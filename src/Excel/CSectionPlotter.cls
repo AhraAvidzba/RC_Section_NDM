@@ -11,7 +11,6 @@ Option Explicit
 
 Private Const CHART_NAME As String = "chtNDMSectionPlot"
 Private Const SHAPE_PREFIX As String = "NDMPlot_"
-Private Const WORKSHEET_LEGEND_PREFIX As String = "NDMPlotConcreteLegend_"
 Private Const XL_XY_SCATTER As Long = -4169
 Private Const XL_XY_SCATTER_LINES As Long = 74
 Private Const XL_XY_SCATTER_LINES_NO_MARKERS As Long = 75
@@ -42,7 +41,6 @@ Private Const MSO_ARROWHEAD_WIDTH_WIDE As Long = 3
 Private Const MSO_SHAPE_RECTANGLE As Long = 1
 Private Const MSO_SHAPE_DIAMOND As Long = 4
 Private Const MSO_SHAPE_OVAL As Long = 9
-Private Const MSO_BRING_TO_FRONT As Long = 0
 
 Private mChart As Object
 Private mChartObject As Object
@@ -94,7 +92,6 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     PrepareChart data
     ConfigureEqualScale data
     ClearGeneratedShapes
-    ClearWorksheetLegendShapes
     CalculateResultRange data
     AddElementSeries data
     DrawAnalysisSeries data, settings
@@ -370,35 +367,54 @@ Private Function ElementColor(ByVal data As CSectionPlotDataReader, ByVal index 
     ElseIf StrComp(data.PhysicalState(index), "NearZero", vbTextCompare) = 0 Then
         ElementColor = RGB(150, 150, 150)
     ElseIf mResultGradientEnabled Then
-        ElementColor = PhysicalGradientColor(data.PhysicalState(index), data.ResultValue(index))
+        ElementColor = MaterialResultColor(data.MaterialType(index), data.PhysicalState(index), data.ResultValue(index))
     ElseIf StrComp(data.MaterialType(index), "Rebar", vbTextCompare) = 0 Then
         If StrComp(data.PhysicalState(index), "Compression", vbTextCompare) = 0 Then
-            ElementColor = RGB(180, 0, 255)
+            ElementColor = LegendCompressionColor("Rebar")
         Else
-            ElementColor = RGB(220, 0, 0)
+            ElementColor = LegendTensionColor("Rebar")
         End If
     ElseIf StrComp(data.PhysicalState(index), "Compression", vbTextCompare) = 0 Then
-        ElementColor = RGB(0, 80, 200)
+        ElementColor = LegendCompressionColor("Concrete")
     Else
-        ElementColor = RGB(220, 0, 0)
+        ElementColor = LegendTensionColor("Concrete")
     End If
 End Function
 
-Private Function PhysicalGradientColor(ByVal state As String, ByVal value As Double) As Long
+Private Function MaterialResultColor(ByVal materialType As String, ByVal state As String, ByVal value As Double) As Long
     Dim t As Double
-    If mResultMaxAbs <= 0.000000000001 Then
+    Dim maxAbs As Double
+    maxAbs = MaterialStateMaxAbs(materialType, state)
+    If maxAbs <= 0.000000000001 Then
         t = 1#
     Else
-        t = ClampDouble(Abs(value) / mResultMaxAbs, 0#, 1#)
+        t = ClampDouble(Abs(value) / maxAbs, 0#, 1#)
     End If
 
     If StrComp(state, "Compression", vbTextCompare) = 0 Then
-        PhysicalGradientColor = BlendColor(RGB(255, 238, 120), RGB(210, 30, 20), t)
+        MaterialResultColor = BlendColor(RGB(218, 218, 218), LegendCompressionColor(materialType), t)
     ElseIf StrComp(state, "Tension", vbTextCompare) = 0 Then
-        PhysicalGradientColor = BlendColor(RGB(210, 245, 250), RGB(30, 80, 220), t)
+        MaterialResultColor = BlendColor(RGB(218, 218, 218), LegendTensionColor(materialType), t)
     Else
-        PhysicalGradientColor = RGB(150, 150, 150)
+        MaterialResultColor = RGB(150, 150, 150)
     End If
+End Function
+
+Private Function MaterialStateMaxAbs(ByVal materialType As String, ByVal state As String) As Double
+    If StrComp(materialType, "Rebar", vbTextCompare) = 0 Then
+        If StrComp(state, "Compression", vbTextCompare) = 0 Then
+            MaterialStateMaxAbs = mRebarCompressionMaxAbs
+        ElseIf StrComp(state, "Tension", vbTextCompare) = 0 Then
+            MaterialStateMaxAbs = mRebarTensionMaxAbs
+        End If
+    ElseIf StrComp(materialType, "Concrete", vbTextCompare) = 0 Then
+        If StrComp(state, "Compression", vbTextCompare) = 0 Then
+            MaterialStateMaxAbs = mConcreteCompressionMaxAbs
+        ElseIf StrComp(state, "Tension", vbTextCompare) = 0 Then
+            MaterialStateMaxAbs = mConcreteTensionMaxAbs
+        End If
+    End If
+    If MaterialStateMaxAbs <= 0# Then MaterialStateMaxAbs = mResultMaxAbs
 End Function
 
 Private Function GradientColor(ByVal value As Double, ByVal minValue As Double, ByVal maxValue As Double) As Long
@@ -944,27 +960,27 @@ Private Sub DrawLegend(ByVal data As CSectionPlotDataReader)
     AddChartText leftPos + 24, topPos + barH / 2# - 8, 84, 16, "0", 0#, RGB(40, 40, 40), False
     AddChartText leftPos + 24, topPos + barH - 10, 84, 16, LegendValueText(mRebarHasTension, mRebarTensionValueAtMaxAbs), 0#, RGB(40, 40, 40), False
     AddChartText leftPos + 24, topPos + barH + 4, 88, 14, "Растяжение", 0#, RGB(40, 40, 40), True
-    DrawWorksheetLegendScale data, mChartObject.Left + leftPos, mChartObject.Top + topPos + barH + 70, barW, barH, "Concrete", _
+    DrawChartLegendScale data, leftPos, topPos + barH + 70, barW, barH, "Concrete", _
         mConcreteHasCompression, mConcreteCompressionValueAtMaxAbs, mConcreteHasTension, mConcreteTensionValueAtMaxAbs
 End Sub
 
-Private Sub DrawWorksheetLegendScale(ByVal data As CSectionPlotDataReader, ByVal leftPos As Double, _
+Private Sub DrawChartLegendScale(ByVal data As CSectionPlotDataReader, ByVal leftPos As Double, _
         ByVal topPos As Double, ByVal barW As Double, ByVal barH As Double, _
         ByVal materialType As String, ByVal hasCompression As Boolean, ByVal compressionValue As Double, _
         ByVal hasTension As Boolean, ByVal tensionValue As Double)
-    AddWorksheetText leftPos - 6, topPos - 28, 132, 22, data.ResultCaption & ", " & data.ResultUnit, 0#, RGB(30, 30, 30), True
+    AddChartText leftPos - 6, topPos - 28, 132, 22, data.ResultCaption & ", " & data.ResultUnit, 0#, RGB(30, 30, 30), True
 
     Dim i As Long
     For i = 0 To 11
         Dim t As Double
         t = CDbl(i) / 11#
-        AddWorksheetLegendRect leftPos, topPos + i * barH / 12#, barW, barH / 12# + 1, MaterialLegendColor(materialType, t)
+        AddLegendRect leftPos, topPos + i * barH / 12#, barW, barH / 12# + 1, MaterialLegendColor(materialType, t)
     Next i
-    AddWorksheetText leftPos + 24, topPos - 12, 88, 14, LegendCompressionText(), 0#, RGB(40, 40, 40), True
-    AddWorksheetText leftPos + 24, topPos + 4, 84, 16, LegendValueText(hasCompression, compressionValue), 0#, RGB(40, 40, 40), False
-    AddWorksheetText leftPos + 24, topPos + barH / 2# - 8, 84, 16, "0", 0#, RGB(40, 40, 40), False
-    AddWorksheetText leftPos + 24, topPos + barH - 10, 84, 16, LegendValueText(hasTension, tensionValue), 0#, RGB(40, 40, 40), False
-    AddWorksheetText leftPos + 24, topPos + barH + 4, 88, 14, LegendTensionText(), 0#, RGB(40, 40, 40), True
+    AddChartText leftPos + 24, topPos - 12, 88, 14, LegendCompressionText(), 0#, RGB(40, 40, 40), True
+    AddChartText leftPos + 24, topPos + 4, 84, 16, LegendValueText(hasCompression, compressionValue), 0#, RGB(40, 40, 40), False
+    AddChartText leftPos + 24, topPos + barH / 2# - 8, 84, 16, "0", 0#, RGB(40, 40, 40), False
+    AddChartText leftPos + 24, topPos + barH - 10, 84, 16, LegendValueText(hasTension, tensionValue), 0#, RGB(40, 40, 40), False
+    AddChartText leftPos + 24, topPos + barH + 4, 88, 14, LegendTensionText(), 0#, RGB(40, 40, 40), True
 End Sub
 
 Private Function LegendCompressionText() As String
@@ -987,17 +1003,17 @@ End Function
 
 Private Function LegendCompressionColor(ByVal materialType As String) As Long
     If StrComp(materialType, "Rebar", vbTextCompare) = 0 Then
-        LegendCompressionColor = RGB(135, 35, 210)
-    Else
         LegendCompressionColor = RGB(210, 30, 20)
+    Else
+        LegendCompressionColor = RGB(125, 35, 210)
     End If
 End Function
 
 Private Function LegendTensionColor(ByVal materialType As String) As Long
     If StrComp(materialType, "Rebar", vbTextCompare) = 0 Then
-        LegendTensionColor = RGB(0, 150, 85)
-    Else
         LegendTensionColor = RGB(30, 80, 220)
+    Else
+        LegendTensionColor = RGB(0, 155, 85)
     End If
 End Function
 
@@ -1035,55 +1051,6 @@ Private Sub AddLegendRow(ByVal leftPos As Double, ByVal topPos As Double, ByVal 
     marker.Fill.ForeColor.RGB = colorValue
     marker.Line.ForeColor.RGB = colorValue
     AddChartText leftPos + 14, topPos, 118, 28, textValue, 0#, RGB(50, 50, 50), False
-End Sub
-
-Private Sub AddWorksheetLegendRect(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _
-        ByVal heightValue As Double, ByVal colorValue As Long)
-    Dim sheet As Object
-    Set sheet = mChartObject.Parent
-
-    Dim marker As Object
-    Set marker = sheet.Shapes.AddShape(MSO_SHAPE_RECTANGLE, leftPos, topPos, widthValue, heightValue)
-    marker.Name = WORKSHEET_LEGEND_PREFIX & "Gradient" & CStr(sheet.Shapes.Count)
-    marker.Fill.ForeColor.RGB = colorValue
-    marker.Line.ForeColor.RGB = colorValue
-    BringWorksheetShapeToFront marker
-End Sub
-
-Private Function AddWorksheetText(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _
-        ByVal heightValue As Double, ByVal textValue As String, ByVal rotation As Double, _
-        ByVal colorValue As Long, ByVal isBold As Boolean, Optional ByVal centered As Boolean = False, _
-        Optional ByVal fontSize As Double = 8#) As Object
-    Dim sheet As Object
-    Set sheet = mChartObject.Parent
-
-    Dim textShape As Object
-    Set textShape = sheet.Shapes.AddTextbox(MSO_TEXT_ORIENTATION_HORIZONTAL, leftPos, topPos, widthValue, heightValue)
-    textShape.Name = WORKSHEET_LEGEND_PREFIX & "Text" & CStr(sheet.Shapes.Count)
-    textShape.TextFrame.Characters().Text = textValue
-    If fontSize <= 0# Then fontSize = 8#
-    textShape.TextFrame.Characters().Font.Size = fontSize
-    textShape.TextFrame.Characters().Font.Color = colorValue
-    textShape.TextFrame.Characters().Font.Bold = isBold
-    If centered Then
-        textShape.TextFrame.HorizontalAlignment = XL_CENTER
-        textShape.TextFrame.VerticalAlignment = XL_VCENTER
-        textShape.TextFrame.MarginLeft = 0
-        textShape.TextFrame.MarginRight = 0
-        textShape.TextFrame.MarginTop = 0
-        textShape.TextFrame.MarginBottom = 0
-    End If
-    textShape.Line.Visible = False
-    textShape.Fill.Visible = False
-    If rotation <> 0# Then textShape.Rotation = rotation
-    BringWorksheetShapeToFront textShape
-    Set AddWorksheetText = textShape
-End Function
-
-Private Sub BringWorksheetShapeToFront(ByVal shapeObject As Object)
-    On Error Resume Next
-    shapeObject.ZOrder MSO_BRING_TO_FRONT
-    On Error GoTo 0
 End Sub
 
 Private Function DrawModelLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
@@ -1238,18 +1205,6 @@ Private Sub ClearGeneratedShapes()
     For i = mChart.Shapes.Count To 1 Step -1
         If Left$(mChart.Shapes.Item(i).Name, Len(SHAPE_PREFIX)) = SHAPE_PREFIX Then
             mChart.Shapes.Item(i).Delete
-        End If
-    Next i
-End Sub
-
-Private Sub ClearWorksheetLegendShapes()
-    Dim sheet As Object
-    Set sheet = mChartObject.Parent
-
-    Dim i As Long
-    For i = sheet.Shapes.Count To 1 Step -1
-        If Left$(sheet.Shapes.Item(i).Name, Len(WORKSHEET_LEGEND_PREFIX)) = WORKSHEET_LEGEND_PREFIX Then
-            sheet.Shapes.Item(i).Delete
         End If
     Next i
 End Sub
