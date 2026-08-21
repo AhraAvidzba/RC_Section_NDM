@@ -11,13 +11,13 @@ Option Explicit
 
 Private Const CHART_NAME As String = "chtNDMSectionPlot"
 Private Const SHAPE_PREFIX As String = "NDMPlot_"
+Private Const WORKSHEET_LEGEND_PREFIX As String = "NDMPlotConcreteLegend_"
 Private Const XL_XY_SCATTER As Long = -4169
 Private Const XL_XY_SCATTER_LINES As Long = 74
 Private Const XL_XY_SCATTER_LINES_NO_MARKERS As Long = 75
 Private Const XL_CATEGORY As Long = 1
 Private Const XL_VALUE As Long = 2
 Private Const XL_PRIMARY As Long = 1
-Private Const XL_SECONDARY As Long = 2
 Private Const XL_MARKER_SQUARE As Long = 1
 Private Const XL_MARKER_DIAMOND As Long = 2
 Private Const XL_MARKER_CIRCLE As Long = 8
@@ -42,6 +42,7 @@ Private Const MSO_ARROWHEAD_WIDTH_WIDE As Long = 3
 Private Const MSO_SHAPE_RECTANGLE As Long = 1
 Private Const MSO_SHAPE_DIAMOND As Long = 4
 Private Const MSO_SHAPE_OVAL As Long = 9
+Private Const MSO_BRING_TO_FRONT As Long = 0
 
 Private mChart As Object
 Private mChartObject As Object
@@ -58,6 +59,18 @@ Private mTensionValueAtMaxAbs As Double
 Private mResultMaxAbs As Double
 Private mHasCompression As Boolean
 Private mHasTension As Boolean
+Private mConcreteCompressionMaxAbs As Double
+Private mConcreteCompressionValueAtMaxAbs As Double
+Private mConcreteTensionMaxAbs As Double
+Private mConcreteTensionValueAtMaxAbs As Double
+Private mConcreteHasCompression As Boolean
+Private mConcreteHasTension As Boolean
+Private mRebarCompressionMaxAbs As Double
+Private mRebarCompressionValueAtMaxAbs As Double
+Private mRebarTensionMaxAbs As Double
+Private mRebarTensionValueAtMaxAbs As Double
+Private mRebarHasCompression As Boolean
+Private mRebarHasTension As Boolean
 Private mResultGradientEnabled As Boolean
 Private mResultPrecision As Long
 Private mDimensionArrowType As String
@@ -81,11 +94,11 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     PrepareChart data
     ConfigureEqualScale data
     ClearGeneratedShapes
+    ClearWorksheetLegendShapes
     CalculateResultRange data
-    DrawConcreteContour data
     AddElementSeries data
-    DrawDecorations data, settings
-    ConfigureAnalysisLineOverlay
+    DrawAnalysisSeries data, settings
+    DrawShapeDecorations data, settings
 End Sub
 
 Private Function EnsureChart(ByVal sheet As Object) As Object
@@ -206,6 +219,7 @@ Private Sub CalculateResultRange(ByVal data As CSectionPlotDataReader)
     mCompressionMaxAbs = 0#
     mTensionMaxAbs = 0#
     mResultMaxAbs = 0#
+    ResetMaterialLegendRanges
     For i = 1 To data.Count
         If StrComp(data.PhysicalState(i), "InactiveTensionConcrete", vbTextCompare) <> 0 Then
             If Not found Then
@@ -219,9 +233,11 @@ Private Sub CalculateResultRange(ByVal data As CSectionPlotDataReader)
 
             If StrComp(data.PhysicalState(i), "Compression", vbTextCompare) = 0 Then
                 RegisterResultMagnitude data.ResultValue(i), mCompressionMaxAbs, mCompressionValueAtMaxAbs, mHasCompression
+                RegisterMaterialLegendMagnitude data.MaterialType(i), True, data.ResultValue(i)
                 mResultMaxAbs = MaxDouble(mResultMaxAbs, Abs(data.ResultValue(i)))
             ElseIf StrComp(data.PhysicalState(i), "Tension", vbTextCompare) = 0 Then
                 RegisterResultMagnitude data.ResultValue(i), mTensionMaxAbs, mTensionValueAtMaxAbs, mHasTension
+                RegisterMaterialLegendMagnitude data.MaterialType(i), False, data.ResultValue(i)
                 mResultMaxAbs = MaxDouble(mResultMaxAbs, Abs(data.ResultValue(i)))
             End If
         End If
@@ -229,6 +245,33 @@ Private Sub CalculateResultRange(ByVal data As CSectionPlotDataReader)
     If Not found Or Abs(mResultMax - mResultMin) < 0.000000000001 Then
         mResultMin = -1#
         mResultMax = 1#
+    End If
+End Sub
+
+Private Sub ResetMaterialLegendRanges()
+    mConcreteCompressionMaxAbs = 0#
+    mConcreteTensionMaxAbs = 0#
+    mConcreteHasCompression = False
+    mConcreteHasTension = False
+    mRebarCompressionMaxAbs = 0#
+    mRebarTensionMaxAbs = 0#
+    mRebarHasCompression = False
+    mRebarHasTension = False
+End Sub
+
+Private Sub RegisterMaterialLegendMagnitude(ByVal materialType As String, ByVal compression As Boolean, ByVal value As Double)
+    If StrComp(materialType, "Concrete", vbTextCompare) = 0 Then
+        If compression Then
+            RegisterResultMagnitude value, mConcreteCompressionMaxAbs, mConcreteCompressionValueAtMaxAbs, mConcreteHasCompression
+        Else
+            RegisterResultMagnitude value, mConcreteTensionMaxAbs, mConcreteTensionValueAtMaxAbs, mConcreteHasTension
+        End If
+    ElseIf StrComp(materialType, "Rebar", vbTextCompare) = 0 Then
+        If compression Then
+            RegisterResultMagnitude value, mRebarCompressionMaxAbs, mRebarCompressionValueAtMaxAbs, mRebarHasCompression
+        Else
+            RegisterResultMagnitude value, mRebarTensionMaxAbs, mRebarTensionValueAtMaxAbs, mRebarHasTension
+        End If
     End If
 End Sub
 
@@ -386,10 +429,14 @@ Private Function BlendColor(ByVal c1 As Long, ByVal c2 As Long, ByVal t As Doubl
     BlendColor = RGB(CLng(r1 + (r2 - r1) * t), CLng(g1 + (g2 - g1) * t), CLng(b1 + (b2 - b1) * t))
 End Function
 
-Private Sub DrawDecorations(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
+Private Sub DrawAnalysisSeries(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
     If settings.GetBoolean("Plot.NeutralLineEnabled", True) Then DrawNeutralLine data
     If settings.GetBoolean("Plot.PrincipalAxesEnabled", True) Then DrawPrincipalAxes data
     If settings.GetBoolean("Plot.LoadApplicationPointEnabled", True) Then DrawPointMarker data.LoadReferenceX, data.LoadReferenceY, 10, RGB(255, 128, 0), XL_MARKER_DIAMOND, "LoadPoint"
+End Sub
+
+Private Sub DrawShapeDecorations(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
+    DrawConcreteContour data
     DrawShapeAnnotations data, settings, settings.GetBoolean("Plot.Dimensions.Enabled", True), _
         settings.GetBoolean("Plot.RebarLabels.Enabled", True)
     If settings.GetBoolean("Plot.ResultLabelsEnabled", False) Then DrawResultLabels data, settings.GetDouble("Plot.ResultLabelSpacing", 100#)
@@ -880,9 +927,9 @@ End Sub
 Private Sub DrawLegend(ByVal data As CSectionPlotDataReader)
     Dim leftPos As Double, topPos As Double, barW As Double, barH As Double
     leftPos = mChartObject.Width - 142
-    topPos = 54
+    topPos = 36
     barW = 18
-    barH = 150
+    barH = 132
 
     AddChartText leftPos - 6, topPos - 28, 132, 22, data.ResultCaption & ", " & data.ResultUnit, 0#, RGB(30, 30, 30), True
 
@@ -890,15 +937,69 @@ Private Sub DrawLegend(ByVal data As CSectionPlotDataReader)
     For i = 0 To 11
         Dim t As Double
         t = CDbl(i) / 11#
-        AddLegendRect leftPos, topPos + i * barH / 12#, barW, barH / 12# + 1, PhysicalLegendColor(t)
+        AddLegendRect leftPos, topPos + i * barH / 12#, barW, barH / 12# + 1, MaterialLegendColor("Rebar", t)
     Next i
     AddChartText leftPos + 24, topPos - 12, 88, 14, "Сжатие", 0#, RGB(40, 40, 40), True
-    AddChartText leftPos + 24, topPos + 4, 84, 16, LegendValueText(mHasCompression, mCompressionValueAtMaxAbs), 0#, RGB(40, 40, 40), False
+    AddChartText leftPos + 24, topPos + 4, 84, 16, LegendValueText(mRebarHasCompression, mRebarCompressionValueAtMaxAbs), 0#, RGB(40, 40, 40), False
     AddChartText leftPos + 24, topPos + barH / 2# - 8, 84, 16, "0", 0#, RGB(40, 40, 40), False
-    AddChartText leftPos + 24, topPos + barH - 10, 84, 16, LegendValueText(mHasTension, mTensionValueAtMaxAbs), 0#, RGB(40, 40, 40), False
+    AddChartText leftPos + 24, topPos + barH - 10, 84, 16, LegendValueText(mRebarHasTension, mRebarTensionValueAtMaxAbs), 0#, RGB(40, 40, 40), False
     AddChartText leftPos + 24, topPos + barH + 4, 88, 14, "Растяжение", 0#, RGB(40, 40, 40), True
-    AddLegendRow leftPos - 2, topPos + barH + 28, RGB(218, 218, 218), "Растянутый бетон без учета сопротивления"
+    DrawWorksheetLegendScale data, mChartObject.Left + leftPos, mChartObject.Top + topPos + barH + 70, barW, barH, "Concrete", _
+        mConcreteHasCompression, mConcreteCompressionValueAtMaxAbs, mConcreteHasTension, mConcreteTensionValueAtMaxAbs
 End Sub
+
+Private Sub DrawWorksheetLegendScale(ByVal data As CSectionPlotDataReader, ByVal leftPos As Double, _
+        ByVal topPos As Double, ByVal barW As Double, ByVal barH As Double, _
+        ByVal materialType As String, ByVal hasCompression As Boolean, ByVal compressionValue As Double, _
+        ByVal hasTension As Boolean, ByVal tensionValue As Double)
+    AddWorksheetText leftPos - 6, topPos - 28, 132, 22, data.ResultCaption & ", " & data.ResultUnit, 0#, RGB(30, 30, 30), True
+
+    Dim i As Long
+    For i = 0 To 11
+        Dim t As Double
+        t = CDbl(i) / 11#
+        AddWorksheetLegendRect leftPos, topPos + i * barH / 12#, barW, barH / 12# + 1, MaterialLegendColor(materialType, t)
+    Next i
+    AddWorksheetText leftPos + 24, topPos - 12, 88, 14, LegendCompressionText(), 0#, RGB(40, 40, 40), True
+    AddWorksheetText leftPos + 24, topPos + 4, 84, 16, LegendValueText(hasCompression, compressionValue), 0#, RGB(40, 40, 40), False
+    AddWorksheetText leftPos + 24, topPos + barH / 2# - 8, 84, 16, "0", 0#, RGB(40, 40, 40), False
+    AddWorksheetText leftPos + 24, topPos + barH - 10, 84, 16, LegendValueText(hasTension, tensionValue), 0#, RGB(40, 40, 40), False
+    AddWorksheetText leftPos + 24, topPos + barH + 4, 88, 14, LegendTensionText(), 0#, RGB(40, 40, 40), True
+End Sub
+
+Private Function LegendCompressionText() As String
+    LegendCompressionText = ChrW$(&H421) & ChrW$(&H436) & ChrW$(&H430) & ChrW$(&H442) & ChrW$(&H438) & ChrW$(&H435)
+End Function
+
+Private Function LegendTensionText() As String
+    LegendTensionText = ChrW$(&H420) & ChrW$(&H430) & ChrW$(&H441) & ChrW$(&H442) & ChrW$(&H44F) & ChrW$(&H436) & ChrW$(&H435) & ChrW$(&H43D) & ChrW$(&H438) & ChrW$(&H435)
+End Function
+
+Private Function MaterialLegendColor(ByVal materialType As String, ByVal position As Double) As Long
+    Dim t As Double
+    t = ClampDouble(position, 0#, 1#)
+    If t < 0.5 Then
+        MaterialLegendColor = BlendColor(LegendCompressionColor(materialType), RGB(218, 218, 218), t / 0.5)
+    Else
+        MaterialLegendColor = BlendColor(RGB(218, 218, 218), LegendTensionColor(materialType), (t - 0.5) / 0.5)
+    End If
+End Function
+
+Private Function LegendCompressionColor(ByVal materialType As String) As Long
+    If StrComp(materialType, "Rebar", vbTextCompare) = 0 Then
+        LegendCompressionColor = RGB(135, 35, 210)
+    Else
+        LegendCompressionColor = RGB(210, 30, 20)
+    End If
+End Function
+
+Private Function LegendTensionColor(ByVal materialType As String) As Long
+    If StrComp(materialType, "Rebar", vbTextCompare) = 0 Then
+        LegendTensionColor = RGB(0, 150, 85)
+    Else
+        LegendTensionColor = RGB(30, 80, 220)
+    End If
+End Function
 
 Private Function PhysicalLegendColor(ByVal position As Double) As Long
     Dim t As Double
@@ -936,6 +1037,55 @@ Private Sub AddLegendRow(ByVal leftPos As Double, ByVal topPos As Double, ByVal 
     AddChartText leftPos + 14, topPos, 118, 28, textValue, 0#, RGB(50, 50, 50), False
 End Sub
 
+Private Sub AddWorksheetLegendRect(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _
+        ByVal heightValue As Double, ByVal colorValue As Long)
+    Dim sheet As Object
+    Set sheet = mChartObject.Parent
+
+    Dim marker As Object
+    Set marker = sheet.Shapes.AddShape(MSO_SHAPE_RECTANGLE, leftPos, topPos, widthValue, heightValue)
+    marker.Name = WORKSHEET_LEGEND_PREFIX & "Gradient" & CStr(sheet.Shapes.Count)
+    marker.Fill.ForeColor.RGB = colorValue
+    marker.Line.ForeColor.RGB = colorValue
+    BringWorksheetShapeToFront marker
+End Sub
+
+Private Function AddWorksheetText(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _
+        ByVal heightValue As Double, ByVal textValue As String, ByVal rotation As Double, _
+        ByVal colorValue As Long, ByVal isBold As Boolean, Optional ByVal centered As Boolean = False, _
+        Optional ByVal fontSize As Double = 8#) As Object
+    Dim sheet As Object
+    Set sheet = mChartObject.Parent
+
+    Dim textShape As Object
+    Set textShape = sheet.Shapes.AddTextbox(MSO_TEXT_ORIENTATION_HORIZONTAL, leftPos, topPos, widthValue, heightValue)
+    textShape.Name = WORKSHEET_LEGEND_PREFIX & "Text" & CStr(sheet.Shapes.Count)
+    textShape.TextFrame.Characters().Text = textValue
+    If fontSize <= 0# Then fontSize = 8#
+    textShape.TextFrame.Characters().Font.Size = fontSize
+    textShape.TextFrame.Characters().Font.Color = colorValue
+    textShape.TextFrame.Characters().Font.Bold = isBold
+    If centered Then
+        textShape.TextFrame.HorizontalAlignment = XL_CENTER
+        textShape.TextFrame.VerticalAlignment = XL_VCENTER
+        textShape.TextFrame.MarginLeft = 0
+        textShape.TextFrame.MarginRight = 0
+        textShape.TextFrame.MarginTop = 0
+        textShape.TextFrame.MarginBottom = 0
+    End If
+    textShape.Line.Visible = False
+    textShape.Fill.Visible = False
+    If rotation <> 0# Then textShape.Rotation = rotation
+    BringWorksheetShapeToFront textShape
+    Set AddWorksheetText = textShape
+End Function
+
+Private Sub BringWorksheetShapeToFront(ByVal shapeObject As Object)
+    On Error Resume Next
+    shapeObject.ZOrder MSO_BRING_TO_FRONT
+    On Error GoTo 0
+End Sub
+
 Private Function DrawModelLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
         ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String) As Object
     Set DrawModelLine = DrawChartLine(ModelToChartX(x1), ModelToChartY(y1), ModelToChartX(x2), ModelToChartY(y2), _
@@ -968,7 +1118,6 @@ Private Sub DrawModelLineSeries(ByVal x1 As Double, ByVal y1 As Double, ByVal x2
     series.XValues = xValues
     series.Values = yValues
     series.MarkerStyle = XL_NONE
-    If IsAnalysisLineSeries(suffix) Then series.AxisGroup = XL_SECONDARY
     series.Format.Line.Visible = True
     series.Format.Line.ForeColor.RGB = colorValue
     series.Format.Line.Weight = weight
@@ -978,52 +1127,6 @@ Private Sub DrawModelLineSeries(ByVal x1 As Double, ByVal y1 As Double, ByVal x2
     series.Smooth = False
     On Error GoTo 0
 End Sub
-
-Private Function IsAnalysisLineSeries(ByVal suffix As String) As Boolean
-    IsAnalysisLineSeries = (InStr(1, suffix, "NeutralAxis", vbTextCompare) > 0) Or _
-        (InStr(1, suffix, "Principal", vbTextCompare) > 0)
-End Function
-
-Private Sub ConfigureAnalysisLineOverlay()
-    If Not HasAnalysisLineSeries() Then Exit Sub
-
-    On Error Resume Next
-    mChart.HasAxis(XL_CATEGORY, XL_SECONDARY) = True
-    mChart.HasAxis(XL_VALUE, XL_SECONDARY) = True
-    With mChart.Axes(XL_CATEGORY, XL_SECONDARY)
-        .MinimumScale = mMinX
-        .MaximumScale = mMaxX
-        .TickLabelPosition = XL_NONE
-        .MajorTickMark = XL_NONE
-        .MinorTickMark = XL_NONE
-        .Format.Line.Visible = False
-        .HasMajorGridlines = False
-        .HasMinorGridlines = False
-    End With
-    With mChart.Axes(XL_VALUE, XL_SECONDARY)
-        .MinimumScale = mMinY
-        .MaximumScale = mMaxY
-        .TickLabelPosition = XL_NONE
-        .MajorTickMark = XL_NONE
-        .MinorTickMark = XL_NONE
-        .Format.Line.Visible = False
-        .HasMajorGridlines = False
-        .HasMinorGridlines = False
-    End With
-    On Error GoTo 0
-End Sub
-
-Private Function HasAnalysisLineSeries() As Boolean
-    Dim i As Long
-    For i = 1 To mChart.SeriesCollection.Count
-        Dim series As Object
-        Set series = mChart.SeriesCollection(i)
-        If IsAnalysisLineSeries(CStr(series.Name)) Then
-            HasAnalysisLineSeries = True
-            Exit Function
-        End If
-    Next i
-End Function
 
 Private Function DrawModelOval(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
         ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String, ByVal filled As Boolean) As Object
@@ -1135,6 +1238,18 @@ Private Sub ClearGeneratedShapes()
     For i = mChart.Shapes.Count To 1 Step -1
         If Left$(mChart.Shapes.Item(i).Name, Len(SHAPE_PREFIX)) = SHAPE_PREFIX Then
             mChart.Shapes.Item(i).Delete
+        End If
+    Next i
+End Sub
+
+Private Sub ClearWorksheetLegendShapes()
+    Dim sheet As Object
+    Set sheet = mChartObject.Parent
+
+    Dim i As Long
+    For i = sheet.Shapes.Count To 1 Step -1
+        If Left$(sheet.Shapes.Item(i).Name, Len(WORKSHEET_LEGEND_PREFIX)) = WORKSHEET_LEGEND_PREFIX Then
+            sheet.Shapes.Item(i).Delete
         End If
     Next i
 End Sub

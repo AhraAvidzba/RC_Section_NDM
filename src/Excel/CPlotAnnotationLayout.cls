@@ -195,6 +195,9 @@ Public Sub AddRebarLabel(ByVal startX As Double, ByVal startY As Double, ByVal e
 
     Dim baseOffset As Double
     baseOffset = mRebarBaseGap
+    If StrComp(mRebarPlacement, "Outside", vbTextCompare) = 0 And offset > 0# Then
+        baseOffset = baseOffset + ModelDistanceToChartPoints(offset)
+    End If
 
     Dim anchorX As Double, anchorY As Double
     anchorX = 0.5 * (startX + endX)
@@ -345,6 +348,10 @@ End Function
 Private Function ModelMmToChartPoints(ByVal valueMm As Double) As Double
     If mLengthUnitFactorToMm <= 0# Then mLengthUnitFactorToMm = 1#
     ModelMmToChartPoints = valueMm / mLengthUnitFactorToMm * ModelScale()
+End Function
+
+Private Function ModelDistanceToChartPoints(ByVal valueInModelUnits As Double) As Double
+    ModelDistanceToChartPoints = valueInModelUnits * ModelScale()
 End Function
 
 Private Function LengthFactorToMm(ByVal unitName As String) As Double
