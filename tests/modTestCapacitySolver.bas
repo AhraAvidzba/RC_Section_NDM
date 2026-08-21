@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestCapacitySolver"
+﻿Attribute VB_Name = "modTestCapacitySolver"
 Option Explicit
 
 Private Type TCapacityTestStats
@@ -23,12 +23,18 @@ Public Function RunCapacitySolverTests() As String
     TestLambdaNearOne stats
     TestZeroAxialForce stats
     TestConcreteLimitState stats
+    TestConcreteTensionLimitState stats
+    TestConcreteTensionLimitIgnored stats
     TestSteelLimitState stats
     TestNumericalFailureNotPhysicalBoundary stats
     TestAsymmetricCoupledCurvatures stats
     TestAsymmetricMxy stats
     TestResultWriter stats
     TestInvalidBaseMoment stats
+    TestCapacityMethodComparisons stats
+    TestLoadMultiplierSearchMethods stats
+    TestSearchMethodInputErrors stats
+    TestSearchMethodPerformanceComparison stats
 
     AppendLine stats, "TOTAL_CAPACITY: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -48,12 +54,12 @@ Private Sub TestMxPositiveAndNegative(ByRef stats As TCapacityTestStats)
     Dim capNeg As CCapacitySolver
     Set capNeg = New CCapacitySolver
     ConfigureCapacity capNeg
-    capNeg.SolveByLoadMultiplier mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), -300000#, -10000000#, 0#
+    capNeg.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -300000#, -10000000#, 0#
 
     Dim capPos As CCapacitySolver
     Set capPos = New CCapacitySolver
     ConfigureCapacity capPos
-    capPos.SolveByLoadMultiplier mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), -300000#, 10000000#, 0#
+    capPos.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -300000#, 10000000#, 0#
 
     AssertTrue stats, "capacity.mx.negative.converged", capNeg.Converged
     AssertTrue stats, "capacity.mx.positive.converged", capPos.Converged
@@ -83,17 +89,17 @@ Private Sub TestCircleCapacitySymmetry(ByRef stats As TCapacityTestStats)
     Dim capMx As CCapacitySolver
     Set capMx = New CCapacitySolver
     ConfigureCapacity capMx
-    capMx.SolveByLoadMultiplier mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), -220000#, -6000000#, 0#
+    capMx.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -220000#, -6000000#, 0#
 
     Dim capMy As CCapacitySolver
     Set capMy = New CCapacitySolver
     ConfigureCapacity capMy
-    capMy.SolveByLoadMultiplier mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), -220000#, 0#, -6000000#
+    capMy.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -220000#, 0#, -6000000#
 
     Dim capMxy As CCapacitySolver
     Set capMxy = New CCapacitySolver
     ConfigureCapacity capMxy
-    capMxy.SolveByLoadMultiplier mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), -220000#, -5000000#, -5000000#
+    capMxy.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -220000#, -5000000#, -5000000#
 
     AssertTrue stats, "circle.capacity.mx.converged", capMx.Converged
     AssertTrue stats, "circle.capacity.my.converged", capMy.Converged
@@ -121,12 +127,12 @@ Private Sub TestConcreteTensionModeAffectsSolverAndCapacity(ByRef stats As TCapa
     Dim solverIgnore As CSectionSolver
     Set solverIgnore = New CSectionSolver
     ConfigureSectionSolver solverIgnore
-    solverIgnore.Solve mesh, rebars, ignoreConcrete, ProvisionalSteel(), -50000#, -5000000#, -3000000#
+    solverIgnore.Solve BuildGeneratedSectionModel(mesh, rebars), ignoreConcrete, ProvisionalSteel(), -50000#, -5000000#, -3000000#
 
     Dim solverUse As CSectionSolver
     Set solverUse = New CSectionSolver
     ConfigureSectionSolver solverUse
-    solverUse.Solve mesh, rebars, useConcrete, ProvisionalSteel(), -50000#, -5000000#, -3000000#
+    solverUse.Solve BuildGeneratedSectionModel(mesh, rebars), useConcrete, ProvisionalSteel(), -50000#, -5000000#, -3000000#
 
     AssertTrue stats, "tensionMode.solver.ignore.converged", solverIgnore.Converged
     AssertTrue stats, "tensionMode.solver.use.converged", solverUse.Converged
@@ -153,12 +159,12 @@ Private Sub AssertTensionModeAffectsSolverMode(ByRef stats As TCapacityTestStats
     Dim solverIgnore As CSectionSolver
     Set solverIgnore = New CSectionSolver
     ConfigureSectionSolver solverIgnore
-    solverIgnore.Solve mesh, rebars, ignoreConcrete, ProvisionalSteel(), nValue, mxValue, myValue
+    solverIgnore.Solve BuildGeneratedSectionModel(mesh, rebars), ignoreConcrete, ProvisionalSteel(), nValue, mxValue, myValue
 
     Dim solverUse As CSectionSolver
     Set solverUse = New CSectionSolver
     ConfigureSectionSolver solverUse
-    solverUse.Solve mesh, rebars, useConcrete, ProvisionalSteel(), nValue, mxValue, myValue
+    solverUse.Solve BuildGeneratedSectionModel(mesh, rebars), useConcrete, ProvisionalSteel(), nValue, mxValue, myValue
 
     AssertTrue stats, prefix & ".ignore.converged", solverIgnore.Converged
     AssertTrue stats, prefix & ".use.converged", solverUse.Converged
@@ -183,7 +189,7 @@ Private Sub CheckMxyCombination(ByRef stats As TCapacityTestStats, ByVal prefix 
     Dim cap As CCapacitySolver
     Set cap = New CCapacitySolver
     ConfigureCapacity cap
-    cap.SolveByLoadMultiplier mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), nValue, mxBase, myBase
+    cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), nValue, mxBase, myBase
 
     AssertTrue stats, prefix & ".converged", cap.Converged
     AssertTrue stats, prefix & ".lambda.positive", cap.LambdaUltimate > 0#
@@ -201,12 +207,12 @@ Private Sub TestMyPositiveAndNegative(ByRef stats As TCapacityTestStats)
     Dim capNeg As CCapacitySolver
     Set capNeg = New CCapacitySolver
     ConfigureCapacity capNeg
-    capNeg.SolveByLoadMultiplier mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), -300000#, 0#, -10000000#
+    capNeg.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -300000#, 0#, -10000000#
 
     Dim capPos As CCapacitySolver
     Set capPos = New CCapacitySolver
     ConfigureCapacity capPos
-    capPos.SolveByLoadMultiplier mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), -300000#, 0#, 10000000#
+    capPos.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -300000#, 0#, 10000000#
 
     AssertTrue stats, "capacity.my.negative.converged", capNeg.Converged
     AssertTrue stats, "capacity.my.positive.converged", capPos.Converged
@@ -224,12 +230,12 @@ Private Sub TestLambdaLessThanOne(ByRef stats As TCapacityTestStats)
     Dim reference As CCapacitySolver
     Set reference = New CCapacitySolver
     ConfigureCapacity reference
-    reference.SolveByLoadMultiplier mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), -300000#, -10000000#, 0#
+    reference.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -300000#, -10000000#, 0#
 
     Dim cap As CCapacitySolver
     Set cap = New CCapacitySolver
     ConfigureCapacity cap
-    cap.SolveByLoadMultiplier mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), -300000#, reference.MxUltimate * 2#, 0#
+    cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -300000#, reference.MxUltimate * 2#, 0#
 
     AssertTrue stats, "capacity.lambda.lessThanOne.converged", cap.Converged
     AssertTrue stats, "capacity.lambda.lessThanOne.value", cap.LambdaUltimate < 1#
@@ -243,12 +249,12 @@ Private Sub TestLambdaNearOne(ByRef stats As TCapacityTestStats)
     Dim reference As CCapacitySolver
     Set reference = New CCapacitySolver
     ConfigureCapacity reference
-    reference.SolveByLoadMultiplier mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), -300000#, -10000000#, 0#
+    reference.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -300000#, -10000000#, 0#
 
     Dim cap As CCapacitySolver
     Set cap = New CCapacitySolver
     ConfigureCapacity cap
-    cap.SolveByLoadMultiplier mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), -300000#, reference.MxUltimate, 0#
+    cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -300000#, reference.MxUltimate, 0#
 
     AssertTrue stats, "capacity.lambda.nearOne.converged", cap.Converged
     AssertClose stats, "capacity.lambda.nearOne.value", cap.LambdaUltimate, 1#, 0.03
@@ -264,7 +270,7 @@ Private Sub TestZeroAxialForce(ByRef stats As TCapacityTestStats)
     ConfigureCapacity cap
     cap.ConcreteCompressionLimit = -0.0006
     cap.SteelStrainLimit = 0.001#
-    cap.SolveByLoadMultiplier mesh, rebars, LinearConcrete(), LinearSteel(), 0#, -5000000#, 0#
+    cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), LinearConcrete(), LinearSteel(), 0#, -5000000#, 0#
 
     AssertTrue stats, "capacity.zeroN.converged", cap.Converged
     AssertEquilibrium stats, "capacity.zeroN", cap.LastSolver, 0#, cap.MxUltimate, 0#
@@ -280,10 +286,56 @@ Private Sub TestConcreteLimitState(ByRef stats As TCapacityTestStats)
     ConfigureCapacity cap
     cap.ConcreteCompressionLimit = -0.0006
     cap.SteelStrainLimit = 1#
-    cap.SolveByLoadMultiplier mesh, rebars, LinearConcrete(), LinearSteel(), 0#, -10000000#, 0#
+    cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), LinearConcrete(), LinearSteel(), 0#, -10000000#, 0#
 
     AssertTrue stats, "capacity.concreteLimit.converged", cap.Converged
     AssertEquals stats, "capacity.concreteLimit.state", cap.LimitState, "ConcreteStrainLimit"
+End Sub
+
+Private Sub TestConcreteTensionLimitState(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+
+    Dim concrete As CConcreteDiagramMaterial
+    Set concrete = ProvisionalConcrete()
+    concrete.TensionMode = "UseDiagram"
+    concrete.TensionElasticModulus = 32500#
+    concrete.TensionStressLimit = 1.1
+
+    Dim cap As CCapacitySolver
+    Set cap = New CCapacitySolver
+    ConfigureCapacity cap
+    cap.InitialLambdaStep = 0.1
+    cap.ConcreteCompressionLimit = -1#
+    cap.ConcreteTensionLimit = 0.00000001
+    cap.SteelStrainLimit = 1#
+    cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), concrete, ProvisionalSteel(), -50000#, -5000000#, 0#
+
+    AssertTrue stats, "capacity.concreteTensionLimit.converged", cap.Converged
+    AssertEquals stats, "capacity.concreteTensionLimit.state", cap.LimitState, "ConcreteTensionStrainLimit"
+End Sub
+
+Private Sub TestConcreteTensionLimitIgnored(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+
+    Dim concrete As CConcreteDiagramMaterial
+    Set concrete = ProvisionalConcrete()
+    concrete.TensionMode = "Ignore"
+
+    Dim cap As CCapacitySolver
+    Set cap = New CCapacitySolver
+    ConfigureCapacity cap
+    cap.InitialLambdaStep = 0.1
+    cap.ConcreteCompressionLimit = -1#
+    cap.ConcreteTensionLimit = 0.00000001
+    cap.SteelStrainLimit = 0.00000001
+    cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), concrete, ProvisionalSteel(), -50000#, -5000000#, 0#
+
+    AssertTrue stats, "capacity.concreteTensionLimit.ignore.notTension", cap.LimitState <> "ConcreteTensionStrainLimit"
+    AssertEquals stats, "capacity.concreteTensionLimit.ignore.state", cap.LimitState, "SteelStrainLimit"
 End Sub
 
 Private Sub TestSteelLimitState(ByRef stats As TCapacityTestStats)
@@ -296,7 +348,7 @@ Private Sub TestSteelLimitState(ByRef stats As TCapacityTestStats)
     ConfigureCapacity cap
     cap.ConcreteCompressionLimit = -1#
     cap.SteelStrainLimit = 0.0005
-    cap.SolveByLoadMultiplier mesh, rebars, LinearConcrete(), LinearSteel(), 0#, -10000000#, 0#
+    cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), LinearConcrete(), LinearSteel(), 0#, -10000000#, 0#
 
     AssertTrue stats, "capacity.steelLimit.converged", cap.Converged
     AssertEquals stats, "capacity.steelLimit.state", cap.LimitState, "SteelStrainLimit"
@@ -312,7 +364,7 @@ Private Sub TestNumericalFailureNotPhysicalBoundary(ByRef stats As TCapacityTest
     ConfigureCapacity cap
     cap.SolverMaxIterations = 1
     cap.MaxRetries = 1
-    cap.SolveByLoadMultiplier mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), 0#, -10000000#, 0#
+    cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), 0#, -10000000#, 0#
 
     AssertTrue stats, "capacity.numericalFailure.notConverged", Not cap.Converged
     AssertTrue stats, "capacity.numericalFailure.state", cap.LimitState = "NumericalFailure" Or cap.LimitState = "SingularTangent"
@@ -328,9 +380,9 @@ Private Sub TestAsymmetricCoupledCurvatures(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Set mesh = BuildMesh(geom, 10#)
 
-    Dim props As CGeometryPropertiesCalculator
-    Set props = New CGeometryPropertiesCalculator
-    props.CalculateFromMesh mesh
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateConcrete BuildGeneratedSectionModel(mesh, Nothing)
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
@@ -342,7 +394,7 @@ Private Sub TestAsymmetricCoupledCurvatures(ByRef stats As TCapacityTestStats)
     Dim cap As CCapacitySolver
     Set cap = New CCapacitySolver
     ConfigureCapacity cap
-    cap.SolveByLoadMultiplier mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), -260000#, -8000000#, 0#
+    cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -260000#, -8000000#, 0#
 
     AssertTrue stats, "capacity.asym.Ixy.nonzero", Abs(props.Ixyc) > 1000000#
     AssertTrue stats, "capacity.asym.converged", cap.Converged
@@ -358,9 +410,9 @@ Private Sub TestAsymmetricMxy(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Set mesh = BuildMesh(geom, 10#)
 
-    Dim props As CGeometryPropertiesCalculator
-    Set props = New CGeometryPropertiesCalculator
-    props.CalculateFromMesh mesh
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateConcrete BuildGeneratedSectionModel(mesh, Nothing)
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
@@ -372,7 +424,7 @@ Private Sub TestAsymmetricMxy(ByRef stats As TCapacityTestStats)
     Dim cap As CCapacitySolver
     Set cap = New CCapacitySolver
     ConfigureCapacity cap
-    cap.SolveByLoadMultiplier mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), -260000#, -6000000#, -4000000#
+    cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -260000#, -6000000#, -4000000#
 
     AssertTrue stats, "capacity.mxy.asym.Ixy.nonzero", Abs(props.Ixyc) > 1000000#
     AssertTrue stats, "capacity.mxy.asym.converged", cap.Converged
@@ -390,7 +442,7 @@ Private Sub TestResultWriter(ByRef stats As TCapacityTestStats)
     Dim cap As CCapacitySolver
     Set cap = New CCapacitySolver
     ConfigureCapacity cap
-    cap.SolveByLoadMultiplier mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), -250000#, -6000000#, -4000000#
+    cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -250000#, -6000000#, -4000000#
 
     Dim writer As CCapacityResultWriter
     Set writer = New CCapacityResultWriter
@@ -409,10 +461,296 @@ Private Sub TestInvalidBaseMoment(ByRef stats As TCapacityTestStats)
     Dim cap As CCapacitySolver
     Set cap = New CCapacitySolver
     ConfigureCapacity cap
-    cap.SolveByLoadMultiplier mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), -100000#, 0#, 0#
+    cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -100000#, 0#, 0#
 
     AssertTrue stats, "capacity.invalidBaseMoment.notConverged", Not cap.Converged
     AssertEquals stats, "capacity.invalidBaseMoment.state", cap.LimitState, "InvalidInput"
+End Sub
+
+Private Sub TestCapacityMethodComparisons(ByRef stats As TCapacityTestStats)
+    TestMethodPureCompression stats
+    CompareCapacityMethods stats, "method.n_plus_mx", -300000#, -10000000#, 0#, False
+    CompareCapacityMethods stats, "method.n_plus_my", -300000#, 0#, -10000000#, False
+    CompareCapacityMethods stats, "method.biaxial", -250000#, -6000000#, -4000000#, False
+    CompareCircleCapacityMethods stats
+    TestMethodStrainLimitState stats
+    TestUltimateStrainNumericalFailure stats
+    TestUltimateStrainInvalidLambdaClearsMoments stats
+End Sub
+
+Private Sub TestMethodPureCompression(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+
+    Dim loadMethod As CCapacitySolver
+    Set loadMethod = New CCapacitySolver
+    ConfigureCapacity loadMethod
+    loadMethod.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -300000#, 0#, 0#
+
+    Dim strainMethod As CCapacitySolver
+    Set strainMethod = New CCapacitySolver
+    ConfigureCapacity strainMethod
+    strainMethod.SolveByUltimateStrain BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -300000#, 0#, 0#
+
+    AssertEquals stats, "method.pure_compression.load.invalid", loadMethod.LimitState, "InvalidInput"
+    AssertEquals stats, "method.pure_compression.strain.invalid", strainMethod.LimitState, "InvalidInput"
+    AppendComparison stats, "method.pure_compression.load", loadMethod, 0#
+    AppendComparison stats, "method.pure_compression.strain", strainMethod, 0#
+End Sub
+
+Private Sub CompareCapacityMethods(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
+        ByVal nValue As Double, ByVal mxBase As Double, ByVal myBase As Double, ByVal tightLimits As Boolean)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+
+    Dim loadMethod As CCapacitySolver
+    Dim strainMethod As CCapacitySolver
+    Dim t0 As Double
+    Dim loadElapsed As Double
+    Dim strainElapsed As Double
+
+    Set loadMethod = New CCapacitySolver
+    ConfigureCapacity loadMethod
+    If tightLimits Then
+        loadMethod.ConcreteCompressionLimit = -0.0006
+        loadMethod.SteelStrainLimit = 0.001#
+    End If
+    t0 = Timer
+    loadMethod.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), nValue, mxBase, myBase
+    loadElapsed = Timer - t0
+
+    Set strainMethod = New CCapacitySolver
+    ConfigureCapacity strainMethod
+    If tightLimits Then
+        strainMethod.ConcreteCompressionLimit = -0.0006
+        strainMethod.SteelStrainLimit = 0.001#
+    End If
+    t0 = Timer
+    strainMethod.SolveByUltimateStrain BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), nValue, mxBase, myBase
+    strainElapsed = Timer - t0
+
+    AssertTrue stats, prefix & ".load.converged", loadMethod.Converged
+    AssertTrue stats, prefix & ".strain.converged", strainMethod.Converged
+    AssertClose stats, prefix & ".lambda", strainMethod.LambdaUltimate, loadMethod.LambdaUltimate, 0.02
+    AssertEquals stats, prefix & ".limitState", strainMethod.LimitState, loadMethod.LimitState
+    AssertTrue stats, prefix & ".criticalElement", Len(strainMethod.CriticalElement) > 0
+    AssertTrue stats, prefix & ".solverCalls", strainMethod.Iterations > 0
+    AppendComparison stats, prefix & ".load", loadMethod, loadElapsed
+    AppendComparison stats, prefix & ".strain", strainMethod, strainElapsed
+End Sub
+
+Private Sub CompareCircleCapacityMethods(ByRef stats As TCapacityTestStats)
+    Dim geom As CGeometryCircle
+    Set geom = New CGeometryCircle
+    geom.InitializeByDiameter 300#
+
+    Dim mesh As CFiberMeshBuilder
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geom, 12#, 12#, 1
+
+    Dim rebars As CRebarLayout
+    Set rebars = New CRebarLayout
+    rebars.AddBar "B1", 0#, 90#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B2", 90#, 0#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B3", 0#, -90#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B4", -90#, 0#, 20#, 0#, "A400", "", geom
+
+    Dim loadMethod As CCapacitySolver
+    Set loadMethod = New CCapacitySolver
+    ConfigureCapacity loadMethod
+    loadMethod.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -220000#, -6000000#, 0#
+
+    Dim strainMethod As CCapacitySolver
+    Set strainMethod = New CCapacitySolver
+    ConfigureCapacity strainMethod
+    strainMethod.SolveByUltimateStrain BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -220000#, 0#, -6000000#
+
+    AssertTrue stats, "method.circle.load.converged", loadMethod.Converged
+    AssertTrue stats, "method.circle.strain.converged", strainMethod.Converged
+    AssertRelative stats, "method.circle.symmetry", Abs(loadMethod.MomentUltimate), Abs(strainMethod.MomentUltimate), 0.04
+    AssertTrue stats, "method.circle.criticalElement", Len(strainMethod.CriticalElement) > 0
+    AppendComparison stats, "method.circle.load", loadMethod, 0#
+    AppendComparison stats, "method.circle.strain", strainMethod, 0#
+End Sub
+
+Private Sub TestMethodStrainLimitState(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+
+    Dim loadMethod As CCapacitySolver
+    Set loadMethod = New CCapacitySolver
+    ConfigureCapacity loadMethod
+    loadMethod.ConcreteCompressionLimit = -0.0006
+    loadMethod.SteelStrainLimit = 1#
+    loadMethod.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), LinearConcrete(), LinearSteel(), 0#, -10000000#, 0#
+
+    Dim strainMethod As CCapacitySolver
+    Set strainMethod = New CCapacitySolver
+    ConfigureCapacity strainMethod
+    strainMethod.ConcreteCompressionLimit = -0.0006
+    strainMethod.SteelStrainLimit = 1#
+    strainMethod.SolveByUltimateStrain BuildGeneratedSectionModel(mesh, rebars), LinearConcrete(), LinearSteel(), 0#, -10000000#, 0#
+
+    AssertTrue stats, "method.strain_limit.load.converged", loadMethod.Converged
+    AssertTrue stats, "method.strain_limit.strain.converged", strainMethod.Converged
+    AssertClose stats, "method.strain_limit.lambda", strainMethod.LambdaUltimate, loadMethod.LambdaUltimate, 0.02
+    AssertEquals stats, "method.strain_limit.limitState", strainMethod.LimitState, "ConcreteStrainLimit"
+    AssertTrue stats, "method.strain_limit.criticalElement", Len(strainMethod.CriticalElement) > 0
+    AssertTrue stats, "method.strain_limit.criticalUtilization", strainMethod.CriticalStrainUtilization > 0.98
+    AppendComparison stats, "method.strain_limit.load", loadMethod, 0#
+    AppendComparison stats, "method.strain_limit.strain", strainMethod, 0#
+End Sub
+
+Private Sub TestUltimateStrainNumericalFailure(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+
+    Dim cap As CCapacitySolver
+    Set cap = New CCapacitySolver
+    ConfigureCapacity cap
+    cap.SolverMaxIterations = 1
+    cap.MaxRetries = 1
+    cap.SolveByUltimateStrain BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), 0#, -10000000#, 0#
+
+    AssertTrue stats, "method.numericalFailure.notConverged", Not cap.Converged
+    AssertTrue stats, "method.numericalFailure.state", cap.LimitState = "NumericalFailure" Or cap.LimitState = "SingularTangent"
+    AssertTrue stats, "method.numericalFailure.noPhysicalUpper", Not IsPhysicalLimitState(cap.LimitState)
+    AppendComparison stats, "method.numericalFailure.strain", cap, 0#
+End Sub
+
+Private Sub TestUltimateStrainInvalidLambdaClearsMoments(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+
+    Dim cap As CCapacitySolver
+    Set cap = New CCapacitySolver
+    ConfigureCapacity cap
+    cap.MaxLambda = 0.5
+    cap.SolveByUltimateStrain BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -300000#, -1000000#, 0#
+
+    AssertTrue stats, "method.invalidLambda.notConverged", Not cap.Converged
+    AssertEquals stats, "method.invalidLambda.state", cap.LimitState, "NumericalFailure"
+    AssertClose stats, "method.invalidLambda.lambdaZero", cap.LambdaUltimate, 0#, 0#
+    AssertClose stats, "method.invalidLambda.mxZero", cap.MxUltimate, 0#, 0#
+    AssertClose stats, "method.invalidLambda.momentZero", cap.MomentUltimate, 0#, 0#
+End Sub
+
+Private Sub TestLoadMultiplierSearchMethods(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+
+    Dim bisection As CCapacitySolver
+    Dim brent As CCapacitySolver
+    Dim secant As CCapacitySolver
+    Set bisection = RunSearchMethod("Bisection", mesh, rebars)
+    Set brent = RunSearchMethod("Brent", mesh, rebars)
+    Set secant = RunSearchMethod("Secant", mesh, rebars)
+
+    AssertTrue stats, "search.bisection.converged", bisection.Converged
+    AssertTrue stats, "search.brent.converged", brent.Converged
+    AssertTrue stats, "search.secant.converged", secant.Converged
+    AssertTrue stats, "search.bisection.branch", InStr(1, bisection.DiagnosticLog, "searchMethod=Bisection", vbTextCompare) > 0
+    AssertTrue stats, "search.brent.branch", InStr(1, brent.DiagnosticLog, "searchMethod=Brent", vbTextCompare) > 0
+    AssertTrue stats, "search.secant.branch", InStr(1, secant.DiagnosticLog, "searchMethod=Secant", vbTextCompare) > 0
+    AssertTrue stats, "search.brent.independent", InStr(1, brent.StopReason, "Brent", vbTextCompare) > 0
+    AssertTrue stats, "search.secant.independent", InStr(1, secant.StopReason, "Secant", vbTextCompare) > 0
+    AssertClose stats, "search.brent.lambda", brent.LambdaUltimate, bisection.LambdaUltimate, 0.02
+    AssertClose stats, "search.secant.lambda", secant.LambdaUltimate, bisection.LambdaUltimate, 0.02
+    AssertEquilibrium stats, "search.brent", brent.LastSolver, -300000#, brent.MxUltimate, 0#
+    AssertEquilibrium stats, "search.secant", secant.LastSolver, -300000#, secant.MxUltimate, 0#
+End Sub
+
+Private Sub TestSearchMethodInputErrors(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+
+    Dim emptyMethod As CCapacitySolver
+    Set emptyMethod = New CCapacitySolver
+    ConfigureCapacity emptyMethod
+    emptyMethod.SearchMethod = ""
+    emptyMethod.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -300000#, -10000000#, 0#
+
+    Dim invalidMethod As CCapacitySolver
+    Set invalidMethod = New CCapacitySolver
+    ConfigureCapacity invalidMethod
+    invalidMethod.SearchMethod = "FalseMethod"
+    invalidMethod.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -300000#, -10000000#, 0#
+
+    Dim secantFail As CCapacitySolver
+    Set secantFail = New CCapacitySolver
+    ConfigureCapacity secantFail
+    secantFail.SearchMethod = "Secant"
+    secantFail.SolverMaxIterations = 1
+    secantFail.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -300000#, -10000000#, 0#
+
+    AssertTrue stats, "search.empty.inputError", Not emptyMethod.Converged And emptyMethod.LimitState = "InvalidInput"
+    AssertTrue stats, "search.invalid.inputError", Not invalidMethod.Converged And invalidMethod.LimitState = "InvalidInput"
+    AssertTrue stats, "search.secant.controlledFailure", Not secantFail.Converged And _
+        (secantFail.LimitState = "NumericalFailure" Or secantFail.LimitState = "InvalidInput")
+End Sub
+
+Private Sub TestSearchMethodPerformanceComparison(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+
+    AppendSearchPerformance stats, "Bisection", mesh, rebars
+    AppendSearchPerformance stats, "Brent", mesh, rebars
+    AppendSearchPerformance stats, "Secant", mesh, rebars
+End Sub
+
+Private Function RunSearchMethod(ByVal methodName As String, ByVal mesh As CFiberMeshBuilder, _
+        ByVal rebars As CRebarLayout) As CCapacitySolver
+    Dim cap As CCapacitySolver
+    Set cap = New CCapacitySolver
+    ConfigureCapacity cap
+    cap.SearchMethod = methodName
+    cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -300000#, -10000000#, 0#
+    Set RunSearchMethod = cap
+End Function
+
+Private Sub AppendSearchPerformance(ByRef stats As TCapacityTestStats, ByVal methodName As String, _
+        ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout)
+    Dim runs As Long
+    runs = 3
+    Dim totalSec As Double
+    Dim cap As CCapacitySolver
+    Dim i As Long
+    For i = 1 To runs
+        Dim t0 As Double
+        t0 = Timer
+        Set cap = RunSearchMethod(methodName, mesh, rebars)
+        totalSec = totalSec + (Timer - t0)
+    Next i
+
+    AssertTrue stats, "search.perf." & methodName & ".converged", cap.Converged
+    AppendLine stats, "PERF_CAPACITY_SEARCH|" & methodName & _
+        "|lambda=" & FormatNumberInvariant(cap.LambdaUltimate) & _
+        "|iterations=" & CStr(cap.Iterations) & _
+        "|functionEvaluations=" & CStr(cap.Iterations) & _
+        "|avgSec=" & FormatNumberInvariant(totalSec / runs) & _
+        "|residual=" & FormatNumberInvariant(cap.MomentEquilibriumResidual) & _
+        "|converged=" & CStr(cap.Converged) & _
+        "|status=" & cap.LimitState
+End Sub
+
+Private Sub AppendComparison(ByRef stats As TCapacityTestStats, ByVal name As String, _
+        ByVal cap As CCapacitySolver, ByVal elapsedSec As Double)
+    AppendLine stats, "COMPARE|" & name & _
+        "|converged=" & CStr(cap.Converged) & _
+        "|lambda=" & FormatNumberInvariant(cap.LambdaUltimate) & _
+        "|limitState=" & cap.LimitState & _
+        "|criticalStrain=" & FormatNumberInvariant(cap.CriticalStrain) & _
+        "|criticalElement=" & cap.CriticalElement & _
+        "|solverCalls=" & CStr(cap.Iterations) & _
+        "|elapsedSec=" & FormatNumberInvariant(elapsedSec)
 End Sub
 
 Private Sub ConfigureCapacity(ByVal cap As CCapacitySolver)
@@ -495,7 +833,8 @@ Private Function BuildMesh(ByVal geom As CGeometryRoundedRectangle, ByVal stepSi
 End Function
 
 Private Function IsPhysicalLimitState(ByVal state As String) As Boolean
-    IsPhysicalLimitState = (state = "ConcreteStrainLimit" Or state = "SteelStrainLimit")
+    IsPhysicalLimitState = (state = "ConcreteStrainLimit" Or state = "ConcreteTensionStrainLimit" Or _
+        state = "SteelStrainLimit")
 End Function
 
 Private Sub AssertEquilibrium(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
@@ -577,6 +916,8 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
+
 
 
 

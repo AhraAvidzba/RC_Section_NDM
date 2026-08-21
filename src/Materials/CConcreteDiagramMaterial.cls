@@ -21,15 +21,30 @@ Private Sub Class_Initialize()
     mTensionMode = "Ignore"
 End Sub
 
-Public Sub InitializeFromSettings(ByVal settings As CSystemSettingsReader)
-    InitializeFromThreeCompressionPoints _
-        settings.GetDouble("Concrete.Point1.Eps", -0.0015), _
-        settings.GetDouble("Concrete.Point1.Stress", -15.5), _
-        settings.GetDouble("Concrete.Point2.Eps", -0.002), _
-        settings.GetDouble("Concrete.Point2.Stress", -15.5), _
-        settings.GetDouble("Concrete.Point3.Eps", -0.0035), _
-        settings.GetDouble("Concrete.Point3.Stress", -15.5)
-    ApplySettings settings
+Public Sub InitializeFromSettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
+    InitializeFromSettingsPoints settings, units
+    ApplySettings settings, units
+End Sub
+
+Private Sub InitializeFromSettingsPoints(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
+    Dim count As Long
+    count = settings.ConcreteDiagramPointCount
+    If count < 2 Then Err.Raise vbObjectError + 3106, "CConcreteDiagramMaterial", "Диаграмма бетона должна содержать не менее двух точек."
+
+    ReDim mStrains(1 To count)
+    ReDim mStresses(1 To count)
+
+    Dim i As Long
+    For i = 1 To count
+        mStrains(i) = settings.ConcreteDiagramStrain(i)
+        mStresses(i) = settings.ConcreteDiagramStress(i)
+        If Not units Is Nothing Then mStresses(i) = units.InputStressToInternal(mStresses(i))
+    Next i
+
+    SortPointsByStrain
+    ValidatePointOrder
+    mPointCount = count
+    mInitialized = True
 End Sub
 
 Public Sub InitializeFromTwoCompressionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
@@ -77,10 +92,16 @@ End Property
 Public Function GetStress(ByVal strain As Double) As Double
     EnsureInitialized
 
-    If strain >= 0# Then
-        GetStress = GetTensionStress(strain)
+    If strain > 0# And StrComp(mTensionMode, "UseDiagram", vbTextCompare) <> 0 Then
+        GetStress = 0#
     ElseIf strain <= mStrains(1) Then
         GetStress = mStresses(1)
+    ElseIf strain > mStrains(mPointCount) Then
+        If strain > 0# And StrComp(mTensionMode, "UseDiagram", vbTextCompare) = 0 And mStrains(mPointCount) <= 0# Then
+            GetStress = GetTensionStressFallback(strain)
+        Else
+            GetStress = mStresses(mPointCount)
+        End If
     Else
         GetStress = InterpolateStress(strain)
     End If
@@ -89,10 +110,16 @@ End Function
 Public Function GetTangentModulus(ByVal strain As Double) As Double
     EnsureInitialized
 
-    If strain > 0# Then
-        GetTangentModulus = GetTensionTangent(strain)
+    If strain > 0# And StrComp(mTensionMode, "UseDiagram", vbTextCompare) <> 0 Then
+        GetTangentModulus = 0#
     ElseIf strain <= mStrains(1) Then
         GetTangentModulus = 0#
+    ElseIf strain > mStrains(mPointCount) Then
+        If strain > 0# And StrComp(mTensionMode, "UseDiagram", vbTextCompare) = 0 And mStrains(mPointCount) <= 0# Then
+            GetTangentModulus = GetTensionTangentFallback(strain)
+        Else
+            GetTangentModulus = 0#
+        End If
     Else
         GetTangentModulus = SegmentTangent(strain)
     End If
@@ -107,11 +134,15 @@ Public Function GetSecantModulus(ByVal strain As Double) As Double
     End If
 End Function
 
-Public Sub ApplySettings(ByVal settings As CSystemSettingsReader)
+Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
     TensionMode = settings.GetString("Concrete.TensionMode", mTensionMode)
     mTensionElasticModulus = settings.GetDouble("Concrete.Eb", mTensionElasticModulus)
     mTensionStressLimit = settings.GetDouble("Concrete.Rbt.SLS", mTensionStressLimit)
+    If Not units Is Nothing Then
+        mTensionElasticModulus = units.InputStressToInternal(mTensionElasticModulus)
+        mTensionStressLimit = units.InputStressToInternal(mTensionStressLimit)
+    End If
 End Sub
 
 Public Property Let TensionMode(ByVal value As String)
@@ -163,21 +194,52 @@ Private Function SegmentTangent(ByVal strain As Double) As Double
     Next i
 End Function
 
-Private Function GetTensionStress(ByVal strain As Double) As Double
+Private Function GetTensionStressFallback(ByVal strain As Double) As Double
     If StrComp(mTensionMode, "UseDiagram", vbTextCompare) <> 0 Then Exit Function
     If strain <= 0# Or mTensionElasticModulus <= 0# Or mTensionStressLimit <= 0# Then Exit Function
-    GetTensionStress = mTensionElasticModulus * strain
-    If GetTensionStress > mTensionStressLimit Then GetTensionStress = mTensionStressLimit
+    GetTensionStressFallback = mTensionElasticModulus * strain
+    If GetTensionStressFallback > mTensionStressLimit Then GetTensionStressFallback = mTensionStressLimit
 End Function
 
-Private Function GetTensionTangent(ByVal strain As Double) As Double
+Private Function GetTensionTangentFallback(ByVal strain As Double) As Double
     If StrComp(mTensionMode, "UseDiagram", vbTextCompare) <> 0 Then Exit Function
     If strain <= 0# Or mTensionElasticModulus <= 0# Or mTensionStressLimit <= 0# Then Exit Function
     If mTensionElasticModulus * strain < mTensionStressLimit Then
-        GetTensionTangent = mTensionElasticModulus
+        GetTensionTangentFallback = mTensionElasticModulus
     End If
 End Function
 
+Private Sub SortPointsByStrain()
+    Dim i As Long
+    Dim j As Long
+    For i = 1 To UBound(mStrains) - 1
+        For j = i + 1 To UBound(mStrains)
+            If mStrains(j) < mStrains(i) Then
+                SwapPoints i, j
+            End If
+        Next j
+    Next i
+End Sub
+
+Private Sub SwapPoints(ByVal firstIndex As Long, ByVal secondIndex As Long)
+    Dim tmp As Double
+    tmp = mStrains(firstIndex)
+    mStrains(firstIndex) = mStrains(secondIndex)
+    mStrains(secondIndex) = tmp
+    tmp = mStresses(firstIndex)
+    mStresses(firstIndex) = mStresses(secondIndex)
+    mStresses(secondIndex) = tmp
+End Sub
+
+Private Sub ValidatePointOrder()
+    Dim i As Long
+    For i = 1 To UBound(mStrains) - 1
+        If mStrains(i + 1) <= mStrains(i) Then
+            Err.Raise vbObjectError + 3107, "CConcreteDiagramMaterial", "Деформации в диаграмме бетона не должны повторяться."
+        End If
+    Next i
+End Sub
+
 Private Sub EnsureInitialized()
-    If Not mInitialized Then Err.Raise vbObjectError + 3103, "CConcreteDiagramMaterial", "Material is not initialized."
+    If Not mInitialized Then Err.Raise vbObjectError + 3103, "CConcreteDiagramMaterial", "Материал не инициализирован."
 End Sub

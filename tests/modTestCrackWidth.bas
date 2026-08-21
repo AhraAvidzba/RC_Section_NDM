@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestCrackWidth"
+﻿Attribute VB_Name = "modTestCrackWidth"
 Option Explicit
 
 Private Type TCrackTestStats
@@ -48,51 +48,51 @@ End Sub
 
 Private Sub TestCircleCrackMxy(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
-    Dim rebars As CRebarLayout
-    Set solver = SolveCircleServiceState(rebars, -10000#, -8000000#, -8000000#)
+    Dim section As CSectionModel
+    Set solver = SolveCircleServiceState(section, -10000#, -8000000#, -8000000#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, rebars)
+    Set crack = CalculateCrack(solver, section)
     AssertCrackCommon stats, "crack.circle.mxy", crack
 End Sub
 
 Private Sub TestCrackMx(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
-    Dim rebars As CRebarLayout
-    Set solver = SolveServiceState(rebars, -80000#, -5000000#, 0#)
+    Dim section As CSectionModel
+    Set solver = SolveServiceState(section, -80000#, -5000000#, 0#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, rebars)
+    Set crack = CalculateCrack(solver, section)
     AssertCrackCommon stats, "crack.mx", crack
 End Sub
 
 Private Sub TestCrackMy(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
-    Dim rebars As CRebarLayout
-    Set solver = SolveServiceState(rebars, -10000#, 0#, 5000000#)
+    Dim section As CSectionModel
+    Set solver = SolveServiceState(section, -10000#, 0#, 5000000#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, rebars)
+    Set crack = CalculateCrack(solver, section)
     AssertCrackCommon stats, "crack.my", crack
 End Sub
 
 Private Sub TestCrackMxy(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
-    Dim rebars As CRebarLayout
-    Set solver = SolveServiceState(rebars, -80000#, -3500000#, -2500000#)
+    Dim section As CSectionModel
+    Set solver = SolveServiceState(section, -80000#, -3500000#, -2500000#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, rebars)
+    Set crack = CalculateCrack(solver, section)
     AssertCrackCommon stats, "crack.mxy", crack
 End Sub
 
 Private Sub TestCrackWriter(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
-    Dim rebars As CRebarLayout
-    Set solver = SolveServiceState(rebars, -80000#, -3500000#, -2500000#)
+    Dim section As CSectionModel
+    Set solver = SolveServiceState(section, -80000#, -3500000#, -2500000#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, rebars)
+    Set crack = CalculateCrack(solver, section)
     Dim writer As CCapacityResultWriter
     Set writer = New CCapacityResultWriter
     writer.WriteCrackResult ThisWorkbook, crack
@@ -103,17 +103,17 @@ End Sub
 
 Private Sub TestNoTensionRebar(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
-    Dim rebars As CRebarLayout
-    Set solver = SolveServiceState(rebars, -100000#, 0#, 0#)
+    Dim section As CSectionModel
+    Set solver = SolveServiceState(section, -100000#, 0#, 0#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, rebars)
+    Set crack = CalculateCrack(solver, section)
     AssertTrue stats, "crack.noTension.converged", crack.Converged
     AssertClose stats, "crack.noTension.width", crack.CrackWidth, 0#, 0.000000000001
     AssertTrue stats, "crack.noTension.count", crack.TensionRebarCount = 0
 End Sub
 
-Private Function SolveServiceState(ByRef rebars As CRebarLayout, ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double) As CSectionSolver
+Private Function SolveServiceState(ByRef section As CSectionModel, ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double) As CSectionSolver
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
     geom.Initialize 300#, 200#, 0#, 0#, 0#, 0#
@@ -122,6 +122,7 @@ Private Function SolveServiceState(ByRef rebars As CRebarLayout, ByVal nValue As
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geom, 20#, 20#, 1
 
+    Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
     rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", geom
     rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", geom
@@ -135,12 +136,13 @@ Private Function SolveServiceState(ByRef rebars As CRebarLayout, ByVal nValue As
     solver.ToleranceN = 5#
     solver.ToleranceMx = 5000#
     solver.ToleranceMy = 5000#
-    solver.Solve mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), nValue, mxValue, myValue
+    Set section = BuildGeneratedSectionModel(mesh, rebars)
+    solver.Solve section, ProvisionalConcrete(), ProvisionalSteel(), nValue, mxValue, myValue
     If Not solver.Converged Then Err.Raise vbObjectError + 3800, "modTestCrackWidth", "Service state did not converge: " & solver.StopReason
     Set SolveServiceState = solver
 End Function
 
-Private Function SolveCircleServiceState(ByRef rebars As CRebarLayout, ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double) As CSectionSolver
+Private Function SolveCircleServiceState(ByRef section As CSectionModel, ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double) As CSectionSolver
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
     geom.InitializeByDiameter 300#
@@ -149,6 +151,7 @@ Private Function SolveCircleServiceState(ByRef rebars As CRebarLayout, ByVal nVa
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geom, 15#, 15#, 1
 
+    Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
     rebars.AddBar "B1", 0#, 90#, 20#, 0#, "A400", "", geom
     rebars.AddBar "B2", 90#, 0#, 20#, 0#, "A400", "", geom
@@ -162,19 +165,20 @@ Private Function SolveCircleServiceState(ByRef rebars As CRebarLayout, ByVal nVa
     solver.ToleranceN = 5#
     solver.ToleranceMx = 5000#
     solver.ToleranceMy = 5000#
-    solver.Solve mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), nValue, mxValue, myValue
+    Set section = BuildGeneratedSectionModel(mesh, rebars)
+    solver.Solve section, ProvisionalConcrete(), ProvisionalSteel(), nValue, mxValue, myValue
     If Not solver.Converged Then Err.Raise vbObjectError + 3801, "modTestCrackWidth", "Circle service state did not converge: " & solver.StopReason
     Set SolveCircleServiceState = solver
 End Function
 
-Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal rebars As CRebarLayout) As CCrackWidthCalculator
+Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As CSectionModel) As CCrackWidthCalculator
     Dim crack As CCrackWidthCalculator
     Set crack = New CCrackWidthCalculator
     crack.AllowableCrackWidth = 0.3
     crack.CrackSpacing = 200#
     crack.StrainFactor = 1#
     crack.DurationFactor = 1#
-    crack.Calculate solver, rebars, ProvisionalSteel()
+    crack.Calculate solver, section, ProvisionalSteel()
     Set CalculateCrack = crack
 End Function
 
@@ -234,6 +238,7 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
 
 
 

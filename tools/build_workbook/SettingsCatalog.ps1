@@ -1,13 +1,12 @@
 ﻿function Get-SystemSettingsCatalog {
     @(
         @{ Name = "GeometrySettings"; Title = "[Геометрия и сетка]"; Rows = @(
-            @("Geometry.Type", "Circle", "", "Тип сечения. Поддерживается: RoundedRectangle или Circle. Это единственный источник выбора геометрии."),
-            @("Circle.Diameter", "300", "мм", "Диаметр круглого сечения. Используется только при Geometry.Type = Circle."),
-            @("Circle.CenterX", "0", "мм", "Координата X центра круглого сечения."),
-            @("Circle.CenterY", "0", "мм", "Координата Y центра круглого сечения."),
-            @("Mesh.StepX", "20", "мм", "Базовый шаг бетонной волоконной сетки по X."),
-            @("Mesh.StepY", "20", "мм", "Базовый шаг бетонной волоконной сетки по Y."),
-            @("Mesh.BoundarySubdivisions", "1", "шт", "Количество подъячеек по каждой оси для граничной базовой ячейки; 1 - быстрый режим по центру ячейки.")
+            @("Geometry.Source", "Generated", "", "Источник расчетной геометрии: Generated - построить сетку встроенными генераторами; AutoCAD - импортировать только Region из активного чертежа AutoCAD. Единицы AutoCAD всегда считаются мм."),
+            @("Geometry.Type", "LShape", "", "Тип сечения для Geometry.Source = Generated. Поддерживается: RoundedRectangle, Circle или LShape."),
+            @("Mesh.Step", "50", "мм", "Базовый шаг квадратной бетонной волоконной сетки для Geometry.Source = Generated. Один и тот же шаг используется по X и Y."),
+            @("Mesh.BoundarySubdivisions", "1", "шт", "Количество подъячеек по каждой оси для граничной базовой ячейки при Geometry.Source = Generated; 1 - быстрый режим по центру ячейки."),
+            @("Load.ReferenceOffsetX", "0", "мм", "Смещение точки приложения нагрузок по X относительно центра тяжести приведенного сечения. 0 означает, что Mx/My заданы относительно этого центра."),
+            @("Load.ReferenceOffsetY", "0", "мм", "Смещение точки приложения нагрузок по Y относительно центра тяжести приведенного сечения. Рабочие моменты для решателя автоматически переносятся к текущим координатам волокон.")
         )},
         @{ Name = "ConcreteDiagram"; Title = "[Бетон и диаграмма]"; Rows = @(
             @("Concrete.Class", "B30", "", "Класс бетона для текущего набора параметров."),
@@ -16,49 +15,43 @@
             @("Concrete.Rb.SLS", "22.0", "МПа", "Сопротивление бетона сжатию для эксплуатационных расчетов."),
             @("Concrete.Rbt.SLS", "1.80", "МПа", "Сопротивление бетона растяжению для режима UseDiagram."),
             @("Concrete.Eb", "32500", "МПа", "Начальный модуль деформации бетона."),
-            @("Concrete.TensionMode", "Ignore", "", "Работа растянутого бетона: Ignore - нулевое напряжение и касательная жесткость; UseDiagram - растянутая ветвь диаграммы."),
-            @("Concrete.Point1.Eps", "-0.0015", "", "Первая пользовательская точка сжатой ветви диаграммы бетона: деформация."),
-            @("Concrete.Point1.Stress", "-15.5", "МПа", "Первая пользовательская точка сжатой ветви диаграммы бетона: напряжение."),
-            @("Concrete.Point2.Eps", "-0.002", "", "Вторая пользовательская точка сжатой ветви диаграммы бетона: деформация. По умолчанию лежит на площадке текущей двухлинейной формы."),
-            @("Concrete.Point2.Stress", "-15.5", "МПа", "Вторая пользовательская точка сжатой ветви диаграммы бетона: напряжение."),
-            @("Concrete.Point3.Eps", "-0.0035", "", "Третья пользовательская точка сжатой ветви диаграммы бетона: деформация. По умолчанию задает конец площадки текущей двухлинейной формы."),
-            @("Concrete.Point3.Stress", "-15.5", "МПа", "Напряжение в третьей пользовательской точке бетона.")
+            @("Concrete.TensionMode", "Ignore", "", "Работа растянутого бетона: Ignore - нулевое напряжение и касательная жесткость; UseDiagram - использовать точки диаграммы бетона в растянутой зоне."),
+            @("Capacity.ConcreteCompressionLimit", "-0.0035", "", "Предельная сжимающая деформация бетона для фиксации ConcreteStrainLimit при поиске несущей способности."),
+            @("Capacity.ConcreteTensionLimit", "0.00015", "", "Предельная растягивающая деформация бетона для ConcreteTensionStrainLimit; используется только при Concrete.TensionMode = UseDiagram.")
         )},
         @{ Name = "SteelDiagram"; Title = "[Арматура и диаграмма]"; Rows = @(
             @("Steel.Class", "A400", "", "Класс обычной ненапрягаемой арматуры."),
             @("Steel.Rs.ULS", "350", "МПа", "Расчетное сопротивление арматуры растяжению."),
             @("Steel.Rsc.ULS", "350", "МПа", "Расчетное сопротивление арматуры сжатию."),
             @("Steel.Es", "200000", "МПа", "Модуль упругости обычной ненапрягаемой арматуры."),
-            @("Steel.Point1.Eps", "0.00175", "", "Первая пользовательская точка растянутой ветви диаграммы арматуры: деформация."),
-            @("Steel.Point1.Stress", "350", "МПа", "Первая пользовательская точка растянутой ветви диаграммы арматуры: напряжение."),
-            @("Steel.Point2.Eps", "0.01", "", "Вторая пользовательская точка растянутой ветви диаграммы арматуры: деформация. По умолчанию лежит на площадке текущей двухлинейной формы."),
-            @("Steel.Point2.Stress", "350", "МПа", "Вторая пользовательская точка растянутой ветви диаграммы арматуры: напряжение."),
-            @("Steel.Point3.Eps", "0.025", "", "Третья пользовательская точка растянутой ветви диаграммы арматуры: деформация. По умолчанию задает конец площадки текущей двухлинейной формы."),
-            @("Steel.Point3.Stress", "350", "МПа", "Напряжение в третьей пользовательской точке арматуры.")
+            @("Capacity.SteelStrainLimit", "0.025", "", "Предельная деформация обычной ненапрягаемой арматуры для фиксации SteelStrainLimit при поиске несущей способности.")
         )},
         @{ Name = "SolverSettings"; Title = "[Решатель равновесия]"; Rows = @(
-            @("Calculation.Mode", "DirectState", "", "Режим расчета: DirectState - НДС по заданным усилиям; FullCapacity - поиск lambdaUltimate; LinearMatrix - один линейно-упругий матричный расчет."),
-            @("Solver.MaxIterations", "40", "шт", "Максимальное число итераций Ньютона на ступень нагрузки."),
-            @("Solver.LoadSteps", "1", "шт", "Число ступеней приложения нагрузки в прямом НДМ."),
-            @("Solver.ToleranceN", "1", "Н", "Абсолютный допуск равновесия по продольной силе."),
-            @("Solver.ToleranceMx", "1000", "Н*мм", "Абсолютный допуск равновесия по моменту Mx."),
-            @("Solver.ToleranceMy", "1000", "Н*мм", "Абсолютный допуск равновесия по моменту My."),
-            @("Solver.LineSearchEnabled", "Yes", "", "Включить line search в CSectionSolver."),
-            @("Solver.DampingInitial", "1", "", "Начальный коэффициент демпфирования шага Ньютона."),
-            @("Solver.MinLineSearchAlpha", "0.03125", "", "Минимальный коэффициент alpha при line search."),
-            @("Solver.MaxDeltaEpsilon0", "0.0005", "", "Ограничение приращения epsilon0 за одну итерацию."),
-            @("Solver.MaxDeltaKappa", "0.00001", "1/мм", "Ограничение приращения кривизны за одну итерацию."),
-            @("Solver.DiagnosticsEnabled", "No", "", "Записывать подробный журнал итераций решателя.")
+            @("Calculation.Mode", "FullCapacity", "", "Режим расчета: DirectState - НДС по заданным усилиям; FullCapacity - поиск lambdaUltimate."),
+            @("Solver.Method", "Newton", "", "Метод решения системы равновесия CSectionSolver. Допустимо только Newton или Secant; по умолчанию Newton; пустое или иное значение дает InputError без скрытого fallback."),
+            @("Solver.MaxIterations", "40", "шт", "Применяется к Newton и Secant. Максимальное число итераций на ступень нагрузки; увеличение повышает шанс сходимости, но увеличивает время."),
+            @("Solver.LoadSteps", "1", "шт", "Применяется к Newton и Secant. Число ступеней приложения нагрузки в прямом НДМ; больше ступеней обычно устойчивее, но медленнее."),
+            @("Solver.ToleranceN", "1", "Н", "Применяется к Newton и Secant. Абсолютный допуск равновесия по продольной силе; меньше значение строже и может увеличить число итераций."),
+            @("Solver.ToleranceMx", "1000", "Н*мм", "Применяется к Newton и Secant. Абсолютный допуск равновесия по моменту Mx; меньше значение строже и может увеличить число итераций."),
+            @("Solver.ToleranceMy", "1000", "Н*мм", "Применяется к Newton и Secant. Абсолютный допуск равновесия по моменту My; меньше значение строже и может увеличить число итераций."),
+            @("Solver.LineSearchEnabled", "Yes", "", "Применяется к Newton и Secant. Включает line search; повышает устойчивость шага, но может добавить вычисления внутренних усилий."),
+            @("Solver.DampingInitial", "1", "", "Применяется к Newton и Secant. Начальный коэффициент демпфирования шага; меньше значение делает шаг осторожнее."),
+            @("Solver.MinLineSearchAlpha", "0.03125", "", "Применяется к Newton и Secant. Минимальный коэффициент alpha при line search; меньше значение разрешает более сильное дробление шага."),
+            @("Solver.MaxDeltaEpsilon0", "0.0005", "", "Применяется к Newton и Secant. Ограничение приращения epsilon0 за одну итерацию; меньше значение устойчивее, но медленнее."),
+            @("Solver.MaxDeltaKappa", "0.00001", "1/мм", "Применяется к Newton и Secant. Ограничение приращения кривизны за одну итерацию; меньше значение устойчивее, но медленнее."),
+            @("Solver.SecantMaxRestarts", "2", "шт", "Применяется только к Secant. Максимальное число контролируемых перезапусков приближенной матрицы чувствительности."),
+            @("Solver.SecantMinStepNorm", "0.000000000001", "", "Применяется только к Secant. Минимально допустимая норма secant-шага; слишком малый шаг считается застоем.")
         )},
         @{ Name = "CapacitySettings"; Title = "[Поиск несущей способности]"; Rows = @(
-            @("Capacity.InitialLambda", "1", "", "Начальный множитель lambda для поиска верхней границы несущей способности."),
-            @("Capacity.MaxLambda", "64", "", "Предельное значение lambda при расширении расчетной скобки."),
-            @("Capacity.ToleranceLambda", "0.01", "", "Допуск одномерного поиска предельного множителя."),
-            @("Capacity.MaxRetries", "0", "шт", "Число повторов после численной несходимости при поиске несущей способности."),
-            @("Capacity.BaseLoadSteps", "1", "шт", "Базовое число ступеней нагрузки внутри CSectionSolver при режиме FullCapacity."),
-            @("Capacity.SolverMaxIterations", "60", "шт", "Максимум итераций Ньютона на ступень при поиске несущей способности."),
-            @("Capacity.ConcreteCompressionLimit", "-0.0035", "", "Предел деформации бетона для фиксации ConcreteStrainLimit."),
-            @("Capacity.SteelStrainLimit", "0.025", "", "Предел деформации обычной ненапрягаемой арматуры для SteelStrainLimit.")
+            @("Capacity.Method", "UltimateStrain", "", "Актуально для всех расчетов несущей способности. Метод определения: LoadMultiplier - масштабирование заданного вектора моментов; UltimateStrain - прямой поиск состояния по достижению предельной деформации при сохранении направления Mx/My."),
+            @("Capacity.SearchMethod", "Bisection", "", "Метод поиска несущей способности для Capacity.Method = LoadMultiplier. Поддерживается только Bisection, Brent или Secant. Пустое или другое значение дает InputError."),
+            @("Capacity.InitialLambda", "1", "", "Актуально только для Capacity.Method = LoadMultiplier. Начальный множитель lambda при поиске верхней границы несущей способности."),
+            @("Capacity.ToleranceLambda", "0.01", "", "Актуально только для Capacity.Method = LoadMultiplier. Общий допуск одномерного поиска lambdaUltimate для Bisection, Brent и Secant."),
+            @("Capacity.MaxRetries", "0", "шт", "Актуально только для Capacity.Method = LoadMultiplier. Число повторов после численной несходимости пробного расчета."),
+            @("Capacity.BaseLoadSteps", "1", "шт", "Актуально только для Capacity.Method = LoadMultiplier. Базовое число ступеней нагрузки внутри CSectionSolver для каждого пробного lambda."),
+            @("Capacity.ToleranceStrain", "0.00001", "", "Актуально только для Capacity.Method = UltimateStrain. Абсолютный допуск достижения предельной деформации критического бетонного волокна или стержня."),
+            @("Capacity.MaxLambda", "64", "", "Актуально для обоих методов. В LoadMultiplier задает предел расширения расчетной скобки; в UltimateStrain используется как защитный верхний предел найденного lambda."),
+            @("Capacity.SolverMaxIterations", "60", "шт", "Актуально для обоих методов. В LoadMultiplier задает максимум итераций Ньютона на ступень внутреннего решателя; в UltimateStrain задает максимум итераций прямого поиска предельного состояния.")
         )},
         @{ Name = "OutputSettings"; Title = "[Вывод и трещины]"; Rows = @(
             @("CrackWidth.Enabled", "Yes", "", "Включить расчет ширины раскрытия уже образовавшихся нормальных трещин."),
@@ -67,7 +60,108 @@
             @("CrackWidth.StrainFactor", "1", "", "Временный коэффициент для прозрачной формулы ширины раскрытия на листе."),
             @("CrackWidth.DurationFactor", "1", "", "Временный коэффициент длительности действия нагрузки.")
         )},
-        @{ Name = "AutoCADSettings"; Title = "[AutoCAD]"; Rows = @()}
+        @{ Name = "AutoCADExportSettings"; Title = "[AutoCAD export]"; Rows = @(
+            @("AutoCAD.Export.CombinationID", "Worst", "", "Какое сочетание экспортировать в AutoCAD: Worst - определяющее сочетание из последнего расчета; либо конкретный CombinationID из rngLoadCombinations."),
+            @("AutoCAD.Export.NeutralLineEnabled", "Yes", "", "Выгружать нейтральную линию в AutoCAD: Yes - выводить; No - не выводить."),
+            @("AutoCAD.Export.PrincipalAxesEnabled", "Yes", "", "Выгружать главные центральные оси приведенного сечения в AutoCAD: Yes - выводить; No - не выводить."),
+            @("AutoCAD.Export.LoadPointEnabled", "Yes", "", "Выгружать точку приложения нагрузки в AutoCAD: Yes - выводить; No - не выводить."),
+            @("AutoCAD.Export.ResultType", "Stress", "", "Что выводить цветом и подписями в AutoCAD: Stress - напряжения; Strain - деформации. Используются данные последнего расчетного snapshot."),
+            @("AutoCAD.Export.LabelMode", "NamesAndValues", "", "Формат текстовых подписей при выгрузке в AutoCAD: ValuesOnly - только значение выбранного ResultType; NamesAndValues - имя элемента и значение. При NamesAndValues имена выводятся для бетона и арматуры."),
+            @("AutoCAD.Layer.Concrete", "Concrete", "", "Слой для областей бетонных волокон. Цвет каждой области задается по знаку напряжения: растяжение, сжатие или нейтральное состояние."),
+            @("AutoCAD.Layer.Rebar", "Reinf", "", "Слой для всех областей продольной арматуры. Цвет каждого стержня задается по знаку напряжения: растяжение, сжатие или нейтральное состояние."),
+            @("AutoCAD.Layer.ConcreteTension", "Anno_Concrete_Positive", "", "Слой для подписей положительных напряжений бетона, то есть растянутых бетонных волокон."),
+            @("AutoCAD.Layer.ConcreteCompression", "Anno_Concrete_Negative", "", "Слой для подписей отрицательных, нулевых и почти нулевых напряжений бетона."),
+            @("AutoCAD.Layer.RebarTension", "Anno_Rebar_Positive", "", "Слой для подписей положительных напряжений арматуры, то есть растянутых стержней."),
+            @("AutoCAD.Layer.RebarCompression", "Anno_Rebar_Negative", "", "Слой для подписей отрицательных, нулевых и почти нулевых напряжений арматуры."),
+            @("AutoCAD.Color.ConcreteTension", "9", "", "AutoCAD ColorIndex для растянутых бетонных областей и их подписей."),
+            @("AutoCAD.Color.ConcreteCompression", "5", "", "AutoCAD ColorIndex для сжатых бетонных областей и их подписей."),
+            @("AutoCAD.Color.RebarTension", "1", "", "AutoCAD ColorIndex для растянутых стержней и их подписей."),
+            @("AutoCAD.Color.RebarCompression", "6", "", "AutoCAD ColorIndex для сжатых стержней и их подписей."),
+            @("AutoCAD.Color.Neutral", "8", "", "AutoCAD ColorIndex для областей и подписей с нулевыми или почти нулевыми напряжениями бетона и арматуры. Слой подписи при этом остается compression-слоем соответствующего материала.")
+        )},
+        @{ Name = "AutoCADImportSettings"; Title = "[AutoCAD import]"; Rows = @(
+            @("AutoCAD.Import.ConcreteLayer", "Concrete", "", "Слой бетонных областей для импорта. Импортируются только AutoCAD Region на этом слое; единицы чертежа считаются мм."),
+            @("AutoCAD.Import.RebarLayer", "Reinf", "", "Слой областей арматуры для импорта. Импортируются только AutoCAD Region на этом слое; Steel.Class берется из System, разные классы арматуры в одном сечении не поддерживаются."),
+            @("AutoCAD.Import.MinArea", "0.000001", "мм2", "Минимальная площадь Region для импорта; области с меньшей площадью игнорируются.")
+        )},
+        @{ Name = "PlotSettings"; Title = "[Схема сечения]"; Rows = @(
+            @("Plot.Enabled", "Yes", "", "Включить построение схемы сечения на листе Расчет по последнему расчетному snapshot на листе Results."),
+            @("Plot.AutoUpdateAfterCalculation", "Yes", "", "Автоматически обновлять схему после выполнения расчета. Кнопка Обновить схему всегда читает только Results и не запускает расчет."),
+            @("Plot.LoadCase", "Worst", "", "Какое сочетание показывать на схеме: Worst - определяющее сочетание из последнего расчета; либо конкретный CombinationID из rngLoadCombinations."),
+            @("Plot.ResultType", "Stress", "", "Что показывать цветом и численными подписями: Stress - напряжения; Strain - деформации. Используется сохраненный snapshot, а не текущие единицы System."),
+            @("Plot.ResultGradient", "Yes", "", "Включить цветовое различение результата на схеме. Цвет физического состояния берется из PhysicalState snapshot."),
+            @("Plot.ResultLabelsEnabled", "No", "", "Показывать пространственно распределенные численные подписи выбранного ResultType для бетонных элементов."),
+            @("Plot.ResultLabelSpacing", "100", "мм", "Минимальный пространственный шаг между численными подписями результата на схеме."),
+            @("Plot.ResultPrecision", "1", "шт", "Количество знаков после запятой для численных подписей и легенды схемы."),
+            @("Plot.NeutralLineEnabled", "Yes", "", "Показывать нейтральную линию выбранного сочетания по Epsilon0, KappaX, KappaY из Results."),
+            @("Plot.PrincipalAxesEnabled", "Yes", "", "Показывать главные центральные оси приведенного сечения."),
+            @("Plot.LoadApplicationPointEnabled", "Yes", "", "Показывать точку приложения нагрузки из последнего расчетного snapshot."),
+            @("Plot.CentroidEnabled", "Yes", "", "Показывать центр тяжести приведенного сечения."),
+            @("Plot.LegendEnabled", "Yes", "", "Показывать легенду физического состояния и выбранного ResultType справа от схемы.")
+        )}
+    )
+}
+
+function Get-UnitSettingsCatalog {
+    @(
+        @("Length", "mm", "mm", "mm"),
+        @("Area", "mm2", "mm2", "mm2"),
+        @("Force", "tf", "N", "tf"),
+        @("Moment", "tf*m", "N*mm", "tf*m"),
+        @("Stress", "MPa", "MPa", "MPa"),
+        @("Curvature", "1/mm", "1/mm", "1/mm")
+    )
+}
+
+function Get-SignConventionSettingsCatalog {
+    @(
+        @("+N", "Compression", "Tension"),
+        @("+Mx", "+Y tension", "+Y tension"),
+        @("+My", "+X tension", "+X tension")
+    )
+}
+
+function Get-GeometrySettingsCatalog {
+    @(
+        @{ RangeName = "rngCircleGeometry"; Title = "Круглое сечение"; StartRow = 16; StartColumn = 6; Rows = @(
+            @("Circle.Diameter", "300", "мм", "Диаметр круглого сечения."),
+            @("Rebar.AxisDistance", "40", "мм", "Расстояние от грани круга до оси стержней as."),
+            @("Rebar.Count", "8", "шт", "Количество продольных стержней по окружности."),
+            @("Rebar.Diameter", "20", "мм", "Диаметр продольных стержней первого ряда."),
+            @("дополнительные ряды арматуры", "", "", "Параметры дополнительных рядов. Пустой или нулевой диаметр означает, что ряд не создается."),
+            @("Rebar.Diameter2", "", "мм", "Диаметр стержней второго ряда. Второй ряд строится от стержней первого ряда."),
+            @("Rebar.Diameter3", "", "мм", "Диаметр стержней третьего ряда. Третий ряд строится от первого ряда; при совпадении Rebar.Loc3row с Rebar.Loc2row и наличии второго ряда перескакивает второй ряд."),
+            @("Rebar.Loc2row", "Stacked", "", "Расположение второго ряда: Stacked - внутрь сечения по радиусу к центру; SideBySide - справа по часовой касательной."),
+            @("Rebar.Loc3row", "Stacked", "", "Расположение третьего ряда: Stacked - внутрь сечения по радиусу к центру; SideBySide - справа по часовой касательной.")
+        )},
+        @{ RangeName = "rngRoundedRectangleGeometry"; Title = "Скругленный прямоугольник"; StartRow = 16; StartColumn = 10; Rows = @(
+            @("RoundedRectangle.Width", "300", "мм", "Ширина прямоугольного сечения со скруглениями."),
+            @("RoundedRectangle.Height", "200", "мм", "Высота прямоугольного сечения со скруглениями."),
+            @("RoundedRectangle.RadiusTopLeft", "0", "мм", "Радиус верхнего левого угла."),
+            @("RoundedRectangle.RadiusTopRight", "0", "мм", "Радиус верхнего правого угла."),
+            @("RoundedRectangle.RadiusBottomRight", "0", "мм", "Радиус нижнего правого угла."),
+            @("RoundedRectangle.RadiusBottomLeft", "0", "мм", "Радиус нижнего левого угла.")
+        )},
+        @{ RangeName = "rngLShapeGeometry"; Title = "Г-образное сечение"; StartRow = 30; StartColumn = 6; FaceTable = $true; Rows = @(
+            @("величина размера", "550", "250", "250", "600", "мм", "H1 и B1 - высота и ширина верхнего прямоугольника; H2 и B2 - высота и ширина нижнего прямоугольника; полная высота сечения равна H1 + H2."),
+            @("as_1", "40", "40", "40", "40", "мм", "Отступ от грани _1. Нумерация граней идет слева направо для H и сверху вниз для B: _1 - левая/верхняя грань."),
+            @("as_2", "40", "40", "40", "40", "мм", "Отступ от грани _2. Нумерация граней идет слева направо для H и сверху вниз для B: _2 - правая/нижняя грань."),
+            @("d_1", "32", "32", "32", "32", "мм", "Диаметр стержней у грани _1; если n_1 = 0, значение не используется."),
+            @("d_2", "32", "32", "32", "32", "мм", "Диаметр стержней у грани _2; если n_2 = 0, значение не используется."),
+            @("n_1", "5", "2", "2", "5", "шт", "Количество стержней у грани _1; 0 означает, что арматура у этой грани не создается."),
+            @("n_2", "5", "2", "2", "5", "шт", "Количество стержней у грани _2; 0 означает, что арматура у этой грани не создается."),
+            @("t1_1", "80", "80", "80", "80", "мм", "Отступ первого стержня от начала грани _1 при обходе по часовой стрелке."),
+            @("t2_1", "80", "80", "80", "80", "мм", "Отступ последнего стержня от конца грани _1 при обходе по часовой стрелке."),
+            @("t1_2", "80", "80", "80", "80", "мм", "Отступ первого стержня от начала грани _2 при обходе по часовой стрелке."),
+            @("t2_2", "80", "80", "80", "80", "мм", "Отступ последнего стержня от конца грани _2 при обходе по часовой стрелке."),
+            @("дополнительные ряды арматуры", "", "", "", "", "", "Параметры дополнительных рядов. Пустой диаметр означает, что ряд не создается. Суффикс _1 - левая грань для H или верхняя грань для B; _2 - правая грань для H или нижняя грань для B."),
+            @("d_2row_1", "", "", "", "", "мм", "Диаметр стержней второго ряда у грани _1. Если первый ряд этой грани не задан, второй ряд не создается."),
+            @("d_2row_2", "", "", "", "", "мм", "Диаметр стержней второго ряда у грани _2. Если первый ряд этой грани не задан, второй ряд не создается."),
+            @("d_3row_1", "", "", "", "", "мм", "Диаметр стержней третьего ряда у грани _1. Ставится относительно первого ряда; при совпадении loc_3row с loc_2row перескакивает второй ряд."),
+            @("d_3row_2", "", "", "", "", "мм", "Диаметр стержней третьего ряда у грани _2. Ставится относительно первого ряда; при совпадении loc_3row с loc_2row перескакивает второй ряд."),
+            @("loc_2row", "Stacked", "Stacked", "Stacked", "Stacked", "", "Расположение второго ряда, общее для граней _1/_2: Stacked - внутрь сечения; SideBySide - для H вниз, для B вправо."),
+            @("loc_3row", "Stacked", "Stacked", "Stacked", "Stacked", "", "Расположение третьего ряда, общее для граней _1/_2: Stacked - внутрь сечения; SideBySide - для H вниз, для B вправо.")
+        )}
     )
 }
 
@@ -93,12 +187,182 @@ function Set-WorkbookNameByBounds {
     catch { $Workbook.Names.Add($Name, $address) | Out-Null }
 }
 
+function Add-UnitSettingsTable {
+    param([object]$Workbook, [object]$Sheet, [int]$HeaderRow, [int]$StartColumn)
+
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = "Units"
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 3)).Merge() | Out-Null
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
+
+    $headers = @("Quantity", "INPUT", "INTERNAL", "OUTPUT")
+    for ($i = 0; $i -lt $headers.Count; $i++) {
+        $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
+        $cell.Value2 = $headers[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = 14277081
+    }
+
+    $rows = Get-UnitSettingsCatalog
+    for ($r = 0; $r -lt $rows.Count; $r++) {
+        for ($c = 0; $c -lt 4; $c++) {
+            $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + $c).Value2 = $rows[$r][$c]
+        }
+        $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + 2).Interior.Color = 15921906
+    }
+
+    $validationLists = @{
+        "Length" = @("mm", "cm", "m")
+        "Area" = @("mm2", "cm2", "m2")
+        "Force" = @("N", "kN", "tf")
+        "Moment" = @("N*mm", "kN*m", "tf*m")
+        "Stress" = @("Pa", "kPa", "MPa", "kgf/cm2", "tf/m2")
+        "Curvature" = @("1/mm", "1/m")
+    }
+    $listColumn = 70
+    for ($r = 0; $r -lt $rows.Count; $r++) {
+        $quantity = [string]$rows[$r][0]
+        $options = $validationLists[$quantity]
+        for ($i = 0; $i -lt $options.Count; $i++) {
+            $Sheet.Cells.Item($i + 1, $listColumn).Value2 = $options[$i]
+        }
+        $colName = ConvertTo-ExcelColumn $listColumn
+        $listAddress = "=$" + $colName + '$1:$' + $colName + '$' + $options.Count
+        foreach ($valueColumn in @($($StartColumn + 1), $($StartColumn + 3))) {
+            $cell = $Sheet.Cells.Item($HeaderRow + 1 + $r, $valueColumn)
+            $cell.Validation.Delete()
+            $cell.Validation.Add(3, 1, 1, $listAddress)
+            $cell.Validation.IgnoreBlank = $false
+            $cell.Validation.InCellDropdown = $true
+        }
+        $listColumn++
+    }
+
+    Set-WorkbookNameByBounds $Workbook "rngUnitSettings" $Sheet $HeaderRow $StartColumn ($HeaderRow + $rows.Count) ($StartColumn + 3)
+}
+
+function Add-SignConventionSettingsTable {
+    param([object]$Workbook, [object]$Sheet, [int]$HeaderRow, [int]$StartColumn)
+
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = "Sign convention"
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 2)).Merge() | Out-Null
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
+
+    $headers = @("Quantity", "USER", "INTERNAL")
+    for ($i = 0; $i -lt $headers.Count; $i++) {
+        $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
+        $cell.Value2 = $headers[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = 14277081
+    }
+
+    $rows = Get-SignConventionSettingsCatalog
+    for ($r = 0; $r -lt $rows.Count; $r++) {
+        for ($c = 0; $c -lt 3; $c++) {
+            $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + $c).Value2 = $rows[$r][$c]
+        }
+        $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + 2).Interior.Color = 15921906
+    }
+
+    $validationLists = @{
+        "+N" = @("Tension", "Compression")
+        "+Mx" = @("+Y tension", "-Y tension")
+        "+My" = @("+X tension", "-X tension")
+    }
+    $listColumn = 76
+    for ($r = 0; $r -lt $rows.Count; $r++) {
+        $quantity = [string]$rows[$r][0]
+        $options = $validationLists[$quantity]
+        for ($i = 0; $i -lt $options.Count; $i++) {
+            $Sheet.Cells.Item($i + 1, $listColumn).Value2 = $options[$i]
+        }
+        $colName = ConvertTo-ExcelColumn $listColumn
+        $listAddress = "=$" + $colName + '$1:$' + $colName + '$' + $options.Count
+        $cell = $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + 1)
+        $cell.Validation.Delete()
+        $cell.Validation.Add(3, 1, 1, $listAddress)
+        $cell.Validation.IgnoreBlank = $false
+        $cell.Validation.InCellDropdown = $true
+        $listColumn++
+    }
+
+    Set-WorkbookNameByBounds $Workbook "rngSignConventionSettings" $Sheet $HeaderRow $StartColumn ($HeaderRow + $rows.Count) ($StartColumn + 2)
+}
+
+function Get-PlotAnnotationSettingsCatalog {
+    @(
+        @("Enabled", "Yes", "Yes", "Yes/No", "Включает вывод соответствующего типа аннотаций на схеме."),
+        @("Placement", "Outside", "Outside", "", "Для арматуры задает сторону подписи от линии осей стержней; для размеров задает только сторону текста относительно размерной линии."),
+        @("Offset", "10", "42", "мм", "Отступ в реальных миллиметрах сечения: для арматуры от линии осей стержней, для размеров от грани до размерной линии."),
+        @("LineEnabled", "Yes", "-", "Yes/No", "Показывать короткую линию обозначения арматуры; если No, остается только текст подписи."),
+        @("LineWeight", "1.35", "1.75", "pt", "Толщина основной линии аннотации."),
+        @("ExtensionLineWeight", "-", "0.85", "pt", "Толщина выносных линий; применяется только для размерных линий."),
+        @("TextHeight", "9", "8.5", "мм", "Высота текста в реальных миллиметрах сечения; при выводе пересчитывается в размер шрифта Chart."),
+        @("TextGap", "7", "7", "мм", "Зазор между линией аннотации и текстом в реальных миллиметрах сечения."),
+        @("ArrowType", "-", "Triangle", "", "Тип стрелки размерной линии."),
+        @("ArrowSize", "-", "Wide", "", "Размер стрелок размерной линии."),
+        @("Color", "20,30,90", "20,30,90", "RGB", "Цвет текста и основной линии в формате R,G,B."),
+        @("ExtensionLineColor", "-", "140,140,140", "RGB", "Цвет выносных линий размеров в формате R,G,B.")
+    )
+}
+
+function Add-PlotAnnotationSettingsTable {
+    param([object]$Workbook, [object]$Sheet, [int]$HeaderRow, [int]$StartColumn)
+
+    $title = "[Аннотации схемы]"
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = $title
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 4)).Merge() | Out-Null
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
+
+    $headers = @("Параметр", "Обозначения арматуры", "Размерные линии", "Ед.", "Комментарий")
+    for ($i = 0; $i -lt $headers.Count; $i++) {
+        $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
+        $cell.Value2 = $headers[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = 14277081
+    }
+
+    $rows = Get-PlotAnnotationSettingsCatalog
+    for ($r = 0; $r -lt $rows.Count; $r++) {
+        for ($c = 0; $c -lt 5; $c++) {
+            $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + $c).Value2 = $rows[$r][$c]
+        }
+    }
+
+    Set-WorkbookNameByBounds $Workbook "rngPlotAnnotationSettings" $Sheet $HeaderRow $StartColumn ($HeaderRow + $rows.Count) ($StartColumn + 4)
+}
+
+function Get-InputUnitFormulaForUnit {
+    param([string]$UnitText)
+    switch ($UnitText) {
+        "мм" { return '=INDEX(rngUnitSettings,MATCH("Length",INDEX(rngUnitSettings,,1),0),2)' }
+        "мм2" { return '=INDEX(rngUnitSettings,MATCH("Area",INDEX(rngUnitSettings,,1),0),2)' }
+        "Н" { return '=INDEX(rngUnitSettings,MATCH("Force",INDEX(rngUnitSettings,,1),0),2)' }
+        "Н*мм" { return '=INDEX(rngUnitSettings,MATCH("Moment",INDEX(rngUnitSettings,,1),0),2)' }
+        "МПа" { return '=INDEX(rngUnitSettings,MATCH("Stress",INDEX(rngUnitSettings,,1),0),2)' }
+        "1/мм" { return '=INDEX(rngUnitSettings,MATCH("Curvature",INDEX(rngUnitSettings,,1),0),2)' }
+        default { return $null }
+    }
+}
+
+function Set-InputUnitCell {
+    param([object]$Cell, [string]$UnitText)
+    $formula = Get-InputUnitFormulaForUnit $UnitText
+    if ($null -ne $formula) {
+        $Cell.Formula = $formula
+    } else {
+        $Cell.Value2 = $UnitText
+    }
+}
+
 function Apply-SystemSettingsLayout {
     param([object]$Workbook, [object]$Sheet)
 
     $catalog = Get-SystemSettingsCatalog
-    $Sheet.Range("A1:O260").ClearContents()
-    $Sheet.Range("A1:O260").Validation.Delete()
+    $Sheet.Range("A1:DK260").ClearContents()
+    $Sheet.Range("A1:DK260").Validation.Delete()
 
     $Sheet.Cells.Item(1, 1).Value2 = "System"
     $Sheet.Cells.Item(1, 1).Font.Bold = $true
@@ -122,25 +386,72 @@ function Apply-SystemSettingsLayout {
         $row++
         foreach ($setting in $section.Rows) {
             for ($c = 0; $c -lt 4; $c++) { $Sheet.Cells.Item($row, $c + 1).Value2 = $setting[$c] }
+            Set-InputUnitCell $Sheet.Cells.Item($row, 3) ([string]$setting[2])
             $row++
         }
-        Set-WorkbookNameByBounds $Workbook $section.Name $Sheet $sectionStart 1 ($row - 1) 4
         $row++
     }
 
     $settingsRange = $Sheet.Range($Sheet.Cells.Item(3, 1), $Sheet.Cells.Item($row - 2, 4))
     Set-WorkbookNameByBounds $Workbook "rngSystemSettings" $Sheet 3 1 ($row - 2) 4
 
-    $validationLists = [ordered]@{
-        "Geometry.Type" = @("RoundedRectangle", "Circle")
-        "Concrete.TensionMode" = @("Ignore", "UseDiagram")
-        "Calculation.Mode" = @("DirectState", "FullCapacity", "LinearMatrix")
-        "Solver.LineSearchEnabled" = @("Yes", "No")
-        "Solver.DiagnosticsEnabled" = @("Yes", "No")
-        "CrackWidth.Enabled" = @("Yes", "No")
+    Add-MaterialDiagramTable $Workbook $Sheet "rngConcreteDiagramPoints" 3 6 "Точки диаграммы бетона" @(
+        @{ Point = 1; Strain = 0.0001; Stress = 1.8 },
+        @{ Point = 2; Strain = 0; Stress = 0 },
+        @{ Point = 3; Strain = -0.0015; Stress = -15.5 },
+        @{ Point = 4; Strain = -0.002; Stress = -15.5 },
+        @{ Point = 5; Strain = -0.0035; Stress = -15.5 }
+    )
+    Add-MaterialDiagramTable $Workbook $Sheet "rngSteelDiagramPoints" 3 10 "Точки диаграммы арматуры" @(
+        @{ Point = 1; Strain = -0.025; Stress = -350 },
+        @{ Point = 2; Strain = -0.01; Stress = -350 },
+        @{ Point = 3; Strain = -0.00175; Stress = -350 },
+        @{ Point = 4; Strain = 0; Stress = 0 },
+        @{ Point = 5; Strain = 0.00175; Stress = 350 },
+        @{ Point = 6; Strain = 0.01; Stress = 350 },
+        @{ Point = 7; Strain = 0.025; Stress = 350 }
+    )
+
+    Add-UnitSettingsTable $Workbook $Sheet 3 14
+    Add-SignConventionSettingsTable $Workbook $Sheet 13 14
+    Add-PlotAnnotationSettingsTable $Workbook $Sheet 20 14
+
+    foreach ($geometryTable in (Get-GeometrySettingsCatalog)) {
+        if ($geometryTable.ContainsKey("FaceTable") -and $geometryTable.FaceTable) {
+            Add-LShapeFaceSettingsTable $Workbook $Sheet $geometryTable.RangeName $geometryTable.StartRow $geometryTable.StartColumn $geometryTable.Title $geometryTable.Rows
+        } else {
+            Add-GeometrySettingsTable $Workbook $Sheet $geometryTable.RangeName $geometryTable.StartRow $geometryTable.StartColumn $geometryTable.Title $geometryTable.Rows
+        }
     }
 
-    $listColumn = 8
+    $validationLists = [ordered]@{
+        "Geometry.Source" = @("Generated", "AutoCAD")
+        "Geometry.Type" = @("RoundedRectangle", "Circle", "LShape")
+        "Concrete.TensionMode" = @("Ignore", "UseDiagram")
+        "Calculation.Mode" = @("DirectState", "FullCapacity")
+        "Solver.Method" = @("Newton", "Secant")
+        "Capacity.Method" = @("LoadMultiplier", "UltimateStrain")
+        "Capacity.SearchMethod" = @("Bisection", "Brent", "Secant")
+        "Solver.LineSearchEnabled" = @("Yes", "No")
+        "CrackWidth.Enabled" = @("Yes", "No")
+        "AutoCAD.Export.ResultType" = @("Stress", "Strain")
+        "AutoCAD.Export.LabelMode" = @("ValuesOnly", "NamesAndValues")
+        "AutoCAD.Export.NeutralLineEnabled" = @("Yes", "No")
+        "AutoCAD.Export.PrincipalAxesEnabled" = @("Yes", "No")
+        "AutoCAD.Export.LoadPointEnabled" = @("Yes", "No")
+        "Plot.Enabled" = @("Yes", "No")
+        "Plot.AutoUpdateAfterCalculation" = @("Yes", "No")
+        "Plot.ResultType" = @("Stress", "Strain")
+        "Plot.ResultGradient" = @("Yes", "No")
+        "Plot.ResultLabelsEnabled" = @("Yes", "No")
+        "Plot.NeutralLineEnabled" = @("Yes", "No")
+        "Plot.PrincipalAxesEnabled" = @("Yes", "No")
+        "Plot.LoadApplicationPointEnabled" = @("Yes", "No")
+        "Plot.CentroidEnabled" = @("Yes", "No")
+        "Plot.LegendEnabled" = @("Yes", "No")
+    }
+
+    $listColumn = 80
     foreach ($key in $validationLists.Keys) {
         $options = $validationLists[$key]
         for ($i = 0; $i -lt $options.Count; $i++) {
@@ -158,45 +469,228 @@ function Apply-SystemSettingsLayout {
         $listColumn++
     }
 
-    $diagStart = $row + 2
-    $Sheet.Cells.Item($diagStart, 1).Value2 = "Диагностика"
-    $Sheet.Cells.Item($diagStart, 1).Font.Bold = $true
-    $Sheet.Cells.Item($diagStart, 1).Interior.Color = 8355711
-    $Sheet.Cells.Item($diagStart, 1).Font.Color = 16777215
-
-    $diagHeaders = @("Iteration", "LoadFactor", "Epsilon0", "KappaX", "KappaY", "Nint", "Mxint", "Myint", "ResidualN", "ResidualMx", "ResidualMy", "StepAlpha", "MatrixDeterminant", "MatrixConditionEstimate", "StopReason")
-    for ($i = 0; $i -lt $diagHeaders.Count; $i++) {
-        $cell = $Sheet.Cells.Item($diagStart + 2, $i + 1)
-        $cell.Value2 = $diagHeaders[$i]
-        $cell.Font.Bold = $true
-        $cell.Interior.Color = 14277081
+    $exportCombinationListColumn = $listColumn
+    $Sheet.Cells.Item(1, $exportCombinationListColumn).Value2 = "Worst"
+    for ($i = 1; $i -le 20; $i++) {
+        $Sheet.Cells.Item($i + 1, $exportCombinationListColumn).Formula = '=IF(INDEX(rngLoadCombinations,' + ($i + 1) + ',1)="","",INDEX(rngLoadCombinations,' + ($i + 1) + ',1))'
     }
-    $diagnosticRange = $Sheet.Range($Sheet.Cells.Item($diagStart + 2, 1), $Sheet.Cells.Item($diagStart + 12, $diagHeaders.Count))
-    Set-WorkbookNameByBounds $Workbook "rngSystemDiagnostics" $Sheet ($diagStart + 2) 1 ($diagStart + 12) $diagHeaders.Count
+    $exportCombinationColName = ConvertTo-ExcelColumn $exportCombinationListColumn
+    $exportCombinationListAddress = "=$" + $exportCombinationColName + '$1:$' + $exportCombinationColName + '$21'
+    for ($r = 4; $r -le ($row - 2); $r++) {
+        if ([string]$Sheet.Cells.Item($r, 1).Value2 -eq "AutoCAD.Export.CombinationID" -or [string]$Sheet.Cells.Item($r, 1).Value2 -eq "Plot.LoadCase") {
+            $cell = $Sheet.Cells.Item($r, 2)
+            $cell.Validation.Delete()
+            $cell.Validation.Add(3, 1, 1, $exportCombinationListAddress)
+            $cell.Validation.IgnoreBlank = $false
+            $cell.Validation.InCellDropdown = $true
+        }
+    }
+
+    Add-PlotAnnotationValidation $Sheet
 
     $Sheet.Columns.Item(1).ColumnWidth = 34
     $Sheet.Columns.Item(2).ColumnWidth = 18
     $Sheet.Columns.Item(3).ColumnWidth = 12
     $Sheet.Columns.Item(4).ColumnWidth = 86
-    $Sheet.Columns.Item("H:M").Hidden = $true
-    $Sheet.Range("A1:O260").Font.Name = "Arial"
-    $Sheet.Range("A1:O260").Font.Size = 9
+    $Sheet.Columns.Item(14).ColumnWidth = 14
+    $Sheet.Columns.Item(15).ColumnWidth = 16
+    $Sheet.Columns.Item(16).ColumnWidth = 16
+    $Sheet.Columns.Item(17).ColumnWidth = 16
+    $Sheet.Columns.Item("BR:DK").Hidden = $true
+    $Sheet.Range("A1:DK260").Font.Name = "Arial"
+    $Sheet.Range("A1:DK260").Font.Size = 9
 
-    return @{ Settings = $settingsRange; Diagnostics = $diagnosticRange }
+    return @{ Settings = $settingsRange }
 }
 
-function Apply-CalculationSettingsLinks {
-    param([object]$Workbook)
-    $calc = $Workbook.Worksheets.Item(1)
-    $calc.Cells.Item(7, 5).Formula = '=VLOOKUP("Geometry.Type",System!$A:$B,2,FALSE)'
-    $calc.Cells.Item(14, 5).Formula = '=VLOOKUP("Circle.Diameter",System!$A:$B,2,FALSE)'
-    $calc.Cells.Item(15, 5).Formula = '=VLOOKUP("Circle.CenterX",System!$A:$B,2,FALSE)'
-    $calc.Cells.Item(16, 5).Formula = '=VLOOKUP("Circle.CenterY",System!$A:$B,2,FALSE)'
+function Add-PlotAnnotationValidation {
+    param([object]$Sheet)
+
+    $validationSources = @{
+        "Enabled" = @{ Column = 110; Values = @("Yes", "No") }
+        "Placement" = @{ Column = 111; Values = @("Outside", "Inside") }
+        "LineEnabled" = @{ Column = 110; Values = @("Yes", "No") }
+        "ArrowType" = @{ Column = 112; Values = @("Triangle", "Stealth", "Diamond", "Oval", "Open") }
+        "ArrowSize" = @{ Column = 113; Values = @("Small", "Medium", "Wide") }
+    }
+    foreach ($key in $validationSources.Keys) {
+        $source = $validationSources[$key]
+        for ($i = 0; $i -lt $source.Values.Count; $i++) {
+            $Sheet.Cells.Item($i + 1, $source.Column).Value2 = $source.Values[$i]
+        }
+    }
+
+    $range = $Sheet.Parent.Names.Item("rngPlotAnnotationSettings").RefersToRange
+    $rows = $range.Value2
+    for ($r = 2; $r -le $range.Rows.Count; $r++) {
+        $paramName = [string]$rows[$r, 1]
+        $source = $validationSources[$paramName]
+
+        if ($null -ne $source) {
+            for ($c = 2; $c -le 3; $c++) {
+                if ([string]$rows[$r, $c] -ne "-") {
+                    $cell = $range.Cells.Item($r, $c)
+                    $cell.Validation.Delete()
+                    $colName = ConvertTo-ExcelColumn $source.Column
+                    $listAddress = "=$" + $colName + '$1:$' + $colName + '$' + $source.Values.Count
+                    $cell.Validation.Add(3, 1, 1, $listAddress)
+                    $cell.Validation.IgnoreBlank = $false
+                    $cell.Validation.InCellDropdown = $true
+                }
+            }
+        }
+    }
+}
+
+function Add-GeometrySettingsTable {
+    param(
+        [object]$Workbook,
+        [object]$Sheet,
+        [string]$RangeName,
+        [int]$HeaderRow,
+        [int]$StartColumn,
+        [string]$Title,
+        [array]$Rows
+    )
+
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = $Title
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 3)).Merge() | Out-Null
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
+
+    $headers = @("Параметр", "Значение", "Ед.", "Комментарий")
+    for ($i = 0; $i -lt $headers.Count; $i++) {
+        $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
+        $cell.Value2 = $headers[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = 14277081
+    }
+
+    for ($r = 0; $r -lt $Rows.Count; $r++) {
+        for ($c = 0; $c -lt 4; $c++) {
+            $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + $c).Value2 = $Rows[$r][$c]
+        }
+        Set-InputUnitCell $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + 2) ([string]$Rows[$r][2])
+    }
+
+    $locOptions = @("Stacked", "SideBySide")
+    $listColumn = 61
+    for ($i = 0; $i -lt $locOptions.Count; $i++) {
+        $Sheet.Cells.Item($i + 1, $listColumn).Value2 = $locOptions[$i]
+    }
+    $listColName = ConvertTo-ExcelColumn $listColumn
+    $listAddress = "=$" + $listColName + '$1:$' + $listColName + '$' + $locOptions.Count
+    for ($r = 0; $r -lt $Rows.Count; $r++) {
+        $parameterName = [string]$Rows[$r][0]
+        if ($parameterName -eq "Rebar.Loc2row" -or $parameterName -eq "Rebar.Loc3row") {
+            $cell = $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + 1)
+            $cell.Validation.Delete()
+            $cell.Validation.Add(3, 1, 1, $listAddress)
+            $cell.Validation.IgnoreBlank = $true
+            $cell.Validation.InCellDropdown = $true
+        }
+    }
+
+    Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($HeaderRow + $Rows.Count) ($StartColumn + 3)
+}
+
+function Add-LShapeFaceSettingsTable {
+    param(
+        [object]$Workbook,
+        [object]$Sheet,
+        [string]$RangeName,
+        [int]$HeaderRow,
+        [int]$StartColumn,
+        [string]$Title,
+        [array]$Rows
+    )
+
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = $Title
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 6)).Merge() | Out-Null
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
+
+    $headers = @("Параметр", "H1", "B1", "H2", "B2", "Ед.", "Комментарий")
+    for ($i = 0; $i -lt $headers.Count; $i++) {
+        $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
+        $cell.Value2 = $headers[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = 14277081
+    }
+
+    for ($r = 0; $r -lt $Rows.Count; $r++) {
+        for ($c = 0; $c -lt 7; $c++) {
+            $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + $c).Value2 = $Rows[$r][$c]
+        }
+        Set-InputUnitCell $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + 5) ([string]$Rows[$r][5])
+    }
+
+    $locOptions = @("Stacked", "SideBySide")
+    $listColumn = 60
+    for ($i = 0; $i -lt $locOptions.Count; $i++) {
+        $Sheet.Cells.Item($i + 1, $listColumn).Value2 = $locOptions[$i]
+    }
+    $listColName = ConvertTo-ExcelColumn $listColumn
+    $listAddress = "=$" + $listColName + '$1:$' + $listColName + '$' + $locOptions.Count
+    for ($r = 0; $r -lt $Rows.Count; $r++) {
+        $parameterName = [string]$Rows[$r][0]
+        if ($parameterName -eq "loc_2row" -or $parameterName -eq "loc_3row") {
+            for ($c = 1; $c -le 4; $c++) {
+                $cell = $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + $c)
+                $cell.Validation.Delete()
+                $cell.Validation.Add(3, 1, 1, $listAddress)
+                $cell.Validation.IgnoreBlank = $true
+                $cell.Validation.InCellDropdown = $true
+            }
+        }
+    }
+
+    Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($HeaderRow + $Rows.Count) ($StartColumn + 6)
+}
+
+function Add-MaterialDiagramTable {
+    param(
+        [object]$Workbook,
+        [object]$Sheet,
+        [string]$RangeName,
+        [int]$HeaderRow,
+        [int]$StartColumn,
+        [string]$Title,
+        [array]$Points
+    )
+
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = $Title
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 2)).Merge() | Out-Null
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
+
+    $headers = @("Point", "Strain", "Stress")
+    for ($i = 0; $i -lt $headers.Count; $i++) {
+        $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
+        $cell.Value2 = $headers[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = 14277081
+    }
+    $Sheet.Cells.Item($HeaderRow, $StartColumn + 2).Formula = '="Stress, "&INDEX(rngUnitSettings,MATCH("Stress",INDEX(rngUnitSettings,,1),0),2)'
+
+    for ($r = 1; $r -le 10; $r++) {
+        for ($c = 0; $c -lt 3; $c++) {
+            $Sheet.Cells.Item($HeaderRow + $r, $StartColumn + $c).ClearContents()
+        }
+    }
+
+    for ($i = 0; $i -lt $Points.Count; $i++) {
+        $targetRow = $HeaderRow + 1 + $i
+        $Sheet.Cells.Item($targetRow, $StartColumn).Value2 = [double]$Points[$i].Point
+        $Sheet.Cells.Item($targetRow, $StartColumn + 1).Value2 = [double]$Points[$i].Strain
+        $Sheet.Cells.Item($targetRow, $StartColumn + 2).Value2 = [double]$Points[$i].Stress
+    }
+
+    Set-WorkbookNameByBounds $Workbook $RangeName $Sheet ($HeaderRow + 1) $StartColumn ($HeaderRow + 10) ($StartColumn + 2)
 }
 
 function Add-SystemSettings {
     param([object]$Sheet)
     $result = Apply-SystemSettingsLayout $Sheet.Parent $Sheet
-    Apply-CalculationSettingsLinks $Sheet.Parent
     $result
 }

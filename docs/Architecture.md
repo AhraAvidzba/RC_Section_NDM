@@ -1,296 +1,134 @@
-# Предлагаемая архитектура
+# Architecture
 
-Статус: обновлено по результатам этапа 9. Реализованы шаблон книги, геометрия и волоконная сетка, геометрические характеристики, линейное ядро, параметризованные диаграммы материалов, общий нелинейный `CSectionSolver`, поиск несущей способности для направлений `Mx`, `My` и `Mxy`, расчет ширины раскрытия уже образовавшихся нормальных трещин, пакетный расчет до 20 сочетаний и круглая геометрия `CGeometryCircle`.
+Дата актуализации: 2026-08-14.
 
-## Цели архитектуры
-
-Новая программа должна быть расчетным ядром на Excel VBA, отделенным от пользовательских листов. Excel должен отвечать за ввод, вывод и оформление, но не за вычисления в итерационных циклах.
-
-Главные приоритеты:
-
-1. нормативная корректность;
-2. физическая корректность;
-3. выполнение равновесия;
-4. проверяемость;
-5. диагностируемость;
-6. расширяемость;
-7. производительность.
-
-## Слои
-
-- `Input` - чтение именованных диапазонов и пользовательских единиц.
-- `Units` - перевод во внутренние единицы: мм, мм2, Н, Н*мм, МПа, безразмерные деформации.
-- `Geometry` - формы сечения и проверки геометрии.
-- `Meshing` - построение бетонных волокон один раз до расчета.
-- `Reinforcement` - стержни арматуры независимо от бетонной сетки.
-- `Materials` - модели бетона, стали и пользовательских материалов.
-- `Norms` - нормативные правила и параметры с трассировкой источников.
-- `Solver` - трехпараметрическое равновесие `N`, `Mx`, `My`.
-- `Capacity` - поиск предельного множителя нагрузки.
-- `CrackWidth` - расчет ширины раскрытия уже образовавшихся трещин.
-- `Diagnostics` - журнал итераций и причины остановки.
-- `Output` - запись результатов в листы одним блоком.
-
-## Основные типы
-
-Предлагаемые интерфейсы:
-
-- `ISectionGeometry`
-- `IConcreteMaterial`
-- `ISteelMaterial`
-- `IMaterialModel`
-- `INormativeRule`
-
-Предлагаемые классы:
-
-- `CGeometryRoundedRectangle`
-- `CFiberMeshBuilder`
-- `CConcreteFiberSet`
-- `CRebarSet`
-- `CSectionSolver`
-- `CLinearSystem3x3`
-- `CCapacitySolver`
-- `CCrackWidthCalculator`
-- `CSolverDiagnostics`
-- `CLoadCombination`
-- `CCombinationRunner`
-- `CWorkbookReader`
-- `CWorkbookWriter`
-
-Для больших наборов волокон предпочтительны типизированные массивы или массивы пользовательских типов, а не отдельный объект на каждое волокно.
-
-## Арматура
-
-Проект поддерживает только обычную ненапрягаемую арматуру.
-
-В расчетной модели и пользовательском вводе не должны появляться:
-
-- начальная деформация арматуры как параметр преднапряжения;
-- признак `IsPrestressed`;
-- отдельные классы, режимы или нормативные ветви для напрягаемой арматуры.
-
-Если данные импортируются из внешнего источника и содержат признаки преднапряжения, слой ввода должен вернуть явную ошибку неподдерживаемой возможности.
-
-## Геометрия и волокна
-
-Первая новая геометрия: `CGeometryRoundedRectangle`.
-
-Требования:
-
-- ширина, высота, четыре независимых радиуса;
-- положение в локальной системе координат;
-- проверки положительности размеров и допустимости радиусов;
-- `ContainsPoint(x, y)`;
-- границы для сетки;
-- площадь, центр тяжести, характерные точки;
-- проверка арматуры внутри сечения и защитного слоя.
-
-Бетонная сетка строится один раз. На первом этапе допустим метод центральной точки ячейки с `FillFactor = 1`, если центр внутри контура. Архитектура должна оставить место для частичного заполнения граничных ячеек.
-
-## Материалы
-
-Материалы не должны быть зашиты в решатель.
-
-Минимальный интерфейс:
-
-- `GetStress(strain, calculationMode)`
-- `GetTangentModulus(strain, calculationMode)`
-- `GetSecantModulus(strain, calculationMode)`
-- `CheckLimitState(strain, stress, calculationMode)`
-
-Режимы:
-
-- `StrengthULS`
-- `CrackWidthSLS`
-
-Режим `CrackFormationSLS` не вводить.
-
-На этапе 3 добавлены только линейные материалы `CLinearConcreteMaterial` и `CLinearSteelMaterial`. Модули упругости передаются параметрами и не являются нормативными значениями.
-
-## Решатель
-
-`CSectionSolver` получает:
-
-- массив бетонных волокон;
-- массив стержней;
-- модели материалов;
-- внешние усилия;
-- настройки решения.
-
-Неизвестные:
-
-- `epsilon0`
-- `kappaX`
-- `kappaY`
-
-Решатель должен считать деформации, напряжения, внутренние усилия, касательную матрицу и нормированные невязки. Базовый метод - полный Ньютон с пересчетом касательной матрицы, демпфированием и line search.
-
-Нельзя использовать `WorksheetFunction.MInverse`. Решение `3 x 3` должно быть отдельным классом с выбором главного элемента, контролем масштаба и проверкой невязки.
-
-На этапе 3 реализован отдельный линейный путь:
-
-- `CLinearSystem3x3` - решение системы `3 x 3` без `WorksheetFunction`;
-- `CLinearSectionSolver` - сборка линейной матрицы жесткости и расчет параметров `epsilon0`, `kappaX`, `kappaY`;
-- `CRebarLayout` - хранение обычных ненапрягаемых стержней без Excel-зависимостей.
-
-Линейный результат не является расчетом несущей способности и не должен выводиться как окончательный нормативный результат.
-
-## Несущая способность
-
-`CCapacitySolver` выполняет одномерный поиск по множителю `lambda`:
-
-- `N = Nspecified`, `Mx = lambda * MxBase`, `My = 0`;
-- `N = Nspecified`, `Mx = 0`, `My = lambda * MyBase`;
-- `N = Nspecified`, `Mx = lambda * MxBase`, `My = lambda * MyBase`.
-
-На этапе 6 реализовано направление `Mxy` с сохранением направления вектора моментов:
+## Общая Схема
 
 ```text
-N  = Nspecified
-Mx = lambda * MxBase
-My = lambda * MyBase
+System + rngLoadCombinations
+  -> CSystemSettingsReader
+  -> CUnitSystem
+  -> CLoadCombinationReader
+  -> BuildWorkbookSectionModel
+       -> Generated: ISectionGeometry + CFiberMeshBuilder + CRebarLayout
+       -> AutoCAD: CAutoCADSectionModelImporter
+  -> CSectionModel
+  -> CBatchSectionCalculator
+       -> CSectionSolver
+       -> CCapacitySolver
+       -> CCrackWidthCalculator
+  -> CBatchResultWriter / CCapacityResultWriter / CNDMResultsWriter
+  -> Results sheet
+  -> AutoCAD export
 ```
 
-Несходимость `CSectionSolver` не считается физическим разрушением. `CCapacitySolver` различает:
+Расчетное ядро работает только с `CSectionModel`, материалами и настройками. Источник геометрии для решателей не важен.
 
-- `ConcreteStrainLimit`;
-- `SteelStrainLimit`;
-- `NumericalFailure`;
-- `SingularTangent`;
-- `InvalidInput`.
+`CUnitSystem` является границей между пользовательским интерфейсом и расчетным ядром. Он читает `rngUnitSettings` и `rngSignConventionSettings`, переводит входные значения в фиксированные внутренние единицы/знаки и переводит результаты обратно в выбранный пользователем формат вывода.
 
-При численном отказе используется последнее сошедшееся состояние, уменьшается шаг по `lambda`, уменьшается внутренний шаг нагрузки за счет увеличения числа ступеней и выполняются повторы. После исчерпания повторов возвращается численный статус, который не используется как верхняя физическая граница несущей способности.
-
-Результаты `Mx`, `My` и `Mxy` записываются в `rngResultMx`, `rngResultMy` и `rngResultMxy` отдельным Excel-адаптером `CCapacityResultWriter`. Расчетный класс `CCapacitySolver` не обращается к листам Excel.
-
-## Ширина раскрытия трещин
-
-`CCrackWidthCalculator` получает уже найденное состояние трещиноватого сечения.
-
-Сжатый бетон работает, растянутый бетон не создает внутренних усилий и имеет нулевую касательную жесткость. Площадь растянутого бетона может использоваться только как геометрический параметр нормативной формулы расстояния между трещинами.
-
-На этапе 7 `CCrackWidthCalculator` не решает равновесие и не использует предельное состояние `CCapacitySolver`. Для трещин сначала отдельно рассчитывается эксплуатационное SLS-состояние через `CSectionSolver` на заданные `N + Mx + My`, после чего crack-калькулятор определяет растянутую арматуру, ее деформации и напряжения, ширину раскрытия, допустимое значение и коэффициент использования.
-
-Настройка `Concrete.TensionMode` находится на листе `System`:
-
-- `Ignore` - растянутый бетон имеет нулевое напряжение и нулевую касательную жесткость;
-- `UseDiagram` - растянутая ветвь определяется выбранной диаграммой бетона.
-
-Для расчета уже образовавшихся трещин значение по умолчанию - `Ignore`.
-
-## Excel и AutoCAD
-
-Excel:
-
-- только ввод и вывод;
-- чтение исходных данных до расчета;
-- запись результатов после расчета;
-- без `Range`, `Cells`, `ActiveSheet`, `Selection` внутри расчетного ядра.
-
-AutoCAD:
-
-- не должен быть обязательной зависимостью расчетного ядра;
-- может быть отдельным импортным адаптером в будущем;
-- геометрия новой программы должна создаваться и проверяться без AutoCAD.
-
-## Реализовано на этапе 1
-
-- создан воспроизводимый механизм сборки книги в `tools/build_workbook/`;
-- собран шаблон `workbook/output/RC_Section_NDM.xlsm`;
-- созданы листы `Расчет` и `System`;
-- созданы крупные именованные диапазоны для ввода, арматуры, сочетаний, результатов и системных настроек;
-- печатная форма `Расчет` разбита на четыре горизонтальных блока А4;
-- добавлена проверка структуры книги.
-
-Этап 1 не добавляет VBA-расчет, НДМ, модели материалов, геометрию, численный решатель, поиск несущей способности или расчет трещин.
-
-## Реализовано на этапе 2
-
-- добавлен интерфейс `ISectionGeometry`;
-- добавлена первая геометрия `CGeometryRoundedRectangle` с шириной, высотой, четырьмя независимыми радиусами и локальным центром;
-- добавлены проверки размеров, радиусов, вырожденной площади и самосогласованности соседних радиусов;
-- добавлен `ContainsPoint(x, y)` с включением граничных точек;
-- добавлен `CFiberMeshBuilder`, который строит типизированный массив `TFiber` один раз до расчета;
-- добавлен `CGeometryPropertiesCalculator` для площади, статических моментов, центра тяжести, `Ix`, `Iy`, `Ixy`, центральных и главных моментов инерции;
-- добавлен тестовый модуль `modTestGeometry`;
-- добавлен скрипт `tools/build_workbook/Run-GeometryTests.ps1`.
-
-Ограничение этапа 2: волокно граничной ячейки учитывается целиком при попадании центра ячейки внутрь контура (`FillFactor = 1`). Частичное заполнение, отверстия, исключение бетона под арматурой, материалы и равновесие усилий относятся к будущим этапам.
-
-## Реализовано на этапе 3
-
-- добавлены линейные материалы бетона и стали;
-- добавлен `CRebarLayout` для обычной ненапрягаемой арматуры;
-- добавлен `CLinearSystem3x3` с выбором главного элемента и проверкой невязки;
-- добавлен `CLinearSectionSolver`;
-- реализована линейная матрица жесткости в порядке `[epsilon0, kappaX, kappaY]`;
-- реализовано исключение двойного учета бетона в арматуре через `Es - Eb`;
-- добавлен тестовый модуль `modTestLinearCore`;
-- добавлен скрипт `tools/build_workbook/Run-LinearTests.ps1`.
-
-Этап 3 не добавляет нормативные диаграммы, нелинейный метод Ньютона, трещины, поиск несущей способности, удерживающие моменты, коэффициенты запаса или использования.
----
-
-## Нормативные параметры и пользовательские изменения
-
-Нормативные коэффициенты, параметры материалов и настройки, влияющие на расчет, хранятся на листе `System`, а не в коде.
-
-Таблица настроек использует структуру:
+Внутри расчетного ядра:
 
 ```text
-Ключ | Значение | Значение по умолчанию | Единица | Назначение | Нормативный источник | Изменено пользователем
+length    = mm
+area      = mm2
+force     = N
+moment    = N*mm
+stress    = MPa
+curvature = 1/mm
++N        = tension
++Mx       = +Y tension
++My       = +X tension
 ```
 
-Слой ввода должен читать текущее значение. Если оно отличается от значения по умолчанию, расчет может использовать пользовательское значение, но диагностика должна явно отметить отклонение.
+Классы `CLoadCase`, `CSectionModel`, `CSectionSolver`, `CCapacitySolver`, `CCrackWidthCalculator` не должны выполнять пользовательские пересчеты единиц и знаков самостоятельно.
 
-Слой сборки книги и управляющие макросы не должны перезаписывать пользовательские значения без явной команды пользователя.
+## Источники Геометрии
 
-Если нормативный источник пока не подтвержден, параметр остается с `TODO` в колонках значения и источника. Числовые коэффициенты без ссылки на СП не закладываются в код.
+Настройка `Geometry.Source` выбирает источник расчетной модели:
 
-## Тестовые нагрузки
+| Значение | Поведение |
+|---|---|
+| `Generated` | Сетка и арматура строятся встроенными генераторами по `Geometry.Type`. |
+| `AutoCAD` | Импортируются только AutoCAD `Region` из активного чертежа на слоях `AutoCAD.Import.ConcreteLayer` и `AutoCAD.Import.RebarLayer`. |
 
-Основные модульные тесты независимы от справочных программ и могут использовать произвольные нагрузки `N`, `Mx`, `My`. Для каждого теста должны быть указаны нагрузки, единицы, ожидаемый результат или независимый способ проверки и критерий успешного прохождения.
+При AutoCAD-импорте единицы чертежа считаются миллиметрами. Класс арматуры берется из `Steel.Class`; одновременные разные классы арматуры в одном сечении не поддерживаются.
 
-Справочные программы круглого и произвольного сечения используются как дополнительные инженерные ориентиры, но не являются обязательным источником нагрузок.
+## CSectionModel
 
-## Материальные диаграммы
+`CSectionModel` является единым расчетным представлением сечения. Он хранит:
 
-Добавлен параметризованный слой диаграмм материалов без доступа к листам Excel:
+- бетонные элементы: `ID`, `SourceName`, `SourceHandle`, `X`, `Y`, `Area`, `MaterialID`, `ShapeType`, `Width`, `Height`, `Rotation`, `LocalIx`, `LocalIy`, `LocalIxy`, `Comment`;
+- арматурные элементы: `ID`, `SourceName`, `SourceHandle`, `X`, `Y`, `Area`, `Diameter`, `SteelClass`, `MaterialID`, `Comment`;
+- `SourceType` для трассировки источника модели.
 
-- `CConcreteDiagramMaterial`;
-- `CSteelDiagramMaterial`.
-
-Расчетное ядро не выбирает тип диаграммы и не знает, является ли пользовательская диаграмма двухлинейной, трехлинейной или иной кусочно-линейной формой. Excel-слой передает в материал координаты точек диаграммы из `System`; изменение формы выполняется редактированием точек, а не переключателем типа. Для бетона сжатие соответствует отрицательным деформациям по принятой системе знаков; режим растянутого бетона задается параметром `Concrete.TensionMode`. Для обычной ненапрягаемой арматуры диаграмма симметрична при растяжении и сжатии.
-
-Нормативная методика НДМ принимается по СП 63, а специальные параметры мостовых конструкций берутся из СП 35. Все параметры, которые предполагается использовать в диаграммах, должны быть видимы на листе `System` и доступны пользователю для изменения. Значения, извлеченные неоднозначно, остаются `TODO` и перечисляются в `docs/OpenNormativeQuestions.md`.
-
-Пользователь сам отвечает за корректность введенных параметров материалов. Отдельный статус источника материалов в расчете не используется: значения читаются из `System` и применяются как заданные пользователем параметры.
-
-Добавлен Excel-адаптер `CSystemSettingsReader`: он читает таблицу `rngSystemSettings` и передает значения в расчетный слой. Сам `CSectionSolver` не обращается к листам Excel.
-## Stage 8 update - batch calculation
-
-Stage 8 adds `CBatchSectionCalculator` as a calculation-layer batch runner for up to 20 load combinations from `rngLoadCombinations`.
-
-The batch runner receives and reuses one prepared concrete fiber mesh, one rebar layout, and one pair of material models for all combinations. It delegates strength checks to the existing `CCapacitySolver`, service-state equilibrium to `CSectionSolver`, and crack-width evaluation to `CCrackWidthCalculator`.
-
-Excel access remains outside the calculation core:
-
-- `CLoadCombinationReader` reads `rngLoadCombinations`;
-- `CBatchResultWriter` writes the batch summary and diagnostics to `System`.
-
-Stage 8 also adds regression tests proving that `Concrete.TensionMode = Ignore / UseDiagram` affects the shared `CSectionSolver` for `Mx`, `My`, and `Mxy` strength-state calculations, not only crack-width calculation.
-## Stage 9 update - circular section
-
-Stage 9 adds only one new geometry: `CGeometryCircle`.
-
-The existing rounded rectangle remains available and unchanged. No other geometries are implemented in Stage 9.
-
-`CGeometryCircle` implements `ISectionGeometry`, supports radius or diameter input, explicit center coordinates, analytical area and centroid, and point-in-circle checks. The existing `CFiberMeshBuilder` builds the concrete fiber mesh from this geometry and passes it to the same universal NDM core.
-
-The calculation path for the circular section is:
+Расчетные имена элементов создаются только внутри `CSectionModel`:
 
 ```text
-CGeometryCircle -> CFiberMeshBuilder -> CSectionSolver / CCapacitySolver / CCrackWidthCalculator
+бетон:    C1, C2, ...
+арматура: R1, R2, ...
 ```
 
-No circle-specific branch was added to the solver.
+Имена генераторов и AutoCAD handles сохраняются только как трассировочные поля `SourceName`/`SourceHandle`.
+
+## AutoCAD Import
+
+`CAutoCADSectionModelImporter` находится вне `CSectionModel` и является адаптером внешнего источника данных.
+
+Импортёр:
+
+- подключается к активному AutoCAD через COM;
+- перебирает `ModelSpace`;
+- принимает только объекты `AcDbRegion`;
+- фильтрует бетон и арматуру по слоям из `System`;
+- игнорирует области меньше `AutoCAD.Import.MinArea`;
+- для арматуры вычисляет эквивалентный диаметр из площади Region;
+- для бетона сохраняет площадь, центр и, если AutoCAD отдаёт данные, центральные моменты инерции;
+- для последующего экспорта строит эквивалентный прямоугольник по площади и моментам инерции.
+
+Если AutoCAD закрыт, активного чертежа нет или нужные Region не найдены, расчет прерывается понятным сообщением.
+
+## Встроенные Генераторы
+
+Встроенный путь используется при `Geometry.Source = Generated`:
+
+- `ISectionGeometry`, `CGeometryCircle`, `CGeometryRoundedRectangle`, `CGeometryLShape` описывают принадлежность точек бетонному сечению;
+- `CFiberMeshBuilder` строит бетонные элементы;
+- `CCircleRebarLayoutBuilder` и `CLShapeRebarLayoutBuilder` строят автоматическую арматуру;
+- `CSectionModelBuilder.BuildFromGenerated` собирает `CSectionModel`.
+
+`CFiberMeshBuilder` и `CRebarLayout` остаются внутренними объектами генераторов и не передаются в решатели.
+
+## Расчетное Ядро
+
+`CSectionSolver`, `CCapacitySolver`, `CCrackWidthCalculator`, `CBatchSectionCalculator` и `CSectionPropertiesCalculator` работают с `CSectionModel`.
+
+Расчетное ядро:
+
+- не обращается к Excel-листам;
+- не знает источник геометрии;
+- решает только постановку `N + Mx + My`;
+- одноосный изгиб считает как частный случай при `Mx = 0` или `My = 0`.
+
+Поле деформаций:
+
+```text
+epsilon(x, y) = epsilon0 + kappaX * y + kappaY * x
+```
+
+Внутренние усилия:
+
+```text
+Nint  = sum(sigma_i * A_i)
+Mxint = sum(sigma_i * A_i * y_i)
+Myint = sum(sigma_i * A_i * x_i)
+```
+
+## Вывод
+
+- `CBatchResultWriter` пишет сводку в `rngBatchSummary` на листе `Results`;
+- `CCapacityResultWriter` пишет результат определяющего сочетания в `rngResultSection`;
+- `CNDMResultsWriter` пишет согласованный snapshot последнего расчета на лист `Results`: `rngNDMSectionGeometry` с постоянной геометрией, `rngNDMElementResults` с LC-зависимыми `Strain/Stress/PhysicalState`, `rngNDMSectionProperties` с общими свойствами сечения и состоянием выбранных LC, `rngNDMSectionAnnotations` с сохраненными semantic-аннотациями;
+- writer-ы получают `CUnitSystem` и выводят числовые результаты в выбранных `OUTPUT`-единицах и пользовательских знаках;
+- контрольная таблица арматуры и формульный блок трещин на `System` больше не выводятся;
+- AutoCAD export читает данные из листа `Results`, поэтому не хранит последнюю модель в памяти и не запускает повторный AutoCAD-import при выгрузке.
+- `UpdateSectionPlot` строит схему на листе `Расчет` только по сохраненному snapshot `Results`; смена `Plot.LoadCase` или `Plot.ResultType` не запускает расчет и не меняет `Results`.

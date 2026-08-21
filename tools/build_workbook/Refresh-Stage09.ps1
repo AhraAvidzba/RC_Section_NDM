@@ -278,13 +278,12 @@ try {
         "src/Geometry/CGeometryCircle.cls",
         "src/Geometry/CGeometryRoundedRectangle.cls",
         "src/Section/CCircleRebarLayoutBuilder.cls",
-        "src/Section/CGeometryPropertiesCalculator.cls",
+        "src/Section/CSectionPropertiesCalculator.cls",
         "src/Section/CRebarLayout.cls",
         "src/Materials/CConcreteDiagramMaterial.cls",        "src/Materials/CLinearConcreteMaterial.cls",
         "src/Materials/CLinearSteelMaterial.cls",
         "src/Materials/CSteelDiagramMaterial.cls",        "src/Solver/CLinearSystem3x3.cls",
         "src/Solver/CCapacitySolver.cls",
-        "src/Solver/CLinearSectionSolver.cls",
         "src/Solver/CSectionSolver.cls",
         "src/Crack/CCrackWidthCalculator.cls",
         "src/Batch/CBatchSectionCalculator.cls",
@@ -295,7 +294,6 @@ try {
         "src/Excel/modWorkbookCalculation.bas",
         "src/Excel/modAutoCADStressExport.bas",
         "tests/modTestGeometry.bas",
-        "tests/modTestLinearCore.bas",
         "tests/modTestMaterialDiagrams.bas",
         "tests/modTestSectionSolver.bas",
         "tests/modTestCapacitySolver.bas",
@@ -331,6 +329,7 @@ finally {
 }
 
 Remove-DuplicatePrintAreaName $fullWorkbookPath
+
 
 
 

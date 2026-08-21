@@ -9,65 +9,94 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Private Const START_ROW As Long = 92
-Private Const START_COLUMN As Long = 1
+Private Const TARGET_ROWS As Long = 29
+Private Const TARGET_COLUMNS As Long = 14
 
-Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 3970, "CBatchResultWriter", "Workbook is missing."
-    If batch Is Nothing Then Err.Raise vbObjectError + 3971, "CBatchResultWriter", "Batch calculator is missing."
+Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, Optional ByVal units As CUnitSystem = Nothing)
+    If workbook Is Nothing Then Err.Raise vbObjectError + 3970, "CBatchResultWriter", "Книга Excel не передана."
+    If batch Is Nothing Then Err.Raise vbObjectError + 3971, "CBatchResultWriter", "Пакетный расчетчик не передан."
 
-    Dim sheet As Object
-    Set sheet = workbook.Worksheets.Item("System")
     Dim target As Object
-    Set target = sheet.Range(sheet.Cells.Item(START_ROW, START_COLUMN), sheet.Cells.Item(START_ROW + 28, START_COLUMN + 10))
-    target.ClearContents
+    Set target = SummaryTargetRange(workbook)
 
-    sheet.Cells.Item(START_ROW, START_COLUMN).Value2 = "Batch summary"
-    sheet.Cells.Item(START_ROW + 1, START_COLUMN).Value2 = "GoverningCombinationID"
-    sheet.Cells.Item(START_ROW + 1, START_COLUMN + 1).Value2 = batch.GoverningCombinationID
-    sheet.Cells.Item(START_ROW + 2, START_COLUMN).Value2 = "GoverningCombinationName"
-    sheet.Cells.Item(START_ROW + 2, START_COLUMN + 1).Value2 = batch.GoverningCombinationName
-    sheet.Cells.Item(START_ROW + 3, START_COLUMN).Value2 = "ElapsedSeconds"
-    sheet.Cells.Item(START_ROW + 3, START_COLUMN + 1).Value2 = batch.ElapsedSeconds
+    Dim data() As Variant
+    ReDim data(1 To TARGET_ROWS, 1 To TARGET_COLUMNS)
 
-    PutHeaders sheet, START_ROW + 5
+    data(1, 1) = "Сводка пакетного расчета"
+    data(2, 1) = "Определяющее сочетание"
+    data(2, 2) = batch.GoverningCombinationID
+    data(3, 1) = "Наименование определяющего сочетания"
+    data(3, 2) = batch.GoverningCombinationName
+    data(4, 1) = "Время расчета, с"
+    data(4, 2) = batch.ElapsedSeconds
+    data(5, 1) = "Точка приложения нагрузки"
+    data(5, 2) = "X=" & CStr(OutputLength(batch.LoadReferenceX, units)) & " " & OutputLengthUnit(units)
+    data(5, 3) = "Y=" & CStr(OutputLength(batch.LoadReferenceY, units)) & " " & OutputLengthUnit(units)
+
+    PutHeaders data, 6
 
     Dim i As Long
     For i = 1 To batch.Count
-        PutCombination sheet, START_ROW + 5 + i, batch, i
+        PutCombination data, 6 + i, batch, i
     Next i
 
-    Dim diagRow As Long
-    diagRow = START_ROW + 7 + batch.Count
-    sheet.Cells.Item(diagRow, START_COLUMN).Value2 = "Batch diagnostics"
-    sheet.Cells.Item(diagRow + 1, START_COLUMN).Value2 = batch.DiagnosticLog
+    target.Value2 = data
 End Sub
 
-Private Sub PutHeaders(ByVal sheet As Object, ByVal rowIndex As Long)
-    sheet.Cells.Item(rowIndex, START_COLUMN).Value2 = "CombinationID"
-    sheet.Cells.Item(rowIndex, START_COLUMN + 1).Value2 = "Name"
-    sheet.Cells.Item(rowIndex, START_COLUMN + 2).Value2 = "Status"
-    sheet.Cells.Item(rowIndex, START_COLUMN + 3).Value2 = "CapacityStatus"
-    sheet.Cells.Item(rowIndex, START_COLUMN + 4).Value2 = "CrackStatus"
-    sheet.Cells.Item(rowIndex, START_COLUMN + 5).Value2 = "LambdaCapacity"
-    sheet.Cells.Item(rowIndex, START_COLUMN + 6).Value2 = "CapacityUtilization"
-    sheet.Cells.Item(rowIndex, START_COLUMN + 7).Value2 = "CrackWidth"
-    sheet.Cells.Item(rowIndex, START_COLUMN + 8).Value2 = "CrackUtilization"
-    sheet.Cells.Item(rowIndex, START_COLUMN + 9).Value2 = "WorstUtilization"
-    sheet.Cells.Item(rowIndex, START_COLUMN + 10).Value2 = "Governing"
+Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
+    If units Is Nothing Then OutputLength = value Else OutputLength = units.InternalLengthToOutput(value)
+End Function
+
+Private Function OutputLengthUnit(ByVal units As CUnitSystem) As String
+    If units Is Nothing Then OutputLengthUnit = "mm" Else OutputLengthUnit = units.OutputLengthUnit
+End Function
+
+Public Sub ClearSummary(ByVal workbook As Object)
+    If workbook Is Nothing Then Err.Raise vbObjectError + 3972, "CBatchResultWriter", "Книга Excel не передана."
+    SummaryTargetRange(workbook).ClearContents
 End Sub
 
-Private Sub PutCombination(ByVal sheet As Object, ByVal rowIndex As Long, ByVal batch As CBatchSectionCalculator, ByVal index As Long)
-    sheet.Cells.Item(rowIndex, START_COLUMN).Value2 = batch.CombinationID(index)
-    sheet.Cells.Item(rowIndex, START_COLUMN + 1).Value2 = batch.CombinationName(index)
-    sheet.Cells.Item(rowIndex, START_COLUMN + 2).Value2 = batch.Status(index)
-    sheet.Cells.Item(rowIndex, START_COLUMN + 3).Value2 = batch.CapacityStatus(index)
-    sheet.Cells.Item(rowIndex, START_COLUMN + 4).Value2 = batch.CrackStatus(index)
-    sheet.Cells.Item(rowIndex, START_COLUMN + 5).Value2 = batch.LambdaCapacity(index)
-    sheet.Cells.Item(rowIndex, START_COLUMN + 6).Value2 = batch.UtilizationCapacity(index)
-    sheet.Cells.Item(rowIndex, START_COLUMN + 7).Value2 = batch.CrackWidth(index)
-    sheet.Cells.Item(rowIndex, START_COLUMN + 8).Value2 = batch.CrackUtilization(index)
-    sheet.Cells.Item(rowIndex, START_COLUMN + 9).Value2 = batch.GoverningUtilization(index)
-    sheet.Cells.Item(rowIndex, START_COLUMN + 10).Value2 = IIf(index = batch.GoverningCombinationIndex, "Yes", "No")
+Private Function SummaryTargetRange(ByVal workbook As Object) As Object
+    Dim target As Object
+    Set target = workbook.Names.Item("rngBatchSummary").RefersToRange
+    If target.Rows.Count < TARGET_ROWS Or target.Columns.Count < TARGET_COLUMNS Then
+        Err.Raise vbObjectError + 3973, "CBatchResultWriter", "rngBatchSummary меньше требуемого размера сводки."
+    End If
+    Set SummaryTargetRange = target.Resize(TARGET_ROWS, TARGET_COLUMNS)
+End Function
+
+Private Sub PutHeaders(ByRef data() As Variant, ByVal rowIndex As Long)
+    data(rowIndex, 1) = "CombinationID"
+    data(rowIndex, 2) = "Наименование"
+    data(rowIndex, 3) = "Status"
+    data(rowIndex, 4) = "CapacityStatus"
+    data(rowIndex, 5) = "CapacityLimitState"
+    data(rowIndex, 6) = "StrengthCheckStatus"
+    data(rowIndex, 7) = "CrackStatus"
+    data(rowIndex, 8) = "LambdaCapacity"
+    data(rowIndex, 9) = "CapacityUtilization"
+    data(rowIndex, 10) = "StrainSafetyFactor"
+    data(rowIndex, 11) = "CrackWidth"
+    data(rowIndex, 12) = "CrackUtilization"
+    data(rowIndex, 13) = "WorstUtilization"
+    data(rowIndex, 14) = "Определяющее"
 End Sub
 
+Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVal batch As CBatchSectionCalculator, ByVal index As Long)
+    If rowIndex > UBound(data, 1) Then Exit Sub
+
+    data(rowIndex, 1) = batch.CombinationID(index)
+    data(rowIndex, 2) = batch.CombinationName(index)
+    data(rowIndex, 3) = batch.Status(index)
+    data(rowIndex, 4) = batch.CapacityStatus(index)
+    data(rowIndex, 5) = batch.CapacityLimitState(index)
+    data(rowIndex, 6) = batch.StrengthCheckStatus(index)
+    data(rowIndex, 7) = batch.CrackStatus(index)
+    data(rowIndex, 8) = batch.LambdaCapacity(index)
+    data(rowIndex, 9) = batch.UtilizationCapacity(index)
+    data(rowIndex, 10) = batch.StrainSafetyFactor(index)
+    data(rowIndex, 11) = batch.CrackWidth(index)
+    data(rowIndex, 12) = batch.CrackUtilization(index)
+    data(rowIndex, 13) = batch.GoverningUtilization(index)
+    data(rowIndex, 14) = IIf(index = batch.GoverningCombinationIndex, "Да", "Нет")
+End Sub

@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -29,25 +29,29 @@ Private Sub Class_Initialize()
     mDurationFactor = 1#
 End Sub
 
-Public Sub ApplySettings(ByVal settings As CSystemSettingsReader)
+Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
     mAllowableCrackWidth = settings.GetDouble("CrackWidth.Allowable", mAllowableCrackWidth)
     mCrackSpacing = settings.GetDouble("CrackWidth.CrackSpacing", mCrackSpacing)
     mStrainFactor = settings.GetDouble("CrackWidth.StrainFactor", mStrainFactor)
     mDurationFactor = settings.GetDouble("CrackWidth.DurationFactor", mDurationFactor)
+    If Not units Is Nothing Then
+        mAllowableCrackWidth = units.InputLengthToInternal(mAllowableCrackWidth)
+        mCrackSpacing = units.InputLengthToInternal(mCrackSpacing)
+    End If
 End Sub
 
-Public Sub Calculate(ByVal solver As CSectionSolver, ByVal rebars As CRebarLayout, ByVal steelMaterial As Object)
+Public Sub Calculate(ByVal solver As CSectionSolver, ByVal section As CSectionModel, ByVal steelMaterial As Object)
     ClearResult
-    ValidateInputs solver, rebars, steelMaterial
+    ValidateInputs solver, section, steelMaterial
 
     Dim i As Long
     Dim strain As Double
     Dim stress As Double
-    For i = 1 To rebars.Count
-        strain = solver.Epsilon0 + solver.KappaX * rebars.Y(i) + solver.KappaY * rebars.X(i)
+    For i = 1 To section.RebarCount
+        strain = solver.Epsilon0 + solver.KappaX * section.RebarY(i) + solver.KappaY * section.RebarX(i)
         stress = steelMaterial.GetStress(strain)
-        AppendBarDiagnostic rebars.BarID(i), strain, stress
+        AppendBarDiagnostic section.RebarID(i), strain, stress
         If strain > 0# Then
             mTensionRebarCount = mTensionRebarCount + 1
             If strain > mMaxSteelStrain Then
@@ -59,24 +63,24 @@ Public Sub Calculate(ByVal solver As CSectionSolver, ByVal rebars As CRebarLayou
 
     If mTensionRebarCount = 0 Then
         mConverged = True
-        mStopReason = "No tensile reinforcement in the supplied cracked-section state."
+        mStopReason = "Р’ РїРµСЂРµРґР°РЅРЅРѕРј СЃРѕСЃС‚РѕСЏРЅРёРё СЃ С‚СЂРµС‰РёРЅРѕР№ РЅРµС‚ СЂР°СЃС‚СЏРЅСѓС‚РѕР№ Р°СЂРјР°С‚СѓСЂС‹."
         Exit Sub
     End If
 
     mCrackWidth = mMaxSteelStrain * mCrackSpacing * mStrainFactor * mDurationFactor
     If mAllowableCrackWidth > 0# Then mUtilization = mCrackWidth / mAllowableCrackWidth
     mConverged = True
-    mStopReason = "Crack width calculated from supplied SLS section state."
+    mStopReason = "РЁРёСЂРёРЅР° СЂР°СЃРєСЂС‹С‚РёСЏ С‚СЂРµС‰РёРЅ СЂР°СЃСЃС‡РёС‚Р°РЅР° РїРѕ РїРµСЂРµРґР°РЅРЅРѕРјСѓ СЃРѕСЃС‚РѕСЏРЅРёСЋ СЃРµС‡РµРЅРёСЏ."
 End Sub
 
-Private Sub ValidateInputs(ByVal solver As CSectionSolver, ByVal rebars As CRebarLayout, ByVal steelMaterial As Object)
-    If solver Is Nothing Then Err.Raise vbObjectError + 3700, "CCrackWidthCalculator", "Section solver result is missing."
-    If Not solver.Converged Then Err.Raise vbObjectError + 3701, "CCrackWidthCalculator", "Section solver result is not converged."
-    If rebars Is Nothing Then Err.Raise vbObjectError + 3702, "CCrackWidthCalculator", "Rebar layout is missing."
-    If rebars.Count <= 0 Then Err.Raise vbObjectError + 3703, "CCrackWidthCalculator", "Rebar layout is empty."
-    If steelMaterial Is Nothing Then Err.Raise vbObjectError + 3704, "CCrackWidthCalculator", "Steel material is missing."
-    If mAllowableCrackWidth <= 0# Then Err.Raise vbObjectError + 3705, "CCrackWidthCalculator", "Allowable crack width must be positive."
-    If mCrackSpacing < 0# Or mStrainFactor < 0# Or mDurationFactor < 0# Then Err.Raise vbObjectError + 3706, "CCrackWidthCalculator", "Crack parameters must be non-negative."
+Private Sub ValidateInputs(ByVal solver As CSectionSolver, ByVal section As CSectionModel, ByVal steelMaterial As Object)
+    If solver Is Nothing Then Err.Raise vbObjectError + 3700, "CCrackWidthCalculator", "Р РµР·СѓР»СЊС‚Р°С‚ СЂРµС€Р°С‚РµР»СЏ СЃРµС‡РµРЅРёСЏ РЅРµ РїРµСЂРµРґР°РЅ."
+    If Not solver.Converged Then Err.Raise vbObjectError + 3701, "CCrackWidthCalculator", "Р РµР·СѓР»СЊС‚Р°С‚ СЂРµС€Р°С‚РµР»СЏ СЃРµС‡РµРЅРёСЏ РЅРµ СЃРѕС€РµР»СЃСЏ."
+    If section Is Nothing Then Err.Raise vbObjectError + 3702, "CCrackWidthCalculator", "Section model is missing."
+    If section.RebarCount <= 0 Then Err.Raise vbObjectError + 3703, "CCrackWidthCalculator", "Section model has no rebar elements."
+    If steelMaterial Is Nothing Then Err.Raise vbObjectError + 3704, "CCrackWidthCalculator", "РњР°С‚РµСЂРёР°Р» Р°СЂРјР°С‚СѓСЂС‹ РЅРµ РїРµСЂРµРґР°РЅ."
+    If mAllowableCrackWidth <= 0# Then Err.Raise vbObjectError + 3705, "CCrackWidthCalculator", "Р”РѕРїСѓСЃС‚РёРјР°СЏ С€РёСЂРёРЅР° СЂР°СЃРєСЂС‹С‚РёСЏ С‚СЂРµС‰РёРЅ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РїРѕР»РѕР¶РёС‚РµР»СЊРЅРѕР№."
+    If mCrackSpacing < 0# Or mStrainFactor < 0# Or mDurationFactor < 0# Then Err.Raise vbObjectError + 3706, "CCrackWidthCalculator", "РџР°СЂР°РјРµС‚СЂС‹ СЂР°СЃС‡РµС‚Р° С‚СЂРµС‰РёРЅ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ РЅРµРѕС‚СЂРёС†Р°С‚РµР»СЊРЅС‹РјРё."
 End Sub
 
 Private Sub AppendBarDiagnostic(ByVal barName As String, ByVal strain As Double, ByVal stress As Double)
@@ -151,5 +155,6 @@ End Property
 Public Property Let DurationFactor(ByVal value As Double)
     mDurationFactor = value
 End Property
+
 
 

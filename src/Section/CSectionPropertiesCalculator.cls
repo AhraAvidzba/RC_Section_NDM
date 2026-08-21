@@ -1,8 +1,8 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "CGeometryPropertiesCalculator"
+Attribute VB_Name = "CSectionPropertiesCalculator"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
@@ -29,8 +29,9 @@ Private mPrincipalRadius1 As Double
 Private mPrincipalRadius2 As Double
 Private mLastCalculationSeconds As Double
 
-Public Sub CalculateFromMesh(ByVal mesh As CFiberMeshBuilder)
-    If mesh.FiberCount <= 0 Then Err.Raise vbObjectError + 2200, "CGeometryPropertiesCalculator", "????? ??????? ????."
+Public Sub CalculateConcrete(ByVal section As CSectionModel)
+    If section Is Nothing Then Err.Raise vbObjectError + 2200, "CSectionPropertiesCalculator", "Section model is missing."
+    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 2201, "CSectionPropertiesCalculator", "Section model has no concrete elements."
 
     Clear
 
@@ -42,10 +43,10 @@ Public Sub CalculateFromMesh(ByVal mesh As CFiberMeshBuilder)
     Dim x As Double
     Dim y As Double
 
-    For i = 1 To mesh.FiberCount
-        a = mesh.FiberArea(i) * mesh.FiberFillFactor(i)
-        x = mesh.FiberX(i)
-        y = mesh.FiberY(i)
+    For i = 1 To section.ConcreteCount
+        a = section.ConcreteArea(i)
+        x = section.ConcreteX(i)
+        y = section.ConcreteY(i)
 
         mArea = mArea + a
         mStaticMomentX = mStaticMomentX + a * y
@@ -55,7 +56,59 @@ Public Sub CalculateFromMesh(ByVal mesh As CFiberMeshBuilder)
         mIxy = mIxy + a * x * y
     Next i
 
-    If mArea <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2201, "CGeometryPropertiesCalculator", "????????? ??????? ??????? ????? ????."
+    If mArea <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2202, "CSectionPropertiesCalculator", "Section area is zero."
+
+    FinalizeProperties t0
+End Sub
+
+Public Sub CalculateTransformed(ByVal section As CSectionModel, _
+        ByVal concrete As Object, ByVal steel As Object)
+    Const probeStrain As Double = -0.000001
+
+    If section Is Nothing Then Err.Raise vbObjectError + 2203, "CSectionPropertiesCalculator", "Section model is missing."
+    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 2204, "CSectionPropertiesCalculator", "Section model has no concrete elements."
+    If concrete Is Nothing Then Err.Raise vbObjectError + 2205, "CSectionPropertiesCalculator", "Concrete material is not set."
+    If steel Is Nothing Then Err.Raise vbObjectError + 2206, "CSectionPropertiesCalculator", "Steel material is not set."
+
+    Clear
+
+    Dim t0 As Double
+    t0 = Timer
+
+    Dim concreteModulus As Double
+    Dim steelModulus As Double
+    concreteModulus = concrete.GetStress(probeStrain) / probeStrain
+    steelModulus = steel.GetStress(probeStrain) / probeStrain
+
+    Dim i As Long
+    For i = 1 To section.ConcreteCount
+        AddWeightedPoint concreteModulus * section.ConcreteArea(i), _
+            section.ConcreteX(i), section.ConcreteY(i)
+    Next i
+
+    If section.RebarCount > 0 Then
+        Dim replacementModulus As Double
+        replacementModulus = steelModulus - concreteModulus
+        For i = 1 To section.RebarCount
+            AddWeightedPoint replacementModulus * section.RebarArea(i), section.RebarX(i), section.RebarY(i)
+        Next i
+    End If
+
+    If mArea <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2207, "CSectionPropertiesCalculator", "Transformed section area is zero."
+
+    FinalizeProperties t0
+End Sub
+
+Private Sub AddWeightedPoint(ByVal weight As Double, ByVal x As Double, ByVal y As Double)
+    mArea = mArea + weight
+    mStaticMomentX = mStaticMomentX + weight * y
+    mStaticMomentY = mStaticMomentY + weight * x
+    mIx = mIx + weight * y * y
+    mIy = mIy + weight * x * x
+    mIxy = mIxy + weight * x * y
+End Sub
+
+Private Sub FinalizeProperties(ByVal t0 As Double)
 
     mCentroidX = mStaticMomentY / mArea
     mCentroidY = mStaticMomentX / mArea
@@ -71,7 +124,10 @@ Public Sub CalculateFromMesh(ByVal mesh As CFiberMeshBuilder)
     mPrincipalI1 = avgI + radius
     mPrincipalI2 = avgI - radius
 
-    If Abs(mIxyc) <= GEOM_TOLERANCE And Abs(mIxc - mIyc) <= GEOM_TOLERANCE Then
+    Dim inertiaRef As Double
+    inertiaRef = GeomMax(GeomMax(Abs(mIxc), Abs(mIyc)), 1#)
+
+    If Abs(mIxyc) / inertiaRef <= 0.000000001 And Abs(mIxc - mIyc) / inertiaRef <= 0.000000001 Then
         mPrincipalAngleRad = 0#
     Else
         mPrincipalAngleRad = 0.5 * Atn2(-2# * mIxyc, mIyc - mIxc)
@@ -200,6 +256,7 @@ Private Function Atn2(ByVal y As Double, ByVal x As Double) As Double
         Atn2 = Atn(y / x) - GEOM_PI
     End If
 End Function
+
 
 
 

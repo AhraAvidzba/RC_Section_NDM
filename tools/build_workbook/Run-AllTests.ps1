@@ -14,7 +14,6 @@ if (-not (Test-Path -LiteralPath $reportDirectory)) {
 $scripts = @(
     "Validate-Workbook.ps1",
     "Run-GeometryTests.ps1",
-    "Run-LinearTests.ps1",
     "Run-MaterialTests.ps1",
     "Run-SectionSolverTests.ps1",
     "Run-CapacityTests.ps1",

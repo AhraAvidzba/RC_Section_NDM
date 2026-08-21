@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestRegressionBaseline"
+﻿Attribute VB_Name = "modTestRegressionBaseline"
 Option Explicit
 
 Private Type TRegressionStats
@@ -60,7 +60,7 @@ Private Sub RunBaselineCase(ByRef stats As TRegressionStats, ByVal caseName As S
 
     Dim t0 As Double
     t0 = Timer
-    solver.Solve mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), nValue, mxValue, myValue
+    solver.Solve BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), nValue, mxValue, myValue
     Dim elapsed As Double
     elapsed = Timer - t0
 
@@ -91,12 +91,12 @@ Private Sub TestRepeatedRun(ByRef stats As TRegressionStats)
     Dim firstSolver As CSectionSolver
     Set firstSolver = New CSectionSolver
     ConfigureBaselineSolver firstSolver
-    firstSolver.Solve mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), -100000#, -4000000#, -3000000#
+    firstSolver.Solve BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -100000#, -4000000#, -3000000#
 
     Dim secondSolver As CSectionSolver
     Set secondSolver = New CSectionSolver
     ConfigureBaselineSolver secondSolver
-    secondSolver.Solve mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), -100000#, -4000000#, -3000000#
+    secondSolver.Solve BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -100000#, -4000000#, -3000000#
 
     AssertTrue stats, "repeated_run.first.converged", firstSolver.Converged
     AssertTrue stats, "repeated_run.second.converged", secondSolver.Converged
@@ -152,6 +152,10 @@ Private Sub TestOriginShift(ByRef stats As TRegressionStats)
     AssertClose stats, "origin_shift.kappaY", shiftedSolver.KappaY, baseSolver.KappaY, 0.00000000001
     AssertClose stats, "origin_shift.epsilon0", shiftedSolver.Epsilon0, _
         baseSolver.Epsilon0 - baseSolver.KappaX * shiftY - baseSolver.KappaY * shiftX, 0.00000001
+    AssertClose stats, "origin_shift.N.transform", baseN, -100000#, 0.000000001
+    AssertClose stats, "origin_shift.Mx.transform", shiftedMx, 1000000#, 0.000000001
+    AssertClose stats, "origin_shift.My.transform", shiftedMy, -10500000#, 0.000000001
+    AssertEquilibrium stats, "origin_shift.shifted", shiftedSolver, baseN, shiftedMx, shiftedMy
     AppendBaseline stats, "origin_shift_base", baseSolver, "NA", 0#, 0, 0
     AppendBaseline stats, "origin_shift_shifted", shiftedSolver, "NA", 0#, 0, 0
 End Sub
@@ -176,7 +180,7 @@ Private Function SolveCircleDirect(ByVal diameter As Double, ByVal centerX As Do
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
     ConfigureBaselineSolver solver
-    solver.Solve mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), nValue, mxValue, myValue
+    solver.Solve BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), nValue, mxValue, myValue
     Set SolveCircleDirect = solver
 End Function
 
@@ -190,7 +194,7 @@ Private Function CalculateLambdaText(ByVal mesh As CFiberMeshBuilder, ByVal reba
     Dim cap As CCapacitySolver
     Set cap = New CCapacitySolver
     ConfigureBaselineCapacity cap
-    cap.SolveByLoadMultiplier mesh, rebars, ProvisionalConcrete(), ProvisionalSteel(), nValue, mxBase, myBase
+    cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), nValue, mxBase, myBase
     If cap.Converged Then
         CalculateLambdaText = FormatNumberInvariant(cap.LambdaUltimate)
     Else
@@ -333,3 +337,4 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+

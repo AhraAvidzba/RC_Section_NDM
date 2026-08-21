@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestMaterialDiagrams"
+﻿Attribute VB_Name = "modTestMaterialDiagrams"
 Option Explicit
 
 Private Type TMaterialTestStats
@@ -134,6 +134,7 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
 
 
 

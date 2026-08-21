@@ -1,22 +1,27 @@
 ﻿===== Validate-Workbook.ps1 =====
 
-Check                                 Passed Details                                                                   
------                                 ------ -------                                                                   
-Sheets Расчет/System                    True Расчет, System                                                            
-Required named ranges                   True Missing:                                                                  
-No duplicate names                      True Duplicates:                                                               
-No obsolete Mx/My result ranges         True Present:                                                                  
-Print area                              True PageSetup=; Xml=Расчет!$A$1:$AJ$60                                        
-A4 portrait                             True PaperSize=9; Orientation=1                                                
-Print scale for one-page blocks         True Zoom=80; HBreaks=0                                                        
-Vertical page breaks                    True Columns: 19                                                               
-Input and result blocks left to right   True Columns: main=1, section=19                                               
-System settings table headers           True Параметр | Значение | Ед. | Комментарий                                   
-No duplicate System keys                True Duplicates:                                                               
-No obsolete System settings             True Present:                                                                  
-Rebar table headers                     True ID | X | Y | Diameter | Area | SteelClass | Comment                       
-Load combinations table headers         True CombinationID | N | Mx | My | CalculationType | DurationType | Comment    
-Formulas allowed on workbook sheets     True Excel formulas are allowed and preferred for transparent user-level cal...
+Check                                Passed Details                                                                    
+-----                                ------ -------                                                                    
+Sheets Расчет/System/Results           True Расчет, System, Results                                                    
+Required named ranges                  True Missing:                                                                   
+Results ranges layout                  True batch=Results!R1C1; elements=R32C1; geometry=R32C10; properties=R32C29; ...
+No duplicate names                     True Duplicates:                                                                
+No obsolete named ranges               True Present:                                                                   
+Print area                             True PageSetup=; Xml=Расчет!$A$1:$AJ$60                                         
+A4 portrait                            True PaperSize=9; Orientation=1                                                 
+Print scale for one-page blocks        True Zoom=80; HBreaks=0                                                         
+Vertical page breaks                   True Columns: 19                                                                
+Load and result blocks left to right   True Columns: loads=1, section=19                                               
+System settings table headers          True Параметр | Значение | Ед. | Комментарий                                    
+No duplicate System keys               True Duplicates:                                                                
+No obsolete System settings            True Present:                                                                   
+Solver.Method default                  True Value=Newton                                                               
+Solver.Method validation list          True Values=Newton, Secant                                                      
+Concrete diagram point table           True Rows=10; Columns=3                                                         
+Steel diagram point table              True Rows=10; Columns=3                                                         
+Load combinations table headers        True CombinationID | N, tf | Mx, tf*m | My, tf*m | CalculationType | Duration...
+Formulas allowed on workbook sheets    True Excel formulas are allowed and preferred for transparent user-level calc...
+Runtime Excel IO uses bulk ranges      True Cells.Item matches:                                                        
 
 
 
@@ -57,11 +62,133 @@ OK: circle.rebar.firstY; actual=-20.; expected=-20.; absDiff=0.
 OK: circle.rebar.centroidX; actual=10.; expected=10.; absDiff=0.
 OK: circle.rebar.centroidY; actual=-20.; expected=-20.; absDiff=0.
 OK: circle.rebar.area; actual=314.159265358979; expected=314.159265358979; relDiff=0.
+OK: circle.rebar.rows.stacked.count
+OK: circle.rebar.rows.stacked.row2.x; actual=100.; expected=100.; absDiff=0.
+OK: circle.rebar.rows.stacked.row2.y; actual=-20.; expected=-20.; absDiff=0.
+OK: circle.rebar.rows.stacked.row3.x; actual=75.; expected=75.; absDiff=0.
+OK: circle.rebar.rows.stacked.row3.y; actual=-20.; expected=-20.; absDiff=0.
+OK: circle.rebar.rows.side.count
+OK: circle.rebar.rows.side.row2.x; actual=120.; expected=120.; absDiff=0.
+OK: circle.rebar.rows.side.row2.y; actual=-40.; expected=-40.; absDiff=0.
+OK: circle.rebar.rows.side.row3.x; actual=120.; expected=120.; absDiff=0.
+OK: circle.rebar.rows.side.row3.y; actual=-65.; expected=-65.; absDiff=0.
+OK: circle.rebar.rows.mixed.count
+OK: circle.rebar.rows.mixed.row2.y; actual=-40.; expected=-40.; absDiff=0.
+OK: circle.rebar.rows.mixed.row3.x; actual=95.; expected=95.; absDiff=0.
+OK: circle.rebar.rows.mixed.row3.y; actual=-20.; expected=-20.; absDiff=0.
+OK: circle.rebar.rows.thirdOnly.count
+OK: circle.rebar.rows.thirdOnly.row3.x; actual=95.; expected=95.; absDiff=0.
+OK: circle.rebar.rows.thirdOnly.row3.y; actual=-20.; expected=-20.; absDiff=0.
+OK: circle.rebar.rows.noFirstByCount.ignored
+OK: circle.rebar.rows.noFirstByCount.angle; actual=0.; expected=0.; absDiff=0.
+OK: circle.rebar.rows.noFirstByDiameter.ignored
 OK: circle.rebar.invalid.D
 OK: circle.rebar.invalid.n
 OK: circle.rebar.invalid.ds
 OK: circle.rebar.invalid.as.small
 OK: circle.rebar.invalid.as.large
+OK: circle.rebar.invalid.loc2
+OK: circle.rebar.invalid.row2.outside
+OK: lshape.area.available
+OK: lshape.area.analytical; actual=287500.; expected=287500.; absDiff=0.
+OK: lshape.cx.analytical; actual=226.304347826087; expected=226.304347826087; absDiff=0.
+OK: lshape.cy.analytical; actual=296.304347826087; expected=296.304347826087; absDiff=0.
+OK: lshape.contains.lower
+OK: lshape.contains.vertical
+OK: lshape.excludes.cutout
+OK: lshape.boundary.subcell.fibers.more
+OK: lshape.boundary.subcell.has.small.fibers
+OK: lshape.boundary.subcell.area; actual=296400.; expected=287500.; relDiff=0.030956521739
+OK: lshape.rebar.count
+OK: lshape.rebar.requested
+OK: lshape.rebar.perimeter; actual=3300.; expected=3300.; absDiff=0.
+OK: lshape.rebar.step; actual=200.; expected=200.; absDiff=0.
+OK: lshape.rebar.firstX; actual=50.; expected=50.; absDiff=0.
+OK: lshape.rebar.firstY; actual=525.; expected=525.; absDiff=0.
+OK: lshape.rebar.zeroFaceSkipped
+OK: lshape.rebar.inside.1
+OK: lshape.rebar.inside.2
+OK: lshape.rebar.inside.3
+OK: lshape.rebar.inside.4
+OK: lshape.rebar.inside.5
+OK: lshape.rebar.inside.6
+OK: lshape.rebar.inside.7
+OK: lshape.rebar.inside.8
+OK: lshape.rebar.invalid.n
+OK: lshape.rebar.invalid.as.small
+OK: lshape.rebar.invalid.offsets
+OK: lshape.offsets.separate.count
+OK: lshape.offsets.as_1.firstY; actual=680.; expected=680.; absDiff=0.
+OK: lshape.offsets.as_1.edgeY; actual=330.; expected=330.; absDiff=0.
+OK: lshape.offsets.as_2.firstY; actual=320.; expected=320.; absDiff=0.
+OK: lshape.offsets.as_2.edgeY; actual=770.; expected=770.; absDiff=0.
+OK: lshape.rows.stacked.count
+OK: lshape.rows.stacked.row1.x; actual=50.; expected=50.; absDiff=0.
+OK: lshape.rows.stacked.row2.x; actual=70.; expected=70.; absDiff=0.
+OK: lshape.rows.stacked.row3.x; actual=95.; expected=95.; absDiff=0.
+OK: lshape.rows.stacked.sameY; actual=525.; expected=525.; absDiff=0.
+OK: lshape.rows.side.vertical.count
+OK: lshape.rows.side.vertical.sameX; actual=50.; expected=50.; absDiff=0.
+OK: lshape.rows.side.vertical.row2.y; actual=505.; expected=505.; absDiff=0.
+OK: lshape.rows.side.vertical.row3.y; actual=480.; expected=480.; absDiff=0.
+OK: lshape.rows.side.horizontal.count
+OK: lshape.rows.side.horizontal.row2.x; actual=145.; expected=145.; absDiff=0.
+OK: lshape.rows.side.horizontal.row3.x; actual=170.; expected=170.; absDiff=0.
+OK: lshape.rows.side.horizontal.sameY; actual=750.; expected=750.; absDiff=0.
+OK: lshape.rows.thirdOnly.count
+OK: lshape.rows.thirdOnly.row3.x; actual=75.; expected=75.; absDiff=0.
+OK: lshape.rows.thirdOnly.sameY; actual=525.; expected=525.; absDiff=0.
+OK: lshape.rows.noFirstRow.ignored
+OK: lshape.rows.noFirstRow.source
+OK: lshape.rows.mixed.count
+OK: lshape.rows.mixed.row2.y; actual=505.; expected=505.; absDiff=0.
+OK: lshape.rows.mixed.row3.x; actual=75.; expected=75.; absDiff=0.
+OK: lshape.rows.mixed.row3.y; actual=525.; expected=525.; absDiff=0.
+OK: lshape.rows.separateLineDiameters.count
+OK: lshape.rows.separateLineDiameters.row2_1.d; actual=18.; expected=18.; absDiff=0.
+OK: lshape.rows.separateLineDiameters.row3_1.d; actual=28.; expected=28.; absDiff=0.
+OK: lshape.rows.separateLineDiameters.row2_2.d; actual=22.; expected=22.; absDiff=0.
+OK: lshape.rows.separateLineDiameters.row3_2.d; actual=34.; expected=34.; absDiff=0.
+OK: lshape.rows.invalid.location
+OK: model.concrete.count
+OK: model.rebar.count
+OK: model.concrete.id
+OK: model.rebar.id
+OK: model.rebar.sourceName
+OK: model.rebar.area; actual=314.159265358979; expected=314.159265358979; absDiff=0.
+OK: annotation.circle.count
+OK: annotation.circle.group
+OK: annotation.circle.startX; actual=-100.; expected=-100.; absDiff=0.
+OK: annotation.circle.endX; actual=120.; expected=120.; absDiff=0.
+OK: annotation.circle.normalY; actual=1.; expected=1.; absDiff=0.
+OK: annotation.circle.axisDistance; actual=40.; expected=40.; absDiff=0.
+OK: annotation.lshape.count
+OK: annotation.lshape.group
+OK: annotation.lshape.startY; actual=300.; expected=300.; absDiff=0.
+OK: annotation.lshape.endY; actual=730.; expected=730.; absDiff=0.
+OK: annotation.lshape.normalX; actual=-1.; expected=-1.; absDiff=0.
+OK: annotation.lshape.axisDistance; actual=40.; expected=40.; absDiff=0.
+OK: annotation.manual.anchor.allowed
+OK: annotation.zeroFace.hasOtherBars
+OK: annotation.zeroFace.noAnchor
+OK: annotation.zeroFace.otherAnchor
+OK: annotation.circle.zeroCount.noBars
+OK: annotation.circle.zeroCount.noAnchor
+OK: annotation.model.count
+OK: annotation.model.group
+OK: annotation.model.axisDistance; actual=40.; expected=40.; absDiff=0.
+OK: autocad.import.source
+OK: autocad.import.concrete.count
+OK: autocad.import.rebar.count
+OK: autocad.import.concrete.id
+OK: autocad.import.concrete.x; actual=10.; expected=10.; absDiff=0.
+OK: autocad.import.concrete.y; actual=20.; expected=20.; absDiff=0.
+OK: autocad.import.concrete.width; actual=3.; expected=3.; absDiff=0.
+OK: autocad.import.concrete.height; actual=6.; expected=6.; absDiff=0.
+OK: autocad.import.concrete.localIx; actual=600.; expected=600.; absDiff=0.
+OK: autocad.import.concrete.localIy; actual=150.; expected=150.; absDiff=0.
+OK: autocad.import.rebar.diameter; actual=20.; expected=20.; absDiff=0.
+OK: autocad.import.rebar.steel
 OK: invalid.width
 OK: invalid.height
 OK: invalid.negative.radius
@@ -79,63 +206,9 @@ CONVERGENCE: step=12.5 area=88750.; cx=0.; cy=1.795774647887; Ix=365141532.79049
 OK: conv.area.25.12; actual=88750.; expected=88750.; relDiff=0.
 OK: conv.Ix.25.12; actual=365141532.790493; expected=362323943.661972; relDiff=0.007776436467
 OK: conv.Iy.25.12; actual=1153369140.625; expected=1151367187.5; relDiff=0.001738761662
-PERFORMANCE: section=800x500; step=10; fibers=3988; buildSec=0.01953125; propsSec=0.00390625; area=398800.
+PERFORMANCE: section=800x500; step=10; fibers=3988; buildSec=0.03125; propsSec=0.0078125; area=398800.
 OK: perf.fibers.positive
-TOTAL: passed=56; failed=0
-
-
-===== Run-LinearTests.ps1 =====
-OK: linsys.solve
-OK: linsys.x1; actual=0.255813953488; expected=0.255813953488; absDiff=0.
-OK: linsys.x2; actual=2.581395348837; expected=2.581395348837; absDiff=0.
-OK: linsys.x3; actual=1.697674418605; expected=1.697674418605; absDiff=0.
-OK: linsys.residual
-OK: linsys.singular
-OK: central.converged
-OK: central.eps0; actual=0.001; expected=0.001; relDiff=0.
-OK: central.kappaX; actual=0.; expected=0.; absDiff=0.
-OK: central.kappaY; actual=0.; expected=0.; absDiff=0.
-OK: central.N; actual=600000.; expected=600000.; relDiff=0.
-OK: central.Mx; actual=0.; expected=0.; absDiff=0.
-OK: central.My; actual=0.; expected=0.; absDiff=0.
-OK: bendX.converged
-OK: bendX.kappaX; actual=0.000501253133; expected=0.000501253133; relDiff=0.
-OK: bendX.kappaY; actual=0.; expected=0.; absDiff=0.
-OK: bendX.N; actual=-0.000000000116; expected=0.; absDiff=0.000000000116
-OK: bendX.Mx; actual=250000000.000001; expected=250000000.; relDiff=0.
-OK: bendX.My; actual=0.000000003456; expected=0.; absDiff=0.000000003456
-OK: bendY.converged
-OK: bendY.kappaX; actual=0.; expected=0.; absDiff=0.
-OK: bendY.kappaY; actual=0.000175109443; expected=0.000175109443; relDiff=0.
-OK: bendY.N; actual=0.000000000015; expected=0.; absDiff=0.000000000015
-OK: bendY.Mx; actual=-0.000000000377; expected=0.; absDiff=0.000000000377
-OK: bendY.My; actual=350000000.; expected=350000000.; relDiff=0.
-OK: combined.converged
-OK: combined.eps0; actual=0.000666666667; expected=0.000666666667; relDiff=0.
-OK: combined.kappaX; actual=0.00030075188; expected=0.00030075188; relDiff=0.
-OK: combined.kappaY; actual=-0.000060037523; expected=-0.000060037523; relDiff=0.
-OK: combined.N; actual=400000.; expected=400000.; relDiff=0.
-OK: combined.Mx; actual=150000000.; expected=150000000.; relDiff=0.
-OK: combined.My; actual=-120000000.; expected=-120000000.; relDiff=0.
-OK: asymLinear.converged
-OK: asymLinear.kappaY.nonzero
-OK: asymLinear.N; actual=-0.000000005093; expected=0.; absDiff=0.000000005093
-OK: asymLinear.Mx; actual=200000000.; expected=200000000.; relDiff=0.
-OK: asymLinear.My; actual=0.000000001526; expected=0.; absDiff=0.000000001526
-OK: rebar.converged
-OK: rebar.autoArea; actual=314.159265358979; expected=314.159265358979; relDiff=0.
-OK: rebar.eps0; actual=0.000990359347; expected=0.000990359347; relDiff=0.
-OK: rebar.K11; actual=706814150.222053; expected=706814150.222053; relDiff=0.
-OK: rebar.N; actual=700000.; expected=700000.; relDiff=0.
-OK: rebar.Mx; actual=-0.00000000028; expected=0.; absDiff=0.00000000028
-OK: rebar.My; actual=0.000000000189; expected=0.; absDiff=0.000000000189
-OK: rebar.invalid.diameter
-OK: rebar.outside
-OK: rebar.duplicate.id
-OK: rebar.duplicate.coords
-PERFORMANCE_LINEAR: fibers=3988; rebars=4; matrixSec=0.00390625; solveSec=0.; backCalcSec=0.00390625
-OK: perfLinear.converged
-TOTAL_LINEAR: passed=49; failed=0; elapsedSec=0.0625
+TOTAL: passed=178; failed=0
 
 
 ===== Run-MaterialTests.ps1 =====
@@ -159,38 +232,120 @@ OK: steel.threePoints.thirdSegment; actual=385.; expected=385.; absDiff=0.
 OK: steel.threePoints.compression; actual=-385.; expected=-385.; absDiff=0.
 OK: material.invalidConcrete
 OK: material.invalidSteel
-TOTAL_MATERIAL: passed=20; failed=0; elapsedSec=0.00390625
+TOTAL_MATERIAL: passed=20; failed=0; elapsedSec=0.0078125
 
 
 ===== Run-SectionSolverTests.ps1 =====
 OK: settings.concrete.Eb; actual=32500.; expected=32500.; absDiff=0.
 OK: settings.steel.Es; actual=200000.; expected=200000.; absDiff=0.
-OK: settings.steel.EpsY; actual=0.00175; expected=0.00175; absDiff=0.
+OK: settings.concreteDiagram.count
+OK: settings.steelDiagram.count
+OK: settings.steelDiagram.epsY; actual=0.00175; expected=0.00175; absDiff=0.
 OK: settings.catalog.loaded
 OK: settings.catalog.noDuplicateKeys
+OK: settings.key.Units.Length.Input
+OK: settings.key.Units.Length.Internal
+OK: settings.key.Units.Length.Output
+OK: settings.key.Units.Area.Input
+OK: settings.key.Units.Area.Internal
+OK: settings.key.Units.Area.Output
+OK: settings.key.Units.Force.Input
+OK: settings.key.Units.Force.Internal
+OK: settings.key.Units.Force.Output
+OK: settings.key.Units.Moment.Input
+OK: settings.key.Units.Moment.Internal
+OK: settings.key.Units.Moment.Output
+OK: settings.key.Units.Stress.Input
+OK: settings.key.Units.Stress.Internal
+OK: settings.key.Units.Stress.Output
+OK: settings.key.Units.Curvature.Input
+OK: settings.key.Units.Curvature.Internal
+OK: settings.key.Units.Curvature.Output
+OK: settings.key.Sign.N.User
+OK: settings.key.Sign.N.Internal
+OK: settings.key.Sign.Mx.User
+OK: settings.key.Sign.Mx.Internal
+OK: settings.key.Sign.My.User
+OK: settings.key.Sign.My.Internal
+OK: settings.key.Geometry.Source
 OK: settings.key.Geometry.Type
-OK: settings.key.Circle.Diameter
-OK: settings.key.Circle.CenterX
-OK: settings.key.Circle.CenterY
-OK: settings.key.Mesh.StepX
-OK: settings.key.Mesh.StepY
+OK: settings.key.LShape.B1
+OK: settings.key.LShape.H1
+OK: settings.key.LShape.B2
+OK: settings.key.LShape.H2
+OK: settings.key.Mesh.Step
 OK: settings.key.Mesh.BoundarySubdivisions
+OK: settings.key.Load.ReferenceOffsetX
+OK: settings.key.Load.ReferenceOffsetY
+OK: settings.key.LShape.H1.as_1
+OK: settings.key.LShape.H1.as_2
+OK: settings.key.LShape.H1.d_1
+OK: settings.key.LShape.H1.d_2
+OK: settings.key.LShape.H1.n_1
+OK: settings.key.LShape.H1.n_2
+OK: settings.key.LShape.H1.StartOffset1
+OK: settings.key.LShape.H1.EndOffset1
+OK: settings.key.LShape.H1.StartOffset2
+OK: settings.key.LShape.H1.EndOffset2
+OK: settings.key.LShape.H1.d_2row_1
+OK: settings.key.LShape.H1.d_2row_2
+OK: settings.key.LShape.H1.d_3row_1
+OK: settings.key.LShape.H1.d_3row_2
+OK: settings.key.LShape.H1.loc_2row
+OK: settings.key.LShape.H1.loc_3row
+OK: settings.key.LShape.H2.as_1
+OK: settings.key.LShape.H2.as_2
+OK: settings.key.LShape.H2.d_1
+OK: settings.key.LShape.H2.d_2
+OK: settings.key.LShape.H2.n_1
+OK: settings.key.LShape.H2.n_2
+OK: settings.key.LShape.H2.StartOffset1
+OK: settings.key.LShape.H2.EndOffset1
+OK: settings.key.LShape.H2.StartOffset2
+OK: settings.key.LShape.H2.EndOffset2
+OK: settings.key.LShape.H2.d_2row_1
+OK: settings.key.LShape.H2.d_2row_2
+OK: settings.key.LShape.H2.d_3row_1
+OK: settings.key.LShape.H2.d_3row_2
+OK: settings.key.LShape.H2.loc_2row
+OK: settings.key.LShape.H2.loc_3row
+OK: settings.key.LShape.B1.as_1
+OK: settings.key.LShape.B1.as_2
+OK: settings.key.LShape.B1.d_1
+OK: settings.key.LShape.B1.d_2
+OK: settings.key.LShape.B1.n_1
+OK: settings.key.LShape.B1.n_2
+OK: settings.key.LShape.B1.StartOffset1
+OK: settings.key.LShape.B1.EndOffset1
+OK: settings.key.LShape.B1.StartOffset2
+OK: settings.key.LShape.B1.EndOffset2
+OK: settings.key.LShape.B1.d_2row_1
+OK: settings.key.LShape.B1.d_2row_2
+OK: settings.key.LShape.B1.d_3row_1
+OK: settings.key.LShape.B1.d_3row_2
+OK: settings.key.LShape.B1.loc_2row
+OK: settings.key.LShape.B1.loc_3row
+OK: settings.key.LShape.B2.as_1
+OK: settings.key.LShape.B2.as_2
+OK: settings.key.LShape.B2.d_1
+OK: settings.key.LShape.B2.d_2
+OK: settings.key.LShape.B2.n_1
+OK: settings.key.LShape.B2.n_2
+OK: settings.key.LShape.B2.StartOffset1
+OK: settings.key.LShape.B2.EndOffset1
+OK: settings.key.LShape.B2.StartOffset2
+OK: settings.key.LShape.B2.EndOffset2
+OK: settings.key.LShape.B2.d_2row_1
+OK: settings.key.LShape.B2.d_2row_2
+OK: settings.key.LShape.B2.d_3row_1
+OK: settings.key.LShape.B2.d_3row_2
+OK: settings.key.LShape.B2.loc_2row
+OK: settings.key.LShape.B2.loc_3row
 OK: settings.key.Concrete.Eb
 OK: settings.key.Concrete.TensionMode
-OK: settings.key.Concrete.Point1.Eps
-OK: settings.key.Concrete.Point1.Stress
-OK: settings.key.Concrete.Point2.Eps
-OK: settings.key.Concrete.Point2.Stress
-OK: settings.key.Concrete.Point3.Eps
-OK: settings.key.Concrete.Point3.Stress
 OK: settings.key.Steel.Es
-OK: settings.key.Steel.Point1.Eps
-OK: settings.key.Steel.Point1.Stress
-OK: settings.key.Steel.Point2.Eps
-OK: settings.key.Steel.Point2.Stress
-OK: settings.key.Steel.Point3.Eps
-OK: settings.key.Steel.Point3.Stress
 OK: settings.key.Calculation.Mode
+OK: settings.key.Solver.Method
 OK: settings.key.Solver.MaxIterations
 OK: settings.key.Solver.LoadSteps
 OK: settings.key.Solver.ToleranceN
@@ -201,49 +356,143 @@ OK: settings.key.Solver.DampingInitial
 OK: settings.key.Solver.MinLineSearchAlpha
 OK: settings.key.Solver.MaxDeltaEpsilon0
 OK: settings.key.Solver.MaxDeltaKappa
-OK: settings.key.Solver.DiagnosticsEnabled
+OK: settings.key.Solver.SecantMaxRestarts
+OK: settings.key.Solver.SecantMinStepNorm
+OK: settings.key.Capacity.Method
+OK: settings.key.Capacity.SearchMethod
 OK: settings.key.Capacity.InitialLambda
 OK: settings.key.Capacity.MaxLambda
 OK: settings.key.Capacity.ToleranceLambda
+OK: settings.key.Capacity.ToleranceStrain
 OK: settings.key.Capacity.MaxRetries
 OK: settings.key.Capacity.BaseLoadSteps
 OK: settings.key.Capacity.SolverMaxIterations
 OK: settings.key.Capacity.ConcreteCompressionLimit
+OK: settings.key.Capacity.ConcreteTensionLimit
 OK: settings.key.Capacity.SteelStrainLimit
 OK: settings.key.CrackWidth.Enabled
 OK: settings.key.CrackWidth.Allowable
 OK: settings.key.CrackWidth.CrackSpacing
 OK: settings.key.CrackWidth.StrainFactor
 OK: settings.key.CrackWidth.DurationFactor
+OK: settings.key.AutoCAD.Export.CombinationID
+OK: settings.key.AutoCAD.Export.NeutralLineEnabled
+OK: settings.key.AutoCAD.Export.PrincipalAxesEnabled
+OK: settings.key.AutoCAD.Export.LoadPointEnabled
+OK: settings.key.AutoCAD.Export.ResultType
+OK: settings.key.AutoCAD.Export.LabelMode
+OK: settings.key.AutoCAD.Layer.Concrete
+OK: settings.key.AutoCAD.Layer.Rebar
+OK: settings.key.AutoCAD.Layer.ConcreteTension
+OK: settings.key.AutoCAD.Layer.ConcreteCompression
+OK: settings.key.AutoCAD.Layer.RebarTension
+OK: settings.key.AutoCAD.Layer.RebarCompression
+OK: settings.key.AutoCAD.Color.ConcreteTension
+OK: settings.key.AutoCAD.Color.ConcreteCompression
+OK: settings.key.AutoCAD.Color.RebarTension
+OK: settings.key.AutoCAD.Color.RebarCompression
+OK: settings.key.AutoCAD.Color.Neutral
+OK: settings.key.AutoCAD.Import.ConcreteLayer
+OK: settings.key.AutoCAD.Import.RebarLayer
+OK: settings.key.AutoCAD.Import.MinArea
+OK: settings.key.Plot.Enabled
+OK: settings.key.Plot.AutoUpdateAfterCalculation
+OK: settings.key.Plot.LoadCase
+OK: settings.key.Plot.ResultType
+OK: settings.key.Plot.ResultGradient
+OK: settings.key.Plot.ResultLabelsEnabled
+OK: settings.key.Plot.ResultLabelSpacing
+OK: settings.key.Plot.ResultPrecision
+OK: settings.key.Plot.NeutralLineEnabled
+OK: settings.key.Plot.PrincipalAxesEnabled
+OK: settings.key.Plot.LoadApplicationPointEnabled
+OK: settings.key.Plot.CentroidEnabled
+OK: settings.key.Plot.LegendEnabled
+OK: settings.key.Plot.RebarLabels.Enabled
+OK: settings.key.Plot.Dimensions.Enabled
+OK: settings.key.Plot.RebarLabels.Placement
+OK: settings.key.Plot.Dimensions.Placement
+OK: settings.key.Plot.RebarLabels.Offset
+OK: settings.key.Plot.Dimensions.Offset
+OK: settings.key.Plot.RebarLabels.TextHeight
+OK: settings.key.Plot.Dimensions.TextHeight
+OK: settings.key.Plot.RebarLabels.LineEnabled
+OK: settings.key.Plot.Dimensions.ArrowType
+OK: settings.key.Plot.Dimensions.ArrowSize
 OK: settings.removed.Capacity.Enabled
 OK: settings.removed.Capacity.CalculateMx
 OK: settings.removed.Capacity.CalculateMy
 OK: settings.removed.Capacity.CalculateMxy
 OK: settings.removed.Mesh.BoundaryMode
+OK: settings.removed.Mesh.StepX
+OK: settings.removed.Mesh.StepY
 OK: settings.removed.Circle.Radius
 OK: settings.removed.Batch.MaxCombinations
 OK: settings.removed.Batch.Diagnostics
 OK: settings.removed.Materials.SourceStatus
 OK: settings.removed.Concrete.Diagram
 OK: settings.removed.Steel.Diagram
-OK: settings.range.SolverSettings
-OK: settings.range.CapacitySettings
-OK: settings.range.ConcreteDiagram
-OK: settings.range.SteelDiagram
-OK: settings.range.GeometrySettings
-OK: settings.range.OutputSettings
-OK: settings.range.AutoCADSettings
+OK: settings.removed.Concrete.Point1.Eps
+OK: settings.removed.Concrete.Point1.Stress
+OK: settings.removed.Concrete.Point2.Eps
+OK: settings.removed.Concrete.Point2.Stress
+OK: settings.removed.Concrete.Point3.Eps
+OK: settings.removed.Concrete.Point3.Stress
+OK: settings.removed.Steel.Point1.Eps
+OK: settings.removed.Steel.Point1.Stress
+OK: settings.removed.Steel.Point2.Eps
+OK: settings.removed.Steel.Point2.Stress
+OK: settings.removed.Steel.Point3.Eps
+OK: settings.removed.Steel.Point3.Stress
+OK: settings.removed.Solver.DiagnosticsEnabled
+OK: settings.removed.Circle.CenterX
+OK: settings.removed.Circle.CenterY
+OK: settings.removed.LShape.OriginX
+OK: settings.removed.LShape.OriginY
+OK: settings.removed.Plot.DimensionsEnabled
+OK: settings.removed.Plot.RebarLabelsEnabled
+OK: settings.range.rngUnitSettings
+OK: settings.range.rngSignConventionSettings
+OK: settings.range.rngConcreteDiagramPoints
+OK: settings.range.rngSteelDiagramPoints
+OK: settings.range.rngCircleGeometry
+OK: settings.range.rngRoundedRectangleGeometry
+OK: settings.range.rngLShapeGeometry
+OK: settings.range.rngNDMSectionProperties
+OK: settings.range.rngNDMSectionAnnotations
+OK: settings.range.removed.SolverSettings
+OK: settings.range.removed.CapacitySettings
+OK: settings.range.removed.ConcreteDiagram
+OK: settings.range.removed.SteelDiagram
+OK: settings.range.removed.GeometrySettings
+OK: settings.range.removed.OutputSettings
+OK: settings.range.removed.AutoCADSettings
+OK: settings.range.removed.rngMainInput
+OK: settings.range.removed.rngRebarInput
+OK: units.length.mm.cm; actual=25.; expected=25.; absDiff=0.
+OK: units.force.tf.toN.compression; actual=-9806.65; expected=-9806.65; absDiff=0.
+OK: units.force.N.toUser.compression; actual=1.; expected=1.; absDiff=0.
+OK: units.moment.tfm.toNmm; actual=9806650.; expected=9806650.; absDiff=0.
+OK: units.moment.Nmm.toUser; actual=1.; expected=1.; absDiff=0.
+OK: units.loadcase.N.example; actual=-294199.5; expected=-294199.5; absDiff=0.
+OK: units.loadcase.Mx.example; actual=1470997500.; expected=1470997500.; absDiff=0.
+OK: linsys.solve
+OK: linsys.x1; actual=1.; expected=1.; absDiff=0.
+OK: linsys.x2; actual=-2.; expected=-2.; absDiff=0.
+OK: linsys.x3; actual=-2.; expected=-2.; absDiff=0.
+OK: linsys.residual
+OK: linsys.singular
 OK: section.linear.converged
-OK: section.linear.eps0; actual=0.000416666667; expected=0.000416666667; relDiff=0.
-OK: section.linear.kappaX; actual=0.000242424242; expected=0.000242424242; relDiff=0.
-OK: section.linear.kappaY; actual=-0.000040100251; expected=-0.000040100251; relDiff=0.
+OK: section.linear.eps0; actual=0.000416666667; expected=0.000416666667; relDiff=0.0000000008
+OK: section.linear.kappaX; actual=0.000242424242; expected=0.000242424242; relDiff=0.00000000175
+OK: section.linear.kappaY; actual=-0.000040100251; expected=-0.000040100251; relDiff=0.000000009312
 OK: section.linear.N; actual=250000.; expected=250000.; relDiff=0.
 OK: section.linear.Mx; actual=120000000.; expected=120000000.; relDiff=0.
 OK: section.linear.My; actual=-80000000.; expected=-80000000.; relDiff=0.
 OK: section.rebar.converged
-OK: section.rebar.eps0; actual=0.00061453123; expected=0.00061453123; relDiff=0.
-OK: section.rebar.kappaX; actual=0.000130953764; expected=0.000130953764; relDiff=0.
-OK: section.rebar.kappaY; actual=0.000025325048; expected=0.000025325048; relDiff=0.
+OK: section.rebar.eps0; actual=0.00061453123; expected=0.00061453123; relDiff=0.000000000469
+OK: section.rebar.kappaX; actual=0.000130953764; expected=0.000130953764; relDiff=0.000000002401
+OK: section.rebar.kappaY; actual=0.000025325048; expected=0.000025325048; relDiff=0.000000002479
 OK: section.rebar.N; actual=500000.; expected=500000.; relDiff=0.
 OK: section.rebar.Mx; actual=90000000.; expected=90000000.; relDiff=0.
 OK: section.rebar.My; actual=70000000.; expected=70000000.; relDiff=0.
@@ -262,7 +511,66 @@ OK: section.diagramRebar.steps
 OK: section.diagnostics.converged
 OK: section.diagnostics.iterations
 OK: section.diagnostics.log
-TOTAL_SECTION_SOLVER: passed=99; failed=0; elapsedSec=0.171875
+OK: section.secant.branch
+OK: section.secant.converged
+OK: section.secant.noNewtonCalls
+OK: section.newton.calls
+OK: section.secant.equilibrium.N; actual=-300000.000000025; expected=-300000.; relDiff=0.
+OK: section.secant.equilibrium.Mx; actual=-20000000.0000025; expected=-20000000.; relDiff=0.
+OK: section.secant.equilibrium.My; actual=-11999999.9999977; expected=-12000000.; relDiff=0.
+OK: section.secant.eps0MatchesNewton; actual=-0.000270585091; expected=-0.000270585091; relDiff=0.
+OK: section.secant.kappaXMatchesNewton; actual=-0.000008562532; expected=-0.000008562532; relDiff=0.
+OK: section.secant.kappaYMatchesNewton; actual=-0.000002386771; expected=-0.000002386771; relDiff=0.
+OK: section.secant.differentIterations
+OK: section.secant.diagnostics
+OK: section.secant.broydenDiagnostics
+OK: secant.compare.compression.newton.converged
+OK: secant.compare.compression.secant.converged
+OK: secant.compare.compression.secant.noNewtonCalls
+OK: secant.compare.compression.eps0; actual=-0.000161290323; expected=-0.000161290323; relDiff=0.
+OK: secant.compare.compression.N; actual=-100000.000000019; expected=-100000.; relDiff=0.
+OK: secant.compare.compression.Mx; actual=0.000000062815; expected=0.; absDiff=0.000000062815
+OK: secant.compare.compression.My; actual=-0.000000023163; expected=0.; absDiff=0.000000023163
+COMPARE_SOLVER|secant.compare.compression|NewtonIterations=10|SecantIterations=11|SecantForceEvaluations=48|SecantNewtonCalls=0|SecantRestarts=0
+OK: secant.compare.n_mx.newton.converged
+OK: secant.compare.n_mx.secant.converged
+OK: secant.compare.n_mx.secant.noNewtonCalls
+OK: secant.compare.n_mx.eps0; actual=-0.000194412442; expected=-0.000194412442; relDiff=0.000000000001
+OK: secant.compare.n_mx.N; actual=-150000.000000035; expected=-150000.; relDiff=0.
+OK: secant.compare.n_mx.Mx; actual=-7999999.99999981; expected=-8000000.; relDiff=0.
+OK: secant.compare.n_mx.My; actual=0.000000075441; expected=0.; absDiff=0.000000075441
+COMPARE_SOLVER|secant.compare.n_mx|NewtonIterations=12|SecantIterations=14|SecantForceEvaluations=65|SecantNewtonCalls=0|SecantRestarts=1
+OK: secant.compare.n_my.newton.converged
+OK: secant.compare.n_my.secant.converged
+OK: secant.compare.n_my.secant.noNewtonCalls
+OK: secant.compare.n_my.eps0; actual=-0.000241935484; expected=-0.000241935484; relDiff=0.
+OK: secant.compare.n_my.N; actual=-149999.999999991; expected=-150000.; relDiff=0.
+OK: secant.compare.n_my.Mx; actual=0.000000060999; expected=0.; absDiff=0.000000060999
+OK: secant.compare.n_my.My; actual=-5999999.99999986; expected=-6000000.; relDiff=0.
+COMPARE_SOLVER|secant.compare.n_my|NewtonIterations=10|SecantIterations=11|SecantForceEvaluations=48|SecantNewtonCalls=0|SecantRestarts=0
+OK: secant.compare.n_mx_my.newton.converged
+OK: secant.compare.n_mx_my.secant.converged
+OK: secant.compare.n_mx_my.secant.noNewtonCalls
+OK: secant.compare.n_mx_my.eps0; actual=-0.000145778915; expected=-0.000145778915; relDiff=0.
+OK: secant.compare.n_mx_my.N; actual=-150000.000000011; expected=-150000.; relDiff=0.
+OK: secant.compare.n_mx_my.Mx; actual=-7999999.99999958; expected=-8000000.; relDiff=0.
+OK: secant.compare.n_mx_my.My; actual=-6000000.000001; expected=-6000000.; relDiff=0.
+COMPARE_SOLVER|secant.compare.n_mx_my|NewtonIterations=14|SecantIterations=16|SecantForceEvaluations=69|SecantNewtonCalls=0|SecantRestarts=1
+OK: secant.compare.circle.newton.converged
+OK: secant.compare.circle.secant.converged
+OK: secant.compare.circle.secant.noNewtonCalls
+OK: secant.compare.circle.eps0; actual=-0.000163825196; expected=-0.000163825196; relDiff=0.
+OK: secant.compare.circle.N; actual=-119999.999999997; expected=-120000.; relDiff=0.
+OK: secant.compare.circle.Mx; actual=-5000000.00000004; expected=-5000000.; relDiff=0.
+OK: secant.compare.circle.My; actual=-0.00000005288; expected=0.; absDiff=0.00000005288
+COMPARE_SOLVER|secant.compare.circle|NewtonIterations=11|SecantIterations=13|SecantForceEvaluations=54|SecantNewtonCalls=0|SecantRestarts=0
+OK: section.method.invalidInput
+OK: section.method.invalidMessage
+OK: section.method.emptyInput
+OK: section.method.emptyMessage
+OK: settings.solverMethod.defaultNewton
+OK: section.systemMethod.newtonBranch
+TOTAL_SECTION_SOLVER: passed=329; failed=0; elapsedSec=0.890625
 
 
 ===== Run-CapacityTests.ps1 =====
@@ -276,7 +584,7 @@ OK: capacity.mx.negative.Mx; actual=-30937500.; expected=-30937500.; relDiff=0.
 OK: capacity.mx.negative.My; actual=-0.000000000407; expected=0.; absDiff=0.000000000407
 OK: capacity.mx.positive.N; actual=-300000.; expected=-300000.; relDiff=0.
 OK: capacity.mx.positive.Mx; actual=30937500.; expected=30937500.; relDiff=0.
-OK: capacity.mx.positive.My; actual=0.000000000757; expected=0.; absDiff=0.000000000757
+OK: capacity.mx.positive.My; actual=-0.000000001557; expected=0.; absDiff=0.000000001557
 OK: capacity.my.negative.converged
 OK: capacity.my.positive.converged
 OK: capacity.my.negative.sign
@@ -348,6 +656,10 @@ OK: capacity.zeroN.Mx; actual=-47929687.4999999; expected=-47929687.5; relDiff=0
 OK: capacity.zeroN.My; actual=0.0000000008; expected=0.; absDiff=0.0000000008
 OK: capacity.concreteLimit.converged
 OK: capacity.concreteLimit.state
+OK: capacity.concreteTensionLimit.converged
+OK: capacity.concreteTensionLimit.state
+OK: capacity.concreteTensionLimit.ignore.notTension
+OK: capacity.concreteTensionLimit.ignore.state
 OK: capacity.steelLimit.converged
 OK: capacity.steelLimit.state
 OK: capacity.numericalFailure.notConverged
@@ -374,7 +686,83 @@ OK: capacity.writer.mx
 OK: capacity.writer.my
 OK: capacity.invalidBaseMoment.notConverged
 OK: capacity.invalidBaseMoment.state
-TOTAL_CAPACITY: passed=108; failed=0; elapsedSec=44.9375
+OK: method.pure_compression.load.invalid
+OK: method.pure_compression.strain.invalid
+COMPARE|method.pure_compression.load|converged=False|lambda=0.|limitState=InvalidInput|criticalStrain=0.|criticalElement=|solverCalls=0|elapsedSec=0.
+COMPARE|method.pure_compression.strain|converged=False|lambda=0.|limitState=InvalidInput|criticalStrain=0.|criticalElement=|solverCalls=0|elapsedSec=0.
+OK: method.n_plus_mx.load.converged
+OK: method.n_plus_mx.strain.converged
+OK: method.n_plus_mx.lambda; actual=3.098714243907; expected=3.09375; absDiff=0.004964243907
+OK: method.n_plus_mx.limitState
+OK: method.n_plus_mx.criticalElement
+OK: method.n_plus_mx.solverCalls
+COMPARE|method.n_plus_mx.load|converged=True|lambda=3.09375|limitState=ConcreteStrainLimit|criticalStrain=-0.001501652538|criticalElement=C136:Compression|solverCalls=15|elapsedSec=0.703125
+COMPARE|method.n_plus_mx.strain|converged=True|lambda=3.098714243907|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.03125
+OK: method.n_plus_my.load.converged
+OK: method.n_plus_my.strain.converged
+OK: method.n_plus_my.lambda; actual=4.490409406947; expected=4.484375; absDiff=0.006034406947
+OK: method.n_plus_my.limitState
+OK: method.n_plus_my.criticalElement
+OK: method.n_plus_my.solverCalls
+COMPARE|method.n_plus_my.load|converged=True|lambda=4.484375|limitState=ConcreteStrainLimit|criticalStrain=-0.001500652149|criticalElement=C15:Compression|solverCalls=18|elapsedSec=1.53125
+COMPARE|method.n_plus_my.strain|converged=True|lambda=4.490409406947|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.015625
+OK: method.biaxial.load.converged
+OK: method.biaxial.strain.converged
+OK: method.biaxial.lambda; actual=3.583378108174; expected=3.578125; absDiff=0.005253108174
+OK: method.biaxial.limitState
+OK: method.biaxial.criticalElement
+OK: method.biaxial.solverCalls
+COMPARE|method.biaxial.load|converged=True|lambda=3.578125|limitState=ConcreteStrainLimit|criticalStrain=-0.001501063653|criticalElement=C150:Compression|solverCalls=12|elapsedSec=0.53125
+COMPARE|method.biaxial.strain|converged=True|lambda=3.583378108174|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=16|elapsedSec=0.046875
+OK: method.circle.load.converged
+OK: method.circle.strain.converged
+OK: method.circle.symmetry; actual=31453125.; expected=31489108.1595391; relDiff=0.001142717646
+OK: method.circle.criticalElement
+COMPARE|method.circle.load|converged=True|lambda=5.2421875|limitState=ConcreteStrainLimit|criticalStrain=-0.001498237699|criticalElement=C483:Compression|solverCalls=17|elapsedSec=0.
+COMPARE|method.circle.strain|converged=True|lambda=5.248184693257|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C307:Compression|solverCalls=11|elapsedSec=0.
+OK: method.strain_limit.load.converged
+OK: method.strain_limit.strain.converged
+OK: method.strain_limit.lambda; actual=4.795168098697; expected=4.7890625; absDiff=0.006105598697
+OK: method.strain_limit.limitState
+OK: method.strain_limit.criticalElement
+OK: method.strain_limit.criticalUtilization
+COMPARE|method.strain_limit.load|converged=True|lambda=4.7890625|limitState=ConcreteStrainLimit|criticalStrain=-0.000599236031|criticalElement=C145:Compression|solverCalls=14|elapsedSec=0.
+COMPARE|method.strain_limit.strain|converged=True|lambda=4.795168098697|limitState=ConcreteStrainLimit|criticalStrain=-0.0006|criticalElement=C136:Compression|solverCalls=1|elapsedSec=0.
+OK: method.numericalFailure.notConverged
+OK: method.numericalFailure.state
+OK: method.numericalFailure.noPhysicalUpper
+COMPARE|method.numericalFailure.strain|converged=False|lambda=0.|limitState=NumericalFailure|criticalStrain=-0.0015|criticalElement=C136:Compression|solverCalls=5|elapsedSec=0.
+OK: method.invalidLambda.notConverged
+OK: method.invalidLambda.state
+OK: method.invalidLambda.lambdaZero; actual=0.; expected=0.; absDiff=0.
+OK: method.invalidLambda.mxZero; actual=0.; expected=0.; absDiff=0.
+OK: method.invalidLambda.momentZero; actual=0.; expected=0.; absDiff=0.
+OK: search.bisection.converged
+OK: search.brent.converged
+OK: search.secant.converged
+OK: search.bisection.branch
+OK: search.brent.branch
+OK: search.secant.branch
+OK: search.brent.independent
+OK: search.secant.independent
+OK: search.brent.lambda; actual=3.09776378716; expected=3.09375; absDiff=0.00401378716
+OK: search.secant.lambda; actual=3.098514991183; expected=3.09375; absDiff=0.004764991183
+OK: search.brent.N; actual=-300000.; expected=-300000.; relDiff=0.
+OK: search.brent.Mx; actual=-30977637.8716035; expected=-30977637.8716035; relDiff=0.
+OK: search.brent.My; actual=0.000000001804; expected=0.; absDiff=0.000000001804
+OK: search.secant.N; actual=-300000.; expected=-300000.; relDiff=0.
+OK: search.secant.Mx; actual=-30985149.9118327; expected=-30985149.9118327; relDiff=0.
+OK: search.secant.My; actual=0.000000001601; expected=0.; absDiff=0.000000001601
+OK: search.empty.inputError
+OK: search.invalid.inputError
+OK: search.secant.controlledFailure
+OK: search.perf.Bisection.converged
+PERF_CAPACITY_SEARCH|Bisection|lambda=3.09375|iterations=15|functionEvaluations=15|avgSec=0.7265625|residual=0.000000000407|converged=True|status=ConcreteStrainLimit
+OK: search.perf.Brent.converged
+PERF_CAPACITY_SEARCH|Brent|lambda=3.09776378716|iterations=12|functionEvaluations=12|avgSec=0.395833333333|residual=0.000000018714|converged=True|status=ConcreteStrainLimit
+OK: search.perf.Secant.converged
+PERF_CAPACITY_SEARCH|Secant|lambda=3.098514991183|iterations=10|functionEvaluations=10|avgSec=0.333333333333|residual=0.00000001129|converged=True|status=ConcreteStrainLimit
+TOTAL_CAPACITY: passed=172; failed=0; elapsedSec=63.6015625
 
 
 ===== Run-CrackTests.ps1 =====
@@ -412,7 +800,7 @@ OK: crack.writer.allowable; actual=0.3; expected=0.3; absDiff=0.
 OK: crack.noTension.converged
 OK: crack.noTension.width; actual=0.; expected=0.; absDiff=0.
 OK: crack.noTension.count
-TOTAL_CRACK: passed=34; failed=0; elapsedSec=0.28515625
+TOTAL_CRACK: passed=34; failed=0; elapsedSec=0.3671875
 
 
 ===== Run-BatchTests.ps1 =====
@@ -426,6 +814,37 @@ RUN: TestBatchFiveCombinations
 OK: batch.five.count
 OK: batch.five.governing.index
 OK: batch.five.diagnostics
+RUN: TestBatchGoverningUsesLowestSafetyFactor
+OK: batch.governing.lambda.order
+OK: batch.governing.lowestSafety
+OK: batch.governing.limitState
+OK: batch.governing.strength.status
+RUN: TestLoadReferenceTransformsUserMoments
+OK: batch.reference.userMx; actual=20000.; expected=20000.
+OK: batch.reference.userMy; actual=-30000.; expected=-30000.
+OK: batch.reference.internalMx; actual=45000.; expected=45000.
+OK: batch.reference.internalMy; actual=-70000.; expected=-70000.
+OK: batch.reference.x; actual=40.; expected=40.
+OK: batch.reference.y; actual=-25.; expected=-25.
+RUN: TestAxialReferenceRemovesPureCompressionEccentricity
+OK: batch.reference.circle.converged
+OK: batch.reference.circle.kappaX; actual=0.; expected=0.
+OK: batch.reference.circle.kappaY; actual=0.; expected=0.
+OK: batch.reference.rounded.converged
+OK: batch.reference.rounded.kappaX; actual=0.; expected=0.
+OK: batch.reference.rounded.kappaY; actual=0.; expected=0.
+OK: batch.reference.lshape.converged
+OK: batch.reference.lshape.kappaX; actual=0.; expected=0.
+OK: batch.reference.lshape.kappaY; actual=0.; expected=0.
+RUN: TestDirectStateReportsStrainSafety
+OK: batch.direct.lambda.zero
+OK: batch.direct.crack.notCalculated
+OK: batch.direct.strainSafety.positive
+OK: batch.direct.strainSafety.order
+OK: batch.direct.governing
+RUN: TestDirectStateKeepsStrainSafetyOnFailure
+OK: batch.direct.failure.status
+OK: batch.direct.failure.strainSafety
 RUN: TestBatchTwentyCombinations
 OK: batch.twenty.count
 OK: batch.twenty.governing.index
@@ -434,20 +853,31 @@ RUN: TestInvalidCombinationFromNamedRange
 OK: batch.invalid.reader.count
 OK: batch.invalid.reader.status
 RUN: TestBatchSummaryWriter
+OK: batch.writer.fixedRow
+OK: batch.writer.noResultOverlap
+OK: batch.writer.rangeSize
 OK: batch.writer.title
 OK: batch.writer.governing
+OK: batch.writer.header.strength
 RUN: TestBatchCapacityUsesSystemSettings
 OK: batch.settings.capacity.maxLambda
-TOTAL_BATCH: passed=16; failed=0; elapsedSec=7.29296875
+RUN: TestInvalidModeSettingsAreNotFallbacks
+OK: batch.invalid.calculationMode.status
+OK: batch.invalid.calculationMode.noCapacity
+OK: batch.invalid.capacityMethod.status
+OK: batch.invalid.capacityMethod.noLambda
+TOTAL_BATCH: passed=50; failed=0; elapsedSec=1.9609375
 
 
 ===== Run-WorkbookInterfaceTests.ps1 =====
 OK: ui.buttons.run.exists
 OK: ui.buttons.clear.exists
 OK: ui.buttons.autocad.exists
+OK: ui.buttons.plot.exists
 OK: ui.buttons.run.macro
 OK: ui.buttons.clear.macro
 OK: ui.buttons.autocad.macro
+OK: ui.buttons.plot.macro
 OK: ui.buttons.outsidePrint
 OK: ui.loads.single.count
 OK: ui.loads.single.id
@@ -455,24 +885,81 @@ OK: ui.loads.single.elapsed
 OK: ui.loads.single.noBlankInvalid
 OK: ui.loads.partial.count
 OK: ui.loads.partial.invalid
+OK: ui.loads.partial.message
+OK: ui.loads.blankMoment.count
+OK: ui.loads.blankMoment.myZero; actual=0.; expected=0.
+OK: ui.loads.blankMoment.valid
 OK: ui.run.message
 OK: ui.run.capacity.lambda
 OK: ui.run.fastMode.noLambdaSearch
 OK: ui.run.deformations
 OK: ui.run.crack
-OK: ui.run.rebar.auto.firstX
-OK: ui.run.rebar.auto.firstY
-OK: ui.run.crack.formulaBlock.title
-OK: ui.run.crack.formula.width
-OK: ui.run.crack.formula.ar
-OK: ui.run.crack.formula.rebar
-OK: ui.run.crack.result.link
-OK: ui.linear.message
-OK: ui.linear.mode
-OK: ui.linear.noCrack
+OK: ui.run.system.noRebarTable
+OK: ui.run.system.noCrackFormulaBlock
+OK: ui.run.crack.result.value
+OK: ui.results.elements.header
+OK: ui.results.elements.rows
+OK: ui.results.elements.noCombinationIndex
+OK: ui.results.elements.units
+OK: ui.results.elements.noGeometryDup
+OK: ui.results.elements.noPlaneDup
+OK: ui.results.geometry.header
+OK: ui.results.geometry.rows
+OK: ui.results.geometry.position
+OK: ui.results.geometry.noSource
+OK: ui.results.properties.header
+OK: ui.results.properties.hasEpsilon0
+OK: ui.results.properties.hasBounds
+OK: ui.results.annotations.header
+OK: ui.results.annotations.rows
+OK: ui.plot.chart.created
+OK: ui.lshape.message
+OK: ui.lshape.result.status
+OK: ui.lshape.system.noRebarTable
+OK: ui.lshape.system.noCrackFormulaBlock
+OK: ui.autocad.reference.converged
+OK: ui.autocad.reference.kappaX; actual=0.; expected=0.
+OK: ui.autocad.reference.kappaY; actual=0.; expected=0.
+OK: ui.autocad.reference.point
+OK: ui.autocad.axes.centerX; actual=122.621330281441; expected=122.621330281441
+OK: ui.autocad.axes.centerY; actual=192.618334000755; expected=192.618334000755
+OK: ui.governing.id
+OK: ui.governing.message
+OK: ui.governing.details.lambda
+OK: ui.validation.capacitySearchMethod
+OK: ui.validation.autocadLabelMode
+OK: ui.validation.autocadResultType
+OK: ui.validation.autocadNeutralLine
+OK: ui.validation.autocadPrincipalAxes
+OK: ui.validation.autocadLoadPoint
+OK: ui.validation.autocadCombination
+OK: ui.validation.plotLoadCase
+OK: ui.validation.plotResultType
+OK: ui.validation.plotLabels
+OK: ui.validation.plotRebarAnnotationEnabled
+OK: ui.validation.plotDimensionEnabled
+OK: ui.validation.plotRebarPlacement
+OK: ui.validation.plotDimensionPlacement
+OK: ui.validation.plotRebarLineEnabled
+OK: ui.validation.plotDimensionArrowType
+OK: ui.validation.plotDimensionArrowSize
+OK: ui.validation.geometrySource
+OK: ui.validation.units.forceInput
+OK: ui.validation.units.momentOutput
+OK: ui.validation.sign.n
+OK: ui.validation.circleLoc2row
+OK: ui.validation.circleLoc3row
+OK: ui.circle.key.rebarDiameter2
+OK: ui.circle.key.rebarDiameter3
+OK: ui.circle.key.rebarLoc2row
+OK: ui.circle.key.rebarLoc3row
 OK: ui.clear.result
+OK: ui.clear.results.elements
+OK: ui.clear.results.geometry
+OK: ui.clear.results.properties
+OK: ui.clear.results.annotations
 OK: ui.clear.input
-TOTAL_WORKBOOK_UI: passed=30; failed=0; elapsedSec=1.40625
+TOTAL_WORKBOOK_UI: passed=89; failed=0; elapsedSec=4.7421875
 
 
 ===== Run-RegressionBaselineTests.ps1 =====
@@ -481,17 +968,17 @@ OK: pure_compression.converged
 OK: pure_compression.N; actual=-99999.9999999996; expected=-100000.; relDiff=0.
 OK: pure_compression.Mx; actual=0.000000000138; expected=0.; absDiff=0.000000000138
 OK: pure_compression.My; actual=0.000000000188; expected=0.; absDiff=0.000000000188
-BASELINE|pure_compression|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=0.|Nint=-99999.9999999996|Mxint=0.000000000138|Myint=0.000000000188|resN=0.000000000378|resMx=0.000000000138|resMy=0.000000000188|lambda=NA|iterations=2|elapsedSec=0.015625|fibers=177|rebars=8
+BASELINE|pure_compression|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=0.|Nint=-99999.9999999996|Mxint=0.000000000138|Myint=0.000000000188|resN=0.000000000378|resMx=0.000000000138|resMy=0.000000000188|lambda=NA|iterations=2|elapsedSec=0.03125|fibers=177|rebars=8
 OK: n_plus_mx_my_zero.converged
 OK: n_plus_mx_my_zero.N; actual=-100000.; expected=-100000.; relDiff=0.
 OK: n_plus_mx_my_zero.Mx; actual=-4000000.; expected=-4000000.; relDiff=0.
 OK: n_plus_mx_my_zero.My; actual=0.000000000269; expected=0.; absDiff=0.000000000269
-BASELINE|n_plus_mx_my_zero|converged=True|eps0=-0.000082761977|kappaX=-0.000000571638|kappaY=0.|Nint=-100000.|Mxint=-4000000.|Myint=0.000000000269|resN=0.000000000029|resMx=0.000000000931|resMy=0.000000000269|lambda=20.421600341797|iterations=2|elapsedSec=0.00390625|fibers=177|rebars=8
+BASELINE|n_plus_mx_my_zero|converged=True|eps0=-0.000082761977|kappaX=-0.000000571638|kappaY=0.|Nint=-100000.|Mxint=-4000000.|Myint=0.000000000269|resN=0.000000000029|resMx=0.000000000931|resMy=0.000000000269|lambda=20.421600341797|iterations=2|elapsedSec=0.015625|fibers=177|rebars=8
 OK: n_plus_my_mx_zero.converged
 OK: n_plus_my_mx_zero.N; actual=-99999.9999999999; expected=-100000.; relDiff=0.
 OK: n_plus_my_mx_zero.Mx; actual=-0.000000000095; expected=0.; absDiff=0.000000000095
 OK: n_plus_my_mx_zero.My; actual=-3000000.; expected=-3000000.; relDiff=0.
-BASELINE|n_plus_my_mx_zero|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=-0.000000428729|Nint=-99999.9999999999|Mxint=-0.000000000095|Myint=-3000000.|resN=0.000000000102|resMx=-0.000000000095|resMy=0.000000002794|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.0078125|fibers=177|rebars=8
+BASELINE|n_plus_my_mx_zero|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=-0.000000428729|Nint=-99999.9999999999|Mxint=-0.000000000095|Myint=-3000000.|resN=0.000000000102|resMx=-0.000000000095|resMy=0.000000002794|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.015625|fibers=177|rebars=8
 OK: full_n_mx_my.converged
 OK: full_n_mx_my.N; actual=-100000.; expected=-100000.; relDiff=0.
 OK: full_n_mx_my.Mx; actual=-4000000.; expected=-4000000.; relDiff=0.
@@ -501,7 +988,7 @@ OK: symmetric_circle.converged
 OK: symmetric_circle.N; actual=-219999.999999999; expected=-220000.; relDiff=0.
 OK: symmetric_circle.Mx; actual=-6000000.00000002; expected=-6000000.; relDiff=0.
 OK: symmetric_circle.My; actual=0.000000000034; expected=0.; absDiff=0.000000000034
-BASELINE|symmetric_circle|converged=True|eps0=-0.000180839111|kappaX=-0.000000845237|kappaY=0.|Nint=-219999.999999999|Mxint=-6000000.00000002|Myint=0.000000000034|resN=0.000000000815|resMx=-0.00000002142|resMy=0.000000000034|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.02734375|fibers=716|rebars=8
+BASELINE|symmetric_circle|converged=True|eps0=-0.000180839111|kappaX=-0.000000845237|kappaY=0.|Nint=-219999.999999999|Mxint=-6000000.00000002|Myint=0.000000000034|resN=0.000000000815|resMx=-0.00000002142|resMy=0.000000000034|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.0390625|fibers=716|rebars=8
 OK: repeated_run.first.converged
 OK: repeated_run.second.converged
 OK: repeated_run.epsilon0; actual=-0.000082335606; expected=-0.000082335606; absDiff=0.
@@ -519,9 +1006,15 @@ OK: origin_shift.shifted.converged
 OK: origin_shift.kappaX; actual=-0.000000579583; expected=-0.000000579583; absDiff=0.
 OK: origin_shift.kappaY; actual=-0.000000434549; expected=-0.000000434549; absDiff=0.
 OK: origin_shift.epsilon0; actual=-0.00007872362; expected=-0.00007872362; absDiff=0.
+OK: origin_shift.N.transform; actual=-100000.; expected=-100000.; absDiff=0.
+OK: origin_shift.Mx.transform; actual=1000000.; expected=1000000.; absDiff=0.
+OK: origin_shift.My.transform; actual=-10500000.; expected=-10500000.; absDiff=0.
+OK: origin_shift.shifted.N; actual=-100000.; expected=-100000.; relDiff=0.
+OK: origin_shift.shifted.Mx; actual=1000000.; expected=1000000.; relDiff=0.
+OK: origin_shift.shifted.My; actual=-10500000.; expected=-10500000.; relDiff=0.
 BASELINE|origin_shift_base|converged=True|eps0=-0.000082335606|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=-4000000.|Myint=-3000000.|resN=0.000000000015|resMx=-0.000000001863|resMy=0.000000000466|lambda=NA|iterations=3|elapsedSec=0.|fibers=0|rebars=0
 BASELINE|origin_shift_shifted|converged=True|eps0=-0.00007872362|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=1000000.|Myint=-10500000.|resN=0.000000000015|resMx=-0.000000000233|resMy=0.000000007451|lambda=NA|iterations=3|elapsedSec=0.|fibers=0|rebars=0
-TOTAL_REGRESSION_BASELINE: passed=33; failed=0; elapsedSec=2.55078125
+TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.7421875
 
 Regression baseline report: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Stage01_RegressionBaseline_Raw.txt
 

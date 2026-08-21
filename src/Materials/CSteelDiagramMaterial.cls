@@ -14,14 +14,25 @@ Private mStresses() As Double
 Private mPointCount As Long
 Private mInitialized As Boolean
 
-Public Sub InitializeFromSettings(ByVal settings As CSystemSettingsReader)
-    InitializeFromThreeTensionPoints _
-        settings.GetDouble("Steel.Point1.Eps", 0.00175), _
-        settings.GetDouble("Steel.Point1.Stress", 350#), _
-        settings.GetDouble("Steel.Point2.Eps", 0.01), _
-        settings.GetDouble("Steel.Point2.Stress", 350#), _
-        settings.GetDouble("Steel.Point3.Eps", 0.025), _
-        settings.GetDouble("Steel.Point3.Stress", 350#)
+Public Sub InitializeFromSettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
+    Dim count As Long
+    count = settings.SteelDiagramPointCount
+    If count < 2 Then Err.Raise vbObjectError + 3125, "CSteelDiagramMaterial", "Диаграмма арматуры должна содержать не менее двух точек."
+
+    ReDim mStrains(1 To count)
+    ReDim mStresses(1 To count)
+
+    Dim i As Long
+    For i = 1 To count
+        mStrains(i) = settings.SteelDiagramStrain(i)
+        mStresses(i) = settings.SteelDiagramStress(i)
+        If Not units Is Nothing Then mStresses(i) = units.InputStressToInternal(mStresses(i))
+    Next i
+
+    SortPointsByStrain
+    ValidatePointOrder
+    mPointCount = count
+    mInitialized = True
 End Sub
 
 Public Sub InitializeFromTwoTensionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
@@ -30,12 +41,14 @@ Public Sub InitializeFromTwoTensionPoints(ByVal eps1 As Double, ByVal stress1 As
     If eps2 <= eps1 Then Err.Raise vbObjectError + 3121, "CSteelDiagramMaterial", "second tension strain must be greater than first."
     If stress1 <= 0# Or stress2 <= 0# Then Err.Raise vbObjectError + 3122, "CSteelDiagramMaterial", "Steel tension stresses must be positive."
 
-    ReDim mStrains(1 To 3)
-    ReDim mStresses(1 To 3)
-    mStrains(1) = 0#: mStresses(1) = 0#
-    mStrains(2) = eps1: mStresses(2) = stress1
-    mStrains(3) = eps2: mStresses(3) = stress2
-    mPointCount = 3
+    ReDim mStrains(1 To 5)
+    ReDim mStresses(1 To 5)
+    mStrains(1) = -eps2: mStresses(1) = -stress2
+    mStrains(2) = -eps1: mStresses(2) = -stress1
+    mStrains(3) = 0#: mStresses(3) = 0#
+    mStrains(4) = eps1: mStresses(4) = stress1
+    mStrains(5) = eps2: mStresses(5) = stress2
+    mPointCount = 5
     mInitialized = True
 End Sub
 
@@ -50,13 +63,16 @@ Public Sub InitializeFromThreeTensionPoints(ByVal eps1 As Double, ByVal stress1 
     If eps3 <= eps2 Then Err.Raise vbObjectError + 3124, "CSteelDiagramMaterial", "third tension strain must be greater than second."
     If stress1 <= 0# Or stress2 <= 0# Or stress3 <= 0# Then Err.Raise vbObjectError + 3122, "CSteelDiagramMaterial", "Steel tension stresses must be positive."
 
-    ReDim mStrains(1 To 4)
-    ReDim mStresses(1 To 4)
-    mStrains(1) = 0#: mStresses(1) = 0#
-    mStrains(2) = eps1: mStresses(2) = stress1
-    mStrains(3) = eps2: mStresses(3) = stress2
-    mStrains(4) = eps3: mStresses(4) = stress3
-    mPointCount = 4
+    ReDim mStrains(1 To 7)
+    ReDim mStresses(1 To 7)
+    mStrains(1) = -eps3: mStresses(1) = -stress3
+    mStrains(2) = -eps2: mStresses(2) = -stress2
+    mStrains(3) = -eps1: mStresses(3) = -stress1
+    mStrains(4) = 0#: mStresses(4) = 0#
+    mStrains(5) = eps1: mStresses(5) = stress1
+    mStrains(6) = eps2: mStresses(6) = stress2
+    mStrains(7) = eps3: mStresses(7) = stress3
+    mPointCount = 7
     mInitialized = True
 End Sub
 
@@ -68,14 +84,19 @@ End Property
 Public Function GetStress(ByVal strain As Double) As Double
     EnsureInitialized
 
-    Dim signValue As Double
-    signValue = SignOf(strain)
-    GetStress = signValue * PositiveStress(Abs(strain))
+    If strain <= mStrains(1) Then
+        GetStress = mStresses(1)
+    ElseIf strain >= mStrains(mPointCount) Then
+        GetStress = mStresses(mPointCount)
+    Else
+        GetStress = InterpolateStress(strain)
+    End If
 End Function
 
 Public Function GetTangentModulus(ByVal strain As Double) As Double
     EnsureInitialized
-    GetTangentModulus = PositiveTangent(Abs(strain))
+    If strain <= mStrains(1) Or strain >= mStrains(mPointCount) Then Exit Function
+    GetTangentModulus = SegmentTangent(strain)
 End Function
 
 Public Function GetSecantModulus(ByVal strain As Double) As Double
@@ -87,40 +108,58 @@ Public Function GetSecantModulus(ByVal strain As Double) As Double
     End If
 End Function
 
-Private Function PositiveStress(ByVal strain As Double) As Double
-    If strain >= mStrains(mPointCount) Then
-        PositiveStress = mStresses(mPointCount)
-    Else
-        Dim i As Long
-        For i = 1 To mPointCount - 1
-            If strain >= mStrains(i) And strain <= mStrains(i + 1) Then
-                PositiveStress = mStresses(i) + (mStresses(i + 1) - mStresses(i)) * _
-                    (strain - mStrains(i)) / (mStrains(i + 1) - mStrains(i))
-                Exit Function
-            End If
-        Next i
-    End If
-End Function
-
-Private Function PositiveTangent(ByVal strain As Double) As Double
-    If strain >= mStrains(mPointCount) Then Exit Function
+Private Function InterpolateStress(ByVal strain As Double) As Double
     Dim i As Long
     For i = 1 To mPointCount - 1
         If strain >= mStrains(i) And strain <= mStrains(i + 1) Then
-            PositiveTangent = (mStresses(i + 1) - mStresses(i)) / (mStrains(i + 1) - mStrains(i))
+            InterpolateStress = mStresses(i) + (mStresses(i + 1) - mStresses(i)) * _
+                (strain - mStrains(i)) / (mStrains(i + 1) - mStrains(i))
             Exit Function
         End If
     Next i
 End Function
 
-Private Function SignOf(ByVal value As Double) As Double
-    If value < 0# Then
-        SignOf = -1#
-    ElseIf value > 0# Then
-        SignOf = 1#
-    End If
+Private Function SegmentTangent(ByVal strain As Double) As Double
+    Dim i As Long
+    For i = 1 To mPointCount - 1
+        If strain >= mStrains(i) And strain <= mStrains(i + 1) Then
+            SegmentTangent = (mStresses(i + 1) - mStresses(i)) / (mStrains(i + 1) - mStrains(i))
+            Exit Function
+        End If
+    Next i
 End Function
 
+Private Sub SortPointsByStrain()
+    Dim i As Long
+    Dim j As Long
+    For i = 1 To UBound(mStrains) - 1
+        For j = i + 1 To UBound(mStrains)
+            If mStrains(j) < mStrains(i) Then
+                SwapPoints i, j
+            End If
+        Next j
+    Next i
+End Sub
+
+Private Sub SwapPoints(ByVal firstIndex As Long, ByVal secondIndex As Long)
+    Dim tmp As Double
+    tmp = mStrains(firstIndex)
+    mStrains(firstIndex) = mStrains(secondIndex)
+    mStrains(secondIndex) = tmp
+    tmp = mStresses(firstIndex)
+    mStresses(firstIndex) = mStresses(secondIndex)
+    mStresses(secondIndex) = tmp
+End Sub
+
+Private Sub ValidatePointOrder()
+    Dim i As Long
+    For i = 1 To UBound(mStrains) - 1
+        If mStrains(i + 1) <= mStrains(i) Then
+            Err.Raise vbObjectError + 3126, "CSteelDiagramMaterial", "Деформации в диаграмме арматуры не должны повторяться."
+        End If
+    Next i
+End Sub
+
 Private Sub EnsureInitialized()
-    If Not mInitialized Then Err.Raise vbObjectError + 3123, "CSteelDiagramMaterial", "Material is not initialized."
+    If Not mInitialized Then Err.Raise vbObjectError + 3123, "CSteelDiagramMaterial", "Материал не инициализирован."
 End Sub

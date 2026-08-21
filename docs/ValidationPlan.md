@@ -1,278 +1,92 @@
-# План проверки
+# ValidationPlan
 
-Статус: обновлено по результатам этапа 9.
+Дата актуализации: 2026-08-05.
 
-## Структура книги
+## Цель
 
-Команда:
+Проверки должны подтверждать:
+
+- компиляцию и работоспособность VBA-модулей;
+- корректность структуры книги;
+- отсутствие устаревших именованных диапазонов и настроек;
+- равновесие `N + Mx + My`;
+- геометрию, сетку и арматуру;
+- материалы по пользовательским точкам;
+- работу прямого решателя, capacity, трещин, batch и UI.
+
+## Основные команды
 
 ```powershell
+powershell -ExecutionPolicy Bypass -File tools/build_workbook/Build-Workbook.ps1
 powershell -ExecutionPolicy Bypass -File tools/build_workbook/Validate-Workbook.ps1
+powershell -ExecutionPolicy Bypass -File tools/build_workbook/Run-AllTests.ps1
 ```
 
-Проверяет:
+Если завис Excel:
 
-- листы `Расчет` и `System`;
+```powershell
+Get-Process EXCEL -ErrorAction SilentlyContinue | Stop-Process -Force
+```
+
+## Структурная проверка книги
+
+`Validate-Workbook.ps1` проверяет:
+
+- наличие листов `Расчет` и `System`;
 - обязательные именованные диапазоны;
-- отсутствие дублирующихся имен;
+- отсутствие дублей имен;
+- отсутствие устаревших диапазонов;
 - область печати;
-- вертикальные разрывы страниц;
-- расположение четырех блоков слева направо;
-- отсутствие формул и расчетной логики НДМ.
+- вертикальные разрывы;
+- расположение таблицы нагрузок и блока результата;
+- заголовки таблицы настроек;
+- отсутствие дублей ключей `System`;
+- выпадающие списки;
+- таблицы точек диаграмм 10 x 3;
+- заголовки `rngLoadCombinations`;
+- допустимость формул на листах;
+- отсутствие построчного runtime IO в основных writer-ах.
 
-## Геометрия и волокна
+## Набор тестов
 
-Команда:
+| Скрипт | Проверяемая область |
+|---|---|
+| `Run-GeometryTests.ps1` | геометрия, сетка, круг, скругленный прямоугольник, Г-сечение, автоматическая арматура, импорт AutoCAD Region в `CSectionModel` на мок-данных |
+| `Run-MaterialTests.ps1` | диаграммы материалов по точкам |
+| `Run-SectionSolverTests.ps1` | прямой `CSectionSolver`, `Newton`, `Secant`, настройки |
+| `Run-CapacityTests.ps1` | `LoadMultiplier`, `UltimateStrain`, `Bisection`, `Brent`, `Secant` |
+| `Run-CrackTests.ps1` | ширина раскрытия уже образовавшихся трещин |
+| `Run-BatchTests.ps1` | batch до 20 сочетаний, worst LC, summary |
+| `Run-WorkbookInterfaceTests.ps1` | кнопки, чтение книги, вывод результатов |
+| `Run-RegressionBaselineTests.ps1` | базовые сценарии `Stage01 TEMPORARY_BASELINE` |
 
-```powershell
-powershell -ExecutionPolicy Bypass -File tools/build_workbook/Run-GeometryTests.ps1
-```
+## Последний зафиксированный полный прогон
 
-Проверяет:
-
-- прямоугольник без скруглений против аналитической площади, центра тяжести, `Ix`, `Iy`, `Ixy`;
-- симметричный скругленный прямоугольник против аналитической площади и симметрии;
-- асимметричные радиусы и ненулевой `Ixy`;
-- недопустимые размеры, радиусы и шаги сетки;
-- сходимость площади и моментов инерции при уменьшении шага сетки;
-- базовую производительность построения сетки.
-
-## Последний результат
-
-После закрытия зависших процессов Excel и исправления проверки скругленных углов геометрические тесты выполнены успешно:
-
-```text
-TOTAL: passed=29; failed=0
-```
-
-Если Excel COM снова начнет возвращать ошибки открытия или создания книги, нужно закрыть все процессы Excel в пользовательской сессии и повторить команды сборки и проверки.
-
-## Линейное ядро
-
-Команда:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File tools/build_workbook/Run-LinearTests.ps1
-```
-
-Проверяет:
-
-- решение системы `3 x 3` с выбором главного элемента;
-- диагностику вырожденной матрицы;
-- центральное сжатие;
-- изгиб относительно оси `X`;
-- изгиб относительно оси `Y`;
-- совместное действие `N + Mx + My`;
-- несимметричную геометрию с ненулевой связью кривизн;
-- автоматический расчет площади обычного стержня по диаметру;
-- эффективный вклад арматуры `Es - Eb`;
-- ошибки данных арматуры;
-- базовую производительность матрицы, решения и обратного расчета.
-
-Последний результат:
+Файл:
 
 ```text
-TOTAL_LINEAR: passed=49; failed=0
+docs/regression/Stage01_AllTests_Report.txt
 ```
 
-## Нормативные параметры и тестовые нагрузки
+Сводка последнего полного прогона:
 
-Структурная проверка книги должна подтверждать заголовки таблицы `System`:
+| Блок | Passed | Failed |
+|---|---:|---:|
+| Geometry | 56 | 0 |
+| Linear | 49 | 0 |
+| Material | 20 | 0 |
+| Section solver | 175 | 0 |
+| Capacity | 167 | 0 |
+| Crack | 34 | 0 |
+| Batch | 31 | 0 |
+| Workbook UI | 34 | 0 |
+| Regression baseline | 39 | 0 |
 
-```text
-Ключ | Значение | Значение по умолчанию | Единица | Назначение | Нормативный источник | Изменено пользователем
-```
+## Что еще требует верификации
 
-Тестовые нагрузки могут быть произвольными. Для аналитических тестов фиксируются `N`, `Mx`, `My`, единицы внутренних усилий и независимая проверка через классические формулы или другой прозрачный расчет.
-
-Справочные программы не являются обязательным источником тестовых нагрузок; они остаются дополнительными сравнительными материалами.
-
-## Диаграммы материалов
-
-Команда:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File tools/build_workbook/Run-MaterialTests.ps1
-```
-
-Проверяет:
-
-- нулевое напряжение растянутого бетона в бетонных диаграммах;
-- линейный участок двухлинейной диаграммы бетона;
-- площадку двухлинейной диаграммы бетона;
-- трехлинейную интерполяцию бетона по заданным точкам;
-- симметрию обычной арматуры при растяжении и сжатии;
-- площадку двухлинейной диаграммы арматуры;
-- трехлинейную интерполяцию арматуры;
-- отбраковку некорректных параметров.
-
-Формулы СП 63, которые не извлекаются текстом из RTF/PDF, не проверяются численно до ручного подтверждения.
-
-## Нелинейный решатель этапа 4
-
-Команда:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File tools/build_workbook/Run-SectionSolverTests.ps1
-```
-
-Проверяет численный алгоритм, а не окончательное соответствие СП:
-
-- чтение временных параметров из `rngSystemSettings`;
-- совпадение `CSectionSolver` с линейным решателем на линейных материалах;
-- нелинейное замещение бетона арматурой через разность напряжений и касательных модулей;
-- сходимость полного Ньютона при центральном сжатии;
-- сходимость с временной двухлинейной диаграммой бетона и обычной A400;
-- пошаговое приложение нагрузки;
-- ограничение приращений;
-- наличие диагностического предупреждения `PROVISIONAL_FOR_SOLVER_TESTING`.
-
-Тесты этапа 4 не проверяют:
-
-- поиск предельного множителя;
-- удерживающий момент;
-- коэффициент запаса;
-- коэффициент использования;
-- ширину раскрытия трещин;
-- окончательную нормативную верификацию диаграмм.
-
-Последний результат:
-
-```text
-TOTAL_SECTION_SOLVER: passed=34; failed=0
-```
-
-## Несущая способность Mx и My
-
-Команда:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File tools/build_workbook/Run-CapacityTests.ps1
-```
-
-Проверяет:
-
-- поиск предельного множителя для положительного и отрицательного `Mx`;
-- поиск предельного множителя для положительного и отрицательного `My`;
-- поиск предельного множителя для `N + Mx + My`;
-- сохранение направления вектора моментов `Mx = lambda * MxBase`, `My = lambda * MyBase`;
-- четыре знаковых сочетания `Mx/My` для `Mxy`;
-- случаи `lambdaUltimate < 1` и `lambdaUltimate` около `1`;
-- случай `N = 0`;
-- физические предельные состояния `ConcreteStrainLimit` и `SteelStrainLimit`;
-- численную несходимость как `NumericalFailure` или `SingularTangent`, а не как физическую границу;
-- выполнение равновесия для последнего допустимого состояния;
-- независимую контрольную невязку удерживающего момента;
-- несимметричное сечение с `Ixy <> 0` и связанной кривизной;
-- запись результатов в `rngResultMx`, `rngResultMy` и `rngResultMxy`;
-- обработку нулевого базового момента как `InvalidInput`.
-
-Последний результат:
-
-```text
-TOTAL_CAPACITY: passed=92; failed=0
-```
-
-Из-за зависшего процесса Excel полная пересборка через `Workbooks.Add()` была заменена обновлением существующей книги:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File tools/build_workbook/Refresh-Workbook.ps1
-```
-
-После refresh также пройдены:
-
-```text
-Validate-Workbook.ps1: все проверки Passed=True
-TOTAL: passed=29; failed=0
-TOTAL_LINEAR: passed=49; failed=0
-TOTAL_MATERIAL: passed=20; failed=0
-TOTAL_SECTION_SOLVER: passed=34; failed=0
-```
-
-## Ширина раскрытия трещин
-
-Команда:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File tools/build_workbook/Run-CrackTests.ps1
-```
-
-Проверяет:
-
-- `Concrete.TensionMode = Ignore`;
-- `Concrete.TensionMode = UseDiagram`;
-- расчет трещин по уже найденному SLS-состоянию `CSectionSolver`;
-- расчет для `Mx`, `My` и `Mxy`;
-- определение растянутой арматуры;
-- деформации и напряжения арматуры;
-- расчет ширины раскрытия и коэффициента использования;
-- запись результатов в соответствующий блок книги.
-
-Последний результат:
-
-```text
-TOTAL_CRACK: passed=28; failed=0
-```
-## Stage 8 validation
-
-Batch calculation tests are run with:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File tools/build_workbook/Run-BatchTests.ps1
-```
-
-The test module checks:
-
-- one load combination;
-- five load combinations;
-- twenty load combinations;
-- invalid input row read from `rngLoadCombinations`;
-- batch summary writer output on `System`;
-- elapsed-time reporting;
-- governing-combination detection.
-
-Stage 8 also extends capacity tests with `Concrete.TensionMode` regression checks for the shared `CSectionSolver` in `Mx`, `My`, and `Mxy` strength-state scenarios.
-
-Latest Stage 8 regression results:
-
-```text
-Validate-Workbook.ps1: all checks Passed=True
-TOTAL: passed=29; failed=0
-TOTAL_LINEAR: passed=49; failed=0
-TOTAL_MATERIAL: passed=20; failed=0
-TOTAL_SECTION_SOLVER: passed=34; failed=0
-TOTAL_CAPACITY: passed=104; failed=0
-TOTAL_CRACK: passed=28; failed=0
-TOTAL_BATCH: passed=17; failed=0
-```
-## Stage 9 validation
-
-Stage 9 adds tests for the circular section.
-
-Geometry validation checks:
-
-- analytical circle area `A = pi * R^2`;
-- centroid coordinates;
-- `Ix = Iy = pi * R^4 / 4`;
-- `Ixy = 0`;
-- invalid radius and diameter inputs.
-
-Calculation validation checks:
-
-- circular-section capacity for `Mx`;
-- circular-section capacity for `My`;
-- circular-section capacity for `Mxy`;
-- symmetry of `Mx` and `My`;
-- crack-width calculation for an already cracked circular section.
-
-Latest Stage 9 results:
-
-```text
-Validate-Workbook.ps1: all checks Passed=True
-TOTAL: passed=39; failed=0
-TOTAL_LINEAR: passed=49; failed=0
-TOTAL_MATERIAL: passed=20; failed=0
-TOTAL_SECTION_SOLVER: passed=34; failed=0
-TOTAL_CAPACITY: passed=110; failed=0
-TOTAL_CRACK: passed=34; failed=0
-```
+- нормативные формулы диаграмм по СП;
+- нормативный расчет ширины раскрытия трещин;
+- независимые ручные контрольные примеры;
+- сравнение с внешними расчетными программами на согласованных исходных данных;
+- производительность на крупных и сложных сечениях;
+- поведение `UltimateStrain` на несимметричных будущих геометриях.

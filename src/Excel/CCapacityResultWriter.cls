@@ -9,154 +9,166 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Public Sub WriteCapacityResult(ByVal workbook As Object, ByVal capacity As CCapacitySolver)
-    WriteResult workbook, "rngResultSection", capacity
+Public Sub WriteCapacityResult(ByVal workbook As Object, ByVal capacity As CCapacitySolver, Optional ByVal units As CUnitSystem = Nothing)
+    WriteResult workbook, "rngResultSection", capacity, units
 End Sub
 
-Public Sub WriteDirectSectionResult(ByVal workbook As Object, ByVal solver As CSectionSolver)
-    WriteDirectResult workbook, "rngResultSection", solver
+Public Sub WriteDirectSectionResult(ByVal workbook As Object, ByVal solver As CSectionSolver, Optional ByVal units As CUnitSystem = Nothing)
+    WriteDirectResult workbook, "rngResultSection", solver, units
 End Sub
 
-Public Sub WriteLinearSectionResult(ByVal workbook As Object, ByVal solver As CLinearSectionSolver)
-    WriteLinearResult workbook, "rngResultSection", solver
+Public Sub WriteCrackResult(ByVal workbook As Object, ByVal crack As CCrackWidthCalculator, Optional ByVal units As CUnitSystem = Nothing)
+    WriteCrackResultToRange workbook, "rngResultSection", crack, units
 End Sub
-Private Sub WriteResult(ByVal workbook As Object, ByVal rangeName As String, ByVal capacity As CCapacitySolver)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 3600, "CCapacityResultWriter", "Workbook is missing."
-    If capacity Is Nothing Then Err.Raise vbObjectError + 3601, "CCapacityResultWriter", "Capacity result is missing."
+
+Private Sub WriteResult(ByVal workbook As Object, ByVal rangeName As String, ByVal capacity As CCapacitySolver, ByVal units As CUnitSystem)
+    If workbook Is Nothing Then Err.Raise vbObjectError + 3600, "CCapacityResultWriter", "Книга Excel не передана."
+    If capacity Is Nothing Then Err.Raise vbObjectError + 3601, "CCapacityResultWriter", "Результат поиска несущей способности не передан."
 
     Dim target As Object
     Set target = workbook.Names.Item(rangeName).RefersToRange
-    ClearResultRange target
 
-    PutRow target, 1, "Indicator", "Value", "Unit", "Comment"
-    PutRow target, 2, "Mode", "N+Mx+My", "", "Единый расчет по направлению вектора моментов"
-    PutRow target, 3, "Converged", IIf(capacity.Converged, "Yes", "No"), "", capacity.StopReason
-    PutRow target, 4, "LimitState", capacity.LimitState, "", "Физические и численные причины остановки разделяются"
-    PutRow target, 5, "LambdaUltimate", capacity.LambdaUltimate, "", "SafetyFactor = LambdaUltimate"
-    PutRow target, 6, "MxUltimate", capacity.MxUltimate / 1000000#, "kN*m", "Внутренние единицы: N*mm"
-    PutRow target, 7, "MyUltimate", capacity.MyUltimate / 1000000#, "kN*m", "Внутренние единицы: N*mm"
-    PutRow target, 8, "MomentResultant", capacity.MomentUltimate / 1000000#, "kN*m", "Результирующий момент вектора Mx/My"
-    PutRow target, 9, "SafetyFactor", capacity.SafetyFactor, "", "Utilization=" & CStr(capacity.Utilization)
-    PutRow target, 10, "MomentResidual", capacity.MomentEquilibriumResidual, "N*mm", "Независимая проверка равновесия"
+    Dim rows As Variant
+    rows = EmptyResultRows(target.Rows.Count)
+    PutRow rows, 1, "Indicator", "Value", "Unit", "Comment"
+    PutRow rows, 2, "Mode", "N+Mx+My", "", "Единый расчет по направлению вектора моментов"
+    PutRow rows, 3, "Converged", IIf(capacity.Converged, "Yes", "No"), "", capacity.StopReason
+    PutRow rows, 4, "LimitState", capacity.LimitState, "", "Физические и численные причины остановки разделяются"
+    PutRow rows, 5, "LambdaUltimate", capacity.LambdaUltimate, "", "SafetyFactor = LambdaUltimate"
+    PutRow rows, 6, "MxUltimate", OutputMx(capacity.MxUltimate, units), OutputMomentUnit(units), "Внутренние единицы: N*mm"
+    PutRow rows, 7, "MyUltimate", OutputMy(capacity.MyUltimate, units), OutputMomentUnit(units), "Внутренние единицы: N*mm"
+    PutRow rows, 8, "MomentResultant", OutputMomentMagnitude(capacity.MomentUltimate, units), OutputMomentUnit(units), "Результирующий момент вектора Mx/My"
+    PutRow rows, 9, "SafetyFactor", capacity.SafetyFactor, "", "Utilization=" & CStr(capacity.Utilization)
+    PutRow rows, 10, "MomentResidual", OutputMomentMagnitude(capacity.MomentEquilibriumResidual, units), OutputMomentUnit(units), "Независимая проверка равновесия"
     If Not capacity.LastSolver Is Nothing Then
-        PutRow target, 11, "Epsilon0", capacity.LastSolver.Epsilon0, "", "Параметр плоскости деформаций"
-        PutRow target, 12, "KappaX", capacity.LastSolver.KappaX, "1/mm", "Кривизна, связанная с координатой y"
-        PutRow target, 13, "KappaY", capacity.LastSolver.KappaY, "1/mm", "Кривизна, связанная с координатой x"
-        PutRow target, 14, "StrainLimits", capacity.LastSolver.MinConcreteStrain, "", "MaxAbsSteelStrain=" & CStr(capacity.LastSolver.MaxAbsSteelStrain)
+        PutRow rows, 11, "Epsilon0", capacity.LastSolver.Epsilon0, "", "Параметр плоскости деформаций"
+        PutRow rows, 12, "KappaX", OutputCurvature(capacity.LastSolver.KappaX, units), OutputCurvatureUnit(units), "Кривизна, связанная с координатой y"
+        PutRow rows, 13, "KappaY", OutputCurvature(capacity.LastSolver.KappaY, units), OutputCurvatureUnit(units), "Кривизна, связанная с координатой x"
+        PutRow rows, 14, "StrainLimits", capacity.LastSolver.MinConcreteStrain, "", "MaxAbsSteelStrain=" & CStr(capacity.LastSolver.MaxAbsSteelStrain)
     End If
+    WriteResultRows target, rows
 End Sub
 
-Private Sub WriteDirectResult(ByVal workbook As Object, ByVal rangeName As String, ByVal solver As CSectionSolver)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 3604, "CCapacityResultWriter", "Workbook is missing."
-    If solver Is Nothing Then Err.Raise vbObjectError + 3605, "CCapacityResultWriter", "Section solver result is missing."
+Private Sub WriteDirectResult(ByVal workbook As Object, ByVal rangeName As String, ByVal solver As CSectionSolver, ByVal units As CUnitSystem)
+    If workbook Is Nothing Then Err.Raise vbObjectError + 3604, "CCapacityResultWriter", "Книга Excel не передана."
+    If solver Is Nothing Then Err.Raise vbObjectError + 3605, "CCapacityResultWriter", "Результат решателя сечения не передан."
 
     Dim target As Object
     Set target = workbook.Names.Item(rangeName).RefersToRange
-    ClearResultRange target
 
-    PutRow target, 1, "Indicator", "Value", "Unit", "Comment"
-    PutRow target, 2, "Mode", "N+Mx+My", "", "Прямой расчет НДС через CSectionSolver"
-    PutRow target, 3, "Converged", IIf(solver.Converged, "Yes", "No"), "", solver.StopReason
-    PutRow target, 4, "LimitState", "NotCalculated", "", "Поиск несущей способности отключен выбранным режимом Calculation.Mode"
-    PutRow target, 5, "LambdaUltimate", "NotCalculated", "", "Для расчета задайте Calculation.Mode = FullCapacity"
-    PutRow target, 6, "MxUltimate", "NotCalculated", "kN*m", "Поиск несущей способности отключен"
-    PutRow target, 7, "MyUltimate", "NotCalculated", "kN*m", "Поиск несущей способности отключен"
-    PutRow target, 8, "MomentResultant", "NotCalculated", "kN*m", "Поиск несущей способности отключен"
-    PutRow target, 9, "SafetyFactor", "NotCalculated", "", "Выполнен только прямой расчет заданного состояния"
-    PutRow target, 10, "MomentResidual", Sqr(solver.ResidualMx ^ 2 + solver.ResidualMy ^ 2), "N*mm", "Невязка равновесия прямого расчета"
-    PutRow target, 11, "Epsilon0", solver.Epsilon0, "", "Параметр плоскости деформаций"
-    PutRow target, 12, "KappaX", solver.KappaX, "1/mm", "Кривизна, связанная с координатой y"
-    PutRow target, 13, "KappaY", solver.KappaY, "1/mm", "Кривизна, связанная с координатой x"
-    PutRow target, 14, "StrainLimits", solver.MinConcreteStrain, "", "MaxAbsSteelStrain=" & CStr(solver.MaxAbsSteelStrain)
+    Dim rows As Variant
+    rows = EmptyResultRows(target.Rows.Count)
+    PutRow rows, 1, "Indicator", "Value", "Unit", "Comment"
+    PutRow rows, 2, "Mode", "N+Mx+My", "", "Прямой расчет НДС через CSectionSolver"
+    PutRow rows, 3, "Converged", IIf(solver.Converged, "Yes", "No"), "", solver.StopReason
+    PutRow rows, 4, "LimitState", "NotCalculated", "", "Поиск несущей способности отключен выбранным режимом Calculation.Mode"
+    PutRow rows, 5, "LambdaUltimate", "NotCalculated", "", "Для расчета задайте Calculation.Mode = FullCapacity"
+    PutRow rows, 6, "MxUltimate", "NotCalculated", OutputMomentUnit(units), "Поиск несущей способности отключен"
+    PutRow rows, 7, "MyUltimate", "NotCalculated", OutputMomentUnit(units), "Поиск несущей способности отключен"
+    PutRow rows, 8, "MomentResultant", "NotCalculated", OutputMomentUnit(units), "Поиск несущей способности отключен"
+    PutRow rows, 9, "SafetyFactor", "NotCalculated", "", "Выполнен только прямой расчет заданного состояния"
+    PutRow rows, 10, "MomentResidual", OutputMomentMagnitude(Sqr(solver.ResidualMx ^ 2 + solver.ResidualMy ^ 2), units), OutputMomentUnit(units), "Невязка равновесия прямого расчета"
+    PutRow rows, 11, "Epsilon0", solver.Epsilon0, "", "Параметр плоскости деформаций"
+    PutRow rows, 12, "KappaX", OutputCurvature(solver.KappaX, units), OutputCurvatureUnit(units), "Кривизна, связанная с координатой y"
+    PutRow rows, 13, "KappaY", OutputCurvature(solver.KappaY, units), OutputCurvatureUnit(units), "Кривизна, связанная с координатой x"
+    PutRow rows, 14, "StrainLimits", solver.MinConcreteStrain, "", "MaxAbsSteelStrain=" & CStr(solver.MaxAbsSteelStrain)
+    WriteResultRows target, rows
 End Sub
 
-Private Sub WriteLinearResult(ByVal workbook As Object, ByVal rangeName As String, ByVal solver As CLinearSectionSolver)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 3606, "CCapacityResultWriter", "Workbook is missing."
-    If solver Is Nothing Then Err.Raise vbObjectError + 3607, "CCapacityResultWriter", "Linear solver result is missing."
+Private Sub WriteCrackResultToRange(ByVal workbook As Object, ByVal rangeName As String, ByVal crack As CCrackWidthCalculator, ByVal units As CUnitSystem)
+    If workbook Is Nothing Then Err.Raise vbObjectError + 3602, "CCapacityResultWriter", "Книга Excel не передана."
+    If crack Is Nothing Then Err.Raise vbObjectError + 3603, "CCapacityResultWriter", "Результат расчета трещин не передан."
 
     Dim target As Object
     Set target = workbook.Names.Item(rangeName).RefersToRange
-    ClearResultRange target
 
-    PutRow target, 1, "Indicator", "Value", "Unit", "Comment"
-    PutRow target, 2, "Mode", "N+Mx+My", "", "Линейно-упругий матричный расчет через CLinearSectionSolver"
-    PutRow target, 3, "Converged", IIf(solver.Converged, "Yes", "No"), "", solver.StopReason
-    PutRow target, 4, "LimitState", "NotCalculated", "", "Линейный режим не определяет предельное состояние"
-    PutRow target, 5, "LambdaUltimate", "NotCalculated", "", "Для расчета задайте Calculation.Mode = FullCapacity"
-    PutRow target, 6, "MxUltimate", "NotCalculated", "kN*m", "Линейный матричный режим"
-    PutRow target, 7, "MyUltimate", "NotCalculated", "kN*m", "Линейный матричный режим"
-    PutRow target, 8, "MomentResultant", "NotCalculated", "kN*m", "Линейный матричный режим"
-    PutRow target, 9, "SafetyFactor", "NotCalculated", "", "Выполнен только линейно-упругий расчет состояния"
-    PutRow target, 10, "MomentResidual", Sqr(solver.ResidualMx ^ 2 + solver.ResidualMy ^ 2), "N*mm", "Невязка равновесия линейного расчета"
-    PutRow target, 11, "Epsilon0", solver.Epsilon0, "", "Параметр линейной плоскости деформаций"
-    PutRow target, 12, "KappaX", solver.KappaX, "1/mm", "Линейная кривизна, связанная с координатой y"
-    PutRow target, 13, "KappaY", solver.KappaY, "1/mm", "Линейная кривизна, связанная с координатой x"
-    PutRow target, 14, "StrainLimits", solver.MinConcreteStrain, "", "MaxAbsSteelStrain=" & CStr(MaxLinearSteelStrain(solver))
-    PutRow target, 16, "CrackConverged", "NotCalculated", "", "Ширина трещин не рассчитывается в режиме LinearMatrix"
-    PutRow target, 17, "CrackWidth", "NotCalculated", "mm", "Используйте Calculation.Mode = DirectState или FullCapacity"
+    Dim rows As Variant
+    rows = EmptyResultRows(4)
+    PutRow rows, 1, "CrackConverged", IIf(crack.Converged, "Yes", "No"), "", crack.StopReason
+    PutRow rows, 2, "CrackWidth", OutputLength(crack.CrackWidth, units), OutputLengthUnit(units), "Уже образовавшаяся нормальная трещина"
+    PutRow rows, 3, "CrackAllowable", OutputLength(crack.AllowableCrackWidth, units), OutputLengthUnit(units), "Utilization=" & CStr(crack.Utilization)
+    PutRow rows, 4, "SteelMax", crack.MaxSteelStrain, "", "Stress=" & CStr(OutputStress(crack.MaxSteelStress, units)) & " " & OutputStressUnit(units) & "; tensionBars=" & CStr(crack.TensionRebarCount)
+    WriteResultRows target.Offset(15, 0).Resize(4, target.Columns.Count), rows
 End Sub
 
-Private Function MaxLinearSteelStrain(ByVal solver As CLinearSectionSolver) As Double
-    Dim result As Double
-    Dim i As Long
-    For i = 1 To solver.RebarCount
-        If Abs(solver.RebarStrain(i)) > result Then result = Abs(solver.RebarStrain(i))
-    Next i
-    MaxLinearSteelStrain = result
+Private Function OutputMx(ByVal value As Double, ByVal units As CUnitSystem) As Double
+    If units Is Nothing Then OutputMx = value / 1000000#: Exit Function
+    OutputMx = units.InternalMomentMxToOutput(value)
 End Function
 
-Private Sub ClearResultRange(ByVal target As Object)
-    Dim rowIndex As Long
-    Dim colIndex As Variant
-    For rowIndex = 1 To target.Rows.Count
-        For Each colIndex In Array(1, 5, 9, 13)
-            If Not target.Cells.Item(rowIndex, CLng(colIndex)).MergeCells Then
-                target.Cells.Item(rowIndex, CLng(colIndex)).ClearContents
-            End If
-        Next colIndex
-    Next rowIndex
-End Sub
+Private Function OutputMy(ByVal value As Double, ByVal units As CUnitSystem) As Double
+    If units Is Nothing Then OutputMy = value / 1000000#: Exit Function
+    OutputMy = units.InternalMomentMyToOutput(value)
+End Function
 
-Public Sub WriteCrackResult(ByVal workbook As Object, ByVal crack As CCrackWidthCalculator)
-    WriteCrackResultToRange workbook, "rngResultSection", crack
-End Sub
+Private Function OutputMomentMagnitude(ByVal value As Double, ByVal units As CUnitSystem) As Double
+    If units Is Nothing Then OutputMomentMagnitude = value / 1000000#: Exit Function
+    OutputMomentMagnitude = units.InternalMomentMagnitudeToOutput(value)
+End Function
 
-Private Sub WriteCrackResultToRange(ByVal workbook As Object, ByVal rangeName As String, ByVal crack As CCrackWidthCalculator)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 3602, "CCapacityResultWriter", "Workbook is missing."
-    If crack Is Nothing Then Err.Raise vbObjectError + 3603, "CCapacityResultWriter", "Crack result is missing."
+Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
+    If units Is Nothing Then OutputLength = value: Exit Function
+    OutputLength = units.InternalLengthToOutput(value)
+End Function
 
-    Dim target As Object
-    Set target = workbook.Names.Item(rangeName).RefersToRange
-    PutRow target, 16, "CrackConverged", IIf(crack.Converged, "Yes", "No"), "", crack.StopReason
-    PutRow target, 17, "CrackWidth", crack.CrackWidth, "mm", "Уже образовавшаяся нормальная трещина"
-    PutRow target, 18, "CrackAllowable", crack.AllowableCrackWidth, "mm", "Utilization=" & CStr(crack.Utilization)
-    PutRow target, 19, "SteelMax", crack.MaxSteelStrain, "", "StressMPa=" & CStr(crack.MaxSteelStress) & "; tensionBars=" & CStr(crack.TensionRebarCount)
-End Sub
-Private Sub PutRow(ByVal target As Object, ByVal rowIndex As Long, _
+Private Function OutputStress(ByVal value As Double, ByVal units As CUnitSystem) As Double
+    If units Is Nothing Then OutputStress = value: Exit Function
+    OutputStress = units.InternalStressToOutput(value)
+End Function
+
+Private Function OutputCurvature(ByVal value As Double, ByVal units As CUnitSystem) As Double
+    If units Is Nothing Then OutputCurvature = value: Exit Function
+    OutputCurvature = units.InternalCurvatureToOutput(value)
+End Function
+
+Private Function OutputMomentUnit(ByVal units As CUnitSystem) As String
+    If units Is Nothing Then OutputMomentUnit = "kN*m" Else OutputMomentUnit = units.OutputMomentUnit
+End Function
+
+Private Function OutputLengthUnit(ByVal units As CUnitSystem) As String
+    If units Is Nothing Then OutputLengthUnit = "mm" Else OutputLengthUnit = units.OutputLengthUnit
+End Function
+
+Private Function OutputStressUnit(ByVal units As CUnitSystem) As String
+    If units Is Nothing Then OutputStressUnit = "MPa" Else OutputStressUnit = units.OutputStressUnit
+End Function
+
+Private Function OutputCurvatureUnit(ByVal units As CUnitSystem) As String
+    If units Is Nothing Then OutputCurvatureUnit = "1/mm" Else OutputCurvatureUnit = units.OutputCurvatureUnit
+End Function
+
+Private Function EmptyResultRows(ByVal rowCount As Long) As Variant
+    Dim rows() As Variant
+    ReDim rows(1 To rowCount, 1 To 4)
+    EmptyResultRows = rows
+End Function
+
+Private Sub PutRow(ByRef rows As Variant, ByVal rowIndex As Long, _
         ByVal indicator As Variant, ByVal value As Variant, ByVal unitName As Variant, ByVal comment As Variant)
-    target.Cells.Item(rowIndex, 1).Value2 = indicator
-    target.Cells.Item(rowIndex, 5).Value2 = value
-    target.Cells.Item(rowIndex, 9).Value2 = unitName
-    target.Cells.Item(rowIndex, 13).Value2 = comment
+    rows(rowIndex, 1) = indicator
+    rows(rowIndex, 2) = value
+    rows(rowIndex, 3) = unitName
+    rows(rowIndex, 4) = comment
 End Sub
 
+Private Sub WriteResultRows(ByVal target As Object, ByRef rows As Variant)
+    Dim rowCount As Long
+    rowCount = UBound(rows, 1)
+    WriteResultColumn target, 1, rows, 1, rowCount
+    WriteResultColumn target, 5, rows, 2, rowCount
+    WriteResultColumn target, 9, rows, 3, rowCount
+    WriteResultColumn target, 13, rows, 4, rowCount
+End Sub
 
+Private Sub WriteResultColumn(ByVal target As Object, ByVal targetColumn As Long, _
+        ByRef rows As Variant, ByVal sourceColumn As Long, ByVal rowCount As Long)
+    Dim columnData() As Variant
+    ReDim columnData(1 To rowCount, 1 To 1)
 
+    Dim rowIndex As Long
+    For rowIndex = 1 To rowCount
+        columnData(rowIndex, 1) = rows(rowIndex, sourceColumn)
+    Next rowIndex
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    target.Offset(0, targetColumn - 1).Resize(rowCount, 1).Value2 = columnData
+End Sub

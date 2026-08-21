@@ -124,22 +124,25 @@ try {
         $sheetNames += [string]$sheet.Name
     }
 
-    Add-Check $checks "Sheets Расчет/System" (($sheetNames -contains "Расчет") -and ($sheetNames -contains "System")) ($sheetNames -join ", ")
+    Add-Check $checks "Sheets Расчет/System/Results" (($sheetNames -contains "Расчет") -and ($sheetNames -contains "System") -and ($sheetNames -contains "Results")) ($sheetNames -join ", ")
 
     $requiredNames = @(
-        "rngMainInput",
-        "rngRebarInput",
         "rngLoadCombinations",
         "rngResultSection",
+        "rngUnitSettings",
+        "rngSignConventionSettings",
+        "rngPlotAnnotationSettings",
         "rngSystemSettings",
-        "rngSystemDiagnostics",
-        "SolverSettings",
-        "CapacitySettings",
-        "ConcreteDiagram",
-        "SteelDiagram",
-        "GeometrySettings",
-        "OutputSettings",
-        "AutoCADSettings"
+        "rngCircleGeometry",
+        "rngRoundedRectangleGeometry",
+        "rngLShapeGeometry",
+        "rngBatchSummary",
+        "rngConcreteDiagramPoints",
+        "rngSteelDiagramPoints",
+        "rngNDMElementResults",
+        "rngNDMSectionGeometry",
+        "rngNDMSectionProperties",
+        "rngNDMSectionAnnotations"
     )
 
     $actualNames = @()
@@ -150,12 +153,33 @@ try {
     $missingNames = @($requiredNames | Where-Object { $actualNames -notcontains $_ })
     Add-Check $checks "Required named ranges" ($missingNames.Count -eq 0) ("Missing: " + ($missingNames -join ", "))
 
+    if ($missingNames.Count -eq 0) {
+        $batchSummaryRange = $workbook.Names.Item("rngBatchSummary").RefersToRange
+        $elementResultsRange = $workbook.Names.Item("rngNDMElementResults").RefersToRange
+        $geometryResultsRange = $workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
+        $sectionPropertiesRange = $workbook.Names.Item("rngNDMSectionProperties").RefersToRange
+        $sectionAnnotationsRange = $workbook.Names.Item("rngNDMSectionAnnotations").RefersToRange
+        Add-Check $checks "Results ranges layout" (
+            ([string]$batchSummaryRange.Worksheet.Name -eq "Results") -and
+            ($batchSummaryRange.Row -eq 1) -and ($batchSummaryRange.Column -eq 1) -and
+            ($elementResultsRange.Row -eq 32) -and ($elementResultsRange.Column -eq 1) -and
+            ($geometryResultsRange.Row -eq 32) -and ($geometryResultsRange.Column -eq 10) -and
+            ($sectionPropertiesRange.Row -eq 32) -and ($sectionPropertiesRange.Column -eq 29) -and
+            ($sectionAnnotationsRange.Row -eq 32) -and ($sectionAnnotationsRange.Column -eq 38)
+        ) ("batch=$($batchSummaryRange.Worksheet.Name)!R$($batchSummaryRange.Row)C$($batchSummaryRange.Column); elements=R$($elementResultsRange.Row)C$($elementResultsRange.Column); geometry=R$($geometryResultsRange.Row)C$($geometryResultsRange.Column); properties=R$($sectionPropertiesRange.Row)C$($sectionPropertiesRange.Column); annotations=R$($sectionAnnotationsRange.Row)C$($sectionAnnotationsRange.Column)")
+    }
+
     $duplicates = @($actualNames | Group-Object | Where-Object { $_.Count -gt 1 } | ForEach-Object { $_.Name })
     Add-Check $checks "No duplicate names" ($duplicates.Count -eq 0) ("Duplicates: " + ($duplicates -join ", "))
 
-    $obsoleteNames = @("rngResultMx", "rngResultMy", "rngResultMxy")
+    $obsoleteNames = @(
+        "rngResultMx", "rngResultMy", "rngResultMxy", "rngMainInput", "rngRebarInput",
+        "rngSystemDiagnostics",
+        "SolverSettings", "CapacitySettings", "ConcreteDiagram", "SteelDiagram", "GeometrySettings",
+        "OutputSettings", "AutoCADSettings"
+    )
     $presentObsoleteNames = @($obsoleteNames | Where-Object { $actualNames -contains $_ })
-    Add-Check $checks "No obsolete Mx/My result ranges" ($presentObsoleteNames.Count -eq 0) ("Present: " + ($presentObsoleteNames -join ", "))
+    Add-Check $checks "No obsolete named ranges" ($presentObsoleteNames.Count -eq 0) ("Present: " + ($presentObsoleteNames -join ", "))
 
     $calc = $workbook.Worksheets.Item("Расчет")
     $system = $workbook.Worksheets.Item("System")
@@ -176,10 +200,10 @@ try {
     $hasBreaks = -not (@($expectedBreakColumns | Where-Object { $breakColumns -notcontains $_ }).Count)
     Add-Check $checks "Vertical page breaks" $hasBreaks ("Columns: " + ($breakColumns -join ", "))
 
-    $main = $workbook.Names.Item("rngMainInput").RefersToRange
     $sectionResult = $workbook.Names.Item("rngResultSection").RefersToRange
-    $leftToRight = ($main.Column -lt $sectionResult.Column)
-    Add-Check $checks "Input and result blocks left to right" $leftToRight ("Columns: main=$($main.Column), section=$($sectionResult.Column)")
+    $loadsRangeForLayout = $workbook.Names.Item("rngLoadCombinations").RefersToRange
+    $leftToRight = ($loadsRangeForLayout.Column -lt $sectionResult.Column)
+    Add-Check $checks "Load and result blocks left to right" $leftToRight ("Columns: loads=$($loadsRangeForLayout.Column), section=$($sectionResult.Column)")
 
     $settings = $workbook.Names.Item("rngSystemSettings").RefersToRange
     $expectedSettingsHeaders = @("Параметр", "Значение", "Ед.", "Комментарий")
@@ -199,26 +223,84 @@ try {
     $duplicateSettingKeys = @($settingKeys | Group-Object | Where-Object { $_.Count -gt 1 } | ForEach-Object { $_.Name })
     Add-Check $checks "No duplicate System keys" ($duplicateSettingKeys.Count -eq 0) ("Duplicates: " + ($duplicateSettingKeys -join ", "))
 
-    $obsoleteSettingKeys = @("Capacity.Enabled", "Capacity.CalculateMx", "Capacity.CalculateMy", "Capacity.CalculateMxy", "Mesh.BoundaryMode", "Circle.Radius", "Batch.MaxCombinations", "Batch.Diagnostics", "Materials.SourceStatus", "Concrete.Diagram", "Steel.Diagram")
+    $obsoleteSettingKeys = @(
+        "Capacity.Enabled", "Capacity.CalculateMx", "Capacity.CalculateMy",
+        "Capacity.CalculateMxy", "Mesh.BoundaryMode", "Mesh.StepX", "Mesh.StepY", "Circle.Radius",
+        "Batch.MaxCombinations", "Batch.Diagnostics", "Materials.SourceStatus",
+        "Concrete.Diagram", "Steel.Diagram",
+        "Concrete.Point1.Eps", "Concrete.Point1.Stress",
+        "Concrete.Point2.Eps", "Concrete.Point2.Stress",
+        "Concrete.Point3.Eps", "Concrete.Point3.Stress",
+        "Steel.Point1.Eps", "Steel.Point1.Stress",
+        "Steel.Point2.Eps", "Steel.Point2.Stress",
+        "Steel.Point3.Eps", "Steel.Point3.Stress",
+        "Circle.CenterX", "Circle.CenterY",
+        "LShape.OriginX", "LShape.OriginY",
+        "Plot.DimensionsEnabled", "Plot.RebarLabelsEnabled"
+    )
     $presentObsoleteSettings = @($obsoleteSettingKeys | Where-Object { $settingKeys -contains $_ })
     Add-Check $checks "No obsolete System settings" ($presentObsoleteSettings.Count -eq 0) ("Present: " + ($presentObsoleteSettings -join ", "))
 
-    $rebar = $workbook.Names.Item("rngRebarInput").RefersToRange
-    $expectedRebarHeaders = @("ID", "X", "Y", "Diameter", "Area", "SteelClass", "Comment")
-    $actualRebarHeaders = @()
-    for ($i = 1; $i -le $expectedRebarHeaders.Count; $i++) {
-        $actualRebarHeaders += [string]$rebar.Cells.Item(1, $i).Value2
+    $solverMethodCell = $null
+    for ($i = 2; $i -le $settings.Rows.Count; $i++) {
+        if ([string]$settings.Cells.Item($i, 1).Value2 -eq "Solver.Method") {
+            $solverMethodCell = $settings.Cells.Item($i, 2)
+            break
+        }
     }
-    Add-Check $checks "Rebar table headers" (($actualRebarHeaders -join "|") -eq ($expectedRebarHeaders -join "|")) ($actualRebarHeaders -join " | ")
+    $solverMethodDefaultOk = ($solverMethodCell -ne $null) -and ([string]$solverMethodCell.Value2 -eq "Newton")
+    Add-Check $checks "Solver.Method default" $solverMethodDefaultOk ("Value=" + [string]$(if ($solverMethodCell -eq $null) { "" } else { $solverMethodCell.Value2 }))
+
+    $solverValidationOk = $false
+    $solverValidationDetails = "Missing Solver.Method"
+    if ($solverMethodCell -ne $null) {
+        try {
+            $formula = [string]$solverMethodCell.Validation.Formula1
+            $solverValidationDetails = "Formula1=$formula"
+            if ($formula.StartsWith("=")) {
+                $validationRange = $system.Range($formula.Substring(1))
+                $values = @()
+                foreach ($cell in $validationRange.Cells) {
+                    $value = [string]$cell.Value2
+                    if (-not [string]::IsNullOrWhiteSpace($value)) { $values += $value }
+                }
+                $solverValidationDetails = "Values=" + ($values -join ", ")
+                $solverValidationOk = (($values.Count -eq 2) -and ($values[0] -eq "Newton") -and ($values[1] -eq "Secant"))
+            }
+            else {
+                $values = @($formula -split "," | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+                $solverValidationDetails = "Values=" + ($values -join ", ")
+                $solverValidationOk = (($values.Count -eq 2) -and ($values[0] -eq "Newton") -and ($values[1] -eq "Secant"))
+            }
+        }
+        catch {
+            $solverValidationDetails = $_.Exception.Message
+        }
+    }
+    Add-Check $checks "Solver.Method validation list" $solverValidationOk $solverValidationDetails
+
+    $concretePoints = $workbook.Names.Item("rngConcreteDiagramPoints").RefersToRange
+    $steelPoints = $workbook.Names.Item("rngSteelDiagramPoints").RefersToRange
+    Add-Check $checks "Concrete diagram point table" (($concretePoints.Columns.Count -eq 3) -and ($concretePoints.Rows.Count -eq 10)) ("Rows=$($concretePoints.Rows.Count); Columns=$($concretePoints.Columns.Count)")
+    Add-Check $checks "Steel diagram point table" (($steelPoints.Columns.Count -eq 3) -and ($steelPoints.Rows.Count -eq 10)) ("Rows=$($steelPoints.Rows.Count); Columns=$($steelPoints.Columns.Count)")
 
     $loads = $workbook.Names.Item("rngLoadCombinations").RefersToRange
-    $expectedLoadHeaders = @("CombinationID", "N", "Mx", "My", "CalculationType", "DurationType", "Comment")
+    $expectedLoadHeaders = @("CombinationID", "N, tf", "Mx, tf*m", "My, tf*m", "CalculationType", "DurationType", "Comment")
     $actualLoadHeaders = @()
     for ($i = 1; $i -le 7; $i++) {
         $actualLoadHeaders += [string]$loads.Cells.Item(1, $i).Value2
     }
     Add-Check $checks "Load combinations table headers" (($actualLoadHeaders -join "|") -eq ($expectedLoadHeaders -join "|")) ($actualLoadHeaders -join " | ")
     Add-Check $checks "Formulas allowed on workbook sheets" $true "Excel formulas are allowed and preferred for transparent user-level calculations; VBA validation covers workbook structure."
+
+    $excelSourceDir = Join-Path $root "src/Excel"
+    $cellItemMatches = @(
+        Get-ChildItem -LiteralPath $excelSourceDir -File |
+            Where-Object { $_.Extension -in @(".bas", ".cls") } |
+            Select-String -Pattern "Cells\.Item" |
+            ForEach-Object { "$($_.Path):$($_.LineNumber)" }
+    )
+    Add-Check $checks "Runtime Excel IO uses bulk ranges" ($cellItemMatches.Count -eq 0) ("Cells.Item matches: " + ($cellItemMatches -join "; "))
 }
 finally {
     if ($workbook -ne $null) {

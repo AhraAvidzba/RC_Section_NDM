@@ -239,8 +239,7 @@ function Add-ResultBlock {
     Add-SectionTitle $Sheet 16 $StartColumn ($StartColumn + 17) "Результаты"
     $resultHeaders = @("Показатель", "Значение", "Ед.", "Комментарий")
     for ($i = 0; $i -lt $resultHeaders.Count; $i++) {
-        $cell = Set-Cell $Sheet 18 ($StartColumn + $i * 4) $resultHeaders[$i] -Bold -InteriorColor 14277081
-        $Sheet.Range($cell, $Sheet.Cells.Item(18, $StartColumn + $i * 4 + 3)).Merge() | Out-Null
+        Set-Cell $Sheet 18 ($StartColumn + $i * 4) $resultHeaders[$i] -Bold -InteriorColor 14277081 | Out-Null
     }
     $resultRange = $Sheet.Range($Sheet.Cells.Item(18, $StartColumn), $Sheet.Cells.Item(36, $StartColumn + 15))
     Set-Border $resultRange
@@ -252,41 +251,16 @@ function Add-ResultBlock {
 function Add-MainInputBlock {
     param([object]$Sheet)
 
-    Add-BlockHeader $Sheet 1 "Исходные данные"
-
-    Add-SectionTitle $Sheet 4 1 18 "Геометрия и материалы"
-    $mainRows = @(
-        @("Объект / элемент", "", "", ""),
-        @("Тип сечения", "RoundedRectangle", "", "Задается на листе System"),
-        @("Ширина", "", "мм", ""),
-        @("Высота", "", "мм", ""),
-        @("Радиус верхний левый", "", "мм", ""),
-        @("Радиус верхний правый", "", "мм", ""),
-        @("Радиус нижний правый", "", "мм", ""),
-        @("Радиус нижний левый", "", "мм", ""),
-        @("Диаметр круга", "", "мм", "Используется при Geometry.Type = Circle"),
-        @("Центр круга X", "0", "мм", "Используется при Geometry.Type = Circle"),
-        @("Центр круга Y", "0", "мм", "Используется при Geometry.Type = Circle"),
-        @("Класс бетона", "", "", ""),
-        @("Класс арматуры", "", "", ""),
-        @("Защитный слой до оси арматуры", "", "мм", ""),
-        @("Диаметр стержней", "", "мм", "Для автоматической арматуры круглого сечения")
-    )
-    Add-KeyValueRows $Sheet 6 1 $mainRows
-
-    Add-SectionTitle $Sheet 23 1 18 "Контрольная таблица арматуры"
-    $rebarHeaders = @("ID", "X", "Y", "Diameter", "Area", "SteelClass", "Comment")
-    for ($i = 0; $i -lt $rebarHeaders.Count; $i++) {
-        Set-Cell $Sheet 25 ($i + 1) $rebarHeaders[$i] -Bold -InteriorColor 14277081 | Out-Null
-    }
-    $rebarRange = $Sheet.Range($Sheet.Cells.Item(25, 1), $Sheet.Cells.Item(35, 7))
-    Set-Border $rebarRange
+    Add-BlockHeader $Sheet 1 "Сочетания нагрузок"
 
     Add-SectionTitle $Sheet 38 1 18 "Сочетания нагрузок"
     $loadHeaders = @("CombinationID", "N", "Mx", "My", "CalculationType", "DurationType", "Comment")
     for ($i = 0; $i -lt $loadHeaders.Count; $i++) {
         Set-Cell $Sheet 40 ($i + 1) $loadHeaders[$i] -Bold -InteriorColor 14277081 | Out-Null
     }
+    $Sheet.Cells.Item(40, 2).Formula = '="N, "&INDEX(rngUnitSettings,MATCH("Force",INDEX(rngUnitSettings,,1),0),2)'
+    $Sheet.Cells.Item(40, 3).Formula = '="Mx, "&INDEX(rngUnitSettings,MATCH("Moment",INDEX(rngUnitSettings,,1),0),2)'
+    $Sheet.Cells.Item(40, 4).Formula = '="My, "&INDEX(rngUnitSettings,MATCH("Moment",INDEX(rngUnitSettings,,1),0),2)'
     $loadRange = $Sheet.Range($Sheet.Cells.Item(40, 1), $Sheet.Cells.Item(60, 7))
     Set-Border $loadRange
 }
@@ -322,6 +296,15 @@ function Add-CalculationButtons {
     $acadButton.Line.ForeColor.RGB = 10053171
     $acadButton.TextFrame.Characters().Font.Color = 16777215
     $acadButton.TextFrame.Characters().Font.Bold = $true
+
+    $plotButton = $Sheet.Shapes.AddShape(1, $left, $top + 108, 150, 28)
+    $plotButton.Name = "btnUpdateSectionPlot"
+    $plotButton.TextFrame.Characters().Text = "Обновить схему"
+    $plotButton.OnAction = "UpdateSectionPlot"
+    $plotButton.Fill.ForeColor.RGB = 5287936
+    $plotButton.Line.ForeColor.RGB = 5287936
+    $plotButton.TextFrame.Characters().Font.Color = 16777215
+    $plotButton.TextFrame.Characters().Font.Bold = $true
 }
 
 $root = Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "../..")
@@ -341,17 +324,19 @@ try {
 
     $workbook = $excel.Workbooks.Add()
 
-    while ($workbook.Worksheets.Count -lt 2) {
+    while ($workbook.Worksheets.Count -lt 3) {
         $workbook.Worksheets.Add() | Out-Null
     }
-    while ($workbook.Worksheets.Count -gt 2) {
+    while ($workbook.Worksheets.Count -gt 3) {
         $workbook.Worksheets.Item($workbook.Worksheets.Count).Delete()
     }
 
     $calc = $workbook.Worksheets.Item(1)
     $system = $workbook.Worksheets.Item(2)
+    $results = $workbook.Worksheets.Item(3)
     $calc.Name = "Расчет"
     $system.Name = "System"
+    $results.Name = "Results"
 
     Add-MainInputBlock $calc
     Add-ResultBlock $calc 19 "Расчет N + Mx + My"
@@ -378,11 +363,23 @@ try {
     $system.Columns.Item(5).ColumnWidth = 48
     $system.Columns.Item(6).ColumnWidth = 34
     $system.Columns.Item(7).ColumnWidth = 22
+    $results.Range("A1:N1").Font.Bold = $true
+    $results.Range("A32:F32").Font.Bold = $true
+    $results.Range("J32:Y32").Font.Bold = $true
+    $results.Range("AC32:AH32").Font.Bold = $true
+    $results.Range("AL32:AY32").Font.Bold = $true
+    $results.Columns.Item(1).ColumnWidth = 20
+    $results.Columns.Item(10).ColumnWidth = 20
+    $results.Columns.Item(29).ColumnWidth = 20
+    $results.Columns.Item(38).ColumnWidth = 20
 
-    Add-WorkbookName $workbook "rngMainInput" $calc '$A$6:$Q$20'
-    Add-WorkbookName $workbook "rngRebarInput" $calc '$A$25:$G$34'
     Add-WorkbookName $workbook "rngLoadCombinations" $calc '$A$40:$G$60'
     Add-WorkbookName $workbook "rngResultSection" $calc '$S$17:$AH$35'
+    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$N$29'
+    Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$32'
+    Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$J$32'
+    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AC$32'
+    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$AL$32'
 
     $calc.PageSetup.PaperSize = 9
     $calc.PageSetup.Orientation = 1

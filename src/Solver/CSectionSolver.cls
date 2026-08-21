@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -40,9 +40,20 @@ Private mMinLineSearchAlpha As Double
 Private mMaxDeltaEpsilon0 As Double
 Private mMaxDeltaKappa As Double
 Private mDiagnosticsEnabled As Boolean
+Private mSolverMethod As String
+Private mSecantMaxRestarts As Long
+Private mSecantMinStepNorm As Double
 Private mDiagnosticLog As String
 Private mLastAlpha As Double
 Private mLastDeltaScale As Double
+Private mLastResidualNorm As Double
+Private mLastStepNorm As Double
+Private mLastMatrixConditionEstimate As Double
+Private mMatrixRestartCount As Long
+Private mLineSearchUsed As Boolean
+Private mLineSearchIterations As Long
+Private mInternalForceEvaluationCount As Long
+Private mInternalNewtonCallCount As Long
 Private mUseInitialState As Boolean
 Private mInitialEpsilon0 As Double
 Private mInitialKappaX As Double
@@ -64,9 +75,12 @@ Private Sub Class_Initialize()
     mMaxDeltaEpsilon0 = 0.0005
     mMaxDeltaKappa = 0.00001
     mDiagnosticsEnabled = True
+    mSolverMethod = "Newton"
+    mSecantMaxRestarts = 2
+    mSecantMinStepNorm = 0.000000000001
 End Sub
 
-Public Sub ApplySettings(ByVal settings As CSystemSettingsReader)
+Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
     mMaxIterations = settings.GetLong("Solver.MaxIterations", mMaxIterations)
     mLoadSteps = settings.GetLong("Solver.LoadSteps", mLoadSteps)
@@ -78,15 +92,28 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader)
     mMinLineSearchAlpha = settings.GetDouble("Solver.MinLineSearchAlpha", mMinLineSearchAlpha)
     mMaxDeltaEpsilon0 = settings.GetDouble("Solver.MaxDeltaEpsilon0", mMaxDeltaEpsilon0)
     mMaxDeltaKappa = settings.GetDouble("Solver.MaxDeltaKappa", mMaxDeltaKappa)
-    mDiagnosticsEnabled = settings.GetBoolean("Solver.DiagnosticsEnabled", mDiagnosticsEnabled)
+    If settings.HasKey("Solver.Method") Then
+        mSolverMethod = settings.GetRawString("Solver.Method", vbNullString)
+    Else
+        mSolverMethod = "Newton"
+    End If
+    mSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSecantMaxRestarts)
+    mSecantMinStepNorm = settings.GetDouble("Solver.SecantMinStepNorm", mSecantMinStepNorm)
+    If Not units Is Nothing Then
+        mToleranceN = Abs(units.InputForceToInternal(mToleranceN))
+        mToleranceMx = Abs(units.InputMomentMxToInternal(mToleranceMx))
+        mToleranceMy = Abs(units.InputMomentMyToInternal(mToleranceMy))
+        mMaxDeltaKappa = Abs(units.InputCurvatureToInternal(mMaxDeltaKappa))
+    End If
 End Sub
 
-Public Sub Solve(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
+Public Sub Solve(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double)
 
     ClearResult
-    ValidateInputs mesh, concreteMaterial, steelMaterial
+    ValidateInputs section, concreteMaterial, steelMaterial
+    If Not ValidateSolverMethod() Then Exit Sub
     If mUseInitialState Then
         mEpsilon0 = mInitialEpsilon0
         mKappaX = mInitialKappaX
@@ -112,34 +139,66 @@ Public Sub Solve(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, 
         stepMx = startMx + (targetMx - startMx) * stepIndex / mLoadSteps
         stepMy = startMy + (targetMy - startMy) * stepIndex / mLoadSteps
 
-        If Not SolveLoadStep(mesh, rebars, concreteMaterial, steelMaterial, stepIndex, stepN, stepMx, stepMy) Then
+        If Not SolveSelectedLoadStep(section, concreteMaterial, steelMaterial, stepIndex, stepN, stepMx, stepMy) Then
             Exit Sub
         End If
         mLoadStepsCompleted = stepIndex
     Next stepIndex
 
-    EvaluateState mesh, rebars, concreteMaterial, steelMaterial, mEpsilon0, mKappaX, mKappaY, True
+    EvaluateState section, concreteMaterial, steelMaterial, mEpsilon0, mKappaX, mKappaY, True
     SetResiduals targetN, targetMx, targetMy
     mConverged = IsConverged(targetN, targetMx, targetMy)
     If mConverged Then
-        mStopReason = "Converged by full Newton with load stepping."
+        mStopReason = "Converged by " & mSolverMethod & " with load stepping."
     Else
         mStopReason = "Final residual check failed."
     End If
 End Sub
 
-Private Function SolveLoadStep(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
+Public Sub EvaluateStrainPlane(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double)
+
+    ClearResult
+    ValidateInputs section, concreteMaterial, steelMaterial
+    mEpsilon0 = epsilon0
+    mKappaX = kappaX
+    mKappaY = kappaY
+    EvaluateState section, concreteMaterial, steelMaterial, mEpsilon0, mKappaX, mKappaY, True
+    SetResiduals mNint, mMxint, mMyint
+    mConverged = True
+    mStopReason = "Evaluated at prescribed strain plane."
+End Sub
+
+Private Function SolveSelectedLoadStep(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal stepIndex As Long, ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
+
+    If StrComp(mSolverMethod, "Newton", vbTextCompare) = 0 Then
+        SolveSelectedLoadStep = SolveNewtonLoadStep(section, concreteMaterial, steelMaterial, stepIndex, targetN, targetMx, targetMy)
+    ElseIf StrComp(mSolverMethod, "Secant", vbTextCompare) = 0 Then
+        SolveSelectedLoadStep = SolveSecantLoadStep(section, concreteMaterial, steelMaterial, stepIndex, targetN, targetMx, targetMy)
+    Else
+        mConverged = False
+        mStopReason = "InputError: Solver.Method must be Newton or Secant."
+        SolveSelectedLoadStep = False
+    End If
+End Function
+
+Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal stepIndex As Long, ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
+
+    mInternalNewtonCallCount = mInternalNewtonCallCount + 1
 
     Dim iter As Long
     For iter = 1 To mMaxIterations
         mIterations = mIterations + 1
-        EvaluateState mesh, rebars, concreteMaterial, steelMaterial, mEpsilon0, mKappaX, mKappaY, True
+        EvaluateState section, concreteMaterial, steelMaterial, mEpsilon0, mKappaX, mKappaY, True
         SetResiduals targetN, targetMx, targetMy
         If IsConverged(targetN, targetMx, targetMy) Then
             AppendDiagnostics stepIndex, iter, 0#, 0#, targetN, targetMx, targetMy, "converged"
-            SolveLoadStep = True
+            SolveNewtonLoadStep = True
             Exit Function
         End If
 
@@ -152,7 +211,7 @@ Private Function SolveLoadStep(ByVal mesh As CFiberMeshBuilder, ByVal rebars As 
             mConverged = False
             mStopReason = "Tangent matrix solve failed: " & system.StopReason
             AppendDiagnostics stepIndex, iter, 0#, 0#, targetN, targetMx, targetMy, mStopReason
-            SolveLoadStep = False
+            SolveNewtonLoadStep = False
             Exit Function
         End If
 
@@ -164,22 +223,285 @@ Private Function SolveLoadStep(ByVal mesh As CFiberMeshBuilder, ByVal rebars As 
         deltaKy = system.X3
 
         mLastDeltaScale = LimitIncrement(deltaEps, deltaKx, deltaKy)
-        mLastAlpha = AcceptStep(mesh, rebars, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, deltaEps, deltaKx, deltaKy)
+        mLastAlpha = AcceptStep(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, deltaEps, deltaKx, deltaKy)
         AppendDiagnostics stepIndex, iter, mLastAlpha, mLastDeltaScale, targetN, targetMx, targetMy, "iteration"
         If mLastAlpha <= 0# Then
             mConverged = False
             mStopReason = "Line search failed to improve residual."
-            SolveLoadStep = False
+            SolveNewtonLoadStep = False
             Exit Function
         End If
     Next iter
 
+    RefreshCurrentState section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
     mConverged = False
     mStopReason = "Maximum iterations reached at load step " & CStr(stepIndex) & "."
-    SolveLoadStep = False
+    SolveNewtonLoadStep = False
 End Function
 
-Private Function AcceptStep(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
+Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal stepIndex As Long, ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
+
+    Dim b(1 To 3, 1 To 3) As Double
+    EvaluateSecantResidual section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+        mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy
+
+    If Not BuildInitialSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+            mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy, b) Then
+        SolveSecantLoadStep = False
+        Exit Function
+    End If
+
+    Dim iter As Long
+    For iter = 1 To mMaxIterations
+        mIterations = mIterations + 1
+        mLastResidualNorm = ResidualNorm(mResidualN, mResidualMx, mResidualMy, targetN, targetMx, targetMy)
+
+        If IsConverged(targetN, targetMx, targetMy) Then
+            AppendDiagnostics stepIndex, iter, 0#, 0#, targetN, targetMx, targetMy, "secant converged"
+            SolveSecantLoadStep = True
+            Exit Function
+        End If
+
+        Dim deltaEps As Double
+        Dim deltaKx As Double
+        Dim deltaKy As Double
+        If Not SolveSecantCorrection(b, deltaEps, deltaKx, deltaKy) Then
+            If Not RestartSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+                    mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy, b, "linear solve failed") Then
+                SolveSecantLoadStep = False
+                Exit Function
+            End If
+            If Not SolveSecantCorrection(b, deltaEps, deltaKx, deltaKy) Then
+                mConverged = False
+                mStopReason = "NumericalFailure: Secant matrix solve failed after restart."
+                SolveSecantLoadStep = False
+                Exit Function
+            End If
+        End If
+
+        Dim oldEps As Double
+        Dim oldKx As Double
+        Dim oldKy As Double
+        Dim oldRN As Double
+        Dim oldRMx As Double
+        Dim oldRMy As Double
+        oldEps = mEpsilon0: oldKx = mKappaX: oldKy = mKappaY
+        oldRN = mResidualN: oldRMx = mResidualMx: oldRMy = mResidualMy
+
+        mLastDeltaScale = LimitIncrement(deltaEps, deltaKx, deltaKy)
+        mLastStepNorm = SecantStepNorm(deltaEps, deltaKx, deltaKy)
+        If Not IsFiniteNumber(mLastStepNorm) Or mLastStepNorm <= mSecantMinStepNorm Then
+            If Not RestartSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+                    mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy, b, "step is too small") Then
+                SolveSecantLoadStep = False
+                Exit Function
+            End If
+            AppendDiagnostics stepIndex, iter, 0#, mLastDeltaScale, targetN, targetMx, targetMy, "secant restarted"
+        Else
+            mLastAlpha = AcceptStep(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, deltaEps, deltaKx, deltaKy)
+            If mLastAlpha <= 0# Then
+                If Not RestartSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+                        oldEps, oldKx, oldKy, oldRN, oldRMx, oldRMy, b, "line search failed") Then
+                    SolveSecantLoadStep = False
+                    Exit Function
+                End If
+            Else
+                EvaluateSecantResidual section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+                    mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy
+                If Not UpdateBroydenMatrix(b, mEpsilon0 - oldEps, mKappaX - oldKx, mKappaY - oldKy, _
+                        mResidualN - oldRN, mResidualMx - oldRMx, mResidualMy - oldRMy) Then
+                    If Not RestartSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+                            mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy, b, "Broyden update failed") Then
+                        SolveSecantLoadStep = False
+                        Exit Function
+                    End If
+                End If
+                AppendDiagnostics stepIndex, iter, mLastAlpha, mLastDeltaScale, targetN, targetMx, targetMy, "secant iteration"
+            End If
+        End If
+    Next iter
+
+    RefreshCurrentState section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
+    mConverged = False
+    mStopReason = "NumericalFailure: Secant maximum iterations reached at load step " & CStr(stepIndex) & "."
+    SolveSecantLoadStep = False
+End Function
+
+Private Sub RefreshCurrentState(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double)
+    EvaluateState section, concreteMaterial, steelMaterial, mEpsilon0, mKappaX, mKappaY, True
+    SetResiduals targetN, targetMx, targetMy
+End Sub
+
+Private Sub EvaluateSecantResidual(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
+        ByRef resN As Double, ByRef resMx As Double, ByRef resMy As Double)
+
+    EvaluateStateInto section, concreteMaterial, steelMaterial, eps0, kx, ky, False, mNint, mMxint, mMyint
+    resN = mNint - targetN
+    resMx = mMxint - targetMx
+    resMy = mMyint - targetMy
+    SetResiduals targetN, targetMx, targetMy
+End Sub
+
+Private Function BuildInitialSecantMatrix(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
+        ByVal baseRN As Double, ByVal baseRMx As Double, ByVal baseRMy As Double, _
+        ByRef b() As Double) As Boolean
+
+    Dim hEps As Double
+    Dim hKx As Double
+    Dim hKy As Double
+    hEps = MaxDouble(0.0000001, Abs(eps0) * 0.0001)
+    hKx = MaxDouble(0.000000001, Abs(kx) * 0.0001)
+    hKy = MaxDouble(0.000000001, Abs(ky) * 0.0001)
+
+    BuildSecantJacobianColumn section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+        eps0 + hEps, kx, ky, eps0 - hEps, kx, ky, 2# * hEps, b, 1
+    BuildSecantJacobianColumn section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+        eps0, kx + hKx, ky, eps0, kx - hKx, ky, 2# * hKx, b, 2
+    BuildSecantJacobianColumn section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+        eps0, kx, ky + hKy, eps0, kx, ky - hKy, 2# * hKy, b, 3
+    mLastMatrixConditionEstimate = EstimateMatrixCondition(b)
+    BuildInitialSecantMatrix = IsFiniteNumber(mLastMatrixConditionEstimate)
+End Function
+
+Private Sub BuildSecantJacobianColumn(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal plusEps0 As Double, ByVal plusKx As Double, ByVal plusKy As Double, _
+        ByVal minusEps0 As Double, ByVal minusKx As Double, ByVal minusKy As Double, _
+        ByVal h As Double, _
+        ByRef b() As Double, ByVal columnIndex As Long)
+
+    Dim pN As Double
+    Dim pMx As Double
+    Dim pMy As Double
+    Dim mN As Double
+    Dim mMx As Double
+    Dim mMy As Double
+    Dim rN As Double
+    Dim rMx As Double
+    Dim rMy As Double
+    Dim minusRN As Double
+    Dim minusRMx As Double
+    Dim minusRMy As Double
+    EvaluateStateInto section, concreteMaterial, steelMaterial, plusEps0, plusKx, plusKy, False, pN, pMx, pMy
+    EvaluateStateInto section, concreteMaterial, steelMaterial, minusEps0, minusKx, minusKy, False, mN, mMx, mMy
+    rN = pN - targetN
+    rMx = pMx - targetMx
+    rMy = pMy - targetMy
+    minusRN = mN - targetN
+    minusRMx = mMx - targetMx
+    minusRMy = mMy - targetMy
+    b(1, columnIndex) = (rN - minusRN) / h
+    b(2, columnIndex) = (rMx - minusRMx) / h
+    b(3, columnIndex) = (rMy - minusRMy) / h
+End Sub
+
+Private Function SolveSecantCorrection(ByRef b() As Double, ByRef deltaEps As Double, _
+        ByRef deltaKx As Double, ByRef deltaKy As Double) As Boolean
+
+    Dim system As CLinearSystem3x3
+    Set system = New CLinearSystem3x3
+    If Not system.Solve(b(1, 1), b(1, 2), b(1, 3), _
+            b(2, 1), b(2, 2), b(2, 3), _
+            b(3, 1), b(3, 2), b(3, 3), _
+            -mResidualN, -mResidualMx, -mResidualMy) Then
+        SolveSecantCorrection = False
+        Exit Function
+    End If
+    deltaEps = system.X1
+    deltaKx = system.X2
+    deltaKy = system.X3
+    SolveSecantCorrection = IsFiniteNumber(deltaEps) And IsFiniteNumber(deltaKx) And IsFiniteNumber(deltaKy)
+End Function
+
+Private Function UpdateBroydenMatrix(ByRef b() As Double, ByVal s1 As Double, ByVal s2 As Double, _
+        ByVal s3 As Double, ByVal y1 As Double, ByVal y2 As Double, ByVal y3 As Double) As Boolean
+
+    Dim denom As Double
+    denom = s1 * s1 + s2 * s2 + s3 * s3
+    If denom <= mSecantMinStepNorm * mSecantMinStepNorm Then Exit Function
+
+    Dim bs1 As Double
+    Dim bs2 As Double
+    Dim bs3 As Double
+    bs1 = b(1, 1) * s1 + b(1, 2) * s2 + b(1, 3) * s3
+    bs2 = b(2, 1) * s1 + b(2, 2) * s2 + b(2, 3) * s3
+    bs3 = b(3, 1) * s1 + b(3, 2) * s2 + b(3, 3) * s3
+
+    Dim u1 As Double
+    Dim u2 As Double
+    Dim u3 As Double
+    u1 = y1 - bs1
+    u2 = y2 - bs2
+    u3 = y3 - bs3
+
+    Dim i As Long
+    Dim s(1 To 3) As Double
+    Dim u(1 To 3) As Double
+    s(1) = s1: s(2) = s2: s(3) = s3
+    u(1) = u1: u(2) = u2: u(3) = u3
+    For i = 1 To 3
+        b(i, 1) = b(i, 1) + u(i) * s(1) / denom
+        b(i, 2) = b(i, 2) + u(i) * s(2) / denom
+        b(i, 3) = b(i, 3) + u(i) * s(3) / denom
+    Next i
+
+    mLastMatrixConditionEstimate = EstimateMatrixCondition(b)
+    UpdateBroydenMatrix = IsFiniteNumber(mLastMatrixConditionEstimate)
+End Function
+
+Private Function RestartSecantMatrix(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
+        ByVal resN As Double, ByVal resMx As Double, ByVal resMy As Double, _
+        ByRef b() As Double, ByVal reason As String) As Boolean
+
+    If mMatrixRestartCount >= mSecantMaxRestarts Then
+        mConverged = False
+        mStopReason = "NumericalFailure: Secant matrix restart limit exceeded; reason=" & reason
+        Exit Function
+    End If
+    mMatrixRestartCount = mMatrixRestartCount + 1
+    AppendDiagnostics mLoadStepsCompleted + 1, mIterations, 0#, 0#, targetN, targetMx, targetMy, "secant matrix restart: " & reason
+    RestartSecantMatrix = BuildInitialSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+        eps0, kx, ky, resN, resMx, resMy, b)
+End Function
+
+Private Function SecantStepNorm(ByVal deltaEps As Double, ByVal deltaKx As Double, ByVal deltaKy As Double) As Double
+    SecantStepNorm = Abs(deltaEps) + Abs(deltaKx) + Abs(deltaKy)
+End Function
+
+Private Function EstimateMatrixCondition(ByRef b() As Double) As Double
+    Dim maxAbs As Double
+    Dim minAbs As Double
+    Dim i As Long
+    Dim j As Long
+    minAbs = 1E+100
+    For i = 1 To 3
+        For j = 1 To 3
+            If Abs(b(i, j)) > maxAbs Then maxAbs = Abs(b(i, j))
+            If Abs(b(i, j)) > 0# And Abs(b(i, j)) < minAbs Then minAbs = Abs(b(i, j))
+        Next j
+    Next i
+    If maxAbs <= 0# Or minAbs >= 1E+99 Then
+        EstimateMatrixCondition = 1E+100
+    Else
+        EstimateMatrixCondition = maxAbs / minAbs
+    End If
+End Function
+
+Private Function AcceptStep(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal deltaEps As Double, ByVal deltaKx As Double, ByVal deltaKy As Double) As Double
@@ -190,8 +512,11 @@ Private Function AcceptStep(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRe
     Dim alpha As Double
     alpha = mDampingInitial
     If alpha <= 0# Or alpha > 1# Then alpha = 1#
+    mLineSearchIterations = 0
+    mLineSearchUsed = False
 
     Do While alpha >= mMinLineSearchAlpha
+        mLineSearchIterations = mLineSearchIterations + 1
         Dim trialEps As Double
         Dim trialKx As Double
         Dim trialKy As Double
@@ -202,11 +527,12 @@ Private Function AcceptStep(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRe
         Dim trialN As Double
         Dim trialMx As Double
         Dim trialMy As Double
-        EvaluateStateInto mesh, rebars, concreteMaterial, steelMaterial, trialEps, trialKx, trialKy, False, trialN, trialMx, trialMy
+        EvaluateStateInto section, concreteMaterial, steelMaterial, trialEps, trialKx, trialKy, False, trialN, trialMx, trialMy
         Dim trialNorm As Double
         trialNorm = ResidualNorm(trialN - targetN, trialMx - targetMx, trialMy - targetMy, targetN, targetMx, targetMy)
 
         If (Not mLineSearchEnabled) Or trialNorm <= baseNorm Or baseNorm <= 0.000000000001 Then
+            If alpha < mDampingInitial Then mLineSearchUsed = True
             mEpsilon0 = trialEps
             mKappaX = trialKx
             mKappaY = trialKy
@@ -240,18 +566,19 @@ Private Function LimitIncrement(ByRef deltaEps As Double, ByRef deltaKx As Doubl
     LimitIncrement = scaleFactor
 End Function
 
-Private Sub EvaluateState(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
+Private Sub EvaluateState(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, ByVal buildTangent As Boolean)
-    EvaluateStateInto mesh, rebars, concreteMaterial, steelMaterial, eps0, kx, ky, buildTangent, mNint, mMxint, mMyint
+    EvaluateStateInto section, concreteMaterial, steelMaterial, eps0, kx, ky, buildTangent, mNint, mMxint, mMyint
 End Sub
 
-Private Sub EvaluateStateInto(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
+Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, ByVal buildTangent As Boolean, _
         ByRef nInt As Double, ByRef mxInt As Double, ByRef myInt As Double)
 
     nInt = 0#: mxInt = 0#: myInt = 0#
+    mInternalForceEvaluationCount = mInternalForceEvaluationCount + 1
     If buildTangent Then ClearTangent
     If buildTangent Then
         mMinConcreteStrain = 1E+100
@@ -266,25 +593,25 @@ Private Sub EvaluateStateInto(ByVal mesh As CFiberMeshBuilder, ByVal rebars As C
     Dim force As Double
     Dim area As Double
 
-    For i = 1 To mesh.FiberCount
-        strain = eps0 + kx * mesh.FiberY(i) + ky * mesh.FiberX(i)
+    For i = 1 To section.ConcreteCount
+        strain = eps0 + kx * section.ConcreteY(i) + ky * section.ConcreteX(i)
         If buildTangent Then
             If strain < mMinConcreteStrain Then mMinConcreteStrain = strain
             If strain > mMaxConcreteStrain Then mMaxConcreteStrain = strain
         End If
         stress = concreteMaterial.GetStress(strain)
         tangent = concreteMaterial.GetTangentModulus(strain)
-        area = mesh.FiberArea(i) * mesh.FiberFillFactor(i)
+        area = section.ConcreteArea(i)
         force = stress * area
         nInt = nInt + force
-        mxInt = mxInt + force * mesh.FiberY(i)
-        myInt = myInt + force * mesh.FiberX(i)
-        If buildTangent Then AddTangent tangent * area, mesh.FiberX(i), mesh.FiberY(i)
+        mxInt = mxInt + force * section.ConcreteY(i)
+        myInt = myInt + force * section.ConcreteX(i)
+        If buildTangent Then AddTangent tangent * area, section.ConcreteX(i), section.ConcreteY(i)
     Next i
 
-    If Not rebars Is Nothing Then
-        For i = 1 To rebars.Count
-            strain = eps0 + kx * rebars.Y(i) + ky * rebars.X(i)
+    If section.RebarCount > 0 Then
+        For i = 1 To section.RebarCount
+            strain = eps0 + kx * section.RebarY(i) + ky * section.RebarX(i)
             If buildTangent Then
                 If Abs(strain) > mMaxAbsSteelStrain Then mMaxAbsSteelStrain = Abs(strain)
             End If
@@ -298,11 +625,11 @@ Private Sub EvaluateStateInto(ByVal mesh As CFiberMeshBuilder, ByVal rebars As C
             concreteTangent = concreteMaterial.GetTangentModulus(strain)
             stress = steelStress - concreteStress
             tangent = steelTangent - concreteTangent
-            force = stress * rebars.Area(i)
+            force = stress * section.RebarArea(i)
             nInt = nInt + force
-            mxInt = mxInt + force * rebars.Y(i)
-            myInt = myInt + force * rebars.X(i)
-            If buildTangent Then AddTangent tangent * rebars.Area(i), rebars.X(i), rebars.Y(i)
+            mxInt = mxInt + force * section.RebarY(i)
+            myInt = myInt + force * section.RebarX(i)
+            If buildTangent Then AddTangent tangent * section.RebarArea(i), section.RebarX(i), section.RebarY(i)
         Next i
     End If
 End Sub
@@ -360,8 +687,10 @@ Private Sub AppendDiagnostics(ByVal stepIndex As Long, ByVal iter As Long, ByVal
         ByVal deltaScale As Double, ByVal targetN As Double, ByVal targetMx As Double, _
         ByVal targetMy As Double, ByVal state As String)
     If Not mDiagnosticsEnabled Then Exit Sub
+    mLastResidualNorm = ResidualNorm(mResidualN, mResidualMx, mResidualMy, targetN, targetMx, targetMy)
     mDiagnosticLog = mDiagnosticLog & "step=" & CStr(stepIndex) & _
         "; iter=" & CStr(iter) & _
+        "; method=" & mSolverMethod & _
         "; state=" & state & _
         "; eps0=" & FormatNumberInvariant(mEpsilon0) & _
         "; kappaX=" & FormatNumberInvariant(mKappaX) & _
@@ -369,18 +698,41 @@ Private Sub AppendDiagnostics(ByVal stepIndex As Long, ByVal iter As Long, ByVal
         "; RN=" & FormatNumberInvariant(mResidualN) & _
         "; RMx=" & FormatNumberInvariant(mResidualMx) & _
         "; RMy=" & FormatNumberInvariant(mResidualMy) & _
+        "; residualNorm=" & FormatNumberInvariant(mLastResidualNorm) & _
+        "; stepNorm=" & FormatNumberInvariant(mLastStepNorm) & _
+        "; matrixConditionEstimate=" & FormatNumberInvariant(mLastMatrixConditionEstimate) & _
+        "; matrixRestartCount=" & CStr(mMatrixRestartCount) & _
+        "; lineSearchUsed=" & CStr(mLineSearchUsed) & _
+        "; lineSearchIterations=" & CStr(mLineSearchIterations) & _
+        "; internalForceEvaluationCount=" & CStr(mInternalForceEvaluationCount) & _
+        "; internalNewtonCallCount=" & CStr(mInternalNewtonCallCount) & _
         "; alpha=" & FormatNumberInvariant(alpha) & _
         "; deltaScale=" & FormatNumberInvariant(deltaScale) & vbCrLf
 End Sub
 
-Private Sub ValidateInputs(ByVal mesh As CFiberMeshBuilder, ByVal concreteMaterial As Object, ByVal steelMaterial As Object)
-    If mesh Is Nothing Then Err.Raise vbObjectError + 3400, "CSectionSolver", "Concrete mesh is missing."
-    If mesh.FiberCount <= 0 Then Err.Raise vbObjectError + 3401, "CSectionSolver", "Concrete mesh is empty."
+Private Sub ValidateInputs(ByVal section As CSectionModel, ByVal concreteMaterial As Object, ByVal steelMaterial As Object)
+    If section Is Nothing Then Err.Raise vbObjectError + 3400, "CSectionSolver", "Section model is missing."
+    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 3401, "CSectionSolver", "Section model has no concrete elements."
     If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 3402, "CSectionSolver", "Concrete material is missing."
     If steelMaterial Is Nothing Then Err.Raise vbObjectError + 3403, "CSectionSolver", "Steel material is missing."
     If mMaxIterations <= 0 Then Err.Raise vbObjectError + 3404, "CSectionSolver", "MaxIterations must be positive."
     If mLoadSteps <= 0 Then Err.Raise vbObjectError + 3405, "CSectionSolver", "LoadSteps must be positive."
+    If mSecantMaxRestarts < 0 Then Err.Raise vbObjectError + 3406, "CSectionSolver", "SecantMaxRestarts must be non-negative."
+    If mSecantMinStepNorm <= 0# Then Err.Raise vbObjectError + 3407, "CSectionSolver", "SecantMinStepNorm must be positive."
 End Sub
+
+Private Function ValidateSolverMethod() As Boolean
+    If StrComp(mSolverMethod, "Newton", vbTextCompare) = 0 Then
+        mSolverMethod = "Newton"
+        ValidateSolverMethod = True
+    ElseIf StrComp(mSolverMethod, "Secant", vbTextCompare) = 0 Then
+        mSolverMethod = "Secant"
+        ValidateSolverMethod = True
+    Else
+        mConverged = False
+        mStopReason = "InputError: Solver.Method must be Newton or Secant."
+    End If
+End Function
 
 Public Sub ClearResult()
     mConverged = False
@@ -395,6 +747,14 @@ Public Sub ClearResult()
     mDiagnosticLog = vbNullString
     mLastAlpha = 0#
     mLastDeltaScale = 0#
+    mLastResidualNorm = 0#
+    mLastStepNorm = 0#
+    mLastMatrixConditionEstimate = 0#
+    mMatrixRestartCount = 0
+    mLineSearchUsed = False
+    mLineSearchIterations = 0
+    mInternalForceEvaluationCount = 0
+    mInternalNewtonCallCount = 0
     ClearTangent
 End Sub
 
@@ -431,6 +791,10 @@ End Function
 
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
+End Function
+
+Private Function IsFiniteNumber(ByVal value As Double) As Boolean
+    IsFiniteNumber = (value = value And Abs(value) < 1E+100)
 End Function
 
 Public Property Get Converged() As Boolean
@@ -517,6 +881,34 @@ Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
+Public Property Get SolverMethod() As String
+    SolverMethod = mSolverMethod
+End Property
+
+Public Property Get InternalForceEvaluationCount() As Long
+    InternalForceEvaluationCount = mInternalForceEvaluationCount
+End Property
+
+Public Property Get InternalNewtonCallCount() As Long
+    InternalNewtonCallCount = mInternalNewtonCallCount
+End Property
+
+Public Property Get MatrixRestartCount() As Long
+    MatrixRestartCount = mMatrixRestartCount
+End Property
+
+Public Property Get LastResidualNorm() As Double
+    LastResidualNorm = mLastResidualNorm
+End Property
+
+Public Property Get LastStepNorm() As Double
+    LastStepNorm = mLastStepNorm
+End Property
+
+Public Property Get LastMatrixConditionEstimate() As Double
+    LastMatrixConditionEstimate = mLastMatrixConditionEstimate
+End Property
+
 Public Property Let MaxIterations(ByVal value As Long)
     mMaxIterations = value
 End Property
@@ -545,6 +937,18 @@ Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
     mDiagnosticsEnabled = value
 End Property
 
+Public Property Let SolverMethod(ByVal value As String)
+    mSolverMethod = value
+End Property
+
+Public Property Let SecantMaxRestarts(ByVal value As Long)
+    mSecantMaxRestarts = value
+End Property
+
+Public Property Let SecantMinStepNorm(ByVal value As Double)
+    mSecantMinStepNorm = value
+End Property
+
 Public Property Let MaxDeltaEpsilon0(ByVal value As Double)
     mMaxDeltaEpsilon0 = value
 End Property
@@ -552,6 +956,8 @@ End Property
 Public Property Let MaxDeltaKappa(ByVal value As Double)
     mMaxDeltaKappa = value
 End Property
+
+
 
 
 

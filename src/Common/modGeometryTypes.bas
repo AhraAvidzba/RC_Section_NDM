@@ -1,4 +1,4 @@
-Attribute VB_Name = "modGeometryTypes"
+﻿Attribute VB_Name = "modGeometryTypes"
 Option Explicit
 
 Public Const GEOM_PI As Double = 3.1415926535897931
@@ -63,4 +63,11 @@ End Function
 
 
 
+
+
+Public Function BuildGeneratedSectionModel(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, Optional ByVal sourceType As String = "Generated") As CSectionModel
+    Dim builder As CSectionModelBuilder
+    Set builder = New CSectionModelBuilder
+    Set BuildGeneratedSectionModel = builder.BuildFromGenerated(mesh, rebars, sourceType)
+End Function
 
