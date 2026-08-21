@@ -336,8 +336,14 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
         AnySettingValidationHasOptions("Rebar.Loc2row", Array("Stacked", "SideBySide"))
     AssertTrue stats, "ui.validation.circleLoc3row", _
         AnySettingValidationHasOptions("Rebar.Loc3row", Array("Stacked", "SideBySide"))
+    SetSystemSetting "Geometry.Type", "LShape"
+    AssertTrue stats, "ui.validation.lshapeLoc2row", _
+        LShapeAdditionalValidationHasOptions(18, 3, Array("Stacked", "SideBySide"))
+    AssertTrue stats, "ui.validation.lshapeBind2row", _
+        LShapeAdditionalValidationHasOptions(18, 4, Array("EachBar", "EverySecondBar"))
     Dim reader As CSystemSettingsReader
     Set reader = New CSystemSettingsReader
+    SetSystemSetting "Geometry.Type", "Circle"
     reader.LoadFromWorkbook ThisWorkbook
     AssertTrue stats, "ui.circle.key.rebarDiameter2", reader.HasKey("Rebar.Diameter2")
     AssertTrue stats, "ui.circle.key.rebarDiameter3", reader.HasKey("Rebar.Diameter3")
@@ -554,55 +560,86 @@ End Function
 Private Function LShapeSettingAddress(ByVal key As String, ByRef rowIndex As Long, ByRef columnIndex As Long) As Boolean
     Dim faceName As String
     If InStr(1, key, "LShape.H1", vbTextCompare) = 1 Then
-        faceName = "H1": columnIndex = 2
+        faceName = "H1"
     ElseIf InStr(1, key, "LShape.B1", vbTextCompare) = 1 Then
-        faceName = "B1": columnIndex = 3
+        faceName = "B1"
     ElseIf InStr(1, key, "LShape.H2", vbTextCompare) = 1 Then
-        faceName = "H2": columnIndex = 4
+        faceName = "H2"
     ElseIf InStr(1, key, "LShape.B2", vbTextCompare) = 1 Then
-        faceName = "B2": columnIndex = 5
+        faceName = "B2"
     Else
         Exit Function
     End If
 
     If StrComp(key, "LShape." & faceName, vbTextCompare) = 0 Then
-        rowIndex = 2
-    ElseIf StrComp(key, "LShape." & faceName & ".as_1", vbTextCompare) = 0 Then
         rowIndex = 3
+        columnIndex = LShapeGeometryColumn(faceName)
+    ElseIf StrComp(key, "LShape." & faceName & ".as_1", vbTextCompare) = 0 Then
+        rowIndex = LShapeMainRow(faceName, 1): columnIndex = 2
     ElseIf StrComp(key, "LShape." & faceName & ".as_2", vbTextCompare) = 0 Then
-        rowIndex = 4
+        rowIndex = LShapeMainRow(faceName, 2): columnIndex = 2
     ElseIf StrComp(key, "LShape." & faceName & ".d_1", vbTextCompare) = 0 Then
-        rowIndex = 5
+        rowIndex = LShapeMainRow(faceName, 1): columnIndex = 3
     ElseIf StrComp(key, "LShape." & faceName & ".d_2", vbTextCompare) = 0 Then
-        rowIndex = 6
+        rowIndex = LShapeMainRow(faceName, 2): columnIndex = 3
     ElseIf StrComp(key, "LShape." & faceName & ".n_1", vbTextCompare) = 0 Then
-        rowIndex = 7
+        rowIndex = LShapeMainRow(faceName, 1): columnIndex = 4
     ElseIf StrComp(key, "LShape." & faceName & ".n_2", vbTextCompare) = 0 Then
-        rowIndex = 8
+        rowIndex = LShapeMainRow(faceName, 2): columnIndex = 4
     ElseIf StrComp(key, "LShape." & faceName & ".StartOffset1", vbTextCompare) = 0 Then
-        rowIndex = 9
+        rowIndex = LShapeMainRow(faceName, 1): columnIndex = 5
     ElseIf StrComp(key, "LShape." & faceName & ".EndOffset1", vbTextCompare) = 0 Then
-        rowIndex = 10
+        rowIndex = LShapeMainRow(faceName, 1): columnIndex = 6
     ElseIf StrComp(key, "LShape." & faceName & ".StartOffset2", vbTextCompare) = 0 Then
-        rowIndex = 11
+        rowIndex = LShapeMainRow(faceName, 2): columnIndex = 5
     ElseIf StrComp(key, "LShape." & faceName & ".EndOffset2", vbTextCompare) = 0 Then
-        rowIndex = 12
+        rowIndex = LShapeMainRow(faceName, 2): columnIndex = 6
     ElseIf StrComp(key, "LShape." & faceName & ".d_2row_1", vbTextCompare) = 0 Then
-        rowIndex = 14
+        rowIndex = LShapeExtraRow(faceName, 1): columnIndex = 2
     ElseIf StrComp(key, "LShape." & faceName & ".d_2row_2", vbTextCompare) = 0 Then
-        rowIndex = 15
+        rowIndex = LShapeExtraRow(faceName, 2): columnIndex = 2
     ElseIf StrComp(key, "LShape." & faceName & ".d_3row_1", vbTextCompare) = 0 Then
-        rowIndex = 16
+        rowIndex = LShapeExtraRow(faceName, 1): columnIndex = 5
     ElseIf StrComp(key, "LShape." & faceName & ".d_3row_2", vbTextCompare) = 0 Then
-        rowIndex = 17
+        rowIndex = LShapeExtraRow(faceName, 2): columnIndex = 5
     ElseIf StrComp(key, "LShape." & faceName & ".loc_2row", vbTextCompare) = 0 Then
-        rowIndex = 18
+        rowIndex = LShapeExtraRow(faceName, 1): columnIndex = 3
     ElseIf StrComp(key, "LShape." & faceName & ".loc_3row", vbTextCompare) = 0 Then
-        rowIndex = 19
+        rowIndex = LShapeExtraRow(faceName, 1): columnIndex = 6
+    ElseIf StrComp(key, "LShape." & faceName & ".bind_2row", vbTextCompare) = 0 Then
+        rowIndex = LShapeExtraRow(faceName, 1): columnIndex = 4
+    ElseIf StrComp(key, "LShape." & faceName & ".bind_3row", vbTextCompare) = 0 Then
+        rowIndex = LShapeExtraRow(faceName, 1): columnIndex = 7
     Else
         Exit Function
     End If
     LShapeSettingAddress = True
+End Function
+
+Private Function LShapeGeometryColumn(ByVal faceName As String) As Long
+    Select Case UCase$(faceName)
+        Case "H1": LShapeGeometryColumn = 1
+        Case "B1": LShapeGeometryColumn = 2
+        Case "H2": LShapeGeometryColumn = 3
+        Case "B2": LShapeGeometryColumn = 4
+    End Select
+End Function
+
+Private Function LShapeMainRow(ByVal faceName As String, ByVal sideIndex As Long) As Long
+    LShapeMainRow = 6 + LShapeFaceOrdinal(faceName, sideIndex)
+End Function
+
+Private Function LShapeExtraRow(ByVal faceName As String, ByVal sideIndex As Long) As Long
+    LShapeExtraRow = 17 + LShapeFaceOrdinal(faceName, sideIndex)
+End Function
+
+Private Function LShapeFaceOrdinal(ByVal faceName As String, ByVal sideIndex As Long) As Long
+    Select Case UCase$(faceName)
+        Case "H1": LShapeFaceOrdinal = sideIndex
+        Case "B1": LShapeFaceOrdinal = 2 + sideIndex
+        Case "H2": LShapeFaceOrdinal = 4 + sideIndex
+        Case "B2": LShapeFaceOrdinal = 6 + sideIndex
+    End Select
 End Function
 
 Private Function GetSystemSetting(ByVal key As String) As String
@@ -719,6 +756,35 @@ Private Function PlotAnnotationValidationHasOptions(ByVal rowName As String, ByV
             Exit Function
         End If
     Next rowIndex
+Failed:
+End Function
+
+Private Function LShapeAdditionalValidationHasOptions(ByVal rowIndex As Long, ByVal valueColumn As Long, ByVal expectedOptions As Variant) As Boolean
+    On Error GoTo Failed
+
+    Dim settings As Object
+    Set settings = ThisWorkbook.Names.Item("rngLShapeGeometry").RefersToRange
+    LShapeAdditionalValidationHasOptions = ValidationCellHasOptions(settings.Cells.Item(rowIndex, valueColumn), expectedOptions)
+    Exit Function
+Failed:
+End Function
+
+Private Function ValidationCellHasOptions(ByVal target As Object, ByVal expectedOptions As Variant) As Boolean
+    On Error GoTo Failed
+
+    Dim formulaText As String
+    formulaText = CStr(target.Validation.Formula1)
+    If Left$(formulaText, 1) <> "=" Then Exit Function
+
+    Dim listRange As Object
+    Set listRange = ThisWorkbook.Worksheets.Item("Settings").Range(Mid$(formulaText, 2))
+    Dim i As Long
+    If listRange.Cells.Count <> (UBound(expectedOptions) - LBound(expectedOptions) + 1) Then Exit Function
+    For i = LBound(expectedOptions) To UBound(expectedOptions)
+        If CStr(listRange.Cells.Item(i - LBound(expectedOptions) + 1, 1).Value2) <> CStr(expectedOptions(i)) Then Exit Function
+    Next i
+    ValidationCellHasOptions = True
+    Exit Function
 Failed:
 End Function
 

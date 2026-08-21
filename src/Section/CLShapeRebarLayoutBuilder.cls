@@ -110,6 +110,8 @@ Private Sub AddFaceBars(ByVal layout As CRebarLayout, ByVal geom As ISectionGeom
     Dim row3Diameter As Double
     Dim row2Location As String
     Dim row3Location As String
+    Dim row2Binding As String
+    Dim row3Binding As String
     barCount = LineBarCount(faceSettings)
     If barCount = 0 Then Exit Sub
 
@@ -121,12 +123,14 @@ Private Sub AddFaceBars(ByVal layout As CRebarLayout, ByVal geom As ISectionGeom
     row3Diameter = LineRow3Diameter(faceSettings)
     row2Location = LineRow2Location(faceSettings)
     row3Location = LineRow3Location(faceSettings)
+    row2Binding = LineRow2Binding(faceSettings)
+    row3Binding = LineRow3Binding(faceSettings)
 
     If barCount < 0 Then Err.Raise vbObjectError + 3171, "CLShapeRebarLayoutBuilder", faceName & " количество стержней должно быть нулевым или положительным."
     If barDiameter <= 0# Then Err.Raise vbObjectError + 3172, "CLShapeRebarLayoutBuilder", faceName & " диаметр стержня первого ряда должен быть положительным."
     If axisDistance <= barDiameter / 2# Then Err.Raise vbObjectError + 3173, "CLShapeRebarLayoutBuilder", faceName & " расстояние до оси стержня должно быть больше половины диаметра."
     If startOffset < 0# Or endOffset < 0# Then Err.Raise vbObjectError + 3174, "CLShapeRebarLayoutBuilder", faceName & " отступы должны быть неотрицательными."
-    ValidateAdditionalRows faceName, row2Diameter, row3Diameter, row2Location, row3Location
+    ValidateAdditionalRows faceName, row2Diameter, row3Diameter, row2Location, row3Location, row2Binding, row3Binding
 
     Dim usableLength As Double
     usableLength = faceLength - startOffset - endOffset
@@ -175,7 +179,7 @@ Private Sub AddFaceBars(ByVal layout As CRebarLayout, ByVal geom As ISectionGeom
         yCoord = y1 + t * (y2 - y1)
         AddBarIfAvailable layout, geom, faceName, 1, xCoord, yCoord, barDiameter, steelClass, nextIndex, sx, sy
         AddAdditionalRows layout, geom, faceName, xCoord, yCoord, barDiameter, row2Diameter, row3Diameter, _
-            row2Location, row3Location, sideX, sideY, stackX, stackY, steelClass, nextIndex, sx, sy
+            row2Location, row3Location, row2Binding, row3Binding, chosen, sideX, sideY, stackX, stackY, steelClass, nextIndex, sx, sy
     Next i
 End Sub
 
@@ -202,11 +206,12 @@ End Sub
 Private Sub AddAdditionalRows(ByVal layout As CRebarLayout, ByVal geom As ISectionGeometry, _
         ByVal faceName As String, ByVal baseX As Double, ByVal baseY As Double, ByVal row1Diameter As Double, _
         ByVal row2Diameter As Double, ByVal row3Diameter As Double, ByVal row2Location As String, ByVal row3Location As String, _
+        ByVal row2Binding As String, ByVal row3Binding As String, ByVal baseBarOrdinal As Long, _
         ByVal sideX As Double, ByVal sideY As Double, ByVal stackX As Double, ByVal stackY As Double, _
         ByVal steelClass As String, ByRef nextIndex As Long, ByRef sx As Double, ByRef sy As Double)
     Dim row2X As Double
     Dim row2Y As Double
-    If row2Diameter > 0# Then
+    If row2Diameter > 0# And ShouldAddAdditionalRow(baseBarOrdinal, row2Binding) Then
         OffsetAdditionalRowFromFirst baseX, baseY, row1Diameter, row2Diameter, 0#, row2Location, _
             sideX, sideY, stackX, stackY, row2X, row2Y
         AddBarIfAvailable layout, geom, faceName, 2, row2X, row2Y, row2Diameter, steelClass, nextIndex, sx, sy
@@ -214,7 +219,7 @@ Private Sub AddAdditionalRows(ByVal layout As CRebarLayout, ByVal geom As ISecti
 
     Dim row3X As Double
     Dim row3Y As Double
-    If row3Diameter > 0# Then
+    If row3Diameter > 0# And ShouldAddAdditionalRow(baseBarOrdinal, row3Binding) Then
         Dim skippedDiameter As Double
         skippedDiameter = 0#
         If row2Diameter > 0# And StrComp(row2Location, row3Location, vbTextCompare) = 0 Then skippedDiameter = row2Diameter
@@ -223,6 +228,14 @@ Private Sub AddAdditionalRows(ByVal layout As CRebarLayout, ByVal geom As ISecti
         AddBarIfAvailable layout, geom, faceName, 3, row3X, row3Y, row3Diameter, steelClass, nextIndex, sx, sy
     End If
 End Sub
+
+Private Function ShouldAddAdditionalRow(ByVal baseBarOrdinal As Long, ByVal bindingMode As String) As Boolean
+    If StrComp(bindingMode, "EverySecondBar", vbTextCompare) = 0 Then
+        ShouldAddAdditionalRow = ((baseBarOrdinal Mod 2) = 1)
+    Else
+        ShouldAddAdditionalRow = True
+    End If
+End Function
 
 Private Sub OffsetAdditionalRowFromFirst(ByVal baseX As Double, ByVal baseY As Double, _
         ByVal row1Diameter As Double, ByVal targetDiameter As Double, ByVal skippedDiameter As Double, ByVal locationMode As String, _
@@ -296,26 +309,46 @@ Private Function LineRow3Location(ByVal lineSettings As Variant) As String
     If Len(Trim$(CStr(lineSettings(LBound(lineSettings) + 8)))) > 0 Then LineRow3Location = Trim$(CStr(lineSettings(LBound(lineSettings) + 8)))
 End Function
 
+Private Function LineRow2Binding(ByVal lineSettings As Variant) As String
+    LineRow2Binding = "EachBar"
+    If UBound(lineSettings) - LBound(lineSettings) < 9 Then Exit Function
+    If Len(Trim$(CStr(lineSettings(LBound(lineSettings) + 9)))) > 0 Then LineRow2Binding = Trim$(CStr(lineSettings(LBound(lineSettings) + 9)))
+End Function
+
+Private Function LineRow3Binding(ByVal lineSettings As Variant) As String
+    LineRow3Binding = "EachBar"
+    If UBound(lineSettings) - LBound(lineSettings) < 10 Then Exit Function
+    If Len(Trim$(CStr(lineSettings(LBound(lineSettings) + 10)))) > 0 Then LineRow3Binding = Trim$(CStr(lineSettings(LBound(lineSettings) + 10)))
+End Function
+
 Private Sub ValidateAdditionalRows(ByVal faceName As String, ByVal row2Diameter As Double, ByVal row3Diameter As Double, _
-        ByVal row2Location As String, ByVal row3Location As String)
+        ByVal row2Location As String, ByVal row3Location As String, ByVal row2Binding As String, ByVal row3Binding As String)
     If row2Diameter < 0# Or row3Diameter < 0# Then Err.Raise vbObjectError + 3180, "CLShapeRebarLayoutBuilder", faceName & " Диаметр дополнительного ряда должен быть неотрицательным."
     If row2Diameter > 0# And Not IsSupportedRowLocation(row2Location) Then Err.Raise vbObjectError + 3182, "CLShapeRebarLayoutBuilder", faceName & " loc_2row должен быть SideBySide или Stacked."
     If row3Diameter > 0# And Not IsSupportedRowLocation(row3Location) Then Err.Raise vbObjectError + 3183, "CLShapeRebarLayoutBuilder", faceName & " loc_3row должен быть SideBySide или Stacked."
+    If row2Diameter > 0# And Not IsSupportedRowBinding(row2Binding) Then Err.Raise vbObjectError + 3184, "CLShapeRebarLayoutBuilder", faceName & " bind_2row должен быть EachBar или EverySecondBar."
+    If row3Diameter > 0# And Not IsSupportedRowBinding(row3Binding) Then Err.Raise vbObjectError + 3185, "CLShapeRebarLayoutBuilder", faceName & " bind_3row должен быть EachBar или EverySecondBar."
 End Sub
 
 Private Function IsSupportedRowLocation(ByVal value As String) As Boolean
     IsSupportedRowLocation = (StrComp(value, "SideBySide", vbTextCompare) = 0 Or StrComp(value, "Stacked", vbTextCompare) = 0)
 End Function
 
+Private Function IsSupportedRowBinding(ByVal value As String) As Boolean
+    IsSupportedRowBinding = (StrComp(value, "EachBar", vbTextCompare) = 0 Or StrComp(value, "EverySecondBar", vbTextCompare) = 0)
+End Function
+
 Private Function FaceLineSettings(ByVal faceSettings As Variant, ByVal lineIndex As Long) As Variant
     If lineIndex = 1 Then
         FaceLineSettings = Array(FaceAs1(faceSettings), FaceCount1(faceSettings), FaceDiameter1(faceSettings), _
             FaceStartOffset1(faceSettings), FaceEndOffset1(faceSettings), _
-            FaceRow2Diameter1(faceSettings), FaceRow3Diameter1(faceSettings), FaceRow2Location(faceSettings), FaceRow3Location(faceSettings))
+            FaceRow2Diameter1(faceSettings), FaceRow3Diameter1(faceSettings), FaceRow2Location(faceSettings), FaceRow3Location(faceSettings), _
+            FaceRow2Binding(faceSettings), FaceRow3Binding(faceSettings))
     Else
         FaceLineSettings = Array(FaceAs2(faceSettings), FaceCount2(faceSettings), FaceDiameter2(faceSettings), _
             FaceStartOffset2(faceSettings), FaceEndOffset2(faceSettings), _
-            FaceRow2Diameter2(faceSettings), FaceRow3Diameter2(faceSettings), FaceRow2Location(faceSettings), FaceRow3Location(faceSettings))
+            FaceRow2Diameter2(faceSettings), FaceRow3Diameter2(faceSettings), FaceRow2Location(faceSettings), FaceRow3Location(faceSettings), _
+            FaceRow2Binding(faceSettings), FaceRow3Binding(faceSettings))
     End If
 End Function
 
@@ -389,6 +422,18 @@ Private Function FaceRow3Location(ByVal faceSettings As Variant) As String
     FaceRow3Location = "Stacked"
     If UBound(faceSettings) - LBound(faceSettings) < 15 Then Exit Function
     If Len(Trim$(CStr(faceSettings(LBound(faceSettings) + 15)))) > 0 Then FaceRow3Location = Trim$(CStr(faceSettings(LBound(faceSettings) + 15)))
+End Function
+
+Private Function FaceRow2Binding(ByVal faceSettings As Variant) As String
+    FaceRow2Binding = "EachBar"
+    If UBound(faceSettings) - LBound(faceSettings) < 16 Then Exit Function
+    If Len(Trim$(CStr(faceSettings(LBound(faceSettings) + 16)))) > 0 Then FaceRow2Binding = Trim$(CStr(faceSettings(LBound(faceSettings) + 16)))
+End Function
+
+Private Function FaceRow3Binding(ByVal faceSettings As Variant) As String
+    FaceRow3Binding = "EachBar"
+    If UBound(faceSettings) - LBound(faceSettings) < 17 Then Exit Function
+    If Len(Trim$(CStr(faceSettings(LBound(faceSettings) + 17)))) > 0 Then FaceRow3Binding = Trim$(CStr(faceSettings(LBound(faceSettings) + 17)))
 End Function
 
 Private Function ClosestUnusedDistanceIndex(ByRef distances() As Double, ByRef used() As Boolean, ByVal faceLength As Double) As Long

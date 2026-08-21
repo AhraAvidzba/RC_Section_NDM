@@ -175,6 +175,16 @@ Private Function SignQuantityKey(ByVal caption As String) As String
 End Function
 
 Private Function IsLShapeFaceSettingsRange(ByRef data As Variant) As Boolean
+    If UBound(data, 1) >= 3 And UBound(data, 2) >= 4 Then
+        If StrComp(Trim$(CStr(data(2, 1))), "H1", vbTextCompare) = 0 And _
+                StrComp(Trim$(CStr(data(2, 2))), "B1", vbTextCompare) = 0 And _
+                StrComp(Trim$(CStr(data(2, 3))), "H2", vbTextCompare) = 0 And _
+                StrComp(Trim$(CStr(data(2, 4))), "B2", vbTextCompare) = 0 Then
+            IsLShapeFaceSettingsRange = True
+            Exit Function
+        End If
+    End If
+
     If UBound(data, 1) < 12 Or UBound(data, 2) < 7 Then Exit Function
     IsLShapeFaceSettingsRange = _
         StrComp(Trim$(CStr(data(1, 2))), "H1", vbTextCompare) = 0 And _
@@ -184,6 +194,15 @@ Private Function IsLShapeFaceSettingsRange(ByRef data As Variant) As Boolean
 End Function
 
 Private Sub AppendLShapeFaceSettings(ByRef data As Variant)
+    If UBound(data, 1) >= 25 And UBound(data, 2) >= 9 And _
+            StrComp(Trim$(CStr(data(2, 1))), "H1", vbTextCompare) = 0 And _
+            StrComp(Trim$(CStr(data(2, 2))), "B1", vbTextCompare) = 0 And _
+            StrComp(Trim$(CStr(data(2, 3))), "H2", vbTextCompare) = 0 And _
+            StrComp(Trim$(CStr(data(2, 4))), "B2", vbTextCompare) = 0 Then
+        AppendLShapeSectionedSettings data
+        Exit Sub
+    End If
+
     Dim faceColumns(1 To 4) As Long
     Dim faceNames(1 To 4) As String
     faceColumns(1) = 2: faceNames(1) = "H1"
@@ -215,8 +234,56 @@ Private Sub AppendLShapeFaceSettings(ByRef data As Variant)
             AppendSetting "LShape." & faceName & ".d_3row_2", Trim$(CStr(data(17, col))), Trim$(CStr(data(17, col))), Trim$(CStr(data(17, 7)))
             AppendSetting "LShape." & faceName & ".loc_2row", Trim$(CStr(data(18, col))), Trim$(CStr(data(18, col))), Trim$(CStr(data(18, 7)))
             AppendSetting "LShape." & faceName & ".loc_3row", Trim$(CStr(data(19, col))), Trim$(CStr(data(19, col))), Trim$(CStr(data(19, 7)))
+            If UBound(data, 1) >= 21 Then
+                AppendSetting "LShape." & faceName & ".bind_2row", Trim$(CStr(data(20, col))), Trim$(CStr(data(20, col))), Trim$(CStr(data(20, 7)))
+                AppendSetting "LShape." & faceName & ".bind_3row", Trim$(CStr(data(21, col))), Trim$(CStr(data(21, col))), Trim$(CStr(data(21, 7)))
+            End If
         End If
     Next i
+End Sub
+
+Private Sub AppendLShapeSectionedSettings(ByRef data As Variant)
+    AppendSetting "LShape.H1", Trim$(CStr(data(3, 1))), Trim$(CStr(data(3, 1))), "LShape geometry"
+    AppendSetting "LShape.B1", Trim$(CStr(data(3, 2))), Trim$(CStr(data(3, 2))), "LShape geometry"
+    AppendSetting "LShape.H2", Trim$(CStr(data(3, 3))), Trim$(CStr(data(3, 3))), "LShape geometry"
+    AppendSetting "LShape.B2", Trim$(CStr(data(3, 4))), Trim$(CStr(data(3, 4))), "LShape geometry"
+
+    Dim faceNames(1 To 8) As String
+    Dim sideIndexes(1 To 8) As Long
+    FillLShapeSectionedFaceOrder faceNames, sideIndexes
+
+    Dim i As Long
+    For i = 1 To 8
+        Dim rowIndex As Long
+        rowIndex = 6 + i
+        AppendSetting "LShape." & faceNames(i) & ".as_" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 8)))
+        AppendSetting "LShape." & faceNames(i) & ".d_" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 8)))
+        AppendSetting "LShape." & faceNames(i) & ".n_" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 8)))
+        AppendSetting "LShape." & faceNames(i) & ".StartOffset" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 5))), Trim$(CStr(data(rowIndex, 5))), Trim$(CStr(data(rowIndex, 8)))
+        AppendSetting "LShape." & faceNames(i) & ".EndOffset" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 6))), Trim$(CStr(data(rowIndex, 6))), Trim$(CStr(data(rowIndex, 8)))
+
+        Dim extraRow As Long
+        extraRow = 17 + i
+        AppendSetting "LShape." & faceNames(i) & ".d_2row_" & CStr(sideIndexes(i)), Trim$(CStr(data(extraRow, 2))), Trim$(CStr(data(extraRow, 2))), Trim$(CStr(data(extraRow, 9)))
+        AppendSetting "LShape." & faceNames(i) & ".d_3row_" & CStr(sideIndexes(i)), Trim$(CStr(data(extraRow, 5))), Trim$(CStr(data(extraRow, 5))), Trim$(CStr(data(extraRow, 9)))
+        If sideIndexes(i) = 1 Then
+            AppendSetting "LShape." & faceNames(i) & ".loc_2row", Trim$(CStr(data(extraRow, 3))), Trim$(CStr(data(extraRow, 3))), Trim$(CStr(data(extraRow, 9)))
+            AppendSetting "LShape." & faceNames(i) & ".bind_2row", Trim$(CStr(data(extraRow, 4))), Trim$(CStr(data(extraRow, 4))), Trim$(CStr(data(extraRow, 9)))
+            AppendSetting "LShape." & faceNames(i) & ".loc_3row", Trim$(CStr(data(extraRow, 6))), Trim$(CStr(data(extraRow, 6))), Trim$(CStr(data(extraRow, 9)))
+            AppendSetting "LShape." & faceNames(i) & ".bind_3row", Trim$(CStr(data(extraRow, 7))), Trim$(CStr(data(extraRow, 7))), Trim$(CStr(data(extraRow, 9)))
+        End If
+    Next i
+End Sub
+
+Private Sub FillLShapeSectionedFaceOrder(ByRef faceNames() As String, ByRef sideIndexes() As Long)
+    faceNames(1) = "H1": sideIndexes(1) = 1
+    faceNames(2) = "H1": sideIndexes(2) = 2
+    faceNames(3) = "B1": sideIndexes(3) = 1
+    faceNames(4) = "B1": sideIndexes(4) = 2
+    faceNames(5) = "H2": sideIndexes(5) = 1
+    faceNames(6) = "H2": sideIndexes(6) = 2
+    faceNames(7) = "B2": sideIndexes(7) = 1
+    faceNames(8) = "B2": sideIndexes(8) = 2
 End Sub
 
 Private Sub AppendSetting(ByVal keyValue As String, ByVal settingValue As String, _

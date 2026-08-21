@@ -317,7 +317,9 @@ Private Function LShapeFaceSettings(ByVal settings As CSystemSettingsReader, ByV
         units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".d_3row_1", 0#)), _
         units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".d_3row_2", 0#)), _
         settings.GetString("LShape." & faceName & ".loc_2row", "Stacked"), _
-        settings.GetString("LShape." & faceName & ".loc_3row", "Stacked"))
+        settings.GetString("LShape." & faceName & ".loc_3row", "Stacked"), _
+        settings.GetString("LShape." & faceName & ".bind_2row", "EachBar"), _
+        settings.GetString("LShape." & faceName & ".bind_3row", "EachBar"))
 End Function
 
 Private Sub WriteGoverningCombinationResults(ByVal workbook As Object, ByVal section As CSectionModel, _

@@ -165,7 +165,9 @@ function Get-GeometrySettingsCatalog {
             @("d_3row_1", "", "", "", "", "мм", "Диаметр стержней третьего ряда у грани _1. Ставится относительно первого ряда; при совпадении loc_3row с loc_2row перескакивает второй ряд."),
             @("d_3row_2", "", "", "", "", "мм", "Диаметр стержней третьего ряда у грани _2. Ставится относительно первого ряда; при совпадении loc_3row с loc_2row перескакивает второй ряд."),
             @("loc_2row", "Stacked", "Stacked", "Stacked", "Stacked", "", "Расположение второго ряда, общее для граней _1/_2: Stacked - внутрь сечения; SideBySide - для H вниз, для B вправо."),
-            @("loc_3row", "Stacked", "Stacked", "Stacked", "Stacked", "", "Расположение третьего ряда, общее для граней _1/_2: Stacked - внутрь сечения; SideBySide - для H вниз, для B вправо.")
+            @("loc_3row", "Stacked", "Stacked", "Stacked", "Stacked", "", "Расположение третьего ряда, общее для граней _1/_2: Stacked - внутрь сечения; SideBySide - для H вниз, для B вправо."),
+            @("bind_2row", "EachBar", "EachBar", "EachBar", "EachBar", "", "Привязка второго ряда: EachBar - к каждому стержню первого ряда; EverySecondBar - через один стержень первого ряда."),
+            @("bind_3row", "EachBar", "EachBar", "EachBar", "EachBar", "", "Привязка третьего ряда: EachBar - к каждому стержню первого ряда; EverySecondBar - через один стержень первого ряда.")
         )}
     )
 }
@@ -419,7 +421,7 @@ function Apply-SystemSettingsLayout {
 
     Add-UnitSettingsTable $Workbook $Sheet 3 14
     Add-SignConventionSettingsTable $Workbook $Sheet 13 14
-    Add-PlotAnnotationSettingsTable $Workbook $Sheet 20 14
+    Add-PlotAnnotationSettingsTable $Workbook $Sheet 20 16
 
     foreach ($geometryTable in (Get-GeometrySettingsCatalog)) {
         if ($geometryTable.ContainsKey("FaceTable") -and $geometryTable.FaceTable) {
@@ -612,46 +614,119 @@ function Add-LShapeFaceSettingsTable {
     )
 
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = $Title
-    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 6)).Merge() | Out-Null
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 8)).Merge() | Out-Null
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
 
-    $headers = @("Параметр", "H1", "B1", "H2", "B2", "Ед.", "Комментарий")
-    for ($i = 0; $i -lt $headers.Count; $i++) {
-        $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
-        $cell.Value2 = $headers[$i]
+    $geometryValues = @{
+        "H1" = $Rows[0][1]
+        "B1" = $Rows[0][2]
+        "H2" = $Rows[0][3]
+        "B2" = $Rows[0][4]
+    }
+    $mainRows = @(
+        @("H1 - левая",   $Rows[1][1], $Rows[3][1], $Rows[5][1], $Rows[7][1],  $Rows[8][1],  "мм", "Грань _1: левая грань H1."),
+        @("H1 - правая",  $Rows[2][1], $Rows[4][1], $Rows[6][1], $Rows[9][1],  $Rows[10][1], "мм", "Грань _2: правая грань H1."),
+        @("B1 - верхняя", $Rows[1][2], $Rows[3][2], $Rows[5][2], $Rows[7][2],  $Rows[8][2],  "мм", "Грань _1: верхняя грань B1."),
+        @("B1 - нижняя",  $Rows[2][2], $Rows[4][2], $Rows[6][2], $Rows[9][2],  $Rows[10][2], "мм", "Грань _2: нижняя грань B1."),
+        @("H2 - левая",   $Rows[1][3], $Rows[3][3], $Rows[5][3], $Rows[7][3],  $Rows[8][3],  "мм", "Грань _1: левая грань H2."),
+        @("H2 - правая",  $Rows[2][3], $Rows[4][3], $Rows[6][3], $Rows[9][3],  $Rows[10][3], "мм", "Грань _2: правая грань H2."),
+        @("B2 - верхняя", $Rows[1][4], $Rows[3][4], $Rows[5][4], $Rows[7][4],  $Rows[8][4],  "мм", "Грань _1: верхняя грань B2."),
+        @("B2 - нижняя",  $Rows[2][4], $Rows[4][4], $Rows[6][4], $Rows[9][4],  $Rows[10][4], "мм", "Грань _2: нижняя грань B2.")
+    )
+    $extraRows = @(
+        @("H1 - левая",   $Rows[12][1], $Rows[16][1], $Rows[18][1], $Rows[14][1], $Rows[17][1], $Rows[19][1], "мм", "Дополнительные ряды у грани _1 H1."),
+        @("H1 - правая",  $Rows[13][1], $Rows[16][1], $Rows[18][1], $Rows[15][1], $Rows[17][1], $Rows[19][1], "мм", "Дополнительные ряды у грани _2 H1."),
+        @("B1 - верхняя", $Rows[12][2], $Rows[16][2], $Rows[18][2], $Rows[14][2], $Rows[17][2], $Rows[19][2], "мм", "Дополнительные ряды у грани _1 B1."),
+        @("B1 - нижняя",  $Rows[13][2], $Rows[16][2], $Rows[18][2], $Rows[15][2], $Rows[17][2], $Rows[19][2], "мм", "Дополнительные ряды у грани _2 B1."),
+        @("H2 - левая",   $Rows[12][3], $Rows[16][3], $Rows[18][3], $Rows[14][3], $Rows[17][3], $Rows[19][3], "мм", "Дополнительные ряды у грани _1 H2."),
+        @("H2 - правая",  $Rows[13][3], $Rows[16][3], $Rows[18][3], $Rows[15][3], $Rows[17][3], $Rows[19][3], "мм", "Дополнительные ряды у грани _2 H2."),
+        @("B2 - верхняя", $Rows[12][4], $Rows[16][4], $Rows[18][4], $Rows[14][4], $Rows[17][4], $Rows[19][4], "мм", "Дополнительные ряды у грани _1 B2."),
+        @("B2 - нижняя",  $Rows[13][4], $Rows[16][4], $Rows[18][4], $Rows[15][4], $Rows[17][4], $Rows[19][4], "мм", "Дополнительные ряды у грани _2 B2.")
+    )
+
+    $Sheet.Cells.Item($HeaderRow, $StartColumn).Value2 = "ГЕОМЕТРИЯ"
+    $Sheet.Cells.Item($HeaderRow, $StartColumn).Font.Bold = $true
+    $Sheet.Cells.Item($HeaderRow, $StartColumn).Interior.Color = 15921906
+    $geomHeaders = @("H1", "B1", "H2", "B2")
+    for ($i = 0; $i -lt $geomHeaders.Count; $i++) {
+        $cell = $Sheet.Cells.Item($HeaderRow + 1, $StartColumn + $i)
+        $cell.Value2 = $geomHeaders[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = 14277081
+        $Sheet.Cells.Item($HeaderRow + 2, $StartColumn + $i).Value2 = $geometryValues[$geomHeaders[$i]]
+    }
+    Set-InputUnitCell $Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 4) "мм"
+
+    $mainHeaderRow = $HeaderRow + 5
+    $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn).Value2 = "ОСНОВНОЕ АРМИРОВАНИЕ"
+    $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn).Font.Bold = $true
+    $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn).Interior.Color = 15921906
+    $mainHeaders = @("Грань", "as", "d", "n", "t нач.", "t кон.", "Ед.", "Комментарий")
+    for ($i = 0; $i -lt $mainHeaders.Count; $i++) {
+        $cell = $Sheet.Cells.Item($mainHeaderRow, $StartColumn + $i)
+        $cell.Value2 = $mainHeaders[$i]
         $cell.Font.Bold = $true
         $cell.Interior.Color = 14277081
     }
-
-    for ($r = 0; $r -lt $Rows.Count; $r++) {
-        for ($c = 0; $c -lt 7; $c++) {
-            $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + $c).Value2 = $Rows[$r][$c]
+    for ($r = 0; $r -lt $mainRows.Count; $r++) {
+        for ($c = 0; $c -lt $mainRows[$r].Count; $c++) {
+            $Sheet.Cells.Item($mainHeaderRow + 1 + $r, $StartColumn + $c).Value2 = $mainRows[$r][$c]
         }
-        Set-InputUnitCell $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + 5) ([string]$Rows[$r][5])
+        Set-InputUnitCell $Sheet.Cells.Item($mainHeaderRow + 1 + $r, $StartColumn + 6) "мм"
+    }
+
+    $extraHeaderRow = $mainHeaderRow + 11
+    $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn).Value2 = "ДОПОЛНИТЕЛЬНЫЕ РЯДЫ"
+    $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn).Font.Bold = $true
+    $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn).Interior.Color = 15921906
+    $extraHeaders = @("Грань", "d2", "положение", "привязка", "d3", "положение", "привязка", "Ед.", "Комментарий")
+    for ($i = 0; $i -lt $extraHeaders.Count; $i++) {
+        $cell = $Sheet.Cells.Item($extraHeaderRow, $StartColumn + $i)
+        $cell.Value2 = $extraHeaders[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = 14277081
+    }
+    for ($r = 0; $r -lt $extraRows.Count; $r++) {
+        for ($c = 0; $c -lt $extraRows[$r].Count; $c++) {
+            $Sheet.Cells.Item($extraHeaderRow + 1 + $r, $StartColumn + $c).Value2 = $extraRows[$r][$c]
+        }
+        Set-InputUnitCell $Sheet.Cells.Item($extraHeaderRow + 1 + $r, $StartColumn + 7) "мм"
     }
 
     $locOptions = @("Stacked", "SideBySide")
-    $listColumn = 60
+    $listColumn = 114
     for ($i = 0; $i -lt $locOptions.Count; $i++) {
         $Sheet.Cells.Item($i + 1, $listColumn).Value2 = $locOptions[$i]
     }
     $listColName = ConvertTo-ExcelColumn $listColumn
     $listAddress = "=$" + $listColName + '$1:$' + $listColName + '$' + $locOptions.Count
-    for ($r = 0; $r -lt $Rows.Count; $r++) {
-        $parameterName = [string]$Rows[$r][0]
-        if ($parameterName -eq "loc_2row" -or $parameterName -eq "loc_3row") {
-            for ($c = 1; $c -le 4; $c++) {
-                $cell = $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + $c)
-                $cell.Validation.Delete()
-                $cell.Validation.Add(3, 1, 1, $listAddress)
-                $cell.Validation.IgnoreBlank = $true
-                $cell.Validation.InCellDropdown = $true
-            }
+    $bindOptions = @("EachBar", "EverySecondBar")
+    $bindListColumn = 115
+    for ($i = 0; $i -lt $bindOptions.Count; $i++) {
+        $Sheet.Cells.Item($i + 1, $bindListColumn).Value2 = $bindOptions[$i]
+    }
+    $bindListColName = ConvertTo-ExcelColumn $bindListColumn
+    $bindListAddress = "=$" + $bindListColName + '$1:$' + $bindListColName + '$' + $bindOptions.Count
+
+    for ($r = 0; $r -lt $extraRows.Count; $r++) {
+        foreach ($valueColumn in @(2, 5)) {
+            $cell = $Sheet.Cells.Item($extraHeaderRow + 1 + $r, $StartColumn + $valueColumn)
+            $cell.Validation.Delete()
+            $cell.Validation.Add(3, 1, 1, $listAddress)
+            $cell.Validation.IgnoreBlank = $true
+            $cell.Validation.InCellDropdown = $true
+        }
+        foreach ($valueColumn in @(3, 6)) {
+            $cell = $Sheet.Cells.Item($extraHeaderRow + 1 + $r, $StartColumn + $valueColumn)
+            $cell.Validation.Delete()
+            $cell.Validation.Add(3, 1, 1, $bindListAddress)
+            $cell.Validation.IgnoreBlank = $true
+            $cell.Validation.InCellDropdown = $true
         }
     }
 
-    Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($HeaderRow + $Rows.Count) ($StartColumn + 6)
+    Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($extraHeaderRow + $extraRows.Count) ($StartColumn + 8)
 }
 
 function Add-MaterialDiagramTable {

@@ -258,6 +258,15 @@ Private Sub TestLShapeAdditionalRebarRows(ByRef stats As TTestStats)
     AssertClose stats, "lshape.rows.separateLineDiameters.row2_2.d", separateLineDiameters.Diameter(5), 22#, 0.000001
     AssertClose stats, "lshape.rows.separateLineDiameters.row3_2.d", separateLineDiameters.Diameter(6), 34#, 0.000001
 
+    Dim everySecond As CRebarLayout
+    Set everySecond = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
+        Array(50#, 50#, 20#, 20#, 5, 0, 50#, 50#, 50#, 50#, 20#, 0#, 30#, 0#, "Stacked", "Stacked", "EverySecondBar", "EachBar"), _
+        EmptyFaceSettings(), EmptyFaceSettings(), EmptyFaceSettings(), "A400")
+
+    AssertTrue stats, "lshape.rows.everySecond.count", everySecond.Count = 13
+    AssertTrue stats, "lshape.rows.everySecond.row2.partial", CountBarsWithRow(everySecond, "row_2") = 3
+    AssertTrue stats, "lshape.rows.everySecond.row3.each", CountBarsWithRow(everySecond, "row_3") = 5
+
     AssertLShapeRebarRowsError stats, "lshape.rows.invalid.location", _
         Array(50#, 50#, 20#, 20#, 1, 0, 100#, 100#, 100#, 100#, 20#, 0#, 0#, 0#, "Diagonal", "Stacked")
 End Sub
@@ -740,6 +749,13 @@ Expected:
     stats.Passed = stats.Passed + 1
     AppendLine stats, "OK: " & name
 End Sub
+
+Private Function CountBarsWithRow(ByVal layout As CRebarLayout, ByVal rowToken As String) As Long
+    Dim i As Long
+    For i = 1 To layout.Count
+        If InStr(1, layout.BarID(i), rowToken, vbTextCompare) > 0 Then CountBarsWithRow = CountBarsWithRow + 1
+    Next i
+End Function
 
 Private Sub AssertTrue(ByRef stats As TTestStats, ByVal name As String, ByVal condition As Boolean)
     If condition Then
