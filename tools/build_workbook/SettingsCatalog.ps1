@@ -97,7 +97,12 @@
             @("Plot.PrincipalAxesEnabled", "Yes", "", "Показывать главные центральные оси приведенного сечения."),
             @("Plot.LoadApplicationPointEnabled", "Yes", "", "Показывать точку приложения нагрузки из последнего расчетного snapshot."),
             @("Plot.CentroidEnabled", "Yes", "", "Показывать центр тяжести приведенного сечения."),
-            @("Plot.LegendEnabled", "Yes", "", "Показывать легенду физического состояния и выбранного ResultType справа от схемы.")
+            @("Plot.LegendEnabled", "Yes", "", "Показывать легенду физического состояния и выбранного ResultType справа от схемы."),
+            @("Plot.LegendMode", "Separate", "", "Separate - отдельные легенды для арматуры и бетона; Common - одна общая легенда. В режиме Common используются цвета Plot.Color.RebarCompression и Plot.Color.RebarTension."),
+            @("Plot.Color.RebarCompression", "30,80,220", "RGB", "Цвет максимального сжатия арматуры. В режиме Plot.LegendMode=Common используется как цвет сжатия для всех элементов."),
+            @("Plot.Color.RebarTension", "210,30,20", "RGB", "Цвет максимального растяжения арматуры. В режиме Plot.LegendMode=Common используется как цвет растяжения для всех элементов."),
+            @("Plot.Color.ConcreteCompression", "125,35,210", "RGB", "Цвет максимального сжатия бетона при Plot.LegendMode=Separate."),
+            @("Plot.Color.ConcreteTension", "0,155,85", "RGB", "Цвет максимального растяжения бетона при Plot.LegendMode=Separate; неработающий растянутый бетон остается серым.")
         )}
     )
 }
@@ -449,6 +454,7 @@ function Apply-SystemSettingsLayout {
         "Plot.LoadApplicationPointEnabled" = @("Yes", "No")
         "Plot.CentroidEnabled" = @("Yes", "No")
         "Plot.LegendEnabled" = @("Yes", "No")
+        "Plot.LegendMode" = @("Separate", "Common")
     }
 
     $listColumn = 80

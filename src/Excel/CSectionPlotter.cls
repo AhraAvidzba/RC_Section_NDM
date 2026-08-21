@@ -73,6 +73,11 @@ Private mResultGradientEnabled As Boolean
 Private mResultPrecision As Long
 Private mDimensionArrowType As String
 Private mDimensionArrowSize As String
+Private mLegendMode As String
+Private mRebarCompressionColor As Long
+Private mRebarTensionColor As Long
+Private mConcreteCompressionColor As Long
+Private mConcreteTensionColor As Long
 
 Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4800, "CSectionPlotter", "Книга Excel не передана."
@@ -88,6 +93,11 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     If mResultPrecision > 8 Then mResultPrecision = 8
     mDimensionArrowType = NormalizeArrowType(settings.GetString("Plot.Dimensions.ArrowType", "Triangle"))
     mDimensionArrowSize = NormalizeArrowSize(settings.GetString("Plot.Dimensions.ArrowSize", "Wide"))
+    mLegendMode = NormalizeLegendMode(settings.GetString("Plot.LegendMode", "Separate"))
+    mRebarCompressionColor = ParseRgb(settings.GetString("Plot.Color.RebarCompression", "30,80,220"), RGB(30, 80, 220))
+    mRebarTensionColor = ParseRgb(settings.GetString("Plot.Color.RebarTension", "210,30,20"), RGB(210, 30, 20))
+    mConcreteCompressionColor = ParseRgb(settings.GetString("Plot.Color.ConcreteCompression", "125,35,210"), RGB(125, 35, 210))
+    mConcreteTensionColor = ParseRgb(settings.GetString("Plot.Color.ConcreteTension", "0,155,85"), RGB(0, 155, 85))
 
     PrepareChart data
     ConfigureEqualScale data
@@ -117,7 +127,7 @@ Private Sub PrepareChart(ByVal data As CSectionPlotDataReader)
     mChart.ChartType = XL_XY_SCATTER
     mChart.HasLegend = False
     mChart.HasTitle = True
-    mChart.ChartTitle.Text = "Сечение: " & data.LoadCase & " / " & data.ResultCaption
+    mChart.ChartTitle.Text = PlotTitlePrefix() & data.LoadCase
 
     Do While mChart.SeriesCollection.Count > 0
         mChart.SeriesCollection(1).Delete
@@ -292,16 +302,19 @@ Private Sub AddElementSeries(ByVal data As CSectionPlotDataReader)
     For i = 1 To data.Count
         Dim key As String
         key = ElementBucketKey(data, i)
+        Dim indexList As Collection
         If buckets.Exists(key) Then
-            buckets(key) = CLng(buckets(key)) + 1
+            Set indexList = buckets.Item(key)
         Else
-            buckets.Add key, 1
+            Set indexList = New Collection
+            buckets.Add key, indexList
         End If
+        indexList.Add i
     Next i
 
     Dim keyVariant As Variant
     For Each keyVariant In buckets.Keys
-        AddBucketSeries data, CStr(keyVariant), CLng(buckets(keyVariant))
+        AddBucketSeriesByIndexes data, CStr(keyVariant), buckets(keyVariant)
     Next keyVariant
 End Sub
 
@@ -322,8 +335,9 @@ Private Function ElementBucketKey(ByVal data As CSectionPlotDataReader, ByVal in
         data.MaterialType(index) & "|" & data.PhysicalState(index)
 End Function
 
-Private Sub AddBucketSeries(ByVal data As CSectionPlotDataReader, ByVal bucketKey As String, ByVal count As Long)
-    If count <= 0 Then Exit Sub
+Private Sub AddBucketSeriesByIndexes(ByVal data As CSectionPlotDataReader, ByVal bucketKey As String, ByVal indexes As Collection)
+    If indexes Is Nothing Then Exit Sub
+    If indexes.Count <= 0 Then Exit Sub
 
     Dim parts As Variant
     parts = Split(bucketKey, "|")
@@ -333,16 +347,14 @@ Private Sub AddBucketSeries(ByVal data As CSectionPlotDataReader, ByVal bucketKe
 
     Dim xValues() As Double
     Dim yValues() As Double
-    ReDim xValues(1 To count)
-    ReDim yValues(1 To count)
+    ReDim xValues(1 To indexes.Count)
+    ReDim yValues(1 To indexes.Count)
 
     Dim i As Long, index As Long
-    For i = 1 To data.Count
-        If ElementBucketKey(data, i) = bucketKey Then
-            index = index + 1
-            xValues(index) = data.X(i)
-            yValues(index) = data.Y(i)
-        End If
+    For i = 1 To indexes.Count
+        index = CLng(indexes.Item(i))
+        xValues(i) = data.X(index)
+        yValues(i) = data.Y(index)
     Next i
 
     Dim series As Object
@@ -401,6 +413,16 @@ Private Function MaterialResultColor(ByVal materialType As String, ByVal state A
 End Function
 
 Private Function MaterialStateMaxAbs(ByVal materialType As String, ByVal state As String) As Double
+    If IsCommonLegendMode() Then
+        If StrComp(state, "Compression", vbTextCompare) = 0 Then
+            MaterialStateMaxAbs = mCompressionMaxAbs
+        ElseIf StrComp(state, "Tension", vbTextCompare) = 0 Then
+            MaterialStateMaxAbs = mTensionMaxAbs
+        End If
+        If MaterialStateMaxAbs <= 0# Then MaterialStateMaxAbs = mResultMaxAbs
+        Exit Function
+    End If
+
     If StrComp(materialType, "Rebar", vbTextCompare) = 0 Then
         If StrComp(state, "Compression", vbTextCompare) = 0 Then
             MaterialStateMaxAbs = mRebarCompressionMaxAbs
@@ -947,6 +969,17 @@ Private Sub DrawLegend(ByVal data As CSectionPlotDataReader)
     barW = 18
     barH = 132
 
+    If IsCommonLegendMode() Then
+        DrawChartLegendScale data, leftPos, topPos, barW, barH, "Rebar", _
+            mHasCompression, mCompressionValueAtMaxAbs, mHasTension, mTensionValueAtMaxAbs
+    Else
+        DrawChartLegendScale data, leftPos, topPos, barW, barH, "Rebar", _
+            mRebarHasCompression, mRebarCompressionValueAtMaxAbs, mRebarHasTension, mRebarTensionValueAtMaxAbs
+        DrawChartLegendScale data, leftPos, topPos + barH + 70, barW, barH, "Concrete", _
+            mConcreteHasCompression, mConcreteCompressionValueAtMaxAbs, mConcreteHasTension, mConcreteTensionValueAtMaxAbs
+    End If
+    Exit Sub
+
     AddChartText leftPos - 6, topPos - 28, 132, 22, data.ResultCaption & ", " & data.ResultUnit, 0#, RGB(30, 30, 30), True
 
     Dim i As Long
@@ -1002,19 +1035,23 @@ Private Function MaterialLegendColor(ByVal materialType As String, ByVal positio
 End Function
 
 Private Function LegendCompressionColor(ByVal materialType As String) As Long
-    If StrComp(materialType, "Rebar", vbTextCompare) = 0 Then
-        LegendCompressionColor = RGB(210, 30, 20)
+    If IsCommonLegendMode() Or StrComp(materialType, "Rebar", vbTextCompare) = 0 Then
+        LegendCompressionColor = mRebarCompressionColor
     Else
-        LegendCompressionColor = RGB(125, 35, 210)
+        LegendCompressionColor = mConcreteCompressionColor
     End If
 End Function
 
 Private Function LegendTensionColor(ByVal materialType As String) As Long
-    If StrComp(materialType, "Rebar", vbTextCompare) = 0 Then
-        LegendTensionColor = RGB(30, 80, 220)
+    If IsCommonLegendMode() Or StrComp(materialType, "Rebar", vbTextCompare) = 0 Then
+        LegendTensionColor = mRebarTensionColor
     Else
-        LegendTensionColor = RGB(0, 155, 85)
+        LegendTensionColor = mConcreteTensionColor
     End If
+End Function
+
+Private Function IsCommonLegendMode() As Boolean
+    IsCommonLegendMode = (StrComp(mLegendMode, "Common", vbTextCompare) = 0)
 End Function
 
 Private Function PhysicalLegendColor(ByVal position As Double) As Long
@@ -1255,6 +1292,42 @@ Private Function AreaFactorToMm2(ByVal unitName As String) As Double
         Case "m2": AreaFactorToMm2 = 1000000#
         Case Else: AreaFactorToMm2 = LengthFactorToMm(Replace$(LCase$(Trim$(unitName)), "2", "")) ^ 2
     End Select
+End Function
+
+Private Function PlotTitlePrefix() As String
+    PlotTitlePrefix = ChrW$(&H421) & ChrW$(&H445) & ChrW$(&H435) & ChrW$(&H43C) & ChrW$(&H430) & " " & _
+        ChrW$(&H441) & ChrW$(&H435) & ChrW$(&H447) & ChrW$(&H435) & ChrW$(&H43D) & ChrW$(&H438) & ChrW$(&H44F) & " " & _
+        ChrW$(&H43F) & ChrW$(&H440) & ChrW$(&H438) & " " & ChrW$(&H437) & ChrW$(&H430) & ChrW$(&H433) & _
+        ChrW$(&H440) & ChrW$(&H443) & ChrW$(&H436) & ChrW$(&H435) & ChrW$(&H43D) & ChrW$(&H438) & ChrW$(&H438) & " "
+End Function
+
+Private Function NormalizeLegendMode(ByVal value As String) As String
+    Select Case LCase$(Trim$(value))
+        Case "common": NormalizeLegendMode = "Common"
+        Case "separate": NormalizeLegendMode = "Separate"
+        Case Else: NormalizeLegendMode = "Separate"
+    End Select
+End Function
+
+Private Function ParseRgb(ByVal value As String, ByVal defaultColor As Long) As Long
+    Dim parts As Variant
+    parts = Split(Replace$(Trim$(value), ";", ","), ",")
+    If UBound(parts) <> 2 Then
+        ParseRgb = defaultColor
+        Exit Function
+    End If
+
+    On Error GoTo InvalidColor
+    Dim r As Long, g As Long, b As Long
+    r = CLng(Trim$(CStr(parts(0))))
+    g = CLng(Trim$(CStr(parts(1))))
+    b = CLng(Trim$(CStr(parts(2))))
+    If r < 0 Or r > 255 Or g < 0 Or g > 255 Or b < 0 Or b > 255 Then GoTo InvalidColor
+    ParseRgb = RGB(r, g, b)
+    Exit Function
+
+InvalidColor:
+    ParseRgb = defaultColor
 End Function
 
 Private Function FormatPlotValue(ByVal value As Double) As String
