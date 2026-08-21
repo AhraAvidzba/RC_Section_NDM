@@ -168,7 +168,7 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.run.deformations", Len(CStr(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(12, 5).Value2)) > 0
     AssertTrue stats, "ui.run.crack", Len(CStr(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(17, 5).Value2)) > 0
     Dim sys As Object
-    Set sys = ThisWorkbook.Worksheets.Item("System")
+    Set sys = ThisWorkbook.Worksheets.Item("Settings")
     AssertTrue stats, "ui.run.system.noRebarTable", Len(CStr(sys.Cells.Item(130, 1).Value2)) = 0
     AssertTrue stats, "ui.run.system.noCrackFormulaBlock", Len(CStr(sys.Cells.Item(130, 9).Value2)) = 0
     AssertTrue stats, "ui.run.crack.result.value", Not ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(17, 5).HasFormula
@@ -199,7 +199,7 @@ Private Sub TestLShapeWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.lshape.result.status", Len(CStr(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(5, 5).Value2)) > 0
 
     Dim sys As Object
-    Set sys = ThisWorkbook.Worksheets.Item("System")
+    Set sys = ThisWorkbook.Worksheets.Item("Settings")
     AssertTrue stats, "ui.lshape.system.noRebarTable", Len(CStr(sys.Cells.Item(130, 1).Value2)) = 0
     AssertTrue stats, "ui.lshape.system.noCrackFormulaBlock", Len(CStr(sys.Cells.Item(130, 9).Value2)) = 0
 End Sub
@@ -359,7 +359,7 @@ Private Function AutoCADCombinationValidationIsDynamic() As Boolean
             If Left$(formulaText, 1) <> "=" Then Exit Function
 
             Dim listRange As Object
-            Set listRange = ThisWorkbook.Worksheets.Item("System").Range(Mid$(formulaText, 2))
+            Set listRange = ThisWorkbook.Worksheets.Item("Settings").Range(Mid$(formulaText, 2))
             AutoCADCombinationValidationIsDynamic = (CStr(listRange.Cells.Item(1, 1).Value2) = "Worst" And _
                 CStr(listRange.Cells.Item(2, 1).Value2) = "LC1" And listRange.Cells.Item(2, 1).HasFormula)
             Exit Function
@@ -386,7 +386,7 @@ Private Function LoadCaseValidationIsDynamicForSetting(ByVal settingKey As Strin
             If Left$(formulaText, 1) <> "=" Then Exit Function
 
             Dim listRange As Object
-            Set listRange = ThisWorkbook.Worksheets.Item("System").Range(Mid$(formulaText, 2))
+            Set listRange = ThisWorkbook.Worksheets.Item("Settings").Range(Mid$(formulaText, 2))
             LoadCaseValidationIsDynamicForSetting = (CStr(listRange.Cells.Item(1, 1).Value2) = "Worst" And _
                 CStr(listRange.Cells.Item(2, 1).Value2) = "LC1" And listRange.Cells.Item(2, 1).HasFormula)
             Exit Function
@@ -682,7 +682,7 @@ Private Function SettingValidationHasOptionsInRange(ByVal settings As Object, By
             If Left$(formulaText, 1) <> "=" Then Exit Function
 
             Dim listRange As Object
-            Set listRange = ThisWorkbook.Worksheets.Item("System").Range(Mid$(formulaText, 2))
+            Set listRange = ThisWorkbook.Worksheets.Item("Settings").Range(Mid$(formulaText, 2))
             Dim i As Long
             If listRange.Cells.Count <> (UBound(expectedOptions) - LBound(expectedOptions) + 1) Then Exit Function
             For i = LBound(expectedOptions) To UBound(expectedOptions)
@@ -709,7 +709,7 @@ Private Function PlotAnnotationValidationHasOptions(ByVal rowName As String, ByV
             If Left$(formulaText, 1) <> "=" Then Exit Function
 
             Dim listRange As Object
-            Set listRange = ThisWorkbook.Worksheets.Item("System").Range(Mid$(formulaText, 2))
+            Set listRange = ThisWorkbook.Worksheets.Item("Settings").Range(Mid$(formulaText, 2))
             Dim i As Long
             If listRange.Cells.Count <> (UBound(expectedOptions) - LBound(expectedOptions) + 1) Then Exit Function
             For i = LBound(expectedOptions) To UBound(expectedOptions)

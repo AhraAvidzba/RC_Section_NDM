@@ -128,6 +128,7 @@ Private Sub PrepareChart(ByVal data As CSectionPlotDataReader)
     mChart.HasLegend = False
     mChart.HasTitle = True
     mChart.ChartTitle.Text = PlotTitlePrefix() & data.LoadCase
+    mChart.ChartTitle.Font.Size = 12
 
     Do While mChart.SeriesCollection.Count > 0
         mChart.SeriesCollection(1).Delete

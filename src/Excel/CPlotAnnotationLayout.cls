@@ -71,10 +71,10 @@ Private mOccRight() As Double
 Private mOccBottom() As Double
 
 Public Sub ConfigureFromSettings(ByVal settings As CSystemSettingsReader)
-    mDimensionTextHeightBase = settings.GetDouble("Plot.Dimensions.TextHeight", 8.5)
-    mRebarTextHeightBase = settings.GetDouble("Plot.RebarLabels.TextHeight", 9#)
-    mDimensionBaseGapBase = settings.GetDouble("Plot.Dimensions.Offset", 42#)
-    mRebarBaseGapBase = settings.GetDouble("Plot.RebarLabels.Offset", 10#)
+    mDimensionTextHeightBase = settings.GetDouble("Plot.Dimensions.TextHeight", 25#)
+    mRebarTextHeightBase = settings.GetDouble("Plot.RebarLabels.TextHeight", 25#)
+    mDimensionBaseGapBase = settings.GetDouble("Plot.Dimensions.Offset", 100#)
+    mRebarBaseGapBase = settings.GetDouble("Plot.RebarLabels.Offset", 60#)
     mDimensionLineWeightBase = settings.GetDouble("Plot.Dimensions.LineWeight", 1.75)
     mExtensionLineWeightBase = settings.GetDouble("Plot.Dimensions.ExtensionLineWeight", 0.85)
     mRebarLineWeightBase = settings.GetDouble("Plot.RebarLabels.LineWeight", 1.35)
@@ -113,10 +113,10 @@ Private Sub InitializeVisualMetrics(ByVal plotWidth As Double, ByVal plotHeight 
     sy = plotHeight / 430#
     mVisualScale = ClampDouble(MinDouble(sx, sy), 0.65, 1.8)
 
-    If mDimensionTextHeightBase <= 0# Then mDimensionTextHeightBase = 8.5
-    If mRebarTextHeightBase <= 0# Then mRebarTextHeightBase = 9#
-    If mDimensionBaseGapBase <= 0# Then mDimensionBaseGapBase = 42#
-    If mRebarBaseGapBase <= 0# Then mRebarBaseGapBase = 10#
+    If mDimensionTextHeightBase <= 0# Then mDimensionTextHeightBase = 25#
+    If mRebarTextHeightBase <= 0# Then mRebarTextHeightBase = 25#
+    If mDimensionBaseGapBase <= 0# Then mDimensionBaseGapBase = 100#
+    If mRebarBaseGapBase <= 0# Then mRebarBaseGapBase = 60#
     If mDimensionLineWeightBase <= 0# Then mDimensionLineWeightBase = 1.75
     If mExtensionLineWeightBase <= 0# Then mExtensionLineWeightBase = 0.85
     If mRebarLineWeightBase <= 0# Then mRebarLineWeightBase = 1.35

@@ -335,7 +335,7 @@ try {
     $system = $workbook.Worksheets.Item(2)
     $results = $workbook.Worksheets.Item(3)
     $calc.Name = "Расчет"
-    $system.Name = "System"
+    $system.Name = "Settings"
     $results.Name = "Results"
 
     Add-MainInputBlock $calc

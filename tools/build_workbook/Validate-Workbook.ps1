@@ -124,7 +124,7 @@ try {
         $sheetNames += [string]$sheet.Name
     }
 
-    Add-Check $checks "Sheets Расчет/System/Results" (($sheetNames -contains "Расчет") -and ($sheetNames -contains "System") -and ($sheetNames -contains "Results")) ($sheetNames -join ", ")
+    Add-Check $checks "Sheets Расчет/Settings/Results" (($sheetNames -contains "Расчет") -and ($sheetNames -contains "Settings") -and ($sheetNames -contains "Results")) ($sheetNames -join ", ")
 
     $requiredNames = @(
         "rngLoadCombinations",
@@ -182,7 +182,7 @@ try {
     Add-Check $checks "No obsolete named ranges" ($presentObsoleteNames.Count -eq 0) ("Present: " + ($presentObsoleteNames -join ", "))
 
     $calc = $workbook.Worksheets.Item("Расчет")
-    $system = $workbook.Worksheets.Item("System")
+    $system = $workbook.Worksheets.Item("Settings")
 
     $printArea = [string]$calc.PageSetup.PrintArea
     $printAreaOk = $printArea.Contains('$A$1:$AJ$60') -or $printAreaXml.Contains('$A$1:$AJ$60')
