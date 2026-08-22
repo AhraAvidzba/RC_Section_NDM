@@ -1,12 +1,19 @@
 ﻿Attribute VB_Name = "modTestRegressionBaseline"
 Option Explicit
 
+' ==========================================================================
+' Регрессионная проверка численных результатов
+' ==========================================================================
+' Модуль сравнивает текущие результаты с сохраненным baseline, чтобы правки
+' интерфейса, документации или архитектуры не меняли расчетную математику.
+
 Private Type TRegressionStats
     Passed As Long
     Failed As Long
     Report As String
 End Type
 
+' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
 Public Function RunRegressionBaselineTests() As String
     On Error GoTo Failed
 
@@ -34,6 +41,7 @@ Failed:
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
 
+' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
 Private Sub RunBaselineCase(ByRef stats As TRegressionStats, ByVal caseName As String, _
         ByVal diameter As Double, ByVal centerX As Double, ByVal centerY As Double, _
         ByVal axisDistance As Double, ByVal barCount As Long, ByVal barDiameter As Double, _
@@ -74,6 +82,7 @@ Private Sub RunBaselineCase(ByRef stats As TRegressionStats, ByVal caseName As S
     AppendBaseline stats, caseName, solver, lambdaText, elapsed, mesh.FiberCount, rebars.Count
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestRepeatedRun(ByRef stats As TRegressionStats)
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -107,6 +116,7 @@ Private Sub TestRepeatedRun(ByRef stats As TRegressionStats)
     AppendBaseline stats, "repeated_run_second", secondSolver, "NA", 0#, mesh.FiberCount, rebars.Count
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestGeometryChange(ByRef stats As TRegressionStats)
     Dim smallSolver As CSectionSolver
     Dim largeSolver As CSectionSolver
@@ -122,6 +132,7 @@ Private Sub TestGeometryChange(ByRef stats As TRegressionStats)
     AppendBaseline stats, "geometry_change_d360", largeSolver, "NA", 0#, 0, 0
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestOriginShift(ByRef stats As TRegressionStats)
     Dim baseN As Double
     Dim baseMx As Double
@@ -337,4 +348,5 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
 

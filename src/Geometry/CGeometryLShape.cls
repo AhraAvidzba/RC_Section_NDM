@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -8,6 +8,13 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
+' ==========================================================================
+' Математическая геометрия Г-образного сечения
+' ==========================================================================
+' Класс описывает бетон как объединение верхнего и нижнего прямоугольников:
+' H1/B1 - верхняя ветвь, H2/B2 - нижняя полка. Он задает форму и контур, но
+' не занимается раскладкой стержней и не решает, какие размеры подписывать.
 
 Implements ISectionGeometry
 
@@ -176,3 +183,4 @@ End Sub
 Private Sub ISectionGeometry_GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
     GetExtremePoints pointX, pointY
 End Sub
+

@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -8,6 +8,13 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
+' ==========================================================================
+' Решение маленькой линейной системы 3x3
+' ==========================================================================
+' Этот класс нужен Newton/Secant-решателям для поправок epsilon0/kappaX/kappaY.
+' Он работает только с числами, не знает о геометрии, материалах и Excel, и
+' возвращает понятную причину отказа при вырожденной матрице.
 
 Private mSolved As Boolean
 Private mX1 As Double
@@ -147,6 +154,7 @@ End Property
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
+
 
 
 

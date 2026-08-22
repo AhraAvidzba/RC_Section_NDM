@@ -5,7 +5,7 @@
 ## Общая Схема
 
 ```text
-System + rngLoadCombinations
+Config + rngLoadCombinations
   -> CSystemSettingsReader
   -> CUnitSystem
   -> CLoadCombinationReader
@@ -51,7 +51,38 @@ curvature = 1/mm
 | `Generated` | Сетка и арматура строятся встроенными генераторами по `Geometry.Type`. |
 | `AutoCAD` | Импортируются только AutoCAD `Region` из активного чертежа на слоях `AutoCAD.Import.ConcreteLayer` и `AutoCAD.Import.RebarLayer`. |
 
-При AutoCAD-импорте единицы чертежа считаются миллиметрами. Класс арматуры берется из `Steel.Class`; одновременные разные классы арматуры в одном сечении не поддерживаются.
+При AutoCAD-импорте единицы чертежа считаются миллиметрами. Диаграмма арматуры берется из общей таблицы `rngSteelDiagramPoints`, а профиль стержней для расчета трещин - из `Steel.RebarProfile`; одновременные разные материалы арматуры в одном сечении не поддерживаются.
+
+## Section Type Extension Contract
+
+Built-in generated geometry is assembled through one registry point:
+
+```text
+CSectionTypeRegistry
+  -> ISectionTypeProvider
+       -> CGeometry*              (mathematical shape)
+       -> C*RebarLayoutBuilder    (bars and semantic rebar groups)
+       -> C*AnnotationBuilder     (contours, dimensions, rebar labels)
+  -> CSectionModel
+  -> CNDMResultsWriter
+  -> rngNDMSectionGeometry / rngNDMElementResults / rngNDMSectionProperties / rngNDMSectionAnnotations
+```
+
+`CSectionTypeRegistry` is the only place where a generated section type is selected by
+`Geometry.Type`. To add a new generated section, add the shape-specific classes, for example
+`CGeometryTShape`, `CTShapeRebarBuilder`, `CTShapeAnnotationBuilder`, implement one
+`ISectionTypeProvider`, and register that provider in `CSectionTypeRegistry`.
+
+Universal layers must not contain shape-specific checks after that point:
+
+- `CNDMResultsWriter` serializes `CSectionModel.Annotations`; it does not infer Circle/LShape/RoundedRectangle from elements.
+- `CSectionPlotDataReader` reads saved Results tables and does not call geometry builders.
+- `CPlotAnnotationLayout` only converts semantic annotations from model coordinates into chart layout.
+- `CSectionPlotter` only draws prepared series and annotation layouts.
+
+Semantic annotation coordinates are model/internal coordinates when they are created by a
+shape-specific annotation builder. The output writer converts them to the selected snapshot
+output units when writing `rngNDMSectionAnnotations`.
 
 ## CSectionModel
 
@@ -79,7 +110,7 @@ curvature = 1/mm
 - подключается к активному AutoCAD через COM;
 - перебирает `ModelSpace`;
 - принимает только объекты `AcDbRegion`;
-- фильтрует бетон и арматуру по слоям из `System`;
+- фильтрует бетон и арматуру по слоям из `Config`;
 - игнорирует области меньше `AutoCAD.Import.MinArea`;
 - для арматуры вычисляет эквивалентный диаметр из площади Region;
 - для бетона сохраняет площадь, центр и, если AutoCAD отдаёт данные, центральные моменты инерции;
@@ -129,6 +160,6 @@ Myint = sum(sigma_i * A_i * x_i)
 - `CCapacityResultWriter` пишет результат определяющего сочетания в `rngResultSection`;
 - `CNDMResultsWriter` пишет согласованный snapshot последнего расчета на лист `Results`: `rngNDMSectionGeometry` с постоянной геометрией, `rngNDMElementResults` с LC-зависимыми `Strain/Stress/PhysicalState`, `rngNDMSectionProperties` с общими свойствами сечения и состоянием выбранных LC, `rngNDMSectionAnnotations` с сохраненными semantic-аннотациями;
 - writer-ы получают `CUnitSystem` и выводят числовые результаты в выбранных `OUTPUT`-единицах и пользовательских знаках;
-- контрольная таблица арматуры и формульный блок трещин на `System` больше не выводятся;
+- контрольная таблица арматуры и формульный блок трещин на `Config` больше не выводятся;
 - AutoCAD export читает данные из листа `Results`, поэтому не хранит последнюю модель в памяти и не запускает повторный AutoCAD-import при выгрузке.
 - `UpdateSectionPlot` строит схему на листе `Расчет` только по сохраненному snapshot `Results`; смена `Plot.LoadCase` или `Plot.ResultType` не запускает расчет и не меняет `Results`.

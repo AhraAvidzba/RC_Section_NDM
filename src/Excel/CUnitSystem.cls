@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -8,6 +8,17 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
+' ==========================================================================
+' Централизованный пересчет единиц и пользовательских знаков
+' ==========================================================================
+' CUnitSystem - единственное место, где внешние INPUT/OUTPUT единицы и
+' пользовательская система знаков переводятся во внутреннюю систему ядра и
+' обратно. Solver-ы работают только во внутренних единицах и не должны знать,
+' ввел пользователь силы в Н, кН или tf.
+'
+' Важно: OUTPUT-знак применяется при записи результатов, а не повторно при
+' построении схемы из уже сохраненного Results.
 
 Private Const TF_IN_N As Double = 9806.65
 Private Const KGF_CM2_IN_MPA As Double = 0.0980665
@@ -316,3 +327,4 @@ Private Function ValidMySign(ByVal value As String) As String
         Case Else: Err.Raise vbObjectError + 4538, "CUnitSystem", "Sign.My.User должен быть +X tension или -X tension."
     End Select
 End Function
+

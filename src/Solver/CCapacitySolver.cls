@@ -9,6 +9,18 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
+' ==========================================================================
+' Поиск несущей способности сечения
+' ==========================================================================
+' Класс определяет предельное состояние поверх готового решателя равновесия.
+' Само равновесие epsilon0/kappaX/kappaY всегда ищет CSectionSolver, а здесь
+' решается внешняя задача: какой предельный множитель или какая предельная
+' плоскость деформаций соответствует заданному N + Mx + My.
+'
+' В классе намеренно сохранены два разных метода:
+' - LoadMultiplier масштабирует Mx/My через lambda при постоянном N;
+' - UltimateStrain напрямую ищет состояние с предельной деформацией.
+
 Private Const STATE_ACCEPTABLE As String = "Acceptable"
 Private Const STATE_CONCRETE_LIMIT As String = "ConcreteStrainLimit"
 Private Const STATE_CONCRETE_TENSION_LIMIT As String = "ConcreteTensionStrainLimit"
@@ -17,48 +29,56 @@ Private Const STATE_NUMERICAL_FAILURE As String = "NumericalFailure"
 Private Const STATE_SINGULAR_TANGENT As String = "SingularTangent"
 Private Const STATE_INVALID_INPUT As String = "InvalidInput"
 
-Private mConverged As Boolean
-Private mStopReason As String
-Private mLimitState As String
-Private mUpperLimitState As String
-Private mLambdaUltimate As Double
-Private mMomentUltimate As Double
-Private mMxUltimate As Double
-Private mMyUltimate As Double
-Private mSafetyFactor As Double
-Private mUtilization As Double
-Private mIterations As Long
-Private mRetryCount As Long
-Private mLastSolver As CSectionSolver
-Private mLastAcceptableSolver As CSectionSolver
-Private mLastAcceptableN As Double
-Private mLastAcceptableMx As Double
-Private mLastAcceptableMy As Double
-Private mConcreteCompressionLimit As Double
-Private mConcreteTensionLimit As Double
-Private mSteelStrainLimit As Double
-Private mLambdaTolerance As Double
-Private mStrainTolerance As Double
-Private mSearchMethod As String
-Private mMaxLambda As Double
-Private mInitialLambdaStep As Double
-Private mMaxRetries As Long
-Private mSolverBaseLoadSteps As Long
-Private mSolverMaxIterations As Long
-Private mSolverToleranceN As Double
-Private mSolverToleranceMx As Double
-Private mSolverToleranceMy As Double
-Private mSolverMethod As String
-Private mSolverMaxDeltaEpsilon0 As Double
-Private mSolverMaxDeltaKappa As Double
-Private mSolverSecantMaxRestarts As Long
-Private mSolverSecantMinStepNorm As Double
-Private mMomentEquilibriumResidual As Double
-Private mDiagnosticLog As String
-Private mCriticalStrain As Double
-Private mCriticalElement As String
-Private mCriticalStrainUtilization As Double
+Private mConverged As Boolean ' True, если выбранный метод capacity нашел предельное состояние.
+Private mStopReason As String ' Причина остановки capacity solver для вывода в результаты и тесты.
+Private mLimitState As String ' Физический или численный статус найденного предела.
+Private mUpperLimitState As String ' Статус верхней границы при LoadMultiplier.
+Private mLambdaUltimate As Double ' Предельный множитель к базовому моментному вектору.
+Private mMomentUltimate As Double ' Результирующий предельный момент sqrt(MxUltimate^2 + MyUltimate^2).
+Private mMxUltimate As Double ' Предельный Mx в той же постановке, что исходный моментный вектор.
+Private mMyUltimate As Double ' Предельный My в той же постановке, что исходный моментный вектор.
+Private mSafetyFactor As Double ' Коэффициент запаса по capacity; сейчас совпадает с lambdaUltimate.
+Private mUtilization As Double ' Использование несущей способности: 1 / lambdaUltimate.
+Private mIterations As Long ' Число внешних итераций поиска несущей способности.
+Private mRetryCount As Long ' Число повторов после численных отказов внутреннего решателя.
+Private mLastSolver As CSectionSolver ' Последний внутренний расчет равновесия, успешный или диагностический.
+Private mLastAcceptableSolver As CSectionSolver ' Последнее состояние, которое еще не вышло за физический предел.
+Private mLastAcceptableN As Double ' N последнего acceptable-состояния.
+Private mLastAcceptableMx As Double ' Mx последнего acceptable-состояния.
+Private mLastAcceptableMy As Double ' My последнего acceptable-состояния.
+Private mConcreteCompressionLimit As Double ' Предельная сжимающая деформация бетона.
+Private mConcreteTensionLimit As Double ' Предельная растягивающая деформация бетона при UseDiagram.
+Private mSteelStrainLimit As Double ' Предельная деформация арматуры по модулю.
+Private mLambdaTolerance As Double ' Точность одномерного поиска lambda для LoadMultiplier.
+Private mStrainTolerance As Double ' Допуск достижения предельной деформации для UltimateStrain.
+Private mSearchMethod As String ' Алгоритм одномерного поиска LoadMultiplier: Bisection, Brent или Secant.
+Private mMaxLambda As Double ' Защитная верхняя граница lambda, чтобы поиск не уходил бесконечно.
+Private mInitialLambdaStep As Double ' Первый шаг расширения lambda при поиске расчетной скобки.
+Private mMaxRetries As Long ' Допустимые повторы пробной точки после NumericalFailure.
+Private mSolverBaseLoadSteps As Long ' Базовое число ступеней CSectionSolver для каждой probe-точки.
+Private mSolverMaxIterations As Long ' Максимум внешних/внутренних итераций capacity-поиска.
+Private mSolverToleranceN As Double ' Допуск внутреннего равновесия CSectionSolver по N.
+Private mSolverToleranceMx As Double ' Допуск внутреннего равновесия CSectionSolver по Mx.
+Private mSolverToleranceMy As Double ' Допуск внутреннего равновесия CSectionSolver по My.
+Private mSolverMethod As String ' Метод внутреннего CSectionSolver: Newton или Secant.
+Private mSolverLineSearchEnabled As Boolean ' Общая настройка line search для внутренних расчетов равновесия.
+Private mSolverDampingInitial As Double ' Начальный alpha line search во внутренних расчетах равновесия.
+Private mSolverMinLineSearchAlpha As Double ' Минимальный alpha line search во внутренних расчетах равновесия.
+Private mSolverMaxDeltaEpsilon0 As Double ' Ограничение шага epsilon0 для внутреннего решателя.
+Private mSolverMaxDeltaKappa As Double ' Ограничение шага кривизн для внутреннего решателя.
+Private mSolverSecantMaxRestarts As Long ' Настройка рестартов внутреннего secant-решателя.
+Private mSolverSecantMinStepNorm As Double ' Минимальный шаг внутреннего secant-решателя.
+Private mMomentEquilibriumResidual As Double ' Невязка направления/момента в найденном предельном состоянии.
+Private mDiagnosticLog As String ' Текстовая трассировка probe-точек и причин остановки.
+Private mCriticalStrain As Double ' Деформация критического волокна или стержня.
+Private mCriticalElement As String ' ID элемента, который первым определил предельное состояние.
+Private mCriticalStrainUtilization As Double ' Отношение фактической деформации к своему пределу.
 
+' ------------------------------
+' Настройки по умолчанию
+' ------------------------------
+' Эти значения используются в модульных тестах и как запасной набор, если
+' книга еще не передала настройки с листа Config.
 Private Sub Class_Initialize()
     mConcreteCompressionLimit = -0.0035
     mConcreteTensionLimit = 0.00015
@@ -75,12 +95,20 @@ Private Sub Class_Initialize()
     mSolverToleranceMx = 5000#
     mSolverToleranceMy = 5000#
     mSolverMethod = "Newton"
+    mSolverLineSearchEnabled = True
+    mSolverDampingInitial = 1#
+    mSolverMinLineSearchAlpha = 0.03125
     mSolverMaxDeltaEpsilon0 = 0.0003
     mSolverMaxDeltaKappa = 0.000005
     mSolverSecantMaxRestarts = 2
     mSolverSecantMinStepNorm = 0.000000000001
 End Sub
 
+' ------------------------------
+' Чтение настроек capacity solver
+' ------------------------------
+' Настройки делятся на два уровня: внешний поиск несущей способности и
+' внутренний CSectionSolver, который каждый раз ищет равновесие для probe-точки.
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
     mInitialLambdaStep = settings.GetDouble("Capacity.InitialLambda", mInitialLambdaStep)
@@ -103,6 +131,9 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     Else
         mSolverMethod = "Newton"
     End If
+    mSolverLineSearchEnabled = settings.GetBoolean("Solver.LineSearchEnabled", mSolverLineSearchEnabled)
+    mSolverDampingInitial = settings.GetDouble("Solver.DampingInitial", mSolverDampingInitial)
+    mSolverMinLineSearchAlpha = settings.GetDouble("Solver.MinLineSearchAlpha", mSolverMinLineSearchAlpha)
     mSolverMaxDeltaEpsilon0 = settings.GetDouble("Solver.MaxDeltaEpsilon0", mSolverMaxDeltaEpsilon0)
     mSolverMaxDeltaKappa = settings.GetDouble("Solver.MaxDeltaKappa", mSolverMaxDeltaKappa)
     mSolverSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSolverSecantMaxRestarts)
@@ -118,6 +149,12 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     End If
 End Sub
 
+' ------------------------------
+' Метод UltimateStrain
+' ------------------------------
+' Ищет плоскость деформаций, при которой одновременно выполнены три условия:
+' равновесие по N, сохранение направления Mx/My и достижение одного из
+' пределов деформаций бетона или арматуры.
 Public Sub SolveByUltimateStrain(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
@@ -180,6 +217,9 @@ Public Sub SolveByUltimateStrain(ByVal section As CSectionModel, _
     mStopReason = "Capacity search converged by direct ultimate strain equilibrium."
 End Sub
 
+' Стартовая плоскость нужна только как начальное приближение UltimateStrain.
+' Она не задает физический результат: дальнейшая итерация заново ищет N,
+' направление моментов и достижение предельной деформации.
 Private Sub InitializeUltimateStrainGuess(ByVal section As CSectionModel, _
         ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
@@ -214,6 +254,10 @@ Private Sub InitializeUltimateStrainGuess(ByVal section As CSectionModel, _
     If Abs(kx) <= 0.000000000001 And Abs(ky) <= 0.000000000001 Then kx = strainLimit / MaxDouble(maxAbsY, 1#)
 End Sub
 
+' Считает три безразмерные невязки UltimateStrain:
+' rN - равновесие по продольной силе,
+' rDir - сохранение направления вектора Mx/My,
+' rLimit - достижение критической деформации.
 Private Function EvaluateUltimateResidual(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
@@ -223,6 +267,8 @@ Private Function EvaluateUltimateResidual(ByVal section As CSectionModel, _
         ByRef rLimit As Double, ByRef lambdaValue As Double, ByRef state As String) As Boolean
     On Error GoTo Failed
 
+    ' Здесь нет итерационного решения равновесия: мы оцениваем уже заданную
+    ' плоскость деформаций и смотрим, какие внутренние усилия она дает.
     Set solver = New CSectionSolver
     solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
     mIterations = mIterations + 1
@@ -235,6 +281,8 @@ Private Function EvaluateUltimateResidual(ByVal section As CSectionModel, _
     baseNorm = Sqr(baseNorm2)
     Dim userMxInt As Double
     Dim userMyInt As Double
+    ' Моменты сравниваются в пользовательской точке приложения нагрузки:
+    ' внутренние моменты сначала возвращаются из системы координат элементов.
     userMxInt = solver.Mxint - mxOffset
     userMyInt = solver.Myint - myOffset
     lambdaValue = (userMxInt * mxBase + userMyInt * myBase) / baseNorm2
@@ -264,6 +312,8 @@ Failed:
     EvaluateUltimateResidual = False
 End Function
 
+' Делает один Newton-шаг для системы UltimateStrain. Якобиан строится
+' численным дифференцированием трех невязок по epsilon0, kappaX и kappaY.
 Private Function ApplyUltimateNewtonStep(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
@@ -272,6 +322,8 @@ Private Function ApplyUltimateNewtonStep(ByVal section As CSectionModel, _
         ByVal rN As Double, ByVal rDir As Double, ByVal rLimit As Double) As Boolean
     On Error GoTo Failed
 
+    ' Малые приращения выбираются относительно текущего масштаба неизвестных,
+    ' чтобы получить численно устойчивые производные.
     Dim hEps As Double
     Dim hKx As Double
     Dim hKy As Double
@@ -289,6 +341,7 @@ Private Function ApplyUltimateNewtonStep(ByVal section As CSectionModel, _
     BuildUltimateJacobianColumn section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, _
         eps0, kx, ky + hKy, hKy, rN, rDir, rLimit, j13, j23, j33
 
+    ' Решаем поправку сразу для всех трех условий UltimateStrain.
     Dim system As CLinearSystem3x3
     Set system = New CLinearSystem3x3
     If Not system.Solve(j11, j12, j13, j21, j22, j23, j31, j32, j33, -rN, -rDir, -rLimit) Then
@@ -305,18 +358,22 @@ Private Function ApplyUltimateNewtonStep(ByVal section As CSectionModel, _
     dKy = system.X3
     LimitUltimateIncrement dEps, dKx, dKy
 
+    ' Полный шаг может ухудшить невязку, поэтому принимаем его через простой
+    ' line search с последовательным делением alpha пополам.
     Dim baseNorm As Double
     baseNorm = UltimateResidualNorm(rN, rDir, rLimit)
     Dim alpha As Double
-    alpha = 1#
-    Do While alpha >= 0.03125
+    alpha = mSolverDampingInitial
+    If alpha <= 0# Or alpha > 1# Then alpha = 1#
+
+    Do While alpha >= mSolverMinLineSearchAlpha
         Dim trialSolver As CSectionSolver
         Dim trialRN As Double, trialRDir As Double, trialRLimit As Double
         Dim trialLambda As Double, trialState As String
         If EvaluateUltimateResidual(section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, _
                 eps0 + alpha * dEps, kx + alpha * dKx, ky + alpha * dKy, trialSolver, _
                 trialRN, trialRDir, trialRLimit, trialLambda, trialState) Then
-            If UltimateResidualNorm(trialRN, trialRDir, trialRLimit) < baseNorm Then
+            If (Not mSolverLineSearchEnabled) Or UltimateResidualNorm(trialRN, trialRDir, trialRLimit) < baseNorm Then
                 eps0 = eps0 + alpha * dEps
                 kx = kx + alpha * dKx
                 ky = ky + alpha * dKy
@@ -336,6 +393,8 @@ Failed:
     mStopReason = "Ultimate strain Newton step failed: " & Err.Description
 End Function
 
+' Строит один столбец численного Якобиана UltimateStrain: меняем одну
+' неизвестную на stepValue и смотрим изменение всех трех невязок.
 Private Sub BuildUltimateJacobianColumn(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
@@ -353,10 +412,14 @@ Private Sub BuildUltimateJacobianColumn(ByVal section As CSectionModel, _
     j3 = (pLimit - rLimit) / stepValue
 End Sub
 
+' Норма смешивает три разных по смыслу остатка. Весовые множители не имеют
+' нормативного смысла; они только помогают line search сравнивать пробные шаги.
 Private Function UltimateResidualNorm(ByVal rN As Double, ByVal rDir As Double, ByVal rLimit As Double) As Double
     UltimateResidualNorm = Abs(rN) + Abs(rDir) * 100# + Abs(rLimit) * 10#
 End Function
 
+' Переводит абсолютный допуск деформации в относительный допуск по условию
+' rLimit = utilization - 1, потому что критический предел может быть разным.
 Private Function UltimateStrainRatioTolerance() As Double
     Dim limitAbs As Double
     limitAbs = Abs(mCriticalStrain)
@@ -370,6 +433,8 @@ Private Function UltimateStrainRatioTolerance() As Double
     UltimateStrainRatioTolerance = MaxDouble(0.000001, mStrainTolerance / MaxDouble(limitAbs, 0.000000001))
 End Function
 
+' Ограничивает приращения UltimateStrain теми же защитными пределами, что и
+' внутренний решатель равновесия.
 Private Sub LimitUltimateIncrement(ByRef dEps As Double, ByRef dKx As Double, ByRef dKy As Double)
     Dim scaleFactor As Double
     scaleFactor = 1#
@@ -387,6 +452,12 @@ Private Sub LimitUltimateIncrement(ByRef dEps As Double, ByRef dKx As Double, By
     dKy = dKy * scaleFactor
 End Sub
 
+' ------------------------------
+' Метод LoadMultiplier
+' ------------------------------
+' Сохраняет N постоянным, а Mx/My масштабирует одним lambda. Каждая probe-точка
+' вызывает CSectionSolver; внешний алгоритм только ищет границу между
+' acceptable-состоянием и физическим пределом.
 Public Sub SolveByLoadMultiplier(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
@@ -403,6 +474,8 @@ Public Sub SolveByLoadMultiplier(ByVal section As CSectionModel, _
     highLambda = mInitialLambdaStep
     If highLambda <= 0# Then highLambda = 1#
 
+    ' Сначала проверяем точку lambda = 0. Если даже состояние с одним N уже
+    ' неприемлемо, искать моментную несущую способность бессмысленно.
     probeState = ProbeWithRetries(section, concreteMaterial, steelMaterial, nSpecified, _
         TargetMx(lowLambda, mxBase, mxOffset), TargetMy(lowLambda, myBase, myOffset), lowLambda)
     If probeState <> STATE_ACCEPTABLE Then
@@ -412,6 +485,8 @@ Public Sub SolveByLoadMultiplier(ByVal section As CSectionModel, _
     End If
     RecordAcceptableState mLastSolver, nSpecified, TargetMx(lowLambda, mxBase, mxOffset), TargetMy(lowLambda, myBase, myOffset)
 
+    ' Расширяем верхнюю границу, пока не получим физический предел. Между
+    ' lowLambda и highLambda далее должен лежать корень целевой функции.
     Dim bracketFound As Boolean
     Do While highLambda <= mMaxLambda
         probeState = ProbeWithRetries(section, concreteMaterial, steelMaterial, nSpecified, _
@@ -441,6 +516,8 @@ Public Sub SolveByLoadMultiplier(ByVal section As CSectionModel, _
         Exit Sub
     End If
 
+    ' Когда физическая скобка найдена, выбираем один из самостоятельных
+    ' одномерных методов поиска lambda.
     Select Case NormalizedSearchMethod()
         Case "Bisection"
             SearchByBisection section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, lowLambda, highLambda
@@ -453,6 +530,8 @@ Public Sub SolveByLoadMultiplier(ByVal section As CSectionModel, _
     End Select
 End Sub
 
+' Устойчивый базовый метод: каждый раз делит физическую скобку пополам.
+' Быстрее он не пытается быть, зато граница acceptable/limit не теряется.
 Private Sub SearchByBisection(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
@@ -500,6 +579,9 @@ Private Sub SearchByBisection(ByVal section As CSectionModel, _
     mStopReason = "Capacity search converged by bisection with physical upper state: " & mUpperLimitState & "."
 End Sub
 
+' Защищенный Brent: хранит скобку как Bisection, но при хорошей геометрии
+' функции пробует интерполяционный шаг. Если шаг рискованный, возвращается к
+' безопасному движению внутри скобки.
 Private Sub SearchByBrent(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
@@ -551,6 +633,8 @@ Private Sub SearchByBrent(ByVal section As CSectionModel, _
             Exit Sub
         End If
 
+        ' Интерполяция разрешается только если она не разрушает скобку. Иначе
+        ' Brent в этой итерации ведет себя как надежное деление интервала.
         If Abs(e) >= tol And Abs(fa) > Abs(fb) Then
             Dim s As Double, p As Double, q As Double
             Dim r As Double
@@ -599,6 +683,9 @@ Private Sub SearchByBrent(ByVal section As CSectionModel, _
     mStopReason = "Brent search exceeded maximum iterations."
 End Sub
 
+' Честный метод секущих: новая lambda получается по двум предыдущим значениям
+' целевой функции. Fallback на бицекцию здесь не выполняется; защиты только
+' останавливают расчет с диагностикой при опасной точке.
 Private Sub SearchBySecant(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
@@ -632,6 +719,8 @@ Private Sub SearchBySecant(ByVal section As CSectionModel, _
             Exit Sub
         End If
 
+        ' Собственно шаг секущей. Дальше идут защиты от типичных численных
+        ' проблем: деление почти на ноль, выход из скобки, NaN и застой.
         x2 = x1 - f1 * (x1 - x0) / (f1 - f0)
         If Not IsFiniteNumber(x2) Then
             mLimitState = STATE_NUMERICAL_FAILURE
@@ -667,6 +756,9 @@ Private Sub SearchBySecant(ByVal section As CSectionModel, _
     mStopReason = "Secant search exceeded maximum iterations."
 End Sub
 
+' Единая целевая функция LoadMultiplier для Bisection, Brent и Secant.
+' Отрицательное значение означает запас до предельной деформации, ноль -
+' попадание в предел, положительное - выход за физический критерий.
 Private Function EvaluateLoadMultiplierFunction(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
@@ -744,6 +836,7 @@ Private Function TargetMy(ByVal lambdaValue As Double, ByVal myBase As Double, B
     TargetMy = myOffset + lambdaValue * myBase
 End Function
 
+' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
 Private Function ValidateCapacityInputs(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
         ByVal steelMaterial As Object, ByVal mxBase As Double, ByVal myBase As Double) As Boolean
     If section Is Nothing Then
@@ -763,6 +856,7 @@ Private Function ValidateCapacityInputs(ByVal section As CSectionModel, ByVal co
     End If
 End Function
 
+' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
 Private Function ValidateLoadMultiplierSettings() As Boolean
     If Len(NormalizedSearchMethod()) = 0 Then
         SetInvalidInput "Capacity.SearchMethod must be one of Bisection, Brent or Secant."
@@ -773,6 +867,7 @@ Private Function ValidateLoadMultiplierSettings() As Boolean
     End If
 End Function
 
+' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
 Private Function ValidateUltimateStrainSettings() As Boolean
     If mStrainTolerance <= 0# Then
         SetInvalidInput "UltimateStrain capacity settings are invalid."
@@ -820,6 +915,9 @@ Private Function ProbeOnce(ByVal section As CSectionModel, _
     solver.ToleranceN = mSolverToleranceN
     solver.ToleranceMx = mSolverToleranceMx
     solver.ToleranceMy = mSolverToleranceMy
+    solver.LineSearchEnabled = mSolverLineSearchEnabled
+    solver.DampingInitial = mSolverDampingInitial
+    solver.MinLineSearchAlpha = mSolverMinLineSearchAlpha
     solver.MaxDeltaEpsilon0 = mSolverMaxDeltaEpsilon0
     solver.MaxDeltaKappa = mSolverMaxDeltaKappa / (2 ^ attempt)
     solver.SecantMaxRestarts = mSolverSecantMaxRestarts
@@ -990,6 +1088,7 @@ Private Sub AppendSearchDiagnostic(ByVal message As String)
     mDiagnosticLog = mDiagnosticLog & "search=" & message & vbCrLf
 End Sub
 
+' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
 Private Sub ClearResult()
     mConverged = False
     mStopReason = vbNullString
@@ -1158,6 +1257,18 @@ End Property
 
 Public Property Let SolverMethod(ByVal value As String)
     mSolverMethod = value
+End Property
+
+Public Property Let SolverLineSearchEnabled(ByVal value As Boolean)
+    mSolverLineSearchEnabled = value
+End Property
+
+Public Property Let SolverDampingInitial(ByVal value As Double)
+    mSolverDampingInitial = value
+End Property
+
+Public Property Let SolverMinLineSearchAlpha(ByVal value As Double)
+    mSolverMinLineSearchAlpha = value
 End Property
 
 Public Property Let SolverMaxDeltaEpsilon0(ByVal value As Double)

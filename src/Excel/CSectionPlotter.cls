@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -8,6 +8,18 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
+' ==========================================================================
+' Excel-схема расчетного сечения
+' ==========================================================================
+' CSectionPlotter рисует схему по данным, которые уже прочитал
+' CSectionPlotDataReader из листа Results. Он не запускает solver, не смотрит
+' текущие исходные данные Config и не пересчитывает единицы: схема всегда
+' показывает сохраненный результат последнего расчета.
+'
+' Расчетные объекты (бетон, арматура, нейтральная линия, главные оси и точка
+' нагрузки) выводятся через XY-series. Shapes используются только для
+' оформительских аннотаций: размеров, выносных линий, подписей арматуры и легенд.
 
 Private Const CHART_NAME As String = "chtNDMSectionPlot"
 Private Const SHAPE_PREFIX As String = "NDMPlot_"
@@ -42,47 +54,50 @@ Private Const MSO_SHAPE_RECTANGLE As Long = 1
 Private Const MSO_SHAPE_DIAMOND As Long = 4
 Private Const MSO_SHAPE_OVAL As Long = 9
 
-Private mChart As Object
-Private mChartObject As Object
-Private mMinX As Double
-Private mMaxX As Double
-Private mMinY As Double
-Private mMaxY As Double
-Private mResultMin As Double
-Private mResultMax As Double
-Private mCompressionMaxAbs As Double
-Private mCompressionValueAtMaxAbs As Double
-Private mTensionMaxAbs As Double
-Private mTensionValueAtMaxAbs As Double
-Private mResultMaxAbs As Double
-Private mHasCompression As Boolean
-Private mHasTension As Boolean
-Private mConcreteCompressionMaxAbs As Double
-Private mConcreteCompressionValueAtMaxAbs As Double
-Private mConcreteTensionMaxAbs As Double
-Private mConcreteTensionValueAtMaxAbs As Double
-Private mConcreteHasCompression As Boolean
-Private mConcreteHasTension As Boolean
-Private mRebarCompressionMaxAbs As Double
-Private mRebarCompressionValueAtMaxAbs As Double
-Private mRebarTensionMaxAbs As Double
-Private mRebarTensionValueAtMaxAbs As Double
-Private mRebarHasCompression As Boolean
-Private mRebarHasTension As Boolean
-Private mResultGradientEnabled As Boolean
-Private mResultPrecision As Long
-Private mDimensionArrowType As String
-Private mDimensionArrowSize As String
-Private mLegendMode As String
-Private mRebarCompressionColor As Long
-Private mRebarTensionColor As Long
-Private mConcreteCompressionColor As Long
-Private mConcreteTensionColor As Long
+Private mChart As Object ' Excel Chart, внутри которого рисуются series и аннотационные Shapes.
+Private mChartObject As Object ' Контейнер ChartObject на листе Расчет; пользователь может двигать/масштабировать его.
+Private mMinX As Double ' Минимум оси X после добавления полей для аннотаций.
+Private mMaxX As Double ' Максимум оси X после добавления полей для аннотаций.
+Private mMinY As Double ' Минимум оси Y после добавления полей для аннотаций.
+Private mMaxY As Double ' Максимум оси Y после добавления полей для аннотаций.
+Private mResultMin As Double ' Минимальное значение выбранного ResultType среди рабочих элементов.
+Private mResultMax As Double ' Максимальное значение выбранного ResultType среди рабочих элементов.
+Private mCompressionMaxAbs As Double ' Максимальный модуль сжатия для общей легенды.
+Private mCompressionValueAtMaxAbs As Double ' Знаковое значение, подписываемое у края шкалы сжатия.
+Private mTensionMaxAbs As Double ' Максимальный модуль растяжения для общей легенды.
+Private mTensionValueAtMaxAbs As Double ' Знаковое значение, подписываемое у края шкалы растяжения.
+Private mResultMaxAbs As Double ' Резервный максимум по модулю, если состояние не разделено.
+Private mHasCompression As Boolean ' Есть ли элементы в сжатии для общей легенды.
+Private mHasTension As Boolean ' Есть ли элементы в растяжении для общей легенды.
+Private mConcreteCompressionMaxAbs As Double ' Максимальный модуль сжатия бетона для отдельной легенды.
+Private mConcreteCompressionValueAtMaxAbs As Double ' Подпись края бетонной шкалы сжатия.
+Private mConcreteTensionMaxAbs As Double ' Максимальный модуль растяжения бетона, если оно учитывается.
+Private mConcreteTensionValueAtMaxAbs As Double ' Подпись края бетонной шкалы растяжения.
+Private mConcreteHasCompression As Boolean ' В расчетном состоянии есть сжатый бетон.
+Private mConcreteHasTension As Boolean ' В расчетном состоянии есть растянутый работающий бетон.
+Private mRebarCompressionMaxAbs As Double ' Максимальный модуль сжатия арматуры.
+Private mRebarCompressionValueAtMaxAbs As Double ' Подпись края арматурной шкалы сжатия.
+Private mRebarTensionMaxAbs As Double ' Максимальный модуль растяжения арматуры.
+Private mRebarTensionValueAtMaxAbs As Double ' Подпись края арматурной шкалы растяжения.
+Private mRebarHasCompression As Boolean ' В расчетном состоянии есть сжатая арматура.
+Private mRebarHasTension As Boolean ' В расчетном состоянии есть растянутая арматура.
+Private mResultGradientEnabled As Boolean ' Включена ли цветовая шкала по Stress/Strain.
+Private mResultPrecision As Long ' Число знаков после запятой для подписей результатов.
+Private mDimensionArrowType As String ' Тип стрелок размерных линий из Config.
+Private mDimensionArrowSize As String ' Размер стрелок размерных линий из Config.
+Private mLegendMode As String ' Separate или Common для легенд бетона/арматуры.
+Private mRebarCompressionColor As Long ' Цвет максимального сжатия арматуры.
+Private mRebarTensionColor As Long ' Цвет максимального растяжения арматуры.
+Private mConcreteCompressionColor As Long ' Цвет максимального сжатия бетона.
+Private mConcreteTensionColor As Long ' Цвет максимального растяжения бетона.
 
+' Перестраивает схему по данным последнего расчета.
+' Метод управляет порядком операций: подготовка chart, равный масштаб X/Y,
+' series расчетных элементов, расчетные линии и Shape-аннотации.
 Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4800, "CSectionPlotter", "Книга Excel не передана."
     If data Is Nothing Then Err.Raise vbObjectError + 4801, "CSectionPlotter", "Данные схемы не переданы."
-    If settings Is Nothing Then Err.Raise vbObjectError + 4802, "CSectionPlotter", "Настройки System не переданы."
+    If settings Is Nothing Then Err.Raise vbObjectError + 4802, "CSectionPlotter", "Настройки Config не переданы."
 
     Set mChartObject = EnsureChart(workbook.Worksheets.Item("Расчет"))
     Set mChart = mChartObject.Chart
@@ -100,7 +115,7 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     mConcreteTensionColor = ParseRgb(settings.GetString("Plot.Color.ConcreteTension", "0,155,85"), RGB(0, 155, 85))
 
     PrepareChart data
-    ConfigureEqualScale data
+    ConfigureEqualScale data, settings
     ClearGeneratedShapes
     CalculateResultRange data
     AddElementSeries data
@@ -108,6 +123,9 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     DrawShapeDecorations data, settings
 End Sub
 
+' Возвращает существующий ChartObject или создает его при первом запуске.
+' При последующих обновлениях контейнер не пересоздается, чтобы пользователь
+' мог вручную перемещать и менять размер схемы на листе.
 Private Function EnsureChart(ByVal sheet As Object) As Object
     Dim chartObject As Object
     On Error Resume Next
@@ -123,11 +141,13 @@ Private Function EnsureChart(ByVal sheet As Object) As Object
     Set EnsureChart = chartObject
 End Function
 
+' Подготавливает Chart к новой отрисовке, сохраняя сам ChartObject.
+' Старые series удаляются, но размеры и положение окна схемы остаются как у пользователя.
 Private Sub PrepareChart(ByVal data As CSectionPlotDataReader)
     mChart.ChartType = XL_XY_SCATTER
     mChart.HasLegend = False
     mChart.HasTitle = True
-    mChart.ChartTitle.Text = PlotTitlePrefix() & data.LoadCase
+    mChart.ChartTitle.Text = PlotTitleText(data)
     mChart.ChartTitle.Font.Size = 12
 
     Do While mChart.SeriesCollection.Count > 0
@@ -144,7 +164,10 @@ Private Sub PrepareChart(ByVal data As CSectionPlotDataReader)
     On Error GoTo 0
 End Sub
 
-Private Sub ConfigureEqualScale(ByVal data As CSectionPlotDataReader)
+' Настраивает одинаковый физический масштаб X и Y.
+' Одна единица модели должна занимать одинаковое расстояние по горизонтали и
+' вертикали, иначе круг станет эллипсом, а расположение арматуры исказится.
+Private Sub ConfigureEqualScale(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
     Dim rawMinX As Double, rawMaxX As Double, rawMinY As Double, rawMaxY As Double
     rawMinX = data.MinX
     rawMaxX = data.MaxX
@@ -157,10 +180,13 @@ Private Sub ConfigureEqualScale(ByVal data As CSectionPlotDataReader)
     If dx <= 0# Then dx = 1#
     If dy <= 0# Then dy = 1#
 
-    rawMinX = rawMinX - dx * 0.16
-    rawMaxX = rawMaxX + dx * 0.24
-    rawMinY = rawMinY - dy * 0.18
-    rawMaxY = rawMaxY + dy * 0.16
+    Dim annotationMargin As Double
+    annotationMargin = AnnotationMarginModel(settings, data.LengthUnit)
+
+    rawMinX = rawMinX - MaxDouble(dx * 0.16, annotationMargin)
+    rawMaxX = rawMaxX + MaxDouble(dx * 0.24, annotationMargin)
+    rawMinY = rawMinY - MaxDouble(dy * 0.18, annotationMargin)
+    rawMaxY = rawMaxY + MaxDouble(dy * 0.16, annotationMargin)
 
     Dim plotW As Double, plotH As Double
     plotW = mChart.PlotArea.InsideWidth
@@ -197,6 +223,24 @@ Private Sub ConfigureEqualScale(ByVal data As CSectionPlotDataReader)
     mChart.Axes(XL_VALUE).MaximumScale = mMaxY
     HideChartAxes
 End Sub
+
+Private Function AnnotationMarginModel(ByVal settings As CSystemSettingsReader, ByVal lengthUnit As String) As Double
+    If settings Is Nothing Then Exit Function
+
+    Dim marginMm As Double
+    If settings.GetBoolean("Plot.Dimensions.Enabled", True) Then
+        marginMm = MaxDouble(marginMm, settings.GetDouble("Plot.Dimensions.Offset", 100#) + _
+            settings.GetDouble("Plot.Dimensions.TextGap", 15#) + _
+            settings.GetDouble("Plot.Dimensions.TextHeight", 25#))
+    End If
+    If settings.GetBoolean("Plot.RebarLabels.Enabled", True) Then
+        marginMm = MaxDouble(marginMm, settings.GetDouble("Plot.RebarLabels.Offset", 60#) + _
+            settings.GetDouble("Plot.RebarLabels.TextGap", 15#) + _
+            settings.GetDouble("Plot.RebarLabels.TextHeight", 25#))
+    End If
+
+    AnnotationMarginModel = marginMm / LengthFactorToMm(lengthUnit)
+End Function
 
 Private Sub HideChartAxes()
     On Error Resume Next
@@ -256,6 +300,7 @@ Private Sub CalculateResultRange(ByVal data As CSectionPlotDataReader)
     End If
 End Sub
 
+' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
 Private Sub ResetMaterialLegendRanges()
     mConcreteCompressionMaxAbs = 0#
     mConcreteTensionMaxAbs = 0#
@@ -294,12 +339,17 @@ Private Sub RegisterResultMagnitude(ByVal value As Double, ByRef maxAbs As Doubl
     End If
 End Sub
 
+' Группирует расчетные элементы в серии Excel по типу маркера, размеру и цвету.
+' Это сильно ускоряет схему: сотни бетонных волокон не создают сотни отдельных
+' series, но визуально остаются отдельными точками.
 Private Sub AddElementSeries(ByVal data As CSectionPlotDataReader)
     Dim buckets As Object
     Set buckets = CreateObject("Scripting.Dictionary")
     buckets.CompareMode = vbTextCompare
 
     Dim i As Long
+    ' Пространственная сетка подписей не зависит от ElementID. В каждой ячейке выбирается
+    ' ближайшее бетонное волокно к центру ячейки, чтобы подписи распределялись равномерно.
     For i = 1 To data.Count
         Dim key As String
         key = ElementBucketKey(data, i)
@@ -336,6 +386,9 @@ Private Function ElementBucketKey(ByVal data As CSectionPlotDataReader, ByVal in
         data.MaterialType(index) & "|" & data.PhysicalState(index)
 End Function
 
+' Создает одну XY-series для группы одинаково оформленных элементов.
+' Координаты элементов остаются model/output-координатами, а Excel сам
+' размещает маркеры по настроенным осям.
 Private Sub AddBucketSeriesByIndexes(ByVal data As CSectionPlotDataReader, ByVal bucketKey As String, ByVal indexes As Collection)
     If indexes Is Nothing Then Exit Sub
     If indexes.Count <= 0 Then Exit Sub
@@ -374,6 +427,9 @@ Private Sub AddBucketSeriesByIndexes(ByVal data As CSectionPlotDataReader, ByVal
     series.MarkerBackgroundColor = colorValue
 End Sub
 
+' Выбирает цвет одного расчетного элемента.
+' Цвет берется из PhysicalState и выбранной легенды, а не из пользовательского
+' знака Stress/Strain, потому что знак вывода может быть настроен пользователем.
 Private Function ElementColor(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Long
     If StrComp(data.PhysicalState(index), "InactiveTensionConcrete", vbTextCompare) = 0 Then
         ElementColor = RGB(218, 218, 218)
@@ -394,6 +450,9 @@ Private Function ElementColor(ByVal data As CSectionPlotDataReader, ByVal index 
     End If
 End Function
 
+' Возвращает градиентный цвет внутри отдельного состояния материала.
+' Ноль идет к нейтральному серому, максимум по модулю - к цвету сжатия или
+' растяжения для бетона/арматуры.
 Private Function MaterialResultColor(ByVal materialType As String, ByVal state As String, ByVal value As Double) As Long
     Dim t As Double
     Dim maxAbs As Double
@@ -413,6 +472,9 @@ Private Function MaterialResultColor(ByVal materialType As String, ByVal state A
     End If
 End Function
 
+' Возвращает максимум по модулю для выбранного материала и физического состояния.
+' При общей легенде используется общий диапазон, при раздельной - свой диапазон
+' для бетона и арматуры.
 Private Function MaterialStateMaxAbs(ByVal materialType As String, ByVal state As String) As Double
     If IsCommonLegendMode() Then
         If StrComp(state, "Compression", vbTextCompare) = 0 Then
@@ -440,6 +502,9 @@ Private Function MaterialStateMaxAbs(ByVal materialType As String, ByVal state A
     If MaterialStateMaxAbs <= 0# Then MaterialStateMaxAbs = mResultMaxAbs
 End Function
 
+' Старый непрерывный градиент для общей шкалы значений.
+' Оставлен как утилита цвета; основная раскраска сейчас идет через
+' MaterialResultColor, чтобы не смешивать физический смысл сжатия/растяжения.
 Private Function GradientColor(ByVal value As Double, ByVal minValue As Double, ByVal maxValue As Double) As Long
     Dim t As Double
     t = (value - minValue) / (maxValue - minValue)
@@ -456,6 +521,7 @@ Private Function GradientColor(ByVal value As Double, ByVal minValue As Double, 
     End If
 End Function
 
+' Линейно смешивает два RGB-цвета.
 Private Function BlendColor(ByVal c1 As Long, ByVal c2 As Long, ByVal t As Double) As Long
     Dim r1 As Long, g1 As Long, b1 As Long
     Dim r2 As Long, g2 As Long, b2 As Long
@@ -468,12 +534,16 @@ Private Function BlendColor(ByVal c1 As Long, ByVal c2 As Long, ByVal t As Doubl
     BlendColor = RGB(CLng(r1 + (r2 - r1) * t), CLng(g1 + (g2 - g1) * t), CLng(b1 + (b2 - b1) * t))
 End Function
 
+' Добавляет расчетные линии и точку нагрузки поверх маркеров элементов.
+' Нейтральная линия и главные оси остаются XY-series, а не Shapes.
 Private Sub DrawAnalysisSeries(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
     If settings.GetBoolean("Plot.NeutralLineEnabled", True) Then DrawNeutralLine data
     If settings.GetBoolean("Plot.PrincipalAxesEnabled", True) Then DrawPrincipalAxes data
     If settings.GetBoolean("Plot.LoadApplicationPointEnabled", True) Then DrawPointMarker data.LoadReferenceX, data.LoadReferenceY, 10, RGB(255, 128, 0), XL_MARKER_DIAMOND, "LoadPoint"
 End Sub
 
+' Рисует Shape-слой схемы: контур, размеры, групповые подписи и легенды.
+' Shapes используются только для оформления; расчетные объекты остаются series.
 Private Sub DrawShapeDecorations(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
     DrawConcreteContour data
     DrawShapeAnnotations data, settings, settings.GetBoolean("Plot.Dimensions.Enabled", True), _
@@ -482,6 +552,9 @@ Private Sub DrawShapeDecorations(ByVal data As CSectionPlotDataReader, ByVal set
     If settings.GetBoolean("Plot.LegendEnabled", True) Then DrawLegend data
 End Sub
 
+' Рисует контур бетона из semantic-аннотаций Results.
+' Generated-геометрия обычно передает точный контур; AutoCAD import может не
+' иметь таких аннотаций, и тогда контур не угадывается насильно.
 Private Sub DrawConcreteContour(ByVal data As CSectionPlotDataReader)
     Dim i As Long
     For i = 1 To data.AnnotationCount
@@ -497,6 +570,9 @@ Private Sub DrawConcreteContour(ByVal data As CSectionPlotDataReader)
     Next i
 End Sub
 
+' Добавляет ребро прямоугольного элемента в набор границ.
+' Если соседний элемент уже добавил обратное ребро, оно удаляется: внутренние
+' границы сетки не должны становиться наружным контуром.
 Private Sub AddBoundaryEdge(ByVal edges As Object, ByVal x1 As Double, ByVal y1 As Double, _
         ByVal x2 As Double, ByVal y2 As Double)
     Dim key As String, reverseKey As String
@@ -509,11 +585,15 @@ Private Sub AddBoundaryEdge(ByVal edges As Object, ByVal x1 As Double, ByVal y1 
     End If
 End Sub
 
+' Формирует устойчивый текстовый ключ ребра с округлением координат.
 Private Function EdgeKey(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double) As String
     EdgeKey = FormatNumberInvariant(RoundTo(x1, 6)) & ":" & FormatNumberInvariant(RoundTo(y1, 6)) & "|" & _
         FormatNumberInvariant(RoundTo(x2, 6)) & ":" & FormatNumberInvariant(RoundTo(y2, 6))
 End Function
 
+' Строит нейтральную линию по сохраненной плоскости деформаций LC.
+' Линия обрезается по semantic-контуру, а если контура нет - по условному
+' контуру бетонных элементов.
 Private Sub DrawNeutralLine(ByVal data As CSectionPlotDataReader)
     Dim a As Double, b As Double, c As Double
     a = data.KappaY
@@ -562,6 +642,8 @@ Private Sub DrawNeutralLine(ByVal data As CSectionPlotDataReader)
         RGB(105, 105, 105), 0.7, "NeutralAxis"
 End Sub
 
+' Собирает пересечения нейтральной линии с semantic-контуром.
+' Для Generated-сечений это основной и наиболее точный путь обрезки линии.
 Private Sub CollectContourIntersections(ByVal data As CSectionPlotDataReader, ByVal a As Double, _
         ByVal b As Double, ByVal c As Double, ByVal x0 As Double, ByVal y0 As Double, _
         ByVal dirX As Double, ByVal dirY As Double, ByRef values() As Double, ByRef count As Long)
@@ -578,6 +660,8 @@ Private Sub CollectContourIntersections(ByVal data As CSectionPlotDataReader, By
     Next i
 End Sub
 
+' Резервно обрезает линию по габариту центров бетонных элементов.
+' Используется, когда точного semantic-контура нет, например после AutoCAD import.
 Private Sub CollectConcreteCenterBoundsIntersections(ByVal data As CSectionPlotDataReader, ByVal a As Double, _
         ByVal b As Double, ByVal c As Double, ByVal x0 As Double, ByVal y0 As Double, _
         ByVal dirX As Double, ByVal dirY As Double, ByRef values() As Double, ByRef count As Long)
@@ -606,6 +690,7 @@ Private Sub CollectConcreteCenterBoundsIntersections(ByVal data As CSectionPlotD
     AddSegmentLineIntersectionT a, b, c, x0, y0, dirX, dirY, minX, maxY, minX, minY, values, count
 End Sub
 
+' Добавляет параметр пересечения бесконечной расчетной линии с одним отрезком контура.
 Private Sub AddSegmentLineIntersectionT(ByVal a As Double, ByVal b As Double, ByVal c As Double, _
         ByVal x0 As Double, ByVal y0 As Double, ByVal dirX As Double, ByVal dirY As Double, _
         ByVal sx As Double, ByVal sy As Double, ByVal ex As Double, ByVal ey As Double, _
@@ -624,6 +709,7 @@ Private Sub AddSegmentLineIntersectionT(ByVal a As Double, ByVal b As Double, By
     AddUniqueLineT (x - x0) * dirX + (y - y0) * dirY, values, count
 End Sub
 
+' Добавляет две точки пересечения расчетной линии с круговым контуром.
 Private Sub AddCircleLineIntersectionT(ByVal x0 As Double, ByVal y0 As Double, _
         ByVal dirX As Double, ByVal dirY As Double, ByVal centerX As Double, _
         ByVal centerY As Double, ByVal radius As Double, ByRef values() As Double, ByRef count As Long)
@@ -641,6 +727,8 @@ Private Sub AddCircleLineIntersectionT(ByVal x0 As Double, ByVal y0 As Double, _
     AddUniqueLineT tCenter + halfChord, values, count
 End Sub
 
+' Добавляет параметр t без дублей, чтобы вершины контура не создавали
+' нулевые или повторные участки линии.
 Private Sub AddUniqueLineT(ByVal t As Double, ByRef values() As Double, ByRef count As Long)
     Dim i As Long
     For i = 1 To count
@@ -651,6 +739,8 @@ Private Sub AddUniqueLineT(ByVal t As Double, ByRef values() As Double, ByRef co
     values(count) = t
 End Sub
 
+' Находит интервал прохождения линии через эквивалентный прямоугольник элемента.
+' Этот путь нужен только для приближенной обрезки по сетке.
 Private Sub CollectRectLineInterval(ByVal data As CSectionPlotDataReader, ByVal index As Long, _
         ByVal a As Double, ByVal b As Double, ByVal c As Double, ByVal dirX As Double, ByVal dirY As Double, _
         ByVal intervals As Collection)
@@ -682,6 +772,7 @@ Private Sub CollectRectLineInterval(ByVal data As CSectionPlotDataReader, ByVal 
     If maxT > minT Then intervals.Add Array(minT, maxT)
 End Sub
 
+' Добавляет одну координату пересечения линии со стороной прямоугольника элемента.
 Private Sub AddRectLineIntersectionValue(ByVal a As Double, ByVal b As Double, ByVal c As Double, _
         ByVal dirX As Double, ByVal dirY As Double, ByVal sx As Double, ByVal sy As Double, _
         ByVal ex As Double, ByVal ey As Double, ByRef values() As Double, ByRef count As Long)
@@ -706,6 +797,8 @@ Private Sub AddRectLineIntersectionValue(ByVal a As Double, ByVal b As Double, B
     values(count) = t
 End Sub
 
+' Рисует заранее найденные интервалы расчетной линии.
+' Близкие интервалы объединяются, чтобы линия выглядела цельной на грубой сетке.
 Private Sub DrawLineIntervals(ByVal intervals As Collection, ByVal x0 As Double, ByVal y0 As Double, _
         ByVal dirX As Double, ByVal dirY As Double, ByVal colorValue As Long, ByVal weight As Double, _
         ByVal suffix As String)
@@ -745,6 +838,7 @@ Private Sub DrawLineIntervals(ByVal intervals As Collection, ByVal x0 As Double,
         x0 + curEnd * dirX, y0 + curEnd * dirY, colorValue, weight, suffix
 End Sub
 
+' Сортирует интервалы по начальной координате вдоль расчетной линии.
 Private Sub SortIntervals(ByRef starts() As Double, ByRef ends() As Double)
     Dim i As Long, j As Long
     For i = LBound(starts) To UBound(starts) - 1
@@ -757,6 +851,7 @@ Private Sub SortIntervals(ByRef starts() As Double, ByRef ends() As Double)
     Next i
 End Sub
 
+' Меняет местами два числа при сортировке интервалов.
 Private Sub SwapDouble(ByRef a As Double, ByRef b As Double)
     Dim t As Double
     t = a
@@ -764,6 +859,7 @@ Private Sub SwapDouble(ByRef a As Double, ByRef b As Double)
     b = t
 End Sub
 
+' Собирает min/max параметр линии внутри прямоугольного элемента.
 Private Sub CollectRectLineIntersections(ByVal data As CSectionPlotDataReader, ByVal index As Long, _
         ByVal a As Double, ByVal b As Double, ByVal c As Double, ByVal dirX As Double, ByVal dirY As Double, _
         ByRef minT As Double, ByRef maxT As Double, ByRef found As Boolean)
@@ -783,6 +879,7 @@ Private Sub CollectRectLineIntersections(ByVal data As CSectionPlotDataReader, B
     AddRectLineIntersection a, b, c, dirX, dirY, x1, y2, x1, y1, minT, maxT, found
 End Sub
 
+' Обновляет min/max параметр линии по пересечению с одной стороной прямоугольника.
 Private Sub AddRectLineIntersection(ByVal a As Double, ByVal b As Double, ByVal c As Double, _
         ByVal dirX As Double, ByVal dirY As Double, ByVal sx As Double, ByVal sy As Double, _
         ByVal ex As Double, ByVal ey As Double, ByRef minT As Double, ByRef maxT As Double, ByRef found As Boolean)
@@ -803,6 +900,9 @@ Private Sub AddRectLineIntersection(ByVal a As Double, ByVal b As Double, ByVal 
     found = True
 End Sub
 
+' Рисует главные центральные оси приведенного сечения как XY-series.
+' Это дает корректный порядок поверх бетонных элементов и сохраняет единый
+' model-to-chart масштаб.
 Private Sub DrawPrincipalAxes(ByVal data As CSectionPlotDataReader)
     Dim lengthValue As Double
     lengthValue = 0.65 * Sqr((data.MaxX - data.MinX) * (data.MaxX - data.MinX) + _
@@ -813,9 +913,12 @@ Private Sub DrawPrincipalAxes(ByVal data As CSectionPlotDataReader)
     DrawModelLineSeries data.CentroidX - lengthValue * ca, data.CentroidY - lengthValue * sa, _
         data.CentroidX + lengthValue * ca, data.CentroidY + lengthValue * sa, RGB(0, 0, 0), 0.7, "Principal1", MSO_LINE_DASH
     DrawModelLineSeries data.CentroidX + lengthValue * sa, data.CentroidY - lengthValue * ca, _
-        data.CentroidX - lengthValue * sa, data.CentroidY + lengthValue * ca, RGB(0, 0, 0), 0.7, "Principal2", MSO_LINE_DASH_DOT
+        data.CentroidX - lengthValue * sa, data.CentroidY + lengthValue * ca, RGB(0, 0, 0), 0.7, "Principal2", MSO_LINE_DASH
 End Sub
 
+' Передает semantic-аннотации Results в CPlotAnnotationLayout.
+' Здесь нет логики конкретной формы: если аннотация есть, layout размещает ее;
+' если import не дал semantic-данных, Plotter ничего не угадывает.
 Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader, _
         ByVal dimensionsEnabled As Boolean, ByVal rebarLabelsEnabled As Boolean)
     If Not dimensionsEnabled And Not rebarLabelsEnabled Then Exit Sub
@@ -850,6 +953,9 @@ Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, ByVal set
     RenderAnnotationLayout layout
 End Sub
 
+' Создает Chart.Shapes по готовому layout.
+' Dimension lines получают стрелки, тексты и выносные линии уже с рассчитанными
+' координатами внутри Chart.
 Private Sub RenderAnnotationLayout(ByVal layout As CPlotAnnotationLayout)
     Dim i As Long
     For i = 1 To layout.Count
@@ -874,6 +980,7 @@ Private Sub RenderAnnotationLayout(ByVal layout As CPlotAnnotationLayout)
     Next i
 End Sub
 
+' Нормализует пользовательский тип стрелки размерной линии.
 Private Function NormalizeArrowType(ByVal value As String) As String
     Select Case LCase$(Trim$(value))
         Case "stealth": NormalizeArrowType = "Stealth"
@@ -884,6 +991,7 @@ Private Function NormalizeArrowType(ByVal value As String) As String
     End Select
 End Function
 
+' Нормализует пользовательский размер стрелки размерной линии.
 Private Function NormalizeArrowSize(ByVal value As String) As String
     Select Case LCase$(Trim$(value))
         Case "small": NormalizeArrowSize = "Small"
@@ -892,6 +1000,7 @@ Private Function NormalizeArrowSize(ByVal value As String) As String
     End Select
 End Function
 
+' Преобразует текстовую настройку стрелки в константу Office.
 Private Function DimensionArrowStyle() As Long
     Select Case mDimensionArrowType
         Case "Stealth": DimensionArrowStyle = MSO_ARROWHEAD_STEALTH
@@ -902,6 +1011,7 @@ Private Function DimensionArrowStyle() As Long
     End Select
 End Function
 
+' Преобразует размер стрелки в длину наконечника Office.
 Private Function DimensionArrowLength() As Long
     Select Case mDimensionArrowSize
         Case "Small": DimensionArrowLength = MSO_ARROWHEAD_LENGTH_SHORT
@@ -910,6 +1020,7 @@ Private Function DimensionArrowLength() As Long
     End Select
 End Function
 
+' Преобразует размер стрелки в ширину наконечника Office.
 Private Function DimensionArrowWidth() As Long
     Select Case mDimensionArrowSize
         Case "Small": DimensionArrowWidth = MSO_ARROWHEAD_WIDTH_NARROW
@@ -918,6 +1029,9 @@ Private Function DimensionArrowWidth() As Long
     End Select
 End Function
 
+' Расставляет пространственные численные подписи Stress/Strain по бетонным элементам.
+' Подписи не ставятся на неработающий растянутый бетон и выбираются по сетке
+' spacing, а не по порядковому ElementID.
 Private Sub DrawResultLabels(ByVal data As CSectionPlotDataReader, ByVal spacing As Double)
     If spacing <= 0# Then spacing = MaxDouble(mMaxX - mMinX, mMaxY - mMinY) / 12#
     Dim bestIndexByCell As Object
@@ -925,6 +1039,9 @@ Private Sub DrawResultLabels(ByVal data As CSectionPlotDataReader, ByVal spacing
     Dim bestDistanceByCell As Object
     Set bestDistanceByCell = CreateObject("Scripting.Dictionary")
 
+    ' Пространственные подписи выбираются не по ElementID, а по расчетной сетке ячеек.
+    ' Для каждой ячейки оставляем ближайшее бетонное волокно к ее центру, поэтому подписи
+    ' распределяются по площади сечения равномернее и не зависят от порядка записи элементов.
     Dim i As Long
     For i = 1 To data.Count
         If StrComp(data.MaterialType(i), "Concrete", vbTextCompare) = 0 And _
@@ -963,41 +1080,31 @@ Private Sub DrawResultLabels(ByVal data As CSectionPlotDataReader, ByVal spacing
     Next cellKey
 End Sub
 
+' Рисует одну общую или две раздельные легенды результата.
+' Раздельный режим считает диапазоны бетона и арматуры независимо, поэтому
+' цвета материалов не “слипаются” из-за разных уровней напряжений.
 Private Sub DrawLegend(ByVal data As CSectionPlotDataReader)
     Dim leftPos As Double, topPos As Double, barW As Double, barH As Double
     leftPos = mChartObject.Width - 142
-    topPos = 36
+    topPos = 88
     barW = 18
-    barH = 132
+    barH = 96
 
+    ' Легенда использует те же диапазоны, что и цвет элементов. В режиме Separate бетон и
+    ' арматура получают независимые шкалы, поэтому их экстремумы не смешиваются визуально.
     If IsCommonLegendMode() Then
         DrawChartLegendScale data, leftPos, topPos, barW, barH, "Rebar", _
             mHasCompression, mCompressionValueAtMaxAbs, mHasTension, mTensionValueAtMaxAbs
     Else
         DrawChartLegendScale data, leftPos, topPos, barW, barH, "Rebar", _
             mRebarHasCompression, mRebarCompressionValueAtMaxAbs, mRebarHasTension, mRebarTensionValueAtMaxAbs
-        DrawChartLegendScale data, leftPos, topPos + barH + 70, barW, barH, "Concrete", _
+        DrawChartLegendScale data, leftPos, topPos + barH + 62, barW, barH, "Concrete", _
             mConcreteHasCompression, mConcreteCompressionValueAtMaxAbs, mConcreteHasTension, mConcreteTensionValueAtMaxAbs
     End If
-    Exit Sub
-
-    AddChartText leftPos - 6, topPos - 28, 132, 22, data.ResultCaption & ", " & data.ResultUnit, 0#, RGB(30, 30, 30), True
-
-    Dim i As Long
-    For i = 0 To 11
-        Dim t As Double
-        t = CDbl(i) / 11#
-        AddLegendRect leftPos, topPos + i * barH / 12#, barW, barH / 12# + 1, MaterialLegendColor("Rebar", t)
-    Next i
-    AddChartText leftPos + 24, topPos - 12, 88, 14, "Сжатие", 0#, RGB(40, 40, 40), True
-    AddChartText leftPos + 24, topPos + 4, 84, 16, LegendValueText(mRebarHasCompression, mRebarCompressionValueAtMaxAbs), 0#, RGB(40, 40, 40), False
-    AddChartText leftPos + 24, topPos + barH / 2# - 8, 84, 16, "0", 0#, RGB(40, 40, 40), False
-    AddChartText leftPos + 24, topPos + barH - 10, 84, 16, LegendValueText(mRebarHasTension, mRebarTensionValueAtMaxAbs), 0#, RGB(40, 40, 40), False
-    AddChartText leftPos + 24, topPos + barH + 4, 88, 14, "Растяжение", 0#, RGB(40, 40, 40), True
-    DrawChartLegendScale data, leftPos, topPos + barH + 70, barW, barH, "Concrete", _
-        mConcreteHasCompression, mConcreteCompressionValueAtMaxAbs, mConcreteHasTension, mConcreteTensionValueAtMaxAbs
 End Sub
 
+' Рисует вертикальную цветовую шкалу для одного материала.
+' Верх шкалы соответствует сжатию, середина - нулю/серому цвету, низ - растяжению.
 Private Sub DrawChartLegendScale(ByVal data As CSectionPlotDataReader, ByVal leftPos As Double, _
         ByVal topPos As Double, ByVal barW As Double, ByVal barH As Double, _
         ByVal materialType As String, ByVal hasCompression As Boolean, ByVal compressionValue As Double, _
@@ -1017,14 +1124,17 @@ Private Sub DrawChartLegendScale(ByVal data As CSectionPlotDataReader, ByVal lef
     AddChartText leftPos + 24, topPos + barH + 4, 88, 14, LegendTensionText(), 0#, RGB(40, 40, 40), True
 End Sub
 
+' Возвращает русскую подпись "Сжатие" без зависимости от кодировки VBE.
 Private Function LegendCompressionText() As String
     LegendCompressionText = ChrW$(&H421) & ChrW$(&H436) & ChrW$(&H430) & ChrW$(&H442) & ChrW$(&H438) & ChrW$(&H435)
 End Function
 
+' Возвращает русскую подпись "Растяжение" без зависимости от кодировки VBE.
 Private Function LegendTensionText() As String
     LegendTensionText = ChrW$(&H420) & ChrW$(&H430) & ChrW$(&H441) & ChrW$(&H442) & ChrW$(&H44F) & ChrW$(&H436) & ChrW$(&H435) & ChrW$(&H43D) & ChrW$(&H438) & ChrW$(&H435)
 End Function
 
+' Возвращает цвет легенды в относительной точке шкалы 0..1.
 Private Function MaterialLegendColor(ByVal materialType As String, ByVal position As Double) As Long
     Dim t As Double
     t = ClampDouble(position, 0#, 1#)
@@ -1035,6 +1145,7 @@ Private Function MaterialLegendColor(ByVal materialType As String, ByVal positio
     End If
 End Function
 
+' Выбирает цвет максимального сжатия для материала или общей легенды.
 Private Function LegendCompressionColor(ByVal materialType As String) As Long
     If IsCommonLegendMode() Or StrComp(materialType, "Rebar", vbTextCompare) = 0 Then
         LegendCompressionColor = mRebarCompressionColor
@@ -1043,6 +1154,7 @@ Private Function LegendCompressionColor(ByVal materialType As String) As Long
     End If
 End Function
 
+' Выбирает цвет максимального растяжения для материала или общей легенды.
 Private Function LegendTensionColor(ByVal materialType As String) As Long
     If IsCommonLegendMode() Or StrComp(materialType, "Rebar", vbTextCompare) = 0 Then
         LegendTensionColor = mRebarTensionColor
@@ -1051,10 +1163,14 @@ Private Function LegendTensionColor(ByVal materialType As String) As Long
     End If
 End Function
 
+' True, если пользователь выбрал одну общую легенду вместо отдельных шкал.
 Private Function IsCommonLegendMode() As Boolean
     IsCommonLegendMode = (StrComp(mLegendMode, "Common", vbTextCompare) = 0)
 End Function
 
+' Старый цветовой переход общей физической шкалы.
+' Оставлен как совместимая утилита, но основная легенда сейчас строится
+' через MaterialLegendColor.
 Private Function PhysicalLegendColor(ByVal position As Double) As Long
     Dim t As Double
     t = ClampDouble(position, 0#, 1#)
@@ -1065,6 +1181,7 @@ Private Function PhysicalLegendColor(ByVal position As Double) As Long
     End If
 End Function
 
+' Формирует подпись min/max легенды; если состояния нет, показывает "нет".
 Private Function LegendValueText(ByVal hasValue As Boolean, ByVal value As Double) As String
     If hasValue Then
         LegendValueText = FormatPlotValue(value)
@@ -1073,6 +1190,7 @@ Private Function LegendValueText(ByVal hasValue As Boolean, ByVal value As Doubl
     End If
 End Function
 
+' Добавляет один цветной прямоугольник вертикальной легенды.
 Private Sub AddLegendRect(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _
         ByVal heightValue As Double, ByVal colorValue As Long)
     Dim marker As Object
@@ -1082,6 +1200,9 @@ Private Sub AddLegendRect(ByVal leftPos As Double, ByVal topPos As Double, ByVal
     marker.Line.ForeColor.RGB = colorValue
 End Sub
 
+' Добавляет строку легенды с цветным маркером и текстом.
+' Сейчас почти вся легенда строится градиентными прямоугольниками, но строка
+' оставлена для компактных пояснений.
 Private Sub AddLegendRow(ByVal leftPos As Double, ByVal topPos As Double, ByVal colorValue As Long, ByVal textValue As String)
     Dim marker As Object
     Set marker = mChart.Shapes.AddShape(MSO_SHAPE_RECTANGLE, leftPos, topPos + 3, 10, 10)
@@ -1091,12 +1212,16 @@ Private Sub AddLegendRow(ByVal leftPos As Double, ByVal topPos As Double, ByVal 
     AddChartText leftPos + 14, topPos, 118, 28, textValue, 0#, RGB(50, 50, 50), False
 End Sub
 
+' Рисует Shape-линию по координатам модели.
+' Используется для контуров и аннотационных линий, когда нужен именно Chart.Shape.
 Private Function DrawModelLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
         ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String) As Object
     Set DrawModelLine = DrawChartLine(ModelToChartX(x1), ModelToChartY(y1), ModelToChartX(x2), ModelToChartY(y2), _
         colorValue, weight, suffix)
 End Function
 
+' Рисует линию в координатах Chart/PlotArea.
+' Все model-to-chart преобразования должны быть сделаны до вызова этого метода.
 Private Function DrawChartLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
         ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String) As Object
     Dim lineShape As Object
@@ -1107,6 +1232,9 @@ Private Function DrawChartLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 
     Set DrawChartLine = lineShape
 End Function
 
+' Рисует расчетную линию как XY-series.
+' Такой способ используется для нейтральной линии и главных осей, чтобы они
+' оставались поверх расчетных элементов и масштабировались вместе с осями.
 Private Sub DrawModelLineSeries(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
         ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String, Optional ByVal dashStyle As Long = MSO_LINE_SOLID)
     Dim xValues(1 To 2) As Double
@@ -1133,6 +1261,8 @@ Private Sub DrawModelLineSeries(ByVal x1 As Double, ByVal y1 As Double, ByVal x2
     On Error GoTo 0
 End Sub
 
+' Рисует овал/круг в координатах модели как Shape.
+' Нужен для semantic-контура круга; сами арматурные стержни рисуются series.
 Private Function DrawModelOval(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
         ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String, ByVal filled As Boolean) As Object
     Dim leftPos As Double, topPos As Double, widthValue As Double, heightValue As Double
@@ -1154,6 +1284,9 @@ Private Function DrawModelOval(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 
     Set DrawModelOval = ovalShape
 End Function
 
+' Рисует одиночную Shape-точку.
+' Сейчас расчетные точки предпочтительно рисуются series; метод оставлен для
+' специальных декоративных объектов, если им нужен Shape-контракт.
 Private Sub DrawPoint(ByVal xCoord As Double, ByVal yCoord As Double, ByVal sizeValue As Double, _
         ByVal colorValue As Long, ByVal labelText As String, ByVal shapeType As Long)
     Dim leftPos As Double, topPos As Double
@@ -1167,6 +1300,9 @@ Private Sub DrawPoint(ByVal xCoord As Double, ByVal yCoord As Double, ByVal size
     If Len(labelText) > 0 Then DrawTextAt xCoord, yCoord, labelText, 1#, 0#, RGB(30, 30, 30), True
 End Sub
 
+' Рисует одиночный маркер как XY-series.
+' Так выводится точка приложения нагрузки: она остается в координатах модели,
+' а не в абсолютных координатах листа.
 Private Sub DrawPointMarker(ByVal xCoord As Double, ByVal yCoord As Double, ByVal sizeValue As Double, _
         ByVal colorValue As Long, ByVal markerStyle As Long, ByVal seriesName As String)
     Dim xValues(1 To 1) As Double
@@ -1186,6 +1322,8 @@ Private Sub DrawPointMarker(ByVal xCoord As Double, ByVal yCoord As Double, ByVa
     series.MarkerBackgroundColor = colorValue
 End Sub
 
+' Размещает короткую подпись около точки модели.
+' Используется для численных подписей результатов внутри бетонных элементов.
 Private Sub DrawTextAt(ByVal xCoord As Double, ByVal yCoord As Double, ByVal textValue As String, _
         ByVal dirX As Double, ByVal dirY As Double, ByVal colorValue As Long, ByVal isBold As Boolean)
     Dim leftPos As Double, topPos As Double
@@ -1196,6 +1334,9 @@ Private Sub DrawTextAt(ByVal xCoord As Double, ByVal yCoord As Double, ByVal tex
     AddChartText leftPos, topPos, 64, 18, textValue, rotation, colorValue, isBold, True
 End Sub
 
+' Создает текстовый Shape внутри Chart.
+' Важно: это не Worksheet.Shape, поэтому при перемещении Chart все подписи
+' остаются внутри единого графического объекта.
 Private Function AddChartText(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _
         ByVal heightValue As Double, ByVal textValue As String, ByVal rotation As Double, _
         ByVal colorValue As Long, ByVal isBold As Boolean, Optional ByVal centered As Boolean = False, _
@@ -1238,6 +1379,7 @@ Private Function ChartScale() As Double
     ChartScale = MinDouble(sx, sy)
 End Function
 
+' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
 Private Sub ClearGeneratedShapes()
     Dim i As Long
     For i = mChart.Shapes.Count To 1 Step -1
@@ -1300,6 +1442,11 @@ Private Function PlotTitlePrefix() As String
         ChrW$(&H441) & ChrW$(&H435) & ChrW$(&H447) & ChrW$(&H435) & ChrW$(&H43D) & ChrW$(&H438) & ChrW$(&H44F) & " " & _
         ChrW$(&H43F) & ChrW$(&H440) & ChrW$(&H438) & " " & ChrW$(&H437) & ChrW$(&H430) & ChrW$(&H433) & _
         ChrW$(&H440) & ChrW$(&H443) & ChrW$(&H436) & ChrW$(&H435) & ChrW$(&H43D) & ChrW$(&H438) & ChrW$(&H438) & " "
+End Function
+
+Private Function PlotTitleText(ByVal data As CSectionPlotDataReader) As String
+    PlotTitleText = PlotTitlePrefix() & data.LoadCase
+    If Len(Trim$(data.LoadCaseComment)) > 0 Then PlotTitleText = PlotTitleText & " (" & data.LoadCaseComment & ")"
 End Function
 
 Private Function NormalizeLegendMode(ByVal value As String) As String

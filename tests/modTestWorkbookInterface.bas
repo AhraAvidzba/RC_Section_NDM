@@ -1,12 +1,19 @@
 ﻿Attribute VB_Name = "modTestWorkbookInterface"
 Option Explicit
 
+' ==========================================================================
+' Тесты структуры книги и пользовательского интерфейса
+' ==========================================================================
+' Модуль проверяет именованные диапазоны, выпадающие списки, листы и макросы
+' workbook-слоя, чтобы сборка книги оставалась воспроизводимой.
+
 Private Type TUiTestStats
     Passed As Long
     Failed As Long
     Report As String
 End Type
 
+' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
 Public Function RunWorkbookInterfaceTests() As String
     On Error GoTo Failed
 
@@ -17,8 +24,10 @@ Public Function RunWorkbookInterfaceTests() As String
     TestButtons stats
     TestSingleCombinationSkipsBlankRows stats
     TestPartialCombinationIsInvalid stats
+    TestInvalidCalculationTypeDoesNotRunPlot stats
     TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped stats
     TestCircleWorkbookRunWritesResults stats
+    TestExecutionReportFile stats
     TestLShapeWorkbookRunWritesResults stats
     TestAutoCADExportUsesSharedLoadReference stats
     TestGoverningCombinationWritesDetailedResults stats
@@ -35,6 +44,7 @@ Failed:
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestButtons(ByRef stats As TUiTestStats)
     Dim calc As Object
     Set calc = ThisWorkbook.Worksheets.Item("Расчет")
@@ -59,6 +69,32 @@ Private Sub TestButtons(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.buttons.outsidePrint", runButton.Left > calc.Range("AJ1").Left And clearButton.Left > calc.Range("AJ1").Left And acadButton.Left > calc.Range("AJ1").Left And plotButton.Left > calc.Range("AJ1").Left
 End Sub
 
+' Проверяет, что включенный общий флаг создает человекочитаемый txt-отчет
+' рядом с книгой и не мешает обычному расчетному сценарию.
+Private Sub TestExecutionReportFile(ByRef stats As TUiTestStats)
+    PrepareCircleInput
+    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
+
+    Dim reportPath As String
+    reportPath = ThisWorkbook.Path & "\RC_Section_NDM_execution_report.txt"
+    DeleteFileIfExists reportPath
+
+    Dim message As String
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+
+    AssertTrue stats, "ui.executionReport.message", InStr(1, message, "Пошаговый отчет сохранен", vbTextCompare) > 0
+    AssertTrue stats, "ui.executionReport.fileExists", FileExists(reportPath)
+    Dim reportText As String
+    reportText = ReadTextFile(reportPath)
+    AssertTrue stats, "ui.executionReport.content", InStr(1, reportText, "ОТЧЕТ ВЫПОЛНЕНИЯ RC SECTION NDM", vbTextCompare) > 0 And _
+        InStr(1, reportText, "Старт расчета", vbTextCompare) > 0 And _
+        InStr(1, reportText, "Итерации прямого CSectionSolver", vbTextCompare) > 0 And _
+        InStr(1, reportText, "Финальное сообщение", vbTextCompare) > 0
+
+    SetSystemSetting "General.ExecutionReportEnabled", "No"
+End Sub
+
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestAutoCADExportUsesSharedLoadReference(ByRef stats As TUiTestStats)
     PrepareLShapeInput
     SetSystemSetting "Load.ReferenceOffsetX", "0"
@@ -90,6 +126,7 @@ Private Sub TestAutoCADExportUsesSharedLoadReference(ByRef stats As TUiTestStats
     AssertClose stats, "ui.autocad.axes.centerY", props.CentroidY, loadReferenceY, 0.000001
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestSingleCombinationSkipsBlankRows(ByRef stats As TUiTestStats)
     PrepareCircleInput
 
@@ -110,6 +147,7 @@ Private Sub TestSingleCombinationSkipsBlankRows(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.loads.single.noBlankInvalid", InStr(1, batch.DiagnosticLog, "InvalidInput", vbTextCompare) = 0
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestPartialCombinationIsInvalid(ByRef stats As TUiTestStats)
     PrepareCircleInput
     Dim loads As Object
@@ -133,6 +171,26 @@ Private Sub TestPartialCombinationIsInvalid(ByRef stats As TUiTestStats)
         InStr(1, message, "InvalidInput", vbTextCompare) > 0
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+Private Sub TestInvalidCalculationTypeDoesNotRunPlot(ByRef stats As TUiTestStats)
+    PrepareCircleInput
+    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
+
+    Dim loads As Object
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    loads.Cells.Item(2, 5).ClearContents
+
+    Dim message As String
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+
+    AssertTrue stats, "ui.loads.invalidCalculationType.message", _
+        InStr(1, message, "InvalidInput", vbTextCompare) > 0 And _
+        InStr(1, message, "результатов элементов", vbTextCompare) = 0
+    AssertTrue stats, "ui.loads.invalidCalculationType.noElementRows", _
+        ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.CurrentRegion.Rows.Count = 1
+End Sub
+
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped(ByRef stats As TUiTestStats)
     PrepareCircleInput
     Dim loads As Object
@@ -142,7 +200,7 @@ Private Sub TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped(ByRef stats As T
     loads.Cells.Item(3, 2).Value2 = 0#
     loads.Cells.Item(3, 3).Value2 = 0#
     loads.Cells.Item(3, 4).Value2 = 0#
-    loads.Cells.Item(3, 5).Value2 = "StrengthAndCrack"
+    loads.Cells.Item(3, 5).Value2 = "Group1"
 
     Dim batch As CBatchSectionCalculator
     Set batch = BuildUiBatch()
@@ -157,6 +215,7 @@ Private Sub TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped(ByRef stats As T
     AssertTrue stats, "ui.loads.blankMoment.valid", InStr(1, batch.Status(1), "InvalidInput", vbTextCompare) = 0
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     PrepareCircleInput
     Dim message As String
@@ -168,7 +227,7 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.run.deformations", Len(CStr(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(12, 5).Value2)) > 0
     AssertTrue stats, "ui.run.crack", Len(CStr(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(17, 5).Value2)) > 0
     Dim sys As Object
-    Set sys = ThisWorkbook.Worksheets.Item("Settings")
+    Set sys = ThisWorkbook.Worksheets.Item("Config")
     AssertTrue stats, "ui.run.system.noRebarTable", Len(CStr(sys.Cells.Item(130, 1).Value2)) = 0
     AssertTrue stats, "ui.run.system.noCrackFormulaBlock", Len(CStr(sys.Cells.Item(130, 9).Value2)) = 0
     AssertTrue stats, "ui.run.crack.result.value", Not ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(17, 5).HasFormula
@@ -182,14 +241,17 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.results.geometry.rows", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.CurrentRegion.Rows.Count > 1
     AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 10
     AssertTrue stats, "ui.results.geometry.noSource", ResultHeaderColumn(ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.CurrentRegion.Value2, "SourceName") = 0
+    AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.CurrentRegion.Value2, "MaterialClass") = 0
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
     AssertTrue stats, "ui.results.properties.hasEpsilon0", ResultsPropertyExists("LC1", "Epsilon0")
     AssertTrue stats, "ui.results.properties.hasBounds", ResultsPropertyExists("ALL", "Bounds.MinX")
     AssertTrue stats, "ui.results.annotations.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Value2) = "RunID"
     AssertTrue stats, "ui.results.annotations.rows", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.CurrentRegion.Rows.Count > 1
     AssertTrue stats, "ui.plot.chart.created", PlotChartExists()
+    AssertTrue stats, "ui.plot.title.comment", PlotChartTitleContains("(ui test)")
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestLShapeWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     PrepareLShapeInput
     Dim message As String
@@ -199,11 +261,12 @@ Private Sub TestLShapeWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.lshape.result.status", Len(CStr(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(5, 5).Value2)) > 0
 
     Dim sys As Object
-    Set sys = ThisWorkbook.Worksheets.Item("Settings")
+    Set sys = ThisWorkbook.Worksheets.Item("Config")
     AssertTrue stats, "ui.lshape.system.noRebarTable", Len(CStr(sys.Cells.Item(130, 1).Value2)) = 0
     AssertTrue stats, "ui.lshape.system.noCrackFormulaBlock", Len(CStr(sys.Cells.Item(130, 9).Value2)) = 0
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTestStats)
     PrepareCircleInput
     SetSystemSetting "Calculation.Mode", "FullCapacity"
@@ -217,17 +280,15 @@ Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTest
     loads.Cells.Item(2, 2).Value2 = -100000#
     loads.Cells.Item(2, 3).Value2 = -1000000#
     loads.Cells.Item(2, 4).Value2 = 0#
-    loads.Cells.Item(2, 5).Value2 = "StrengthAndCrack"
-    loads.Cells.Item(2, 6).Value2 = "LongTerm"
-    loads.Cells.Item(2, 7).Value2 = "less severe"
+    loads.Cells.Item(2, 5).Value2 = "Group1"
+    loads.Cells.Item(2, 6).Value2 = "less severe"
 
     loads.Cells.Item(3, 1).Value2 = "LC_GOV"
     loads.Cells.Item(3, 2).Value2 = -100000#
     loads.Cells.Item(3, 3).Value2 = -8000000#
     loads.Cells.Item(3, 4).Value2 = 0#
-    loads.Cells.Item(3, 5).Value2 = "StrengthAndCrack"
-    loads.Cells.Item(3, 6).Value2 = "LongTerm"
-    loads.Cells.Item(3, 7).Value2 = "governing"
+    loads.Cells.Item(3, 5).Value2 = "Group1"
+    loads.Cells.Item(3, 6).Value2 = "governing"
 
     Dim message As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
@@ -290,6 +351,7 @@ Private Function ResultHeaderColumn(ByRef data As Variant, ByVal headerText As S
     Next colIndex
 End Function
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.validation.capacitySearchMethod", _
         SystemSettingValidationHasOptions("Capacity.SearchMethod", Array("Bisection", "Brent", "Secant"))
@@ -305,6 +367,8 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
         SystemSettingValidationHasOptions("AutoCAD.Export.LoadPointEnabled", Array("Yes", "No"))
     AssertTrue stats, "ui.validation.autocadCombination", AutoCADCombinationValidationIsDynamic()
     AssertTrue stats, "ui.validation.plotLoadCase", PlotLoadCaseValidationIsDynamic()
+    AssertTrue stats, "ui.validation.loadCalculationType", _
+        LoadCombinationValidationHasOptions(5, Array("Group1", "Group2"))
     AssertTrue stats, "ui.validation.plotResultType", _
         SystemSettingValidationHasOptions("Plot.ResultType", Array("Stress", "Strain"))
     AssertTrue stats, "ui.validation.plotLabels", _
@@ -365,7 +429,7 @@ Private Function AutoCADCombinationValidationIsDynamic() As Boolean
             If Left$(formulaText, 1) <> "=" Then Exit Function
 
             Dim listRange As Object
-            Set listRange = ThisWorkbook.Worksheets.Item("Settings").Range(Mid$(formulaText, 2))
+            Set listRange = ThisWorkbook.Worksheets.Item("Config").Range(Mid$(formulaText, 2))
             AutoCADCombinationValidationIsDynamic = (CStr(listRange.Cells.Item(1, 1).Value2) = "Worst" And _
                 CStr(listRange.Cells.Item(2, 1).Value2) = "LC1" And listRange.Cells.Item(2, 1).HasFormula)
             Exit Function
@@ -392,7 +456,7 @@ Private Function LoadCaseValidationIsDynamicForSetting(ByVal settingKey As Strin
             If Left$(formulaText, 1) <> "=" Then Exit Function
 
             Dim listRange As Object
-            Set listRange = ThisWorkbook.Worksheets.Item("Settings").Range(Mid$(formulaText, 2))
+            Set listRange = ThisWorkbook.Worksheets.Item("Config").Range(Mid$(formulaText, 2))
             LoadCaseValidationIsDynamicForSetting = (CStr(listRange.Cells.Item(1, 1).Value2) = "Worst" And _
                 CStr(listRange.Cells.Item(2, 1).Value2) = "LC1" And listRange.Cells.Item(2, 1).HasFormula)
             Exit Function
@@ -426,6 +490,16 @@ Private Function PlotChartExists() As Boolean
 Failed:
 End Function
 
+' Проверяет текст заголовка существующей схемы, чтобы не запускать повторную отрисовку только ради проверки подписи.
+Private Function PlotChartTitleContains(ByVal expectedText As String) As Boolean
+    On Error GoTo Failed
+    Dim chartObject As Object
+    Set chartObject = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
+    PlotChartTitleContains = InStr(1, chartObject.Chart.ChartTitle.Text, expectedText, vbTextCompare) > 0
+Failed:
+End Function
+
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestClearResultsKeepsInputs(ByRef stats As TUiTestStats)
     PrepareCircleInput
     ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(5, 5).Value2 = 123#
@@ -719,7 +793,7 @@ Private Function SettingValidationHasOptionsInRange(ByVal settings As Object, By
             If Left$(formulaText, 1) <> "=" Then Exit Function
 
             Dim listRange As Object
-            Set listRange = ThisWorkbook.Worksheets.Item("Settings").Range(Mid$(formulaText, 2))
+            Set listRange = ThisWorkbook.Worksheets.Item("Config").Range(Mid$(formulaText, 2))
             Dim i As Long
             If listRange.Cells.Count <> (UBound(expectedOptions) - LBound(expectedOptions) + 1) Then Exit Function
             For i = LBound(expectedOptions) To UBound(expectedOptions)
@@ -746,7 +820,7 @@ Private Function PlotAnnotationValidationHasOptions(ByVal rowName As String, ByV
             If Left$(formulaText, 1) <> "=" Then Exit Function
 
             Dim listRange As Object
-            Set listRange = ThisWorkbook.Worksheets.Item("Settings").Range(Mid$(formulaText, 2))
+            Set listRange = ThisWorkbook.Worksheets.Item("Config").Range(Mid$(formulaText, 2))
             Dim i As Long
             If listRange.Cells.Count <> (UBound(expectedOptions) - LBound(expectedOptions) + 1) Then Exit Function
             For i = LBound(expectedOptions) To UBound(expectedOptions)
@@ -769,6 +843,16 @@ Private Function LShapeAdditionalValidationHasOptions(ByVal rowIndex As Long, By
 Failed:
 End Function
 
+Private Function LoadCombinationValidationHasOptions(ByVal valueColumn As Long, ByVal expectedOptions As Variant) As Boolean
+    On Error GoTo Failed
+
+    Dim loads As Object
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    LoadCombinationValidationHasOptions = ValidationCellHasOptions(loads.Cells.Item(2, valueColumn), expectedOptions)
+    Exit Function
+Failed:
+End Function
+
 Private Function ValidationCellHasOptions(ByVal target As Object, ByVal expectedOptions As Variant) As Boolean
     On Error GoTo Failed
 
@@ -777,7 +861,7 @@ Private Function ValidationCellHasOptions(ByVal target As Object, ByVal expected
     If Left$(formulaText, 1) <> "=" Then Exit Function
 
     Dim listRange As Object
-    Set listRange = ThisWorkbook.Worksheets.Item("Settings").Range(Mid$(formulaText, 2))
+    Set listRange = target.Worksheet.Range(Mid$(formulaText, 2))
     Dim i As Long
     If listRange.Cells.Count <> (UBound(expectedOptions) - LBound(expectedOptions) + 1) Then Exit Function
     For i = LBound(expectedOptions) To UBound(expectedOptions)
@@ -788,6 +872,7 @@ Private Function ValidationCellHasOptions(ByVal target As Object, ByVal expected
 Failed:
 End Function
 
+' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
 Private Function BuildUiBatch() As CBatchSectionCalculator
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -812,7 +897,7 @@ Private Function BuildUiBatch() As CBatchSectionCalculator
         settings.GetDouble("Rebar.AxisDistance", 40#), _
         settings.GetLong("Rebar.Count", 8), _
         settings.GetDouble("Rebar.Diameter", 20#), _
-        settings.GetString("Steel.Class", "A400"))
+        settings.GetString("Steel.RebarProfile", "Ribbed"))
     Dim concrete As CConcreteDiagramMaterial
     Set concrete = New CConcreteDiagramMaterial
     concrete.Initialize -0.0015, -15.5, -0.0035, -15.5
@@ -845,12 +930,11 @@ Private Sub PrepareCircleInput()
     SetSystemSetting "Geometry.Source", "Generated"
     SetSystemSetting "Geometry.Type", "Circle"
     SetSystemSetting "Calculation.Mode", "DirectState"
-    SetSystemSetting "Concrete.Class", "B30"
-    SetSystemSetting "Steel.Class", "A400"
+    SetSystemSetting "Steel.RebarProfile", "Ribbed"
     SetSystemSetting "Rebar.AxisDistance", "40"
     SetSystemSetting "Rebar.Count", "8"
     SetSystemSetting "Rebar.Diameter", "20"
-    SetSystemSetting "CrackWidth.Allowable", "0.3"
+    SetSystemSetting "SLS.Crack.Allowable", "0.3"
 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -859,9 +943,8 @@ Private Sub PrepareCircleInput()
     loads.Cells.Item(2, 2).Value2 = -100000#
     loads.Cells.Item(2, 3).Value2 = -4000000#
     loads.Cells.Item(2, 4).Value2 = -3000000#
-    loads.Cells.Item(2, 5).Value2 = "StrengthAndCrack"
-    loads.Cells.Item(2, 6).Value2 = "LongTerm"
-    loads.Cells.Item(2, 7).Value2 = "ui test"
+    loads.Cells.Item(2, 5).Value2 = "Group2"
+    loads.Cells.Item(2, 6).Value2 = "ui test"
 End Sub
 
 Private Sub PrepareLShapeInput()
@@ -923,7 +1006,7 @@ Private Sub PrepareLShapeInput()
     SetSystemSetting "LShape.B2.EndOffset1", "60"
     SetSystemSetting "LShape.B2.StartOffset2", "60"
     SetSystemSetting "LShape.B2.EndOffset2", "60"
-    SetSystemSetting "CrackWidth.Allowable", "0.3"
+    SetSystemSetting "SLS.Crack.Allowable", "0.3"
 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -932,11 +1015,11 @@ Private Sub PrepareLShapeInput()
     loads.Cells.Item(2, 2).Value2 = -80000#
     loads.Cells.Item(2, 3).Value2 = -1500000#
     loads.Cells.Item(2, 4).Value2 = -1000000#
-    loads.Cells.Item(2, 5).Value2 = "StrengthAndCrack"
-    loads.Cells.Item(2, 6).Value2 = "LongTerm"
-    loads.Cells.Item(2, 7).Value2 = "lshape ui test"
+    loads.Cells.Item(2, 5).Value2 = "Group2"
+    loads.Cells.Item(2, 6).Value2 = "lshape ui test"
 End Sub
 
+' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
 Private Sub ClearDataRows(ByVal target As Object)
     Dim rowIndex As Long
     Dim colIndex As Long
@@ -946,6 +1029,23 @@ Private Sub ClearDataRows(ByVal target As Object)
         Next colIndex
     Next rowIndex
 End Sub
+
+Private Function FileExists(ByVal path As String) As Boolean
+    FileExists = CreateObject("Scripting.FileSystemObject").FileExists(path)
+End Function
+
+Private Sub DeleteFileIfExists(ByVal path As String)
+    Dim fso As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    If fso.FileExists(path) Then fso.DeleteFile path, True
+End Sub
+
+Private Function ReadTextFile(ByVal path As String) As String
+    Dim stream As Object
+    Set stream = CreateObject("Scripting.FileSystemObject").OpenTextFile(path, 1, False, -1)
+    ReadTextFile = stream.ReadAll
+    stream.Close
+End Function
 
 Private Sub AssertTrue(ByRef stats As TUiTestStats, ByVal name As String, ByVal condition As Boolean)
     If condition Then
@@ -977,6 +1077,7 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
 
 
 

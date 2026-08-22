@@ -1,12 +1,19 @@
 ﻿Attribute VB_Name = "modTestSectionSolver"
 Option Explicit
 
+' ==========================================================================
+' Тесты решателя равновесия CSectionSolver
+' ==========================================================================
+' Проверяется поиск epsilon0/kappaX/kappaY в единой постановке N + Mx + My,
+' включая одноосные частные случаи и перенос начала координат.
+
 Private Type TSectionSolverTestStats
     Passed As Long
     Failed As Long
     Report As String
 End Type
 
+' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
 Public Function RunSectionSolverTests() As String
     On Error GoTo Failed
 
@@ -38,6 +45,7 @@ Failed:
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestUnitSystemConversions(ByRef stats As TSectionSolverTestStats)
     Dim units As CUnitSystem
     Set units = New CUnitSystem
@@ -62,6 +70,7 @@ Private Sub TestUnitSystemConversions(ByRef stats As TSectionSolverTestStats)
     AssertClose stats, "units.loadcase.Mx.example", configured.InputMomentMxToInternal(150#), 1470997500#, 0.1
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestLinearSystem3x3(ByRef stats As TSectionSolverTestStats)
     Dim system As CLinearSystem3x3
     Set system = New CLinearSystem3x3
@@ -76,6 +85,7 @@ Private Sub TestLinearSystem3x3(ByRef stats As TSectionSolverTestStats)
     AssertTrue stats, "linsys.singular", Not singular.Solve(1#, 2#, 3#, 2#, 4#, 6#, 3#, 6#, 9#, 1#, 2#, 3#)
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestSystemSettingsReader(ByRef stats As TSectionSolverTestStats)
     Dim reader As CSystemSettingsReader
     Set reader = New CSystemSettingsReader
@@ -88,6 +98,7 @@ Private Sub TestSystemSettingsReader(ByRef stats As TSectionSolverTestStats)
     AssertClose stats, "settings.steelDiagram.epsY", reader.SteelDiagramStrain(5), 0.00175, 0.000000000001
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestSecantComparativeTasks(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(300#, 200#)
@@ -108,6 +119,7 @@ Private Sub TestSecantComparativeTasks(ByRef stats As TSectionSolverTestStats)
     AssertNewtonSecantCase stats, "secant.compare.circle", circleMesh, Nothing, -120000#, -5000000#, 0#
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     Dim reader As CSystemSettingsReader
     Set reader = New CSystemSettingsReader
@@ -128,6 +140,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     AssertRequiredKeys stats, requiredKeys
 
     requiredKeys = Array( _
+        "General.ExecutionReportEnabled", _
         "Geometry.Source", "Geometry.Type", "LShape.B1", "LShape.H1", "LShape.B2", "LShape.H2", _
         "Mesh.Step", "Mesh.BoundarySubdivisions", _
         "Load.ReferenceOffsetX", "Load.ReferenceOffsetY", _
@@ -155,7 +168,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
 
     requiredKeys = Array( _
         "Concrete.Eb", "Concrete.TensionMode", _
-        "Steel.Es", _
+        "Steel.RebarProfile", "Steel.Es", _
         "Calculation.Mode", "Solver.Method", "Solver.MaxIterations", "Solver.LoadSteps", _
         "Solver.ToleranceN", "Solver.ToleranceMx", "Solver.ToleranceMy", _
         "Solver.LineSearchEnabled", "Solver.DampingInitial", "Solver.MinLineSearchAlpha", _
@@ -166,8 +179,8 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "Capacity.MaxRetries", "Capacity.BaseLoadSteps", "Capacity.SolverMaxIterations", _
         "Capacity.ConcreteCompressionLimit", "Capacity.ConcreteTensionLimit", _
         "Capacity.SteelStrainLimit", _
-        "CrackWidth.Enabled", "CrackWidth.Allowable", "CrackWidth.CrackSpacing", _
-        "CrackWidth.StrainFactor", "CrackWidth.DurationFactor")
+        "SLS.Crack.Enabled", "SLS.Crack.Allowable", _
+        "SLS.Crack.PsiMode", "SLS.Crack.TensionZoneMode")
     AssertRequiredKeys stats, requiredKeys
 
     requiredKeys = Array( _
@@ -240,6 +253,7 @@ Private Sub AssertRequiredKeys(ByRef stats As TSectionSolverTestStats, ByVal req
     Next i
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestLinearMaterialEquilibrium(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(200#, 100#)
@@ -272,6 +286,7 @@ Private Sub TestLinearMaterialEquilibrium(ByRef stats As TSectionSolverTestStats
     AssertEquilibrium stats, "section.linear", solver, n, mx, my
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestLinearMaterialWithRebarReplacement(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(200#, 100#)
@@ -310,6 +325,7 @@ Private Sub TestLinearMaterialWithRebarReplacement(ByRef stats As TSectionSolver
     AssertEquilibrium stats, "section.rebar", solver, n, mx, my
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestDiagramConcreteCentralCompression(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(200#, 100#)
@@ -333,6 +349,7 @@ Private Sub TestDiagramConcreteCentralCompression(ByRef stats As TSectionSolverT
     AssertEquilibrium stats, "section.diagramCompression", solver, -100000#, 0#, 0#
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestDiagramConcreteWithRebar(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(300#, 200#)
@@ -355,6 +372,7 @@ Private Sub TestDiagramConcreteWithRebar(ByRef stats As TSectionSolverTestStats)
     AssertTrue stats, "section.diagramRebar.steps", solver.LoadStepsCompleted = 5
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestIncrementLimitsAndDiagnostics(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(200#, 100#)
@@ -372,6 +390,7 @@ Private Sub TestIncrementLimitsAndDiagnostics(ByRef stats As TSectionSolverTestS
     AssertTrue stats, "section.diagnostics.log", InStr(1, solver.DiagnosticLog, "iter=", vbTextCompare) > 0
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestSecantIndependentBranch(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(300#, 200#)
@@ -410,6 +429,7 @@ Private Sub TestSecantIndependentBranch(ByRef stats As TSectionSolverTestStats)
     AssertTrue stats, "section.secant.broydenDiagnostics", secant.InternalForceEvaluationCount > secant.Iterations
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestSolverMethodInputErrors(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(200#, 100#)
@@ -432,6 +452,7 @@ Private Sub TestSolverMethodInputErrors(ByRef stats As TSectionSolverTestStats)
     AssertTrue stats, "section.method.emptyMessage", InStr(1, solver.StopReason, "InputError", vbTextCompare) > 0
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestSolverMethodFromSystem(ByRef stats As TSectionSolverTestStats)
     Dim reader As CSystemSettingsReader
     Set reader = New CSystemSettingsReader
@@ -527,6 +548,7 @@ Private Function RectangleGeometry(ByVal width As Double, ByVal height As Double
     Set RectangleGeometry = geom
 End Function
 
+' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
 Private Function BuildMesh(ByVal geom As CGeometryRoundedRectangle, ByVal stepSize As Double) As CFiberMeshBuilder
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
@@ -613,6 +635,7 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
 
 
 

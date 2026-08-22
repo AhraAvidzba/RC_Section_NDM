@@ -32,7 +32,7 @@ Get-Process EXCEL -ErrorAction SilentlyContinue | Stop-Process -Force
 
 `Validate-Workbook.ps1` проверяет:
 
-- наличие листов `Расчет` и `System`;
+- наличие листов `Расчет` и `Config`;
 - обязательные именованные диапазоны;
 - отсутствие дублей имен;
 - отсутствие устаревших диапазонов;
@@ -40,7 +40,7 @@ Get-Process EXCEL -ErrorAction SilentlyContinue | Stop-Process -Force
 - вертикальные разрывы;
 - расположение таблицы нагрузок и блока результата;
 - заголовки таблицы настроек;
-- отсутствие дублей ключей `System`;
+- отсутствие дублей ключей `Config`;
 - выпадающие списки;
 - таблицы точек диаграмм 10 x 3;
 - заголовки `rngLoadCombinations`;

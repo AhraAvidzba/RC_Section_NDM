@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -9,6 +9,13 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
+' ==========================================================================
+' Автоматическая раскладка арматуры Г-образного сечения
+' ==========================================================================
+' Builder читает таблицу граней H1/B1/H2/B2, расставляет стержни первого ряда
+' и при необходимости добавляет второй/третий ряды. Он также формирует
+' semantic-группы, по которым затем строятся подписи вида 6Ø32 + 3Ø20.
+
 Private mStepAlong As Double
 Private mPerimeter As Double
 Private mCentroidX As Double
@@ -16,6 +23,7 @@ Private mCentroidY As Double
 Private mRequestedCount As Long
 Private mSkippedDuplicateCount As Long
 
+' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
 Public Function Build(ByVal upperWidth As Double, ByVal upperHeight As Double, _
         ByVal lowerWidth As Double, ByVal lowerHeight As Double, _
         ByVal originX As Double, ByVal originY As Double, _
@@ -56,6 +64,7 @@ Public Function Build(ByVal upperWidth As Double, ByVal upperHeight As Double, _
     Set Build = layout
 End Function
 
+' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
 Private Sub ValidateGeometry(ByVal b1 As Double, ByVal h1 As Double, ByVal b2 As Double, ByVal h2 As Double)
     Dim geom As CGeometryLShape
     Dim message As String
@@ -260,7 +269,7 @@ Private Sub AddBarIfAvailable(ByVal layout As CRebarLayout, ByVal geom As ISecti
         mSkippedDuplicateCount = mSkippedDuplicateCount + 1
     Else
         layout.AddBar faceName & ".row_" & CStr(rowNumber) & "-" & CStr(nextIndex), _
-            xCoord, yCoord, diameter, 0#, steelClass, "auto lshape " & faceName & " row " & CStr(rowNumber), geom
+            xCoord, yCoord, diameter, 0#, steelClass, "auto lshape " & faceName & " row " & CStr(rowNumber), geom, faceName
         nextIndex = nextIndex + 1
         sx = sx + xCoord
         sy = sy + yCoord
@@ -321,6 +330,7 @@ Private Function LineRow3Binding(ByVal lineSettings As Variant) As String
     If Len(Trim$(CStr(lineSettings(LBound(lineSettings) + 10)))) > 0 Then LineRow3Binding = Trim$(CStr(lineSettings(LBound(lineSettings) + 10)))
 End Function
 
+' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
 Private Sub ValidateAdditionalRows(ByVal faceName As String, ByVal row2Diameter As Double, ByVal row3Diameter As Double, _
         ByVal row2Location As String, ByVal row3Location As String, ByVal row2Binding As String, ByVal row3Binding As String)
     If row2Diameter < 0# Or row3Diameter < 0# Then Err.Raise vbObjectError + 3180, "CLShapeRebarLayoutBuilder", faceName & " Диаметр дополнительного ряда должен быть неотрицательным."
@@ -485,3 +495,4 @@ End Property
 Public Property Get SkippedDuplicateCount() As Long
     SkippedDuplicateCount = mSkippedDuplicateCount
 End Property
+

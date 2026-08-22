@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -8,6 +8,13 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
+' ==========================================================================
+' Математическая геометрия прямоугольника со скруглениями
+' ==========================================================================
+' Класс описывает прямоугольное бетонное сечение с независимыми радиусами
+' углов. Он используется только для проверки попадания точек, габаритов и
+' построения контура; расчетные усилия и материалы находятся в других слоях.
 
 Implements ISectionGeometry
 
@@ -315,6 +322,7 @@ Private Sub SubtractCorner(ByRef area As Double, ByRef sx As Double, ByRef sy As
     sx = sx - removedArea * removedX
     sy = sy - removedArea * removedY
 End Sub
+
 
 
 

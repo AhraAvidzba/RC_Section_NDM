@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -8,6 +8,17 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
+' ==========================================================================
+' Импорт расчетной сетки из AutoCAD Region
+' ==========================================================================
+' Импортер читает активный чертеж AutoCAD и превращает Region на заданных
+' слоях бетона и арматуры в CSectionModel. После этого расчетное ядро уже не
+' знает, что геометрия пришла из AutoCAD: оно видит те же бетонные элементы
+' и арматуру, что и при автоматической генерации.
+'
+' Класс не выполняет расчет и не пишет Results. Его ответственность - только
+' аккуратно отфильтровать AutoCAD-сущности и заполнить модель сечения.
 
 Public Function ImportFromActiveDocument(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
     If settings Is Nothing Then Err.Raise vbObjectError + 4400, "CAutoCADSectionModelImporter", "Настройки System не переданы."
@@ -27,7 +38,7 @@ Public Function ImportFromActiveDocument(ByVal settings As CSystemSettingsReader
     Set ImportFromActiveDocument = ImportFromModelSpace(doc.ModelSpace, _
         settings.GetString("AutoCAD.Import.ConcreteLayer", "Concrete"), _
         settings.GetString("AutoCAD.Import.RebarLayer", "Reinf"), _
-        settings.GetString("Steel.Class", "A400"), _
+        settings.GetString("Steel.RebarProfile", "Ribbed"), _
         InputArea(settings.GetDouble("AutoCAD.Import.MinArea", 0.000001), units), units)
 End Function
 
@@ -54,6 +65,7 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
     Set ImportFromModelSpace = model
 End Function
 
+' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
 Public Function BuildFromRegionArrays(ByVal concreteRegions As Variant, ByVal rebarRegions As Variant, _
         ByVal steelClass As String, Optional ByVal minArea As Double = 0.000001) As CSectionModel
     Dim model As CSectionModel
@@ -220,6 +232,7 @@ Private Function EntityHandle(ByVal entity As Object) As String
     On Error GoTo 0
 End Function
 
+' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
 Private Sub ValidateImportedModel(ByVal model As CSectionModel)
     If model.ConcreteCount <= 0 Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
         "Не найдено бетонных AutoCAD Region на заданном слое импорта."
@@ -269,3 +282,4 @@ End Function
 Private Function InputFourthPowerLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then InputFourthPowerLength = value Else InputFourthPowerLength = units.InputFourthPowerLengthToInternal(value)
 End Function
+

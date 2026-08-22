@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -9,11 +9,19 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
+' ==========================================================================
+' Автоматическая раскладка арматуры круглого сечения
+' ==========================================================================
+' Builder расставляет первый, второй и третий ряды стержней по окружности:
+' Stacked уводит дополнительный ряд к центру, SideBySide смещает по касательной
+' по часовой стрелке. Если первого ряда нет, дополнительные ряды не создаются.
+
 Private mAngleStep As Double
 Private mCentroidX As Double
 Private mCentroidY As Double
 Private mAxisRadius As Double
 
+' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
 Public Function Build(ByVal diameter As Double, ByVal centerX As Double, ByVal centerY As Double, _
         ByVal axisDistance As Double, ByVal barCount As Long, ByVal barDiameter As Double, _
         ByVal steelClass As String, Optional ByVal row2Diameter As Double = 0#, _
@@ -54,7 +62,7 @@ Public Function Build(ByVal diameter As Double, ByVal centerX As Double, ByVal c
         alpha = mAngleStep * CDbl(i)
         xCoord = centerX + mAxisRadius * Cos(alpha)
         yCoord = centerY + mAxisRadius * Sin(alpha)
-        layout.AddBar "B" & CStr(i + 1), xCoord, yCoord, barDiameter, 0#, steelClass, "auto circle row 1", geom
+        layout.AddBar "B" & CStr(i + 1), xCoord, yCoord, barDiameter, 0#, steelClass, "auto circle row 1", geom, "Circle"
         AddAdditionalCircleBar layout, geom, "B" & CStr(i + 1) & "_R2", centerX, centerY, xCoord, yCoord, _
             alpha, barDiameter, row2Diameter, row2Location, 0#, steelClass
         AddAdditionalCircleBar layout, geom, "B" & CStr(i + 1) & "_R3", centerX, centerY, xCoord, yCoord, _
@@ -103,7 +111,7 @@ Private Sub AddAdditionalCircleBar(ByVal layout As CRebarLayout, ByVal geom As C
     xCoord = baseX + offsetDistance * dirX
     yCoord = baseY + offsetDistance * dirY
     ValidateBarInsideCircle geom, centerX, centerY, xCoord, yCoord, addDiameter
-    layout.AddBar barName, xCoord, yCoord, addDiameter, 0#, steelClass, "auto circle additional row", geom
+    layout.AddBar barName, xCoord, yCoord, addDiameter, 0#, steelClass, "auto circle additional row", geom, "Circle"
 End Sub
 
 Private Function RowSkipDiameter(ByVal row2Diameter As Double, ByVal row2Location As String, ByVal row3Location As String) As Double
@@ -114,6 +122,7 @@ Private Function RowSkipDiameter(ByVal row2Diameter As Double, ByVal row2Locatio
     End If
 End Function
 
+' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
 Private Sub ValidateInputs(ByVal diameter As Double, ByVal axisDistance As Double, _
         ByVal barCount As Long, ByVal barDiameter As Double, ByVal row2Diameter As Double, _
         ByVal row3Diameter As Double, ByVal row2Location As String, ByVal row3Location As String)
@@ -132,6 +141,7 @@ Private Sub ValidateInputs(ByVal diameter As Double, ByVal axisDistance As Doubl
     If axisDistance >= diameter / 2# Then Err.Raise vbObjectError + 3154, "CCircleRebarLayoutBuilder", "Расстояние до оси стержня должно быть меньше половины диаметра круга."
 End Sub
 
+' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
 Private Sub ValidateBarInsideCircle(ByVal geom As CGeometryCircle, ByVal centerX As Double, ByVal centerY As Double, _
         ByVal xCoord As Double, ByVal yCoord As Double, ByVal barDiameter As Double)
     Dim dx As Double
@@ -166,3 +176,4 @@ End Property
 Public Property Get AxisRadius() As Double
     AxisRadius = mAxisRadius
 End Property
+

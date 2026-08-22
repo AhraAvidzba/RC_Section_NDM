@@ -1,12 +1,19 @@
 ﻿Attribute VB_Name = "modTestBatchCalculation"
 Option Explicit
 
+' ==========================================================================
+' Тесты пакетного расчета и интерфейсных статусов
+' ==========================================================================
+' Модуль проверяет, что batch-слой правильно обрабатывает несколько LC,
+' выбирает худшее сочетание и не смешивает статусы capacity/crack/direct state.
+
 Private Type TBatchTestStats
     Passed As Long
     Failed As Long
     Report As String
 End Type
 
+' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
 Public Function RunBatchCalculationTests() As String
     On Error GoTo Failed
 
@@ -16,6 +23,8 @@ Public Function RunBatchCalculationTests() As String
 
     AppendLine stats, "RUN: TestBatchOneCombination"
     TestBatchOneCombination stats
+    AppendLine stats, "RUN: TestCalculationTypeControlsLimitStateGroup"
+    TestCalculationTypeControlsLimitStateGroup stats
     AppendLine stats, "RUN: TestBatchFiveCombinations"
     TestBatchFiveCombinations stats
     AppendLine stats, "RUN: TestBatchGoverningUsesLowestSafetyFactor"
@@ -49,10 +58,11 @@ Failed:
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestBatchOneCombination(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
-    batch.AddCombination "C1", -220000#, -7000000#, -5000000#, "StrengthAndCrack", "LongTerm", "single"
+    batch.AddCombination "C1", -220000#, -7000000#, -5000000#, "Group1", "single"
     batch.Execute
 
     AssertTrue stats, "batch.one.count", batch.Count = 1
@@ -62,6 +72,26 @@ Private Sub TestBatchOneCombination(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.one.elapsed", batch.ElapsedSeconds >= 0#
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+Private Sub TestCalculationTypeControlsLimitStateGroup(ByRef stats As TBatchTestStats)
+    Dim group1 As CBatchSectionCalculator
+    Set group1 = BuildBatchCalculator()
+    group1.AddCombination "G1", -220000#, -7000000#, -5000000#, "Group1", "strength"
+    group1.Execute
+
+    AssertTrue stats, "batch.calculationType.group1.capacity", group1.LambdaCapacity(1) > 0#
+    AssertTrue stats, "batch.calculationType.group1.noCrack", group1.CrackStatus(1) = "NotCalculated"
+
+    Dim group2 As CBatchSectionCalculator
+    Set group2 = BuildBatchCalculator()
+    group2.AddCombination "G2", -220000#, -7000000#, -5000000#, "Group2", "crack"
+    group2.Execute
+
+    AssertTrue stats, "batch.calculationType.group2.noCapacity", group2.CapacityStatus(1) = "NotCalculated"
+    AssertTrue stats, "batch.calculationType.group2.crack", group2.CrackStatus(1) <> "NotCalculated"
+End Sub
+
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestBatchCapacityUsesSystemSettings(ByRef stats As TBatchTestStats)
     Dim oldMode As String
     Dim oldMaxLambda As String
@@ -79,7 +109,7 @@ Private Sub TestBatchCapacityUsesSystemSettings(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
     batch.ApplySettings settings
-    batch.AddCombination "LIMITED", -220000#, -7000000#, -5000000#, "StrengthAndCrack", "ShortTerm", "max-lambda"
+    batch.AddCombination "LIMITED", -220000#, -7000000#, -5000000#, "Group1", "max-lambda"
     batch.Execute
 
     AssertTrue stats, "batch.settings.capacity.maxLambda", InStr(1, batch.CapacityStatus(1), "NumericalFailure", vbTextCompare) > 0
@@ -95,6 +125,7 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestInvalidModeSettingsAreNotFallbacks(ByRef stats As TBatchTestStats)
     Dim oldMode As String
     Dim oldCapacityMethod As String
@@ -111,7 +142,7 @@ Private Sub TestInvalidModeSettingsAreNotFallbacks(ByRef stats As TBatchTestStat
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
     batch.ApplySettings settings
-    batch.AddCombination "BAD_MODE", -220000#, -7000000#, -5000000#, "StrengthAndCrack", "ShortTerm", "wrong mode"
+    batch.AddCombination "BAD_MODE", -220000#, -7000000#, -5000000#, "Group1", "wrong mode"
     batch.Execute
     AssertTrue stats, "batch.invalid.calculationMode.status", InStr(1, batch.Status(1), "InvalidInput", vbTextCompare) > 0
     AssertTrue stats, "batch.invalid.calculationMode.noCapacity", batch.LambdaCapacity(1) = 0#
@@ -123,7 +154,7 @@ Private Sub TestInvalidModeSettingsAreNotFallbacks(ByRef stats As TBatchTestStat
 
     Set batch = BuildBatchCalculator()
     batch.ApplySettings settings
-    batch.AddCombination "BAD_CAP", -220000#, -7000000#, -5000000#, "StrengthAndCrack", "ShortTerm", "wrong capacity"
+    batch.AddCombination "BAD_CAP", -220000#, -7000000#, -5000000#, "Group1", "wrong capacity"
     batch.Execute
     AssertTrue stats, "batch.invalid.capacityMethod.status", InStr(1, batch.Status(1), "InvalidInput", vbTextCompare) > 0
     AssertTrue stats, "batch.invalid.capacityMethod.noLambda", batch.LambdaCapacity(1) = 0#
@@ -139,6 +170,7 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestBatchFiveCombinations(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
@@ -146,7 +178,7 @@ Private Sub TestBatchFiveCombinations(ByRef stats As TBatchTestStats)
     Dim i As Long
     For i = 1 To 5
         batch.AddCombination "C" & CStr(i), -150000# - 10000# * i, -3000000# - 250000# * i, _
-            -2000000# - 200000# * i, "StrengthAndCrack", "ShortTerm", "five-" & CStr(i)
+            -2000000# - 200000# * i, "Group1", "five-" & CStr(i)
     Next i
     batch.Execute
 
@@ -155,11 +187,12 @@ Private Sub TestBatchFiveCombinations(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.five.diagnostics", InStr(1, batch.DiagnosticLog, "combination=C5", vbTextCompare) > 0
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestBatchGoverningUsesLowestSafetyFactor(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
-    batch.AddCombination "SAFE", -150000#, -1000000#, -500000#, "StrengthAndCrack", "ShortTerm", "larger safety"
-    batch.AddCombination "GOV", -150000#, -7000000#, -3500000#, "StrengthAndCrack", "ShortTerm", "smaller safety"
+    batch.AddCombination "SAFE", -150000#, -1000000#, -500000#, "Group1", "larger safety"
+    batch.AddCombination "GOV", -150000#, -7000000#, -3500000#, "Group1", "smaller safety"
     batch.Execute
 
     AssertTrue stats, "batch.governing.lambda.order", batch.LambdaCapacity(2) > 0# And batch.LambdaCapacity(2) < batch.LambdaCapacity(1)
@@ -171,10 +204,11 @@ Private Sub TestBatchGoverningUsesLowestSafetyFactor(ByRef stats As TBatchTestSt
         (batch.CapacityStatus(2) <> "OK" And batch.StrengthCheckStatus(2) = "NotCalculated")
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestLoadReferenceTransformsUserMoments(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
-    batch.AddCombination "REF", -1000#, 20000#, -30000#, "StrengthAndCrack", "ShortTerm", "reference"
+    batch.AddCombination "REF", -1000#, 20000#, -30000#, "Group1", "reference"
     batch.ApplyLoadReference 40#, -25#
 
     AssertClose stats, "batch.reference.userMx", batch.UserMx(1), 20000#, 0.000001
@@ -185,6 +219,7 @@ Private Sub TestLoadReferenceTransformsUserMoments(ByRef stats As TBatchTestStat
     AssertClose stats, "batch.reference.y", batch.LoadReferenceY, -25#, 0.000001
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestAxialReferenceRemovesPureCompressionEccentricity(ByRef stats As TBatchTestStats)
     CheckPureCompressionReference stats, "circle", CircleGeometry(300#, 125#, -75#), _
         CircleRebars(300#, 125#, -75#, 40#, 12, 20#), 25#, 0.00000001
@@ -222,15 +257,16 @@ Private Sub CheckPureCompressionReference(ByRef stats As TBatchTestStats, ByVal 
     AssertClose stats, "batch.reference." & caseName & ".kappaY", solver.KappaY, 0#, tolerance
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestDirectStateReportsStrainSafety(ByRef stats As TBatchTestStats)
     Dim oldMode As String
     Dim oldCrackEnabled As String
     oldMode = GetSystemSetting("Calculation.Mode")
-    oldCrackEnabled = GetSystemSetting("CrackWidth.Enabled")
+    oldCrackEnabled = GetSystemSetting("SLS.Crack.Enabled")
 
     On Error GoTo RestoreAndFail
     SetSystemSetting "Calculation.Mode", "DirectState"
-    SetSystemSetting "CrackWidth.Enabled", "No"
+    SetSystemSetting "SLS.Crack.Enabled", "No"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -239,8 +275,8 @@ Private Sub TestDirectStateReportsStrainSafety(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
     batch.ApplySettings settings
-    batch.AddCombination "DS_SAFE", -120000#, -1500000#, -800000#, "StrengthAndCrack", "ShortTerm", "smaller strain"
-    batch.AddCombination "DS_GOV", -120000#, -4500000#, -2400000#, "StrengthAndCrack", "ShortTerm", "larger strain"
+    batch.AddCombination "DS_SAFE", -120000#, -1500000#, -800000#, "Group1", "smaller strain"
+    batch.AddCombination "DS_GOV", -120000#, -4500000#, -2400000#, "Group1", "larger strain"
     batch.Execute
 
     AssertTrue stats, "batch.direct.lambda.zero", batch.LambdaCapacity(1) = 0# And batch.LambdaCapacity(2) = 0#
@@ -251,7 +287,7 @@ Private Sub TestDirectStateReportsStrainSafety(ByRef stats As TBatchTestStats)
 
 Restore:
     SetSystemSetting "Calculation.Mode", oldMode
-    SetSystemSetting "CrackWidth.Enabled", oldCrackEnabled
+    SetSystemSetting "SLS.Crack.Enabled", oldCrackEnabled
     Exit Sub
 
 RestoreAndFail:
@@ -260,17 +296,18 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestDirectStateKeepsStrainSafetyOnFailure(ByRef stats As TBatchTestStats)
     Dim oldMode As String
     Dim oldCrackEnabled As String
     Dim oldMaxIterations As String
     oldMode = GetSystemSetting("Calculation.Mode")
-    oldCrackEnabled = GetSystemSetting("CrackWidth.Enabled")
+    oldCrackEnabled = GetSystemSetting("SLS.Crack.Enabled")
     oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
 
     On Error GoTo RestoreAndFail
     SetSystemSetting "Calculation.Mode", "DirectState"
-    SetSystemSetting "CrackWidth.Enabled", "No"
+    SetSystemSetting "SLS.Crack.Enabled", "No"
     SetSystemSetting "Solver.MaxIterations", "1"
 
     Dim settings As CSystemSettingsReader
@@ -280,7 +317,7 @@ Private Sub TestDirectStateKeepsStrainSafetyOnFailure(ByRef stats As TBatchTestS
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
     batch.ApplySettings settings
-    batch.AddCombination "DS_FAIL", -120000#, -12000000#, -7000000#, "StrengthAndCrack", "ShortTerm", "forced non-convergence"
+    batch.AddCombination "DS_FAIL", -120000#, -12000000#, -7000000#, "Group1", "forced non-convergence"
     batch.Execute
 
     AssertTrue stats, "batch.direct.failure.status", InStr(1, batch.Status(1), "NumericalFailure", vbTextCompare) > 0 Or batch.Status(1) = "StrainLimitExceeded"
@@ -288,7 +325,7 @@ Private Sub TestDirectStateKeepsStrainSafetyOnFailure(ByRef stats As TBatchTestS
 
 Restore:
     SetSystemSetting "Calculation.Mode", oldMode
-    SetSystemSetting "CrackWidth.Enabled", oldCrackEnabled
+    SetSystemSetting "SLS.Crack.Enabled", oldCrackEnabled
     SetSystemSetting "Solver.MaxIterations", oldMaxIterations
     Exit Sub
 
@@ -298,6 +335,7 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestBatchTwentyCombinations(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
@@ -305,7 +343,7 @@ Private Sub TestBatchTwentyCombinations(ByRef stats As TBatchTestStats)
     Dim i As Long
     For i = 1 To 20
         batch.AddCombination "LC" & CStr(i), -100000# - 2500# * i, -1800000# - 100000# * i, _
-            -1200000# - 75000# * i, "StrengthAndCrack", "LongTerm", "twenty-" & CStr(i)
+            -1200000# - 75000# * i, "Group1", "twenty-" & CStr(i)
     Next i
     batch.Execute
 
@@ -314,6 +352,7 @@ Private Sub TestBatchTwentyCombinations(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.twenty.last.status", Len(batch.Status(20)) > 0
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestInvalidCombinationFromNamedRange(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
@@ -326,15 +365,13 @@ Private Sub TestInvalidCombinationFromNamedRange(ByRef stats As TBatchTestStats)
     loads.Cells.Item(1, 3).Value2 = "Mx"
     loads.Cells.Item(1, 4).Value2 = "My"
     loads.Cells.Item(1, 5).Value2 = "CalculationType"
-    loads.Cells.Item(1, 6).Value2 = "DurationType"
-    loads.Cells.Item(1, 7).Value2 = "Comment"
+    loads.Cells.Item(1, 6).Value2 = "Comment"
     loads.Cells.Item(2, 1).Value2 = "BAD"
     loads.Cells.Item(2, 2).Value2 = "not-a-number"
     loads.Cells.Item(2, 3).Value2 = -1000000#
     loads.Cells.Item(2, 4).Value2 = -500000#
-    loads.Cells.Item(2, 5).Value2 = "StrengthAndCrack"
-    loads.Cells.Item(2, 6).Value2 = "ShortTerm"
-    loads.Cells.Item(2, 7).Value2 = "invalid source row"
+    loads.Cells.Item(2, 5).Value2 = "Group1"
+    loads.Cells.Item(2, 6).Value2 = "invalid source row"
 
     Dim reader As CLoadCombinationReader
     Set reader = New CLoadCombinationReader
@@ -345,10 +382,11 @@ Private Sub TestInvalidCombinationFromNamedRange(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.invalid.reader.status", InStr(1, batch.Status(1), "InvalidInput", vbTextCompare) > 0
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
-    batch.AddCombination "W1", -180000#, -3500000#, -2500000#, "StrengthAndCrack", "ShortTerm", "writer"
+    batch.AddCombination "W1", -180000#, -3500000#, -2500000#, "Group1", "writer"
     batch.Execute
 
     Dim writer As CBatchResultWriter
@@ -361,7 +399,7 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     summaryRow = BatchSummaryStartRow()
     AssertTrue stats, "batch.writer.fixedRow", summaryRow = 1
     AssertTrue stats, "batch.writer.noResultOverlap", summaryRow + ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count - 1 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
-    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count >= 29 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count >= 14
+    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count >= 29 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count >= 32
     AssertTrue stats, "batch.writer.title", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = "Сводка пакетного расчета"
     AssertTrue stats, "batch.writer.governing", CStr(resultsSheet.Cells.Item(summaryRow + 1, 2).Value2) = "W1"
     AssertTrue stats, "batch.writer.header.strength", CStr(resultsSheet.Cells.Item(summaryRow + 5, 6).Value2) = "StrengthCheckStatus"
@@ -371,6 +409,7 @@ Private Function BatchSummaryStartRow() As Long
     BatchSummaryStartRow = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Row
 End Function
 
+' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
 Private Function BuildBatchCalculator() As CBatchSectionCalculator
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -517,6 +556,7 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
 
 
 

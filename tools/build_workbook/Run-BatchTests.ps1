@@ -1,3 +1,5 @@
+﻿# служебный PowerShell-скрипт поддерживает сборку, проверку или обновление Excel-книги проекта.
+
 param(
     [string]$WorkbookPath = "workbook/output/RC_Section_NDM.xlsm"
 )
@@ -11,6 +13,7 @@ if (-not (Test-Path -LiteralPath $fullWorkbookPath)) {
     throw "Workbook not found: $fullWorkbookPath"
 }
 
+# Удаляет только служебный объект, который может мешать повторяемой сборке или проверке.
 function Remove-DuplicatePrintAreaName {
     param([string]$Path)
     Add-Type -AssemblyName System.IO.Compression

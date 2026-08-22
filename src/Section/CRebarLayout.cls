@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -9,6 +9,13 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
+' ==========================================================================
+' Промежуточный список стержней до CSectionModel
+' ==========================================================================
+' CRebarLayout хранит координаты, диаметры и диагностические подписи стержней,
+' сформированных раскладчиком. Затем CSectionModelBuilder переносит эти данные
+' в единую расчетную модель и присваивает расчетные имена R1/R2/....
+
 Private mBarID() As String
 Private mX() As Double
 Private mY() As Double
@@ -16,6 +23,7 @@ Private mDiameter() As Double
 Private mArea() As Double
 Private mSteelClass() As String
 Private mComment() As String
+Private mBarAnnotationGroupName() As String
 Private mCount As Long
 
 Private mAnnotationGroupName() As String
@@ -28,6 +36,7 @@ Private mAnnotationNormalY() As Double
 Private mAnnotationAxisDistance() As Double
 Private mAnnotationCount As Long
 
+' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
 Public Sub Clear()
     Erase mBarID
     Erase mX
@@ -36,6 +45,7 @@ Public Sub Clear()
     Erase mArea
     Erase mSteelClass
     Erase mComment
+    Erase mBarAnnotationGroupName
     mCount = 0
 
     Erase mAnnotationGroupName
@@ -51,7 +61,8 @@ End Sub
 
 Public Sub AddBar(ByVal barName As String, ByVal xCoord As Double, ByVal yCoord As Double, _
         ByVal diameter As Double, ByVal area As Double, ByVal steelClass As String, _
-        Optional ByVal comment As String = vbNullString, Optional ByVal geometry As ISectionGeometry = Nothing)
+        Optional ByVal comment As String = vbNullString, Optional ByVal geometry As ISectionGeometry = Nothing, _
+        Optional ByVal annotationGroupName As String = vbNullString)
 
     If Len(Trim$(barName)) = 0 Then Err.Raise vbObjectError + 3100, "CRebarLayout", "ID стержня не заполнен."
     If diameter <= 0# Then Err.Raise vbObjectError + 3101, "CRebarLayout", "Диаметр арматуры должен быть положительным."
@@ -84,6 +95,7 @@ Public Sub AddBar(ByVal barName As String, ByVal xCoord As Double, ByVal yCoord 
     ReDim Preserve mArea(1 To mCount)
     ReDim Preserve mSteelClass(1 To mCount)
     ReDim Preserve mComment(1 To mCount)
+    ReDim Preserve mBarAnnotationGroupName(1 To mCount)
 
     mBarID(mCount) = barName
     mX(mCount) = xCoord
@@ -92,6 +104,7 @@ Public Sub AddBar(ByVal barName As String, ByVal xCoord As Double, ByVal yCoord 
     mArea(mCount) = actualArea
     mSteelClass(mCount) = steelClass
     mComment(mCount) = comment
+    mBarAnnotationGroupName(mCount) = Trim$(annotationGroupName)
 End Sub
 
 Public Property Get Count() As Long
@@ -131,6 +144,11 @@ End Property
 Public Property Get Comment(ByVal index As Long) As String
     CheckIndex index
     Comment = mComment(index)
+End Property
+
+Public Property Get BarAnnotationGroupName(ByVal index As Long) As String
+    CheckIndex index
+    BarAnnotationGroupName = mBarAnnotationGroupName(index)
 End Property
 
 Public Sub AddAnnotationAnchor(ByVal groupName As String, ByVal startX As Double, ByVal startY As Double, _
@@ -209,6 +227,7 @@ End Sub
 Private Sub CheckAnnotationIndex(ByVal index As Long)
     If index < 1 Or index > mAnnotationCount Then Err.Raise vbObjectError + 3107, "CRebarLayout", "Индекс аннотации арматуры вне допустимого диапазона."
 End Sub
+
 
 
 

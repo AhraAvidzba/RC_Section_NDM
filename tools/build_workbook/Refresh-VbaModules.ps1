@@ -1,9 +1,12 @@
+﻿# скрипт обновляет отдельные части существующей книги без ручного импорта модулей через редактор VBA.
+
 param(
     [string]$WorkbookPath = "workbook/output/RC_Section_NDM.xlsm"
 )
 
 $ErrorActionPreference = "Stop"
 
+# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
 function Add-VbaSourceFile {
     param(
         [object]$Workbook,
@@ -61,6 +64,7 @@ function Add-VbaSourceFile {
     }
 }
 
+# Импортирует исходные VBA-модули в книгу, сохраняя воспроизводимость сборки.
 function Import-VbaSourceTree {
     param(
         [object]$Workbook,
@@ -92,6 +96,7 @@ function Import-VbaSourceTree {
     }
 }
 
+# Удаляет только служебный объект, который может мешать повторяемой сборке или проверке.
 function Remove-ImportedVbaComponents {
     param([object]$Workbook)
 

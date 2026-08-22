@@ -4,7 +4,7 @@
 
 ## Источник Настроек
 
-Все пользовательские настройки расчета находятся на листе `System`.
+Все пользовательские настройки расчета находятся на листе `Config`.
 
 `CSystemSettingsReader` читает:
 
@@ -28,9 +28,9 @@
 | `rngLShapeGeometry` | Параметры Г-образного сечения и автоматической арматуры. |
 | `rngConcreteDiagramPoints` | До 10 точек диаграммы бетона: `Point / Strain / Stress, <единица INPUT для Stress>`. |
 | `rngSteelDiagramPoints` | До 10 точек диаграммы арматуры: `Point / Strain / Stress, <единица INPUT для Stress>`. |
-| `rngLoadCombinations` | До 20 сочетаний нагрузок. |
+| `rngLoadCombinations` | До 20 сочетаний нагрузок: `CalculationType = Group1` для расчета по первой группе предельных состояний, `CalculationType = Group2` для расчета трещин по второй группе. |
 | `rngResultSection` | Единый блок результатов `N + Mx + My`. |
-| `rngBatchSummary` | Сводка batch-расчета на `Results!A1:N29`. |
+| `rngBatchSummary` | Сводка batch-расчета на `Results!A1:AF29`. |
 | `rngNDMElementResults` | LC-зависимые результаты элементов на `Results!A32`: `RunID`, `LoadCase`, `ElementID`, `Strain`, `Stress`, `PhysicalState`. |
 | `rngNDMSectionGeometry` | Неизменяемая расчетная геометрия snapshot на `Results!J32`: координаты, площадь, размеры/диаметр, материал и локальные характеристики. |
 | `rngNDMSectionProperties` | Общие свойства расчетного snapshot и LC-зависимые свойства уровня сечения на `Results!AC32`: Bounds, центр тяжести, главные оси, единицы output, `Epsilon0/KappaX/KappaY`, точка приложения нагрузки. |
@@ -97,8 +97,9 @@
 
 - импортируются только AutoCAD `Region`;
 - единицы AutoCAD всегда считаются миллиметрами;
-- класс арматуры берется из `Steel.Class`;
-- разные классы арматуры в одном сечении не поддерживаются;
+- диаграмма арматуры берется из `rngSteelDiagramPoints`;
+- профиль арматуры для коэффициента `phi2` при расчете трещин берется из `Steel.RebarProfile`;
+- разные материалы арматуры в одном сечении не поддерживаются;
 - при отсутствии AutoCAD, активного чертежа или нужных областей расчет останавливается с ошибкой ввода.
 
 ## AutoCAD Export
@@ -137,7 +138,10 @@
 | `Capacity.Method` | `LoadMultiplier`, `UltimateStrain` |
 | `Capacity.SearchMethod` | `Bisection`, `Brent`, `Secant` |
 | `Solver.LineSearchEnabled` | `Yes`, `No` |
-| `CrackWidth.Enabled` | `Yes`, `No` |
+| `Steel.RebarProfile` | `Ribbed`, `Smooth` |
+| `SLS.Crack.Enabled` | `Yes`, `No` |
+| `SLS.Crack.PsiMode` | `Unity`, `Refined` |
+| `SLS.Crack.TensionZoneMode` | `Effective`, `FullTension` |
 | `AutoCAD.Export.ResultType` | `Stress`, `Strain` |
 | `AutoCAD.Export.LabelMode` | `ValuesOnly`, `NamesAndValues` |
 | `AutoCAD.Export.NeutralLineEnabled` | `Yes`, `No` |
@@ -166,5 +170,6 @@
 | `Plot.Dimensions.ArrowType` | `Triangle`, `Stealth`, `Diamond`, `Oval`, `Open` |
 | `Plot.Dimensions.ArrowSize` | `Small`, `Medium`, `Wide` |
 | `Plot.LegendEnabled` | `Yes`, `No` |
+| `rngLoadCombinations.CalculationType` | `Group1`, `Group2` |
 
 Пустые или неподдерживаемые значения расчетных методов должны приводить к `InputError`, а не к скрытому переключению на значение по умолчанию.

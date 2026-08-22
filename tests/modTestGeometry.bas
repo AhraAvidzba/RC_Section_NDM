@@ -1,12 +1,19 @@
 ﻿Attribute VB_Name = "modTestGeometry"
 Option Explicit
 
+' ==========================================================================
+' Тесты геометрии, сетки и раскладки арматуры
+' ==========================================================================
+' Модуль защищает договоренности по Circle, RoundedRectangle и LShape: габариты,
+' дискретизацию, автоматическую арматуру и semantic-аннотации для схемы.
+
 Private Type TTestStats
     Passed As Long
     Failed As Long
     Report As String
 End Type
 
+' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
 Public Function RunGeometryTests() As String
     On Error GoTo Failed
 
@@ -39,6 +46,7 @@ Failed:
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestSectionModelFromGeneratedGeometry(ByRef stats As TTestStats)
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -64,6 +72,7 @@ Private Sub TestSectionModelFromGeneratedGeometry(ByRef stats As TTestStats)
     AssertClose stats, "model.rebar.area", model.RebarArea(1), GEOM_PI * 20# * 20# / 4#, 0.000000001
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestRebarAnnotationAnchors(ByRef stats As TTestStats)
     Dim circleBuilder As CCircleRebarLayoutBuilder
     Set circleBuilder = New CCircleRebarLayoutBuilder
@@ -123,11 +132,15 @@ Private Sub TestRebarAnnotationAnchors(ByRef stats As TTestStats)
 
     Dim model As CSectionModel
     Set model = BuildGeneratedSectionModel(mesh, circleBars, "Circle")
-    AssertTrue stats, "annotation.model.count", model.RebarAnnotationCount = 1
-    AssertTrue stats, "annotation.model.group", model.RebarAnnotationGroupName(1) = "Circle"
-    AssertClose stats, "annotation.model.axisDistance", model.RebarAnnotationAxisDistance(1), 40#, 0.000001
+    Dim annotationBuilder As CCircleAnnotationBuilder
+    Set annotationBuilder = New CCircleAnnotationBuilder
+    annotationBuilder.Build model, geom, circleBars
+    AssertTrue stats, "annotation.model.count", model.AnnotationCount = 3
+    AssertTrue stats, "annotation.model.rebarLabel", HasSectionAnnotation(model, "REBAR_ANNOTATION", "REBAR_Circle")
+    AssertClose stats, "annotation.model.axisDistance", SectionAnnotationOffset(model, "REBAR_ANNOTATION", "REBAR_Circle"), 40#, 0.000001
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestAutoCADImporterBuildsSectionModel(ByRef stats As TTestStats)
     Dim concreteRegions(1 To 2, 1 To 7) As Variant
     concreteRegions(1, 1) = 0.0000000001
@@ -151,7 +164,7 @@ Private Sub TestAutoCADImporterBuildsSectionModel(ByRef stats As TTestStats)
     Set importer = New CAutoCADSectionModelImporter
 
     Dim model As CSectionModel
-    Set model = importer.BuildFromRegionArrays(concreteRegions, rebarRegions, "A400", 0.000001)
+    Set model = importer.BuildFromRegionArrays(concreteRegions, rebarRegions, "Ribbed", 0.000001)
 
     AssertTrue stats, "autocad.import.source", model.SourceType = "AutoCADImport"
     AssertTrue stats, "autocad.import.concrete.count", model.ConcreteCount = 1
@@ -164,9 +177,10 @@ Private Sub TestAutoCADImporterBuildsSectionModel(ByRef stats As TTestStats)
     AssertClose stats, "autocad.import.concrete.localIx", model.ConcreteLocalIx(1), 600#, 0.000001
     AssertClose stats, "autocad.import.concrete.localIy", model.ConcreteLocalIy(1), 150#, 0.000001
     AssertClose stats, "autocad.import.rebar.diameter", model.RebarDiameter(1), 20#, 0.000001
-    AssertTrue stats, "autocad.import.rebar.steel", model.RebarSteelClass(1) = "A400"
+    AssertTrue stats, "autocad.import.rebar.profile", model.RebarSteelClass(1) = "Ribbed"
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestRectangle(ByRef stats As TTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -183,6 +197,7 @@ Private Sub TestRectangle(ByRef stats As TTestStats)
     AssertClose stats, "rect.Ixy", props.Ixyc, 0#, 0.000001
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestLShapeAdditionalRebarRows(ByRef stats As TTestStats)
     Dim builder As CLShapeRebarLayoutBuilder
     Set builder = New CLShapeRebarLayoutBuilder
@@ -271,6 +286,7 @@ Private Sub TestLShapeAdditionalRebarRows(ByRef stats As TTestStats)
         Array(50#, 50#, 20#, 20#, 1, 0, 100#, 100#, 100#, 100#, 20#, 0#, 0#, 0#, "Diagonal", "Stacked")
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestLShapeGeometry(ByRef stats As TTestStats)
     Dim geom As CGeometryLShape
     Set geom = New CGeometryLShape
@@ -312,6 +328,7 @@ Private Sub TestLShapeGeometry(ByRef stats As TTestStats)
     AssertRelative stats, "lshape.boundary.subcell.area", subcellProps.Area, analyticalArea, 0.04
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestLShapeAutoRebarLayout(ByRef stats As TTestStats)
     Dim builder As CLShapeRebarLayoutBuilder
     Set builder = New CLShapeRebarLayoutBuilder
@@ -346,6 +363,7 @@ Private Sub TestLShapeAutoRebarLayout(ByRef stats As TTestStats)
     AssertLShapeRebarError stats, "lshape.rebar.invalid.offsets", 600#, 550#, 250#, 250#, 2, 50#, 20#, 500#, 500#
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestLShapeSeparateLineOffsets(ByRef stats As TTestStats)
     Dim builder As CLShapeRebarLayoutBuilder
     Set builder = New CLShapeRebarLayoutBuilder
@@ -365,6 +383,7 @@ Private Sub TestLShapeSeparateLineOffsets(ByRef stats As TTestStats)
     AssertClose stats, "lshape.offsets.as_2.edgeY", layout.Y(4), 770#, 0.000001
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestCircleAutoRebarLayout(ByRef stats As TTestStats)
     Dim builder As CCircleRebarLayoutBuilder
     Set builder = New CCircleRebarLayoutBuilder
@@ -428,6 +447,7 @@ Private Sub TestCircleAutoRebarLayout(ByRef stats As TTestStats)
     AssertCircleRebarError stats, "circle.rebar.invalid.row2.outside", 300#, 20#, 8, 20#, 40#, 0#, "SideBySide", "Stacked"
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestBoundarySubcellMesh(ByRef stats As TTestStats)
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -458,6 +478,7 @@ Private Sub TestBoundarySubcellMesh(ByRef stats As TTestStats)
     AssertClose stats, "boundary.subcell.small.width", FirstSmallFiberWidth(subcellMesh, 40#), 10#, 0.000001
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestCircleGeometry(ByRef stats As TTestStats)
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -486,6 +507,7 @@ Private Sub TestCircleGeometry(ByRef stats As TTestStats)
     AssertClose stats, "circle.principal.angle", props.PrincipalAngleRad, 0#, 0.000001
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestCircleInvalidData(ByRef stats As TTestStats)
     Dim geom As CGeometryCircle
     Dim message As String
@@ -498,6 +520,7 @@ Private Sub TestCircleInvalidData(ByRef stats As TTestStats)
     AssertTrue stats, "circle.invalid.negativeDiameter", Not geom.IsValid(message)
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestSymmetricRoundedRectangle(ByRef stats As TTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -518,6 +541,7 @@ Private Sub TestSymmetricRoundedRectangle(ByRef stats As TTestStats)
     AssertClose stats, "sym.principal.angle", props.PrincipalAngleRad, 0#, 0.000001
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestAsymmetricRadii(ByRef stats As TTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -536,6 +560,7 @@ Private Sub TestAsymmetricRadii(ByRef stats As TTestStats)
     AssertTrue stats, "asym.Ixy.can_be_nonzero", Abs(props125.Ixyc) > GEOM_TOLERANCE
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestInvalidData(ByRef stats As TTestStats)
     AssertInvalid stats, "invalid.width", -100#, 100#, 0#, 0#, 0#, 0#
     AssertInvalid stats, "invalid.height", 100#, 0#, 0#, 0#, 0#, 0#
@@ -550,6 +575,7 @@ Private Sub TestInvalidData(ByRef stats As TTestStats)
     AssertBuildError stats, "invalid.step.negative", geom, 10#, -10#
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestMeshConvergence(ByRef stats As TTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -584,6 +610,7 @@ Private Sub TestMeshConvergence(ByRef stats As TTestStats)
     AssertRelative stats, "conv.Iy.25.12", p125.Iyc, p25.Iyc, 0.05
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestPerformance(ByRef stats As TTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -736,6 +763,39 @@ Private Function HasAnnotationGroup(ByVal layout As CRebarLayout, ByVal groupNam
     Next i
 End Function
 
+Private Function HasSectionAnnotation(ByVal model As CSectionModel, ByVal annotationType As String, _
+        ByVal annotationID As String) As Boolean
+    HasSectionAnnotation = (FindSectionAnnotationIndex(model, annotationType, annotationID) > 0)
+End Function
+
+Private Function SectionAnnotationOffset(ByVal model As CSectionModel, ByVal annotationType As String, _
+        ByVal annotationID As String) As Double
+    Dim annotationIndex As Long
+    annotationIndex = FindSectionAnnotationIndex(model, annotationType, annotationID)
+    If annotationIndex <= 0 Then
+        SectionAnnotationOffset = 0#
+    Else
+        SectionAnnotationOffset = model.Annotations.Offset(annotationIndex)
+    End If
+End Function
+
+Private Function FindSectionAnnotationIndex(ByVal model As CSectionModel, ByVal annotationType As String, _
+        ByVal annotationID As String) As Long
+    If model Is Nothing Then Exit Function
+
+    Dim annotations As CSectionAnnotations
+    Set annotations = model.Annotations
+
+    Dim i As Long
+    For i = 1 To annotations.Count
+        If StrComp(annotations.AnnotationType(i), annotationType, vbTextCompare) = 0 And _
+                StrComp(annotations.AnnotationID(i), annotationID, vbTextCompare) = 0 Then
+            FindSectionAnnotationIndex = i
+            Exit Function
+        End If
+    Next i
+End Function
+
 Private Sub AssertLShapeRebarRowsError(ByRef stats As TTestStats, ByVal name As String, ByVal h1Settings As Variant)
     On Error GoTo Expected
     Dim builder As CLShapeRebarLayoutBuilder
@@ -811,6 +871,7 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
 
 
 

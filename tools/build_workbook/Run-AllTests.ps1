@@ -1,3 +1,5 @@
+﻿# служебный PowerShell-скрипт поддерживает сборку, проверку или обновление Excel-книги проекта.
+
 param(
     [string]$ReportPath = "docs/regression/Stage01_AllTests_Report.txt"
 )

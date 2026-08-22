@@ -1,3 +1,5 @@
+﻿# служебный PowerShell-скрипт поддерживает сборку, проверку или обновление Excel-книги проекта.
+
 param(
     [string]$WorkbookPath = "workbook/output/RC_Section_NDM.xlsm",
     [string]$ReportPath = "docs/regression/Stage01_RegressionBaseline_Raw.txt"

@@ -1,6 +1,14 @@
 ﻿Attribute VB_Name = "modAutoCADStressExport"
 Option Explicit
 
+' ==========================================================================
+' Экспорт последнего расчета в AutoCAD
+' ==========================================================================
+' Модуль читает сохраненные таблицы Results и строит в AutoCAD области,
+' подписи, главные оси, нейтральную линию и точку приложения нагрузки. Он не
+' хранит модель сечения между макросами и не запускает AutoCAD import заново
+' при экспорте.
+
 Private Type TAutoCADExportSettings
     ConcreteLayer As String
     RebarLayer As String
@@ -133,7 +141,6 @@ Private Function ReadSectionGeometryFromResults(ByVal workbook As Object, ByVal 
 
     Dim colID As Long: colID = ResultColumn(data, "ElementID")
     Dim colType As Long: colType = ResultColumn(data, "MaterialType")
-    Dim colClass As Long: colClass = ResultColumn(data, "MaterialClass")
     Dim colX As Long: colX = ResultColumn(data, "X")
     Dim colY As Long: colY = ResultColumn(data, "Y")
     Dim colArea As Long: colArea = ResultColumn(data, "Area")
@@ -164,7 +171,7 @@ Private Function ReadSectionGeometryFromResults(ByVal workbook As Object, ByVal 
             ElseIf StrComp(CStr(data(rowIndex, colType)), "Rebar", vbTextCompare) = 0 Then
                 model.AddRebarElement OutputLengthToInternal(CDbl(data(rowIndex, colX)), units), OutputLengthToInternal(CDbl(data(rowIndex, colY)), units), _
                     OutputLengthToInternal(CDbl(data(rowIndex, colDiameter)), units), OutputAreaToInternal(CDbl(data(rowIndex, colArea)), units), _
-                    CStr(data(rowIndex, colClass)), 1, vbNullString, _
+                    vbNullString, 1, vbNullString, _
                     vbNullString, CStr(data(rowIndex, colComment))
             End If
         End If
@@ -836,6 +843,7 @@ Private Sub AddAcadRegionFromCurve(ByVal ms As Object, ByVal source As Object, _
     source.Delete
 End Sub
 
+' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
 Private Sub EnsureAcadLayer(ByVal doc As Object, ByVal layerName As String, ByVal colorIndex As Long)
     On Error Resume Next
     Dim layer As Object
@@ -893,7 +901,7 @@ Private Sub ReadFirstExportLoad(ByVal workbook As Object, ByRef nValue As Double
 
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
-        If Not IsExportEmptyRow(data, rowIndex, 7) Then
+        If Not IsExportEmptyRow(data, rowIndex, UBound(data, 2)) Then
             nValue = ReadExportRequiredDouble(data(rowIndex, 2), "N")
             mxValue = ReadExportRequiredDouble(data(rowIndex, 3), "Mx")
             myValue = ReadExportRequiredDouble(data(rowIndex, 4), "My")
@@ -924,4 +932,5 @@ End Function
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
+
 

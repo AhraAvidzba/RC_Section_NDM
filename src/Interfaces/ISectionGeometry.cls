@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -8,6 +8,13 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
+' ==========================================================================
+' Контракт бетонной геометрии
+' ==========================================================================
+' Интерфейс описывает только математическую форму бетонной части сечения:
+' попадает ли точка внутрь, какие габариты у модели и как дискретизировать
+' контур. Он не знает об Excel, арматуре, Results и расчетных solver-ах.
 
 Public Property Get MinX() As Double
 End Property
@@ -38,6 +45,7 @@ End Sub
 
 Public Sub GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
 End Sub
+
 
 
 

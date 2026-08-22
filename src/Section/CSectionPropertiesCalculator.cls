@@ -9,6 +9,13 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
+' ==========================================================================
+' Геометрические свойства приведенного сечения
+' ==========================================================================
+' Класс считает центр тяжести, главные центральные оси и моменты инерции для
+' фактической расчетной модели бетон + арматура. Эти свойства используются
+' одинаково в Results, AutoCAD export и Excel-схеме.
+
 Private mArea As Double
 Private mStaticMomentX As Double
 Private mStaticMomentY As Double
@@ -141,6 +148,7 @@ Private Sub FinalizeProperties(ByVal t0 As Double)
     mLastCalculationSeconds = Timer - t0
 End Sub
 
+' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
 Public Sub Clear()
     mArea = 0#
     mStaticMomentX = 0#
@@ -256,6 +264,7 @@ Private Function Atn2(ByVal y As Double, ByVal x As Double) As Double
         Atn2 = Atn(y / x) - GEOM_PI
     End If
 End Function
+
 
 
 

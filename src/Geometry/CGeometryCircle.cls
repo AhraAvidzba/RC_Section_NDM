@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -8,6 +8,13 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
+' ==========================================================================
+' Математическая геометрия круглого сечения
+' ==========================================================================
+' Класс хранит диаметр круга и отвечает на геометрические вопросы: габариты,
+' принадлежность точки области и контур для визуального вывода. Арматура и
+' подписи рядов формируются отдельными builder-ами.
 
 Implements ISectionGeometry
 
@@ -149,4 +156,5 @@ End Sub
 Private Sub ISectionGeometry_GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
     GetExtremePoints pointX, pointY
 End Sub
+
 

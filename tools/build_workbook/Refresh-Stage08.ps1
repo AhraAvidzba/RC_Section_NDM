@@ -1,9 +1,12 @@
-﻿param(
+﻿# скрипт обновляет отдельные части существующей книги без ручного импорта модулей через редактор VBA.
+
+param(
     [string]$WorkbookPath = "workbook/output/RC_Section_NDM.xlsm"
 )
 
 $ErrorActionPreference = "Stop"
 
+# Возвращает подготовленные данные или справочное значение для дальнейшего шага сборки.
 function Get-VbaComponentName {
     param([string]$Path)
     $source = [System.IO.File]::ReadAllText($Path, [System.Text.Encoding]::Default)
@@ -15,6 +18,7 @@ function Get-VbaComponentName {
     throw "VBA source has no Attribute VB_Name: $Path"
 }
 
+# Импортирует исходные VBA-модули в книгу, сохраняя воспроизводимость сборки.
 function Import-VbaSourceFile {
     param(
         [object]$Workbook,
@@ -59,6 +63,7 @@ function Import-VbaSourceFile {
     }
 }
 
+# Устанавливает значение, оформление или именованный диапазон в книге через Excel COM.
 function Set-SystemSetting {
     param(
         [object]$Workbook,
@@ -104,6 +109,7 @@ function Set-SystemSetting {
     $settings.Cells.Item($row, 7).Value2 = "No"
 }
 
+# Удаляет только служебный объект, который может мешать повторяемой сборке или проверке.
 function Remove-DuplicatePrintAreaName {
     param([string]$Path)
 

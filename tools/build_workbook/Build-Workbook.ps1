@@ -1,9 +1,12 @@
-﻿param(
+﻿# скрипт собирает рабочую книгу Excel из исходных VBA-модулей, настроек и шаблонной структуры листов.
+
+param(
     [string]$OutputPath = "workbook/output/RC_Section_NDM.xlsm"
 )
 
 $ErrorActionPreference = "Stop"
 
+# Устанавливает значение, оформление или именованный диапазон в книге через Excel COM.
 function Set-Cell {
     param(
         [object]$Sheet,
@@ -23,6 +26,7 @@ function Set-Cell {
     return $cell
 }
 
+# Устанавливает значение, оформление или именованный диапазон в книге через Excel COM.
 function Set-Border {
     param([object]$Range)
 
@@ -33,6 +37,7 @@ function Set-Border {
     }
 }
 
+# Преобразует техническое представление в формат, удобный для Excel или отчета.
 function ConvertTo-ExcelColumn {
     param([int]$ColumnNumber)
     $name = ""
@@ -44,6 +49,7 @@ function ConvertTo-ExcelColumn {
     $name
 }
 
+# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
 function Add-WorkbookName {
     param(
         [object]$Workbook,
@@ -59,6 +65,7 @@ function Add-WorkbookName {
     catch { $Workbook.Names.Add($Name, $address) | Out-Null }
 }
 
+# Импортирует исходные VBA-модули в книгу, сохраняя воспроизводимость сборки.
 function Import-VbaSourceTree {
     param(
         [object]$Workbook,
@@ -84,12 +91,50 @@ function Import-VbaSourceTree {
                 Where-Object { $_.Extension -in @(".bas", ".cls", ".frm") } |
                 Sort-Object FullName |
                 ForEach-Object {
-                    Add-VbaSourceFile $Workbook $_.FullName
+                    $sourcePath = $_.FullName
+                    try {
+                        Add-VbaSourceFile $Workbook $sourcePath
+                    }
+                    catch {
+                        throw "Failed to import VBA source '$sourcePath': $($_.Exception.Message)"
+                    }
                 }
         }
     }
 }
 
+# Добавляет обработчики событий книги, которые нельзя импортировать как обычный стандартный модуль.
+function Add-WorkbookEventHandlers {
+    param([object]$Workbook)
+
+    $code = @'
+Option Explicit
+
+Private Sub Workbook_SheetFollowHyperlink(ByVal Sh As Object, ByVal Target As Hyperlink)
+    On Error GoTo SafeExit
+    If InStr(1, Target.SubAddress, "'Инструкции'!", vbTextCompare) = 0 Then Exit Sub
+
+    Dim addressText As String
+    addressText = Replace(Target.SubAddress, "'Инструкции'!", vbNullString)
+    Application.Goto ThisWorkbook.Worksheets("Инструкции").Range(addressText), True
+SafeExit:
+End Sub
+'@
+
+    $componentName = [string]$Workbook.CodeName
+    if ([string]::IsNullOrWhiteSpace($componentName)) {
+        $componentName = "ThisWorkbook"
+    }
+    $component = $Workbook.VBProject.VBComponents.Item($componentName)
+    if ($component.CodeModule.CountOfLines -gt 0) {
+        $component.CodeModule.DeleteLines(1, $component.CodeModule.CountOfLines)
+    }
+    $component.CodeModule.AddFromString($code)
+}
+
+# Импортирует один VBA-файл в книгу. Формы .frm Excel принимает через Import,
+# а классы и стандартные модули сначала создаются с правильным типом компонента
+# и затем заполняются текстом из исходников.
 function Add-VbaSourceFile {
     param(
         [object]$Workbook,
@@ -147,6 +192,7 @@ function Add-VbaSourceFile {
     }
 }
 
+# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
 function Add-BlockHeader {
     param(
         [object]$Sheet,
@@ -166,6 +212,7 @@ function Add-BlockHeader {
     $range.VerticalAlignment = -4108
 }
 
+# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
 function Add-SectionTitle {
     param(
         [object]$Sheet,
@@ -184,6 +231,7 @@ function Add-SectionTitle {
     $range.HorizontalAlignment = -4131
 }
 
+# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
 function Add-KeyValueRows {
     param(
         [object]$Sheet,
@@ -206,6 +254,7 @@ function Add-KeyValueRows {
     $Sheet.Range($Sheet.Cells.Item($StartRow, $StartColumn), $Sheet.Cells.Item($row - 1, $StartColumn + 3)).Font.Bold = $true
 }
 
+# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
 function Add-InputValidationList {
     param(
         [object]$Cell,
@@ -216,6 +265,7 @@ function Add-InputValidationList {
     $Cell.Validation.Add(3, 1, 1, $List)
 }
 
+# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
 function Add-ResultBlock {
     param(
         [object]$Sheet,
@@ -248,22 +298,37 @@ function Add-ResultBlock {
     $diagnosticRange = $Sheet.Range($Sheet.Cells.Item(38, $StartColumn), $Sheet.Cells.Item(50, $StartColumn + 17))
     Set-Border $diagnosticRange
 }
+# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
 function Add-MainInputBlock {
     param([object]$Sheet)
 
     Add-BlockHeader $Sheet 1 "Сочетания нагрузок"
 
     Add-SectionTitle $Sheet 38 1 18 "Сочетания нагрузок"
-    $loadHeaders = @("CombinationID", "N", "Mx", "My", "CalculationType", "DurationType", "Comment")
+    $loadHeaders = @("CombinationID", "N", "Mx", "My", "CalculationType", "Comment")
     for ($i = 0; $i -lt $loadHeaders.Count; $i++) {
         Set-Cell $Sheet 40 ($i + 1) $loadHeaders[$i] -Bold -InteriorColor 14277081 | Out-Null
     }
-    $Sheet.Cells.Item(40, 2).Formula = '="N, "&INDEX(rngUnitSettings,MATCH("Force",INDEX(rngUnitSettings,,1),0),2)'
-    $Sheet.Cells.Item(40, 3).Formula = '="Mx, "&INDEX(rngUnitSettings,MATCH("Moment",INDEX(rngUnitSettings,,1),0),2)'
-    $Sheet.Cells.Item(40, 4).Formula = '="My, "&INDEX(rngUnitSettings,MATCH("Moment",INDEX(rngUnitSettings,,1),0),2)'
-    $loadRange = $Sheet.Range($Sheet.Cells.Item(40, 1), $Sheet.Cells.Item(60, 7))
+    $Sheet.Cells.Item(40, 2).Formula = "=`"N, `"&INDEX(rngUnitSettings,MATCH(`"Force`",INDEX(rngUnitSettings,,1),0),2)"
+    $Sheet.Cells.Item(40, 3).Formula = "=`"Mx, `"&INDEX(rngUnitSettings,MATCH(`"Moment`",INDEX(rngUnitSettings,,1),0),2)"
+    $Sheet.Cells.Item(40, 4).Formula = "=`"My, `"&INDEX(rngUnitSettings,MATCH(`"Moment`",INDEX(rngUnitSettings,,1),0),2)"
+    $loadRange = $Sheet.Range($Sheet.Cells.Item(40, 1), $Sheet.Cells.Item(60, 6))
     Set-Border $loadRange
+
+    $calcTypeListColumn = 52
+    $calcTypeOptions = @("Group1", "Group2")
+    for ($i = 0; $i -lt $calcTypeOptions.Count; $i++) {
+        $Sheet.Cells.Item($i + 1, $calcTypeListColumn).Value2 = $calcTypeOptions[$i]
+    }
+    $calcTypeListAddress = '=$AZ$1:$AZ$' + $calcTypeOptions.Count
+    $calcTypeRange = $Sheet.Range($Sheet.Cells.Item(41, 5), $Sheet.Cells.Item(60, 5))
+    $calcTypeRange.Validation.Delete()
+    $calcTypeRange.Validation.Add(3, 1, 1, $calcTypeListAddress)
+    $calcTypeRange.Validation.IgnoreBlank = $false
+    $calcTypeRange.Validation.InCellDropdown = $true
+    $Sheet.Columns.Item($calcTypeListColumn).Hidden = $true
 }
+# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
 function Add-CalculationButtons {
     param([object]$Sheet)
 
@@ -324,18 +389,20 @@ try {
 
     $workbook = $excel.Workbooks.Add()
 
-    while ($workbook.Worksheets.Count -lt 3) {
+    while ($workbook.Worksheets.Count -lt 4) {
         $workbook.Worksheets.Add() | Out-Null
     }
-    while ($workbook.Worksheets.Count -gt 3) {
+    while ($workbook.Worksheets.Count -gt 4) {
         $workbook.Worksheets.Item($workbook.Worksheets.Count).Delete()
     }
 
-    $calc = $workbook.Worksheets.Item(1)
-    $system = $workbook.Worksheets.Item(2)
-    $results = $workbook.Worksheets.Item(3)
+    $system = $workbook.Worksheets.Item(1)
+    $instructions = $workbook.Worksheets.Item(2)
+    $calc = $workbook.Worksheets.Item(3)
+    $results = $workbook.Worksheets.Item(4)
+    $system.Name = "Config"
+    $instructions.Name = "Инструкции"
     $calc.Name = "Расчет"
-    $system.Name = "Settings"
     $results.Name = "Results"
 
     Add-MainInputBlock $calc
@@ -354,8 +421,9 @@ try {
     $calc.Range("A1:AJ60").VerticalAlignment = -4108
 
     $systemRanges = Add-SystemSettings $system
-    $system.Range("A1:O80").Font.Name = "Arial"
-    $system.Range("A1:O80").Font.Size = 9
+    Add-SettingsInstructions $workbook $system $instructions
+    $system.Range("A1:U80").Font.Name = "Arial"
+    $system.Range("A1:U80").Font.Size = 9
     $system.Columns.Item(1).ColumnWidth = 32
     $system.Columns.Item(2).ColumnWidth = 18
     $system.Columns.Item(3).ColumnWidth = 22
@@ -363,7 +431,12 @@ try {
     $system.Columns.Item(5).ColumnWidth = 48
     $system.Columns.Item(6).ColumnWidth = 34
     $system.Columns.Item(7).ColumnWidth = 22
-    $results.Range("A1:N1").Font.Bold = $true
+    $system.Columns.Item(17).ColumnWidth = 34
+    $system.Columns.Item(18).ColumnWidth = 18
+    $system.Columns.Item(19).ColumnWidth = 18
+    $system.Columns.Item(20).ColumnWidth = 26
+    $system.Columns.Item(21).ColumnWidth = 14
+    $results.Range("A1:AF1").Font.Bold = $true
     $results.Range("A32:F32").Font.Bold = $true
     $results.Range("J32:Y32").Font.Bold = $true
     $results.Range("AC32:AH32").Font.Bold = $true
@@ -373,9 +446,9 @@ try {
     $results.Columns.Item(29).ColumnWidth = 20
     $results.Columns.Item(38).ColumnWidth = 20
 
-    Add-WorkbookName $workbook "rngLoadCombinations" $calc '$A$40:$G$60'
+    Add-WorkbookName $workbook "rngLoadCombinations" $calc '$A$40:$F$60'
     Add-WorkbookName $workbook "rngResultSection" $calc '$S$17:$AH$35'
-    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$N$29'
+    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$AF$29'
     Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$32'
     Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$J$32'
     Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AC$32'
@@ -399,6 +472,7 @@ try {
     $system.PageSetup.PrintArea = ""
 
     Import-VbaSourceTree $workbook $root
+    Add-WorkbookEventHandlers $workbook
 
     $workbook.SaveAs($fullOutputPath, 52)
     Write-Output "Workbook built: $fullOutputPath"

@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -9,10 +9,21 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
+' ==========================================================================
+' Генератор бетонной расчетной сетки
+' ==========================================================================
+' CFiberMeshBuilder разбивает бетонную геометрию на конечные волокна
+' заданного шага. На выходе получается набор центров и площадей бетонных
+' элементов, который затем переносится в CSectionModel.
+'
+' Класс не знает о нагрузках, материалах и solver-ах: он отвечает только за
+' геометрическую дискретизацию бетонной области.
+
 Private mFibers() As TFiber
 Private mFiberCount As Long
 Private mBuildSeconds As Double
 
+' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
 Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, ByVal stepY As Double, _
         Optional ByVal materialID As Long = 1, Optional ByVal boundarySubdivisions As Long = 1)
 
@@ -185,6 +196,7 @@ Private Sub CheckFiberIndex(ByVal index As Long)
         Err.Raise vbObjectError + 2106, "CFiberMeshBuilder", "Fiber index out of range."
     End If
 End Sub
+
 
 
 

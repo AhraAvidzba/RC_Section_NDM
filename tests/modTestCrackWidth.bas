@@ -1,5 +1,13 @@
-﻿Attribute VB_Name = "modTestCrackWidth"
+Attribute VB_Name = "modTestCrackWidth"
 Option Explicit
+
+' ==========================================================================
+' Регрессионные тесты расчета нормальных трещин
+' ==========================================================================
+' Тесты проверяют новую SLS-методику CCrackWidthCalculator: выбор расчетной
+' растянутой зоны, формулу СП 63 для a_crc, режимы psi_s, центральное
+' растяжение и writer основного результата. Проверки не меняют CSectionSolver:
+' расчет трещин использует его как готовый общий решатель равновесия.
 
 Private Type TCrackTestStats
     Passed As Long
@@ -14,13 +22,14 @@ Public Function RunCrackWidthTests() As String
     Dim t0 As Double
     t0 = Timer
 
-    TestConcreteTensionMode stats
-    TestCrackMx stats
-    TestCrackMy stats
-    TestCrackMxy stats
-    TestCircleCrackMxy stats
-    TestCrackWriter stats
+    TestConcreteTensionFallback stats
+    TestCrackUnityMx stats
+    TestCrackUnityMxy stats
+    TestEffectiveAndFullTensionZones stats
+    TestRefinedPsiAndLambda stats
+    TestCentralTensionBranch stats
     TestNoTensionRebar stats
+    TestCrackWriter stats
 
     AppendLine stats, "TOTAL_CRACK: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -32,7 +41,12 @@ Failed:
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
 
-Private Sub TestConcreteTensionMode(ByRef stats As TCrackTestStats)
+' ------------------------------
+' Материал бетона
+' ------------------------------
+' Проверяем, что растянутую часть диаграммы не обязательно задавать руками:
+' CConcreteDiagramMaterial умеет построить SLS fallback по Eb и Rbt,ser.
+Private Sub TestConcreteTensionFallback(ByRef stats As TCrackTestStats)
     Dim concrete As CConcreteDiagramMaterial
     Set concrete = ProvisionalConcrete()
     AssertClose stats, "crack.tensionMode.defaultStress", concrete.GetStress(0.0001), 0#, 0.000000000001
@@ -46,71 +60,133 @@ Private Sub TestConcreteTensionMode(ByRef stats As TCrackTestStats)
     AssertClose stats, "crack.tensionMode.useTangent", concrete.GetTangentModulus(0.00002), 30000#, 0.000000000001
 End Sub
 
-Private Sub TestCircleCrackMxy(ByRef stats As TCrackTestStats)
-    Dim solver As CSectionSolver
-    Dim section As CSectionModel
-    Set solver = SolveCircleServiceState(section, -10000#, -8000000#, -8000000#)
-
-    Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, section)
-    AssertCrackCommon stats, "crack.circle.mxy", crack
-End Sub
-
-Private Sub TestCrackMx(ByRef stats As TCrackTestStats)
+' ------------------------------
+' Unity-режим psi_s
+' ------------------------------
+' Для обычного изгиба проверяем, что a_crc собирается из расчетных sigma_s,
+' ls и коэффициентов, а не из старого ручного CrackSpacing.
+Private Sub TestCrackUnityMx(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
     Set solver = SolveServiceState(section, -80000#, -5000000#, 0#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, section)
-    AssertCrackCommon stats, "crack.mx", crack
+    Set crack = CalculateCrack(solver, section, -80000#, -5000000#, 0#, "Unity", "Effective")
+    AssertCrackCommon stats, "crack.unity.mx", crack
+    AssertClose stats, "crack.unity.psi", crack.PsiS, 1#, 0.000000001
 End Sub
 
-Private Sub TestCrackMy(ByRef stats As TCrackTestStats)
+Private Sub TestCrackUnityMxy(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
-    Set solver = SolveServiceState(section, -10000#, 0#, 5000000#)
+    Set solver = SolveCircleServiceState(section, -10000#, -8000000#, -8000000#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, section)
-    AssertCrackCommon stats, "crack.my", crack
+    Set crack = CalculateCrack(solver, section, -10000#, -8000000#, -8000000#, "Unity", "Effective")
+    AssertCrackCommon stats, "crack.unity.circleMxy", crack
 End Sub
 
-Private Sub TestCrackMxy(ByRef stats As TCrackTestStats)
+' ------------------------------
+' Зона Abt
+' ------------------------------
+' FullTension не должен давать меньшую площадь бетона, чем Effective, потому
+' что Effective является ограниченной полосой у растянутой поверхности.
+Private Sub TestEffectiveAndFullTensionZones(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
-    Set solver = SolveServiceState(section, -80000#, -3500000#, -2500000#)
+    Set solver = SolveServiceState(section, -30000#, -5500000#, -1500000#)
 
-    Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, section)
-    AssertCrackCommon stats, "crack.mxy", crack
+    Dim effectiveCrack As CCrackWidthCalculator
+    Set effectiveCrack = CalculateCrack(solver, section, -30000#, -5500000#, -1500000#, "Unity", "Effective")
+    Dim fullCrack As CCrackWidthCalculator
+    Set fullCrack = CalculateCrack(solver, section, -30000#, -5500000#, -1500000#, "Unity", "FullTension")
+
+    AssertCrackCommon stats, "crack.zone.effective", effectiveCrack
+    AssertCrackCommon stats, "crack.zone.full", fullCrack
+    AssertTrue stats, "crack.zone.fullAbtNotLess", fullCrack.Abt >= effectiveCrack.Abt
 End Sub
 
-Private Sub TestCrackWriter(ByRef stats As TCrackTestStats)
+' ------------------------------
+' Refined-режим psi_s
+' ------------------------------
+' Режим Refined должен найти lambda_crc в пределах текущей нагрузки, решить
+' состояние после образования трещины и получить psi_s по sigma_s,crc.
+Private Sub TestRefinedPsiAndLambda(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
-    Set solver = SolveServiceState(section, -80000#, -3500000#, -2500000#)
+    Set solver = SolveServiceState(section, -20000#, -15000000#, 0#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, section)
-    Dim writer As CCapacityResultWriter
-    Set writer = New CCapacityResultWriter
-    writer.WriteCrackResult ThisWorkbook, crack
-
-    AssertClose stats, "crack.writer.width", CDbl(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(17, 5).Value2), crack.CrackWidth, 0.000000001
-    AssertClose stats, "crack.writer.allowable", CDbl(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(18, 5).Value2), crack.AllowableCrackWidth, 0.000000001
+    Set crack = CalculateCrack(solver, section, -20000#, -15000000#, 0#, "Refined", "Effective")
+    AssertCrackCommon stats, "crack.refined", crack
+    AssertTrue stats, "crack.refined.lambda", crack.LambdaCrc > 0# And crack.LambdaCrc <= 1#
+    AssertTrue stats, "crack.refined.psiRange", crack.PsiS >= 0# And crack.PsiS <= 1#
+    AssertTrue stats, "crack.refined.sigmaCrc", crack.SigmaSCrc >= 0#
 End Sub
 
+' ------------------------------
+' Центральное растяжение
+' ------------------------------
+' При почти нулевых кривизнах применяется отдельная ветка Ncrc = Ared*Rbt,ser.
+Private Sub TestCentralTensionBranch(ByRef stats As TCrackTestStats)
+    Dim solver As CSectionSolver
+    Dim section As CSectionModel
+    Set solver = SolveServiceState(section, 200000#, 0#, 0#)
+
+    Dim crack As CCrackWidthCalculator
+    Set crack = CalculateCrack(solver, section, 200000#, 0#, 0#, "Refined", "Effective")
+    Dim fullZoneCrack As CCrackWidthCalculator
+    Set fullZoneCrack = CalculateCrack(solver, section, 200000#, 0#, 0#, "Refined", "FullTension")
+    AssertCrackCommon stats, "crack.central", crack
+    AssertTrue stats, "crack.central.branch", crack.CentralTensionBranch
+    AssertTrue stats, "crack.central.ncrc", crack.Ncrc > 0#
+    AssertTrue stats, "crack.central.lambda", crack.LambdaCrc > 0# And crack.LambdaCrc <= 1#
+    AssertClose stats, "crack.central.phi3", crack.Phi3, 1.2, 0.000000001
+    AssertClose stats, "crack.central.zoneModeInvariant", fullZoneCrack.CrackWidth, crack.CrackWidth, 0.000000001
+
+    Dim shiftedMomentCrack As CCrackWidthCalculator
+    Set shiftedMomentCrack = CalculateCrack(solver, section, 200000#, 2500000#, -1500000#, _
+        "Unity", "Effective", 0#, 0#)
+    AssertTrue stats, "crack.central.userMomentsBeforeTransfer", shiftedMomentCrack.CentralTensionBranch
+End Sub
+
+' ------------------------------
+' Нет растянутой арматуры
+' ------------------------------
+' Чистое сжатие должно завершаться корректно, но без раскрытой трещины.
 Private Sub TestNoTensionRebar(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
     Set solver = SolveServiceState(section, -100000#, 0#, 0#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, section)
+    Set crack = CalculateCrack(solver, section, -100000#, 0#, 0#, "Unity", "Effective")
     AssertTrue stats, "crack.noTension.converged", crack.Converged
+    AssertTrue stats, "crack.noTension.notFormed", Not crack.CrackFormed
     AssertClose stats, "crack.noTension.width", crack.CrackWidth, 0#, 0.000000000001
-    AssertTrue stats, "crack.noTension.count", crack.TensionRebarCount = 0
+End Sub
+
+' ------------------------------
+' Writer основного отчета
+' ------------------------------
+' Проверяем, что расширенный блок результата выводит расчетную ширину,
+' допускаемую ширину и диагностические поля новой методики.
+Private Sub TestCrackWriter(ByRef stats As TCrackTestStats)
+    Dim solver As CSectionSolver
+    Dim section As CSectionModel
+    Set solver = SolveServiceState(section, -80000#, -5000000#, 0#)
+
+    Dim crack As CCrackWidthCalculator
+    Set crack = CalculateCrack(solver, section, -80000#, -5000000#, 0#, "Unity", "Effective")
+    Dim writer As CCapacityResultWriter
+    Set writer = New CCapacityResultWriter
+    writer.WriteCrackResult ThisWorkbook, crack
+
+    Dim target As Object
+    Set target = ThisWorkbook.Names.Item("rngResultSection").RefersToRange
+    AssertClose stats, "crack.writer.width", CDbl(target.Cells.Item(18, 5).Value2), crack.CrackWidth, 0.000000001
+    AssertClose stats, "crack.writer.allowable", CDbl(target.Cells.Item(19, 5).Value2), crack.AllowableCrackWidth, 0.000000001
+    AssertTrue stats, "crack.writer.sigma", CDbl(target.Cells.Item(21, 5).Value2) > 0#
 End Sub
 
 Private Function SolveServiceState(ByRef section As CSectionModel, ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double) As CSectionSolver
@@ -124,18 +200,14 @@ Private Function SolveServiceState(ByRef section As CSectionModel, ByVal nValue 
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "Ribbed", "", geom
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "Ribbed", "", geom
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "Ribbed", "", geom
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "Ribbed", "", geom
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
-    solver.LoadSteps = 8
-    solver.MaxIterations = 80
-    solver.ToleranceN = 5#
-    solver.ToleranceMx = 5000#
-    solver.ToleranceMy = 5000#
+    ConfigureTestSolver solver
     Set section = BuildGeneratedSectionModel(mesh, rebars)
     solver.Solve section, ProvisionalConcrete(), ProvisionalSteel(), nValue, mxValue, myValue
     If Not solver.Converged Then Err.Raise vbObjectError + 3800, "modTestCrackWidth", "Service state did not converge: " & solver.StopReason
@@ -153,32 +225,52 @@ Private Function SolveCircleServiceState(ByRef section As CSectionModel, ByVal n
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", 0#, 90#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B2", 90#, 0#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B3", 0#, -90#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B4", -90#, 0#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B1", 0#, 90#, 20#, 0#, "Ribbed", "", geom
+    rebars.AddBar "B2", 90#, 0#, 20#, 0#, "Ribbed", "", geom
+    rebars.AddBar "B3", 0#, -90#, 20#, 0#, "Ribbed", "", geom
+    rebars.AddBar "B4", -90#, 0#, 20#, 0#, "Ribbed", "", geom
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
-    solver.LoadSteps = 8
-    solver.MaxIterations = 80
-    solver.ToleranceN = 5#
-    solver.ToleranceMx = 5000#
-    solver.ToleranceMy = 5000#
+    ConfigureTestSolver solver
     Set section = BuildGeneratedSectionModel(mesh, rebars)
     solver.Solve section, ProvisionalConcrete(), ProvisionalSteel(), nValue, mxValue, myValue
     If Not solver.Converged Then Err.Raise vbObjectError + 3801, "modTestCrackWidth", "Circle service state did not converge: " & solver.StopReason
     Set SolveCircleServiceState = solver
 End Function
 
-Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As CSectionModel) As CCrackWidthCalculator
+Private Sub ConfigureTestSolver(ByVal solver As CSectionSolver)
+    solver.LoadSteps = 8
+    solver.MaxIterations = 80
+    solver.ToleranceN = 5#
+    solver.ToleranceMx = 5000#
+    solver.ToleranceMy = 5000#
+End Sub
+
+Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As CSectionModel, _
+        ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
+        ByVal psiMode As String, ByVal zoneMode As String, _
+        Optional ByVal userMxForCentralCheck As Variant, Optional ByVal userMyForCentralCheck As Variant) As CCrackWidthCalculator
     Dim crack As CCrackWidthCalculator
     Set crack = New CCrackWidthCalculator
     crack.AllowableCrackWidth = 0.3
-    crack.CrackSpacing = 200#
-    crack.StrainFactor = 1#
-    crack.DurationFactor = 1#
-    crack.Calculate solver, section, ProvisionalSteel()
+    crack.PsiMode = psiMode
+    crack.TensionZoneMode = zoneMode
+    crack.RebarProfile = "Ribbed"
+    crack.ConcreteTensionLimitStress = 1.8
+    crack.ConcreteElasticModulus = 32500#
+    crack.SteelElasticModulus = 200000#
+    crack.SolverLoadSteps = 8
+    crack.SolverMaxIterations = 100
+    crack.SolverToleranceN = 5#
+    crack.SolverToleranceMx = 5000#
+    crack.SolverToleranceMy = 5000#
+    If IsMissing(userMxForCentralCheck) Or IsMissing(userMyForCentralCheck) Then
+        crack.Calculate solver, section, ProvisionalConcrete(), ProvisionalSteel(), nValue, mxValue, myValue
+    Else
+        crack.Calculate solver, section, ProvisionalConcrete(), ProvisionalSteel(), nValue, mxValue, myValue, _
+            userMxForCentralCheck, userMyForCentralCheck
+    End If
     Set CalculateCrack = crack
 End Function
 
@@ -187,6 +279,8 @@ Private Function ProvisionalConcrete() As CConcreteDiagramMaterial
     Set concrete = New CConcreteDiagramMaterial
     concrete.Initialize -0.0015, -15.5, -0.0035, -15.5
     concrete.TensionMode = "Ignore"
+    concrete.TensionElasticModulus = 32500#
+    concrete.TensionStressLimit = 1.8
     Set ProvisionalConcrete = concrete
 End Function
 
@@ -199,10 +293,12 @@ End Function
 
 Private Sub AssertCrackCommon(ByRef stats As TCrackTestStats, ByVal prefix As String, ByVal crack As CCrackWidthCalculator)
     AssertTrue stats, prefix & ".converged", crack.Converged
+    AssertTrue stats, prefix & ".formed", crack.CrackFormed
     AssertTrue stats, prefix & ".tensionBars", crack.TensionRebarCount > 0
-    AssertTrue stats, prefix & ".strainPositive", crack.MaxSteelStrain > 0#
-    AssertTrue stats, prefix & ".stressPositive", crack.MaxSteelStress > 0#
-    AssertClose stats, prefix & ".widthFormula", crack.CrackWidth, crack.MaxSteelStrain * 200#, 0.000000001
+    AssertTrue stats, prefix & ".sigmaPositive", crack.SigmaS > 0#
+    AssertTrue stats, prefix & ".spacingPositive", crack.CrackSpacing > 0#
+    AssertClose stats, prefix & ".widthFormula", crack.CrackWidth, _
+        crack.Phi1 * crack.Phi2 * crack.Phi3 * crack.PsiS * (crack.SigmaS / 200000#) * crack.CrackSpacing, 0.000000001
     AssertClose stats, prefix & ".utilization", crack.Utilization, crack.CrackWidth / crack.AllowableCrackWidth, 0.000000001
 End Sub
 
@@ -238,12 +334,3 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
-
-
-
-
-
-
-
-
-

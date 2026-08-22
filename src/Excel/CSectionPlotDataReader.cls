@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -9,51 +9,66 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Private mResultType As String
-Private mLoadCase As String
-Private mResultUnit As String
-Private mResultCaption As String
-Private mLengthUnit As String
-Private mAreaUnit As String
-Private mStressUnit As String
-Private mCurvatureUnit As String
-Private mCount As Long
-Private mElementID() As String
-Private mMaterialType() As String
-Private mX() As Double
-Private mY() As Double
-Private mArea() As Double
-Private mDiameter() As Double
-Private mWidth() As Double
-Private mHeight() As Double
-Private mResultValue() As Double
-Private mPhysicalState() As String
-Private mMinX As Double
-Private mMaxX As Double
-Private mMinY As Double
-Private mMaxY As Double
-Private mCentroidX As Double
-Private mCentroidY As Double
-Private mPrincipalAngle As Double
-Private mEpsilon0 As Double
-Private mKappaX As Double
-Private mKappaY As Double
-Private mLoadReferenceX As Double
-Private mLoadReferenceY As Double
-Private mAnnotationCount As Long
-Private mAnnotationType() As String
-Private mAnnotationStartX() As Double
-Private mAnnotationStartY() As Double
-Private mAnnotationEndX() As Double
-Private mAnnotationEndY() As Double
-Private mAnnotationNormalX() As Double
-Private mAnnotationNormalY() As Double
-Private mAnnotationOffset() As Double
-Private mAnnotationText() As String
+' ==========================================================================
+' Чтение данных схемы из Results
+' ==========================================================================
+' Reader собирает из сохраненного Results-снимка геометрию, LC-зависимые
+' Stress/Strain, свойства сечения и semantic-аннотации. Он объединяет
+' rngNDMSectionGeometry с rngNDMElementResults по ElementID и отдает Plotter-у
+' уже готовую модель отображения.
+'
+' Reader не запускает расчет, не читает текущую геометрию Config и не
+' пересчитывает единицы: схема показывает ровно то, что записано в Results.
 
+Private mResultType As String ' Что сейчас визуализируется: Stress или Strain.
+Private mLoadCase As String ' LC, выбранный для схемы после обработки Worst/конкретного ID.
+Private mLoadCaseComment As String ' Комментарий LC для заголовка схемы.
+Private mResultUnit As String ' Единица выбранной величины из сохраненных Results.
+Private mResultCaption As String ' Название выбранной величины для легенды.
+Private mLengthUnit As String ' Единица длины, в которой записаны координаты Results.
+Private mAreaUnit As String ' Единица площади, в которой записаны площади Results.
+Private mStressUnit As String ' Единица напряжений, сохраненная при последнем расчете.
+Private mCurvatureUnit As String ' Единица кривизн, сохраненная при последнем расчете.
+Private mCount As Long ' Количество элементов, у которых есть геометрия и результат выбранного LC.
+Private mElementID() As String ' ID элемента для связи геометрии, результатов и подписей.
+Private mMaterialType() As String ' Concrete/Rebar; Plotter использует это для выбора маркера.
+Private mX() As Double ' X элемента в output-единицах Results.
+Private mY() As Double ' Y элемента в output-единицах Results.
+Private mArea() As Double ' Площадь элемента в output-единицах Results.
+Private mDiameter() As Double ' Диаметр арматуры; для бетона обычно 0.
+Private mWidth() As Double ' Ширина эквивалентного бетонного маркера/области.
+Private mHeight() As Double ' Высота эквивалентного бетонного маркера/области.
+Private mResultValue() As Double ' Значение Stress или Strain для выбранного LC.
+Private mPhysicalState() As String ' Compression/Tension/InactiveTensionConcrete/NearZero.
+Private mMinX As Double ' Левая граница бетонной расчетной модели.
+Private mMaxX As Double ' Правая граница бетонной расчетной модели.
+Private mMinY As Double ' Нижняя граница бетонной расчетной модели.
+Private mMaxY As Double ' Верхняя граница бетонной расчетной модели.
+Private mCentroidX As Double ' X центра тяжести приведенного сечения.
+Private mCentroidY As Double ' Y центра тяжести приведенного сечения.
+Private mPrincipalAngle As Double ' Угол главных центральных осей, рад.
+Private mEpsilon0 As Double ' Свободный член сохраненной плоскости деформаций LC.
+Private mKappaX As Double ' Кривизна при y в сохраненной плоскости деформаций.
+Private mKappaY As Double ' Кривизна при x в сохраненной плоскости деформаций.
+Private mLoadReferenceX As Double ' X точки приложения нагрузки для выбранного LC.
+Private mLoadReferenceY As Double ' Y точки приложения нагрузки для выбранного LC.
+Private mAnnotationCount As Long ' Количество semantic-аннотаций, прочитанных из Results.
+Private mAnnotationType() As String ' Dimension, RebarLabel, Outline и другие типы оформления.
+Private mAnnotationStartX() As Double ' Начало линии/размера в координатах модели.
+Private mAnnotationStartY() As Double ' Начало линии/размера в координатах модели.
+Private mAnnotationEndX() As Double ' Конец линии/размера в координатах модели.
+Private mAnnotationEndY() As Double ' Конец линии/размера в координатах модели.
+Private mAnnotationNormalX() As Double ' Наружная нормаль semantic-аннотации.
+Private mAnnotationNormalY() As Double ' Наружная нормаль semantic-аннотации.
+Private mAnnotationOffset() As Double ' Конструктивный/semantic offset, если он задан builder-ом.
+Private mAnnotationText() As String ' Готовый текст подписи или размера.
+
+' Загружает все данные, необходимые для Excel-схемы.
+' Метод намеренно читает только Results и настройки отображения Plot.*:
+' геометрия и расчетные значения берутся из последнего выполненного расчета.
 Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemSettingsReader)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
-    If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки System не переданы."
+    If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки Config не переданы."
 
     mResultType = NormalizeResultType(settings.GetString("Plot.ResultType", "Stress"))
     mLoadCase = ResolveLoadCase(workbook, settings.GetString("Plot.LoadCase", "Worst"))
@@ -63,6 +78,9 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemS
     ReadAnnotations workbook
 End Sub
 
+' Определяет, какой LC показывать на схеме.
+' Значение Worst разворачивается в ID определяющего сочетания из batch summary,
+' а конкретный LC используется напрямую.
 Private Function ResolveLoadCase(ByVal workbook As Object, ByVal requested As String) As String
     Dim valueText As String
     valueText = Trim$(requested)
@@ -70,6 +88,7 @@ Private Function ResolveLoadCase(ByVal workbook As Object, ByVal requested As St
 
     If StrComp(valueText, "Worst", vbTextCompare) <> 0 Then
         ResolveLoadCase = valueText
+        mLoadCaseComment = ReadBatchSummaryComment(workbook, ResolveLoadCase)
         Exit Function
     End If
 
@@ -78,10 +97,34 @@ Private Function ResolveLoadCase(ByVal workbook As Object, ByVal requested As St
     If UBound(data, 1) >= 2 And UBound(data, 2) >= 2 Then
         ResolveLoadCase = Trim$(CStr(data(2, 2)))
     End If
+    mLoadCaseComment = ReadBatchSummaryComment(workbook, ResolveLoadCase)
     If Len(ResolveLoadCase) = 0 Then Err.Raise vbObjectError + 4702, "CSectionPlotDataReader", _
         "В rngBatchSummary не найдено определяющее сочетание для Plot.LoadCase = Worst."
 End Function
 
+' Находит комментарий выбранного LC для заголовка схемы.
+' Если комментария нет или batch summary еще пустой, возвращается пустая строка
+' без ошибки: сама схема может строиться и без комментария.
+Private Function ReadBatchSummaryComment(ByVal workbook As Object, ByVal loadCase As String) As String
+    On Error GoTo Failed
+    If Len(Trim$(loadCase)) = 0 Then Exit Function
+
+    Dim data As Variant
+    data = workbook.Names.Item("rngBatchSummary").RefersToRange.Value2
+
+    Dim rowIndex As Long
+    For rowIndex = 7 To UBound(data, 1)
+        If StrComp(Trim$(CStr(data(rowIndex, 1))), loadCase, vbTextCompare) = 0 Then
+            ReadBatchSummaryComment = Trim$(CStr(data(rowIndex, 2)))
+            Exit Function
+        End If
+    Next rowIndex
+Failed:
+End Function
+
+' Читает свойства уровня всего сечения и выбранного LC.
+' Здесь находятся Bounds, центр тяжести, главные оси, единицы Results и
+' сохраненная плоскость деформаций epsilon0/kappaX/kappaY.
 Private Sub ReadSectionProperties(ByVal workbook As Object)
     Dim data As Variant
     data = workbook.Names.Item("rngNDMSectionProperties").RefersToRange.CurrentRegion.Value2
@@ -93,6 +136,8 @@ Private Sub ReadSectionProperties(ByVal workbook As Object)
     Dim colValue As Long: colValue = ResultColumn(data, "Value")
 
     Dim rowIndex As Long
+    ' В одной таблице лежат свойства ALL и свойства конкретных LC. Reader
+    ' выбирает только общие строки и строки mLoadCase, остальные LC игнорируются.
     For rowIndex = 2 To UBound(data, 1)
         Dim parameter As String
         Dim loadCase As String
@@ -120,6 +165,8 @@ Private Sub ReadSectionProperties(ByVal workbook As Object)
     End If
 End Sub
 
+' Запоминает общие свойства расчетного снимка Results.
+' Эти данные одинаково подходят для Generated и AutoCAD-геометрии.
 Private Sub ReadCommonProperty(ByVal parameter As String, ByVal value As Variant)
     Select Case LCase$(parameter)
         Case "bounds.minx": mMinX = CDbl(value)
@@ -136,6 +183,9 @@ Private Sub ReadCommonProperty(ByVal parameter As String, ByVal value As Variant
     End Select
 End Sub
 
+' Запоминает свойства выбранного LC: плоскость деформаций и точку нагрузки.
+' Нейтральная линия затем строится из epsilon0/kappaX/kappaY без хранения
+' отдельного A/B/C.
 Private Sub ReadLoadCaseProperty(ByVal parameter As String, ByVal value As Variant)
     Select Case LCase$(parameter)
         Case "epsilon0": mEpsilon0 = CDbl(value)
@@ -146,6 +196,9 @@ Private Sub ReadLoadCaseProperty(ByVal parameter As String, ByVal value As Varia
     End Select
 End Sub
 
+' Соединяет постоянную геометрию с LC-зависимыми результатами.
+' rngNDMSectionGeometry хранит координаты и площади один раз, а
+' rngNDMElementResults хранит Stress/Strain/PhysicalState по LoadCase.
 Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     Dim geom As Variant
     geom = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange.CurrentRegion.Value2
@@ -168,6 +221,9 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     Dim colState As Long: colState = ResultColumn(results, "PhysicalState")
 
     Dim rowIndex As Long
+    ' LC-зависимые результаты сначала собираются в словарь по ElementID. Это
+    ' сохраняет разделение Results: геометрия лежит отдельно, а Stress/Strain
+    ' выбираются только для нужного LoadCase.
     For rowIndex = 2 To UBound(results, 1)
         If StrComp(CStr(results(rowIndex, colResLC)), mLoadCase, vbTextCompare) = 0 Then
             resultMap(CStr(results(rowIndex, colResID))) = Array(CDbl(results(rowIndex, colStrain)), _
@@ -186,6 +242,8 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     Dim colWidth As Long: colWidth = ResultColumn(geom, "Width")
     Dim colHeight As Long: colHeight = ResultColumn(geom, "Height")
 
+    ' На втором проходе геометрия соединяется с найденным состоянием. Plotter после этого
+    ' получает готовые элементы и не обращается к Results напрямую.
     For rowIndex = 2 To UBound(geom, 1)
         Dim elementID As String
         elementID = Trim$(CStr(geom(rowIndex, colID)))
@@ -201,6 +259,8 @@ End Sub
 Private Sub AppendElement(ByVal elementID As String, ByVal materialType As String, ByVal xCoord As Double, _
         ByVal yCoord As Double, ByVal area As Double, ByVal diameter As Double, _
         ByVal width As Double, ByVal height As Double, ByVal resultData As Variant)
+    ' Сохраняем только элементы, у которых есть и геометрия, и результат
+    ' выбранного LC. Так схема не рисует “пустые” элементы после ошибочного LC.
     mCount = mCount + 1
     ReDim Preserve mElementID(1 To mCount)
     ReDim Preserve mMaterialType(1 To mCount)
@@ -229,6 +289,9 @@ Private Sub AppendElement(ByVal elementID As String, ByVal materialType As Strin
     mPhysicalState(mCount) = CStr(resultData(2))
 End Sub
 
+' Читает semantic-аннотации схемы.
+' Если таблица отсутствует или пуста, схема все равно строится: для AutoCAD
+' import это нормальный сценарий, потому что характерные грани могут быть неизвестны.
 Private Sub ReadAnnotations(ByVal workbook As Object)
     On Error GoTo NoAnnotations
     Dim data As Variant
@@ -280,11 +343,14 @@ Private Function NormalizeResultType(ByVal value As String) As String
     End Select
 End Function
 
+' Безопасно читает числовое поле Results, где часть колонок может быть пустой.
+' Например Diameter у бетонных элементов не заполняется.
 Private Function SafeDouble(ByVal value As Variant) As Double
     If Len(Trim$(CStr(value))) = 0 Then Exit Function
     If IsNumeric(value) Then SafeDouble = CDbl(value)
 End Function
 
+' Проверяет, что табличный массив содержит хотя бы заголовок и одну строку данных.
 Private Function HasRows(ByVal data As Variant) As Boolean
     On Error GoTo Failed
     HasRows = (UBound(data, 1) >= 2 And UBound(data, 2) >= 1)
@@ -292,6 +358,9 @@ Private Function HasRows(ByVal data As Variant) As Boolean
 Failed:
 End Function
 
+' Находит индекс столбца по имени заголовка.
+' Единицы в заголовке после запятой отбрасываются, поэтому "Stress, MPa"
+' корректно сопоставляется с базовым именем "Stress".
 Private Function ResultColumn(ByRef data As Variant, ByVal headerName As String) As Long
     Dim colIndex As Long
     For colIndex = 1 To UBound(data, 2)
@@ -303,6 +372,7 @@ Private Function ResultColumn(ByRef data As Variant, ByVal headerName As String)
     Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", "В Results не найден столбец: " & headerName
 End Function
 
+' Возвращает имя столбца без единицы измерения.
 Private Function ResultHeaderBase(ByVal headerText As String) As String
     Dim commaPos As Long
     commaPos = InStr(1, headerText, ",", vbTextCompare)
@@ -325,6 +395,7 @@ Public Property Get Height(ByVal index As Long) As Double: Height = mHeight(inde
 Public Property Get ResultValue(ByVal index As Long) As Double: ResultValue = mResultValue(index): End Property
 Public Property Get PhysicalState(ByVal index As Long) As String: PhysicalState = mPhysicalState(index): End Property
 Public Property Get LoadCase() As String: LoadCase = mLoadCase: End Property
+Public Property Get LoadCaseComment() As String: LoadCaseComment = mLoadCaseComment: End Property
 Public Property Get ResultType() As String: ResultType = mResultType: End Property
 Public Property Get ResultUnit() As String: ResultUnit = mResultUnit: End Property
 Public Property Get ResultCaption() As String: ResultCaption = mResultCaption: End Property
@@ -352,3 +423,4 @@ Public Property Get AnnotationNormalX(ByVal index As Long) As Double: Annotation
 Public Property Get AnnotationNormalY(ByVal index As Long) As Double: AnnotationNormalY = mAnnotationNormalY(index): End Property
 Public Property Get AnnotationOffset(ByVal index As Long) As Double: AnnotationOffset = mAnnotationOffset(index): End Property
 Public Property Get AnnotationText(ByVal index As Long) As String: AnnotationText = mAnnotationText(index): End Property
+

@@ -1,9 +1,12 @@
-﻿param(
+﻿# скрипт обновляет отдельные части существующей книги без ручного импорта модулей через редактор VBA.
+
+param(
     [string]$WorkbookPath = "workbook/output/RC_Section_NDM.xlsm"
 )
 
 $ErrorActionPreference = "Stop"
 
+# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
 function Add-VbaSourceFile {
     param(
         [object]$Workbook,
@@ -61,6 +64,7 @@ function Add-VbaSourceFile {
     }
 }
 
+# Импортирует исходные VBA-модули в книгу, сохраняя воспроизводимость сборки.
 function Import-VbaSourceTree {
     param(
         [object]$Workbook,
@@ -92,6 +96,7 @@ function Import-VbaSourceTree {
     }
 }
 
+# Удаляет только служебный объект, который может мешать повторяемой сборке или проверке.
 function Remove-ImportedVbaComponents {
     param([object]$Workbook)
 
@@ -107,6 +112,7 @@ function Remove-ImportedVbaComponents {
     }
 }
 
+# Устанавливает значение, оформление или именованный диапазон в книге через Excel COM.
 function Set-SystemSetting {
     param(
         [object]$Workbook,
@@ -144,7 +150,7 @@ function Set-SystemSetting {
     $settings.Cells.Item($row, 4).Value2 = $Unit
     $settings.Cells.Item($row, 5).Value2 = $Purpose
     $settings.Cells.Item($row, 6).Value2 = $Source
-    $settings.Cells.Item($row, 7).Value2 = "РќРµС‚"
+    $settings.Cells.Item($row, 7).Value2 = "Нет"
 }
 
 $root = Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "../..")
@@ -168,20 +174,20 @@ try {
     Remove-ImportedVbaComponents $workbook
     Import-VbaSourceTree $workbook $root
 
-    Set-SystemSetting $workbook "Capacity.InitialLambda" "1" "1" "" "РќР°С‡Р°Р»СЊРЅС‹Р№ РјРЅРѕР¶РёС‚РµР»СЊ РґР»СЏ РїРѕРёСЃРєР° РІРµСЂС…РЅРµР№ РіСЂР°РЅРёС†С‹" "РџСЂРѕРµРєС‚РЅР°СЏ РЅР°СЃС‚СЂРѕР№РєР° СЌС‚Р°РїР° 5"
-    Set-SystemSetting $workbook "Capacity.MaxLambda" "64" "64" "" "РџСЂРµРґРµР»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ lambda РїСЂРё СЂР°СЃС€РёСЂРµРЅРёРё СЃРєРѕР±РєРё" "РџСЂРѕРµРєС‚РЅР°СЏ РЅР°СЃС‚СЂРѕР№РєР° СЌС‚Р°РїР° 5"
-    Set-SystemSetting $workbook "Capacity.ToleranceLambda" "0.01" "0.01" "" "Р”РѕРїСѓСЃРє РѕРґРЅРѕРјРµСЂРЅРѕРіРѕ РїРѕРёСЃРєР° РїСЂРµРґРµР»СЊРЅРѕРіРѕ РјРЅРѕР¶РёС‚РµР»СЏ" "РџСЂРѕРµРєС‚РЅР°СЏ РЅР°СЃС‚СЂРѕР№РєР° СЌС‚Р°РїР° 5"
-    Set-SystemSetting $workbook "Capacity.MaxRetries" "4" "4" "С€С‚" "Р§РёСЃР»Рѕ РїРѕРІС‚РѕСЂРѕРІ РїРѕСЃР»Рµ С‡РёСЃР»РµРЅРЅРѕР№ РЅРµСЃС…РѕРґРёРјРѕСЃС‚Рё РїСЂРѕР±С‹" "РџСЂРѕРµРєС‚РЅР°СЏ РЅР°СЃС‚СЂРѕР№РєР° СЌС‚Р°РїР° 5"
-    Set-SystemSetting $workbook "Capacity.BaseLoadSteps" "8" "8" "С€С‚" "Р‘Р°Р·РѕРІРѕРµ С‡РёСЃР»Рѕ РІРЅСѓС‚СЂРµРЅРЅРёС… СЃС‚СѓРїРµРЅРµР№ РЅР°РіСЂСѓР·РєРё РІ CSectionSolver" "РџСЂРѕРµРєС‚РЅР°СЏ РЅР°СЃС‚СЂРѕР№РєР° СЌС‚Р°РїР° 5"
-    Set-SystemSetting $workbook "Capacity.SolverMaxIterations" "60" "60" "С€С‚" "РњР°РєСЃРёРјСѓРј РёС‚РµСЂР°С†РёР№ Newton РЅР° СЃС‚СѓРїРµРЅСЊ РїСЂРё РїРѕРёСЃРєРµ РЅРµСЃСѓС‰РµР№ СЃРїРѕСЃРѕР±РЅРѕСЃС‚Рё" "РџСЂРѕРµРєС‚РЅР°СЏ РЅР°СЃС‚СЂРѕР№РєР° СЌС‚Р°РїР° 5"
-    Set-SystemSetting $workbook "Capacity.ConcreteCompressionLimit" "-0.0035" "-0.0035" "" "РџСЂРµРґРµР» РґРµС„РѕСЂРјР°С†РёРё Р±РµС‚РѕРЅР° РґР»СЏ С„РёРєСЃР°С†РёРё ConcreteStrainLimit" "PROVISIONAL_FOR_SOLVER_TESTING"
-    Set-SystemSetting $workbook "Capacity.SteelStrainLimit" "0.025" "0.025" "" "РџСЂРµРґРµР» РґРµС„РѕСЂРјР°С†РёРё РѕР±С‹С‡РЅРѕР№ РЅРµРЅР°РїСЂСЏРіР°РµРјРѕР№ Р°СЂРјР°С‚СѓСЂС‹ РґР»СЏ SteelStrainLimit" "PROVISIONAL_FOR_SOLVER_TESTING"
-    Set-SystemSetting $workbook "Concrete.TensionMode" "Ignore" "Ignore" "Ignore/UseDiagram" "Concrete tension behavior for cracked and material-diagram calculations" "Stage 7 project setting; normative applicability pending"
-    Set-SystemSetting $workbook "CrackWidth.Enabled" "Да" "Да" "Да/Нет" "Calculate already formed normal crack width" "Stage 7 project setting"
-    Set-SystemSetting $workbook "CrackWidth.Allowable" "0.3" "0.3" "мм" "Provisional allowable crack width" "PROVISIONAL_FOR_SOLVER_TESTING"
-    Set-SystemSetting $workbook "CrackWidth.CrackSpacing" "200" "200" "мм" "Provisional normal crack spacing" "PROVISIONAL_FOR_SOLVER_TESTING"
-    Set-SystemSetting $workbook "CrackWidth.StrainFactor" "1" "1" "" "Provisional strain factor for crack width" "PROVISIONAL_FOR_SOLVER_TESTING"
-    Set-SystemSetting $workbook "CrackWidth.DurationFactor" "1" "1" "" "Provisional load-duration factor for crack width" "PROVISIONAL_FOR_SOLVER_TESTING"
+    Set-SystemSetting $workbook "Capacity.InitialLambda" "1" "1" "" "Начальный множитель для поиска верхней границы" "Проектная настройка этапа 5"
+    Set-SystemSetting $workbook "Capacity.MaxLambda" "64" "64" "" "Предельное значение lambda при расширении скобки" "Проектная настройка этапа 5"
+    Set-SystemSetting $workbook "Capacity.ToleranceLambda" "0.01" "0.01" "" "Допуск одномерного поиска предельного множителя" "Проектная настройка этапа 5"
+    Set-SystemSetting $workbook "Capacity.MaxRetries" "4" "4" "шт" "Число повторов после численной несходимости пробы" "Проектная настройка этапа 5"
+    Set-SystemSetting $workbook "Capacity.BaseLoadSteps" "8" "8" "шт" "Базовое число внутренних ступеней нагрузки в CSectionSolver" "Проектная настройка этапа 5"
+    Set-SystemSetting $workbook "Capacity.SolverMaxIterations" "60" "60" "шт" "Максимум итераций Newton на ступень при поиске несущей способности" "Проектная настройка этапа 5"
+    Set-SystemSetting $workbook "Capacity.ConcreteCompressionLimit" "-0.0035" "-0.0035" "" "Предельная деформация бетона для фиксации ConcreteStrainLimit" "PROVISIONAL_FOR_SOLVER_TESTING"
+    Set-SystemSetting $workbook "Capacity.SteelStrainLimit" "0.025" "0.025" "" "Предельная деформация обычной ненапрягаемой арматуры для SteelStrainLimit" "PROVISIONAL_FOR_SOLVER_TESTING"
+    Set-SystemSetting $workbook "Concrete.TensionMode" "Ignore" "Ignore" "Ignore/UseDiagram" "Concrete tension behavior for strength calculations; crack formation check uses SLS tensile branch separately" "Stage 7 project setting; normative applicability pending"
+    Set-SystemSetting $workbook "Steel.RebarProfile" "Ribbed" "Ribbed" "Ribbed/Smooth" "Rebar surface profile for phi2 in normal crack width calculation" "Stage 7 project setting"
+    Set-SystemSetting $workbook "SLS.Crack.Enabled" "Yes" "Yes" "Yes/No" "Calculate long-term normal crack width for Group2 combinations" "Stage 7 project setting"
+    Set-SystemSetting $workbook "SLS.Crack.Allowable" "0.3" "0.3" "мм" "User-defined allowable crack width a_crc,ult" "Stage 7 project setting"
+    Set-SystemSetting $workbook "SLS.Crack.PsiMode" "Unity" "Unity" "Unity/Refined" "Psi_s mode: Unity or Refined lambda_crc search" "Stage 7 project setting"
+    Set-SystemSetting $workbook "SLS.Crack.TensionZoneMode" "Effective" "Effective" "Effective/FullTension" "Concrete tension zone for Abt in crack width calculation" "Stage 7 project setting"
 
     $workbook.Save()
     Write-Output "Workbook refreshed: $fullWorkbookPath"

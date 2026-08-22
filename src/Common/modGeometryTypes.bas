@@ -1,6 +1,14 @@
 ﻿Attribute VB_Name = "modGeometryTypes"
 Option Explicit
 
+' ==========================================================================
+' Общие геометрические константы и типы
+' ==========================================================================
+' Модуль содержит небольшие общие определения, которыми пользуются геометрия,
+' раскладчики арматуры и расчетные модели. Здесь не должно быть логики
+' конкретной формы сечения или обращения к Excel: только простые константы и
+' функции, одинаково полезные всем геометрическим слоям.
+
 Public Const GEOM_PI As Double = 3.1415926535897931
 Public Const GEOM_TOLERANCE As Double = 0.000000001
 
@@ -65,9 +73,11 @@ End Function
 
 
 
+' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
 Public Function BuildGeneratedSectionModel(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, Optional ByVal sourceType As String = "Generated") As CSectionModel
     Dim builder As CSectionModelBuilder
     Set builder = New CSectionModelBuilder
     Set BuildGeneratedSectionModel = builder.BuildFromGenerated(mesh, rebars, sourceType)
 End Function
+
 

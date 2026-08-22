@@ -1,9 +1,12 @@
-﻿param(
+﻿# скрипт проверяет структуру собранной книги, именованные диапазоны и ключевые правила интерфейса.
+
+param(
     [string]$WorkbookPath = "workbook/output/RC_Section_NDM.xlsm"
 )
 
 $ErrorActionPreference = "Stop"
 
+# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
 function Add-Check {
     param(
         [System.Collections.Generic.List[object]]$Checks,
@@ -19,6 +22,7 @@ function Add-Check {
     }) | Out-Null
 }
 
+# Выполняет одну проверку структуры книги и добавляет результат в общий отчет.
 function Test-FormulaPresence {
     param([object]$Sheet)
 
@@ -40,6 +44,7 @@ function Test-FormulaPresence {
     return ""
 }
 
+# Выполняет служебный шаг сборочного или проверочного сценария.
 function Is-AllowedFormulaCell {
     param([string]$SheetName, [int]$Row, [int]$Column)
 
@@ -47,7 +52,7 @@ function Is-AllowedFormulaCell {
         if ($Row -ge 6 -and $Row -le 60 -and $Column -ge 1 -and $Column -le 7) { return $true }
         if ($Row -ge 17 -and $Row -le 35 -and $Column -ge 19 -and $Column -le 70) { return $true }
     }
-    if ($SheetName -eq "System") {
+    if ($SheetName -eq "Config") {
         if ($Row -ge 130 -and $Row -le 250 -and $Column -ge 9 -and $Column -le 17) { return $true }
     }
     return $false
@@ -64,6 +69,7 @@ $checks = [System.Collections.Generic.List[object]]::new()
 $excel = $null
 $workbook = $null
 
+# Удаляет только служебный объект, который может мешать повторяемой сборке или проверке.
 function Remove-DuplicatePrintAreaName {
     param([string]$Path)
     Add-Type -AssemblyName System.IO.Compression
@@ -91,6 +97,7 @@ function Remove-DuplicatePrintAreaName {
 
 Remove-DuplicatePrintAreaName $fullWorkbookPath
 
+# Возвращает подготовленные данные или справочное значение для дальнейшего шага сборки.
 function Get-PrintAreaFromWorkbookXml {
     param([string]$Path)
     Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -124,7 +131,12 @@ try {
         $sheetNames += [string]$sheet.Name
     }
 
-    Add-Check $checks "Sheets Расчет/Settings/Results" (($sheetNames -contains "Расчет") -and ($sheetNames -contains "Settings") -and ($sheetNames -contains "Results")) ($sheetNames -join ", ")
+    $expectedSheetOrder = @("Config", "Инструкции", "Расчет", "Results")
+    $sheetOrderOk = $true
+    for ($i = 0; $i -lt $expectedSheetOrder.Count; $i++) {
+        if ($sheetNames.Count -lt ($i + 1) -or $sheetNames[$i] -ne $expectedSheetOrder[$i]) { $sheetOrderOk = $false }
+    }
+    Add-Check $checks "Sheets Config/Инструкции/Расчет/Results" $sheetOrderOk ($sheetNames -join ", ")
 
     $requiredNames = @(
         "rngLoadCombinations",
@@ -182,7 +194,7 @@ try {
     Add-Check $checks "No obsolete named ranges" ($presentObsoleteNames.Count -eq 0) ("Present: " + ($presentObsoleteNames -join ", "))
 
     $calc = $workbook.Worksheets.Item("Расчет")
-    $system = $workbook.Worksheets.Item("Settings")
+    $system = $workbook.Worksheets.Item("Config")
 
     $printArea = [string]$calc.PageSetup.PrintArea
     $printAreaOk = $printArea.Contains('$A$1:$AJ$60') -or $printAreaXml.Contains('$A$1:$AJ$60')
@@ -206,12 +218,12 @@ try {
     Add-Check $checks "Load and result blocks left to right" $leftToRight ("Columns: loads=$($loadsRangeForLayout.Column), section=$($sectionResult.Column)")
 
     $settings = $workbook.Names.Item("rngSystemSettings").RefersToRange
-    $expectedSettingsHeaders = @("Параметр", "Значение", "Ед.", "Комментарий")
+    $expectedSettingsHeaders = @("Параметр", "Значение", "Ед.", "Комментарий", "Инструкции")
     $actualSettingsHeaders = @()
     for ($i = 1; $i -le $expectedSettingsHeaders.Count; $i++) {
         $actualSettingsHeaders += [string]$settings.Cells.Item(1, $i).Value2
     }
-    Add-Check $checks "System settings table headers" (($actualSettingsHeaders -join "|") -eq ($expectedSettingsHeaders -join "|")) ($actualSettingsHeaders -join " | ")
+    Add-Check $checks "Config settings table headers" (($actualSettingsHeaders -join "|") -eq ($expectedSettingsHeaders -join "|")) ($actualSettingsHeaders -join " | ")
 
     $settingKeys = @()
     for ($i = 2; $i -le $settings.Rows.Count; $i++) {
@@ -221,7 +233,7 @@ try {
         }
     }
     $duplicateSettingKeys = @($settingKeys | Group-Object | Where-Object { $_.Count -gt 1 } | ForEach-Object { $_.Name })
-    Add-Check $checks "No duplicate System keys" ($duplicateSettingKeys.Count -eq 0) ("Duplicates: " + ($duplicateSettingKeys -join ", "))
+    Add-Check $checks "No duplicate Config keys" ($duplicateSettingKeys.Count -eq 0) ("Duplicates: " + ($duplicateSettingKeys -join ", "))
 
     $obsoleteSettingKeys = @(
         "Capacity.Enabled", "Capacity.CalculateMx", "Capacity.CalculateMy",
@@ -239,7 +251,7 @@ try {
         "Plot.DimensionsEnabled", "Plot.RebarLabelsEnabled"
     )
     $presentObsoleteSettings = @($obsoleteSettingKeys | Where-Object { $settingKeys -contains $_ })
-    Add-Check $checks "No obsolete System settings" ($presentObsoleteSettings.Count -eq 0) ("Present: " + ($presentObsoleteSettings -join ", "))
+    Add-Check $checks "No obsolete Config settings" ($presentObsoleteSettings.Count -eq 0) ("Present: " + ($presentObsoleteSettings -join ", "))
 
     $solverMethodCell = $null
     for ($i = 2; $i -le $settings.Rows.Count; $i++) {
@@ -285,9 +297,9 @@ try {
     Add-Check $checks "Steel diagram point table" (($steelPoints.Columns.Count -eq 3) -and ($steelPoints.Rows.Count -eq 10)) ("Rows=$($steelPoints.Rows.Count); Columns=$($steelPoints.Columns.Count)")
 
     $loads = $workbook.Names.Item("rngLoadCombinations").RefersToRange
-    $expectedLoadHeaders = @("CombinationID", "N, tf", "Mx, tf*m", "My, tf*m", "CalculationType", "DurationType", "Comment")
+    $expectedLoadHeaders = @("CombinationID", "N, tf", "Mx, tf*m", "My, tf*m", "CalculationType", "Comment")
     $actualLoadHeaders = @()
-    for ($i = 1; $i -le 7; $i++) {
+    for ($i = 1; $i -le 6; $i++) {
         $actualLoadHeaders += [string]$loads.Cells.Item(1, $i).Value2
     }
     Add-Check $checks "Load combinations table headers" (($actualLoadHeaders -join "|") -eq ($expectedLoadHeaders -join "|")) ($actualLoadHeaders -join " | ")

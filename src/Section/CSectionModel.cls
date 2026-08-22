@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -9,47 +9,54 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Private mSourceType As String
+' ==========================================================================
+' Унифицированная расчетная модель сечения
+' ==========================================================================
+' CSectionModel - это единственный формат геометрии, который видит расчетное
+' ядро. Неважно, пришла сетка из встроенного генератора или из AutoCAD import:
+' ниже по цепочке solver получает один и тот же набор бетонных элементов,
+' стержней арматуры и semantic-аннотаций для вывода.
+'
+' Важно: расчетные имена элементов C1/R1 создаются здесь. Генераторы
+' геометрии и импорт из AutoCAD не должны придумывать собственный формат имен
+' для расчетного ядра.
 
-Private mConcreteID() As String
-Private mConcreteSourceName() As String
-Private mConcreteSourceHandle() As String
-Private mConcreteX() As Double
-Private mConcreteY() As Double
-Private mConcreteArea() As Double
-Private mConcreteMaterialID() As Long
-Private mConcreteShapeType() As String
-Private mConcreteWidth() As Double
-Private mConcreteHeight() As Double
-Private mConcreteRotation() As Double
-Private mConcreteLocalIx() As Double
-Private mConcreteLocalIy() As Double
-Private mConcreteLocalIxy() As Double
-Private mConcreteComment() As String
-Private mConcreteCount As Long
+Private mSourceType As String ' Диагностическая метка источника модели: Generated, AutoCADImport и т.п.
 
-Private mRebarID() As String
-Private mRebarSourceName() As String
-Private mRebarSourceHandle() As String
-Private mRebarX() As Double
-Private mRebarY() As Double
-Private mRebarArea() As Double
-Private mRebarDiameter() As Double
-Private mRebarSteelClass() As String
-Private mRebarMaterialID() As Long
-Private mRebarComment() As String
-Private mRebarCount As Long
+Private mConcreteID() As String ' Расчетные имена бетонных элементов: C1, C2, ...
+Private mConcreteSourceName() As String ' Необязательное исходное имя области для трассировки.
+Private mConcreteSourceHandle() As String ' Необязательный AutoCAD handle для поиска исходного Region.
+Private mConcreteX() As Double ' X центра тяжести бетонного элемента во внутренней системе координат, мм.
+Private mConcreteY() As Double ' Y центра тяжести бетонного элемента во внутренней системе координат, мм.
+Private mConcreteArea() As Double ' Площадь бетонного элемента, мм2.
+Private mConcreteMaterialID() As Long ' Номер/тип материала бетона для будущего расширения на разные материалы.
+Private mConcreteShapeType() As String ' Упрощенная форма элемента для вывода: Rectangle, Circle и т.п.
+Private mConcreteWidth() As Double ' Ширина эквивалентного прямоугольника элемента для схемы/AutoCAD export, мм.
+Private mConcreteHeight() As Double ' Высота эквивалентного прямоугольника элемента для схемы/AutoCAD export, мм.
+Private mConcreteRotation() As Double ' Поворот эквивалентной области, рад.
+Private mConcreteLocalIx() As Double ' Собственный Ix элемента вокруг его центра, мм4.
+Private mConcreteLocalIy() As Double ' Собственный Iy элемента вокруг его центра, мм4.
+Private mConcreteLocalIxy() As Double ' Собственный центробежный момент элемента, мм4.
+Private mConcreteComment() As String ' Короткая диагностическая заметка для Results.
+Private mConcreteCount As Long ' Фактическое число бетонных элементов в модели.
 
-Private mRebarAnnotationGroupName() As String
-Private mRebarAnnotationStartX() As Double
-Private mRebarAnnotationStartY() As Double
-Private mRebarAnnotationEndX() As Double
-Private mRebarAnnotationEndY() As Double
-Private mRebarAnnotationNormalX() As Double
-Private mRebarAnnotationNormalY() As Double
-Private mRebarAnnotationAxisDistance() As Double
-Private mRebarAnnotationCount As Long
+Private mRebarID() As String ' Расчетные имена стержней: R1, R2, ...
+Private mRebarSourceName() As String ' Необязательное исходное имя арматурной области.
+Private mRebarSourceHandle() As String ' Необязательный AutoCAD handle арматурного Region.
+Private mRebarX() As Double ' X центра стержня, мм.
+Private mRebarY() As Double ' Y центра стержня, мм.
+Private mRebarArea() As Double ' Площадь стержня, мм2.
+Private mRebarDiameter() As Double ' Диаметр стержня, мм.
+Private mRebarSteelClass() As String ' Расчетная подпись арматуры; сейчас хранит профиль стержней для трассировки.
+Private mRebarMaterialID() As Long ' Номер/тип материала арматуры для будущего расширения.
+Private mRebarComment() As String ' Диагностическая заметка о грани, ряде или источнике стержня.
+Private mRebarCount As Long ' Фактическое число стержней в модели.
 
+Private mAnnotations As CSectionAnnotations ' Semantic-аннотации, сформированные генератором сечения.
+
+' Очищает модель перед новым построением сечения.
+' После Clear объект снова готов принимать бетонные элементы, арматуру и
+' аннотации без следов предыдущего расчета.
 Public Sub Clear()
     mSourceType = vbNullString
 
@@ -82,15 +89,7 @@ Public Sub Clear()
     Erase mRebarComment
     mRebarCount = 0
 
-    Erase mRebarAnnotationGroupName
-    Erase mRebarAnnotationStartX
-    Erase mRebarAnnotationStartY
-    Erase mRebarAnnotationEndX
-    Erase mRebarAnnotationEndY
-    Erase mRebarAnnotationNormalX
-    Erase mRebarAnnotationNormalY
-    Erase mRebarAnnotationAxisDistance
-    mRebarAnnotationCount = 0
+    Set mAnnotations = New CSectionAnnotations
 End Sub
 
 Public Property Let SourceType(ByVal value As String)
@@ -101,6 +100,10 @@ Public Property Get SourceType() As String
     SourceType = mSourceType
 End Property
 
+' Добавляет одно бетонное волокно или импортированную бетонную область.
+' Координаты и площадь уже должны быть во внутренних единицах проекта. Метод
+' только проверяет минимальную физическую корректность и присваивает элементу
+' стабильное расчетное имя Cn.
 Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, ByVal area As Double, _
         Optional ByVal materialID As Long = 1, Optional ByVal sourceName As String = vbNullString, _
         Optional ByVal sourceHandle As String = vbNullString, Optional ByVal shapeType As String = "Rectangle", _
@@ -108,8 +111,10 @@ Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, By
         Optional ByVal rotation As Double = 0#, Optional ByVal comment As String = vbNullString, _
         Optional ByVal localIx As Double = 0#, Optional ByVal localIy As Double = 0#, _
         Optional ByVal localIxy As Double = 0#)
-    If area <= 0# Then Err.Raise vbObjectError + 5200, "CSectionModel", "Площадь бетонного элемента должна быть положительной."
+    If area <= 0# Then Err.Raise vbObjectError + 5200, "CSectionModel", "Concrete element area must be positive."
 
+    ' Массивы хранятся параллельно, чтобы горячие расчетные циклы работали без
+    ' коллекций и COM-объектов на каждом элементе.
     mConcreteCount = mConcreteCount + 1
     ReDim Preserve mConcreteID(1 To mConcreteCount)
     ReDim Preserve mConcreteSourceName(1 To mConcreteCount)
@@ -144,20 +149,26 @@ Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, By
     mConcreteComment(mConcreteCount) = comment
 End Sub
 
+' Добавляет один стержень арматуры.
+' Если площадь не передана явно, она считается по диаметру. Это удобно для
+' встроенных раскладчиков, а AutoCAD import может передать площадь Region
+' напрямую, если она известна надежнее диаметра.
 Public Sub AddRebarElement(ByVal xCoord As Double, ByVal yCoord As Double, _
         ByVal diameter As Double, ByVal area As Double, ByVal steelClass As String, _
         Optional ByVal materialID As Long = 1, Optional ByVal sourceName As String = vbNullString, _
         Optional ByVal sourceHandle As String = vbNullString, Optional ByVal comment As String = vbNullString)
-    If diameter <= 0# Then Err.Raise vbObjectError + 5210, "CSectionModel", "Диаметр арматуры должен быть положительным."
+    If diameter <= 0# Then Err.Raise vbObjectError + 5210, "CSectionModel", "Rebar diameter must be positive."
 
-    Dim actualArea As Double
+    Dim actualArea As Double ' Площадь, которая реально попадет в расчетную модель.
     If area <= 0# Then
         actualArea = GEOM_PI * diameter * diameter / 4#
     Else
         actualArea = area
     End If
-    If actualArea <= 0# Then Err.Raise vbObjectError + 5211, "CSectionModel", "Площадь арматуры должна быть положительной."
+    If actualArea <= 0# Then Err.Raise vbObjectError + 5211, "CSectionModel", "Rebar area must be positive."
 
+    ' Нумерация R1/R2/... создается здесь, чтобы у всех источников геометрии
+    ' был одинаковый формат расчетных имен.
     mRebarCount = mRebarCount + 1
     ReDim Preserve mRebarID(1 To mRebarCount)
     ReDim Preserve mRebarSourceName(1 To mRebarCount)
@@ -315,83 +326,23 @@ Public Property Get RebarComment(ByVal index As Long) As String
     RebarComment = mRebarComment(index)
 End Property
 
-Public Sub AddRebarAnnotationAnchor(ByVal groupName As String, ByVal startX As Double, ByVal startY As Double, _
-        ByVal endX As Double, ByVal endY As Double, ByVal normalX As Double, ByVal normalY As Double, _
-        Optional ByVal axisDistance As Double = 0#)
-    If Len(Trim$(groupName)) = 0 Then Exit Sub
-
-    mRebarAnnotationCount = mRebarAnnotationCount + 1
-    ReDim Preserve mRebarAnnotationGroupName(1 To mRebarAnnotationCount)
-    ReDim Preserve mRebarAnnotationStartX(1 To mRebarAnnotationCount)
-    ReDim Preserve mRebarAnnotationStartY(1 To mRebarAnnotationCount)
-    ReDim Preserve mRebarAnnotationEndX(1 To mRebarAnnotationCount)
-    ReDim Preserve mRebarAnnotationEndY(1 To mRebarAnnotationCount)
-    ReDim Preserve mRebarAnnotationNormalX(1 To mRebarAnnotationCount)
-    ReDim Preserve mRebarAnnotationNormalY(1 To mRebarAnnotationCount)
-    ReDim Preserve mRebarAnnotationAxisDistance(1 To mRebarAnnotationCount)
-
-    mRebarAnnotationGroupName(mRebarAnnotationCount) = Trim$(groupName)
-    mRebarAnnotationStartX(mRebarAnnotationCount) = startX
-    mRebarAnnotationStartY(mRebarAnnotationCount) = startY
-    mRebarAnnotationEndX(mRebarAnnotationCount) = endX
-    mRebarAnnotationEndY(mRebarAnnotationCount) = endY
-    mRebarAnnotationNormalX(mRebarAnnotationCount) = normalX
-    mRebarAnnotationNormalY(mRebarAnnotationCount) = normalY
-    mRebarAnnotationAxisDistance(mRebarAnnotationCount) = axisDistance
-End Sub
-
-Public Property Get RebarAnnotationCount() As Long
-    RebarAnnotationCount = mRebarAnnotationCount
+Public Property Get Annotations() As CSectionAnnotations
+    If mAnnotations Is Nothing Then Set mAnnotations = New CSectionAnnotations
+    Set Annotations = mAnnotations
 End Property
 
-Public Property Get RebarAnnotationGroupName(ByVal index As Long) As String
-    CheckRebarAnnotationIndex index
-    RebarAnnotationGroupName = mRebarAnnotationGroupName(index)
-End Property
-
-Public Property Get RebarAnnotationStartX(ByVal index As Long) As Double
-    CheckRebarAnnotationIndex index
-    RebarAnnotationStartX = mRebarAnnotationStartX(index)
-End Property
-
-Public Property Get RebarAnnotationStartY(ByVal index As Long) As Double
-    CheckRebarAnnotationIndex index
-    RebarAnnotationStartY = mRebarAnnotationStartY(index)
-End Property
-
-Public Property Get RebarAnnotationEndX(ByVal index As Long) As Double
-    CheckRebarAnnotationIndex index
-    RebarAnnotationEndX = mRebarAnnotationEndX(index)
-End Property
-
-Public Property Get RebarAnnotationEndY(ByVal index As Long) As Double
-    CheckRebarAnnotationIndex index
-    RebarAnnotationEndY = mRebarAnnotationEndY(index)
-End Property
-
-Public Property Get RebarAnnotationNormalX(ByVal index As Long) As Double
-    CheckRebarAnnotationIndex index
-    RebarAnnotationNormalX = mRebarAnnotationNormalX(index)
-End Property
-
-Public Property Get RebarAnnotationNormalY(ByVal index As Long) As Double
-    CheckRebarAnnotationIndex index
-    RebarAnnotationNormalY = mRebarAnnotationNormalY(index)
-End Property
-
-Public Property Get RebarAnnotationAxisDistance(ByVal index As Long) As Double
-    CheckRebarAnnotationIndex index
-    RebarAnnotationAxisDistance = mRebarAnnotationAxisDistance(index)
+Public Property Get AnnotationCount() As Long
+    If mAnnotations Is Nothing Then
+        AnnotationCount = 0
+    Else
+        AnnotationCount = mAnnotations.Count
+    End If
 End Property
 
 Private Sub CheckConcreteIndex(ByVal index As Long)
-    If index < 1 Or index > mConcreteCount Then Err.Raise vbObjectError + 5220, "CSectionModel", "Индекс бетонного элемента вне диапазона."
+    If index < 1 Or index > mConcreteCount Then Err.Raise vbObjectError + 5220, "CSectionModel", "Concrete element index is out of range."
 End Sub
 
 Private Sub CheckRebarIndex(ByVal index As Long)
-    If index < 1 Or index > mRebarCount Then Err.Raise vbObjectError + 5221, "CSectionModel", "Индекс стержня вне диапазона."
-End Sub
-
-Private Sub CheckRebarAnnotationIndex(ByVal index As Long)
-    If index < 1 Or index > mRebarAnnotationCount Then Err.Raise vbObjectError + 5222, "CSectionModel", "Индекс аннотации арматуры вне диапазона."
+    If index < 1 Or index > mRebarCount Then Err.Raise vbObjectError + 5221, "CSectionModel", "Rebar index is out of range."
 End Sub

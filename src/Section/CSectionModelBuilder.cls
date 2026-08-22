@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -8,6 +8,13 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
+' ==========================================================================
+' Сборка CSectionModel из сетки бетона и раскладки арматуры
+' ==========================================================================
+' Builder соединяет результат геометрической дискретизации и арматурный layout
+' в один CSectionModel. Это тонкий адаптер: он не решает равновесие, не читает
+' Excel и не создает semantic-аннотации конкретной формы сам по себе.
 
 Public Function BuildFromGenerated(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
         Optional ByVal sourceType As String = "Generated") As CSectionModel
@@ -31,12 +38,8 @@ Public Function BuildFromGenerated(ByVal mesh As CFiberMeshBuilder, ByVal rebars
             model.AddRebarElement rebars.X(i), rebars.Y(i), rebars.Diameter(i), rebars.Area(i), _
                 rebars.SteelClass(i), 1, rebars.BarID(i), vbNullString, rebars.Comment(i)
         Next i
-        For i = 1 To rebars.AnnotationCount
-            model.AddRebarAnnotationAnchor rebars.AnnotationGroupName(i), rebars.AnnotationStartX(i), _
-                rebars.AnnotationStartY(i), rebars.AnnotationEndX(i), rebars.AnnotationEndY(i), _
-                rebars.AnnotationNormalX(i), rebars.AnnotationNormalY(i), rebars.AnnotationAxisDistance(i)
-        Next i
     End If
 
     Set BuildFromGenerated = model
 End Function
+

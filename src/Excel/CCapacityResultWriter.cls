@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -8,6 +8,13 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
+' ==========================================================================
+' Вывод результатов несущей способности в основной отчет
+' ==========================================================================
+' Класс отвечает за человекочитаемый блок результатов capacity-проверки на
+' листе расчета. Он получает готовые значения lambda, статусы и предельные
+' моменты, форматирует их для Excel и не участвует в самом поиске lambda.
 
 Public Sub WriteCapacityResult(ByVal workbook As Object, ByVal capacity As CCapacitySolver, Optional ByVal units As CUnitSystem = Nothing)
     WriteResult workbook, "rngResultSection", capacity, units
@@ -83,12 +90,20 @@ Private Sub WriteCrackResultToRange(ByVal workbook As Object, ByVal rangeName As
     Set target = workbook.Names.Item(rangeName).RefersToRange
 
     Dim rows As Variant
-    rows = EmptyResultRows(4)
+    rows = EmptyResultRows(12)
     PutRow rows, 1, "CrackConverged", IIf(crack.Converged, "Yes", "No"), "", crack.StopReason
-    PutRow rows, 2, "CrackWidth", OutputLength(crack.CrackWidth, units), OutputLengthUnit(units), "Уже образовавшаяся нормальная трещина"
-    PutRow rows, 3, "CrackAllowable", OutputLength(crack.AllowableCrackWidth, units), OutputLengthUnit(units), "Utilization=" & CStr(crack.Utilization)
-    PutRow rows, 4, "SteelMax", crack.MaxSteelStrain, "", "Stress=" & CStr(OutputStress(crack.MaxSteelStress, units)) & " " & OutputStressUnit(units) & "; tensionBars=" & CStr(crack.TensionRebarCount)
-    WriteResultRows target.Offset(15, 0).Resize(4, target.Columns.Count), rows
+    PutRow rows, 2, "CrackFormed", IIf(crack.CrackFormed, "Yes", "No"), "", "Refined/central branch can return No when lambda_crc > 1"
+    PutRow rows, 3, "CrackWidth", OutputLength(crack.CrackWidth, units), OutputLengthUnit(units), "a_crc for long-term SLS crack opening"
+    PutRow rows, 4, "CrackAllowable", OutputLength(crack.AllowableCrackWidth, units), OutputLengthUnit(units), "Utilization=" & CStr(crack.Utilization)
+    PutRow rows, 5, "CrackModes", crack.PsiMode & "; " & crack.TensionZoneMode, "", "psi_s mode and Abt zone mode"
+    PutRow rows, 6, "SigmaS", OutputStress(crack.SigmaS, units), OutputStressUnit(units), "sigma_s averaged by selected tensile As"
+    PutRow rows, 7, "SigmaS_crc", OutputStress(crack.SigmaSCrc, units), OutputStressUnit(units), "Used only for SLS.Crack.PsiMode = Refined"
+    PutRow rows, 8, "PsiS", crack.PsiS, "", "psi_s = 1 or 1 - 0.8*sigma_s,crc/sigma_s"
+    PutRow rows, 9, "CrackSpacing", OutputLength(crack.CrackSpacing, units), OutputLengthUnit(units), "ls after limits 10ds/100/40ds/400"
+    PutRow rows, 10, "Abt_As_ds", OutputArea(crack.Abt, units) & "; " & OutputArea(crack.AsTension, units) & "; " & OutputLength(crack.DsEquivalent, units), OutputAreaUnit(units) & "; " & OutputLengthUnit(units), "Abt; As; ds,eq"
+    PutRow rows, 11, "LambdaCrc", crack.LambdaCrc, "", "Load factor for first cracking in Refined/central branch"
+    PutRow rows, 12, "SteelMax", crack.MaxSteelStrain, "", "Stress=" & CStr(OutputStress(crack.MaxSteelStress, units)) & " " & OutputStressUnit(units) & "; tensionBars=" & CStr(crack.TensionRebarCount)
+    WriteResultRows target.Offset(15, 0).Resize(12, target.Columns.Count), rows
 End Sub
 
 Private Function OutputMx(ByVal value As Double, ByVal units As CUnitSystem) As Double
@@ -111,6 +126,11 @@ Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem)
     OutputLength = units.InternalLengthToOutput(value)
 End Function
 
+Private Function OutputArea(ByVal value As Double, ByVal units As CUnitSystem) As Double
+    If units Is Nothing Then OutputArea = value: Exit Function
+    OutputArea = units.InternalAreaToOutput(value)
+End Function
+
 Private Function OutputStress(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputStress = value: Exit Function
     OutputStress = units.InternalStressToOutput(value)
@@ -127,6 +147,10 @@ End Function
 
 Private Function OutputLengthUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputLengthUnit = "mm" Else OutputLengthUnit = units.OutputLengthUnit
+End Function
+
+Private Function OutputAreaUnit(ByVal units As CUnitSystem) As String
+    If units Is Nothing Then OutputAreaUnit = "mm2" Else OutputAreaUnit = units.OutputAreaUnit
 End Function
 
 Private Function OutputStressUnit(ByVal units As CUnitSystem) As String
@@ -172,3 +196,4 @@ Private Sub WriteResultColumn(ByVal target As Object, ByVal targetColumn As Long
 
     target.Offset(0, targetColumn - 1).Resize(rowCount, 1).Value2 = columnData
 End Sub
+

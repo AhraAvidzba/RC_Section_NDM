@@ -1,9 +1,12 @@
-﻿param(
+﻿# скрипт обновляет отдельные части существующей книги без ручного импорта модулей через редактор VBA.
+
+param(
     [string]$WorkbookPath = "workbook/output/RC_Section_NDM.xlsm"
 )
 
 $ErrorActionPreference = "Stop"
 
+# Возвращает подготовленные данные или справочное значение для дальнейшего шага сборки.
 function Get-VbaComponentName {
     param([string]$Path)
     $source = [System.IO.File]::ReadAllText($Path, [System.Text.Encoding]::Default)
@@ -15,6 +18,7 @@ function Get-VbaComponentName {
     throw "VBA source has no Attribute VB_Name: $Path"
 }
 
+# Импортирует исходные VBA-модули в книгу, сохраняя воспроизводимость сборки.
 function Import-VbaSourceFile {
     param(
         [object]$Workbook,
@@ -59,6 +63,7 @@ function Import-VbaSourceFile {
     }
 }
 
+# Устанавливает значение, оформление или именованный диапазон в книге через Excel COM.
 function Set-SystemSetting {
     param(
         [object]$Workbook,
@@ -104,6 +109,7 @@ function Set-SystemSetting {
     $settings.Cells.Item($row, 7).Value2 = "���"
 }
 
+# Удаляет только служебный объект, который может мешать повторяемой сборке или проверке.
 function Remove-SystemSetting {
     param(
         [object]$Workbook,
@@ -118,6 +124,7 @@ function Remove-SystemSetting {
     }
 }
 
+# Удаляет только служебный объект, который может мешать повторяемой сборке или проверке.
 function Remove-DuplicatePrintAreaName {
     param([string]$Path)
 
@@ -144,17 +151,20 @@ function Remove-DuplicatePrintAreaName {
     }
 }
 
+# Устанавливает значение, оформление или именованный диапазон в книге через Excel COM.
 function Set-CellText {
     param([object]$Sheet, [int]$Row, [int]$Column, [string]$Text)
     $Sheet.Cells.Item($Row, $Column).Value2 = $Text
 }
 
+# Устанавливает значение, оформление или именованный диапазон в книге через Excel COM.
 function Set-ValidationList {
     param([object]$Cell, [string]$List)
     $Cell.Validation.Delete()
     $Cell.Validation.Add(3, 1, 1, $List)
 }
 
+# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
 function Add-Or-Replace-Button {
     param(
         [object]$Sheet,
@@ -182,6 +192,7 @@ function Add-Or-Replace-Button {
     $button.TextFrame.Characters().Font.Bold = $true
 }
 
+# Выполняет служебный шаг сборочного или проверочного сценария.
 function Update-CalculationSheetLayout {
     param([object]$Workbook)
 
@@ -228,14 +239,14 @@ function Update-CalculationSheetLayout {
     }
 
     Set-CellText $calc 38 1 "��������� ��������"
-    $loadHeaders = @("CombinationID", "N", "Mx", "My", "CalculationType", "DurationType", "Comment")
+    $loadHeaders = @("CombinationID", "N", "Mx", "My", "CalculationType", "Comment")
     for ($i = 0; $i -lt $loadHeaders.Count; $i++) {
         Set-CellText $calc 40 ($i + 1) $loadHeaders[$i]
     }
 
     $Workbook.Names.Item("rngMainInput").RefersTo = "=" + $calc.Range("A6:Q22").Address($true, $true, 1, $true)
     $Workbook.Names.Item("rngRebarInput").RefersTo = "=" + $calc.Range("A25:G34").Address($true, $true, 1, $true)
-    $Workbook.Names.Item("rngLoadCombinations").RefersTo = "=" + $calc.Range("A40:G60").Address($true, $true, 1, $true)
+    $Workbook.Names.Item("rngLoadCombinations").RefersTo = "=" + $calc.Range("A40:F60").Address($true, $true, 1, $true)
     foreach ($obsoleteName in @("rngResultMx", "rngResultMy", "rngResultMxy")) {
         try { $Workbook.Names.Item($obsoleteName).Delete() } catch { }
     }

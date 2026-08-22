@@ -1,9 +1,12 @@
-﻿param(
+﻿# скрипт обновляет отдельные части существующей книги без ручного импорта модулей через редактор VBA.
+
+param(
     [string]$WorkbookPath = "workbook/output/RC_Section_NDM.xlsm"
 )
 
 $ErrorActionPreference = "Stop"
 
+# Возвращает подготовленные данные или справочное значение для дальнейшего шага сборки.
 function Get-VbaComponentName {
     param([string]$Path)
     $source = [System.IO.File]::ReadAllText($Path, [System.Text.Encoding]::Default)
@@ -15,6 +18,7 @@ function Get-VbaComponentName {
     throw "VBA source has no Attribute VB_Name: $Path"
 }
 
+# Импортирует исходные VBA-модули в книгу, сохраняя воспроизводимость сборки.
 function Import-VbaSourceFile {
     param(
         [object]$Workbook,
@@ -59,6 +63,7 @@ function Import-VbaSourceFile {
     }
 }
 
+# Устанавливает значение, оформление или именованный диапазон в книге через Excel COM.
 function Set-SystemSetting {
     param(
         [object]$Workbook,
@@ -128,12 +133,12 @@ try {
         Import-VbaSourceFile $workbook (Join-Path $root $relative)
     }
 
-    Set-SystemSetting $workbook "Concrete.TensionMode" "Ignore" "Ignore" "Ignore/UseDiagram" "Concrete tension behavior for cracked and material-diagram calculations" "Stage 7 project setting; normative applicability pending"
-    Set-SystemSetting $workbook "CrackWidth.Enabled" "Yes" "Yes" "Yes/No" "Calculate already formed normal crack width" "Stage 7 project setting"
-    Set-SystemSetting $workbook "CrackWidth.Allowable" "0.3" "0.3" "mm" "Provisional allowable crack width" "PROVISIONAL_FOR_SOLVER_TESTING"
-    Set-SystemSetting $workbook "CrackWidth.CrackSpacing" "200" "200" "mm" "Provisional normal crack spacing" "PROVISIONAL_FOR_SOLVER_TESTING"
-    Set-SystemSetting $workbook "CrackWidth.StrainFactor" "1" "1" "" "Provisional strain factor for crack width" "PROVISIONAL_FOR_SOLVER_TESTING"
-    Set-SystemSetting $workbook "CrackWidth.DurationFactor" "1" "1" "" "Provisional load-duration factor for crack width" "PROVISIONAL_FOR_SOLVER_TESTING"
+    Set-SystemSetting $workbook "Concrete.TensionMode" "Ignore" "Ignore" "Ignore/UseDiagram" "Concrete tension behavior for strength calculations; crack formation check uses SLS tensile branch separately" "Stage 7 project setting; normative applicability pending"
+    Set-SystemSetting $workbook "Steel.RebarProfile" "Ribbed" "Ribbed" "Ribbed/Smooth" "Rebar surface profile for phi2 in normal crack width calculation" "Stage 7 project setting"
+    Set-SystemSetting $workbook "SLS.Crack.Enabled" "Yes" "Yes" "Yes/No" "Calculate long-term normal crack width for Group2 combinations" "Stage 7 project setting"
+    Set-SystemSetting $workbook "SLS.Crack.Allowable" "0.3" "0.3" "mm" "User-defined allowable crack width a_crc,ult" "Stage 7 project setting"
+    Set-SystemSetting $workbook "SLS.Crack.PsiMode" "Unity" "Unity" "Unity/Refined" "Psi_s mode: Unity or Refined lambda_crc search" "Stage 7 project setting"
+    Set-SystemSetting $workbook "SLS.Crack.TensionZoneMode" "Effective" "Effective" "Effective/FullTension" "Concrete tension zone for Abt in crack width calculation" "Stage 7 project setting"
 
     $workbook.Save()
     Write-Output "Workbook stage 7 refreshed: $fullWorkbookPath"

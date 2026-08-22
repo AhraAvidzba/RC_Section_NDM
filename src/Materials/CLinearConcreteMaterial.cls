@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -8,6 +8,13 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
+' ==========================================================================
+' Упрощенный линейный бетонный материал для тестов и проверок
+' ==========================================================================
+' Класс реализует простой закон σ = E·ε с ограничениями, где это нужно
+' старым тестам. Основной пользовательский расчет должен идти через
+' CConcreteDiagramMaterial и таблицу точек диаграммы.
 
 Private mElasticModulus As Double
 
@@ -31,6 +38,7 @@ End Function
 Public Function GetSecantModulus(ByVal strain As Double) As Double
     GetSecantModulus = mElasticModulus
 End Function
+
 
 
 

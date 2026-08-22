@@ -9,35 +9,39 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Private mKeys() As String
-Private mValues() As String
-Private mDefaults() As String
-Private mSources() As String
-Private mCount As Long
-Private mConcreteStrains() As Double
-Private mConcreteStresses() As Double
-Private mConcretePointCount As Long
-Private mSteelStrains() As Double
-Private mSteelStresses() As Double
-Private mSteelPointCount As Long
+' ==========================================================================
+' Чтение настроек Config и таблиц диаграмм
+' ==========================================================================
+' Reader проходит по именованным диапазонам Config, собирает пары ключ/значение
+' и отдельно читает точки диаграмм бетона и арматуры. Он приводит разные
+' формы таблиц к одному словарю настроек, которым пользуются генераторы,
+' материалы, solver-ы и writer-ы.
+'
+' Класс не делает инженерных расчетов. Его задача - надежно прочитать ввод и
+' дать понятную ошибку, если обязательный ключ или таблица отсутствуют.
 
+Private mKeys() As String ' Имена настроек Config: Calculation.Mode, Solver.Method и т.п.
+Private mValues() As String ' Значения, которые ввел пользователь или сгенерировала таблица.
+Private mDefaults() As String ' Значения по умолчанию из таблицы Config.
+Private mSources() As String ' Комментарий/источник строки для диагностики.
+Private mCount As Long ' Количество загруженных ключей.
+Private mConcreteStrains() As Double ' Деформации точек бетонной диаграммы.
+Private mConcreteStresses() As Double ' Напряжения бетонной диаграммы в INPUT-единице; материал позже переведет их в МПа.
+Private mConcretePointCount As Long ' Фактическое число точек бетонной диаграммы.
+Private mSteelStrains() As Double ' Деформации точек диаграммы арматуры.
+Private mSteelStresses() As Double ' Напряжения арматурной диаграммы в INPUT-единице; материал позже переведет их в МПа.
+Private mSteelPointCount As Long ' Фактическое число точек диаграммы арматуры.
+
+' Загружает все настройки книги, нужные расчету и выводу.
+' Метод объединяет разные именованные диапазоны Config в один внутренний
+' словарь, а точки диаграмм материалов читает отдельно как числовые массивы.
 Public Sub LoadFromWorkbook(ByVal workbook As Object)
     Clear
     AppendSettingsRange workbook.Names.Item("rngUnitSettings").RefersToRange
     AppendSettingsRange workbook.Names.Item("rngSignConventionSettings").RefersToRange
     AppendSettingsRange workbook.Names.Item("rngSystemSettings").RefersToRange
     AppendSettingsRange workbook.Names.Item("rngPlotAnnotationSettings").RefersToRange
-
-    Dim geometryType As String
-    geometryType = GetString("Geometry.Type", vbNullString)
-    Select Case LCase$(Trim$(geometryType))
-        Case "circle"
-            AppendSettingsRange workbook.Names.Item("rngCircleGeometry").RefersToRange
-        Case "roundedrectangle"
-            AppendSettingsRange workbook.Names.Item("rngRoundedRectangleGeometry").RefersToRange
-        Case "lshape"
-            AppendSettingsRange workbook.Names.Item("rngLShapeGeometry").RefersToRange
-    End Select
+    AppendGeometrySettingsRanges workbook
 
     LoadDiagramPoints workbook.Names.Item("rngConcreteDiagramPoints").RefersToRange, _
         mConcreteStrains, mConcreteStresses, mConcretePointCount, "rngConcreteDiagramPoints"
@@ -45,6 +49,45 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object)
         mSteelStrains, mSteelStresses, mSteelPointCount, "rngSteelDiagramPoints"
 End Sub
 
+Private Sub AppendGeometrySettingsRanges(ByVal workbook As Object)
+    Dim nameObject As Object
+    ' Проходим по именованным диапазонам и выбираем только входные таблицы
+    ' геометрии. rngNDMSectionGeometry пропускается: это Results, а не Config.
+    For Each nameObject In workbook.Names
+        Dim rangeName As String
+        rangeName = LocalName(CStr(nameObject.Name))
+        If IsInputGeometrySettingsRangeName(rangeName) Then
+            On Error Resume Next
+            Dim settingsRange As Object
+            Set settingsRange = nameObject.RefersToRange
+            Dim rangeError As Long
+            rangeError = Err.Number
+            On Error GoTo 0
+            If rangeError = 0 And Not settingsRange Is Nothing Then AppendSettingsRange settingsRange
+        End If
+    Next nameObject
+End Sub
+
+Private Function LocalName(ByVal workbookName As String) As String
+    Dim bangPos As Long
+    bangPos = InStrRev(workbookName, "!")
+    If bangPos > 0 Then
+        LocalName = Mid$(workbookName, bangPos + 1)
+    Else
+        LocalName = workbookName
+    End If
+End Function
+
+' Определяет, является ли имя входной таблицей геометрии.
+Private Function IsInputGeometrySettingsRangeName(ByVal rangeName As String) As Boolean
+    Dim key As String
+    key = LCase$(Trim$(rangeName))
+    If key = "rngndmsectiongeometry" Then Exit Function
+    IsInputGeometrySettingsRangeName = (Left$(key, 3) = "rng" And Right$(key, 8) = "geometry")
+End Function
+
+' Загружает настройки из одного диапазона.
+' Этот короткий путь используют тесты и вспомогательные сценарии без полной книги.
 Public Sub LoadFromRange(ByVal settingsRange As Object)
     Clear
     AppendSettingsRange settingsRange
@@ -74,6 +117,8 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object)
     End If
 
     Dim rowIndex As Long
+    ' Обычные таблицы читаются как ключ/значение. Строки с заголовками секций
+    ' в квадратных скобках пропускаются.
     For rowIndex = 2 To UBound(data, 1)
         Dim keyValue As String
         keyValue = Trim$(CStr(data(rowIndex, 1)))
@@ -91,6 +136,7 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object)
     Next rowIndex
 End Sub
 
+' Распознает таблицу единиц по строке заголовков Quantity/INPUT/INTERNAL/OUTPUT.
 Private Function IsUnitSettingsRange(ByRef data As Variant) As Boolean
     If UBound(data, 1) < 2 Or UBound(data, 2) < 4 Then Exit Function
     IsUnitSettingsRange = _
@@ -100,6 +146,7 @@ Private Function IsUnitSettingsRange(ByRef data As Variant) As Boolean
         StrComp(Trim$(CStr(data(1, 4))), "OUTPUT", vbTextCompare) = 0
 End Function
 
+' Распознает таблицу пользовательской системы знаков.
 Private Function IsSignConventionSettingsRange(ByRef data As Variant) As Boolean
     If UBound(data, 1) < 2 Or UBound(data, 2) < 3 Then Exit Function
     IsSignConventionSettingsRange = _
@@ -107,12 +154,18 @@ Private Function IsSignConventionSettingsRange(ByRef data As Variant) As Boolean
         StrComp(Trim$(CStr(data(1, 2))), "USER", vbTextCompare) = 0 And _
         StrComp(Trim$(CStr(data(1, 3))), "INTERNAL", vbTextCompare) = 0
 End Function
+
+' Распознает компактный блок настроек аннотаций схемы.
+' В нем одна строка параметра задает значения сразу для RebarLabels и Dimensions.
 Private Function IsPlotAnnotationSettingsRange(ByRef data As Variant) As Boolean
     If UBound(data, 1) < 3 Or UBound(data, 2) < 5 Then Exit Function
     IsPlotAnnotationSettingsRange = _
         StrComp(Trim$(CStr(data(2, 1))), "Enabled", vbTextCompare) = 0 And _
         StrComp(Trim$(CStr(data(3, 1))), "Placement", vbTextCompare) = 0
 End Function
+
+' Разворачивает таблицу аннотаций в обычные ключи Plot.RebarLabels.*
+' и Plot.Dimensions.*, чтобы остальной код читал настройки единообразно.
 Private Sub AppendPlotAnnotationSettings(ByRef data As Variant)
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
@@ -125,11 +178,13 @@ Private Sub AppendPlotAnnotationSettings(ByRef data As Variant)
     Next rowIndex
 End Sub
 
+' Добавляет настройку аннотации, пропуская пустые значения и "-".
 Private Sub AppendPlotAnnotationValue(ByVal keyValue As String, ByVal settingValue As String, ByVal commentValue As String)
     If Len(settingValue) = 0 Or settingValue = "-" Then Exit Sub
     AppendSetting keyValue, settingValue, settingValue, commentValue
 End Sub
 
+' Загружает INPUT/INTERNAL/OUTPUT единицы в общий словарь настроек.
 Private Sub AppendUnitSettings(ByRef data As Variant)
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
@@ -143,6 +198,7 @@ Private Sub AppendUnitSettings(ByRef data As Variant)
     Next rowIndex
 End Sub
 
+' Загружает выбранные пользователем правила знаков N, Mx и My.
 Private Sub AppendSignConventionSettings(ByRef data As Variant)
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
@@ -155,6 +211,7 @@ Private Sub AppendSignConventionSettings(ByRef data As Variant)
     Next rowIndex
 End Sub
 
+' Преобразует подпись строки таблицы Units в суффикс ключа Units.*.
 Private Function UnitQuantityKey(ByVal caption As String) As String
     Select Case LCase$(Trim$(caption))
         Case "length": UnitQuantityKey = "Length"
@@ -166,6 +223,7 @@ Private Function UnitQuantityKey(ByVal caption As String) As String
     End Select
 End Function
 
+' Преобразует подпись строки таблицы знаков в суффикс ключа Sign.*.
 Private Function SignQuantityKey(ByVal caption As String) As String
     Select Case LCase$(Trim$(caption))
         Case "+n": SignQuantityKey = "N"
@@ -174,6 +232,7 @@ Private Function SignQuantityKey(ByVal caption As String) As String
     End Select
 End Function
 
+' Распознает табличную компоновку rngLShapeGeometry по заголовкам H1/B1/H2/B2.
 Private Function IsLShapeFaceSettingsRange(ByRef data As Variant) As Boolean
     If UBound(data, 1) >= 3 And UBound(data, 2) >= 4 Then
         If StrComp(Trim$(CStr(data(2, 1))), "H1", vbTextCompare) = 0 And _
@@ -193,6 +252,8 @@ Private Function IsLShapeFaceSettingsRange(ByRef data As Variant) As Boolean
         StrComp(Trim$(CStr(data(1, 5))), "B2", vbTextCompare) = 0
 End Function
 
+' Читает старую матричную компоновку LShape, если такая таблица еще встретится.
+' Основная новая компоновка распознается выше и уходит в AppendLShapeSectionedSettings.
 Private Sub AppendLShapeFaceSettings(ByRef data As Variant)
     If UBound(data, 1) >= 25 And UBound(data, 2) >= 9 And _
             StrComp(Trim$(CStr(data(2, 1))), "H1", vbTextCompare) = 0 And _
@@ -211,6 +272,8 @@ Private Sub AppendLShapeFaceSettings(ByRef data As Variant)
     faceColumns(4) = 5: faceNames(4) = "B2"
 
     Dim i As Long
+    ' Для каждой стороны H1/B1/H2/B2 разворачиваем пары _1/_2 в обычные ключи
+    ' LShape.<грань>.<параметр>. Solver и builder дальше не знают о форме таблицы.
     For i = 1 To 4
         Dim col As Long
         Dim faceName As String
@@ -242,6 +305,8 @@ Private Sub AppendLShapeFaceSettings(ByRef data As Variant)
     Next i
 End Sub
 
+' Читает текущую табличную компоновку Г-сечения:
+' отдельный блок геометрии, блок основного армирования и блок дополнительных рядов.
 Private Sub AppendLShapeSectionedSettings(ByRef data As Variant)
     AppendSetting "LShape.H1", Trim$(CStr(data(3, 1))), Trim$(CStr(data(3, 1))), "LShape geometry"
     AppendSetting "LShape.B1", Trim$(CStr(data(3, 2))), Trim$(CStr(data(3, 2))), "LShape geometry"
@@ -253,6 +318,8 @@ Private Sub AppendLShapeSectionedSettings(ByRef data As Variant)
     FillLShapeSectionedFaceOrder faceNames, sideIndexes
 
     Dim i As Long
+    ' Восемь строк граней превращаются в ключи с суффиксами _1/_2. Это сохраняет
+    ' понятный ввод на листе и прежний контракт для CLShapeRebarLayoutBuilder.
     For i = 1 To 8
         Dim rowIndex As Long
         rowIndex = 6 + i
@@ -275,6 +342,8 @@ Private Sub AppendLShapeSectionedSettings(ByRef data As Variant)
     Next i
 End Sub
 
+' Задает порядок строк в секционной таблице LShape.
+' _1 означает левую/верхнюю грань, _2 - правую/нижнюю.
 Private Sub FillLShapeSectionedFaceOrder(ByRef faceNames() As String, ByRef sideIndexes() As Long)
     faceNames(1) = "H1": sideIndexes(1) = 1
     faceNames(2) = "H1": sideIndexes(2) = 2
@@ -286,6 +355,9 @@ Private Sub FillLShapeSectionedFaceOrder(ByRef faceNames() As String, ByRef side
     faceNames(8) = "B2": sideIndexes(8) = 2
 End Sub
 
+' Добавляет одну пару ключ-значение в reader.
+' Массивы параллельные: это проще и быстрее для VBA, чем словарь с Variant-объектами,
+' а поиск по ключу остается достаточно дешевым для числа настроек Config.
 Private Sub AppendSetting(ByVal keyValue As String, ByVal settingValue As String, _
         ByVal defaultValue As String, ByVal sourceValue As String)
     mCount = mCount + 1
@@ -299,6 +371,7 @@ Private Sub AppendSetting(ByVal keyValue As String, ByVal settingValue As String
     mSources(mCount) = sourceValue
 End Sub
 
+' Сбрасывает все прочитанные настройки и точки диаграмм.
 Public Sub Clear()
     Erase mKeys
     Erase mValues
@@ -313,6 +386,9 @@ Public Sub Clear()
     mSteelPointCount = 0
 End Sub
 
+' Возвращает строковое значение настройки.
+' Пустая строка и TODO трактуются как отсутствие пользовательского значения,
+' поэтому вызывающий код получает свой defaultValue.
 Public Function GetString(ByVal key As String, Optional ByVal defaultValue As String = vbNullString) As String
     Dim index As Long
     index = FindKey(key)
@@ -325,6 +401,8 @@ Public Function GetString(ByVal key As String, Optional ByVal defaultValue As St
     End If
 End Function
 
+' Возвращает сырую строку без подстановки default при пустом значении.
+' Это нужно для настроек, где пустое значение является ошибкой ввода.
 Public Function GetRawString(ByVal key As String, Optional ByVal defaultValue As String = vbNullString) As String
     Dim index As Long
     index = FindKey(key)
@@ -335,6 +413,7 @@ Public Function GetRawString(ByVal key As String, Optional ByVal defaultValue As
     End If
 End Function
 
+' Возвращает настройку как Double, учитывая десятичный разделитель Excel.
 Public Function GetDouble(ByVal key As String, Optional ByVal defaultValue As Double = 0#) As Double
     Dim textValue As String
     textValue = GetString(key, vbNullString)
@@ -345,16 +424,19 @@ Public Function GetDouble(ByVal key As String, Optional ByVal defaultValue As Do
     End If
 End Function
 
+' Возвращает настройку как Long через тот же числовой путь, что и GetDouble.
 Public Function GetLong(ByVal key As String, Optional ByVal defaultValue As Long = 0) As Long
     GetLong = CLng(GetDouble(key, CDbl(defaultValue)))
 End Function
 
+' Читает булеву настройку из привычных вариантов Yes/No, True/False, 1/0, Да/Нет.
 Public Function GetBoolean(ByVal key As String, Optional ByVal defaultValue As Boolean = False) As Boolean
     Dim textValue As String
     textValue = UCase$(GetString(key, IIf(defaultValue, "YES", "NO")))
     GetBoolean = (textValue = "YES" Or textValue = "TRUE" Or textValue = "1" Or textValue = "ДА")
 End Function
 
+' Возвращает комментарий/источник настройки для диагностических сообщений.
 Public Function GetSource(ByVal key As String) As String
     Dim index As Long
     index = FindKey(key)
@@ -365,19 +447,25 @@ Public Function GetSource(ByVal key As String) As String
     End If
 End Function
 
+' Проверяет наличие ключа в загруженных настройках.
 Public Function HasKey(ByVal key As String) As Boolean
     HasKey = (FindKey(key) > 0)
 End Function
 
+' Количество ключей удобно для тестов структуры Config.
 Public Function KeyCount() As Long
     KeyCount = mCount
 End Function
 
+' Возвращает имя ключа по порядковому номеру для проверок дубликатов и тестов.
 Public Function KeyAt(ByVal index As Long) As String
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 4300, "CSystemSettingsReader", "Setting index is out of range."
     KeyAt = mKeys(index)
 End Function
 
+' Считает повторяющиеся ключи Config.
+' Дубликаты опасны тем, что один и тот же параметр может быть прочитан из двух
+' таблиц с разными значениями.
 Public Function DuplicateCount() As Long
     Dim duplicates As Long
     Dim i As Long
@@ -393,34 +481,42 @@ Public Function DuplicateCount() As Long
     DuplicateCount = duplicates
 End Function
 
+' Количество точек бетонной диаграммы после чтения таблицы.
 Public Function ConcreteDiagramPointCount() As Long
     ConcreteDiagramPointCount = mConcretePointCount
 End Function
 
+' Возвращает деформацию бетонной диаграммы по номеру точки.
 Public Function ConcreteDiagramStrain(ByVal index As Long) As Double
     If index < 1 Or index > mConcretePointCount Then Err.Raise vbObjectError + 4310, "CSystemSettingsReader", "Concrete diagram point index is out of range."
     ConcreteDiagramStrain = mConcreteStrains(index)
 End Function
 
+' Возвращает напряжение бетонной диаграммы в МПа по номеру точки.
 Public Function ConcreteDiagramStress(ByVal index As Long) As Double
     If index < 1 Or index > mConcretePointCount Then Err.Raise vbObjectError + 4311, "CSystemSettingsReader", "Concrete diagram point index is out of range."
     ConcreteDiagramStress = mConcreteStresses(index)
 End Function
 
+' Количество точек диаграммы арматуры после чтения таблицы.
 Public Function SteelDiagramPointCount() As Long
     SteelDiagramPointCount = mSteelPointCount
 End Function
 
+' Возвращает деформацию диаграммы арматуры по номеру точки.
 Public Function SteelDiagramStrain(ByVal index As Long) As Double
     If index < 1 Or index > mSteelPointCount Then Err.Raise vbObjectError + 4312, "CSystemSettingsReader", "Steel diagram point index is out of range."
     SteelDiagramStrain = mSteelStrains(index)
 End Function
 
+' Возвращает напряжение диаграммы арматуры в МПа по номеру точки.
 Public Function SteelDiagramStress(ByVal index As Long) As Double
     If index < 1 Or index > mSteelPointCount Then Err.Raise vbObjectError + 4313, "CSystemSettingsReader", "Steel diagram point index is out of range."
     SteelDiagramStress = mSteelStresses(index)
 End Function
 
+' Ищет ключ линейным проходом по небольшому массиву настроек.
+' Для текущего размера Config словарь не нужен, зато порядок и дубликаты легко тестировать.
 Private Function FindKey(ByVal key As String) As Long
     Dim i As Long
     For i = 1 To mCount
@@ -432,6 +528,9 @@ Private Function FindKey(ByVal key As String) As Long
     FindKey = 0
 End Function
 
+' Читает таблицу точек диаграммы материала.
+' Каждая непустая строка должна содержать номер точки, деформацию и напряжение:
+' частично заполненная строка почти всегда означает ошибку ввода.
 Private Sub LoadDiagramPoints(ByVal pointRange As Object, ByRef strains() As Double, ByRef stresses() As Double, _
         ByRef pointCount As Long, ByVal rangeName As String)
     pointCount = 0
@@ -442,6 +541,8 @@ Private Sub LoadDiagramPoints(ByVal pointRange As Object, ByRef strains() As Dou
     data = pointRange.Value2
 
     Dim rowIndex As Long
+    ' Собираем только реально заполненные строки. Пустые хвосты диапазона
+    ' допускаются, но каждая непустая строка должна быть полной.
     For rowIndex = 1 To UBound(data, 1)
         Dim pointText As String
         Dim strainText As String
@@ -465,9 +566,12 @@ Private Sub LoadDiagramPoints(ByVal pointRange As Object, ByRef strains() As Dou
     If pointCount < 2 Then Err.Raise vbObjectError + 4315, "CSystemSettingsReader", rangeName & " must contain at least two points."
 End Sub
 
+' Возвращает десятичный разделитель текущего Excel.
+' Это позволяет читать точки диаграмм и настройки с точкой или запятой в разных локалях.
 Private Function ApplicationDecimalSeparator() As String
     ApplicationDecimalSeparator = Mid$(CStr(1.1), 2, 1)
 End Function
+
 
 
 

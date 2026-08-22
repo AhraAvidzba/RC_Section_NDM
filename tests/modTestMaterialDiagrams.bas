@@ -1,12 +1,19 @@
 ﻿Attribute VB_Name = "modTestMaterialDiagrams"
 Option Explicit
 
+' ==========================================================================
+' Тесты пользовательских диаграмм материалов
+' ==========================================================================
+' Проверяется кусочно-линейная интерполяция бетона и арматуры по точкам,
+' включая режимы работы растянутого бетона.
+
 Private Type TMaterialTestStats
     Passed As Long
     Failed As Long
     Report As String
 End Type
 
+' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
 Public Function RunMaterialDiagramTests() As String
     On Error GoTo Failed
 
@@ -30,6 +37,7 @@ Failed:
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestConcreteDiagramPoints(ByRef stats As TMaterialTestStats)
     Dim mat As CConcreteDiagramMaterial
     Set mat = New CConcreteDiagramMaterial
@@ -42,6 +50,7 @@ Private Sub TestConcreteDiagramPoints(ByRef stats As TMaterialTestStats)
     AssertClose stats, "conc.points.secondTangent", mat.GetTangentModulus(-0.0025), 0#, 0.000000000001
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestConcreteThreePointDiagram(ByRef stats As TMaterialTestStats)
     Dim mat As CConcreteDiagramMaterial
     Set mat = New CConcreteDiagramMaterial
@@ -53,6 +62,7 @@ Private Sub TestConcreteThreePointDiagram(ByRef stats As TMaterialTestStats)
     AssertClose stats, "conc.threePoints.ultimate", mat.GetStress(-0.004), -18#, 0.000000000001
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestSteelThreePointDiagram(ByRef stats As TMaterialTestStats)
     Dim mat As CSteelDiagramMaterial
     Set mat = New CSteelDiagramMaterial
@@ -64,6 +74,7 @@ Private Sub TestSteelThreePointDiagram(ByRef stats As TMaterialTestStats)
     AssertClose stats, "steel.threePoints.compression", mat.GetStress(-0.0175), -385#, 0.000000000001
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestSteelDiagramPoints(ByRef stats As TMaterialTestStats)
     Dim mat As CSteelDiagramMaterial
     Set mat = New CSteelDiagramMaterial
@@ -76,6 +87,7 @@ Private Sub TestSteelDiagramPoints(ByRef stats As TMaterialTestStats)
     AssertClose stats, "steel.points.secondTangent", mat.GetTangentModulus(0.01), 0#, 0.000000000001
 End Sub
 
+' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestInvalidParameters(ByRef stats As TMaterialTestStats)
     On Error GoTo ConcreteError
     Dim concrete As CConcreteDiagramMaterial
@@ -134,6 +146,7 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
 
 
 
