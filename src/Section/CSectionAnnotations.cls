@@ -54,8 +54,8 @@ Public Sub AddAnnotation(ByVal annotationType As String, ByVal annotationID As S
         ByVal normalX As Double, ByVal normalY As Double, ByVal offset As Double, _
         ByVal textValue As String, ByVal numericValue As Double, ByVal unitText As String, _
         ByVal commentValue As String)
-    If Len(Trim$(annotationType)) = 0 Then Err.Raise vbObjectError + 5280, "CSectionAnnotations", "Annotation type is empty."
-    If Len(Trim$(annotationID)) = 0 Then Err.Raise vbObjectError + 5281, "CSectionAnnotations", "Annotation ID is empty."
+    If Len(Trim$(annotationType)) = 0 Then Err.Raise vbObjectError + 5280, "CSectionAnnotations", "Тип аннотации не задан."
+    If Len(Trim$(annotationID)) = 0 Then Err.Raise vbObjectError + 5281, "CSectionAnnotations", "ID аннотации не задан."
 
     mCount = mCount + 1
     ReDim Preserve mType(1 To mCount)
@@ -180,6 +180,6 @@ Public Property Get Comment(ByVal index As Long) As String
 End Property
 
 Private Sub CheckIndex(ByVal index As Long)
-    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5282, "CSectionAnnotations", "Annotation index is out of range."
+    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5282, "CSectionAnnotations", "Индекс аннотации вне допустимого диапазона."
 End Sub
 

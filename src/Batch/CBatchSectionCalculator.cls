@@ -48,6 +48,8 @@ Private mInputValid(1 To MAX_COMBINATIONS) As Boolean ' False, если стро
 Private mInputError(1 To MAX_COMBINATIONS) As String ' Текст причины InvalidInput для конкретного LC.
 Private mLoadReferenceX As Double ' X точки приложения нагрузки относительно расчетной модели, мм.
 Private mLoadReferenceY As Double ' Y точки приложения нагрузки относительно расчетной модели, мм.
+Private mLoadReferenceOffsetX As Double ' Пользовательское смещение точки нагрузки от приведенного центра тяжести по X, мм.
+Private mLoadReferenceOffsetY As Double ' Пользовательское смещение точки нагрузки от приведенного центра тяжести по Y, мм.
 
 Private mStatus(1 To MAX_COMBINATIONS) As String ' Итоговый сводный статус LC.
 Private mCapacityStatus(1 To MAX_COMBINATIONS) As String ' Статус поиска несущей способности.
@@ -56,6 +58,15 @@ Private mStrengthCheckStatus(1 To MAX_COMBINATIONS) As String ' Простая �
 Private mCrackStatus(1 To MAX_COMBINATIONS) As String ' Статус расчета трещин для второй группы.
 Private mLambdaCapacity(1 To MAX_COMBINATIONS) As Double ' Найденный множитель несущей способности.
 Private mUtilCapacity(1 To MAX_COMBINATIONS) As Double ' Использование по несущей способности, обычно 1/lambda.
+Private mMomentUltimate(1 To MAX_COMBINATIONS) As Double ' Результирующий предельный момент Mxy при заданной N, Н*мм.
+Private mCapacityStateAvailable(1 To MAX_COMBINATIONS) As Boolean ' True, если сохранена плоскость деформаций именно предельного capacity-состояния.
+Private mCapacityEpsilon0(1 To MAX_COMBINATIONS) As Double ' epsilon0 в состоянии найденного предельного момента, а не в фактическом LC.
+Private mCapacityKappaX(1 To MAX_COMBINATIONS) As Double ' kappaX в состоянии найденного предельного момента.
+Private mCapacityKappaY(1 To MAX_COMBINATIONS) As Double ' kappaY в состоянии найденного предельного момента.
+Private mMinConcreteStrain(1 To MAX_COMBINATIONS) As Double ' Наиболее сжатая деформация бетона в фактическом НДС LC.
+Private mMaxConcreteStrain(1 To MAX_COMBINATIONS) As Double ' Наиболее растянутая деформация бетона в фактическом НДС LC.
+Private mMinSteelStrain(1 To MAX_COMBINATIONS) As Double ' Наиболее сжатая деформация арматуры в фактическом НДС LC.
+Private mMaxSteelStrain(1 To MAX_COMBINATIONS) As Double ' Наиболее растянутая деформация арматуры в фактическом НДС LC.
 Private mCrackWidth(1 To MAX_COMBINATIONS) As Double ' Расчетная ширина раскрытия трещины, мм.
 Private mCrackAllowableValue(1 To MAX_COMBINATIONS) As Double ' Нормативный/пользовательский предел a_crc,ult, мм.
 Private mCrackUtil(1 To MAX_COMBINATIONS) As Double ' Использование по ширине трещины.
@@ -74,11 +85,15 @@ Private mCrackLs(1 To MAX_COMBINATIONS) As Double ' Расчетное ls пос
 Private mCrackLambdaCrc(1 To MAX_COMBINATIONS) As Double ' Множитель нагрузки в момент образования трещины.
 Private mCrackNcrc(1 To MAX_COMBINATIONS) As Double ' Усилие образования трещины для центрального растяжения, Н.
 Private mCrackTensionRebarCount(1 To MAX_COMBINATIONS) As Long ' Количество стержней, вошедших в As.
+Private mCrackSectionDepthH(1 To MAX_COMBINATIONS) As Double ' Полная высота h по нормали к нейтральной линии для расчета трещин, мм.
+Private mCrackCoverA(1 To MAX_COMBINATIONS) As Double ' Расстояние a от растянутого края до оси крайнего стержня, мм.
+Private mCrackTensionDepth(1 To MAX_COMBINATIONS) As Double ' Высота фактической растянутой зоны бетона, мм.
 Private mCrackEffectiveZoneDepth(1 To MAX_COMBINATIONS) As Double ' Фактическая глубина зоны Abt, мм.
 Private mCrackCentralBranch(1 To MAX_COMBINATIONS) As Boolean ' True, если использована ветка центрального растяжения.
 Private mStrainSafetyFactor(1 To MAX_COMBINATIONS) As Double ' Ориентировочный запас по деформациям для DirectState.
 Private mGoverningUtil(1 To MAX_COMBINATIONS) As Double ' Максимальное использование из доступных проверок LC.
 Private mGoverningCombinationIndex As Long ' Индекс LC, который стал определяющим в batch summary.
+Private mCrackGoverningCombinationIndex As Long ' Индекс LC с минимальным запасом по раскрытию трещин.
 Private mElapsedSeconds As Double ' Полное время пакетного расчета, сек.
 Private mDiagnosticLog As String ' Короткий текстовый журнал по LC для отладки batch-потока.
 Private mStateAvailable(1 To MAX_COMBINATIONS) As Boolean ' True, если для LC сохранена плоскость деформаций.
@@ -255,10 +270,13 @@ End Sub
 Public Sub ClearCombinations()
     mCount = 0
     mGoverningCombinationIndex = 0
+    mCrackGoverningCombinationIndex = 0
     mElapsedSeconds = 0#
     mDiagnosticLog = vbNullString
     mLoadReferenceX = 0#
     mLoadReferenceY = 0#
+    mLoadReferenceOffsetX = 0#
+    mLoadReferenceOffsetY = 0#
 End Sub
 
 ' Добавляет корректно прочитанное сочетание нагрузок.
@@ -296,9 +314,12 @@ End Sub
 ' Переносит пользовательские моменты из точки приложения нагрузки к координатам элементов.
 ' Пользователь задает Mx/My относительно выбранной точки нагрузки, а solver
 ' должен получить моменты относительно внутренней системы координат CSectionModel.
-Public Sub ApplyLoadReference(ByVal referenceX As Double, ByVal referenceY As Double)
+Public Sub ApplyLoadReference(ByVal referenceX As Double, ByVal referenceY As Double, _
+        Optional ByVal baseX As Double = 0#, Optional ByVal baseY As Double = 0#)
     mLoadReferenceX = referenceX
     mLoadReferenceY = referenceY
+    mLoadReferenceOffsetX = referenceX - baseX
+    mLoadReferenceOffsetY = referenceY - baseY
 
     Dim i As Long
     ' Эквивалентный перенос момента от продольной силы:
@@ -319,6 +340,7 @@ Public Sub Execute()
     Dim t0 As Double
     t0 = Timer
     mGoverningCombinationIndex = 0
+    mCrackGoverningCombinationIndex = 0
     mDiagnosticLog = vbNullString
     ReportStep "Начат пакетный расчет. Количество сочетаний: " & CStr(mCount) & "."
 
@@ -333,6 +355,9 @@ Public Sub Execute()
                 mGoverningCombinationIndex = i
             ElseIf IsBetterGoverningCandidate(i, mGoverningCombinationIndex) Then
                 mGoverningCombinationIndex = i
+            End If
+            If IsBetterCrackGoverningCandidate(i, mCrackGoverningCombinationIndex) Then
+                mCrackGoverningCombinationIndex = i
             End If
         End If
     Next i
@@ -366,7 +391,7 @@ Private Sub RunCombination(ByVal index As Long)
     ReportValue "My расчетный", FormatNumberInvariant(mMy(index)) & " Н*мм"
     If Len(calculationType) = 0 Then
         ReportStep "Сочетание не рассчитано: CalculationType должен быть Group1 или Group2."
-        MarkInvalid index, "CalculationType must be Group1 or Group2."
+        MarkInvalid index, "CalculationType должен быть Group1 или Group2."
         Exit Sub
     End If
 
@@ -483,6 +508,9 @@ Private Sub RunSectionStateAndCrack(ByVal index As Long, ByVal crackRequested As
     mCrackLambdaCrc(index) = crack.LambdaCrc
     mCrackNcrc(index) = crack.Ncrc
     mCrackTensionRebarCount(index) = crack.TensionRebarCount
+    mCrackSectionDepthH(index) = crack.SectionDepthH
+    mCrackCoverA(index) = crack.CoverA
+    mCrackTensionDepth(index) = crack.TensionDepth
     mCrackEffectiveZoneDepth(index) = crack.EffectiveZoneDepth
     mCrackCentralBranch(index) = crack.CentralTensionBranch
     ReportValue "CrackStatus", mCrackStatus(index)
@@ -576,9 +604,23 @@ Private Sub StoreCapacity(ByVal index As Long, ByVal cap As CCapacitySolver)
     mCapacityStatus(index) = statusText
     mCapacityLimitState(index) = cap.LimitState
     mLambdaCapacity(index) = cap.LambdaUltimate
+    mMomentUltimate(index) = cap.MomentUltimate
     If cap.LambdaUltimate > 0# Then mUtilCapacity(index) = 1# / cap.LambdaUltimate
     If cap.Converged Then mUtilCapacity(index) = cap.Utilization
     mStrengthCheckStatus(index) = StrengthStatusFromLambda(cap)
+
+    ' h/x в блоке предельного момента должны относиться к найденному
+    ' предельному состоянию, а не к фактическому НДС LC. Поэтому сохраняем
+    ' отдельную плоскость деформаций только когда capacity-поиск действительно
+    ' дал физически принятое предельное состояние.
+    If cap.Converged And cap.MomentUltimate > 0# Then
+        If Not cap.LastSolver Is Nothing Then
+            mCapacityStateAvailable(index) = True
+            mCapacityEpsilon0(index) = cap.LastSolver.Epsilon0
+            mCapacityKappaX(index) = cap.LastSolver.KappaX
+            mCapacityKappaY(index) = cap.LastSolver.KappaY
+        End If
+    End If
 End Sub
 
 ' Фиксирует InvalidInput по конкретному LC и не дает этому сочетанию пройти
@@ -690,8 +732,15 @@ Private Sub ClearResultRow(ByVal index As Long)
     mCrackPhi1(index) = 0#: mCrackPhi2(index) = 0#: mCrackPhi3(index) = 0#: mCrackPsiS(index) = 0#
     mCrackSigmaS(index) = 0#: mCrackSigmaSCrc(index) = 0#
     mCrackAs(index) = 0#: mCrackAbt(index) = 0#: mCrackDsEquivalent(index) = 0#
+    mMomentUltimate(index) = 0#
+    mCapacityStateAvailable(index) = False
+    mCapacityEpsilon0(index) = 0#: mCapacityKappaX(index) = 0#: mCapacityKappaY(index) = 0#
+    mMinConcreteStrain(index) = 0#: mMaxConcreteStrain(index) = 0#
+    mMinSteelStrain(index) = 0#: mMaxSteelStrain(index) = 0#
     mCrackLsRaw(index) = 0#: mCrackLs(index) = 0#: mCrackLambdaCrc(index) = 0#: mCrackNcrc(index) = 0#
-    mCrackTensionRebarCount(index) = 0#: mCrackEffectiveZoneDepth(index) = 0#: mCrackCentralBranch(index) = False
+    mCrackTensionRebarCount(index) = 0#
+    mCrackSectionDepthH(index) = 0#: mCrackCoverA(index) = 0#: mCrackTensionDepth(index) = 0#
+    mCrackEffectiveZoneDepth(index) = 0#: mCrackCentralBranch(index) = False
     mStrainSafetyFactor(index) = 0#: mGoverningUtil(index) = 0#
     mStateAvailable(index) = False
     mStateConverged(index) = False
@@ -712,6 +761,10 @@ Private Sub StoreSectionState(ByVal index As Long, ByVal solver As CSectionSolve
     mNint(index) = solver.Nint
     mMxint(index) = solver.Mxint
     mMyint(index) = solver.Myint
+    mMinConcreteStrain(index) = solver.MinConcreteStrain
+    mMaxConcreteStrain(index) = solver.MaxConcreteStrain
+    mMinSteelStrain(index) = solver.MinSteelStrain
+    mMaxSteelStrain(index) = solver.MaxSteelStrain
     mResidualN(index) = solver.ResidualN
     mResidualMx(index) = solver.ResidualMx
     mResidualMy(index) = solver.ResidualMy
@@ -820,6 +873,10 @@ Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
 
+Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
+    If a < b Then MinDouble = a Else MinDouble = b
+End Function
+
 ' Считает ориентировочный запас по деформациям для DirectState.
 ' Дополнительный solve не выполняется: используется уже найденное состояние LC.
 Private Function CalculateStrainSafetyFactor(ByVal solver As CSectionSolver) As Double
@@ -853,23 +910,81 @@ Private Function StrainUtilization(ByVal index As Long) As Double
     If mStrainSafetyFactor(index) > 0# Then StrainUtilization = 1# / mStrainSafetyFactor(index)
 End Function
 
-' Выбирает худшее сочетание для batch summary.
-' Сначала сравнивается lambda, если она есть у обоих LC; для DirectState или
-' не рассчитанной capacity используется общий governing utilization.
+' Выбирает худшее сочетание для batch summary и режима Worst.
+' По пользовательскому требованию Worst относится именно к прочности: сравниваем
+' минимальный запас между деформационной проверкой и запасом по моменту, но не
+' включаем ширину трещин в выбор определяющего LC.
 Private Function IsBetterGoverningCandidate(ByVal candidateIndex As Long, ByVal currentIndex As Long) As Boolean
-    Dim candidateLambda As Double
-    Dim currentLambda As Double
-    candidateLambda = mLambdaCapacity(candidateIndex)
-    currentLambda = mLambdaCapacity(currentIndex)
+    Dim candidateSafety As Double
+    Dim currentSafety As Double
+    candidateSafety = StrengthSafetyFactorForGoverning(candidateIndex)
+    currentSafety = StrengthSafetyFactorForGoverning(currentIndex)
 
-    If candidateLambda > 0# And currentLambda > 0# Then
-        IsBetterGoverningCandidate = (candidateLambda < currentLambda)
-    ElseIf candidateLambda > 0# Then
-        IsBetterGoverningCandidate = True
-    ElseIf currentLambda > 0# Then
+    If candidateSafety <= 0# Then
         IsBetterGoverningCandidate = False
+    ElseIf currentSafety <= 0# Then
+        IsBetterGoverningCandidate = True
     Else
-        IsBetterGoverningCandidate = (mGoverningUtil(candidateIndex) > mGoverningUtil(currentIndex))
+        IsBetterGoverningCandidate = (candidateSafety < currentSafety)
+    End If
+End Function
+
+' Возвращает один прочностной запас LC: минимум между запасом по деформациям
+' и запасом по предельному моменту. Если предельный момент посчитан, именно
+' MomentSafetyFactor является основным прочностным запасом LC; иначе берется
+' StrainSafetyFactor из прямого НДС. Трещины сюда принципиально не входят.
+Private Function StrengthSafetyFactorForGoverning(ByVal index As Long) As Double
+    Dim momentSafety As Double
+    momentSafety = MomentSafetyFactorForGoverning(index)
+    If momentSafety > 0# Then
+        StrengthSafetyFactorForGoverning = momentSafety
+    Else
+        StrengthSafetyFactorForGoverning = mStrainSafetyFactor(index)
+    End If
+End Function
+
+' Сравнивает только запасы по раскрытию трещин. Нулевой запас означает, что
+' проверка трещин для LC не считалась или ширина раскрытия равна нулю.
+Private Function IsBetterCrackGoverningCandidate(ByVal candidateIndex As Long, ByVal currentIndex As Long) As Boolean
+    Dim candidateSafety As Double
+    Dim currentSafety As Double
+    candidateSafety = CrackSafetyFactorForGoverning(candidateIndex)
+    If candidateSafety <= 0# Then Exit Function
+
+    If currentIndex <= 0 Then
+        IsBetterCrackGoverningCandidate = True
+    Else
+        currentSafety = CrackSafetyFactorForGoverning(currentIndex)
+        IsBetterCrackGoverningCandidate = (currentSafety <= 0# Or candidateSafety < currentSafety)
+    End If
+End Function
+
+' Возвращает запас по трещинам как величину, обратную использованию.
+Private Function CrackSafetyFactorForGoverning(ByVal index As Long) As Double
+    If mCrackUtil(index) > 0# Then CrackSafetyFactorForGoverning = 1# / mCrackUtil(index)
+End Function
+
+' Считает тот же запас по моменту, который выводится в rngBatchSummary:
+' отношение найденного несущего результирующего момента к действующему Mxy.
+' LambdaCapacity здесь не используем, чтобы выбор Worst и таблица Results
+' опирались на один физический показатель.
+Private Function MomentSafetyFactorForGoverning(ByVal index As Long) As Double
+    Dim appliedMoment As Double
+    appliedMoment = Sqr(mUserMx(index) * mUserMx(index) + mUserMy(index) * mUserMy(index))
+    If appliedMoment > 0# And mMomentUltimate(index) > 0# Then
+        MomentSafetyFactorForGoverning = mMomentUltimate(index) / appliedMoment
+    End If
+End Function
+
+' Берет минимальное положительное значение из двух запасов.
+' Нулевые значения означают, что соответствующая проверка не рассчитана.
+Private Function PositiveMin(ByVal firstValue As Double, ByVal secondValue As Double) As Double
+    If firstValue > 0# And secondValue > 0# Then
+        PositiveMin = MinDouble(firstValue, secondValue)
+    ElseIf firstValue > 0# Then
+        PositiveMin = firstValue
+    ElseIf secondValue > 0# Then
+        PositiveMin = secondValue
     End If
 End Function
 
@@ -922,6 +1037,14 @@ Public Property Get LoadReferenceY() As Double
     LoadReferenceY = mLoadReferenceY
 End Property
 
+Public Property Get LoadReferenceOffsetX() As Double
+    LoadReferenceOffsetX = mLoadReferenceOffsetX
+End Property
+
+Public Property Get LoadReferenceOffsetY() As Double
+    LoadReferenceOffsetY = mLoadReferenceOffsetY
+End Property
+
 Public Property Get Status(ByVal index As Long) As String
     Status = mStatus(index)
 End Property
@@ -948,6 +1071,42 @@ End Property
 
 Public Property Get UtilizationCapacity(ByVal index As Long) As Double
     UtilizationCapacity = mUtilCapacity(index)
+End Property
+
+Public Property Get MomentUltimate(ByVal index As Long) As Double
+    MomentUltimate = mMomentUltimate(index)
+End Property
+
+Public Property Get CapacityStateAvailable(ByVal index As Long) As Boolean
+    CapacityStateAvailable = mCapacityStateAvailable(index)
+End Property
+
+Public Property Get CapacityEpsilon0(ByVal index As Long) As Double
+    CapacityEpsilon0 = mCapacityEpsilon0(index)
+End Property
+
+Public Property Get CapacityKappaX(ByVal index As Long) As Double
+    CapacityKappaX = mCapacityKappaX(index)
+End Property
+
+Public Property Get CapacityKappaY(ByVal index As Long) As Double
+    CapacityKappaY = mCapacityKappaY(index)
+End Property
+
+Public Property Get MinConcreteStrain(ByVal index As Long) As Double
+    MinConcreteStrain = mMinConcreteStrain(index)
+End Property
+
+Public Property Get MaxConcreteStrain(ByVal index As Long) As Double
+    MaxConcreteStrain = mMaxConcreteStrain(index)
+End Property
+
+Public Property Get MinSteelStrain(ByVal index As Long) As Double
+    MinSteelStrain = mMinSteelStrain(index)
+End Property
+
+Public Property Get MaxSteelStrain(ByVal index As Long) As Double
+    MaxSteelStrain = mMaxSteelStrain(index)
 End Property
 
 Public Property Get CrackWidth(ByVal index As Long) As Double
@@ -1022,6 +1181,18 @@ Public Property Get CrackTensionRebarCount(ByVal index As Long) As Long
     CrackTensionRebarCount = mCrackTensionRebarCount(index)
 End Property
 
+Public Property Get CrackSectionDepthH(ByVal index As Long) As Double
+    CrackSectionDepthH = mCrackSectionDepthH(index)
+End Property
+
+Public Property Get CrackCoverA(ByVal index As Long) As Double
+    CrackCoverA = mCrackCoverA(index)
+End Property
+
+Public Property Get CrackTensionDepth(ByVal index As Long) As Double
+    CrackTensionDepth = mCrackTensionDepth(index)
+End Property
+
 Public Property Get CrackEffectiveZoneDepth(ByVal index As Long) As Double
     CrackEffectiveZoneDepth = mCrackEffectiveZoneDepth(index)
 End Property
@@ -1038,6 +1209,26 @@ Public Property Get GoverningUtilization(ByVal index As Long) As Double
     GoverningUtilization = mGoverningUtil(index)
 End Property
 
+Public Property Get CapacityConcreteCompressionLimit() As Double
+    CapacityConcreteCompressionLimit = mCapacityConcreteCompressionLimit
+End Property
+
+Public Property Get CapacityConcreteTensionLimit() As Double
+    CapacityConcreteTensionLimit = mCapacityConcreteTensionLimit
+End Property
+
+Public Property Get CapacitySteelStrainLimit() As Double
+    CapacitySteelStrainLimit = mCapacitySteelStrainLimit
+End Property
+
+Public Property Get ConcreteTensionMode() As String
+    ConcreteTensionMode = mConcreteTensionMode
+End Property
+
+Public Property Get CrackSteelElasticModulus() As Double
+    CrackSteelElasticModulus = mCrackSteelEs
+End Property
+
 Public Property Get GoverningCombinationIndex() As Long
     GoverningCombinationIndex = mGoverningCombinationIndex
 End Property
@@ -1048,6 +1239,18 @@ End Property
 
 Public Property Get GoverningCombinationName() As String
     If mGoverningCombinationIndex > 0 Then GoverningCombinationName = mComment(mGoverningCombinationIndex)
+End Property
+
+Public Property Get CrackGoverningCombinationIndex() As Long
+    CrackGoverningCombinationIndex = mCrackGoverningCombinationIndex
+End Property
+
+Public Property Get CrackGoverningCombinationID() As String
+    If mCrackGoverningCombinationIndex > 0 Then CrackGoverningCombinationID = mCombinationID(mCrackGoverningCombinationIndex)
+End Property
+
+Public Property Get CrackGoverningCombinationName() As String
+    If mCrackGoverningCombinationIndex > 0 Then CrackGoverningCombinationName = mComment(mCrackGoverningCombinationIndex)
 End Property
 
 Public Property Get ElapsedSeconds() As Double

@@ -37,8 +37,8 @@ Private mPrincipalRadius2 As Double
 Private mLastCalculationSeconds As Double
 
 Public Sub CalculateConcrete(ByVal section As CSectionModel)
-    If section Is Nothing Then Err.Raise vbObjectError + 2200, "CSectionPropertiesCalculator", "Section model is missing."
-    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 2201, "CSectionPropertiesCalculator", "Section model has no concrete elements."
+    If section Is Nothing Then Err.Raise vbObjectError + 2200, "CSectionPropertiesCalculator", "Модель сечения не передана."
+    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 2201, "CSectionPropertiesCalculator", "В модели сечения нет бетонных элементов."
 
     Clear
 
@@ -63,7 +63,7 @@ Public Sub CalculateConcrete(ByVal section As CSectionModel)
         mIxy = mIxy + a * x * y
     Next i
 
-    If mArea <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2202, "CSectionPropertiesCalculator", "Section area is zero."
+    If mArea <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2202, "CSectionPropertiesCalculator", "Площадь сечения равна нулю."
 
     FinalizeProperties t0
 End Sub
@@ -72,10 +72,10 @@ Public Sub CalculateTransformed(ByVal section As CSectionModel, _
         ByVal concrete As Object, ByVal steel As Object)
     Const probeStrain As Double = -0.000001
 
-    If section Is Nothing Then Err.Raise vbObjectError + 2203, "CSectionPropertiesCalculator", "Section model is missing."
-    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 2204, "CSectionPropertiesCalculator", "Section model has no concrete elements."
-    If concrete Is Nothing Then Err.Raise vbObjectError + 2205, "CSectionPropertiesCalculator", "Concrete material is not set."
-    If steel Is Nothing Then Err.Raise vbObjectError + 2206, "CSectionPropertiesCalculator", "Steel material is not set."
+    If section Is Nothing Then Err.Raise vbObjectError + 2203, "CSectionPropertiesCalculator", "Модель сечения не передана."
+    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 2204, "CSectionPropertiesCalculator", "В модели сечения нет бетонных элементов."
+    If concrete Is Nothing Then Err.Raise vbObjectError + 2205, "CSectionPropertiesCalculator", "Материал бетона не передан."
+    If steel Is Nothing Then Err.Raise vbObjectError + 2206, "CSectionPropertiesCalculator", "Материал арматуры не передан."
 
     Clear
 
@@ -101,7 +101,7 @@ Public Sub CalculateTransformed(ByVal section As CSectionModel, _
         Next i
     End If
 
-    If mArea <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2207, "CSectionPropertiesCalculator", "Transformed section area is zero."
+    If mArea <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2207, "CSectionPropertiesCalculator", "Площадь приведенного сечения равна нулю."
 
     FinalizeProperties t0
 End Sub

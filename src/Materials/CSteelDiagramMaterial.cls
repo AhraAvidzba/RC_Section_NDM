@@ -51,9 +51,9 @@ End Sub
 ' По заданной растянутой ветви автоматически создается такая же сжатая ветвь.
 Public Sub InitializeFromTwoTensionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
         ByVal eps2 As Double, ByVal stress2 As Double)
-    If eps1 <= 0# Then Err.Raise vbObjectError + 3120, "CSteelDiagramMaterial", "first tension strain must be positive."
-    If eps2 <= eps1 Then Err.Raise vbObjectError + 3121, "CSteelDiagramMaterial", "second tension strain must be greater than first."
-    If stress1 <= 0# Or stress2 <= 0# Then Err.Raise vbObjectError + 3122, "CSteelDiagramMaterial", "Steel tension stresses must be positive."
+    If eps1 <= 0# Then Err.Raise vbObjectError + 3120, "CSteelDiagramMaterial", "Первая деформация растяжения арматуры должна быть положительной."
+    If eps2 <= eps1 Then Err.Raise vbObjectError + 3121, "CSteelDiagramMaterial", "Вторая деформация растяжения арматуры должна быть больше первой."
+    If stress1 <= 0# Or stress2 <= 0# Then Err.Raise vbObjectError + 3122, "CSteelDiagramMaterial", "Напряжения растяжения арматуры должны быть положительными."
 
     ReDim mStrains(1 To 5)
     ReDim mStresses(1 To 5)
@@ -74,10 +74,10 @@ End Sub
 ' Тестовый конструктор симметричной трехточечной диаграммы арматуры.
 Public Sub InitializeFromThreeTensionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
         ByVal eps2 As Double, ByVal stress2 As Double, ByVal eps3 As Double, ByVal stress3 As Double)
-    If eps1 <= 0# Then Err.Raise vbObjectError + 3120, "CSteelDiagramMaterial", "first tension strain must be positive."
-    If eps2 <= eps1 Then Err.Raise vbObjectError + 3121, "CSteelDiagramMaterial", "second tension strain must be greater than first."
-    If eps3 <= eps2 Then Err.Raise vbObjectError + 3124, "CSteelDiagramMaterial", "third tension strain must be greater than second."
-    If stress1 <= 0# Or stress2 <= 0# Or stress3 <= 0# Then Err.Raise vbObjectError + 3122, "CSteelDiagramMaterial", "Steel tension stresses must be positive."
+    If eps1 <= 0# Then Err.Raise vbObjectError + 3120, "CSteelDiagramMaterial", "Первая деформация растяжения арматуры должна быть положительной."
+    If eps2 <= eps1 Then Err.Raise vbObjectError + 3121, "CSteelDiagramMaterial", "Вторая деформация растяжения арматуры должна быть больше первой."
+    If eps3 <= eps2 Then Err.Raise vbObjectError + 3124, "CSteelDiagramMaterial", "Третья деформация растяжения арматуры должна быть больше второй."
+    If stress1 <= 0# Or stress2 <= 0# Or stress3 <= 0# Then Err.Raise vbObjectError + 3122, "CSteelDiagramMaterial", "Напряжения растяжения арматуры должны быть положительными."
 
     ReDim mStrains(1 To 7)
     ReDim mStresses(1 To 7)

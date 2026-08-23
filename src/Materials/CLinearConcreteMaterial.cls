@@ -19,7 +19,7 @@ Option Explicit
 Private mElasticModulus As Double
 
 Public Sub Initialize(ByVal elasticModulus As Double)
-    If elasticModulus <= 0# Then Err.Raise vbObjectError + 3000, "CLinearConcreteMaterial", "Concrete modulus must be positive."
+    If elasticModulus <= 0# Then Err.Raise vbObjectError + 3000, "CLinearConcreteMaterial", "Модуль упругости бетона должен быть положительным."
     mElasticModulus = elasticModulus
 End Sub
 

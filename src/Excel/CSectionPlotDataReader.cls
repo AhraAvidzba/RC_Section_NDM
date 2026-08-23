@@ -23,6 +23,7 @@ Option Explicit
 Private mResultType As String ' Что сейчас визуализируется: Stress или Strain.
 Private mLoadCase As String ' LC, выбранный для схемы после обработки Worst/конкретного ID.
 Private mLoadCaseComment As String ' Комментарий LC для заголовка схемы.
+Private mGeometryOnly As Boolean ' True для preview импортированной геометрии без расчетных результатов.
 Private mResultUnit As String ' Единица выбранной величины из сохраненных Results.
 Private mResultCaption As String ' Название выбранной величины для легенды.
 Private mLengthUnit As String ' Единица длины, в которой записаны координаты Results.
@@ -70,6 +71,7 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemS
     If workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
     If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки Config не переданы."
 
+    ResetReaderState
     mResultType = NormalizeResultType(settings.GetString("Plot.ResultType", "Stress"))
     mLoadCase = ResolveLoadCase(workbook, settings.GetString("Plot.LoadCase", "Worst"))
 
@@ -78,9 +80,30 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemS
     ReadAnnotations workbook
 End Sub
 
+' Загружает геометрию последнего AutoCAD import для визуального контроля.
+' Расчетные результаты и нейтральная линия не читаются, но сохраненные
+' габаритные аннотации по Bounds можно показать сразу после импорта.
+Public Sub LoadGeometryPreviewFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemSettingsReader)
+    If workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
+    If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки Config не переданы."
+
+    ResetReaderState
+    mGeometryOnly = True
+    mResultType = "Stress"
+    mLoadCase = "AutoCAD import"
+
+    ReadSectionProperties workbook
+    mResultCaption = "Геометрия"
+    mResultUnit = "-"
+    ReadGeometryPreview workbook
+    ReadAnnotations workbook
+End Sub
+
 ' Определяет, какой LC показывать на схеме.
-' Значение Worst разворачивается в ID определяющего сочетания из batch summary,
-' а конкретный LC используется напрямую.
+' Значение Worst разворачивается в LC из верхней строки batch summary
+' "Определяющее сочетание по прочности". Эта строка формируется batch-слоем
+' по прочностному правилу: MomentSafetyFactor, если он посчитан, иначе
+' StrainSafetyFactor. Общий MinSafetyFactor остается только справочной колонкой.
 Private Function ResolveLoadCase(ByVal workbook As Object, ByVal requested As String) As String
     Dim valueText As String
     valueText = Trim$(requested)
@@ -94,12 +117,12 @@ Private Function ResolveLoadCase(ByVal workbook As Object, ByVal requested As St
 
     Dim data As Variant
     data = workbook.Names.Item("rngBatchSummary").RefersToRange.Value2
-    If UBound(data, 1) >= 2 And UBound(data, 2) >= 2 Then
-        ResolveLoadCase = Trim$(CStr(data(2, 2)))
+    If UBound(data, 1) >= 2 And UBound(data, 2) >= 5 Then
+        ResolveLoadCase = Trim$(SafeText(data(2, 5)))
     End If
     mLoadCaseComment = ReadBatchSummaryComment(workbook, ResolveLoadCase)
     If Len(ResolveLoadCase) = 0 Then Err.Raise vbObjectError + 4702, "CSectionPlotDataReader", _
-        "В rngBatchSummary не найдено определяющее сочетание для Plot.LoadCase = Worst."
+        "В rngBatchSummary не найдено определяющее сочетание по прочности для Plot.LoadCase = Worst."
 End Function
 
 ' Находит комментарий выбранного LC для заголовка схемы.
@@ -113,9 +136,9 @@ Private Function ReadBatchSummaryComment(ByVal workbook As Object, ByVal loadCas
     data = workbook.Names.Item("rngBatchSummary").RefersToRange.Value2
 
     Dim rowIndex As Long
-    For rowIndex = 7 To UBound(data, 1)
-        If StrComp(Trim$(CStr(data(rowIndex, 1))), loadCase, vbTextCompare) = 0 Then
-            ReadBatchSummaryComment = Trim$(CStr(data(rowIndex, 2)))
+    For rowIndex = 9 To UBound(data, 1)
+        If StrComp(Trim$(SafeText(data(rowIndex, 1))), loadCase, vbTextCompare) = 0 Then
+            ReadBatchSummaryComment = Trim$(SafeText(data(rowIndex, 2)))
             Exit Function
         End If
     Next rowIndex
@@ -127,7 +150,7 @@ End Function
 ' сохраненная плоскость деформаций epsilon0/kappaX/kappaY.
 Private Sub ReadSectionProperties(ByVal workbook As Object)
     Dim data As Variant
-    data = workbook.Names.Item("rngNDMSectionProperties").RefersToRange.CurrentRegion.Value2
+    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
     If Not HasRows(data) Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
         "На листе Results нет rngNDMSectionProperties. Сначала выполните расчет."
 
@@ -201,12 +224,12 @@ End Sub
 ' rngNDMElementResults хранит Stress/Strain/PhysicalState по LoadCase.
 Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     Dim geom As Variant
-    geom = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange.CurrentRegion.Value2
+    geom = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
     If Not HasRows(geom) Then Err.Raise vbObjectError + 4704, "CSectionPlotDataReader", _
         "На листе Results нет расчетной геометрии."
 
     Dim results As Variant
-    results = workbook.Names.Item("rngNDMElementResults").RefersToRange.CurrentRegion.Value2
+    results = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
     If Not HasRows(results) Then Err.Raise vbObjectError + 4705, "CSectionPlotDataReader", _
         "На листе Results нет результатов элементов."
 
@@ -256,6 +279,39 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     Next rowIndex
 End Sub
 
+' Читает только постоянную геометрию элементов и добавляет ее в модель схемы
+' с нейтральным состоянием. Этот режим нужен сразу после AutoCAD import.
+Private Sub ReadGeometryPreview(ByVal workbook As Object)
+    Dim geom As Variant
+    geom = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
+    If Not HasRows(geom) Then Err.Raise vbObjectError + 4704, "CSectionPlotDataReader", _
+        "На листе Results нет импортированной геометрии."
+
+    Dim colID As Long: colID = ResultColumn(geom, "ElementID")
+    Dim colType As Long: colType = ResultColumn(geom, "MaterialType")
+    Dim colX As Long: colX = ResultColumn(geom, "X")
+    Dim colY As Long: colY = ResultColumn(geom, "Y")
+    Dim colArea As Long: colArea = ResultColumn(geom, "Area")
+    Dim colDiameter As Long: colDiameter = ResultColumn(geom, "Diameter")
+    Dim colWidth As Long: colWidth = ResultColumn(geom, "Width")
+    Dim colHeight As Long: colHeight = ResultColumn(geom, "Height")
+
+    Dim neutralResult As Variant
+    neutralResult = Array(0#, 0#, "NearZero")
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(geom, 1)
+        Dim elementID As String
+        elementID = Trim$(CStr(geom(rowIndex, colID)))
+        If Len(elementID) > 0 Then
+            AppendElement elementID, CStr(geom(rowIndex, colType)), CDbl(geom(rowIndex, colX)), _
+                CDbl(geom(rowIndex, colY)), CDbl(geom(rowIndex, colArea)), _
+                SafeDouble(geom(rowIndex, colDiameter)), SafeDouble(geom(rowIndex, colWidth)), _
+                SafeDouble(geom(rowIndex, colHeight)), neutralResult
+        End If
+    Next rowIndex
+End Sub
+
 Private Sub AppendElement(ByVal elementID As String, ByVal materialType As String, ByVal xCoord As Double, _
         ByVal yCoord As Double, ByVal area As Double, ByVal diameter As Double, _
         ByVal width As Double, ByVal height As Double, ByVal resultData As Variant)
@@ -295,7 +351,7 @@ End Sub
 Private Sub ReadAnnotations(ByVal workbook As Object)
     On Error GoTo NoAnnotations
     Dim data As Variant
-    data = workbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.CurrentRegion.Value2
+    data = ReadAnchoredResultTable(workbook, "rngNDMSectionAnnotations")
     If Not HasRows(data) Then Exit Sub
 
     Dim colType As Long: colType = ResultColumn(data, "AnnotationType")
@@ -335,6 +391,85 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
 NoAnnotations:
 End Sub
 
+' Сбрасывает внутренние массивы перед новым чтением Results.
+' Reader может переиспользоваться тестами, поэтому нельзя оставлять элементы
+' и аннотации от предыдущей загрузки.
+Private Sub ResetReaderState()
+    mGeometryOnly = False
+    mResultType = vbNullString
+    mLoadCase = vbNullString
+    mLoadCaseComment = vbNullString
+    mResultUnit = vbNullString
+    mResultCaption = vbNullString
+    mLengthUnit = vbNullString
+    mAreaUnit = vbNullString
+    mStressUnit = vbNullString
+    mCurvatureUnit = vbNullString
+    mCount = 0
+    mAnnotationCount = 0
+    mMinX = 0#: mMaxX = 0#: mMinY = 0#: mMaxY = 0#
+    mCentroidX = 0#: mCentroidY = 0#: mPrincipalAngle = 0#
+    mEpsilon0 = 0#: mKappaX = 0#: mKappaY = 0#
+    mLoadReferenceX = 0#: mLoadReferenceY = 0#
+
+    Erase mElementID
+    Erase mMaterialType
+    Erase mX
+    Erase mY
+    Erase mArea
+    Erase mDiameter
+    Erase mWidth
+    Erase mHeight
+    Erase mResultValue
+    Erase mPhysicalState
+    Erase mAnnotationType
+    Erase mAnnotationStartX
+    Erase mAnnotationStartY
+    Erase mAnnotationEndX
+    Erase mAnnotationEndY
+    Erase mAnnotationNormalX
+    Erase mAnnotationNormalY
+    Erase mAnnotationOffset
+    Erase mAnnotationText
+End Sub
+
+' Читает таблицу Results от именованного якоря, не полагаясь на CurrentRegion.
+' Это позволяет размещать человекочитаемый заголовок прямо над таблицей и не
+' включать его в массив данных.
+Private Function ReadAnchoredResultTable(ByVal workbook As Object, ByVal rangeName As String) As Variant
+    Dim anchor As Object
+    Set anchor = workbook.Names.Item(rangeName).RefersToRange
+
+    Dim columnCount As Long
+    columnCount = AnchoredColumnCount(anchor)
+    If columnCount <= 0 Then Exit Function
+
+    Dim rowCount As Long
+    rowCount = AnchoredRowCount(anchor)
+    If rowCount <= 0 Then rowCount = 1
+
+    ReadAnchoredResultTable = anchor.Resize(rowCount, columnCount).Value2
+End Function
+
+' Определяет ширину таблицы по непрерывной строке заголовков от якоря.
+Private Function AnchoredColumnCount(ByVal anchor As Object) As Long
+    Dim colOffset As Long
+    For colOffset = 0 To 255
+        If Len(Trim$(CStr(anchor.Offset(0, colOffset).Value2))) = 0 Then Exit For
+        AnchoredColumnCount = AnchoredColumnCount + 1
+    Next colOffset
+End Function
+
+' Определяет высоту таблицы по первому столбцу. Пустой первый столбец означает
+' конец данных; это соответствует формату всех Results-диапазонов.
+Private Function AnchoredRowCount(ByVal anchor As Object) As Long
+    Dim rowOffset As Long
+    For rowOffset = 0 To 1048575 - anchor.Row
+        If Len(Trim$(CStr(anchor.Offset(rowOffset, 0).Value2))) = 0 Then Exit For
+        AnchoredRowCount = AnchoredRowCount + 1
+    Next rowOffset
+End Function
+
 Private Function NormalizeResultType(ByVal value As String) As String
     Select Case LCase$(Trim$(value))
         Case "stress": NormalizeResultType = "Stress"
@@ -346,8 +481,15 @@ End Function
 ' Безопасно читает числовое поле Results, где часть колонок может быть пустой.
 ' Например Diameter у бетонных элементов не заполняется.
 Private Function SafeDouble(ByVal value As Variant) As Double
+    If IsError(value) Then Exit Function
     If Len(Trim$(CStr(value))) = 0 Then Exit Function
     If IsNumeric(value) Then SafeDouble = CDbl(value)
+End Function
+
+' Превращает значение ячейки в строку без падения на Excel-ошибках.
+Private Function SafeText(ByVal value As Variant) As String
+    If IsError(value) Then Exit Function
+    SafeText = CStr(value)
 End Function
 
 ' Проверяет, что табличный массив содержит хотя бы заголовок и одну строку данных.
@@ -396,6 +538,7 @@ Public Property Get ResultValue(ByVal index As Long) As Double: ResultValue = mR
 Public Property Get PhysicalState(ByVal index As Long) As String: PhysicalState = mPhysicalState(index): End Property
 Public Property Get LoadCase() As String: LoadCase = mLoadCase: End Property
 Public Property Get LoadCaseComment() As String: LoadCaseComment = mLoadCaseComment: End Property
+Public Property Get GeometryOnly() As Boolean: GeometryOnly = mGeometryOnly: End Property
 Public Property Get ResultType() As String: ResultType = mResultType: End Property
 Public Property Get ResultUnit() As String: ResultUnit = mResultUnit: End Property
 Public Property Get ResultCaption() As String: ResultCaption = mResultCaption: End Property

@@ -111,7 +111,7 @@ Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, By
         Optional ByVal rotation As Double = 0#, Optional ByVal comment As String = vbNullString, _
         Optional ByVal localIx As Double = 0#, Optional ByVal localIy As Double = 0#, _
         Optional ByVal localIxy As Double = 0#)
-    If area <= 0# Then Err.Raise vbObjectError + 5200, "CSectionModel", "Concrete element area must be positive."
+    If area <= 0# Then Err.Raise vbObjectError + 5200, "CSectionModel", "Площадь бетонного элемента должна быть положительной."
 
     ' Массивы хранятся параллельно, чтобы горячие расчетные циклы работали без
     ' коллекций и COM-объектов на каждом элементе.
@@ -157,7 +157,7 @@ Public Sub AddRebarElement(ByVal xCoord As Double, ByVal yCoord As Double, _
         ByVal diameter As Double, ByVal area As Double, ByVal steelClass As String, _
         Optional ByVal materialID As Long = 1, Optional ByVal sourceName As String = vbNullString, _
         Optional ByVal sourceHandle As String = vbNullString, Optional ByVal comment As String = vbNullString)
-    If diameter <= 0# Then Err.Raise vbObjectError + 5210, "CSectionModel", "Rebar diameter must be positive."
+    If diameter <= 0# Then Err.Raise vbObjectError + 5210, "CSectionModel", "Диаметр арматуры должен быть положительным."
 
     Dim actualArea As Double ' Площадь, которая реально попадет в расчетную модель.
     If area <= 0# Then
@@ -165,7 +165,7 @@ Public Sub AddRebarElement(ByVal xCoord As Double, ByVal yCoord As Double, _
     Else
         actualArea = area
     End If
-    If actualArea <= 0# Then Err.Raise vbObjectError + 5211, "CSectionModel", "Rebar area must be positive."
+    If actualArea <= 0# Then Err.Raise vbObjectError + 5211, "CSectionModel", "Площадь арматурного элемента должна быть положительной."
 
     ' Нумерация R1/R2/... создается здесь, чтобы у всех источников геометрии
     ' был одинаковый формат расчетных имен.
@@ -340,9 +340,9 @@ Public Property Get AnnotationCount() As Long
 End Property
 
 Private Sub CheckConcreteIndex(ByVal index As Long)
-    If index < 1 Or index > mConcreteCount Then Err.Raise vbObjectError + 5220, "CSectionModel", "Concrete element index is out of range."
+    If index < 1 Or index > mConcreteCount Then Err.Raise vbObjectError + 5220, "CSectionModel", "Индекс бетонного элемента вне допустимого диапазона."
 End Sub
 
 Private Sub CheckRebarIndex(ByVal index As Long)
-    If index < 1 Or index > mRebarCount Then Err.Raise vbObjectError + 5221, "CSectionModel", "Rebar index is out of range."
+    If index < 1 Or index > mRebarCount Then Err.Raise vbObjectError + 5221, "CSectionModel", "Индекс арматурного элемента вне допустимого диапазона."
 End Sub

@@ -262,7 +262,7 @@ function Update-CalculationSheetLayout {
     $left = $calc.Cells.Item(4, 74).Left
     $top = $calc.Cells.Item(4, 74).Top
     Add-Or-Replace-Button $calc "btnRunSectionCalculation" "��������� ������" "RunSectionCalculation" $left $top 5383702
-    Add-Or-Replace-Button $calc "btnClearSectionResults" "�������� ����������" "ClearSectionResults" $left ($top + 36) 8355711
+    Add-Or-Replace-Button $calc "btnClearAutoCADDrawing" "Очистить чертеж AutoCAD" "ClearAutoCADDrawing" $left ($top + 36) 8355711
     Add-Or-Replace-Button $calc "btnExportStressToAutoCAD" "��������� � AutoCAD" "ExportSectionStressToAutoCAD" $left ($top + 72) 10053171
 }
 

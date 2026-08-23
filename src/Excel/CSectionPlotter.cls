@@ -119,7 +119,7 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     ClearGeneratedShapes
     CalculateResultRange data
     AddElementSeries data
-    DrawAnalysisSeries data, settings
+    If Not data.GeometryOnly Then DrawAnalysisSeries data, settings
     DrawShapeDecorations data, settings
 End Sub
 
@@ -548,6 +548,7 @@ Private Sub DrawShapeDecorations(ByVal data As CSectionPlotDataReader, ByVal set
     DrawConcreteContour data
     DrawShapeAnnotations data, settings, settings.GetBoolean("Plot.Dimensions.Enabled", True), _
         settings.GetBoolean("Plot.RebarLabels.Enabled", True)
+    If data.GeometryOnly Then Exit Sub
     If settings.GetBoolean("Plot.ResultLabelsEnabled", False) Then DrawResultLabels data, settings.GetDouble("Plot.ResultLabelSpacing", 100#)
     If settings.GetBoolean("Plot.LegendEnabled", True) Then DrawLegend data
 End Sub
@@ -1445,6 +1446,10 @@ Private Function PlotTitlePrefix() As String
 End Function
 
 Private Function PlotTitleText(ByVal data As CSectionPlotDataReader) As String
+    If data.GeometryOnly Then
+        PlotTitleText = "Импортированная геометрия AutoCAD"
+        Exit Function
+    End If
     PlotTitleText = PlotTitlePrefix() & data.LoadCase
     If Len(Trim$(data.LoadCaseComment)) > 0 Then PlotTitleText = PlotTitleText & " (" & data.LoadCaseComment & ")"
 End Function

@@ -1293,7 +1293,7 @@ CBatchResultWriter / CNDMResultsWriter
 
 Перед кодированием нужно уточнить:
 
-1. Точные позиции на листе `Results` зафиксированы горизонтальной полосой под `rngBatchSummary`: `rngNDMElementResults = Results!A32`, `rngNDMSectionGeometry = Results!J32`, `rngNDMSectionProperties = Results!AC32`, `rngNDMSectionAnnotations = Results!AL32`. Каждый следующий якорь расположен через три пустых столбца после конца предыдущей таблицы, поэтому блоки могут расти вниз независимо друг от друга.
+1. Точные позиции на листе `Results` зафиксированы горизонтальной полосой под `rngBatchSummary`: `rngNDMElementResults = Results!A33`, `rngNDMSectionGeometry = Results!I33`, `rngNDMSectionProperties = Results!Z33`, `rngNDMSectionAnnotations = Results!AH33`. Между `rngBatchSummary` и заголовками нижних диапазонов оставлены две пустые строки. Каждый следующий якорь расположен через два пустых столбца после конца предыдущей таблицы, поэтому блоки могут расти вниз независимо друг от друга.
 2. Итоговый формат `rngNDMSectionAnnotations` принят как широкая таблица строк `DIMENSION` и `REBAR_ANNOTATION`.
 3. Нужен ли `GeometrySource` как диагностическое свойство или его не записывать.
 4. Нужны ли `ConcreteCount/RebarCount` для контроля целостности или их вычислять при чтении.

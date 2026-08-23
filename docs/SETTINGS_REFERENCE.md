@@ -30,11 +30,11 @@
 | `rngSteelDiagramPoints` | До 10 точек диаграммы арматуры: `Point / Strain / Stress, <единица INPUT для Stress>`. |
 | `rngLoadCombinations` | До 20 сочетаний нагрузок: `CalculationType = Group1` для расчета по первой группе предельных состояний, `CalculationType = Group2` для расчета трещин по второй группе. |
 | `rngResultSection` | Единый блок результатов `N + Mx + My`. |
-| `rngBatchSummary` | Сводка batch-расчета на `Results!A1:AF29`. |
-| `rngNDMElementResults` | LC-зависимые результаты элементов на `Results!A32`: `RunID`, `LoadCase`, `ElementID`, `Strain`, `Stress`, `PhysicalState`. |
-| `rngNDMSectionGeometry` | Неизменяемая расчетная геометрия snapshot на `Results!J32`: координаты, площадь, размеры/диаметр, материал и локальные характеристики. |
-| `rngNDMSectionProperties` | Общие свойства расчетного snapshot и LC-зависимые свойства уровня сечения на `Results!AC32`: Bounds, центр тяжести, главные оси, единицы output, `Epsilon0/KappaX/KappaY`, точка приложения нагрузки. |
-| `rngNDMSectionAnnotations` | Сохраненные semantic-аннотации оформления на `Results!AL32`: размерные линии и групповые подписи арматуры. |
+| `rngBatchSummary` | Сводка batch-расчета на `Results!A1:AT30`. |
+| `rngNDMElementResults` | LC-зависимые результаты элементов на `Results!A33`: `RunID`, `LoadCase`, `ElementID`, `Strain`, `Stress`, `PhysicalState`. |
+| `rngNDMSectionGeometry` | Неизменяемая расчетная геометрия snapshot на `Results!I33`: координаты, площадь, размеры/диаметр, материал и локальные характеристики. |
+| `rngNDMSectionProperties` | Общие свойства всего сечения и LC-зависимые свойства уровня сечения на `Results!Z33`: Bounds, центр тяжести, главные оси, единицы output, `Epsilon0/KappaX/KappaY`, точка приложения нагрузки. |
+| `rngNDMSectionAnnotations` | Сохраненные semantic-аннотации оформления на `Results!AH33`: размерные линии и групповые подписи арматуры. |
 | `chtNDMSectionPlot` | ChartObject схемы сечения на листе `Расчет`; создается около столбца `AP` и дальше не пересоздается при обновлении. |
 
 ## Единицы И Знаки

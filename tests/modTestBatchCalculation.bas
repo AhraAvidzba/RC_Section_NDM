@@ -29,6 +29,8 @@ Public Function RunBatchCalculationTests() As String
     TestBatchFiveCombinations stats
     AppendLine stats, "RUN: TestBatchGoverningUsesLowestSafetyFactor"
     TestBatchGoverningUsesLowestSafetyFactor stats
+    AppendLine stats, "RUN: TestBatchGoverningCanUseGroup2StrainSafety"
+    TestBatchGoverningCanUseGroup2StrainSafety stats
     AppendLine stats, "RUN: TestLoadReferenceTransformsUserMoments"
     TestLoadReferenceTransformsUserMoments stats
     AppendLine stats, "RUN: TestAxialReferenceRemovesPureCompressionEccentricity"
@@ -204,6 +206,46 @@ Private Sub TestBatchGoverningUsesLowestSafetyFactor(ByRef stats As TBatchTestSt
         (batch.CapacityStatus(2) <> "OK" And batch.StrengthCheckStatus(2) = "NotCalculated")
 End Sub
 
+' Проверяет, что определяющее сочетание по прочности выбирается по минимальному
+' запасу среди всех LC, включая строки второй группы. Это важно для режима
+' Plot/AutoCAD = Worst: эксплуатационное сочетание может иметь более опасные
+' деформации, даже если capacity-поиск для него не запускается.
+Private Sub TestBatchGoverningCanUseGroup2StrainSafety(ByRef stats As TBatchTestStats)
+    Dim oldMode As String
+    Dim oldCrackEnabled As String
+    oldMode = GetSystemSetting("Calculation.Mode")
+    oldCrackEnabled = GetSystemSetting("SLS.Crack.Enabled")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "Calculation.Mode", "DirectState"
+    SetSystemSetting "SLS.Crack.Enabled", "No"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.AddCombination "G1_SAFE", -120000#, -1200000#, -600000#, "Group1", "first group"
+    batch.AddCombination "G2_GOV", -120000#, -5200000#, -2600000#, "Group2", "second group controls strain"
+    batch.Execute
+
+    AssertTrue stats, "batch.governing.group2.strain.order", _
+        batch.StrainSafetyFactor(2) > 0# And batch.StrainSafetyFactor(2) < batch.StrainSafetyFactor(1)
+    AssertTrue stats, "batch.governing.group2.id", batch.GoverningCombinationID = "G2_GOV"
+
+Restore:
+    SetSystemSetting "Calculation.Mode", oldMode
+    SetSystemSetting "SLS.Crack.Enabled", oldCrackEnabled
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.governing.group2; " & Err.Description
+    Resume Restore
+End Sub
+
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestLoadReferenceTransformsUserMoments(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
@@ -217,6 +259,15 @@ Private Sub TestLoadReferenceTransformsUserMoments(ByRef stats As TBatchTestStat
     AssertClose stats, "batch.reference.internalMy", batch.My(1), -70000#, 0.000001
     AssertClose stats, "batch.reference.x", batch.LoadReferenceX, 40#, 0.000001
     AssertClose stats, "batch.reference.y", batch.LoadReferenceY, -25#, 0.000001
+    AssertClose stats, "batch.reference.offsetX.defaultBase", batch.LoadReferenceOffsetX, 40#, 0.000001
+    AssertClose stats, "batch.reference.offsetY.defaultBase", batch.LoadReferenceOffsetY, -25#, 0.000001
+
+    Dim shiftedBatch As CBatchSectionCalculator
+    Set shiftedBatch = BuildBatchCalculator()
+    shiftedBatch.AddCombination "REF2", -1000#, 20000#, -30000#, "Group1", "reference shifted"
+    shiftedBatch.ApplyLoadReference 140#, 75#, 100#, 100#
+    AssertClose stats, "batch.reference.offsetX.centroidBase", shiftedBatch.LoadReferenceOffsetX, 40#, 0.000001
+    AssertClose stats, "batch.reference.offsetY.centroidBase", shiftedBatch.LoadReferenceOffsetY, -25#, 0.000001
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -399,10 +450,22 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     summaryRow = BatchSummaryStartRow()
     AssertTrue stats, "batch.writer.fixedRow", summaryRow = 1
     AssertTrue stats, "batch.writer.noResultOverlap", summaryRow + ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count - 1 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
-    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count >= 29 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count >= 32
-    AssertTrue stats, "batch.writer.title", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = "Сводка пакетного расчета"
-    AssertTrue stats, "batch.writer.governing", CStr(resultsSheet.Cells.Item(summaryRow + 1, 2).Value2) = "W1"
-    AssertTrue stats, "batch.writer.header.strength", CStr(resultsSheet.Cells.Item(summaryRow + 5, 6).Value2) = "StrengthCheckStatus"
+    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count >= 30 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count >= 46
+    AssertTrue stats, "batch.writer.title", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = "Сводка пакетного расчета (Подробнее)"
+    AssertTrue stats, "batch.writer.titleNotMerged", Not resultsSheet.Cells.Item(summaryRow, 1).MergeCells
+    AssertTrue stats, "batch.writer.titleHyperlink", resultsSheet.Cells.Item(summaryRow, 1).Hyperlinks.Count > 0
+    AssertTrue stats, "batch.writer.governing", CStr(resultsSheet.Cells.Item(summaryRow + 1, 5).Value2) = "W1"
+    AssertTrue stats, "batch.writer.crackGoverning.row", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 3, 1).Value2), "трещинам", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.loadPoint.relativeLabel", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 5, 1).Value2), "относительно центра тяжести", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.loadPoint.zeroX", CStr(resultsSheet.Cells.Item(summaryRow + 5, 5).Value2) = "X=0 mm"
+    AssertTrue stats, "batch.writer.strainFormula.simple", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 15).Formula), "AGGREGATE", vbTextCompare) = 0 And _
+        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 15).Formula), "CHOOSE", vbTextCompare) = 0
+    AssertTrue stats, "batch.writer.momentFormula.simple", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 21).Formula), "IFERROR", vbTextCompare) > 0 And _
+        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 21).Formula), "IF(", vbTextCompare) = 0
+    AssertTrue stats, "batch.writer.header.strength", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 15).Value2), "StrainSafetyFactor", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.limitState", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 16).Value2), "CapacityLimitState", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.moment", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 21).Value2), "MomentSafetyFactor", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 46).Value2), "MinSafetyFactor", vbTextCompare) > 0
 End Sub
 
 Private Function BatchSummaryStartRow() As Long

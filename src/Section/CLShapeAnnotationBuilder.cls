@@ -17,8 +17,8 @@ Option Explicit
 ' не решает, как эти подписи будут разведены по lanes на листе.
 
 Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, ByVal rebars As CRebarLayout)
-    If model Is Nothing Then Err.Raise vbObjectError + 5300, "CLShapeAnnotationBuilder", "Section model is not provided."
-    If geometry Is Nothing Then Err.Raise vbObjectError + 5301, "CLShapeAnnotationBuilder", "Geometry is not provided."
+    If model Is Nothing Then Err.Raise vbObjectError + 5300, "CLShapeAnnotationBuilder", "Модель сечения не передана."
+    If geometry Is Nothing Then Err.Raise vbObjectError + 5301, "CLShapeAnnotationBuilder", "Геометрия Г-сечения не передана."
 
     Dim annotations As CSectionAnnotations
     Set annotations = model.Annotations

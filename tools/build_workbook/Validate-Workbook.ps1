@@ -131,12 +131,12 @@ try {
         $sheetNames += [string]$sheet.Name
     }
 
-    $expectedSheetOrder = @("Config", "Инструкции", "Расчет", "Results")
+    $expectedSheetOrder = @("Config", "Справка", "Расчет", "Results")
     $sheetOrderOk = $true
     for ($i = 0; $i -lt $expectedSheetOrder.Count; $i++) {
         if ($sheetNames.Count -lt ($i + 1) -or $sheetNames[$i] -ne $expectedSheetOrder[$i]) { $sheetOrderOk = $false }
     }
-    Add-Check $checks "Sheets Config/Инструкции/Расчет/Results" $sheetOrderOk ($sheetNames -join ", ")
+    Add-Check $checks "Sheets Config/Справка/Расчет/Results" $sheetOrderOk ($sheetNames -join ", ")
 
     $requiredNames = @(
         "rngLoadCombinations",
@@ -174,10 +174,11 @@ try {
         Add-Check $checks "Results ranges layout" (
             ([string]$batchSummaryRange.Worksheet.Name -eq "Results") -and
             ($batchSummaryRange.Row -eq 1) -and ($batchSummaryRange.Column -eq 1) -and
-            ($elementResultsRange.Row -eq 32) -and ($elementResultsRange.Column -eq 1) -and
-            ($geometryResultsRange.Row -eq 32) -and ($geometryResultsRange.Column -eq 10) -and
-            ($sectionPropertiesRange.Row -eq 32) -and ($sectionPropertiesRange.Column -eq 29) -and
-            ($sectionAnnotationsRange.Row -eq 32) -and ($sectionAnnotationsRange.Column -eq 38)
+            ($batchSummaryRange.Rows.Count -ge 30) -and
+            ($elementResultsRange.Row -eq 33) -and ($elementResultsRange.Column -eq 1) -and
+            ($geometryResultsRange.Row -eq 33) -and ($geometryResultsRange.Column -eq 9) -and
+            ($sectionPropertiesRange.Row -eq 33) -and ($sectionPropertiesRange.Column -eq 26) -and
+            ($sectionAnnotationsRange.Row -eq 33) -and ($sectionAnnotationsRange.Column -eq 34)
         ) ("batch=$($batchSummaryRange.Worksheet.Name)!R$($batchSummaryRange.Row)C$($batchSummaryRange.Column); elements=R$($elementResultsRange.Row)C$($elementResultsRange.Column); geometry=R$($geometryResultsRange.Row)C$($geometryResultsRange.Column); properties=R$($sectionPropertiesRange.Row)C$($sectionPropertiesRange.Column); annotations=R$($sectionAnnotationsRange.Row)C$($sectionAnnotationsRange.Column)")
     }
 

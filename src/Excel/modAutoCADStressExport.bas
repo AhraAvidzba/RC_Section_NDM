@@ -70,6 +70,84 @@ Failed:
     MsgBox "Экспорт в AutoCAD не выполнен: " & Err.Description, vbExclamation, "RC Section NDM"
 End Sub
 
+' Очищает активный чертеж AutoCAD от объектов оформления, созданных NDM-export.
+' Геометрические Region бетона и арматуры остаются на своих слоях. Удаляются
+' только подписи на annotation-слоях, нейтральная линия, главные оси и точка
+' приложения нагрузки, чтобы можно было заново выгрузить расчет поверх той же
+' геометрии.
+Public Sub ClearAutoCADDrawing()
+    On Error GoTo Failed
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim exportSettings As TAutoCADExportSettings
+    exportSettings = ReadAutoCADExportSettings(settings)
+
+    Dim acad As Object
+    Set acad = ConnectToRunningAutoCAD()
+
+    Dim doc As Object
+    Set doc = ActiveAutoCADDocument(acad)
+
+    Dim deletedCount As Long
+    deletedCount = DeleteAutoCADEntitiesOnLayers(doc, AutoCADCleanupLayerSet(exportSettings))
+    doc.Regen 1
+
+    MsgBox "Чертеж AutoCAD очищен от объектов оформления RC Section NDM." & vbCrLf & _
+        "Удалено объектов: " & CStr(deletedCount) & "." & vbCrLf & _
+        "Геометрия бетона и арматуры оставлена без изменений.", vbInformation, "RC Section NDM"
+    Exit Sub
+
+Failed:
+    MsgBox "Очистка чертежа AutoCAD не выполнена: " & Err.Description, vbExclamation, "RC Section NDM"
+End Sub
+
+' Собирает перечень слоев, которые относятся к оформлению, а не к геометрии.
+' Слои подписей берутся из Config, а технические слои осей/точки/нейтральной
+' линии совпадают с теми, которые создает экспорт.
+Private Function AutoCADCleanupLayerSet(ByRef exportSettings As TAutoCADExportSettings) As Object
+    Dim layers As Object
+    Set layers = CreateObject("Scripting.Dictionary")
+    layers.CompareMode = vbTextCompare
+
+    AddCleanupLayer layers, exportSettings.ConcreteTensionLayer
+    AddCleanupLayer layers, exportSettings.ConcreteCompressionLayer
+    AddCleanupLayer layers, exportSettings.RebarTensionLayer
+    AddCleanupLayer layers, exportSettings.RebarCompressionLayer
+    AddCleanupLayer layers, "RC_NDM_Axes"
+    AddCleanupLayer layers, "RC_NDM_LoadPoint"
+    AddCleanupLayer layers, "RC_NDM_NeutralLine"
+
+    Set AutoCADCleanupLayerSet = layers
+End Function
+
+' Добавляет слой в set, пропуская пустые значения.
+Private Sub AddCleanupLayer(ByVal layers As Object, ByVal layerName As String)
+    layerName = Trim$(layerName)
+    If Len(layerName) = 0 Then Exit Sub
+    If Not layers.Exists(layerName) Then layers.Add layerName, True
+End Sub
+
+' Проходит ModelSpace с конца, чтобы безопасно удалять найденные объекты.
+' Удаление идет только по слоям оформления; остальные сущности чертежа не
+' затрагиваются, даже если они были созданы не этой программой.
+Private Function DeleteAutoCADEntitiesOnLayers(ByVal doc As Object, ByVal layers As Object) As Long
+    Dim ms As Object
+    Set ms = doc.ModelSpace
+
+    Dim i As Long
+    For i = ms.Count - 1 To 0 Step -1
+        Dim entity As Object
+        Set entity = ms.Item(i)
+        If layers.Exists(CStr(entity.Layer)) Then
+            entity.Delete
+            DeleteAutoCADEntitiesOnLayers = DeleteAutoCADEntitiesOnLayers + 1
+        End If
+    Next i
+End Function
+
 Public Sub PrepareAutoCADExportState(ByVal workbook As Object, ByRef section As CSectionModel, _
         ByRef concrete As CConcreteDiagramMaterial, _
         ByRef steel As CSteelDiagramMaterial, ByRef solver As CSectionSolver, _
@@ -119,7 +197,7 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
         ByRef section As CSectionModel, ByRef stressByID As Object, ByRef combinationID As String, _
         ByRef epsilon0 As Double, ByRef kappaX As Double, ByRef kappaY As Double, _
         ByRef loadReferenceX As Double, ByRef loadReferenceY As Double)
-    Set section = ReadSectionGeometryFromResults(workbook, units)
+    Set section = ReadSectionGeometryFromResults(workbook, "Results")
 
     combinationID = ResolveExportCombinationID(workbook, settings.GetRawString("AutoCAD.Export.CombinationID", "Worst"))
 
@@ -130,12 +208,12 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
         loadReferenceX, loadReferenceY
 End Sub
 
-Private Function ReadSectionGeometryFromResults(ByVal workbook As Object, ByVal units As CUnitSystem) As CSectionModel
+Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optional ByVal sourceType As String = "Results") As CSectionModel
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
 
     Dim data As Variant
-    data = anchor.CurrentRegion.Value2
+    data = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
     If Not HasResultTableRows(data) Then Err.Raise vbObjectError + 4350, "ReadSectionGeometryFromResults", _
         "На листе Results нет таблицы расчетной геометрии. Сначала выполните расчет."
 
@@ -153,24 +231,27 @@ Private Function ReadSectionGeometryFromResults(ByVal workbook As Object, ByVal 
     Dim colLocalIy As Long: colLocalIy = ResultColumn(data, "LocalIy")
     Dim colLocalIxy As Long: colLocalIxy = ResultColumn(data, "LocalIxy")
     Dim colComment As Long: colComment = ResultColumn(data, "Comment")
+    Dim lengthUnit As String: lengthUnit = ResultHeaderUnit(data, colX, "mm")
+    Dim areaUnit As String: areaUnit = ResultHeaderUnit(data, colArea, "mm2")
+    Dim fourthUnit As String: fourthUnit = ResultHeaderUnit(data, colLocalIx, lengthUnit & "4")
 
     Dim model As CSectionModel
     Set model = New CSectionModel
-    model.SourceType = "Results"
+    model.SourceType = sourceType
 
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
         If Len(Trim$(CStr(data(rowIndex, colID)))) > 0 Then
             If StrComp(CStr(data(rowIndex, colType)), "Concrete", vbTextCompare) = 0 Then
-                model.AddConcreteElement OutputLengthToInternal(CDbl(data(rowIndex, colX)), units), OutputLengthToInternal(CDbl(data(rowIndex, colY)), units), _
-                    OutputAreaToInternal(CDbl(data(rowIndex, colArea)), units), 1, vbNullString, vbNullString, _
-                    CStr(data(rowIndex, colShape)), OutputLengthToInternal(CDbl(Val(CStr(data(rowIndex, colWidth)))), units), _
-                    OutputLengthToInternal(CDbl(Val(CStr(data(rowIndex, colHeight)))), units), CDbl(Val(CStr(data(rowIndex, colRotation)))), _
-                    CStr(data(rowIndex, colComment)), OutputFourthPowerLengthToInternal(CDbl(Val(CStr(data(rowIndex, colLocalIx)))), units), _
-                    OutputFourthPowerLengthToInternal(CDbl(Val(CStr(data(rowIndex, colLocalIy)))), units), OutputFourthPowerLengthToInternal(CDbl(Val(CStr(data(rowIndex, colLocalIxy)))), units)
+                model.AddConcreteElement OutputLengthToInternalByUnit(CDbl(data(rowIndex, colX)), lengthUnit), OutputLengthToInternalByUnit(CDbl(data(rowIndex, colY)), lengthUnit), _
+                    OutputAreaToInternalByUnit(CDbl(data(rowIndex, colArea)), areaUnit), 1, vbNullString, vbNullString, _
+                    CStr(data(rowIndex, colShape)), OutputLengthToInternalByUnit(CDbl(Val(CStr(data(rowIndex, colWidth)))), lengthUnit), _
+                    OutputLengthToInternalByUnit(CDbl(Val(CStr(data(rowIndex, colHeight)))), lengthUnit), CDbl(Val(CStr(data(rowIndex, colRotation)))), _
+                    CStr(data(rowIndex, colComment)), OutputFourthPowerLengthToInternalByUnit(CDbl(Val(CStr(data(rowIndex, colLocalIx)))), fourthUnit), _
+                    OutputFourthPowerLengthToInternalByUnit(CDbl(Val(CStr(data(rowIndex, colLocalIy)))), fourthUnit), OutputFourthPowerLengthToInternalByUnit(CDbl(Val(CStr(data(rowIndex, colLocalIxy)))), fourthUnit)
             ElseIf StrComp(CStr(data(rowIndex, colType)), "Rebar", vbTextCompare) = 0 Then
-                model.AddRebarElement OutputLengthToInternal(CDbl(data(rowIndex, colX)), units), OutputLengthToInternal(CDbl(data(rowIndex, colY)), units), _
-                    OutputLengthToInternal(CDbl(data(rowIndex, colDiameter)), units), OutputAreaToInternal(CDbl(data(rowIndex, colArea)), units), _
+                model.AddRebarElement OutputLengthToInternalByUnit(CDbl(data(rowIndex, colX)), lengthUnit), OutputLengthToInternalByUnit(CDbl(data(rowIndex, colY)), lengthUnit), _
+                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colDiameter)), lengthUnit), OutputAreaToInternalByUnit(CDbl(data(rowIndex, colArea)), areaUnit), _
                     vbNullString, 1, vbNullString, _
                     vbNullString, CStr(data(rowIndex, colComment))
             End If
@@ -182,13 +263,37 @@ Private Function ReadSectionGeometryFromResults(ByVal workbook As Object, ByVal 
     Set ReadSectionGeometryFromResults = model
 End Function
 
+' Возвращает диагностическую метку источника геометрии, сохраненную в
+' rngNDMSectionProperties. Расчет с Geometry.Source = AutoCAD использует ее,
+' чтобы не принять старую generated-геометрию за импортированную.
+Public Function ResultsGeometrySource(ByVal workbook As Object) As String
+    On Error GoTo Failed
+    Dim data As Variant
+    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    If Not HasResultTableRows(data) Then Exit Function
+
+    Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
+    Dim colParameter As Long: colParameter = ResultColumn(data, "Parameter")
+    Dim colValue As Long: colValue = ResultColumn(data, "Value")
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(data, 1)
+        If StrComp(CStr(data(rowIndex, colLoadCase)), "ALL", vbTextCompare) = 0 And _
+                StrComp(CStr(data(rowIndex, colParameter)), "Geometry.Source", vbTextCompare) = 0 Then
+            ResultsGeometrySource = Trim$(CStr(data(rowIndex, colValue)))
+            Exit Function
+        End If
+    Next rowIndex
+Failed:
+End Function
+
 Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal resultType As String, ByRef combinationID As String, _
         ByVal stressByID As Object)
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
 
     Dim data As Variant
-    data = anchor.CurrentRegion.Value2
+    data = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
     If Not HasResultTableRows(data) Then Err.Raise vbObjectError + 4352, "ReadElementResultsForCombination", _
         "На листе Results нет таблицы результатов НДМ. Сначала выполните расчет."
 
@@ -225,7 +330,7 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
         ByVal combinationID As String, ByRef epsilon0 As Double, ByRef kappaX As Double, _
         ByRef kappaY As Double, ByRef loadReferenceX As Double, ByRef loadReferenceY As Double)
     Dim data As Variant
-    data = workbook.Names.Item("rngNDMSectionProperties").RefersToRange.CurrentRegion.Value2
+    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
     If Not HasResultTableRows(data) Then Err.Raise vbObjectError + 4360, "ReadSectionPropertiesForCombination", _
         "На листе Results нет rngNDMSectionProperties. Сначала выполните расчет."
 
@@ -261,10 +366,16 @@ Private Function ReadGoverningCombinationID(ByVal workbook As Object) As String
     On Error GoTo Failed
     Dim data As Variant
     data = workbook.Names.Item("rngBatchSummary").RefersToRange.Value2
-    If UBound(data, 1) >= 2 And UBound(data, 2) >= 2 Then
-        ReadGoverningCombinationID = Trim$(CStr(data(2, 2)))
+    If UBound(data, 1) >= 2 And UBound(data, 2) >= 5 Then
+        ReadGoverningCombinationID = Trim$(SafeText(data(2, 5)))
     End If
 Failed:
+End Function
+
+' Безопасно читает текст из ячейки Results.
+Private Function SafeText(ByVal value As Variant) As String
+    If IsError(value) Then Exit Function
+    SafeText = CStr(value)
 End Function
 
 Private Function OutputLengthToInternal(ByVal value As Double, ByVal units As CUnitSystem) As Double
@@ -327,18 +438,111 @@ Private Function ResultHeaderBase(ByVal headerText As String) As String
     End If
 End Function
 
+' Читает таблицу Results от именованного якоря. Метод не использует
+' CurrentRegion, чтобы человекочитаемые заголовки над таблицами не попадали
+' в массив расчетных данных.
+Private Function ReadAnchoredResultTable(ByVal workbook As Object, ByVal rangeName As String) As Variant
+    Dim anchor As Object
+    Set anchor = workbook.Names.Item(rangeName).RefersToRange
+
+    Dim columnCount As Long
+    columnCount = AnchoredColumnCount(anchor)
+    If columnCount <= 0 Then Exit Function
+
+    Dim rowCount As Long
+    rowCount = AnchoredRowCount(anchor)
+    If rowCount <= 0 Then rowCount = 1
+
+    ReadAnchoredResultTable = anchor.Resize(rowCount, columnCount).Value2
+End Function
+
+' Определяет ширину таблицы по непрерывной строке заголовков.
+Private Function AnchoredColumnCount(ByVal anchor As Object) As Long
+    Dim colOffset As Long
+    For colOffset = 0 To 255
+        If Len(Trim$(CStr(anchor.Offset(0, colOffset).Value2))) = 0 Then Exit For
+        AnchoredColumnCount = AnchoredColumnCount + 1
+    Next colOffset
+End Function
+
+' Определяет высоту таблицы по первому столбцу, где все Results-таблицы имеют
+' обязательный RunID/ElementID/AnnotationID в каждой строке данных.
+Private Function AnchoredRowCount(ByVal anchor As Object) As Long
+    Dim rowOffset As Long
+    For rowOffset = 0 To 1048575 - anchor.Row
+        If Len(Trim$(CStr(anchor.Offset(rowOffset, 0).Value2))) = 0 Then Exit For
+        AnchoredRowCount = AnchoredRowCount + 1
+    Next rowOffset
+End Function
+
+' Достает единицу измерения из заголовка вида "X, mm".
+Private Function ResultHeaderUnit(ByRef data As Variant, ByVal colIndex As Long, ByVal defaultUnit As String) As String
+    Dim headerText As String
+    headerText = CStr(data(1, colIndex))
+
+    Dim commaPos As Long
+    commaPos = InStr(1, headerText, ",", vbTextCompare)
+    If commaPos <= 0 Then
+        ResultHeaderUnit = defaultUnit
+        Exit Function
+    End If
+
+    Dim unitText As String
+    unitText = Trim$(Mid$(headerText, commaPos + 1))
+    Dim bracketPos As Long
+    bracketPos = InStr(1, unitText, "(", vbTextCompare)
+    If bracketPos > 0 Then unitText = Trim$(Left$(unitText, bracketPos - 1))
+
+    If Len(unitText) = 0 Then unitText = defaultUnit
+    ResultHeaderUnit = unitText
+End Function
+
+' Переводит длину из единицы, сохраненной в Results snapshot, во внутренние мм.
+Private Function OutputLengthToInternalByUnit(ByVal value As Double, ByVal unitText As String) As Double
+    OutputLengthToInternalByUnit = value * LengthFactorToMmByUnit(unitText)
+End Function
+
+' Переводит площадь из единицы, сохраненной в Results snapshot, во внутренние мм2.
+Private Function OutputAreaToInternalByUnit(ByVal value As Double, ByVal unitText As String) As Double
+    OutputAreaToInternalByUnit = value * AreaFactorToMm2ByUnit(unitText)
+End Function
+
+' Переводит собственные моменты инерции элемента из snapshot в мм4.
+Private Function OutputFourthPowerLengthToInternalByUnit(ByVal value As Double, ByVal unitText As String) As Double
+    Dim baseUnit As String
+    baseUnit = Trim$(unitText)
+    If Right$(baseUnit, 1) = "4" Then baseUnit = Left$(baseUnit, Len(baseUnit) - 1)
+    OutputFourthPowerLengthToInternalByUnit = value * LengthFactorToMmByUnit(baseUnit) ^ 4
+End Function
+
+Private Function LengthFactorToMmByUnit(ByVal unitText As String) As Double
+    Select Case LCase$(Trim$(unitText))
+        Case "mm": LengthFactorToMmByUnit = 1#
+        Case "cm": LengthFactorToMmByUnit = 10#
+        Case "m": LengthFactorToMmByUnit = 1000#
+        Case Else: Err.Raise vbObjectError + 4362, "LengthFactorToMmByUnit", "В Results неизвестная единица длины: " & unitText
+    End Select
+End Function
+
+Private Function AreaFactorToMm2ByUnit(ByVal unitText As String) As Double
+    Select Case LCase$(Trim$(unitText))
+        Case "mm2": AreaFactorToMm2ByUnit = 1#
+        Case "cm2": AreaFactorToMm2ByUnit = 100#
+        Case "m2": AreaFactorToMm2ByUnit = 1000000#
+        Case Else: Err.Raise vbObjectError + 4363, "AreaFactorToMm2ByUnit", "В Results неизвестная единица площади: " & unitText
+    End Select
+End Function
+
 Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
         ByVal concrete As Object, ByVal steel As Object, ByVal stressByID As Object, _
         ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
         ByRef exportSettings As TAutoCADExportSettings)
     Dim acad As Object
-    Set acad = GetObject(, "AutoCAD.Application")
-    If acad Is Nothing Then Err.Raise vbObjectError + 4310, "DrawResultsStressExport", "Откройте AutoCAD и активный чертеж."
+    Set acad = ConnectToRunningAutoCAD()
 
     Dim doc As Object
-    Set doc = acad.ActiveDocument
-    If doc Is Nothing Then Err.Raise vbObjectError + 4311, "DrawResultsStressExport", "В AutoCAD нет активного чертежа."
+    Set doc = ActiveAutoCADDocument(acad)
 
     Dim ms As Object
     Set ms = doc.ModelSpace
@@ -410,12 +614,10 @@ Private Sub DrawStressExport(ByVal section As CSectionModel, _
         ByVal concrete As Object, ByVal steel As Object, ByVal solver As CSectionSolver, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, ByRef exportSettings As TAutoCADExportSettings)
     Dim acad As Object
-    Set acad = GetObject(, "AutoCAD.Application")
-    If acad Is Nothing Then Err.Raise vbObjectError + 4310, "DrawStressExport", "Откройте AutoCAD и активный чертеж."
+    Set acad = ConnectToRunningAutoCAD()
 
     Dim doc As Object
-    Set doc = acad.ActiveDocument
-    If doc Is Nothing Then Err.Raise vbObjectError + 4311, "DrawStressExport", "В AutoCAD нет активного чертежа."
+    Set doc = ActiveAutoCADDocument(acad)
 
     Dim ms As Object
     Set ms = doc.ModelSpace
@@ -523,6 +725,32 @@ Private Sub DrawCentroidAxesAndLoadPoint(ByVal ms As Object, ByVal section As CS
     End If
     If loadPointEnabled Then DrawLoadPointMarker ms, loadReferenceX, loadReferenceY, MaxDouble(axisLength * 0.035, 8#)
 End Sub
+
+' Подключается только к уже открытому AutoCAD.
+' Если приложение не запущено, возвращаем свою русскую ошибку вместо COM-текста
+' вроде "ActiveX component can't create object".
+Private Function ConnectToRunningAutoCAD() As Object
+    On Error Resume Next
+    Set ConnectToRunningAutoCAD = GetObject(, "AutoCAD.Application")
+    On Error GoTo 0
+    If ConnectToRunningAutoCAD Is Nothing Then
+        Err.Raise vbObjectError + 4310, "ConnectToRunningAutoCAD", _
+            "AutoCAD не открыт. Откройте AutoCAD с нужным чертежом и повторите экспорт."
+    End If
+End Function
+
+' Возвращает активный чертеж AutoCAD.
+' Ситуация, когда AutoCAD открыт без документа, обрабатывается отдельно, чтобы
+' пользователь понял, что нужно создать или открыть DWG, а не искать ошибку в расчете.
+Private Function ActiveAutoCADDocument(ByVal acad As Object) As Object
+    On Error Resume Next
+    Set ActiveAutoCADDocument = acad.ActiveDocument
+    On Error GoTo 0
+    If ActiveAutoCADDocument Is Nothing Then
+        Err.Raise vbObjectError + 4311, "ActiveAutoCADDocument", _
+            "AutoCAD открыт, но активного чертежа нет. Откройте или создайте чертеж и повторите экспорт."
+    End If
+End Function
 
 Private Function ReadAutoCADExportSettings(ByVal settings As CSystemSettingsReader) As TAutoCADExportSettings
     With ReadAutoCADExportSettings

@@ -684,8 +684,9 @@ Private Sub SearchByBrent(ByVal section As CSectionModel, _
 End Sub
 
 ' Честный метод секущих: новая lambda получается по двум предыдущим значениям
-' целевой функции. Fallback на бицекцию здесь не выполняется; защиты только
-' останавливают расчет с диагностикой при опасной точке.
+' целевой функции. Метод дополнительно хранит физическую скобку, чтобы не
+' принять точку вне допустимого диапазона, но не подменяет шаг секущей
+' бицекцией или Brent.
 Private Sub SearchBySecant(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
@@ -695,6 +696,8 @@ Private Sub SearchBySecant(ByVal section As CSectionModel, _
     Dim x0 As Double, x1 As Double, x2 As Double
     Dim f0 As Double, f1 As Double, f2 As Double
     Dim state0 As String, state1 As String, state2 As String
+    Dim bracketLow As Double ' Последняя известная lambda с запасом по деформациям.
+    Dim bracketHigh As Double ' Первая известная lambda за физическим пределом.
     Dim iter As Long
 
     x0 = lowLambda
@@ -705,11 +708,13 @@ Private Sub SearchBySecant(ByVal section As CSectionModel, _
         SetInvalidInput "Secant requires a bracket with acceptable lower lambda and physical upper lambda."
         Exit Sub
     End If
+    bracketLow = x0
+    bracketHigh = x1
 
     For iter = 1 To mSolverMaxIterations
-        If Abs(x1 - x0) <= mLambdaTolerance Or Abs(f1) <= mLambdaTolerance Then
+        If Abs(bracketHigh - bracketLow) <= mLambdaTolerance Or Abs(f1) <= mLambdaTolerance Then
             FinalizeLoadMultiplierSearchAfterProbe section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, _
-                ChooseLowerPhysicalLambda(x0, f0, state0, x1, f1, state1), "Secant"
+                bracketLow, "Secant"
             Exit Sub
         End If
 
@@ -719,15 +724,17 @@ Private Sub SearchBySecant(ByVal section As CSectionModel, _
             Exit Sub
         End If
 
-        ' Собственно шаг секущей. Дальше идут защиты от типичных численных
-        ' проблем: деление почти на ноль, выход из скобки, NaN и застой.
+        ' Сначала строим настоящий шаг секущей по двум предыдущим значениям.
+        ' Если он выходит за физическую скобку, не запускаем probe-точку
+        ' заведомо вне диапазона, а демпфируем этот же шаг внутрь скобки.
         x2 = x1 - f1 * (x1 - x0) / (f1 - f0)
         If Not IsFiniteNumber(x2) Then
             mLimitState = STATE_NUMERICAL_FAILURE
             mStopReason = "Secant search produced NaN or overflow."
             Exit Sub
         End If
-        If x2 <= lowLambda Or x2 >= highLambda Then
+        x2 = GuardSecantCandidate(x2, x1, bracketLow, bracketHigh)
+        If x2 <= bracketLow Or x2 >= bracketHigh Or Not IsFiniteNumber(x2) Then
             mLimitState = STATE_NUMERICAL_FAILURE
             mStopReason = "Secant search candidate left the physical bracket."
             Exit Sub
@@ -739,8 +746,9 @@ Private Sub SearchBySecant(ByVal section As CSectionModel, _
         End If
 
         If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, x2, f2, state2) Then Exit Sub
-        If Abs(f2) <= mLambdaTolerance Then
-            FinalizeLoadMultiplierSearchAfterProbe section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, x2, "Secant"
+        UpdateSecantBracket x2, f2, state2, bracketLow, bracketHigh
+        If Abs(f2) <= mLambdaTolerance Or Abs(bracketHigh - bracketLow) <= mLambdaTolerance Then
+            FinalizeLoadMultiplierSearchAfterProbe section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, bracketLow, "Secant"
             Exit Sub
         End If
 
@@ -754,6 +762,47 @@ Private Sub SearchBySecant(ByVal section As CSectionModel, _
 
     mLimitState = STATE_NUMERICAL_FAILURE
     mStopReason = "Secant search exceeded maximum iterations."
+End Sub
+
+' Удерживает пробную lambda внутри найденной физической скобки.
+' Это защита именно для Secant: базовый кандидат уже посчитан по секущей,
+' а здесь слишком длинный шаг только уменьшается по тому же направлению.
+Private Function GuardSecantCandidate(ByVal rawCandidate As Double, ByVal currentLambda As Double, _
+        ByVal bracketLow As Double, ByVal bracketHigh As Double) As Double
+    GuardSecantCandidate = rawCandidate
+    If rawCandidate > bracketLow And rawCandidate < bracketHigh Then Exit Function
+
+    If rawCandidate <= bracketLow Then
+        If currentLambda > bracketLow And currentLambda < bracketHigh Then
+            GuardSecantCandidate = (currentLambda + bracketLow) / 2#
+        Else
+            GuardSecantCandidate = bracketLow + 0.25 * (bracketHigh - bracketLow)
+        End If
+    ElseIf rawCandidate >= bracketHigh Then
+        If currentLambda > bracketLow And currentLambda < bracketHigh Then
+            GuardSecantCandidate = (currentLambda + bracketHigh) / 2#
+        Else
+            GuardSecantCandidate = bracketLow + 0.75 * (bracketHigh - bracketLow)
+        End If
+    End If
+
+    AppendSearchDiagnostic "secantGuard=insideBracket; rawLambda=" & FormatNumberInvariant(rawCandidate) & _
+        "; guardedLambda=" & FormatNumberInvariant(GuardSecantCandidate) & _
+        "; bracketLow=" & FormatNumberInvariant(bracketLow) & _
+        "; bracketHigh=" & FormatNumberInvariant(bracketHigh)
+End Function
+
+' Обновляет только защитную физическую скобку Secant.
+' Отрицательная функция означает, что деформационный предел еще не достигнут;
+' неотрицательная - что probe-точка уже является верхним физическим состоянием.
+Private Sub UpdateSecantBracket(ByVal lambdaValue As Double, ByVal functionValue As Double, _
+        ByVal probeState As String, ByRef bracketLow As Double, ByRef bracketHigh As Double)
+    If functionValue < 0# Then
+        If lambdaValue > bracketLow Then bracketLow = lambdaValue
+    Else
+        If lambdaValue < bracketHigh Then bracketHigh = lambdaValue
+        If IsPhysicalLimit(probeState) Then mUpperLimitState = probeState
+    End If
 End Sub
 
 ' Единая целевая функция LoadMultiplier для Bisection, Brent и Secant.
@@ -840,17 +889,17 @@ End Function
 Private Function ValidateCapacityInputs(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
         ByVal steelMaterial As Object, ByVal mxBase As Double, ByVal myBase As Double) As Boolean
     If section Is Nothing Then
-        SetInvalidInput "Section model is missing."
+        SetInvalidInput "Модель сечения не передана."
     ElseIf section.ConcreteCount <= 0 Then
-        SetInvalidInput "Section model has no concrete elements."
+        SetInvalidInput "В модели сечения нет бетонных элементов."
     ElseIf concreteMaterial Is Nothing Then
-        SetInvalidInput "Concrete material is missing."
+        SetInvalidInput "Материал бетона не передан."
     ElseIf steelMaterial Is Nothing Then
-        SetInvalidInput "Steel material is missing."
+        SetInvalidInput "Материал арматуры не передан."
     ElseIf Sqr(mxBase * mxBase + myBase * myBase) <= 0.000000001 Then
-        SetInvalidInput "Base moment vector must be non-zero."
+        SetInvalidInput "Базовый вектор момента должен быть ненулевым."
     ElseIf mMaxLambda <= 0# Or mSolverMaxIterations <= 0 Then
-        SetInvalidInput "Capacity solver settings are invalid."
+        SetInvalidInput "Настройки поиска несущей способности некорректны."
     Else
         ValidateCapacityInputs = True
     End If
@@ -931,7 +980,11 @@ Private Function ProbeOnce(ByVal section As CSectionModel, _
     Set mLastSolver = solver
 
     If Not solver.Converged Then
-        ProbeOnce = ClassifyNumericalFailure(solver.StopReason)
+        If FailedProbeReachedPhysicalLimit(section, concreteMaterial, solver) Then
+            ProbeOnce = CriticalLimitState()
+        Else
+            ProbeOnce = ClassifyNumericalFailure(solver.StopReason)
+        End If
     Else
         UpdateCriticalState section, concreteMaterial, solver
         If mCriticalStrainUtilization >= 1# Then
@@ -948,6 +1001,27 @@ Failed:
     ProbeOnce = STATE_INVALID_INPUT
     mLimitState = STATE_INVALID_INPUT
     mStopReason = "Capacity probe failed: " & Err.Description
+End Function
+
+' Проверяет неудачную probe-точку LoadMultiplier на физический предел.
+' Около разрушения внутренний CSectionSolver может не успеть закрыть невязку
+' равновесия, хотя рассчитанная плоскость деформаций уже прошла допустимую
+' сжимающую/растягивающую деформацию. Такое состояние годится как верхняя
+' граница lambda, но только если solver сделал больше одной итерации: одиночный
+' неудачный шаг слишком груб, чтобы считать его надежным физическим пределом.
+Private Function FailedProbeReachedPhysicalLimit(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal solver As CSectionSolver) As Boolean
+    If solver Is Nothing Then Exit Function
+    If solver.Iterations <= 1 Then Exit Function
+
+    UpdateCriticalState section, concreteMaterial, solver
+    If mCriticalStrainUtilization >= 1# And IsFiniteNumber(mCriticalStrainUtilization) And _
+            Len(mCriticalElement) > 0 Then
+        AppendSearchDiagnostic "non-converged probe reached physical strain limit; state=" & _
+            CriticalLimitState() & "; utilization=" & FormatNumberInvariant(mCriticalStrainUtilization) & _
+            "; element=" & mCriticalElement & "; solverReason=" & solver.StopReason
+        FailedProbeReachedPhysicalLimit = True
+    End If
 End Function
 
 Private Sub UpdateCriticalState(ByVal section As CSectionModel, _

@@ -45,6 +45,17 @@ Failed:
     MsgBox "Схема не обновлена: " & Err.Description, vbExclamation, "RC Section NDM"
 End Sub
 
+Public Sub ImportGeometryFromAutoCAD()
+    On Error GoTo Failed
+    Dim message As String
+    message = ImportGeometryFromAutoCADForWorkbook(ThisWorkbook)
+    MsgBox message, vbInformation, "RC Section NDM"
+    Exit Sub
+
+Failed:
+    MsgBox "Импорт геометрии из AutoCAD не выполнен: " & Err.Description, vbExclamation, "RC Section NDM"
+End Sub
+
 Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4140, "UpdateSectionPlotForWorkbook", "Книга Excel не передана."
 
@@ -56,17 +67,95 @@ Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object)
 
     Dim reader As CSectionPlotDataReader
     Set reader = New CSectionPlotDataReader
-    reader.LoadFromWorkbook workbook, settings
+    If Not TryLoadFullPlotReader(reader, workbook, settings) Then
+        Set reader = New CSectionPlotDataReader
+        reader.LoadGeometryPreviewFromWorkbook workbook, settings
+    End If
 
     Dim plotter As CSectionPlotter
     Set plotter = New CSectionPlotter
     plotter.Draw workbook, reader, settings
 End Sub
 
+' Сначала пытаемся построить обычную схему по расчетным результатам.
+' Если расчета еще нет, но после AutoCAD-import уже сохранена геометрия,
+' возвращаем False: вызывающий код построит geometry-preview с текущими
+' настройками аннотаций, не запуская solver и не меняя Results.
+Private Function TryLoadFullPlotReader(ByVal reader As CSectionPlotDataReader, _
+        ByVal workbook As Object, ByVal settings As CSystemSettingsReader) As Boolean
+    On Error GoTo Failed
+    reader.LoadFromWorkbook workbook, settings
+    TryLoadFullPlotReader = True
+    Exit Function
+
+Failed:
+    If Err.Number = vbObjectError + 4702 Or Err.Number = vbObjectError + 4705 Then
+        TryLoadFullPlotReader = False
+    Else
+        Err.Raise Err.Number, Err.Source, Err.Description
+    End If
+End Function
+
+Public Sub UpdateSectionGeometryPreviewForWorkbook(ByVal workbook As Object)
+    If workbook Is Nothing Then Err.Raise vbObjectError + 4141, "UpdateSectionGeometryPreviewForWorkbook", "Книга Excel не передана."
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook workbook
+
+    Dim reader As CSectionPlotDataReader
+    Set reader = New CSectionPlotDataReader
+    reader.LoadGeometryPreviewFromWorkbook workbook, settings
+
+    Dim plotter As CSectionPlotter
+    Set plotter = New CSectionPlotter
+    plotter.Draw workbook, reader, settings
+End Sub
+
+' Импортирует AutoCAD Region в CSectionModel и сохраняет geometry-only snapshot.
+' Расчет при Geometry.Source = AutoCAD затем использует этот снимок, а не
+' обращается к AutoCAD повторно.
+Public Function ImportGeometryFromAutoCADForWorkbook(ByVal workbook As Object) As String
+    If workbook Is Nothing Then Err.Raise vbObjectError + 4142, "ImportGeometryFromAutoCADForWorkbook", "Книга Excel не передана."
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook workbook
+
+    If StrComp(settings.GetRawString("Geometry.Source", "Generated"), "AutoCAD", vbTextCompare) <> 0 Then
+        Err.Raise vbObjectError + 4143, "ImportGeometryFromAutoCADForWorkbook", _
+            "Для импорта выберите Geometry.Source = AutoCAD на листе Config."
+    End If
+
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+
+    Dim importer As CAutoCADSectionModelImporter
+    Set importer = New CAutoCADSectionModelImporter
+
+    Dim section As CSectionModel
+    Set section = importer.ImportFromActiveDocument(settings, units)
+
+    Dim writer As CNDMResultsWriter
+    Set writer = New CNDMResultsWriter
+    writer.WriteGeometryPreview workbook, section, units
+
+    UpdateSectionGeometryPreviewForWorkbook workbook
+
+    ImportGeometryFromAutoCADForWorkbook = "Геометрия успешно импортирована из AutoCAD." & vbCrLf & _
+        "Бетонных Region: " & CStr(section.ConcreteCount) & "; арматурных Region: " & _
+        CStr(section.RebarCount) & "." & vbCrLf & _
+        "На схеме показаны только импортированные элементы для визуального контроля."
+End Function
+
 ' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
 Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optional ByVal showMessages As Boolean = False) As String
     On Error GoTo Failed
     If workbook Is Nothing Then Err.Raise vbObjectError + 4100, "RunSectionCalculationForWorkbook", "Книга Excel не передана."
+
+    Dim runStart As Double
+    runStart = Timer
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -87,11 +176,6 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddValue "Режим расчета", settings.GetRawString("Calculation.Mode", "-")
     report.AddValue "Расчет трещин", settings.GetRawString("SLS.Crack.Enabled", "-")
     
-    report.AddSection "Подготовка книги"
-    report.AddStep "Начата очистка старых результатов."
-    ClearSectionResultsForWorkbook workbook
-    report.AddStep "Очищены rngResultSection, rngBatchSummary и таблицы расчетного снимка Results."
-
     Dim units As CUnitSystem
     Set units = New CUnitSystem
     report.AddSection "Единицы и знаки"
@@ -122,6 +206,11 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddValue "Бетонных элементов", CStr(section.ConcreteCount)
     report.AddValue "Стержней арматуры", CStr(section.RebarCount)
     report.AddValue "Semantic-аннотаций", CStr(section.AnnotationCount)
+
+    report.AddSection "Подготовка книги"
+    report.AddStep "Начата очистка старых результатов."
+    ClearSectionResultsForWorkbook workbook
+    report.AddStep "Очищены rngResultSection, rngBatchSummary и таблицы расчетного снимка Results."
 
     Dim concrete As CConcreteDiagramMaterial
     Set concrete = New CConcreteDiagramMaterial
@@ -168,7 +257,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     Set summaryWriter = New CBatchResultWriter
     report.AddSection "Запись результатов"
     report.AddStep "Начата запись batch summary."
-    summaryWriter.WriteSummary workbook, batch, units
+    summaryWriter.WriteSummary workbook, batch, units, section
     report.AddStep "Сводка batch summary записана на лист Results."
 
     Dim ndmWriter As CNDMResultsWriter
@@ -191,12 +280,18 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
         report.AddStep "Автообновление схемы пропущено: Plot.AutoUpdateAfterCalculation = No или нет доступных состояний LC."
     End If
 
+    Dim totalElapsedSeconds As Double
+    totalElapsedSeconds = ElapsedSecondsFrom(runStart)
+    summaryWriter.UpdateElapsedSeconds workbook, totalElapsedSeconds
+    report.AddValue "Полное время выполнения макроса", FormatReportNumber(totalElapsedSeconds) & " с"
+
     report.AddSection "Финальное сообщение"
     report.AddStep "Формируется пользовательское сообщение о завершении."
     RunSectionCalculationForWorkbook = BuildCalculationMessage(section, settings, batch)
     If report.Enabled Then
         report.AddStep "Отчет сохраняется в txt-файл рядом с книгой."
         report.Save RunSectionCalculationForWorkbook
+        summaryWriter.UpdateElapsedSeconds workbook, ElapsedSecondsFrom(runStart)
         RunSectionCalculationForWorkbook = RunSectionCalculationForWorkbook & vbCrLf & _
             "Пошаговый отчет сохранен: " & report.FilePath
     End If
@@ -291,7 +386,7 @@ Private Sub ApplyLoadReferenceFromSettings(ByVal section As CSectionModel, _
     CalculateTransformedSectionCentroid section, concrete, steel, referenceX, referenceY
 
     batch.ApplyLoadReference referenceX + units.InputLengthToInternal(settings.GetDouble("Load.ReferenceOffsetX", 0#)), _
-        referenceY + units.InputLengthToInternal(settings.GetDouble("Load.ReferenceOffsetY", 0#))
+        referenceY + units.InputLengthToInternal(settings.GetDouble("Load.ReferenceOffsetY", 0#)), referenceX, referenceY
 End Sub
 
 Public Sub CalculateTransformedSectionCentroid(ByVal section As CSectionModel, _
@@ -352,9 +447,12 @@ Public Function BuildWorkbookSectionModel(ByVal workbook As Object, ByVal settin
         Set registry = New CSectionTypeRegistry
         Set BuildWorkbookSectionModel = registry.BuildGeneratedModel(settings, units)
     ElseIf StrComp(geometrySource, "AutoCAD", vbTextCompare) = 0 Then
-        Dim importer As CAutoCADSectionModelImporter
-        Set importer = New CAutoCADSectionModelImporter
-        Set BuildWorkbookSectionModel = importer.ImportFromActiveDocument(settings, units)
+        If StrComp(ResultsGeometrySource(workbook), "AutoCADImport", vbTextCompare) <> 0 Then
+            Err.Raise vbObjectError + 4134, "BuildWorkbookSectionModel", _
+                "Выбрано Geometry.Source = AutoCAD, но на листе Results нет предварительно импортированной AutoCAD-геометрии. " & _
+                "Сначала нажмите кнопку ""Импортировать геометрию из AutoCAD""."
+        End If
+        Set BuildWorkbookSectionModel = ReadSectionGeometryFromResults(workbook, "AutoCADImport")
     Else
         Err.Raise vbObjectError + 4133, "BuildWorkbookSectionModel", _
             "Geometry.Source должен быть Generated или AutoCAD."
@@ -486,6 +584,18 @@ End Function
 ' нужна только для протокола запуска и не участвует в расчетных формулах.
 Private Function FormatReportNumber(ByVal value As Double) As String
     FormatReportNumber = Replace$(Format$(value, "0.############"), ",", ".")
+End Function
+
+' Считает продолжительность пользовательского сценария с учетом возможного
+' перехода Timer через полночь.
+Private Function ElapsedSecondsFrom(ByVal startTimer As Double) As Double
+    Dim nowTimer As Double
+    nowTimer = Timer
+    If nowTimer >= startTimer Then
+        ElapsedSecondsFrom = nowTimer - startTimer
+    Else
+        ElapsedSecondsFrom = 86400# - startTimer + nowTimer
+    End If
 End Function
 
 

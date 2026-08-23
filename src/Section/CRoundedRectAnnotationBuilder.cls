@@ -17,8 +17,8 @@ Option Explicit
 ' и аннотации Circle или LShape.
 
 Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, ByVal rebars As CRebarLayout)
-    If model Is Nothing Then Err.Raise vbObjectError + 5305, "CRoundedRectAnnotationBuilder", "Section model is not provided."
-    If geometry Is Nothing Then Err.Raise vbObjectError + 5306, "CRoundedRectAnnotationBuilder", "Geometry is not provided."
+    If model Is Nothing Then Err.Raise vbObjectError + 5305, "CRoundedRectAnnotationBuilder", "Модель сечения не передана."
+    If geometry Is Nothing Then Err.Raise vbObjectError + 5306, "CRoundedRectAnnotationBuilder", "Геометрия скругленного прямоугольника не передана."
 
     Dim annotations As CSectionAnnotations
     Set annotations = model.Annotations

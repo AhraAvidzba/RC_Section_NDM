@@ -25,6 +25,9 @@ Public Function RunWorkbookInterfaceTests() As String
     TestSingleCombinationSkipsBlankRows stats
     TestPartialCombinationIsInvalid stats
     TestInvalidCalculationTypeDoesNotRunPlot stats
+    TestAutoCADSourceRequiresManualImport stats
+    TestAutoCADImportButtonRejectsGeneratedSource stats
+    TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
     TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped stats
     TestCircleWorkbookRunWritesResults stats
     TestExecutionReportFile stats
@@ -32,6 +35,8 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAutoCADExportUsesSharedLoadReference stats
     TestGoverningCombinationWritesDetailedResults stats
     TestCapacitySearchMethodValidation stats
+    TestSolverToleranceUnitLabels stats
+    TestCapacitySettingsUnitLabels stats
     TestClearResultsKeepsInputs stats
 
     AppendLine stats, "TOTAL_WORKBOOK_UI: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
@@ -51,23 +56,34 @@ Private Sub TestButtons(ByRef stats As TUiTestStats)
 
     Dim runButton As Object
     Dim clearButton As Object
+    Dim importButton As Object
     Dim acadButton As Object
     Dim plotButton As Object
     Set runButton = calc.Shapes.Item("btnRunSectionCalculation")
-    Set clearButton = calc.Shapes.Item("btnClearSectionResults")
+    Set importButton = calc.Shapes.Item("btnImportGeometryFromAutoCAD")
+    Set clearButton = calc.Shapes.Item("btnClearAutoCADDrawing")
     Set acadButton = calc.Shapes.Item("btnExportStressToAutoCAD")
     Set plotButton = calc.Shapes.Item("btnUpdateSectionPlot")
 
     AssertTrue stats, "ui.buttons.run.exists", Not runButton Is Nothing
+    AssertTrue stats, "ui.buttons.import.exists", Not importButton Is Nothing
     AssertTrue stats, "ui.buttons.clear.exists", Not clearButton Is Nothing
     AssertTrue stats, "ui.buttons.autocad.exists", Not acadButton Is Nothing
     AssertTrue stats, "ui.buttons.plot.exists", Not plotButton Is Nothing
     AssertTrue stats, "ui.buttons.run.macro", InStr(1, runButton.OnAction, "RunSectionCalculation", vbTextCompare) > 0
-    AssertTrue stats, "ui.buttons.clear.macro", InStr(1, clearButton.OnAction, "ClearSectionResults", vbTextCompare) > 0
+    AssertTrue stats, "ui.buttons.import.macro", InStr(1, importButton.OnAction, "ImportGeometryFromAutoCAD", vbTextCompare) > 0
+    AssertTrue stats, "ui.buttons.clear.macro", InStr(1, clearButton.OnAction, "ClearAutoCADDrawing", vbTextCompare) > 0
     AssertTrue stats, "ui.buttons.autocad.macro", InStr(1, acadButton.OnAction, "ExportSectionStressToAutoCAD", vbTextCompare) > 0
     AssertTrue stats, "ui.buttons.plot.macro", InStr(1, plotButton.OnAction, "UpdateSectionPlot", vbTextCompare) > 0
-    AssertTrue stats, "ui.buttons.outsidePrint", runButton.Left > calc.Range("AJ1").Left And clearButton.Left > calc.Range("AJ1").Left And acadButton.Left > calc.Range("AJ1").Left And plotButton.Left > calc.Range("AJ1").Left
+    AssertTrue stats, "ui.buttons.outsidePrint", runButton.Left > calc.Range("AJ1").Left And importButton.Left > calc.Range("AJ1").Left And clearButton.Left > calc.Range("AJ1").Left And acadButton.Left > calc.Range("AJ1").Left And plotButton.Left > calc.Range("AJ1").Left
+    AssertTrue stats, "ui.buttons.textCentered", ButtonTextIsCentered(runButton) And ButtonTextIsCentered(importButton) And _
+        ButtonTextIsCentered(clearButton) And ButtonTextIsCentered(acadButton) And ButtonTextIsCentered(plotButton)
 End Sub
+
+Private Function ButtonTextIsCentered(ByVal buttonShape As Object) As Boolean
+    ButtonTextIsCentered = (buttonShape.TextFrame.HorizontalAlignment = -4108 And _
+        buttonShape.TextFrame.VerticalAlignment = -4108)
+End Function
 
 ' Проверяет, что включенный общий флаг создает человекочитаемый txt-отчет
 ' рядом с книгой и не мешает обычному расчетному сценарию.
@@ -187,7 +203,84 @@ Private Sub TestInvalidCalculationTypeDoesNotRunPlot(ByRef stats As TUiTestStats
         InStr(1, message, "InvalidInput", vbTextCompare) > 0 And _
         InStr(1, message, "результатов элементов", vbTextCompare) = 0
     AssertTrue stats, "ui.loads.invalidCalculationType.noElementRows", _
-        ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.CurrentRegion.Rows.Count = 1
+        ResultTableRowCount("rngNDMElementResults") = 1
+End Sub
+
+' Проверяет, что расчет в режиме AutoCAD не запускает скрытый импорт.
+' Пользователь должен сначала явно нажать отдельную кнопку импорта; иначе
+' расчет останавливается до очистки старых Results и до обращения к AutoCAD.
+Private Sub TestAutoCADSourceRequiresManualImport(ByRef stats As TUiTestStats)
+    PrepareCircleInput
+    SetSystemSetting "Geometry.Source", "AutoCAD"
+    ClearSectionResultsForWorkbook ThisWorkbook
+
+    Dim message As String
+    On Error Resume Next
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    Dim description As String
+    description = Err.Description
+    Err.Clear
+    On Error GoTo 0
+
+    AssertTrue stats, "ui.autocad.manualImport.required", _
+        InStr(1, description, "предварительно импортированной", vbTextCompare) > 0 And _
+        InStr(1, description, "Импортировать геометрию", vbTextCompare) > 0
+End Sub
+
+' Проверяет защиту отдельной кнопки импорта: если пользователь оставил
+' Geometry.Source = Generated, макрос должен объяснить, что импорт недоступен
+' в этом режиме, и не должен пытаться подключаться к AutoCAD.
+Private Sub TestAutoCADImportButtonRejectsGeneratedSource(ByRef stats As TUiTestStats)
+    PrepareCircleInput
+    SetSystemSetting "Geometry.Source", "Generated"
+
+    Dim message As String
+    On Error Resume Next
+    message = ImportGeometryFromAutoCADForWorkbook(ThisWorkbook)
+    Dim description As String
+    description = Err.Description
+    Err.Clear
+    On Error GoTo 0
+
+    AssertTrue stats, "ui.autocad.import.generatedRejected", _
+        InStr(1, description, "Geometry.Source = AutoCAD", vbTextCompare) > 0
+End Sub
+
+' Проверяет preview импортированной геометрии без реального AutoCAD.
+' Важна вся цепочка: CSectionModel(AutoCADImport) -> Results annotations ->
+' CSectionPlotDataReader -> CSectionPlotter -> Chart.Shapes размерных линий.
+Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiTestStats)
+    PrepareCircleInput
+    SetSystemSetting "Geometry.Source", "AutoCAD"
+
+    Dim section As CSectionModel
+    Set section = New CSectionModel
+    section.SourceType = "AutoCADImport"
+    section.AddConcreteElement 50#, 50#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
+    section.AddConcreteElement 250#, 50#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
+    section.AddRebarElement 50#, 50#, 20#, 0#, "Ribbed"
+
+    Dim writer As CNDMResultsWriter
+    Set writer = New CNDMResultsWriter
+    writer.WriteGeometryPreview ThisWorkbook, section
+
+    Dim annotationData As Variant
+    annotationData = ResultTable("rngNDMSectionAnnotations")
+    AssertTrue stats, "ui.autocad.preview.boundsAnnotations", CountAnnotationType(annotationData, "DIMENSION") = 2
+    AssertTrue stats, "ui.autocad.preview.approxText", InStr(1, CStr(annotationData(2, 11)), ChrW$(&H2248), vbTextCompare) > 0
+    AssertTrue stats, "ui.autocad.preview.russianComment", InStr(1, CStr(annotationData(2, 14)), "Приблизительная", vbTextCompare) > 0
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim reader As CSectionPlotDataReader
+    Set reader = New CSectionPlotDataReader
+    reader.LoadGeometryPreviewFromWorkbook ThisWorkbook, settings
+    AssertTrue stats, "ui.autocad.preview.readerAnnotations", reader.AnnotationCount = 2
+
+    UpdateSectionPlotForWorkbook ThisWorkbook
+    AssertTrue stats, "ui.autocad.preview.dimensionShapes", CountPlotShapes("AnnotationLine") > 0
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -231,22 +324,36 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.run.system.noRebarTable", Len(CStr(sys.Cells.Item(130, 1).Value2)) = 0
     AssertTrue stats, "ui.run.system.noCrackFormulaBlock", Len(CStr(sys.Cells.Item(130, 9).Value2)) = 0
     AssertTrue stats, "ui.run.crack.result.value", Not ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(17, 5).HasFormula
+    Dim resultsSheet As Object
+    Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
+    Dim summaryRow As Long
+    summaryRow = BatchSummaryStartRow()
+    AssertTrue stats, "ui.batchSummary.currentDepths", IsNumeric(resultsSheet.Cells.Item(summaryRow + 8, 9).Value2) And IsNumeric(resultsSheet.Cells.Item(summaryRow + 8, 10).Value2)
+    AssertTrue stats, "ui.batchSummary.direct.noCapacityDepths", Len(CStr(resultsSheet.Cells.Item(summaryRow + 8, 19).Value2)) = 0 And Len(CStr(resultsSheet.Cells.Item(summaryRow + 8, 20).Value2)) = 0
     AssertTrue stats, "ui.results.elements.header", CStr(ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Value2) = "RunID"
-    AssertTrue stats, "ui.results.elements.rows", ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.CurrentRegion.Rows.Count > 1
-    AssertTrue stats, "ui.results.elements.noCombinationIndex", ResultHeaderColumn(ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.CurrentRegion.Value2, "CombinationIndex") = 0
-    AssertTrue stats, "ui.results.elements.units", ResultHeaderColumn(ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.CurrentRegion.Value2, "Stress, MPa") > 0
-    AssertTrue stats, "ui.results.elements.noGeometryDup", ResultHeaderColumn(ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.CurrentRegion.Value2, "X, mm") = 0
-    AssertTrue stats, "ui.results.elements.noPlaneDup", ResultHeaderColumn(ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.CurrentRegion.Value2, "Epsilon0") = 0
+    Dim elementResults As Variant
+    elementResults = ResultTable("rngNDMElementResults")
+    AssertTrue stats, "ui.results.elements.rows", UBound(elementResults, 1) > 1
+    AssertTrue stats, "ui.results.elements.noCombinationIndex", ResultHeaderColumn(elementResults, "CombinationIndex") = 0
+    AssertTrue stats, "ui.results.elements.units", ResultHeaderColumn(elementResults, "Stress, MPa") > 0
+    AssertTrue stats, "ui.results.elements.noGeometryDup", ResultHeaderColumn(elementResults, "X, mm") = 0
+    AssertTrue stats, "ui.results.elements.noPlaneDup", ResultHeaderColumn(elementResults, "Epsilon0") = 0
+    AssertTrue stats, "ui.results.elements.physicalStateAlign", _
+        ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Offset(1, ResultHeaderColumn(elementResults, "PhysicalState") - 1).HorizontalAlignment = -4152
     AssertTrue stats, "ui.results.geometry.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Value2) = "RunID"
-    AssertTrue stats, "ui.results.geometry.rows", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.CurrentRegion.Rows.Count > 1
-    AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 10
-    AssertTrue stats, "ui.results.geometry.noSource", ResultHeaderColumn(ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.CurrentRegion.Value2, "SourceName") = 0
-    AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.CurrentRegion.Value2, "MaterialClass") = 0
+    Dim geometryResults As Variant
+    geometryResults = ResultTable("rngNDMSectionGeometry")
+    AssertTrue stats, "ui.results.geometry.rows", UBound(geometryResults, 1) > 1
+    AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 33 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 9
+    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 33 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 26
+    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 33 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 34
+    AssertTrue stats, "ui.results.geometry.noSource", ResultHeaderColumn(geometryResults, "SourceName") = 0
+    AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(geometryResults, "MaterialClass") = 0
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
     AssertTrue stats, "ui.results.properties.hasEpsilon0", ResultsPropertyExists("LC1", "Epsilon0")
     AssertTrue stats, "ui.results.properties.hasBounds", ResultsPropertyExists("ALL", "Bounds.MinX")
     AssertTrue stats, "ui.results.annotations.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Value2) = "RunID"
-    AssertTrue stats, "ui.results.annotations.rows", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.CurrentRegion.Rows.Count > 1
+    AssertTrue stats, "ui.results.annotations.rows", ResultTableRowCount("rngNDMSectionAnnotations") > 1
     AssertTrue stats, "ui.plot.chart.created", PlotChartExists()
     AssertTrue stats, "ui.plot.title.comment", PlotChartTitleContains("(ui test)")
 End Sub
@@ -292,47 +399,56 @@ Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTest
 
     Dim message As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    ThisWorkbook.Application.CalculateFull
 
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
     Dim summaryRow As Long
     summaryRow = BatchSummaryStartRow()
     Dim governingID As String
-    governingID = CStr(resultsSheet.Cells.Item(summaryRow + 1, 2).Value2)
+    governingID = CStr(resultsSheet.Cells.Item(summaryRow + 1, 5).Value2)
     Dim expectedID As String
-    expectedID = ExpectedGoverningByLowestLambda(resultsSheet, summaryRow)
+    expectedID = ExpectedGoverningByLowestStrengthSafety(resultsSheet, summaryRow)
 
     AssertTrue stats, "ui.governing.id", governingID = expectedID
     AssertTrue stats, "ui.governing.message", InStr(1, message, governingID, vbTextCompare) > 0
-    AssertTrue stats, "ui.governing.details.lambda", Abs(CDbl(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(5, 5).Value2) - LowestPositiveLambda(resultsSheet, summaryRow)) < 0.0000001
+    AssertTrue stats, "ui.governing.details.moment", Abs(CDbl(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(8, 5).Value2) - MomentUltimateForCombination(resultsSheet, summaryRow, governingID)) < 0.0000001
 End Sub
 
-Private Function ExpectedGoverningByLowestLambda(ByVal resultsSheet As Object, ByVal summaryRow As Long) As String
+Private Function ExpectedGoverningByLowestStrengthSafety(ByVal resultsSheet As Object, ByVal summaryRow As Long) As String
     Dim rowIndex As Long
-    Dim bestLambda As Double
-    For rowIndex = summaryRow + 6 To summaryRow + 25
+    Dim bestSafety As Double
+    For rowIndex = summaryRow + 8 To summaryRow + 27
         If Len(Trim$(CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2))) > 0 Then
-            If IsNumeric(resultsSheet.Cells.Item(rowIndex, 8).Value2) Then
-                Dim lambdaValue As Double
-                lambdaValue = CDbl(resultsSheet.Cells.Item(rowIndex, 8).Value2)
-                If lambdaValue > 0# And (bestLambda = 0# Or lambdaValue < bestLambda) Then
-                    bestLambda = lambdaValue
-                    ExpectedGoverningByLowestLambda = CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2)
-                End If
+            Dim safetyValue As Double
+            safetyValue = StrengthSafetyForSummaryRow(resultsSheet, rowIndex)
+            If safetyValue > 0# And (bestSafety = 0# Or safetyValue < bestSafety) Then
+                bestSafety = safetyValue
+                ExpectedGoverningByLowestStrengthSafety = CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2)
             End If
         End If
     Next rowIndex
 End Function
 
-Private Function LowestPositiveLambda(ByVal resultsSheet As Object, ByVal summaryRow As Long) As Double
+Private Function StrengthSafetyForSummaryRow(ByVal resultsSheet As Object, ByVal rowIndex As Long) As Double
+    Dim strainSafety As Double
+    Dim momentSafety As Double
+    If IsNumeric(resultsSheet.Cells.Item(rowIndex, 15).Value2) Then strainSafety = CDbl(resultsSheet.Cells.Item(rowIndex, 15).Value2)
+    If IsNumeric(resultsSheet.Cells.Item(rowIndex, 21).Value2) Then momentSafety = CDbl(resultsSheet.Cells.Item(rowIndex, 21).Value2)
+
+    If momentSafety > 0# Then
+        StrengthSafetyForSummaryRow = momentSafety
+    Else
+        StrengthSafetyForSummaryRow = strainSafety
+    End If
+End Function
+
+Private Function MomentUltimateForCombination(ByVal resultsSheet As Object, ByVal summaryRow As Long, ByVal combinationID As String) As Double
     Dim rowIndex As Long
-    For rowIndex = summaryRow + 6 To summaryRow + 25
-        If IsNumeric(resultsSheet.Cells.Item(rowIndex, 8).Value2) Then
-            Dim lambdaValue As Double
-            lambdaValue = CDbl(resultsSheet.Cells.Item(rowIndex, 8).Value2)
-            If lambdaValue > 0# And (LowestPositiveLambda = 0# Or lambdaValue < LowestPositiveLambda) Then
-                LowestPositiveLambda = lambdaValue
-            End If
+    For rowIndex = summaryRow + 8 To summaryRow + 27
+        If StrComp(CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2), combinationID, vbTextCompare) = 0 Then
+            If IsNumeric(resultsSheet.Cells.Item(rowIndex, 18).Value2) Then MomentUltimateForCombination = CDbl(resultsSheet.Cells.Item(rowIndex, 18).Value2)
+            Exit Function
         End If
     Next rowIndex
 End Function
@@ -468,7 +584,7 @@ End Function
 Private Function ResultsPropertyExists(ByVal loadCase As String, ByVal parameter As String) As Boolean
     On Error GoTo Failed
     Dim data As Variant
-    data = ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.CurrentRegion.Value2
+    data = ResultTable("rngNDMSectionProperties")
     Dim colLC As Long: colLC = ResultHeaderColumn(data, "LoadCase")
     Dim colParam As Long: colParam = ResultHeaderColumn(data, "Parameter")
     Dim rowIndex As Long
@@ -496,6 +612,31 @@ Private Function PlotChartTitleContains(ByVal expectedText As String) As Boolean
     Dim chartObject As Object
     Set chartObject = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
     PlotChartTitleContains = InStr(1, chartObject.Chart.ChartTitle.Text, expectedText, vbTextCompare) > 0
+Failed:
+End Function
+
+Private Function CountPlotShapes(ByVal nameFragment As String) As Long
+    On Error GoTo Failed
+    Dim chartObject As Object
+    Set chartObject = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
+
+    Dim shapeIndex As Long
+    For shapeIndex = 1 To chartObject.Chart.Shapes.Count
+        If InStr(1, chartObject.Chart.Shapes.Item(shapeIndex).Name, nameFragment, vbTextCompare) > 0 Then
+            CountPlotShapes = CountPlotShapes + 1
+        End If
+    Next shapeIndex
+Failed:
+End Function
+
+Private Function CountAnnotationType(ByRef annotationData As Variant, ByVal annotationType As String) As Long
+    On Error GoTo Failed
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(annotationData, 1)
+        If StrComp(CStr(annotationData(rowIndex, 2)), annotationType, vbTextCompare) = 0 Then
+            CountAnnotationType = CountAnnotationType + 1
+        End If
+    Next rowIndex
 Failed:
 End Function
 
@@ -769,6 +910,67 @@ Private Function SystemSettingValidationHasOptions(ByVal key As String, ByVal ex
     SystemSettingValidationHasOptions = SettingValidationHasOptionsInRange(ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange, key, expectedOptions)
 End Function
 
+' Ищет настройку в rngSystemSettings и проверяет, что ее колонка "Ед."
+' является формулой к нужной строке rngUnitSettings. Видимое значение
+' может быть разным после выбора пользователем единиц, поэтому тестируем
+' источник данных формулы, а не конкретный текст вроде tf или kN*m.
+Private Function SystemSettingUnitCellReferencesQuantity(ByVal key As String, ByVal quantity As String) As Boolean
+    On Error GoTo Failed
+
+    Dim settings As Object
+    Set settings = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To settings.Rows.Count
+        If StrComp(CStr(settings.Cells.Item(rowIndex, 1).Value2), key, vbTextCompare) = 0 Then
+            Dim formulaText As String
+            formulaText = CStr(settings.Cells.Item(rowIndex, 3).Formula)
+            If Left$(formulaText, 1) <> "=" Then Exit Function
+
+            SystemSettingUnitCellReferencesQuantity = _
+                InStr(1, formulaText, "rngUnitSettings", vbTextCompare) > 0 And _
+                InStr(1, formulaText, """" & quantity & """", vbTextCompare) > 0
+            Exit Function
+        End If
+    Next rowIndex
+
+Failed:
+End Function
+
+Private Function ResultTable(ByVal rangeName As String) As Variant
+    Dim anchor As Object
+    Set anchor = ThisWorkbook.Names.Item(rangeName).RefersToRange
+
+    Dim columnCount As Long
+    columnCount = ResultTableColumnCount(anchor)
+    If columnCount <= 0 Then Exit Function
+
+    Dim rowCount As Long
+    rowCount = ResultTableRowCount(rangeName)
+    If rowCount <= 0 Then rowCount = 1
+
+    ResultTable = anchor.Resize(rowCount, columnCount).Value2
+End Function
+
+Private Function ResultTableRowCount(ByVal rangeName As String) As Long
+    Dim anchor As Object
+    Set anchor = ThisWorkbook.Names.Item(rangeName).RefersToRange
+
+    Dim rowOffset As Long
+    For rowOffset = 0 To 1048575 - anchor.Row
+        If Len(Trim$(CStr(anchor.Offset(rowOffset, 0).Value2))) = 0 Then Exit For
+        ResultTableRowCount = ResultTableRowCount + 1
+    Next rowOffset
+End Function
+
+Private Function ResultTableColumnCount(ByVal anchor As Object) As Long
+    Dim colOffset As Long
+    For colOffset = 0 To 255
+        If Len(Trim$(CStr(anchor.Offset(0, colOffset).Value2))) = 0 Then Exit For
+        ResultTableColumnCount = ResultTableColumnCount + 1
+    Next colOffset
+End Function
+
 Private Function AnySettingValidationHasOptions(ByVal key As String, ByVal expectedOptions As Variant) As Boolean
     Dim ranges As Variant
     ranges = SettingsRangeSearchOrder()
@@ -1028,6 +1230,59 @@ Private Sub ClearDataRows(ByVal target As Object)
             target.Cells.Item(rowIndex, colIndex).ClearContents
         Next colIndex
     Next rowIndex
+End Sub
+
+' Проверяет, что единицы у допусков равновесия не зашиты текстом.
+' Эти значения вводятся пользователем в выбранных INPUT-единицах, поэтому
+' колонка "Ед." должна ссылаться формулой на rngUnitSettings. Иначе при
+' переходе, например, на tf*m можно случайно получить гигантский допуск
+' момента и принять несбалансированное состояние как сошедшееся.
+Private Sub TestSolverToleranceUnitLabels(ByRef stats As TUiTestStats)
+    AssertTrue stats, "ui.units.solverToleranceN.dynamic", _
+        SystemSettingUnitCellReferencesQuantity("Solver.ToleranceN", "Force")
+    AssertTrue stats, "ui.units.solverToleranceMx.dynamic", _
+        SystemSettingUnitCellReferencesQuantity("Solver.ToleranceMx", "Moment")
+    AssertTrue stats, "ui.units.solverToleranceMy.dynamic", _
+        SystemSettingUnitCellReferencesQuantity("Solver.ToleranceMy", "Moment")
+End Sub
+
+' Проверяет, что настройки поиска несущей способности не выглядят как
+' недооформленный блок: у безразмерных коэффициентов стоит "-", у счетчиков -
+' "шт". Размерных величин в этом блоке сейчас нет, поэтому формулы единиц
+' здесь не нужны; важно именно не оставлять пустую колонку "Ед.".
+Private Sub TestCapacitySettingsUnitLabels(ByRef stats As TUiTestStats)
+    AssertTextEquals stats, "ui.units.capacity.mode", SystemSettingUnitText("Calculation.Mode"), "-"
+    AssertTextEquals stats, "ui.units.capacity.method", SystemSettingUnitText("Capacity.Method"), "-"
+    AssertTextEquals stats, "ui.units.capacity.searchMethod", SystemSettingUnitText("Capacity.SearchMethod"), "-"
+    AssertTextEquals stats, "ui.units.capacity.initialLambda", SystemSettingUnitText("Capacity.InitialLambda"), "-"
+    AssertTextEquals stats, "ui.units.capacity.toleranceLambda", SystemSettingUnitText("Capacity.ToleranceLambda"), "-"
+    AssertTextEquals stats, "ui.units.capacity.maxRetries", SystemSettingUnitText("Capacity.MaxRetries"), "шт"
+    AssertTextEquals stats, "ui.units.capacity.baseLoadSteps", SystemSettingUnitText("Capacity.BaseLoadSteps"), "шт"
+    AssertTextEquals stats, "ui.units.capacity.toleranceStrain", SystemSettingUnitText("Capacity.ToleranceStrain"), "-"
+    AssertTextEquals stats, "ui.units.capacity.maxLambda", SystemSettingUnitText("Capacity.MaxLambda"), "-"
+    AssertTextEquals stats, "ui.units.capacity.solverIterations", SystemSettingUnitText("Capacity.SolverMaxIterations"), "шт"
+End Sub
+
+Private Function SystemSettingUnitText(ByVal key As String) As String
+    On Error GoTo Failed
+
+    Dim settings As Object
+    Set settings = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To settings.Rows.Count
+        If StrComp(CStr(settings.Cells.Item(rowIndex, 1).Value2), key, vbTextCompare) = 0 Then
+            SystemSettingUnitText = Trim$(CStr(settings.Cells.Item(rowIndex, 3).Value2))
+            Exit Function
+        End If
+    Next rowIndex
+
+Failed:
+End Function
+
+Private Sub AssertTextEquals(ByRef stats As TUiTestStats, ByVal name As String, _
+        ByVal actual As String, ByVal expected As String)
+    AssertTrue stats, name, StrComp(actual, expected, vbTextCompare) = 0
 End Sub
 
 Private Function FileExists(ByVal path As String) As Boolean

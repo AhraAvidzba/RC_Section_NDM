@@ -21,19 +21,21 @@ Option Explicit
 ' аккуратно отфильтровать AutoCAD-сущности и заполнить модель сечения.
 
 Public Function ImportFromActiveDocument(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
-    If settings Is Nothing Then Err.Raise vbObjectError + 4400, "CAutoCADSectionModelImporter", "Настройки System не переданы."
+    If settings Is Nothing Then Err.Raise vbObjectError + 4400, "CAutoCADSectionModelImporter", "Настройки Config не переданы."
 
     Dim acad As Object
     On Error Resume Next
     Set acad = GetObject(, "AutoCAD.Application")
     On Error GoTo 0
     If acad Is Nothing Then Err.Raise vbObjectError + 4401, "CAutoCADSectionModelImporter", _
-        "AutoCAD не найден. Откройте AutoCAD с активным чертежом или выберите Geometry.Source = Generated."
+        "AutoCAD не открыт. Откройте AutoCAD с нужным чертежом и повторите импорт."
 
     Dim doc As Object
+    On Error Resume Next
     Set doc = acad.ActiveDocument
+    On Error GoTo 0
     If doc Is Nothing Then Err.Raise vbObjectError + 4402, "CAutoCADSectionModelImporter", _
-        "В AutoCAD нет активного чертежа."
+        "AutoCAD открыт, но активный чертеж не найден. Откройте или создайте чертеж и повторите импорт."
 
     Set ImportFromActiveDocument = ImportFromModelSpace(doc.ModelSpace, _
         settings.GetString("AutoCAD.Import.ConcreteLayer", "Concrete"), _

@@ -65,6 +65,38 @@ function Add-WorkbookName {
     catch { $Workbook.Names.Add($Name, $address) | Out-Null }
 }
 
+# Делает заголовок rngBatchSummary статической ссылкой на раздел справки.
+# Writer результатов дальше не трогает первую строку, поэтому ссылка не
+# пересоздается после каждого расчета и работает так же, как ссылки Config.
+function Add-ResultsSummaryHelpLink {
+    param(
+        [object]$ResultsSheet,
+        [object]$InstructionSheet
+    )
+
+    $title = "Сводка пакетного расчета"
+    $displayText = "$title (Подробнее)"
+    $cell = $ResultsSheet.Cells.Item(1, 1)
+    $cell.Hyperlinks.Delete()
+    $cell.Value2 = $displayText
+
+    $found = $InstructionSheet.Cells.Find($title)
+    if ($null -ne $found) {
+        $ResultsSheet.Hyperlinks.Add($cell, "", "'" + [string]$InstructionSheet.Name + "'!A" + [string]$found.Row, "", $displayText) | Out-Null
+    }
+
+    try {
+        $linkText = "(Подробнее)"
+        $linkStart = $displayText.IndexOf($linkText) + 1
+        $cell.Characters(1, $title.Length).Font.Color = 0
+        $cell.Characters(1, $title.Length).Font.Underline = -4142
+        $cell.Characters($linkStart, $linkText.Length).Font.Color = 16711680
+        $cell.Characters($linkStart, $linkText.Length).Font.Underline = 2
+    } catch {
+        # Ссылка остается рабочей даже если Excel не даст частично оформить текст.
+    }
+}
+
 # Импортирует исходные VBA-модули в книгу, сохраняя воспроизводимость сборки.
 function Import-VbaSourceTree {
     param(
@@ -112,11 +144,11 @@ Option Explicit
 
 Private Sub Workbook_SheetFollowHyperlink(ByVal Sh As Object, ByVal Target As Hyperlink)
     On Error GoTo SafeExit
-    If InStr(1, Target.SubAddress, "'Инструкции'!", vbTextCompare) = 0 Then Exit Sub
+    If InStr(1, Target.SubAddress, "'Справка'!", vbTextCompare) = 0 Then Exit Sub
 
     Dim addressText As String
-    addressText = Replace(Target.SubAddress, "'Инструкции'!", vbNullString)
-    Application.Goto ThisWorkbook.Worksheets("Инструкции").Range(addressText), True
+    addressText = Replace(Target.SubAddress, "'Справка'!", vbNullString)
+    Application.Goto ThisWorkbook.Worksheets("Справка").Range(addressText), True
 SafeExit:
 End Sub
 '@
@@ -328,14 +360,42 @@ function Add-MainInputBlock {
     $calcTypeRange.Validation.InCellDropdown = $true
     $Sheet.Columns.Item($calcTypeListColumn).Hidden = $true
 }
+
+# Центрирует подпись внутри Shape-кнопки. Используем старый TextFrame для
+# совместимости с Excel VBA/COM и, если доступно, TextFrame2 для более
+# надежного вертикального якоря в новых версиях Office.
+function Center-ShapeButtonText {
+    param([object]$Button)
+
+    $Button.TextFrame.HorizontalAlignment = -4108
+    $Button.TextFrame.VerticalAlignment = -4108
+    $Button.TextFrame.MarginLeft = 0
+    $Button.TextFrame.MarginRight = 0
+    $Button.TextFrame.MarginTop = 0
+    $Button.TextFrame.MarginBottom = 0
+    try {
+        $Button.TextFrame2.TextRange.ParagraphFormat.Alignment = 2
+        $Button.TextFrame2.VerticalAnchor = 3
+        $Button.TextFrame2.MarginLeft = 0
+        $Button.TextFrame2.MarginRight = 0
+        $Button.TextFrame2.MarginTop = 0
+        $Button.TextFrame2.MarginBottom = 0
+    } catch {
+        # В старых Excel TextFrame2 может быть недоступен; TextFrame выше уже достаточно.
+    }
+}
+
 # Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
 function Add-CalculationButtons {
     param([object]$Sheet)
 
     $left = $Sheet.Cells.Item(4, 38).Left
     $top = $Sheet.Cells.Item(4, 38).Top
+    $buttonWidth = 235
+    $buttonHeight = 32
+    $buttonStep = 40
 
-    $runButton = $Sheet.Shapes.AddShape(1, $left, $top, 150, 28)
+    $runButton = $Sheet.Shapes.AddShape(1, $left, $top, $buttonWidth, $buttonHeight)
     $runButton.Name = "btnRunSectionCalculation"
     $runButton.TextFrame.Characters().Text = "Выполнить расчет"
     $runButton.OnAction = "RunSectionCalculation"
@@ -343,17 +403,32 @@ function Add-CalculationButtons {
     $runButton.Line.ForeColor.RGB = 5383702
     $runButton.TextFrame.Characters().Font.Color = 16777215
     $runButton.TextFrame.Characters().Font.Bold = $true
+    $runButton.TextFrame.Characters().Font.Size = 9
+    Center-ShapeButtonText $runButton
 
-    $clearButton = $Sheet.Shapes.AddShape(1, $left, $top + 36, 150, 28)
-    $clearButton.Name = "btnClearSectionResults"
-    $clearButton.TextFrame.Characters().Text = "Очистить результаты"
-    $clearButton.OnAction = "ClearSectionResults"
+    $importButton = $Sheet.Shapes.AddShape(1, $left, $top + $buttonStep, $buttonWidth, $buttonHeight)
+    $importButton.Name = "btnImportGeometryFromAutoCAD"
+    $importButton.TextFrame.Characters().Text = "Импортировать геометрию из AutoCAD"
+    $importButton.OnAction = "ImportGeometryFromAutoCAD"
+    $importButton.Fill.ForeColor.RGB = 10053171
+    $importButton.Line.ForeColor.RGB = 10053171
+    $importButton.TextFrame.Characters().Font.Color = 16777215
+    $importButton.TextFrame.Characters().Font.Bold = $true
+    $importButton.TextFrame.Characters().Font.Size = 9
+    Center-ShapeButtonText $importButton
+
+    $clearButton = $Sheet.Shapes.AddShape(1, $left, $top + 2 * $buttonStep, $buttonWidth, $buttonHeight)
+    $clearButton.Name = "btnClearAutoCADDrawing"
+    $clearButton.TextFrame.Characters().Text = "Очистить чертеж AutoCAD"
+    $clearButton.OnAction = "ClearAutoCADDrawing"
     $clearButton.Fill.ForeColor.RGB = 8355711
     $clearButton.Line.ForeColor.RGB = 8355711
     $clearButton.TextFrame.Characters().Font.Color = 16777215
     $clearButton.TextFrame.Characters().Font.Bold = $true
+    $clearButton.TextFrame.Characters().Font.Size = 9
+    Center-ShapeButtonText $clearButton
 
-    $acadButton = $Sheet.Shapes.AddShape(1, $left, $top + 72, 150, 28)
+    $acadButton = $Sheet.Shapes.AddShape(1, $left, $top + 3 * $buttonStep, $buttonWidth, $buttonHeight)
     $acadButton.Name = "btnExportStressToAutoCAD"
     $acadButton.TextFrame.Characters().Text = "Экспорт в AutoCAD"
     $acadButton.OnAction = "ExportSectionStressToAutoCAD"
@@ -361,8 +436,10 @@ function Add-CalculationButtons {
     $acadButton.Line.ForeColor.RGB = 10053171
     $acadButton.TextFrame.Characters().Font.Color = 16777215
     $acadButton.TextFrame.Characters().Font.Bold = $true
+    $acadButton.TextFrame.Characters().Font.Size = 9
+    Center-ShapeButtonText $acadButton
 
-    $plotButton = $Sheet.Shapes.AddShape(1, $left, $top + 108, 150, 28)
+    $plotButton = $Sheet.Shapes.AddShape(1, $left, $top + 4 * $buttonStep, $buttonWidth, $buttonHeight)
     $plotButton.Name = "btnUpdateSectionPlot"
     $plotButton.TextFrame.Characters().Text = "Обновить схему"
     $plotButton.OnAction = "UpdateSectionPlot"
@@ -370,6 +447,8 @@ function Add-CalculationButtons {
     $plotButton.Line.ForeColor.RGB = 5287936
     $plotButton.TextFrame.Characters().Font.Color = 16777215
     $plotButton.TextFrame.Characters().Font.Bold = $true
+    $plotButton.TextFrame.Characters().Font.Size = 9
+    Center-ShapeButtonText $plotButton
 }
 
 $root = Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "../..")
@@ -401,7 +480,7 @@ try {
     $calc = $workbook.Worksheets.Item(3)
     $results = $workbook.Worksheets.Item(4)
     $system.Name = "Config"
-    $instructions.Name = "Инструкции"
+    $instructions.Name = "Справка"
     $calc.Name = "Расчет"
     $results.Name = "Results"
 
@@ -436,23 +515,24 @@ try {
     $system.Columns.Item(19).ColumnWidth = 18
     $system.Columns.Item(20).ColumnWidth = 26
     $system.Columns.Item(21).ColumnWidth = 14
-    $results.Range("A1:AF1").Font.Bold = $true
-    $results.Range("A32:F32").Font.Bold = $true
-    $results.Range("J32:Y32").Font.Bold = $true
-    $results.Range("AC32:AH32").Font.Bold = $true
-    $results.Range("AL32:AY32").Font.Bold = $true
-    $results.Columns.Item(1).ColumnWidth = 20
-    $results.Columns.Item(10).ColumnWidth = 20
-    $results.Columns.Item(29).ColumnWidth = 20
-    $results.Columns.Item(38).ColumnWidth = 20
+    $results.Range("A1:AT1").Font.Bold = $true
+    $results.Range("A33:F33").Font.Bold = $true
+    $results.Range("I33:W33").Font.Bold = $true
+    $results.Range("Z33:AE33").Font.Bold = $true
+    $results.Range("AH33:AU33").Font.Bold = $true
+    $results.Columns.Item(1).ColumnWidth = 12
+    $results.Columns.Item(9).ColumnWidth = 12
+    $results.Columns.Item(26).ColumnWidth = 12
+    $results.Columns.Item(34).ColumnWidth = 12
+    Add-ResultsSummaryHelpLink $results $instructions
 
     Add-WorkbookName $workbook "rngLoadCombinations" $calc '$A$40:$F$60'
     Add-WorkbookName $workbook "rngResultSection" $calc '$S$17:$AH$35'
-    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$AF$29'
-    Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$32'
-    Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$J$32'
-    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AC$32'
-    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$AL$32'
+    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$AT$30'
+    Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$33'
+    Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$I$33'
+    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$Z$33'
+    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$AH$33'
 
     $calc.PageSetup.PaperSize = 9
     $calc.PageSetup.Orientation = 1

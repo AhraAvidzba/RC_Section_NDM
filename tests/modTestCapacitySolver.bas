@@ -39,6 +39,7 @@ Public Function RunCapacitySolverTests() As String
     TestResultWriter stats
     TestInvalidBaseMoment stats
     TestCapacityMethodComparisons stats
+    TestLoadMultiplierWithWorkbookTfDefaults stats
     TestLoadMultiplierSearchMethods stats
     TestSearchMethodInputErrors stats
     TestSearchMethodPerformanceComparison stats
@@ -667,6 +668,85 @@ Private Sub TestUltimateStrainInvalidLambdaClearsMoments(ByRef stats As TCapacit
     AssertClose stats, "method.invalidLambda.lambdaZero", cap.LambdaUltimate, 0#, 0#
     AssertClose stats, "method.invalidLambda.mxZero", cap.MxUltimate, 0#, 0#
     AssertClose stats, "method.invalidLambda.momentZero", cap.MomentUltimate, 0#, 0#
+End Sub
+
+' Проверяет пользовательский сценарий с дефолтными единицами книги.
+' После перехода INPUT-нагрузок на tf и tf*m численные значения допусков
+' solver-а тоже должны быть заданы в этих единицах. Иначе 1000 в строке
+' Solver.ToleranceMx превращается в 1000 tf*m, LoadMultiplier принимает
+' грубо несбалансированные probe-точки и уходит далеко за реальный предел.
+Private Sub TestLoadMultiplierWithWorkbookTfDefaults(ByRef stats As TCapacityTestStats)
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+
+    AssertEquals stats, "capacity.tfDefaults.geometry", settings.GetString("Geometry.Type", ""), "LShape"
+    AssertEquals stats, "capacity.tfDefaults.forceUnit", settings.GetString("Units.Force.Input", ""), "tf"
+    AssertEquals stats, "capacity.tfDefaults.momentUnit", settings.GetString("Units.Moment.Input", ""), "tf*m"
+
+    Dim registry As CSectionTypeRegistry
+    Set registry = New CSectionTypeRegistry
+
+    Dim section As CSectionModel
+    Set section = registry.BuildGeneratedModel(settings, units)
+
+    Dim concrete As CConcreteDiagramMaterial
+    Set concrete = New CConcreteDiagramMaterial
+    concrete.InitializeFromSettings settings, units
+
+    Dim steel As CSteelDiagramMaterial
+    Set steel = New CSteelDiagramMaterial
+    steel.InitializeFromSettings settings, units
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateTransformed section, concrete, steel
+
+    Dim nValue As Double
+    Dim mxValue As Double
+    Dim myValue As Double
+    Dim mxOffset As Double
+    Dim myOffset As Double
+    nValue = units.InputForceToInternal(100#)
+    mxValue = units.InputMomentMxToInternal(50#)
+    myValue = 0#
+    mxOffset = nValue * props.CentroidY
+    myOffset = nValue * props.CentroidX
+
+    Dim reference As CCapacitySolver
+    Set reference = New CCapacitySolver
+    reference.ApplySettings settings, units
+    reference.SolveByUltimateStrain section, concrete, steel, nValue, mxValue, myValue, mxOffset, myOffset
+    AssertTrue stats, "capacity.tfDefaults.ultimate.converged", reference.Converged
+    AssertTrue stats, "capacity.tfDefaults.ultimate.lambda", reference.LambdaUltimate > 0# And reference.LambdaUltimate < 10#
+
+    AssertLoadMultiplierTfDefault stats, "Bisection", settings, units, section, concrete, steel, _
+        nValue, mxValue, myValue, mxOffset, myOffset, reference.LambdaUltimate
+    AssertLoadMultiplierTfDefault stats, "Brent", settings, units, section, concrete, steel, _
+        nValue, mxValue, myValue, mxOffset, myOffset, reference.LambdaUltimate
+    AssertLoadMultiplierTfDefault stats, "Secant", settings, units, section, concrete, steel, _
+        nValue, mxValue, myValue, mxOffset, myOffset, reference.LambdaUltimate
+End Sub
+
+Private Sub AssertLoadMultiplierTfDefault(ByRef stats As TCapacityTestStats, ByVal methodName As String, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
+        ByVal section As CSectionModel, ByVal concrete As Object, ByVal steel As Object, _
+        ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
+        ByVal mxOffset As Double, ByVal myOffset As Double, ByVal referenceLambda As Double)
+    Dim cap As CCapacitySolver
+    Set cap = New CCapacitySolver
+    cap.ApplySettings settings, units
+    cap.SearchMethod = methodName
+    cap.SolveByLoadMultiplier section, concrete, steel, nValue, mxValue, myValue, mxOffset, myOffset
+
+    AssertTrue stats, "capacity.tfDefaults." & methodName & ".converged", cap.Converged
+    AssertTrue stats, "capacity.tfDefaults." & methodName & ".physical", IsPhysicalLimitState(cap.LimitState)
+    AssertClose stats, "capacity.tfDefaults." & methodName & ".lambda", cap.LambdaUltimate, referenceLambda, 0.2
+    AssertTrue stats, "capacity.tfDefaults." & methodName & ".notOvershot", cap.LambdaUltimate < 2# * referenceLambda
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.

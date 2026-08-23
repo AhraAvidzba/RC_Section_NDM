@@ -459,7 +459,7 @@ End Function
 
 ' Возвращает имя ключа по порядковому номеру для проверок дубликатов и тестов.
 Public Function KeyAt(ByVal index As Long) As String
-    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 4300, "CSystemSettingsReader", "Setting index is out of range."
+    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 4300, "CSystemSettingsReader", "Индекс настройки вне допустимого диапазона."
     KeyAt = mKeys(index)
 End Function
 
@@ -488,13 +488,13 @@ End Function
 
 ' Возвращает деформацию бетонной диаграммы по номеру точки.
 Public Function ConcreteDiagramStrain(ByVal index As Long) As Double
-    If index < 1 Or index > mConcretePointCount Then Err.Raise vbObjectError + 4310, "CSystemSettingsReader", "Concrete diagram point index is out of range."
+    If index < 1 Or index > mConcretePointCount Then Err.Raise vbObjectError + 4310, "CSystemSettingsReader", "Индекс точки диаграммы бетона вне допустимого диапазона."
     ConcreteDiagramStrain = mConcreteStrains(index)
 End Function
 
 ' Возвращает напряжение бетонной диаграммы в МПа по номеру точки.
 Public Function ConcreteDiagramStress(ByVal index As Long) As Double
-    If index < 1 Or index > mConcretePointCount Then Err.Raise vbObjectError + 4311, "CSystemSettingsReader", "Concrete diagram point index is out of range."
+    If index < 1 Or index > mConcretePointCount Then Err.Raise vbObjectError + 4311, "CSystemSettingsReader", "Индекс точки диаграммы бетона вне допустимого диапазона."
     ConcreteDiagramStress = mConcreteStresses(index)
 End Function
 
@@ -505,13 +505,13 @@ End Function
 
 ' Возвращает деформацию диаграммы арматуры по номеру точки.
 Public Function SteelDiagramStrain(ByVal index As Long) As Double
-    If index < 1 Or index > mSteelPointCount Then Err.Raise vbObjectError + 4312, "CSystemSettingsReader", "Steel diagram point index is out of range."
+    If index < 1 Or index > mSteelPointCount Then Err.Raise vbObjectError + 4312, "CSystemSettingsReader", "Индекс точки диаграммы арматуры вне допустимого диапазона."
     SteelDiagramStrain = mSteelStrains(index)
 End Function
 
 ' Возвращает напряжение диаграммы арматуры в МПа по номеру точки.
 Public Function SteelDiagramStress(ByVal index As Long) As Double
-    If index < 1 Or index > mSteelPointCount Then Err.Raise vbObjectError + 4313, "CSystemSettingsReader", "Steel diagram point index is out of range."
+    If index < 1 Or index > mSteelPointCount Then Err.Raise vbObjectError + 4313, "CSystemSettingsReader", "Индекс точки диаграммы арматуры вне допустимого диапазона."
     SteelDiagramStress = mSteelStresses(index)
 End Function
 
@@ -553,7 +553,7 @@ Private Sub LoadDiagramPoints(ByVal pointRange As Object, ByRef strains() As Dou
 
         If Len(pointText) > 0 Or Len(strainText) > 0 Or Len(stressText) > 0 Then
             If Len(pointText) = 0 Or Len(strainText) = 0 Or Len(stressText) = 0 Then
-                Err.Raise vbObjectError + 4314, "CSystemSettingsReader", rangeName & " has partially filled point row."
+                Err.Raise vbObjectError + 4314, "CSystemSettingsReader", rangeName & ": строка точки диаграммы заполнена не полностью."
             End If
             pointCount = pointCount + 1
             ReDim Preserve strains(1 To pointCount)
@@ -563,7 +563,7 @@ Private Sub LoadDiagramPoints(ByVal pointRange As Object, ByRef strains() As Dou
         End If
     Next rowIndex
 
-    If pointCount < 2 Then Err.Raise vbObjectError + 4315, "CSystemSettingsReader", rangeName & " must contain at least two points."
+    If pointCount < 2 Then Err.Raise vbObjectError + 4315, "CSystemSettingsReader", rangeName & " должен содержать не менее двух точек."
 End Sub
 
 ' Возвращает десятичный разделитель текущего Excel.

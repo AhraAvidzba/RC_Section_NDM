@@ -29,8 +29,8 @@ Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, 
 
     Dim message As String
     If Not geometry.IsValid(message) Then Err.Raise vbObjectError + 2100, "CFiberMeshBuilder", message
-    If stepX <= 0# Then Err.Raise vbObjectError + 2101, "CFiberMeshBuilder", "Mesh step X must be positive."
-    If stepY <= 0# Then Err.Raise vbObjectError + 2102, "CFiberMeshBuilder", "Mesh step Y must be positive."
+    If stepX <= 0# Then Err.Raise vbObjectError + 2101, "CFiberMeshBuilder", "Шаг сетки должен быть положительным."
+    If stepY <= 0# Then Err.Raise vbObjectError + 2102, "CFiberMeshBuilder", "Шаг сетки должен быть положительным."
     If boundarySubdivisions < 1 Then boundarySubdivisions = 1
 
     Dim t0 As Double
@@ -55,7 +55,7 @@ Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, 
     Dim ny As Long
     nx = CLng(Fix((maxX - minX) / stepX)) + 1
     ny = CLng(Fix((maxY - minY) / stepY)) + 1
-    If nx < 1 Or ny < 1 Then Err.Raise vbObjectError + 2104, "CFiberMeshBuilder", "Empty mesh bounding rectangle."
+    If nx < 1 Or ny < 1 Then Err.Raise vbObjectError + 2104, "CFiberMeshBuilder", "Габаритный прямоугольник сетки пуст."
 
     ReDim mFibers(1 To nx * ny)
     mFiberCount = 0
@@ -193,7 +193,7 @@ End Property
 
 Private Sub CheckFiberIndex(ByVal index As Long)
     If index < 1 Or index > mFiberCount Then
-        Err.Raise vbObjectError + 2106, "CFiberMeshBuilder", "Fiber index out of range."
+        Err.Raise vbObjectError + 2106, "CFiberMeshBuilder", "Индекс бетонного элемента вне допустимого диапазона."
     End If
 End Sub
 

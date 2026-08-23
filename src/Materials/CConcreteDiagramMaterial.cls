@@ -68,9 +68,9 @@ End Sub
 ' Нулевая точка добавляется автоматически, чтобы диаграмма замыкалась в начале.
 Public Sub InitializeFromTwoCompressionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
         ByVal eps2 As Double, ByVal stress2 As Double)
-    If eps1 >= 0# Then Err.Raise vbObjectError + 3100, "CConcreteDiagramMaterial", "first compression strain must be negative."
-    If eps2 >= eps1 Then Err.Raise vbObjectError + 3101, "CConcreteDiagramMaterial", "second compression strain must be more negative than first."
-    If stress1 >= 0# Or stress2 >= 0# Then Err.Raise vbObjectError + 3102, "CConcreteDiagramMaterial", "Concrete compression stresses must be negative."
+    If eps1 >= 0# Then Err.Raise vbObjectError + 3100, "CConcreteDiagramMaterial", "Первая деформация сжатия бетона должна быть отрицательной."
+    If eps2 >= eps1 Then Err.Raise vbObjectError + 3101, "CConcreteDiagramMaterial", "Вторая деформация сжатия бетона должна быть более отрицательной, чем первая."
+    If stress1 >= 0# Or stress2 >= 0# Then Err.Raise vbObjectError + 3102, "CConcreteDiagramMaterial", "Напряжения сжатия бетона должны быть отрицательными."
 
     ReDim mStrains(1 To 3)
     ReDim mStresses(1 To 3)
@@ -90,10 +90,10 @@ End Sub
 ' Тестовый и служебный конструктор трехточечной сжатой ветви.
 Public Sub InitializeFromThreeCompressionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
         ByVal eps2 As Double, ByVal stress2 As Double, ByVal eps3 As Double, ByVal stress3 As Double)
-    If eps1 >= 0# Then Err.Raise vbObjectError + 3100, "CConcreteDiagramMaterial", "first compression strain must be negative."
-    If eps2 >= eps1 Then Err.Raise vbObjectError + 3101, "CConcreteDiagramMaterial", "second compression strain must be more negative than first."
-    If eps3 >= eps2 Then Err.Raise vbObjectError + 3104, "CConcreteDiagramMaterial", "third compression strain must be more negative than second."
-    If stress1 >= 0# Or stress2 >= 0# Or stress3 >= 0# Then Err.Raise vbObjectError + 3102, "CConcreteDiagramMaterial", "Concrete compression stresses must be negative."
+    If eps1 >= 0# Then Err.Raise vbObjectError + 3100, "CConcreteDiagramMaterial", "Первая деформация сжатия бетона должна быть отрицательной."
+    If eps2 >= eps1 Then Err.Raise vbObjectError + 3101, "CConcreteDiagramMaterial", "Вторая деформация сжатия бетона должна быть более отрицательной, чем первая."
+    If eps3 >= eps2 Then Err.Raise vbObjectError + 3104, "CConcreteDiagramMaterial", "Третья деформация сжатия бетона должна быть более отрицательной, чем вторая."
+    If stress1 >= 0# Or stress2 >= 0# Or stress3 >= 0# Then Err.Raise vbObjectError + 3102, "CConcreteDiagramMaterial", "Напряжения сжатия бетона должны быть отрицательными."
 
     ReDim mStrains(1 To 4)
     ReDim mStresses(1 To 4)

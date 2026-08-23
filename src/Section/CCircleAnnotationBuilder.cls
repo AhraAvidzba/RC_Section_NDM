@@ -17,8 +17,8 @@ Option Explicit
 ' Он передает только model-координаты; Excel Chart здесь не участвует.
 
 Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, ByVal rebars As CRebarLayout)
-    If model Is Nothing Then Err.Raise vbObjectError + 5295, "CCircleAnnotationBuilder", "Section model is not provided."
-    If geometry Is Nothing Then Err.Raise vbObjectError + 5296, "CCircleAnnotationBuilder", "Geometry is not provided."
+    If model Is Nothing Then Err.Raise vbObjectError + 5295, "CCircleAnnotationBuilder", "Модель сечения не передана."
+    If geometry Is Nothing Then Err.Raise vbObjectError + 5296, "CCircleAnnotationBuilder", "Геометрия круглого сечения не передана."
 
     Dim annotations As CSectionAnnotations
     Set annotations = model.Annotations

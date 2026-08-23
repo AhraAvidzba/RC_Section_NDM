@@ -41,12 +41,33 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
 
     ClearResults workbook
 
-    Dim runID As String
-    runID = Format$(Now, "yyyy-mm-dd hh:nn:ss")
+    Dim runID As Date
+    runID = Now
 
     WriteSectionGeometry workbook, section, runID, units
     WriteElementResults workbook, section, concrete, steel, batch, runID, units
     WriteSectionProperties workbook, section, concrete, steel, batch, runID, units
+    EnsureAutoCADBoundsAnnotations section
+    WriteSectionAnnotations workbook, section, runID, units
+End Sub
+
+' Записывает на Results только импортированную геометрию без расчетных LC.
+' Такой снимок нужен после кнопки AutoCAD import: пользователь сразу видит
+' элементы на схеме, а последующий расчет берет эту же геометрию из Results.
+Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSectionModel, _
+        Optional ByVal units As CUnitSystem = Nothing)
+    If workbook Is Nothing Then Err.Raise vbObjectError + 4450, "CNDMResultsWriter", "Книга Excel не передана."
+    If section Is Nothing Then Err.Raise vbObjectError + 4451, "CNDMResultsWriter", "Модель сечения не передана."
+
+    ClearResults workbook
+
+    Dim runID As Date
+    runID = Now
+
+    WriteSectionGeometry workbook, section, runID, units
+    WriteEmptyElementResults workbook, runID, units
+    WriteSectionPropertiesPreview workbook, section, runID, units
+    EnsureAutoCADBoundsAnnotations section
     WriteSectionAnnotations workbook, section, runID, units
 End Sub
 
@@ -63,7 +84,10 @@ End Sub
 ' Безопасно чистит именованный диапазон, если он существует в книге.
 Private Sub ClearNamedRegion(ByVal workbook As Object, ByVal rangeName As String)
     On Error GoTo MissingRange
-    workbook.Names.Item(rangeName).RefersToRange.CurrentRegion.ClearContents
+    Dim anchor As Object
+    Set anchor = workbook.Names.Item(rangeName).RefersToRange
+    anchor.CurrentRegion.ClearContents
+    If anchor.Row > 1 Then anchor.Offset(-1, 0).Resize(1, 20).Clear
 MissingRange:
 End Sub
 
@@ -74,7 +98,7 @@ End Sub
 ' rngNDMSectionGeometry и связываются по ElementID.
 Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal concrete As Object, ByVal steel As Object, ByVal batch As CBatchSectionCalculator, _
-        ByVal runID As String, ByVal units As CUnitSystem)
+        ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
     Set target = workbook.Names.Item("rngNDMElementResults").RefersToRange
 
@@ -108,6 +132,7 @@ Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSect
     Next i
 
     target.Resize(rowCount, ELEMENT_RESULT_COLUMNS).Value2 = data
+    FormatResultsBlock target, rowCount, ELEMENT_RESULT_COLUMNS, "Результаты элементов по сочетаниям"
 End Sub
 
 ' ------------------------------
@@ -116,7 +141,7 @@ End Sub
 ' Геометрия не зависит от LoadCase, поэтому записывается один раз. Схема и
 ' AutoCAD export затем объединяют эту таблицу с нужным LC из ElementResults.
 Private Sub WriteSectionGeometry(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal runID As String, ByVal units As CUnitSystem)
+        ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
     Set target = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
 
@@ -174,6 +199,7 @@ Private Sub WriteSectionGeometry(ByVal workbook As Object, ByVal section As CSec
     Next i
 
     target.Resize(rowCount, GEOMETRY_COLUMNS).Value2 = data
+    FormatResultsBlock target, rowCount, GEOMETRY_COLUMNS, "Расчетная геометрия элементов"
 End Sub
 
 ' ------------------------------
@@ -183,12 +209,12 @@ End Sub
 ' сечения, главные оси, сохраненные единицы вывода и плоскость деформаций LC.
 Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal concrete As Object, ByVal steel As Object, ByVal batch As CBatchSectionCalculator, _
-        ByVal runID As String, ByVal units As CUnitSystem)
+        ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
     Set target = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
 
     Dim rowCount As Long
-    rowCount = 1 + 20 + batch.Count * 12
+    rowCount = 1 + 21 + batch.Count * 12
 
     Dim data() As Variant
     ReDim data(1 To rowCount, 1 To SECTION_PROPERTY_COLUMNS)
@@ -212,6 +238,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxX", OutputLength(maxX, units), OutputLengthUnit(units), "Максимальный X расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MinY", OutputLength(minY, units), OutputLengthUnit(units), "Минимальный Y расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxY", OutputLength(maxY, units), OutputLengthUnit(units), "Максимальный Y расчетной модели."
+    PutProperty data, rowIndex, runID, "ALL", "Geometry.Source", section.SourceType, "-", "Источник геометрии расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "CentroidX", OutputLength(props.CentroidX, units), OutputLengthUnit(units), "Центр тяжести приведенного сечения."
     PutProperty data, rowIndex, runID, "ALL", "CentroidY", OutputLength(props.CentroidY, units), OutputLengthUnit(units), "Центр тяжести приведенного сечения."
     PutProperty data, rowIndex, runID, "ALL", "PrincipalAngle", props.PrincipalAngleRad, "rad", "Угол главных центральных осей."
@@ -250,6 +277,40 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     Next i
 
     target.Resize(rowCount, SECTION_PROPERTY_COLUMNS).Value2 = data
+    FormatResultsBlock target, rowCount, SECTION_PROPERTY_COLUMNS, "Свойства всего сечения"
+End Sub
+
+' Записывает минимальные свойства imported-preview: Bounds, количество
+' элементов и единицы, достаточные для проверки геометрии на схеме.
+Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal section As CSectionModel, _
+        ByVal runID As Variant, ByVal units As CUnitSystem)
+    Dim target As Object
+    Set target = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
+
+    Dim data() As Variant
+    ReDim data(1 To 13, 1 To SECTION_PROPERTY_COLUMNS)
+    PutSectionPropertyHeaders data
+
+    Dim rowIndex As Long
+    rowIndex = 2
+
+    Dim minX As Double, maxX As Double, minY As Double, maxY As Double
+    GetConcreteBounds section, minX, maxX, minY, maxY
+
+    PutProperty data, rowIndex, runID, "ALL", "Bounds.MinX", OutputLength(minX, units), OutputLengthUnit(units), "Минимальный X расчетной модели."
+    PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxX", OutputLength(maxX, units), OutputLengthUnit(units), "Максимальный X расчетной модели."
+    PutProperty data, rowIndex, runID, "ALL", "Bounds.MinY", OutputLength(minY, units), OutputLengthUnit(units), "Минимальный Y расчетной модели."
+    PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxY", OutputLength(maxY, units), OutputLengthUnit(units), "Максимальный Y расчетной модели."
+    PutProperty data, rowIndex, runID, "ALL", "Geometry.Source", section.SourceType, "-", "Источник геометрии расчетной модели."
+    PutProperty data, rowIndex, runID, "ALL", "ConcreteCount", section.ConcreteCount, "шт", "Количество бетонных элементов."
+    PutProperty data, rowIndex, runID, "ALL", "RebarCount", section.RebarCount, "шт", "Количество элементов арматуры."
+    PutProperty data, rowIndex, runID, "ALL", "Output.LengthUnit", OutputLengthUnit(units), "-", "Единица вывода длины на момент импорта."
+    PutProperty data, rowIndex, runID, "ALL", "Output.AreaUnit", OutputAreaUnit(units), "-", "Единица вывода площади на момент импорта."
+    PutProperty data, rowIndex, runID, "ALL", "Output.StressUnit", OutputStressUnit(units), "-", "Единица вывода напряжения на момент импорта."
+    PutProperty data, rowIndex, runID, "ALL", "Output.CurvatureUnit", OutputCurvatureUnit(units), "-", "Единица вывода кривизны на момент импорта."
+
+    target.Resize(UBound(data, 1), SECTION_PROPERTY_COLUMNS).Value2 = data
+    FormatResultsBlock target, UBound(data, 1), SECTION_PROPERTY_COLUMNS, "Свойства всего сечения"
 End Sub
 
 ' ------------------------------
@@ -258,7 +319,7 @@ End Sub
 ' Эти строки отвечают не за расчет, а за оформление последнего рассчитанного
 ' сечения: контуры, размеры и групповые подписи арматуры.
 Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal runID As String, ByVal units As CUnitSystem)
+        ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
     Set target = workbook.Names.Item("rngNDMSectionAnnotations").RefersToRange
 
@@ -282,12 +343,118 @@ Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As C
     Next i
 
     target.Resize(rowCount, ANNOTATION_COLUMNS).Value2 = data
+    FormatResultsBlock target, rowCount, ANNOTATION_COLUMNS, "Аннотации схемы"
 End Sub
+
+' Оставляет таблицу результатов элементов с одной шапкой.
+' Для preview нет LC, поэтому записывать Stress/Strain нельзя.
+Private Sub WriteEmptyElementResults(ByVal workbook As Object, ByVal runID As Variant, ByVal units As CUnitSystem)
+    Dim target As Object
+    Set target = workbook.Names.Item("rngNDMElementResults").RefersToRange
+
+    Dim data() As Variant
+    ReDim data(1 To 1, 1 To ELEMENT_RESULT_COLUMNS)
+    PutElementResultHeaders data, units
+
+    target.Resize(1, ELEMENT_RESULT_COLUMNS).Value2 = data
+    FormatResultsBlock target, 1, ELEMENT_RESULT_COLUMNS, "Результаты элементов по сочетаниям"
+End Sub
+
+' Оставляет таблицу аннотаций с одной шапкой.
+' У импортированной AutoCAD-сетки semantic-граней обычно нет, поэтому preview
+' не должен наследовать старые размеры и подписи.
+Private Sub WriteEmptySectionAnnotations(ByVal workbook As Object, ByVal runID As Variant)
+    Dim target As Object
+    Set target = workbook.Names.Item("rngNDMSectionAnnotations").RefersToRange
+
+    Dim data() As Variant
+    ReDim data(1 To 1, 1 To ANNOTATION_COLUMNS)
+    PutAnnotationHeaders data
+
+    target.Resize(1, ANNOTATION_COLUMNS).Value2 = data
+    FormatResultsBlock target, 1, ANNOTATION_COLUMNS, "Аннотации схемы"
+End Sub
+
+' Оформляет один Results-диапазон как самостоятельную таблицу.
+' Заголовок ставится прямо над якорем, а чтение Results ниже выполняется
+' явным anchored-reader-ом, поэтому внешний вид больше не зависит от CurrentRegion.
+Private Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, ByVal columnCount As Long, ByVal titleText As String)
+    Dim tableRange As Object
+    Set tableRange = target.Resize(rowCount, columnCount)
+
+    tableRange.HorizontalAlignment = -4108
+    tableRange.VerticalAlignment = -4108
+    tableRange.Font.Name = "Arial"
+    tableRange.Font.Size = 9
+    tableRange.Borders.LineStyle = 1
+    tableRange.Borders.Color = RGB(200, 200, 200)
+    tableRange.Rows.Item(1).Interior.Color = RGB(217, 217, 217)
+    tableRange.Rows.Item(1).Font.Bold = True
+    tableRange.Rows.Item(1).HorizontalAlignment = -4131
+    tableRange.Columns.Item(1).NumberFormat = "dd.mm.yy"
+
+    AlignCommentColumns tableRange
+
+    If target.Row > 2 Then
+        Dim titleRange As Object
+        Set titleRange = target.Offset(-1, 0).Resize(1, columnCount)
+        titleRange.UnMerge
+        titleRange.Clear
+        titleRange.Merge
+        titleRange.Value2 = titleText
+        titleRange.Font.Name = "Arial"
+        titleRange.Font.Size = 9
+        titleRange.Font.Bold = True
+        titleRange.HorizontalAlignment = -4108
+        titleRange.VerticalAlignment = -4108
+        titleRange.Interior.Color = RGB(217, 217, 217)
+    End If
+End Sub
+
+' Ищет текстовые диагностические столбцы и выравнивает их вправо.
+' Comment и PhysicalState читаются удобнее как текстовые признаки, поэтому
+' они не центрируются вместе с числовыми данными таблиц Results.
+Private Sub AlignCommentColumns(ByVal tableRange As Object)
+    Dim headers As Variant
+    headers = tableRange.Rows.Item(1).Value2
+
+    Dim colIndex As Long
+    For colIndex = 1 To tableRange.Columns.Count
+        If ShouldRightAlignResultColumn(ResultHeaderBase(CStr(headers(1, colIndex)))) Then
+            If tableRange.Rows.Count > 1 Then
+                tableRange.Offset(1, colIndex - 1).Resize(tableRange.Rows.Count - 1, 1).HorizontalAlignment = -4152
+            End If
+        End If
+    Next colIndex
+End Sub
+
+' Определяет текстовые столбцы Results, которые должны читаться как подпись,
+' а не как числовой параметр. Пока это комментарии и физическое состояние
+' элемента в rngNDMElementResults.
+Private Function ShouldRightAlignResultColumn(ByVal headerBase As String) As Boolean
+    ShouldRightAlignResultColumn = _
+        (StrComp(headerBase, "Comment", vbTextCompare) = 0 Or _
+         StrComp(headerBase, "PhysicalState", vbTextCompare) = 0)
+End Function
+
+' Возвращает имя столбца без единицы измерения.
+' Например, заголовок "Stress, MPa" для служебных проверок считается просто
+' "Stress"; это позволяет одинаково находить Comment и другие столбцы при
+' разных пользовательских единицах вывода.
+Private Function ResultHeaderBase(ByVal headerText As String) As String
+    Dim commaPos As Long
+    commaPos = InStr(1, headerText, ",", vbTextCompare)
+    If commaPos > 0 Then
+        ResultHeaderBase = Trim$(Left$(headerText, commaPos - 1))
+    Else
+        ResultHeaderBase = Trim$(headerText)
+    End If
+End Function
 
 Private Sub PutCombinationElementResults(ByRef data() As Variant, ByRef rowIndex As Long, _
         ByVal section As CSectionModel, ByVal concrete As Object, ByVal steel As Object, _
         ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, _
-        ByVal runID As String, ByVal units As CUnitSystem)
+        ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim i As Long
     Dim strain As Double
     Dim stress As Double
@@ -311,7 +478,7 @@ Private Sub PutCombinationElementResults(ByRef data() As Variant, ByRef rowIndex
     Next i
 End Sub
 
-Private Sub PutElementRow(ByRef data() As Variant, ByVal rowIndex As Long, ByVal runID As String, _
+Private Sub PutElementRow(ByRef data() As Variant, ByVal rowIndex As Long, ByVal runID As Variant, _
         ByVal combinationID As String, ByVal elementID As String, _
         ByVal strain As Double, ByVal stress As Double, ByVal state As String, ByVal units As CUnitSystem)
     data(rowIndex, 1) = runID
@@ -389,7 +556,7 @@ Private Sub PutAnnotationHeaders(ByRef data() As Variant)
     data(1, 14) = "Comment"
 End Sub
 
-Private Sub PutProperty(ByRef data() As Variant, ByRef rowIndex As Long, ByVal runID As String, _
+Private Sub PutProperty(ByRef data() As Variant, ByRef rowIndex As Long, ByVal runID As Variant, _
         ByVal loadCase As String, ByVal parameter As String, ByVal value As Variant, _
         ByVal unitText As String, ByVal comment As String)
     data(rowIndex, 1) = runID
@@ -401,7 +568,7 @@ Private Sub PutProperty(ByRef data() As Variant, ByRef rowIndex As Long, ByVal r
     rowIndex = rowIndex + 1
 End Sub
 
-Private Sub PutAnnotationRow(ByRef data() As Variant, ByRef rowIndex As Long, ByVal runID As String, _
+Private Sub PutAnnotationRow(ByRef data() As Variant, ByRef rowIndex As Long, ByVal runID As Variant, _
         ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long, ByVal units As CUnitSystem)
     Dim annotationType As String
     annotationType = annotations.AnnotationType(annotationIndex)
@@ -419,7 +586,7 @@ Private Sub PutAnnotationRow(ByRef data() As Variant, ByRef rowIndex As Long, By
     data(rowIndex, 11) = OutputAnnotationText(annotations, annotationIndex, units)
     data(rowIndex, 12) = OutputAnnotationValue(annotations, annotationIndex, units)
     data(rowIndex, 13) = OutputAnnotationUnit(annotations, annotationIndex, units)
-    data(rowIndex, 14) = annotations.Comment(annotationIndex)
+    data(rowIndex, 14) = OutputAnnotationComment(annotations, annotationIndex)
     rowIndex = rowIndex + 1
 End Sub
 
@@ -436,11 +603,68 @@ Private Function OutputAnnotationText(ByVal annotations As CSectionAnnotations, 
     valueText = FormatNumberInvariant(OutputLength(annotations.Value(annotationIndex), units))
     Dim unitText As String
     unitText = OutputLengthUnit(units)
-    If Len(Trim$(annotations.Text(annotationIndex))) > 0 Then
+    If StrComp(Trim$(annotations.Text(annotationIndex)), ApproxSign(), vbTextCompare) = 0 Then
+        OutputAnnotationText = ApproxSign() & " " & valueText & " " & unitText
+    ElseIf Len(Trim$(annotations.Text(annotationIndex))) > 0 Then
         OutputAnnotationText = annotations.Text(annotationIndex) & "=" & valueText & " " & unitText
     Else
         OutputAnnotationText = valueText & " " & unitText
     End If
+End Function
+
+Private Function OutputAnnotationComment(ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long) As String
+    Dim commentValue As String
+    commentValue = Trim$(annotations.Comment(annotationIndex))
+
+    If StrComp(commentValue, "Generated section contour segment.", vbTextCompare) = 0 Then
+        OutputAnnotationComment = "Сегмент контура параметрического сечения."
+    ElseIf StrComp(commentValue, "Generated circle contour.", vbTextCompare) = 0 Then
+        OutputAnnotationComment = "Контур круглого параметрического сечения."
+    ElseIf StrComp(commentValue, "Section dimension.", vbTextCompare) = 0 Then
+        OutputAnnotationComment = "Размер сечения для отображения на схеме."
+    ElseIf StrComp(commentValue, "Grouped rebar annotation.", vbTextCompare) = 0 Then
+        OutputAnnotationComment = "Групповая подпись арматуры по смысловой грани."
+    ElseIf StrComp(commentValue, "Overall concrete width.", vbTextCompare) = 0 Then
+        OutputAnnotationComment = "Общая ширина бетонного сечения."
+    ElseIf StrComp(commentValue, "Overall concrete height.", vbTextCompare) = 0 Then
+        OutputAnnotationComment = "Общая высота бетонного сечения."
+    ElseIf StrComp(commentValue, "Upper rectangle width.", vbTextCompare) = 0 Then
+        OutputAnnotationComment = "Ширина верхнего прямоугольника Г-образного сечения."
+    ElseIf StrComp(commentValue, "Lower rectangle height.", vbTextCompare) = 0 Then
+        OutputAnnotationComment = "Высота нижнего прямоугольника Г-образного сечения."
+    ElseIf Len(commentValue) > 0 Then
+        OutputAnnotationComment = commentValue
+    Else
+        OutputAnnotationComment = "Semantic-аннотация схемы."
+    End If
+End Function
+
+' Для AutoCAD-сетки у программы нет смысловых граней, но есть надежные Bounds
+' бетонных элементов. Поэтому сохраняем только две приблизительные размерные
+' аннотации: общую ширину и высоту. Символ "≈" показывает, что размер получен
+' по дискретной сетке Region, а не из параметрической геометрии.
+Private Sub EnsureAutoCADBoundsAnnotations(ByVal section As CSectionModel)
+    If section Is Nothing Then Exit Sub
+    If StrComp(section.SourceType, "AutoCADImport", vbTextCompare) <> 0 Then Exit Sub
+    If section.AnnotationCount > 0 Then Exit Sub
+    If section.ConcreteCount <= 0 Then Exit Sub
+
+    Dim minX As Double
+    Dim maxX As Double
+    Dim minY As Double
+    Dim maxY As Double
+    GetConcreteBounds section, minX, maxX, minY, maxY
+
+    section.Annotations.AddDimension "DIM_AUTO_BOUNDS_B", minX, minY, maxX, minY, 0#, -1#, _
+        ApproxSign(), maxX - minX, "Приблизительная общая ширина по Bounds импортированного бетона."
+    section.Annotations.AddDimension "DIM_AUTO_BOUNDS_H", minX, minY, minX, maxY, -1#, 0#, _
+        ApproxSign(), maxY - minY, "Приблизительная общая высота по Bounds импортированного бетона."
+End Sub
+
+' Возвращает знак приблизительного равенства без литерала в исходнике. Так VBA-модуль
+' не зависит от кодировки файла, а на лист Results попадает настоящий символ "≈", не "?".
+Private Function ApproxSign() As String
+    ApproxSign = ChrW$(&H2248)
 End Function
 
 Private Function OutputAnnotationValue(ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long, _
@@ -465,7 +689,7 @@ End Function
 
 Private Sub GetConcreteBounds(ByVal section As CSectionModel, ByRef minX As Double, ByRef maxX As Double, _
         ByRef minY As Double, ByRef maxY As Double)
-    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 4460, "CNDMResultsWriter", "No concrete elements in section model."
+    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 4460, "CNDMResultsWriter", "В модели нет бетонных элементов."
 
     minX = section.ConcreteX(1) - ConcreteWidth(section, 1) / 2#
     maxX = section.ConcreteX(1) + ConcreteWidth(section, 1) / 2#

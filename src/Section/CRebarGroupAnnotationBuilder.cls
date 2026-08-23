@@ -17,7 +17,7 @@ Option Explicit
 ' к грани должна прийти от конкретного rebar builder-а.
 
 Public Sub AddRebarLabels(ByVal annotations As CSectionAnnotations, ByVal rebars As CRebarLayout)
-    If annotations Is Nothing Then Err.Raise vbObjectError + 5290, "CRebarGroupAnnotationBuilder", "Annotations collection is not provided."
+    If annotations Is Nothing Then Err.Raise vbObjectError + 5290, "CRebarGroupAnnotationBuilder", "Коллекция аннотаций не передана."
     If rebars Is Nothing Then Exit Sub
     If rebars.Count <= 0 Or rebars.AnnotationCount <= 0 Then Exit Sub
 

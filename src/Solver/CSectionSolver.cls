@@ -37,6 +37,8 @@ Private mRelativeResidualMx As Double ' Относительная невязк�
 Private mRelativeResidualMy As Double ' Относительная невязка My для диагностики качества найденного состояния.
 Private mMinConcreteStrain As Double ' Минимальная деформация бетона в последнем посчитанном состоянии.
 Private mMaxConcreteStrain As Double ' Максимальная деформация бетона в последнем посчитанном состоянии.
+Private mMinSteelStrain As Double ' Наиболее сжатая деформация арматуры в последнем посчитанном состоянии.
+Private mMaxSteelStrain As Double ' Наиболее растянутая деформация арматуры в последнем посчитанном состоянии.
 Private mMaxAbsSteelStrain As Double ' Максимальная по модулю деформация арматуры в последнем состоянии.
 Private mIterations As Long ' Суммарное число итераций на всех ступенях текущего вызова Solve.
 Private mLoadStepsCompleted As Long ' Сколько ступеней нагрузки успешно доведено до равновесия.
@@ -640,6 +642,8 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
     If buildTangent Then
         mMinConcreteStrain = 1E+100
         mMaxConcreteStrain = -1E+100
+        mMinSteelStrain = 1E+100
+        mMaxSteelStrain = -1E+100
         mMaxAbsSteelStrain = 0#
     End If
 
@@ -670,6 +674,8 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
         For i = 1 To section.RebarCount
             strain = eps0 + kx * section.RebarY(i) + ky * section.RebarX(i)
             If buildTangent Then
+                If strain < mMinSteelStrain Then mMinSteelStrain = strain
+                If strain > mMaxSteelStrain Then mMaxSteelStrain = strain
                 If Abs(strain) > mMaxAbsSteelStrain Then mMaxAbsSteelStrain = Abs(strain)
             End If
             Dim steelStress As Double
@@ -770,14 +776,14 @@ End Sub
 
 ' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
 Private Sub ValidateInputs(ByVal section As CSectionModel, ByVal concreteMaterial As Object, ByVal steelMaterial As Object)
-    If section Is Nothing Then Err.Raise vbObjectError + 3400, "CSectionSolver", "Section model is missing."
-    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 3401, "CSectionSolver", "Section model has no concrete elements."
-    If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 3402, "CSectionSolver", "Concrete material is missing."
-    If steelMaterial Is Nothing Then Err.Raise vbObjectError + 3403, "CSectionSolver", "Steel material is missing."
-    If mMaxIterations <= 0 Then Err.Raise vbObjectError + 3404, "CSectionSolver", "MaxIterations must be positive."
-    If mLoadSteps <= 0 Then Err.Raise vbObjectError + 3405, "CSectionSolver", "LoadSteps must be positive."
-    If mSecantMaxRestarts < 0 Then Err.Raise vbObjectError + 3406, "CSectionSolver", "SecantMaxRestarts must be non-negative."
-    If mSecantMinStepNorm <= 0# Then Err.Raise vbObjectError + 3407, "CSectionSolver", "SecantMinStepNorm must be positive."
+    If section Is Nothing Then Err.Raise vbObjectError + 3400, "CSectionSolver", "Модель сечения не передана."
+    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 3401, "CSectionSolver", "В модели сечения нет бетонных элементов."
+    If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 3402, "CSectionSolver", "Материал бетона не передан."
+    If steelMaterial Is Nothing Then Err.Raise vbObjectError + 3403, "CSectionSolver", "Материал арматуры не передан."
+    If mMaxIterations <= 0 Then Err.Raise vbObjectError + 3404, "CSectionSolver", "Solver.MaxIterations должен быть положительным."
+    If mLoadSteps <= 0 Then Err.Raise vbObjectError + 3405, "CSectionSolver", "Solver.LoadSteps должен быть положительным."
+    If mSecantMaxRestarts < 0 Then Err.Raise vbObjectError + 3406, "CSectionSolver", "Solver.SecantMaxRestarts не может быть отрицательным."
+    If mSecantMinStepNorm <= 0# Then Err.Raise vbObjectError + 3407, "CSectionSolver", "Solver.SecantMinStepNorm должен быть положительным."
 End Sub
 
 ' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
@@ -802,7 +808,8 @@ Public Sub ClearResult()
     mNint = 0#: mMxint = 0#: mMyint = 0#
     mResidualN = 0#: mResidualMx = 0#: mResidualMy = 0#
     mRelativeResidualN = 0#: mRelativeResidualMx = 0#: mRelativeResidualMy = 0#
-    mMinConcreteStrain = 0#: mMaxConcreteStrain = 0#: mMaxAbsSteelStrain = 0#
+    mMinConcreteStrain = 0#: mMaxConcreteStrain = 0#
+    mMinSteelStrain = 0#: mMaxSteelStrain = 0#: mMaxAbsSteelStrain = 0#
     mIterations = 0
     mLoadStepsCompleted = 0
     mDiagnosticLog = vbNullString
@@ -921,6 +928,14 @@ End Property
 
 Public Property Get MaxConcreteStrain() As Double
     MaxConcreteStrain = mMaxConcreteStrain
+End Property
+
+Public Property Get MinSteelStrain() As Double
+    MinSteelStrain = mMinSteelStrain
+End Property
+
+Public Property Get MaxSteelStrain() As Double
+    MaxSteelStrain = mMaxSteelStrain
 End Property
 
 Public Property Get MaxAbsSteelStrain() As Double
