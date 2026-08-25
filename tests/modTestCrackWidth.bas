@@ -23,10 +23,11 @@ Public Function RunCrackWidthTests() As String
     t0 = Timer
 
     TestConcreteTensionFallback stats
-    TestCrackUnityMx stats
-    TestCrackUnityMxy stats
+    TestCrackFixed1Mx stats
+    TestCrackFixed1Mxy stats
     TestEffectiveAndFullTensionZones stats
-    TestRefinedPsiAndLambda stats
+    TestAutoPsiSkipsLambdaWhenFirstCheckPasses stats
+    TestAutoPsiAndLambdaAfterFailedFirstCheck stats
     TestCentralTensionBranch stats
     TestNoTensionRebar stats
     TestCrackWriter stats
@@ -61,29 +62,30 @@ Private Sub TestConcreteTensionFallback(ByRef stats As TCrackTestStats)
 End Sub
 
 ' ------------------------------
-' Unity-режим psi_s
+' Fixed1-режим psi_s
 ' ------------------------------
 ' Для обычного изгиба проверяем, что a_crc собирается из расчетных sigma_s,
 ' ls и коэффициентов, а не из старого ручного CrackSpacing.
-Private Sub TestCrackUnityMx(ByRef stats As TCrackTestStats)
+Private Sub TestCrackFixed1Mx(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
     Set solver = SolveServiceState(section, -80000#, -5000000#, 0#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, section, -80000#, -5000000#, 0#, "Unity", "Effective")
-    AssertCrackCommon stats, "crack.unity.mx", crack
-    AssertClose stats, "crack.unity.psi", crack.PsiS, 1#, 0.000000001
+    Set crack = CalculateCrack(solver, section, -80000#, -5000000#, 0#, "Fixed1", "Effective")
+    AssertCrackCommon stats, "crack.fixed1.mx", crack
+    AssertClose stats, "crack.fixed1.psi", crack.PsiS, 1#, 0.000000001
+    AssertClose stats, "crack.fixed1.noSigmaCrc", crack.SigmaSCrc, 0#, 0.000000001
 End Sub
 
-Private Sub TestCrackUnityMxy(ByRef stats As TCrackTestStats)
+Private Sub TestCrackFixed1Mxy(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
     Set solver = SolveCircleServiceState(section, -10000#, -8000000#, -8000000#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, section, -10000#, -8000000#, -8000000#, "Unity", "Effective")
-    AssertCrackCommon stats, "crack.unity.circleMxy", crack
+    Set crack = CalculateCrack(solver, section, -10000#, -8000000#, -8000000#, "Fixed1", "Effective")
+    AssertCrackCommon stats, "crack.fixed1.circleMxy", crack
 End Sub
 
 ' ------------------------------
@@ -97,46 +99,63 @@ Private Sub TestEffectiveAndFullTensionZones(ByRef stats As TCrackTestStats)
     Set solver = SolveServiceState(section, -30000#, -5500000#, -1500000#)
 
     Dim effectiveCrack As CCrackWidthCalculator
-    Set effectiveCrack = CalculateCrack(solver, section, -30000#, -5500000#, -1500000#, "Unity", "Effective")
+    Set effectiveCrack = CalculateCrack(solver, section, -30000#, -5500000#, -1500000#, "Fixed1", "Effective")
     Dim fullCrack As CCrackWidthCalculator
-    Set fullCrack = CalculateCrack(solver, section, -30000#, -5500000#, -1500000#, "Unity", "FullTension")
+    Set fullCrack = CalculateCrack(solver, section, -30000#, -5500000#, -1500000#, "Fixed1", "FullTension")
 
     AssertCrackCommon stats, "crack.zone.effective", effectiveCrack
     AssertCrackCommon stats, "crack.zone.full", fullCrack
-    AssertTrue stats, "crack.zone.fullAbtNotLess", fullCrack.Abt >= effectiveCrack.Abt
+    AssertTrue stats, "crack.zone.fullAbtPositive", fullCrack.Abt > 0#
+    AssertTrue stats, "crack.zone.effectiveAbtPositive", effectiveCrack.Abt > 0#
+    AssertClose stats, "crack.zone.effectiveDepthFormula", effectiveCrack.EffectiveZoneDepth, _
+        MinTest(MaxTest(effectiveCrack.TensionDepth, 2# * effectiveCrack.CoverA), 0.5 * effectiveCrack.SectionDepthH), 0.000000001
 End Sub
 
 ' ------------------------------
-' Refined-режим psi_s
+' Auto-режим psi_s
 ' ------------------------------
-' Режим Refined должен найти lambda_crc в пределах текущей нагрузки, решить
+' Режим Auto после непрохождения первой проверки должен найти lambda_crc в пределах текущей нагрузки, решить
 ' состояние после образования трещины и получить psi_s по sigma_s,crc.
-Private Sub TestRefinedPsiAndLambda(ByRef stats As TCrackTestStats)
+Private Sub TestAutoPsiSkipsLambdaWhenFirstCheckPasses(ByRef stats As TCrackTestStats)
+    Dim solver As CSectionSolver
+    Dim section As CSectionModel
+    Set solver = SolveServiceState(section, -80000#, -5000000#, 0#)
+
+    Dim crack As CCrackWidthCalculator
+    Set crack = CalculateCrack(solver, section, -80000#, -5000000#, 0#, "Auto", "Effective")
+    AssertCrackCommon stats, "crack.auto.pass", crack
+    AssertClose stats, "crack.auto.pass.psi", crack.PsiS, 1#, 0.000000001
+    AssertClose stats, "crack.auto.pass.noLambda", crack.LambdaCrc, 0#, 0.000000001
+    AssertClose stats, "crack.auto.pass.noSigmaCrc", crack.SigmaSCrc, 0#, 0.000000001
+End Sub
+
+Private Sub TestAutoPsiAndLambdaAfterFailedFirstCheck(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
     Set solver = SolveServiceState(section, -20000#, -15000000#, 0#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, section, -20000#, -15000000#, 0#, "Refined", "Effective")
-    AssertCrackCommon stats, "crack.refined", crack
-    AssertTrue stats, "crack.refined.lambda", crack.LambdaCrc > 0# And crack.LambdaCrc <= 1#
-    AssertTrue stats, "crack.refined.psiRange", crack.PsiS >= 0# And crack.PsiS <= 1#
-    AssertTrue stats, "crack.refined.sigmaCrc", crack.SigmaSCrc >= 0#
+    Set crack = CalculateCrack(solver, section, -20000#, -15000000#, 0#, "Auto", "Effective", allowable:=0.0001)
+    AssertCrackCommon stats, "crack.auto.fail", crack
+    AssertTrue stats, "crack.auto.fail.lambda", crack.LambdaCrc > 0# And crack.LambdaCrc <= 1#
+    AssertTrue stats, "crack.auto.fail.psiRange", crack.PsiS >= 0# And crack.PsiS <= 1#
+    AssertTrue stats, "crack.auto.fail.sigmaCrc", crack.SigmaSCrc >= 0#
+    AssertTrue stats, "crack.auto.fail.psiReduced", crack.PsiS < 1#
 End Sub
 
 ' ------------------------------
 ' Центральное растяжение
 ' ------------------------------
-' При почти нулевых кривизнах применяется отдельная ветка Ncrc = Ared*Rbt,ser.
+' При центральном растяжении по внешним нагрузкам применяется отдельная ветка Ncrc = Ared*Rbt,ser.
 Private Sub TestCentralTensionBranch(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
     Set solver = SolveServiceState(section, 200000#, 0#, 0#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, section, 200000#, 0#, 0#, "Refined", "Effective")
+    Set crack = CalculateCrack(solver, section, 200000#, 0#, 0#, "Auto", "Effective", 0#, 0#, allowable:=0.0001)
     Dim fullZoneCrack As CCrackWidthCalculator
-    Set fullZoneCrack = CalculateCrack(solver, section, 200000#, 0#, 0#, "Refined", "FullTension")
+    Set fullZoneCrack = CalculateCrack(solver, section, 200000#, 0#, 0#, "Auto", "FullTension", 0#, 0#, allowable:=0.0001)
     AssertCrackCommon stats, "crack.central", crack
     AssertTrue stats, "crack.central.branch", crack.CentralTensionBranch
     AssertTrue stats, "crack.central.ncrc", crack.Ncrc > 0#
@@ -144,10 +163,12 @@ Private Sub TestCentralTensionBranch(ByRef stats As TCrackTestStats)
     AssertClose stats, "crack.central.phi3", crack.Phi3, 1.2, 0.000000001
     AssertClose stats, "crack.central.zoneModeInvariant", fullZoneCrack.CrackWidth, crack.CrackWidth, 0.000000001
 
+    Dim shiftedSolver As CSectionSolver
+    Set shiftedSolver = SolveServiceState(section, 200000#, 2500000#, -1500000#)
     Dim shiftedMomentCrack As CCrackWidthCalculator
-    Set shiftedMomentCrack = CalculateCrack(solver, section, 200000#, 2500000#, -1500000#, _
-        "Unity", "Effective", 0#, 0#)
-    AssertTrue stats, "crack.central.userMomentsBeforeTransfer", shiftedMomentCrack.CentralTensionBranch
+    Set shiftedMomentCrack = CalculateCrack(shiftedSolver, section, 200000#, 2500000#, -1500000#, _
+        "Fixed1", "Effective", 2500000#, -1500000#)
+    AssertTrue stats, "crack.central.eccentricLoadRejected", Not shiftedMomentCrack.CentralTensionBranch
 End Sub
 
 ' ------------------------------
@@ -160,7 +181,7 @@ Private Sub TestNoTensionRebar(ByRef stats As TCrackTestStats)
     Set solver = SolveServiceState(section, -100000#, 0#, 0#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, section, -100000#, 0#, 0#, "Unity", "Effective")
+    Set crack = CalculateCrack(solver, section, -100000#, 0#, 0#, "Fixed1", "Effective")
     AssertTrue stats, "crack.noTension.converged", crack.Converged
     AssertTrue stats, "crack.noTension.notFormed", Not crack.CrackFormed
     AssertClose stats, "crack.noTension.width", crack.CrackWidth, 0#, 0.000000000001
@@ -177,7 +198,7 @@ Private Sub TestCrackWriter(ByRef stats As TCrackTestStats)
     Set solver = SolveServiceState(section, -80000#, -5000000#, 0#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, section, -80000#, -5000000#, 0#, "Unity", "Effective")
+    Set crack = CalculateCrack(solver, section, -80000#, -5000000#, 0#, "Fixed1", "Effective")
     Dim writer As CCapacityResultWriter
     Set writer = New CCapacityResultWriter
     writer.WriteCrackResult ThisWorkbook, crack
@@ -250,10 +271,11 @@ End Sub
 Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As CSectionModel, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
         ByVal psiMode As String, ByVal zoneMode As String, _
-        Optional ByVal userMxForCentralCheck As Variant, Optional ByVal userMyForCentralCheck As Variant) As CCrackWidthCalculator
+        Optional ByVal centroidMxForCentralCheck As Variant, Optional ByVal centroidMyForCentralCheck As Variant, _
+        Optional ByVal allowable As Double = 0.3) As CCrackWidthCalculator
     Dim crack As CCrackWidthCalculator
     Set crack = New CCrackWidthCalculator
-    crack.AllowableCrackWidth = 0.3
+    crack.AllowableCrackWidth = allowable
     crack.PsiMode = psiMode
     crack.TensionZoneMode = zoneMode
     crack.RebarProfile = "Ribbed"
@@ -265,11 +287,11 @@ Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As
     crack.SolverToleranceN = 5#
     crack.SolverToleranceMx = 5000#
     crack.SolverToleranceMy = 5000#
-    If IsMissing(userMxForCentralCheck) Or IsMissing(userMyForCentralCheck) Then
+    If IsMissing(centroidMxForCentralCheck) Or IsMissing(centroidMyForCentralCheck) Then
         crack.Calculate solver, section, ProvisionalConcrete(), ProvisionalSteel(), nValue, mxValue, myValue
     Else
         crack.Calculate solver, section, ProvisionalConcrete(), ProvisionalSteel(), nValue, mxValue, myValue, _
-            userMxForCentralCheck, userMyForCentralCheck
+            centroidMxForCentralCheck, centroidMyForCentralCheck
     End If
     Set CalculateCrack = crack
 End Function
@@ -333,4 +355,12 @@ End Sub
 
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
+End Function
+
+Private Function MaxTest(ByVal a As Double, ByVal b As Double) As Double
+    If a > b Then MaxTest = a Else MaxTest = b
+End Function
+
+Private Function MinTest(ByVal a As Double, ByVal b As Double) As Double
+    If a < b Then MinTest = a Else MinTest = b
 End Function

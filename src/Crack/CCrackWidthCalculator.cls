@@ -21,12 +21,11 @@ Option Explicit
 ' a_crc = a_crc1, поэтому phi1 фиксирован равным 1.4. Непродолжительное
 ' раскрытие по комбинации a_crc1 + a_crc2 - a_crc3 намеренно не реализовано.
 '
-' В режиме Unity ширина считается по переданному НДС текущего сочетания:
+' В режиме Fixed1 ширина считается по переданному НДС текущего сочетания:
 ' повторный solve не выполняется, а psi_s принимается равным 1.
-' В режиме Refined дополнительно ищется состояние образования трещины:
-' растянутый бетон временно включается по SLS-ветви материала, критерием
-' является eps_bt,crc = Rbt,ser / Eb, а sigma_s,crc затем берется из состояния
-' lambda_crc * LC с выключенным растянутым бетоном.
+' В режиме Auto расчет также сначала выполняется с psi_s = 1. Только если
+' первая проверка не проходит, класс ищет состояние образования трещины,
+' определяет sigma_s,crc и пересчитывает итоговую ширину с уточненным psi_s.
 
 Private Const PHI1_LONG_TERM As Double = 1.4 ' Коэффициент длительного действия нагрузки для a_crc1 по СП 63.
 Private Const PHI2_RIBBED As Double = 0.5 ' Коэффициент для арматуры периодического профиля.
@@ -37,7 +36,6 @@ Private Const CRACK_DIRECTION_TOLERANCE As Double = 0.001 ' Допуск сох�
 Private Const CRACK_STRAIN_RATIO_TOLERANCE As Double = 0.000001 ' Допуск попадания в eps_bt,crc как в безразмерное условие.
 Private Const NEAR_ZERO_STRAIN As Double = 0.000000000001 ' Численный ноль для деформаций и кривизн.
 Private Const NEAR_ZERO_FORCE As Double = 0.000001 ' Численный ноль для отличия центрального растяжения от нулевой нагрузки.
-Private Const CENTRAL_CURVATURE_TOLERANCE As Double = 0.00000001 ' Мягкий допуск кривизны для распознавания центрального растяжения при численном шуме.
 Private Const LARGE_LAMBDA As Double = 1E+30 ' Диагностическая отметка: трещина не достигнута при lambda = 1.
 
 Private mConverged As Boolean ' True, если расчет трещины завершился без ошибки входных данных или несходимости.
@@ -49,7 +47,7 @@ Private mCrackWidth As Double ' Расчетная ширина раскрыти
 Private mUtilization As Double ' Коэффициент использования по трещине: a_crc / a_crc,ult.
 Private mCrackFormed As Boolean ' True, если по выбранной ветке расчета трещина считается образованной.
 
-Private mPsiMode As String ' Unity или Refined: способ определения коэффициента psi_s.
+Private mPsiMode As String ' Fixed1 или Auto: фиксировать psi_s=1 или уточнять его только при неудачной первой проверке.
 Private mTensionZoneMode As String ' Effective или FullTension: способ задания бетонной зоны Abt.
 Private mRebarProfile As String ' Ribbed или Smooth: профиль арматуры для выбора phi2.
 Private mConcreteRbtSer As Double ' Rbt,ser для момента образования трещины, МПа.
@@ -100,7 +98,7 @@ Private mCentralTensionBranch As Boolean ' True, если сработала о�
 ' эффективная зона СП и арматура периодического профиля.
 Private Sub Class_Initialize()
     mAllowableCrackWidth = 0.3
-    mPsiMode = "Unity"
+    mPsiMode = "Fixed1"
     mTensionZoneMode = "Effective"
     mRebarProfile = "Ribbed"
     mConcreteRbtSer = 1.8
@@ -167,19 +165,19 @@ End Sub
 ' ------------------------------
 ' Основной расчет
 ' ------------------------------
-' Метод получает уже найденное НДС текущего сочетания и, в режиме Unity,
+' Метод получает уже найденное НДС текущего сочетания и, в режиме Fixed1,
 ' использует его напрямую без повторного вызова CSectionSolver. Дополнительные
-' solve-ы нужны только для Refined, где требуется состояние образования
-' трещины и sigma_s,crc.
+' solve-ы нужны только для Auto и только после неудачной первой проверки
+' раскрытия с psi_s = 1.
 Public Sub Calculate(ByVal currentSolver As CSectionSolver, ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
-        Optional ByVal userMxForCentralCheck As Variant, Optional ByVal userMyForCentralCheck As Variant)
+        Optional ByVal centroidMxForCentralCheck As Variant, Optional ByVal centroidMyForCentralCheck As Variant)
     ClearResult
     ValidateInputs currentSolver, section, concreteMaterial, steelMaterial
     NormalizeSettings
 
-    If IsCentralTensionState(currentSolver, targetN, userMxForCentralCheck, userMyForCentralCheck) Then
+    If IsCentralTensionState(targetN, centroidMxForCentralCheck, centroidMyForCentralCheck) Then
         CalculateCentralTension currentSolver, currentSolver, section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
     Else
         CalculateGeneralBending currentSolver, currentSolver, section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
@@ -223,19 +221,9 @@ Private Sub CalculateCentralTension(ByVal currentSolver As CSectionSolver, ByVal
     End If
 
     CompleteCrackFormula crackedSolver, section, steelMaterial, selected
-    If mConverged Then Exit Sub
-    If StrComp(mPsiMode, "Refined", vbTextCompare) = 0 Then
-        Dim crcSolver As CSectionSolver
-        Set crcSolver = SolveState(section, concreteMaterial, steelMaterial, currentSolver, _
-            targetN * mLambdaCrc, targetMx * mLambdaCrc, targetMy * mLambdaCrc, "Ignore")
-        If Not crcSolver.Converged Then
-            mStopReason = "NumericalFailure: состояние lambda_crc после образования трещины не сошлось: " & crcSolver.StopReason
-            Exit Sub
-        End If
-        mSigmaSCrc = AverageSelectedSteelStress(crcSolver, section, steelMaterial, selected)
-        mPsiS = RefinedPsi(mSigmaS, mSigmaSCrc)
-    End If
-    FinalizeWidth "Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона."
+    If mStopReason <> vbNullString And Not mCrackFormed Then Exit Sub
+    If Not FinalizeWithPsiMode(section, concreteMaterial, steelMaterial, currentSolver, selected, _
+            targetN, targetMx, targetMy, "Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона.") Then Exit Sub
 End Sub
 
 ' Выполняет общий расчет для N + Mx + My при существующей нейтральной линии.
@@ -286,7 +274,8 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionSolver, ByVal
         Exit Sub
     End If
 
-    mAbt = ConcreteAreaInZone(crackedSolver, section, nx, ny, zoneLowerS)
+    mAbt = ConcreteAreaInZone(crackedSolver, section, nx, ny, zoneLowerS, _
+        StrComp(mTensionZoneMode, "FullTension", vbTextCompare) = 0)
     If mAbt <= 0# Then
         FinishNoCrack "В расчетную растянутую зону не попали бетонные элементы."
         Exit Sub
@@ -300,33 +289,13 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionSolver, ByVal
         Exit Sub
     End If
 
-    If StrComp(mPsiMode, "Refined", vbTextCompare) = 0 Then
-        If Not CalculateLambdaCrc(section, concreteMaterial, steelMaterial, currentSolver, targetN, targetMx, targetMy) Then
-            Exit Sub
-        End If
-        If mLambdaCrc > 1# Then
-            FinishNoCrack "Трещина не образована: предельная растянутая деформация бетона не достигнута при lambda = 1."
-            Exit Sub
-        End If
-    End If
-
     CompleteCrackFormula crackedSolver, section, steelMaterial, selected
-    If mConverged Then Exit Sub
-    If StrComp(mPsiMode, "Refined", vbTextCompare) = 0 Then
-        Dim crcSolver As CSectionSolver
-        Set crcSolver = SolveState(section, concreteMaterial, steelMaterial, currentSolver, _
-            targetN * mLambdaCrc, targetMx * mLambdaCrc, targetMy * mLambdaCrc, "Ignore")
-        If Not crcSolver.Converged Then
-            mStopReason = "NumericalFailure: состояние lambda_crc после образования трещины не сошлось: " & crcSolver.StopReason
-            Exit Sub
-        End If
-        mSigmaSCrc = AverageSelectedSteelStress(crcSolver, section, steelMaterial, selected)
-        mPsiS = RefinedPsi(mSigmaS, mSigmaSCrc)
-    End If
-    FinalizeWidth "Расчет выполнен для произвольного сечения по общей НДМ-ветке."
+    If mStopReason <> vbNullString And Not mCrackFormed Then Exit Sub
+    If Not FinalizeWithPsiMode(section, concreteMaterial, steelMaterial, currentSolver, selected, _
+            targetN, targetMx, targetMy, "Расчет выполнен для произвольного сечения по общей НДМ-ветке.") Then Exit Sub
 End Sub
 
-' Находит lambda_crc в режиме Refined. Нагрузка масштабируется целиком, чтобы
+' Находит lambda_crc в режиме Auto. Нагрузка масштабируется целиком, чтобы
 ' направление вектора N/Mx/My оставалось постоянным, а критерием служит
 ' достижение eps_bt,crc = Rbt,ser / Eb в наиболее растянутом бетонном волокне.
 Private Function CalculateLambdaCrc(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
@@ -337,7 +306,7 @@ Private Function CalculateLambdaCrc(ByVal section As CSectionModel, ByVal concre
     Dim epsCrc As Double
     epsCrc = ConcreteCrackingStrain()
     If epsCrc <= 0# Then
-        mStopReason = "InputError: Concrete.Rbt.SLS и Concrete.Eb должны быть положительными для режима Refined."
+        mStopReason = "InputError: Concrete.Rbt.SLS и Concrete.Eb должны быть положительными для режима Auto."
         Exit Function
     End If
 
@@ -359,7 +328,7 @@ Private Function CalculateLambdaCrc(ByVal section As CSectionModel, ByVal concre
     Dim lambdaValue As Double
     Dim solver As CSectionSolver
 
-    ' Refined не подбирает lambda внешней бицекцией. Здесь ищется сама плоскость
+    ' Auto не подбирает lambda внешней бицекцией. Здесь ищется сама плоскость
     ' деформаций образования трещины: направление полного вектора N/Mx/My
     ' сохраняется, а максимальная растягивающая деформация бетона равна Rbt,ser/Eb.
     For iter = 1 To mSolverMaxIterations
@@ -478,7 +447,7 @@ Private Function EvaluateCrcStrainResidual(ByVal section As CSectionModel, ByVal
     Dim baseNorm2 As Double
     baseNorm2 = baseN * baseN + baseMx * baseMx + baseMy * baseMy
     If baseNorm2 <= NEAR_ZERO_STRAIN Then
-        mStopReason = "InputError: для Refined нужен ненулевой вектор N/Mx/My."
+        mStopReason = "InputError: для Auto нужен ненулевой вектор N/Mx/My."
         Exit Function
     End If
 
@@ -640,6 +609,54 @@ Private Sub CompleteCrackFormula(ByVal solver As CSectionSolver, ByVal section A
     mLs = LimitedCrackSpacing(mLsRaw, mDsEquivalent)
 End Sub
 
+' Завершает расчет раскрытия с учетом режима psi_s.
+' Fixed1 заканчивает расчет после первой формулы с psi_s = 1. Auto сначала
+' делает ту же проверку; если a_crc <= a_crc,ult, уточнение не запускается.
+' Только при непрохождении проверки Auto ищет lambda_crc, определяет
+' sigma_s,crc для того же набора стержней и пересчитывает ширину с меньшим
+' psi_s по формуле СП.
+Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
+        ByVal steelMaterial As Object, ByVal currentSolver As CSectionSolver, ByRef selected() As Boolean, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal finalReason As String) As Boolean
+    mPsiS = 1#
+    FinalizeWidth finalReason & " Psi_s принят равным 1."
+    If Not mConverged Or Not mCrackFormed Then Exit Function
+
+    If StrComp(mPsiMode, "Auto", vbTextCompare) <> 0 Then
+        FinalizeWithPsiMode = True
+        Exit Function
+    End If
+
+    If mAllowableCrackWidth > 0# And mCrackWidth <= mAllowableCrackWidth Then
+        AppendDiagnostic "Auto psi_s: первая проверка с psi_s=1 проходит; lambda_crc не считался."
+        FinalizeWithPsiMode = True
+        Exit Function
+    End If
+
+    AppendDiagnostic "Auto psi_s: первая проверка с psi_s=1 не проходит; запускается расчет lambda_crc."
+    mConverged = False
+    If Not CalculateLambdaCrc(section, concreteMaterial, steelMaterial, currentSolver, targetN, targetMx, targetMy) Then Exit Function
+    If mLambdaCrc > 1# Then
+        FinishNoCrack "Трещина не образована: предельная растянутая деформация бетона не достигнута при lambda = 1."
+        FinalizeWithPsiMode = True
+        Exit Function
+    End If
+
+    Dim crcSolver As CSectionSolver
+    Set crcSolver = SolveState(section, concreteMaterial, steelMaterial, currentSolver, _
+        targetN * mLambdaCrc, targetMx * mLambdaCrc, targetMy * mLambdaCrc, "Ignore")
+    If Not crcSolver.Converged Then
+        mStopReason = "NumericalFailure: состояние lambda_crc после образования трещины не сошлось: " & crcSolver.StopReason
+        Exit Function
+    End If
+
+    mSigmaSCrc = AverageSelectedSteelStress(crcSolver, section, steelMaterial, selected)
+    mPsiS = AutoPsi(mSigmaS, mSigmaSCrc)
+    FinalizeWidth finalReason & " Psi_s уточнен автоматически после непрохождения первой проверки."
+    FinalizeWithPsiMode = mConverged
+End Function
+
 ' Завершает расчет по формуле СП 63 п. 8.2.15 для продолжительного раскрытия.
 Private Sub FinalizeWidth(ByVal reason As String)
     If mSigmaS <= 0# Or mLs <= 0# Then
@@ -732,26 +749,29 @@ Private Sub ConfigureSolver(ByVal solver As CSectionSolver)
     solver.MaxDeltaKappa = mSolverMaxDeltaKappa
 End Sub
 
-' Центральное растяжение для трещин определяется прежде всего по фактически
-' заданному пользователем LC: растягивающее N без пользовательских Mx/My.
-' Это защищает отдельную ветку СП от малых кривизн, которые могут появиться
-' из-за дискретной сетки или переноса усилий к внутреннему началу координат.
-' Если пользовательский моментный вектор не передан, остается запасная
-' проверка по почти нулевым кривизнам с более мягким допуском.
-Private Function IsCentralTensionState(ByVal solver As CSectionSolver, ByVal targetN As Double, _
-        Optional ByVal userMxForCentralCheck As Variant, Optional ByVal userMyForCentralCheck As Variant) As Boolean
+' Центральное растяжение для трещин определяется по моментному вектору
+' относительно центра тяжести приведенного сечения. В этот вектор уже должен
+' входить эксцентриситет точки приложения нагрузки: Mx_cg = Mx_user + N*dy,
+' My_cg = My_user + N*dx. Поэтому случай N при Mx/My = 0, но с ненулевым
+' Load.ReferenceOffset, не попадает в центральную ветку.
+'
+' Кривизны solver-а здесь сознательно не используются. Если при таком LC
+' появляется заметная кривизна, это уже ошибка в переносе нагрузок, сетке или
+' тестовом сценарии; она должна ловиться регрессионными проверками, а не
+' менять расчетную ветку в рабочей книге.
+Private Function IsCentralTensionState(ByVal targetN As Double, _
+        Optional ByVal centroidMxForCentralCheck As Variant, Optional ByVal centroidMyForCentralCheck As Variant) As Boolean
     If targetN <= NEAR_ZERO_FORCE Then Exit Function
 
-    If Not IsMissing(userMxForCentralCheck) And Not IsMissing(userMyForCentralCheck) Then
-        If Abs(CDbl(userMxForCentralCheck)) <= MaxDouble(mSolverToleranceMx, 1#) And _
-                Abs(CDbl(userMyForCentralCheck)) <= MaxDouble(mSolverToleranceMy, 1#) Then
-            IsCentralTensionState = True
-            Exit Function
-        End If
+    If IsMissing(centroidMxForCentralCheck) Or IsMissing(centroidMyForCentralCheck) Then
+        AppendDiagnostic "Центральная ветка не проверялась: не переданы моменты относительно центра тяжести."
+        Exit Function
     End If
 
-    IsCentralTensionState = (Abs(solver.KappaX) <= CENTRAL_CURVATURE_TOLERANCE And _
-        Abs(solver.KappaY) <= CENTRAL_CURVATURE_TOLERANCE)
+    If Abs(CDbl(centroidMxForCentralCheck)) > MaxDouble(mSolverToleranceMx, 1#) Or _
+            Abs(CDbl(centroidMyForCentralCheck)) > MaxDouble(mSolverToleranceMy, 1#) Then Exit Function
+
+    IsCentralTensionState = True
 End Function
 
 ' Выбирает все растянутые стержни для центрального растяжения.
@@ -779,20 +799,24 @@ Private Function FindMostTensionRebarProjection(ByVal solver As CSectionSolver, 
     Next i
 End Function
 
-' Определяет нижнюю границу зоны Abt в координате s. FullTension берет всю
-' растянутую часть по нейтральной линии. Effective берет полосу от внешней
-' растянутой поверхности глубиной min(2a, 0.5h) и дополнительно обрезает ее
-' нейтральной линией, если сжатая зона находится ближе.
+' Определяет нижнюю границу расчетной зоны в координате s.
+' FullTension берет всю фактически растянутую часть до нейтральной линии.
+' Effective задает нормативную глубину h_bt = min(max(x_t, 2a), 0.5h).
+' Если фактическая растянутая зона x_t меньше 2a, полоса может геометрически
+' зайти за нейтральную линию. Для Abt это намеренно учитывается: бетонные КЭ
+' выбираются по попаданию центра в полосу h_bt, а не по знаку текущей деформации.
+' Арматура As остается только растянутой, потому что sigma_s в формуле раскрытия
+' относится к работающей растянутой арматуре между трещинами.
 Private Function TensionZoneLowerBound(ByVal st As Double, ByVal sc As Double, ByVal neutralS As Double) As Double
     Dim lower As Double
     If StrComp(mTensionZoneMode, "FullTension", vbTextCompare) = 0 Then
         lower = MaxDouble(neutralS, sc)
     Else
         Dim effectiveDepth As Double
-        effectiveDepth = MinDouble(2# * mCoverA, 0.5 * mSectionDepthH)
+        effectiveDepth = MinDouble(MaxDouble(mTensionDepth, 2# * mCoverA), 0.5 * mSectionDepthH)
         If effectiveDepth <= NEAR_ZERO_STRAIN Then effectiveDepth = MinDouble(mTensionDepth, 0.5 * mSectionDepthH)
         lower = st - effectiveDepth
-        lower = MaxDouble(MaxDouble(lower, neutralS), sc)
+        lower = MaxDouble(lower, sc)
     End If
     TensionZoneLowerBound = lower
 End Function
@@ -801,10 +825,11 @@ End Function
 ' зону. Частичные площади намеренно не считаются: это принятое дискретное
 ' приближение текущей НДМ-модели.
 Private Function ConcreteAreaInZone(ByVal solver As CSectionSolver, ByVal section As CSectionModel, _
-        ByVal nx As Double, ByVal ny As Double, ByVal lowerS As Double) As Double
+        ByVal nx As Double, ByVal ny As Double, ByVal lowerS As Double, _
+        ByVal requireTensionStrain As Boolean) As Double
     Dim i As Long
     For i = 1 To section.ConcreteCount
-        If ConcreteStrain(solver, section, i) > 0# Then
+        If Not requireTensionStrain Or ConcreteStrain(solver, section, i) > 0# Then
             If Projection(section.ConcreteX(i), section.ConcreteY(i), nx, ny) >= lowerS - NEAR_ZERO_STRAIN Then
                 ConcreteAreaInZone = ConcreteAreaInZone + section.ConcreteArea(i)
             End If
@@ -812,8 +837,10 @@ Private Function ConcreteAreaInZone(ByVal solver As CSectionSolver, ByVal sectio
     Next i
 End Function
 
-' Формирует набор стержней As: стержень должен быть растянут и его ось должна
-' находиться внутри той же зоны, по которой считалась площадь Abt.
+' Формирует набор стержней As по той же полосе, которая принята для Abt,
+' но с обязательным физическим фильтром по растяжению стержня. Поэтому при
+' Effective и срабатывании ограничения 2a бетонная полоса может зайти за
+' нейтральную линию, однако сжатые стержни в As, sigma_s и d_s,eq не попадают.
 Private Sub SelectRebarsInZone(ByVal solver As CSectionSolver, ByVal section As CSectionModel, _
         ByVal nx As Double, ByVal ny As Double, ByVal lowerS As Double, ByRef selected() As Boolean)
     Dim i As Long
@@ -914,13 +941,13 @@ End Function
 ' Формула psi_s = 1 - 0.8*sigma_s,crc/sigma_s. Ограничение 0...1 является
 ' численной защитой от отрицательного psi_s при почти равных напряжениях или
 ' случайных малых несоответствиях solve-ов.
-Private Function RefinedPsi(ByVal sigmaS As Double, ByVal sigmaSCrc As Double) As Double
+Private Function AutoPsi(ByVal sigmaS As Double, ByVal sigmaSCrc As Double) As Double
     If sigmaS <= 0# Then
-        RefinedPsi = 1#
+        AutoPsi = 1#
     Else
-        RefinedPsi = 1# - 0.8 * sigmaSCrc / sigmaS
-        If RefinedPsi < 0# Then RefinedPsi = 0#
-        If RefinedPsi > 1# Then RefinedPsi = 1#
+        AutoPsi = 1# - 0.8 * sigmaSCrc / sigmaS
+        If AutoPsi < 0# Then AutoPsi = 0#
+        If AutoPsi > 1# Then AutoPsi = 1#
     End If
 End Function
 
@@ -1003,9 +1030,12 @@ End Function
 ' внутренних solve, чтобы ошибки Config были понятны пользователю.
 Private Sub NormalizeSettings()
     Select Case LCase$(Trim$(mPsiMode))
-        Case "unity": mPsiMode = "Unity"
-        Case "refined": mPsiMode = "Refined"
-        Case Else: Err.Raise vbObjectError + 3707, "CCrackWidthCalculator", "SLS.Crack.PsiMode должен быть Unity или Refined."
+        Case "fixed1", "unity"
+            mPsiMode = "Fixed1"
+        Case "auto", "refined"
+            mPsiMode = "Auto"
+        Case Else
+            Err.Raise vbObjectError + 3707, "CCrackWidthCalculator", "SLS.Crack.PsiMode должен быть Fixed1 или Auto."
     End Select
 
     Select Case LCase$(Trim$(mTensionZoneMode))

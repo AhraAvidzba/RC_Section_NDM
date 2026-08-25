@@ -137,7 +137,7 @@ try {
     Set-SystemSetting $workbook "Steel.RebarProfile" "Ribbed" "Ribbed" "Ribbed/Smooth" "Rebar surface profile for phi2 in normal crack width calculation" "Stage 7 project setting"
     Set-SystemSetting $workbook "SLS.Crack.Enabled" "Yes" "Yes" "Yes/No" "Calculate long-term normal crack width for Group2 combinations" "Stage 7 project setting"
     Set-SystemSetting $workbook "SLS.Crack.Allowable" "0.3" "0.3" "mm" "User-defined allowable crack width a_crc,ult" "Stage 7 project setting"
-    Set-SystemSetting $workbook "SLS.Crack.PsiMode" "Unity" "Unity" "Unity/Refined" "Psi_s mode: Unity or Refined lambda_crc search" "Stage 7 project setting"
+    Set-SystemSetting $workbook "SLS.Crack.PsiMode" "Fixed1" "Fixed1" "Fixed1/Auto" "Psi_s mode: Fixed1 or Auto after failed first crack-width check" "Stage 7 project setting"
     Set-SystemSetting $workbook "SLS.Crack.TensionZoneMode" "Effective" "Effective" "Effective/FullTension" "Concrete tension zone for Abt in crack width calculation" "Stage 7 project setting"
 
     $workbook.Save()

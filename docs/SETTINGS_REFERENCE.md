@@ -30,7 +30,7 @@
 | `rngSteelDiagramPoints` | До 10 точек диаграммы арматуры: `Point / Strain / Stress, <единица INPUT для Stress>`. |
 | `rngLoadCombinations` | До 20 сочетаний нагрузок: `CalculationType = Group1` для расчета по первой группе предельных состояний, `CalculationType = Group2` для расчета трещин по второй группе. |
 | `rngResultSection` | Единый блок результатов `N + Mx + My`. |
-| `rngBatchSummary` | Сводка batch-расчета на `Results!A1:AT30`. |
+| `rngBatchSummary` | Сводка batch-расчета на `Results!A1:AT31`. |
 | `rngNDMElementResults` | LC-зависимые результаты элементов на `Results!A33`: `RunID`, `LoadCase`, `ElementID`, `Strain`, `Stress`, `PhysicalState`. |
 | `rngNDMSectionGeometry` | Неизменяемая расчетная геометрия snapshot на `Results!I33`: координаты, площадь, размеры/диаметр, материал и локальные характеристики. |
 | `rngNDMSectionProperties` | Общие свойства всего сечения и LC-зависимые свойства уровня сечения на `Results!Z33`: Bounds, центр тяжести, главные оси, единицы output, `Epsilon0/KappaX/KappaY`, точка приложения нагрузки. |
@@ -140,7 +140,7 @@
 | `Solver.LineSearchEnabled` | `Yes`, `No` |
 | `Steel.RebarProfile` | `Ribbed`, `Smooth` |
 | `SLS.Crack.Enabled` | `Yes`, `No` |
-| `SLS.Crack.PsiMode` | `Unity`, `Refined` |
+| `SLS.Crack.PsiMode` | `Fixed1`, `Auto` |
 | `SLS.Crack.TensionZoneMode` | `Effective`, `FullTension` |
 | `AutoCAD.Export.ResultType` | `Stress`, `Strain` |
 | `AutoCAD.Export.LabelMode` | `ValuesOnly`, `NamesAndValues` |

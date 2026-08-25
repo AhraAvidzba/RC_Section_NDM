@@ -74,7 +74,7 @@ Private mCrackFormed(1 To MAX_COMBINATIONS) As Boolean ' True, если при �
 Private mCrackPhi1(1 To MAX_COMBINATIONS) As Double ' Коэффициент длительности нагрузки в формуле a_crc.
 Private mCrackPhi2(1 To MAX_COMBINATIONS) As Double ' Коэффициент профиля арматуры в формуле a_crc.
 Private mCrackPhi3(1 To MAX_COMBINATIONS) As Double ' Коэффициент характера нагружения в формуле a_crc.
-Private mCrackPsiS(1 To MAX_COMBINATIONS) As Double ' Коэффициент psi_s: 1 или уточненное значение Refined.
+Private mCrackPsiS(1 To MAX_COMBINATIONS) As Double ' Коэффициент psi_s: 1 или Auto-уточнение после непрохождения первой проверки.
 Private mCrackSigmaS(1 To MAX_COMBINATIONS) As Double ' Среднее напряжение выбранной растянутой арматуры, МПа.
 Private mCrackSigmaSCrc(1 To MAX_COMBINATIONS) As Double ' Напряжение той же арматуры в состоянии lambda_crc, МПа.
 Private mCrackAs(1 To MAX_COMBINATIONS) As Double ' Площадь выбранной растянутой арматуры As, мм2.
@@ -110,7 +110,7 @@ Private mResidualMy(1 To MAX_COMBINATIONS) As Double ' Невязка Myint - My
 Private mStateIterations(1 To MAX_COMBINATIONS) As Long ' Число итераций прямого solver-а для LC.
 
 Private mCrackAllowable As Double ' Допустимая ширина раскрытия трещины a_crc,ult, мм.
-Private mCrackPsiMode As String ' Unity или Refined: как определять psi_s для нормальных трещин.
+Private mCrackPsiMode As String ' Fixed1 или Auto: как определять psi_s для нормальных трещин.
 Private mCrackTensionZoneMode As String ' Effective или FullTension: какая бетонная зона входит в Abt.
 Private mCrackRebarProfile As String ' Ribbed или Smooth: профиль арматуры для коэффициента phi2.
 Private mCrackConcreteRbtSer As Double ' SLS-сопротивление бетона растяжению для eps_bt,crc и Ncrc, МПа.
@@ -149,7 +149,7 @@ Private mReport As CExecutionReport ' Необязательный челове�
 ' Инициализирует внутреннее состояние объекта значениями по умолчанию, безопасными для последующей настройки.
 Private Sub Class_Initialize()
     mCrackAllowable = 0.3
-    mCrackPsiMode = "Unity"
+    mCrackPsiMode = "Fixed1"
     mCrackTensionZoneMode = "Effective"
     mCrackRebarProfile = "Ribbed"
     mCrackConcreteRbtSer = 1.8
@@ -487,8 +487,17 @@ Private Sub RunSectionStateAndCrack(ByVal index As Long, ByVal crackRequested As
     Set crack = New CCrackWidthCalculator
     ConfigureCrackCalculator crack
     ReportStep "Запускается расчет ширины раскрытия нормальных трещин."
+
+    Dim centroidMxForCrack As Double
+    Dim centroidMyForCrack As Double
+    ' Для отдельной ветки центрального растяжения важны моменты именно
+    ' относительно центра тяжести. Если точка приложения N смещена, то даже
+    ' при Mx_user = My_user = 0 появляется внецентренное растяжение.
+    centroidMxForCrack = mUserMx(index) + mN(index) * mLoadReferenceOffsetY
+    centroidMyForCrack = mUserMy(index) + mN(index) * mLoadReferenceOffsetX
+
     crack.Calculate service, mSection, mConcreteMaterial, mSteelMaterial, mN(index), mMx(index), mMy(index), _
-        mUserMx(index), mUserMy(index)
+        centroidMxForCrack, centroidMyForCrack
     mCrackStatus(index) = IIf(crack.Converged, STATUS_OK, crack.StopReason)
     mCrackWidth(index) = crack.CrackWidth
     mCrackAllowableValue(index) = crack.AllowableCrackWidth

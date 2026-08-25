@@ -175,10 +175,10 @@ try {
             ([string]$batchSummaryRange.Worksheet.Name -eq "Results") -and
             ($batchSummaryRange.Row -eq 1) -and ($batchSummaryRange.Column -eq 1) -and
             ($batchSummaryRange.Rows.Count -ge 30) -and
-            ($elementResultsRange.Row -eq 33) -and ($elementResultsRange.Column -eq 1) -and
-            ($geometryResultsRange.Row -eq 33) -and ($geometryResultsRange.Column -eq 9) -and
-            ($sectionPropertiesRange.Row -eq 33) -and ($sectionPropertiesRange.Column -eq 26) -and
-            ($sectionAnnotationsRange.Row -eq 33) -and ($sectionAnnotationsRange.Column -eq 34)
+            ($elementResultsRange.Row -eq 34) -and ($elementResultsRange.Column -eq 1) -and
+            ($geometryResultsRange.Row -eq 34) -and ($geometryResultsRange.Column -eq 9) -and
+            ($sectionPropertiesRange.Row -eq 34) -and ($sectionPropertiesRange.Column -eq 26) -and
+            ($sectionAnnotationsRange.Row -eq 34) -and ($sectionAnnotationsRange.Column -eq 34)
         ) ("batch=$($batchSummaryRange.Worksheet.Name)!R$($batchSummaryRange.Row)C$($batchSummaryRange.Column); elements=R$($elementResultsRange.Row)C$($elementResultsRange.Column); geometry=R$($geometryResultsRange.Row)C$($geometryResultsRange.Column); properties=R$($sectionPropertiesRange.Row)C$($sectionPropertiesRange.Column); annotations=R$($sectionAnnotationsRange.Row)C$($sectionAnnotationsRange.Column)")
     }
 

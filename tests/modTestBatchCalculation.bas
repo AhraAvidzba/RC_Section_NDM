@@ -35,6 +35,8 @@ Public Function RunBatchCalculationTests() As String
     TestLoadReferenceTransformsUserMoments stats
     AppendLine stats, "RUN: TestAxialReferenceRemovesPureCompressionEccentricity"
     TestAxialReferenceRemovesPureCompressionEccentricity stats
+    AppendLine stats, "RUN: TestAxialTensionReferenceAndEccentricity"
+    TestAxialTensionReferenceAndEccentricity stats
     AppendLine stats, "RUN: TestDirectStateReportsStrainSafety"
     TestDirectStateReportsStrainSafety stats
     AppendLine stats, "RUN: TestDirectStateKeepsStrainSafetyOnFailure"
@@ -280,6 +282,19 @@ Private Sub TestAxialReferenceRemovesPureCompressionEccentricity(ByRef stats As 
         LShapeRebars(250#, 550#, 600#, 250#, 40#, 50, 32#), 50#, 0.00000001
 End Sub
 
+' Проверяет осевое растяжение как отдельный физический сценарий:
+' при приложении N через центр тяжести кривизны должны быть нулевыми, а при
+' смещении той же силы появляется изгиб. Этот контроль остается в тестах,
+' чтобы рабочий алгоритм трещин не использовал кривизны как fallback-критерий.
+Private Sub TestAxialTensionReferenceAndEccentricity(ByRef stats As TBatchTestStats)
+    CheckPureTensionReference stats, "circle", CircleGeometry(300#, 125#, -75#), _
+        CircleRebars(300#, 125#, -75#, 40#, 12, 20#), 25#, 0.00000001
+    CheckPureTensionReference stats, "rounded", RoundedRectangleGeometry(360#, 240#), _
+        RectangleRebars(RoundedRectangleGeometry(360#, 240#)), 30#, 0.00000001
+    CheckPureTensionReference stats, "lshape", LShapeGeometry(250#, 550#, 600#, 250#), _
+        LShapeRebars(250#, 550#, 600#, 250#, 40#, 50, 32#), 50#, 0.00000001, -180#, 250#
+End Sub
+
 Private Sub CheckPureCompressionReference(ByRef stats As TBatchTestStats, ByVal caseName As String, _
         ByVal geom As ISectionGeometry, ByVal rebars As CRebarLayout, ByVal meshStep As Double, ByVal tolerance As Double)
     Dim mesh As CFiberMeshBuilder
@@ -306,6 +321,49 @@ Private Sub CheckPureCompressionReference(ByRef stats As TBatchTestStats, ByVal 
     AssertTrue stats, "batch.reference." & caseName & ".converged", solver.Converged
     AssertClose stats, "batch.reference." & caseName & ".kappaX", solver.KappaX, 0#, tolerance
     AssertClose stats, "batch.reference." & caseName & ".kappaY", solver.KappaY, 0#, tolerance
+End Sub
+
+Private Sub CheckPureTensionReference(ByRef stats As TBatchTestStats, ByVal caseName As String, _
+        ByVal geom As ISectionGeometry, ByVal rebars As CRebarLayout, ByVal meshStep As Double, ByVal tolerance As Double, _
+        Optional ByVal eccentricOffsetX As Double = -25#, Optional ByVal eccentricOffsetY As Double = 40#)
+    Dim mesh As CFiberMeshBuilder
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geom, meshStep, meshStep, 1, 1
+
+    Dim concrete As CConcreteDiagramMaterial
+    Set concrete = ProvisionalConcrete()
+    Dim steel As CSteelDiagramMaterial
+    Set steel = ProvisionalSteel()
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, rebars)
+
+    Dim refX As Double
+    Dim refY As Double
+    CalculateTransformedSectionCentroid section, concrete, steel, refX, refY
+
+    Dim nValue As Double
+    nValue = 100000#
+
+    Dim axialSolver As CSectionSolver
+    Set axialSolver = New CSectionSolver
+    axialSolver.LoadSteps = 1
+    axialSolver.MaxIterations = 60
+    axialSolver.Solve section, concrete, steel, nValue, nValue * refY, nValue * refX
+
+    AssertTrue stats, "batch.tension." & caseName & ".central.converged", axialSolver.Converged
+    AssertClose stats, "batch.tension." & caseName & ".central.kappaX", axialSolver.KappaX, 0#, tolerance
+    AssertClose stats, "batch.tension." & caseName & ".central.kappaY", axialSolver.KappaY, 0#, tolerance
+
+    Dim eccentricSolver As CSectionSolver
+    Set eccentricSolver = New CSectionSolver
+    eccentricSolver.LoadSteps = 1
+    eccentricSolver.MaxIterations = 60
+    eccentricSolver.Solve section, concrete, steel, nValue, nValue * (refY + eccentricOffsetY), _
+        nValue * (refX + eccentricOffsetX)
+
+    AssertTrue stats, "batch.tension." & caseName & ".eccentric.converged", eccentricSolver.Converged
+    AssertTrue stats, "batch.tension." & caseName & ".eccentric.kappa", _
+        Abs(eccentricSolver.KappaX) > tolerance Or Abs(eccentricSolver.KappaY) > tolerance
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -450,7 +508,7 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     summaryRow = BatchSummaryStartRow()
     AssertTrue stats, "batch.writer.fixedRow", summaryRow = 1
     AssertTrue stats, "batch.writer.noResultOverlap", summaryRow + ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count - 1 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
-    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count >= 30 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count >= 46
+    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count >= 31 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count >= 46
     AssertTrue stats, "batch.writer.title", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = "Сводка пакетного расчета (Подробнее)"
     AssertTrue stats, "batch.writer.titleNotMerged", Not resultsSheet.Cells.Item(summaryRow, 1).MergeCells
     AssertTrue stats, "batch.writer.titleHyperlink", resultsSheet.Cells.Item(summaryRow, 1).Hyperlinks.Count > 0
@@ -458,14 +516,15 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.crackGoverning.row", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 3, 1).Value2), "трещинам", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.loadPoint.relativeLabel", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 5, 1).Value2), "относительно центра тяжести", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.loadPoint.zeroX", CStr(resultsSheet.Cells.Item(summaryRow + 5, 5).Value2) = "X=0 mm"
-    AssertTrue stats, "batch.writer.strainFormula.simple", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 15).Formula), "AGGREGATE", vbTextCompare) = 0 And _
-        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 15).Formula), "CHOOSE", vbTextCompare) = 0
-    AssertTrue stats, "batch.writer.momentFormula.simple", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 21).Formula), "IFERROR", vbTextCompare) > 0 And _
-        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 21).Formula), "IF(", vbTextCompare) = 0
-    AssertTrue stats, "batch.writer.header.strength", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 15).Value2), "StrainSafetyFactor", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.limitState", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 16).Value2), "CapacityLimitState", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.moment", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 21).Value2), "MomentSafetyFactor", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 46).Value2), "MinSafetyFactor", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.subheader.psi", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 37).Value2), "psi", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.strainFormula.simple", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 15).Formula), "AGGREGATE", vbTextCompare) = 0 And _
+        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 15).Formula), "CHOOSE", vbTextCompare) = 0
+    AssertTrue stats, "batch.writer.momentFormula.simple", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 21).Formula), "IFERROR", vbTextCompare) > 0 And _
+        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 21).Formula), "IF(", vbTextCompare) = 0
+    AssertTrue stats, "batch.writer.header.strength", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 15).Value2), "StrainSafetyFactor", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.limitState", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 16).Value2), "CapacityLimitState", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.moment", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 21).Value2), "MomentSafetyFactor", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 46).Value2), "MinSafetyFactor", vbTextCompare) > 0
 End Sub
 
 Private Function BatchSummaryStartRow() As Long

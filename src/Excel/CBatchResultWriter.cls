@@ -19,12 +19,13 @@ Option Explicit
 ' и записывает их на лист одним массивом, а коэффициенты запаса и a_crc задает
 ' формулами Excel, чтобы пользователь видел связь между исходными колонками.
 
-Private Const TARGET_ROWS As Long = 30 ' Высота фиксированного диапазона batch summary.
+Private Const TARGET_ROWS As Long = 31 ' Высота фиксированного диапазона batch summary.
 Private Const TARGET_COLUMNS As Long = 46 ' Ширина новой сводки до общего минимального запаса.
 Private Const META_ROWS As Long = 6 ' Верхние строки с общими сведениями о запуске.
 Private Const GROUP_HEADER_ROW As Long = 7 ' Строка объединенных заголовков расчетных блоков.
-Private Const COLUMN_HEADER_ROW As Long = 8 ' Строка заголовков конкретных параметров.
-Private Const FIRST_DATA_ROW As Long = 9 ' Первая строка сочетаний.
+Private Const SUBGROUP_HEADER_ROW As Long = 8 ' Строка внутренних подзаголовков расчетных блоков.
+Private Const COLUMN_HEADER_ROW As Long = 9 ' Строка заголовков конкретных параметров.
+Private Const FIRST_DATA_ROW As Long = 10 ' Первая строка сочетаний.
 
 Private Const COL_ID As Long = 1
 Private Const COL_COMMENT As Long = 2
@@ -59,18 +60,18 @@ Private Const COL_CRACK_EFFECTIVE_DEPTH As Long = 27
 Private Const COL_CRACK_AS As Long = 28
 Private Const COL_CRACK_ABT As Long = 29
 Private Const COL_CRACK_DS As Long = 30
-Private Const COL_CRACK_PHI1 As Long = 31
-Private Const COL_CRACK_PHI2 As Long = 32
-Private Const COL_CRACK_PHI3 As Long = 33
-Private Const COL_CRACK_PSI As Long = 34
-Private Const COL_CRACK_SIGMA_S As Long = 35
-Private Const COL_CRACK_SIGMA_S_CRC As Long = 36
-Private Const COL_CRACK_ES As Long = 37
-Private Const COL_CRACK_LS_RAW As Long = 38
-Private Const COL_CRACK_LS As Long = 39
-Private Const COL_CRACK_LAMBDA_CRC As Long = 40
-Private Const COL_CRACK_NCRC As Long = 41
-Private Const COL_CRACK_REBAR_COUNT As Long = 42
+Private Const COL_CRACK_REBAR_COUNT As Long = 31
+Private Const COL_CRACK_LS_RAW As Long = 32
+Private Const COL_CRACK_LS As Long = 33
+Private Const COL_CRACK_PHI1 As Long = 34
+Private Const COL_CRACK_PHI2 As Long = 35
+Private Const COL_CRACK_PHI3 As Long = 36
+Private Const COL_CRACK_NCRC As Long = 37
+Private Const COL_CRACK_LAMBDA_CRC As Long = 38
+Private Const COL_CRACK_SIGMA_S As Long = 39
+Private Const COL_CRACK_SIGMA_S_CRC As Long = 40
+Private Const COL_CRACK_PSI As Long = 41
+Private Const COL_CRACK_ES As Long = 42
 Private Const COL_CRACK_WIDTH As Long = 43
 Private Const COL_CRACK_ALLOWABLE As Long = 44
 Private Const COL_CRACK_SF As Long = 45
@@ -100,6 +101,7 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
 
     PutMetaRows data, batch, units
     PutGroupHeaders data
+    PutSubgroupHeaders data
     PutColumnHeaders data, units
 
     Dim i As Long
@@ -189,6 +191,27 @@ Private Sub PutGroupHeaders(ByRef data() As Variant)
     data(GROUP_HEADER_ROW, COL_OVERALL_SF) = "Минимальный запас"
 End Sub
 
+Private Sub PutSubgroupHeaders(ByRef data() As Variant)
+    data(SUBGROUP_HEADER_ROW, COL_ID) = "Сочетание"
+    data(SUBGROUP_HEADER_ROW, COL_EPS_C_COMP) = "Фактическое НДС от LC"
+    data(SUBGROUP_HEADER_ROW, COL_LIM_C_COMP) = "Предельные деформации"
+    data(SUBGROUP_HEADER_ROW, COL_STRAIN_SF) = "Запас"
+    data(SUBGROUP_HEADER_ROW, COL_LIMIT_STATE) = "Предельное состояние"
+
+    data(SUBGROUP_HEADER_ROW, COL_MXY) = "Моменты"
+    data(SUBGROUP_HEADER_ROW, COL_MOMENT_H) = "Геометрия при MxyUltimate"
+    data(SUBGROUP_HEADER_ROW, COL_MOMENT_SF) = "Запас"
+
+    data(SUBGROUP_HEADER_ROW, COL_CRACK_STATUS) = "Фактическое НДС от LC"
+    data(SUBGROUP_HEADER_ROW, COL_CRACK_AS) = "Арматура и бетон"
+    data(SUBGROUP_HEADER_ROW, COL_CRACK_LS_RAW) = "Расстояние между трещинами"
+    data(SUBGROUP_HEADER_ROW, COL_CRACK_PHI1) = "Коэффициенты phi"
+    data(SUBGROUP_HEADER_ROW, COL_CRACK_NCRC) = "Расчет psi_s"
+    data(SUBGROUP_HEADER_ROW, COL_CRACK_ES) = "Модуль арматуры"
+    data(SUBGROUP_HEADER_ROW, COL_CRACK_WIDTH) = "Проверка a_crc"
+    data(SUBGROUP_HEADER_ROW, COL_OVERALL_SF) = "Итог"
+End Sub
+
 Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem)
     data(COLUMN_HEADER_ROW, COL_ID) = "CombinationID (сочетание)"
     data(COLUMN_HEADER_ROW, COL_COMMENT) = "Comment (комментарий)"
@@ -223,18 +246,18 @@ Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem
     data(COLUMN_HEADER_ROW, COL_CRACK_AS) = "As, " & OutputAreaUnit(units) & " (растянутая арматура)"
     data(COLUMN_HEADER_ROW, COL_CRACK_ABT) = "Abt, " & OutputAreaUnit(units) & " (растянутый бетон)"
     data(COLUMN_HEADER_ROW, COL_CRACK_DS) = "ds_eq, " & OutputLengthUnit(units) & " (экв. диаметр)"
+    data(COLUMN_HEADER_ROW, COL_CRACK_REBAR_COUNT) = "TensionRebarCount (стержней в зоне)"
+    data(COLUMN_HEADER_ROW, COL_CRACK_LS_RAW) = "ls_raw, " & OutputLengthUnit(units) & " (шаг до ограничений)"
+    data(COLUMN_HEADER_ROW, COL_CRACK_LS) = "ls, " & OutputLengthUnit(units) & " (принятый шаг)"
     data(COLUMN_HEADER_ROW, COL_CRACK_PHI1) = "phi1 (длительность)"
     data(COLUMN_HEADER_ROW, COL_CRACK_PHI2) = "phi2 (профиль арматуры)"
     data(COLUMN_HEADER_ROW, COL_CRACK_PHI3) = "phi3 (характер нагрузки)"
-    data(COLUMN_HEADER_ROW, COL_CRACK_PSI) = "psi_s (работа растянутого бетона)"
+    data(COLUMN_HEADER_ROW, COL_CRACK_NCRC) = "Ncrc, " & OutputForceUnit(units) & " (усилие образования трещин при центральном растяжении)"
+    data(COLUMN_HEADER_ROW, COL_CRACK_LAMBDA_CRC) = "lambda_crc (множитель трещины)"
     data(COLUMN_HEADER_ROW, COL_CRACK_SIGMA_S) = "sigma_s, " & OutputStressUnit(units) & " (напряжение арматуры)"
     data(COLUMN_HEADER_ROW, COL_CRACK_SIGMA_S_CRC) = "sigma_s,crc, " & OutputStressUnit(units) & " (при образовании трещины)"
+    data(COLUMN_HEADER_ROW, COL_CRACK_PSI) = "psi_s (работа растянутого бетона)"
     data(COLUMN_HEADER_ROW, COL_CRACK_ES) = "Es, " & OutputStressUnit(units) & " (модуль арматуры)"
-    data(COLUMN_HEADER_ROW, COL_CRACK_LS_RAW) = "ls_raw, " & OutputLengthUnit(units) & " (шаг до ограничений)"
-    data(COLUMN_HEADER_ROW, COL_CRACK_LS) = "ls, " & OutputLengthUnit(units) & " (принятый шаг)"
-    data(COLUMN_HEADER_ROW, COL_CRACK_LAMBDA_CRC) = "lambda_crc (множитель трещины)"
-    data(COLUMN_HEADER_ROW, COL_CRACK_NCRC) = "Ncrc, " & OutputForceUnit(units) & " (сила трещины)"
-    data(COLUMN_HEADER_ROW, COL_CRACK_REBAR_COUNT) = "TensionRebarCount (стержней в зоне)"
     data(COLUMN_HEADER_ROW, COL_CRACK_WIDTH) = "a_crc, " & OutputLengthUnit(units) & " (ширина трещины)"
     data(COLUMN_HEADER_ROW, COL_CRACK_ALLOWABLE) = "a_crc,ult, " & OutputLengthUnit(units) & " (допустимая ширина)"
     data(COLUMN_HEADER_ROW, COL_CRACK_SF) = "CrackSafetyFactor (запас по трещинам)"
@@ -271,6 +294,7 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
     PutCapacityMomentGeometry data, rowIndex, batch, index, units, section
 
     data(rowIndex, COL_CRACK_STATUS) = ShortStatus(batch.CrackStatus(index))
+    data(rowIndex, COL_CRACK_NCRC) = NOT_CALCULATED_SHORT
     If StrComp(batch.CrackStatus(index), "OK", vbTextCompare) = 0 Then
         data(rowIndex, COL_CRACK_FORMED) = IIf(batch.CrackFormed(index), "Да", "Нет")
         data(rowIndex, COL_CRACK_H) = OutputLength(batch.CrackSectionDepthH(index), units)
@@ -280,18 +304,30 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
         data(rowIndex, COL_CRACK_AS) = OutputArea(batch.CrackAs(index), units)
         data(rowIndex, COL_CRACK_ABT) = OutputArea(batch.CrackAbt(index), units)
         data(rowIndex, COL_CRACK_DS) = OutputLength(batch.CrackDsEquivalent(index), units)
+        data(rowIndex, COL_CRACK_REBAR_COUNT) = batch.CrackTensionRebarCount(index)
+        data(rowIndex, COL_CRACK_LS_RAW) = OutputLength(batch.CrackSpacingRaw(index), units)
+        data(rowIndex, COL_CRACK_LS) = OutputLength(batch.CrackSpacing(index), units)
         data(rowIndex, COL_CRACK_PHI1) = batch.CrackPhi1(index)
         data(rowIndex, COL_CRACK_PHI2) = batch.CrackPhi2(index)
         data(rowIndex, COL_CRACK_PHI3) = batch.CrackPhi3(index)
-        data(rowIndex, COL_CRACK_PSI) = batch.CrackPsiS(index)
+        If batch.CrackNcrc(index) > 0# Then
+            data(rowIndex, COL_CRACK_NCRC) = OutputForce(batch.CrackNcrc(index), units)
+        Else
+            data(rowIndex, COL_CRACK_NCRC) = NOT_CALCULATED_SHORT
+        End If
+        If batch.CrackSigmaSCrc(index) > 0# Then
+            data(rowIndex, COL_CRACK_LAMBDA_CRC) = batch.CrackLambdaCrc(index)
+        Else
+            data(rowIndex, COL_CRACK_LAMBDA_CRC) = NOT_CALCULATED_SHORT
+        End If
         data(rowIndex, COL_CRACK_SIGMA_S) = OutputStress(batch.CrackSigmaS(index), units)
-        data(rowIndex, COL_CRACK_SIGMA_S_CRC) = OutputStress(batch.CrackSigmaSCrc(index), units)
+        If batch.CrackSigmaSCrc(index) > 0# Then
+            data(rowIndex, COL_CRACK_SIGMA_S_CRC) = OutputStress(batch.CrackSigmaSCrc(index), units)
+        Else
+            data(rowIndex, COL_CRACK_SIGMA_S_CRC) = NOT_CALCULATED_SHORT
+        End If
+        data(rowIndex, COL_CRACK_PSI) = batch.CrackPsiS(index)
         data(rowIndex, COL_CRACK_ES) = OutputStress(batch.CrackSteelElasticModulus, units)
-        data(rowIndex, COL_CRACK_LS_RAW) = OutputLength(batch.CrackSpacingRaw(index), units)
-        data(rowIndex, COL_CRACK_LS) = OutputLength(batch.CrackSpacing(index), units)
-        data(rowIndex, COL_CRACK_LAMBDA_CRC) = batch.CrackLambdaCrc(index)
-        data(rowIndex, COL_CRACK_NCRC) = OutputForce(batch.CrackNcrc(index), units)
-        data(rowIndex, COL_CRACK_REBAR_COUNT) = batch.CrackTensionRebarCount(index)
         data(rowIndex, COL_CRACK_WIDTH) = CrackWidthFormula(rowIndex)
         data(rowIndex, COL_CRACK_ALLOWABLE) = OutputLength(batch.CrackAllowable(index), units)
         data(rowIndex, COL_CRACK_SF) = CrackSafetyFormula(rowIndex)
@@ -474,17 +510,31 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
 
     target.Rows.Item(1).Font.Bold = True
     target.Rows.Item(GROUP_HEADER_ROW).Font.Bold = True
+    target.Rows.Item(SUBGROUP_HEADER_ROW).Font.Bold = True
     target.Rows.Item(COLUMN_HEADER_ROW).Font.Bold = True
     target.Rows.Item(GROUP_HEADER_ROW).Interior.Color = HEADER_COLOR
+    target.Rows.Item(SUBGROUP_HEADER_ROW).Interior.Color = HEADER_COLOR
     target.Rows.Item(COLUMN_HEADER_ROW).Interior.Color = HEADER_COLOR
     target.Rows.Item(1).Interior.Color = HEADER_COLOR
 
     MergeSummaryHeader target, GROUP_HEADER_ROW, COL_EPS_C_COMP, COL_STRAIN_SF
     MergeSummaryHeader target, GROUP_HEADER_ROW, COL_LIMIT_STATE, COL_MOMENT_SF
     MergeSummaryHeader target, GROUP_HEADER_ROW, COL_CRACK_STATUS, COL_CRACK_SF
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_ID, COL_STATUS
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_EPS_C_COMP, COL_STATE_C
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_LIM_C_COMP, COL_LIM_S_TENS
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_MXY, COL_MXY_ULT
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_MOMENT_H, COL_MOMENT_C
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CRACK_STATUS, COL_CRACK_EFFECTIVE_DEPTH
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CRACK_AS, COL_CRACK_REBAR_COUNT
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CRACK_LS_RAW, COL_CRACK_LS
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CRACK_PHI1, COL_CRACK_PHI3
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CRACK_NCRC, COL_CRACK_PSI
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CRACK_WIDTH, COL_CRACK_SF
 
     target.Rows.Item(COLUMN_HEADER_ROW).HorizontalAlignment = -4131
     target.Rows.Item(GROUP_HEADER_ROW).HorizontalAlignment = -4108
+    target.Rows.Item(SUBGROUP_HEADER_ROW).HorizontalAlignment = -4108
     target.Rows.Item(1).HorizontalAlignment = -4131
     target.Offset(0, 0).Resize(META_ROWS, TARGET_COLUMNS).HorizontalAlignment = -4131
 

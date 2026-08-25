@@ -328,8 +328,8 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
     Dim summaryRow As Long
     summaryRow = BatchSummaryStartRow()
-    AssertTrue stats, "ui.batchSummary.currentDepths", IsNumeric(resultsSheet.Cells.Item(summaryRow + 8, 9).Value2) And IsNumeric(resultsSheet.Cells.Item(summaryRow + 8, 10).Value2)
-    AssertTrue stats, "ui.batchSummary.direct.noCapacityDepths", Len(CStr(resultsSheet.Cells.Item(summaryRow + 8, 19).Value2)) = 0 And Len(CStr(resultsSheet.Cells.Item(summaryRow + 8, 20).Value2)) = 0
+    AssertTrue stats, "ui.batchSummary.currentDepths", IsNumeric(resultsSheet.Cells.Item(summaryRow + 9, 9).Value2) And IsNumeric(resultsSheet.Cells.Item(summaryRow + 9, 10).Value2)
+    AssertTrue stats, "ui.batchSummary.direct.noCapacityDepths", Len(CStr(resultsSheet.Cells.Item(summaryRow + 9, 19).Value2)) = 0 And Len(CStr(resultsSheet.Cells.Item(summaryRow + 9, 20).Value2)) = 0
     AssertTrue stats, "ui.results.elements.header", CStr(ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Value2) = "RunID"
     Dim elementResults As Variant
     elementResults = ResultTable("rngNDMElementResults")
@@ -344,9 +344,9 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Dim geometryResults As Variant
     geometryResults = ResultTable("rngNDMSectionGeometry")
     AssertTrue stats, "ui.results.geometry.rows", UBound(geometryResults, 1) > 1
-    AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 33 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 9
-    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 33 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 26
-    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 33 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 34
+    AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 34 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 9
+    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 34 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 26
+    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 34 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 34
     AssertTrue stats, "ui.results.geometry.noSource", ResultHeaderColumn(geometryResults, "SourceName") = 0
     AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(geometryResults, "MaterialClass") = 0
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
@@ -418,7 +418,7 @@ End Sub
 Private Function ExpectedGoverningByLowestStrengthSafety(ByVal resultsSheet As Object, ByVal summaryRow As Long) As String
     Dim rowIndex As Long
     Dim bestSafety As Double
-    For rowIndex = summaryRow + 8 To summaryRow + 27
+    For rowIndex = summaryRow + 9 To summaryRow + 28
         If Len(Trim$(CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2))) > 0 Then
             Dim safetyValue As Double
             safetyValue = StrengthSafetyForSummaryRow(resultsSheet, rowIndex)
@@ -445,7 +445,7 @@ End Function
 
 Private Function MomentUltimateForCombination(ByVal resultsSheet As Object, ByVal summaryRow As Long, ByVal combinationID As String) As Double
     Dim rowIndex As Long
-    For rowIndex = summaryRow + 8 To summaryRow + 27
+    For rowIndex = summaryRow + 9 To summaryRow + 28
         If StrComp(CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2), combinationID, vbTextCompare) = 0 Then
             If IsNumeric(resultsSheet.Cells.Item(rowIndex, 18).Value2) Then MomentUltimateForCombination = CDbl(resultsSheet.Cells.Item(rowIndex, 18).Value2)
             Exit Function

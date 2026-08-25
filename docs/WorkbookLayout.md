@@ -50,11 +50,11 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Build-Workbook.ps1
 
 | Область | Диапазон | Назначение |
 |---|---|---|
-| Сводка batch-расчета | `rngBatchSummary = Results!A1:AT30` | определяющее сочетание, блок прочности и блок трещин до 20 сочетаний |
-| Результаты НДМ по элементам | `rngNDMElementResults = Results!A33` | LC-зависимые данные: `RunID`, `LoadCase`, `ElementID`, `Strain`, `Stress`, `PhysicalState` |
-| Расчетная геометрия | `rngNDMSectionGeometry = Results!I33` | постоянные данные snapshot: `ElementID`, тип материала, координаты, площадь, размеры/диаметр и локальные моменты инерции |
-| Свойства всего сечения | `rngNDMSectionProperties = Results!Z33` | Bounds, центр тяжести, главные оси, output-единицы snapshot, `Epsilon0/KappaX/KappaY`, точка приложения нагрузки и другие свойства уровня LC |
-| Аннотации сечения | `rngNDMSectionAnnotations = Results!AH33` | сохраненные размерные линии и групповые подписи арматуры для восстановления схемы без повторного расчета |
+| Сводка batch-расчета | `rngBatchSummary = Results!A1:AT31` | определяющее сочетание, блок прочности и блок трещин до 20 сочетаний |
+| Результаты НДМ по элементам | `rngNDMElementResults = Results!A34` | LC-зависимые данные: `RunID`, `LoadCase`, `ElementID`, `Strain`, `Stress`, `PhysicalState` |
+| Расчетная геометрия | `rngNDMSectionGeometry = Results!I34` | постоянные данные snapshot: `ElementID`, тип материала, координаты, площадь, размеры/диаметр и локальные моменты инерции |
+| Свойства всего сечения | `rngNDMSectionProperties = Results!Z34` | Bounds, центр тяжести, главные оси, output-единицы snapshot, `Epsilon0/KappaX/KappaY`, точка приложения нагрузки и другие свойства уровня LC |
+| Аннотации сечения | `rngNDMSectionAnnotations = Results!AH34` | сохраненные размерные линии и групповые подписи арматуры для восстановления схемы без повторного расчета |
 
 Все переменные по высоте таблицы на `Results` расположены горизонтально в одной строке под `rngBatchSummary`. Между нижней границей `rngBatchSummary` и заголовками нижних диапазонов оставлены две пустые строки. Между концом каждой нижней таблицы и следующим якорем оставлены два пустых столбца, поэтому увеличение количества строк в одной таблице не может перекрыть соседний блок.
 

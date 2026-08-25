@@ -92,16 +92,24 @@ Private Sub WriteCrackResultToRange(ByVal workbook As Object, ByVal rangeName As
     Dim rows As Variant
     rows = EmptyResultRows(12)
     PutRow rows, 1, "CrackConverged", IIf(crack.Converged, "Yes", "No"), "", crack.StopReason
-    PutRow rows, 2, "CrackFormed", IIf(crack.CrackFormed, "Yes", "No"), "", "Refined/central branch can return No when lambda_crc > 1"
+    PutRow rows, 2, "CrackFormed", IIf(crack.CrackFormed, "Yes", "No"), "", "Auto/central branch can return No when lambda_crc > 1"
     PutRow rows, 3, "CrackWidth", OutputLength(crack.CrackWidth, units), OutputLengthUnit(units), "a_crc for long-term SLS crack opening"
     PutRow rows, 4, "CrackAllowable", OutputLength(crack.AllowableCrackWidth, units), OutputLengthUnit(units), "Utilization=" & CStr(crack.Utilization)
     PutRow rows, 5, "CrackModes", crack.PsiMode & "; " & crack.TensionZoneMode, "", "psi_s mode and Abt zone mode"
     PutRow rows, 6, "SigmaS", OutputStress(crack.SigmaS, units), OutputStressUnit(units), "sigma_s averaged by selected tensile As"
-    PutRow rows, 7, "SigmaS_crc", OutputStress(crack.SigmaSCrc, units), OutputStressUnit(units), "Used only for SLS.Crack.PsiMode = Refined"
-    PutRow rows, 8, "PsiS", crack.PsiS, "", "psi_s = 1 or 1 - 0.8*sigma_s,crc/sigma_s"
+    If crack.SigmaSCrc > 0# Then
+        PutRow rows, 7, "SigmaS_crc", OutputStress(crack.SigmaSCrc, units), OutputStressUnit(units), "Заполняется только если SLS.Crack.PsiMode = Auto запустил расчет lambda_crc"
+    Else
+        PutRow rows, 7, "SigmaS_crc", "NotCalcul.", OutputStressUnit(units), "Не считалось: Fixed1 или Auto-проверка с psi_s=1 прошла"
+    End If
+    PutRow rows, 8, "PsiS", crack.PsiS, "", "psi_s = 1 или Auto-уточнение 1 - 0.8*sigma_s,crc/sigma_s"
     PutRow rows, 9, "CrackSpacing", OutputLength(crack.CrackSpacing, units), OutputLengthUnit(units), "ls after limits 10ds/100/40ds/400"
     PutRow rows, 10, "Abt_As_ds", OutputArea(crack.Abt, units) & "; " & OutputArea(crack.AsTension, units) & "; " & OutputLength(crack.DsEquivalent, units), OutputAreaUnit(units) & "; " & OutputLengthUnit(units), "Abt; As; ds,eq"
-    PutRow rows, 11, "LambdaCrc", crack.LambdaCrc, "", "Load factor for first cracking in Refined/central branch"
+    If crack.SigmaSCrc > 0# Then
+        PutRow rows, 11, "LambdaCrc", crack.LambdaCrc, "", "Множитель образования трещины; считается только при Auto-уточнении"
+    Else
+        PutRow rows, 11, "LambdaCrc", "NotCalcul.", "", "Не считалось: Fixed1 или Auto-проверка с psi_s=1 прошла"
+    End If
     PutRow rows, 12, "SteelMax", crack.MaxSteelStrain, "", "Stress=" & CStr(OutputStress(crack.MaxSteelStress, units)) & " " & OutputStressUnit(units) & "; tensionBars=" & CStr(crack.TensionRebarCount)
     WriteResultRows target.Offset(15, 0).Resize(12, target.Columns.Count), rows
 End Sub

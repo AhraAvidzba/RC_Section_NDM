@@ -503,13 +503,25 @@ Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section
     internalMxValue = userMxValue + nValue * referenceY
     internalMyValue = userMyValue + nValue * referenceX
 
+    Dim centroidX As Double
+    Dim centroidY As Double
+    CalculateTransformedSectionCentroid section, concrete, steel, centroidX, centroidY
+
+    Dim centroidMxForCrack As Double
+    Dim centroidMyForCrack As Double
+    ' Проверка центрального растяжения в расчете трещин выполняется относительно
+    ' центра тяжести, поэтому здесь учитываем только эксцентриситет точки
+    ' приложения нагрузки от этого центра, а не абсолютные координаты модели.
+    centroidMxForCrack = userMxValue + nValue * (referenceY - centroidY)
+    centroidMyForCrack = userMyValue + nValue * (referenceX - centroidX)
+
     Dim calculationMode As String
     calculationMode = settings.GetString("Calculation.Mode", "FullCapacity")
 
     Select Case LCase$(Trim$(calculationMode))
         Case "directstate"
             WriteDirectStateAndCrackResults workbook, section, concrete, steel, settings, units, _
-                nValue, internalMxValue, internalMyValue, userMxValue, userMyValue, writer
+                nValue, internalMxValue, internalMyValue, centroidMxForCrack, centroidMyForCrack, writer
             Exit Sub
         Case "fullcapacity"
         Case Else
@@ -545,7 +557,7 @@ Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section
         crack.ApplySettings settings, units
         If CrackCalculationEnabled(settings) Then
             crack.Calculate service, section, concrete, steel, nValue, internalMxValue, internalMyValue, _
-                userMxValue, userMyValue
+                centroidMxForCrack, centroidMyForCrack
             writer.WriteCrackResult workbook, crack, units
         End If
     End If
@@ -555,7 +567,7 @@ Private Sub WriteDirectStateAndCrackResults(ByVal workbook As Object, ByVal sect
         ByVal concrete As Object, ByVal steel As Object, ByVal settings As CSystemSettingsReader, _
         ByVal units As CUnitSystem, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
-        ByVal userMxValue As Double, ByVal userMyValue As Double, ByVal writer As CCapacityResultWriter)
+        ByVal centroidMxForCrack As Double, ByVal centroidMyForCrack As Double, ByVal writer As CCapacityResultWriter)
 
     Dim service As CSectionSolver
     Set service = New CSectionSolver
@@ -570,7 +582,7 @@ Private Sub WriteDirectStateAndCrackResults(ByVal workbook As Object, ByVal sect
         Dim crack As CCrackWidthCalculator
         Set crack = New CCrackWidthCalculator
         crack.ApplySettings settings, units
-        crack.Calculate service, section, concrete, steel, nValue, mxValue, myValue, userMxValue, userMyValue
+        crack.Calculate service, section, concrete, steel, nValue, mxValue, myValue, centroidMxForCrack, centroidMyForCrack
         writer.WriteCrackResult workbook, crack, units
     End If
 End Sub
