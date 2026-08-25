@@ -23,7 +23,7 @@ N + Mx + My
 - круглая геометрия;
 - прямоугольник со скруглениями;
 - автоматическая арматура круглого сечения;
-- пользовательские диаграммы материалов по точкам;
+- параметрические TwoLine/ThreeLine диаграммы материалов по параметрам бетона, арматуры и расчетного режима;
 - экспорт расчетной сетки и напряжений в AutoCAD;
 - импорт расчетной сетки из AutoCAD `Region` на заданных слоях.
 
@@ -72,12 +72,13 @@ Myint = Myext
 
 ## Материалы
 
-Материалы задаются точками:
+Материалы задаются параметрами:
 
-- `rngConcreteDiagramPoints`;
-- `rngSteelDiagramPoints`.
+- `rngConcreteMaterialParameters`;
+- `rngSteelMaterialParameters`;
+- `rngCalculationDiagramSettings`.
 
-Программа не содержит переключателя типа диаграммы. Пользователь меняет форму диаграммы редактированием точек.
+Пользователь выбирает TwoLine/ThreeLine для расчетных режимов. Произвольные точки диаграмм больше не являются входными данными: контрольные таблицы точек на `Config` используются только для проверки формул.
 
 ## Несущая способность
 
@@ -108,8 +109,9 @@ Myint = Myext
 Обязательные именованные диапазоны:
 
 - `rngSystemSettings`;
-- `rngConcreteDiagramPoints`;
-- `rngSteelDiagramPoints`;
+- `rngConcreteMaterialParameters`;
+- `rngSteelMaterialParameters`;
+- `rngCalculationDiagramSettings`;
 - `rngLoadCombinations`;
 - `rngResultSection`;
 - `rngBatchSummary`.

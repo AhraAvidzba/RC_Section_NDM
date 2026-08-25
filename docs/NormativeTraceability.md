@@ -23,10 +23,10 @@ norms/
 
 | Область | Реализация | Нормативный статус |
 |---|---|---|
-| Диаграмма бетона | `CConcreteDiagramMaterial`, точки `rngConcreteDiagramPoints` | параметризовано; формулы участков требуют ручной проверки |
-| Диаграмма стали | `CSteelDiagramMaterial`, точки `rngSteelDiagramPoints` | параметризовано; формулы участков требуют ручной проверки |
-| Предельные деформации | `Capacity.ConcreteCompressionLimit`, `Capacity.ConcreteTensionLimit`, `Capacity.SteelStrainLimit` | вынесено на `Config`; требуется подтверждение применимости |
-| Растянутый бетон | `Concrete.TensionMode = Ignore / UseDiagram` | постановка выбирается пользователем |
+| Диаграмма бетона | `CConcreteDiagramBuilder` + `CConcreteDiagramMaterial`, параметры `rngConcreteMaterialParameters`, режимы `rngCalculationDiagramSettings` | реализованы TwoLine/ThreeLine; формулы и область применимости требуют дальнейшей нормативной трассировки |
+| Диаграмма стали | `CSteelDiagramBuilder` + `CSteelDiagramMaterial`, параметры `rngSteelMaterialParameters`, режимы `rngCalculationDiagramSettings` | реализованы TwoLine/ThreeLine; формулы и область применимости требуют дальнейшей нормативной трассировки |
+| Предельные деформации | берутся из построенной материальной диаграммы выбранного расчетного режима | отдельные дублирующие настройки предельных деформаций удалены |
+| Растянутый бетон | задается только режимом расчета в `rngCalculationDiagramSettings`: `Strength` - `Ignore/UseDiagram`, `Mcrc` - `UseDiagram`, `CrackedNDS` - `Ignore` | источник логики учета растянутого бетона централизован |
 | НДС | `CSectionSolver` | расчетная механика реализована |
 | Несущая способность | `CCapacitySolver` | алгоритмы реализованы; нормативная приемка не завершена |
 | Трещины | `CCrackWidthCalculator`; продолжительное раскрытие нормальных трещин по II группе для общего `N + Mx + My` | реализовано по принятой проектной интерпретации СП 63; инженерные допущения вынесены в инструкции Config и `docs/CrackWidthMethodology_SP63.md` |
@@ -40,13 +40,14 @@ norms/
 | `Concrete.Rb.SLS` | 22.0 | МПа | требуется подтверждение источника |
 | `Concrete.Rbt.SLS` | 1.80 | МПа | требуется подтверждение источника |
 | `Concrete.Eb` | 32500 | МПа | требуется подтверждение источника |
+| `Concrete.Ebt` | 32500 | МПа | по умолчанию равно `Eb`; требуется подтверждение источника |
 | `Steel.RebarProfile` | `Ribbed` | | профиль стержней для коэффициента `phi2` в расчете трещин |
 | `Steel.Rs.ULS` | 350 | МПа | требуется подтверждение источника |
 | `Steel.Rsc.ULS` | 350 | МПа | требуется подтверждение источника |
+| `Steel.Rs.SLS` | 390 | МПа | требуется подтверждение источника |
+| `Steel.Rsc.SLS` | 390 | МПа | программный параметр для симметрии; по умолчанию равен `Rs.SLS` |
 | `Steel.Es` | 200000 | МПа | требуется подтверждение источника |
-| `Capacity.ConcreteCompressionLimit` | -0.0035 | | требуется подтверждение применимости |
-| `Capacity.ConcreteTensionLimit` | 0.00015 | | применяется только при `UseDiagram` |
-| `Capacity.SteelStrainLimit` | 0.025 | | требуется подтверждение применимости |
+| `Steel.Esc` | 200000 | МПа | программный параметр для симметрии; по умолчанию равен `Es` |
 
 ## Требования к дальнейшей трассировке
 

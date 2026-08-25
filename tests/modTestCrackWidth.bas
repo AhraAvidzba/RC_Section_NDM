@@ -22,7 +22,7 @@ Public Function RunCrackWidthTests() As String
     Dim t0 As Double
     t0 = Timer
 
-    TestConcreteTensionFallback stats
+    TestConcreteTensionBranches stats
     TestCrackFixed1Mx stats
     TestCrackFixed1Mxy stats
     TestEffectiveAndFullTensionZones stats
@@ -47,18 +47,16 @@ End Function
 ' ------------------------------
 ' Проверяем, что растянутую часть диаграммы не обязательно задавать руками:
 ' CConcreteDiagramMaterial умеет построить SLS fallback по Eb и Rbt,ser.
-Private Sub TestConcreteTensionFallback(ByRef stats As TCrackTestStats)
+Private Sub TestConcreteTensionBranches(ByRef stats As TCrackTestStats)
     Dim concrete As CConcreteDiagramMaterial
     Set concrete = ProvisionalConcrete()
-    AssertClose stats, "crack.tensionMode.defaultStress", concrete.GetStress(0.0001), 0#, 0.000000000001
-    AssertClose stats, "crack.tensionMode.defaultTangent", concrete.GetTangentModulus(0.0001), 0#, 0.000000000001
+    AssertClose stats, "crack.concrete.ignoreStress", concrete.GetStress(0.0001), 0#, 0.000000000001
+    AssertClose stats, "crack.concrete.ignoreTangent", concrete.GetTangentModulus(0.0001), 0#, 0.000000000001
 
-    concrete.TensionMode = "UseDiagram"
-    concrete.TensionElasticModulus = 30000#
-    concrete.TensionStressLimit = 1.5
-    AssertClose stats, "crack.tensionMode.useStress", concrete.GetStress(0.00002), 0.6, 0.000000000001
-    AssertClose stats, "crack.tensionMode.useLimit", concrete.GetStress(0.001), 1.5, 0.000000000001
-    AssertClose stats, "crack.tensionMode.useTangent", concrete.GetTangentModulus(0.00002), 30000#, 0.000000000001
+    Set concrete = ProvisionalConcreteWithTension()
+    AssertClose stats, "crack.concrete.useStress", concrete.GetStress(0.00002), 0.45, 0.000000000001
+    AssertClose stats, "crack.concrete.useLimit", concrete.GetStress(0.001), 1.8, 0.000000000001
+    AssertClose stats, "crack.concrete.useTangent", concrete.GetTangentModulus(0.00002), 22500#, 0.000000000001
 End Sub
 
 ' ------------------------------
@@ -230,7 +228,9 @@ Private Function SolveServiceState(ByRef section As CSectionModel, ByVal nValue 
     Set solver = New CSectionSolver
     ConfigureTestSolver solver
     Set section = BuildGeneratedSectionModel(mesh, rebars)
-    solver.Solve section, ProvisionalConcrete(), ProvisionalSteel(), nValue, mxValue, myValue
+    Dim materialSet As CCalculationMaterialSet
+    Set materialSet = TestMaterialProvider().CrackedNDSSet
+    solver.Solve section, materialSet.ConcreteMaterial, materialSet.SteelMaterial, nValue, mxValue, myValue
     If Not solver.Converged Then Err.Raise vbObjectError + 3800, "modTestCrackWidth", "Service state did not converge: " & solver.StopReason
     Set SolveServiceState = solver
 End Function
@@ -255,7 +255,9 @@ Private Function SolveCircleServiceState(ByRef section As CSectionModel, ByVal n
     Set solver = New CSectionSolver
     ConfigureTestSolver solver
     Set section = BuildGeneratedSectionModel(mesh, rebars)
-    solver.Solve section, ProvisionalConcrete(), ProvisionalSteel(), nValue, mxValue, myValue
+    Dim materialSet As CCalculationMaterialSet
+    Set materialSet = TestMaterialProvider().CrackedNDSSet
+    solver.Solve section, materialSet.ConcreteMaterial, materialSet.SteelMaterial, nValue, mxValue, myValue
     If Not solver.Converged Then Err.Raise vbObjectError + 3801, "modTestCrackWidth", "Circle service state did not converge: " & solver.StopReason
     Set SolveCircleServiceState = solver
 End Function
@@ -278,39 +280,57 @@ Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As
     crack.AllowableCrackWidth = allowable
     crack.PsiMode = psiMode
     crack.TensionZoneMode = zoneMode
-    crack.RebarProfile = "Ribbed"
-    crack.ConcreteTensionLimitStress = 1.8
-    crack.ConcreteElasticModulus = 32500#
-    crack.SteelElasticModulus = 200000#
     crack.SolverLoadSteps = 8
     crack.SolverMaxIterations = 100
     crack.SolverToleranceN = 5#
     crack.SolverToleranceMx = 5000#
     crack.SolverToleranceMy = 5000#
+    Dim provider As CMaterialModelProvider
+    Set provider = TestMaterialProvider()
+
     If IsMissing(centroidMxForCentralCheck) Or IsMissing(centroidMyForCentralCheck) Then
-        crack.Calculate solver, section, ProvisionalConcrete(), ProvisionalSteel(), nValue, mxValue, myValue
+        crack.Calculate solver, section, provider.CrackedNDSSet, provider.McrcSet, provider.CrackedNDSSet, nValue, mxValue, myValue
     Else
-        crack.Calculate solver, section, ProvisionalConcrete(), ProvisionalSteel(), nValue, mxValue, myValue, _
+        crack.Calculate solver, section, provider.CrackedNDSSet, provider.McrcSet, provider.CrackedNDSSet, nValue, mxValue, myValue, _
             centroidMxForCentralCheck, centroidMyForCentralCheck
     End If
     Set CalculateCrack = crack
 End Function
 
 Private Function ProvisionalConcrete() As CConcreteDiagramMaterial
-    Dim concrete As CConcreteDiagramMaterial
-    Set concrete = New CConcreteDiagramMaterial
-    concrete.Initialize -0.0015, -15.5, -0.0035, -15.5
-    concrete.TensionMode = "Ignore"
-    concrete.TensionElasticModulus = 32500#
-    concrete.TensionStressLimit = 1.8
-    Set ProvisionalConcrete = concrete
+    Dim provider As CMaterialModelProvider
+    Set provider = TestMaterialProvider()
+    Set ProvisionalConcrete = provider.CrackedNDSSet.ConcreteMaterial
+End Function
+
+Private Function ProvisionalConcreteWithTension() As CConcreteDiagramMaterial
+    Dim builder As CConcreteDiagramBuilder
+    Set builder = New CConcreteDiagramBuilder
+    Set ProvisionalConcreteWithTension = builder.BuildMaterial(TestConcreteParameters(), "II", "TwoLine", "UseDiagram")
 End Function
 
 Private Function ProvisionalSteel() As CSteelDiagramMaterial
-    Dim steel As CSteelDiagramMaterial
-    Set steel = New CSteelDiagramMaterial
-    steel.Initialize 0.00175, 350#, 0.025
-    Set ProvisionalSteel = steel
+    Dim provider As CMaterialModelProvider
+    Set provider = TestMaterialProvider()
+    Set ProvisionalSteel = provider.CrackedNDSSet.SteelMaterial
+End Function
+
+Private Function TestMaterialProvider() As CMaterialModelProvider
+    Dim steelParameters As CSteelMaterialParameters
+    Set steelParameters = New CSteelMaterialParameters
+    steelParameters.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#, "Ribbed"
+
+    Dim provider As CMaterialModelProvider
+    Set provider = New CMaterialModelProvider
+    provider.InitializeFromParameters TestConcreteParameters(), steelParameters
+    Set TestMaterialProvider = provider
+End Function
+
+Private Function TestConcreteParameters() As CConcreteMaterialParameters
+    Dim parameters As CConcreteMaterialParameters
+    Set parameters = New CConcreteMaterialParameters
+    parameters.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#
+    Set TestConcreteParameters = parameters
 End Function
 
 Private Sub AssertCrackCommon(ByRef stats As TCrackTestStats, ByVal prefix As String, ByVal crack As CCrackWidthCalculator)

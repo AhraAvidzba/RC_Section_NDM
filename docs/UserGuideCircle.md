@@ -58,21 +58,17 @@ workbook/output/RC_Section_NDM.xlsm
 
 ## Материалы
 
-В `rngSystemSettings` проверь:
+В `rngConcreteMaterialParameters`, `rngSteelMaterialParameters` и `rngCalculationDiagramSettings` проверь:
 
 | Параметр | Пример |
 |---|---:|
 | `Concrete.Eb` | 32500 |
+| `Concrete.Ebt` | 32500 |
 | `Steel.RebarProfile` | `Ribbed` |
 | `Steel.Es` | 200000 |
-| `Concrete.TensionMode` | `Ignore` |
+| `Strength / Растянутый бетон` | `Ignore` |
 
-Точки диаграмм задаются в:
-
-- `rngConcreteDiagramPoints`;
-- `rngSteelDiagramPoints`.
-
-Программа использует именно введенные точки. Отдельного переключателя "двухлинейная/трехлинейная" нет.
+Пользователь больше не задает произвольные точки диаграмм. Программа строит расчетные TwoLine/ThreeLine-диаграммы по параметрам материала и выбранному расчетному режиму; служебные таблицы точек на `Config` нужны только для контроля формул.
 
 ## Сочетание Нагрузок
 

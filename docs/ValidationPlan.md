@@ -11,7 +11,7 @@
 - отсутствие устаревших именованных диапазонов и настроек;
 - равновесие `N + Mx + My`;
 - геометрию, сетку и арматуру;
-- материалы по пользовательским точкам;
+- материалы по параметрическим TwoLine/ThreeLine-диаграммам;
 - работу прямого решателя, capacity, трещин, batch и UI.
 
 ## Основные команды
@@ -42,7 +42,7 @@ Get-Process EXCEL -ErrorAction SilentlyContinue | Stop-Process -Force
 - заголовки таблицы настроек;
 - отсутствие дублей ключей `Config`;
 - выпадающие списки;
-- таблицы точек диаграмм 10 x 3;
+- новые диапазоны параметров материалов, режимов диаграмм и контрольных таблиц точек;
 - заголовки `rngLoadCombinations`;
 - допустимость формул на листах;
 - отсутствие построчного runtime IO в основных writer-ах.
@@ -52,7 +52,7 @@ Get-Process EXCEL -ErrorAction SilentlyContinue | Stop-Process -Force
 | Скрипт | Проверяемая область |
 |---|---|
 | `Run-GeometryTests.ps1` | геометрия, сетка, круг, скругленный прямоугольник, Г-сечение, автоматическая арматура, импорт AutoCAD Region в `CSectionModel` на мок-данных |
-| `Run-MaterialTests.ps1` | диаграммы материалов по точкам |
+| `Run-MaterialTests.ps1` | построение TwoLine/ThreeLine-диаграмм материалов по параметрам I/II ГПС |
 | `Run-SectionSolverTests.ps1` | прямой `CSectionSolver`, `Newton`, `Secant`, настройки |
 | `Run-CapacityTests.ps1` | `LoadMultiplier`, `UltimateStrain`, `Bisection`, `Brent`, `Secant` |
 | `Run-CrackTests.ps1` | ширина раскрытия уже образовавшихся трещин |

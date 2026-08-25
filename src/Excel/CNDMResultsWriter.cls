@@ -31,12 +31,11 @@ Private Const PHYSICAL_TOLERANCE As Double = 0.000000001 ' Порог, ниже 
 ' Очищает старый снимок и заново пишет четыре согласованных блока:
 ' geometry, element results, section properties и section annotations.
 Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal concrete As Object, ByVal steel As Object, ByVal batch As CBatchSectionCalculator, _
+        ByVal materialProvider As CMaterialModelProvider, ByVal batch As CBatchSectionCalculator, _
         Optional ByVal units As CUnitSystem = Nothing)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4450, "CNDMResultsWriter", "Книга Excel не передана."
     If section Is Nothing Then Err.Raise vbObjectError + 4451, "CNDMResultsWriter", "Модель сечения не передана."
-    If concrete Is Nothing Then Err.Raise vbObjectError + 4452, "CNDMResultsWriter", "Материал бетона не передан."
-    If steel Is Nothing Then Err.Raise vbObjectError + 4453, "CNDMResultsWriter", "Материал арматуры не передан."
+    If materialProvider Is Nothing Then Err.Raise vbObjectError + 4452, "CNDMResultsWriter", "Material provider не передан."
     If batch Is Nothing Then Err.Raise vbObjectError + 4454, "CNDMResultsWriter", "Пакетный расчетчик не передан."
 
     ClearResults workbook
@@ -45,8 +44,8 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
     runID = Now
 
     WriteSectionGeometry workbook, section, runID, units
-    WriteElementResults workbook, section, concrete, steel, batch, runID, units
-    WriteSectionProperties workbook, section, concrete, steel, batch, runID, units
+    WriteElementResults workbook, section, batch, runID, units
+    WriteSectionProperties workbook, section, materialProvider, batch, runID, units
     EnsureAutoCADBoundsAnnotations section
     WriteSectionAnnotations workbook, section, runID, units
 End Sub
@@ -97,8 +96,7 @@ End Sub
 ' В этот блок не пишутся координаты и площади: они уже есть в
 ' rngNDMSectionGeometry и связываются по ElementID.
 Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal concrete As Object, ByVal steel As Object, ByVal batch As CBatchSectionCalculator, _
-        ByVal runID As Variant, ByVal units As CUnitSystem)
+        ByVal batch As CBatchSectionCalculator, ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
     Set target = workbook.Names.Item("rngNDMElementResults").RefersToRange
 
@@ -127,7 +125,7 @@ Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSect
     ' на лист. Это принципиально быстрее и устойчивее построчной записи Cells.
     For i = 1 To batch.Count
         If batch.StateAvailable(i) Then
-            PutCombinationElementResults data, rowIndex, section, concrete, steel, batch, i, runID, units
+            PutCombinationElementResults data, rowIndex, section, batch, i, runID, units
         End If
     Next i
 
@@ -208,13 +206,13 @@ End Sub
 ' Здесь лежат свойства уровня всей модели: Bounds, центр тяжести приведенного
 ' сечения, главные оси, сохраненные единицы вывода и плоскость деформаций LC.
 Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal concrete As Object, ByVal steel As Object, ByVal batch As CBatchSectionCalculator, _
+        ByVal materialProvider As CMaterialModelProvider, ByVal batch As CBatchSectionCalculator, _
         ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
     Set target = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
 
     Dim rowCount As Long
-    rowCount = 1 + 21 + batch.Count * 12
+    rowCount = 1 + 45 + batch.Count * 12
 
     Dim data() As Variant
     ReDim data(1 To rowCount, 1 To SECTION_PROPERTY_COLUMNS)
@@ -232,7 +230,8 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     ' бетон + арматура, чтобы AutoCAD export и схема использовали один источник.
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
-    props.CalculateTransformed section, concrete, steel
+    props.CalculateTransformed section, materialProvider.StrengthSet.ConcreteMaterial, _
+        materialProvider.StrengthSet.SteelMaterial
 
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MinX", OutputLength(minX, units), OutputLengthUnit(units), "Минимальный X расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxX", OutputLength(maxX, units), OutputLengthUnit(units), "Максимальный X расчетной модели."
@@ -255,6 +254,9 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     PutProperty data, rowIndex, runID, "ALL", "Output.SignConvention.N", OutputSignN(units), "-", "Пользовательский знак N на момент расчета."
     PutProperty data, rowIndex, runID, "ALL", "Output.SignConvention.Mx", OutputSignMx(units), "-", "Пользовательский знак Mx на момент расчета."
     PutProperty data, rowIndex, runID, "ALL", "Output.SignConvention.My", OutputSignMy(units), "-", "Пользовательский знак My на момент расчета."
+    PutMaterialSetProperties data, rowIndex, runID, materialProvider.StrengthSet
+    PutMaterialSetProperties data, rowIndex, runID, materialProvider.McrcSet
+    PutMaterialSetProperties data, rowIndex, runID, materialProvider.CrackedNDSSet
 
     Dim i As Long
     ' LC-зависимые свойства уровня сечения хранятся отдельно от поэлементных
@@ -278,6 +280,25 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
 
     target.Resize(rowCount, SECTION_PROPERTY_COLUMNS).Value2 = data
     FormatResultsBlock target, rowCount, SECTION_PROPERTY_COLUMNS, "Свойства всего сечения"
+End Sub
+
+' Записывает в Results краткое описание материалной модели расчетного snapshot.
+' Эти строки нужны для диагностики и для внешних выводов, которые не должны
+' перечитывать текущий Config после расчета.
+Private Sub PutMaterialSetProperties(ByRef data() As Variant, ByRef rowIndex As Long, _
+        ByVal runID As Variant, ByVal materialSet As CCalculationMaterialSet)
+    Dim prefix As String
+    prefix = "Material." & materialSet.Purpose & "."
+    PutProperty data, rowIndex, runID, "ALL", prefix & "LimitStateGroup", materialSet.LimitStateGroup, "-", "Группа предельных состояний material set."
+    PutProperty data, rowIndex, runID, "ALL", prefix & "ConcreteDiagram", materialSet.ConcreteDiagramType, "-", "Тип бетонной диаграммы snapshot."
+    PutProperty data, rowIndex, runID, "ALL", prefix & "ConcreteTension", materialSet.ConcreteTensionBehavior, "-", "Учет растянутого бетона в бетонной диаграмме snapshot."
+    PutProperty data, rowIndex, runID, "ALL", prefix & "SteelDiagram", materialSet.SteelDiagramType, "-", "Тип диаграммы арматуры snapshot."
+    PutProperty data, rowIndex, runID, "ALL", prefix & "ConcreteCompressionLimit", materialSet.ConcreteCompressionLimit, "-", "Предельная сжатая деформация бетона snapshot."
+    If materialSet.ConcreteTensionLimitEnabled Then
+        PutProperty data, rowIndex, runID, "ALL", prefix & "ConcreteTensionLimit", materialSet.ConcreteTensionLimit, "-", "Предельная растянутая деформация бетона snapshot."
+    End If
+    PutProperty data, rowIndex, runID, "ALL", prefix & "SteelCompressionLimit", materialSet.SteelCompressionLimit, "-", "Предельная сжатая деформация арматуры snapshot."
+    PutProperty data, rowIndex, runID, "ALL", prefix & "SteelTensionLimit", materialSet.SteelTensionLimit, "-", "Предельная растянутая деформация арматуры snapshot."
 End Sub
 
 ' Записывает минимальные свойства imported-preview: Bounds, количество
@@ -452,12 +473,16 @@ Private Function ResultHeaderBase(ByVal headerText As String) As String
 End Function
 
 Private Sub PutCombinationElementResults(ByRef data() As Variant, ByRef rowIndex As Long, _
-        ByVal section As CSectionModel, ByVal concrete As Object, ByVal steel As Object, _
-        ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, _
+        ByVal section As CSectionModel, ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, _
         ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim i As Long
     Dim strain As Double
     Dim stress As Double
+    Dim concrete As Object
+    Dim steel As Object
+
+    Set concrete = batch.ConcreteMaterialForCombination(combinationIndex)
+    Set steel = batch.SteelMaterialForCombination(combinationIndex)
 
     For i = 1 To section.ConcreteCount
         strain = batch.Epsilon0(combinationIndex) + batch.KappaX(combinationIndex) * section.ConcreteY(i) + _

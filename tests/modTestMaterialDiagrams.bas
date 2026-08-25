@@ -2,10 +2,11 @@
 Option Explicit
 
 ' ==========================================================================
-' Тесты пользовательских диаграмм материалов
+' Тесты построения диаграмм материалов
 ' ==========================================================================
-' Проверяется кусочно-линейная интерполяция бетона и арматуры по точкам,
-' включая режимы работы растянутого бетона.
+' Проверяется два уровня новой архитектуры: builders формируют нормативные
+' TwoLine/ThreeLine точки из параметров материала, а расчетные material-классы
+' дальше только интерполируют уже готовую диаграмму.
 
 Private Type TMaterialTestStats
     Passed As Long
@@ -21,8 +22,10 @@ Public Function RunMaterialDiagramTests() As String
     Dim t0 As Double
     t0 = Timer
 
-    TestConcreteDiagramPoints stats
-    TestSteelDiagramPoints stats
+    TestConcreteDiagramBuilder stats
+    TestSteelDiagramBuilder stats
+    TestConcreteInterpolation stats
+    TestSteelInterpolation stats
     TestConcreteThreePointDiagram stats
     TestSteelThreePointDiagram stats
     TestInvalidParameters stats
@@ -38,7 +41,7 @@ Failed:
 End Function
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
-Private Sub TestConcreteDiagramPoints(ByRef stats As TMaterialTestStats)
+Private Sub TestConcreteInterpolation(ByRef stats As TMaterialTestStats)
     Dim mat As CConcreteDiagramMaterial
     Set mat = New CConcreteDiagramMaterial
     mat.Initialize -0.0015, -15.5, -0.0035, -15.5
@@ -75,7 +78,7 @@ Private Sub TestSteelThreePointDiagram(ByRef stats As TMaterialTestStats)
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
-Private Sub TestSteelDiagramPoints(ByRef stats As TMaterialTestStats)
+Private Sub TestSteelInterpolation(ByRef stats As TMaterialTestStats)
     Dim mat As CSteelDiagramMaterial
     Set mat = New CSteelDiagramMaterial
     mat.Initialize 0.00175, 350#, 0.025
@@ -85,6 +88,69 @@ Private Sub TestSteelDiagramPoints(ByRef stats As TMaterialTestStats)
     AssertClose stats, "steel.points.compressionFirstSegment", mat.GetStress(-0.000875), -175#, 0.000000000001
     AssertClose stats, "steel.points.compressionSecondSegment", mat.GetStress(-0.01), -350#, 0.000000000001
     AssertClose stats, "steel.points.secondTangent", mat.GetTangentModulus(0.01), 0#, 0.000000000001
+End Sub
+
+' Проверяет бетонный builder на контрольных short-term точках СП 63:
+' I ГПС без растянутого бетона для прочности и II ГПС с растянутой ветвью
+' для состояния образования трещины.
+Private Sub TestConcreteDiagramBuilder(ByRef stats As TMaterialTestStats)
+    Dim parameters As CConcreteMaterialParameters
+    Set parameters = TestConcreteParameters()
+
+    Dim builder As CConcreteDiagramBuilder
+    Set builder = New CConcreteDiagramBuilder
+
+    Dim strength As CConcreteDiagramMaterial
+    Set strength = builder.BuildMaterial(parameters, "I", "TwoLine", "Ignore")
+    AssertClose stats, "conc.builder.strength.point1.eps", strength.PointStrain(1), -0.0035, 0.000000000001
+    AssertClose stats, "conc.builder.strength.point1.stress", strength.PointStress(1), -15.5, 0.000000000001
+    AssertClose stats, "conc.builder.strength.point2.eps", strength.PointStrain(2), -0.0015, 0.000000000001
+    AssertClose stats, "conc.builder.strength.tensionZero", strength.GetStress(0.0001), 0#, 0.000000000001
+    AssertClose stats, "conc.builder.strength.compressionLimit", builder.CompressionLimit, -0.0035, 0.000000000001
+    AssertClose stats, "conc.builder.strength.tensionLimit", builder.TensionLimit, 0#, 0.000000000001
+
+    Dim mcrc As CConcreteDiagramMaterial
+    Set mcrc = builder.BuildMaterial(parameters, "II", "ThreeLine", "UseDiagram")
+    AssertClose stats, "conc.builder.mcrc.compressionRb", mcrc.GetStress(-0.002), -22#, 0.000000000001
+    AssertClose stats, "conc.builder.mcrc.tensionRbt", mcrc.GetStress(0.0001), 1.8, 0.000000000001
+    AssertClose stats, "conc.builder.mcrc.epsB1", mcrc.PointStrain(3), -(0.6 * 22# / 32500#), 0.000000000001
+    AssertClose stats, "conc.builder.mcrc.epsBt1", mcrc.PointStrain(5), 0.6 * 1.8 / 32500#, 0.000000000001
+    AssertClose stats, "conc.builder.mcrc.tensionLimit", builder.TensionLimit, 0.00015, 0.000000000001
+End Sub
+
+' Проверяет построение диаграмм арматуры по пп. 6.2.14 и 6.2.15 СП 63.
+' Для ThreeLine отдельно контролируются eps_s0, eps_s1 и eps_s,pl, потому что
+' эти точки определяют участок условного предела текучести.
+Private Sub TestSteelDiagramBuilder(ByRef stats As TMaterialTestStats)
+    Dim parameters As CSteelMaterialParameters
+    Set parameters = TestSteelParameters()
+
+    Dim builder As CSteelDiagramBuilder
+    Set builder = New CSteelDiagramBuilder
+
+    Dim twoLine As CSteelDiagramMaterial
+    Set twoLine = builder.BuildMaterial(parameters, "I", "TwoLine")
+    AssertClose stats, "steel.builder.twoline.epsSc0", twoLine.PointStrain(2), -350# / 200000#, 0.000000000001
+    AssertClose stats, "steel.builder.twoline.epsS0", twoLine.PointStrain(4), 350# / 200000#, 0.000000000001
+    AssertClose stats, "steel.builder.twoline.limit", builder.TensionLimit, 0.025, 0.000000000001
+
+    Dim threeLine As CSteelDiagramMaterial
+    Set threeLine = builder.BuildMaterial(parameters, "I", "ThreeLine")
+    Dim epsS0 As Double
+    Dim epsS1 As Double
+    Dim epsSPl As Double
+    epsS0 = 350# / 200000# + 0.002
+    epsS1 = 0.9 * 350# / 200000#
+    epsSPl = 2# * epsS0 - epsS1
+
+    AssertClose stats, "steel.builder.threeline.epsS1", threeLine.PointStrain(6), epsS1, 0.000000000001
+    AssertClose stats, "steel.builder.threeline.epsS0", threeLine.PointStrain(7), epsS0, 0.000000000001
+    AssertClose stats, "steel.builder.threeline.epsSPl", threeLine.PointStrain(8), epsSPl, 0.000000000001
+    AssertClose stats, "steel.builder.threeline.limit", builder.TensionLimit, 0.015, 0.000000000001
+    Dim slsTwoLine As CSteelDiagramMaterial
+    Set slsTwoLine = builder.BuildMaterial(parameters, "II", "TwoLine")
+    AssertClose stats, "steel.builder.sls.resistance", _
+        slsTwoLine.GetStress(0.01), 390#, 0.000000000001
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -113,6 +179,20 @@ SteelError:
     On Error GoTo 0
     AssertTrue stats, "material.invalidSteel", True
 End Sub
+
+Private Function TestConcreteParameters() As CConcreteMaterialParameters
+    Dim parameters As CConcreteMaterialParameters
+    Set parameters = New CConcreteMaterialParameters
+    parameters.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#
+    Set TestConcreteParameters = parameters
+End Function
+
+Private Function TestSteelParameters() As CSteelMaterialParameters
+    Dim parameters As CSteelMaterialParameters
+    Set parameters = New CSteelMaterialParameters
+    parameters.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#, "Ribbed"
+    Set TestSteelParameters = parameters
+End Function
 
 Private Sub AssertTrue(ByRef stats As TMaterialTestStats, ByVal name As String, ByVal condition As Boolean)
     If condition Then

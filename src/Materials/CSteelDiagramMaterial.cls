@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -12,38 +12,40 @@ Option Explicit
 ' ==========================================================================
 ' Кусочно-линейная диаграмма арматуры
 ' ==========================================================================
-' Материал арматуры интерполирует напряжения по пользовательским точкам
-' диаграммы. Он не знает о диаметрах и координатах стержней: solver передает
-' сюда только деформацию конкретного стержня.
+' Класс является расчетным материалом для solver-а. Он не знает класс
+' арматуры, ГПС, профиль стержня и нормативные формулы построения диаграммы:
+' все это заранее решает CMaterialModelProvider.
+'
+' На вход сюда попадает только готовый набор точек во внутренних единицах.
+' Solver дальше вызывает единый материалный контракт GetStress,
+' GetTangentModulus и GetSecantModulus для каждого стержня.
 
 Private mStrains() As Double ' Узлы диаграммы по деформации, отсортированные от сжатия к растяжению.
 Private mStresses() As Double ' Напряжения в узлах диаграммы во внутренних единицах, МПа.
 Private mPointCount As Long ' Количество активных точек диаграммы.
 Private mInitialized As Boolean ' Защита от вызова материала до задания диаграммы.
 
-' Инициализирует диаграмму арматуры по точкам Config.
-' Напряжения в reader-е еще записаны в пользовательской INPUT-единице, поэтому
-' здесь они переводятся в МПа через CUnitSystem.
-Public Sub InitializeFromSettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
-    Dim count As Long
-    count = settings.SteelDiagramPointCount
-    If count < 2 Then Err.Raise vbObjectError + 3125, "CSteelDiagramMaterial", "Диаграмма арматуры должна содержать не менее двух точек."
+' ------------------------------
+' Инициализация
+' ------------------------------
+' Загружает точки, построенные CSteelDiagramBuilder по выбранному расчетному
+' назначению и типу диаграммы.
+Public Sub InitializeFromPointSet(ByVal points As CMaterialPointSet)
+    If points Is Nothing Then Err.Raise vbObjectError + 3125, "CSteelDiagramMaterial", "Точки диаграммы арматуры не переданы."
+    If points.Count < 2 Then Err.Raise vbObjectError + 3125, "CSteelDiagramMaterial", "Диаграмма арматуры должна содержать не менее двух точек."
 
-    ReDim mStrains(1 To count)
-    ReDim mStresses(1 To count)
+    ReDim mStrains(1 To points.Count)
+    ReDim mStresses(1 To points.Count)
 
     Dim i As Long
-    ' Копируем точки в локальные массивы, чтобы solver мог быстро получать
-    ' напряжение стержня без обращения к Excel-reader-у.
-    For i = 1 To count
-        mStrains(i) = settings.SteelDiagramStrain(i)
-        mStresses(i) = settings.SteelDiagramStress(i)
-        If Not units Is Nothing Then mStresses(i) = units.InputStressToInternal(mStresses(i))
+    For i = 1 To points.Count
+        mStrains(i) = points.Strain(i)
+        mStresses(i) = points.Stress(i)
     Next i
 
     SortPointsByStrain
     ValidatePointOrder
-    mPointCount = count
+    mPointCount = points.Count
     mInitialized = True
 End Sub
 
@@ -51,22 +53,22 @@ End Sub
 ' По заданной растянутой ветви автоматически создается такая же сжатая ветвь.
 Public Sub InitializeFromTwoTensionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
         ByVal eps2 As Double, ByVal stress2 As Double)
+    Dim points As CMaterialPointSet
+    Set points = New CMaterialPointSet
+
     If eps1 <= 0# Then Err.Raise vbObjectError + 3120, "CSteelDiagramMaterial", "Первая деформация растяжения арматуры должна быть положительной."
     If eps2 <= eps1 Then Err.Raise vbObjectError + 3121, "CSteelDiagramMaterial", "Вторая деформация растяжения арматуры должна быть больше первой."
     If stress1 <= 0# Or stress2 <= 0# Then Err.Raise vbObjectError + 3122, "CSteelDiagramMaterial", "Напряжения растяжения арматуры должны быть положительными."
 
-    ReDim mStrains(1 To 5)
-    ReDim mStresses(1 To 5)
-    mStrains(1) = -eps2: mStresses(1) = -stress2
-    mStrains(2) = -eps1: mStresses(2) = -stress1
-    mStrains(3) = 0#: mStresses(3) = 0#
-    mStrains(4) = eps1: mStresses(4) = stress1
-    mStrains(5) = eps2: mStresses(5) = stress2
-    mPointCount = 5
-    mInitialized = True
+    points.AddPoint -eps2, -stress2
+    points.AddPoint -eps1, -stress1
+    points.AddPoint 0#, 0#
+    points.AddPoint eps1, stress1
+    points.AddPoint eps2, stress2
+    InitializeFromPointSet points
 End Sub
 
-' Короткий старый алиас для двухточечной растянутой ветви.
+' Короткий старый алиас для тестов, которые создают простой материал вручную.
 Public Sub Initialize(ByVal eps1 As Double, ByVal stress1 As Double, ByVal eps2 As Double)
     InitializeFromTwoTensionPoints eps1, stress1, eps2, stress1
 End Sub
@@ -74,22 +76,22 @@ End Sub
 ' Тестовый конструктор симметричной трехточечной диаграммы арматуры.
 Public Sub InitializeFromThreeTensionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
         ByVal eps2 As Double, ByVal stress2 As Double, ByVal eps3 As Double, ByVal stress3 As Double)
+    Dim points As CMaterialPointSet
+    Set points = New CMaterialPointSet
+
     If eps1 <= 0# Then Err.Raise vbObjectError + 3120, "CSteelDiagramMaterial", "Первая деформация растяжения арматуры должна быть положительной."
     If eps2 <= eps1 Then Err.Raise vbObjectError + 3121, "CSteelDiagramMaterial", "Вторая деформация растяжения арматуры должна быть больше первой."
     If eps3 <= eps2 Then Err.Raise vbObjectError + 3124, "CSteelDiagramMaterial", "Третья деформация растяжения арматуры должна быть больше второй."
     If stress1 <= 0# Or stress2 <= 0# Or stress3 <= 0# Then Err.Raise vbObjectError + 3122, "CSteelDiagramMaterial", "Напряжения растяжения арматуры должны быть положительными."
 
-    ReDim mStrains(1 To 7)
-    ReDim mStresses(1 To 7)
-    mStrains(1) = -eps3: mStresses(1) = -stress3
-    mStrains(2) = -eps2: mStresses(2) = -stress2
-    mStrains(3) = -eps1: mStresses(3) = -stress1
-    mStrains(4) = 0#: mStresses(4) = 0#
-    mStrains(5) = eps1: mStresses(5) = stress1
-    mStrains(6) = eps2: mStresses(6) = stress2
-    mStrains(7) = eps3: mStresses(7) = stress3
-    mPointCount = 7
-    mInitialized = True
+    points.AddPoint -eps3, -stress3
+    points.AddPoint -eps2, -stress2
+    points.AddPoint -eps1, -stress1
+    points.AddPoint 0#, 0#
+    points.AddPoint eps1, stress1
+    points.AddPoint eps2, stress2
+    points.AddPoint eps3, stress3
+    InitializeFromPointSet points
 End Sub
 
 ' Возвращает крайнюю растянутую точку диаграммы как ориентир предельной деформации.
@@ -98,6 +100,34 @@ Public Property Get UltimateTensionStrain() As Double
     UltimateTensionStrain = mStrains(mPointCount)
 End Property
 
+' Возвращает крайнюю сжатую точку диаграммы как ориентир предельной деформации.
+Public Property Get UltimateCompressionStrain() As Double
+    EnsureInitialized
+    UltimateCompressionStrain = mStrains(1)
+End Property
+
+' Количество точек используется тестами построителя диаграмм.
+Public Property Get PointCount() As Long
+    PointCount = mPointCount
+End Property
+
+' Возвращает деформацию узла диаграммы по индексу.
+Public Function PointStrain(ByVal index As Long) As Double
+    EnsureInitialized
+    If index < 1 Or index > mPointCount Then Err.Raise vbObjectError + 3127, "CSteelDiagramMaterial", "Индекс точки диаграммы арматуры вне диапазона."
+    PointStrain = mStrains(index)
+End Function
+
+' Возвращает напряжение узла диаграммы по индексу.
+Public Function PointStress(ByVal index As Long) As Double
+    EnsureInitialized
+    If index < 1 Or index > mPointCount Then Err.Raise vbObjectError + 3128, "CSteelDiagramMaterial", "Индекс точки диаграммы арматуры вне диапазона."
+    PointStress = mStresses(index)
+End Function
+
+' ------------------------------
+' Расчетный контракт материала
+' ------------------------------
 ' Возвращает напряжение стержня по его деформации.
 ' За пределами заданной диаграммы напряжение удерживается на крайнем значении.
 Public Function GetStress(ByVal strain As Double) As Double
@@ -113,7 +143,7 @@ Public Function GetStress(ByVal strain As Double) As Double
 End Function
 
 ' Возвращает касательный модуль участка диаграммы.
-' За крайними точками модуль равен 0, потому что напряжение не изменяется.
+' За крайними точками модуль равен нулю, потому что напряжение не меняется.
 Public Function GetTangentModulus(ByVal strain As Double) As Double
     EnsureInitialized
     If strain <= mStrains(1) Or strain >= mStrains(mPointCount) Then Exit Function
@@ -154,16 +184,12 @@ Private Function SegmentTangent(ByVal strain As Double) As Double
 End Function
 
 ' Сортирует пользовательские точки по возрастанию деформации.
-' Это позволяет вводить таблицу удобно, а расчету всегда работать с правильным
-' порядком интерполяции.
 Private Sub SortPointsByStrain()
     Dim i As Long
     Dim j As Long
     For i = 1 To UBound(mStrains) - 1
         For j = i + 1 To UBound(mStrains)
-            If mStrains(j) < mStrains(i) Then
-                SwapPoints i, j
-            End If
+            If mStrains(j) < mStrains(i) Then SwapPoints i, j
         Next j
     Next i
 End Sub
@@ -179,7 +205,7 @@ Private Sub SwapPoints(ByVal firstIndex As Long, ByVal secondIndex As Long)
     mStresses(secondIndex) = tmp
 End Sub
 
-' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
+' Проверяет, что в диаграмме нет повторяющихся деформаций.
 Private Sub ValidatePointOrder()
     Dim i As Long
     For i = 1 To UBound(mStrains) - 1
@@ -189,8 +215,7 @@ Private Sub ValidatePointOrder()
     Next i
 End Sub
 
-' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
+' Проверяет, что материал уже получил диаграмму.
 Private Sub EnsureInitialized()
-    If Not mInitialized Then Err.Raise vbObjectError + 3123, "CSteelDiagramMaterial", "Материал не инициализирован."
+    If Not mInitialized Then Err.Raise vbObjectError + 3123, "CSteelDiagramMaterial", "Материал арматуры не инициализирован."
 End Sub
-

@@ -553,7 +553,7 @@ Private Function BuildBatchCalculator() As CBatchSectionCalculator
 
     Dim batch As CBatchSectionCalculator
     Set batch = New CBatchSectionCalculator
-    batch.Initialize section, ProvisionalConcrete(), ProvisionalSteel()
+    batch.Initialize section, TestMaterialProvider()
     Set BuildBatchCalculator = batch
 End Function
 
@@ -637,8 +637,22 @@ Private Function ProvisionalConcrete() As CConcreteDiagramMaterial
     Dim concrete As CConcreteDiagramMaterial
     Set concrete = New CConcreteDiagramMaterial
     concrete.Initialize -0.0015, -15.5, -0.0035, -15.5
-    concrete.TensionMode = "Ignore"
     Set ProvisionalConcrete = concrete
+End Function
+
+Private Function TestMaterialProvider() As CMaterialModelProvider
+    Dim concreteParameters As CConcreteMaterialParameters
+    Set concreteParameters = New CConcreteMaterialParameters
+    concreteParameters.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#
+
+    Dim steelParameters As CSteelMaterialParameters
+    Set steelParameters = New CSteelMaterialParameters
+    steelParameters.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#, "Ribbed"
+
+    Dim provider As CMaterialModelProvider
+    Set provider = New CMaterialModelProvider
+    provider.InitializeFromParameters concreteParameters, steelParameters
+    Set TestMaterialProvider = provider
 End Function
 
 Private Function ProvisionalSteel() As CSteelDiagramMaterial

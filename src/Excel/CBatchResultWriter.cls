@@ -279,10 +279,10 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
     data(rowIndex, COL_EPS_S_COMP) = batch.MinSteelStrain(index)
     data(rowIndex, COL_EPS_S_TENS) = batch.MaxSteelStrain(index)
     PutCurrentStateGeometry data, rowIndex, batch, index, units, section
-    data(rowIndex, COL_LIM_C_COMP) = batch.CapacityConcreteCompressionLimit
-    If StrComp(batch.ConcreteTensionMode, "UseDiagram", vbTextCompare) = 0 Then data(rowIndex, COL_LIM_C_TENS) = batch.CapacityConcreteTensionLimit
-    data(rowIndex, COL_LIM_S_COMP) = -Abs(batch.CapacitySteelStrainLimit)
-    data(rowIndex, COL_LIM_S_TENS) = Abs(batch.CapacitySteelStrainLimit)
+    data(rowIndex, COL_LIM_C_COMP) = batch.ConcreteCompressionLimitForCombination(index)
+    If batch.ConcreteTensionLimitEnabledForCombination(index) Then data(rowIndex, COL_LIM_C_TENS) = batch.ConcreteTensionLimitForCombination(index)
+    data(rowIndex, COL_LIM_S_COMP) = batch.SteelCompressionLimitForCombination(index)
+    data(rowIndex, COL_LIM_S_TENS) = batch.SteelTensionLimitForCombination(index)
     data(rowIndex, COL_STRAIN_SF) = StrainSafetyFormula(rowIndex, batch, index)
     data(rowIndex, COL_LIMIT_STATE) = ShortStatus(batch.CapacityLimitState(index))
 
@@ -420,17 +420,17 @@ Private Function StrainSafetyFormula(ByVal rowIndex As Long, ByVal batch As CBat
     Dim limitColumn As Long
     Dim bestSafety As Double
 
-    PickStrainSafetyCandidate batch.MinConcreteStrain(index), batch.CapacityConcreteCompressionLimit, _
+    PickStrainSafetyCandidate batch.MinConcreteStrain(index), batch.ConcreteCompressionLimitForCombination(index), _
         COL_EPS_C_COMP, COL_LIM_C_COMP, bestSafety, actualColumn, limitColumn
 
-    If StrComp(batch.ConcreteTensionMode, "UseDiagram", vbTextCompare) = 0 Then
-        PickStrainSafetyCandidate batch.MaxConcreteStrain(index), batch.CapacityConcreteTensionLimit, _
+    If batch.ConcreteTensionLimitEnabledForCombination(index) Then
+        PickStrainSafetyCandidate batch.MaxConcreteStrain(index), batch.ConcreteTensionLimitForCombination(index), _
             COL_EPS_C_TENS, COL_LIM_C_TENS, bestSafety, actualColumn, limitColumn
     End If
 
-    PickStrainSafetyCandidate batch.MinSteelStrain(index), -Abs(batch.CapacitySteelStrainLimit), _
+    PickStrainSafetyCandidate batch.MinSteelStrain(index), batch.SteelCompressionLimitForCombination(index), _
         COL_EPS_S_COMP, COL_LIM_S_COMP, bestSafety, actualColumn, limitColumn
-    PickStrainSafetyCandidate batch.MaxSteelStrain(index), Abs(batch.CapacitySteelStrainLimit), _
+    PickStrainSafetyCandidate batch.MaxSteelStrain(index), batch.SteelTensionLimitForCombination(index), _
         COL_EPS_S_TENS, COL_LIM_S_TENS, bestSafety, actualColumn, limitColumn
 
     If actualColumn > 0 And limitColumn > 0 Then

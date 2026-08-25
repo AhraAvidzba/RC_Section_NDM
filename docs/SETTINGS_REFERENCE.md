@@ -12,7 +12,8 @@
 2. `rngSignConventionSettings`;
 3. общий диапазон `rngSystemSettings`;
 4. активный геометрический диапазон по `Geometry.Type`;
-5. точки диаграмм `rngConcreteDiagramPoints` и `rngSteelDiagramPoints`.
+5. параметры материалов `rngConcreteMaterialParameters` и `rngSteelMaterialParameters`;
+6. настройки расчетных диаграмм `rngCalculationDiagramSettings`.
 
 При `Geometry.Source = AutoCAD` геометрический диапазон по `Geometry.Type` может оставаться заполненным, но расчетная геометрия берется из AutoCAD `Region`, а не из встроенного генератора.
 
@@ -26,8 +27,9 @@
 | `rngCircleGeometry` | Параметры круглого сечения и автоматической арматуры. |
 | `rngRoundedRectangleGeometry` | Параметры прямоугольного сечения со скруглениями. |
 | `rngLShapeGeometry` | Параметры Г-образного сечения и автоматической арматуры. |
-| `rngConcreteDiagramPoints` | До 10 точек диаграммы бетона: `Point / Strain / Stress, <единица INPUT для Stress>`. |
-| `rngSteelDiagramPoints` | До 10 точек диаграммы арматуры: `Point / Strain / Stress, <единица INPUT для Stress>`. |
+| `rngConcreteMaterialParameters` | Параметры бетона для I/II ГПС: `Rb/Rbt`, `Rb,ser/Rbt,ser`, `Eb/Ebt` и расчетные деформационные точки. |
+| `rngSteelMaterialParameters` | Параметры арматуры для I/II ГПС: `Rsc/Rs`, `Rsc,ser/Rs,ser`, `Esc/Es` и профиль арматуры. |
+| `rngCalculationDiagramSettings` | Выбор расчетной диаграммы и режима растянутого бетона для `Strength`, `Mcrc` и `CrackedNDS`. |
 | `rngLoadCombinations` | До 20 сочетаний нагрузок: `CalculationType = Group1` для расчета по первой группе предельных состояний, `CalculationType = Group2` для расчета трещин по второй группе. |
 | `rngResultSection` | Единый блок результатов `N + Mx + My`. |
 | `rngBatchSummary` | Сводка batch-расчета на `Results!A1:AT31`. |
@@ -71,7 +73,7 @@
 
 Колонка `Ед.` в таблицах входных настроек заполняется формулами Excel и автоматически подтягивает выбранную пользователем единицу `INPUT` из `rngUnitSettings`. Заголовки таблиц результатов и таблиц на листе `Results` записываются writer-ами уже в выбранных единицах `OUTPUT`.
 
-Заголовки таблиц точек диаграмм материалов содержат единицу напряжений из `rngUnitSettings`: например `Stress, MPa`. Значения напряжений из этих таблиц считаются входными значениями и перед расчетом переводятся во внутренние `MPa`.
+Контрольные таблицы координат диаграмм на `Config` строятся формулами Excel только для проверки и визуального контроля. Расчетное ядро читает не эти таблицы, а параметры материалов и настройки расчетных режимов; готовые `CConcreteDiagramMaterial` и `CSteelDiagramMaterial` создает `CMaterialModelProvider`.
 
 ## Геометрия
 
@@ -97,7 +99,7 @@
 
 - импортируются только AutoCAD `Region`;
 - единицы AutoCAD всегда считаются миллиметрами;
-- диаграмма арматуры берется из `rngSteelDiagramPoints`;
+- материальная модель для расчета строится через `CMaterialModelProvider`; AutoCAD importer передает только геометрию и не выбирает диаграмму сам;
 - профиль арматуры для коэффициента `phi2` при расчете трещин берется из `Steel.RebarProfile`;
 - разные материалы арматуры в одном сечении не поддерживаются;
 - при отсутствии AutoCAD, активного чертежа или нужных областей расчет останавливается с ошибкой ввода.
@@ -132,7 +134,7 @@
 |---|---|
 | `Geometry.Source` | `Generated`, `AutoCAD` |
 | `Geometry.Type` | `RoundedRectangle`, `Circle`, `LShape` |
-| `Concrete.TensionMode` | `Ignore`, `UseDiagram` |
+| `Strength.ConcreteTensionMode` в `rngCalculationDiagramSettings` | `Ignore`, `UseDiagram` |
 | `Calculation.Mode` | `DirectState`, `FullCapacity` |
 | `Solver.Method` | `Newton`, `Secant` |
 | `Capacity.Method` | `LoadMultiplier`, `UltimateStrain` |

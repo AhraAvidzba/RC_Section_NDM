@@ -502,25 +502,6 @@ Private Function MaterialStateMaxAbs(ByVal materialType As String, ByVal state A
     If MaterialStateMaxAbs <= 0# Then MaterialStateMaxAbs = mResultMaxAbs
 End Function
 
-' Старый непрерывный градиент для общей шкалы значений.
-' Оставлен как утилита цвета; основная раскраска сейчас идет через
-' MaterialResultColor, чтобы не смешивать физический смысл сжатия/растяжения.
-Private Function GradientColor(ByVal value As Double, ByVal minValue As Double, ByVal maxValue As Double) As Long
-    Dim t As Double
-    t = (value - minValue) / (maxValue - minValue)
-    t = ClampDouble(t, 0#, 1#)
-
-    If t < 0.25 Then
-        GradientColor = BlendColor(RGB(210, 30, 20), RGB(255, 140, 20), t / 0.25)
-    ElseIf t < 0.5 Then
-        GradientColor = BlendColor(RGB(255, 140, 20), RGB(255, 230, 30), (t - 0.25) / 0.25)
-    ElseIf t < 0.75 Then
-        GradientColor = BlendColor(RGB(255, 230, 30), RGB(50, 190, 190), (t - 0.5) / 0.25)
-    Else
-        GradientColor = BlendColor(RGB(50, 190, 190), RGB(30, 80, 220), (t - 0.75) / 0.25)
-    End If
-End Function
-
 ' Линейно смешивает два RGB-цвета.
 Private Function BlendColor(ByVal c1 As Long, ByVal c2 As Long, ByVal t As Double) As Long
     Dim r1 As Long, g1 As Long, b1 As Long
@@ -1169,19 +1150,6 @@ Private Function IsCommonLegendMode() As Boolean
     IsCommonLegendMode = (StrComp(mLegendMode, "Common", vbTextCompare) = 0)
 End Function
 
-' Старый цветовой переход общей физической шкалы.
-' Оставлен как совместимая утилита, но основная легенда сейчас строится
-' через MaterialLegendColor.
-Private Function PhysicalLegendColor(ByVal position As Double) As Long
-    Dim t As Double
-    t = ClampDouble(position, 0#, 1#)
-    If t < 0.5 Then
-        PhysicalLegendColor = BlendColor(RGB(210, 30, 20), RGB(255, 238, 120), t / 0.5)
-    Else
-        PhysicalLegendColor = BlendColor(RGB(210, 245, 250), RGB(30, 80, 220), (t - 0.5) / 0.5)
-    End If
-End Function
-
 ' Формирует подпись min/max легенды; если состояния нет, показывает "нет".
 Private Function LegendValueText(ByVal hasValue As Boolean, ByVal value As Double) As String
     If hasValue Then
@@ -1199,18 +1167,6 @@ Private Sub AddLegendRect(ByVal leftPos As Double, ByVal topPos As Double, ByVal
     marker.Name = SHAPE_PREFIX & "LegendGradient" & CStr(mChart.Shapes.Count)
     marker.Fill.ForeColor.RGB = colorValue
     marker.Line.ForeColor.RGB = colorValue
-End Sub
-
-' Добавляет строку легенды с цветным маркером и текстом.
-' Сейчас почти вся легенда строится градиентными прямоугольниками, но строка
-' оставлена для компактных пояснений.
-Private Sub AddLegendRow(ByVal leftPos As Double, ByVal topPos As Double, ByVal colorValue As Long, ByVal textValue As String)
-    Dim marker As Object
-    Set marker = mChart.Shapes.AddShape(MSO_SHAPE_RECTANGLE, leftPos, topPos + 3, 10, 10)
-    marker.Name = SHAPE_PREFIX & "LegendMarker" & CStr(mChart.Shapes.Count)
-    marker.Fill.ForeColor.RGB = colorValue
-    marker.Line.ForeColor.RGB = colorValue
-    AddChartText leftPos + 14, topPos, 118, 28, textValue, 0#, RGB(50, 50, 50), False
 End Sub
 
 ' Рисует Shape-линию по координатам модели.

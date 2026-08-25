@@ -24,7 +24,7 @@ Public Function RunCapacitySolverTests() As String
     TestMxPositiveAndNegative stats
     TestMyPositiveAndNegative stats
     TestMxySignedCombinations stats
-    TestConcreteTensionModeAffectsSolverAndCapacity stats
+    TestConcreteTensionBehaviorAffectsSolverAndCapacity stats
     TestCircleCapacitySymmetry stats
     TestLambdaLessThanOne stats
     TestLambdaNearOne stats
@@ -120,20 +120,16 @@ Private Sub TestCircleCapacitySymmetry(ByRef stats As TCapacityTestStats)
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
-Private Sub TestConcreteTensionModeAffectsSolverAndCapacity(ByRef stats As TCapacityTestStats)
+Private Sub TestConcreteTensionBehaviorAffectsSolverAndCapacity(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
     PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
 
     Dim ignoreConcrete As CConcreteDiagramMaterial
     Set ignoreConcrete = ProvisionalConcrete()
-    ignoreConcrete.TensionMode = "Ignore"
 
     Dim useConcrete As CConcreteDiagramMaterial
-    Set useConcrete = ProvisionalConcrete()
-    useConcrete.TensionMode = "UseDiagram"
-    useConcrete.TensionElasticModulus = 32500#
-    useConcrete.TensionStressLimit = 1.1
+    Set useConcrete = ProvisionalConcreteWithTension()
 
     Dim solverIgnore As CSectionSolver
     Set solverIgnore = New CSectionSolver
@@ -149,23 +145,19 @@ Private Sub TestConcreteTensionModeAffectsSolverAndCapacity(ByRef stats As TCapa
     AssertTrue stats, "tensionMode.solver.use.converged", solverUse.Converged
     AssertTrue stats, "tensionMode.solver.affectsState", Abs(solverIgnore.KappaX - solverUse.KappaX) > 0.000000001 Or Abs(solverIgnore.KappaY - solverUse.KappaY) > 0.000000001
 
-    AssertTensionModeAffectsSolverMode stats, "tensionMode.strength.mx", mesh, rebars, -50000#, -5000000#, 0#
-    AssertTensionModeAffectsSolverMode stats, "tensionMode.strength.my", mesh, rebars, -50000#, 0#, -5000000#
-    AssertTensionModeAffectsSolverMode stats, "tensionMode.strength.mxy", mesh, rebars, -50000#, -5000000#, -3000000#
+    AssertTensionBehaviorAffectsSolverMode stats, "tensionBehavior.strength.mx", mesh, rebars, -50000#, -5000000#, 0#
+    AssertTensionBehaviorAffectsSolverMode stats, "tensionBehavior.strength.my", mesh, rebars, -50000#, 0#, -5000000#
+    AssertTensionBehaviorAffectsSolverMode stats, "tensionBehavior.strength.mxy", mesh, rebars, -50000#, -5000000#, -3000000#
 End Sub
 
-Private Sub AssertTensionModeAffectsSolverMode(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
+Private Sub AssertTensionBehaviorAffectsSolverMode(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double)
     Dim ignoreConcrete As CConcreteDiagramMaterial
     Set ignoreConcrete = ProvisionalConcrete()
-    ignoreConcrete.TensionMode = "Ignore"
 
     Dim useConcrete As CConcreteDiagramMaterial
-    Set useConcrete = ProvisionalConcrete()
-    useConcrete.TensionMode = "UseDiagram"
-    useConcrete.TensionElasticModulus = 32500#
-    useConcrete.TensionStressLimit = 1.1
+    Set useConcrete = ProvisionalConcreteWithTension()
 
     Dim solverIgnore As CSectionSolver
     Set solverIgnore = New CSectionSolver
@@ -316,10 +308,7 @@ Private Sub TestConcreteTensionLimitState(ByRef stats As TCapacityTestStats)
     PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
 
     Dim concrete As CConcreteDiagramMaterial
-    Set concrete = ProvisionalConcrete()
-    concrete.TensionMode = "UseDiagram"
-    concrete.TensionElasticModulus = 32500#
-    concrete.TensionStressLimit = 1.1
+    Set concrete = ProvisionalConcreteWithTension()
 
     Dim cap As CCapacitySolver
     Set cap = New CCapacitySolver
@@ -327,6 +316,7 @@ Private Sub TestConcreteTensionLimitState(ByRef stats As TCapacityTestStats)
     cap.InitialLambdaStep = 0.1
     cap.ConcreteCompressionLimit = -1#
     cap.ConcreteTensionLimit = 0.00000001
+    cap.ConcreteTensionLimitEnabled = True
     cap.SteelStrainLimit = 1#
     cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), concrete, ProvisionalSteel(), -50000#, -5000000#, 0#
 
@@ -342,7 +332,6 @@ Private Sub TestConcreteTensionLimitIgnored(ByRef stats As TCapacityTestStats)
 
     Dim concrete As CConcreteDiagramMaterial
     Set concrete = ProvisionalConcrete()
-    concrete.TensionMode = "Ignore"
 
     Dim cap As CCapacitySolver
     Set cap = New CCapacitySolver
@@ -350,6 +339,7 @@ Private Sub TestConcreteTensionLimitIgnored(ByRef stats As TCapacityTestStats)
     cap.InitialLambdaStep = 0.1
     cap.ConcreteCompressionLimit = -1#
     cap.ConcreteTensionLimit = 0.00000001
+    cap.ConcreteTensionLimitEnabled = False
     cap.SteelStrainLimit = 0.00000001
     cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), concrete, ProvisionalSteel(), -50000#, -5000000#, 0#
 
@@ -694,13 +684,18 @@ Private Sub TestLoadMultiplierWithWorkbookTfDefaults(ByRef stats As TCapacityTes
     Dim section As CSectionModel
     Set section = registry.BuildGeneratedModel(settings, units)
 
-    Dim concrete As CConcreteDiagramMaterial
-    Set concrete = New CConcreteDiagramMaterial
-    concrete.InitializeFromSettings settings, units
+    Dim materialProvider As CMaterialModelProvider
+    Set materialProvider = New CMaterialModelProvider
+    materialProvider.Initialize settings, units
 
-    Dim steel As CSteelDiagramMaterial
-    Set steel = New CSteelDiagramMaterial
-    steel.InitializeFromSettings settings, units
+    Dim materialSet As CCalculationMaterialSet
+    Set materialSet = materialProvider.StrengthSet
+
+    Dim concrete As Object
+    Set concrete = materialSet.ConcreteMaterial
+
+    Dim steel As Object
+    Set steel = materialSet.SteelMaterial
 
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
@@ -890,6 +885,22 @@ Private Function ProvisionalConcrete() As CConcreteDiagramMaterial
     Set concrete = New CConcreteDiagramMaterial
     concrete.Initialize -0.0015, -15.5, -0.0035, -15.5
     Set ProvisionalConcrete = concrete
+End Function
+
+Private Function ProvisionalConcreteWithTension() As CConcreteDiagramMaterial
+    Dim parameters As CConcreteMaterialParameters
+    Set parameters = TestConcreteParameters()
+
+    Dim builder As CConcreteDiagramBuilder
+    Set builder = New CConcreteDiagramBuilder
+    Set ProvisionalConcreteWithTension = builder.BuildMaterial(parameters, "I", "TwoLine", "UseDiagram")
+End Function
+
+Private Function TestConcreteParameters() As CConcreteMaterialParameters
+    Dim parameters As CConcreteMaterialParameters
+    Set parameters = New CConcreteMaterialParameters
+    parameters.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#
+    Set TestConcreteParameters = parameters
 End Function
 
 Private Function ProvisionalSteel() As CSteelDiagramMaterial

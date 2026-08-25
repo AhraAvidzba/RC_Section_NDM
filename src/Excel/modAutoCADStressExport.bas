@@ -38,29 +38,26 @@ Public Sub ExportSectionStressToAutoCAD()
     units.LoadFromSettings settings
 
     Dim section As CSectionModel
-    Dim stressByID As Object
+    Dim resultByID As Object
+    Dim physicalStateByID As Object
     Dim combinationID As String
     Dim epsilon0 As Double
     Dim kappaX As Double
     Dim kappaY As Double
     Dim loadReferenceX As Double
     Dim loadReferenceY As Double
-    ReadResultsExportState ThisWorkbook, settings, units, section, stressByID, combinationID, _
-        epsilon0, kappaX, kappaY, loadReferenceX, loadReferenceY
+    Dim centroidX As Double
+    Dim centroidY As Double
+    Dim principalAngle As Double
+    ReadResultsExportState ThisWorkbook, settings, units, section, resultByID, physicalStateByID, combinationID, _
+        epsilon0, kappaX, kappaY, loadReferenceX, loadReferenceY, _
+        centroidX, centroidY, principalAngle
 
     Dim exportSettings As TAutoCADExportSettings
     exportSettings = ReadAutoCADExportSettings(settings)
 
-    Dim concrete As CConcreteDiagramMaterial
-    Set concrete = New CConcreteDiagramMaterial
-    concrete.InitializeFromSettings settings, units
-
-    Dim steel As CSteelDiagramMaterial
-    Set steel = New CSteelDiagramMaterial
-    steel.InitializeFromSettings settings, units
-
-    DrawResultsStressExport section, concrete, steel, stressByID, epsilon0, kappaX, kappaY, _
-        loadReferenceX, loadReferenceY, exportSettings
+    DrawResultsStressExport section, resultByID, physicalStateByID, epsilon0, kappaX, kappaY, _
+        loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, exportSettings
     MsgBox "Экспорт в AutoCAD завершен. Волокон бетона: " & CStr(section.ConcreteCount) & _
         "; стержней арматуры: " & CStr(section.RebarCount) & _
         "; сочетание: " & combinationID, vbInformation, "RC Section NDM"
@@ -148,64 +145,23 @@ Private Function DeleteAutoCADEntitiesOnLayers(ByVal doc As Object, ByVal layers
     Next i
 End Function
 
-Public Sub PrepareAutoCADExportState(ByVal workbook As Object, ByRef section As CSectionModel, _
-        ByRef concrete As CConcreteDiagramMaterial, _
-        ByRef steel As CSteelDiagramMaterial, ByRef solver As CSectionSolver, _
-        ByRef loadReferenceX As Double, ByRef loadReferenceY As Double)
-    Dim settings As CSystemSettingsReader
-    Set settings = New CSystemSettingsReader
-    settings.LoadFromWorkbook workbook
-    Dim units As CUnitSystem
-    Set units = New CUnitSystem
-    units.LoadFromSettings settings
-
-    Set section = BuildWorkbookSectionModel(workbook, settings, units)
-
-    Set concrete = New CConcreteDiagramMaterial
-    concrete.InitializeFromSettings settings, units
-
-    Set steel = New CSteelDiagramMaterial
-    steel.InitializeFromSettings settings, units
-
-    Dim nValue As Double
-    Dim userMxValue As Double
-    Dim userMyValue As Double
-    ReadFirstExportLoad workbook, nValue, userMxValue, userMyValue
-    nValue = units.InputForceToInternal(nValue)
-    userMxValue = units.InputMomentMxToInternal(userMxValue)
-    userMyValue = units.InputMomentMyToInternal(userMyValue)
-
-    Dim referenceX As Double
-    Dim referenceY As Double
-    CalculateTransformedSectionCentroid section, concrete, steel, referenceX, referenceY
-    loadReferenceX = referenceX + units.InputLengthToInternal(settings.GetDouble("Load.ReferenceOffsetX", 0#))
-    loadReferenceY = referenceY + units.InputLengthToInternal(settings.GetDouble("Load.ReferenceOffsetY", 0#))
-
-    Dim internalMxValue As Double
-    Dim internalMyValue As Double
-    internalMxValue = userMxValue + nValue * loadReferenceY
-    internalMyValue = userMyValue + nValue * loadReferenceX
-
-    Set solver = New CSectionSolver
-    solver.ApplySettings settings, units
-    solver.Solve section, concrete, steel, nValue, internalMxValue, internalMyValue
-    If Not solver.Converged Then Err.Raise vbObjectError + 4300, "PrepareAutoCADExportState", solver.StopReason
-End Sub
-
 Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
         ByVal units As CUnitSystem, _
-        ByRef section As CSectionModel, ByRef stressByID As Object, ByRef combinationID As String, _
+        ByRef section As CSectionModel, ByRef resultByID As Object, ByRef physicalStateByID As Object, ByRef combinationID As String, _
         ByRef epsilon0 As Double, ByRef kappaX As Double, ByRef kappaY As Double, _
-        ByRef loadReferenceX As Double, ByRef loadReferenceY As Double)
+        ByRef loadReferenceX As Double, ByRef loadReferenceY As Double, _
+        ByRef centroidX As Double, ByRef centroidY As Double, ByRef principalAngle As Double)
     Set section = ReadSectionGeometryFromResults(workbook, "Results")
 
     combinationID = ResolveExportCombinationID(workbook, settings.GetRawString("AutoCAD.Export.CombinationID", "Worst"))
 
-    Set stressByID = CreateObject("Scripting.Dictionary")
-    stressByID.CompareMode = vbTextCompare
-    ReadElementResultsForCombination workbook, settings.GetString("AutoCAD.Export.ResultType", "Stress"), combinationID, stressByID
+    Set resultByID = CreateObject("Scripting.Dictionary")
+    resultByID.CompareMode = vbTextCompare
+    Set physicalStateByID = CreateObject("Scripting.Dictionary")
+    physicalStateByID.CompareMode = vbTextCompare
+    ReadElementResultsForCombination workbook, settings.GetString("AutoCAD.Export.ResultType", "Stress"), combinationID, resultByID, physicalStateByID
     ReadSectionPropertiesForCombination workbook, units, combinationID, epsilon0, kappaX, kappaY, _
-        loadReferenceX, loadReferenceY
+        loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle
 End Sub
 
 Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optional ByVal sourceType As String = "Results") As CSectionModel
@@ -288,7 +244,7 @@ Failed:
 End Function
 
 Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal resultType As String, ByRef combinationID As String, _
-        ByVal stressByID As Object)
+        ByVal resultByID As Object, ByVal physicalStateByID As Object)
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
 
@@ -299,6 +255,7 @@ Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal res
 
     Dim colCombination As Long: colCombination = ResultColumn(data, "LoadCase")
     Dim colID As Long: colID = ResultColumn(data, "ElementID")
+    Dim colState As Long: colState = ResultColumn(data, "PhysicalState")
     Dim colValue As Long
     Select Case LCase$(Trim$(resultType))
         Case "stress"
@@ -318,7 +275,8 @@ Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal res
     For rowIndex = 2 To UBound(data, 1)
         If StrComp(CStr(data(rowIndex, colCombination)), combinationID, vbTextCompare) = 0 Then
             found = True
-            stressByID(CStr(data(rowIndex, colID))) = CDbl(data(rowIndex, colValue))
+            resultByID(CStr(data(rowIndex, colID))) = CDbl(data(rowIndex, colValue))
+            physicalStateByID(CStr(data(rowIndex, colID))) = CStr(data(rowIndex, colState))
         End If
     Next rowIndex
 
@@ -328,7 +286,8 @@ End Sub
 
 Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal units As CUnitSystem, _
         ByVal combinationID As String, ByRef epsilon0 As Double, ByRef kappaX As Double, _
-        ByRef kappaY As Double, ByRef loadReferenceX As Double, ByRef loadReferenceY As Double)
+        ByRef kappaY As Double, ByRef loadReferenceX As Double, ByRef loadReferenceY As Double, _
+        ByRef centroidX As Double, ByRef centroidY As Double, ByRef principalAngle As Double)
     Dim data As Variant
     data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
     If Not HasResultTableRows(data) Then Err.Raise vbObjectError + 4360, "ReadSectionPropertiesForCombination", _
@@ -337,23 +296,33 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
     Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
     Dim colParameter As Long: colParameter = ResultColumn(data, "Parameter")
     Dim colValue As Long: colValue = ResultColumn(data, "Value")
+    Dim colUnit As Long: colUnit = ResultColumn(data, "Unit")
 
     Dim foundState As Boolean
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
-        If StrComp(CStr(data(rowIndex, colLoadCase)), combinationID, vbTextCompare) = 0 Then
+        If StrComp(CStr(data(rowIndex, colLoadCase)), "ALL", vbTextCompare) = 0 Then
+            Select Case LCase$(Trim$(CStr(data(rowIndex, colParameter))))
+                Case "centroidx"
+                    centroidX = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                Case "centroidy"
+                    centroidY = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                Case "principalangle"
+                    principalAngle = CDbl(data(rowIndex, colValue))
+            End Select
+        ElseIf StrComp(CStr(data(rowIndex, colLoadCase)), combinationID, vbTextCompare) = 0 Then
             Select Case LCase$(Trim$(CStr(data(rowIndex, colParameter))))
                 Case "epsilon0"
                     epsilon0 = CDbl(data(rowIndex, colValue))
                     foundState = True
                 Case "kappax"
-                    kappaX = OutputCurvatureToInternal(CDbl(data(rowIndex, colValue)), units)
+                    kappaX = OutputCurvatureToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
                 Case "kappay"
-                    kappaY = OutputCurvatureToInternal(CDbl(data(rowIndex, colValue)), units)
+                    kappaY = OutputCurvatureToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
                 Case "loadreferencex"
-                    loadReferenceX = OutputLengthToInternal(CDbl(data(rowIndex, colValue)), units)
+                    loadReferenceX = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
                 Case "loadreferencey"
-                    loadReferenceY = OutputLengthToInternal(CDbl(data(rowIndex, colValue)), units)
+                    loadReferenceY = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
             End Select
         End If
     Next rowIndex
@@ -388,10 +357,6 @@ End Function
 
 Private Function OutputFourthPowerLengthToInternal(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputFourthPowerLengthToInternal = value Else OutputFourthPowerLengthToInternal = units.OutputFourthPowerLengthToInternal(value)
-End Function
-
-Private Function OutputCurvatureToInternal(ByVal value As Double, ByVal units As CUnitSystem) As Double
-    If units Is Nothing Then OutputCurvatureToInternal = value Else OutputCurvatureToInternal = units.OutputCurvatureToInternal(value)
 End Function
 
 Private Function ResolveExportCombinationID(ByVal workbook As Object, ByVal settingValue As String) As String
@@ -533,10 +498,20 @@ Private Function AreaFactorToMm2ByUnit(ByVal unitText As String) As Double
     End Select
 End Function
 
+' Переводит кривизну из единицы, сохраненной в Results snapshot, во внутренние 1/мм.
+Private Function OutputCurvatureToInternalByUnit(ByVal value As Double, ByVal unitText As String) As Double
+    Select Case LCase$(Trim$(unitText))
+        Case "1/mm": OutputCurvatureToInternalByUnit = value
+        Case "1/m": OutputCurvatureToInternalByUnit = value / 1000#
+        Case Else: Err.Raise vbObjectError + 4364, "OutputCurvatureToInternalByUnit", "В Results неизвестная единица кривизны: " & unitText
+    End Select
+End Function
+
 Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
-        ByVal concrete As Object, ByVal steel As Object, ByVal stressByID As Object, _
+        ByVal resultByID As Object, ByVal physicalStateByID As Object, _
         ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
+        ByVal centroidX As Double, ByVal centroidY As Double, ByVal principalAngle As Double, _
         ByRef exportSettings As TAutoCADExportSettings)
     Dim acad As Object
     Set acad = ConnectToRunningAutoCAD()
@@ -558,7 +533,8 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
     EnsureAcadLayer doc, "RC_NDM_NeutralLine", exportSettings.NeutralColor
 
     Dim i As Long
-    Dim stress As Double
+    Dim resultValue As Double
+    Dim physicalState As String
     Dim textHeight As Double
 
     For i = 1 To section.ConcreteCount
@@ -566,34 +542,33 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
         Dim concreteHeight As Double
         concreteWidth = ConcreteDrawWidth(section, i)
         concreteHeight = ConcreteDrawHeight(section, i)
-        stress = ResultStress(stressByID, section.ConcreteID(i))
+        resultValue = ResultValue(resultByID, section.ConcreteID(i))
+        physicalState = ResultPhysicalState(physicalStateByID, section.ConcreteID(i))
         textHeight = 0.22 * MinDouble(concreteWidth, concreteHeight)
         If textHeight <= 0# Then textHeight = 1#
         AddAcadRectangleRegion ms, section.ConcreteX(i), section.ConcreteY(i), concreteWidth, concreteHeight, _
-            exportSettings.ConcreteLayer, StressColor(stress, exportSettings.ConcreteTensionColor, _
-            exportSettings.ConcreteCompressionColor, exportSettings.NeutralColor)
-        AddAcadText ms, StressLabelText(section.ConcreteID(i), stress, exportSettings.IncludeElementNames), _
+            exportSettings.ConcreteLayer, ResultColorByPhysicalState("Concrete", physicalState, exportSettings)
+        AddAcadText ms, StressLabelText(section.ConcreteID(i), resultValue, exportSettings.IncludeElementNames), _
             section.ConcreteX(i) - 0.45 * concreteWidth, _
             section.ConcreteY(i) - 0.1 * concreteHeight, textHeight, _
-            StressAnnotationLayer(stress, exportSettings.ConcreteTensionLayer, exportSettings.ConcreteCompressionLayer), _
-            StressColor(stress, exportSettings.ConcreteTensionColor, _
-            exportSettings.ConcreteCompressionColor, exportSettings.NeutralColor)
+            ResultAnnotationLayerByPhysicalState("Concrete", physicalState, exportSettings), _
+            ResultColorByPhysicalState("Concrete", physicalState, exportSettings)
     Next i
 
     For i = 1 To section.RebarCount
-        stress = ResultStress(stressByID, section.RebarID(i))
+        resultValue = ResultValue(resultByID, section.RebarID(i))
+        physicalState = ResultPhysicalState(physicalStateByID, section.RebarID(i))
         AddAcadCircleRegion ms, section.RebarX(i), section.RebarY(i), section.RebarDiameter(i) / 2#, _
-            exportSettings.RebarLayer, StressColor(stress, exportSettings.RebarTensionColor, _
-            exportSettings.RebarCompressionColor, exportSettings.NeutralColor)
-        AddAcadText ms, StressLabelText(section.RebarID(i), stress, exportSettings.IncludeElementNames), _
+            exportSettings.RebarLayer, ResultColorByPhysicalState("Rebar", physicalState, exportSettings)
+        AddAcadText ms, StressLabelText(section.RebarID(i), resultValue, exportSettings.IncludeElementNames), _
             section.RebarX(i) + section.RebarDiameter(i) / 2#, section.RebarY(i) + section.RebarDiameter(i) / 2#, _
             MaxDouble(2.5, section.RebarDiameter(i) * 0.18), _
-            StressAnnotationLayer(stress, exportSettings.RebarTensionLayer, exportSettings.RebarCompressionLayer), _
-            StressColor(stress, exportSettings.RebarTensionColor, _
-            exportSettings.RebarCompressionColor, exportSettings.NeutralColor)
+            ResultAnnotationLayerByPhysicalState("Rebar", physicalState, exportSettings), _
+            ResultColorByPhysicalState("Rebar", physicalState, exportSettings)
     Next i
 
-    DrawCentroidAxesAndLoadPoint ms, section, concrete, steel, loadReferenceX, loadReferenceY, _
+    DrawCentroidAxesAndLoadPoint ms, section, centroidX, centroidY, principalAngle, _
+        loadReferenceX, loadReferenceY, _
         exportSettings.PrincipalAxesEnabled, exportSettings.LoadPointEnabled
     If exportSettings.NeutralLineEnabled Then
         DrawNeutralLineByState ms, section, epsilon0, kappaX, kappaY, exportSettings.NeutralColor
@@ -602,81 +577,24 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
     doc.Regen 1
 End Sub
 
-Private Function ResultStress(ByVal stressByID As Object, ByVal elementID As String) As Double
-    If stressByID.Exists(elementID) Then
-        ResultStress = CDbl(stressByID.Item(elementID))
+Private Function ResultValue(ByVal resultByID As Object, ByVal elementID As String) As Double
+    If resultByID.Exists(elementID) Then
+        ResultValue = CDbl(resultByID.Item(elementID))
     Else
-        Err.Raise vbObjectError + 4356, "ResultStress", "В Results нет напряжения для элемента: " & elementID
+        Err.Raise vbObjectError + 4356, "ResultValue", "В Results нет выбранного результата для элемента: " & elementID
     End If
 End Function
 
-Private Sub DrawStressExport(ByVal section As CSectionModel, _
-        ByVal concrete As Object, ByVal steel As Object, ByVal solver As CSectionSolver, _
-        ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, ByRef exportSettings As TAutoCADExportSettings)
-    Dim acad As Object
-    Set acad = ConnectToRunningAutoCAD()
-
-    Dim doc As Object
-    Set doc = ActiveAutoCADDocument(acad)
-
-    Dim ms As Object
-    Set ms = doc.ModelSpace
-
-    EnsureAcadLayer doc, exportSettings.ConcreteLayer, 8
-    EnsureAcadLayer doc, exportSettings.RebarLayer, 1
-    EnsureAcadLayer doc, exportSettings.ConcreteTensionLayer, exportSettings.ConcreteTensionColor
-    EnsureAcadLayer doc, exportSettings.ConcreteCompressionLayer, exportSettings.ConcreteCompressionColor
-    EnsureAcadLayer doc, exportSettings.RebarTensionLayer, exportSettings.RebarTensionColor
-    EnsureAcadLayer doc, exportSettings.RebarCompressionLayer, exportSettings.RebarCompressionColor
-    EnsureAcadLayer doc, "RC_NDM_Axes", 3
-    EnsureAcadLayer doc, "RC_NDM_LoadPoint", 2
-    EnsureAcadLayer doc, "RC_NDM_NeutralLine", exportSettings.NeutralColor
-
-    Dim i As Long
-    Dim strain As Double
-    Dim stress As Double
-    Dim textHeight As Double
-
-    For i = 1 To section.ConcreteCount
-        Dim concreteWidth As Double
-        Dim concreteHeight As Double
-        concreteWidth = ConcreteDrawWidth(section, i)
-        concreteHeight = ConcreteDrawHeight(section, i)
-        strain = solver.Epsilon0 + solver.KappaX * section.ConcreteY(i) + solver.KappaY * section.ConcreteX(i)
-        stress = concrete.GetStress(strain)
-        textHeight = 0.22 * MinDouble(concreteWidth, concreteHeight)
-        If textHeight <= 0# Then textHeight = 1#
-        AddAcadRectangleRegion ms, section.ConcreteX(i), section.ConcreteY(i), concreteWidth, concreteHeight, _
-            exportSettings.ConcreteLayer, StressColor(stress, exportSettings.ConcreteTensionColor, _
-            exportSettings.ConcreteCompressionColor, exportSettings.NeutralColor)
-        AddAcadText ms, StressLabelText(section.ConcreteID(i), stress, exportSettings.IncludeElementNames), _
-            section.ConcreteX(i) - 0.45 * concreteWidth, _
-            section.ConcreteY(i) - 0.1 * concreteHeight, textHeight, _
-            StressAnnotationLayer(stress, exportSettings.ConcreteTensionLayer, exportSettings.ConcreteCompressionLayer), _
-            StressColor(stress, exportSettings.ConcreteTensionColor, _
-            exportSettings.ConcreteCompressionColor, exportSettings.NeutralColor)
-    Next i
-
-    For i = 1 To section.RebarCount
-        strain = solver.Epsilon0 + solver.KappaX * section.RebarY(i) + solver.KappaY * section.RebarX(i)
-        stress = steel.GetStress(strain)
-        AddAcadCircleRegion ms, section.RebarX(i), section.RebarY(i), section.RebarDiameter(i) / 2#, _
-            exportSettings.RebarLayer, StressColor(stress, exportSettings.RebarTensionColor, _
-            exportSettings.RebarCompressionColor, exportSettings.NeutralColor)
-        AddAcadText ms, StressLabelText(section.RebarID(i), stress, exportSettings.IncludeElementNames), _
-            section.RebarX(i) + section.RebarDiameter(i) / 2#, section.RebarY(i) + section.RebarDiameter(i) / 2#, _
-            MaxDouble(2.5, section.RebarDiameter(i) * 0.18), _
-            StressAnnotationLayer(stress, exportSettings.RebarTensionLayer, exportSettings.RebarCompressionLayer), _
-            StressColor(stress, exportSettings.RebarTensionColor, _
-            exportSettings.RebarCompressionColor, exportSettings.NeutralColor)
-    Next i
-
-    DrawCentroidAxesAndLoadPoint ms, section, concrete, steel, loadReferenceX, loadReferenceY, _
-        exportSettings.PrincipalAxesEnabled, exportSettings.LoadPointEnabled
-    If exportSettings.NeutralLineEnabled Then DrawNeutralLine ms, section, solver, exportSettings.NeutralColor
-
-    doc.Regen 1
-End Sub
+' Возвращает физическое состояние элемента из snapshot Results.
+' Цвет и слой AutoCAD выбираются по этому полю, а не по знаку Stress/Strain,
+' потому что знак числа уже мог быть преобразован в пользовательскую convention.
+Private Function ResultPhysicalState(ByVal physicalStateByID As Object, ByVal elementID As String) As String
+    If physicalStateByID.Exists(elementID) Then
+        ResultPhysicalState = CStr(physicalStateByID.Item(elementID))
+    Else
+        Err.Raise vbObjectError + 4356, "ResultPhysicalState", "В Results нет PhysicalState для элемента: " & elementID
+    End If
+End Function
 
 Private Function StressLabelText(ByVal elementID As String, ByVal stress As Double, _
         ByVal includeElementName As Boolean) As String
@@ -690,7 +608,7 @@ Private Function StressLabelText(ByVal elementID As String, ByVal stress As Doub
 End Function
 
 Private Sub DrawCentroidAxesAndLoadPoint(ByVal ms As Object, ByVal section As CSectionModel, _
-        ByVal concrete As Object, ByVal steel As Object, _
+        ByVal centroidX As Double, ByVal centroidY As Double, ByVal principalAngle As Double, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
         ByVal principalAxesEnabled As Boolean, ByVal loadPointEnabled As Boolean)
     If Not principalAxesEnabled And Not loadPointEnabled Then Exit Sub
@@ -705,15 +623,8 @@ Private Sub DrawCentroidAxesAndLoadPoint(ByVal ms As Object, ByVal section As CS
     axisLength = 0.65 * MaxDouble(maxX - minX, maxY - minY)
     If axisLength <= 0# Then axisLength = 100#
 
-    Dim centroidX As Double
-    Dim centroidY As Double
     Dim a As Double
-    Dim props As CSectionPropertiesCalculator
-    Set props = New CSectionPropertiesCalculator
-    props.CalculateTransformed section, concrete, steel
-    centroidX = props.CentroidX
-    centroidY = props.CentroidY
-    a = props.PrincipalAngleRad
+    a = principalAngle
 
     If principalAxesEnabled Then
         AddAcadLine ms, centroidX - axisLength * Cos(a), centroidY - axisLength * Sin(a), _
@@ -756,10 +667,10 @@ Private Function ReadAutoCADExportSettings(ByVal settings As CSystemSettingsRead
     With ReadAutoCADExportSettings
         .ConcreteLayer = settings.GetString("AutoCAD.Layer.Concrete", "Concrete")
         .RebarLayer = settings.GetString("AutoCAD.Layer.Rebar", "Reinf")
-        .ConcreteTensionLayer = settings.GetString("AutoCAD.Layer.ConcreteTension", "Anno_Concrete_Positive")
-        .ConcreteCompressionLayer = settings.GetString("AutoCAD.Layer.ConcreteCompression", "Anno_Concrete_Negative")
-        .RebarTensionLayer = settings.GetString("AutoCAD.Layer.RebarTension", "Anno_Rebar_Positive")
-        .RebarCompressionLayer = settings.GetString("AutoCAD.Layer.RebarCompression", "Anno_Rebar_Negative")
+        .ConcreteTensionLayer = settings.GetString("AutoCAD.Layer.ConcreteTension", "Anno_Concrete_Tension")
+        .ConcreteCompressionLayer = settings.GetString("AutoCAD.Layer.ConcreteCompression", "Anno_Concrete_Compression")
+        .RebarTensionLayer = settings.GetString("AutoCAD.Layer.RebarTension", "Anno_Rebar_Tension")
+        .RebarCompressionLayer = settings.GetString("AutoCAD.Layer.RebarCompression", "Anno_Rebar_Compression")
         .ConcreteTensionColor = settings.GetLong("AutoCAD.Color.ConcreteTension", 9)
         .ConcreteCompressionColor = settings.GetLong("AutoCAD.Color.ConcreteCompression", 5)
         .RebarTensionColor = settings.GetLong("AutoCAD.Color.RebarTension", 1)
@@ -817,64 +728,6 @@ Private Sub DrawLoadPointMarker(ByVal ms As Object, ByVal x As Double, ByVal y A
     AddAcadLine ms, x - size, y, x + size, y, "RC_NDM_LoadPoint", 2
     AddAcadLine ms, x, y - size, x, y + size, "RC_NDM_LoadPoint", 2
     AddAcadCircle ms, x, y, size * 0.65, "RC_NDM_LoadPoint", 2
-End Sub
-
-Private Sub DrawNeutralLine(ByVal ms As Object, ByVal section As CSectionModel, _
-        ByVal solver As CSectionSolver, ByVal colorIndex As Long)
-    If Abs(solver.KappaX) + Abs(solver.KappaY) <= 0.000000000000001 Then Exit Sub
-
-    Dim minX As Double
-    Dim maxX As Double
-    Dim minY As Double
-    Dim maxY As Double
-    GetSectionBounds section, minX, maxX, minY, maxY
-
-    Dim margin As Double
-    margin = 0.1 * MaxDouble(maxX - minX, maxY - minY)
-    minX = minX - margin
-    maxX = maxX + margin
-    minY = minY - margin
-    maxY = maxY + margin
-    ExpandNeutralBoundsByState solver.Epsilon0, solver.KappaX, solver.KappaY, minX, maxX, minY, maxY
-
-    Dim pointX() As Double
-    Dim pointY() As Double
-    ReDim pointX(1 To 4)
-    ReDim pointY(1 To 4)
-    Dim pointCount As Long
-
-    AppendNeutralIntersection pointX, pointY, pointCount, minX, _
-        NeutralYAtX(solver, minX), minX, maxX, minY, maxY
-    AppendNeutralIntersection pointX, pointY, pointCount, maxX, _
-        NeutralYAtX(solver, maxX), minX, maxX, minY, maxY
-    AppendNeutralIntersection pointX, pointY, pointCount, _
-        NeutralXAtY(solver, minY), minY, minX, maxX, minY, maxY
-    AppendNeutralIntersection pointX, pointY, pointCount, _
-        NeutralXAtY(solver, maxY), maxY, minX, maxX, minY, maxY
-
-    If pointCount < 2 Then Exit Sub
-
-    Dim i As Long
-    Dim j As Long
-    Dim bestI As Long
-    Dim bestJ As Long
-    Dim bestDistance2 As Double
-    For i = 1 To pointCount - 1
-        For j = i + 1 To pointCount
-            Dim distance2 As Double
-            distance2 = (pointX(i) - pointX(j)) ^ 2 + (pointY(i) - pointY(j)) ^ 2
-            If distance2 > bestDistance2 Then
-                bestDistance2 = distance2
-                bestI = i
-                bestJ = j
-            End If
-        Next j
-    Next i
-
-    If bestDistance2 > 0# Then
-        AddAcadLine ms, pointX(bestI), pointY(bestI), pointX(bestJ), pointY(bestJ), _
-            "RC_NDM_NeutralLine", colorIndex
-    End If
 End Sub
 
 Private Sub DrawNeutralLineByState(ByVal ms As Object, ByVal section As CSectionModel, _
@@ -968,22 +821,6 @@ Private Sub ExpandNeutralBoundsByState(ByVal epsilon0 As Double, ByVal kappaX As
     minY = centerY - expandedHalfSize
     maxY = centerY + expandedHalfSize
 End Sub
-
-Private Function NeutralYAtX(ByVal solver As CSectionSolver, ByVal x As Double) As Double
-    If Abs(solver.KappaX) <= 0.000000000000001 Then
-        NeutralYAtX = 1E+99
-    Else
-        NeutralYAtX = -(solver.Epsilon0 + solver.KappaY * x) / solver.KappaX
-    End If
-End Function
-
-Private Function NeutralXAtY(ByVal solver As CSectionSolver, ByVal y As Double) As Double
-    If Abs(solver.KappaY) <= 0.000000000000001 Then
-        NeutralXAtY = 1E+99
-    Else
-        NeutralXAtY = -(solver.Epsilon0 + solver.KappaX * y) / solver.KappaY
-    End If
-End Function
 
 Private Function NeutralYAtXState(ByVal epsilon0 As Double, ByVal kappaX As Double, _
         ByVal kappaY As Double, ByVal x As Double) As Double
@@ -1101,23 +938,45 @@ Private Sub AddAcadText(ByVal ms As Object, ByVal value As String, ByVal x As Do
     entity.Color = colorIndex
 End Sub
 
-Private Function StressColor(ByVal stress As Double, ByVal tensionColor As Long, _
-        ByVal compressionColor As Long, ByVal neutralColor As Long) As Long
-    If stress > 0.000000001 Then
-        StressColor = tensionColor
-    ElseIf stress < -0.000000001 Then
-        StressColor = compressionColor
+' Выбирает цвет AutoCAD по физическому состоянию, сохраненному в Results.
+' Compression/Tension получают материал-зависимые цвета, а NearZero и
+' InactiveTensionConcrete выводятся нейтральным серым.
+Private Function ResultColorByPhysicalState(ByVal materialType As String, ByVal physicalState As String, _
+        ByRef exportSettings As TAutoCADExportSettings) As Long
+    If StrComp(physicalState, "Compression", vbTextCompare) = 0 Then
+        If StrComp(materialType, "Rebar", vbTextCompare) = 0 Then
+            ResultColorByPhysicalState = exportSettings.RebarCompressionColor
+        Else
+            ResultColorByPhysicalState = exportSettings.ConcreteCompressionColor
+        End If
+    ElseIf StrComp(physicalState, "Tension", vbTextCompare) = 0 Then
+        If StrComp(materialType, "Rebar", vbTextCompare) = 0 Then
+            ResultColorByPhysicalState = exportSettings.RebarTensionColor
+        Else
+            ResultColorByPhysicalState = exportSettings.ConcreteTensionColor
+        End If
     Else
-        StressColor = neutralColor
+        ResultColorByPhysicalState = exportSettings.NeutralColor
     End If
 End Function
 
-Private Function StressAnnotationLayer(ByVal stress As Double, ByVal tensionLayer As String, _
-        ByVal compressionLayer As String) As String
-    If stress > 0.000000001 Then
-        StressAnnotationLayer = tensionLayer
+' Помещает подписи в tension/compression-слои по PhysicalState.
+' Нейтральные и выключенные растянутые бетонные элементы уходят в
+' compression-слой материала, как раньше уходили нулевые значения.
+Private Function ResultAnnotationLayerByPhysicalState(ByVal materialType As String, ByVal physicalState As String, _
+        ByRef exportSettings As TAutoCADExportSettings) As String
+    If StrComp(materialType, "Rebar", vbTextCompare) = 0 Then
+        If StrComp(physicalState, "Tension", vbTextCompare) = 0 Then
+            ResultAnnotationLayerByPhysicalState = exportSettings.RebarTensionLayer
+        Else
+            ResultAnnotationLayerByPhysicalState = exportSettings.RebarCompressionLayer
+        End If
     Else
-        StressAnnotationLayer = compressionLayer
+        If StrComp(physicalState, "Tension", vbTextCompare) = 0 Then
+            ResultAnnotationLayerByPhysicalState = exportSettings.ConcreteTensionLayer
+        Else
+            ResultAnnotationLayerByPhysicalState = exportSettings.ConcreteCompressionLayer
+        End If
     End If
 End Function
 

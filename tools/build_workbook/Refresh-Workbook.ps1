@@ -19,11 +19,11 @@ function Add-VbaSourceFile {
         return
     }
 
-    $source = [System.IO.File]::ReadAllText($Path, [System.Text.Encoding]::Default)
+    $source = [System.IO.File]::ReadAllText($Path, [System.Text.Encoding]::UTF8)
     $lines = $source -split "`r?`n"
     $componentName = $null
     foreach ($line in $lines) {
-        if ($line -match '^Attribute\s+VB_Name\s*=\s*"([^"]+)"') {
+        if ($line -match '^\uFEFF?Attribute\s+VB_Name\s*=\s*"([^"]+)"') {
             $componentName = $Matches[1]
             break
         }
@@ -43,22 +43,22 @@ function Add-VbaSourceFile {
     $bodyLines = New-Object System.Collections.Generic.List[string]
     $insideVbaHeaderBlock = $false
     foreach ($line in $lines) {
-        if ($line -match '^VERSION\s+') { continue }
-        if ($line -match '^BEGIN\s*$') {
+        if ($line -match '^\uFEFF?VERSION\s+') { continue }
+        if ($line -match '^\uFEFF?BEGIN\s*$') {
             $insideVbaHeaderBlock = $true
             continue
         }
         if ($insideVbaHeaderBlock) {
-            if ($line -match '^END\s*$') {
+            if ($line -match '^\uFEFF?END\s*$') {
                 $insideVbaHeaderBlock = $false
             }
             continue
         }
-        if ($line -match '^Attribute\s+VB_') { continue }
+        if ($line -match '^\uFEFF?Attribute\s+VB_') { continue }
         $bodyLines.Add($line)
     }
 
-    $body = ($bodyLines -join "").Trim()
+    $body = ($bodyLines -join "`r`n").Trim()
     if ($body.Length -gt 0) {
         $component.CodeModule.AddFromString($body)
     }
@@ -180,9 +180,6 @@ try {
     Set-SystemSetting $workbook "Capacity.MaxRetries" "4" "4" "шт" "Число повторов после численной несходимости пробы" "Проектная настройка этапа 5"
     Set-SystemSetting $workbook "Capacity.BaseLoadSteps" "8" "8" "шт" "Базовое число внутренних ступеней нагрузки в CSectionSolver" "Проектная настройка этапа 5"
     Set-SystemSetting $workbook "Capacity.SolverMaxIterations" "60" "60" "шт" "Максимум итераций Newton на ступень при поиске несущей способности" "Проектная настройка этапа 5"
-    Set-SystemSetting $workbook "Capacity.ConcreteCompressionLimit" "-0.0035" "-0.0035" "" "Предельная деформация бетона для фиксации ConcreteStrainLimit" "PROVISIONAL_FOR_SOLVER_TESTING"
-    Set-SystemSetting $workbook "Capacity.SteelStrainLimit" "0.025" "0.025" "" "Предельная деформация обычной ненапрягаемой арматуры для SteelStrainLimit" "PROVISIONAL_FOR_SOLVER_TESTING"
-    Set-SystemSetting $workbook "Concrete.TensionMode" "Ignore" "Ignore" "Ignore/UseDiagram" "Concrete tension behavior for strength calculations; crack formation check uses SLS tensile branch separately" "Stage 7 project setting; normative applicability pending"
     Set-SystemSetting $workbook "Steel.RebarProfile" "Ribbed" "Ribbed" "Ribbed/Smooth" "Rebar surface profile for phi2 in normal crack width calculation" "Stage 7 project setting"
     Set-SystemSetting $workbook "SLS.Crack.Enabled" "Yes" "Yes" "Yes/No" "Calculate long-term normal crack width for Group2 combinations" "Stage 7 project setting"
     Set-SystemSetting $workbook "SLS.Crack.Allowable" "0.3" "0.3" "мм" "User-defined allowable crack width a_crc,ult" "Stage 7 project setting"

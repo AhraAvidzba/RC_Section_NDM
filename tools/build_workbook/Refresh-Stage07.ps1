@@ -133,7 +133,6 @@ try {
         Import-VbaSourceFile $workbook (Join-Path $root $relative)
     }
 
-    Set-SystemSetting $workbook "Concrete.TensionMode" "Ignore" "Ignore" "Ignore/UseDiagram" "Concrete tension behavior for strength calculations; crack formation check uses SLS tensile branch separately" "Stage 7 project setting; normative applicability pending"
     Set-SystemSetting $workbook "Steel.RebarProfile" "Ribbed" "Ribbed" "Ribbed/Smooth" "Rebar surface profile for phi2 in normal crack width calculation" "Stage 7 project setting"
     Set-SystemSetting $workbook "SLS.Crack.Enabled" "Yes" "Yes" "Yes/No" "Calculate long-term normal crack width for Group2 combinations" "Stage 7 project setting"
     Set-SystemSetting $workbook "SLS.Crack.Allowable" "0.3" "0.3" "mm" "User-defined allowable crack width a_crc,ult" "Stage 7 project setting"

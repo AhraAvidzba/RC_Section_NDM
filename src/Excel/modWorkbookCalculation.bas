@@ -169,8 +169,6 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddStep "Лист Config прочитан."
     report.AddValue "Загружено настроек", CStr(settings.KeyCount)
     report.AddValue "Дубликатов настроек", CStr(settings.DuplicateCount)
-    report.AddValue "Точек диаграммы бетона", CStr(settings.ConcreteDiagramPointCount)
-    report.AddValue "Точек диаграммы арматуры", CStr(settings.SteelDiagramPointCount)
     report.AddValue "Источник геометрии", settings.GetRawString("Geometry.Source", "Generated")
     report.AddValue "Тип геометрии", settings.GetRawString("Geometry.Type", "-")
     report.AddValue "Режим расчета", settings.GetRawString("Calculation.Mode", "-")
@@ -212,23 +210,16 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     ClearSectionResultsForWorkbook workbook
     report.AddStep "Очищены rngResultSection, rngBatchSummary и таблицы расчетного снимка Results."
 
-    Dim concrete As CConcreteDiagramMaterial
-    Set concrete = New CConcreteDiagramMaterial
-    report.AddStep "Начато создание материала бетона."
-    concrete.InitializeFromSettings settings, units
-    report.AddStep "Материал бетона создан по точкам диаграммы Config."
-
-    Dim steel As CSteelDiagramMaterial
-    Set steel = New CSteelDiagramMaterial
-    report.AddStep "Начато создание материала арматуры."
-    steel.InitializeFromSettings settings, units
-    report.AddStep "Материал арматуры создан по точкам диаграммы Config."
-
+    Dim materialProvider As CMaterialModelProvider
+    Set materialProvider = New CMaterialModelProvider
+    report.AddStep "Начато построение material provider."
+    materialProvider.Initialize settings, units
+    report.AddStep "Построены материалные модели Strength, Mcrc и CrackedNDS по параметрам Config."
 
     Dim batch As CBatchSectionCalculator
     Set batch = New CBatchSectionCalculator
     report.AddStep "Создан CBatchSectionCalculator."
-    batch.Initialize section, concrete, steel
+    batch.Initialize section, materialProvider
     report.AddStep "Batch инициализирован моделью сечения и материалами."
     batch.ApplySettings settings, units
     report.AddStep "Настройки solver/capacity/crack применены к batch."
@@ -245,7 +236,8 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
 
     report.AddSection "Точка приложения нагрузки"
     report.AddStep "Расчет приведенного центра сечения для пользовательской точки нагрузки."
-    ApplyLoadReferenceFromSettings section, concrete, steel, settings, units, batch
+    ApplyLoadReferenceFromSettings section, materialProvider.StrengthSet.ConcreteMaterial, _
+        materialProvider.StrengthSet.SteelMaterial, settings, units, batch
     report.AddValue "Точка приложения нагрузки X", FormatReportNumber(batch.LoadReferenceX) & " мм"
     report.AddValue "Точка приложения нагрузки Y", FormatReportNumber(batch.LoadReferenceY) & " мм"
 
@@ -263,11 +255,11 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     Dim ndmWriter As CNDMResultsWriter
     Set ndmWriter = New CNDMResultsWriter
     report.AddStep "Начата запись расчетного snapshot NDM."
-    ndmWriter.WriteResults workbook, section, concrete, steel, batch, units
+    ndmWriter.WriteResults workbook, section, materialProvider, batch, units
     report.AddStep "Расчетный снимок NDM записан на лист Results."
 
     report.AddStep "Начата запись итогового блока определяющего сочетания на лист Расчет."
-    WriteGoverningCombinationResults workbook, section, concrete, steel, settings, units, batch
+    WriteGoverningCombinationResults workbook, section, materialProvider, settings, units, batch
     report.AddStep "Итоговый блок определяющего сочетания записан на лист Расчет."
 
     If settings.GetBoolean("Plot.AutoUpdateAfterCalculation", True) And batch.StateAvailableCount > 0 Then
@@ -476,7 +468,7 @@ Public Function ReadWorkbookRebars(ByVal workbook As Object, ByVal geometry As I
 End Function
 
 Private Sub WriteGoverningCombinationResults(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal concrete As Object, ByVal steel As Object, _
+        ByVal materialProvider As CMaterialModelProvider, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByVal batch As CBatchSectionCalculator)
     If batch Is Nothing Then Err.Raise vbObjectError + 4123, "WriteGoverningCombinationResults", "Результаты пакетного расчета отсутствуют."
     If batch.GoverningCombinationIndex <= 0 Then Exit Sub
@@ -485,18 +477,27 @@ Private Sub WriteGoverningCombinationResults(ByVal workbook As Object, ByVal sec
     index = batch.GoverningCombinationIndex
     If Not batch.StateAvailable(index) Then Exit Sub
 
-    WriteCapacityAndCrackResults workbook, section, concrete, steel, settings, _
-        units, batch.N(index), batch.UserMx(index), batch.UserMy(index), batch.LoadReferenceX, batch.LoadReferenceY
+    Dim currentSet As CCalculationMaterialSet
+    Set currentSet = MaterialSetForCalculationType(materialProvider, batch.CalculationType(index))
+
+    WriteCapacityAndCrackResults workbook, section, materialProvider, currentSet, settings, _
+        units, batch.N(index), batch.UserMx(index), batch.UserMy(index), _
+        batch.LoadReferenceX, batch.LoadReferenceY
 End Sub
 
 Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal concrete As Object, ByVal steel As Object, ByVal settings As CSystemSettingsReader, _
-        ByVal units As CUnitSystem, _
+        ByVal materialProvider As CMaterialModelProvider, ByVal currentSet As CCalculationMaterialSet, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
         ByVal nValue As Double, ByVal userMxValue As Double, ByVal userMyValue As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double)
 
     Dim writer As CCapacityResultWriter
     Set writer = New CCapacityResultWriter
+
+    Dim concrete As Object
+    Dim steel As Object
+    Set concrete = currentSet.ConcreteMaterial
+    Set steel = currentSet.SteelMaterial
 
     Dim internalMxValue As Double
     Dim internalMyValue As Double
@@ -520,7 +521,7 @@ Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section
 
     Select Case LCase$(Trim$(calculationMode))
         Case "directstate"
-            WriteDirectStateAndCrackResults workbook, section, concrete, steel, settings, units, _
+            WriteDirectStateAndCrackResults workbook, section, materialProvider, currentSet, settings, units, _
                 nValue, internalMxValue, internalMyValue, centroidMxForCrack, centroidMyForCrack, writer
             Exit Sub
         Case "fullcapacity"
@@ -532,13 +533,16 @@ Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section
     Dim capacity As CCapacitySolver
     Set capacity = New CCapacitySolver
     capacity.ApplySettings settings, units
+    ApplyCapacityLimitsFromSet capacity, materialProvider.StrengthSet
     If Sqr(userMxValue * userMxValue + userMyValue * userMyValue) > 0.000000001 Then
         Select Case LCase$(Trim$(settings.GetRawString("Capacity.Method", vbNullString)))
             Case "ultimatestrain"
-                capacity.SolveByUltimateStrain section, concrete, steel, nValue, userMxValue, userMyValue, _
+                capacity.SolveByUltimateStrain section, materialProvider.StrengthSet.ConcreteMaterial, _
+                    materialProvider.StrengthSet.SteelMaterial, nValue, userMxValue, userMyValue, _
                     nValue * referenceY, nValue * referenceX
             Case "loadmultiplier"
-                capacity.SolveByLoadMultiplier section, concrete, steel, nValue, userMxValue, userMyValue, _
+                capacity.SolveByLoadMultiplier section, materialProvider.StrengthSet.ConcreteMaterial, _
+                    materialProvider.StrengthSet.SteelMaterial, nValue, userMxValue, userMyValue, _
                     nValue * referenceY, nValue * referenceX
             Case Else
                 Err.Raise vbObjectError + 4125, "WriteCapacityAndCrackResults", _
@@ -556,7 +560,8 @@ Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section
         Set crack = New CCrackWidthCalculator
         crack.ApplySettings settings, units
         If CrackCalculationEnabled(settings) Then
-            crack.Calculate service, section, concrete, steel, nValue, internalMxValue, internalMyValue, _
+            crack.Calculate service, section, currentSet, materialProvider.McrcSet, _
+                materialProvider.CrackedNDSSet, nValue, internalMxValue, internalMyValue, _
                 centroidMxForCrack, centroidMyForCrack
             writer.WriteCrackResult workbook, crack, units
         End If
@@ -564,10 +569,16 @@ Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section
 End Sub
 
 Private Sub WriteDirectStateAndCrackResults(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal concrete As Object, ByVal steel As Object, ByVal settings As CSystemSettingsReader, _
+        ByVal materialProvider As CMaterialModelProvider, ByVal currentSet As CCalculationMaterialSet, _
+        ByVal settings As CSystemSettingsReader, _
         ByVal units As CUnitSystem, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
         ByVal centroidMxForCrack As Double, ByVal centroidMyForCrack As Double, ByVal writer As CCapacityResultWriter)
+
+    Dim concrete As Object
+    Dim steel As Object
+    Set concrete = currentSet.ConcreteMaterial
+    Set steel = currentSet.SteelMaterial
 
     Dim service As CSectionSolver
     Set service = New CSectionSolver
@@ -582,9 +593,36 @@ Private Sub WriteDirectStateAndCrackResults(ByVal workbook As Object, ByVal sect
         Dim crack As CCrackWidthCalculator
         Set crack = New CCrackWidthCalculator
         crack.ApplySettings settings, units
-        crack.Calculate service, section, concrete, steel, nValue, mxValue, myValue, centroidMxForCrack, centroidMyForCrack
+        crack.Calculate service, section, currentSet, materialProvider.McrcSet, _
+            materialProvider.CrackedNDSSet, nValue, mxValue, myValue, _
+            centroidMxForCrack, centroidMyForCrack
         writer.WriteCrackResult workbook, crack, units
     End If
+End Sub
+
+' Выбирает материал для повторного вывода одного LC на лист "Расчет".
+' Это тот же смысл, что и в batch: I группа использует Strength, II группа -
+' CrackedNDS с диаграммами II группы и неработающим растянутым бетоном.
+Private Function MaterialSetForCalculationType(ByVal materialProvider As CMaterialModelProvider, _
+        ByVal calculationType As String) As CCalculationMaterialSet
+    Select Case LCase$(Trim$(calculationType))
+        Case "group2", "2", "sls", "crack", "crackonly"
+            Set MaterialSetForCalculationType = materialProvider.CrackedNDSSet
+        Case Else
+            Set MaterialSetForCalculationType = materialProvider.StrengthSet
+    End Select
+End Function
+
+' Передает CCapacitySolver пределы деформаций из material set. Эти величины
+' больше не читаются как отдельные настройки Capacity.*Limit: источник истины -
+' автоматически построенная диаграмма материала для Strength.
+Private Sub ApplyCapacityLimitsFromSet(ByVal capacity As CCapacitySolver, _
+        ByVal materialSet As CCalculationMaterialSet)
+    capacity.ConcreteCompressionLimit = materialSet.ConcreteCompressionLimit
+    capacity.ConcreteTensionLimit = materialSet.ConcreteTensionLimit
+    capacity.ConcreteTensionLimitEnabled = materialSet.ConcreteTensionLimitEnabled
+    capacity.SteelStrainLimit = MaxDouble(Abs(materialSet.SteelCompressionLimit), _
+        Abs(materialSet.SteelTensionLimit))
 End Sub
 
 Private Function CrackCalculationEnabled(ByVal settings As CSystemSettingsReader) As Boolean
@@ -608,6 +646,12 @@ Private Function ElapsedSecondsFrom(ByVal startTimer As Double) As Double
     Else
         ElapsedSecondsFrom = 86400# - startTimer + nowTimer
     End If
+End Function
+
+' Локальный максимум для передачи асимметричных пределов арматуры в старый
+' контракт CCapacitySolver, который пока принимает одно абсолютное значение.
+Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
+    If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
 
 

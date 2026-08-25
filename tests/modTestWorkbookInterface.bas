@@ -122,24 +122,41 @@ Private Sub TestAutoCADExportUsesSharedLoadReference(ByRef stats As TUiTestStats
     loads.Cells.Item(2, 3).Value2 = 0#
     loads.Cells.Item(2, 4).Value2 = 0#
 
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+
+    Dim materialProvider As CMaterialModelProvider
+    Set materialProvider = New CMaterialModelProvider
+    materialProvider.Initialize settings, units
+
     Dim section As CSectionModel
-    Dim concrete As CConcreteDiagramMaterial
-    Dim steel As CSteelDiagramMaterial
-    Dim solver As CSectionSolver
-    Dim loadReferenceX As Double
-    Dim loadReferenceY As Double
-    PrepareAutoCADExportState ThisWorkbook, section, concrete, steel, solver, loadReferenceX, loadReferenceY
-
-    AssertTrue stats, "ui.autocad.reference.converged", solver.Converged
-    AssertClose stats, "ui.autocad.reference.kappaX", solver.KappaX, 0#, 0.00000001
-    AssertClose stats, "ui.autocad.reference.kappaY", solver.KappaY, 0#, 0.00000001
-    AssertTrue stats, "ui.autocad.reference.point", Abs(loadReferenceX) > 0.000001 Or Abs(loadReferenceY) > 0.000001
-
+    Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
-    props.CalculateTransformed section, concrete, steel
-    AssertClose stats, "ui.autocad.axes.centerX", props.CentroidX, loadReferenceX, 0.000001
-    AssertClose stats, "ui.autocad.axes.centerY", props.CentroidY, loadReferenceY, 0.000001
+    props.CalculateTransformed section, materialProvider.StrengthSet.ConcreteMaterial, materialProvider.StrengthSet.SteelMaterial
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = New CBatchSectionCalculator
+    batch.Initialize section, materialProvider
+    batch.ApplySettings settings, units
+
+    Dim reader As CLoadCombinationReader
+    Set reader = New CLoadCombinationReader
+    reader.LoadFromWorkbook ThisWorkbook, batch, units
+    batch.ApplyLoadReference props.CentroidX, props.CentroidY, props.CentroidX, props.CentroidY
+    batch.Execute
+
+    AssertTrue stats, "ui.autocad.reference.converged", batch.StateConverged(1)
+    AssertClose stats, "ui.autocad.reference.kappaX", batch.KappaX(1), 0#, 0.000001
+    AssertClose stats, "ui.autocad.reference.kappaY", batch.KappaY(1), 0#, 0.000001
+    AssertTrue stats, "ui.autocad.reference.point", Abs(batch.LoadReferenceX) > 0.000001 Or Abs(batch.LoadReferenceY) > 0.000001
+    AssertClose stats, "ui.autocad.axes.centerX", props.CentroidX, batch.LoadReferenceX, 0.000001
+    AssertClose stats, "ui.autocad.axes.centerY", props.CentroidY, batch.LoadReferenceY, 0.000001
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -882,11 +899,11 @@ Private Function SettingsRangeSearchOrder() As Variant
     Dim geometryType As String
     geometryType = SystemGeometryType()
     If StrComp(geometryType, "LShape", vbTextCompare) = 0 Then
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngPlotAnnotationSettings", "rngLShapeGeometry", "rngCircleGeometry", "rngRoundedRectangleGeometry")
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationDiagramSettings", "rngPlotAnnotationSettings", "rngLShapeGeometry", "rngCircleGeometry", "rngRoundedRectangleGeometry")
     ElseIf StrComp(geometryType, "RoundedRectangle", vbTextCompare) = 0 Then
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngPlotAnnotationSettings", "rngRoundedRectangleGeometry", "rngCircleGeometry", "rngLShapeGeometry")
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationDiagramSettings", "rngPlotAnnotationSettings", "rngRoundedRectangleGeometry", "rngCircleGeometry", "rngLShapeGeometry")
     Else
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngPlotAnnotationSettings", "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngLShapeGeometry")
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationDiagramSettings", "rngPlotAnnotationSettings", "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngLShapeGeometry")
     End If
 End Function
 
@@ -1100,21 +1117,16 @@ Private Function BuildUiBatch() As CBatchSectionCalculator
         settings.GetLong("Rebar.Count", 8), _
         settings.GetDouble("Rebar.Diameter", 20#), _
         settings.GetString("Steel.RebarProfile", "Ribbed"))
-    Dim concrete As CConcreteDiagramMaterial
-    Set concrete = New CConcreteDiagramMaterial
-    concrete.Initialize -0.0015, -15.5, -0.0035, -15.5
-    concrete.ApplySettings settings
-
-    Dim steel As CSteelDiagramMaterial
-    Set steel = New CSteelDiagramMaterial
-    steel.Initialize 0.00175, 350#, 0.025
+    Dim materialProvider As CMaterialModelProvider
+    Set materialProvider = New CMaterialModelProvider
+    materialProvider.Initialize settings
 
     Dim section As CSectionModel
     Set section = BuildGeneratedSectionModel(mesh, rebars, "WorkbookInterface")
 
     Dim batch As CBatchSectionCalculator
     Set batch = New CBatchSectionCalculator
-    batch.Initialize section, concrete, steel
+    batch.Initialize section, materialProvider
     batch.ApplySettings settings
     Set BuildUiBatch = batch
 End Function

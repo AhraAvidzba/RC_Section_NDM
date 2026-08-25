@@ -47,7 +47,8 @@ Private mLastAcceptableN As Double ' N последнего acceptable-сост�
 Private mLastAcceptableMx As Double ' Mx последнего acceptable-состояния.
 Private mLastAcceptableMy As Double ' My последнего acceptable-состояния.
 Private mConcreteCompressionLimit As Double ' Предельная сжимающая деформация бетона.
-Private mConcreteTensionLimit As Double ' Предельная растягивающая деформация бетона при UseDiagram.
+Private mConcreteTensionLimit As Double ' Предельная растягивающая деформация бетона, если растянутая ветвь включена материалной моделью.
+Private mConcreteTensionLimitEnabled As Boolean ' True, когда растянутый бетон реально ограничивает предельное состояние.
 Private mSteelStrainLimit As Double ' Предельная деформация арматуры по модулю.
 Private mLambdaTolerance As Double ' Точность одномерного поиска lambda для LoadMultiplier.
 Private mStrainTolerance As Double ' Допуск достижения предельной деформации для UltimateStrain.
@@ -82,6 +83,7 @@ Private mCriticalStrainUtilization As Double ' Отношение фактиче
 Private Sub Class_Initialize()
     mConcreteCompressionLimit = -0.0035
     mConcreteTensionLimit = 0.00015
+    mConcreteTensionLimitEnabled = False
     mSteelStrainLimit = 0.025
     mLambdaTolerance = 0.001
     mStrainTolerance = 0.00001
@@ -138,9 +140,6 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mSolverMaxDeltaKappa = settings.GetDouble("Solver.MaxDeltaKappa", mSolverMaxDeltaKappa)
     mSolverSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSolverSecantMaxRestarts)
     mSolverSecantMinStepNorm = settings.GetDouble("Solver.SecantMinStepNorm", mSolverSecantMinStepNorm)
-    mConcreteCompressionLimit = settings.GetDouble("Capacity.ConcreteCompressionLimit", mConcreteCompressionLimit)
-    mConcreteTensionLimit = settings.GetDouble("Capacity.ConcreteTensionLimit", mConcreteTensionLimit)
-    mSteelStrainLimit = settings.GetDouble("Capacity.SteelStrainLimit", mSteelStrainLimit)
     If Not units Is Nothing Then
         mSolverToleranceN = Abs(units.InputForceToInternal(mSolverToleranceN))
         mSolverToleranceMx = Abs(units.InputMomentMxToInternal(mSolverToleranceMx))
@@ -1038,7 +1037,7 @@ Private Sub UpdateCriticalState(ByVal section As CSectionModel, _
         If strain < 0# And mConcreteCompressionLimit < 0# Then
             utilization = strain / mConcreteCompressionLimit
             StoreCriticalIfLarger utilization, strain, section.ConcreteID(i) & ":Compression"
-        ElseIf strain > 0# And ConcreteTensionLimitApplies(concreteMaterial) And mConcreteTensionLimit > 0# Then
+        ElseIf strain > 0# And mConcreteTensionLimitEnabled And mConcreteTensionLimit > 0# Then
             utilization = strain / mConcreteTensionLimit
             StoreCriticalIfLarger utilization, strain, section.ConcreteID(i) & ":Tension"
         End If
@@ -1111,15 +1110,6 @@ End Function
 Private Function IsPhysicalLimit(ByVal state As String) As Boolean
     IsPhysicalLimit = (state = STATE_CONCRETE_LIMIT Or state = STATE_CONCRETE_TENSION_LIMIT Or _
         state = STATE_STEEL_LIMIT)
-End Function
-
-Private Function ConcreteTensionLimitApplies(ByVal concreteMaterial As Object) As Boolean
-    On Error GoTo NotSupported
-    ConcreteTensionLimitApplies = (StrComp(CStr(CallByName(concreteMaterial, "TensionMode", VbGet)), _
-        "UseDiagram", vbTextCompare) = 0)
-    Exit Function
-NotSupported:
-    ConcreteTensionLimitApplies = False
 End Function
 
 Private Function IsNumericalFailure(ByVal state As String) As Boolean
@@ -1275,6 +1265,10 @@ End Property
 
 Public Property Let ConcreteTensionLimit(ByVal value As Double)
     mConcreteTensionLimit = value
+End Property
+
+Public Property Let ConcreteTensionLimitEnabled(ByVal value As Boolean)
+    mConcreteTensionLimitEnabled = value
 End Property
 
 Public Property Let SteelStrainLimit(ByVal value As Double)

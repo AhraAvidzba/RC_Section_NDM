@@ -3,27 +3,27 @@ OK: pure_compression.converged
 OK: pure_compression.N; actual=-99999.9999999996; expected=-100000.; relDiff=0.
 OK: pure_compression.Mx; actual=0.000000000138; expected=0.; absDiff=0.000000000138
 OK: pure_compression.My; actual=0.000000000188; expected=0.; absDiff=0.000000000188
-BASELINE|pure_compression|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=0.|Nint=-99999.9999999996|Mxint=0.000000000138|Myint=0.000000000188|resN=0.000000000378|resMx=0.000000000138|resMy=0.000000000188|lambda=NA|iterations=2|elapsedSec=0.0234375|fibers=177|rebars=8
+BASELINE|pure_compression|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=0.|Nint=-99999.9999999996|Mxint=0.000000000138|Myint=0.000000000188|resN=0.000000000378|resMx=0.000000000138|resMy=0.000000000188|lambda=NA|iterations=2|elapsedSec=0.03125|fibers=177|rebars=8
 OK: n_plus_mx_my_zero.converged
 OK: n_plus_mx_my_zero.N; actual=-100000.; expected=-100000.; relDiff=0.
 OK: n_plus_mx_my_zero.Mx; actual=-4000000.; expected=-4000000.; relDiff=0.
 OK: n_plus_mx_my_zero.My; actual=0.000000000269; expected=0.; absDiff=0.000000000269
-BASELINE|n_plus_mx_my_zero|converged=True|eps0=-0.000082761977|kappaX=-0.000000571638|kappaY=0.|Nint=-100000.|Mxint=-4000000.|Myint=0.000000000269|resN=0.000000000029|resMx=0.000000000931|resMy=0.000000000269|lambda=20.421600341797|iterations=2|elapsedSec=0.0078125|fibers=177|rebars=8
+BASELINE|n_plus_mx_my_zero|converged=True|eps0=-0.000082761977|kappaX=-0.000000571638|kappaY=0.|Nint=-100000.|Mxint=-4000000.|Myint=0.000000000269|resN=0.000000000029|resMx=0.000000000931|resMy=0.000000000269|lambda=20.421600341797|iterations=2|elapsedSec=0.015625|fibers=177|rebars=8
 OK: n_plus_my_mx_zero.converged
 OK: n_plus_my_mx_zero.N; actual=-99999.9999999999; expected=-100000.; relDiff=0.
 OK: n_plus_my_mx_zero.Mx; actual=-0.000000000095; expected=0.; absDiff=0.000000000095
 OK: n_plus_my_mx_zero.My; actual=-3000000.; expected=-3000000.; relDiff=0.
-BASELINE|n_plus_my_mx_zero|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=-0.000000428729|Nint=-99999.9999999999|Mxint=-0.000000000095|Myint=-3000000.|resN=0.000000000102|resMx=-0.000000000095|resMy=0.000000002794|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.0078125|fibers=177|rebars=8
+BASELINE|n_plus_my_mx_zero|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=-0.000000428729|Nint=-99999.9999999999|Mxint=-0.000000000095|Myint=-3000000.|resN=0.000000000102|resMx=-0.000000000095|resMy=0.000000002794|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.0234375|fibers=177|rebars=8
 OK: full_n_mx_my.converged
 OK: full_n_mx_my.N; actual=-100000.; expected=-100000.; relDiff=0.
 OK: full_n_mx_my.Mx; actual=-4000000.; expected=-4000000.; relDiff=0.
 OK: full_n_mx_my.My; actual=-3000000.; expected=-3000000.; relDiff=0.
-BASELINE|full_n_mx_my|converged=True|eps0=-0.000082335606|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=-4000000.|Myint=-3000000.|resN=0.000000000015|resMx=-0.000000001863|resMy=0.000000000466|lambda=16.3359375|iterations=3|elapsedSec=0.0078125|fibers=177|rebars=8
+BASELINE|full_n_mx_my|converged=True|eps0=-0.000082335606|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=-4000000.|Myint=-3000000.|resN=0.000000000015|resMx=-0.000000001863|resMy=0.000000000466|lambda=16.3359375|iterations=3|elapsedSec=0.0234375|fibers=177|rebars=8
 OK: symmetric_circle.converged
 OK: symmetric_circle.N; actual=-219999.999999999; expected=-220000.; relDiff=0.
 OK: symmetric_circle.Mx; actual=-6000000.00000002; expected=-6000000.; relDiff=0.
 OK: symmetric_circle.My; actual=0.000000000034; expected=0.; absDiff=0.000000000034
-BASELINE|symmetric_circle|converged=True|eps0=-0.000180839111|kappaX=-0.000000845237|kappaY=0.|Nint=-219999.999999999|Mxint=-6000000.00000002|Myint=0.000000000034|resN=0.000000000815|resMx=-0.00000002142|resMy=0.000000000034|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.0390625|fibers=716|rebars=8
+BASELINE|symmetric_circle|converged=True|eps0=-0.000180839111|kappaX=-0.000000845237|kappaY=0.|Nint=-219999.999999999|Mxint=-6000000.00000002|Myint=0.000000000034|resN=0.000000000815|resMx=-0.00000002142|resMy=0.000000000034|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.0703125|fibers=716|rebars=8
 OK: repeated_run.first.converged
 OK: repeated_run.second.converged
 OK: repeated_run.epsilon0; actual=-0.000082335606; expected=-0.000082335606; absDiff=0.
@@ -49,5 +49,5 @@ OK: origin_shift.shifted.Mx; actual=1000000.; expected=1000000.; relDiff=0.
 OK: origin_shift.shifted.My; actual=-10500000.; expected=-10500000.; relDiff=0.
 BASELINE|origin_shift_base|converged=True|eps0=-0.000082335606|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=-4000000.|Myint=-3000000.|resN=0.000000000015|resMx=-0.000000001863|resMy=0.000000000466|lambda=NA|iterations=3|elapsedSec=0.|fibers=0|rebars=0
 BASELINE|origin_shift_shifted|converged=True|eps0=-0.00007872362|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=1000000.|Myint=-10500000.|resN=0.000000000015|resMx=-0.000000000233|resMy=0.000000007451|lambda=NA|iterations=3|elapsedSec=0.|fibers=0|rebars=0
-TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.609375
+TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=3.25
 

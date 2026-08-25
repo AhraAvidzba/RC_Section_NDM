@@ -149,8 +149,9 @@ try {
         "rngRoundedRectangleGeometry",
         "rngLShapeGeometry",
         "rngBatchSummary",
-        "rngConcreteDiagramPoints",
-        "rngSteelDiagramPoints",
+        "rngConcreteMaterialParameters",
+        "rngSteelMaterialParameters",
+        "rngCalculationDiagramSettings",
         "rngNDMElementResults",
         "rngNDMSectionGeometry",
         "rngNDMSectionProperties",
@@ -187,7 +188,7 @@ try {
 
     $obsoleteNames = @(
         "rngResultMx", "rngResultMy", "rngResultMxy", "rngMainInput", "rngRebarInput",
-        "rngSystemDiagnostics",
+        "rngSystemDiagnostics", "rngConcreteDiagramPoints", "rngSteelDiagramPoints",
         "SolverSettings", "CapacitySettings", "ConcreteDiagram", "SteelDiagram", "GeometrySettings",
         "OutputSettings", "AutoCADSettings"
     )
@@ -247,6 +248,9 @@ try {
         "Steel.Point1.Eps", "Steel.Point1.Stress",
         "Steel.Point2.Eps", "Steel.Point2.Stress",
         "Steel.Point3.Eps", "Steel.Point3.Stress",
+        "Concrete.TensionMode",
+        "Capacity.ConcreteCompressionLimit", "Capacity.ConcreteTensionLimit",
+        "Capacity.SteelStrainLimit", "Concrete.Class",
         "Circle.CenterX", "Circle.CenterY",
         "LShape.OriginX", "LShape.OriginY",
         "Plot.DimensionsEnabled", "Plot.RebarLabelsEnabled"
@@ -292,10 +296,12 @@ try {
     }
     Add-Check $checks "Solver.Method validation list" $solverValidationOk $solverValidationDetails
 
-    $concretePoints = $workbook.Names.Item("rngConcreteDiagramPoints").RefersToRange
-    $steelPoints = $workbook.Names.Item("rngSteelDiagramPoints").RefersToRange
-    Add-Check $checks "Concrete diagram point table" (($concretePoints.Columns.Count -eq 3) -and ($concretePoints.Rows.Count -eq 10)) ("Rows=$($concretePoints.Rows.Count); Columns=$($concretePoints.Columns.Count)")
-    Add-Check $checks "Steel diagram point table" (($steelPoints.Columns.Count -eq 3) -and ($steelPoints.Rows.Count -eq 10)) ("Rows=$($steelPoints.Rows.Count); Columns=$($steelPoints.Columns.Count)")
+    $concreteParams = $workbook.Names.Item("rngConcreteMaterialParameters").RefersToRange
+    $steelParams = $workbook.Names.Item("rngSteelMaterialParameters").RefersToRange
+    $diagramSettings = $workbook.Names.Item("rngCalculationDiagramSettings").RefersToRange
+    Add-Check $checks "Concrete material parameters" (($concreteParams.Columns.Count -eq 6) -and ($concreteParams.Rows.Count -eq 4)) ("Rows=$($concreteParams.Rows.Count); Columns=$($concreteParams.Columns.Count)")
+    Add-Check $checks "Steel material parameters" (($steelParams.Columns.Count -eq 6) -and ($steelParams.Rows.Count -eq 5)) ("Rows=$($steelParams.Rows.Count); Columns=$($steelParams.Columns.Count)")
+    Add-Check $checks "Calculation diagram settings" (($diagramSettings.Columns.Count -eq 6) -and ($diagramSettings.Rows.Count -eq 4)) ("Rows=$($diagramSettings.Rows.Count); Columns=$($diagramSettings.Columns.Count)")
 
     $loads = $workbook.Names.Item("rngLoadCombinations").RefersToRange
     $expectedLoadHeaders = @("CombinationID", "N, tf", "Mx, tf*m", "My, tf*m", "CalculationType", "Comment")

@@ -10,12 +10,13 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Чтение настроек Config и таблиц диаграмм
+' Чтение настроек Config и параметров материалов
 ' ==========================================================================
 ' Reader проходит по именованным диапазонам Config, собирает пары ключ/значение
-' и отдельно читает точки диаграмм бетона и арматуры. Он приводит разные
-' формы таблиц к одному словарю настроек, которым пользуются генераторы,
-' материалы, solver-ы и writer-ы.
+' и разворачивает специальные таблицы материалов в те же ключи словаря.
+' Материальные диаграммы больше не читаются как пользовательский набор точек:
+' точки строит CMaterialModelProvider по параметрам бетона/арматуры и выбранному
+' расчетному режиму.
 '
 ' Класс не делает инженерных расчетов. Его задача - надежно прочитать ввод и
 ' дать понятную ошибку, если обязательный ключ или таблица отсутствуют.
@@ -25,28 +26,35 @@ Private mValues() As String ' Значения, которые ввел поль
 Private mDefaults() As String ' Значения по умолчанию из таблицы Config.
 Private mSources() As String ' Комментарий/источник строки для диагностики.
 Private mCount As Long ' Количество загруженных ключей.
-Private mConcreteStrains() As Double ' Деформации точек бетонной диаграммы.
-Private mConcreteStresses() As Double ' Напряжения бетонной диаграммы в INPUT-единице; материал позже переведет их в МПа.
-Private mConcretePointCount As Long ' Фактическое число точек бетонной диаграммы.
-Private mSteelStrains() As Double ' Деформации точек диаграммы арматуры.
-Private mSteelStresses() As Double ' Напряжения арматурной диаграммы в INPUT-единице; материал позже переведет их в МПа.
-Private mSteelPointCount As Long ' Фактическое число точек диаграммы арматуры.
 
 ' Загружает все настройки книги, нужные расчету и выводу.
 ' Метод объединяет разные именованные диапазоны Config в один внутренний
-' словарь, а точки диаграмм материалов читает отдельно как числовые массивы.
+' словарь. Новые таблицы материалов имеют человекочитаемую форму, поэтому
+' перед попаданием в словарь разворачиваются в ключи Concrete.* / Steel.*.
 Public Sub LoadFromWorkbook(ByVal workbook As Object)
     Clear
     AppendSettingsRange workbook.Names.Item("rngUnitSettings").RefersToRange
     AppendSettingsRange workbook.Names.Item("rngSignConventionSettings").RefersToRange
     AppendSettingsRange workbook.Names.Item("rngSystemSettings").RefersToRange
+    AppendNamedSettingsRangeIfExists workbook, "rngConcreteMaterialParameters"
+    AppendNamedSettingsRangeIfExists workbook, "rngSteelMaterialParameters"
+    AppendNamedSettingsRangeIfExists workbook, "rngCalculationDiagramSettings"
     AppendSettingsRange workbook.Names.Item("rngPlotAnnotationSettings").RefersToRange
     AppendGeometrySettingsRanges workbook
+End Sub
 
-    LoadDiagramPoints workbook.Names.Item("rngConcreteDiagramPoints").RefersToRange, _
-        mConcreteStrains, mConcreteStresses, mConcretePointCount, "rngConcreteDiagramPoints"
-    LoadDiagramPoints workbook.Names.Item("rngSteelDiagramPoints").RefersToRange, _
-        mSteelStrains, mSteelStresses, mSteelPointCount, "rngSteelDiagramPoints"
+' Подключает дополнительный именованный диапазон, если он уже есть в книге.
+' Это позволяет старым тестовым книгам открываться с расчетными defaults,
+' но новая сборка книги все равно создает эти диапазоны явно на Config.
+Private Sub AppendNamedSettingsRangeIfExists(ByVal workbook As Object, ByVal rangeName As String)
+    On Error GoTo MissingRange
+    Dim settingsRange As Object
+    Set settingsRange = workbook.Names.Item(rangeName).RefersToRange
+    On Error GoTo 0
+    AppendSettingsRange settingsRange
+    Exit Sub
+MissingRange:
+    On Error GoTo 0
 End Sub
 
 Private Sub AppendGeometrySettingsRanges(ByVal workbook As Object)
@@ -115,6 +123,18 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object)
         AppendPlotAnnotationSettings data
         Exit Sub
     End If
+    If IsConcreteMaterialParametersRange(data) Then
+        AppendConcreteMaterialParameters data
+        Exit Sub
+    End If
+    If IsSteelMaterialParametersRange(data) Then
+        AppendSteelMaterialParameters data
+        Exit Sub
+    End If
+    If IsCalculationDiagramSettingsRange(data) Then
+        AppendCalculationDiagramSettings data
+        Exit Sub
+    End If
 
     Dim rowIndex As Long
     ' Обычные таблицы читаются как ключ/значение. Строки с заголовками секций
@@ -133,6 +153,119 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object)
             End If
             AppendSetting keyValue, Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 3))), sourceValue
         End If
+    Next rowIndex
+End Sub
+
+' Распознает компактную таблицу параметров бетона:
+' Параметр | Сжатие | Растяжение | Ед. | Комментарий | Инструкции.
+Private Function IsConcreteMaterialParametersRange(ByRef data As Variant) As Boolean
+    If UBound(data, 1) < 2 Or UBound(data, 2) < 4 Then Exit Function
+    IsConcreteMaterialParametersRange = _
+        StrComp(Trim$(CStr(data(1, 1))), "Параметр", vbTextCompare) = 0 And _
+        StrComp(Trim$(CStr(data(1, 2))), "Сжатие", vbTextCompare) = 0 And _
+        StrComp(Trim$(CStr(data(1, 3))), "Растяжение", vbTextCompare) = 0 And _
+        InStr(1, CStr(data(2, 1)), "Concrete.", vbTextCompare) > 0
+End Function
+
+' Разворачивает симметричную таблицу бетона в конкретные ключи Rb/Rbt/Eb/Ebt.
+Private Sub AppendConcreteMaterialParameters(ByRef data As Variant)
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(data, 1)
+        Dim rowKey As String
+        rowKey = Trim$(CStr(data(rowIndex, 1)))
+        If Len(rowKey) = 0 Then GoTo NextRow
+
+        Dim compressionValue As String
+        Dim tensionValue As String
+        Dim commentValue As String
+        compressionValue = Trim$(CStr(data(rowIndex, 2)))
+        tensionValue = Trim$(CStr(data(rowIndex, 3)))
+        If UBound(data, 2) >= 5 Then commentValue = Trim$(CStr(data(rowIndex, 5)))
+
+        Select Case LCase$(rowKey)
+            Case "concrete.r.uls"
+                AppendSetting "Concrete.Rb.ULS", compressionValue, compressionValue, commentValue
+                AppendSetting "Concrete.Rbt.ULS", tensionValue, tensionValue, commentValue
+            Case "concrete.r.sls"
+                AppendSetting "Concrete.Rb.SLS", compressionValue, compressionValue, commentValue
+                AppendSetting "Concrete.Rbt.SLS", tensionValue, tensionValue, commentValue
+            Case "concrete.e"
+                AppendSetting "Concrete.Eb", compressionValue, compressionValue, commentValue
+                AppendSetting "Concrete.Ebt", tensionValue, tensionValue, commentValue
+            Case Else
+                If Len(compressionValue) > 0 Then AppendSetting rowKey, compressionValue, compressionValue, commentValue
+        End Select
+NextRow:
+    Next rowIndex
+End Sub
+
+' Распознает таблицу параметров арматуры с аналогичной структурой.
+Private Function IsSteelMaterialParametersRange(ByRef data As Variant) As Boolean
+    If UBound(data, 1) < 2 Or UBound(data, 2) < 4 Then Exit Function
+    IsSteelMaterialParametersRange = _
+        StrComp(Trim$(CStr(data(1, 1))), "Параметр", vbTextCompare) = 0 And _
+        StrComp(Trim$(CStr(data(1, 2))), "Сжатие", vbTextCompare) = 0 And _
+        StrComp(Trim$(CStr(data(1, 3))), "Растяжение", vbTextCompare) = 0 And _
+        InStr(1, CStr(data(2, 1)), "Steel.", vbTextCompare) > 0
+End Function
+
+' Разворачивает симметричную таблицу арматуры в конкретные ключи Rsc/Rs/Esc/Es.
+Private Sub AppendSteelMaterialParameters(ByRef data As Variant)
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(data, 1)
+        Dim rowKey As String
+        rowKey = Trim$(CStr(data(rowIndex, 1)))
+        If Len(rowKey) = 0 Then GoTo NextRow
+
+        Dim compressionValue As String
+        Dim tensionValue As String
+        Dim commentValue As String
+        compressionValue = Trim$(CStr(data(rowIndex, 2)))
+        tensionValue = Trim$(CStr(data(rowIndex, 3)))
+        If UBound(data, 2) >= 5 Then commentValue = Trim$(CStr(data(rowIndex, 5)))
+
+        Select Case LCase$(rowKey)
+            Case "steel.r.uls"
+                AppendSetting "Steel.Rsc.ULS", compressionValue, compressionValue, commentValue
+                AppendSetting "Steel.Rs.ULS", tensionValue, tensionValue, commentValue
+            Case "steel.r.sls"
+                AppendSetting "Steel.Rsc.SLS", compressionValue, compressionValue, commentValue
+                AppendSetting "Steel.Rs.SLS", tensionValue, tensionValue, commentValue
+            Case "steel.e"
+                AppendSetting "Steel.Esc", compressionValue, compressionValue, commentValue
+                AppendSetting "Steel.Es", tensionValue, tensionValue, commentValue
+            Case Else
+                If Len(compressionValue) > 0 Then AppendSetting rowKey, compressionValue, compressionValue, commentValue
+        End Select
+NextRow:
+    Next rowIndex
+End Sub
+
+' Распознает таблицу выбора диаграмм для расчетных целей Strength/Mcrc/CrackedNDS.
+Private Function IsCalculationDiagramSettingsRange(ByRef data As Variant) As Boolean
+    If UBound(data, 1) < 2 Or UBound(data, 2) < 5 Then Exit Function
+    IsCalculationDiagramSettingsRange = _
+        StrComp(Trim$(CStr(data(1, 1))), "Расчет", vbTextCompare) = 0 And _
+        StrComp(Trim$(CStr(data(1, 2))), "ГПС", vbTextCompare) = 0 And _
+        InStr(1, CStr(data(1, 3)), "бетон", vbTextCompare) > 0
+End Function
+
+' Преобразует человекочитаемые строки режимов в ключи Diagram.<Purpose>.*.
+Private Sub AppendCalculationDiagramSettings(ByRef data As Variant)
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(data, 1)
+        Dim purpose As String
+        purpose = Trim$(CStr(data(rowIndex, 1)))
+        If Len(purpose) = 0 Then GoTo NextRow
+
+        Dim commentValue As String
+        If UBound(data, 2) >= 6 Then commentValue = Trim$(CStr(data(rowIndex, 6)))
+
+        AppendSetting "Diagram." & purpose & ".LimitStateGroup", Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), commentValue
+        AppendSetting "Diagram." & purpose & ".Concrete", Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 3))), commentValue
+        AppendSetting "Diagram." & purpose & ".ConcreteTension", Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 4))), commentValue
+        AppendSetting "Diagram." & purpose & ".Steel", Trim$(CStr(data(rowIndex, 5))), Trim$(CStr(data(rowIndex, 5))), commentValue
+NextRow:
     Next rowIndex
 End Sub
 
@@ -377,13 +510,7 @@ Public Sub Clear()
     Erase mValues
     Erase mDefaults
     Erase mSources
-    Erase mConcreteStrains
-    Erase mConcreteStresses
-    Erase mSteelStrains
-    Erase mSteelStresses
     mCount = 0
-    mConcretePointCount = 0
-    mSteelPointCount = 0
 End Sub
 
 ' Возвращает строковое значение настройки.
@@ -481,40 +608,6 @@ Public Function DuplicateCount() As Long
     DuplicateCount = duplicates
 End Function
 
-' Количество точек бетонной диаграммы после чтения таблицы.
-Public Function ConcreteDiagramPointCount() As Long
-    ConcreteDiagramPointCount = mConcretePointCount
-End Function
-
-' Возвращает деформацию бетонной диаграммы по номеру точки.
-Public Function ConcreteDiagramStrain(ByVal index As Long) As Double
-    If index < 1 Or index > mConcretePointCount Then Err.Raise vbObjectError + 4310, "CSystemSettingsReader", "Индекс точки диаграммы бетона вне допустимого диапазона."
-    ConcreteDiagramStrain = mConcreteStrains(index)
-End Function
-
-' Возвращает напряжение бетонной диаграммы в МПа по номеру точки.
-Public Function ConcreteDiagramStress(ByVal index As Long) As Double
-    If index < 1 Or index > mConcretePointCount Then Err.Raise vbObjectError + 4311, "CSystemSettingsReader", "Индекс точки диаграммы бетона вне допустимого диапазона."
-    ConcreteDiagramStress = mConcreteStresses(index)
-End Function
-
-' Количество точек диаграммы арматуры после чтения таблицы.
-Public Function SteelDiagramPointCount() As Long
-    SteelDiagramPointCount = mSteelPointCount
-End Function
-
-' Возвращает деформацию диаграммы арматуры по номеру точки.
-Public Function SteelDiagramStrain(ByVal index As Long) As Double
-    If index < 1 Or index > mSteelPointCount Then Err.Raise vbObjectError + 4312, "CSystemSettingsReader", "Индекс точки диаграммы арматуры вне допустимого диапазона."
-    SteelDiagramStrain = mSteelStrains(index)
-End Function
-
-' Возвращает напряжение диаграммы арматуры в МПа по номеру точки.
-Public Function SteelDiagramStress(ByVal index As Long) As Double
-    If index < 1 Or index > mSteelPointCount Then Err.Raise vbObjectError + 4313, "CSystemSettingsReader", "Индекс точки диаграммы арматуры вне допустимого диапазона."
-    SteelDiagramStress = mSteelStresses(index)
-End Function
-
 ' Ищет ключ линейным проходом по небольшому массиву настроек.
 ' Для текущего размера Config словарь не нужен, зато порядок и дубликаты легко тестировать.
 Private Function FindKey(ByVal key As String) As Long
@@ -527,44 +620,6 @@ Private Function FindKey(ByVal key As String) As Long
     Next i
     FindKey = 0
 End Function
-
-' Читает таблицу точек диаграммы материала.
-' Каждая непустая строка должна содержать номер точки, деформацию и напряжение:
-' частично заполненная строка почти всегда означает ошибку ввода.
-Private Sub LoadDiagramPoints(ByVal pointRange As Object, ByRef strains() As Double, ByRef stresses() As Double, _
-        ByRef pointCount As Long, ByVal rangeName As String)
-    pointCount = 0
-    Erase strains
-    Erase stresses
-
-    Dim data As Variant
-    data = pointRange.Value2
-
-    Dim rowIndex As Long
-    ' Собираем только реально заполненные строки. Пустые хвосты диапазона
-    ' допускаются, но каждая непустая строка должна быть полной.
-    For rowIndex = 1 To UBound(data, 1)
-        Dim pointText As String
-        Dim strainText As String
-        Dim stressText As String
-        pointText = Trim$(CStr(data(rowIndex, 1)))
-        strainText = Trim$(CStr(data(rowIndex, 2)))
-        stressText = Trim$(CStr(data(rowIndex, 3)))
-
-        If Len(pointText) > 0 Or Len(strainText) > 0 Or Len(stressText) > 0 Then
-            If Len(pointText) = 0 Or Len(strainText) = 0 Or Len(stressText) = 0 Then
-                Err.Raise vbObjectError + 4314, "CSystemSettingsReader", rangeName & ": строка точки диаграммы заполнена не полностью."
-            End If
-            pointCount = pointCount + 1
-            ReDim Preserve strains(1 To pointCount)
-            ReDim Preserve stresses(1 To pointCount)
-            strains(pointCount) = CDbl(Replace$(strainText, ".", ApplicationDecimalSeparator()))
-            stresses(pointCount) = CDbl(Replace$(stressText, ".", ApplicationDecimalSeparator()))
-        End If
-    Next rowIndex
-
-    If pointCount < 2 Then Err.Raise vbObjectError + 4315, "CSystemSettingsReader", rangeName & " должен содержать не менее двух точек."
-End Sub
 
 ' Возвращает десятичный разделитель текущего Excel.
 ' Это позволяет читать точки диаграмм и настройки с точкой или запятой в разных локалях.

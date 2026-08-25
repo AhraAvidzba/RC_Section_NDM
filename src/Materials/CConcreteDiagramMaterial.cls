@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -12,55 +12,45 @@ Option Explicit
 ' ==========================================================================
 ' Кусочно-линейная диаграмма бетона
 ' ==========================================================================
-' Материал получает массив точек strain-stress и возвращает напряжение,
-' касательный и секущий модуль по текущей деформации. Переключателей
-' двухлинейная/трехлинейная диаграмма нет: расчет работает только с точками.
+' Класс является легким расчетным объектом для solver-а: он получает уже
+' готовые точки диаграммы "деформация - напряжение" во внутренних единицах
+' и быстро возвращает напряжение, касательный и секущий модуль.
 '
-' TensionMode решает, участвует ли растянутый бетон в усилиях или его
-' напряжение обнуляется при растяжении.
+' Здесь нет выбора класса бетона, ГПС, TwoLine/ThreeLine или режима работы
+' растянутого бетона. Эти решения принимает CMaterialModelProvider через
+' builders, а сюда попадает только итоговая диаграмма для конкретного
+' расчетного назначения: Strength, Mcrc или CrackedNDS.
+'
+' Если растянутая ветвь не включена в набор точек, крайняя точка диаграммы
+' остается (0; 0), поэтому положительная деформация автоматически дает
+' нулевое напряжение без отдельной настройки в самом материале.
 
 Private mStrains() As Double ' Узлы диаграммы по деформации, отсортированные от сжатия к растяжению.
 Private mStresses() As Double ' Напряжения в узлах диаграммы во внутренних единицах, МПа.
 Private mPointCount As Long ' Количество активных точек диаграммы.
 Private mInitialized As Boolean ' Защита от вызова GetStress до задания диаграммы.
-Private mTensionMode As String ' Ignore выключает растянутый бетон, UseDiagram оставляет растянутую ветвь.
-Private mTensionElasticModulus As Double ' Резервная линейная жесткость растяжения для fallback-ветви.
-Private mTensionStressLimit As Double ' Ограничение растянутого напряжения для fallback-ветви.
 
-' По умолчанию растянутый бетон не участвует во внутренних усилиях.
-Private Sub Class_Initialize()
-    mTensionMode = "Ignore"
-End Sub
+' ------------------------------
+' Инициализация
+' ------------------------------
+' Загружает точки, подготовленные builder-ом материала. Точки уже должны быть
+' во внутренних единицах проекта: деформация безразмерная, напряжение в МПа.
+Public Sub InitializeFromPointSet(ByVal points As CMaterialPointSet)
+    If points Is Nothing Then Err.Raise vbObjectError + 3106, "CConcreteDiagramMaterial", "Точки диаграммы бетона не переданы."
+    If points.Count < 2 Then Err.Raise vbObjectError + 3106, "CConcreteDiagramMaterial", "Диаграмма бетона должна содержать не менее двух точек."
 
-' Инициализирует диаграмму по точкам Config и применяет настройки материала.
-Public Sub InitializeFromSettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
-    InitializeFromSettingsPoints settings, units
-    ApplySettings settings, units
-End Sub
-
-' Читает точки бетонной диаграммы из reader-а.
-' Reader хранит напряжения в пользовательской INPUT-единице, поэтому здесь
-' выполняется перевод в МПа через CUnitSystem.
-Private Sub InitializeFromSettingsPoints(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
-    Dim count As Long
-    count = settings.ConcreteDiagramPointCount
-    If count < 2 Then Err.Raise vbObjectError + 3106, "CConcreteDiagramMaterial", "Диаграмма бетона должна содержать не менее двух точек."
-
-    ReDim mStrains(1 To count)
-    ReDim mStresses(1 To count)
+    ReDim mStrains(1 To points.Count)
+    ReDim mStresses(1 To points.Count)
 
     Dim i As Long
-    ' Копируем точки в локальные массивы материала, чтобы solver не зависел от
-    ' Excel-reader-а и мог быстро интерполировать напряжение в hot loop.
-    For i = 1 To count
-        mStrains(i) = settings.ConcreteDiagramStrain(i)
-        mStresses(i) = settings.ConcreteDiagramStress(i)
-        If Not units Is Nothing Then mStresses(i) = units.InputStressToInternal(mStresses(i))
+    For i = 1 To points.Count
+        mStrains(i) = points.Strain(i)
+        mStresses(i) = points.Stress(i)
     Next i
 
     SortPointsByStrain
     ValidatePointOrder
-    mPointCount = count
+    mPointCount = points.Count
     mInitialized = True
 End Sub
 
@@ -68,20 +58,20 @@ End Sub
 ' Нулевая точка добавляется автоматически, чтобы диаграмма замыкалась в начале.
 Public Sub InitializeFromTwoCompressionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
         ByVal eps2 As Double, ByVal stress2 As Double)
+    Dim points As CMaterialPointSet
+    Set points = New CMaterialPointSet
+
     If eps1 >= 0# Then Err.Raise vbObjectError + 3100, "CConcreteDiagramMaterial", "Первая деформация сжатия бетона должна быть отрицательной."
     If eps2 >= eps1 Then Err.Raise vbObjectError + 3101, "CConcreteDiagramMaterial", "Вторая деформация сжатия бетона должна быть более отрицательной, чем первая."
     If stress1 >= 0# Or stress2 >= 0# Then Err.Raise vbObjectError + 3102, "CConcreteDiagramMaterial", "Напряжения сжатия бетона должны быть отрицательными."
 
-    ReDim mStrains(1 To 3)
-    ReDim mStresses(1 To 3)
-    mStrains(1) = eps2: mStresses(1) = stress2
-    mStrains(2) = eps1: mStresses(2) = stress1
-    mStrains(3) = 0#: mStresses(3) = 0#
-    mPointCount = 3
-    mInitialized = True
+    points.AddPoint eps2, stress2
+    points.AddPoint eps1, stress1
+    points.AddPoint 0#, 0#
+    InitializeFromPointSet points
 End Sub
 
-' Короткий старый алиас для InitializeFromTwoCompressionPoints.
+' Короткий старый алиас для тестов, которые создают простой материал вручную.
 Public Sub Initialize(ByVal eps1 As Double, ByVal stress1 As Double, _
         ByVal eps2 As Double, ByVal stress2 As Double)
     InitializeFromTwoCompressionPoints eps1, stress1, eps2, stress2
@@ -90,19 +80,19 @@ End Sub
 ' Тестовый и служебный конструктор трехточечной сжатой ветви.
 Public Sub InitializeFromThreeCompressionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
         ByVal eps2 As Double, ByVal stress2 As Double, ByVal eps3 As Double, ByVal stress3 As Double)
+    Dim points As CMaterialPointSet
+    Set points = New CMaterialPointSet
+
     If eps1 >= 0# Then Err.Raise vbObjectError + 3100, "CConcreteDiagramMaterial", "Первая деформация сжатия бетона должна быть отрицательной."
     If eps2 >= eps1 Then Err.Raise vbObjectError + 3101, "CConcreteDiagramMaterial", "Вторая деформация сжатия бетона должна быть более отрицательной, чем первая."
     If eps3 >= eps2 Then Err.Raise vbObjectError + 3104, "CConcreteDiagramMaterial", "Третья деформация сжатия бетона должна быть более отрицательной, чем вторая."
     If stress1 >= 0# Or stress2 >= 0# Or stress3 >= 0# Then Err.Raise vbObjectError + 3102, "CConcreteDiagramMaterial", "Напряжения сжатия бетона должны быть отрицательными."
 
-    ReDim mStrains(1 To 4)
-    ReDim mStresses(1 To 4)
-    mStrains(1) = eps3: mStresses(1) = stress3
-    mStrains(2) = eps2: mStresses(2) = stress2
-    mStrains(3) = eps1: mStresses(3) = stress1
-    mStrains(4) = 0#: mStresses(4) = 0#
-    mPointCount = 4
-    mInitialized = True
+    points.AddPoint eps3, stress3
+    points.AddPoint eps2, stress2
+    points.AddPoint eps1, stress1
+    points.AddPoint 0#, 0#
+    InitializeFromPointSet points
 End Sub
 
 ' Возвращает наиболее сжатую точку диаграммы как ориентир предельной деформации.
@@ -111,46 +101,55 @@ Public Property Get UltimateCompressionStrain() As Double
     UltimateCompressionStrain = mStrains(1)
 End Property
 
-' Возвращает напряжение бетона по текущей деформации.
-' Если растянутый бетон выключен, положительная деформация сразу дает 0:
-' элемент остается геометрически в модели, но не дает внутреннего усилия.
+' Возвращает крайнюю растянутую точку диаграммы. Если растяжение отключено,
+' последней точкой остается ноль и растянутый бетон не ограничивает расчет.
+Public Property Get UltimateTensionStrain() As Double
+    EnsureInitialized
+    If mStrains(mPointCount) > 0# Then UltimateTensionStrain = mStrains(mPointCount)
+End Property
+
+' Количество точек используется в тестах и диагностике построителя диаграмм.
+Public Property Get PointCount() As Long
+    PointCount = mPointCount
+End Property
+
+' Возвращает деформацию узла диаграммы по индексу.
+Public Function PointStrain(ByVal index As Long) As Double
+    EnsureInitialized
+    If index < 1 Or index > mPointCount Then Err.Raise vbObjectError + 3108, "CConcreteDiagramMaterial", "Индекс точки диаграммы бетона вне диапазона."
+    PointStrain = mStrains(index)
+End Function
+
+' Возвращает напряжение узла диаграммы по индексу.
+Public Function PointStress(ByVal index As Long) As Double
+    EnsureInitialized
+    If index < 1 Or index > mPointCount Then Err.Raise vbObjectError + 3109, "CConcreteDiagramMaterial", "Индекс точки диаграммы бетона вне диапазона."
+    PointStress = mStresses(index)
+End Function
+
+' ------------------------------
+' Расчетный контракт материала
+' ------------------------------
+' Возвращает напряжение бетона по текущей деформации. За пределами заданной
+' диаграммы напряжение удерживается на крайнем значении.
 Public Function GetStress(ByVal strain As Double) As Double
     EnsureInitialized
 
-    If strain > 0# And StrComp(mTensionMode, "UseDiagram", vbTextCompare) <> 0 Then
-        GetStress = 0#
-    ElseIf strain <= mStrains(1) Then
+    If strain <= mStrains(1) Then
         GetStress = mStresses(1)
-    ElseIf strain > mStrains(mPointCount) Then
-        If strain > 0# And StrComp(mTensionMode, "UseDiagram", vbTextCompare) = 0 And mStrains(mPointCount) <= 0# Then
-            GetStress = GetTensionStressFallback(strain)
-        Else
-            GetStress = mStresses(mPointCount)
-        End If
+    ElseIf strain >= mStrains(mPointCount) Then
+        GetStress = mStresses(mPointCount)
     Else
         GetStress = InterpolateStress(strain)
     End If
 End Function
 
 ' Возвращает касательный модуль dσ/dε для Newton-матрицы.
-' На плато за крайними точками модуль равен 0, потому что напряжение больше
-' не меняется при росте деформации.
+' На плато за крайними точками модуль равен нулю.
 Public Function GetTangentModulus(ByVal strain As Double) As Double
     EnsureInitialized
-
-    If strain > 0# And StrComp(mTensionMode, "UseDiagram", vbTextCompare) <> 0 Then
-        GetTangentModulus = 0#
-    ElseIf strain <= mStrains(1) Then
-        GetTangentModulus = 0#
-    ElseIf strain > mStrains(mPointCount) Then
-        If strain > 0# And StrComp(mTensionMode, "UseDiagram", vbTextCompare) = 0 And mStrains(mPointCount) <= 0# Then
-            GetTangentModulus = GetTensionTangentFallback(strain)
-        Else
-            GetTangentModulus = 0#
-        End If
-    Else
-        GetTangentModulus = SegmentTangent(strain)
-    End If
+    If strain < mStrains(1) Or strain > mStrains(mPointCount) Then Exit Function
+    GetTangentModulus = SegmentTangent(strain)
 End Function
 
 ' Возвращает секущий модуль σ/ε.
@@ -165,48 +164,7 @@ Public Function GetSecantModulus(ByVal strain As Double) As Double
     End If
 End Function
 
-' Применяет настройки растянутого бетона.
-' Основная ветвь берется из точек диаграммы; Eb/Rbt используются только для
-' fallback-режима, когда растяжение включено, но точек растянутой ветви нет.
-Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
-    If settings Is Nothing Then Exit Sub
-    TensionMode = settings.GetString("Concrete.TensionMode", mTensionMode)
-    mTensionElasticModulus = settings.GetDouble("Concrete.Eb", mTensionElasticModulus)
-    mTensionStressLimit = settings.GetDouble("Concrete.Rbt.SLS", mTensionStressLimit)
-    If Not units Is Nothing Then
-        mTensionElasticModulus = units.InputStressToInternal(mTensionElasticModulus)
-        mTensionStressLimit = units.InputStressToInternal(mTensionStressLimit)
-    End If
-End Sub
-
-Public Property Let TensionMode(ByVal value As String)
-    If StrComp(Trim$(value), "UseDiagram", vbTextCompare) = 0 Then
-        mTensionMode = "UseDiagram"
-    Else
-        mTensionMode = "Ignore"
-    End If
-End Property
-
-Public Property Get TensionMode() As String
-    TensionMode = mTensionMode
-End Property
-
-Public Property Let TensionElasticModulus(ByVal value As Double)
-    mTensionElasticModulus = value
-End Property
-
-Public Property Get TensionElasticModulus() As Double
-    TensionElasticModulus = mTensionElasticModulus
-End Property
-
-Public Property Let TensionStressLimit(ByVal value As Double)
-    mTensionStressLimit = value
-End Property
-
-Public Property Get TensionStressLimit() As Double
-    TensionStressLimit = mTensionStressLimit
-End Property
-
+' Выполняет линейную интерполяцию напряжения между соседними точками диаграммы.
 Private Function InterpolateStress(ByVal strain As Double) As Double
     Dim i As Long
     For i = 1 To mPointCount - 1
@@ -218,6 +176,7 @@ Private Function InterpolateStress(ByVal strain As Double) As Double
     Next i
 End Function
 
+' Возвращает наклон текущего отрезка диаграммы.
 Private Function SegmentTangent(ByVal strain As Double) As Double
     Dim i As Long
     For i = 1 To mPointCount - 1
@@ -228,33 +187,18 @@ Private Function SegmentTangent(ByVal strain As Double) As Double
     Next i
 End Function
 
-Private Function GetTensionStressFallback(ByVal strain As Double) As Double
-    If StrComp(mTensionMode, "UseDiagram", vbTextCompare) <> 0 Then Exit Function
-    If strain <= 0# Or mTensionElasticModulus <= 0# Or mTensionStressLimit <= 0# Then Exit Function
-    GetTensionStressFallback = mTensionElasticModulus * strain
-    If GetTensionStressFallback > mTensionStressLimit Then GetTensionStressFallback = mTensionStressLimit
-End Function
-
-Private Function GetTensionTangentFallback(ByVal strain As Double) As Double
-    If StrComp(mTensionMode, "UseDiagram", vbTextCompare) <> 0 Then Exit Function
-    If strain <= 0# Or mTensionElasticModulus <= 0# Or mTensionStressLimit <= 0# Then Exit Function
-    If mTensionElasticModulus * strain < mTensionStressLimit Then
-        GetTensionTangentFallback = mTensionElasticModulus
-    End If
-End Function
-
+' Сортирует точки по возрастанию деформации.
 Private Sub SortPointsByStrain()
     Dim i As Long
     Dim j As Long
     For i = 1 To UBound(mStrains) - 1
         For j = i + 1 To UBound(mStrains)
-            If mStrains(j) < mStrains(i) Then
-                SwapPoints i, j
-            End If
+            If mStrains(j) < mStrains(i) Then SwapPoints i, j
         Next j
     Next i
 End Sub
 
+' Меняет местами две точки диаграммы при сортировке.
 Private Sub SwapPoints(ByVal firstIndex As Long, ByVal secondIndex As Long)
     Dim tmp As Double
     tmp = mStrains(firstIndex)
@@ -265,7 +209,7 @@ Private Sub SwapPoints(ByVal firstIndex As Long, ByVal secondIndex As Long)
     mStresses(secondIndex) = tmp
 End Sub
 
-' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
+' Проверяет, что после сортировки нет повторяющихся деформаций.
 Private Sub ValidatePointOrder()
     Dim i As Long
     For i = 1 To UBound(mStrains) - 1
@@ -275,8 +219,7 @@ Private Sub ValidatePointOrder()
     Next i
 End Sub
 
-' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
+' Проверяет, что материал уже получил диаграмму.
 Private Sub EnsureInitialized()
-    If Not mInitialized Then Err.Raise vbObjectError + 3103, "CConcreteDiagramMaterial", "Материал не инициализирован."
+    If Not mInitialized Then Err.Raise vbObjectError + 3103, "CConcreteDiagramMaterial", "Материал бетона не инициализирован."
 End Sub
-

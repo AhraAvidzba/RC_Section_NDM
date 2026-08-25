@@ -239,7 +239,6 @@ Private Function ProvisionalConcrete() As CConcreteDiagramMaterial
     Dim concrete As CConcreteDiagramMaterial
     Set concrete = New CConcreteDiagramMaterial
     concrete.Initialize -0.0015, -15.5, -0.0035, -15.5
-    concrete.TensionMode = "Ignore"
     Set ProvisionalConcrete = concrete
 End Function
 

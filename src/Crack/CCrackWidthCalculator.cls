@@ -131,10 +131,6 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mAllowableCrackWidth = settings.GetDouble("SLS.Crack.Allowable", mAllowableCrackWidth)
     mPsiMode = settings.GetString("SLS.Crack.PsiMode", mPsiMode)
     mTensionZoneMode = settings.GetString("SLS.Crack.TensionZoneMode", mTensionZoneMode)
-    mRebarProfile = settings.GetString("Steel.RebarProfile", mRebarProfile)
-    mConcreteRbtSer = settings.GetDouble("Concrete.Rbt.SLS", mConcreteRbtSer)
-    mConcreteEb = settings.GetDouble("Concrete.Eb", mConcreteEb)
-    mSteelEs = settings.GetDouble("Steel.Es", mSteelEs)
 
     mSolverMaxIterations = settings.GetLong("Solver.MaxIterations", mSolverMaxIterations)
     mSolverLoadSteps = settings.GetLong("Solver.LoadSteps", mSolverLoadSteps)
@@ -152,9 +148,6 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
 
     If Not units Is Nothing Then
         mAllowableCrackWidth = units.InputLengthToInternal(mAllowableCrackWidth)
-        mConcreteRbtSer = units.InputStressToInternal(mConcreteRbtSer)
-        mConcreteEb = units.InputStressToInternal(mConcreteEb)
-        mSteelEs = units.InputStressToInternal(mSteelEs)
         mSolverToleranceN = Abs(units.InputForceToInternal(mSolverToleranceN))
         mSolverToleranceMx = Abs(units.InputMomentMxToInternal(mSolverToleranceMx))
         mSolverToleranceMy = Abs(units.InputMomentMyToInternal(mSolverToleranceMy))
@@ -170,25 +163,38 @@ End Sub
 ' solve-ы нужны только для Auto и только после неудачной первой проверки
 ' раскрытия с psi_s = 1.
 Public Sub Calculate(ByVal currentSolver As CSectionSolver, ByVal section As CSectionModel, _
-        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal currentSet As CCalculationMaterialSet, ByVal mcrcSet As CCalculationMaterialSet, _
+        ByVal crackedSet As CCalculationMaterialSet, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         Optional ByVal centroidMxForCentralCheck As Variant, Optional ByVal centroidMyForCentralCheck As Variant)
     ClearResult
-    ValidateInputs currentSolver, section, concreteMaterial, steelMaterial
+    ValidateInputs currentSolver, section, currentSet, mcrcSet, crackedSet
+    ApplyMaterialSetProperties mcrcSet, crackedSet
     NormalizeSettings
 
     If IsCentralTensionState(targetN, centroidMxForCentralCheck, centroidMyForCentralCheck) Then
-        CalculateCentralTension currentSolver, currentSolver, section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
+        CalculateCentralTension currentSolver, section, currentSet, mcrcSet, crackedSet, targetN, targetMx, targetMy
     Else
-        CalculateGeneralBending currentSolver, currentSolver, section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
+        CalculateGeneralBending currentSolver, section, currentSet, mcrcSet, crackedSet, targetN, targetMx, targetMy
     End If
+End Sub
+
+' Берет Rbt,ser, Eb, Es и профиль арматуры из готовых material set.
+' Эти значения больше не являются отдельными настройками crack-класса:
+' они должны совпадать с диаграммами, которыми реально решается НДС.
+Private Sub ApplyMaterialSetProperties(ByVal mcrcSet As CCalculationMaterialSet, ByVal crackedSet As CCalculationMaterialSet)
+    mRebarProfile = crackedSet.RebarProfile
+    mConcreteRbtSer = mcrcSet.ConcreteTensionResistance
+    mConcreteEb = mcrcSet.ConcreteElasticModulus
+    mSteelEs = crackedSet.SteelElasticModulus
 End Sub
 
 ' Выполняет отдельную ветку СП для истинного центрального растяжения.
 ' Здесь нет нейтральной линии, поэтому Abt принимается равной всей площади
 ' бетона, а As - всей продольной арматуре, которая растянута в текущем НДС.
-Private Sub CalculateCentralTension(ByVal currentSolver As CSectionSolver, ByVal crackedSolver As CSectionSolver, _
-        ByVal section As CSectionModel, ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+Private Sub CalculateCentralTension(ByVal currentSolver As CSectionSolver, ByVal section As CSectionModel, _
+        ByVal currentSet As CCalculationMaterialSet, ByVal mcrcSet As CCalculationMaterialSet, _
+        ByVal crackedSet As CCalculationMaterialSet, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double)
     mCentralTensionBranch = True
     mPhi3 = PHI3_TENSION
@@ -200,7 +206,7 @@ Private Sub CalculateCentralTension(ByVal currentSolver As CSectionSolver, ByVal
 
     Dim selected() As Boolean
     ReDim selected(1 To section.RebarCount)
-    SelectAllTensionRebars crackedSolver, section, selected
+    SelectAllTensionRebars currentSolver, section, selected
     If mTensionRebarCount = 0 Then
         FinishNoCrack "В центральном растяжении не найдено растянутой арматуры."
         Exit Sub
@@ -220,26 +226,27 @@ Private Sub CalculateCentralTension(ByVal currentSolver As CSectionSolver, ByVal
         Exit Sub
     End If
 
-    CompleteCrackFormula crackedSolver, section, steelMaterial, selected
+    CompleteCrackFormula currentSolver, section, currentSet.SteelMaterial, selected
     If mStopReason <> vbNullString And Not mCrackFormed Then Exit Sub
-    If Not FinalizeWithPsiMode(section, concreteMaterial, steelMaterial, currentSolver, selected, _
+    If Not FinalizeWithPsiMode(section, currentSet, mcrcSet, crackedSet, currentSolver, selected, _
             targetN, targetMx, targetMy, "Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона.") Then Exit Sub
 End Sub
 
 ' Выполняет общий расчет для N + Mx + My при существующей нейтральной линии.
 ' Все геометрические величины строятся в координате s вдоль нормали к
 ' нейтральной линии, направленной в сторону растяжения.
-Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionSolver, ByVal crackedSolver As CSectionSolver, _
-        ByVal section As CSectionModel, ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionSolver, ByVal section As CSectionModel, _
+        ByVal currentSet As CCalculationMaterialSet, ByVal mcrcSet As CCalculationMaterialSet, _
+        ByVal crackedSet As CCalculationMaterialSet, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double)
     mPhi3 = IIf(targetN > NEAR_ZERO_FORCE, PHI3_TENSION, PHI3_BENDING)
 
     Dim nx As Double
     Dim ny As Double
     Dim normK As Double
-    normK = Sqr(crackedSolver.KappaX * crackedSolver.KappaX + crackedSolver.KappaY * crackedSolver.KappaY)
-    nx = crackedSolver.KappaY / normK
-    ny = crackedSolver.KappaX / normK
+    normK = Sqr(currentSolver.KappaX * currentSolver.KappaX + currentSolver.KappaY * currentSolver.KappaY)
+    nx = currentSolver.KappaY / normK
+    ny = currentSolver.KappaX / normK
 
     Dim st As Double
     Dim sc As Double
@@ -251,7 +258,7 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionSolver, ByVal
     End If
 
     Dim neutralS As Double
-    neutralS = -crackedSolver.Epsilon0 / normK
+    neutralS = -currentSolver.Epsilon0 / normK
     mTensionDepth = st - MaxDouble(neutralS, sc)
     If mTensionDepth <= NEAR_ZERO_STRAIN Then
         FinishNoCrack "В текущем состоянии нет растянутой бетонной зоны."
@@ -259,7 +266,7 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionSolver, ByVal
     End If
 
     Dim sBarMax As Double
-    If Not FindMostTensionRebarProjection(crackedSolver, section, nx, ny, sBarMax) Then
+    If Not FindMostTensionRebarProjection(currentSolver, section, nx, ny, sBarMax) Then
         FinishNoCrack "В расчетной растянутой зоне не найдено растянутой арматуры."
         Exit Sub
     End If
@@ -274,7 +281,7 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionSolver, ByVal
         Exit Sub
     End If
 
-    mAbt = ConcreteAreaInZone(crackedSolver, section, nx, ny, zoneLowerS, _
+    mAbt = ConcreteAreaInZone(currentSolver, section, nx, ny, zoneLowerS, _
         StrComp(mTensionZoneMode, "FullTension", vbTextCompare) = 0)
     If mAbt <= 0# Then
         FinishNoCrack "В расчетную растянутую зону не попали бетонные элементы."
@@ -283,15 +290,15 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionSolver, ByVal
 
     Dim selected() As Boolean
     ReDim selected(1 To section.RebarCount)
-    SelectRebarsInZone crackedSolver, section, nx, ny, zoneLowerS, selected
+    SelectRebarsInZone currentSolver, section, nx, ny, zoneLowerS, selected
     If mTensionRebarCount = 0 Then
         FinishNoCrack "В расчетную растянутую зону не попали растянутые стержни."
         Exit Sub
     End If
 
-    CompleteCrackFormula crackedSolver, section, steelMaterial, selected
+    CompleteCrackFormula currentSolver, section, currentSet.SteelMaterial, selected
     If mStopReason <> vbNullString And Not mCrackFormed Then Exit Sub
-    If Not FinalizeWithPsiMode(section, concreteMaterial, steelMaterial, currentSolver, selected, _
+    If Not FinalizeWithPsiMode(section, currentSet, mcrcSet, crackedSet, currentSolver, selected, _
             targetN, targetMx, targetMy, "Расчет выполнен для произвольного сечения по общей НДМ-ветке.") Then Exit Sub
 End Sub
 
@@ -301,7 +308,7 @@ End Sub
 Private Function CalculateLambdaCrc(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
         ByVal steelMaterial As Object, ByVal startSolver As CSectionSolver, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
-    On Error GoTo RestoreConcreteMode
+    On Error GoTo Failed
 
     Dim epsCrc As Double
     epsCrc = ConcreteCrackingStrain()
@@ -309,12 +316,6 @@ Private Function CalculateLambdaCrc(ByVal section As CSectionModel, ByVal concre
         mStopReason = "InputError: Concrete.Rbt.SLS и Concrete.Eb должны быть положительными для режима Auto."
         Exit Function
     End If
-
-    Dim oldMode As String
-    Dim hadMode As Boolean
-    hadMode = TryGetConcreteTensionMode(concreteMaterial, oldMode)
-    If hadMode Then SetConcreteTensionMode concreteMaterial, "UseDiagram"
-    ApplyTensionFallback concreteMaterial
 
     Dim eps0 As Double
     Dim kx As Double
@@ -333,41 +334,31 @@ Private Function CalculateLambdaCrc(ByVal section As CSectionModel, ByVal concre
     ' сохраняется, а максимальная растягивающая деформация бетона равна Rbt,ser/Eb.
     For iter = 1 To mSolverMaxIterations
         If Not EvaluateCrcStrainResidual(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-                eps0, kx, ky, epsCrc, solver, rDir1, rDir2, rLimit, lambdaValue) Then GoTo RestoreAndExit
+                eps0, kx, ky, epsCrc, solver, rDir1, rDir2, rLimit, lambdaValue) Then Exit Function
 
         If Abs(rDir1) <= CRACK_DIRECTION_TOLERANCE And _
                 Abs(rDir2) <= CRACK_DIRECTION_TOLERANCE And _
                 Abs(rLimit) <= CRACK_STRAIN_RATIO_TOLERANCE Then
             If lambdaValue <= 0# Then
                 mStopReason = "NumericalFailure: найденное состояние образования трещины имеет неположительный lambda_crc."
-                GoTo RestoreAndExit
+                Exit Function
             End If
             mLambdaCrc = lambdaValue
             AppendDiagnostic "lambda_crc=" & FormatNumberInvariant(mLambdaCrc) & _
                 "; iterations=" & CStr(iter) & "; method=DirectCrackingStrain"
             CalculateLambdaCrc = True
-            GoTo RestoreAndExit
+            Exit Function
         End If
 
         If Not ApplyCrcNewtonStep(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-                epsCrc, eps0, kx, ky, rDir1, rDir2, rLimit) Then GoTo RestoreAndExit
+                epsCrc, eps0, kx, ky, rDir1, rDir2, rLimit) Then Exit Function
     Next iter
 
     mStopReason = "NumericalFailure: прямой поиск lambda_crc по eps_bt,crc не сошелся за заданное число итераций."
-
-RestoreAndExit:
-    If hadMode Then SetConcreteTensionMode concreteMaterial, oldMode
     Exit Function
 
-RestoreConcreteMode:
-    Dim errNumber As Long
-    Dim errSource As String
-    Dim errDescription As String
-    errNumber = Err.Number
-    errSource = Err.Source
-    errDescription = Err.Description
-    If hadMode Then SetConcreteTensionMode concreteMaterial, oldMode
-    Err.Raise errNumber, errSource, errDescription
+Failed:
+    mStopReason = "NumericalFailure: расчет lambda_crc не выполнен: " & Err.Description
 End Function
 
 
@@ -615,8 +606,9 @@ End Sub
 ' Только при непрохождении проверки Auto ищет lambda_crc, определяет
 ' sigma_s,crc для того же набора стержней и пересчитывает ширину с меньшим
 ' psi_s по формуле СП.
-Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
-        ByVal steelMaterial As Object, ByVal currentSolver As CSectionSolver, ByRef selected() As Boolean, _
+Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal currentSet As CCalculationMaterialSet, _
+        ByVal mcrcSet As CCalculationMaterialSet, ByVal crackedSet As CCalculationMaterialSet, _
+        ByVal currentSolver As CSectionSolver, ByRef selected() As Boolean, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal finalReason As String) As Boolean
     mPsiS = 1#
@@ -636,7 +628,8 @@ Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal concr
 
     AppendDiagnostic "Auto psi_s: первая проверка с psi_s=1 не проходит; запускается расчет lambda_crc."
     mConverged = False
-    If Not CalculateLambdaCrc(section, concreteMaterial, steelMaterial, currentSolver, targetN, targetMx, targetMy) Then Exit Function
+    If Not CalculateLambdaCrc(section, mcrcSet.ConcreteMaterial, mcrcSet.SteelMaterial, currentSolver, _
+            targetN, targetMx, targetMy) Then Exit Function
     If mLambdaCrc > 1# Then
         FinishNoCrack "Трещина не образована: предельная растянутая деформация бетона не достигнута при lambda = 1."
         FinalizeWithPsiMode = True
@@ -644,14 +637,14 @@ Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal concr
     End If
 
     Dim crcSolver As CSectionSolver
-    Set crcSolver = SolveState(section, concreteMaterial, steelMaterial, currentSolver, _
-        targetN * mLambdaCrc, targetMx * mLambdaCrc, targetMy * mLambdaCrc, "Ignore")
+    Set crcSolver = SolveState(section, crackedSet.ConcreteMaterial, crackedSet.SteelMaterial, currentSolver, _
+        targetN * mLambdaCrc, targetMx * mLambdaCrc, targetMy * mLambdaCrc)
     If Not crcSolver.Converged Then
         mStopReason = "NumericalFailure: состояние lambda_crc после образования трещины не сошлось: " & crcSolver.StopReason
         Exit Function
     End If
 
-    mSigmaSCrc = AverageSelectedSteelStress(crcSolver, section, steelMaterial, selected)
+    mSigmaSCrc = AverageSelectedSteelStress(crcSolver, section, crackedSet.SteelMaterial, selected)
     mPsiS = AutoPsi(mSigmaS, mSigmaSCrc)
     FinalizeWidth finalReason & " Psi_s уточнен автоматически после непрохождения первой проверки."
     FinalizeWithPsiMode = mConverged
@@ -694,16 +687,7 @@ End Sub
 ' класс трещин только выбирает режим бетона и передает готовые N, Mx, My.
 Private Function SolveState(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
         ByVal steelMaterial As Object, ByVal startSolver As CSectionSolver, _
-        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
-        ByVal concreteTensionMode As String) As CSectionSolver
-    On Error GoTo RestoreConcreteMode
-
-    Dim oldMode As String
-    Dim hadMode As Boolean
-    hadMode = TryGetConcreteTensionMode(concreteMaterial, oldMode)
-    If hadMode Then SetConcreteTensionMode concreteMaterial, concreteTensionMode
-    If StrComp(concreteTensionMode, "UseDiagram", vbTextCompare) = 0 Then ApplyTensionFallback concreteMaterial
-
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As CSectionSolver
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
     ConfigureSolver solver
@@ -716,20 +700,7 @@ Private Function SolveState(ByVal section As CSectionModel, ByVal concreteMateri
         End If
     End If
     solver.Solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
-
-    If hadMode Then SetConcreteTensionMode concreteMaterial, oldMode
     Set SolveState = solver
-    Exit Function
-
-RestoreConcreteMode:
-    Dim errNumber As Long
-    Dim errSource As String
-    Dim errDescription As String
-    errNumber = Err.Number
-    errSource = Err.Source
-    errDescription = Err.Description
-    If hadMode Then SetConcreteTensionMode concreteMaterial, oldMode
-    Err.Raise errNumber, errSource, errDescription
 End Function
 
 ' Передает внутренние настройки в CSectionSolver без чтения Config внутри solver-а.
@@ -1059,42 +1030,16 @@ End Sub
 
 ' Проверяет расчетный контракт класса.
 Private Sub ValidateInputs(ByVal currentSolver As CSectionSolver, ByVal section As CSectionModel, _
-        ByVal concreteMaterial As Object, ByVal steelMaterial As Object)
+        ByVal currentSet As CCalculationMaterialSet, ByVal mcrcSet As CCalculationMaterialSet, _
+        ByVal crackedSet As CCalculationMaterialSet)
     If currentSolver Is Nothing Then Err.Raise vbObjectError + 3700, "CCrackWidthCalculator", "Результат решателя сечения не передан."
     If Not currentSolver.Converged Then Err.Raise vbObjectError + 3701, "CCrackWidthCalculator", "Результат решателя сечения не сошелся."
     If section Is Nothing Then Err.Raise vbObjectError + 3702, "CCrackWidthCalculator", "Модель расчетного сечения не передана."
     If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 3703, "CCrackWidthCalculator", "В модели расчетного сечения нет бетонных элементов."
     If section.RebarCount <= 0 Then Err.Raise vbObjectError + 3704, "CCrackWidthCalculator", "В модели расчетного сечения нет арматурных элементов."
-    If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 3705, "CCrackWidthCalculator", "Материал бетона не передан."
-    If steelMaterial Is Nothing Then Err.Raise vbObjectError + 3706, "CCrackWidthCalculator", "Материал арматуры не передан."
-End Sub
-
-' Устанавливает SLS-параметры fallback-ветви растянутого бетона, если материал
-' поддерживает соответствующие свойства. Для CConcreteDiagramMaterial это
-' позволяет не задавать растянутую часть диаграммы вручную.
-Private Sub ApplyTensionFallback(ByVal concreteMaterial As Object)
-    On Error Resume Next
-    CallByName concreteMaterial, "TensionElasticModulus", VbLet, mConcreteEb
-    CallByName concreteMaterial, "TensionStressLimit", VbLet, mConcreteRbtSer
-    On Error GoTo 0
-End Sub
-
-' Безопасно читает текущий режим растянутого бетона, чтобы восстановить его
-' после внутреннего solve.
-Private Function TryGetConcreteTensionMode(ByVal concreteMaterial As Object, ByRef mode As String) As Boolean
-    On Error Resume Next
-    mode = CStr(CallByName(concreteMaterial, "TensionMode", VbGet))
-    TryGetConcreteTensionMode = (Err.Number = 0)
-    Err.Clear
-    On Error GoTo 0
-End Function
-
-' Безопасно задает режим растянутого бетона. Если тестовый материал не имеет
-' такого свойства, вызов тихо пропускается, не меняя сам solver.
-Private Sub SetConcreteTensionMode(ByVal concreteMaterial As Object, ByVal mode As String)
-    On Error Resume Next
-    CallByName concreteMaterial, "TensionMode", VbLet, mode
-    On Error GoTo 0
+    If currentSet Is Nothing Then Err.Raise vbObjectError + 3705, "CCrackWidthCalculator", "Материалы текущего НДС не переданы."
+    If mcrcSet Is Nothing Then Err.Raise vbObjectError + 3706, "CCrackWidthCalculator", "Материалы Mcrc не переданы."
+    If crackedSet Is Nothing Then Err.Raise vbObjectError + 3707, "CCrackWidthCalculator", "Материалы CrackedNDS не переданы."
 End Sub
 
 ' Сбрасывает результаты предыдущего вызова.
@@ -1286,22 +1231,6 @@ End Property
 
 Public Property Let TensionZoneMode(ByVal value As String)
     mTensionZoneMode = value
-End Property
-
-Public Property Let RebarProfile(ByVal value As String)
-    mRebarProfile = value
-End Property
-
-Public Property Let ConcreteTensionLimitStress(ByVal value As Double)
-    mConcreteRbtSer = value
-End Property
-
-Public Property Let ConcreteElasticModulus(ByVal value As Double)
-    mConcreteEb = value
-End Property
-
-Public Property Let SteelElasticModulus(ByVal value As Double)
-    mSteelEs = value
 End Property
 
 Public Property Let SolverMethod(ByVal value As String)
