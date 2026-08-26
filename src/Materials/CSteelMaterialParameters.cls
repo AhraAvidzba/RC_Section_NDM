@@ -64,31 +64,6 @@ Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader, Optional By
     Validate
 End Sub
 
-' Заполняет параметры напрямую без чтения Config.
-' Используется в тестах построителей диаграмм, чтобы сверять нормативные точки
-' на фиксированном наборе характеристик без зависимости от состояния книги.
-Public Sub Initialize(ByVal rscULS As Double, ByVal rsULS As Double, _
-        ByVal rscSLS As Double, ByVal rsSLS As Double, ByVal esc As Double, _
-        ByVal es As Double, Optional ByVal rebarProfile As String = "Ribbed", _
-        Optional ByVal twoLineEsc2 As Double = 0.025, Optional ByVal twoLineEs2 As Double = 0.025, _
-        Optional ByVal threeLineEsc2 As Double = 0.015, Optional ByVal threeLineEs2 As Double = 0.015)
-    mRscULS = rscULS
-    mRsULS = rsULS
-    mRscSLS = rscSLS
-    mRsSLS = rsSLS
-    mEsc = esc
-    mEs = es
-    mTwoLineEsc2 = twoLineEsc2
-    mTwoLineEs2 = twoLineEs2
-    mThreeLineEsc2 = threeLineEsc2
-    mThreeLineEs2 = threeLineEs2
-    If mRscSLS <= 0# Then mRscSLS = mRsSLS
-    If mEsc <= 0# Then mEsc = mEs
-    mRebarProfile = rebarProfile
-    NormalizeProfile
-    Validate
-End Sub
-
 ' Нормализует пользовательскую подпись профиля арматуры.
 Private Sub NormalizeProfile()
     Select Case LCase$(Trim$(mRebarProfile))
@@ -156,3 +131,32 @@ End Property
 Public Property Get ThreeLineEsc2() As Double
     ThreeLineEsc2 = mThreeLineEsc2
 End Property
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Тесты передают параметры напрямую, чтобы проверять построение диаграмм без
+' временного листа Config. В пользовательском сценарии значения должны идти
+' через LoadFromSettings и единый CMaterialModelProvider.
+
+Public Sub Initialize(ByVal rscULS As Double, ByVal rsULS As Double, _
+        ByVal rscSLS As Double, ByVal rsSLS As Double, ByVal esc As Double, _
+        ByVal es As Double, Optional ByVal rebarProfile As String = "Ribbed", _
+        Optional ByVal twoLineEsc2 As Double = 0.025, Optional ByVal twoLineEs2 As Double = 0.025, _
+        Optional ByVal threeLineEsc2 As Double = 0.015, Optional ByVal threeLineEs2 As Double = 0.015)
+    mRscULS = rscULS
+    mRsULS = rsULS
+    mRscSLS = rscSLS
+    mRsSLS = rsSLS
+    mEsc = esc
+    mEs = es
+    mTwoLineEsc2 = twoLineEsc2
+    mTwoLineEs2 = twoLineEs2
+    mThreeLineEsc2 = threeLineEsc2
+    mThreeLineEs2 = threeLineEs2
+    If mRscSLS <= 0# Then mRscSLS = mRsSLS
+    If mEsc <= 0# Then mEsc = mEs
+    mRebarProfile = rebarProfile
+    NormalizeProfile
+    Validate
+End Sub

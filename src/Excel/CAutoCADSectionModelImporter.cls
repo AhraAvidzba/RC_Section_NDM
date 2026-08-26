@@ -67,20 +67,6 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
     Set ImportFromModelSpace = model
 End Function
 
-' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
-Public Function BuildFromRegionArrays(ByVal concreteRegions As Variant, ByVal rebarRegions As Variant, _
-        ByVal steelClass As String, Optional ByVal minArea As Double = 0.000001) As CSectionModel
-    Dim model As CSectionModel
-    Set model = New CSectionModel
-    model.SourceType = "AutoCADImport"
-
-    AddConcreteRegionArray model, concreteRegions, minArea
-    AddRebarRegionArray model, rebarRegions, steelClass, minArea
-    ValidateImportedModel model
-
-    Set BuildFromRegionArrays = model
-End Function
-
 Private Sub AddConcreteRegionEntity(ByVal model As CSectionModel, ByVal entity As Object, ByVal minArea As Double, ByVal units As CUnitSystem)
     Dim area As Double
     area = InputArea(CDbl(entity.Area), units)
@@ -283,5 +269,24 @@ End Function
 
 Private Function InputFourthPowerLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then InputFourthPowerLength = value Else InputFourthPowerLength = units.InputFourthPowerLengthToInternal(value)
+End Function
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Тесты собирают AutoCAD-import модель из массивов, чтобы проверить фильтрацию,
+' заполнение CSectionModel и расчетные поля без запуска AutoCAD COM.
+
+Public Function BuildFromRegionArrays(ByVal concreteRegions As Variant, ByVal rebarRegions As Variant, _
+        ByVal steelClass As String, Optional ByVal minArea As Double = 0.000001) As CSectionModel
+    Dim model As CSectionModel
+    Set model = New CSectionModel
+    model.SourceType = "AutoCADImport"
+
+    AddConcreteRegionArray model, concreteRegions, minArea
+    AddRebarRegionArray model, rebarRegions, steelClass, minArea
+    ValidateImportedModel model
+
+    Set BuildFromRegionArrays = model
 End Function
 

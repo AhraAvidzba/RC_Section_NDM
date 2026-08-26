@@ -1231,28 +1231,12 @@ Public Property Get Iterations() As Long
     Iterations = mIterations
 End Property
 
-Public Property Get RetryCount() As Long
-    RetryCount = mRetryCount
-End Property
-
 Public Property Get MomentEquilibriumResidual() As Double
     MomentEquilibriumResidual = mMomentEquilibriumResidual
 End Property
 
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
-End Property
-
-Public Property Get CriticalStrain() As Double
-    CriticalStrain = mCriticalStrain
-End Property
-
-Public Property Get CriticalElement() As String
-    CriticalElement = mCriticalElement
-End Property
-
-Public Property Get CriticalStrainUtilization() As Double
-    CriticalStrainUtilization = mCriticalStrainUtilization
 End Property
 
 Public Property Get LastSolver() As CSectionSolver
@@ -1353,6 +1337,31 @@ End Property
 
 Public Property Let SolverSecantMinStepNorm(ByVal value As Double)
     mSolverSecantMinStepNorm = value
+End Property
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Эти свойства раскрывают внутреннюю диагностику поиска несущей способности.
+' Они нужны regression-тестам, чтобы убедиться, что solver действительно
+' дошел до нужного предельного элемента, использовал retry-ветку и корректно
+' оценил utilization. Пользовательский вывод берет уже агрегированные поля
+' SafetyFactor, LimitState, MomentUltimate и статусы batch-расчета.
+
+Public Property Get RetryCount() As Long
+    RetryCount = mRetryCount
+End Property
+
+Public Property Get CriticalStrain() As Double
+    CriticalStrain = mCriticalStrain
+End Property
+
+Public Property Get CriticalElement() As String
+    CriticalElement = mCriticalElement
+End Property
+
+Public Property Get CriticalStrainUtilization() As Double
+    CriticalStrainUtilization = mCriticalStrainUtilization
 End Property
 
 

@@ -161,16 +161,22 @@ Private Function IsStackedLocation(ByVal value As String) As Boolean
     IsStackedLocation = (StrComp(Trim$(value), "Stacked", vbTextCompare) = 0)
 End Function
 
-Public Property Get AngleStep() As Double
-    AngleStep = mAngleStep
-End Property
-
 Public Property Get CentroidX() As Double
     CentroidX = mCentroidX
 End Property
 
 Public Property Get CentroidY() As Double
     CentroidY = mCentroidY
+End Property
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Эти диагностические свойства нужны проверкам круговой раскладки: тесты
+' сверяют угловой шаг и расчетный радиус осей стержней с ожидаемой геометрией.
+
+Public Property Get AngleStep() As Double
+    AngleStep = mAngleStep
 End Property
 
 Public Property Get AxisRadius() As Double

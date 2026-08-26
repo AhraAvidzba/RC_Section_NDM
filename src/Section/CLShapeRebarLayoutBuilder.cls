@@ -472,14 +472,6 @@ Private Function HasBarAt(ByVal layout As CRebarLayout, ByVal xCoord As Double, 
     Next i
 End Function
 
-Public Property Get StepAlong() As Double
-    StepAlong = mStepAlong
-End Property
-
-Public Property Get Perimeter() As Double
-    Perimeter = mPerimeter
-End Property
-
 Public Property Get CentroidX() As Double
     CentroidX = mCentroidX
 End Property
@@ -488,11 +480,26 @@ Public Property Get CentroidY() As Double
     CentroidY = mCentroidY
 End Property
 
-Public Property Get RequestedCount() As Long
-    RequestedCount = mRequestedCount
-End Property
-
 Public Property Get SkippedDuplicateCount() As Long
     SkippedDuplicateCount = mSkippedDuplicateCount
+End Property
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Эти свойства раскрывают внутреннюю геометрию раскладки Г-образного сечения.
+' Тесты используют их, чтобы проверить длину обхода и шаг расстановки без
+' анализа уже созданных координат каждого стержня.
+
+Public Property Get StepAlong() As Double
+    StepAlong = mStepAlong
+End Property
+
+Public Property Get Perimeter() As Double
+    Perimeter = mPerimeter
+End Property
+
+Public Property Get RequestedCount() As Long
+    RequestedCount = mRequestedCount
 End Property
 

@@ -281,11 +281,6 @@ Public Property Get RebarID(ByVal index As Long) As String
     RebarID = mRebarID(index)
 End Property
 
-Public Property Get RebarSourceName(ByVal index As Long) As String
-    CheckRebarIndex index
-    RebarSourceName = mRebarSourceName(index)
-End Property
-
 Public Property Get RebarSourceHandle(ByVal index As Long) As String
     CheckRebarIndex index
     RebarSourceHandle = mRebarSourceHandle(index)
@@ -309,11 +304,6 @@ End Property
 Public Property Get RebarDiameter(ByVal index As Long) As Double
     CheckRebarIndex index
     RebarDiameter = mRebarDiameter(index)
-End Property
-
-Public Property Get RebarSteelClass(ByVal index As Long) As String
-    CheckRebarIndex index
-    RebarSteelClass = mRebarSteelClass(index)
 End Property
 
 Public Property Get RebarMaterialID(ByVal index As Long) As Long
@@ -346,3 +336,21 @@ End Sub
 Private Sub CheckRebarIndex(ByVal index As Long)
     If index < 1 Or index > mRebarCount Then Err.Raise vbObjectError + 5221, "CSectionModel", "Индекс арматурного элемента вне допустимого диапазона."
 End Sub
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Эти трассировочные свойства нужны regression-тестам AutoCAD/import и старых
+' сценариев, где проверяется перенос исходных имен и профиля арматуры внутрь
+' CSectionModel. Обычные расчеты берут рабочие свойства стержня через ID,
+' координаты, площадь, диаметр, материал и комментарий.
+
+Public Property Get RebarSourceName(ByVal index As Long) As String
+    CheckRebarIndex index
+    RebarSourceName = mRebarSourceName(index)
+End Property
+
+Public Property Get RebarSteelClass(ByVal index As Long) As String
+    CheckRebarIndex index
+    RebarSteelClass = mRebarSteelClass(index)
+End Property

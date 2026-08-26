@@ -946,10 +946,6 @@ Public Property Get Iterations() As Long
     Iterations = mIterations
 End Property
 
-Public Property Get LoadStepsCompleted() As Long
-    LoadStepsCompleted = mLoadStepsCompleted
-End Property
-
 Public Property Get Tangent(ByVal rowIndex As Long, ByVal columnIndex As Long) As Double
     Tangent = mK(rowIndex, columnIndex)
 End Property
@@ -960,18 +956,6 @@ End Property
 
 Public Property Get SolverMethod() As String
     SolverMethod = mSolverMethod
-End Property
-
-Public Property Get InternalForceEvaluationCount() As Long
-    InternalForceEvaluationCount = mInternalForceEvaluationCount
-End Property
-
-Public Property Get InternalNewtonCallCount() As Long
-    InternalNewtonCallCount = mInternalNewtonCallCount
-End Property
-
-Public Property Get MatrixRestartCount() As Long
-    MatrixRestartCount = mMatrixRestartCount
 End Property
 
 Public Property Get LastResidualNorm() As Double
@@ -1018,10 +1002,6 @@ Public Property Let MinLineSearchAlpha(ByVal value As Double)
     mMinLineSearchAlpha = value
 End Property
 
-Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
-    mDiagnosticsEnabled = value
-End Property
-
 Public Property Let SolverMethod(ByVal value As String)
     mSolverMethod = value
 End Property
@@ -1040,6 +1020,34 @@ End Property
 
 Public Property Let MaxDeltaKappa(ByVal value As Double)
     mMaxDeltaKappa = value
+End Property
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Эти свойства и настройки раскрывают внутренний ход Newton/Secant. Они нужны
+' unit- и regression-тестам, чтобы отличать ветки алгоритма, считать пробные
+' пересчеты усилий и проверять рестарты матрицы. Пользовательский расчет
+' использует сходимость, найденные деформации, внутренние усилия и DiagnosticLog.
+
+Public Property Get LoadStepsCompleted() As Long
+    LoadStepsCompleted = mLoadStepsCompleted
+End Property
+
+Public Property Get InternalForceEvaluationCount() As Long
+    InternalForceEvaluationCount = mInternalForceEvaluationCount
+End Property
+
+Public Property Get InternalNewtonCallCount() As Long
+    InternalNewtonCallCount = mInternalNewtonCallCount
+End Property
+
+Public Property Get MatrixRestartCount() As Long
+    MatrixRestartCount = mMatrixRestartCount
+End Property
+
+Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
+    mDiagnosticsEnabled = value
 End Property
 
 

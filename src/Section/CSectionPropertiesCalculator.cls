@@ -36,38 +36,6 @@ Private mPrincipalRadius1 As Double
 Private mPrincipalRadius2 As Double
 Private mLastCalculationSeconds As Double
 
-Public Sub CalculateConcrete(ByVal section As CSectionModel)
-    If section Is Nothing Then Err.Raise vbObjectError + 2200, "CSectionPropertiesCalculator", "Модель сечения не передана."
-    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 2201, "CSectionPropertiesCalculator", "В модели сечения нет бетонных элементов."
-
-    Clear
-
-    Dim t0 As Double
-    t0 = Timer
-
-    Dim i As Long
-    Dim a As Double
-    Dim x As Double
-    Dim y As Double
-
-    For i = 1 To section.ConcreteCount
-        a = section.ConcreteArea(i)
-        x = section.ConcreteX(i)
-        y = section.ConcreteY(i)
-
-        mArea = mArea + a
-        mStaticMomentX = mStaticMomentX + a * y
-        mStaticMomentY = mStaticMomentY + a * x
-        mIx = mIx + a * y * y
-        mIy = mIy + a * x * x
-        mIxy = mIxy + a * x * y
-    Next i
-
-    If mArea <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2202, "CSectionPropertiesCalculator", "Площадь сечения равна нулю."
-
-    FinalizeProperties t0
-End Sub
-
 Public Sub CalculateTransformed(ByVal section As CSectionModel, _
         ByVal concrete As Object, ByVal steel As Object)
     Const probeStrain As Double = -0.000001
@@ -243,10 +211,6 @@ Public Property Get PrincipalRadius2() As Double
     PrincipalRadius2 = mPrincipalRadius2
 End Property
 
-Public Property Get LastCalculationSeconds() As Double
-    LastCalculationSeconds = mLastCalculationSeconds
-End Property
-
 Private Function Atn2(ByVal y As Double, ByVal x As Double) As Double
     If Abs(x) <= GEOM_TOLERANCE Then
         If y > 0# Then
@@ -264,6 +228,49 @@ Private Function Atn2(ByVal y As Double, ByVal x As Double) As Double
         Atn2 = Atn(y / x) - GEOM_PI
     End If
 End Function
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Geometry/performance-тесты используют бетон-only свойства и время расчета,
+' чтобы проверять качество дискретизации и скорость без материального
+' приведения арматуры. Рабочий Results snapshot вызывает CalculateTransformed.
+
+Public Sub CalculateConcrete(ByVal section As CSectionModel)
+    If section Is Nothing Then Err.Raise vbObjectError + 2200, "CSectionPropertiesCalculator", "Модель сечения не передана."
+    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 2201, "CSectionPropertiesCalculator", "В модели сечения нет бетонных элементов."
+
+    Clear
+
+    Dim t0 As Double
+    t0 = Timer
+
+    Dim i As Long
+    Dim a As Double
+    Dim x As Double
+    Dim y As Double
+
+    For i = 1 To section.ConcreteCount
+        a = section.ConcreteArea(i)
+        x = section.ConcreteX(i)
+        y = section.ConcreteY(i)
+
+        mArea = mArea + a
+        mStaticMomentX = mStaticMomentX + a * y
+        mStaticMomentY = mStaticMomentY + a * x
+        mIx = mIx + a * y * y
+        mIy = mIy + a * x * x
+        mIxy = mIxy + a * x * y
+    Next i
+
+    If mArea <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2202, "CSectionPropertiesCalculator", "Площадь сечения равна нулю."
+
+    FinalizeProperties t0
+End Sub
+
+Public Property Get LastCalculationSeconds() As Double
+    LastCalculationSeconds = mLastCalculationSeconds
+End Property
 
 
 

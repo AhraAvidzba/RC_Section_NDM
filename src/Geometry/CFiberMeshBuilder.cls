@@ -152,10 +152,6 @@ Public Property Get FiberCount() As Long
     FiberCount = mFiberCount
 End Property
 
-Public Property Get BuildSeconds() As Double
-    BuildSeconds = mBuildSeconds
-End Property
-
 Public Property Get FiberX(ByVal index As Long) As Double
     CheckFiberIndex index
     FiberX = mFibers(index).X
@@ -196,6 +192,17 @@ Private Sub CheckFiberIndex(ByVal index As Long)
         Err.Raise vbObjectError + 2106, "CFiberMeshBuilder", "Индекс бетонного элемента вне допустимого диапазона."
     End If
 End Sub
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Performance-тесты читают время построения сетки, чтобы ловить грубые
+' регрессии скорости. Рабочий расчет использует уже построенные элементы и
+' не принимает решений по этому диагностическому значению.
+
+Public Property Get BuildSeconds() As Double
+    BuildSeconds = mBuildSeconds
+End Property
 
 
 

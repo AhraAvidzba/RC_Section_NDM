@@ -306,28 +306,32 @@ End Function
 ' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
 Private Function BuildCalculationMessage(ByVal section As CSectionModel, ByVal settings As CSystemSettingsReader, _
         ByVal batch As CBatchSectionCalculator) As String
-    Dim prefix As String
-    prefix = ImportedSectionMessage(section, settings)
+    Dim calculationCaption As String
+    calculationCaption = "Расчет"
+    If IsAutoCADSnapshotCalculation(section, settings) Then
+        calculationCaption = "Расчет импортированной из AutoCAD геометрии"
+    End If
 
     If batch.InvalidInputCount > 0 Then
-        BuildCalculationMessage = prefix & "Расчет завершен с ошибками ввода. Обработано сочетаний: " & _
+        BuildCalculationMessage = calculationCaption & " завершен с ошибками ввода. Обработано сочетаний: " & _
             CStr(batch.Count) & "; ошибок ввода: " & CStr(batch.InvalidInputCount) & "." & vbCrLf & _
             "Проверьте строки со статусом InvalidInput на листе Results." & vbCrLf & _
             "Первая ошибка: " & batch.FirstInvalidInputMessage
     Else
-        BuildCalculationMessage = prefix & "Расчет завершен. Обработано сочетаний: " & CStr(batch.Count) & _
+        BuildCalculationMessage = calculationCaption & " завершен. Обработано сочетаний: " & CStr(batch.Count) & _
             ". Определяющее сочетание: " & batch.GoverningCombinationID
     End If
 End Function
 
-Private Function ImportedSectionMessage(ByVal section As CSectionModel, ByVal settings As CSystemSettingsReader) As String
+' Отличает расчет обычной Generated-модели от расчета AutoCAD-snapshot.
+' Здесь не выполняется импорт: функция только выбирает человеческий текст
+' сообщения после того, как модель уже построена через BuildWorkbookSectionModel.
+Private Function IsAutoCADSnapshotCalculation(ByVal section As CSectionModel, ByVal settings As CSystemSettingsReader) As Boolean
     If section Is Nothing Then Exit Function
     If settings Is Nothing Then Exit Function
+    If StrComp(settings.GetRawString("Geometry.Source", "Generated"), "AutoCAD", vbTextCompare) <> 0 Then Exit Function
 
-    If StrComp(settings.GetRawString("Geometry.Source", "Generated"), "AutoCAD", vbTextCompare) = 0 Then
-        ImportedSectionMessage = "Импортировано из AutoCAD: бетонных Region: " & _
-            CStr(section.ConcreteCount) & "; арматурных Region: " & CStr(section.RebarCount) & "." & vbCrLf
-    End If
+    IsAutoCADSnapshotCalculation = (StrComp(section.SourceType, "AutoCADImport", vbTextCompare) = 0)
 End Function
 
 ' Собирает компактный список всех сочетаний, которые reader реально добавил

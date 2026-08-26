@@ -77,29 +77,6 @@ Public Sub Initialize(ByVal settings As CSystemSettingsReader, Optional ByVal un
     mInitialized = True
 End Sub
 
-' Инициализирует provider уже подготовленными параметрами. Метод используется
-' тестами: он проходит тот же путь построения диаграмм, что и обычное чтение
-' Config, но не зависит от состояния рабочей книги.
-Public Sub InitializeFromParameters(ByVal concreteParameters As CConcreteMaterialParameters, _
-        ByVal steelParameters As CSteelMaterialParameters, _
-        Optional ByVal strengthConcreteDiagram As String = "TwoLine", _
-        Optional ByVal strengthConcreteTension As String = "Ignore", _
-        Optional ByVal strengthSteelDiagram As String = "TwoLine", _
-        Optional ByVal mcrcConcreteDiagram As String = "ThreeLine", _
-        Optional ByVal mcrcSteelDiagram As String = "TwoLine", _
-        Optional ByVal crackedConcreteDiagram As String = "TwoLine", _
-        Optional ByVal crackedSteelDiagram As String = "TwoLine")
-    If concreteParameters Is Nothing Then Err.Raise vbObjectError + 3243, "CMaterialModelProvider", "Параметры бетона не переданы."
-    If steelParameters Is Nothing Then Err.Raise vbObjectError + 3244, "CMaterialModelProvider", "Параметры арматуры не переданы."
-
-    Set mConcreteParameters = concreteParameters
-    Set mSteelParameters = steelParameters
-    BuildPurpose PURPOSE_STRENGTH, "I", strengthConcreteDiagram, strengthConcreteTension, strengthSteelDiagram
-    BuildPurpose PURPOSE_MCRC, "II", mcrcConcreteDiagram, "UseDiagram", mcrcSteelDiagram
-    BuildPurpose PURPOSE_CRACKED_NDS, "II", crackedConcreteDiagram, "Ignore", crackedSteelDiagram
-    mInitialized = True
-End Sub
-
 ' Строит полный материалный набор одной расчетной цели: две диаграммы и все
 ' численные свойства, которые потом нужны capacity, crack и Results snapshot.
 Private Sub BuildPurpose(ByVal purpose As String, ByVal limitStateGroup As String, _
@@ -445,6 +422,39 @@ Public Property Get RebarProfile() As String
     RebarProfile = mSteelParameters.RebarProfile
 End Property
 
+' Проверяет, что provider уже построил диаграммы.
+Private Sub EnsureInitialized()
+    If Not mInitialized Then Err.Raise vbObjectError + 3242, "CMaterialModelProvider", "Material provider не инициализирован."
+End Sub
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Этот API нужен unit-тестам материальных диаграмм и расчетных сценариев без
+' чтения листа Config. В рабочем пользовательском сценарии provider должен
+' инициализироваться через Initialize(settings, units), чтобы источник данных
+' оставался одним и совпадал с настройками книги.
+
+Public Sub InitializeFromParameters(ByVal concreteParameters As CConcreteMaterialParameters, _
+        ByVal steelParameters As CSteelMaterialParameters, _
+        Optional ByVal strengthConcreteDiagram As String = "TwoLine", _
+        Optional ByVal strengthConcreteTension As String = "Ignore", _
+        Optional ByVal strengthSteelDiagram As String = "TwoLine", _
+        Optional ByVal mcrcConcreteDiagram As String = "ThreeLine", _
+        Optional ByVal mcrcSteelDiagram As String = "TwoLine", _
+        Optional ByVal crackedConcreteDiagram As String = "TwoLine", _
+        Optional ByVal crackedSteelDiagram As String = "TwoLine")
+    If concreteParameters Is Nothing Then Err.Raise vbObjectError + 3243, "CMaterialModelProvider", "Параметры бетона не переданы."
+    If steelParameters Is Nothing Then Err.Raise vbObjectError + 3244, "CMaterialModelProvider", "Параметры арматуры не переданы."
+
+    Set mConcreteParameters = concreteParameters
+    Set mSteelParameters = steelParameters
+    BuildPurpose PURPOSE_STRENGTH, "I", strengthConcreteDiagram, strengthConcreteTension, strengthSteelDiagram
+    BuildPurpose PURPOSE_MCRC, "II", mcrcConcreteDiagram, "UseDiagram", mcrcSteelDiagram
+    BuildPurpose PURPOSE_CRACKED_NDS, "II", crackedConcreteDiagram, "Ignore", crackedSteelDiagram
+    mInitialized = True
+End Sub
+
 Public Property Get ConcreteParameters() As CConcreteMaterialParameters
     EnsureInitialized
     Set ConcreteParameters = mConcreteParameters
@@ -454,8 +464,3 @@ Public Property Get SteelParameters() As CSteelMaterialParameters
     EnsureInitialized
     Set SteelParameters = mSteelParameters
 End Property
-
-' Проверяет, что provider уже построил диаграммы.
-Private Sub EnsureInitialized()
-    If Not mInitialized Then Err.Raise vbObjectError + 3242, "CMaterialModelProvider", "Material provider не инициализирован."
-End Sub

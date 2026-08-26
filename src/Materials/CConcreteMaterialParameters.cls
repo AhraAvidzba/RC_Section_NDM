@@ -64,31 +64,6 @@ Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader, Optional By
     Validate
 End Sub
 
-' Заполняет параметры напрямую без чтения Config.
-' Метод нужен тестам и служебным сценариям, где важно проверить построитель
-' диаграмм из известных чисел, не создавая временный Excel-диапазон.
-Public Sub Initialize(ByVal rbULS As Double, ByVal rbtULS As Double, _
-        ByVal rbSLS As Double, ByVal rbtSLS As Double, ByVal eb As Double, _
-        Optional ByVal ebt As Double = 0#, _
-        Optional ByVal eb1Red As Double = 0.0015, Optional ByVal ebt1Red As Double = 0.00008, _
-        Optional ByVal eb0 As Double = 0.002, Optional ByVal ebt0 As Double = 0.0001, _
-        Optional ByVal eb2 As Double = 0.0035, Optional ByVal ebt2 As Double = 0.00015)
-    mRbULS = rbULS
-    mRbtULS = rbtULS
-    mRbSLS = rbSLS
-    mRbtSLS = rbtSLS
-    mEb = eb
-    mEbt = ebt
-    mEb1Red = eb1Red
-    mEbt1Red = ebt1Red
-    mEb0 = eb0
-    mEbt0 = ebt0
-    mEb2 = eb2
-    mEbt2 = ebt2
-    If mEbt <= 0# Then mEbt = mEb
-    Validate
-End Sub
-
 ' Проверяет, что характеристики можно использовать для диаграмм.
 Private Sub Validate()
     If mRbULS <= 0# Then Err.Raise vbObjectError + 3191, "CConcreteMaterialParameters", "Concrete.Rb.ULS должен быть положительным."
@@ -152,3 +127,32 @@ End Property
 Public Property Get Ebt2() As Double
     Ebt2 = mEbt2
 End Property
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Тесты передают параметры напрямую, чтобы проверять построение диаграмм без
+' временного листа Config. Обычный расчет должен читать эти значения через
+' LoadFromSettings, иначе можно незаметно обойти пользовательские настройки.
+
+Public Sub Initialize(ByVal rbULS As Double, ByVal rbtULS As Double, _
+        ByVal rbSLS As Double, ByVal rbtSLS As Double, ByVal eb As Double, _
+        Optional ByVal ebt As Double = 0#, _
+        Optional ByVal eb1Red As Double = 0.0015, Optional ByVal ebt1Red As Double = 0.00008, _
+        Optional ByVal eb0 As Double = 0.002, Optional ByVal ebt0 As Double = 0.0001, _
+        Optional ByVal eb2 As Double = 0.0035, Optional ByVal ebt2 As Double = 0.00015)
+    mRbULS = rbULS
+    mRbtULS = rbtULS
+    mRbSLS = rbSLS
+    mRbtSLS = rbtSLS
+    mEb = eb
+    mEbt = ebt
+    mEb1Red = eb1Red
+    mEbt1Red = ebt1Red
+    mEb0 = eb0
+    mEbt0 = ebt0
+    mEb2 = eb2
+    mEbt2 = ebt2
+    If mEbt <= 0# Then mEbt = mEb
+    Validate
+End Sub

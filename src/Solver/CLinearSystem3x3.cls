@@ -143,16 +143,23 @@ Public Property Get Determinant() As Double
     Determinant = mDeterminant
 End Property
 
-Public Property Get AbsoluteResidual() As Double
-    AbsoluteResidual = mAbsoluteResidual
-End Property
-
 Public Property Get RelativeResidual() As Double
     RelativeResidual = mRelativeResidual
 End Property
 
 Public Property Get StopReason() As String
     StopReason = mStopReason
+End Property
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Абсолютная сумма невязок нужна unit-тестам линейного решателя. Рабочая
+' численная логика обычно ориентируется на относительную невязку и StopReason,
+' потому что абсолютный масштаб правой части может сильно отличаться.
+
+Public Property Get AbsoluteResidual() As Double
+    AbsoluteResidual = mAbsoluteResidual
 End Property
 
 

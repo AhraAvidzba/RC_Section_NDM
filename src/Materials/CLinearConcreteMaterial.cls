@@ -18,6 +18,13 @@ Option Explicit
 
 Private mElasticModulus As Double
 
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Весь публичный API класса предназначен для unit-тестов solver-а. Он дает
+' простую линейную связь stress/strain, чтобы тестировать равновесие без
+' влияния нелинейных диаграмм и нормативного provider-а.
+
 Public Sub Initialize(ByVal elasticModulus As Double)
     If elasticModulus <= 0# Then Err.Raise vbObjectError + 3000, "CLinearConcreteMaterial", "Модуль упругости бетона должен быть положительным."
     mElasticModulus = elasticModulus

@@ -1064,24 +1064,12 @@ Public Property Get Status(ByVal index As Long) As String
     Status = mStatus(index)
 End Property
 
-Public Property Get CapacityStatus(ByVal index As Long) As String
-    CapacityStatus = mCapacityStatus(index)
-End Property
-
 Public Property Get CapacityLimitState(ByVal index As Long) As String
     CapacityLimitState = mCapacityLimitState(index)
 End Property
 
-Public Property Get StrengthCheckStatus(ByVal index As Long) As String
-    StrengthCheckStatus = mStrengthCheckStatus(index)
-End Property
-
 Public Property Get CrackStatus(ByVal index As Long) As String
     CrackStatus = mCrackStatus(index)
-End Property
-
-Public Property Get LambdaCapacity(ByVal index As Long) As Double
-    LambdaCapacity = mLambdaCapacity(index)
 End Property
 
 Public Property Get UtilizationCapacity(ByVal index As Long) As Double
@@ -1313,10 +1301,6 @@ Public Property Get StateAvailableCount() As Long
     Next i
 End Property
 
-Public Property Get StateConverged(ByVal index As Long) As Boolean
-    StateConverged = mStateConverged(index)
-End Property
-
 Public Property Get Epsilon0(ByVal index As Long) As Double
     Epsilon0 = mEpsilon0(index)
 End Property
@@ -1355,6 +1339,30 @@ End Property
 
 Public Property Get StateIterations(ByVal index As Long) As Long
     StateIterations = mStateIterations(index)
+End Property
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Эти свойства раскрывают промежуточные статусы batch-расчета, которые удобны
+' regression-тестам: отдельно проверяются поиск несущей способности, простая
+' strength-проверка по lambda и факт сходимости прямого НДС. Пользовательский
+' вывод использует агрегированные статусы, коэффициенты запаса и Results.
+
+Public Property Get CapacityStatus(ByVal index As Long) As String
+    CapacityStatus = mCapacityStatus(index)
+End Property
+
+Public Property Get StrengthCheckStatus(ByVal index As Long) As String
+    StrengthCheckStatus = mStrengthCheckStatus(index)
+End Property
+
+Public Property Get LambdaCapacity(ByVal index As Long) As Double
+    LambdaCapacity = mLambdaCapacity(index)
+End Property
+
+Public Property Get StateConverged(ByVal index As Long) As Boolean
+    StateConverged = mStateConverged(index)
 End Property
 
 

@@ -28,6 +28,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAutoCADSourceRequiresManualImport stats
     TestAutoCADImportButtonRejectsGeneratedSource stats
     TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
+    TestAutoCADCalculationMessageUsesSavedGeometry stats
     TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped stats
     TestCircleWorkbookRunWritesResults stats
     TestExecutionReportFile stats
@@ -298,6 +299,42 @@ Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiT
 
     UpdateSectionPlotForWorkbook ThisWorkbook
     AssertTrue stats, "ui.autocad.preview.dimensionShapes", CountPlotShapes("AnnotationLine") > 0
+End Sub
+
+' Проверяет, что кнопка расчета в режиме AutoCAD использует уже сохраненную
+' геометрию Results. Макрос не должен повторно импортировать Region и не должен
+' показывать строку "Импортировано из AutoCAD", потому что это действие относится
+' только к отдельной кнопке импорта геометрии.
+Private Sub TestAutoCADCalculationMessageUsesSavedGeometry(ByRef stats As TUiTestStats)
+    PrepareCircleInput
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+
+    Dim section As CSectionModel
+    Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
+    section.SourceType = "AutoCADImport"
+    section.Annotations.Clear
+
+    Dim writer As CNDMResultsWriter
+    Set writer = New CNDMResultsWriter
+    writer.WriteGeometryPreview ThisWorkbook, section, units
+
+    SetSystemSetting "Geometry.Source", "AutoCAD"
+    ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange.Cells.Item(2, 5).Value2 = "Group1"
+
+    Dim message As String
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+
+    AssertTrue stats, "ui.autocad.run.savedGeometry.message", _
+        InStr(1, message, "Расчет импортированной из AutoCAD геометрии завершен", vbTextCompare) > 0
+    AssertTrue stats, "ui.autocad.run.savedGeometry.noImportText", _
+        InStr(1, message, "Импортировано из AutoCAD", vbTextCompare) = 0
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
