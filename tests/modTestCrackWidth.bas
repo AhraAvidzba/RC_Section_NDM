@@ -46,17 +46,17 @@ End Function
 ' Материал бетона
 ' ------------------------------
 ' Проверяем, что растянутую часть диаграммы не обязательно задавать руками:
-' CConcreteDiagramMaterial умеет построить SLS fallback по Eb и Rbt,ser.
+' Mcrc-диаграмма provider-а включает растянутую ветвь бетона по параметрам II ГПС.
 Private Sub TestConcreteTensionBranches(ByRef stats As TCrackTestStats)
-    Dim concrete As CConcreteDiagramMaterial
+    Dim concrete As CMaterialDiagram
     Set concrete = ProvisionalConcrete()
     AssertClose stats, "crack.concrete.ignoreStress", concrete.GetStress(0.0001), 0#, 0.000000000001
     AssertClose stats, "crack.concrete.ignoreTangent", concrete.GetTangentModulus(0.0001), 0#, 0.000000000001
 
     Set concrete = ProvisionalConcreteWithTension()
-    AssertClose stats, "crack.concrete.useStress", concrete.GetStress(0.00002), 0.45, 0.000000000001
+    AssertClose stats, "crack.concrete.useStress", concrete.GetStress(0.00002), 0.65, 0.000000000001
     AssertClose stats, "crack.concrete.useLimit", concrete.GetStress(0.001), 1.8, 0.000000000001
-    AssertClose stats, "crack.concrete.useTangent", concrete.GetTangentModulus(0.00002), 22500#, 0.000000000001
+    AssertClose stats, "crack.concrete.useTangent", concrete.GetTangentModulus(0.00002), 32500#, 0.000000001
 End Sub
 
 ' ------------------------------
@@ -228,9 +228,9 @@ Private Function SolveServiceState(ByRef section As CSectionModel, ByVal nValue 
     Set solver = New CSectionSolver
     ConfigureTestSolver solver
     Set section = BuildGeneratedSectionModel(mesh, rebars)
-    Dim materialSet As CCalculationMaterialSet
-    Set materialSet = TestMaterialProvider().CrackedNDSSet
-    solver.Solve section, materialSet.ConcreteMaterial, materialSet.SteelMaterial, nValue, mxValue, myValue
+    Dim provider As CMaterialModelProvider
+    Set provider = TestMaterialProvider()
+    solver.Solve section, provider.ConcreteMaterial("CrackedNDS"), provider.SteelMaterial("CrackedNDS"), nValue, mxValue, myValue
     If Not solver.Converged Then Err.Raise vbObjectError + 3800, "modTestCrackWidth", "Service state did not converge: " & solver.StopReason
     Set SolveServiceState = solver
 End Function
@@ -255,9 +255,9 @@ Private Function SolveCircleServiceState(ByRef section As CSectionModel, ByVal n
     Set solver = New CSectionSolver
     ConfigureTestSolver solver
     Set section = BuildGeneratedSectionModel(mesh, rebars)
-    Dim materialSet As CCalculationMaterialSet
-    Set materialSet = TestMaterialProvider().CrackedNDSSet
-    solver.Solve section, materialSet.ConcreteMaterial, materialSet.SteelMaterial, nValue, mxValue, myValue
+    Dim provider As CMaterialModelProvider
+    Set provider = TestMaterialProvider()
+    solver.Solve section, provider.ConcreteMaterial("CrackedNDS"), provider.SteelMaterial("CrackedNDS"), nValue, mxValue, myValue
     If Not solver.Converged Then Err.Raise vbObjectError + 3801, "modTestCrackWidth", "Circle service state did not converge: " & solver.StopReason
     Set SolveCircleServiceState = solver
 End Function
@@ -289,30 +289,30 @@ Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As
     Set provider = TestMaterialProvider()
 
     If IsMissing(centroidMxForCentralCheck) Or IsMissing(centroidMyForCentralCheck) Then
-        crack.Calculate solver, section, provider.CrackedNDSSet, provider.McrcSet, provider.CrackedNDSSet, nValue, mxValue, myValue
+        crack.Calculate solver, section, provider, "CrackedNDS", nValue, mxValue, myValue
     Else
-        crack.Calculate solver, section, provider.CrackedNDSSet, provider.McrcSet, provider.CrackedNDSSet, nValue, mxValue, myValue, _
+        crack.Calculate solver, section, provider, "CrackedNDS", nValue, mxValue, myValue, _
             centroidMxForCentralCheck, centroidMyForCentralCheck
     End If
     Set CalculateCrack = crack
 End Function
 
-Private Function ProvisionalConcrete() As CConcreteDiagramMaterial
+Private Function ProvisionalConcrete() As CMaterialDiagram
     Dim provider As CMaterialModelProvider
     Set provider = TestMaterialProvider()
-    Set ProvisionalConcrete = provider.CrackedNDSSet.ConcreteMaterial
+    Set ProvisionalConcrete = provider.ConcreteMaterial("CrackedNDS")
 End Function
 
-Private Function ProvisionalConcreteWithTension() As CConcreteDiagramMaterial
-    Dim builder As CConcreteDiagramBuilder
-    Set builder = New CConcreteDiagramBuilder
-    Set ProvisionalConcreteWithTension = builder.BuildMaterial(TestConcreteParameters(), "II", "TwoLine", "UseDiagram")
-End Function
-
-Private Function ProvisionalSteel() As CSteelDiagramMaterial
+Private Function ProvisionalConcreteWithTension() As CMaterialDiagram
     Dim provider As CMaterialModelProvider
     Set provider = TestMaterialProvider()
-    Set ProvisionalSteel = provider.CrackedNDSSet.SteelMaterial
+    Set ProvisionalConcreteWithTension = provider.ConcreteMaterial("Mcrc")
+End Function
+
+Private Function ProvisionalSteel() As CMaterialDiagram
+    Dim provider As CMaterialModelProvider
+    Set provider = TestMaterialProvider()
+    Set ProvisionalSteel = provider.SteelMaterial("CrackedNDS")
 End Function
 
 Private Function TestMaterialProvider() As CMaterialModelProvider

@@ -23,8 +23,8 @@ norms/
 
 | Область | Реализация | Нормативный статус |
 |---|---|---|
-| Диаграмма бетона | `CConcreteDiagramBuilder` + `CConcreteDiagramMaterial`, параметры `rngConcreteMaterialParameters`, режимы `rngCalculationDiagramSettings` | реализованы TwoLine/ThreeLine; формулы и область применимости требуют дальнейшей нормативной трассировки |
-| Диаграмма стали | `CSteelDiagramBuilder` + `CSteelDiagramMaterial`, параметры `rngSteelMaterialParameters`, режимы `rngCalculationDiagramSettings` | реализованы TwoLine/ThreeLine; формулы и область применимости требуют дальнейшей нормативной трассировки |
+| Диаграмма бетона | `CMaterialModelProvider` строит универсальный `CMaterialDiagram` по параметрам `rngConcreteMaterialParameters` и режимам `rngCalculationDiagramSettings` | реализованы TwoLine/ThreeLine; формулы и область применимости требуют дальнейшей нормативной трассировки |
+| Диаграмма стали | `CMaterialModelProvider` строит универсальный `CMaterialDiagram` по параметрам `rngSteelMaterialParameters` и режимам `rngCalculationDiagramSettings` | реализованы TwoLine/ThreeLine; формулы и область применимости требуют дальнейшей нормативной трассировки |
 | Предельные деформации | берутся из построенной материальной диаграммы выбранного расчетного режима | отдельные дублирующие настройки предельных деформаций удалены |
 | Растянутый бетон | задается только режимом расчета в `rngCalculationDiagramSettings`: `Strength` - `Ignore/UseDiagram`, `Mcrc` - `UseDiagram`, `CrackedNDS` - `Ignore` | источник логики учета растянутого бетона централизован |
 | НДС | `CSectionSolver` | расчетная механика реализована |

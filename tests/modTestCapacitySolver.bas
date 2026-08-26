@@ -21,27 +21,49 @@ Public Function RunCapacitySolverTests() As String
     Dim t0 As Double
     t0 = Timer
 
+    AppendLine stats, "RUN: TestMxPositiveAndNegative"
     TestMxPositiveAndNegative stats
+    AppendLine stats, "RUN: TestMyPositiveAndNegative"
     TestMyPositiveAndNegative stats
+    AppendLine stats, "RUN: TestMxySignedCombinations"
     TestMxySignedCombinations stats
+    AppendLine stats, "RUN: TestConcreteTensionBehaviorAffectsSolverAndCapacity"
     TestConcreteTensionBehaviorAffectsSolverAndCapacity stats
+    AppendLine stats, "RUN: TestCircleCapacitySymmetry"
     TestCircleCapacitySymmetry stats
+    AppendLine stats, "RUN: TestLambdaLessThanOne"
     TestLambdaLessThanOne stats
+    AppendLine stats, "RUN: TestLambdaNearOne"
     TestLambdaNearOne stats
+    AppendLine stats, "RUN: TestZeroAxialForce"
     TestZeroAxialForce stats
+    AppendLine stats, "RUN: TestConcreteLimitState"
     TestConcreteLimitState stats
+    AppendLine stats, "RUN: TestConcreteTensionLimitState"
     TestConcreteTensionLimitState stats
+    AppendLine stats, "RUN: TestConcreteTensionLimitIgnored"
     TestConcreteTensionLimitIgnored stats
+    AppendLine stats, "RUN: TestSteelLimitState"
     TestSteelLimitState stats
+    AppendLine stats, "RUN: TestNumericalFailureNotPhysicalBoundary"
     TestNumericalFailureNotPhysicalBoundary stats
+    AppendLine stats, "RUN: TestAsymmetricCoupledCurvatures"
     TestAsymmetricCoupledCurvatures stats
+    AppendLine stats, "RUN: TestAsymmetricMxy"
     TestAsymmetricMxy stats
+    AppendLine stats, "RUN: TestResultWriter"
     TestResultWriter stats
+    AppendLine stats, "RUN: TestInvalidBaseMoment"
     TestInvalidBaseMoment stats
+    AppendLine stats, "RUN: TestCapacityMethodComparisons"
     TestCapacityMethodComparisons stats
+    AppendLine stats, "RUN: TestLoadMultiplierWithWorkbookTfDefaults"
     TestLoadMultiplierWithWorkbookTfDefaults stats
+    AppendLine stats, "RUN: TestLoadMultiplierSearchMethods"
     TestLoadMultiplierSearchMethods stats
+    AppendLine stats, "RUN: TestSearchMethodInputErrors"
     TestSearchMethodInputErrors stats
+    AppendLine stats, "RUN: TestSearchMethodPerformanceComparison"
     TestSearchMethodPerformanceComparison stats
 
     AppendLine stats, "TOTAL_CAPACITY: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
@@ -50,7 +72,7 @@ Public Function RunCapacitySolverTests() As String
     Exit Function
 
 Failed:
-    RunCapacitySolverTests = "RUNTIME ERROR: " & CStr(Err.Number) & _
+    RunCapacitySolverTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & _
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
 
@@ -125,10 +147,10 @@ Private Sub TestConcreteTensionBehaviorAffectsSolverAndCapacity(ByRef stats As T
     Dim rebars As CRebarLayout
     PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
 
-    Dim ignoreConcrete As CConcreteDiagramMaterial
+    Dim ignoreConcrete As CMaterialDiagram
     Set ignoreConcrete = ProvisionalConcrete()
 
-    Dim useConcrete As CConcreteDiagramMaterial
+    Dim useConcrete As CMaterialDiagram
     Set useConcrete = ProvisionalConcreteWithTension()
 
     Dim solverIgnore As CSectionSolver
@@ -153,10 +175,10 @@ End Sub
 Private Sub AssertTensionBehaviorAffectsSolverMode(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double)
-    Dim ignoreConcrete As CConcreteDiagramMaterial
+    Dim ignoreConcrete As CMaterialDiagram
     Set ignoreConcrete = ProvisionalConcrete()
 
-    Dim useConcrete As CConcreteDiagramMaterial
+    Dim useConcrete As CMaterialDiagram
     Set useConcrete = ProvisionalConcreteWithTension()
 
     Dim solverIgnore As CSectionSolver
@@ -307,7 +329,7 @@ Private Sub TestConcreteTensionLimitState(ByRef stats As TCapacityTestStats)
     Dim rebars As CRebarLayout
     PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
 
-    Dim concrete As CConcreteDiagramMaterial
+    Dim concrete As CMaterialDiagram
     Set concrete = ProvisionalConcreteWithTension()
 
     Dim cap As CCapacitySolver
@@ -330,7 +352,7 @@ Private Sub TestConcreteTensionLimitIgnored(ByRef stats As TCapacityTestStats)
     Dim rebars As CRebarLayout
     PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
 
-    Dim concrete As CConcreteDiagramMaterial
+    Dim concrete As CMaterialDiagram
     Set concrete = ProvisionalConcrete()
 
     Dim cap As CCapacitySolver
@@ -688,14 +710,11 @@ Private Sub TestLoadMultiplierWithWorkbookTfDefaults(ByRef stats As TCapacityTes
     Set materialProvider = New CMaterialModelProvider
     materialProvider.Initialize settings, units
 
-    Dim materialSet As CCalculationMaterialSet
-    Set materialSet = materialProvider.StrengthSet
-
     Dim concrete As Object
-    Set concrete = materialSet.ConcreteMaterial
+    Set concrete = materialProvider.ConcreteMaterial("Strength")
 
     Dim steel As Object
-    Set steel = materialSet.SteelMaterial
+    Set steel = materialProvider.SteelMaterial("Strength")
 
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
@@ -880,20 +899,18 @@ Private Sub ConfigureSectionSolver(ByVal solver As CSectionSolver)
     solver.ToleranceMy = 5000#
 End Sub
 
-Private Function ProvisionalConcrete() As CConcreteDiagramMaterial
-    Dim concrete As CConcreteDiagramMaterial
-    Set concrete = New CConcreteDiagramMaterial
+Private Function ProvisionalConcrete() As CMaterialDiagram
+    Dim concrete As CMaterialDiagram
+    Set concrete = New CMaterialDiagram
     concrete.Initialize -0.0015, -15.5, -0.0035, -15.5
     Set ProvisionalConcrete = concrete
 End Function
 
-Private Function ProvisionalConcreteWithTension() As CConcreteDiagramMaterial
-    Dim parameters As CConcreteMaterialParameters
-    Set parameters = TestConcreteParameters()
-
-    Dim builder As CConcreteDiagramBuilder
-    Set builder = New CConcreteDiagramBuilder
-    Set ProvisionalConcreteWithTension = builder.BuildMaterial(parameters, "I", "TwoLine", "UseDiagram")
+Private Function ProvisionalConcreteWithTension() As CMaterialDiagram
+    Dim provider As CMaterialModelProvider
+    Set provider = New CMaterialModelProvider
+    provider.InitializeFromParameters TestConcreteParameters(), TestSteelParameters(), "TwoLine", "UseDiagram"
+    Set ProvisionalConcreteWithTension = provider.ConcreteMaterial("Strength")
 End Function
 
 Private Function TestConcreteParameters() As CConcreteMaterialParameters
@@ -903,9 +920,16 @@ Private Function TestConcreteParameters() As CConcreteMaterialParameters
     Set TestConcreteParameters = parameters
 End Function
 
-Private Function ProvisionalSteel() As CSteelDiagramMaterial
-    Dim steel As CSteelDiagramMaterial
-    Set steel = New CSteelDiagramMaterial
+Private Function TestSteelParameters() As CSteelMaterialParameters
+    Dim parameters As CSteelMaterialParameters
+    Set parameters = New CSteelMaterialParameters
+    parameters.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#, "Ribbed"
+    Set TestSteelParameters = parameters
+End Function
+
+Private Function ProvisionalSteel() As CMaterialDiagram
+    Dim steel As CMaterialDiagram
+    Set steel = New CMaterialDiagram
     steel.Initialize 0.00175, 350#, 0.025
     Set ProvisionalSteel = steel
 End Function

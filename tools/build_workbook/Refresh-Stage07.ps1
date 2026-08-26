@@ -125,7 +125,7 @@ try {
     $workbook = $excel.Workbooks.Open($fullWorkbookPath)
 
     $files = @(
-        "src/Materials/CConcreteDiagramMaterial.cls",        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Materials/CMaterialDiagram.cls",        "src/Crack/CCrackWidthCalculator.cls",
         "src/Excel/CCapacityResultWriter.cls",
         "tests/modTestCrackWidth.bas"
     )

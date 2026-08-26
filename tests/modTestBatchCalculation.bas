@@ -301,9 +301,9 @@ Private Sub CheckPureCompressionReference(ByRef stats As TBatchTestStats, ByVal 
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geom, meshStep, meshStep, 1, 1
 
-    Dim concrete As CConcreteDiagramMaterial
+    Dim concrete As CMaterialDiagram
     Set concrete = ProvisionalConcrete()
-    Dim steel As CSteelDiagramMaterial
+    Dim steel As CMaterialDiagram
     Set steel = ProvisionalSteel()
 
     Dim refX As Double
@@ -330,9 +330,9 @@ Private Sub CheckPureTensionReference(ByRef stats As TBatchTestStats, ByVal case
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geom, meshStep, meshStep, 1, 1
 
-    Dim concrete As CConcreteDiagramMaterial
+    Dim concrete As CMaterialDiagram
     Set concrete = ProvisionalConcrete()
-    Dim steel As CSteelDiagramMaterial
+    Dim steel As CMaterialDiagram
     Set steel = ProvisionalSteel()
     Dim section As CSectionModel
     Set section = BuildGeneratedSectionModel(mesh, rebars)
@@ -633,9 +633,9 @@ Private Function RectangleRebars(ByVal geom As ISectionGeometry) As CRebarLayout
     Set RectangleRebars = layout
 End Function
 
-Private Function ProvisionalConcrete() As CConcreteDiagramMaterial
-    Dim concrete As CConcreteDiagramMaterial
-    Set concrete = New CConcreteDiagramMaterial
+Private Function ProvisionalConcrete() As CMaterialDiagram
+    Dim concrete As CMaterialDiagram
+    Set concrete = New CMaterialDiagram
     concrete.Initialize -0.0015, -15.5, -0.0035, -15.5
     Set ProvisionalConcrete = concrete
 End Function
@@ -655,9 +655,9 @@ Private Function TestMaterialProvider() As CMaterialModelProvider
     Set TestMaterialProvider = provider
 End Function
 
-Private Function ProvisionalSteel() As CSteelDiagramMaterial
-    Dim steel As CSteelDiagramMaterial
-    Set steel = New CSteelDiagramMaterial
+Private Function ProvisionalSteel() As CMaterialDiagram
+    Dim steel As CMaterialDiagram
+    Set steel = New CMaterialDiagram
     steel.Initialize 0.00175, 350#, 0.025
     Set ProvisionalSteel = steel
 End Function

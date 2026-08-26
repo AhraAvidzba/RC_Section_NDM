@@ -27,6 +27,12 @@ Private mRbSLS As Double ' Сопротивление бетона сжатию 
 Private mRbtSLS As Double ' Сопротивление бетона растяжению Rbt,ser для II ГПС, МПа.
 Private mEb As Double ' Начальный модуль бетона при сжатии, МПа.
 Private mEbt As Double ' Начальный модуль бетона при растяжении, МПа; default по СП равен Eb.
+Private mEb1Red As Double ' Пользовательская деформация eps_b1,red для двухлинейной сжатой ветви.
+Private mEbt1Red As Double ' Пользовательская деформация eps_bt1,red для двухлинейной растянутой ветви.
+Private mEb0 As Double ' Пользовательская деформация eps_b0 для трехлинейной сжатой ветви.
+Private mEbt0 As Double ' Пользовательская деформация eps_bt0 для трехлинейной растянутой ветви.
+Private mEb2 As Double ' Предельная деформация eps_b2 для TwoLine/ThreeLine при сжатии.
+Private mEbt2 As Double ' Предельная деформация eps_bt2 для TwoLine/ThreeLine при растяжении.
 
 ' Читает параметры из Config и сразу переводит напряжения в МПа.
 Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
@@ -38,6 +44,12 @@ Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader, Optional By
     mRbtSLS = settings.GetDouble("Concrete.Rbt.SLS", 1.8)
     mEb = settings.GetDouble("Concrete.Eb", 32500#)
     mEbt = settings.GetDouble("Concrete.Ebt", mEb)
+    mEb1Red = settings.GetDouble("Concrete.Eb1Red", 0.0015)
+    mEbt1Red = settings.GetDouble("Concrete.Ebt1Red", 0.00008)
+    mEb0 = settings.GetDouble("Concrete.Eb0", 0.002)
+    mEbt0 = settings.GetDouble("Concrete.Ebt0", 0.0001)
+    mEb2 = settings.GetDouble("Concrete.Eb2", 0.0035)
+    mEbt2 = settings.GetDouble("Concrete.Ebt2", 0.00015)
     If mEbt <= 0# Then mEbt = mEb
 
     If Not units Is Nothing Then
@@ -57,13 +69,22 @@ End Sub
 ' диаграмм из известных чисел, не создавая временный Excel-диапазон.
 Public Sub Initialize(ByVal rbULS As Double, ByVal rbtULS As Double, _
         ByVal rbSLS As Double, ByVal rbtSLS As Double, ByVal eb As Double, _
-        Optional ByVal ebt As Double = 0#)
+        Optional ByVal ebt As Double = 0#, _
+        Optional ByVal eb1Red As Double = 0.0015, Optional ByVal ebt1Red As Double = 0.00008, _
+        Optional ByVal eb0 As Double = 0.002, Optional ByVal ebt0 As Double = 0.0001, _
+        Optional ByVal eb2 As Double = 0.0035, Optional ByVal ebt2 As Double = 0.00015)
     mRbULS = rbULS
     mRbtULS = rbtULS
     mRbSLS = rbSLS
     mRbtSLS = rbtSLS
     mEb = eb
     mEbt = ebt
+    mEb1Red = eb1Red
+    mEbt1Red = ebt1Red
+    mEb0 = eb0
+    mEbt0 = ebt0
+    mEb2 = eb2
+    mEbt2 = ebt2
     If mEbt <= 0# Then mEbt = mEb
     Validate
 End Sub
@@ -76,6 +97,12 @@ Private Sub Validate()
     If mRbtSLS <= 0# Then Err.Raise vbObjectError + 3194, "CConcreteMaterialParameters", "Concrete.Rbt.SLS должен быть положительным."
     If mEb <= 0# Then Err.Raise vbObjectError + 3195, "CConcreteMaterialParameters", "Concrete.Eb должен быть положительным."
     If mEbt <= 0# Then Err.Raise vbObjectError + 3196, "CConcreteMaterialParameters", "Concrete.Ebt должен быть положительным."
+    If mEb1Red <= 0# Then Err.Raise vbObjectError + 3197, "CConcreteMaterialParameters", "Concrete.Eb1Red должен быть положительным."
+    If mEbt1Red <= 0# Then Err.Raise vbObjectError + 3198, "CConcreteMaterialParameters", "Concrete.Ebt1Red должен быть положительным."
+    If mEb0 <= 0# Then Err.Raise vbObjectError + 3199, "CConcreteMaterialParameters", "Concrete.Eb0 должен быть положительным."
+    If mEbt0 <= 0# Then Err.Raise vbObjectError + 3200, "CConcreteMaterialParameters", "Concrete.Ebt0 должен быть положительным."
+    If mEb2 <= 0# Then Err.Raise vbObjectError + 3201, "CConcreteMaterialParameters", "Concrete.Eb2 должен быть положительным."
+    If mEbt2 <= 0# Then Err.Raise vbObjectError + 3202, "CConcreteMaterialParameters", "Concrete.Ebt2 должен быть положительным."
 End Sub
 
 Public Property Get RbULS() As Double
@@ -100,4 +127,28 @@ End Property
 
 Public Property Get Ebt() As Double
     Ebt = mEbt
+End Property
+
+Public Property Get Eb1Red() As Double
+    Eb1Red = mEb1Red
+End Property
+
+Public Property Get Ebt1Red() As Double
+    Ebt1Red = mEbt1Red
+End Property
+
+Public Property Get Eb0() As Double
+    Eb0 = mEb0
+End Property
+
+Public Property Get Ebt0() As Double
+    Ebt0 = mEbt0
+End Property
+
+Public Property Get Eb2() As Double
+    Eb2 = mEb2
+End Property
+
+Public Property Get Ebt2() As Double
+    Ebt2 = mEbt2
 End Property

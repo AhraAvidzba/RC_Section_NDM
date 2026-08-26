@@ -503,18 +503,20 @@ try {
     Add-SettingsInstructions $workbook $system $instructions
     $system.Range("A1:U80").Font.Name = "Arial"
     $system.Range("A1:U80").Font.Size = 9
-    $system.Columns.Item(1).ColumnWidth = 32
+    $system.Columns.Item(1).ColumnWidth = 34
     $system.Columns.Item(2).ColumnWidth = 18
-    $system.Columns.Item(3).ColumnWidth = 22
-    $system.Columns.Item(4).ColumnWidth = 14
-    $system.Columns.Item(5).ColumnWidth = 48
-    $system.Columns.Item(6).ColumnWidth = 34
-    $system.Columns.Item(7).ColumnWidth = 22
-    $system.Columns.Item(17).ColumnWidth = 34
-    $system.Columns.Item(18).ColumnWidth = 18
-    $system.Columns.Item(19).ColumnWidth = 18
-    $system.Columns.Item(20).ColumnWidth = 26
-    $system.Columns.Item(21).ColumnWidth = 14
+    $system.Columns.Item(3).ColumnWidth = 12
+    $system.Columns.Item(4).ColumnWidth = 20
+    $system.Columns.Item(5).ColumnWidth = 11
+    $system.Columns.Item(6).ColumnWidth = 11
+    $system.Columns.Item(7).ColumnWidth = 11
+    $system.Columns.Item(8).ColumnWidth = 32
+    foreach ($col in @(9, 10, 11, 12, 13)) {
+        $system.Columns.Item($col).ColumnWidth = 17
+    }
+    for ($col = 14; $col -le 69; $col++) {
+        $system.Columns.Item($col).ColumnWidth = 8.43
+    }
     $results.Range("A1:AT1").Font.Bold = $true
     $results.Range("A34:F34").Font.Bold = $true
     $results.Range("I34:W34").Font.Bold = $true

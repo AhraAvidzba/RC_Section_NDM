@@ -542,7 +542,7 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
         Dim concreteHeight As Double
         concreteWidth = ConcreteDrawWidth(section, i)
         concreteHeight = ConcreteDrawHeight(section, i)
-        resultValue = ResultValue(resultByID, section.ConcreteID(i))
+        resultValue = LookupResultValue(resultByID, section.ConcreteID(i))
         physicalState = ResultPhysicalState(physicalStateByID, section.ConcreteID(i))
         textHeight = 0.22 * MinDouble(concreteWidth, concreteHeight)
         If textHeight <= 0# Then textHeight = 1#
@@ -556,7 +556,7 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
     Next i
 
     For i = 1 To section.RebarCount
-        resultValue = ResultValue(resultByID, section.RebarID(i))
+        resultValue = LookupResultValue(resultByID, section.RebarID(i))
         physicalState = ResultPhysicalState(physicalStateByID, section.RebarID(i))
         AddAcadCircleRegion ms, section.RebarX(i), section.RebarY(i), section.RebarDiameter(i) / 2#, _
             exportSettings.RebarLayer, ResultColorByPhysicalState("Rebar", physicalState, exportSettings)
@@ -577,11 +577,11 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
     doc.Regen 1
 End Sub
 
-Private Function ResultValue(ByVal resultByID As Object, ByVal elementID As String) As Double
+Private Function LookupResultValue(ByVal resultByID As Object, ByVal elementID As String) As Double
     If resultByID.Exists(elementID) Then
-        ResultValue = CDbl(resultByID.Item(elementID))
+        LookupResultValue = CDbl(resultByID.Item(elementID))
     Else
-        Err.Raise vbObjectError + 4356, "ResultValue", "В Results нет выбранного результата для элемента: " & elementID
+        Err.Raise vbObjectError + 4356, "LookupResultValue", "В Results нет выбранного результата для элемента: " & elementID
     End If
 End Function
 

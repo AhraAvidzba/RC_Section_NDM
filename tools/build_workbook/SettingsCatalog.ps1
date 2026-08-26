@@ -122,9 +122,12 @@ function Get-SignConventionSettingsCatalog {
 # Серые вычисляемые точки диаграмм выводятся отдельно и не являются вводом.
 function Get-ConcreteMaterialParametersCatalog {
     @(
-        @("Concrete.R.ULS", "15.5", "1.10", "МПа", "Сопротивления бетона для I группы: Rb при сжатии и Rbt при растяжении."),
-        @("Concrete.R.SLS", "22.0", "1.80", "МПа", "Сопротивления бетона для II группы: Rb,ser и Rbt,ser."),
-        @("Concrete.E", "32500", "32500", "МПа", "Начальный модуль бетона. По СП 63 Ebt по умолчанию принимается равным Eb.")
+        @("Concrete.R.ULS", "15.5", "1.10", "МПа", "Для I ГПС: в колонке Сжатие задается Rb, в колонке Растяжение - Rbt."),
+        @("Concrete.R.SLS", "22.0", "1.80", "МПа", "Для II ГПС: в колонке Сжатие задается Rb,ser, в колонке Растяжение - Rbt,ser."),
+        @("Concrete.E", "32500", "32500", "МПа", "Начальный модуль бетона: Eb при сжатии и Ebt при растяжении; default Ebt = Eb."),
+        @("Concrete.TwoLine.Eb1Red", "0.0015", "0.00008", "-", "Для TwoLine: eps_b1,red при сжатии и eps_bt1,red при растяжении."),
+        @("Concrete.ThreeLine.Eb0", "0.002", "0.0001", "-", "Для ThreeLine: eps_b0 и eps_bt0 - деформации начала горизонтального участка."),
+        @("Concrete.TwoThreeLine.Eb2", "0.0035", "0.00015", "-", "Предельные деформации eps_b2 и eps_bt2 для TwoLine и ThreeLine.")
     )
 }
 
@@ -132,10 +135,12 @@ function Get-ConcreteMaterialParametersCatalog {
 # Rsc,ser и Esc оставлены как программное расширение для симметрии.
 function Get-SteelMaterialParametersCatalog {
     @(
-        @("Steel.RebarProfile", "Ribbed", "", "-", "Профиль арматуры для коэффициента φ2 в расчете трещин: Ribbed или Smooth."),
-        @("Steel.R.ULS", "350", "350", "МПа", "Сопротивления арматуры для I группы: Rsc при сжатии и Rs при растяжении."),
-        @("Steel.R.SLS", "390", "390", "МПа", "Сопротивления арматуры для II группы: Rsc,ser и Rs,ser; Rsc,ser - программный параметр."),
-        @("Steel.E", "200000", "200000", "МПа", "Модули арматуры: Esc и Es. По СП 63 основной модуль Es одинаков при сжатии и растяжении.")
+        @("Steel.R.ULS", "350", "350", "МПа", "Для I ГПС: в колонке Сжатие задается Rsc, в колонке Растяжение - Rs."),
+        @("Steel.R.SLS", "390", "390", "МПа", "Для II ГПС: в колонке Сжатие задается Rsc,ser, в колонке Растяжение - Rs,ser."),
+        @("Steel.E", "200000", "200000", "МПа", "Модуль арматуры: Esc при сжатии и Es при растяжении; default Esc = Es."),
+        @("Steel.TwoLine.Es2", "0.025", "0.025", "-", "Для TwoLine: eps_sc2 при сжатии и eps_s2 при растяжении."),
+        @("Steel.ThreeLine.Es2", "0.015", "0.015", "-", "Для ThreeLine: eps_sc2 при сжатии и eps_s2 при растяжении."),
+        @("Steel.RebarProfile", "Ribbed", "", "-", "Профиль арматуры для phi2 в расчете трещин: Ribbed - периодическая, Smooth - гладкая.")
     )
 }
 
@@ -152,7 +157,7 @@ function Get-CalculationDiagramSettingsCatalog {
 # Возвращает подготовленные данные или справочное значение для дальнейшего шага сборки.
 function Get-GeometrySettingsCatalog {
     @(
-        @{ RangeName = "rngCircleGeometry"; Title = "Круглое сечение"; StartRow = 16; StartColumn = 6; Rows = @(
+        @{ RangeName = "rngCircleGeometry"; Title = "Круглое сечение"; Rows = @(
             @("Circle.Diameter", "300", "мм", "Диаметр круглого сечения."),
             @("Rebar.AxisDistance", "40", "мм", "Расстояние от грани круга до оси стержней as."),
             @("Rebar.Count", "8", "шт", "Количество продольных стержней по окружности."),
@@ -163,7 +168,7 @@ function Get-GeometrySettingsCatalog {
             @("Rebar.Loc2row", "Stacked", "-", "Расположение второго ряда: Stacked - внутрь сечения по радиусу к центру; SideBySide - справа по часовой касательной."),
             @("Rebar.Loc3row", "Stacked", "-", "Расположение третьего ряда: Stacked - внутрь сечения по радиусу к центру; SideBySide - справа по часовой касательной.")
         )},
-        @{ RangeName = "rngRoundedRectangleGeometry"; Title = "Скругленный прямоугольник"; StartRow = 16; StartColumn = 17; Rows = @(
+        @{ RangeName = "rngRoundedRectangleGeometry"; Title = "Скругленный прямоугольник"; Rows = @(
             @("RoundedRectangle.Width", "300", "мм", "Ширина прямоугольного сечения со скруглениями."),
             @("RoundedRectangle.Height", "200", "мм", "Высота прямоугольного сечения со скруглениями."),
             @("RoundedRectangle.RadiusTopLeft", "0", "мм", "Радиус верхнего левого угла."),
@@ -171,7 +176,7 @@ function Get-GeometrySettingsCatalog {
             @("RoundedRectangle.RadiusBottomRight", "0", "мм", "Радиус нижнего правого угла."),
             @("RoundedRectangle.RadiusBottomLeft", "0", "мм", "Радиус нижнего левого угла.")
         )},
-        @{ RangeName = "rngLShapeGeometry"; Title = "Г-образное сечение"; StartRow = 30; StartColumn = 6; FaceTable = $true; Rows = @(
+        @{ RangeName = "rngLShapeGeometry"; Title = "Г-образное сечение"; FaceTable = $true; Rows = @(
             @("величина размера", "550", "250", "250", "600", "мм", "H1 и B1 - высота и ширина верхнего прямоугольника; H2 и B2 - высота и ширина нижнего прямоугольника; полная высота сечения равна H1 + H2."),
             @("as_1", "40", "40", "40", "40", "мм", "Отступ от грани _1. Нумерация граней идет слева направо для H и сверху вниз для B: _1 - левая/верхняя грань."),
             @("as_2", "40", "40", "40", "40", "мм", "Отступ от грани _2. Нумерация граней идет слева направо для H и сверху вниз для B: _2 - правая/нижняя грань."),
@@ -313,19 +318,19 @@ function Get-SettingInstructionLines {
             "Если задан offset, программа переносит моменты от пользовательской точки приложения нагрузки к внутренней системе координат расчетных элементов перед передачей в CSectionSolver.",
             "Инженерный смысл: осевая сила N при ненулевом offset создает дополнительный момент от эксцентриситета. Поэтому изменение offset при тех же N, Mx, My физически меняет расчетную задачу.",
             "Число вводится в текущей INPUT-единице длины. Например эксцентриситет 100 mm задается как 100 при mm, 10 при cm или 0.1 при m.",
-            "Нормативная связь: равновесие внутренних усилий НДМ сверяется с СП 63.13330.2018, п. 8.1.23. Принятая в программе система координат и знаков описана в начале этой справки и на листе Config в блоках Units и Sign convention.",
+            "Нормативная связь: равновесие внутренних усилий НДМ сверяется с СП 63.13330.2018, п. 8.1.23. Принятая в программе система координат и знаков описана в начале этой справки и на листе Config в блоках Единицы измерения и Система знаков.",
             "Практическая проверка: при чистом N и нулевом offset для симметричного сечения кривизны должны быть близки к нулю; для несимметричного сечения они также не должны появляться только из-за выбора внутреннего начала координат."
         ) }
         "Concrete.R.SLS" { return @($lead) + @(
             "Строка задает сопротивления бетона для расчетов II группы: Rb,ser при сжатии и Rbt,ser при растяжении.",
-            "Эти значения используются при построении material set-ов Mcrc и CrackedNDS. Для Mcrc растянутый бетон включен фиксированно, для CrackedNDS растянутый бетон выключен фиксированно.",
+            "Эти значения используются при построении диаграмм Mcrc и CrackedNDS. Для Mcrc растянутый бетон включен фиксированно, для CrackedNDS растянутый бетон выключен фиксированно.",
             "Rbt,ser участвует в проверке образования трещины: ε_bt,crc = Rbt,ser / E_b и N_crc = A_red · Rbt,ser при центральном растяжении.",
-            "Фактические точки диаграммы строит CConcreteDiagramBuilder. Расчетное ядро не читает пользовательскую таблицу точек: источник истины - эта строка параметров плюс таблица 'Настройки диаграмм для расчетов'.",
+            "Фактические точки диаграммы строит CMaterialModelProvider, а в решатель передается готовый CMaterialDiagram. Расчетное ядро не читает пользовательскую таблицу точек: источник истины - эта строка параметров плюс таблица 'Настройки диаграмм для расчетов'.",
             "Значения вводятся в текущей INPUT-единице напряжения и перед расчетом переводятся в МПа."
         ) }
         "Concrete.R.ULS" { return @($lead) + @(
             "Строка задает сопротивления бетона для расчетов I группы: Rb при сжатии и Rbt при растяжении.",
-            "Эти значения используются material set-ом Strength. Они не должны подменяться значениями II группы и не читаются solver-ом напрямую.",
+            "Эти значения используются диаграммой Strength. Они не должны подменяться значениями II группы и не читаются solver-ом напрямую.",
             "Если для Strength выбран режим растянутого бетона Ignore, положительная ветвь бетонной диаграммы в прочностном расчете отключается. Если выбран UseDiagram, растяжение идет по автоматически построенной ветви.",
             "Фактические предельные деформации Strength берутся из построенной диаграммы, а не из отдельных старых настроек пределов."
         ) }
@@ -336,8 +341,8 @@ function Get-SettingInstructionLines {
             "Eb используется в построении диаграмм, в начальной жесткости и в формуле образования трещины ε_bt,crc = Rbt,ser / E_b."
         ) }
         "Concrete.*" { return @($lead) + @(
-            "Это исходное значение материала бетона в Config. Из этих параметров CConcreteDiagramBuilder автоматически строит расчетные диаграммы для I и II группы.",
-            "Фактическое напряжение бетонного элемента в НДМ определяется уже построенной диаграммой material set-а: Strength, Mcrc или CrackedNDS.",
+            "Это исходное значение материала бетона в Config. Из этих параметров CMaterialModelProvider автоматически строит расчетные диаграммы для I и II группы.",
+            "Фактическое напряжение бетонного элемента в НДМ определяется уже построенной диаграммой выбранного расчета: Strength, Mcrc или CrackedNDS.",
             "Единицы напряжений вводятся в выбранной INPUT единице Stress и перед расчетом переводятся в МПа. Внутри ядра 1 МПа = 1 Н/мм2.",
             "Если Units.Stress.Input = MPa, значения вводятся как привычные МПа. Если выбраны kPa, то 15.5 MPa нужно ввести как 15500. Если Pa - как 15500000. Для kgf/cm2 ориентир: 15.5 MPa примерно 158 kgf/cm2. Для tf/m2 - примерно 1580 tf/m2.",
             "Нормативная трассировка: расчетные диаграммы строятся по СП 63.13330.2018, пп. 6.1.14, 6.1.20-6.1.24 и 6.1.26. Табличные значения сопротивлений пользователь задает сам."
@@ -347,18 +352,18 @@ function Get-SettingInstructionLines {
             "Ribbed означает арматуру периодического профиля. В формуле СП 63 п. 8.2.15 для нее принимается phi2 = 0.5.",
             "Smooth означает гладкую арматуру. Для нее принимается phi2 = 0.8.",
             "Формула продолжительного раскрытия, используемая программой: a_crc = phi1 * phi2 * phi3 * psi_s * (sigma_s / Es) * ls, СП 63.13330.2018, п. 8.2.15, формула (8.128).",
-            "Steel.RebarProfile не является отдельной диаграммой материала. Он нужен только для коэффициента φ2 в расчете трещин; напряжения стержней берутся из steel material set-а, построенного по таблицам арматуры.",
+            "Steel.RebarProfile не является отдельной диаграммой материала. Он нужен только для коэффициента phi2 в расчете трещин; напряжения стержней берутся из готовой диаграммы CMaterialDiagram.",
             "Разные профили или разные диаграммы арматуры в одном сечении сейчас не поддерживаются. Для AutoCAD import достаточно указать слой арматуры; профиль берется из этой настройки."
         ) }
         "Steel.R.ULS" { return @($lead) + @(
             "Строка задает сопротивления арматуры для расчетов I группы: Rsc при сжатии и Rs при растяжении.",
-            "Эти значения используются при построении диаграммы material set-а Strength. Solver получает уже готовую диаграмму и не выбирает Rsc/Rs самостоятельно.",
-            "Для TwoLine и ThreeLine производные деформационные точки строятся CSteelDiagramBuilder по СП 63.13330.2018, пп. 6.2.11, 6.2.14 и 6.2.15."
+            "Эти значения используются при построении диаграммы Strength. Solver получает уже готовую диаграмму и не выбирает Rsc/Rs самостоятельно.",
+            "Для TwoLine и ThreeLine производные деформационные точки строит CMaterialModelProvider по СП 63.13330.2018, пп. 6.2.11, 6.2.14 и 6.2.15."
         ) }
         "Steel.R.SLS" { return @($lead) + @(
             "Строка задает сопротивления арматуры для расчетов II группы: Rs,ser при растяжении и программный параметр Rsc,ser при сжатии.",
             "СП 63 явно использует Rs,ser, а отдельное обозначение Rsc,ser для этой таблицы не вводит. В программе поле Rsc,ser оставлено для симметрии и расчетных экспериментов; default Rsc,ser = Rs,ser.",
-            "Эти значения используются material set-ами Mcrc и CrackedNDS и не должны смешиваться с ULS-сопротивлениями Strength."
+            "Эти значения используются диаграммами Mcrc и CrackedNDS и не должны смешиваться с ULS-сопротивлениями Strength."
         ) }
         "Steel.E" { return @($lead) + @(
             "Строка задает модуль арматуры при сжатии Esc и растяжении Es.",
@@ -368,7 +373,7 @@ function Get-SettingInstructionLines {
         ) }
         "Steel.*" { return @($lead) + @(
             "Это исходное значение материала обычной ненапрягаемой арматуры в Config. Программа не выполняет автоматическую нормативную проверку соответствия Rs/Rsc/Es выбранному профилю.",
-            "Фактическое напряжение в каждом стержне определяется по material set-у выбранного расчета. Тип диаграммы TwoLine/ThreeLine выбирается в отдельной таблице настроек диаграмм.",
+            "Фактическое напряжение в каждом стержне определяется по CMaterialDiagram выбранного расчета. Тип диаграммы TwoLine/ThreeLine выбирается в отдельной таблице настроек диаграмм.",
             "Единицы Rs/Rsc/Es такие же, как Units.Stress.Input. Например 350 MPa вводится как 350 при MPa, 350000 при kPa, 350000000 при Pa, примерно 3569 при kgf/cm2 или примерно 35691 при tf/m2.",
             "Разные материалы арматуры в одном сечении сейчас не поддерживаются. При AutoCAD import достаточно указать, что Region относится к арматуре; профиль и диаграмма берутся из Config.",
             "Инженерное последствие: если в одном реальном сечении есть разные классы или профили арматуры, текущая версия программы требует отдельного инженерного решения или доработки модели материалов."
@@ -502,7 +507,7 @@ function Get-SettingInstructionLines {
         "Capacity.ToleranceStrain" { return @($lead) + @(
             "В UltimateStrain программа не перебирает lambda. Она подбирает плоскость деформаций так, чтобы одновременно были выполнены равновесие по N, сохранено направление Mx/My и один критический элемент дошел до своего предела деформации.",
             "Capacity.ToleranceStrain говорит, насколько близко к этому пределу нужно попасть. Например при пределе бетона -0.0035 и допуске 0.00001 расчет может остановиться, когда критическая деформация отличается от предела примерно на эту величину.",
-            "Это не физический предел. Физические пределы берутся из material set-а выбранного расчета: бетонные пределы задает построенная диаграмма бетона, пределы арматуры - построенная диаграмма арматуры.",
+            "Это не физический предел. Физические пределы берутся из диаграммы выбранного расчета: бетонные пределы задает построенная диаграмма бетона, пределы арматуры - построенная диаграмма арматуры.",
             "Меньший допуск дает более строгую численную остановку, но может увеличить число итераций или привести к NumericalFailure на сложной геометрии/диаграмме. Больший допуск ускоряет расчет, но делает найденный lambda менее точным.",
             "Ориентиры: 0.0001 - грубее и быстрее; 0.00001 - обычное значение; 0.000001 - строгая проверка, которая может потребовать больше итераций. Это относительная деформация, безразмерная величина; при смене единиц длины или нагрузки ее не пересчитывают.",
             "Нормативный статус: это численный допуск реализации, а не требование СП."
@@ -543,7 +548,7 @@ function Get-SettingInstructionLines {
             "sigma_s,crc считается как средневзвешенное по площади напряжение этих же стержней: сумма As_i * sigma_i,crc делится на сумму As_i. СП 63 задает саму величину sigma_s,crc в п. 8.2.18, но не описывает, как усреднять много стержней произвольного сечения N + Mx + My; это принятая НДМ-интерпретация.",
             "Формула: psi_s = 1 - 0.8 * sigma_s,crc / sigma_s. При численных выбросах значение ограничивается диапазоном 0...1.",
             "Если lambda_crc > 1, трещина при заданной нагрузке еще не образована, поэтому a_crc принимается равным 0.",
-            "Важно: режим растянутого бетона из Strength здесь не используется. Для lambda_crc provider всегда берет material set Mcrc: II группа, растянутый бетон UseDiagram, диаграммы с кратковременными деформационными параметрами.",
+            "Важно: режим растянутого бетона из Strength здесь не используется. Для lambda_crc provider всегда берет диаграмму Mcrc: II группа, растянутый бетон UseDiagram, диаграммы с кратковременными деформационными параметрами.",
             "Нормативная связь: базовая формула раскрытия - СП 63.13330.2018, п. 8.2.15, формула (8.128). Поиск lambda_crc для произвольного сечения N + Mx + My является инженерной НДМ-интерпретацией, потому что СП не дает отдельной явной процедуры для такой дискретной модели."
         ) }
         "SLS.Crack.TensionZoneMode" { return @($lead) + @(
@@ -722,7 +727,7 @@ function Get-SettingsInstructionCatalog {
         "СП 63 отдельно не вводит Rsc,ser в том виде, как оно выведено в таблице. В программе поле оставлено для симметрии и экспериментов; значение по умолчанию Rsc,ser = Rs,ser.",
         "Esc также является программным расширением для симметрии. Нормативный default: Esc = Es, потому что СП 63.13330.2018, п. 6.2.12 принимает модуль арматуры одинаковым при растяжении и сжатии.",
         "Производные точки арматурных диаграмм строятся по СП 63.13330.2018, пп. 6.2.11, 6.2.14 и 6.2.15. П. 6.2.13 задает смысл: TwoLine для физического предела текучести, ThreeLine для условного.",
-        "Steel.RebarProfile не меняет диаграмму арматуры. Он нужен для коэффициента φ2 при расчете ширины раскрытия трещин."
+        "Steel.RebarProfile не меняет диаграмму арматуры. Он нужен для коэффициента phi2 при расчете ширины раскрытия трещин."
     )}) | Out-Null
     $items.Add(@{ Key = "CalculationDiagramSettings"; Title = "Настройки диаграмм для расчетов"; Lines = @(
         "Эта таблица является единственным пользовательским местом выбора расчетной диаграммы и режима учета растянутого бетона.",
@@ -735,9 +740,9 @@ function Get-SettingsInstructionCatalog {
     )}) | Out-Null
     $items.Add(@{ Key = "MaterialDiagramControlTables"; Title = "Контрольные точки диаграмм"; Lines = @(
         "Служебные таблицы точек на Config нужны как независимый контроль того, какие координаты TwoLine/ThreeLine получаются из исходных параметров.",
-        "Формулы Excel в этом блоке должны математически совпадать с CConcreteDiagramBuilder и CSteelDiagramBuilder.",
+        "Формулы Excel в этом блоке должны математически совпадать с CMaterialModelProvider.",
         "Расчетное ядро не читает эти таблицы. Если пользователь случайно изменит формулы контрольного блока, расчетные результаты не изменятся, но проверка книги должна показать расхождение.",
-        "Графики рядом с контрольными точками служат только для визуальной проверки формы диаграмм."
+        "Графики рядом с контрольными точками служат только для визуальной проверки формы диаграмм. Каждый график строится по строкам контрольной таблицы для I ГПС: одна линия TwoLine и одна линия ThreeLine."
     )}) | Out-Null
     $items.Add(@{ Key = "PlotAnnotationSettings"; Title = "Аннотации схемы"; Lines = @(
         "Таблица управляет только оформлением Shape-аннотаций схемы: размерными линиями, выносными линиями, текстом размеров и групповыми подписями арматуры вида 6Ø32 или 6Ø32 + 3Ø20.",
@@ -770,14 +775,14 @@ function Get-SettingsInstructionCatalog {
         "eps_c,max (бетон растяжение) - максимальная растягивающая деформация бетонных элементов.",
         "eps_s,min (арматура сжатие) - минимальная деформация стержней арматуры.",
         "eps_s,max (арматура растяжение) - максимальная растягивающая деформация стержней арматуры.",
-        "eps_cu,comp (предел бетона сжатие) - предельная сжатая деформация бетонной диаграммы активного material set-а.",
-        "eps_cu,tens (предел бетона растяжение) - предельная растягивающая деформация бетонной диаграммы. Поле заполняется только если активный material set действительно учитывает растянутый бетон.",
-        "eps_su,comp (предел арматуры сжатие) и eps_su,tens (предел арматуры растяжение) - предельные деформации построенной диаграммы арматуры активного material set-а.",
+        "eps_cu,comp (предел бетона сжатие) - предельная сжатая деформация бетонной диаграммы активного расчета.",
+        "eps_cu,tens (предел бетона растяжение) - предельная растягивающая деформация бетонной диаграммы. Поле заполняется только если активная диаграмма действительно учитывает растянутый бетон.",
+        "eps_su,comp (предел арматуры сжатие) и eps_su,tens (предел арматуры растяжение) - предельные деформации построенной диаграммы арматуры активного расчета.",
         "h в блоке деформаций - высота всего бетонного сечения по нормали к нейтральной линии именно для фактического состояния этого LC. Это не параметр предельного момента.",
         "x в блоке деформаций - высота сжатой зоны по той же нормали для фактического состояния LC. Если все сечение сжато, x близко к h; если все растянуто, x близко к 0.",
         "StrainSafetyFactor (запас по деформациям) - минимальное отношение допустимой деформации к фактической по всем реально активным предельным деформациям.",
         "Формула: SFε = min(|εcu,comp/εc,min|; |εcu,tens/εc,max|; |εsu,comp/εs,min|; |εsu,tens/εs,max|), но в min включаются только физически применимые ветви: сжатие при отрицательной деформации, растяжение при положительной и только при наличии соответствующего предела.",
-        "Важное следствие для осевого растяжения: растянутая деформация бетона входит в StrainSafetyFactor только если активный material set учитывает растянутый бетон. Для Strength это зависит от таблицы 'Настройки диаграмм для расчетов'. Для CrackedNDS растянутый бетон выключен фиксированно.",
+        "Важное следствие для осевого растяжения: растянутая деформация бетона входит в StrainSafetyFactor только если активная диаграмма учитывает растянутый бетон. Для Strength это зависит от таблицы 'Настройки диаграмм для расчетов'. Для CrackedNDS растянутый бетон выключен фиксированно.",
         "CapacityLimitState (предельное состояние) относится к блоку предельного момента. Это причина остановки поиска MxyUltimate: ConcreteStrainLimit, SteelStrainLimit, NumericalFailure и т.п. NumericalFailure не является физическим разрушением.",
         "Mxy (действующий момент) - модуль заданного пользовательского моментного вектора: Mxy = sqrt(Mx² + My²).",
         "MxyUltimate (несущий момент) - найденный предельный модуль моментного вектора при заданной N и сохраненном направлении Mx/My.",
@@ -1508,38 +1513,32 @@ function Add-SettingsInstructions {
     }
 
     $used = $ConfigSheet.UsedRange
-    $ConfigSheet.Cells.Item(3, 5).Value2 = "Инструкции"
+    $ConfigSheet.Cells.Item(3, 5).Value2 = "Справка"
     $ConfigSheet.Cells.Item(3, 5).Font.Bold = $true
     $ConfigSheet.Cells.Item(3, 5).Interior.Color = 14277081
-    $ConfigSheet.Columns.Item(5).ColumnWidth = 14
+    $ConfigSheet.Columns.Item(5).ColumnWidth = 11
     for ($r = 4; $r -le ($used.Row + $used.Rows.Count + 5); $r++) {
         $key = [string]$ConfigSheet.Cells.Item($r, 1).Value2
         if ($anchors.ContainsKey($key)) {
             Add-InstructionHyperlink $ConfigSheet.Cells.Item($r, 5) $InstructionSheet.Name $anchors[$key]
         }
     }
-    for ($r = 1; $r -le ($used.Row + $used.Rows.Count + 40); $r++) {
-        for ($c = 6; $c -le 40; $c++) {
-            $key = [string]$ConfigSheet.Cells.Item($r, $c).Value2
-            if ($anchors.ContainsKey($key)) {
-                $targetCell = $ConfigSheet.Cells.Item($r, $c + 4)
-                if ($c -eq 6 -and ($key -like "Concrete.*" -or $key -like "Steel.*")) {
-                    $targetCell = $ConfigSheet.Cells.Item($r, $c + 5)
-                }
-                Add-InstructionHyperlink $targetCell $InstructionSheet.Name $anchors[$key]
-            }
-        }
-    }
+    Add-NamedRangeInstructionLinks $ConfigSheet $InstructionSheet.Name $anchors "rngSteelMaterialParameters" 1 6
+    Add-NamedRangeInstructionLinks $ConfigSheet $InstructionSheet.Name $anchors "rngConcreteMaterialParameters" 1 6
+    Add-NamedRangeInstructionLinks $ConfigSheet $InstructionSheet.Name $anchors "rngCircleGeometry" 1 5
+    Add-NamedRangeInstructionLinks $ConfigSheet $InstructionSheet.Name $anchors "rngRoundedRectangleGeometry" 1 5
 
     $headerLinks = @{
-        "Units" = "Units"
-        "Sign convention" = "SignConvention"
+        "Единицы измерения" = "Units"
+        "Система знаков" = "SignConvention"
         "Параметры бетона" = "ConcreteMaterialParameters"
         "Параметры арматуры" = "SteelMaterialParameters"
+        "Материал бетона" = "ConcreteMaterialParameters"
+        "Материал арматуры" = "SteelMaterialParameters"
         "Настройки диаграмм для расчетов" = "CalculationDiagramSettings"
         "Контрольные точки диаграмм" = "MaterialDiagramControlTables"
-        "[Аннотации схемы]" = "PlotAnnotationSettings"
-        "ГЕОМЕТРИЯ" = "LShapeGeometry"
+        "Аннотации схемы" = "PlotAnnotationSettings"
+        "Геометрия" = "LShapeGeometry"
     }
     for ($r = 1; $r -le ($used.Row + $used.Rows.Count + 40); $r++) {
         for ($c = 1; $c -le 40; $c++) {
@@ -1550,6 +1549,33 @@ function Add-SettingsInstructions {
                     Add-HeaderInstructionHyperlink $ConfigSheet.Cells.Item($r, $c) $caption $InstructionSheet.Name $anchors[$targetKey]
                 }
             }
+        }
+    }
+}
+
+# Расставляет ссылки "Подробнее" внутри табличных блоков, у которых есть
+# собственная колонка справки. Явная привязка к именованному диапазону не
+# зависит от того, куда блок перенесли на листе Config.
+function Add-NamedRangeInstructionLinks {
+    param(
+        [object]$ConfigSheet,
+        [string]$InstructionSheetName,
+        [hashtable]$Anchors,
+        [string]$RangeName,
+        [int]$KeyColumn,
+        [int]$InstructionColumn
+    )
+
+    try {
+        $range = $ConfigSheet.Parent.Names.Item($RangeName).RefersToRange
+    } catch {
+        return
+    }
+
+    for ($r = 2; $r -le $range.Rows.Count; $r++) {
+        $key = [string]$range.Cells.Item($r, $KeyColumn).Value2
+        if ($Anchors.ContainsKey($key)) {
+            Add-InstructionHyperlink $range.Cells.Item($r, $InstructionColumn) $InstructionSheetName $Anchors[$key]
         }
     }
 }
@@ -1586,7 +1612,7 @@ function Add-HeaderInstructionHyperlink {
 function Add-UnitSettingsTable {
     param([object]$Workbook, [object]$Sheet, [int]$HeaderRow, [int]$StartColumn)
 
-    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = "Units"
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = "Единицы измерения"
     $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 3)).Merge() | Out-Null
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
@@ -1641,7 +1667,7 @@ function Add-UnitSettingsTable {
 function Add-SignConventionSettingsTable {
     param([object]$Workbook, [object]$Sheet, [int]$HeaderRow, [int]$StartColumn)
 
-    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = "Sign convention"
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = "Система знаков"
     $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 2)).Merge() | Out-Null
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
@@ -1709,7 +1735,7 @@ function Get-PlotAnnotationSettingsCatalog {
 function Add-PlotAnnotationSettingsTable {
     param([object]$Workbook, [object]$Sheet, [int]$HeaderRow, [int]$StartColumn)
 
-    $title = "[Аннотации схемы]"
+    $title = "Аннотации схемы"
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = $title
     $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 4)).Merge() | Out-Null
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
@@ -1780,7 +1806,7 @@ function Add-MaterialParameterTable {
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
 
-    $headers = @("Параметр", "Сжатие", "Растяжение", "Ед.", "Комментарий", "Инструкции")
+    $headers = @("Параметр", "Сжатие", "Растяжение", "Ед.", "Комментарий", "Справка")
     for ($i = 0; $i -lt $headers.Count; $i++) {
         $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
         $cell.Value2 = $headers[$i]
@@ -1834,19 +1860,19 @@ function Add-CalculationDiagramSettingsTable {
 }
 
 # Служебные точки диаграмм нужны только как независимый контроль Config.
-# Расчетное ядро их не читает: те же формулы продублированы в builders.
+# Расчетное ядро их не читает: те же формулы реализованы в CMaterialModelProvider.
 function Add-MaterialDiagramControlTables {
     param([object]$Sheet, [int]$HeaderRow, [int]$StartColumn)
 
-    function New-AbsoluteCellRef {
-        param([string]$Column, [int]$Row)
-        return '$' + $Column + '$' + [string]$Row
+    function New-MaterialParameterRef {
+        param([string]$RangeName, [string]$ParameterName, [int]$ValueColumn)
+        return ('INDEX({0},MATCH("{1}",INDEX({0},,1),0),{2})' -f $RangeName, $ParameterName, $ValueColumn)
     }
 
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = "Контрольные точки диаграмм"
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
-    $headers = @("Материал", "ГПС", "Тип", "Ветвь", "ε", "σ")
+    $headers = @("Материал", "ГПС", "Тип", "Ветвь", "eps", "sigma")
     for ($i = 0; $i -lt $headers.Count; $i++) {
         $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
         $cell.Value2 = $headers[$i]
@@ -1855,13 +1881,33 @@ function Add-MaterialDiagramControlTables {
     }
 
     $concreteGroups = @(
-        @{ Group = "I"; Rb = (New-AbsoluteCellRef "G" 4); Rbt = (New-AbsoluteCellRef "H" 4); Eb = (New-AbsoluteCellRef "G" 6); Ebt = (New-AbsoluteCellRef "H" 6) },
-        @{ Group = "II"; Rb = (New-AbsoluteCellRef "G" 5); Rbt = (New-AbsoluteCellRef "H" 5); Eb = (New-AbsoluteCellRef "G" 6); Ebt = (New-AbsoluteCellRef "H" 6) }
+        @{ Group = "I"; Rb = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.R.ULS" 2); Rbt = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.R.ULS" 3); Eb = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.E" 2); Ebt = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.E" 3) },
+        @{ Group = "II"; Rb = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.R.SLS" 2); Rbt = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.R.SLS" 3); Eb = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.E" 2); Ebt = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.E" 3) }
     )
     $steelGroups = @(
-        @{ Group = "I"; Rsc = (New-AbsoluteCellRef "G" 11); Rs = (New-AbsoluteCellRef "H" 11); Esc = (New-AbsoluteCellRef "G" 13); Es = (New-AbsoluteCellRef "H" 13) },
-        @{ Group = "II"; Rsc = (New-AbsoluteCellRef "G" 12); Rs = (New-AbsoluteCellRef "H" 12); Esc = (New-AbsoluteCellRef "G" 13); Es = (New-AbsoluteCellRef "H" 13) }
+        @{ Group = "I"; Rsc = (New-MaterialParameterRef "rngSteelMaterialParameters" "Steel.R.ULS" 2); Rs = (New-MaterialParameterRef "rngSteelMaterialParameters" "Steel.R.ULS" 3); Esc = (New-MaterialParameterRef "rngSteelMaterialParameters" "Steel.E" 2); Es = (New-MaterialParameterRef "rngSteelMaterialParameters" "Steel.E" 3) },
+        @{ Group = "II"; Rsc = (New-MaterialParameterRef "rngSteelMaterialParameters" "Steel.R.SLS" 2); Rs = (New-MaterialParameterRef "rngSteelMaterialParameters" "Steel.R.SLS" 3); Esc = (New-MaterialParameterRef "rngSteelMaterialParameters" "Steel.E" 2); Es = (New-MaterialParameterRef "rngSteelMaterialParameters" "Steel.E" 3) }
     )
+    $concreteUser = @{
+        Eb1Red = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.TwoLine.Eb1Red" 2); Ebt1Red = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.TwoLine.Eb1Red" 3)
+        Eb0 = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.ThreeLine.Eb0" 2); Ebt0 = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.ThreeLine.Eb0" 3)
+        Eb2 = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.TwoThreeLine.Eb2" 2); Ebt2 = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.TwoThreeLine.Eb2" 3)
+    }
+    $steelUser = @{
+        TwoLineEsc2 = (New-MaterialParameterRef "rngSteelMaterialParameters" "Steel.TwoLine.Es2" 2); TwoLineEs2 = (New-MaterialParameterRef "rngSteelMaterialParameters" "Steel.TwoLine.Es2" 3)
+        ThreeLineEsc2 = (New-MaterialParameterRef "rngSteelMaterialParameters" "Steel.ThreeLine.Es2" 2); ThreeLineEs2 = (New-MaterialParameterRef "rngSteelMaterialParameters" "Steel.ThreeLine.Es2" 3)
+    }
+
+    $concreteEb1Red = $concreteUser["Eb1Red"]
+    $concreteEbt1Red = $concreteUser["Ebt1Red"]
+    $concreteEb0 = $concreteUser["Eb0"]
+    $concreteEbt0 = $concreteUser["Ebt0"]
+    $concreteEb2 = $concreteUser["Eb2"]
+    $concreteEbt2 = $concreteUser["Ebt2"]
+    $steelTwoLineEsc2 = $steelUser["TwoLineEsc2"]
+    $steelTwoLineEs2 = $steelUser["TwoLineEs2"]
+    $steelThreeLineEsc2 = $steelUser["ThreeLineEsc2"]
+    $steelThreeLineEs2 = $steelUser["ThreeLineEs2"]
 
     $rows = New-Object System.Collections.Generic.List[object]
     foreach ($g in $concreteGroups) {
@@ -1870,18 +1916,18 @@ function Add-MaterialDiagramControlTables {
         $rbt = $g["Rbt"]
         $eb = $g["Eb"]
         $ebt = $g["Ebt"]
-        $rows.Add(@("Concrete", $group, "TwoLine", "Compression", "=-0.0035", ("=-{0}" -f $rb))) | Out-Null
-        $rows.Add(@("Concrete", $group, "TwoLine", "Compression", "=-0.0015", ("=-{0}" -f $rb))) | Out-Null
+        $rows.Add(@("Concrete", $group, "TwoLine", "Compression", ("=-{0}" -f $concreteEb2), ("=-{0}" -f $rb))) | Out-Null
+        $rows.Add(@("Concrete", $group, "TwoLine", "Compression", ("=-{0}" -f $concreteEb1Red), ("=-{0}" -f $rb))) | Out-Null
         $rows.Add(@("Concrete", $group, "TwoLine", "Zero", "0", "0")) | Out-Null
-        $rows.Add(@("Concrete", $group, "TwoLine", "Tension", "=0.00008", ("={0}" -f $rbt))) | Out-Null
-        $rows.Add(@("Concrete", $group, "TwoLine", "Tension", "=0.00015", ("={0}" -f $rbt))) | Out-Null
-        $rows.Add(@("Concrete", $group, "ThreeLine", "Compression", "=-0.0035", ("=-{0}" -f $rb))) | Out-Null
-        $rows.Add(@("Concrete", $group, "ThreeLine", "Compression", "=-0.002", ("=-{0}" -f $rb))) | Out-Null
+        $rows.Add(@("Concrete", $group, "TwoLine", "Tension", ("={0}" -f $concreteEbt1Red), ("={0}" -f $rbt))) | Out-Null
+        $rows.Add(@("Concrete", $group, "TwoLine", "Tension", ("={0}" -f $concreteEbt2), ("={0}" -f $rbt))) | Out-Null
+        $rows.Add(@("Concrete", $group, "ThreeLine", "Compression", ("=-{0}" -f $concreteEb2), ("=-{0}" -f $rb))) | Out-Null
+        $rows.Add(@("Concrete", $group, "ThreeLine", "Compression", ("=-{0}" -f $concreteEb0), ("=-{0}" -f $rb))) | Out-Null
         $rows.Add(@("Concrete", $group, "ThreeLine", "Compression", ("=-0.6*{0}/{1}" -f $rb, $eb), ("=-0.6*{0}" -f $rb))) | Out-Null
         $rows.Add(@("Concrete", $group, "ThreeLine", "Zero", "0", "0")) | Out-Null
         $rows.Add(@("Concrete", $group, "ThreeLine", "Tension", ("=0.6*{0}/{1}" -f $rbt, $ebt), ("=0.6*{0}" -f $rbt))) | Out-Null
-        $rows.Add(@("Concrete", $group, "ThreeLine", "Tension", "=0.0001", ("={0}" -f $rbt))) | Out-Null
-        $rows.Add(@("Concrete", $group, "ThreeLine", "Tension", "=0.00015", ("={0}" -f $rbt))) | Out-Null
+        $rows.Add(@("Concrete", $group, "ThreeLine", "Tension", ("={0}" -f $concreteEbt0), ("={0}" -f $rbt))) | Out-Null
+        $rows.Add(@("Concrete", $group, "ThreeLine", "Tension", ("={0}" -f $concreteEbt2), ("={0}" -f $rbt))) | Out-Null
     }
     foreach ($g in $steelGroups) {
         $group = $g["Group"]
@@ -1895,12 +1941,12 @@ function Add-MaterialDiagramControlTables {
         $epsS0 = "({0}/{1}+0.002)" -f $rs, $es
         $epsS1 = "(0.9*{0}/{1})" -f $rs, $es
         $epsSPl = "(2*{0}-{1})" -f $epsS0, $epsS1
-        $rows.Add(@("Steel", $group, "TwoLine", "Compression", "=-0.025", ("=-{0}" -f $rsc))) | Out-Null
+        $rows.Add(@("Steel", $group, "TwoLine", "Compression", ("=-{0}" -f $steelTwoLineEsc2), ("=-{0}" -f $rsc))) | Out-Null
         $rows.Add(@("Steel", $group, "TwoLine", "Compression", ("=-{0}/{1}" -f $rsc, $esc), ("=-{0}" -f $rsc))) | Out-Null
         $rows.Add(@("Steel", $group, "TwoLine", "Zero", "0", "0")) | Out-Null
         $rows.Add(@("Steel", $group, "TwoLine", "Tension", ("={0}/{1}" -f $rs, $es), ("={0}" -f $rs))) | Out-Null
-        $rows.Add(@("Steel", $group, "TwoLine", "Tension", "=0.025", ("={0}" -f $rs))) | Out-Null
-        $rows.Add(@("Steel", $group, "ThreeLine", "Compression", "=-0.015", ("=-1.1*{0}" -f $rsc))) | Out-Null
+        $rows.Add(@("Steel", $group, "TwoLine", "Tension", ("={0}" -f $steelTwoLineEs2), ("={0}" -f $rs))) | Out-Null
+        $rows.Add(@("Steel", $group, "ThreeLine", "Compression", ("=-{0}" -f $steelThreeLineEsc2), ("=-1.1*{0}" -f $rsc))) | Out-Null
         $rows.Add(@("Steel", $group, "ThreeLine", "Compression", ("=-{0}" -f $epsScPl), ("=-1.1*{0}" -f $rsc))) | Out-Null
         $rows.Add(@("Steel", $group, "ThreeLine", "Compression", ("=-{0}" -f $epsSc0), ("=-{0}" -f $rsc))) | Out-Null
         $rows.Add(@("Steel", $group, "ThreeLine", "Compression", ("=-{0}" -f $epsSc1), ("=-0.9*{0}" -f $rsc))) | Out-Null
@@ -1908,14 +1954,14 @@ function Add-MaterialDiagramControlTables {
         $rows.Add(@("Steel", $group, "ThreeLine", "Tension", ("={0}" -f $epsS1), ("=0.9*{0}" -f $rs))) | Out-Null
         $rows.Add(@("Steel", $group, "ThreeLine", "Tension", ("={0}" -f $epsS0), ("={0}" -f $rs))) | Out-Null
         $rows.Add(@("Steel", $group, "ThreeLine", "Tension", ("={0}" -f $epsSPl), ("=1.1*{0}" -f $rs))) | Out-Null
-        $rows.Add(@("Steel", $group, "ThreeLine", "Tension", "=0.015", ("=1.1*{0}" -f $rs))) | Out-Null
+        $rows.Add(@("Steel", $group, "ThreeLine", "Tension", ("={0}" -f $steelThreeLineEs2), ("=1.1*{0}" -f $rs))) | Out-Null
     }
 
     for ($r = 0; $r -lt $rows.Count; $r++) {
         for ($c = 0; $c -lt $rows[$r].Count; $c++) {
             $value = [string]$rows[$r][$c]
+            $cell = $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + $c)
             if ($value.StartsWith("=")) {
-                $cell = $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + $c)
                 try {
                     $cell.Formula = $value
                 } catch {
@@ -1923,10 +1969,120 @@ function Add-MaterialDiagramControlTables {
                     throw "Не удалось записать формулу контрольной таблицы диаграмм в $address`: $value. $($_.Exception.Message)"
                 }
             } else {
-                $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + $c).Value2 = $value
+                $cell.Value2 = $value
             }
         }
     }
+
+    $dataRange = $Sheet.Range($Sheet.Cells.Item($HeaderRow, $StartColumn), $Sheet.Cells.Item($HeaderRow + $rows.Count, $StartColumn + 5))
+    $dataRange.Borders.LineStyle = 1
+    $dataRange.Borders.Weight = 2
+    $dataRange.Columns.AutoFit() | Out-Null
+}
+
+function Remove-MaterialDiagramCharts {
+    param([object]$Sheet)
+
+    foreach ($name in @("chMaterialConcreteDiagram", "chMaterialSteelDiagram", "grpMaterialDiagrams")) {
+        try { $Sheet.ChartObjects($name).Delete() } catch {}
+        try { $Sheet.Shapes.Item($name).Delete() } catch {}
+    }
+}
+
+function Add-MaterialDiagramCharts {
+    param(
+        [object]$Sheet,
+        [int]$TopRow,
+        [int]$StartColumn,
+        [int]$ControlHeaderRow,
+        [int]$ControlStartColumn
+    )
+
+    $left = $Sheet.Cells.Item($TopRow, $StartColumn).Left + ($Sheet.Columns.Item($StartColumn).Width / 2)
+    $top = $Sheet.Cells.Item($TopRow, $StartColumn).Top
+    $width = 453.54
+    $height = 255
+    $gap = 18
+    $epsColumn = $ControlStartColumn + 4
+    $sigmaColumn = $ControlStartColumn + 5
+
+    Add-MaterialDiagramChart $Sheet "chMaterialConcreteDiagram" "Диаграмма растяжения/сжатия бетона (I ГПС)" `
+        $left $top $width $height ($ControlHeaderRow + 1) ($ControlHeaderRow + 5) ($ControlHeaderRow + 6) ($ControlHeaderRow + 12) $epsColumn $sigmaColumn
+    Add-MaterialDiagramChart $Sheet "chMaterialSteelDiagram" "Диаграмма растяжения/сжатия арматуры (I ГПС)" `
+        $left ($top + $height + $gap) $width $height ($ControlHeaderRow + 25) ($ControlHeaderRow + 29) ($ControlHeaderRow + 30) ($ControlHeaderRow + 38) $epsColumn $sigmaColumn
+}
+
+function Add-MaterialDiagramChart {
+    param(
+        [object]$Sheet,
+        [string]$Name,
+        [string]$Title,
+        [double]$Left,
+        [double]$Top,
+        [double]$Width,
+        [double]$Height,
+        [int]$TwoLineStartRow,
+        [int]$TwoLineEndRow,
+        [int]$ThreeLineStartRow,
+        [int]$ThreeLineEndRow,
+        [int]$EpsColumn,
+        [int]$SigmaColumn
+    )
+
+    $chartObject = $Sheet.ChartObjects().Add($Left, $Top, $Width, $Height)
+    $chartObject.Name = $Name
+    $chart = $chartObject.Chart
+    $chart.ChartType = 74
+    $chart.HasTitle = $true
+    $chart.ChartTitle.Text = $Title
+    try { $chart.ChartTitle.Font.Size = 12 } catch {}
+    $chart.HasLegend = $true
+
+    while ($chart.SeriesCollection().Count -gt 0) {
+        $chart.SeriesCollection(1).Delete()
+    }
+
+    Add-MaterialDiagramChartSeries $Sheet $chart "TwoLine" $TwoLineStartRow $TwoLineEndRow $EpsColumn $SigmaColumn 15773696
+    Add-MaterialDiagramChartSeries $Sheet $chart "ThreeLine" $ThreeLineStartRow $ThreeLineEndRow $EpsColumn $SigmaColumn 49407
+
+    try {
+        $chart.Axes(1).HasTitle = $true
+        $chart.Axes(1).AxisTitle.Text = "eps"
+        $chart.Axes(2).HasTitle = $true
+        $chart.Axes(2).AxisTitle.Text = "sigma, MPa"
+        $chart.Axes(1).CrossesAt = 0
+        $chart.Axes(2).CrossesAt = 0
+        $chart.Axes(1).ReversePlotOrder = $true
+        $chart.Axes(2).ReversePlotOrder = $true
+        $chart.Axes(1).HasMajorGridlines = $false
+        $chart.Axes(2).HasMajorGridlines = $false
+        $chart.Axes(1).HasMinorGridlines = $false
+        $chart.Axes(2).HasMinorGridlines = $false
+    } catch {}
+}
+
+function Add-MaterialDiagramChartSeries {
+    param(
+        [object]$Sheet,
+        [object]$Chart,
+        [string]$SeriesName,
+        [int]$StartRow,
+        [int]$EndRow,
+        [int]$EpsColumn,
+        [int]$SigmaColumn,
+        [int]$Color
+    )
+
+    $series = $Chart.SeriesCollection().NewSeries()
+    $series.Name = $SeriesName
+    $series.XValues = $Sheet.Range($Sheet.Cells.Item($StartRow, $EpsColumn), $Sheet.Cells.Item($EndRow, $EpsColumn))
+    $series.Values = $Sheet.Range($Sheet.Cells.Item($StartRow, $SigmaColumn), $Sheet.Cells.Item($EndRow, $SigmaColumn))
+    try {
+        $series.Format.Line.ForeColor.RGB = $Color
+        $series.Format.Line.Weight = 1.5
+        $series.MarkerStyle = 8
+        $series.MarkerSize = 5
+    } catch {}
 }
 
 # Выполняет служебный шаг сборочного или проверочного сценария.
@@ -1936,12 +2092,13 @@ function Apply-SystemSettingsLayout {
     $catalog = Get-SystemSettingsCatalog
     $Sheet.Range("A1:EF260").ClearContents()
     $Sheet.Range("A1:EF260").Validation.Delete()
+    Remove-MaterialDiagramCharts $Sheet
 
     $Sheet.Cells.Item(1, 1).Value2 = "Config"
     $Sheet.Cells.Item(1, 1).Font.Bold = $true
     $Sheet.Cells.Item(1, 1).Font.Size = 16
 
-    $headers = @("Параметр", "Значение", "Ед.", "Комментарий", "Инструкции")
+    $headers = @("Параметр", "Значение", "Ед.", "Комментарий", "Справка")
     for ($i = 0; $i -lt $headers.Count; $i++) {
         $cell = $Sheet.Cells.Item(3, $i + 1)
         $cell.Value2 = $headers[$i]
@@ -1968,22 +2125,49 @@ function Apply-SystemSettingsLayout {
     $settingsRange = $Sheet.Range($Sheet.Cells.Item(3, 1), $Sheet.Cells.Item($row - 2, 5))
     Set-WorkbookNameByBounds $Workbook "rngSystemSettings" $Sheet 3 1 ($row - 2) 5
 
-    Add-MaterialParameterTable $Workbook $Sheet "rngConcreteMaterialParameters" 3 6 "Параметры бетона" (Get-ConcreteMaterialParametersCatalog)
-    Add-MaterialParameterTable $Workbook $Sheet "rngSteelMaterialParameters" 9 6 "Параметры арматуры" (Get-SteelMaterialParametersCatalog)
-    Add-CalculationDiagramSettingsTable $Workbook $Sheet 3 13
-    Add-MaterialDiagramControlTables $Sheet 3 29
+    # Правая часть листа собирается одним вертикальным стеком.
+    # A:E занимает общий реестр rngSystemSettings, F:G оставлены пустым
+    # визуальным зазором, а все специализированные диапазоны начинаются с H.
+    $rightColumn = 8
+    $rightRow = 3
+    $rightBlockGap = 2
+    $materialControlHeaderRow = 2
+    $materialControlColumn = 27
+    $materialChartTopRow = 1
+    $materialChartColumn = 14
+    Add-MaterialDiagramControlTables $Sheet $materialControlHeaderRow $materialControlColumn
 
-    Add-UnitSettingsTable $Workbook $Sheet 3 21
-    Add-SignConventionSettingsTable $Workbook $Sheet 13 22
-    Add-PlotAnnotationSettingsTable $Workbook $Sheet 56 21
+    Add-UnitSettingsTable $Workbook $Sheet $rightRow $rightColumn
+    $rightRow += (Get-UnitSettingsCatalog).Count + 1 + $rightBlockGap
+
+    Add-SignConventionSettingsTable $Workbook $Sheet $rightRow $rightColumn
+    $rightRow += (Get-SignConventionSettingsCatalog).Count + 1 + $rightBlockGap
+
+    $steelRows = Get-SteelMaterialParametersCatalog
+    Add-MaterialParameterTable $Workbook $Sheet "rngSteelMaterialParameters" $rightRow $rightColumn "Материал арматуры" $steelRows
+    $rightRow += $steelRows.Count + 1 + $rightBlockGap
+
+    $concreteRows = Get-ConcreteMaterialParametersCatalog
+    Add-MaterialParameterTable $Workbook $Sheet "rngConcreteMaterialParameters" $rightRow $rightColumn "Материал бетона" $concreteRows
+    $rightRow += $concreteRows.Count + 1 + $rightBlockGap
+
+    Add-CalculationDiagramSettingsTable $Workbook $Sheet $rightRow $rightColumn
+    $rightRow += (Get-CalculationDiagramSettingsCatalog).Count + 1 + $rightBlockGap
+
+    Add-PlotAnnotationSettingsTable $Workbook $Sheet $rightRow $rightColumn
+    $rightRow += (Get-PlotAnnotationSettingsCatalog).Count + 1 + $rightBlockGap
 
     foreach ($geometryTable in (Get-GeometrySettingsCatalog)) {
         if ($geometryTable.ContainsKey("FaceTable") -and $geometryTable.FaceTable) {
-            Add-LShapeFaceSettingsTable $Workbook $Sheet $geometryTable.RangeName $geometryTable.StartRow $geometryTable.StartColumn $geometryTable.Title $geometryTable.Rows
+            Add-LShapeFaceSettingsTable $Workbook $Sheet $geometryTable.RangeName $rightRow $rightColumn $geometryTable.Title $geometryTable.Rows
+            $rightRow += 23 + $rightBlockGap
         } else {
-            Add-GeometrySettingsTable $Workbook $Sheet $geometryTable.RangeName $geometryTable.StartRow $geometryTable.StartColumn $geometryTable.Title $geometryTable.Rows
+            Add-GeometrySettingsTable $Workbook $Sheet $geometryTable.RangeName $rightRow $rightColumn $geometryTable.Title $geometryTable.Rows
+            $rightRow += $geometryTable.Rows.Count + 1 + $rightBlockGap
         }
     }
+
+    Add-MaterialDiagramCharts $Sheet $materialChartTopRow $materialChartColumn $materialControlHeaderRow $materialControlColumn
 
     $validationLists = [ordered]@{
         "Geometry.Source" = @("Generated", "AutoCAD")
@@ -2061,13 +2245,16 @@ function Apply-SystemSettingsLayout {
     $Sheet.Columns.Item(1).ColumnWidth = 34
     $Sheet.Columns.Item(2).ColumnWidth = 18
     $Sheet.Columns.Item(3).ColumnWidth = 12
-    $Sheet.Columns.Item(4).ColumnWidth = 86
-    $Sheet.Columns.Item(5).ColumnWidth = 14
-    foreach ($colIndex in @(6, 13, 21, 29)) {
-        $Sheet.Columns.Item($colIndex).ColumnWidth = 22
+    $Sheet.Columns.Item(4).ColumnWidth = 20
+    $Sheet.Columns.Item(5).ColumnWidth = 11
+    $Sheet.Columns.Item(6).ColumnWidth = 11
+    $Sheet.Columns.Item(7).ColumnWidth = 11
+    $Sheet.Columns.Item(8).ColumnWidth = 32
+    foreach ($colIndex in @(9, 10, 11, 12, 13)) {
+        $Sheet.Columns.Item($colIndex).ColumnWidth = 17
     }
-    foreach ($colIndex in @(7, 8, 14, 15, 16, 17, 22, 23, 24, 30, 31, 32, 33, 34)) {
-        $Sheet.Columns.Item($colIndex).ColumnWidth = 16
+    for ($colIndex = 14; $colIndex -le 69; $colIndex++) {
+        $Sheet.Columns.Item($colIndex).ColumnWidth = 8.43
     }
     $Sheet.Columns.Item("BR:EF").Hidden = $true
     $Sheet.Range("A1:EF260").Font.Name = "Arial"
@@ -2148,7 +2335,7 @@ function Add-MaterialParameterValidation {
     }
 }
 
-# Добавляет валидацию для таблицы расчетных material set-ов.
+# Добавляет валидацию для таблицы расчетных режимов диаграмм.
 # ГПС и режим растянутого бетона для Mcrc/CrackedNDS заблокированы как
 # информационные поля: фактическое решение все равно принимает provider.
 function Add-CalculationDiagramValidation {
@@ -2219,7 +2406,7 @@ function Add-GeometrySettingsTable {
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
 
-    $headers = @("Параметр", "Значение", "Ед.", "Комментарий", "Инструкции")
+    $headers = @("Параметр", "Значение", "Ед.", "Комментарий", "Справка")
     for ($i = 0; $i -lt $headers.Count; $i++) {
         $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
         $cell.Value2 = $headers[$i]
@@ -2299,7 +2486,7 @@ function Add-LShapeFaceSettingsTable {
         @("B2 - нижняя",  $Rows[13][4], $Rows[16][4], $Rows[18][4], $Rows[15][4], $Rows[17][4], $Rows[19][4], "мм", "Дополнительные ряды у грани _2 B2.")
     )
 
-    $Sheet.Cells.Item($HeaderRow, $StartColumn).Value2 = "ГЕОМЕТРИЯ"
+    $Sheet.Cells.Item($HeaderRow, $StartColumn).Value2 = "Геометрия"
     $Sheet.Cells.Item($HeaderRow, $StartColumn).Font.Bold = $true
     $Sheet.Cells.Item($HeaderRow, $StartColumn).Interior.Color = 15921906
     $Sheet.Cells.Item($HeaderRow, $StartColumn).WrapText = $false
@@ -2313,8 +2500,8 @@ function Add-LShapeFaceSettingsTable {
     }
     Set-InputUnitCell $Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 4) "мм"
 
-    $mainHeaderRow = $HeaderRow + 5
-    $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn).Value2 = "ОСНОВНОЕ АРМИРОВАНИЕ"
+    $mainHeaderRow = $HeaderRow + 4
+    $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn).Value2 = "Основное армирование"
     $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn).Font.Bold = $true
     $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn).Interior.Color = 15921906
     $mainHeaders = @("Грань", "as", "d", "n", "t нач.", "t кон.", "Ед.", "Комментарий")
@@ -2331,8 +2518,8 @@ function Add-LShapeFaceSettingsTable {
         Set-InputUnitCell $Sheet.Cells.Item($mainHeaderRow + 1 + $r, $StartColumn + 6) "мм"
     }
 
-    $extraHeaderRow = $mainHeaderRow + 11
-    $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn).Value2 = "ДОПОЛНИТЕЛЬНЫЕ РЯДЫ"
+    $extraHeaderRow = $mainHeaderRow + 10
+    $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn).Value2 = "Дополнительные ряды"
     $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn).Font.Bold = $true
     $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn).Interior.Color = 15921906
     $extraHeaders = @("Грань", "d2", "положение", "привязка", "d3", "положение", "привязка", "Ед.", "Комментарий")

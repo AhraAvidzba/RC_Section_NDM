@@ -157,7 +157,7 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object)
 End Sub
 
 ' Распознает компактную таблицу параметров бетона:
-' Параметр | Сжатие | Растяжение | Ед. | Комментарий | Инструкции.
+' Параметр | Сжатие | Растяжение | Ед. | Комментарий | Справка.
 Private Function IsConcreteMaterialParametersRange(ByRef data As Variant) As Boolean
     If UBound(data, 1) < 2 Or UBound(data, 2) < 4 Then Exit Function
     IsConcreteMaterialParametersRange = _
@@ -192,6 +192,15 @@ Private Sub AppendConcreteMaterialParameters(ByRef data As Variant)
             Case "concrete.e"
                 AppendSetting "Concrete.Eb", compressionValue, compressionValue, commentValue
                 AppendSetting "Concrete.Ebt", tensionValue, tensionValue, commentValue
+            Case "concrete.twoline.eb1red"
+                AppendSetting "Concrete.Eb1Red", compressionValue, compressionValue, commentValue
+                AppendSetting "Concrete.Ebt1Red", tensionValue, tensionValue, commentValue
+            Case "concrete.threeline.eb0"
+                AppendSetting "Concrete.Eb0", compressionValue, compressionValue, commentValue
+                AppendSetting "Concrete.Ebt0", tensionValue, tensionValue, commentValue
+            Case "concrete.twothreeline.eb2"
+                AppendSetting "Concrete.Eb2", compressionValue, compressionValue, commentValue
+                AppendSetting "Concrete.Ebt2", tensionValue, tensionValue, commentValue
             Case Else
                 If Len(compressionValue) > 0 Then AppendSetting rowKey, compressionValue, compressionValue, commentValue
         End Select
@@ -234,6 +243,14 @@ Private Sub AppendSteelMaterialParameters(ByRef data As Variant)
             Case "steel.e"
                 AppendSetting "Steel.Esc", compressionValue, compressionValue, commentValue
                 AppendSetting "Steel.Es", tensionValue, tensionValue, commentValue
+            Case "steel.twoline.es2"
+                AppendSetting "Steel.TwoLine.Esc2", compressionValue, compressionValue, commentValue
+                AppendSetting "Steel.TwoLine.Es2", tensionValue, tensionValue, commentValue
+            Case "steel.threeline.es2"
+                AppendSetting "Steel.ThreeLine.Esc2", compressionValue, compressionValue, commentValue
+                AppendSetting "Steel.ThreeLine.Es2", tensionValue, tensionValue, commentValue
+            Case "steel.rebarprofile"
+                If Len(compressionValue) > 0 Then AppendSetting "Steel.RebarProfile", compressionValue, compressionValue, commentValue
             Case Else
                 If Len(compressionValue) > 0 Then AppendSetting rowKey, compressionValue, compressionValue, commentValue
         End Select
@@ -388,7 +405,7 @@ End Function
 ' Читает старую матричную компоновку LShape, если такая таблица еще встретится.
 ' Основная новая компоновка распознается выше и уходит в AppendLShapeSectionedSettings.
 Private Sub AppendLShapeFaceSettings(ByRef data As Variant)
-    If UBound(data, 1) >= 25 And UBound(data, 2) >= 9 And _
+    If UBound(data, 1) >= 23 And UBound(data, 2) >= 9 And _
             StrComp(Trim$(CStr(data(2, 1))), "H1", vbTextCompare) = 0 And _
             StrComp(Trim$(CStr(data(2, 2))), "B1", vbTextCompare) = 0 And _
             StrComp(Trim$(CStr(data(2, 3))), "H2", vbTextCompare) = 0 And _
@@ -455,7 +472,7 @@ Private Sub AppendLShapeSectionedSettings(ByRef data As Variant)
     ' понятный ввод на листе и прежний контракт для CLShapeRebarLayoutBuilder.
     For i = 1 To 8
         Dim rowIndex As Long
-        rowIndex = 6 + i
+        rowIndex = 5 + i
         AppendSetting "LShape." & faceNames(i) & ".as_" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 8)))
         AppendSetting "LShape." & faceNames(i) & ".d_" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 8)))
         AppendSetting "LShape." & faceNames(i) & ".n_" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 8)))
@@ -463,7 +480,7 @@ Private Sub AppendLShapeSectionedSettings(ByRef data As Variant)
         AppendSetting "LShape." & faceNames(i) & ".EndOffset" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 6))), Trim$(CStr(data(rowIndex, 6))), Trim$(CStr(data(rowIndex, 8)))
 
         Dim extraRow As Long
-        extraRow = 17 + i
+        extraRow = 15 + i
         AppendSetting "LShape." & faceNames(i) & ".d_2row_" & CStr(sideIndexes(i)), Trim$(CStr(data(extraRow, 2))), Trim$(CStr(data(extraRow, 2))), Trim$(CStr(data(extraRow, 9)))
         AppendSetting "LShape." & faceNames(i) & ".d_3row_" & CStr(sideIndexes(i)), Trim$(CStr(data(extraRow, 5))), Trim$(CStr(data(extraRow, 5))), Trim$(CStr(data(extraRow, 9)))
         If sideIndexes(i) = 1 Then

@@ -235,16 +235,16 @@ Private Sub ConfigureBaselineCapacity(ByVal cap As CCapacitySolver)
     cap.SteelStrainLimit = 0.025
 End Sub
 
-Private Function ProvisionalConcrete() As CConcreteDiagramMaterial
-    Dim concrete As CConcreteDiagramMaterial
-    Set concrete = New CConcreteDiagramMaterial
+Private Function ProvisionalConcrete() As CMaterialDiagram
+    Dim concrete As CMaterialDiagram
+    Set concrete = New CMaterialDiagram
     concrete.Initialize -0.0015, -15.5, -0.0035, -15.5
     Set ProvisionalConcrete = concrete
 End Function
 
-Private Function ProvisionalSteel() As CSteelDiagramMaterial
-    Dim steel As CSteelDiagramMaterial
-    Set steel = New CSteelDiagramMaterial
+Private Function ProvisionalSteel() As CMaterialDiagram
+    Dim steel As CMaterialDiagram
+    Set steel = New CMaterialDiagram
     steel.Initialize 0.00175, 350#, 0.025
     Set ProvisionalSteel = steel
 End Function

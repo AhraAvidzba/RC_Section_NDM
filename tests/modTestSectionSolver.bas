@@ -99,8 +99,8 @@ Private Sub TestSystemSettingsReader(ByRef stats As TSectionSolverTestStats)
     Dim provider As CMaterialModelProvider
     Set provider = New CMaterialModelProvider
     provider.Initialize reader
-    AssertClose stats, "settings.material.strengthTensionIgnored", provider.StrengthSet.ConcreteMaterial.GetStress(0.0001), 0#, 0.000000000001
-    AssertTrue stats, "settings.material.mcrcTensionEnabled", provider.McrcSet.ConcreteMaterial.GetStress(0.0001) > 0#
+    AssertClose stats, "settings.material.strengthTensionIgnored", provider.ConcreteMaterial("Strength").GetStress(0.0001), 0#, 0.000000000001
+    AssertTrue stats, "settings.material.mcrcTensionEnabled", provider.ConcreteMaterial("Mcrc").GetStress(0.0001) > 0#
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -173,9 +173,11 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
 
     requiredKeys = Array( _
         "Concrete.Rb.ULS", "Concrete.Rbt.ULS", "Concrete.Rb.SLS", "Concrete.Rbt.SLS", _
-        "Concrete.Eb", "Concrete.Ebt", _
+        "Concrete.Eb", "Concrete.Ebt", "Concrete.Eb1Red", "Concrete.Ebt1Red", _
+        "Concrete.Eb0", "Concrete.Ebt0", "Concrete.Eb2", "Concrete.Ebt2", _
         "Steel.Rsc.ULS", "Steel.Rs.ULS", "Steel.Rsc.SLS", "Steel.Rs.SLS", _
-        "Steel.Esc", "Steel.Es", "Steel.RebarProfile", _
+        "Steel.Esc", "Steel.Es", "Steel.TwoLine.Esc2", "Steel.TwoLine.Es2", _
+        "Steel.ThreeLine.Esc2", "Steel.ThreeLine.Es2", "Steel.RebarProfile", _
         "Diagram.Strength.Concrete", "Diagram.Strength.ConcreteTension", "Diagram.Strength.Steel", _
         "Diagram.Mcrc.Concrete", "Diagram.Mcrc.ConcreteTension", "Diagram.Mcrc.Steel", _
         "Diagram.CrackedNDS.Concrete", "Diagram.CrackedNDS.ConcreteTension", "Diagram.CrackedNDS.Steel", _
@@ -342,9 +344,9 @@ Private Sub TestDiagramConcreteCentralCompression(ByRef stats As TSectionSolverT
     Dim mesh As CFiberMeshBuilder
     Set mesh = BuildMesh(geom, 10#)
 
-    Dim concrete As CConcreteDiagramMaterial
+    Dim concrete As CMaterialDiagram
     Set concrete = ProvisionalConcrete()
-    Dim steel As CSteelDiagramMaterial
+    Dim steel As CMaterialDiagram
     Set steel = ProvisionalSteel()
 
     Dim solver As CSectionSolver
@@ -537,16 +539,16 @@ Private Sub ConfigureProvisionalSolver(ByVal solver As CSectionSolver)
     solver.MaxDeltaKappa = 0.00001
 End Sub
 
-Private Function ProvisionalConcrete() As CConcreteDiagramMaterial
-    Dim concrete As CConcreteDiagramMaterial
-    Set concrete = New CConcreteDiagramMaterial
+Private Function ProvisionalConcrete() As CMaterialDiagram
+    Dim concrete As CMaterialDiagram
+    Set concrete = New CMaterialDiagram
     concrete.Initialize -0.0015, -15.5, -0.0035, -15.5
     Set ProvisionalConcrete = concrete
 End Function
 
-Private Function ProvisionalSteel() As CSteelDiagramMaterial
-    Dim steel As CSteelDiagramMaterial
-    Set steel = New CSteelDiagramMaterial
+Private Function ProvisionalSteel() As CMaterialDiagram
+    Dim steel As CMaterialDiagram
+    Set steel = New CMaterialDiagram
     steel.Initialize 0.00175, 350#, 0.025
     Set ProvisionalSteel = steel
 End Function

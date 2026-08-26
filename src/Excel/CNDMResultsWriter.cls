@@ -230,8 +230,8 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     ' бетон + арматура, чтобы AutoCAD export и схема использовали один источник.
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
-    props.CalculateTransformed section, materialProvider.StrengthSet.ConcreteMaterial, _
-        materialProvider.StrengthSet.SteelMaterial
+    props.CalculateTransformed section, materialProvider.ConcreteMaterial("Strength"), _
+        materialProvider.SteelMaterial("Strength")
 
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MinX", OutputLength(minX, units), OutputLengthUnit(units), "Минимальный X расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxX", OutputLength(maxX, units), OutputLengthUnit(units), "Максимальный X расчетной модели."
@@ -254,9 +254,9 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     PutProperty data, rowIndex, runID, "ALL", "Output.SignConvention.N", OutputSignN(units), "-", "Пользовательский знак N на момент расчета."
     PutProperty data, rowIndex, runID, "ALL", "Output.SignConvention.Mx", OutputSignMx(units), "-", "Пользовательский знак Mx на момент расчета."
     PutProperty data, rowIndex, runID, "ALL", "Output.SignConvention.My", OutputSignMy(units), "-", "Пользовательский знак My на момент расчета."
-    PutMaterialSetProperties data, rowIndex, runID, materialProvider.StrengthSet
-    PutMaterialSetProperties data, rowIndex, runID, materialProvider.McrcSet
-    PutMaterialSetProperties data, rowIndex, runID, materialProvider.CrackedNDSSet
+    PutMaterialModelProperties data, rowIndex, runID, materialProvider, "Strength"
+    PutMaterialModelProperties data, rowIndex, runID, materialProvider, "Mcrc"
+    PutMaterialModelProperties data, rowIndex, runID, materialProvider, "CrackedNDS"
 
     Dim i As Long
     ' LC-зависимые свойства уровня сечения хранятся отдельно от поэлементных
@@ -285,20 +285,21 @@ End Sub
 ' Записывает в Results краткое описание материалной модели расчетного snapshot.
 ' Эти строки нужны для диагностики и для внешних выводов, которые не должны
 ' перечитывать текущий Config после расчета.
-Private Sub PutMaterialSetProperties(ByRef data() As Variant, ByRef rowIndex As Long, _
-        ByVal runID As Variant, ByVal materialSet As CCalculationMaterialSet)
+Private Sub PutMaterialModelProperties(ByRef data() As Variant, ByRef rowIndex As Long, _
+        ByVal runID As Variant, ByVal materialProvider As CMaterialModelProvider, _
+        ByVal purpose As String)
     Dim prefix As String
-    prefix = "Material." & materialSet.Purpose & "."
-    PutProperty data, rowIndex, runID, "ALL", prefix & "LimitStateGroup", materialSet.LimitStateGroup, "-", "Группа предельных состояний material set."
-    PutProperty data, rowIndex, runID, "ALL", prefix & "ConcreteDiagram", materialSet.ConcreteDiagramType, "-", "Тип бетонной диаграммы snapshot."
-    PutProperty data, rowIndex, runID, "ALL", prefix & "ConcreteTension", materialSet.ConcreteTensionBehavior, "-", "Учет растянутого бетона в бетонной диаграмме snapshot."
-    PutProperty data, rowIndex, runID, "ALL", prefix & "SteelDiagram", materialSet.SteelDiagramType, "-", "Тип диаграммы арматуры snapshot."
-    PutProperty data, rowIndex, runID, "ALL", prefix & "ConcreteCompressionLimit", materialSet.ConcreteCompressionLimit, "-", "Предельная сжатая деформация бетона snapshot."
-    If materialSet.ConcreteTensionLimitEnabled Then
-        PutProperty data, rowIndex, runID, "ALL", prefix & "ConcreteTensionLimit", materialSet.ConcreteTensionLimit, "-", "Предельная растянутая деформация бетона snapshot."
+    prefix = "Material." & purpose & "."
+    PutProperty data, rowIndex, runID, "ALL", prefix & "LimitStateGroup", materialProvider.LimitStateGroup(purpose), "-", "Группа предельных состояний material model."
+    PutProperty data, rowIndex, runID, "ALL", prefix & "ConcreteDiagram", materialProvider.ConcreteDiagramType(purpose), "-", "Тип бетонной диаграммы snapshot."
+    PutProperty data, rowIndex, runID, "ALL", prefix & "ConcreteTension", materialProvider.ConcreteTensionBehavior(purpose), "-", "Учет растянутого бетона в бетонной диаграмме snapshot."
+    PutProperty data, rowIndex, runID, "ALL", prefix & "SteelDiagram", materialProvider.SteelDiagramType(purpose), "-", "Тип диаграммы арматуры snapshot."
+    PutProperty data, rowIndex, runID, "ALL", prefix & "ConcreteCompressionLimit", materialProvider.ConcreteCompressionLimit(purpose), "-", "Предельная сжатая деформация бетона snapshot."
+    If materialProvider.ConcreteTensionLimitEnabled(purpose) Then
+        PutProperty data, rowIndex, runID, "ALL", prefix & "ConcreteTensionLimit", materialProvider.ConcreteTensionLimit(purpose), "-", "Предельная растянутая деформация бетона snapshot."
     End If
-    PutProperty data, rowIndex, runID, "ALL", prefix & "SteelCompressionLimit", materialSet.SteelCompressionLimit, "-", "Предельная сжатая деформация арматуры snapshot."
-    PutProperty data, rowIndex, runID, "ALL", prefix & "SteelTensionLimit", materialSet.SteelTensionLimit, "-", "Предельная растянутая деформация арматуры snapshot."
+    PutProperty data, rowIndex, runID, "ALL", prefix & "SteelCompressionLimit", materialProvider.SteelCompressionLimit(purpose), "-", "Предельная сжатая деформация арматуры snapshot."
+    PutProperty data, rowIndex, runID, "ALL", prefix & "SteelTensionLimit", materialProvider.SteelTensionLimit(purpose), "-", "Предельная растянутая деформация арматуры snapshot."
 End Sub
 
 ' Записывает минимальные свойства imported-preview: Bounds, количество

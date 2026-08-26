@@ -32,7 +32,7 @@ Private Const CALC_GROUP1 As String = "Group1" ' Первая группа: пр
 Private Const CALC_GROUP2 As String = "Group2" ' Вторая группа: эксплуатационная проверка трещин.
 
 Private mSection As CSectionModel ' Расчетная модель сечения, общая для всех LC.
-Private mMaterialProvider As CMaterialModelProvider ' Единая точка выдачи material set для Strength/Mcrc/CrackedNDS.
+Private mMaterialProvider As CMaterialModelProvider ' Единая точка выдачи диаграмм для Strength/Mcrc/CrackedNDS.
 Private mCount As Long ' Сколько сочетаний реально добавлено в пакет.
 
 Private mCombinationID(1 To MAX_COMBINATIONS) As String ' ID сочетания из таблицы нагрузок.
@@ -399,14 +399,16 @@ Private Sub RunCapacity(ByVal index As Long)
     Dim cap As CCapacitySolver
     Set cap = New CCapacitySolver
     ConfigureCapacity cap
-    Dim materialSet As CCalculationMaterialSet
-    Set materialSet = mMaterialProvider.StrengthSet
+    Dim materialPurpose As String
+    materialPurpose = "Strength"
     Select Case NormalizedCapacityMethod()
         Case "UltimateStrain"
-            cap.SolveByUltimateStrain mSection, materialSet.ConcreteMaterial, materialSet.SteelMaterial, _
+            cap.SolveByUltimateStrain mSection, mMaterialProvider.ConcreteMaterial(materialPurpose), _
+                mMaterialProvider.SteelMaterial(materialPurpose), _
                 mN(index), mUserMx(index), mUserMy(index), mN(index) * mLoadReferenceY, mN(index) * mLoadReferenceX
         Case "LoadMultiplier"
-            cap.SolveByLoadMultiplier mSection, materialSet.ConcreteMaterial, materialSet.SteelMaterial, _
+            cap.SolveByLoadMultiplier mSection, mMaterialProvider.ConcreteMaterial(materialPurpose), _
+                mMaterialProvider.SteelMaterial(materialPurpose), _
                 mN(index), mUserMx(index), mUserMy(index), mN(index) * mLoadReferenceY, mN(index) * mLoadReferenceX
         Case Else
             mCapacityStatus(index) = STATUS_INVALID_INPUT & ": Capacity.Method должен быть LoadMultiplier или UltimateStrain."
@@ -429,16 +431,17 @@ End Sub
 ' Даже в FullCapacity этот solve нужен отдельно: он показывает состояние
 ' именно от заданного LC, а не только предельное состояние capacity solver-а.
 Private Sub RunSectionStateAndCrack(ByVal index As Long, ByVal crackRequested As Boolean)
-    Dim materialSet As CCalculationMaterialSet
-    Set materialSet = MaterialSetForCombination(index)
+    Dim materialPurpose As String
+    materialPurpose = MaterialPurposeForCombination(index)
 
     Dim service As CSectionSolver
     Set service = New CSectionSolver
     ConfigureSectionSolver service
     ReportStep "Запускается прямой расчет НДС CSectionSolver."
-    service.Solve mSection, materialSet.ConcreteMaterial, materialSet.SteelMaterial, mN(index), mMx(index), mMy(index)
+    service.Solve mSection, mMaterialProvider.ConcreteMaterial(materialPurpose), _
+        mMaterialProvider.SteelMaterial(materialPurpose), mN(index), mMx(index), mMy(index)
     StoreSectionState index, service
-    mStrainSafetyFactor(index) = CalculateStrainSafetyFactor(service, materialSet)
+    mStrainSafetyFactor(index) = CalculateStrainSafetyFactor(service, materialPurpose)
     ReportValue "НДС сошелся", IIf(service.Converged, "да", "нет")
     ReportValue "Итераций НДС", CStr(service.Iterations)
     ReportBlock "Итерации прямого CSectionSolver", service.DiagnosticLog
@@ -471,7 +474,7 @@ Private Sub RunSectionStateAndCrack(ByVal index As Long, ByVal crackRequested As
     centroidMxForCrack = mUserMx(index) + mN(index) * mLoadReferenceOffsetY
     centroidMyForCrack = mUserMy(index) + mN(index) * mLoadReferenceOffsetX
 
-    crack.Calculate service, mSection, materialSet, mMaterialProvider.McrcSet, mMaterialProvider.CrackedNDSSet, _
+    crack.Calculate service, mSection, mMaterialProvider, materialPurpose, _
         mN(index), mMx(index), mMy(index), _
         centroidMxForCrack, centroidMyForCrack
     mCrackStatus(index) = IIf(crack.Converged, STATUS_OK, crack.StopReason)
@@ -531,25 +534,25 @@ Private Function ShouldRunCrack(ByVal calculationType As String) As Boolean
     ShouldRunCrack = (calculationType = CALC_GROUP2)
 End Function
 
-' Выбирает material set для фактического НДС конкретного LC.
+' Выбирает material purpose для фактического НДС конкретного LC.
 ' Group1 решается по Strength-модели I ГПС, Group2 - по CrackedNDS-модели
 ' II ГПС с неработающим растянутым бетоном, как принято для a_crc.
-Private Function MaterialSetForCombination(ByVal index As Long) As CCalculationMaterialSet
+Private Function MaterialPurposeForCombination(ByVal index As Long) As String
     If NormalizedCombinationCalculationType(mCalculationType(index)) = CALC_GROUP2 Then
-        Set MaterialSetForCombination = mMaterialProvider.CrackedNDSSet
+        MaterialPurposeForCombination = "CrackedNDS"
     Else
-        Set MaterialSetForCombination = mMaterialProvider.StrengthSet
+        MaterialPurposeForCombination = "Strength"
     End If
 End Function
 
 ' Возвращает бетонный материал для writer-а Results по уже рассчитанному LC.
 Public Function ConcreteMaterialForCombination(ByVal index As Long) As Object
-    Set ConcreteMaterialForCombination = MaterialSetForCombination(index).ConcreteMaterial
+    Set ConcreteMaterialForCombination = mMaterialProvider.ConcreteMaterial(MaterialPurposeForCombination(index))
 End Function
 
 ' Возвращает материал арматуры для writer-а Results по уже рассчитанному LC.
 Public Function SteelMaterialForCombination(ByVal index As Long) As Object
-    Set SteelMaterialForCombination = MaterialSetForCombination(index).SteelMaterial
+    Set SteelMaterialForCombination = mMaterialProvider.SteelMaterial(MaterialPurposeForCombination(index))
 End Function
 
 ' True, когда выбран полный расчет с поиском несущей способности.
@@ -645,12 +648,11 @@ End Sub
 ' Передает в CCapacitySolver ровно те настройки, которые относятся к поиску
 ' несущей способности и внутренним пробным расчетам равновесия.
 Private Sub ConfigureCapacity(ByVal cap As CCapacitySolver)
-    Dim materialSet As CCalculationMaterialSet
-    Set materialSet = mMaterialProvider.StrengthSet
-    cap.ConcreteCompressionLimit = materialSet.ConcreteCompressionLimit
-    cap.ConcreteTensionLimit = materialSet.ConcreteTensionLimit
-    cap.ConcreteTensionLimitEnabled = materialSet.ConcreteTensionLimitEnabled
-    cap.SteelStrainLimit = MaxDouble(Abs(materialSet.SteelCompressionLimit), Abs(materialSet.SteelTensionLimit))
+    cap.ConcreteCompressionLimit = mMaterialProvider.ConcreteCompressionLimit("Strength")
+    cap.ConcreteTensionLimit = mMaterialProvider.ConcreteTensionLimit("Strength")
+    cap.ConcreteTensionLimitEnabled = mMaterialProvider.ConcreteTensionLimitEnabled("Strength")
+    cap.SteelStrainLimit = MaxDouble(Abs(mMaterialProvider.SteelCompressionLimit("Strength")), _
+        Abs(mMaterialProvider.SteelTensionLimit("Strength")))
     cap.LambdaTolerance = mCapacityToleranceLambda
     cap.StrainTolerance = mCapacityToleranceStrain
     cap.SearchMethod = mCapacitySearchMethod
@@ -885,33 +887,33 @@ End Function
 
 ' Считает ориентировочный запас по деформациям для DirectState.
 ' Дополнительный solve не выполняется: используется уже найденное состояние LC.
-Private Function CalculateStrainSafetyFactor(ByVal solver As CSectionSolver, ByVal materialSet As CCalculationMaterialSet) As Double
+Private Function CalculateStrainSafetyFactor(ByVal solver As CSectionSolver, ByVal materialPurpose As String) As Double
     Dim maxUtilization As Double
     maxUtilization = 0#
 
     ' Сжатый бетон сравнивается с пределом той диаграммы, которой решалось
     ' фактическое состояние LC. Старые отдельные Capacity.*Limit здесь не
     ' участвуют, чтобы не было второго источника истины.
-    If materialSet.ConcreteCompressionLimit < 0# And solver.MinConcreteStrain < 0# Then
-        maxUtilization = MaxDouble(maxUtilization, Abs(solver.MinConcreteStrain) / Abs(materialSet.ConcreteCompressionLimit))
+    If mMaterialProvider.ConcreteCompressionLimit(materialPurpose) < 0# And solver.MinConcreteStrain < 0# Then
+        maxUtilization = MaxDouble(maxUtilization, Abs(solver.MinConcreteStrain) / Abs(mMaterialProvider.ConcreteCompressionLimit(materialPurpose)))
     End If
 
     ' Растянутый бетон ограничивает запас только если он включен в текущую
     ' диаграмму. Для CrackedNDS это обычно Ignore, поэтому положительные
     ' деформации бетона не становятся скрытым критерием прочности.
-    If materialSet.ConcreteTensionLimitEnabled Then
-        If materialSet.ConcreteTensionLimit > 0# And solver.MaxConcreteStrain > 0# Then
-            maxUtilization = MaxDouble(maxUtilization, solver.MaxConcreteStrain / materialSet.ConcreteTensionLimit)
+    If mMaterialProvider.ConcreteTensionLimitEnabled(materialPurpose) Then
+        If mMaterialProvider.ConcreteTensionLimit(materialPurpose) > 0# And solver.MaxConcreteStrain > 0# Then
+            maxUtilization = MaxDouble(maxUtilization, solver.MaxConcreteStrain / mMaterialProvider.ConcreteTensionLimit(materialPurpose))
         End If
     End If
 
     ' Арматуру проверяем по разным пределам сжатия/растяжения, хотя defaults
     ' сейчас симметричны для TwoLine и ThreeLine.
-    If materialSet.SteelCompressionLimit < 0# And solver.MinSteelStrain < 0# Then
-        maxUtilization = MaxDouble(maxUtilization, Abs(solver.MinSteelStrain) / Abs(materialSet.SteelCompressionLimit))
+    If mMaterialProvider.SteelCompressionLimit(materialPurpose) < 0# And solver.MinSteelStrain < 0# Then
+        maxUtilization = MaxDouble(maxUtilization, Abs(solver.MinSteelStrain) / Abs(mMaterialProvider.SteelCompressionLimit(materialPurpose)))
     End If
-    If materialSet.SteelTensionLimit > 0# And solver.MaxSteelStrain > 0# Then
-        maxUtilization = MaxDouble(maxUtilization, solver.MaxSteelStrain / materialSet.SteelTensionLimit)
+    If mMaterialProvider.SteelTensionLimit(materialPurpose) > 0# And solver.MaxSteelStrain > 0# Then
+        maxUtilization = MaxDouble(maxUtilization, solver.MaxSteelStrain / mMaterialProvider.SteelTensionLimit(materialPurpose))
     End If
 
     If maxUtilization > 0# Then CalculateStrainSafetyFactor = 1# / maxUtilization
@@ -1223,32 +1225,32 @@ Public Property Get GoverningUtilization(ByVal index As Long) As Double
 End Property
 
 Public Property Get CrackSteelElasticModulus() As Double
-    CrackSteelElasticModulus = mMaterialProvider.CrackedNDSSet.SteelElasticModulus
+    CrackSteelElasticModulus = mMaterialProvider.SteelElasticModulus("CrackedNDS")
 End Property
 
 ' Предельная сжатая деформация бетона для фактического НДС выбранного LC.
 Public Function ConcreteCompressionLimitForCombination(ByVal index As Long) As Double
-    ConcreteCompressionLimitForCombination = MaterialSetForCombination(index).ConcreteCompressionLimit
+    ConcreteCompressionLimitForCombination = mMaterialProvider.ConcreteCompressionLimit(MaterialPurposeForCombination(index))
 End Function
 
 ' Предельная растянутая деформация бетона для фактического НДС выбранного LC.
 Public Function ConcreteTensionLimitForCombination(ByVal index As Long) As Double
-    ConcreteTensionLimitForCombination = MaterialSetForCombination(index).ConcreteTensionLimit
+    ConcreteTensionLimitForCombination = mMaterialProvider.ConcreteTensionLimit(MaterialPurposeForCombination(index))
 End Function
 
 ' True, если текущая диаграмма LC учитывает растянутый бетон и его предел нужно выводить.
 Public Function ConcreteTensionLimitEnabledForCombination(ByVal index As Long) As Boolean
-    ConcreteTensionLimitEnabledForCombination = MaterialSetForCombination(index).ConcreteTensionLimitEnabled
+    ConcreteTensionLimitEnabledForCombination = mMaterialProvider.ConcreteTensionLimitEnabled(MaterialPurposeForCombination(index))
 End Function
 
 ' Предельная сжатая деформация арматуры для фактического НДС выбранного LC.
 Public Function SteelCompressionLimitForCombination(ByVal index As Long) As Double
-    SteelCompressionLimitForCombination = MaterialSetForCombination(index).SteelCompressionLimit
+    SteelCompressionLimitForCombination = mMaterialProvider.SteelCompressionLimit(MaterialPurposeForCombination(index))
 End Function
 
 ' Предельная растянутая деформация арматуры для фактического НДС выбранного LC.
 Public Function SteelTensionLimitForCombination(ByVal index As Long) As Double
-    SteelTensionLimitForCombination = MaterialSetForCombination(index).SteelTensionLimit
+    SteelTensionLimitForCombination = mMaterialProvider.SteelTensionLimit(MaterialPurposeForCombination(index))
 End Function
 
 Public Property Get GoverningCombinationIndex() As Long

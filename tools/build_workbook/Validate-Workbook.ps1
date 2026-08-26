@@ -220,7 +220,7 @@ try {
     Add-Check $checks "Load and result blocks left to right" $leftToRight ("Columns: loads=$($loadsRangeForLayout.Column), section=$($sectionResult.Column)")
 
     $settings = $workbook.Names.Item("rngSystemSettings").RefersToRange
-    $expectedSettingsHeaders = @("Параметр", "Значение", "Ед.", "Комментарий", "Инструкции")
+    $expectedSettingsHeaders = @("Параметр", "Значение", "Ед.", "Комментарий", "Справка")
     $actualSettingsHeaders = @()
     for ($i = 1; $i -le $expectedSettingsHeaders.Count; $i++) {
         $actualSettingsHeaders += [string]$settings.Cells.Item(1, $i).Value2
@@ -299,9 +299,34 @@ try {
     $concreteParams = $workbook.Names.Item("rngConcreteMaterialParameters").RefersToRange
     $steelParams = $workbook.Names.Item("rngSteelMaterialParameters").RefersToRange
     $diagramSettings = $workbook.Names.Item("rngCalculationDiagramSettings").RefersToRange
-    Add-Check $checks "Concrete material parameters" (($concreteParams.Columns.Count -eq 6) -and ($concreteParams.Rows.Count -eq 4)) ("Rows=$($concreteParams.Rows.Count); Columns=$($concreteParams.Columns.Count)")
-    Add-Check $checks "Steel material parameters" (($steelParams.Columns.Count -eq 6) -and ($steelParams.Rows.Count -eq 5)) ("Rows=$($steelParams.Rows.Count); Columns=$($steelParams.Columns.Count)")
+    Add-Check $checks "Concrete material parameters" (($concreteParams.Columns.Count -eq 6) -and ($concreteParams.Rows.Count -eq 7)) ("Rows=$($concreteParams.Rows.Count); Columns=$($concreteParams.Columns.Count)")
+    Add-Check $checks "Steel material parameters" (($steelParams.Columns.Count -eq 6) -and ($steelParams.Rows.Count -eq 7)) ("Rows=$($steelParams.Rows.Count); Columns=$($steelParams.Columns.Count)")
     Add-Check $checks "Calculation diagram settings" (($diagramSettings.Columns.Count -eq 6) -and ($diagramSettings.Rows.Count -eq 4)) ("Rows=$($diagramSettings.Rows.Count); Columns=$($diagramSettings.Columns.Count)")
+
+    $rightStackNames = @(
+        "rngUnitSettings",
+        "rngSignConventionSettings",
+        "rngSteelMaterialParameters",
+        "rngConcreteMaterialParameters",
+        "rngCalculationDiagramSettings",
+        "rngPlotAnnotationSettings",
+        "rngCircleGeometry",
+        "rngRoundedRectangleGeometry",
+        "rngLShapeGeometry"
+    )
+    $rightStackOk = $true
+    $rightStackDetails = @()
+    $previousEndRow = 0
+    foreach ($rangeName in $rightStackNames) {
+        $range = $workbook.Names.Item($rangeName).RefersToRange
+        $endRow = $range.Row + $range.Rows.Count - 1
+        $rightStackDetails += "$rangeName=R$($range.Row)C$($range.Column):R$endRow"
+        if (($range.Worksheet.Name -ne "Config") -or ($range.Column -ne 8) -or ($range.Row -le $previousEndRow)) {
+            $rightStackOk = $false
+        }
+        $previousEndRow = $endRow
+    }
+    Add-Check $checks "Config right-side ranges vertical stack" $rightStackOk ($rightStackDetails -join "; ")
 
     $loads = $workbook.Names.Item("rngLoadCombinations").RefersToRange
     $expectedLoadHeaders = @("CombinationID", "N, tf", "Mx, tf*m", "My, tf*m", "CalculationType", "Comment")

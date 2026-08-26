@@ -138,7 +138,7 @@ Private Sub TestAutoCADExportUsesSharedLoadReference(ByRef stats As TUiTestStats
     Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
-    props.CalculateTransformed section, materialProvider.StrengthSet.ConcreteMaterial, materialProvider.StrengthSet.SteelMaterial
+    props.CalculateTransformed section, materialProvider.ConcreteMaterial("Strength"), materialProvider.SteelMaterial("Strength")
 
     Dim batch As CBatchSectionCalculator
     Set batch = New CBatchSectionCalculator
@@ -339,7 +339,8 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Dim sys As Object
     Set sys = ThisWorkbook.Worksheets.Item("Config")
     AssertTrue stats, "ui.run.system.noRebarTable", Len(CStr(sys.Cells.Item(130, 1).Value2)) = 0
-    AssertTrue stats, "ui.run.system.noCrackFormulaBlock", Len(CStr(sys.Cells.Item(130, 9).Value2)) = 0
+    AssertTrue stats, "ui.run.system.materialDiagramControls", _
+        InStr(1, CStr(sys.Cells.Item(1, 27).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
     AssertTrue stats, "ui.run.crack.result.value", Not ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(17, 5).HasFormula
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
@@ -387,7 +388,8 @@ Private Sub TestLShapeWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Dim sys As Object
     Set sys = ThisWorkbook.Worksheets.Item("Config")
     AssertTrue stats, "ui.lshape.system.noRebarTable", Len(CStr(sys.Cells.Item(130, 1).Value2)) = 0
-    AssertTrue stats, "ui.lshape.system.noCrackFormulaBlock", Len(CStr(sys.Cells.Item(130, 9).Value2)) = 0
+    AssertTrue stats, "ui.lshape.system.materialDiagramControls", _
+        InStr(1, CStr(sys.Cells.Item(1, 27).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -535,9 +537,9 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
         AnySettingValidationHasOptions("Rebar.Loc3row", Array("Stacked", "SideBySide"))
     SetSystemSetting "Geometry.Type", "LShape"
     AssertTrue stats, "ui.validation.lshapeLoc2row", _
-        LShapeAdditionalValidationHasOptions(18, 3, Array("Stacked", "SideBySide"))
+        LShapeAdditionalValidationHasOptions(16, 3, Array("Stacked", "SideBySide"))
     AssertTrue stats, "ui.validation.lshapeBind2row", _
-        LShapeAdditionalValidationHasOptions(18, 4, Array("EachBar", "EverySecondBar"))
+        LShapeAdditionalValidationHasOptions(16, 4, Array("EachBar", "EverySecondBar"))
     Dim reader As CSystemSettingsReader
     Set reader = New CSystemSettingsReader
     SetSystemSetting "Geometry.Type", "Circle"
@@ -858,11 +860,11 @@ Private Function LShapeGeometryColumn(ByVal faceName As String) As Long
 End Function
 
 Private Function LShapeMainRow(ByVal faceName As String, ByVal sideIndex As Long) As Long
-    LShapeMainRow = 6 + LShapeFaceOrdinal(faceName, sideIndex)
+    LShapeMainRow = 5 + LShapeFaceOrdinal(faceName, sideIndex)
 End Function
 
 Private Function LShapeExtraRow(ByVal faceName As String, ByVal sideIndex As Long) As Long
-    LShapeExtraRow = 17 + LShapeFaceOrdinal(faceName, sideIndex)
+    LShapeExtraRow = 15 + LShapeFaceOrdinal(faceName, sideIndex)
 End Function
 
 Private Function LShapeFaceOrdinal(ByVal faceName As String, ByVal sideIndex As Long) As Long
