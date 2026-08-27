@@ -13,7 +13,7 @@ Public Sub RunSectionCalculation()
     On Error GoTo Failed
     Dim message As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, True)
-    If InStr(1, message, "ошиб", vbTextCompare) > 0 Or InStr(1, message, "InvalidInput", vbTextCompare) > 0 Then
+    If InStr(1, message, "ошиб", vbTextCompare) > 0 Or InStr(1, message, "InputErr", vbTextCompare) > 0 Then
         MsgBox message, vbExclamation, "RC Section NDM"
     Else
         MsgBox message, vbInformation, "RC Section NDM"
@@ -56,7 +56,7 @@ Failed:
     MsgBox "Импорт геометрии из AutoCAD не выполнен: " & Err.Description, vbExclamation, "RC Section NDM"
 End Sub
 
-Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object)
+Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal raiseIfNoData As Boolean = True)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4140, "UpdateSectionPlotForWorkbook", "Книга Excel не передана."
 
     Dim settings As CSystemSettingsReader
@@ -68,6 +68,16 @@ Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object)
     Dim reader As CSectionPlotDataReader
     Set reader = New CSectionPlotDataReader
     If Not TryLoadFullPlotReader(reader, workbook, settings) Then
+        If Not CanUseGeometryPreview(workbook, settings) Then
+            ClearSectionPlotForNoData workbook, _
+                "Схема не обновлена: нет расчетных данных для текущего Geometry.Source."
+            If raiseIfNoData Then
+                Err.Raise vbObjectError + 4144, "UpdateSectionPlotForWorkbook", _
+                    "На листе Results нет расчетных данных для текущей схемы. Выполните расчет."
+            End If
+            Exit Sub
+        End If
+
         Set reader = New CSectionPlotDataReader
         reader.LoadGeometryPreviewFromWorkbook workbook, settings
     End If
@@ -95,6 +105,33 @@ Failed:
         Err.Raise Err.Number, Err.Source, Err.Description
     End If
 End Function
+
+' Проверяет, можно ли вместо полноценной расчетной схемы показать preview
+' импортированной AutoCAD-геометрии. Generated-сценарий сюда не допускается:
+' иначе старый AutoCAD-preview может остаться на листе после переключения
+' настроек на автоматическую генерацию сечения.
+Private Function CanUseGeometryPreview(ByVal workbook As Object, ByVal settings As CSystemSettingsReader) As Boolean
+    On Error GoTo Failed
+    If workbook Is Nothing Then Exit Function
+    If settings Is Nothing Then Exit Function
+    If StrComp(settings.GetRawString("Geometry.Source", "Generated"), "AutoCAD", vbTextCompare) <> 0 Then Exit Function
+
+    CanUseGeometryPreview = (StrComp(ResultsGeometrySource(workbook), "AutoCADImport", vbTextCompare) = 0)
+    Exit Function
+Failed:
+End Function
+
+' Очищает содержимое существующего ChartObject, но не удаляет само окно схемы.
+' Это нужно, когда расчет не дал ни одного доступного состояния LC: пользователь
+' не должен видеть старую подпись или старую AutoCAD-preview схему как будто она
+' относится к текущим Generated-настройкам.
+Private Sub ClearSectionPlotForNoData(ByVal workbook As Object, ByVal titleText As String)
+    On Error GoTo Done
+    Dim plotter As CSectionPlotter
+    Set plotter = New CSectionPlotter
+    plotter.ClearExisting workbook, titleText
+Done:
+End Sub
 
 Public Sub UpdateSectionGeometryPreviewForWorkbook(ByVal workbook As Object)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4141, "UpdateSectionGeometryPreviewForWorkbook", "Книга Excel не передана."
@@ -236,8 +273,8 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
 
     report.AddSection "Точка приложения нагрузки"
     report.AddStep "Расчет приведенного центра сечения для пользовательской точки нагрузки."
-    ApplyLoadReferenceFromSettings section, materialProvider.ConcreteMaterial("Strength"), _
-        materialProvider.SteelMaterial("Strength"), settings, units, batch
+    ApplyLoadReferenceFromSettings section, materialProvider.ConcreteMaterial(cpStrength), _
+        materialProvider.SteelMaterial(cpStrength), settings, units, batch
     report.AddValue "Точка приложения нагрузки X", FormatReportNumber(batch.LoadReferenceX) & " мм"
     report.AddValue "Точка приложения нагрузки Y", FormatReportNumber(batch.LoadReferenceY) & " мм"
 
@@ -265,11 +302,17 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     If settings.GetBoolean("Plot.AutoUpdateAfterCalculation", True) And batch.StateAvailableCount > 0 Then
         report.AddSection "Схема"
         report.AddStep "Начато обновление схемы сечения по Results."
-        UpdateSectionPlotForWorkbook workbook
+        UpdateSectionPlotForWorkbook workbook, False
         report.AddStep "Схема сечения обновлена по сохраненному снимку Results."
     Else
         report.AddSection "Схема"
-        report.AddStep "Автообновление схемы пропущено: Plot.AutoUpdateAfterCalculation = No или нет доступных состояний LC."
+        If settings.GetBoolean("Plot.AutoUpdateAfterCalculation", True) Then
+            ClearSectionPlotForNoData workbook, _
+                "Схема не обновлена: нет доступных расчетных состояний LC."
+            report.AddStep "Схема очищена от старого изображения: нет доступных состояний LC."
+        Else
+            report.AddStep "Автообновление схемы пропущено: Plot.AutoUpdateAfterCalculation = No."
+        End If
     End If
 
     Dim totalElapsedSeconds As Double
@@ -315,7 +358,7 @@ Private Function BuildCalculationMessage(ByVal section As CSectionModel, ByVal s
     If batch.InvalidInputCount > 0 Then
         BuildCalculationMessage = calculationCaption & " завершен с ошибками ввода. Обработано сочетаний: " & _
             CStr(batch.Count) & "; ошибок ввода: " & CStr(batch.InvalidInputCount) & "." & vbCrLf & _
-            "Проверьте строки со статусом InvalidInput на листе Results." & vbCrLf & _
+            "Проверьте строки со статусом InputErr на листе Results." & vbCrLf & _
             "Первая ошибка: " & batch.FirstInvalidInputMessage
     Else
         BuildCalculationMessage = calculationCaption & " завершен. Обработано сочетаний: " & CStr(batch.Count) & _
@@ -481,7 +524,7 @@ Private Sub WriteGoverningCombinationResults(ByVal workbook As Object, ByVal sec
     index = batch.GoverningCombinationIndex
     If Not batch.StateAvailable(index) Then Exit Sub
 
-    Dim currentPurpose As String
+    Dim currentPurpose As ECalculationPurpose
     currentPurpose = MaterialPurposeForCalculationType(batch.CalculationType(index))
 
     WriteCapacityAndCrackResults workbook, section, materialProvider, currentPurpose, settings, _
@@ -490,7 +533,7 @@ Private Sub WriteGoverningCombinationResults(ByVal workbook As Object, ByVal sec
 End Sub
 
 Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal materialProvider As CMaterialModelProvider, ByVal currentPurpose As String, _
+        ByVal materialProvider As CMaterialModelProvider, ByVal currentPurpose As ECalculationPurpose, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
         ByVal nValue As Double, ByVal userMxValue As Double, ByVal userMyValue As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double)
@@ -500,8 +543,8 @@ Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section
 
     Dim concrete As Object
     Dim steel As Object
-    Set concrete = materialProvider.ConcreteMaterial(currentPurpose)
-    Set steel = materialProvider.SteelMaterial(currentPurpose)
+    Set concrete = materialProvider.ConcreteStateMaterial(currentPurpose)
+    Set steel = materialProvider.SteelStateMaterial(currentPurpose)
 
     Dim internalMxValue As Double
     Dim internalMyValue As Double
@@ -537,16 +580,16 @@ Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section
     Dim capacity As CCapacitySolver
     Set capacity = New CCapacitySolver
     capacity.ApplySettings settings, units
-    ApplyCapacityLimitsFromProvider capacity, materialProvider, "Strength"
+    ApplyCapacityLimitsFromProvider capacity, materialProvider, cpStrength
     If Sqr(userMxValue * userMxValue + userMyValue * userMyValue) > 0.000000001 Then
         Select Case LCase$(Trim$(settings.GetRawString("Capacity.Method", vbNullString)))
             Case "ultimatestrain"
-                capacity.SolveByUltimateStrain section, materialProvider.ConcreteMaterial("Strength"), _
-                    materialProvider.SteelMaterial("Strength"), nValue, userMxValue, userMyValue, _
+                capacity.SolveByUltimateStrain section, materialProvider.ConcreteMaterial(cpStrength), _
+                    materialProvider.SteelMaterial(cpStrength), nValue, userMxValue, userMyValue, _
                     nValue * referenceY, nValue * referenceX
             Case "loadmultiplier"
-                capacity.SolveByLoadMultiplier section, materialProvider.ConcreteMaterial("Strength"), _
-                    materialProvider.SteelMaterial("Strength"), nValue, userMxValue, userMyValue, _
+                capacity.SolveByLoadMultiplier section, materialProvider.ConcreteMaterial(cpStrength), _
+                    materialProvider.SteelMaterial(cpStrength), nValue, userMxValue, userMyValue, _
                     nValue * referenceY, nValue * referenceX
             Case Else
                 Err.Raise vbObjectError + 4125, "WriteCapacityAndCrackResults", _
@@ -563,7 +606,9 @@ Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section
         Dim crack As CCrackWidthCalculator
         Set crack = New CCrackWidthCalculator
         crack.ApplySettings settings, units
-        If CrackCalculationEnabled(settings) Then
+        If currentPurpose = cpCrackedNDS And CrackCalculationEnabled(settings) And _
+                Not ServiceUsesExtension(section, service, concrete, steel) And _
+                ServiceWithinPhysicalRange(section, service, concrete, steel) Then
             crack.Calculate service, section, materialProvider, currentPurpose, _
                 nValue, internalMxValue, internalMyValue, _
                 centroidMxForCrack, centroidMyForCrack
@@ -573,7 +618,7 @@ Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section
 End Sub
 
 Private Sub WriteDirectStateAndCrackResults(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal materialProvider As CMaterialModelProvider, ByVal currentPurpose As String, _
+        ByVal materialProvider As CMaterialModelProvider, ByVal currentPurpose As ECalculationPurpose, _
         ByVal settings As CSystemSettingsReader, _
         ByVal units As CUnitSystem, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
@@ -581,8 +626,8 @@ Private Sub WriteDirectStateAndCrackResults(ByVal workbook As Object, ByVal sect
 
     Dim concrete As Object
     Dim steel As Object
-    Set concrete = materialProvider.ConcreteMaterial(currentPurpose)
-    Set steel = materialProvider.SteelMaterial(currentPurpose)
+    Set concrete = materialProvider.ConcreteStateMaterial(currentPurpose)
+    Set steel = materialProvider.SteelStateMaterial(currentPurpose)
 
     Dim service As CSectionSolver
     Set service = New CSectionSolver
@@ -593,7 +638,9 @@ Private Sub WriteDirectStateAndCrackResults(ByVal workbook As Object, ByVal sect
     
     
 
-    If service.Converged And CrackCalculationEnabled(settings) Then
+    If service.Converged And currentPurpose = cpCrackedNDS And CrackCalculationEnabled(settings) And _
+            Not ServiceUsesExtension(section, service, concrete, steel) And _
+            ServiceWithinPhysicalRange(section, service, concrete, steel) Then
         Dim crack As CCrackWidthCalculator
         Set crack = New CCrackWidthCalculator
         crack.ApplySettings settings, units
@@ -607,26 +654,68 @@ End Sub
 ' Выбирает расчетную цель материала для повторного вывода одного LC на лист "Расчет".
 ' Это тот же смысл, что и в batch: I группа использует Strength, II группа -
 ' CrackedNDS с диаграммами II группы и неработающим растянутым бетоном.
-Private Function MaterialPurposeForCalculationType(ByVal calculationType As String) As String
-    Select Case LCase$(Trim$(calculationType))
-        Case "group2", "2", "sls", "crack", "crackonly"
-            MaterialPurposeForCalculationType = "CrackedNDS"
-        Case Else
-            MaterialPurposeForCalculationType = "Strength"
-    End Select
+Private Function MaterialPurposeForCalculationType(ByVal calculationType As String) As ECalculationPurpose
+    MaterialPurposeForCalculationType = StateBasePurposeForCalculationType(calculationType)
 End Function
 
 ' Передает CCapacitySolver пределы деформаций из material provider-а. Эти величины
 ' больше не читаются как отдельные настройки Capacity.*Limit: источник истины -
 ' автоматически построенная диаграмма материала для Strength.
 Private Sub ApplyCapacityLimitsFromProvider(ByVal capacity As CCapacitySolver, _
-        ByVal materialProvider As CMaterialModelProvider, ByVal purpose As String)
+        ByVal materialProvider As CMaterialModelProvider, ByVal purpose As ECalculationPurpose)
     capacity.ConcreteCompressionLimit = materialProvider.ConcreteCompressionLimit(purpose)
     capacity.ConcreteTensionLimit = materialProvider.ConcreteTensionLimit(purpose)
     capacity.ConcreteTensionLimitEnabled = materialProvider.ConcreteTensionLimitEnabled(purpose)
     capacity.SteelStrainLimit = MaxDouble(Abs(materialProvider.SteelCompressionLimit(purpose)), _
         Abs(materialProvider.SteelTensionLimit(purpose)))
 End Sub
+
+' Проверяет, использовал ли прямой solve техническое продолжение диаграммы.
+' Это локальная защита итогового блока листа "Расчет"; основной batch пишет
+' тот же признак в Results snapshot и именно его используют схема/AutoCAD.
+Private Function ServiceUsesExtension(ByVal section As CSectionModel, ByVal solver As CSectionSolver, _
+        ByVal concrete As Object, ByVal steel As Object) As Boolean
+    Dim i As Long
+    Dim strain As Double
+
+    For i = 1 To section.ConcreteCount
+        strain = solver.Epsilon0 + solver.KappaX * section.ConcreteY(i) + solver.KappaY * section.ConcreteX(i)
+        If concrete.IsInExtensionRange(strain) Then
+            ServiceUsesExtension = True
+            Exit Function
+        End If
+    Next i
+
+    For i = 1 To section.RebarCount
+        strain = solver.Epsilon0 + solver.KappaX * section.RebarY(i) + solver.KappaY * section.RebarX(i)
+        If steel.IsInExtensionRange(strain) Then
+            ServiceUsesExtension = True
+            Exit Function
+        End If
+    Next i
+End Function
+
+' Проверяет физические пределы прямого НДС в итоговом блоке листа "Расчет".
+' Batch делает такую же проверку перед записью Results. Здесь она нужна, чтобы
+' повторный вывод одного LC не запускал расчет трещин по состоянию, которое
+' формально сошлось, но уже находится за физическими eps_ult.
+Private Function ServiceWithinPhysicalRange(ByVal section As CSectionModel, ByVal solver As CSectionSolver, _
+        ByVal concrete As Object, ByVal steel As Object) As Boolean
+    Dim i As Long
+    Dim strain As Double
+
+    For i = 1 To section.ConcreteCount
+        strain = solver.Epsilon0 + solver.KappaX * section.ConcreteY(i) + solver.KappaY * section.ConcreteX(i)
+        If Not concrete.IsInPhysicalRange(strain) Then Exit Function
+    Next i
+
+    For i = 1 To section.RebarCount
+        strain = solver.Epsilon0 + solver.KappaX * section.RebarY(i) + solver.KappaY * section.RebarX(i)
+        If Not steel.IsInPhysicalRange(strain) Then Exit Function
+    Next i
+
+    ServiceWithinPhysicalRange = True
+End Function
 
 Private Function CrackCalculationEnabled(ByVal settings As CSystemSettingsReader) As Boolean
     CrackCalculationEnabled = settings.GetBoolean("SLS.Crack.Enabled", True)

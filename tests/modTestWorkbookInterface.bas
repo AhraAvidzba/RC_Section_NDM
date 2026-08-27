@@ -28,11 +28,14 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAutoCADSourceRequiresManualImport stats
     TestAutoCADImportButtonRejectsGeneratedSource stats
     TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
+    TestGeneratedSourceDoesNotReuseAutoCADPreview stats
+    TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC stats
     TestAutoCADCalculationMessageUsesSavedGeometry stats
     TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped stats
     TestCircleWorkbookRunWritesResults stats
     TestExecutionReportFile stats
     TestLShapeWorkbookRunWritesResults stats
+    TestLShapeAxialTensionExtensionFromWorkbookSettings stats
     TestAutoCADExportUsesSharedLoadReference stats
     TestGoverningCombinationWritesDetailedResults stats
     TestCapacitySearchMethodValidation stats
@@ -139,7 +142,7 @@ Private Sub TestAutoCADExportUsesSharedLoadReference(ByRef stats As TUiTestStats
     Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
-    props.CalculateTransformed section, materialProvider.ConcreteMaterial("Strength"), materialProvider.SteelMaterial("Strength")
+    props.CalculateTransformed section, materialProvider.ConcreteMaterial(cpStrength), materialProvider.SteelMaterial(cpStrength)
 
     Dim batch As CBatchSectionCalculator
     Set batch = New CBatchSectionCalculator
@@ -178,7 +181,7 @@ Private Sub TestSingleCombinationSkipsBlankRows(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.loads.single.count", batch.Count = 1
     AssertTrue stats, "ui.loads.single.id", batch.CombinationID(1) = "LC1"
     AssertTrue stats, "ui.loads.single.elapsed", (Timer - t0) < 20#
-    AssertTrue stats, "ui.loads.single.noBlankInvalid", InStr(1, batch.DiagnosticLog, "InvalidInput", vbTextCompare) = 0
+    AssertTrue stats, "ui.loads.single.noBlankInvalid", InStr(1, batch.DiagnosticLog, "InputErr", vbTextCompare) = 0
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -197,12 +200,12 @@ Private Sub TestPartialCombinationIsInvalid(ByRef stats As TUiTestStats)
     batch.Execute
 
     AssertTrue stats, "ui.loads.partial.count", batch.Count = 1
-    AssertTrue stats, "ui.loads.partial.invalid", InStr(1, batch.Status(1), "InvalidInput", vbTextCompare) > 0
+    AssertTrue stats, "ui.loads.partial.invalid", batch.Status(1) = "InputErr"
 
     Dim message As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
     AssertTrue stats, "ui.loads.partial.message", InStr(1, message, "ошиб", vbTextCompare) > 0 And _
-        InStr(1, message, "InvalidInput", vbTextCompare) > 0
+        InStr(1, message, "InputErr", vbTextCompare) > 0
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -218,7 +221,7 @@ Private Sub TestInvalidCalculationTypeDoesNotRunPlot(ByRef stats As TUiTestStats
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
 
     AssertTrue stats, "ui.loads.invalidCalculationType.message", _
-        InStr(1, message, "InvalidInput", vbTextCompare) > 0 And _
+        InStr(1, message, "InputErr", vbTextCompare) > 0 And _
         InStr(1, message, "результатов элементов", vbTextCompare) = 0
     AssertTrue stats, "ui.loads.invalidCalculationType.noElementRows", _
         ResultTableRowCount("rngNDMElementResults") = 1
@@ -301,6 +304,57 @@ Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiT
     AssertTrue stats, "ui.autocad.preview.dimensionShapes", CountPlotShapes("AnnotationLine") > 0
 End Sub
 
+' Проверяет, что старый AutoCAD-preview не используется как запасная схема
+' после переключения Geometry.Source обратно на Generated. Иначе пользователь
+' видит подпись "Импортированная геометрия AutoCAD" у уже generated-сценария.
+Private Sub TestGeneratedSourceDoesNotReuseAutoCADPreview(ByRef stats As TUiTestStats)
+    PrepareCircleInput
+    SetSystemSetting "Geometry.Source", "AutoCAD"
+
+    Dim section As CSectionModel
+    Set section = New CSectionModel
+    section.SourceType = "AutoCADImport"
+    section.AddConcreteElement 50#, 50#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
+    section.AddRebarElement 50#, 50#, 20#, 0#, "Ribbed"
+
+    Dim writer As CNDMResultsWriter
+    Set writer = New CNDMResultsWriter
+    writer.WriteGeometryPreview ThisWorkbook, section
+
+    UpdateSectionPlotForWorkbook ThisWorkbook
+    AssertTrue stats, "ui.plot.preview.title", PlotChartTitleContains("Импортированная геометрия AutoCAD")
+
+    SetSystemSetting "Geometry.Source", "Generated"
+    Dim errorDescription As String
+    On Error Resume Next
+    UpdateSectionPlotForWorkbook ThisWorkbook
+    errorDescription = Err.Description
+    On Error GoTo 0
+
+    AssertTrue stats, "ui.plot.generated.noPreviewFallback.error", _
+        InStr(1, errorDescription, "Выполните расчет", vbTextCompare) > 0
+    AssertTrue stats, "ui.plot.generated.noPreviewFallback.title", _
+        Not PlotChartTitleContains("Импортированная геометрия AutoCAD")
+End Sub
+
+' Проверяет DirectState-сценарий без определяющего сочетания по прочности.
+' При Plot.LoadCase = Worst схема должна показать первый рассчитанный LC из
+' Results, а не оставлять старый AutoCAD-preview и не очищаться до пустого окна.
+Private Sub TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC(ByRef stats As TUiTestStats)
+    PrepareCircleInput
+    SetSystemSetting "Geometry.Source", "Generated"
+    SetSystemSetting "Calculation.Mode", "DirectState"
+    SetSystemSetting "Plot.LoadCase", "Worst"
+
+    Dim message As String
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+
+    AssertTrue stats, "ui.plot.generatedWorst.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    AssertTrue stats, "ui.plot.generatedWorst.drawsCalculatedLc", PlotChartTitleContains("LC1")
+    AssertTrue stats, "ui.plot.generatedWorst.noImportTitle", _
+        Not PlotChartTitleContains("Импортированная геометрия AutoCAD")
+End Sub
+
 ' Проверяет, что кнопка расчета в режиме AutoCAD использует уже сохраненную
 ' геометрию Results. Макрос не должен повторно импортировать Region и не должен
 ' показывать строку "Импортировано из AutoCAD", потому что это действие относится
@@ -359,7 +413,7 @@ Private Sub TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped(ByRef stats As T
 
     AssertTrue stats, "ui.loads.blankMoment.count", batch.Count = 1
     AssertClose stats, "ui.loads.blankMoment.myZero", batch.UserMy(1), 0#, 0.0000001
-    AssertTrue stats, "ui.loads.blankMoment.valid", InStr(1, batch.Status(1), "InvalidInput", vbTextCompare) = 0
+    AssertTrue stats, "ui.loads.blankMoment.valid", InStr(1, batch.Status(1), "InputErr", vbTextCompare) = 0
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -369,10 +423,15 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
 
     AssertTrue stats, "ui.run.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
-    AssertTrue stats, "ui.run.capacity.lambda", Len(CStr(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(5, 5).Value2)) > 0
-    AssertTrue stats, "ui.run.fastMode.noLambdaSearch", CStr(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(5, 5).Value2) = "NotCalculated"
-    AssertTrue stats, "ui.run.deformations", Len(CStr(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(12, 5).Value2)) > 0
-    AssertTrue stats, "ui.run.crack", Len(CStr(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(17, 5).Value2)) > 0
+    Dim summary As Object
+    Set summary = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
+    Dim firstDataRow As Long
+    firstDataRow = BatchSummaryStartRow() + 9
+    AssertTrue stats, "ui.run.capacity.na", CStr(summary.Worksheet.Cells.Item(firstDataRow, 16).Value2) = "N/A"
+    AssertTrue stats, "ui.run.direct.status", Len(CStr(summary.Worksheet.Cells.Item(firstDataRow, 5).Value2)) > 0
+    AssertTrue stats, "ui.run.deformations", IsNumeric(summary.Worksheet.Cells.Item(firstDataRow, 6).Value2) And _
+        IsNumeric(summary.Worksheet.Cells.Item(firstDataRow, 9).Value2)
+    AssertTrue stats, "ui.run.crack", Len(CStr(summary.Worksheet.Cells.Item(firstDataRow, 23).Value2)) > 0
     Dim sys As Object
     Set sys = ThisWorkbook.Worksheets.Item("Config")
     AssertTrue stats, "ui.run.system.noRebarTable", Len(CStr(sys.Cells.Item(130, 1).Value2)) = 0
@@ -383,8 +442,8 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
     Dim summaryRow As Long
     summaryRow = BatchSummaryStartRow()
-    AssertTrue stats, "ui.batchSummary.currentDepths", IsNumeric(resultsSheet.Cells.Item(summaryRow + 9, 9).Value2) And IsNumeric(resultsSheet.Cells.Item(summaryRow + 9, 10).Value2)
-    AssertTrue stats, "ui.batchSummary.direct.noCapacityDepths", Len(CStr(resultsSheet.Cells.Item(summaryRow + 9, 19).Value2)) = 0 And Len(CStr(resultsSheet.Cells.Item(summaryRow + 9, 20).Value2)) = 0
+    AssertTrue stats, "ui.batchSummary.currentDepths", IsNumeric(resultsSheet.Cells.Item(summaryRow + 9, 10).Value2) And IsNumeric(resultsSheet.Cells.Item(summaryRow + 9, 11).Value2)
+    AssertTrue stats, "ui.batchSummary.direct.noCapacityDepths", Len(CStr(resultsSheet.Cells.Item(summaryRow + 9, 20).Value2)) = 0 And Len(CStr(resultsSheet.Cells.Item(summaryRow + 9, 21).Value2)) = 0
     AssertTrue stats, "ui.results.elements.header", CStr(ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Value2) = "RunID"
     Dim elementResults As Variant
     elementResults = ResultTable("rngNDMElementResults")
@@ -402,6 +461,7 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 34 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 9
     AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 34 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 26
     AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 34 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 34
+    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 34 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 50
     AssertTrue stats, "ui.results.geometry.noSource", ResultHeaderColumn(geometryResults, "SourceName") = 0
     AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(geometryResults, "MaterialClass") = 0
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
@@ -409,6 +469,8 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.results.properties.hasBounds", ResultsPropertyExists("ALL", "Bounds.MinX")
     AssertTrue stats, "ui.results.annotations.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Value2) = "RunID"
     AssertTrue stats, "ui.results.annotations.rows", ResultTableRowCount("rngNDMSectionAnnotations") > 1
+    AssertTrue stats, "ui.results.materialDiagrams.header", CStr(ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Value2) = "RunID"
+    AssertTrue stats, "ui.results.materialDiagrams.rows", ResultTableRowCount("rngNDMMaterialDiagrams") > 1
     AssertTrue stats, "ui.plot.chart.created", PlotChartExists()
     AssertTrue stats, "ui.plot.title.comment", PlotChartTitleContains("(ui test)")
 End Sub
@@ -420,13 +482,65 @@ Private Sub TestLShapeWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
 
     AssertTrue stats, "ui.lshape.message", InStr(1, message, "завершен", vbTextCompare) > 0
-    AssertTrue stats, "ui.lshape.result.status", Len(CStr(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(5, 5).Value2)) > 0
+    Dim summary As Object
+    Set summary = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
+    AssertTrue stats, "ui.lshape.result.status", Len(CStr(summary.Worksheet.Cells.Item(BatchSummaryStartRow() + 9, 1).Value2)) > 0
 
     Dim sys As Object
     Set sys = ThisWorkbook.Worksheets.Item("Config")
     AssertTrue stats, "ui.lshape.system.noRebarTable", Len(CStr(sys.Cells.Item(130, 1).Value2)) = 0
     AssertTrue stats, "ui.lshape.system.materialDiagramControls", _
         InStr(1, CStr(sys.Cells.Item(1, 27).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
+End Sub
+
+' Проверяет пользовательский сценарий с сильным осевым растяжением Г-сечения
+' через настоящий workbook-path: Config -> CUnitSystem -> batch -> Results.
+' Это важно, потому что знак N и единицы tf здесь проходят ровно тем же путем,
+' что и при нажатии кнопки "Расчет" в книге.
+Private Sub TestLShapeAxialTensionExtensionFromWorkbookSettings(ByRef stats As TUiTestStats)
+    PrepareUserLShapeAxialTensionInput
+
+    Dim reportPath As String
+    reportPath = ThisWorkbook.Path & "\RC_Section_NDM_execution_report.txt"
+    DeleteFileIfExists reportPath
+
+    Dim message As String
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+
+    Dim resultsSheet As Object
+    Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
+    Dim firstRow As Long
+    firstRow = BatchSummaryStartRow() + 9
+
+    Dim safeOverall As String
+    Dim safeDirect As String
+    Dim overOverall As String
+    Dim overDirect As String
+    Dim overCrack As String
+    Dim overExtension As String
+    safeOverall = CStr(resultsSheet.Cells.Item(firstRow, 1).Value2)
+    safeDirect = CStr(resultsSheet.Cells.Item(firstRow, 5).Value2)
+    overOverall = CStr(resultsSheet.Cells.Item(firstRow + 1, 1).Value2)
+    overDirect = CStr(resultsSheet.Cells.Item(firstRow + 1, 5).Value2)
+    overCrack = CStr(resultsSheet.Cells.Item(firstRow + 1, 23).Value2)
+    overExtension = ResultsPropertyValue("LC_OVER", "ExtensionUsed")
+
+    AppendLine stats, "INFO: ui.lshape.axial795 overall=" & safeOverall & _
+        "; direct=" & safeDirect
+    AppendLine stats, "INFO: ui.lshape.axial900 overall=" & overOverall & _
+        "; direct=" & overDirect & "; crack=" & overCrack & _
+        "; extensionUsed=" & overExtension
+
+    AssertTextEquals stats, "ui.lshape.axial795.directOk", safeDirect, "OK"
+
+    AssertTextEquals stats, "ui.lshape.axial900.fail", overOverall, "FAIL"
+    AssertTextEquals stats, "ui.lshape.axial900.directFail", overDirect, "FAIL"
+    AssertTextEquals stats, "ui.lshape.axial900.crackSkipped", overCrack, "N/A"
+    AssertTrue stats, "ui.lshape.axial900.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    AssertTextEquals stats, "ui.lshape.axial900.extensionSnapshot", overExtension, "True"
+    AssertTrue stats, "ui.lshape.axial900.reportCreated", FileExists(reportPath)
+
+    SetSystemSetting "General.ExecutionReportEnabled", "No"
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -436,6 +550,7 @@ Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTest
     SetSystemSetting "Capacity.Method", "LoadMultiplier"
     SetSystemSetting "Capacity.ToleranceLambda", "0.05"
     SetSystemSetting "Capacity.MaxLambda", "10"
+    SetSystemSetting "Plot.LoadCase", "Worst"
 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -475,35 +590,31 @@ Private Function ExpectedGoverningByLowestStrengthSafety(ByVal resultsSheet As O
     Dim rowIndex As Long
     Dim bestSafety As Double
     For rowIndex = summaryRow + 9 To summaryRow + 28
-        If Len(Trim$(CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2))) > 0 Then
+        If Len(Trim$(CStr(resultsSheet.Cells.Item(rowIndex, 2).Value2))) > 0 Then
             Dim safetyValue As Double
             safetyValue = StrengthSafetyForSummaryRow(resultsSheet, rowIndex)
             If safetyValue > 0# And (bestSafety = 0# Or safetyValue < bestSafety) Then
                 bestSafety = safetyValue
-                ExpectedGoverningByLowestStrengthSafety = CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2)
+                ExpectedGoverningByLowestStrengthSafety = CStr(resultsSheet.Cells.Item(rowIndex, 2).Value2)
             End If
         End If
     Next rowIndex
 End Function
 
 Private Function StrengthSafetyForSummaryRow(ByVal resultsSheet As Object, ByVal rowIndex As Long) As Double
-    Dim strainSafety As Double
     Dim momentSafety As Double
-    If IsNumeric(resultsSheet.Cells.Item(rowIndex, 15).Value2) Then strainSafety = CDbl(resultsSheet.Cells.Item(rowIndex, 15).Value2)
-    If IsNumeric(resultsSheet.Cells.Item(rowIndex, 21).Value2) Then momentSafety = CDbl(resultsSheet.Cells.Item(rowIndex, 21).Value2)
+    If IsNumeric(resultsSheet.Cells.Item(rowIndex, 22).Value2) Then momentSafety = CDbl(resultsSheet.Cells.Item(rowIndex, 22).Value2)
 
     If momentSafety > 0# Then
         StrengthSafetyForSummaryRow = momentSafety
-    Else
-        StrengthSafetyForSummaryRow = strainSafety
     End If
 End Function
 
 Private Function MomentUltimateForCombination(ByVal resultsSheet As Object, ByVal summaryRow As Long, ByVal combinationID As String) As Double
     Dim rowIndex As Long
     For rowIndex = summaryRow + 9 To summaryRow + 28
-        If StrComp(CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2), combinationID, vbTextCompare) = 0 Then
-            If IsNumeric(resultsSheet.Cells.Item(rowIndex, 18).Value2) Then MomentUltimateForCombination = CDbl(resultsSheet.Cells.Item(rowIndex, 18).Value2)
+        If StrComp(CStr(resultsSheet.Cells.Item(rowIndex, 2).Value2), combinationID, vbTextCompare) = 0 Then
+            If IsNumeric(resultsSheet.Cells.Item(rowIndex, 19).Value2) Then MomentUltimateForCombination = CDbl(resultsSheet.Cells.Item(rowIndex, 19).Value2)
             Exit Function
         End If
     Next rowIndex
@@ -527,6 +638,8 @@ End Function
 Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.validation.capacitySearchMethod", _
         SystemSettingValidationHasOptions("Capacity.SearchMethod", Array("Bisection", "Brent", "Secant"))
+    AssertTrue stats, "ui.validation.capacityScope", _
+        SystemSettingValidationHasOptions("Capacity.CalculationScope", Array("Group1Only", "Group1+2"))
     AssertTrue stats, "ui.validation.autocadLabelMode", _
         SystemSettingValidationHasOptions("AutoCAD.Export.LabelMode", Array("ValuesOnly", "NamesAndValues"))
     AssertTrue stats, "ui.validation.autocadResultType", _
@@ -654,6 +767,27 @@ Private Function ResultsPropertyExists(ByVal loadCase As String, ByVal parameter
 Failed:
 End Function
 
+' Возвращает значение свойства из расчетного snapshot Results.
+' Используется в UI-тестах, где важно проверить не только видимую Summary,
+' но и машинные признаки выбранного LC, например ExtensionUsed.
+Private Function ResultsPropertyValue(ByVal loadCase As String, ByVal parameter As String) As String
+    On Error GoTo Failed
+    Dim data As Variant
+    data = ResultTable("rngNDMSectionProperties")
+    Dim colLC As Long: colLC = ResultHeaderColumn(data, "LoadCase")
+    Dim colParam As Long: colParam = ResultHeaderColumn(data, "Parameter")
+    Dim colValue As Long: colValue = ResultHeaderColumn(data, "Value")
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(data, 1)
+        If StrComp(CStr(data(rowIndex, colLC)), loadCase, vbTextCompare) = 0 And _
+                StrComp(CStr(data(rowIndex, colParam)), parameter, vbTextCompare) = 0 Then
+            ResultsPropertyValue = CStr(data(rowIndex, colValue))
+            Exit Function
+        End If
+    Next rowIndex
+Failed:
+End Function
+
 Private Function PlotChartExists() As Boolean
     On Error GoTo Failed
     Dim chartObject As Object
@@ -704,12 +838,14 @@ Private Sub TestClearResultsKeepsInputs(ByRef stats As TUiTestStats)
     ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Value2 = "RunID"
     ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2 = "RunID"
     ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Value2 = "RunID"
+    ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Value2 = "RunID"
     ClearSectionResultsForWorkbook ThisWorkbook
     AssertTrue stats, "ui.clear.result", Len(CStr(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(5, 5).Value2)) = 0
     AssertTrue stats, "ui.clear.results.elements", Len(CStr(ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Value2)) = 0
     AssertTrue stats, "ui.clear.results.geometry", Len(CStr(ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Value2)) = 0
     AssertTrue stats, "ui.clear.results.properties", Len(CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2)) = 0
     AssertTrue stats, "ui.clear.results.annotations", Len(CStr(ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Value2)) = 0
+    AssertTrue stats, "ui.clear.results.materialDiagrams", Len(CStr(ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Value2)) = 0
     AssertTrue stats, "ui.clear.input", CStr(GetSystemSetting("Geometry.Type")) = "Circle"
 End Sub
 
@@ -1183,6 +1319,7 @@ Private Sub PrepareCircleInput()
     SetSystemSetting "Geometry.Source", "Generated"
     SetSystemSetting "Geometry.Type", "Circle"
     SetSystemSetting "Calculation.Mode", "DirectState"
+    SetSystemSetting "Plot.LoadCase", "LC1"
     SetSystemSetting "Steel.RebarProfile", "Ribbed"
     SetSystemSetting "Rebar.AxisDistance", "40"
     SetSystemSetting "Rebar.Count", "8"
@@ -1213,6 +1350,7 @@ Private Sub PrepareLShapeInput()
     SetSystemSetting "Geometry.Source", "Generated"
     SetSystemSetting "Geometry.Type", "LShape"
     SetSystemSetting "Calculation.Mode", "DirectState"
+    SetSystemSetting "Plot.LoadCase", "LC_L"
     SetSystemSetting "Mesh.Step", "40"
     SetSystemSetting "Mesh.BoundarySubdivisions", "2"
     SetSystemSetting "LShape.B1", "160"
@@ -1272,6 +1410,91 @@ Private Sub PrepareLShapeInput()
     loads.Cells.Item(2, 6).Value2 = "lshape ui test"
 End Sub
 
+' Настраивает книгу ровно под пользовательский пример с Г-сечением и осевым
+' растяжением в tf. Это дополняет unit-тест batch-слоя проверкой полного
+' Excel-пути: пользовательский знак N, единицы, чтение Config и запись Results.
+Private Sub PrepareUserLShapeAxialTensionInput()
+    SetSystemSetting "Units.Force.Input", "tf"
+    SetSystemSetting "Units.Moment.Input", "tf*m"
+    SetSystemSetting "Units.Length.Input", "mm"
+    SetSystemSetting "Units.Area.Input", "mm2"
+    SetSystemSetting "Units.Stress.Input", "MPa"
+    SetSystemSetting "Units.Curvature.Input", "1/mm"
+    SetSystemSetting "Sign.N.User", "Compression"
+    SetSystemSetting "Sign.Mx.User", "+Y tension"
+    SetSystemSetting "Sign.My.User", "+X tension"
+    SetSystemSetting "Geometry.Source", "Generated"
+    SetSystemSetting "Geometry.Type", "LShape"
+    SetSystemSetting "Calculation.Mode", "DirectState"
+    SetSystemSetting "Solver.Method", "Newton"
+    SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
+    SetSystemSetting "Solver.MaxIterations", "80"
+    SetSystemSetting "Solver.LoadSteps", "1"
+    SetSystemSetting "Mesh.Step", "50"
+    SetSystemSetting "Mesh.BoundarySubdivisions", "1"
+    SetSystemSetting "Load.ReferenceOffsetX", "0"
+    SetSystemSetting "Load.ReferenceOffsetY", "0"
+    SetSystemSetting "Plot.LoadCase", "LC_OVER"
+    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
+
+    SetSystemSetting "LShape.H1", "550"
+    SetSystemSetting "LShape.B1", "250"
+    SetSystemSetting "LShape.H2", "250"
+    SetSystemSetting "LShape.B2", "600"
+
+    SetUserLShapeMainRow "H1", 5, 5
+    SetUserLShapeMainRow "B1", 2, 2
+    SetUserLShapeMainRow "H2", 2, 2
+    SetUserLShapeMainRow "B2", 5, 5
+    ClearUserLShapeExtraRows
+
+    Dim loads As Object
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    ClearDataRows loads
+    loads.Cells.Item(2, 1).Value2 = "LC_SAFE"
+    loads.Cells.Item(2, 2).Value2 = -795#
+    loads.Cells.Item(2, 3).ClearContents
+    loads.Cells.Item(2, 4).ClearContents
+    loads.Cells.Item(2, 5).Value2 = "Group2"
+    loads.Cells.Item(2, 6).Value2 = "inside physical range"
+
+    loads.Cells.Item(3, 1).Value2 = "LC_OVER"
+    loads.Cells.Item(3, 2).Value2 = -900#
+    loads.Cells.Item(3, 3).ClearContents
+    loads.Cells.Item(3, 4).ClearContents
+    loads.Cells.Item(3, 5).Value2 = "Group2"
+    loads.Cells.Item(3, 6).Value2 = "uses extension"
+End Sub
+
+Private Sub SetUserLShapeMainRow(ByVal faceName As String, ByVal count1 As Long, ByVal count2 As Long)
+    SetSystemSetting "LShape." & faceName & ".as_1", "40"
+    SetSystemSetting "LShape." & faceName & ".as_2", "40"
+    SetSystemSetting "LShape." & faceName & ".d_1", "32"
+    SetSystemSetting "LShape." & faceName & ".d_2", "32"
+    SetSystemSetting "LShape." & faceName & ".n_1", CStr(count1)
+    SetSystemSetting "LShape." & faceName & ".n_2", CStr(count2)
+    SetSystemSetting "LShape." & faceName & ".StartOffset1", "80"
+    SetSystemSetting "LShape." & faceName & ".EndOffset1", "80"
+    SetSystemSetting "LShape." & faceName & ".StartOffset2", "80"
+    SetSystemSetting "LShape." & faceName & ".EndOffset2", "80"
+End Sub
+
+Private Sub ClearUserLShapeExtraRows()
+    Dim faces As Variant
+    faces = Array("H1", "B1", "H2", "B2")
+    Dim i As Long
+    For i = LBound(faces) To UBound(faces)
+        SetSystemSetting "LShape." & CStr(faces(i)) & ".d_2row_1", vbNullString
+        SetSystemSetting "LShape." & CStr(faces(i)) & ".d_2row_2", vbNullString
+        SetSystemSetting "LShape." & CStr(faces(i)) & ".d_3row_1", vbNullString
+        SetSystemSetting "LShape." & CStr(faces(i)) & ".d_3row_2", vbNullString
+        SetSystemSetting "LShape." & CStr(faces(i)) & ".loc_2row", "Stacked"
+        SetSystemSetting "LShape." & CStr(faces(i)) & ".loc_3row", "Stacked"
+        SetSystemSetting "LShape." & CStr(faces(i)) & ".bind_2row", "EachBar"
+        SetSystemSetting "LShape." & CStr(faces(i)) & ".bind_3row", "EachBar"
+    Next i
+End Sub
+
 ' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
 Private Sub ClearDataRows(ByVal target As Object)
     Dim rowIndex As Long
@@ -1303,6 +1526,7 @@ End Sub
 ' здесь не нужны; важно именно не оставлять пустую колонку "Ед.".
 Private Sub TestCapacitySettingsUnitLabels(ByRef stats As TUiTestStats)
     AssertTextEquals stats, "ui.units.capacity.mode", SystemSettingUnitText("Calculation.Mode"), "-"
+    AssertTextEquals stats, "ui.units.capacity.scope", SystemSettingUnitText("Capacity.CalculationScope"), "-"
     AssertTextEquals stats, "ui.units.capacity.method", SystemSettingUnitText("Capacity.Method"), "-"
     AssertTextEquals stats, "ui.units.capacity.searchMethod", SystemSettingUnitText("Capacity.SearchMethod"), "-"
     AssertTextEquals stats, "ui.units.capacity.initialLambda", SystemSettingUnitText("Capacity.InitialLambda"), "-"
@@ -1333,7 +1557,13 @@ End Function
 
 Private Sub AssertTextEquals(ByRef stats As TUiTestStats, ByVal name As String, _
         ByVal actual As String, ByVal expected As String)
-    AssertTrue stats, name, StrComp(actual, expected, vbTextCompare) = 0
+    If StrComp(actual, expected, vbTextCompare) = 0 Then
+        stats.Passed = stats.Passed + 1
+        AppendLine stats, "OK: " & name & "; actual=" & actual
+    Else
+        stats.Failed = stats.Failed + 1
+        AppendLine stats, "FAIL: " & name & "; actual=" & actual & "; expected=" & expected
+    End If
 End Sub
 
 Private Function FileExists(ByVal path As String) As Boolean

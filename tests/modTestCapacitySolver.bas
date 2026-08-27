@@ -711,10 +711,10 @@ Private Sub TestLoadMultiplierWithWorkbookTfDefaults(ByRef stats As TCapacityTes
     materialProvider.Initialize settings, units
 
     Dim concrete As Object
-    Set concrete = materialProvider.ConcreteMaterial("Strength")
+    Set concrete = materialProvider.ConcreteMaterial(cpStrength)
 
     Dim steel As Object
-    Set steel = materialProvider.SteelMaterial("Strength")
+    Set steel = materialProvider.SteelMaterial(cpStrength)
 
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
@@ -910,7 +910,7 @@ Private Function ProvisionalConcreteWithTension() As CMaterialDiagram
     Dim provider As CMaterialModelProvider
     Set provider = New CMaterialModelProvider
     provider.InitializeFromParameters TestConcreteParameters(), TestSteelParameters(), "TwoLine", "UseDiagram"
-    Set ProvisionalConcreteWithTension = provider.ConcreteMaterial("Strength")
+    Set ProvisionalConcreteWithTension = provider.ConcreteMaterial(cpStrength)
 End Function
 
 Private Function TestConcreteParameters() As CConcreteMaterialParameters

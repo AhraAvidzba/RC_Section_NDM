@@ -26,6 +26,14 @@ Private mStrains() As Double ' Узлы диаграммы по деформац
 Private mStresses() As Double ' Напряжения в узлах диаграммы, МПа во внутренней системе.
 Private mPointCount As Long ' Количество активных точек диаграммы.
 Private mInitialized As Boolean ' Защита от вызова расчетных методов до загрузки точек.
+Private mPhysicalCompressionStrain As Double ' Физический сжатый предел; extension-точки его не меняют.
+Private mPhysicalTensionStrain As Double ' Физический растянутый предел, если у диаграммы есть растянутая ветвь.
+Private mHasPhysicalTensionLimit As Boolean ' False для диаграмм, где растянутый бетон принят с нулевым сопротивлением без eps-лимита.
+Private mHasCompressionExtension As Boolean ' True, если слева от физического сжатого предела добавлена техническая область.
+Private mHasTensionExtension As Boolean ' True, если справа от физического растянутого предела добавлена техническая область.
+Private mCompressionExtensionStartStrain As Double ' Граница, после которой сжатая ветвь уже использует numerical extension.
+Private mTensionExtensionStartStrain As Double ' Граница, после которой растянутая ветвь уже использует numerical extension.
+Private Const RANGE_TOLERANCE As Double = 0.000000000001 ' Малый допуск для сравнения деформаций с границами диаграммы.
 
 ' ------------------------------
 ' Инициализация
@@ -33,7 +41,10 @@ Private mInitialized As Boolean ' Защита от вызова расчетн�
 ' Загружает готовые массивы точек диаграммы. Provider передает сюда уже
 ' рассчитанные и знаково оформленные координаты: сжатие в проекте имеет
 ' отрицательную деформацию и отрицательное напряжение, растяжение - положительное.
-Public Sub InitializeFromArrays(ByRef strains() As Double, ByRef stresses() As Double, ByVal pointCount As Long)
+Public Sub InitializeFromArrays(ByRef strains() As Double, ByRef stresses() As Double, ByVal pointCount As Long, _
+        Optional ByVal physicalCompressionStrain As Variant, Optional ByVal physicalTensionStrain As Variant, _
+        Optional ByVal hasCompressionExtension As Boolean = False, Optional ByVal hasTensionExtension As Boolean = False, _
+        Optional ByVal compressionExtensionStartStrain As Variant, Optional ByVal tensionExtensionStartStrain As Variant)
     If pointCount < 2 Then Err.Raise vbObjectError + 3100, "CMaterialDiagram", "Диаграмма материала должна содержать не менее двух точек."
 
     ReDim mStrains(1 To pointCount)
@@ -48,6 +59,29 @@ Public Sub InitializeFromArrays(ByRef strains() As Double, ByRef stresses() As D
     SortPointsByStrain
     ValidatePointOrder
     mPointCount = pointCount
+    If IsMissing(physicalCompressionStrain) Then
+        mPhysicalCompressionStrain = mStrains(1)
+    Else
+        mPhysicalCompressionStrain = CDbl(physicalCompressionStrain)
+    End If
+    If IsMissing(physicalTensionStrain) Then
+        mPhysicalTensionStrain = IIf(mStrains(mPointCount) > 0#, mStrains(mPointCount), 0#)
+    Else
+        mPhysicalTensionStrain = CDbl(physicalTensionStrain)
+    End If
+    mHasPhysicalTensionLimit = (mPhysicalTensionStrain > 0#)
+    mHasCompressionExtension = hasCompressionExtension
+    mHasTensionExtension = hasTensionExtension
+    If IsMissing(compressionExtensionStartStrain) Then
+        mCompressionExtensionStartStrain = mPhysicalCompressionStrain
+    Else
+        mCompressionExtensionStartStrain = CDbl(compressionExtensionStartStrain)
+    End If
+    If IsMissing(tensionExtensionStartStrain) Then
+        mTensionExtensionStartStrain = mPhysicalTensionStrain
+    Else
+        mTensionExtensionStartStrain = CDbl(tensionExtensionStartStrain)
+    End If
     mInitialized = True
 End Sub
 
@@ -58,15 +92,71 @@ End Sub
 ' предельную сжатую деформацию, потому что отдельные Capacity.*Limit удалены.
 Public Property Get UltimateCompressionStrain() As Double
     EnsureInitialized
-    UltimateCompressionStrain = mStrains(1)
+    UltimateCompressionStrain = mPhysicalCompressionStrain
 End Property
 
 ' Возвращает крайнюю растянутую точку диаграммы. Если диаграмма не имеет
 ' положительной ветви, предел растяжения равен нулю и не участвует в проверке.
 Public Property Get UltimateTensionStrain() As Double
     EnsureInitialized
-    If mStrains(mPointCount) > 0# Then UltimateTensionStrain = mStrains(mPointCount)
+    If mHasPhysicalTensionLimit Then UltimateTensionStrain = mPhysicalTensionStrain
 End Property
+
+' Возвращает физический сжатый предел диаграммы. Если provider добавил
+' техническую extension-точку, это свойство все равно остается на реальном eps_ult.
+Public Property Get PhysicalCompressionStrain() As Double
+    EnsureInitialized
+    PhysicalCompressionStrain = mPhysicalCompressionStrain
+End Property
+
+' Возвращает физический растянутый предел, если он есть. Для бетона с
+' отключенным растяжением предела нет: положительная деформация означает
+' неработающую растянутую зону, а не автоматический выход в extension.
+Public Property Get PhysicalTensionStrain() As Double
+    EnsureInitialized
+    PhysicalTensionStrain = mPhysicalTensionStrain
+End Property
+
+Public Property Get HasPhysicalTensionLimit() As Boolean
+    EnsureInitialized
+    HasPhysicalTensionLimit = mHasPhysicalTensionLimit
+End Property
+
+Public Property Get HasCompressionExtension() As Boolean
+    EnsureInitialized
+    HasCompressionExtension = mHasCompressionExtension
+End Property
+
+Public Property Get HasTensionExtension() As Boolean
+    EnsureInitialized
+    HasTensionExtension = mHasTensionExtension
+End Property
+
+' Проверяет, остается ли деформация в физической области диаграммы.
+' Отсутствие растянутого предела трактуется как неработающая растянутая зона
+' с нулевым сопротивлением, поэтому положительные eps в этом случае допустимы.
+Public Function IsInPhysicalRange(ByVal strain As Double) As Boolean
+    EnsureInitialized
+    If strain < mPhysicalCompressionStrain - RANGE_TOLERANCE Then Exit Function
+    If mHasPhysicalTensionLimit Then
+        If strain > mPhysicalTensionStrain + RANGE_TOLERANCE Then Exit Function
+    End If
+    IsInPhysicalRange = True
+End Function
+
+' True означает, что деформация вышла за физический eps_ult именно в ту
+' техническую область, которую provider добавил для прямого StateSolution.
+' Горизонтальное физическое плато до eps_ult не считается extension: оно
+' остается допустимой частью диаграммы материала и не должно давать FAIL.
+Public Function IsInExtensionRange(ByVal strain As Double) As Boolean
+    EnsureInitialized
+    If mHasCompressionExtension And strain < mPhysicalCompressionStrain - RANGE_TOLERANCE Then
+        IsInExtensionRange = True
+    ElseIf mHasTensionExtension And mHasPhysicalTensionLimit And _
+            strain > mPhysicalTensionStrain + RANGE_TOLERANCE Then
+        IsInExtensionRange = True
+    End If
+End Function
 
 ' ------------------------------
 ' Расчетный контракт материала

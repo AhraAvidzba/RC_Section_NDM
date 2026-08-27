@@ -27,6 +27,10 @@ Private Type TAutoCADExportSettings
     LoadPointEnabled As Boolean
 End Type
 
+Private Const EXTENSION_WARNING_TEXT As String = "ВНЕ ФИЗИЧЕСКОЙ ДИАГРАММЫ МАТЕРИАЛА"
+Private Const NUMERICAL_STATE_WARNING_TEXT As String = "ПРЯМОЕ НДС НЕ СОШЛОСЬ"
+Private Const EXTENSION_WARNING_LAYER As String = "RC_NDM_Warnings"
+
 Public Sub ExportSectionStressToAutoCAD()
     On Error GoTo Failed
 
@@ -49,15 +53,17 @@ Public Sub ExportSectionStressToAutoCAD()
     Dim centroidX As Double
     Dim centroidY As Double
     Dim principalAngle As Double
+    Dim extensionUsed As Boolean
+    Dim stateWarningText As String
     ReadResultsExportState ThisWorkbook, settings, units, section, resultByID, physicalStateByID, combinationID, _
         epsilon0, kappaX, kappaY, loadReferenceX, loadReferenceY, _
-        centroidX, centroidY, principalAngle
+        centroidX, centroidY, principalAngle, extensionUsed, stateWarningText
 
     Dim exportSettings As TAutoCADExportSettings
     exportSettings = ReadAutoCADExportSettings(settings)
 
     DrawResultsStressExport section, resultByID, physicalStateByID, epsilon0, kappaX, kappaY, _
-        loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, exportSettings
+        loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, stateWarningText, exportSettings
     MsgBox "Экспорт в AutoCAD завершен. Волокон бетона: " & CStr(section.ConcreteCount) & _
         "; стержней арматуры: " & CStr(section.RebarCount) & _
         "; сочетание: " & combinationID, vbInformation, "RC Section NDM"
@@ -116,6 +122,7 @@ Private Function AutoCADCleanupLayerSet(ByRef exportSettings As TAutoCADExportSe
     AddCleanupLayer layers, "RC_NDM_Axes"
     AddCleanupLayer layers, "RC_NDM_LoadPoint"
     AddCleanupLayer layers, "RC_NDM_NeutralLine"
+    AddCleanupLayer layers, EXTENSION_WARNING_LAYER
 
     Set AutoCADCleanupLayerSet = layers
 End Function
@@ -150,7 +157,8 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
         ByRef section As CSectionModel, ByRef resultByID As Object, ByRef physicalStateByID As Object, ByRef combinationID As String, _
         ByRef epsilon0 As Double, ByRef kappaX As Double, ByRef kappaY As Double, _
         ByRef loadReferenceX As Double, ByRef loadReferenceY As Double, _
-        ByRef centroidX As Double, ByRef centroidY As Double, ByRef principalAngle As Double)
+        ByRef centroidX As Double, ByRef centroidY As Double, ByRef principalAngle As Double, _
+        ByRef extensionUsed As Boolean, ByRef stateWarningText As String)
     Set section = ReadSectionGeometryFromResults(workbook, "Results")
 
     combinationID = ResolveExportCombinationID(workbook, settings.GetRawString("AutoCAD.Export.CombinationID", "Worst"))
@@ -161,7 +169,7 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
     physicalStateByID.CompareMode = vbTextCompare
     ReadElementResultsForCombination workbook, settings.GetString("AutoCAD.Export.ResultType", "Stress"), combinationID, resultByID, physicalStateByID
     ReadSectionPropertiesForCombination workbook, units, combinationID, epsilon0, kappaX, kappaY, _
-        loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle
+        loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, extensionUsed, stateWarningText
 End Sub
 
 Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optional ByVal sourceType As String = "Results") As CSectionModel
@@ -287,7 +295,8 @@ End Sub
 Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal units As CUnitSystem, _
         ByVal combinationID As String, ByRef epsilon0 As Double, ByRef kappaX As Double, _
         ByRef kappaY As Double, ByRef loadReferenceX As Double, ByRef loadReferenceY As Double, _
-        ByRef centroidX As Double, ByRef centroidY As Double, ByRef principalAngle As Double)
+        ByRef centroidX As Double, ByRef centroidY As Double, ByRef principalAngle As Double, _
+        ByRef extensionUsed As Boolean, ByRef stateWarningText As String)
     Dim data As Variant
     data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
     If Not HasResultTableRows(data) Then Err.Raise vbObjectError + 4360, "ReadSectionPropertiesForCombination", _
@@ -299,6 +308,7 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
     Dim colUnit As Long: colUnit = ResultColumn(data, "Unit")
 
     Dim foundState As Boolean
+    Dim directStateStatus As String
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
         If StrComp(CStr(data(rowIndex, colLoadCase)), "ALL", vbTextCompare) = 0 Then
@@ -323,9 +333,19 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
                     loadReferenceX = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
                 Case "loadreferencey"
                     loadReferenceY = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                Case "extensionused"
+                    extensionUsed = SafeBoolean(data(rowIndex, colValue))
+                Case "directstatestatus"
+                    directStateStatus = Trim$(SafeText(data(rowIndex, colValue)))
             End Select
         End If
     Next rowIndex
+
+    If extensionUsed Or StrComp(directStateStatus, "FAIL", vbTextCompare) = 0 Then
+        stateWarningText = EXTENSION_WARNING_TEXT
+    ElseIf StrComp(directStateStatus, "NumFail", vbTextCompare) = 0 Then
+        stateWarningText = NUMERICAL_STATE_WARNING_TEXT
+    End If
 
     If Not foundState Then Err.Raise vbObjectError + 4361, "ReadSectionPropertiesForCombination", _
         "В rngNDMSectionProperties нет состояния для сочетания: " & combinationID
@@ -345,6 +365,18 @@ End Function
 Private Function SafeText(ByVal value As Variant) As String
     If IsError(value) Then Exit Function
     SafeText = CStr(value)
+End Function
+
+Private Function SafeBoolean(ByVal value As Variant) As Boolean
+    If IsError(value) Then Exit Function
+    If VarType(value) = vbBoolean Then
+        SafeBoolean = CBool(value)
+        Exit Function
+    End If
+    Select Case LCase$(Trim$(CStr(value)))
+        Case "true", "yes", "да", "1"
+            SafeBoolean = True
+    End Select
 End Function
 
 Private Function OutputLengthToInternal(ByVal value As Double, ByVal units As CUnitSystem) As Double
@@ -367,11 +399,32 @@ Private Function ResolveExportCombinationID(ByVal workbook As Object, ByVal sett
 
     If StrComp(valueText, "Worst", vbTextCompare) = 0 Then
         ResolveExportCombinationID = ReadGoverningCombinationID(workbook)
+        If Len(ResolveExportCombinationID) = 0 Then ResolveExportCombinationID = FirstCalculatedLoadCaseFromResults(workbook)
         If Len(ResolveExportCombinationID) = 0 Then Err.Raise vbObjectError + 4358, "ResolveExportCombinationID", _
-            "В rngBatchSummary не найдено определяющее сочетание для AutoCAD.Export.CombinationID = Worst."
+            "В Results не найдено рассчитанное сочетание для AutoCAD.Export.CombinationID = Worst."
     Else
         ResolveExportCombinationID = valueText
     End If
+End Function
+
+' Возвращает первое сочетание, для которого в Results есть LC-зависимые
+' результаты элементов. Это тот же fallback, которым пользуется Excel-схема,
+' когда определяющее сочетание в batch summary не заполнено.
+Private Function FirstCalculatedLoadCaseFromResults(ByVal workbook As Object) As String
+    On Error GoTo Failed
+    Dim data As Variant
+    data = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
+    If Not HasResultTableRows(data) Then Exit Function
+
+    Dim colLoadCase As Long
+    colLoadCase = ResultColumn(data, "LoadCase")
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(data, 1)
+        FirstCalculatedLoadCaseFromResults = Trim$(SafeText(data(rowIndex, colLoadCase)))
+        If Len(FirstCalculatedLoadCaseFromResults) > 0 Then Exit Function
+    Next rowIndex
+Failed:
 End Function
 
 Private Function HasResultTableRows(ByVal data As Variant) As Boolean
@@ -512,7 +565,7 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
         ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
         ByVal centroidX As Double, ByVal centroidY As Double, ByVal principalAngle As Double, _
-        ByRef exportSettings As TAutoCADExportSettings)
+        ByVal stateWarningText As String, ByRef exportSettings As TAutoCADExportSettings)
     Dim acad As Object
     Set acad = ConnectToRunningAutoCAD()
 
@@ -531,6 +584,7 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
     EnsureAcadLayer doc, "RC_NDM_Axes", 3
     EnsureAcadLayer doc, "RC_NDM_LoadPoint", 2
     EnsureAcadLayer doc, "RC_NDM_NeutralLine", exportSettings.NeutralColor
+    EnsureAcadLayer doc, EXTENSION_WARNING_LAYER, 1
 
     Dim i As Long
     Dim resultValue As Double
@@ -573,8 +627,27 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
     If exportSettings.NeutralLineEnabled Then
         DrawNeutralLineByState ms, section, epsilon0, kappaX, kappaY, exportSettings.NeutralColor
     End If
+    If Len(stateWarningText) > 0 Then DrawStateWarning ms, section, stateWarningText
 
     doc.Regen 1
+End Sub
+
+' Добавляет в AutoCAD заметное предупреждение под сечением.
+' Текст берется из сохраненного Results snapshot: это может быть выход за
+' физическую диаграмму или численная несходимость прямого НДС.
+Private Sub DrawStateWarning(ByVal ms As Object, ByVal section As CSectionModel, ByVal warningText As String)
+    Dim minX As Double
+    Dim maxX As Double
+    Dim minY As Double
+    Dim maxY As Double
+    GetSectionBounds section, minX, maxX, minY, maxY
+
+    Dim sectionSize As Double
+    sectionSize = MaxDouble(maxX - minX, maxY - minY)
+    If sectionSize <= 0# Then sectionSize = 100#
+
+    AddAcadText ms, warningText, minX, minY - 0.14 * sectionSize, _
+        MaxDouble(8#, 0.035 * sectionSize), EXTENSION_WARNING_LAYER, 1
 End Sub
 
 Private Function LookupResultValue(ByVal resultByID As Object, ByVal elementID As String) As Double

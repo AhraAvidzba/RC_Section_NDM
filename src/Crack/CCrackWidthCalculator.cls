@@ -163,7 +163,7 @@ End Sub
 ' solve-ы нужны только для Auto и только после неудачной первой проверки
 ' раскрытия с psi_s = 1.
 Public Sub Calculate(ByVal currentSolver As CSectionSolver, ByVal section As CSectionModel, _
-        ByVal materialProvider As CMaterialModelProvider, ByVal currentPurpose As String, _
+        ByVal materialProvider As CMaterialModelProvider, ByVal currentPurpose As ECalculationPurpose, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         Optional ByVal centroidMxForCentralCheck As Variant, Optional ByVal centroidMyForCentralCheck As Variant)
     ClearResult
@@ -183,16 +183,16 @@ End Sub
 ' они должны совпадать с диаграммами, которыми реально решается НДС.
 Private Sub ApplyMaterialProviderProperties(ByVal materialProvider As CMaterialModelProvider)
     mRebarProfile = materialProvider.RebarProfile
-    mConcreteRbtSer = materialProvider.ConcreteTensionResistance("Mcrc")
-    mConcreteEb = materialProvider.ConcreteElasticModulus("Mcrc")
-    mSteelEs = materialProvider.SteelElasticModulus("CrackedNDS")
+    mConcreteRbtSer = materialProvider.ConcreteTensionResistance(cpMcrc)
+    mConcreteEb = materialProvider.ConcreteElasticModulus(cpMcrc)
+    mSteelEs = materialProvider.SteelElasticModulus(cpCrackedNDS)
 End Sub
 
 ' Выполняет отдельную ветку СП для истинного центрального растяжения.
 ' Здесь нет нейтральной линии, поэтому Abt принимается равной всей площади
 ' бетона, а As - всей продольной арматуре, которая растянута в текущем НДС.
 Private Sub CalculateCentralTension(ByVal currentSolver As CSectionSolver, ByVal section As CSectionModel, _
-        ByVal materialProvider As CMaterialModelProvider, ByVal currentPurpose As String, _
+        ByVal materialProvider As CMaterialModelProvider, ByVal currentPurpose As ECalculationPurpose, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double)
     mCentralTensionBranch = True
     mPhi3 = PHI3_TENSION
@@ -234,7 +234,7 @@ End Sub
 ' Все геометрические величины строятся в координате s вдоль нормали к
 ' нейтральной линии, направленной в сторону растяжения.
 Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionSolver, ByVal section As CSectionModel, _
-        ByVal materialProvider As CMaterialModelProvider, ByVal currentPurpose As String, _
+        ByVal materialProvider As CMaterialModelProvider, ByVal currentPurpose As ECalculationPurpose, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double)
     mPhi3 = IIf(targetN > NEAR_ZERO_FORCE, PHI3_TENSION, PHI3_BENDING)
 
@@ -624,8 +624,8 @@ Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal mater
 
     AppendDiagnostic "Auto psi_s: первая проверка с psi_s=1 не проходит; запускается расчет lambda_crc."
     mConverged = False
-    If Not CalculateLambdaCrc(section, materialProvider.ConcreteMaterial("Mcrc"), _
-            materialProvider.SteelMaterial("Mcrc"), currentSolver, _
+    If Not CalculateLambdaCrc(section, materialProvider.ConcreteMaterial(cpMcrc), _
+            materialProvider.SteelMaterial(cpMcrc), currentSolver, _
             targetN, targetMx, targetMy) Then Exit Function
     If mLambdaCrc > 1# Then
         FinishNoCrack "Трещина не образована: предельная растянутая деформация бетона не достигнута при lambda = 1."
@@ -634,8 +634,8 @@ Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal mater
     End If
 
     Dim crcSolver As CSectionSolver
-    Set crcSolver = SolveState(section, materialProvider.ConcreteMaterial("CrackedNDS"), _
-        materialProvider.SteelMaterial("CrackedNDS"), currentSolver, _
+    Set crcSolver = SolveState(section, materialProvider.ConcreteMaterial(cpCrackedNDS), _
+        materialProvider.SteelMaterial(cpCrackedNDS), currentSolver, _
         targetN * mLambdaCrc, targetMx * mLambdaCrc, targetMy * mLambdaCrc)
     If Not crcSolver.Converged Then
         mStopReason = "NumericalFailure: состояние lambda_crc после образования трещины не сошлось: " & crcSolver.StopReason
@@ -643,7 +643,7 @@ Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal mater
     End If
 
     mSigmaSCrc = AverageSelectedSteelStress(crcSolver, section, _
-        materialProvider.SteelMaterial("CrackedNDS"), selected)
+        materialProvider.SteelMaterial(cpCrackedNDS), selected)
     mPsiS = AutoPsi(mSigmaS, mSigmaSCrc)
     FinalizeWidth finalReason & " Psi_s уточнен автоматически после непрохождения первой проверки."
     FinalizeWithPsiMode = mConverged

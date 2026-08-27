@@ -53,6 +53,8 @@ Private Const MSO_ARROWHEAD_WIDTH_WIDE As Long = 3
 Private Const MSO_SHAPE_RECTANGLE As Long = 1
 Private Const MSO_SHAPE_DIAMOND As Long = 4
 Private Const MSO_SHAPE_OVAL As Long = 9
+Private Const EXTENSION_WARNING_TEXT As String = "ВНЕ ФИЗИЧЕСКОЙ ДИАГРАММЫ МАТЕРИАЛА"
+Private Const NUMERICAL_STATE_WARNING_TEXT As String = "ПРЯМОЕ НДС НЕ СОШЛОСЬ"
 
 Private mChart As Object ' Excel Chart, внутри которого рисуются series и аннотационные Shapes.
 Private mChartObject As Object ' Контейнер ChartObject на листе Расчет; пользователь может двигать/масштабировать его.
@@ -121,6 +123,27 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     AddElementSeries data
     If Not data.GeometryOnly Then DrawAnalysisSeries data, settings
     DrawShapeDecorations data, settings
+End Sub
+
+' Очищает существующую схему до нейтрального состояния без удаления ChartObject.
+' Положение и размер окна схемы сохраняются, но старые расчетные series,
+' аннотации и заголовок больше не могут выглядеть как актуальный snapshot.
+Public Sub ClearExisting(ByVal workbook As Object, ByVal titleText As String)
+    If workbook Is Nothing Then Err.Raise vbObjectError + 4800, "CSectionPlotter", "Книга Excel не передана."
+
+    Set mChartObject = EnsureChart(workbook.Worksheets.Item("Расчет"))
+    Set mChart = mChartObject.Chart
+
+    mChart.ChartType = XL_XY_SCATTER
+    mChart.HasLegend = False
+    mChart.HasTitle = True
+    mChart.ChartTitle.Text = titleText
+    mChart.ChartTitle.Font.Size = 12
+
+    Do While mChart.SeriesCollection.Count > 0
+        mChart.SeriesCollection(1).Delete
+    Loop
+    ClearGeneratedShapes
 End Sub
 
 ' Возвращает существующий ChartObject или создает его при первом запуске.
@@ -532,6 +555,31 @@ Private Sub DrawShapeDecorations(ByVal data As CSectionPlotDataReader, ByVal set
     If data.GeometryOnly Then Exit Sub
     If settings.GetBoolean("Plot.ResultLabelsEnabled", False) Then DrawResultLabels data, settings.GetDouble("Plot.ResultLabelSpacing", 100#)
     If settings.GetBoolean("Plot.LegendEnabled", True) Then DrawLegend data
+    DrawStateWarning data
+End Sub
+
+' Показывает под схемой короткое красное предупреждение по сохраненному
+' DirectStateStatus. Для FAIL сохраняется прежний смысл: состояние найдено
+' вне физической диаграммы. Для NumFail отдельно предупреждаем, что на схеме
+' может быть последняя итерация, а не корректное равновесное состояние.
+Private Sub DrawStateWarning(ByVal data As CSectionPlotDataReader)
+    Dim warningText As String
+    If data.PhysicalDiagramWarningRequired Then
+        warningText = EXTENSION_WARNING_TEXT
+    ElseIf StrComp(data.DirectStateStatus, "NumFail", vbTextCompare) = 0 Then
+        warningText = NUMERICAL_STATE_WARNING_TEXT
+    End If
+    If Len(warningText) = 0 Then Exit Sub
+
+    Dim leftPos As Double
+    Dim topPos As Double
+    Dim widthValue As Double
+    leftPos = mChart.PlotArea.InsideLeft
+    topPos = mChart.PlotArea.InsideTop + mChart.PlotArea.InsideHeight + 8
+    widthValue = mChart.PlotArea.InsideWidth
+    If widthValue <= 0# Then widthValue = mChartObject.Width - 40
+
+    AddChartText leftPos, topPos, widthValue, 18, warningText, 0#, RGB(192, 0, 0), True, True, 10#
 End Sub
 
 ' Рисует контур бетона из semantic-аннотаций Results.

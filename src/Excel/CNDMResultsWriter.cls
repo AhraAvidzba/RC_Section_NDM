@@ -23,6 +23,7 @@ Private Const ELEMENT_RESULT_COLUMNS As Long = 6 ' LC-зависимые рез�
 Private Const GEOMETRY_COLUMNS As Long = 15 ' Постоянная геометрия элементов, записанная один раз на расчетный снимок.
 Private Const SECTION_PROPERTY_COLUMNS As Long = 6 ' Общие свойства сечения и LC-свойства уровня всего сечения.
 Private Const ANNOTATION_COLUMNS As Long = 14 ' Semantic-аннотации схемы: размеры, контур, групповые подписи арматуры.
+Private Const MATERIAL_DIAGRAM_COLUMNS As Long = 8 ' Диагностический вывод фактических точек диаграмм, переданных solver-ам.
 Private Const PHYSICAL_TOLERANCE As Double = 0.000000001 ' Порог, ниже которого напряжение считается NearZero.
 
 ' ------------------------------
@@ -46,6 +47,7 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
     WriteSectionGeometry workbook, section, runID, units
     WriteElementResults workbook, section, batch, runID, units
     WriteSectionProperties workbook, section, materialProvider, batch, runID, units
+    WriteMaterialDiagrams workbook, materialProvider, batch, runID, units
     EnsureAutoCADBoundsAnnotations section
     WriteSectionAnnotations workbook, section, runID, units
 End Sub
@@ -78,6 +80,7 @@ Public Sub ClearResults(ByVal workbook As Object)
     ClearNamedRegion workbook, "rngNDMSectionGeometry"
     ClearNamedRegion workbook, "rngNDMSectionProperties"
     ClearNamedRegion workbook, "rngNDMSectionAnnotations"
+    ClearNamedRegion workbook, "rngNDMMaterialDiagrams"
 End Sub
 
 ' Безопасно чистит именованный диапазон, если он существует в книге.
@@ -212,7 +215,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     Set target = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
 
     Dim rowCount As Long
-    rowCount = 1 + 45 + batch.Count * 12
+    rowCount = 1 + 45 + batch.Count * 17
 
     Dim data() As Variant
     ReDim data(1 To rowCount, 1 To SECTION_PROPERTY_COLUMNS)
@@ -230,8 +233,8 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     ' бетон + арматура, чтобы AutoCAD export и схема использовали один источник.
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
-    props.CalculateTransformed section, materialProvider.ConcreteMaterial("Strength"), _
-        materialProvider.SteelMaterial("Strength")
+    props.CalculateTransformed section, materialProvider.ConcreteMaterial(cpStrength), _
+        materialProvider.SteelMaterial(cpStrength)
 
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MinX", OutputLength(minX, units), OutputLengthUnit(units), "Минимальный X расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxX", OutputLength(maxX, units), OutputLengthUnit(units), "Максимальный X расчетной модели."
@@ -254,9 +257,9 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     PutProperty data, rowIndex, runID, "ALL", "Output.SignConvention.N", OutputSignN(units), "-", "Пользовательский знак N на момент расчета."
     PutProperty data, rowIndex, runID, "ALL", "Output.SignConvention.Mx", OutputSignMx(units), "-", "Пользовательский знак Mx на момент расчета."
     PutProperty data, rowIndex, runID, "ALL", "Output.SignConvention.My", OutputSignMy(units), "-", "Пользовательский знак My на момент расчета."
-    PutMaterialModelProperties data, rowIndex, runID, materialProvider, "Strength"
-    PutMaterialModelProperties data, rowIndex, runID, materialProvider, "Mcrc"
-    PutMaterialModelProperties data, rowIndex, runID, materialProvider, "CrackedNDS"
+    PutMaterialModelProperties data, rowIndex, runID, materialProvider, cpStrength
+    PutMaterialModelProperties data, rowIndex, runID, materialProvider, cpMcrc
+    PutMaterialModelProperties data, rowIndex, runID, materialProvider, cpCrackedNDS
 
     Dim i As Long
     ' LC-зависимые свойства уровня сечения хранятся отдельно от поэлементных
@@ -266,20 +269,152 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "Epsilon0", batch.Epsilon0(i), "-", "Деформация в начале координат расчетной модели."
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "KappaX", OutputCurvature(batch.KappaX(i), units), OutputCurvatureUnit(units), "Кривизна KappaX."
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "KappaY", OutputCurvature(batch.KappaY(i), units), OutputCurvatureUnit(units), "Кривизна KappaY."
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "LoadReferenceX", OutputLength(batch.LoadReferenceX, units), OutputLengthUnit(units), "X точки приложения нагрузки."
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "LoadReferenceY", OutputLength(batch.LoadReferenceY, units), OutputLengthUnit(units), "Y точки приложения нагрузки."
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "N", OutputForce(batch.N(i), units), OutputForceUnit(units), "Заданная продольная сила."
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxUser", OutputMx(batch.UserMx(i), units), OutputMomentUnit(units), "Пользовательский Mx."
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUser", OutputMy(batch.UserMy(i), units), OutputMomentUnit(units), "Пользовательский My."
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxInternal", OutputMx(batch.Mx(i), units), OutputMomentUnit(units), "Mx после переноса к координатам элементов."
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyInternal", OutputMy(batch.My(i), units), OutputMomentUnit(units), "My после переноса к координатам элементов."
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nint", OutputForce(batch.Nint(i), units), OutputForceUnit(units), "Внутренняя продольная сила."
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Status", batch.Status(i), "-", "Сводный статус сочетания."
+        Else
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Epsilon0", vbNullString, "-", "Деформация в начале координат расчетной модели."
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "KappaX", vbNullString, OutputCurvatureUnit(units), "Кривизна KappaX."
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "KappaY", vbNullString, OutputCurvatureUnit(units), "Кривизна KappaY."
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nint", vbNullString, OutputForceUnit(units), "Внутренняя продольная сила."
         End If
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LoadReferenceX", OutputLength(batch.LoadReferenceX, units), OutputLengthUnit(units), "X точки приложения нагрузки."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LoadReferenceY", OutputLength(batch.LoadReferenceY, units), OutputLengthUnit(units), "Y точки приложения нагрузки."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "N", OutputForce(batch.N(i), units), OutputForceUnit(units), "Заданная продольная сила."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxUser", OutputMx(batch.UserMx(i), units), OutputMomentUnit(units), "Пользовательский Mx."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUser", OutputMy(batch.UserMy(i), units), OutputMomentUnit(units), "Пользовательский My."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxInternal", OutputMx(batch.Mx(i), units), OutputMomentUnit(units), "Mx после переноса к координатам элементов."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyInternal", OutputMy(batch.My(i), units), OutputMomentUnit(units), "My после переноса к координатам элементов."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "OverallStatus", batch.OverallStatus(i), "-", "Итоговый пользовательский статус сочетания."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "DirectStateStatus", batch.DirectStateStatus(i), "-", "Статус прямого решения НДС фактического сочетания."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacityStatus", batch.CapacityStatus(i), "-", "Статус расчета несущей способности."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "CrackStatus", batch.CrackStatus(i), "-", "Статус расчета ширины раскрытия трещин."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "ExtensionUsed", BooleanText(batch.ExtensionUsed(i)), "-", "True, если прямой StateSolution вышел за физические пределы диаграммы в numerical extension."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "DirectState.DiagramExtensionEnabled", BooleanText(batch.DirectStateDiagramExtensionEnabled(i)), "-", "Сохраненное значение настройки Solver.DirectState.DiagramExtension на момент расчета."
     Next i
 
     target.Resize(rowCount, SECTION_PROPERTY_COLUMNS).Value2 = data
     FormatResultsBlock target, rowCount, SECTION_PROPERTY_COLUMNS, "Свойства всего сечения"
+End Sub
+
+' Возвращает английскую запись логического флага для Results snapshot.
+' Так файл не зависит от локали Excel, где Boolean может отображаться как
+' ИСТИНА/ЛОЖЬ, TRUE/FALSE или в другом переводе интерфейса.
+Private Function BooleanText(ByVal value As Boolean) As String
+    If value Then
+        BooleanText = "True"
+    Else
+        BooleanText = "False"
+    End If
+End Function
+
+' ------------------------------
+' Диагностический вывод фактических диаграмм
+' ------------------------------
+' Пишет точки CMaterialDiagram, которые solver/provider использовали для
+' прямого НДС, capacity и crack-веток каждого LC. Это временный контрольный
+' блок Results: расчетное ядро и plotter его не читают.
+Private Sub WriteMaterialDiagrams(ByVal workbook As Object, ByVal materialProvider As CMaterialModelProvider, _
+        ByVal batch As CBatchSectionCalculator, ByVal runID As Variant, ByVal units As CUnitSystem)
+    Dim target As Object
+    Set target = workbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange
+
+    Dim rowCapacity As Long
+    rowCapacity = 1 + batch.Count * 128
+
+    Dim data() As Variant
+    ReDim data(1 To rowCapacity, 1 To MATERIAL_DIAGRAM_COLUMNS)
+    PutMaterialDiagramHeaders data, units
+
+    Dim rowIndex As Long
+    rowIndex = 2
+
+    Dim i As Long
+    For i = 1 To batch.Count
+        PutCombinationMaterialDiagrams data, rowIndex, runID, materialProvider, batch, i, units
+    Next i
+
+    Dim rowCount As Long
+    rowCount = rowIndex - 1
+    If rowCount < 1 Then rowCount = 1
+
+    target.Resize(rowCount, MATERIAL_DIAGRAM_COLUMNS).Value2 = data
+    FormatResultsBlock target, rowCount, MATERIAL_DIAGRAM_COLUMNS, "Фактические диаграммы материалов"
+End Sub
+
+' Собирает материалные диаграммы одного сочетания в том же порядке, в каком
+' пользователь обычно читает Summary: прямое состояние, capacity, cracks.
+Private Sub PutCombinationMaterialDiagrams(ByRef data() As Variant, ByRef rowIndex As Long, _
+        ByVal runID As Variant, ByVal materialProvider As CMaterialModelProvider, _
+        ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, ByVal units As CUnitSystem)
+    Dim basePurpose As ECalculationPurpose
+    basePurpose = StateBasePurposeForCalculationType(batch.CalculationType(combinationIndex))
+
+    If Len(Trim$(batch.DirectStateStatus(combinationIndex))) > 0 And _
+            StrComp(batch.DirectStateStatus(combinationIndex), "InputErr", vbTextCompare) <> 0 Then
+        Dim stateConcrete As CMaterialDiagram
+        Dim stateSteel As CMaterialDiagram
+        Set stateConcrete = batch.ConcreteMaterialForCombination(combinationIndex)
+        Set stateSteel = batch.SteelMaterialForCombination(combinationIndex)
+        AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
+            "DirectState", "StateSolution/" & PurposeToText(basePurpose), "Concrete", stateConcrete, units
+        AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
+            "DirectState", "StateSolution/" & PurposeToText(basePurpose), "Rebar", stateSteel, units
+    End If
+
+    If StrComp(batch.CapacityStatus(combinationIndex), "N/A", vbTextCompare) <> 0 And _
+            Len(Trim$(batch.CapacityStatus(combinationIndex))) > 0 Then
+        AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
+            "Capacity", PurposeToText(cpStrength), "Concrete", materialProvider.ConcreteMaterial(cpStrength), units
+        AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
+            "Capacity", PurposeToText(cpStrength), "Rebar", materialProvider.SteelMaterial(cpStrength), units
+    End If
+
+    If StrComp(batch.CrackStatus(combinationIndex), "N/A", vbTextCompare) <> 0 And _
+            Len(Trim$(batch.CrackStatus(combinationIndex))) > 0 Then
+        AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
+            "Crack.CrackedNDS", PurposeToText(cpCrackedNDS), "Concrete", materialProvider.ConcreteMaterial(cpCrackedNDS), units
+        AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
+            "Crack.CrackedNDS", PurposeToText(cpCrackedNDS), "Rebar", materialProvider.SteelMaterial(cpCrackedNDS), units
+        If batch.CrackLambdaCrc(combinationIndex) > 0# Then
+            AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
+                "Crack.Mcrc", PurposeToText(cpMcrc), "Concrete", materialProvider.ConcreteMaterial(cpMcrc), units
+            AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
+                "Crack.Mcrc", PurposeToText(cpMcrc), "Rebar", materialProvider.SteelMaterial(cpMcrc), units
+        End If
+    End If
+End Sub
+
+' Добавляет все точки одной диаграммы. Напряжения пишутся в OUTPUT stress unit,
+' деформации остаются безразмерными, как их получает solver.
+Private Sub AppendMaterialDiagramPoints(ByRef data() As Variant, ByRef rowIndex As Long, _
+        ByVal runID As Variant, ByVal combinationID As String, ByVal calculationStage As String, _
+        ByVal purposeText As String, ByVal materialKind As String, ByVal diagram As CMaterialDiagram, _
+        ByVal units As CUnitSystem)
+    If diagram Is Nothing Then Exit Sub
+
+    Dim pointIndex As Long
+    For pointIndex = 1 To diagram.PointCount
+        data(rowIndex, 1) = runID
+        data(rowIndex, 2) = combinationID
+        data(rowIndex, 3) = calculationStage
+        data(rowIndex, 4) = purposeText
+        data(rowIndex, 5) = materialKind
+        data(rowIndex, 6) = pointIndex
+        data(rowIndex, 7) = diagram.PointStrain(pointIndex)
+        data(rowIndex, 8) = OutputStress(diagram.PointStress(pointIndex), units)
+        rowIndex = rowIndex + 1
+    Next pointIndex
+End Sub
+
+' Шапка диагностической таблицы диаграмм материалов.
+Private Sub PutMaterialDiagramHeaders(ByRef data() As Variant, ByVal units As CUnitSystem)
+    data(1, 1) = "RunID"
+    data(1, 2) = "LoadCase"
+    data(1, 3) = "CalculationStage"
+    data(1, 4) = "Purpose"
+    data(1, 5) = "Material"
+    data(1, 6) = "PointIndex"
+    data(1, 7) = "Strain"
+    data(1, 8) = "Stress, " & OutputStressUnit(units)
 End Sub
 
 ' Записывает в Results краткое описание материалной модели расчетного snapshot.
@@ -287,9 +422,9 @@ End Sub
 ' перечитывать текущий Config после расчета.
 Private Sub PutMaterialModelProperties(ByRef data() As Variant, ByRef rowIndex As Long, _
         ByVal runID As Variant, ByVal materialProvider As CMaterialModelProvider, _
-        ByVal purpose As String)
+        ByVal purpose As ECalculationPurpose)
     Dim prefix As String
-    prefix = "Material." & purpose & "."
+    prefix = "Material." & PurposeToText(purpose) & "."
     PutProperty data, rowIndex, runID, "ALL", prefix & "LimitStateGroup", materialProvider.LimitStateGroup(purpose), "-", "Группа предельных состояний material model."
     PutProperty data, rowIndex, runID, "ALL", prefix & "ConcreteDiagram", materialProvider.ConcreteDiagramType(purpose), "-", "Тип бетонной диаграммы snapshot."
     PutProperty data, rowIndex, runID, "ALL", prefix & "ConcreteTension", materialProvider.ConcreteTensionBehavior(purpose), "-", "Учет растянутого бетона в бетонной диаграмме snapshot."

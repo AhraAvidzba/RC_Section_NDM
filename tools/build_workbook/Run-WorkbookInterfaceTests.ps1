@@ -53,11 +53,21 @@ try {
 }
 finally {
     if ($workbook -ne $null) {
-        $workbook.Close($false)
+        try {
+            $workbook.Close($false)
+        }
+        catch {
+            Write-Warning "Excel workbook refused to close cleanly after workbook interface tests: $($_.Exception.Message)"
+        }
         [System.Runtime.InteropServices.Marshal]::ReleaseComObject($workbook) | Out-Null
     }
     if ($excel -ne $null) {
-        $excel.Quit()
+        try {
+            $excel.Quit()
+        }
+        catch {
+            Write-Warning "Excel COM refused to quit cleanly after workbook interface tests: $($_.Exception.Message)"
+        }
         [System.Runtime.InteropServices.Marshal]::ReleaseComObject($excel) | Out-Null
     }
     [GC]::Collect()

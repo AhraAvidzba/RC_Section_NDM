@@ -13,74 +13,77 @@ Option Explicit
 ' Сводка пакетного расчета на листе Results
 ' ==========================================================================
 ' Writer формирует верхний диапазон rngBatchSummary как компактный инженерный
-' отчет по всем сочетаниям. Таблица разделена на блоки: запас по деформациям,
-' запас по предельному моменту и расчет раскрытия трещин. Расчетные алгоритмы
-' здесь не запускаются: класс только берет готовые данные CBatchSectionCalculator
-' и записывает их на лист одним массивом, а коэффициенты запаса и a_crc задает
+' отчет по всем сочетаниям. Таблица разделена на прямое НДС, расчет
+' несущей способности и раскрытие трещин. Расчетные алгоритмы здесь не
+' запускаются: класс только берет готовые данные CBatchSectionCalculator и
+' записывает их на лист одним массивом, а коэффициенты запаса и a_crc задает
 ' формулами Excel, чтобы пользователь видел связь между исходными колонками.
 
 Private Const TARGET_ROWS As Long = 31 ' Высота фиксированного диапазона batch summary.
-Private Const TARGET_COLUMNS As Long = 46 ' Ширина новой сводки до общего минимального запаса.
+Private Const TARGET_COLUMNS As Long = 47 ' Ширина новой сводки до общего минимального запаса.
 Private Const META_ROWS As Long = 6 ' Верхние строки с общими сведениями о запуске.
 Private Const GROUP_HEADER_ROW As Long = 7 ' Строка объединенных заголовков расчетных блоков.
 Private Const SUBGROUP_HEADER_ROW As Long = 8 ' Строка внутренних подзаголовков расчетных блоков.
 Private Const COLUMN_HEADER_ROW As Long = 9 ' Строка заголовков конкретных параметров.
 Private Const FIRST_DATA_ROW As Long = 10 ' Первая строка сочетаний.
 
-Private Const COL_ID As Long = 1
-Private Const COL_COMMENT As Long = 2
-Private Const COL_CALC_TYPE As Long = 3
-Private Const COL_STATUS As Long = 4
+Private Const COL_OVERALL_STATUS As Long = 1
+Private Const COL_ID As Long = 2
+Private Const COL_COMMENT As Long = 3
+Private Const COL_CALC_TYPE As Long = 4
 
-Private Const COL_EPS_C_COMP As Long = 5
-Private Const COL_EPS_C_TENS As Long = 6
-Private Const COL_EPS_S_COMP As Long = 7
-Private Const COL_EPS_S_TENS As Long = 8
-Private Const COL_STATE_H As Long = 9
-Private Const COL_STATE_C As Long = 10
-Private Const COL_LIM_C_COMP As Long = 11
-Private Const COL_LIM_C_TENS As Long = 12
-Private Const COL_LIM_S_COMP As Long = 13
-Private Const COL_LIM_S_TENS As Long = 14
-Private Const COL_STRAIN_SF As Long = 15
-Private Const COL_LIMIT_STATE As Long = 16
+Private Const COL_DIRECT_STATUS As Long = 5
+Private Const COL_EPS_C_COMP As Long = 6
+Private Const COL_EPS_C_TENS As Long = 7
+Private Const COL_EPS_S_COMP As Long = 8
+Private Const COL_EPS_S_TENS As Long = 9
+Private Const COL_STATE_H As Long = 10
+Private Const COL_STATE_C As Long = 11
+Private Const COL_LIM_C_COMP As Long = 12
+Private Const COL_LIM_C_TENS As Long = 13
+Private Const COL_LIM_S_COMP As Long = 14
+Private Const COL_LIM_S_TENS As Long = 15
 
-Private Const COL_MXY As Long = 17
-Private Const COL_MXY_ULT As Long = 18
-Private Const COL_MOMENT_H As Long = 19
-Private Const COL_MOMENT_C As Long = 20
-Private Const COL_MOMENT_SF As Long = 21
+Private Const COL_CAPACITY_STATUS As Long = 16
+Private Const COL_LIMIT_STATE As Long = 17
+Private Const COL_MXY As Long = 18
+Private Const COL_MXY_ULT As Long = 19
+Private Const COL_MOMENT_H As Long = 20
+Private Const COL_MOMENT_C As Long = 21
+Private Const COL_MOMENT_SF As Long = 22
 
-Private Const COL_CRACK_STATUS As Long = 22
-Private Const COL_CRACK_FORMED As Long = 23
-Private Const COL_CRACK_H As Long = 24
-Private Const COL_CRACK_A As Long = 25
-Private Const COL_CRACK_TENSION_DEPTH As Long = 26
-Private Const COL_CRACK_EFFECTIVE_DEPTH As Long = 27
-Private Const COL_CRACK_AS As Long = 28
-Private Const COL_CRACK_ABT As Long = 29
-Private Const COL_CRACK_DS As Long = 30
-Private Const COL_CRACK_REBAR_COUNT As Long = 31
-Private Const COL_CRACK_LS_RAW As Long = 32
-Private Const COL_CRACK_LS As Long = 33
-Private Const COL_CRACK_PHI1 As Long = 34
-Private Const COL_CRACK_PHI2 As Long = 35
-Private Const COL_CRACK_PHI3 As Long = 36
-Private Const COL_CRACK_NCRC As Long = 37
-Private Const COL_CRACK_LAMBDA_CRC As Long = 38
-Private Const COL_CRACK_SIGMA_S As Long = 39
-Private Const COL_CRACK_SIGMA_S_CRC As Long = 40
-Private Const COL_CRACK_PSI As Long = 41
-Private Const COL_CRACK_ES As Long = 42
-Private Const COL_CRACK_WIDTH As Long = 43
-Private Const COL_CRACK_ALLOWABLE As Long = 44
-Private Const COL_CRACK_SF As Long = 45
+Private Const COL_CRACK_STATUS As Long = 23
+Private Const COL_CRACK_FORMED As Long = 24
+Private Const COL_CRACK_H As Long = 25
+Private Const COL_CRACK_A As Long = 26
+Private Const COL_CRACK_TENSION_DEPTH As Long = 27
+Private Const COL_CRACK_EFFECTIVE_DEPTH As Long = 28
+Private Const COL_CRACK_AS As Long = 29
+Private Const COL_CRACK_ABT As Long = 30
+Private Const COL_CRACK_DS As Long = 31
+Private Const COL_CRACK_REBAR_COUNT As Long = 32
+Private Const COL_CRACK_LS_RAW As Long = 33
+Private Const COL_CRACK_LS As Long = 34
+Private Const COL_CRACK_PHI1 As Long = 35
+Private Const COL_CRACK_PHI2 As Long = 36
+Private Const COL_CRACK_PHI3 As Long = 37
+Private Const COL_CRACK_NCRC As Long = 38
+Private Const COL_CRACK_LAMBDA_CRC As Long = 39
+Private Const COL_CRACK_SIGMA_S As Long = 40
+Private Const COL_CRACK_SIGMA_S_CRC As Long = 41
+Private Const COL_CRACK_PSI As Long = 42
+Private Const COL_CRACK_ES As Long = 43
+Private Const COL_CRACK_WIDTH As Long = 44
+Private Const COL_CRACK_ALLOWABLE As Long = 45
+Private Const COL_CRACK_SF As Long = 46
 
-Private Const COL_OVERALL_SF As Long = 46
+Private Const COL_OVERALL_SF As Long = 47
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Светло-серый фон заголовков.
 Private Const SAFETY_COLOR As Long = &HE7E6E6 ' Серый фон столбцов коэффициентов запаса.
 Private Const OVERALL_SAFETY_COLOR As Long = &HBFBFBF ' Более темный фон итогового минимального запаса.
+Private Const FAILED_ROW_COLOR As Long = &HCEC7FF ' Светло-красный фон LC, где расчет не прошел или не сошелся.
+Private Const FAILED_FONT_COLOR As Long = &H9C0006 ' Темно-красный текст для строк FAIL/NumFail/InputErr.
 Private Const NOT_CALCULATED_SHORT As String = "NotCalcul." ' Короткий статус для компактной таблицы Results.
 
 ' Записывает rngBatchSummary одним массивом и оформляет блоки.
@@ -89,28 +92,46 @@ Private Const NOT_CALCULATED_SHORT As String = "NotCalcul." ' Короткий �
 ' найденному capacity-состоянию. Если section не передан, эти поля пустые.
 Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, _
         Optional ByVal units As CUnitSystem = Nothing, Optional ByVal section As CSectionModel = Nothing)
+    On Error GoTo Failed
+
+    Dim stage As String
+    stage = "ValidateArguments"
     If workbook Is Nothing Then Err.Raise vbObjectError + 3970, "CBatchResultWriter", "Книга Excel не передана."
     If batch Is Nothing Then Err.Raise vbObjectError + 3971, "CBatchResultWriter", "Пакетный расчетчик не передан."
 
+    stage = "SummaryTargetRange"
     Dim target As Object
     Set target = SummaryTargetRange(workbook)
+    stage = "PrepareSummaryTarget"
     PrepareSummaryTarget target
 
+    stage = "AllocateData"
     Dim data() As Variant
     ReDim data(1 To TARGET_ROWS, 1 To TARGET_COLUMNS)
 
+    stage = "PutMetaRows"
     PutMetaRows data, batch, units
+    stage = "PutGroupHeaders"
     PutGroupHeaders data
+    stage = "PutSubgroupHeaders"
     PutSubgroupHeaders data
+    stage = "PutColumnHeaders"
     PutColumnHeaders data, units
 
     Dim i As Long
     For i = 1 To batch.Count
+        stage = "PutCombination " & CStr(i)
         PutCombination data, FIRST_DATA_ROW + i - 1, batch, i, units, section
     Next i
 
+    stage = "WriteSummaryBody"
     WriteSummaryBody target, data
-    FormatSummary workbook, target, batch.Count
+    stage = "FormatSummary"
+    FormatSummary workbook, target, batch
+    Exit Sub
+
+Failed:
+    Err.Raise Err.Number, "CBatchResultWriter.WriteSummary", stage & ": " & Err.Description
 End Sub
 
 ' Очищает старую сводку перед новым расчетом или ручной очисткой Results.
@@ -185,19 +206,18 @@ Private Sub PutMetaRows(ByRef data() As Variant, ByVal batch As CBatchSectionCal
 End Sub
 
 Private Sub PutGroupHeaders(ByRef data() As Variant)
-    data(GROUP_HEADER_ROW, COL_EPS_C_COMP) = "Расчет несущей способности по относительным деформациям"
-    data(GROUP_HEADER_ROW, COL_LIMIT_STATE) = "Расчет несущей способности по предельному моменту"
+    data(GROUP_HEADER_ROW, COL_DIRECT_STATUS) = "Прямое состояние НДС и физические пределы"
+    data(GROUP_HEADER_ROW, COL_CAPACITY_STATUS) = "Расчет несущей способности по предельному моменту"
     data(GROUP_HEADER_ROW, COL_CRACK_STATUS) = "Расчет ширины раскрытия нормальных трещин"
     data(GROUP_HEADER_ROW, COL_OVERALL_SF) = "Минимальный запас"
 End Sub
 
 Private Sub PutSubgroupHeaders(ByRef data() As Variant)
-    data(SUBGROUP_HEADER_ROW, COL_ID) = "Сочетание"
-    data(SUBGROUP_HEADER_ROW, COL_EPS_C_COMP) = "Фактическое НДС от LC"
+    data(SUBGROUP_HEADER_ROW, COL_OVERALL_STATUS) = "Сочетание"
+    data(SUBGROUP_HEADER_ROW, COL_DIRECT_STATUS) = "Фактическое НДС от LC"
     data(SUBGROUP_HEADER_ROW, COL_LIM_C_COMP) = "Предельные деформации"
-    data(SUBGROUP_HEADER_ROW, COL_STRAIN_SF) = "Запас"
-    data(SUBGROUP_HEADER_ROW, COL_LIMIT_STATE) = "Предельное состояние"
 
+    data(SUBGROUP_HEADER_ROW, COL_CAPACITY_STATUS) = "Статус"
     data(SUBGROUP_HEADER_ROW, COL_MXY) = "Моменты"
     data(SUBGROUP_HEADER_ROW, COL_MOMENT_H) = "Геометрия при MxyUltimate"
     data(SUBGROUP_HEADER_ROW, COL_MOMENT_SF) = "Запас"
@@ -213,10 +233,11 @@ Private Sub PutSubgroupHeaders(ByRef data() As Variant)
 End Sub
 
 Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem)
+    data(COLUMN_HEADER_ROW, COL_OVERALL_STATUS) = "OverallStatus (итог)"
     data(COLUMN_HEADER_ROW, COL_ID) = "CombinationID (сочетание)"
     data(COLUMN_HEADER_ROW, COL_COMMENT) = "Comment (комментарий)"
     data(COLUMN_HEADER_ROW, COL_CALC_TYPE) = "CalculationType (группа)"
-    data(COLUMN_HEADER_ROW, COL_STATUS) = "Status (статус)"
+    data(COLUMN_HEADER_ROW, COL_DIRECT_STATUS) = "DirectStateStatus (НДС)"
 
     data(COLUMN_HEADER_ROW, COL_EPS_C_COMP) = "eps_c,min (бетон сжатие)"
     data(COLUMN_HEADER_ROW, COL_EPS_C_TENS) = "eps_c,max (бетон растяжение)"
@@ -228,7 +249,7 @@ Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem
     data(COLUMN_HEADER_ROW, COL_LIM_C_TENS) = "eps_cu,tens (предел бетона растяжение)"
     data(COLUMN_HEADER_ROW, COL_LIM_S_COMP) = "eps_su,comp (предел арматуры сжатие)"
     data(COLUMN_HEADER_ROW, COL_LIM_S_TENS) = "eps_su,tens (предел арматуры растяжение)"
-    data(COLUMN_HEADER_ROW, COL_STRAIN_SF) = "StrainSafetyFactor (запас по деформациям)"
+    data(COLUMN_HEADER_ROW, COL_CAPACITY_STATUS) = "CapacityStatus (прочность)"
     data(COLUMN_HEADER_ROW, COL_LIMIT_STATE) = "CapacityLimitState (предельное состояние)"
 
     data(COLUMN_HEADER_ROW, COL_MXY) = "Mxy, " & OutputMomentUnit(units) & " (действующий момент)"
@@ -269,10 +290,11 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
         ByVal index As Long, ByVal units As CUnitSystem, ByVal section As CSectionModel)
     If rowIndex > UBound(data, 1) Then Exit Sub
 
+    data(rowIndex, COL_OVERALL_STATUS) = ShortStatus(batch.OverallStatus(index))
     data(rowIndex, COL_ID) = batch.CombinationID(index)
     data(rowIndex, COL_COMMENT) = batch.CombinationName(index)
     data(rowIndex, COL_CALC_TYPE) = batch.CalculationType(index)
-    data(rowIndex, COL_STATUS) = ShortStatus(batch.Status(index))
+    data(rowIndex, COL_DIRECT_STATUS) = ShortStatus(batch.DirectStateStatus(index))
 
     data(rowIndex, COL_EPS_C_COMP) = batch.MinConcreteStrain(index)
     data(rowIndex, COL_EPS_C_TENS) = batch.MaxConcreteStrain(index)
@@ -283,7 +305,8 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
     If batch.ConcreteTensionLimitEnabledForCombination(index) Then data(rowIndex, COL_LIM_C_TENS) = batch.ConcreteTensionLimitForCombination(index)
     data(rowIndex, COL_LIM_S_COMP) = batch.SteelCompressionLimitForCombination(index)
     data(rowIndex, COL_LIM_S_TENS) = batch.SteelTensionLimitForCombination(index)
-    data(rowIndex, COL_STRAIN_SF) = StrainSafetyFormula(rowIndex, batch, index)
+
+    data(rowIndex, COL_CAPACITY_STATUS) = ShortStatus(batch.CapacityStatus(index))
     data(rowIndex, COL_LIMIT_STATE) = ShortStatus(batch.CapacityLimitState(index))
 
     data(rowIndex, COL_MXY) = OutputMomentMagnitude(Sqr(batch.UserMx(index) ^ 2 + batch.UserMy(index) ^ 2), units)
@@ -295,7 +318,7 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
 
     data(rowIndex, COL_CRACK_STATUS) = ShortStatus(batch.CrackStatus(index))
     data(rowIndex, COL_CRACK_NCRC) = NOT_CALCULATED_SHORT
-    If StrComp(batch.CrackStatus(index), "OK", vbTextCompare) = 0 Then
+    If IsFinishedStatus(batch.CrackStatus(index)) Then
         data(rowIndex, COL_CRACK_FORMED) = IIf(batch.CrackFormed(index), "Да", "Нет")
         data(rowIndex, COL_CRACK_H) = OutputLength(batch.CrackSectionDepthH(index), units)
         data(rowIndex, COL_CRACK_A) = OutputLength(batch.CrackCoverA(index), units)
@@ -415,52 +438,10 @@ Private Sub CalculateDepthsPerpendicularToNeutral(ByVal section As CSectionModel
     End If
 End Sub
 
-Private Function StrainSafetyFormula(ByVal rowIndex As Long, ByVal batch As CBatchSectionCalculator, ByVal index As Long) As String
-    Dim actualColumn As Long
-    Dim limitColumn As Long
-    Dim bestSafety As Double
-
-    PickStrainSafetyCandidate batch.MinConcreteStrain(index), batch.ConcreteCompressionLimitForCombination(index), _
-        COL_EPS_C_COMP, COL_LIM_C_COMP, bestSafety, actualColumn, limitColumn
-
-    If batch.ConcreteTensionLimitEnabledForCombination(index) Then
-        PickStrainSafetyCandidate batch.MaxConcreteStrain(index), batch.ConcreteTensionLimitForCombination(index), _
-            COL_EPS_C_TENS, COL_LIM_C_TENS, bestSafety, actualColumn, limitColumn
-    End If
-
-    PickStrainSafetyCandidate batch.MinSteelStrain(index), batch.SteelCompressionLimitForCombination(index), _
-        COL_EPS_S_COMP, COL_LIM_S_COMP, bestSafety, actualColumn, limitColumn
-    PickStrainSafetyCandidate batch.MaxSteelStrain(index), batch.SteelTensionLimitForCombination(index), _
-        COL_EPS_S_TENS, COL_LIM_S_TENS, bestSafety, actualColumn, limitColumn
-
-    If actualColumn > 0 And limitColumn > 0 Then
-        StrainSafetyFormula = "=IFERROR(ABS(" & CellAddress(rowIndex, limitColumn) & "/" & _
-            CellAddress(rowIndex, actualColumn) & "),"""")"
-    End If
-End Function
-
 Private Function MomentSafetyFormula(ByVal rowIndex As Long) As String
     MomentSafetyFormula = "=IFERROR(" & CellAddress(rowIndex, COL_MXY_ULT) & "/" & _
         CellAddress(rowIndex, COL_MXY) & ","""")"
 End Function
-
-Private Sub PickStrainSafetyCandidate(ByVal actualStrain As Double, ByVal limitStrain As Double, _
-        ByVal actualColumn As Long, ByVal limitColumn As Long, ByRef bestSafety As Double, _
-        ByRef bestActualColumn As Long, ByRef bestLimitColumn As Long)
-    If actualStrain = 0# Then Exit Sub
-    If limitStrain = 0# Then Exit Sub
-    If Sgn(actualStrain) <> Sgn(limitStrain) Then Exit Sub
-
-    Dim safety As Double
-    safety = Abs(limitStrain / actualStrain)
-    If safety <= 0# Then Exit Sub
-
-    If bestSafety <= 0# Or safety < bestSafety Then
-        bestSafety = safety
-        bestActualColumn = actualColumn
-        bestLimitColumn = limitColumn
-    End If
-End Sub
 
 Private Function CrackWidthFormula(ByVal rowIndex As Long) As String
     CrackWidthFormula = "=IF(" & CellAddress(rowIndex, COL_CRACK_FORMED) & "=""" & "Да" & """," & _
@@ -476,8 +457,7 @@ Private Function CrackSafetyFormula(ByVal rowIndex As Long) As String
 End Function
 
 Private Function OverallSafetyFormula(ByVal rowIndex As Long) As String
-    OverallSafetyFormula = "=IFERROR(AGGREGATE(15,6,CHOOSE({1,2,3}," & _
-        "IF(" & CellAddress(rowIndex, COL_STRAIN_SF) & ">0," & CellAddress(rowIndex, COL_STRAIN_SF) & ",NA())," & _
+    OverallSafetyFormula = "=IFERROR(AGGREGATE(15,6,CHOOSE({1,2}," & _
         "IF(" & CellAddress(rowIndex, COL_MOMENT_SF) & ">0," & CellAddress(rowIndex, COL_MOMENT_SF) & ",NA())," & _
         "IF(" & CellAddress(rowIndex, COL_CRACK_SF) & ">0," & CellAddress(rowIndex, COL_CRACK_SF) & ",NA())),1),"""")"
 End Function
@@ -497,17 +477,23 @@ Private Function ColumnLetter(ByVal columnIndex As Long) As String
     Loop
 End Function
 
-Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVal combinationCount As Long)
+Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVal batch As CBatchSectionCalculator)
+    On Error GoTo Failed
+
+    Dim stage As String
+    stage = "ResetRange"
     target.UnMerge
     target.Interior.ColorIndex = -4142
     target.Borders.LineStyle = -4142
 
+    stage = "BaseFont"
     target.HorizontalAlignment = -4131
     target.VerticalAlignment = -4108
     target.WrapText = False
     target.Font.Name = "Arial"
     target.Font.Size = 9
 
+    stage = "HeaderStyle"
     target.Rows.Item(1).Font.Bold = True
     target.Rows.Item(GROUP_HEADER_ROW).Font.Bold = True
     target.Rows.Item(SUBGROUP_HEADER_ROW).Font.Bold = True
@@ -517,12 +503,14 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     target.Rows.Item(COLUMN_HEADER_ROW).Interior.Color = HEADER_COLOR
     target.Rows.Item(1).Interior.Color = HEADER_COLOR
 
-    MergeSummaryHeader target, GROUP_HEADER_ROW, COL_EPS_C_COMP, COL_STRAIN_SF
-    MergeSummaryHeader target, GROUP_HEADER_ROW, COL_LIMIT_STATE, COL_MOMENT_SF
+    stage = "MergeHeaders"
+    MergeSummaryHeader target, GROUP_HEADER_ROW, COL_DIRECT_STATUS, COL_LIM_S_TENS
+    MergeSummaryHeader target, GROUP_HEADER_ROW, COL_CAPACITY_STATUS, COL_MOMENT_SF
     MergeSummaryHeader target, GROUP_HEADER_ROW, COL_CRACK_STATUS, COL_CRACK_SF
-    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_ID, COL_STATUS
-    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_EPS_C_COMP, COL_STATE_C
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_OVERALL_STATUS, COL_CALC_TYPE
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_DIRECT_STATUS, COL_STATE_C
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_LIM_C_COMP, COL_LIM_S_TENS
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CAPACITY_STATUS, COL_LIMIT_STATE
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_MXY, COL_MXY_ULT
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_MOMENT_H, COL_MOMENT_C
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CRACK_STATUS, COL_CRACK_EFFECTIVE_DEPTH
@@ -532,6 +520,7 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CRACK_NCRC, COL_CRACK_PSI
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CRACK_WIDTH, COL_CRACK_SF
 
+    stage = "Alignment"
     target.Rows.Item(COLUMN_HEADER_ROW).HorizontalAlignment = -4131
     target.Rows.Item(GROUP_HEADER_ROW).HorizontalAlignment = -4108
     target.Rows.Item(SUBGROUP_HEADER_ROW).HorizontalAlignment = -4108
@@ -542,17 +531,26 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     dataRows = TARGET_ROWS - FIRST_DATA_ROW + 1
     target.Offset(FIRST_DATA_ROW - 1, 0).Resize(dataRows, TARGET_COLUMNS).HorizontalAlignment = -4108
     target.Offset(FIRST_DATA_ROW - 1, COL_COMMENT - 1).Resize(dataRows, 1).HorizontalAlignment = -4152
-    target.Offset(FIRST_DATA_ROW - 1, COL_STRAIN_SF - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
     target.Offset(FIRST_DATA_ROW - 1, COL_MOMENT_SF - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
     target.Offset(FIRST_DATA_ROW - 1, COL_CRACK_SF - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
     target.Offset(FIRST_DATA_ROW - 1, COL_OVERALL_SF - 1).Resize(dataRows, 1).Interior.Color = OVERALL_SAFETY_COLOR
+    stage = "FormatOverallStatusRows"
+    FormatOverallStatusRows target, batch
 
+    stage = "Borders"
     Dim borderedArea As Object
     Set borderedArea = target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(TARGET_ROWS - GROUP_HEADER_ROW + 1, TARGET_COLUMNS)
     borderedArea.Borders.LineStyle = 1
     borderedArea.Borders.Color = RGB(0, 0, 0)
     borderedArea.Borders.Weight = 2
+    stage = "NumberFormat"
     target.Offset(0, 0).Resize(1, TARGET_COLUMNS).NumberFormat = "@"
+    stage = "WriteStatusDictionary"
+    WriteStatusDictionary target
+    Exit Sub
+
+Failed:
+    Err.Raise Err.Number, "CBatchResultWriter.FormatSummary", stage & ": " & Err.Description
 End Sub
 
 Private Sub MergeSummaryHeader(ByVal target As Object, ByVal rowIndex As Long, ByVal firstColumn As Long, ByVal lastColumn As Long)
@@ -561,10 +559,98 @@ Private Sub MergeSummaryHeader(ByVal target As Object, ByVal rowIndex As Long, B
     area.Merge
 End Sub
 
+' Красит всю строку LC, если общий статус показывает физический отказ,
+' численную несходимость или ошибку исходных данных.
+Private Sub FormatOverallStatusRows(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
+    If batch Is Nothing Then Exit Sub
+    If batch.Count <= 0 Then Exit Sub
+
+    Dim i As Long
+    For i = 1 To batch.Count
+        Dim statusText As String
+        statusText = batch.OverallStatus(i)
+        If IsFailedOverallStatus(statusText) Then
+            With target.Offset(FIRST_DATA_ROW + i - 2, 0).Resize(1, TARGET_COLUMNS)
+                .Interior.Color = FAILED_ROW_COLOR
+                .Font.Color = FAILED_FONT_COLOR
+            End With
+        End If
+    Next i
+End Sub
+
+Private Function IsFailedOverallStatus(ByVal statusText As String) As Boolean
+    statusText = UCase$(Trim$(statusText))
+    IsFailedOverallStatus = (statusText = "FAIL" Or statusText = "NUMFAIL" Or statusText = "INPUTERR")
+End Function
+
+' Выводит справа от Summary компактный справочник пользовательских статусов.
+' Таблица не входит в rngBatchSummary, но каждый расчет обновляет ее вместе
+' со сводкой, чтобы пользователь видел расшифровку ровно тех кодов, которые
+' могут появиться в строках сочетаний.
+Private Sub WriteStatusDictionary(ByVal target As Object)
+    Dim topLeft As Object
+    Dim dictionaryColumn As Long
+    dictionaryColumn = target.Column + TARGET_COLUMNS + 1
+
+    ' Словарь статусов стоит справа от Summary, но начинается ниже мета-строк.
+    ' Так длинные расшифровки не раздувают первые строки с итогами расчета.
+    Set topLeft = target.Worksheet.Cells(target.Row, dictionaryColumn)
+    topLeft.Resize(GROUP_HEADER_ROW + 6, 2).Clear
+    topLeft.Resize(GROUP_HEADER_ROW + 6, 2).WrapText = False
+    Dim resetRow As Long
+    For resetRow = target.Row To target.Row + GROUP_HEADER_ROW - 2
+        target.Worksheet.Rows.Item(resetRow).RowHeight = 15
+    Next resetRow
+    Set topLeft = target.Worksheet.Cells(target.Row + GROUP_HEADER_ROW - 1, dictionaryColumn)
+
+    topLeft.Value2 = "Статус"
+    topLeft.Offset(0, 1).Value2 = "Расшифровка"
+    topLeft.Offset(1, 0).Value2 = "OK"
+    topLeft.Offset(1, 1).Value2 = "Расчет этой проверки выполнен успешно. Для прямого НДС равновесие найдено внутри физической диаграммы материала; для прочности или трещин проверка прошла."
+    topLeft.Offset(2, 0).Value2 = "FAIL"
+    topLeft.Offset(2, 1).Value2 = "Численное решение есть, но инженерная проверка не проходит: превышена несущая способность, ширина трещины больше допуска или прямое НДС найдено только за пределами физической диаграммы."
+    topLeft.Offset(3, 0).Value2 = "NumFail"
+    topLeft.Offset(3, 1).Value2 = "Solver не смог найти равновесие или предельную точку с текущими численными настройками. Это не доказательство разрушения; нужно смотреть диагностику, нагрузку, сетку и параметры solver-а."
+    topLeft.Offset(4, 0).Value2 = "InputErr"
+    topLeft.Offset(4, 1).Value2 = "Расчет не запускался из-за ошибки во входных данных: пустая или неизвестная настройка, недопустимая геометрия, материал, единицы или строка сочетания."
+    topLeft.Offset(5, 0).Value2 = "N/A"
+    topLeft.Offset(5, 1).Value2 = "Проверка для этого сочетания не выполнялась и не считается ошибкой: например, трещины не относятся к Group1 или capacity отключен выбранным режимом расчета."
+
+    With topLeft.Resize(1, 2)
+        .Font.Bold = True
+        .Interior.Color = HEADER_COLOR
+    End With
+    With topLeft.Resize(6, 2)
+        .Borders.LineStyle = 1
+        .Borders.Color = RGB(0, 0, 0)
+        .HorizontalAlignment = -4131
+        .VerticalAlignment = -4108
+        .WrapText = False
+    End With
+End Sub
+
 ' Сокращает длинный служебный статус только в пользовательской сводке.
 ' В расчетных объектах и подробных Results остается исходный текст статуса.
 Private Function ShortStatus(ByVal statusText As String) As String
-    ShortStatus = Replace$(statusText, "NotCalculated", NOT_CALCULATED_SHORT, 1, -1, vbTextCompare)
+    Select Case UCase$(Trim$(statusText))
+        Case "OK"
+            ShortStatus = "OK"
+        Case "FAIL", "STRENGTHFAILED", "STRAINLIMITEXCEEDED"
+            ShortStatus = "FAIL"
+        Case "NUMFAIL", "NUMERICALFAILURE", "SINGULARTANGENT"
+            ShortStatus = "NumFail"
+        Case "INPUTERR", "INPUTERROR", "INVALIDINPUT"
+            ShortStatus = "InputErr"
+        Case "N/A", "NA", "NOTCALCULATED", "NOTCALCUL.", "SKIPPEDZEROMOMENT", "SKIPPEDZEROBASEMOMENT"
+            ShortStatus = "N/A"
+        Case Else
+            ShortStatus = Replace$(statusText, "NotCalculated", NOT_CALCULATED_SHORT, 1, -1, vbTextCompare)
+    End Select
+End Function
+
+Private Function IsFinishedStatus(ByVal statusText As String) As Boolean
+    statusText = UCase$(Trim$(statusText))
+    IsFinishedStatus = (statusText = "OK" Or statusText = "FAIL")
 End Function
 
 Private Function ConcreteWidth(ByVal section As CSectionModel, ByVal index As Long) As Double

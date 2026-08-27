@@ -53,6 +53,8 @@ Private mKappaX As Double ' Кривизна при y в сохраненной 
 Private mKappaY As Double ' Кривизна при x в сохраненной плоскости деформаций.
 Private mLoadReferenceX As Double ' X точки приложения нагрузки для выбранного LC.
 Private mLoadReferenceY As Double ' Y точки приложения нагрузки для выбранного LC.
+Private mExtensionUsed As Boolean ' True, если выбранный LC был найден в numerical extension.
+Private mDirectStateStatus As String ' Сохраненный статус прямого НДС выбранного LC.
 Private mAnnotationCount As Long ' Количество semantic-аннотаций, прочитанных из Results.
 Private mAnnotationType() As String ' Dimension, RebarLabel, Outline и другие типы оформления.
 Private mAnnotationStartX() As Double ' Начало линии/размера в координатах модели.
@@ -102,8 +104,8 @@ End Sub
 ' Определяет, какой LC показывать на схеме.
 ' Значение Worst разворачивается в LC из верхней строки batch summary
 ' "Определяющее сочетание по прочности". Эта строка формируется batch-слоем
-' по прочностному правилу: MomentSafetyFactor, если он посчитан, иначе
-' StrainSafetyFactor. Общий MinSafetyFactor остается только справочной колонкой.
+' по прочностному правилу: минимальный MomentSafetyFactor среди рассчитанных
+' сочетаний. Общий MinSafetyFactor остается только справочной колонкой.
 Private Function ResolveLoadCase(ByVal workbook As Object, ByVal requested As String) As String
     Dim valueText As String
     valueText = Trim$(requested)
@@ -120,9 +122,32 @@ Private Function ResolveLoadCase(ByVal workbook As Object, ByVal requested As St
     If UBound(data, 1) >= 2 And UBound(data, 2) >= 5 Then
         ResolveLoadCase = Trim$(SafeText(data(2, 5)))
     End If
+    If Len(ResolveLoadCase) = 0 Then ResolveLoadCase = FirstCalculatedLoadCaseFromResults(workbook)
     mLoadCaseComment = ReadBatchSummaryComment(workbook, ResolveLoadCase)
     If Len(ResolveLoadCase) = 0 Then Err.Raise vbObjectError + 4702, "CSectionPlotDataReader", _
         "В rngBatchSummary не найдено определяющее сочетание по прочности для Plot.LoadCase = Worst."
+End Function
+
+' Возвращает первый LC, для которого на Results реально есть результаты элементов.
+' Это запасной путь только для режимов, где Plot.LoadCase = Worst не может быть
+' развернут в прочностное определяющее сочетание, например DirectState без
+' расчета несущей способности. Старый AutoCAD-preview этим путем не выбирается,
+' потому что geometry-only snapshot не содержит rngNDMElementResults.
+Private Function FirstCalculatedLoadCaseFromResults(ByVal workbook As Object) As String
+    On Error GoTo Failed
+    Dim data As Variant
+    data = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
+    If Not HasRows(data) Then Exit Function
+
+    Dim colLoadCase As Long
+    colLoadCase = ResultColumn(data, "LoadCase")
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(data, 1)
+        FirstCalculatedLoadCaseFromResults = Trim$(SafeText(data(rowIndex, colLoadCase)))
+        If Len(FirstCalculatedLoadCaseFromResults) > 0 Then Exit Function
+    Next rowIndex
+Failed:
 End Function
 
 ' Находит комментарий выбранного LC для заголовка схемы.
@@ -136,9 +161,9 @@ Private Function ReadBatchSummaryComment(ByVal workbook As Object, ByVal loadCas
     data = workbook.Names.Item("rngBatchSummary").RefersToRange.Value2
 
     Dim rowIndex As Long
-    For rowIndex = 9 To UBound(data, 1)
-        If StrComp(Trim$(SafeText(data(rowIndex, 1))), loadCase, vbTextCompare) = 0 Then
-            ReadBatchSummaryComment = Trim$(SafeText(data(rowIndex, 2)))
+    For rowIndex = 10 To UBound(data, 1)
+        If StrComp(Trim$(SafeText(data(rowIndex, 2))), loadCase, vbTextCompare) = 0 Then
+            ReadBatchSummaryComment = Trim$(SafeText(data(rowIndex, 3)))
             Exit Function
         End If
     Next rowIndex
@@ -216,6 +241,8 @@ Private Sub ReadLoadCaseProperty(ByVal parameter As String, ByVal value As Varia
         Case "kappay": mKappaY = CDbl(value)
         Case "loadreferencex": mLoadReferenceX = CDbl(value)
         Case "loadreferencey": mLoadReferenceY = CDbl(value)
+        Case "extensionused": mExtensionUsed = SafeBoolean(value)
+        Case "directstatestatus": mDirectStateStatus = Trim$(SafeText(value))
     End Select
 End Sub
 
@@ -411,6 +438,8 @@ Private Sub ResetReaderState()
     mCentroidX = 0#: mCentroidY = 0#: mPrincipalAngle = 0#
     mEpsilon0 = 0#: mKappaX = 0#: mKappaY = 0#
     mLoadReferenceX = 0#: mLoadReferenceY = 0#
+    mExtensionUsed = False
+    mDirectStateStatus = vbNullString
 
     Erase mElementID
     Erase mMaterialType
@@ -486,6 +515,20 @@ Private Function SafeDouble(ByVal value As Variant) As Double
     If IsNumeric(value) Then SafeDouble = CDbl(value)
 End Function
 
+' Читает логический флаг из Results. Snapshot может хранить True/False как
+' настоящий Boolean или как текст после ручного просмотра/копирования.
+Private Function SafeBoolean(ByVal value As Variant) As Boolean
+    If IsError(value) Then Exit Function
+    If VarType(value) = vbBoolean Then
+        SafeBoolean = CBool(value)
+    Else
+        Select Case LCase$(Trim$(CStr(value)))
+            Case "true", "yes", "да", "1"
+                SafeBoolean = True
+        End Select
+    End If
+End Function
+
 ' Превращает значение ячейки в строку без падения на Excel-ошибках.
 Private Function SafeText(ByVal value As Variant) As String
     If IsError(value) Then Exit Function
@@ -556,6 +599,11 @@ Public Property Get KappaX() As Double: KappaX = mKappaX: End Property
 Public Property Get KappaY() As Double: KappaY = mKappaY: End Property
 Public Property Get LoadReferenceX() As Double: LoadReferenceX = mLoadReferenceX: End Property
 Public Property Get LoadReferenceY() As Double: LoadReferenceY = mLoadReferenceY: End Property
+Public Property Get ExtensionUsed() As Boolean: ExtensionUsed = mExtensionUsed: End Property
+Public Property Get DirectStateStatus() As String: DirectStateStatus = mDirectStateStatus: End Property
+Public Property Get PhysicalDiagramWarningRequired() As Boolean
+    PhysicalDiagramWarningRequired = (mExtensionUsed Or StrComp(mDirectStateStatus, "FAIL", vbTextCompare) = 0)
+End Property
 Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCount: End Property
 Public Property Get AnnotationType(ByVal index As Long) As String: AnnotationType = mAnnotationType(index): End Property
 Public Property Get AnnotationStartX(ByVal index As Long) As Double: AnnotationStartX = mAnnotationStartX(index): End Property

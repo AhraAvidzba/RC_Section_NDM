@@ -83,7 +83,7 @@ Private mInitialTargetMy As Double ' Начальное My при продолж
 ' Значения достаточно устойчивы для тестовой книги. Excel-слой может заменить
 ' их через ApplySettings перед запуском расчета.
 Private Sub Class_Initialize()
-    mMaxIterations = 40
+    mMaxIterations = 80
     mLoadSteps = 5
     mToleranceN = 1#
     mToleranceMx = 1000#

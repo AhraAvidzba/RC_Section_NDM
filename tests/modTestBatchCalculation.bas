@@ -29,18 +29,38 @@ Public Function RunBatchCalculationTests() As String
     TestBatchFiveCombinations stats
     AppendLine stats, "RUN: TestBatchGoverningUsesLowestSafetyFactor"
     TestBatchGoverningUsesLowestSafetyFactor stats
-    AppendLine stats, "RUN: TestBatchGoverningCanUseGroup2StrainSafety"
-    TestBatchGoverningCanUseGroup2StrainSafety stats
+    AppendLine stats, "RUN: TestBatchGoverningCanUseGroup2CapacitySafety"
+    TestBatchGoverningCanUseGroup2CapacitySafety stats
+    AppendLine stats, "RUN: TestCapacityScopeGroup1OnlySkipsGroup2"
+    TestCapacityScopeGroup1OnlySkipsGroup2 stats
     AppendLine stats, "RUN: TestLoadReferenceTransformsUserMoments"
     TestLoadReferenceTransformsUserMoments stats
     AppendLine stats, "RUN: TestAxialReferenceRemovesPureCompressionEccentricity"
     TestAxialReferenceRemovesPureCompressionEccentricity stats
     AppendLine stats, "RUN: TestAxialTensionReferenceAndEccentricity"
     TestAxialTensionReferenceAndEccentricity stats
-    AppendLine stats, "RUN: TestDirectStateReportsStrainSafety"
-    TestDirectStateReportsStrainSafety stats
-    AppendLine stats, "RUN: TestDirectStateKeepsStrainSafetyOnFailure"
-    TestDirectStateKeepsStrainSafetyOnFailure stats
+    AppendLine stats, "RUN: TestDirectStateReportsSectionStatus"
+    TestDirectStateReportsSectionStatus stats
+    AppendLine stats, "RUN: TestDirectStateReportsNumericalFailure"
+    TestDirectStateReportsNumericalFailure stats
+    AppendLine stats, "RUN: TestGroup2PhysicalStateRunsCrackWithExtensionEnabled"
+    TestGroup2PhysicalStateRunsCrackWithExtensionEnabled stats
+    AppendLine stats, "RUN: TestGroup1AxialTensionBeyondPhysicalLimitUsesExtension"
+    TestGroup1AxialTensionBeyondPhysicalLimitUsesExtension stats
+    AppendLine stats, "RUN: TestGroup1AxialTensionNearLimitDoesNotJumpToNumFail"
+    TestGroup1AxialTensionNearLimitDoesNotJumpToNumFail stats
+    AppendLine stats, "RUN: TestGroup1AxialCompressionNearLimitDoesNotJumpToNumFail"
+    TestGroup1AxialCompressionNearLimitDoesNotJumpToNumFail stats
+    AppendLine stats, "RUN: TestGroup1AxialTensionProgressionAfterLimitIsStableFail"
+    TestGroup1AxialTensionProgressionAfterLimitIsStableFail stats
+    AppendLine stats, "RUN: TestGroup1AxialCompressionProgressionAfterLimitIsStableFail"
+    TestGroup1AxialCompressionProgressionAfterLimitIsStableFail stats
+    AppendLine stats, "RUN: TestGroup2AxialTensionBeyondPhysicalLimitUsesExtension"
+    TestGroup2AxialTensionBeyondPhysicalLimitUsesExtension stats
+    AppendLine stats, "RUN: TestGroup2AxialCompressionBeyondPhysicalLimitUsesExtension"
+    TestGroup2AxialCompressionBeyondPhysicalLimitUsesExtension stats
+    AppendLine stats, "RUN: TestGroup2BendingBeyondPhysicalLimitUsesExtension"
+    TestGroup2BendingBeyondPhysicalLimitUsesExtension stats
     AppendLine stats, "RUN: TestBatchTwentyCombinations"
     TestBatchTwentyCombinations stats
     AppendLine stats, "RUN: TestInvalidCombinationFromNamedRange"
@@ -84,15 +104,15 @@ Private Sub TestCalculationTypeControlsLimitStateGroup(ByRef stats As TBatchTest
     group1.Execute
 
     AssertTrue stats, "batch.calculationType.group1.capacity", group1.LambdaCapacity(1) > 0#
-    AssertTrue stats, "batch.calculationType.group1.noCrack", group1.CrackStatus(1) = "NotCalculated"
+    AssertTrue stats, "batch.calculationType.group1.noCrack", group1.CrackStatus(1) = "N/A"
 
     Dim group2 As CBatchSectionCalculator
     Set group2 = BuildBatchCalculator()
     group2.AddCombination "G2", -220000#, -7000000#, -5000000#, "Group2", "crack"
     group2.Execute
 
-    AssertTrue stats, "batch.calculationType.group2.noCapacity", group2.CapacityStatus(1) = "NotCalculated"
-    AssertTrue stats, "batch.calculationType.group2.crack", group2.CrackStatus(1) <> "NotCalculated"
+    AssertTrue stats, "batch.calculationType.group2.capacity", group2.CapacityStatus(1) <> "N/A"
+    AssertTrue stats, "batch.calculationType.group2.crack", group2.CrackStatus(1) <> "N/A"
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -116,7 +136,7 @@ Private Sub TestBatchCapacityUsesSystemSettings(ByRef stats As TBatchTestStats)
     batch.AddCombination "LIMITED", -220000#, -7000000#, -5000000#, "Group1", "max-lambda"
     batch.Execute
 
-    AssertTrue stats, "batch.settings.capacity.maxLambda", InStr(1, batch.CapacityStatus(1), "NumericalFailure", vbTextCompare) > 0
+    AssertTrue stats, "batch.settings.capacity.maxLambda", batch.CapacityStatus(1) = "NumFail"
 
 Restore:
     SetSystemSetting "Calculation.Mode", oldMode
@@ -148,7 +168,7 @@ Private Sub TestInvalidModeSettingsAreNotFallbacks(ByRef stats As TBatchTestStat
     batch.ApplySettings settings
     batch.AddCombination "BAD_MODE", -220000#, -7000000#, -5000000#, "Group1", "wrong mode"
     batch.Execute
-    AssertTrue stats, "batch.invalid.calculationMode.status", InStr(1, batch.Status(1), "InvalidInput", vbTextCompare) > 0
+    AssertTrue stats, "batch.invalid.calculationMode.status", batch.Status(1) = "InputErr"
     AssertTrue stats, "batch.invalid.calculationMode.noCapacity", batch.LambdaCapacity(1) = 0#
 
     SetSystemSetting "Calculation.Mode", "FullCapacity"
@@ -160,7 +180,7 @@ Private Sub TestInvalidModeSettingsAreNotFallbacks(ByRef stats As TBatchTestStat
     batch.ApplySettings settings
     batch.AddCombination "BAD_CAP", -220000#, -7000000#, -5000000#, "Group1", "wrong capacity"
     batch.Execute
-    AssertTrue stats, "batch.invalid.capacityMethod.status", InStr(1, batch.Status(1), "InvalidInput", vbTextCompare) > 0
+    AssertTrue stats, "batch.invalid.capacityMethod.status", batch.Status(1) = "InputErr"
     AssertTrue stats, "batch.invalid.capacityMethod.noLambda", batch.LambdaCapacity(1) = 0#
 
 Restore:
@@ -203,24 +223,597 @@ Private Sub TestBatchGoverningUsesLowestSafetyFactor(ByRef stats As TBatchTestSt
     AssertTrue stats, "batch.governing.lowestSafety", batch.GoverningCombinationID = "GOV"
     AssertTrue stats, "batch.governing.limitState", Len(batch.CapacityLimitState(2)) > 0
     AssertTrue stats, "batch.governing.strength.status", _
-        (batch.CapacityStatus(2) = "OK" And batch.LambdaCapacity(2) < 1# And batch.StrengthCheckStatus(2) = "StrengthFailed" And batch.Status(2) = "StrengthFailed") Or _
-        (batch.CapacityStatus(2) = "OK" And batch.LambdaCapacity(2) >= 1# And batch.StrengthCheckStatus(2) = "StrengthPassed") Or _
-        (batch.CapacityStatus(2) <> "OK" And batch.StrengthCheckStatus(2) = "NotCalculated")
+        batch.CapacityStatus(2) = "OK" Or batch.CapacityStatus(2) = "FAIL" Or batch.CapacityStatus(2) = "NumFail"
 End Sub
 
-' Проверяет, что определяющее сочетание по прочности выбирается по минимальному
-' запасу среди всех LC, включая строки второй группы. Это важно для режима
-' Plot/AutoCAD = Worst: эксплуатационное сочетание может иметь более опасные
-' деформации, даже если capacity-поиск для него не запускается.
-Private Sub TestBatchGoverningCanUseGroup2StrainSafety(ByRef stats As TBatchTestStats)
+' Проверяет, что физическое плато нормативной диаграммы не считается
+' numerical extension. Extension начинается только после eps_ult; иначе
+' нормальное состояние с запасом по capacity ошибочно получит FAIL.
+Private Sub TestGroup2PhysicalStateRunsCrackWithExtensionEnabled(ByRef stats As TBatchTestStats)
     Dim oldMode As String
     Dim oldCrackEnabled As String
+    Dim oldExtension As String
     oldMode = GetSystemSetting("Calculation.Mode")
     oldCrackEnabled = GetSystemSetting("SLS.Crack.Enabled")
+    oldExtension = GetSystemSetting("Solver.DirectState.DiagramExtension")
 
     On Error GoTo RestoreAndFail
     SetSystemSetting "Calculation.Mode", "DirectState"
+    SetSystemSetting "SLS.Crack.Enabled", "Yes"
+    SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.AddCombination "G2_PHYS", -220000#, -7000000#, -5000000#, "Group2", "physical state"
+    batch.Execute
+
+    AssertTrue stats, "batch.group2.physical.noExtension", Not batch.ExtensionUsed(1)
+    AssertTrue stats, "batch.group2.physical.directOK", batch.DirectStateStatus(1) = "OK"
+    AssertTrue stats, "batch.group2.physical.crackRuns", batch.CrackStatus(1) <> "N/A"
+
+Restore:
+    SetSystemSetting "Calculation.Mode", oldMode
+    SetSystemSetting "SLS.Crack.Enabled", oldCrackEnabled
+    SetSystemSetting "Solver.DirectState.DiagramExtension", oldExtension
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.group2.physical; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет сценарий из пользовательского расчета: большое осевое растяжение
+' второй группы должно доходить до технического продолжения диаграммы и давать
+' инженерный FAIL, а не теряться как численная несходимость NumFail.
+Private Sub TestGroup2AxialTensionBeyondPhysicalLimitUsesExtension(ByRef stats As TBatchTestStats)
+    Dim oldMode As String
+    Dim oldCrackEnabled As String
+    Dim oldMaxIterations As String
+    Dim oldLoadSteps As String
+    Dim oldExtension As String
+    oldMode = GetSystemSetting("Calculation.Mode")
+    oldCrackEnabled = GetSystemSetting("SLS.Crack.Enabled")
+    oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
+    oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
+    oldExtension = GetSystemSetting("Solver.DirectState.DiagramExtension")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "Calculation.Mode", "DirectState"
+    SetSystemSetting "SLS.Crack.Enabled", "Yes"
+    SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
+    SetSystemSetting "Solver.MaxIterations", "80"
+    SetSystemSetting "Solver.LoadSteps", "1"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+
+    Dim provider As CMaterialModelProvider
+    Set provider = New CMaterialModelProvider
+    provider.Initialize settings, units
+
+    Dim referenceX As Double
+    Dim referenceY As Double
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUserLShapeTensionBatch(referenceX, referenceY, provider)
+    batch.ApplySettings settings, units
+    batch.AddCombination "G2_TENSION_EXT", 900# * 9806.65, 0#, 0#, "Group2", "tension over SLS yield"
+    batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
+    batch.Execute
+
+    AssertTrue stats, "batch.group2.extension.directFail", batch.DirectStateStatus(1) = "FAIL"
+    AssertTrue stats, "batch.group2.extension.used", batch.ExtensionUsed(1)
+    AssertTrue stats, "batch.group2.extension.noCrack", batch.CrackStatus(1) = "N/A"
+    AssertTrue stats, "batch.group2.extension.overall", batch.OverallStatus(1) = "FAIL"
+    AssertTrue stats, "batch.group2.extension.strain", batch.MaxSteelStrain(1) > 0.025
+
+Restore:
+    SetSystemSetting "Calculation.Mode", oldMode
+    SetSystemSetting "SLS.Crack.Enabled", oldCrackEnabled
+    SetSystemSetting "Solver.MaxIterations", oldMaxIterations
+    SetSystemSetting "Solver.LoadSteps", oldLoadSteps
+    SetSystemSetting "Solver.DirectState.DiagramExtension", oldExtension
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.group2.extension.tension; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет пользовательский сценарий Group1: растянутый бетон в прочности не
+' работает, перегрузка должна распознаваться через extension арматуры, а не
+' превращаться в рассинхрон DirectStateStatus=FAIL при ExtensionUsed=False.
+Private Sub TestGroup1AxialTensionBeyondPhysicalLimitUsesExtension(ByRef stats As TBatchTestStats)
+    Dim oldMode As String
+    Dim oldCrackEnabled As String
+    Dim oldMaxIterations As String
+    Dim oldLoadSteps As String
+    Dim oldExtension As String
+    oldMode = GetSystemSetting("Calculation.Mode")
+    oldCrackEnabled = GetSystemSetting("SLS.Crack.Enabled")
+    oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
+    oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
+    oldExtension = GetSystemSetting("Solver.DirectState.DiagramExtension")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "Calculation.Mode", "DirectState"
+    SetSystemSetting "SLS.Crack.Enabled", "Yes"
+    SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
+    SetSystemSetting "Solver.MaxIterations", "100"
+    SetSystemSetting "Solver.LoadSteps", "1"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+
+    Dim provider As CMaterialModelProvider
+    Set provider = New CMaterialModelProvider
+    provider.Initialize settings, units
+
+    Dim referenceX As Double
+    Dim referenceY As Double
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUserLShapeTensionBatch(referenceX, referenceY, provider)
+    batch.ApplySettings settings, units
+    batch.AddCombination "G1_TENSION_EXT", 900# * 9806.65, 0#, 0#, "Group1", "tension over ULS diagram"
+    batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
+    batch.Execute
+
+    AssertTrue stats, "batch.group1.extension.directFail", batch.DirectStateStatus(1) = "FAIL"
+    AssertTrue stats, "batch.group1.extension.used", batch.ExtensionUsed(1)
+    AssertTrue stats, "batch.group1.extension.noCrack", batch.CrackStatus(1) = "N/A"
+    AssertTrue stats, "batch.group1.extension.overall", batch.OverallStatus(1) = "FAIL"
+
+Restore:
+    SetSystemSetting "Calculation.Mode", oldMode
+    SetSystemSetting "SLS.Crack.Enabled", oldCrackEnabled
+    SetSystemSetting "Solver.MaxIterations", oldMaxIterations
+    SetSystemSetting "Solver.LoadSteps", oldLoadSteps
+    SetSystemSetting "Solver.DirectState.DiagramExtension", oldExtension
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.group1.extension.tension; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет ряд почти соседних осевых растягивающих нагрузок возле физического
+' предела. Раньше первый найденный warm-start мог сорваться на одной точке
+' ряда и давал NumFail между двумя корректными FAIL; теперь batch пробует
+' несколько стартов и не должен терять равновесие из-за неудачной подсказки.
+Private Sub TestGroup1AxialTensionNearLimitDoesNotJumpToNumFail(ByRef stats As TBatchTestStats)
+    Dim oldMode As String
+    Dim oldCrackEnabled As String
+    Dim oldMaxIterations As String
+    Dim oldLoadSteps As String
+    Dim oldExtension As String
+    oldMode = GetSystemSetting("Calculation.Mode")
+    oldCrackEnabled = GetSystemSetting("SLS.Crack.Enabled")
+    oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
+    oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
+    oldExtension = GetSystemSetting("Solver.DirectState.DiagramExtension")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "Calculation.Mode", "DirectState"
+    SetSystemSetting "SLS.Crack.Enabled", "Yes"
+    SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
+    SetSystemSetting "Solver.MaxIterations", "100"
+    SetSystemSetting "Solver.LoadSteps", "1"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+
+    Dim provider As CMaterialModelProvider
+    Set provider = New CMaterialModelProvider
+    provider.Initialize settings, units
+
+    Dim referenceX As Double
+    Dim referenceY As Double
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUserLShapeTensionBatch(referenceX, referenceY, provider)
+    batch.ApplySettings settings, units
+
+    Dim loads As Variant
+    loads = Array(796#, 797#, 800#, 801#, 809#, 810#, 811#, 812#)
+
+    Dim i As Long
+    For i = LBound(loads) To UBound(loads)
+        batch.AddCombination "G1_T" & CStr(CLng(loads(i))), CDbl(loads(i)) * 9806.65, 0#, 0#, _
+            "Group1", "near physical tension limit"
+    Next i
+    batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
+    batch.Execute
+
+    For i = 1 To UBound(loads) - LBound(loads) + 1
+        AppendLine stats, "INFO: batch.group1.nearLimit." & batch.CombinationID(i) & _
+            " direct=" & batch.DirectStateStatus(i) & _
+            "; extensionUsed=" & CStr(batch.ExtensionUsed(i)) & _
+            "; epsSmax=" & FormatNumberInvariant(batch.MaxSteelStrain(i))
+        If batch.DirectStateStatus(i) = "NumFail" Then
+            AppendLine stats, "DIAG: batch.group1.nearLimit." & batch.CombinationID(i) & vbCrLf & batch.DiagnosticLog
+        End If
+        AssertTrue stats, "batch.group1.nearLimit.noNumFail." & batch.CombinationID(i), _
+            batch.DirectStateStatus(i) = "OK" Or batch.DirectStateStatus(i) = "FAIL"
+        If batch.DirectStateStatus(i) = "FAIL" Then
+            AssertTrue stats, "batch.group1.nearLimit.failUsesExtension." & batch.CombinationID(i), batch.ExtensionUsed(i)
+        End If
+    Next i
+
+Restore:
+    SetSystemSetting "Calculation.Mode", oldMode
+    SetSystemSetting "SLS.Crack.Enabled", oldCrackEnabled
+    SetSystemSetting "Solver.MaxIterations", oldMaxIterations
+    SetSystemSetting "Solver.LoadSteps", oldLoadSteps
+    SetSystemSetting "Solver.DirectState.DiagramExtension", oldExtension
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.group1.nearLimit; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет соседние значения осевого сжатия около предела сечения.
+' Регрессия защищает от численной дырки, когда одно значение N между двумя
+' корректными FAIL ошибочно превращается в NumFail из-за неудачного старта
+' Newton на technical extension.
+Private Sub TestGroup1AxialCompressionNearLimitDoesNotJumpToNumFail(ByRef stats As TBatchTestStats)
+    Dim oldMode As String
+    Dim oldCrackEnabled As String
+    Dim oldMaxIterations As String
+    Dim oldLoadSteps As String
+    Dim oldExtension As String
+    oldMode = GetSystemSetting("Calculation.Mode")
+    oldCrackEnabled = GetSystemSetting("SLS.Crack.Enabled")
+    oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
+    oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
+    oldExtension = GetSystemSetting("Solver.DirectState.DiagramExtension")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "Calculation.Mode", "DirectState"
+    SetSystemSetting "SLS.Crack.Enabled", "Yes"
+    SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
+    SetSystemSetting "Solver.MaxIterations", "100"
+    SetSystemSetting "Solver.LoadSteps", "1"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+
+    Dim provider As CMaterialModelProvider
+    Set provider = New CMaterialModelProvider
+    provider.Initialize settings, units
+
+    Dim referenceX As Double
+    Dim referenceY As Double
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUserLShapeTensionBatch(referenceX, referenceY, provider)
+    batch.ApplySettings settings, units
+
+    Dim loads As Variant
+    loads = Array(1222#, 1223#, 1224#, 1225#)
+
+    Dim i As Long
+    For i = LBound(loads) To UBound(loads)
+        batch.AddCombination "G1_C" & CStr(CLng(loads(i))), -CDbl(loads(i)) * 9806.65, 0#, 0#, _
+            "Group1", "near physical compression limit"
+    Next i
+    batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
+    batch.Execute
+
+    For i = 1 To UBound(loads) - LBound(loads) + 1
+        AppendLine stats, "INFO: batch.group1.compressionNearLimit." & batch.CombinationID(i) & _
+            " direct=" & batch.DirectStateStatus(i) & _
+            "; extensionUsed=" & CStr(batch.ExtensionUsed(i)) & _
+            "; epsCmin=" & FormatNumberInvariant(batch.MinConcreteStrain(i))
+        If batch.DirectStateStatus(i) = "NumFail" Then
+            AppendLine stats, "DIAG: batch.group1.compressionNearLimit." & batch.CombinationID(i) & vbCrLf & batch.DiagnosticLog
+        End If
+        AssertTrue stats, "batch.group1.compressionNearLimit.noNumFail." & batch.CombinationID(i), _
+            batch.DirectStateStatus(i) = "OK" Or batch.DirectStateStatus(i) = "FAIL"
+        If batch.DirectStateStatus(i) = "FAIL" Then
+            AssertTrue stats, "batch.group1.compressionNearLimit.failUsesExtension." & batch.CombinationID(i), batch.ExtensionUsed(i)
+        End If
+    Next i
+
+Restore:
+    SetSystemSetting "Calculation.Mode", oldMode
+    SetSystemSetting "SLS.Crack.Enabled", oldCrackEnabled
+    SetSystemSetting "Solver.MaxIterations", oldMaxIterations
+    SetSystemSetting "Solver.LoadSteps", oldLoadSteps
+    SetSystemSetting "Solver.DirectState.DiagramExtension", oldExtension
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.group1.compressionNearLimit; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет длинный растянутый ряд после последнего физически проходящего
+' состояния. Набор нагрузок намеренно неровный: сначала шаг 1 т, затем скачок,
+' затем снова малый шаг на более высокой нагрузке. Так тест ловит не только
+' соседний порог, но и зависимость warm-start от величины предыдущего скачка.
+Private Sub TestGroup1AxialTensionProgressionAfterLimitIsStableFail(ByRef stats As TBatchTestStats)
+    Dim loads As Variant
+    loads = Array(796#, 797#, 798#, 799#, 800#, 801#, 805#, 810#, 811#, 812#, _
+        820#, 830#, 850#, 851#, 900#, 925#, 930#, 950#, 1000#, 1200#)
+    RunAxialProgressionAfterLimit stats, "batch.group1.tensionProgression", loads, True, 1
+End Sub
+
+' Проверяет аналогичный ряд для сжатия. Это защищает от ситуации, когда при
+' росте N одно сочетание внутри перегруженной области внезапно получает NumFail,
+' хотя соседние нагрузки уже корректно сходятся в extension и дают FAIL.
+Private Sub TestGroup1AxialCompressionProgressionAfterLimitIsStableFail(ByRef stats As TBatchTestStats)
+    Dim loads As Variant
+    loads = Array(1221#, 1222#, 1223#, 1224#, 1225#, 1226#, 1230#, 1231#, 1240#, 1250#, _
+        1275#, 1300#, 1301#, 1350#, 1400#, 1500#, 1600#, 1700#, 1800#, 2000#)
+    RunAxialProgressionAfterLimit stats, "batch.group1.compressionProgression", loads, False, 1
+End Sub
+
+' Общая проверка длинного осевого ряда. firstOkIndex указывает строку, которая
+' должна еще оставаться физически допустимой; все последующие строки обязаны
+' сходиться как FAIL с ExtensionUsed=True, а не как NumFail.
+Private Sub RunAxialProgressionAfterLimit(ByRef stats As TBatchTestStats, ByVal testPrefix As String, _
+        ByVal loads As Variant, ByVal isTension As Boolean, ByVal firstOkIndex As Long)
+    Dim oldMode As String
+    Dim oldCrackEnabled As String
+    Dim oldMaxIterations As String
+    Dim oldLoadSteps As String
+    Dim oldExtension As String
+    oldMode = GetSystemSetting("Calculation.Mode")
+    oldCrackEnabled = GetSystemSetting("SLS.Crack.Enabled")
+    oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
+    oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
+    oldExtension = GetSystemSetting("Solver.DirectState.DiagramExtension")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "Calculation.Mode", "DirectState"
+    SetSystemSetting "SLS.Crack.Enabled", "Yes"
+    SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
+    SetSystemSetting "Solver.MaxIterations", "100"
+    SetSystemSetting "Solver.LoadSteps", "1"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+
+    Dim provider As CMaterialModelProvider
+    Set provider = New CMaterialModelProvider
+    provider.Initialize settings, units
+
+    Dim referenceX As Double
+    Dim referenceY As Double
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUserLShapeTensionBatch(referenceX, referenceY, provider)
+    batch.ApplySettings settings, units
+
+    Dim i As Long
+    Dim signedN As Double
+    For i = LBound(loads) To UBound(loads)
+        If isTension Then
+            signedN = CDbl(loads(i)) * 9806.65
+        Else
+            signedN = -CDbl(loads(i)) * 9806.65
+        End If
+        batch.AddCombination ProgressionCombinationID(isTension, CDbl(loads(i))), signedN, 0#, 0#, _
+            "Group1", "axial progression after physical limit"
+    Next i
+    batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
+    batch.Execute
+
+    For i = 1 To UBound(loads) - LBound(loads) + 1
+        AppendLine stats, "INFO: " & testPrefix & "." & batch.CombinationID(i) & _
+            " direct=" & batch.DirectStateStatus(i) & _
+            "; extensionUsed=" & CStr(batch.ExtensionUsed(i)) & _
+            "; epsCmin=" & FormatNumberInvariant(batch.MinConcreteStrain(i)) & _
+            "; epsSmax=" & FormatNumberInvariant(batch.MaxSteelStrain(i))
+        If i = firstOkIndex Then
+            AssertTrue stats, testPrefix & ".lastPhysicalOK." & batch.CombinationID(i), _
+                batch.DirectStateStatus(i) = "OK" And Not batch.ExtensionUsed(i)
+        Else
+            If batch.DirectStateStatus(i) = "NumFail" Then
+                AppendLine stats, "DIAG: " & testPrefix & "." & batch.CombinationID(i) & vbCrLf & batch.DiagnosticLog
+            End If
+            AssertTrue stats, testPrefix & ".stableFail." & batch.CombinationID(i), _
+                batch.DirectStateStatus(i) = "FAIL"
+            AssertTrue stats, testPrefix & ".usesExtension." & batch.CombinationID(i), batch.ExtensionUsed(i)
+        End If
+    Next i
+
+Restore:
+    SetSystemSetting "Calculation.Mode", oldMode
+    SetSystemSetting "SLS.Crack.Enabled", oldCrackEnabled
+    SetSystemSetting "Solver.MaxIterations", oldMaxIterations
+    SetSystemSetting "Solver.LoadSteps", oldLoadSteps
+    SetSystemSetting "Solver.DirectState.DiagramExtension", oldExtension
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: " & testPrefix & "; " & Err.Description
+    Resume Restore
+End Sub
+
+Private Function ProgressionCombinationID(ByVal isTension As Boolean, ByVal loadTf As Double) As String
+    If isTension Then
+        ProgressionCombinationID = "G1_TP" & CStr(CLng(loadTf))
+    Else
+        ProgressionCombinationID = "G1_CP" & CStr(CLng(loadTf))
+    End If
+End Function
+
+' Проверяет симметричный для сжатия сценарий: если заданное N больше
+' физической сжатой области диаграммы, повторный StateSolution должен найти
+' формальное равновесие в compression-extension и вернуть FAIL, а не NumFail.
+Private Sub TestGroup2AxialCompressionBeyondPhysicalLimitUsesExtension(ByRef stats As TBatchTestStats)
+    Dim oldMode As String
+    Dim oldCrackEnabled As String
+    Dim oldMaxIterations As String
+    Dim oldLoadSteps As String
+    Dim oldExtension As String
+    oldMode = GetSystemSetting("Calculation.Mode")
+    oldCrackEnabled = GetSystemSetting("SLS.Crack.Enabled")
+    oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
+    oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
+    oldExtension = GetSystemSetting("Solver.DirectState.DiagramExtension")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "Calculation.Mode", "DirectState"
+    SetSystemSetting "SLS.Crack.Enabled", "Yes"
+    SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
+    SetSystemSetting "Solver.MaxIterations", "80"
+    SetSystemSetting "Solver.LoadSteps", "1"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+
+    Dim provider As CMaterialModelProvider
+    Set provider = New CMaterialModelProvider
+    provider.Initialize settings, units
+
+    Dim referenceX As Double
+    Dim referenceY As Double
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUserLShapeTensionBatch(referenceX, referenceY, provider)
+    batch.ApplySettings settings, units
+    batch.AddCombination "G2_COMPRESSION_EXT", -2000# * 9806.65, 0#, 0#, "Group2", "compression over SLS diagram"
+    batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
+    batch.Execute
+
+    AssertTrue stats, "batch.group2.extension.compression.directFail", batch.DirectStateStatus(1) = "FAIL"
+    AssertTrue stats, "batch.group2.extension.compression.used", batch.ExtensionUsed(1)
+    AssertTrue stats, "batch.group2.extension.compression.noCrack", batch.CrackStatus(1) = "N/A"
+    AssertTrue stats, "batch.group2.extension.compression.strain", _
+        batch.MinConcreteStrain(1) < provider.ConcreteCompressionLimit(cpCrackedNDS)
+
+Restore:
+    SetSystemSetting "Calculation.Mode", oldMode
+    SetSystemSetting "SLS.Crack.Enabled", oldCrackEnabled
+    SetSystemSetting "Solver.MaxIterations", oldMaxIterations
+    SetSystemSetting "Solver.LoadSteps", oldLoadSteps
+    SetSystemSetting "Solver.DirectState.DiagramExtension", oldExtension
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.group2.extension.compression; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет неосевую перегрузку. Builder должен использовать форму
+' деформаций первой несошедшейся попытки, поэтому warm-start остается
+' применимым и при одновременных N + Mx + My, а не только при чистом N.
+Private Sub TestGroup2BendingBeyondPhysicalLimitUsesExtension(ByRef stats As TBatchTestStats)
+    Dim oldMode As String
+    Dim oldCrackEnabled As String
+    Dim oldMaxIterations As String
+    Dim oldLoadSteps As String
+    Dim oldExtension As String
+    oldMode = GetSystemSetting("Calculation.Mode")
+    oldCrackEnabled = GetSystemSetting("SLS.Crack.Enabled")
+    oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
+    oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
+    oldExtension = GetSystemSetting("Solver.DirectState.DiagramExtension")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "Calculation.Mode", "DirectState"
+    SetSystemSetting "SLS.Crack.Enabled", "Yes"
+    SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
+    SetSystemSetting "Solver.MaxIterations", "100"
+    SetSystemSetting "Solver.LoadSteps", "1"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+
+    Dim provider As CMaterialModelProvider
+    Set provider = New CMaterialModelProvider
+    provider.Initialize settings, units
+
+    Dim referenceX As Double
+    Dim referenceY As Double
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUserLShapeTensionBatch(referenceX, referenceY, provider)
+    batch.ApplySettings settings, units
+    batch.AddCombination "G2_BENDING_EXT", -120# * 9806.65, 420# * 9806.65 * 1000#, _
+        -180# * 9806.65 * 1000#, "Group2", "bending over SLS diagram"
+    batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
+    batch.Execute
+
+    AssertTrue stats, "batch.group2.extension.bending.directFail", batch.DirectStateStatus(1) = "FAIL"
+    AssertTrue stats, "batch.group2.extension.bending.used", batch.ExtensionUsed(1)
+    AssertTrue stats, "batch.group2.extension.bending.noCrack", batch.CrackStatus(1) = "N/A"
+    AssertTrue stats, "batch.group2.extension.bending.curvature", _
+        Abs(batch.KappaX(1)) > 0.000000001 Or Abs(batch.KappaY(1)) > 0.000000001
+
+Restore:
+    SetSystemSetting "Calculation.Mode", oldMode
+    SetSystemSetting "SLS.Crack.Enabled", oldCrackEnabled
+    SetSystemSetting "Solver.MaxIterations", oldMaxIterations
+    SetSystemSetting "Solver.LoadSteps", oldLoadSteps
+    SetSystemSetting "Solver.DirectState.DiagramExtension", oldExtension
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.group2.extension.bending; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет, что определяющее сочетание по прочности выбирается по минимальному
+' запасу Capacity среди всех LC, включая строки второй группы. Это нужно для
+' Plot/AutoCAD = Worst после удаления пользовательского StrainSafetyFactor.
+Private Sub TestBatchGoverningCanUseGroup2CapacitySafety(ByRef stats As TBatchTestStats)
+    Dim oldMode As String
+    Dim oldCrackEnabled As String
+    Dim oldCapacityScope As String
+    oldMode = GetSystemSetting("Calculation.Mode")
+    oldCrackEnabled = GetSystemSetting("SLS.Crack.Enabled")
+    oldCapacityScope = GetSystemSetting("Capacity.CalculationScope")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "Calculation.Mode", "FullCapacity"
     SetSystemSetting "SLS.Crack.Enabled", "No"
+    SetSystemSetting "Capacity.CalculationScope", "Group1+2"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -230,21 +823,64 @@ Private Sub TestBatchGoverningCanUseGroup2StrainSafety(ByRef stats As TBatchTest
     Set batch = BuildBatchCalculator()
     batch.ApplySettings settings
     batch.AddCombination "G1_SAFE", -120000#, -1200000#, -600000#, "Group1", "first group"
-    batch.AddCombination "G2_GOV", -120000#, -5200000#, -2600000#, "Group2", "second group controls strain"
+    batch.AddCombination "G2_GOV", -120000#, -5200000#, -2600000#, "Group2", "second group controls capacity"
     batch.Execute
 
-    AssertTrue stats, "batch.governing.group2.strain.order", _
-        batch.StrainSafetyFactor(2) > 0# And batch.StrainSafetyFactor(2) < batch.StrainSafetyFactor(1)
+    AssertTrue stats, "batch.governing.group2.capacity.order", _
+        batch.LambdaCapacity(2) > 0# And batch.LambdaCapacity(2) < batch.LambdaCapacity(1)
     AssertTrue stats, "batch.governing.group2.id", batch.GoverningCombinationID = "G2_GOV"
 
 Restore:
     SetSystemSetting "Calculation.Mode", oldMode
     SetSystemSetting "SLS.Crack.Enabled", oldCrackEnabled
+    SetSystemSetting "Capacity.CalculationScope", oldCapacityScope
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.governing.group2; " & Err.Description
+    AppendLine stats, "FAIL: batch.governing.group2.capacity; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет новую настройку Capacity.CalculationScope. При Group1Only
+' предельный момент считается только для первой группы; Group2 остается
+' доступной для прямого НДС и трещин, но CapacityStatus получает N/A.
+Private Sub TestCapacityScopeGroup1OnlySkipsGroup2(ByRef stats As TBatchTestStats)
+    Dim oldMode As String
+    Dim oldCrackEnabled As String
+    Dim oldCapacityScope As String
+    oldMode = GetSystemSetting("Calculation.Mode")
+    oldCrackEnabled = GetSystemSetting("SLS.Crack.Enabled")
+    oldCapacityScope = GetSystemSetting("Capacity.CalculationScope")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "Calculation.Mode", "FullCapacity"
+    SetSystemSetting "SLS.Crack.Enabled", "No"
+    SetSystemSetting "Capacity.CalculationScope", "Group1Only"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.AddCombination "G1", -120000#, -1200000#, -600000#, "Group1", "first group"
+    batch.AddCombination "G2", -120000#, -5200000#, -2600000#, "Group2", "second group"
+    batch.Execute
+
+    AssertTrue stats, "batch.capacity.scope.group1.runs", batch.CapacityStatus(1) <> "N/A"
+    AssertTrue stats, "batch.capacity.scope.group2.skipped", batch.CapacityStatus(2) = "N/A"
+
+Restore:
+    SetSystemSetting "Calculation.Mode", oldMode
+    SetSystemSetting "SLS.Crack.Enabled", oldCrackEnabled
+    SetSystemSetting "Capacity.CalculationScope", oldCapacityScope
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.capacity.scope; " & Err.Description
     Resume Restore
 End Sub
 
@@ -366,8 +1002,9 @@ Private Sub CheckPureTensionReference(ByRef stats As TBatchTestStats, ByVal case
         Abs(eccentricSolver.KappaX) > tolerance Or Abs(eccentricSolver.KappaY) > tolerance
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
-Private Sub TestDirectStateReportsStrainSafety(ByRef stats As TBatchTestStats)
+' Проверяет DirectState после отказа от пользовательского запаса по деформациям.
+' В этом режиме должен быть статус фактического НДС, а capacity остается N/A.
+Private Sub TestDirectStateReportsSectionStatus(ByRef stats As TBatchTestStats)
     Dim oldMode As String
     Dim oldCrackEnabled As String
     oldMode = GetSystemSetting("Calculation.Mode")
@@ -389,10 +1026,10 @@ Private Sub TestDirectStateReportsStrainSafety(ByRef stats As TBatchTestStats)
     batch.Execute
 
     AssertTrue stats, "batch.direct.lambda.zero", batch.LambdaCapacity(1) = 0# And batch.LambdaCapacity(2) = 0#
-    AssertTrue stats, "batch.direct.crack.notCalculated", StrComp(batch.CrackStatus(1), "NotCalculated", vbTextCompare) = 0
-    AssertTrue stats, "batch.direct.strainSafety.positive", batch.StrainSafetyFactor(1) > 0# And batch.StrainSafetyFactor(2) > 0#
-    AssertTrue stats, "batch.direct.strainSafety.order", batch.StrainSafetyFactor(2) < batch.StrainSafetyFactor(1)
-    AssertTrue stats, "batch.direct.governing", batch.GoverningCombinationID = "DS_GOV"
+    AssertTrue stats, "batch.direct.capacity.na", batch.CapacityStatus(1) = "N/A" And batch.CapacityStatus(2) = "N/A"
+    AssertTrue stats, "batch.direct.crack.na", StrComp(batch.CrackStatus(1), "N/A", vbTextCompare) = 0
+    AssertTrue stats, "batch.direct.state.status", Len(batch.DirectStateStatus(1)) > 0 And Len(batch.DirectStateStatus(2)) > 0
+    AssertTrue stats, "batch.direct.governing.none", Len(batch.GoverningCombinationID) = 0 Or batch.GoverningCombinationID = "DS_SAFE"
 
 Restore:
     SetSystemSetting "Calculation.Mode", oldMode
@@ -401,12 +1038,13 @@ Restore:
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.direct.strainSafety; " & Err.Description
+    AppendLine stats, "FAIL: batch.direct.sectionStatus; " & Err.Description
     Resume Restore
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
-Private Sub TestDirectStateKeepsStrainSafetyOnFailure(ByRef stats As TBatchTestStats)
+' Проверяет, что численная несходимость прямого НДС превращается в короткий
+' пользовательский статус NumFail и не порождает расчет трещин.
+Private Sub TestDirectStateReportsNumericalFailure(ByRef stats As TBatchTestStats)
     Dim oldMode As String
     Dim oldCrackEnabled As String
     Dim oldMaxIterations As String
@@ -429,8 +1067,9 @@ Private Sub TestDirectStateKeepsStrainSafetyOnFailure(ByRef stats As TBatchTestS
     batch.AddCombination "DS_FAIL", -120000#, -12000000#, -7000000#, "Group1", "forced non-convergence"
     batch.Execute
 
-    AssertTrue stats, "batch.direct.failure.status", InStr(1, batch.Status(1), "NumericalFailure", vbTextCompare) > 0 Or batch.Status(1) = "StrainLimitExceeded"
-    AssertTrue stats, "batch.direct.failure.strainSafety", batch.StrainSafetyFactor(1) > 0#
+    AssertTrue stats, "batch.direct.failure.status", batch.Status(1) = "NumFail" Or batch.Status(1) = "FAIL"
+    AssertTrue stats, "batch.direct.failure.directStatus", batch.DirectStateStatus(1) = "NumFail" Or batch.DirectStateStatus(1) = "FAIL"
+    AssertTrue stats, "batch.direct.failure.crack", batch.CrackStatus(1) = "N/A"
 
 Restore:
     SetSystemSetting "Calculation.Mode", oldMode
@@ -440,7 +1079,7 @@ Restore:
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.direct.failure.strainSafety; " & Err.Description
+    AppendLine stats, "FAIL: batch.direct.failure.status; " & Err.Description
     Resume Restore
 End Sub
 
@@ -488,27 +1127,35 @@ Private Sub TestInvalidCombinationFromNamedRange(ByRef stats As TBatchTestStats)
     batch.Execute
 
     AssertTrue stats, "batch.invalid.reader.count", batch.Count = 1
-    AssertTrue stats, "batch.invalid.reader.status", InStr(1, batch.Status(1), "InvalidInput", vbTextCompare) > 0
+    AssertTrue stats, "batch.invalid.reader.status", batch.Status(1) = "InputErr"
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
+    On Error GoTo Failed
+
+    Dim stage As String
+    stage = "BuildBatchCalculator"
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
+    stage = "AddCombination"
     batch.AddCombination "W1", -180000#, -3500000#, -2500000#, "Group1", "writer"
+    stage = "Execute"
     batch.Execute
 
+    stage = "WriteSummary"
     Dim writer As CBatchResultWriter
     Set writer = New CBatchResultWriter
     writer.WriteSummary ThisWorkbook, batch
 
+    stage = "Asserts"
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
     Dim summaryRow As Long
     summaryRow = BatchSummaryStartRow()
     AssertTrue stats, "batch.writer.fixedRow", summaryRow = 1
     AssertTrue stats, "batch.writer.noResultOverlap", summaryRow + ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count - 1 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
-    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count >= 31 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count >= 46
+    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count >= 31 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count >= 47
     AssertTrue stats, "batch.writer.title", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = "Сводка пакетного расчета (Подробнее)"
     AssertTrue stats, "batch.writer.titleNotMerged", Not resultsSheet.Cells.Item(summaryRow, 1).MergeCells
     AssertTrue stats, "batch.writer.titleHyperlink", resultsSheet.Cells.Item(summaryRow, 1).Hyperlinks.Count > 0
@@ -516,15 +1163,19 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.crackGoverning.row", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 3, 1).Value2), "трещинам", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.loadPoint.relativeLabel", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 5, 1).Value2), "относительно центра тяжести", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.loadPoint.zeroX", CStr(resultsSheet.Cells.Item(summaryRow + 5, 5).Value2) = "X=0 mm"
-    AssertTrue stats, "batch.writer.subheader.psi", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 37).Value2), "psi", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.strainFormula.simple", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 15).Formula), "AGGREGATE", vbTextCompare) = 0 And _
-        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 15).Formula), "CHOOSE", vbTextCompare) = 0
-    AssertTrue stats, "batch.writer.momentFormula.simple", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 21).Formula), "IFERROR", vbTextCompare) > 0 And _
-        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 21).Formula), "IF(", vbTextCompare) = 0
-    AssertTrue stats, "batch.writer.header.strength", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 15).Value2), "StrainSafetyFactor", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.limitState", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 16).Value2), "CapacityLimitState", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.moment", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 21).Value2), "MomentSafetyFactor", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 46).Value2), "MinSafetyFactor", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.subheader.psi", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 38).Value2), "psi", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.momentFormula.simple", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 22).Formula), "IFERROR", vbTextCompare) > 0 And _
+        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 22).Formula), "IF(", vbTextCompare) = 0
+    AssertTrue stats, "batch.writer.header.directStatus", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 5).Value2), "DirectStateStatus", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.limitState", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 17).Value2), "CapacityLimitState", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.moment", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 22).Value2), "MomentSafetyFactor", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 47).Value2), "MinSafetyFactor", vbTextCompare) > 0
+    Exit Sub
+
+Failed:
+    AppendLine stats, "FAIL-TRACE: TestBatchSummaryWriter." & stage & _
+        "; err=" & CStr(Err.Number) & "; " & Err.Description
+    Err.Raise Err.Number, Err.Source, "TestBatchSummaryWriter." & stage & ": " & Err.Description
 End Sub
 
 Private Function BatchSummaryStartRow() As Long
@@ -555,6 +1206,55 @@ Private Function BuildBatchCalculator() As CBatchSectionCalculator
     Set batch = New CBatchSectionCalculator
     batch.Initialize section, TestMaterialProvider()
     Set BuildBatchCalculator = batch
+End Function
+
+' Собирает Г-сечение из пользовательского примера: H1/B1/H2/B2 = 550/250/250/600,
+' арматура Ø32 по всем внешним и внутренним граням. Этот сценарий нужен именно
+' для проверки StateSolution при почти предельном осевом растяжении Group2.
+Private Function BuildUserLShapeTensionBatch(ByRef referenceX As Double, ByRef referenceY As Double, _
+        Optional ByVal providerOverride As CMaterialModelProvider = Nothing) As CBatchSectionCalculator
+    Dim geom As ISectionGeometry
+    Set geom = LShapeGeometry(250#, 550#, 600#, 250#)
+
+    Dim mesh As CFiberMeshBuilder
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geom, 50#, 50#, 1
+
+    Dim rebars As CRebarLayout
+    Set rebars = UserLShapeTensionRebars()
+
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, rebars, "UserLShapeTension")
+
+    Dim provider As CMaterialModelProvider
+    If providerOverride Is Nothing Then
+        Set provider = TestMaterialProvider()
+    Else
+        Set provider = providerOverride
+    End If
+    CalculateTransformedSectionCentroid section, provider.ConcreteMaterial(cpStrength), _
+        provider.SteelMaterial(cpStrength), referenceX, referenceY
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = New CBatchSectionCalculator
+    batch.Initialize section, provider
+    Set BuildUserLShapeTensionBatch = batch
+End Function
+
+Private Function UserLShapeTensionRebars() As CRebarLayout
+    Dim builder As CLShapeRebarLayoutBuilder
+    Set builder = New CLShapeRebarLayoutBuilder
+    Set UserLShapeTensionRebars = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
+        LShapeFaceSettingsForTest(5, 5), _
+        LShapeFaceSettingsForTest(2, 2), _
+        LShapeFaceSettingsForTest(2, 2), _
+        LShapeFaceSettingsForTest(5, 5), _
+        "A400")
+End Function
+
+Private Function LShapeFaceSettingsForTest(ByVal count1 As Long, ByVal count2 As Long) As Variant
+    LShapeFaceSettingsForTest = Array(40#, 40#, 32#, 32#, count1, count2, 80#, 80#, 80#, 80#, _
+        0#, 0#, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
 End Function
 
 Private Function GetSystemSetting(ByVal key As String) As String

@@ -99,8 +99,8 @@ Private Sub TestSystemSettingsReader(ByRef stats As TSectionSolverTestStats)
     Dim provider As CMaterialModelProvider
     Set provider = New CMaterialModelProvider
     provider.Initialize reader
-    AssertClose stats, "settings.material.strengthTensionIgnored", provider.ConcreteMaterial("Strength").GetStress(0.0001), 0#, 0.000000000001
-    AssertTrue stats, "settings.material.mcrcTensionEnabled", provider.ConcreteMaterial("Mcrc").GetStress(0.0001) > 0#
+    AssertClose stats, "settings.material.strengthTensionIgnored", provider.ConcreteMaterial(cpStrength).GetStress(0.0001), 0#, 0.000000000001
+    AssertTrue stats, "settings.material.mcrcTensionEnabled", provider.ConcreteMaterial(cpMcrc).GetStress(0.0001) > 0#
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -182,11 +182,12 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "Diagram.Mcrc.Concrete", "Diagram.Mcrc.ConcreteTension", "Diagram.Mcrc.Steel", _
         "Diagram.CrackedNDS.Concrete", "Diagram.CrackedNDS.ConcreteTension", "Diagram.CrackedNDS.Steel", _
         "Calculation.Mode", "Solver.Method", "Solver.MaxIterations", "Solver.LoadSteps", _
+        "Solver.DirectState.DiagramExtension", _
         "Solver.ToleranceN", "Solver.ToleranceMx", "Solver.ToleranceMy", _
         "Solver.LineSearchEnabled", "Solver.DampingInitial", "Solver.MinLineSearchAlpha", _
         "Solver.MaxDeltaEpsilon0", "Solver.MaxDeltaKappa", _
         "Solver.SecantMaxRestarts", "Solver.SecantMinStepNorm", _
-        "Capacity.Method", "Capacity.SearchMethod", "Capacity.InitialLambda", "Capacity.MaxLambda", "Capacity.ToleranceLambda", _
+        "Capacity.CalculationScope", "Capacity.Method", "Capacity.SearchMethod", "Capacity.InitialLambda", "Capacity.MaxLambda", "Capacity.ToleranceLambda", _
         "Capacity.ToleranceStrain", _
         "Capacity.MaxRetries", "Capacity.BaseLoadSteps", "Capacity.SolverMaxIterations", _
         "SLS.Crack.Enabled", "SLS.Crack.Allowable", _
@@ -240,7 +241,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     rangeNames = Array("rngUnitSettings", "rngSignConventionSettings", _
         "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationDiagramSettings", _
         "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngLShapeGeometry", _
-        "rngNDMSectionProperties", "rngNDMSectionAnnotations")
+        "rngNDMSectionProperties", "rngNDMSectionAnnotations", "rngNDMMaterialDiagrams")
     For i = LBound(rangeNames) To UBound(rangeNames)
         AssertTrue stats, "settings.range." & CStr(rangeNames(i)), NamedRangeExists(CStr(rangeNames(i)))
     Next i

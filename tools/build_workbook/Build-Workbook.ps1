@@ -517,24 +517,27 @@ try {
     for ($col = 14; $col -le 69; $col++) {
         $system.Columns.Item($col).ColumnWidth = 8.43
     }
-    $results.Range("A1:AT1").Font.Bold = $true
+    $results.Range("A1:AU1").Font.Bold = $true
     $results.Range("A34:F34").Font.Bold = $true
     $results.Range("I34:W34").Font.Bold = $true
     $results.Range("Z34:AE34").Font.Bold = $true
     $results.Range("AH34:AU34").Font.Bold = $true
+    $results.Range("AX34:BE34").Font.Bold = $true
     $results.Columns.Item(1).ColumnWidth = 12
     $results.Columns.Item(9).ColumnWidth = 12
     $results.Columns.Item(26).ColumnWidth = 12
     $results.Columns.Item(34).ColumnWidth = 12
+    $results.Columns.Item(50).ColumnWidth = 12
     Add-ResultsSummaryHelpLink $results $instructions
 
     Add-WorkbookName $workbook "rngLoadCombinations" $calc '$A$40:$F$60'
     Add-WorkbookName $workbook "rngResultSection" $calc '$S$17:$AH$35'
-    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$AT$31'
+    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$AU$31'
     Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$34'
     Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$I$34'
     Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$Z$34'
     Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$AH$34'
+    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AX$34'
 
     $calc.PageSetup.PaperSize = 9
     $calc.PageSetup.Orientation = 1

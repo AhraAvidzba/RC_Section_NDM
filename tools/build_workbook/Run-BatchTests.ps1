@@ -41,6 +41,27 @@ function Remove-DuplicatePrintAreaName {
 
 Remove-DuplicatePrintAreaName $fullWorkbookPath
 
+function Invoke-ExcelMacroWithRetry {
+    param(
+        [object]$ExcelApplication,
+        [string]$MacroName,
+        [int]$Attempts = 5
+    )
+
+    for ($attempt = 1; $attempt -le $Attempts; $attempt++) {
+        try {
+            Start-Sleep -Milliseconds (500 * $attempt)
+            return $ExcelApplication.Run($MacroName)
+        }
+        catch {
+            if ($attempt -eq $Attempts) {
+                throw
+            }
+            Write-Warning "Excel rejected macro run attempt $attempt/$Attempts; retrying: $($_.Exception.Message)"
+        }
+    }
+}
+
 $excel = $null
 $workbook = $null
 
@@ -51,16 +72,26 @@ try {
     $excel.AutomationSecurity = 1
 
     $workbook = $excel.Workbooks.Open($fullWorkbookPath)
-    $result = $excel.Run("'RC_Section_NDM.xlsm'!modTestBatchCalculation.RunBatchCalculationTests")
+    $result = Invoke-ExcelMacroWithRetry $excel "'RC_Section_NDM.xlsm'!modTestBatchCalculation.RunBatchCalculationTests"
     Write-Output $result
 }
 finally {
     if ($workbook -ne $null) {
-        $workbook.Close($false)
+        try {
+            $workbook.Close($false)
+        }
+        catch {
+            Write-Warning "Excel workbook refused to close cleanly after batch tests: $($_.Exception.Message)"
+        }
         [System.Runtime.InteropServices.Marshal]::ReleaseComObject($workbook) | Out-Null
     }
     if ($excel -ne $null) {
-        $excel.Quit()
+        try {
+            $excel.Quit()
+        }
+        catch {
+            Write-Warning "Excel COM refused to quit cleanly after batch tests: $($_.Exception.Message)"
+        }
         [System.Runtime.InteropServices.Marshal]::ReleaseComObject($excel) | Out-Null
     }
     [GC]::Collect()

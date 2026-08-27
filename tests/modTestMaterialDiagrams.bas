@@ -30,6 +30,7 @@ Public Function RunMaterialDiagramTests() As String
     TestSteelThreePointDiagram stats
     TestProviderConcreteDiagrams stats
     TestProviderSteelDiagrams stats
+    TestProviderStateSolutionExtension stats
     TestUserStrainParametersAffectDiagrams stats
     TestInvalidParameters stats
 
@@ -104,23 +105,23 @@ Private Sub TestProviderConcreteDiagrams(ByRef stats As TMaterialTestStats)
     Set provider = TestProvider()
 
     Dim strength As CMaterialDiagram
-    Set strength = provider.ConcreteMaterial("Strength")
+    Set strength = provider.ConcreteMaterial(cpStrength)
     AssertClose stats, "conc.provider.strength.point1.eps", strength.PointStrain(1), -0.0035, 0.000000000001
     AssertClose stats, "conc.provider.strength.point1.stress", strength.PointStress(1), -15.5, 0.000000000001
     AssertClose stats, "conc.provider.strength.point2.eps", strength.PointStrain(2), -0.0015, 0.000000000001
     AssertClose stats, "conc.provider.strength.tensionZero", strength.GetStress(0.0001), 0#, 0.000000000001
-    AssertClose stats, "conc.provider.strength.compressionLimit", provider.ConcreteCompressionLimit("Strength"), -0.0035, 0.000000000001
-    AssertClose stats, "conc.provider.strength.tensionLimit", provider.ConcreteTensionLimit("Strength"), 0#, 0.000000000001
+    AssertClose stats, "conc.provider.strength.compressionLimit", provider.ConcreteCompressionLimit(cpStrength), -0.0035, 0.000000000001
+    AssertClose stats, "conc.provider.strength.tensionLimit", provider.ConcreteTensionLimit(cpStrength), 0#, 0.000000000001
 
     Dim mcrc As CMaterialDiagram
-    Set mcrc = provider.ConcreteMaterial("Mcrc")
+    Set mcrc = provider.ConcreteMaterial(cpMcrc)
     AssertClose stats, "conc.provider.mcrc.compressionRb", mcrc.GetStress(-0.002), -22#, 0.000000000001
     AssertClose stats, "conc.provider.mcrc.tensionRbt", mcrc.GetStress(0.0001), 1.8, 0.000000000001
     AssertClose stats, "conc.provider.mcrc.epsB1", mcrc.PointStrain(3), -(0.6 * 22# / 32500#), 0.000000000001
     AssertClose stats, "conc.provider.mcrc.epsBt1", mcrc.PointStrain(5), 0.6 * 1.8 / 32500#, 0.000000000001
-    AssertClose stats, "conc.provider.mcrc.tensionLimit", provider.ConcreteTensionLimit("Mcrc"), 0.00015, 0.000000000001
+    AssertClose stats, "conc.provider.mcrc.tensionLimit", provider.ConcreteTensionLimit(cpMcrc), 0.00015, 0.000000000001
 
-    AssertClose stats, "conc.provider.cracked.tensionZero", provider.ConcreteMaterial("CrackedNDS").GetStress(0.0001), 0#, 0.000000000001
+    AssertClose stats, "conc.provider.cracked.tensionZero", provider.ConcreteMaterial(cpCrackedNDS).GetStress(0.0001), 0#, 0.000000000001
 End Sub
 
 ' Проверяет нормативные расчетные точки арматуры, которые provider вычисляет
@@ -130,16 +131,16 @@ Private Sub TestProviderSteelDiagrams(ByRef stats As TMaterialTestStats)
     Set provider = TestProvider()
 
     Dim twoLine As CMaterialDiagram
-    Set twoLine = provider.SteelMaterial("Strength")
+    Set twoLine = provider.SteelMaterial(cpStrength)
     AssertClose stats, "steel.provider.twoline.epsSc0", twoLine.PointStrain(2), -350# / 200000#, 0.000000000001
     AssertClose stats, "steel.provider.twoline.epsS0", twoLine.PointStrain(4), 350# / 200000#, 0.000000000001
-    AssertClose stats, "steel.provider.twoline.limit", provider.SteelTensionLimit("Strength"), 0.025, 0.000000000001
+    AssertClose stats, "steel.provider.twoline.limit", provider.SteelTensionLimit(cpStrength), 0.025, 0.000000000001
 
     Dim providerThree As CMaterialModelProvider
     Set providerThree = TestProvider("TwoLine", "Ignore", "ThreeLine", "ThreeLine", "ThreeLine")
 
     Dim threeLine As CMaterialDiagram
-    Set threeLine = providerThree.SteelMaterial("Strength")
+    Set threeLine = providerThree.SteelMaterial(cpStrength)
     Dim epsS0 As Double
     Dim epsS1 As Double
     Dim epsSPl As Double
@@ -150,8 +151,41 @@ Private Sub TestProviderSteelDiagrams(ByRef stats As TMaterialTestStats)
     AssertClose stats, "steel.provider.threeline.epsS1", threeLine.PointStrain(6), epsS1, 0.000000000001
     AssertClose stats, "steel.provider.threeline.epsS0", threeLine.PointStrain(7), epsS0, 0.000000000001
     AssertClose stats, "steel.provider.threeline.epsSPl", threeLine.PointStrain(8), epsSPl, 0.000000000001
-    AssertClose stats, "steel.provider.threeline.limit", providerThree.SteelTensionLimit("Strength"), 0.015, 0.000000000001
-    AssertClose stats, "steel.provider.sls.resistance", provider.SteelMaterial("CrackedNDS").GetStress(0.01), 390#, 0.000000000001
+    AssertClose stats, "steel.provider.threeline.limit", providerThree.SteelTensionLimit(cpStrength), 0.015, 0.000000000001
+    AssertClose stats, "steel.provider.sls.resistance", provider.SteelMaterial(cpCrackedNDS).GetStress(0.01), 390#, 0.000000000001
+End Sub
+
+' Проверяет, что numerical extension появляется только у StateSolution-диаграмм.
+' Физические Strength/Mcrc/CrackedNDS-диаграммы остаются без технических точек,
+' поэтому capacity и crack не получают искусственного продолжения материала.
+Private Sub TestProviderStateSolutionExtension(ByRef stats As TMaterialTestStats)
+    Dim provider As CMaterialModelProvider
+    Set provider = TestProvider()
+
+    Dim physicalConcrete As CMaterialDiagram
+    Set physicalConcrete = provider.ConcreteMaterial(cpStrength)
+    Dim stateConcrete As CMaterialDiagram
+    Set stateConcrete = provider.ConcreteStateMaterial(cpStrength)
+    AssertTrue stats, "state.extension.concrete.physicalClean", Not physicalConcrete.HasCompressionExtension
+    AssertTrue stats, "state.extension.concrete.compression", stateConcrete.HasCompressionExtension
+    AssertTrue stats, "state.extension.concrete.noTension", Not stateConcrete.HasTensionExtension
+    AssertClose stats, "state.extension.concrete.physicalLimit", stateConcrete.PhysicalCompressionStrain, _
+        physicalConcrete.PhysicalCompressionStrain, 0.000000000001
+
+    Dim physicalSteel As CMaterialDiagram
+    Set physicalSteel = provider.SteelMaterial(cpStrength)
+    Dim stateSteel As CMaterialDiagram
+    Set stateSteel = provider.SteelStateMaterial(cpStrength)
+    AssertTrue stats, "state.extension.steel.compression", stateSteel.HasCompressionExtension
+    AssertTrue stats, "state.extension.steel.tension", stateSteel.HasTensionExtension
+    AssertClose stats, "state.extension.steel.physicalLimit", stateSteel.PhysicalTensionStrain, _
+        physicalSteel.PhysicalTensionStrain, 0.000000000001
+    AssertTrue stats, "state.extension.steel.plateauPhysical", Not stateSteel.IsInExtensionRange(0.01)
+    AssertTrue stats, "state.extension.steel.beyondUltimate", stateSteel.IsInExtensionRange(0.03)
+
+    Dim disabledProvider As CMaterialModelProvider
+    Set disabledProvider = TestProvider("TwoLine", "Ignore", "TwoLine", "TwoLine", "TwoLine", False)
+    AssertTrue stats, "state.extension.disabled", Not disabledProvider.SteelStateMaterial(cpStrength).HasTensionExtension
 End Sub
 
 ' Проверяет требование ТЗ: пользовательские предельные деформации берутся из
@@ -171,10 +205,10 @@ Private Sub TestUserStrainParametersAffectDiagrams(ByRef stats As TMaterialTestS
     Set provider = New CMaterialModelProvider
     provider.InitializeFromParameters concrete, steel
 
-    AssertClose stats, "material.userConcreteLimit", provider.ConcreteMaterial("Strength").PointStrain(1), -0.004, 0.000000000001
-    AssertClose stats, "material.userConcreteTensionLimit", provider.ConcreteMaterial("Mcrc").PointStrain(7), 0.0002, 0.000000000001
-    AssertClose stats, "material.userSteelTwoLineCompressionLimit", provider.SteelMaterial("Strength").PointStrain(1), -0.03, 0.000000000001
-    AssertClose stats, "material.userSteelTwoLineTensionLimit", provider.SteelMaterial("Strength").PointStrain(5), 0.031, 0.000000000001
+    AssertClose stats, "material.userConcreteLimit", provider.ConcreteMaterial(cpStrength).PointStrain(1), -0.004, 0.000000000001
+    AssertClose stats, "material.userConcreteTensionLimit", provider.ConcreteMaterial(cpMcrc).PointStrain(7), 0.0002, 0.000000000001
+    AssertClose stats, "material.userSteelTwoLineCompressionLimit", provider.SteelMaterial(cpStrength).PointStrain(1), -0.03, 0.000000000001
+    AssertClose stats, "material.userSteelTwoLineTensionLimit", provider.SteelMaterial(cpStrength).PointStrain(5), 0.031, 0.000000000001
 End Sub
 
 ' Проверяет базовую защиту от некорректной диаграммы: точки должны иметь
@@ -209,12 +243,13 @@ Private Function TestProvider(Optional ByVal strengthConcreteDiagram As String =
         Optional ByVal strengthConcreteTension As String = "Ignore", _
         Optional ByVal strengthSteelDiagram As String = "TwoLine", _
         Optional ByVal mcrcSteelDiagram As String = "TwoLine", _
-        Optional ByVal crackedSteelDiagram As String = "TwoLine") As CMaterialModelProvider
+        Optional ByVal crackedSteelDiagram As String = "TwoLine", _
+        Optional ByVal directStateDiagramExtension As Boolean = True) As CMaterialModelProvider
     Dim provider As CMaterialModelProvider
     Set provider = New CMaterialModelProvider
     provider.InitializeFromParameters TestConcreteParameters(), TestSteelParameters(), _
         strengthConcreteDiagram, strengthConcreteTension, strengthSteelDiagram, _
-        "ThreeLine", mcrcSteelDiagram, "TwoLine", crackedSteelDiagram
+        "ThreeLine", mcrcSteelDiagram, "TwoLine", crackedSteelDiagram, directStateDiagramExtension
     Set TestProvider = provider
 End Function
 

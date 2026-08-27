@@ -155,7 +155,8 @@ try {
         "rngNDMElementResults",
         "rngNDMSectionGeometry",
         "rngNDMSectionProperties",
-        "rngNDMSectionAnnotations"
+        "rngNDMSectionAnnotations",
+        "rngNDMMaterialDiagrams"
     )
 
     $actualNames = @()
@@ -172,6 +173,7 @@ try {
         $geometryResultsRange = $workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
         $sectionPropertiesRange = $workbook.Names.Item("rngNDMSectionProperties").RefersToRange
         $sectionAnnotationsRange = $workbook.Names.Item("rngNDMSectionAnnotations").RefersToRange
+        $materialDiagramsRange = $workbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange
         Add-Check $checks "Results ranges layout" (
             ([string]$batchSummaryRange.Worksheet.Name -eq "Results") -and
             ($batchSummaryRange.Row -eq 1) -and ($batchSummaryRange.Column -eq 1) -and
@@ -179,8 +181,9 @@ try {
             ($elementResultsRange.Row -eq 34) -and ($elementResultsRange.Column -eq 1) -and
             ($geometryResultsRange.Row -eq 34) -and ($geometryResultsRange.Column -eq 9) -and
             ($sectionPropertiesRange.Row -eq 34) -and ($sectionPropertiesRange.Column -eq 26) -and
-            ($sectionAnnotationsRange.Row -eq 34) -and ($sectionAnnotationsRange.Column -eq 34)
-        ) ("batch=$($batchSummaryRange.Worksheet.Name)!R$($batchSummaryRange.Row)C$($batchSummaryRange.Column); elements=R$($elementResultsRange.Row)C$($elementResultsRange.Column); geometry=R$($geometryResultsRange.Row)C$($geometryResultsRange.Column); properties=R$($sectionPropertiesRange.Row)C$($sectionPropertiesRange.Column); annotations=R$($sectionAnnotationsRange.Row)C$($sectionAnnotationsRange.Column)")
+            ($sectionAnnotationsRange.Row -eq 34) -and ($sectionAnnotationsRange.Column -eq 34) -and
+            ($materialDiagramsRange.Row -eq 34) -and ($materialDiagramsRange.Column -eq 50)
+        ) ("batch=$($batchSummaryRange.Worksheet.Name)!R$($batchSummaryRange.Row)C$($batchSummaryRange.Column); elements=R$($elementResultsRange.Row)C$($elementResultsRange.Column); geometry=R$($geometryResultsRange.Row)C$($geometryResultsRange.Column); properties=R$($sectionPropertiesRange.Row)C$($sectionPropertiesRange.Column); annotations=R$($sectionAnnotationsRange.Row)C$($sectionAnnotationsRange.Column); materialDiagrams=R$($materialDiagramsRange.Row)C$($materialDiagramsRange.Column)")
     }
 
     $duplicates = @($actualNames | Group-Object | Where-Object { $_.Count -gt 1 } | ForEach-Object { $_.Name })
@@ -348,11 +351,21 @@ try {
 }
 finally {
     if ($workbook -ne $null) {
-        $workbook.Close($false)
+        try {
+            $workbook.Close($false)
+        }
+        catch {
+            Write-Warning "Excel COM refused to close workbook cleanly after validation: $($_.Exception.Message)"
+        }
         [System.Runtime.InteropServices.Marshal]::ReleaseComObject($workbook) | Out-Null
     }
     if ($excel -ne $null) {
-        $excel.Quit()
+        try {
+            $excel.Quit()
+        }
+        catch {
+            Write-Warning "Excel COM refused to quit cleanly after validation: $($_.Exception.Message)"
+        }
         [System.Runtime.InteropServices.Marshal]::ReleaseComObject($excel) | Out-Null
     }
     [GC]::Collect()

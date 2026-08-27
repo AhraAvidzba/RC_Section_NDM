@@ -230,7 +230,7 @@ Private Function SolveServiceState(ByRef section As CSectionModel, ByVal nValue 
     Set section = BuildGeneratedSectionModel(mesh, rebars)
     Dim provider As CMaterialModelProvider
     Set provider = TestMaterialProvider()
-    solver.Solve section, provider.ConcreteMaterial("CrackedNDS"), provider.SteelMaterial("CrackedNDS"), nValue, mxValue, myValue
+    solver.Solve section, provider.ConcreteMaterial(cpCrackedNDS), provider.SteelMaterial(cpCrackedNDS), nValue, mxValue, myValue
     If Not solver.Converged Then Err.Raise vbObjectError + 3800, "modTestCrackWidth", "Service state did not converge: " & solver.StopReason
     Set SolveServiceState = solver
 End Function
@@ -257,7 +257,7 @@ Private Function SolveCircleServiceState(ByRef section As CSectionModel, ByVal n
     Set section = BuildGeneratedSectionModel(mesh, rebars)
     Dim provider As CMaterialModelProvider
     Set provider = TestMaterialProvider()
-    solver.Solve section, provider.ConcreteMaterial("CrackedNDS"), provider.SteelMaterial("CrackedNDS"), nValue, mxValue, myValue
+    solver.Solve section, provider.ConcreteMaterial(cpCrackedNDS), provider.SteelMaterial(cpCrackedNDS), nValue, mxValue, myValue
     If Not solver.Converged Then Err.Raise vbObjectError + 3801, "modTestCrackWidth", "Circle service state did not converge: " & solver.StopReason
     Set SolveCircleServiceState = solver
 End Function
@@ -289,9 +289,9 @@ Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As
     Set provider = TestMaterialProvider()
 
     If IsMissing(centroidMxForCentralCheck) Or IsMissing(centroidMyForCentralCheck) Then
-        crack.Calculate solver, section, provider, "CrackedNDS", nValue, mxValue, myValue
+        crack.Calculate solver, section, provider, cpCrackedNDS, nValue, mxValue, myValue
     Else
-        crack.Calculate solver, section, provider, "CrackedNDS", nValue, mxValue, myValue, _
+        crack.Calculate solver, section, provider, cpCrackedNDS, nValue, mxValue, myValue, _
             centroidMxForCentralCheck, centroidMyForCentralCheck
     End If
     Set CalculateCrack = crack
@@ -300,19 +300,19 @@ End Function
 Private Function ProvisionalConcrete() As CMaterialDiagram
     Dim provider As CMaterialModelProvider
     Set provider = TestMaterialProvider()
-    Set ProvisionalConcrete = provider.ConcreteMaterial("CrackedNDS")
+    Set ProvisionalConcrete = provider.ConcreteMaterial(cpCrackedNDS)
 End Function
 
 Private Function ProvisionalConcreteWithTension() As CMaterialDiagram
     Dim provider As CMaterialModelProvider
     Set provider = TestMaterialProvider()
-    Set ProvisionalConcreteWithTension = provider.ConcreteMaterial("Mcrc")
+    Set ProvisionalConcreteWithTension = provider.ConcreteMaterial(cpMcrc)
 End Function
 
 Private Function ProvisionalSteel() As CMaterialDiagram
     Dim provider As CMaterialModelProvider
     Set provider = TestMaterialProvider()
-    Set ProvisionalSteel = provider.SteelMaterial("CrackedNDS")
+    Set ProvisionalSteel = provider.SteelMaterial(cpCrackedNDS)
 End Function
 
 Private Function TestMaterialProvider() As CMaterialModelProvider
