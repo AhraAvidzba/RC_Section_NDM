@@ -138,7 +138,7 @@ Private mSolverMaxDeltaKappa As Double ' Защита от слишком бол
 Private mSolverSecantMaxRestarts As Long ' Сколько раз Secant может перестроить приближенную матрицу.
 Private mSolverSecantMinStepNorm As Double ' Минимальная норма шага Secant до признания застоя.
 Private mCapacityInitialLambda As Double ' Начальный шаг/точка поиска lambda для LoadMultiplier.
-Private mCapacityMethod As String ' Auto, LoadMultiplier или UltimateStrain.
+Private mCapacitySolutionStrategy As String ' Auto, LoadMultiplier или UltimateStrain.
 Private mCapacityCalculationScope As String ' Какие LC отправлять в поиск несущего момента: только Group1 или Group1+Group2.
 Private mCapacitySearchMethod As String ' Bisection, Brent или Secant для LoadMultiplier.
 Private mCapacityMaxLambda As Double ' Верхняя защитная граница lambda.
@@ -170,7 +170,7 @@ Private Sub Class_Initialize()
     mSolverSecantMaxRestarts = 2
     mSolverSecantMinStepNorm = 0.000000000001
     mCapacityInitialLambda = 1#
-    mCapacityMethod = "Auto"
+    mCapacitySolutionStrategy = "Auto"
     mCapacityCalculationScope = "Group1+2"
     mCapacitySearchMethod = "Bisection"
     mCapacityMaxLambda = 64#
@@ -226,7 +226,7 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mSolverSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSolverSecantMaxRestarts)
     mSolverSecantMinStepNorm = settings.GetDouble("Solver.SecantMinStepNorm", mSolverSecantMinStepNorm)
     mCapacityInitialLambda = settings.GetDouble("Capacity.InitialLambda", mCapacityInitialLambda)
-    mCapacityMethod = settings.GetString("Capacity.Method", mCapacityMethod)
+    mCapacitySolutionStrategy = settings.GetString("Capacity.SolutionStrategy", mCapacitySolutionStrategy)
     mCapacityCalculationScope = settings.GetString("Capacity.CalculationScope", mCapacityCalculationScope)
     If settings.HasKey("Capacity.SearchMethod") Then
         mCapacitySearchMethod = settings.GetRawString("Capacity.SearchMethod", vbNullString)
@@ -470,7 +470,7 @@ Private Sub RunCapacity(ByVal index As Long)
     ' переноса от N к расчетной системе координат, но это не делает исходную
     ' пользовательскую задачу изгибной.
     forceOnlyPath = IsForceOnlyCapacityLoadPath(index, loadPath)
-    Select Case NormalizedCapacityMethod()
+    Select Case NormalizedCapacitySolutionStrategy()
         Case "Auto"
             If forceOnlyPath Then
                 cap.SolveByLoadPathMultiplier mSection, mMaterialProvider.ConcreteMaterial(cpStrength), _
@@ -493,9 +493,9 @@ Private Sub RunCapacity(ByVal index As Long)
                 forceOnlyPath
         Case Else
             mCapacityStatus(index) = STATUS_INPUTERR
-            mCapacityLimitState(index) = "Capacity.Method должен быть Auto, LoadMultiplier или UltimateStrain."
+            mCapacityLimitState(index) = "Capacity.SolutionStrategy должен быть Auto, LoadMultiplier или UltimateStrain."
             mCapacitySolutionMethod(index) = vbNullString
-            ReportStep "Capacity остановлен: неизвестный Capacity.Method."
+            ReportStep "Capacity остановлен: неизвестный Capacity.SolutionStrategy."
             Exit Sub
     End Select
 
@@ -842,16 +842,16 @@ Private Function IsSupportedCalculationMode() As Boolean
     IsSupportedCalculationMode = IsDirectStateMode() Or IsFullCapacityMode()
 End Function
 
-' Приводит пользовательскую строку Capacity.Method к одному из трех
+' Приводит пользовательскую строку Capacity.SolutionStrategy к одному из трех
 ' внутренних имен. Пустой результат дальше превращается в InvalidInput.
-Private Function NormalizedCapacityMethod() As String
-    Select Case LCase$(Trim$(mCapacityMethod))
+Private Function NormalizedCapacitySolutionStrategy() As String
+    Select Case LCase$(Trim$(mCapacitySolutionStrategy))
         Case "auto"
-            NormalizedCapacityMethod = "Auto"
+            NormalizedCapacitySolutionStrategy = "Auto"
         Case "loadmultiplier"
-            NormalizedCapacityMethod = "LoadMultiplier"
+            NormalizedCapacitySolutionStrategy = "LoadMultiplier"
         Case "ultimatestrain"
-            NormalizedCapacityMethod = "UltimateStrain"
+            NormalizedCapacitySolutionStrategy = "UltimateStrain"
     End Select
 End Function
 
@@ -1884,5 +1884,6 @@ End Property
 Public Property Get StateConverged(ByVal index As Long) As Boolean
     StateConverged = mStateConverged(index)
 End Property
+
 
 

@@ -187,7 +187,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "Solver.LineSearchEnabled", "Solver.DampingInitial", "Solver.MinLineSearchAlpha", _
         "Solver.MaxDeltaEpsilon0", "Solver.MaxDeltaKappa", _
         "Solver.SecantMaxRestarts", "Solver.SecantMinStepNorm", _
-        "Capacity.CalculationScope", "Capacity.Method", "Capacity.SearchMethod", "Capacity.InitialLambda", "Capacity.MaxLambda", "Capacity.ToleranceLambda", _
+        "Capacity.CalculationScope", "Capacity.SolutionStrategy", "Capacity.SearchMethod", "Capacity.InitialLambda", "Capacity.MaxLambda", "Capacity.ToleranceLambda", _
         "Capacity.ToleranceStrain", _
         "Capacity.MaxRetries", "Capacity.BaseLoadSteps", "Capacity.SolverMaxIterations", _
         "SLS.Crack.Enabled", "SLS.Crack.Allowable", _
@@ -648,6 +648,7 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
 
 
 

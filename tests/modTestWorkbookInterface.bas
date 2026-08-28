@@ -22,6 +22,7 @@ Public Function RunWorkbookInterfaceTests() As String
     t0 = Timer
 
     TestButtons stats
+    TestLoadCombinationsOnConfig stats
     TestSingleCombinationSkipsBlankRows stats
     TestPartialCombinationIsInvalid stats
     TestInvalidCalculationTypeDoesNotRunPlot stats
@@ -54,6 +55,23 @@ Failed:
     RunWorkbookInterfaceTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & _
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
+
+' Проверяет, что таблица сочетаний живет на Config рядом с настройками,
+' а не возвращается в старое место на листе Расчет.
+Private Sub TestLoadCombinationsOnConfig(ByRef stats As TUiTestStats)
+    Dim loads As Object
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+
+    AssertTrue stats, "ui.loads.layout.sheet", loads.Worksheet.Name = "Config"
+    AssertTrue stats, "ui.loads.layout.position", loads.Row = 3 And loads.Column = 15
+    AssertTrue stats, "ui.loads.layout.title", _
+        InStr(1, CStr(loads.Worksheet.Cells.Item(2, 15).Value2), "Сочетания нагрузок", vbTextCompare) > 0
+    Dim pathOptions As Variant
+    pathOptions = Array(ChrW$(&H3BB) & "*Mx", ChrW$(&H3BB) & "*My", _
+        ChrW$(&H3BB) & "*Mxy", ChrW$(&H3BB) & "*N", ChrW$(&H3BB) & "*NMxy")
+    AssertTrue stats, "ui.loads.layout.capacityPathValidation", _
+        LoadCombinationValidationHasOptions(6, pathOptions)
+End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestButtons(ByRef stats As TUiTestStats)
@@ -480,7 +498,7 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Set sys = ThisWorkbook.Worksheets.Item("Config")
     AssertTrue stats, "ui.run.system.noRebarTable", Len(CStr(sys.Cells.Item(130, 1).Value2)) = 0
     AssertTrue stats, "ui.run.system.materialDiagramControls", _
-        InStr(1, CStr(sys.Cells.Item(1, 27).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
+        InStr(1, CStr(sys.Cells.Item(1, 35).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
     AssertTrue stats, "ui.run.crack.result.value", Not ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(17, 5).HasFormula
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
@@ -534,7 +552,7 @@ Private Sub TestLShapeWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Set sys = ThisWorkbook.Worksheets.Item("Config")
     AssertTrue stats, "ui.lshape.system.noRebarTable", Len(CStr(sys.Cells.Item(130, 1).Value2)) = 0
     AssertTrue stats, "ui.lshape.system.materialDiagramControls", _
-        InStr(1, CStr(sys.Cells.Item(1, 27).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
+        InStr(1, CStr(sys.Cells.Item(1, 35).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
 End Sub
 
 ' Проверяет пользовательский сценарий Г-сечения с N + Mx и выбранной
@@ -625,7 +643,7 @@ End Sub
 Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTestStats)
     PrepareCircleInput
     SetSystemSetting "Calculation.Mode", "FullCapacity"
-    SetSystemSetting "Capacity.Method", "LoadMultiplier"
+    SetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
     SetSystemSetting "Capacity.ToleranceLambda", "0.05"
     SetSystemSetting "Capacity.MaxLambda", "10"
     SetSystemSetting "Plot.LoadCase", "Worst"
@@ -733,8 +751,8 @@ End Function
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
-    AssertTrue stats, "ui.validation.capacityMethod", _
-        SystemSettingValidationHasOptions("Capacity.Method", Array("Auto", "UltimateStrain", "LoadMultiplier"))
+    AssertTrue stats, "ui.validation.CapacitySolutionStrategy", _
+        SystemSettingValidationHasOptions("Capacity.SolutionStrategy", Array("Auto", "UltimateStrain", "LoadMultiplier"))
     AssertTrue stats, "ui.validation.capacitySearchMethod", _
         SystemSettingValidationHasOptions("Capacity.SearchMethod", Array("Bisection", "Brent", "Secant"))
     AssertTrue stats, "ui.validation.capacityScope", _
@@ -1513,7 +1531,7 @@ End Sub
 
 ' Настраивает книгу под типовой прочностной расчет Г-сечения:
 ' пользователь задает N и Mx, а несущая способность ищется увеличением Mx.
-' Здесь специально выбран Capacity.Method = UltimateStrain, чтобы проверить,
+' Здесь специально выбран Capacity.SolutionStrategy = UltimateStrain, чтобы проверить,
 ' что быстрый изгибный путь работает без fallback на LoadMultiplier.
 Private Sub PrepareUserLShapeMomentUltimateInput()
     SetSystemSetting "Units.Force.Input", "tf"
@@ -1529,7 +1547,7 @@ Private Sub PrepareUserLShapeMomentUltimateInput()
     SetSystemSetting "Geometry.Type", "LShape"
     SetSystemSetting "Calculation.Mode", "FullCapacity"
     SetSystemSetting "Capacity.CalculationScope", "Group1Only"
-    SetSystemSetting "Capacity.Method", "UltimateStrain"
+    SetSystemSetting "Capacity.SolutionStrategy", "UltimateStrain"
     SetSystemSetting "Capacity.MaxLambda", "64"
     SetSystemSetting "Capacity.ToleranceStrain", "0.00001"
     SetSystemSetting "Capacity.SolverMaxIterations", "60"
@@ -1686,7 +1704,7 @@ End Sub
 Private Sub TestCapacitySettingsUnitLabels(ByRef stats As TUiTestStats)
     AssertTextEquals stats, "ui.units.capacity.mode", SystemSettingUnitText("Calculation.Mode"), "-"
     AssertTextEquals stats, "ui.units.capacity.scope", SystemSettingUnitText("Capacity.CalculationScope"), "-"
-    AssertTextEquals stats, "ui.units.capacity.method", SystemSettingUnitText("Capacity.Method"), "-"
+    AssertTextEquals stats, "ui.units.Capacity.SolutionStrategy", SystemSettingUnitText("Capacity.SolutionStrategy"), "-"
     AssertTextEquals stats, "ui.units.capacity.searchMethod", SystemSettingUnitText("Capacity.SearchMethod"), "-"
     AssertTextEquals stats, "ui.units.capacity.initialLambda", SystemSettingUnitText("Capacity.InitialLambda"), "-"
     AssertTextEquals stats, "ui.units.capacity.toleranceLambda", SystemSettingUnitText("Capacity.ToleranceLambda"), "-"
@@ -1772,6 +1790,7 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
 
 
 

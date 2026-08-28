@@ -498,7 +498,6 @@ try {
     $calc.Name = "Расчет"
     $results.Name = "Results"
 
-    Add-MainInputBlock $calc
     Add-ResultBlock $calc 19 "Расчет N + Mx + My"
 
     for ($col = 1; $col -le 36; $col++) {
@@ -531,6 +530,13 @@ try {
     for ($col = 14; $col -le 69; $col++) {
         $system.Columns.Item($col).ColumnWidth = 8.43
     }
+    $system.Columns.Item(15).ColumnWidth = 15
+    $system.Columns.Item(16).ColumnWidth = 11
+    $system.Columns.Item(17).ColumnWidth = 11
+    $system.Columns.Item(18).ColumnWidth = 11
+    $system.Columns.Item(19).ColumnWidth = 15
+    $system.Columns.Item(20).ColumnWidth = 18
+    $system.Columns.Item(21).ColumnWidth = 22
     $results.Range("A1:AY1").Font.Bold = $true
     $results.Range("A34:F34").Font.Bold = $true
     $results.Range("I34:W34").Font.Bold = $true
@@ -544,7 +550,6 @@ try {
     $results.Columns.Item(50).ColumnWidth = 12
     Add-ResultsSummaryHelpLink $results $instructions
 
-    Add-WorkbookName $workbook "rngLoadCombinations" $calc '$A$40:$G$60'
     Add-WorkbookName $workbook "rngResultSection" $calc '$S$17:$AH$35'
     Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$AY$31'
     Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$34'

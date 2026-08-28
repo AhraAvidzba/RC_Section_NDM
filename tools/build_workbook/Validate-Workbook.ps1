@@ -217,10 +217,9 @@ try {
     $hasBreaks = -not (@($expectedBreakColumns | Where-Object { $breakColumns -notcontains $_ }).Count)
     Add-Check $checks "Vertical page breaks" $hasBreaks ("Columns: " + ($breakColumns -join ", "))
 
-    $sectionResult = $workbook.Names.Item("rngResultSection").RefersToRange
     $loadsRangeForLayout = $workbook.Names.Item("rngLoadCombinations").RefersToRange
-    $leftToRight = ($loadsRangeForLayout.Column -lt $sectionResult.Column)
-    Add-Check $checks "Load and result blocks left to right" $leftToRight ("Columns: loads=$($loadsRangeForLayout.Column), section=$($sectionResult.Column)")
+    $loadCombinationsOnConfig = (($loadsRangeForLayout.Worksheet.Name -eq "Config") -and ($loadsRangeForLayout.Row -eq 3) -and ($loadsRangeForLayout.Column -eq 15))
+    Add-Check $checks "Load combinations table on Config O3" $loadCombinationsOnConfig ("Sheet=$($loadsRangeForLayout.Worksheet.Name); Row=$($loadsRangeForLayout.Row); Column=$($loadsRangeForLayout.Column)")
 
     $settings = $workbook.Names.Item("rngSystemSettings").RefersToRange
     $expectedSettingsHeaders = @("Параметр", "Значение", "Ед.", "Комментарий", "Справка")

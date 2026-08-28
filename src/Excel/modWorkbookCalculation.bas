@@ -614,7 +614,7 @@ Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section
     ' выбранный CapacityLoadPath не меняется, меняется только численный метод.
     forceOnlyPath = ((capacityLoadPath = "LambdaN" Or capacityLoadPath = "LambdaNMxy") And _
         Abs(userMxValue) <= 0.000000001 And Abs(userMyValue) <= 0.000000001)
-    Select Case LCase$(Trim$(settings.GetRawString("Capacity.Method", vbNullString)))
+    Select Case LCase$(Trim$(settings.GetRawString("Capacity.SolutionStrategy", vbNullString)))
         Case "auto"
             If forceOnlyPath Then
                 capacity.SolveByLoadPathMultiplier section, materialProvider.ConcreteMaterial(cpStrength), _
@@ -637,7 +637,7 @@ Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section
                 forceOnlyPath
         Case Else
             Err.Raise vbObjectError + 4125, "WriteCapacityAndCrackResults", _
-                "Capacity.Method должен быть Auto, LoadMultiplier или UltimateStrain."
+                "Capacity.SolutionStrategy должен быть Auto, LoadMultiplier или UltimateStrain."
     End Select
     writer.WriteCapacityResult workbook, capacity, units
     Dim service As CSectionSolver
@@ -863,6 +863,7 @@ End Function
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
+
 
 
 

@@ -166,9 +166,9 @@ End Sub
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestInvalidModeSettingsAreNotFallbacks(ByRef stats As TBatchTestStats)
     Dim oldMode As String
-    Dim oldCapacityMethod As String
+    Dim oldCapacitySolutionStrategy As String
     oldMode = GetSystemSetting("Calculation.Mode")
-    oldCapacityMethod = GetSystemSetting("Capacity.Method")
+    oldCapacitySolutionStrategy = GetSystemSetting("Capacity.SolutionStrategy")
 
     On Error GoTo RestoreAndFail
     SetSystemSetting "Calculation.Mode", "WrongMode"
@@ -186,7 +186,7 @@ Private Sub TestInvalidModeSettingsAreNotFallbacks(ByRef stats As TBatchTestStat
     AssertTrue stats, "batch.invalid.calculationMode.noCapacity", batch.LambdaCapacity(1) = 0#
 
     SetSystemSetting "Calculation.Mode", "FullCapacity"
-    SetSystemSetting "Capacity.Method", "WrongCapacity"
+    SetSystemSetting "Capacity.SolutionStrategy", "WrongCapacity"
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
@@ -194,12 +194,12 @@ Private Sub TestInvalidModeSettingsAreNotFallbacks(ByRef stats As TBatchTestStat
     batch.ApplySettings settings
     batch.AddCombination "BAD_CAP", -220000#, -7000000#, -5000000#, "Group1", "wrong capacity"
     batch.Execute
-    AssertTrue stats, "batch.invalid.capacityMethod.status", batch.Status(1) = "InputErr"
-    AssertTrue stats, "batch.invalid.capacityMethod.noLambda", batch.LambdaCapacity(1) = 0#
+    AssertTrue stats, "batch.invalid.CapacitySolutionStrategy.status", batch.Status(1) = "InputErr"
+    AssertTrue stats, "batch.invalid.CapacitySolutionStrategy.noLambda", batch.LambdaCapacity(1) = 0#
 
 Restore:
     SetSystemSetting "Calculation.Mode", oldMode
-    SetSystemSetting "Capacity.Method", oldCapacityMethod
+    SetSystemSetting "Capacity.SolutionStrategy", oldCapacitySolutionStrategy
     Exit Sub
 
 RestoreAndFail:
@@ -274,7 +274,7 @@ Private Sub TestBatchLShapeN200CapacityPathNDoesNotNumFail(ByRef stats As TBatch
     Dim oldBaseLoadSteps As String
     Dim oldMaxRetries As String
     oldMode = GetSystemSetting("Calculation.Mode")
-    oldMethod = GetSystemSetting("Capacity.Method")
+    oldMethod = GetSystemSetting("Capacity.SolutionStrategy")
     oldScope = GetSystemSetting("Capacity.CalculationScope")
     oldBaseLoadSteps = GetSystemSetting("Capacity.BaseLoadSteps")
     oldMaxRetries = GetSystemSetting("Capacity.MaxRetries")
@@ -285,13 +285,13 @@ Private Sub TestBatchLShapeN200CapacityPathNDoesNotNumFail(ByRef stats As TBatch
     SetSystemSetting "Capacity.BaseLoadSteps", "1"
     SetSystemSetting "Capacity.MaxRetries", "0"
 
-    CheckBatchLShapeN200CapacityMethod stats, "Auto"
-    CheckBatchLShapeN200CapacityMethod stats, "UltimateStrain"
-    CheckBatchLShapeN200CapacityMethod stats, "LoadMultiplier"
+    CheckBatchLShapeN200CapacitySolutionStrategy stats, "Auto"
+    CheckBatchLShapeN200CapacitySolutionStrategy stats, "UltimateStrain"
+    CheckBatchLShapeN200CapacitySolutionStrategy stats, "LoadMultiplier"
 
 Restore:
     SetSystemSetting "Calculation.Mode", oldMode
-    SetSystemSetting "Capacity.Method", oldMethod
+    SetSystemSetting "Capacity.SolutionStrategy", oldMethod
     SetSystemSetting "Capacity.CalculationScope", oldScope
     SetSystemSetting "Capacity.BaseLoadSteps", oldBaseLoadSteps
     SetSystemSetting "Capacity.MaxRetries", oldMaxRetries
@@ -303,8 +303,8 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
-Private Sub CheckBatchLShapeN200CapacityMethod(ByRef stats As TBatchTestStats, ByVal methodName As String)
-    SetSystemSetting "Capacity.Method", methodName
+Private Sub CheckBatchLShapeN200CapacitySolutionStrategy(ByRef stats As TBatchTestStats, ByVal methodName As String)
+    SetSystemSetting "Capacity.SolutionStrategy", methodName
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -404,11 +404,11 @@ Private Sub TestBatchNMxyWithoutMomentsUsesStableForcePath(ByRef stats As TBatch
     Dim oldMode As String
     Dim oldMethod As String
     oldMode = GetSystemSetting("Calculation.Mode")
-    oldMethod = GetSystemSetting("Capacity.Method")
+    oldMethod = GetSystemSetting("Capacity.SolutionStrategy")
 
     On Error GoTo RestoreAndFail
     SetSystemSetting "Calculation.Mode", "FullCapacity"
-    SetSystemSetting "Capacity.Method", "UltimateStrain"
+    SetSystemSetting "Capacity.SolutionStrategy", "UltimateStrain"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -439,7 +439,7 @@ Private Sub TestBatchNMxyWithoutMomentsUsesStableForcePath(ByRef stats As TBatch
 
 Restore:
     SetSystemSetting "Calculation.Mode", oldMode
-    SetSystemSetting "Capacity.Method", oldMethod
+    SetSystemSetting "Capacity.SolutionStrategy", oldMethod
     Exit Sub
 
 RestoreAndFail:
@@ -1628,6 +1628,7 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
 
 
 

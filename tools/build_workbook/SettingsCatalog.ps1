@@ -37,18 +37,17 @@ function Get-SystemSettingsCatalog {
             @("[Общие настройки]", "", "-", "Параметры ниже применяются ко всем λ-траекториям поиска несущей способности."),
             @("Calculation.Mode", "FullCapacity", "-", "Режим расчета: DirectState - только НДС по заданным усилиям; FullCapacity - дополнительно искать запас несущей способности для сочетаний, выбранных настройкой Capacity.CalculationScope."),
             @("Capacity.CalculationScope", "Group1+2", "-", "Какие сочетания отправлять в поиск несущей способности: Group1Only - только первая группа; Group1+2 - первая и вторая группы."),
-            @("Capacity.Method", "Auto", "-", "Как искать предельную нагрузку: Auto обычно пробует UltimateStrain и при неудаче LoadMultiplier; для λ*N и λ*NMxy без пользовательских моментов сразу используется LoadMultiplier."),
+            @("Capacity.SolutionStrategy", "Auto", "-", "Предпочтительная стратегия поиска предельной нагрузки: Auto, UltimateStrain или LoadMultiplier. Для отдельных траекторий программа может выбрать более устойчивую ветку и покажет ее в Results."),
             @("Capacity.MaxLambda", "64", "-", "Актуально для всех методов. В LoadMultiplier задает предел расширения расчетной скобки; в UltimateStrain используется как защитный верхний предел найденного lambda."),
             @("Capacity.SolverMaxIterations", "60", "шт", "Актуально для всех методов. В LoadMultiplier задает максимум итераций Ньютона на ступень внутреннего решателя; в UltimateStrain задает максимум итераций прямого поиска предельного состояния."),
             @("[UltimateStrain]", "", "-", "Параметры прямого поиска предельной плоскости деформаций. В Auto используются на первой попытке."),
             @("Capacity.ToleranceStrain", "0.00001", "-", "Актуально для UltimateStrain и первой ветки Auto. Абсолютный допуск достижения предельной деформации критического бетонного волокна или стержня."),
             @("[LoadMultiplier]", "", "-", "Параметры одномерного поиска по λ. В Auto используются при fallback, а для λ*N и λ*NMxy без пользовательских моментов применяются сразу."),
-            @("Capacity.SearchMethod", "Bisection", "-", "Метод одномерного поиска для Capacity.Method=LoadMultiplier и fallback-ветки Auto. Поддерживается только Bisection, Brent или Secant."),
+            @("Capacity.SearchMethod", "Bisection", "-", "Метод одномерного поиска для LoadMultiplier и fallback-ветки Auto. Поддерживается только Bisection, Brent или Secant."),
             @("Capacity.InitialLambda", "1", "-", "Начальный множитель lambda при поиске верхней границы несущей способности."),
             @("Capacity.ToleranceLambda", "0.01", "-", "Общий допуск одномерного поиска lambdaUltimate для Bisection, Brent и Secant."),
             @("Capacity.MaxRetries", "0", "шт", "Число повторов после численной несходимости пробного расчета в LoadMultiplier."),
-            @("Capacity.BaseLoadSteps", "1", "шт", "Базовое число ступеней нагрузки внутри CSectionSolver для каждой пробной точки LoadMultiplier."),
-            @("[Выбор λ-траектории]", "", "-", "Задается в строке сочетания CapacityLoadPath: λ*Mx, λ*My, λ*Mxy, λ*N или λ*NMxy.")
+            @("Capacity.BaseLoadSteps", "1", "шт", "Базовое число ступеней нагрузки внутри CSectionSolver для каждой пробной точки LoadMultiplier.")
         )},
         @{ Name = "OutputSettings"; Title = "[Вывод и трещины]"; Rows = @(
             @("SLS.Crack.Enabled", "Yes", "-", "Включить расчет ширины раскрытия нормальных трещин для сочетаний II группы."),
@@ -386,13 +385,16 @@ function Get-SettingInstructionLines {
         ) }
         "Calculation.Mode" { return @($lead) + @(
             "DirectState: выполняется только поиск напряженно-деформированного состояния. Решатель находит epsilon0, kappaX, kappaY из условий равновесия, но несущая способность lambdaUltimate не ищется.",
-            "FullCapacity: после решения НДС выполняется определение несущей способности выбранным Capacity.Method.",
+            "FullCapacity: после решения НДС выполняется определение несущей способности выбранным Capacity.SolutionStrategy.",
             "Для DirectState пользовательский StrainSafetyFactor больше не выводится. Количественный запас по прочности определяется расчетом Capacity, а прямое НДС получает понятный DirectStateStatus.",
             "Если сочетание пустое по всем трем усилиям N, Mx, My, оно не считается. Пустой Mx или My при заданных других усилиях трактуется как 0."
         ) }
         "Solver.Method" { return @($lead) + @(
             "Newton решает равновесие через касательную матрицу жесткости: K · Δu = −R, где Δu = [Δε₀; Δκx; Δκy].",
             "Secant использует самостоятельную секущую схему с приближенной матрицей чувствительности и контролируемыми рестартами. Это не скрытый вызов Newton.",
+            "Для обычных расчетов и для всех CapacityLoadPath обычно предпочтителен Newton: он чаще быстрее и устойчивее, потому что использует локальную жесткость сечения на текущей плоскости деформаций.",
+            "Secant полезен как диагностическая альтернатива, если хочется проверить чувствительность результата к методу равновесия. На нелинейных диаграммах и особенно внутри LoadMultiplier он часто медленнее, потому что может требовать больше пробных пересчетов и рестартов.",
+            "Выбор Solver.Method влияет на прямое НДС и на внутренние solve-точки LoadMultiplier. Для UltimateStrain предельная постановка имеет собственную систему, но использует те же допуски и ограничения шага.",
             "Пустое или недопустимое значение дает InputError. Программа не переключается на другой метод молча."
         ) }
         "Solver.MaxIterations" { return @($lead) + @(
@@ -426,7 +428,7 @@ function Get-SettingInstructionLines {
             "Перед расчетом программа переводит этот допуск во внутренние Н*мм и уже там проверяет равновесие.",
             "Критерий считается выполненным, когда |Mxint − Mx| не больше переведенного допуска.",
             "Практический ориентир для строгого расчета: при INPUT Moment = Н*мм можно ставить около 1000; при kN*m - около 0.001; при tf*m - около 0.0001. Все три варианта дают примерно один и тот же внутренний допуск порядка 1000 Н*мм.",
-            "В столбце Ед. эта настройка должна показывать текущую INPUT-единицу момента формулой из rngUnitSettings. Это важно для Capacity.Method = LoadMultiplier, потому что тот же CSectionSolver проверяет равновесие каждой probe-точки.",
+            "В столбце Ед. эта настройка должна показывать текущую INPUT-единицу момента формулой из rngUnitSettings. Это важно для Capacity.SolutionStrategy = LoadMultiplier, потому что тот же CSectionSolver проверяет равновесие каждой probe-точки.",
             "Допуск относится к равновесию решателя, а не к точности вывода момента в таблицу Results."
         ) }
         "Solver.ToleranceMy" { return @($lead) + @(
@@ -478,19 +480,19 @@ function Get-SettingInstructionLines {
             "Настройка защищает от бесконечных микрошагов без улучшения равновесия.",
             "Обычно это очень малое безразмерное число: 1E-12 по умолчанию, 1E-10 для более грубой остановки, 1E-14 для более терпеливой проверки. От пользовательских единиц нагрузки и длины оно не зависит."
         ) }
-        "Capacity.Method" { return @($lead) + @(
-            "Capacity.Method выбирает численный способ поиска предельной точки для траектории, заданной в строке сочетания столбцом CapacityLoadPath.",
+        "Capacity.SolutionStrategy" { return @($lead) + @(
+            "Capacity.SolutionStrategy задает предпочтительную стратегию поиска предельной точки для траектории, заданной в строке сочетания столбцом CapacityLoadPath. Это не жесткий запрет на другую ветку, потому что в некоторых траекториях программа выбирает более устойчивый путь и отдельно показывает фактический метод в Results.",
             "CapacityLoadPath показывает, какие компоненты нагрузки умножаются на λ: λ*Mx, λ*My, λ*Mxy, λ*N или λ*NMxy. Остальные компоненты остаются постоянными.",
             "Если масштабируется N, то момент от смещения точки приложения N масштабируется вместе с N. Это сохраняет одну и ту же линию действия продольной силы.",
-            "Auto: рекомендуемый режим по умолчанию. Программа сначала пробует UltimateStrain. Если эта задача не сошлась численно, она автоматически повторяет поиск через LoadMultiplier по той же самой λ-траектории.",
+            "Auto: рекомендуемый режим по умолчанию. Для изгибных траекторий программа сначала пробует быстрый UltimateStrain. Если эта задача не сошлась численно, она автоматически повторяет поиск через LoadMultiplier по той же самой λ-траектории.",
             "LoadMultiplier: программа подбирает множитель λ пробными расчетами НДС по общей формуле N = N0 + λ·Nbase, Mx = Mx0 + λ·Mxbase, My = My0 + λ·Mybase.",
             "UltimateStrain: программа напрямую ищет плоскость деформаций, где одновременно выполнены условия выбранной λ-траектории и достигнута одна из предельных деформаций бетона или арматуры.",
             "Важное исключение для силовой осевой траектории: если выбран λ*N или выбран λ*NMxy при нулевых пользовательских Mx/My, программа сразу использует LoadMultiplier. Такой путь масштабирует только продольную силу и моменты ее переноса, поэтому прямая предельная постановка UltimateStrain может быть вырожденной на горизонтальном плато диаграммы.",
-            "В Summary это видно в отдельном столбце CapacitySolutionMethod. Он показывает фактический метод из пользовательского списка настроек: UltimateStrain или LoadMultiplier.",
+            "В Summary это видно в отдельном столбце CapacitySolutionMethod. Он показывает не пожелание из Config, а фактическую ветку, которой программа реально нашла предельную точку: UltimateStrain или LoadMultiplier.",
             "Оба метода используют один и тот же CSectionSolver, одинаковые диаграммы материалов и одинаковый формат результата. Отдельных пользовательских режимов SolveMx/SolveMy/SolveMxy нет.",
             "Практический выбор: Auto удобен для обычной работы. UltimateStrain обычно быстрее для изгибных и смешанных траекторий, а LoadMultiplier устойчивее в вырожденных случаях, особенно при чистой продольной силе.",
-            "Самые быстрые траектории обычно λ*Mx, λ*My и λ*Mxy при Capacity.Method = UltimateStrain или Auto. В этих случаях N остается постоянной, программа напрямую ищет предельную плоскость деформаций и затем получает λ из найденного предельного момента. Такой путь не требует многократно запускать полный прямой расчет НДС для разных λ.",
-            "Более тяжелые и долгие режимы - λ*N и особенно λ*NMxy, а также любой путь при Capacity.Method = LoadMultiplier. Причина не в типе сечения, а в математической постановке: если масштабируется N, нужно проверять целую силовую траекторию N = N0 + λ·Nbase, Mx = Mx0 + λ·Mxbase, My = My0 + λ·Mybase. Для каждого пробного λ запускается прямой CSectionSolver, поэтому время растет примерно пропорционально числу probe-точек и количеству внутренних итераций.",
+            "Самые быстрые траектории обычно λ*Mx, λ*My и λ*Mxy при Capacity.SolutionStrategy = UltimateStrain или Auto. В этих случаях N остается постоянной, программа напрямую ищет предельную плоскость деформаций и затем получает λ из найденного предельного момента. Такой путь не требует многократно запускать полный прямой расчет НДС для разных λ.",
+            "Более тяжелые и долгие режимы - λ*N и особенно λ*NMxy, а также любой путь при Capacity.SolutionStrategy = LoadMultiplier. Причина не в типе сечения, а в математической постановке: если масштабируется N, нужно проверять целую силовую траекторию N = N0 + λ·Nbase, Mx = Mx0 + λ·Mxbase, My = My0 + λ·Mybase. Для каждого пробного λ запускается прямой CSectionSolver, поэтому время растет примерно пропорционально числу probe-точек и количеству внутренних итераций.",
             "λ*NMxy является самым общим вариантом: одновременно меняются N, Mx и My, поэтому прямой UltimateStrain должен удерживать результат на трехмерной линии в пространстве усилий N-Mx-My. Это устойчиво и универсально, но численно тяжелее, чем типовой инженерный случай N + λ*Mxy с постоянной N.",
             "Если нужен быстрый расчет предельного момента при заданной продольной силе, обычно выбирают λ*Mxy или λ*Mx/λ*My. Если нужно именно предельное осевое усилие или масштабирование всего сочетания целиком, выбирают λ*N или λ*NMxy и принимают, что расчет может идти заметно дольше.",
             "Численная несходимость не является физическим разрушением. Если CSectionSolver не нашел равновесие, пользовательский статус должен быть NumFail, а не FAIL по физическому пределу."
@@ -503,10 +505,12 @@ function Get-SettingInstructionLines {
             "Пустое значение оставлено как удобный fallback: при наличии пользовательского Mx/My программа выбирает λ*Mxy, при чистой N - λ*N. Неизвестный текст дает InputErr."
         ) }
         "Capacity.SearchMethod" { return @($lead) + @(
-            "Все варианты используют одну целевую функцию, одинаковые границы, одинаковые допуски и одинаковый критерий предельного состояния.",
-            "Bisection: сохраняет интервал, внутри которого меняется знак целевой функции, и на каждой итерации делит его пополам. Метод устойчивый, но может требовать больше вычислений.",
-            "Brent: программа всегда держит безопасный интервал, где с одной стороны сечение еще проходит проверку, а с другой уже достигнут предел. Если форма функции позволяет, Brent делает более быстрый расчетный шаг внутри этого интервала. Если такой шаг получается рискованным, он возвращается к обычному безопасному шагу внутри интервала.",
-            "Secant: метод секущих берет две последние проверенные точки lambda и по ним прогнозирует следующую точку. Это не бицекция и не Brent под другим названием. Если прогноз выходит за допустимый интервал, дает слишком малый шаг, NaN/overflow или упирается в застой, расчет останавливается с диагностикой.",
+            "Capacity.SearchMethod работает только там, где фактически используется LoadMultiplier: при явном LoadMultiplier, при fallback из Auto и при осевых траекториях, которые программа переводит в LoadMultiplier как более устойчивую постановку.",
+            "Для λ*Mx, λ*My и λ*Mxy в обычном режиме Auto/UltimateStrain эта настройка не влияет, пока расчет не перешел в fallback LoadMultiplier.",
+            "Bisection: самый предсказуемый и обычно предпочтительный вариант по умолчанию. Он сохраняет интервал, внутри которого меняется знак целевой функции, и на каждой итерации делит его пополам. Чаще всего он не самый быстрый по числу шагов, зато хорошо переносит неровную нелинейную функцию.",
+            "Brent: обычно быстрее Bisection, если функция по λ достаточно гладкая. Метод тоже держит безопасный интервал, но при возможности делает более умный интерполяционный шаг. Если шаг получается рискованным, возвращается к безопасному шагу внутри интервала.",
+            "Secant: потенциально быстрый на гладких задачах, но в текущих CapacityLoadPath чаще менее предпочтителен. Он берет две последние проверенные точки lambda и прогнозирует следующую точку; при плохом прогнозе, слишком малом шаге или застое может остановиться с NumFail.",
+            "Практически: Bisection - надежный baseline; Brent - хороший кандидат, если хочется ускорить LoadMultiplier и проверка стабильна; Secant лучше использовать для экспериментов и диагностики, а не как основной режим.",
             "Пустое или недопустимое значение приводит к InputError. Программа не должна молча переключаться на Bisection или Brent.",
             "Нормативный статус: выбор Bisection/Brent/Secant - это численная техника поиска предельного множителя, а не отдельное требование СП."
         ) }
@@ -745,6 +749,16 @@ function Get-SettingsInstructionCatalog {
         "Цвета схемы определяются не по пользовательскому знаку Stress, а по сохраненному PhysicalState: Compression, Tension, InactiveTensionConcrete или NearZero.",
         "Нормативная связь: СП 63.13330.2018, п. 8.1.22 задает правило знаков для деформаций и напряжений НДМ: сжатие со знаком минус, растяжение со знаком плюс. Пользовательская convention является интерфейсной надстройкой и не меняет INTERNAL-математику."
     )}) | Out-Null
+    $items.Add(@{ Key = "LoadCombinations"; Title = "Сочетания нагрузок"; Lines = @(
+        "Таблица задает список LC, которые будут рассчитаны при нажатии кнопки Выполнить расчет. Сейчас она расположена на листе Config начиная с O3 и хранится в именованном диапазоне rngLoadCombinations.",
+        "CombinationID - короткое имя сочетания. Оно используется в Results, в заголовке схемы, в выборе Plot.LoadCase и AutoCAD.Export.CombinationID.",
+        "N, Mx и My вводятся в текущих INPUT-единицах из блока единиц. Пустой Mx или My считается нулем, поэтому одноосный изгиб можно задавать как N + Mx или N + My без заполнения второго момента.",
+        "CalculationType задает расчетную группу: Group1 - прочность по I группе; Group2 - трещины по II группе. Прямое НДС считается для обеих групп.",
+        "CapacityLoadPath задает, какие компоненты нагрузки масштабируются при поиске несущей способности: λ*Mx, λ*My, λ*Mxy, λ*N или λ*NMxy. Эта настройка находится в строке LC, потому что разные сочетания могут требовать разной траектории поиска.",
+        "Если выбран λ*N, продольная сила N умножается на λ, а момент от ее смещенной линии действия масштабируется вместе с N. Если выбран λ*Mxy, N остается постоянной, а масштабируется только пользовательский вектор моментов.",
+        "Если CapacityLoadPath оставлен пустым, программа выбирает fallback: при наличии пользовательского Mx/My используется λ*Mxy, при чистой N - λ*N. Для прозрачности расчетов лучше задавать путь явно.",
+        "Comment - пользовательское пояснение к LC. Оно выводится в Summary и добавляется в заголовок схемы в скобках."
+    )}) | Out-Null
     $items.Add(@{ Key = "ConcreteMaterialParameters"; Title = "Параметры бетона"; Lines = @(
         "Этот блок заменяет старый ввод произвольных точек бетонной диаграммы. Пользователь задает исходные сопротивления и модули, а расчетные точки TwoLine/ThreeLine строятся программой автоматически.",
         "Для Strength используется I группа: Rb и Rbt. Для Mcrc и CrackedNDS используется II группа: Rb,ser и Rbt,ser.",
@@ -817,7 +831,7 @@ function Get-SettingsInstructionCatalog {
         "CapacityStatus (прочность) - статус поиска предельной точки по выбранной λ-траектории. OK означает, что предельный множитель найден и он не меньше 1; FAIL - предельная точка найдена, но исходное сочетание уже превышает несущую способность; NumFail - numerical search не дал надежного результата.",
         "CapacityLimitState (предельное состояние) - внутренняя причина остановки поиска: ConcreteStrainLimit, SteelStrainLimit, NumericalFailure и т.п. В коротком пользовательском Status численная несходимость показывается как NumFail.",
         "CapacityLoadPath (что масштабируется) - выбранная пользователем траектория: λ*Mx, λ*My, λ*Mxy, λ*N или λ*NMxy. Компоненты, которые не входят в путь, остаются постоянными.",
-        "CapacitySolutionMethod (фактический метод) - метод из настройки Capacity.Method, который фактически дал найденную предельную точку: UltimateStrain или LoadMultiplier. Для λ*N и для λ*NMxy без пользовательских моментов здесь будет LoadMultiplier, потому что осевая силовая траектория устойчивее считается одномерным поиском по λ.",
+        "CapacitySolutionMethod (фактический метод) - фактическая ветка, которой программа реально нашла предельную точку: UltimateStrain или LoadMultiplier. Это поле может отличаться от предпочтительной Capacity.SolutionStrategy, если Auto перешел в fallback или выбранная λ-траектория устойчивее считается через LoadMultiplier.",
         "lambdaUltimate (множитель) - найденный предельный множитель λ. Именно он выводится как CapacitySafetyFactor.",
         "Nult, Mxult, Myult - предельные компоненты только для тех нагрузок, которые входили в выбранную λ-траекторию. Если компонент не масштабировался, его ячейка остается пустой.",
         "Если выбрано λ*N, момент от смещения точки приложения продольной силы масштабируется вместе с N. Если выбрано λ*Mx/λ*My/λ*Mxy, N остается постоянной, а момент от ее эксцентриситета остается в постоянной части.",
@@ -1589,6 +1603,7 @@ function Add-SettingsInstructions {
     $headerLinks = @{
         "Единицы измерения" = "Units"
         "Система знаков" = "SignConvention"
+        "Сочетания нагрузок" = "LoadCombinations"
         "Параметры бетона" = "ConcreteMaterialParameters"
         "Параметры арматуры" = "SteelMaterialParameters"
         "Материал бетона" = "ConcreteMaterialParameters"
@@ -1609,6 +1624,69 @@ function Add-SettingsInstructions {
             }
         }
     }
+}
+
+# Рисует таблицу сочетаний нагрузок на Config и сразу назначает ей имя
+# rngLoadCombinations. Расчетный код ниже по цепочке не знает, на каком
+# листе находится таблица: reader всегда работает через это имя.
+function Add-LoadCombinationsTable {
+    param(
+        [object]$Workbook,
+        [object]$Sheet,
+        [int]$HeaderRow,
+        [int]$StartColumn
+    )
+
+    $titleRow = $HeaderRow - 1
+    $Sheet.Cells.Item($titleRow, $StartColumn).Value2 = "Сочетания нагрузок"
+    $Sheet.Range($Sheet.Cells.Item($titleRow, $StartColumn), $Sheet.Cells.Item($titleRow, $StartColumn + 6)).Merge() | Out-Null
+    $Sheet.Cells.Item($titleRow, $StartColumn).Font.Bold = $true
+    $Sheet.Cells.Item($titleRow, $StartColumn).Interior.Color = 15921906
+
+    $loadHeaders = @("CombinationID", "N", "Mx", "My", "CalculationType", "CapacityLoadPath", "Comment")
+    for ($i = 0; $i -lt $loadHeaders.Count; $i++) {
+        $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
+        $cell.Value2 = $loadHeaders[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = 14277081
+    }
+    $Sheet.Cells.Item($HeaderRow, $StartColumn + 1).Formula = "=`"N, `"&INDEX(rngUnitSettings,MATCH(`"Force`",INDEX(rngUnitSettings,,1),0),2)"
+    $Sheet.Cells.Item($HeaderRow, $StartColumn + 2).Formula = "=`"Mx, `"&INDEX(rngUnitSettings,MATCH(`"Moment`",INDEX(rngUnitSettings,,1),0),2)"
+    $Sheet.Cells.Item($HeaderRow, $StartColumn + 3).Formula = "=`"My, `"&INDEX(rngUnitSettings,MATCH(`"Moment`",INDEX(rngUnitSettings,,1),0),2)"
+
+    $loadRange = $Sheet.Range($Sheet.Cells.Item($HeaderRow, $StartColumn), $Sheet.Cells.Item($HeaderRow + 20, $StartColumn + 6))
+    $loadRange.Borders.LineStyle = 1
+    $loadRange.Borders.Weight = 2
+    $loadRange.Borders.Color = 12632256
+
+    $calcTypeListColumn = 132
+    $capacityLoadPathListColumn = 133
+    $calcTypeOptions = @("Group1", "Group2")
+    for ($i = 0; $i -lt $calcTypeOptions.Count; $i++) {
+        $Sheet.Cells.Item($i + 1, $calcTypeListColumn).Value2 = $calcTypeOptions[$i]
+    }
+    $calcTypeColName = ConvertTo-ExcelColumn $calcTypeListColumn
+    $calcTypeListAddress = "=$" + $calcTypeColName + '$1:$' + $calcTypeColName + '$' + $calcTypeOptions.Count
+    $calcTypeRange = $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 4), $Sheet.Cells.Item($HeaderRow + 20, $StartColumn + 4))
+    $calcTypeRange.Validation.Delete()
+    $calcTypeRange.Validation.Add(3, 1, 1, $calcTypeListAddress)
+    $calcTypeRange.Validation.IgnoreBlank = $false
+    $calcTypeRange.Validation.InCellDropdown = $true
+
+    $lambda = [char]0x03BB
+    $capacityLoadPathOptions = @("$lambda*Mx", "$lambda*My", "$lambda*Mxy", "$lambda*N", "$lambda*NMxy")
+    for ($i = 0; $i -lt $capacityLoadPathOptions.Count; $i++) {
+        $Sheet.Cells.Item($i + 1, $capacityLoadPathListColumn).Value2 = $capacityLoadPathOptions[$i]
+    }
+    $capacityLoadPathColName = ConvertTo-ExcelColumn $capacityLoadPathListColumn
+    $capacityLoadPathListAddress = "=$" + $capacityLoadPathColName + '$1:$' + $capacityLoadPathColName + '$' + $capacityLoadPathOptions.Count
+    $capacityLoadPathRange = $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 5), $Sheet.Cells.Item($HeaderRow + 20, $StartColumn + 5))
+    $capacityLoadPathRange.Validation.Delete()
+    $capacityLoadPathRange.Validation.Add(3, 1, 1, $capacityLoadPathListAddress)
+    $capacityLoadPathRange.Validation.IgnoreBlank = $true
+    $capacityLoadPathRange.Validation.InCellDropdown = $true
+
+    Set-WorkbookNameByBounds $Workbook "rngLoadCombinations" $Sheet $HeaderRow $StartColumn ($HeaderRow + 20) ($StartColumn + 6)
 }
 
 # Расставляет ссылки "Подробнее" внутри табличных блоков, у которых есть
@@ -2196,14 +2274,18 @@ function Apply-SystemSettingsLayout {
     $rightColumn = 8
     $rightRow = 3
     $rightBlockGap = 2
+    $loadCombinationsHeaderRow = 3
+    $loadCombinationsColumn = 15
     $materialControlHeaderRow = 2
-    $materialControlColumn = 27
+    $materialControlColumn = 35
     $materialChartTopRow = 1
-    $materialChartColumn = 14
+    $materialChartColumn = 22
     Add-MaterialDiagramControlTables $Sheet $materialControlHeaderRow $materialControlColumn
 
     Add-UnitSettingsTable $Workbook $Sheet $rightRow $rightColumn
     $rightRow += (Get-UnitSettingsCatalog).Count + 1 + $rightBlockGap
+
+    Add-LoadCombinationsTable $Workbook $Sheet $loadCombinationsHeaderRow $loadCombinationsColumn
 
     Add-SignConventionSettingsTable $Workbook $Sheet $rightRow $rightColumn
     $rightRow += (Get-SignConventionSettingsCatalog).Count + 1 + $rightBlockGap
@@ -2242,7 +2324,7 @@ function Apply-SystemSettingsLayout {
         "Solver.Method" = @("Newton", "Secant")
         "Solver.DirectState.DiagramExtension" = @("Yes", "No")
         "Capacity.CalculationScope" = @("Group1Only", "Group1+2")
-        "Capacity.Method" = @("Auto", "UltimateStrain", "LoadMultiplier")
+        "Capacity.SolutionStrategy" = @("Auto", "UltimateStrain", "LoadMultiplier")
         "Capacity.SearchMethod" = @("Bisection", "Brent", "Secant")
         "Solver.LineSearchEnabled" = @("Yes", "No")
         "SLS.Crack.Enabled" = @("Yes", "No")
@@ -2323,6 +2405,13 @@ function Apply-SystemSettingsLayout {
     for ($colIndex = 14; $colIndex -le 69; $colIndex++) {
         $Sheet.Columns.Item($colIndex).ColumnWidth = 8.43
     }
+    $Sheet.Columns.Item(15).ColumnWidth = 15
+    $Sheet.Columns.Item(16).ColumnWidth = 11
+    $Sheet.Columns.Item(17).ColumnWidth = 11
+    $Sheet.Columns.Item(18).ColumnWidth = 11
+    $Sheet.Columns.Item(19).ColumnWidth = 15
+    $Sheet.Columns.Item(20).ColumnWidth = 18
+    $Sheet.Columns.Item(21).ColumnWidth = 22
     $Sheet.Columns.Item("BR:EF").Hidden = $true
     $Sheet.Range("A1:EF260").Font.Name = "Arial"
     $Sheet.Range("A1:EF260").Font.Size = 9
@@ -2686,4 +2775,5 @@ function Add-SystemSettings {
     $result = Apply-SystemSettingsLayout $Sheet.Parent $Sheet
     $result
 }
+
 

@@ -1,4 +1,4 @@
-# SETTINGS_REFERENCE
+﻿# SETTINGS_REFERENCE
 
 Дата актуализации: 2026-08-14.
 
@@ -137,7 +137,7 @@
 | `Strength.ConcreteTensionMode` в `rngCalculationDiagramSettings` | `Ignore`, `UseDiagram` |
 | `Calculation.Mode` | `DirectState`, `FullCapacity` |
 | `Solver.Method` | `Newton`, `Secant` |
-| `Capacity.Method` | `Auto`, `UltimateStrain`, `LoadMultiplier` |
+| `Capacity.SolutionStrategy` | `Auto`, `UltimateStrain`, `LoadMultiplier` |
 | `Capacity.SearchMethod` | `Bisection`, `Brent`, `Secant` |
 | `Solver.LineSearchEnabled` | `Yes`, `No` |
 | `Steel.RebarProfile` | `Ribbed`, `Smooth` |
@@ -175,3 +175,4 @@
 | `rngLoadCombinations.CalculationType` | `Group1`, `Group2` |
 
 Пустые или неподдерживаемые значения расчетных методов должны приводить к `InputError`, а не к скрытому переключению на значение по умолчанию.
+

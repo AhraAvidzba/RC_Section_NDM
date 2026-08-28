@@ -57,8 +57,8 @@ Public Function RunCapacitySolverTests() As String
     TestResultWriter stats
     AppendLine stats, "RUN: TestInvalidBaseMoment"
     TestInvalidBaseMoment stats
-    AppendLine stats, "RUN: TestCapacityMethodComparisons"
-    TestCapacityMethodComparisons stats
+    AppendLine stats, "RUN: TestCapacitySolutionStrategyComparisons"
+    TestCapacitySolutionStrategyComparisons stats
     AppendLine stats, "RUN: TestLoadMultiplierWithWorkbookTfDefaults"
     TestLoadMultiplierWithWorkbookTfDefaults stats
     AppendLine stats, "RUN: TestLoadMultiplierSearchMethods"
@@ -548,12 +548,12 @@ Private Sub TestInvalidBaseMoment(ByRef stats As TCapacityTestStats)
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
-Private Sub TestCapacityMethodComparisons(ByRef stats As TCapacityTestStats)
+Private Sub TestCapacitySolutionStrategyComparisons(ByRef stats As TCapacityTestStats)
     TestMethodPureCompression stats
-    CompareCapacityMethods stats, "method.n_plus_mx", -300000#, -10000000#, 0#, False
-    CompareCapacityMethods stats, "method.n_plus_my", -300000#, 0#, -10000000#, False
-    CompareCapacityMethods stats, "method.biaxial", -250000#, -6000000#, -4000000#, False
-    CompareCircleCapacityMethods stats
+    CompareCapacitySolutionStrategys stats, "method.n_plus_mx", -300000#, -10000000#, 0#, False
+    CompareCapacitySolutionStrategys stats, "method.n_plus_my", -300000#, 0#, -10000000#, False
+    CompareCapacitySolutionStrategys stats, "method.biaxial", -250000#, -6000000#, -4000000#, False
+    CompareCircleCapacitySolutionStrategys stats
     TestMethodStrainLimitState stats
     TestUltimateStrainNumericalFailure stats
     TestUltimateStrainInvalidLambdaClearsMoments stats
@@ -581,7 +581,7 @@ Private Sub TestMethodPureCompression(ByRef stats As TCapacityTestStats)
     AppendComparison stats, "method.pure_compression.strain", strainMethod, 0#
 End Sub
 
-Private Sub CompareCapacityMethods(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
+Private Sub CompareCapacitySolutionStrategys(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal nValue As Double, ByVal mxBase As Double, ByVal myBase As Double, ByVal tightLimits As Boolean)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -623,7 +623,7 @@ Private Sub CompareCapacityMethods(ByRef stats As TCapacityTestStats, ByVal pref
     AppendComparison stats, prefix & ".strain", strainMethod, strainElapsed
 End Sub
 
-Private Sub CompareCircleCapacityMethods(ByRef stats As TCapacityTestStats)
+Private Sub CompareCircleCapacitySolutionStrategys(ByRef stats As TCapacityTestStats)
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
     geom.InitializeByDiameter 300#
@@ -1428,6 +1428,7 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
 
 
 

@@ -72,10 +72,10 @@ workbook/output/RC_Section_NDM.xlsm
 
 ## Сочетание Нагрузок
 
-На листе `Расчет` в `rngLoadCombinations` заполни строку:
+На листе `Config` в `rngLoadCombinations` заполни строку:
 
 ```text
-CombinationID | N | Mx | My | CalculationType | Comment
+CombinationID | N | Mx | My | CalculationType | CapacityLoadPath | Comment
 ```
 
 Единицы:

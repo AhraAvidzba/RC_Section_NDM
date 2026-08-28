@@ -206,7 +206,7 @@ step_2 = (Lлинии - t1_2 - t2_2) / (n_2 - 1)
 - `CCapacitySolver.SolveByLoadPathMultiplier` ищет предельный множитель `lambda` для универсальной траектории `N = N0 + lambda·Nbase`, `Mx = Mx0 + lambda·Mxbase`, `My = My0 + lambda·Mybase`.
 - `CCapacitySolver.SolveByUltimateLoadPath` решает ту же универсальную λ-траекторию через условие достижения предельной деформации.
 - Столбец `CapacityLoadPath` в сочетании выбирает, какие компоненты масштабируются: `λ*Mx`, `λ*My`, `λ*Mxy`, `λ*N`, `λ*NMxy`. Если масштабируется `N`, момент от смещения точки приложения нагрузки масштабируется вместе с `N`.
-- `Capacity.Method = Auto` сначала пробует `UltimateStrain`, а при численной неудаче повторяет тот же путь через `LoadMultiplier`.
+- `Capacity.SolutionStrategy = Auto` сначала пробует `UltimateStrain`, а при численной неудаче повторяет тот же путь через `LoadMultiplier`.
 - Для силовой осевой траектории `λ*N`, а также для `λ*NMxy` без пользовательских моментов, batch сразу использует `LoadMultiplier`: это убирает вырожденность `UltimateStrain` на горизонтальном плато диаграммы. Фактический метод выводится в `CapacitySolutionMethod`.
 - Для `LoadMultiplier` и fallback-ветки `Auto` доступны `Bisection`, `Brent`, `Secant`.
 - Численная несходимость не является физическим разрушением.
@@ -265,4 +265,5 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Run-AllTests.ps1
 - Не откатывать чужие изменения в git.
 - Не выполнять destructive-команды без явного запроса пользователя.
 - Не пересобирать книгу, если пользователь просит только изменить исходный модуль или документацию.
+
 

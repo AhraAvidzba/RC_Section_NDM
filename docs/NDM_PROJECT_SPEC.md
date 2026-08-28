@@ -1,4 +1,4 @@
-# NDM_PROJECT_SPEC
+﻿# NDM_PROJECT_SPEC
 
 Дата актуализации: 2026-08-05.
 
@@ -84,9 +84,9 @@ Myint = Myext
 
 Поддерживаются:
 
-- `Capacity.Method = Auto`;
-- `Capacity.Method = UltimateStrain`;
-- `Capacity.Method = LoadMultiplier`.
+- `Capacity.SolutionStrategy = Auto`;
+- `Capacity.SolutionStrategy = UltimateStrain`;
+- `Capacity.SolutionStrategy = LoadMultiplier`.
 
 Для `LoadMultiplier` и fallback-ветки `Auto`:
 
@@ -128,3 +128,4 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Run-AllTests.ps1
 ```
 
 Подробности: `docs/ValidationPlan.md` и `docs/TEST_CASES.md`.
+
