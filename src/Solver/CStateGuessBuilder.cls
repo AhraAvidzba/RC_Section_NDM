@@ -397,8 +397,7 @@ Private Sub AccumulateMaterialElement(ByVal material As CMaterialDiagram, _
         ByRef n0 As Double, ByRef mx0 As Double, ByRef my0 As Double)
     Dim tangent As Double ' Касательная жесткость текущего участка диаграммы, МПа.
     Dim stress As Double ' Напряжение материала в точке линеаризации, МПа.
-    tangent = material.GetTangentModulus(sampleStrain)
-    stress = material.GetStress(sampleStrain)
+    material.EvaluateAtStrain sampleStrain, stress, tangent
 
     AccumulateLinearElement tangent, stress, sampleStrain, area, x, y, activeCount, _
         k11, k12, k13, k21, k22, k23, k31, k32, k33, n0, mx0, my0
@@ -454,10 +453,8 @@ Private Sub AccumulateRebarElement(ByVal concreteMaterial As CMaterialDiagram, B
     Dim concreteStress As Double ' Напряжение вытесненного бетона на той же деформации.
     Dim steelTangent As Double ' Касательный модуль стали на текущем участке.
     Dim concreteTangent As Double ' Касательный модуль вытесненного бетона.
-    steelStress = steelMaterial.GetStress(sampleStrain)
-    concreteStress = concreteMaterial.GetStress(sampleStrain)
-    steelTangent = steelMaterial.GetTangentModulus(sampleStrain)
-    concreteTangent = concreteMaterial.GetTangentModulus(sampleStrain)
+    steelMaterial.EvaluateAtStrain sampleStrain, steelStress, steelTangent
+    concreteMaterial.EvaluateAtStrain sampleStrain, concreteStress, concreteTangent
 
     AccumulateLinearElement steelTangent - concreteTangent, _
         steelStress - concreteStress, sampleStrain, area, x, y, activeCount, _

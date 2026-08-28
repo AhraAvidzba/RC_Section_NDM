@@ -653,6 +653,12 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
     Dim tangent As Double
     Dim force As Double
     Dim area As Double
+    Dim xCoord As Double
+    Dim yCoord As Double
+    Dim steelStress As Double
+    Dim steelTangent As Double
+    Dim concreteStress As Double
+    Dim concreteTangent As Double
     Dim concreteDiagram As CMaterialDiagram ' Быстрый путь для штатной кусочно-линейной диаграммы.
     Dim steelDiagram As CMaterialDiagram ' Быстрый путь для штатной диаграммы арматуры.
 
@@ -660,56 +666,65 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
     If TypeName(steelMaterial) = "CMaterialDiagram" Then Set steelDiagram = steelMaterial
 
     For i = 1 To section.ConcreteCount
-        strain = eps0 + kx * section.ConcreteY(i) + ky * section.ConcreteX(i)
+        xCoord = section.ConcreteX(i)
+        yCoord = section.ConcreteY(i)
+        area = section.ConcreteArea(i)
+        strain = eps0 + kx * yCoord + ky * xCoord
         If buildTangent Then
             If strain < mMinConcreteStrain Then mMinConcreteStrain = strain
             If strain > mMaxConcreteStrain Then mMaxConcreteStrain = strain
         End If
         If concreteDiagram Is Nothing Then
             stress = concreteMaterial.GetStress(strain)
-            tangent = concreteMaterial.GetTangentModulus(strain)
-        Else
+            If buildTangent Then tangent = concreteMaterial.GetTangentModulus(strain)
+        ElseIf buildTangent Then
             concreteDiagram.EvaluateAtStrain strain, stress, tangent
+        Else
+            stress = concreteDiagram.StressAtStrain(strain)
         End If
-        area = section.ConcreteArea(i)
         force = stress * area
         nInt = nInt + force
-        mxInt = mxInt + force * section.ConcreteY(i)
-        myInt = myInt + force * section.ConcreteX(i)
-        If buildTangent Then AddTangent tangent * area, section.ConcreteX(i), section.ConcreteY(i)
+        mxInt = mxInt + force * yCoord
+        myInt = myInt + force * xCoord
+        If buildTangent Then AddTangent tangent * area, xCoord, yCoord
     Next i
 
     If section.RebarCount > 0 Then
         For i = 1 To section.RebarCount
-            strain = eps0 + kx * section.RebarY(i) + ky * section.RebarX(i)
+            xCoord = section.RebarX(i)
+            yCoord = section.RebarY(i)
+            area = section.RebarArea(i)
+            strain = eps0 + kx * yCoord + ky * xCoord
             If buildTangent Then
                 If strain < mMinSteelStrain Then mMinSteelStrain = strain
                 If strain > mMaxSteelStrain Then mMaxSteelStrain = strain
                 If Abs(strain) > mMaxAbsSteelStrain Then mMaxAbsSteelStrain = Abs(strain)
             End If
-            Dim steelStress As Double
-            Dim steelTangent As Double
-            Dim concreteStress As Double
-            Dim concreteTangent As Double
             If steelDiagram Is Nothing Then
                 steelStress = steelMaterial.GetStress(strain)
-                steelTangent = steelMaterial.GetTangentModulus(strain)
-            Else
+                If buildTangent Then steelTangent = steelMaterial.GetTangentModulus(strain)
+            ElseIf buildTangent Then
                 steelDiagram.EvaluateAtStrain strain, steelStress, steelTangent
+            Else
+                steelStress = steelDiagram.StressAtStrain(strain)
             End If
             If concreteDiagram Is Nothing Then
                 concreteStress = concreteMaterial.GetStress(strain)
-                concreteTangent = concreteMaterial.GetTangentModulus(strain)
-            Else
+                If buildTangent Then concreteTangent = concreteMaterial.GetTangentModulus(strain)
+            ElseIf buildTangent Then
                 concreteDiagram.EvaluateAtStrain strain, concreteStress, concreteTangent
+            Else
+                concreteStress = concreteDiagram.StressAtStrain(strain)
             End If
             stress = steelStress - concreteStress
-            tangent = steelTangent - concreteTangent
-            force = stress * section.RebarArea(i)
+            force = stress * area
             nInt = nInt + force
-            mxInt = mxInt + force * section.RebarY(i)
-            myInt = myInt + force * section.RebarX(i)
-            If buildTangent Then AddTangent tangent * section.RebarArea(i), section.RebarX(i), section.RebarY(i)
+            mxInt = mxInt + force * yCoord
+            myInt = myInt + force * xCoord
+            If buildTangent Then
+                tangent = steelTangent - concreteTangent
+                AddTangent tangent * area, xCoord, yCoord
+            End If
         Next i
     End If
 End Sub

@@ -1727,8 +1727,12 @@ Private Sub UpdateCriticalState(ByVal section As CSectionModel, _
     Dim i As Long
     Dim strain As Double
     Dim utilization As Double
+    Dim xCoord As Double
+    Dim yCoord As Double
     For i = 1 To section.ConcreteCount
-        strain = solver.Epsilon0 + solver.KappaX * section.ConcreteY(i) + solver.KappaY * section.ConcreteX(i)
+        xCoord = section.ConcreteX(i)
+        yCoord = section.ConcreteY(i)
+        strain = solver.Epsilon0 + solver.KappaX * yCoord + solver.KappaY * xCoord
         If strain < 0# And mConcreteCompressionLimit < 0# Then
             utilization = strain / mConcreteCompressionLimit
             StoreCriticalIfLarger utilization, strain, section.ConcreteID(i) & ":Compression"
@@ -1740,7 +1744,9 @@ Private Sub UpdateCriticalState(ByVal section As CSectionModel, _
 
     If section.RebarCount > 0 Then
         For i = 1 To section.RebarCount
-            strain = solver.Epsilon0 + solver.KappaX * section.RebarY(i) + solver.KappaY * section.RebarX(i)
+            xCoord = section.RebarX(i)
+            yCoord = section.RebarY(i)
+            strain = solver.Epsilon0 + solver.KappaX * yCoord + solver.KappaY * xCoord
             If mSteelStrainLimit > 0# Then
                 utilization = Abs(strain) / mSteelStrainLimit
                 StoreCriticalIfLarger utilization, strain, section.RebarID(i) & ":Steel"

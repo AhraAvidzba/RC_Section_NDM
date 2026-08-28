@@ -213,7 +213,7 @@ CONVERGENCE: step=12.5 area=88750.; cx=0.; cy=1.795774647887; Ix=365141532.79049
 OK: conv.area.25.12; actual=88750.; expected=88750.; relDiff=0.
 OK: conv.Ix.25.12; actual=365141532.790493; expected=362323943.661972; relDiff=0.007776436467
 OK: conv.Iy.25.12; actual=1153369140.625; expected=1151367187.5; relDiff=0.001738761662
-PERFORMANCE: section=800x500; step=10; fibers=3988; buildSec=0.0078125; propsSec=0.; area=398800.
+PERFORMANCE: section=800x500; step=10; fibers=3988; buildSec=0.0234375; propsSec=0.0078125; area=398800.
 OK: perf.fibers.positive
 TOTAL: passed=183; failed=0
 
@@ -594,9 +594,9 @@ OK: section.secant.branch
 OK: section.secant.converged
 OK: section.secant.noNewtonCalls
 OK: section.newton.calls
-OK: section.secant.equilibrium.N; actual=-300000.000000009; expected=-300000.; relDiff=0.
-OK: section.secant.equilibrium.Mx; actual=-19999999.9999996; expected=-20000000.; relDiff=0.
-OK: section.secant.equilibrium.My; actual=-11999999.9999993; expected=-12000000.; relDiff=0.
+OK: section.secant.equilibrium.N; actual=-300000.00000003; expected=-300000.; relDiff=0.
+OK: section.secant.equilibrium.Mx; actual=-20000000.0000012; expected=-20000000.; relDiff=0.
+OK: section.secant.equilibrium.My; actual=-11999999.9999957; expected=-12000000.; relDiff=0.
 OK: section.secant.eps0MatchesNewton; actual=-0.000270585091; expected=-0.000270585091; relDiff=0.
 OK: section.secant.kappaXMatchesNewton; actual=-0.000008562532; expected=-0.000008562532; relDiff=0.
 OK: section.secant.kappaYMatchesNewton; actual=-0.000002386771; expected=-0.000002386771; relDiff=0.
@@ -607,41 +607,41 @@ OK: secant.compare.compression.newton.converged
 OK: secant.compare.compression.secant.converged
 OK: secant.compare.compression.secant.noNewtonCalls
 OK: secant.compare.compression.eps0; actual=-0.000161290323; expected=-0.000161290323; relDiff=0.
-OK: secant.compare.compression.N; actual=-100000.000000026; expected=-100000.; relDiff=0.
-OK: secant.compare.compression.Mx; actual=-0.000001082685; expected=0.; absDiff=0.000001082685
-OK: secant.compare.compression.My; actual=-0.000000008904; expected=0.; absDiff=0.000000008904
+OK: secant.compare.compression.N; actual=-99999.9999999719; expected=-100000.; relDiff=0.
+OK: secant.compare.compression.Mx; actual=0.000000071217; expected=0.; absDiff=0.000000071217
+OK: secant.compare.compression.My; actual=-0.000000042077; expected=0.; absDiff=0.000000042077
 COMPARE_SOLVER|secant.compare.compression|NewtonIterations=10|SecantIterations=10|SecantForceEvaluations=47|SecantNewtonCalls=0|SecantRestarts=0
 OK: secant.compare.n_mx.newton.converged
 OK: secant.compare.n_mx.secant.converged
 OK: secant.compare.n_mx.secant.noNewtonCalls
 OK: secant.compare.n_mx.eps0; actual=-0.000194412442; expected=-0.000194412442; relDiff=0.
-OK: secant.compare.n_mx.N; actual=-149999.999999997; expected=-150000.; relDiff=0.
-OK: secant.compare.n_mx.Mx; actual=-7999999.99999953; expected=-8000000.; relDiff=0.
-OK: secant.compare.n_mx.My; actual=0.000000107975; expected=0.; absDiff=0.000000107975
+OK: secant.compare.n_mx.N; actual=-150000.000000008; expected=-150000.; relDiff=0.
+OK: secant.compare.n_mx.Mx; actual=-8000000.; expected=-8000000.; relDiff=0.
+OK: secant.compare.n_mx.My; actual=0.000000134993; expected=0.; absDiff=0.000000134993
 COMPARE_SOLVER|secant.compare.n_mx|NewtonIterations=12|SecantIterations=14|SecantForceEvaluations=65|SecantNewtonCalls=0|SecantRestarts=1
 OK: secant.compare.n_my.newton.converged
 OK: secant.compare.n_my.secant.converged
 OK: secant.compare.n_my.secant.noNewtonCalls
 OK: secant.compare.n_my.eps0; actual=-0.000241935484; expected=-0.000241935484; relDiff=0.
-OK: secant.compare.n_my.N; actual=-149999.999999968; expected=-150000.; relDiff=0.
-OK: secant.compare.n_my.Mx; actual=0.000000458702; expected=0.; absDiff=0.000000458702
-OK: secant.compare.n_my.My; actual=-5999999.99999984; expected=-6000000.; relDiff=0.
+OK: secant.compare.n_my.N; actual=-150000.; expected=-150000.; relDiff=0.
+OK: secant.compare.n_my.Mx; actual=0.000000395064; expected=0.; absDiff=0.000000395064
+OK: secant.compare.n_my.My; actual=-5999999.99999905; expected=-6000000.; relDiff=0.
 COMPARE_SOLVER|secant.compare.n_my|NewtonIterations=10|SecantIterations=10|SecantForceEvaluations=47|SecantNewtonCalls=0|SecantRestarts=0
 OK: secant.compare.n_mx_my.newton.converged
 OK: secant.compare.n_mx_my.secant.converged
 OK: secant.compare.n_mx_my.secant.noNewtonCalls
-OK: secant.compare.n_mx_my.eps0; actual=-0.000145778915; expected=-0.000145778915; relDiff=0.
-OK: secant.compare.n_mx_my.N; actual=-150000.000000004; expected=-150000.; relDiff=0.
-OK: secant.compare.n_mx_my.Mx; actual=-7999999.99999971; expected=-8000000.; relDiff=0.
-OK: secant.compare.n_mx_my.My; actual=-6000000.00000056; expected=-6000000.; relDiff=0.
+OK: secant.compare.n_mx_my.eps0; actual=-0.000145778915; expected=-0.000145778915; relDiff=0.000000000001
+OK: secant.compare.n_mx_my.N; actual=-149999.99999999; expected=-150000.; relDiff=0.
+OK: secant.compare.n_mx_my.Mx; actual=-8000000.00000064; expected=-8000000.; relDiff=0.
+OK: secant.compare.n_mx_my.My; actual=-5999999.99999917; expected=-6000000.; relDiff=0.
 COMPARE_SOLVER|secant.compare.n_mx_my|NewtonIterations=14|SecantIterations=16|SecantForceEvaluations=69|SecantNewtonCalls=0|SecantRestarts=1
 OK: secant.compare.circle.newton.converged
 OK: secant.compare.circle.secant.converged
 OK: secant.compare.circle.secant.noNewtonCalls
 OK: secant.compare.circle.eps0; actual=-0.000163825196; expected=-0.000163825196; relDiff=0.
-OK: secant.compare.circle.N; actual=-120000.000000018; expected=-120000.; relDiff=0.
-OK: secant.compare.circle.Mx; actual=-4999999.99999985; expected=-5000000.; relDiff=0.
-OK: secant.compare.circle.My; actual=0.000000010723; expected=0.; absDiff=0.000000010723
+OK: secant.compare.circle.N; actual=-120000.000000008; expected=-120000.; relDiff=0.
+OK: secant.compare.circle.Mx; actual=-4999999.99999882; expected=-5000000.; relDiff=0.
+OK: secant.compare.circle.My; actual=-0.000000013395; expected=0.; absDiff=0.000000013395
 COMPARE_SOLVER|secant.compare.circle|NewtonIterations=11|SecantIterations=13|SecantForceEvaluations=54|SecantNewtonCalls=0|SecantRestarts=0
 OK: section.method.invalidInput
 OK: section.method.invalidMessage
@@ -649,7 +649,7 @@ OK: section.method.emptyInput
 OK: section.method.emptyMessage
 OK: settings.solverMethod.defaultNewton
 OK: section.systemMethod.newtonBranch
-TOTAL_SECTION_SOLVER: passed=367; failed=0; elapsedSec=0.4140625
+TOTAL_SECTION_SOLVER: passed=367; failed=0; elapsedSec=0.6640625
 
 
 ===== Run-CapacityTests.ps1 =====
@@ -807,15 +807,15 @@ OK: method.n_plus_mx.lambda; actual=3.098714243907; expected=3.09375; absDiff=0.
 OK: method.n_plus_mx.limitState
 OK: method.n_plus_mx.criticalElement
 OK: method.n_plus_mx.solverCalls
-COMPARE|method.n_plus_mx.load|converged=True|lambda=3.09375|limitState=ConcreteStrainLimit|criticalStrain=-0.001501652538|criticalElement=C136:Compression|solverCalls=15|elapsedSec=0.2421875
-COMPARE|method.n_plus_mx.strain|converged=True|lambda=3.098714243907|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.015625
+COMPARE|method.n_plus_mx.load|converged=True|lambda=3.09375|limitState=ConcreteStrainLimit|criticalStrain=-0.001501652538|criticalElement=C136:Compression|solverCalls=15|elapsedSec=0.140625
+COMPARE|method.n_plus_mx.strain|converged=True|lambda=3.098714243907|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.0234375
 OK: method.n_plus_my.load.converged
 OK: method.n_plus_my.strain.converged
 OK: method.n_plus_my.lambda; actual=4.490409406947; expected=4.484375; absDiff=0.006034406947
 OK: method.n_plus_my.limitState
 OK: method.n_plus_my.criticalElement
 OK: method.n_plus_my.solverCalls
-COMPARE|method.n_plus_my.load|converged=True|lambda=4.484375|limitState=ConcreteStrainLimit|criticalStrain=-0.001500652149|criticalElement=C15:Compression|solverCalls=14|elapsedSec=0.1875
+COMPARE|method.n_plus_my.load|converged=True|lambda=4.484375|limitState=ConcreteStrainLimit|criticalStrain=-0.001500652149|criticalElement=C15:Compression|solverCalls=14|elapsedSec=0.1484375
 COMPARE|method.n_plus_my.strain|converged=True|lambda=4.490409406947|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.015625
 OK: method.biaxial.load.converged
 OK: method.biaxial.strain.converged
@@ -823,8 +823,8 @@ OK: method.biaxial.lambda; actual=3.583378108174; expected=3.578125; absDiff=0.0
 OK: method.biaxial.limitState
 OK: method.biaxial.criticalElement
 OK: method.biaxial.solverCalls
-COMPARE|method.biaxial.load|converged=True|lambda=3.578125|limitState=ConcreteStrainLimit|criticalStrain=-0.001501063653|criticalElement=C150:Compression|solverCalls=12|elapsedSec=0.15625
-COMPARE|method.biaxial.strain|converged=True|lambda=3.583378108174|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=16|elapsedSec=0.0234375
+COMPARE|method.biaxial.load|converged=True|lambda=3.578125|limitState=ConcreteStrainLimit|criticalStrain=-0.001501063653|criticalElement=C150:Compression|solverCalls=12|elapsedSec=0.109375
+COMPARE|method.biaxial.strain|converged=True|lambda=3.583378108174|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=16|elapsedSec=0.03125
 OK: method.circle.load.converged
 OK: method.circle.strain.converged
 OK: method.circle.symmetry; actual=31453125.; expected=31489108.1595385; relDiff=0.001142717646
@@ -1039,8 +1039,8 @@ OK: capacity.pathMatrix.n.auto.lambda
 OK: capacity.pathMatrix.n.auto.physical
 OK: capacity.pathMatrix.n.auto.solutionMethod
 OK: capacity.pathMatrix.n.auto.equilibrium.N; actual=-1287500.; expected=-1287500.; relDiff=0.
-OK: capacity.pathMatrix.n.auto.equilibrium.Mx; actual=0.000000003027; expected=0.; absDiff=0.000000003027
-OK: capacity.pathMatrix.n.auto.equilibrium.My; actual=0.000000002678; expected=0.; absDiff=0.000000002678
+OK: capacity.pathMatrix.n.auto.equilibrium.Mx; actual=0.000000002154; expected=0.; absDiff=0.000000002154
+OK: capacity.pathMatrix.n.auto.equilibrium.My; actual=0.000000001368; expected=0.; absDiff=0.000000001368
 OK: capacity.pathMatrix.n.auto.nUltimate; actual=-1287500.; expected=-1287500.; absDiff=0.
 OK: capacity.pathMatrix.n.auto.mxUltimate; actual=0.; expected=0.; absDiff=0.
 OK: capacity.pathMatrix.n.auto.myUltimate; actual=0.; expected=0.; absDiff=0.
@@ -1049,8 +1049,8 @@ OK: capacity.pathMatrix.n.ultimate.lambda
 OK: capacity.pathMatrix.n.ultimate.physical
 OK: capacity.pathMatrix.n.ultimate.solutionMethod
 OK: capacity.pathMatrix.n.ultimate.equilibrium.N; actual=-1287500.; expected=-1287500.; relDiff=0.
-OK: capacity.pathMatrix.n.ultimate.equilibrium.Mx; actual=0.000000003027; expected=0.; absDiff=0.000000003027
-OK: capacity.pathMatrix.n.ultimate.equilibrium.My; actual=0.000000002678; expected=0.; absDiff=0.000000002678
+OK: capacity.pathMatrix.n.ultimate.equilibrium.Mx; actual=0.000000002154; expected=0.; absDiff=0.000000002154
+OK: capacity.pathMatrix.n.ultimate.equilibrium.My; actual=0.000000001368; expected=0.; absDiff=0.000000001368
 OK: capacity.pathMatrix.n.ultimate.nUltimate; actual=-1287500.; expected=-1287500.; absDiff=0.
 OK: capacity.pathMatrix.n.ultimate.mxUltimate; actual=0.; expected=0.; absDiff=0.
 OK: capacity.pathMatrix.n.ultimate.myUltimate; actual=0.; expected=0.; absDiff=0.
@@ -1059,8 +1059,8 @@ OK: capacity.pathMatrix.n.bisection.lambda
 OK: capacity.pathMatrix.n.bisection.physical
 OK: capacity.pathMatrix.n.bisection.solutionMethod
 OK: capacity.pathMatrix.n.bisection.equilibrium.N; actual=-1287500.; expected=-1287500.; relDiff=0.
-OK: capacity.pathMatrix.n.bisection.equilibrium.Mx; actual=0.000000003027; expected=0.; absDiff=0.000000003027
-OK: capacity.pathMatrix.n.bisection.equilibrium.My; actual=0.000000002678; expected=0.; absDiff=0.000000002678
+OK: capacity.pathMatrix.n.bisection.equilibrium.Mx; actual=0.000000002154; expected=0.; absDiff=0.000000002154
+OK: capacity.pathMatrix.n.bisection.equilibrium.My; actual=0.000000001368; expected=0.; absDiff=0.000000001368
 OK: capacity.pathMatrix.n.bisection.nUltimate; actual=-1287500.; expected=-1287500.; absDiff=0.
 OK: capacity.pathMatrix.n.bisection.mxUltimate; actual=0.; expected=0.; absDiff=0.
 OK: capacity.pathMatrix.n.bisection.myUltimate; actual=0.; expected=0.; absDiff=0.
@@ -1068,9 +1068,9 @@ OK: capacity.pathMatrix.n.brent.converged
 OK: capacity.pathMatrix.n.brent.lambda
 OK: capacity.pathMatrix.n.brent.physical
 OK: capacity.pathMatrix.n.brent.solutionMethod
-OK: capacity.pathMatrix.n.brent.equilibrium.N; actual=-1287499.70241763; expected=-1287499.70241762; relDiff=0.
-OK: capacity.pathMatrix.n.brent.equilibrium.Mx; actual=0.000000002095; expected=0.; absDiff=0.000000002095
-OK: capacity.pathMatrix.n.brent.equilibrium.My; actual=0.000000000349; expected=0.; absDiff=0.000000000349
+OK: capacity.pathMatrix.n.brent.equilibrium.N; actual=-1287499.70241762; expected=-1287499.70241762; relDiff=0.
+OK: capacity.pathMatrix.n.brent.equilibrium.Mx; actual=0.000000000058; expected=0.; absDiff=0.000000000058
+OK: capacity.pathMatrix.n.brent.equilibrium.My; actual=-0.000000000378; expected=0.; absDiff=0.000000000378
 OK: capacity.pathMatrix.n.brent.nUltimate; actual=-1287499.70241762; expected=-1287499.70241762; absDiff=0.
 OK: capacity.pathMatrix.n.brent.mxUltimate; actual=0.; expected=0.; absDiff=0.
 OK: capacity.pathMatrix.n.brent.myUltimate; actual=0.; expected=0.; absDiff=0.
@@ -1078,9 +1078,9 @@ OK: capacity.pathMatrix.n.secant.converged
 OK: capacity.pathMatrix.n.secant.lambda
 OK: capacity.pathMatrix.n.secant.physical
 OK: capacity.pathMatrix.n.secant.solutionMethod
-OK: capacity.pathMatrix.n.secant.equilibrium.N; actual=-1279205.46210786; expected=-1279205.46210787; relDiff=0.
-OK: capacity.pathMatrix.n.secant.equilibrium.Mx; actual=-0.00000000227; expected=0.; absDiff=0.00000000227
-OK: capacity.pathMatrix.n.secant.equilibrium.My; actual=0.000000010099; expected=0.; absDiff=0.000000010099
+OK: capacity.pathMatrix.n.secant.equilibrium.N; actual=-1279205.46210787; expected=-1279205.46210787; relDiff=0.
+OK: capacity.pathMatrix.n.secant.equilibrium.Mx; actual=-0.000000001455; expected=0.; absDiff=0.000000001455
+OK: capacity.pathMatrix.n.secant.equilibrium.My; actual=0.000000000611; expected=0.; absDiff=0.000000000611
 OK: capacity.pathMatrix.n.secant.nUltimate; actual=-1279205.46210787; expected=-1279205.46210787; absDiff=0.
 OK: capacity.pathMatrix.n.secant.mxUltimate; actual=0.; expected=0.; absDiff=0.
 OK: capacity.pathMatrix.n.secant.myUltimate; actual=0.; expected=0.; absDiff=0.
@@ -1292,12 +1292,12 @@ OK: search.invalid.inputError
 OK: search.secant.controlledFailure
 RUN: TestSearchMethodPerformanceComparison
 OK: search.perf.Bisection.converged
-PERF_CAPACITY_SEARCH|Bisection|lambda=3.09375|iterations=15|functionEvaluations=15|avgSec=0.192708333333|residual=0.000000018633|converged=True|status=ConcreteStrainLimit
+PERF_CAPACITY_SEARCH|Bisection|lambda=3.09375|iterations=15|functionEvaluations=15|avgSec=0.15625|residual=0.000000018633|converged=True|status=ConcreteStrainLimit
 OK: search.perf.Brent.converged
-PERF_CAPACITY_SEARCH|Brent|lambda=3.09776378716|iterations=9|functionEvaluations=9|avgSec=0.114583333333|residual=0.000000000975|converged=True|status=ConcreteStrainLimit
+PERF_CAPACITY_SEARCH|Brent|lambda=3.09776378716|iterations=9|functionEvaluations=9|avgSec=0.078125|residual=0.000000000975|converged=True|status=ConcreteStrainLimit
 OK: search.perf.Secant.converged
-PERF_CAPACITY_SEARCH|Secant|lambda=3.098514991183|iterations=7|functionEvaluations=7|avgSec=0.1015625|residual=0.000000011376|converged=True|status=ConcreteStrainLimit
-TOTAL_CAPACITY: passed=581; failed=0; elapsedSec=17.2265625
+PERF_CAPACITY_SEARCH|Secant|lambda=3.098514991183|iterations=7|functionEvaluations=7|avgSec=0.065104166667|residual=0.000000011376|converged=True|status=ConcreteStrainLimit
+TOTAL_CAPACITY: passed=581; failed=0; elapsedSec=13.5078125
 
 
 ===== Run-CrackTests.ps1 =====
@@ -1379,7 +1379,7 @@ OK: crack.noTension.width; actual=0.; expected=0.; absDiff=0.
 OK: crack.writer.width; actual=0.01041513196; expected=0.01041513196; absDiff=0.
 OK: crack.writer.allowable; actual=0.3; expected=0.3; absDiff=0.
 OK: crack.writer.sigma
-TOTAL_CRACK: passed=78; failed=0; elapsedSec=0.3125
+TOTAL_CRACK: passed=78; failed=0; elapsedSec=0.2890625
 
 
 ===== Run-BatchTests.ps1 =====
@@ -1716,7 +1716,7 @@ OK: batch.invalid.calculationMode.status
 OK: batch.invalid.calculationMode.noCapacity
 OK: batch.invalid.capacityMethod.status
 OK: batch.invalid.capacityMethod.noLambda
-TOTAL_BATCH: passed=245; failed=0; elapsedSec=8.296875
+TOTAL_BATCH: passed=245; failed=0; elapsedSec=6.78125
 
 
 ===== Run-WorkbookInterfaceTests.ps1 =====
@@ -1883,7 +1883,7 @@ OK: ui.clear.results.properties
 OK: ui.clear.results.annotations
 OK: ui.clear.results.materialDiagrams
 OK: ui.clear.input
-TOTAL_WORKBOOK_UI: passed=160; failed=0; elapsedSec=9.5078125
+TOTAL_WORKBOOK_UI: passed=160; failed=0; elapsedSec=9.296875
 
 
 ===== Run-RegressionBaselineTests.ps1 =====
@@ -1912,7 +1912,7 @@ OK: symmetric_circle.converged
 OK: symmetric_circle.N; actual=-219999.999999999; expected=-220000.; relDiff=0.
 OK: symmetric_circle.Mx; actual=-6000000.00000002; expected=-6000000.; relDiff=0.
 OK: symmetric_circle.My; actual=0.000000000146; expected=0.; absDiff=0.000000000146
-BASELINE|symmetric_circle|converged=True|eps0=-0.000180839111|kappaX=-0.000000845237|kappaY=0.|Nint=-219999.999999999|Mxint=-6000000.00000002|Myint=0.000000000146|resN=0.000000000815|resMx=-0.000000019558|resMy=0.000000000146|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.015625|fibers=716|rebars=8
+BASELINE|symmetric_circle|converged=True|eps0=-0.000180839111|kappaX=-0.000000845237|kappaY=0.|Nint=-219999.999999999|Mxint=-6000000.00000002|Myint=0.000000000146|resN=0.000000000815|resMx=-0.000000019558|resMy=0.000000000146|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.0390625|fibers=716|rebars=8
 OK: repeated_run.first.converged
 OK: repeated_run.second.converged
 OK: repeated_run.epsilon0; actual=-0.000082335606; expected=-0.000082335606; absDiff=0.
@@ -1938,7 +1938,7 @@ OK: origin_shift.shifted.Mx; actual=1000000.; expected=1000000.; relDiff=0.
 OK: origin_shift.shifted.My; actual=-10500000.; expected=-10500000.; relDiff=0.
 BASELINE|origin_shift_base|converged=True|eps0=-0.000082335606|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=-4000000.|Myint=-3000000.|resN=0.|resMx=-0.000000003725|resMy=0.000000000931|lambda=NA|iterations=3|elapsedSec=0.|fibers=0|rebars=0
 BASELINE|origin_shift_shifted|converged=True|eps0=-0.00007872362|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=1000000.|Myint=-10500000.|resN=-0.000000000015|resMx=0.000000000815|resMy=0.000000003725|lambda=NA|iterations=3|elapsedSec=0.|fibers=0|rebars=0
-TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.890625
+TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=1.0859375
 
 Regression baseline report: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Stage01_RegressionBaseline_Raw.txt
 

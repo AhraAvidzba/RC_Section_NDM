@@ -24,6 +24,8 @@ Option Explicit
 
 Private mStrains() As Double ' Узлы диаграммы по деформации, отсортированные от сжатия к растяжению.
 Private mStresses() As Double ' Напряжения в узлах диаграммы, МПа во внутренней системе.
+Private mSegmentTangent() As Double ' Заранее рассчитанный наклон каждого линейного участка диаграммы, МПа.
+Private mSegmentIntercept() As Double ' Свободный член sigma = E_t * epsilon + b для быстрого расчета stress.
 Private mPointCount As Long ' Количество активных точек диаграммы.
 Private mInitialized As Boolean ' Защита от вызова расчетных методов до загрузки точек.
 Private mPhysicalCompressionStrain As Double ' Физический сжатый предел; extension-точки его не меняют.
@@ -59,6 +61,7 @@ Public Sub InitializeFromArrays(ByRef strains() As Double, ByRef stresses() As D
     SortPointsByStrain
     ValidatePointOrder
     mPointCount = pointCount
+    BuildSegmentCache
     If IsMissing(physicalCompressionStrain) Then
         mPhysicalCompressionStrain = mStrains(1)
     Else
@@ -171,7 +174,9 @@ Public Function StressAtStrain(ByVal strain As Double) As Double
     ElseIf strain >= mStrains(mPointCount) Then
         StressAtStrain = mStresses(mPointCount)
     Else
-        StressAtStrain = InterpolateStress(strain)
+        Dim segmentIndex As Long
+        segmentIndex = FindSegmentIndex(strain)
+        If segmentIndex > 0 Then StressAtStrain = mSegmentTangent(segmentIndex) * strain + mSegmentIntercept(segmentIndex)
     End If
 End Function
 
@@ -185,11 +190,11 @@ End Function
 Public Function GetTangentModulus(ByVal strain As Double) As Double
     EnsureInitialized
     If strain < mStrains(1) Or strain > mStrains(mPointCount) Then Exit Function
-    GetTangentModulus = SegmentTangent(strain)
+    Dim segmentIndex As Long
+    segmentIndex = FindSegmentIndex(strain)
+    If segmentIndex > 0 Then GetTangentModulus = mSegmentTangent(segmentIndex)
 End Function
 
-' Возвращает секущий модуль stress/strain; около нуля используется касательный
-' модуль, чтобы не делить на почти нулевую деформацию.
 ' Возвращает напряжение и касательный модуль за один проход по отрезкам.
 ' В горячих циклах CSectionSolver это убирает два независимых поиска одного
 ' и того же участка диаграммы для каждого бетонного волокна и стержня.
@@ -203,17 +208,17 @@ Public Sub EvaluateAtStrain(ByVal strain As Double, ByRef stress As Double, ByRe
         stress = mStresses(mPointCount)
         tangent = 0#
     Else
-        Dim i As Long
-        For i = 1 To mPointCount - 1
-            If strain >= mStrains(i) And strain <= mStrains(i + 1) Then
-                tangent = (mStresses(i + 1) - mStresses(i)) / (mStrains(i + 1) - mStrains(i))
-                stress = mStresses(i) + tangent * (strain - mStrains(i))
-                Exit Sub
-            End If
-        Next i
+        Dim segmentIndex As Long
+        segmentIndex = FindSegmentIndex(strain)
+        If segmentIndex > 0 Then
+            tangent = mSegmentTangent(segmentIndex)
+            stress = mSegmentTangent(segmentIndex) * strain + mSegmentIntercept(segmentIndex)
+        End If
     End If
 End Sub
 
+' Возвращает секущий модуль stress/strain; около нуля используется касательный
+' модуль, чтобы не делить на почти нулевую деформацию.
 Public Function GetSecantModulus(ByVal strain As Double) As Double
     EnsureInitialized
     If Abs(strain) <= 0.000000000001 Then
@@ -223,25 +228,26 @@ Public Function GetSecantModulus(ByVal strain As Double) As Double
     End If
 End Function
 
-' Линейно интерполирует напряжение между соседними узлами диаграммы.
-Private Function InterpolateStress(ByVal strain As Double) As Double
+' Подготавливает быстрые коэффициенты линейных участков диаграммы.
+Private Sub BuildSegmentCache()
     Dim i As Long
-    For i = 1 To mPointCount - 1
-        If strain >= mStrains(i) And strain <= mStrains(i + 1) Then
-            InterpolateStress = mStresses(i) + (mStresses(i + 1) - mStresses(i)) * _
-                (strain - mStrains(i)) / (mStrains(i + 1) - mStrains(i))
-            Exit Function
-        End If
-    Next i
-End Function
+    ReDim mSegmentTangent(1 To mPointCount - 1)
+    ReDim mSegmentIntercept(1 To mPointCount - 1)
 
-' Возвращает наклон того же отрезка, который содержит текущую деформацию.
-Private Function SegmentTangent(ByVal strain As Double) As Double
+    ' В горячих циклах solver многократно спрашивает одну и ту же кусочно-линейную
+    ' диаграмму. Поэтому наклон и свободный член каждого участка считаются один раз
+    ' при инициализации, а не заново для каждого бетонного волокна и стержня.
+    For i = 1 To mPointCount - 1
+        mSegmentTangent(i) = (mStresses(i + 1) - mStresses(i)) / (mStrains(i + 1) - mStrains(i))
+        mSegmentIntercept(i) = mStresses(i) - mSegmentTangent(i) * mStrains(i)
+    Next i
+End Sub
+
+Private Function FindSegmentIndex(ByVal strain As Double) As Long
     Dim i As Long
     For i = 1 To mPointCount - 1
         If strain >= mStrains(i) And strain <= mStrains(i + 1) Then
-            SegmentTangent = (mStresses(i + 1) - mStresses(i)) / _
-                (mStrains(i + 1) - mStrains(i))
+            FindSegmentIndex = i
             Exit Function
         End If
     Next i
