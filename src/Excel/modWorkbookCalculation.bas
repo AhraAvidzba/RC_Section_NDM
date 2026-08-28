@@ -556,8 +556,8 @@ Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section
     Dim writer As CCapacityResultWriter
     Set writer = New CCapacityResultWriter
 
-    Dim concrete As Object
-    Dim steel As Object
+    Dim concrete As CMaterialDiagram
+    Dim steel As CMaterialDiagram
     Set concrete = materialProvider.ConcreteStateMaterial(currentPurpose)
     Set steel = materialProvider.SteelStateMaterial(currentPurpose)
 
@@ -643,6 +643,7 @@ Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section
     Dim service As CSectionSolver
     Set service = New CSectionSolver
     service.ApplySettings settings, units
+    ApplyDirectStateInitialGuessForResult section, concrete, steel, nValue, internalMxValue, internalMyValue, service
     service.Solve section, concrete, steel, nValue, internalMxValue, internalMyValue
 
     If service.Converged Then
@@ -667,14 +668,15 @@ Private Sub WriteDirectStateAndCrackResults(ByVal workbook As Object, ByVal sect
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
         ByVal centroidMxForCrack As Double, ByVal centroidMyForCrack As Double, ByVal writer As CCapacityResultWriter)
 
-    Dim concrete As Object
-    Dim steel As Object
+    Dim concrete As CMaterialDiagram
+    Dim steel As CMaterialDiagram
     Set concrete = materialProvider.ConcreteStateMaterial(currentPurpose)
     Set steel = materialProvider.SteelStateMaterial(currentPurpose)
 
     Dim service As CSectionSolver
     Set service = New CSectionSolver
     service.ApplySettings settings, units
+    ApplyDirectStateInitialGuessForResult section, concrete, steel, nValue, mxValue, myValue, service
     service.Solve section, concrete, steel, nValue, mxValue, myValue
 
     writer.WriteDirectSectionResult workbook, service, units
@@ -691,6 +693,30 @@ Private Sub WriteDirectStateAndCrackResults(ByVal workbook As Object, ByVal sect
             nValue, mxValue, myValue, _
             centroidMxForCrack, centroidMyForCrack
         writer.WriteCrackResult workbook, crack, units
+    End If
+End Sub
+
+' Для одиночного вывода результатов применяет тот же старт чистого изгиба,
+' что и batch-расчет. Это важно, чтобы Results, схема и блок "Расчет" не
+' расходились только из-за разных начальных приближений CSectionSolver.
+Private Sub ApplyDirectStateInitialGuessForResult(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
+        ByVal service As CSectionSolver)
+    If section Is Nothing Then Exit Sub
+    If concreteMaterial Is Nothing Then Exit Sub
+    If steelMaterial Is Nothing Then Exit Sub
+    If service Is Nothing Then Exit Sub
+    If Abs(nValue) > 0.000000001 Then Exit Sub
+    If Not HasMomentVectorValues(mxValue, myValue) Then Exit Sub
+
+    Dim guessBuilder As CStateGuessBuilder
+    Dim eps0 As Double
+    Dim kx As Double
+    Dim ky As Double
+    Set guessBuilder = New CStateGuessBuilder
+    If guessBuilder.BuildForDirectState(section, concreteMaterial, steelMaterial, nValue, mxValue, myValue, eps0, kx, ky) Then
+        service.SetInitialState eps0, kx, ky
     End If
 End Sub
 
@@ -723,6 +749,13 @@ Private Function NormalizedCapacityLoadPathForResult(ByVal capacityLoadPath As S
                 NormalizedCapacityLoadPathForResult = "LambdaN"
             End If
     End Select
+End Function
+
+' Проверяет, что пользовательский или перенесенный момент действительно
+' ненулевой. Отдельная функция нужна, чтобы одинаково применять допуск в
+' одиночном DirectState и FullCapacity-выводе.
+Private Function HasMomentVectorValues(ByVal mxValue As Double, ByVal myValue As Double) As Boolean
+    HasMomentVectorValues = (Sqr(mxValue * mxValue + myValue * myValue) > 0.000000001)
 End Function
 
 ' Собирает математические Offset/Base для повторного вывода capacity на лист

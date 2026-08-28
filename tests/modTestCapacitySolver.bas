@@ -47,8 +47,8 @@ Public Function RunCapacitySolverTests() As String
     TestConcreteTensionLimitIgnored stats
     AppendLine stats, "RUN: TestSteelLimitState"
     TestSteelLimitState stats
-    AppendLine stats, "RUN: TestNumericalFailureNotPhysicalBoundary"
-    TestNumericalFailureNotPhysicalBoundary stats
+    AppendLine stats, "RUN: TestLoadMultiplierPureBendingUsesStateGuess"
+    TestLoadMultiplierPureBendingUsesStateGuess stats
     AppendLine stats, "RUN: TestAsymmetricCoupledCurvatures"
     TestAsymmetricCoupledCurvatures stats
     AppendLine stats, "RUN: TestAsymmetricMxy"
@@ -65,6 +65,8 @@ Public Function RunCapacitySolverTests() As String
     TestLoadMultiplierSearchMethods stats
     AppendLine stats, "RUN: TestCapacityLoadPathMethodMatrix"
     TestCapacityLoadPathMethodMatrix stats
+    AppendLine stats, "RUN: TestCapacityLoadPathZeroComponentMatrix"
+    TestCapacityLoadPathZeroComponentMatrix stats
     AppendLine stats, "RUN: TestLShapeCapacityLoadPathSmoke"
     TestLShapeCapacityLoadPathSmoke stats
     AppendLine stats, "RUN: TestNultBaseLoadStepsSensitivity"
@@ -428,8 +430,10 @@ Private Sub TestSteelLimitState(ByRef stats As TCapacityTestStats)
     AssertEquals stats, "capacity.steelLimit.state", cap.LimitState, "SteelStrainLimit"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
-Private Sub TestNumericalFailureNotPhysicalBoundary(ByRef stats As TCapacityTestStats)
+' Проверяет, что LoadMultiplier не падает на чистом изгибе из-за старта из нулевого излома диаграммы.
+' Раньше этот искусственно жесткий сценарий использовался как пример NumericalFailure, но после появления
+' CStateGuessBuilder он стал важной регрессией устойчивости для λ*Mx/λ*My без постоянной продольной силы.
+Private Sub TestLoadMultiplierPureBendingUsesStateGuess(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
     PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
@@ -441,10 +445,9 @@ Private Sub TestNumericalFailureNotPhysicalBoundary(ByRef stats As TCapacityTest
     cap.MaxRetries = 1
     cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), 0#, -10000000#, 0#
 
-    AssertTrue stats, "capacity.numericalFailure.notConverged", Not cap.Converged
-    AssertTrue stats, "capacity.numericalFailure.state", cap.LimitState = "NumericalFailure" Or cap.LimitState = "SingularTangent"
-    AssertTrue stats, "capacity.numericalFailure.noPhysicalUpper", Not IsPhysicalLimitState(cap.LimitState)
-    AssertTrue stats, "capacity.numericalFailure.retried", cap.RetryCount > 0
+    AssertTrue stats, "capacity.pureBendingGuess.converged", cap.Converged
+    AssertTrue stats, "capacity.pureBendingGuess.physical", IsPhysicalLimitState(cap.LimitState)
+    AssertTrue stats, "capacity.pureBendingGuess.usedGuess", InStr(1, cap.DiagnosticLog, "pureBendingProbeGuess applied", vbTextCompare) > 0
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -849,6 +852,25 @@ Private Sub TestCapacityLoadPathMethodMatrix(ByRef stats As TCapacityTestStats)
     CheckCapacityLoadPathMethods stats, "nmxy", mesh, rebars, 0#, -50000#, 0#, -1200000#, 0#, -800000#
 End Sub
 
+' Проверяет вырожденные, но допустимые lambda-траектории: в Base-векторе
+' могут быть нулевые компоненты, если хотя бы одна компонента нагрузки реально
+' масштабируется. Это защищает общий контракт solver-а Offset + lambda*Base:
+' λ*Mx не обязан иметь N, λ*Mxy может содержать только один момент, а λ*NMxy
+' может фактически свестись к чистому N, чистому Mx или чистому My.
+Private Sub TestCapacityLoadPathZeroComponentMatrix(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+
+    CheckCapacityLoadPathMethods stats, "zero.mxNoN", mesh, rebars, 0#, 0#, 0#, -2000000#, 0#, 0#
+    CheckCapacityLoadPathMethods stats, "zero.myNoN", mesh, rebars, 0#, 0#, 0#, 0#, 0#, -2000000#
+    CheckCapacityLoadPathMethods stats, "zero.mxyOnlyMx", mesh, rebars, 0#, 0#, 0#, -2000000#, 0#, 0#
+    CheckCapacityLoadPathMethods stats, "zero.mxyOnlyMy", mesh, rebars, 0#, 0#, 0#, 0#, 0#, -2000000#
+    CheckCapacityLoadPathMethods stats, "zero.nmxyOnlyN", mesh, rebars, 0#, -50000#, 0#, 0#, 0#, 0#
+    CheckCapacityLoadPathMethods stats, "zero.nmxyOnlyMx", mesh, rebars, 0#, 0#, 0#, -2000000#, 0#, 0#
+    CheckCapacityLoadPathMethods stats, "zero.nmxyOnlyMy", mesh, rebars, 0#, 0#, 0#, 0#, 0#, -2000000#
+End Sub
+
 ' Проверяет пользовательское Г-сечение именно на осевой траектории lambda*N.
 ' В этой задаче важно, что N приложена в бетонном центре тяжести: после
 ' переноса к координатам расчетных элементов внутри solver-а появляются
@@ -1065,6 +1087,12 @@ Private Sub CheckCapacityLoadPathMethod(ByRef stats As TCapacityTestStats, ByVal
     AssertTrue stats, "capacity.pathMatrix." & prefix & ".converged", cap.Converged
     AssertTrue stats, "capacity.pathMatrix." & prefix & ".lambda", cap.LambdaUltimate > 0#
     AssertTrue stats, "capacity.pathMatrix." & prefix & ".physical", IsPhysicalLimitState(cap.LimitState)
+    If Not cap.Converged Then
+        AppendLine stats, "DIAG: capacity.pathMatrix." & prefix & _
+            "; limitState=" & cap.LimitState & _
+            "; stopReason=" & cap.StopReason & _
+            "; log=" & Replace(cap.DiagnosticLog, vbCrLf, " | ")
+    End If
     AssertCapacitySolutionMethod stats, "capacity.pathMatrix." & prefix & ".solutionMethod", cap, methodName, _
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase
     If cap.Converged Then

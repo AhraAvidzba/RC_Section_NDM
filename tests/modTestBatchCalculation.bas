@@ -41,6 +41,8 @@ Public Function RunBatchCalculationTests() As String
     TestBatchExplicitCapacityLoadPathScalesNWithMoments stats
     AppendLine stats, "RUN: TestBatchCapacityLoadPathVariants"
     TestBatchCapacityLoadPathVariants stats
+    AppendLine stats, "RUN: TestBatchCapacityLoadPathAllowsZeroInactiveComponents"
+    TestBatchCapacityLoadPathAllowsZeroInactiveComponents stats
     AppendLine stats, "RUN: TestBatchNMxyWithoutMomentsUsesStableForcePath"
     TestBatchNMxyWithoutMomentsUsesStableForcePath stats
     AppendLine stats, "RUN: TestBatchInvalidCapacityLoadPathReportsInputErr"
@@ -394,6 +396,36 @@ Private Sub TestBatchCapacityLoadPathVariants(ByRef stats As TBatchTestStats)
         batch.CapacityStatus(1) <> "InputErr" And batch.CapacityStatus(2) <> "InputErr" And _
         batch.CapacityStatus(3) <> "InputErr" And batch.CapacityStatus(4) <> "InputErr" And _
         batch.CapacityStatus(5) <> "InputErr"
+End Sub
+
+' Проверяет пользовательский контракт таблицы сочетаний: неучаствующие
+' компоненты нагрузки могут быть пустыми/нулевыми. Ошибкой является только
+' полностью нулевой масштабируемый Base-вектор, потому что тогда lambda не
+' имеет расчетного смысла.
+Private Sub TestBatchCapacityLoadPathAllowsZeroInactiveComponents(ByRef stats As TBatchTestStats)
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.AddCombination "MX_NO_N", 0#, -3000000#, 0#, "Group1", "lambda mx without N", ChrW$(&H3BB) & "*Mx"
+    batch.AddCombination "MY_NO_N", 0#, 0#, -3000000#, "Group1", "lambda my without N", ChrW$(&H3BB) & "*My"
+    batch.AddCombination "MXY_ONLY_MX", 0#, -3000000#, 0#, "Group1", "lambda mxy with only Mx", ChrW$(&H3BB) & "*Mxy"
+    batch.AddCombination "MXY_ONLY_MY", 0#, 0#, -3000000#, "Group1", "lambda mxy with only My", ChrW$(&H3BB) & "*Mxy"
+    batch.AddCombination "NMXY_ONLY_N", -150000#, 0#, 0#, "Group1", "lambda nmxy with only N", ChrW$(&H3BB) & "*NMxy"
+    batch.AddCombination "NMXY_ONLY_MX", 0#, -3000000#, 0#, "Group1", "lambda nmxy with only Mx", ChrW$(&H3BB) & "*NMxy"
+    batch.AddCombination "NMXY_ONLY_MY", 0#, 0#, -3000000#, "Group1", "lambda nmxy with only My", ChrW$(&H3BB) & "*NMxy"
+    batch.AddCombination "NMXY_EMPTY", 0#, 0#, 0#, "Group1", "lambda nmxy empty", ChrW$(&H3BB) & "*NMxy"
+    batch.Execute
+
+    AssertTrue stats, "batch.capacityPath.zero.mx.noInputErr", batch.CapacityStatus(1) <> "InputErr"
+    AssertTrue stats, "batch.capacityPath.zero.my.noInputErr", batch.CapacityStatus(2) <> "InputErr"
+    AssertTrue stats, "batch.capacityPath.zero.mxyMx.noInputErr", batch.CapacityStatus(3) <> "InputErr"
+    AssertTrue stats, "batch.capacityPath.zero.mxyMy.noInputErr", batch.CapacityStatus(4) <> "InputErr"
+    AssertTrue stats, "batch.capacityPath.zero.nmxyN.noInputErr", batch.CapacityStatus(5) <> "InputErr"
+    AssertTrue stats, "batch.capacityPath.zero.nmxyMx.noInputErr", batch.CapacityStatus(6) <> "InputErr"
+    AssertTrue stats, "batch.capacityPath.zero.nmxyMy.noInputErr", batch.CapacityStatus(7) <> "InputErr"
+    AssertTrue stats, "batch.capacityPath.zero.nmxyEmpty.inputErr", batch.CapacityStatus(8) = "InputErr"
+    AssertTrue stats, "batch.capacityPath.zero.nmxyN.pathKept", batch.CapacityLoadPathKey(5) = "LambdaNMxy"
+    AssertTrue stats, "batch.capacityPath.zero.nmxyMx.pathKept", batch.CapacityLoadPathKey(6) = "LambdaNMxy"
+    AssertTrue stats, "batch.capacityPath.zero.nmxyMy.pathKept", batch.CapacityLoadPathKey(7) = "LambdaNMxy"
 End Sub
 
 ' Проверяет вырожденный пользовательский случай: выбран λ*NMxy, но в строке

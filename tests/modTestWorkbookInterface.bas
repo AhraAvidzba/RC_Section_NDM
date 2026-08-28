@@ -37,6 +37,8 @@ Public Function RunWorkbookInterfaceTests() As String
     TestExecutionReportFile stats
     TestLShapeWorkbookRunWritesResults stats
     TestLShapeMomentUltimateStrainWorkbookPath stats
+    TestLShapePureBendingUltimateStrainWorkbookPath stats
+    TestLShapePureBendingDirectStateWorkbookPath stats
     TestLShapeAxialTensionExtensionFromWorkbookSettings stats
     TestAutoCADExportUsesSharedLoadReference stats
     TestGoverningCombinationWritesDetailedResults stats
@@ -587,6 +589,81 @@ Private Sub TestLShapeMomentUltimateStrainWorkbookPath(ByRef stats As TUiTestSta
         CDbl(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("lambdaUltimate")).Value2) > 0#
     AssertTrue stats, "ui.lshape.momentUltimate.mxult", _
         Abs(CDbl(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("Mxult")).Value2)) > 0#
+End Sub
+
+' Проверяет чистый изгиб Г-сечения по полному Excel-пути.
+' Здесь N намеренно равен нулю: программа должна найти прямое НДС и
+' предельный момент без перехода в осевую или аварийную ветку.
+Private Sub TestLShapePureBendingUltimateStrainWorkbookPath(ByRef stats As TUiTestStats)
+    PrepareUserLShapeMomentUltimateInput
+
+    Dim loads As Object
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    loads.Cells.Item(2, 2).Value2 = 0#
+    loads.Cells.Item(2, 7).Value2 = "pure bending ultimate regression"
+
+    Dim message As String
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    ThisWorkbook.Application.CalculateFull
+
+    Dim resultsSheet As Object
+    Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
+    Dim firstRow As Long
+    firstRow = BatchSummaryStartRow() + 9
+
+    Dim directStatus As String
+    Dim capacityStatus As String
+    Dim solutionMethod As String
+    directStatus = CStr(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("DirectStateStatus")).Value2)
+    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("CapacityStatus")).Value2)
+    solutionMethod = CStr(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("CapacitySolutionMethod")).Value2)
+
+    AppendLine stats, "INFO: ui.lshape.pureBending direct=" & directStatus & _
+        "; capacity=" & capacityStatus & _
+        "; solutionMethod=" & solutionMethod & _
+        "; lambda=" & CStr(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("lambdaUltimate")).Value2)
+
+    AssertTrue stats, "ui.lshape.pureBending.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    AssertTextEquals stats, "ui.lshape.pureBending.directOk", directStatus, "OK"
+    AssertTextEquals stats, "ui.lshape.pureBending.capacityOk", capacityStatus, "OK"
+    AssertTextEquals stats, "ui.lshape.pureBending.method", solutionMethod, "UltimateStrain"
+    AssertTrue stats, "ui.lshape.pureBending.lambda", _
+        CDbl(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("lambdaUltimate")).Value2) > 0#
+End Sub
+
+' Проверяет чистый изгиб Г-сечения без расчета несущей способности.
+' Это защищает именно прямой StateSolution: даже если FullCapacity выключен,
+' solver должен найти НДС для простого Mx при N=0, а не зависеть от ранее
+' найденной предельной capacity-плоскости.
+Private Sub TestLShapePureBendingDirectStateWorkbookPath(ByRef stats As TUiTestStats)
+    PrepareUserLShapeMomentUltimateInput
+    SetSystemSetting "Calculation.Mode", "DirectState"
+
+    Dim loads As Object
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    loads.Cells.Item(2, 2).Value2 = 0#
+    loads.Cells.Item(2, 7).Value2 = "pure bending direct regression"
+
+    Dim message As String
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    ThisWorkbook.Application.CalculateFull
+
+    Dim resultsSheet As Object
+    Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
+    Dim firstRow As Long
+    firstRow = BatchSummaryStartRow() + 9
+
+    Dim directStatus As String
+    Dim capacityStatus As String
+    directStatus = CStr(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("DirectStateStatus")).Value2)
+    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("CapacityStatus")).Value2)
+
+    AppendLine stats, "INFO: ui.lshape.pureBendingDirect direct=" & directStatus & _
+        "; capacity=" & capacityStatus
+
+    AssertTrue stats, "ui.lshape.pureBendingDirect.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    AssertTextEquals stats, "ui.lshape.pureBendingDirect.directOk", directStatus, "OK"
+    AssertTextEquals stats, "ui.lshape.pureBendingDirect.capacityNA", capacityStatus, "N/A"
 End Sub
 
 ' Проверяет пользовательский сценарий с сильным осевым растяжением Г-сечения

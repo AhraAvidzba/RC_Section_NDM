@@ -1599,6 +1599,7 @@ Private Function ProbeOnce(ByVal section As CSectionModel, _
         solver.SetInitialLoadState mLastAcceptableSolver.Epsilon0, mLastAcceptableSolver.KappaX, mLastAcceptableSolver.KappaY, _
             mLastAcceptableN, mLastAcceptableMx, mLastAcceptableMy
     End If
+    ApplyPureBendingProbeGuess section, concreteMaterial, steelMaterial, solver, nSpecified, mx, my
 
     solver.Solve section, concreteMaterial, steelMaterial, nSpecified, mx, my
     Set mLastSolver = solver
@@ -1626,6 +1627,44 @@ Failed:
     mLimitState = STATE_INVALID_INPUT
     mStopReason = "Capacity probe failed: " & Err.Description
 End Function
+
+' Для чистого изгиба N=0 каждая probe-точка LoadMultiplier может оказаться
+' в той же численной ловушке, что и прямой DirectState: нулевая плоскость
+' деформаций лежит ровно на изломе "сжатый бетон / выключенное растяжение".
+' Поэтому для такой probe-точки старт строится от ее собственных целевых
+' усилий, а не от предыдущей lambda: это устойчивее около границы плато и не
+' зависит от того, какая точка перед этим была последней acceptable.
+' Траектория Target = Offset + lambda*Base при этом не меняется: мы только
+' подсказываем внутреннему CSectionSolver, с какой стороны излома начинать.
+Private Sub ApplyPureBendingProbeGuess(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal solver As CSectionSolver, ByVal nSpecified As Double, _
+        ByVal mx As Double, ByVal my As Double)
+    If solver Is Nothing Then Exit Sub
+    If section Is Nothing Then Exit Sub
+    If Abs(nSpecified) > 0.000000001 Then Exit Sub
+    If Sqr(mx * mx + my * my) <= 0.000000001 Then Exit Sub
+    If TypeName(concreteMaterial) <> "CMaterialDiagram" Then Exit Sub
+    If TypeName(steelMaterial) <> "CMaterialDiagram" Then Exit Sub
+
+    Dim concreteDiagram As CMaterialDiagram
+    Dim steelDiagram As CMaterialDiagram
+    Set concreteDiagram = concreteMaterial
+    Set steelDiagram = steelMaterial
+
+    Dim guessBuilder As CStateGuessBuilder
+    Set guessBuilder = New CStateGuessBuilder
+
+    Dim eps0 As Double
+    Dim kx As Double
+    Dim ky As Double
+    If guessBuilder.BuildForDirectState(section, concreteDiagram, steelDiagram, _
+            nSpecified, mx, my, eps0, kx, ky) Then
+        solver.ClearInitialState
+        solver.SetInitialLoadState eps0, kx, ky, nSpecified, mx, my
+        AppendSearchDiagnostic "pureBendingProbeGuess applied; lambda target moments are nonzero"
+    End If
+End Sub
 
 ' Возвращает уже посчитанную probe-точку LoadMultiplier.
 ' Brent/Secant после нахождения скобки могут повторно спросить те же lambda,

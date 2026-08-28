@@ -526,6 +526,7 @@ Private Sub RunSectionStateAndCrack(ByVal index As Long, ByVal crackRequested As
     Dim service As CSectionSolver
     Set service = New CSectionSolver
     ConfigureSectionSolver service
+    ApplyDirectStateInitialGuess index, concreteState, steelState, service
     ReportStep "Запускается прямой расчет НДС CSectionSolver."
     service.Solve mSection, concreteState, steelState, mN(index), mMx(index), mMy(index)
     StoreSectionState index, service
@@ -626,6 +627,32 @@ Private Sub RunSectionStateAndCrack(ByVal index As Long, ByVal crackRequested As
     ReportValue "ds_eq", FormatNumberInvariant(mCrackDsEquivalent(index)) & " мм"
     ReportValue "ls", FormatNumberInvariant(mCrackLs(index)) & " мм"
     ReportBlock "Диагностика расчета трещин", crack.DiagnosticLog
+End Sub
+
+' Для чистого изгиба прямой НДС стартует не из нулевой плоскости, а из
+' active-set оценки по текущим диаграммам материала. Это устраняет попадание
+' первой итерации ровно в излом бетона между сжатием и неработающим
+' растяжением. Дальше CSectionSolver все равно заново решает полное
+' равновесие, поэтому начальная плоскость не подменяет расчетный результат.
+Private Sub ApplyDirectStateInitialGuess(ByVal index As Long, _
+        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal service As CSectionSolver)
+    If service Is Nothing Then Exit Sub
+    If concreteMaterial Is Nothing Then Exit Sub
+    If steelMaterial Is Nothing Then Exit Sub
+    If Abs(mN(index)) > 0.000000001 Then Exit Sub
+    If Not HasUserMomentVector(index) Then Exit Sub
+
+    Dim guessBuilder As CStateGuessBuilder
+    Dim eps0 As Double
+    Dim kx As Double
+    Dim ky As Double
+    Set guessBuilder = New CStateGuessBuilder
+    If guessBuilder.BuildForDirectState(mSection, concreteMaterial, steelMaterial, _
+            mN(index), mMx(index), mMy(index), eps0, kx, ky) Then
+        service.SetInitialState eps0, kx, ky
+        ReportStep "Для чистого изгиба НДС задан active-set старт по текущей диаграмме материала."
+    End If
 End Sub
 
 Private Function NormalizedCombinationCalculationType(ByVal calculationType As String) As String
