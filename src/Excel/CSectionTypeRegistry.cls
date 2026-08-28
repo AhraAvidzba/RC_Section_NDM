@@ -14,7 +14,9 @@ Option Explicit
 ' ==========================================================================
 ' Registry - единственная точка, где строка Geometry.Type из Config
 ' сопоставляется с конкретным набором классов формы: CGeometry*,
-' *RebarLayoutBuilder и *AnnotationBuilder. Отдельные provider-классы здесь
+' *RebarLayoutBuilder и *AnnotationBuilder. Он не должен знать внутреннюю
+' структуру таблиц граней и рядов конкретного сечения: такие детали остаются
+' внутри специализированных builders. Отдельные provider-классы здесь
 ' сознательно не используются, чтобы новый тип сечения требовал не более трех
 ' новых специализированных классов и одной регистрации в этом registry.
 
@@ -77,8 +79,9 @@ Public Function CreateGeometry(ByVal settings As CSystemSettingsReader, ByVal un
 End Function
 
 ' Создает раскладку арматуры для активной встроенной формы.
-' Логика принадлежности стержней граням остается внутри специализированного
-' RebarLayoutBuilder; registry только передает уже нормализованные настройки.
+' Registry выбирает нужный builder, а чтение shape-specific ключей Config
+' выполняет сам builder. Так таблица граней LShape и правила дополнительных
+' рядов не размазываются по общему registry.
 Public Function CreateRebars(ByVal geometry As ISectionGeometry, ByVal settings As CSystemSettingsReader, _
         ByVal units As CUnitSystem) As CRebarLayout
     Dim circleRebars As CCircleRebarLayoutBuilder ' Генератор раскладки арматуры для кругового сечения.
@@ -87,48 +90,36 @@ Public Function CreateRebars(ByVal geometry As ISectionGeometry, ByVal settings 
     Select Case ActiveGeometryType(settings)
         Case TYPE_CIRCLE
             Set circleRebars = New CCircleRebarLayoutBuilder
-            Set CreateRebars = circleRebars.Build( _
-                units.InputLengthToInternal(settings.GetDouble("Circle.Diameter", 300#)), _
-                0#, _
-                0#, _
-                units.InputLengthToInternal(settings.GetDouble("Rebar.AxisDistance", 40#)), _
-                settings.GetLong("Rebar.Count", 8), _
-                units.InputLengthToInternal(settings.GetDouble("Rebar.Diameter", 20#)), _
-                settings.GetString("Steel.RebarProfile", "Ribbed"), _
-                units.InputLengthToInternal(settings.GetDouble("Rebar.Diameter2", 0#)), _
-                units.InputLengthToInternal(settings.GetDouble("Rebar.Diameter3", 0#)), _
-                settings.GetString("Rebar.Loc2row", "Stacked"), _
-                settings.GetString("Rebar.Loc3row", "Stacked"))
+            Set CreateRebars = circleRebars.BuildFromSettings(settings, units)
 
         Case TYPE_LSHAPE
             Set lshapeRebars = New CLShapeRebarLayoutBuilder
-            Set CreateRebars = lshapeRebars.Build( _
-                units.InputLengthToInternal(settings.GetDouble("LShape.B1", 250#)), _
-                units.InputLengthToInternal(settings.GetDouble("LShape.H1", 550#)), _
-                units.InputLengthToInternal(settings.GetDouble("LShape.B2", 600#)), _
-                units.InputLengthToInternal(settings.GetDouble("LShape.H2", 250#)), _
-                0#, _
-                0#, _
-                LShapeFaceSettings(settings, units, "H1"), _
-                LShapeFaceSettings(settings, units, "H2"), _
-                LShapeFaceSettings(settings, units, "B1"), _
-                LShapeFaceSettings(settings, units, "B2"), _
-                settings.GetString("Steel.RebarProfile", "Ribbed"))
+            Set CreateRebars = lshapeRebars.BuildFromSettings(settings, units)
 
         Case TYPE_ROUNDED_RECTANGLE
-            Err.Raise vbObjectError + 4103, "CSectionTypeRegistry", _
-                "Автоматическая раскладка арматуры поддерживается только для Circle и LShape."
+            ' Для RoundedRectangle пока нет отдельного rebar builder-а. Это не
+            ' ошибка геометрии: сечение строится как бетонное, а подписи
+            ' арматуры отсутствуют естественным образом.
+            Set CreateRebars = New CRebarLayout
     End Select
 End Function
 
 ' Добавляет semantic-аннотации формы в готовую CSectionModel.
 ' AnnotationBuilder получает модельные координаты и смысловые группы арматуры;
 ' Excel/Chart-координаты по-прежнему рассчитывает только layout/plot layer.
+' Если для будущего типа сечения annotation builder еще не создан, это не
+' считается ошибкой: модель просто останется без размеров/подписей граней,
+' а общие подписи схемы CSectionPlotter продолжит выводить сам.
 Public Sub BuildAnnotations(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, _
         ByVal rebars As CRebarLayout, ByVal settings As CSystemSettingsReader)
+    If model Is Nothing Then Err.Raise vbObjectError + 4136, "CSectionTypeRegistry", "Модель сечения не передана."
+    If geometry Is Nothing Then Err.Raise vbObjectError + 4137, "CSectionTypeRegistry", "Геометрия сечения не передана."
+
     Dim circleAnnotations As CCircleAnnotationBuilder ' Формирует semantic-размеры и подписи арматуры для круга.
     Dim lshapeAnnotations As CLShapeAnnotationBuilder ' Формирует semantic-аннотации для граней Г-сечения.
     Dim roundedAnnotations As CRoundedRectAnnotationBuilder ' Формирует semantic-аннотации скругленного прямоугольника.
+
+    model.Annotations.Clear
 
     Select Case ActiveGeometryType(settings)
         Case TYPE_CIRCLE
@@ -175,30 +166,3 @@ Public Function MeshBoundarySubdivisions(ByVal settings As CSystemSettingsReader
     MeshBoundarySubdivisions = settings.GetLong("Mesh.BoundarySubdivisions", 1)
     If MeshBoundarySubdivisions < 1 Then MeshBoundarySubdivisions = 1
 End Function
-
-' Читает параметры одной смысловой грани Г-сечения и переводит длины во
-' внутренние миллиметры. Дальше CLShapeRebarLayoutBuilder сам решает, какие
-' стержни создать и какие semantic-группы арматуры сформировать.
-Private Function LShapeFaceSettings(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
-        ByVal faceName As String) As Variant
-    LShapeFaceSettings = Array( _
-        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".as_1", 40#)), _
-        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".as_2", 40#)), _
-        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".d_1", 32#)), _
-        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".d_2", 32#)), _
-        settings.GetLong("LShape." & faceName & ".n_1", 0), _
-        settings.GetLong("LShape." & faceName & ".n_2", 0), _
-        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".StartOffset1", 80#)), _
-        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".EndOffset1", 80#)), _
-        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".StartOffset2", 80#)), _
-        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".EndOffset2", 80#)), _
-        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".d_2row_1", 0#)), _
-        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".d_2row_2", 0#)), _
-        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".d_3row_1", 0#)), _
-        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".d_3row_2", 0#)), _
-        settings.GetString("LShape." & faceName & ".loc_2row", "Stacked"), _
-        settings.GetString("LShape." & faceName & ".loc_3row", "Stacked"), _
-        settings.GetString("LShape." & faceName & ".bind_2row", "EachBar"), _
-        settings.GetString("LShape." & faceName & ".bind_3row", "EachBar"))
-End Function
-

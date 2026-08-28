@@ -14,7 +14,8 @@ Option Explicit
 ' ==========================================================================
 ' Класс отвечает за человекочитаемый блок результатов capacity-проверки на
 ' листе расчета. Он получает готовые значения lambda, статусы и предельные
-' моменты, форматирует их для Excel и не участвует в самом поиске lambda.
+' компоненты выбранной λ-траектории, форматирует их для Excel и не участвует
+' в самом поиске lambda.
 
 Public Sub WriteCapacityResult(ByVal workbook As Object, ByVal capacity As CCapacitySolver, Optional ByVal units As CUnitSystem = Nothing)
     WriteResult workbook, "rngResultSection", capacity, units
@@ -38,21 +39,27 @@ Private Sub WriteResult(ByVal workbook As Object, ByVal rangeName As String, ByV
     Dim rows As Variant
     rows = EmptyResultRows(target.Rows.Count)
     PutRow rows, 1, "Indicator", "Value", "Unit", "Comment"
-    PutRow rows, 2, "Mode", "N+Mx+My", "", "Единый расчет по направлению вектора моментов"
+    PutRow rows, 2, "Mode", "N+Mx+My", "", "Единый расчет по выбранной λ-траектории нагрузки"
     PutRow rows, 3, "Converged", IIf(capacity.Converged, "Yes", "No"), "", capacity.StopReason
     PutRow rows, 4, "LimitState", capacity.LimitState, "", "Физические и численные причины остановки разделяются"
     PutRow rows, 5, "LambdaUltimate", capacity.LambdaUltimate, "", "SafetyFactor = LambdaUltimate"
-    PutRow rows, 6, "MxUltimate", OutputMx(capacity.MxUltimate, units), OutputMomentUnit(units), "Внутренние единицы: N*mm"
-    PutRow rows, 7, "MyUltimate", OutputMy(capacity.MyUltimate, units), OutputMomentUnit(units), "Внутренние единицы: N*mm"
-    PutRow rows, 8, "MomentResultant", OutputMomentMagnitude(capacity.MomentUltimate, units), OutputMomentUnit(units), "Результирующий момент вектора Mx/My"
-    PutRow rows, 9, "SafetyFactor", capacity.SafetyFactor, "", "Utilization=" & CStr(capacity.Utilization)
-    PutRow rows, 10, "MomentResidual", OutputMomentMagnitude(capacity.MomentEquilibriumResidual, units), OutputMomentUnit(units), "Независимая проверка равновесия"
-    If Not capacity.LastSolver Is Nothing Then
-        PutRow rows, 11, "Epsilon0", capacity.LastSolver.Epsilon0, "", "Параметр плоскости деформаций"
-        PutRow rows, 12, "KappaX", OutputCurvature(capacity.LastSolver.KappaX, units), OutputCurvatureUnit(units), "Кривизна, связанная с координатой y"
-        PutRow rows, 13, "KappaY", OutputCurvature(capacity.LastSolver.KappaY, units), OutputCurvatureUnit(units), "Кривизна, связанная с координатой x"
-        PutRow rows, 14, "StrainLimits", capacity.LastSolver.MinConcreteStrain, "", "MaxAbsSteelStrain=" & CStr(capacity.LastSolver.MaxAbsSteelStrain)
+    If Abs(capacity.NUltimate) > 0# Then
+        PutRow rows, 6, "Nultimate", OutputForce(capacity.NUltimate, units), OutputForceUnit(units), "Предельная продольная сила для траектории, где масштабируется N"
+    Else
+        PutRow rows, 6, "Nultimate", vbNullString, OutputForceUnit(units), "Заполняется только если выбранная траектория масштабирует N"
     End If
+    PutRow rows, 7, "MxUltimate", OutputMx(capacity.MxUltimate, units), OutputMomentUnit(units), "Внутренние единицы: N*mm"
+    PutRow rows, 8, "MyUltimate", OutputMy(capacity.MyUltimate, units), OutputMomentUnit(units), "Внутренние единицы: N*mm"
+    PutRow rows, 9, "MomentResultant", OutputMomentMagnitude(capacity.MomentUltimate, units), OutputMomentUnit(units), "Результирующий момент вектора Mx/My"
+    PutRow rows, 10, "SafetyFactor", capacity.SafetyFactor, "", "Utilization=" & CStr(capacity.Utilization)
+    PutRow rows, 11, "MomentResidual", OutputMomentMagnitude(capacity.MomentEquilibriumResidual, units), OutputMomentUnit(units), "Независимая проверка равновесия"
+    If Not capacity.LastSolver Is Nothing Then
+        PutRow rows, 12, "Epsilon0", capacity.LastSolver.Epsilon0, "", "Параметр плоскости деформаций"
+        PutRow rows, 13, "KappaX", OutputCurvature(capacity.LastSolver.KappaX, units), OutputCurvatureUnit(units), "Кривизна, связанная с координатой y"
+        PutRow rows, 14, "KappaY", OutputCurvature(capacity.LastSolver.KappaY, units), OutputCurvatureUnit(units), "Кривизна, связанная с координатой x"
+        PutRow rows, 15, "StrainLimits", capacity.LastSolver.MinConcreteStrain, "", "MaxAbsSteelStrain=" & CStr(capacity.LastSolver.MaxAbsSteelStrain)
+    End If
+    PutRow rows, 16, "SolutionMethod", capacity.SolutionMethod, "", "Фактическая численная ветка, которой найден предельный множитель"
     WriteResultRows target, rows
 End Sub
 
@@ -129,6 +136,11 @@ Private Function OutputMomentMagnitude(ByVal value As Double, ByVal units As CUn
     OutputMomentMagnitude = units.InternalMomentMagnitudeToOutput(value)
 End Function
 
+Private Function OutputForce(ByVal value As Double, ByVal units As CUnitSystem) As Double
+    If units Is Nothing Then OutputForce = value: Exit Function
+    OutputForce = units.InternalForceToOutput(value)
+End Function
+
 Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputLength = value: Exit Function
     OutputLength = units.InternalLengthToOutput(value)
@@ -151,6 +163,10 @@ End Function
 
 Private Function OutputMomentUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputMomentUnit = "kN*m" Else OutputMomentUnit = units.OutputMomentUnit
+End Function
+
+Private Function OutputForceUnit(ByVal units As CUnitSystem) As String
+    If units Is Nothing Then OutputForceUnit = "N" Else OutputForceUnit = units.OutputForceUnit
 End Function
 
 Private Function OutputLengthUnit(ByVal units As CUnitSystem) As String

@@ -31,6 +31,20 @@ Public Function RunBatchCalculationTests() As String
     TestBatchGoverningUsesLowestSafetyFactor stats
     AppendLine stats, "RUN: TestBatchGoverningCanUseGroup2CapacitySafety"
     TestBatchGoverningCanUseGroup2CapacitySafety stats
+    AppendLine stats, "RUN: TestBatchPureAxialCapacityUsesNult"
+    TestBatchPureAxialCapacityUsesNult stats
+    AppendLine stats, "RUN: TestBatchLShapeN200CapacityPathNDoesNotNumFail"
+    TestBatchLShapeN200CapacityPathNDoesNotNumFail stats
+    AppendLine stats, "RUN: TestBatchExplicitCapacityLoadPathScalesMxy"
+    TestBatchExplicitCapacityLoadPathScalesMxy stats
+    AppendLine stats, "RUN: TestBatchExplicitCapacityLoadPathScalesNWithMoments"
+    TestBatchExplicitCapacityLoadPathScalesNWithMoments stats
+    AppendLine stats, "RUN: TestBatchCapacityLoadPathVariants"
+    TestBatchCapacityLoadPathVariants stats
+    AppendLine stats, "RUN: TestBatchNMxyWithoutMomentsUsesStableForcePath"
+    TestBatchNMxyWithoutMomentsUsesStableForcePath stats
+    AppendLine stats, "RUN: TestBatchInvalidCapacityLoadPathReportsInputErr"
+    TestBatchInvalidCapacityLoadPathReportsInputErr stats
     AppendLine stats, "RUN: TestCapacityScopeGroup1OnlySkipsGroup2"
     TestCapacityScopeGroup1OnlySkipsGroup2 stats
     AppendLine stats, "RUN: TestLoadReferenceTransformsUserMoments"
@@ -224,6 +238,227 @@ Private Sub TestBatchGoverningUsesLowestSafetyFactor(ByRef stats As TBatchTestSt
     AssertTrue stats, "batch.governing.limitState", Len(batch.CapacityLimitState(2)) > 0
     AssertTrue stats, "batch.governing.strength.status", _
         batch.CapacityStatus(2) = "OK" Or batch.CapacityStatus(2) = "FAIL" Or batch.CapacityStatus(2) = "NumFail"
+End Sub
+
+' Проверяет, что batch для чистой продольной силы автоматически выбирает
+' траекторию lambda*N. Нулевые пользовательские моменты в этом режиме не
+' являются ошибкой: до предела масштабируется именно продольная сила.
+Private Sub TestBatchPureAxialCapacityUsesNult(ByRef stats As TBatchTestStats)
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.AddCombination "N_ONLY", 50000#, 0#, 0#, "Group1", "pure axial"
+    batch.Execute
+
+    AssertTrue stats, "batch.nult.path", batch.CapacityLoadPathKey(1) = "LambdaN"
+    AssertTrue stats, "batch.nult.solutionMethod", batch.CapacitySolutionMethod(1) = "LoadMultiplier"
+    AppendLine stats, "INFO: batch.nult.status=" & batch.CapacityStatus(1) & _
+        "; limitState=" & batch.CapacityLimitState(1) & _
+        "; solutionMethod=" & batch.CapacitySolutionMethod(1) & _
+        "; lambda=" & FormatNumberInvariant(batch.LambdaCapacity(1)) & _
+        "; Nult=" & FormatNumberInvariant(batch.NUltimate(1))
+    AssertTrue stats, "batch.nult.status", batch.CapacityStatus(1) = "OK" Or batch.CapacityStatus(1) = "FAIL"
+    AssertTrue stats, "batch.nult.axialUltimate", Abs(batch.NUltimate(1)) > Abs(batch.N(1))
+    AssertTrue stats, "batch.nult.noMomentUltimate", Abs(batch.MomentUltimate(1)) < 0.000001
+    AssertTrue stats, "batch.nult.governing", batch.GoverningCombinationID = "N_ONLY"
+End Sub
+
+' Проверяет пользовательский сценарий из книги: Г-сечение, нагрузка
+' N=-200 тс при принятом знаке +N=Compression, то есть внутреннее растяжение,
+' и путь CapacityLoadPath = λ*N. Точка приложения проходит через бетонный
+' центр тяжести, поэтому внутри solver-а вместе с N масштабируются и моменты
+' переноса, но пользовательская постановка остается чистым Nult.
+Private Sub TestBatchLShapeN200CapacityPathNDoesNotNumFail(ByRef stats As TBatchTestStats)
+    Dim oldMode As String
+    Dim oldMethod As String
+    Dim oldScope As String
+    Dim oldBaseLoadSteps As String
+    Dim oldMaxRetries As String
+    oldMode = GetSystemSetting("Calculation.Mode")
+    oldMethod = GetSystemSetting("Capacity.Method")
+    oldScope = GetSystemSetting("Capacity.CalculationScope")
+    oldBaseLoadSteps = GetSystemSetting("Capacity.BaseLoadSteps")
+    oldMaxRetries = GetSystemSetting("Capacity.MaxRetries")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "Calculation.Mode", "FullCapacity"
+    SetSystemSetting "Capacity.CalculationScope", "Group1Only"
+    SetSystemSetting "Capacity.BaseLoadSteps", "1"
+    SetSystemSetting "Capacity.MaxRetries", "0"
+
+    CheckBatchLShapeN200CapacityMethod stats, "Auto"
+    CheckBatchLShapeN200CapacityMethod stats, "UltimateStrain"
+    CheckBatchLShapeN200CapacityMethod stats, "LoadMultiplier"
+
+Restore:
+    SetSystemSetting "Calculation.Mode", oldMode
+    SetSystemSetting "Capacity.Method", oldMethod
+    SetSystemSetting "Capacity.CalculationScope", oldScope
+    SetSystemSetting "Capacity.BaseLoadSteps", oldBaseLoadSteps
+    SetSystemSetting "Capacity.MaxRetries", oldMaxRetries
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.lshape.n200.capacityPathN; " & Err.Description
+    Resume Restore
+End Sub
+
+Private Sub CheckBatchLShapeN200CapacityMethod(ByRef stats As TBatchTestStats, ByVal methodName As String)
+    SetSystemSetting "Capacity.Method", methodName
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+
+    Dim provider As CMaterialModelProvider
+    Set provider = New CMaterialModelProvider
+    provider.Initialize settings, units
+
+    Dim referenceX As Double
+    Dim referenceY As Double
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUserLShapeTensionBatch(referenceX, referenceY, provider)
+    batch.ApplySettings settings, units
+    batch.AddCombination "G1_N200_" & methodName, 200# * 9806.65, 0#, 0#, _
+        "Group1", "user N=-200 tf, lambda*N", ChrW$(&H3BB) & "*N"
+    batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
+    batch.Execute
+
+    AppendLine stats, "INFO: batch.lshape.n200." & methodName & _
+        "; capacityStatus=" & batch.CapacityStatus(1) & _
+        "; limitState=" & batch.CapacityLimitState(1) & _
+        "; solutionMethod=" & batch.CapacitySolutionMethod(1) & _
+        "; lambda=" & FormatNumberInvariant(batch.LambdaCapacity(1)) & _
+        "; Nult=" & FormatNumberInvariant(batch.NUltimate(1))
+    AssertTrue stats, "batch.lshape.n200." & methodName & ".notNumFail", batch.CapacityStatus(1) <> "NumFail"
+    AssertTrue stats, "batch.lshape.n200." & methodName & ".capacityStatus", _
+        batch.CapacityStatus(1) = "OK" Or batch.CapacityStatus(1) = "FAIL"
+    AssertTrue stats, "batch.lshape.n200." & methodName & ".nult", Abs(batch.NUltimate(1)) > Abs(batch.N(1))
+    AssertTrue stats, "batch.lshape.n200." & methodName & ".solutionMethod", _
+        batch.CapacitySolutionMethod(1) = "LoadMultiplier"
+End Sub
+
+' Проверяет, что явный выбор lambda*Mxy масштабирует оба пользовательских
+' момента при постоянной продольной силе. Это основной вариант для общего
+' изгиба N + Mx + My, когда нужно найти предельный момент при заданной N.
+Private Sub TestBatchExplicitCapacityLoadPathScalesMxy(ByRef stats As TBatchTestStats)
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.AddCombination "M_BRANCH", -150000#, -3000000#, -1000000#, "Group1", "moment branch", ChrW$(&H3BB) & "*Mxy"
+    batch.Execute
+
+    AssertTrue stats, "batch.capacityPath.mxy.value", batch.CapacityLoadPath(1) = ChrW$(&H3BB) & "*Mxy"
+    AssertTrue stats, "batch.capacityPath.mxy.key", batch.CapacityLoadPathKey(1) = "LambdaMxy"
+    AssertTrue stats, "batch.capacityPath.mxy.mx", Abs(batch.MxUltimate(1)) > 0#
+    AssertTrue stats, "batch.capacityPath.mxy.my", Abs(batch.MyUltimate(1)) > 0#
+End Sub
+
+' Проверяет, что явный выбор lambda*N масштабирует продольную силу даже при
+' наличии пользовательских моментов. Моменты остаются постоянной частью
+' траектории, а момент от эксцентриситета N масштабируется вместе с N.
+Private Sub TestBatchExplicitCapacityLoadPathScalesNWithMoments(ByRef stats As TBatchTestStats)
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.AddCombination "N_BRANCH", -150000#, -3000000#, -1000000#, "Group1", "axial branch", ChrW$(&H3BB) & "*N"
+    batch.Execute
+
+    AssertTrue stats, "batch.capacityPath.n.value", batch.CapacityLoadPath(1) = ChrW$(&H3BB) & "*N"
+    AssertTrue stats, "batch.capacityPath.n.key", batch.CapacityLoadPathKey(1) = "LambdaN"
+    AssertTrue stats, "batch.capacityPath.n.nult", Abs(batch.NUltimate(1)) > 0#
+    AssertTrue stats, "batch.capacityPath.n.status", batch.CapacityStatus(1) = "OK" Or batch.CapacityStatus(1) = "FAIL" Or batch.CapacityStatus(1) = "NumFail"
+End Sub
+
+' Проверяет все пользовательские варианты CapacityLoadPath. Тест не
+' привязывается к конкретной величине запаса: здесь важно, что batch
+' корректно распознает путь и не подменяет выбранную пользователем траекторию.
+Private Sub TestBatchCapacityLoadPathVariants(ByRef stats As TBatchTestStats)
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.AddCombination "PATH_MX", -150000#, -3000000#, 0#, "Group1", "lambda mx", ChrW$(&H3BB) & "*Mx"
+    batch.AddCombination "PATH_MY", -150000#, 0#, -3000000#, "Group1", "lambda my", ChrW$(&H3BB) & "*My"
+    batch.AddCombination "PATH_MXY", -150000#, -3000000#, -1000000#, "Group1", "lambda mxy", ChrW$(&H3BB) & "*Mxy"
+    batch.AddCombination "PATH_N", -150000#, -3000000#, -1000000#, "Group1", "lambda n", ChrW$(&H3BB) & "*N"
+    batch.AddCombination "PATH_ALL", -150000#, -3000000#, -1000000#, "Group1", "lambda all", ChrW$(&H3BB) & "*NMxy"
+    batch.Execute
+
+    AssertTrue stats, "batch.capacityPath.mx.key", batch.CapacityLoadPathKey(1) = "LambdaMx"
+    AssertTrue stats, "batch.capacityPath.my.key", batch.CapacityLoadPathKey(2) = "LambdaMy"
+    AssertTrue stats, "batch.capacityPath.mxy.key", batch.CapacityLoadPathKey(3) = "LambdaMxy"
+    AssertTrue stats, "batch.capacityPath.n.key", batch.CapacityLoadPathKey(4) = "LambdaN"
+    AssertTrue stats, "batch.capacityPath.all.key", batch.CapacityLoadPathKey(5) = "LambdaNMxy"
+    AssertTrue stats, "batch.capacityPath.noInputErr", _
+        batch.CapacityStatus(1) <> "InputErr" And batch.CapacityStatus(2) <> "InputErr" And _
+        batch.CapacityStatus(3) <> "InputErr" And batch.CapacityStatus(4) <> "InputErr" And _
+        batch.CapacityStatus(5) <> "InputErr"
+End Sub
+
+' Проверяет вырожденный пользовательский случай: выбран λ*NMxy, но в строке
+' сочетания Mx=0 и My=0. Это не ошибка ввода и не особая геометрия; по
+' фактическим нагрузкам пользователь масштабирует только продольную силу, а
+' значит capacity должен идти устойчивым силовым путем LoadMultiplier.
+Private Sub TestBatchNMxyWithoutMomentsUsesStableForcePath(ByRef stats As TBatchTestStats)
+    Dim oldMode As String
+    Dim oldMethod As String
+    oldMode = GetSystemSetting("Calculation.Mode")
+    oldMethod = GetSystemSetting("Capacity.Method")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "Calculation.Mode", "FullCapacity"
+    SetSystemSetting "Capacity.Method", "UltimateStrain"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+
+    Dim provider As CMaterialModelProvider
+    Set provider = New CMaterialModelProvider
+    provider.Initialize settings, units
+
+    Dim referenceX As Double
+    Dim referenceY As Double
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUserLShapeTensionBatch(referenceX, referenceY, provider)
+    batch.ApplySettings settings, units
+    batch.AddCombination "NMXY_ZERO_M", 100# * 9806.65, 0#, 0#, _
+        "Group1", "lambda NMxy with zero moments", ChrW$(&H3BB) & "*NMxy"
+    batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
+    batch.Execute
+
+    AssertTrue stats, "batch.capacityPath.nmxyZeroM.path", batch.CapacityLoadPathKey(1) = "LambdaNMxy"
+    AssertTrue stats, "batch.capacityPath.nmxyZeroM.solutionMethod", batch.CapacitySolutionMethod(1) = "LoadMultiplier"
+    AssertTrue stats, "batch.capacityPath.nmxyZeroM.notNumFail", batch.CapacityStatus(1) <> "NumFail"
+    AssertTrue stats, "batch.capacityPath.nmxyZeroM.nult", Abs(batch.NUltimate(1)) > Abs(batch.N(1))
+
+Restore:
+    SetSystemSetting "Calculation.Mode", oldMode
+    SetSystemSetting "Capacity.Method", oldMethod
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.capacityPath.nmxyZeroM; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет, что ошибочный текст CapacityLoadPath не заменяется молча
+' авто-выбором. Пользователь должен сразу увидеть ошибку в строке LC.
+Private Sub TestBatchInvalidCapacityLoadPathReportsInputErr(ByRef stats As TBatchTestStats)
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.AddCombination "BAD_CONST", -150000#, -3000000#, 0#, "Group1", "bad branch", "WrongPath"
+    batch.Execute
+
+    AssertTrue stats, "batch.capacityPath.invalid.status", batch.CapacityStatus(1) = "InputErr"
+    AssertTrue stats, "batch.capacityPath.invalid.overall", batch.OverallStatus(1) = "InputErr"
+    AssertTrue stats, "batch.capacityPath.invalid.noPath", Len(batch.CapacityLoadPathKey(1)) = 0
 End Sub
 
 ' Проверяет, что физическое плато нормативной диаграммы не считается
@@ -803,25 +1038,8 @@ End Sub
 ' запасу Capacity среди всех LC, включая строки второй группы. Это нужно для
 ' Plot/AutoCAD = Worst после удаления пользовательского StrainSafetyFactor.
 Private Sub TestBatchGoverningCanUseGroup2CapacitySafety(ByRef stats As TBatchTestStats)
-    Dim oldMode As String
-    Dim oldCrackEnabled As String
-    Dim oldCapacityScope As String
-    oldMode = GetSystemSetting("Calculation.Mode")
-    oldCrackEnabled = GetSystemSetting("SLS.Crack.Enabled")
-    oldCapacityScope = GetSystemSetting("Capacity.CalculationScope")
-
-    On Error GoTo RestoreAndFail
-    SetSystemSetting "Calculation.Mode", "FullCapacity"
-    SetSystemSetting "SLS.Crack.Enabled", "No"
-    SetSystemSetting "Capacity.CalculationScope", "Group1+2"
-
-    Dim settings As CSystemSettingsReader
-    Set settings = New CSystemSettingsReader
-    settings.LoadFromWorkbook ThisWorkbook
-
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
-    batch.ApplySettings settings
     batch.AddCombination "G1_SAFE", -120000#, -1200000#, -600000#, "Group1", "first group"
     batch.AddCombination "G2_GOV", -120000#, -5200000#, -2600000#, "Group2", "second group controls capacity"
     batch.Execute
@@ -829,17 +1047,6 @@ Private Sub TestBatchGoverningCanUseGroup2CapacitySafety(ByRef stats As TBatchTe
     AssertTrue stats, "batch.governing.group2.capacity.order", _
         batch.LambdaCapacity(2) > 0# And batch.LambdaCapacity(2) < batch.LambdaCapacity(1)
     AssertTrue stats, "batch.governing.group2.id", batch.GoverningCombinationID = "G2_GOV"
-
-Restore:
-    SetSystemSetting "Calculation.Mode", oldMode
-    SetSystemSetting "SLS.Crack.Enabled", oldCrackEnabled
-    SetSystemSetting "Capacity.CalculationScope", oldCapacityScope
-    Exit Sub
-
-RestoreAndFail:
-    stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.governing.group2.capacity; " & Err.Description
-    Resume Restore
 End Sub
 
 ' Проверяет новую настройку Capacity.CalculationScope. При Group1Only
@@ -1183,7 +1390,7 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     summaryRow = BatchSummaryStartRow()
     AssertTrue stats, "batch.writer.fixedRow", summaryRow = 1
     AssertTrue stats, "batch.writer.noResultOverlap", summaryRow + ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count - 1 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
-    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count >= 31 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count >= 47
+    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count >= 31 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count >= 51
     AssertTrue stats, "batch.writer.title", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = "Сводка пакетного расчета (Подробнее)"
     AssertTrue stats, "batch.writer.titleNotMerged", Not resultsSheet.Cells.Item(summaryRow, 1).MergeCells
     AssertTrue stats, "batch.writer.titleHyperlink", resultsSheet.Cells.Item(summaryRow, 1).Hyperlinks.Count > 0
@@ -1191,13 +1398,15 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.crackGoverning.row", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 3, 1).Value2), "трещинам", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.loadPoint.relativeLabel", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 5, 1).Value2), "бетонного сечения", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.loadPoint.zeroX", CStr(resultsSheet.Cells.Item(summaryRow + 5, 5).Value2) = "X=0 mm"
-    AssertTrue stats, "batch.writer.subheader.psi", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 38).Value2), "psi", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.momentFormula.simple", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 22).Formula), "IFERROR", vbTextCompare) > 0 And _
-        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 22).Formula), "IF(", vbTextCompare) = 0
+    AssertTrue stats, "batch.writer.subheader.psi", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 42).Value2), "psi", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.capacityFormula.simple", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 26).Formula), "IFERROR", vbTextCompare) > 0 And _
+        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 26).Formula), "IF(", vbTextCompare) = 0
     AssertTrue stats, "batch.writer.header.directStatus", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 5).Value2), "DirectStateStatus", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.limitState", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 17).Value2), "CapacityLimitState", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.moment", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 22).Value2), "MomentSafetyFactor", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 47).Value2), "MinSafetyFactor", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.capacityStatus", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 16).Value2), "CapacityStatus", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.capacityPath", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 18).Value2), "CapacityLoadPath", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.capacitySolutionMethod", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 19).Value2), "CapacitySolutionMethod", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.capacitySafety", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 26).Value2), "CapacitySafetyFactor", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 51).Value2), "MinSafetyFactor", vbTextCompare) > 0
     Exit Sub
 
 Failed:

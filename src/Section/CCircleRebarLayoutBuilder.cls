@@ -21,7 +21,51 @@ Private mCentroidX As Double
 Private mCentroidY As Double
 Private mAxisRadius As Double
 
-' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
+' Строит круговую раскладку по таблице rngCircleGeometry.
+' Пустой или нулевой Rebar.Diameter означает, что первый ряд отсутствует;
+' дополнительные ряды без первого ряда не создаются, потому что их положение
+' задается относительно стержней основного ряда.
+Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
+        Optional ByVal centerX As Double = 0#, Optional ByVal centerY As Double = 0#) As CRebarLayout
+    If settings Is Nothing Then Err.Raise vbObjectError + 3162, "CCircleRebarLayoutBuilder", "Настройки Config не переданы."
+    If units Is Nothing Then Err.Raise vbObjectError + 3163, "CCircleRebarLayoutBuilder", "Система единиц не передана."
+
+    Set BuildFromSettings = Build( _
+        units.InputLengthToInternal(settings.GetDouble("Circle.Diameter", 300#)), _
+        centerX, _
+        centerY, _
+        units.InputLengthToInternal(settings.GetDouble("Rebar.AxisDistance", 40#)), _
+        settings.GetLong("Rebar.Count", 8), _
+        OptionalDiameterFromSettings(settings, units, "Rebar.Diameter", 20#), _
+        settings.GetString("Steel.RebarProfile", "Ribbed"), _
+        OptionalDiameterFromSettings(settings, units, "Rebar.Diameter2", 0#), _
+        OptionalDiameterFromSettings(settings, units, "Rebar.Diameter3", 0#), _
+        settings.GetString("Rebar.Loc2row", "Stacked"), _
+        settings.GetString("Rebar.Loc3row", "Stacked"))
+End Function
+
+' Возвращает диаметр из Config без подстановки default-а для пустой ячейки.
+' Такое правило важно именно для арматуры: пустое значение означает "не
+' создавать ряд", а не "взять типовой диаметр".
+Private Function OptionalDiameterFromSettings(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
+        ByVal key As String, ByVal defaultValue As Double) As Double
+    If Not settings.HasKey(key) Then
+        OptionalDiameterFromSettings = units.InputLengthToInternal(defaultValue)
+        Exit Function
+    End If
+
+    Dim rawValue As String
+    rawValue = Trim$(settings.GetRawString(key, vbNullString))
+    If Len(rawValue) = 0 Or UCase$(rawValue) = "TODO" Then
+        OptionalDiameterFromSettings = 0#
+    Else
+        OptionalDiameterFromSettings = units.InputLengthToInternal(settings.GetDouble(key, defaultValue))
+    End If
+End Function
+
+' Создает раскладку из уже нормализованных чисел.
+' Метод не читает Excel и поэтому удобен для расчетных тестов и внутренних
+' сценариев, где параметры круга подготовлены заранее.
 Public Function Build(ByVal diameter As Double, ByVal centerX As Double, ByVal centerY As Double, _
         ByVal axisDistance As Double, ByVal barCount As Long, ByVal barDiameter As Double, _
         ByVal steelClass As String, Optional ByVal row2Diameter As Double = 0#, _
@@ -62,7 +106,8 @@ Public Function Build(ByVal diameter As Double, ByVal centerX As Double, ByVal c
         alpha = mAngleStep * CDbl(i)
         xCoord = centerX + mAxisRadius * Cos(alpha)
         yCoord = centerY + mAxisRadius * Sin(alpha)
-        layout.AddBar "B" & CStr(i + 1), xCoord, yCoord, barDiameter, 0#, steelClass, "auto circle row 1", geom, "Circle"
+        layout.AddBar "B" & CStr(i + 1), xCoord, yCoord, barDiameter, 0#, steelClass, _
+            "Круг: основной ряд арматуры", geom, "Circle"
         AddAdditionalCircleBar layout, geom, "B" & CStr(i + 1) & "_R2", centerX, centerY, xCoord, yCoord, _
             alpha, barDiameter, row2Diameter, row2Location, 0#, steelClass
         AddAdditionalCircleBar layout, geom, "B" & CStr(i + 1) & "_R3", centerX, centerY, xCoord, yCoord, _
@@ -111,7 +156,8 @@ Private Sub AddAdditionalCircleBar(ByVal layout As CRebarLayout, ByVal geom As C
     xCoord = baseX + offsetDistance * dirX
     yCoord = baseY + offsetDistance * dirY
     ValidateBarInsideCircle geom, centerX, centerY, xCoord, yCoord, addDiameter
-    layout.AddBar barName, xCoord, yCoord, addDiameter, 0#, steelClass, "auto circle additional row", geom, "Circle"
+    layout.AddBar barName, xCoord, yCoord, addDiameter, 0#, steelClass, _
+        "Круг: дополнительный ряд арматуры", geom, "Circle"
 End Sub
 
 Private Function RowSkipDiameter(ByVal row2Diameter As Double, ByVal row2Location As String, ByVal row3Location As String) As Double

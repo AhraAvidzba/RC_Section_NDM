@@ -337,17 +337,18 @@ function Add-MainInputBlock {
     Add-BlockHeader $Sheet 1 "Сочетания нагрузок"
 
     Add-SectionTitle $Sheet 38 1 18 "Сочетания нагрузок"
-    $loadHeaders = @("CombinationID", "N", "Mx", "My", "CalculationType", "Comment")
+    $loadHeaders = @("CombinationID", "N", "Mx", "My", "CalculationType", "CapacityLoadPath", "Comment")
     for ($i = 0; $i -lt $loadHeaders.Count; $i++) {
         Set-Cell $Sheet 40 ($i + 1) $loadHeaders[$i] -Bold -InteriorColor 14277081 | Out-Null
     }
     $Sheet.Cells.Item(40, 2).Formula = "=`"N, `"&INDEX(rngUnitSettings,MATCH(`"Force`",INDEX(rngUnitSettings,,1),0),2)"
     $Sheet.Cells.Item(40, 3).Formula = "=`"Mx, `"&INDEX(rngUnitSettings,MATCH(`"Moment`",INDEX(rngUnitSettings,,1),0),2)"
     $Sheet.Cells.Item(40, 4).Formula = "=`"My, `"&INDEX(rngUnitSettings,MATCH(`"Moment`",INDEX(rngUnitSettings,,1),0),2)"
-    $loadRange = $Sheet.Range($Sheet.Cells.Item(40, 1), $Sheet.Cells.Item(60, 6))
+    $loadRange = $Sheet.Range($Sheet.Cells.Item(40, 1), $Sheet.Cells.Item(60, 7))
     Set-Border $loadRange
 
     $calcTypeListColumn = 52
+    $capacityLoadPathListColumn = 53
     $calcTypeOptions = @("Group1", "Group2")
     for ($i = 0; $i -lt $calcTypeOptions.Count; $i++) {
         $Sheet.Cells.Item($i + 1, $calcTypeListColumn).Value2 = $calcTypeOptions[$i]
@@ -358,7 +359,20 @@ function Add-MainInputBlock {
     $calcTypeRange.Validation.Add(3, 1, 1, $calcTypeListAddress)
     $calcTypeRange.Validation.IgnoreBlank = $false
     $calcTypeRange.Validation.InCellDropdown = $true
+
+    $lambda = [char]0x03BB
+    $capacityLoadPathOptions = @("$lambda*Mx", "$lambda*My", "$lambda*Mxy", "$lambda*N", "$lambda*NMxy")
+    for ($i = 0; $i -lt $capacityLoadPathOptions.Count; $i++) {
+        $Sheet.Cells.Item($i + 1, $capacityLoadPathListColumn).Value2 = $capacityLoadPathOptions[$i]
+    }
+    $capacityLoadPathListAddress = '=$BA$1:$BA$' + $capacityLoadPathOptions.Count
+    $capacityLoadPathRange = $Sheet.Range($Sheet.Cells.Item(41, 6), $Sheet.Cells.Item(60, 6))
+    $capacityLoadPathRange.Validation.Delete()
+    $capacityLoadPathRange.Validation.Add(3, 1, 1, $capacityLoadPathListAddress)
+    $capacityLoadPathRange.Validation.IgnoreBlank = $true
+    $capacityLoadPathRange.Validation.InCellDropdown = $true
     $Sheet.Columns.Item($calcTypeListColumn).Hidden = $true
+    $Sheet.Columns.Item($capacityLoadPathListColumn).Hidden = $true
 }
 
 # Центрирует подпись внутри Shape-кнопки. Используем старый TextFrame для
@@ -517,7 +531,7 @@ try {
     for ($col = 14; $col -le 69; $col++) {
         $system.Columns.Item($col).ColumnWidth = 8.43
     }
-    $results.Range("A1:AU1").Font.Bold = $true
+    $results.Range("A1:AY1").Font.Bold = $true
     $results.Range("A34:F34").Font.Bold = $true
     $results.Range("I34:W34").Font.Bold = $true
     $results.Range("Z34:AE34").Font.Bold = $true
@@ -530,9 +544,9 @@ try {
     $results.Columns.Item(50).ColumnWidth = 12
     Add-ResultsSummaryHelpLink $results $instructions
 
-    Add-WorkbookName $workbook "rngLoadCombinations" $calc '$A$40:$F$60'
+    Add-WorkbookName $workbook "rngLoadCombinations" $calc '$A$40:$G$60'
     Add-WorkbookName $workbook "rngResultSection" $calc '$S$17:$AH$35'
-    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$AU$31'
+    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$AY$31'
     Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$34'
     Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$I$34'
     Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$Z$34'

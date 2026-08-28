@@ -88,24 +88,24 @@ Public Sub AddAnnotation(ByVal annotationType As String, ByVal annotationID As S
 End Sub
 
 Public Sub AddContourLine(ByVal annotationID As String, ByVal startX As Double, ByVal startY As Double, _
-        ByVal endX As Double, ByVal endY As Double, Optional ByVal commentValue As String = "Generated section contour segment.")
+        ByVal endX As Double, ByVal endY As Double, Optional ByVal commentValue As String = "Сегмент контура параметрического сечения.")
     AddAnnotation "CONTOUR_LINE", annotationID, startX, startY, endX, endY, 0#, 0#, 0#, vbNullString, 0#, vbNullString, commentValue
 End Sub
 
 Public Sub AddContourCircle(ByVal annotationID As String, ByVal centerX As Double, ByVal centerY As Double, _
-        ByVal radius As Double, Optional ByVal commentValue As String = "Generated circle contour.")
+        ByVal radius As Double, Optional ByVal commentValue As String = "Контур круглого параметрического сечения.")
     AddAnnotation "CONTOUR_CIRCLE", annotationID, centerX, centerY, radius, 0#, 0#, 0#, 0#, vbNullString, radius, vbNullString, commentValue
 End Sub
 
 Public Sub AddDimension(ByVal annotationID As String, ByVal startX As Double, ByVal startY As Double, _
         ByVal endX As Double, ByVal endY As Double, ByVal normalX As Double, ByVal normalY As Double, _
-        ByVal labelText As String, ByVal numericValue As Double, Optional ByVal commentValue As String = "Section dimension.")
+        ByVal labelText As String, ByVal numericValue As Double, Optional ByVal commentValue As String = "Размер сечения для отображения на схеме.")
     AddAnnotation "DIMENSION", annotationID, startX, startY, endX, endY, normalX, normalY, 0#, labelText, numericValue, "Length", commentValue
 End Sub
 
 Public Sub AddRebarLabel(ByVal annotationID As String, ByVal startX As Double, ByVal startY As Double, _
         ByVal endX As Double, ByVal endY As Double, ByVal normalX As Double, ByVal normalY As Double, _
-        ByVal axisDistance As Double, ByVal labelText As String, Optional ByVal commentValue As String = "Grouped rebar annotation.")
+        ByVal axisDistance As Double, ByVal labelText As String, Optional ByVal commentValue As String = "Групповая подпись арматуры по смысловой грани.")
     If Len(Trim$(labelText)) = 0 Then Exit Sub
     AddAnnotation "REBAR_ANNOTATION", annotationID, startX, startY, endX, endY, normalX, normalY, axisDistance, labelText, 0#, vbNullString, commentValue
 End Sub

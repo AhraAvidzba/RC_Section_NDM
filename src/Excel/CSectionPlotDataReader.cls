@@ -104,7 +104,7 @@ End Sub
 ' Определяет, какой LC показывать на схеме.
 ' Значение Worst разворачивается в LC из верхней строки batch summary
 ' "Определяющее сочетание по прочности". Эта строка формируется batch-слоем
-' по прочностному правилу: минимальный MomentSafetyFactor среди рассчитанных
+' по прочностному правилу: минимальный CapacitySafetyFactor среди рассчитанных
 ' сочетаний. Общий MinSafetyFactor остается только справочной колонкой.
 Private Function ResolveLoadCase(ByVal workbook As Object, ByVal requested As String) As String
     Dim valueText As String

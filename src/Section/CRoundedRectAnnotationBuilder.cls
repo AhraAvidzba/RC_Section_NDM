@@ -29,9 +29,9 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
     annotations.AddContourLine "CONTOUR_LINE_3", geometry.MaxX, geometry.MaxY, geometry.MinX, geometry.MaxY
     annotations.AddContourLine "CONTOUR_LINE_4", geometry.MinX, geometry.MaxY, geometry.MinX, geometry.MinY
     annotations.AddDimension "DIM_B", geometry.MinX, geometry.MinY, geometry.MaxX, geometry.MinY, 0#, -1#, _
-        "B", geometry.MaxX - geometry.MinX, "Overall concrete width."
+        "B", geometry.MaxX - geometry.MinX, "Общая ширина прямоугольного сечения со скруглениями."
     annotations.AddDimension "DIM_H", geometry.MinX, geometry.MinY, geometry.MinX, geometry.MaxY, -1#, 0#, _
-        "H", geometry.MaxY - geometry.MinY, "Overall concrete height."
+        "H", geometry.MaxY - geometry.MinY, "Общая высота прямоугольного сечения со скруглениями."
 
     Dim rebarLabels As CRebarGroupAnnotationBuilder
     Set rebarLabels = New CRebarGroupAnnotationBuilder

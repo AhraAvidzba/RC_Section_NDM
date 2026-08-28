@@ -17,8 +17,8 @@
 | Волокна | сетка бетона с `Mesh.BoundarySubdivisions` |
 | Материалы | TwoLine/ThreeLine-диаграммы по параметрам бетона, арматуры и расчетного режима |
 | Прямой расчет | `CSectionSolver`, режимы `Newton` и `Secant` |
-| Несущая способность | `LoadMultiplier`, `UltimateStrain` |
-| Одномерный поиск | `Bisection`, `Brent`, `Secant` для `LoadMultiplier` |
+| Несущая способность | универсальная λ-траектория `CapacityLoadPath`: `λ*Mx`, `λ*My`, `λ*Mxy`, `λ*N`, `λ*NMxy`; доступны `Auto`, `UltimateStrain`, `LoadMultiplier` |
+| Одномерный поиск | `Bisection`, `Brent`, `Secant` для `LoadMultiplier` и fallback-ветки `Auto` по выбранной λ-траектории |
 | Трещины | расчет ширины уже образовавшихся нормальных трещин |
 | Batch | до 20 сочетаний в одном запуске |
 | AutoCAD | экспорт волокон, арматуры и напряжений; импорт расчетной сетки из Region |
@@ -40,7 +40,7 @@
 - Все настройки берутся с `Config`; расчетное ядро не читает Excel-листы.
 - Материалы задаются параметрами I/II ГПС; готовые TwoLine/ThreeLine-диаграммы создает `CMaterialModelProvider`.
 - `Capacity.MaxLambda` является защитным верхним пределом; при слишком малом заданном базовом моменте для `UltimateStrain` может потребоваться увеличить этот предел.
-- `rngBatchSummary` расположен на `Results!A1:AT31`.
+- `rngBatchSummary` расположен на `Results!A1:AY31`.
 
 ## Исторические этапы
 

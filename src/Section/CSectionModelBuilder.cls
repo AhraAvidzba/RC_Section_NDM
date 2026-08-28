@@ -29,8 +29,8 @@ Public Function BuildFromGenerated(ByVal mesh As CFiberMeshBuilder, ByVal rebars
     For i = 1 To mesh.FiberCount
         model.AddConcreteElement mesh.FiberX(i), mesh.FiberY(i), _
             mesh.FiberArea(i) * mesh.FiberFillFactor(i), mesh.FiberMaterialID(i), _
-            "generated concrete fiber " & CStr(i), vbNullString, "Rectangle", _
-            mesh.FiberWidth(i), mesh.FiberHeight(i), 0#, "generated"
+            "Бетонный КЭ " & CStr(i), vbNullString, "Rectangle", _
+            mesh.FiberWidth(i), mesh.FiberHeight(i), 0#, "Параметрическая бетонная сетка"
     Next i
 
     If Not rebars Is Nothing Then

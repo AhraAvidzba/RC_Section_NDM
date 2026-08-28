@@ -140,7 +140,7 @@ Private Sub AddConcreteRegion(ByVal model As CSectionModel, ByVal area As Double
     If localIy <= 0# Then localIy = area * width * width / 12#
 
     model.AddConcreteElement xCoord, yCoord, area, 1, sourceName, sourceHandle, _
-        "EquivalentRectangle", width, height, 0#, "AutoCAD Region; equivalent rectangle for export", _
+        "EquivalentRectangle", width, height, 0#, "AutoCAD Region: эквивалентный прямоугольник для схемы и экспорта.", _
         localIx, localIy, localIxy
 End Sub
 
@@ -149,7 +149,7 @@ Private Sub AddRebarRegion(ByVal model As CSectionModel, ByVal area As Double, _
         ByVal sourceName As String, ByVal sourceHandle As String)
     Dim diameter As Double
     diameter = Sqr(4# * area / GEOM_PI)
-    model.AddRebarElement xCoord, yCoord, diameter, area, steelClass, 1, sourceName, sourceHandle, "AutoCAD Region"
+    model.AddRebarElement xCoord, yCoord, diameter, area, steelClass, 1, sourceName, sourceHandle, "AutoCAD Region: импортированный стержень арматуры."
 End Sub
 
 Private Sub ReadCentralRegionInertia(ByVal entity As Object, ByVal area As Double, _

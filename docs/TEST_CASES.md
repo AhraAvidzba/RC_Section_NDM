@@ -78,8 +78,9 @@ N + My, Mx = 0
 
 - `CSectionSolver` с `Newton`;
 - `CSectionSolver` с `Secant`;
-- `CCapacitySolver.SolveByLoadMultiplier`;
-- `CCapacitySolver.SolveByUltimateStrain`;
+- `CCapacitySolver.SolveByLoadPathMultiplier`;
+- `CCapacitySolver.SolveByUltimateLoadPath`;
+- совместимость старого `SolveByLoadMultiplier` как частного случая `λ*Mxy`;
 - одномерные методы поиска `Bisection`, `Brent`, `Secant`;
 - `CCrackWidthCalculator`;
 - `CBatchSectionCalculator`.

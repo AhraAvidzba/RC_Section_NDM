@@ -543,14 +543,15 @@ Private Sub WriteGoverningCombinationResults(ByVal workbook As Object, ByVal sec
 
     WriteCapacityAndCrackResults workbook, section, materialProvider, currentPurpose, settings, _
         units, batch.N(index), batch.UserMx(index), batch.UserMy(index), _
-        batch.LoadReferenceX, batch.LoadReferenceY
+        batch.LoadReferenceX, batch.LoadReferenceY, batch.CapacityLoadPath(index)
 End Sub
 
 Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal currentPurpose As ECalculationPurpose, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
         ByVal nValue As Double, ByVal userMxValue As Double, ByVal userMyValue As Double, _
-        ByVal referenceX As Double, ByVal referenceY As Double)
+        ByVal referenceX As Double, ByVal referenceY As Double, _
+        Optional ByVal capacityLoadPath As String = vbNullString)
 
     Dim writer As CCapacityResultWriter
     Set writer = New CCapacityResultWriter
@@ -596,21 +597,48 @@ Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section
     Set capacity = New CCapacitySolver
     capacity.ApplySettings settings, units
     ApplyCapacityLimitsFromProvider capacity, materialProvider, cpStrength
-    If Sqr(userMxValue * userMxValue + userMyValue * userMyValue) > 0.000000001 Then
-        Select Case LCase$(Trim$(settings.GetRawString("Capacity.Method", vbNullString)))
-            Case "ultimatestrain"
-                capacity.SolveByUltimateStrain section, materialProvider.ConcreteMaterial(cpStrength), _
-                    materialProvider.SteelMaterial(cpStrength), nValue, userMxValue, userMyValue, _
-                    nValue * referenceY, nValue * referenceX
-            Case "loadmultiplier"
-                capacity.SolveByLoadMultiplier section, materialProvider.ConcreteMaterial(cpStrength), _
-                    materialProvider.SteelMaterial(cpStrength), nValue, userMxValue, userMyValue, _
-                    nValue * referenceY, nValue * referenceX
-            Case Else
-                Err.Raise vbObjectError + 4125, "WriteCapacityAndCrackResults", _
-                    "Capacity.Method должен быть LoadMultiplier или UltimateStrain."
-        End Select
-    End If
+    capacityLoadPath = NormalizedCapacityLoadPathForResult(capacityLoadPath, nValue, userMxValue, userMyValue)
+
+    Dim nOffset As Double
+    Dim nBase As Double
+    Dim mxOffset As Double
+    Dim mxBase As Double
+    Dim myOffset As Double
+    Dim myBase As Double
+    BuildCapacityLoadPathForResult capacityLoadPath, nValue, userMxValue, userMyValue, referenceX, referenceY, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+
+    Dim forceOnlyPath As Boolean
+    ' Одиночный вывод capacity повторяет batch-логику: если пользовательские
+    ' моменты равны нулю, λ*N и λ*NMxy считаются силовой траекторией N. Сам
+    ' выбранный CapacityLoadPath не меняется, меняется только численный метод.
+    forceOnlyPath = ((capacityLoadPath = "LambdaN" Or capacityLoadPath = "LambdaNMxy") And _
+        Abs(userMxValue) <= 0.000000001 And Abs(userMyValue) <= 0.000000001)
+    Select Case LCase$(Trim$(settings.GetRawString("Capacity.Method", vbNullString)))
+        Case "auto"
+            If forceOnlyPath Then
+                capacity.SolveByLoadPathMultiplier section, materialProvider.ConcreteMaterial(cpStrength), _
+                    materialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase, True
+            Else
+                capacity.SolveByAutoLoadPath section, materialProvider.ConcreteMaterial(cpStrength), _
+                    materialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+            End If
+        Case "ultimatestrain"
+            If forceOnlyPath Then
+                capacity.SolveByLoadPathMultiplier section, materialProvider.ConcreteMaterial(cpStrength), _
+                    materialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase, True
+            Else
+                capacity.SolveByUltimateLoadPath section, materialProvider.ConcreteMaterial(cpStrength), _
+                    materialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+            End If
+        Case "loadmultiplier"
+            capacity.SolveByLoadPathMultiplier section, materialProvider.ConcreteMaterial(cpStrength), _
+                materialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase, _
+                forceOnlyPath
+        Case Else
+            Err.Raise vbObjectError + 4125, "WriteCapacityAndCrackResults", _
+                "Capacity.Method должен быть Auto, LoadMultiplier или UltimateStrain."
+    End Select
     writer.WriteCapacityResult workbook, capacity, units
     Dim service As CSectionSolver
     Set service = New CSectionSolver
@@ -664,6 +692,81 @@ Private Sub WriteDirectStateAndCrackResults(ByVal workbook As Object, ByVal sect
             centroidMxForCrack, centroidMyForCrack
         writer.WriteCrackResult workbook, crack, units
     End If
+End Sub
+
+' Нормализует capacity-траекторию для одиночного блока результата на листе
+' "Расчет". Здесь повторяется только пограничная логика Excel-слоя: сама
+' предельная задача дальше уходит в универсальный CCapacitySolver.
+Private Function NormalizedCapacityLoadPathForResult(ByVal capacityLoadPath As String, _
+        ByVal nValue As Double, ByVal userMxValue As Double, ByVal userMyValue As Double) As String
+    Dim value As String
+    value = LCase$(Trim$(capacityLoadPath))
+    value = Replace$(value, " ", vbNullString)
+    value = Replace$(value, ChrW$(&H3BB), "lambda")
+    value = Replace$(value, "λ", "lambda")
+
+    Select Case value
+        Case "lambda*mx", "lambdamx", "mx"
+            NormalizedCapacityLoadPathForResult = "LambdaMx"
+        Case "lambda*my", "lambdamy", "my"
+            NormalizedCapacityLoadPathForResult = "LambdaMy"
+        Case "lambda*mxy", "lambdamxy", "mxy"
+            NormalizedCapacityLoadPathForResult = "LambdaMxy"
+        Case "lambda*n", "lambdan", "nload"
+            NormalizedCapacityLoadPathForResult = "LambdaN"
+        Case "lambda*nmxy", "lambdanmxy", "nmxy", "all"
+            NormalizedCapacityLoadPathForResult = "LambdaNMxy"
+        Case Else
+            If Sqr(userMxValue * userMxValue + userMyValue * userMyValue) > 0.000000001 Then
+                NormalizedCapacityLoadPathForResult = "LambdaMxy"
+            ElseIf Abs(nValue) > 0.000000001 Then
+                NormalizedCapacityLoadPathForResult = "LambdaN"
+            End If
+    End Select
+End Function
+
+' Собирает математические Offset/Base для повторного вывода capacity на лист
+' "Расчет". Логика та же, что в CBatchSectionCalculator: пользовательские
+' Mx/My отделены от моментов, появившихся из-за смещения точки приложения N.
+Private Sub BuildCapacityLoadPathForResult(ByVal loadPath As String, _
+        ByVal nValue As Double, ByVal userMxValue As Double, ByVal userMyValue As Double, _
+        ByVal referenceX As Double, ByVal referenceY As Double, _
+        ByRef nOffset As Double, ByRef nBase As Double, _
+        ByRef mxOffset As Double, ByRef mxBase As Double, _
+        ByRef myOffset As Double, ByRef myBase As Double)
+    Dim mxFromN As Double
+    Dim myFromN As Double
+    mxFromN = nValue * referenceY
+    myFromN = nValue * referenceX
+
+    Select Case loadPath
+        Case "LambdaMx"
+            nOffset = nValue
+            mxOffset = mxFromN
+            mxBase = userMxValue
+            myOffset = myFromN + userMyValue
+        Case "LambdaMy"
+            nOffset = nValue
+            mxOffset = mxFromN + userMxValue
+            myOffset = myFromN
+            myBase = userMyValue
+        Case "LambdaMxy"
+            nOffset = nValue
+            mxOffset = mxFromN
+            mxBase = userMxValue
+            myOffset = myFromN
+            myBase = userMyValue
+        Case "LambdaN"
+            nBase = nValue
+            mxOffset = userMxValue
+            mxBase = mxFromN
+            myOffset = userMyValue
+            myBase = myFromN
+        Case "LambdaNMxy"
+            nBase = nValue
+            mxBase = userMxValue + mxFromN
+            myBase = userMyValue + myFromN
+    End Select
 End Sub
 
 ' Выбирает расчетную цель материала для повторного вывода одного LC на лист "Расчет".

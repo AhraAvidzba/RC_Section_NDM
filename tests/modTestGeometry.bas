@@ -349,6 +349,24 @@ Private Sub TestLShapeAutoRebarLayout(ByRef stats As TTestStats)
     AssertClose stats, "lshape.rebar.firstY", layout.Y(1), 525#, 0.000001
     AssertTrue stats, "lshape.rebar.zeroFaceSkipped", InStr(1, layout.BarID(1), "H2", vbTextCompare) = 0
 
+    Dim noLineByDiameter As CRebarLayout
+    Set noLineByDiameter = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
+        Array(50#, 50#, 0#, 20#, 3, 0, 100#, 100#, 100#, 100#), _
+        Array(50#, 50#, 20#, 20#, 0, 0, 50#, 50#, 50#, 50#), _
+        Array(50#, 50#, 20#, 20#, 2, 0, 60#, 60#, 60#, 60#), _
+        Array(50#, 50#, 20#, 20#, 3, 0, 100#, 100#, 100#, 100#), _
+        "A400")
+    AssertTrue stats, "lshape.rebar.zeroDiameterSkipped", noLineByDiameter.Count = 5
+
+    Dim noBarsByDiameter As CRebarLayout
+    Set noBarsByDiameter = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
+        Array(50#, 50#, 0#, 0#, 3, 2, 100#, 100#, 100#, 100#), _
+        Array(50#, 50#, 0#, 0#, 2, 2, 50#, 50#, 50#, 50#), _
+        Array(50#, 50#, 0#, 0#, 2, 2, 60#, 60#, 60#, 60#), _
+        Array(50#, 50#, 0#, 0#, 3, 3, 100#, 100#, 100#, 100#), _
+        "A400")
+    AssertTrue stats, "lshape.rebar.allZeroDiameters.noError", noBarsByDiameter.Count = 0
+
     Dim geom As CGeometryLShape
     Set geom = New CGeometryLShape
     geom.Initialize 250#, 550#, 600#, 250#

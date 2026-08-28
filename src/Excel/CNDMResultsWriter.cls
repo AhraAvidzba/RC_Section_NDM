@@ -217,7 +217,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     Set target = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
 
     Dim rowCount As Long
-    rowCount = 1 + 90 + batch.Count * 17
+    rowCount = 1 + 90 + batch.Count * 23
 
     Dim data() As Variant
     ReDim data(1 To rowCount, 1 To SECTION_PROPERTY_COLUMNS)
@@ -298,6 +298,24 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "OverallStatus", batch.OverallStatus(i), "-", "Итоговый пользовательский статус сочетания."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "DirectStateStatus", batch.DirectStateStatus(i), "-", "Статус прямого решения НДС фактического сочетания."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacityStatus", batch.CapacityStatus(i), "-", "Статус расчета несущей способности."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacityLoadPath", batch.CapacityLoadPath(i), "-", "Какие компоненты нагрузки масштабировались при поиске несущей способности."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacitySolutionMethod", batch.CapacitySolutionMethod(i), "-", "Фактический численный метод, которым найдена предельная несущая способность."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LambdaCapacity", batch.LambdaCapacity(i), "-", "Предельный множитель для выбранной λ-траектории."
+        If Abs(batch.NUltimate(i)) > 0# Then
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nultimate", OutputForce(batch.NUltimate(i), units), OutputForceUnit(units), "Предельная продольная сила, если N входила в выбранную λ-траекторию."
+        Else
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nultimate", vbNullString, OutputForceUnit(units), "Заполняется только для траекторий λ*N и λ*NMxy."
+        End If
+        If Abs(batch.MxUltimate(i)) > 0# Then
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxUltimate", OutputMx(batch.MxUltimate(i), units), OutputMomentUnit(units), "Предельный пользовательский Mx, если Mx входил в выбранную λ-траекторию."
+        Else
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxUltimate", vbNullString, OutputMomentUnit(units), "Заполняется только для траекторий, где масштабируется Mx."
+        End If
+        If Abs(batch.MyUltimate(i)) > 0# Then
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUltimate", OutputMy(batch.MyUltimate(i), units), OutputMomentUnit(units), "Предельный пользовательский My, если My входил в выбранную λ-траекторию."
+        Else
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUltimate", vbNullString, OutputMomentUnit(units), "Заполняется только для траекторий, где масштабируется My."
+        End If
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "CrackStatus", batch.CrackStatus(i), "-", "Статус расчета ширины раскрытия трещин."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "ExtensionUsed", BooleanText(batch.ExtensionUsed(i)), "-", "True, если прямой StateSolution вышел за физические пределы диаграммы в numerical extension."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "DirectState.DiagramExtensionEnabled", BooleanText(batch.DirectStateDiagramExtensionEnabled(i)), "-", "Сохраненное значение настройки Solver.DirectState.DiagramExtension на момент расчета."

@@ -33,7 +33,7 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
 
     annotations.AddContourCircle "CONTOUR_CIRCLE", centerX, centerY, radius
     annotations.AddDimension "DIM_CIRCLE_D", geometry.MinX, geometry.MinY, geometry.MinX, geometry.MaxY, _
-        -1#, 0#, "D", geometry.MaxY - geometry.MinY, "Diameter dimension for generated circle."
+        -1#, 0#, "D", geometry.MaxY - geometry.MinY, "Диаметр параметрического круглого сечения."
 
     Dim rebarLabels As CRebarGroupAnnotationBuilder
     Set rebarLabels = New CRebarGroupAnnotationBuilder

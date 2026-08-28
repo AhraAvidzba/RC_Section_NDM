@@ -84,10 +84,11 @@ Myint = Myext
 
 Поддерживаются:
 
-- `Capacity.Method = LoadMultiplier`;
-- `Capacity.Method = UltimateStrain`.
+- `Capacity.Method = Auto`;
+- `Capacity.Method = UltimateStrain`;
+- `Capacity.Method = LoadMultiplier`.
 
-Для `LoadMultiplier`:
+Для `LoadMultiplier` и fallback-ветки `Auto`:
 
 - `Capacity.SearchMethod = Bisection`;
 - `Capacity.SearchMethod = Brent`;

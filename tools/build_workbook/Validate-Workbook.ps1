@@ -332,9 +332,9 @@ try {
     Add-Check $checks "Config right-side ranges vertical stack" $rightStackOk ($rightStackDetails -join "; ")
 
     $loads = $workbook.Names.Item("rngLoadCombinations").RefersToRange
-    $expectedLoadHeaders = @("CombinationID", "N, tf", "Mx, tf*m", "My, tf*m", "CalculationType", "Comment")
+    $expectedLoadHeaders = @("CombinationID", "N, tf", "Mx, tf*m", "My, tf*m", "CalculationType", "CapacityLoadPath", "Comment")
     $actualLoadHeaders = @()
-    for ($i = 1; $i -le 6; $i++) {
+    for ($i = 1; $i -le 7; $i++) {
         $actualLoadHeaders += [string]$loads.Cells.Item(1, $i).Value2
     }
     Add-Check $checks "Load combinations table headers" (($actualLoadHeaders -join "|") -eq ($expectedLoadHeaders -join "|")) ($actualLoadHeaders -join " | ")

@@ -35,12 +35,14 @@ Public Function RunWorkbookInterfaceTests() As String
     TestCircleWorkbookRunWritesResults stats
     TestExecutionReportFile stats
     TestLShapeWorkbookRunWritesResults stats
+    TestLShapeMomentUltimateStrainWorkbookPath stats
     TestLShapeAxialTensionExtensionFromWorkbookSettings stats
     TestAutoCADExportUsesSharedLoadReference stats
     TestGoverningCombinationWritesDetailedResults stats
     TestCapacitySearchMethodValidation stats
     TestSolverToleranceUnitLabels stats
     TestCapacitySettingsUnitLabels stats
+    TestBlankDiametersDisableGeneratedRebars stats
     TestClearResultsKeepsInputs stats
 
     AppendLine stats, "TOTAL_WORKBOOK_UI: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
@@ -87,6 +89,48 @@ End Sub
 Private Function ButtonTextIsCentered(ByVal buttonShape As Object) As Boolean
     ButtonTextIsCentered = (buttonShape.TextFrame.HorizontalAlignment = -4108 And _
         buttonShape.TextFrame.VerticalAlignment = -4108)
+End Function
+
+' Проверяет пользовательское правило: пустой диаметр арматуры означает
+' отсутствие ряда, а не подстановку типового default-диаметра из кода.
+Private Sub TestBlankDiametersDisableGeneratedRebars(ByRef stats As TUiTestStats)
+    PrepareCircleInput
+    SetSystemSetting "Rebar.Diameter", vbNullString
+
+    Dim circleSection As CSectionModel
+    Set circleSection = BuildCurrentWorkbookSection()
+    AssertTrue stats, "ui.circle.blankDiameter.noRebar", circleSection.RebarCount = 0
+    AssertTrue stats, "ui.circle.blankDiameter.dimensionsRemain", circleSection.AnnotationCount >= 2
+
+    PrepareLShapeInput
+    SetSystemSetting "LShape.H1.d_1", vbNullString
+
+    Dim lshapeSection As CSectionModel
+    Set lshapeSection = BuildCurrentWorkbookSection()
+    AssertTrue stats, "ui.lshape.blankFaceDiameter.skipsLine", lshapeSection.RebarCount = 7
+    AssertTrue stats, "ui.lshape.blankFaceDiameter.dimensionsRemain", lshapeSection.AnnotationCount >= 4
+
+    SetSystemSetting "Geometry.Type", "RoundedRectangle"
+    Dim roundedSection As CSectionModel
+    Set roundedSection = BuildCurrentWorkbookSection()
+    AssertTrue stats, "ui.rounded.noAutoRebar.noError", roundedSection.RebarCount = 0
+    AssertTrue stats, "ui.rounded.noAutoRebar.dimensionsRemain", roundedSection.AnnotationCount >= 2
+
+    PrepareCircleInput
+End Sub
+
+' Собирает модель через тот же путь, которым пользуется кнопка расчета:
+' Config -> CSystemSettingsReader -> CUnitSystem -> CSectionTypeRegistry.
+Private Function BuildCurrentWorkbookSection() As CSectionModel
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+
+    Set BuildCurrentWorkbookSection = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
 End Function
 
 ' Проверяет, что включенный общий флаг создает человекочитаемый txt-отчет
@@ -431,7 +475,7 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.run.direct.status", Len(CStr(summary.Worksheet.Cells.Item(firstDataRow, 5).Value2)) > 0
     AssertTrue stats, "ui.run.deformations", IsNumeric(summary.Worksheet.Cells.Item(firstDataRow, 6).Value2) And _
         IsNumeric(summary.Worksheet.Cells.Item(firstDataRow, 9).Value2)
-    AssertTrue stats, "ui.run.crack", Len(CStr(summary.Worksheet.Cells.Item(firstDataRow, 23).Value2)) > 0
+    AssertTrue stats, "ui.run.crack", Len(CStr(summary.Worksheet.Cells.Item(firstDataRow, 28).Value2)) > 0
     Dim sys As Object
     Set sys = ThisWorkbook.Worksheets.Item("Config")
     AssertTrue stats, "ui.run.system.noRebarTable", Len(CStr(sys.Cells.Item(130, 1).Value2)) = 0
@@ -443,7 +487,7 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Dim summaryRow As Long
     summaryRow = BatchSummaryStartRow()
     AssertTrue stats, "ui.batchSummary.currentDepths", IsNumeric(resultsSheet.Cells.Item(summaryRow + 9, 10).Value2) And IsNumeric(resultsSheet.Cells.Item(summaryRow + 9, 11).Value2)
-    AssertTrue stats, "ui.batchSummary.direct.noCapacityDepths", Len(CStr(resultsSheet.Cells.Item(summaryRow + 9, 20).Value2)) = 0 And Len(CStr(resultsSheet.Cells.Item(summaryRow + 9, 21).Value2)) = 0
+    AssertTrue stats, "ui.batchSummary.direct.noCapacityDepths", Len(CStr(resultsSheet.Cells.Item(summaryRow + 9, 23).Value2)) = 0 And Len(CStr(resultsSheet.Cells.Item(summaryRow + 9, 24).Value2)) = 0
     AssertTrue stats, "ui.results.elements.header", CStr(ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Value2) = "RunID"
     Dim elementResults As Variant
     elementResults = ResultTable("rngNDMElementResults")
@@ -493,6 +537,40 @@ Private Sub TestLShapeWorkbookRunWritesResults(ByRef stats As TUiTestStats)
         InStr(1, CStr(sys.Cells.Item(1, 27).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
 End Sub
 
+' Проверяет пользовательский сценарий Г-сечения с N + Mx и выбранной
+' траекторией lambda*Mx через полный путь книги. Этот тест защищает быстрый
+' UltimateStrain-путь для обычного изгибного расчета: после универсализации
+' CapacityLoadPath он не должен уходить в тяжелую общую residual-систему.
+Private Sub TestLShapeMomentUltimateStrainWorkbookPath(ByRef stats As TUiTestStats)
+    PrepareUserLShapeMomentUltimateInput
+
+    Dim message As String
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    ThisWorkbook.Application.CalculateFull
+
+    Dim resultsSheet As Object
+    Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
+    Dim firstRow As Long
+    firstRow = BatchSummaryStartRow() + 9
+
+    Dim capacityStatus As String
+    Dim solutionMethod As String
+    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("CapacityStatus")).Value2)
+    solutionMethod = CStr(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("CapacitySolutionMethod")).Value2)
+
+    AppendLine stats, "INFO: ui.lshape.momentUltimate capacityStatus=" & capacityStatus & _
+        "; solutionMethod=" & solutionMethod & _
+        "; lambda=" & CStr(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("lambdaUltimate")).Value2)
+
+    AssertTrue stats, "ui.lshape.momentUltimate.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    AssertTextEquals stats, "ui.lshape.momentUltimate.capacityOk", capacityStatus, "OK"
+    AssertTextEquals stats, "ui.lshape.momentUltimate.method", solutionMethod, "UltimateStrain"
+    AssertTrue stats, "ui.lshape.momentUltimate.lambda", _
+        CDbl(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("lambdaUltimate")).Value2) > 0#
+    AssertTrue stats, "ui.lshape.momentUltimate.mxult", _
+        Abs(CDbl(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("Mxult")).Value2)) > 0#
+End Sub
+
 ' Проверяет пользовательский сценарий с сильным осевым растяжением Г-сечения
 ' через настоящий workbook-path: Config -> CUnitSystem -> batch -> Results.
 ' Это важно, потому что знак N и единицы tf здесь проходят ровно тем же путем,
@@ -522,7 +600,7 @@ Private Sub TestLShapeAxialTensionExtensionFromWorkbookSettings(ByRef stats As T
     safeDirect = CStr(resultsSheet.Cells.Item(firstRow, 5).Value2)
     overOverall = CStr(resultsSheet.Cells.Item(firstRow + 1, 1).Value2)
     overDirect = CStr(resultsSheet.Cells.Item(firstRow + 1, 5).Value2)
-    overCrack = CStr(resultsSheet.Cells.Item(firstRow + 1, 23).Value2)
+    overCrack = CStr(resultsSheet.Cells.Item(firstRow + 1, BatchSummaryColumnByHeader("CrackStatus")).Value2)
     overExtension = ResultsPropertyValue("LC_OVER", "ExtensionUsed")
 
     AppendLine stats, "INFO: ui.lshape.axial795 overall=" & safeOverall & _
@@ -559,14 +637,16 @@ Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTest
     loads.Cells.Item(2, 3).Value2 = -1000000#
     loads.Cells.Item(2, 4).Value2 = 0#
     loads.Cells.Item(2, 5).Value2 = "Group1"
-    loads.Cells.Item(2, 6).Value2 = "less severe"
+    loads.Cells.Item(2, 6).Value2 = ChrW$(&H3BB) & "*Mxy"
+    loads.Cells.Item(2, 7).Value2 = "less severe"
 
     loads.Cells.Item(3, 1).Value2 = "LC_GOV"
     loads.Cells.Item(3, 2).Value2 = -100000#
     loads.Cells.Item(3, 3).Value2 = -8000000#
     loads.Cells.Item(3, 4).Value2 = 0#
     loads.Cells.Item(3, 5).Value2 = "Group1"
-    loads.Cells.Item(3, 6).Value2 = "governing"
+    loads.Cells.Item(3, 6).Value2 = ChrW$(&H3BB) & "*Mxy"
+    loads.Cells.Item(3, 7).Value2 = "governing"
 
     Dim message As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
@@ -583,7 +663,7 @@ Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTest
 
     AssertTrue stats, "ui.governing.id", governingID = expectedID
     AssertTrue stats, "ui.governing.message", InStr(1, message, governingID, vbTextCompare) > 0
-    AssertTrue stats, "ui.governing.details.moment", Abs(CDbl(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(8, 5).Value2) - MomentUltimateForCombination(resultsSheet, summaryRow, governingID)) < 0.0000001
+    AssertTrue stats, "ui.governing.details.moment", Abs(CDbl(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(9, 5).Value2) - MomentUltimateForCombination(resultsSheet, summaryRow, governingID)) < 0.0000001
 End Sub
 
 Private Function ExpectedGoverningByLowestStrengthSafety(ByVal resultsSheet As Object, ByVal summaryRow As Long) As String
@@ -602,19 +682,19 @@ Private Function ExpectedGoverningByLowestStrengthSafety(ByVal resultsSheet As O
 End Function
 
 Private Function StrengthSafetyForSummaryRow(ByVal resultsSheet As Object, ByVal rowIndex As Long) As Double
-    Dim momentSafety As Double
-    If IsNumeric(resultsSheet.Cells.Item(rowIndex, 22).Value2) Then momentSafety = CDbl(resultsSheet.Cells.Item(rowIndex, 22).Value2)
-
-    If momentSafety > 0# Then
-        StrengthSafetyForSummaryRow = momentSafety
-    End If
+    If IsNumeric(resultsSheet.Cells.Item(rowIndex, 25).Value2) Then _
+        StrengthSafetyForSummaryRow = CDbl(resultsSheet.Cells.Item(rowIndex, 25).Value2)
 End Function
 
 Private Function MomentUltimateForCombination(ByVal resultsSheet As Object, ByVal summaryRow As Long, ByVal combinationID As String) As Double
     Dim rowIndex As Long
     For rowIndex = summaryRow + 9 To summaryRow + 28
         If StrComp(CStr(resultsSheet.Cells.Item(rowIndex, 2).Value2), combinationID, vbTextCompare) = 0 Then
-            If IsNumeric(resultsSheet.Cells.Item(rowIndex, 19).Value2) Then MomentUltimateForCombination = CDbl(resultsSheet.Cells.Item(rowIndex, 19).Value2)
+            Dim mxUltimate As Double
+            Dim myUltimate As Double
+            If IsNumeric(resultsSheet.Cells.Item(rowIndex, 21).Value2) Then mxUltimate = CDbl(resultsSheet.Cells.Item(rowIndex, 21).Value2)
+            If IsNumeric(resultsSheet.Cells.Item(rowIndex, 22).Value2) Then myUltimate = CDbl(resultsSheet.Cells.Item(rowIndex, 22).Value2)
+            MomentUltimateForCombination = Sqr(mxUltimate * mxUltimate + myUltimate * myUltimate)
             Exit Function
         End If
     Next rowIndex
@@ -622,6 +702,23 @@ End Function
 
 Private Function BatchSummaryStartRow() As Long
     BatchSummaryStartRow = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Row
+End Function
+
+' Ищет колонку rngBatchSummary по началу текста заголовка.
+' В сводке часто добавляются новые расчетные поля, поэтому UI-тесты не
+' должны зависеть от старого номера столбца: проверяем именно смысловую
+' колонку, которую видит пользователь.
+Private Function BatchSummaryColumnByHeader(ByVal headerPrefix As String) As Long
+    Dim summary As Object
+    Set summary = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
+
+    Dim colIndex As Long
+    For colIndex = 1 To summary.Columns.Count
+        If InStr(1, CStr(summary.Cells.Item(9, colIndex).Value2), headerPrefix, vbTextCompare) = 1 Then
+            BatchSummaryColumnByHeader = colIndex
+            Exit Function
+        End If
+    Next colIndex
 End Function
 
 Private Function ResultHeaderColumn(ByRef data As Variant, ByVal headerText As String) As Long
@@ -636,6 +733,8 @@ End Function
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
+    AssertTrue stats, "ui.validation.capacityMethod", _
+        SystemSettingValidationHasOptions("Capacity.Method", Array("Auto", "UltimateStrain", "LoadMultiplier"))
     AssertTrue stats, "ui.validation.capacitySearchMethod", _
         SystemSettingValidationHasOptions("Capacity.SearchMethod", Array("Bisection", "Brent", "Secant"))
     AssertTrue stats, "ui.validation.capacityScope", _
@@ -1334,7 +1433,8 @@ Private Sub PrepareCircleInput()
     loads.Cells.Item(2, 3).Value2 = -4000000#
     loads.Cells.Item(2, 4).Value2 = -3000000#
     loads.Cells.Item(2, 5).Value2 = "Group2"
-    loads.Cells.Item(2, 6).Value2 = "ui test"
+    loads.Cells.Item(2, 6).Value2 = ChrW$(&H3BB) & "*Mxy"
+    loads.Cells.Item(2, 7).Value2 = "ui test"
 End Sub
 
 Private Sub PrepareLShapeInput()
@@ -1407,7 +1507,64 @@ Private Sub PrepareLShapeInput()
     loads.Cells.Item(2, 3).Value2 = -1500000#
     loads.Cells.Item(2, 4).Value2 = -1000000#
     loads.Cells.Item(2, 5).Value2 = "Group2"
-    loads.Cells.Item(2, 6).Value2 = "lshape ui test"
+    loads.Cells.Item(2, 6).Value2 = ChrW$(&H3BB) & "*Mxy"
+    loads.Cells.Item(2, 7).Value2 = "lshape ui test"
+End Sub
+
+' Настраивает книгу под типовой прочностной расчет Г-сечения:
+' пользователь задает N и Mx, а несущая способность ищется увеличением Mx.
+' Здесь специально выбран Capacity.Method = UltimateStrain, чтобы проверить,
+' что быстрый изгибный путь работает без fallback на LoadMultiplier.
+Private Sub PrepareUserLShapeMomentUltimateInput()
+    SetSystemSetting "Units.Force.Input", "tf"
+    SetSystemSetting "Units.Moment.Input", "tf*m"
+    SetSystemSetting "Units.Length.Input", "mm"
+    SetSystemSetting "Units.Area.Input", "mm2"
+    SetSystemSetting "Units.Stress.Input", "MPa"
+    SetSystemSetting "Units.Curvature.Input", "1/mm"
+    SetSystemSetting "Sign.N.User", "Compression"
+    SetSystemSetting "Sign.Mx.User", "+Y tension"
+    SetSystemSetting "Sign.My.User", "+X tension"
+    SetSystemSetting "Geometry.Source", "Generated"
+    SetSystemSetting "Geometry.Type", "LShape"
+    SetSystemSetting "Calculation.Mode", "FullCapacity"
+    SetSystemSetting "Capacity.CalculationScope", "Group1Only"
+    SetSystemSetting "Capacity.Method", "UltimateStrain"
+    SetSystemSetting "Capacity.MaxLambda", "64"
+    SetSystemSetting "Capacity.ToleranceStrain", "0.00001"
+    SetSystemSetting "Capacity.SolverMaxIterations", "60"
+    SetSystemSetting "Solver.Method", "Newton"
+    SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
+    SetSystemSetting "Solver.MaxIterations", "80"
+    SetSystemSetting "Solver.LoadSteps", "1"
+    SetSystemSetting "Mesh.Step", "50"
+    SetSystemSetting "Mesh.BoundarySubdivisions", "1"
+    SetSystemSetting "Load.ReferenceOffsetX", "0"
+    SetSystemSetting "Load.ReferenceOffsetY", "0"
+    SetSystemSetting "Plot.LoadCase", "LC_MX"
+    SetSystemSetting "General.ExecutionReportEnabled", "No"
+
+    SetSystemSetting "LShape.H1", "550"
+    SetSystemSetting "LShape.B1", "250"
+    SetSystemSetting "LShape.H2", "250"
+    SetSystemSetting "LShape.B2", "600"
+
+    SetUserLShapeMainRow "H1", 5, 5
+    SetUserLShapeMainRow "B1", 2, 2
+    SetUserLShapeMainRow "H2", 2, 2
+    SetUserLShapeMainRow "B2", 5, 5
+    ClearUserLShapeExtraRows
+
+    Dim loads As Object
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    ClearDataRows loads
+    loads.Cells.Item(2, 1).Value2 = "LC_MX"
+    loads.Cells.Item(2, 2).Value2 = 200#
+    loads.Cells.Item(2, 3).Value2 = 50#
+    loads.Cells.Item(2, 4).ClearContents
+    loads.Cells.Item(2, 5).Value2 = "Group1"
+    loads.Cells.Item(2, 6).Value2 = ChrW$(&H3BB) & "*Mx"
+    loads.Cells.Item(2, 7).Value2 = "moment ultimate regression"
 End Sub
 
 ' Настраивает книгу ровно под пользовательский пример с Г-сечением и осевым
@@ -1456,14 +1613,16 @@ Private Sub PrepareUserLShapeAxialTensionInput()
     loads.Cells.Item(2, 3).ClearContents
     loads.Cells.Item(2, 4).ClearContents
     loads.Cells.Item(2, 5).Value2 = "Group2"
-    loads.Cells.Item(2, 6).Value2 = "inside physical range"
+    loads.Cells.Item(2, 6).Value2 = ChrW$(&H3BB) & "*N"
+    loads.Cells.Item(2, 7).Value2 = "inside physical range"
 
     loads.Cells.Item(3, 1).Value2 = "LC_OVER"
     loads.Cells.Item(3, 2).Value2 = -900#
     loads.Cells.Item(3, 3).ClearContents
     loads.Cells.Item(3, 4).ClearContents
     loads.Cells.Item(3, 5).Value2 = "Group2"
-    loads.Cells.Item(3, 6).Value2 = "uses extension"
+    loads.Cells.Item(3, 6).Value2 = ChrW$(&H3BB) & "*N"
+    loads.Cells.Item(3, 7).Value2 = "uses extension"
 End Sub
 
 Private Sub SetUserLShapeMainRow(ByVal faceName As String, ByVal count1 As Long, ByVal count2 As Long)

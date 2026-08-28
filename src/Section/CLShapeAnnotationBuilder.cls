@@ -56,15 +56,14 @@ Private Sub AddDimensions(ByVal annotations As CSectionAnnotations, ByVal geomet
     minY = geometry.MinY
     maxY = geometry.MaxY
 
-    annotations.AddDimension "DIM_B", minX, minY, maxX, minY, 0#, -1#, "B", maxX - minX, "Overall concrete width."
-    annotations.AddDimension "DIM_H", minX, minY, minX, maxY, -1#, 0#, "H", maxY - minY, "Overall concrete height."
+    annotations.AddDimension "DIM_B", minX, minY, maxX, minY, 0#, -1#, "B", maxX - minX, "Общая ширина Г-образного сечения."
+    annotations.AddDimension "DIM_H", minX, minY, minX, maxY, -1#, 0#, "H", maxY - minY, "Общая высота Г-образного сечения."
 
     Dim px() As Double
     Dim py() As Double
     geometry.GetExtremePoints px, py
     If UBound(px) - LBound(px) + 1 >= 6 Then
-        annotations.AddDimension "DIM_TOP_WIDTH", px(6), py(6), px(5), py(5), 0#, 1#, "B1", Abs(px(5) - px(6)), "Upper rectangle width."
-        annotations.AddDimension "DIM_RIGHT_HEIGHT", px(2), py(2), px(3), py(3), 1#, 0#, "H2", Abs(py(3) - py(2)), "Lower rectangle height."
+        annotations.AddDimension "DIM_TOP_WIDTH", px(6), py(6), px(5), py(5), 0#, 1#, "B1", Abs(px(5) - px(6)), "Ширина верхнего прямоугольника Г-образного сечения."
+        annotations.AddDimension "DIM_RIGHT_HEIGHT", px(2), py(2), px(3), py(3), 1#, 0#, "H2", Abs(py(3) - py(2)), "Высота нижнего прямоугольника Г-образного сечения."
     End If
 End Sub
-

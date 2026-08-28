@@ -37,6 +37,8 @@ Public Function RunCapacitySolverTests() As String
     TestLambdaNearOne stats
     AppendLine stats, "RUN: TestZeroAxialForce"
     TestZeroAxialForce stats
+    AppendLine stats, "RUN: TestAxialLoadMultiplierFindsNult"
+    TestAxialLoadMultiplierFindsNult stats
     AppendLine stats, "RUN: TestConcreteLimitState"
     TestConcreteLimitState stats
     AppendLine stats, "RUN: TestConcreteTensionLimitState"
@@ -61,6 +63,12 @@ Public Function RunCapacitySolverTests() As String
     TestLoadMultiplierWithWorkbookTfDefaults stats
     AppendLine stats, "RUN: TestLoadMultiplierSearchMethods"
     TestLoadMultiplierSearchMethods stats
+    AppendLine stats, "RUN: TestCapacityLoadPathMethodMatrix"
+    TestCapacityLoadPathMethodMatrix stats
+    AppendLine stats, "RUN: TestLShapeCapacityLoadPathSmoke"
+    TestLShapeCapacityLoadPathSmoke stats
+    AppendLine stats, "RUN: TestNultBaseLoadStepsSensitivity"
+    TestNultBaseLoadStepsSensitivity stats
     AppendLine stats, "RUN: TestSearchMethodInputErrors"
     TestSearchMethodInputErrors stats
     AppendLine stats, "RUN: TestSearchMethodPerformanceComparison"
@@ -306,6 +314,40 @@ Private Sub TestZeroAxialForce(ByRef stats As TCapacityTestStats)
     AssertEquilibrium stats, "capacity.zeroN", cap.LastSolver, 0#, cap.MxUltimate, 0#
 End Sub
 
+' Проверяет универсальную λ-траекторию для чистой продольной силы. Здесь
+' масштабируется только N, поэтому нулевые Mx/My являются нормальным входом,
+' а не ошибкой контракта.
+Private Sub TestAxialLoadMultiplierFindsNult(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, rebars)
+
+    Dim compression As CCapacitySolver
+    Set compression = New CCapacitySolver
+    ConfigureCapacity compression
+    compression.SolveByLoadPathMultiplier section, ProvisionalConcrete(), ProvisionalSteel(), _
+        0#, -100000#, 0#, 0#, 0#, 0#
+
+    Dim tension As CCapacitySolver
+    Set tension = New CCapacitySolver
+    ConfigureCapacity tension
+    tension.SolveByLoadPathMultiplier section, ProvisionalConcrete(), ProvisionalSteel(), _
+        0#, 50000#, 0#, 0#, 0#, 0#
+
+    AssertTrue stats, "capacity.nult.compression.converged", compression.Converged
+    AssertTrue stats, "capacity.nult.compression.sign", compression.NUltimate < 0#
+    AssertTrue stats, "capacity.nult.compression.safety", Abs(compression.NUltimate / -100000#) > 1#
+    AssertEquilibrium stats, "capacity.nult.compression", compression.LastSolver, compression.NUltimate, 0#, 0#
+
+    AssertTrue stats, "capacity.nult.tension.converged", tension.Converged
+    AssertTrue stats, "capacity.nult.tension.sign", tension.NUltimate > 0#
+    AssertTrue stats, "capacity.nult.tension.safety", Abs(tension.NUltimate / 50000#) > 1#
+    AssertEquilibrium stats, "capacity.nult.tension", tension.LastSolver, tension.NUltimate, 0#, 0#
+End Sub
+
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestConcreteLimitState(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
@@ -486,8 +528,9 @@ Private Sub TestResultWriter(ByRef stats As TCapacityTestStats)
 
     AssertEquals stats, "capacity.writer.mode", CStr(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(2, 5).Value2), "N+Mx+My"
     AssertTrue stats, "capacity.writer.lambda", CDbl(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(5, 5).Value2) > 0#
-    AssertTrue stats, "capacity.writer.mx", CDbl(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(6, 5).Value2) <> 0#
-    AssertTrue stats, "capacity.writer.my", CDbl(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(7, 5).Value2) <> 0#
+    AssertTrue stats, "capacity.writer.nult.blankForMult", Len(CStr(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(6, 5).Value2)) = 0
+    AssertTrue stats, "capacity.writer.mx", CDbl(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(7, 5).Value2) <> 0#
+    AssertTrue stats, "capacity.writer.my", CDbl(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(8, 5).Value2) <> 0#
 End Sub
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestInvalidBaseMoment(ByRef stats As TCapacityTestStats)
@@ -788,6 +831,326 @@ Private Sub TestLoadMultiplierSearchMethods(ByRef stats As TCapacityTestStats)
     AssertClose stats, "search.secant.lambda", secant.LambdaUltimate, bisection.LambdaUltimate, 0.02
     AssertEquilibrium stats, "search.brent", brent.LastSolver, -300000#, brent.MxUltimate, 0#
     AssertEquilibrium stats, "search.secant", secant.LastSolver, -300000#, secant.MxUltimate, 0#
+End Sub
+
+' Проверяет все пользовательские траектории CapacityLoadPath на всех
+' доступных способах поиска несущей способности. Тест намеренно работает
+' на уровне CCapacitySolver: batch уже переводит пользовательские строки
+' λ*Mx/λ*My/... в универсальную форму Offset + lambda*Base.
+Private Sub TestCapacityLoadPathMethodMatrix(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+
+    CheckCapacityLoadPathMethods stats, "mx", mesh, rebars, -120000#, 0#, 0#, -2000000#, 0#, 0#
+    CheckCapacityLoadPathMethods stats, "my", mesh, rebars, -120000#, 0#, 0#, 0#, 0#, -2000000#
+    CheckCapacityLoadPathMethods stats, "mxy", mesh, rebars, -120000#, 0#, 0#, -2000000#, 0#, -1200000#
+    CheckCapacityLoadPathMethods stats, "n", mesh, rebars, 0#, -50000#, 0#, 0#, 0#, 0#
+    CheckCapacityLoadPathMethods stats, "nmxy", mesh, rebars, 0#, -50000#, 0#, -1200000#, 0#, -800000#
+End Sub
+
+' Проверяет пользовательское Г-сечение именно на осевой траектории lambda*N.
+' В этой задаче важно, что N приложена в бетонном центре тяжести: после
+' переноса к координатам расчетных элементов внутри solver-а появляются
+' связанные Mx/My, хотя пользователь масштабирует только продольную силу.
+Private Sub TestLShapeCapacityLoadPathSmoke(ByRef stats As TCapacityTestStats)
+    Dim section As CSectionModel
+    Set section = LShapeCapacitySection()
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateConcrete section
+
+    CheckLShapeCapacityPathMethods stats, "lshape.n.tension", section, 0#, 200# * 9806.65, _
+        0#, 200# * 9806.65 * props.CentroidY, 0#, 200# * 9806.65 * props.CentroidX, True
+    CheckLShapeCapacityPathMethods stats, "lshape.n.compression", section, 0#, -200# * 9806.65, _
+        0#, -200# * 9806.65 * props.CentroidY, 0#, -200# * 9806.65 * props.CentroidX, True
+
+    ' Пользовательский сценарий из книги: Г-сечение, N задана относительно
+    ' бетонного центра тяжести, а предельная способность ищется по λ*Mx.
+    ' Здесь обязана включаться старая быстрая моментная постановка
+    ' UltimateStrain: N постоянна, направление Mx/My сохраняется.
+    CheckLShapeMomentUltimatePath stats, "lshape.moment.mx.userCase", section, _
+        -200# * 9806.65, 50# * 9806.65 * 1000#, 0#, props.CentroidX, props.CentroidY
+    CheckLShapeMomentUltimatePath stats, "lshape.moment.my.userCase", section, _
+        -200# * 9806.65, 0#, 50# * 9806.65 * 1000#, props.CentroidX, props.CentroidY
+    CheckLShapeMomentUltimatePath stats, "lshape.moment.mxy.userCase", section, _
+        -200# * 9806.65, 50# * 9806.65 * 1000#, 25# * 9806.65 * 1000#, props.CentroidX, props.CentroidY
+End Sub
+
+' Проверяет моментную ветку UltimateStrain на несимметричном Г-сечении.
+' Внутри solver-а момент от N добавляется как постоянный offset, а
+' пользовательский момент масштабируется через lambda. Такой тест защищает
+' старую рабочую постановку от случайного ухода в общий load-path residual.
+Private Sub CheckLShapeMomentUltimatePath(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
+        ByVal section As CSectionModel, ByVal nValue As Double, _
+        ByVal userMxBase As Double, ByVal userMyBase As Double, _
+        ByVal referenceX As Double, ByVal referenceY As Double)
+    Dim cap As CCapacitySolver
+    Set cap = New CCapacitySolver
+    ConfigureCapacity cap
+
+    Dim mxOffset As Double
+    Dim myOffset As Double
+    mxOffset = nValue * referenceY
+    myOffset = nValue * referenceX
+
+    cap.SolveByUltimateLoadPath section, ProvisionalConcrete(), ProvisionalSteel(), _
+        nValue, 0#, mxOffset, userMxBase, myOffset, userMyBase
+
+    AppendLine stats, "INFO: " & prefix & _
+        "; status=" & cap.LimitState & _
+        "; converged=" & CStr(cap.Converged) & _
+        "; solutionMethod=" & cap.SolutionMethod & _
+        "; lambda=" & FormatNumberInvariant(cap.LambdaUltimate)
+    AssertTrue stats, prefix & ".converged", cap.Converged
+    AssertEquals stats, prefix & ".solutionMethod", cap.SolutionMethod, "UltimateStrain"
+    AssertTrue stats, prefix & ".lambda", cap.LambdaUltimate > 0#
+    AssertTrue stats, prefix & ".physical", IsPhysicalLimitState(cap.LimitState)
+    AssertLoadComponent stats, prefix & ".equilibrium.N", cap.LastSolver.Nint, nValue, 10#, 0.0001
+    AssertLoadComponent stats, prefix & ".equilibrium.Mx", cap.LastSolver.Mxint, _
+        mxOffset + cap.LambdaUltimate * userMxBase, 10000#, 0.0002
+    AssertLoadComponent stats, prefix & ".equilibrium.My", cap.LastSolver.Myint, _
+        myOffset + cap.LambdaUltimate * userMyBase, 10000#, 0.0002
+    AssertClose stats, prefix & ".mxUltimate.user", cap.MxUltimate, cap.LambdaUltimate * userMxBase, 20000#
+    AssertClose stats, prefix & ".myUltimate.user", cap.MyUltimate, cap.LambdaUltimate * userMyBase, 20000#
+End Sub
+
+Private Sub CheckLShapeCapacityPathMethods(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
+        ByVal section As CSectionModel, ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double, _
+        Optional ByVal allowForcePathFallback As Boolean = False)
+    CheckLShapeCapacityPathMethod stats, prefix & ".auto", "Auto", "", section, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathFallback
+    CheckLShapeCapacityPathMethod stats, prefix & ".ultimate", "UltimateStrain", "", section, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathFallback
+    CheckLShapeCapacityPathMethod stats, prefix & ".bisection", "LoadMultiplier", "Bisection", section, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathFallback
+    CheckLShapeCapacityPathMethod stats, prefix & ".brent", "LoadMultiplier", "Brent", section, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathFallback
+    CheckLShapeCapacityPathMethod stats, prefix & ".secant", "LoadMultiplier", "Secant", section, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathFallback
+End Sub
+
+Private Sub CheckLShapeCapacityPathMethod(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
+        ByVal methodName As String, ByVal searchMethod As String, ByVal section As CSectionModel, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double, _
+        Optional ByVal allowForcePathFallback As Boolean = False)
+    Dim cap As CCapacitySolver
+    Set cap = New CCapacitySolver
+    ConfigureCapacity cap
+    If Len(searchMethod) > 0 Then cap.SearchMethod = searchMethod
+
+    Select Case methodName
+        Case "Auto"
+            If allowForcePathFallback Then
+                cap.SolveByLoadPathMultiplier section, ProvisionalConcrete(), ProvisionalSteel(), _
+                    nOffset, nBase, mxOffset, mxBase, myOffset, myBase, True
+            Else
+                cap.SolveByAutoLoadPath section, ProvisionalConcrete(), ProvisionalSteel(), _
+                    nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+            End If
+        Case "UltimateStrain"
+            If allowForcePathFallback Then
+                cap.SolveByLoadPathMultiplier section, ProvisionalConcrete(), ProvisionalSteel(), _
+                    nOffset, nBase, mxOffset, mxBase, myOffset, myBase, True
+            Else
+                cap.SolveByUltimateLoadPath section, ProvisionalConcrete(), ProvisionalSteel(), _
+                    nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+            End If
+        Case Else
+            cap.SolveByLoadPathMultiplier section, ProvisionalConcrete(), ProvisionalSteel(), _
+                nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathFallback
+    End Select
+
+    AppendLine stats, "INFO: " & prefix & _
+        "; status=" & cap.LimitState & _
+        "; converged=" & CStr(cap.Converged) & _
+        "; solutionMethod=" & cap.SolutionMethod & _
+        "; lambda=" & FormatNumberInvariant(cap.LambdaUltimate)
+    AssertTrue stats, prefix & ".converged", cap.Converged
+    AssertTrue stats, prefix & ".lambda", cap.LambdaUltimate > 0#
+    AssertTrue stats, prefix & ".physical", IsPhysicalLimitState(cap.LimitState)
+    AssertLoadPathResult stats, prefix, cap, nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+End Sub
+
+' Прогоняет чистый Nult через разные значения BaseLoadSteps. Настройка не
+' является физическим параметром, но для осевой траектории на плато диаграммы
+' она может заметно влиять на устойчивость отдельных probe-точек.
+Private Sub TestNultBaseLoadStepsSensitivity(ByRef stats As TCapacityTestStats)
+    Dim section As CSectionModel
+    Set section = LShapeCapacitySection()
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateConcrete section
+
+    CheckNultBaseLoadSteps stats, "tension", section, 200# * 9806.65, _
+        200# * 9806.65 * props.CentroidY, 200# * 9806.65 * props.CentroidX
+    CheckNultBaseLoadSteps stats, "compression", section, -200# * 9806.65, _
+        -200# * 9806.65 * props.CentroidY, -200# * 9806.65 * props.CentroidX
+End Sub
+
+Private Sub CheckNultBaseLoadSteps(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
+        ByVal section As CSectionModel, ByVal nBase As Double, _
+        ByVal mxBase As Double, ByVal myBase As Double)
+    Dim steps As Variant
+    steps = Array(1, 2, 4, 8)
+
+    Dim i As Long
+    For i = LBound(steps) To UBound(steps)
+        Dim cap As CCapacitySolver
+        Set cap = New CCapacitySolver
+        ConfigureCapacity cap
+        cap.SolverBaseLoadSteps = CLng(steps(i))
+        cap.SolveByLoadPathMultiplier section, ProvisionalConcrete(), ProvisionalSteel(), _
+            0#, nBase, 0#, mxBase, 0#, myBase, True
+
+        AppendLine stats, "INFO: capacity.nult.baseLoadSteps." & prefix & "." & CStr(steps(i)) & _
+            "; converged=" & CStr(cap.Converged) & _
+            "; state=" & cap.LimitState & _
+            "; lambda=" & FormatNumberInvariant(cap.LambdaUltimate) & _
+            "; iterations=" & CStr(cap.Iterations) & _
+            "; retries=" & CStr(cap.RetryCount)
+        If CLng(steps(i)) > 1 Then
+            AssertTrue stats, "capacity.nult.baseLoadSteps." & prefix & "." & CStr(steps(i)) & ".converged", cap.Converged
+            AssertTrue stats, "capacity.nult.baseLoadSteps." & prefix & "." & CStr(steps(i)) & ".lambda", cap.LambdaUltimate > 0#
+        End If
+    Next i
+End Sub
+
+Private Sub CheckCapacityLoadPathMethods(ByRef stats As TCapacityTestStats, ByVal pathName As String, _
+        ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double)
+    CheckCapacityLoadPathMethod stats, pathName & ".auto", "Auto", "", mesh, rebars, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+    CheckCapacityLoadPathMethod stats, pathName & ".ultimate", "UltimateStrain", "", mesh, rebars, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+    CheckCapacityLoadPathMethod stats, pathName & ".bisection", "LoadMultiplier", "Bisection", mesh, rebars, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+    CheckCapacityLoadPathMethod stats, pathName & ".brent", "LoadMultiplier", "Brent", mesh, rebars, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+    CheckCapacityLoadPathMethod stats, pathName & ".secant", "LoadMultiplier", "Secant", mesh, rebars, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+End Sub
+
+Private Sub CheckCapacityLoadPathMethod(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
+        ByVal methodName As String, ByVal searchMethod As String, _
+        ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double)
+    Dim cap As CCapacitySolver
+    Set cap = New CCapacitySolver
+    ConfigureCapacity cap
+    If Len(searchMethod) > 0 Then cap.SearchMethod = searchMethod
+
+    Select Case methodName
+        Case "Auto"
+            cap.SolveByAutoLoadPath BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), _
+                nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+        Case "UltimateStrain"
+            cap.SolveByUltimateLoadPath BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), _
+                nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+        Case Else
+            cap.SolveByLoadPathMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), _
+                nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+    End Select
+
+    AssertTrue stats, "capacity.pathMatrix." & prefix & ".converged", cap.Converged
+    AssertTrue stats, "capacity.pathMatrix." & prefix & ".lambda", cap.LambdaUltimate > 0#
+    AssertTrue stats, "capacity.pathMatrix." & prefix & ".physical", IsPhysicalLimitState(cap.LimitState)
+    AssertCapacitySolutionMethod stats, "capacity.pathMatrix." & prefix & ".solutionMethod", cap, methodName, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+    If cap.Converged Then
+        AssertLoadPathResult stats, "capacity.pathMatrix." & prefix, cap, _
+            nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+    End If
+End Sub
+
+Private Function LShapeCapacitySection() As CSectionModel
+    Dim geom As CGeometryLShape
+    Set geom = New CGeometryLShape
+    geom.Initialize 250#, 550#, 600#, 250#, 0#, 0#
+
+    Dim mesh As CFiberMeshBuilder
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geom, 50#, 50#, 1
+
+    Dim builder As CLShapeRebarLayoutBuilder
+    Set builder = New CLShapeRebarLayoutBuilder
+
+    Dim rebars As CRebarLayout
+    Set rebars = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
+        LShapeCapacityFaceSettings(5, 5), _
+        LShapeCapacityFaceSettings(2, 2), _
+        LShapeCapacityFaceSettings(2, 2), _
+        LShapeCapacityFaceSettings(5, 5), _
+        "A400")
+
+    Set LShapeCapacitySection = BuildGeneratedSectionModel(mesh, rebars, "LShapeCapacityTest")
+End Function
+
+Private Function LShapeCapacityFaceSettings(ByVal count1 As Long, ByVal count2 As Long) As Variant
+    LShapeCapacityFaceSettings = Array(40#, 40#, 32#, 32#, count1, count2, 80#, 80#, 80#, 80#, _
+        0#, 0#, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
+End Function
+
+' Проверяет диагностическое имя фактической ветки capacity.
+' Solver показывает пользователю именно публичный метод настройки:
+' UltimateStrain или LoadMultiplier. Внутреннее имя универсальной процедуры
+' SolveByLoadPathMultiplier наружу не выводится.
+Private Sub AssertCapacitySolutionMethod(ByRef stats As TCapacityTestStats, ByVal name As String, _
+        ByVal cap As CCapacitySolver, ByVal methodName As String, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double)
+    Dim isPureAxial As Boolean
+    isPureAxial = Abs(nBase) > 0.000000001 And _
+        Abs(nOffset) <= 0.000000001 And _
+        Abs(mxOffset) <= 0.000000001 And Abs(mxBase) <= 0.000000001 And _
+        Abs(myOffset) <= 0.000000001 And Abs(myBase) <= 0.000000001
+
+    If methodName = "LoadMultiplier" Then
+        AssertEquals stats, name, cap.SolutionMethod, "LoadMultiplier"
+    ElseIf methodName = "UltimateStrain" Then
+        If isPureAxial Then
+            AssertEquals stats, name, cap.SolutionMethod, "LoadMultiplier"
+        Else
+            AssertEquals stats, name, cap.SolutionMethod, "UltimateStrain"
+        End If
+    Else
+        AssertTrue stats, name, cap.SolutionMethod = "UltimateStrain" Or cap.SolutionMethod = "LoadMultiplier"
+    End If
+End Sub
+
+Private Sub AssertLoadPathResult(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
+        ByVal cap As CCapacitySolver, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double)
+    Dim expectedN As Double
+    Dim expectedMx As Double
+    Dim expectedMy As Double
+    expectedN = nOffset + cap.LambdaUltimate * nBase
+    expectedMx = mxOffset + cap.LambdaUltimate * mxBase
+    expectedMy = myOffset + cap.LambdaUltimate * myBase
+
+    AssertLoadComponent stats, prefix & ".equilibrium.N", cap.LastSolver.Nint, expectedN, 10#, 0.0001
+    AssertLoadComponent stats, prefix & ".equilibrium.Mx", cap.LastSolver.Mxint, expectedMx, 10000#, 0.0002
+    AssertLoadComponent stats, prefix & ".equilibrium.My", cap.LastSolver.Myint, expectedMy, 10000#, 0.0002
+    If Abs(nBase) > 0.000000001 Then
+        AssertClose stats, prefix & ".nUltimate", cap.NUltimate, expectedN, 20#
+    Else
+        AssertClose stats, prefix & ".nUltimateBlank", cap.NUltimate, 0#, 0#
+    End If
+    AssertClose stats, prefix & ".mxUltimate", cap.MxUltimate, expectedMx, 20000#
+    AssertClose stats, prefix & ".myUltimate", cap.MyUltimate, expectedMy, 20000#
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.

@@ -17,9 +17,10 @@ Option Explicit
 ' решается внешняя задача: какой предельный множитель или какая предельная
 ' плоскость деформаций соответствует заданному N + Mx + My.
 '
-' В классе намеренно сохранены два разных метода:
-' - LoadMultiplier масштабирует Mx/My через lambda при постоянном N;
-' - UltimateStrain напрямую ищет состояние с предельной деформацией.
+' На вход класса теперь передается универсальная траектория нагрузки:
+' N = N0 + lambda*Nbase, Mx = Mx0 + lambda*Mxbase, My = My0 + lambda*Mybase.
+' Это позволяет одним алгоритмом считать λ*Mx, λ*My, λ*Mxy, λ*N и λ*NMxy,
+' не плодя отдельные пользовательские ветви внутри расчетного ядра.
 
 Private Const STATE_ACCEPTABLE As String = "Acceptable"
 Private Const STATE_CONCRETE_LIMIT As String = "ConcreteStrainLimit"
@@ -28,15 +29,17 @@ Private Const STATE_STEEL_LIMIT As String = "SteelStrainLimit"
 Private Const STATE_NUMERICAL_FAILURE As String = "NumericalFailure"
 Private Const STATE_SINGULAR_TANGENT As String = "SingularTangent"
 Private Const STATE_INVALID_INPUT As String = "InvalidInput"
+Private Const MOMENT_DIRECTION_TOLERANCE As Double = 0.001 ' Допустимое относительное отклонение от выбранной моментной траектории.
 
 Private mConverged As Boolean ' True, если выбранный метод capacity нашел предельное состояние.
 Private mStopReason As String ' Причина остановки capacity solver для вывода в результаты и тесты.
 Private mLimitState As String ' Физический или численный статус найденного предела.
 Private mUpperLimitState As String ' Статус верхней границы при LoadMultiplier.
-Private mLambdaUltimate As Double ' Предельный множитель к базовому моментному вектору.
+Private mLambdaUltimate As Double ' Предельный множитель к выбранной λ-траектории нагрузки.
+Private mNUltimate As Double ' Предельная продольная сила, если N входит в масштабируемый путь.
 Private mMomentUltimate As Double ' Результирующий предельный момент sqrt(MxUltimate^2 + MyUltimate^2).
-Private mMxUltimate As Double ' Предельный Mx в той же постановке, что исходный моментный вектор.
-Private mMyUltimate As Double ' Предельный My в той же постановке, что исходный моментный вектор.
+Private mMxUltimate As Double ' Предельный Mx, если Mx входит в масштабируемый путь.
+Private mMyUltimate As Double ' Предельный My, если My входит в масштабируемый путь.
 Private mSafetyFactor As Double ' Коэффициент запаса по capacity; сейчас совпадает с lambdaUltimate.
 Private mUtilization As Double ' Использование несущей способности: 1 / lambdaUltimate.
 Private mIterations As Long ' Число внешних итераций поиска несущей способности.
@@ -53,6 +56,7 @@ Private mSteelStrainLimit As Double ' Предельная деформация 
 Private mLambdaTolerance As Double ' Точность одномерного поиска lambda для LoadMultiplier.
 Private mStrainTolerance As Double ' Допуск достижения предельной деформации для UltimateStrain.
 Private mSearchMethod As String ' Алгоритм одномерного поиска LoadMultiplier: Bisection, Brent или Secant.
+Private mSolutionMethod As String ' Фактическая ветка, которая дала принятый результат: UltimateStrain или LoadMultiplier.
 Private mMaxLambda As Double ' Защитная верхняя граница lambda, чтобы поиск не уходил бесконечно.
 Private mInitialLambdaStep As Double ' Первый шаг расширения lambda при поиске расчетной скобки.
 Private mMaxRetries As Long ' Допустимые повторы пробной точки после NumericalFailure.
@@ -158,55 +162,78 @@ Public Sub SolveByUltimateStrain(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
         Optional ByVal mxOffset As Double = 0#, Optional ByVal myOffset As Double = 0#)
-    ClearResult
+    SolveByUltimateLoadPath section, concreteMaterial, steelMaterial, _
+        nSpecified, 0#, mxOffset, mxBase, myOffset, myBase
+End Sub
 
-    If Not ValidateCapacityInputs(section, concreteMaterial, steelMaterial, mxBase, myBase) Then Exit Sub
+' Ищет предельное состояние для произвольной lambda-траектории.
+' Этот метод ничего не знает о названии пользовательского режима: он работает
+' только с прямой формулой
+' Target = Offset + lambda*Base для N, Mx и My.
+Public Sub SolveByUltimateLoadPath(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double)
+    ClearResult
+    mSolutionMethod = "UltimateStrain"
+
+    If Not ValidateLoadPathCapacityInputs(section, concreteMaterial, steelMaterial, nBase, mxBase, myBase) Then Exit Sub
     If Not ValidateUltimateStrainSettings() Then Exit Sub
+    If IsPureAxialLoadPath(nOffset, nBase, mxOffset, mxBase, myOffset, myBase) Then
+        SolvePureAxialUltimateByLoadMultiplier section, concreteMaterial, steelMaterial, _
+            nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+        Exit Sub
+    End If
+    If IsMomentOnlyLoadPath(nBase, mxBase, myBase) Then
+        SolveMomentUltimateStrainPath section, concreteMaterial, steelMaterial, _
+            nOffset, mxBase, myBase, mxOffset, myOffset
+        Exit Sub
+    End If
 
     Dim eps0 As Double
     Dim kx As Double
     Dim ky As Double
-    InitializeUltimateStrainGuess section, nSpecified, mxBase, myBase, eps0, kx, ky
-
     Dim iter As Long
-    Dim rN As Double
-    Dim rDir As Double
+    Dim rPath1 As Double
+    Dim rPath2 As Double
     Dim rLimit As Double
     Dim lambdaValue As Double
     Dim state As String
     Dim solver As CSectionSolver
 
-    For iter = 1 To mSolverMaxIterations
-        If Not EvaluateUltimateResidual(section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, _
-                eps0, kx, ky, solver, rN, rDir, rLimit, lambdaValue, state) Then Exit Sub
+    InitializeUltimateLoadPathGuess section, nOffset, nBase, mxOffset, mxBase, myOffset, myBase, eps0, kx, ky
 
-        If Abs(rN) <= 1# And Abs(rDir) <= 0.001 And Abs(rLimit) <= UltimateStrainRatioTolerance() Then
+    For iter = 1 To mSolverMaxIterations
+        If Not EvaluateUltimateLoadPathResidual(section, concreteMaterial, steelMaterial, _
+                nOffset, nBase, mxOffset, mxBase, myOffset, myBase, _
+                eps0, kx, ky, solver, rPath1, rPath2, rLimit, lambdaValue, state) Then Exit For
+
+        If Abs(rPath1) <= 1# And Abs(rPath2) <= 1# And Abs(rLimit) <= UltimateStrainRatioTolerance() Then
             Set mLastSolver = solver
             If lambdaValue <= 0# Or lambdaValue > mMaxLambda Then
                 mLimitState = STATE_NUMERICAL_FAILURE
                 mStopReason = "Ultimate strain solution has invalid lambda: " & FormatNumberInvariant(lambdaValue)
                 Exit Sub
             End If
-            mLambdaUltimate = lambdaValue
-            mMxUltimate = mLambdaUltimate * mxBase
-            mMyUltimate = mLambdaUltimate * myBase
+            StoreLoadPathUltimateComponents lambdaValue, nOffset, nBase, mxBase, myBase, mxOffset, myOffset
             mLimitState = state
             mUpperLimitState = state
             mConverged = True
             Exit For
         End If
 
-        If Not ApplyUltimateNewtonStep(section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, _
-                eps0, kx, ky, rN, rDir, rLimit) Then Exit Sub
+        If Not ApplyUltimateLoadPathNewtonStep(section, concreteMaterial, steelMaterial, _
+                nOffset, nBase, mxOffset, mxBase, myOffset, myBase, _
+                eps0, kx, ky, rPath1, rPath2, rLimit) Then Exit For
     Next iter
 
     If Not mConverged Then
-        mLimitState = STATE_NUMERICAL_FAILURE
-        mStopReason = "Ultimate strain Newton iteration did not converge."
+        If Len(mLimitState) = 0 Then mLimitState = STATE_NUMERICAL_FAILURE
+        If Len(mStopReason) = 0 Then mStopReason = "Ultimate strain Newton iteration did not converge."
         Exit Sub
     End If
 
-    mMomentUltimate = Sqr(mMxUltimate * mMxUltimate + mMyUltimate * mMyUltimate)
     If Not mLastSolver Is Nothing Then
         mMomentEquilibriumResidual = Sqr((mLastSolver.Mxint - TargetMx(mLambdaUltimate, mxBase, mxOffset)) ^ 2 + _
             (mLastSolver.Myint - TargetMy(mLambdaUltimate, myBase, myOffset)) ^ 2)
@@ -215,6 +242,378 @@ Public Sub SolveByUltimateStrain(ByVal section As CSectionModel, _
     If mLambdaUltimate > 0# Then mUtilization = 1# / mLambdaUltimate
     mStopReason = "Capacity search converged by direct ultimate strain equilibrium."
 End Sub
+
+' Быстрая ветка старого UltimateStrain для моментных траекторий.
+' Внешний API остается универсальным, но математически этот частный случай
+' должен решаться как раньше: продольная сила фиксирована, а Mx/My
+' масштабируются с сохранением направления моментного вектора.
+Private Sub SolveMomentUltimateStrainPath(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
+        ByVal mxOffset As Double, ByVal myOffset As Double)
+    Dim eps0 As Double
+    Dim kx As Double
+    Dim ky As Double
+    Dim iter As Long
+    Dim rN As Double
+    Dim rDir As Double
+    Dim rLimit As Double
+    Dim lambdaValue As Double
+    Dim state As String
+    Dim solver As CSectionSolver
+
+    InitializeUltimateStrainGuess section, nSpecified, mxBase, myBase, eps0, kx, ky
+
+    For iter = 1 To mSolverMaxIterations
+        If Not EvaluateUltimateResidual(section, concreteMaterial, steelMaterial, _
+                nSpecified, mxBase, myBase, mxOffset, myOffset, _
+                eps0, kx, ky, solver, rN, rDir, rLimit, lambdaValue, state) Then Exit Sub
+
+        If Abs(rN) <= 1# And Abs(rDir) <= MOMENT_DIRECTION_TOLERANCE And _
+                Abs(rLimit) <= UltimateStrainRatioTolerance() Then
+            Set mLastSolver = solver
+            If lambdaValue <= 0# Or lambdaValue > mMaxLambda Then
+                mLimitState = STATE_NUMERICAL_FAILURE
+                mStopReason = "Ultimate strain solution has invalid lambda: " & FormatNumberInvariant(lambdaValue)
+                Exit Sub
+            End If
+            StoreLoadPathUltimateComponents lambdaValue, nSpecified, 0#, mxBase, myBase, mxOffset, myOffset
+            mLimitState = state
+            mUpperLimitState = state
+            mConverged = True
+            Exit For
+        End If
+
+        If Not ApplyUltimateNewtonStep(section, concreteMaterial, steelMaterial, _
+                nSpecified, mxBase, myBase, mxOffset, myOffset, _
+                eps0, kx, ky, rN, rDir, rLimit) Then Exit Sub
+    Next iter
+
+    If Not mConverged Then
+        If Len(mLimitState) = 0 Then mLimitState = STATE_NUMERICAL_FAILURE
+        If Len(mStopReason) = 0 Then mStopReason = "Ultimate strain Newton iteration did not converge."
+        Exit Sub
+    End If
+
+    If Not mLastSolver Is Nothing Then
+        mMomentEquilibriumResidual = Sqr((mLastSolver.Mxint - TargetMx(mLambdaUltimate, mxBase, mxOffset)) ^ 2 + _
+            (mLastSolver.Myint - TargetMy(mLambdaUltimate, myBase, myOffset)) ^ 2)
+    End If
+    mSafetyFactor = mLambdaUltimate
+    If mLambdaUltimate > 0# Then mUtilization = 1# / mLambdaUltimate
+    mStopReason = "Capacity search converged by direct ultimate strain equilibrium."
+End Sub
+
+' Математически чистая λ*N без моментов не имеет устойчивой уникальной
+' предельной плоскости для UltimateStrain: на горизонтальном плато одну и ту же
+' N могут давать разные почти равномерные деформации. В этом вырожденном
+' численном случае используем одномерный LoadMultiplier.
+Private Sub SolvePureAxialUltimateByLoadMultiplier(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double)
+    SolveByLoadPathMultiplier section, concreteMaterial, steelMaterial, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase, True
+    If Not mConverged Then AcceptPureAxialRetainedCapacity section, concreteMaterial
+
+    mDiagnosticLog = "ultimatePath pureAxial redirected=LoadMultiplier" & vbCrLf & mDiagnosticLog
+    If mConverged Then
+        mStopReason = "Чистая осевая траектория рассчитана через LoadMultiplier как устойчивую одномерную постановку. " & mStopReason
+    End If
+End Sub
+
+' Автоматический режим сначала пробует UltimateStrain как более прямой способ
+' найти предельную плоскость деформаций. Если эта постановка не сошлась
+' численно, но входные данные корректны, расчет повторяется через
+' LoadMultiplier по той же самой lambda-траектории. Это не меняет физический
+' критерий несущей способности, а только выбирает более устойчивый численный
+' путь для случаев с горизонтальными участками диаграмм.
+Public Sub SolveByAutoLoadPath(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double)
+    SolveByUltimateLoadPath section, concreteMaterial, steelMaterial, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+    If mConverged Or mLimitState = STATE_INVALID_INPUT Then Exit Sub
+
+    Dim firstStopReason As String
+    Dim firstLimitState As String
+    Dim firstDiagnostics As String
+    firstStopReason = mStopReason
+    firstLimitState = mLimitState
+    firstDiagnostics = mDiagnosticLog
+
+    SolveByLoadPathMultiplier section, concreteMaterial, steelMaterial, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+
+    mDiagnosticLog = "auto primary=UltimateStrain; result=failed; state=" & firstLimitState & _
+        "; reason=" & firstStopReason & vbCrLf & _
+        firstDiagnostics & _
+        "auto fallback=LoadMultiplier" & vbCrLf & _
+        mDiagnosticLog
+    If mConverged Then
+        mStopReason = "Auto: UltimateStrain не сошелся, предельная точка найдена через LoadMultiplier. " & mStopReason
+    End If
+End Sub
+
+' Чистое осевое масштабирование без постоянных моментов является
+' вырожденным для UltimateStrain при горизонтальном плато диаграммы:
+' разные равномерные деформации дают одну и ту же предельную N. Если прямой
+' UltimateStrain не сошелся устойчиво, эта проверка разрешает перейти на ту
+' же универсальную λ-траекторию и найти границу одномерно.
+Private Function IsPureAxialLoadPath(ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double) As Boolean
+    IsPureAxialLoadPath = Abs(nBase) > 0.000000001 And _
+        Abs(nOffset) <= 0.000000001 And _
+        Abs(mxOffset) <= 0.000000001 And Abs(mxBase) <= 0.000000001 And _
+        Abs(myOffset) <= 0.000000001 And Abs(myBase) <= 0.000000001
+End Function
+
+' True для классической траектории "N = const, M = lambda*Mbase".
+' Это λ*Mx, λ*My и λ*Mxy. Для них внутри универсального API используется
+' старая быстрая система UltimateStrain, потому что она лучше обусловлена
+' именно для моментного поиска несущей способности.
+Private Function IsMomentOnlyLoadPath(ByVal nBase As Double, ByVal mxBase As Double, ByVal myBase As Double) As Boolean
+    IsMomentOnlyLoadPath = Abs(nBase) <= 0.000000001 And _
+        Sqr(mxBase * mxBase + myBase * myBase) > 0.000000001
+End Function
+
+' При чистой λ*N траектории горизонтальное плато диаграммы может дать
+' устойчивую нижнюю границу capacity, а следующая probe-точка уже теряет
+' касательную жесткость до формального пересечения eps_ult. Для такого
+' осевого случая это означает достижение силового плато, поэтому принимаем
+' последнюю сходящуюся lambda как найденную несущую способность.
+Private Sub AcceptPureAxialRetainedCapacity(ByVal section As CSectionModel, ByVal concreteMaterial As Object)
+    If mLambdaUltimate <= 0# Then Exit Sub
+    If mLastAcceptableSolver Is Nothing Then Exit Sub
+
+    Set mLastSolver = mLastAcceptableSolver
+    UpdateCriticalState section, concreteMaterial, mLastAcceptableSolver
+    mLimitState = CriticalLimitState()
+    If mLimitState = STATE_NUMERICAL_FAILURE Then
+        If mLastAcceptableN < 0# Then
+            mLimitState = STATE_CONCRETE_LIMIT
+        Else
+            mLimitState = STATE_STEEL_LIMIT
+        End If
+    End If
+    mUpperLimitState = mLimitState
+    mSafetyFactor = mLambdaUltimate
+    mUtilization = 1# / mLambdaUltimate
+    mConverged = True
+    AppendSearchDiagnostic "pureAxial retained lower lambda accepted as force plateau; lambda=" & _
+        FormatNumberInvariant(mLambdaUltimate) & "; state=" & mLimitState
+End Sub
+
+' Стартовая плоскость для универсального UltimateStrain подбирается по
+' направлению полной нагрузки при lambda = 1. Это только начальное приближение:
+' дальше Newton одновременно уточняет равновесие вдоль выбранной траектории
+' и доводит критическое волокно/стержень до физической предельной деформации.
+Private Sub InitializeUltimateLoadPathGuess(ByVal section As CSectionModel, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
+    Dim area As Double
+    Dim maxAbsX As Double
+    Dim maxAbsY As Double
+    Dim i As Long
+    Dim targetNValue As Double
+    Dim targetMxValue As Double
+    Dim targetMyValue As Double
+    Dim momentNorm As Double
+    Dim strainLimit As Double
+
+    For i = 1 To section.ConcreteCount
+        area = area + section.ConcreteArea(i)
+        If Abs(section.ConcreteX(i)) > maxAbsX Then maxAbsX = Abs(section.ConcreteX(i))
+        If Abs(section.ConcreteY(i)) > maxAbsY Then maxAbsY = Abs(section.ConcreteY(i))
+    Next i
+    If section.RebarCount > 0 Then
+        For i = 1 To section.RebarCount
+            area = area + section.RebarArea(i)
+            If Abs(section.RebarX(i)) > maxAbsX Then maxAbsX = Abs(section.RebarX(i))
+            If Abs(section.RebarY(i)) > maxAbsY Then maxAbsY = Abs(section.RebarY(i))
+        Next i
+    End If
+
+    targetNValue = TargetN(1#, nOffset, nBase)
+    targetMxValue = TargetMx(1#, mxBase, mxOffset)
+    targetMyValue = TargetMy(1#, myBase, myOffset)
+    If area > 0# Then eps0 = targetNValue / (area * 30000#)
+
+    strainLimit = Abs(mConcreteCompressionLimit)
+    If mSteelStrainLimit > 0# Then strainLimit = MinDouble(strainLimit, mSteelStrainLimit)
+    If strainLimit <= 0# Then strainLimit = 0.001
+
+    If targetNValue < 0# Then
+        eps0 = MinDouble(eps0, 0.25 * mConcreteCompressionLimit)
+    ElseIf targetNValue > 0# Then
+        eps0 = MaxDouble(eps0, 0.25 * mSteelStrainLimit)
+    End If
+
+    momentNorm = Sqr(targetMxValue * targetMxValue + targetMyValue * targetMyValue)
+    If momentNorm <= 0.000000001 Then Exit Sub
+
+    If maxAbsY > 0# Then kx = Sgn(targetMxValue) * strainLimit / maxAbsY * Abs(targetMxValue) / momentNorm
+    If maxAbsX > 0# Then ky = Sgn(targetMyValue) * strainLimit / maxAbsX * Abs(targetMyValue) / momentNorm
+End Sub
+
+' Оценивает плоскость деформаций для универсального UltimateStrain.
+' Первые две невязки удерживают внутренние усилия на выбранной прямой
+' load-path в пространстве N/Mx/My, третья отвечает за достижение предельной
+' деформации материала.
+Private Function EvaluateUltimateLoadPathResidual(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double, _
+        ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
+        ByRef solver As CSectionSolver, ByRef rPath1 As Double, ByRef rPath2 As Double, _
+        ByRef rLimit As Double, ByRef lambdaValue As Double, ByRef state As String) As Boolean
+    On Error GoTo Failed
+
+    Set solver = New CSectionSolver
+    solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
+    mIterations = mIterations + 1
+    Set mLastSolver = solver
+    UpdateCriticalState section, concreteMaterial, solver
+
+    lambdaValue = LoadPathLambda(solver.Nint, solver.Mxint, solver.Myint, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase)
+    BuildLoadPathResiduals solver.Nint, solver.Mxint, solver.Myint, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase, lambdaValue, rPath1, rPath2
+    rLimit = mCriticalStrainUtilization - 1#
+    state = CriticalLimitState()
+
+    AppendSearchDiagnostic "ultimatePath iter=" & CStr(mIterations) & _
+        "; eps0=" & FormatNumberInvariant(eps0) & _
+        "; kappaX=" & FormatNumberInvariant(kx) & _
+        "; kappaY=" & FormatNumberInvariant(ky) & _
+        "; rPath1=" & FormatNumberInvariant(rPath1) & _
+        "; rPath2=" & FormatNumberInvariant(rPath2) & _
+        "; rLimit=" & FormatNumberInvariant(rLimit) & _
+        "; lambda=" & FormatNumberInvariant(lambdaValue) & _
+        "; critical=" & mCriticalElement
+    EvaluateUltimateLoadPathResidual = True
+    Exit Function
+
+Failed:
+    mLimitState = STATE_NUMERICAL_FAILURE
+    mStopReason = "Ultimate strain state evaluation failed: " & Err.Description
+    EvaluateUltimateLoadPathResidual = False
+End Function
+
+' Делает Newton-шаг для универсальной постановки UltimateStrain.
+' Якобиан строится численно, потому что material diagram уже инкапсулирует
+' кусочно-линейную диаграмму, а ручное дифференцирование дало бы дублирование.
+Private Function ApplyUltimateLoadPathNewtonStep(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double, _
+        ByVal rPath1 As Double, ByVal rPath2 As Double, ByVal rLimit As Double) As Boolean
+    On Error GoTo Failed
+
+    Dim hEps As Double
+    Dim hKx As Double
+    Dim hKy As Double
+    Dim j11 As Double, j21 As Double, j31 As Double
+    Dim j12 As Double, j22 As Double, j32 As Double
+    Dim j13 As Double, j23 As Double, j33 As Double
+    Dim system As CLinearSystem3x3
+    Dim dEps As Double
+    Dim dKx As Double
+    Dim dKy As Double
+    Dim baseNorm As Double
+    Dim alpha As Double
+    Dim trialSolver As CSectionSolver
+    Dim trialR1 As Double, trialR2 As Double, trialRLimit As Double
+    Dim trialLambda As Double, trialState As String
+
+    hEps = MaxDouble(0.0000001, Abs(eps0) * 0.0001)
+    hKx = MaxDouble(0.000000001, Abs(kx) * 0.0001)
+    hKy = MaxDouble(0.000000001, Abs(ky) * 0.0001)
+
+    BuildUltimateLoadPathJacobianColumn section, concreteMaterial, steelMaterial, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase, _
+        eps0 + hEps, kx, ky, hEps, rPath1, rPath2, rLimit, j11, j21, j31
+    BuildUltimateLoadPathJacobianColumn section, concreteMaterial, steelMaterial, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase, _
+        eps0, kx + hKx, ky, hKx, rPath1, rPath2, rLimit, j12, j22, j32
+    BuildUltimateLoadPathJacobianColumn section, concreteMaterial, steelMaterial, _
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase, _
+        eps0, kx, ky + hKy, hKy, rPath1, rPath2, rLimit, j13, j23, j33
+
+    Set system = New CLinearSystem3x3
+    If Not system.Solve(j11, j12, j13, j21, j22, j23, j31, j32, j33, -rPath1, -rPath2, -rLimit) Then
+        mLimitState = STATE_SINGULAR_TANGENT
+        mStopReason = "Ultimate strain tangent solve failed: " & system.StopReason
+        Exit Function
+    End If
+
+    dEps = system.X1
+    dKx = system.X2
+    dKy = system.X3
+    LimitUltimateIncrement dEps, dKx, dKy
+
+    baseNorm = UltimateLoadPathResidualNorm(rPath1, rPath2, rLimit)
+    alpha = mSolverDampingInitial
+    If alpha <= 0# Or alpha > 1# Then alpha = 1#
+
+    Do While alpha >= mSolverMinLineSearchAlpha
+        If EvaluateUltimateLoadPathResidual(section, concreteMaterial, steelMaterial, _
+                nOffset, nBase, mxOffset, mxBase, myOffset, myBase, _
+                eps0 + alpha * dEps, kx + alpha * dKx, ky + alpha * dKy, _
+                trialSolver, trialR1, trialR2, trialRLimit, trialLambda, trialState) Then
+            If (Not mSolverLineSearchEnabled) Or UltimateLoadPathResidualNorm(trialR1, trialR2, trialRLimit) < baseNorm Then
+                eps0 = eps0 + alpha * dEps
+                kx = kx + alpha * dKx
+                ky = ky + alpha * dKy
+                ApplyUltimateLoadPathNewtonStep = True
+                Exit Function
+            End If
+        End If
+        alpha = alpha / 2#
+    Loop
+
+    mLimitState = STATE_NUMERICAL_FAILURE
+    mStopReason = "Ultimate strain line search failed."
+    Exit Function
+
+Failed:
+    mLimitState = STATE_NUMERICAL_FAILURE
+    mStopReason = "Ultimate strain Newton step failed: " & Err.Description
+End Function
+
+' Строит один столбец численного Якобиана универсальной предельной задачи.
+Private Sub BuildUltimateLoadPathJacobianColumn(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double, _
+        ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, ByVal stepValue As Double, _
+        ByVal rPath1 As Double, ByVal rPath2 As Double, ByVal rLimit As Double, _
+        ByRef j1 As Double, ByRef j2 As Double, ByRef j3 As Double)
+    Dim solver As CSectionSolver
+    Dim pR1 As Double, pR2 As Double, pLimit As Double
+    Dim pLambda As Double, pState As String
+
+    If Not EvaluateUltimateLoadPathResidual(section, concreteMaterial, steelMaterial, _
+            nOffset, nBase, mxOffset, mxBase, myOffset, myBase, _
+            eps0, kx, ky, solver, pR1, pR2, pLimit, pLambda, pState) Then Exit Sub
+    j1 = (pR1 - rPath1) / stepValue
+    j2 = (pR2 - rPath2) / stepValue
+    j3 = (pLimit - rLimit) / stepValue
+End Sub
+
+Private Function UltimateLoadPathResidualNorm(ByVal rPath1 As Double, ByVal rPath2 As Double, ByVal rLimit As Double) As Double
+    UltimateLoadPathResidualNorm = Abs(rPath1) + Abs(rPath2) + Abs(rLimit) * 10#
+End Function
 
 ' Стартовая плоскость нужна только как начальное приближение UltimateStrain.
 ' Она не задает физический результат: дальнейшая итерация заново ищет N,
@@ -461,11 +860,39 @@ Public Sub SolveByLoadMultiplier(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
         Optional ByVal mxOffset As Double = 0#, Optional ByVal myOffset As Double = 0#)
-    ClearResult
+    SolveByLoadPathMultiplier section, concreteMaterial, steelMaterial, _
+        nSpecified, 0#, mxOffset, mxBase, myOffset, myBase
+End Sub
 
-    If Not ValidateCapacityInputs(section, concreteMaterial, steelMaterial, mxBase, myBase) Then Exit Sub
+' Ищет предельный lambda для любой траектории Target = Offset + lambda*Base.
+' Метод используется batch-слоем для новых вариантов λ*Mx, λ*My, λ*Mxy,
+' λ*N и λ*NMxy. Внутренний алгоритм скобки и Bisection/Brent/Secant остается
+' тем же для всех вариантов CapacityLoadPath.
+Public Sub SolveByLoadPathMultiplier(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double, _
+        Optional ByVal allowForcePathRetainedLimit As Boolean = False)
+    ClearResult
+    mSolutionMethod = "LoadMultiplier"
+
+    If Not ValidateLoadPathCapacityInputs(section, concreteMaterial, steelMaterial, nBase, mxBase, myBase) Then Exit Sub
     If Not ValidateLoadMultiplierSettings() Then Exit Sub
 
+    SolveLoadMultiplierCore section, concreteMaterial, steelMaterial, nOffset, nBase, mxOffset, mxBase, myOffset, myBase, _
+        allowForcePathRetainedLimit
+End Sub
+
+' Общий одномерный поиск предельного множителя. Входные Offset/Base задают
+' любую допустимую λ-траекторию нагрузки, а алгоритм скобки, probe-точек и
+' Bisection/Brent/Secant остается одним для всех вариантов.
+Private Sub SolveLoadMultiplierCore(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double, _
+        ByVal allowForcePathRetainedLimit As Boolean)
     Dim lowLambda As Double
     Dim highLambda As Double
     Dim probeState As String
@@ -475,24 +902,24 @@ Public Sub SolveByLoadMultiplier(ByVal section As CSectionModel, _
 
     ' Сначала проверяем точку lambda = 0. Если даже состояние с одним N уже
     ' неприемлемо, искать моментную несущую способность бессмысленно.
-    probeState = ProbeWithRetries(section, concreteMaterial, steelMaterial, nSpecified, _
+    probeState = ProbeWithRetries(section, concreteMaterial, steelMaterial, TargetN(lowLambda, nOffset, nBase), _
         TargetMx(lowLambda, mxBase, mxOffset), TargetMy(lowLambda, myBase, myOffset), lowLambda)
     If probeState <> STATE_ACCEPTABLE Then
         mLimitState = probeState
         mStopReason = "Initial N-only state is not acceptable: " & probeState & "."
         Exit Sub
     End If
-    RecordAcceptableState mLastSolver, nSpecified, TargetMx(lowLambda, mxBase, mxOffset), TargetMy(lowLambda, myBase, myOffset)
+    RecordAcceptableState mLastSolver, TargetN(lowLambda, nOffset, nBase), TargetMx(lowLambda, mxBase, mxOffset), TargetMy(lowLambda, myBase, myOffset)
 
     ' Расширяем верхнюю границу, пока не получим физический предел. Между
     ' lowLambda и highLambda далее должен лежать корень целевой функции.
     Dim bracketFound As Boolean
     Do While highLambda <= mMaxLambda
-        probeState = ProbeWithRetries(section, concreteMaterial, steelMaterial, nSpecified, _
+        probeState = ProbeWithRetries(section, concreteMaterial, steelMaterial, TargetN(highLambda, nOffset, nBase), _
             TargetMx(highLambda, mxBase, mxOffset), TargetMy(highLambda, myBase, myOffset), highLambda)
         If probeState = STATE_ACCEPTABLE Then
             lowLambda = highLambda
-            RecordAcceptableState mLastSolver, nSpecified, TargetMx(highLambda, mxBase, mxOffset), TargetMy(highLambda, myBase, myOffset)
+            RecordAcceptableState mLastSolver, TargetN(highLambda, nOffset, nBase), TargetMx(highLambda, mxBase, mxOffset), TargetMy(highLambda, myBase, myOffset)
             highLambda = highLambda * 2#
         ElseIf IsPhysicalLimit(probeState) Then
             mUpperLimitState = probeState
@@ -500,7 +927,10 @@ Public Sub SolveByLoadMultiplier(ByVal section As CSectionModel, _
             Exit Do
         ElseIf IsNumericalFailure(probeState) Then
             highLambda = ReduceLambdaAfterNumericalFailure(lowLambda, highLambda, probeState)
-            If highLambda <= lowLambda Then Exit Sub
+            If highLambda <= lowLambda Then
+                If allowForcePathRetainedLimit Then AcceptPureAxialRetainedCapacity section, concreteMaterial
+                Exit Sub
+            End If
         Else
             mLimitState = probeState
             mStopReason = "Capacity search stopped: " & probeState & "."
@@ -512,6 +942,7 @@ Public Sub SolveByLoadMultiplier(ByVal section As CSectionModel, _
         If Len(mLimitState) = 0 Then mLimitState = STATE_NUMERICAL_FAILURE
         If Len(mStopReason) = 0 Then mStopReason = "Physical upper lambda was not found before MaxLambda."
         mLambdaUltimate = lowLambda
+        If allowForcePathRetainedLimit Then AcceptPureAxialRetainedCapacity section, concreteMaterial
         Exit Sub
     End If
 
@@ -519,21 +950,23 @@ Public Sub SolveByLoadMultiplier(ByVal section As CSectionModel, _
     ' одномерных методов поиска lambda.
     Select Case NormalizedSearchMethod()
         Case "Bisection"
-            SearchByBisection section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, lowLambda, highLambda
+            SearchByBisection section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, lowLambda, highLambda
         Case "Brent"
-            SearchByBrent section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, lowLambda, highLambda
+            SearchByBrent section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, lowLambda, highLambda
         Case "Secant"
-            SearchBySecant section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, lowLambda, highLambda
+            SearchBySecant section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, lowLambda, highLambda
         Case Else
             SetInvalidInput "Capacity.SearchMethod must be one of Bisection, Brent or Secant."
     End Select
+    If Not mConverged And allowForcePathRetainedLimit Then AcceptPureAxialRetainedCapacity section, concreteMaterial
 End Sub
 
 ' Устойчивый базовый метод: каждый раз делит физическую скобку пополам.
 ' Быстрее он не пытается быть, зато граница acceptable/limit не теряется.
 Private Sub SearchByBisection(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
-        ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxBase As Double, ByVal myBase As Double, _
         ByVal mxOffset As Double, ByVal myOffset As Double, _
         ByVal lowLambda As Double, ByVal highLambda As Double)
     AppendSearchDiagnostic "searchMethod=Bisection"
@@ -541,11 +974,11 @@ Private Sub SearchByBisection(ByVal section As CSectionModel, _
     Dim probeState As String
     Do While (highLambda - lowLambda) > mLambdaTolerance
         midLambda = (lowLambda + highLambda) / 2#
-        probeState = ProbeWithRetries(section, concreteMaterial, steelMaterial, nSpecified, _
+        probeState = ProbeWithRetries(section, concreteMaterial, steelMaterial, TargetN(midLambda, nOffset, nBase), _
             TargetMx(midLambda, mxBase, mxOffset), TargetMy(midLambda, myBase, myOffset), midLambda)
         If probeState = STATE_ACCEPTABLE Then
             lowLambda = midLambda
-            RecordAcceptableState mLastSolver, nSpecified, TargetMx(midLambda, mxBase, mxOffset), TargetMy(midLambda, myBase, myOffset)
+            RecordAcceptableState mLastSolver, TargetN(midLambda, nOffset, nBase), TargetMx(midLambda, mxBase, mxOffset), TargetMy(midLambda, myBase, myOffset)
         ElseIf IsPhysicalLimit(probeState) Then
             highLambda = midLambda
             mUpperLimitState = probeState
@@ -562,10 +995,7 @@ Private Sub SearchByBisection(ByVal section As CSectionModel, _
         End If
     Loop
 
-    mLambdaUltimate = lowLambda
-    mMxUltimate = mLambdaUltimate * mxBase
-    mMyUltimate = mLambdaUltimate * myBase
-    mMomentUltimate = Sqr(mMxUltimate * mMxUltimate + mMyUltimate * mMyUltimate)
+    StoreLoadPathUltimateComponents lowLambda, nOffset, nBase, mxBase, myBase, mxOffset, myOffset
     If Not mLastAcceptableSolver Is Nothing Then
         mMomentEquilibriumResidual = Sqr((mLastAcceptableSolver.Mxint - TargetMx(mLambdaUltimate, mxBase, mxOffset)) ^ 2 + _
             (mLastAcceptableSolver.Myint - TargetMy(mLambdaUltimate, myBase, myOffset)) ^ 2)
@@ -583,7 +1013,8 @@ End Sub
 ' безопасному движению внутри скобки.
 Private Sub SearchByBrent(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
-        ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxBase As Double, ByVal myBase As Double, _
         ByVal mxOffset As Double, ByVal myOffset As Double, _
         ByVal lowLambda As Double, ByVal highLambda As Double)
     AppendSearchDiagnostic "searchMethod=Brent"
@@ -595,8 +1026,8 @@ Private Sub SearchByBrent(ByVal section As CSectionModel, _
 
     a = lowLambda
     b = highLambda
-    If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, a, fa, stateA) Then Exit Sub
-    If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, b, fb, stateB) Then Exit Sub
+    If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, a, fa, stateA) Then Exit Sub
+    If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, b, fb, stateB) Then Exit Sub
     If fa >= 0# Or fb <= 0# Then
         SetInvalidInput "Brent requires a bracket with acceptable lower lambda and physical upper lambda."
         Exit Sub
@@ -628,7 +1059,7 @@ Private Sub SearchByBrent(ByVal section As CSectionModel, _
         tol = MaxDouble(mLambdaTolerance / 2#, 0.000000000001 * Abs(b))
         xm = (c - b) / 2#
         If Abs(xm) <= tol Then
-            FinalizeLoadMultiplierSearchAfterProbe section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, b, "Brent"
+            FinalizeLoadMultiplierSearchAfterProbe section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, b, "Brent"
             Exit Sub
         End If
 
@@ -675,7 +1106,7 @@ Private Sub SearchByBrent(ByVal section As CSectionModel, _
             mStopReason = "Brent candidate left the physical bracket."
             Exit Sub
         End If
-        If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, b, fb, stateB) Then Exit Sub
+        If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, b, fb, stateB) Then Exit Sub
     Next iter
 
     mLimitState = STATE_NUMERICAL_FAILURE
@@ -688,7 +1119,8 @@ End Sub
 ' бицекцией или Brent.
 Private Sub SearchBySecant(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
-        ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxBase As Double, ByVal myBase As Double, _
         ByVal mxOffset As Double, ByVal myOffset As Double, _
         ByVal lowLambda As Double, ByVal highLambda As Double)
     AppendSearchDiagnostic "searchMethod=Secant"
@@ -701,8 +1133,8 @@ Private Sub SearchBySecant(ByVal section As CSectionModel, _
 
     x0 = lowLambda
     x1 = highLambda
-    If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, x0, f0, state0) Then Exit Sub
-    If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, x1, f1, state1) Then Exit Sub
+    If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, x0, f0, state0) Then Exit Sub
+    If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, x1, f1, state1) Then Exit Sub
     If f0 >= 0# Or f1 <= 0# Then
         SetInvalidInput "Secant requires a bracket with acceptable lower lambda and physical upper lambda."
         Exit Sub
@@ -712,7 +1144,7 @@ Private Sub SearchBySecant(ByVal section As CSectionModel, _
 
     For iter = 1 To mSolverMaxIterations
         If Abs(bracketHigh - bracketLow) <= mLambdaTolerance Or Abs(f1) <= mLambdaTolerance Then
-            FinalizeLoadMultiplierSearchAfterProbe section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, _
+            FinalizeLoadMultiplierSearchAfterProbe section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, _
                 bracketLow, "Secant"
             Exit Sub
         End If
@@ -744,10 +1176,10 @@ Private Sub SearchBySecant(ByVal section As CSectionModel, _
             Exit Sub
         End If
 
-        If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, x2, f2, state2) Then Exit Sub
+        If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, x2, f2, state2) Then Exit Sub
         UpdateSecantBracket x2, f2, state2, bracketLow, bracketHigh
         If Abs(f2) <= mLambdaTolerance Or Abs(bracketHigh - bracketLow) <= mLambdaTolerance Then
-            FinalizeLoadMultiplierSearchAfterProbe section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, bracketLow, "Secant"
+            FinalizeLoadMultiplierSearchAfterProbe section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, bracketLow, "Secant"
             Exit Sub
         End If
 
@@ -809,14 +1241,15 @@ End Sub
 ' попадание в предел, положительное - выход за физический критерий.
 Private Function EvaluateLoadMultiplierFunction(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
-        ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxBase As Double, ByVal myBase As Double, _
         ByVal mxOffset As Double, ByVal myOffset As Double, _
         ByVal lambdaValue As Double, ByRef functionValue As Double, ByRef probeState As String) As Boolean
-    probeState = ProbeWithRetries(section, concreteMaterial, steelMaterial, nSpecified, _
+    probeState = ProbeWithRetries(section, concreteMaterial, steelMaterial, TargetN(lambdaValue, nOffset, nBase), _
         TargetMx(lambdaValue, mxBase, mxOffset), TargetMy(lambdaValue, myBase, myOffset), lambdaValue)
     If probeState = STATE_ACCEPTABLE Then
         functionValue = mCriticalStrainUtilization - 1#
-        RecordAcceptableState mLastSolver, nSpecified, TargetMx(lambdaValue, mxBase, mxOffset), TargetMy(lambdaValue, myBase, myOffset)
+        RecordAcceptableState mLastSolver, TargetN(lambdaValue, nOffset, nBase), TargetMx(lambdaValue, mxBase, mxOffset), TargetMy(lambdaValue, myBase, myOffset)
         EvaluateLoadMultiplierFunction = True
     ElseIf IsPhysicalLimit(probeState) Then
         functionValue = mCriticalStrainUtilization - 1#
@@ -832,13 +1265,12 @@ Private Function EvaluateLoadMultiplierFunction(ByVal section As CSectionModel, 
     End If
 End Function
 
-Private Sub FinalizeLoadMultiplierSearch(ByVal lambdaValue As Double, ByVal mxBase As Double, ByVal myBase As Double, _
+Private Sub FinalizeLoadMultiplierSearch(ByVal lambdaValue As Double, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxBase As Double, ByVal myBase As Double, _
         ByVal mxOffset As Double, ByVal myOffset As Double, _
         ByVal limitState As String, ByVal methodName As String)
-    mLambdaUltimate = lambdaValue
-    mMxUltimate = mLambdaUltimate * mxBase
-    mMyUltimate = mLambdaUltimate * myBase
-    mMomentUltimate = Sqr(mMxUltimate * mMxUltimate + mMyUltimate * mMyUltimate)
+    StoreLoadPathUltimateComponents lambdaValue, nOffset, nBase, mxBase, myBase, mxOffset, myOffset
     If Not mLastSolver Is Nothing Then
         mMomentEquilibriumResidual = Sqr((mLastSolver.Mxint - TargetMx(mLambdaUltimate, mxBase, mxOffset)) ^ 2 + _
             (mLastSolver.Myint - TargetMy(mLambdaUltimate, myBase, myOffset)) ^ 2)
@@ -853,14 +1285,15 @@ End Sub
 
 Private Sub FinalizeLoadMultiplierSearchAfterProbe(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
-        ByVal nSpecified As Double, ByVal mxBase As Double, ByVal myBase As Double, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxBase As Double, ByVal myBase As Double, _
         ByVal mxOffset As Double, ByVal myOffset As Double, _
         ByVal lambdaValue As Double, ByVal methodName As String)
     Dim functionValue As Double
     Dim probeState As String
-    If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nSpecified, mxBase, myBase, mxOffset, myOffset, _
+    If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, _
             lambdaValue, functionValue, probeState) Then Exit Sub
-    FinalizeLoadMultiplierSearch lambdaValue, mxBase, myBase, mxOffset, myOffset, probeState, methodName
+    FinalizeLoadMultiplierSearch lambdaValue, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, probeState, methodName
 End Sub
 
 Private Function ChooseLowerPhysicalLambda(ByVal x0 As Double, ByVal f0 As Double, ByVal state0 As String, _
@@ -876,12 +1309,176 @@ Private Function ChooseLowerPhysicalLambda(ByVal x0 As Double, ByVal f0 As Doubl
     End If
 End Function
 
+' Выбирает lambda по самой устойчивой масштабируемой компоненте нагрузки.
+' Компоненты имеют разные размерности, поэтому сравниваем их не напрямую, а
+' относительно допусков равновесия solver-а.
+Private Function LoadPathLambda(ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double) As Double
+    Select Case LoadPathAnchorComponent(nBase, mxBase, myBase)
+        Case 1
+            LoadPathLambda = (nValue - nOffset) / nBase
+        Case 2
+            LoadPathLambda = (mxValue - mxOffset) / mxBase
+        Case 3
+            LoadPathLambda = (myValue - myOffset) / myBase
+    End Select
+End Function
+
+' Возвращает номер опорной компоненты load-path:
+' 1 - N, 2 - Mx, 3 - My. Опорная компонента задает lambda, а остальные
+' компоненты проверяются как остаточные уравнения траектории.
+Private Function LoadPathAnchorComponent(ByVal nBase As Double, ByVal mxBase As Double, ByVal myBase As Double) As Long
+    Dim nScore As Double
+    Dim mxScore As Double
+    Dim myScore As Double
+    nScore = Abs(nBase) / MaxDouble(mSolverToleranceN, 1#)
+    mxScore = Abs(mxBase) / MaxDouble(mSolverToleranceMx, 1#)
+    myScore = Abs(myBase) / MaxDouble(mSolverToleranceMy, 1#)
+
+    If mxScore >= nScore And mxScore >= myScore And Abs(mxBase) > 0.000000001 Then
+        LoadPathAnchorComponent = 2
+    ElseIf myScore >= nScore And myScore >= mxScore And Abs(myBase) > 0.000000001 Then
+        LoadPathAnchorComponent = 3
+    Else
+        LoadPathAnchorComponent = 1
+    End If
+End Function
+
+' Собирает две независимые невязки, которые удерживают найденное внутреннее
+' усилие на прямой Target = Offset + lambda*Base. Если компонент не
+' масштабируется, она контролируется как постоянная. Если масштабируется,
+' она должна совпасть со своим значением при том же lambda.
+Private Sub BuildLoadPathResiduals(ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double, _
+        ByVal lambdaValue As Double, ByRef rPath1 As Double, ByRef rPath2 As Double)
+    Dim residualCount As Long
+    Dim anchorComponent As Long
+    Dim targetNValue As Double
+    Dim targetMxValue As Double
+    Dim targetMyValue As Double
+
+    rPath1 = 0#
+    rPath2 = 0#
+
+    anchorComponent = LoadPathAnchorComponent(nBase, mxBase, myBase)
+    targetNValue = TargetN(lambdaValue, nOffset, nBase)
+    targetMxValue = TargetMx(lambdaValue, mxBase, mxOffset)
+    targetMyValue = TargetMy(lambdaValue, myBase, myOffset)
+
+    If Abs(nBase) <= 0.000000001 Then
+        AddLoadPathResidual residualCount, rPath1, rPath2, _
+            (nValue - nOffset) / ComponentTolerance(1, nOffset, nValue)
+    End If
+    If Abs(mxBase) <= 0.000000001 Then
+        AddLoadPathResidual residualCount, rPath1, rPath2, _
+            (mxValue - mxOffset) / ComponentTolerance(2, mxOffset, mxValue)
+    End If
+    If Abs(myBase) <= 0.000000001 Then
+        AddLoadPathResidual residualCount, rPath1, rPath2, _
+            (myValue - myOffset) / ComponentTolerance(3, myOffset, myValue)
+    End If
+
+    If residualCount < 2 And Abs(nBase) > 0.000000001 And anchorComponent <> 1 Then
+        AddLoadPathResidual residualCount, rPath1, rPath2, _
+            (nValue - targetNValue) / ComponentTolerance(1, targetNValue, nValue)
+    End If
+    If residualCount < 2 And Abs(mxBase) > 0.000000001 And anchorComponent <> 2 Then
+        AddLoadPathResidual residualCount, rPath1, rPath2, _
+            (mxValue - targetMxValue) / ComponentTolerance(2, targetMxValue, mxValue)
+    End If
+    If residualCount < 2 And Abs(myBase) > 0.000000001 And anchorComponent <> 3 Then
+        AddLoadPathResidual residualCount, rPath1, rPath2, _
+            (myValue - targetMyValue) / ComponentTolerance(3, targetMyValue, myValue)
+    End If
+End Sub
+
+' Считает относительное отклонение внутреннего момента от направления Mbase.
+' Возвращаемое значение уже поделено на допустимый относительный угол, поэтому
+' общий критерий |rPath| <= 1 эквивалентен прежнему правилу UltimateStrain:
+' перпендикулярная составляющая момента не больше 0.001 от масштаба момента.
+Private Sub AddLoadPathResidual(ByRef residualCount As Long, ByRef rPath1 As Double, ByRef rPath2 As Double, _
+        ByVal residualValue As Double)
+    If residualCount >= 2 Then Exit Sub
+    residualCount = residualCount + 1
+    If residualCount = 1 Then
+        rPath1 = residualValue
+    Else
+        rPath2 = residualValue
+    End If
+End Sub
+
+Private Function ComponentTolerance(ByVal componentIndex As Long, ByVal targetValue As Double, ByVal actualValue As Double) As Double
+    Select Case componentIndex
+        Case 1
+            ComponentTolerance = MaxDouble(mSolverToleranceN, MaxDouble(Abs(targetValue), Abs(actualValue)) * 0.000000001)
+        Case 2
+            ComponentTolerance = MaxDouble(mSolverToleranceMx, MaxDouble(Abs(targetValue), Abs(actualValue)) * 0.000000001)
+        Case 3
+            ComponentTolerance = MaxDouble(mSolverToleranceMy, MaxDouble(Abs(targetValue), Abs(actualValue)) * 0.000000001)
+    End Select
+End Function
+
 Private Function TargetMx(ByVal lambdaValue As Double, ByVal mxBase As Double, ByVal mxOffset As Double) As Double
     TargetMx = mxOffset + lambdaValue * mxBase
 End Function
 
 Private Function TargetMy(ByVal lambdaValue As Double, ByVal myBase As Double, ByVal myOffset As Double) As Double
     TargetMy = myOffset + lambdaValue * myBase
+End Function
+
+Private Function TargetN(ByVal lambdaValue As Double, ByVal nOffset As Double, ByVal nBase As Double) As Double
+    TargetN = nOffset + lambdaValue * nBase
+End Function
+
+' Записывает итоговые компоненты нагрузки для общей lambda-траектории.
+' Этот низкоуровневый результат хранит полное предельное состояние solver-а:
+' постоянные компоненты Offset и масштабируемые Base уже сложены вместе.
+' Batch summary дополнительно показывает только те пользовательские компоненты,
+' которые действительно входили в выбранный CapacityLoadPath.
+Private Sub StoreLoadPathUltimateComponents(ByVal lambdaValue As Double, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxBase As Double, ByVal myBase As Double, _
+        ByVal mxOffset As Double, ByVal myOffset As Double)
+    mLambdaUltimate = lambdaValue
+    If CapacityScalesAxial(nBase) Then
+        mNUltimate = TargetN(mLambdaUltimate, nOffset, nBase)
+        mMxUltimate = TargetMx(mLambdaUltimate, mxBase, mxOffset)
+        mMyUltimate = TargetMy(mLambdaUltimate, myBase, myOffset)
+    Else
+        mMxUltimate = mLambdaUltimate * mxBase
+        mMyUltimate = mLambdaUltimate * myBase
+    End If
+    mMomentUltimate = Sqr(mMxUltimate * mMxUltimate + mMyUltimate * mMyUltimate)
+End Sub
+
+Private Function CapacityScalesAxial(ByVal nBase As Double) As Boolean
+    CapacityScalesAxial = (Abs(nBase) > 0.000000001)
+End Function
+
+' Проверяет общую lambda-траекторию. Нулевой Base означает, что ни одна
+' компонента нагрузки не масштабируется, поэтому предельный множитель не имеет
+' инженерного смысла.
+Private Function ValidateLoadPathCapacityInputs(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
+        ByVal steelMaterial As Object, ByVal nBase As Double, ByVal mxBase As Double, ByVal myBase As Double) As Boolean
+    If section Is Nothing Then
+        SetInvalidInput "Модель сечения не передана."
+    ElseIf section.ConcreteCount <= 0 Then
+        SetInvalidInput "В модели сечения нет бетонных элементов."
+    ElseIf concreteMaterial Is Nothing Then
+        SetInvalidInput "Материал бетона не передан."
+    ElseIf steelMaterial Is Nothing Then
+        SetInvalidInput "Материал арматуры не передан."
+    ElseIf Abs(nBase) <= 0.000000001 And Abs(mxBase) <= 0.000000001 And Abs(myBase) <= 0.000000001 Then
+        SetInvalidInput "В траектории несущей способности нет масштабируемой нагрузки."
+    ElseIf mMaxLambda <= 0# Or mSolverMaxIterations <= 0 Then
+        SetInvalidInput "Настройки поиска несущей способности некорректны."
+    Else
+        ValidateLoadPathCapacityInputs = True
+    End If
 End Function
 
 ' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
@@ -1159,6 +1756,7 @@ Private Sub ClearResult()
     mLimitState = vbNullString
     mUpperLimitState = vbNullString
     mLambdaUltimate = 0#
+    mNUltimate = 0#
     mMomentUltimate = 0#
     mMxUltimate = 0#: mMyUltimate = 0#
     mSafetyFactor = 0#
@@ -1173,6 +1771,7 @@ Private Sub ClearResult()
     Set mLastSolver = Nothing
     Set mLastAcceptableSolver = Nothing
     mDiagnosticLog = vbNullString
+    mSolutionMethod = vbNullString
 End Sub
 
 Private Function FormatNumberInvariant(ByVal value As Double) As String
@@ -1205,6 +1804,10 @@ End Property
 
 Public Property Get LambdaUltimate() As Double
     LambdaUltimate = mLambdaUltimate
+End Property
+
+Public Property Get NUltimate() As Double
+    NUltimate = mNUltimate
 End Property
 
 Public Property Get MomentUltimate() As Double
@@ -1273,6 +1876,10 @@ End Property
 
 Public Property Get SearchMethod() As String
     SearchMethod = mSearchMethod
+End Property
+
+Public Property Get SolutionMethod() As String
+    SolutionMethod = mSolutionMethod
 End Property
 
 Public Property Let MaxLambda(ByVal value As Double)

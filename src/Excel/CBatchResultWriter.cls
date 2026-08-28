@@ -20,7 +20,7 @@ Option Explicit
 ' формулами Excel, чтобы пользователь видел связь между исходными колонками.
 
 Private Const TARGET_ROWS As Long = 31 ' Высота фиксированного диапазона batch summary.
-Private Const TARGET_COLUMNS As Long = 47 ' Ширина новой сводки до общего минимального запаса.
+Private Const TARGET_COLUMNS As Long = 51 ' Ширина сводки до общего минимального запаса.
 Private Const META_ROWS As Long = 6 ' Верхние строки с общими сведениями о запуске.
 Private Const GROUP_HEADER_ROW As Long = 7 ' Строка объединенных заголовков расчетных блоков.
 Private Const SUBGROUP_HEADER_ROW As Long = 8 ' Строка внутренних подзаголовков расчетных блоков.
@@ -45,39 +45,43 @@ Private Const COL_LIM_S_COMP As Long = 14
 Private Const COL_LIM_S_TENS As Long = 15
 
 Private Const COL_CAPACITY_STATUS As Long = 16
-Private Const COL_LIMIT_STATE As Long = 17
-Private Const COL_MXY As Long = 18
-Private Const COL_MXY_ULT As Long = 19
-Private Const COL_MOMENT_H As Long = 20
-Private Const COL_MOMENT_C As Long = 21
-Private Const COL_MOMENT_SF As Long = 22
+Private Const COL_CAPACITY_LIMIT_STATE As Long = 17
+Private Const COL_CAPACITY_LOAD_PATH As Long = 18
+Private Const COL_CAPACITY_SOLUTION_METHOD As Long = 19
+Private Const COL_CAPACITY_LAMBDA As Long = 20
+Private Const COL_CAPACITY_N_ULT As Long = 21
+Private Const COL_CAPACITY_MX_ULT As Long = 22
+Private Const COL_CAPACITY_MY_ULT As Long = 23
+Private Const COL_CAPACITY_H As Long = 24
+Private Const COL_CAPACITY_C As Long = 25
+Private Const COL_CAPACITY_SF As Long = 26
 
-Private Const COL_CRACK_STATUS As Long = 23
-Private Const COL_CRACK_FORMED As Long = 24
-Private Const COL_CRACK_H As Long = 25
-Private Const COL_CRACK_A As Long = 26
-Private Const COL_CRACK_TENSION_DEPTH As Long = 27
-Private Const COL_CRACK_EFFECTIVE_DEPTH As Long = 28
-Private Const COL_CRACK_AS As Long = 29
-Private Const COL_CRACK_ABT As Long = 30
-Private Const COL_CRACK_DS As Long = 31
-Private Const COL_CRACK_REBAR_COUNT As Long = 32
-Private Const COL_CRACK_LS_RAW As Long = 33
-Private Const COL_CRACK_LS As Long = 34
-Private Const COL_CRACK_PHI1 As Long = 35
-Private Const COL_CRACK_PHI2 As Long = 36
-Private Const COL_CRACK_PHI3 As Long = 37
-Private Const COL_CRACK_NCRC As Long = 38
-Private Const COL_CRACK_LAMBDA_CRC As Long = 39
-Private Const COL_CRACK_SIGMA_S As Long = 40
-Private Const COL_CRACK_SIGMA_S_CRC As Long = 41
-Private Const COL_CRACK_PSI As Long = 42
-Private Const COL_CRACK_ES As Long = 43
-Private Const COL_CRACK_WIDTH As Long = 44
-Private Const COL_CRACK_ALLOWABLE As Long = 45
-Private Const COL_CRACK_SF As Long = 46
+Private Const COL_CRACK_STATUS As Long = 27
+Private Const COL_CRACK_FORMED As Long = 28
+Private Const COL_CRACK_H As Long = 29
+Private Const COL_CRACK_A As Long = 30
+Private Const COL_CRACK_TENSION_DEPTH As Long = 31
+Private Const COL_CRACK_EFFECTIVE_DEPTH As Long = 32
+Private Const COL_CRACK_AS As Long = 33
+Private Const COL_CRACK_ABT As Long = 34
+Private Const COL_CRACK_DS As Long = 35
+Private Const COL_CRACK_REBAR_COUNT As Long = 36
+Private Const COL_CRACK_LS_RAW As Long = 37
+Private Const COL_CRACK_LS As Long = 38
+Private Const COL_CRACK_PHI1 As Long = 39
+Private Const COL_CRACK_PHI2 As Long = 40
+Private Const COL_CRACK_PHI3 As Long = 41
+Private Const COL_CRACK_NCRC As Long = 42
+Private Const COL_CRACK_LAMBDA_CRC As Long = 43
+Private Const COL_CRACK_SIGMA_S As Long = 44
+Private Const COL_CRACK_SIGMA_S_CRC As Long = 45
+Private Const COL_CRACK_PSI As Long = 46
+Private Const COL_CRACK_ES As Long = 47
+Private Const COL_CRACK_WIDTH As Long = 48
+Private Const COL_CRACK_ALLOWABLE As Long = 49
+Private Const COL_CRACK_SF As Long = 50
 
-Private Const COL_OVERALL_SF As Long = 47
+Private Const COL_OVERALL_SF As Long = 51
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Светло-серый фон заголовков.
 Private Const SAFETY_COLOR As Long = &HE7E6E6 ' Серый фон столбцов коэффициентов запаса.
@@ -207,7 +211,7 @@ End Sub
 
 Private Sub PutGroupHeaders(ByRef data() As Variant)
     data(GROUP_HEADER_ROW, COL_DIRECT_STATUS) = "Прямое состояние НДС и физические пределы"
-    data(GROUP_HEADER_ROW, COL_CAPACITY_STATUS) = "Расчет несущей способности по предельному моменту"
+    data(GROUP_HEADER_ROW, COL_CAPACITY_STATUS) = "Расчет предельной несущей способности по выбранной " & ChrW$(&H3BB) & "-траектории"
     data(GROUP_HEADER_ROW, COL_CRACK_STATUS) = "Расчет ширины раскрытия нормальных трещин"
     data(GROUP_HEADER_ROW, COL_OVERALL_SF) = "Минимальный запас"
 End Sub
@@ -217,10 +221,11 @@ Private Sub PutSubgroupHeaders(ByRef data() As Variant)
     data(SUBGROUP_HEADER_ROW, COL_DIRECT_STATUS) = "Фактическое НДС от LC"
     data(SUBGROUP_HEADER_ROW, COL_LIM_C_COMP) = "Предельные деформации"
 
-    data(SUBGROUP_HEADER_ROW, COL_CAPACITY_STATUS) = "Статус"
-    data(SUBGROUP_HEADER_ROW, COL_MXY) = "Моменты"
-    data(SUBGROUP_HEADER_ROW, COL_MOMENT_H) = "Геометрия при MxyUltimate"
-    data(SUBGROUP_HEADER_ROW, COL_MOMENT_SF) = "Запас"
+    data(SUBGROUP_HEADER_ROW, COL_CAPACITY_STATUS) = "Статус, путь и метод"
+    data(SUBGROUP_HEADER_ROW, COL_CAPACITY_LAMBDA) = "Множитель"
+    data(SUBGROUP_HEADER_ROW, COL_CAPACITY_N_ULT) = "Предельные компоненты"
+    data(SUBGROUP_HEADER_ROW, COL_CAPACITY_H) = "Геометрия при " & ChrW$(&H3BB) & "ult"
+    data(SUBGROUP_HEADER_ROW, COL_CAPACITY_SF) = "Запас"
 
     data(SUBGROUP_HEADER_ROW, COL_CRACK_STATUS) = "Фактическое НДС от LC"
     data(SUBGROUP_HEADER_ROW, COL_CRACK_AS) = "Арматура и бетон"
@@ -250,13 +255,16 @@ Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem
     data(COLUMN_HEADER_ROW, COL_LIM_S_COMP) = "eps_su,comp (предел арматуры сжатие)"
     data(COLUMN_HEADER_ROW, COL_LIM_S_TENS) = "eps_su,tens (предел арматуры растяжение)"
     data(COLUMN_HEADER_ROW, COL_CAPACITY_STATUS) = "CapacityStatus (прочность)"
-    data(COLUMN_HEADER_ROW, COL_LIMIT_STATE) = "CapacityLimitState (предельное состояние)"
-
-    data(COLUMN_HEADER_ROW, COL_MXY) = "Mxy, " & OutputMomentUnit(units) & " (действующий момент)"
-    data(COLUMN_HEADER_ROW, COL_MXY_ULT) = "MxyUltimate, " & OutputMomentUnit(units) & " (несущий момент)"
-    data(COLUMN_HEADER_ROW, COL_MOMENT_H) = "h, " & OutputLengthUnit(units) & " (высота при MxyUltimate)"
-    data(COLUMN_HEADER_ROW, COL_MOMENT_C) = "x, " & OutputLengthUnit(units) & " (сжатая зона при MxyUltimate)"
-    data(COLUMN_HEADER_ROW, COL_MOMENT_SF) = "MomentSafetyFactor (запас по моменту)"
+    data(COLUMN_HEADER_ROW, COL_CAPACITY_LIMIT_STATE) = "CapacityLimitState (предельное состояние)"
+    data(COLUMN_HEADER_ROW, COL_CAPACITY_LOAD_PATH) = "CapacityLoadPath (что масштабируется)"
+    data(COLUMN_HEADER_ROW, COL_CAPACITY_SOLUTION_METHOD) = "CapacitySolutionMethod (фактический метод)"
+    data(COLUMN_HEADER_ROW, COL_CAPACITY_LAMBDA) = "lambdaUltimate (множитель)"
+    data(COLUMN_HEADER_ROW, COL_CAPACITY_N_ULT) = "Nult, " & OutputForceUnit(units) & " (предельная N)"
+    data(COLUMN_HEADER_ROW, COL_CAPACITY_MX_ULT) = "Mxult, " & OutputMomentUnit(units) & " (предельный Mx)"
+    data(COLUMN_HEADER_ROW, COL_CAPACITY_MY_ULT) = "Myult, " & OutputMomentUnit(units) & " (предельный My)"
+    data(COLUMN_HEADER_ROW, COL_CAPACITY_H) = "h, " & OutputLengthUnit(units) & " (высота при lambdaUltimate)"
+    data(COLUMN_HEADER_ROW, COL_CAPACITY_C) = "x, " & OutputLengthUnit(units) & " (сжатая зона при lambdaUltimate)"
+    data(COLUMN_HEADER_ROW, COL_CAPACITY_SF) = "CapacitySafetyFactor (запас по " & ChrW$(&H3BB) & ")"
 
     data(COLUMN_HEADER_ROW, COL_CRACK_STATUS) = "CrackStatus (статус трещин)"
     data(COLUMN_HEADER_ROW, COL_CRACK_FORMED) = "CrackFormed (трещина есть)"
@@ -307,14 +315,19 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
     data(rowIndex, COL_LIM_S_TENS) = batch.SteelTensionLimitForCombination(index)
 
     data(rowIndex, COL_CAPACITY_STATUS) = ShortStatus(batch.CapacityStatus(index))
-    data(rowIndex, COL_LIMIT_STATE) = ShortStatus(batch.CapacityLimitState(index))
-
-    data(rowIndex, COL_MXY) = OutputMomentMagnitude(Sqr(batch.UserMx(index) ^ 2 + batch.UserMy(index) ^ 2), units)
-    If batch.MomentUltimate(index) > 0# Then
-        data(rowIndex, COL_MXY_ULT) = OutputMomentMagnitude(batch.MomentUltimate(index), units)
-        data(rowIndex, COL_MOMENT_SF) = MomentSafetyFormula(rowIndex)
+    data(rowIndex, COL_CAPACITY_LIMIT_STATE) = ShortStatus(batch.CapacityLimitState(index))
+    If ShortStatus(batch.CapacityStatus(index)) <> "N/A" Then
+        data(rowIndex, COL_CAPACITY_LOAD_PATH) = batch.CapacityLoadPath(index)
     End If
-    PutCapacityMomentGeometry data, rowIndex, batch, index, units, section
+    If IsFinishedStatus(batch.CapacityStatus(index)) Then
+        data(rowIndex, COL_CAPACITY_SOLUTION_METHOD) = batch.CapacitySolutionMethod(index)
+        data(rowIndex, COL_CAPACITY_LAMBDA) = batch.LambdaCapacity(index)
+        If CapacityLoadPathScalesN(batch.CapacityLoadPathKey(index)) Then data(rowIndex, COL_CAPACITY_N_ULT) = OutputForce(batch.NUltimate(index), units)
+        If CapacityLoadPathScalesMx(batch.CapacityLoadPathKey(index)) Then data(rowIndex, COL_CAPACITY_MX_ULT) = OutputMx(batch.MxUltimate(index), units)
+        If CapacityLoadPathScalesMy(batch.CapacityLoadPathKey(index)) Then data(rowIndex, COL_CAPACITY_MY_ULT) = OutputMy(batch.MyUltimate(index), units)
+        data(rowIndex, COL_CAPACITY_SF) = CapacitySafetyFormula(rowIndex)
+        PutCapacityStateGeometry data, rowIndex, batch, index, units, section
+    End If
 
     data(rowIndex, COL_CRACK_STATUS) = ShortStatus(batch.CrackStatus(index))
     data(rowIndex, COL_CRACK_NCRC) = NOT_CALCULATED_SHORT
@@ -378,18 +391,19 @@ End Sub
 ' Записывает h/x только для состояния найденного предельного момента.
 ' В режиме DirectState или при NumericalFailure этих данных нет, поэтому
 ' ячейки остаются пустыми и не смешиваются с фактическим состоянием LC.
-Private Sub PutCapacityMomentGeometry(ByRef data() As Variant, ByVal rowIndex As Long, ByVal batch As CBatchSectionCalculator, _
+' Записывает h/x для предельного состояния, найденного на выбранной λ-траектории.
+' Эти величины относятся не к текущему LC, а именно к состоянию lambdaUltimate.
+Private Sub PutCapacityStateGeometry(ByRef data() As Variant, ByVal rowIndex As Long, ByVal batch As CBatchSectionCalculator, _
         ByVal index As Long, ByVal units As CUnitSystem, ByVal section As CSectionModel)
     If section Is Nothing Then Exit Sub
-    If batch.MomentUltimate(index) <= 0# Then Exit Sub
     If Not batch.CapacityStateAvailable(index) Then Exit Sub
 
     Dim depthH As Double
     Dim compressedDepth As Double
     CalculateDepthsPerpendicularToNeutral section, batch.CapacityEpsilon0(index), batch.CapacityKappaX(index), batch.CapacityKappaY(index), _
         depthH, compressedDepth
-    If depthH > 0# Then data(rowIndex, COL_MOMENT_H) = OutputLength(depthH, units)
-    If compressedDepth >= 0# Then data(rowIndex, COL_MOMENT_C) = OutputLength(compressedDepth, units)
+    If depthH > 0# Then data(rowIndex, COL_CAPACITY_H) = OutputLength(depthH, units)
+    If compressedDepth >= 0# Then data(rowIndex, COL_CAPACITY_C) = OutputLength(compressedDepth, units)
 End Sub
 
 ' Определяет габарит h и глубину сжатой зоны c вдоль нормали к нейтральной линии.
@@ -438,9 +452,8 @@ Private Sub CalculateDepthsPerpendicularToNeutral(ByVal section As CSectionModel
     End If
 End Sub
 
-Private Function MomentSafetyFormula(ByVal rowIndex As Long) As String
-    MomentSafetyFormula = "=IFERROR(" & CellAddress(rowIndex, COL_MXY_ULT) & "/" & _
-        CellAddress(rowIndex, COL_MXY) & ","""")"
+Private Function CapacitySafetyFormula(ByVal rowIndex As Long) As String
+    CapacitySafetyFormula = "=IFERROR(" & CellAddress(rowIndex, COL_CAPACITY_LAMBDA) & ","""")"
 End Function
 
 Private Function CrackWidthFormula(ByVal rowIndex As Long) As String
@@ -458,7 +471,7 @@ End Function
 
 Private Function OverallSafetyFormula(ByVal rowIndex As Long) As String
     OverallSafetyFormula = "=IFERROR(AGGREGATE(15,6,CHOOSE({1,2}," & _
-        "IF(" & CellAddress(rowIndex, COL_MOMENT_SF) & ">0," & CellAddress(rowIndex, COL_MOMENT_SF) & ",NA())," & _
+        "IF(" & CellAddress(rowIndex, COL_CAPACITY_SF) & ">0," & CellAddress(rowIndex, COL_CAPACITY_SF) & ",NA())," & _
         "IF(" & CellAddress(rowIndex, COL_CRACK_SF) & ">0," & CellAddress(rowIndex, COL_CRACK_SF) & ",NA())),1),"""")"
 End Function
 
@@ -505,14 +518,14 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
 
     stage = "MergeHeaders"
     MergeSummaryHeader target, GROUP_HEADER_ROW, COL_DIRECT_STATUS, COL_LIM_S_TENS
-    MergeSummaryHeader target, GROUP_HEADER_ROW, COL_CAPACITY_STATUS, COL_MOMENT_SF
+    MergeSummaryHeader target, GROUP_HEADER_ROW, COL_CAPACITY_STATUS, COL_CAPACITY_SF
     MergeSummaryHeader target, GROUP_HEADER_ROW, COL_CRACK_STATUS, COL_CRACK_SF
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_OVERALL_STATUS, COL_CALC_TYPE
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_DIRECT_STATUS, COL_STATE_C
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_LIM_C_COMP, COL_LIM_S_TENS
-    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CAPACITY_STATUS, COL_LIMIT_STATE
-    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_MXY, COL_MXY_ULT
-    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_MOMENT_H, COL_MOMENT_C
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CAPACITY_STATUS, COL_CAPACITY_SOLUTION_METHOD
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CAPACITY_N_ULT, COL_CAPACITY_MY_ULT
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CAPACITY_H, COL_CAPACITY_C
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CRACK_STATUS, COL_CRACK_EFFECTIVE_DEPTH
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CRACK_AS, COL_CRACK_REBAR_COUNT
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CRACK_LS_RAW, COL_CRACK_LS
@@ -531,7 +544,7 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     dataRows = TARGET_ROWS - FIRST_DATA_ROW + 1
     target.Offset(FIRST_DATA_ROW - 1, 0).Resize(dataRows, TARGET_COLUMNS).HorizontalAlignment = -4108
     target.Offset(FIRST_DATA_ROW - 1, COL_COMMENT - 1).Resize(dataRows, 1).HorizontalAlignment = -4152
-    target.Offset(FIRST_DATA_ROW - 1, COL_MOMENT_SF - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
+    target.Offset(FIRST_DATA_ROW - 1, COL_CAPACITY_SF - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
     target.Offset(FIRST_DATA_ROW - 1, COL_CRACK_SF - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
     target.Offset(FIRST_DATA_ROW - 1, COL_OVERALL_SF - 1).Resize(dataRows, 1).Interior.Color = OVERALL_SAFETY_COLOR
     stage = "FormatOverallStatusRows"
@@ -700,6 +713,14 @@ Private Function OutputForceUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputForceUnit = "N" Else OutputForceUnit = units.OutputForceUnit
 End Function
 
+Private Function OutputMx(ByVal value As Double, ByVal units As CUnitSystem) As Double
+    If units Is Nothing Then OutputMx = value Else OutputMx = units.InternalMomentMxToOutput(value)
+End Function
+
+Private Function OutputMy(ByVal value As Double, ByVal units As CUnitSystem) As Double
+    If units Is Nothing Then OutputMy = value Else OutputMy = units.InternalMomentMyToOutput(value)
+End Function
+
 Private Function OutputMomentMagnitude(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputMomentMagnitude = value Else OutputMomentMagnitude = units.InternalMomentMagnitudeToOutput(value)
 End Function
@@ -714,4 +735,21 @@ End Function
 
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
+End Function
+
+Private Function CapacityLoadPathScalesN(ByVal loadPath As String) As Boolean
+    CapacityLoadPathScalesN = (StrComp(loadPath, "LambdaN", vbTextCompare) = 0 Or _
+        StrComp(loadPath, "LambdaNMxy", vbTextCompare) = 0)
+End Function
+
+Private Function CapacityLoadPathScalesMx(ByVal loadPath As String) As Boolean
+    CapacityLoadPathScalesMx = (StrComp(loadPath, "LambdaMx", vbTextCompare) = 0 Or _
+        StrComp(loadPath, "LambdaMxy", vbTextCompare) = 0 Or _
+        StrComp(loadPath, "LambdaNMxy", vbTextCompare) = 0)
+End Function
+
+Private Function CapacityLoadPathScalesMy(ByVal loadPath As String) As Boolean
+    CapacityLoadPathScalesMy = (StrComp(loadPath, "LambdaMy", vbTextCompare) = 0 Or _
+        StrComp(loadPath, "LambdaMxy", vbTextCompare) = 0 Or _
+        StrComp(loadPath, "LambdaNMxy", vbTextCompare) = 0)
 End Function

@@ -23,7 +23,76 @@ Private mCentroidY As Double
 Private mRequestedCount As Long
 Private mSkippedDuplicateCount As Long
 
-' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
+' Строит раскладку прямо по таблице rngLShapeGeometry.
+' Registry только выбирает, что активна форма LShape, а вся структура граней,
+' строк d/n/as/t и дополнительных рядов остается здесь, рядом с логикой
+' расстановки стержней и формирования rebar annotation anchors.
+Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As CRebarLayout
+    If settings Is Nothing Then Err.Raise vbObjectError + 3190, "CLShapeRebarLayoutBuilder", "Настройки Config не переданы."
+    If units Is Nothing Then Err.Raise vbObjectError + 3191, "CLShapeRebarLayoutBuilder", "Система единиц не передана."
+
+    Set BuildFromSettings = Build( _
+        units.InputLengthToInternal(settings.GetDouble("LShape.B1", 250#)), _
+        units.InputLengthToInternal(settings.GetDouble("LShape.H1", 550#)), _
+        units.InputLengthToInternal(settings.GetDouble("LShape.B2", 600#)), _
+        units.InputLengthToInternal(settings.GetDouble("LShape.H2", 250#)), _
+        0#, _
+        0#, _
+        ReadFaceSettingsFromConfig(settings, units, "H1"), _
+        ReadFaceSettingsFromConfig(settings, units, "H2"), _
+        ReadFaceSettingsFromConfig(settings, units, "B1"), _
+        ReadFaceSettingsFromConfig(settings, units, "B2"), _
+        settings.GetString("Steel.RebarProfile", "Ribbed"))
+End Function
+
+' Читает параметры одной смысловой грани Г-сечения.
+' Для диаметров действует особое правило ввода: если ячейка существует, но
+' оставлена пустой, это не default, а явное отсутствие арматуры на данной линии.
+Private Function ReadFaceSettingsFromConfig(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
+        ByVal faceName As String) As Variant
+    ReadFaceSettingsFromConfig = Array( _
+        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".as_1", 40#)), _
+        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".as_2", 40#)), _
+        OptionalDiameterFromSettings(settings, units, "LShape." & faceName & ".d_1", 32#), _
+        OptionalDiameterFromSettings(settings, units, "LShape." & faceName & ".d_2", 32#), _
+        settings.GetLong("LShape." & faceName & ".n_1", 0), _
+        settings.GetLong("LShape." & faceName & ".n_2", 0), _
+        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".StartOffset1", 80#)), _
+        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".EndOffset1", 80#)), _
+        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".StartOffset2", 80#)), _
+        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".EndOffset2", 80#)), _
+        OptionalDiameterFromSettings(settings, units, "LShape." & faceName & ".d_2row_1", 0#), _
+        OptionalDiameterFromSettings(settings, units, "LShape." & faceName & ".d_2row_2", 0#), _
+        OptionalDiameterFromSettings(settings, units, "LShape." & faceName & ".d_3row_1", 0#), _
+        OptionalDiameterFromSettings(settings, units, "LShape." & faceName & ".d_3row_2", 0#), _
+        settings.GetString("LShape." & faceName & ".loc_2row", "Stacked"), _
+        settings.GetString("LShape." & faceName & ".loc_3row", "Stacked"), _
+        settings.GetString("LShape." & faceName & ".bind_2row", "EachBar"), _
+        settings.GetString("LShape." & faceName & ".bind_3row", "EachBar"))
+End Function
+
+' Возвращает диаметр из Config с учетом пользовательского смысла пустой ячейки.
+' Если ключа вообще нет, используется default для старых тестовых сценариев.
+' Если ключ есть, но значение пустое или TODO, диаметр считается нулевым.
+Private Function OptionalDiameterFromSettings(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
+        ByVal key As String, ByVal defaultValue As Double) As Double
+    If Not settings.HasKey(key) Then
+        OptionalDiameterFromSettings = units.InputLengthToInternal(defaultValue)
+        Exit Function
+    End If
+
+    Dim rawValue As String
+    rawValue = Trim$(settings.GetRawString(key, vbNullString))
+    If Len(rawValue) = 0 Or UCase$(rawValue) = "TODO" Then
+        OptionalDiameterFromSettings = 0#
+    Else
+        OptionalDiameterFromSettings = units.InputLengthToInternal(settings.GetDouble(key, defaultValue))
+    End If
+End Function
+
+' Создает раскладку из уже нормализованных чисел.
+' Метод оставлен как чистая расчетная точка входа для тестов и для сценариев,
+' где геометрические параметры уже подготовлены без чтения Config.
 Public Function Build(ByVal upperWidth As Double, ByVal upperHeight As Double, _
         ByVal lowerWidth As Double, ByVal lowerHeight As Double, _
         ByVal originX As Double, ByVal originY As Double, _
@@ -58,9 +127,13 @@ Public Function Build(ByVal upperWidth As Double, ByVal upperHeight As Double, _
     AddHorizontalPair layout, geom, "B2", originX, originY, lowerWidth, _
         lowerHeight, b2Settings, h2Settings, steelClass, nextIndex, sx, sy
 
-    If layout.Count <= 0 Then Err.Raise vbObjectError + 3179, "CLShapeRebarLayoutBuilder", "Для Г-сечения должна быть задана арматура хотя бы у одной грани."
-    mCentroidX = sx / CDbl(layout.Count)
-    mCentroidY = sy / CDbl(layout.Count)
+    If layout.Count > 0 Then
+        mCentroidX = sx / CDbl(layout.Count)
+        mCentroidY = sy / CDbl(layout.Count)
+    Else
+        mCentroidX = 0#
+        mCentroidY = 0#
+    End If
     Set Build = layout
 End Function
 
@@ -136,7 +209,8 @@ Private Sub AddFaceBars(ByVal layout As CRebarLayout, ByVal geom As ISectionGeom
     row3Binding = LineRow3Binding(faceSettings)
 
     If barCount < 0 Then Err.Raise vbObjectError + 3171, "CLShapeRebarLayoutBuilder", faceName & " количество стержней должно быть нулевым или положительным."
-    If barDiameter <= 0# Then Err.Raise vbObjectError + 3172, "CLShapeRebarLayoutBuilder", faceName & " диаметр стержня первого ряда должен быть положительным."
+    If barDiameter < 0# Then Err.Raise vbObjectError + 3172, "CLShapeRebarLayoutBuilder", faceName & " диаметр стержня первого ряда не может быть отрицательным."
+    If barCount = 0 Or barDiameter = 0# Then Exit Sub
     If axisDistance <= barDiameter / 2# Then Err.Raise vbObjectError + 3173, "CLShapeRebarLayoutBuilder", faceName & " расстояние до оси стержня должно быть больше половины диаметра."
     If startOffset < 0# Or endOffset < 0# Then Err.Raise vbObjectError + 3174, "CLShapeRebarLayoutBuilder", faceName & " отступы должны быть неотрицательными."
     ValidateAdditionalRows faceName, row2Diameter, row3Diameter, row2Location, row3Location, row2Binding, row3Binding
@@ -269,7 +343,8 @@ Private Sub AddBarIfAvailable(ByVal layout As CRebarLayout, ByVal geom As ISecti
         mSkippedDuplicateCount = mSkippedDuplicateCount + 1
     Else
         layout.AddBar faceName & ".row_" & CStr(rowNumber) & "-" & CStr(nextIndex), _
-            xCoord, yCoord, diameter, 0#, steelClass, "auto lshape " & faceName & " row " & CStr(rowNumber), geom, faceName
+            xCoord, yCoord, diameter, 0#, steelClass, _
+            "Г-сечение: грань " & faceName & ", ряд " & CStr(rowNumber), geom, faceName
         nextIndex = nextIndex + 1
         sx = sx + xCoord
         sy = sy + yCoord

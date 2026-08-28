@@ -54,7 +54,7 @@ Get-Process EXCEL -ErrorAction SilentlyContinue | Stop-Process -Force
 | `Run-GeometryTests.ps1` | геометрия, сетка, круг, скругленный прямоугольник, Г-сечение, автоматическая арматура, импорт AutoCAD Region в `CSectionModel` на мок-данных |
 | `Run-MaterialTests.ps1` | построение TwoLine/ThreeLine-диаграмм материалов по параметрам I/II ГПС |
 | `Run-SectionSolverTests.ps1` | прямой `CSectionSolver`, `Newton`, `Secant`, настройки |
-| `Run-CapacityTests.ps1` | `LoadMultiplier`, `UltimateStrain`, `Bisection`, `Brent`, `Secant` |
+| `Run-CapacityTests.ps1` | универсальная λ-траектория `CapacityLoadPath`, `Auto`, `UltimateStrain`, `LoadMultiplier`, `Bisection`, `Brent`, `Secant` |
 | `Run-CrackTests.ps1` | ширина раскрытия уже образовавшихся трещин |
 | `Run-BatchTests.ps1` | batch до 20 сочетаний, worst LC, summary |
 | `Run-WorkbookInterfaceTests.ps1` | кнопки, чтение книги, вывод результатов |

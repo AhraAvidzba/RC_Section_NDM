@@ -28,6 +28,12 @@ Private Const STATUS_INPUTERR As String = "InputErr" ' Ошибка исходн
 Private Const STATUS_NA As String = "N/A" ' Расчетная проверка не относится к этому LC/режиму.
 Private Const CALC_GROUP1 As String = "Group1" ' Первая группа: проверка несущей способности.
 Private Const CALC_GROUP2 As String = "Group2" ' Вторая группа: эксплуатационная проверка трещин.
+Private Const CAPACITY_PATH_NONE As String = "None" ' Capacity не запускался для LC.
+Private Const CAPACITY_PATH_MX As String = "LambdaMx" ' Масштабируется только пользовательский Mx.
+Private Const CAPACITY_PATH_MY As String = "LambdaMy" ' Масштабируется только пользовательский My.
+Private Const CAPACITY_PATH_MXY As String = "LambdaMxy" ' Масштабируется пользовательский вектор Mx/My.
+Private Const CAPACITY_PATH_N As String = "LambdaN" ' Масштабируется N вместе с моментом от эксцентриситета N.
+Private Const CAPACITY_PATH_NMXY As String = "LambdaNMxy" ' Масштабируется весь расчетный вектор N/Mx/My.
 
 Private mSection As CSectionModel ' Расчетная модель сечения, общая для всех LC.
 Private mMaterialProvider As CMaterialModelProvider ' Единая точка выдачи диаграмм для Strength/Mcrc/CrackedNDS.
@@ -40,6 +46,7 @@ Private mMy(1 To MAX_COMBINATIONS) As Double ' My после учета точк
 Private mUserMx(1 To MAX_COMBINATIONS) As Double ' Mx как ввел пользователь относительно выбранной точки нагрузки.
 Private mUserMy(1 To MAX_COMBINATIONS) As Double ' My как ввел пользователь относительно выбранной точки нагрузки.
 Private mCalculationType(1 To MAX_COMBINATIONS) As String ' Group1/Group2: какая инженерная проверка нужна для LC.
+Private mCapacityLoadPath(1 To MAX_COMBINATIONS) As String ' Выбор пользователя: какие компоненты масштабировать множителем lambda.
 Private mComment(1 To MAX_COMBINATIONS) As String ' Комментарий пользователя из таблицы сочетаний.
 Private mInputValid(1 To MAX_COMBINATIONS) As Boolean ' False, если строка LC прочитана, но входные данные некорректны.
 Private mInputError(1 To MAX_COMBINATIONS) As String ' Текст причины InvalidInput для конкретного LC.
@@ -52,12 +59,17 @@ Private mStatus(1 To MAX_COMBINATIONS) As String ' OverallStatus: итоговы
 Private mDirectStateStatus(1 To MAX_COMBINATIONS) As String ' Статус прямого НДС фактического сочетания.
 Private mCapacityStatus(1 To MAX_COMBINATIONS) As String ' Статус поиска несущей способности.
 Private mCapacityLimitState(1 To MAX_COMBINATIONS) As String ' Какой предел остановил capacity solver.
+Private mCapacitySolutionMethod(1 To MAX_COMBINATIONS) As String ' Фактическая численная ветка, которая дала capacity-результат.
 Private mCrackStatus(1 To MAX_COMBINATIONS) As String ' Статус расчета трещин для второй группы.
 Private mExtensionUsed(1 To MAX_COMBINATIONS) As Boolean ' True, если прямой StateSolution вышел в numerical extension.
 Private mDirectStateDiagramExtensionEnabled(1 To MAX_COMBINATIONS) As Boolean ' Снимок настройки extension для LC.
 Private mLambdaCapacity(1 To MAX_COMBINATIONS) As Double ' Найденный множитель несущей способности.
 Private mUtilCapacity(1 To MAX_COMBINATIONS) As Double ' Использование по несущей способности, обычно 1/lambda.
-Private mMomentUltimate(1 To MAX_COMBINATIONS) As Double ' Результирующий предельный момент Mxy при заданной N, Н*мм.
+Private mCapacityPathResolved(1 To MAX_COMBINATIONS) As String ' Нормализованная capacity-траектория после fallback/валидации.
+Private mNUltimate(1 To MAX_COMBINATIONS) As Double ' Предельная N для траекторий, где N входит в масштабируемый вектор.
+Private mMxUltimate(1 To MAX_COMBINATIONS) As Double ' Предельный пользовательский Mx для траекторий, где масштабируется Mx.
+Private mMyUltimate(1 To MAX_COMBINATIONS) As Double ' Предельный пользовательский My для траекторий, где масштабируется My.
+Private mMomentUltimate(1 To MAX_COMBINATIONS) As Double ' Результирующий предельный момент из заполненных MxUltimate/MyUltimate.
 Private mCapacityStateAvailable(1 To MAX_COMBINATIONS) As Boolean ' True, если сохранена плоскость деформаций именно предельного capacity-состояния.
 Private mCapacityEpsilon0(1 To MAX_COMBINATIONS) As Double ' epsilon0 в состоянии найденного предельного момента, а не в фактическом LC.
 Private mCapacityKappaX(1 To MAX_COMBINATIONS) As Double ' kappaX в состоянии найденного предельного момента.
@@ -126,7 +138,7 @@ Private mSolverMaxDeltaKappa As Double ' Защита от слишком бол
 Private mSolverSecantMaxRestarts As Long ' Сколько раз Secant может перестроить приближенную матрицу.
 Private mSolverSecantMinStepNorm As Double ' Минимальная норма шага Secant до признания застоя.
 Private mCapacityInitialLambda As Double ' Начальный шаг/точка поиска lambda для LoadMultiplier.
-Private mCapacityMethod As String ' LoadMultiplier или UltimateStrain.
+Private mCapacityMethod As String ' Auto, LoadMultiplier или UltimateStrain.
 Private mCapacityCalculationScope As String ' Какие LC отправлять в поиск несущего момента: только Group1 или Group1+Group2.
 Private mCapacitySearchMethod As String ' Bisection, Brent или Secant для LoadMultiplier.
 Private mCapacityMaxLambda As Double ' Верхняя защитная граница lambda.
@@ -158,7 +170,7 @@ Private Sub Class_Initialize()
     mSolverSecantMaxRestarts = 2
     mSolverSecantMinStepNorm = 0.000000000001
     mCapacityInitialLambda = 1#
-    mCapacityMethod = "UltimateStrain"
+    mCapacityMethod = "Auto"
     mCapacityCalculationScope = "Group1+2"
     mCapacitySearchMethod = "Bisection"
     mCapacityMaxLambda = 64#
@@ -254,20 +266,21 @@ End Sub
 ' Добавляет корректно прочитанное сочетание нагрузок.
 ' Усилия уже должны быть во внутренних единицах и в INTERNAL-системе знаков.
 Public Sub AddCombination(ByVal combinationID As String, ByVal nValue As Double, ByVal mxValue As Double, _
-        ByVal myValue As Double, ByVal calculationType As String, ByVal comment As String)
-    AddCombinationInternal combinationID, nValue, mxValue, myValue, calculationType, comment, True, vbNullString
+        ByVal myValue As Double, ByVal calculationType As String, ByVal comment As String, _
+        Optional ByVal capacityLoadPath As String = vbNullString)
+    AddCombinationInternal combinationID, nValue, mxValue, myValue, calculationType, comment, True, vbNullString, capacityLoadPath
 End Sub
 
 ' Сохраняет строку LC с ошибкой ввода, чтобы пользователь увидел ее в отчете.
 ' Такие сочетания не передаются в solver, но отображаются как InvalidInput.
 Public Sub AddInvalidCombination(ByVal combinationID As String, ByVal calculationType As String, _
-        ByVal comment As String, ByVal reason As String)
-    AddCombinationInternal combinationID, 0#, 0#, 0#, calculationType, comment, False, reason
+        ByVal comment As String, ByVal reason As String, Optional ByVal capacityLoadPath As String = vbNullString)
+    AddCombinationInternal combinationID, 0#, 0#, 0#, calculationType, comment, False, reason, capacityLoadPath
 End Sub
 
 Private Sub AddCombinationInternal(ByVal combinationID As String, ByVal nValue As Double, ByVal mxValue As Double, _
         ByVal myValue As Double, ByVal calculationType As String, ByVal comment As String, _
-        ByVal inputValid As Boolean, ByVal inputError As String)
+        ByVal inputValid As Boolean, ByVal inputError As String, ByVal capacityLoadPath As String)
     If mCount >= MAX_COMBINATIONS Then Err.Raise vbObjectError + 3911, "CBatchSectionCalculator", "Поддерживается не более 20 сочетаний нагрузок."
     mCount = mCount + 1
     If Len(Trim$(combinationID)) = 0 Then combinationID = "ROW" & CStr(mCount)
@@ -276,6 +289,7 @@ Private Sub AddCombinationInternal(ByVal combinationID As String, ByVal nValue A
     mMx(mCount) = mxValue
     mMy(mCount) = myValue
     mCalculationType(mCount) = calculationType
+    mCapacityLoadPath(mCount) = Trim$(capacityLoadPath)
     mComment(mCount) = comment
     mUserMx(mCount) = mxValue
     mUserMy(mCount) = myValue
@@ -412,37 +426,84 @@ Failed:
     MarkInvalid index, Err.Description
 End Sub
 
-' Запускает поиск несущей способности для LC первой группы.
-' Если моментный вектор Mx/My нулевой, множитель lambda не имеет смысла, и
-' capacity-проверка помечается как пропущенная без ошибки solver-а.
+' Запускает поиск несущей способности для LC.
+' Пользовательский столбец CapacityLoadPath задает, какие компоненты нагрузки
+' умножаются на lambda. Все варианты дальше сводятся к одной математике:
+' Target = Offset + lambda*Base для N, Mx и My.
 Private Sub RunCapacity(ByVal index As Long)
-    If Sqr(mUserMx(index) * mUserMx(index) + mUserMy(index) * mUserMy(index)) <= 0.000000001 Then
-        ReportStep "Capacity не запускается: моментный вектор Mx/My равен нулю."
-        StoreSkippedCapacity index
+    Dim loadPath As String
+    Dim nOffset As Double
+    Dim nBase As Double
+    Dim mxOffset As Double
+    Dim mxBase As Double
+    Dim myOffset As Double
+    Dim myBase As Double
+    Dim cap As CCapacitySolver
+
+    loadPath = CapacityLoadPathForCombination(index)
+    mCapacityPathResolved(index) = loadPath
+    ReportValue "CapacityLoadPath", IIf(Len(loadPath) > 0, CapacityLoadPathDisplay(loadPath), mCapacityLoadPath(index))
+
+    If Len(loadPath) = 0 Then
+        If Len(Trim$(mCapacityLoadPath(index))) > 0 Then
+            StoreInvalidCapacity index, "CapacityLoadPath должен быть λ*Mx, λ*My, λ*Mxy, λ*N или λ*NMxy."
+            ReportStep "Capacity остановлен: неизвестное значение CapacityLoadPath."
+        Else
+            ReportStep "Capacity не запускается: в сочетании нет ни момента, ни продольной силы."
+            StoreSkippedCapacity index
+        End If
         Exit Sub
     End If
 
-    Dim cap As CCapacitySolver
+    If Not CapacityLoadPathHasScaledLoad(index, loadPath) Then
+        StoreInvalidCapacity index, "Для выбранного CapacityLoadPath соответствующая нагрузка должна быть ненулевой."
+        ReportStep "Capacity остановлен: выбранная λ-траектория не содержит ненулевой масштабируемой нагрузки."
+        Exit Sub
+    End If
+
+    BuildCapacityLoadPath index, loadPath, nOffset, nBase, mxOffset, mxBase, myOffset, myBase
     Set cap = New CCapacitySolver
     ConfigureCapacity cap
+    Dim forceOnlyPath As Boolean
+    ' Если пользователь не задавал Mx/My, то λ*N и λ*NMxy являются силовой
+    ' траекторией продольной силы. Во внутренних моментах могут быть члены
+    ' переноса от N к расчетной системе координат, но это не делает исходную
+    ' пользовательскую задачу изгибной.
+    forceOnlyPath = IsForceOnlyCapacityLoadPath(index, loadPath)
     Select Case NormalizedCapacityMethod()
+        Case "Auto"
+            If forceOnlyPath Then
+                cap.SolveByLoadPathMultiplier mSection, mMaterialProvider.ConcreteMaterial(cpStrength), _
+                    mMaterialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase, True
+            Else
+                cap.SolveByAutoLoadPath mSection, mMaterialProvider.ConcreteMaterial(cpStrength), _
+                    mMaterialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+            End If
         Case "UltimateStrain"
-            cap.SolveByUltimateStrain mSection, mMaterialProvider.ConcreteMaterial(cpStrength), _
-                mMaterialProvider.SteelMaterial(cpStrength), _
-                mN(index), mUserMx(index), mUserMy(index), mN(index) * mLoadReferenceY, mN(index) * mLoadReferenceX
+            If forceOnlyPath Then
+                cap.SolveByLoadPathMultiplier mSection, mMaterialProvider.ConcreteMaterial(cpStrength), _
+                    mMaterialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase, True
+            Else
+                cap.SolveByUltimateLoadPath mSection, mMaterialProvider.ConcreteMaterial(cpStrength), _
+                    mMaterialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+            End If
         Case "LoadMultiplier"
-            cap.SolveByLoadMultiplier mSection, mMaterialProvider.ConcreteMaterial(cpStrength), _
-                mMaterialProvider.SteelMaterial(cpStrength), _
-                mN(index), mUserMx(index), mUserMy(index), mN(index) * mLoadReferenceY, mN(index) * mLoadReferenceX
+            cap.SolveByLoadPathMultiplier mSection, mMaterialProvider.ConcreteMaterial(cpStrength), _
+                mMaterialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase, _
+                forceOnlyPath
         Case Else
             mCapacityStatus(index) = STATUS_INPUTERR
-            mCapacityLimitState(index) = "Capacity.Method должен быть LoadMultiplier или UltimateStrain."
+            mCapacityLimitState(index) = "Capacity.Method должен быть Auto, LoadMultiplier или UltimateStrain."
+            mCapacitySolutionMethod(index) = vbNullString
             ReportStep "Capacity остановлен: неизвестный Capacity.Method."
             Exit Sub
     End Select
-    StoreCapacity index, cap
+
+    StoreCapacity index, cap, loadPath
+
     ReportValue "CapacityStatus", mCapacityStatus(index)
     ReportValue "LambdaCapacity", FormatNumberInvariant(mLambdaCapacity(index))
+    ReportValue "CapacityLoadPath", CapacityLoadPathDisplay(mCapacityPathResolved(index))
     ReportBlock "Диагностика поиска несущей способности", cap.DiagnosticLog
     If Not cap.LastSolver Is Nothing Then
         ReportBlock "Итерации внутреннего CSectionSolver для последней capacity-точки", cap.LastSolver.DiagnosticLog
@@ -578,7 +639,7 @@ End Function
 
 ' Показывает, должна ли для LC запускаться несущая способность.
 ' Пользовательская настройка Capacity.CalculationScope позволяет оставить
-' расчет предельного момента только для первой группы или временно считать
+' поиск предельной λ-траектории только для первой группы или временно считать
 ' его также для Group2 как диагностический прочностной запас.
 Private Function ShouldRunCapacity(ByVal calculationType As String) As Boolean
     Select Case NormalizedCapacityCalculationScope()
@@ -594,6 +655,153 @@ End Function
 ' трещин для второй группы; сочетания первой группы сюда не попадают.
 Private Function ShouldRunCrack(ByVal calculationType As String) As Boolean
     ShouldRunCrack = (calculationType = CALC_GROUP2)
+End Function
+
+' True, если в LC есть пользовательский момент Mx или My.
+' Моменты от смещенной точки приложения N сюда не входят: пользователь не
+' задавал их как отдельную нагрузку, они формируются переносом силы.
+Private Function HasUserMomentVector(ByVal index As Long) As Boolean
+    HasUserMomentVector = (Sqr(mUserMx(index) * mUserMx(index) + mUserMy(index) * mUserMy(index)) > 0.000000001)
+End Function
+
+' True для траекторий, где пользователь масштабирует только продольную силу.
+' CapacityLoadPath при этом не переписывается: λ*NMxy остается λ*NMxy в
+' Results, но если пользовательские Mx/My равны нулю, фактический вектор
+' нагрузки содержит только N и моменты переноса от выбранной точки приложения.
+Private Function IsForceOnlyCapacityLoadPath(ByVal index As Long, ByVal loadPath As String) As Boolean
+    IsForceOnlyCapacityLoadPath = (loadPath = CAPACITY_PATH_N Or loadPath = CAPACITY_PATH_NMXY) And _
+        Not HasUserMomentVector(index)
+End Function
+
+' Нормализует текст из Excel в короткий внутренний ключ load-path.
+' Явный текст должен совпадать с пользовательской моделью λ*..., иначе
+' строка сочетания получает InputErr вместо молчаливого авто-исправления.
+Private Function NormalizedCapacityLoadPath(ByVal loadPath As String) As String
+    Dim value As String
+    value = LCase$(Trim$(loadPath))
+    value = Replace$(value, " ", vbNullString)
+    value = Replace$(value, ChrW$(&H3BB), "lambda")
+    value = Replace$(value, "λ", "lambda")
+
+    Select Case value
+        Case "lambda*mx", "lambdamx", "mx"
+            NormalizedCapacityLoadPath = CAPACITY_PATH_MX
+        Case "lambda*my", "lambdamy", "my"
+            NormalizedCapacityLoadPath = CAPACITY_PATH_MY
+        Case "lambda*mxy", "lambdamxy", "mxy"
+            NormalizedCapacityLoadPath = CAPACITY_PATH_MXY
+        Case "lambda*n", "lambdan", "nload"
+            NormalizedCapacityLoadPath = CAPACITY_PATH_N
+        Case "lambda*nmxy", "lambdanmxy", "nmxy", "all"
+            NormalizedCapacityLoadPath = CAPACITY_PATH_NMXY
+    End Select
+End Function
+
+' Возвращает load-path, который реально будет использован для LC.
+' Пустой столбец трактуется осторожно: моментное сочетание идет по λ*Mxy,
+' чистая продольная сила - по λ*N. Явный неизвестный текст остается ошибкой.
+Private Function CapacityLoadPathForCombination(ByVal index As Long) As String
+    Dim explicitValue As String
+    explicitValue = NormalizedCapacityLoadPath(mCapacityLoadPath(index))
+    If Len(explicitValue) > 0 Then
+        CapacityLoadPathForCombination = explicitValue
+    ElseIf Len(Trim$(mCapacityLoadPath(index))) > 0 Then
+        CapacityLoadPathForCombination = vbNullString
+    ElseIf HasUserMomentVector(index) Then
+        CapacityLoadPathForCombination = CAPACITY_PATH_MXY
+    ElseIf Abs(mN(index)) > 0.000000001 Then
+        CapacityLoadPathForCombination = CAPACITY_PATH_N
+    End If
+End Function
+
+' Формирует человекочитаемую подпись load-path для Results и отчета.
+Private Function CapacityLoadPathDisplay(ByVal loadPath As String) As String
+    Select Case loadPath
+        Case CAPACITY_PATH_MX
+            CapacityLoadPathDisplay = ChrW$(&H3BB) & "*Mx"
+        Case CAPACITY_PATH_MY
+            CapacityLoadPathDisplay = ChrW$(&H3BB) & "*My"
+        Case CAPACITY_PATH_MXY
+            CapacityLoadPathDisplay = ChrW$(&H3BB) & "*Mxy"
+        Case CAPACITY_PATH_N
+            CapacityLoadPathDisplay = ChrW$(&H3BB) & "*N"
+        Case CAPACITY_PATH_NMXY
+            CapacityLoadPathDisplay = ChrW$(&H3BB) & "*NMxy"
+        Case Else
+            CapacityLoadPathDisplay = loadPath
+    End Select
+End Function
+
+' Проверяет, есть ли в выбранном пути хотя бы одна ненулевая масштабируемая
+' пользовательская компонента нагрузки.
+Private Function CapacityLoadPathHasScaledLoad(ByVal index As Long, ByVal loadPath As String) As Boolean
+    Select Case loadPath
+        Case CAPACITY_PATH_MX
+            CapacityLoadPathHasScaledLoad = (Abs(mUserMx(index)) > 0.000000001)
+        Case CAPACITY_PATH_MY
+            CapacityLoadPathHasScaledLoad = (Abs(mUserMy(index)) > 0.000000001)
+        Case CAPACITY_PATH_MXY
+            CapacityLoadPathHasScaledLoad = HasUserMomentVector(index)
+        Case CAPACITY_PATH_N
+            CapacityLoadPathHasScaledLoad = (Abs(mN(index)) > 0.000000001)
+        Case CAPACITY_PATH_NMXY
+            CapacityLoadPathHasScaledLoad = (Abs(mN(index)) + Abs(mUserMx(index)) + Abs(mUserMy(index)) > 0.000000001)
+    End Select
+End Function
+
+' Переводит выбранный пользователем путь в математическую форму solver-а.
+' Offset - неизменяемая часть внешней нагрузки, Base - часть, умножаемая
+' на lambda. Моменты от эксцентриситета N попадают туда, куда физически
+' попадает сама N: при λ*N они масштабируются, при λ*M остаются постоянными.
+Private Sub BuildCapacityLoadPath(ByVal index As Long, ByVal loadPath As String, _
+        ByRef nOffset As Double, ByRef nBase As Double, _
+        ByRef mxOffset As Double, ByRef mxBase As Double, _
+        ByRef myOffset As Double, ByRef myBase As Double)
+    Dim mxFromN As Double
+    Dim myFromN As Double
+    mxFromN = mN(index) * mLoadReferenceY
+    myFromN = mN(index) * mLoadReferenceX
+
+    Select Case loadPath
+        Case CAPACITY_PATH_MX
+            nOffset = mN(index)
+            mxOffset = mxFromN
+            mxBase = mUserMx(index)
+            myOffset = myFromN + mUserMy(index)
+        Case CAPACITY_PATH_MY
+            nOffset = mN(index)
+            mxOffset = mxFromN + mUserMx(index)
+            myOffset = myFromN
+            myBase = mUserMy(index)
+        Case CAPACITY_PATH_MXY
+            nOffset = mN(index)
+            mxOffset = mxFromN
+            mxBase = mUserMx(index)
+            myOffset = myFromN
+            myBase = mUserMy(index)
+        Case CAPACITY_PATH_N
+            nBase = mN(index)
+            mxOffset = mUserMx(index)
+            mxBase = mxFromN
+            myOffset = mUserMy(index)
+            myBase = myFromN
+        Case CAPACITY_PATH_NMXY
+            nBase = mN(index)
+            mxBase = mMx(index)
+            myBase = mMy(index)
+    End Select
+End Sub
+
+Private Function CapacityPathScalesN(ByVal loadPath As String) As Boolean
+    CapacityPathScalesN = (loadPath = CAPACITY_PATH_N Or loadPath = CAPACITY_PATH_NMXY)
+End Function
+
+Private Function CapacityPathScalesMx(ByVal loadPath As String) As Boolean
+    CapacityPathScalesMx = (loadPath = CAPACITY_PATH_MX Or loadPath = CAPACITY_PATH_MXY Or loadPath = CAPACITY_PATH_NMXY)
+End Function
+
+Private Function CapacityPathScalesMy(ByVal loadPath As String) As Boolean
+    CapacityPathScalesMy = (loadPath = CAPACITY_PATH_MY Or loadPath = CAPACITY_PATH_MXY Or loadPath = CAPACITY_PATH_NMXY)
 End Function
 
 ' Выбирает material purpose для фактического НДС конкретного LC.
@@ -634,10 +842,12 @@ Private Function IsSupportedCalculationMode() As Boolean
     IsSupportedCalculationMode = IsDirectStateMode() Or IsFullCapacityMode()
 End Function
 
-' Приводит пользовательскую строку Capacity.Method к одному из двух
+' Приводит пользовательскую строку Capacity.Method к одному из трех
 ' внутренних имен. Пустой результат дальше превращается в InvalidInput.
 Private Function NormalizedCapacityMethod() As String
     Select Case LCase$(Trim$(mCapacityMethod))
+        Case "auto"
+            NormalizedCapacityMethod = "Auto"
         Case "loadmultiplier"
             NormalizedCapacityMethod = "LoadMultiplier"
         Case "ultimatestrain"
@@ -650,24 +860,51 @@ End Function
 Private Sub StoreNotCalculatedCapacity(ByVal index As Long)
     mCapacityStatus(index) = STATUS_NA
     mCapacityLimitState(index) = STATUS_NA
+    mCapacitySolutionMethod(index) = vbNullString
+    mCapacityPathResolved(index) = CAPACITY_PATH_NONE
 End Sub
 
-' Помечает capacity как пропущенную из-за нулевого моментного вектора.
-' Это не ошибка исходных данных: для чистого N нет направления момента,
-' которое можно масштабировать через lambda.
+' Помечает capacity как пропущенную из-за нулевой нагрузки.
+' Это не ошибка исходных данных: для нулевых N, Mx и My нельзя построить
+' направление внешнего поиска несущей способности.
 Private Sub StoreSkippedCapacity(ByVal index As Long)
     mCapacityStatus(index) = STATUS_NA
-    mCapacityLimitState(index) = "ZeroBaseMoment"
+    mCapacityLimitState(index) = "ZeroBaseLoad"
+    mCapacitySolutionMethod(index) = vbNullString
+    mCapacityPathResolved(index) = CAPACITY_PATH_NONE
+End Sub
+
+' Помечает только ветку capacity как ошибку исходных данных.
+' Прямое НДС при этом все равно может быть посчитано: ошибка относится к
+' выбору траектории несущей способности, а не к самим нагрузкам LC.
+Private Sub StoreInvalidCapacity(ByVal index As Long, ByVal reason As String)
+    mCapacityStatus(index) = STATUS_INPUTERR
+    mCapacityLimitState(index) = reason
+    mCapacitySolutionMethod(index) = vbNullString
+    mCapacityPathResolved(index) = CAPACITY_PATH_NONE
+    mLambdaCapacity(index) = 0#
+    mUtilCapacity(index) = 0#
+    mNUltimate(index) = 0#
+    mMxUltimate(index) = 0#
+    mMyUltimate(index) = 0#
+    mMomentUltimate(index) = 0#
 End Sub
 
 ' Переносит результат CCapacitySolver в массивы batch-отчета.
 ' Здесь разделяется математическая сходимость capacity solver-а и простая
 ' инженерная проверка: lambda меньше или больше единицы.
-Private Sub StoreCapacity(ByVal index As Long, ByVal cap As CCapacitySolver)
+Private Sub StoreCapacity(ByVal index As Long, ByVal cap As CCapacitySolver, ByVal loadPath As String)
     mCapacityStatus(index) = CapacityStatusFromSolver(cap)
     mCapacityLimitState(index) = cap.LimitState
+    mCapacitySolutionMethod(index) = cap.SolutionMethod
+    mCapacityPathResolved(index) = loadPath
     mLambdaCapacity(index) = cap.LambdaUltimate
-    mMomentUltimate(index) = cap.MomentUltimate
+    If cap.LambdaUltimate > 0# Then
+        If CapacityPathScalesN(loadPath) Then mNUltimate(index) = cap.LambdaUltimate * mN(index)
+        If CapacityPathScalesMx(loadPath) Then mMxUltimate(index) = cap.LambdaUltimate * mUserMx(index)
+        If CapacityPathScalesMy(loadPath) Then mMyUltimate(index) = cap.LambdaUltimate * mUserMy(index)
+    End If
+    mMomentUltimate(index) = Sqr(mMxUltimate(index) * mMxUltimate(index) + mMyUltimate(index) * mMyUltimate(index))
     If cap.LambdaUltimate > 0# Then mUtilCapacity(index) = 1# / cap.LambdaUltimate
     If cap.Converged Then mUtilCapacity(index) = cap.Utilization
 
@@ -675,7 +912,7 @@ Private Sub StoreCapacity(ByVal index As Long, ByVal cap As CCapacitySolver)
     ' предельному состоянию, а не к фактическому НДС LC. Поэтому сохраняем
     ' отдельную плоскость деформаций только когда capacity-поиск действительно
     ' дал физически принятое предельное состояние.
-    If cap.Converged And cap.MomentUltimate > 0# Then
+    If cap.Converged And cap.LambdaUltimate > 0# Then
         If Not cap.LastSolver Is Nothing Then
             mCapacityStateAvailable(index) = True
             mCapacityEpsilon0(index) = cap.LastSolver.Epsilon0
@@ -694,6 +931,8 @@ Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     mDirectStateStatus(index) = STATUS_INPUTERR
     mCapacityStatus(index) = STATUS_INPUTERR
     mCapacityLimitState(index) = reason
+    mCapacitySolutionMethod(index) = vbNullString
+    mCapacityPathResolved(index) = CAPACITY_PATH_NONE
     mCrackStatus(index) = STATUS_NA
     If Not mMaterialProvider Is Nothing Then
         mDirectStateDiagramExtensionEnabled(index) = mMaterialProvider.DirectStateDiagramExtensionEnabled
@@ -789,9 +1028,14 @@ Private Sub ClearResultRow(ByVal index As Long)
     mDirectStateStatus(index) = vbNullString
     mCapacityStatus(index) = vbNullString
     mCapacityLimitState(index) = vbNullString
+    mCapacitySolutionMethod(index) = vbNullString
     mCrackStatus(index) = vbNullString
     mLambdaCapacity(index) = 0#
     mUtilCapacity(index) = 0#
+    mCapacityPathResolved(index) = CAPACITY_PATH_NONE
+    mNUltimate(index) = 0#
+    mMxUltimate(index) = 0#
+    mMyUltimate(index) = 0#
     mCrackWidth(index) = 0#: mCrackAllowableValue(index) = 0#: mCrackUtil(index) = 0#
     mCrackFormed(index) = False
     mCrackPhi1(index) = 0#: mCrackPhi2(index) = 0#: mCrackPhi3(index) = 0#: mCrackPsiS(index) = 0#
@@ -963,6 +1207,13 @@ Private Function NormalizeUserStatus(ByVal statusText As String) As String
                 NormalizeUserStatus = STATUS_FAIL
             End If
     End Select
+End Function
+
+' True для расчетов, которые дали физически интерпретируемый результат:
+' проверка либо прошла, либо показала недостаточную несущую способность.
+Private Function IsFinishedStatus(ByVal statusText As String) As Boolean
+    statusText = NormalizeUserStatus(statusText)
+    IsFinishedStatus = (statusText = STATUS_OK Or statusText = STATUS_FAIL)
 End Function
 
 ' Распознает статусы, означающие именно численную несходимость.
@@ -1184,11 +1435,14 @@ Private Function IsBetterGoverningCandidate(ByVal candidateIndex As Long, ByVal 
     End If
 End Function
 
-' Возвращает прочностной запас LC по предельному моменту.
-' DirectState больше не дает пользовательский запас по деформациям, поэтому
-' количественный выбор Worst опирается только на рассчитанный FullCapacity.
+' Возвращает прочностной запас LC как найденный множитель lambda.
+' После перехода на CapacityLoadPath это единая величина для λ*Mx, λ*My,
+' λ*Mxy, λ*N и λ*NMxy; отдельные отношения Nult/N или Mult/Mxy больше
+' не нужны для выбора Worst.
 Private Function StrengthSafetyFactorForGoverning(ByVal index As Long) As Double
-    StrengthSafetyFactorForGoverning = MomentSafetyFactorForGoverning(index)
+    If IsFinishedStatus(mCapacityStatus(index)) And mLambdaCapacity(index) > 0# Then
+        StrengthSafetyFactorForGoverning = mLambdaCapacity(index)
+    End If
 End Function
 
 ' Сравнивает только запасы по раскрытию трещин. Нулевой запас означает, что
@@ -1210,18 +1464,6 @@ End Function
 ' Возвращает запас по трещинам как величину, обратную использованию.
 Private Function CrackSafetyFactorForGoverning(ByVal index As Long) As Double
     If mCrackUtil(index) > 0# Then CrackSafetyFactorForGoverning = 1# / mCrackUtil(index)
-End Function
-
-' Считает тот же запас по моменту, который выводится в rngBatchSummary:
-' отношение найденного несущего результирующего момента к действующему Mxy.
-' LambdaCapacity здесь не используем, чтобы выбор Worst и таблица Results
-' опирались на один физический показатель.
-Private Function MomentSafetyFactorForGoverning(ByVal index As Long) As Double
-    Dim appliedMoment As Double
-    appliedMoment = Sqr(mUserMx(index) * mUserMx(index) + mUserMy(index) * mUserMy(index))
-    If appliedMoment > 0# And mMomentUltimate(index) > 0# Then
-        MomentSafetyFactorForGoverning = mMomentUltimate(index) / appliedMoment
-    End If
 End Function
 
 ' Берет минимальное положительное значение из двух запасов.
@@ -1255,6 +1497,14 @@ End Property
 
 Public Property Get CalculationType(ByVal index As Long) As String
     CalculationType = mCalculationType(index)
+End Property
+
+Public Property Get CapacityLoadPath(ByVal index As Long) As String
+    CapacityLoadPath = CapacityLoadPathDisplay(CapacityLoadPathForCombination(index))
+End Property
+
+Public Property Get CapacityLoadPathKey(ByVal index As Long) As String
+    CapacityLoadPathKey = CapacityLoadPathForCombination(index)
 End Property
 
 Public Property Get N(ByVal index As Long) As Double
@@ -1313,6 +1563,10 @@ Public Property Get CapacityLimitState(ByVal index As Long) As String
     CapacityLimitState = mCapacityLimitState(index)
 End Property
 
+Public Property Get CapacitySolutionMethod(ByVal index As Long) As String
+    CapacitySolutionMethod = mCapacitySolutionMethod(index)
+End Property
+
 Public Property Get CrackStatus(ByVal index As Long) As String
     CrackStatus = mCrackStatus(index)
 End Property
@@ -1327,6 +1581,18 @@ End Property
 
 Public Property Get UtilizationCapacity(ByVal index As Long) As Double
     UtilizationCapacity = mUtilCapacity(index)
+End Property
+
+Public Property Get NUltimate(ByVal index As Long) As Double
+    NUltimate = mNUltimate(index)
+End Property
+
+Public Property Get MxUltimate(ByVal index As Long) As Double
+    MxUltimate = mMxUltimate(index)
+End Property
+
+Public Property Get MyUltimate(ByVal index As Long) As Double
+    MyUltimate = mMyUltimate(index)
 End Property
 
 Public Property Get MomentUltimate(ByVal index As Long) As Double

@@ -54,10 +54,17 @@ End Sub
 Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator, ByVal rowIndex As Long, ByVal units As CUnitSystem)
     Dim combinationID As String
     Dim calculationType As String
+    Dim capacityLoadPath As String
     Dim comment As String
     combinationID = Trim$(CStr(data(rowIndex, 1)))
     calculationType = Trim$(CStr(data(rowIndex, 5)))
-    comment = Trim$(CStr(data(rowIndex, 6)))
+    If UBound(data, 2) >= 7 Then
+        capacityLoadPath = Trim$(CStr(data(rowIndex, 6)))
+        comment = Trim$(CStr(data(rowIndex, 7)))
+    Else
+        capacityLoadPath = vbNullString
+        comment = Trim$(CStr(data(rowIndex, 6)))
+    End If
 
     Dim errorText As String
     Dim nValue As Double
@@ -72,21 +79,21 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     If Len(Trim$(combinationID)) = 0 Then AppendError errorText, "CombinationID не заполнен"
 
     If Len(errorText) > 0 Then
-        batch.AddInvalidCombination combinationID, calculationType, comment, errorText
+        batch.AddInvalidCombination combinationID, calculationType, comment, errorText, capacityLoadPath
     Else
         If Not units Is Nothing Then
             nValue = units.InputForceToInternal(nValue)
             mxValue = units.InputMomentMxToInternal(mxValue)
             myValue = units.InputMomentMyToInternal(myValue)
         End If
-        batch.AddCombination combinationID, nValue, mxValue, myValue, calculationType, comment
+        batch.AddCombination combinationID, nValue, mxValue, myValue, calculationType, comment, capacityLoadPath
     End If
 End Sub
 
 ' Проверяет, что пользователь действительно ничего не ввел в строке LC.
 Private Function IsEmptyCombinationRow(ByRef data As Variant, ByVal rowIndex As Long) As Boolean
     Dim col As Long
-    For col = 1 To 6
+    For col = 1 To UBound(data, 2)
         If Len(Trim$(CStr(data(rowIndex, col)))) > 0 Then Exit Function
     Next col
     IsEmptyCombinationRow = True
