@@ -30,6 +30,7 @@ Private Const STATE_NUMERICAL_FAILURE As String = "NumericalFailure"
 Private Const STATE_SINGULAR_TANGENT As String = "SingularTangent"
 Private Const STATE_INVALID_INPUT As String = "InvalidInput"
 Private Const MOMENT_DIRECTION_TOLERANCE As Double = 0.001 ' Допустимое относительное отклонение от выбранной моментной траектории.
+Private Const PROBE_CACHE_SIZE As Long = 12 ' Небольшое кольцо последних probe-точек LoadMultiplier.
 
 Private mConverged As Boolean ' True, если выбранный метод capacity нашел предельное состояние.
 Private mStopReason As String ' Причина остановки capacity solver для вывода в результаты и тесты.
@@ -75,9 +76,21 @@ Private mSolverSecantMaxRestarts As Long ' Настройка рестартов
 Private mSolverSecantMinStepNorm As Double ' Минимальный шаг внутреннего secant-решателя.
 Private mMomentEquilibriumResidual As Double ' Невязка направления/момента в найденном предельном состоянии.
 Private mDiagnosticLog As String ' Текстовая трассировка probe-точек и причин остановки.
+Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал в массовом пользовательском расчете без txt-отчета.
 Private mCriticalStrain As Double ' Деформация критического волокна или стержня.
 Private mCriticalElement As String ' ID элемента, который первым определил предельное состояние.
 Private mCriticalStrainUtilization As Double ' Отношение фактической деформации к своему пределу.
+Private mProbeCacheCount As Long ' Сколько ячеек cache реально заполнено.
+Private mProbeCacheNextSlot As Long ' Следующая ячейка кольцевого cache для записи.
+Private mProbeCacheLambda(1 To PROBE_CACHE_SIZE) As Double ' Lambda ранее посчитанной probe-точки.
+Private mProbeCacheN(1 To PROBE_CACHE_SIZE) As Double ' N этой probe-точки; нужен, чтобы не спутать разные траектории.
+Private mProbeCacheMx(1 To PROBE_CACHE_SIZE) As Double ' Mx этой probe-точки.
+Private mProbeCacheMy(1 To PROBE_CACHE_SIZE) As Double ' My этой probe-точки.
+Private mProbeCacheState(1 To PROBE_CACHE_SIZE) As String ' Классификация probe-точки: acceptable/limit/numerical.
+Private mProbeCacheCriticalStrain(1 To PROBE_CACHE_SIZE) As Double ' Критическая деформация, восстановленная без повторного solve.
+Private mProbeCacheCriticalElement(1 To PROBE_CACHE_SIZE) As String ' Критический элемент, соответствующий cache-записи.
+Private mProbeCacheCriticalUtil(1 To PROBE_CACHE_SIZE) As Double ' Utilization критической деформации для целевой функции.
+Private mProbeCacheSolver(1 To PROBE_CACHE_SIZE) As CSectionSolver ' Solver-состояние probe-точки для дальнейшего warm-start.
 
 ' ------------------------------
 ' Настройки по умолчанию
@@ -108,6 +121,8 @@ Private Sub Class_Initialize()
     mSolverMaxDeltaKappa = 0.000005
     mSolverSecantMaxRestarts = 2
     mSolverSecantMinStepNorm = 0.000000000001
+    mDiagnosticsEnabled = True
+    mProbeCacheNextSlot = 1
 End Sub
 
 ' ------------------------------
@@ -317,7 +332,9 @@ Private Sub SolvePureAxialUltimateByLoadMultiplier(ByVal section As CSectionMode
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase, True
     If Not mConverged Then AcceptPureAxialRetainedCapacity section, concreteMaterial
 
-    mDiagnosticLog = "ultimatePath pureAxial redirected=LoadMultiplier" & vbCrLf & mDiagnosticLog
+    If mDiagnosticsEnabled Then
+        mDiagnosticLog = "ultimatePath pureAxial redirected=LoadMultiplier" & vbCrLf & mDiagnosticLog
+    End If
     If mConverged Then
         mStopReason = "Чистая осевая траектория рассчитана через LoadMultiplier как устойчивую одномерную постановку. " & mStopReason
     End If
@@ -348,11 +365,13 @@ Public Sub SolveByAutoLoadPath(ByVal section As CSectionModel, _
     SolveByLoadPathMultiplier section, concreteMaterial, steelMaterial, _
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase
 
-    mDiagnosticLog = "auto primary=UltimateStrain; result=failed; state=" & firstLimitState & _
-        "; reason=" & firstStopReason & vbCrLf & _
-        firstDiagnostics & _
-        "auto fallback=LoadMultiplier" & vbCrLf & _
-        mDiagnosticLog
+    If mDiagnosticsEnabled Then
+        mDiagnosticLog = "auto primary=UltimateStrain; result=failed; state=" & firstLimitState & _
+            "; reason=" & firstStopReason & vbCrLf & _
+            firstDiagnostics & _
+            "auto fallback=LoadMultiplier" & vbCrLf & _
+            mDiagnosticLog
+    End If
     If mConverged Then
         mStopReason = "Auto: UltimateStrain не сошелся, предельная точка найдена через LoadMultiplier. " & mStopReason
     End If
@@ -1530,17 +1549,25 @@ Private Function ProbeWithRetries(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nSpecified As Double, ByVal mx As Double, ByVal my As Double, ByVal lambdaValue As Double) As String
 
+    Dim cachedState As String
+    If TryRestoreProbeCache(nSpecified, mx, my, lambdaValue, cachedState) Then
+        ProbeWithRetries = cachedState
+        Exit Function
+    End If
+
     Dim attempt As Long
     Dim probeState As String
     For attempt = 0 To mMaxRetries
         probeState = ProbeOnce(section, concreteMaterial, steelMaterial, nSpecified, mx, my, lambdaValue, attempt)
         If Not IsNumericalFailure(probeState) Then
+            StoreProbeCache nSpecified, mx, my, lambdaValue, probeState
             ProbeWithRetries = probeState
             Exit Function
         End If
         If attempt < mMaxRetries Then mRetryCount = mRetryCount + 1
     Next attempt
 
+    StoreProbeCache nSpecified, mx, my, lambdaValue, probeState
     ProbeWithRetries = probeState
 End Function
 
@@ -1567,6 +1594,7 @@ Private Function ProbeOnce(ByVal section As CSectionModel, _
     solver.MaxDeltaKappa = mSolverMaxDeltaKappa / (2 ^ attempt)
     solver.SecantMaxRestarts = mSolverSecantMaxRestarts
     solver.SecantMinStepNorm = mSolverSecantMinStepNorm
+    solver.DiagnosticsEnabled = mDiagnosticsEnabled
     If Not mLastAcceptableSolver Is Nothing Then
         solver.SetInitialLoadState mLastAcceptableSolver.Epsilon0, mLastAcceptableSolver.KappaX, mLastAcceptableSolver.KappaY, _
             mLastAcceptableN, mLastAcceptableMx, mLastAcceptableMy
@@ -1598,6 +1626,76 @@ Failed:
     mLimitState = STATE_INVALID_INPUT
     mStopReason = "Capacity probe failed: " & Err.Description
 End Function
+
+' Возвращает уже посчитанную probe-точку LoadMultiplier.
+' Brent/Secant после нахождения скобки могут повторно спросить те же lambda,
+' особенно нижнюю и верхнюю границы. Cache убирает этот повторный solve и
+' восстанавливает все поля, от которых зависит целевая функция и warm-start.
+Private Function TryRestoreProbeCache(ByVal nSpecified As Double, ByVal mx As Double, ByVal my As Double, _
+        ByVal lambdaValue As Double, ByRef probeState As String) As Boolean
+    Dim slot As Long
+    For slot = 1 To mProbeCacheCount
+        If ProbeCacheMatches(slot, nSpecified, mx, my, lambdaValue) Then
+            probeState = mProbeCacheState(slot)
+            Set mLastSolver = mProbeCacheSolver(slot)
+            mCriticalStrain = mProbeCacheCriticalStrain(slot)
+            mCriticalElement = mProbeCacheCriticalElement(slot)
+            mCriticalStrainUtilization = mProbeCacheCriticalUtil(slot)
+            AppendSearchDiagnostic "probeCache hit; lambda=" & FormatNumberInvariant(lambdaValue) & "; state=" & probeState
+            TryRestoreProbeCache = True
+            Exit Function
+        End If
+    Next slot
+End Function
+
+' Сравнивает probe-точку по lambda и целевым усилиям.
+' Усилия проверяются отдельно от lambda, чтобы cache оставался безопасным даже
+' после будущих расширений траектории нагрузки внутри одного solver-а.
+Private Function ProbeCacheMatches(ByVal slot As Long, ByVal nSpecified As Double, ByVal mx As Double, ByVal my As Double, _
+        ByVal lambdaValue As Double) As Boolean
+    If Abs(mProbeCacheLambda(slot) - lambdaValue) > 0.000000000001 * MaxDouble(1#, Abs(lambdaValue)) Then Exit Function
+    If Abs(mProbeCacheN(slot) - nSpecified) > MaxDouble(mSolverToleranceN * 0.000000001, 0.000001) Then Exit Function
+    If Abs(mProbeCacheMx(slot) - mx) > MaxDouble(mSolverToleranceMx * 0.000000001, 0.001) Then Exit Function
+    If Abs(mProbeCacheMy(slot) - my) > MaxDouble(mSolverToleranceMy * 0.000000001, 0.001) Then Exit Function
+    ProbeCacheMatches = True
+End Function
+
+' Запоминает итог probe-точки после всех retry.
+' NumericalFailure тоже можно сохранить: если метод снова спросит ту же lambda,
+' повторная попытка с теми же настройками даст тот же отказ, а cache не даст
+' впустую запускать внутренний CSectionSolver.
+Private Sub StoreProbeCache(ByVal nSpecified As Double, ByVal mx As Double, ByVal my As Double, _
+        ByVal lambdaValue As Double, ByVal probeState As String)
+    If mProbeCacheNextSlot < 1 Or mProbeCacheNextSlot > PROBE_CACHE_SIZE Then mProbeCacheNextSlot = 1
+
+    Dim slot As Long
+    slot = mProbeCacheNextSlot
+    mProbeCacheLambda(slot) = lambdaValue
+    mProbeCacheN(slot) = nSpecified
+    mProbeCacheMx(slot) = mx
+    mProbeCacheMy(slot) = my
+    mProbeCacheState(slot) = probeState
+    mProbeCacheCriticalStrain(slot) = mCriticalStrain
+    mProbeCacheCriticalElement(slot) = mCriticalElement
+    mProbeCacheCriticalUtil(slot) = mCriticalStrainUtilization
+    Set mProbeCacheSolver(slot) = mLastSolver
+
+    If mProbeCacheCount < PROBE_CACHE_SIZE Then mProbeCacheCount = mProbeCacheCount + 1
+    mProbeCacheNextSlot = slot + 1
+    If mProbeCacheNextSlot > PROBE_CACHE_SIZE Then mProbeCacheNextSlot = 1
+End Sub
+
+' Полностью очищает cache между независимыми расчетами.
+Private Sub ClearProbeCache()
+    Dim slot As Long
+    For slot = 1 To PROBE_CACHE_SIZE
+        Set mProbeCacheSolver(slot) = Nothing
+        mProbeCacheState(slot) = vbNullString
+        mProbeCacheCriticalElement(slot) = vbNullString
+    Next slot
+    mProbeCacheCount = 0
+    mProbeCacheNextSlot = 1
+End Sub
 
 ' Проверяет неудачную probe-точку LoadMultiplier на физический предел.
 ' Около разрушения внутренний CSectionSolver может не успеть закрыть невязку
@@ -1732,6 +1830,7 @@ End Function
 
 Private Sub AppendDiagnostic(ByVal solver As CSectionSolver, ByVal mx As Double, ByVal my As Double, _
         ByVal lambdaValue As Double, ByVal attempt As Long, ByVal probeState As String)
+    If Not mDiagnosticsEnabled Then Exit Sub
     mDiagnosticLog = mDiagnosticLog & "probe=" & CStr(mIterations) & _
         "; attempt=" & CStr(attempt) & _
         "; lambda=" & FormatNumberInvariant(lambdaValue) & _
@@ -1746,6 +1845,7 @@ Private Sub AppendDiagnostic(ByVal solver As CSectionSolver, ByVal mx As Double,
 End Sub
 
 Private Sub AppendSearchDiagnostic(ByVal message As String)
+    If Not mDiagnosticsEnabled Then Exit Sub
     mDiagnosticLog = mDiagnosticLog & "search=" & message & vbCrLf
 End Sub
 
@@ -1772,6 +1872,7 @@ Private Sub ClearResult()
     Set mLastAcceptableSolver = Nothing
     mDiagnosticLog = vbNullString
     mSolutionMethod = vbNullString
+    ClearProbeCache
 End Sub
 
 Private Function FormatNumberInvariant(ByVal value As Double) As String
@@ -1840,6 +1941,10 @@ End Property
 
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
+End Property
+
+Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
+    mDiagnosticsEnabled = value
 End Property
 
 Public Property Get LastSolver() As CSectionSolver

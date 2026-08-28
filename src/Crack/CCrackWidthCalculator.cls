@@ -41,6 +41,7 @@ Private Const LARGE_LAMBDA As Double = 1E+30 ' Диагностическая о
 Private mConverged As Boolean ' True, если расчет трещины завершился без ошибки входных данных или несходимости.
 Private mStopReason As String ' Короткое пояснение результата: расчет выполнен, трещина не образована или solver не сошелся.
 Private mDiagnosticLog As String ' Текстовая диагностика выбора зоны, арматуры, ls и psi_s.
+Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал, когда txt-отчет выполнения не нужен.
 
 Private mAllowableCrackWidth As Double ' Пользовательский предел a_crc,ult во внутренних единицах длины, мм.
 Private mCrackWidth As Double ' Расчетная ширина раскрытия a_crc, мм.
@@ -117,6 +118,7 @@ Private Sub Class_Initialize()
     mSolverMaxDeltaKappa = 0.00001
     mSolverSecantMaxRestarts = 2
     mSolverSecantMinStepNorm = 0.000000000001
+    mDiagnosticsEnabled = True
 End Sub
 
 ' ------------------------------
@@ -717,6 +719,7 @@ Private Sub ConfigureSolver(ByVal solver As CSectionSolver)
     solver.SecantMinStepNorm = mSolverSecantMinStepNorm
     solver.MaxDeltaEpsilon0 = mSolverMaxDeltaEpsilon0
     solver.MaxDeltaKappa = mSolverMaxDeltaKappa
+    solver.DiagnosticsEnabled = mDiagnosticsEnabled
 End Sub
 
 ' Центральное растяжение для трещин определяется по моментному вектору
@@ -1071,6 +1074,7 @@ End Sub
 
 ' Добавляет строку в диагностический журнал.
 Private Sub AppendDiagnostic(ByVal text As String)
+    If Not mDiagnosticsEnabled Then Exit Sub
     mDiagnosticLog = mDiagnosticLog & text & vbCrLf
 End Sub
 
@@ -1279,4 +1283,8 @@ End Property
 
 Public Property Let SolverSecantMinStepNorm(ByVal value As Double)
     mSolverSecantMinStepNorm = value
+End Property
+
+Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
+    mDiagnosticsEnabled = value
 End Property

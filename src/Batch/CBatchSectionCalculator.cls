@@ -968,6 +968,7 @@ Private Sub ConfigureCapacity(ByVal cap As CCapacitySolver)
     cap.SolverMaxDeltaKappa = mSolverMaxDeltaKappa
     cap.SolverSecantMaxRestarts = mSolverSecantMaxRestarts
     cap.SolverSecantMinStepNorm = mSolverSecantMinStepNorm
+    cap.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
 End Sub
 
 ' Настраивает прямой CSectionSolver для расчета фактического состояния LC.
@@ -987,6 +988,7 @@ Private Sub ConfigureSectionSolver(ByVal solver As CSectionSolver)
     solver.MaxDeltaKappa = mSolverMaxDeltaKappa
     solver.SecantMaxRestarts = mSolverSecantMaxRestarts
     solver.SecantMinStepNorm = mSolverSecantMinStepNorm
+    solver.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
 End Sub
 
 ' Передает в расчет трещин те же настройки прямого равновесия, что и в
@@ -1010,7 +1012,17 @@ Private Sub ConfigureCrackCalculator(ByVal crack As CCrackWidthCalculator)
     crack.SolverMaxDeltaKappa = mSolverMaxDeltaKappa
     crack.SolverSecantMaxRestarts = mSolverSecantMaxRestarts
     crack.SolverSecantMinStepNorm = mSolverSecantMinStepNorm
+    crack.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
 End Sub
+
+' Проверяет, нужен ли подробный журнал внутренних итераций.
+' Короткая batch-сводка всегда остается в памяти для тестов и диагностики, но
+' тяжелые строки CSectionSolver/CCapacitySolver/CCrackWidthCalculator имеют
+' смысл только тогда, когда пользователь включил txt-отчет выполнения.
+Private Function DetailedDiagnosticsEnabled() As Boolean
+    If mReport Is Nothing Then Exit Function
+    DetailedDiagnosticsEnabled = mReport.Enabled
+End Function
 
 ' Проверяет, что batch готов к расчету.
 ' Это последний защитный барьер перед запуском solver-ов: модель и хотя бы

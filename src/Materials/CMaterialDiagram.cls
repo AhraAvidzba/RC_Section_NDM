@@ -190,6 +190,30 @@ End Function
 
 ' Возвращает секущий модуль stress/strain; около нуля используется касательный
 ' модуль, чтобы не делить на почти нулевую деформацию.
+' Возвращает напряжение и касательный модуль за один проход по отрезкам.
+' В горячих циклах CSectionSolver это убирает два независимых поиска одного
+' и того же участка диаграммы для каждого бетонного волокна и стержня.
+Public Sub EvaluateAtStrain(ByVal strain As Double, ByRef stress As Double, ByRef tangent As Double)
+    EnsureInitialized
+
+    If strain < mStrains(1) Then
+        stress = mStresses(1)
+        tangent = 0#
+    ElseIf strain > mStrains(mPointCount) Then
+        stress = mStresses(mPointCount)
+        tangent = 0#
+    Else
+        Dim i As Long
+        For i = 1 To mPointCount - 1
+            If strain >= mStrains(i) And strain <= mStrains(i + 1) Then
+                tangent = (mStresses(i + 1) - mStresses(i)) / (mStrains(i + 1) - mStrains(i))
+                stress = mStresses(i) + tangent * (strain - mStrains(i))
+                Exit Sub
+            End If
+        Next i
+    End If
+End Sub
+
 Public Function GetSecantModulus(ByVal strain As Double) As Double
     EnsureInitialized
     If Abs(strain) <= 0.000000000001 Then

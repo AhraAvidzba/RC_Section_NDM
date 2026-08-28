@@ -653,6 +653,11 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
     Dim tangent As Double
     Dim force As Double
     Dim area As Double
+    Dim concreteDiagram As CMaterialDiagram ' Быстрый путь для штатной кусочно-линейной диаграммы.
+    Dim steelDiagram As CMaterialDiagram ' Быстрый путь для штатной диаграммы арматуры.
+
+    If TypeName(concreteMaterial) = "CMaterialDiagram" Then Set concreteDiagram = concreteMaterial
+    If TypeName(steelMaterial) = "CMaterialDiagram" Then Set steelDiagram = steelMaterial
 
     For i = 1 To section.ConcreteCount
         strain = eps0 + kx * section.ConcreteY(i) + ky * section.ConcreteX(i)
@@ -660,8 +665,12 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
             If strain < mMinConcreteStrain Then mMinConcreteStrain = strain
             If strain > mMaxConcreteStrain Then mMaxConcreteStrain = strain
         End If
-        stress = concreteMaterial.GetStress(strain)
-        tangent = concreteMaterial.GetTangentModulus(strain)
+        If concreteDiagram Is Nothing Then
+            stress = concreteMaterial.GetStress(strain)
+            tangent = concreteMaterial.GetTangentModulus(strain)
+        Else
+            concreteDiagram.EvaluateAtStrain strain, stress, tangent
+        End If
         area = section.ConcreteArea(i)
         force = stress * area
         nInt = nInt + force
@@ -682,10 +691,18 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
             Dim steelTangent As Double
             Dim concreteStress As Double
             Dim concreteTangent As Double
-            steelStress = steelMaterial.GetStress(strain)
-            steelTangent = steelMaterial.GetTangentModulus(strain)
-            concreteStress = concreteMaterial.GetStress(strain)
-            concreteTangent = concreteMaterial.GetTangentModulus(strain)
+            If steelDiagram Is Nothing Then
+                steelStress = steelMaterial.GetStress(strain)
+                steelTangent = steelMaterial.GetTangentModulus(strain)
+            Else
+                steelDiagram.EvaluateAtStrain strain, steelStress, steelTangent
+            End If
+            If concreteDiagram Is Nothing Then
+                concreteStress = concreteMaterial.GetStress(strain)
+                concreteTangent = concreteMaterial.GetTangentModulus(strain)
+            Else
+                concreteDiagram.EvaluateAtStrain strain, concreteStress, concreteTangent
+            End If
             stress = steelStress - concreteStress
             tangent = steelTangent - concreteTangent
             force = stress * section.RebarArea(i)
