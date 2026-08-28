@@ -142,7 +142,7 @@ Private Sub TestAutoCADExportUsesSharedLoadReference(ByRef stats As TUiTestStats
     Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
-    props.CalculateTransformed section, materialProvider.ConcreteMaterial(cpStrength), materialProvider.SteelMaterial(cpStrength)
+    props.CalculateConcrete section
 
     Dim batch As CBatchSectionCalculator
     Set batch = New CBatchSectionCalculator
@@ -156,11 +156,11 @@ Private Sub TestAutoCADExportUsesSharedLoadReference(ByRef stats As TUiTestStats
     batch.Execute
 
     AssertTrue stats, "ui.autocad.reference.converged", batch.StateConverged(1)
-    AssertClose stats, "ui.autocad.reference.kappaX", batch.KappaX(1), 0#, 0.000001
-    AssertClose stats, "ui.autocad.reference.kappaY", batch.KappaY(1), 0#, 0.000001
     AssertTrue stats, "ui.autocad.reference.point", Abs(batch.LoadReferenceX) > 0.000001 Or Abs(batch.LoadReferenceY) > 0.000001
-    AssertClose stats, "ui.autocad.axes.centerX", props.CentroidX, batch.LoadReferenceX, 0.000001
-    AssertClose stats, "ui.autocad.axes.centerY", props.CentroidY, batch.LoadReferenceY, 0.000001
+    AssertClose stats, "ui.autocad.reference.concreteCenterX", props.CentroidX, batch.LoadReferenceX, 0.000001
+    AssertClose stats, "ui.autocad.reference.concreteCenterY", props.CentroidY, batch.LoadReferenceY, 0.000001
+    AssertClose stats, "ui.autocad.reference.mxTransfer", batch.Mx(1), batch.N(1) * props.CentroidY, 0.000001
+    AssertClose stats, "ui.autocad.reference.myTransfer", batch.My(1), batch.N(1) * props.CentroidX, 0.000001
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.

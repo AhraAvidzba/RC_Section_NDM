@@ -720,7 +720,7 @@ Private Sub ConfigureSolver(ByVal solver As CSectionSolver)
 End Sub
 
 ' Центральное растяжение для трещин определяется по моментному вектору
-' относительно центра тяжести приведенного сечения. В этот вектор уже должен
+' относительно центра тяжести бетонного сечения. В этот вектор уже должен
 ' входить эксцентриситет точки приложения нагрузки: Mx_cg = Mx_user + N*dy,
 ' My_cg = My_user + N*dx. Поэтому случай N при Mx/My = 0, но с ненулевым
 ' Load.ReferenceOffset, не попадает в центральную ветку.
@@ -734,7 +734,7 @@ Private Function IsCentralTensionState(ByVal targetN As Double, _
     If targetN <= NEAR_ZERO_FORCE Then Exit Function
 
     If IsMissing(centroidMxForCentralCheck) Or IsMissing(centroidMyForCentralCheck) Then
-        AppendDiagnostic "Центральная ветка не проверялась: не переданы моменты относительно центра тяжести."
+        AppendDiagnostic "Центральная ветка не проверялась: не переданы моменты относительно центра тяжести бетонного сечения."
         Exit Function
     End If
 

@@ -59,10 +59,9 @@ Built-in generated geometry is assembled through one registry point:
 
 ```text
 CSectionTypeRegistry
-  -> ISectionTypeProvider
-       -> CGeometry*              (mathematical shape)
-       -> C*RebarLayoutBuilder    (bars and semantic rebar groups)
-       -> C*AnnotationBuilder     (contours, dimensions, rebar labels)
+  -> CGeometry*              (mathematical shape)
+  -> C*RebarLayoutBuilder    (bars and semantic rebar groups)
+  -> C*AnnotationBuilder     (contours, dimensions, rebar labels)
   -> CSectionModel
   -> CNDMResultsWriter
   -> rngNDMSectionGeometry / rngNDMElementResults / rngNDMSectionProperties / rngNDMSectionAnnotations
@@ -70,8 +69,8 @@ CSectionTypeRegistry
 
 `CSectionTypeRegistry` is the only place where a generated section type is selected by
 `Geometry.Type`. To add a new generated section, add the shape-specific classes, for example
-`CGeometryTShape`, `CTShapeRebarBuilder`, `CTShapeAnnotationBuilder`, implement one
-`ISectionTypeProvider`, and register that provider in `CSectionTypeRegistry`.
+`CGeometryTShape`, `CTShapeRebarBuilder`, `CTShapeAnnotationBuilder`, and register that
+set in `CSectionTypeRegistry`. There is no separate provider class per section type.
 
 Universal layers must not contain shape-specific checks after that point:
 

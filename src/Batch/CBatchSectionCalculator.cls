@@ -45,8 +45,8 @@ Private mInputValid(1 To MAX_COMBINATIONS) As Boolean ' False, если стро
 Private mInputError(1 To MAX_COMBINATIONS) As String ' Текст причины InvalidInput для конкретного LC.
 Private mLoadReferenceX As Double ' X точки приложения нагрузки относительно расчетной модели, мм.
 Private mLoadReferenceY As Double ' Y точки приложения нагрузки относительно расчетной модели, мм.
-Private mLoadReferenceOffsetX As Double ' Пользовательское смещение точки нагрузки от приведенного центра тяжести по X, мм.
-Private mLoadReferenceOffsetY As Double ' Пользовательское смещение точки нагрузки от приведенного центра тяжести по Y, мм.
+Private mLoadReferenceOffsetX As Double ' Смещение точки нагрузки от центра тяжести бетонного сечения по X, мм.
+Private mLoadReferenceOffsetY As Double ' Смещение точки нагрузки от центра тяжести бетонного сечения по Y, мм.
 
 Private mStatus(1 To MAX_COMBINATIONS) As String ' OverallStatus: итоговый пользовательский статус LC.
 Private mDirectStateStatus(1 To MAX_COMBINATIONS) As String ' Статус прямого НДС фактического сочетания.
@@ -522,9 +522,10 @@ Private Sub RunSectionStateAndCrack(ByVal index As Long, ByVal crackRequested As
 
     Dim centroidMxForCrack As Double
     Dim centroidMyForCrack As Double
-    ' Для отдельной ветки центрального растяжения важны моменты именно
-    ' относительно центра тяжести. Если точка приложения N смещена, то даже
-    ' при Mx_user = My_user = 0 появляется внецентренное растяжение.
+    ' Для отдельной ветки центрального растяжения важны моменты относительно
+    ' центра тяжести бетонного сечения. Если точка приложения N смещена от
+    ' бетонного центра, то даже при Mx_user = My_user = 0 появляется
+    ' внецентренное растяжение.
     centroidMxForCrack = mUserMx(index) + mN(index) * mLoadReferenceOffsetY
     centroidMyForCrack = mUserMy(index) + mN(index) * mLoadReferenceOffsetX
 

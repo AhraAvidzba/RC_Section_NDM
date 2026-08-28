@@ -561,8 +561,8 @@ End Sub
 ' соседний порог, но и зависимость warm-start от величины предыдущего скачка.
 Private Sub TestGroup1AxialTensionProgressionAfterLimitIsStableFail(ByRef stats As TBatchTestStats)
     Dim loads As Variant
-    loads = Array(796#, 797#, 798#, 799#, 800#, 801#, 805#, 810#, 811#, 812#, _
-        820#, 830#, 850#, 851#, 900#, 925#, 930#, 950#, 1000#, 1200#)
+    loads = Array(750#, 796#, 797#, 798#, 799#, 800#, 801#, 805#, 810#, 811#, 812#, _
+        820#, 830#, 850#, 900#, 925#, 930#, 950#, 1000#, 1200#)
     RunAxialProgressionAfterLimit stats, "batch.group1.tensionProgression", loads, True, 1
 End Sub
 
@@ -571,8 +571,8 @@ End Sub
 ' хотя соседние нагрузки уже корректно сходятся в extension и дают FAIL.
 Private Sub TestGroup1AxialCompressionProgressionAfterLimitIsStableFail(ByRef stats As TBatchTestStats)
     Dim loads As Variant
-    loads = Array(1221#, 1222#, 1223#, 1224#, 1225#, 1226#, 1230#, 1231#, 1240#, 1250#, _
-        1275#, 1300#, 1301#, 1350#, 1400#, 1500#, 1600#, 1700#, 1800#, 2000#)
+    loads = Array(1200#, 1221#, 1222#, 1223#, 1224#, 1225#, 1226#, 1230#, 1231#, 1240#, 1250#, _
+        1275#, 1300#, 1350#, 1400#, 1500#, 1600#, 1700#, 1800#, 2000#)
     RunAxialProgressionAfterLimit stats, "batch.group1.compressionProgression", loads, False, 1
 End Sub
 
@@ -908,27 +908,28 @@ Private Sub TestLoadReferenceTransformsUserMoments(ByRef stats As TBatchTestStat
     AssertClose stats, "batch.reference.offsetY.centroidBase", shiftedBatch.LoadReferenceOffsetY, -25#, 0.000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет осевое сжатие через бетонный центр тяжести.
+' Для симметричных сечений это состояние не должно создавать кривизну. Для
+' Г-сечения с несимметричной арматурой отдельная проверка ниже фиксирует именно
+' выбор бетонного центра, а не нулевую кривизну как физическое требование.
 Private Sub TestAxialReferenceRemovesPureCompressionEccentricity(ByRef stats As TBatchTestStats)
     CheckPureCompressionReference stats, "circle", CircleGeometry(300#, 125#, -75#), _
         CircleRebars(300#, 125#, -75#, 40#, 12, 20#), 25#, 0.00000001
     CheckPureCompressionReference stats, "rounded", RoundedRectangleGeometry(360#, 240#), _
         RectangleRebars(RoundedRectangleGeometry(360#, 240#)), 30#, 0.00000001
-    CheckPureCompressionReference stats, "lshape", LShapeGeometry(250#, 550#, 600#, 250#), _
-        LShapeRebars(250#, 550#, 600#, 250#, 40#, 50, 32#), 50#, 0.00000001
+    CheckLShapeReferenceUsesConcreteCentroid stats
 End Sub
 
 ' Проверяет осевое растяжение как отдельный физический сценарий:
-' при приложении N через центр тяжести кривизны должны быть нулевыми, а при
-' смещении той же силы появляется изгиб. Этот контроль остается в тестах,
-' чтобы рабочий алгоритм трещин не использовал кривизны как fallback-критерий.
+' при приложении N через бетонный центр симметричного сечения кривизны должны
+' быть нулевыми, а при смещении той же силы появляется изгиб. Этот контроль
+' остается в тестах, чтобы рабочий алгоритм трещин не использовал кривизны как
+' fallback-критерий.
 Private Sub TestAxialTensionReferenceAndEccentricity(ByRef stats As TBatchTestStats)
     CheckPureTensionReference stats, "circle", CircleGeometry(300#, 125#, -75#), _
         CircleRebars(300#, 125#, -75#, 40#, 12, 20#), 25#, 0.00000001
     CheckPureTensionReference stats, "rounded", RoundedRectangleGeometry(360#, 240#), _
         RectangleRebars(RoundedRectangleGeometry(360#, 240#)), 30#, 0.00000001
-    CheckPureTensionReference stats, "lshape", LShapeGeometry(250#, 550#, 600#, 250#), _
-        LShapeRebars(250#, 550#, 600#, 250#, 40#, 50, 32#), 50#, 0.00000001, -180#, 250#
 End Sub
 
 Private Sub CheckPureCompressionReference(ByRef stats As TBatchTestStats, ByVal caseName As String, _
@@ -941,10 +942,12 @@ Private Sub CheckPureCompressionReference(ByRef stats As TBatchTestStats, ByVal 
     Set concrete = ProvisionalConcrete()
     Dim steel As CMaterialDiagram
     Set steel = ProvisionalSteel()
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, rebars)
 
     Dim refX As Double
     Dim refY As Double
-    CalculateTransformedSectionCentroid BuildGeneratedSectionModel(mesh, rebars), concrete, steel, refX, refY
+    CalculateConcreteSectionCentroid section, refX, refY
 
     Dim nValue As Double
     nValue = -100000#
@@ -952,11 +955,36 @@ Private Sub CheckPureCompressionReference(ByRef stats As TBatchTestStats, ByVal 
     Set solver = New CSectionSolver
     solver.LoadSteps = 1
     solver.MaxIterations = 40
-    solver.Solve BuildGeneratedSectionModel(mesh, rebars), concrete, steel, nValue, nValue * refY, nValue * refX
+    solver.Solve section, concrete, steel, nValue, nValue * refY, nValue * refX
 
     AssertTrue stats, "batch.reference." & caseName & ".converged", solver.Converged
     AssertClose stats, "batch.reference." & caseName & ".kappaX", solver.KappaX, 0#, tolerance
     AssertClose stats, "batch.reference." & caseName & ".kappaY", solver.KappaY, 0#, tolerance
+End Sub
+
+' Проверяет, что для несимметричного Г-сечения новый reference point берется
+' от бетонной части. Это важнее, чем требовать нулевую кривизну: при
+' несимметричной арматуре бетонный и приведенный центры могут не совпадать.
+Private Sub CheckLShapeReferenceUsesConcreteCentroid(ByRef stats As TBatchTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh LShapeGeometry(250#, 550#, 600#, 250#), 50#, 50#, 1, 1
+
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, _
+        LShapeRebars(250#, 550#, 600#, 250#, 40#, 50, 32#))
+
+    Dim concreteX As Double
+    Dim concreteY As Double
+    CalculateConcreteSectionCentroid section, concreteX, concreteY
+
+    Dim transformedX As Double
+    Dim transformedY As Double
+    CalculateTransformedSectionCentroid section, ProvisionalConcrete(), ProvisionalSteel(), transformedX, transformedY
+
+    AssertTrue stats, "batch.reference.lshape.concreteCenter.exists", Abs(concreteX) + Abs(concreteY) > 0.000001
+    AssertTrue stats, "batch.reference.lshape.centerDifference", _
+        Abs(concreteX - transformedX) > 0.000001 Or Abs(concreteY - transformedY) > 0.000001
 End Sub
 
 Private Sub CheckPureTensionReference(ByRef stats As TBatchTestStats, ByVal caseName As String, _
@@ -975,7 +1003,7 @@ Private Sub CheckPureTensionReference(ByRef stats As TBatchTestStats, ByVal case
 
     Dim refX As Double
     Dim refY As Double
-    CalculateTransformedSectionCentroid section, concrete, steel, refX, refY
+    CalculateConcreteSectionCentroid section, refX, refY
 
     Dim nValue As Double
     nValue = 100000#
@@ -1161,7 +1189,7 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.titleHyperlink", resultsSheet.Cells.Item(summaryRow, 1).Hyperlinks.Count > 0
     AssertTrue stats, "batch.writer.governing", CStr(resultsSheet.Cells.Item(summaryRow + 1, 5).Value2) = "W1"
     AssertTrue stats, "batch.writer.crackGoverning.row", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 3, 1).Value2), "трещинам", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.loadPoint.relativeLabel", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 5, 1).Value2), "относительно центра тяжести", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.loadPoint.relativeLabel", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 5, 1).Value2), "бетонного сечения", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.loadPoint.zeroX", CStr(resultsSheet.Cells.Item(summaryRow + 5, 5).Value2) = "X=0 mm"
     AssertTrue stats, "batch.writer.subheader.psi", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 38).Value2), "psi", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.momentFormula.simple", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 22).Formula), "IFERROR", vbTextCompare) > 0 And _
@@ -1232,8 +1260,7 @@ Private Function BuildUserLShapeTensionBatch(ByRef referenceX As Double, ByRef r
     Else
         Set provider = providerOverride
     End If
-    CalculateTransformedSectionCentroid section, provider.ConcreteMaterial(cpStrength), _
-        provider.SteelMaterial(cpStrength), referenceX, referenceY
+    CalculateConcreteSectionCentroid section, referenceX, referenceY
 
     Dim batch As CBatchSectionCalculator
     Set batch = New CBatchSectionCalculator

@@ -30,7 +30,7 @@ workbook/output/RC_Section_NDM.xlsm
 | `Load.ReferenceOffsetX` | мм | 0 |
 | `Load.ReferenceOffsetY` | мм | 0 |
 
-При `Load.ReferenceOffsetX = 0` и `Load.ReferenceOffsetY = 0` моменты из `rngLoadCombinations` считаются заданными относительно центра тяжести приведенного сечения.
+При `Load.ReferenceOffsetX = 0` и `Load.ReferenceOffsetY = 0` моменты из `rngLoadCombinations` считаются заданными относительно центра тяжести бетонного сечения.
 
 ## Круглое Сечение
 

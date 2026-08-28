@@ -10,32 +10,83 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Геометрические свойства приведенного сечения
+' Геометрические свойства сечения
 ' ==========================================================================
-' Класс считает центр тяжести, главные центральные оси и моменты инерции для
-' фактической расчетной модели бетон + арматура. Эти свойства используются
-' одинаково в Results, AutoCAD export и Excel-схеме.
+' Класс считает площадь, центр тяжести, моменты инерции и главные центральные
+' оси для двух инженерных представлений одной CSectionModel.
+'
+' CalculateConcrete работает только по бетонным конечным элементам. Этот центр
+' используется как базовая точка задания пользовательских нагрузок, потому что
+' внешние расчетные модели обычно привязаны к бетонному поперечному сечению без
+' учета продольной арматуры.
+'
+' CalculateTransformed считает приведенное сечение бетон + арматура. Эти
+' свойства нужны для справочного вывода, главных осей и контроля расчетной
+' модели, но больше не являются базой для Load.ReferenceOffset.
 
-Private mArea As Double
-Private mStaticMomentX As Double
-Private mStaticMomentY As Double
-Private mCentroidX As Double
-Private mCentroidY As Double
-Private mIx As Double
-Private mIy As Double
-Private mIxy As Double
-Private mIxc As Double
-Private mIyc As Double
-Private mIxyc As Double
-Private mPrincipalI1 As Double
-Private mPrincipalI2 As Double
-Private mPrincipalAngleRad As Double
-Private mRadiusX As Double
-Private mRadiusY As Double
-Private mPrincipalRadius1 As Double
-Private mPrincipalRadius2 As Double
-Private mLastCalculationSeconds As Double
+Private mArea As Double ' Площадь текущего представления: бетонная или приведенная к бетону, мм2.
+Private mStaticMomentX As Double ' Статический момент относительно оси X: сумма A*y.
+Private mStaticMomentY As Double ' Статический момент относительно оси Y: сумма A*x.
+Private mCentroidX As Double ' X центра тяжести текущего представления сечения.
+Private mCentroidY As Double ' Y центра тяжести текущего представления сечения.
+Private mIx As Double ' Момент инерции относительно исходной оси X.
+Private mIy As Double ' Момент инерции относительно исходной оси Y.
+Private mIxy As Double ' Центробежный момент инерции относительно исходных осей.
+Private mIxc As Double ' Центральный момент инерции относительно оси X через центр тяжести.
+Private mIyc As Double ' Центральный момент инерции относительно оси Y через центр тяжести.
+Private mIxyc As Double ' Центральный центробежный момент инерции.
+Private mPrincipalI1 As Double ' Больший главный центральный момент инерции.
+Private mPrincipalI2 As Double ' Меньший главный центральный момент инерции.
+Private mPrincipalAngleRad As Double ' Угол поворота главных осей относительно исходной системы, рад.
+Private mRadiusX As Double ' Радиус инерции относительно центральной оси X.
+Private mRadiusY As Double ' Радиус инерции относительно центральной оси Y.
+Private mPrincipalRadius1 As Double ' Радиус инерции по главной оси I1.
+Private mPrincipalRadius2 As Double ' Радиус инерции по главной оси I2.
+Private mLastCalculationSeconds As Double ' Время последнего расчета свойств для диагностики производительности.
 
+' Считает геометрические характеристики только бетонной части сечения.
+' Такой расчет не зависит от диаграмм материалов и продольной арматуры. Он
+' используется для Load.ReferenceOffset: нулевое смещение означает, что N, Mx и
+' My заданы относительно центра тяжести бетонного сечения.
+Public Sub CalculateConcrete(ByVal section As CSectionModel)
+    If section Is Nothing Then Err.Raise vbObjectError + 2200, "CSectionPropertiesCalculator", "Модель сечения не передана."
+    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 2201, "CSectionPropertiesCalculator", "В модели сечения нет бетонных элементов."
+
+    Clear
+
+    Dim t0 As Double
+    t0 = Timer
+
+    Dim i As Long
+    Dim a As Double ' Площадь бетонного элемента, полностью входящая в дискретную модель.
+    Dim x As Double ' X центра тяжести бетонного элемента.
+    Dim y As Double ' Y центра тяжести бетонного элемента.
+
+    ' Проходим по бетонной сетке и накапливаем обычные геометрические моменты.
+    ' Для справочных свойств частичное восстановление контура не требуется:
+    ' используются те же дискретные бетонные элементы, что и в НДМ.
+    For i = 1 To section.ConcreteCount
+        a = section.ConcreteArea(i)
+        x = section.ConcreteX(i)
+        y = section.ConcreteY(i)
+
+        mArea = mArea + a
+        mStaticMomentX = mStaticMomentX + a * y
+        mStaticMomentY = mStaticMomentY + a * x
+        mIx = mIx + a * y * y
+        mIy = mIy + a * x * x
+        mIxy = mIxy + a * x * y
+    Next i
+
+    If mArea <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2202, "CSectionPropertiesCalculator", "Площадь бетонного сечения равна нулю."
+
+    FinalizeProperties t0
+End Sub
+
+' Считает свойства приведенного сечения бетон + арматура.
+' Бетон и арматура приводятся через начальный секущий модуль в малой сжатой
+' деформации. Метод нужен для справочных осей и инерций, но не определяет
+' пользовательскую точку приложения нагрузки.
 Public Sub CalculateTransformed(ByVal section As CSectionModel, _
         ByVal concrete As Object, ByVal steel As Object)
     Const probeStrain As Double = -0.000001
@@ -50,22 +101,27 @@ Public Sub CalculateTransformed(ByVal section As CSectionModel, _
     Dim t0 As Double
     t0 = Timer
 
-    Dim concreteModulus As Double
-    Dim steelModulus As Double
+    Dim concreteModulus As Double ' Начальная жесткость бетона, базовый модуль для приведения.
+    Dim steelModulus As Double ' Начальная жесткость арматуры, из нее получаем n = Es / Eb.
     concreteModulus = concrete.GetStress(probeStrain) / probeStrain
     steelModulus = steel.GetStress(probeStrain) / probeStrain
+    If Abs(concreteModulus) <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2208, _
+        "CSectionPropertiesCalculator", "Начальный модуль бетона для приведенного сечения равен нулю."
+
+    Dim steelModularRatio As Double
+    steelModularRatio = steelModulus / concreteModulus
 
     Dim i As Long
     For i = 1 To section.ConcreteCount
-        AddWeightedPoint concreteModulus * section.ConcreteArea(i), _
+        AddWeightedPoint section.ConcreteArea(i), _
             section.ConcreteX(i), section.ConcreteY(i)
     Next i
 
     If section.RebarCount > 0 Then
-        Dim replacementModulus As Double
-        replacementModulus = steelModulus - concreteModulus
+        Dim replacementAreaFactor As Double ' Добавочная площадь арматуры в бетонном приведении: n - 1.
+        replacementAreaFactor = steelModularRatio - 1#
         For i = 1 To section.RebarCount
-            AddWeightedPoint replacementModulus * section.RebarArea(i), section.RebarX(i), section.RebarY(i)
+            AddWeightedPoint replacementAreaFactor * section.RebarArea(i), section.RebarX(i), section.RebarY(i)
         Next i
     End If
 
@@ -74,6 +130,9 @@ Public Sub CalculateTransformed(ByVal section As CSectionModel, _
     FinalizeProperties t0
 End Sub
 
+' Добавляет точку с весовой площадью в накопленные статические и инерционные
+' характеристики. Для бетонного сечения вес равен площади, для приведенного -
+' площади, пересчитанной к бетонной базе через модульное отношение n = Es/Eb.
 Private Sub AddWeightedPoint(ByVal weight As Double, ByVal x As Double, ByVal y As Double)
     mArea = mArea + weight
     mStaticMomentX = mStaticMomentX + weight * y
@@ -83,8 +142,10 @@ Private Sub AddWeightedPoint(ByVal weight As Double, ByVal x As Double, ByVal y 
     mIxy = mIxy + weight * x * y
 End Sub
 
+' Завершает расчет: переводит моменты к центру тяжести, находит главные оси и
+' радиусы инерции. Формулы одинаковы для бетонного и приведенного представления,
+' потому что к этому моменту все различие уже учтено в накопленных весах.
 Private Sub FinalizeProperties(ByVal t0 As Double)
-
     mCentroidX = mStaticMomentY / mArea
     mCentroidY = mStaticMomentX / mArea
 
@@ -228,45 +289,6 @@ Private Function Atn2(ByVal y As Double, ByVal x As Double) As Double
         Atn2 = Atn(y / x) - GEOM_PI
     End If
 End Function
-
-' ==========================================================================
-' ДЛЯ ТЕСТОВ
-' ==========================================================================
-' Geometry/performance-тесты используют бетон-only свойства и время расчета,
-' чтобы проверять качество дискретизации и скорость без материального
-' приведения арматуры. Рабочий Results snapshot вызывает CalculateTransformed.
-
-Public Sub CalculateConcrete(ByVal section As CSectionModel)
-    If section Is Nothing Then Err.Raise vbObjectError + 2200, "CSectionPropertiesCalculator", "Модель сечения не передана."
-    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 2201, "CSectionPropertiesCalculator", "В модели сечения нет бетонных элементов."
-
-    Clear
-
-    Dim t0 As Double
-    t0 = Timer
-
-    Dim i As Long
-    Dim a As Double
-    Dim x As Double
-    Dim y As Double
-
-    For i = 1 To section.ConcreteCount
-        a = section.ConcreteArea(i)
-        x = section.ConcreteX(i)
-        y = section.ConcreteY(i)
-
-        mArea = mArea + a
-        mStaticMomentX = mStaticMomentX + a * y
-        mStaticMomentY = mStaticMomentY + a * x
-        mIx = mIx + a * y * y
-        mIy = mIy + a * x * x
-        mIxy = mIxy + a * x * y
-    Next i
-
-    If mArea <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2202, "CSectionPropertiesCalculator", "Площадь сечения равна нулю."
-
-    FinalizeProperties t0
-End Sub
 
 Public Property Get LastCalculationSeconds() As Double
     LastCalculationSeconds = mLastCalculationSeconds

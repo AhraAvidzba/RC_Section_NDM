@@ -272,9 +272,8 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddBlock "Список сочетаний", CombinationListForReport(batch)
 
     report.AddSection "Точка приложения нагрузки"
-    report.AddStep "Расчет приведенного центра сечения для пользовательской точки нагрузки."
-    ApplyLoadReferenceFromSettings section, materialProvider.ConcreteMaterial(cpStrength), _
-        materialProvider.SteelMaterial(cpStrength), settings, units, batch
+    report.AddStep "Расчет центра тяжести бетонного сечения для пользовательской точки нагрузки."
+    ApplyLoadReferenceFromSettings section, settings, units, batch
     report.AddValue "Точка приложения нагрузки X", FormatReportNumber(batch.LoadReferenceX) & " мм"
     report.AddValue "Точка приложения нагрузки Y", FormatReportNumber(batch.LoadReferenceY) & " мм"
 
@@ -417,17 +416,32 @@ Private Function JoinCollectionLines(ByVal lines As Collection) As String
 End Function
 
 Private Sub ApplyLoadReferenceFromSettings(ByVal section As CSectionModel, _
-        ByVal concrete As Object, ByVal steel As Object, ByVal settings As CSystemSettingsReader, _
-        ByVal units As CUnitSystem, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
         ByVal batch As CBatchSectionCalculator)
     Dim referenceX As Double
     Dim referenceY As Double
-    CalculateTransformedSectionCentroid section, concrete, steel, referenceX, referenceY
+    CalculateConcreteSectionCentroid section, referenceX, referenceY
 
     batch.ApplyLoadReference referenceX + units.InputLengthToInternal(settings.GetDouble("Load.ReferenceOffsetX", 0#)), _
         referenceY + units.InputLengthToInternal(settings.GetDouble("Load.ReferenceOffsetY", 0#)), referenceX, referenceY
 End Sub
 
+' Возвращает центр тяжести бетонной части сечения.
+' Это базовая точка пользовательских нагрузок: Load.ReferenceOffsetX/Y
+' откладываются именно от центра бетона, а не от приведенного сечения
+' бетон + арматура.
+Public Sub CalculateConcreteSectionCentroid(ByVal section As CSectionModel, _
+        ByRef referenceX As Double, ByRef referenceY As Double)
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateConcrete section
+    referenceX = props.CentroidX
+    referenceY = props.CentroidY
+End Sub
+
+' Возвращает центр тяжести приведенного сечения бетон + арматура.
+' Метод остается для справочных геометрических характеристик, главных осей и
+' регрессионных проверок, но не используется как база пользовательского offset.
 Public Sub CalculateTransformedSectionCentroid(ByVal section As CSectionModel, _
         ByVal concrete As Object, ByVal steel As Object, ByRef referenceX As Double, ByRef referenceY As Double)
     Dim props As CSectionPropertiesCalculator
@@ -551,17 +565,18 @@ Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section
     internalMxValue = userMxValue + nValue * referenceY
     internalMyValue = userMyValue + nValue * referenceX
 
-    Dim centroidX As Double
-    Dim centroidY As Double
-    CalculateTransformedSectionCentroid section, concrete, steel, centroidX, centroidY
+    Dim concreteCentroidX As Double
+    Dim concreteCentroidY As Double
+    CalculateConcreteSectionCentroid section, concreteCentroidX, concreteCentroidY
 
     Dim centroidMxForCrack As Double
     Dim centroidMyForCrack As Double
     ' Проверка центрального растяжения в расчете трещин выполняется относительно
-    ' центра тяжести, поэтому здесь учитываем только эксцентриситет точки
-    ' приложения нагрузки от этого центра, а не абсолютные координаты модели.
-    centroidMxForCrack = userMxValue + nValue * (referenceY - centroidY)
-    centroidMyForCrack = userMyValue + nValue * (referenceX - centroidX)
+    ' центра тяжести бетонного сечения. Если пользователь задал чистое N, но
+    ' сместил точку нагрузки через Load.ReferenceOffset, это уже внецентренное
+    ' состояние и центральная ветка трещин не включается.
+    centroidMxForCrack = userMxValue + nValue * (referenceY - concreteCentroidY)
+    centroidMyForCrack = userMyValue + nValue * (referenceX - concreteCentroidX)
 
     Dim calculationMode As String
     calculationMode = settings.GetString("Calculation.Mode", "FullCapacity")

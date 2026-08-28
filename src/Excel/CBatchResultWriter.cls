@@ -200,7 +200,7 @@ Private Sub PutMetaRows(ByRef data() As Variant, ByVal batch As CBatchSectionCal
     data(4, 8) = batch.CrackGoverningCombinationName
     data(5, 1) = "Время расчета, с"
     data(5, 5) = batch.ElapsedSeconds
-    data(6, 1) = "Точка приложения нагрузки (относительно центра тяжести сечения)"
+    data(6, 1) = "Точка приложения нагрузки (относительно центра тяжести бетонного сечения)"
     data(6, 5) = "X=" & CStr(OutputLengthForSummary(batch.LoadReferenceOffsetX, units)) & " " & OutputLengthUnit(units)
     data(6, 8) = "Y=" & CStr(OutputLengthForSummary(batch.LoadReferenceOffsetY, units)) & " " & OutputLengthUnit(units)
 End Sub

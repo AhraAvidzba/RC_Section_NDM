@@ -206,8 +206,10 @@ End Sub
 ' ------------------------------
 ' Свойства сечения и LC-состояния
 ' ------------------------------
-' Здесь лежат свойства уровня всей модели: Bounds, центр тяжести приведенного
-' сечения, главные оси, сохраненные единицы вывода и плоскость деформаций LC.
+' Здесь лежат свойства уровня всей модели: Bounds, бетонные и приведенные
+' геометрические характеристики, сохраненные единицы вывода и плоскость
+' деформаций каждого LC. Нагрузки пользователя задаются от бетонного центра,
+' а главные оси схемы пока используют приведенные свойства для совместимости.
 Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal batch As CBatchSectionCalculator, _
         ByVal runID As Variant, ByVal units As CUnitSystem)
@@ -215,7 +217,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     Set target = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
 
     Dim rowCount As Long
-    rowCount = 1 + 45 + batch.Count * 17
+    rowCount = 1 + 90 + batch.Count * 17
 
     Dim data() As Variant
     ReDim data(1 To rowCount, 1 To SECTION_PROPERTY_COLUMNS)
@@ -229,11 +231,16 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     Dim minX As Double, maxX As Double, minY As Double, maxY As Double
     GetConcreteBounds section, minX, maxX, minY, maxY
 
-    ' Центр тяжести и главные оси считаются для приведенного сечения
-    ' бетон + арматура, чтобы AutoCAD export и схема использовали один источник.
-    Dim props As CSectionPropertiesCalculator
-    Set props = New CSectionPropertiesCalculator
-    props.CalculateTransformed section, materialProvider.ConcreteMaterial(cpStrength), _
+    ' Бетонные свойства нужны как база пользовательской точки нагрузки.
+    ' Приведенные свойства сохраняются отдельно: они используются для справки,
+    ' главных осей и совместимости существующего plot/export layer.
+    Dim concreteProps As CSectionPropertiesCalculator
+    Set concreteProps = New CSectionPropertiesCalculator
+    concreteProps.CalculateConcrete section
+
+    Dim transformedProps As CSectionPropertiesCalculator
+    Set transformedProps = New CSectionPropertiesCalculator
+    transformedProps.CalculateTransformed section, materialProvider.ConcreteMaterial(cpStrength), _
         materialProvider.SteelMaterial(cpStrength)
 
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MinX", OutputLength(minX, units), OutputLengthUnit(units), "Минимальный X расчетной модели."
@@ -241,11 +248,16 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MinY", OutputLength(minY, units), OutputLengthUnit(units), "Минимальный Y расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxY", OutputLength(maxY, units), OutputLengthUnit(units), "Максимальный Y расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.Source", section.SourceType, "-", "Источник геометрии расчетной модели."
-    PutProperty data, rowIndex, runID, "ALL", "CentroidX", OutputLength(props.CentroidX, units), OutputLengthUnit(units), "Центр тяжести приведенного сечения."
-    PutProperty data, rowIndex, runID, "ALL", "CentroidY", OutputLength(props.CentroidY, units), OutputLengthUnit(units), "Центр тяжести приведенного сечения."
-    PutProperty data, rowIndex, runID, "ALL", "PrincipalAngle", props.PrincipalAngleRad, "rad", "Угол главных центральных осей."
-    PutProperty data, rowIndex, runID, "ALL", "PrincipalI1", OutputFourthPowerLength(props.PrincipalI1, units), OutputLengthUnit(units) & "4", "Главный момент инерции I1."
-    PutProperty data, rowIndex, runID, "ALL", "PrincipalI2", OutputFourthPowerLength(props.PrincipalI2, units), OutputLengthUnit(units) & "4", "Главный момент инерции I2."
+    PutConcreteSectionProperties data, rowIndex, runID, concreteProps, units
+    PutTransformedSectionProperties data, rowIndex, runID, transformedProps, units
+
+    ' Совместимые имена без префикса пока означают приведенное сечение. Их читают
+    ' существующие plot/export-компоненты, поэтому aliases оставлены явно.
+    PutProperty data, rowIndex, runID, "ALL", "CentroidX", OutputLength(transformedProps.CentroidX, units), OutputLengthUnit(units), "Центр тяжести приведенного сечения; совместимое имя для схемы и AutoCAD."
+    PutProperty data, rowIndex, runID, "ALL", "CentroidY", OutputLength(transformedProps.CentroidY, units), OutputLengthUnit(units), "Центр тяжести приведенного сечения; совместимое имя для схемы и AutoCAD."
+    PutProperty data, rowIndex, runID, "ALL", "PrincipalAngle", transformedProps.PrincipalAngleRad, "rad", "Угол главных центральных осей приведенного сечения; совместимое имя."
+    PutProperty data, rowIndex, runID, "ALL", "PrincipalI1", OutputFourthPowerLength(transformedProps.PrincipalI1, units), OutputLengthUnit(units) & "4", "Главный момент инерции I1 приведенного сечения; совместимое имя."
+    PutProperty data, rowIndex, runID, "ALL", "PrincipalI2", OutputFourthPowerLength(transformedProps.PrincipalI2, units), OutputLengthUnit(units) & "4", "Главный момент инерции I2 приведенного сечения; совместимое имя."
     PutProperty data, rowIndex, runID, "ALL", "ConcreteCount", section.ConcreteCount, "шт", "Количество бетонных элементов."
     PutProperty data, rowIndex, runID, "ALL", "RebarCount", section.RebarCount, "шт", "Количество элементов арматуры."
     PutProperty data, rowIndex, runID, "ALL", "Output.LengthUnit", OutputLengthUnit(units), "-", "Единица вывода длины на момент расчета."
@@ -417,6 +429,53 @@ Private Sub PutMaterialDiagramHeaders(ByRef data() As Variant, ByVal units As CU
     data(1, 8) = "Stress, " & OutputStressUnit(units)
 End Sub
 
+' Записывает справочные свойства бетонной части сечения.
+' Эти строки нужны, чтобы на Results было видно, от какой точки реально
+' задается Load.ReferenceOffset и какие геометрические характеристики имеет
+' бетонное сечение без учета продольной арматуры.
+Private Sub PutConcreteSectionProperties(ByRef data() As Variant, ByRef rowIndex As Long, _
+        ByVal runID As Variant, ByVal props As CSectionPropertiesCalculator, ByVal units As CUnitSystem)
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.Area", OutputArea(props.Area, units), OutputAreaUnit(units), "Площадь бетонной части сечения по расчетной сетке."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.CentroidX", OutputLength(props.CentroidX, units), OutputLengthUnit(units), "X центра тяжести бетонного сечения; от этой точки задается Load.ReferenceOffsetX."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.CentroidY", OutputLength(props.CentroidY, units), OutputLengthUnit(units), "Y центра тяжести бетонного сечения; от этой точки задается Load.ReferenceOffsetY."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.Ix", OutputFourthPowerLength(props.Ix, units), OutputLengthUnit(units) & "4", "Момент инерции бетонного сечения относительно исходной оси X."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.Iy", OutputFourthPowerLength(props.Iy, units), OutputLengthUnit(units) & "4", "Момент инерции бетонного сечения относительно исходной оси Y."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.Ixy", OutputFourthPowerLength(props.Ixy, units), OutputLengthUnit(units) & "4", "Центробежный момент бетонного сечения относительно исходных осей."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.Ixc", OutputFourthPowerLength(props.Ixc, units), OutputLengthUnit(units) & "4", "Центральный момент инерции бетонного сечения относительно оси X."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.Iyc", OutputFourthPowerLength(props.Iyc, units), OutputLengthUnit(units) & "4", "Центральный момент инерции бетонного сечения относительно оси Y."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.Ixyc", OutputFourthPowerLength(props.Ixyc, units), OutputLengthUnit(units) & "4", "Центральный центробежный момент бетонного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalAngle", props.PrincipalAngleRad, "rad", "Угол главных центральных осей бетонного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalI1", OutputFourthPowerLength(props.PrincipalI1, units), OutputLengthUnit(units) & "4", "Больший главный момент инерции бетонного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalI2", OutputFourthPowerLength(props.PrincipalI2, units), OutputLengthUnit(units) & "4", "Меньший главный момент инерции бетонного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.RadiusX", OutputLength(props.RadiusX, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно центральной оси X."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.RadiusY", OutputLength(props.RadiusY, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно центральной оси Y."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalRadius1", OutputLength(props.PrincipalRadius1, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения по главной оси I1."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalRadius2", OutputLength(props.PrincipalRadius2, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения по главной оси I2."
+End Sub
+
+' Записывает свойства приведенного сечения бетон + арматура.
+' Они остаются отдельным набором справочных данных и совместимы с уже
+' существующей логикой главных осей на схеме и в AutoCAD export.
+Private Sub PutTransformedSectionProperties(ByRef data() As Variant, ByRef rowIndex As Long, _
+        ByVal runID As Variant, ByVal props As CSectionPropertiesCalculator, ByVal units As CUnitSystem)
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.Area", OutputArea(props.Area, units), OutputAreaUnit(units), "Площадь приведенного сечения в бетонной базе."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.CentroidX", OutputLength(props.CentroidX, units), OutputLengthUnit(units), "X центра тяжести приведенного сечения бетон + арматура."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.CentroidY", OutputLength(props.CentroidY, units), OutputLengthUnit(units), "Y центра тяжести приведенного сечения бетон + арматура."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.Ix", OutputFourthPowerLength(props.Ix, units), OutputLengthUnit(units) & "4", "Момент инерции приведенного сечения относительно исходной оси X."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.Iy", OutputFourthPowerLength(props.Iy, units), OutputLengthUnit(units) & "4", "Момент инерции приведенного сечения относительно исходной оси Y."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.Ixy", OutputFourthPowerLength(props.Ixy, units), OutputLengthUnit(units) & "4", "Центробежный момент приведенного сечения относительно исходных осей."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.Ixc", OutputFourthPowerLength(props.Ixc, units), OutputLengthUnit(units) & "4", "Центральный момент инерции приведенного сечения относительно оси X."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.Iyc", OutputFourthPowerLength(props.Iyc, units), OutputLengthUnit(units) & "4", "Центральный момент инерции приведенного сечения относительно оси Y."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.Ixyc", OutputFourthPowerLength(props.Ixyc, units), OutputLengthUnit(units) & "4", "Центральный центробежный момент приведенного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalAngle", props.PrincipalAngleRad, "rad", "Угол главных центральных осей приведенного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalI1", OutputFourthPowerLength(props.PrincipalI1, units), OutputLengthUnit(units) & "4", "Главный момент инерции I1 приведенного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalI2", OutputFourthPowerLength(props.PrincipalI2, units), OutputLengthUnit(units) & "4", "Главный момент инерции I2 приведенного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.RadiusX", OutputLength(props.RadiusX, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно центральной оси X."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.RadiusY", OutputLength(props.RadiusY, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно центральной оси Y."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalRadius1", OutputLength(props.PrincipalRadius1, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения по главной оси I1."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalRadius2", OutputLength(props.PrincipalRadius2, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения по главной оси I2."
+End Sub
+
 ' Записывает в Results краткое описание материалной модели расчетного snapshot.
 ' Эти строки нужны для диагностики и для внешних выводов, которые не должны
 ' перечитывать текущий Config после расчета.
@@ -445,7 +504,7 @@ Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal sectio
     Set target = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
 
     Dim data() As Variant
-    ReDim data(1 To 13, 1 To SECTION_PROPERTY_COLUMNS)
+    ReDim data(1 To 35, 1 To SECTION_PROPERTY_COLUMNS)
     PutSectionPropertyHeaders data
 
     Dim rowIndex As Long
@@ -459,6 +518,12 @@ Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal sectio
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MinY", OutputLength(minY, units), OutputLengthUnit(units), "Минимальный Y расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxY", OutputLength(maxY, units), OutputLengthUnit(units), "Максимальный Y расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.Source", section.SourceType, "-", "Источник геометрии расчетной модели."
+
+    Dim concreteProps As CSectionPropertiesCalculator
+    Set concreteProps = New CSectionPropertiesCalculator
+    concreteProps.CalculateConcrete section
+    PutConcreteSectionProperties data, rowIndex, runID, concreteProps, units
+
     PutProperty data, rowIndex, runID, "ALL", "ConcreteCount", section.ConcreteCount, "шт", "Количество бетонных элементов."
     PutProperty data, rowIndex, runID, "ALL", "RebarCount", section.RebarCount, "шт", "Количество элементов арматуры."
     PutProperty data, rowIndex, runID, "ALL", "Output.LengthUnit", OutputLengthUnit(units), "-", "Единица вывода длины на момент импорта."
