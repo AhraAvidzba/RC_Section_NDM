@@ -64,16 +64,9 @@ Public Function GeomMin(ByVal A As Double, ByVal B As Double) As Double
     End If
 End Function
 
-
-
-
-
-
-
-
-
-
-' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
+' Создает CSectionModel коротким путем для тестов и небольших расчетных примеров.
+' Рабочий Excel-pipeline собирает модель через CSectionModelBuilder напрямую,
+' чтобы каноническая точка сборки сечения была видна в production-коде.
 Public Function BuildGeneratedSectionModel(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, Optional ByVal sourceType As String = "Generated") As CSectionModel
     Dim builder As CSectionModelBuilder
     Set builder = New CSectionModelBuilder

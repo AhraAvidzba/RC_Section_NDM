@@ -121,7 +121,11 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     ClearGeneratedShapes
     CalculateResultRange data
     AddElementSeries data
-    If Not data.GeometryOnly Then DrawAnalysisSeries data, settings
+    If data.GeometryOnly Then
+        DrawGeometryReferenceSeries data, settings
+    Else
+        DrawAnalysisSeries data, settings
+    End If
     DrawShapeDecorations data, settings
 End Sub
 
@@ -546,16 +550,43 @@ Private Sub DrawAnalysisSeries(ByVal data As CSectionPlotDataReader, ByVal setti
     If settings.GetBoolean("Plot.LoadApplicationPointEnabled", True) Then DrawPointMarker data.LoadReferenceX, data.LoadReferenceY, 10, RGB(255, 128, 0), XL_MARKER_DIAMOND, "LoadPoint"
 End Sub
 
+' Добавляет к geometry-only схеме только те ориентиры, которые не требуют
+' найденной плоскости деформаций. В CapacityOnly это позволяет показать
+' геометрию, главные оси и точку нагрузки, но не рисовать нейтральную линию,
+' легенду и подписи Stress/Strain.
+Private Sub DrawGeometryReferenceSeries(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
+    If Not data.GeometryReferenceItemsEnabled Then Exit Sub
+    If settings.GetBoolean("Plot.PrincipalAxesEnabled", True) Then DrawPrincipalAxes data
+    If settings.GetBoolean("Plot.LoadApplicationPointEnabled", True) Then DrawPointMarker data.LoadReferenceX, data.LoadReferenceY, 10, RGB(255, 128, 0), XL_MARKER_DIAMOND, "LoadPoint"
+End Sub
+
 ' Рисует Shape-слой схемы: контур, размеры, групповые подписи и легенды.
 ' Shapes используются только для оформления; расчетные объекты остаются series.
 Private Sub DrawShapeDecorations(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
     DrawConcreteContour data
     DrawShapeAnnotations data, settings, settings.GetBoolean("Plot.Dimensions.Enabled", True), _
         settings.GetBoolean("Plot.RebarLabels.Enabled", True)
-    If data.GeometryOnly Then Exit Sub
+    If data.GeometryOnly Then
+        DrawGeometryOnlyNote data
+        Exit Sub
+    End If
     If settings.GetBoolean("Plot.ResultLabelsEnabled", False) Then DrawResultLabels data, settings.GetDouble("Plot.ResultLabelSpacing", 100#)
     If settings.GetBoolean("Plot.LegendEnabled", True) Then DrawLegend data
     DrawStateWarning data
+End Sub
+
+' Пишет под схемой короткое пояснение, почему у geometry-only схемы нет
+' цветовой шкалы, нейтральной линии и поэлементных Stress/Strain.
+Private Sub DrawGeometryOnlyNote(ByVal data As CSectionPlotDataReader)
+    If Len(Trim$(data.GeometryOnlyNote)) = 0 Then Exit Sub
+
+    Dim leftPos As Double
+    Dim topPos As Double
+    Dim widthValue As Double
+    leftPos = mChart.PlotArea.InsideLeft
+    topPos = mChart.PlotArea.InsideTop + mChart.PlotArea.InsideHeight + 16
+    widthValue = mChart.PlotArea.InsideWidth
+    AddChartText leftPos, topPos, widthValue, 28, data.GeometryOnlyNote, 0#, RGB(160, 40, 40), True
 End Sub
 
 ' Показывает под схемой короткое красное предупреждение по сохраненному
@@ -564,9 +595,12 @@ End Sub
 ' может быть последняя итерация, а не корректное равновесное состояние.
 Private Sub DrawStateWarning(ByVal data As CSectionPlotDataReader)
     Dim warningText As String
+    Dim policy As CBatchStatusPolicy
+    Set policy = New CBatchStatusPolicy
+
     If data.PhysicalDiagramWarningRequired Then
         warningText = EXTENSION_WARNING_TEXT
-    ElseIf StrComp(data.DirectStateStatus, "NumFail", vbTextCompare) = 0 Then
+    ElseIf policy.ToUserStatus(data.DirectStateStatus) = policy.NumFail Then
         warningText = NUMERICAL_STATE_WARNING_TEXT
     End If
     If Len(warningText) = 0 Then Exit Sub
@@ -1451,7 +1485,11 @@ End Function
 
 Private Function PlotTitleText(ByVal data As CSectionPlotDataReader) As String
     If data.GeometryOnly Then
-        PlotTitleText = "Импортированная геометрия AutoCAD"
+        If Len(Trim$(data.GeometryOnlyTitle)) > 0 Then
+            PlotTitleText = data.GeometryOnlyTitle
+        Else
+            PlotTitleText = "Геометрия без НДС"
+        End If
         Exit Function
     End If
     PlotTitleText = PlotTitlePrefix() & data.LoadCase

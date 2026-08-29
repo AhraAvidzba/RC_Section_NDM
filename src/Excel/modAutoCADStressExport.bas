@@ -41,6 +41,30 @@ Public Sub ExportSectionStressToAutoCAD()
     Set units = New CUnitSystem
     units.LoadFromSettings settings
 
+    Dim exportSettings As TAutoCADExportSettings
+    exportSettings = ReadAutoCADExportSettings(settings)
+
+    If StrComp(ResultsCalculationMode(ThisWorkbook), "CapacityOnly", vbTextCompare) = 0 Then
+        Dim geometryOnlyLoadReferenceX As Double
+        Dim geometryOnlyLoadReferenceY As Double
+        Dim geometryOnlyCentroidX As Double
+        Dim geometryOnlyCentroidY As Double
+        Dim geometryOnlyPrincipalAngle As Double
+        Dim geometryOnlySection As CSectionModel
+        Set geometryOnlySection = ReadSectionGeometryFromResults(ThisWorkbook, "Results")
+        ReadCommonSectionReferenceProperties ThisWorkbook, units, _
+            geometryOnlyLoadReferenceX, geometryOnlyLoadReferenceY, geometryOnlyCentroidX, geometryOnlyCentroidY, _
+            geometryOnlyPrincipalAngle
+        DrawResultsGeometryOnlyExport geometryOnlySection, exportSettings, geometryOnlyLoadReferenceX, _
+            geometryOnlyLoadReferenceY, geometryOnlyCentroidX, geometryOnlyCentroidY, geometryOnlyPrincipalAngle
+        MsgBox "Экспорт в AutoCAD завершен: выгружена геометрия без НДС." & vbCrLf & _
+            "Последний расчет выполнен в режиме CapacityOnly, поэтому значения НДС, Stress/Strain, " & _
+            "нейтральная линия и расчетные подписи не экспортировались." & vbCrLf & _
+            "Главные оси и точка приложения нагрузки выгружены, если они включены в настройках.", _
+            vbInformation, "RC Section NDM"
+        Exit Sub
+    End If
+
     Dim section As CSectionModel
     Dim resultByID As Object
     Dim physicalStateByID As Object
@@ -58,9 +82,6 @@ Public Sub ExportSectionStressToAutoCAD()
     ReadResultsExportState ThisWorkbook, settings, units, section, resultByID, physicalStateByID, combinationID, _
         epsilon0, kappaX, kappaY, loadReferenceX, loadReferenceY, _
         centroidX, centroidY, principalAngle, extensionUsed, stateWarningText
-
-    Dim exportSettings As TAutoCADExportSettings
-    exportSettings = ReadAutoCADExportSettings(settings)
 
     DrawResultsStressExport section, resultByID, physicalStateByID, epsilon0, kappaX, kappaY, _
         loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, stateWarningText, exportSettings
@@ -251,6 +272,28 @@ Public Function ResultsGeometrySource(ByVal workbook As Object) As String
 Failed:
 End Function
 
+' Возвращает Calculation.Mode, сохраненный в последнем Results snapshot.
+' Это нужно внешним выводам, которые не должны перечитывать текущий Config
+' и угадывать, есть ли в снимке поэлементное НДС.
+Public Function ResultsCalculationMode(ByVal workbook As Object) As String
+    On Error GoTo Failed
+    Dim data As Variant
+    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    If Not HasResultTableRows(data) Then Exit Function
+
+    Dim colParameter As Long: colParameter = ResultColumn(data, "Parameter")
+    Dim colValue As Long: colValue = ResultColumn(data, "Value")
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(data, 1)
+        If StrComp(CStr(data(rowIndex, colParameter)), "CalculationMode", vbTextCompare) = 0 Then
+            ResultsCalculationMode = Trim$(SafeText(data(rowIndex, colValue)))
+            Exit Function
+        End If
+    Next rowIndex
+Failed:
+End Function
+
 Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal resultType As String, ByRef combinationID As String, _
         ByVal resultByID As Object, ByVal physicalStateByID As Object)
     Dim anchor As Object
@@ -309,7 +352,9 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
 
     Dim foundState As Boolean
     Dim directStateStatus As String
+    Dim policy As CBatchStatusPolicy
     Dim rowIndex As Long
+    Set policy = New CBatchStatusPolicy
     For rowIndex = 2 To UBound(data, 1)
         If StrComp(CStr(data(rowIndex, colLoadCase)), "ALL", vbTextCompare) = 0 Then
             Select Case LCase$(Trim$(CStr(data(rowIndex, colParameter))))
@@ -319,6 +364,10 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
                     centroidY = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
                 Case "principalangle"
                     principalAngle = CDbl(data(rowIndex, colValue))
+                Case "loadreferencex"
+                    loadReferenceX = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                Case "loadreferencey"
+                    loadReferenceY = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
             End Select
         ElseIf StrComp(CStr(data(rowIndex, colLoadCase)), combinationID, vbTextCompare) = 0 Then
             Select Case LCase$(Trim$(CStr(data(rowIndex, colParameter))))
@@ -329,10 +378,6 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
                     kappaX = OutputCurvatureToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
                 Case "kappay"
                     kappaY = OutputCurvatureToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
-                Case "loadreferencex"
-                    loadReferenceX = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
-                Case "loadreferencey"
-                    loadReferenceY = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
                 Case "extensionused"
                     extensionUsed = SafeBoolean(data(rowIndex, colValue))
                 Case "directstatestatus"
@@ -341,14 +386,50 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
         End If
     Next rowIndex
 
-    If extensionUsed Or StrComp(directStateStatus, "FAIL", vbTextCompare) = 0 Then
+    If extensionUsed Or policy.ToUserStatus(directStateStatus) = policy.Fail Then
         stateWarningText = EXTENSION_WARNING_TEXT
-    ElseIf StrComp(directStateStatus, "NumFail", vbTextCompare) = 0 Then
+    ElseIf policy.ToUserStatus(directStateStatus) = policy.NumFail Then
         stateWarningText = NUMERICAL_STATE_WARNING_TEXT
     End If
 
     If Not foundState Then Err.Raise vbObjectError + 4361, "ReadSectionPropertiesForCombination", _
         "В rngNDMSectionProperties нет состояния для сочетания: " & combinationID
+End Sub
+
+' Читает только общие геометрические и справочные свойства snapshot.
+' Этот путь используется для CapacityOnly: прямое НДС не считалось, поэтому
+' нет смысла выбирать LC. Главные оси и точка приложения нагрузки являются
+' общими ориентирами расчетной модели и не зависят от Stress/Strain.
+Private Sub ReadCommonSectionReferenceProperties(ByVal workbook As Object, ByVal units As CUnitSystem, _
+        ByRef loadReferenceX As Double, ByRef loadReferenceY As Double, _
+        ByRef centroidX As Double, ByRef centroidY As Double, ByRef principalAngle As Double)
+    Dim data As Variant
+    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    If Not HasResultTableRows(data) Then Err.Raise vbObjectError + 4360, "ReadCommonSectionReferenceProperties", _
+        "На листе Results нет rngNDMSectionProperties. Сначала выполните расчет."
+
+    Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
+    Dim colParameter As Long: colParameter = ResultColumn(data, "Parameter")
+    Dim colValue As Long: colValue = ResultColumn(data, "Value")
+    Dim colUnit As Long: colUnit = ResultColumn(data, "Unit")
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(data, 1)
+        If StrComp(CStr(data(rowIndex, colLoadCase)), "ALL", vbTextCompare) = 0 Then
+            Select Case LCase$(Trim$(CStr(data(rowIndex, colParameter))))
+                Case "centroidx"
+                    centroidX = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                Case "centroidy"
+                    centroidY = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                Case "principalangle"
+                    principalAngle = CDbl(data(rowIndex, colValue))
+                Case "loadreferencex"
+                    loadReferenceX = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                Case "loadreferencey"
+                    loadReferenceY = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+            End Select
+        End If
+    Next rowIndex
 End Sub
 
 Private Function ReadGoverningCombinationID(ByVal workbook As Object) As String
@@ -400,11 +481,33 @@ Private Function ResolveExportCombinationID(ByVal workbook As Object, ByVal sett
     If StrComp(valueText, "Worst", vbTextCompare) = 0 Then
         ResolveExportCombinationID = ReadGoverningCombinationID(workbook)
         If Len(ResolveExportCombinationID) = 0 Then ResolveExportCombinationID = FirstCalculatedLoadCaseFromResults(workbook)
+        If Len(ResolveExportCombinationID) = 0 Then ResolveExportCombinationID = FirstLoadCaseFromSectionProperties(workbook)
         If Len(ResolveExportCombinationID) = 0 Then Err.Raise vbObjectError + 4358, "ResolveExportCombinationID", _
             "В Results не найдено рассчитанное сочетание для AutoCAD.Export.CombinationID = Worst."
     Else
         ResolveExportCombinationID = valueText
     End If
+End Function
+
+' Возвращает первый LC из свойств Results для режимов без поэлементного НДС.
+' В CapacityOnly таблица rngNDMElementResults не заполняется, но LC-свойства
+' сохраняют точку приложения нагрузки и помогают выполнить geometry-only export.
+Private Function FirstLoadCaseFromSectionProperties(ByVal workbook As Object) As String
+    On Error GoTo Failed
+    Dim data As Variant
+    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    If Not HasResultTableRows(data) Then Exit Function
+
+    Dim colLoadCase As Long
+    colLoadCase = ResultColumn(data, "LoadCase")
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(data, 1)
+        FirstLoadCaseFromSectionProperties = Trim$(SafeText(data(rowIndex, colLoadCase)))
+        If Len(FirstLoadCaseFromSectionProperties) > 0 And _
+                StrComp(FirstLoadCaseFromSectionProperties, "ALL", vbTextCompare) <> 0 Then Exit Function
+    Next rowIndex
+Failed:
 End Function
 
 ' Возвращает первое сочетание, для которого в Results есть LC-зависимые
@@ -628,6 +731,45 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
         DrawNeutralLineByState ms, section, epsilon0, kappaX, kappaY, exportSettings.NeutralColor
     End If
     If Len(stateWarningText) > 0 Then DrawStateWarning ms, section, stateWarningText
+
+    doc.Regen 1
+End Sub
+
+' Выгружает geometry-only представление расчетной модели, когда последний
+' snapshot был получен в CapacityOnly. Здесь намеренно нет подписей
+' Stress/Strain и нейтральной линии; главные оси и точка нагрузки выводятся
+' по настройкам, потому что они не зависят от прямого НДС.
+Private Sub DrawResultsGeometryOnlyExport(ByVal section As CSectionModel, _
+        ByRef exportSettings As TAutoCADExportSettings, ByVal loadReferenceX As Double, _
+        ByVal loadReferenceY As Double, ByVal centroidX As Double, ByVal centroidY As Double, _
+        ByVal principalAngle As Double)
+    Dim acad As Object
+    Set acad = ConnectToRunningAutoCAD()
+
+    Dim doc As Object
+    Set doc = ActiveAutoCADDocument(acad)
+
+    Dim ms As Object
+    Set ms = doc.ModelSpace
+
+    EnsureAcadLayer doc, exportSettings.ConcreteLayer, 8
+    EnsureAcadLayer doc, exportSettings.RebarLayer, 1
+
+    Dim i As Long
+    For i = 1 To section.ConcreteCount
+        AddAcadRectangleRegion ms, section.ConcreteX(i), section.ConcreteY(i), _
+            ConcreteDrawWidth(section, i), ConcreteDrawHeight(section, i), _
+            exportSettings.ConcreteLayer, 8
+    Next i
+
+    For i = 1 To section.RebarCount
+        AddAcadCircleRegion ms, section.RebarX(i), section.RebarY(i), _
+            section.RebarDiameter(i) / 2#, exportSettings.RebarLayer, 1
+    Next i
+
+    DrawCentroidAxesAndLoadPoint ms, section, centroidX, centroidY, principalAngle, _
+        loadReferenceX, loadReferenceY, _
+        exportSettings.PrincipalAxesEnabled, exportSettings.LoadPointEnabled
 
     doc.Regen 1
 End Sub

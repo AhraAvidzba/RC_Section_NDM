@@ -134,7 +134,7 @@
 | `Geometry.Source` | `Generated`, `AutoCAD` |
 | `Geometry.Type` | `RoundedRectangle`, `Circle`, `LShape` |
 | `Strength.ConcreteTensionMode` в `rngCalculationDiagramSettings` | `Ignore`, `UseDiagram` |
-| `Calculation.Mode` | `DirectState`, `FullCapacity` |
+| `Calculation.Mode` | `DirectState`, `FullCapacity`, `CapacityOnly` |
 | `Solver.Method` | `Newton`, `Secant` |
 | `Capacity.SolutionStrategy` | `Auto`, `UltimateStrain`, `LoadMultiplier` |
 | `Capacity.SearchMethod` | `Bisection`, `Brent`, `Secant` |

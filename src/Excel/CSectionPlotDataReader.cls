@@ -23,7 +23,10 @@ Option Explicit
 Private mResultType As String ' Что сейчас визуализируется: Stress или Strain.
 Private mLoadCase As String ' LC, выбранный для схемы после обработки Worst/конкретного ID.
 Private mLoadCaseComment As String ' Комментарий LC для заголовка схемы.
-Private mGeometryOnly As Boolean ' True для preview импортированной геометрии без расчетных результатов.
+Private mGeometryOnly As Boolean ' True для схемы без расчетных Stress/Strain.
+Private mGeometryOnlyTitle As String ' Заголовок схемы без НДС: import-preview или CapacityOnly.
+Private mGeometryOnlyNote As String ' Пояснение под схемой, если НДС намеренно отсутствует.
+Private mGeometryReferenceItemsEnabled As Boolean ' Можно ли показывать оси/точку нагрузки без НДС.
 Private mResultUnit As String ' Единица выбранной величины из сохраненных Results.
 Private mResultCaption As String ' Название выбранной величины для легенды.
 Private mLengthUnit As String ' Единица длины, в которой записаны координаты Results.
@@ -51,8 +54,8 @@ Private mPrincipalAngle As Double ' Угол главных центральны
 Private mEpsilon0 As Double ' Свободный член сохраненной плоскости деформаций LC.
 Private mKappaX As Double ' Кривизна при y в сохраненной плоскости деформаций.
 Private mKappaY As Double ' Кривизна при x в сохраненной плоскости деформаций.
-Private mLoadReferenceX As Double ' X точки приложения нагрузки для выбранного LC.
-Private mLoadReferenceY As Double ' Y точки приложения нагрузки для выбранного LC.
+Private mLoadReferenceX As Double ' X общей точки приложения нагрузки из Results snapshot.
+Private mLoadReferenceY As Double ' Y общей точки приложения нагрузки из Results snapshot.
 Private mExtensionUsed As Boolean ' True, если выбранный LC был найден в numerical extension.
 Private mDirectStateStatus As String ' Сохраненный статус прямого НДС выбранного LC.
 Private mAnnotationCount As Long ' Количество semantic-аннотаций, прочитанных из Results.
@@ -91,8 +94,31 @@ Public Sub LoadGeometryPreviewFromWorkbook(ByVal workbook As Object, ByVal setti
 
     ResetReaderState
     mGeometryOnly = True
+    mGeometryOnlyTitle = "Импортированная геометрия AutoCAD"
     mResultType = "Stress"
     mLoadCase = "AutoCAD import"
+
+    ReadSectionProperties workbook
+    mResultCaption = "Геометрия"
+    mResultUnit = "-"
+    ReadGeometryPreview workbook
+    ReadAnnotations workbook
+End Sub
+
+' Загружает из Results геометрию последнего расчета CapacityOnly.
+' В этом режиме solver не сохраняет Stress/Strain по элементам, но геометрия,
+' контур, размерные аннотации, главные оси и точка нагрузки остаются
+' полезным визуальным контролем и не зависят от прямого НДС.
+Public Sub LoadCapacityOnlyGeometryFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemSettingsReader)
+    If workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
+    If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки Config не переданы."
+
+    ResetReaderState
+    mGeometryOnly = True
+    mGeometryReferenceItemsEnabled = True
+    mResultType = "Stress"
+    mGeometryOnlyTitle = "CapacityOnly: геометрия без НДС"
+    mGeometryOnlyNote = "НДС, Stress/Strain, нейтральная линия и легенда недоступны в режиме CapacityOnly."
 
     ReadSectionProperties workbook
     mResultCaption = "Геометрия"
@@ -123,6 +149,7 @@ Private Function ResolveLoadCase(ByVal workbook As Object, ByVal requested As St
         ResolveLoadCase = Trim$(SafeText(data(2, 5)))
     End If
     If Len(ResolveLoadCase) = 0 Then ResolveLoadCase = FirstCalculatedLoadCaseFromResults(workbook)
+    If Len(ResolveLoadCase) = 0 Then ResolveLoadCase = FirstLoadCaseFromSectionProperties(workbook)
     mLoadCaseComment = ReadBatchSummaryComment(workbook, ResolveLoadCase)
     If Len(ResolveLoadCase) = 0 Then Err.Raise vbObjectError + 4702, "CSectionPlotDataReader", _
         "В rngBatchSummary не найдено определяющее сочетание по прочности для Plot.LoadCase = Worst."
@@ -146,6 +173,27 @@ Private Function FirstCalculatedLoadCaseFromResults(ByVal workbook As Object) As
     For rowIndex = 2 To UBound(data, 1)
         FirstCalculatedLoadCaseFromResults = Trim$(SafeText(data(rowIndex, colLoadCase)))
         If Len(FirstCalculatedLoadCaseFromResults) > 0 Then Exit Function
+    Next rowIndex
+Failed:
+End Function
+
+' Возвращает первый LC из таблицы свойств сечения.
+' В CapacityOnly поэлементных результатов НДС нет, но LC-свойства все равно
+' сохраняются, чтобы схема могла показать геометрию и точку нагрузки.
+Private Function FirstLoadCaseFromSectionProperties(ByVal workbook As Object) As String
+    On Error GoTo Failed
+    Dim data As Variant
+    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    If Not HasRows(data) Then Exit Function
+
+    Dim colLoadCase As Long
+    colLoadCase = ResultColumn(data, "LoadCase")
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(data, 1)
+        FirstLoadCaseFromSectionProperties = Trim$(SafeText(data(rowIndex, colLoadCase)))
+        If Len(FirstLoadCaseFromSectionProperties) > 0 And _
+                StrComp(FirstLoadCaseFromSectionProperties, "ALL", vbTextCompare) <> 0 Then Exit Function
     Next rowIndex
 Failed:
 End Function
@@ -224,6 +272,8 @@ Private Sub ReadCommonProperty(ByVal parameter As String, ByVal value As Variant
         Case "centroidx": mCentroidX = CDbl(value)
         Case "centroidy": mCentroidY = CDbl(value)
         Case "principalangle": mPrincipalAngle = CDbl(value)
+        Case "loadreferencex": mLoadReferenceX = SafeDouble(value)
+        Case "loadreferencey": mLoadReferenceY = SafeDouble(value)
         Case "output.lengthunit": mLengthUnit = CStr(value)
         Case "output.areaunit": mAreaUnit = CStr(value)
         Case "output.stressunit": mStressUnit = CStr(value)
@@ -231,16 +281,14 @@ Private Sub ReadCommonProperty(ByVal parameter As String, ByVal value As Variant
     End Select
 End Sub
 
-' Запоминает свойства выбранного LC: плоскость деформаций и точку нагрузки.
-' Нейтральная линия затем строится из epsilon0/kappaX/kappaY без хранения
-' отдельного A/B/C.
+' Запоминает свойства выбранного LC: плоскость деформаций и признаки
+' допустимости найденного состояния. Точка приложения нагрузки читается из
+' общего блока ALL, потому что она задается один раз для всего snapshot.
 Private Sub ReadLoadCaseProperty(ByVal parameter As String, ByVal value As Variant)
     Select Case LCase$(parameter)
-        Case "epsilon0": mEpsilon0 = CDbl(value)
-        Case "kappax": mKappaX = CDbl(value)
-        Case "kappay": mKappaY = CDbl(value)
-        Case "loadreferencex": mLoadReferenceX = CDbl(value)
-        Case "loadreferencey": mLoadReferenceY = CDbl(value)
+        Case "epsilon0": mEpsilon0 = SafeDouble(value)
+        Case "kappax": mKappaX = SafeDouble(value)
+        Case "kappay": mKappaY = SafeDouble(value)
         Case "extensionused": mExtensionUsed = SafeBoolean(value)
         Case "directstatestatus": mDirectStateStatus = Trim$(SafeText(value))
     End Select
@@ -423,6 +471,9 @@ End Sub
 ' и аннотации от предыдущей загрузки.
 Private Sub ResetReaderState()
     mGeometryOnly = False
+    mGeometryOnlyTitle = vbNullString
+    mGeometryOnlyNote = vbNullString
+    mGeometryReferenceItemsEnabled = False
     mResultType = vbNullString
     mLoadCase = vbNullString
     mLoadCaseComment = vbNullString
@@ -582,6 +633,9 @@ Public Property Get PhysicalState(ByVal index As Long) As String: PhysicalState 
 Public Property Get LoadCase() As String: LoadCase = mLoadCase: End Property
 Public Property Get LoadCaseComment() As String: LoadCaseComment = mLoadCaseComment: End Property
 Public Property Get GeometryOnly() As Boolean: GeometryOnly = mGeometryOnly: End Property
+Public Property Get GeometryOnlyTitle() As String: GeometryOnlyTitle = mGeometryOnlyTitle: End Property
+Public Property Get GeometryOnlyNote() As String: GeometryOnlyNote = mGeometryOnlyNote: End Property
+Public Property Get GeometryReferenceItemsEnabled() As Boolean: GeometryReferenceItemsEnabled = mGeometryReferenceItemsEnabled: End Property
 Public Property Get ResultType() As String: ResultType = mResultType: End Property
 Public Property Get ResultUnit() As String: ResultUnit = mResultUnit: End Property
 Public Property Get ResultCaption() As String: ResultCaption = mResultCaption: End Property
@@ -602,7 +656,9 @@ Public Property Get LoadReferenceY() As Double: LoadReferenceY = mLoadReferenceY
 Public Property Get ExtensionUsed() As Boolean: ExtensionUsed = mExtensionUsed: End Property
 Public Property Get DirectStateStatus() As String: DirectStateStatus = mDirectStateStatus: End Property
 Public Property Get PhysicalDiagramWarningRequired() As Boolean
-    PhysicalDiagramWarningRequired = (mExtensionUsed Or StrComp(mDirectStateStatus, "FAIL", vbTextCompare) = 0)
+    Dim policy As CBatchStatusPolicy
+    Set policy = New CBatchStatusPolicy
+    PhysicalDiagramWarningRequired = (mExtensionUsed Or policy.ToUserStatus(mDirectStateStatus) = policy.Fail)
 End Property
 Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCount: End Property
 Public Property Get AnnotationType(ByVal index As Long) As String: AnnotationType = mAnnotationType(index): End Property

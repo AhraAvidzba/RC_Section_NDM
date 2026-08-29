@@ -31,6 +31,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
     TestGeneratedSourceDoesNotReuseAutoCADPreview stats
     TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC stats
+    TestCapacityOnlyDrawsGeometryWithoutStateResults stats
     TestAutoCADCalculationMessageUsesSavedGeometry stats
     TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped stats
     TestCircleWorkbookRunWritesResults stats
@@ -419,6 +420,34 @@ Private Sub TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC(ByRef stats
         Not PlotChartTitleContains("Импортированная геометрия AutoCAD")
 End Sub
 
+' Проверяет режим CapacityOnly на уровне книги.
+' Расчет сохраняет геометрию и capacity-результаты, но не записывает
+' поэлементные Stress/Strain. Схема должна строиться как geometry-only,
+' чтобы Excel и AutoCAD показывали согласованную картину без НДС.
+Private Sub TestCapacityOnlyDrawsGeometryWithoutStateResults(ByRef stats As TUiTestStats)
+    PrepareCircleInput
+    SetSystemSetting "Calculation.Mode", "CapacityOnly"
+    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
+    SetSystemSetting "Plot.LoadCase", "Worst"
+
+    Dim message As String
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+
+    AssertTrue stats, "ui.capacityOnly.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    AssertTextEquals stats, "ui.capacityOnly.directNA", _
+        CStr(ThisWorkbook.Worksheets.Item("Results").Cells.Item(BatchSummaryStartRow() + 9, _
+        BatchSummaryColumnByHeader("DirectStateStatus")).Value2), "N/A"
+    AssertTrue stats, "ui.capacityOnly.noElementStateRows", ResultTableRowCount("rngNDMElementResults") = 1
+    AssertTrue stats, "ui.capacityOnly.plotGeometryTitle", PlotChartTitleContains("CapacityOnly: геометрия без НДС")
+    AssertTrue stats, "ui.capacityOnly.plotNoLoadCaseTitle", Not PlotChartTitleContains("при загружении")
+    AssertTrue stats, "ui.capacityOnly.plotNoImportTitle", _
+        Not PlotChartTitleContains("Импортированная геометрия AutoCAD")
+    AssertTrue stats, "ui.capacityOnly.commonLoadReference", _
+        Len(ResultsPropertyValue("ALL", "LoadReferenceX")) > 0 And Len(ResultsPropertyValue("ALL", "LoadReferenceY")) > 0
+
+    SetSystemSetting "Calculation.Mode", "FullCapacity"
+End Sub
+
 ' Проверяет, что кнопка расчета в режиме AutoCAD использует уже сохраненную
 ' геометрию Results. Макрос не должен повторно импортировать Region и не должен
 ' показывать строку "Импортировано из AutoCAD", потому что это действие относится
@@ -530,6 +559,10 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
     AssertTrue stats, "ui.results.properties.hasEpsilon0", ResultsPropertyExists("LC1", "Epsilon0")
     AssertTrue stats, "ui.results.properties.hasBounds", ResultsPropertyExists("ALL", "Bounds.MinX")
+    AssertTrue stats, "ui.results.properties.commonLoadReference", _
+        ResultsPropertyExists("ALL", "LoadReferenceX") And ResultsPropertyExists("ALL", "LoadReferenceY")
+    AssertTrue stats, "ui.results.properties.noLcLoadReference", _
+        Not ResultsPropertyExists("LC1", "LoadReferenceX") And Not ResultsPropertyExists("LC1", "LoadReferenceY")
     AssertTrue stats, "ui.results.annotations.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Value2) = "RunID"
     AssertTrue stats, "ui.results.annotations.rows", ResultTableRowCount("rngNDMSectionAnnotations") > 1
     AssertTrue stats, "ui.results.materialDiagrams.header", CStr(ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Value2) = "RunID"
@@ -826,6 +859,8 @@ End Function
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
+    AssertTrue stats, "ui.validation.calculationMode", _
+        SystemSettingValidationHasOptions("Calculation.Mode", Array("DirectState", "FullCapacity", "CapacityOnly"))
     AssertTrue stats, "ui.validation.CapacitySolutionStrategy", _
         SystemSettingValidationHasOptions("Capacity.SolutionStrategy", Array("Auto", "UltimateStrain", "LoadMultiplier"))
     AssertTrue stats, "ui.validation.capacitySearchMethod", _

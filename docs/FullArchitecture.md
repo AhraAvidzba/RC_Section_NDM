@@ -248,12 +248,15 @@ lambda-траектории.
 #### CBatchSectionCalculator
 
 Роль: главный оркестратор пакетного расчета до 20 LC. Хранит входные LC,
-вызывает прямое состояние, capacity и crack, агрегирует статусы и governing, но
-не должен сам решать численные системы.
+вызывает прямое состояние, capacity и crack, передает статусы в
+`CBatchStatusPolicy`, выбирает governing и отдает готовые результаты writer-ам.
+Данные одного LC хранятся в `CCombinationResult`; сам batch не должен решать
+численные системы и не должен формировать пользовательские статусы вручную.
 
 Основные зависимости: `CSectionModel`, `CMaterialModelProvider`,
 `CCapacityLoadPath`, `CStateSolutionRunner`, `CCapacitySolver`,
-`CCrackWidthCalculator`, `CExecutionReport`.
+`CCrackWidthCalculator`, `CCombinationResult`, `CBatchStatusPolicy`,
+`CExecutionReport`.
 
 Публичные методы:
 
@@ -271,8 +274,7 @@ lambda-траектории.
 - `RunCombination`, `RunSectionStateAndCrack`, `RunCapacity` - сценарии расчета LC.
 - `BuildLoadPathForCombination` - создает `CCapacityLoadPath`.
 - `ConfigureStateRunner`, `ConfigureCapacity`, `ConfigureCrackCalculator` - передают настройки специализированным расчетным компонентам.
-- `StoreSectionState`, `StoreCapacity`, `StoreSkippedCapacity`, `StoreInvalidCapacity` - заполняют массивы результатов.
-- `AggregateOverallStatus`, `MergeOverallStatus`, `StatusPriority`, `NormalizeUserStatus` - пользовательские статусы.
+- `StoreSectionState`, `StoreCapacity`, `StoreSkippedCapacity`, `StoreInvalidCapacity` - заполняют `CCombinationResult`.
 - `IsBetterGoverningCandidate`, `StrengthSafetyFactorForGoverning`, `IsBetterCrackGoverningCandidate` - выбор governing.
 
 Публичные свойства результатов: `Count`, `CombinationID`, `CalculationType`,
@@ -282,6 +284,41 @@ lambda-траектории.
 `CrackWidth`, `CrackAllowable`, `CrackPhi1/Phi2/Phi3/PsiS`,
 `CrackSigmaS/SigmaSCrc`, `CrackAs/Abt/DsEquivalent`, `GoverningCombinationID`,
 `CrackGoverningCombinationID`, `DiagnosticLog`.
+
+#### CCombinationResult
+
+Роль: единый объект результата одного LC. Хранит прямое НДС, результаты
+capacity, crack, статусы, `ExtensionUsed`, плоскость деформаций и предельные
+компоненты нагрузки.
+
+Публичные методы:
+
+- `Clear` - сбрасывает результат LC перед новым расчетом.
+- `StoreSectionState` - копирует результат прямого `CSectionSolver`.
+- `StoreCrackResult` - копирует инженерные величины `CCrackWidthCalculator`.
+- `ClearCrackResult` - очищает только блок трещин, если проверка неприменима.
+
+Класс не запускает расчет и не выбирает статусы: этим занимаются solver-ы,
+calculator-ы и `CBatchStatusPolicy`.
+
+#### CBatchStatusPolicy
+
+Роль: единственная точка формирования пользовательских статусов
+`OK / FAIL / NumFail / InputErr / N/A`.
+
+Публичные методы:
+
+- `ToUserStatus` - переводит внутренний технический текст в один из пяти
+  пользовательских статусов.
+- `DisplayStatus` - готовит текст для ячейки Results/Summary и сохраняет
+  подробные значения, которые не являются статусом, например `CapacityLimitState`.
+- `Aggregate` - собирает `OverallStatus` по статусам DirectState, Capacity и Crack.
+- `IsFinished`, `IsFailedOverall`, `IsNumerical`, `IsInvalid` - проверки,
+  которыми пользуются batch, writer-ы, схема и AutoCAD export.
+
+Подробные `StopReason` и diagnostic log остаются внутренними; на листы выводится
+только короткий пользовательский статус там, где поле действительно является
+статусом.
 
 #### CCapacityLoadPath
 
@@ -474,7 +511,8 @@ AutoCAD, обновления схемы и сборка общего польз
 `CalculateDepthsPerpendicularToNeutral`, `CapacitySafetyFormula`,
 `CrackWidthFormula`, `CrackSafetyFormula`, `OverallSafetyFormula`,
 `FormatSummary`, `FormatOverallStatusRows`, `WriteStatusDictionary`,
-`ShortStatus` и unit-output helpers.
+`StatusPolicy` и unit-output helpers. Текст пользовательских статусов и
+подсветка строк берутся через `CBatchStatusPolicy`.
 
 #### CNDMResultsWriter
 

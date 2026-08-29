@@ -57,6 +57,8 @@ Public Function RunBatchCalculationTests() As String
     TestAxialTensionReferenceAndEccentricity stats
     AppendLine stats, "RUN: TestDirectStateReportsSectionStatus"
     TestDirectStateReportsSectionStatus stats
+    AppendLine stats, "RUN: TestCapacityOnlySkipsDirectStateAndCrack"
+    TestCapacityOnlySkipsDirectStateAndCrack stats
     AppendLine stats, "RUN: TestDirectStateReportsNumericalFailure"
     TestDirectStateReportsNumericalFailure stats
     AppendLine stats, "RUN: TestGroup2PhysicalStateRunsCrackWithExtensionEnabled"
@@ -1306,6 +1308,43 @@ Restore:
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: batch.direct.sectionStatus; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет режим CapacityOnly: batch ищет только несущую способность и не
+' создает прямое НДС. Это ускоренный сценарий для оценки запаса, поэтому
+' поэлементные Stress/Strain и расчет трещин должны быть недоступны.
+Private Sub TestCapacityOnlySkipsDirectStateAndCrack(ByRef stats As TBatchTestStats)
+    Dim oldMode As String
+    oldMode = GetSystemSetting("Calculation.Mode")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "Calculation.Mode", "CapacityOnly"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.AddCombination "CAP_ONLY", -150000#, -3000000#, 0#, "Group1", "capacity only"
+    batch.Execute
+
+    AssertTrue stats, "batch.capacityOnly.mode", batch.CalculationMode = "CapacityOnly"
+    AssertTrue stats, "batch.capacityOnly.capacityRuns", batch.CapacityStatus(1) <> "N/A"
+    AssertTrue stats, "batch.capacityOnly.directNA", batch.DirectStateStatus(1) = "N/A"
+    AssertTrue stats, "batch.capacityOnly.crackNA", batch.CrackStatus(1) = "N/A"
+    AssertTrue stats, "batch.capacityOnly.noState", Not batch.StateAvailable(1) And batch.StateAvailableCount = 0
+    AssertTrue stats, "batch.capacityOnly.noExtension", Not batch.ExtensionUsed(1)
+
+Restore:
+    SetSystemSetting "Calculation.Mode", oldMode
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.capacityOnly; " & Err.Description
     Resume Restore
 End Sub
 

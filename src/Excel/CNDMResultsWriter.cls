@@ -217,7 +217,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     Set target = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
 
     Dim rowCount As Long
-    rowCount = 1 + 90 + batch.Count * 23
+    rowCount = 1 + 92 + batch.Count * 22
 
     Dim data() As Variant
     ReDim data(1 To rowCount, 1 To SECTION_PROPERTY_COLUMNS)
@@ -248,6 +248,8 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MinY", OutputLength(minY, units), OutputLengthUnit(units), "Минимальный Y расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxY", OutputLength(maxY, units), OutputLengthUnit(units), "Максимальный Y расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.Source", section.SourceType, "-", "Источник геометрии расчетной модели."
+    PutProperty data, rowIndex, runID, "ALL", "LoadReferenceX", OutputLength(batch.LoadReferenceX, units), OutputLengthUnit(units), "Общая X точки приложения нагрузки относительно центра тяжести бетонного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "LoadReferenceY", OutputLength(batch.LoadReferenceY, units), OutputLengthUnit(units), "Общая Y точки приложения нагрузки относительно центра тяжести бетонного сечения."
     PutConcreteSectionProperties data, rowIndex, runID, concreteProps, units
     PutTransformedSectionProperties data, rowIndex, runID, transformedProps, units
 
@@ -288,13 +290,12 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "KappaY", vbNullString, OutputCurvatureUnit(units), "Кривизна KappaY."
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nint", vbNullString, OutputForceUnit(units), "Внутренняя продольная сила."
         End If
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LoadReferenceX", OutputLength(batch.LoadReferenceX, units), OutputLengthUnit(units), "X точки приложения нагрузки."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LoadReferenceY", OutputLength(batch.LoadReferenceY, units), OutputLengthUnit(units), "Y точки приложения нагрузки."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "N", OutputForce(batch.N(i), units), OutputForceUnit(units), "Заданная продольная сила."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxUser", OutputMx(batch.UserMx(i), units), OutputMomentUnit(units), "Пользовательский Mx."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUser", OutputMy(batch.UserMy(i), units), OutputMomentUnit(units), "Пользовательский My."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxInternal", OutputMx(batch.Mx(i), units), OutputMomentUnit(units), "Mx после переноса к координатам элементов."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyInternal", OutputMy(batch.My(i), units), OutputMomentUnit(units), "My после переноса к координатам элементов."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "CalculationMode", batch.CalculationMode, "-", "Режим Calculation.Mode, по которому был выполнен последний расчет этого LC."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "OverallStatus", batch.OverallStatus(i), "-", "Итоговый пользовательский статус сочетания."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "DirectStateStatus", batch.DirectStateStatus(i), "-", "Статус прямого решения НДС фактического сочетания."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacityStatus", batch.CapacityStatus(i), "-", "Статус расчета несущей способности."
@@ -375,11 +376,13 @@ End Sub
 Private Sub PutCombinationMaterialDiagrams(ByRef data() As Variant, ByRef rowIndex As Long, _
         ByVal runID As Variant, ByVal materialProvider As CMaterialModelProvider, _
         ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, ByVal units As CUnitSystem)
+    Dim policy As CBatchStatusPolicy
+    Set policy = New CBatchStatusPolicy
+
     Dim basePurpose As ECalculationPurpose
     basePurpose = StateBasePurposeForCalculationType(batch.CalculationType(combinationIndex))
 
-    If Len(Trim$(batch.DirectStateStatus(combinationIndex))) > 0 And _
-            StrComp(batch.DirectStateStatus(combinationIndex), "InputErr", vbTextCompare) <> 0 Then
+    If batch.StateAvailable(combinationIndex) Then
         Dim stateConcrete As CMaterialDiagram
         Dim stateSteel As CMaterialDiagram
         Set stateConcrete = batch.ConcreteMaterialForCombination(combinationIndex)
@@ -390,7 +393,7 @@ Private Sub PutCombinationMaterialDiagrams(ByRef data() As Variant, ByRef rowInd
             "DirectState", "StateSolution/" & PurposeToText(basePurpose), "Rebar", stateSteel, units
     End If
 
-    If StrComp(batch.CapacityStatus(combinationIndex), "N/A", vbTextCompare) <> 0 And _
+    If policy.ToUserStatus(batch.CapacityStatus(combinationIndex)) <> policy.NotApplicable And _
             Len(Trim$(batch.CapacityStatus(combinationIndex))) > 0 Then
         AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
             "Capacity", PurposeToText(cpStrength), "Concrete", materialProvider.ConcreteMaterial(cpStrength), units
@@ -398,7 +401,7 @@ Private Sub PutCombinationMaterialDiagrams(ByRef data() As Variant, ByRef rowInd
             "Capacity", PurposeToText(cpStrength), "Rebar", materialProvider.SteelMaterial(cpStrength), units
     End If
 
-    If StrComp(batch.CrackStatus(combinationIndex), "N/A", vbTextCompare) <> 0 And _
+    If policy.ToUserStatus(batch.CrackStatus(combinationIndex)) <> policy.NotApplicable And _
             Len(Trim$(batch.CrackStatus(combinationIndex))) > 0 Then
         AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
             "Crack.CrackedNDS", PurposeToText(cpCrackedNDS), "Concrete", materialProvider.ConcreteMaterial(cpCrackedNDS), units

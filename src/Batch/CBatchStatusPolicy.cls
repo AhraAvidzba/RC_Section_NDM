@@ -16,16 +16,18 @@ Option Explicit
 ' пользователь в Summary и Results, и правила перехода от внутренних причин
 ' solver-ов к этому словарю.
 '
-' Класс не запускает расчет и не знает о сочетаниях нагрузок. Его граница
-' ответственности - только интерпретация результата: OK, FAIL, NumFail,
-' InputErr или N/A. Благодаря этому CBatchSectionCalculator остается
-' оркестратором LC, а правила статусов не размазываются по расчетному потоку.
+' Внутренний слой может хранить подробные StopReason, LimitState и другие
+' технические строки. Наружный слой, который выводится пользователю, всегда
+' сводится только к OK, FAIL, NumFail, InputErr или N/A. Класс не запускает
+' расчет и не знает о сочетаниях нагрузок: его граница ответственности -
+' только перевод и агрегирование статусов.
 
 Private Const STATUS_OK As String = "OK" ' Расчетная ветка завершилась без ошибки.
 Private Const STATUS_FAIL As String = "FAIL" ' Равновесие найдено, но физический предел или проверка не проходят.
 Private Const STATUS_NUMFAIL As String = "NumFail" ' Solver не нашел равновесие в заданных численных ограничениях.
 Private Const STATUS_INPUTERR As String = "InputErr" ' Ошибка исходных данных, а не численная несходимость.
 Private Const STATUS_NA As String = "N/A" ' Расчетная проверка не относится к этому LC/режиму.
+Private Const STATUS_NOT_CALCULATED_SHORT As String = "NotCalcul." ' Короткая подпись для служебных нерассчитанных полей.
 
 ' Возвращает статус успешной расчетной ветки.
 Public Property Get OK() As String
@@ -64,39 +66,73 @@ Public Function Aggregate(ByVal directStateStatus As String, ByVal capacityStatu
     Aggregate = resultStatus
 End Function
 
-' Нормализует внутренний текст в короткий пользовательский словарь статусов.
-' Внутренние StopReason могут быть подробнее, но на лист Results уходит только
-' ограниченный набор значений, чтобы таблица оставалась читаемой.
-Public Function Normalize(ByVal statusText As String) As String
+' Переводит внутренний текст расчетной ветки в один из пяти пользовательских
+' статусов. Этот метод используется там, где нужна именно оценка результата:
+' агрегирование OverallStatus, подсветка строк и проверка завершенности ветки.
+Public Function ToUserStatus(ByVal statusText As String) As String
     Dim value As String
     value = Trim$(statusText)
     Select Case UCase$(value)
         Case "OK"
-            Normalize = STATUS_OK
+            ToUserStatus = STATUS_OK
         Case "FAIL", "STRENGTHFAILED", "STRAINLIMITEXCEEDED"
-            Normalize = STATUS_FAIL
+            ToUserStatus = STATUS_FAIL
         Case "NUMFAIL", "NUMERICALFAILURE", "SINGULARTANGENT"
-            Normalize = STATUS_NUMFAIL
+            ToUserStatus = STATUS_NUMFAIL
         Case "INPUTERR", "INPUTERROR", "INVALIDINPUT"
-            Normalize = STATUS_INPUTERR
+            ToUserStatus = STATUS_INPUTERR
         Case "N/A", "NA", "NOTCALCULATED", "NOTCALCUL.", "SKIPPEDZEROMOMENT", "SKIPPEDZEROBASEMOMENT", ""
-            Normalize = STATUS_NA
+            ToUserStatus = STATUS_NA
         Case Else
             If IsInvalid(statusText) Then
-                Normalize = STATUS_INPUTERR
+                ToUserStatus = STATUS_INPUTERR
             ElseIf IsNumerical(statusText) Then
-                Normalize = STATUS_NUMFAIL
+                ToUserStatus = STATUS_NUMFAIL
             Else
-                Normalize = STATUS_FAIL
+                ToUserStatus = STATUS_FAIL
             End If
+    End Select
+End Function
+
+' Совместимое имя для старых вызовов внутри проекта. Новая расчетная логика
+' должна использовать ToUserStatus, чтобы было видно различие внутреннего
+' технического текста и пользовательского статуса.
+Public Function Normalize(ByVal statusText As String) As String
+    Normalize = ToUserStatus(statusText)
+End Function
+
+' Готовит текст для ячейки Results/Summary. В отличие от ToUserStatus, метод
+' не превращает неизвестную строку в FAIL: например, CapacityLimitState
+' "ConcreteStrainLimit" остается инженерной причиной, а не статусом.
+Public Function DisplayStatus(ByVal statusText As String) As String
+    Select Case UCase$(Trim$(statusText))
+        Case "OK"
+            DisplayStatus = STATUS_OK
+        Case "FAIL", "STRENGTHFAILED", "STRAINLIMITEXCEEDED"
+            DisplayStatus = STATUS_FAIL
+        Case "NUMFAIL", "NUMERICALFAILURE", "SINGULARTANGENT"
+            DisplayStatus = STATUS_NUMFAIL
+        Case "INPUTERR", "INPUTERROR", "INVALIDINPUT"
+            DisplayStatus = STATUS_INPUTERR
+        Case "N/A", "NA", "NOTCALCULATED", "NOTCALCUL.", "SKIPPEDZEROMOMENT", "SKIPPEDZEROBASEMOMENT", ""
+            DisplayStatus = STATUS_NA
+        Case Else
+            DisplayStatus = Replace$(statusText, "NotCalculated", STATUS_NOT_CALCULATED_SHORT, 1, -1, vbTextCompare)
     End Select
 End Function
 
 ' True для расчетов, которые дали физически интерпретируемый результат:
 ' проверка либо прошла, либо показала недостаточную несущую способность.
 Public Function IsFinished(ByVal statusText As String) As Boolean
-    statusText = Normalize(statusText)
+    statusText = ToUserStatus(statusText)
     IsFinished = (statusText = STATUS_OK Or statusText = STATUS_FAIL)
+End Function
+
+' True для OverallStatus, при котором строку LC нужно выделить как проблемную.
+' N/A сюда не входит: это нейтральный пропуск неприменимой проверки.
+Public Function IsFailedOverall(ByVal statusText As String) As Boolean
+    statusText = ToUserStatus(statusText)
+    IsFailedOverall = (statusText = STATUS_FAIL Or statusText = STATUS_NUMFAIL Or statusText = STATUS_INPUTERR)
 End Function
 
 ' Распознает статусы, означающие именно численную несходимость.
@@ -155,8 +191,8 @@ End Function
 ' Объединяет два статуса по утвержденному приоритету:
 ' InputErr -> NumFail -> FAIL -> OK, при этом N/A пропускается.
 Private Function Merge(ByVal currentStatus As String, ByVal candidateStatus As String) As String
-    candidateStatus = Normalize(candidateStatus)
-    currentStatus = Normalize(currentStatus)
+    candidateStatus = ToUserStatus(candidateStatus)
+    currentStatus = ToUserStatus(currentStatus)
     If candidateStatus = STATUS_NA Then
         Merge = currentStatus
     ElseIf currentStatus = STATUS_NA Then
@@ -170,7 +206,7 @@ End Function
 
 ' Численный приоритет нужен только для выбора худшего OverallStatus.
 Private Function StatusPriority(ByVal statusText As String) As Long
-    Select Case Normalize(statusText)
+    Select Case ToUserStatus(statusText)
         Case STATUS_INPUTERR
             StatusPriority = 4
         Case STATUS_NUMFAIL

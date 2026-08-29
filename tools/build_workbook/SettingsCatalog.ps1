@@ -38,7 +38,7 @@ function Get-SystemSettingsCatalog {
         )},
         @{ Name = "CapacitySettings"; Title = "[Поиск предельной несущей способности]"; Rows = @(
             @("[Общие настройки]", "", "-", ""),
-            @("Calculation.Mode", "FullCapacity", "-", "Режим расчета: DirectState - только НДС по заданным усилиям; FullCapacity - дополнительно искать запас несущей способности для сочетаний, выбранных настройкой Capacity.CalculationScope."),
+            @("Calculation.Mode", "FullCapacity", "-", "Режим расчета: DirectState - только НДС; FullCapacity - НДС и несущая способность; CapacityOnly - только несущая способность без НДС, трещин и поэлементных Stress/Strain."),
             @("Capacity.CalculationScope", "Group1+2", "-", "Какие сочетания отправлять в поиск несущей способности: Group1Only - только первая группа; Group1+2 - первая и вторая группы."),
             @("Capacity.SolutionStrategy", "Auto", "-", "Предпочтительная стратегия поиска предельной нагрузки: Auto, UltimateStrain или LoadMultiplier. Для отдельных траекторий программа может выбрать более устойчивую ветку и покажет ее в Results."),
             @("Capacity.MaxLambda", "64", "-", "Актуально для всех методов. В LoadMultiplier задает предел расширения расчетной скобки; в UltimateStrain используется как защитный верхний предел найденного lambda."),
@@ -547,6 +547,8 @@ function Get-SettingInstructionLines {
         "Calculation.Mode" { return @($lead) + @(
             "DirectState: выполняется только поиск напряженно-деформированного состояния. Решатель находит epsilon0, kappaX, kappaY из условий равновесия, но несущая способность lambdaUltimate не ищется.",
             "FullCapacity: после решения НДС выполняется определение несущей способности выбранным Capacity.SolutionStrategy.",
+            "CapacityOnly: выполняется только расчет предельной несущей способности по выбранной lambda-траектории. Прямое НДС заданного LC не решается, поэтому поэлементные Stress/Strain, нейтральная линия и расчет трещин недоступны.",
+            "В CapacityOnly лист Results сохраняет геометрию и результаты Capacity. Excel-схема и AutoCAD export показывают геометрию и включенные не-НДС ориентиры, например главные оси и точку нагрузки, но не выводят Stress/Strain, легенду и нейтральную линию.",
             "Для DirectState пользовательский StrainSafetyFactor больше не выводится. Количественный запас по прочности определяется расчетом Capacity, а прямое НДС получает понятный DirectStateStatus.",
             "Если сочетание пустое по всем трем усилиям N, Mx, My, оно не считается. Пустой Mx или My при заданных других усилиях трактуется как 0."
         ) }
@@ -2557,7 +2559,7 @@ function Apply-SystemSettingsLayout {
         "Geometry.Source" = @("Generated", "AutoCAD")
         "General.ExecutionReportEnabled" = @("Yes", "No")
         "Geometry.Type" = @("RoundedRectangle", "Circle", "LShape")
-        "Calculation.Mode" = @("DirectState", "FullCapacity")
+        "Calculation.Mode" = @("DirectState", "FullCapacity", "CapacityOnly")
         "Solver.Method" = @("Newton", "Secant")
         "Solver.DirectState.DiagramExtension" = @("Yes", "No")
         "Capacity.CalculationScope" = @("Group1Only", "Group1+2")

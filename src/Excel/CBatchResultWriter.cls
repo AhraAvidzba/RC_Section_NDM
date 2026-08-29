@@ -296,30 +296,35 @@ End Sub
 
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVal batch As CBatchSectionCalculator, _
         ByVal index As Long, ByVal units As CUnitSystem, ByVal section As CSectionModel)
+    Dim policy As CBatchStatusPolicy
+    Set policy = StatusPolicy()
+
     If rowIndex > UBound(data, 1) Then Exit Sub
 
-    data(rowIndex, COL_OVERALL_STATUS) = ShortStatus(batch.OverallStatus(index))
+    data(rowIndex, COL_OVERALL_STATUS) = policy.DisplayStatus(batch.OverallStatus(index))
     data(rowIndex, COL_ID) = batch.CombinationID(index)
     data(rowIndex, COL_COMMENT) = batch.CombinationName(index)
     data(rowIndex, COL_CALC_TYPE) = batch.CalculationType(index)
-    data(rowIndex, COL_DIRECT_STATUS) = ShortStatus(batch.DirectStateStatus(index))
+    data(rowIndex, COL_DIRECT_STATUS) = policy.DisplayStatus(batch.DirectStateStatus(index))
 
-    data(rowIndex, COL_EPS_C_COMP) = batch.MinConcreteStrain(index)
-    data(rowIndex, COL_EPS_C_TENS) = batch.MaxConcreteStrain(index)
-    data(rowIndex, COL_EPS_S_COMP) = batch.MinSteelStrain(index)
-    data(rowIndex, COL_EPS_S_TENS) = batch.MaxSteelStrain(index)
-    PutCurrentStateGeometry data, rowIndex, batch, index, units, section
-    data(rowIndex, COL_LIM_C_COMP) = batch.ConcreteCompressionLimitForCombination(index)
-    If batch.ConcreteTensionLimitEnabledForCombination(index) Then data(rowIndex, COL_LIM_C_TENS) = batch.ConcreteTensionLimitForCombination(index)
-    data(rowIndex, COL_LIM_S_COMP) = batch.SteelCompressionLimitForCombination(index)
-    data(rowIndex, COL_LIM_S_TENS) = batch.SteelTensionLimitForCombination(index)
+    If batch.StateAvailable(index) Then
+        data(rowIndex, COL_EPS_C_COMP) = batch.MinConcreteStrain(index)
+        data(rowIndex, COL_EPS_C_TENS) = batch.MaxConcreteStrain(index)
+        data(rowIndex, COL_EPS_S_COMP) = batch.MinSteelStrain(index)
+        data(rowIndex, COL_EPS_S_TENS) = batch.MaxSteelStrain(index)
+        PutCurrentStateGeometry data, rowIndex, batch, index, units, section
+        data(rowIndex, COL_LIM_C_COMP) = batch.ConcreteCompressionLimitForCombination(index)
+        If batch.ConcreteTensionLimitEnabledForCombination(index) Then data(rowIndex, COL_LIM_C_TENS) = batch.ConcreteTensionLimitForCombination(index)
+        data(rowIndex, COL_LIM_S_COMP) = batch.SteelCompressionLimitForCombination(index)
+        data(rowIndex, COL_LIM_S_TENS) = batch.SteelTensionLimitForCombination(index)
+    End If
 
-    data(rowIndex, COL_CAPACITY_STATUS) = ShortStatus(batch.CapacityStatus(index))
-    data(rowIndex, COL_CAPACITY_LIMIT_STATE) = ShortStatus(batch.CapacityLimitState(index))
-    If ShortStatus(batch.CapacityStatus(index)) <> "N/A" Then
+    data(rowIndex, COL_CAPACITY_STATUS) = policy.DisplayStatus(batch.CapacityStatus(index))
+    data(rowIndex, COL_CAPACITY_LIMIT_STATE) = policy.DisplayStatus(batch.CapacityLimitState(index))
+    If policy.DisplayStatus(batch.CapacityStatus(index)) <> policy.NotApplicable Then
         data(rowIndex, COL_CAPACITY_LOAD_PATH) = batch.CapacityLoadPath(index)
     End If
-    If IsFinishedStatus(batch.CapacityStatus(index)) Then
+    If policy.IsFinished(batch.CapacityStatus(index)) Then
         data(rowIndex, COL_CAPACITY_SOLUTION_METHOD) = batch.CapacitySolutionMethod(index)
         data(rowIndex, COL_CAPACITY_LAMBDA) = batch.LambdaCapacity(index)
         If CapacityLoadPathScalesN(batch.CapacityLoadPathKey(index)) Then data(rowIndex, COL_CAPACITY_N_ULT) = OutputForce(batch.NUltimate(index), units)
@@ -329,9 +334,9 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
         PutCapacityStateGeometry data, rowIndex, batch, index, units, section
     End If
 
-    data(rowIndex, COL_CRACK_STATUS) = ShortStatus(batch.CrackStatus(index))
+    data(rowIndex, COL_CRACK_STATUS) = policy.DisplayStatus(batch.CrackStatus(index))
     data(rowIndex, COL_CRACK_NCRC) = NOT_CALCULATED_SHORT
-    If IsFinishedStatus(batch.CrackStatus(index)) Then
+    If policy.IsFinished(batch.CrackStatus(index)) Then
         data(rowIndex, COL_CRACK_FORMED) = IIf(batch.CrackFormed(index), "Да", "Нет")
         data(rowIndex, COL_CRACK_H) = OutputLength(batch.CrackSectionDepthH(index), units)
         data(rowIndex, COL_CRACK_A) = OutputLength(batch.CrackCoverA(index), units)
@@ -578,11 +583,14 @@ Private Sub FormatOverallStatusRows(ByVal target As Object, ByVal batch As CBatc
     If batch Is Nothing Then Exit Sub
     If batch.Count <= 0 Then Exit Sub
 
+    Dim policy As CBatchStatusPolicy
+    Set policy = StatusPolicy()
+
     Dim i As Long
     For i = 1 To batch.Count
         Dim statusText As String
         statusText = batch.OverallStatus(i)
-        If IsFailedOverallStatus(statusText) Then
+        If policy.IsFailedOverall(statusText) Then
             With target.Offset(FIRST_DATA_ROW + i - 2, 0).Resize(1, TARGET_COLUMNS)
                 .Interior.Color = FAILED_ROW_COLOR
                 .Font.Color = FAILED_FONT_COLOR
@@ -591,11 +599,6 @@ Private Sub FormatOverallStatusRows(ByVal target As Object, ByVal batch As CBatc
     Next i
 End Sub
 
-Private Function IsFailedOverallStatus(ByVal statusText As String) As Boolean
-    statusText = UCase$(Trim$(statusText))
-    IsFailedOverallStatus = (statusText = "FAIL" Or statusText = "NUMFAIL" Or statusText = "INPUTERR")
-End Function
-
 ' Выводит справа от Summary компактный справочник пользовательских статусов.
 ' Таблица не входит в rngBatchSummary, но каждый расчет обновляет ее вместе
 ' со сводкой, чтобы пользователь видел расшифровку ровно тех кодов, которые
@@ -603,6 +606,9 @@ End Function
 Private Sub WriteStatusDictionary(ByVal target As Object)
     Dim topLeft As Object
     Dim dictionaryColumn As Long
+    Dim policy As CBatchStatusPolicy
+    Set policy = StatusPolicy()
+
     dictionaryColumn = target.Column + TARGET_COLUMNS + 1
 
     ' Словарь статусов стоит справа от Summary, но начинается ниже мета-строк.
@@ -618,15 +624,15 @@ Private Sub WriteStatusDictionary(ByVal target As Object)
 
     topLeft.Value2 = "Статус"
     topLeft.Offset(0, 1).Value2 = "Расшифровка"
-    topLeft.Offset(1, 0).Value2 = "OK"
+    topLeft.Offset(1, 0).Value2 = policy.OK
     topLeft.Offset(1, 1).Value2 = "Расчет этой проверки выполнен успешно. Для прямого НДС равновесие найдено внутри физической диаграммы материала; для прочности или трещин проверка прошла."
-    topLeft.Offset(2, 0).Value2 = "FAIL"
+    topLeft.Offset(2, 0).Value2 = policy.Fail
     topLeft.Offset(2, 1).Value2 = "Численное решение есть, но инженерная проверка не проходит: превышена несущая способность, ширина трещины больше допуска или прямое НДС найдено только за пределами физической диаграммы."
-    topLeft.Offset(3, 0).Value2 = "NumFail"
+    topLeft.Offset(3, 0).Value2 = policy.NumFail
     topLeft.Offset(3, 1).Value2 = "Solver не смог найти равновесие или предельную точку с текущими численными настройками. Это не доказательство разрушения; нужно смотреть диагностику, нагрузку, сетку и параметры solver-а."
-    topLeft.Offset(4, 0).Value2 = "InputErr"
+    topLeft.Offset(4, 0).Value2 = policy.InputErr
     topLeft.Offset(4, 1).Value2 = "Расчет не запускался из-за ошибки во входных данных: пустая или неизвестная настройка, недопустимая геометрия, материал, единицы или строка сочетания."
-    topLeft.Offset(5, 0).Value2 = "N/A"
+    topLeft.Offset(5, 0).Value2 = policy.NotApplicable
     topLeft.Offset(5, 1).Value2 = "Проверка для этого сочетания не выполнялась и не считается ошибкой: например, трещины не относятся к Group1 или capacity отключен выбранным режимом расчета."
 
     With topLeft.Resize(1, 2)
@@ -642,28 +648,10 @@ Private Sub WriteStatusDictionary(ByVal target As Object)
     End With
 End Sub
 
-' Сокращает длинный служебный статус только в пользовательской сводке.
-' В расчетных объектах и подробных Results остается исходный текст статуса.
-Private Function ShortStatus(ByVal statusText As String) As String
-    Select Case UCase$(Trim$(statusText))
-        Case "OK"
-            ShortStatus = "OK"
-        Case "FAIL", "STRENGTHFAILED", "STRAINLIMITEXCEEDED"
-            ShortStatus = "FAIL"
-        Case "NUMFAIL", "NUMERICALFAILURE", "SINGULARTANGENT"
-            ShortStatus = "NumFail"
-        Case "INPUTERR", "INPUTERROR", "INVALIDINPUT"
-            ShortStatus = "InputErr"
-        Case "N/A", "NA", "NOTCALCULATED", "NOTCALCUL.", "SKIPPEDZEROMOMENT", "SKIPPEDZEROBASEMOMENT"
-            ShortStatus = "N/A"
-        Case Else
-            ShortStatus = Replace$(statusText, "NotCalculated", NOT_CALCULATED_SHORT, 1, -1, vbTextCompare)
-    End Select
-End Function
-
-Private Function IsFinishedStatus(ByVal statusText As String) As Boolean
-    statusText = UCase$(Trim$(statusText))
-    IsFinishedStatus = (statusText = "OK" Or statusText = "FAIL")
+Private Function StatusPolicy() As CBatchStatusPolicy
+    Static policy As CBatchStatusPolicy
+    If policy Is Nothing Then Set policy = New CBatchStatusPolicy
+    Set StatusPolicy = policy
 End Function
 
 Private Function ConcreteWidth(ByVal section As CSectionModel, ByVal index As Long) As Double

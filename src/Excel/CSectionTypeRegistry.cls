@@ -154,7 +154,9 @@ Public Function BuildGeneratedModel(ByVal settings As CSystemSettingsReader, ByV
     Set rebars = CreateRebars(geometry, settings, units)
 
     Dim model As CSectionModel
-    Set model = BuildGeneratedSectionModel(mesh, rebars, "Generated")
+    Dim modelBuilder As CSectionModelBuilder
+    Set modelBuilder = New CSectionModelBuilder
+    Set model = modelBuilder.BuildFromGenerated(mesh, rebars, "Generated")
     BuildAnnotations model, geometry, rebars, settings
     Set BuildGeneratedModel = model
 End Function

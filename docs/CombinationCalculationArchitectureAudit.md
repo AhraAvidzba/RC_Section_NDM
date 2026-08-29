@@ -31,16 +31,18 @@ Config
 
 ## Что Осталось В CBatchSectionCalculator
 
-`CBatchSectionCalculator` по-прежнему хранит массивы результатов, потому что
-именно он собирает batch summary и governing. Его основные обязанности:
+`CBatchSectionCalculator` по-прежнему хранит результаты LC, потому что именно
+он собирает batch summary и governing. Но данные одной строки теперь лежат в
+`CCombinationResult`, а не в наборе параллельных массивов внутри batch.
+Основные обязанности batch:
 
 - пройти по LC;
 - выбрать, нужно ли запускать capacity и crack;
 - вызвать `CStateSolutionRunner` для прямого НДС;
 - вызвать `CCapacitySolver` с уже готовым `CCapacityLoadPath`;
 - вызвать `CCrackWidthCalculator`, только если DirectState физически допустим;
-- агрегировать `DirectStateStatus`, `CapacityStatus`, `CrackStatus`,
-  `OverallStatus`;
+- передать `DirectStateStatus`, `CapacityStatus`, `CrackStatus` в
+  `CBatchStatusPolicy` и получить `OverallStatus`;
 - выбрать governing по прочности и трещинам;
 - отдать writer-ам готовые данные.
 
@@ -86,6 +88,24 @@ Target(lambda) = Offset + lambda * Base
 batch-а. Теперь это свойство выбранной lambda-траектории, а не отдельная скрытая
 ветка расчета.
 
+## CCombinationResult
+
+`CCombinationResult` - единый контейнер результата одного LC. В нем хранятся
+прямое НДС, capacity, crack, статусы, `ExtensionUsed`, плоскость деформаций и
+предельные компоненты нагрузки. Класс не запускает solver-ы и не выбирает
+статусы; он только аккуратно держит данные одной строки batch.
+
+Такой вынос разгружает `CBatchSectionCalculator`: batch больше не содержит
+длинный private `Type` и не сбрасывает десятки полей вручную. При этом внешний
+API batch для writer-ов не изменился.
+
+## CBatchStatusPolicy
+
+`CBatchStatusPolicy` - единственная точка перевода внутренних технических
+причин в пользовательские статусы `OK`, `FAIL`, `NumFail`, `InputErr`, `N/A`.
+Внутренние `StopReason` и `LimitState` могут оставаться подробными, а наружный
+статус для Summary/Results всегда приводится через policy.
+
 ## CStateGuessBuilder И ApplyPureBendingProbeGuess
 
 `CStateGuessBuilder` остается builder-ом стартовых плоскостей. Он не запускает
@@ -112,10 +132,10 @@ StateSolution, а не одномерными пробными точками ca
 
 ## Оставшиеся Границы Ответственности
 
-`CBatchSectionCalculator` все еще остается большим классом, потому что хранит
-широкий snapshot результатов для writer-ов. Это приемлемо для текущего проекта:
-численная логика уже вынесена, а дальнейшее дробление на scenario-runner-ы
-увеличило бы число классов без немедленного выигрыша.
+`CBatchSectionCalculator` все еще остается главным оркестратором LC, но самый
+широкий блок данных вынесен в `CCombinationResult`. Это приемлемо для текущего
+проекта: численная логика уже вынесена, а дальнейшее дробление на отдельные
+scenario-runner-ы увеличило бы число классов без немедленного выигрыша.
 
 Следующий разумный шаг, если класс снова начнет разрастаться, - выносить не
-математику, а структуры хранения/вывода результатов batch. Пока это не требуется.
+математику, а узкие writer-specific представления результатов. Пока это не требуется.
