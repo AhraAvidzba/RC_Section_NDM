@@ -2899,8 +2899,11 @@ function Add-LShapeFaceSettingsTable {
 
     $mainHeaderRow = $HeaderRow + 4
     $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn).Value2 = "Основное армирование"
-    $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn).Font.Bold = $true
-    $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn).Interior.Color = 15921906
+    $mainSectionRange = $Sheet.Range($Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn), $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn + 7))
+    $mainSectionRange.Font.Bold = $true
+    $mainSectionRange.Interior.Color = 15921906
+    $mainSectionRange.HorizontalAlignment = 7
+    $mainSectionRange.VerticalAlignment = -4108
     $mainHeaders = @("Грань", "as", "d", "n", "t нач.", "t кон.", "Ед.", "Комментарий")
     for ($i = 0; $i -lt $mainHeaders.Count; $i++) {
         $cell = $Sheet.Cells.Item($mainHeaderRow, $StartColumn + $i)
@@ -2917,8 +2920,11 @@ function Add-LShapeFaceSettingsTable {
 
     $extraHeaderRow = $mainHeaderRow + 10
     $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn).Value2 = "Дополнительные ряды"
-    $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn).Font.Bold = $true
-    $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn).Interior.Color = 15921906
+    $extraSectionRange = $Sheet.Range($Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn), $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn + 8))
+    $extraSectionRange.Font.Bold = $true
+    $extraSectionRange.Interior.Color = 15921906
+    $extraSectionRange.HorizontalAlignment = 7
+    $extraSectionRange.VerticalAlignment = -4108
     $extraHeaders = @("Грань", "d2", "положение", "привязка", "d3", "положение", "привязка", "Ед.", "Комментарий")
     for ($i = 0; $i -lt $extraHeaders.Count; $i++) {
         $cell = $Sheet.Cells.Item($extraHeaderRow, $StartColumn + $i)
