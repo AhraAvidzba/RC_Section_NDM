@@ -373,13 +373,18 @@ function Apply-ConfigUserInputAlignment {
 
     try {
         $range = $Workbook.Names.Item("rngLShapeGeometry").RefersToRange
-        if ([string]$range.Worksheet.Name -eq "Config" -and $range.Rows.Count -ge 24) {
+        if ([string]$range.Worksheet.Name -eq "Config" -and $range.Rows.Count -ge 23) {
             $sheet = $range.Worksheet
             $top = $range.Row
             $left = $range.Column
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 2, $left + 1), $sheet.Cells.Item($top + 2, $left + 4))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 1, $left), $sheet.Cells.Item($top + 1, $left + 4))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 2, $left), $sheet.Cells.Item($top + 2, $left + 3))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 4, $left + 1), $sheet.Cells.Item($top + 4, $left + 6))
             Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 5, $left + 1), $sheet.Cells.Item($top + 12, $left + 5))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 5, $left + 6), $sheet.Cells.Item($top + 12, $left + 6))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 14, $left + 1), $sheet.Cells.Item($top + 14, $left + 7))
             Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 15, $left + 1), $sheet.Cells.Item($top + 22, $left + 6))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 15, $left + 7), $sheet.Cells.Item($top + 22, $left + 7))
         }
     } catch {
         # LShape имеет составную таблицу, поэтому его ячейки ввода форматируются отдельно.
@@ -2902,7 +2907,7 @@ function Add-LShapeFaceSettingsTable {
     $mainSectionRange = $Sheet.Range($Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn), $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn + 7))
     $mainSectionRange.Font.Bold = $true
     $mainSectionRange.Interior.Color = 15921906
-    $mainSectionRange.HorizontalAlignment = 7
+    $mainSectionRange.HorizontalAlignment = -4131
     $mainSectionRange.VerticalAlignment = -4108
     $mainHeaders = @("Грань", "as", "d", "n", "t нач.", "t кон.", "Ед.", "Комментарий")
     for ($i = 0; $i -lt $mainHeaders.Count; $i++) {
@@ -2923,7 +2928,7 @@ function Add-LShapeFaceSettingsTable {
     $extraSectionRange = $Sheet.Range($Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn), $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn + 8))
     $extraSectionRange.Font.Bold = $true
     $extraSectionRange.Interior.Color = 15921906
-    $extraSectionRange.HorizontalAlignment = 7
+    $extraSectionRange.HorizontalAlignment = -4131
     $extraSectionRange.VerticalAlignment = -4108
     $extraHeaders = @("Грань", "d2", "положение", "привязка", "d3", "положение", "привязка", "Ед.", "Комментарий")
     for ($i = 0; $i -lt $extraHeaders.Count; $i++) {
