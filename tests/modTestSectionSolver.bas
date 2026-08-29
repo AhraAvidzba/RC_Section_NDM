@@ -215,7 +215,9 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "Plot.RebarLabels.Enabled", "Plot.Dimensions.Enabled", _
         "Plot.RebarLabels.Placement", "Plot.Dimensions.Placement", _
         "Plot.RebarLabels.Offset", "Plot.Dimensions.Offset", _
+        "Plot.RebarLabels.TextUnits", "Plot.Dimensions.TextUnits", _
         "Plot.RebarLabels.TextHeight", "Plot.Dimensions.TextHeight", _
+        "Plot.RebarLabels.TextGap", "Plot.Dimensions.TextGap", _
         "Plot.RebarLabels.LineEnabled", "Plot.Dimensions.ArrowType", "Plot.Dimensions.ArrowSize")
     AssertRequiredKeys stats, requiredKeys
 

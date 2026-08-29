@@ -208,7 +208,7 @@ Private Sub ConfigureEqualScale(ByVal data As CSectionPlotDataReader, ByVal sett
     If dy <= 0# Then dy = 1#
 
     Dim annotationMargin As Double
-    annotationMargin = AnnotationMarginModel(settings, data.LengthUnit)
+    annotationMargin = AnnotationMarginModel(settings, data.LengthUnit, dx, dy)
 
     rawMinX = rawMinX - MaxDouble(dx * 0.16, annotationMargin)
     rawMaxX = rawMaxX + MaxDouble(dx * 0.24, annotationMargin)
@@ -251,22 +251,59 @@ Private Sub ConfigureEqualScale(ByVal data As CSectionPlotDataReader, ByVal sett
     HideChartAxes
 End Sub
 
-Private Function AnnotationMarginModel(ByVal settings As CSystemSettingsReader, ByVal lengthUnit As String) As Double
+Private Function AnnotationMarginModel(ByVal settings As CSystemSettingsReader, ByVal lengthUnit As String, _
+        ByVal rangeX As Double, ByVal rangeY As Double) As Double
     If settings Is Nothing Then Exit Function
 
-    Dim marginMm As Double
+    Dim marginModel As Double
     If settings.GetBoolean("Plot.Dimensions.Enabled", True) Then
-        marginMm = MaxDouble(marginMm, settings.GetDouble("Plot.Dimensions.Offset", 100#) + _
-            settings.GetDouble("Plot.Dimensions.TextGap", 15#) + _
-            settings.GetDouble("Plot.Dimensions.TextHeight", 25#))
+        marginModel = MaxDouble(marginModel, _
+            LengthMmToModel(settings.GetDouble("Plot.Dimensions.Offset", 100#), lengthUnit) + _
+            AnnotationTextMetricModel(settings.GetDouble("Plot.Dimensions.TextGap", 15#), _
+                settings.GetString("Plot.Dimensions.TextUnits", "pt"), lengthUnit, rangeX, rangeY) + _
+            AnnotationTextMetricModel(settings.GetDouble("Plot.Dimensions.TextHeight", 25#), _
+                settings.GetString("Plot.Dimensions.TextUnits", "pt"), lengthUnit, rangeX, rangeY))
     End If
     If settings.GetBoolean("Plot.RebarLabels.Enabled", True) Then
-        marginMm = MaxDouble(marginMm, settings.GetDouble("Plot.RebarLabels.Offset", 60#) + _
-            settings.GetDouble("Plot.RebarLabels.TextGap", 15#) + _
-            settings.GetDouble("Plot.RebarLabels.TextHeight", 25#))
+        marginModel = MaxDouble(marginModel, _
+            LengthMmToModel(settings.GetDouble("Plot.RebarLabels.Offset", 60#), lengthUnit) + _
+            AnnotationTextMetricModel(settings.GetDouble("Plot.RebarLabels.TextGap", 15#), _
+                settings.GetString("Plot.RebarLabels.TextUnits", "pt"), lengthUnit, rangeX, rangeY) + _
+            AnnotationTextMetricModel(settings.GetDouble("Plot.RebarLabels.TextHeight", 25#), _
+                settings.GetString("Plot.RebarLabels.TextUnits", "pt"), lengthUnit, rangeX, rangeY))
     End If
 
-    AnnotationMarginModel = marginMm / LengthFactorToMm(lengthUnit)
+    AnnotationMarginModel = marginModel
+End Function
+
+' Переводит геометрический offset из миллиметров сечения в output-единицы
+' сохраненного Results. Offset специально остается модельной величиной.
+Private Function LengthMmToModel(ByVal valueMm As Double, ByVal lengthUnit As String) As Double
+    LengthMmToModel = valueMm / LengthFactorToMm(lengthUnit)
+End Function
+
+' Оценивает TextHeight/TextGap в координатах модели только для расширения
+' области графика. В самом layout точное значение еще раз переводится в points
+' по фактической PlotArea; здесь нужна лишь разумная предварительная рамка.
+Private Function AnnotationTextMetricModel(ByVal value As Double, ByVal unitName As String, _
+        ByVal lengthUnit As String, ByVal rangeX As Double, ByVal rangeY As Double) As Double
+    If StrComp(Trim$(unitName), "pt", vbTextCompare) <> 0 Then
+        AnnotationTextMetricModel = LengthMmToModel(value, lengthUnit)
+        Exit Function
+    End If
+
+    Dim plotW As Double, plotH As Double
+    plotW = mChart.PlotArea.InsideWidth
+    plotH = mChart.PlotArea.InsideHeight
+    If plotW <= 0# Or plotH <= 0# Then
+        plotW = mChartObject.Width * 0.72
+        plotH = mChartObject.Height * 0.72
+    End If
+
+    Dim scaleValue As Double
+    scaleValue = MinDouble(plotW / MaxDouble(rangeX, 1#), plotH / MaxDouble(rangeY, 1#))
+    If scaleValue <= 0# Then Exit Function
+    AnnotationTextMetricModel = value / scaleValue
 End Function
 
 Private Sub HideChartAxes()

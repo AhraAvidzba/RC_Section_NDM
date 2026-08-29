@@ -45,15 +45,17 @@ Private mBoxPadding As Double ' Запас вокруг текстового bbo
 Private mDimensionLineWeight As Double ' Толщина основной размерной линии.
 Private mExtensionLineWeight As Double ' Толщина выносных линий размера.
 Private mRebarLineWeight As Double ' Толщина линии-выноски под групповой подписью арматуры.
-Private mDimensionTextHeightBase As Double ' Базовая высота текста размеров в модельных мм.
-Private mRebarTextHeightBase As Double ' Базовая высота текста арматуры в модельных мм.
+Private mDimensionTextHeightBase As Double ' Высота текста размеров в единицах mDimensionTextUnits.
+Private mRebarTextHeightBase As Double ' Высота текста арматуры в единицах mRebarTextUnits.
+Private mDimensionTextUnits As String ' Единицы TextHeight/TextGap для размеров: mm или pt.
+Private mRebarTextUnits As String ' Единицы TextHeight/TextGap для подписей арматуры: mm или pt.
 Private mDimensionBaseGapBase As Double ' Базовый отступ размеров в модельных мм.
 Private mRebarBaseGapBase As Double ' Базовый отступ подписей арматуры в модельных мм.
 Private mDimensionLineWeightBase As Double ' Базовая толщина размерной линии до visual-scale.
 Private mExtensionLineWeightBase As Double ' Базовая толщина выносной линии до visual-scale.
 Private mRebarLineWeightBase As Double ' Базовая толщина линии арматурной подписи до visual-scale.
-Private mDimensionTextGapBase As Double ' Зазор между размерной линией и текстом в модельных мм.
-Private mRebarTextGapBase As Double ' Зазор между линией арматурной подписи и текстом в модельных мм.
+Private mDimensionTextGapBase As Double ' Зазор размер-текст в единицах mDimensionTextUnits.
+Private mRebarTextGapBase As Double ' Зазор линия-текст в единицах mRebarTextUnits.
 Private mDimensionPlacement As String ' С какой стороны от размерной линии ставить текст: Outside или Inside.
 Private mRebarPlacement As String ' Куда смещать подпись арматуры от линии стержней: Outside или Inside.
 Private mRebarLineEnabled As Boolean ' Рисовать ли короткую линию под групповой подписью арматуры.
@@ -89,13 +91,15 @@ Private mOccBottom() As Double ' Нижние границы занятых bbox
 Public Sub ConfigureFromSettings(ByVal settings As CSystemSettingsReader)
     mDimensionTextHeightBase = settings.GetDouble("Plot.Dimensions.TextHeight", 25#)
     mRebarTextHeightBase = settings.GetDouble("Plot.RebarLabels.TextHeight", 25#)
+    mDimensionTextUnits = NormalizeTextUnits(settings.GetString("Plot.Dimensions.TextUnits", "pt"))
+    mRebarTextUnits = NormalizeTextUnits(settings.GetString("Plot.RebarLabels.TextUnits", "pt"))
     mDimensionBaseGapBase = settings.GetDouble("Plot.Dimensions.Offset", 100#)
     mRebarBaseGapBase = settings.GetDouble("Plot.RebarLabels.Offset", 60#)
     mDimensionLineWeightBase = settings.GetDouble("Plot.Dimensions.LineWeight", 1.75)
     mExtensionLineWeightBase = settings.GetDouble("Plot.Dimensions.ExtensionLineWeight", 0.85)
     mRebarLineWeightBase = settings.GetDouble("Plot.RebarLabels.LineWeight", 1.35)
-    mDimensionTextGapBase = settings.GetDouble("Plot.Dimensions.TextGap", 7#)
-    mRebarTextGapBase = settings.GetDouble("Plot.RebarLabels.TextGap", 7#)
+    mDimensionTextGapBase = settings.GetDouble("Plot.Dimensions.TextGap", 15#)
+    mRebarTextGapBase = settings.GetDouble("Plot.RebarLabels.TextGap", 15#)
     mDimensionPlacement = NormalizePlacement(settings.GetString("Plot.Dimensions.Placement", "Outside"))
     mRebarPlacement = NormalizePlacement(settings.GetString("Plot.RebarLabels.Placement", "Outside"))
     mRebarLineEnabled = settings.GetBoolean("Plot.RebarLabels.LineEnabled", True)
@@ -107,8 +111,9 @@ End Sub
 ' ------------------------------
 ' Геометрия Chart
 ' ------------------------------
-' Фиксирует границы модели и фактическую PlotArea. После этого все offset,
-' TextGap и высоты текста можно переводить из модельных мм в points Chart.
+' Фиксирует границы модели и фактическую PlotArea. После этого offset всегда
+' переводится из модельных мм, а TextGap/TextHeight - из выбранных единиц
+' mm или pt в реальные points Chart.
 Public Sub Initialize(ByVal minX As Double, ByVal maxX As Double, ByVal minY As Double, ByVal maxY As Double, _
         ByVal plotLeft As Double, ByVal plotTop As Double, ByVal plotWidth As Double, ByVal plotHeight As Double, _
         Optional ByVal lengthUnit As String = "mm")
@@ -143,16 +148,16 @@ Private Sub InitializeVisualMetrics(ByVal plotWidth As Double, ByVal plotHeight 
     If mDimensionLineWeightBase <= 0# Then mDimensionLineWeightBase = 1.75
     If mExtensionLineWeightBase <= 0# Then mExtensionLineWeightBase = 0.85
     If mRebarLineWeightBase <= 0# Then mRebarLineWeightBase = 1.35
-    If mDimensionTextGapBase <= 0# Then mDimensionTextGapBase = 7#
-    If mRebarTextGapBase <= 0# Then mRebarTextGapBase = 7#
+    If mDimensionTextGapBase <= 0# Then mDimensionTextGapBase = 15#
+    If mRebarTextGapBase <= 0# Then mRebarTextGapBase = 15#
     If Len(mDimensionPlacement) = 0 Then mDimensionPlacement = "Outside"
     If Len(mRebarPlacement) = 0 Then mRebarPlacement = "Outside"
     If mDimensionColor = 0 Then mDimensionColor = RGB(20, 30, 90)
     If mDimensionExtensionColor = 0 Then mDimensionExtensionColor = RGB(140, 140, 140)
     If mRebarColor = 0 Then mRebarColor = RGB(20, 30, 90)
 
-    mDimensionFontSize = ClampDouble(ModelMmToChartPoints(mDimensionTextHeightBase), 5#, 28#)
-    mRebarFontSize = ClampDouble(ModelMmToChartPoints(mRebarTextHeightBase), 5#, 28#)
+    mDimensionFontSize = ClampDouble(TextMetricToChartPoints(mDimensionTextHeightBase, mDimensionTextUnits), 5#, 28#)
+    mRebarFontSize = ClampDouble(TextMetricToChartPoints(mRebarTextHeightBase, mRebarTextUnits), 5#, 28#)
     mDimensionBaseGap = ClampDouble(ModelMmToChartPoints(mDimensionBaseGapBase), 4#, 180#)
     mRebarBaseGap = ClampDouble(ModelMmToChartPoints(mRebarBaseGapBase), 2#, 120#)
     mDimensionLaneGap = 24# * mVisualScale
@@ -269,7 +274,7 @@ Private Sub DimensionTextBox(ByVal sx As Double, ByVal sy As Double, ByVal ex As
     End If
 
     Dim textGap As Double
-    textGap = ClampDouble(ModelMmToChartPoints(mDimensionTextGapBase), 0#, 80#)
+    textGap = ClampDouble(TextMetricToChartPoints(mDimensionTextGapBase, mDimensionTextUnits), 0#, 80#)
 
     Dim midX As Double, midY As Double
     midX = 0.5 * (sx + ex) + normalPxX * textGap
@@ -293,7 +298,7 @@ Private Sub RebarTextBox(ByVal anchorPxX As Double, ByVal anchorPxY As Double, B
     End If
 
     Dim textGap As Double
-    textGap = ClampDouble(ModelMmToChartPoints(mRebarTextGapBase), 0#, 80#)
+    textGap = ClampDouble(TextMetricToChartPoints(mRebarTextGapBase, mRebarTextUnits), 0#, 80#)
 
     Dim centerX As Double, centerY As Double
     centerX = anchorPxX + normalPxX * textGap
@@ -316,6 +321,21 @@ Private Function NormalizePlacement(ByVal value As String) As String
         NormalizePlacement = "Inside"
     Else
         NormalizePlacement = "Outside"
+    End If
+End Function
+
+' Приводит настройку единиц текста к двум понятным режимам.
+' mm сохраняет старое поведение: TextHeight/TextGap задаются в реальных
+' миллиметрах сечения и зависят от масштаба модели. pt задает обычные
+' Excel points и удобен, когда нужен одинаковый визуальный размер текста
+' для сечений разных габаритов.
+Private Function NormalizeTextUnits(ByVal value As String) As String
+    Dim normalized As String
+    normalized = LCase$(Trim$(value))
+    If normalized = "pt" Then
+        NormalizeTextUnits = "pt"
+    Else
+        NormalizeTextUnits = "mm"
     End If
 End Function
 
@@ -392,11 +412,21 @@ Private Function ModelScale() As Double
     ModelScale = MinDouble(mScaleX, mScaleY)
 End Function
 
-' Переводит заданный в настройках отступ/размер текста из реальных мм сечения
-' в экранные points текущей PlotArea.
+' Переводит модельную миллиметровую величину оформления в экранные points
+' текущей PlotArea. TextUnits=pt идет через TextMetricToChartPoints ниже.
 Private Function ModelMmToChartPoints(ByVal valueMm As Double) As Double
     If mLengthUnitFactorToMm <= 0# Then mLengthUnitFactorToMm = 1#
     ModelMmToChartPoints = valueMm / mLengthUnitFactorToMm * ModelScale()
+End Function
+
+' Переводит TextHeight/TextGap в points Chart. В режиме pt значение уже
+' является экранной величиной Excel, поэтому не зависит от размера сечения.
+Private Function TextMetricToChartPoints(ByVal value As Double, ByVal unitName As String) As Double
+    If StrComp(unitName, "pt", vbTextCompare) = 0 Then
+        TextMetricToChartPoints = value
+    Else
+        TextMetricToChartPoints = ModelMmToChartPoints(value)
+    End If
 End Function
 
 ' Показывает, сколько мм содержится в одной output-единице длины Results.

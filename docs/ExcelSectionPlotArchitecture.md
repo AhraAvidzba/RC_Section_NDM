@@ -761,9 +761,10 @@ PhysicalState = Compression
 | `Plot.RebarLabels.Enabled` | `Yes` | `Yes`, `No` | Показывать групповые подписи арматуры по граням, например `6Ø32 + 3Ø20`. |
 | `Plot.Dimensions.Placement` | `Outside` | `Outside`, `Inside` | Сторона текста размера относительно размерной линии; сама размерная линия остается на своей semantic-стороне. |
 | `Plot.RebarLabels.Placement` | `Outside` | `Outside`, `Inside` | Сторона подписи арматуры относительно линии осей стержней. |
-| `Plot.Dimensions.Offset`, `Plot.RebarLabels.Offset` | `42` / `10` | мм сечения | Отступ задается в реальных миллиметрах сечения и пересчитывается в координаты Chart через масштаб сохраненного snapshot. |
-| `Plot.Dimensions.TextHeight`, `Plot.RebarLabels.TextHeight` | `8.5` / `9` | мм сечения | Высота текста задается в реальных миллиметрах сечения; Excel получает пересчитанный размер шрифта. |
-| `Plot.Dimensions.TextGap`, `Plot.RebarLabels.TextGap` | `7` | мм сечения | Зазор между линией аннотации и текстом в реальных миллиметрах сечения. |
+| `Plot.Dimensions.Offset`, `Plot.RebarLabels.Offset` | `100` / `60` | мм сечения | Геометрический отступ задается в реальных миллиметрах сечения: для размеров от грани до размерной линии, для арматуры от линии осей стержней. |
+| `Plot.Dimensions.TextUnits`, `Plot.RebarLabels.TextUnits` | `pt` | `mm`, `pt` | Единицы для `TextHeight` и `TextGap`. `pt` задает обычные Excel points и стабилизирует визуальный размер текста для сечений разных габаритов, `mm` сохраняет модельное масштабирование. |
+| `Plot.Dimensions.TextHeight`, `Plot.RebarLabels.TextHeight` | `25` / `25` | по `TextUnits` | Высота текста: модельные миллиметры сечения или фиксированный размер шрифта Excel в points. |
+| `Plot.Dimensions.TextGap`, `Plot.RebarLabels.TextGap` | `15` / `15` | по `TextUnits` | Зазор между линией аннотации и текстом: модельные миллиметры сечения или фиксированный экранный зазор в points. |
 | `Plot.RebarLabels.LineEnabled` | `Yes` | `Yes`, `No` | Показывать короткую линию обозначения арматуры; при `No` остается только текст. |
 | `Plot.Dimensions.ArrowType` | `Triangle` | `Triangle`, `Stealth`, `Diamond`, `Oval`, `Open` | Тип наконечников размерной линии. |
 | `Plot.Dimensions.ArrowSize` | `Wide` | `Small`, `Medium`, `Wide` | Размер наконечников размерной линии. |

@@ -165,8 +165,9 @@
 | `Plot.Dimensions.Placement` | `Outside`, `Inside` |
 | `Plot.RebarLabels.Placement` | `Outside`, `Inside` |
 | `Plot.Dimensions.Offset`, `Plot.RebarLabels.Offset` | мм сечения |
-| `Plot.Dimensions.TextHeight`, `Plot.RebarLabels.TextHeight` | мм сечения |
-| `Plot.Dimensions.TextGap`, `Plot.RebarLabels.TextGap` | мм сечения |
+| `Plot.Dimensions.TextUnits`, `Plot.RebarLabels.TextUnits` | `mm`, `pt` |
+| `Plot.Dimensions.TextHeight`, `Plot.RebarLabels.TextHeight` | по выбранному `TextUnits`: мм сечения или pt |
+| `Plot.Dimensions.TextGap`, `Plot.RebarLabels.TextGap` | по выбранному `TextUnits`: мм сечения или pt |
 | `Plot.RebarLabels.LineEnabled` | `Yes`, `No` |
 | `Plot.Dimensions.ArrowType` | `Triangle`, `Stealth`, `Diamond`, `Oval`, `Open` |
 | `Plot.Dimensions.ArrowSize` | `Small`, `Medium`, `Wide` |

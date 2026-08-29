@@ -895,6 +895,14 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
         PlotAnnotationValidationHasOptions("Placement", 2, Array("Outside", "Inside"))
     AssertTrue stats, "ui.validation.plotDimensionPlacement", _
         PlotAnnotationValidationHasOptions("Placement", 3, Array("Outside", "Inside"))
+    AssertTrue stats, "ui.validation.plotRebarTextUnits", _
+        PlotAnnotationValidationHasOptions("TextUnits", 2, Array("mm", "pt"))
+    AssertTrue stats, "ui.validation.plotDimensionTextUnits", _
+        PlotAnnotationValidationHasOptions("TextUnits", 3, Array("mm", "pt"))
+    AssertTrue stats, "ui.validation.plotTextHeightUnitDynamic", _
+        PlotAnnotationTextUnitCellIsDynamic("TextHeight")
+    AssertTrue stats, "ui.validation.plotTextGapUnitDynamic", _
+        PlotAnnotationTextUnitCellIsDynamic("TextGap")
     AssertTrue stats, "ui.validation.plotRebarLineEnabled", _
         PlotAnnotationValidationHasOptions("LineEnabled", 2, Array("Yes", "No"))
     AssertTrue stats, "ui.validation.plotDimensionArrowType", _
@@ -1840,6 +1848,41 @@ Private Function SystemSettingUnitText(ByVal key As String) As String
     Next rowIndex
 
 Failed:
+End Function
+
+Private Function PlotAnnotationTextUnitCellIsDynamic(ByVal rowName As String) As Boolean
+    On Error GoTo Failed
+
+    Dim settings As Object
+    Set settings = ThisWorkbook.Names.Item("rngPlotAnnotationSettings").RefersToRange
+
+    Dim textUnitsRow As Long, targetRow As Long, rowIndex As Long
+    For rowIndex = 2 To settings.Rows.Count
+        If StrComp(CStr(settings.Cells.Item(rowIndex, 1).Value2), "TextUnits", vbTextCompare) = 0 Then textUnitsRow = rowIndex
+        If StrComp(CStr(settings.Cells.Item(rowIndex, 1).Value2), rowName, vbTextCompare) = 0 Then targetRow = rowIndex
+    Next rowIndex
+    If textUnitsRow = 0 Or targetRow = 0 Then Exit Function
+    If Left$(CStr(settings.Cells.Item(targetRow, 4).Formula), 1) <> "=" Then Exit Function
+
+    Dim oldRebarUnits As Variant, oldDimensionUnits As Variant
+    Dim valuesSaved As Boolean
+    oldRebarUnits = settings.Cells.Item(textUnitsRow, 2).Value2
+    oldDimensionUnits = settings.Cells.Item(textUnitsRow, 3).Value2
+    valuesSaved = True
+
+    settings.Cells.Item(textUnitsRow, 2).Value2 = "pt"
+    settings.Cells.Item(textUnitsRow, 3).Value2 = "pt"
+    settings.Worksheet.Calculate
+    PlotAnnotationTextUnitCellIsDynamic = (CStr(settings.Cells.Item(targetRow, 4).Value2) = "pt")
+
+CleanUp:
+    If Not valuesSaved Then Exit Function
+    settings.Cells.Item(textUnitsRow, 2).Value2 = oldRebarUnits
+    settings.Cells.Item(textUnitsRow, 3).Value2 = oldDimensionUnits
+    settings.Worksheet.Calculate
+    Exit Function
+Failed:
+    If valuesSaved Then Resume CleanUp
 End Function
 
 Private Sub AssertTextEquals(ByRef stats As TUiTestStats, ByVal name As String, _
