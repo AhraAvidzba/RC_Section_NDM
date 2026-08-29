@@ -300,7 +300,7 @@ try {
     $concreteParams = $workbook.Names.Item("rngConcreteMaterialParameters").RefersToRange
     $steelParams = $workbook.Names.Item("rngSteelMaterialParameters").RefersToRange
     $diagramSettings = $workbook.Names.Item("rngCalculationDiagramSettings").RefersToRange
-    Add-Check $checks "Concrete material parameters" (($concreteParams.Columns.Count -eq 6) -and ($concreteParams.Rows.Count -eq 7)) ("Rows=$($concreteParams.Rows.Count); Columns=$($concreteParams.Columns.Count)")
+    Add-Check $checks "Concrete material parameters" (($concreteParams.Columns.Count -eq 6) -and ($concreteParams.Rows.Count -eq 8)) ("Rows=$($concreteParams.Rows.Count); Columns=$($concreteParams.Columns.Count)")
     Add-Check $checks "Steel material parameters" (($steelParams.Columns.Count -eq 6) -and ($steelParams.Rows.Count -eq 7)) ("Rows=$($steelParams.Rows.Count); Columns=$($steelParams.Columns.Count)")
     Add-Check $checks "Calculation diagram settings" (($diagramSettings.Columns.Count -eq 6) -and ($diagramSettings.Rows.Count -eq 4)) ("Rows=$($diagramSettings.Rows.Count); Columns=$($diagramSettings.Columns.Count)")
 

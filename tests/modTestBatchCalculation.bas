@@ -57,6 +57,10 @@ Public Function RunBatchCalculationTests() As String
     TestAxialTensionReferenceAndEccentricity stats
     AppendLine stats, "RUN: TestDirectStateReportsSectionStatus"
     TestDirectStateReportsSectionStatus stats
+    AppendLine stats, "RUN: TestLongitudinalCrackCheckUsesDirectStateStress"
+    TestLongitudinalCrackCheckUsesDirectStateStress stats
+    AppendLine stats, "RUN: TestLongitudinalCrackSkippedForGroup1"
+    TestLongitudinalCrackSkippedForGroup1 stats
     AppendLine stats, "RUN: TestCapacityOnlySkipsDirectStateAndCrack"
     TestCapacityOnlySkipsDirectStateAndCrack stats
     AppendLine stats, "RUN: TestDirectStateReportsNumericalFailure"
@@ -1389,6 +1393,37 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
+' Проверяет проверку продольных трещин: она должна брать максимальное
+' сжимающее напряжение бетона из уже найденного прямого НДС Group2 и не
+' требовать отдельного расчетного purpose или повторного запуска solver-а.
+Private Sub TestLongitudinalCrackCheckUsesDirectStateStress(ByRef stats As TBatchTestStats)
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.AddCombination "LONG", -90000#, 0#, 0#, "Group2", "longitudinal"
+    batch.Execute
+
+    AssertTrue stats, "batch.longCrack.status.finished", _
+        batch.LongitudinalCrackStatus(1) = "OK" Or batch.LongitudinalCrackStatus(1) = "FAIL"
+    AssertTrue stats, "batch.longCrack.sigma", batch.MaxConcreteCompressionStress(1) > 0#
+    AssertClose stats, "batch.longCrack.rbMc2", batch.LongitudinalCrackRbMc2(1), 14.6, 0.000000001
+    AssertClose stats, "batch.longCrack.util", batch.LongitudinalCrackUtilization(1), _
+        batch.MaxConcreteCompressionStress(1) / batch.LongitudinalCrackRbMc2(1), 0.000000001
+End Sub
+
+' Проверяет нормативную область применения: продольные трещины являются
+' проверкой трещиностойкости по Group2, поэтому для Group1 этот блок остается
+' N/A и не влияет на прочностной результат.
+Private Sub TestLongitudinalCrackSkippedForGroup1(ByRef stats As TBatchTestStats)
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.AddCombination "LONG_G1", -90000#, 0#, 0#, "Group1", "longitudinal group1"
+    batch.Execute
+
+    AssertTrue stats, "batch.longCrack.group1.na", batch.LongitudinalCrackStatus(1) = "N/A"
+    AssertClose stats, "batch.longCrack.group1.noRbMc2", batch.LongitudinalCrackRbMc2(1), 0#, 0.000000001
+    AssertClose stats, "batch.longCrack.group1.noUtil", batch.LongitudinalCrackUtilization(1), 0#, 0.000000001
+End Sub
+
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestBatchTwentyCombinations(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
@@ -1445,7 +1480,7 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
     stage = "AddCombination"
-    batch.AddCombination "W1", -180000#, -3500000#, -2500000#, "Group1", "writer"
+    batch.AddCombination "W1", -180000#, -3500000#, -2500000#, "Group2", "writer"
     stage = "Execute"
     batch.Execute
 
@@ -1461,7 +1496,7 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     summaryRow = BatchSummaryStartRow()
     AssertTrue stats, "batch.writer.fixedRow", summaryRow = 1
     AssertTrue stats, "batch.writer.noResultOverlap", summaryRow + ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count - 1 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
-    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count >= 31 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count >= 51
+    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count >= 31 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count >= 55
     AssertTrue stats, "batch.writer.title", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = "Сводка пакетного расчета (Подробнее)"
     AssertTrue stats, "batch.writer.titleNotMerged", Not resultsSheet.Cells.Item(summaryRow, 1).MergeCells
     AssertTrue stats, "batch.writer.titleHyperlink", resultsSheet.Cells.Item(summaryRow, 1).Hyperlinks.Count > 0
@@ -1477,7 +1512,12 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.header.capacityPath", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 18).Value2), "CapacityLoadPath", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.header.capacitySolutionMethod", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 19).Value2), "CapacitySolutionMethod", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.header.capacitySafety", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 26).Value2), "CapacitySafetyFactor", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 51).Value2), "MinSafetyFactor", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.longitudinalCrackStatus", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 51).Value2), "LongitudinalCrackStatus", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.longitudinalCrackSafety", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 54).Value2), "LongitudinalCrackSafetyFactor", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 55).Value2), "MinSafetyFactor", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.longitudinalFormula", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 54).Formula), "IFERROR", vbTextCompare) > 0 And _
+        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 54).Formula), "BA", vbTextCompare) > 0 And _
+        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 54).Formula), "AZ", vbTextCompare) > 0
     Exit Sub
 
 Failed:
@@ -1650,7 +1690,7 @@ End Function
 Private Function TestMaterialProvider() As CMaterialModelProvider
     Dim concreteParameters As CConcreteMaterialParameters
     Set concreteParameters = New CConcreteMaterialParameters
-    concreteParameters.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#
+    concreteParameters.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
 
     Dim steelParameters As CSteelMaterialParameters
     Set steelParameters = New CSteelMaterialParameters

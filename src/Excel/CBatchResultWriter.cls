@@ -20,7 +20,7 @@ Option Explicit
 ' формулами Excel, чтобы пользователь видел связь между исходными колонками.
 
 Private Const TARGET_ROWS As Long = 31 ' Высота фиксированного диапазона batch summary.
-Private Const TARGET_COLUMNS As Long = 51 ' Ширина сводки до общего минимального запаса.
+Private Const TARGET_COLUMNS As Long = 55 ' Ширина сводки до общего минимального запаса.
 Private Const META_ROWS As Long = 6 ' Верхние строки с общими сведениями о запуске.
 Private Const GROUP_HEADER_ROW As Long = 7 ' Строка объединенных заголовков расчетных блоков.
 Private Const SUBGROUP_HEADER_ROW As Long = 8 ' Строка внутренних подзаголовков расчетных блоков.
@@ -81,7 +81,12 @@ Private Const COL_CRACK_WIDTH As Long = 48
 Private Const COL_CRACK_ALLOWABLE As Long = 49
 Private Const COL_CRACK_SF As Long = 50
 
-Private Const COL_OVERALL_SF As Long = 51
+Private Const COL_LONG_CRACK_STATUS As Long = 51
+Private Const COL_LONG_CRACK_SIGMA_C_MAX As Long = 52
+Private Const COL_LONG_CRACK_RB_MC2 As Long = 53
+Private Const COL_LONG_CRACK_SF As Long = 54
+
+Private Const COL_OVERALL_SF As Long = 55
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Светло-серый фон заголовков.
 Private Const SAFETY_COLOR As Long = &HE7E6E6 ' Серый фон столбцов коэффициентов запаса.
@@ -213,6 +218,7 @@ Private Sub PutGroupHeaders(ByRef data() As Variant)
     data(GROUP_HEADER_ROW, COL_DIRECT_STATUS) = "Прямое состояние НДС и физические пределы"
     data(GROUP_HEADER_ROW, COL_CAPACITY_STATUS) = "Расчет предельной несущей способности по выбранной " & ChrW$(&H3BB) & "-траектории"
     data(GROUP_HEADER_ROW, COL_CRACK_STATUS) = "Расчет ширины раскрытия нормальных трещин"
+    data(GROUP_HEADER_ROW, COL_LONG_CRACK_STATUS) = "Продольные трещины"
     data(GROUP_HEADER_ROW, COL_OVERALL_SF) = "Минимальный запас"
 End Sub
 
@@ -234,6 +240,7 @@ Private Sub PutSubgroupHeaders(ByRef data() As Variant)
     data(SUBGROUP_HEADER_ROW, COL_CRACK_NCRC) = "Расчет psi_s"
     data(SUBGROUP_HEADER_ROW, COL_CRACK_ES) = "Модуль арматуры"
     data(SUBGROUP_HEADER_ROW, COL_CRACK_WIDTH) = "Проверка a_crc"
+    data(SUBGROUP_HEADER_ROW, COL_LONG_CRACK_STATUS) = "Проверка сжатого бетона"
     data(SUBGROUP_HEADER_ROW, COL_OVERALL_SF) = "Итог"
 End Sub
 
@@ -290,6 +297,11 @@ Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem
     data(COLUMN_HEADER_ROW, COL_CRACK_WIDTH) = "a_crc, " & OutputLengthUnit(units) & " (ширина трещины)"
     data(COLUMN_HEADER_ROW, COL_CRACK_ALLOWABLE) = "a_crc,ult, " & OutputLengthUnit(units) & " (допустимая ширина)"
     data(COLUMN_HEADER_ROW, COL_CRACK_SF) = "CrackSafetyFactor (запас по трещинам)"
+
+    data(COLUMN_HEADER_ROW, COL_LONG_CRACK_STATUS) = "LongitudinalCrackStatus (продольные трещины)"
+    data(COLUMN_HEADER_ROW, COL_LONG_CRACK_SIGMA_C_MAX) = "sigma_c,max, " & OutputStressUnit(units) & " (сжатие бетона)"
+    data(COLUMN_HEADER_ROW, COL_LONG_CRACK_RB_MC2) = "Rb,mc2, " & OutputStressUnit(units) & " (допустимое сжатие)"
+    data(COLUMN_HEADER_ROW, COL_LONG_CRACK_SF) = "LongitudinalCrackSafetyFactor (запас)"
 
     data(COLUMN_HEADER_ROW, COL_OVERALL_SF) = "MinSafetyFactor (общий запас)"
 End Sub
@@ -372,6 +384,13 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
         data(rowIndex, COL_CRACK_WIDTH) = CrackWidthFormula(rowIndex)
         data(rowIndex, COL_CRACK_ALLOWABLE) = OutputLength(batch.CrackAllowable(index), units)
         data(rowIndex, COL_CRACK_SF) = CrackSafetyFormula(rowIndex)
+    End If
+
+    data(rowIndex, COL_LONG_CRACK_STATUS) = policy.DisplayStatus(batch.LongitudinalCrackStatus(index))
+    If policy.IsFinished(batch.LongitudinalCrackStatus(index)) Then
+        data(rowIndex, COL_LONG_CRACK_SIGMA_C_MAX) = OutputStress(batch.MaxConcreteCompressionStress(index), units)
+        data(rowIndex, COL_LONG_CRACK_RB_MC2) = OutputStress(batch.LongitudinalCrackRbMc2(index), units)
+        data(rowIndex, COL_LONG_CRACK_SF) = LongitudinalCrackSafetyFormula(rowIndex)
     End If
 
     data(rowIndex, COL_OVERALL_SF) = OverallSafetyFormula(rowIndex)
@@ -474,10 +493,17 @@ Private Function CrackSafetyFormula(ByVal rowIndex As Long) As String
         CellAddress(rowIndex, COL_CRACK_ALLOWABLE) & "/" & CellAddress(rowIndex, COL_CRACK_WIDTH) & ",""""),"""")"
 End Function
 
+Private Function LongitudinalCrackSafetyFormula(ByVal rowIndex As Long) As String
+    LongitudinalCrackSafetyFormula = "=IFERROR(IF(" & CellAddress(rowIndex, COL_LONG_CRACK_SIGMA_C_MAX) & ">0," & _
+        CellAddress(rowIndex, COL_LONG_CRACK_RB_MC2) & "/" & _
+        CellAddress(rowIndex, COL_LONG_CRACK_SIGMA_C_MAX) & ",""""),"""")"
+End Function
+
 Private Function OverallSafetyFormula(ByVal rowIndex As Long) As String
-    OverallSafetyFormula = "=IFERROR(AGGREGATE(15,6,CHOOSE({1,2}," & _
+    OverallSafetyFormula = "=IFERROR(AGGREGATE(15,6,CHOOSE({1,2,3}," & _
         "IF(" & CellAddress(rowIndex, COL_CAPACITY_SF) & ">0," & CellAddress(rowIndex, COL_CAPACITY_SF) & ",NA())," & _
-        "IF(" & CellAddress(rowIndex, COL_CRACK_SF) & ">0," & CellAddress(rowIndex, COL_CRACK_SF) & ",NA())),1),"""")"
+        "IF(" & CellAddress(rowIndex, COL_CRACK_SF) & ">0," & CellAddress(rowIndex, COL_CRACK_SF) & ",NA())," & _
+        "IF(" & CellAddress(rowIndex, COL_LONG_CRACK_SF) & ">0," & CellAddress(rowIndex, COL_LONG_CRACK_SF) & ",NA())),1),"""")"
 End Function
 
 Private Function CellAddress(ByVal rowIndex As Long, ByVal columnIndex As Long) As String
@@ -525,6 +551,7 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     MergeSummaryHeader target, GROUP_HEADER_ROW, COL_DIRECT_STATUS, COL_LIM_S_TENS
     MergeSummaryHeader target, GROUP_HEADER_ROW, COL_CAPACITY_STATUS, COL_CAPACITY_SF
     MergeSummaryHeader target, GROUP_HEADER_ROW, COL_CRACK_STATUS, COL_CRACK_SF
+    MergeSummaryHeader target, GROUP_HEADER_ROW, COL_LONG_CRACK_STATUS, COL_LONG_CRACK_SF
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_OVERALL_STATUS, COL_CALC_TYPE
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_DIRECT_STATUS, COL_STATE_C
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_LIM_C_COMP, COL_LIM_S_TENS
@@ -537,6 +564,7 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CRACK_PHI1, COL_CRACK_PHI3
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CRACK_NCRC, COL_CRACK_PSI
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CRACK_WIDTH, COL_CRACK_SF
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_LONG_CRACK_STATUS, COL_LONG_CRACK_SF
 
     stage = "Alignment"
     target.Rows.Item(COLUMN_HEADER_ROW).HorizontalAlignment = -4131
@@ -551,6 +579,7 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     target.Offset(FIRST_DATA_ROW - 1, COL_COMMENT - 1).Resize(dataRows, 1).HorizontalAlignment = -4152
     target.Offset(FIRST_DATA_ROW - 1, COL_CAPACITY_SF - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
     target.Offset(FIRST_DATA_ROW - 1, COL_CRACK_SF - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
+    target.Offset(FIRST_DATA_ROW - 1, COL_LONG_CRACK_SF - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
     target.Offset(FIRST_DATA_ROW - 1, COL_OVERALL_SF - 1).Resize(dataRows, 1).Interior.Color = OVERALL_SAFETY_COLOR
     stage = "FormatOverallStatusRows"
     FormatOverallStatusRows target, batch
@@ -627,7 +656,7 @@ Private Sub WriteStatusDictionary(ByVal target As Object)
     topLeft.Offset(1, 0).Value2 = policy.OK
     topLeft.Offset(1, 1).Value2 = "Расчет этой проверки выполнен успешно. Для прямого НДС равновесие найдено внутри физической диаграммы материала; для прочности или трещин проверка прошла."
     topLeft.Offset(2, 0).Value2 = policy.Fail
-    topLeft.Offset(2, 1).Value2 = "Численное решение есть, но инженерная проверка не проходит: превышена несущая способность, ширина трещины больше допуска или прямое НДС найдено только за пределами физической диаграммы."
+    topLeft.Offset(2, 1).Value2 = "Численное решение есть, но инженерная проверка не проходит: превышена несущая способность, ширина нормальной трещины больше допуска, sigma_c,max больше Rb,mc2 по продольным трещинам или прямое НДС найдено только за пределами физической диаграммы."
     topLeft.Offset(3, 0).Value2 = policy.NumFail
     topLeft.Offset(3, 1).Value2 = "Solver не смог найти равновесие или предельную точку с текущими численными настройками. Это не доказательство разрушения; нужно смотреть диагностику, нагрузку, сетку и параметры solver-а."
     topLeft.Offset(4, 0).Value2 = policy.InputErr

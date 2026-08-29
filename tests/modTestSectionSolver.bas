@@ -172,7 +172,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     AssertRequiredKeys stats, requiredKeys
 
     requiredKeys = Array( _
-        "Concrete.Rb.ULS", "Concrete.Rbt.ULS", "Concrete.Rb.SLS", "Concrete.Rbt.SLS", _
+        "Concrete.Rb.ULS", "Concrete.Rbt.ULS", "Concrete.Rb.SLS", "Concrete.Rbt.SLS", "Concrete.Rb.mc2", _
         "Concrete.Eb", "Concrete.Ebt", "Concrete.Eb1Red", "Concrete.Ebt1Red", _
         "Concrete.Eb0", "Concrete.Ebt0", "Concrete.Eb2", "Concrete.Ebt2", _
         "Steel.Rsc.ULS", "Steel.Rs.ULS", "Steel.Rsc.SLS", "Steel.Rs.SLS", _

@@ -28,6 +28,7 @@ Private Const STATUS_NUMFAIL As String = "NumFail" ' Solver не нашел ра
 Private Const STATUS_INPUTERR As String = "InputErr" ' Ошибка исходных данных, а не численная несходимость.
 Private Const STATUS_NA As String = "N/A" ' Расчетная проверка не относится к этому LC/режиму.
 Private Const STATUS_NOT_CALCULATED_SHORT As String = "NotCalcul." ' Короткая подпись для служебных нерассчитанных полей.
+Private Const STRESS_ZERO_TOLERANCE As Double = 0.000000001 ' Малые численные шумы напряжений не должны запускать проверку сжатого бетона.
 
 ' Возвращает статус успешной расчетной ветки.
 Public Property Get OK() As String
@@ -57,12 +58,13 @@ End Property
 ' Собирает OverallStatus из статусов применимых расчетных разделов.
 ' N/A не ухудшает итог: это означает, что ветка не относится к LC или режиму.
 Public Function Aggregate(ByVal directStateStatus As String, ByVal capacityStatus As String, _
-        ByVal crackStatus As String) As String
+        ByVal crackStatus As String, Optional ByVal longitudinalCrackStatus As String = vbNullString) As String
     Dim resultStatus As String
     resultStatus = STATUS_NA
     resultStatus = Merge(resultStatus, directStateStatus)
     resultStatus = Merge(resultStatus, capacityStatus)
     resultStatus = Merge(resultStatus, crackStatus)
+    resultStatus = Merge(resultStatus, longitudinalCrackStatus)
     Aggregate = resultStatus
 End Function
 
@@ -185,6 +187,20 @@ Public Function CrackStatusFromCalculator(ByVal crack As CCrackWidthCalculator) 
         CrackStatusFromCalculator = STATUS_INPUTERR
     Else
         CrackStatusFromCalculator = STATUS_NUMFAIL
+    End If
+End Function
+
+' Возвращает статус проверки продольных трещин по сжатию бетона.
+' Если сжатого бетона в найденном НДС нет, проверка неприменима и не ухудшает OverallStatus.
+Public Function LongitudinalCrackStatus(ByVal maxCompressionStress As Double, ByVal rbMc2 As Double) As String
+    If maxCompressionStress <= STRESS_ZERO_TOLERANCE Then
+        LongitudinalCrackStatus = STATUS_NA
+    ElseIf rbMc2 <= 0# Then
+        LongitudinalCrackStatus = STATUS_INPUTERR
+    ElseIf maxCompressionStress <= rbMc2 Then
+        LongitudinalCrackStatus = STATUS_OK
+    Else
+        LongitudinalCrackStatus = STATUS_FAIL
     End If
 End Function
 

@@ -217,7 +217,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     Set target = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
 
     Dim rowCount As Long
-    rowCount = 1 + 92 + batch.Count * 22
+    rowCount = 1 + 92 + batch.Count * 26
 
     Dim data() As Variant
     ReDim data(1 To rowCount, 1 To SECTION_PROPERTY_COLUMNS)
@@ -318,6 +318,10 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUltimate", vbNullString, OutputMomentUnit(units), "Заполняется только для траекторий, где масштабируется My."
         End If
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "CrackStatus", batch.CrackStatus(i), "-", "Статус расчета ширины раскрытия трещин."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrackStatus", batch.LongitudinalCrackStatus(i), "-", "Статус SLS-проверки продольных трещин по сжатому бетону; для Group1 не применяется."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrack.MaxConcreteCompressionStress", OutputStress(batch.MaxConcreteCompressionStress(i), units), OutputStressUnit(units), "Максимальное по модулю сжимающее напряжение бетона в прямом НДС."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrack.RbMc2", OutputStress(batch.LongitudinalCrackRbMc2(i), units), OutputStressUnit(units), "Пользовательское допустимое Rb,mc2 для проверки продольных трещин."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrack.Utilization", batch.LongitudinalCrackUtilization(i), "-", "Использование по продольным трещинам: sigma_c,max / Rb,mc2."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "ExtensionUsed", BooleanText(batch.ExtensionUsed(i)), "-", "True, если прямой StateSolution вышел за физические пределы диаграммы в numerical extension."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "DirectState.DiagramExtensionEnabled", BooleanText(batch.DirectStateDiagramExtensionEnabled(i)), "-", "Сохраненное значение настройки Solver.DirectState.DiagramExtension на момент расчета."
     Next i

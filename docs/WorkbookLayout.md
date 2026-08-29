@@ -39,7 +39,7 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Build-Workbook.ps1
 | Круг | `rngCircleGeometry` | диаметр и автоматическая арматура круглого сечения |
 | Скругленный прямоугольник | `rngRoundedRectangleGeometry` | размеры и радиусы углов |
 | Г-сечение | `rngLShapeGeometry` | размеры и автоматическая арматура по граням |
-| Параметры бетона | `rngConcreteMaterialParameters` | расчетные сопротивления и модули бетона для I/II ГПС; по ним строятся диаграммы |
+| Параметры бетона | `rngConcreteMaterialParameters` | расчетные сопротивления и модули бетона для I/II ГПС, `Rb,mc2` для продольных трещин; по ним строятся диаграммы |
 | Параметры арматуры | `rngSteelMaterialParameters` | расчетные сопротивления, модули и профиль арматуры для I/II ГПС |
 | Настройки диаграмм | `rngCalculationDiagramSettings` | выбор TwoLine/ThreeLine и режима растянутого бетона для Strength, Mcrc и CrackedNDS |
 
@@ -53,7 +53,7 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Build-Workbook.ps1
 
 | Область | Диапазон | Назначение |
 |---|---|---|
-| Сводка batch-расчета | `rngBatchSummary = Results!A1:AY31` | определяющее сочетание, прямое НДС, единый блок предельной несущей способности по `CapacityLoadPath` и блок трещин до 20 сочетаний |
+| Сводка batch-расчета | `rngBatchSummary = Results!A1:BC31` | определяющее сочетание, прямое НДС, единый блок предельной несущей способности по `CapacityLoadPath`, блок нормальных трещин и блок продольных трещин до 20 сочетаний |
 | Результаты НДМ по элементам | `rngNDMElementResults = Results!A34` | LC-зависимые данные: `RunID`, `LoadCase`, `ElementID`, `Strain`, `Stress`, `PhysicalState` |
 | Расчетная геометрия | `rngNDMSectionGeometry = Results!I34` | постоянные данные snapshot: `ElementID`, тип материала, координаты, площадь, размеры/диаметр и локальные моменты инерции |
 | Свойства всего сечения | `rngNDMSectionProperties = Results!Z34` | Bounds, центр тяжести, главные оси, output-единицы snapshot, `Epsilon0/KappaX/KappaY`, точка приложения нагрузки и другие свойства уровня LC |

@@ -25,6 +25,7 @@ Private mRbULS As Double ' Расчетное сопротивление бет�
 Private mRbtULS As Double ' Расчетное сопротивление бетона растяжению для I ГПС, МПа.
 Private mRbSLS As Double ' Сопротивление бетона сжатию для II ГПС, МПа.
 Private mRbtSLS As Double ' Сопротивление бетона растяжению Rbt,ser для II ГПС, МПа.
+Private mRbMc2 As Double ' Допустимое сжатие бетона для проверки продольных трещин по СП 35, МПа.
 Private mEb As Double ' Начальный модуль бетона при сжатии, МПа.
 Private mEbt As Double ' Начальный модуль бетона при растяжении, МПа; default по СП равен Eb.
 Private mEb1Red As Double ' Пользовательская деформация eps_b1,red для двухлинейной сжатой ветви.
@@ -38,25 +39,26 @@ Private mEbt2 As Double ' Предельная деформация eps_bt2 дл
 Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Err.Raise vbObjectError + 3190, "CConcreteMaterialParameters", "Настройки бетона не переданы."
 
-    mRbULS = settings.GetDouble("Concrete.Rb.ULS", 15.5)
-    mRbtULS = settings.GetDouble("Concrete.Rbt.ULS", 1.1)
-    mRbSLS = settings.GetDouble("Concrete.Rb.SLS", 22#)
-    mRbtSLS = settings.GetDouble("Concrete.Rbt.SLS", 1.8)
-    mEb = settings.GetDouble("Concrete.Eb", 32500#)
-    mEbt = settings.GetDouble("Concrete.Ebt", mEb)
-    mEb1Red = settings.GetDouble("Concrete.Eb1Red", 0.0015)
-    mEbt1Red = settings.GetDouble("Concrete.Ebt1Red", 0.00008)
-    mEb0 = settings.GetDouble("Concrete.Eb0", 0.002)
-    mEbt0 = settings.GetDouble("Concrete.Ebt0", 0.0001)
-    mEb2 = settings.GetDouble("Concrete.Eb2", 0.0035)
-    mEbt2 = settings.GetDouble("Concrete.Ebt2", 0.00015)
-    If mEbt <= 0# Then mEbt = mEb
+    mRbULS = settings.GetRequiredDouble("Concrete.Rb.ULS")
+    mRbtULS = settings.GetRequiredDouble("Concrete.Rbt.ULS")
+    mRbSLS = settings.GetRequiredDouble("Concrete.Rb.SLS")
+    mRbtSLS = settings.GetRequiredDouble("Concrete.Rbt.SLS")
+    mRbMc2 = settings.GetRequiredDouble("Concrete.Rb.mc2")
+    mEb = settings.GetRequiredDouble("Concrete.Eb")
+    mEbt = settings.GetRequiredDouble("Concrete.Ebt")
+    mEb1Red = settings.GetRequiredDouble("Concrete.Eb1Red")
+    mEbt1Red = settings.GetRequiredDouble("Concrete.Ebt1Red")
+    mEb0 = settings.GetRequiredDouble("Concrete.Eb0")
+    mEbt0 = settings.GetRequiredDouble("Concrete.Ebt0")
+    mEb2 = settings.GetRequiredDouble("Concrete.Eb2")
+    mEbt2 = settings.GetRequiredDouble("Concrete.Ebt2")
 
     If Not units Is Nothing Then
         mRbULS = units.InputStressToInternal(mRbULS)
         mRbtULS = units.InputStressToInternal(mRbtULS)
         mRbSLS = units.InputStressToInternal(mRbSLS)
         mRbtSLS = units.InputStressToInternal(mRbtSLS)
+        mRbMc2 = units.InputStressToInternal(mRbMc2)
         mEb = units.InputStressToInternal(mEb)
         mEbt = units.InputStressToInternal(mEbt)
     End If
@@ -70,6 +72,7 @@ Private Sub Validate()
     If mRbtULS <= 0# Then Err.Raise vbObjectError + 3192, "CConcreteMaterialParameters", "Concrete.Rbt.ULS должен быть положительным."
     If mRbSLS <= 0# Then Err.Raise vbObjectError + 3193, "CConcreteMaterialParameters", "Concrete.Rb.SLS должен быть положительным."
     If mRbtSLS <= 0# Then Err.Raise vbObjectError + 3194, "CConcreteMaterialParameters", "Concrete.Rbt.SLS должен быть положительным."
+    If mRbMc2 <= 0# Then Err.Raise vbObjectError + 3203, "CConcreteMaterialParameters", "Concrete.Rb.mc2 должен быть положительным."
     If mEb <= 0# Then Err.Raise vbObjectError + 3195, "CConcreteMaterialParameters", "Concrete.Eb должен быть положительным."
     If mEbt <= 0# Then Err.Raise vbObjectError + 3196, "CConcreteMaterialParameters", "Concrete.Ebt должен быть положительным."
     If mEb1Red <= 0# Then Err.Raise vbObjectError + 3197, "CConcreteMaterialParameters", "Concrete.Eb1Red должен быть положительным."
@@ -94,6 +97,10 @@ End Property
 
 Public Property Get RbtSLS() As Double
     RbtSLS = mRbtSLS
+End Property
+
+Public Property Get RbMc2() As Double
+    RbMc2 = mRbMc2
 End Property
 
 Public Property Get Eb() As Double
@@ -140,11 +147,13 @@ Public Sub Initialize(ByVal rbULS As Double, ByVal rbtULS As Double, _
         Optional ByVal ebt As Double = 0#, _
         Optional ByVal eb1Red As Double = 0.0015, Optional ByVal ebt1Red As Double = 0.00008, _
         Optional ByVal eb0 As Double = 0.002, Optional ByVal ebt0 As Double = 0.0001, _
-        Optional ByVal eb2 As Double = 0.0035, Optional ByVal ebt2 As Double = 0.00015)
+        Optional ByVal eb2 As Double = 0.0035, Optional ByVal ebt2 As Double = 0.00015, _
+        Optional ByVal rbMc2 As Double = 0#)
     mRbULS = rbULS
     mRbtULS = rbtULS
     mRbSLS = rbSLS
     mRbtSLS = rbtSLS
+    mRbMc2 = rbMc2
     mEb = eb
     mEbt = ebt
     mEb1Red = eb1Red
@@ -153,6 +162,5 @@ Public Sub Initialize(ByVal rbULS As Double, ByVal rbtULS As Double, _
     mEbt0 = ebt0
     mEb2 = eb2
     mEbt2 = ebt2
-    If mEbt <= 0# Then mEbt = mEb
     Validate
 End Sub

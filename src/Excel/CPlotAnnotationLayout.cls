@@ -89,8 +89,8 @@ Private mOccBottom() As Double ' Нижние границы занятых bbox
 ' Читает только визуальные параметры схемы. Смысл аннотаций уже должен быть
 ' сформирован выше: геометрией и rebar builders.
 Public Sub ConfigureFromSettings(ByVal settings As CSystemSettingsReader)
-    mDimensionTextHeightBase = settings.GetDouble("Plot.Dimensions.TextHeight", 25#)
-    mRebarTextHeightBase = settings.GetDouble("Plot.RebarLabels.TextHeight", 25#)
+    mDimensionTextHeightBase = settings.GetDouble("Plot.Dimensions.TextHeight", 13#)
+    mRebarTextHeightBase = settings.GetDouble("Plot.RebarLabels.TextHeight", 13#)
     mDimensionTextUnits = NormalizeTextUnits(settings.GetString("Plot.Dimensions.TextUnits", "pt"))
     mRebarTextUnits = NormalizeTextUnits(settings.GetString("Plot.RebarLabels.TextUnits", "pt"))
     mDimensionBaseGapBase = settings.GetDouble("Plot.Dimensions.Offset", 100#)
@@ -98,8 +98,8 @@ Public Sub ConfigureFromSettings(ByVal settings As CSystemSettingsReader)
     mDimensionLineWeightBase = settings.GetDouble("Plot.Dimensions.LineWeight", 1.75)
     mExtensionLineWeightBase = settings.GetDouble("Plot.Dimensions.ExtensionLineWeight", 0.85)
     mRebarLineWeightBase = settings.GetDouble("Plot.RebarLabels.LineWeight", 1.35)
-    mDimensionTextGapBase = settings.GetDouble("Plot.Dimensions.TextGap", 15#)
-    mRebarTextGapBase = settings.GetDouble("Plot.RebarLabels.TextGap", 15#)
+    mDimensionTextGapBase = settings.GetDouble("Plot.Dimensions.TextGap", 9#)
+    mRebarTextGapBase = settings.GetDouble("Plot.RebarLabels.TextGap", 9#)
     mDimensionPlacement = NormalizePlacement(settings.GetString("Plot.Dimensions.Placement", "Outside"))
     mRebarPlacement = NormalizePlacement(settings.GetString("Plot.RebarLabels.Placement", "Outside"))
     mRebarLineEnabled = settings.GetBoolean("Plot.RebarLabels.LineEnabled", True)
@@ -141,15 +141,15 @@ Private Sub InitializeVisualMetrics(ByVal plotWidth As Double, ByVal plotHeight 
     sy = plotHeight / 430#
     mVisualScale = ClampDouble(MinDouble(sx, sy), 0.65, 1.8)
 
-    If mDimensionTextHeightBase <= 0# Then mDimensionTextHeightBase = 25#
-    If mRebarTextHeightBase <= 0# Then mRebarTextHeightBase = 25#
+    If mDimensionTextHeightBase <= 0# Then mDimensionTextHeightBase = 13#
+    If mRebarTextHeightBase <= 0# Then mRebarTextHeightBase = 13#
     If mDimensionBaseGapBase <= 0# Then mDimensionBaseGapBase = 100#
     If mRebarBaseGapBase <= 0# Then mRebarBaseGapBase = 60#
     If mDimensionLineWeightBase <= 0# Then mDimensionLineWeightBase = 1.75
     If mExtensionLineWeightBase <= 0# Then mExtensionLineWeightBase = 0.85
     If mRebarLineWeightBase <= 0# Then mRebarLineWeightBase = 1.35
-    If mDimensionTextGapBase <= 0# Then mDimensionTextGapBase = 15#
-    If mRebarTextGapBase <= 0# Then mRebarTextGapBase = 15#
+    If mDimensionTextGapBase <= 0# Then mDimensionTextGapBase = 9#
+    If mRebarTextGapBase <= 0# Then mRebarTextGapBase = 9#
     If Len(mDimensionPlacement) = 0 Then mDimensionPlacement = "Outside"
     If Len(mRebarPlacement) = 0 Then mRebarPlacement = "Outside"
     If mDimensionColor = 0 Then mDimensionColor = RGB(20, 30, 90)

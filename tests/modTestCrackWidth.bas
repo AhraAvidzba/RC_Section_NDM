@@ -304,7 +304,7 @@ End Function
 Private Function TestConcreteParameters() As CConcreteMaterialParameters
     Dim parameters As CConcreteMaterialParameters
     Set parameters = New CConcreteMaterialParameters
-    parameters.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#
+    parameters.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
     Set TestConcreteParameters = parameters
 End Function
 

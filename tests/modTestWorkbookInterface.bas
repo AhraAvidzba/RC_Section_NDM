@@ -903,6 +903,10 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
         PlotAnnotationTextUnitCellIsDynamic("TextHeight")
     AssertTrue stats, "ui.validation.plotTextGapUnitDynamic", _
         PlotAnnotationTextUnitCellIsDynamic("TextGap")
+    AssertClose stats, "ui.validation.plotTextHeight.defaultRebar", PlotAnnotationSettingValue("TextHeight", 2), 13#, 0.000000001
+    AssertClose stats, "ui.validation.plotTextHeight.defaultDimension", PlotAnnotationSettingValue("TextHeight", 3), 13#, 0.000000001
+    AssertClose stats, "ui.validation.plotTextGap.defaultRebar", PlotAnnotationSettingValue("TextGap", 2), 9#, 0.000000001
+    AssertClose stats, "ui.validation.plotTextGap.defaultDimension", PlotAnnotationSettingValue("TextGap", 3), 9#, 0.000000001
     AssertTrue stats, "ui.validation.plotRebarLineEnabled", _
         PlotAnnotationValidationHasOptions("LineEnabled", 2, Array("Yes", "No"))
     AssertTrue stats, "ui.validation.plotDimensionArrowType", _
@@ -1883,6 +1887,23 @@ CleanUp:
     Exit Function
 Failed:
     If valuesSaved Then Resume CleanUp
+End Function
+
+Private Function PlotAnnotationSettingValue(ByVal rowName As String, ByVal valueColumn As Long) As Double
+    On Error GoTo Failed
+
+    Dim settings As Object
+    Set settings = ThisWorkbook.Names.Item("rngPlotAnnotationSettings").RefersToRange
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To settings.Rows.Count
+        If StrComp(CStr(settings.Cells.Item(rowIndex, 1).Value2), rowName, vbTextCompare) = 0 Then
+            PlotAnnotationSettingValue = CDbl(settings.Cells.Item(rowIndex, valueColumn).Value2)
+            Exit Function
+        End If
+    Next rowIndex
+
+Failed:
 End Function
 
 Private Sub AssertTextEquals(ByRef stats As TUiTestStats, ByVal name As String, _

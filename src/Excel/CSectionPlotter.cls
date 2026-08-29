@@ -259,17 +259,17 @@ Private Function AnnotationMarginModel(ByVal settings As CSystemSettingsReader, 
     If settings.GetBoolean("Plot.Dimensions.Enabled", True) Then
         marginModel = MaxDouble(marginModel, _
             LengthMmToModel(settings.GetDouble("Plot.Dimensions.Offset", 100#), lengthUnit) + _
-            AnnotationTextMetricModel(settings.GetDouble("Plot.Dimensions.TextGap", 15#), _
+            AnnotationTextMetricModel(settings.GetDouble("Plot.Dimensions.TextGap", 9#), _
                 settings.GetString("Plot.Dimensions.TextUnits", "pt"), lengthUnit, rangeX, rangeY) + _
-            AnnotationTextMetricModel(settings.GetDouble("Plot.Dimensions.TextHeight", 25#), _
+            AnnotationTextMetricModel(settings.GetDouble("Plot.Dimensions.TextHeight", 13#), _
                 settings.GetString("Plot.Dimensions.TextUnits", "pt"), lengthUnit, rangeX, rangeY))
     End If
     If settings.GetBoolean("Plot.RebarLabels.Enabled", True) Then
         marginModel = MaxDouble(marginModel, _
             LengthMmToModel(settings.GetDouble("Plot.RebarLabels.Offset", 60#), lengthUnit) + _
-            AnnotationTextMetricModel(settings.GetDouble("Plot.RebarLabels.TextGap", 15#), _
+            AnnotationTextMetricModel(settings.GetDouble("Plot.RebarLabels.TextGap", 9#), _
                 settings.GetString("Plot.RebarLabels.TextUnits", "pt"), lengthUnit, rangeX, rangeY) + _
-            AnnotationTextMetricModel(settings.GetDouble("Plot.RebarLabels.TextHeight", 25#), _
+            AnnotationTextMetricModel(settings.GetDouble("Plot.RebarLabels.TextHeight", 13#), _
                 settings.GetString("Plot.RebarLabels.TextUnits", "pt"), lengthUnit, rangeX, rangeY))
     End If
 

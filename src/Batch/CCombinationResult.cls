@@ -26,6 +26,7 @@ Public CapacityStatus As String ' Статус поиска предельной
 Public CapacityLimitState As String ' Причина предельного состояния или текст ошибки capacity.
 Public CapacitySolutionMethod As String ' Фактический метод, которым получена capacity-точка.
 Public CrackStatus As String ' Статус расчета раскрытия нормальных трещин.
+Public LongitudinalCrackStatus As String ' Статус проверки продольных трещин по сжатому бетону.
 Public ExtensionUsed As Boolean ' True, если прямое НДС использовало technical extension диаграммы.
 Public DirectStateDiagramExtensionEnabled As Boolean ' Снимок настройки extension на момент расчета LC.
 Public LambdaCapacity As Double ' Предельный множитель выбранной lambda-траектории.
@@ -41,6 +42,7 @@ Public CapacityKappaX As Double ' kappaX в найденной capacity-точк
 Public CapacityKappaY As Double ' kappaY в найденной capacity-точке.
 Public MinConcreteStrain As Double ' Минимальная деформация бетонных волокон в прямом НДС.
 Public MaxConcreteStrain As Double ' Максимальная деформация бетонных волокон в прямом НДС.
+Public MaxConcreteCompressionStress As Double ' Максимальное по модулю сжимающее напряжение бетона в прямом НДС.
 Public MinSteelStrain As Double ' Минимальная деформация арматуры в прямом НДС.
 Public MaxSteelStrain As Double ' Максимальная деформация арматуры в прямом НДС.
 Public CrackWidth As Double ' Расчетная ширина раскрытия нормальных трещин.
@@ -66,6 +68,8 @@ Public CrackCoverA As Double ' Расстояние от растянутой п
 Public CrackTensionDepth As Double ' Фактическая глубина растянутой зоны.
 Public CrackEffectiveZoneDepth As Double ' Принятая эффективная глубина зоны взаимодействия.
 Public CrackCentralBranch As Boolean ' True для отдельной ветки центрального растяжения.
+Public LongitudinalCrackRbMc2 As Double ' Допустимое Rb,mc2, с которым сравнивается сжатие бетона.
+Public LongitudinalCrackUtil As Double ' Использование по продольным трещинам: sigma_c,max / Rb,mc2.
 Public GoverningUtil As Double ' Наибольшее использование LC по применимым проверкам.
 Public StateAvailable As Boolean ' True, если есть сохраненное прямое состояние НДС.
 Public StateConverged As Boolean ' True, если прямой CSectionSolver сошелся.
@@ -90,6 +94,7 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     CapacityLimitState = vbNullString
     CapacitySolutionMethod = vbNullString
     CrackStatus = vbNullString
+    LongitudinalCrackStatus = vbNullString
     ExtensionUsed = False
     DirectStateDiagramExtensionEnabled = False
     LambdaCapacity = 0#
@@ -105,9 +110,11 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     CapacityKappaY = 0#
     MinConcreteStrain = 0#
     MaxConcreteStrain = 0#
+    MaxConcreteCompressionStress = 0#
     MinSteelStrain = 0#
     MaxSteelStrain = 0#
     ClearCrackResult
+    ClearLongitudinalCrackResult
     GoverningUtil = 0#
     StateAvailable = False
     StateConverged = False
@@ -136,6 +143,7 @@ Public Sub StoreSectionState(ByVal solver As CSectionSolver)
     Myint = solver.Myint
     MinConcreteStrain = solver.MinConcreteStrain
     MaxConcreteStrain = solver.MaxConcreteStrain
+    MaxConcreteCompressionStress = solver.MaxConcreteCompressionStress
     MinSteelStrain = solver.MinSteelStrain
     MaxSteelStrain = solver.MaxSteelStrain
     ResidualN = solver.ResidualN
@@ -171,6 +179,25 @@ Public Sub StoreCrackResult(ByVal crack As CCrackWidthCalculator)
     CrackTensionDepth = crack.TensionDepth
     CrackEffectiveZoneDepth = crack.EffectiveZoneDepth
     CrackCentralBranch = crack.CentralTensionBranch
+End Sub
+
+' Сохраняет результат проверки продольных трещин по сжатому бетону.
+' Проверка использует уже найденные напряжения прямого НДС и не запускает
+' отдельный material purpose или повторный solve.
+Public Sub StoreLongitudinalCrackResult(ByVal statusText As String, ByVal maxCompressionStress As Double, _
+        ByVal rbMc2 As Double, ByVal utilization As Double)
+    LongitudinalCrackStatus = statusText
+    MaxConcreteCompressionStress = maxCompressionStress
+    LongitudinalCrackRbMc2 = rbMc2
+    LongitudinalCrackUtil = utilization
+End Sub
+
+' Очищает только проверку продольных трещин. N/A здесь означает, что для LC
+' нет сжатого бетона или прямое НДС не было получено.
+Public Sub ClearLongitudinalCrackResult()
+    LongitudinalCrackStatus = vbNullString
+    LongitudinalCrackRbMc2 = 0#
+    LongitudinalCrackUtil = 0#
 End Sub
 
 ' Очищает только блок трещин. Это удобно для режимов, где прямое НДС и capacity

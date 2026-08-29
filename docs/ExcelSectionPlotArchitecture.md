@@ -763,8 +763,8 @@ PhysicalState = Compression
 | `Plot.RebarLabels.Placement` | `Outside` | `Outside`, `Inside` | Сторона подписи арматуры относительно линии осей стержней. |
 | `Plot.Dimensions.Offset`, `Plot.RebarLabels.Offset` | `100` / `60` | мм сечения | Геометрический отступ задается в реальных миллиметрах сечения: для размеров от грани до размерной линии, для арматуры от линии осей стержней. |
 | `Plot.Dimensions.TextUnits`, `Plot.RebarLabels.TextUnits` | `pt` | `mm`, `pt` | Единицы для `TextHeight` и `TextGap`. `pt` задает обычные Excel points и стабилизирует визуальный размер текста для сечений разных габаритов, `mm` сохраняет модельное масштабирование. |
-| `Plot.Dimensions.TextHeight`, `Plot.RebarLabels.TextHeight` | `25` / `25` | по `TextUnits` | Высота текста: модельные миллиметры сечения или фиксированный размер шрифта Excel в points. |
-| `Plot.Dimensions.TextGap`, `Plot.RebarLabels.TextGap` | `15` / `15` | по `TextUnits` | Зазор между линией аннотации и текстом: модельные миллиметры сечения или фиксированный экранный зазор в points. |
+| `Plot.Dimensions.TextHeight`, `Plot.RebarLabels.TextHeight` | `13` / `13` | по `TextUnits` | Высота текста: модельные миллиметры сечения или фиксированный размер шрифта Excel в points. |
+| `Plot.Dimensions.TextGap`, `Plot.RebarLabels.TextGap` | `9` / `9` | по `TextUnits` | Зазор между линией аннотации и текстом: модельные миллиметры сечения или фиксированный экранный зазор в points. |
 | `Plot.RebarLabels.LineEnabled` | `Yes` | `Yes`, `No` | Показывать короткую линию обозначения арматуры; при `No` остается только текст. |
 | `Plot.Dimensions.ArrowType` | `Triangle` | `Triangle`, `Stealth`, `Diamond`, `Oval`, `Open` | Тип наконечников размерной линии. |
 | `Plot.Dimensions.ArrowSize` | `Wide` | `Small`, `Medium`, `Wide` | Размер наконечников размерной линии. |

@@ -194,7 +194,7 @@ Private Sub TestUserStrainParametersAffectDiagrams(ByRef stats As TMaterialTestS
     Dim concrete As CConcreteMaterialParameters
     Set concrete = New CConcreteMaterialParameters
     concrete.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, _
-        0.0017, 0.00009, 0.0022, 0.00011, 0.004, 0.0002
+        0.0017, 0.00009, 0.0022, 0.00011, 0.004, 0.0002, 14.6
 
     Dim steel As CSteelMaterialParameters
     Set steel = New CSteelMaterialParameters
@@ -257,7 +257,7 @@ Private Function TestConcreteParameters() As CConcreteMaterialParameters
     Dim parameters As CConcreteMaterialParameters
     Set parameters = New CConcreteMaterialParameters
     parameters.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, _
-        0.0015, 0.00008, 0.002, 0.0001, 0.0035, 0.00015
+        0.0015, 0.00008, 0.002, 0.0001, 0.0035, 0.00015, 14.6
     Set TestConcreteParameters = parameters
 End Function
 

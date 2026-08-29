@@ -364,9 +364,10 @@ Private Sub RunCombination(ByVal index As Long)
         RunSectionStateAndCrack index, ShouldRunCrack(calculationType)
     End If
 
-    mResults(index).GoverningUtil = MaxDouble(mResults(index).UtilCapacity, mResults(index).CrackUtil)
+    mResults(index).GoverningUtil = MaxDouble(MaxDouble(mResults(index).UtilCapacity, mResults(index).CrackUtil), _
+        mResults(index).LongitudinalCrackUtil)
     mResults(index).Status = mStatusPolicy.Aggregate(mResults(index).DirectStateStatus, _
-        mResults(index).CapacityStatus, mResults(index).CrackStatus)
+        mResults(index).CapacityStatus, mResults(index).CrackStatus, mResults(index).LongitudinalCrackStatus)
     AppendDiagnostic index
     ReportCombinationSummary index
     Exit Sub
@@ -477,6 +478,7 @@ Private Sub RunSectionStateAndCrack(ByVal index As Long, ByVal crackRequested As
     If service Is Nothing Then
         mResults(index).DirectStateStatus = mStatusPolicy.NumFail
         mResults(index).CrackStatus = mStatusPolicy.NotApplicable
+        mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
         ReportStep "Расчет трещин не запускается: прямой НДС не вернул состояние solver-а."
         Exit Sub
     End If
@@ -488,6 +490,7 @@ Private Sub RunSectionStateAndCrack(ByVal index As Long, ByVal crackRequested As
     If Not service.Converged Then
         mResults(index).DirectStateStatus = mStatusPolicy.NumFail
         mResults(index).CrackStatus = mStatusPolicy.NotApplicable
+        mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
         ReportStep "Расчет трещин не запускается, потому что прямое НДС не сошлось: " & service.StopReason
         Exit Sub
     End If
@@ -504,6 +507,7 @@ Private Sub RunSectionStateAndCrack(ByVal index As Long, ByVal crackRequested As
     End If
     ReportValue "DirectStateStatus", mResults(index).DirectStateStatus
     ReportValue "ExtensionUsed", IIf(mResults(index).ExtensionUsed, "да", "нет")
+    RunLongitudinalCrackCheck index
 
     If Not crackRequested Or Not mCrackEnabled Then
         mResults(index).CrackStatus = mStatusPolicy.NotApplicable
@@ -672,6 +676,7 @@ End Sub
 Private Sub StoreCapacityOnlyStateAndCrack(ByVal index As Long)
     mResults(index).DirectStateStatus = mStatusPolicy.NotApplicable
     mResults(index).CrackStatus = mStatusPolicy.NotApplicable
+    mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
     mResults(index).StateAvailable = False
     mResults(index).StateConverged = False
     mResults(index).ExtensionUsed = False
@@ -751,11 +756,60 @@ Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     mResults(index).CapacitySolutionMethod = vbNullString
     mResults(index).CapacityPathResolved = CAPACITY_PATH_NONE
     mResults(index).CrackStatus = mStatusPolicy.NotApplicable
+    mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
     If Not mMaterialProvider Is Nothing Then
         mResults(index).DirectStateDiagramExtensionEnabled = mMaterialProvider.DirectStateDiagramExtensionEnabled
     End If
     mResults(index).GoverningUtil = 0#
     AppendDiagnostic index
+End Sub
+
+' Выполняет SLS-проверку продольных трещин по максимальному сжимающему
+' напряжению бетона из уже найденного прямого НДС. По СП 35 эта проверка
+' относится к трещиностойкости и нормативным нагрузкам, поэтому запускается
+' только для Group2. Повторный расчет состояния здесь намеренно не нужен:
+' сравниваем именно Stress/Strain, сохраненные в Results snapshot для LC.
+Private Sub RunLongitudinalCrackCheck(ByVal index As Long)
+    If NormalizedCombinationCalculationType(mInputs(index).CalculationType) <> CALC_GROUP2 Then
+        mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
+        ReportStep "Проверка продольных трещин не запускается: она относится только к Group2."
+        Exit Sub
+    End If
+
+    If Not mResults(index).StateAvailable Or Not mResults(index).StateConverged Then
+        mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
+        ReportStep "Проверка продольных трещин не запускается: нет сходящегося прямого НДС."
+        Exit Sub
+    End If
+
+    If mResults(index).DirectStateStatus <> mStatusPolicy.OK Or mResults(index).ExtensionUsed Then
+        mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
+        ReportStep "Проверка продольных трещин не запускается: НДС Group2 не находится полностью в физическом диапазоне диаграммы."
+        Exit Sub
+    End If
+
+    Dim maxCompressionStress As Double
+    Dim rbMc2 As Double
+    Dim utilization As Double
+    maxCompressionStress = mResults(index).MaxConcreteCompressionStress
+    rbMc2 = mMaterialProvider.ConcreteParameters.RbMc2
+
+    If maxCompressionStress > 0.000000001 And rbMc2 > 0# Then
+        utilization = maxCompressionStress / rbMc2
+    End If
+
+    mResults(index).StoreLongitudinalCrackResult _
+        mStatusPolicy.LongitudinalCrackStatus(maxCompressionStress, rbMc2), _
+        maxCompressionStress, rbMc2, utilization
+
+    ReportValue "LongitudinalCrackStatus", mResults(index).LongitudinalCrackStatus
+    If mResults(index).LongitudinalCrackStatus <> mStatusPolicy.NotApplicable Then
+        ReportValue "sigma_c,max", FormatNumberInvariant(maxCompressionStress) & " МПа"
+        ReportValue "Rb,mc2", FormatNumberInvariant(rbMc2) & " МПа"
+        ReportValue "LongitudinalCrackUtilization", FormatNumberInvariant(utilization)
+    Else
+        ReportStep "Проверка продольных трещин неприменима: в прямом НДС нет сжатого бетона."
+    End If
 End Sub
 
 ' Передает в CCapacitySolver ровно те настройки, которые относятся к поиску
@@ -872,6 +926,8 @@ Private Sub AppendDiagnostic(ByVal index As Long)
         "; ExtensionUsed=" & CStr(mResults(index).ExtensionUsed) & _
         "; CapacityStatus=" & mResults(index).CapacityStatus & _
         "; CrackStatus=" & mResults(index).CrackStatus & _
+        "; LongitudinalCrackStatus=" & mResults(index).LongitudinalCrackStatus & _
+        "; LongitudinalCrackUtil=" & FormatNumberInvariant(mResults(index).LongitudinalCrackUtil) & _
         "; governingUtil=" & FormatNumberInvariant(mResults(index).GoverningUtil) & vbCrLf
 End Sub
 
@@ -884,6 +940,8 @@ Private Sub ReportCombinationSummary(ByVal index As Long)
     ReportValue "ExtensionUsed", CStr(mResults(index).ExtensionUsed)
     ReportValue "CapacityStatus", mResults(index).CapacityStatus
     ReportValue "CrackStatus", mResults(index).CrackStatus
+    ReportValue "LongitudinalCrackStatus", mResults(index).LongitudinalCrackStatus
+    ReportValue "LongitudinalCrackUtilization", FormatNumberInvariant(mResults(index).LongitudinalCrackUtil)
     ReportValue "GoverningUtilization", FormatNumberInvariant(mResults(index).GoverningUtil)
 End Sub
 
@@ -1094,6 +1152,10 @@ Public Property Get CrackStatus(ByVal index As Long) As String
     CrackStatus = mResults(index).CrackStatus
 End Property
 
+Public Property Get LongitudinalCrackStatus(ByVal index As Long) As String
+    LongitudinalCrackStatus = mResults(index).LongitudinalCrackStatus
+End Property
+
 Public Property Get ExtensionUsed(ByVal index As Long) As Boolean
     ExtensionUsed = mResults(index).ExtensionUsed
 End Property
@@ -1164,6 +1226,18 @@ End Property
 
 Public Property Get CrackUtilization(ByVal index As Long) As Double
     CrackUtilization = mResults(index).CrackUtil
+End Property
+
+Public Property Get MaxConcreteCompressionStress(ByVal index As Long) As Double
+    MaxConcreteCompressionStress = mResults(index).MaxConcreteCompressionStress
+End Property
+
+Public Property Get LongitudinalCrackRbMc2(ByVal index As Long) As Double
+    LongitudinalCrackRbMc2 = mResults(index).LongitudinalCrackRbMc2
+End Property
+
+Public Property Get LongitudinalCrackUtilization(ByVal index As Long) As Double
+    LongitudinalCrackUtilization = mResults(index).LongitudinalCrackUtil
 End Property
 
 Public Property Get CrackFormed(ByVal index As Long) As Boolean

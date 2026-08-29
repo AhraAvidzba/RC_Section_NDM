@@ -189,6 +189,8 @@ Private Sub AppendConcreteMaterialParameters(ByRef data As Variant)
             Case "concrete.r.sls"
                 AppendSetting "Concrete.Rb.SLS", compressionValue, compressionValue, commentValue
                 AppendSetting "Concrete.Rbt.SLS", tensionValue, tensionValue, commentValue
+            Case "concrete.rb.mc2"
+                AppendSetting "Concrete.Rb.mc2", compressionValue, compressionValue, commentValue
             Case "concrete.e"
                 AppendSetting "Concrete.Eb", compressionValue, compressionValue, commentValue
                 AppendSetting "Concrete.Ebt", tensionValue, tensionValue, commentValue
@@ -566,6 +568,32 @@ Public Function GetDouble(ByVal key As String, Optional ByVal defaultValue As Do
     Else
         GetDouble = CDbl(Replace$(textValue, ".", ApplicationDecimalSeparator()))
     End If
+End Function
+
+' Читает обязательную числовую настройку без скрытой подстановки значения.
+' Используется для характеристик материалов: если пользователь очистил ячейку
+' или ключ не попал в Config, расчет должен остановиться как ошибка исходных данных.
+Public Function GetRequiredDouble(ByVal key As String) As Double
+    Dim textValue As String
+    textValue = Trim$(GetRawString(key, vbNullString))
+    If Len(textValue) = 0 Or UCase$(textValue) = "TODO" Then
+        Err.Raise vbObjectError + 4310, "CSystemSettingsReader", _
+            "Обязательная числовая настройка " & key & " не задана."
+    End If
+    GetRequiredDouble = CDbl(Replace$(textValue, ".", ApplicationDecimalSeparator()))
+End Function
+
+' Читает обязательную текстовую настройку без default-значения.
+' Нужна для пользовательских переключателей, которые являются частью
+' расчетной материальной модели, например профиля арматуры.
+Public Function GetRequiredString(ByVal key As String) As String
+    Dim textValue As String
+    textValue = Trim$(GetRawString(key, vbNullString))
+    If Len(textValue) = 0 Or UCase$(textValue) = "TODO" Then
+        Err.Raise vbObjectError + 4311, "CSystemSettingsReader", _
+            "Обязательная настройка " & key & " не задана."
+    End If
+    GetRequiredString = textValue
 End Function
 
 ' Возвращает настройку как Long через тот же числовой путь, что и GetDouble.

@@ -37,19 +37,17 @@ Private mRebarProfile As String ' Ribbed/Smooth для коэффициента 
 Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Err.Raise vbObjectError + 3200, "CSteelMaterialParameters", "Настройки арматуры не переданы."
 
-    mRsULS = settings.GetDouble("Steel.Rs.ULS", 350#)
-    mRscULS = settings.GetDouble("Steel.Rsc.ULS", mRsULS)
-    mRsSLS = settings.GetDouble("Steel.Rs.SLS", mRsULS)
-    mRscSLS = settings.GetDouble("Steel.Rsc.SLS", mRsSLS)
-    mEs = settings.GetDouble("Steel.Es", 200000#)
-    mEsc = settings.GetDouble("Steel.Esc", mEs)
-    mTwoLineEsc2 = settings.GetDouble("Steel.TwoLine.Esc2", 0.025)
-    mTwoLineEs2 = settings.GetDouble("Steel.TwoLine.Es2", 0.025)
-    mThreeLineEsc2 = settings.GetDouble("Steel.ThreeLine.Esc2", 0.015)
-    mThreeLineEs2 = settings.GetDouble("Steel.ThreeLine.Es2", 0.015)
-    If mRscSLS <= 0# Then mRscSLS = mRsSLS
-    If mEsc <= 0# Then mEsc = mEs
-    mRebarProfile = settings.GetString("Steel.RebarProfile", "Ribbed")
+    mRsULS = settings.GetRequiredDouble("Steel.Rs.ULS")
+    mRscULS = settings.GetRequiredDouble("Steel.Rsc.ULS")
+    mRsSLS = settings.GetRequiredDouble("Steel.Rs.SLS")
+    mRscSLS = settings.GetRequiredDouble("Steel.Rsc.SLS")
+    mEs = settings.GetRequiredDouble("Steel.Es")
+    mEsc = settings.GetRequiredDouble("Steel.Esc")
+    mTwoLineEsc2 = settings.GetRequiredDouble("Steel.TwoLine.Esc2")
+    mTwoLineEs2 = settings.GetRequiredDouble("Steel.TwoLine.Es2")
+    mThreeLineEsc2 = settings.GetRequiredDouble("Steel.ThreeLine.Esc2")
+    mThreeLineEs2 = settings.GetRequiredDouble("Steel.ThreeLine.Es2")
+    mRebarProfile = settings.GetRequiredString("Steel.RebarProfile")
 
     If Not units Is Nothing Then
         mRsULS = units.InputStressToInternal(mRsULS)
@@ -154,8 +152,6 @@ Public Sub Initialize(ByVal rscULS As Double, ByVal rsULS As Double, _
     mTwoLineEs2 = twoLineEs2
     mThreeLineEsc2 = threeLineEsc2
     mThreeLineEs2 = threeLineEs2
-    If mRscSLS <= 0# Then mRscSLS = mRsSLS
-    If mEsc <= 0# Then mEsc = mEs
     mRebarProfile = rebarProfile
     NormalizeProfile
     Validate

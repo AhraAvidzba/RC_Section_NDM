@@ -37,6 +37,7 @@ Private mRelativeResidualMx As Double ' Относительная невязк�
 Private mRelativeResidualMy As Double ' Относительная невязка My для диагностики качества найденного состояния.
 Private mMinConcreteStrain As Double ' Минимальная деформация бетона в последнем посчитанном состоянии.
 Private mMaxConcreteStrain As Double ' Максимальная деформация бетона в последнем посчитанном состоянии.
+Private mMaxConcreteCompressionStress As Double ' Максимальное по модулю сжимающее напряжение бетона в последнем состоянии.
 Private mMinSteelStrain As Double ' Наиболее сжатая деформация арматуры в последнем посчитанном состоянии.
 Private mMaxSteelStrain As Double ' Наиболее растянутая деформация арматуры в последнем посчитанном состоянии.
 Private mMaxAbsSteelStrain As Double ' Максимальная по модулю деформация арматуры в последнем состоянии.
@@ -642,6 +643,7 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
     If buildTangent Then
         mMinConcreteStrain = 1E+100
         mMaxConcreteStrain = -1E+100
+        mMaxConcreteCompressionStress = 0#
         mMinSteelStrain = 1E+100
         mMaxSteelStrain = -1E+100
         mMaxAbsSteelStrain = 0#
@@ -681,6 +683,11 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
             concreteDiagram.EvaluateAtStrain strain, stress, tangent
         Else
             stress = concreteDiagram.StressAtStrain(strain)
+        End If
+        If buildTangent Then
+            If stress < 0# And Abs(stress) > mMaxConcreteCompressionStress Then
+                mMaxConcreteCompressionStress = Abs(stress)
+            End If
         End If
         force = stress * area
         nInt = nInt + force
@@ -841,6 +848,7 @@ Public Sub ClearResult()
     mResidualN = 0#: mResidualMx = 0#: mResidualMy = 0#
     mRelativeResidualN = 0#: mRelativeResidualMx = 0#: mRelativeResidualMy = 0#
     mMinConcreteStrain = 0#: mMaxConcreteStrain = 0#
+    mMaxConcreteCompressionStress = 0#
     mMinSteelStrain = 0#: mMaxSteelStrain = 0#: mMaxAbsSteelStrain = 0#
     mIterations = 0
     mLoadStepsCompleted = 0
@@ -960,6 +968,10 @@ End Property
 
 Public Property Get MaxConcreteStrain() As Double
     MaxConcreteStrain = mMaxConcreteStrain
+End Property
+
+Public Property Get MaxConcreteCompressionStress() As Double
+    MaxConcreteCompressionStress = mMaxConcreteCompressionStress
 End Property
 
 Public Property Get MinSteelStrain() As Double
