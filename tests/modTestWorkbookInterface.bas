@@ -353,8 +353,10 @@ Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiT
     Dim annotationData As Variant
     annotationData = ResultTable("rngNDMSectionAnnotations")
     AssertTrue stats, "ui.autocad.preview.boundsAnnotations", CountAnnotationType(annotationData, "DIMENSION") = 2
-    AssertTrue stats, "ui.autocad.preview.approxText", InStr(1, CStr(annotationData(2, 11)), ChrW$(&H2248), vbTextCompare) > 0
-    AssertTrue stats, "ui.autocad.preview.russianComment", InStr(1, CStr(annotationData(2, 14)), "Приблизительная", vbTextCompare) > 0
+    AssertTrue stats, "ui.autocad.preview.approxText", _
+        InStr(1, CStr(annotationData(2, ResultHeaderColumn(annotationData, "Text"))), ChrW$(&H2248), vbTextCompare) > 0
+    AssertTrue stats, "ui.autocad.preview.russianComment", _
+        InStr(1, CStr(annotationData(2, ResultHeaderColumn(annotationData, "Comment"))), "Приблизительная", vbTextCompare) > 0
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader

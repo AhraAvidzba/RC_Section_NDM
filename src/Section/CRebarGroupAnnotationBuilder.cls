@@ -67,8 +67,7 @@ Public Sub AddRebarLabels(ByVal annotations As CSectionAnnotations, ByVal rebars
             annotations.AddRebarLabel "REBAR_" & groupName, _
                 rebars.AnnotationStartX(i), rebars.AnnotationStartY(i), _
                 rebars.AnnotationEndX(i), rebars.AnnotationEndY(i), _
-                rebars.AnnotationNormalX(i), rebars.AnnotationNormalY(i), _
-                rebars.AnnotationAxisDistance(i), CStr(labels(groupName))
+                rebars.AnnotationNormalX(i), rebars.AnnotationNormalY(i), CStr(labels(groupName))
         End If
     Next i
 End Sub

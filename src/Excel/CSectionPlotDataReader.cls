@@ -66,7 +66,6 @@ Private mAnnotationEndX() As Double ' Конец линии/размера в к
 Private mAnnotationEndY() As Double ' Конец линии/размера в координатах модели.
 Private mAnnotationNormalX() As Double ' Наружная нормаль semantic-аннотации.
 Private mAnnotationNormalY() As Double ' Наружная нормаль semantic-аннотации.
-Private mAnnotationOffset() As Double ' Конструктивный/semantic offset, если он задан builder-ом.
 Private mAnnotationText() As String ' Готовый текст подписи или размера.
 
 ' Загружает все данные, необходимые для Excel-схемы.
@@ -436,7 +435,6 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
     Dim colEndY As Long: colEndY = ResultColumn(data, "EndY")
     Dim colNormalX As Long: colNormalX = ResultColumn(data, "OutsideNormalX")
     Dim colNormalY As Long: colNormalY = ResultColumn(data, "OutsideNormalY")
-    Dim colOffset As Long: colOffset = ResultColumn(data, "Offset")
     Dim colText As Long: colText = ResultColumn(data, "Text")
 
     Dim rowIndex As Long
@@ -450,7 +448,6 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
             ReDim Preserve mAnnotationEndY(1 To mAnnotationCount)
             ReDim Preserve mAnnotationNormalX(1 To mAnnotationCount)
             ReDim Preserve mAnnotationNormalY(1 To mAnnotationCount)
-            ReDim Preserve mAnnotationOffset(1 To mAnnotationCount)
             ReDim Preserve mAnnotationText(1 To mAnnotationCount)
             mAnnotationType(mAnnotationCount) = CStr(data(rowIndex, colType))
             mAnnotationStartX(mAnnotationCount) = SafeDouble(data(rowIndex, colStartX))
@@ -459,7 +456,6 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
             mAnnotationEndY(mAnnotationCount) = SafeDouble(data(rowIndex, colEndY))
             mAnnotationNormalX(mAnnotationCount) = SafeDouble(data(rowIndex, colNormalX))
             mAnnotationNormalY(mAnnotationCount) = SafeDouble(data(rowIndex, colNormalY))
-            mAnnotationOffset(mAnnotationCount) = SafeDouble(data(rowIndex, colOffset))
             mAnnotationText(mAnnotationCount) = CStr(data(rowIndex, colText))
         End If
     Next rowIndex
@@ -509,7 +505,6 @@ Private Sub ResetReaderState()
     Erase mAnnotationEndY
     Erase mAnnotationNormalX
     Erase mAnnotationNormalY
-    Erase mAnnotationOffset
     Erase mAnnotationText
 End Sub
 
@@ -668,6 +663,5 @@ Public Property Get AnnotationEndX(ByVal index As Long) As Double: AnnotationEnd
 Public Property Get AnnotationEndY(ByVal index As Long) As Double: AnnotationEndY = mAnnotationEndY(index): End Property
 Public Property Get AnnotationNormalX(ByVal index As Long) As Double: AnnotationNormalX = mAnnotationNormalX(index): End Property
 Public Property Get AnnotationNormalY(ByVal index As Long) As Double: AnnotationNormalY = mAnnotationNormalY(index): End Property
-Public Property Get AnnotationOffset(ByVal index As Long) As Double: AnnotationOffset = mAnnotationOffset(index): End Property
 Public Property Get AnnotationText(ByVal index As Long) As String: AnnotationText = mAnnotationText(index): End Property
 

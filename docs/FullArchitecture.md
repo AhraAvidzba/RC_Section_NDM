@@ -697,7 +697,7 @@ Implements `ISectionGeometry`.
 `AddContourCircle`, `AddDimension`, `AddRebarLabel`.
 
 Публичные свойства: `Count`, `AnnotationType`, `AnnotationID`, `StartX`,
-`StartY`, `EndX`, `EndY`, `NormalX`, `NormalY`, `Offset`, `Text`, `Value`,
+`StartY`, `EndX`, `EndY`, `NormalX`, `NormalY`, `Text`, `Value`,
 `Unit`, `Comment`.
 
 #### CCircleAnnotationBuilder

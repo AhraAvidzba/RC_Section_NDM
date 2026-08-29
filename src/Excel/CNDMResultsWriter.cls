@@ -22,7 +22,7 @@ Option Explicit
 Private Const ELEMENT_RESULT_COLUMNS As Long = 6 ' LC-зависимые результаты: ElementID, LoadCase, Strain, Stress, PhysicalState.
 Private Const GEOMETRY_COLUMNS As Long = 15 ' Постоянная геометрия элементов, записанная один раз на расчетный снимок.
 Private Const SECTION_PROPERTY_COLUMNS As Long = 6 ' Общие свойства сечения и LC-свойства уровня всего сечения.
-Private Const ANNOTATION_COLUMNS As Long = 14 ' Semantic-аннотации схемы: размеры, контур, групповые подписи арматуры.
+Private Const ANNOTATION_COLUMNS As Long = 13 ' Semantic-аннотации схемы: размеры, контур, групповые подписи арматуры.
 Private Const MATERIAL_DIAGRAM_COLUMNS As Long = 8 ' Диагностический вывод фактических точек диаграмм, переданных solver-ам.
 Private Const PHYSICAL_TOLERANCE As Double = 0.000000001 ' Порог, ниже которого напряжение считается NearZero.
 
@@ -796,11 +796,10 @@ Private Sub PutAnnotationHeaders(ByRef data() As Variant)
     data(1, 7) = "EndY"
     data(1, 8) = "OutsideNormalX"
     data(1, 9) = "OutsideNormalY"
-    data(1, 10) = "Offset"
-    data(1, 11) = "Text"
-    data(1, 12) = "Value"
-    data(1, 13) = "Unit"
-    data(1, 14) = "Comment"
+    data(1, 10) = "Text"
+    data(1, 11) = "Value"
+    data(1, 12) = "Unit"
+    data(1, 13) = "Comment"
 End Sub
 
 Private Sub PutProperty(ByRef data() As Variant, ByRef rowIndex As Long, ByVal runID As Variant, _
@@ -829,11 +828,10 @@ Private Sub PutAnnotationRow(ByRef data() As Variant, ByRef rowIndex As Long, By
     data(rowIndex, 7) = OutputLength(annotations.EndY(annotationIndex), units)
     data(rowIndex, 8) = annotations.NormalX(annotationIndex)
     data(rowIndex, 9) = annotations.NormalY(annotationIndex)
-    data(rowIndex, 10) = OutputLength(annotations.Offset(annotationIndex), units)
-    data(rowIndex, 11) = OutputAnnotationText(annotations, annotationIndex, units)
-    data(rowIndex, 12) = OutputAnnotationValue(annotations, annotationIndex, units)
-    data(rowIndex, 13) = OutputAnnotationUnit(annotations, annotationIndex, units)
-    data(rowIndex, 14) = OutputAnnotationComment(annotations, annotationIndex)
+    data(rowIndex, 10) = OutputAnnotationText(annotations, annotationIndex, units)
+    data(rowIndex, 11) = OutputAnnotationValue(annotations, annotationIndex, units)
+    data(rowIndex, 12) = OutputAnnotationUnit(annotations, annotationIndex, units)
+    data(rowIndex, 13) = OutputAnnotationComment(annotations, annotationIndex)
     rowIndex = rowIndex + 1
 End Sub
 

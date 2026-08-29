@@ -999,7 +999,7 @@ Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, ByVal set
             If StrComp(data.AnnotationType(i), "REBAR_ANNOTATION", vbTextCompare) = 0 Then
                 layout.AddRebarLabel data.AnnotationStartX(i), data.AnnotationStartY(i), _
                     data.AnnotationEndX(i), data.AnnotationEndY(i), data.AnnotationNormalX(i), _
-                    data.AnnotationNormalY(i), data.AnnotationOffset(i), data.AnnotationText(i)
+                    data.AnnotationNormalY(i), data.AnnotationText(i)
             End If
         Next i
     End If
@@ -1009,7 +1009,7 @@ Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, ByVal set
             If StrComp(data.AnnotationType(i), "DIMENSION", vbTextCompare) = 0 Then
                 layout.AddDimension data.AnnotationStartX(i), data.AnnotationStartY(i), _
                     data.AnnotationEndX(i), data.AnnotationEndY(i), data.AnnotationNormalX(i), _
-                    data.AnnotationNormalY(i), data.AnnotationOffset(i), data.AnnotationText(i)
+                    data.AnnotationNormalY(i), data.AnnotationText(i)
             End If
         Next i
     End If

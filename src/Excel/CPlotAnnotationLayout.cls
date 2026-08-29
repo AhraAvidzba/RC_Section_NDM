@@ -169,7 +169,7 @@ End Sub
 ' На вход приходят две точки размера и наружная нормаль в координатах модели.
 ' Layout сам ставит выносные линии, основную линию со стрелками и текст.
 Public Sub AddDimension(ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, _
-        ByVal normalX As Double, ByVal normalY As Double, ByVal offset As Double, ByVal textValue As String)
+        ByVal normalX As Double, ByVal normalY As Double, ByVal textValue As String)
     Dim dirX As Double, dirY As Double
     dirX = endX - startX
     dirY = endY - startY
@@ -212,7 +212,7 @@ End Sub
 ' AnchorStart/AnchorEnd описывают реальную линию раскладки стержней. Поэтому
 ' подпись центрируется относительно группы арматуры, а не относительно Bounds.
 Public Sub AddRebarLabel(ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, _
-        ByVal normalX As Double, ByVal normalY As Double, ByVal offset As Double, ByVal textValue As String)
+        ByVal normalX As Double, ByVal normalY As Double, ByVal textValue As String)
     Dim dirX As Double, dirY As Double
     dirX = endX - startX
     dirY = endY - startY

@@ -183,7 +183,6 @@ OK: annotation.circle.zeroCount.noBars
 OK: annotation.circle.zeroCount.noAnchor
 OK: annotation.model.count
 OK: annotation.model.rebarLabel
-OK: annotation.model.axisDistance; actual=40.; expected=40.; absDiff=0.
 OK: autocad.import.source
 OK: autocad.import.concrete.count
 OK: autocad.import.rebar.count
@@ -215,7 +214,7 @@ OK: conv.Ix.25.12; actual=365141532.790493; expected=362323943.661972; relDiff=0
 OK: conv.Iy.25.12; actual=1153369140.625; expected=1151367187.5; relDiff=0.001738761662
 PERFORMANCE: section=800x500; step=10; fibers=3988; buildSec=0.0234375; propsSec=0.; area=398800.
 OK: perf.fibers.positive
-TOTAL: passed=183; failed=0
+TOTAL: passed=182; failed=0
 
 
 ===== Run-MaterialTests.ps1 =====
@@ -273,7 +272,7 @@ OK: material.userSteelTwoLineCompressionLimit; actual=-0.03; expected=-0.03; abs
 OK: material.userSteelTwoLineTensionLimit; actual=0.031; expected=0.031; absDiff=0.
 OK: material.invalidConcrete
 OK: material.invalidSteel
-TOTAL_MATERIAL: passed=54; failed=0; elapsedSec=0.03125
+TOTAL_MATERIAL: passed=54; failed=0; elapsedSec=0.0234375
 
 
 ===== Run-SectionSolverTests.ps1 =====
@@ -649,7 +648,7 @@ OK: section.method.emptyInput
 OK: section.method.emptyMessage
 OK: settings.solverMethod.defaultNewton
 OK: section.systemMethod.newtonBranch
-TOTAL_SECTION_SOLVER: passed=367; failed=0; elapsedSec=0.5234375
+TOTAL_SECTION_SOLVER: passed=367; failed=0; elapsedSec=0.3671875
 
 
 ===== Run-CapacityTests.ps1 =====
@@ -800,7 +799,7 @@ OK: method.n_plus_mx.lambda; actual=3.098714243907; expected=3.09375; absDiff=0.
 OK: method.n_plus_mx.limitState
 OK: method.n_plus_mx.criticalElement
 OK: method.n_plus_mx.solverCalls
-COMPARE|method.n_plus_mx.load|converged=True|lambda=3.09375|limitState=ConcreteStrainLimit|criticalStrain=-0.001501652538|criticalElement=C136:Compression|solverCalls=15|elapsedSec=0.171875
+COMPARE|method.n_plus_mx.load|converged=True|lambda=3.09375|limitState=ConcreteStrainLimit|criticalStrain=-0.001501652538|criticalElement=C136:Compression|solverCalls=15|elapsedSec=0.1640625
 COMPARE|method.n_plus_mx.strain|converged=True|lambda=3.098714243907|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.015625
 OK: method.n_plus_my.load.converged
 OK: method.n_plus_my.strain.converged
@@ -808,15 +807,15 @@ OK: method.n_plus_my.lambda; actual=4.490409406947; expected=4.484375; absDiff=0
 OK: method.n_plus_my.limitState
 OK: method.n_plus_my.criticalElement
 OK: method.n_plus_my.solverCalls
-COMPARE|method.n_plus_my.load|converged=True|lambda=4.484375|limitState=ConcreteStrainLimit|criticalStrain=-0.001500652149|criticalElement=C15:Compression|solverCalls=14|elapsedSec=0.15625
-COMPARE|method.n_plus_my.strain|converged=True|lambda=4.490409406947|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.0078125
+COMPARE|method.n_plus_my.load|converged=True|lambda=4.484375|limitState=ConcreteStrainLimit|criticalStrain=-0.001500652149|criticalElement=C15:Compression|solverCalls=14|elapsedSec=0.1328125
+COMPARE|method.n_plus_my.strain|converged=True|lambda=4.490409406947|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.
 OK: method.biaxial.load.converged
 OK: method.biaxial.strain.converged
 OK: method.biaxial.lambda; actual=3.583378108174; expected=3.578125; absDiff=0.005253108174
 OK: method.biaxial.limitState
 OK: method.biaxial.criticalElement
 OK: method.biaxial.solverCalls
-COMPARE|method.biaxial.load|converged=True|lambda=3.578125|limitState=ConcreteStrainLimit|criticalStrain=-0.001501063653|criticalElement=C150:Compression|solverCalls=12|elapsedSec=0.1328125
+COMPARE|method.biaxial.load|converged=True|lambda=3.578125|limitState=ConcreteStrainLimit|criticalStrain=-0.001501063653|criticalElement=C150:Compression|solverCalls=12|elapsedSec=0.0859375
 COMPARE|method.biaxial.strain|converged=True|lambda=3.583378108174|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=16|elapsedSec=0.015625
 OK: method.circle.load.converged
 OK: method.circle.strain.converged
@@ -1636,12 +1635,12 @@ OK: search.invalid.inputError
 OK: search.secant.controlledFailure
 RUN: TestSearchMethodPerformanceComparison
 OK: search.perf.Bisection.converged
-PERF_CAPACITY_SEARCH|Bisection|lambda=3.09375|iterations=15|functionEvaluations=15|avgSec=0.166666666667|residual=0.000000018633|converged=True|status=ConcreteStrainLimit
+PERF_CAPACITY_SEARCH|Bisection|lambda=3.09375|iterations=15|functionEvaluations=15|avgSec=0.161458333333|residual=0.000000018633|converged=True|status=ConcreteStrainLimit
 OK: search.perf.Brent.converged
-PERF_CAPACITY_SEARCH|Brent|lambda=3.09776378716|iterations=9|functionEvaluations=9|avgSec=0.078125|residual=0.000000000975|converged=True|status=ConcreteStrainLimit
+PERF_CAPACITY_SEARCH|Brent|lambda=3.09776378716|iterations=9|functionEvaluations=9|avgSec=0.080729166667|residual=0.000000000975|converged=True|status=ConcreteStrainLimit
 OK: search.perf.Secant.converged
-PERF_CAPACITY_SEARCH|Secant|lambda=3.098514991183|iterations=7|functionEvaluations=7|avgSec=0.0703125|residual=0.000000011376|converged=True|status=ConcreteStrainLimit
-TOTAL_CAPACITY: passed=925; failed=0; elapsedSec=16.953125
+PERF_CAPACITY_SEARCH|Secant|lambda=3.098514991183|iterations=7|functionEvaluations=7|avgSec=0.059895833333|residual=0.000000011376|converged=True|status=ConcreteStrainLimit
+TOTAL_CAPACITY: passed=925; failed=0; elapsedSec=14.90625
 
 
 ===== Run-CrackTests.ps1 =====
@@ -1720,7 +1719,7 @@ OK: crack.central.eccentricLoadRejected
 OK: crack.noTension.converged
 OK: crack.noTension.notFormed
 OK: crack.noTension.width; actual=0.; expected=0.; absDiff=0.
-TOTAL_CRACK: passed=75; failed=0; elapsedSec=0.2421875
+TOTAL_CRACK: passed=75; failed=0; elapsedSec=0.3125
 
 
 ===== Run-BatchTests.ps1 =====
@@ -2076,7 +2075,7 @@ OK: batch.invalid.calculationMode.status
 OK: batch.invalid.calculationMode.noCapacity
 OK: batch.invalid.CapacitySolutionStrategy.status
 OK: batch.invalid.CapacitySolutionStrategy.noLambda
-TOTAL_BATCH: passed=262; failed=0; elapsedSec=7.375
+TOTAL_BATCH: passed=262; failed=0; elapsedSec=6.3828125
 
 
 ===== Run-WorkbookInterfaceTests.ps1 =====
@@ -2264,7 +2263,7 @@ OK: ui.clear.results.properties
 OK: ui.clear.results.annotations
 OK: ui.clear.results.materialDiagrams
 OK: ui.clear.input
-TOTAL_WORKBOOK_UI: passed=179; failed=0; elapsedSec=8.3359375
+TOTAL_WORKBOOK_UI: passed=179; failed=0; elapsedSec=7.9921875
 
 
 ===== Run-RegressionBaselineTests.ps1 =====
@@ -2283,7 +2282,7 @@ OK: n_plus_my_mx_zero.converged
 OK: n_plus_my_mx_zero.N; actual=-100000.; expected=-100000.; relDiff=0.
 OK: n_plus_my_mx_zero.Mx; actual=0.000000000001; expected=0.; absDiff=0.000000000001
 OK: n_plus_my_mx_zero.My; actual=-3000000.; expected=-3000000.; relDiff=0.
-BASELINE|n_plus_my_mx_zero|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=-0.000000428729|Nint=-100000.|Mxint=0.000000000001|Myint=-3000000.|resN=0.000000000015|resMx=0.000000000001|resMy=0.00000000326|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.015625|fibers=177|rebars=8
+BASELINE|n_plus_my_mx_zero|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=-0.000000428729|Nint=-100000.|Mxint=0.000000000001|Myint=-3000000.|resN=0.000000000015|resMx=0.000000000001|resMy=0.00000000326|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.0078125|fibers=177|rebars=8
 OK: full_n_mx_my.converged
 OK: full_n_mx_my.N; actual=-100000.; expected=-100000.; relDiff=0.
 OK: full_n_mx_my.Mx; actual=-4000000.; expected=-4000000.; relDiff=0.
@@ -2293,7 +2292,7 @@ OK: symmetric_circle.converged
 OK: symmetric_circle.N; actual=-219999.999999999; expected=-220000.; relDiff=0.
 OK: symmetric_circle.Mx; actual=-6000000.00000002; expected=-6000000.; relDiff=0.
 OK: symmetric_circle.My; actual=0.000000000146; expected=0.; absDiff=0.000000000146
-BASELINE|symmetric_circle|converged=True|eps0=-0.000180839111|kappaX=-0.000000845237|kappaY=0.|Nint=-219999.999999999|Mxint=-6000000.00000002|Myint=0.000000000146|resN=0.000000000815|resMx=-0.000000019558|resMy=0.000000000146|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.0390625|fibers=716|rebars=8
+BASELINE|symmetric_circle|converged=True|eps0=-0.000180839111|kappaX=-0.000000845237|kappaY=0.|Nint=-219999.999999999|Mxint=-6000000.00000002|Myint=0.000000000146|resN=0.000000000815|resMx=-0.000000019558|resMy=0.000000000146|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.015625|fibers=716|rebars=8
 OK: repeated_run.first.converged
 OK: repeated_run.second.converged
 OK: repeated_run.epsilon0; actual=-0.000082335606; expected=-0.000082335606; absDiff=0.
@@ -2319,7 +2318,7 @@ OK: origin_shift.shifted.Mx; actual=1000000.; expected=1000000.; relDiff=0.
 OK: origin_shift.shifted.My; actual=-10500000.; expected=-10500000.; relDiff=0.
 BASELINE|origin_shift_base|converged=True|eps0=-0.000082335606|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=-4000000.|Myint=-3000000.|resN=0.|resMx=-0.000000003725|resMy=0.000000000931|lambda=NA|iterations=3|elapsedSec=0.|fibers=0|rebars=0
 BASELINE|origin_shift_shifted|converged=True|eps0=-0.00007872362|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=1000000.|Myint=-10500000.|resN=-0.000000000015|resMx=0.000000000815|resMy=0.000000003725|lambda=NA|iterations=3|elapsedSec=0.|fibers=0|rebars=0
-TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.921875
+TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.6953125
 
 Regression baseline report: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Stage01_RegressionBaseline_Raw.txt
 

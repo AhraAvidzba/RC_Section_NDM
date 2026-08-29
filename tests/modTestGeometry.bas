@@ -137,7 +137,6 @@ Private Sub TestRebarAnnotationAnchors(ByRef stats As TTestStats)
     annotationBuilder.Build model, geom, circleBars
     AssertTrue stats, "annotation.model.count", model.AnnotationCount = 3
     AssertTrue stats, "annotation.model.rebarLabel", HasSectionAnnotation(model, "REBAR_ANNOTATION", "REBAR_Circle")
-    AssertClose stats, "annotation.model.axisDistance", SectionAnnotationOffset(model, "REBAR_ANNOTATION", "REBAR_Circle"), 40#, 0.000001
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -784,17 +783,6 @@ End Function
 Private Function HasSectionAnnotation(ByVal model As CSectionModel, ByVal annotationType As String, _
         ByVal annotationID As String) As Boolean
     HasSectionAnnotation = (FindSectionAnnotationIndex(model, annotationType, annotationID) > 0)
-End Function
-
-Private Function SectionAnnotationOffset(ByVal model As CSectionModel, ByVal annotationType As String, _
-        ByVal annotationID As String) As Double
-    Dim annotationIndex As Long
-    annotationIndex = FindSectionAnnotationIndex(model, annotationType, annotationID)
-    If annotationIndex <= 0 Then
-        SectionAnnotationOffset = 0#
-    Else
-        SectionAnnotationOffset = model.Annotations.Offset(annotationIndex)
-    End If
 End Function
 
 Private Function FindSectionAnnotationIndex(ByVal model As CSectionModel, ByVal annotationType As String, _
