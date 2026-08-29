@@ -250,13 +250,6 @@ function Update-CalculationSheetLayout {
     foreach ($obsoleteName in @("rngResultMx", "rngResultMy", "rngResultMxy")) {
         try { $Workbook.Names.Item($obsoleteName).Delete() } catch { }
     }
-    $sectionResultAddress = "=" + $calc.Range("S17:AH35").Address($true, $true, 1, $true)
-    try {
-        $Workbook.Names.Item("rngResultSection").RefersTo = $sectionResultAddress
-    }
-    catch {
-        $Workbook.Names.Add("rngResultSection", $sectionResultAddress) | Out-Null
-    }
     $calc.PageSetup.PrintArea = $calc.Range("A1:BT60").Address($true, $true)
 
     $left = $calc.Cells.Item(4, 74).Left
@@ -300,7 +293,6 @@ try {
         "src/Batch/CBatchSectionCalculator.cls",
         "src/Excel/CSystemSettingsReader.cls",
         "src/Excel/CLoadCombinationReader.cls",
-        "src/Excel/CCapacityResultWriter.cls",
         "src/Excel/CBatchResultWriter.cls",
         "src/Excel/modWorkbookCalculation.bas",
         "src/Excel/modAutoCADStressExport.bas",

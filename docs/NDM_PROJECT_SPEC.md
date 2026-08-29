@@ -114,7 +114,6 @@ Myint = Myext
 - `rngSteelMaterialParameters`;
 - `rngCalculationDiagramSettings`;
 - `rngLoadCombinations`;
-- `rngResultSection`;
 - `rngBatchSummary`.
 
 Подробности: `docs/WorkbookLayout.md`.

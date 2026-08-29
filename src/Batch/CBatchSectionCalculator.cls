@@ -21,103 +21,106 @@ Option Explicit
 ' прийти CSectionModel, материалы и нормализованные усилия N + Mx + My.
 
 Private Const MAX_COMBINATIONS As Long = 20 ' Максимум LC, поддерживаемый таблицей книги.
-Private Const STATUS_OK As String = "OK" ' Расчетная ветка завершилась без ошибки.
-Private Const STATUS_FAIL As String = "FAIL" ' Равновесие найдено, но физический предел или проверка не проходят.
-Private Const STATUS_NUMFAIL As String = "NumFail" ' Solver не нашел равновесие в заданных численных ограничениях.
-Private Const STATUS_INPUTERR As String = "InputErr" ' Ошибка исходных данных, а не численная несходимость.
-Private Const STATUS_NA As String = "N/A" ' Расчетная проверка не относится к этому LC/режиму.
 Private Const CALC_GROUP1 As String = "Group1" ' Первая группа: проверка несущей способности.
 Private Const CALC_GROUP2 As String = "Group2" ' Вторая группа: эксплуатационная проверка трещин.
 Private Const CAPACITY_PATH_NONE As String = "None" ' Capacity не запускался для LC.
-Private Const CAPACITY_PATH_MX As String = "LambdaMx" ' Масштабируется только пользовательский Mx.
-Private Const CAPACITY_PATH_MY As String = "LambdaMy" ' Масштабируется только пользовательский My.
-Private Const CAPACITY_PATH_MXY As String = "LambdaMxy" ' Масштабируется пользовательский вектор Mx/My.
-Private Const CAPACITY_PATH_N As String = "LambdaN" ' Масштабируется N вместе с моментом от эксцентриситета N.
-Private Const CAPACITY_PATH_NMXY As String = "LambdaNMxy" ' Масштабируется весь расчетный вектор N/Mx/My.
+
+' Данные одной строки таблицы сочетаний. Batch хранит их отдельно от результатов,
+' чтобы было видно, где исходные нагрузки пользователя, а где то, что вернул расчет.
+Private Type TCombinationInput
+    CombinationID As String
+    N As Double
+    Mx As Double
+    My As Double
+    UserMx As Double
+    UserMy As Double
+    CalculationType As String
+    CapacityLoadPath As String
+    Comment As String
+    InputValid As Boolean
+    InputError As String
+End Type
+
+' Результаты одного LC после прямого НДС, capacity и трещин. Поля собраны в
+' одну запись, чтобы исходные данные сочетаний и расчетные результаты не
+' смешивались между разными строками batch.
+Private Type TCombinationResult
+    Status As String
+    DirectStateStatus As String
+    CapacityStatus As String
+    CapacityLimitState As String
+    CapacitySolutionMethod As String
+    CrackStatus As String
+    ExtensionUsed As Boolean
+    DirectStateDiagramExtensionEnabled As Boolean
+    LambdaCapacity As Double
+    UtilCapacity As Double
+    CapacityPathResolved As String
+    NUltimate As Double
+    MxUltimate As Double
+    MyUltimate As Double
+    MomentUltimate As Double
+    CapacityStateAvailable As Boolean
+    CapacityEpsilon0 As Double
+    CapacityKappaX As Double
+    CapacityKappaY As Double
+    MinConcreteStrain As Double
+    MaxConcreteStrain As Double
+    MinSteelStrain As Double
+    MaxSteelStrain As Double
+    CrackWidth As Double
+    CrackAllowableValue As Double
+    CrackUtil As Double
+    CrackFormed As Boolean
+    CrackPhi1 As Double
+    CrackPhi2 As Double
+    CrackPhi3 As Double
+    CrackPsiS As Double
+    CrackSigmaS As Double
+    CrackSigmaSCrc As Double
+    CrackAs As Double
+    CrackAbt As Double
+    CrackDsEquivalent As Double
+    CrackLsRaw As Double
+    CrackLs As Double
+    CrackLambdaCrc As Double
+    CrackNcrc As Double
+    CrackTensionRebarCount As Long
+    CrackSectionDepthH As Double
+    CrackCoverA As Double
+    CrackTensionDepth As Double
+    CrackEffectiveZoneDepth As Double
+    CrackCentralBranch As Boolean
+    GoverningUtil As Double
+    StateAvailable As Boolean
+    StateConverged As Boolean
+    Epsilon0 As Double
+    KappaX As Double
+    KappaY As Double
+    Nint As Double
+    Mxint As Double
+    Myint As Double
+    ResidualN As Double
+    ResidualMx As Double
+    ResidualMy As Double
+    StateIterations As Long
+End Type
 
 Private mSection As CSectionModel ' Расчетная модель сечения, общая для всех LC.
 Private mMaterialProvider As CMaterialModelProvider ' Единая точка выдачи диаграмм для Strength/Mcrc/CrackedNDS.
+Private mStatusPolicy As CBatchStatusPolicy ' Единый словарь пользовательских статусов и правил их агрегирования.
 Private mCount As Long ' Сколько сочетаний реально добавлено в пакет.
 
-Private mCombinationID(1 To MAX_COMBINATIONS) As String ' ID сочетания из таблицы нагрузок.
-Private mN(1 To MAX_COMBINATIONS) As Double ' Продольная сила после переноса к координатам модели, Н.
-Private mMx(1 To MAX_COMBINATIONS) As Double ' Mx после учета точки приложения нагрузки, Н*мм.
-Private mMy(1 To MAX_COMBINATIONS) As Double ' My после учета точки приложения нагрузки, Н*мм.
-Private mUserMx(1 To MAX_COMBINATIONS) As Double ' Mx как ввел пользователь относительно выбранной точки нагрузки.
-Private mUserMy(1 To MAX_COMBINATIONS) As Double ' My как ввел пользователь относительно выбранной точки нагрузки.
-Private mCalculationType(1 To MAX_COMBINATIONS) As String ' Group1/Group2: какая инженерная проверка нужна для LC.
-Private mCapacityLoadPath(1 To MAX_COMBINATIONS) As String ' Выбор пользователя: какие компоненты масштабировать множителем lambda.
-Private mComment(1 To MAX_COMBINATIONS) As String ' Комментарий пользователя из таблицы сочетаний.
-Private mInputValid(1 To MAX_COMBINATIONS) As Boolean ' False, если строка LC прочитана, но входные данные некорректны.
-Private mInputError(1 To MAX_COMBINATIONS) As String ' Текст причины InvalidInput для конкретного LC.
+Private mInputs(1 To MAX_COMBINATIONS) As TCombinationInput ' Исходные данные LC, прочитанные из таблицы сочетаний.
+Private mResults(1 To MAX_COMBINATIONS) As TCombinationResult ' Расчетные результаты LC для Summary/Results.
 Private mLoadReferenceX As Double ' X точки приложения нагрузки относительно расчетной модели, мм.
 Private mLoadReferenceY As Double ' Y точки приложения нагрузки относительно расчетной модели, мм.
 Private mLoadReferenceOffsetX As Double ' Смещение точки нагрузки от центра тяжести бетонного сечения по X, мм.
 Private mLoadReferenceOffsetY As Double ' Смещение точки нагрузки от центра тяжести бетонного сечения по Y, мм.
-
-Private mStatus(1 To MAX_COMBINATIONS) As String ' OverallStatus: итоговый пользовательский статус LC.
-Private mDirectStateStatus(1 To MAX_COMBINATIONS) As String ' Статус прямого НДС фактического сочетания.
-Private mCapacityStatus(1 To MAX_COMBINATIONS) As String ' Статус поиска несущей способности.
-Private mCapacityLimitState(1 To MAX_COMBINATIONS) As String ' Какой предел остановил capacity solver.
-Private mCapacitySolutionMethod(1 To MAX_COMBINATIONS) As String ' Фактическая численная ветка, которая дала capacity-результат.
-Private mCrackStatus(1 To MAX_COMBINATIONS) As String ' Статус расчета трещин для второй группы.
-Private mExtensionUsed(1 To MAX_COMBINATIONS) As Boolean ' True, если прямой StateSolution вышел в numerical extension.
-Private mDirectStateDiagramExtensionEnabled(1 To MAX_COMBINATIONS) As Boolean ' Снимок настройки extension для LC.
-Private mLambdaCapacity(1 To MAX_COMBINATIONS) As Double ' Найденный множитель несущей способности.
-Private mUtilCapacity(1 To MAX_COMBINATIONS) As Double ' Использование по несущей способности, обычно 1/lambda.
-Private mCapacityPathResolved(1 To MAX_COMBINATIONS) As String ' Нормализованная capacity-траектория после fallback/валидации.
-Private mNUltimate(1 To MAX_COMBINATIONS) As Double ' Предельная N для траекторий, где N входит в масштабируемый вектор.
-Private mMxUltimate(1 To MAX_COMBINATIONS) As Double ' Предельный пользовательский Mx для траекторий, где масштабируется Mx.
-Private mMyUltimate(1 To MAX_COMBINATIONS) As Double ' Предельный пользовательский My для траекторий, где масштабируется My.
-Private mMomentUltimate(1 To MAX_COMBINATIONS) As Double ' Результирующий предельный момент из заполненных MxUltimate/MyUltimate.
-Private mCapacityStateAvailable(1 To MAX_COMBINATIONS) As Boolean ' True, если сохранена плоскость деформаций именно предельного capacity-состояния.
-Private mCapacityEpsilon0(1 To MAX_COMBINATIONS) As Double ' epsilon0 в состоянии найденного предельного момента, а не в фактическом LC.
-Private mCapacityKappaX(1 To MAX_COMBINATIONS) As Double ' kappaX в состоянии найденного предельного момента.
-Private mCapacityKappaY(1 To MAX_COMBINATIONS) As Double ' kappaY в состоянии найденного предельного момента.
-Private mMinConcreteStrain(1 To MAX_COMBINATIONS) As Double ' Наиболее сжатая деформация бетона в фактическом НДС LC.
-Private mMaxConcreteStrain(1 To MAX_COMBINATIONS) As Double ' Наиболее растянутая деформация бетона в фактическом НДС LC.
-Private mMinSteelStrain(1 To MAX_COMBINATIONS) As Double ' Наиболее сжатая деформация арматуры в фактическом НДС LC.
-Private mMaxSteelStrain(1 To MAX_COMBINATIONS) As Double ' Наиболее растянутая деформация арматуры в фактическом НДС LC.
-Private mCrackWidth(1 To MAX_COMBINATIONS) As Double ' Расчетная ширина раскрытия трещины, мм.
-Private mCrackAllowableValue(1 To MAX_COMBINATIONS) As Double ' Нормативный/пользовательский предел a_crc,ult, мм.
-Private mCrackUtil(1 To MAX_COMBINATIONS) As Double ' Использование по ширине трещины.
-Private mCrackFormed(1 To MAX_COMBINATIONS) As Boolean ' True, если при текущем LC трещина считается образованной.
-Private mCrackPhi1(1 To MAX_COMBINATIONS) As Double ' Коэффициент длительности нагрузки в формуле a_crc.
-Private mCrackPhi2(1 To MAX_COMBINATIONS) As Double ' Коэффициент профиля арматуры в формуле a_crc.
-Private mCrackPhi3(1 To MAX_COMBINATIONS) As Double ' Коэффициент характера нагружения в формуле a_crc.
-Private mCrackPsiS(1 To MAX_COMBINATIONS) As Double ' Коэффициент psi_s: 1 или Auto-уточнение после непрохождения первой проверки.
-Private mCrackSigmaS(1 To MAX_COMBINATIONS) As Double ' Среднее напряжение выбранной растянутой арматуры, МПа.
-Private mCrackSigmaSCrc(1 To MAX_COMBINATIONS) As Double ' Напряжение той же арматуры в состоянии lambda_crc, МПа.
-Private mCrackAs(1 To MAX_COMBINATIONS) As Double ' Площадь выбранной растянутой арматуры As, мм2.
-Private mCrackAbt(1 To MAX_COMBINATIONS) As Double ' Площадь растянутого бетона Abt, мм2.
-Private mCrackDsEquivalent(1 To MAX_COMBINATIONS) As Double ' Эквивалентный диаметр стержней ds, мм.
-Private mCrackLsRaw(1 To MAX_COMBINATIONS) As Double ' Неограниченное расстояние между трещинами ls, мм.
-Private mCrackLs(1 To MAX_COMBINATIONS) As Double ' Расчетное ls после ограничений СП, мм.
-Private mCrackLambdaCrc(1 To MAX_COMBINATIONS) As Double ' Множитель нагрузки в момент образования трещины.
-Private mCrackNcrc(1 To MAX_COMBINATIONS) As Double ' Усилие образования трещины для центрального растяжения, Н.
-Private mCrackTensionRebarCount(1 To MAX_COMBINATIONS) As Long ' Количество стержней, вошедших в As.
-Private mCrackSectionDepthH(1 To MAX_COMBINATIONS) As Double ' Полная высота h по нормали к нейтральной линии для расчета трещин, мм.
-Private mCrackCoverA(1 To MAX_COMBINATIONS) As Double ' Расстояние a от растянутого края до оси крайнего стержня, мм.
-Private mCrackTensionDepth(1 To MAX_COMBINATIONS) As Double ' Высота фактической растянутой зоны бетона, мм.
-Private mCrackEffectiveZoneDepth(1 To MAX_COMBINATIONS) As Double ' Фактическая глубина зоны Abt, мм.
-Private mCrackCentralBranch(1 To MAX_COMBINATIONS) As Boolean ' True, если использована ветка центрального растяжения.
-Private mGoverningUtil(1 To MAX_COMBINATIONS) As Double ' Максимальное использование из доступных проверок LC.
 Private mGoverningCombinationIndex As Long ' Индекс LC, который стал определяющим в batch summary.
 Private mCrackGoverningCombinationIndex As Long ' Индекс LC с минимальным запасом по раскрытию трещин.
 Private mElapsedSeconds As Double ' Полное время пакетного расчета, сек.
 Private mDiagnosticLog As String ' Короткий текстовый журнал по LC для отладки batch-потока.
-Private mStateAvailable(1 To MAX_COMBINATIONS) As Boolean ' True, если для LC сохранена плоскость деформаций.
-Private mStateConverged(1 To MAX_COMBINATIONS) As Boolean ' True, если прямой CSectionSolver сошелся.
-Private mEpsilon0(1 To MAX_COMBINATIONS) As Double ' Свободный член плоскости деформаций LC.
-Private mKappaX(1 To MAX_COMBINATIONS) As Double ' Кривизна при y в формуле epsilon = e0 + kx*y + ky*x.
-Private mKappaY(1 To MAX_COMBINATIONS) As Double ' Кривизна при x в формуле epsilon = e0 + kx*y + ky*x.
-Private mNint(1 To MAX_COMBINATIONS) As Double ' Внутренняя продольная сила из напряжений элементов, Н.
-Private mMxint(1 To MAX_COMBINATIONS) As Double ' Внутренний Mx из напряжений элементов, Н*мм.
-Private mMyint(1 To MAX_COMBINATIONS) As Double ' Внутренний My из напряжений элементов, Н*мм.
-Private mResidualN(1 To MAX_COMBINATIONS) As Double ' Невязка Nint - N после прямого solve, Н.
-Private mResidualMx(1 To MAX_COMBINATIONS) As Double ' Невязка Mxint - Mx после прямого solve, Н*мм.
-Private mResidualMy(1 To MAX_COMBINATIONS) As Double ' Невязка Myint - My после прямого solve, Н*мм.
-Private mStateIterations(1 To MAX_COMBINATIONS) As Long ' Число итераций прямого solver-а для LC.
 
 Private mCrackAllowable As Double ' Допустимая ширина раскрытия трещины a_crc,ult, мм.
 Private mCrackPsiMode As String ' Fixed1 или Auto: как определять psi_s для нормальных трещин.
@@ -151,6 +154,7 @@ Private mReport As CExecutionReport ' Необязательный челове�
 
 ' Инициализирует внутреннее состояние объекта значениями по умолчанию, безопасными для последующей настройки.
 Private Sub Class_Initialize()
+    Set mStatusPolicy = New CBatchStatusPolicy
     mCrackAllowable = 0.3
     mCrackPsiMode = "Fixed1"
     mCrackTensionZoneMode = "Effective"
@@ -284,17 +288,17 @@ Private Sub AddCombinationInternal(ByVal combinationID As String, ByVal nValue A
     If mCount >= MAX_COMBINATIONS Then Err.Raise vbObjectError + 3911, "CBatchSectionCalculator", "Поддерживается не более 20 сочетаний нагрузок."
     mCount = mCount + 1
     If Len(Trim$(combinationID)) = 0 Then combinationID = "ROW" & CStr(mCount)
-    mCombinationID(mCount) = combinationID
-    mN(mCount) = nValue
-    mMx(mCount) = mxValue
-    mMy(mCount) = myValue
-    mCalculationType(mCount) = calculationType
-    mCapacityLoadPath(mCount) = Trim$(capacityLoadPath)
-    mComment(mCount) = comment
-    mUserMx(mCount) = mxValue
-    mUserMy(mCount) = myValue
-    mInputValid(mCount) = inputValid
-    mInputError(mCount) = inputError
+    mInputs(mCount).CombinationID = combinationID
+    mInputs(mCount).N = nValue
+    mInputs(mCount).Mx = mxValue
+    mInputs(mCount).My = myValue
+    mInputs(mCount).CalculationType = calculationType
+    mInputs(mCount).CapacityLoadPath = Trim$(capacityLoadPath)
+    mInputs(mCount).Comment = comment
+    mInputs(mCount).UserMx = mxValue
+    mInputs(mCount).UserMy = myValue
+    mInputs(mCount).InputValid = inputValid
+    mInputs(mCount).InputError = inputError
 End Sub
 
 ' Переносит пользовательские моменты из точки приложения нагрузки к координатам элементов.
@@ -311,9 +315,9 @@ Public Sub ApplyLoadReference(ByVal referenceX As Double, ByVal referenceY As Do
     ' Эквивалентный перенос момента от продольной силы:
     ' Mx_model = Mx_user + N * y_ref, My_model = My_user + N * x_ref.
     For i = 1 To mCount
-        If mInputValid(i) Then
-            mMx(i) = mUserMx(i) + mN(i) * referenceY
-            mMy(i) = mUserMy(i) + mN(i) * referenceX
+        If mInputs(i).InputValid Then
+            mInputs(i).Mx = mInputs(i).UserMx + mInputs(i).N * referenceY
+            mInputs(i).My = mInputs(i).UserMy + mInputs(i).N * referenceX
         End If
     Next i
 End Sub
@@ -345,7 +349,7 @@ Public Sub Execute()
         ClearResultRow i
         stage = "RunCombination"
         RunCombination i
-        If mInputValid(i) Then
+        If mInputs(i).InputValid Then
             stage = "SelectStrengthGoverning"
             If StrengthSafetyFactorForGoverning(i) > 0# Then
                 If mGoverningCombinationIndex = 0 Then
@@ -375,11 +379,11 @@ End Sub
 ' прямой solve дает фактическое НДС, crack запускается только для 2 группы.
 Private Sub RunCombination(ByVal index As Long)
     On Error GoTo Failed
-    ReportSection "Сочетание " & CStr(index) & ": " & mCombinationID(index)
-    ReportValue "Комментарий", mComment(index)
-    If Not mInputValid(index) Then
-        ReportStep "Сочетание не передано в solver из-за ошибки входных данных: " & mInputError(index)
-        MarkInvalid index, mInputError(index)
+    ReportSection "Сочетание " & CStr(index) & ": " & mInputs(index).CombinationID
+    ReportValue "Комментарий", mInputs(index).Comment
+    If Not mInputs(index).InputValid Then
+        ReportStep "Сочетание не передано в solver из-за ошибки входных данных: " & mInputs(index).InputError
+        MarkInvalid index, mInputs(index).InputError
         Exit Sub
     End If
     If Not IsSupportedCalculationMode() Then
@@ -389,11 +393,11 @@ Private Sub RunCombination(ByVal index As Long)
     End If
 
     Dim calculationType As String
-    calculationType = NormalizedCombinationCalculationType(mCalculationType(index))
-    ReportValue "Тип проверки", IIf(Len(calculationType) > 0, calculationType, mCalculationType(index))
-    ReportValue "N", FormatNumberInvariant(mN(index)) & " Н"
-    ReportValue "Mx расчетный", FormatNumberInvariant(mMx(index)) & " Н*мм"
-    ReportValue "My расчетный", FormatNumberInvariant(mMy(index)) & " Н*мм"
+    calculationType = NormalizedCombinationCalculationType(mInputs(index).CalculationType)
+    ReportValue "Тип проверки", IIf(Len(calculationType) > 0, calculationType, mInputs(index).CalculationType)
+    ReportValue "N", FormatNumberInvariant(mInputs(index).N) & " Н"
+    ReportValue "Mx расчетный", FormatNumberInvariant(mInputs(index).Mx) & " Н*мм"
+    ReportValue "My расчетный", FormatNumberInvariant(mInputs(index).My) & " Н*мм"
     If Len(calculationType) = 0 Then
         ReportStep "Сочетание не рассчитано: CalculationType должен быть Group1 или Group2."
         MarkInvalid index, "CalculationType должен быть Group1 или Group2."
@@ -405,7 +409,7 @@ Private Sub RunCombination(ByVal index As Long)
         Exit Sub
     End If
 
-    mStatus(index) = STATUS_NA
+    mResults(index).Status = mStatusPolicy.NotApplicable
     If ShouldRunCapacity(calculationType) And IsFullCapacityMode Then
         ReportStep "Запускается проверка несущей способности для сочетания."
         RunCapacity index
@@ -415,8 +419,9 @@ Private Sub RunCombination(ByVal index As Long)
     End If
     RunSectionStateAndCrack index, ShouldRunCrack(calculationType)
 
-    mGoverningUtil(index) = MaxDouble(mUtilCapacity(index), mCrackUtil(index))
-    mStatus(index) = AggregateOverallStatus(index)
+    mResults(index).GoverningUtil = MaxDouble(mResults(index).UtilCapacity, mResults(index).CrackUtil)
+    mResults(index).Status = mStatusPolicy.Aggregate(mResults(index).DirectStateStatus, _
+        mResults(index).CapacityStatus, mResults(index).CrackStatus)
     AppendDiagnostic index
     ReportCombinationSummary index
     Exit Sub
@@ -431,79 +436,71 @@ End Sub
 ' умножаются на lambda. Все варианты дальше сводятся к одной математике:
 ' Target = Offset + lambda*Base для N, Mx и My.
 Private Sub RunCapacity(ByVal index As Long)
-    Dim loadPath As String
-    Dim nOffset As Double
-    Dim nBase As Double
-    Dim mxOffset As Double
-    Dim mxBase As Double
-    Dim myOffset As Double
-    Dim myBase As Double
+    Dim loadPath As CCapacityLoadPath
     Dim cap As CCapacitySolver
 
-    loadPath = CapacityLoadPathForCombination(index)
-    mCapacityPathResolved(index) = loadPath
-    ReportValue "CapacityLoadPath", IIf(Len(loadPath) > 0, CapacityLoadPathDisplay(loadPath), mCapacityLoadPath(index))
+    Set loadPath = BuildLoadPathForCombination(index)
+    mResults(index).CapacityPathResolved = loadPath.Key
+    ReportValue "CapacityLoadPath", IIf(loadPath.HasPath, loadPath.DisplayName, mInputs(index).CapacityLoadPath)
 
-    If Len(loadPath) = 0 Then
-        If Len(Trim$(mCapacityLoadPath(index))) > 0 Then
-            StoreInvalidCapacity index, "CapacityLoadPath должен быть λ*Mx, λ*My, λ*Mxy, λ*N или λ*NMxy."
-            ReportStep "Capacity остановлен: неизвестное значение CapacityLoadPath."
-        Else
-            ReportStep "Capacity не запускается: в сочетании нет ни момента, ни продольной силы."
-            StoreSkippedCapacity index
-        End If
+    If Not loadPath.Valid Then
+        StoreInvalidCapacity index, loadPath.ErrorMessage
+        ReportStep "Capacity остановлен: неизвестное значение CapacityLoadPath."
         Exit Sub
     End If
 
-    If Not CapacityLoadPathHasScaledLoad(index, loadPath) Then
+    If Not loadPath.HasPath Then
+        ReportStep "Capacity не запускается: в сочетании нет ни момента, ни продольной силы."
+        StoreSkippedCapacity index
+        Exit Sub
+    End If
+
+    If Not loadPath.HasScaledLoad Then
         StoreInvalidCapacity index, "Для выбранного CapacityLoadPath соответствующая нагрузка должна быть ненулевой."
-        ReportStep "Capacity остановлен: выбранная λ-траектория не содержит ненулевой масштабируемой нагрузки."
+        ReportStep "Capacity остановлен: выбранная lambda-траектория не содержит ненулевой масштабируемой нагрузки."
         Exit Sub
     End If
 
-    BuildCapacityLoadPath index, loadPath, nOffset, nBase, mxOffset, mxBase, myOffset, myBase
     Set cap = New CCapacitySolver
     ConfigureCapacity cap
-    Dim forceOnlyPath As Boolean
-    ' Если пользователь не задавал Mx/My, то λ*N и λ*NMxy являются силовой
-    ' траекторией продольной силы. Во внутренних моментах могут быть члены
-    ' переноса от N к расчетной системе координат, но это не делает исходную
-    ' пользовательскую задачу изгибной.
-    forceOnlyPath = IsForceOnlyCapacityLoadPath(index, loadPath)
     Select Case NormalizedCapacitySolutionStrategy()
         Case "Auto"
-            If forceOnlyPath Then
+            If loadPath.ForceOnly Then
                 cap.SolveByLoadPathMultiplier mSection, mMaterialProvider.ConcreteMaterial(cpStrength), _
-                    mMaterialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase, True
+                    mMaterialProvider.SteelMaterial(cpStrength), loadPath.NOffset, loadPath.NBase, _
+                    loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, True
             Else
                 cap.SolveByAutoLoadPath mSection, mMaterialProvider.ConcreteMaterial(cpStrength), _
-                    mMaterialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+                    mMaterialProvider.SteelMaterial(cpStrength), loadPath.NOffset, loadPath.NBase, _
+                    loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase
             End If
         Case "UltimateStrain"
-            If forceOnlyPath Then
+            If loadPath.ForceOnly Then
                 cap.SolveByLoadPathMultiplier mSection, mMaterialProvider.ConcreteMaterial(cpStrength), _
-                    mMaterialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase, True
+                    mMaterialProvider.SteelMaterial(cpStrength), loadPath.NOffset, loadPath.NBase, _
+                    loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, True
             Else
                 cap.SolveByUltimateLoadPath mSection, mMaterialProvider.ConcreteMaterial(cpStrength), _
-                    mMaterialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+                    mMaterialProvider.SteelMaterial(cpStrength), loadPath.NOffset, loadPath.NBase, _
+                    loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase
             End If
         Case "LoadMultiplier"
             cap.SolveByLoadPathMultiplier mSection, mMaterialProvider.ConcreteMaterial(cpStrength), _
-                mMaterialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase, _
-                forceOnlyPath
+                mMaterialProvider.SteelMaterial(cpStrength), loadPath.NOffset, loadPath.NBase, _
+                loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, loadPath.ForceOnly
         Case Else
-            mCapacityStatus(index) = STATUS_INPUTERR
-            mCapacityLimitState(index) = "Capacity.SolutionStrategy должен быть Auto, LoadMultiplier или UltimateStrain."
-            mCapacitySolutionMethod(index) = vbNullString
+            mResults(index).CapacityStatus = mStatusPolicy.InputErr
+            mResults(index).CapacityLimitState = "Capacity.SolutionStrategy должен быть Auto, LoadMultiplier или UltimateStrain."
+            mResults(index).CapacitySolutionMethod = vbNullString
             ReportStep "Capacity остановлен: неизвестный Capacity.SolutionStrategy."
             Exit Sub
     End Select
 
     StoreCapacity index, cap, loadPath
 
-    ReportValue "CapacityStatus", mCapacityStatus(index)
-    ReportValue "LambdaCapacity", FormatNumberInvariant(mLambdaCapacity(index))
-    ReportValue "CapacityLoadPath", CapacityLoadPathDisplay(mCapacityPathResolved(index))
+    ReportValue "CapacityStatus", mResults(index).CapacityStatus
+    ReportValue "LambdaCapacity", FormatNumberInvariant(mResults(index).LambdaCapacity)
+    ReportValue "CapacityLoadPath", CapacityLoadPathDisplay(mResults(index).CapacityPathResolved)
     ReportBlock "Диагностика поиска несущей способности", cap.DiagnosticLog
     If Not cap.LastSolver Is Nothing Then
         ReportBlock "Итерации внутреннего CSectionSolver для последней capacity-точки", cap.LastSolver.DiagnosticLog
@@ -521,48 +518,50 @@ Private Sub RunSectionStateAndCrack(ByVal index As Long, ByVal crackRequested As
     Dim steelState As CMaterialDiagram
     Set concreteState = mMaterialProvider.ConcreteStateMaterial(basePurpose)
     Set steelState = mMaterialProvider.SteelStateMaterial(basePurpose)
-    mDirectStateDiagramExtensionEnabled(index) = mMaterialProvider.DirectStateDiagramExtensionEnabled
+    mResults(index).DirectStateDiagramExtensionEnabled = mMaterialProvider.DirectStateDiagramExtensionEnabled
+
+    Dim runner As CStateSolutionRunner
+    Set runner = New CStateSolutionRunner
+    ConfigureStateRunner runner
+    ReportStep "Запускается прямой расчет НДС CSectionSolver."
+    runner.Solve mSection, concreteState, steelState, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
+        mResults(index).DirectStateDiagramExtensionEnabled
 
     Dim service As CSectionSolver
-    Set service = New CSectionSolver
-    ConfigureSectionSolver service
-    ApplyDirectStateInitialGuess index, concreteState, steelState, service
-    ReportStep "Запускается прямой расчет НДС CSectionSolver."
-    service.Solve mSection, concreteState, steelState, mN(index), mMx(index), mMy(index)
+    Set service = runner.ResultSolver
+    If service Is Nothing Then
+        mResults(index).DirectStateStatus = mStatusPolicy.NumFail
+        mResults(index).CrackStatus = mStatusPolicy.NotApplicable
+        ReportStep "Расчет трещин не запускается: прямой НДС не вернул состояние solver-а."
+        Exit Sub
+    End If
     StoreSectionState index, service
     ReportValue "НДС сошелся", IIf(service.Converged, "да", "нет")
-    ReportValue "Итераций НДС", CStr(service.Iterations)
+    ReportValue "Итераций НДС", CStr(runner.Iterations)
+    ReportBlock "Сценарий прямого StateSolution", runner.DiagnosticLog
     ReportBlock "Итерации прямого CSectionSolver", service.DiagnosticLog
-    If Not service.Converged And mDirectStateDiagramExtensionEnabled(index) Then
-        If TrySolveStateWithExtensionWarmStart(index, concreteState, steelState, service) Then
-            StoreSectionState index, service
-            ReportStep "Прямое НДС сошлось после повторного старта в technical extension."
-            ReportValue "Итераций повторного НДС", CStr(service.Iterations)
-            ReportBlock "Итерации повторного CSectionSolver", service.DiagnosticLog
-        End If
-    End If
     If Not service.Converged Then
-        mDirectStateStatus(index) = STATUS_NUMFAIL
-        mCrackStatus(index) = STATUS_NA
+        mResults(index).DirectStateStatus = mStatusPolicy.NumFail
+        mResults(index).CrackStatus = mStatusPolicy.NotApplicable
         ReportStep "Расчет трещин не запускается, потому что прямое НДС не сошлось: " & service.StopReason
         Exit Sub
     End If
 
     Dim stateWithinPhysical As Boolean
-    stateWithinPhysical = StateWithinPhysicalRange(service, concreteState, steelState)
-    mExtensionUsed(index) = StateUsesExtension(service, concreteState, steelState)
+    stateWithinPhysical = runner.WithinPhysicalRange
+    mResults(index).ExtensionUsed = runner.ExtensionUsed
 
-    If mExtensionUsed(index) Or Not stateWithinPhysical Then
-        mDirectStateStatus(index) = STATUS_FAIL
+    If mResults(index).ExtensionUsed Or Not stateWithinPhysical Then
+        mResults(index).DirectStateStatus = mStatusPolicy.Fail
         ReportStep "Прямое НДС найдено, но вышло за физический диапазон диаграммы материала."
     Else
-        mDirectStateStatus(index) = STATUS_OK
+        mResults(index).DirectStateStatus = mStatusPolicy.OK
     End If
-    ReportValue "DirectStateStatus", mDirectStateStatus(index)
-    ReportValue "ExtensionUsed", IIf(mExtensionUsed(index), "да", "нет")
+    ReportValue "DirectStateStatus", mResults(index).DirectStateStatus
+    ReportValue "ExtensionUsed", IIf(mResults(index).ExtensionUsed, "да", "нет")
 
     If Not crackRequested Or Not mCrackEnabled Then
-        mCrackStatus(index) = STATUS_NA
+        mResults(index).CrackStatus = mStatusPolicy.NotApplicable
         If crackRequested Then
             ReportStep "Расчет трещин отключен настройкой SLS.Crack.Enabled."
         Else
@@ -571,8 +570,8 @@ Private Sub RunSectionStateAndCrack(ByVal index As Long, ByVal crackRequested As
         Exit Sub
     End If
 
-    If mDirectStateStatus(index) <> STATUS_OK Or mExtensionUsed(index) Then
-        mCrackStatus(index) = STATUS_NA
+    If mResults(index).DirectStateStatus <> mStatusPolicy.OK Or mResults(index).ExtensionUsed Then
+        mResults(index).CrackStatus = mStatusPolicy.NotApplicable
         ReportStep "Расчет трещин не запускается: исходное НДС Group2 не находится полностью в физическом диапазоне диаграммы."
         Exit Sub
     End If
@@ -588,71 +587,45 @@ Private Sub RunSectionStateAndCrack(ByVal index As Long, ByVal crackRequested As
     ' центра тяжести бетонного сечения. Если точка приложения N смещена от
     ' бетонного центра, то даже при Mx_user = My_user = 0 появляется
     ' внецентренное растяжение.
-    centroidMxForCrack = mUserMx(index) + mN(index) * mLoadReferenceOffsetY
-    centroidMyForCrack = mUserMy(index) + mN(index) * mLoadReferenceOffsetX
+    centroidMxForCrack = mInputs(index).UserMx + mInputs(index).N * mLoadReferenceOffsetY
+    centroidMyForCrack = mInputs(index).UserMy + mInputs(index).N * mLoadReferenceOffsetX
 
     crack.Calculate service, mSection, mMaterialProvider, basePurpose, _
-        mN(index), mMx(index), mMy(index), _
+        mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
         centroidMxForCrack, centroidMyForCrack
-    mCrackStatus(index) = CrackStatusFromCalculator(crack)
-    mCrackWidth(index) = crack.CrackWidth
-    mCrackAllowableValue(index) = crack.AllowableCrackWidth
-    mCrackUtil(index) = crack.Utilization
-    mCrackFormed(index) = crack.CrackFormed
-    mCrackPhi1(index) = crack.Phi1
-    mCrackPhi2(index) = crack.Phi2
-    mCrackPhi3(index) = crack.Phi3
-    mCrackPsiS(index) = crack.PsiS
-    mCrackSigmaS(index) = crack.SigmaS
-    mCrackSigmaSCrc(index) = crack.SigmaSCrc
-    mCrackAs(index) = crack.AsTension
-    mCrackAbt(index) = crack.Abt
-    mCrackDsEquivalent(index) = crack.DsEquivalent
-    mCrackLsRaw(index) = crack.CrackSpacingRaw
-    mCrackLs(index) = crack.CrackSpacing
-    mCrackLambdaCrc(index) = crack.LambdaCrc
-    mCrackNcrc(index) = crack.Ncrc
-    mCrackTensionRebarCount(index) = crack.TensionRebarCount
-    mCrackSectionDepthH(index) = crack.SectionDepthH
-    mCrackCoverA(index) = crack.CoverA
-    mCrackTensionDepth(index) = crack.TensionDepth
-    mCrackEffectiveZoneDepth(index) = crack.EffectiveZoneDepth
-    mCrackCentralBranch(index) = crack.CentralTensionBranch
-    ReportValue "CrackStatus", mCrackStatus(index)
-    ReportValue "Трещина образована", IIf(mCrackFormed(index), "да", "нет")
-    ReportValue "a_crc", FormatNumberInvariant(mCrackWidth(index)) & " мм"
-    ReportValue "psi_s", FormatNumberInvariant(mCrackPsiS(index))
-    ReportValue "As", FormatNumberInvariant(mCrackAs(index)) & " мм2"
-    ReportValue "Abt", FormatNumberInvariant(mCrackAbt(index)) & " мм2"
-    ReportValue "ds_eq", FormatNumberInvariant(mCrackDsEquivalent(index)) & " мм"
-    ReportValue "ls", FormatNumberInvariant(mCrackLs(index)) & " мм"
+    mResults(index).CrackStatus = mStatusPolicy.CrackStatusFromCalculator(crack)
+    mResults(index).CrackWidth = crack.CrackWidth
+    mResults(index).CrackAllowableValue = crack.AllowableCrackWidth
+    mResults(index).CrackUtil = crack.Utilization
+    mResults(index).CrackFormed = crack.CrackFormed
+    mResults(index).CrackPhi1 = crack.Phi1
+    mResults(index).CrackPhi2 = crack.Phi2
+    mResults(index).CrackPhi3 = crack.Phi3
+    mResults(index).CrackPsiS = crack.PsiS
+    mResults(index).CrackSigmaS = crack.SigmaS
+    mResults(index).CrackSigmaSCrc = crack.SigmaSCrc
+    mResults(index).CrackAs = crack.AsTension
+    mResults(index).CrackAbt = crack.Abt
+    mResults(index).CrackDsEquivalent = crack.DsEquivalent
+    mResults(index).CrackLsRaw = crack.CrackSpacingRaw
+    mResults(index).CrackLs = crack.CrackSpacing
+    mResults(index).CrackLambdaCrc = crack.LambdaCrc
+    mResults(index).CrackNcrc = crack.Ncrc
+    mResults(index).CrackTensionRebarCount = crack.TensionRebarCount
+    mResults(index).CrackSectionDepthH = crack.SectionDepthH
+    mResults(index).CrackCoverA = crack.CoverA
+    mResults(index).CrackTensionDepth = crack.TensionDepth
+    mResults(index).CrackEffectiveZoneDepth = crack.EffectiveZoneDepth
+    mResults(index).CrackCentralBranch = crack.CentralTensionBranch
+    ReportValue "CrackStatus", mResults(index).CrackStatus
+    ReportValue "Трещина образована", IIf(mResults(index).CrackFormed, "да", "нет")
+    ReportValue "a_crc", FormatNumberInvariant(mResults(index).CrackWidth) & " мм"
+    ReportValue "psi_s", FormatNumberInvariant(mResults(index).CrackPsiS)
+    ReportValue "As", FormatNumberInvariant(mResults(index).CrackAs) & " мм2"
+    ReportValue "Abt", FormatNumberInvariant(mResults(index).CrackAbt) & " мм2"
+    ReportValue "ds_eq", FormatNumberInvariant(mResults(index).CrackDsEquivalent) & " мм"
+    ReportValue "ls", FormatNumberInvariant(mResults(index).CrackLs) & " мм"
     ReportBlock "Диагностика расчета трещин", crack.DiagnosticLog
-End Sub
-
-' Для чистого изгиба прямой НДС стартует не из нулевой плоскости, а из
-' active-set оценки по текущим диаграммам материала. Это устраняет попадание
-' первой итерации ровно в излом бетона между сжатием и неработающим
-' растяжением. Дальше CSectionSolver все равно заново решает полное
-' равновесие, поэтому начальная плоскость не подменяет расчетный результат.
-Private Sub ApplyDirectStateInitialGuess(ByVal index As Long, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
-        ByVal service As CSectionSolver)
-    If service Is Nothing Then Exit Sub
-    If concreteMaterial Is Nothing Then Exit Sub
-    If steelMaterial Is Nothing Then Exit Sub
-    If Abs(mN(index)) > 0.000000001 Then Exit Sub
-    If Not HasUserMomentVector(index) Then Exit Sub
-
-    Dim guessBuilder As CStateGuessBuilder
-    Dim eps0 As Double
-    Dim kx As Double
-    Dim ky As Double
-    Set guessBuilder = New CStateGuessBuilder
-    If guessBuilder.BuildForDirectState(mSection, concreteMaterial, steelMaterial, _
-            mN(index), mMx(index), mMy(index), eps0, kx, ky) Then
-        service.SetInitialState eps0, kx, ky
-        ReportStep "Для чистого изгиба НДС задан active-set старт по текущей диаграмме материала."
-    End If
 End Sub
 
 Private Function NormalizedCombinationCalculationType(ByVal calculationType As String) As String
@@ -666,7 +639,7 @@ End Function
 
 ' Показывает, должна ли для LC запускаться несущая способность.
 ' Пользовательская настройка Capacity.CalculationScope позволяет оставить
-' поиск предельной λ-траектории только для первой группы или временно считать
+' поиск предельной lambda-траектории только для первой группы или временно считать
 ' его также для Group2 как диагностический прочностной запас.
 Private Function ShouldRunCapacity(ByVal calculationType As String) As Boolean
     Select Case NormalizedCapacityCalculationScope()
@@ -684,158 +657,31 @@ Private Function ShouldRunCrack(ByVal calculationType As String) As Boolean
     ShouldRunCrack = (calculationType = CALC_GROUP2)
 End Function
 
-' True, если в LC есть пользовательский момент Mx или My.
-' Моменты от смещенной точки приложения N сюда не входят: пользователь не
-' задавал их как отдельную нагрузку, они формируются переносом силы.
-Private Function HasUserMomentVector(ByVal index As Long) As Boolean
-    HasUserMomentVector = (Sqr(mUserMx(index) * mUserMx(index) + mUserMy(index) * mUserMy(index)) > 0.000000001)
-End Function
-
-' True для траекторий, где пользователь масштабирует только продольную силу.
-' CapacityLoadPath при этом не переписывается: λ*NMxy остается λ*NMxy в
-' Results, но если пользовательские Mx/My равны нулю, фактический вектор
-' нагрузки содержит только N и моменты переноса от выбранной точки приложения.
-Private Function IsForceOnlyCapacityLoadPath(ByVal index As Long, ByVal loadPath As String) As Boolean
-    IsForceOnlyCapacityLoadPath = (loadPath = CAPACITY_PATH_N Or loadPath = CAPACITY_PATH_NMXY) And _
-        Not HasUserMomentVector(index)
-End Function
-
-' Нормализует текст из Excel в короткий внутренний ключ load-path.
-' Явный текст должен совпадать с пользовательской моделью λ*..., иначе
-' строка сочетания получает InputErr вместо молчаливого авто-исправления.
-Private Function NormalizedCapacityLoadPath(ByVal loadPath As String) As String
-    Dim value As String
-    value = LCase$(Trim$(loadPath))
-    value = Replace$(value, " ", vbNullString)
-    value = Replace$(value, ChrW$(&H3BB), "lambda")
-    value = Replace$(value, "λ", "lambda")
-
-    Select Case value
-        Case "lambda*mx", "lambdamx", "mx"
-            NormalizedCapacityLoadPath = CAPACITY_PATH_MX
-        Case "lambda*my", "lambdamy", "my"
-            NormalizedCapacityLoadPath = CAPACITY_PATH_MY
-        Case "lambda*mxy", "lambdamxy", "mxy"
-            NormalizedCapacityLoadPath = CAPACITY_PATH_MXY
-        Case "lambda*n", "lambdan", "nload"
-            NormalizedCapacityLoadPath = CAPACITY_PATH_N
-        Case "lambda*nmxy", "lambdanmxy", "nmxy", "all"
-            NormalizedCapacityLoadPath = CAPACITY_PATH_NMXY
-    End Select
-End Function
-
-' Возвращает load-path, который реально будет использован для LC.
-' Пустой столбец трактуется осторожно: моментное сочетание идет по λ*Mxy,
-' чистая продольная сила - по λ*N. Явный неизвестный текст остается ошибкой.
-Private Function CapacityLoadPathForCombination(ByVal index As Long) As String
-    Dim explicitValue As String
-    explicitValue = NormalizedCapacityLoadPath(mCapacityLoadPath(index))
-    If Len(explicitValue) > 0 Then
-        CapacityLoadPathForCombination = explicitValue
-    ElseIf Len(Trim$(mCapacityLoadPath(index))) > 0 Then
-        CapacityLoadPathForCombination = vbNullString
-    ElseIf HasUserMomentVector(index) Then
-        CapacityLoadPathForCombination = CAPACITY_PATH_MXY
-    ElseIf Abs(mN(index)) > 0.000000001 Then
-        CapacityLoadPathForCombination = CAPACITY_PATH_N
-    End If
+' Создает объект lambda-траектории для одной строки LC.
+' Batch передает сюда только уже нормализованные усилия и точку приложения
+' нагрузки, а все подробности интерпретации lambda*Mx/lambda*N остаются в CCapacityLoadPath.
+Private Function BuildLoadPathForCombination(ByVal index As Long) As CCapacityLoadPath
+    Dim loadPath As CCapacityLoadPath
+    Set loadPath = New CCapacityLoadPath
+    loadPath.Initialize mInputs(index).CapacityLoadPath, mInputs(index).N, mInputs(index).UserMx, mInputs(index).UserMy, _
+        mLoadReferenceX, mLoadReferenceY
+    Set BuildLoadPathForCombination = loadPath
 End Function
 
 ' Формирует человекочитаемую подпись load-path для Results и отчета.
-Private Function CapacityLoadPathDisplay(ByVal loadPath As String) As String
-    Select Case loadPath
-        Case CAPACITY_PATH_MX
-            CapacityLoadPathDisplay = ChrW$(&H3BB) & "*Mx"
-        Case CAPACITY_PATH_MY
-            CapacityLoadPathDisplay = ChrW$(&H3BB) & "*My"
-        Case CAPACITY_PATH_MXY
-            CapacityLoadPathDisplay = ChrW$(&H3BB) & "*Mxy"
-        Case CAPACITY_PATH_N
-            CapacityLoadPathDisplay = ChrW$(&H3BB) & "*N"
-        Case CAPACITY_PATH_NMXY
-            CapacityLoadPathDisplay = ChrW$(&H3BB) & "*NMxy"
-        Case Else
-            CapacityLoadPathDisplay = loadPath
-    End Select
-End Function
-
-' Проверяет, есть ли в выбранном пути хотя бы одна ненулевая масштабируемая
-' пользовательская компонента нагрузки.
-Private Function CapacityLoadPathHasScaledLoad(ByVal index As Long, ByVal loadPath As String) As Boolean
-    Select Case loadPath
-        Case CAPACITY_PATH_MX
-            CapacityLoadPathHasScaledLoad = (Abs(mUserMx(index)) > 0.000000001)
-        Case CAPACITY_PATH_MY
-            CapacityLoadPathHasScaledLoad = (Abs(mUserMy(index)) > 0.000000001)
-        Case CAPACITY_PATH_MXY
-            CapacityLoadPathHasScaledLoad = HasUserMomentVector(index)
-        Case CAPACITY_PATH_N
-            CapacityLoadPathHasScaledLoad = (Abs(mN(index)) > 0.000000001)
-        Case CAPACITY_PATH_NMXY
-            CapacityLoadPathHasScaledLoad = (Abs(mN(index)) + Abs(mUserMx(index)) + Abs(mUserMy(index)) > 0.000000001)
-    End Select
-End Function
-
-' Переводит выбранный пользователем путь в математическую форму solver-а.
-' Offset - неизменяемая часть внешней нагрузки, Base - часть, умножаемая
-' на lambda. Моменты от эксцентриситета N попадают туда, куда физически
-' попадает сама N: при λ*N они масштабируются, при λ*M остаются постоянными.
-Private Sub BuildCapacityLoadPath(ByVal index As Long, ByVal loadPath As String, _
-        ByRef nOffset As Double, ByRef nBase As Double, _
-        ByRef mxOffset As Double, ByRef mxBase As Double, _
-        ByRef myOffset As Double, ByRef myBase As Double)
-    Dim mxFromN As Double
-    Dim myFromN As Double
-    mxFromN = mN(index) * mLoadReferenceY
-    myFromN = mN(index) * mLoadReferenceX
-
-    Select Case loadPath
-        Case CAPACITY_PATH_MX
-            nOffset = mN(index)
-            mxOffset = mxFromN
-            mxBase = mUserMx(index)
-            myOffset = myFromN + mUserMy(index)
-        Case CAPACITY_PATH_MY
-            nOffset = mN(index)
-            mxOffset = mxFromN + mUserMx(index)
-            myOffset = myFromN
-            myBase = mUserMy(index)
-        Case CAPACITY_PATH_MXY
-            nOffset = mN(index)
-            mxOffset = mxFromN
-            mxBase = mUserMx(index)
-            myOffset = myFromN
-            myBase = mUserMy(index)
-        Case CAPACITY_PATH_N
-            nBase = mN(index)
-            mxOffset = mUserMx(index)
-            mxBase = mxFromN
-            myOffset = mUserMy(index)
-            myBase = myFromN
-        Case CAPACITY_PATH_NMXY
-            nBase = mN(index)
-            mxBase = mMx(index)
-            myBase = mMy(index)
-    End Select
-End Sub
-
-Private Function CapacityPathScalesN(ByVal loadPath As String) As Boolean
-    CapacityPathScalesN = (loadPath = CAPACITY_PATH_N Or loadPath = CAPACITY_PATH_NMXY)
-End Function
-
-Private Function CapacityPathScalesMx(ByVal loadPath As String) As Boolean
-    CapacityPathScalesMx = (loadPath = CAPACITY_PATH_MX Or loadPath = CAPACITY_PATH_MXY Or loadPath = CAPACITY_PATH_NMXY)
-End Function
-
-Private Function CapacityPathScalesMy(ByVal loadPath As String) As Boolean
-    CapacityPathScalesMy = (loadPath = CAPACITY_PATH_MY Or loadPath = CAPACITY_PATH_MXY Or loadPath = CAPACITY_PATH_NMXY)
+' Само соответствие ключа и подписи хранится в CCapacityLoadPath, чтобы batch
+' не становился вторым местом интерпретации lambda-траекторий.
+Private Function CapacityLoadPathDisplay(ByVal loadPathKey As String) As String
+    Dim loadPath As CCapacityLoadPath
+    Set loadPath = New CCapacityLoadPath
+    CapacityLoadPathDisplay = loadPath.DisplayNameForKey(loadPathKey)
 End Function
 
 ' Выбирает material purpose для фактического НДС конкретного LC.
 ' Group1 решается по Strength-модели I ГПС, Group2 - по CrackedNDS-модели
 ' II ГПС с неработающим растянутым бетоном, как принято для a_crc.
 Private Function MaterialPurposeForCombination(ByVal index As Long) As ECalculationPurpose
-    If NormalizedCombinationCalculationType(mCalculationType(index)) = CALC_GROUP2 Then
+    If NormalizedCombinationCalculationType(mInputs(index).CalculationType) = CALC_GROUP2 Then
         MaterialPurposeForCombination = cpCrackedNDS
     Else
         MaterialPurposeForCombination = cpStrength
@@ -885,55 +731,55 @@ End Function
 ' Заполняет capacity-поля нейтральным статусом, когда эта проверка не должна
 ' выполняться для выбранной группы/режима.
 Private Sub StoreNotCalculatedCapacity(ByVal index As Long)
-    mCapacityStatus(index) = STATUS_NA
-    mCapacityLimitState(index) = STATUS_NA
-    mCapacitySolutionMethod(index) = vbNullString
-    mCapacityPathResolved(index) = CAPACITY_PATH_NONE
+    mResults(index).CapacityStatus = mStatusPolicy.NotApplicable
+    mResults(index).CapacityLimitState = mStatusPolicy.NotApplicable
+    mResults(index).CapacitySolutionMethod = vbNullString
+    mResults(index).CapacityPathResolved = CAPACITY_PATH_NONE
 End Sub
 
 ' Помечает capacity как пропущенную из-за нулевой нагрузки.
 ' Это не ошибка исходных данных: для нулевых N, Mx и My нельзя построить
 ' направление внешнего поиска несущей способности.
 Private Sub StoreSkippedCapacity(ByVal index As Long)
-    mCapacityStatus(index) = STATUS_NA
-    mCapacityLimitState(index) = "ZeroBaseLoad"
-    mCapacitySolutionMethod(index) = vbNullString
-    mCapacityPathResolved(index) = CAPACITY_PATH_NONE
+    mResults(index).CapacityStatus = mStatusPolicy.NotApplicable
+    mResults(index).CapacityLimitState = "ZeroBaseLoad"
+    mResults(index).CapacitySolutionMethod = vbNullString
+    mResults(index).CapacityPathResolved = CAPACITY_PATH_NONE
 End Sub
 
 ' Помечает только ветку capacity как ошибку исходных данных.
 ' Прямое НДС при этом все равно может быть посчитано: ошибка относится к
 ' выбору траектории несущей способности, а не к самим нагрузкам LC.
 Private Sub StoreInvalidCapacity(ByVal index As Long, ByVal reason As String)
-    mCapacityStatus(index) = STATUS_INPUTERR
-    mCapacityLimitState(index) = reason
-    mCapacitySolutionMethod(index) = vbNullString
-    mCapacityPathResolved(index) = CAPACITY_PATH_NONE
-    mLambdaCapacity(index) = 0#
-    mUtilCapacity(index) = 0#
-    mNUltimate(index) = 0#
-    mMxUltimate(index) = 0#
-    mMyUltimate(index) = 0#
-    mMomentUltimate(index) = 0#
+    mResults(index).CapacityStatus = mStatusPolicy.InputErr
+    mResults(index).CapacityLimitState = reason
+    mResults(index).CapacitySolutionMethod = vbNullString
+    mResults(index).CapacityPathResolved = CAPACITY_PATH_NONE
+    mResults(index).LambdaCapacity = 0#
+    mResults(index).UtilCapacity = 0#
+    mResults(index).NUltimate = 0#
+    mResults(index).MxUltimate = 0#
+    mResults(index).MyUltimate = 0#
+    mResults(index).MomentUltimate = 0#
 End Sub
 
 ' Переносит результат CCapacitySolver в массивы batch-отчета.
 ' Здесь разделяется математическая сходимость capacity solver-а и простая
 ' инженерная проверка: lambda меньше или больше единицы.
-Private Sub StoreCapacity(ByVal index As Long, ByVal cap As CCapacitySolver, ByVal loadPath As String)
-    mCapacityStatus(index) = CapacityStatusFromSolver(cap)
-    mCapacityLimitState(index) = cap.LimitState
-    mCapacitySolutionMethod(index) = cap.SolutionMethod
-    mCapacityPathResolved(index) = loadPath
-    mLambdaCapacity(index) = cap.LambdaUltimate
+Private Sub StoreCapacity(ByVal index As Long, ByVal cap As CCapacitySolver, ByVal loadPath As CCapacityLoadPath)
+    mResults(index).CapacityStatus = mStatusPolicy.CapacityStatusFromSolver(cap)
+    mResults(index).CapacityLimitState = cap.LimitState
+    mResults(index).CapacitySolutionMethod = cap.SolutionMethod
+    mResults(index).CapacityPathResolved = loadPath.Key
+    mResults(index).LambdaCapacity = cap.LambdaUltimate
     If cap.LambdaUltimate > 0# Then
-        If CapacityPathScalesN(loadPath) Then mNUltimate(index) = cap.LambdaUltimate * mN(index)
-        If CapacityPathScalesMx(loadPath) Then mMxUltimate(index) = cap.LambdaUltimate * mUserMx(index)
-        If CapacityPathScalesMy(loadPath) Then mMyUltimate(index) = cap.LambdaUltimate * mUserMy(index)
+        If loadPath.ScalesN Then mResults(index).NUltimate = cap.LambdaUltimate * mInputs(index).N
+        If loadPath.ScalesMx Then mResults(index).MxUltimate = cap.LambdaUltimate * mInputs(index).UserMx
+        If loadPath.ScalesMy Then mResults(index).MyUltimate = cap.LambdaUltimate * mInputs(index).UserMy
     End If
-    mMomentUltimate(index) = Sqr(mMxUltimate(index) * mMxUltimate(index) + mMyUltimate(index) * mMyUltimate(index))
-    If cap.LambdaUltimate > 0# Then mUtilCapacity(index) = 1# / cap.LambdaUltimate
-    If cap.Converged Then mUtilCapacity(index) = cap.Utilization
+    mResults(index).MomentUltimate = Sqr(mResults(index).MxUltimate * mResults(index).MxUltimate + mResults(index).MyUltimate * mResults(index).MyUltimate)
+    If cap.LambdaUltimate > 0# Then mResults(index).UtilCapacity = 1# / cap.LambdaUltimate
+    If cap.Converged Then mResults(index).UtilCapacity = cap.Utilization
 
     ' h/x в блоке предельного момента должны относиться к найденному
     ' предельному состоянию, а не к фактическому НДС LC. Поэтому сохраняем
@@ -941,10 +787,10 @@ Private Sub StoreCapacity(ByVal index As Long, ByVal cap As CCapacitySolver, ByV
     ' дал физически принятое предельное состояние.
     If cap.Converged And cap.LambdaUltimate > 0# Then
         If Not cap.LastSolver Is Nothing Then
-            mCapacityStateAvailable(index) = True
-            mCapacityEpsilon0(index) = cap.LastSolver.Epsilon0
-            mCapacityKappaX(index) = cap.LastSolver.KappaX
-            mCapacityKappaY(index) = cap.LastSolver.KappaY
+            mResults(index).CapacityStateAvailable = True
+            mResults(index).CapacityEpsilon0 = cap.LastSolver.Epsilon0
+            mResults(index).CapacityKappaX = cap.LastSolver.KappaX
+            mResults(index).CapacityKappaY = cap.LastSolver.KappaY
         End If
     End If
 End Sub
@@ -953,18 +799,18 @@ End Sub
 ' в solver. Так пользователь видит причину в таблице, а остальные LC считаются.
 Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     If Len(Trim$(reason)) = 0 Then reason = "Некорректное сочетание нагрузок."
-    mInputError(index) = reason
-    mStatus(index) = STATUS_INPUTERR
-    mDirectStateStatus(index) = STATUS_INPUTERR
-    mCapacityStatus(index) = STATUS_INPUTERR
-    mCapacityLimitState(index) = reason
-    mCapacitySolutionMethod(index) = vbNullString
-    mCapacityPathResolved(index) = CAPACITY_PATH_NONE
-    mCrackStatus(index) = STATUS_NA
+    mInputs(index).InputError = reason
+    mResults(index).Status = mStatusPolicy.InputErr
+    mResults(index).DirectStateStatus = mStatusPolicy.InputErr
+    mResults(index).CapacityStatus = mStatusPolicy.InputErr
+    mResults(index).CapacityLimitState = reason
+    mResults(index).CapacitySolutionMethod = vbNullString
+    mResults(index).CapacityPathResolved = CAPACITY_PATH_NONE
+    mResults(index).CrackStatus = mStatusPolicy.NotApplicable
     If Not mMaterialProvider Is Nothing Then
-        mDirectStateDiagramExtensionEnabled(index) = mMaterialProvider.DirectStateDiagramExtensionEnabled
+        mResults(index).DirectStateDiagramExtensionEnabled = mMaterialProvider.DirectStateDiagramExtensionEnabled
     End If
-    mGoverningUtil(index) = 0#
+    mResults(index).GoverningUtil = 0#
     AppendDiagnostic index
 End Sub
 
@@ -998,24 +844,24 @@ Private Sub ConfigureCapacity(ByVal cap As CCapacitySolver)
     cap.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
 End Sub
 
-' Настраивает прямой CSectionSolver для расчета фактического состояния LC.
-' Capacity-настройки сюда не попадают, чтобы прямое НДС не зависело от
-' выбранного метода поиска предельного состояния.
-Private Sub ConfigureSectionSolver(ByVal solver As CSectionSolver)
-    solver.LoadSteps = mSolverLoadSteps
-    solver.SolverMethod = mSolverMethod
-    solver.MaxIterations = mSolverMaxIterations
-    solver.ToleranceN = mSolverToleranceN
-    solver.ToleranceMx = mSolverToleranceMx
-    solver.ToleranceMy = mSolverToleranceMy
-    solver.LineSearchEnabled = mSolverLineSearchEnabled
-    solver.DampingInitial = mSolverDampingInitial
-    solver.MinLineSearchAlpha = mSolverMinLineSearchAlpha
-    solver.MaxDeltaEpsilon0 = mSolverMaxDeltaEpsilon0
-    solver.MaxDeltaKappa = mSolverMaxDeltaKappa
-    solver.SecantMaxRestarts = mSolverSecantMaxRestarts
-    solver.SecantMinStepNorm = mSolverSecantMinStepNorm
-    solver.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
+' Настраивает runner прямого НДС общими solver-параметрами batch-расчета.
+' Здесь остается только передача настроек; сама логика initial guess, retry
+' и extension живет в CStateSolutionRunner.
+Private Sub ConfigureStateRunner(ByVal runner As CStateSolutionRunner)
+    runner.LoadSteps = mSolverLoadSteps
+    runner.SolverMethod = mSolverMethod
+    runner.MaxIterations = mSolverMaxIterations
+    runner.ToleranceN = mSolverToleranceN
+    runner.ToleranceMx = mSolverToleranceMx
+    runner.ToleranceMy = mSolverToleranceMy
+    runner.LineSearchEnabled = mSolverLineSearchEnabled
+    runner.DampingInitial = mSolverDampingInitial
+    runner.MinLineSearchAlpha = mSolverMinLineSearchAlpha
+    runner.MaxDeltaEpsilon0 = mSolverMaxDeltaEpsilon0
+    runner.MaxDeltaKappa = mSolverMaxDeltaKappa
+    runner.SecantMaxRestarts = mSolverSecantMaxRestarts
+    runner.SecantMinStepNorm = mSolverSecantMinStepNorm
+    runner.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
 End Sub
 
 ' Передает в расчет трещин те же настройки прямого равновесия, что и в
@@ -1063,86 +909,86 @@ End Sub
 ' Сбрасывает все результаты одной строки перед повторным расчетом LC.
 ' Входные усилия и комментарий не трогаются.
 Private Sub ClearResultRow(ByVal index As Long)
-    mStatus(index) = vbNullString
-    mDirectStateStatus(index) = vbNullString
-    mCapacityStatus(index) = vbNullString
-    mCapacityLimitState(index) = vbNullString
-    mCapacitySolutionMethod(index) = vbNullString
-    mCrackStatus(index) = vbNullString
-    mLambdaCapacity(index) = 0#
-    mUtilCapacity(index) = 0#
-    mCapacityPathResolved(index) = CAPACITY_PATH_NONE
-    mNUltimate(index) = 0#
-    mMxUltimate(index) = 0#
-    mMyUltimate(index) = 0#
-    mCrackWidth(index) = 0#: mCrackAllowableValue(index) = 0#: mCrackUtil(index) = 0#
-    mCrackFormed(index) = False
-    mCrackPhi1(index) = 0#: mCrackPhi2(index) = 0#: mCrackPhi3(index) = 0#: mCrackPsiS(index) = 0#
-    mCrackSigmaS(index) = 0#: mCrackSigmaSCrc(index) = 0#
-    mCrackAs(index) = 0#: mCrackAbt(index) = 0#: mCrackDsEquivalent(index) = 0#
-    mMomentUltimate(index) = 0#
-    mCapacityStateAvailable(index) = False
-    mCapacityEpsilon0(index) = 0#: mCapacityKappaX(index) = 0#: mCapacityKappaY(index) = 0#
-    mMinConcreteStrain(index) = 0#: mMaxConcreteStrain(index) = 0#
-    mMinSteelStrain(index) = 0#: mMaxSteelStrain(index) = 0#
-    mCrackLsRaw(index) = 0#: mCrackLs(index) = 0#: mCrackLambdaCrc(index) = 0#: mCrackNcrc(index) = 0#
-    mCrackTensionRebarCount(index) = 0#
-    mCrackSectionDepthH(index) = 0#: mCrackCoverA(index) = 0#: mCrackTensionDepth(index) = 0#
-    mCrackEffectiveZoneDepth(index) = 0#: mCrackCentralBranch(index) = False
-    mGoverningUtil(index) = 0#
-    mStateAvailable(index) = False
-    mStateConverged(index) = False
-    mEpsilon0(index) = 0#: mKappaX(index) = 0#: mKappaY(index) = 0#
-    mNint(index) = 0#: mMxint(index) = 0#: mMyint(index) = 0#
-    mResidualN(index) = 0#: mResidualMx(index) = 0#: mResidualMy(index) = 0#
-    mStateIterations(index) = 0
-    mExtensionUsed(index) = False
-    mDirectStateDiagramExtensionEnabled(index) = False
+    mResults(index).Status = vbNullString
+    mResults(index).DirectStateStatus = vbNullString
+    mResults(index).CapacityStatus = vbNullString
+    mResults(index).CapacityLimitState = vbNullString
+    mResults(index).CapacitySolutionMethod = vbNullString
+    mResults(index).CrackStatus = vbNullString
+    mResults(index).LambdaCapacity = 0#
+    mResults(index).UtilCapacity = 0#
+    mResults(index).CapacityPathResolved = CAPACITY_PATH_NONE
+    mResults(index).NUltimate = 0#
+    mResults(index).MxUltimate = 0#
+    mResults(index).MyUltimate = 0#
+    mResults(index).CrackWidth = 0#: mResults(index).CrackAllowableValue = 0#: mResults(index).CrackUtil = 0#
+    mResults(index).CrackFormed = False
+    mResults(index).CrackPhi1 = 0#: mResults(index).CrackPhi2 = 0#: mResults(index).CrackPhi3 = 0#: mResults(index).CrackPsiS = 0#
+    mResults(index).CrackSigmaS = 0#: mResults(index).CrackSigmaSCrc = 0#
+    mResults(index).CrackAs = 0#: mResults(index).CrackAbt = 0#: mResults(index).CrackDsEquivalent = 0#
+    mResults(index).MomentUltimate = 0#
+    mResults(index).CapacityStateAvailable = False
+    mResults(index).CapacityEpsilon0 = 0#: mResults(index).CapacityKappaX = 0#: mResults(index).CapacityKappaY = 0#
+    mResults(index).MinConcreteStrain = 0#: mResults(index).MaxConcreteStrain = 0#
+    mResults(index).MinSteelStrain = 0#: mResults(index).MaxSteelStrain = 0#
+    mResults(index).CrackLsRaw = 0#: mResults(index).CrackLs = 0#: mResults(index).CrackLambdaCrc = 0#: mResults(index).CrackNcrc = 0#
+    mResults(index).CrackTensionRebarCount = 0#
+    mResults(index).CrackSectionDepthH = 0#: mResults(index).CrackCoverA = 0#: mResults(index).CrackTensionDepth = 0#
+    mResults(index).CrackEffectiveZoneDepth = 0#: mResults(index).CrackCentralBranch = False
+    mResults(index).GoverningUtil = 0#
+    mResults(index).StateAvailable = False
+    mResults(index).StateConverged = False
+    mResults(index).Epsilon0 = 0#: mResults(index).KappaX = 0#: mResults(index).KappaY = 0#
+    mResults(index).Nint = 0#: mResults(index).Mxint = 0#: mResults(index).Myint = 0#
+    mResults(index).ResidualN = 0#: mResults(index).ResidualMx = 0#: mResults(index).ResidualMy = 0#
+    mResults(index).StateIterations = 0
+    mResults(index).ExtensionUsed = False
+    mResults(index).DirectStateDiagramExtensionEnabled = False
 End Sub
 
 ' Сохраняет найденную плоскость деформаций и внутренние усилия прямого solve.
 ' Эти данные затем уходят в Results и используются для схемы/AutoCAD export.
 Private Sub StoreSectionState(ByVal index As Long, ByVal solver As CSectionSolver)
-    mStateAvailable(index) = True
-    mStateConverged(index) = solver.Converged
-    mEpsilon0(index) = solver.Epsilon0
-    mKappaX(index) = solver.KappaX
-    mKappaY(index) = solver.KappaY
-    mNint(index) = solver.Nint
-    mMxint(index) = solver.Mxint
-    mMyint(index) = solver.Myint
-    mMinConcreteStrain(index) = solver.MinConcreteStrain
-    mMaxConcreteStrain(index) = solver.MaxConcreteStrain
-    mMinSteelStrain(index) = solver.MinSteelStrain
-    mMaxSteelStrain(index) = solver.MaxSteelStrain
-    mResidualN(index) = solver.ResidualN
-    mResidualMx(index) = solver.ResidualMx
-    mResidualMy(index) = solver.ResidualMy
-    mStateIterations(index) = solver.Iterations
+    mResults(index).StateAvailable = True
+    mResults(index).StateConverged = solver.Converged
+    mResults(index).Epsilon0 = solver.Epsilon0
+    mResults(index).KappaX = solver.KappaX
+    mResults(index).KappaY = solver.KappaY
+    mResults(index).Nint = solver.Nint
+    mResults(index).Mxint = solver.Mxint
+    mResults(index).Myint = solver.Myint
+    mResults(index).MinConcreteStrain = solver.MinConcreteStrain
+    mResults(index).MaxConcreteStrain = solver.MaxConcreteStrain
+    mResults(index).MinSteelStrain = solver.MinSteelStrain
+    mResults(index).MaxSteelStrain = solver.MaxSteelStrain
+    mResults(index).ResidualN = solver.ResidualN
+    mResults(index).ResidualMx = solver.ResidualMx
+    mResults(index).ResidualMy = solver.ResidualMy
+    mResults(index).StateIterations = solver.Iterations
 End Sub
 
 ' Добавляет одну строку в текстовую диагностику batch-расчета.
 ' Это компактная сводка для отладки, а не подробный журнал итераций solver-а.
 Private Sub AppendDiagnostic(ByVal index As Long)
-    mDiagnosticLog = mDiagnosticLog & "combination=" & mCombinationID(index) & _
-        "; OverallStatus=" & mStatus(index) & _
-        "; DirectStateStatus=" & mDirectStateStatus(index) & _
-        "; ExtensionUsed=" & CStr(mExtensionUsed(index)) & _
-        "; CapacityStatus=" & mCapacityStatus(index) & _
-        "; CrackStatus=" & mCrackStatus(index) & _
-        "; governingUtil=" & FormatNumberInvariant(mGoverningUtil(index)) & vbCrLf
+    mDiagnosticLog = mDiagnosticLog & "combination=" & mInputs(index).CombinationID & _
+        "; OverallStatus=" & mResults(index).Status & _
+        "; DirectStateStatus=" & mResults(index).DirectStateStatus & _
+        "; ExtensionUsed=" & CStr(mResults(index).ExtensionUsed) & _
+        "; CapacityStatus=" & mResults(index).CapacityStatus & _
+        "; CrackStatus=" & mResults(index).CrackStatus & _
+        "; governingUtil=" & FormatNumberInvariant(mResults(index).GoverningUtil) & vbCrLf
 End Sub
 
 ' Добавляет в подробный txt-отчет краткий итог по текущему LC.
 ' Batch summary остается основным табличным выводом, а здесь пользователь
 ' видит ход выполнения без открытия Results и без чтения внутренних массивов.
 Private Sub ReportCombinationSummary(ByVal index As Long)
-    ReportValue "Итоговый Status", mStatus(index)
-    ReportValue "DirectStateStatus", mDirectStateStatus(index)
-    ReportValue "ExtensionUsed", CStr(mExtensionUsed(index))
-    ReportValue "CapacityStatus", mCapacityStatus(index)
-    ReportValue "CrackStatus", mCrackStatus(index)
-    ReportValue "GoverningUtilization", FormatNumberInvariant(mGoverningUtil(index))
+    ReportValue "Итоговый Status", mResults(index).Status
+    ReportValue "DirectStateStatus", mResults(index).DirectStateStatus
+    ReportValue "ExtensionUsed", CStr(mResults(index).ExtensionUsed)
+    ReportValue "CapacityStatus", mResults(index).CapacityStatus
+    ReportValue "CrackStatus", mResults(index).CrackStatus
+    ReportValue "GoverningUtilization", FormatNumberInvariant(mResults(index).GoverningUtil)
 End Sub
 
 Private Sub ReportSection(ByVal title As String)
@@ -1169,17 +1015,6 @@ Private Sub ReportBlock(ByVal title As String, ByVal body As String)
     mReport.AddBlock title, body
 End Sub
 
-' Собирает OverallStatus из статусов применимых расчетных разделов.
-' N/A не ухудшает итог: это означает, что ветка не относится к LC или режиму.
-Private Function AggregateOverallStatus(ByVal index As Long) As String
-    Dim resultStatus As String
-    resultStatus = STATUS_NA
-    resultStatus = MergeOverallStatus(resultStatus, mDirectStateStatus(index))
-    resultStatus = MergeOverallStatus(resultStatus, mCapacityStatus(index))
-    resultStatus = MergeOverallStatus(resultStatus, mCrackStatus(index))
-    AggregateOverallStatus = resultStatus
-End Function
-
 ' Нормализует область запуска capacity-поиска. Алиасы оставлены на границе
 ' Excel-ввода, чтобы в расчетной логике дальше ходили только два значения.
 Private Function NormalizedCapacityCalculationScope() As String
@@ -1189,261 +1024,6 @@ Private Function NormalizedCapacityCalculationScope() As String
         Case "group1+2", "group1andgroup2", "group1+group2", "all", "both"
             NormalizedCapacityCalculationScope = "Group1AndGroup2"
     End Select
-End Function
-
-' Выбирает худший статус по утвержденному приоритету:
-' InputErr -> NumFail -> FAIL -> OK, при этом N/A пропускается.
-Private Function MergeOverallStatus(ByVal currentStatus As String, ByVal candidateStatus As String) As String
-    candidateStatus = NormalizeUserStatus(candidateStatus)
-    currentStatus = NormalizeUserStatus(currentStatus)
-    If candidateStatus = STATUS_NA Then
-        MergeOverallStatus = currentStatus
-    ElseIf currentStatus = STATUS_NA Then
-        MergeOverallStatus = candidateStatus
-    ElseIf StatusPriority(candidateStatus) > StatusPriority(currentStatus) Then
-        MergeOverallStatus = candidateStatus
-    Else
-        MergeOverallStatus = currentStatus
-    End If
-End Function
-
-Private Function StatusPriority(ByVal statusText As String) As Long
-    Select Case NormalizeUserStatus(statusText)
-        Case STATUS_INPUTERR
-            StatusPriority = 4
-        Case STATUS_NUMFAIL
-            StatusPriority = 3
-        Case STATUS_FAIL
-            StatusPriority = 2
-        Case STATUS_OK
-            StatusPriority = 1
-        Case Else
-            StatusPriority = 0
-    End Select
-End Function
-
-' Нормализует внутренний текст в короткий пользовательский словарь статусов.
-Private Function NormalizeUserStatus(ByVal statusText As String) As String
-    Dim value As String
-    value = Trim$(statusText)
-    Select Case UCase$(value)
-        Case "OK"
-            NormalizeUserStatus = STATUS_OK
-        Case "FAIL", "STRENGTHFAILED", "STRAINLIMITEXCEEDED"
-            NormalizeUserStatus = STATUS_FAIL
-        Case "NUMFAIL", "NUMERICALFAILURE", "SINGULARTANGENT"
-            NormalizeUserStatus = STATUS_NUMFAIL
-        Case "INPUTERR", "INPUTERROR", "INVALIDINPUT"
-            NormalizeUserStatus = STATUS_INPUTERR
-        Case "N/A", "NA", "NOTCALCULATED", "NOTCALCUL.", "SKIPPEDZEROMOMENT", "SKIPPEDZEROBASEMOMENT", ""
-            NormalizeUserStatus = STATUS_NA
-        Case Else
-            If IsInvalidStatus(value) Then
-                NormalizeUserStatus = STATUS_INPUTERR
-            ElseIf IsNumericalStatus(value) Then
-                NormalizeUserStatus = STATUS_NUMFAIL
-            Else
-                NormalizeUserStatus = STATUS_FAIL
-            End If
-    End Select
-End Function
-
-' True для расчетов, которые дали физически интерпретируемый результат:
-' проверка либо прошла, либо показала недостаточную несущую способность.
-Private Function IsFinishedStatus(ByVal statusText As String) As Boolean
-    statusText = NormalizeUserStatus(statusText)
-    IsFinishedStatus = (statusText = STATUS_OK Or statusText = STATUS_FAIL)
-End Function
-
-' Распознает статусы, означающие именно численную несходимость.
-Private Function IsNumericalStatus(ByVal statusText As String) As Boolean
-    IsNumericalStatus = (InStr(1, statusText, STATUS_NUMFAIL, vbTextCompare) > 0 Or _
-        InStr(1, statusText, "NumericalFailure", vbTextCompare) > 0 Or _
-        InStr(1, statusText, "SingularTangent", vbTextCompare) > 0)
-End Function
-
-' Делает вторую попытку прямого StateSolution, если первый Newton/Secant
-' застрял на горизонтальном физическом плато. Диаграмма материала не меняется:
-' стартовая плоскость лишь переносится ближе к technical extension, где уже
-' есть малая касательная жесткость и solver может добрать формальное равновесие.
-Private Function TrySolveStateWithExtensionWarmStart(ByVal index As Long, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
-        ByRef service As CSectionSolver) As Boolean
-    Dim guessBuilder As CStateGuessBuilder
-    Set guessBuilder = New CStateGuessBuilder
-
-    Dim eps0 As Double
-    Dim kx As Double
-    Dim ky As Double
-    Dim attemptIndex As Long
-
-    For attemptIndex = 1 To guessBuilder.ExtensionAttemptCount
-        If guessBuilder.BuildAttemptForExtensionState(attemptIndex, mSection, service, _
-                concreteMaterial, steelMaterial, mN(index), mMx(index), mMy(index), eps0, kx, ky) Then
-            If TrySolveStateFromExtensionGuess(index, concreteMaterial, steelMaterial, _
-                    eps0, kx, ky, guessBuilder.ExtensionAttemptName(attemptIndex), service) Then
-                TrySolveStateWithExtensionWarmStart = True
-                Exit Function
-            End If
-        End If
-    Next attemptIndex
-End Function
-
-' Проверяет одну стартовую плоскость повторного StateSolution.
-' Стартовые варианты строятся в CStateGuessBuilder, а здесь batch-слой
-' запускает настоящий CSectionSolver и решает, подошла ли эта подсказка.
-Private Function TrySolveStateFromExtensionGuess(ByVal index As Long, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
-        ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
-        ByVal attemptName As String, ByRef service As CSectionSolver) As Boolean
-    Dim startState As CSectionSolver
-    Set startState = New CSectionSolver
-    startState.EvaluateStrainPlane mSection, concreteMaterial, steelMaterial, eps0, kx, ky
-
-    Dim retryLoadSteps As Long
-    retryLoadSteps = mSolverLoadSteps
-    If retryLoadSteps < 4 Then retryLoadSteps = 4
-
-    If TryRunStateRetry(index, concreteMaterial, steelMaterial, eps0, kx, ky, _
-            mN(index), mMx(index), mMy(index), 1, attemptName & " / direct target", service) Then
-        TrySolveStateFromExtensionGuess = True
-        Exit Function
-    End If
-    If TryRunStateRetry(index, concreteMaterial, steelMaterial, eps0, kx, ky, _
-            mN(index), mMx(index), mMy(index), 1, attemptName & " / direct target without line search", service, True) Then
-        TrySolveStateFromExtensionGuess = True
-        Exit Function
-    End If
-
-    ' Повторный старт передает solver-у не только плоскость деформаций, но и
-    ' усилия, которые эта плоскость уже создает. Тогда ступени идут от близкого
-    ' extension-состояния к полному LC, а не от нулевой нагрузки из чужой
-    ' деформированной формы; это особенно важно для перегруженного изгиба.
-    TrySolveStateFromExtensionGuess = TryRunStateRetry(index, concreteMaterial, steelMaterial, eps0, kx, ky, _
-        startState.Nint, startState.Mxint, startState.Myint, retryLoadSteps, attemptName & " / stepped", service)
-End Function
-
-' Запускает один повторный solve из подготовленной extension-плоскости.
-' initialN/Mx/My определяют, от какого уже известного уровня нагрузки solver
-' будет идти к полному LC: либо сразу от полного target, либо от усилий,
-' созданных стартовой плоскостью.
-Private Function TryRunStateRetry(ByVal index As Long, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
-        ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
-        ByVal initialN As Double, ByVal initialMx As Double, ByVal initialMy As Double, _
-        ByVal loadSteps As Long, ByVal attemptName As String, ByRef service As CSectionSolver, _
-        Optional ByVal disableLineSearch As Boolean = False) As Boolean
-    Dim retry As CSectionSolver
-    Set retry = New CSectionSolver
-    ConfigureSectionSolver retry
-    If disableLineSearch Then retry.LineSearchEnabled = False
-    retry.LoadSteps = loadSteps
-    retry.SetInitialLoadState eps0, kx, ky, initialN, initialMx, initialMy
-    ReportStep "Повторный старт StateSolution в extension: " & attemptName & "."
-    retry.Solve mSection, concreteMaterial, steelMaterial, mN(index), mMx(index), mMy(index)
-
-    If retry.Converged Then
-        Set service = retry
-        TryRunStateRetry = True
-    Else
-        mDiagnosticLog = mDiagnosticLog & "extensionRetryAttempt=" & attemptName & _
-            "; extensionRetryStop=" & retry.StopReason & _
-            "; retryResidualN=" & FormatNumberInvariant(retry.ResidualN) & _
-            "; retryResidualMx=" & FormatNumberInvariant(retry.ResidualMx) & _
-            "; retryResidualMy=" & FormatNumberInvariant(retry.ResidualMy) & vbCrLf
-        ReportStep "Повторный старт в technical extension не сошелся (" & attemptName & "): " & retry.StopReason
-        ReportBlock "Итерации несошедшегося повторного CSectionSolver", retry.DiagnosticLog
-    End If
-End Function
-
-' Распознает статусы ошибок исходных данных.
-Private Function IsInvalidStatus(ByVal statusText As String) As Boolean
-    IsInvalidStatus = (InStr(1, statusText, STATUS_INPUTERR, vbTextCompare) > 0 Or _
-        InStr(1, statusText, "InputError", vbTextCompare) > 0 Or _
-        InStr(1, statusText, "InvalidInput", vbTextCompare) > 0)
-End Function
-
-' Переводит результат capacity solver-а в короткий пользовательский статус.
-Private Function CapacityStatusFromSolver(ByVal cap As CCapacitySolver) As String
-    If cap Is Nothing Then
-        CapacityStatusFromSolver = STATUS_NUMFAIL
-    ElseIf Not cap.Converged Then
-        If IsInvalidStatus(cap.StopReason) Or IsInvalidStatus(cap.LimitState) Then
-            CapacityStatusFromSolver = STATUS_INPUTERR
-        Else
-            CapacityStatusFromSolver = STATUS_NUMFAIL
-        End If
-    ElseIf cap.LambdaUltimate > 0# And cap.LambdaUltimate < 1# Then
-        CapacityStatusFromSolver = STATUS_FAIL
-    Else
-        CapacityStatusFromSolver = STATUS_OK
-    End If
-End Function
-
-' Переводит результат расчета трещин в тот же пользовательский словарь.
-Private Function CrackStatusFromCalculator(ByVal crack As CCrackWidthCalculator) As String
-    If crack Is Nothing Then
-        CrackStatusFromCalculator = STATUS_NUMFAIL
-    ElseIf crack.Converged Then
-        If crack.CrackFormed And crack.AllowableCrackWidth > 0# And _
-                crack.CrackWidth > crack.AllowableCrackWidth Then
-            CrackStatusFromCalculator = STATUS_FAIL
-        Else
-            CrackStatusFromCalculator = STATUS_OK
-        End If
-    ElseIf IsInvalidStatus(crack.StopReason) Then
-        CrackStatusFromCalculator = STATUS_INPUTERR
-    Else
-        CrackStatusFromCalculator = STATUS_NUMFAIL
-    End If
-End Function
-
-' Проверяет, попала ли хотя бы одна деформация в техническую область extension.
-Private Function StateUsesExtension(ByVal solver As CSectionSolver, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram) As Boolean
-    Dim i As Long
-    Dim strain As Double
-
-    For i = 1 To mSection.ConcreteCount
-        strain = ElementStrain(solver, mSection.ConcreteX(i), mSection.ConcreteY(i))
-        If concreteMaterial.IsInExtensionRange(strain) Then
-            StateUsesExtension = True
-            Exit Function
-        End If
-    Next i
-
-    For i = 1 To mSection.RebarCount
-        strain = ElementStrain(solver, mSection.RebarX(i), mSection.RebarY(i))
-        If steelMaterial.IsInExtensionRange(strain) Then
-            StateUsesExtension = True
-            Exit Function
-        End If
-    Next i
-End Function
-
-' Проверяет физические пределы StateSolution. Бетонная растянутая зона с
-' отключенным сопротивлением допускается: CMaterialDiagram сам знает, есть ли
-' у конкретной диаграммы физический растянутый eps-предел.
-Private Function StateWithinPhysicalRange(ByVal solver As CSectionSolver, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram) As Boolean
-    Dim i As Long
-    Dim strain As Double
-
-    For i = 1 To mSection.ConcreteCount
-        strain = ElementStrain(solver, mSection.ConcreteX(i), mSection.ConcreteY(i))
-        If Not concreteMaterial.IsInPhysicalRange(strain) Then Exit Function
-    Next i
-
-    For i = 1 To mSection.RebarCount
-        strain = ElementStrain(solver, mSection.RebarX(i), mSection.RebarY(i))
-        If Not steelMaterial.IsInPhysicalRange(strain) Then Exit Function
-    Next i
-
-    StateWithinPhysicalRange = True
-End Function
-
-Private Function ElementStrain(ByVal solver As CSectionSolver, ByVal x As Double, ByVal y As Double) As Double
-    ElementStrain = solver.Epsilon0 + solver.KappaX * y + solver.KappaY * x
 End Function
 
 ' Утилитарный максимум без WorksheetFunction, чтобы не тащить Excel в hot path.
@@ -1475,12 +1055,12 @@ Private Function IsBetterGoverningCandidate(ByVal candidateIndex As Long, ByVal 
 End Function
 
 ' Возвращает прочностной запас LC как найденный множитель lambda.
-' После перехода на CapacityLoadPath это единая величина для λ*Mx, λ*My,
-' λ*Mxy, λ*N и λ*NMxy; отдельные отношения Nult/N или Mult/Mxy больше
+' После перехода на CapacityLoadPath это единая величина для lambda*Mx,
+' lambda*My, lambda*Mxy, lambda*N и lambda*NMxy; отдельные отношения Nult/N или Mult/Mxy больше
 ' не нужны для выбора Worst.
 Private Function StrengthSafetyFactorForGoverning(ByVal index As Long) As Double
-    If IsFinishedStatus(mCapacityStatus(index)) And mLambdaCapacity(index) > 0# Then
-        StrengthSafetyFactorForGoverning = mLambdaCapacity(index)
+    If mStatusPolicy.IsFinished(mResults(index).CapacityStatus) And mResults(index).LambdaCapacity > 0# Then
+        StrengthSafetyFactorForGoverning = mResults(index).LambdaCapacity
     End If
 End Function
 
@@ -1502,7 +1082,7 @@ End Function
 
 ' Возвращает запас по трещинам как величину, обратную использованию.
 Private Function CrackSafetyFactorForGoverning(ByVal index As Long) As Double
-    If mCrackUtil(index) > 0# Then CrackSafetyFactorForGoverning = 1# / mCrackUtil(index)
+    If mResults(index).CrackUtil > 0# Then CrackSafetyFactorForGoverning = 1# / mResults(index).CrackUtil
 End Function
 
 ' Берет минимальное положительное значение из двух запасов.
@@ -1527,43 +1107,47 @@ Public Property Get Count() As Long
 End Property
 
 Public Property Get CombinationID(ByVal index As Long) As String
-    CombinationID = mCombinationID(index)
+    CombinationID = mInputs(index).CombinationID
 End Property
 
 Public Property Get CombinationName(ByVal index As Long) As String
-    CombinationName = mComment(index)
+    CombinationName = mInputs(index).Comment
 End Property
 
 Public Property Get CalculationType(ByVal index As Long) As String
-    CalculationType = mCalculationType(index)
+    CalculationType = mInputs(index).CalculationType
 End Property
 
 Public Property Get CapacityLoadPath(ByVal index As Long) As String
-    CapacityLoadPath = CapacityLoadPathDisplay(CapacityLoadPathForCombination(index))
+    CapacityLoadPath = CapacityLoadPathDisplay(CapacityLoadPathKey(index))
 End Property
 
 Public Property Get CapacityLoadPathKey(ByVal index As Long) As String
-    CapacityLoadPathKey = CapacityLoadPathForCombination(index)
+    If Len(mResults(index).CapacityPathResolved) > 0 And mResults(index).CapacityPathResolved <> CAPACITY_PATH_NONE Then
+        CapacityLoadPathKey = mResults(index).CapacityPathResolved
+    Else
+        CapacityLoadPathKey = BuildLoadPathForCombination(index).Key
+    End If
 End Property
 
 Public Property Get N(ByVal index As Long) As Double
-    N = mN(index)
+    N = mInputs(index).N
 End Property
 
 Public Property Get Mx(ByVal index As Long) As Double
-    Mx = mMx(index)
+    Mx = mInputs(index).Mx
 End Property
 
 Public Property Get My(ByVal index As Long) As Double
-    My = mMy(index)
+    My = mInputs(index).My
 End Property
 
 Public Property Get UserMx(ByVal index As Long) As Double
-    UserMx = mUserMx(index)
+    UserMx = mInputs(index).UserMx
 End Property
 
 Public Property Get UserMy(ByVal index As Long) As Double
-    UserMy = mUserMy(index)
+    UserMy = mInputs(index).UserMy
 End Property
 
 Public Property Get LoadReferenceX() As Double
@@ -1583,187 +1167,187 @@ Public Property Get LoadReferenceOffsetY() As Double
 End Property
 
 Public Property Get Status(ByVal index As Long) As String
-    Status = mStatus(index)
+    Status = mResults(index).Status
 End Property
 
 Public Property Get OverallStatus(ByVal index As Long) As String
-    OverallStatus = mStatus(index)
+    OverallStatus = mResults(index).Status
 End Property
 
 Public Property Get DirectStateStatus(ByVal index As Long) As String
-    DirectStateStatus = mDirectStateStatus(index)
+    DirectStateStatus = mResults(index).DirectStateStatus
 End Property
 
 Public Property Get CapacityStatus(ByVal index As Long) As String
-    CapacityStatus = mCapacityStatus(index)
+    CapacityStatus = mResults(index).CapacityStatus
 End Property
 
 Public Property Get CapacityLimitState(ByVal index As Long) As String
-    CapacityLimitState = mCapacityLimitState(index)
+    CapacityLimitState = mResults(index).CapacityLimitState
 End Property
 
 Public Property Get CapacitySolutionMethod(ByVal index As Long) As String
-    CapacitySolutionMethod = mCapacitySolutionMethod(index)
+    CapacitySolutionMethod = mResults(index).CapacitySolutionMethod
 End Property
 
 Public Property Get CrackStatus(ByVal index As Long) As String
-    CrackStatus = mCrackStatus(index)
+    CrackStatus = mResults(index).CrackStatus
 End Property
 
 Public Property Get ExtensionUsed(ByVal index As Long) As Boolean
-    ExtensionUsed = mExtensionUsed(index)
+    ExtensionUsed = mResults(index).ExtensionUsed
 End Property
 
 Public Property Get DirectStateDiagramExtensionEnabled(ByVal index As Long) As Boolean
-    DirectStateDiagramExtensionEnabled = mDirectStateDiagramExtensionEnabled(index)
+    DirectStateDiagramExtensionEnabled = mResults(index).DirectStateDiagramExtensionEnabled
 End Property
 
 Public Property Get UtilizationCapacity(ByVal index As Long) As Double
-    UtilizationCapacity = mUtilCapacity(index)
+    UtilizationCapacity = mResults(index).UtilCapacity
 End Property
 
 Public Property Get NUltimate(ByVal index As Long) As Double
-    NUltimate = mNUltimate(index)
+    NUltimate = mResults(index).NUltimate
 End Property
 
 Public Property Get MxUltimate(ByVal index As Long) As Double
-    MxUltimate = mMxUltimate(index)
+    MxUltimate = mResults(index).MxUltimate
 End Property
 
 Public Property Get MyUltimate(ByVal index As Long) As Double
-    MyUltimate = mMyUltimate(index)
+    MyUltimate = mResults(index).MyUltimate
 End Property
 
 Public Property Get MomentUltimate(ByVal index As Long) As Double
-    MomentUltimate = mMomentUltimate(index)
+    MomentUltimate = mResults(index).MomentUltimate
 End Property
 
 Public Property Get CapacityStateAvailable(ByVal index As Long) As Boolean
-    CapacityStateAvailable = mCapacityStateAvailable(index)
+    CapacityStateAvailable = mResults(index).CapacityStateAvailable
 End Property
 
 Public Property Get CapacityEpsilon0(ByVal index As Long) As Double
-    CapacityEpsilon0 = mCapacityEpsilon0(index)
+    CapacityEpsilon0 = mResults(index).CapacityEpsilon0
 End Property
 
 Public Property Get CapacityKappaX(ByVal index As Long) As Double
-    CapacityKappaX = mCapacityKappaX(index)
+    CapacityKappaX = mResults(index).CapacityKappaX
 End Property
 
 Public Property Get CapacityKappaY(ByVal index As Long) As Double
-    CapacityKappaY = mCapacityKappaY(index)
+    CapacityKappaY = mResults(index).CapacityKappaY
 End Property
 
 Public Property Get MinConcreteStrain(ByVal index As Long) As Double
-    MinConcreteStrain = mMinConcreteStrain(index)
+    MinConcreteStrain = mResults(index).MinConcreteStrain
 End Property
 
 Public Property Get MaxConcreteStrain(ByVal index As Long) As Double
-    MaxConcreteStrain = mMaxConcreteStrain(index)
+    MaxConcreteStrain = mResults(index).MaxConcreteStrain
 End Property
 
 Public Property Get MinSteelStrain(ByVal index As Long) As Double
-    MinSteelStrain = mMinSteelStrain(index)
+    MinSteelStrain = mResults(index).MinSteelStrain
 End Property
 
 Public Property Get MaxSteelStrain(ByVal index As Long) As Double
-    MaxSteelStrain = mMaxSteelStrain(index)
+    MaxSteelStrain = mResults(index).MaxSteelStrain
 End Property
 
 Public Property Get CrackWidth(ByVal index As Long) As Double
-    CrackWidth = mCrackWidth(index)
+    CrackWidth = mResults(index).CrackWidth
 End Property
 
 Public Property Get CrackAllowable(ByVal index As Long) As Double
-    CrackAllowable = mCrackAllowableValue(index)
+    CrackAllowable = mResults(index).CrackAllowableValue
 End Property
 
 Public Property Get CrackUtilization(ByVal index As Long) As Double
-    CrackUtilization = mCrackUtil(index)
+    CrackUtilization = mResults(index).CrackUtil
 End Property
 
 Public Property Get CrackFormed(ByVal index As Long) As Boolean
-    CrackFormed = mCrackFormed(index)
+    CrackFormed = mResults(index).CrackFormed
 End Property
 
 Public Property Get CrackPhi1(ByVal index As Long) As Double
-    CrackPhi1 = mCrackPhi1(index)
+    CrackPhi1 = mResults(index).CrackPhi1
 End Property
 
 Public Property Get CrackPhi2(ByVal index As Long) As Double
-    CrackPhi2 = mCrackPhi2(index)
+    CrackPhi2 = mResults(index).CrackPhi2
 End Property
 
 Public Property Get CrackPhi3(ByVal index As Long) As Double
-    CrackPhi3 = mCrackPhi3(index)
+    CrackPhi3 = mResults(index).CrackPhi3
 End Property
 
 Public Property Get CrackPsiS(ByVal index As Long) As Double
-    CrackPsiS = mCrackPsiS(index)
+    CrackPsiS = mResults(index).CrackPsiS
 End Property
 
 Public Property Get CrackSigmaS(ByVal index As Long) As Double
-    CrackSigmaS = mCrackSigmaS(index)
+    CrackSigmaS = mResults(index).CrackSigmaS
 End Property
 
 Public Property Get CrackSigmaSCrc(ByVal index As Long) As Double
-    CrackSigmaSCrc = mCrackSigmaSCrc(index)
+    CrackSigmaSCrc = mResults(index).CrackSigmaSCrc
 End Property
 
 Public Property Get CrackAs(ByVal index As Long) As Double
-    CrackAs = mCrackAs(index)
+    CrackAs = mResults(index).CrackAs
 End Property
 
 Public Property Get CrackAbt(ByVal index As Long) As Double
-    CrackAbt = mCrackAbt(index)
+    CrackAbt = mResults(index).CrackAbt
 End Property
 
 Public Property Get CrackDsEquivalent(ByVal index As Long) As Double
-    CrackDsEquivalent = mCrackDsEquivalent(index)
+    CrackDsEquivalent = mResults(index).CrackDsEquivalent
 End Property
 
 Public Property Get CrackSpacingRaw(ByVal index As Long) As Double
-    CrackSpacingRaw = mCrackLsRaw(index)
+    CrackSpacingRaw = mResults(index).CrackLsRaw
 End Property
 
 Public Property Get CrackSpacing(ByVal index As Long) As Double
-    CrackSpacing = mCrackLs(index)
+    CrackSpacing = mResults(index).CrackLs
 End Property
 
 Public Property Get CrackLambdaCrc(ByVal index As Long) As Double
-    CrackLambdaCrc = mCrackLambdaCrc(index)
+    CrackLambdaCrc = mResults(index).CrackLambdaCrc
 End Property
 
 Public Property Get CrackNcrc(ByVal index As Long) As Double
-    CrackNcrc = mCrackNcrc(index)
+    CrackNcrc = mResults(index).CrackNcrc
 End Property
 
 Public Property Get CrackTensionRebarCount(ByVal index As Long) As Long
-    CrackTensionRebarCount = mCrackTensionRebarCount(index)
+    CrackTensionRebarCount = mResults(index).CrackTensionRebarCount
 End Property
 
 Public Property Get CrackSectionDepthH(ByVal index As Long) As Double
-    CrackSectionDepthH = mCrackSectionDepthH(index)
+    CrackSectionDepthH = mResults(index).CrackSectionDepthH
 End Property
 
 Public Property Get CrackCoverA(ByVal index As Long) As Double
-    CrackCoverA = mCrackCoverA(index)
+    CrackCoverA = mResults(index).CrackCoverA
 End Property
 
 Public Property Get CrackTensionDepth(ByVal index As Long) As Double
-    CrackTensionDepth = mCrackTensionDepth(index)
+    CrackTensionDepth = mResults(index).CrackTensionDepth
 End Property
 
 Public Property Get CrackEffectiveZoneDepth(ByVal index As Long) As Double
-    CrackEffectiveZoneDepth = mCrackEffectiveZoneDepth(index)
+    CrackEffectiveZoneDepth = mResults(index).CrackEffectiveZoneDepth
 End Property
 
 Public Property Get CrackCentralBranch(ByVal index As Long) As Boolean
-    CrackCentralBranch = mCrackCentralBranch(index)
+    CrackCentralBranch = mResults(index).CrackCentralBranch
 End Property
 
 Public Property Get GoverningUtilization(ByVal index As Long) As Double
-    GoverningUtilization = mGoverningUtil(index)
+    GoverningUtilization = mResults(index).GoverningUtil
 End Property
 
 Public Property Get CrackSteelElasticModulus() As Double
@@ -1800,11 +1384,11 @@ Public Property Get GoverningCombinationIndex() As Long
 End Property
 
 Public Property Get GoverningCombinationID() As String
-    If mGoverningCombinationIndex > 0 Then GoverningCombinationID = mCombinationID(mGoverningCombinationIndex)
+    If mGoverningCombinationIndex > 0 Then GoverningCombinationID = mInputs(mGoverningCombinationIndex).CombinationID
 End Property
 
 Public Property Get GoverningCombinationName() As String
-    If mGoverningCombinationIndex > 0 Then GoverningCombinationName = mComment(mGoverningCombinationIndex)
+    If mGoverningCombinationIndex > 0 Then GoverningCombinationName = mInputs(mGoverningCombinationIndex).Comment
 End Property
 
 Public Property Get CrackGoverningCombinationIndex() As Long
@@ -1812,11 +1396,11 @@ Public Property Get CrackGoverningCombinationIndex() As Long
 End Property
 
 Public Property Get CrackGoverningCombinationID() As String
-    If mCrackGoverningCombinationIndex > 0 Then CrackGoverningCombinationID = mCombinationID(mCrackGoverningCombinationIndex)
+    If mCrackGoverningCombinationIndex > 0 Then CrackGoverningCombinationID = mInputs(mCrackGoverningCombinationIndex).CombinationID
 End Property
 
 Public Property Get CrackGoverningCombinationName() As String
-    If mCrackGoverningCombinationIndex > 0 Then CrackGoverningCombinationName = mComment(mCrackGoverningCombinationIndex)
+    If mCrackGoverningCombinationIndex > 0 Then CrackGoverningCombinationName = mInputs(mCrackGoverningCombinationIndex).Comment
 End Property
 
 Public Property Get ElapsedSeconds() As Double
@@ -1830,71 +1414,71 @@ End Property
 Public Property Get InvalidInputCount() As Long
     Dim i As Long
     For i = 1 To mCount
-        If IsInvalidStatus(mStatus(i)) Then InvalidInputCount = InvalidInputCount + 1
+        If mStatusPolicy.IsInvalid(mResults(i).Status) Then InvalidInputCount = InvalidInputCount + 1
     Next i
 End Property
 
 Public Property Get FirstInvalidInputMessage() As String
     Dim i As Long
     For i = 1 To mCount
-        If IsInvalidStatus(mStatus(i)) Then
-            FirstInvalidInputMessage = mInputError(i)
-            If Len(Trim$(FirstInvalidInputMessage)) = 0 Then FirstInvalidInputMessage = mCapacityLimitState(i)
-            If Len(Trim$(FirstInvalidInputMessage)) = 0 Then FirstInvalidInputMessage = mStatus(i)
+        If mStatusPolicy.IsInvalid(mResults(i).Status) Then
+            FirstInvalidInputMessage = mInputs(i).InputError
+            If Len(Trim$(FirstInvalidInputMessage)) = 0 Then FirstInvalidInputMessage = mResults(i).CapacityLimitState
+            If Len(Trim$(FirstInvalidInputMessage)) = 0 Then FirstInvalidInputMessage = mResults(i).Status
             Exit Property
         End If
     Next i
 End Property
 
 Public Property Get StateAvailable(ByVal index As Long) As Boolean
-    StateAvailable = mStateAvailable(index)
+    StateAvailable = mResults(index).StateAvailable
 End Property
 
 Public Property Get StateAvailableCount() As Long
     Dim i As Long
     For i = 1 To mCount
-        If mStateAvailable(i) Then StateAvailableCount = StateAvailableCount + 1
+        If mResults(i).StateAvailable Then StateAvailableCount = StateAvailableCount + 1
     Next i
 End Property
 
 Public Property Get Epsilon0(ByVal index As Long) As Double
-    Epsilon0 = mEpsilon0(index)
+    Epsilon0 = mResults(index).Epsilon0
 End Property
 
 Public Property Get KappaX(ByVal index As Long) As Double
-    KappaX = mKappaX(index)
+    KappaX = mResults(index).KappaX
 End Property
 
 Public Property Get KappaY(ByVal index As Long) As Double
-    KappaY = mKappaY(index)
+    KappaY = mResults(index).KappaY
 End Property
 
 Public Property Get Nint(ByVal index As Long) As Double
-    Nint = mNint(index)
+    Nint = mResults(index).Nint
 End Property
 
 Public Property Get Mxint(ByVal index As Long) As Double
-    Mxint = mMxint(index)
+    Mxint = mResults(index).Mxint
 End Property
 
 Public Property Get Myint(ByVal index As Long) As Double
-    Myint = mMyint(index)
+    Myint = mResults(index).Myint
 End Property
 
 Public Property Get ResidualN(ByVal index As Long) As Double
-    ResidualN = mResidualN(index)
+    ResidualN = mResults(index).ResidualN
 End Property
 
 Public Property Get ResidualMx(ByVal index As Long) As Double
-    ResidualMx = mResidualMx(index)
+    ResidualMx = mResults(index).ResidualMx
 End Property
 
 Public Property Get ResidualMy(ByVal index As Long) As Double
-    ResidualMy = mResidualMy(index)
+    ResidualMy = mResults(index).ResidualMy
 End Property
 
 Public Property Get StateIterations(ByVal index As Long) As Long
-    StateIterations = mStateIterations(index)
+    StateIterations = mResults(index).StateIterations
 End Property
 
 ' ==========================================================================
@@ -1905,11 +1489,11 @@ End Property
 ' и факт сходимости прямого НДС.
 
 Public Property Get LambdaCapacity(ByVal index As Long) As Double
-    LambdaCapacity = mLambdaCapacity(index)
+    LambdaCapacity = mResults(index).LambdaCapacity
 End Property
 
 Public Property Get StateConverged(ByVal index As Long) As Boolean
-    StateConverged = mStateConverged(index)
+    StateConverged = mResults(index).StateConverged
 End Property
 
 

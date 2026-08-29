@@ -229,7 +229,7 @@ End Function
 
 ' Возвращает диагностическую метку источника геометрии, сохраненную в
 ' rngNDMSectionProperties. Расчет с Geometry.Source = AutoCAD использует ее,
-' чтобы не принять старую generated-геометрию за импортированную.
+' чтобы не принять generated-геометрию за импортированную.
 Public Function ResultsGeometrySource(ByVal workbook As Object) As String
     On Error GoTo Failed
     Dim data As Variant
@@ -1035,7 +1035,7 @@ End Function
 
 ' Помещает подписи в tension/compression-слои по PhysicalState.
 ' Нейтральные и выключенные растянутые бетонные элементы уходят в
-' compression-слой материала, как раньше уходили нулевые значения.
+' compression-слой материала, чтобы нулевые значения не теряли слой вывода.
 Private Function ResultAnnotationLayerByPhysicalState(ByVal materialType As String, ByVal physicalState As String, _
         ByRef exportSettings As TAutoCADExportSettings) As String
     If StrComp(materialType, "Rebar", vbTextCompare) = 0 Then

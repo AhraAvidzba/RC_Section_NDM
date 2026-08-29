@@ -298,39 +298,6 @@ function Add-InputValidationList {
 }
 
 # Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
-function Add-ResultBlock {
-    param(
-        [object]$Sheet,
-        [int]$StartColumn,
-        [string]$Title
-    )
-
-    Add-BlockHeader $Sheet $StartColumn $Title
-    Add-SectionTitle $Sheet 4 $StartColumn ($StartColumn + 17) "Расчет по прочности и трещиностойкости"
-
-    $rows = @(
-        @("Сочетание", "", "", ""),
-        @("N", "", "Н", ""),
-        @("Mx", "", "Н*мм", ""),
-        @("My", "", "Н*мм", ""),
-        @("Статус", "Заполняется после расчета", "", ""),
-        @("Примечание", "Единая постановка N + Mx + My", "", "")
-    )
-    Add-KeyValueRows $Sheet 7 $StartColumn $rows
-
-    Add-SectionTitle $Sheet 16 $StartColumn ($StartColumn + 17) "Результаты"
-    $resultHeaders = @("Показатель", "Значение", "Ед.", "Комментарий")
-    for ($i = 0; $i -lt $resultHeaders.Count; $i++) {
-        Set-Cell $Sheet 18 ($StartColumn + $i * 4) $resultHeaders[$i] -Bold -InteriorColor 14277081 | Out-Null
-    }
-    $resultRange = $Sheet.Range($Sheet.Cells.Item(18, $StartColumn), $Sheet.Cells.Item(36, $StartColumn + 15))
-    Set-Border $resultRange
-
-    Add-SectionTitle $Sheet 36 $StartColumn ($StartColumn + 17) "Диагностика"
-    $diagnosticRange = $Sheet.Range($Sheet.Cells.Item(38, $StartColumn), $Sheet.Cells.Item(50, $StartColumn + 17))
-    Set-Border $diagnosticRange
-}
-# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
 function Add-MainInputBlock {
     param([object]$Sheet)
 
@@ -375,7 +342,7 @@ function Add-MainInputBlock {
     $Sheet.Columns.Item($capacityLoadPathListColumn).Hidden = $true
 }
 
-# Центрирует подпись внутри Shape-кнопки. Используем старый TextFrame для
+# Центрирует подпись внутри Shape-кнопки. Используем TextFrame для
 # совместимости с Excel VBA/COM и, если доступно, TextFrame2 для более
 # надежного вертикального якоря в новых версиях Office.
 function Center-ShapeButtonText {
@@ -498,8 +465,6 @@ try {
     $calc.Name = "Расчет"
     $results.Name = "Results"
 
-    Add-ResultBlock $calc 19 "Расчет N + Mx + My"
-
     for ($col = 1; $col -le 36; $col++) {
         $calc.Columns.Item($col).ColumnWidth = 3.7
     }
@@ -550,7 +515,6 @@ try {
     $results.Columns.Item(50).ColumnWidth = 12
     Add-ResultsSummaryHelpLink $results $instructions
 
-    Add-WorkbookName $workbook "rngResultSection" $calc '$S$17:$AH$35'
     Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$AY$31'
     Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$34'
     Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$I$34'

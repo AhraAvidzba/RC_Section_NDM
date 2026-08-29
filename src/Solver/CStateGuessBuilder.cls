@@ -42,7 +42,7 @@ Private Const ACTIVE_SET_EPSILON_TOLERANCE As Double = 0.0000000001 ' Допус
 Private Const ACTIVE_SET_KAPPA_TOLERANCE As Double = 0.000000000001 ' Допуск стабилизации кривизн в active-set уточнении.
 
 ' Строит стартовую плоскость для штатного прямого НДС.
-' Метод нужен прежде всего для чистого изгиба N=0: старт из нулевой плоскости
+' Метод особенно полезен для чистого изгиба N=0: старт из нулевой плоскости
 ' попадает ровно в излом диаграммы бетона, где сжатая производная ненулевая,
 ' а растянутая ветвь при Ignore уже выключена. Здесь сначала строится грубая
 ' линейно-упругая плоскость, затем несколько раз уточняется active-set
@@ -564,7 +564,7 @@ Private Function SolveLinearizedSystem(ByVal activeCount As Long, _
 End Function
 
 ' Подталкивает глобальную растянутую оценку так, чтобы хотя бы крайние стержни
-' не остались на физическом плато. Это сохраняет старое устойчивое поведение
+' не остались на физическом плато. Так solver сразу получает рабочий наклон
 ' для осевого растяжения, но не заменяет последующий solve.
 Private Sub PushRebarsIntoTensionExtension(ByVal section As CSectionModel, _
         ByVal steelMaterial As CMaterialDiagram, ByRef eps0 As Double, ByVal kx As Double, ByVal ky As Double)

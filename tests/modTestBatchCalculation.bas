@@ -266,7 +266,7 @@ End Sub
 
 ' Проверяет пользовательский сценарий из книги: Г-сечение, нагрузка
 ' N=-200 тс при принятом знаке +N=Compression, то есть внутреннее растяжение,
-' и путь CapacityLoadPath = λ*N. Точка приложения проходит через бетонный
+' и путь CapacityLoadPath = lambda*N. Точка приложения проходит через бетонный
 ' центр тяжести, поэтому внутри solver-а вместе с N масштабируются и моменты
 ' переноса, но пользовательская постановка остается чистым Nult.
 Private Sub TestBatchLShapeN200CapacityPathNDoesNotNumFail(ByRef stats As TBatchTestStats)
@@ -428,7 +428,7 @@ Private Sub TestBatchCapacityLoadPathAllowsZeroInactiveComponents(ByRef stats As
     AssertTrue stats, "batch.capacityPath.zero.nmxyMy.pathKept", batch.CapacityLoadPathKey(7) = "LambdaNMxy"
 End Sub
 
-' Проверяет вырожденный пользовательский случай: выбран λ*NMxy, но в строке
+' Проверяет вырожденный пользовательский случай: выбран lambda*NMxy, но в строке
 ' сочетания Mx=0 и My=0. Это не ошибка ввода и не особая геометрия; по
 ' фактическим нагрузкам пользователь масштабирует только продольную силу, а
 ' значит capacity должен идти устойчивым силовым путем LoadMultiplier.
@@ -661,7 +661,7 @@ RestoreAndFail:
 End Sub
 
 ' Проверяет ряд почти соседних осевых растягивающих нагрузок возле физического
-' предела. Раньше первый найденный warm-start мог сорваться на одной точке
+' предела. Первый найденный warm-start может сорваться на одной точке
 ' ряда и давал NumFail между двумя корректными FAIL; теперь batch пробует
 ' несколько стартов и не должен терять равновесие из-за неудачной подсказки.
 Private Sub TestGroup1AxialTensionNearLimitDoesNotJumpToNumFail(ByRef stats As TBatchTestStats)

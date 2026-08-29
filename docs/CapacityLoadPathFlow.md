@@ -12,13 +12,14 @@ Target(lambda) = Offset + lambda * Base
 
 Основные места в коде:
 
-- `CBatchSectionCalculator.RunCapacity` - читает выбранный `CapacityLoadPath`, собирает `Offset/Base`, выбирает численный путь по `Capacity.SolutionStrategy`.
-- `CBatchSectionCalculator.BuildCapacityLoadPath` - переводит пользовательский вариант `lambda*...` в шесть чисел: `NOffset`, `NBase`, `MxOffset`, `MxBase`, `MyOffset`, `MyBase`.
-- `CBatchSectionCalculator.IsForceOnlyCapacityLoadPath` - определяет силовую осевую траекторию, когда пользователь масштабирует только `N`; при этом имя пользовательского пути не меняется.
+- `CBatchSectionCalculator.RunCapacity` - читает уже разобранный `CCapacityLoadPath` и выбирает численный путь по `Capacity.SolutionStrategy`.
+- `CCapacityLoadPath` - переводит пользовательский вариант `lambda*...` в шесть чисел: `NOffset`, `NBase`, `MxOffset`, `MxBase`, `MyOffset`, `MyBase`.
+- `CCapacityLoadPath.ForceOnly` - определяет силовую осевую траекторию, когда пользователь масштабирует только `N` или `lambda*NMxy` фактически содержит только `N`; имя пользовательского пути при этом не меняется.
+- `CStateSolutionRunner` - управляет прямым `StateSolution`: стартовой плоскостью, retry, extension warm-start и повторными вызовами `CSectionSolver`.
 - `CCapacitySolver` - решает уже готовую математическую задачу `Offset + lambda*Base`.
 - `CStateGuessBuilder` - строит стартовую плоскость деформаций для редких численно трудных случаев; не выбирает путь, не меняет нагрузки и не принимает решение о статусе.
 
-Архитектурно это в целом правильно: смысл пользовательской траектории остается в batch-слое, а solver получает универсальные численные параметры. Единственное спорное место - `CCapacitySolver.ApplyPureBendingProbeGuess`: это вспомогательная подсказка старта внутри solver-а. Она не меняет физику, но ее можно в будущем вынести в отдельный `probe/guess`-помощник, если таких подсказок станет больше.
+Архитектурно смысл пользовательской траектории теперь сосредоточен в `CCapacityLoadPath`, а batch получает готовый Offset/Base и признаки вроде `ForceOnly`. `CCapacitySolver.ApplyPureBendingProbeGuess` оставлен локально внутри solver-а, потому что это не пользовательская ветка, а подсказка старта для конкретной probe-точки `LoadMultiplier`; саму плоскость строит общий `CStateGuessBuilder`.
 
 ## Варианты CapacityLoadPath
 
@@ -34,7 +35,7 @@ Target(lambda) = Offset + lambda * Base
 
 ## Как собирается Offset/Base
 
-В `BuildCapacityLoadPath` учитываются две части момента:
+В `CCapacityLoadPath.BuildOffsetBase` учитываются две части момента:
 
 - пользовательские `Mx/My`;
 - моменты от переноса продольной силы из точки приложения нагрузки к расчетной системе координат.
@@ -74,21 +75,17 @@ Target(lambda) = Offset + lambda * Base
 
 `CStateGuessBuilder` вызывается только как численная подсказка начальной плоскости:
 
-1. `CBatchSectionCalculator.ApplyDirectStateInitialGuess`
+1. `CStateSolutionRunner.ApplyInitialGuess`
    - случай: прямой НДС для чистого изгиба `N = 0`, но есть пользовательский `Mx` или `My`;
    - метод builder-а: `BuildForDirectState`;
    - смысл: не стартовать ровно из нулевого излома диаграммы бетона.
 
-2. `modWorkbookCalculation.ApplyDirectStateInitialGuessForResult`
-   - то же самое, но для одиночного вывода на лист `Расчет`;
-   - нужно, чтобы одиночный расчет и batch давали одинаковое поведение.
-
-3. `CCapacitySolver.ApplyPureBendingProbeGuess`
+2. `CCapacitySolver.ApplyPureBendingProbeGuess`
    - случай: probe-точка `LoadMultiplier` имеет `N = 0` и ненулевой момент;
    - метод builder-а: `BuildForDirectState`;
    - смысл: каждая probe-точка чистого изгиба получает разумный старт от собственных целевых усилий.
 
-4. `CBatchSectionCalculator.TrySolveStateWithExtensionWarmStart`
+3. `CStateSolutionRunner.TrySolveWithExtensionWarmStart`
    - случай: прямой `StateSolution` не сошелся на первой попытке, а `Solver.DirectState.DiagramExtension = Yes`;
    - метод builder-а: `BuildForExtensionState`;
    - смысл: дать повторному solve старт уже в области технического продолжения диаграммы.
@@ -108,6 +105,4 @@ Target(lambda) = Offset + lambda * Base
 
 ## Что можно улучшить позже
 
-Если логика стартовых подсказок продолжит расти, лучше вынести `ApplyPureBendingProbeGuess` из `CCapacitySolver` в отдельный небольшой помощник уровня solver-infrastructure. Тогда `CCapacitySolver` останется только про одномерный поиск lambda, а построение стартовых плоскостей будет сосредоточено рядом с `CStateGuessBuilder`.
-
-Пока отдельный перенос не обязателен: текущая вставка локальна, тестами покрыта и не смешивает расчетную физику с пользовательским выбором траектории.
+Если логика стартовых подсказок продолжит расти, можно будет расширить `CStateGuessBuilder` новыми чистыми методами построения eps0/kappaX/kappaY. Управление retry при этом должно оставаться в runner-е или solver-е того сценария, который выполняет повторные solve-ы.

@@ -30,8 +30,6 @@ Public Function RunCrackWidthTests() As String
     TestAutoPsiAndLambdaAfterFailedFirstCheck stats
     TestCentralTensionBranch stats
     TestNoTensionRebar stats
-    TestCrackWriter stats
-
     AppendLine stats, "TOTAL_CRACK: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
     RunCrackWidthTests = stats.Report
@@ -63,7 +61,7 @@ End Sub
 ' Fixed1-режим psi_s
 ' ------------------------------
 ' Для обычного изгиба проверяем, что a_crc собирается из расчетных sigma_s,
-' ls и коэффициентов, а не из старого ручного CrackSpacing.
+' ls и коэффициентов, а не из ручного CrackSpacing.
 Private Sub TestCrackFixed1Mx(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
@@ -183,29 +181,6 @@ Private Sub TestNoTensionRebar(ByRef stats As TCrackTestStats)
     AssertTrue stats, "crack.noTension.converged", crack.Converged
     AssertTrue stats, "crack.noTension.notFormed", Not crack.CrackFormed
     AssertClose stats, "crack.noTension.width", crack.CrackWidth, 0#, 0.000000000001
-End Sub
-
-' ------------------------------
-' Writer основного отчета
-' ------------------------------
-' Проверяем, что расширенный блок результата выводит расчетную ширину,
-' допускаемую ширину и диагностические поля новой методики.
-Private Sub TestCrackWriter(ByRef stats As TCrackTestStats)
-    Dim solver As CSectionSolver
-    Dim section As CSectionModel
-    Set solver = SolveServiceState(section, -80000#, -5000000#, 0#)
-
-    Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, section, -80000#, -5000000#, 0#, "Fixed1", "Effective")
-    Dim writer As CCapacityResultWriter
-    Set writer = New CCapacityResultWriter
-    writer.WriteCrackResult ThisWorkbook, crack
-
-    Dim target As Object
-    Set target = ThisWorkbook.Names.Item("rngResultSection").RefersToRange
-    AssertClose stats, "crack.writer.width", CDbl(target.Cells.Item(18, 5).Value2), crack.CrackWidth, 0.000000001
-    AssertClose stats, "crack.writer.allowable", CDbl(target.Cells.Item(19, 5).Value2), crack.AllowableCrackWidth, 0.000000001
-    AssertTrue stats, "crack.writer.sigma", CDbl(target.Cells.Item(21, 5).Value2) > 0#
 End Sub
 
 Private Function SolveServiceState(ByRef section As CSectionModel, ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double) As CSectionSolver

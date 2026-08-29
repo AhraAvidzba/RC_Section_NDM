@@ -402,7 +402,7 @@ Private Function IsLShapeFaceSettingsRange(ByRef data As Variant) As Boolean
         StrComp(Trim$(CStr(data(1, 5))), "B2", vbTextCompare) = 0
 End Function
 
-' Читает старую матричную компоновку LShape, если такая таблица еще встретится.
+' Читает матричную компоновку LShape, если книга собрана в таком формате.
 ' Основная новая компоновка распознается выше и уходит в AppendLShapeSectionedSettings.
 Private Sub AppendLShapeFaceSettings(ByRef data As Variant)
     If UBound(data, 1) >= 23 And UBound(data, 2) >= 9 And _

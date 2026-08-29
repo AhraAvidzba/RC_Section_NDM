@@ -19,7 +19,8 @@ Option Explicit
 '
 ' На вход класса теперь передается универсальная траектория нагрузки:
 ' N = N0 + lambda*Nbase, Mx = Mx0 + lambda*Mxbase, My = My0 + lambda*Mybase.
-' Это позволяет одним алгоритмом считать λ*Mx, λ*My, λ*Mxy, λ*N и λ*NMxy,
+' Это позволяет одним алгоритмом считать lambda*Mx, lambda*My, lambda*Mxy,
+' lambda*N и lambda*NMxy,
 ' не плодя отдельные пользовательские ветви внутри расчетного ядра.
 
 Private Const STATE_ACCEPTABLE As String = "Acceptable"
@@ -36,7 +37,7 @@ Private mConverged As Boolean ' True, если выбранный метод cap
 Private mStopReason As String ' Причина остановки capacity solver для вывода в результаты и тесты.
 Private mLimitState As String ' Физический или численный статус найденного предела.
 Private mUpperLimitState As String ' Статус верхней границы при LoadMultiplier.
-Private mLambdaUltimate As Double ' Предельный множитель к выбранной λ-траектории нагрузки.
+Private mLambdaUltimate As Double ' Предельный множитель к выбранной lambda-траектории нагрузки.
 Private mNUltimate As Double ' Предельная продольная сила, если N входит в масштабируемый путь.
 Private mMomentUltimate As Double ' Результирующий предельный момент sqrt(MxUltimate^2 + MyUltimate^2).
 Private mMxUltimate As Double ' Предельный Mx, если Mx входит в масштабируемый путь.
@@ -258,9 +259,9 @@ Public Sub SolveByUltimateLoadPath(ByVal section As CSectionModel, _
     mStopReason = "Capacity search converged by direct ultimate strain equilibrium."
 End Sub
 
-' Быстрая ветка старого UltimateStrain для моментных траекторий.
+' Быстрая ветка UltimateStrain для моментных траекторий.
 ' Внешний API остается универсальным, но математически этот частный случай
-' должен решаться как раньше: продольная сила фиксирована, а Mx/My
+' должен решаться в прямой моментной постановке: продольная сила фиксирована, а Mx/My
 ' масштабируются с сохранением направления моментного вектора.
 Private Sub SolveMomentUltimateStrainPath(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
@@ -319,7 +320,7 @@ Private Sub SolveMomentUltimateStrainPath(ByVal section As CSectionModel, _
     mStopReason = "Capacity search converged by direct ultimate strain equilibrium."
 End Sub
 
-' Математически чистая λ*N без моментов не имеет устойчивой уникальной
+' Математически чистая lambda*N без моментов не имеет устойчивой уникальной
 ' предельной плоскости для UltimateStrain: на горизонтальном плато одну и ту же
 ' N могут давать разные почти равномерные деформации. В этом вырожденном
 ' численном случае используем одномерный LoadMultiplier.
@@ -381,7 +382,7 @@ End Sub
 ' вырожденным для UltimateStrain при горизонтальном плато диаграммы:
 ' разные равномерные деформации дают одну и ту же предельную N. Если прямой
 ' UltimateStrain не сошелся устойчиво, эта проверка разрешает перейти на ту
-' же универсальную λ-траекторию и найти границу одномерно.
+' же универсальную lambda-траекторию и найти границу одномерно.
 Private Function IsPureAxialLoadPath(ByVal nOffset As Double, ByVal nBase As Double, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
         ByVal myOffset As Double, ByVal myBase As Double) As Boolean
@@ -392,15 +393,15 @@ Private Function IsPureAxialLoadPath(ByVal nOffset As Double, ByVal nBase As Dou
 End Function
 
 ' True для классической траектории "N = const, M = lambda*Mbase".
-' Это λ*Mx, λ*My и λ*Mxy. Для них внутри универсального API используется
-' старая быстрая система UltimateStrain, потому что она лучше обусловлена
+' Это lambda*Mx, lambda*My и lambda*Mxy. Для них внутри универсального API используется
+' быстрая система UltimateStrain, потому что она лучше обусловлена
 ' именно для моментного поиска несущей способности.
 Private Function IsMomentOnlyLoadPath(ByVal nBase As Double, ByVal mxBase As Double, ByVal myBase As Double) As Boolean
     IsMomentOnlyLoadPath = Abs(nBase) <= 0.000000001 And _
         Sqr(mxBase * mxBase + myBase * myBase) > 0.000000001
 End Function
 
-' При чистой λ*N траектории горизонтальное плато диаграммы может дать
+' При чистой lambda*N траектории горизонтальное плато диаграммы может дать
 ' устойчивую нижнюю границу capacity, а следующая probe-точка уже теряет
 ' касательную жесткость до формального пересечения eps_ult. Для такого
 ' осевого случая это означает достижение силового плато, поэтому принимаем
@@ -884,8 +885,8 @@ Public Sub SolveByLoadMultiplier(ByVal section As CSectionModel, _
 End Sub
 
 ' Ищет предельный lambda для любой траектории Target = Offset + lambda*Base.
-' Метод используется batch-слоем для новых вариантов λ*Mx, λ*My, λ*Mxy,
-' λ*N и λ*NMxy. Внутренний алгоритм скобки и Bisection/Brent/Secant остается
+' Метод используется batch-слоем для новых вариантов lambda*Mx, lambda*My,
+' lambda*Mxy, lambda*N и lambda*NMxy. Внутренний алгоритм скобки и Bisection/Brent/Secant остается
 ' тем же для всех вариантов CapacityLoadPath.
 Public Sub SolveByLoadPathMultiplier(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
@@ -904,7 +905,7 @@ Public Sub SolveByLoadPathMultiplier(ByVal section As CSectionModel, _
 End Sub
 
 ' Общий одномерный поиск предельного множителя. Входные Offset/Base задают
-' любую допустимую λ-траекторию нагрузки, а алгоритм скобки, probe-точек и
+' любую допустимую lambda-траекторию нагрузки, а алгоритм скобки, probe-точек и
 ' Bisection/Brent/Secant остается одним для всех вариантов.
 Private Sub SolveLoadMultiplierCore(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _

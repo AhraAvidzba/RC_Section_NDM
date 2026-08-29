@@ -140,7 +140,6 @@ try {
 
     $requiredNames = @(
         "rngLoadCombinations",
-        "rngResultSection",
         "rngUnitSettings",
         "rngSignConventionSettings",
         "rngPlotAnnotationSettings",

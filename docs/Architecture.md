@@ -14,10 +14,11 @@ Config + rngLoadCombinations
        -> AutoCAD: CAutoCADSectionModelImporter
   -> CSectionModel
   -> CBatchSectionCalculator
-       -> CSectionSolver
+       -> CStateSolutionRunner -> CSectionSolver
+       -> CCapacityLoadPath
        -> CCapacitySolver
        -> CCrackWidthCalculator
-  -> CBatchResultWriter / CCapacityResultWriter / CNDMResultsWriter
+  -> CBatchResultWriter / CNDMResultsWriter
   -> Results sheet
   -> AutoCAD export
 ```
@@ -156,9 +157,9 @@ Myint = sum(sigma_i * A_i * x_i)
 ## Вывод
 
 - `CBatchResultWriter` пишет сводку в `rngBatchSummary` на листе `Results`;
-- `CCapacityResultWriter` пишет результат определяющего сочетания в `rngResultSection`;
 - `CNDMResultsWriter` пишет согласованный snapshot последнего расчета на лист `Results`: `rngNDMSectionGeometry` с постоянной геометрией, `rngNDMElementResults` с LC-зависимыми `Strain/Stress/PhysicalState`, `rngNDMSectionProperties` с общими свойствами сечения и состоянием выбранных LC, `rngNDMSectionAnnotations` с сохраненными semantic-аннотациями;
 - writer-ы получают `CUnitSystem` и выводят числовые результаты в выбранных `OUTPUT`-единицах и пользовательских знаках;
 - контрольная таблица арматуры и формульный блок трещин на `Config` больше не выводятся;
 - AutoCAD export читает данные из листа `Results`, поэтому не хранит последнюю модель в памяти и не запускает повторный AutoCAD-import при выгрузке.
 - `UpdateSectionPlot` строит схему на листе `Расчет` только по сохраненному snapshot `Results`; смена `Plot.LoadCase` или `Plot.ResultType` не запускает расчет и не меняет `Results`.
+- Старый численный блок на листе `Расчет` удален: governing LC больше не пересчитывается отдельной веткой, а весь пользовательский вывод берется из batch/snapshot.

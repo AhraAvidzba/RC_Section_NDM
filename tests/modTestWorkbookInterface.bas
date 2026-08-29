@@ -59,7 +59,7 @@ Failed:
 End Function
 
 ' Проверяет, что таблица сочетаний живет на Config рядом с настройками,
-' а не возвращается в старое место на листе Расчет.
+' и не выводится отдельной параллельной таблицей на лист Расчет.
 Private Sub TestLoadCombinationsOnConfig(ByRef stats As TUiTestStats)
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -368,7 +368,7 @@ Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiT
     AssertTrue stats, "ui.autocad.preview.dimensionShapes", CountPlotShapes("AnnotationLine") > 0
 End Sub
 
-' Проверяет, что старый AutoCAD-preview не используется как запасная схема
+' Проверяет, что AutoCAD-preview не используется как запасная схема
 ' после переключения Geometry.Source обратно на Generated. Иначе пользователь
 ' видит подпись "Импортированная геометрия AutoCAD" у уже generated-сценария.
 Private Sub TestGeneratedSourceDoesNotReuseAutoCADPreview(ByRef stats As TUiTestStats)
@@ -403,7 +403,7 @@ End Sub
 
 ' Проверяет DirectState-сценарий без определяющего сочетания по прочности.
 ' При Plot.LoadCase = Worst схема должна показать первый рассчитанный LC из
-' Results, а не оставлять старый AutoCAD-preview и не очищаться до пустого окна.
+' Results, а не оставлять AutoCAD-preview и не очищаться до пустого окна.
 Private Sub TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC(ByRef stats As TUiTestStats)
     PrepareCircleInput
     SetSystemSetting "Geometry.Source", "Generated"
@@ -501,7 +501,6 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.run.system.noRebarTable", Len(CStr(sys.Cells.Item(130, 1).Value2)) = 0
     AssertTrue stats, "ui.run.system.materialDiagramControls", _
         InStr(1, CStr(sys.Cells.Item(1, 35).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
-    AssertTrue stats, "ui.run.crack.result.value", Not ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(17, 5).HasFormula
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
     Dim summaryRow As Long
@@ -758,7 +757,6 @@ Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTest
 
     AssertTrue stats, "ui.governing.id", governingID = expectedID
     AssertTrue stats, "ui.governing.message", InStr(1, message, governingID, vbTextCompare) > 0
-    AssertTrue stats, "ui.governing.details.moment", Abs(CDbl(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(9, 5).Value2) - MomentUltimateForCombination(resultsSheet, summaryRow, governingID)) < 0.0000001
 End Sub
 
 Private Function ExpectedGoverningByLowestStrengthSafety(ByVal resultsSheet As Object, ByVal summaryRow As Long) As String
@@ -801,7 +799,7 @@ End Function
 
 ' Ищет колонку rngBatchSummary по началу текста заголовка.
 ' В сводке часто добавляются новые расчетные поля, поэтому UI-тесты не
-' должны зависеть от старого номера столбца: проверяем именно смысловую
+' должны зависеть от номера столбца: проверяем именно смысловую
 ' колонку, которую видит пользователь.
 Private Function BatchSummaryColumnByHeader(ByVal headerPrefix As String) As Long
     Dim summary As Object
@@ -1027,14 +1025,12 @@ End Function
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestClearResultsKeepsInputs(ByRef stats As TUiTestStats)
     PrepareCircleInput
-    ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(5, 5).Value2 = 123#
     ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Value2 = "RunID"
     ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Value2 = "RunID"
     ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2 = "RunID"
     ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Value2 = "RunID"
     ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Value2 = "RunID"
     ClearSectionResultsForWorkbook ThisWorkbook
-    AssertTrue stats, "ui.clear.result", Len(CStr(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(5, 5).Value2)) = 0
     AssertTrue stats, "ui.clear.results.elements", Len(CStr(ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Value2)) = 0
     AssertTrue stats, "ui.clear.results.geometry", Len(CStr(ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Value2)) = 0
     AssertTrue stats, "ui.clear.results.properties", Len(CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2)) = 0

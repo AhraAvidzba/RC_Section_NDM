@@ -29,7 +29,7 @@ Private Const PHYSICAL_TOLERANCE As Double = 0.000000001 ' Порог, ниже 
 ' ------------------------------
 ' Полная запись Results
 ' ------------------------------
-' Очищает старый снимок и заново пишет четыре согласованных блока:
+' Очищает текущий снимок и заново пишет четыре согласованных блока:
 ' geometry, element results, section properties и section annotations.
 Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal batch As CBatchSectionCalculator, _
@@ -300,19 +300,19 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacityStatus", batch.CapacityStatus(i), "-", "Статус расчета несущей способности."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacityLoadPath", batch.CapacityLoadPath(i), "-", "Какие компоненты нагрузки масштабировались при поиске несущей способности."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacitySolutionMethod", batch.CapacitySolutionMethod(i), "-", "Фактический численный метод, которым найдена предельная несущая способность."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LambdaCapacity", batch.LambdaCapacity(i), "-", "Предельный множитель для выбранной λ-траектории."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LambdaCapacity", batch.LambdaCapacity(i), "-", "Предельный множитель для выбранной lambda-траектории."
         If Abs(batch.NUltimate(i)) > 0# Then
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nultimate", OutputForce(batch.NUltimate(i), units), OutputForceUnit(units), "Предельная продольная сила, если N входила в выбранную λ-траекторию."
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nultimate", OutputForce(batch.NUltimate(i), units), OutputForceUnit(units), "Предельная продольная сила, если N входила в выбранную lambda-траекторию."
         Else
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nultimate", vbNullString, OutputForceUnit(units), "Заполняется только для траекторий λ*N и λ*NMxy."
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nultimate", vbNullString, OutputForceUnit(units), "Заполняется только для траекторий lambda*N и lambda*NMxy."
         End If
         If Abs(batch.MxUltimate(i)) > 0# Then
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxUltimate", OutputMx(batch.MxUltimate(i), units), OutputMomentUnit(units), "Предельный пользовательский Mx, если Mx входил в выбранную λ-траекторию."
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxUltimate", OutputMx(batch.MxUltimate(i), units), OutputMomentUnit(units), "Предельный пользовательский Mx, если Mx входил в выбранную lambda-траекторию."
         Else
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxUltimate", vbNullString, OutputMomentUnit(units), "Заполняется только для траекторий, где масштабируется Mx."
         End If
         If Abs(batch.MyUltimate(i)) > 0# Then
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUltimate", OutputMy(batch.MyUltimate(i), units), OutputMomentUnit(units), "Предельный пользовательский My, если My входил в выбранную λ-траекторию."
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUltimate", OutputMy(batch.MyUltimate(i), units), OutputMomentUnit(units), "Предельный пользовательский My, если My входил в выбранную lambda-траекторию."
         Else
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUltimate", vbNullString, OutputMomentUnit(units), "Заполняется только для траекторий, где масштабируется My."
         End If
@@ -885,7 +885,7 @@ End Function
 
 ' Для AutoCAD-сетки у программы нет смысловых граней, но есть надежные Bounds
 ' бетонных элементов. Поэтому сохраняем только две приблизительные размерные
-' аннотации: общую ширину и высоту. Символ "≈" показывает, что размер получен
+' аннотации: общую ширину и высоту. Знак приблизительного равенства показывает, что размер получен
 ' по дискретной сетке Region, а не из параметрической геометрии.
 Private Sub EnsureAutoCADBoundsAnnotations(ByVal section As CSectionModel)
     If section Is Nothing Then Exit Sub
@@ -906,7 +906,7 @@ Private Sub EnsureAutoCADBoundsAnnotations(ByVal section As CSectionModel)
 End Sub
 
 ' Возвращает знак приблизительного равенства без литерала в исходнике. Так VBA-модуль
-' не зависит от кодировки файла, а на лист Results попадает настоящий символ "≈", не "?".
+' не зависит от кодировки файла, а на лист Results попадает настоящий знак приблизительного равенства.
 Private Function ApproxSign() As String
     ApproxSign = ChrW$(&H2248)
 End Function

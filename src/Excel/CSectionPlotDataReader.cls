@@ -131,7 +131,7 @@ End Function
 ' Возвращает первый LC, для которого на Results реально есть результаты элементов.
 ' Это запасной путь только для режимов, где Plot.LoadCase = Worst не может быть
 ' развернут в прочностное определяющее сочетание, например DirectState без
-' расчета несущей способности. Старый AutoCAD-preview этим путем не выбирается,
+' расчета несущей способности. AutoCAD-preview этим путем не выбирается,
 ' потому что geometry-only snapshot не содержит rngNDMElementResults.
 Private Function FirstCalculatedLoadCaseFromResults(ByVal workbook As Object) As String
     On Error GoTo Failed

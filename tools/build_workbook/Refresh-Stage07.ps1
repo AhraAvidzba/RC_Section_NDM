@@ -126,7 +126,6 @@ try {
 
     $files = @(
         "src/Materials/CMaterialDiagram.cls",        "src/Crack/CCrackWidthCalculator.cls",
-        "src/Excel/CCapacityResultWriter.cls",
         "tests/modTestCrackWidth.bas"
     )
     foreach ($relative in $files) {

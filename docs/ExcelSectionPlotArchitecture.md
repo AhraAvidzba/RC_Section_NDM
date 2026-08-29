@@ -1213,7 +1213,7 @@ CBatchResultWriter / CNDMResultsWriter
 
 - `CUnitSystem` читает `rngUnitSettings` и `rngSignConventionSettings`;
 - `CUnitSystem` содержит методы `InternalLengthToOutput`, `InternalAreaToOutput`, `InternalForceToOutput`, `InternalMomentMxToOutput`, `InternalMomentMyToOutput`, `InternalStressToOutput`, `InternalCurvatureToOutput`;
-- `CNDMResultsWriter`, `CBatchResultWriter` и `CCapacityResultWriter` принимают `CUnitSystem` и записывают пользовательские значения через `Internal...ToOutput`;
+- `CNDMResultsWriter` и `CBatchResultWriter` принимают `CUnitSystem` и записывают пользовательские значения через `Internal...ToOutput`;
 - значит правильное место `OUTPUT`-преобразования - writer/output-adapter слой при записи `Results`, а не `CSectionPlotter`.
 
 Что нужно учесть при реализации этой архитектуры:

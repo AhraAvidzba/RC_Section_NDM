@@ -138,14 +138,14 @@ Failed:
     Err.Raise Err.Number, "CBatchResultWriter.WriteSummary", stage & ": " & Err.Description
 End Sub
 
-' Очищает старую сводку перед новым расчетом или ручной очисткой Results.
+' Очищает текущую сводку перед новым расчетом или ручной очисткой Results.
 Public Sub ClearSummary(ByVal workbook As Object)
     If workbook Is Nothing Then Err.Raise vbObjectError + 3972, "CBatchResultWriter", "Книга Excel не передана."
     ClearSummaryBody SummaryTargetRange(workbook)
 End Sub
 
 ' Обновляет итоговое время уже после завершения записи Results и схемы.
-' Сама сводка формируется раньше, потому что Plot.LoadCase = Worst читает из
+' Сводка формируется перед детальным Results, потому что Plot.LoadCase = Worst читает из
 ' нее определяющее сочетание; поэтому общий elapsed time дозаписывается в конце.
 Public Sub UpdateElapsedSeconds(ByVal workbook As Object, ByVal elapsedSeconds As Double)
     If workbook Is Nothing Then Err.Raise vbObjectError + 3974, "CBatchResultWriter", "Книга Excel не передана."
@@ -164,7 +164,7 @@ Private Function SummaryTargetRange(ByVal workbook As Object) As Object
     Set SummaryTargetRange = target.Resize(TARGET_ROWS, TARGET_COLUMNS)
 End Function
 
-' Снимает объединения и очищает старую сводку до блочной записи массива.
+' Снимает объединения и очищает текущую сводку до блочной записи массива.
 ' Это важно при повторном расчете: предыдущий запуск объединяет строки
 ' заголовков, и Excel не позволяет записывать двумерный массив поверх
 ' частично объединенного диапазона.
@@ -391,7 +391,7 @@ End Sub
 ' Записывает h/x только для состояния найденного предельного момента.
 ' В режиме DirectState или при NumericalFailure этих данных нет, поэтому
 ' ячейки остаются пустыми и не смешиваются с фактическим состоянием LC.
-' Записывает h/x для предельного состояния, найденного на выбранной λ-траектории.
+' Записывает h/x для предельного состояния, найденного на выбранной lambda-траектории.
 ' Эти величины относятся не к текущему LC, а именно к состоянию lambdaUltimate.
 Private Sub PutCapacityStateGeometry(ByRef data() As Variant, ByVal rowIndex As Long, ByVal batch As CBatchSectionCalculator, _
         ByVal index As Long, ByVal units As CUnitSystem, ByVal section As CSectionModel)

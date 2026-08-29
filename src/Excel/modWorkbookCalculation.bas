@@ -108,7 +108,7 @@ End Function
 
 ' Проверяет, можно ли вместо полноценной расчетной схемы показать preview
 ' импортированной AutoCAD-геометрии. Generated-сценарий сюда не допускается:
-' иначе старый AutoCAD-preview может остаться на листе после переключения
+' иначе AutoCAD-preview может остаться на листе после переключения
 ' настроек на автоматическую генерацию сечения.
 Private Function CanUseGeometryPreview(ByVal workbook As Object, ByVal settings As CSystemSettingsReader) As Boolean
     On Error GoTo Failed
@@ -123,7 +123,7 @@ End Function
 
 ' Очищает содержимое существующего ChartObject, но не удаляет само окно схемы.
 ' Это нужно, когда расчет не дал ни одного доступного состояния LC: пользователь
-' не должен видеть старую подпись или старую AutoCAD-preview схему как будто она
+' не должен видеть подпись или AutoCAD-preview схему как будто она
 ' относится к текущим Generated-настройкам.
 Private Sub ClearSectionPlotForNoData(ByVal workbook As Object, ByVal titleText As String)
     On Error GoTo Done
@@ -245,7 +245,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddSection "Подготовка книги"
     report.AddStep "Начата очистка старых результатов."
     ClearSectionResultsForWorkbook workbook
-    report.AddStep "Очищены rngResultSection, rngBatchSummary и таблицы расчетного снимка Results."
+    report.AddStep "Очищены rngBatchSummary и таблицы расчетного снимка Results."
 
     Dim materialProvider As CMaterialModelProvider
     Set materialProvider = New CMaterialModelProvider
@@ -294,10 +294,6 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     ndmWriter.WriteResults workbook, section, materialProvider, batch, units
     report.AddStep "Расчетный снимок NDM записан на лист Results."
 
-    report.AddStep "Начата запись итогового блока определяющего сочетания на лист Расчет."
-    WriteGoverningCombinationResults workbook, section, materialProvider, settings, units, batch
-    report.AddStep "Итоговый блок определяющего сочетания записан на лист Расчет."
-
     If settings.GetBoolean("Plot.AutoUpdateAfterCalculation", True) And batch.StateAvailableCount > 0 Then
         report.AddSection "Схема"
         report.AddStep "Начато обновление схемы сечения по Results."
@@ -308,7 +304,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
         If settings.GetBoolean("Plot.AutoUpdateAfterCalculation", True) Then
             ClearSectionPlotForNoData workbook, _
                 "Схема не обновлена: нет доступных расчетных состояний LC."
-            report.AddStep "Схема очищена от старого изображения: нет доступных состояний LC."
+            report.AddStep "Схема очищена: нет доступных состояний LC."
         Else
             report.AddStep "Автообновление схемы пропущено: Plot.AutoUpdateAfterCalculation = No."
         End If
@@ -454,21 +450,12 @@ End Sub
 ' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
 Public Sub ClearSectionResultsForWorkbook(ByVal workbook As Object)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4110, "ClearSectionResultsForWorkbook", "Книга Excel не передана."
-    ClearResultRange workbook.Names.Item("rngResultSection").RefersToRange
     Dim summaryWriter As CBatchResultWriter
     Set summaryWriter = New CBatchResultWriter
     summaryWriter.ClearSummary workbook
     Dim ndmWriter As CNDMResultsWriter
     Set ndmWriter = New CNDMResultsWriter
     ndmWriter.ClearResults workbook
-End Sub
-
-' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
-Private Sub ClearResultRange(ByVal target As Object)
-    target.Offset(0, 0).Resize(target.Rows.Count, 1).ClearContents
-    target.Offset(0, 4).Resize(target.Rows.Count, 1).ClearContents
-    target.Offset(0, 8).Resize(target.Rows.Count, 1).ClearContents
-    target.Offset(0, 12).Resize(target.Rows.Count, 1).ClearContents
 End Sub
 
 Public Function ReadWorkbookGeometry(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As ISectionGeometry
@@ -528,350 +515,6 @@ Public Function ReadWorkbookRebars(ByVal workbook As Object, ByVal geometry As I
     Set ReadWorkbookRebars = registry.CreateRebars(geometry, settings, units)
 End Function
 
-Private Sub WriteGoverningCombinationResults(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal materialProvider As CMaterialModelProvider, _
-        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByVal batch As CBatchSectionCalculator)
-    If batch Is Nothing Then Err.Raise vbObjectError + 4123, "WriteGoverningCombinationResults", "Результаты пакетного расчета отсутствуют."
-    If batch.GoverningCombinationIndex <= 0 Then Exit Sub
-
-    Dim index As Long
-    index = batch.GoverningCombinationIndex
-    If Not batch.StateAvailable(index) Then Exit Sub
-
-    Dim currentPurpose As ECalculationPurpose
-    currentPurpose = MaterialPurposeForCalculationType(batch.CalculationType(index))
-
-    WriteCapacityAndCrackResults workbook, section, materialProvider, currentPurpose, settings, _
-        units, batch.N(index), batch.UserMx(index), batch.UserMy(index), _
-        batch.LoadReferenceX, batch.LoadReferenceY, batch.CapacityLoadPath(index)
-End Sub
-
-Private Sub WriteCapacityAndCrackResults(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal materialProvider As CMaterialModelProvider, ByVal currentPurpose As ECalculationPurpose, _
-        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
-        ByVal nValue As Double, ByVal userMxValue As Double, ByVal userMyValue As Double, _
-        ByVal referenceX As Double, ByVal referenceY As Double, _
-        Optional ByVal capacityLoadPath As String = vbNullString)
-
-    Dim writer As CCapacityResultWriter
-    Set writer = New CCapacityResultWriter
-
-    Dim concrete As CMaterialDiagram
-    Dim steel As CMaterialDiagram
-    Set concrete = materialProvider.ConcreteStateMaterial(currentPurpose)
-    Set steel = materialProvider.SteelStateMaterial(currentPurpose)
-
-    Dim internalMxValue As Double
-    Dim internalMyValue As Double
-    internalMxValue = userMxValue + nValue * referenceY
-    internalMyValue = userMyValue + nValue * referenceX
-
-    Dim concreteCentroidX As Double
-    Dim concreteCentroidY As Double
-    CalculateConcreteSectionCentroid section, concreteCentroidX, concreteCentroidY
-
-    Dim centroidMxForCrack As Double
-    Dim centroidMyForCrack As Double
-    ' Проверка центрального растяжения в расчете трещин выполняется относительно
-    ' центра тяжести бетонного сечения. Если пользователь задал чистое N, но
-    ' сместил точку нагрузки через Load.ReferenceOffset, это уже внецентренное
-    ' состояние и центральная ветка трещин не включается.
-    centroidMxForCrack = userMxValue + nValue * (referenceY - concreteCentroidY)
-    centroidMyForCrack = userMyValue + nValue * (referenceX - concreteCentroidX)
-
-    Dim calculationMode As String
-    calculationMode = settings.GetString("Calculation.Mode", "FullCapacity")
-
-    Select Case LCase$(Trim$(calculationMode))
-        Case "directstate"
-            WriteDirectStateAndCrackResults workbook, section, materialProvider, currentPurpose, settings, units, _
-                nValue, internalMxValue, internalMyValue, centroidMxForCrack, centroidMyForCrack, writer
-            Exit Sub
-        Case "fullcapacity"
-        Case Else
-            Err.Raise vbObjectError + 4124, "WriteCapacityAndCrackResults", _
-                "Calculation.Mode должен быть DirectState или FullCapacity."
-    End Select
-
-    Dim capacity As CCapacitySolver
-    Set capacity = New CCapacitySolver
-    capacity.ApplySettings settings, units
-    ApplyCapacityLimitsFromProvider capacity, materialProvider, cpStrength
-    capacityLoadPath = NormalizedCapacityLoadPathForResult(capacityLoadPath, nValue, userMxValue, userMyValue)
-
-    Dim nOffset As Double
-    Dim nBase As Double
-    Dim mxOffset As Double
-    Dim mxBase As Double
-    Dim myOffset As Double
-    Dim myBase As Double
-    BuildCapacityLoadPathForResult capacityLoadPath, nValue, userMxValue, userMyValue, referenceX, referenceY, _
-        nOffset, nBase, mxOffset, mxBase, myOffset, myBase
-
-    Dim forceOnlyPath As Boolean
-    ' Одиночный вывод capacity повторяет batch-логику: если пользовательские
-    ' моменты равны нулю, λ*N и λ*NMxy считаются силовой траекторией N. Сам
-    ' выбранный CapacityLoadPath не меняется, меняется только численный метод.
-    forceOnlyPath = ((capacityLoadPath = "LambdaN" Or capacityLoadPath = "LambdaNMxy") And _
-        Abs(userMxValue) <= 0.000000001 And Abs(userMyValue) <= 0.000000001)
-    Select Case LCase$(Trim$(settings.GetRawString("Capacity.SolutionStrategy", vbNullString)))
-        Case "auto"
-            If forceOnlyPath Then
-                capacity.SolveByLoadPathMultiplier section, materialProvider.ConcreteMaterial(cpStrength), _
-                    materialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase, True
-            Else
-                capacity.SolveByAutoLoadPath section, materialProvider.ConcreteMaterial(cpStrength), _
-                    materialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase
-            End If
-        Case "ultimatestrain"
-            If forceOnlyPath Then
-                capacity.SolveByLoadPathMultiplier section, materialProvider.ConcreteMaterial(cpStrength), _
-                    materialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase, True
-            Else
-                capacity.SolveByUltimateLoadPath section, materialProvider.ConcreteMaterial(cpStrength), _
-                    materialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase
-            End If
-        Case "loadmultiplier"
-            capacity.SolveByLoadPathMultiplier section, materialProvider.ConcreteMaterial(cpStrength), _
-                materialProvider.SteelMaterial(cpStrength), nOffset, nBase, mxOffset, mxBase, myOffset, myBase, _
-                forceOnlyPath
-        Case Else
-            Err.Raise vbObjectError + 4125, "WriteCapacityAndCrackResults", _
-                "Capacity.SolutionStrategy должен быть Auto, LoadMultiplier или UltimateStrain."
-    End Select
-    writer.WriteCapacityResult workbook, capacity, units
-    Dim service As CSectionSolver
-    Set service = New CSectionSolver
-    service.ApplySettings settings, units
-    ApplyDirectStateInitialGuessForResult section, concrete, steel, nValue, internalMxValue, internalMyValue, service
-    service.Solve section, concrete, steel, nValue, internalMxValue, internalMyValue
-
-    If service.Converged Then
-        Dim crack As CCrackWidthCalculator
-        Set crack = New CCrackWidthCalculator
-        crack.ApplySettings settings, units
-        If currentPurpose = cpCrackedNDS And CrackCalculationEnabled(settings) And _
-                Not ServiceUsesExtension(section, service, concrete, steel) And _
-                ServiceWithinPhysicalRange(section, service, concrete, steel) Then
-            crack.Calculate service, section, materialProvider, currentPurpose, _
-                nValue, internalMxValue, internalMyValue, _
-                centroidMxForCrack, centroidMyForCrack
-            writer.WriteCrackResult workbook, crack, units
-        End If
-    End If
-End Sub
-
-Private Sub WriteDirectStateAndCrackResults(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal materialProvider As CMaterialModelProvider, ByVal currentPurpose As ECalculationPurpose, _
-        ByVal settings As CSystemSettingsReader, _
-        ByVal units As CUnitSystem, _
-        ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
-        ByVal centroidMxForCrack As Double, ByVal centroidMyForCrack As Double, ByVal writer As CCapacityResultWriter)
-
-    Dim concrete As CMaterialDiagram
-    Dim steel As CMaterialDiagram
-    Set concrete = materialProvider.ConcreteStateMaterial(currentPurpose)
-    Set steel = materialProvider.SteelStateMaterial(currentPurpose)
-
-    Dim service As CSectionSolver
-    Set service = New CSectionSolver
-    service.ApplySettings settings, units
-    ApplyDirectStateInitialGuessForResult section, concrete, steel, nValue, mxValue, myValue, service
-    service.Solve section, concrete, steel, nValue, mxValue, myValue
-
-    writer.WriteDirectSectionResult workbook, service, units
-    
-    
-
-    If service.Converged And currentPurpose = cpCrackedNDS And CrackCalculationEnabled(settings) And _
-            Not ServiceUsesExtension(section, service, concrete, steel) And _
-            ServiceWithinPhysicalRange(section, service, concrete, steel) Then
-        Dim crack As CCrackWidthCalculator
-        Set crack = New CCrackWidthCalculator
-        crack.ApplySettings settings, units
-        crack.Calculate service, section, materialProvider, currentPurpose, _
-            nValue, mxValue, myValue, _
-            centroidMxForCrack, centroidMyForCrack
-        writer.WriteCrackResult workbook, crack, units
-    End If
-End Sub
-
-' Для одиночного вывода результатов применяет тот же старт чистого изгиба,
-' что и batch-расчет. Это важно, чтобы Results, схема и блок "Расчет" не
-' расходились только из-за разных начальных приближений CSectionSolver.
-Private Sub ApplyDirectStateInitialGuessForResult(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
-        ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
-        ByVal service As CSectionSolver)
-    If section Is Nothing Then Exit Sub
-    If concreteMaterial Is Nothing Then Exit Sub
-    If steelMaterial Is Nothing Then Exit Sub
-    If service Is Nothing Then Exit Sub
-    If Abs(nValue) > 0.000000001 Then Exit Sub
-    If Not HasMomentVectorValues(mxValue, myValue) Then Exit Sub
-
-    Dim guessBuilder As CStateGuessBuilder
-    Dim eps0 As Double
-    Dim kx As Double
-    Dim ky As Double
-    Set guessBuilder = New CStateGuessBuilder
-    If guessBuilder.BuildForDirectState(section, concreteMaterial, steelMaterial, nValue, mxValue, myValue, eps0, kx, ky) Then
-        service.SetInitialState eps0, kx, ky
-    End If
-End Sub
-
-' Нормализует capacity-траекторию для одиночного блока результата на листе
-' "Расчет". Здесь повторяется только пограничная логика Excel-слоя: сама
-' предельная задача дальше уходит в универсальный CCapacitySolver.
-Private Function NormalizedCapacityLoadPathForResult(ByVal capacityLoadPath As String, _
-        ByVal nValue As Double, ByVal userMxValue As Double, ByVal userMyValue As Double) As String
-    Dim value As String
-    value = LCase$(Trim$(capacityLoadPath))
-    value = Replace$(value, " ", vbNullString)
-    value = Replace$(value, ChrW$(&H3BB), "lambda")
-    value = Replace$(value, "λ", "lambda")
-
-    Select Case value
-        Case "lambda*mx", "lambdamx", "mx"
-            NormalizedCapacityLoadPathForResult = "LambdaMx"
-        Case "lambda*my", "lambdamy", "my"
-            NormalizedCapacityLoadPathForResult = "LambdaMy"
-        Case "lambda*mxy", "lambdamxy", "mxy"
-            NormalizedCapacityLoadPathForResult = "LambdaMxy"
-        Case "lambda*n", "lambdan", "nload"
-            NormalizedCapacityLoadPathForResult = "LambdaN"
-        Case "lambda*nmxy", "lambdanmxy", "nmxy", "all"
-            NormalizedCapacityLoadPathForResult = "LambdaNMxy"
-        Case Else
-            If Sqr(userMxValue * userMxValue + userMyValue * userMyValue) > 0.000000001 Then
-                NormalizedCapacityLoadPathForResult = "LambdaMxy"
-            ElseIf Abs(nValue) > 0.000000001 Then
-                NormalizedCapacityLoadPathForResult = "LambdaN"
-            End If
-    End Select
-End Function
-
-' Проверяет, что пользовательский или перенесенный момент действительно
-' ненулевой. Отдельная функция нужна, чтобы одинаково применять допуск в
-' одиночном DirectState и FullCapacity-выводе.
-Private Function HasMomentVectorValues(ByVal mxValue As Double, ByVal myValue As Double) As Boolean
-    HasMomentVectorValues = (Sqr(mxValue * mxValue + myValue * myValue) > 0.000000001)
-End Function
-
-' Собирает математические Offset/Base для повторного вывода capacity на лист
-' "Расчет". Логика та же, что в CBatchSectionCalculator: пользовательские
-' Mx/My отделены от моментов, появившихся из-за смещения точки приложения N.
-Private Sub BuildCapacityLoadPathForResult(ByVal loadPath As String, _
-        ByVal nValue As Double, ByVal userMxValue As Double, ByVal userMyValue As Double, _
-        ByVal referenceX As Double, ByVal referenceY As Double, _
-        ByRef nOffset As Double, ByRef nBase As Double, _
-        ByRef mxOffset As Double, ByRef mxBase As Double, _
-        ByRef myOffset As Double, ByRef myBase As Double)
-    Dim mxFromN As Double
-    Dim myFromN As Double
-    mxFromN = nValue * referenceY
-    myFromN = nValue * referenceX
-
-    Select Case loadPath
-        Case "LambdaMx"
-            nOffset = nValue
-            mxOffset = mxFromN
-            mxBase = userMxValue
-            myOffset = myFromN + userMyValue
-        Case "LambdaMy"
-            nOffset = nValue
-            mxOffset = mxFromN + userMxValue
-            myOffset = myFromN
-            myBase = userMyValue
-        Case "LambdaMxy"
-            nOffset = nValue
-            mxOffset = mxFromN
-            mxBase = userMxValue
-            myOffset = myFromN
-            myBase = userMyValue
-        Case "LambdaN"
-            nBase = nValue
-            mxOffset = userMxValue
-            mxBase = mxFromN
-            myOffset = userMyValue
-            myBase = myFromN
-        Case "LambdaNMxy"
-            nBase = nValue
-            mxBase = userMxValue + mxFromN
-            myBase = userMyValue + myFromN
-    End Select
-End Sub
-
-' Выбирает расчетную цель материала для повторного вывода одного LC на лист "Расчет".
-' Это тот же смысл, что и в batch: I группа использует Strength, II группа -
-' CrackedNDS с диаграммами II группы и неработающим растянутым бетоном.
-Private Function MaterialPurposeForCalculationType(ByVal calculationType As String) As ECalculationPurpose
-    MaterialPurposeForCalculationType = StateBasePurposeForCalculationType(calculationType)
-End Function
-
-' Передает CCapacitySolver пределы деформаций из material provider-а. Эти величины
-' больше не читаются как отдельные настройки Capacity.*Limit: источник истины -
-' автоматически построенная диаграмма материала для Strength.
-Private Sub ApplyCapacityLimitsFromProvider(ByVal capacity As CCapacitySolver, _
-        ByVal materialProvider As CMaterialModelProvider, ByVal purpose As ECalculationPurpose)
-    capacity.ConcreteCompressionLimit = materialProvider.ConcreteCompressionLimit(purpose)
-    capacity.ConcreteTensionLimit = materialProvider.ConcreteTensionLimit(purpose)
-    capacity.ConcreteTensionLimitEnabled = materialProvider.ConcreteTensionLimitEnabled(purpose)
-    capacity.SteelStrainLimit = MaxDouble(Abs(materialProvider.SteelCompressionLimit(purpose)), _
-        Abs(materialProvider.SteelTensionLimit(purpose)))
-End Sub
-
-' Проверяет, использовал ли прямой solve техническое продолжение диаграммы.
-' Это локальная защита итогового блока листа "Расчет"; основной batch пишет
-' тот же признак в Results snapshot и именно его используют схема/AutoCAD.
-Private Function ServiceUsesExtension(ByVal section As CSectionModel, ByVal solver As CSectionSolver, _
-        ByVal concrete As Object, ByVal steel As Object) As Boolean
-    Dim i As Long
-    Dim strain As Double
-
-    For i = 1 To section.ConcreteCount
-        strain = solver.Epsilon0 + solver.KappaX * section.ConcreteY(i) + solver.KappaY * section.ConcreteX(i)
-        If concrete.IsInExtensionRange(strain) Then
-            ServiceUsesExtension = True
-            Exit Function
-        End If
-    Next i
-
-    For i = 1 To section.RebarCount
-        strain = solver.Epsilon0 + solver.KappaX * section.RebarY(i) + solver.KappaY * section.RebarX(i)
-        If steel.IsInExtensionRange(strain) Then
-            ServiceUsesExtension = True
-            Exit Function
-        End If
-    Next i
-End Function
-
-' Проверяет физические пределы прямого НДС в итоговом блоке листа "Расчет".
-' Batch делает такую же проверку перед записью Results. Здесь она нужна, чтобы
-' повторный вывод одного LC не запускал расчет трещин по состоянию, которое
-' формально сошлось, но уже находится за физическими eps_ult.
-Private Function ServiceWithinPhysicalRange(ByVal section As CSectionModel, ByVal solver As CSectionSolver, _
-        ByVal concrete As Object, ByVal steel As Object) As Boolean
-    Dim i As Long
-    Dim strain As Double
-
-    For i = 1 To section.ConcreteCount
-        strain = solver.Epsilon0 + solver.KappaX * section.ConcreteY(i) + solver.KappaY * section.ConcreteX(i)
-        If Not concrete.IsInPhysicalRange(strain) Then Exit Function
-    Next i
-
-    For i = 1 To section.RebarCount
-        strain = solver.Epsilon0 + solver.KappaX * section.RebarY(i) + solver.KappaY * section.RebarX(i)
-        If Not steel.IsInPhysicalRange(strain) Then Exit Function
-    Next i
-
-    ServiceWithinPhysicalRange = True
-End Function
-
-Private Function CrackCalculationEnabled(ByVal settings As CSystemSettingsReader) As Boolean
-    CrackCalculationEnabled = settings.GetBoolean("SLS.Crack.Enabled", True)
-End Function
-
 ' Форматирует числа для человекочитаемого txt-отчета без зависимости от
 ' десятичного разделителя Windows. Это локальная утилита Excel-слоя: она
 ' нужна только для протокола запуска и не участвует в расчетных формулах.
@@ -890,27 +533,3 @@ Private Function ElapsedSecondsFrom(ByVal startTimer As Double) As Double
         ElapsedSecondsFrom = 86400# - startTimer + nowTimer
     End If
 End Function
-
-' Локальный максимум для передачи асимметричных пределов арматуры в старый
-' контракт CCapacitySolver, который пока принимает одно абсолютное значение.
-Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
-    If a > b Then MaxDouble = a Else MaxDouble = b
-End Function
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

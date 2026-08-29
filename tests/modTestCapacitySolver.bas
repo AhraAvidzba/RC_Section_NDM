@@ -53,8 +53,6 @@ Public Function RunCapacitySolverTests() As String
     TestAsymmetricCoupledCurvatures stats
     AppendLine stats, "RUN: TestAsymmetricMxy"
     TestAsymmetricMxy stats
-    AppendLine stats, "RUN: TestResultWriter"
-    TestResultWriter stats
     AppendLine stats, "RUN: TestInvalidBaseMoment"
     TestInvalidBaseMoment stats
     AppendLine stats, "RUN: TestCapacitySolutionStrategyComparisons"
@@ -316,7 +314,7 @@ Private Sub TestZeroAxialForce(ByRef stats As TCapacityTestStats)
     AssertEquilibrium stats, "capacity.zeroN", cap.LastSolver, 0#, cap.MxUltimate, 0#
 End Sub
 
-' Проверяет универсальную λ-траекторию для чистой продольной силы. Здесь
+' Проверяет универсальную lambda-траекторию для чистой продольной силы. Здесь
 ' масштабируется только N, поэтому нулевые Mx/My являются нормальным входом,
 ' а не ошибкой контракта.
 Private Sub TestAxialLoadMultiplierFindsNult(ByRef stats As TCapacityTestStats)
@@ -431,8 +429,8 @@ Private Sub TestSteelLimitState(ByRef stats As TCapacityTestStats)
 End Sub
 
 ' Проверяет, что LoadMultiplier не падает на чистом изгибе из-за старта из нулевого излома диаграммы.
-' Раньше этот искусственно жесткий сценарий использовался как пример NumericalFailure, но после появления
-' CStateGuessBuilder он стал важной регрессией устойчивости для λ*Mx/λ*My без постоянной продольной силы.
+' Этот искусственно жесткий сценарий проверяет устойчивость numerical extension после появления
+' CStateGuessBuilder он стал важной регрессией устойчивости для lambda*Mx/lambda*My без постоянной продольной силы.
 Private Sub TestLoadMultiplierPureBendingUsesStateGuess(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -514,27 +512,6 @@ Private Sub TestAsymmetricMxy(ByRef stats As TCapacityTestStats)
     AssertEquilibrium stats, "capacity.mxy.asym", cap.LastSolver, -260000#, cap.MxUltimate, cap.MyUltimate
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
-Private Sub TestResultWriter(ByRef stats As TCapacityTestStats)
-    Dim mesh As CFiberMeshBuilder
-    Dim rebars As CRebarLayout
-    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
-
-    Dim cap As CCapacitySolver
-    Set cap = New CCapacitySolver
-    ConfigureCapacity cap
-    cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -250000#, -6000000#, -4000000#
-
-    Dim writer As CCapacityResultWriter
-    Set writer = New CCapacityResultWriter
-    writer.WriteCapacityResult ThisWorkbook, cap
-
-    AssertEquals stats, "capacity.writer.mode", CStr(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(2, 5).Value2), "N+Mx+My"
-    AssertTrue stats, "capacity.writer.lambda", CDbl(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(5, 5).Value2) > 0#
-    AssertTrue stats, "capacity.writer.nult.blankForMult", Len(CStr(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(6, 5).Value2)) = 0
-    AssertTrue stats, "capacity.writer.mx", CDbl(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(7, 5).Value2) <> 0#
-    AssertTrue stats, "capacity.writer.my", CDbl(ThisWorkbook.Names.Item("rngResultSection").RefersToRange.Cells.Item(8, 5).Value2) <> 0#
-End Sub
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestInvalidBaseMoment(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
@@ -839,7 +816,7 @@ End Sub
 ' Проверяет все пользовательские траектории CapacityLoadPath на всех
 ' доступных способах поиска несущей способности. Тест намеренно работает
 ' на уровне CCapacitySolver: batch уже переводит пользовательские строки
-' λ*Mx/λ*My/... в универсальную форму Offset + lambda*Base.
+' lambda*Mx/lambda*My/... в универсальную форму Offset + lambda*Base.
 Private Sub TestCapacityLoadPathMethodMatrix(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -855,7 +832,7 @@ End Sub
 ' Проверяет вырожденные, но допустимые lambda-траектории: в Base-векторе
 ' могут быть нулевые компоненты, если хотя бы одна компонента нагрузки реально
 ' масштабируется. Это защищает общий контракт solver-а Offset + lambda*Base:
-' λ*Mx не обязан иметь N, λ*Mxy может содержать только один момент, а λ*NMxy
+' lambda*Mx не обязан иметь N, lambda*Mxy может содержать только один момент, а lambda*NMxy
 ' может фактически свестись к чистому N, чистому Mx или чистому My.
 Private Sub TestCapacityLoadPathZeroComponentMatrix(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
@@ -889,8 +866,8 @@ Private Sub TestLShapeCapacityLoadPathSmoke(ByRef stats As TCapacityTestStats)
         0#, -200# * 9806.65 * props.CentroidY, 0#, -200# * 9806.65 * props.CentroidX, True
 
     ' Пользовательский сценарий из книги: Г-сечение, N задана относительно
-    ' бетонного центра тяжести, а предельная способность ищется по λ*Mx.
-    ' Здесь обязана включаться старая быстрая моментная постановка
+    ' бетонного центра тяжести, а предельная способность ищется по lambda*Mx.
+    ' Здесь обязана включаться быстрая моментная постановка
     ' UltimateStrain: N постоянна, направление Mx/My сохраняется.
     CheckLShapeMomentUltimatePath stats, "lshape.moment.mx.userCase", section, _
         -200# * 9806.65, 50# * 9806.65 * 1000#, 0#, props.CentroidX, props.CentroidY
@@ -903,7 +880,7 @@ End Sub
 ' Проверяет моментную ветку UltimateStrain на несимметричном Г-сечении.
 ' Внутри solver-а момент от N добавляется как постоянный offset, а
 ' пользовательский момент масштабируется через lambda. Такой тест защищает
-' старую рабочую постановку от случайного ухода в общий load-path residual.
+' рабочую моментную постановку от случайного ухода в общий load-path residual.
 Private Sub CheckLShapeMomentUltimatePath(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal section As CSectionModel, ByVal nValue As Double, _
         ByVal userMxBase As Double, ByVal userMyBase As Double, _
