@@ -536,7 +536,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
         Exit Sub
     End If
 
-    RunLongitudinalCrackCheck index
+    StoreLongitudinalCrackWithinCrackWidth index
 
     Dim crack As CCrackWidthCalculator
     Set crack = New CCrackWidthCalculator
@@ -719,7 +719,7 @@ End Sub
 ' относится к трещиностойкости и нормативным нагрузкам, поэтому запускается
 ' только для Group2. Повторный расчет состояния здесь намеренно не нужен:
 ' сравниваем именно Stress/Strain, сохраненные в Results snapshot для LC.
-Private Sub RunLongitudinalCrackCheck(ByVal index As Long)
+Private Sub StoreLongitudinalCrackWithinCrackWidth(ByVal index As Long)
     If Not mResults(index).StateAvailable Or Not mResults(index).StateConverged Then
         mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
         ReportStep "Проверка продольных трещин не запускается: нет сходящегося прямого НДС."

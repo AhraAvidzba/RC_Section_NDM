@@ -62,8 +62,8 @@ Private mMinX As Double ' Минимум оси X после добавлени�
 Private mMaxX As Double ' Максимум оси X после добавления полей для аннотаций.
 Private mMinY As Double ' Минимум оси Y после добавления полей для аннотаций.
 Private mMaxY As Double ' Максимум оси Y после добавления полей для аннотаций.
-Private mResultMin As Double ' Минимальное значение выбранного ResultType среди рабочих элементов.
-Private mResultMax As Double ' Максимальное значение выбранного ResultType среди рабочих элементов.
+Private mResultMin As Double ' Минимальное значение выбранной визуальной величины среди рабочих элементов.
+Private mResultMax As Double ' Максимальное значение выбранной визуальной величины среди рабочих элементов.
 Private mCompressionMaxAbs As Double ' Максимальный модуль сжатия для общей легенды.
 Private mCompressionValueAtMaxAbs As Double ' Знаковое значение, подписываемое у края шкалы сжатия.
 Private mTensionMaxAbs As Double ' Максимальный модуль растяжения для общей легенды.

@@ -25,7 +25,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestLoadCombinationsOnConfig stats
     TestSingleCombinationSkipsBlankRows stats
     TestPartialCombinationIsInvalid stats
-    TestInvalidCalculationTypeDoesNotRunPlot stats
+    TestInvalidProfileIdDoesNotRunPlot stats
     TestAutoCADSourceRequiresManualImport stats
     TestAutoCADImportButtonRejectsGeneratedSource stats
     TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
@@ -305,7 +305,7 @@ Private Sub TestPartialCombinationIsInvalid(ByRef stats As TUiTestStats)
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
-Private Sub TestInvalidCalculationTypeDoesNotRunPlot(ByRef stats As TUiTestStats)
+Private Sub TestInvalidProfileIdDoesNotRunPlot(ByRef stats As TUiTestStats)
     PrepareCircleInput
     SetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
 
@@ -316,10 +316,10 @@ Private Sub TestInvalidCalculationTypeDoesNotRunPlot(ByRef stats As TUiTestStats
     Dim message As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
 
-    AssertTrue stats, "ui.loads.invalidCalculationType.message", _
+    AssertTrue stats, "ui.loads.invalidProfileId.message", _
         InStr(1, message, "InputErr", vbTextCompare) > 0 And _
         InStr(1, message, "результатов элементов", vbTextCompare) = 0
-    AssertTrue stats, "ui.loads.invalidCalculationType.noElementRows", _
+    AssertTrue stats, "ui.loads.invalidProfileId.noElementRows", _
         ResultTableRowCount("rngNDMElementResults") = 1
 End Sub
 
@@ -441,7 +441,6 @@ End Sub
 Private Sub TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC(ByRef stats As TUiTestStats)
     PrepareCircleInput
     SetSystemSetting "Geometry.Source", "Generated"
-    SetSystemSetting "Calculation.Mode", "DirectState"
     SetSystemSetting "Plot.LoadCase", "Worst"
 
     Dim message As String
@@ -459,7 +458,6 @@ End Sub
 ' чтобы Excel и AutoCAD показывали согласованную картину без НДС.
 Private Sub TestCapacityOnlyDrawsGeometryWithoutStateResults(ByRef stats As TUiTestStats)
     PrepareCircleInput
-    SetSystemSetting "Calculation.Mode", "CapacityOnly"
     SetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
     SetSystemSetting "Plot.LoadCase", "Worst"
 
@@ -478,7 +476,6 @@ Private Sub TestCapacityOnlyDrawsGeometryWithoutStateResults(ByRef stats As TUiT
     AssertTrue stats, "ui.capacityOnly.commonLoadReference", _
         Len(ResultsPropertyValue("ALL", "LoadReferenceX")) > 0 And Len(ResultsPropertyValue("ALL", "LoadReferenceY")) > 0
 
-    SetSystemSetting "Calculation.Mode", "FullCapacity"
 End Sub
 
 ' Проверяет, что кнопка расчета в режиме AutoCAD использует уже сохраненную
@@ -506,7 +503,7 @@ Private Sub TestAutoCADCalculationMessageUsesSavedGeometry(ByRef stats As TUiTes
     writer.WriteGeometryPreview ThisWorkbook, section, units
 
     SetSystemSetting "Geometry.Source", "AutoCAD"
-    ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange.Cells.Item(2, 5).Value2 = "Group1"
+    ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange.Cells.Item(2, 5).Value2 = "PR1"
 
     Dim message As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
@@ -527,7 +524,7 @@ Private Sub TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped(ByRef stats As T
     loads.Cells.Item(3, 2).Value2 = 0#
     loads.Cells.Item(3, 3).Value2 = 0#
     loads.Cells.Item(3, 4).Value2 = 0#
-    loads.Cells.Item(3, 5).Value2 = "Group1"
+    loads.Cells.Item(3, 5).Value2 = "PR1"
 
     Dim batch As CBatchSectionCalculator
     Set batch = BuildUiBatch()
@@ -702,7 +699,6 @@ End Sub
 ' найденной предельной capacity-плоскости.
 Private Sub TestLShapePureBendingDirectStateWorkbookPath(ByRef stats As TUiTestStats)
     PrepareUserLShapeMomentUltimateInput
-    SetSystemSetting "Calculation.Mode", "DirectState"
 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -784,7 +780,6 @@ End Sub
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTestStats)
     PrepareCircleInput
-    SetSystemSetting "Calculation.Mode", "FullCapacity"
     SetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
     SetSystemSetting "Capacity.ToleranceLambda", "0.05"
     SetSystemSetting "Capacity.MaxLambda", "10"
@@ -796,7 +791,7 @@ Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTest
     loads.Cells.Item(2, 2).Value2 = -100000#
     loads.Cells.Item(2, 3).Value2 = -1000000#
     loads.Cells.Item(2, 4).Value2 = 0#
-    loads.Cells.Item(2, 5).Value2 = "Group1"
+    loads.Cells.Item(2, 5).Value2 = "PR1"
     loads.Cells.Item(2, 6).Value2 = ChrW$(&H3BB) & "*Mxy"
     loads.Cells.Item(2, 7).Value2 = "less severe"
 
@@ -804,7 +799,7 @@ Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTest
     loads.Cells.Item(3, 2).Value2 = -100000#
     loads.Cells.Item(3, 3).Value2 = -8000000#
     loads.Cells.Item(3, 4).Value2 = 0#
-    loads.Cells.Item(3, 5).Value2 = "Group1"
+    loads.Cells.Item(3, 5).Value2 = "PR1"
     loads.Cells.Item(3, 6).Value2 = ChrW$(&H3BB) & "*Mxy"
     loads.Cells.Item(3, 7).Value2 = "governing"
 
@@ -899,7 +894,7 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.validation.capacitySearchMethod", _
         SystemSettingValidationHasOptions("Capacity.SearchMethod", Array("Bisection", "Brent", "Secant"))
     AssertTrue stats, "ui.validation.capacityScope", _
-        SystemSettingValidationHasOptions("Capacity.CalculationScope", Array("Group1Only", "Group1+2"))
+        SystemSettingValidationHasOptions("Capacity.CalculationScope", Array("PR1Only", "PR1+2"))
     AssertTrue stats, "ui.validation.autocadLabelMode", _
         SystemSettingValidationHasOptions("AutoCAD.Export.LabelMode", Array("ValuesOnly", "NamesAndValues"))
     AssertTrue stats, "ui.validation.autocadResultType", _
@@ -912,8 +907,8 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
         SystemSettingValidationHasOptions("AutoCAD.Export.LoadPointEnabled", Array("Yes", "No"))
     AssertTrue stats, "ui.validation.autocadCombination", AutoCADCombinationValidationIsDynamic()
     AssertTrue stats, "ui.validation.plotLoadCase", PlotLoadCaseValidationIsDynamic()
-    AssertTrue stats, "ui.validation.loadCalculationType", _
-        LoadCombinationValidationHasOptions(5, Array("Group1", "Group2"))
+    AssertTrue stats, "ui.validation.loadProfileId", _
+        LoadCombinationValidationHasOptions(5, Array("PR1", "PR2"))
     AssertTrue stats, "ui.validation.plotResultType", _
         SystemSettingValidationHasOptions("Plot.ResultType", Array("Stress", "Strain"))
     AssertTrue stats, "ui.validation.plotLabels", _
@@ -1573,6 +1568,10 @@ Private Function BuildUiBatch() As CBatchSectionCalculator
     Set batch = New CBatchSectionCalculator
     batch.Initialize section, materialProvider
     batch.ApplySettings settings
+    Dim profiles As CCalculationProfileCatalog
+    Set profiles = New CCalculationProfileCatalog
+    profiles.LoadFromWorkbook ThisWorkbook
+    Set batch.ProfileCatalog = profiles
     Set BuildUiBatch = batch
 End Function
 
@@ -1588,7 +1587,6 @@ Private Sub PrepareCircleInput()
     SetSystemSetting "Sign.My.User", "+X tension"
     SetSystemSetting "Geometry.Source", "Generated"
     SetSystemSetting "Geometry.Type", "Circle"
-    SetSystemSetting "Calculation.Mode", "DirectState"
     SetSystemSetting "Plot.LoadCase", "LC1"
     SetSystemSetting "Steel.RebarProfile", "Ribbed"
     SetSystemSetting "Rebar.AxisDistance", "40"
@@ -1603,7 +1601,7 @@ Private Sub PrepareCircleInput()
     loads.Cells.Item(2, 2).Value2 = -100000#
     loads.Cells.Item(2, 3).Value2 = -4000000#
     loads.Cells.Item(2, 4).Value2 = -3000000#
-    loads.Cells.Item(2, 5).Value2 = "Group2"
+    loads.Cells.Item(2, 5).Value2 = "PR2"
     loads.Cells.Item(2, 6).Value2 = ChrW$(&H3BB) & "*Mxy"
     loads.Cells.Item(2, 7).Value2 = "ui test"
 End Sub
@@ -1620,7 +1618,6 @@ Private Sub PrepareLShapeInput()
     SetSystemSetting "Sign.My.User", "+X tension"
     SetSystemSetting "Geometry.Source", "Generated"
     SetSystemSetting "Geometry.Type", "LShape"
-    SetSystemSetting "Calculation.Mode", "DirectState"
     SetSystemSetting "Plot.LoadCase", "LC_L"
     SetSystemSetting "Mesh.Step", "40"
     SetSystemSetting "Mesh.BoundarySubdivisions", "2"
@@ -1677,7 +1674,7 @@ Private Sub PrepareLShapeInput()
     loads.Cells.Item(2, 2).Value2 = -80000#
     loads.Cells.Item(2, 3).Value2 = -1500000#
     loads.Cells.Item(2, 4).Value2 = -1000000#
-    loads.Cells.Item(2, 5).Value2 = "Group2"
+    loads.Cells.Item(2, 5).Value2 = "PR2"
     loads.Cells.Item(2, 6).Value2 = ChrW$(&H3BB) & "*Mxy"
     loads.Cells.Item(2, 7).Value2 = "lshape ui test"
 End Sub
@@ -1698,8 +1695,6 @@ Private Sub PrepareUserLShapeMomentUltimateInput()
     SetSystemSetting "Sign.My.User", "+X tension"
     SetSystemSetting "Geometry.Source", "Generated"
     SetSystemSetting "Geometry.Type", "LShape"
-    SetSystemSetting "Calculation.Mode", "FullCapacity"
-    SetSystemSetting "Capacity.CalculationScope", "Group1Only"
     SetSystemSetting "Capacity.SolutionStrategy", "UltimateStrain"
     SetSystemSetting "Capacity.MaxLambda", "64"
     SetSystemSetting "Capacity.ToleranceStrain", "0.00001"
@@ -1733,7 +1728,7 @@ Private Sub PrepareUserLShapeMomentUltimateInput()
     loads.Cells.Item(2, 2).Value2 = 200#
     loads.Cells.Item(2, 3).Value2 = 50#
     loads.Cells.Item(2, 4).ClearContents
-    loads.Cells.Item(2, 5).Value2 = "Group1"
+    loads.Cells.Item(2, 5).Value2 = "PR1"
     loads.Cells.Item(2, 6).Value2 = ChrW$(&H3BB) & "*Mx"
     loads.Cells.Item(2, 7).Value2 = "moment ultimate regression"
 End Sub
@@ -1753,7 +1748,6 @@ Private Sub PrepareUserLShapeAxialTensionInput()
     SetSystemSetting "Sign.My.User", "+X tension"
     SetSystemSetting "Geometry.Source", "Generated"
     SetSystemSetting "Geometry.Type", "LShape"
-    SetSystemSetting "Calculation.Mode", "DirectState"
     SetSystemSetting "Solver.Method", "Newton"
     SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
     SetSystemSetting "Solver.MaxIterations", "80"
@@ -1783,7 +1777,7 @@ Private Sub PrepareUserLShapeAxialTensionInput()
     loads.Cells.Item(2, 2).Value2 = -795#
     loads.Cells.Item(2, 3).ClearContents
     loads.Cells.Item(2, 4).ClearContents
-    loads.Cells.Item(2, 5).Value2 = "Group2"
+    loads.Cells.Item(2, 5).Value2 = "PR2"
     loads.Cells.Item(2, 6).Value2 = ChrW$(&H3BB) & "*N"
     loads.Cells.Item(2, 7).Value2 = "inside physical range"
 
@@ -1791,7 +1785,7 @@ Private Sub PrepareUserLShapeAxialTensionInput()
     loads.Cells.Item(3, 2).Value2 = -900#
     loads.Cells.Item(3, 3).ClearContents
     loads.Cells.Item(3, 4).ClearContents
-    loads.Cells.Item(3, 5).Value2 = "Group2"
+    loads.Cells.Item(3, 5).Value2 = "PR2"
     loads.Cells.Item(3, 6).Value2 = ChrW$(&H3BB) & "*N"
     loads.Cells.Item(3, 7).Value2 = "uses extension"
 End Sub

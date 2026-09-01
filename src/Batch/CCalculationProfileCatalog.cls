@@ -170,6 +170,7 @@ Private Sub Clear()
     mCount = 0
 End Sub
 
+' Возвращает профиль по стабильному ID столбца.
 Public Function ProfileById(ByVal profileId As String) As CCalculationProfile
     Dim index As Long
     index = FindProfile(profileId)
@@ -178,6 +179,7 @@ Public Function ProfileById(ByVal profileId As String) As CCalculationProfile
     Set ProfileById = mProfiles(index)
 End Function
 
+' Проверяет наличие профиля без выбрасывания ошибки.
 Public Function HasProfile(ByVal profileId As String) As Boolean
     HasProfile = (FindProfile(profileId) > 0)
 End Function

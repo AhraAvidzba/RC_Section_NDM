@@ -53,21 +53,27 @@ Public Sub Initialize(ByVal profileId As String, ByVal displayName As String, By
     mCrackWidth = crackWidth
 End Sub
 
+' Сохраняет спецификацию модели прочности.
 Public Sub SetStrengthSpec(ByVal spec As CMaterialModelSpec)
     If spec Is Nothing Then Exit Sub
     Set mStrengthSpec = spec.Clone
 End Sub
 
+' Сохраняет спецификацию модели образования трещины для ветки Auto.
 Public Sub SetCrackInitiationSpec(ByVal spec As CMaterialModelSpec)
     If spec Is Nothing Then Exit Sub
     Set mCrackInitiationSpec = spec.Clone
 End Sub
 
+' Сохраняет спецификацию модели НДС с раскрытой трещиной.
 Public Sub SetCrackedStateSpec(ByVal spec As CMaterialModelSpec)
     If spec Is Nothing Then Exit Sub
     Set mCrackedStateSpec = spec.Clone
 End Sub
 
+' Сохраняет настройки визуализации. Их несоответствие фактически полученным
+' состояниям не блокирует расчет: ошибка появится только при построении схемы
+' или AutoCAD export по отсутствующему StateType.
 Public Sub SetVisualization(ByVal stateText As String, ByVal quantityText As String)
     If Len(Trim$(stateText)) > 0 Then
         mVisualizationState = SectionStateTypeFromText(stateText)

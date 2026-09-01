@@ -13,13 +13,13 @@ Option Explicit
 ' ИМЕНОВАННОЕ НДС ОДНОГО СОЧЕТАНИЯ
 ' ==========================================================================
 ' Один LC может иметь несколько конечных расчетных состояний: StrengthState,
-' CapacityState, CrackedState и, при реально выполненной ветке Auto, 
+' CapacityState, CrackedState и, при реально выполненной ветке Auto,
 ' CrackInitiationState. CSectionStateResult хранит плоскость деформаций и
 ' фактическую спецификацию материала для такого named-state.
 '
 ' Класс не пишет лист Results и не решает равновесие. Он только переносит
 ' состояние solver-а в компактный объект, который CCombinationResult хранит
-' до момента блочной записи snapshot.
+' до блочной записи snapshot.
 
 Private mStateType As ESectionStateType ' Какое именованное состояние рассчитано.
 Private mMaterialModelRole As ECalculationPurpose ' Смысловая роль модели материала.

@@ -20,7 +20,7 @@ Option Explicit
 ' Reader не запускает расчет, не читает текущую геометрию Config и не
 ' пересчитывает единицы: схема показывает ровно то, что записано в Results.
 
-Private mResultType As String ' Что сейчас визуализируется: Stress или Strain.
+Private mVisualizationQuantity As String ' Что сейчас визуализируется по профилю: Stress или Strain.
 Private mLoadCase As String ' LC, выбранный для схемы после обработки Worst/конкретного ID.
 Private mLoadCaseComment As String ' Комментарий LC для заголовка схемы.
 Private mProfileId As String ' ProfileId, сохраненный в snapshot для выбранного LC.
@@ -96,7 +96,7 @@ Public Sub LoadGeometryPreviewFromWorkbook(ByVal workbook As Object, ByVal setti
     ResetReaderState
     mGeometryOnly = True
     mGeometryOnlyTitle = "Импортированная геометрия AutoCAD"
-    mResultType = "Stress"
+    mVisualizationQuantity = "Stress"
     mLoadCase = "AutoCAD import"
 
     ReadSectionProperties workbook
@@ -149,7 +149,7 @@ Private Sub ApplyVisualizationProfile(ByVal workbook As Object)
     Dim profile As CCalculationProfile
     Set profile = profiles.ProfileById(mProfileId)
     mStateType = profile.VisualizationStateText
-    mResultType = VisualizationQuantityToText(profile.VisualizationQuantity)
+    mVisualizationQuantity = VisualizationQuantityToText(profile.VisualizationQuantity)
 End Sub
 
 ' Находит ProfileId выбранного LC в Results. Поэлементная таблица является
@@ -300,7 +300,7 @@ Private Sub ReadSectionProperties(ByVal workbook As Object)
     If Len(mAreaUnit) = 0 Then mAreaUnit = mLengthUnit & "2"
     If Len(mStressUnit) = 0 Then mStressUnit = "MPa"
     If Len(mCurvatureUnit) = 0 Then mCurvatureUnit = "1/mm"
-    If StrComp(mResultType, "Strain", vbTextCompare) = 0 Then
+    If StrComp(mVisualizationQuantity, "Strain", vbTextCompare) = 0 Then
         mResultUnit = "-"
         mResultCaption = "Strain"
     Else
@@ -468,7 +468,7 @@ Private Sub AppendElement(ByVal elementID As String, ByVal materialType As Strin
     mDiameter(mCount) = diameter
     mWidth(mCount) = width
     mHeight(mCount) = height
-    If StrComp(mResultType, "Strain", vbTextCompare) = 0 Then
+    If StrComp(mVisualizationQuantity, "Strain", vbTextCompare) = 0 Then
         mResultValue(mCount) = CDbl(resultData(0))
     Else
         mResultValue(mCount) = CDbl(resultData(1))
@@ -527,7 +527,7 @@ Private Sub ResetReaderState()
     mGeometryOnlyTitle = vbNullString
     mGeometryOnlyNote = vbNullString
     mGeometryReferenceItemsEnabled = False
-    mResultType = vbNullString
+    mVisualizationQuantity = vbNullString
     mLoadCase = vbNullString
     mLoadCaseComment = vbNullString
     mProfileId = vbNullString
@@ -691,7 +691,7 @@ Public Property Get GeometryOnly() As Boolean: GeometryOnly = mGeometryOnly: End
 Public Property Get GeometryOnlyTitle() As String: GeometryOnlyTitle = mGeometryOnlyTitle: End Property
 Public Property Get GeometryOnlyNote() As String: GeometryOnlyNote = mGeometryOnlyNote: End Property
 Public Property Get GeometryReferenceItemsEnabled() As Boolean: GeometryReferenceItemsEnabled = mGeometryReferenceItemsEnabled: End Property
-Public Property Get ResultType() As String: ResultType = mResultType: End Property
+Public Property Get VisualizationQuantity() As String: VisualizationQuantity = mVisualizationQuantity: End Property
 Public Property Get ResultUnit() As String: ResultUnit = mResultUnit: End Property
 Public Property Get ResultCaption() As String: ResultCaption = mResultCaption: End Property
 Public Property Get LengthUnit() As String: LengthUnit = mLengthUnit: End Property
