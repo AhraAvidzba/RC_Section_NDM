@@ -210,9 +210,10 @@ End Sub
 ' Свойства сечения и LC-состояния
 ' ------------------------------
 ' Здесь лежат свойства уровня всей модели: Bounds, бетонные и приведенные
-' геометрические характеристики, сохраненные единицы вывода и плоскость
-' деформаций каждого LC. Нагрузки пользователя задаются от бетонного центра,
-' а главные оси схемы пока используют приведенные свойства для совместимости.
+' геометрические характеристики, сохраненные единицы вывода и плоскости
+' деформаций named-state каждого LC. Нагрузки пользователя задаются от
+' бетонного центра, а главные оси схемы пока используют приведенные свойства
+' для совместимости.
 Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal batch As CBatchSectionCalculator, _
         ByVal runID As Variant, ByVal units As CUnitSystem)
@@ -276,17 +277,13 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     PutProperty data, rowIndex, runID, "ALL", "Output.SignConvention.My", OutputSignMy(units), "-", "Пользовательский знак My на момент расчета."
     Dim i As Long
     ' LC-зависимые свойства уровня сечения хранятся отдельно от поэлементных
-    ' строк: epsilon0/kappaX/kappaY не дублируются на каждое волокно.
+    ' строк. Плоскости деформаций пишутся ниже только как State.<StateType>.*,
+    ' чтобы схема и AutoCAD всегда выбирали конкретное named-state без
+    ' неоднозначных legacy-полей.
     For i = 1 To batch.Count
         If batch.StateAvailable(i) Then
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Epsilon0", batch.Epsilon0(i), "-", "Деформация в начале координат расчетной модели."
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "KappaX", OutputCurvature(batch.KappaX(i), units), OutputCurvatureUnit(units), "Кривизна KappaX."
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "KappaY", OutputCurvature(batch.KappaY(i), units), OutputCurvatureUnit(units), "Кривизна KappaY."
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nint", OutputForce(batch.Nint(i), units), OutputForceUnit(units), "Внутренняя продольная сила."
         Else
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Epsilon0", vbNullString, "-", "Деформация в начале координат расчетной модели."
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "KappaX", vbNullString, OutputCurvatureUnit(units), "Кривизна KappaX."
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "KappaY", vbNullString, OutputCurvatureUnit(units), "Кривизна KappaY."
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nint", vbNullString, OutputForceUnit(units), "Внутренняя продольная сила."
         End If
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "N", OutputForce(batch.N(i), units), OutputForceUnit(units), "Заданная продольная сила."

@@ -611,7 +611,11 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.results.geometry.noSource", ResultHeaderColumn(geometryResults, "SourceName") = 0
     AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(geometryResults, "MaterialClass") = 0
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
-    AssertTrue stats, "ui.results.properties.hasEpsilon0", ResultsPropertyExists("LC1", "Epsilon0")
+    AssertTrue stats, "ui.results.properties.hasStateEpsilon0", ResultsPropertyExists("LC1", "State.CrackedState.Epsilon0")
+    AssertTrue stats, "ui.results.properties.noLegacyPlane", _
+        Not ResultsPropertyExists("LC1", "Epsilon0") And _
+        Not ResultsPropertyExists("LC1", "KappaX") And _
+        Not ResultsPropertyExists("LC1", "KappaY")
     AssertTrue stats, "ui.results.properties.hasBounds", ResultsPropertyExists("ALL", "Bounds.MinX")
     AssertTrue stats, "ui.results.properties.commonLoadReference", _
         ResultsPropertyExists("ALL", "LoadReferenceX") And ResultsPropertyExists("ALL", "LoadReferenceY")
