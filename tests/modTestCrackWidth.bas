@@ -262,14 +262,32 @@ Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As
     crack.SolverToleranceMy = 5000#
     Dim provider As CMaterialModelProvider
     Set provider = TestMaterialProvider()
+    Dim crackedSpec As CMaterialModelSpec
+    Set crackedSpec = TestCrackedStateSpec()
+    Dim initiationSpec As CMaterialModelSpec
+    Set initiationSpec = TestCrackInitiationSpec()
 
     If IsMissing(centroidMxForCentralCheck) Or IsMissing(centroidMyForCentralCheck) Then
-        crack.Calculate solver, section, provider, cpCrackedNDS, nValue, mxValue, myValue
+        crack.Calculate solver, section, provider, crackedSpec, initiationSpec, nValue, mxValue, myValue
     Else
-        crack.Calculate solver, section, provider, cpCrackedNDS, nValue, mxValue, myValue, _
+        crack.Calculate solver, section, provider, crackedSpec, initiationSpec, nValue, mxValue, myValue, _
             centroidMxForCentralCheck, centroidMyForCentralCheck
     End If
     Set CalculateCrack = crack
+End Function
+
+Private Function TestCrackedStateSpec() As CMaterialModelSpec
+    Dim spec As CMaterialModelSpec
+    Set spec = New CMaterialModelSpec
+    spec.Initialize "SLS", "TwoLine", "Ignore", "TwoLine"
+    Set TestCrackedStateSpec = spec
+End Function
+
+Private Function TestCrackInitiationSpec() As CMaterialModelSpec
+    Dim spec As CMaterialModelSpec
+    Set spec = New CMaterialModelSpec
+    spec.Initialize "SLS", "ThreeLine", "UseDiagram", "TwoLine"
+    Set TestCrackInitiationSpec = spec
 End Function
 
 Private Function ProvisionalConcrete() As CMaterialDiagram

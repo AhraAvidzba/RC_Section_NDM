@@ -662,7 +662,7 @@ Private Sub WriteStatusDictionary(ByVal target As Object)
     topLeft.Offset(4, 0).Value2 = policy.InputErr
     topLeft.Offset(4, 1).Value2 = "Расчет не запускался из-за ошибки во входных данных: пустая или неизвестная настройка, недопустимая геометрия, материал, единицы или строка сочетания."
     topLeft.Offset(5, 0).Value2 = policy.NotApplicable
-    topLeft.Offset(5, 1).Value2 = "Проверка для этого сочетания не выполнялась и не считается ошибкой: например, трещины не относятся к Group1 или capacity отключен выбранным режимом расчета."
+    topLeft.Offset(5, 1).Value2 = "Проверка для этого сочетания не выполнялась и не считается ошибкой: например, она не включена выбранным профилем или неприменима к найденному состоянию."
 
     With topLeft.Resize(1, 2)
         .Font.Bold = True

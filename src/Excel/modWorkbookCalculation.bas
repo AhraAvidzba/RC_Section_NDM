@@ -73,7 +73,7 @@ Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal
                 "Схема не обновлена: в Results нет выбранного состояния НДС."
             If raiseIfNoData Then
                 Err.Raise vbObjectError + 4144, "UpdateSectionPlotForWorkbook", _
-                    "В Results нет выбранного состояния для схемы. Проверьте ProfileId, Visualization.State и выполненный расчет."
+                    "В Results нет выбранного состояния для схемы. Выполните расчет или проверьте ProfileId и Visualization.State."
             End If
             Exit Sub
         End If
@@ -99,7 +99,8 @@ Private Function TryLoadFullPlotReader(ByVal reader As CSectionPlotDataReader, _
     Exit Function
 
 Failed:
-    If Err.Number = vbObjectError + 4702 Or Err.Number = vbObjectError + 4705 Then
+    If Err.Number = vbObjectError + 4702 Or Err.Number = vbObjectError + 4705 Or _
+            Err.Number = vbObjectError + 4706 Or Err.Number = vbObjectError + 4710 Then
         TryLoadFullPlotReader = False
     Else
         Err.Raise Err.Number, Err.Source, Err.Description

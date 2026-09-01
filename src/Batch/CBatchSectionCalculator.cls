@@ -715,10 +715,10 @@ Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
 End Sub
 
 ' Выполняет SLS-проверку продольных трещин по максимальному сжимающему
-' напряжению бетона из уже найденного прямого НДС. По СП 35 эта проверка
-' относится к трещиностойкости и нормативным нагрузкам, поэтому запускается
-' только для Group2. Повторный расчет состояния здесь намеренно не нужен:
-' сравниваем именно Stress/Strain, сохраненные в Results snapshot для LC.
+' напряжению бетона из уже найденного прямого НДС с трещинами. По СП 35 эта
+' проверка относится к трещиностойкости, поэтому в новой профильной схеме она
+' является частью Calculation.Crack.Width. Повторный расчет состояния здесь
+' намеренно не нужен: сравниваем именно Stress/Strain рассчитанного LC.
 Private Sub StoreLongitudinalCrackWithinCrackWidth(ByVal index As Long)
     If Not mResults(index).StateAvailable Or Not mResults(index).StateConverged Then
         mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable

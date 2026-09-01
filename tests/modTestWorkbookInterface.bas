@@ -31,7 +31,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
     TestGeneratedSourceDoesNotReuseAutoCADPreview stats
     TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC stats
-    TestCapacityOnlyDrawsGeometryWithoutStateResults stats
+    TestProfileDrivenPlotUsesSnapshotState stats
     TestAutoCADCalculationMessageUsesSavedGeometry stats
     TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped stats
     TestCircleWorkbookRunWritesResults stats
@@ -244,6 +244,10 @@ Private Sub TestAutoCADExportUsesSharedLoadReference(ByRef stats As TUiTestStats
     Set batch = New CBatchSectionCalculator
     batch.Initialize section, materialProvider
     batch.ApplySettings settings, units
+    Dim profiles As CCalculationProfileCatalog
+    Set profiles = New CCalculationProfileCatalog
+    profiles.LoadFromWorkbook ThisWorkbook
+    Set batch.ProfileCatalog = profiles
 
     Dim reader As CLoadCombinationReader
     Set reader = New CLoadCombinationReader
@@ -452,11 +456,9 @@ Private Sub TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC(ByRef stats
         Not PlotChartTitleContains("Импортированная геометрия AutoCAD")
 End Sub
 
-' Проверяет режим CapacityOnly на уровне книги.
-' Расчет сохраняет геометрию и capacity-результаты, но не записывает
-' поэлементные Stress/Strain. Схема должна строиться как geometry-only,
-' чтобы Excel и AutoCAD показывали согласованную картину без НДС.
-Private Sub TestCapacityOnlyDrawsGeometryWithoutStateResults(ByRef stats As TUiTestStats)
+' Проверяет, что схема после расчета выбирает состояние через профиль, а
+' численные Stress/Strain берет из snapshot Results.
+Private Sub TestProfileDrivenPlotUsesSnapshotState(ByRef stats As TUiTestStats)
     PrepareCircleInput
     SetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
     SetSystemSetting "Plot.LoadCase", "Worst"
@@ -464,16 +466,12 @@ Private Sub TestCapacityOnlyDrawsGeometryWithoutStateResults(ByRef stats As TUiT
     Dim message As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
 
-    AssertTrue stats, "ui.capacityOnly.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
-    AssertTextEquals stats, "ui.capacityOnly.directNA", _
-        CStr(ThisWorkbook.Worksheets.Item("Results").Cells.Item(BatchSummaryStartRow() + 9, _
-        BatchSummaryColumnByHeader("DirectStateStatus")).Value2), "N/A"
-    AssertTrue stats, "ui.capacityOnly.noElementStateRows", ResultTableRowCount("rngNDMElementResults") = 1
-    AssertTrue stats, "ui.capacityOnly.plotGeometryTitle", PlotChartTitleContains("CapacityOnly: геометрия без НДС")
-    AssertTrue stats, "ui.capacityOnly.plotNoLoadCaseTitle", Not PlotChartTitleContains("при загружении")
-    AssertTrue stats, "ui.capacityOnly.plotNoImportTitle", _
+    AssertTrue stats, "ui.profilePlot.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    AssertTrue stats, "ui.profilePlot.hasElementStateRows", ResultTableRowCount("rngNDMElementResults") > 1
+    AssertTrue stats, "ui.profilePlot.drawsLoadCase", PlotChartTitleContains("LC1")
+    AssertTrue stats, "ui.profilePlot.noImportTitle", _
         Not PlotChartTitleContains("Импортированная геометрия AutoCAD")
-    AssertTrue stats, "ui.capacityOnly.commonLoadReference", _
+    AssertTrue stats, "ui.profilePlot.commonLoadReference", _
         Len(ResultsPropertyValue("ALL", "LoadReferenceX")) > 0 And Len(ResultsPropertyValue("ALL", "LoadReferenceY")) > 0
 
 End Sub
@@ -693,10 +691,9 @@ Private Sub TestLShapePureBendingUltimateStrainWorkbookPath(ByRef stats As TUiTe
         CDbl(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("lambdaUltimate")).Value2) > 0#
 End Sub
 
-' Проверяет чистый изгиб Г-сечения без расчета несущей способности.
-' Это защищает именно прямой StateSolution: даже если FullCapacity выключен,
-' solver должен найти НДС для простого Mx при N=0, а не зависеть от ранее
-' найденной предельной capacity-плоскости.
+' Проверяет чистый изгиб Г-сечения по профилю PR1. Такой профиль запрашивает
+' и прямое НДС, и несущую способность, поэтому обе ветви должны проходить
+' через полный workbook-path без специальных обходов.
 Private Sub TestLShapePureBendingDirectStateWorkbookPath(ByRef stats As TUiTestStats)
     PrepareUserLShapeMomentUltimateInput
 
@@ -724,7 +721,7 @@ Private Sub TestLShapePureBendingDirectStateWorkbookPath(ByRef stats As TUiTestS
 
     AssertTrue stats, "ui.lshape.pureBendingDirect.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
     AssertTextEquals stats, "ui.lshape.pureBendingDirect.directOk", directStatus, "OK"
-    AssertTextEquals stats, "ui.lshape.pureBendingDirect.capacityNA", capacityStatus, "N/A"
+    AssertTextEquals stats, "ui.lshape.pureBendingDirect.capacityOk", capacityStatus, "OK"
 End Sub
 
 ' Проверяет пользовательский сценарий с сильным осевым растяжением Г-сечения
@@ -887,18 +884,12 @@ End Function
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
-    AssertTrue stats, "ui.validation.calculationMode", _
-        SystemSettingValidationHasOptions("Calculation.Mode", Array("DirectState", "FullCapacity", "CapacityOnly"))
     AssertTrue stats, "ui.validation.CapacitySolutionStrategy", _
         SystemSettingValidationHasOptions("Capacity.SolutionStrategy", Array("Auto", "UltimateStrain", "LoadMultiplier"))
     AssertTrue stats, "ui.validation.capacitySearchMethod", _
         SystemSettingValidationHasOptions("Capacity.SearchMethod", Array("Bisection", "Brent", "Secant"))
-    AssertTrue stats, "ui.validation.capacityScope", _
-        SystemSettingValidationHasOptions("Capacity.CalculationScope", Array("PR1Only", "PR1+2"))
     AssertTrue stats, "ui.validation.autocadLabelMode", _
         SystemSettingValidationHasOptions("AutoCAD.Export.LabelMode", Array("ValuesOnly", "NamesAndValues"))
-    AssertTrue stats, "ui.validation.autocadResultType", _
-        SystemSettingValidationHasOptions("AutoCAD.Export.ResultType", Array("Stress", "Strain"))
     AssertTrue stats, "ui.validation.autocadNeutralLine", _
         SystemSettingValidationHasOptions("AutoCAD.Export.NeutralLineEnabled", Array("Yes", "No"))
     AssertTrue stats, "ui.validation.autocadPrincipalAxes", _
@@ -908,9 +899,7 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.validation.autocadCombination", AutoCADCombinationValidationIsDynamic()
     AssertTrue stats, "ui.validation.plotLoadCase", PlotLoadCaseValidationIsDynamic()
     AssertTrue stats, "ui.validation.loadProfileId", _
-        LoadCombinationValidationHasOptions(5, Array("PR1", "PR2"))
-    AssertTrue stats, "ui.validation.plotResultType", _
-        SystemSettingValidationHasOptions("Plot.ResultType", Array("Stress", "Strain"))
+        LoadCombinationValidationHasOptions(5, Array("PR1", "PR2", "PR3", "PR4"))
     AssertTrue stats, "ui.validation.plotLabels", _
         SystemSettingValidationHasOptions("Plot.ResultLabelsEnabled", Array("Yes", "No"))
     AssertTrue stats, "ui.validation.plotRebarAnnotationEnabled", _
@@ -1339,11 +1328,11 @@ Private Function SettingsRangeSearchOrder() As Variant
     Dim geometryType As String
     geometryType = SystemGeometryType()
     If StrComp(geometryType, "LShape", vbTextCompare) = 0 Then
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationDiagramSettings", "rngPlotAnnotationSettings", "rngLShapeGeometry", "rngCircleGeometry", "rngRoundedRectangleGeometry")
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngLShapeGeometry", "rngCircleGeometry", "rngRoundedRectangleGeometry")
     ElseIf StrComp(geometryType, "RoundedRectangle", vbTextCompare) = 0 Then
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationDiagramSettings", "rngPlotAnnotationSettings", "rngRoundedRectangleGeometry", "rngCircleGeometry", "rngLShapeGeometry")
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngRoundedRectangleGeometry", "rngCircleGeometry", "rngLShapeGeometry")
     Else
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationDiagramSettings", "rngPlotAnnotationSettings", "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngLShapeGeometry")
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngLShapeGeometry")
     End If
 End Function
 
@@ -1421,11 +1410,47 @@ Private Function ResultTableRowCount(ByVal rangeName As String) As Long
 End Function
 
 Private Function ResultTableColumnCount(ByVal anchor As Object) As Long
+    Dim maxColumns As Long
+    maxColumns = ColumnsUntilNextResultAnchor(anchor)
+    If maxColumns <= 0 Then maxColumns = 256
+
     Dim colOffset As Long
-    For colOffset = 0 To 255
+    For colOffset = 0 To maxColumns - 1
         If Len(Trim$(CStr(anchor.Offset(0, colOffset).Value2))) = 0 Then Exit For
         ResultTableColumnCount = ResultTableColumnCount + 1
     Next colOffset
+End Function
+
+' Ограничивает чтение таблицы Results ближайшим соседним именованным
+' диапазоном справа. Блоки Results стоят на одной строке и не обязаны иметь
+' пустой столбец между собой, поэтому простого CurrentRegion здесь мало.
+Private Function ColumnsUntilNextResultAnchor(ByVal anchor As Object) As Long
+    Dim bestDelta As Long
+    bestDelta = 0
+
+    Dim nm As Object
+    For Each nm In ThisWorkbook.Names
+        Dim candidate As Object
+        On Error Resume Next
+        Set candidate = nm.RefersToRange
+        If Err.Number <> 0 Then
+            Err.Clear
+            Set candidate = Nothing
+        End If
+        On Error GoTo 0
+
+        If Not candidate Is Nothing Then
+            If candidate.Worksheet.Name = anchor.Worksheet.Name And candidate.Row = anchor.Row Then
+                Dim delta As Long
+                delta = candidate.Column - anchor.Column
+                If delta > 0 Then
+                    If bestDelta = 0 Or delta < bestDelta Then bestDelta = delta
+                End If
+            End If
+        End If
+    Next nm
+
+    ColumnsUntilNextResultAnchor = bestDelta
 End Function
 
 Private Function AnySettingValidationHasOptions(ByVal key As String, ByVal expectedOptions As Variant) As Boolean
@@ -1849,8 +1874,6 @@ End Sub
 ' "шт". Размерных величин в этом блоке сейчас нет, поэтому формулы единиц
 ' здесь не нужны; важно именно не оставлять пустую колонку "Ед.".
 Private Sub TestCapacitySettingsUnitLabels(ByRef stats As TUiTestStats)
-    AssertTextEquals stats, "ui.units.capacity.mode", SystemSettingUnitText("Calculation.Mode"), "-"
-    AssertTextEquals stats, "ui.units.capacity.scope", SystemSettingUnitText("Capacity.CalculationScope"), "-"
     AssertTextEquals stats, "ui.units.Capacity.SolutionStrategy", SystemSettingUnitText("Capacity.SolutionStrategy"), "-"
     AssertTextEquals stats, "ui.units.capacity.searchMethod", SystemSettingUnitText("Capacity.SearchMethod"), "-"
     AssertTextEquals stats, "ui.units.capacity.initialLambda", SystemSettingUnitText("Capacity.InitialLambda"), "-"

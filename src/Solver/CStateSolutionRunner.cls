@@ -17,7 +17,7 @@ Option Explicit
 ' подбирает стартовую плоскость через CStateGuessBuilder и, если первая попытка
 ' не сошлась, пробует согласованные повторные старты в technical extension.
 '
-' В классе нет выбора Group1/Group2, диаграмм Strength/CrackedNDS и нет записи
+' В классе нет выбора расчетного профиля, диаграмм Strength/CrackedNDS и нет записи
 ' Results. Материалы уже должны быть подготовлены CMaterialModelProvider, а
 ' CBatchSectionCalculator после этого только читает готовый результат: сошелся
 ' ли solver, вышло ли состояние в extension и находится ли оно в физических

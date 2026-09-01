@@ -553,8 +553,8 @@ function Get-SettingInstructionLines {
         ) }
         "Concrete.Rb.mc2" { return @($lead) + @(
             "Concrete.Rb.mc2 задает допустимое сжимающее напряжение бетона для SLS-проверки образования продольных трещин.",
-            "Проверка выполняется только для сочетаний Group2, потому что СП 35 относит образование продольных трещин к расчетам трещиностойкости и требует сравнивать напряжения от нормативных нагрузок.",
-            "Для Group2 программа берет максимальное по модулю сжимающее напряжение бетонных элементов sigma_c,max из уже найденного прямого НДС и сравнивает его с Rb,mc2.",
+            "Проверка выполняется как часть Calculation.Crack.Width, потому что СП 35 относит образование продольных трещин к расчетам трещиностойкости и требует сравнивать напряжения от нормативных нагрузок.",
+            "Для профиля с Calculation.Crack.Width программа берет максимальное по модулю сжимающее напряжение бетонных элементов sigma_c,max из уже найденного CrackedState и сравнивает его с Rb,mc2.",
             "Если в найденном НДС нет сжатого бетона, проверка получает статус N/A и не влияет на общий статус сочетания.",
             "Коэффициент запаса в Results записывается формулой Excel: SF_long = Rb,mc2 / sigma_c,max. Если SF_long < 1, статус проверки становится FAIL.",
             "СП 35.13330.2011, п. 7.2 и таблица 7.1 задают область проверки, п. 7.100 формулирует условие по нормативным нагрузкам, таблица 7.6 задает сопротивление, а таблица 7.7 - коэффициенты условий работы.",
@@ -629,7 +629,7 @@ function Get-SettingInstructionLines {
             "Если нагрузка немного больше того, что описывает физическая диаграмма материала, обычная диаграмма выходит на последнюю точку и solver может не найти равновесие. При Yes программа добавляет слабое техническое продолжение за последней физической деформацией, чтобы равновесие можно было найти и явно показать пользователю перегрузку.",
             "Такой результат не считается нормальным расчетным состоянием. Если техническое продолжение действительно понадобилось, в Summary будет FAIL, а на схеме и в AutoCAD появится предупреждение: ВНЕ ФИЗИЧЕСКОЙ ДИАГРАММЫ МАТЕРИАЛА.",
             "Extension не увеличивает несущую способность сечения. Расчет Capacity, образование трещины и расчет раскрытия трещин выполняются только по обычным физическим диаграммам без этого продолжения.",
-            "Для Group2 трещины считаются только тогда, когда прямое состояние найдено внутри физической диаграммы: DirectStateStatus = OK и ExtensionUsed = False. Само включение настройки расчет трещин не запрещает."
+            "Crack.Width считается только тогда, когда исходное CrackedState найдено внутри физической диаграммы: DirectStateStatus = OK и ExtensionUsed = False. Само включение настройки расчет трещин не запрещает."
         ) }
         "Solver.ToleranceN" { return @($lead) + @(
             "Это абсолютный допуск невязки по продольной силе N. Число в Config вводится в текущей INPUT-единице силы, указанной в блоке Units.",
@@ -1073,7 +1073,7 @@ function Get-SettingsInstructionCatalog {
         "h в блоке Capacity - высота бетонного сечения по нормали к нейтральной линии именно в найденном предельном состоянии λult. В DirectState или при неудачном capacity-поиске поле остается пустым.",
         "x в блоке Capacity - сжатая зона именно при найденном λult. Она не подменяется текущим состоянием LC, потому что нейтральная линия при увеличении нагрузки может повернуться.",
         "CapacitySafetyFactor (запас по λ) - формульная ссылка на lambdaUltimate. Этот коэффициент используется для выбора Worst по прочности.",
-        "CrackStatus (статус трещин) - статус расчета ширины раскрытия нормальных трещин по II группе. Для Group2 расчет трещин выполняется только когда DirectStateStatus = OK и ExtensionUsed = False.",
+        "CrackStatus (статус трещин) - статус расчета ширины раскрытия нормальных трещин по II группе. Расчет выполняется только для профилей с Calculation.Crack.Width = Yes и только когда DirectStateStatus = OK и ExtensionUsed = False.",
         "CrackFormed (трещина есть) - Да, если трещина считается образованной; Нет, если при заданной нагрузке трещина еще не образовалась.",
         "h в блоке трещин - полный размер бетонного сечения по нормали к нейтральной линии, используемый для определения эффективной растянутой зоны.",
         "a (от края до стержня) - расстояние от внешнего края наиболее растянутого бетонного волокна до оси наиболее удаленного растянутого стержня по нормали к нейтральной линии.",
@@ -1099,10 +1099,10 @@ function Get-SettingsInstructionCatalog {
         "Формула: a_crc = phi1 · phi2 · phi3 · psi_s · (sigma_s / Es) · ls.",
         "a_crc,ult (допустимая ширина) - пользовательское допустимое значение SLS.Crack.Allowable.",
         "CrackSafetyFactor (запас по трещинам) - отношение допустимой ширины к расчетной: SFcrc = a_crc,ult / a_crc. Если трещина не образована или a_crc = 0, запас не выводится.",
-        "LongitudinalCrackStatus (продольные трещины) - статус SLS-проверки сжатого бетона на продольные трещины. Проверка выполняется только для Group2, когда прямое НДС найдено в физическом диапазоне диаграммы и в бетоне есть сжимающие напряжения.",
+        "LongitudinalCrackStatus (продольные трещины) - статус SLS-проверки сжатого бетона на продольные трещины. Проверка выполняется внутри Calculation.Crack.Width, когда CrackedState найден в физическом диапазоне диаграммы и в бетоне есть сжимающие напряжения.",
         "sigma_c,max (сжатие бетона) - максимальное по модулю сжимающее напряжение среди бетонных элементов в уже найденном прямом НДС этого LC.",
         "Rb,mc2 (допустимое сжатие) - пользовательское допустимое значение для проверки продольных трещин по СП 35. Число вводится на Config уже с учетом применимых коэффициентов условий работы.",
-        "LongitudinalCrackSafetyFactor (запас) - формула Results: SFlong = Rb,mc2 / sigma_c,max. Для Group1 или при отсутствии сжатого бетона проверка получает N/A и запас не выводится.",
+        "LongitudinalCrackSafetyFactor (запас) - формула Results: SFlong = Rb,mc2 / sigma_c,max. Если Crack.Width не включен или сжатого бетона нет, проверка получает N/A и запас не выводится.",
         "MinSafetyFactor (общий запас) - минимальный положительный коэффициент из CapacitySafetyFactor, CrackSafetyFactor и LongitudinalCrackSafetyFactor. Столбец информативный и специально выделен более темным серым цветом."
     )}) | Out-Null
     foreach ($section in (Get-SystemSettingsCatalog)) {
@@ -1601,7 +1601,7 @@ function Add-CrackWidthMethodologyGuide {
 
     $row = Add-GuideTitle $Sheet $row "Нормативные источники и статус реализации" 13
     $row = Add-GuideParagraph $Sheet $row "СП 63.13330.2018, разделы 8.1 и 8.2: НДМ нормального сечения, проверка раскрытия трещин, формулы (8.118), (8.119), (8.128), (8.136), (8.137). Конкретные ссылки в этом разделе привязаны именно к версии 2018 года."
-    $row = Add-GuideParagraph $Sheet $row "СП 35.13330.2011 используется для отдельной SLS-проверки продольных трещин по сжатому бетону. Нормальные трещины a_crc считаются по СП 63, а продольная проверка для Group2 сравнивает σ_c,max с пользовательским R_b,mc2."
+    $row = Add-GuideParagraph $Sheet $row "СП 35.13330.2011 используется для отдельной SLS-проверки продольных трещин по сжатому бетону. Нормальные трещины a_crc считаются по СП 63, а продольная проверка внутри Calculation.Crack.Width сравнивает σ_c,max с пользовательским R_b,mc2."
     $row = Add-GuideParagraph $Sheet $row "EN 1992-1-1 используется только как инженерное дополнение для эквивалентного диаметра при разных диаметрах стержней. Это не требование СП 63 и явно помечается как принятое обобщение."
     $row = Add-GuideParagraph $Sheet $row "Фактическая реализация находится в CCrackWidthCalculator. Расчет работает только для продолжительных сочетаний II группы: a_crc = a_crc1, φ1 = 1.4. Непродолжительное раскрытие a_crc1 + a_crc2 − a_crc3 не реализовано."
     $row = Add-GuideFormula $Sheet $row "a_crc = a_crc1      СП 63, п. 8.2.7, ф. (8.119)"
@@ -1722,8 +1722,8 @@ function Add-CrackWidthMethodologyGuide {
 
     $row = Add-GuideTitle $Sheet $row "12. Продольные трещины по сжатому бетону" 13
     $row = Add-GuideParagraph $Sheet $row "Эта проверка отделена от расчета ширины нормальных трещин a_crc. Она контролирует максимальное сжимающее напряжение в бетоне по уже найденному прямому НДС сочетания и не запускает отдельный solver."
-    $row = Add-GuideParagraph $Sheet $row "По СП 35.13330.2011, п. 7.2 и таблице 7.1, образование продольных трещин относится к расчетам по второй группе предельных состояний. Поэтому программа выполняет эту проверку только для сочетаний Group2. Для Group1 в Results выводится LongitudinalCrackStatus = N/A."
-    $row = Add-GuideParagraph $Sheet $row "Программа просматривает бетонные элементы текущего Group2 LC, берет максимальное по модулю сжимающее напряжение σ_c,max и сравнивает его с пользовательским Concrete.Rb.mc2. Если сжатого бетона нет, проверка неприменима: LongitudinalCrackStatus = N/A."
+    $row = Add-GuideParagraph $Sheet $row "По СП 35.13330.2011, п. 7.2 и таблице 7.1, образование продольных трещин относится к расчетам по второй группе предельных состояний. Поэтому программа выполняет эту проверку только как часть Calculation.Crack.Width. Если профиль не запрашивает раскрытие трещин, в Results выводится LongitudinalCrackStatus = N/A."
+    $row = Add-GuideParagraph $Sheet $row "Программа просматривает бетонные элементы текущего CrackedState, берет максимальное по модулю сжимающее напряжение σ_c,max и сравнивает его с пользовательским Concrete.Rb.mc2. Если сжатого бетона нет, проверка неприменима: LongitudinalCrackStatus = N/A."
     $row = Add-GuideFormula $Sheet $row "σ_c,max ≤ R_b,mc2"
     $row = Add-GuideFractionFormula $Sheet $row "SF_long =" "R_b,mc2" "σ_c,max" ""
     $row = Add-GuideParagraph $Sheet $row "Concrete.Rb.mc2 вводится пользователем как итоговое допустимое значение для осевого сжатия при проверке продольных трещин. Программа не вычисляет и не умножает коэффициенты условий работы автоматически."
@@ -1798,7 +1798,7 @@ function Add-SettingsInstructions {
     $InstructionSheet.Cells.Item($row, 2).Value2 = "Расчет не запускался из-за ошибки во входных данных: пустая или неизвестная настройка, недопустимая геометрия, материал, единицы или строка сочетания."
     $row++
     $InstructionSheet.Cells.Item($row, 1).Value2 = "N/A"
-    $InstructionSheet.Cells.Item($row, 2).Value2 = "Проверка для этого сочетания не выполнялась и не считается ошибкой: например, трещины не относятся к Group1 или capacity отключен выбранным режимом расчета."
+    $InstructionSheet.Cells.Item($row, 2).Value2 = "Проверка для этого сочетания не выполнялась и не считается ошибкой: например, она не включена выбранным профилем или неприменима к найденному состоянию."
     $InstructionSheet.Range($InstructionSheet.Cells.Item($row - 5, 1), $InstructionSheet.Cells.Item($row, 2)).Borders.LineStyle = 1
     $InstructionSheet.Range($InstructionSheet.Cells.Item($row - 5, 1), $InstructionSheet.Cells.Item($row, 2)).Borders.Color = 14277081
     $row += 3
@@ -2836,8 +2836,6 @@ function Add-CalculationProfilesValidation {
         "MaterialModel.CrackInitiation.ConcreteDiagram" = @{ Column = ($ListColumn + 2); Values = @("TwoLine", "ThreeLine") }
         "MaterialModel.CrackedState.ConcreteDiagram" = @{ Column = ($ListColumn + 2); Values = @("TwoLine", "ThreeLine") }
         "MaterialModel.Strength.ConcreteTension" = @{ Column = ($ListColumn + 3); Values = @("Ignore", "UseDiagram") }
-        "MaterialModel.CrackInitiation.ConcreteTension" = @{ Column = ($ListColumn + 3); Values = @("Ignore", "UseDiagram") }
-        "MaterialModel.CrackedState.ConcreteTension" = @{ Column = ($ListColumn + 3); Values = @("Ignore", "UseDiagram") }
         "MaterialModel.Strength.SteelDiagram" = @{ Column = ($ListColumn + 4); Values = @("TwoLine", "ThreeLine") }
         "MaterialModel.CrackInitiation.SteelDiagram" = @{ Column = ($ListColumn + 4); Values = @("TwoLine", "ThreeLine") }
         "MaterialModel.CrackedState.SteelDiagram" = @{ Column = ($ListColumn + 4); Values = @("TwoLine", "ThreeLine") }

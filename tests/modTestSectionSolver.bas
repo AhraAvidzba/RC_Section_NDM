@@ -93,8 +93,7 @@ Private Sub TestSystemSettingsReader(ByRef stats As TSectionSolverTestStats)
 
     AssertClose stats, "settings.concrete.Eb", reader.GetDouble("Concrete.Eb", 0#), 32500#, 0.000000001
     AssertClose stats, "settings.steel.Es", reader.GetDouble("Steel.Es", 0#), 200000#, 0.000000001
-    AssertTrue stats, "settings.diagram.strength", reader.HasKey("Diagram.Strength.Concrete")
-    AssertTrue stats, "settings.diagram.mcrc", reader.HasKey("Diagram.Mcrc.ConcreteTension")
+    AssertTrue stats, "settings.profiles.present", ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange.Rows.Count > 1
 
     Dim provider As CMaterialModelProvider
     Set provider = New CMaterialModelProvider
@@ -178,26 +177,23 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "Steel.Rsc.ULS", "Steel.Rs.ULS", "Steel.Rsc.SLS", "Steel.Rs.SLS", _
         "Steel.Esc", "Steel.Es", "Steel.TwoLine.Esc2", "Steel.TwoLine.Es2", _
         "Steel.ThreeLine.Esc2", "Steel.ThreeLine.Es2", "Steel.RebarProfile", _
-        "Diagram.Strength.Concrete", "Diagram.Strength.ConcreteTension", "Diagram.Strength.Steel", _
-        "Diagram.Mcrc.Concrete", "Diagram.Mcrc.ConcreteTension", "Diagram.Mcrc.Steel", _
-        "Diagram.CrackedNDS.Concrete", "Diagram.CrackedNDS.ConcreteTension", "Diagram.CrackedNDS.Steel", _
-        "Calculation.Mode", "Solver.Method", "Solver.MaxIterations", "Solver.LoadSteps", _
+        "Solver.Method", "Solver.MaxIterations", "Solver.LoadSteps", _
         "Solver.DirectState.DiagramExtension", _
         "Solver.ToleranceN", "Solver.ToleranceMx", "Solver.ToleranceMy", _
         "Solver.LineSearchEnabled", "Solver.DampingInitial", "Solver.MinLineSearchAlpha", _
         "Solver.MaxDeltaEpsilon0", "Solver.MaxDeltaKappa", _
         "Solver.SecantMaxRestarts", "Solver.SecantMinStepNorm", _
-        "Capacity.CalculationScope", "Capacity.SolutionStrategy", "Capacity.SearchMethod", "Capacity.InitialLambda", "Capacity.MaxLambda", "Capacity.ToleranceLambda", _
+        "Capacity.SolutionStrategy", "Capacity.SearchMethod", "Capacity.InitialLambda", "Capacity.MaxLambda", "Capacity.ToleranceLambda", _
         "Capacity.ToleranceStrain", _
         "Capacity.MaxRetries", "Capacity.BaseLoadSteps", "Capacity.SolverMaxIterations", _
-        "SLS.Crack.Enabled", "SLS.Crack.Allowable", _
+        "SLS.Crack.Allowable", _
         "SLS.Crack.PsiMode", "SLS.Crack.TensionZoneMode")
     AssertRequiredKeys stats, requiredKeys
 
     requiredKeys = Array( _
         "AutoCAD.Export.CombinationID", "AutoCAD.Export.NeutralLineEnabled", _
         "AutoCAD.Export.PrincipalAxesEnabled", "AutoCAD.Export.LoadPointEnabled", _
-        "AutoCAD.Export.ResultType", "AutoCAD.Export.LabelMode", _
+        "AutoCAD.Export.LabelMode", _
         "AutoCAD.Layer.Concrete", "AutoCAD.Layer.Rebar", _
         "AutoCAD.Layer.ConcreteTension", "AutoCAD.Layer.ConcreteCompression", _
         "AutoCAD.Layer.RebarTension", "AutoCAD.Layer.RebarCompression", _
@@ -208,7 +204,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     AssertRequiredKeys stats, requiredKeys
 
     requiredKeys = Array( _
-        "Plot.Enabled", "Plot.AutoUpdateAfterCalculation", "Plot.LoadCase", "Plot.ResultType", _
+        "Plot.Enabled", "Plot.AutoUpdateAfterCalculation", "Plot.LoadCase", _
         "Plot.ResultGradient", "Plot.ResultLabelsEnabled", "Plot.ResultLabelSpacing", "Plot.ResultPrecision", _
         "Plot.NeutralLineEnabled", "Plot.PrincipalAxesEnabled", "Plot.LoadApplicationPointEnabled", _
         "Plot.CentroidEnabled", "Plot.LegendEnabled", _
@@ -234,14 +230,19 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "Solver.DiagnosticsEnabled", "Circle.CenterX", "Circle.CenterY", _
         "LShape.OriginX", "LShape.OriginY", "Plot.DimensionsEnabled", "Plot.RebarLabelsEnabled", _
         "Concrete.TensionMode", "Capacity.ConcreteCompressionLimit", "Capacity.ConcreteTensionLimit", _
-        "Capacity.SteelStrainLimit", "Concrete.Class")
+        "Capacity.SteelStrainLimit", "Concrete.Class", _
+        "Calculation.Mode", "Capacity.CalculationScope", "SLS.Crack.Enabled", _
+        "AutoCAD.Export.ResultType", "Plot.ResultType", _
+        "Diagram.Strength.Concrete", "Diagram.Strength.ConcreteTension", "Diagram.Strength.Steel", _
+        "Diagram.Mcrc.Concrete", "Diagram.Mcrc.ConcreteTension", "Diagram.Mcrc.Steel", _
+        "Diagram.CrackedNDS.Concrete", "Diagram.CrackedNDS.ConcreteTension", "Diagram.CrackedNDS.Steel")
     For i = LBound(removedKeys) To UBound(removedKeys)
         AssertTrue stats, "settings.removed." & CStr(removedKeys(i)), Not reader.HasKey(CStr(removedKeys(i)))
     Next i
 
     Dim rangeNames As Variant
     rangeNames = Array("rngUnitSettings", "rngSignConventionSettings", _
-        "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationDiagramSettings", _
+        "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", _
         "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngLShapeGeometry", _
         "rngNDMSectionProperties", "rngNDMSectionAnnotations", "rngNDMMaterialDiagrams")
     For i = LBound(rangeNames) To UBound(rangeNames)
@@ -251,7 +252,8 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     Dim removedRanges As Variant
     removedRanges = Array("SolverSettings", "CapacitySettings", "ConcreteDiagram", _
         "SteelDiagram", "GeometrySettings", "OutputSettings", "AutoCADSettings", _
-        "rngMainInput", "rngRebarInput", "rngConcreteDiagramPoints", "rngSteelDiagramPoints")
+        "rngMainInput", "rngRebarInput", "rngConcreteDiagramPoints", "rngSteelDiagramPoints", _
+        "rngCalculationDiagramSettings")
     For i = LBound(removedRanges) To UBound(removedRanges)
         AssertTrue stats, "settings.range.removed." & CStr(removedRanges(i)), Not NamedRangeExists(CStr(removedRanges(i)))
     Next i

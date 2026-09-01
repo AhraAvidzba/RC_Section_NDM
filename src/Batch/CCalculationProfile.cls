@@ -112,9 +112,17 @@ Public Function ValidateForCalculation(ByVal psiMode As String, ByRef errorText 
         errorText = "Профиль " & mProfileId & ": не задана MaterialModel.CrackedState."
         Exit Function
     End If
+    If mCrackWidth And mCrackedStateSpec.ConcreteTension <> ctkIgnore Then
+        errorText = "Профиль " & mProfileId & ": MaterialModel.CrackedState.ConcreteTension должен быть Ignore."
+        Exit Function
+    End If
     If mCrackWidth And StrComp(Trim$(psiMode), "Auto", vbTextCompare) = 0 And _
             Not mCrackInitiationSpec.IsComplete Then
         errorText = "Профиль " & mProfileId & ": для SLS.Crack.PsiMode=Auto нужна MaterialModel.CrackInitiation."
+        Exit Function
+    End If
+    If mCrackWidth And mCrackInitiationSpec.IsComplete And mCrackInitiationSpec.ConcreteTension <> ctkUseDiagram Then
+        errorText = "Профиль " & mProfileId & ": MaterialModel.CrackInitiation.ConcreteTension должен быть UseDiagram."
         Exit Function
     End If
     ValidateForCalculation = True

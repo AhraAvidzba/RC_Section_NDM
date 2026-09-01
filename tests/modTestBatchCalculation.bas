@@ -29,8 +29,8 @@ Public Function RunBatchCalculationTests() As String
     TestBatchFiveCombinations stats
     AppendLine stats, "RUN: TestBatchGoverningUsesLowestSafetyFactor"
     TestBatchGoverningUsesLowestSafetyFactor stats
-    AppendLine stats, "RUN: TestBatchGoverningCanUsePR2CapacitySafety"
-    TestBatchGoverningCanUsePR2CapacitySafety stats
+    AppendLine stats, "RUN: TestBatchGoverningUsesStrengthProfilesOnly"
+    TestBatchGoverningUsesStrengthProfilesOnly stats
     AppendLine stats, "RUN: TestBatchPureAxialCapacityUsesNult"
     TestBatchPureAxialCapacityUsesNult stats
     AppendLine stats, "RUN: TestBatchLShapeN200CapacityPathNDoesNotNumFail"
@@ -47,8 +47,8 @@ Public Function RunBatchCalculationTests() As String
     TestBatchNMxyWithoutMomentsUsesStableForcePath stats
     AppendLine stats, "RUN: TestBatchInvalidCapacityLoadPathReportsInputErr"
     TestBatchInvalidCapacityLoadPathReportsInputErr stats
-    AppendLine stats, "RUN: TestCapacityScopePR1OnlySkipsPR2"
-    TestCapacityScopePR1OnlySkipsPR2 stats
+    AppendLine stats, "RUN: TestPR2SkipsCapacityByProfile"
+    TestPR2SkipsCapacityByProfile stats
     AppendLine stats, "RUN: TestLoadReferenceTransformsUserMoments"
     TestLoadReferenceTransformsUserMoments stats
     AppendLine stats, "RUN: TestAxialReferenceRemovesPureCompressionEccentricity"
@@ -61,8 +61,8 @@ Public Function RunBatchCalculationTests() As String
     TestLongitudinalCrackCheckUsesDirectStateStress stats
     AppendLine stats, "RUN: TestLongitudinalCrackSkippedForPR1"
     TestLongitudinalCrackSkippedForPR1 stats
-    AppendLine stats, "RUN: TestCapacityOnlySkipsDirectStateAndCrack"
-    TestCapacityOnlySkipsDirectStateAndCrack stats
+    AppendLine stats, "RUN: TestPR1RunsStrengthWithoutCrackWidth"
+    TestPR1RunsStrengthWithoutCrackWidth stats
     AppendLine stats, "RUN: TestDirectStateReportsNumericalFailure"
     TestDirectStateReportsNumericalFailure stats
     AppendLine stats, "RUN: TestPR2PhysicalStateRunsCrackWithExtensionEnabled"
@@ -997,29 +997,26 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
-' Проверяет, что определяющее сочетание по прочности выбирается по минимальному
-' запасу Capacity среди всех LC, включая строки второй группы. Это нужно для
-' Plot/AutoCAD = Worst после удаления пользовательского StrainSafetyFactor.
-Private Sub TestBatchGoverningCanUsePR2CapacitySafety(ByRef stats As TBatchTestStats)
+' Проверяет, что governing по прочности выбирается среди профилей, где capacity
+' действительно запрошен. PR2 в базовом шаблоне трещин не участвует в этой
+' выборке, потому что его CapacityStatus получает N/A.
+Private Sub TestBatchGoverningUsesStrengthProfilesOnly(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
-    batch.AddCombination "G1_SAFE", -120000#, -1200000#, -600000#, "PR1", "first group"
-    batch.AddCombination "G2_GOV", -120000#, -5200000#, -2600000#, "PR2", "second group controls capacity"
+    batch.AddCombination "SAFE", -120000#, -1200000#, -600000#, "PR1", "larger safety"
+    batch.AddCombination "GOV", -120000#, -5200000#, -2600000#, "PR1", "smaller safety"
+    batch.AddCombination "CRACK", -120000#, -9000000#, -4500000#, "PR2", "crack-only profile"
     batch.Execute
 
-    AssertTrue stats, "batch.governing.group2.capacity.order", _
+    AssertTrue stats, "batch.governing.profiles.capacity.order", _
         batch.LambdaCapacity(2) > 0# And batch.LambdaCapacity(2) < batch.LambdaCapacity(1)
-    AssertTrue stats, "batch.governing.group2.id", batch.GoverningCombinationID = "G2_GOV"
+    AssertTrue stats, "batch.governing.profiles.pr2Skipped", batch.CapacityStatus(3) = "N/A"
+    AssertTrue stats, "batch.governing.profiles.id", batch.GoverningCombinationID = "GOV"
 End Sub
 
-' Проверяет новую настройку Capacity.CalculationScope. При PR1Only
-' предельный момент считается только для первой группы; PR2 остается
-' доступной для прямого НДС и трещин, но CapacityStatus получает N/A.
-Private Sub TestCapacityScopePR1OnlySkipsPR2(ByRef stats As TBatchTestStats)
-    Dim oldMode As String
-    Dim oldCrackEnabled As String
-    Dim oldCapacityScope As String
-
+' Проверяет, что отключение capacity задается самим профилем, а не старой
+' глобальной настройкой области расчета.
+Private Sub TestPR2SkipsCapacityByProfile(ByRef stats As TBatchTestStats)
     On Error GoTo RestoreAndFail
 
     Dim settings As CSystemSettingsReader
@@ -1029,19 +1026,19 @@ Private Sub TestCapacityScopePR1OnlySkipsPR2(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
     batch.ApplySettings settings
-    batch.AddCombination "G1", -120000#, -1200000#, -600000#, "PR1", "first group"
-    batch.AddCombination "G2", -120000#, -5200000#, -2600000#, "PR2", "second group"
+    batch.AddCombination "STRENGTH", -120000#, -1200000#, -600000#, "PR1", "strength profile"
+    batch.AddCombination "CRACK", -120000#, -5200000#, -2600000#, "PR2", "crack profile"
     batch.Execute
 
-    AssertTrue stats, "batch.capacity.scope.group1.runs", batch.CapacityStatus(1) <> "N/A"
-    AssertTrue stats, "batch.capacity.scope.group2.skipped", batch.CapacityStatus(2) = "N/A"
+    AssertTrue stats, "batch.profile.capacity.pr1.runs", batch.CapacityStatus(1) <> "N/A"
+    AssertTrue stats, "batch.profile.capacity.pr2.skipped", batch.CapacityStatus(2) = "N/A"
 
 Restore:
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.capacity.scope; " & Err.Description
+    AppendLine stats, "FAIL: batch.profile.capacity; " & Err.Description
     Resume Restore
 End Sub
 
@@ -1191,8 +1188,8 @@ Private Sub CheckPureTensionReference(ByRef stats As TBatchTestStats, ByVal case
         Abs(eccentricSolver.KappaX) > tolerance Or Abs(eccentricSolver.KappaY) > tolerance
 End Sub
 
-' Проверяет DirectState после отказа от пользовательского запаса по деформациям.
-' В этом режиме должен быть статус фактического НДС, а capacity остается N/A.
+' Проверяет профиль PR1 после отказа от пользовательского запаса по деформациям.
+' В этом профиле выполняются и прямое НДС по прочности, и поиск capacity.
 Private Sub TestDirectStateReportsSectionStatus(ByRef stats As TBatchTestStats)
     Dim oldMode As String
     Dim oldCrackEnabled As String
@@ -1210,11 +1207,11 @@ Private Sub TestDirectStateReportsSectionStatus(ByRef stats As TBatchTestStats)
     batch.AddCombination "DS_GOV", -120000#, -4500000#, -2400000#, "PR1", "larger strain"
     batch.Execute
 
-    AssertTrue stats, "batch.direct.lambda.zero", batch.LambdaCapacity(1) = 0# And batch.LambdaCapacity(2) = 0#
-    AssertTrue stats, "batch.direct.capacity.na", batch.CapacityStatus(1) = "N/A" And batch.CapacityStatus(2) = "N/A"
+    AssertTrue stats, "batch.direct.lambda.positive", batch.LambdaCapacity(1) > 0# And batch.LambdaCapacity(2) > 0#
+    AssertTrue stats, "batch.direct.capacity.ok", batch.CapacityStatus(1) = "OK" And batch.CapacityStatus(2) = "OK"
     AssertTrue stats, "batch.direct.crack.na", StrComp(batch.CrackStatus(1), "N/A", vbTextCompare) = 0
     AssertTrue stats, "batch.direct.state.status", Len(batch.DirectStateStatus(1)) > 0 And Len(batch.DirectStateStatus(2)) > 0
-    AssertTrue stats, "batch.direct.governing.none", Len(batch.GoverningCombinationID) = 0 Or batch.GoverningCombinationID = "DS_SAFE"
+    AssertTrue stats, "batch.direct.governing.present", Len(batch.GoverningCombinationID) > 0
 
 Restore:
     Exit Sub
@@ -1225,12 +1222,9 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
-' Проверяет режим CapacityOnly: batch ищет только несущую способность и не
-' создает прямое НДС. Это ускоренный сценарий для оценки запаса, поэтому
-' поэлементные Stress/Strain и расчет трещин должны быть недоступны.
-Private Sub TestCapacityOnlySkipsDirectStateAndCrack(ByRef stats As TBatchTestStats)
-    Dim oldMode As String
-
+' Проверяет базовый профиль PR1: прочностное НДС и capacity выполняются, а
+' расчет раскрытия трещин не запускается.
+Private Sub TestPR1RunsStrengthWithoutCrackWidth(ByRef stats As TBatchTestStats)
     On Error GoTo RestoreAndFail
 
     Dim settings As CSystemSettingsReader
@@ -1240,22 +1234,20 @@ Private Sub TestCapacityOnlySkipsDirectStateAndCrack(ByRef stats As TBatchTestSt
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
     batch.ApplySettings settings
-    batch.AddCombination "CAP_ONLY", -150000#, -3000000#, 0#, "PR1", "capacity only"
+    batch.AddCombination "PR1_STRENGTH", -150000#, -3000000#, 0#, "PR1", "strength profile"
     batch.Execute
 
-    AssertTrue stats, "batch.capacityOnly.mode", batch.CalculationMode = "CapacityOnly"
-    AssertTrue stats, "batch.capacityOnly.capacityRuns", batch.CapacityStatus(1) <> "N/A"
-    AssertTrue stats, "batch.capacityOnly.directNA", batch.DirectStateStatus(1) = "N/A"
-    AssertTrue stats, "batch.capacityOnly.crackNA", batch.CrackStatus(1) = "N/A"
-    AssertTrue stats, "batch.capacityOnly.noState", Not batch.StateAvailable(1) And batch.StateAvailableCount = 0
-    AssertTrue stats, "batch.capacityOnly.noExtension", Not batch.ExtensionUsed(1)
+    AssertTrue stats, "batch.pr1.capacityRuns", batch.CapacityStatus(1) <> "N/A"
+    AssertTrue stats, "batch.pr1.directRuns", batch.DirectStateStatus(1) <> "N/A"
+    AssertTrue stats, "batch.pr1.crackNA", batch.CrackStatus(1) = "N/A"
+    AssertTrue stats, "batch.pr1.hasState", batch.StateAvailable(1) And batch.StateAvailableCount > 0
 
 Restore:
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.capacityOnly; " & Err.Description
+    AppendLine stats, "FAIL: batch.pr1.strengthWithoutCrack; " & Err.Description
     Resume Restore
 End Sub
 
@@ -1381,7 +1373,8 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
     stage = "AddCombination"
-    batch.AddCombination "W1", -180000#, -3500000#, -2500000#, "PR2", "writer"
+    batch.AddCombination "W1", -180000#, -3500000#, -2500000#, "PR1", "writer"
+    batch.AddCombination "W2", -90000#, 0#, 0#, "PR2", "crack writer"
     stage = "Execute"
     batch.Execute
 
@@ -1416,9 +1409,9 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.header.longitudinalCrackStatus", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 51).Value2), "LongitudinalCrackStatus", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.header.longitudinalCrackSafety", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 54).Value2), "LongitudinalCrackSafetyFactor", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 55).Value2), "MinSafetyFactor", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.longitudinalFormula", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 54).Formula), "IFERROR", vbTextCompare) > 0 And _
-        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 54).Formula), "BA", vbTextCompare) > 0 And _
-        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 54).Formula), "AZ", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.longitudinalFormula", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 54).Formula), "IFERROR", vbTextCompare) > 0 And _
+        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 54).Formula), "BA", vbTextCompare) > 0 And _
+        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 54).Formula), "AZ", vbTextCompare) > 0
     Exit Sub
 
 Failed:
