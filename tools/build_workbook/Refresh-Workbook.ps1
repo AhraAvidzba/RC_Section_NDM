@@ -181,7 +181,6 @@ try {
     Set-SystemSetting $workbook "Capacity.BaseLoadSteps" "8" "8" "шт" "Базовое число внутренних ступеней нагрузки в CSectionSolver" "Проектная настройка этапа 5"
     Set-SystemSetting $workbook "Capacity.SolverMaxIterations" "60" "60" "шт" "Максимум итераций Newton на ступень при поиске несущей способности" "Проектная настройка этапа 5"
     Set-SystemSetting $workbook "Steel.RebarProfile" "Ribbed" "Ribbed" "Ribbed/Smooth" "Rebar surface profile for phi2 in normal crack width calculation" "Stage 7 project setting"
-    Set-SystemSetting $workbook "SLS.Crack.Enabled" "Yes" "Yes" "Yes/No" "Calculate long-term normal crack width for Group2 combinations" "Stage 7 project setting"
     Set-SystemSetting $workbook "SLS.Crack.Allowable" "0.3" "0.3" "мм" "User-defined allowable crack width a_crc,ult" "Stage 7 project setting"
     Set-SystemSetting $workbook "SLS.Crack.PsiMode" "Fixed1" "Fixed1" "Fixed1/Auto" "Psi_s mode: Fixed1 or Auto after failed first crack-width check" "Stage 7 project setting"
     Set-SystemSetting $workbook "SLS.Crack.TensionZoneMode" "Effective" "Effective" "Effective/FullTension" "Concrete tension zone for Abt in crack width calculation" "Stage 7 project setting"

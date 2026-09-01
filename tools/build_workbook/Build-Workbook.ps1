@@ -304,7 +304,7 @@ function Add-MainInputBlock {
     Add-BlockHeader $Sheet 1 "Сочетания нагрузок"
 
     Add-SectionTitle $Sheet 38 1 18 "Сочетания нагрузок"
-    $loadHeaders = @("CombinationID", "N", "Mx", "My", "CalculationType", "CapacityLoadPath", "Comment")
+    $loadHeaders = @("CombinationID", "N", "Mx", "My", "ProfileId", "CapacityLoadPath", "Comment")
     for ($i = 0; $i -lt $loadHeaders.Count; $i++) {
         Set-Cell $Sheet 40 ($i + 1) $loadHeaders[$i] -Bold -InteriorColor 14277081 | Out-Null
     }
@@ -314,18 +314,18 @@ function Add-MainInputBlock {
     $loadRange = $Sheet.Range($Sheet.Cells.Item(40, 1), $Sheet.Cells.Item(60, 7))
     Set-Border $loadRange
 
-    $calcTypeListColumn = 52
+    $profileListColumn = 52
     $capacityLoadPathListColumn = 53
-    $calcTypeOptions = @("Group1", "Group2")
-    for ($i = 0; $i -lt $calcTypeOptions.Count; $i++) {
-        $Sheet.Cells.Item($i + 1, $calcTypeListColumn).Value2 = $calcTypeOptions[$i]
+    $profileOptions = @("PR1", "PR2", "PR3", "PR4")
+    for ($i = 0; $i -lt $profileOptions.Count; $i++) {
+        $Sheet.Cells.Item($i + 1, $profileListColumn).Value2 = $profileOptions[$i]
     }
-    $calcTypeListAddress = '=$AZ$1:$AZ$' + $calcTypeOptions.Count
-    $calcTypeRange = $Sheet.Range($Sheet.Cells.Item(41, 5), $Sheet.Cells.Item(60, 5))
-    $calcTypeRange.Validation.Delete()
-    $calcTypeRange.Validation.Add(3, 1, 1, $calcTypeListAddress)
-    $calcTypeRange.Validation.IgnoreBlank = $false
-    $calcTypeRange.Validation.InCellDropdown = $true
+    $profileListAddress = '=$AZ$1:$AZ$' + $profileOptions.Count
+    $profileRange = $Sheet.Range($Sheet.Cells.Item(41, 5), $Sheet.Cells.Item(60, 5))
+    $profileRange.Validation.Delete()
+    $profileRange.Validation.Add(3, 1, 1, $profileListAddress)
+    $profileRange.Validation.IgnoreBlank = $false
+    $profileRange.Validation.InCellDropdown = $true
 
     $lambda = [char]0x03BB
     $capacityLoadPathOptions = @("$lambda*Mx", "$lambda*My", "$lambda*Mxy", "$lambda*N", "$lambda*NMxy")
@@ -338,7 +338,7 @@ function Add-MainInputBlock {
     $capacityLoadPathRange.Validation.Add(3, 1, 1, $capacityLoadPathListAddress)
     $capacityLoadPathRange.Validation.IgnoreBlank = $true
     $capacityLoadPathRange.Validation.InCellDropdown = $true
-    $Sheet.Columns.Item($calcTypeListColumn).Hidden = $true
+    $Sheet.Columns.Item($profileListColumn).Hidden = $true
     $Sheet.Columns.Item($capacityLoadPathListColumn).Hidden = $true
 }
 

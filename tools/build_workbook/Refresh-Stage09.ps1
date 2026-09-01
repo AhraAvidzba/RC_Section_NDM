@@ -239,7 +239,7 @@ function Update-CalculationSheetLayout {
     }
 
     Set-CellText $calc 38 1 "��������� ��������"
-    $loadHeaders = @("CombinationID", "N", "Mx", "My", "CalculationType", "Comment")
+    $loadHeaders = @("CombinationID", "N", "Mx", "My", "ProfileId", "Comment")
     for ($i = 0; $i -lt $loadHeaders.Count; $i++) {
         Set-CellText $calc 40 ($i + 1) $loadHeaders[$i]
     }

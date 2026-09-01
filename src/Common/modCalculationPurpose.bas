@@ -2,38 +2,38 @@ Attribute VB_Name = "modCalculationPurpose"
 Option Explicit
 
 ' ==========================================================================
-' ТИПИЗИРОВАННЫЕ ЦЕЛИ РАСЧЕТА МАТЕРИАЛЬНОЙ МОДЕЛИ
+' ТИПИЗИРОВАННЫЕ РОЛИ МАТЕРИАЛЬНЫХ МОДЕЛЕЙ И NAMED STATES
 ' ==========================================================================
-' Модуль держит единый enum для выбора диаграммы материала и небольшие
-' функции преобразования текста из Config/Results в типизированное значение.
-' Здесь нет формул СП и нет построения диаграмм: физический выбор остается в
-' CMaterialModelProvider, а solver получает уже готовый CMaterialDiagram.
+' Модуль держит общие enum-ы и преобразование текста из Config/Results в
+' типизированные значения. Здесь нет формул СП и построения диаграмм:
+' физическую модель строит CMaterialModelProvider, а solver получает уже
+' готовый CMaterialDiagram.
 
 Public Enum ECalculationPurpose
     cpStrength = 1        ' I ГПС: расчет прочности и несущей способности.
     cpMcrc = 2            ' II ГПС: состояние образования трещины.
     cpCrackedNDS = 3      ' II ГПС: НДС раскрытой трещины без растянутого бетона.
-    cpStateSolution = 4   ' Прямой НДС заданного LC; требует отдельной физической базы.
+    cpStateSolution = 4   ' Прямой НДС заданного LC; физическая база передается отдельно.
 End Enum
 
 Public Enum EMaterialValueSet
-    mvsULS = 1             ' Характеристики I ГПС: Rb/Rbt/Rs/Rsc.
-    mvsSLS = 2             ' Характеристики II ГПС: Rb,ser/Rbt,ser/Rs,ser/Rsc,ser.
+    mvsULS = 1            ' Характеристики I ГПС: Rb/Rbt/Rs/Rsc.
+    mvsSLS = 2            ' Характеристики II ГПС: Rb,ser/Rbt,ser/Rs,ser/Rsc,ser.
 End Enum
 
 Public Enum EConcreteDiagramKind
-    cdkTwoLine = 1         ' Двухлинейная диаграмма бетона.
-    cdkThreeLine = 2       ' Трехлинейная диаграмма бетона.
+    cdkTwoLine = 1        ' Двухлинейная диаграмма бетона.
+    cdkThreeLine = 2      ' Трехлинейная диаграмма бетона.
 End Enum
 
 Public Enum EConcreteTensionKind
-    ctkIgnore = 1          ' Растянутый бетон не работает.
-    ctkUseDiagram = 2      ' Растянутый бетон работает по выбранной диаграмме.
+    ctkIgnore = 1         ' Растянутый бетон не работает.
+    ctkUseDiagram = 2     ' Растянутый бетон работает по выбранной диаграмме.
 End Enum
 
 Public Enum ESteelDiagramKind
-    sdkTwoLine = 1         ' Двухлинейная диаграмма арматуры.
-    sdkThreeLine = 2       ' Трехлинейная диаграмма арматуры.
+    sdkTwoLine = 1        ' Двухлинейная диаграмма арматуры.
+    sdkThreeLine = 2      ' Трехлинейная диаграмма арматуры.
 End Enum
 
 Public Enum ESectionStateType
@@ -44,12 +44,11 @@ Public Enum ESectionStateType
 End Enum
 
 Public Enum EVisualizationQuantity
-    vqStress = 1           ' Для схемы/AutoCAD показываются напряжения.
-    vqStrain = 2           ' Для схемы/AutoCAD показываются деформации.
+    vqStress = 1          ' Для схемы/AutoCAD показываются напряжения.
+    vqStrain = 2          ' Для схемы/AutoCAD показываются деформации.
 End Enum
 
-' Преобразует пользовательский или snapshot-текст в enum. Алиасы оставлены
-' только на границе с Excel, чтобы внутри расчетного кода не ходили свободные строки.
+' Преобразует пользовательский или snapshot-текст в роль материальной модели.
 Public Function PurposeFromText(ByVal purposeText As String) As ECalculationPurpose
     Select Case LCase$(Trim$(purposeText))
         Case "strength", "group1", "uls", "i", "1"
@@ -66,7 +65,7 @@ Public Function PurposeFromText(ByVal purposeText As String) As ECalculationPurp
     End Select
 End Function
 
-' Возвращает канонический текст для записи в Results, диагностику и справку.
+' Возвращает канонический текст для Results, диагностики и справки.
 Public Function PurposeToText(ByVal purpose As ECalculationPurpose) As String
     Select Case purpose
         Case cpStrength
@@ -83,8 +82,7 @@ Public Function PurposeToText(ByVal purpose As ECalculationPurpose) As String
     End Select
 End Function
 
-' Возвращает текст роли материальной модели в новой профильной архитектуре.
-' Роль близка к старому purpose, но не является видом пользовательского расчета.
+' Возвращает смысловую метку material model role для профильной архитектуры.
 Public Function MaterialModelRoleToText(ByVal purpose As ECalculationPurpose) As String
     Select Case purpose
         Case cpStrength
@@ -95,11 +93,11 @@ Public Function MaterialModelRoleToText(ByVal purpose As ECalculationPurpose) As
             MaterialModelRoleToText = "CrackedState"
         Case Else
             Err.Raise vbObjectError + 3310, "modCalculationPurpose", _
-                "Для роли материальной модели требуется физическая цель."
+                "Для роли материальной модели требуется физическая расчетная цель."
     End Select
 End Function
 
-' Преобразует текст ValueSet из профиля в типизированное значение.
+' Преобразует ValueSet из профиля в enum.
 Public Function MaterialValueSetFromText(ByVal valueText As String) As EMaterialValueSet
     Select Case LCase$(Trim$(valueText))
         Case "uls", "i", "group1", "strength"
@@ -119,7 +117,8 @@ Public Function MaterialValueSetToText(ByVal valueSet As EMaterialValueSet) As S
         Case mvsSLS
             MaterialValueSetToText = "SLS"
         Case Else
-            Err.Raise vbObjectError + 3312, "modCalculationPurpose", "Неизвестный MaterialValueSet."
+            Err.Raise vbObjectError + 3312, "modCalculationPurpose", _
+                "Неизвестный MaterialValueSet."
     End Select
 End Function
 
@@ -142,7 +141,8 @@ Public Function ConcreteDiagramKindToText(ByVal diagramKind As EConcreteDiagramK
         Case cdkThreeLine
             ConcreteDiagramKindToText = "ThreeLine"
         Case Else
-            Err.Raise vbObjectError + 3314, "modCalculationPurpose", "Неизвестный тип диаграммы бетона."
+            Err.Raise vbObjectError + 3314, "modCalculationPurpose", _
+                "Неизвестный тип диаграммы бетона."
     End Select
 End Function
 
@@ -165,7 +165,8 @@ Public Function ConcreteTensionKindToText(ByVal tensionKind As EConcreteTensionK
         Case ctkUseDiagram
             ConcreteTensionKindToText = "UseDiagram"
         Case Else
-            Err.Raise vbObjectError + 3316, "modCalculationPurpose", "Неизвестный режим растянутого бетона."
+            Err.Raise vbObjectError + 3316, "modCalculationPurpose", _
+                "Неизвестный режим растянутого бетона."
     End Select
 End Function
 
@@ -188,7 +189,8 @@ Public Function SteelDiagramKindToText(ByVal diagramKind As ESteelDiagramKind) A
         Case sdkThreeLine
             SteelDiagramKindToText = "ThreeLine"
         Case Else
-            Err.Raise vbObjectError + 3318, "modCalculationPurpose", "Неизвестный тип диаграммы арматуры."
+            Err.Raise vbObjectError + 3318, "modCalculationPurpose", _
+                "Неизвестный тип диаграммы арматуры."
     End Select
 End Function
 
@@ -232,7 +234,8 @@ Public Function MaterialRoleFromStateType(ByVal stateType As ESectionStateType) 
         Case sstCrackedState
             MaterialRoleFromStateType = cpCrackedNDS
         Case Else
-            Err.Raise vbObjectError + 3321, "modCalculationPurpose", "Для StateType не определена роль material model."
+            Err.Raise vbObjectError + 3321, "modCalculationPurpose", _
+                "Для StateType не определена роль material model."
     End Select
 End Function
 
@@ -255,19 +258,17 @@ Public Function VisualizationQuantityToText(ByVal quantity As EVisualizationQuan
         Case vqStrain
             VisualizationQuantityToText = "Strain"
         Case Else
-            Err.Raise vbObjectError + 3323, "modCalculationPurpose", "Неизвестная Visualization.Quantity."
+            Err.Raise vbObjectError + 3323, "modCalculationPurpose", _
+                "Неизвестная Visualization.Quantity."
     End Select
 End Function
 
-' True для целей, которые являются физической базой диаграммы без numerical extension.
+' Проверяет, что цель является физической material model без numerical extension.
 Public Function IsPhysicalPurpose(ByVal purpose As ECalculationPurpose) As Boolean
     IsPhysicalPurpose = (purpose = cpStrength Or purpose = cpMcrc Or purpose = cpCrackedNDS)
 End Function
 
-' True для физических целей, которыми разрешено подпитать прямой StateSolution.
+' Проверяет, что цель может быть базой для прямого StateSolution.
 Public Function IsStateBasePurpose(ByVal purpose As ECalculationPurpose) As Boolean
     IsStateBasePurpose = (purpose = cpStrength Or purpose = cpCrackedNDS)
 End Function
-
-' Выбирает физическую базу StateSolution по группе сочетания.
-' Group1 получает Strength, Group2 получает CrackedNDS.

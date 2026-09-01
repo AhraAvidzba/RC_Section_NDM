@@ -60,7 +60,7 @@ function Get-SystemSettingsCatalog {
             @("AutoCAD.Export.NeutralLineEnabled", "Yes", "-", "Выгружать нейтральную линию в AutoCAD: Yes - выводить; No - не выводить."),
             @("AutoCAD.Export.PrincipalAxesEnabled", "Yes", "-", "Выгружать главные центральные оси приведенного сечения в AutoCAD: Yes - выводить; No - не выводить."),
             @("AutoCAD.Export.LoadPointEnabled", "Yes", "-", "Выгружать точку приложения нагрузки в AutoCAD: Yes - выводить; No - не выводить."),
-            @("AutoCAD.Export.LabelMode", "NamesAndValues", "-", "Формат текстовых подписей при выгрузке в AutoCAD: ValuesOnly - только значение выбранного ResultType; NamesAndValues - имя элемента и значение. При NamesAndValues имена выводятся для бетона и арматуры."),
+            @("AutoCAD.Export.LabelMode", "NamesAndValues", "-", "Формат текстовых подписей при выгрузке в AutoCAD: ValuesOnly - только выбранная величина профиля; NamesAndValues - имя элемента и значение. При NamesAndValues имена выводятся для бетона и арматуры."),
             @("AutoCAD.Layer.Concrete", "Concrete", "-", "Слой для областей бетонных волокон. Цвет каждой области задается по PhysicalState из Results: сжатие, растяжение или нейтральное состояние."),
             @("AutoCAD.Layer.Rebar", "Reinf", "-", "Слой для всех областей продольной арматуры. Цвет каждого стержня задается по PhysicalState из Results, а не по пользовательскому знаку Stress/Strain."),
             @("AutoCAD.Layer.ConcreteTension", "Anno_Concrete_Tension", "-", "Слой для подписей бетонных волокон, которые физически находятся в растяжении."),
@@ -83,14 +83,14 @@ function Get-SystemSettingsCatalog {
             @("Plot.AutoUpdateAfterCalculation", "Yes", "-", "Автоматически обновлять схему после выполнения расчета. Кнопка Обновить схему всегда читает только Results и не запускает расчет."),
             @("Plot.LoadCase", "Worst", "-", "Какое сочетание показывать на схеме: Worst - определяющее сочетание из последнего расчета; либо конкретный CombinationID из rngLoadCombinations."),
             @("Plot.ResultGradient", "Yes", "-", "Включить цветовое различение результата на схеме. Цвет физического состояния берется из PhysicalState, записанного в Results."),
-            @("Plot.ResultLabelsEnabled", "No", "-", "Показывать пространственно распределенные численные подписи выбранного ResultType для бетонных элементов."),
+            @("Plot.ResultLabelsEnabled", "No", "-", "Показывать пространственно распределенные численные подписи величины Visualization.Quantity выбранного профиля для бетонных элементов."),
             @("Plot.ResultLabelSpacing", "100", "мм", "Минимальный пространственный шаг между численными подписями результата на схеме."),
             @("Plot.ResultPrecision", "1", "шт", "Количество знаков после запятой для численных подписей и легенды схемы."),
             @("Plot.NeutralLineEnabled", "Yes", "-", "Показывать нейтральную линию выбранного сочетания по Epsilon0, KappaX, KappaY из Results."),
             @("Plot.PrincipalAxesEnabled", "Yes", "-", "Показывать главные центральные оси приведенного сечения."),
             @("Plot.LoadApplicationPointEnabled", "Yes", "-", "Показывать точку приложения нагрузки из последнего расчета."),
             @("Plot.CentroidEnabled", "Yes", "-", "Показывать центр тяжести приведенного сечения."),
-            @("Plot.LegendEnabled", "Yes", "-", "Показывать легенду физического состояния и выбранного ResultType справа от схемы."),
+            @("Plot.LegendEnabled", "Yes", "-", "Показывать легенду физического состояния и выбранной величины профиля справа от схемы."),
             @("Plot.LegendMode", "Separate", "-", "Separate - отдельные легенды для арматуры и бетона; Common - одна общая легенда. В режиме Common используются цвета Plot.Color.RebarCompression и Plot.Color.RebarTension."),
             @("Plot.Color.RebarCompression", "30,80,220", "RGB", "Цвет максимального сжатия арматуры. В режиме Plot.LegendMode=Common используется как цвет сжатия для всех элементов."),
             @("Plot.Color.RebarTension", "210,30,20", "RGB", "Цвет максимального растяжения арматуры. В режиме Plot.LegendMode=Common используется как цвет растяжения для всех элементов."),
@@ -605,14 +605,6 @@ function Get-SettingInstructionLines {
             "Разные материалы арматуры в одном сечении сейчас не поддерживаются. При AutoCAD import достаточно указать, что Region относится к арматуре; профиль и диаграмма берутся из Config.",
             "Инженерное последствие: если в одном реальном сечении есть разные классы или профили арматуры, текущая версия программы требует отдельного инженерного решения или доработки модели материалов."
         ) }
-        "Calculation.Mode" { return @($lead) + @(
-            "DirectState: выполняется только поиск напряженно-деформированного состояния. Решатель находит epsilon0, kappaX, kappaY из условий равновесия, но несущая способность lambdaUltimate не ищется.",
-            "FullCapacity: после решения НДС выполняется определение несущей способности выбранным Capacity.SolutionStrategy.",
-            "CapacityOnly: выполняется только расчет предельной несущей способности по выбранной lambda-траектории. Прямое НДС заданного LC не решается, поэтому поэлементные Stress/Strain, нейтральная линия и расчет трещин недоступны.",
-            "В CapacityOnly лист Results сохраняет геометрию и результаты Capacity. Excel-схема и AutoCAD export показывают геометрию и включенные не-НДС ориентиры, например главные оси и точку нагрузки, но не выводят Stress/Strain, легенду и нейтральную линию.",
-            "Для DirectState пользовательский StrainSafetyFactor больше не выводится. Количественный запас по прочности определяется расчетом Capacity, а прямое НДС получает понятный DirectStateStatus.",
-            "Если сочетание пустое по всем трем усилиям N, Mx, My, оно не считается. Пустой Mx или My при заданных других усилиях трактуется как 0."
-        ) }
         "Solver.Method" { return @($lead) + @(
             "Newton решает равновесие через касательную матрицу жесткости: K · Δu = −R, где Δu = [Δε₀; Δκx; Δκy].",
             "Secant использует самостоятельную секущую схему с приближенной матрицей чувствительности и контролируемыми рестартами. Это не скрытый вызов Newton.",
@@ -721,13 +713,6 @@ function Get-SettingInstructionLines {
             "Если нужен быстрый расчет предельного момента при заданной продольной силе, обычно выбирают λ*Mxy или λ*Mx/λ*My. Если нужно именно предельное осевое усилие или масштабирование всего сочетания целиком, выбирают λ*N или λ*NMxy и принимают, что расчет может идти заметно дольше.",
             "Численная несходимость не является физическим разрушением. Если CSectionSolver не нашел равновесие, пользовательский статус должен быть NumFail, а не FAIL по физическому пределу."
         ) }
-        "Capacity.CalculationScope" { return @($lead) + @(
-            "Group1Only: поиск предельной несущей способности запускается только для сочетаний первой группы. Для Group2 в разделе Capacity будет N/A, а расчет трещин при допустимом прямом НДС выполняется как обычно.",
-            "Group1+2: поиск предельной несущей способности запускается и для первой, и для второй группы. Это сохраняет текущее диагностическое поведение книги, когда для SLS-сочетаний можно одновременно видеть прочностной запас.",
-            "Настройка влияет только на запуск Capacity. Она не меняет прямое НДС, не меняет расчет трещин и пока не меняет утвержденную логику выбора Worst.",
-            "Внутри Capacity путь выбирает столбец CapacityLoadPath в таблице сочетаний. В новых книгах лучше заполнять его явно.",
-            "Пустое значение оставлено как удобный fallback: при наличии пользовательского Mx/My программа выбирает λ*Mxy, при чистой N - λ*N. Неизвестный текст дает InputErr."
-        ) }
         "Capacity.SearchMethod" { return @($lead) + @(
             "Capacity.SearchMethod работает только там, где фактически используется LoadMultiplier: при явном LoadMultiplier, при fallback из Auto и при осевых траекториях, которые программа переводит в LoadMultiplier как более устойчивую постановку.",
             "Для λ*Mx, λ*My и λ*Mxy в обычном режиме Auto/UltimateStrain эта настройка не влияет, пока расчет не перешел в fallback LoadMultiplier.",
@@ -784,12 +769,6 @@ function Get-SettingInstructionLines {
             "Если значение слишком мало, сложное сочетание может получить NumFail даже тогда, когда физически сечение несет нагрузку. Если значение слишком велико, расчет может дольше пытаться сойтись на плохих исходных данных.",
             "Практически: увеличивать имеет смысл, когда диаграммы корректны, геометрия нормальная, но solver останавливается по Maximum iterations reached. Если ошибка вызвана неправильными единицами, пустыми диаграммами или нереалистичной нагрузкой, увеличение итераций проблему не исправит.",
             "Нормативный статус: это защитный численный параметр программы, а не расчетный коэффициент СП."
-        ) }
-        "SLS.Crack.Enabled" { return @($lead) + @(
-            "Yes включает расчет ширины раскрытия нормальных трещин только для сочетаний II группы. В таблице сочетаний это строки с CalculationType = Group2.",
-            "No полностью пропускает расчет трещин: CrackStatus будет N/A, а поиск несущей способности по I группе не изменится.",
-            "Текущая реализация считает только продолжительное раскрытие: a_crc = a_crc1. Непродолжительное раскрытие по формуле a_crc = a_crc1 + a_crc2 - a_crc3 не реализовано.",
-            "Нормативная связь: условие проверки a_crc <= a_crc,ult приведено в СП 63.13330.2018, п. 8.2.6, формула (8.118); продолжительное раскрытие a_crc = a_crc1 - п. 8.2.7, формула (8.119)."
         ) }
         "SLS.Crack.Allowable" { return @($lead) + @(
             "Это предельно допустимая ширина раскрытия нормальной трещины a_crc,ult.",
@@ -857,13 +836,8 @@ function Get-SettingInstructionLines {
             "Значение должно совпадать с CombinationID, который есть в результатах последнего расчета. Если указать несуществующий LC, export остановится с понятной ошибкой.",
             "Экспорт не запускает расчет заново. Если после расчета пользователь поменял нагрузки, сначала нужно выполнить новый расчет, и только потом экспортировать."
         ) }
-        "AutoCAD.Export.ResultType" { return @($lead) + @(
-            "Stress означает, что цвет и подписи берутся по напряжениям. Strain означает, что вместо напряжений используются деформации.",
-            "Данные берутся из последнего Results, уже в сохраненных OUTPUT единицах и знаках.",
-            "Настройка не пересчитывает сечение и не меняет Results."
-        ) }
         "AutoCAD.Export.LabelMode" { return @($lead) + @(
-            "ValuesOnly выводит только численное значение выбранного ResultType.",
+            "ValuesOnly выводит только численное значение выбранной профильной величины Visualization.Quantity.",
             "NamesAndValues добавляет к значению имя расчетного элемента, например C1 или R1.",
             "При NamesAndValues имена выводятся и для бетона, и для арматуры, если они сохранены в Results."
         ) }
@@ -893,18 +867,13 @@ function Get-SettingInstructionLines {
             "Конкретный CombinationID, например LC2, показывает сохраненные Stress/Strain/Epsilon0/KappaX/KappaY именно этого сочетания.",
             "Переключение LoadCase не создает геометрию заново: меняется только отображаемое расчетное состояние из Results."
         ) }
-        "Plot.ResultType" { return @($lead) + @(
-            "Stress окрашивает элементы и подписи по напряжениям. Strain делает то же самое по деформациям.",
-            "Легенда и численные подписи используют единицы, сохраненные в Results на момент последнего расчета.",
-            "Физический цвет сжатия/растяжения берется из PhysicalState, а не угадывается по пользовательскому знаку числа."
-        ) }
         "Plot.ResultGradient" { return @($lead) + @(
-            "Yes включает цветовой градиент расчетных элементов по выбранному Plot.ResultType.",
+            "Yes включает цветовой градиент расчетных элементов по величине Visualization.Quantity выбранного профиля.",
             "No оставляет элементы в нейтральном оформлении без цветовой шкалы результата.",
             "Неработающий растянутый бетон остается отдельным серым состоянием и не смешивается с обычным градиентом."
         ) }
         "Plot.ResultLabelsEnabled" { return @($lead) + @(
-            "Yes добавляет на схему численные подписи выбранного Plot.ResultType.",
+            "Yes добавляет на схему численные подписи величины Visualization.Quantity выбранного профиля.",
             "Подписываются только бетонные элементы с пространственным шагом Plot.ResultLabelSpacing.",
             "Неработающий растянутый бетон не подписывается, чтобы схема не показывала нулевые значения как полезные напряжения."
         ) }
@@ -977,7 +946,8 @@ function Get-SettingsInstructionCatalog {
         "Таблица задает список LC, которые будут рассчитаны при нажатии кнопки Выполнить расчет.",
         "CombinationID - короткое имя сочетания. Оно используется в Results, в заголовке схемы, в выборе Plot.LoadCase и AutoCAD.Export.CombinationID.",
         "N, Mx и My вводятся в текущих INPUT-единицах из блока единиц. Пустой Mx или My считается нулем, поэтому одноосный изгиб можно задавать как N + Mx или N + My без заполнения второго момента.",
-        "CalculationType задает расчетную группу: Group1 - прочность по I группе; Group2 - трещины по II группе. Прямое НДС считается для обеих групп.",
+        "ProfileId задает расчетный профиль из таблицы rngCalculationProfiles. В базовой книге PR1 - прочность, PR2 - трещины, PR3/PR4 оставлены пустыми резервными профилями.",
+        "Профиль определяет только, какие расчеты запрошены и какие материальные модели использовать. Порядок расчета и зависимости между состояниями задает программа, а не строка профиля.",
         "CapacityLoadPath задает, какие компоненты нагрузки масштабируются при поиске несущей способности: λ*Mx, λ*My, λ*Mxy, λ*N или λ*NMxy. Эта настройка находится в строке LC, потому что разные сочетания могут требовать разной траектории поиска.",
         "Если выбран λ*N, продольная сила N умножается на λ, а момент от ее смещенной линии действия масштабируется вместе с N. Если выбран λ*Mxy, N остается постоянной, а масштабируется только пользовательский вектор моментов.",
         "Если CapacityLoadPath оставлен пустым, программа выбирает fallback: при наличии пользовательского Mx/My используется λ*Mxy, при чистой N - λ*N. Для прозрачности расчетов лучше задавать путь явно.",
@@ -1022,12 +992,15 @@ function Get-SettingsInstructionCatalog {
         "Производные точки арматурных диаграмм строятся по СП 63.13330.2018, пп. 6.2.11, 6.2.14 и 6.2.15. П. 6.2.13 задает смысл: TwoLine для физического предела текучести, ThreeLine для условного.",
         "Steel.RebarProfile не меняет диаграмму арматуры. Он нужен для коэффициента phi2 при расчете ширины раскрытия трещин."
     )}) | Out-Null
-    $items.Add(@{ Key = "CalculationDiagramSettings"; Title = "Настройки диаграмм для расчетов"; Lines = @(
-        "Эта таблица является единственным пользовательским местом выбора расчетной диаграммы и режима учета растянутого бетона.",
-        "Strength: расчет прочности по I группе. Пользователь может выбрать TwoLine/ThreeLine для бетона и арматуры, а также Ignore/UseDiagram для растянутого бетона.",
-        "Mcrc: состояние образования трещины по II группе. Растянутый бетон включен фиксированно UseDiagram, потому что нужно определить достижение растянутым бетоном ε_bt,crc.",
-        "CrackedNDS: НДС после образования трещины для a_crc по II группе. Растянутый бетон выключен фиксированно Ignore.",
-        "ГПС не редактируется пользователем: Strength всегда I, Mcrc и CrackedNDS всегда II.",
+    $items.Add(@{ Key = "CalculationProfiles"; Title = "Настройка расчетных профилей"; Lines = @(
+        "rngCalculationProfiles задает профили расчета вертикальной таблицей: параметры идут по строкам, а столбцы PR1, PR2, PR3, PR4 являются стабильными ProfileId.",
+        "Отдельной строки ProfileId и признака Активен нет. Профиль используется только тогда, когда его ProfileId назначен сочетанию в rngLoadCombinations.",
+        "Профиль считается настроенным, если заполнено Profile.DisplayName и все параметры, обязательные для включенных расчетов. PR3 и PR4 в шаблоне оставлены пустыми резервными профилями.",
+        "PR1 по умолчанию: имя Прочность; Calculation.Strength.DirectState = Yes; Calculation.Strength.Capacity = Yes; Calculation.Crack.Width = No; MaterialModel.Strength = ULS / TwoLine / Ignore / TwoLine; Visualization.State = StrengthState; Visualization.Quantity = Stress.",
+        "PR2 по умолчанию: имя Трещины; Calculation.Strength.DirectState = No; Calculation.Strength.Capacity = No; Calculation.Crack.Width = Yes; MaterialModel.CrackInitiation = SLS / ThreeLine / UseDiagram / TwoLine; MaterialModel.CrackedState = SLS / TwoLine / Ignore / TwoLine; Visualization.State = CrackedState; Visualization.Quantity = Stress.",
+        "Calculation.Crack.Width включает расчет нормальных трещин и существующую проверку продольных трещин. Отдельного профиля, флага или ветки LongitudinalCrack нет.",
+        "CrackedState обязателен при включенном Calculation.Crack.Width. CrackInitiation нужен только при SLS.Crack.PsiMode = Auto; при Fixed1 он может быть не заполнен и не блокирует расчет.",
+        "Visualization.State и Visualization.Quantity управляют только схемой и AutoCAD после расчета. Если выбранного StateType нет в Results, расчет не отменяется; сообщение появится только при попытке построить схему или экспорт.",
         "Нормативные ориентиры СП 63: бетон для прочности - п. 6.1.23; неучет растянутого бетона при прочности допускается п. 8.1.20; Mcrc - п. 6.1.24; раскрытие трещин - п. 6.1.26; арматура - п. 6.2.13.",
         "Пользовательский выбор TwoLine/ThreeLine оставлен для исследований. Если выбранный режим отличается от основного нормативного режима, это осознанная расчетная настройка, а не автоматическая нормативная рекомендация."
     )}) | Out-Null
@@ -1075,9 +1048,9 @@ function Get-SettingsInstructionCatalog {
         "Первые строки - служебная часть. Определяющее сочетание по прочности берется по минимальному рассчитанному CapacitySafetyFactor. После перехода на CapacityLoadPath этот запас равен найденному lambda для выбранной траектории: λ*Mx, λ*My, λ*Mxy, λ*N или λ*NMxy. Проверка трещин в выбор worst для прочности не входит.",
         "Время расчета, с - полное время выполнения макроса от старта пользовательского расчета до завершения записи Results, обновления схемы и, если включен General.ExecutionReportEnabled, сохранения txt-отчета. Время batch-solver-а отдельно видно в txt-отчете.",
         "Точка приложения нагрузки - смещение точки, относительно которой пользователь задает N, Mx и My, от центра тяжести бетонного сечения. При нулевых Load.ReferenceOffsetX/Y в summary выводится X=0 и Y=0.",
-        "CombinationID (сочетание) - ID строки из таблицы сочетаний на листе Расчет.",
+        "CombinationID (сочетание) - ID строки из таблицы сочетаний на листе Config.",
         "Comment (комментарий) - пользовательский комментарий к сочетанию. Этот же текст добавляется в заголовок схемы в скобках.",
-        "CalculationType (группа) - тип проверки сочетания: Group1 для прочности по I группе, Group2 для расчета трещин по II группе.",
+        "ProfileId (профиль) - расчетный профиль, назначенный этому сочетанию. Профиль задает запрошенные расчеты, материальные модели и состояние для визуализации.",
         "OverallStatus (итог) - общий короткий статус LC. Он собирается из применимых статусов разделов с приоритетом InputErr -> NumFail -> FAIL -> OK; N/A не ухудшает итог, если раздел просто неприменим.",
         "DirectStateStatus (НДС) - статус прямого состояния от заданного сочетания. OK означает, что равновесие найдено в физической диаграмме; FAIL означает, что равновесие найдено, но использован numerical extension или нарушены физические пределы; NumFail означает численную несходимость.",
         "eps_c,min (бетон сжатие) - минимальная деформация бетонных элементов в найденном состоянии. В INTERNAL convention сжатие отрицательное, поэтому для сжатого бетона обычно контролируется отрицательный минимум.",
@@ -2340,7 +2313,7 @@ function Add-CalculationProfilesTable {
         $Sheet.Cells.Item($targetRow, $StartColumn + 5).Value2 = $rows[$r].PR4
         $Sheet.Cells.Item($targetRow, $StartColumn + 6).Value2 = $rows[$r].Comment
 
-        if ([string]$rows[$r].Caption -like "[[]*[]]") {
+        if (([string]$rows[$r].Caption).StartsWith("[")) {
             $sectionRow = $Sheet.Range($Sheet.Cells.Item($targetRow, $StartColumn), $Sheet.Cells.Item($targetRow, $StartColumn + 6))
             $sectionRow.Font.Bold = $true
             $sectionRow.Interior.Color = $script:ConfigSubgroupHeaderColor
@@ -2848,29 +2821,28 @@ function Add-MaterialParameterValidation {
 }
 
 # Добавляет валидацию для профильной таблицы. Типы расчетов, материальные
-# модели и визуализация выбираются в PR-колонках, а не в старых глобальных
-# настройках Calculation.Mode/CalculationType.
+# модели и визуализация выбираются в PR-колонках профилей.
 function Add-CalculationProfilesValidation {
-    param([object]$Sheet, [int]$StartColumn)
+    param([object]$Sheet, [int]$ListColumn)
 
     $sources = @{
-        "Calculation.Strength.DirectState" = @{ Column = $StartColumn; Values = @("Yes", "No") }
-        "Calculation.Strength.Capacity" = @{ Column = $StartColumn; Values = @("Yes", "No") }
-        "Calculation.Crack.Width" = @{ Column = $StartColumn; Values = @("Yes", "No") }
-        "MaterialModel.Strength.ValueSet" = @{ Column = ($StartColumn + 1); Values = @("ULS", "SLS") }
-        "MaterialModel.CrackInitiation.ValueSet" = @{ Column = ($StartColumn + 1); Values = @("ULS", "SLS") }
-        "MaterialModel.CrackedState.ValueSet" = @{ Column = ($StartColumn + 1); Values = @("ULS", "SLS") }
-        "MaterialModel.Strength.ConcreteDiagram" = @{ Column = ($StartColumn + 2); Values = @("TwoLine", "ThreeLine") }
-        "MaterialModel.CrackInitiation.ConcreteDiagram" = @{ Column = ($StartColumn + 2); Values = @("TwoLine", "ThreeLine") }
-        "MaterialModel.CrackedState.ConcreteDiagram" = @{ Column = ($StartColumn + 2); Values = @("TwoLine", "ThreeLine") }
-        "MaterialModel.Strength.ConcreteTension" = @{ Column = ($StartColumn + 3); Values = @("Ignore", "UseDiagram") }
-        "MaterialModel.CrackInitiation.ConcreteTension" = @{ Column = ($StartColumn + 3); Values = @("Ignore", "UseDiagram") }
-        "MaterialModel.CrackedState.ConcreteTension" = @{ Column = ($StartColumn + 3); Values = @("Ignore", "UseDiagram") }
-        "MaterialModel.Strength.SteelDiagram" = @{ Column = ($StartColumn + 4); Values = @("TwoLine", "ThreeLine") }
-        "MaterialModel.CrackInitiation.SteelDiagram" = @{ Column = ($StartColumn + 4); Values = @("TwoLine", "ThreeLine") }
-        "MaterialModel.CrackedState.SteelDiagram" = @{ Column = ($StartColumn + 4); Values = @("TwoLine", "ThreeLine") }
-        "Visualization.State" = @{ Column = ($StartColumn + 5); Values = @("StrengthState", "CapacityState", "CrackInitiationState", "CrackedState") }
-        "Visualization.Quantity" = @{ Column = ($StartColumn + 6); Values = @("Stress", "Strain") }
+        "Calculation.Strength.DirectState" = @{ Column = $ListColumn; Values = @("Yes", "No") }
+        "Calculation.Strength.Capacity" = @{ Column = $ListColumn; Values = @("Yes", "No") }
+        "Calculation.Crack.Width" = @{ Column = $ListColumn; Values = @("Yes", "No") }
+        "MaterialModel.Strength.ValueSet" = @{ Column = ($ListColumn + 1); Values = @("ULS", "SLS") }
+        "MaterialModel.CrackInitiation.ValueSet" = @{ Column = ($ListColumn + 1); Values = @("ULS", "SLS") }
+        "MaterialModel.CrackedState.ValueSet" = @{ Column = ($ListColumn + 1); Values = @("ULS", "SLS") }
+        "MaterialModel.Strength.ConcreteDiagram" = @{ Column = ($ListColumn + 2); Values = @("TwoLine", "ThreeLine") }
+        "MaterialModel.CrackInitiation.ConcreteDiagram" = @{ Column = ($ListColumn + 2); Values = @("TwoLine", "ThreeLine") }
+        "MaterialModel.CrackedState.ConcreteDiagram" = @{ Column = ($ListColumn + 2); Values = @("TwoLine", "ThreeLine") }
+        "MaterialModel.Strength.ConcreteTension" = @{ Column = ($ListColumn + 3); Values = @("Ignore", "UseDiagram") }
+        "MaterialModel.CrackInitiation.ConcreteTension" = @{ Column = ($ListColumn + 3); Values = @("Ignore", "UseDiagram") }
+        "MaterialModel.CrackedState.ConcreteTension" = @{ Column = ($ListColumn + 3); Values = @("Ignore", "UseDiagram") }
+        "MaterialModel.Strength.SteelDiagram" = @{ Column = ($ListColumn + 4); Values = @("TwoLine", "ThreeLine") }
+        "MaterialModel.CrackInitiation.SteelDiagram" = @{ Column = ($ListColumn + 4); Values = @("TwoLine", "ThreeLine") }
+        "MaterialModel.CrackedState.SteelDiagram" = @{ Column = ($ListColumn + 4); Values = @("TwoLine", "ThreeLine") }
+        "Visualization.State" = @{ Column = ($ListColumn + 5); Values = @("StrengthState", "CapacityState", "CrackInitiationState", "CrackedState") }
+        "Visualization.Quantity" = @{ Column = ($ListColumn + 6); Values = @("Stress", "Strain") }
     }
 
     foreach ($source in $sources.Values) {

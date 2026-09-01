@@ -130,11 +130,6 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object)
         AppendSteelMaterialParameters data
         Exit Sub
     End If
-    If IsCalculationDiagramSettingsRange(data) Then
-        AppendCalculationDiagramSettings data
-        Exit Sub
-    End If
-
     Dim rowIndex As Long
     ' Обычные таблицы читаются как ключ/значение. Строки с заголовками секций
     ' в квадратных скобках пропускаются.
@@ -255,34 +250,6 @@ Private Sub AppendSteelMaterialParameters(ByRef data As Variant)
             Case Else
                 If Len(compressionValue) > 0 Then AppendSetting rowKey, compressionValue, compressionValue, commentValue
         End Select
-NextRow:
-    Next rowIndex
-End Sub
-
-' Распознает таблицу выбора диаграмм для расчетных целей Strength/Mcrc/CrackedNDS.
-Private Function IsCalculationDiagramSettingsRange(ByRef data As Variant) As Boolean
-    If UBound(data, 1) < 2 Or UBound(data, 2) < 5 Then Exit Function
-    IsCalculationDiagramSettingsRange = _
-        StrComp(Trim$(CStr(data(1, 1))), "Расчет", vbTextCompare) = 0 And _
-        StrComp(Trim$(CStr(data(1, 2))), "ГПС", vbTextCompare) = 0 And _
-        InStr(1, CStr(data(1, 3)), "бетон", vbTextCompare) > 0
-End Function
-
-' Преобразует человекочитаемые строки режимов в ключи Diagram.<Purpose>.*.
-Private Sub AppendCalculationDiagramSettings(ByRef data As Variant)
-    Dim rowIndex As Long
-    For rowIndex = 2 To UBound(data, 1)
-        Dim purpose As String
-        purpose = Trim$(CStr(data(rowIndex, 1)))
-        If Len(purpose) = 0 Then GoTo NextRow
-
-        Dim commentValue As String
-        If UBound(data, 2) >= 6 Then commentValue = Trim$(CStr(data(rowIndex, 6)))
-
-        AppendSetting "Diagram." & purpose & ".LimitStateGroup", Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), commentValue
-        AppendSetting "Diagram." & purpose & ".Concrete", Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 3))), commentValue
-        AppendSetting "Diagram." & purpose & ".ConcreteTension", Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 4))), commentValue
-        AppendSetting "Diagram." & purpose & ".Steel", Trim$(CStr(data(rowIndex, 5))), Trim$(CStr(data(rowIndex, 5))), commentValue
 NextRow:
     Next rowIndex
 End Sub
