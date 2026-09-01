@@ -31,7 +31,7 @@
 | `rngSteelMaterialParameters` | Параметры арматуры для I/II ГПС: `Rsc/Rs`, `Rsc,ser/Rs,ser`, `Esc/Es` и профиль арматуры. |
 | `rngCalculationDiagramSettings` | Выбор расчетной диаграммы и режима растянутого бетона для `Strength`, `Mcrc` и `CrackedNDS`. |
 | `rngLoadCombinations` | До 20 сочетаний нагрузок: `CalculationType = Group1` для расчета по первой группе предельных состояний, `CalculationType = Group2` для расчета трещин по второй группе. |
-| `rngBatchSummary` | Сводка batch-расчета на `Results!A1:BC31`. |
+| `rngBatchSummary` | Сводка batch-расчета на `Results!A1:BC29`. |
 | `rngNDMElementResults` | LC-зависимые результаты элементов на `Results!A33`: `RunID`, `LoadCase`, `ElementID`, `Strain`, `Stress`, `PhysicalState`. |
 | `rngNDMSectionGeometry` | Неизменяемая расчетная геометрия snapshot на `Results!I33`: координаты, площадь, размеры/диаметр, материал и локальные характеристики. |
 | `rngNDMSectionProperties` | Общие свойства всего сечения и LC-зависимые свойства уровня сечения на `Results!Z33`: Bounds, центр тяжести, главные оси, единицы output, `Epsilon0/KappaX/KappaY`, точка приложения нагрузки. |

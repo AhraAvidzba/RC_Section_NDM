@@ -1496,7 +1496,7 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     summaryRow = BatchSummaryStartRow()
     AssertTrue stats, "batch.writer.fixedRow", summaryRow = 1
     AssertTrue stats, "batch.writer.noResultOverlap", summaryRow + ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count - 1 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
-    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count >= 31 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count >= 55
+    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count = 29 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count >= 55
     AssertTrue stats, "batch.writer.title", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = "Сводка пакетного расчета (Подробнее)"
     AssertTrue stats, "batch.writer.titleNotMerged", Not resultsSheet.Cells.Item(summaryRow, 1).MergeCells
     AssertTrue stats, "batch.writer.titleHyperlink", resultsSheet.Cells.Item(summaryRow, 1).Hyperlinks.Count > 0

@@ -176,12 +176,12 @@ try {
         Add-Check $checks "Results ranges layout" (
             ([string]$batchSummaryRange.Worksheet.Name -eq "Results") -and
             ($batchSummaryRange.Row -eq 1) -and ($batchSummaryRange.Column -eq 1) -and
-            ($batchSummaryRange.Rows.Count -ge 30) -and
-            ($elementResultsRange.Row -eq 34) -and ($elementResultsRange.Column -eq 1) -and
-            ($geometryResultsRange.Row -eq 34) -and ($geometryResultsRange.Column -eq 9) -and
-            ($sectionPropertiesRange.Row -eq 34) -and ($sectionPropertiesRange.Column -eq 26) -and
-            ($sectionAnnotationsRange.Row -eq 34) -and ($sectionAnnotationsRange.Column -eq 34) -and
-            ($materialDiagramsRange.Row -eq 34) -and ($materialDiagramsRange.Column -eq 50)
+            ($batchSummaryRange.Rows.Count -eq 29) -and
+            ($elementResultsRange.Row -eq 32) -and ($elementResultsRange.Column -eq 1) -and
+            ($geometryResultsRange.Row -eq 32) -and ($geometryResultsRange.Column -eq 9) -and
+            ($sectionPropertiesRange.Row -eq 32) -and ($sectionPropertiesRange.Column -eq 26) -and
+            ($sectionAnnotationsRange.Row -eq 32) -and ($sectionAnnotationsRange.Column -eq 34) -and
+            ($materialDiagramsRange.Row -eq 32) -and ($materialDiagramsRange.Column -eq 50)
         ) ("batch=$($batchSummaryRange.Worksheet.Name)!R$($batchSummaryRange.Row)C$($batchSummaryRange.Column); elements=R$($elementResultsRange.Row)C$($elementResultsRange.Column); geometry=R$($geometryResultsRange.Row)C$($geometryResultsRange.Column); properties=R$($sectionPropertiesRange.Row)C$($sectionPropertiesRange.Column); annotations=R$($sectionAnnotationsRange.Row)C$($sectionAnnotationsRange.Column); materialDiagrams=R$($materialDiagramsRange.Row)C$($materialDiagramsRange.Column)")
     }
 

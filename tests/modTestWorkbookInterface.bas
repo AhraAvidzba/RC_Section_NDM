@@ -36,6 +36,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped stats
     TestCircleWorkbookRunWritesResults stats
     TestExecutionReportFile stats
+    TestExcelApplicationStateGuardRestoresSettings stats
     TestLShapeWorkbookRunWritesResults stats
     TestLShapeMomentUltimateStrainWorkbookPath stats
     TestLShapePureBendingUltimateStrainWorkbookPath stats
@@ -177,6 +178,36 @@ Private Sub TestExecutionReportFile(ByRef stats As TUiTestStats)
         InStr(1, reportText, "Финальное сообщение", vbTextCompare) > 0
 
     SetSystemSetting "General.ExecutionReportEnabled", "No"
+End Sub
+
+' Проверяет защиту пользовательского сценария расчета от лишней работы Excel.
+' Макрос временно отключает события, экран, предупреждения и автопересчет,
+' но после завершения должен вернуть настройки текущего Excel.Application
+' ровно в исходное состояние.
+Private Sub TestExcelApplicationStateGuardRestoresSettings(ByRef stats As TUiTestStats)
+    PrepareCircleInput
+    SetSystemSetting "General.ExecutionReportEnabled", "No"
+
+    Dim app As Object
+    Set app = ThisWorkbook.Application
+
+    Dim oldCalculation As Variant
+    Dim oldEnableEvents As Boolean
+    Dim oldScreenUpdating As Boolean
+    Dim oldDisplayAlerts As Boolean
+    oldCalculation = app.Calculation
+    oldEnableEvents = app.EnableEvents
+    oldScreenUpdating = app.ScreenUpdating
+    oldDisplayAlerts = app.DisplayAlerts
+
+    Dim message As String
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+
+    AssertTrue stats, "ui.excelGuard.run", InStr(1, message, "Расчет", vbTextCompare) > 0
+    AssertTrue stats, "ui.excelGuard.calculation", app.Calculation = oldCalculation
+    AssertTrue stats, "ui.excelGuard.events", app.EnableEvents = oldEnableEvents
+    AssertTrue stats, "ui.excelGuard.screen", app.ScreenUpdating = oldScreenUpdating
+    AssertTrue stats, "ui.excelGuard.alerts", app.DisplayAlerts = oldDisplayAlerts
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -552,10 +583,10 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Dim geometryResults As Variant
     geometryResults = ResultTable("rngNDMSectionGeometry")
     AssertTrue stats, "ui.results.geometry.rows", UBound(geometryResults, 1) > 1
-    AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 34 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 9
-    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 34 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 26
-    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 34 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 34
-    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 34 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 50
+    AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 9
+    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 26
+    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 34
+    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 50
     AssertTrue stats, "ui.results.geometry.noSource", ResultHeaderColumn(geometryResults, "SourceName") = 0
     AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(geometryResults, "MaterialClass") = 0
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"

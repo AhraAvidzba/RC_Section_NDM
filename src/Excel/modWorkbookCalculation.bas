@@ -196,6 +196,10 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     On Error GoTo Failed
     If workbook Is Nothing Then Err.Raise vbObjectError + 4100, "RunSectionCalculationForWorkbook", "Книга Excel не передана."
 
+    Dim excelGuard As CExcelAppStateGuard
+    Set excelGuard = New CExcelAppStateGuard
+    excelGuard.Enter workbook.Application
+
     Dim runStart As Double
     runStart = Timer
 
@@ -335,6 +339,8 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
         RunSectionCalculationForWorkbook = RunSectionCalculationForWorkbook & vbCrLf & _
             "Пошаговый отчет сохранен: " & report.FilePath
     End If
+    CalculateResultsSheet workbook
+    excelGuard.Restore
     Exit Function
 
 Failed:
@@ -348,8 +354,19 @@ Failed:
         report.AddError "Расчет остановлен", errorDescription
         report.Save "Расчет не выполнен: " & errorDescription
     End If
+    If Not excelGuard Is Nothing Then excelGuard.Restore
     Err.Raise errorNumber, errorSource, errorDescription
 End Function
+
+' Пересчитывает только лист Results после блочной записи формул.
+' Во время расчета Excel работает в ручном режиме, поэтому точечный пересчет
+' нужен, чтобы пользователь сразу видел актуальные коэффициенты запаса, но
+' чужие открытые книги не пересчитывались на каждом шаге вывода.
+Private Sub CalculateResultsSheet(ByVal workbook As Object)
+    On Error GoTo SafeExit
+    workbook.Worksheets.Item("Results").Calculate
+SafeExit:
+End Sub
 
 ' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
 Private Function BuildCalculationMessage(ByVal section As CSectionModel, ByVal settings As CSystemSettingsReader, _

@@ -19,7 +19,7 @@ Option Explicit
 ' записывает их на лист одним массивом, а коэффициенты запаса и a_crc задает
 ' формулами Excel, чтобы пользователь видел связь между исходными колонками.
 
-Private Const TARGET_ROWS As Long = 31 ' Высота фиксированного диапазона batch summary.
+Private Const TARGET_ROWS As Long = 29 ' Высота фиксированного диапазона batch summary: 9 строк шапки + 20 LC.
 Private Const TARGET_COLUMNS As Long = 55 ' Ширина сводки до общего минимального запаса.
 Private Const META_ROWS As Long = 6 ' Верхние строки с общими сведениями о запуске.
 Private Const GROUP_HEADER_ROW As Long = 7 ' Строка объединенных заголовков расчетных блоков.
