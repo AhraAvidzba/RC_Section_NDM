@@ -623,7 +623,7 @@ Private Sub DrawGeometryOnlyNote(ByVal data As CSectionPlotDataReader)
     leftPos = mChart.PlotArea.InsideLeft
     topPos = mChart.PlotArea.InsideTop + mChart.PlotArea.InsideHeight + 16
     widthValue = mChart.PlotArea.InsideWidth
-    AddChartText leftPos, topPos, widthValue, 28, data.GeometryOnlyNote, 0#, RGB(160, 40, 40), True
+    AddChartText leftPos, topPos, widthValue, 42, data.GeometryOnlyNote, 0#, RGB(160, 40, 40), True, True, 12#
 End Sub
 
 ' Показывает под схемой короткое красное предупреждение по сохраненному

@@ -106,6 +106,32 @@ Public Sub LoadGeometryPreviewFromWorkbook(ByVal workbook As Object, ByVal setti
     ReadAnnotations workbook
 End Sub
 
+' Загружает расчетную геометрию из Results, когда выбранное состояние НДС
+' отсутствует в snapshot. Это не AutoCAD-preview и не повторный расчет:
+' пользователь видит актуальную геометрию последнего запуска и понятную
+' подпись, почему цветовая раскраска Stress/Strain недоступна.
+Public Sub LoadGeometryOnlyForMissingState(ByVal workbook As Object, _
+        ByVal settings As CSystemSettingsReader, Optional ByVal noteText As String = vbNullString)
+    If workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
+    If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки Config не переданы."
+
+    ResetReaderState
+    mLoadCase = ResolveLoadCase(workbook, settings.GetString("Plot.LoadCase", "Worst"))
+    ApplyVisualizationProfile workbook
+
+    mGeometryOnly = True
+    mGeometryOnlyTitle = "Геометрия расчетного сечения: " & mLoadCase
+    mGeometryOnlyNote = Trim$(noteText)
+    If Len(mGeometryOnlyNote) = 0 Then mGeometryOnlyNote = MissingStateMessage(mLoadCase, mStateType)
+    mGeometryReferenceItemsEnabled = True
+
+    ReadSectionProperties workbook
+    mResultCaption = "Геометрия"
+    mResultUnit = "-"
+    ReadGeometryPreview workbook
+    ReadAnnotations workbook
+End Sub
+
 ' Определяет, какой LC показывать на схеме.
 ' Значение Worst разворачивается в LC из верхней строки batch summary
 ' "Определяющее сочетание по прочности". Эта строка формируется batch-слоем
@@ -411,12 +437,13 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
 End Sub
 
 ' Читает только постоянную геометрию элементов и добавляет ее в модель схемы
-' с нейтральным состоянием. Этот режим нужен сразу после AutoCAD import.
+' с нейтральным состоянием. Этот режим используется для AutoCAD-preview и для
+' схемы без выбранного StateType, если геометрия уже есть в Results.
 Private Sub ReadGeometryPreview(ByVal workbook As Object)
     Dim geom As Variant
     geom = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
     If Not HasRows(geom) Then Err.Raise vbObjectError + 4704, "CSectionPlotDataReader", _
-        "На листе Results нет импортированной геометрии."
+        "На листе Results нет расчетной геометрии."
 
     Dim colID As Long: colID = ResultColumn(geom, "ElementID")
     Dim colType As Long: colType = ResultColumn(geom, "MaterialType")

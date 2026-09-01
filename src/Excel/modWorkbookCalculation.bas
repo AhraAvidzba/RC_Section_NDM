@@ -67,19 +67,26 @@ Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal
 
     Dim reader As CSectionPlotDataReader
     Set reader = New CSectionPlotDataReader
-    If Not TryLoadFullPlotReader(reader, workbook, settings) Then
-        If Not CanUseGeometryPreview(workbook, settings) Then
-            ClearSectionPlotForNoData workbook, _
-                "Схема не обновлена: в Results нет выбранного состояния НДС."
-            If raiseIfNoData Then
-                Err.Raise vbObjectError + 4144, "UpdateSectionPlotForWorkbook", _
-                    "В Results нет выбранного состояния для схемы. Выполните расчет или проверьте ProfileId и Visualization.State."
+    Dim plotLoadErrorNumber As Long
+    Dim plotLoadErrorDescription As String
+    If Not TryLoadFullPlotReader(reader, workbook, settings, plotLoadErrorNumber, plotLoadErrorDescription) Then
+        If plotLoadErrorNumber = vbObjectError + 4706 Then
+            Set reader = New CSectionPlotDataReader
+            reader.LoadGeometryOnlyForMissingState workbook, settings, plotLoadErrorDescription
+        Else
+            If Not CanUseGeometryPreview(workbook, settings) Then
+                ClearSectionPlotForNoData workbook, _
+                    "Схема не обновлена: в Results нет выбранного состояния НДС."
+                If raiseIfNoData Then
+                    Err.Raise vbObjectError + 4144, "UpdateSectionPlotForWorkbook", _
+                        "В Results нет выбранного состояния для схемы. Выполните расчет или проверьте ProfileId и Visualization.State."
+                End If
+                Exit Sub
             End If
-            Exit Sub
-        End If
 
-        Set reader = New CSectionPlotDataReader
-        reader.LoadGeometryPreviewFromWorkbook workbook, settings
+            Set reader = New CSectionPlotDataReader
+            reader.LoadGeometryPreviewFromWorkbook workbook, settings
+        End If
     End If
 
     Dim plotter As CSectionPlotter
@@ -92,8 +99,11 @@ End Sub
 ' возвращаем False: вызывающий код построит geometry-preview с текущими
 ' настройками аннотаций, не запуская solver и не меняя Results.
 Private Function TryLoadFullPlotReader(ByVal reader As CSectionPlotDataReader, _
-        ByVal workbook As Object, ByVal settings As CSystemSettingsReader) As Boolean
+        ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
+        ByRef errorNumber As Long, ByRef errorDescription As String) As Boolean
     On Error GoTo Failed
+    errorNumber = 0
+    errorDescription = vbNullString
     reader.LoadFromWorkbook workbook, settings
     TryLoadFullPlotReader = True
     Exit Function
@@ -101,6 +111,8 @@ Private Function TryLoadFullPlotReader(ByVal reader As CSectionPlotDataReader, _
 Failed:
     If Err.Number = vbObjectError + 4702 Or Err.Number = vbObjectError + 4705 Or _
             Err.Number = vbObjectError + 4706 Or Err.Number = vbObjectError + 4710 Then
+        errorNumber = Err.Number
+        errorDescription = Err.Description
         TryLoadFullPlotReader = False
     Else
         Err.Raise Err.Number, Err.Source, Err.Description

@@ -23,7 +23,7 @@ Private Const ELEMENT_RESULT_COLUMNS As Long = 8 ' LC-зависимые рез�
 Private Const GEOMETRY_COLUMNS As Long = 15 ' Постоянная геометрия элементов, записанная один раз на расчетный снимок.
 Private Const SECTION_PROPERTY_COLUMNS As Long = 6 ' Общие свойства сечения и LC-свойства уровня всего сечения.
 Private Const ANNOTATION_COLUMNS As Long = 13 ' Semantic-аннотации схемы: размеры, контур, групповые подписи арматуры.
-Private Const MATERIAL_DIAGRAM_COLUMNS As Long = 8 ' Диагностический вывод фактических точек диаграмм, переданных solver-ам.
+Private Const MATERIAL_DIAGRAM_COLUMNS As Long = 9 ' Диагностический вывод фактических точек диаграмм, переданных solver-ам.
 Private Const PHYSICAL_TOLERANCE As Double = 0.000000001 ' Порог, ниже которого напряжение считается NearZero.
 
 ' ------------------------------
@@ -387,9 +387,11 @@ Private Sub PutCombinationMaterialDiagrams(ByRef data() As Variant, ByRef rowInd
         Set stateResult = batch.NamedState(combinationIndex, stateIndex)
         If Not stateResult Is Nothing Then
             AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
+                batch.ProfileId(combinationIndex), _
                 stateResult.StateTypeText, stateResult.MaterialModelRoleText, "Concrete", _
                 materialProvider.ConcreteMaterialFromSpec(stateResult.MaterialSpec), units
             AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
+                batch.ProfileId(combinationIndex), _
                 stateResult.StateTypeText, stateResult.MaterialModelRoleText, "Rebar", _
                 materialProvider.SteelMaterialFromSpec(stateResult.MaterialSpec), units
         End If
@@ -399,8 +401,9 @@ End Sub
 ' Добавляет все точки одной диаграммы. Напряжения пишутся в OUTPUT stress unit,
 ' деформации остаются безразмерными, как их получает solver.
 Private Sub AppendMaterialDiagramPoints(ByRef data() As Variant, ByRef rowIndex As Long, _
-        ByVal runID As Variant, ByVal combinationID As String, ByVal calculationStage As String, _
-        ByVal purposeText As String, ByVal materialKind As String, ByVal diagram As CMaterialDiagram, _
+        ByVal runID As Variant, ByVal combinationID As String, ByVal profileId As String, _
+        ByVal stateType As String, ByVal materialModelRole As String, ByVal materialKind As String, _
+        ByVal diagram As CMaterialDiagram, _
         ByVal units As CUnitSystem)
     If diagram Is Nothing Then Exit Sub
 
@@ -408,12 +411,13 @@ Private Sub AppendMaterialDiagramPoints(ByRef data() As Variant, ByRef rowIndex 
     For pointIndex = 1 To diagram.PointCount
         data(rowIndex, 1) = runID
         data(rowIndex, 2) = combinationID
-        data(rowIndex, 3) = calculationStage
-        data(rowIndex, 4) = purposeText
-        data(rowIndex, 5) = materialKind
-        data(rowIndex, 6) = pointIndex
-        data(rowIndex, 7) = diagram.PointStrain(pointIndex)
-        data(rowIndex, 8) = OutputStress(diagram.PointStress(pointIndex), units)
+        data(rowIndex, 3) = profileId
+        data(rowIndex, 4) = stateType
+        data(rowIndex, 5) = materialModelRole
+        data(rowIndex, 6) = materialKind
+        data(rowIndex, 7) = pointIndex
+        data(rowIndex, 8) = diagram.PointStrain(pointIndex)
+        data(rowIndex, 9) = OutputStress(diagram.PointStress(pointIndex), units)
         rowIndex = rowIndex + 1
     Next pointIndex
 End Sub
@@ -422,12 +426,13 @@ End Sub
 Private Sub PutMaterialDiagramHeaders(ByRef data() As Variant, ByVal units As CUnitSystem)
     data(1, 1) = "RunID"
     data(1, 2) = "LoadCase"
-    data(1, 3) = "CalculationStage"
-    data(1, 4) = "Purpose"
-    data(1, 5) = "Material"
-    data(1, 6) = "PointIndex"
-    data(1, 7) = "Strain"
-    data(1, 8) = "Stress, " & OutputStressUnit(units)
+    data(1, 3) = "ProfileId"
+    data(1, 4) = "StateType"
+    data(1, 5) = "MaterialModelRole"
+    data(1, 6) = "Material"
+    data(1, 7) = "PointIndex"
+    data(1, 8) = "Strain"
+    data(1, 9) = "Stress, " & OutputStressUnit(units)
 End Sub
 
 ' Записывает справочные свойства бетонной части сечения.

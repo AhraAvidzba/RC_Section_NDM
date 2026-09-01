@@ -32,6 +32,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestGeneratedSourceDoesNotReuseAutoCADPreview stats
     TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC stats
     TestProfileDrivenPlotUsesSnapshotState stats
+    TestMissingProfileStateDrawsGeometryOnly stats
     TestAutoCADCalculationMessageUsesSavedGeometry stats
     TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped stats
     TestCircleWorkbookRunWritesResults stats
@@ -476,6 +477,31 @@ Private Sub TestProfileDrivenPlotUsesSnapshotState(ByRef stats As TUiTestStats)
 
 End Sub
 
+' Проверяет, что отсутствие выбранного StateType не превращается в popup-only
+' ошибку. Схема должна показать сохраненную геометрию Results и крупную
+' подпись под сечением, что запрошенного состояния в snapshot нет.
+Private Sub TestMissingProfileStateDrawsGeometryOnly(ByRef stats As TUiTestStats)
+    PrepareCircleInput
+    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
+    SetSystemSetting "Plot.LoadCase", "LC1"
+
+    Dim message As String
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    AssertTrue stats, "ui.plot.missingState.run", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+
+    SetProfileSetting "PR2", "Visualization.State", "CapacityState"
+
+    Dim errorDescription As String
+    On Error Resume Next
+    UpdateSectionPlotForWorkbook ThisWorkbook
+    errorDescription = Err.Description
+    On Error GoTo 0
+
+    AssertTrue stats, "ui.plot.missingState.noError", Len(errorDescription) = 0
+    AssertTrue stats, "ui.plot.missingState.geometryTitle", PlotChartTitleContains("Геометрия расчетного сечения")
+    AssertTrue stats, "ui.plot.missingState.note", PlotShapeTextContains("Запрашиваемое состояние")
+End Sub
+
 ' Проверяет, что кнопка расчета в режиме AutoCAD использует уже сохраненную
 ' геометрию Results. Макрос не должен повторно импортировать Region и не должен
 ' показывать строку "Импортировано из AutoCAD", потому что это действие относится
@@ -578,10 +604,10 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Dim geometryResults As Variant
     geometryResults = ResultTable("rngNDMSectionGeometry")
     AssertTrue stats, "ui.results.geometry.rows", UBound(geometryResults, 1) > 1
-    AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 9
-    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 26
-    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 34
-    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 50
+    AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 11
+    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 28
+    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 36
+    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 51
     AssertTrue stats, "ui.results.geometry.noSource", ResultHeaderColumn(geometryResults, "SourceName") = 0
     AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(geometryResults, "MaterialClass") = 0
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
@@ -594,9 +620,19 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.results.annotations.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Value2) = "RunID"
     AssertTrue stats, "ui.results.annotations.rows", ResultTableRowCount("rngNDMSectionAnnotations") > 1
     AssertTrue stats, "ui.results.materialDiagrams.header", CStr(ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Value2) = "RunID"
-    AssertTrue stats, "ui.results.materialDiagrams.rows", ResultTableRowCount("rngNDMMaterialDiagrams") > 1
+    Dim materialDiagrams As Variant
+    materialDiagrams = ResultTable("rngNDMMaterialDiagrams")
+    AssertTrue stats, "ui.results.materialDiagrams.rows", UBound(materialDiagrams, 1) > 1
+    AssertTrue stats, "ui.results.materialDiagrams.stateType", ResultHeaderColumn(materialDiagrams, "StateType") > 0
+    AssertTrue stats, "ui.results.materialDiagrams.role", ResultHeaderColumn(materialDiagrams, "MaterialModelRole") > 0
+    AssertTrue stats, "ui.results.materialDiagrams.noPurpose", ResultHeaderColumn(materialDiagrams, "Purpose") = 0
     AssertTrue stats, "ui.plot.chart.created", PlotChartExists()
     AssertTrue stats, "ui.plot.title.comment", PlotChartTitleContains("(ui test)")
+
+    Dim profiles As Object
+    Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    AssertTrue stats, "ui.profiles.topHeader.noDuplicateParameter", Len(Trim$(CStr(profiles.Cells.Item(1, 1).Value2))) = 0
+    AssertTrue stats, "ui.profiles.lowerHeader.parameter", CStr(profiles.Cells.Item(2, 1).Value2) = "Параметр"
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -1075,6 +1111,30 @@ Private Function CountPlotShapes(ByVal nameFragment As String) As Long
 Failed:
 End Function
 
+' Ищет текст среди Shape-подписей текущей схемы.
+' Тесты используют это для предупреждений, которые рисуются внутри ChartObject,
+' а не выводятся отдельным окном Excel.
+Private Function PlotShapeTextContains(ByVal expectedText As String) As Boolean
+    On Error GoTo Failed
+    Dim chartObject As Object
+    Set chartObject = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
+
+    Dim shapeIndex As Long
+    For shapeIndex = 1 To chartObject.Chart.Shapes.Count
+        Dim textValue As String
+        textValue = vbNullString
+        Err.Clear
+        On Error Resume Next
+        textValue = chartObject.Chart.Shapes.Item(shapeIndex).TextFrame.Characters().Text
+        On Error GoTo Failed
+        If InStr(1, textValue, expectedText, vbTextCompare) > 0 Then
+            PlotShapeTextContains = True
+            Exit Function
+        End If
+    Next shapeIndex
+Failed:
+End Function
+
 Private Function CountAnnotationType(ByRef annotationData As Variant, ByVal annotationType As String) As Long
     On Error GoTo Failed
     Dim rowIndex As Long
@@ -1126,6 +1186,37 @@ Private Sub SetSystemSetting(ByVal key As String, ByVal value As String)
     If TrySetLShapeFaceSetting(key, value) Then Exit Sub
 
     Err.Raise vbObjectError + 4210, "modTestWorkbookInterface", "System setting not found: " & key
+End Sub
+
+' Меняет одну ячейку расчетного профиля в тестовой книге.
+' Диапазон профилей имеет две строки шапки, поэтому ProfileId ищется
+' динамически, как это делает реальный reader.
+Private Sub SetProfileSetting(ByVal profileId As String, ByVal key As String, ByVal value As String)
+    Dim profiles As Object
+    Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+
+    Dim profileColumn As Long
+    Dim rowIndex As Long
+    Dim colIndex As Long
+    For rowIndex = 1 To profiles.Rows.Count
+        For colIndex = 3 To profiles.Columns.Count
+            If StrComp(Trim$(CStr(profiles.Cells.Item(rowIndex, colIndex).Value2)), profileId, vbTextCompare) = 0 Then
+                profileColumn = colIndex
+                Exit For
+            End If
+        Next colIndex
+        If profileColumn > 0 Then Exit For
+    Next rowIndex
+    If profileColumn = 0 Then Err.Raise vbObjectError + 4212, "modTestWorkbookInterface", "ProfileId not found: " & profileId
+
+    For rowIndex = 1 To profiles.Rows.Count
+        If StrComp(Trim$(CStr(profiles.Cells.Item(rowIndex, 2).Value2)), key, vbTextCompare) = 0 Then
+            profiles.Cells.Item(rowIndex, profileColumn).Value2 = value
+            Exit Sub
+        End If
+    Next rowIndex
+
+    Err.Raise vbObjectError + 4213, "modTestWorkbookInterface", "Profile setting not found: " & key
 End Sub
 
 Private Function TrySetUnitOrSignSetting(ByVal key As String, ByVal value As String) As Boolean
@@ -1612,12 +1703,14 @@ Private Sub PrepareCircleInput()
     SetSystemSetting "Sign.My.User", "+X tension"
     SetSystemSetting "Geometry.Source", "Generated"
     SetSystemSetting "Geometry.Type", "Circle"
+    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
     SetSystemSetting "Plot.LoadCase", "LC1"
     SetSystemSetting "Steel.RebarProfile", "Ribbed"
     SetSystemSetting "Rebar.AxisDistance", "40"
     SetSystemSetting "Rebar.Count", "8"
     SetSystemSetting "Rebar.Diameter", "20"
     SetSystemSetting "SLS.Crack.Allowable", "0.3"
+    SetProfileSetting "PR2", "Visualization.State", "CrackedState"
 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange

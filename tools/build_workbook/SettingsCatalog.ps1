@@ -311,11 +311,18 @@ function Apply-ConfigCommentColumnAlignment {
 
             for ($c = 1; $c -le $range.Columns.Count; $c++) {
                 $header = [string]$range.Cells.Item(1, $c).Value2
+                $headerRow = 1
+                if (($header -ne "Комментарий") -and ($header -ne "Комментарии") -and ($header -ne "Comment") -and ($range.Rows.Count -ge 2)) {
+                    $header = [string]$range.Cells.Item(2, $c).Value2
+                    $headerRow = 2
+                }
                 if ($header -eq "Комментарий" -or $header -eq "Комментарии" -or $header -eq "Comment") {
                     $alignment = -4131
                     if ($c -eq $range.Columns.Count) { $alignment = -4152 }
-                    $range.Cells.Item(1, $c).HorizontalAlignment = -4131
-                    $range.Offset(1, $c - 1).Resize($range.Rows.Count - 1, 1).HorizontalAlignment = $alignment
+                    $range.Cells.Item($headerRow, $c).HorizontalAlignment = -4131
+                    if ($range.Rows.Count -gt $headerRow) {
+                        $range.Offset($headerRow, $c - 1).Resize($range.Rows.Count - $headerRow, 1).HorizontalAlignment = $alignment
+                    }
                 }
             }
         } catch {
@@ -993,8 +1000,6 @@ function Get-SettingsInstructionCatalog {
         "Steel.RebarProfile не меняет диаграмму арматуры. Он нужен для коэффициента phi2 при расчете ширины раскрытия трещин."
     )}) | Out-Null
     $items.Add(@{ Key = "CalculationProfiles"; Title = "Настройка расчетных профилей"; Lines = @(
-        "rngCalculationProfiles задает профили расчета вертикальной таблицей: параметры идут по строкам, а столбцы PR1, PR2, PR3, PR4 являются стабильными ProfileId.",
-        "Отдельной строки ProfileId и признака Активен нет. Профиль используется только тогда, когда его ProfileId назначен сочетанию в rngLoadCombinations.",
         "Профиль считается настроенным, если заполнено Profile.DisplayName и все параметры, обязательные для включенных расчетов. PR3 и PR4 в шаблоне оставлены пустыми резервными профилями.",
         "PR1 по умолчанию: имя Прочность; Calculation.Strength.DirectState = Yes; Calculation.Strength.Capacity = Yes; Calculation.Crack.Width = No; MaterialModel.Strength = ULS / TwoLine / Ignore / TwoLine; Visualization.State = StrengthState; Visualization.Quantity = Stress.",
         "PR2 по умолчанию: имя Трещины; Calculation.Strength.DirectState = No; Calculation.Strength.Capacity = No; Calculation.Crack.Width = Yes; MaterialModel.CrackInitiation = SLS / ThreeLine / UseDiagram / TwoLine; MaterialModel.CrackedState = SLS / TwoLine / Ignore / TwoLine; Visualization.State = CrackedState; Visualization.Quantity = Stress.",
@@ -2284,12 +2289,9 @@ function Add-CalculationProfilesTable {
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
 
     $headers = @("Параметр", "Key", "PR1", "PR2", "PR3", "PR4", "Комментарий")
-    $Sheet.Cells.Item($HeaderRow, $StartColumn).Value2 = "Параметр"
-    $Sheet.Cells.Item($HeaderRow, $StartColumn + 1).Value2 = "Key"
     $profileHeader = $Sheet.Range($Sheet.Cells.Item($HeaderRow, $StartColumn + 2), $Sheet.Cells.Item($HeaderRow, $StartColumn + 5))
     $profileHeader.Merge() | Out-Null
     $profileHeader.Value2 = "ProfileId"
-    $Sheet.Cells.Item($HeaderRow, $StartColumn + 6).Value2 = "Комментарий"
     $Sheet.Range($Sheet.Cells.Item($HeaderRow, $StartColumn), $Sheet.Cells.Item($HeaderRow, $StartColumn + 6)).Font.Bold = $true
     $Sheet.Range($Sheet.Cells.Item($HeaderRow, $StartColumn), $Sheet.Cells.Item($HeaderRow, $StartColumn + 6)).Interior.Color = 14277081
     $Sheet.Range($Sheet.Cells.Item($HeaderRow, $StartColumn), $Sheet.Cells.Item($HeaderRow, $StartColumn + 6)).HorizontalAlignment = -4108
@@ -2978,15 +2980,17 @@ function Add-LShapeFaceSettingsTable {
     $Sheet.Cells.Item($HeaderRow, $StartColumn).Font.Bold = $true
     $Sheet.Cells.Item($HeaderRow, $StartColumn).Interior.Color = 15921906
     $Sheet.Cells.Item($HeaderRow, $StartColumn).WrapText = $false
-    $geomHeaders = @("H1", "B1", "H2", "B2")
+    $geomHeaders = @("H1", "B1", "H2", "B2", "Ед.")
     for ($i = 0; $i -lt $geomHeaders.Count; $i++) {
         $cell = $Sheet.Cells.Item($HeaderRow + 1, $StartColumn + $i)
         $cell.Value2 = $geomHeaders[$i]
         $cell.Font.Bold = $true
         $cell.Interior.Color = 14277081
-        $Sheet.Cells.Item($HeaderRow + 2, $StartColumn + $i).Value2 = $geometryValues[$geomHeaders[$i]]
+        if ($i -lt 4) {
+            $Sheet.Cells.Item($HeaderRow + 2, $StartColumn + $i).Value2 = $geometryValues[$geomHeaders[$i]]
+        }
     }
-    Set-InputUnitCell $Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 4) "мм"
+    Set-InputUnitCell $Sheet.Cells.Item($HeaderRow + 2, $StartColumn + 4) "мм"
 
     $mainHeaderRow = $HeaderRow + 4
     $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn).Value2 = "Основное армирование"
