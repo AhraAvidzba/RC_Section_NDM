@@ -989,20 +989,12 @@ Public Property Get Count() As Long
     Count = mCount
 End Property
 
-Public Property Get CalculationMode() As String
-    CalculationMode = "Profiles"
-End Property
-
 Public Property Get CombinationID(ByVal index As Long) As String
     CombinationID = mInputs(index).CombinationID
 End Property
 
 Public Property Get CombinationName(ByVal index As Long) As String
     CombinationName = mInputs(index).Comment
-End Property
-
-Public Property Get CalculationType(ByVal index As Long) As String
-    CalculationType = mInputs(index).ProfileId
 End Property
 
 Public Property Get ProfileId(ByVal index As Long) As String
@@ -1377,7 +1369,7 @@ End Function
 Public Property Get StateAvailableCount() As Long
     Dim i As Long
     For i = 1 To mCount
-        If mResults(i).StateAvailable Then StateAvailableCount = StateAvailableCount + 1
+        If mResults(i).StateCount > 0 Then StateAvailableCount = StateAvailableCount + 1
     Next i
 End Property
 

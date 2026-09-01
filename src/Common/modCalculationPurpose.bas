@@ -271,11 +271,3 @@ End Function
 
 ' Выбирает физическую базу StateSolution по группе сочетания.
 ' Group1 получает Strength, Group2 получает CrackedNDS.
-Public Function StateBasePurposeForCalculationType(ByVal calculationType As String) As ECalculationPurpose
-    Select Case LCase$(Trim$(calculationType))
-        Case "group2", "2", "sls", "crack", "crackonly"
-            StateBasePurposeForCalculationType = cpCrackedNDS
-        Case Else
-            StateBasePurposeForCalculationType = cpStrength
-    End Select
-End Function

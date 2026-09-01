@@ -23,8 +23,10 @@ Option Explicit
 Private mResultType As String ' Что сейчас визуализируется: Stress или Strain.
 Private mLoadCase As String ' LC, выбранный для схемы после обработки Worst/конкретного ID.
 Private mLoadCaseComment As String ' Комментарий LC для заголовка схемы.
+Private mProfileId As String ' ProfileId, сохраненный в snapshot для выбранного LC.
+Private mStateType As String ' StateType, выбранный через Visualization.State текущего профиля.
 Private mGeometryOnly As Boolean ' True для схемы без расчетных Stress/Strain.
-Private mGeometryOnlyTitle As String ' Заголовок схемы без НДС: import-preview или CapacityOnly.
+Private mGeometryOnlyTitle As String ' Заголовок схемы без НДС, например для import-preview.
 Private mGeometryOnlyNote As String ' Пояснение под схемой, если НДС намеренно отсутствует.
 Private mGeometryReferenceItemsEnabled As Boolean ' Можно ли показывать оси/точку нагрузки без НДС.
 Private mResultUnit As String ' Единица выбранной величины из сохраненных Results.
@@ -57,7 +59,7 @@ Private mKappaY As Double ' Кривизна при x в сохраненной 
 Private mLoadReferenceX As Double ' X общей точки приложения нагрузки из Results snapshot.
 Private mLoadReferenceY As Double ' Y общей точки приложения нагрузки из Results snapshot.
 Private mExtensionUsed As Boolean ' True, если выбранный LC был найден в numerical extension.
-Private mDirectStateStatus As String ' Сохраненный статус прямого НДС выбранного LC.
+Private mStateStatus As String ' Сохраненный статус выбранного named-state.
 Private mAnnotationCount As Long ' Количество semantic-аннотаций, прочитанных из Results.
 Private mAnnotationType() As String ' Dimension, RebarLabel, Outline и другие типы оформления.
 Private mAnnotationStartX() As Double ' Начало линии/размера в координатах модели.
@@ -69,15 +71,15 @@ Private mAnnotationNormalY() As Double ' Наружная нормаль semanti
 Private mAnnotationText() As String ' Готовый текст подписи или размера.
 
 ' Загружает все данные, необходимые для Excel-схемы.
-' Метод намеренно читает только Results и настройки отображения Plot.*:
-' геометрия и расчетные значения берутся из последнего выполненного расчета.
+' Метод намеренно читает расчетные значения только из Results. Из Config
+' используется только выбор LC и текущие настройки визуализации профиля.
 Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemSettingsReader)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
     If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки Config не переданы."
 
     ResetReaderState
-    mResultType = NormalizeResultType(settings.GetString("Plot.ResultType", "Stress"))
     mLoadCase = ResolveLoadCase(workbook, settings.GetString("Plot.LoadCase", "Worst"))
+    ApplyVisualizationProfile workbook
 
     ReadSectionProperties workbook
     ReadGeometryAndResults workbook
@@ -96,28 +98,6 @@ Public Sub LoadGeometryPreviewFromWorkbook(ByVal workbook As Object, ByVal setti
     mGeometryOnlyTitle = "Импортированная геометрия AutoCAD"
     mResultType = "Stress"
     mLoadCase = "AutoCAD import"
-
-    ReadSectionProperties workbook
-    mResultCaption = "Геометрия"
-    mResultUnit = "-"
-    ReadGeometryPreview workbook
-    ReadAnnotations workbook
-End Sub
-
-' Загружает из Results геометрию последнего расчета CapacityOnly.
-' В этом режиме solver не сохраняет Stress/Strain по элементам, но геометрия,
-' контур, размерные аннотации, главные оси и точка нагрузки остаются
-' полезным визуальным контролем и не зависят от прямого НДС.
-Public Sub LoadCapacityOnlyGeometryFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemSettingsReader)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
-    If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки Config не переданы."
-
-    ResetReaderState
-    mGeometryOnly = True
-    mGeometryReferenceItemsEnabled = True
-    mResultType = "Stress"
-    mGeometryOnlyTitle = "CapacityOnly: геометрия без НДС"
-    mGeometryOnlyNote = "НДС, Stress/Strain, нейтральная линия и легенда недоступны в режиме CapacityOnly."
 
     ReadSectionProperties workbook
     mResultCaption = "Геометрия"
@@ -154,6 +134,75 @@ Private Function ResolveLoadCase(ByVal workbook As Object, ByVal requested As St
         "В rngBatchSummary не найдено определяющее сочетание по прочности для Plot.LoadCase = Worst."
 End Function
 
+' Применяет настройки визуализации профиля, назначенного выбранному LC.
+' ProfileId читается из snapshot Results, а не из текущей строки сочетаний:
+' схема должна показывать ровно тот расчетный запуск, который сохранен.
+Private Sub ApplyVisualizationProfile(ByVal workbook As Object)
+    mProfileId = ReadProfileIdForLoadCase(workbook, mLoadCase)
+    If Len(mProfileId) = 0 Then Err.Raise vbObjectError + 4710, "CSectionPlotDataReader", _
+        "В Results не найден ProfileId для сочетания: " & mLoadCase
+
+    Dim profiles As CCalculationProfileCatalog
+    Set profiles = New CCalculationProfileCatalog
+    profiles.LoadFromWorkbook workbook
+
+    Dim profile As CCalculationProfile
+    Set profile = profiles.ProfileById(mProfileId)
+    mStateType = profile.VisualizationStateText
+    mResultType = VisualizationQuantityToText(profile.VisualizationQuantity)
+End Sub
+
+' Находит ProfileId выбранного LC в Results. Поэлементная таблица является
+' основным snapshot-источником; если в выбранном LC нет элементов нужного
+' состояния, fallback на свойства сечения нужен только для более понятной
+' ошибки визуализации.
+Private Function ReadProfileIdForLoadCase(ByVal workbook As Object, ByVal loadCase As String) As String
+    ReadProfileIdForLoadCase = ReadProfileIdFromElementResults(workbook, loadCase)
+    If Len(ReadProfileIdForLoadCase) = 0 Then
+        ReadProfileIdForLoadCase = ReadLoadCasePropertyText(workbook, loadCase, "ProfileId")
+    End If
+End Function
+
+Private Function ReadProfileIdFromElementResults(ByVal workbook As Object, ByVal loadCase As String) As String
+    On Error GoTo Failed
+    Dim data As Variant
+    data = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
+    If Not HasRows(data) Then Exit Function
+
+    Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
+    Dim colProfileId As Long: colProfileId = ResultColumn(data, "ProfileId")
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(data, 1)
+        If StrComp(Trim$(SafeText(data(rowIndex, colLoadCase))), loadCase, vbTextCompare) = 0 Then
+            ReadProfileIdFromElementResults = Trim$(SafeText(data(rowIndex, colProfileId)))
+            Exit Function
+        End If
+    Next rowIndex
+Failed:
+End Function
+
+Private Function ReadLoadCasePropertyText(ByVal workbook As Object, ByVal loadCase As String, ByVal propertyName As String) As String
+    On Error GoTo Failed
+    Dim data As Variant
+    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    If Not HasRows(data) Then Exit Function
+
+    Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
+    Dim colParameter As Long: colParameter = ResultColumn(data, "Parameter")
+    Dim colValue As Long: colValue = ResultColumn(data, "Value")
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(data, 1)
+        If StrComp(Trim$(SafeText(data(rowIndex, colLoadCase))), loadCase, vbTextCompare) = 0 And _
+                StrComp(Trim$(SafeText(data(rowIndex, colParameter))), propertyName, vbTextCompare) = 0 Then
+            ReadLoadCasePropertyText = Trim$(SafeText(data(rowIndex, colValue)))
+            Exit Function
+        End If
+    Next rowIndex
+Failed:
+End Function
+
 ' Возвращает первый LC, для которого на Results реально есть результаты элементов.
 ' Это запасной путь только для режимов, где Plot.LoadCase = Worst не может быть
 ' развернут в прочностное определяющее сочетание, например DirectState без
@@ -177,8 +226,8 @@ Failed:
 End Function
 
 ' Возвращает первый LC из таблицы свойств сечения.
-' В CapacityOnly поэлементных результатов НДС нет, но LC-свойства все равно
-' сохраняются, чтобы схема могла показать геометрию и точку нагрузки.
+' В некоторых профилях может не быть состояния для визуализации, но свойства
+' LC все равно помогают показать пользователю, что сохранено в snapshot.
 Private Function FirstLoadCaseFromSectionProperties(ByVal workbook As Object) As String
     On Error GoTo Failed
     Dim data As Variant
@@ -284,12 +333,18 @@ End Sub
 ' допустимости найденного состояния. Точка приложения нагрузки читается из
 ' общего блока ALL, потому что она задается один раз для всего snapshot.
 Private Sub ReadLoadCaseProperty(ByVal parameter As String, ByVal value As Variant)
-    Select Case LCase$(parameter)
+    Dim key As String
+    Dim prefix As String
+    key = LCase$(Trim$(parameter))
+    prefix = "state." & LCase$(mStateType) & "."
+    If Left$(key, Len(prefix)) <> prefix Then Exit Sub
+
+    Select Case Mid$(key, Len(prefix) + 1)
         Case "epsilon0": mEpsilon0 = SafeDouble(value)
         Case "kappax": mKappaX = SafeDouble(value)
         Case "kappay": mKappaY = SafeDouble(value)
         Case "extensionused": mExtensionUsed = SafeBoolean(value)
-        Case "directstatestatus": mDirectStateStatus = Trim$(SafeText(value))
+        Case "status": mStateStatus = Trim$(SafeText(value))
     End Select
 End Sub
 
@@ -312,6 +367,7 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     resultMap.CompareMode = vbTextCompare
 
     Dim colResLC As Long: colResLC = ResultColumn(results, "LoadCase")
+    Dim colResStateType As Long: colResStateType = ResultColumn(results, "StateType")
     Dim colResID As Long: colResID = ResultColumn(results, "ElementID")
     Dim colStrain As Long: colStrain = ResultColumn(results, "Strain")
     Dim colStress As Long: colStress = ResultColumn(results, "Stress")
@@ -322,13 +378,14 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     ' сохраняет разделение Results: геометрия лежит отдельно, а Stress/Strain
     ' выбираются только для нужного LoadCase.
     For rowIndex = 2 To UBound(results, 1)
-        If StrComp(CStr(results(rowIndex, colResLC)), mLoadCase, vbTextCompare) = 0 Then
+        If StrComp(Trim$(SafeText(results(rowIndex, colResLC))), mLoadCase, vbTextCompare) = 0 And _
+                StrComp(Trim$(SafeText(results(rowIndex, colResStateType))), mStateType, vbTextCompare) = 0 Then
             resultMap(CStr(results(rowIndex, colResID))) = Array(CDbl(results(rowIndex, colStrain)), _
                 CDbl(results(rowIndex, colStress)), CStr(results(rowIndex, colState)))
         End If
     Next rowIndex
     If resultMap.Count = 0 Then Err.Raise vbObjectError + 4706, "CSectionPlotDataReader", _
-        "В Results нет данных для Plot.LoadCase: " & mLoadCase
+        MissingStateMessage(mLoadCase, mStateType)
 
     Dim colID As Long: colID = ResultColumn(geom, "ElementID")
     Dim colType As Long: colType = ResultColumn(geom, "MaterialType")
@@ -473,6 +530,8 @@ Private Sub ResetReaderState()
     mResultType = vbNullString
     mLoadCase = vbNullString
     mLoadCaseComment = vbNullString
+    mProfileId = vbNullString
+    mStateType = vbNullString
     mResultUnit = vbNullString
     mResultCaption = vbNullString
     mLengthUnit = vbNullString
@@ -486,7 +545,7 @@ Private Sub ResetReaderState()
     mEpsilon0 = 0#: mKappaX = 0#: mKappaY = 0#
     mLoadReferenceX = 0#: mLoadReferenceY = 0#
     mExtensionUsed = False
-    mDirectStateStatus = vbNullString
+    mStateStatus = vbNullString
 
     Erase mElementID
     Erase mMaterialType
@@ -545,12 +604,11 @@ Private Function AnchoredRowCount(ByVal anchor As Object) As Long
     Next rowOffset
 End Function
 
-Private Function NormalizeResultType(ByVal value As String) As String
-    Select Case LCase$(Trim$(value))
-        Case "stress": NormalizeResultType = "Stress"
-        Case "strain": NormalizeResultType = "Strain"
-        Case Else: Err.Raise vbObjectError + 4707, "CSectionPlotDataReader", "Plot.ResultType должен быть Stress или Strain."
-    End Select
+Private Function MissingStateMessage(ByVal loadCase As String, ByVal stateType As String) As String
+    MissingStateMessage = "Запрашиваемое состояние """ & stateType & """ не найдено в Results для сочетания " & loadCase & "."
+    If StrComp(stateType, "CrackInitiationState", vbTextCompare) = 0 Then
+        MissingStateMessage = MissingStateMessage & " Для НДС при Mcrc это нормально, если ветвь определения Mcrc в расчете трещин не потребовалась."
+    End If
 End Function
 
 ' Безопасно читает числовое поле Results, где часть колонок может быть пустой.
@@ -627,6 +685,8 @@ Public Property Get ResultValue(ByVal index As Long) As Double: ResultValue = mR
 Public Property Get PhysicalState(ByVal index As Long) As String: PhysicalState = mPhysicalState(index): End Property
 Public Property Get LoadCase() As String: LoadCase = mLoadCase: End Property
 Public Property Get LoadCaseComment() As String: LoadCaseComment = mLoadCaseComment: End Property
+Public Property Get ProfileId() As String: ProfileId = mProfileId: End Property
+Public Property Get StateType() As String: StateType = mStateType: End Property
 Public Property Get GeometryOnly() As Boolean: GeometryOnly = mGeometryOnly: End Property
 Public Property Get GeometryOnlyTitle() As String: GeometryOnlyTitle = mGeometryOnlyTitle: End Property
 Public Property Get GeometryOnlyNote() As String: GeometryOnlyNote = mGeometryOnlyNote: End Property
@@ -649,11 +709,11 @@ Public Property Get KappaY() As Double: KappaY = mKappaY: End Property
 Public Property Get LoadReferenceX() As Double: LoadReferenceX = mLoadReferenceX: End Property
 Public Property Get LoadReferenceY() As Double: LoadReferenceY = mLoadReferenceY: End Property
 Public Property Get ExtensionUsed() As Boolean: ExtensionUsed = mExtensionUsed: End Property
-Public Property Get DirectStateStatus() As String: DirectStateStatus = mDirectStateStatus: End Property
+Public Property Get DirectStateStatus() As String: DirectStateStatus = mStateStatus: End Property
 Public Property Get PhysicalDiagramWarningRequired() As Boolean
     Dim policy As CBatchStatusPolicy
     Set policy = New CBatchStatusPolicy
-    PhysicalDiagramWarningRequired = (mExtensionUsed Or policy.ToUserStatus(mDirectStateStatus) = policy.Fail)
+    PhysicalDiagramWarningRequired = (mExtensionUsed Or policy.ToUserStatus(mStateStatus) = policy.Fail)
 End Property
 Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCount: End Property
 Public Property Get AnnotationType(ByVal index As Long) As String: AnnotationType = mAnnotationType(index): End Property

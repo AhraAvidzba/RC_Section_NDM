@@ -68,23 +68,18 @@ Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal
     Dim reader As CSectionPlotDataReader
     Set reader = New CSectionPlotDataReader
     If Not TryLoadFullPlotReader(reader, workbook, settings) Then
-        If StrComp(ResultsCalculationMode(workbook), "CapacityOnly", vbTextCompare) = 0 Then
-            Set reader = New CSectionPlotDataReader
-            reader.LoadCapacityOnlyGeometryFromWorkbook workbook, settings
-        Else
-            If Not CanUseGeometryPreview(workbook, settings) Then
-                ClearSectionPlotForNoData workbook, _
-                    "Схема не обновлена: нет расчетных данных для текущего Geometry.Source."
-                If raiseIfNoData Then
-                    Err.Raise vbObjectError + 4144, "UpdateSectionPlotForWorkbook", _
-                        "На листе Results нет расчетных данных для текущей схемы. Выполните расчет."
-                End If
-                Exit Sub
+        If Not CanUseGeometryPreview(workbook, settings) Then
+            ClearSectionPlotForNoData workbook, _
+                "Схема не обновлена: в Results нет выбранного состояния НДС."
+            If raiseIfNoData Then
+                Err.Raise vbObjectError + 4144, "UpdateSectionPlotForWorkbook", _
+                    "В Results нет выбранного состояния для схемы. Проверьте ProfileId, Visualization.State и выполненный расчет."
             End If
-
-            Set reader = New CSectionPlotDataReader
-            reader.LoadGeometryPreviewFromWorkbook workbook, settings
+            Exit Sub
         End If
+
+        Set reader = New CSectionPlotDataReader
+        reader.LoadGeometryPreviewFromWorkbook workbook, settings
     End If
 
     Dim plotter As CSectionPlotter
@@ -317,14 +312,9 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     Else
         report.AddSection "Схема"
         If settings.GetBoolean("Plot.AutoUpdateAfterCalculation", True) Then
-            If StrComp(batch.CalculationMode, "CapacityOnly", vbTextCompare) = 0 Then
-                UpdateSectionPlotForWorkbook workbook, False
-                report.AddStep "Схема обновлена в режиме CapacityOnly: показана геометрия без НДС."
-            Else
-                ClearSectionPlotForNoData workbook, _
-                    "Схема не обновлена: нет доступных расчетных состояний LC."
-                report.AddStep "Схема очищена: нет доступных состояний LC."
-            End If
+            ClearSectionPlotForNoData workbook, _
+                "Схема не обновлена: нет доступных расчетных состояний LC."
+            report.AddStep "Схема очищена: нет доступных named-state в Results."
         Else
             report.AddStep "Автообновление схемы пропущено: Plot.AutoUpdateAfterCalculation = No."
         End If
@@ -417,7 +407,7 @@ Private Function CombinationListForReport(ByVal batch As CBatchSectionCalculator
     Dim i As Long
     For i = 1 To batch.Count
         lines.Add CStr(i) & ". " & batch.CombinationID(i) & _
-            "; type=" & batch.CalculationType(i) & _
+            "; profile=" & batch.ProfileId(i) & _
             "; N=" & FormatReportNumber(batch.N(i)) & " Н" & _
             "; Mx=" & FormatReportNumber(batch.Mx(i)) & " Н*мм" & _
             "; My=" & FormatReportNumber(batch.My(i)) & " Н*мм" & _

@@ -44,31 +44,13 @@ Public Sub ExportSectionStressToAutoCAD()
     Dim exportSettings As TAutoCADExportSettings
     exportSettings = ReadAutoCADExportSettings(settings)
 
-    If StrComp(ResultsCalculationMode(ThisWorkbook), "CapacityOnly", vbTextCompare) = 0 Then
-        Dim geometryOnlyLoadReferenceX As Double
-        Dim geometryOnlyLoadReferenceY As Double
-        Dim geometryOnlyCentroidX As Double
-        Dim geometryOnlyCentroidY As Double
-        Dim geometryOnlyPrincipalAngle As Double
-        Dim geometryOnlySection As CSectionModel
-        Set geometryOnlySection = ReadSectionGeometryFromResults(ThisWorkbook, "Results")
-        ReadCommonSectionReferenceProperties ThisWorkbook, units, _
-            geometryOnlyLoadReferenceX, geometryOnlyLoadReferenceY, geometryOnlyCentroidX, geometryOnlyCentroidY, _
-            geometryOnlyPrincipalAngle
-        DrawResultsGeometryOnlyExport geometryOnlySection, exportSettings, geometryOnlyLoadReferenceX, _
-            geometryOnlyLoadReferenceY, geometryOnlyCentroidX, geometryOnlyCentroidY, geometryOnlyPrincipalAngle
-        MsgBox "Экспорт в AutoCAD завершен: выгружена геометрия без НДС." & vbCrLf & _
-            "Последний расчет выполнен в режиме CapacityOnly, поэтому значения НДС, Stress/Strain, " & _
-            "нейтральная линия и расчетные подписи не экспортировались." & vbCrLf & _
-            "Главные оси и точка приложения нагрузки выгружены, если они включены в настройках.", _
-            vbInformation, "RC Section NDM"
-        Exit Sub
-    End If
-
     Dim section As CSectionModel
     Dim resultByID As Object
     Dim physicalStateByID As Object
     Dim combinationID As String
+    Dim profileId As String
+    Dim stateType As String
+    Dim quantity As String
     Dim epsilon0 As Double
     Dim kappaX As Double
     Dim kappaY As Double
@@ -80,6 +62,7 @@ Public Sub ExportSectionStressToAutoCAD()
     Dim extensionUsed As Boolean
     Dim stateWarningText As String
     ReadResultsExportState ThisWorkbook, settings, units, section, resultByID, physicalStateByID, combinationID, _
+        profileId, stateType, quantity, _
         epsilon0, kappaX, kappaY, loadReferenceX, loadReferenceY, _
         centroidX, centroidY, principalAngle, extensionUsed, stateWarningText
 
@@ -87,7 +70,10 @@ Public Sub ExportSectionStressToAutoCAD()
         loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, stateWarningText, exportSettings
     MsgBox "Экспорт в AutoCAD завершен. Волокон бетона: " & CStr(section.ConcreteCount) & _
         "; стержней арматуры: " & CStr(section.RebarCount) & _
-        "; сочетание: " & combinationID, vbInformation, "RC Section NDM"
+        "; сочетание: " & combinationID & _
+        "; профиль: " & profileId & _
+        "; состояние: " & stateType & _
+        "; величина: " & quantity, vbInformation, "RC Section NDM"
     Exit Sub
 
 Failed:
@@ -176,6 +162,7 @@ End Function
 Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
         ByVal units As CUnitSystem, _
         ByRef section As CSectionModel, ByRef resultByID As Object, ByRef physicalStateByID As Object, ByRef combinationID As String, _
+        ByRef profileId As String, ByRef stateType As String, ByRef quantity As String, _
         ByRef epsilon0 As Double, ByRef kappaX As Double, ByRef kappaY As Double, _
         ByRef loadReferenceX As Double, ByRef loadReferenceY As Double, _
         ByRef centroidX As Double, ByRef centroidY As Double, ByRef principalAngle As Double, _
@@ -183,13 +170,25 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
     Set section = ReadSectionGeometryFromResults(workbook, "Results")
 
     combinationID = ResolveExportCombinationID(workbook, settings.GetRawString("AutoCAD.Export.CombinationID", "Worst"))
+    profileId = ReadProfileIdForLoadCase(workbook, combinationID)
+    If Len(profileId) = 0 Then Err.Raise vbObjectError + 4366, "ReadResultsExportState", _
+        "В Results не найден ProfileId для сочетания: " & combinationID
+
+    Dim profiles As CCalculationProfileCatalog
+    Set profiles = New CCalculationProfileCatalog
+    profiles.LoadFromWorkbook workbook
+
+    Dim profile As CCalculationProfile
+    Set profile = profiles.ProfileById(profileId)
+    stateType = profile.VisualizationStateText
+    quantity = VisualizationQuantityToText(profile.VisualizationQuantity)
 
     Set resultByID = CreateObject("Scripting.Dictionary")
     resultByID.CompareMode = vbTextCompare
     Set physicalStateByID = CreateObject("Scripting.Dictionary")
     physicalStateByID.CompareMode = vbTextCompare
-    ReadElementResultsForCombination workbook, settings.GetString("AutoCAD.Export.ResultType", "Stress"), combinationID, resultByID, physicalStateByID
-    ReadSectionPropertiesForCombination workbook, units, combinationID, epsilon0, kappaX, kappaY, _
+    ReadElementResultsForCombination workbook, quantity, combinationID, stateType, resultByID, physicalStateByID
+    ReadSectionPropertiesForCombination workbook, units, combinationID, stateType, epsilon0, kappaX, kappaY, _
         loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, extensionUsed, stateWarningText
 End Sub
 
@@ -272,29 +271,58 @@ Public Function ResultsGeometrySource(ByVal workbook As Object) As String
 Failed:
 End Function
 
-' Возвращает Calculation.Mode, сохраненный в последнем Results snapshot.
-' Это нужно внешним выводам, которые не должны перечитывать текущий Config
-' и угадывать, есть ли в снимке поэлементное НДС.
-Public Function ResultsCalculationMode(ByVal workbook As Object) As String
+' Находит профиль выбранного LC в последнем snapshot Results.
+' Основной источник - rngNDMElementResults; свойства LC используются только
+' для понятной ошибки, если выбранное состояние профиля не записывалось.
+Private Function ReadProfileIdForLoadCase(ByVal workbook As Object, ByVal combinationID As String) As String
+    ReadProfileIdForLoadCase = ReadProfileIdFromElementResults(workbook, combinationID)
+    If Len(ReadProfileIdForLoadCase) = 0 Then
+        ReadProfileIdForLoadCase = ReadLoadCasePropertyText(workbook, combinationID, "ProfileId")
+    End If
+End Function
+
+Private Function ReadProfileIdFromElementResults(ByVal workbook As Object, ByVal combinationID As String) As String
     On Error GoTo Failed
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    data = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
     If Not HasResultTableRows(data) Then Exit Function
 
-    Dim colParameter As Long: colParameter = ResultColumn(data, "Parameter")
-    Dim colValue As Long: colValue = ResultColumn(data, "Value")
+    Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
+    Dim colProfileId As Long: colProfileId = ResultColumn(data, "ProfileId")
 
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
-        If StrComp(CStr(data(rowIndex, colParameter)), "CalculationMode", vbTextCompare) = 0 Then
-            ResultsCalculationMode = Trim$(SafeText(data(rowIndex, colValue)))
+        If StrComp(Trim$(SafeText(data(rowIndex, colLoadCase))), combinationID, vbTextCompare) = 0 Then
+            ReadProfileIdFromElementResults = Trim$(SafeText(data(rowIndex, colProfileId)))
             Exit Function
         End If
     Next rowIndex
 Failed:
 End Function
 
-Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal resultType As String, ByRef combinationID As String, _
+Private Function ReadLoadCasePropertyText(ByVal workbook As Object, ByVal combinationID As String, ByVal propertyName As String) As String
+    On Error GoTo Failed
+    Dim data As Variant
+    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    If Not HasResultTableRows(data) Then Exit Function
+
+    Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
+    Dim colParameter As Long: colParameter = ResultColumn(data, "Parameter")
+    Dim colValue As Long: colValue = ResultColumn(data, "Value")
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(data, 1)
+        If StrComp(Trim$(SafeText(data(rowIndex, colLoadCase))), combinationID, vbTextCompare) = 0 And _
+                StrComp(Trim$(SafeText(data(rowIndex, colParameter))), propertyName, vbTextCompare) = 0 Then
+            ReadLoadCasePropertyText = Trim$(SafeText(data(rowIndex, colValue)))
+            Exit Function
+        End If
+    Next rowIndex
+Failed:
+End Function
+
+Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal resultType As String, _
+        ByRef combinationID As String, ByVal stateType As String, _
         ByVal resultByID As Object, ByVal physicalStateByID As Object)
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
@@ -305,6 +333,7 @@ Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal res
         "На листе Results нет таблицы результатов НДМ. Сначала выполните расчет."
 
     Dim colCombination As Long: colCombination = ResultColumn(data, "LoadCase")
+    Dim colStateType As Long: colStateType = ResultColumn(data, "StateType")
     Dim colID As Long: colID = ResultColumn(data, "ElementID")
     Dim colState As Long: colState = ResultColumn(data, "PhysicalState")
     Dim colValue As Long
@@ -315,7 +344,7 @@ Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal res
             colValue = ResultColumn(data, "Strain")
         Case Else
             Err.Raise vbObjectError + 4359, "ReadElementResultsForCombination", _
-                "AutoCAD.Export.ResultType должен быть Stress или Strain."
+                "Visualization.Quantity профиля должен быть Stress или Strain."
     End Select
 
     If Len(combinationID) = 0 Then Err.Raise vbObjectError + 4353, "ReadElementResultsForCombination", _
@@ -324,7 +353,8 @@ Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal res
     Dim found As Boolean
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
-        If StrComp(CStr(data(rowIndex, colCombination)), combinationID, vbTextCompare) = 0 Then
+        If StrComp(Trim$(SafeText(data(rowIndex, colCombination))), combinationID, vbTextCompare) = 0 And _
+                StrComp(Trim$(SafeText(data(rowIndex, colStateType))), stateType, vbTextCompare) = 0 Then
             found = True
             resultByID(CStr(data(rowIndex, colID))) = CDbl(data(rowIndex, colValue))
             physicalStateByID(CStr(data(rowIndex, colID))) = CStr(data(rowIndex, colState))
@@ -332,11 +362,11 @@ Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal res
     Next rowIndex
 
     If Not found Then Err.Raise vbObjectError + 4354, "ReadElementResultsForCombination", _
-        "В Results не найдено сочетание для экспорта: " & combinationID
+        MissingExportStateMessage(combinationID, stateType)
 End Sub
 
 Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal units As CUnitSystem, _
-        ByVal combinationID As String, ByRef epsilon0 As Double, ByRef kappaX As Double, _
+        ByVal combinationID As String, ByVal stateType As String, ByRef epsilon0 As Double, ByRef kappaX As Double, _
         ByRef kappaY As Double, ByRef loadReferenceX As Double, ByRef loadReferenceY As Double, _
         ByRef centroidX As Double, ByRef centroidY As Double, ByRef principalAngle As Double, _
         ByRef extensionUsed As Boolean, ByRef stateWarningText As String)
@@ -351,7 +381,7 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
     Dim colUnit As Long: colUnit = ResultColumn(data, "Unit")
 
     Dim foundState As Boolean
-    Dim directStateStatus As String
+    Dim stateStatus As String
     Dim policy As CBatchStatusPolicy
     Dim rowIndex As Long
     Set policy = New CBatchStatusPolicy
@@ -370,7 +400,12 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
                     loadReferenceY = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
             End Select
         ElseIf StrComp(CStr(data(rowIndex, colLoadCase)), combinationID, vbTextCompare) = 0 Then
-            Select Case LCase$(Trim$(CStr(data(rowIndex, colParameter))))
+            Dim key As String
+            Dim prefix As String
+            key = LCase$(Trim$(SafeText(data(rowIndex, colParameter))))
+            prefix = "state." & LCase$(stateType) & "."
+            If Left$(key, Len(prefix)) = prefix Then
+                Select Case Mid$(key, Len(prefix) + 1)
                 Case "epsilon0"
                     epsilon0 = CDbl(data(rowIndex, colValue))
                     foundState = True
@@ -380,57 +415,31 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
                     kappaY = OutputCurvatureToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
                 Case "extensionused"
                     extensionUsed = SafeBoolean(data(rowIndex, colValue))
-                Case "directstatestatus"
-                    directStateStatus = Trim$(SafeText(data(rowIndex, colValue)))
-            End Select
+                Case "status"
+                    stateStatus = Trim$(SafeText(data(rowIndex, colValue)))
+                End Select
+            End If
         End If
     Next rowIndex
 
-    If extensionUsed Or policy.ToUserStatus(directStateStatus) = policy.Fail Then
+    If extensionUsed Or policy.ToUserStatus(stateStatus) = policy.Fail Then
         stateWarningText = EXTENSION_WARNING_TEXT
-    ElseIf policy.ToUserStatus(directStateStatus) = policy.NumFail Then
+    ElseIf policy.ToUserStatus(stateStatus) = policy.NumFail Then
         stateWarningText = NUMERICAL_STATE_WARNING_TEXT
     End If
 
     If Not foundState Then Err.Raise vbObjectError + 4361, "ReadSectionPropertiesForCombination", _
-        "В rngNDMSectionProperties нет состояния для сочетания: " & combinationID
+        MissingExportStateMessage(combinationID, stateType)
 End Sub
 
-' Читает только общие геометрические и справочные свойства snapshot.
-' Этот путь используется для CapacityOnly: прямое НДС не считалось, поэтому
-' нет смысла выбирать LC. Главные оси и точка приложения нагрузки являются
-' общими ориентирами расчетной модели и не зависят от Stress/Strain.
-Private Sub ReadCommonSectionReferenceProperties(ByVal workbook As Object, ByVal units As CUnitSystem, _
-        ByRef loadReferenceX As Double, ByRef loadReferenceY As Double, _
-        ByRef centroidX As Double, ByRef centroidY As Double, ByRef principalAngle As Double)
-    Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
-    If Not HasResultTableRows(data) Then Err.Raise vbObjectError + 4360, "ReadCommonSectionReferenceProperties", _
-        "На листе Results нет rngNDMSectionProperties. Сначала выполните расчет."
-
-    Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
-    Dim colParameter As Long: colParameter = ResultColumn(data, "Parameter")
-    Dim colValue As Long: colValue = ResultColumn(data, "Value")
-    Dim colUnit As Long: colUnit = ResultColumn(data, "Unit")
-
-    Dim rowIndex As Long
-    For rowIndex = 2 To UBound(data, 1)
-        If StrComp(CStr(data(rowIndex, colLoadCase)), "ALL", vbTextCompare) = 0 Then
-            Select Case LCase$(Trim$(CStr(data(rowIndex, colParameter))))
-                Case "centroidx"
-                    centroidX = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
-                Case "centroidy"
-                    centroidY = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
-                Case "principalangle"
-                    principalAngle = CDbl(data(rowIndex, colValue))
-                Case "loadreferencex"
-                    loadReferenceX = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
-                Case "loadreferencey"
-                    loadReferenceY = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
-            End Select
-        End If
-    Next rowIndex
-End Sub
+Private Function MissingExportStateMessage(ByVal combinationID As String, ByVal stateType As String) As String
+    MissingExportStateMessage = "Запрашиваемое состояние """ & stateType & _
+        """ не найдено в Results для AutoCAD export, сочетание " & combinationID & "."
+    If StrComp(stateType, "CrackInitiationState", vbTextCompare) = 0 Then
+        MissingExportStateMessage = MissingExportStateMessage & _
+            " Для НДС при Mcrc это нормально, если ветвь Mcrc в расчете трещин не потребовалась."
+    End If
+End Function
 
 Private Function ReadGoverningCombinationID(ByVal workbook As Object) As String
     On Error GoTo Failed
@@ -489,9 +498,9 @@ Private Function ResolveExportCombinationID(ByVal workbook As Object, ByVal sett
     End If
 End Function
 
-' Возвращает первый LC из свойств Results для режимов без поэлементного НДС.
-' В CapacityOnly таблица rngNDMElementResults не заполняется, но LC-свойства
-' сохраняют точку приложения нагрузки и помогают выполнить geometry-only export.
+' Возвращает первый LC из свойств Results, если batch summary не содержит
+' определяющего сочетания и поэлементная таблица пуста. Дальше экспорт все
+' равно проверит, что выбранное Visualization.State реально есть в snapshot.
 Private Function FirstLoadCaseFromSectionProperties(ByVal workbook As Object) As String
     On Error GoTo Failed
     Dim data As Variant
@@ -731,45 +740,6 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
         DrawNeutralLineByState ms, section, epsilon0, kappaX, kappaY, exportSettings.NeutralColor
     End If
     If Len(stateWarningText) > 0 Then DrawStateWarning ms, section, stateWarningText
-
-    doc.Regen 1
-End Sub
-
-' Выгружает geometry-only представление расчетной модели, когда последний
-' snapshot был получен в CapacityOnly. Здесь намеренно нет подписей
-' Stress/Strain и нейтральной линии; главные оси и точка нагрузки выводятся
-' по настройкам, потому что они не зависят от прямого НДС.
-Private Sub DrawResultsGeometryOnlyExport(ByVal section As CSectionModel, _
-        ByRef exportSettings As TAutoCADExportSettings, ByVal loadReferenceX As Double, _
-        ByVal loadReferenceY As Double, ByVal centroidX As Double, ByVal centroidY As Double, _
-        ByVal principalAngle As Double)
-    Dim acad As Object
-    Set acad = ConnectToRunningAutoCAD()
-
-    Dim doc As Object
-    Set doc = ActiveAutoCADDocument(acad)
-
-    Dim ms As Object
-    Set ms = doc.ModelSpace
-
-    EnsureAcadLayer doc, exportSettings.ConcreteLayer, 8
-    EnsureAcadLayer doc, exportSettings.RebarLayer, 1
-
-    Dim i As Long
-    For i = 1 To section.ConcreteCount
-        AddAcadRectangleRegion ms, section.ConcreteX(i), section.ConcreteY(i), _
-            ConcreteDrawWidth(section, i), ConcreteDrawHeight(section, i), _
-            exportSettings.ConcreteLayer, 8
-    Next i
-
-    For i = 1 To section.RebarCount
-        AddAcadCircleRegion ms, section.RebarX(i), section.RebarY(i), _
-            section.RebarDiameter(i) / 2#, exportSettings.RebarLayer, 1
-    Next i
-
-    DrawCentroidAxesAndLoadPoint ms, section, centroidX, centroidY, principalAngle, _
-        loadReferenceX, loadReferenceY, _
-        exportSettings.PrincipalAxesEnabled, exportSettings.LoadPointEnabled
 
     doc.Regen 1
 End Sub

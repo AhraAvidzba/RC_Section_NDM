@@ -588,9 +588,9 @@ Private Sub DrawAnalysisSeries(ByVal data As CSectionPlotDataReader, ByVal setti
 End Sub
 
 ' Добавляет к geometry-only схеме только те ориентиры, которые не требуют
-' найденной плоскости деформаций. В CapacityOnly это позволяет показать
-' геометрию, главные оси и точку нагрузки, но не рисовать нейтральную линию,
-' легенду и подписи Stress/Strain.
+' найденной плоскости деформаций. Этот режим используется для preview после
+' AutoCAD-import: можно показать геометрию, главные оси и точку нагрузки,
+' но нельзя рисовать нейтральную линию, легенду и подписи Stress/Strain.
 Private Sub DrawGeometryReferenceSeries(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
     If Not data.GeometryReferenceItemsEnabled Then Exit Sub
     If settings.GetBoolean("Plot.PrincipalAxesEnabled", True) Then DrawPrincipalAxes data

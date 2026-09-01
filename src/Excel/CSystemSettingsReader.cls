@@ -21,7 +21,7 @@ Option Explicit
 ' Класс не делает инженерных расчетов. Его задача - надежно прочитать ввод и
 ' дать понятную ошибку, если обязательный ключ или таблица отсутствуют.
 
-Private mKeys() As String ' Имена настроек Config: Calculation.Mode, Solver.Method и т.п.
+Private mKeys() As String ' Имена настроек Config: Solver.Method, Capacity.SolutionStrategy и т.п.
 Private mValues() As String ' Значения, которые ввел пользователь или сгенерировала таблица.
 Private mDefaults() As String ' Значения по умолчанию из таблицы Config.
 Private mSources() As String ' Комментарий/источник строки для диагностики.
@@ -38,7 +38,6 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object)
     AppendSettingsRange workbook.Names.Item("rngSystemSettings").RefersToRange
     AppendNamedSettingsRangeIfExists workbook, "rngConcreteMaterialParameters"
     AppendNamedSettingsRangeIfExists workbook, "rngSteelMaterialParameters"
-    AppendNamedSettingsRangeIfExists workbook, "rngCalculationDiagramSettings"
     AppendSettingsRange workbook.Names.Item("rngPlotAnnotationSettings").RefersToRange
     AppendGeometrySettingsRanges workbook
 End Sub

@@ -294,7 +294,6 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUser", OutputMy(batch.UserMy(i), units), OutputMomentUnit(units), "Пользовательский My."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxInternal", OutputMx(batch.Mx(i), units), OutputMomentUnit(units), "Mx после переноса к координатам элементов."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyInternal", OutputMy(batch.My(i), units), OutputMomentUnit(units), "My после переноса к координатам элементов."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "CalculationMode", batch.CalculationMode, "-", "Режим Calculation.Mode, по которому был выполнен последний расчет этого LC."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "OverallStatus", batch.OverallStatus(i), "-", "Итоговый пользовательский статус сочетания."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "ProfileId", batch.ProfileId(i), "-", "Расчетный профиль, назначенный сочетанию в rngLoadCombinations."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "DirectStateStatus", batch.DirectStateStatus(i), "-", "Статус прямого решения НДС фактического сочетания."
@@ -476,26 +475,6 @@ Private Sub PutTransformedSectionProperties(ByRef data() As Variant, ByRef rowIn
     PutProperty data, rowIndex, runID, "ALL", "Transformed.RadiusY", OutputLength(props.RadiusY, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно центральной оси Y."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalRadius1", OutputLength(props.PrincipalRadius1, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения по главной оси I1."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalRadius2", OutputLength(props.PrincipalRadius2, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения по главной оси I2."
-End Sub
-
-' Записывает в Results краткое описание материалной модели расчетного snapshot.
-' Эти строки нужны для диагностики и для внешних выводов, которые не должны
-' перечитывать текущий Config после расчета.
-Private Sub PutMaterialModelProperties(ByRef data() As Variant, ByRef rowIndex As Long, _
-        ByVal runID As Variant, ByVal materialProvider As CMaterialModelProvider, _
-        ByVal purpose As ECalculationPurpose)
-    Dim prefix As String
-    prefix = "Material." & PurposeToText(purpose) & "."
-    PutProperty data, rowIndex, runID, "ALL", prefix & "LimitStateGroup", materialProvider.LimitStateGroup(purpose), "-", "Группа предельных состояний material model."
-    PutProperty data, rowIndex, runID, "ALL", prefix & "ConcreteDiagram", materialProvider.ConcreteDiagramType(purpose), "-", "Тип бетонной диаграммы snapshot."
-    PutProperty data, rowIndex, runID, "ALL", prefix & "ConcreteTension", materialProvider.ConcreteTensionBehavior(purpose), "-", "Учет растянутого бетона в бетонной диаграмме snapshot."
-    PutProperty data, rowIndex, runID, "ALL", prefix & "SteelDiagram", materialProvider.SteelDiagramType(purpose), "-", "Тип диаграммы арматуры snapshot."
-    PutProperty data, rowIndex, runID, "ALL", prefix & "ConcreteCompressionLimit", materialProvider.ConcreteCompressionLimit(purpose), "-", "Предельная сжатая деформация бетона snapshot."
-    If materialProvider.ConcreteTensionLimitEnabled(purpose) Then
-        PutProperty data, rowIndex, runID, "ALL", prefix & "ConcreteTensionLimit", materialProvider.ConcreteTensionLimit(purpose), "-", "Предельная растянутая деформация бетона snapshot."
-    End If
-    PutProperty data, rowIndex, runID, "ALL", prefix & "SteelCompressionLimit", materialProvider.SteelCompressionLimit(purpose), "-", "Предельная сжатая деформация арматуры snapshot."
-    PutProperty data, rowIndex, runID, "ALL", prefix & "SteelTensionLimit", materialProvider.SteelTensionLimit(purpose), "-", "Предельная растянутая деформация арматуры snapshot."
 End Sub
 
 ' Записывает компактную metadata по каждому конечному named-state LC.

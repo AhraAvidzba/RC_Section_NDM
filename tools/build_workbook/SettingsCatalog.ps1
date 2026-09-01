@@ -38,8 +38,6 @@ function Get-SystemSettingsCatalog {
         )},
         @{ Name = "CapacitySettings"; Title = "[Поиск предельной несущей способности]"; Rows = @(
             @("[Общие настройки]", "", "-", ""),
-            @("Calculation.Mode", "FullCapacity", "-", "Режим расчета: DirectState - только НДС; FullCapacity - НДС и несущая способность; CapacityOnly - только несущая способность без НДС, трещин и поэлементных Stress/Strain."),
-            @("Capacity.CalculationScope", "Group1+2", "-", "Какие сочетания отправлять в поиск несущей способности: Group1Only - только первая группа; Group1+2 - первая и вторая группы."),
             @("Capacity.SolutionStrategy", "Auto", "-", "Предпочтительная стратегия поиска предельной нагрузки: Auto, UltimateStrain или LoadMultiplier. Для отдельных траекторий программа может выбрать более устойчивую ветку и покажет ее в Results."),
             @("Capacity.MaxLambda", "64", "-", "Актуально для всех методов. В LoadMultiplier задает предел расширения расчетной скобки; в UltimateStrain используется как защитный верхний предел найденного lambda."),
             @("Capacity.SolverMaxIterations", "60", "шт", "Актуально для всех методов. В LoadMultiplier задает максимум итераций Ньютона на ступень внутреннего решателя; в UltimateStrain задает максимум итераций прямого поиска предельного состояния."),
@@ -53,7 +51,6 @@ function Get-SystemSettingsCatalog {
             @("Capacity.BaseLoadSteps", "1", "шт", "Базовое число ступеней нагрузки внутри CSectionSolver для каждой пробной точки LoadMultiplier.")
         )},
         @{ Name = "OutputSettings"; Title = "[Вывод и трещины]"; Rows = @(
-            @("SLS.Crack.Enabled", "Yes", "-", "Включить расчет ширины раскрытия нормальных трещин для сочетаний II группы."),
             @("SLS.Crack.Allowable", "0.3", "мм", "Допустимая ширина раскрытия a_crc,ult, задается пользователем по нормам и условиям эксплуатации."),
             @("SLS.Crack.PsiMode", "Fixed1", "-", "Способ определения psi_s: Fixed1 - принять 1; Auto - уточнять только если первая проверка с psi_s=1 не прошла."),
             @("SLS.Crack.TensionZoneMode", "Effective", "-", "Зона бетона Abt: Effective - эффективная зона по 2a и 0.5h; FullTension - вся фактически растянутая зона.")
@@ -63,7 +60,6 @@ function Get-SystemSettingsCatalog {
             @("AutoCAD.Export.NeutralLineEnabled", "Yes", "-", "Выгружать нейтральную линию в AutoCAD: Yes - выводить; No - не выводить."),
             @("AutoCAD.Export.PrincipalAxesEnabled", "Yes", "-", "Выгружать главные центральные оси приведенного сечения в AutoCAD: Yes - выводить; No - не выводить."),
             @("AutoCAD.Export.LoadPointEnabled", "Yes", "-", "Выгружать точку приложения нагрузки в AutoCAD: Yes - выводить; No - не выводить."),
-            @("AutoCAD.Export.ResultType", "Stress", "-", "Что выводить цветом и подписями в AutoCAD: Stress - напряжения; Strain - деформации. Используются данные последнего расчета."),
             @("AutoCAD.Export.LabelMode", "NamesAndValues", "-", "Формат текстовых подписей при выгрузке в AutoCAD: ValuesOnly - только значение выбранного ResultType; NamesAndValues - имя элемента и значение. При NamesAndValues имена выводятся для бетона и арматуры."),
             @("AutoCAD.Layer.Concrete", "Concrete", "-", "Слой для областей бетонных волокон. Цвет каждой области задается по PhysicalState из Results: сжатие, растяжение или нейтральное состояние."),
             @("AutoCAD.Layer.Rebar", "Reinf", "-", "Слой для всех областей продольной арматуры. Цвет каждого стержня задается по PhysicalState из Results, а не по пользовательскому знаку Stress/Strain."),
@@ -86,7 +82,6 @@ function Get-SystemSettingsCatalog {
             @("Plot.Enabled", "Yes", "-", "Включить построение схемы сечения на листе Расчет по данным последнего расчета на листе Results."),
             @("Plot.AutoUpdateAfterCalculation", "Yes", "-", "Автоматически обновлять схему после выполнения расчета. Кнопка Обновить схему всегда читает только Results и не запускает расчет."),
             @("Plot.LoadCase", "Worst", "-", "Какое сочетание показывать на схеме: Worst - определяющее сочетание из последнего расчета; либо конкретный CombinationID из rngLoadCombinations."),
-            @("Plot.ResultType", "Stress", "-", "Что показывать цветом и численными подписями: Stress - напряжения; Strain - деформации. Используются сохраненные Results, а не текущие единицы Config."),
             @("Plot.ResultGradient", "Yes", "-", "Включить цветовое различение результата на схеме. Цвет физического состояния берется из PhysicalState, записанного в Results."),
             @("Plot.ResultLabelsEnabled", "No", "-", "Показывать пространственно распределенные численные подписи выбранного ResultType для бетонных элементов."),
             @("Plot.ResultLabelSpacing", "100", "мм", "Минимальный пространственный шаг между численными подписями результата на схеме."),
@@ -153,13 +148,41 @@ function Get-SteelMaterialParametersCatalog {
     )
 }
 
-# Возвращает режимы, через которые material provider выбирает готовую
-# диаграмму для Strength, Mcrc и раскрытой трещины.
-function Get-CalculationDiagramSettingsCatalog {
+# Возвращает вертикальную таблицу расчетных профилей.
+# Строки описывают frontend-контракт профиля, а столбцы PR1/PR2/... являются
+# стабильными ProfileId, которые назначаются сочетаниям нагрузок.
+function Get-CalculationProfilesCatalog {
     @(
-        @("Strength", "I", "TwoLine", "Ignore", "TwoLine", "Прочность по I группе. Растянутый бетон можно отключить или учитывать по диаграмме."),
-        @("Mcrc", "II", "ThreeLine", "UseDiagram", "TwoLine", "Состояние образования трещины. Растянутый бетон учитывается фиксированно."),
-        @("CrackedNDS", "II", "TwoLine", "Ignore", "TwoLine", "НДС после образования трещины для a_crc. Растянутый бетон выключен фиксированно.")
+        @{ Caption = "[Общее]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
+        @{ Caption = "Имя профиля"; Key = "Profile.DisplayName"; PR1 = "Прочность"; PR2 = "Трещины"; PR3 = ""; PR4 = ""; Comment = "Короткое имя профиля для пользователя." },
+        @{ Caption = "Описание"; Key = "Profile.Description"; PR1 = "НДС по прочности и несущая способность"; PR2 = "Расчет раскрытия нормальных и продольных трещин"; PR3 = ""; PR4 = ""; Comment = "Пояснение, что делает профиль." },
+
+        @{ Caption = "[Запрашиваемые расчеты]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
+        @{ Caption = "НДС по прочности"; Key = "Calculation.Strength.DirectState"; PR1 = "Yes"; PR2 = "No"; PR3 = ""; PR4 = ""; Comment = "StrengthState по модели прочности." },
+        @{ Caption = "Несущая способность"; Key = "Calculation.Strength.Capacity"; PR1 = "Yes"; PR2 = "No"; PR3 = ""; PR4 = ""; Comment = "Поиск предельной точки по CapacityLoadPath сочетания." },
+        @{ Caption = "Раскрытие трещин"; Key = "Calculation.Crack.Width"; PR1 = "No"; PR2 = "Yes"; PR3 = ""; PR4 = ""; Comment = "CrackedState, нормальные трещины и проверка продольных трещин." },
+
+        @{ Caption = "[Модель прочности]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
+        @{ Caption = "Характеристики материалов"; Key = "MaterialModel.Strength.ValueSet"; PR1 = "ULS"; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "ULS использует R/Rb/Rs для I ГПС." },
+        @{ Caption = "Диаграмма бетона"; Key = "MaterialModel.Strength.ConcreteDiagram"; PR1 = "TwoLine"; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "Допустимо TwoLine или ThreeLine." },
+        @{ Caption = "Растянутый бетон"; Key = "MaterialModel.Strength.ConcreteTension"; PR1 = "Ignore"; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "Ignore или UseDiagram для прочностного НДС." },
+        @{ Caption = "Диаграмма арматуры"; Key = "MaterialModel.Strength.SteelDiagram"; PR1 = "TwoLine"; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "Допустимо TwoLine или ThreeLine." },
+
+        @{ Caption = "[Модель Mcrc]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
+        @{ Caption = "Характеристики материалов"; Key = "MaterialModel.CrackInitiation.ValueSet"; PR1 = ""; PR2 = "SLS"; PR3 = ""; PR4 = ""; Comment = "Нужна только для PsiMode=Auto." },
+        @{ Caption = "Диаграмма бетона"; Key = "MaterialModel.CrackInitiation.ConcreteDiagram"; PR1 = ""; PR2 = "ThreeLine"; PR3 = ""; PR4 = ""; Comment = "Состояние образования трещины с растянутым бетоном." },
+        @{ Caption = "Растянутый бетон"; Key = "MaterialModel.CrackInitiation.ConcreteTension"; PR1 = ""; PR2 = "UseDiagram"; PR3 = ""; PR4 = ""; Comment = "Для Mcrc всегда учитывается растянутая ветвь." },
+        @{ Caption = "Диаграмма арматуры"; Key = "MaterialModel.CrackInitiation.SteelDiagram"; PR1 = ""; PR2 = "TwoLine"; PR3 = ""; PR4 = ""; Comment = "Диаграмма арматуры для состояния образования трещины." },
+
+        @{ Caption = "[Модель НДС с трещинами]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
+        @{ Caption = "Характеристики материалов"; Key = "MaterialModel.CrackedState.ValueSet"; PR1 = ""; PR2 = "SLS"; PR3 = ""; PR4 = ""; Comment = "SLS использует R,ser для II ГПС." },
+        @{ Caption = "Диаграмма бетона"; Key = "MaterialModel.CrackedState.ConcreteDiagram"; PR1 = ""; PR2 = "TwoLine"; PR3 = ""; PR4 = ""; Comment = "Диаграмма для исходного НДС с раскрытой трещиной." },
+        @{ Caption = "Растянутый бетон"; Key = "MaterialModel.CrackedState.ConcreteTension"; PR1 = ""; PR2 = "Ignore"; PR3 = ""; PR4 = ""; Comment = "Для CrackedState растянутый бетон не работает." },
+        @{ Caption = "Диаграмма арматуры"; Key = "MaterialModel.CrackedState.SteelDiagram"; PR1 = ""; PR2 = "TwoLine"; PR3 = ""; PR4 = ""; Comment = "Диаграмма арматуры для расчета a_crc." },
+
+        @{ Caption = "[Настройки визуализации]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
+        @{ Caption = "Выводимое состояние"; Key = "Visualization.State"; PR1 = "StrengthState"; PR2 = "CrackedState"; PR3 = ""; PR4 = ""; Comment = "StateType, который схема и AutoCAD выбирают из Results." },
+        @{ Caption = "Выводимая величина"; Key = "Visualization.Quantity"; PR1 = "Stress"; PR2 = "Stress"; PR3 = ""; PR4 = ""; Comment = "Stress или Strain из сохраненного snapshot." }
     )
 }
 
@@ -246,7 +269,7 @@ function Get-ConfigNamedRangeNames {
         "rngLShapeGeometry",
         "rngConcreteMaterialParameters",
         "rngSteelMaterialParameters",
-        "rngCalculationDiagramSettings",
+        "rngCalculationProfiles",
         "rngPlotAnnotationSettings",
         "rngLoadCombinations"
     )
@@ -350,7 +373,7 @@ function Apply-ConfigUserInputAlignment {
         @{ Name = "rngSignConventionSettings"; Columns = @(2) },
         @{ Name = "rngSteelMaterialParameters"; Columns = @(2, 3) },
         @{ Name = "rngConcreteMaterialParameters"; Columns = @(2, 3) },
-        @{ Name = "rngCalculationDiagramSettings"; Columns = @(3, 4, 5) },
+        @{ Name = "rngCalculationProfiles"; Columns = @(3, 4, 5, 6) },
         @{ Name = "rngPlotAnnotationSettings"; Columns = @(2, 3) },
         @{ Name = "rngCircleGeometry"; Columns = @(2) },
         @{ Name = "rngRoundedRectangleGeometry"; Columns = @(2) },
@@ -1900,7 +1923,7 @@ function Add-SettingsInstructions {
         "Параметры арматуры" = "SteelMaterialParameters"
         "Материал бетона" = "ConcreteMaterialParameters"
         "Материал арматуры" = "SteelMaterialParameters"
-        "Настройки диаграмм для расчетов" = "CalculationDiagramSettings"
+        "Настройка расчетных профилей" = "CalculationProfiles"
         "Контрольные точки диаграмм" = "MaterialDiagramControlTables"
         "Аннотации схемы" = "PlotAnnotationSettings"
         "Круглое сечение" = "CircleGeometry"
@@ -1937,7 +1960,7 @@ function Add-LoadCombinationsTable {
     $Sheet.Cells.Item($titleRow, $StartColumn).Font.Bold = $true
     $Sheet.Cells.Item($titleRow, $StartColumn).Interior.Color = 15921906
 
-    $loadHeaders = @("CombinationID", "N", "Mx", "My", "CalculationType", "CapacityLoadPath", "Comment")
+    $loadHeaders = @("CombinationID", "N", "Mx", "My", "ProfileId", "CapacityLoadPath", "Comment")
     for ($i = 0; $i -lt $loadHeaders.Count; $i++) {
         $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
         $cell.Value2 = $loadHeaders[$i]
@@ -1953,19 +1976,20 @@ function Add-LoadCombinationsTable {
     $loadRange.Borders.Weight = 2
     $loadRange.Borders.Color = 12632256
 
-    $calcTypeListColumn = 132
+    $profileListColumn = 132
     $capacityLoadPathListColumn = 133
-    $calcTypeOptions = @("Group1", "Group2")
-    for ($i = 0; $i -lt $calcTypeOptions.Count; $i++) {
-        $Sheet.Cells.Item($i + 1, $calcTypeListColumn).Value2 = $calcTypeOptions[$i]
+    $profileOptions = @("PR1", "PR2", "PR3", "PR4")
+    for ($i = 0; $i -lt $profileOptions.Count; $i++) {
+        $Sheet.Cells.Item($i + 1, $profileListColumn).Value2 = $profileOptions[$i]
     }
-    $calcTypeColName = ConvertTo-ExcelColumn $calcTypeListColumn
-    $calcTypeListAddress = "=$" + $calcTypeColName + '$1:$' + $calcTypeColName + '$' + $calcTypeOptions.Count
-    $calcTypeRange = $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 4), $Sheet.Cells.Item($HeaderRow + 20, $StartColumn + 4))
-    $calcTypeRange.Validation.Delete()
-    $calcTypeRange.Validation.Add(3, 1, 1, $calcTypeListAddress)
-    $calcTypeRange.Validation.IgnoreBlank = $false
-    $calcTypeRange.Validation.InCellDropdown = $true
+    $profileColName = ConvertTo-ExcelColumn $profileListColumn
+    $profileListAddress = "=$" + $profileColName + '$1:$' + $profileColName + '$' + $profileOptions.Count
+    $profileRange = $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 4), $Sheet.Cells.Item($HeaderRow + 20, $StartColumn + 4))
+    $profileRange.Validation.Delete()
+    $profileRange.Validation.Add(3, 1, 1, $profileListAddress)
+    $profileRange.Validation.IgnoreBlank = $false
+    $profileRange.Validation.InCellDropdown = $true
+    $Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 4).Value2 = "PR1"
 
     $lambda = [char]0x03BB
     $capacityLoadPathOptions = @("$lambda*Mx", "$lambda*My", "$lambda*Mxy", "$lambda*N", "$lambda*NMxy")
@@ -2273,39 +2297,58 @@ function Add-MaterialParameterTable {
     Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($HeaderRow + $Rows.Count) ($StartColumn + 5)
 }
 
-# Рисует таблицу выбора расчетных диаграмм. Значения ГПС и режим растянутого
-# бетона для Mcrc/CrackedNDS информационные: material provider принудительно
-# использует их как часть утвержденного расчетного контракта.
-function Add-CalculationDiagramSettingsTable {
+# Рисует вертикальную таблицу расчетных профилей.
+# В named range входит две строки шапки: строка с общей подписью ProfileId и
+# строка со стабильными ID PR1/PR2/... . Reader ищет именно PR-строку и не
+# зависит от заранее заданного количества профилей.
+function Add-CalculationProfilesTable {
     param([object]$Workbook, [object]$Sheet, [int]$HeaderRow, [int]$StartColumn)
 
-    $title = "Настройки диаграмм для расчетов"
+    $title = "Настройка расчетных профилей"
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = $title
-    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 5)).Merge() | Out-Null
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 6)).Merge() | Out-Null
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
 
-    $headers = @("Расчет", "ГПС", "Диаграмма бетона", "Растянутый бетон", "Диаграмма арматуры", "Комментарий")
+    $headers = @("Параметр", "Key", "PR1", "PR2", "PR3", "PR4", "Комментарий")
+    $Sheet.Cells.Item($HeaderRow, $StartColumn).Value2 = "Параметр"
+    $Sheet.Cells.Item($HeaderRow, $StartColumn + 1).Value2 = "Key"
+    $profileHeader = $Sheet.Range($Sheet.Cells.Item($HeaderRow, $StartColumn + 2), $Sheet.Cells.Item($HeaderRow, $StartColumn + 5))
+    $profileHeader.Merge() | Out-Null
+    $profileHeader.Value2 = "ProfileId"
+    $Sheet.Cells.Item($HeaderRow, $StartColumn + 6).Value2 = "Комментарий"
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow, $StartColumn), $Sheet.Cells.Item($HeaderRow, $StartColumn + 6)).Font.Bold = $true
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow, $StartColumn), $Sheet.Cells.Item($HeaderRow, $StartColumn + 6)).Interior.Color = 14277081
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow, $StartColumn), $Sheet.Cells.Item($HeaderRow, $StartColumn + 6)).HorizontalAlignment = -4108
+
     for ($i = 0; $i -lt $headers.Count; $i++) {
-        $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
+        $cell = $Sheet.Cells.Item($HeaderRow + 1, $StartColumn + $i)
         $cell.Value2 = $headers[$i]
         $cell.Font.Bold = $true
         $cell.Interior.Color = 14277081
+        $cell.HorizontalAlignment = -4108
     }
 
-    $rows = Get-CalculationDiagramSettingsCatalog
+    $rows = Get-CalculationProfilesCatalog
     for ($r = 0; $r -lt $rows.Count; $r++) {
-        for ($c = 0; $c -lt 6; $c++) {
-            $cell = $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + $c)
-            $cell.Value2 = $rows[$r][$c]
-            if ($c -eq 1 -or (($rows[$r][0] -ne "Strength") -and $c -eq 3)) {
-                $cell.Interior.Color = 14277081
-                $cell.Locked = $true
-            }
+        $targetRow = $HeaderRow + 2 + $r
+        $Sheet.Cells.Item($targetRow, $StartColumn).Value2 = $rows[$r].Caption
+        $Sheet.Cells.Item($targetRow, $StartColumn + 1).Value2 = $rows[$r].Key
+        $Sheet.Cells.Item($targetRow, $StartColumn + 2).Value2 = $rows[$r].PR1
+        $Sheet.Cells.Item($targetRow, $StartColumn + 3).Value2 = $rows[$r].PR2
+        $Sheet.Cells.Item($targetRow, $StartColumn + 4).Value2 = $rows[$r].PR3
+        $Sheet.Cells.Item($targetRow, $StartColumn + 5).Value2 = $rows[$r].PR4
+        $Sheet.Cells.Item($targetRow, $StartColumn + 6).Value2 = $rows[$r].Comment
+
+        if ([string]$rows[$r].Caption -like "[[]*[]]") {
+            $sectionRow = $Sheet.Range($Sheet.Cells.Item($targetRow, $StartColumn), $Sheet.Cells.Item($targetRow, $StartColumn + 6))
+            $sectionRow.Font.Bold = $true
+            $sectionRow.Interior.Color = $script:ConfigSubgroupHeaderColor
+            $sectionRow.Font.Color = 4210752
         }
     }
 
-    Set-WorkbookNameByBounds $Workbook "rngCalculationDiagramSettings" $Sheet $HeaderRow $StartColumn ($HeaderRow + $rows.Count) ($StartColumn + 5)
+    Set-WorkbookNameByBounds $Workbook "rngCalculationProfiles" $Sheet $HeaderRow $StartColumn ($HeaderRow + $rows.Count + 1) ($StartColumn + 6)
 }
 
 # Служебные точки диаграмм нужны только как независимый контроль Config.
@@ -2611,8 +2654,8 @@ function Apply-SystemSettingsLayout {
     Add-MaterialParameterTable $Workbook $Sheet "rngConcreteMaterialParameters" $rightRow $rightColumn "Материал бетона" $concreteRows
     $rightRow += $concreteRows.Count + 1 + $rightBlockGap
 
-    Add-CalculationDiagramSettingsTable $Workbook $Sheet $rightRow $rightColumn
-    $rightRow += (Get-CalculationDiagramSettingsCatalog).Count + 1 + $rightBlockGap
+    Add-CalculationProfilesTable $Workbook $Sheet $rightRow $rightColumn
+    $rightRow += (Get-CalculationProfilesCatalog).Count + 2 + $rightBlockGap
 
     Add-PlotAnnotationSettingsTable $Workbook $Sheet $rightRow $rightColumn
     $rightRow += (Get-PlotAnnotationSettingsCatalog).Count + 1 + $rightBlockGap
@@ -2633,24 +2676,19 @@ function Apply-SystemSettingsLayout {
         "Geometry.Source" = @("Generated", "AutoCAD")
         "General.ExecutionReportEnabled" = @("Yes", "No")
         "Geometry.Type" = @("RoundedRectangle", "Circle", "LShape")
-        "Calculation.Mode" = @("DirectState", "FullCapacity", "CapacityOnly")
         "Solver.Method" = @("Newton", "Secant")
         "Solver.DirectState.DiagramExtension" = @("Yes", "No")
-        "Capacity.CalculationScope" = @("Group1Only", "Group1+2")
         "Capacity.SolutionStrategy" = @("Auto", "UltimateStrain", "LoadMultiplier")
         "Capacity.SearchMethod" = @("Bisection", "Brent", "Secant")
         "Solver.LineSearchEnabled" = @("Yes", "No")
-        "SLS.Crack.Enabled" = @("Yes", "No")
         "SLS.Crack.PsiMode" = @("Fixed1", "Auto")
         "SLS.Crack.TensionZoneMode" = @("Effective", "FullTension")
-        "AutoCAD.Export.ResultType" = @("Stress", "Strain")
         "AutoCAD.Export.LabelMode" = @("ValuesOnly", "NamesAndValues")
         "AutoCAD.Export.NeutralLineEnabled" = @("Yes", "No")
         "AutoCAD.Export.PrincipalAxesEnabled" = @("Yes", "No")
         "AutoCAD.Export.LoadPointEnabled" = @("Yes", "No")
         "Plot.Enabled" = @("Yes", "No")
         "Plot.AutoUpdateAfterCalculation" = @("Yes", "No")
-        "Plot.ResultType" = @("Stress", "Strain")
         "Plot.ResultGradient" = @("Yes", "No")
         "Plot.ResultLabelsEnabled" = @("Yes", "No")
         "Plot.NeutralLineEnabled" = @("Yes", "No")
@@ -2699,8 +2737,8 @@ function Apply-SystemSettingsLayout {
 
     Add-MaterialParameterValidation $Sheet $listColumn
     $listColumn++
-    Add-CalculationDiagramValidation $Sheet $listColumn
-    $listColumn += 2
+    Add-CalculationProfilesValidation $Sheet $listColumn
+    $listColumn += 7
 
     Add-PlotAnnotationValidation $Sheet $listColumn
 
@@ -2809,53 +2847,54 @@ function Add-MaterialParameterValidation {
     }
 }
 
-# Добавляет валидацию для таблицы расчетных режимов диаграмм.
-# ГПС и режим растянутого бетона для Mcrc/CrackedNDS заблокированы как
-# информационные поля: фактическое решение все равно принимает provider.
-function Add-CalculationDiagramValidation {
+# Добавляет валидацию для профильной таблицы. Типы расчетов, материальные
+# модели и визуализация выбираются в PR-колонках, а не в старых глобальных
+# настройках Calculation.Mode/CalculationType.
+function Add-CalculationProfilesValidation {
     param([object]$Sheet, [int]$StartColumn)
 
-    $diagramColumn = $StartColumn
-    $tensionColumn = ($StartColumn + 1)
-    $diagramOptions = @("TwoLine", "ThreeLine")
-    $tensionOptions = @("Ignore", "UseDiagram")
-
-    for ($i = 0; $i -lt $diagramOptions.Count; $i++) {
-        $Sheet.Cells.Item($i + 1, $diagramColumn).Value2 = $diagramOptions[$i]
+    $sources = @{
+        "Calculation.Strength.DirectState" = @{ Column = $StartColumn; Values = @("Yes", "No") }
+        "Calculation.Strength.Capacity" = @{ Column = $StartColumn; Values = @("Yes", "No") }
+        "Calculation.Crack.Width" = @{ Column = $StartColumn; Values = @("Yes", "No") }
+        "MaterialModel.Strength.ValueSet" = @{ Column = ($StartColumn + 1); Values = @("ULS", "SLS") }
+        "MaterialModel.CrackInitiation.ValueSet" = @{ Column = ($StartColumn + 1); Values = @("ULS", "SLS") }
+        "MaterialModel.CrackedState.ValueSet" = @{ Column = ($StartColumn + 1); Values = @("ULS", "SLS") }
+        "MaterialModel.Strength.ConcreteDiagram" = @{ Column = ($StartColumn + 2); Values = @("TwoLine", "ThreeLine") }
+        "MaterialModel.CrackInitiation.ConcreteDiagram" = @{ Column = ($StartColumn + 2); Values = @("TwoLine", "ThreeLine") }
+        "MaterialModel.CrackedState.ConcreteDiagram" = @{ Column = ($StartColumn + 2); Values = @("TwoLine", "ThreeLine") }
+        "MaterialModel.Strength.ConcreteTension" = @{ Column = ($StartColumn + 3); Values = @("Ignore", "UseDiagram") }
+        "MaterialModel.CrackInitiation.ConcreteTension" = @{ Column = ($StartColumn + 3); Values = @("Ignore", "UseDiagram") }
+        "MaterialModel.CrackedState.ConcreteTension" = @{ Column = ($StartColumn + 3); Values = @("Ignore", "UseDiagram") }
+        "MaterialModel.Strength.SteelDiagram" = @{ Column = ($StartColumn + 4); Values = @("TwoLine", "ThreeLine") }
+        "MaterialModel.CrackInitiation.SteelDiagram" = @{ Column = ($StartColumn + 4); Values = @("TwoLine", "ThreeLine") }
+        "MaterialModel.CrackedState.SteelDiagram" = @{ Column = ($StartColumn + 4); Values = @("TwoLine", "ThreeLine") }
+        "Visualization.State" = @{ Column = ($StartColumn + 5); Values = @("StrengthState", "CapacityState", "CrackInitiationState", "CrackedState") }
+        "Visualization.Quantity" = @{ Column = ($StartColumn + 6); Values = @("Stress", "Strain") }
     }
-    for ($i = 0; $i -lt $tensionOptions.Count; $i++) {
-        $Sheet.Cells.Item($i + 1, $tensionColumn).Value2 = $tensionOptions[$i]
+
+    foreach ($source in $sources.Values) {
+        for ($i = 0; $i -lt $source.Values.Count; $i++) {
+            $Sheet.Cells.Item($i + 1, $source.Column).Value2 = $source.Values[$i]
+        }
     }
 
     try {
-        $range = $Sheet.Parent.Names.Item("rngCalculationDiagramSettings").RefersToRange
-        for ($r = 2; $r -le $range.Rows.Count; $r++) {
-            foreach ($c in @(3, 5)) {
-                $cell = $range.Cells.Item($r, $c)
-                $cell.Validation.Delete()
-                $colName = ConvertTo-ExcelColumn $diagramColumn
-                $listAddress = "=$" + $colName + '$1:$' + $colName + '$' + $diagramOptions.Count
-                $cell.Validation.Add(3, 1, 1, $listAddress)
-                $cell.Validation.IgnoreBlank = $false
-                $cell.Validation.InCellDropdown = $true
+        $range = $Sheet.Parent.Names.Item("rngCalculationProfiles").RefersToRange
+        for ($r = 3; $r -le $range.Rows.Count; $r++) {
+            $key = [string]$range.Cells.Item($r, 2).Value2
+            if ($sources.ContainsKey($key)) {
+                $source = $sources[$key]
+                $colName = ConvertTo-ExcelColumn $source.Column
+                $listAddress = "=$" + $colName + '$1:$' + $colName + '$' + $source.Values.Count
+                for ($c = 3; $c -le 6; $c++) {
+                    $cell = $range.Cells.Item($r, $c)
+                    $cell.Validation.Delete()
+                    $cell.Validation.Add(3, 1, 1, $listAddress)
+                    $cell.Validation.IgnoreBlank = $true
+                    $cell.Validation.InCellDropdown = $true
+                }
             }
-
-            $purpose = [string]$range.Cells.Item($r, 1).Value2
-            $tensionCell = $range.Cells.Item($r, 4)
-            $tensionCell.Validation.Delete()
-            if ($purpose -eq "Strength") {
-                $colName = ConvertTo-ExcelColumn $tensionColumn
-                $listAddress = "=$" + $colName + '$1:$' + $colName + '$' + $tensionOptions.Count
-                $tensionCell.Validation.Add(3, 1, 1, $listAddress)
-                $tensionCell.Validation.IgnoreBlank = $false
-                $tensionCell.Validation.InCellDropdown = $true
-            }
-            else {
-                $tensionCell.Interior.Color = 15921906
-                $tensionCell.Locked = $true
-            }
-            $range.Cells.Item($r, 2).Interior.Color = 15921906
-            $range.Cells.Item($r, 2).Locked = $true
         }
     }
     catch {
