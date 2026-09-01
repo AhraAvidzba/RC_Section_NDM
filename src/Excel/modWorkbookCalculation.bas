@@ -217,8 +217,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddValue "Дубликатов настроек", CStr(settings.DuplicateCount)
     report.AddValue "Источник геометрии", settings.GetRawString("Geometry.Source", "Generated")
     report.AddValue "Тип геометрии", settings.GetRawString("Geometry.Type", "-")
-    report.AddValue "Режим расчета", settings.GetRawString("Calculation.Mode", "-")
-    report.AddValue "Расчет трещин", settings.GetRawString("SLS.Crack.Enabled", "-")
+    report.AddValue "Профили расчета", "rngCalculationProfiles"
     
     Dim units As CUnitSystem
     Set units = New CUnitSystem
@@ -262,10 +261,17 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     materialProvider.Initialize settings, units
     report.AddStep "Построены материалные модели Strength, Mcrc и CrackedNDS по параметрам Config."
 
+    Dim profiles As CCalculationProfileCatalog
+    Set profiles = New CCalculationProfileCatalog
+    profiles.LoadFromWorkbook workbook
+    report.AddStep "Загружен каталог расчетных профилей."
+    report.AddValue "Профилей в rngCalculationProfiles", CStr(profiles.Count)
+
     Dim batch As CBatchSectionCalculator
     Set batch = New CBatchSectionCalculator
     report.AddStep "Создан CBatchSectionCalculator."
     batch.Initialize section, materialProvider
+    Set batch.ProfileCatalog = profiles
     report.AddStep "Batch инициализирован моделью сечения и материалами."
     batch.ApplySettings settings, units
     report.AddStep "Настройки solver/capacity/crack применены к batch."

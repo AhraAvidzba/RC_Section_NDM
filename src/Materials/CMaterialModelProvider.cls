@@ -426,6 +426,113 @@ Public Function SteelStateMaterial(ByVal basePurpose As ECalculationPurpose) As 
     End If
 End Function
 
+' Возвращает физическую бетонную диаграмму по спецификации профиля.
+' Это новый основной вход provider-а: профиль уже определил ValueSet,
+' TwoLine/ThreeLine и режим растянутого бетона, а solver получает готовую
+' CMaterialDiagram без знания этих настроек.
+Public Function ConcreteMaterialFromSpec(ByVal spec As CMaterialModelSpec) As CMaterialDiagram
+    EnsureInitialized
+    ValidateSpec spec
+    Set ConcreteMaterialFromSpec = BuildConcreteDiagram(LimitStateGroupFromSpec(spec), _
+        spec.ConcreteDiagramText, spec.ConcreteTensionText)
+End Function
+
+' Возвращает физическую диаграмму арматуры по спецификации профиля.
+Public Function SteelMaterialFromSpec(ByVal spec As CMaterialModelSpec) As CMaterialDiagram
+    EnsureInitialized
+    ValidateSpec spec
+    Set SteelMaterialFromSpec = BuildSteelDiagram(LimitStateGroupFromSpec(spec), spec.SteelDiagramText)
+End Function
+
+' Возвращает бетонную диаграмму прямого StateSolution по спецификации профиля.
+' Numerical extension добавляется только здесь и только если соответствующая
+' настройка включена. Capacity, Mcrc и crack-состояния вызывают физический
+' ConcreteMaterialFromSpec без extension.
+Public Function ConcreteStateMaterialFromSpec(ByVal spec As CMaterialModelSpec) As CMaterialDiagram
+    Dim physical As CMaterialDiagram
+    Set physical = ConcreteMaterialFromSpec(spec)
+    If mDirectStateDiagramExtension Then
+        Set ConcreteStateMaterialFromSpec = DiagramWithExtension(physical, _
+            mConcreteParameters.Eb, mConcreteParameters.Ebt, True, False)
+    Else
+        Set ConcreteStateMaterialFromSpec = physical
+    End If
+End Function
+
+' Возвращает диаграмму арматуры прямого StateSolution по спецификации профиля.
+Public Function SteelStateMaterialFromSpec(ByVal spec As CMaterialModelSpec) As CMaterialDiagram
+    Dim physical As CMaterialDiagram
+    Set physical = SteelMaterialFromSpec(spec)
+    If mDirectStateDiagramExtension Then
+        Set SteelStateMaterialFromSpec = DiagramWithExtension(physical, _
+            mSteelParameters.Esc, mSteelParameters.Es, True, True)
+    Else
+        Set SteelStateMaterialFromSpec = physical
+    End If
+End Function
+
+Public Function ConcreteCompressionLimitFromSpec(ByVal spec As CMaterialModelSpec) As Double
+    ConcreteCompressionLimitFromSpec = ConcreteMaterialFromSpec(spec).UltimateCompressionStrain
+End Function
+
+Public Function ConcreteTensionLimitFromSpec(ByVal spec As CMaterialModelSpec) As Double
+    ConcreteTensionLimitFromSpec = ConcreteMaterialFromSpec(spec).UltimateTensionStrain
+End Function
+
+Public Function ConcreteTensionLimitEnabledFromSpec(ByVal spec As CMaterialModelSpec) As Boolean
+    Dim diagram As CMaterialDiagram
+    Set diagram = ConcreteMaterialFromSpec(spec)
+    ConcreteTensionLimitEnabledFromSpec = (diagram.HasPhysicalTensionLimit And spec.ConcreteTension = ctkUseDiagram)
+End Function
+
+Public Function SteelCompressionLimitFromSpec(ByVal spec As CMaterialModelSpec) As Double
+    SteelCompressionLimitFromSpec = SteelMaterialFromSpec(spec).UltimateCompressionStrain
+End Function
+
+Public Function SteelTensionLimitFromSpec(ByVal spec As CMaterialModelSpec) As Double
+    SteelTensionLimitFromSpec = SteelMaterialFromSpec(spec).UltimateTensionStrain
+End Function
+
+Public Function ConcreteCompressionResistanceFromSpec(ByVal spec As CMaterialModelSpec) As Double
+    Dim rb As Double
+    Dim rbt As Double
+    ConcreteStrengths LimitStateGroupFromSpec(spec), rb, rbt
+    ConcreteCompressionResistanceFromSpec = rb
+End Function
+
+Public Function ConcreteTensionResistanceFromSpec(ByVal spec As CMaterialModelSpec) As Double
+    Dim rb As Double
+    Dim rbt As Double
+    ConcreteStrengths LimitStateGroupFromSpec(spec), rb, rbt
+    ConcreteTensionResistanceFromSpec = rbt
+End Function
+
+Public Function ConcreteElasticModulusFromSpec(ByVal spec As CMaterialModelSpec) As Double
+    ValidateSpec spec
+    ConcreteElasticModulusFromSpec = mConcreteParameters.Eb
+End Function
+
+Public Function SteelElasticModulusFromSpec(ByVal spec As CMaterialModelSpec) As Double
+    ValidateSpec spec
+    SteelElasticModulusFromSpec = mSteelParameters.Es
+End Function
+
+' ГПС определяется спецификацией профиля, а не расчетным классом.
+Private Function LimitStateGroupFromSpec(ByVal spec As CMaterialModelSpec) As String
+    ValidateSpec spec
+    If spec.ValueSet = mvsSLS Then
+        LimitStateGroupFromSpec = "II"
+    Else
+        LimitStateGroupFromSpec = "I"
+    End If
+End Function
+
+' Общая проверка контракта профильной спецификации.
+Private Sub ValidateSpec(ByVal spec As CMaterialModelSpec)
+    If spec Is Nothing Then Err.Raise vbObjectError + 3250, "CMaterialModelProvider", "MaterialModelSpec не передан."
+    If Not spec.IsComplete Then Err.Raise vbObjectError + 3251, "CMaterialModelProvider", "MaterialModelSpec заполнен не полностью."
+End Sub
+
 Public Function LimitStateGroup(ByVal purpose As ECalculationPurpose) As String
     EnsureInitialized
     LimitStateGroup = mLimitStateGroup(PhysicalPurposeSlot(purpose))

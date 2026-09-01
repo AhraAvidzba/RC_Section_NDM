@@ -53,11 +53,11 @@ End Sub
 ' остальные сочетания продолжают считаться.
 Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator, ByVal rowIndex As Long, ByVal units As CUnitSystem)
     Dim combinationID As String
-    Dim calculationType As String
+    Dim profileId As String
     Dim capacityLoadPath As String
     Dim comment As String
     combinationID = Trim$(CStr(data(rowIndex, 1)))
-    calculationType = Trim$(CStr(data(rowIndex, 5)))
+    profileId = Trim$(CStr(data(rowIndex, 5)))
     If UBound(data, 2) >= 7 Then
         capacityLoadPath = Trim$(CStr(data(rowIndex, 6)))
         comment = Trim$(CStr(data(rowIndex, 7)))
@@ -77,16 +77,17 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     If Abs(nValue) + Abs(mxValue) + Abs(myValue) <= 0.000000001 Then Exit Sub
 
     If Len(Trim$(combinationID)) = 0 Then AppendError errorText, "CombinationID не заполнен"
+    If Len(profileId) = 0 Then AppendError errorText, "ProfileId не заполнен"
 
     If Len(errorText) > 0 Then
-        batch.AddInvalidCombination combinationID, calculationType, comment, errorText, capacityLoadPath
+        batch.AddInvalidCombination combinationID, profileId, comment, errorText, capacityLoadPath
     Else
         If Not units Is Nothing Then
             nValue = units.InputForceToInternal(nValue)
             mxValue = units.InputMomentMxToInternal(mxValue)
             myValue = units.InputMomentMyToInternal(myValue)
         End If
-        batch.AddCombination combinationID, nValue, mxValue, myValue, calculationType, comment, capacityLoadPath
+        batch.AddCombination combinationID, nValue, mxValue, myValue, profileId, comment, capacityLoadPath
     End If
 End Sub
 

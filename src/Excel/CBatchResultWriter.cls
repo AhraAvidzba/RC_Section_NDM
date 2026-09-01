@@ -30,7 +30,7 @@ Private Const FIRST_DATA_ROW As Long = 10 ' Первая строка сочет
 Private Const COL_OVERALL_STATUS As Long = 1
 Private Const COL_ID As Long = 2
 Private Const COL_COMMENT As Long = 3
-Private Const COL_CALC_TYPE As Long = 4
+Private Const COL_PROFILE_ID As Long = 4
 
 Private Const COL_DIRECT_STATUS As Long = 5
 Private Const COL_EPS_C_COMP As Long = 6
@@ -248,7 +248,7 @@ Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem
     data(COLUMN_HEADER_ROW, COL_OVERALL_STATUS) = "OverallStatus (итог)"
     data(COLUMN_HEADER_ROW, COL_ID) = "CombinationID (сочетание)"
     data(COLUMN_HEADER_ROW, COL_COMMENT) = "Comment (комментарий)"
-    data(COLUMN_HEADER_ROW, COL_CALC_TYPE) = "CalculationType (группа)"
+    data(COLUMN_HEADER_ROW, COL_PROFILE_ID) = "ProfileId (профиль)"
     data(COLUMN_HEADER_ROW, COL_DIRECT_STATUS) = "DirectStateStatus (НДС)"
 
     data(COLUMN_HEADER_ROW, COL_EPS_C_COMP) = "eps_c,min (бетон сжатие)"
@@ -316,7 +316,7 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
     data(rowIndex, COL_OVERALL_STATUS) = policy.DisplayStatus(batch.OverallStatus(index))
     data(rowIndex, COL_ID) = batch.CombinationID(index)
     data(rowIndex, COL_COMMENT) = batch.CombinationName(index)
-    data(rowIndex, COL_CALC_TYPE) = batch.CalculationType(index)
+    data(rowIndex, COL_PROFILE_ID) = batch.ProfileId(index)
     data(rowIndex, COL_DIRECT_STATUS) = policy.DisplayStatus(batch.DirectStateStatus(index))
 
     If batch.StateAvailable(index) Then
@@ -552,7 +552,7 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     MergeSummaryHeader target, GROUP_HEADER_ROW, COL_CAPACITY_STATUS, COL_CAPACITY_SF
     MergeSummaryHeader target, GROUP_HEADER_ROW, COL_CRACK_STATUS, COL_CRACK_SF
     MergeSummaryHeader target, GROUP_HEADER_ROW, COL_LONG_CRACK_STATUS, COL_LONG_CRACK_SF
-    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_OVERALL_STATUS, COL_CALC_TYPE
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_OVERALL_STATUS, COL_PROFILE_ID
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_DIRECT_STATUS, COL_STATE_C
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_LIM_C_COMP, COL_LIM_S_TENS
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CAPACITY_STATUS, COL_CAPACITY_SOLUTION_METHOD

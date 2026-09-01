@@ -16,6 +16,38 @@ Public Enum ECalculationPurpose
     cpStateSolution = 4   ' Прямой НДС заданного LC; требует отдельной физической базы.
 End Enum
 
+Public Enum EMaterialValueSet
+    mvsULS = 1             ' Характеристики I ГПС: Rb/Rbt/Rs/Rsc.
+    mvsSLS = 2             ' Характеристики II ГПС: Rb,ser/Rbt,ser/Rs,ser/Rsc,ser.
+End Enum
+
+Public Enum EConcreteDiagramKind
+    cdkTwoLine = 1         ' Двухлинейная диаграмма бетона.
+    cdkThreeLine = 2       ' Трехлинейная диаграмма бетона.
+End Enum
+
+Public Enum EConcreteTensionKind
+    ctkIgnore = 1          ' Растянутый бетон не работает.
+    ctkUseDiagram = 2      ' Растянутый бетон работает по выбранной диаграмме.
+End Enum
+
+Public Enum ESteelDiagramKind
+    sdkTwoLine = 1         ' Двухлинейная диаграмма арматуры.
+    sdkThreeLine = 2       ' Трехлинейная диаграмма арматуры.
+End Enum
+
+Public Enum ESectionStateType
+    sstStrengthState = 1          ' Прямое НДС по модели прочности.
+    sstCapacityState = 2          ' Предельное НДС, найденное capacity solver-ом.
+    sstCrackInitiationState = 3   ' НДС образования трещины по модели Mcrc.
+    sstCrackedState = 4           ' Текущее НДС с раскрытой трещиной.
+End Enum
+
+Public Enum EVisualizationQuantity
+    vqStress = 1           ' Для схемы/AutoCAD показываются напряжения.
+    vqStrain = 2           ' Для схемы/AutoCAD показываются деформации.
+End Enum
+
 ' Преобразует пользовательский или snapshot-текст в enum. Алиасы оставлены
 ' только на границе с Excel, чтобы внутри расчетного кода не ходили свободные строки.
 Public Function PurposeFromText(ByVal purposeText As String) As ECalculationPurpose
@@ -48,6 +80,182 @@ Public Function PurposeToText(ByVal purpose As ECalculationPurpose) As String
         Case Else
             Err.Raise vbObjectError + 3302, "modCalculationPurpose", _
                 "Неизвестный ECalculationPurpose."
+    End Select
+End Function
+
+' Возвращает текст роли материальной модели в новой профильной архитектуре.
+' Роль близка к старому purpose, но не является видом пользовательского расчета.
+Public Function MaterialModelRoleToText(ByVal purpose As ECalculationPurpose) As String
+    Select Case purpose
+        Case cpStrength
+            MaterialModelRoleToText = "Strength"
+        Case cpMcrc
+            MaterialModelRoleToText = "CrackInitiation"
+        Case cpCrackedNDS
+            MaterialModelRoleToText = "CrackedState"
+        Case Else
+            Err.Raise vbObjectError + 3310, "modCalculationPurpose", _
+                "Для роли материальной модели требуется физическая цель."
+    End Select
+End Function
+
+' Преобразует текст ValueSet из профиля в типизированное значение.
+Public Function MaterialValueSetFromText(ByVal valueText As String) As EMaterialValueSet
+    Select Case LCase$(Trim$(valueText))
+        Case "uls", "i", "group1", "strength"
+            MaterialValueSetFromText = mvsULS
+        Case "sls", "ii", "group2", "service"
+            MaterialValueSetFromText = mvsSLS
+        Case Else
+            Err.Raise vbObjectError + 3311, "modCalculationPurpose", _
+                "ValueSet материальной модели должен быть ULS или SLS."
+    End Select
+End Function
+
+Public Function MaterialValueSetToText(ByVal valueSet As EMaterialValueSet) As String
+    Select Case valueSet
+        Case mvsULS
+            MaterialValueSetToText = "ULS"
+        Case mvsSLS
+            MaterialValueSetToText = "SLS"
+        Case Else
+            Err.Raise vbObjectError + 3312, "modCalculationPurpose", "Неизвестный MaterialValueSet."
+    End Select
+End Function
+
+Public Function ConcreteDiagramKindFromText(ByVal valueText As String) As EConcreteDiagramKind
+    Select Case LCase$(Trim$(valueText))
+        Case "threeline", "three"
+            ConcreteDiagramKindFromText = cdkThreeLine
+        Case "twoline", "two"
+            ConcreteDiagramKindFromText = cdkTwoLine
+        Case Else
+            Err.Raise vbObjectError + 3313, "modCalculationPurpose", _
+                "Диаграмма бетона должна быть TwoLine или ThreeLine."
+    End Select
+End Function
+
+Public Function ConcreteDiagramKindToText(ByVal diagramKind As EConcreteDiagramKind) As String
+    Select Case diagramKind
+        Case cdkTwoLine
+            ConcreteDiagramKindToText = "TwoLine"
+        Case cdkThreeLine
+            ConcreteDiagramKindToText = "ThreeLine"
+        Case Else
+            Err.Raise vbObjectError + 3314, "modCalculationPurpose", "Неизвестный тип диаграммы бетона."
+    End Select
+End Function
+
+Public Function ConcreteTensionKindFromText(ByVal valueText As String) As EConcreteTensionKind
+    Select Case LCase$(Trim$(valueText))
+        Case "usediagram", "use"
+            ConcreteTensionKindFromText = ctkUseDiagram
+        Case "ignore", "no", "none"
+            ConcreteTensionKindFromText = ctkIgnore
+        Case Else
+            Err.Raise vbObjectError + 3315, "modCalculationPurpose", _
+                "Растянутый бетон должен быть Ignore или UseDiagram."
+    End Select
+End Function
+
+Public Function ConcreteTensionKindToText(ByVal tensionKind As EConcreteTensionKind) As String
+    Select Case tensionKind
+        Case ctkIgnore
+            ConcreteTensionKindToText = "Ignore"
+        Case ctkUseDiagram
+            ConcreteTensionKindToText = "UseDiagram"
+        Case Else
+            Err.Raise vbObjectError + 3316, "modCalculationPurpose", "Неизвестный режим растянутого бетона."
+    End Select
+End Function
+
+Public Function SteelDiagramKindFromText(ByVal valueText As String) As ESteelDiagramKind
+    Select Case LCase$(Trim$(valueText))
+        Case "threeline", "three"
+            SteelDiagramKindFromText = sdkThreeLine
+        Case "twoline", "two"
+            SteelDiagramKindFromText = sdkTwoLine
+        Case Else
+            Err.Raise vbObjectError + 3317, "modCalculationPurpose", _
+                "Диаграмма арматуры должна быть TwoLine или ThreeLine."
+    End Select
+End Function
+
+Public Function SteelDiagramKindToText(ByVal diagramKind As ESteelDiagramKind) As String
+    Select Case diagramKind
+        Case sdkTwoLine
+            SteelDiagramKindToText = "TwoLine"
+        Case sdkThreeLine
+            SteelDiagramKindToText = "ThreeLine"
+        Case Else
+            Err.Raise vbObjectError + 3318, "modCalculationPurpose", "Неизвестный тип диаграммы арматуры."
+    End Select
+End Function
+
+Public Function SectionStateTypeFromText(ByVal valueText As String) As ESectionStateType
+    Select Case LCase$(Trim$(valueText))
+        Case "strengthstate", "strength", "прочность"
+            SectionStateTypeFromText = sstStrengthState
+        Case "capacitystate", "capacity", "предельное ндс"
+            SectionStateTypeFromText = sstCapacityState
+        Case "crackinitiationstate", "mcrc", "ндс при mcrc"
+            SectionStateTypeFromText = sstCrackInitiationState
+        Case "crackedstate", "crack", "crackednds", "ндс при трещинах"
+            SectionStateTypeFromText = sstCrackedState
+        Case Else
+            Err.Raise vbObjectError + 3319, "modCalculationPurpose", _
+                "Visualization.State должен быть StrengthState, CapacityState, CrackInitiationState или CrackedState."
+    End Select
+End Function
+
+Public Function SectionStateTypeToText(ByVal stateType As ESectionStateType) As String
+    Select Case stateType
+        Case sstStrengthState
+            SectionStateTypeToText = "StrengthState"
+        Case sstCapacityState
+            SectionStateTypeToText = "CapacityState"
+        Case sstCrackInitiationState
+            SectionStateTypeToText = "CrackInitiationState"
+        Case sstCrackedState
+            SectionStateTypeToText = "CrackedState"
+        Case Else
+            Err.Raise vbObjectError + 3320, "modCalculationPurpose", "Неизвестный StateType."
+    End Select
+End Function
+
+Public Function MaterialRoleFromStateType(ByVal stateType As ESectionStateType) As ECalculationPurpose
+    Select Case stateType
+        Case sstStrengthState, sstCapacityState
+            MaterialRoleFromStateType = cpStrength
+        Case sstCrackInitiationState
+            MaterialRoleFromStateType = cpMcrc
+        Case sstCrackedState
+            MaterialRoleFromStateType = cpCrackedNDS
+        Case Else
+            Err.Raise vbObjectError + 3321, "modCalculationPurpose", "Для StateType не определена роль material model."
+    End Select
+End Function
+
+Public Function VisualizationQuantityFromText(ByVal valueText As String) As EVisualizationQuantity
+    Select Case LCase$(Trim$(valueText))
+        Case "stress", "напряжения"
+            VisualizationQuantityFromText = vqStress
+        Case "strain", "деформации"
+            VisualizationQuantityFromText = vqStrain
+        Case Else
+            Err.Raise vbObjectError + 3322, "modCalculationPurpose", _
+                "Visualization.Quantity должен быть Stress или Strain."
+    End Select
+End Function
+
+Public Function VisualizationQuantityToText(ByVal quantity As EVisualizationQuantity) As String
+    Select Case quantity
+        Case vqStress
+            VisualizationQuantityToText = "Stress"
+        Case vqStrain
+            VisualizationQuantityToText = "Strain"
+        Case Else
+            Err.Raise vbObjectError + 3323, "modCalculationPurpose", "Неизвестная Visualization.Quantity."
     End Select
 End Function
 

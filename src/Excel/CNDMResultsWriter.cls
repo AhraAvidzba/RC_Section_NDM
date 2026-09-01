@@ -19,7 +19,7 @@ Option Explicit
 ' Writer не запускает solver, не генерирует геометрию и не читает текущие
 ' Inputs. Он только сериализует то состояние, которое уже рассчитано.
 
-Private Const ELEMENT_RESULT_COLUMNS As Long = 6 ' LC-зависимые результаты: ElementID, LoadCase, Strain, Stress, PhysicalState.
+Private Const ELEMENT_RESULT_COLUMNS As Long = 8 ' LC-зависимые результаты named-state: RunID, LoadCase, ProfileId, StateType, ElementID, Strain, Stress, PhysicalState.
 Private Const GEOMETRY_COLUMNS As Long = 15 ' Постоянная геометрия элементов, записанная один раз на расчетный снимок.
 Private Const SECTION_PROPERTY_COLUMNS As Long = 6 ' Общие свойства сечения и LC-свойства уровня всего сечения.
 Private Const ANNOTATION_COLUMNS As Long = 13 ' Semantic-аннотации схемы: размеры, контур, групповые подписи арматуры.
@@ -45,7 +45,7 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
     runID = Now
 
     WriteSectionGeometry workbook, section, runID, units
-    WriteElementResults workbook, section, batch, runID, units
+    WriteElementResults workbook, section, materialProvider, batch, runID, units
     WriteSectionProperties workbook, section, materialProvider, batch, runID, units
     WriteMaterialDiagrams workbook, materialProvider, batch, runID, units
     EnsureAutoCADBoundsAnnotations section
@@ -99,23 +99,24 @@ End Sub
 ' В этот блок не пишутся координаты и площади: они уже есть в
 ' rngNDMSectionGeometry и связываются по ElementID.
 Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal batch As CBatchSectionCalculator, ByVal runID As Variant, ByVal units As CUnitSystem)
+        ByVal materialProvider As CMaterialModelProvider, ByVal batch As CBatchSectionCalculator, _
+        ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
     Set target = workbook.Names.Item("rngNDMElementResults").RefersToRange
 
     Dim elementCount As Long
     elementCount = section.ConcreteCount + section.RebarCount
 
-    Dim activeCombinationCount As Long
+    Dim stateCount As Long
     Dim i As Long
-    ' Считаем только те сочетания, для которых solver действительно сохранил
-    ' состояние. Ошибочные или пустые LC не должны создавать бессмысленные rows.
+    ' Считаем только конечные named states. Один LC может дать несколько
+    ' состояний: StrengthState, CapacityState, CrackedState и CrackInitiationState.
     For i = 1 To batch.Count
-        If batch.StateAvailable(i) Then activeCombinationCount = activeCombinationCount + 1
+        stateCount = stateCount + batch.NamedStateCount(i)
     Next i
 
     Dim rowCount As Long
-    rowCount = 1 + activeCombinationCount * elementCount
+    rowCount = 1 + stateCount * elementCount
     If rowCount < 1 Then rowCount = 1
 
     Dim data() As Variant
@@ -127,9 +128,11 @@ Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSect
     ' Все строки собираются в массив VBA и одним присваиванием выгружаются
     ' на лист. Это принципиально быстрее и устойчивее построчной записи Cells.
     For i = 1 To batch.Count
-        If batch.StateAvailable(i) Then
-            PutCombinationElementResults data, rowIndex, section, batch, i, runID, units
-        End If
+        Dim stateIndex As Long
+        For stateIndex = 1 To batch.NamedStateCount(i)
+            PutCombinationElementResults data, rowIndex, section, materialProvider, batch, i, _
+                batch.NamedState(i, stateIndex), runID, units
+        Next stateIndex
     Next i
 
     target.Resize(rowCount, ELEMENT_RESULT_COLUMNS).Value2 = data
@@ -217,7 +220,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     Set target = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
 
     Dim rowCount As Long
-    rowCount = 1 + 92 + batch.Count * 26
+    rowCount = 1 + 92 + batch.Count * 60
 
     Dim data() As Variant
     ReDim data(1 To rowCount, 1 To SECTION_PROPERTY_COLUMNS)
@@ -271,10 +274,6 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     PutProperty data, rowIndex, runID, "ALL", "Output.SignConvention.N", OutputSignN(units), "-", "Пользовательский знак N на момент расчета."
     PutProperty data, rowIndex, runID, "ALL", "Output.SignConvention.Mx", OutputSignMx(units), "-", "Пользовательский знак Mx на момент расчета."
     PutProperty data, rowIndex, runID, "ALL", "Output.SignConvention.My", OutputSignMy(units), "-", "Пользовательский знак My на момент расчета."
-    PutMaterialModelProperties data, rowIndex, runID, materialProvider, cpStrength
-    PutMaterialModelProperties data, rowIndex, runID, materialProvider, cpMcrc
-    PutMaterialModelProperties data, rowIndex, runID, materialProvider, cpCrackedNDS
-
     Dim i As Long
     ' LC-зависимые свойства уровня сечения хранятся отдельно от поэлементных
     ' строк: epsilon0/kappaX/kappaY не дублируются на каждое волокно.
@@ -297,6 +296,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyInternal", OutputMy(batch.My(i), units), OutputMomentUnit(units), "My после переноса к координатам элементов."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "CalculationMode", batch.CalculationMode, "-", "Режим Calculation.Mode, по которому был выполнен последний расчет этого LC."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "OverallStatus", batch.OverallStatus(i), "-", "Итоговый пользовательский статус сочетания."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "ProfileId", batch.ProfileId(i), "-", "Расчетный профиль, назначенный сочетанию в rngLoadCombinations."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "DirectStateStatus", batch.DirectStateStatus(i), "-", "Статус прямого решения НДС фактического сочетания."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacityStatus", batch.CapacityStatus(i), "-", "Статус расчета несущей способности."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacityLoadPath", batch.CapacityLoadPath(i), "-", "Какие компоненты нагрузки масштабировались при поиске несущей способности."
@@ -324,6 +324,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrack.Utilization", batch.LongitudinalCrackUtilization(i), "-", "Использование по продольным трещинам: sigma_c,max / Rb,mc2."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "ExtensionUsed", BooleanText(batch.ExtensionUsed(i)), "-", "True, если прямой StateSolution вышел за физические пределы диаграммы в numerical extension."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "DirectState.DiagramExtensionEnabled", BooleanText(batch.DirectStateDiagramExtensionEnabled(i)), "-", "Сохраненное значение настройки Solver.DirectState.DiagramExtension на момент расчета."
+        PutNamedStateProperties data, rowIndex, runID, batch, i, units
     Next i
 
     target.Resize(rowCount, SECTION_PROPERTY_COLUMNS).Value2 = data
@@ -353,7 +354,7 @@ Private Sub WriteMaterialDiagrams(ByVal workbook As Object, ByVal materialProvid
     Set target = workbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange
 
     Dim rowCapacity As Long
-    rowCapacity = 1 + batch.Count * 128
+    rowCapacity = 1 + batch.Count * 192
 
     Dim data() As Variant
     ReDim data(1 To rowCapacity, 1 To MATERIAL_DIAGRAM_COLUMNS)
@@ -375,49 +376,25 @@ Private Sub WriteMaterialDiagrams(ByVal workbook As Object, ByVal materialProvid
     FormatResultsBlock target, rowCount, MATERIAL_DIAGRAM_COLUMNS, "Фактические диаграммы материалов"
 End Sub
 
-' Собирает материалные диаграммы одного сочетания в том же порядке, в каком
-' пользователь обычно читает Summary: прямое состояние, capacity, cracks.
+' Собирает материальные диаграммы одного сочетания по фактически сохраненным
+' named states. Это важно для профилей: один и тот же StateType у разных
+' профилей может иметь разную MaterialModelSpec.
 Private Sub PutCombinationMaterialDiagrams(ByRef data() As Variant, ByRef rowIndex As Long, _
         ByVal runID As Variant, ByVal materialProvider As CMaterialModelProvider, _
         ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, ByVal units As CUnitSystem)
-    Dim policy As CBatchStatusPolicy
-    Set policy = New CBatchStatusPolicy
-
-    Dim basePurpose As ECalculationPurpose
-    basePurpose = StateBasePurposeForCalculationType(batch.CalculationType(combinationIndex))
-
-    If batch.StateAvailable(combinationIndex) Then
-        Dim stateConcrete As CMaterialDiagram
-        Dim stateSteel As CMaterialDiagram
-        Set stateConcrete = batch.ConcreteMaterialForCombination(combinationIndex)
-        Set stateSteel = batch.SteelMaterialForCombination(combinationIndex)
-        AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
-            "DirectState", "StateSolution/" & PurposeToText(basePurpose), "Concrete", stateConcrete, units
-        AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
-            "DirectState", "StateSolution/" & PurposeToText(basePurpose), "Rebar", stateSteel, units
-    End If
-
-    If policy.ToUserStatus(batch.CapacityStatus(combinationIndex)) <> policy.NotApplicable And _
-            Len(Trim$(batch.CapacityStatus(combinationIndex))) > 0 Then
-        AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
-            "Capacity", PurposeToText(cpStrength), "Concrete", materialProvider.ConcreteMaterial(cpStrength), units
-        AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
-            "Capacity", PurposeToText(cpStrength), "Rebar", materialProvider.SteelMaterial(cpStrength), units
-    End If
-
-    If policy.ToUserStatus(batch.CrackStatus(combinationIndex)) <> policy.NotApplicable And _
-            Len(Trim$(batch.CrackStatus(combinationIndex))) > 0 Then
-        AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
-            "Crack.CrackedNDS", PurposeToText(cpCrackedNDS), "Concrete", materialProvider.ConcreteMaterial(cpCrackedNDS), units
-        AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
-            "Crack.CrackedNDS", PurposeToText(cpCrackedNDS), "Rebar", materialProvider.SteelMaterial(cpCrackedNDS), units
-        If batch.CrackLambdaCrc(combinationIndex) > 0# Then
+    Dim stateIndex As Long
+    For stateIndex = 1 To batch.NamedStateCount(combinationIndex)
+        Dim stateResult As CSectionStateResult
+        Set stateResult = batch.NamedState(combinationIndex, stateIndex)
+        If Not stateResult Is Nothing Then
             AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
-                "Crack.Mcrc", PurposeToText(cpMcrc), "Concrete", materialProvider.ConcreteMaterial(cpMcrc), units
+                stateResult.StateTypeText, stateResult.MaterialModelRoleText, "Concrete", _
+                materialProvider.ConcreteMaterialFromSpec(stateResult.MaterialSpec), units
             AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
-                "Crack.Mcrc", PurposeToText(cpMcrc), "Rebar", materialProvider.SteelMaterial(cpMcrc), units
+                stateResult.StateTypeText, stateResult.MaterialModelRoleText, "Rebar", _
+                materialProvider.SteelMaterialFromSpec(stateResult.MaterialSpec), units
         End If
-    End If
+    Next stateIndex
 End Sub
 
 ' Добавляет все точки одной диаграммы. Напряжения пишутся в OUTPUT stress unit,
@@ -519,6 +496,40 @@ Private Sub PutMaterialModelProperties(ByRef data() As Variant, ByRef rowIndex A
     End If
     PutProperty data, rowIndex, runID, "ALL", prefix & "SteelCompressionLimit", materialProvider.SteelCompressionLimit(purpose), "-", "Предельная сжатая деформация арматуры snapshot."
     PutProperty data, rowIndex, runID, "ALL", prefix & "SteelTensionLimit", materialProvider.SteelTensionLimit(purpose), "-", "Предельная растянутая деформация арматуры snapshot."
+End Sub
+
+' Записывает компактную metadata по каждому конечному named-state LC.
+' Поэлементная таблица хранит Stress/Strain, а здесь лежит то, что не нужно
+' повторять для каждого волокна: плоскость деформаций и фактическая спецификация
+' материальной модели.
+Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As Long, _
+        ByVal runID As Variant, ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, _
+        ByVal units As CUnitSystem)
+    Dim stateIndex As Long
+    For stateIndex = 1 To batch.NamedStateCount(combinationIndex)
+        Dim stateResult As CSectionStateResult
+        Set stateResult = batch.NamedState(combinationIndex, stateIndex)
+        If Not stateResult Is Nothing Then
+            Dim prefix As String
+            prefix = "State." & stateResult.StateTypeText & "."
+            PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "MaterialModelRole", _
+                stateResult.MaterialModelRoleText, "-", "Смысловая роль материальной модели для named-state."
+            PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "MaterialModelSpec", _
+                stateResult.MaterialSpec.SpecKey, "-", "Фактическая спецификация ValueSet/ConcreteDiagram/ConcreteTension/SteelDiagram."
+            PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "Epsilon0", _
+                stateResult.Epsilon0, "-", "Деформация в начале координат для named-state."
+            PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "KappaX", _
+                OutputCurvature(stateResult.KappaX, units), OutputCurvatureUnit(units), "Кривизна KappaX для named-state."
+            PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "KappaY", _
+                OutputCurvature(stateResult.KappaY, units), OutputCurvatureUnit(units), "Кривизна KappaY для named-state."
+            PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "ExtensionUsed", _
+                BooleanText(stateResult.ExtensionUsed), "-", "True, если этот StateSolution использовал numerical extension."
+            PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "Status", _
+                stateResult.Status, "-", "Короткий статус состояния, сохраненный orchestrator-ом."
+            PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "StopReason", _
+                stateResult.StopReason, "-", "Служебная причина остановки solver-а для диагностики."
+        End If
+    Next stateIndex
 End Sub
 
 ' Записывает минимальные свойства imported-preview: Bounds, количество
@@ -699,45 +710,53 @@ Private Function ResultHeaderBase(ByVal headerText As String) As String
 End Function
 
 Private Sub PutCombinationElementResults(ByRef data() As Variant, ByRef rowIndex As Long, _
-        ByVal section As CSectionModel, ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, _
-        ByVal runID As Variant, ByVal units As CUnitSystem)
+        ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
+        ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, _
+        ByVal stateResult As CSectionStateResult, ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim i As Long
     Dim strain As Double
     Dim stress As Double
-    Dim concrete As Object
-    Dim steel As Object
+    Dim concrete As CMaterialDiagram
+    Dim steel As CMaterialDiagram
 
-    Set concrete = batch.ConcreteMaterialForCombination(combinationIndex)
-    Set steel = batch.SteelMaterialForCombination(combinationIndex)
+    If stateResult Is Nothing Then Exit Sub
+    If Not stateResult.Converged Then Exit Sub
+
+    Set concrete = materialProvider.ConcreteMaterialFromSpec(stateResult.MaterialSpec)
+    Set steel = materialProvider.SteelMaterialFromSpec(stateResult.MaterialSpec)
 
     For i = 1 To section.ConcreteCount
-        strain = batch.Epsilon0(combinationIndex) + batch.KappaX(combinationIndex) * section.ConcreteY(i) + _
-            batch.KappaY(combinationIndex) * section.ConcreteX(i)
+        strain = stateResult.Epsilon0 + stateResult.KappaX * section.ConcreteY(i) + _
+            stateResult.KappaY * section.ConcreteX(i)
         stress = concrete.GetStress(strain)
-        PutElementRow data, rowIndex, runID, batch.CombinationID(combinationIndex), section.ConcreteID(i), _
+        PutElementRow data, rowIndex, runID, batch.CombinationID(combinationIndex), _
+            batch.ProfileId(combinationIndex), stateResult.StateTypeText, section.ConcreteID(i), _
             strain, stress, PhysicalState("Concrete", strain, stress), units
         rowIndex = rowIndex + 1
     Next i
 
     For i = 1 To section.RebarCount
-        strain = batch.Epsilon0(combinationIndex) + batch.KappaX(combinationIndex) * section.RebarY(i) + _
-            batch.KappaY(combinationIndex) * section.RebarX(i)
+        strain = stateResult.Epsilon0 + stateResult.KappaX * section.RebarY(i) + _
+            stateResult.KappaY * section.RebarX(i)
         stress = steel.GetStress(strain)
-        PutElementRow data, rowIndex, runID, batch.CombinationID(combinationIndex), section.RebarID(i), _
+        PutElementRow data, rowIndex, runID, batch.CombinationID(combinationIndex), _
+            batch.ProfileId(combinationIndex), stateResult.StateTypeText, section.RebarID(i), _
             strain, stress, PhysicalState("Rebar", strain, stress), units
         rowIndex = rowIndex + 1
     Next i
 End Sub
 
 Private Sub PutElementRow(ByRef data() As Variant, ByVal rowIndex As Long, ByVal runID As Variant, _
-        ByVal combinationID As String, ByVal elementID As String, _
+        ByVal combinationID As String, ByVal profileId As String, ByVal stateType As String, ByVal elementID As String, _
         ByVal strain As Double, ByVal stress As Double, ByVal state As String, ByVal units As CUnitSystem)
     data(rowIndex, 1) = runID
     data(rowIndex, 2) = combinationID
-    data(rowIndex, 3) = elementID
-    data(rowIndex, 4) = strain
-    data(rowIndex, 5) = OutputStress(stress, units)
-    data(rowIndex, 6) = state
+    data(rowIndex, 3) = profileId
+    data(rowIndex, 4) = stateType
+    data(rowIndex, 5) = elementID
+    data(rowIndex, 6) = strain
+    data(rowIndex, 7) = OutputStress(stress, units)
+    data(rowIndex, 8) = state
 End Sub
 
 Private Function PhysicalState(ByVal materialType As String, ByVal strain As Double, ByVal stress As Double) As String
@@ -757,10 +776,12 @@ End Function
 Private Sub PutElementResultHeaders(ByRef data() As Variant, ByVal units As CUnitSystem)
     data(1, 1) = "RunID"
     data(1, 2) = "LoadCase"
-    data(1, 3) = "ElementID"
-    data(1, 4) = "Strain"
-    data(1, 5) = "Stress, " & OutputStressUnit(units)
-    data(1, 6) = "PhysicalState"
+    data(1, 3) = "ProfileId"
+    data(1, 4) = "StateType"
+    data(1, 5) = "ElementID"
+    data(1, 6) = "Strain"
+    data(1, 7) = "Stress, " & OutputStressUnit(units)
+    data(1, 8) = "PhysicalState"
 End Sub
 
 Private Sub PutGeometryHeaders(ByRef data() As Variant, ByVal units As CUnitSystem)

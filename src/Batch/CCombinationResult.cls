@@ -21,6 +21,7 @@ Option Explicit
 ' не превращался в набор параллельных массивов и длинных блоков присваивания.
 
 Public Status As String ' Итоговый пользовательский статус LC.
+Public ProfileId As String ' Расчетный профиль, назначенный этому LC в rngLoadCombinations.
 Public DirectStateStatus As String ' Статус прямого решения НДС фактического LC.
 Public CapacityStatus As String ' Статус поиска предельной несущей способности.
 Public CapacityLimitState As String ' Причина предельного состояния или текст ошибки capacity.
@@ -84,11 +85,15 @@ Public ResidualMx As Double ' Остаточная невязка по Mx.
 Public ResidualMy As Double ' Остаточная невязка по My.
 Public StateIterations As Long ' Число итераций прямого StateSolution.
 
+Private mStates As Collection ' Конечные именованные НДС, которые должны попасть в Results snapshot.
+
 ' Полностью очищает результат LC перед новым расчетом.
 ' Исходные нагрузки и комментарий сочетания здесь не хранятся, поэтому метод
 ' не может случайно стереть пользовательский ввод.
 Public Sub Clear(ByVal defaultCapacityPath As String)
+    Set mStates = New Collection
     Status = vbNullString
+    ProfileId = vbNullString
     DirectStateStatus = vbNullString
     CapacityStatus = vbNullString
     CapacityLimitState = vbNullString
@@ -129,6 +134,40 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     ResidualMy = 0#
     StateIterations = 0
 End Sub
+
+' Добавляет конечное named-state LC. Промежуточные итерации solver-а,
+' probe-точки и служебное состояние lambda_crc для sigma_s,crc сюда не пишутся.
+Public Sub AddState(ByVal stateResult As CSectionStateResult)
+    If stateResult Is Nothing Then Exit Sub
+    If mStates Is Nothing Then Set mStates = New Collection
+    mStates.Add stateResult
+End Sub
+
+' Возвращает количество сохраненных named states.
+Public Property Get StateCount() As Long
+    If Not mStates Is Nothing Then StateCount = mStates.Count
+End Property
+
+' Возвращает named-state по порядковому номеру.
+Public Property Get StateAt(ByVal index As Long) As CSectionStateResult
+    If mStates Is Nothing Then Err.Raise vbObjectError + 3940, "CCombinationResult", "Коллекция states не инициализирована."
+    If index < 1 Or index > mStates.Count Then Err.Raise vbObjectError + 3941, "CCombinationResult", "Индекс named-state вне диапазона."
+    Set StateAt = mStates.Item(index)
+End Property
+
+' Ищет named-state по типу. Если состояние не рассчитывалось, возвращает Nothing.
+Public Function FindState(ByVal stateType As ESectionStateType) As CSectionStateResult
+    If mStates Is Nothing Then Exit Function
+    Dim i As Long
+    For i = 1 To mStates.Count
+        Dim stateResult As CSectionStateResult
+        Set stateResult = mStates.Item(i)
+        If stateResult.StateType = stateType Then
+            Set FindState = stateResult
+            Exit Function
+        End If
+    Next i
+End Function
 
 ' Сохраняет найденную плоскость деформаций и внутренние усилия прямого НДС.
 ' Эти данные используются Results snapshot, Excel-схемой и AutoCAD export.
