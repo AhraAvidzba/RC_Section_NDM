@@ -432,14 +432,14 @@ End Function
 Private Function TestCrackedStateSpec() As CMaterialModelSpec
     Dim spec As CMaterialModelSpec
     Set spec = New CMaterialModelSpec
-    spec.Initialize "SLS", "TwoLine", "Ignore", "TwoLine"
+    spec.Initialize "SLS(II)", "TwoLine", "Ignore", "TwoLine"
     Set TestCrackedStateSpec = spec
 End Function
 
 Private Function TestCrackInitiationSpec() As CMaterialModelSpec
     Dim spec As CMaterialModelSpec
     Set spec = New CMaterialModelSpec
-    spec.Initialize "SLS", "ThreeLine", "UseDiagram", "TwoLine"
+    spec.Initialize "SLS(II)", "ThreeLine", "UseDiagram", "TwoLine"
     Set TestCrackInitiationSpec = spec
 End Function
 

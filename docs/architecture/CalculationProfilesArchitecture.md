@@ -53,20 +53,20 @@
 | Несущая способность | `Calculation.Strength.Capacity` | `Yes` | `No` | `Yes` | `No` | Поиск предельной несущей способности по `CapacityLoadPath` сочетания. |
 | Раскрытие трещин | `Calculation.Crack.Width` | `No` | `Yes` | `Yes` | `No` | Расчет ширины раскрытия нормальных трещин. |
 | `[Модель прочности]` |  |  |  |  |  | Материальная модель для `StrengthState` и `CapacityState`. |
-| Характеристики материалов | `MaterialModel.Strength.ValueSet` | `ULS` | `ULS` | `ULS` | `ULS` | Допустимо: `ULS`, `SLS`; для PR1 стартовое значение `ULS`. |
-| Диаграмма бетона | `MaterialModel.Strength.ConcreteDiagram` | `TwoLine` | `TwoLine` | `TwoLine` | `TwoLine` | Допустимо: `TwoLine`, `ThreeLine`. |
-| Растянутый бетон | `MaterialModel.Strength.ConcreteTension` | `Ignore` | `Ignore` | `Ignore` | `Ignore` | Допустимо: `Ignore`, `UseDiagram`. |
-| Диаграмма арматуры | `MaterialModel.Strength.SteelDiagram` | `TwoLine` | `TwoLine` | `TwoLine` | `TwoLine` | Допустимо: `TwoLine`, `ThreeLine`. |
+| Характеристики материалов | `MaterialModel.Strength.ValueSet` | `ULS(I)` | `ULS(I)` | `ULS(I)` | `ULS(I)` | Для прочности по СП используются характеристики I ГПС: бетон `Rb/Rbt`, арматура `Rsc/Rs`. |
+| Диаграмма бетона | `MaterialModel.Strength.ConcreteDiagram` | `TwoLine` | `TwoLine` | `TwoLine` | `TwoLine` | СП 63, п. 6.1.23: для прочности применяется двух- или трехлинейная диаграмма бетона. |
+| Растянутый бетон | `MaterialModel.Strength.ConcreteTension` | `Ignore` | `Ignore` | `Ignore` | `Ignore` | СП 63, п. 8.1.20: при расчете прочности растянутый бетон допускается не учитывать. |
+| Диаграмма арматуры | `MaterialModel.Strength.SteelDiagram` | `TwoLine` | `TwoLine` | `TwoLine` | `TwoLine` | СП 63, п. 6.2.13: `TwoLine` для физического предела текучести, `ThreeLine` для условного. |
 | `[Модель Mcrc]` |  |  |  |  |  | Модель образования трещины внутри `Calculation.Crack.Width`. |
-| Характеристики материалов | `MaterialModel.CrackInitiation.ValueSet` | `SLS` | `SLS` | `SLS` | `SLS` | Обязательно только при `Calculation.Crack.Width = Yes` и `SLS.Crack.PsiMode = Auto`. Допустимо: `ULS`, `SLS`. |
-| Диаграмма бетона | `MaterialModel.CrackInitiation.ConcreteDiagram` | `ThreeLine` | `ThreeLine` | `ThreeLine` | `ThreeLine` | Обязательно только для `Auto`. Допустимо: `TwoLine`, `ThreeLine`. |
-| Растянутый бетон | `MaterialModel.CrackInitiation.ConcreteTension` | `UseDiagram` | `UseDiagram` | `UseDiagram` | `UseDiagram` | Для Mcrc растянутый бетон должен учитываться; допустимо только `UseDiagram`. |
-| Диаграмма арматуры | `MaterialModel.CrackInitiation.SteelDiagram` | `TwoLine` | `TwoLine` | `TwoLine` | `TwoLine` | Обязательно только для `Auto`. Допустимо: `TwoLine`, `ThreeLine`. |
+| Характеристики материалов | `MaterialModel.CrackInitiation.ValueSet` | `SLS(II)` | `SLS(II)` | `SLS(II)` | `SLS(II)` | Для Mcrc по СП используются характеристики II ГПС: `Rb,ser/Rbt,ser` и `Rs,ser`. |
+| Диаграмма бетона | `MaterialModel.CrackInitiation.ConcreteDiagram` | `ThreeLine` | `ThreeLine` | `ThreeLine` | `ThreeLine` | СП 63, п. 6.1.24: для образования трещин основная модель бетона - `ThreeLine` с растяжением. |
+| Растянутый бетон | `MaterialModel.CrackInitiation.ConcreteTension` | `UseDiagram` | `UseDiagram` | `UseDiagram` | `UseDiagram` | Для Mcrc растянутая ветвь бетона должна учитываться. |
+| Диаграмма арматуры | `MaterialModel.CrackInitiation.SteelDiagram` | `TwoLine` | `TwoLine` | `TwoLine` | `TwoLine` | СП 63, п. 6.2.13: `TwoLine` для физического предела текучести, `ThreeLine` для условного. |
 | `[Модель НДС с трещинами]` |  |  |  |  |  | Модель раскрытого состояния внутри `Calculation.Crack.Width`. |
-| Характеристики материалов | `MaterialModel.CrackedState.ValueSet` | `SLS` | `SLS` | `SLS` | `SLS` | Обязательно всегда при `Calculation.Crack.Width = Yes`. Допустимо: `ULS`, `SLS`. |
-| Диаграмма бетона | `MaterialModel.CrackedState.ConcreteDiagram` | `TwoLine` | `TwoLine` | `TwoLine` | `TwoLine` | Обязательно всегда при Crack.Width. Допустимо: `TwoLine`, `ThreeLine`. |
-| Растянутый бетон | `MaterialModel.CrackedState.ConcreteTension` | `Ignore` | `Ignore` | `Ignore` | `Ignore` | Для уже образовавшейся трещины растянутый бетон не учитывается. |
-| Диаграмма арматуры | `MaterialModel.CrackedState.SteelDiagram` | `TwoLine` | `TwoLine` | `TwoLine` | `TwoLine` | Обязательно всегда при Crack.Width. Допустимо: `TwoLine`, `ThreeLine`. |
+| Характеристики материалов | `MaterialModel.CrackedState.ValueSet` | `SLS(II)` | `SLS(II)` | `SLS(II)` | `SLS(II)` | Для раскрытия трещин по СП используются характеристики II ГПС. |
+| Диаграмма бетона | `MaterialModel.CrackedState.ConcreteDiagram` | `TwoLine` | `TwoLine` | `TwoLine` | `TwoLine` | СП 63, п. 6.1.26: после образования трещин НДС допускается считать по `TwoLine` или `ThreeLine`. |
+| Растянутый бетон | `MaterialModel.CrackedState.ConcreteTension` | `Ignore` | `Ignore` | `Ignore` | `Ignore` | Для уже образовавшейся трещины растянутый бетон в НДС не учитывается. |
+| Диаграмма арматуры | `MaterialModel.CrackedState.SteelDiagram` | `TwoLine` | `TwoLine` | `TwoLine` | `TwoLine` | СП 63, п. 6.2.13: `TwoLine` для физического предела текучести, `ThreeLine` для условного. |
 | `[Настройки визуализации]` |  |  |  |  |  | Что показывать на схеме и в AutoCAD для выбранного LC. |
 | Выводимое состояние | `Visualization.State` | `StrengthState` | `CrackedState` | `StrengthState` | `StrengthState` | Имя конечного состояния, которое схема/AutoCAD будут искать в snapshot. |
 | Выводимая величина | `Visualization.Quantity` | `Stress` | `Stress` | `Stress` | `Strain` | `Stress` или `Strain`. |
@@ -132,7 +132,7 @@ PhysicalState
 - `CapacityState`, если включен `Calculation.Strength.Capacity` и найдено предельное состояние;
 - `CrackedState`, если включен `Calculation.Crack.Width` и расчет трещин дошел до раскрытого состояния;
 - `BeforeMcrcState` только если внутри `Calculation.Crack.Width` действительно потребовалась общая Mcrc-ветка по `eps_bt,ult`;
-- `AfterMcrcState` только если для уточнения `psi_s` выполнен повторный solve при `lambda_crc * LC` без растянутого бетона.
+- `AfterMcrcState` только если для уточнения `psi_s` выполнен повторный solve состояния сразу после появления трещины без растянутого бетона.
 
 Не записываются:
 
@@ -218,7 +218,7 @@ Provider получает спецификацию материальной мо
 ValueSet + ConcreteDiagram + ConcreteTension + SteelDiagram
 ```
 
-Решатели не выбирают `ULS/SLS`, `TwoLine/ThreeLine` или режим растянутого бетона. Они получают готовые диаграммы.
+Решатели не выбирают `ULS(I)/SLS(II)`, `TwoLine/ThreeLine` или режим растянутого бетона. Они получают готовые диаграммы.
 
 ### `CNDMResultsWriter`
 
@@ -345,7 +345,7 @@ mvsULS
 mvsSLS
 ```
 
-`ULS` и `SLS` выбирают набор характеристик материала. Они не являются профилями.
+`ULS(I)` и `SLS(II)` выбирают набор характеристик материала для I и II групп предельных состояний. Они не являются профилями. Старые текстовые значения `ULS`, `SLS`, `I(ULS)` и `II(SLS)` можно читать как алиасы при миграции, но в книге пользователь видит запись с группой.
 
 ### `EConcreteDiagramType`
 
@@ -523,7 +523,7 @@ Target(lambda) = Offset + lambda * Base
 - calculator получает уже готовый исходный `CrackedState` от orchestrator-а;
 - calculator не должен сам повторно решать исходное раскрытое состояние заданного LC;
 - `BeforeMcrcState` получается только если режим `Auto` действительно дошел до общей ветки Mcrc по `eps_bt,ult`; это состояние на пороге Mcrc с работающим растянутым бетоном;
-- `AfterMcrcState` получается тем же условным путем, а также для центральной ветки через `Ncrc`, если требуется `sigma_s,crc`; это отдельный solve при той же `lambda_crc * LC` уже без растянутого бетона;
+- `AfterMcrcState` получается тем же условным путем, а также для центральной ветки через расчетную силу трещинообразования `Ncrc`, если требуется `sigma_s,crc`; это отдельный solve состояния сразу после появления трещины уже без растянутого бетона;
 - calculator считает и возвращает crack-result и optional `BeforeMcrcState` / `AfterMcrcState`, но не знает о `CCombinationResult` и не модифицирует его напрямую;
 - проверка продольных трещин вызывается в том же конвейере трещин после получения напряжений бетона раскрытого состояния;
 - итог продольных трещин хранится в `CCombinationResult` как часть результата Crack.Width, а не как самостоятельный расчет профиля.
@@ -593,6 +593,8 @@ Writer должен читать готовые `CCombinationResult` и не р�
 - писать все конечные named states;
 - добавить базовые колонки `ProfileId` и `StateType`;
 - воспроизводить `Stress` по `MaterialModelSpec`, сохраненной в `CSectionStateResult`;
+- писать `rngNDMMaterialDiagrams` как уникальный каталог `DiagramId`, а не как повторение одних и тех же точек по каждому LC;
+- сохранять в `rngNDMSectionProperties` ссылки `ConcreteDiagramId` и `RebarDiagramId` для каждого named-state;
 - не восстанавливать материальную модель только по `MaterialModelRole` или текущему `Config`;
 - не писать внутренние пробы solver-а.
 
@@ -617,6 +619,7 @@ Writer должен читать готовые `CCombinationResult` и не р�
 | Crack.Width | Глобальное включение + старая группа | Запускается по `Calculation.Crack.Width` |
 | Продольные трещины | Сейчас вызываются в batch рядом с трещинами | Остаются частью `Calculation.Crack.Width` |
 | Элементные результаты | Одно состояние на LC | Все конечные named states с колонкой `StateType` |
+| Диаграммы Results | Повторение диаграмм по сочетаниям | Уникальный каталог `DiagramId` по `ProfileId`/`StateType`/`MaterialModelSpec`; named-state metadata хранит ссылки на бетонную и арматурную диаграмму |
 | Plot/AutoCAD | По `LoadCase` без явного состояния | `LoadCase` из Config, `Visualization.State` из текущего профиля, численные данные из snapshot |
 | Статусы | Частично в batch, частично рядом с расчетами | Пользовательские строки только через `CBatchStatusPolicy` |
 

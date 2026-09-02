@@ -177,10 +177,10 @@ Private Sub AppendConcreteMaterialParameters(ByRef data As Variant)
         If UBound(data, 2) >= 5 Then commentValue = Trim$(CStr(data(rowIndex, 5)))
 
         Select Case LCase$(rowKey)
-            Case "concrete.r.uls"
+            Case "concrete.r.uls(i)", "concrete.r.i(uls)", "concrete.r.uls"
                 AppendSetting "Concrete.Rb.ULS", compressionValue, compressionValue, commentValue
                 AppendSetting "Concrete.Rbt.ULS", tensionValue, tensionValue, commentValue
-            Case "concrete.r.sls"
+            Case "concrete.r.sls(ii)", "concrete.r.ii(sls)", "concrete.r.sls"
                 AppendSetting "Concrete.Rb.SLS", compressionValue, compressionValue, commentValue
                 AppendSetting "Concrete.Rbt.SLS", tensionValue, tensionValue, commentValue
             Case "concrete.rb.mc2"
@@ -230,10 +230,10 @@ Private Sub AppendSteelMaterialParameters(ByRef data As Variant)
         If UBound(data, 2) >= 5 Then commentValue = Trim$(CStr(data(rowIndex, 5)))
 
         Select Case LCase$(rowKey)
-            Case "steel.r.uls"
+            Case "steel.r.uls(i)", "steel.r.i(uls)", "steel.r.uls"
                 AppendSetting "Steel.Rsc.ULS", compressionValue, compressionValue, commentValue
                 AppendSetting "Steel.Rs.ULS", tensionValue, tensionValue, commentValue
-            Case "steel.r.sls"
+            Case "steel.r.sls(ii)", "steel.r.ii(sls)", "steel.r.sls"
                 AppendSetting "Steel.Rsc.SLS", compressionValue, compressionValue, commentValue
                 AppendSetting "Steel.Rs.SLS", tensionValue, tensionValue, commentValue
             Case "steel.e"

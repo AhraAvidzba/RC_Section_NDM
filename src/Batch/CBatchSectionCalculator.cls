@@ -54,7 +54,7 @@ Private mLoadReferenceOffsetY As Double ' Смещение точки нагру
 Private mGoverningCombinationIndex As Long ' Индекс LC, который стал определяющим в batch summary.
 Private mCrackGoverningCombinationIndex As Long ' Индекс LC с минимальным запасом по раскрытию трещин.
 Private mElapsedSeconds As Double ' Полное время пакетного расчета, сек.
-Private mDiagnosticLog As String ' Короткий текстовый журнал по LC для отладки batch-потока.
+Private mDiagnosticLog As String ' Короткий текстовый журнал по LC для диагностики batch-потока.
 
 Private mCrackAllowable As Double ' Допустимая ширина раскрытия трещины a_crc,ult, мм.
 Private mCrackPsiMode As String ' User или Auto: как определять psi_s для нормальных трещин.
@@ -732,7 +732,7 @@ Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     AppendDiagnostic index
 End Sub
 
-' Выполняет SLS-проверку продольных трещин по максимальному сжимающему
+' Выполняет SLS(II)-проверку продольных трещин по максимальному сжимающему
 ' напряжению бетона из уже найденного прямого НДС с трещинами. По СП 35 эта
 ' проверка относится к трещиностойкости, поэтому в новой профильной схеме она
 ' является частью Calculation.Crack.Width. Повторный расчет состояния здесь
@@ -881,7 +881,7 @@ Private Sub StoreSectionState(ByVal index As Long, ByVal solver As CSectionSolve
 End Sub
 
 ' Добавляет одну строку в текстовую диагностику batch-расчета.
-' Это компактная сводка для отладки, а не подробный журнал итераций solver-а.
+' Это компактная диагностическая сводка, а не подробный журнал итераций solver-а.
 Private Sub AppendDiagnostic(ByVal index As Long)
     mDiagnosticLog = mDiagnosticLog & "combination=" & mInputs(index).CombinationID & _
         "; OverallStatus=" & mResults(index).Status & _

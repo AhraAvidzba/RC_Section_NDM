@@ -631,7 +631,7 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 11
     AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 28
     AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 36
-    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 47
+    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 49
     AssertTrue stats, "ui.results.geometry.noSource", ResultHeaderColumn(geometryResults, "SourceName") = 0
     AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(geometryResults, "MaterialClass") = 0
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
@@ -653,9 +653,13 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.results.materialDiagrams.rows", UBound(materialDiagrams, 1) > 1
     AssertTrue stats, "ui.results.materialDiagrams.stateType", ResultHeaderColumn(materialDiagrams, "StateType") > 0
     AssertTrue stats, "ui.results.materialDiagrams.role", ResultHeaderColumn(materialDiagrams, "MaterialModelRole") > 0
+    AssertTrue stats, "ui.results.materialDiagrams.diagramId", ResultHeaderColumn(materialDiagrams, "DiagramId") > 0
+    AssertTrue stats, "ui.results.materialDiagrams.spec", ResultHeaderColumn(materialDiagrams, "MaterialModelSpec") > 0
+    AssertTrue stats, "ui.results.materialDiagrams.mode", ResultHeaderColumn(materialDiagrams, "DiagramMode") > 0
     AssertTrue stats, "ui.results.materialDiagrams.noPurpose", ResultHeaderColumn(materialDiagrams, "Purpose") = 0
+    AssertTrue stats, "ui.results.materialDiagrams.noLoadCase", ResultHeaderColumn(materialDiagrams, "LoadCase") = 0
     AssertTrue stats, "ui.results.materialDiagrams.usedStates", _
-        MaterialDiagramStatesMatchElementStates(materialDiagrams, elementResults)
+        MaterialDiagramIdsMatchStateProperties(materialDiagrams)
     AssertTrue stats, "ui.plot.chart.created", PlotChartExists()
     AssertTrue stats, "ui.plot.title.comment", PlotChartTitleContains("(ui test)")
 
@@ -727,7 +731,7 @@ Private Sub TestTwentyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUi
     AssertElementStateRows stats, elementResults, "LC_FULL_20", "AfterMcrcState", geometryRowCount
 
     AssertTrue stats, "ui.results.fullSnapshot.propertiesRows", _
-        ResultTableRowCount("rngNDMSectionProperties") >= 1 + 55 + 20 * (23 + 5 * 8)
+        ResultTableRowCount("rngNDMSectionProperties") >= 1 + 55 + 20 * (23 + 5 * 10)
     AssertTrue stats, "ui.results.fullSnapshot.materialRows", _
         ResultTableRowCount("rngNDMMaterialDiagrams") > 1
 End Sub
@@ -1096,67 +1100,67 @@ Private Function ElementStateRowCount(ByRef data As Variant, ByVal loadCase As S
     Next rowIndex
 End Function
 
-' Проверяет, что диагностический блок фактических диаграмм соответствует
-' конечным named-state из rngNDMElementResults. Диаграммы не должны выводиться
-' для абстрактного Purpose или промежуточной probe-точки solver-а.
-Private Function MaterialDiagramStatesMatchElementStates(ByRef materialDiagrams As Variant, _
-        ByRef elementResults As Variant) As Boolean
-    Dim elementKeys As Object
-    Set elementKeys = CreateObject("Scripting.Dictionary")
-    elementKeys.CompareMode = vbTextCompare
+' Проверяет, что каталог фактических диаграмм связан с named-state metadata.
+' Диаграммы пишутся один раз по DiagramId, а состояния ссылаются на них через
+' State.*.ConcreteDiagramId и State.*.RebarDiagramId в rngNDMSectionProperties.
+Private Function MaterialDiagramIdsMatchStateProperties(ByRef materialDiagrams As Variant) As Boolean
+    Dim diagramIds As Object
+    Set diagramIds = CreateObject("Scripting.Dictionary")
+    diagramIds.CompareMode = vbTextCompare
 
-    Dim loadCol As Long
-    Dim profileCol As Long
-    Dim stateCol As Long
-    loadCol = ResultHeaderColumn(elementResults, "LoadCase")
-    profileCol = ResultHeaderColumn(elementResults, "ProfileId")
-    stateCol = ResultHeaderColumn(elementResults, "StateType")
-    If loadCol = 0 Or profileCol = 0 Or stateCol = 0 Then Exit Function
+    Dim pointKeys As Object
+    Set pointKeys = CreateObject("Scripting.Dictionary")
+    pointKeys.CompareMode = vbTextCompare
+
+    Dim diagramCol As Long
+    Dim pointCol As Long
+    diagramCol = ResultHeaderColumn(materialDiagrams, "DiagramId")
+    pointCol = ResultHeaderColumn(materialDiagrams, "PointIndex")
+    If diagramCol = 0 Or pointCol = 0 Then Exit Function
 
     Dim rowIndex As Long
-    For rowIndex = 2 To UBound(elementResults, 1)
-        Dim elementKey As String
-        elementKey = StateKey(elementResults(rowIndex, loadCol), _
-            elementResults(rowIndex, profileCol), elementResults(rowIndex, stateCol))
-        If Len(elementKey) > 0 Then
-            If Not elementKeys.Exists(elementKey) Then elementKeys.Add elementKey, True
-        End If
+    For rowIndex = 2 To UBound(materialDiagrams, 1)
+        Dim diagramId As String
+        diagramId = Trim$(CStr(materialDiagrams(rowIndex, diagramCol)))
+        If Len(diagramId) = 0 Then Exit Function
+        If Not diagramIds.Exists(diagramId) Then diagramIds.Add diagramId, True
+
+        Dim pointKey As String
+        pointKey = diagramId & "|" & CStr(materialDiagrams(rowIndex, pointCol))
+        If pointKeys.Exists(pointKey) Then Exit Function
+        pointKeys.Add pointKey, True
     Next rowIndex
 
-    Dim diagramKeys As Object
-    Set diagramKeys = CreateObject("Scripting.Dictionary")
-    diagramKeys.CompareMode = vbTextCompare
+    Dim usedIds As Object
+    Set usedIds = CreateObject("Scripting.Dictionary")
+    usedIds.CompareMode = vbTextCompare
 
-    loadCol = ResultHeaderColumn(materialDiagrams, "LoadCase")
-    profileCol = ResultHeaderColumn(materialDiagrams, "ProfileId")
-    stateCol = ResultHeaderColumn(materialDiagrams, "StateType")
-    If loadCol = 0 Or profileCol = 0 Or stateCol = 0 Then Exit Function
+    Dim props As Variant
+    props = ResultTable("rngNDMSectionProperties")
+    Dim parameterCol As Long
+    Dim valueCol As Long
+    parameterCol = ResultHeaderColumn(props, "Parameter")
+    valueCol = ResultHeaderColumn(props, "Value")
+    If parameterCol = 0 Or valueCol = 0 Then Exit Function
 
-    For rowIndex = 2 To UBound(materialDiagrams, 1)
-        Dim diagramKey As String
-        diagramKey = StateKey(materialDiagrams(rowIndex, loadCol), _
-            materialDiagrams(rowIndex, profileCol), materialDiagrams(rowIndex, stateCol))
-        If Len(diagramKey) > 0 Then
-            If Not elementKeys.Exists(diagramKey) Then Exit Function
-            If Not diagramKeys.Exists(diagramKey) Then diagramKeys.Add diagramKey, True
+    For rowIndex = 2 To UBound(props, 1)
+        Dim parameterName As String
+        parameterName = CStr(props(rowIndex, parameterCol))
+        If Right$(parameterName, Len("ConcreteDiagramId")) = "ConcreteDiagramId" Or _
+                Right$(parameterName, Len("RebarDiagramId")) = "RebarDiagramId" Then
+            diagramId = Trim$(CStr(props(rowIndex, valueCol)))
+            If Len(diagramId) = 0 Then Exit Function
+            If Not diagramIds.Exists(diagramId) Then Exit Function
+            If Not usedIds.Exists(diagramId) Then usedIds.Add diagramId, True
         End If
     Next rowIndex
 
     Dim keyVariant As Variant
-    For Each keyVariant In elementKeys.Keys
-        If Not diagramKeys.Exists(CStr(keyVariant)) Then Exit Function
+    For Each keyVariant In diagramIds.Keys
+        If Not usedIds.Exists(CStr(keyVariant)) Then Exit Function
     Next keyVariant
 
-    MaterialDiagramStatesMatchElementStates = True
-End Function
-
-' Собирает ключ состояния, общий для rngNDMElementResults и
-' rngNDMMaterialDiagrams.
-Private Function StateKey(ByVal loadCase As Variant, ByVal profileId As Variant, _
-        ByVal stateType As Variant) As String
-    If Len(Trim$(CStr(loadCase))) = 0 Or Len(Trim$(CStr(profileId))) = 0 Or _
-            Len(Trim$(CStr(stateType))) = 0 Then Exit Function
-    StateKey = CStr(loadCase) & "|" & CStr(profileId) & "|" & CStr(stateType)
+    MaterialDiagramIdsMatchStateProperties = True
 End Function
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -2197,15 +2201,15 @@ Private Sub PrepareFullStateProfile(ByVal profileId As String)
     SetProfileSetting profileId, "Calculation.Strength.DirectState", "Yes"
     SetProfileSetting profileId, "Calculation.Strength.Capacity", "Yes"
     SetProfileSetting profileId, "Calculation.Crack.Width", "Yes"
-    SetProfileSetting profileId, "MaterialModel.Strength.ValueSet", "ULS"
+    SetProfileSetting profileId, "MaterialModel.Strength.ValueSet", "ULS(I)"
     SetProfileSetting profileId, "MaterialModel.Strength.ConcreteDiagram", "TwoLine"
     SetProfileSetting profileId, "MaterialModel.Strength.ConcreteTension", "Ignore"
     SetProfileSetting profileId, "MaterialModel.Strength.SteelDiagram", "TwoLine"
-    SetProfileSetting profileId, "MaterialModel.CrackInitiation.ValueSet", "SLS"
+    SetProfileSetting profileId, "MaterialModel.CrackInitiation.ValueSet", "SLS(II)"
     SetProfileSetting profileId, "MaterialModel.CrackInitiation.ConcreteDiagram", "ThreeLine"
     SetProfileSetting profileId, "MaterialModel.CrackInitiation.ConcreteTension", "UseDiagram"
     SetProfileSetting profileId, "MaterialModel.CrackInitiation.SteelDiagram", "TwoLine"
-    SetProfileSetting profileId, "MaterialModel.CrackedState.ValueSet", "SLS"
+    SetProfileSetting profileId, "MaterialModel.CrackedState.ValueSet", "SLS(II)"
     SetProfileSetting profileId, "MaterialModel.CrackedState.ConcreteDiagram", "TwoLine"
     SetProfileSetting profileId, "MaterialModel.CrackedState.ConcreteTension", "Ignore"
     SetProfileSetting profileId, "MaterialModel.CrackedState.SteelDiagram", "TwoLine"

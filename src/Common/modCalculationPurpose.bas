@@ -52,11 +52,11 @@ End Enum
 ' Преобразует пользовательский или snapshot-текст в роль материальной модели.
 Public Function PurposeFromText(ByVal purposeText As String) As ECalculationPurpose
     Select Case LCase$(Trim$(purposeText))
-        Case "strength", "group1", "uls", "i", "1"
+        Case "strength", "group1", "uls", "i", "i(uls)", "uls(i)", "1"
             PurposeFromText = cpStrength
         Case "mcrc"
             PurposeFromText = cpMcrc
-        Case "crackednds", "a_crc", "crack", "group2", "sls", "ii", "2"
+        Case "crackednds", "a_crc", "crack", "group2", "sls", "ii", "ii(sls)", "sls(ii)", "2"
             PurposeFromText = cpCrackedNDS
         Case "statesolution", "state", "directstate"
             PurposeFromText = cpStateSolution
@@ -100,23 +100,25 @@ End Function
 
 ' Преобразует ValueSet из профиля в enum.
 Public Function MaterialValueSetFromText(ByVal valueText As String) As EMaterialValueSet
-    Select Case LCase$(Trim$(valueText))
-        Case "uls", "i", "group1", "strength"
+    Dim normalized As String
+    normalized = LCase$(Replace$(Trim$(valueText), " ", vbNullString))
+    Select Case normalized
+        Case "uls", "i", "i(uls)", "uls(i)", "group1", "strength"
             MaterialValueSetFromText = mvsULS
-        Case "sls", "ii", "group2", "service"
+        Case "sls", "ii", "ii(sls)", "sls(ii)", "group2", "service"
             MaterialValueSetFromText = mvsSLS
         Case Else
             Err.Raise vbObjectError + 3311, "modCalculationPurpose", _
-                "ValueSet материальной модели должен быть ULS или SLS."
+                "ValueSet материальной модели должен быть ULS(I) или SLS(II)."
     End Select
 End Function
 
 Public Function MaterialValueSetToText(ByVal valueSet As EMaterialValueSet) As String
     Select Case valueSet
         Case mvsULS
-            MaterialValueSetToText = "ULS"
+            MaterialValueSetToText = "ULS(I)"
         Case mvsSLS
-            MaterialValueSetToText = "SLS"
+            MaterialValueSetToText = "SLS(II)"
         Case Else
             Err.Raise vbObjectError + 3312, "modCalculationPurpose", _
                 "Неизвестный MaterialValueSet."

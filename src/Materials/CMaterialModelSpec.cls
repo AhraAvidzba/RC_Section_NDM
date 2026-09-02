@@ -14,14 +14,14 @@ Option Explicit
 ' ==========================================================================
 ' CMaterialModelSpec хранит ровно тот набор пользовательских переключателей,
 ' по которому CMaterialModelProvider строит бетонную и арматурную диаграммы:
-' ULS/SLS, TwoLine/ThreeLine, учет растянутого бетона и тип диаграммы стали.
+' ULS(I)/SLS(II), TwoLine/ThreeLine, учет растянутого бетона и тип диаграммы стали.
 '
 ' Класс не строит диаграммы и не знает формул СП. Его задача - зафиксировать
 ' выбранную спецификацию в памяти результата, чтобы writer мог воспроизвести
 ' именно рассчитанное состояние, даже если другой профиль использует ту же
 ' роль материальной модели с другими настройками.
 
-Private mValueSet As EMaterialValueSet ' ULS или SLS.
+Private mValueSet As EMaterialValueSet ' ULS(I) или SLS(II).
 Private mConcreteDiagram As EConcreteDiagramKind ' TwoLine или ThreeLine для бетона.
 Private mConcreteTension As EConcreteTensionKind ' Ignore или UseDiagram для растянутого бетона.
 Private mSteelDiagram As ESteelDiagramKind ' TwoLine или ThreeLine для арматуры.

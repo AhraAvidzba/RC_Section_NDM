@@ -23,11 +23,11 @@ Private Const ELEMENT_RESULT_COLUMNS As Long = 8 ' LC-зависимые рез�
 Private Const GEOMETRY_COLUMNS As Long = 15 ' Постоянная геометрия элементов, записанная один раз на расчетный снимок.
 Private Const SECTION_PROPERTY_COLUMNS As Long = 6 ' Общие свойства сечения и LC-свойства уровня всего сечения.
 Private Const ANNOTATION_COLUMNS As Long = 13 ' Semantic-аннотации схемы: размеры, контур, групповые подписи арматуры.
-Private Const MATERIAL_DIAGRAM_COLUMNS As Long = 9 ' Диагностический вывод фактических точек диаграмм, переданных solver-ам.
+Private Const MATERIAL_DIAGRAM_COLUMNS As Long = 11 ' Каталог уникальных точек диаграмм, переданных solver-ам.
 Private Const PHYSICAL_TOLERANCE As Double = 0.000000001 ' Порог, ниже которого напряжение считается NearZero.
 Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 55 ' Строки общих свойств сечения до LC-зависимых блоков.
 Private Const LC_SECTION_PROPERTY_ROWS As Long = 23 ' Строки свойств одного LC без metadata named-state.
-Private Const STATE_SECTION_PROPERTY_ROWS As Long = 8 ' Строки metadata одного сохраненного named-state.
+Private Const STATE_SECTION_PROPERTY_ROWS As Long = 10 ' Строки metadata одного сохраненного named-state.
 
 ' ------------------------------
 ' Полная запись Results
@@ -317,7 +317,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUltimate", vbNullString, OutputMomentUnit(units), "Заполняется только для траекторий, где масштабируется My."
         End If
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "CrackStatus", batch.CrackStatus(i), "-", "Статус расчета ширины раскрытия трещин."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrackStatus", batch.LongitudinalCrackStatus(i), "-", "Статус SLS-проверки продольных трещин по сжатому бетону; выполняется как часть Calculation.Crack.Width."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrackStatus", batch.LongitudinalCrackStatus(i), "-", "Статус SLS(II)-проверки продольных трещин по сжатому бетону; выполняется как часть Calculation.Crack.Width."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrack.MaxConcreteCompressionStress", OutputStress(batch.MaxConcreteCompressionStress(i), units), OutputStressUnit(units), "Максимальное по модулю сжимающее напряжение бетона в прямом НДС."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrack.RbMc2", OutputStress(batch.LongitudinalCrackRbMc2(i), units), OutputStressUnit(units), "Пользовательское допустимое Rb,mc2 для проверки продольных трещин."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrack.Utilization", batch.LongitudinalCrackUtilization(i), "-", "Использование по продольным трещинам: sigma_c,max / Rb,mc2."
@@ -344,9 +344,10 @@ End Function
 ' ------------------------------
 ' Диагностический вывод фактических диаграмм
 ' ------------------------------
-' Пишет точки CMaterialDiagram, которые solver/provider использовали для
-' прямого НДС, capacity и crack-веток каждого LC. Это временный контрольный
-' блок Results: расчетное ядро и plotter его не читают.
+' Пишет уникальный каталог CMaterialDiagram, которые solver/provider
+' использовали для конечных named-state текущего snapshot. Диаграммы зависят
+' от профиля, StateType, MaterialModelSpec и режима extension, но не от номера
+' LC, поэтому одинаковые сочетания не дублируются.
 Private Sub WriteMaterialDiagrams(ByVal workbook As Object, ByVal materialProvider As CMaterialModelProvider, _
         ByVal batch As CBatchSectionCalculator, ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
@@ -361,10 +362,12 @@ Private Sub WriteMaterialDiagrams(ByVal workbook As Object, ByVal materialProvid
 
     Dim rowIndex As Long
     rowIndex = 2
+    Dim written As Object
+    Set written = CreateObject("Scripting.Dictionary")
 
     Dim i As Long
     For i = 1 To batch.Count
-        PutCombinationMaterialDiagrams data, rowIndex, runID, materialProvider, batch, i, units
+        PutCombinationMaterialDiagrams data, rowIndex, runID, materialProvider, batch, i, units, written
     Next i
 
     Dim rowCount As Long
@@ -376,24 +379,25 @@ Private Sub WriteMaterialDiagrams(ByVal workbook As Object, ByVal materialProvid
 End Sub
 
 ' Собирает материальные диаграммы одного сочетания по фактически сохраненным
-' named states. Это важно для профилей: один и тот же StateType у разных
-' профилей может иметь разную MaterialModelSpec.
+' named states, но пишет только новые DiagramId. Это важно для профилей: один
+' и тот же StateType у разных профилей может иметь разную MaterialModelSpec.
 Private Sub PutCombinationMaterialDiagrams(ByRef data() As Variant, ByRef rowIndex As Long, _
         ByVal runID As Variant, ByVal materialProvider As CMaterialModelProvider, _
-        ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, ByVal units As CUnitSystem)
+        ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, ByVal units As CUnitSystem, _
+        ByVal written As Object)
     Dim stateIndex As Long
     For stateIndex = 1 To batch.NamedStateCount(combinationIndex)
         Dim stateResult As CSectionStateResult
         Set stateResult = batch.NamedState(combinationIndex, stateIndex)
         If Not stateResult Is Nothing Then
-            AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
-                batch.ProfileId(combinationIndex), _
-                stateResult.StateTypeText, stateResult.MaterialModelRoleText, "Concrete", _
-                ConcreteDiagramForState(materialProvider, stateResult, batch.DirectStateDiagramExtensionEnabled(combinationIndex)), units
-            AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
-                batch.ProfileId(combinationIndex), _
-                stateResult.StateTypeText, stateResult.MaterialModelRoleText, "Rebar", _
-                SteelDiagramForState(materialProvider, stateResult, batch.DirectStateDiagramExtensionEnabled(combinationIndex)), units
+            AppendMaterialDiagramPoints data, rowIndex, runID, batch.ProfileId(combinationIndex), _
+                stateResult, "Concrete", _
+                ConcreteDiagramForState(materialProvider, stateResult, batch.DirectStateDiagramExtensionEnabled(combinationIndex)), _
+                batch.DirectStateDiagramExtensionEnabled(combinationIndex), units, written
+            AppendMaterialDiagramPoints data, rowIndex, runID, batch.ProfileId(combinationIndex), _
+                stateResult, "Rebar", _
+                SteelDiagramForState(materialProvider, stateResult, batch.DirectStateDiagramExtensionEnabled(combinationIndex)), _
+                batch.DirectStateDiagramExtensionEnabled(combinationIndex), units, written
         End If
     Next stateIndex
 End Sub
@@ -430,26 +434,54 @@ Private Function IsDirectStateResult(ByVal stateResult As CSectionStateResult) A
     IsDirectStateResult = (stateResult.StateType = sstStrengthState Or stateResult.StateType = sstCrackedState)
 End Function
 
+' Формирует стабильный идентификатор уникальной диаграммы текущего snapshot.
+' LoadCase намеренно не входит в ключ: если разные сочетания используют один
+' профиль и одно named-state, материал для solver-а у них одинаковый.
+Private Function MaterialDiagramId(ByVal profileId As String, ByVal stateResult As CSectionStateResult, _
+        ByVal materialKind As String, ByVal directExtensionEnabled As Boolean) As String
+    MaterialDiagramId = profileId & "|" & stateResult.StateTypeText & "|" & _
+        stateResult.MaterialModelRoleText & "|" & materialKind & "|" & _
+        MaterialDiagramModeText(stateResult, directExtensionEnabled) & "|" & _
+        stateResult.MaterialSpec.SpecKey
+End Function
+
+' Показывает, была ли в точках диаграммы записана физическая модель или
+' техническое продолжение для прямого StateSolution.
+Private Function MaterialDiagramModeText(ByVal stateResult As CSectionStateResult, _
+        ByVal directExtensionEnabled As Boolean) As String
+    If IsDirectStateResult(stateResult) And directExtensionEnabled Then
+        MaterialDiagramModeText = "StateExtension"
+    Else
+        MaterialDiagramModeText = "Physical"
+    End If
+End Function
+
 ' Добавляет все точки одной диаграммы. Напряжения пишутся в OUTPUT stress unit,
 ' деформации остаются безразмерными, как их получает solver.
 Private Sub AppendMaterialDiagramPoints(ByRef data() As Variant, ByRef rowIndex As Long, _
-        ByVal runID As Variant, ByVal combinationID As String, ByVal profileId As String, _
-        ByVal stateType As String, ByVal materialModelRole As String, ByVal materialKind As String, _
-        ByVal diagram As CMaterialDiagram, _
-        ByVal units As CUnitSystem)
+        ByVal runID As Variant, ByVal profileId As String, ByVal stateResult As CSectionStateResult, _
+        ByVal materialKind As String, ByVal diagram As CMaterialDiagram, _
+        ByVal directExtensionEnabled As Boolean, ByVal units As CUnitSystem, ByVal written As Object)
     If diagram Is Nothing Then Exit Sub
+
+    Dim diagramId As String
+    diagramId = MaterialDiagramId(profileId, stateResult, materialKind, directExtensionEnabled)
+    If written.Exists(diagramId) Then Exit Sub
+    written.Add diagramId, True
 
     Dim pointIndex As Long
     For pointIndex = 1 To diagram.PointCount
         data(rowIndex, 1) = runID
-        data(rowIndex, 2) = combinationID
+        data(rowIndex, 2) = diagramId
         data(rowIndex, 3) = profileId
-        data(rowIndex, 4) = stateType
-        data(rowIndex, 5) = materialModelRole
-        data(rowIndex, 6) = materialKind
-        data(rowIndex, 7) = pointIndex
-        data(rowIndex, 8) = diagram.PointStrain(pointIndex)
-        data(rowIndex, 9) = OutputStress(diagram.PointStress(pointIndex), units)
+        data(rowIndex, 4) = stateResult.StateTypeText
+        data(rowIndex, 5) = stateResult.MaterialModelRoleText
+        data(rowIndex, 6) = stateResult.MaterialSpec.SpecKey
+        data(rowIndex, 7) = MaterialDiagramModeText(stateResult, directExtensionEnabled)
+        data(rowIndex, 8) = materialKind
+        data(rowIndex, 9) = pointIndex
+        data(rowIndex, 10) = diagram.PointStrain(pointIndex)
+        data(rowIndex, 11) = OutputStress(diagram.PointStress(pointIndex), units)
         rowIndex = rowIndex + 1
     Next pointIndex
 End Sub
@@ -457,14 +489,16 @@ End Sub
 ' Шапка диагностической таблицы диаграмм материалов.
 Private Sub PutMaterialDiagramHeaders(ByRef data() As Variant, ByVal units As CUnitSystem)
     data(1, 1) = "RunID"
-    data(1, 2) = "LoadCase"
+    data(1, 2) = "DiagramId"
     data(1, 3) = "ProfileId"
     data(1, 4) = "StateType"
     data(1, 5) = "MaterialModelRole"
-    data(1, 6) = "Material"
-    data(1, 7) = "PointIndex"
-    data(1, 8) = "Strain"
-    data(1, 9) = "Stress, " & OutputStressUnit(units)
+    data(1, 6) = "MaterialModelSpec"
+    data(1, 7) = "DiagramMode"
+    data(1, 8) = "Material"
+    data(1, 9) = "PointIndex"
+    data(1, 10) = "Strain"
+    data(1, 11) = "Stress, " & OutputStressUnit(units)
 End Sub
 
 ' Записывает справочные свойства бетонной части сечения.
@@ -532,6 +566,12 @@ Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As L
                 stateResult.MaterialModelRoleText, "-", "Смысловая роль материальной модели для named-state."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "MaterialModelSpec", _
                 stateResult.MaterialSpec.SpecKey, "-", "Фактическая спецификация ValueSet/ConcreteDiagram/ConcreteTension/SteelDiagram."
+            PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "ConcreteDiagramId", _
+                MaterialDiagramId(batch.ProfileId(combinationIndex), stateResult, "Concrete", batch.DirectStateDiagramExtensionEnabled(combinationIndex)), _
+                "-", "Ссылка на бетонную диаграмму в rngNDMMaterialDiagrams."
+            PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "RebarDiagramId", _
+                MaterialDiagramId(batch.ProfileId(combinationIndex), stateResult, "Rebar", batch.DirectStateDiagramExtensionEnabled(combinationIndex)), _
+                "-", "Ссылка на диаграмму арматуры в rngNDMMaterialDiagrams."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "Epsilon0", _
                 stateResult.Epsilon0, "-", "Деформация в начале координат для named-state."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "KappaX", _

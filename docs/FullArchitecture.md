@@ -527,6 +527,11 @@ AutoCAD, обновления схемы и сборка общего польз
 `OutputAnnotationComment`, `PhysicalState`, `FormatResultsBlock`,
 `AlignCommentColumns` и unit-output helpers.
 
+`WriteMaterialDiagrams` пишет уникальный каталог `DiagramId` по профилю,
+named-state, спецификации материальной модели, материалу и режиму extension.
+Свойства named-state в `rngNDMSectionProperties` ссылаются на этот каталог
+через `ConcreteDiagramId` и `RebarDiagramId`.
+
 #### CSectionPlotDataReader
 
 Роль: читает snapshot Results для Excel-схемы.

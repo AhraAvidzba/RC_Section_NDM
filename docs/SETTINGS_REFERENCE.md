@@ -35,8 +35,8 @@
 | `rngNDMElementResults` | LC-зависимые результаты элементов на `Results!A32`: `RunID`, `LoadCase`, `ProfileId`, `StateType`, `ElementID`, `Strain`, `Stress`, `PhysicalState`. |
 | `rngNDMSectionGeometry` | Неизменяемая расчетная геометрия snapshot на `Results!K32`: координаты, площадь, размеры/диаметр, материал и локальные характеристики. |
 | `rngNDMSectionProperties` | Общие свойства всего сечения и LC-зависимые свойства уровня сечения на `Results!AB32`: Bounds, центр тяжести, главные оси, единицы output, named-state metadata, точка приложения нагрузки. |
-| `rngNDMMaterialDiagrams` | Фактические точки диаграмм материалов на `Results!AJ32`, построенные по `MaterialModelSpec` сохраненных named-state. |
-| `rngNDMSectionAnnotations` | Сохраненные semantic-аннотации оформления на `Results!AU32`: размерные линии и групповые подписи арматуры. |
+| `rngNDMMaterialDiagrams` | Уникальный каталог фактических точек диаграмм материалов на `Results!AJ32`. Каждая диаграмма имеет `DiagramId`; named-state metadata в `rngNDMSectionProperties` ссылается на бетонную и арматурную диаграмму через `ConcreteDiagramId`/`RebarDiagramId`. |
+| `rngNDMSectionAnnotations` | Сохраненные semantic-аннотации оформления на `Results!AW32`: размерные линии и групповые подписи арматуры. |
 | `chtNDMSectionPlot` | ChartObject схемы сечения на листе `Расчет`; создается около столбца `AP` и дальше не пересоздается при обновлении. |
 
 ## Единицы И Знаки

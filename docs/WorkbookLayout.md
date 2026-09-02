@@ -54,11 +54,11 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Build-Workbook.ps1
 | Область | Диапазон | Назначение |
 |---|---|---|
 | Сводка batch-расчета | `rngBatchSummary = Results!A1:BC29` | определяющее сочетание, прямое НДС, единый блок предельной несущей способности по `CapacityLoadPath`, блок нормальных трещин и блок продольных трещин до 20 сочетаний |
-| Результаты НДМ по элементам | `rngNDMElementResults = Results!A32` | LC-зависимые данные: `RunID`, `LoadCase`, `ElementID`, `Strain`, `Stress`, `PhysicalState` |
+| Результаты НДМ по элементам | `rngNDMElementResults = Results!A32` | LC-зависимые данные: `RunID`, `LoadCase`, `ProfileId`, `StateType`, `ElementID`, `Strain`, `Stress`, `PhysicalState` |
 | Расчетная геометрия | `rngNDMSectionGeometry = Results!K32` | постоянные данные snapshot: `ElementID`, тип материала, координаты, площадь, размеры/диаметр и локальные моменты инерции |
-| Свойства всего сечения | `rngNDMSectionProperties = Results!AB32` | Bounds, центр тяжести, главные оси, output-единицы snapshot, `Epsilon0/KappaX/KappaY`, точка приложения нагрузки и другие свойства уровня LC |
-| Фактические диаграммы материалов | `rngNDMMaterialDiagrams = Results!AJ32` | контрольные точки диаграмм, реально использованных конечными `StateType` расчетного snapshot |
-| Аннотации сечения | `rngNDMSectionAnnotations = Results!AU32` | сохраненные размерные линии и групповые подписи арматуры для восстановления схемы без повторного расчета |
+| Свойства всего сечения | `rngNDMSectionProperties = Results!AB32` | Bounds, центр тяжести, главные оси, output-единицы snapshot, `Epsilon0/KappaX/KappaY`, `ConcreteDiagramId`/`RebarDiagramId`, точка приложения нагрузки и другие свойства уровня LC |
+| Фактические диаграммы материалов | `rngNDMMaterialDiagrams = Results!AJ32` | уникальный каталог контрольных точек диаграмм, реально переданных solver-ам для сохраненных `ProfileId`/`StateType`/`MaterialModelSpec` |
+| Аннотации сечения | `rngNDMSectionAnnotations = Results!AW32` | сохраненные размерные линии и групповые подписи арматуры для восстановления схемы без повторного расчета |
 
 Все переменные по высоте таблицы на `Results` расположены горизонтально в одной строке под `rngBatchSummary`. Между нижней границей `rngBatchSummary` и заголовками нижних диапазонов оставлены две пустые строки. Между концом каждой нижней таблицы и следующим якорем оставлены два пустых столбца, поэтому увеличение количества строк в одной таблице не может перекрыть соседний блок. Последним правым блоком остается `rngNDMSectionAnnotations`.
 

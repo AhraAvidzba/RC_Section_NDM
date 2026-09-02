@@ -181,7 +181,7 @@ try {
             ($geometryResultsRange.Row -eq 32) -and ($geometryResultsRange.Column -eq 11) -and
             ($sectionPropertiesRange.Row -eq 32) -and ($sectionPropertiesRange.Column -eq 28) -and
             ($materialDiagramsRange.Row -eq 32) -and ($materialDiagramsRange.Column -eq 36) -and
-            ($sectionAnnotationsRange.Row -eq 32) -and ($sectionAnnotationsRange.Column -eq 47)
+            ($sectionAnnotationsRange.Row -eq 32) -and ($sectionAnnotationsRange.Column -eq 49)
         ) ("batch=$($batchSummaryRange.Worksheet.Name)!R$($batchSummaryRange.Row)C$($batchSummaryRange.Column); elements=R$($elementResultsRange.Row)C$($elementResultsRange.Column); geometry=R$($geometryResultsRange.Row)C$($geometryResultsRange.Column); properties=R$($sectionPropertiesRange.Row)C$($sectionPropertiesRange.Column); annotations=R$($sectionAnnotationsRange.Row)C$($sectionAnnotationsRange.Column); materialDiagrams=R$($materialDiagramsRange.Row)C$($materialDiagramsRange.Column)")
     }
 
