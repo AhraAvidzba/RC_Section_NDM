@@ -10,7 +10,8 @@ $script:ConfigTableHeaderColor = 14277081
 function Get-SystemSettingsCatalog {
     @(
         @{ Name = "GeneralSettings"; Title = "[Общие]"; Rows = @(
-            ,@("General.ExecutionReportEnabled", "No", "-", "Записывать пошаговый txt-отчет выполнения расчета в папку с книгой. Файл перезаписывается при каждом новом запуске.")
+            @("General.ExecutionReportEnabled", "No", "-", "Записывать пошаговый txt-отчет выполнения расчета в папку с книгой. Файл перезаписывается при каждом новом запуске."),
+            @("General.NonCriticalMessagesEnabled", "Yes", "-", "Показывать информационные окна об успешном расчете, обновлении схемы, импорте и экспорте. Ошибки и предупреждения выводятся всегда.")
         )},
         @{ Name = "GeometrySettings"; Title = "[Геометрия и сетка]"; Rows = @(
             @("Geometry.Source", "Generated", "-", "Источник расчетной геометрии: Generated - построить сетку встроенными генераторами; AutoCAD - импортировать только Region из активного чертежа AutoCAD. Единицы AutoCAD всегда считаются мм."),
@@ -158,35 +159,35 @@ function Get-SteelMaterialParametersCatalog {
 function Get-CalculationProfilesCatalog {
     @(
         @{ Caption = "[Общее]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
-        @{ Caption = "Имя профиля"; Key = "Profile.DisplayName"; PR1 = "Прочность"; PR2 = "Трещины"; PR3 = ""; PR4 = ""; Comment = "Короткое имя профиля для пользователя." },
-        @{ Caption = "Описание"; Key = "Profile.Description"; PR1 = "НДС по прочности и несущая способность"; PR2 = "Расчет раскрытия нормальных и продольных трещин"; PR3 = ""; PR4 = ""; Comment = "Пояснение, что делает профиль." },
+        @{ Caption = "Имя профиля"; Key = "Profile.DisplayName"; PR1 = "Прочность"; PR2 = "Трещины"; PR3 = "Полный расчет"; PR4 = "НДС"; Comment = "Короткое имя профиля для пользователя." },
+        @{ Caption = "Описание"; Key = "Profile.Description"; PR1 = "НДС по прочности и несущая способность"; PR2 = "Расчет раскрытия нормальных и продольных трещин"; PR3 = "Прочность, capacity и трещины"; PR4 = "Только прямое НДС по прочности"; Comment = "Пояснение, что делает профиль." },
 
         @{ Caption = "[Запрашиваемые расчеты]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
-        @{ Caption = "НДС по прочности"; Key = "Calculation.Strength.DirectState"; PR1 = "Yes"; PR2 = "No"; PR3 = ""; PR4 = ""; Comment = "StrengthState по модели прочности." },
-        @{ Caption = "Несущая способность"; Key = "Calculation.Strength.Capacity"; PR1 = "Yes"; PR2 = "No"; PR3 = ""; PR4 = ""; Comment = "Поиск предельной точки по CapacityLoadPath сочетания." },
-        @{ Caption = "Раскрытие трещин"; Key = "Calculation.Crack.Width"; PR1 = "No"; PR2 = "Yes"; PR3 = ""; PR4 = ""; Comment = "CrackedState, нормальные трещины и проверка продольных трещин." },
+        @{ Caption = "НДС по прочности"; Key = "Calculation.Strength.DirectState"; PR1 = "Yes"; PR2 = "No"; PR3 = "Yes"; PR4 = "Yes"; Comment = "StrengthState по модели прочности." },
+        @{ Caption = "Несущая способность"; Key = "Calculation.Strength.Capacity"; PR1 = "Yes"; PR2 = "No"; PR3 = "Yes"; PR4 = "No"; Comment = "Поиск предельной точки по CapacityLoadPath сочетания." },
+        @{ Caption = "Раскрытие трещин"; Key = "Calculation.Crack.Width"; PR1 = "No"; PR2 = "Yes"; PR3 = "Yes"; PR4 = "No"; Comment = "CrackedState, нормальные трещины и проверка продольных трещин." },
 
         @{ Caption = "[Модель прочности]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
-        @{ Caption = "Характеристики материалов"; Key = "MaterialModel.Strength.ValueSet"; PR1 = "ULS"; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "ULS использует R/Rb/Rs для I ГПС." },
-        @{ Caption = "Диаграмма бетона"; Key = "MaterialModel.Strength.ConcreteDiagram"; PR1 = "TwoLine"; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "Допустимо TwoLine или ThreeLine." },
-        @{ Caption = "Растянутый бетон"; Key = "MaterialModel.Strength.ConcreteTension"; PR1 = "Ignore"; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "Ignore или UseDiagram для прочностного НДС." },
-        @{ Caption = "Диаграмма арматуры"; Key = "MaterialModel.Strength.SteelDiagram"; PR1 = "TwoLine"; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "Допустимо TwoLine или ThreeLine." },
+        @{ Caption = "Характеристики материалов"; Key = "MaterialModel.Strength.ValueSet"; PR1 = "ULS"; PR2 = "ULS"; PR3 = "ULS"; PR4 = "ULS"; Comment = "ULS использует R/Rb/Rs для I ГПС." },
+        @{ Caption = "Диаграмма бетона"; Key = "MaterialModel.Strength.ConcreteDiagram"; PR1 = "TwoLine"; PR2 = "TwoLine"; PR3 = "TwoLine"; PR4 = "TwoLine"; Comment = "Допустимо TwoLine или ThreeLine." },
+        @{ Caption = "Растянутый бетон"; Key = "MaterialModel.Strength.ConcreteTension"; PR1 = "Ignore"; PR2 = "Ignore"; PR3 = "Ignore"; PR4 = "Ignore"; Comment = "Ignore или UseDiagram для прочностного НДС." },
+        @{ Caption = "Диаграмма арматуры"; Key = "MaterialModel.Strength.SteelDiagram"; PR1 = "TwoLine"; PR2 = "TwoLine"; PR3 = "TwoLine"; PR4 = "TwoLine"; Comment = "Допустимо TwoLine или ThreeLine." },
 
         @{ Caption = "[Модель Mcrc]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
-        @{ Caption = "Характеристики материалов"; Key = "MaterialModel.CrackInitiation.ValueSet"; PR1 = ""; PR2 = "SLS"; PR3 = ""; PR4 = ""; Comment = "Нужна только для PsiMode=Auto." },
-        @{ Caption = "Диаграмма бетона"; Key = "MaterialModel.CrackInitiation.ConcreteDiagram"; PR1 = ""; PR2 = "ThreeLine"; PR3 = ""; PR4 = ""; Comment = "Состояние образования трещины с растянутым бетоном." },
-        @{ Caption = "Растянутый бетон"; Key = "MaterialModel.CrackInitiation.ConcreteTension"; PR1 = ""; PR2 = "UseDiagram"; PR3 = ""; PR4 = ""; Comment = "Для Mcrc всегда учитывается растянутая ветвь." },
-        @{ Caption = "Диаграмма арматуры"; Key = "MaterialModel.CrackInitiation.SteelDiagram"; PR1 = ""; PR2 = "TwoLine"; PR3 = ""; PR4 = ""; Comment = "Диаграмма арматуры для состояния образования трещины." },
+        @{ Caption = "Характеристики материалов"; Key = "MaterialModel.CrackInitiation.ValueSet"; PR1 = "SLS"; PR2 = "SLS"; PR3 = "SLS"; PR4 = "SLS"; Comment = "Нужна только для PsiMode=Auto." },
+        @{ Caption = "Диаграмма бетона"; Key = "MaterialModel.CrackInitiation.ConcreteDiagram"; PR1 = "ThreeLine"; PR2 = "ThreeLine"; PR3 = "ThreeLine"; PR4 = "ThreeLine"; Comment = "Состояние образования трещины с растянутым бетоном." },
+        @{ Caption = "Растянутый бетон"; Key = "MaterialModel.CrackInitiation.ConcreteTension"; PR1 = "UseDiagram"; PR2 = "UseDiagram"; PR3 = "UseDiagram"; PR4 = "UseDiagram"; Comment = "Для Mcrc всегда учитывается растянутая ветвь." },
+        @{ Caption = "Диаграмма арматуры"; Key = "MaterialModel.CrackInitiation.SteelDiagram"; PR1 = "TwoLine"; PR2 = "TwoLine"; PR3 = "TwoLine"; PR4 = "TwoLine"; Comment = "Диаграмма арматуры для состояния образования трещины." },
 
         @{ Caption = "[Модель НДС с трещинами]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
-        @{ Caption = "Характеристики материалов"; Key = "MaterialModel.CrackedState.ValueSet"; PR1 = ""; PR2 = "SLS"; PR3 = ""; PR4 = ""; Comment = "SLS использует R,ser для II ГПС." },
-        @{ Caption = "Диаграмма бетона"; Key = "MaterialModel.CrackedState.ConcreteDiagram"; PR1 = ""; PR2 = "TwoLine"; PR3 = ""; PR4 = ""; Comment = "Диаграмма для исходного НДС с раскрытой трещиной." },
-        @{ Caption = "Растянутый бетон"; Key = "MaterialModel.CrackedState.ConcreteTension"; PR1 = ""; PR2 = "Ignore"; PR3 = ""; PR4 = ""; Comment = "Для CrackedState растянутый бетон не работает." },
-        @{ Caption = "Диаграмма арматуры"; Key = "MaterialModel.CrackedState.SteelDiagram"; PR1 = ""; PR2 = "TwoLine"; PR3 = ""; PR4 = ""; Comment = "Диаграмма арматуры для расчета a_crc." },
+        @{ Caption = "Характеристики материалов"; Key = "MaterialModel.CrackedState.ValueSet"; PR1 = "SLS"; PR2 = "SLS"; PR3 = "SLS"; PR4 = "SLS"; Comment = "SLS использует R,ser для II ГПС." },
+        @{ Caption = "Диаграмма бетона"; Key = "MaterialModel.CrackedState.ConcreteDiagram"; PR1 = "TwoLine"; PR2 = "TwoLine"; PR3 = "TwoLine"; PR4 = "TwoLine"; Comment = "Диаграмма для исходного НДС с раскрытой трещиной." },
+        @{ Caption = "Растянутый бетон"; Key = "MaterialModel.CrackedState.ConcreteTension"; PR1 = "Ignore"; PR2 = "Ignore"; PR3 = "Ignore"; PR4 = "Ignore"; Comment = "Для CrackedState растянутый бетон не работает." },
+        @{ Caption = "Диаграмма арматуры"; Key = "MaterialModel.CrackedState.SteelDiagram"; PR1 = "TwoLine"; PR2 = "TwoLine"; PR3 = "TwoLine"; PR4 = "TwoLine"; Comment = "Диаграмма арматуры для расчета a_crc." },
 
         @{ Caption = "[Настройки визуализации]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
-        @{ Caption = "Выводимое состояние"; Key = "Visualization.State"; PR1 = "StrengthState"; PR2 = "CrackedState"; PR3 = ""; PR4 = ""; Comment = "StateType, который схема и AutoCAD выбирают из Results." },
-        @{ Caption = "Выводимая величина"; Key = "Visualization.Quantity"; PR1 = "Stress"; PR2 = "Stress"; PR3 = ""; PR4 = ""; Comment = "Stress или Strain из сохраненного snapshot." }
+        @{ Caption = "Выводимое состояние"; Key = "Visualization.State"; PR1 = "StrengthState"; PR2 = "CrackedState"; PR3 = "StrengthState"; PR4 = "StrengthState"; Comment = "StateType, который схема и AutoCAD выбирают из Results." },
+        @{ Caption = "Выводимая величина"; Key = "Visualization.Quantity"; PR1 = "Stress"; PR2 = "Stress"; PR3 = "Stress"; PR4 = "Strain"; Comment = "Stress или Strain из сохраненного snapshot." }
     )
 }
 
@@ -439,6 +440,11 @@ function Get-SettingInstructionLines {
             "В отчет попадает весь пользовательский сценарий от старта макроса до финального сообщения: чтение Config, очистка старых результатов, загрузка единиц и знаков, построение геометрии, создание материалов, чтение сочетаний, перенос точки приложения нагрузки, расчет каждого LC, запись Results и обновление схемы.",
             "Для каждого сочетания дополнительно выводится диагностика solver-ов: итерации прямого CSectionSolver, probe-точки поиска несущей способности и диагностические строки расчета трещин. Поэтому файл может быть большим, если сочетаний много или расчет сходится долго.",
             "No полностью отключает запись файла. Расчетная логика и результаты при этом не меняются."
+        ) }
+        "General.NonCriticalMessagesEnabled" { return @($lead) + @(
+            "Yes показывает обычные информационные окна после успешных действий: расчет выполнен, схема обновлена, геометрия импортирована, экспорт в AutoCAD завершен.",
+            "No убирает эти окна, чтобы пакетная работа не требовала каждый раз нажимать OK.",
+            "Ошибки, предупреждения и сообщения о невыполненном действии выводятся независимо от этой настройки."
         ) }
         "Geometry.Source" { return @($lead) + @(
             "Generated: программа сама строит бетонную волоконную сетку, автоматически расставляет арматуру и формирует semantic-аннотации для схемы. Этот режим удобен для параметрических сечений Circle, RoundedRectangle и LShape.",
@@ -979,7 +985,7 @@ function Get-SettingsInstructionCatalog {
         "Таблица задает список LC, которые будут рассчитаны при нажатии кнопки Выполнить расчет.",
         "CombinationID - короткое имя сочетания. Оно используется в Results, в заголовке схемы, в выборе Plot.LoadCase и AutoCAD.Export.CombinationID.",
         "N, Mx и My вводятся в текущих INPUT-единицах из блока единиц. Пустой Mx или My считается нулем, поэтому одноосный изгиб можно задавать как N + Mx или N + My без заполнения второго момента.",
-        "ProfileId задает расчетный профиль из таблицы rngCalculationProfiles. В базовой книге PR1 - прочность, PR2 - трещины, PR3/PR4 оставлены пустыми резервными профилями.",
+        "ProfileId задает расчетный профиль из таблицы rngCalculationProfiles. В базовой книге заполнены PR1 - прочность, PR2 - трещины, PR3 - полный расчет, PR4 - только НДС.",
         "Профиль определяет только, какие расчеты запрошены и какие материальные модели использовать. Порядок расчета и зависимости между состояниями задает программа, а не строка профиля.",
         "CapacityLoadPath задает, какие компоненты нагрузки масштабируются при поиске несущей способности: λ*Mx, λ*My, λ*Mxy, λ*N или λ*NMxy. Эта настройка находится в строке LC, потому что разные сочетания могут требовать разной траектории поиска.",
         "Если выбран λ*N, продольная сила N умножается на λ, а момент от ее смещенной линии действия масштабируется вместе с N. Если выбран λ*Mxy, N остается постоянной, а масштабируется только пользовательский вектор моментов.",
@@ -1026,9 +1032,11 @@ function Get-SettingsInstructionCatalog {
         "Коэффициент phi2 для раскрытия трещин больше не берется из материала арматуры: он задается отдельной настройкой SLS.Crack.Phi2."
     )}) | Out-Null
     $items.Add(@{ Key = "CalculationProfiles"; Title = "Настройка расчетных профилей"; Lines = @(
-        "Профиль считается настроенным, если заполнено Profile.DisplayName и все параметры, обязательные для включенных расчетов. PR3 и PR4 в шаблоне оставлены пустыми резервными профилями.",
+        "Профиль используется только тогда, когда его ProfileId назначен строке сочетания. Заполненный PR3 или PR4 сам по себе не запускает расчет.",
         "PR1 по умолчанию: имя Прочность; Calculation.Strength.DirectState = Yes; Calculation.Strength.Capacity = Yes; Calculation.Crack.Width = No; MaterialModel.Strength = ULS / TwoLine / Ignore / TwoLine; Visualization.State = StrengthState; Visualization.Quantity = Stress.",
         "PR2 по умолчанию: имя Трещины; Calculation.Strength.DirectState = No; Calculation.Strength.Capacity = No; Calculation.Crack.Width = Yes; MaterialModel.CrackInitiation = SLS / ThreeLine / UseDiagram / TwoLine; MaterialModel.CrackedState = SLS / TwoLine / Ignore / TwoLine; Visualization.State = CrackedState; Visualization.Quantity = Stress.",
+        "PR3 по умолчанию: имя Полный расчет; включены StrengthState, CapacityState и Crack.Width; материальные модели заполнены теми же стартовыми нормативными наборами.",
+        "PR4 по умолчанию: имя НДС; включен только StrengthState; Visualization.Quantity = Strain. Все спецификации материальных моделей также заполнены для прозрачности и будущего ручного переключения.",
         "Calculation.Crack.Width включает расчет нормальных трещин и существующую проверку продольных трещин. Отдельного профиля, флага или ветки LongitudinalCrack нет.",
         "CrackedState обязателен при включенном Calculation.Crack.Width. CrackInitiation нужен только при SLS.Crack.PsiMode = Auto; при User он может быть не заполнен и не блокирует расчет.",
         "Visualization.State и Visualization.Quantity управляют только схемой и AutoCAD после расчета. Если выбранного StateType нет в Results, расчет не отменяется; сообщение появится только при попытке построить схему или экспорт.",
@@ -2680,6 +2688,7 @@ function Apply-SystemSettingsLayout {
     $validationLists = [ordered]@{
         "Geometry.Source" = @("Generated", "AutoCAD")
         "General.ExecutionReportEnabled" = @("Yes", "No")
+        "General.NonCriticalMessagesEnabled" = @("Yes", "No")
         "Geometry.Type" = @("RoundedRectangle", "Circle", "LShape")
         "Solver.Method" = @("Newton", "Secant")
         "Solver.DirectState.DiagramExtension" = @("Yes", "No")

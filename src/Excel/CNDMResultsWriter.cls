@@ -32,8 +32,8 @@ Private Const STATE_SECTION_PROPERTY_ROWS As Long = 8 ' Строки metadata о
 ' ------------------------------
 ' Полная запись Results
 ' ------------------------------
-' Очищает текущий снимок и заново пишет четыре согласованных блока:
-' geometry, element results, section properties и section annotations.
+' Очищает текущий снимок и заново пишет согласованные блоки:
+' geometry, element results, section properties, material diagrams и annotations.
 Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal batch As CBatchSectionCalculator, _
         Optional ByVal units As CUnitSystem = Nothing)
@@ -389,14 +389,46 @@ Private Sub PutCombinationMaterialDiagrams(ByRef data() As Variant, ByRef rowInd
             AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
                 batch.ProfileId(combinationIndex), _
                 stateResult.StateTypeText, stateResult.MaterialModelRoleText, "Concrete", _
-                materialProvider.ConcreteMaterialFromSpec(stateResult.MaterialSpec), units
+                ConcreteDiagramForState(materialProvider, stateResult, batch.DirectStateDiagramExtensionEnabled(combinationIndex)), units
             AppendMaterialDiagramPoints data, rowIndex, runID, batch.CombinationID(combinationIndex), _
                 batch.ProfileId(combinationIndex), _
                 stateResult.StateTypeText, stateResult.MaterialModelRoleText, "Rebar", _
-                materialProvider.SteelMaterialFromSpec(stateResult.MaterialSpec), units
+                SteelDiagramForState(materialProvider, stateResult, batch.DirectStateDiagramExtensionEnabled(combinationIndex)), units
         End If
     Next stateIndex
 End Sub
+
+' Возвращает бетонную диаграмму именно в том виде, в котором ее мог получить
+' solver для named-state. Прямые StateSolution при включенном numerical
+' extension используют state-диаграммы, а capacity/Mcrc-состояния остаются
+' строго физическими.
+Private Function ConcreteDiagramForState(ByVal materialProvider As CMaterialModelProvider, _
+        ByVal stateResult As CSectionStateResult, ByVal directExtensionEnabled As Boolean) As CMaterialDiagram
+    If IsDirectStateResult(stateResult) And directExtensionEnabled Then
+        Set ConcreteDiagramForState = materialProvider.ConcreteStateMaterialFromSpec(stateResult.MaterialSpec)
+    Else
+        Set ConcreteDiagramForState = materialProvider.ConcreteMaterialFromSpec(stateResult.MaterialSpec)
+    End If
+End Function
+
+' Возвращает диаграмму арматуры для диагностического snapshot-а по тем же
+' правилам, по которым расчетный orchestrator отдавал материал solver-у.
+Private Function SteelDiagramForState(ByVal materialProvider As CMaterialModelProvider, _
+        ByVal stateResult As CSectionStateResult, ByVal directExtensionEnabled As Boolean) As CMaterialDiagram
+    If IsDirectStateResult(stateResult) And directExtensionEnabled Then
+        Set SteelDiagramForState = materialProvider.SteelStateMaterialFromSpec(stateResult.MaterialSpec)
+    Else
+        Set SteelDiagramForState = materialProvider.SteelMaterialFromSpec(stateResult.MaterialSpec)
+    End If
+End Function
+
+' Прямые состояния LC строятся через CStateSolutionRunner; только они могут
+' получать numerical extension. Остальные named-state рассчитываются по
+' физическим диаграммам соответствующей MaterialModelSpec.
+Private Function IsDirectStateResult(ByVal stateResult As CSectionStateResult) As Boolean
+    If stateResult Is Nothing Then Exit Function
+    IsDirectStateResult = (stateResult.StateType = sstStrengthState Or stateResult.StateType = sstCrackedState)
+End Function
 
 ' Добавляет все точки одной диаграммы. Напряжения пишутся в OUTPUT stress unit,
 ' деформации остаются безразмерными, как их получает solver.
@@ -546,8 +578,10 @@ Private Function MaterialDiagramRowCount(ByVal materialProvider As CMaterialMode
             Dim stateResult As CSectionStateResult
             Set stateResult = batch.NamedState(combinationIndex, stateIndex)
             If Not stateResult Is Nothing Then
-                rowCount = rowCount + materialProvider.ConcreteMaterialFromSpec(stateResult.MaterialSpec).PointCount
-                rowCount = rowCount + materialProvider.SteelMaterialFromSpec(stateResult.MaterialSpec).PointCount
+                rowCount = rowCount + ConcreteDiagramForState(materialProvider, stateResult, _
+                    batch.DirectStateDiagramExtensionEnabled(combinationIndex)).PointCount
+                rowCount = rowCount + SteelDiagramForState(materialProvider, stateResult, _
+                    batch.DirectStateDiagramExtensionEnabled(combinationIndex)).PointCount
             End If
         Next stateIndex
     Next combinationIndex

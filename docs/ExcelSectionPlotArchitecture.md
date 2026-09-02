@@ -53,7 +53,7 @@ CSectionPlotter -> CRebarLayout
                              |
        +-------------+--------------+--------------+--------------+
        |             |              |              |              |
-rngNDMSectionGeometry  rngNDMElementResults  rngNDMSectionProperties  rngNDMSectionAnnotations
+rngNDMElementResults  rngNDMSectionGeometry  rngNDMSectionProperties  rngNDMMaterialDiagrams  rngNDMSectionAnnotations
        |             |              |              |              |
        +-------------+--------------+--------------+--------------+
                              |
@@ -1294,7 +1294,7 @@ CBatchResultWriter / CNDMResultsWriter
 
 Перед кодированием нужно уточнить:
 
-1. Точные позиции на листе `Results` зафиксированы горизонтальной полосой под `rngBatchSummary`: `rngNDMElementResults = Results!A32`, `rngNDMSectionGeometry = Results!I32`, `rngNDMSectionProperties = Results!Z32`, `rngNDMSectionAnnotations = Results!AH32`. Между `rngBatchSummary` и заголовками нижних диапазонов оставлены две пустые строки. Каждый следующий якорь расположен через два пустых столбца после конца предыдущей таблицы, поэтому блоки могут расти вниз независимо друг от друга.
+1. Точные позиции на листе `Results` зафиксированы горизонтальной полосой под `rngBatchSummary`: `rngNDMElementResults = Results!A32`, `rngNDMSectionGeometry = Results!K32`, `rngNDMSectionProperties = Results!AB32`, `rngNDMMaterialDiagrams = Results!AJ32`, `rngNDMSectionAnnotations = Results!AU32`. Между `rngBatchSummary` и заголовками нижних диапазонов оставлены две пустые строки. Каждый следующий якорь расположен через два пустых столбца после конца предыдущей таблицы, поэтому блоки могут расти вниз независимо друг от друга.
 2. Итоговый формат `rngNDMSectionAnnotations` принят как широкая таблица строк `DIMENSION` и `REBAR_ANNOTATION`.
 3. Нужен ли `GeometrySource` как диагностическое свойство или его не записывать.
 4. Нужны ли `ConcreteCount/RebarCount` для контроля целостности или их вычислять при чтении.

@@ -506,21 +506,21 @@ try {
     $results.Range("A32:F32").Font.Bold = $true
     $results.Range("K32:Y32").Font.Bold = $true
     $results.Range("AB32:AG32").Font.Bold = $true
-    $results.Range("AJ32:AV32").Font.Bold = $true
-    $results.Range("AY32:BG32").Font.Bold = $true
+    $results.Range("AJ32:AR32").Font.Bold = $true
+    $results.Range("AU32:BG32").Font.Bold = $true
     $results.Columns.Item(1).ColumnWidth = 12
     $results.Columns.Item(11).ColumnWidth = 12
     $results.Columns.Item(28).ColumnWidth = 12
     $results.Columns.Item(36).ColumnWidth = 12
-    $results.Columns.Item(51).ColumnWidth = 12
+    $results.Columns.Item(47).ColumnWidth = 12
     Add-ResultsSummaryHelpLink $results $instructions
 
     Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$BC$29'
     Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$32'
     Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$K$32'
     Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AB$32'
-    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$AJ$32'
-    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AY$32'
+    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AJ$32'
+    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$AU$32'
 
     $calc.PageSetup.PaperSize = 9
     $calc.PageSetup.Orientation = 1

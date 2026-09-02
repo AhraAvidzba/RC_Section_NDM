@@ -68,12 +68,14 @@ Public Sub ExportSectionStressToAutoCAD()
 
     DrawResultsStressExport section, resultByID, physicalStateByID, epsilon0, kappaX, kappaY, _
         loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, stateWarningText, exportSettings
-    MsgBox "Экспорт в AutoCAD завершен. Волокон бетона: " & CStr(section.ConcreteCount) & _
-        "; стержней арматуры: " & CStr(section.RebarCount) & _
-        "; сочетание: " & combinationID & _
-        "; профиль: " & profileId & _
-        "; состояние: " & stateType & _
-        "; величина: " & quantity, vbInformation, "RC Section NDM"
+    If NonCriticalMessagesEnabled(ThisWorkbook) Then
+        MsgBox "Экспорт в AutoCAD завершен. Волокон бетона: " & CStr(section.ConcreteCount) & _
+            "; стержней арматуры: " & CStr(section.RebarCount) & _
+            "; сочетание: " & combinationID & _
+            "; профиль: " & profileId & _
+            "; состояние: " & stateType & _
+            "; величина: " & quantity, vbInformation, "RC Section NDM"
+    End If
     Exit Sub
 
 Failed:
@@ -105,9 +107,11 @@ Public Sub ClearAutoCADDrawing()
     deletedCount = DeleteAutoCADEntitiesOnLayers(doc, AutoCADCleanupLayerSet(exportSettings))
     doc.Regen 1
 
-    MsgBox "Чертеж AutoCAD очищен от объектов оформления RC Section NDM." & vbCrLf & _
-        "Удалено объектов: " & CStr(deletedCount) & "." & vbCrLf & _
-        "Геометрия бетона и арматуры оставлена без изменений.", vbInformation, "RC Section NDM"
+    If NonCriticalMessagesEnabled(ThisWorkbook) Then
+        MsgBox "Чертеж AutoCAD очищен от объектов оформления RC Section NDM." & vbCrLf & _
+            "Удалено объектов: " & CStr(deletedCount) & "." & vbCrLf & _
+            "Геометрия бетона и арматуры оставлена без изменений.", vbInformation, "RC Section NDM"
+    End If
     Exit Sub
 
 Failed:

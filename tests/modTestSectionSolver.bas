@@ -144,7 +144,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     AssertRequiredKeys stats, requiredKeys
 
     requiredKeys = Array( _
-        "General.ExecutionReportEnabled", _
+        "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", _
         "Geometry.Source", "Geometry.Type", "LShape.B1", "LShape.H1", "LShape.B2", "LShape.H2", _
         "Mesh.Step", "Mesh.BoundarySubdivisions", _
         "Load.ReferenceOffsetX", "Load.ReferenceOffsetY", _

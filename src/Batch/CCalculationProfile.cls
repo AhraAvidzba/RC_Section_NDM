@@ -42,7 +42,7 @@ Private Sub Class_Initialize()
 End Sub
 
 ' Заполняет простые поля профиля. MaterialModelSpec задаются отдельными
-' методами, потому что у пустых резервных профилей они могут отсутствовать.
+' методами, потому что профиль хранит три независимые роли материальных моделей.
 Public Sub Initialize(ByVal profileId As String, ByVal displayName As String, ByVal description As String, _
         ByVal strengthDirectState As Boolean, ByVal strengthCapacity As Boolean, ByVal crackWidth As Boolean)
     mProfileId = Trim$(profileId)
@@ -86,7 +86,8 @@ Public Sub SetVisualization(ByVal stateText As String, ByVal quantityText As Str
 End Sub
 
 ' Профиль считается настроенным только если задано имя и есть хотя бы один
-' запрошенный расчет. Пустые PR3/PR4 остаются резервом и не проходят сюда.
+' запрошенный расчет. Неназначенные профили не участвуют в batch, даже если
+' в таблице профилей заполнены все их параметры.
 Public Function IsConfigured() As Boolean
     IsConfigured = (Len(mDisplayName) > 0 And (mStrengthDirectState Or mStrengthCapacity Or mCrackWidth))
 End Function

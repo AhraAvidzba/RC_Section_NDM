@@ -30,7 +30,7 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object)
 End Sub
 
 ' Читает вертикальную таблицу профилей. Структурные строки в квадратных
-' скобках пропускаются, а пустые резервные профили остаются в каталоге.
+' скобках пропускаются, а профильные столбцы остаются доступными по ProfileId.
 Public Sub LoadFromRange(ByVal source As Object)
     If source Is Nothing Then Err.Raise vbObjectError + 3981, "CCalculationProfileCatalog", "Диапазон rngCalculationProfiles не найден."
     Clear

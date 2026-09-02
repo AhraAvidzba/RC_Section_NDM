@@ -32,10 +32,11 @@
 | `rngCalculationDiagramSettings` | Выбор расчетной диаграммы и режима растянутого бетона для `Strength`, `Mcrc` и `CrackedNDS`. |
 | `rngLoadCombinations` | До 20 сочетаний нагрузок: `CalculationType = Group1` для расчета по первой группе предельных состояний, `CalculationType = Group2` для расчета трещин по второй группе. |
 | `rngBatchSummary` | Сводка batch-расчета на `Results!A1:BC29`. |
-| `rngNDMElementResults` | LC-зависимые результаты элементов на `Results!A33`: `RunID`, `LoadCase`, `ElementID`, `Strain`, `Stress`, `PhysicalState`. |
-| `rngNDMSectionGeometry` | Неизменяемая расчетная геометрия snapshot на `Results!I33`: координаты, площадь, размеры/диаметр, материал и локальные характеристики. |
-| `rngNDMSectionProperties` | Общие свойства всего сечения и LC-зависимые свойства уровня сечения на `Results!Z33`: Bounds, центр тяжести, главные оси, единицы output, `Epsilon0/KappaX/KappaY`, точка приложения нагрузки. |
-| `rngNDMSectionAnnotations` | Сохраненные semantic-аннотации оформления на `Results!AH33`: размерные линии и групповые подписи арматуры. |
+| `rngNDMElementResults` | LC-зависимые результаты элементов на `Results!A32`: `RunID`, `LoadCase`, `ProfileId`, `StateType`, `ElementID`, `Strain`, `Stress`, `PhysicalState`. |
+| `rngNDMSectionGeometry` | Неизменяемая расчетная геометрия snapshot на `Results!K32`: координаты, площадь, размеры/диаметр, материал и локальные характеристики. |
+| `rngNDMSectionProperties` | Общие свойства всего сечения и LC-зависимые свойства уровня сечения на `Results!AB32`: Bounds, центр тяжести, главные оси, единицы output, named-state metadata, точка приложения нагрузки. |
+| `rngNDMMaterialDiagrams` | Фактические точки диаграмм материалов на `Results!AJ32`, построенные по `MaterialModelSpec` сохраненных named-state. |
+| `rngNDMSectionAnnotations` | Сохраненные semantic-аннотации оформления на `Results!AU32`: размерные линии и групповые подписи арматуры. |
 | `chtNDMSectionPlot` | ChartObject схемы сечения на листе `Расчет`; создается около столбца `AP` и дальше не пересоздается при обновлении. |
 
 ## Единицы И Знаки

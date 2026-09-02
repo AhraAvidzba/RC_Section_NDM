@@ -630,8 +630,8 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.results.geometry.rows", UBound(geometryResults, 1) > 1
     AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 11
     AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 28
-    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 36
-    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 51
+    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 36
+    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 32 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 47
     AssertTrue stats, "ui.results.geometry.noSource", ResultHeaderColumn(geometryResults, "SourceName") = 0
     AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(geometryResults, "MaterialClass") = 0
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
@@ -654,6 +654,8 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.results.materialDiagrams.stateType", ResultHeaderColumn(materialDiagrams, "StateType") > 0
     AssertTrue stats, "ui.results.materialDiagrams.role", ResultHeaderColumn(materialDiagrams, "MaterialModelRole") > 0
     AssertTrue stats, "ui.results.materialDiagrams.noPurpose", ResultHeaderColumn(materialDiagrams, "Purpose") = 0
+    AssertTrue stats, "ui.results.materialDiagrams.usedStates", _
+        MaterialDiagramStatesMatchElementStates(materialDiagrams, elementResults)
     AssertTrue stats, "ui.plot.chart.created", PlotChartExists()
     AssertTrue stats, "ui.plot.title.comment", PlotChartTitleContains("(ui test)")
 
@@ -661,6 +663,13 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     AssertTrue stats, "ui.profiles.topHeader.noDuplicateParameter", Len(Trim$(CStr(profiles.Cells.Item(1, 1).Value2))) = 0
     AssertTrue stats, "ui.profiles.lowerHeader.parameter", CStr(profiles.Cells.Item(2, 1).Value2) = "Параметр"
+    AssertTrue stats, "ui.profiles.pr3.default", _
+        Len(ProfileSettingValue("PR3", "Profile.DisplayName")) > 0 And _
+        ProfileSettingValue("PR3", "Calculation.Strength.DirectState") = "Yes" And _
+        ProfileSettingValue("PR3", "Calculation.Crack.Width") = "Yes"
+    AssertTrue stats, "ui.profiles.pr4.default", _
+        Len(ProfileSettingValue("PR4", "Profile.DisplayName")) > 0 And _
+        ProfileSettingValue("PR4", "Visualization.Quantity") = "Strain"
 End Sub
 
 ' Проверяет полный предельный snapshot: 20 сочетаний, каждое с пятью
@@ -1087,10 +1096,75 @@ Private Function ElementStateRowCount(ByRef data As Variant, ByVal loadCase As S
     Next rowIndex
 End Function
 
+' Проверяет, что диагностический блок фактических диаграмм соответствует
+' конечным named-state из rngNDMElementResults. Диаграммы не должны выводиться
+' для абстрактного Purpose или промежуточной probe-точки solver-а.
+Private Function MaterialDiagramStatesMatchElementStates(ByRef materialDiagrams As Variant, _
+        ByRef elementResults As Variant) As Boolean
+    Dim elementKeys As Object
+    Set elementKeys = CreateObject("Scripting.Dictionary")
+    elementKeys.CompareMode = vbTextCompare
+
+    Dim loadCol As Long
+    Dim profileCol As Long
+    Dim stateCol As Long
+    loadCol = ResultHeaderColumn(elementResults, "LoadCase")
+    profileCol = ResultHeaderColumn(elementResults, "ProfileId")
+    stateCol = ResultHeaderColumn(elementResults, "StateType")
+    If loadCol = 0 Or profileCol = 0 Or stateCol = 0 Then Exit Function
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(elementResults, 1)
+        Dim elementKey As String
+        elementKey = StateKey(elementResults(rowIndex, loadCol), _
+            elementResults(rowIndex, profileCol), elementResults(rowIndex, stateCol))
+        If Len(elementKey) > 0 Then
+            If Not elementKeys.Exists(elementKey) Then elementKeys.Add elementKey, True
+        End If
+    Next rowIndex
+
+    Dim diagramKeys As Object
+    Set diagramKeys = CreateObject("Scripting.Dictionary")
+    diagramKeys.CompareMode = vbTextCompare
+
+    loadCol = ResultHeaderColumn(materialDiagrams, "LoadCase")
+    profileCol = ResultHeaderColumn(materialDiagrams, "ProfileId")
+    stateCol = ResultHeaderColumn(materialDiagrams, "StateType")
+    If loadCol = 0 Or profileCol = 0 Or stateCol = 0 Then Exit Function
+
+    For rowIndex = 2 To UBound(materialDiagrams, 1)
+        Dim diagramKey As String
+        diagramKey = StateKey(materialDiagrams(rowIndex, loadCol), _
+            materialDiagrams(rowIndex, profileCol), materialDiagrams(rowIndex, stateCol))
+        If Len(diagramKey) > 0 Then
+            If Not elementKeys.Exists(diagramKey) Then Exit Function
+            If Not diagramKeys.Exists(diagramKey) Then diagramKeys.Add diagramKey, True
+        End If
+    Next rowIndex
+
+    Dim keyVariant As Variant
+    For Each keyVariant In elementKeys.Keys
+        If Not diagramKeys.Exists(CStr(keyVariant)) Then Exit Function
+    Next keyVariant
+
+    MaterialDiagramStatesMatchElementStates = True
+End Function
+
+' Собирает ключ состояния, общий для rngNDMElementResults и
+' rngNDMMaterialDiagrams.
+Private Function StateKey(ByVal loadCase As Variant, ByVal profileId As Variant, _
+        ByVal stateType As Variant) As String
+    If Len(Trim$(CStr(loadCase))) = 0 Or Len(Trim$(CStr(profileId))) = 0 Or _
+            Len(Trim$(CStr(stateType))) = 0 Then Exit Function
+    StateKey = CStr(loadCase) & "|" & CStr(profileId) & "|" & CStr(stateType)
+End Function
+
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.validation.CapacitySolutionStrategy", _
         SystemSettingValidationHasOptions("Capacity.SolutionStrategy", Array("Auto", "UltimateStrain", "LoadMultiplier"))
+    AssertTrue stats, "ui.validation.nonCriticalMessages", _
+        SystemSettingValidationHasOptions("General.NonCriticalMessagesEnabled", Array("Yes", "No"))
     AssertTrue stats, "ui.validation.capacitySearchMethod", _
         SystemSettingValidationHasOptions("Capacity.SearchMethod", Array("Bisection", "Brent", "Secant"))
     AssertTrue stats, "ui.validation.autocadLabelMode", _
@@ -1400,6 +1474,34 @@ Private Sub SetProfileSetting(ByVal profileId As String, ByVal key As String, By
 
     Err.Raise vbObjectError + 4213, "modTestWorkbookInterface", "Profile setting not found: " & key
 End Sub
+
+' Читает ячейку расчетного профиля по ProfileId и Key. Это нужно тестам,
+' чтобы не зависеть от физического номера строки в rngCalculationProfiles.
+Private Function ProfileSettingValue(ByVal profileId As String, ByVal key As String) As String
+    Dim profiles As Object
+    Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+
+    Dim profileColumn As Long
+    Dim rowIndex As Long
+    Dim colIndex As Long
+    For rowIndex = 1 To profiles.Rows.Count
+        For colIndex = 3 To profiles.Columns.Count
+            If StrComp(Trim$(CStr(profiles.Cells.Item(rowIndex, colIndex).Value2)), profileId, vbTextCompare) = 0 Then
+                profileColumn = colIndex
+                Exit For
+            End If
+        Next colIndex
+        If profileColumn > 0 Then Exit For
+    Next rowIndex
+    If profileColumn = 0 Then Exit Function
+
+    For rowIndex = 1 To profiles.Rows.Count
+        If StrComp(Trim$(CStr(profiles.Cells.Item(rowIndex, 2).Value2)), key, vbTextCompare) = 0 Then
+            ProfileSettingValue = CStr(profiles.Cells.Item(rowIndex, profileColumn).Value2)
+            Exit Function
+        End If
+    Next rowIndex
+End Function
 
 Private Function TrySetUnitOrSignSetting(ByVal key As String, ByVal value As String) As Boolean
     Dim target As Object

@@ -15,7 +15,7 @@ Public Sub RunSectionCalculation()
     message = RunSectionCalculationForWorkbook(ThisWorkbook, True)
     If InStr(1, message, "ошиб", vbTextCompare) > 0 Or InStr(1, message, "InputErr", vbTextCompare) > 0 Then
         MsgBox message, vbExclamation, "RC Section NDM"
-    Else
+    ElseIf NonCriticalMessagesEnabled(ThisWorkbook) Then
         MsgBox message, vbInformation, "RC Section NDM"
     End If
     Exit Sub
@@ -28,7 +28,9 @@ End Sub
 Public Sub ClearSectionResults()
     On Error GoTo Failed
     ClearSectionResultsForWorkbook ThisWorkbook
-    MsgBox "Результаты и диагностика очищены. Исходные данные не изменены.", vbInformation, "RC Section NDM"
+    If NonCriticalMessagesEnabled(ThisWorkbook) Then
+        MsgBox "Результаты и диагностика очищены. Исходные данные не изменены.", vbInformation, "RC Section NDM"
+    End If
     Exit Sub
 
 Failed:
@@ -38,7 +40,9 @@ End Sub
 Public Sub UpdateSectionPlot()
     On Error GoTo Failed
     UpdateSectionPlotForWorkbook ThisWorkbook
-    MsgBox "Схема сечения обновлена по последнему расчетному снимку Results.", vbInformation, "RC Section NDM"
+    If NonCriticalMessagesEnabled(ThisWorkbook) Then
+        MsgBox "Схема сечения обновлена по последнему расчетному снимку Results.", vbInformation, "RC Section NDM"
+    End If
     Exit Sub
 
 Failed:
@@ -49,7 +53,7 @@ Public Sub ImportGeometryFromAutoCAD()
     On Error GoTo Failed
     Dim message As String
     message = ImportGeometryFromAutoCADForWorkbook(ThisWorkbook)
-    MsgBox message, vbInformation, "RC Section NDM"
+    If NonCriticalMessagesEnabled(ThisWorkbook) Then MsgBox message, vbInformation, "RC Section NDM"
     Exit Sub
 
 Failed:
@@ -197,6 +201,24 @@ Public Function ImportGeometryFromAutoCADForWorkbook(ByVal workbook As Object) A
         "Бетонных Region: " & CStr(section.ConcreteCount) & "; арматурных Region: " & _
         CStr(section.RebarCount) & "." & vbCrLf & _
         "На схеме показаны только импортированные элементы для визуального контроля."
+End Function
+
+' Возвращает пользовательское решение о показе обычных информационных окон.
+' Ошибки и предупреждения эта настройка не гасит: она нужна только для
+' сообщений об успешно завершенных действиях, которые могут мешать серии запусков.
+Public Function NonCriticalMessagesEnabled(ByVal workbook As Object) As Boolean
+    On Error GoTo DefaultEnabled
+    If workbook Is Nothing Then GoTo DefaultEnabled
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook workbook
+
+    NonCriticalMessagesEnabled = settings.GetBoolean("General.NonCriticalMessagesEnabled", True)
+    Exit Function
+
+DefaultEnabled:
+    NonCriticalMessagesEnabled = True
 End Function
 
 ' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.

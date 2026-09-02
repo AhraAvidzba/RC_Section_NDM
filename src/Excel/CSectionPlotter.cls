@@ -55,8 +55,8 @@ Private Const MSO_SHAPE_DIAMOND As Long = 4
 Private Const MSO_SHAPE_OVAL As Long = 9
 Private Const EXTENSION_WARNING_TEXT As String = "ВНЕ ФИЗИЧЕСКОЙ ДИАГРАММЫ МАТЕРИАЛА"
 Private Const NUMERICAL_STATE_WARNING_TEXT As String = "ПРЯМОЕ НДС НЕ СОШЛОСЬ"
-Private Const RESULT_COLOR_BUCKET_COUNT As Long = 8 ' Число цветовых ступеней для расчетных маркеров Excel Chart.
-Private Const CONCRETE_MARKER_SIZE_BUCKET As Long = 6 ' Шаг группировки бетонных маркеров, чтобы Chart не превысил лимит series.
+Private Const RESULT_COLOR_BUCKET_COUNT As Long = 16 ' Число цветовых ступеней для расчетных маркеров Excel Chart.
+Private Const CONCRETE_MARKER_SIZE_BUCKET As Long = 3 ' Шаг группировки бетонных маркеров, чтобы Chart не превысил лимит series.
 
 Private mChart As Object ' Excel Chart, внутри которого рисуются series и аннотационные Shapes.
 Private mChartObject As Object ' Контейнер ChartObject на листе Расчет; пользователь может двигать/масштабировать его.

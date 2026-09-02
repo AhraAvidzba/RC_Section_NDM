@@ -43,35 +43,35 @@
 
 Точная структура строк:
 
-| Параметр | Key | PR1 default | PR2 default | PR3 | PR4 | Комментарий |
+| Параметр | Key | PR1 default | PR2 default | PR3 default | PR4 default | Комментарий |
 | --- | --- | --- | --- | --- | --- | --- |
 | `[Общее]` |  |  |  |  |  | Раздел профиля. |
-| Имя профиля | `Profile.DisplayName` | `Прочность` | `Трещины` |  |  | Короткое имя профиля для пользователя. |
-| Описание | `Profile.Description` | Проверка прочности и несущей способности | Проверка раскрытия трещин |  |  | Пояснение, когда профиль применять. |
+| Имя профиля | `Profile.DisplayName` | `Прочность` | `Трещины` | `Полный расчет` | `НДС` | Короткое имя профиля для пользователя. |
+| Описание | `Profile.Description` | Проверка прочности и несущей способности | Проверка раскрытия трещин | Прочность, capacity и трещины | Только прямое НДС по прочности | Пояснение, когда профиль применять. |
 | `[Запрашиваемые расчеты]` |  |  |  |  |  | Расчеты, которые профиль просит выполнить. |
-| НДС по прочности | `Calculation.Strength.DirectState` | `Yes` | `No` |  |  | Прямое НДС по модели прочности. |
-| Несущая способность | `Calculation.Strength.Capacity` | `Yes` | `No` |  |  | Поиск предельной несущей способности по `CapacityLoadPath` сочетания. |
-| Раскрытие трещин | `Calculation.Crack.Width` | `No` | `Yes` |  |  | Расчет ширины раскрытия нормальных трещин. |
+| НДС по прочности | `Calculation.Strength.DirectState` | `Yes` | `No` | `Yes` | `Yes` | Прямое НДС по модели прочности. |
+| Несущая способность | `Calculation.Strength.Capacity` | `Yes` | `No` | `Yes` | `No` | Поиск предельной несущей способности по `CapacityLoadPath` сочетания. |
+| Раскрытие трещин | `Calculation.Crack.Width` | `No` | `Yes` | `Yes` | `No` | Расчет ширины раскрытия нормальных трещин. |
 | `[Модель прочности]` |  |  |  |  |  | Материальная модель для `StrengthState` и `CapacityState`. |
-| Характеристики материалов | `MaterialModel.Strength.ValueSet` | `ULS` |  |  |  | Допустимо: `ULS`, `SLS`; для PR1 стартовое значение `ULS`. |
-| Диаграмма бетона | `MaterialModel.Strength.ConcreteDiagram` | `TwoLine` |  |  |  | Допустимо: `TwoLine`, `ThreeLine`. |
-| Растянутый бетон | `MaterialModel.Strength.ConcreteTension` | `Ignore` |  |  |  | Допустимо: `Ignore`, `UseDiagram`. |
-| Диаграмма арматуры | `MaterialModel.Strength.SteelDiagram` | `TwoLine` |  |  |  | Допустимо: `TwoLine`, `ThreeLine`. |
+| Характеристики материалов | `MaterialModel.Strength.ValueSet` | `ULS` | `ULS` | `ULS` | `ULS` | Допустимо: `ULS`, `SLS`; для PR1 стартовое значение `ULS`. |
+| Диаграмма бетона | `MaterialModel.Strength.ConcreteDiagram` | `TwoLine` | `TwoLine` | `TwoLine` | `TwoLine` | Допустимо: `TwoLine`, `ThreeLine`. |
+| Растянутый бетон | `MaterialModel.Strength.ConcreteTension` | `Ignore` | `Ignore` | `Ignore` | `Ignore` | Допустимо: `Ignore`, `UseDiagram`. |
+| Диаграмма арматуры | `MaterialModel.Strength.SteelDiagram` | `TwoLine` | `TwoLine` | `TwoLine` | `TwoLine` | Допустимо: `TwoLine`, `ThreeLine`. |
 | `[Модель Mcrc]` |  |  |  |  |  | Модель образования трещины внутри `Calculation.Crack.Width`. |
-| Характеристики материалов | `MaterialModel.CrackInitiation.ValueSet` |  | `SLS` |  |  | Обязательно только при `Calculation.Crack.Width = Yes` и `SLS.Crack.PsiMode = Auto`. Допустимо: `ULS`, `SLS`. |
-| Диаграмма бетона | `MaterialModel.CrackInitiation.ConcreteDiagram` |  | `ThreeLine` |  |  | Обязательно только для `Auto`. Допустимо: `TwoLine`, `ThreeLine`. |
-| Растянутый бетон | `MaterialModel.CrackInitiation.ConcreteTension` |  | `UseDiagram` |  |  | Для Mcrc растянутый бетон должен учитываться; допустимо только `UseDiagram`. |
-| Диаграмма арматуры | `MaterialModel.CrackInitiation.SteelDiagram` |  | `TwoLine` |  |  | Обязательно только для `Auto`. Допустимо: `TwoLine`, `ThreeLine`. |
+| Характеристики материалов | `MaterialModel.CrackInitiation.ValueSet` | `SLS` | `SLS` | `SLS` | `SLS` | Обязательно только при `Calculation.Crack.Width = Yes` и `SLS.Crack.PsiMode = Auto`. Допустимо: `ULS`, `SLS`. |
+| Диаграмма бетона | `MaterialModel.CrackInitiation.ConcreteDiagram` | `ThreeLine` | `ThreeLine` | `ThreeLine` | `ThreeLine` | Обязательно только для `Auto`. Допустимо: `TwoLine`, `ThreeLine`. |
+| Растянутый бетон | `MaterialModel.CrackInitiation.ConcreteTension` | `UseDiagram` | `UseDiagram` | `UseDiagram` | `UseDiagram` | Для Mcrc растянутый бетон должен учитываться; допустимо только `UseDiagram`. |
+| Диаграмма арматуры | `MaterialModel.CrackInitiation.SteelDiagram` | `TwoLine` | `TwoLine` | `TwoLine` | `TwoLine` | Обязательно только для `Auto`. Допустимо: `TwoLine`, `ThreeLine`. |
 | `[Модель НДС с трещинами]` |  |  |  |  |  | Модель раскрытого состояния внутри `Calculation.Crack.Width`. |
-| Характеристики материалов | `MaterialModel.CrackedState.ValueSet` |  | `SLS` |  |  | Обязательно всегда при `Calculation.Crack.Width = Yes`. Допустимо: `ULS`, `SLS`. |
-| Диаграмма бетона | `MaterialModel.CrackedState.ConcreteDiagram` |  | `TwoLine` |  |  | Обязательно всегда при Crack.Width. Допустимо: `TwoLine`, `ThreeLine`. |
-| Растянутый бетон | `MaterialModel.CrackedState.ConcreteTension` |  | `Ignore` |  |  | Для уже образовавшейся трещины растянутый бетон не учитывается. |
-| Диаграмма арматуры | `MaterialModel.CrackedState.SteelDiagram` |  | `TwoLine` |  |  | Обязательно всегда при Crack.Width. Допустимо: `TwoLine`, `ThreeLine`. |
+| Характеристики материалов | `MaterialModel.CrackedState.ValueSet` | `SLS` | `SLS` | `SLS` | `SLS` | Обязательно всегда при `Calculation.Crack.Width = Yes`. Допустимо: `ULS`, `SLS`. |
+| Диаграмма бетона | `MaterialModel.CrackedState.ConcreteDiagram` | `TwoLine` | `TwoLine` | `TwoLine` | `TwoLine` | Обязательно всегда при Crack.Width. Допустимо: `TwoLine`, `ThreeLine`. |
+| Растянутый бетон | `MaterialModel.CrackedState.ConcreteTension` | `Ignore` | `Ignore` | `Ignore` | `Ignore` | Для уже образовавшейся трещины растянутый бетон не учитывается. |
+| Диаграмма арматуры | `MaterialModel.CrackedState.SteelDiagram` | `TwoLine` | `TwoLine` | `TwoLine` | `TwoLine` | Обязательно всегда при Crack.Width. Допустимо: `TwoLine`, `ThreeLine`. |
 | `[Настройки визуализации]` |  |  |  |  |  | Что показывать на схеме и в AutoCAD для выбранного LC. |
-| Выводимое состояние | `Visualization.State` | `StrengthState` | `CrackedState` |  |  | Имя конечного состояния, которое схема/AutoCAD будут искать в snapshot. |
-| Выводимая величина | `Visualization.Quantity` | `Stress` | `Stress` |  |  | `Stress` или `Strain`. |
+| Выводимое состояние | `Visualization.State` | `StrengthState` | `CrackedState` | `StrengthState` | `StrengthState` | Имя конечного состояния, которое схема/AutoCAD будут искать в snapshot. |
+| Выводимая величина | `Visualization.Quantity` | `Stress` | `Stress` | `Stress` | `Strain` | `Stress` или `Strain`. |
 
-`PR3` и `PR4` изначально пустые резервные профили. Они не требуют отдельного признака активности: если профиль не назначен сочетанию, он не участвует в расчете.
+Заполненность профиля не означает автоматический запуск. Профиль используется только тогда, когда его `ProfileId` назначен сочетанию.
 
 ### `rngLoadCombinations`
 
@@ -334,7 +334,7 @@ SteelDiagram As ESteelDiagramType
 
 Почему нужен отдельный `CMaterialModelSpec`: три модели имеют одинаковый набор полей. Если хранить их отдельными строковыми полями прямо в `CCalculationProfile`, класс быстро станет нечитаемым, а provider будет получать разрозненные параметры.
 
-`CCalculationProfile` не содержит признака активности. Пустой резервный профиль просто не выбирается в сочетаниях.
+`CCalculationProfile` не содержит признака активности. Даже полностью заполненный профиль не участвует в расчете, пока его `ProfileId` не выбран в сочетании.
 
 ## 6. Enums и стабильные машинные значения
 
@@ -1019,7 +1019,7 @@ Plot/AutoCAD не должны использовать:
 - при `SLS.Crack.PsiMode = User` модель `CrackInitiation` может быть пустой и не должна блокировать расчет;
 - `Visualization.Quantity` задана корректно как управляющее значение `Stress` или `Strain`.
 
-Пустые `PR3` и `PR4` не являются ошибкой, пока они не назначены сочетанию.
+Профиль с неполными обязательными параметрами не является ошибкой, пока он не назначен сочетанию.
 
 ### Проверка визуализации
 
@@ -1143,8 +1143,8 @@ Runtime-совместимость со старой моделью не нуж�
 ## 23. Внесенные исправления в документ
 
 - Зафиксирована вертикальная структура `rngCalculationProfiles` с колонками `PR1`, `PR2`, `PR3`, `PR4`.
-- Убрана идея отдельной активности профиля: пустой профиль просто не используется.
-- Начальные профили заменены на `PR1 = Прочность`, `PR2 = Трещины`, `PR3/PR4 = резерв`.
+- Убрана идея отдельной активности профиля: профиль используется только через назначение `ProfileId` в сочетании.
+- Начальные профили заменены на `PR1 = Прочность`, `PR2 = Трещины`, `PR3 = Полный расчет`, `PR4 = НДС`.
 - Для PR1/PR2 разделены default-значения ячеек и списки допустимых значений.
 - Уточнена точная backend-модель `CCalculationProfile` по строкам frontend-контракта.
 - Зафиксировано, что reader/catalog читает профильные столбцы динамически, а не только `PR1..PR4`.
