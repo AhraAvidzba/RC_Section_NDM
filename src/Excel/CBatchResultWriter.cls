@@ -286,7 +286,7 @@ Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem
     data(COLUMN_HEADER_ROW, COL_CRACK_LS_RAW) = "ls_raw, " & OutputLengthUnit(units) & " (шаг до ограничений)"
     data(COLUMN_HEADER_ROW, COL_CRACK_LS) = "ls, " & OutputLengthUnit(units) & " (принятый шаг)"
     data(COLUMN_HEADER_ROW, COL_CRACK_PHI1) = "phi1 (длительность)"
-    data(COLUMN_HEADER_ROW, COL_CRACK_PHI2) = "phi2 (профиль арматуры)"
+    data(COLUMN_HEADER_ROW, COL_CRACK_PHI2) = "phi2 (коэффициент из Config)"
     data(COLUMN_HEADER_ROW, COL_CRACK_PHI3) = "phi3 (характер нагрузки)"
     data(COLUMN_HEADER_ROW, COL_CRACK_NCRC) = "Ncrc, " & OutputForceUnit(units) & " (усилие образования трещин при центральном растяжении)"
     data(COLUMN_HEADER_ROW, COL_CRACK_LAMBDA_CRC) = "lambda_crc (множитель трещины)"

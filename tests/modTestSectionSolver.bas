@@ -176,7 +176,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "Concrete.Eb0", "Concrete.Ebt0", "Concrete.Eb2", "Concrete.Ebt2", _
         "Steel.Rsc.ULS", "Steel.Rs.ULS", "Steel.Rsc.SLS", "Steel.Rs.SLS", _
         "Steel.Esc", "Steel.Es", "Steel.TwoLine.Esc2", "Steel.TwoLine.Es2", _
-        "Steel.ThreeLine.Esc2", "Steel.ThreeLine.Es2", "Steel.RebarProfile", _
+        "Steel.ThreeLine.Esc2", "Steel.ThreeLine.Es2", _
         "Solver.Method", "Solver.MaxIterations", "Solver.LoadSteps", _
         "Solver.DirectState.DiagramExtension", _
         "Solver.ToleranceN", "Solver.ToleranceMx", "Solver.ToleranceMy", _
@@ -187,7 +187,8 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "Capacity.ToleranceStrain", _
         "Capacity.MaxRetries", "Capacity.BaseLoadSteps", "Capacity.SolverMaxIterations", _
         "SLS.Crack.Allowable", _
-        "SLS.Crack.PsiMode", "SLS.Crack.TensionZoneMode")
+        "SLS.Crack.Phi1", "SLS.Crack.Phi2", "SLS.Crack.Phi3Mode", "SLS.Crack.Phi3", _
+        "SLS.Crack.PsiMode", "SLS.Crack.PsiS", "SLS.Crack.TensionZoneMode")
     AssertRequiredKeys stats, requiredKeys
 
     requiredKeys = Array( _
@@ -231,6 +232,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "LShape.OriginX", "LShape.OriginY", "Plot.DimensionsEnabled", "Plot.RebarLabelsEnabled", _
         "Concrete.TensionMode", "Capacity.ConcreteCompressionLimit", "Capacity.ConcreteTensionLimit", _
         "Capacity.SteelStrainLimit", "Concrete.Class", _
+        "Steel.RebarProfile", _
         "Calculation.Mode", "Capacity.CalculationScope", "SLS.Crack.Enabled", _
         "AutoCAD.Export.ResultType", "Plot.ResultType", _
         "Diagram.Strength.Concrete", "Diagram.Strength.ConcreteTension", "Diagram.Strength.Steel", _

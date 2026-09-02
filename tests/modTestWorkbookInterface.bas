@@ -36,6 +36,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAutoCADCalculationMessageUsesSavedGeometry stats
     TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped stats
     TestCircleWorkbookRunWritesResults stats
+    TestTwentyCombinationsWithFiveStatesWriteSnapshot stats
     TestExecutionReportFile stats
     TestExcelApplicationStateGuardRestoresSettings stats
     TestLShapeWorkbookRunWritesResults stats
@@ -58,6 +59,29 @@ Public Function RunWorkbookInterfaceTests() As String
 
 Failed:
     RunWorkbookInterfaceTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & _
+        "; source=" & Err.Source & "; description=" & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Запускает тяжелый ручной сценарий: 20 LC, пять named-state на LC и мелкая
+' сетка Г-сечения. Он не входит в обычный RunWorkbookInterfaceTests, потому что
+' нужен только для проверки больших snapshot-ов и лимита Excel Chart на series.
+Public Function RunLargeSnapshotPlotStressTest() As String
+    On Error GoTo Failed
+
+    Dim stats As TUiTestStats
+    Dim t0 As Double
+    t0 = Timer
+
+    TestLargeSnapshotPlotStress stats
+
+    AppendLine stats, "TOTAL_LARGE_SNAPSHOT_PLOT: passed=" & CStr(stats.Passed) & _
+        "; failed=" & CStr(stats.Failed) & "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
+    RunLargeSnapshotPlotStressTest = stats.Report
+    Exit Function
+
+Failed:
+    RunLargeSnapshotPlotStressTest = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & _
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
 
@@ -380,7 +404,7 @@ Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiT
     section.SourceType = "AutoCADImport"
     section.AddConcreteElement 50#, 50#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
     section.AddConcreteElement 250#, 50#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
-    section.AddRebarElement 50#, 50#, 20#, 0#, "Ribbed"
+    section.AddRebarElement 50#, 50#, 20#, 0#, "Rebar"
 
     Dim writer As CNDMResultsWriter
     Set writer = New CNDMResultsWriter
@@ -418,7 +442,7 @@ Private Sub TestGeneratedSourceDoesNotReuseAutoCADPreview(ByRef stats As TUiTest
     Set section = New CSectionModel
     section.SourceType = "AutoCADImport"
     section.AddConcreteElement 50#, 50#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
-    section.AddRebarElement 50#, 50#, 20#, 0#, "Ribbed"
+    section.AddRebarElement 50#, 50#, 20#, 0#, "Rebar"
 
     Dim writer As CNDMResultsWriter
     Set writer = New CNDMResultsWriter
@@ -637,6 +661,120 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     AssertTrue stats, "ui.profiles.topHeader.noDuplicateParameter", Len(Trim$(CStr(profiles.Cells.Item(1, 1).Value2))) = 0
     AssertTrue stats, "ui.profiles.lowerHeader.parameter", CStr(profiles.Cells.Item(2, 1).Value2) = "Параметр"
+End Sub
+
+' Проверяет полный предельный snapshot: 20 сочетаний, каждое с пятью
+' конечными named-state. Регрессия защищает writer-ы Results от фиксированных
+' размеров массивов, которые раньше давали Subscript out of range.
+Private Sub TestTwentyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUiTestStats)
+    PrepareUserLShapeMomentUltimateInput
+    PrepareFullStateProfile "PR3"
+    SetSystemSetting "SLS.Crack.PsiMode", "Auto"
+    SetSystemSetting "SLS.Crack.Allowable", "0.000001"
+    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
+    SetSystemSetting "Plot.LoadCase", "LC_FULL_01"
+
+    Dim loads As Object
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    ClearDataRows loads
+
+    Dim rowIndex As Long
+    For rowIndex = 1 To 20
+        loads.Cells.Item(rowIndex + 1, 1).Value2 = "LC_FULL_" & Format$(rowIndex, "00")
+        loads.Cells.Item(rowIndex + 1, 2).Value2 = 200#
+        loads.Cells.Item(rowIndex + 1, 3).Value2 = 50#
+        loads.Cells.Item(rowIndex + 1, 4).ClearContents
+        loads.Cells.Item(rowIndex + 1, 5).Value2 = "PR3"
+        loads.Cells.Item(rowIndex + 1, 6).Value2 = ChrW$(&H3BB) & "*Mx"
+        loads.Cells.Item(rowIndex + 1, 7).Value2 = "full snapshot " & CStr(rowIndex)
+    Next rowIndex
+
+    Dim message As String
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+
+    AssertTrue stats, "ui.results.fullSnapshot.message", _
+        InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+
+    Dim geometryRowCount As Long
+    geometryRowCount = ResultTableRowCount("rngNDMSectionGeometry") - 1
+    AssertTrue stats, "ui.results.fullSnapshot.geometry143", geometryRowCount = 143
+
+    Dim elementResults As Variant
+    elementResults = ResultTable("rngNDMElementResults")
+    Dim expectedElementRows As Long
+    expectedElementRows = 1 + 20 * 5 * geometryRowCount
+    AssertTrue stats, "ui.results.fullSnapshot.elementRows", _
+        UBound(elementResults, 1) = expectedElementRows
+
+    AssertElementStateRows stats, elementResults, "LC_FULL_01", "StrengthState", geometryRowCount
+    AssertElementStateRows stats, elementResults, "LC_FULL_01", "CapacityState", geometryRowCount
+    AssertElementStateRows stats, elementResults, "LC_FULL_01", "CrackedState", geometryRowCount
+    AssertElementStateRows stats, elementResults, "LC_FULL_01", "BeforeMcrcState", geometryRowCount
+    AssertElementStateRows stats, elementResults, "LC_FULL_01", "AfterMcrcState", geometryRowCount
+    AssertElementStateRows stats, elementResults, "LC_FULL_20", "StrengthState", geometryRowCount
+    AssertElementStateRows stats, elementResults, "LC_FULL_20", "CapacityState", geometryRowCount
+    AssertElementStateRows stats, elementResults, "LC_FULL_20", "CrackedState", geometryRowCount
+    AssertElementStateRows stats, elementResults, "LC_FULL_20", "BeforeMcrcState", geometryRowCount
+    AssertElementStateRows stats, elementResults, "LC_FULL_20", "AfterMcrcState", geometryRowCount
+
+    AssertTrue stats, "ui.results.fullSnapshot.propertiesRows", _
+        ResultTableRowCount("rngNDMSectionProperties") >= 1 + 55 + 20 * (23 + 5 * 8)
+    AssertTrue stats, "ui.results.fullSnapshot.materialRows", _
+        ResultTableRowCount("rngNDMMaterialDiagrams") > 1
+End Sub
+
+' ДЛЯ ТЕСТОВ
+' Проверяет тяжелую схему с мелкой сеткой. Расчетные строки остаются полными,
+' а plotter обязан сгруппировать маркеры так, чтобы Excel Chart не превысил
+' свой внутренний лимит рядов диаграммы.
+Private Sub TestLargeSnapshotPlotStress(ByRef stats As TUiTestStats)
+    PrepareUserLShapeMomentUltimateInput
+    PrepareFullStateProfile "PR3"
+    SetSystemSetting "Mesh.Step", "10"
+    SetSystemSetting "Mesh.BoundarySubdivisions", "1"
+    SetSystemSetting "SLS.Crack.PsiMode", "Auto"
+    SetSystemSetting "SLS.Crack.Allowable", "0.000001"
+    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
+    SetSystemSetting "Plot.LoadCase", "LC_BIG_01"
+
+    Dim loads As Object
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    ClearDataRows loads
+
+    Dim rowIndex As Long
+    For rowIndex = 1 To 20
+        loads.Cells.Item(rowIndex + 1, 1).Value2 = "LC_BIG_" & Format$(rowIndex, "00")
+        loads.Cells.Item(rowIndex + 1, 2).Value2 = 200#
+        loads.Cells.Item(rowIndex + 1, 3).Value2 = 50#
+        loads.Cells.Item(rowIndex + 1, 4).ClearContents
+        loads.Cells.Item(rowIndex + 1, 5).Value2 = "PR3"
+        loads.Cells.Item(rowIndex + 1, 6).Value2 = ChrW$(&H3BB) & "*Mx"
+        loads.Cells.Item(rowIndex + 1, 7).Value2 = "large snapshot " & CStr(rowIndex)
+    Next rowIndex
+
+    Dim message As String
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+
+    Dim geometryRowCount As Long
+    geometryRowCount = ResultTableRowCount("rngNDMSectionGeometry") - 1
+
+    Dim elementResults As Variant
+    elementResults = ResultTable("rngNDMElementResults")
+
+    Dim seriesCount As Long
+    seriesCount = PlotSeriesCount()
+
+    AppendLine stats, "INFO: ui.largeSnapshot.geometryRows=" & CStr(geometryRowCount) & _
+        "; elementResultRows=" & CStr(UBound(elementResults, 1)) & _
+        "; plotSeries=" & CStr(seriesCount)
+
+    AssertTrue stats, "ui.largeSnapshot.message", _
+        InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    AssertTrue stats, "ui.largeSnapshot.geometryLarge", geometryRowCount > 2500
+    AssertTrue stats, "ui.largeSnapshot.elementRows", _
+        UBound(elementResults, 1) = 1 + 20 * 5 * geometryRowCount
+    AssertTrue stats, "ui.largeSnapshot.plotCreated", PlotChartExists()
+    AssertTrue stats, "ui.largeSnapshot.plotSeriesLimit", seriesCount < 256
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -922,6 +1060,33 @@ Private Function ResultHeaderColumn(ByRef data As Variant, ByVal headerText As S
     Next colIndex
 End Function
 
+' Проверяет, что конкретное состояние конкретного LC записано для каждого
+' расчетного элемента сечения. Это защищает snapshot от частичной записи.
+Private Sub AssertElementStateRows(ByRef stats As TUiTestStats, ByRef data As Variant, _
+        ByVal loadCase As String, ByVal stateType As String, ByVal expectedCount As Long)
+    Dim count As Long
+    count = ElementStateRowCount(data, loadCase, stateType)
+    AssertTrue stats, "ui.results.fullSnapshot." & loadCase & "." & stateType, count = expectedCount
+End Sub
+
+' Считает строки rngNDMElementResults для пары LoadCase + StateType.
+Private Function ElementStateRowCount(ByRef data As Variant, ByVal loadCase As String, _
+        ByVal stateType As String) As Long
+    Dim loadCaseColumn As Long
+    Dim stateTypeColumn As Long
+    loadCaseColumn = ResultHeaderColumn(data, "LoadCase")
+    stateTypeColumn = ResultHeaderColumn(data, "StateType")
+    If loadCaseColumn = 0 Or stateTypeColumn = 0 Then Exit Function
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(data, 1)
+        If StrComp(CStr(data(rowIndex, loadCaseColumn)), loadCase, vbTextCompare) = 0 And _
+                StrComp(CStr(data(rowIndex, stateTypeColumn)), stateType, vbTextCompare) = 0 Then
+            ElementStateRowCount = ElementStateRowCount + 1
+        End If
+    Next rowIndex
+End Function
+
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.validation.CapacitySolutionStrategy", _
@@ -1137,6 +1302,19 @@ Private Function PlotShapeTextContains(ByVal expectedText As String) As Boolean
         End If
     Next shapeIndex
 Failed:
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Возвращает число рядов данных на текущей схеме Excel.
+Private Function PlotSeriesCount() As Long
+    On Error GoTo Failed
+    Dim chartObject As Object
+    Set chartObject = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
+    PlotSeriesCount = chartObject.Chart.SeriesCollection.Count
+    Exit Function
+
+Failed:
+    PlotSeriesCount = 0
 End Function
 
 Private Function CountAnnotationType(ByRef annotationData As Variant, ByVal annotationType As String) As Long
@@ -1676,7 +1854,7 @@ Private Function BuildUiBatch() As CBatchSectionCalculator
         settings.GetDouble("Rebar.AxisDistance", 40#), _
         settings.GetLong("Rebar.Count", 8), _
         settings.GetDouble("Rebar.Diameter", 20#), _
-        settings.GetString("Steel.RebarProfile", "Ribbed"))
+        "Rebar")
     Dim materialProvider As CMaterialModelProvider
     Set materialProvider = New CMaterialModelProvider
     materialProvider.Initialize settings
@@ -1709,7 +1887,6 @@ Private Sub PrepareCircleInput()
     SetSystemSetting "Geometry.Type", "Circle"
     SetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
     SetSystemSetting "Plot.LoadCase", "LC1"
-    SetSystemSetting "Steel.RebarProfile", "Ribbed"
     SetSystemSetting "Rebar.AxisDistance", "40"
     SetSystemSetting "Rebar.Count", "8"
     SetSystemSetting "Rebar.Diameter", "20"
@@ -1910,6 +2087,28 @@ Private Sub PrepareUserLShapeAxialTensionInput()
     loads.Cells.Item(3, 5).Value2 = "PR2"
     loads.Cells.Item(3, 6).Value2 = ChrW$(&H3BB) & "*N"
     loads.Cells.Item(3, 7).Value2 = "uses extension"
+End Sub
+
+Private Sub PrepareFullStateProfile(ByVal profileId As String)
+    SetProfileSetting profileId, "Profile.DisplayName", "Полный snapshot"
+    SetProfileSetting profileId, "Profile.Description", "Тестовая запись всех состояний"
+    SetProfileSetting profileId, "Calculation.Strength.DirectState", "Yes"
+    SetProfileSetting profileId, "Calculation.Strength.Capacity", "Yes"
+    SetProfileSetting profileId, "Calculation.Crack.Width", "Yes"
+    SetProfileSetting profileId, "MaterialModel.Strength.ValueSet", "ULS"
+    SetProfileSetting profileId, "MaterialModel.Strength.ConcreteDiagram", "TwoLine"
+    SetProfileSetting profileId, "MaterialModel.Strength.ConcreteTension", "Ignore"
+    SetProfileSetting profileId, "MaterialModel.Strength.SteelDiagram", "TwoLine"
+    SetProfileSetting profileId, "MaterialModel.CrackInitiation.ValueSet", "SLS"
+    SetProfileSetting profileId, "MaterialModel.CrackInitiation.ConcreteDiagram", "ThreeLine"
+    SetProfileSetting profileId, "MaterialModel.CrackInitiation.ConcreteTension", "UseDiagram"
+    SetProfileSetting profileId, "MaterialModel.CrackInitiation.SteelDiagram", "TwoLine"
+    SetProfileSetting profileId, "MaterialModel.CrackedState.ValueSet", "SLS"
+    SetProfileSetting profileId, "MaterialModel.CrackedState.ConcreteDiagram", "TwoLine"
+    SetProfileSetting profileId, "MaterialModel.CrackedState.ConcreteTension", "Ignore"
+    SetProfileSetting profileId, "MaterialModel.CrackedState.SteelDiagram", "TwoLine"
+    SetProfileSetting profileId, "Visualization.State", "StrengthState"
+    SetProfileSetting profileId, "Visualization.Quantity", "Stress"
 End Sub
 
 Private Sub SetUserLShapeMainRow(ByVal faceName As String, ByVal count1 As Long, ByVal count2 As Long)

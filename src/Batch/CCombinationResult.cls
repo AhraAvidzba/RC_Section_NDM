@@ -51,7 +51,7 @@ Public CrackAllowableValue As Double ' Допустимая ширина рас�
 Public CrackUtil As Double ' Использование по раскрытию трещин a_crc/a_crc,ult.
 Public CrackFormed As Boolean ' True, если по принятой методике трещина образована.
 Public CrackPhi1 As Double ' Коэффициент длительности действия нагрузки.
-Public CrackPhi2 As Double ' Коэффициент профиля арматуры.
+Public CrackPhi2 As Double ' Пользовательский коэффициент phi2 из настроек трещин.
 Public CrackPhi3 As Double ' Коэффициент характера продольной силы.
 Public CrackPsiS As Double ' Коэффициент неравномерности деформаций арматуры между трещинами.
 Public CrackSigmaS As Double ' Средневзвешенное напряжение выбранной растянутой арматуры.
@@ -135,8 +135,9 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     StateIterations = 0
 End Sub
 
-' Добавляет конечное named-state LC. Промежуточные итерации solver-а,
-' probe-точки и служебное состояние lambda_crc для sigma_s,crc сюда не пишутся.
+' Добавляет конечное named-state LC. Промежуточные итерации solver-а и
+' probe-точки сюда не пишутся; состояния BeforeMcrc/AfterMcrc сохраняются
+' только если Auto-ветка трещин реально дошла до lambda_crc.
 Public Sub AddState(ByVal stateResult As CSectionStateResult)
     If stateResult Is Nothing Then Exit Sub
     If mStates Is Nothing Then Set mStates = New Collection

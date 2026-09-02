@@ -22,6 +22,7 @@ Private mCentroidX As Double
 Private mCentroidY As Double
 Private mRequestedCount As Long
 Private mSkippedDuplicateCount As Long
+Private Const REBAR_STEEL_CLASS As String = "Rebar" ' Техническая метка типа элемента: расчетная арматура, не профиль для phi2.
 
 ' Строит раскладку прямо по таблице rngLShapeGeometry.
 ' Registry только выбирает, что активна форма LShape, а вся структура граней,
@@ -42,7 +43,7 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
         ReadFaceSettingsFromConfig(settings, units, "H2"), _
         ReadFaceSettingsFromConfig(settings, units, "B1"), _
         ReadFaceSettingsFromConfig(settings, units, "B2"), _
-        settings.GetString("Steel.RebarProfile", "Ribbed"))
+        REBAR_STEEL_CLASS)
 End Function
 
 ' Читает параметры одной смысловой грани Г-сечения.

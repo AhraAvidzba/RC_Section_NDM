@@ -435,9 +435,10 @@ End Sub
 Private Function MissingExportStateMessage(ByVal combinationID As String, ByVal stateType As String) As String
     MissingExportStateMessage = "Запрашиваемое состояние """ & stateType & _
         """ не найдено в Results для AutoCAD export, сочетание " & combinationID & "."
-    If StrComp(stateType, "CrackInitiationState", vbTextCompare) = 0 Then
+    If StrComp(stateType, "BeforeMcrcState", vbTextCompare) = 0 Or _
+            StrComp(stateType, "AfterMcrcState", vbTextCompare) = 0 Then
         MissingExportStateMessage = MissingExportStateMessage & _
-            " Для НДС при Mcrc это нормально, если ветвь Mcrc в расчете трещин не потребовалась."
+            " Для состояния около Mcrc это нормально, если ветвь Mcrc в расчете трещин не потребовалась."
     End If
 End Function
 

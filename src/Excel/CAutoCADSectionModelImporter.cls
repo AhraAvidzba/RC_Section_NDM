@@ -20,6 +20,8 @@ Option Explicit
 ' Класс не выполняет расчет и не пишет Results. Его ответственность - только
 ' аккуратно отфильтровать AutoCAD-сущности и заполнить модель сечения.
 
+Private Const REBAR_STEEL_CLASS As String = "Rebar" ' Техническая метка расчетной арматуры в snapshot геометрии.
+
 Public Function ImportFromActiveDocument(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
     If settings Is Nothing Then Err.Raise vbObjectError + 4400, "CAutoCADSectionModelImporter", "Настройки Config не переданы."
 
@@ -40,7 +42,7 @@ Public Function ImportFromActiveDocument(ByVal settings As CSystemSettingsReader
     Set ImportFromActiveDocument = ImportFromModelSpace(doc.ModelSpace, _
         settings.GetString("AutoCAD.Import.ConcreteLayer", "Concrete"), _
         settings.GetString("AutoCAD.Import.RebarLayer", "Reinf"), _
-        settings.GetString("Steel.RebarProfile", "Ribbed"), _
+        REBAR_STEEL_CLASS, _
         InputArea(settings.GetDouble("AutoCAD.Import.MinArea", 0.000001), units), units)
 End Function
 

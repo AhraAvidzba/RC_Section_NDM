@@ -163,7 +163,7 @@ Private Sub TestAutoCADImporterBuildsSectionModel(ByRef stats As TTestStats)
     Set importer = New CAutoCADSectionModelImporter
 
     Dim model As CSectionModel
-    Set model = importer.BuildFromRegionArrays(concreteRegions, rebarRegions, "Ribbed", 0.000001)
+    Set model = importer.BuildFromRegionArrays(concreteRegions, rebarRegions, "Rebar", 0.000001)
 
     AssertTrue stats, "autocad.import.source", model.SourceType = "AutoCADImport"
     AssertTrue stats, "autocad.import.concrete.count", model.ConcreteCount = 1
@@ -176,7 +176,7 @@ Private Sub TestAutoCADImporterBuildsSectionModel(ByRef stats As TTestStats)
     AssertClose stats, "autocad.import.concrete.localIx", model.ConcreteLocalIx(1), 600#, 0.000001
     AssertClose stats, "autocad.import.concrete.localIy", model.ConcreteLocalIy(1), 150#, 0.000001
     AssertClose stats, "autocad.import.rebar.diameter", model.RebarDiameter(1), 20#, 0.000001
-    AssertTrue stats, "autocad.import.rebar.profile", model.RebarSteelClass(1) = "Ribbed"
+    AssertTrue stats, "autocad.import.rebar.marker", model.RebarSteelClass(1) = "Rebar"
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.

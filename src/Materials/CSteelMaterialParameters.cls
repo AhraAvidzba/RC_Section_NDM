@@ -12,14 +12,15 @@ Option Explicit
 ' ==========================================================================
 ' Параметры арматуры для построения диаграмм
 ' ==========================================================================
-' Класс хранит исходные характеристики ненапрягаемой арматуры. Расчетное
-' ядро не читает их напрямую: CMaterialModelProvider строит по ним готовую
-' CMaterialDiagram, а solver работает только с этой универсальной диаграммой.
+' Класс хранит только исходные характеристики ненапрягаемой арматуры.
+' Он не выбирает расчетный режим, не строит диаграмму и не содержит настроек
+' трещин. Готовую CMaterialDiagram по этим параметрам строит
+' CMaterialModelProvider, а solver работает уже с универсальной диаграммой.
 '
 ' Rsc,ser и Esc оставлены как программные пользовательские параметры для
-' симметрии сжатой и растянутой ветви и для исследований. В СП 63 отдельные
-' обозначения Rsc,ser и Esc для обычной арматуры не вводятся, поэтому
-' нормативные defaults: Rsc,ser = Rs,ser, Esc = Es.
+' симметрии сжатой и растянутой ветви и для исследовательских сценариев.
+' Отдельные нормативные обозначения Rsc,ser и Esc для обычной арматуры в
+' СП 63 не вводятся, поэтому типовые defaults: Rsc,ser = Rs,ser, Esc = Es.
 
 Private mRsULS As Double ' Расчетное сопротивление растяжению для I ГПС, МПа.
 Private mRscULS As Double ' Расчетное сопротивление сжатию для I ГПС, МПа.
@@ -31,9 +32,10 @@ Private mTwoLineEsc2 As Double ' Предельная сжатая деформ�
 Private mTwoLineEs2 As Double ' Предельная растянутая деформация eps_s2 для двухлинейной диаграммы.
 Private mThreeLineEsc2 As Double ' Предельная сжатая деформация eps_sc2 для трехлинейной диаграммы.
 Private mThreeLineEs2 As Double ' Предельная растянутая деформация eps_s2 для трехлинейной диаграммы.
-Private mRebarProfile As String ' Ribbed/Smooth для коэффициента phi2 в расчете трещин.
 
-' Читает параметры из Config и сразу переводит напряжения/модули в МПа.
+' Читает параметры из Config и переводит прочности/модули в МПа.
+' Коэффициенты раскрытия трещин здесь не читаются: phi2 теперь задается
+' отдельной настройкой SLS.Crack.Phi2 и не является свойством материала.
 Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Err.Raise vbObjectError + 3200, "CSteelMaterialParameters", "Настройки арматуры не переданы."
 
@@ -47,7 +49,6 @@ Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader, Optional By
     mTwoLineEs2 = settings.GetRequiredDouble("Steel.TwoLine.Es2")
     mThreeLineEsc2 = settings.GetRequiredDouble("Steel.ThreeLine.Esc2")
     mThreeLineEs2 = settings.GetRequiredDouble("Steel.ThreeLine.Es2")
-    mRebarProfile = settings.GetRequiredString("Steel.RebarProfile")
 
     If Not units Is Nothing Then
         mRsULS = units.InputStressToInternal(mRsULS)
@@ -58,18 +59,7 @@ Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader, Optional By
         mEsc = units.InputStressToInternal(mEsc)
     End If
 
-    NormalizeProfile
     Validate
-End Sub
-
-' Нормализует пользовательскую подпись профиля арматуры.
-Private Sub NormalizeProfile()
-    Select Case LCase$(Trim$(mRebarProfile))
-        Case "smooth", "гладкая"
-            mRebarProfile = "Smooth"
-        Case Else
-            mRebarProfile = "Ribbed"
-    End Select
 End Sub
 
 ' Проверяет, что характеристики можно использовать для построения диаграмм.
@@ -110,10 +100,6 @@ Public Property Get Esc() As Double
     Esc = mEsc
 End Property
 
-Public Property Get RebarProfile() As String
-    RebarProfile = mRebarProfile
-End Property
-
 Public Property Get TwoLineEs2() As Double
     TwoLineEs2 = mTwoLineEs2
 End Property
@@ -139,9 +125,10 @@ End Property
 
 Public Sub Initialize(ByVal rscULS As Double, ByVal rsULS As Double, _
         ByVal rscSLS As Double, ByVal rsSLS As Double, ByVal esc As Double, _
-        ByVal es As Double, Optional ByVal rebarProfile As String = "Ribbed", _
-        Optional ByVal twoLineEsc2 As Double = 0.025, Optional ByVal twoLineEs2 As Double = 0.025, _
-        Optional ByVal threeLineEsc2 As Double = 0.015, Optional ByVal threeLineEs2 As Double = 0.015)
+        ByVal es As Double, Optional ByVal twoLineEsc2 As Double = 0.025, _
+        Optional ByVal twoLineEs2 As Double = 0.025, _
+        Optional ByVal threeLineEsc2 As Double = 0.015, _
+        Optional ByVal threeLineEs2 As Double = 0.015)
     mRscULS = rscULS
     mRsULS = rsULS
     mRscSLS = rscSLS
@@ -152,7 +139,5 @@ Public Sub Initialize(ByVal rscULS As Double, ByVal rsULS As Double, _
     mTwoLineEs2 = twoLineEs2
     mThreeLineEsc2 = threeLineEsc2
     mThreeLineEs2 = threeLineEs2
-    mRebarProfile = rebarProfile
-    NormalizeProfile
     Validate
 End Sub

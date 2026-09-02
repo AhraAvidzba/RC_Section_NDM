@@ -67,6 +67,10 @@ Public Function RunBatchCalculationTests() As String
     TestDirectStateReportsNumericalFailure stats
     AppendLine stats, "RUN: TestPR2PhysicalStateRunsCrackWithExtensionEnabled"
     TestPR2PhysicalStateRunsCrackWithExtensionEnabled stats
+    AppendLine stats, "RUN: TestPR2AutoCrackStoresBeforeAndAfterMcrcStates"
+    TestPR2AutoCrackStoresBeforeAndAfterMcrcStates stats
+    AppendLine stats, "RUN: TestPR2AutoCrackPureBendingStoresMcrcStates"
+    TestPR2AutoCrackPureBendingStoresMcrcStates stats
     AppendLine stats, "RUN: TestPR1AxialTensionBeyondPhysicalLimitUsesExtension"
     TestPR1AxialTensionBeyondPhysicalLimitUsesExtension stats
     AppendLine stats, "RUN: TestPR1AxialTensionNearLimitDoesNotJumpToNumFail"
@@ -505,6 +509,91 @@ Restore:
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: batch.group2.physical; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет, что Auto-ветка трещин сохраняет оба состояния около Mcrc.
+' BeforeMcrcState нужен для контроля состояния с работающим растянутым бетоном,
+' AfterMcrcState - для ручной проверки sigma_s,crc после раскрытия трещины.
+Private Sub TestPR2AutoCrackStoresBeforeAndAfterMcrcStates(ByRef stats As TBatchTestStats)
+    Dim oldPsiMode As String
+    Dim oldAllowable As String
+    oldPsiMode = GetSystemSetting("SLS.Crack.PsiMode")
+    oldAllowable = GetSystemSetting("SLS.Crack.Allowable")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "SLS.Crack.PsiMode", "Auto"
+    SetSystemSetting "SLS.Crack.Allowable", "0.0001"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.AddCombination "G2_AUTO_MCRC", -20000#, -15000000#, 0#, "PR2", "auto mcrc states"
+    batch.Execute
+
+    AssertTrue stats, "batch.group2.autoMcrc.crackCalculated", _
+        batch.CrackStatus(1) = "OK" Or batch.CrackStatus(1) = "FAIL"
+    AssertTrue stats, "batch.group2.autoMcrc.beforeState", _
+        Not batch.FindNamedState(1, sstBeforeMcrcState) Is Nothing
+    AssertTrue stats, "batch.group2.autoMcrc.afterState", _
+        Not batch.FindNamedState(1, sstAfterMcrcState) Is Nothing
+    AssertTrue stats, "batch.group2.autoMcrc.afterRole", _
+        batch.FindNamedState(1, sstAfterMcrcState).MaterialModelRoleText = "CrackedState"
+
+Restore:
+    SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
+    SetSystemSetting "SLS.Crack.Allowable", oldAllowable
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.group2.autoMcrc.states; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет чистый изгиб N=0 в полном batch-конвейере: исходное CrackedState
+' находит CStateSolutionRunner, а Auto-ветка трещин затем сохраняет состояния
+' до и после Mcrc без отдельной подстановки продольной силы.
+Private Sub TestPR2AutoCrackPureBendingStoresMcrcStates(ByRef stats As TBatchTestStats)
+    Dim oldPsiMode As String
+    Dim oldAllowable As String
+    oldPsiMode = GetSystemSetting("SLS.Crack.PsiMode")
+    oldAllowable = GetSystemSetting("SLS.Crack.Allowable")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "SLS.Crack.PsiMode", "Auto"
+    SetSystemSetting "SLS.Crack.Allowable", "0.0001"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.AddCombination "G2_AUTO_PURE_MX", 0#, -15000000#, 0#, "PR2", "auto pure bending"
+    batch.Execute
+
+    AssertTrue stats, "batch.group2.autoMcrcPure.directOK", batch.DirectStateStatus(1) = "OK"
+    AssertTrue stats, "batch.group2.autoMcrcPure.crackCalculated", _
+        batch.CrackStatus(1) = "OK" Or batch.CrackStatus(1) = "FAIL"
+    AssertTrue stats, "batch.group2.autoMcrcPure.beforeState", _
+        Not batch.FindNamedState(1, sstBeforeMcrcState) Is Nothing
+    AssertTrue stats, "batch.group2.autoMcrcPure.afterState", _
+        Not batch.FindNamedState(1, sstAfterMcrcState) Is Nothing
+
+Restore:
+    SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
+    SetSystemSetting "SLS.Crack.Allowable", oldAllowable
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.group2.autoMcrcPure.states; " & Err.Description
     Resume Restore
 End Sub
 
@@ -1590,7 +1679,7 @@ Private Function TestMaterialProvider() As CMaterialModelProvider
 
     Dim steelParameters As CSteelMaterialParameters
     Set steelParameters = New CSteelMaterialParameters
-    steelParameters.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#, "Ribbed"
+    steelParameters.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#
 
     Dim provider As CMaterialModelProvider
     Set provider = New CMaterialModelProvider

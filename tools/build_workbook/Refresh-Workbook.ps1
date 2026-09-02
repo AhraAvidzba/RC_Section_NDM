@@ -180,10 +180,14 @@ try {
     Set-SystemSetting $workbook "Capacity.MaxRetries" "4" "4" "шт" "Число повторов после численной несходимости пробы" "Проектная настройка этапа 5"
     Set-SystemSetting $workbook "Capacity.BaseLoadSteps" "8" "8" "шт" "Базовое число внутренних ступеней нагрузки в CSectionSolver" "Проектная настройка этапа 5"
     Set-SystemSetting $workbook "Capacity.SolverMaxIterations" "60" "60" "шт" "Максимум итераций Newton на ступень при поиске несущей способности" "Проектная настройка этапа 5"
-    Set-SystemSetting $workbook "Steel.RebarProfile" "Ribbed" "Ribbed" "Ribbed/Smooth" "Rebar surface profile for phi2 in normal crack width calculation" "Stage 7 project setting"
     Set-SystemSetting $workbook "SLS.Crack.Allowable" "0.3" "0.3" "мм" "User-defined allowable crack width a_crc,ult" "Stage 7 project setting"
-    Set-SystemSetting $workbook "SLS.Crack.PsiMode" "Fixed1" "Fixed1" "Fixed1/Auto" "Psi_s mode: Fixed1 or Auto after failed first crack-width check" "Stage 7 project setting"
     Set-SystemSetting $workbook "SLS.Crack.TensionZoneMode" "Effective" "Effective" "Effective/FullTension" "Concrete tension zone for Abt in crack width calculation" "Stage 7 project setting"
+    Set-SystemSetting $workbook "SLS.Crack.Phi1" "1.4" "1.4" "" "Crack coefficient phi1" "Stage 7 project setting"
+    Set-SystemSetting $workbook "SLS.Crack.Phi2" "0.5" "0.5" "" "Crack coefficient phi2" "Stage 7 project setting"
+    Set-SystemSetting $workbook "SLS.Crack.Phi3Mode" "Auto" "Auto" "Auto/User" "Phi3 mode" "Stage 7 project setting"
+    Set-SystemSetting $workbook "SLS.Crack.Phi3" "1" "1" "" "User phi3 when Phi3Mode=User" "Stage 7 project setting"
+    Set-SystemSetting $workbook "SLS.Crack.PsiMode" "User" "User" "User/Auto" "Psi_s mode: user value or auto after failed first crack-width check" "Stage 7 project setting"
+    Set-SystemSetting $workbook "SLS.Crack.PsiS" "1" "1" "" "User psi_s when PsiMode=User" "Stage 7 project setting"
 
     $workbook.Save()
     Write-Output "Workbook refreshed: $fullWorkbookPath"

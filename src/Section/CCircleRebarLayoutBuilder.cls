@@ -20,6 +20,7 @@ Private mAngleStep As Double
 Private mCentroidX As Double
 Private mCentroidY As Double
 Private mAxisRadius As Double
+Private Const REBAR_STEEL_CLASS As String = "Rebar" ' Техническая метка типа элемента: расчетная арматура, не коэффициент трещин.
 
 ' Строит круговую раскладку по таблице rngCircleGeometry.
 ' Пустой или нулевой Rebar.Diameter означает, что первый ряд отсутствует;
@@ -37,7 +38,7 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
         units.InputLengthToInternal(settings.GetDouble("Rebar.AxisDistance", 40#)), _
         settings.GetLong("Rebar.Count", 8), _
         OptionalDiameterFromSettings(settings, units, "Rebar.Diameter", 20#), _
-        settings.GetString("Steel.RebarProfile", "Ribbed"), _
+        REBAR_STEEL_CLASS, _
         OptionalDiameterFromSettings(settings, units, "Rebar.Diameter2", 0#), _
         OptionalDiameterFromSettings(settings, units, "Rebar.Diameter3", 0#), _
         settings.GetString("Rebar.Loc2row", "Stacked"), _

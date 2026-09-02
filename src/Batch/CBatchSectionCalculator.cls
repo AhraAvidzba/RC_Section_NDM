@@ -57,7 +57,12 @@ Private mElapsedSeconds As Double ' Полное время пакетного �
 Private mDiagnosticLog As String ' Короткий текстовый журнал по LC для отладки batch-потока.
 
 Private mCrackAllowable As Double ' Допустимая ширина раскрытия трещины a_crc,ult, мм.
-Private mCrackPsiMode As String ' Fixed1 или Auto: как определять psi_s для нормальных трещин.
+Private mCrackPsiMode As String ' User или Auto: как определять psi_s для нормальных трещин.
+Private mCrackPhi1 As Double ' Пользовательский коэффициент phi1 для формулы раскрытия.
+Private mCrackPhi2 As Double ' Пользовательский коэффициент phi2 для формулы раскрытия.
+Private mCrackPhi3Mode As String ' User или Auto: как принимать phi3.
+Private mCrackPhi3 As Double ' Пользовательский коэффициент phi3, если Phi3Mode = User.
+Private mCrackPsiS As Double ' Пользовательский коэффициент psi_s, если PsiMode = User.
 Private mCrackTensionZoneMode As String ' Effective или FullTension: какая бетонная зона входит в Abt.
 Private mSolverMethod As String ' Newton или Secant для прямого равновесия.
 Private mSolverLoadSteps As Long ' Число ступеней приложения нагрузки в CSectionSolver.
@@ -93,7 +98,12 @@ Private Sub Class_Initialize()
     Next resultIndex
 
     mCrackAllowable = 0.3
-    mCrackPsiMode = "Fixed1"
+    mCrackPsiMode = "User"
+    mCrackPhi1 = 1.4
+    mCrackPhi2 = 0.5
+    mCrackPhi3Mode = "Auto"
+    mCrackPhi3 = 1#
+    mCrackPsiS = 1#
     mCrackTensionZoneMode = "Effective"
     mSolverMethod = "Newton"
     mSolverLoadSteps = 8
@@ -150,6 +160,11 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mCrackAllowable = settings.GetDouble("SLS.Crack.Allowable", mCrackAllowable)
     mCrackPsiMode = settings.GetString("SLS.Crack.PsiMode", mCrackPsiMode)
     mCrackTensionZoneMode = settings.GetString("SLS.Crack.TensionZoneMode", mCrackTensionZoneMode)
+    mCrackPhi1 = settings.GetDouble("SLS.Crack.Phi1", mCrackPhi1)
+    mCrackPhi2 = settings.GetDouble("SLS.Crack.Phi2", mCrackPhi2)
+    mCrackPhi3Mode = settings.GetString("SLS.Crack.Phi3Mode", mCrackPhi3Mode)
+    mCrackPhi3 = settings.GetDouble("SLS.Crack.Phi3", mCrackPhi3)
+    mCrackPsiS = settings.GetDouble("SLS.Crack.PsiS", mCrackPsiS)
     If settings.HasKey("Solver.Method") Then
         mSolverMethod = settings.GetRawString("Solver.Method", vbNullString)
     Else
@@ -557,7 +572,8 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
         centroidMxForCrack, centroidMyForCrack
     mResults(index).CrackStatus = mStatusPolicy.CrackStatusFromCalculator(crack)
     mResults(index).StoreCrackResult crack
-    If Not crack.CrackInitiationState Is Nothing Then mResults(index).AddState crack.CrackInitiationState
+    If Not crack.BeforeMcrcState Is Nothing Then mResults(index).AddState crack.BeforeMcrcState
+    If Not crack.AfterMcrcState Is Nothing Then mResults(index).AddState crack.AfterMcrcState
 
     ReportValue "CrackStatus", mResults(index).CrackStatus
     ReportValue "Трещина образована", IIf(mResults(index).CrackFormed, "да", "нет")
@@ -608,8 +624,10 @@ Private Function NormalizedCrackPsiMode() As String
     Select Case LCase$(Trim$(mCrackPsiMode))
         Case "auto", "refined"
             NormalizedCrackPsiMode = "Auto"
+        Case "user", "manual", "fixed1", "unity"
+            NormalizedCrackPsiMode = "User"
         Case Else
-            NormalizedCrackPsiMode = "Fixed1"
+            NormalizedCrackPsiMode = "User"
     End Select
 End Function
 
@@ -807,6 +825,11 @@ End Sub
 Private Sub ConfigureCrackCalculator(ByVal crack As CCrackWidthCalculator)
     crack.AllowableCrackWidth = mCrackAllowable
     crack.PsiMode = mCrackPsiMode
+    crack.Phi1 = mCrackPhi1
+    crack.Phi2 = mCrackPhi2
+    crack.Phi3Mode = mCrackPhi3Mode
+    crack.Phi3 = mCrackPhi3
+    crack.PsiS = mCrackPsiS
     crack.TensionZoneMode = mCrackTensionZoneMode
     crack.SolverLoadSteps = mSolverLoadSteps
     crack.SolverMethod = mSolverMethod

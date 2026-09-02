@@ -14,7 +14,7 @@ Option Explicit
 ' ==========================================================================
 ' Один LC может иметь несколько конечных расчетных состояний: StrengthState,
 ' CapacityState, CrackedState и, при реально выполненной ветке Auto,
-' CrackInitiationState. CSectionStateResult хранит плоскость деформаций и
+' BeforeMcrcState/AfterMcrcState. CSectionStateResult хранит плоскость деформаций и
 ' фактическую спецификацию материала для такого named-state.
 '
 ' Класс не пишет лист Results и не решает равновесие. Он только переносит

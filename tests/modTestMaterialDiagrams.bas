@@ -198,7 +198,7 @@ Private Sub TestUserStrainParametersAffectDiagrams(ByRef stats As TMaterialTestS
 
     Dim steel As CSteelMaterialParameters
     Set steel = New CSteelMaterialParameters
-    steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#, "Ribbed", _
+    steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#, _
         0.03, 0.031, 0.016, 0.017
 
     Dim provider As CMaterialModelProvider
@@ -264,7 +264,7 @@ End Function
 Private Function TestSteelParameters() As CSteelMaterialParameters
     Dim parameters As CSteelMaterialParameters
     Set parameters = New CSteelMaterialParameters
-    parameters.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#, "Ribbed", _
+    parameters.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#, _
         0.025, 0.025, 0.015, 0.015
     Set TestSteelParameters = parameters
 End Function

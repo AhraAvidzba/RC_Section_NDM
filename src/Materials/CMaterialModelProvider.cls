@@ -479,6 +479,15 @@ Public Function ConcreteTensionLimitFromSpec(ByVal spec As CMaterialModelSpec) A
     ConcreteTensionLimitFromSpec = ConcreteMaterialFromSpec(spec).UltimateTensionStrain
 End Function
 
+' Возвращает eps_bt0 из исходных параметров бетона для нормативного критерия
+' Mcrc по СП 63 п. 8.1.30, формула (8.54). Значение берется из той же
+' профильной спецификации, что и диаграмма Mcrc, чтобы crack-калькулятор не
+' читал Config напрямую и не создавал параллельный источник материалов.
+Public Function ConcreteTensionEbt0FromSpec(ByVal spec As CMaterialModelSpec) As Double
+    ValidateSpec spec
+    ConcreteTensionEbt0FromSpec = mConcreteParameters.Ebt0
+End Function
+
 Public Function ConcreteTensionLimitEnabledFromSpec(ByVal spec As CMaterialModelSpec) As Boolean
     Dim diagram As CMaterialDiagram
     Set diagram = ConcreteMaterialFromSpec(spec)
@@ -611,11 +620,6 @@ End Function
 Public Property Get DirectStateDiagramExtensionEnabled() As Boolean
     EnsureInitialized
     DirectStateDiagramExtensionEnabled = mDirectStateDiagramExtension
-End Property
-
-Public Property Get RebarProfile() As String
-    EnsureInitialized
-    RebarProfile = mSteelParameters.RebarProfile
 End Property
 
 ' Проверяет, что provider уже построил диаграммы.

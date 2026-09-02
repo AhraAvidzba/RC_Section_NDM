@@ -1,4 +1,4 @@
-# Архитектура расчетных профилей и единого batch-конвейера
+﻿# Архитектура расчетных профилей и единого batch-конвейера
 
 Документ фиксирует согласованную и реализованную архитектуру расчетных профилей для NDM. Описание привязано к текущим классам проекта и используется как контрольный контракт для Config, batch-конвейера, Results snapshot, схемы, AutoCAD export и тестов. Исторические замечания ниже описывают состояние до миграции только для понимания, какие старые ветви больше не должны возвращаться.
 
@@ -21,7 +21,7 @@
 - оставить `CapacityLoadPath` в строке сочетания, потому что это свойство конкретного вектора нагрузок;
 - убрать выбор расчетов из Excel-модулей и writer-ов;
 - оставить `CBatchSectionCalculator` оркестратором, а не центром всех расчетных правил;
-- хранить в памяти и на `Results` конечные именованные НДС: `StrengthState`, `CapacityState`, `CrackInitiationState`, `CrackedState`;
+- хранить в памяти и на `Results` конечные именованные НДС: `StrengthState`, `CapacityState`, `BeforeMcrcState`, `AfterMcrcState`, `CrackedState`;
 - сохранить текущую математику расчетов без изменения нормативных формул и solver API.
 
 ## 2. Зафиксированный frontend-контракт
@@ -131,7 +131,8 @@ PhysicalState
 - `StrengthState`, если включен `Calculation.Strength.DirectState`;
 - `CapacityState`, если включен `Calculation.Strength.Capacity` и найдено предельное состояние;
 - `CrackedState`, если включен `Calculation.Crack.Width` и расчет трещин дошел до раскрытого состояния;
-- `CrackInitiationState` только если внутри `Calculation.Crack.Width` действительно потребовалось определение Mcrc.
+- `BeforeMcrcState` только если внутри `Calculation.Crack.Width` действительно потребовалась общая Mcrc-ветка по `eps_bt,ult`;
+- `AfterMcrcState` только если для уточнения `psi_s` выполнен повторный solve при `lambda_crc * LC` без растянутого бетона.
 
 Не записываются:
 
@@ -167,7 +168,7 @@ PhysicalState
 
 Старая настройка `AutoCAD.Export.ResultType` удалена, потому что она дублировала `Visualization.Quantity`. Аналогичная отдельная настройка схемы для выбора `Stress/Strain` также не используется: выводимая величина берется из профиля. `CombinationID` для схемы и AutoCAD при этом остается отдельной управляющей настройкой.
 
-Если выбранное `Visualization.State` отсутствует в snapshot, нужно вывести понятное сообщение и ничего не пересчитывать. Для отсутствующего `CrackInitiationState` отдельно пояснять, что определение Mcrc в ходе расчета трещин не потребовалось.
+Если выбранное `Visualization.State` отсутствует в snapshot, нужно вывести понятное сообщение и ничего не пересчитывать. Для отсутствующих `BeforeMcrcState` и `AfterMcrcState` отдельно пояснять, что определение Mcrc в ходе расчета трещин не потребовалось.
 
 ## 3. Исторические Проблемы До Миграции
 
@@ -221,7 +222,7 @@ ValueSet + ConcreteDiagram + ConcreteTension + SteelDiagram
 
 ### `CNDMResultsWriter`
 
-Writer пишет все конечные named states. Одно сочетание может дать `StrengthState`, `CapacityState`, `CrackedState` и иногда `CrackInitiationState`.
+Writer пишет все конечные named states. Одно сочетание может дать `StrengthState`, `CapacityState`, `CrackedState`, а в Auto-ветке трещин дополнительно `BeforeMcrcState` и/или `AfterMcrcState`.
 
 Writer добавляет колонку `StateType` и не пишет промежуточные solver/probe-состояния.
 
@@ -267,7 +268,8 @@ Writer добавляет колонку `StateType` и не пишет пром
 
 - `StrengthState`;
 - `CapacityState`;
-- `CrackInitiationState`;
+- `BeforeMcrcState`;
+- `AfterMcrcState`;
 - `CrackedState`.
 
 Состояния для будущей устойчивости сейчас не добавляются и не резервируются.
@@ -371,7 +373,8 @@ sdThreeLine
 ```text
 sstStrengthState
 sstCapacityState
-sstCrackInitiationState
+sstBeforeMcrcState
+sstAfterMcrcState
 sstCrackedState
 ```
 
@@ -519,9 +522,9 @@ Target(lambda) = Offset + lambda * Base
 
 - calculator получает уже готовый исходный `CrackedState` от orchestrator-а;
 - calculator не должен сам повторно решать исходное раскрытое состояние заданного LC;
-- `CrackInitiationState` получается только если режим `Auto` действительно дошел до определения Mcrc;
-- второе служебное cracked-состояние при `lambda_crc * LC` остается внутри Auto-ветви calculator-а и нужно только для `sigma_s,crc`;
-- calculator считает и возвращает crack-result и optional `CrackInitiationState`, но не знает о `CCombinationResult` и не модифицирует его напрямую;
+- `BeforeMcrcState` получается только если режим `Auto` действительно дошел до общей ветки Mcrc по `eps_bt,ult`; это состояние на пороге Mcrc с работающим растянутым бетоном;
+- `AfterMcrcState` получается тем же условным путем, а также для центральной ветки через `Ncrc`, если требуется `sigma_s,crc`; это отдельный solve при той же `lambda_crc * LC` уже без растянутого бетона;
+- calculator считает и возвращает crack-result и optional `BeforeMcrcState` / `AfterMcrcState`, но не знает о `CCombinationResult` и не модифицирует его напрямую;
 - проверка продольных трещин вызывается в том же конвейере трещин после получения напряжений бетона раскрытого состояния;
 - итог продольных трещин хранится в `CCombinationResult` как часть результата Crack.Width, а не как самостоятельный расчет профиля.
 
@@ -641,10 +644,12 @@ flowchart TD
     P --> Q["CStateSolutionRunner: решить исходный CrackedState"]
     Q --> R["CCombinationResult.AddState(CrackedState)"]
     R --> S["CCrackWidthCalculator.Calculate(CrackedState, ...)"]
-    S --> V["Продольные трещины внутри Crack.Width"]
-    V --> W["CCombinationResult: crack result"]
+    S --> V["optional BeforeMcrcState / AfterMcrcState"]
+    V --> W["CCombinationResult.AddState для возвращенных Mcrc-состояний"]
+    W --> X["Продольные трещины внутри Crack.Width"]
+    X --> Y["CCombinationResult: crack result"]
     O -- "Нет" --> T["Crack result = N/A"]
-    W --> U["CBatchStatusPolicy.Aggregate"]
+    Y --> U["CBatchStatusPolicy.Aggregate"]
     T --> U
 ```
 
@@ -688,9 +693,12 @@ sequenceDiagram
     State-->>Batch: CrackedState
     Batch->>Batch: CCombinationResult.AddState(CrackedState)
     Batch->>Crack: Calculate(CrackedState, LC, models, settings)
-    Crack-->>Batch: crack result and optional CrackInitiationState
-    opt CrackInitiationState returned
-        Batch->>Batch: CCombinationResult.AddState(CrackInitiationState)
+    Crack-->>Batch: crack result and optional BeforeMcrcState / AfterMcrcState
+    opt BeforeMcrcState returned
+        Batch->>Batch: CCombinationResult.AddState(BeforeMcrcState)
+    end
+    opt AfterMcrcState returned
+        Batch->>Batch: CCombinationResult.AddState(AfterMcrcState)
     end
         end
         Batch->>Status: Normalize and aggregate statuses
@@ -716,11 +724,11 @@ CBatchSectionCalculator
 
 `CCrackWidthCalculator` не должен сам повторно решать исходное `CrackedState` заданного LC. Он получает готовое раскрытое НДС и использует его для зоны, `sigma_s`, `As`, `Abt`, `ds`, `ls` и первой проверки с `psi_s = 1`.
 
-Внутри `CCrackWidthCalculator` остается только специальная условная ветвь `Auto`: если первая проверка не проходит, calculator определяет `lambda_crc`, формирует `CrackInitiationState` как часть возвращаемого результата, выполняет отдельный служебный solve для `lambda_crc * LC` по модели `CrackedState` и по нему получает `sigma_s,crc`.
+Внутри `CCrackWidthCalculator` остается только специальная условная ветвь `Auto`: если первая проверка не проходит, calculator определяет `lambda_crc`. В общей Mcrc-ветке он формирует `BeforeMcrcState` по модели `CrackInitiation`; в центральной ветке `lambda_crc` берется из `Ncrc / N` и `BeforeMcrcState` не создается. После найденного `lambda_crc` calculator выполняет отдельный solve для `lambda_crc * LC` по модели `CrackedState`, формирует `AfterMcrcState` и по нему получает `sigma_s,crc`.
 
 Единое правило сохранения состояний: calculator считает и возвращает результат, а named states в `CCombinationResult` добавляет только orchestrator. Поэтому `CCrackWidthCalculator` не должен иметь зависимости от `CCombinationResult`.
 
-### Fixed1
+### User
 
 ```text
 1. Orchestrator строит `MaterialModel.CrackedState`.
@@ -741,7 +749,7 @@ CBatchSectionCalculator
 1. Crack.Width получает от orchestrator-а уже найденное текущее CrackedState для исходного LC.
 2. Выполнить первую проверку раскрытия с psi_s = 1.
 3. Если a_crc <= a_crc,ult, Mcrc не искать.
-4. CrackInitiationState не создавать.
+4. BeforeMcrcState и AfterMcrcState не создавать.
 5. Значения lambda_crc и sigma_s,crc считать нерассчитанными.
 6. Проверку продольных трещин выполнить по полученному CrackedState, если она применима.
 ```
@@ -763,52 +771,90 @@ sequenceDiagram
     Batch->>Crack: Calculate(CrackedState, ...)
     Crack->>Crack: First check with psi_s = 1
     alt crack width is not acceptable
-        Crack->>Mat: Build CrackInitiation model / cpMcrc
-        Crack->>Solver: CalculateLambdaCrc by eps_bt,crc = Rbt,ser / Eb
-        Solver-->>Crack: lambda_crc and CrackInitiationState with tensile concrete
+        alt true central tension
+            Crack->>Crack: lambda_crc = Ncrc / N by SP 63 p. 8.2.13
+        else general Mcrc state
+            Crack->>Mat: Build CrackInitiation model / cpMcrc
+            Crack->>Solver: CalculateLambdaCrc by eps_bt,ult, SP 63 p. 8.2.14 and 8.1.30
+            Solver-->>Crack: lambda_crc and BeforeMcrcState with tensile concrete
+        end
         Crack->>Mat: Build CrackedState model / cpCrackedNDS
         Crack->>Solver: Separate solve for lambda_crc * LC without tensile concrete
-        Solver-->>Crack: service cracked state at lambda_crc
-        Crack->>Crack: sigma_s,crc from the second cracked solve
+        Solver-->>Crack: AfterMcrcState without tensile concrete
+        Crack->>Crack: sigma_s,crc from AfterMcrcState
         Crack->>Crack: psi_s = 1 - 0.8 * sigma_s,crc / sigma_s
     else first check is acceptable
-        Crack->>Crack: No CrackInitiationState
+        Crack->>Crack: No BeforeMcrcState / AfterMcrcState
     end
     Crack->>Crack: Проверка продольных трещин внутри Crack.Width
-    Crack-->>Batch: crack result and optional CrackInitiationState
-    opt CrackInitiationState returned
-        Batch->>Batch: CCombinationResult.AddState(CrackInitiationState)
+    Crack-->>Batch: crack result and optional BeforeMcrcState / AfterMcrcState
+    opt BeforeMcrcState returned
+        Batch->>Batch: CCombinationResult.AddState(BeforeMcrcState)
+    end
+    opt AfterMcrcState returned
+        Batch->>Batch: CCombinationResult.AddState(AfterMcrcState)
     end
     Batch->>Batch: Save crack result in CCombinationResult
 ```
 
-Подробная последовательность при непрохождении первой проверки:
+Подробная последовательность при непрохождении первой проверки в общей ветке
+с изгибной или внецентренно-растянутой эпюрой:
 
 ```text
 1. `CalculateLambdaCrc(...)` с материалами `MaterialModel.CrackInitiation` / `cpMcrc`
    определяет `lambda_crc` и состояние образования трещины по критерию
-   `eps_bt,crc = Rbt,ser / Eb`.
+   достижения предельной растягивающей деформации бетона `eps_bt,ult`
+   по СП 63 п. 8.2.14 и п. 8.1.30.
 
-2. Это состояние является `CrackInitiationState`: физическое состояние
+   - при двузначной эпюре принимается `eps_bt,ult = eps_bt2`;
+   - при однозначно растянутой эпюре с ненулевой кривизной применяется
+     формула (8.54):
+     `eps_bt,ult = eps_bt2 - (eps_bt2 - eps_bt0) * eps1 / eps2`;
+2. Это состояние является `BeforeMcrcState`: физическое состояние
    образования трещины с учетом растянутого бетона. Если расчет Mcrc реально
    был выполнен и состояние успешно найдено, calculator возвращает его
    orchestrator-у. Orchestrator обязательно добавляет его в
    `CCombinationResult.States`, а затем writer записывает его в
-   `rngNDMElementResults` как `StateType = CrackInitiationState`.
+   `rngNDMElementResults` как `StateType = BeforeMcrcState`.
 
 3. После нахождения `lambda_crc` выполняется отдельный повторный solve для
    нагрузки `lambda_crc * LC` уже по `MaterialModel.CrackedState` /
    `cpCrackedNDS`, то есть без растянутого бетона.
 
-4. Именно из второго cracked-состояния определяется `sigma_s,crc`.
+4. Это состояние является `AfterMcrcState`: НДС сразу после образования
+   трещины на той же нагрузке `lambda_crc * LC`, но уже с выключенным
+   растянутым бетоном. Если solve успешно выполнен, calculator возвращает это
+   состояние orchestrator-у. Orchestrator обязательно добавляет его в
+   `CCombinationResult.States`, а writer записывает его в
+   `rngNDMElementResults` как `StateType = AfterMcrcState`.
 
-5. Затем вычисляется `psi_s = 1 - 0.8 * sigma_s,crc / sigma_s`.
+5. Именно из `AfterMcrcState` определяется `sigma_s,crc`, чтобы пользователь
+   мог вручную проверить напряжение арматуры после раскрытия.
+
+6. Затем вычисляется `psi_s = 1 - 0.8 * sigma_s,crc / sigma_s`.
+```
+
+Для истинного центрального растяжения эта последовательность короче и
+нормативно отделена от изгибного поиска:
+
+```text
+1. Проверяется растягивающая продольная сила N и нулевые Mx/My относительно
+   центра тяжести бетонного сечения.
+2. По СП 63 п. 8.2.13, формула (8.127), считается Ncrc = Ared * Rbt,ser.
+3. Если N <= Ncrc, трещина при текущей нагрузке не считается образованной.
+4. Если N > Ncrc, принимается lambda_crc = Ncrc / N.
+5. Для получения sigma_s,crc выполняется отдельный solve lambda_crc * LC
+   по MaterialModel.CrackedState / cpCrackedNDS без растянутого бетона.
+6. Полученное состояние calculator возвращает как AfterMcrcState, а
+   orchestrator сохраняет его в CCombinationResult.States. BeforeMcrcState в
+   центральной ветке не создается, потому что порог задается силой Ncrc, а не
+   отдельным поиском плоскости деформаций с растянутым бетоном.
 ```
 
 Важно различать два состояния:
 
-- `CrackInitiationState` - именованное состояние образования трещины по модели Mcrc. Оно обязательно возвращается calculator-ом и сохраняется orchestrator-ом как конечное состояние, если реально было рассчитано.
-- внутреннее cracked-состояние при `lambda_crc` - служебное состояние по `CrackedState`, из которого берется `sigma_s,crc`. Оно не является отдельным `StateType` и не обязано записываться в `rngNDMElementResults`.
+- `BeforeMcrcState` - именованное состояние образования трещины по модели Mcrc. Оно обязательно возвращается calculator-ом и сохраняется orchestrator-ом как конечное состояние, если реально было рассчитано в общей ветке Mcrc по `eps_bt,ult`.
+- `AfterMcrcState` - именованное состояние сразу после образования трещины по модели `CrackedState`. Оно обязательно возвращается calculator-ом и сохраняется orchestrator-ом как конечное состояние, если реально было рассчитано; из него берется `sigma_s,crc`.
 
 Итог продольных трещин хранится в `CCombinationResult` рядом с результатами Crack.Width: максимальное сжимающее напряжение бетона, допустимое `Rb,mc2`, запас и статус проверки. Отдельной строки профиля и отдельного расчетного действия для него не требуется.
 
@@ -871,7 +917,7 @@ CSectionStateResult
     service status/flags if needed by next calculation stages
 ```
 
-`CSectionStateResult` является обязательной частью целевой архитектуры. Без него `CCombinationResult` снова превратится в набор параллельных полей для `StrengthState`, `CapacityState`, `CrackedState` и `CrackInitiationState`.
+`CSectionStateResult` является обязательной частью целевой архитектуры. Без него `CCombinationResult` снова превратится в набор параллельных полей для `StrengthState`, `CapacityState`, `CrackedState`, `BeforeMcrcState` и `AfterMcrcState`.
 
 В памяти state должен хранить достаточно информации, чтобы writer мог однозначно воспроизвести именно рассчитанную плоскость деформаций и именно ту материальную модель, с которой это состояние было получено. Поэтому `MaterialModelRole` и `MaterialModelSpec` являются частью in-memory state. При этом `MaterialModelRole`, `MaterialModelSpec`, `StateStatus`, `ExtensionUsed` не обязаны автоматически попадать в каждую строку `rngNDMElementResults`: для snapshot сначала надо проверить, какой потребитель реально нуждается в этих признаках и нельзя ли хранить их компактнее в отдельной заголовочной таблице состояний.
 
@@ -880,7 +926,8 @@ CSectionStateResult
 - `StrengthState` создается только для включенного `Calculation.Strength.DirectState`;
 - `CapacityState` создается только при успешном получении предельного НДС;
 - `CrackedState` создается внутри включенного `Calculation.Crack.Width`;
-- `CrackInitiationState` обязательно создается calculator-ом и сохраняется orchestrator-ом, если Mcrc-ветвь Auto реально выполнялась и успешно нашла состояние;
+- `BeforeMcrcState` обязательно создается calculator-ом и сохраняется orchestrator-ом, если общая Mcrc-ветвь Auto по `eps_bt,ult` реально выполнялась и успешно нашла состояние;
+- `AfterMcrcState` обязательно создается calculator-ом и сохраняется orchestrator-ом, если после найденного `lambda_crc` успешно выполнен повторный solve по `CrackedState`;
 - внутренние пробы не сохраняются;
 - writer-ы получают states из `CCombinationResult`, а не запускают solver.
 
@@ -947,7 +994,7 @@ Else
 End If
 ```
 
-Для `CrackInitiationState` сообщение должно быть специальным: состояние отсутствует, потому что Mcrc не требовалось в ходе расчета трещин либо расчет трещин не дошел до этой ветви.
+Для `BeforeMcrcState` и `AfterMcrcState` сообщение должно быть специальным: состояние отсутствует, потому что Mcrc не требовалось в ходе расчета трещин либо расчет трещин не дошел до этой ветви.
 
 Plot/AutoCAD не должны использовать:
 
@@ -969,7 +1016,7 @@ Plot/AutoCAD не должны использовать:
 - для включенного `Calculation.Strength.Capacity` заполнена модель прочности;
 - для включенного `Calculation.Crack.Width` всегда заполнена модель `CrackedState`;
 - для включенного `Calculation.Crack.Width` и глобального `SLS.Crack.PsiMode = Auto` заполнена модель `CrackInitiation`;
-- при `SLS.Crack.PsiMode = Fixed1` модель `CrackInitiation` может быть пустой и не должна блокировать расчет;
+- при `SLS.Crack.PsiMode = User` модель `CrackInitiation` может быть пустой и не должна блокировать расчет;
 - `Visualization.Quantity` задана корректно как управляющее значение `Stress` или `Strain`.
 
 Пустые `PR3` и `PR4` не являются ошибкой, пока они не назначены сочетанию.
@@ -982,16 +1029,18 @@ Plot/AutoCAD не должны использовать:
 
 ```text
 Calculation.Crack.Width = Yes
-Visualization.State = CrackInitiationState
+Visualization.State = BeforeMcrcState
 ```
 
 допустима даже если:
 
-- `SLS.Crack.PsiMode = Fixed1`;
+- `SLS.Crack.PsiMode = User`;
 - при `Auto` первая проверка с `psi_s = 1` прошла;
 - Mcrc-ветвь в конкретном LC не выполнялась.
 
-В таком случае все запрошенные расчеты выполняются и snapshot записывается нормально. Ошибка или предупреждение возникает только при попытке построения схемы/AutoCAD: запрашиваемое состояние не найдено в текущем snapshot. Для `CrackInitiationState` сообщение должно объяснять, что НДС при Mcrc отсутствует, потому что Mcrc не требовался или ветвь Mcrc не была выполнена для выбранного LC.
+То же относится к `Visualization.State = AfterMcrcState`.
+
+В таком случае все запрошенные расчеты выполняются и snapshot записывается нормально. Ошибка или предупреждение возникает только при попытке построения схемы/AutoCAD: запрашиваемое состояние не найдено в текущем snapshot. Для `BeforeMcrcState` и `AfterMcrcState` сообщение должно объяснять, что состояние около Mcrc отсутствует, потому что Mcrc не требовался или ветвь Mcrc не была выполнена для выбранного LC.
 
 Иными словами, `Visualization.State`, не соответствующий гарантированному состоянию профиля, является проблемой визуализации, а не расчетной ошибкой профиля.
 
@@ -1068,7 +1117,7 @@ Runtime-совместимость со старой моделью не нуж�
 - Неправильная миграция `PR1/PR2` может изменить набор выполняемых расчетов.
 - Plot/AutoCAD могут показать не то состояние, если не будет строгого выбора по `StateType`.
 - Writer element results должен получить ровно те состояния, которые реально были рассчитаны, без внутренних probe-состояний.
-- `Calculation.Crack.Width` сложнее простого флага: внутри него всегда нужен `CrackedState`, а `CrackInitiationState` появляется только в одной ветви Auto.
+- `Calculation.Crack.Width` сложнее простого флага: внутри него всегда нужен `CrackedState`, а `BeforeMcrcState` и `AfterMcrcState` появляются только при необходимости уточнения `psi_s`. `BeforeMcrcState` относится только к общей Mcrc-ветке по `eps_bt,ult`, а `AfterMcrcState` появляется после повторного solve без растянутого бетона как в общей ветке, так и в центральной ветке через `Ncrc`.
 - Если добавить лишние колонки в `rngNDMElementResults` без необходимости, snapshot раздуется и станет труднее поддерживать.
 - Если оставить пользовательские статусы вне `CBatchStatusPolicy`, появятся разные варианты одинаковых статусов.
 
@@ -1102,7 +1151,7 @@ Runtime-совместимость со старой моделью не нуж�
 - Исправлена validation-логика Mcrc: `CrackInitiation` обязателен только для `SLS.Crack.PsiMode = Auto`.
 - Подробно описана фактическая Auto-последовательность `CCrackWidthCalculator` с отдельным solve для `lambda_crc * LC` по `CrackedState`.
 - Однозначно зафиксировано, что исходный `CrackedState` считает orchestrator через `CStateSolutionRunner`, а `CCrackWidthCalculator` получает его готовым.
-- Зафиксировано, что `CCrackWidthCalculator` возвращает crack-result и optional `CrackInitiationState`, а сохраняет named states в `CCombinationResult` только orchestrator.
+- Зафиксировано, что `CCrackWidthCalculator` возвращает crack-result и optional `BeforeMcrcState` / `AfterMcrcState`, а сохраняет named states в `CCombinationResult` только orchestrator.
 - Продольные трещины описаны как часть `Calculation.Crack.Width`, без отдельного расчетного действия.
 - `CSectionStateResult` закреплен как обязательная часть целевой архитектуры с точным контрактом `MaterialModelRole` + `MaterialModelSpec`.
 - `rngNDMElementResults` приведен к базовой структуре с `LoadCase` и `StateType`.

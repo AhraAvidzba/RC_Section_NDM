@@ -1291,7 +1291,7 @@ End Function
 Private Function TestSteelParameters() As CSteelMaterialParameters
     Dim parameters As CSteelMaterialParameters
     Set parameters = New CSteelMaterialParameters
-    parameters.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#, "Ribbed"
+    parameters.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#
     Set TestSteelParameters = parameters
 End Function
 

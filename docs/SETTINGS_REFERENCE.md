@@ -28,7 +28,7 @@
 | `rngRoundedRectangleGeometry` | Параметры прямоугольного сечения со скруглениями. |
 | `rngLShapeGeometry` | Параметры Г-образного сечения и автоматической арматуры. |
 | `rngConcreteMaterialParameters` | Параметры бетона для I/II ГПС: `Rb/Rbt`, `Rb,ser/Rbt,ser`, `Rb,mc2`, `Eb/Ebt` и расчетные деформационные точки. |
-| `rngSteelMaterialParameters` | Параметры арматуры для I/II ГПС: `Rsc/Rs`, `Rsc,ser/Rs,ser`, `Esc/Es` и профиль арматуры. |
+| `rngSteelMaterialParameters` | Параметры арматуры для I/II ГПС: `Rsc/Rs`, `Rsc,ser/Rs,ser`, `Esc/Es` и предельные деформации диаграмм. |
 | `rngCalculationDiagramSettings` | Выбор расчетной диаграммы и режима растянутого бетона для `Strength`, `Mcrc` и `CrackedNDS`. |
 | `rngLoadCombinations` | До 20 сочетаний нагрузок: `CalculationType = Group1` для расчета по первой группе предельных состояний, `CalculationType = Group2` для расчета трещин по второй группе. |
 | `rngBatchSummary` | Сводка batch-расчета на `Results!A1:BC29`. |
@@ -99,7 +99,7 @@
 - импортируются только AutoCAD `Region`;
 - единицы AutoCAD всегда считаются миллиметрами;
 - материальная модель для расчета строится через `CMaterialModelProvider`; AutoCAD importer передает только геометрию и не выбирает диаграмму сам;
-- профиль арматуры для коэффициента `phi2` при расчете трещин берется из `Steel.RebarProfile`;
+- коэффициент `phi2` при расчете трещин задается пользователем в `SLS.Crack.Phi2`;
 - разные материалы арматуры в одном сечении не поддерживаются;
 - при отсутствии AutoCAD, активного чертежа или нужных областей расчет останавливается с ошибкой ввода.
 
@@ -139,9 +139,8 @@
 | `Capacity.SolutionStrategy` | `Auto`, `UltimateStrain`, `LoadMultiplier` |
 | `Capacity.SearchMethod` | `Bisection`, `Brent`, `Secant` |
 | `Solver.LineSearchEnabled` | `Yes`, `No` |
-| `Steel.RebarProfile` | `Ribbed`, `Smooth` |
-| `SLS.Crack.Enabled` | `Yes`, `No` |
-| `SLS.Crack.PsiMode` | `Fixed1`, `Auto` |
+| `SLS.Crack.Phi3Mode` | `Auto`, `User` |
+| `SLS.Crack.PsiMode` | `User`, `Auto` |
 | `SLS.Crack.TensionZoneMode` | `Effective`, `FullTension` |
 | `AutoCAD.Export.ResultType` | `Stress`, `Strain` |
 | `AutoCAD.Export.LabelMode` | `ValuesOnly`, `NamesAndValues` |

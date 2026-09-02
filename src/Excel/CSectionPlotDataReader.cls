@@ -633,8 +633,9 @@ End Function
 
 Private Function MissingStateMessage(ByVal loadCase As String, ByVal stateType As String) As String
     MissingStateMessage = "Запрашиваемое состояние """ & stateType & """ не найдено в Results для сочетания " & loadCase & "."
-    If StrComp(stateType, "CrackInitiationState", vbTextCompare) = 0 Then
-        MissingStateMessage = MissingStateMessage & " Для НДС при Mcrc это нормально, если ветвь определения Mcrc в расчете трещин не потребовалась."
+    If StrComp(stateType, "BeforeMcrcState", vbTextCompare) = 0 Or _
+            StrComp(stateType, "AfterMcrcState", vbTextCompare) = 0 Then
+        MissingStateMessage = MissingStateMessage & " Для состояния около Mcrc это нормально, если ветвь определения Mcrc в расчете трещин не потребовалась."
     End If
 End Function
 

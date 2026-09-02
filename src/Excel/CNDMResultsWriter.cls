@@ -25,6 +25,9 @@ Private Const SECTION_PROPERTY_COLUMNS As Long = 6 ' Общие свойства
 Private Const ANNOTATION_COLUMNS As Long = 13 ' Semantic-аннотации схемы: размеры, контур, групповые подписи арматуры.
 Private Const MATERIAL_DIAGRAM_COLUMNS As Long = 9 ' Диагностический вывод фактических точек диаграмм, переданных solver-ам.
 Private Const PHYSICAL_TOLERANCE As Double = 0.000000001 ' Порог, ниже которого напряжение считается NearZero.
+Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 55 ' Строки общих свойств сечения до LC-зависимых блоков.
+Private Const LC_SECTION_PROPERTY_ROWS As Long = 23 ' Строки свойств одного LC без metadata named-state.
+Private Const STATE_SECTION_PROPERTY_ROWS As Long = 8 ' Строки metadata одного сохраненного named-state.
 
 ' ------------------------------
 ' Полная запись Results
@@ -110,7 +113,7 @@ Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSect
     Dim stateCount As Long
     Dim i As Long
     ' Считаем только конечные named states. Один LC может дать несколько
-    ' состояний: StrengthState, CapacityState, CrackedState и CrackInitiationState.
+    ' состояний: StrengthState, CapacityState, CrackedState, BeforeMcrcState и AfterMcrcState.
     For i = 1 To batch.Count
         stateCount = stateCount + batch.NamedStateCount(i)
     Next i
@@ -221,7 +224,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     Set target = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
 
     Dim rowCount As Long
-    rowCount = 1 + 92 + batch.Count * 60
+    rowCount = SectionPropertyRowCount(batch)
 
     Dim data() As Variant
     ReDim data(1 To rowCount, 1 To SECTION_PROPERTY_COLUMNS)
@@ -350,7 +353,7 @@ Private Sub WriteMaterialDiagrams(ByVal workbook As Object, ByVal materialProvid
     Set target = workbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange
 
     Dim rowCapacity As Long
-    rowCapacity = 1 + batch.Count * 192
+    rowCapacity = MaterialDiagramRowCount(materialProvider, batch)
 
     Dim data() As Variant
     ReDim data(1 To rowCapacity, 1 To MATERIAL_DIAGRAM_COLUMNS)
@@ -512,6 +515,45 @@ Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As L
         End If
     Next stateIndex
 End Sub
+
+' Считает точную высоту rngNDMSectionProperties до выделения массива.
+' Это важно для полного snapshot-а: при 20 LC и нескольких named-state на LC
+' фиксированного запаса может не хватить, и VBA падает с Subscript out of range.
+Private Function SectionPropertyRowCount(ByVal batch As CBatchSectionCalculator) As Long
+    Dim rowCount As Long
+    rowCount = 1 + COMMON_SECTION_PROPERTY_ROWS + batch.Count * LC_SECTION_PROPERTY_ROWS
+
+    Dim combinationIndex As Long
+    For combinationIndex = 1 To batch.Count
+        rowCount = rowCount + batch.NamedStateCount(combinationIndex) * STATE_SECTION_PROPERTY_ROWS
+    Next combinationIndex
+
+    SectionPropertyRowCount = rowCount
+End Function
+
+' Считает точную высоту диагностической таблицы фактических диаграмм.
+' В расчетах с профилями одно сочетание может иметь несколько material spec,
+' поэтому размер зависит от фактических states и количества точек диаграмм.
+Private Function MaterialDiagramRowCount(ByVal materialProvider As CMaterialModelProvider, _
+        ByVal batch As CBatchSectionCalculator) As Long
+    Dim rowCount As Long
+    rowCount = 1
+
+    Dim combinationIndex As Long
+    For combinationIndex = 1 To batch.Count
+        Dim stateIndex As Long
+        For stateIndex = 1 To batch.NamedStateCount(combinationIndex)
+            Dim stateResult As CSectionStateResult
+            Set stateResult = batch.NamedState(combinationIndex, stateIndex)
+            If Not stateResult Is Nothing Then
+                rowCount = rowCount + materialProvider.ConcreteMaterialFromSpec(stateResult.MaterialSpec).PointCount
+                rowCount = rowCount + materialProvider.SteelMaterialFromSpec(stateResult.MaterialSpec).PointCount
+            End If
+        Next stateIndex
+    Next combinationIndex
+
+    MaterialDiagramRowCount = rowCount
+End Function
 
 ' Записывает минимальные свойства imported-preview: Bounds, количество
 ' элементов и единицы, достаточные для проверки геометрии на схеме.

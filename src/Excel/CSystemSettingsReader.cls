@@ -245,8 +245,6 @@ Private Sub AppendSteelMaterialParameters(ByRef data As Variant)
             Case "steel.threeline.es2"
                 AppendSetting "Steel.ThreeLine.Esc2", compressionValue, compressionValue, commentValue
                 AppendSetting "Steel.ThreeLine.Es2", tensionValue, tensionValue, commentValue
-            Case "steel.rebarprofile"
-                If Len(compressionValue) > 0 Then AppendSetting "Steel.RebarProfile", compressionValue, compressionValue, commentValue
             Case Else
                 If Len(compressionValue) > 0 Then AppendSetting rowKey, compressionValue, compressionValue, commentValue
         End Select

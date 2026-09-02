@@ -301,7 +301,7 @@ try {
     $steelParams = $workbook.Names.Item("rngSteelMaterialParameters").RefersToRange
     $calculationProfiles = $workbook.Names.Item("rngCalculationProfiles").RefersToRange
     Add-Check $checks "Concrete material parameters" (($concreteParams.Columns.Count -eq 6) -and ($concreteParams.Rows.Count -eq 8)) ("Rows=$($concreteParams.Rows.Count); Columns=$($concreteParams.Columns.Count)")
-    Add-Check $checks "Steel material parameters" (($steelParams.Columns.Count -eq 6) -and ($steelParams.Rows.Count -eq 7)) ("Rows=$($steelParams.Rows.Count); Columns=$($steelParams.Columns.Count)")
+    Add-Check $checks "Steel material parameters" (($steelParams.Columns.Count -eq 6) -and ($steelParams.Rows.Count -eq 6)) ("Rows=$($steelParams.Rows.Count); Columns=$($steelParams.Columns.Count)")
     Add-Check $checks "Calculation profiles" (($calculationProfiles.Columns.Count -eq 7) -and ($calculationProfiles.Rows.Count -ge 26)) ("Rows=$($calculationProfiles.Rows.Count); Columns=$($calculationProfiles.Columns.Count)")
 
     $rightStackNames = @(

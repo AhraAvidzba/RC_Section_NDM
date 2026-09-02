@@ -55,6 +55,8 @@ Private Const MSO_SHAPE_DIAMOND As Long = 4
 Private Const MSO_SHAPE_OVAL As Long = 9
 Private Const EXTENSION_WARNING_TEXT As String = "ВНЕ ФИЗИЧЕСКОЙ ДИАГРАММЫ МАТЕРИАЛА"
 Private Const NUMERICAL_STATE_WARNING_TEXT As String = "ПРЯМОЕ НДС НЕ СОШЛОСЬ"
+Private Const RESULT_COLOR_BUCKET_COUNT As Long = 8 ' Число цветовых ступеней для расчетных маркеров Excel Chart.
+Private Const CONCRETE_MARKER_SIZE_BUCKET As Long = 6 ' Шаг группировки бетонных маркеров, чтобы Chart не превысил лимит series.
 
 Private mChart As Object ' Excel Chart, внутри которого рисуются series и аннотационные Shapes.
 Private mChartObject As Object ' Контейнер ChartObject на листе Расчет; пользователь может двигать/масштабировать его.
@@ -403,9 +405,9 @@ Private Sub RegisterResultMagnitude(ByVal value As Double, ByRef maxAbs As Doubl
     End If
 End Sub
 
-' Группирует расчетные элементы в серии Excel по типу маркера, размеру и цвету.
-' Это сильно ускоряет схему: сотни бетонных волокон не создают сотни отдельных
-' series, но визуально остаются отдельными точками.
+' Группирует расчетные элементы в серии Excel по типу маркера, размеру и цветовой ступени.
+' Excel Chart ограничен примерно 256 рядами данных, поэтому при мелкой сетке нельзя
+' создавать отдельную series под каждый уникальный оттенок или размер бетонного волокна.
 Private Sub AddElementSeries(ByVal data As CSectionPlotDataReader)
     Dim buckets As Object
     Set buckets = CreateObject("Scripting.Dictionary")
@@ -442,6 +444,7 @@ Private Function ElementBucketKey(ByVal data As CSectionPlotDataReader, ByVal in
     Else
         markerStyle = XL_MARKER_SQUARE
         markerSize = RoundToLong(ClampDouble(0.7 * ConcreteMarkerLength(data, index) * ChartScale(), 2#, 48#))
+        markerSize = BucketConcreteMarkerSize(markerSize)
     End If
 
     Dim colorValue As Long
@@ -526,6 +529,7 @@ Private Function MaterialResultColor(ByVal materialType As String, ByVal state A
     Else
         t = ClampDouble(Abs(value) / maxAbs, 0#, 1#)
     End If
+    t = BucketResultColorRatio(t)
 
     If StrComp(state, "Compression", vbTextCompare) = 0 Then
         MaterialResultColor = BlendColor(RGB(218, 218, 218), LegendCompressionColor(materialType), t)
@@ -533,6 +537,28 @@ Private Function MaterialResultColor(ByVal materialType As String, ByVal state A
         MaterialResultColor = BlendColor(RGB(218, 218, 218), LegendTensionColor(materialType), t)
     Else
         MaterialResultColor = RGB(150, 150, 150)
+    End If
+End Function
+
+' Укрупняет бетонные маркеры до нескольких близких размеров. На мелкой сетке
+' это визуально почти не меняет схему, но резко снижает число Excel series.
+Private Function BucketConcreteMarkerSize(ByVal markerSize As Long) As Long
+    If markerSize <= 2 Then
+        BucketConcreteMarkerSize = 2
+    Else
+        BucketConcreteMarkerSize = RoundToLong(markerSize / CONCRETE_MARKER_SIZE_BUCKET) * CONCRETE_MARKER_SIZE_BUCKET
+        BucketConcreteMarkerSize = RoundToLong(ClampDouble(BucketConcreteMarkerSize, 2#, 48#))
+    End If
+End Function
+
+' Переводит непрерывный градиент в ограниченное число цветовых ступеней.
+' Численное значение элемента остается точным в Results; дискретизация нужна
+' только для устойчивой отрисовки большой расчетной сетки средствами Excel Chart.
+Private Function BucketResultColorRatio(ByVal t As Double) As Double
+    If RESULT_COLOR_BUCKET_COUNT <= 1 Then
+        BucketResultColorRatio = ClampDouble(t, 0#, 1#)
+    Else
+        BucketResultColorRatio = RoundToLong(ClampDouble(t, 0#, 1#) * RESULT_COLOR_BUCKET_COUNT) / RESULT_COLOR_BUCKET_COUNT
     End If
 End Function
 

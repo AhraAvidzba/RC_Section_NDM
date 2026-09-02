@@ -64,7 +64,6 @@ workbook/output/RC_Section_NDM.xlsm
 |---|---:|
 | `Concrete.Eb` | 32500 |
 | `Concrete.Ebt` | 32500 |
-| `Steel.RebarProfile` | `Ribbed` |
 | `Steel.Es` | 200000 |
 | `Strength / Растянутый бетон` | `Ignore` |
 

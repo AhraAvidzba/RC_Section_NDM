@@ -384,7 +384,7 @@ rebar layout.
 Публичные свойства: `Converged`, `StopReason`, `CrackFormed`,
 `TensionRebarCount`, `MaxSteelStrain`, `MaxSteelStress`, `CrackWidth`,
 `AllowableCrackWidth`, `Utilization`, `DiagnosticLog`, `PsiMode`,
-`TensionZoneMode`, `RebarProfile`, `Phi1`, `Phi2`, `Phi3`, `PsiS`,
+`TensionZoneMode`, `Phi1`, `Phi2`, `Phi3`, `PsiS`,
 `SigmaS`, `SigmaSCrc`, `AsTension`, `Abt`, `DsEquivalent`,
 `CrackSpacingRaw`, `CrackSpacing`, `LambdaCrc`, `Ncrc`, `SectionDepthH`,
 `CoverA`, `TensionDepth`, `EffectiveZoneDepth`, `CentralTensionBranch`.
@@ -760,7 +760,7 @@ Implements `ISectionGeometry`.
 Публичные методы: `LoadFromSettings`, `Initialize`.
 
 Публичные свойства: `RsULS`, `RscULS`, `RsSLS`, `RscSLS`, `Es`, `Esc`,
-`RebarProfile`, `TwoLineEs2`, `TwoLineEsc2`, `ThreeLineEs2`,
+`TwoLineEs2`, `TwoLineEsc2`, `ThreeLineEs2`,
 `ThreeLineEsc2`.
 
 Внутренние методы: `NormalizeProfile`, `Validate`.

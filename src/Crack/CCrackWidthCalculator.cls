@@ -18,22 +18,22 @@ Option Explicit
 ' находится штатным CSectionSolver.
 '
 ' Текущая версия считает только продолжительное раскрытие по формуле
-' a_crc = a_crc1, поэтому phi1 фиксирован равным 1.4. Непродолжительное
-' раскрытие по комбинации a_crc1 + a_crc2 - a_crc3 намеренно не реализовано.
+' a_crc = a_crc1. Коэффициенты phi1, phi2, phi3 и psi_s задаются в Config:
+' phi3 и psi_s могут быть приняты пользователем либо определены автоматически.
 '
-' В режиме Fixed1 ширина считается по переданному НДС текущего сочетания:
-' повторный solve не выполняется, а psi_s принимается равным 1.
-' В режиме Auto расчет также сначала выполняется с psi_s = 1. Только если
-' первая проверка не проходит, класс ищет состояние образования трещины,
-' определяет sigma_s,crc и пересчитывает итоговую ширину с уточненным psi_s.
+' В режиме User ширина считается по переданному НДС текущего сочетания:
+' повторный solve не выполняется, а psi_s берется из настройки.
+' В режиме Auto расчет сначала выполняется с psi_s = 1. Только если
+' первая проверка не проходит, класс ищет состояние BeforeMcrcState с
+' растянутым бетоном, затем отдельно решает AfterMcrcState без растянутого
+' бетона. Именно AfterMcrcState дает sigma_s,crc для уточнения psi_s.
 
 Private Const PHI1_LONG_TERM As Double = 1.4 ' Коэффициент длительного действия нагрузки для a_crc1 по СП 63.
-Private Const PHI2_RIBBED As Double = 0.5 ' Коэффициент для арматуры периодического профиля.
-Private Const PHI2_SMOOTH As Double = 0.8 ' Коэффициент для гладкой арматуры.
+Private Const PHI2_DEFAULT As Double = 0.5 ' Типовой default для обычной арматуры периодического профиля.
 Private Const PHI3_TENSION As Double = 1.2 ' Коэффициент для центрального/сквозного растяжения.
 Private Const PHI3_BENDING As Double = 1# ' Коэффициент для изгиба и внецентренного сжатия.
 Private Const CRACK_DIRECTION_TOLERANCE As Double = 0.001 ' Допуск сохранения направления вектора N/Mx/My в прямом поиске lambda_crc.
-Private Const CRACK_STRAIN_RATIO_TOLERANCE As Double = 0.000001 ' Допуск попадания в eps_bt,crc как в безразмерное условие.
+Private Const CRACK_STRAIN_RATIO_TOLERANCE As Double = 0.000001 ' Допуск попадания в eps_bt,ult как в безразмерное условие.
 Private Const NEAR_ZERO_STRAIN As Double = 0.000000000001 ' Численный ноль для деформаций и кривизн.
 Private Const NEAR_ZERO_FORCE As Double = 0.000001 ' Численный ноль для отличия центрального растяжения от нулевой нагрузки.
 Private Const LARGE_LAMBDA As Double = 1E+30 ' Диагностическая отметка: трещина не достигнута при lambda = 1.
@@ -48,15 +48,22 @@ Private mCrackWidth As Double ' Расчетная ширина раскрыти
 Private mUtilization As Double ' Коэффициент использования по трещине: a_crc / a_crc,ult.
 Private mCrackFormed As Boolean ' True, если по выбранной ветке расчета трещина считается образованной.
 
-Private mPsiMode As String ' Fixed1 или Auto: фиксировать psi_s=1 или уточнять его только при неудачной первой проверке.
+Private mPsiMode As String ' User или Auto: брать psi_s из Config или уточнять после неудачной первой проверки.
+Private mPhi3Mode As String ' User или Auto: брать phi3 из Config или выбирать по характеру продольной силы.
 Private mTensionZoneMode As String ' Effective или FullTension: способ задания бетонной зоны Abt.
-Private mRebarProfile As String ' Ribbed или Smooth: профиль арматуры для выбора phi2.
-Private mConcreteRbtSer As Double ' Rbt,ser для момента образования трещины, МПа.
-Private mConcreteEb As Double ' Eb для eps_bt,crc и Ared, МПа.
+Private mPhi1Input As Double ' Пользовательское значение phi1 для формулы раскрытия.
+Private mPhi2Input As Double ' Пользовательское значение phi2 для формулы раскрытия.
+Private mPhi3Input As Double ' Пользовательское значение phi3, если Phi3Mode = User.
+Private mPsiSInput As Double ' Пользовательское значение psi_s, если PsiMode = User.
+Private mConcreteRbtSer As Double ' Rbt,ser для центральной ветки Ncrc и справочных расчетов Mcrc, МПа.
+Private mConcreteEb As Double ' Eb для Ared в центральной ветке Ncrc, МПа.
+Private mConcreteEbt0 As Double ' eps_bt0 для формулы (8.54) СП 63 при однозначно растянутой эпюре.
+Private mConcreteEbt2 As Double ' eps_bt2: предельная растягивающая деформация при двузначной эпюре Mcrc.
 Private mSteelEs As Double ' Es для формулы раскрытия трещины, МПа.
 Private mCrackInitiationSpec As CMaterialModelSpec ' Спецификация модели Mcrc, если Auto потребует lambda_crc.
 Private mCrackedStateSpec As CMaterialModelSpec ' Спецификация модели раскрытой трещины текущего LC.
-Private mCrackInitiationState As CSectionStateResult ' Optional named-state образования трещины, возвращается batch-у.
+Private mBeforeMcrcState As CSectionStateResult ' Необязательное состояние до выключения растянутого бетона.
+Private mAfterMcrcState As CSectionStateResult ' Необязательное состояние после выключения растянутого бетона для sigma_s,crc.
 
 Private mSolverMethod As String ' Newton или Secant для внутренних прямых расчетов состояния сечения.
 Private mSolverLoadSteps As Long ' Число ступеней приложения нагрузки во внутреннем CSectionSolver.
@@ -84,9 +91,9 @@ Private mLsRaw As Double ' Нормативная длина ls до огран�
 Private mLs As Double ' Итоговое расстояние между трещинами после ограничений, мм.
 Private mPsiS As Double ' Коэффициент неравномерности деформаций арматуры между трещинами.
 Private mPhi1 As Double ' Коэффициент длительности действия нагрузки.
-Private mPhi2 As Double ' Коэффициент профиля арматуры.
+Private mPhi2 As Double ' Пользовательский коэффициент, учитывающий поверхность арматуры.
 Private mPhi3 As Double ' Коэффициент характера нагружения.
-Private mLambdaCrc As Double ' Множитель нагрузки, при котором достигается eps_bt,crc.
+Private mLambdaCrc As Double ' Множитель нагрузки на пороге трещины: eps_bt,ult для общей ветки или Ncrc/N для центрального растяжения.
 Private mNcrc As Double ' Усилие образования трещины для ветки истинного центрального растяжения, Н.
 
 Private mSectionDepthH As Double ' Габарит сечения по нормали к нейтральной линии с учетом эквивалентных кругов КЭ.
@@ -99,12 +106,16 @@ Private mCentralTensionBranch As Boolean ' True, если сработала о�
 ' Настройки по умолчанию
 ' ------------------------------
 ' Значения соответствуют текущей принятой постановке: длительное раскрытие,
-' эффективная зона СП и арматура периодического профиля.
+' эффективная зона СП и пользовательские коэффициенты с нормативными defaults.
 Private Sub Class_Initialize()
     mAllowableCrackWidth = 0.3
-    mPsiMode = "Fixed1"
+    mPsiMode = "User"
+    mPhi3Mode = "Auto"
     mTensionZoneMode = "Effective"
-    mRebarProfile = "Ribbed"
+    mPhi1Input = PHI1_LONG_TERM
+    mPhi2Input = PHI2_DEFAULT
+    mPhi3Input = PHI3_BENDING
+    mPsiSInput = 1#
     mConcreteRbtSer = 1.8
     mConcreteEb = 32500#
     mSteelEs = 200000#
@@ -136,6 +147,11 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mAllowableCrackWidth = settings.GetDouble("SLS.Crack.Allowable", mAllowableCrackWidth)
     mPsiMode = settings.GetString("SLS.Crack.PsiMode", mPsiMode)
     mTensionZoneMode = settings.GetString("SLS.Crack.TensionZoneMode", mTensionZoneMode)
+    mPhi1Input = settings.GetDouble("SLS.Crack.Phi1", mPhi1Input)
+    mPhi2Input = settings.GetDouble("SLS.Crack.Phi2", mPhi2Input)
+    mPhi3Mode = settings.GetString("SLS.Crack.Phi3Mode", mPhi3Mode)
+    mPhi3Input = settings.GetDouble("SLS.Crack.Phi3", mPhi3Input)
+    mPsiSInput = settings.GetDouble("SLS.Crack.PsiS", mPsiSInput)
 
     mSolverMaxIterations = settings.GetLong("Solver.MaxIterations", mSolverMaxIterations)
     mSolverLoadSteps = settings.GetLong("Solver.LoadSteps", mSolverLoadSteps)
@@ -163,7 +179,7 @@ End Sub
 ' ------------------------------
 ' Основной расчет
 ' ------------------------------
-' Метод получает уже найденное НДС текущего сочетания и, в режиме Fixed1,
+' Метод получает уже найденное НДС текущего сочетания и, в режиме User,
 ' использует его напрямую без повторного вызова CSectionSolver. Дополнительные
 ' solve-ы нужны только для Auto и только после неудачной первой проверки
 ' раскрытия с psi_s = 1.
@@ -190,17 +206,20 @@ Public Sub Calculate(ByVal currentSolver As CSectionSolver, ByVal section As CSe
     End If
 End Sub
 
-' Берет Rbt,ser, Eb, Es и профиль арматуры из material provider-а.
+' Берет Rbt,ser, Eb, eps_bt0, eps_bt2 и Es из material provider-а.
 ' Эти значения больше не являются отдельными настройками crack-класса:
 ' они должны совпадать с диаграммами, которыми реально решается НДС.
 Private Sub ApplyMaterialProviderProperties(ByVal materialProvider As CMaterialModelProvider)
-    mRebarProfile = materialProvider.RebarProfile
     If Not mCrackInitiationSpec Is Nothing Then
         mConcreteRbtSer = materialProvider.ConcreteTensionResistanceFromSpec(mCrackInitiationSpec)
         mConcreteEb = materialProvider.ConcreteElasticModulusFromSpec(mCrackInitiationSpec)
+        mConcreteEbt0 = materialProvider.ConcreteTensionEbt0FromSpec(mCrackInitiationSpec)
+        mConcreteEbt2 = materialProvider.ConcreteTensionLimitFromSpec(mCrackInitiationSpec)
     Else
         mConcreteRbtSer = materialProvider.ConcreteTensionResistanceFromSpec(mCrackedStateSpec)
         mConcreteEb = materialProvider.ConcreteElasticModulusFromSpec(mCrackedStateSpec)
+        mConcreteEbt0 = 0#
+        mConcreteEbt2 = 0#
     End If
     mSteelEs = materialProvider.SteelElasticModulusFromSpec(mCrackedStateSpec)
 End Sub
@@ -212,7 +231,7 @@ Private Sub CalculateCentralTension(ByVal currentSolver As CSectionSolver, ByVal
         ByVal materialProvider As CMaterialModelProvider, ByVal targetN As Double, _
         ByVal targetMx As Double, ByVal targetMy As Double)
     mCentralTensionBranch = True
-    mPhi3 = PHI3_TENSION
+    mPhi3 = ResolvePhi3(targetN)
 
     If targetN <= NEAR_ZERO_FORCE Then
         FinishNoCrack "Центральная ветка: продольная сила не является растягивающей."
@@ -253,7 +272,7 @@ End Sub
 Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionSolver, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal targetN As Double, _
         ByVal targetMx As Double, ByVal targetMy As Double)
-    mPhi3 = IIf(targetN > NEAR_ZERO_FORCE, PHI3_TENSION, PHI3_BENDING)
+    mPhi3 = ResolvePhi3(targetN)
 
     Dim nx As Double
     Dim ny As Double
@@ -318,23 +337,23 @@ End Sub
 
 ' Находит lambda_crc в режиме Auto. Нагрузка масштабируется целиком, чтобы
 ' направление вектора N/Mx/My оставалось постоянным, а критерием служит
-' достижение eps_bt,crc = Rbt,ser / Eb в наиболее растянутом бетонном волокне.
+' достижение eps_bt,ult по СП 63 п. 8.2.14 и п. 8.1.30:
+' для двузначной эпюры eps_bt,ult = eps_bt2, для однозначно растянутой
+' эпюры с ненулевой кривизной применяется формула (8.54).
 Private Function CalculateLambdaCrc(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
         ByVal steelMaterial As Object, ByVal startSolver As CSectionSolver, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
     On Error GoTo Failed
 
-    Dim epsCrc As Double
-    epsCrc = ConcreteCrackingStrain()
-    If epsCrc <= 0# Then
-        mStopReason = "InputError: Concrete.Rbt.SLS и Concrete.Eb должны быть положительными для режима Auto."
+    If mConcreteEbt0 <= 0# Or mConcreteEbt2 <= 0# Then
+        mStopReason = "InputError: для Mcrc в режиме Auto нужны положительные eps_bt0 и eps_bt2 в модели CrackInitiation."
         Exit Function
     End If
 
     Dim eps0 As Double
     Dim kx As Double
     Dim ky As Double
-    InitializeCrcStrainGuess section, startSolver, targetN, targetMx, targetMy, epsCrc, eps0, kx, ky
+    InitializeCrcStrainGuess section, startSolver, targetN, targetMx, targetMy, mConcreteEbt2, eps0, kx, ky
 
     Dim iter As Long
     Dim rDir1 As Double
@@ -345,10 +364,11 @@ Private Function CalculateLambdaCrc(ByVal section As CSectionModel, ByVal concre
 
     ' Auto не подбирает lambda внешней бицекцией. Здесь ищется сама плоскость
     ' деформаций образования трещины: направление полного вектора N/Mx/My
-    ' сохраняется, а максимальная растягивающая деформация бетона равна Rbt,ser/Eb.
+    ' сохраняется, а максимальная растягивающая деформация бетона достигает
+    ' предельного значения eps_bt,ult по СП 63 п. 8.1.30.
     For iter = 1 To mSolverMaxIterations
         If Not EvaluateCrcStrainResidual(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-                eps0, kx, ky, epsCrc, solver, rDir1, rDir2, rLimit, lambdaValue) Then Exit Function
+                eps0, kx, ky, solver, rDir1, rDir2, rLimit, lambdaValue) Then Exit Function
 
         If Abs(rDir1) <= CRACK_DIRECTION_TOLERANCE And _
                 Abs(rDir2) <= CRACK_DIRECTION_TOLERANCE And _
@@ -358,8 +378,8 @@ Private Function CalculateLambdaCrc(ByVal section As CSectionModel, ByVal concre
                 Exit Function
             End If
             mLambdaCrc = lambdaValue
-            Set mCrackInitiationState = New CSectionStateResult
-            mCrackInitiationState.InitializeFromSolver sstCrackInitiationState, cpMcrc, _
+            Set mBeforeMcrcState = New CSectionStateResult
+            mBeforeMcrcState.InitializeFromSolver sstBeforeMcrcState, cpMcrc, _
                 mCrackInitiationSpec, solver, False, "OK"
             AppendDiagnostic "lambda_crc=" & FormatNumberInvariant(mLambdaCrc) & _
                 "; iterations=" & CStr(iter) & "; method=DirectCrackingStrain"
@@ -368,10 +388,10 @@ Private Function CalculateLambdaCrc(ByVal section As CSectionModel, ByVal concre
         End If
 
         If Not ApplyCrcNewtonStep(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-                epsCrc, eps0, kx, ky, rDir1, rDir2, rLimit) Then Exit Function
+                eps0, kx, ky, rDir1, rDir2, rLimit) Then Exit Function
     Next iter
 
-    mStopReason = "NumericalFailure: прямой поиск lambda_crc по eps_bt,crc не сошелся за заданное число итераций."
+    mStopReason = "NumericalFailure: прямой поиск lambda_crc по eps_bt,ult не сошелся за заданное число итераций."
     Exit Function
 
 Failed:
@@ -381,17 +401,17 @@ End Function
 
 ' Строит стартовое приближение для прямого состояния образования трещины.
 ' Если текущий service-solver уже содержит растяжение бетона, его плоскость
-' просто масштабируется до eps_bt,crc. Иначе используется грубая геометрическая
+' просто масштабируется до eps_bt2 как устойчивой начальной оценки. Иначе используется грубая геометрическая
 ' оценка по направлению заданного вектора Mx/My.
 Private Sub InitializeCrcStrainGuess(ByVal section As CSectionModel, ByVal startSolver As CSectionSolver, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
-        ByVal epsCrc As Double, ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
+        ByVal epsBt2Guess As Double, ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
     If Not startSolver Is Nothing Then
         Dim maxTension As Double
         maxTension = MaxConcreteStrain(startSolver, section)
         If maxTension > NEAR_ZERO_STRAIN Then
             Dim strainScale As Double
-            strainScale = epsCrc / maxTension
+            strainScale = epsBt2Guess / maxTension
             eps0 = startSolver.Epsilon0 * strainScale
             kx = startSolver.KappaX * strainScale
             ky = startSolver.KappaY * strainScale
@@ -418,20 +438,20 @@ Private Sub InitializeCrcStrainGuess(ByVal section As CSectionModel, ByVal start
     Dim momentNorm As Double
     momentNorm = Sqr(targetMx * targetMx + targetMy * targetMy)
     If momentNorm > 0# Then
-        If maxAbsY > 0# Then kx = Sgn(targetMx) * epsCrc / maxAbsY * Abs(targetMx) / momentNorm
-        If maxAbsX > 0# Then ky = Sgn(targetMy) * epsCrc / maxAbsX * Abs(targetMy) / momentNorm
+        If maxAbsY > 0# Then kx = Sgn(targetMx) * epsBt2Guess / maxAbsY * Abs(targetMx) / momentNorm
+        If maxAbsX > 0# Then ky = Sgn(targetMy) * epsBt2Guess / maxAbsX * Abs(targetMy) / momentNorm
     Else
-        eps0 = epsCrc
+        eps0 = epsBt2Guess
     End If
-    If Abs(kx) <= NEAR_ZERO_STRAIN And Abs(ky) <= NEAR_ZERO_STRAIN And maxAbsY > 0# Then kx = epsCrc / maxAbsY
+    If Abs(kx) <= NEAR_ZERO_STRAIN And Abs(ky) <= NEAR_ZERO_STRAIN And maxAbsY > 0# Then kx = epsBt2Guess / maxAbsY
 End Sub
 
 ' Считает три безразмерных условия для прямого поиска lambda_crc:
 ' два условия сохраняют направление полного вектора N/Mx/My, третье требует
-' достижения eps_bt,crc в наиболее растянутом бетонном конечном элементе.
+' достижения eps_bt,ult в наиболее растянутом бетонном конечном элементе.
 Private Function EvaluateCrcStrainResidual(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
         ByVal steelMaterial As Object, ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
-        ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, ByVal epsCrc As Double, _
+        ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
         ByRef solver As CSectionSolver, ByRef rDir1 As Double, ByRef rDir2 As Double, _
         ByRef rLimit As Double, ByRef lambdaValue As Double) As Boolean
     On Error GoTo Failed
@@ -461,12 +481,24 @@ Private Function EvaluateCrcStrainResidual(ByVal section As CSectionModel, ByVal
 
     lambdaValue = (intN * baseN + intMx * baseMx + intMy * baseMy) / baseNorm2
     SetCrcDirectionResiduals baseN, baseMx, baseMy, intN, intMx, intMy, rDir1, rDir2
-    rLimit = MaxConcreteStrain(solver, section) / epsCrc - 1#
+
+    Dim minConcreteStrain As Double
+    Dim maxConcreteStrain As Double
+    ConcreteStrainBounds solver, section, minConcreteStrain, maxConcreteStrain
+
+    Dim epsBtUlt As Double
+    epsBtUlt = ConcreteTensionUltimateStrain(minConcreteStrain, maxConcreteStrain)
+    If epsBtUlt <= 0# Then
+        mStopReason = "InputError: не удалось определить eps_bt,ult для состояния образования трещины."
+        Exit Function
+    End If
+    rLimit = maxConcreteStrain / epsBtUlt - 1#
 
     AppendDiagnostic "lambda_crc_iter=" & FormatNumberInvariant(lambdaValue) & _
         "; rDir1=" & FormatNumberInvariant(rDir1) & _
         "; rDir2=" & FormatNumberInvariant(rDir2) & _
-        "; rLimit=" & FormatNumberInvariant(rLimit)
+        "; rLimit=" & FormatNumberInvariant(rLimit) & _
+        "; eps_bt_ult=" & FormatNumberInvariant(epsBtUlt)
     EvaluateCrcStrainResidual = True
     Exit Function
 
@@ -495,10 +527,10 @@ End Sub
 
 ' Выполняет один Newton-шаг для прямой системы образования трещины. Якобиан
 ' строится численно, как в UltimateStrain, но предельным условием является
-' только растягивающая деформация бетона Rbt,ser/Eb.
+' нормативная предельная растягивающая деформация бетона eps_bt,ult.
 Private Function ApplyCrcNewtonStep(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
         ByVal steelMaterial As Object, ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
-        ByVal epsCrc As Double, ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double, _
         ByVal rDir1 As Double, ByVal rDir2 As Double, ByVal rLimit As Double) As Boolean
     Dim hEps As Double
     Dim hKx As Double
@@ -511,11 +543,11 @@ Private Function ApplyCrcNewtonStep(ByVal section As CSectionModel, ByVal concre
     Dim j12 As Double, j22 As Double, j32 As Double
     Dim j13 As Double, j23 As Double, j33 As Double
     BuildCrcJacobianColumn section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-        eps0 + hEps, kx, ky, epsCrc, hEps, rDir1, rDir2, rLimit, j11, j21, j31
+        eps0 + hEps, kx, ky, hEps, rDir1, rDir2, rLimit, j11, j21, j31
     BuildCrcJacobianColumn section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-        eps0, kx + hKx, ky, epsCrc, hKx, rDir1, rDir2, rLimit, j12, j22, j32
+        eps0, kx + hKx, ky, hKx, rDir1, rDir2, rLimit, j12, j22, j32
     BuildCrcJacobianColumn section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-        eps0, kx, ky + hKy, epsCrc, hKy, rDir1, rDir2, rLimit, j13, j23, j33
+        eps0, kx, ky + hKy, hKy, rDir1, rDir2, rLimit, j13, j23, j33
 
     Dim system As CLinearSystem3x3
     Set system = New CLinearSystem3x3
@@ -541,7 +573,7 @@ Private Function ApplyCrcNewtonStep(ByVal section As CSectionModel, ByVal concre
         Dim trialSolver As CSectionSolver
         Dim trialR1 As Double, trialR2 As Double, trialRLimit As Double, trialLambda As Double
         If EvaluateCrcStrainResidual(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-                eps0 + alpha * dEps, kx + alpha * dKx, ky + alpha * dKy, epsCrc, _
+                eps0 + alpha * dEps, kx + alpha * dKx, ky + alpha * dKy, _
                 trialSolver, trialR1, trialR2, trialRLimit, trialLambda) Then
             If CrcResidualNorm(trialR1, trialR2, trialRLimit) < baseNorm Then
                 eps0 = eps0 + alpha * dEps
@@ -561,13 +593,13 @@ End Function
 ' Один столбец численного Якобиана для системы образования трещины.
 Private Sub BuildCrcJacobianColumn(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
         ByVal steelMaterial As Object, ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
-        ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, ByVal epsCrc As Double, _
+        ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
         ByVal stepValue As Double, ByVal rDir1 As Double, ByVal rDir2 As Double, ByVal rLimit As Double, _
         ByRef j1 As Double, ByRef j2 As Double, ByRef j3 As Double)
     Dim solver As CSectionSolver
     Dim p1 As Double, p2 As Double, pLimit As Double, pLambda As Double
     If Not EvaluateCrcStrainResidual(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-            eps0, kx, ky, epsCrc, solver, p1, p2, pLimit, pLambda) Then Exit Sub
+            eps0, kx, ky, solver, p1, p2, pLimit, pLambda) Then Exit Sub
     j1 = (p1 - rDir1) / stepValue
     j2 = (p2 - rDir2) / stepValue
     j3 = (pLimit - rLimit) / stepValue
@@ -600,10 +632,10 @@ End Sub
 
 Private Sub CompleteCrackFormula(ByVal solver As CSectionSolver, ByVal section As CSectionModel, _
         ByVal steelMaterial As Object, ByRef selected() As Boolean)
-    mPhi1 = PHI1_LONG_TERM
-    mPhi2 = Phi2FromProfile()
-    If mPhi3 <= 0# Then mPhi3 = PHI3_BENDING
-    If mPsiS <= 0# Then mPsiS = 1#
+    mPhi1 = mPhi1Input
+    mPhi2 = mPhi2Input
+    If mPhi3 <= 0# Then mPhi3 = mPhi3Input
+    mPsiS = mPsiSInput
 
     mAs = SelectedRebarArea(section, selected)
     mDsEquivalent = EquivalentDiameter(section, selected)
@@ -618,23 +650,27 @@ Private Sub CompleteCrackFormula(ByVal solver As CSectionSolver, ByVal section A
 End Sub
 
 ' Завершает расчет раскрытия с учетом режима psi_s.
-' Fixed1 заканчивает расчет после первой формулы с psi_s = 1. Auto сначала
-' делает ту же проверку; если a_crc <= a_crc,ult, уточнение не запускается.
-' Только при непрохождении проверки Auto ищет lambda_crc, определяет
-' sigma_s,crc для того же набора стержней и пересчитывает ширину с меньшим
-' psi_s по формуле СП.
+' User заканчивает расчет после первой формулы с пользовательским psi_s.
+' Auto сначала делает проверку с psi_s = 1; если a_crc <= a_crc,ult,
+' уточнение не запускается.
+' Только при непрохождении проверки Auto уточняет lambda_crc. В общей ветке
+' при этом появляется BeforeMcrcState, а AfterMcrcState решается для той же
+' lambda_crc уже без растянутого бетона. В центральной ветке lambda_crc берется
+' из Ncrc/N, поэтому создается только AfterMcrcState.
 Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
         ByVal currentSolver As CSectionSolver, ByRef selected() As Boolean, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal finalReason As String) As Boolean
-    mPsiS = 1#
-    FinalizeWidth finalReason & " Psi_s принят равным 1."
-    If Not mConverged Or Not mCrackFormed Then Exit Function
-
     If StrComp(mPsiMode, "Auto", vbTextCompare) <> 0 Then
-        FinalizeWithPsiMode = True
+        mPsiS = mPsiSInput
+        FinalizeWidth finalReason & " Psi_s принят из настройки SLS.Crack.PsiS."
+        FinalizeWithPsiMode = mConverged
         Exit Function
     End If
+
+    mPsiS = 1#
+    FinalizeWidth finalReason & " Auto psi_s: первая проверка выполнена с psi_s=1."
+    If Not mConverged Or Not mCrackFormed Then Exit Function
 
     If mAllowableCrackWidth > 0# And mCrackWidth <= mAllowableCrackWidth Then
         AppendDiagnostic "Auto psi_s: первая проверка с psi_s=1 проходит; lambda_crc не считался."
@@ -644,13 +680,25 @@ Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal mater
 
     AppendDiagnostic "Auto psi_s: первая проверка с psi_s=1 не проходит; запускается расчет lambda_crc."
     mConverged = False
-    If mCrackInitiationSpec Is Nothing Then
-        mStopReason = "InputError: для SLS.Crack.PsiMode=Auto требуется MaterialModel.CrackInitiation."
-        Exit Function
+
+    ' При истинном центральном растяжении СП задает отдельный порог Ncrc.
+    ' В этой ветке lambda_crc уже получена как Ncrc/N, поэтому ее нельзя
+    ' перетирать общим поиском по eps_bt,ult для изгибных эпюр.
+    If mCentralTensionBranch Then
+        If mLambdaCrc <= 0# Then
+            mStopReason = "InputError: для центрального растяжения lambda_crc через Ncrc не определена."
+            Exit Function
+        End If
+    Else
+        If mCrackInitiationSpec Is Nothing Then
+            mStopReason = "InputError: для SLS.Crack.PsiMode=Auto требуется MaterialModel.CrackInitiation."
+            Exit Function
+        End If
+        If Not CalculateLambdaCrc(section, materialProvider.ConcreteMaterialFromSpec(mCrackInitiationSpec), _
+                materialProvider.SteelMaterialFromSpec(mCrackInitiationSpec), currentSolver, _
+                targetN, targetMx, targetMy) Then Exit Function
     End If
-    If Not CalculateLambdaCrc(section, materialProvider.ConcreteMaterialFromSpec(mCrackInitiationSpec), _
-            materialProvider.SteelMaterialFromSpec(mCrackInitiationSpec), currentSolver, _
-            targetN, targetMx, targetMy) Then Exit Function
+
     If mLambdaCrc > 1# Then
         FinishNoCrack "Трещина не образована: предельная растянутая деформация бетона не достигнута при lambda = 1."
         FinalizeWithPsiMode = True
@@ -665,6 +713,10 @@ Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal mater
         mStopReason = "NumericalFailure: состояние lambda_crc после образования трещины не сошлось: " & crcSolver.StopReason
         Exit Function
     End If
+
+    Set mAfterMcrcState = New CSectionStateResult
+    mAfterMcrcState.InitializeFromSolver sstAfterMcrcState, cpCrackedNDS, _
+        mCrackedStateSpec, crcSolver, False, "OK"
 
     mSigmaSCrc = AverageSelectedSteelStress(crcSolver, section, _
         materialProvider.SteelMaterialFromSpec(mCrackedStateSpec), selected)
@@ -1005,32 +1057,83 @@ Private Sub TrackMaxSteel(ByVal section As CSectionModel, ByVal index As Long, B
     End If
 End Sub
 
-' Расчетная деформация образования трещины по SLS-сопротивлению бетона.
-Private Function ConcreteCrackingStrain() As Double
-    If mConcreteEb > 0# Then ConcreteCrackingStrain = mConcreteRbtSer / mConcreteEb
+' Определяет минимальную и максимальную деформацию бетонных КЭ для пробной
+' плоскости Mcrc. Эти две величины нужны, чтобы отличить двузначную эпюру от
+' однозначно растянутой и выбрать нормативный eps_bt,ult по СП 63 п. 8.1.30.
+Private Sub ConcreteStrainBounds(ByVal solver As CSectionSolver, ByVal section As CSectionModel, _
+        ByRef minStrain As Double, ByRef maxStrain As Double)
+    Dim i As Long
+    For i = 1 To section.ConcreteCount
+        Dim strain As Double
+        strain = ConcreteStrain(solver, section, i)
+        If i = 1 Then
+            minStrain = strain
+            maxStrain = strain
+        Else
+            If strain < minStrain Then minStrain = strain
+            If strain > maxStrain Then maxStrain = strain
+        End If
+    Next i
+End Sub
+
+' Возвращает eps_bt,ult для критерия образования трещины по СП 63 п. 8.1.30.
+' При двузначной эпюре используется eps_bt2. При однозначном растяжении с
+' ненулевой кривизной применяется формула (8.54):
+' eps_bt,ult = eps_bt2 - (eps_bt2 - eps_bt0) * eps1 / eps2.
+' Истинное центральное растяжение сюда не попадает: для него выше работает
+' отдельная ветка Ncrc по п. 8.2.13.
+Private Function ConcreteTensionUltimateStrain(ByVal minStrain As Double, ByVal maxStrain As Double) As Double
+    If mConcreteEbt2 <= 0# Then Exit Function
+
+    If maxStrain <= NEAR_ZERO_STRAIN Then
+        ConcreteTensionUltimateStrain = mConcreteEbt2
+        Exit Function
+    End If
+
+    If minStrain <= NEAR_ZERO_STRAIN Then
+        ConcreteTensionUltimateStrain = mConcreteEbt2
+        Exit Function
+    End If
+
+    Dim ratio As Double
+    ratio = minStrain / maxStrain
+    If ratio < 0# Then ratio = 0#
+    If ratio > 1# Then ratio = 1#
+    ConcreteTensionUltimateStrain = mConcreteEbt2 - (mConcreteEbt2 - mConcreteEbt0) * ratio
 End Function
 
-' Возвращает phi2 по профилю арматуры. Это отдельная расчетная настройка для
-' трещин, потому что формула СП использует именно тип поверхности стержней.
-Private Function Phi2FromProfile() As Double
-    Select Case LCase$(Trim$(mRebarProfile))
-        Case "smooth", "гладкая"
-            Phi2FromProfile = PHI2_SMOOTH
-        Case Else
-            Phi2FromProfile = PHI2_RIBBED
-    End Select
+' Возвращает phi3 для текущего LC. В Auto используется принятое правило СП:
+' при растягивающей продольной силе принимается 1.2, иначе 1.0. В User
+' программа не выводит характер нагрузки из НДС, а берет введенное значение.
+Private Function ResolvePhi3(ByVal targetN As Double) As Double
+    If StrComp(mPhi3Mode, "User", vbTextCompare) = 0 Then
+        ResolvePhi3 = mPhi3Input
+    ElseIf targetN > NEAR_ZERO_FORCE Then
+        ResolvePhi3 = PHI3_TENSION
+    Else
+        ResolvePhi3 = PHI3_BENDING
+    End If
 End Function
 
 ' Нормализует текстовые режимы и проверяет численные параметры до запуска
 ' внутренних solve, чтобы ошибки Config были понятны пользователю.
 Private Sub NormalizeSettings()
     Select Case LCase$(Trim$(mPsiMode))
-        Case "fixed1", "unity"
-            mPsiMode = "Fixed1"
+        Case "user", "manual", "fixed1", "unity"
+            mPsiMode = "User"
         Case "auto", "refined"
             mPsiMode = "Auto"
         Case Else
-            Err.Raise vbObjectError + 3707, "CCrackWidthCalculator", "SLS.Crack.PsiMode должен быть Fixed1 или Auto."
+            Err.Raise vbObjectError + 3707, "CCrackWidthCalculator", "SLS.Crack.PsiMode должен быть User или Auto."
+    End Select
+
+    Select Case LCase$(Trim$(mPhi3Mode))
+        Case "user", "manual"
+            mPhi3Mode = "User"
+        Case "auto"
+            mPhi3Mode = "Auto"
+        Case Else
+            Err.Raise vbObjectError + 3709, "CCrackWidthCalculator", "SLS.Crack.Phi3Mode должен быть User или Auto."
     End Select
 
     Select Case LCase$(Trim$(mTensionZoneMode))
@@ -1039,17 +1142,19 @@ Private Sub NormalizeSettings()
         Case Else: Err.Raise vbObjectError + 3708, "CCrackWidthCalculator", "SLS.Crack.TensionZoneMode должен быть Effective или FullTension."
     End Select
 
-    Select Case LCase$(Trim$(mRebarProfile))
-        Case "smooth": mRebarProfile = "Smooth"
-        Case "ribbed": mRebarProfile = "Ribbed"
-        Case Else
-            Err.Raise vbObjectError + 3709, "CCrackWidthCalculator", "Steel.RebarProfile должен быть Ribbed или Smooth."
-    End Select
-
     If mAllowableCrackWidth <= 0# Then Err.Raise vbObjectError + 3710, "CCrackWidthCalculator", "SLS.Crack.Allowable должен быть положительным."
+    If mPhi1Input <= 0# Then Err.Raise vbObjectError + 3717, "CCrackWidthCalculator", "SLS.Crack.Phi1 должен быть положительным."
+    If mPhi2Input <= 0# Then Err.Raise vbObjectError + 3718, "CCrackWidthCalculator", "SLS.Crack.Phi2 должен быть положительным."
+    If mPhi3Input <= 0# Then Err.Raise vbObjectError + 3719, "CCrackWidthCalculator", "SLS.Crack.Phi3 должен быть положительным."
+    If mPsiSInput <= 0# Then Err.Raise vbObjectError + 3720, "CCrackWidthCalculator", "SLS.Crack.PsiS должен быть положительным."
     If mConcreteRbtSer <= 0# Then Err.Raise vbObjectError + 3711, "CCrackWidthCalculator", "Concrete.Rbt.SLS должен быть положительным для расчета трещин."
     If mConcreteEb <= 0# Then Err.Raise vbObjectError + 3712, "CCrackWidthCalculator", "Concrete.Eb должен быть положительным для расчета трещин."
     If mSteelEs <= 0# Then Err.Raise vbObjectError + 3713, "CCrackWidthCalculator", "Steel.Es должен быть положительным для расчета трещин."
+    If StrComp(mPsiMode, "Auto", vbTextCompare) = 0 And Not mCrackInitiationSpec Is Nothing Then
+        If mConcreteEbt0 <= 0# Then Err.Raise vbObjectError + 3714, "CCrackWidthCalculator", "Concrete.Ebt0 должен быть положительным для расчета Mcrc."
+        If mConcreteEbt2 <= 0# Then Err.Raise vbObjectError + 3715, "CCrackWidthCalculator", "Concrete.Ebt2 должен быть положительным для расчета Mcrc."
+        If mConcreteEbt0 > mConcreteEbt2 Then Err.Raise vbObjectError + 3716, "CCrackWidthCalculator", "Concrete.Ebt0 не должен быть больше Concrete.Ebt2 для формулы (8.54)."
+    End If
 End Sub
 
 ' Проверяет расчетный контракт класса.
@@ -1081,13 +1186,14 @@ Private Sub ClearResult()
     mDsEquivalent = 0#
     mLsRaw = 0#
     mLs = 0#
-    mPsiS = 1#
-    mPhi1 = PHI1_LONG_TERM
-    mPhi2 = PHI2_RIBBED
-    mPhi3 = PHI3_BENDING
+    mPsiS = mPsiSInput
+    mPhi1 = mPhi1Input
+    mPhi2 = mPhi2Input
+    mPhi3 = 0#
     mLambdaCrc = 0#
     mNcrc = 0#
-    Set mCrackInitiationState = Nothing
+    Set mBeforeMcrcState = Nothing
+    Set mAfterMcrcState = Nothing
     Set mCrackInitiationSpec = Nothing
     Set mCrackedStateSpec = Nothing
     mSectionDepthH = 0#
@@ -1170,10 +1276,6 @@ Public Property Get TensionZoneMode() As String
     TensionZoneMode = mTensionZoneMode
 End Property
 
-Public Property Get RebarProfile() As String
-    RebarProfile = mRebarProfile
-End Property
-
 Public Property Get Phi1() As Double
     Phi1 = mPhi1
 End Property
@@ -1246,8 +1348,12 @@ Public Property Get CentralTensionBranch() As Boolean
     CentralTensionBranch = mCentralTensionBranch
 End Property
 
-Public Property Get CrackInitiationState() As CSectionStateResult
-    Set CrackInitiationState = mCrackInitiationState
+Public Property Get BeforeMcrcState() As CSectionStateResult
+    Set BeforeMcrcState = mBeforeMcrcState
+End Property
+
+Public Property Get AfterMcrcState() As CSectionStateResult
+    Set AfterMcrcState = mAfterMcrcState
 End Property
 
 Public Property Let AllowableCrackWidth(ByVal value As Double)
@@ -1256,6 +1362,26 @@ End Property
 
 Public Property Let PsiMode(ByVal value As String)
     mPsiMode = value
+End Property
+
+Public Property Let Phi1(ByVal value As Double)
+    mPhi1Input = value
+End Property
+
+Public Property Let Phi2(ByVal value As Double)
+    mPhi2Input = value
+End Property
+
+Public Property Let Phi3Mode(ByVal value As String)
+    mPhi3Mode = value
+End Property
+
+Public Property Let Phi3(ByVal value As Double)
+    mPhi3Input = value
+End Property
+
+Public Property Let PsiS(ByVal value As Double)
+    mPsiSInput = value
 End Property
 
 Public Property Let TensionZoneMode(ByVal value As String)
