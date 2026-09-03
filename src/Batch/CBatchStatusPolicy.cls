@@ -58,13 +58,15 @@ End Property
 ' Собирает OverallStatus из статусов применимых расчетных разделов.
 ' N/A не ухудшает итог: это означает, что ветка не относится к LC или режиму.
 Public Function Aggregate(ByVal directStateStatus As String, ByVal capacityStatus As String, _
-        ByVal crackStatus As String, Optional ByVal longitudinalCrackStatus As String = vbNullString) As String
+        ByVal crackStatus As String, Optional ByVal longitudinalCrackStatus As String = vbNullString, _
+        Optional ByVal stabilityStatus As String = vbNullString) As String
     Dim resultStatus As String
     resultStatus = STATUS_NA
     resultStatus = Merge(resultStatus, directStateStatus)
     resultStatus = Merge(resultStatus, capacityStatus)
     resultStatus = Merge(resultStatus, crackStatus)
     resultStatus = Merge(resultStatus, longitudinalCrackStatus)
+    resultStatus = Merge(resultStatus, stabilityStatus)
     Aggregate = resultStatus
 End Function
 
@@ -201,6 +203,23 @@ Public Function LongitudinalCrackStatus(ByVal maxCompressionStress As Double, By
         LongitudinalCrackStatus = STATUS_OK
     Else
         LongitudinalCrackStatus = STATUS_FAIL
+    End If
+End Function
+
+' Возвращает пользовательский статус из результата фильтра устойчивости.
+' Сам CStabilityCalculator хранит подробные расчетные причины, а наружу
+' отдается только общий словарь Summary.
+Public Function StabilityStatusFromCalculator(ByVal stability As CStabilityCalculator) As String
+    If stability Is Nothing Then
+        StabilityStatusFromCalculator = STATUS_NUMFAIL
+    ElseIf Not stability.InputValid Then
+        StabilityStatusFromCalculator = STATUS_INPUTERR
+    ElseIf Not stability.Applicable Then
+        StabilityStatusFromCalculator = STATUS_NA
+    ElseIf stability.CheckPassed Then
+        StabilityStatusFromCalculator = STATUS_OK
+    Else
+        StabilityStatusFromCalculator = STATUS_FAIL
     End If
 End Function
 

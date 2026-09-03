@@ -30,7 +30,9 @@ Public Function BuildFromGenerated(ByVal mesh As CFiberMeshBuilder, ByVal rebars
         model.AddConcreteElement mesh.FiberX(i), mesh.FiberY(i), _
             mesh.FiberArea(i) * mesh.FiberFillFactor(i), mesh.FiberMaterialID(i), _
             "Бетонный КЭ " & CStr(i), vbNullString, "Rectangle", _
-            mesh.FiberWidth(i), mesh.FiberHeight(i), 0#, "Параметрическая бетонная сетка"
+            mesh.FiberWidth(i), mesh.FiberHeight(i), 0#, "Параметрическая бетонная сетка", _
+            mesh.FiberArea(i) * mesh.FiberFillFactor(i) * mesh.FiberHeight(i) * mesh.FiberHeight(i) / 12#, _
+            mesh.FiberArea(i) * mesh.FiberFillFactor(i) * mesh.FiberWidth(i) * mesh.FiberWidth(i) / 12#, 0#
     Next i
 
     If Not rebars Is Nothing Then

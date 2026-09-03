@@ -61,6 +61,12 @@ Public Function RunBatchCalculationTests() As String
     TestLongitudinalCrackCheckUsesDirectStateStress stats
     AppendLine stats, "RUN: TestLongitudinalCrackSkippedForPR1"
     TestLongitudinalCrackSkippedForPR1 stats
+    AppendLine stats, "RUN: TestStabilityProfileEnablesSP63ForCompression"
+    TestStabilityProfileEnablesSP63ForCompression stats
+    AppendLine stats, "RUN: TestStabilitySkippedForTension"
+    TestStabilitySkippedForTension stats
+    AppendLine stats, "RUN: TestStabilitySP35UsesConfigTableAndProfileValueSet"
+    TestStabilitySP35UsesConfigTableAndProfileValueSet stats
     AppendLine stats, "RUN: TestPR1RunsStrengthWithoutCrackWidth"
     TestPR1RunsStrengthWithoutCrackWidth stats
     AppendLine stats, "RUN: TestDirectStateReportsNumericalFailure"
@@ -1406,6 +1412,126 @@ Private Sub TestLongitudinalCrackSkippedForPR1(ByRef stats As TBatchTestStats)
     AssertClose stats, "batch.longCrack.group1.noUtil", batch.LongitudinalCrackUtilization(1), 0#, 0.000000001
 End Sub
 
+' Проверяет, что профильный флаг включает расчет устойчивости как отдельный
+' фильтр перед НДМ: при сжатии SP63 должен дать применимый статус и расчетные
+' величины Ncr/eta, а не оставаться в N/A.
+Private Sub TestStabilityProfileEnablesSP63ForCompression(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP63"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.AddCombination "STAB_SP63", -120000#, 1000000#, 0#, "PR1", "stability sp63"
+    batch.Execute
+
+    AssertTrue stats, "batch.stability.sp63.status", batch.StabilityStatus(1) = "OK" Or batch.StabilityStatus(1) = "FAIL"
+    AssertTrue stats, "batch.stability.sp63.ncr", batch.StabilityCriticalForce(1) > 0#
+    AssertTrue stats, "batch.stability.sp63.eta", batch.StabilityEta1(1) > 0# Or batch.StabilityEta2(1) > 0#
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.sp63; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет область применения фильтра устойчивости: при растяжении сжатой
+' продольной силы нет, поэтому проверка становится N/A и не ухудшает OverallStatus.
+Private Sub TestStabilitySkippedForTension(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP63"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.AddCombination "STAB_TENSION", 50000#, 0#, 0#, "PR1", "stability tension"
+    batch.Execute
+
+    AssertTrue stats, "batch.stability.tension.na", batch.StabilityStatus(1) = "N/A"
+    AssertClose stats, "batch.stability.tension.noNcr", batch.StabilityCriticalForce(1), 0#, 0.000000001
+    AssertTrue stats, "batch.stability.tension.overall", batch.Status(1) <> "InputErr"
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.tension; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет две договоренности по СП 35: табличные коэффициенты приходят из
+' rngSP35Table721, а материал устойчивости выбирается отдельной строкой профиля.
+' При SLS(II) в тестовом наборе Rb/Rsc больше, поэтому расчетная сила должна
+' получиться выше, чем при нормативном для устойчивости ULS(I).
+Private Sub TestStabilitySP35UsesConfigTableAndProfileValueSet(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetSystemSetting "Stability.Code", "SP35"
+
+    Dim ncrULS As Double
+    Dim ncrSLS As Double
+    ncrULS = StabilitySP35CriticalForceForValueSet("ULS(I)")
+    ncrSLS = StabilitySP35CriticalForceForValueSet("SLS(II)")
+
+    AssertTrue stats, "batch.stability.sp35.uls.ncr", ncrULS > 0#
+    AssertTrue stats, "batch.stability.sp35.sls.ncr", ncrSLS > 0#
+    AssertTrue stats, "batch.stability.sp35.valueSet.affectsResult", ncrSLS > ncrULS * 1.05
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.sp35; " & Err.Description
+    Resume Restore
+End Sub
+
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestBatchTwentyCombinations(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
@@ -1497,7 +1623,9 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.header.capacitySafety", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 26).Value2), "CapacitySafetyFactor", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.header.longitudinalCrackStatus", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 51).Value2), "LongitudinalCrackStatus", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.header.longitudinalCrackSafety", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 54).Value2), "LongitudinalCrackSafetyFactor", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 55).Value2), "MinSafetyFactor", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.stabilityStatus", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 55).Value2), "StabilityStatus", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.stabilitySafety", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 59).Value2), "StabilitySafetyFactor", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 79).Value2), "MinSafetyFactor", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.longitudinalFormula", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 54).Formula), "IFERROR", vbTextCompare) > 0 And _
         InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 54).Formula), "BA", vbTextCompare) > 0 And _
         InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 54).Formula), "AZ", vbTextCompare) > 0
@@ -1614,6 +1742,76 @@ Private Sub SetSystemSetting(ByVal key As String, ByVal value As String)
     Next rowIndex
     Err.Raise vbObjectError + 3931, "modTestBatchCalculation", "System setting not found: " & key
 End Sub
+
+' Возвращает значение конкретной строки профиля из rngCalculationProfiles.
+' Тесты используют это для временного включения веток без изменения шаблона книги.
+Private Function GetProfileValue(ByVal key As String, ByVal profileId As String) As String
+    Dim profiles As Object
+    Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+
+    Dim rowIndex As Long
+    rowIndex = ProfileKeyRow(profiles, key)
+    GetProfileValue = CStr(profiles.Cells.Item(rowIndex, ProfileColumn(profiles, profileId)).Value2)
+End Function
+
+' Записывает значение в один профильный столбец. Восстановление старого
+' значения остается на вызывающем тесте, чтобы сценарии были изолированными.
+Private Sub SetProfileValue(ByVal key As String, ByVal profileId As String, ByVal value As String)
+    Dim profiles As Object
+    Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+
+    profiles.Cells.Item(ProfileKeyRow(profiles, key), ProfileColumn(profiles, profileId)).Value2 = value
+End Sub
+
+' Находит строку параметра в вертикальной таблице профилей.
+Private Function ProfileKeyRow(ByVal profiles As Object, ByVal key As String) As Long
+    Dim rowIndex As Long
+    For rowIndex = 1 To profiles.Rows.Count
+        If StrComp(CStr(profiles.Cells.Item(rowIndex, 2).Value2), key, vbTextCompare) = 0 Then
+            ProfileKeyRow = rowIndex
+            Exit Function
+        End If
+    Next rowIndex
+    Err.Raise vbObjectError + 3932, "modTestBatchCalculation", "Profile key not found: " & key
+End Function
+
+' Находит столбец PR1/PR2/... независимо от фактической ширины таблицы.
+Private Function ProfileColumn(ByVal profiles As Object, ByVal profileId As String) As Long
+    Dim rowIndex As Long
+    Dim colIndex As Long
+    For rowIndex = 1 To profiles.Rows.Count
+        For colIndex = 3 To profiles.Columns.Count
+            If StrComp(CStr(profiles.Cells.Item(rowIndex, colIndex).Value2), profileId, vbTextCompare) = 0 Then
+                ProfileColumn = colIndex
+                Exit Function
+            End If
+        Next colIndex
+    Next rowIndex
+    Err.Raise vbObjectError + 3933, "modTestBatchCalculation", "Profile column not found: " & profileId
+End Function
+
+' Запускает короткий SP35-сценарий и возвращает предельную/критическую силу,
+' чтобы тест мог сравнить влияние выбранного MaterialModel.Stability.ValueSet.
+Private Function StabilitySP35CriticalForceForValueSet(ByVal valueSetText As String) As Double
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", valueSetText
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    batch.AddCombination "STAB_SP35_" & Replace$(valueSetText, "(", ""), -120000#, 0#, 0#, "PR1", "stability sp35"
+    batch.Execute
+
+    If batch.StabilityStatus(1) <> "OK" And batch.StabilityStatus(1) <> "FAIL" Then
+        Err.Raise vbObjectError + 3934, "modTestBatchCalculation", _
+            "SP35 stability status is not applicable: " & batch.StabilityStatus(1)
+    End If
+    StabilitySP35CriticalForceForValueSet = batch.StabilityCriticalForce(1)
+End Function
 
 Private Function CircleGeometry(ByVal diameter As Double, ByVal centerX As Double, ByVal centerY As Double) As ISectionGeometry
     Dim geom As CGeometryCircle

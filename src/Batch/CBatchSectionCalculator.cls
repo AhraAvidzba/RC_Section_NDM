@@ -88,6 +88,28 @@ Private mCapacityBaseLoadSteps As Long ' Базовое число load steps д
 Private mCapacitySolverMaxIterations As Long ' Лимит итераций внутреннего solver-а при capacity-поиске.
 Private mReport As CExecutionReport ' Необязательный человекочитаемый отчет выполнения; расчетная логика от него не зависит.
 
+Private mStabilityCode As String ' SP63 или SP35: выбранная нормативная ветвь фильтра устойчивости.
+Private mStabilityElementLength As Double ' Геометрическая длина элемента l, мм.
+Private mStabilityMu1 As Double ' Коэффициент расчетной длины для первой главной плоскости.
+Private mStabilityMu2 As Double ' Коэффициент расчетной длины для второй главной плоскости.
+Private mStabilitySystemType As String ' Determinate или Indeterminate для случайного эксцентриситета.
+Private mStabilityZeroSign1 As Double ' Направление случайного эксцентриситета при M1=0: +1 или -1.
+Private mStabilityZeroSign2 As Double ' Направление случайного эксцентриситета при M2=0: +1 или -1.
+Private mStabilityPhiLMode As String ' Auto или PhiL2.
+Private mStabilitySP63Ks As Double ' Коэффициент ks для арматуры в D по СП 63.
+Private mStabilitySP63DeltaEMin As Double ' Нижняя защита delta_e для численной устойчивости формулы.
+Private mStabilitySP63DeltaEMax As Double ' Верхняя защита delta_e для численной устойчивости формулы.
+Private mStabilitySP35PhiP As Double ' Коэффициент phi_p; для ненапрягаемой арматуры по умолчанию 1.
+Private mStabilitySP35NOverNcrLimit As Double ' Ограничение N/Ncr для ветви СП 35.
+Private mStabilitySP35Table721 As Variant ' Таблица 7.21 СП 35, прочитанная с Config.
+Private mStabilityLoadCount As Long ' Число строк постоянных/длительных нагрузок для устойчивости.
+Private mStabilityLoadCombinationID(1 To MAX_COMBINATIONS) As String ' LC, к которому относится строка длительных нагрузок.
+Private mStabilityLoadN(1 To MAX_COMBINATIONS) As Double ' N от постоянных или постоянных+длительных нагрузок, Н.
+Private mStabilityLoadUserMx(1 To MAX_COMBINATIONS) As Double ' Пользовательский Mx длительной части до переноса к расчетной модели.
+Private mStabilityLoadUserMy(1 To MAX_COMBINATIONS) As Double ' Пользовательский My длительной части до переноса к расчетной модели.
+Private mStabilityLoadMx(1 To MAX_COMBINATIONS) As Double ' Mx длительной части после учета точки приложения нагрузки.
+Private mStabilityLoadMy(1 To MAX_COMBINATIONS) As Double ' My длительной части после учета точки приложения нагрузки.
+
 ' Инициализирует внутреннее состояние объекта значениями по умолчанию, безопасными для последующей настройки.
 Private Sub Class_Initialize()
     Dim resultIndex As Long
@@ -127,6 +149,19 @@ Private Sub Class_Initialize()
     mCapacityMaxRetries = 0
     mCapacityBaseLoadSteps = 1
     mCapacitySolverMaxIterations = 60
+    mStabilityCode = "SP63"
+    mStabilityElementLength = 3000#
+    mStabilityMu1 = 1#
+    mStabilityMu2 = 1#
+    mStabilitySystemType = "Determinate"
+    mStabilityZeroSign1 = 1#
+    mStabilityZeroSign2 = 1#
+    mStabilityPhiLMode = "Auto"
+    mStabilitySP63Ks = 0.7
+    mStabilitySP63DeltaEMin = 0.15
+    mStabilitySP63DeltaEMax = 1.5
+    mStabilitySP35PhiP = 1#
+    mStabilitySP35NOverNcrLimit = 0.7
 End Sub
 
 ' Принимает готовую модель и материалы перед добавлением/расчетом LC.
@@ -195,8 +230,22 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mCapacityMaxRetries = settings.GetLong("Capacity.MaxRetries", mCapacityMaxRetries)
     mCapacityBaseLoadSteps = settings.GetLong("Capacity.BaseLoadSteps", mCapacityBaseLoadSteps)
     mCapacitySolverMaxIterations = settings.GetLong("Capacity.SolverMaxIterations", mCapacitySolverMaxIterations)
+    mStabilityCode = settings.GetString("Stability.Code", mStabilityCode)
+    mStabilityElementLength = settings.GetDouble("Stability.ElementLength", mStabilityElementLength)
+    mStabilityMu1 = settings.GetDouble("Stability.Mu1", mStabilityMu1)
+    mStabilityMu2 = settings.GetDouble("Stability.Mu2", mStabilityMu2)
+    mStabilitySystemType = settings.GetString("Stability.SystemType", mStabilitySystemType)
+    mStabilityZeroSign1 = settings.GetDouble("Stability.ZeroMomentEccentricitySign1", mStabilityZeroSign1)
+    mStabilityZeroSign2 = settings.GetDouble("Stability.ZeroMomentEccentricitySign2", mStabilityZeroSign2)
+    mStabilityPhiLMode = settings.GetString("Stability.PhiLMode", mStabilityPhiLMode)
+    mStabilitySP63Ks = settings.GetDouble("Stability.SP63.Ks", mStabilitySP63Ks)
+    mStabilitySP63DeltaEMin = settings.GetDouble("Stability.SP63.DeltaEMin", mStabilitySP63DeltaEMin)
+    mStabilitySP63DeltaEMax = settings.GetDouble("Stability.SP63.DeltaEMax", mStabilitySP63DeltaEMax)
+    mStabilitySP35PhiP = settings.GetDouble("Stability.SP35.PhiP", mStabilitySP35PhiP)
+    mStabilitySP35NOverNcrLimit = settings.GetDouble("Stability.SP35.NOverNcrLimit", mStabilitySP35NOverNcrLimit)
     If Not units Is Nothing Then
         mCrackAllowable = units.InputLengthToInternal(mCrackAllowable)
+        mStabilityElementLength = units.InputLengthToInternal(mStabilityElementLength)
         mSolverToleranceN = Abs(units.InputForceToInternal(mSolverToleranceN))
         mSolverToleranceMx = Abs(units.InputMomentMxToInternal(mSolverToleranceMx))
         mSolverToleranceMy = Abs(units.InputMomentMyToInternal(mSolverToleranceMy))
@@ -209,6 +258,7 @@ End Sub
 ' попали в новый batch summary.
 Public Sub ClearCombinations()
     mCount = 0
+    ClearStabilityDurationLoads
     mGoverningCombinationIndex = 0
     mCrackGoverningCombinationIndex = 0
     mElapsedSeconds = 0#
@@ -217,6 +267,43 @@ Public Sub ClearCombinations()
     mLoadReferenceY = 0#
     mLoadReferenceOffsetX = 0#
     mLoadReferenceOffsetY = 0#
+End Sub
+
+' Очищает таблицу постоянных/длительных нагрузок для расчета устойчивости.
+Public Sub ClearStabilityDurationLoads()
+    mStabilityLoadCount = 0
+    Dim i As Long
+    For i = 1 To MAX_COMBINATIONS
+        mStabilityLoadCombinationID(i) = vbNullString
+        mStabilityLoadN(i) = 0#
+        mStabilityLoadUserMx(i) = 0#
+        mStabilityLoadUserMy(i) = 0#
+        mStabilityLoadMx(i) = 0#
+        mStabilityLoadMy(i) = 0#
+    Next i
+End Sub
+
+' Добавляет строку постоянных или постоянных+длительных нагрузок для LC.
+' Какие именно длительные нагрузки вводит пользователь, зависит от выбранного
+' нормативного блока и описано на листе "Справка"; ядро получает уже готовые
+' значения во внутренних единицах.
+Public Sub AddStabilityDurationLoad(ByVal combinationID As String, ByVal nValue As Double, _
+        ByVal mxValue As Double, ByVal myValue As Double)
+    If mStabilityLoadCount >= MAX_COMBINATIONS Then Err.Raise vbObjectError + 3925, _
+        "CBatchSectionCalculator", "Поддерживается не более 20 строк нагрузок для устойчивости."
+    mStabilityLoadCount = mStabilityLoadCount + 1
+    mStabilityLoadCombinationID(mStabilityLoadCount) = Trim$(combinationID)
+    mStabilityLoadN(mStabilityLoadCount) = nValue
+    mStabilityLoadUserMx(mStabilityLoadCount) = mxValue
+    mStabilityLoadUserMy(mStabilityLoadCount) = myValue
+    mStabilityLoadMx(mStabilityLoadCount) = mxValue
+    mStabilityLoadMy(mStabilityLoadCount) = myValue
+End Sub
+
+' Принимает таблицу 7.21 СП 35 из Config. Таблица нужна только при выборе
+' Stability.Code = SP35 и не должна быть зашита константами в код класса.
+Public Sub SetSP35Table721(ByVal tableData As Variant)
+    mStabilitySP35Table721 = tableData
 End Sub
 
 ' Добавляет корректно прочитанное сочетание нагрузок.
@@ -271,6 +358,11 @@ Public Sub ApplyLoadReference(ByVal referenceX As Double, ByVal referenceY As Do
             mInputs(i).Mx = mInputs(i).UserMx + mInputs(i).N * referenceY
             mInputs(i).My = mInputs(i).UserMy + mInputs(i).N * referenceX
         End If
+    Next i
+
+    For i = 1 To mStabilityLoadCount
+        mStabilityLoadMx(i) = mStabilityLoadUserMx(i) + mStabilityLoadN(i) * referenceY
+        mStabilityLoadMy(i) = mStabilityLoadUserMy(i) + mStabilityLoadN(i) * referenceX
     Next i
 End Sub
 
@@ -366,6 +458,16 @@ Private Sub RunCombination(ByVal index As Long)
     mResults(index).CapacityStatus = mStatusPolicy.NotApplicable
     mResults(index).CrackStatus = mStatusPolicy.NotApplicable
     mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
+    mResults(index).StabilityStatus = mStatusPolicy.NotApplicable
+
+    If profile.StabilityEnabled Then
+        ReportStep "Запускается фильтр продольного изгиба/устойчивости по профилю."
+        RunStabilityFilter index, profile.StabilityValueSet
+    Else
+        ReportStep "Устойчивость не запрошена профилем."
+        mResults(index).ClearStabilityResult
+        mResults(index).StabilityStatus = mStatusPolicy.NotApplicable
+    End If
 
     If profile.StrengthCapacityEnabled Then
         ReportStep "Запускается проверка несущей способности по профилю."
@@ -384,10 +486,11 @@ Private Sub RunCombination(ByVal index As Long)
         RunCrackWidth index, profile
     End If
 
-    mResults(index).GoverningUtil = MaxDouble(MaxDouble(mResults(index).UtilCapacity, mResults(index).CrackUtil), _
-        mResults(index).LongitudinalCrackUtil)
+    mResults(index).GoverningUtil = MaxDouble(MaxDouble(MaxDouble(mResults(index).UtilCapacity, mResults(index).CrackUtil), _
+        mResults(index).LongitudinalCrackUtil), mResults(index).StabilityUtil)
     mResults(index).Status = mStatusPolicy.Aggregate(mResults(index).DirectStateStatus, _
-        mResults(index).CapacityStatus, mResults(index).CrackStatus, mResults(index).LongitudinalCrackStatus)
+        mResults(index).CapacityStatus, mResults(index).CrackStatus, _
+        mResults(index).LongitudinalCrackStatus, mResults(index).StabilityStatus)
     AppendDiagnostic index
     ReportCombinationSummary index
     Exit Sub
@@ -395,6 +498,77 @@ Private Sub RunCombination(ByVal index As Long)
 Failed:
     ReportStep "Ошибка при расчете сочетания: " & Err.Description
     MarkInvalid index, Err.Description
+End Sub
+
+' Применяет расчет продольного изгиба как изолированный фильтр усилий.
+' CStabilityCalculator не знает о batch и профилях: он возвращает только
+' расчетные N/Mx/My и диагностические величины, а batch решает, что делать
+' дальше с пользовательскими статусами и последующими проверками НДМ.
+Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialValueSet)
+    On Error GoTo Failed
+
+    Dim sustainedN As Double
+    Dim sustainedMx As Double
+    Dim sustainedMy As Double
+    StabilityDurationLoadForCombination mInputs(index).CombinationID, sustainedN, sustainedMx, sustainedMy
+
+    Dim stability As CStabilityCalculator
+    Set stability = New CStabilityCalculator
+    stability.Calculate mSection, mMaterialProvider, valueSet, mStabilityCode, _
+        mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
+        sustainedN, sustainedMx, sustainedMy, _
+        mStabilityElementLength, mStabilityMu1, mStabilityMu2, _
+        mStabilitySystemType, mStabilityZeroSign1, mStabilityZeroSign2, _
+        mStabilityPhiLMode, mStabilitySP63Ks, mStabilitySP63DeltaEMin, _
+        mStabilitySP63DeltaEMax, mStabilitySP35PhiP, _
+        mStabilitySP35NOverNcrLimit, mStabilitySP35Table721
+
+    mResults(index).StoreStabilityResult mStatusPolicy.StabilityStatusFromCalculator(stability), stability
+    If stability.InputValid And stability.Applicable Then ApplyStabilityDesignLoads index, stability
+
+    ReportValue "StabilityStatus", mResults(index).StabilityStatus
+    ReportValue "Stability.Code", stability.Code
+    ReportValue "Stability.ValueSet", MaterialValueSetToText(valueSet)
+    ReportValue "Stability.Branch", stability.Branch
+    ReportValue "Stability.Ncr/reserve force", FormatNumberInvariant(stability.CriticalForce) & " Н"
+    ReportValue "Stability reserve", FormatNumberInvariant(stability.ReserveFactor)
+    ReportValue "N/Mx/My после устойчивости", _
+        FormatNumberInvariant(mInputs(index).N) & "; " & _
+        FormatNumberInvariant(mInputs(index).Mx) & "; " & _
+        FormatNumberInvariant(mInputs(index).My)
+    Exit Sub
+
+Failed:
+    mResults(index).StabilityStatus = mStatusPolicy.InputErr
+    mResults(index).StabilityBranch = Err.Description
+    ReportStep "Устойчивость не рассчитана: " & Err.Description
+End Sub
+
+' Берет длительную часть нагрузки для LC. Если пользователь не заполнил строку,
+' принимаются нули: это допустимый ввод и не блокирует основной расчет.
+Private Sub StabilityDurationLoadForCombination(ByVal combinationID As String, _
+        ByRef nValue As Double, ByRef mxValue As Double, ByRef myValue As Double)
+    Dim i As Long
+    For i = 1 To mStabilityLoadCount
+        If StrComp(mStabilityLoadCombinationID(i), Trim$(combinationID), vbTextCompare) = 0 Then
+            nValue = mStabilityLoadN(i)
+            mxValue = mStabilityLoadMx(i)
+            myValue = mStabilityLoadMy(i)
+            Exit Sub
+        End If
+    Next i
+End Sub
+
+' Подменяет усилия LC расчетными усилиями после фильтра устойчивости.
+' UserMx/UserMy также пересчитываются относительно той же точки приложения,
+' чтобы CapacityLoadPath продолжил строить Offset + lambda*Base без отдельной
+' ветви для устойчивости.
+Private Sub ApplyStabilityDesignLoads(ByVal index As Long, ByVal stability As CStabilityCalculator)
+    mInputs(index).N = stability.DesignN
+    mInputs(index).Mx = stability.DesignMx
+    mInputs(index).My = stability.DesignMy
+    mInputs(index).UserMx = mInputs(index).Mx - mInputs(index).N * mLoadReferenceY
+    mInputs(index).UserMy = mInputs(index).My - mInputs(index).N * mLoadReferenceX
 End Sub
 
 ' Запускает поиск несущей способности для LC.
@@ -891,6 +1065,8 @@ Private Sub AppendDiagnostic(ByVal index As Long)
         "; CrackStatus=" & mResults(index).CrackStatus & _
         "; LongitudinalCrackStatus=" & mResults(index).LongitudinalCrackStatus & _
         "; LongitudinalCrackUtil=" & FormatNumberInvariant(mResults(index).LongitudinalCrackUtil) & _
+        "; StabilityStatus=" & mResults(index).StabilityStatus & _
+        "; StabilityUtil=" & FormatNumberInvariant(mResults(index).StabilityUtil) & _
         "; governingUtil=" & FormatNumberInvariant(mResults(index).GoverningUtil) & vbCrLf
 End Sub
 
@@ -905,6 +1081,8 @@ Private Sub ReportCombinationSummary(ByVal index As Long)
     ReportValue "CrackStatus", mResults(index).CrackStatus
     ReportValue "LongitudinalCrackStatus", mResults(index).LongitudinalCrackStatus
     ReportValue "LongitudinalCrackUtilization", FormatNumberInvariant(mResults(index).LongitudinalCrackUtil)
+    ReportValue "StabilityStatus", mResults(index).StabilityStatus
+    ReportValue "StabilityUtilization", FormatNumberInvariant(mResults(index).StabilityUtil)
     ReportValue "GoverningUtilization", FormatNumberInvariant(mResults(index).GoverningUtil)
 End Sub
 
@@ -1186,6 +1364,102 @@ End Property
 
 Public Property Get LongitudinalCrackUtilization(ByVal index As Long) As Double
     LongitudinalCrackUtilization = mResults(index).LongitudinalCrackUtil
+End Property
+
+Public Property Get StabilityStatus(ByVal index As Long) As String
+    StabilityStatus = mResults(index).StabilityStatus
+End Property
+
+Public Property Get StabilityCode(ByVal index As Long) As String
+    StabilityCode = mResults(index).StabilityCode
+End Property
+
+Public Property Get StabilityBranch(ByVal index As Long) As String
+    StabilityBranch = mResults(index).StabilityBranch
+End Property
+
+Public Property Get StabilityDesignN(ByVal index As Long) As Double
+    StabilityDesignN = mResults(index).StabilityDesignN
+End Property
+
+Public Property Get StabilityDesignMx(ByVal index As Long) As Double
+    StabilityDesignMx = mResults(index).StabilityDesignMx
+End Property
+
+Public Property Get StabilityDesignMy(ByVal index As Long) As Double
+    StabilityDesignMy = mResults(index).StabilityDesignMy
+End Property
+
+Public Property Get StabilityCriticalForce(ByVal index As Long) As Double
+    StabilityCriticalForce = mResults(index).StabilityCriticalForce
+End Property
+
+Public Property Get StabilityReserveFactor(ByVal index As Long) As Double
+    StabilityReserveFactor = mResults(index).StabilityReserveFactor
+End Property
+
+Public Property Get StabilityNcr1(ByVal index As Long) As Double
+    StabilityNcr1 = mResults(index).StabilityNcr1
+End Property
+
+Public Property Get StabilityNcr2(ByVal index As Long) As Double
+    StabilityNcr2 = mResults(index).StabilityNcr2
+End Property
+
+Public Property Get StabilityReserve1(ByVal index As Long) As Double
+    StabilityReserve1 = mResults(index).StabilityReserve1
+End Property
+
+Public Property Get StabilityReserve2(ByVal index As Long) As Double
+    StabilityReserve2 = mResults(index).StabilityReserve2
+End Property
+
+Public Property Get StabilityEta1(ByVal index As Long) As Double
+    StabilityEta1 = mResults(index).StabilityEta1
+End Property
+
+Public Property Get StabilityEta2(ByVal index As Long) As Double
+    StabilityEta2 = mResults(index).StabilityEta2
+End Property
+
+Public Property Get StabilityPhiL1(ByVal index As Long) As Double
+    StabilityPhiL1 = mResults(index).StabilityPhiL1
+End Property
+
+Public Property Get StabilityPhiL2(ByVal index As Long) As Double
+    StabilityPhiL2 = mResults(index).StabilityPhiL2
+End Property
+
+Public Property Get StabilityEccentricity1(ByVal index As Long) As Double
+    StabilityEccentricity1 = mResults(index).StabilityEccentricity1
+End Property
+
+Public Property Get StabilityEccentricity2(ByVal index As Long) As Double
+    StabilityEccentricity2 = mResults(index).StabilityEccentricity2
+End Property
+
+Public Property Get StabilityAccidentalEcc1(ByVal index As Long) As Double
+    StabilityAccidentalEcc1 = mResults(index).StabilityAccidentalEcc1
+End Property
+
+Public Property Get StabilityAccidentalEcc2(ByVal index As Long) As Double
+    StabilityAccidentalEcc2 = mResults(index).StabilityAccidentalEcc2
+End Property
+
+Public Property Get StabilityEffectiveLength1(ByVal index As Long) As Double
+    StabilityEffectiveLength1 = mResults(index).StabilityEffectiveLength1
+End Property
+
+Public Property Get StabilityEffectiveLength2(ByVal index As Long) As Double
+    StabilityEffectiveLength2 = mResults(index).StabilityEffectiveLength2
+End Property
+
+Public Property Get StabilityStiffnessD1(ByVal index As Long) As Double
+    StabilityStiffnessD1 = mResults(index).StabilityStiffnessD1
+End Property
+
+Public Property Get StabilityStiffnessD2(ByVal index As Long) As Double
+    StabilityStiffnessD2 = mResults(index).StabilityStiffnessD2
 End Property
 
 Public Property Get CrackFormed(ByVal index As Long) As Boolean

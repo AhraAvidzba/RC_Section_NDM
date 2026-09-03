@@ -27,6 +27,9 @@ Private mDescription As String ' Короткое описание для пол
 Private mStrengthDirectState As Boolean ' Запрошено StrengthState.
 Private mStrengthCapacity As Boolean ' Запрошена несущая способность.
 Private mCrackWidth As Boolean ' Запрошен расчет раскрытия нормальных трещин.
+Private mStabilityEnabled As Boolean ' Запрошен фильтр продольного изгиба/устойчивости перед НДМ.
+Private mStabilityValueSet As EMaterialValueSet ' Набор характеристик материала для устойчивости без диаграмм.
+Private mHasStabilityValueSet As Boolean ' True, если строка MaterialModel.Stability.ValueSet задана в профиле.
 Private mStrengthSpec As CMaterialModelSpec ' Материальная модель прочности.
 Private mCrackInitiationSpec As CMaterialModelSpec ' Материальная модель Mcrc для Auto psi_s.
 Private mCrackedStateSpec As CMaterialModelSpec ' Материальная модель НДС с раскрытой трещиной.
@@ -44,13 +47,15 @@ End Sub
 ' Заполняет простые поля профиля. MaterialModelSpec задаются отдельными
 ' методами, потому что профиль хранит три независимые роли материальных моделей.
 Public Sub Initialize(ByVal profileId As String, ByVal displayName As String, ByVal description As String, _
-        ByVal strengthDirectState As Boolean, ByVal strengthCapacity As Boolean, ByVal crackWidth As Boolean)
+        ByVal strengthDirectState As Boolean, ByVal strengthCapacity As Boolean, _
+        ByVal crackWidth As Boolean, Optional ByVal stabilityEnabled As Boolean = False)
     mProfileId = Trim$(profileId)
     mDisplayName = Trim$(displayName)
     mDescription = Trim$(description)
     mStrengthDirectState = strengthDirectState
     mStrengthCapacity = strengthCapacity
     mCrackWidth = crackWidth
+    mStabilityEnabled = stabilityEnabled
 End Sub
 
 ' Сохраняет спецификацию модели прочности.
@@ -71,6 +76,14 @@ Public Sub SetCrackedStateSpec(ByVal spec As CMaterialModelSpec)
     Set mCrackedStateSpec = spec.Clone
 End Sub
 
+' Сохраняет набор характеристик для устойчивости. Диаграммы здесь не нужны:
+' расчет D, Ncr и eta использует R/E, а не sigma-epsilon график.
+Public Sub SetStabilityValueSet(ByVal valueSetText As String)
+    If Len(Trim$(valueSetText)) = 0 Then Exit Sub
+    mStabilityValueSet = MaterialValueSetFromText(valueSetText)
+    mHasStabilityValueSet = True
+End Sub
+
 ' Сохраняет настройки визуализации. Их несоответствие фактически полученным
 ' состояниям не блокирует расчет: ошибка появится только при построении схемы
 ' или AutoCAD export по отсутствующему StateType.
@@ -89,7 +102,7 @@ End Sub
 ' запрошенный расчет. Неназначенные профили не участвуют в batch, даже если
 ' в таблице профилей заполнены все их параметры.
 Public Function IsConfigured() As Boolean
-    IsConfigured = (Len(mDisplayName) > 0 And (mStrengthDirectState Or mStrengthCapacity Or mCrackWidth))
+    IsConfigured = (Len(mDisplayName) > 0 And (mStrengthDirectState Or mStrengthCapacity Or mCrackWidth Or mStabilityEnabled))
 End Function
 
 ' Валидирует профиль только для фактически назначенного LC. Visualization.State
@@ -107,6 +120,10 @@ Public Function ValidateForCalculation(ByVal psiMode As String, ByRef errorText 
     End If
     If (mStrengthDirectState Or mStrengthCapacity) And Not mStrengthSpec.IsComplete Then
         errorText = "Профиль " & mProfileId & ": не задана MaterialModel.Strength."
+        Exit Function
+    End If
+    If mStabilityEnabled And Not mHasStabilityValueSet Then
+        errorText = "Профиль " & mProfileId & ": для устойчивости задайте MaterialModel.Stability.ValueSet."
         Exit Function
     End If
     If mCrackWidth And Not mCrackedStateSpec.IsComplete Then
@@ -151,6 +168,22 @@ End Property
 
 Public Property Get CrackWidthEnabled() As Boolean
     CrackWidthEnabled = mCrackWidth
+End Property
+
+Public Property Get StabilityEnabled() As Boolean
+    StabilityEnabled = mStabilityEnabled
+End Property
+
+Public Property Get StabilityValueSet() As EMaterialValueSet
+    If mHasStabilityValueSet Then
+        StabilityValueSet = mStabilityValueSet
+    Else
+        StabilityValueSet = mvsULS
+    End If
+End Property
+
+Public Property Get StabilityValueSetText() As String
+    StabilityValueSetText = MaterialValueSetToText(StabilityValueSet)
 End Property
 
 Public Property Get StrengthSpec() As CMaterialModelSpec

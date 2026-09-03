@@ -112,6 +112,7 @@ function Import-VbaSourceTree {
         (Join-Path $RootPath "src/Materials"),
         (Join-Path $RootPath "src/Solver"),
         (Join-Path $RootPath "src/Crack"),
+        (Join-Path $RootPath "src/Stability"),
         (Join-Path $RootPath "src/Batch"),
         (Join-Path $RootPath "src/Excel"),
         (Join-Path $RootPath "tests")
@@ -515,7 +516,7 @@ try {
     $results.Columns.Item(49).ColumnWidth = 12
     Add-ResultsSummaryHelpLink $results $instructions
 
-    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$BC$29'
+    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$CA$29'
     Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$32'
     Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$K$32'
     Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AB$32'

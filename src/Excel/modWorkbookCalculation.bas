@@ -315,6 +315,9 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     If batch.Count = 0 Then Err.Raise vbObjectError + 4101, "RunSectionCalculationForWorkbook", "Не задано ни одного сочетания нагрузок."
     report.AddValue "Прочитано сочетаний", CStr(batch.Count)
     report.AddBlock "Список сочетаний", CombinationListForReport(batch)
+    LoadStabilityDurationLoadsFromWorkbook workbook, batch, units
+    batch.SetSP35Table721 ReadSP35Table721FromWorkbook(workbook)
+    report.AddStep "Прочитаны нагрузки и таблицы для расчета устойчивости."
 
     report.AddSection "Точка приложения нагрузки"
     report.AddStep "Расчет центра тяжести бетонного сечения для пользовательской точки нагрузки."
@@ -479,6 +482,65 @@ Private Sub ApplyLoadReferenceFromSettings(ByVal section As CSectionModel, _
     batch.ApplyLoadReference referenceX + units.InputLengthToInternal(settings.GetDouble("Load.ReferenceOffsetX", 0#)), _
         referenceY + units.InputLengthToInternal(settings.GetDouble("Load.ReferenceOffsetY", 0#)), referenceX, referenceY
 End Sub
+
+' Читает дополнительную таблицу нагрузок для устойчивости. Excel-слой сразу
+' приводит силы и моменты к внутренним единицам, чтобы расчетный batch не
+' обращался к листам и не знал пользовательских единиц.
+Private Sub LoadStabilityDurationLoadsFromWorkbook(ByVal workbook As Object, _
+        ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
+    On Error GoTo MissingRange
+    If workbook Is Nothing Then Exit Sub
+    If batch Is Nothing Then Exit Sub
+
+    Dim range As Object
+    Set range = workbook.Names.Item("rngStabilityDurationLoads").RefersToRange
+    On Error GoTo 0
+    Dim values As Variant
+    values = range.Value2
+
+    batch.ClearStabilityDurationLoads
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(values, 1)
+        Dim combinationID As String
+        combinationID = Trim$(CStr(values(rowIndex, 1)))
+        If Len(combinationID) > 0 Then
+            batch.AddStabilityDurationLoad combinationID, _
+                units.InputForceToInternal(NumericCellOrZero(values(rowIndex, 2))), _
+                units.InputMomentMxToInternal(NumericCellOrZero(values(rowIndex, 3))), _
+                units.InputMomentMyToInternal(NumericCellOrZero(values(rowIndex, 4)))
+        End If
+    Next rowIndex
+    Exit Sub
+
+MissingRange:
+    batch.ClearStabilityDurationLoads
+End Sub
+
+' Возвращает таблицу 7.21 СП 35 как обычный массив Variant. Дальше она живет
+' только в памяти и передается в CStabilityCalculator через batch.
+Private Function ReadSP35Table721FromWorkbook(ByVal workbook As Object) As Variant
+    On Error GoTo MissingRange
+    If workbook Is Nothing Then Exit Function
+
+    Dim range As Object
+    Set range = workbook.Names.Item("rngSP35Table721").RefersToRange
+    On Error GoTo 0
+    ReadSP35Table721FromWorkbook = range.Value2
+    Exit Function
+
+MissingRange:
+End Function
+
+' Превращает пустую ячейку дополнительной таблицы нагрузок в 0. Ошибочные
+' значения оставляем ошибкой исходных данных Excel, чтобы они не маскировались.
+Private Function NumericCellOrZero(ByVal value As Variant) As Double
+    If IsEmpty(value) Or IsNull(value) Then Exit Function
+    If VarType(value) = vbString Then
+        If Len(Trim$(CStr(value))) = 0 Then Exit Function
+    End If
+    NumericCellOrZero = CDbl(value)
+End Function
 
 ' Возвращает центр тяжести бетонной части сечения.
 ' Это базовая точка пользовательских нагрузок: Load.ReferenceOffsetX/Y

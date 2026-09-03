@@ -79,6 +79,7 @@ function Import-VbaSourceTree {
         (Join-Path $RootPath "src/Materials"),
         (Join-Path $RootPath "src/Solver"),
         (Join-Path $RootPath "src/Crack"),
+        (Join-Path $RootPath "src/Stability"),
         (Join-Path $RootPath "src/Batch"),
         (Join-Path $RootPath "src/Excel"),
         (Join-Path $RootPath "tests")

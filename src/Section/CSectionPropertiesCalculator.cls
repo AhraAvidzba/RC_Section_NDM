@@ -58,24 +58,14 @@ Public Sub CalculateConcrete(ByVal section As CSectionModel)
     t0 = Timer
 
     Dim i As Long
-    Dim a As Double ' Площадь бетонного элемента, полностью входящая в дискретную модель.
-    Dim x As Double ' X центра тяжести бетонного элемента.
-    Dim y As Double ' Y центра тяжести бетонного элемента.
-
-    ' Проходим по бетонной сетке и накапливаем обычные геометрические моменты.
-    ' Для справочных свойств частичное восстановление контура не требуется:
-    ' используются те же дискретные бетонные элементы, что и в НДМ.
+    ' Проходим по бетонной сетке и накапливаем геометрические моменты. Если
+    ' элемент пришел из AutoCAD Region или генератора уже с собственными
+    ' инерциями вокруг своего центра, учитываем их здесь же: это единая точка
+    ' расчета геометрических характеристик для всех последующих проверок.
     For i = 1 To section.ConcreteCount
-        a = section.ConcreteArea(i)
-        x = section.ConcreteX(i)
-        y = section.ConcreteY(i)
-
-        mArea = mArea + a
-        mStaticMomentX = mStaticMomentX + a * y
-        mStaticMomentY = mStaticMomentY + a * x
-        mIx = mIx + a * y * y
-        mIy = mIy + a * x * x
-        mIxy = mIxy + a * x * y
+        AddWeightedArea section.ConcreteArea(i), _
+            section.ConcreteX(i), section.ConcreteY(i), _
+            section.ConcreteLocalIx(i), section.ConcreteLocalIy(i), section.ConcreteLocalIxy(i)
     Next i
 
     If mArea <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2202, "CSectionPropertiesCalculator", "Площадь бетонного сечения равна нулю."
@@ -113,15 +103,20 @@ Public Sub CalculateTransformed(ByVal section As CSectionModel, _
 
     Dim i As Long
     For i = 1 To section.ConcreteCount
-        AddWeightedPoint section.ConcreteArea(i), _
-            section.ConcreteX(i), section.ConcreteY(i)
+        AddWeightedArea section.ConcreteArea(i), _
+            section.ConcreteX(i), section.ConcreteY(i), _
+            section.ConcreteLocalIx(i), section.ConcreteLocalIy(i), section.ConcreteLocalIxy(i)
     Next i
 
     If section.RebarCount > 0 Then
         Dim replacementAreaFactor As Double ' Добавочная площадь арматуры в бетонном приведении: n - 1.
+        Dim rebarWeight As Double
+        Dim rebarLocalI As Double
         replacementAreaFactor = steelModularRatio - 1#
         For i = 1 To section.RebarCount
-            AddWeightedPoint replacementAreaFactor * section.RebarArea(i), section.RebarX(i), section.RebarY(i)
+            rebarWeight = replacementAreaFactor * section.RebarArea(i)
+            rebarLocalI = replacementAreaFactor * RebarCircleInertia(section.RebarArea(i))
+            AddWeightedArea rebarWeight, section.RebarX(i), section.RebarY(i), rebarLocalI, rebarLocalI, 0#
         Next i
     End If
 
@@ -130,17 +125,157 @@ Public Sub CalculateTransformed(ByVal section As CSectionModel, _
     FinalizeProperties t0
 End Sub
 
-' Добавляет точку с весовой площадью в накопленные статические и инерционные
-' характеристики. Для бетонного сечения вес равен площади, для приведенного -
-' площади, пересчитанной к бетонной базе через модульное отношение n = Es/Eb.
-Private Sub AddWeightedPoint(ByVal weight As Double, ByVal x As Double, ByVal y As Double)
+' Добавляет элемент с весовой площадью и собственными инерциями вокруг центра.
+' Для бетонного сечения weight равен площади. Для приведенного сечения арматура
+' добавляется как (n-1)*As, поэтому ее собственная инерция также умножается на
+' тот же коэффициент приведения.
+Private Sub AddWeightedArea(ByVal weight As Double, ByVal x As Double, ByVal y As Double, _
+        Optional ByVal localIx As Double = 0#, Optional ByVal localIy As Double = 0#, _
+        Optional ByVal localIxy As Double = 0#)
     mArea = mArea + weight
     mStaticMomentX = mStaticMomentX + weight * y
     mStaticMomentY = mStaticMomentY + weight * x
-    mIx = mIx + weight * y * y
-    mIy = mIy + weight * x * x
-    mIxy = mIxy + weight * x * y
+    mIx = mIx + localIx + weight * y * y
+    mIy = mIy + localIy + weight * x * x
+    mIxy = mIxy + localIxy + weight * x * y
 End Sub
+
+' Возвращает проекцию расчетного сечения на произвольную ось.
+' Метод централизует высоты/габариты, которые нужны Summary, трещинам и
+' устойчивости: бетон берется по сохраненной ширине/высоте элемента или по
+' эквивалентному кругу, арматура - по эквивалентному радиусу из площади.
+Public Sub CalculateProjection(ByVal section As CSectionModel, ByVal axisX As Double, ByVal axisY As Double, _
+        ByVal includeRebar As Boolean, ByRef minProjection As Double, ByRef maxProjection As Double)
+    If section Is Nothing Then Err.Raise vbObjectError + 2210, "CSectionPropertiesCalculator", "Модель сечения не передана."
+    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 2211, "CSectionPropertiesCalculator", "В модели сечения нет бетонных элементов."
+
+    Dim normValue As Double
+    normValue = Sqr(axisX * axisX + axisY * axisY)
+    If normValue <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2212, "CSectionPropertiesCalculator", "Ось проекции имеет нулевую длину."
+
+    Dim nx As Double
+    Dim ny As Double
+    nx = axisX / normValue
+    ny = axisY / normValue
+
+    Dim initialized As Boolean
+    Dim i As Long
+    For i = 1 To section.ConcreteCount
+        ExtendProjection initialized, minProjection, maxProjection, _
+            nx * section.ConcreteX(i) + ny * section.ConcreteY(i), _
+            ConcreteHalfProjection(section, i, nx, ny)
+    Next i
+
+    If includeRebar And section.RebarCount > 0 Then
+        For i = 1 To section.RebarCount
+            ExtendProjection initialized, minProjection, maxProjection, _
+                nx * section.RebarX(i) + ny * section.RebarY(i), _
+                RebarEquivalentRadius(section.RebarArea(i))
+        Next i
+    End If
+End Sub
+
+' Возвращает полную высоту/габарит сечения по заданной оси проекции.
+Public Function ProjectionDepth(ByVal section As CSectionModel, ByVal axisX As Double, ByVal axisY As Double, _
+        Optional ByVal includeRebar As Boolean = True) As Double
+    Dim minProjection As Double
+    Dim maxProjection As Double
+    CalculateProjection section, axisX, axisY, includeRebar, minProjection, maxProjection
+    ProjectionDepth = maxProjection - minProjection
+End Function
+
+' Возвращает суммарную площадь продольной арматуры.
+' Метод живет в геометрическом калькуляторе, потому что это чистая
+' характеристика CSectionModel и она нужна разным нормативным проверкам.
+Public Function RebarAreaTotal(ByVal section As CSectionModel) As Double
+    If section Is Nothing Then Err.Raise vbObjectError + 2213, "CSectionPropertiesCalculator", "Модель сечения не передана."
+
+    Dim i As Long
+    For i = 1 To section.RebarCount
+        RebarAreaTotal = RebarAreaTotal + section.RebarArea(i)
+    Next i
+End Function
+
+' Считает момент инерции всей арматуры относительно произвольной оси.
+' Ось задается направляющим вектором и точкой прохождения. Для каждого
+' стержня учитывается перенос площади и собственная инерция круглого сечения,
+' вычисленная через площадь: I = A^2/(4*pi).
+Public Function RebarInertiaAboutAxis(ByVal section As CSectionModel, ByVal axisX As Double, _
+        ByVal axisY As Double, ByVal originX As Double, ByVal originY As Double) As Double
+    If section Is Nothing Then Err.Raise vbObjectError + 2214, "CSectionPropertiesCalculator", "Модель сечения не передана."
+
+    Dim normValue As Double
+    normValue = Sqr(axisX * axisX + axisY * axisY)
+    If normValue <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2215, "CSectionPropertiesCalculator", "Ось инерции арматуры имеет нулевую длину."
+
+    Dim nx As Double
+    Dim ny As Double
+    nx = axisX / normValue
+    ny = axisY / normValue
+
+    Dim i As Long
+    Dim dx As Double
+    Dim dy As Double
+    Dim distanceToAxis As Double
+    For i = 1 To section.RebarCount
+        dx = section.RebarX(i) - originX
+        dy = section.RebarY(i) - originY
+        distanceToAxis = -ny * dx + nx * dy
+        RebarInertiaAboutAxis = RebarInertiaAboutAxis + _
+            section.RebarArea(i) * distanceToAxis * distanceToAxis + RebarCircleInertia(section.RebarArea(i))
+    Next i
+End Function
+
+' Расширяет накопленный диапазон проекций одним элементом.
+Private Sub ExtendProjection(ByRef initialized As Boolean, ByRef minProjection As Double, ByRef maxProjection As Double, _
+        ByVal centerProjection As Double, ByVal halfProjection As Double)
+    If Not initialized Then
+        minProjection = centerProjection - halfProjection
+        maxProjection = centerProjection + halfProjection
+        initialized = True
+    Else
+        minProjection = GeomMin(minProjection, centerProjection - halfProjection)
+        maxProjection = GeomMax(maxProjection, centerProjection + halfProjection)
+    End If
+End Sub
+
+' Проекция бетонного элемента. Для обычной сетки используется сохраненный
+' прямоугольник с поворотом. Если точных размеров нет, берется эквивалентный
+' круг по площади: это устойчивый fallback для произвольных Region.
+Private Function ConcreteHalfProjection(ByVal section As CSectionModel, ByVal index As Long, _
+        ByVal axisX As Double, ByVal axisY As Double) As Double
+    Dim widthValue As Double
+    Dim heightValue As Double
+    widthValue = section.ConcreteWidth(index)
+    heightValue = section.ConcreteHeight(index)
+
+    If widthValue > GEOM_TOLERANCE And heightValue > GEOM_TOLERANCE Then
+        Dim angleValue As Double
+        Dim ux As Double
+        Dim uy As Double
+        Dim vx As Double
+        Dim vy As Double
+        angleValue = section.ConcreteRotation(index)
+        ux = Cos(angleValue)
+        uy = Sin(angleValue)
+        vx = -uy
+        vy = ux
+        ConcreteHalfProjection = 0.5 * (widthValue * Abs(axisX * ux + axisY * uy) + _
+            heightValue * Abs(axisX * vx + axisY * vy))
+    ElseIf section.ConcreteArea(index) > GEOM_TOLERANCE Then
+        ConcreteHalfProjection = Sqr(section.ConcreteArea(index) / GEOM_PI)
+    End If
+End Function
+
+' Собственная инерция круглого стержня через его площадь: I = A^2/(4*pi).
+Private Function RebarCircleInertia(ByVal areaValue As Double) As Double
+    If areaValue > GEOM_TOLERANCE Then RebarCircleInertia = areaValue * areaValue / (4# * GEOM_PI)
+End Function
+
+' Радиус круглого стержня через площадь. Используется для габарита по оси.
+Private Function RebarEquivalentRadius(ByVal areaValue As Double) As Double
+    If areaValue > GEOM_TOLERANCE Then RebarEquivalentRadius = Sqr(areaValue / GEOM_PI)
+End Function
 
 ' Завершает расчет: переводит моменты к центру тяжести, находит главные оси и
 ' радиусы инерции. Формулы одинаковы для бетонного и приведенного представления,

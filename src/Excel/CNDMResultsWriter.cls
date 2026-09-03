@@ -1056,55 +1056,11 @@ End Function
 
 Private Sub GetConcreteBounds(ByVal section As CSectionModel, ByRef minX As Double, ByRef maxX As Double, _
         ByRef minY As Double, ByRef maxY As Double)
-    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 4460, "CNDMResultsWriter", "В модели нет бетонных элементов."
-
-    minX = section.ConcreteX(1) - ConcreteWidth(section, 1) / 2#
-    maxX = section.ConcreteX(1) + ConcreteWidth(section, 1) / 2#
-    minY = section.ConcreteY(1) - ConcreteHeight(section, 1) / 2#
-    maxY = section.ConcreteY(1) + ConcreteHeight(section, 1) / 2#
-
-    Dim i As Long
-    For i = 1 To section.ConcreteCount
-        minX = MinDouble(minX, section.ConcreteX(i) - ConcreteWidth(section, i) / 2#)
-        maxX = MaxDouble(maxX, section.ConcreteX(i) + ConcreteWidth(section, i) / 2#)
-        minY = MinDouble(minY, section.ConcreteY(i) - ConcreteHeight(section, i) / 2#)
-        maxY = MaxDouble(maxY, section.ConcreteY(i) + ConcreteHeight(section, i) / 2#)
-    Next i
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateProjection section, 1#, 0#, False, minX, maxX
+    props.CalculateProjection section, 0#, 1#, False, minY, maxY
 End Sub
-
-Private Sub GetSectionBoundsUnused(ByVal section As CSectionModel, ByRef minX As Double, ByRef maxX As Double, _
-        ByRef minY As Double, ByRef maxY As Double)
-    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 4460, "CNDMResultsWriter", "В модели нет бетонных элементов."
-
-    minX = section.ConcreteX(1) - ConcreteWidth(section, 1) / 2#
-    maxX = section.ConcreteX(1) + ConcreteWidth(section, 1) / 2#
-    minY = section.ConcreteY(1) - ConcreteHeight(section, 1) / 2#
-    maxY = section.ConcreteY(1) + ConcreteHeight(section, 1) / 2#
-
-    Dim i As Long
-    For i = 1 To section.ConcreteCount
-        minX = MinDouble(minX, section.ConcreteX(i) - ConcreteWidth(section, i) / 2#)
-        maxX = MaxDouble(maxX, section.ConcreteX(i) + ConcreteWidth(section, i) / 2#)
-        minY = MinDouble(minY, section.ConcreteY(i) - ConcreteHeight(section, i) / 2#)
-        maxY = MaxDouble(maxY, section.ConcreteY(i) + ConcreteHeight(section, i) / 2#)
-    Next i
-    For i = 1 To section.RebarCount
-        minX = MinDouble(minX, section.RebarX(i) - section.RebarDiameter(i) / 2#)
-        maxX = MaxDouble(maxX, section.RebarX(i) + section.RebarDiameter(i) / 2#)
-        minY = MinDouble(minY, section.RebarY(i) - section.RebarDiameter(i) / 2#)
-        maxY = MaxDouble(maxY, section.RebarY(i) + section.RebarDiameter(i) / 2#)
-    Next i
-End Sub
-
-Private Function ConcreteWidth(ByVal section As CSectionModel, ByVal index As Long) As Double
-    ConcreteWidth = section.ConcreteWidth(index)
-    If ConcreteWidth <= 0# Then ConcreteWidth = Sqr(section.ConcreteArea(index))
-End Function
-
-Private Function ConcreteHeight(ByVal section As CSectionModel, ByVal index As Long) As Double
-    ConcreteHeight = section.ConcreteHeight(index)
-    If ConcreteHeight <= 0# Then ConcreteHeight = Sqr(section.ConcreteArea(index))
-End Function
 
 Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputLength = value Else OutputLength = units.InternalLengthToOutput(value)

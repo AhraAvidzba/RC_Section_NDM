@@ -28,6 +28,7 @@ Public CapacityLimitState As String ' Причина предельного со
 Public CapacitySolutionMethod As String ' Фактический метод, которым получена capacity-точка.
 Public CrackStatus As String ' Статус расчета раскрытия нормальных трещин.
 Public LongitudinalCrackStatus As String ' Статус проверки продольных трещин по сжатому бетону.
+Public StabilityStatus As String ' Статус учета продольного изгиба/устойчивости перед НДМ.
 Public ExtensionUsed As Boolean ' True, если прямое НДС использовало technical extension диаграммы.
 Public DirectStateDiagramExtensionEnabled As Boolean ' Снимок настройки extension на момент расчета LC.
 Public LambdaCapacity As Double ' Предельный множитель выбранной lambda-траектории.
@@ -71,6 +72,30 @@ Public CrackEffectiveZoneDepth As Double ' Принятая эффективна
 Public CrackCentralBranch As Boolean ' True для отдельной ветки центрального растяжения.
 Public LongitudinalCrackRbMc2 As Double ' Допустимое Rb,mc2, с которым сравнивается сжатие бетона.
 Public LongitudinalCrackUtil As Double ' Использование по продольным трещинам: sigma_c,max / Rb,mc2.
+Public StabilityCode As String ' Выбранная нормативная ветвь: SP63 или SP35.
+Public StabilityBranch As String ' Расчетная ветвь/управляющая плоскость для трассировки Summary.
+Public StabilityDesignN As Double ' Продольная сила после фильтра устойчивости; в текущей схеме равна исходной N.
+Public StabilityDesignMx As Double ' Mx после учета продольного изгиба и случайного эксцентриситета.
+Public StabilityDesignMy As Double ' My после учета продольного изгиба и случайного эксцентриситета.
+Public StabilityCriticalForce As Double ' Минимальная применимая критическая сила Ncr, Н.
+Public StabilityReserveFactor As Double ' Запас устойчивости: Ncr/N или Nult,stab/N по выбранной ветви.
+Public StabilityUtil As Double ' Использование устойчивости: 1 / StabilityReserveFactor.
+Public StabilityNcr1 As Double ' Критическая сила в первой главной плоскости, Н.
+Public StabilityNcr2 As Double ' Критическая сила во второй главной плоскости, Н.
+Public StabilityReserve1 As Double ' Запас по первой главной плоскости.
+Public StabilityReserve2 As Double ' Запас по второй главной плоскости.
+Public StabilityEta1 As Double ' Коэффициент увеличения момента eta в первой главной плоскости.
+Public StabilityEta2 As Double ' Коэффициент увеличения момента eta во второй главной плоскости.
+Public StabilityPhiL1 As Double ' Коэффициент длительности для Ncr в первой главной плоскости.
+Public StabilityPhiL2 As Double ' Коэффициент длительности для Ncr во второй главной плоскости.
+Public StabilityEccentricity1 As Double ' Начальный расчетный эксцентриситет в первой главной плоскости, мм.
+Public StabilityEccentricity2 As Double ' Начальный расчетный эксцентриситет во второй главной плоскости, мм.
+Public StabilityAccidentalEcc1 As Double ' Случайный эксцентриситет в первой главной плоскости, мм.
+Public StabilityAccidentalEcc2 As Double ' Случайный эксцентриситет во второй главной плоскости, мм.
+Public StabilityEffectiveLength1 As Double ' Расчетная длина l0 первой главной плоскости, мм.
+Public StabilityEffectiveLength2 As Double ' Расчетная длина l0 второй главной плоскости, мм.
+Public StabilityStiffnessD1 As Double ' Условная жесткость D первой главной плоскости, Н*мм2.
+Public StabilityStiffnessD2 As Double ' Условная жесткость D второй главной плоскости, Н*мм2.
 Public GoverningUtil As Double ' Наибольшее использование LC по применимым проверкам.
 Public StateAvailable As Boolean ' True, если есть сохраненное прямое состояние НДС.
 Public StateConverged As Boolean ' True, если прямой CSectionSolver сошелся.
@@ -100,6 +125,7 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     CapacitySolutionMethod = vbNullString
     CrackStatus = vbNullString
     LongitudinalCrackStatus = vbNullString
+    StabilityStatus = vbNullString
     ExtensionUsed = False
     DirectStateDiagramExtensionEnabled = False
     LambdaCapacity = 0#
@@ -120,6 +146,7 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     MaxSteelStrain = 0#
     ClearCrackResult
     ClearLongitudinalCrackResult
+    ClearStabilityResult
     GoverningUtil = 0#
     StateAvailable = False
     StateConverged = False
@@ -133,6 +160,67 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     ResidualMx = 0#
     ResidualMy = 0#
     StateIterations = 0
+End Sub
+
+' Сохраняет результат изолированного фильтра продольного изгиба/устойчивости.
+' Калькулятор не знает о batch-status policy, поэтому сюда копируются уже
+' нормализованные численные величины и короткий пользовательский статус.
+Public Sub StoreStabilityResult(ByVal statusText As String, ByVal stability As CStabilityCalculator)
+    StabilityStatus = statusText
+    If stability Is Nothing Then Exit Sub
+    StabilityCode = stability.Code
+    StabilityBranch = stability.Branch
+    StabilityDesignN = stability.DesignN
+    StabilityDesignMx = stability.DesignMx
+    StabilityDesignMy = stability.DesignMy
+    StabilityCriticalForce = stability.CriticalForce
+    StabilityReserveFactor = stability.ReserveFactor
+    If StabilityReserveFactor > 0# Then StabilityUtil = 1# / StabilityReserveFactor
+    StabilityNcr1 = stability.Ncr1
+    StabilityNcr2 = stability.Ncr2
+    StabilityReserve1 = stability.Reserve1
+    StabilityReserve2 = stability.Reserve2
+    StabilityEta1 = stability.Eta1
+    StabilityEta2 = stability.Eta2
+    StabilityPhiL1 = stability.PhiL1
+    StabilityPhiL2 = stability.PhiL2
+    StabilityEccentricity1 = stability.Eccentricity1
+    StabilityEccentricity2 = stability.Eccentricity2
+    StabilityAccidentalEcc1 = stability.AccidentalEccentricity1
+    StabilityAccidentalEcc2 = stability.AccidentalEccentricity2
+    StabilityEffectiveLength1 = stability.EffectiveLength1
+    StabilityEffectiveLength2 = stability.EffectiveLength2
+    StabilityStiffnessD1 = stability.StiffnessD1
+    StabilityStiffnessD2 = stability.StiffnessD2
+End Sub
+
+' Очищает только блок продольного изгиба/устойчивости.
+Public Sub ClearStabilityResult()
+    StabilityStatus = vbNullString
+    StabilityCode = vbNullString
+    StabilityBranch = vbNullString
+    StabilityDesignN = 0#
+    StabilityDesignMx = 0#
+    StabilityDesignMy = 0#
+    StabilityCriticalForce = 0#
+    StabilityReserveFactor = 0#
+    StabilityUtil = 0#
+    StabilityNcr1 = 0#
+    StabilityNcr2 = 0#
+    StabilityReserve1 = 0#
+    StabilityReserve2 = 0#
+    StabilityEta1 = 0#
+    StabilityEta2 = 0#
+    StabilityPhiL1 = 0#
+    StabilityPhiL2 = 0#
+    StabilityEccentricity1 = 0#
+    StabilityEccentricity2 = 0#
+    StabilityAccidentalEcc1 = 0#
+    StabilityAccidentalEcc2 = 0#
+    StabilityEffectiveLength1 = 0#
+    StabilityEffectiveLength2 = 0#
+    StabilityStiffnessD1 = 0#
+    StabilityStiffnessD2 = 0#
 End Sub
 
 ' Добавляет конечное named-state LC. Промежуточные итерации solver-а и

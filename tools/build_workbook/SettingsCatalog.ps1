@@ -51,6 +51,24 @@ function Get-SystemSettingsCatalog {
             @("Capacity.MaxRetries", "0", "шт", "Число повторов после численной несходимости пробного расчета в LoadMultiplier."),
             @("Capacity.BaseLoadSteps", "1", "шт", "Базовое число ступеней нагрузки для каждой пробной точки LoadMultiplier.")
         )},
+        @{ Name = "StabilitySettings"; Title = "[Продольный изгиб и устойчивость]"; Rows = @(
+            @("[Общие настройки]", "", "-", ""),
+            @("Stability.Code", "SP63", "-", "Выбор методики учета продольного изгиба: SP63 или SP35. Расчет включается отдельно в профиле."),
+            @("Stability.ElementLength", "3000", "мм", "Геометрическая длина элемента l. Расчетная длина по главным плоскостям получается как mu1*l и mu2*l."),
+            @("Stability.Mu1", "1", "-", "Коэффициент расчетной длины для первой главной центральной плоскости бетонного сечения."),
+            @("Stability.Mu2", "1", "-", "Коэффициент расчетной длины для второй главной центральной плоскости бетонного сечения."),
+            @("Stability.SystemType", "Determinate", "-", "Determinate - статический момент плюс случайный эксцентриситет; Indeterminate - момент принимается не меньше случайного."),
+            @("Stability.ZeroMomentEccentricitySign1", "1", "-", "Направление случайного эксцентриситета при нулевом моменте в первой главной плоскости: 1 или -1."),
+            @("Stability.ZeroMomentEccentricitySign2", "1", "-", "Направление случайного эксцентриситета при нулевом моменте во второй главной плоскости: 1 или -1."),
+            @("Stability.PhiLMode", "Auto", "-", "Auto - коэффициент длительности считается по длительной части момента; PhiL2 - принять phi_l = 2."),
+            @("[СП 63]", "", "-", ""),
+            @("Stability.SP63.Ks", "0.7", "-", "Коэффициент ks при вкладе арматуры в условную жесткость D по СП 63."),
+            @("Stability.SP63.DeltaEMin", "0.15", "-", "Нижнее ограничение delta_e в формуле условной жесткости СП 63."),
+            @("Stability.SP63.DeltaEMax", "1.5", "-", "Верхнее ограничение delta_e в формуле условной жесткости СП 63."),
+            @("[СП 35]", "", "-", ""),
+            @("Stability.SP35.PhiP", "1", "-", "Коэффициент phi_p. Для ненапрягаемой арматуры в текущей постановке обычно принимается 1."),
+            @("Stability.SP35.NOverNcrLimit", "0.7", "-", "Контрольное ограничение N/Ncr для ветви СП 35 с коэффициентом eta.")
+        )},
         @{ Name = "OutputSettings"; Title = "[Вывод и трещины]"; Rows = @(
             @("SLS.Crack.Allowable", "0.3", "мм", "Допустимая ширина раскрытия a_crc,ult, задается пользователем по нормам и условиям эксплуатации."),
             @("SLS.Crack.TensionZoneMode", "Effective", "-", "Зона бетона Abt: Effective - эффективная зона по 2a и 0.5h; FullTension - вся фактически растянутая зона."),
@@ -166,6 +184,10 @@ function Get-CalculationProfilesCatalog {
         @{ Caption = "НДС по прочности"; Key = "Calculation.Strength.DirectState"; PR1 = "Yes"; PR2 = "No"; PR3 = "Yes"; PR4 = "Yes"; Comment = "Состояние НДС по модели прочности." },
         @{ Caption = "Несущая способность"; Key = "Calculation.Strength.Capacity"; PR1 = "Yes"; PR2 = "No"; PR3 = "Yes"; PR4 = "No"; Comment = "Поиск предельной точки по CapacityLoadPath сочетания." },
         @{ Caption = "Раскрытие трещин"; Key = "Calculation.Crack.Width"; PR1 = "No"; PR2 = "Yes"; PR3 = "Yes"; PR4 = "No"; Comment = "Нормальные трещины и проверка продольных трещин." },
+        @{ Caption = "Продольный изгиб"; Key = "Calculation.Stability.Enabled"; PR1 = "No"; PR2 = "No"; PR3 = "No"; PR4 = "No"; Comment = "Включает расчет продольного изгиба и устойчивости перед остальными проверками профиля." },
+
+        @{ Caption = "[Модель устойчивости]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
+        @{ Caption = "Характеристики материалов"; Key = "MaterialModel.Stability.ValueSet"; PR1 = "ULS(I)"; PR2 = "ULS(I)"; PR3 = "ULS(I)"; PR4 = "ULS(I)"; Comment = "Для расчета устойчивости по СП применяются расчетные характеристики I ГПС: бетон Rb/Rbt, арматура Rsc/Rs." },
 
         @{ Caption = "[Модель прочности]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
         @{ Caption = "Характеристики материалов"; Key = "MaterialModel.Strength.ValueSet"; PR1 = "ULS(I)"; PR2 = "ULS(I)"; PR3 = "ULS(I)"; PR4 = "ULS(I)"; Comment = "Для прочности по СП используются характеристики I ГПС: бетон Rb/Rbt, арматура Rsc/Rs." },
@@ -276,7 +298,9 @@ function Get-ConfigNamedRangeNames {
         "rngSteelMaterialParameters",
         "rngCalculationProfiles",
         "rngPlotAnnotationSettings",
-        "rngLoadCombinations"
+        "rngLoadCombinations",
+        "rngStabilityDurationLoads",
+        "rngSP35Table721"
     )
 }
 
@@ -389,7 +413,9 @@ function Apply-ConfigUserInputAlignment {
         @{ Name = "rngPlotAnnotationSettings"; Columns = @(2, 3) },
         @{ Name = "rngCircleGeometry"; Columns = @(2) },
         @{ Name = "rngRoundedRectangleGeometry"; Columns = @(2) },
-        @{ Name = "rngLoadCombinations"; Columns = @(1, 2, 3, 4, 5, 6) }
+        @{ Name = "rngLoadCombinations"; Columns = @(1, 2, 3, 4, 5, 6) },
+        @{ Name = "rngStabilityDurationLoads"; Columns = @(1, 2, 3, 4) },
+        @{ Name = "rngSP35Table721"; Columns = @(1, 2, 3, 4, 5, 6, 7, 8) }
     )
 
     foreach ($item in $items) {
@@ -779,6 +805,48 @@ function Get-SettingInstructionLines {
             "Практически: увеличивать имеет смысл, когда диаграммы корректны, геометрия нормальная, но расчет останавливается по превышению числа итераций. Если ошибка вызвана неправильными единицами, пустыми диаграммами или нереалистичной нагрузкой, увеличение итераций проблему не исправит.",
             "Capacity.SolverMaxIterations - это защитный численный параметр программы. Он не является расчетным коэффициентом СП."
         ) }
+        "Stability.Code" { return @($lead) + @(
+            "SP63 включает учет продольного изгиба по формулам СП 63.13330.2018, п. 8.1.15: условная жесткость D, критическая сила Ncr и коэффициент eta.",
+            "SP35 включает ветвь СП 35.13330.2011: для малых эксцентриситетов используется отдельная проверка устойчивости, для больших - увеличение момента через eta.",
+            "Расчет запускается только для тех сочетаний, где выбранный профиль имеет Calculation.Stability.Enabled = Yes."
+        ) }
+        "Stability.ElementLength" { return @($lead) + @(
+            "Это расчетная геометрическая длина элемента до умножения на mu1/mu2.",
+            "Для первой главной плоскости l0,1 = mu1*l, для второй l0,2 = mu2*l.",
+            "Программа не анализирует закрепления элемента автоматически: пользователь задает длину и коэффициенты расчетной длины уже по своей расчетной схеме."
+        ) }
+        "Stability.Mu*" { return @($lead) + @(
+            "Коэффициент задает расчетную длину в соответствующей главной плоскости бетонного сечения.",
+            "mu1 относится к первой главной центральной плоскости, mu2 - ко второй.",
+            "Если оси сечения повернуты относительно X/Y, программа сама переводит моменты в главные оси, но выбор mu остается ответственностью пользователя."
+        ) }
+        "Stability.SystemType" { return @($lead) + @(
+            "Determinate: случайный эксцентриситет добавляется к статическому моменту.",
+            "Indeterminate: момент от расчета принимается, но его эксцентриситет должен быть не меньше случайного.",
+            "Этот выбор влияет только на учет случайного эксцентриситета, а не на построение НДМ-диаграмм."
+        ) }
+        "Stability.ZeroMomentEccentricitySign*" { return @($lead) + @(
+            "Если момент в главной плоскости равен нулю, знак случайного эксцентриситета нельзя определить из направления момента.",
+            "Пользователь задает 1 или -1, чтобы явно указать, в какую сторону прикладывать случайный эксцентриситет.",
+            "Настройка относится к главным плоскостям, а не к глобальным осям X/Y."
+        ) }
+        "Stability.PhiLMode" { return @($lead) + @(
+            "Auto считает коэффициент длительности по отношению длительного момента к полному моменту.",
+            "PhiL2 принимает phi_l = 2 как консервативный пользовательский режим.",
+            "Для СП 63 таблица нагрузок означает постоянные + длительные нагрузки. Для СП 35 таблица означает постоянные нагрузки."
+        ) }
+        "Stability.SP63.*" { return @($lead) + @(
+            "Эта настройка применяется только при Stability.Code = SP63.",
+            "ks участвует в условной жесткости D = kb*Eb*Ib + ks*Es*Is.",
+            "DeltaEMin и DeltaEMax ограничивают delta_e = e0/h в формуле kb. По СП 63 для расчета принимается диапазон 0.15...1.5.",
+            "Материалы берутся строго из профиля: расчет устойчивости не подменяет ULS(I)/SLS(II) сам."
+        ) }
+        "Stability.SP35.*" { return @($lead) + @(
+            "Эта настройка применяется только при Stability.Code = SP35.",
+            "PhiP оставлен пользовательским коэффициентом. Для ненапрягаемой арматуры в текущей постановке обычно используется значение 1.",
+            "NOverNcrLimit контролирует условие N/Ncr для ветви eta СП 35.",
+            "Табличные коэффициенты СП 35 берутся из отдельной таблицы rngSP35Table721 на Config, а не из кода."
+        ) }
         "SLS.Crack.Allowable" { return @($lead) + @(
             "Это предельно допустимая ширина раскрытия нормальной трещины a_crc,ult.",
             "Программа не назначает это значение автоматически. Пользователь выбирает его по нормам, категории трещиностойкости, условиям эксплуатации и проектным требованиям.",
@@ -1016,6 +1084,22 @@ function Get-SettingsInstructionCatalog {
             )
         }
     )}) | Out-Null
+    $items.Add(@{ Key = "StabilityLoads"; Title = "Нагрузки для устойчивости"; Lines = @(
+        "Эта таблица задает длительную часть нагрузок, которая нужна только для расчета коэффициентов продольного изгиба.",
+        "LC должен совпадать с CombinationID из основной таблицы сочетаний. N, Mx и My вводятся в тех же INPUT-единицах и той же системе знаков, что и основные сочетания.",
+        "Для Stability.Code = SP63 пользователь указывает постоянные + длительные нагрузки.",
+        "Для Stability.Code = SP35 пользователь указывает постоянные нагрузки.",
+        "Если строка не заполнена или все усилия равны нулю, это не ошибка само по себе. Расчет продолжится, если формулы выбранного СП не требуют ненулевой длительной части.",
+        "Load.ReferenceOffsetX/Y применяется к этой таблице так же, как к основной таблице сочетаний: моменты переносятся от центра тяжести бетонного сечения и заданного пользователем offset.",
+        "Таблица не запускает расчет сама. Устойчивость включается флагом Calculation.Stability.Enabled в расчетном профиле."
+    )}) | Out-Null
+    $items.Add(@{ Key = "SP35Table721"; Title = "Таблица 7.21 СП 35"; Lines = @(
+        "Таблица содержит коэффициенты продольного изгиба из СП 35.13330.2011, таблица 7.21.",
+        "В текущей программе используется ненапрягаемая арматура, поэтому в таблицу вынесены верхние значения.",
+        "Расчетный класс устойчивости получает эту таблицу как массив из Config. В VBA нет скрытой резервной копии значений.",
+        "Если выбран Stability.Code = SP35, таблица должна быть заполнена корректно. Пустая или поврежденная таблица приводит к InputErr для проверки устойчивости.",
+        "Для промежуточных значений гибкости и эксцентриситета программа использует интерполяцию по загруженной таблице."
+    )}) | Out-Null
     $items.Add(@{ Key = "ConcreteMaterialParameters"; Title = "Параметры бетона"; Lines = @(
         "Пользователь задает исходные сопротивления и модули бетона, а расчетные точки TwoLine/ThreeLine строятся программой автоматически.",
         "Для Strength используется I группа: Rb и Rbt. Для Mcrc и CrackedNDS используется II группа: Rb,ser и Rbt,ser.",
@@ -1037,6 +1121,9 @@ function Get-SettingsInstructionCatalog {
         "Calculation.Strength.DirectState включает прямое НДС по модели прочности. Для этой модели по СП используются характеристики ULS(I): бетон Rb/Rbt и арматура Rsc/Rs.",
         "Calculation.Strength.Capacity включает поиск предельной несущей способности по выбранной λ-траектории сочетания. Используется та же модель материала, что и для НДС по прочности.",
         "Calculation.Crack.Width включает расчет нормальных трещин и существующую проверку продольных трещин. Для этих проверок по СП используются характеристики SLS(II): Rb,ser/Rbt,ser и Rs,ser.",
+        "Calculation.Stability.Enabled включает учет продольного изгиба и проверку устойчивости перед последующими расчетами профиля.",
+        "MaterialModel.Stability.ValueSet задает только набор характеристик материала для устойчивости. Диаграммы TwoLine/ThreeLine здесь не выбираются, потому что в формулах D, Ncr и eta используются R, Eb и Es.",
+        "Для нормативного расчета устойчивости следует выбирать ULS(I): это расчет прочности сжатого элемента по первой группе предельных состояний.",
         "MaterialModel.Strength задает модель материала для НДС по прочности и для несущей способности. По СП 63, п. 6.1.23 бетон для прочности описывается TwoLine или ThreeLine; по п. 8.1.20 растянутый бетон при прочности допускается не учитывать.",
         "MaterialModel.CrackInitiation задает модель материала для состояния, когда нормальная трещина только появляется. По СП 63, п. 6.1.24 применяется II группа с работающей растянутой ветвью бетона; основной нормативный вариант для бетона - ThreeLine.",
         "MaterialModel.CrackedState задает модель материала для сечения после появления трещин. По СП 63, п. 6.1.26 допускается TwoLine или ThreeLine; растянутый бетон для уже образовавшейся трещины в НДС не учитывается.",
@@ -1153,7 +1240,7 @@ function Get-SettingsInstructionCatalog {
         "sigma_c,max (сжатие бетона) - максимальное по модулю сжимающее напряжение среди бетонных элементов в уже найденном НДС этого сочетания.",
         "Rb,mc2 (допустимое сжатие) - пользовательское допустимое значение для проверки продольных трещин по СП 35. Число вводится на Config уже с учетом применимых коэффициентов условий работы.",
         "LongitudinalCrackSafetyFactor (запас) - формула Results: SFlong = Rb,mc2 / sigma_c,max. Если Crack.Width не включен или сжатого бетона нет, проверка получает N/A и запас не выводится.",
-        "MinSafetyFactor (общий запас) - минимальный положительный коэффициент из CapacitySafetyFactor, CrackSafetyFactor и LongitudinalCrackSafetyFactor. Столбец информативный и специально выделен более темным серым цветом."
+        "MinSafetyFactor (общий запас) - минимальный положительный коэффициент из CapacitySafetyFactor, CrackSafetyFactor, LongitudinalCrackSafetyFactor и StabilitySafetyFactor. Столбец информативный и специально выделен более темным серым цветом."
     )}) | Out-Null
     foreach ($section in (Get-SystemSettingsCatalog)) {
         foreach ($row in $section.Rows) {
@@ -1956,6 +2043,8 @@ function Add-SettingsInstructions {
         "Единицы измерения" = "Units"
         "Система знаков" = "SignConvention"
         "Сочетания нагрузок" = "LoadCombinations"
+        "Нагрузки для устойчивости" = "StabilityLoads"
+        "СП 35.13330.2011, таблица 7.21" = "SP35Table721"
         "Параметры бетона" = "ConcreteMaterialParameters"
         "Параметры арматуры" = "SteelMaterialParameters"
         "Материал бетона" = "ConcreteMaterialParameters"
@@ -2042,6 +2131,100 @@ function Add-LoadCombinationsTable {
     $capacityLoadPathRange.Validation.InCellDropdown = $true
 
     Set-WorkbookNameByBounds $Workbook "rngLoadCombinations" $Sheet $HeaderRow $StartColumn ($HeaderRow + 20) ($StartColumn + 6)
+}
+
+# Рисует таблицу постоянных/длительных нагрузок для расчета устойчивости.
+# Она связана с основной таблицей только через CombinationID: Excel-слой
+# прочитает значения, переведет единицы и передаст массив в batch.
+function Add-StabilityDurationLoadsTable {
+    param(
+        [object]$Workbook,
+        [object]$Sheet,
+        [int]$HeaderRow,
+        [int]$StartColumn
+    )
+
+    $titleRow = $HeaderRow - 1
+    $Sheet.Cells.Item($titleRow, $StartColumn).Value2 = "Нагрузки для устойчивости"
+    $Sheet.Range($Sheet.Cells.Item($titleRow, $StartColumn), $Sheet.Cells.Item($titleRow, $StartColumn + 3)).Merge() | Out-Null
+    $Sheet.Cells.Item($titleRow, $StartColumn).Font.Bold = $true
+    $Sheet.Cells.Item($titleRow, $StartColumn).Interior.Color = 15921906
+
+    $headers = @("LC", "N", "Mx", "My")
+    for ($i = 0; $i -lt $headers.Count; $i++) {
+        $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
+        $cell.Value2 = $headers[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = $script:ConfigTableHeaderColor
+    }
+    $Sheet.Cells.Item($HeaderRow, $StartColumn + 1).Formula = "=`"N, `"&INDEX(rngUnitSettings,MATCH(`"Force`",INDEX(rngUnitSettings,,1),0),2)"
+    $Sheet.Cells.Item($HeaderRow, $StartColumn + 2).Formula = "=`"Mx, `"&INDEX(rngUnitSettings,MATCH(`"Moment`",INDEX(rngUnitSettings,,1),0),2)"
+    $Sheet.Cells.Item($HeaderRow, $StartColumn + 3).Formula = "=`"My, `"&INDEX(rngUnitSettings,MATCH(`"Moment`",INDEX(rngUnitSettings,,1),0),2)"
+
+    for ($r = 1; $r -le 20; $r++) {
+        $Sheet.Cells.Item($HeaderRow + $r, $StartColumn).Formula = '=IF(INDEX(rngLoadCombinations,' + ($r + 1) + ',1)="","",INDEX(rngLoadCombinations,' + ($r + 1) + ',1))'
+        $Sheet.Cells.Item($HeaderRow + $r, $StartColumn + 1).Value2 = 0
+        $Sheet.Cells.Item($HeaderRow + $r, $StartColumn + 2).Value2 = 0
+        $Sheet.Cells.Item($HeaderRow + $r, $StartColumn + 3).Value2 = 0
+    }
+
+    Set-WorkbookNameByBounds $Workbook "rngStabilityDurationLoads" $Sheet $HeaderRow $StartColumn ($HeaderRow + 20) ($StartColumn + 3)
+}
+
+# Размещает на Config таблицу 7.21 СП 35. Расчетный код читает ее как
+# исходный массив; встроенных hardcoded-значений таблицы в VBA быть не должно.
+function Add-SP35Table721 {
+    param(
+        [object]$Workbook,
+        [object]$Sheet,
+        [int]$HeaderRow,
+        [int]$StartColumn
+    )
+
+    $Sheet.Cells.Item($HeaderRow - 2, $StartColumn).Value2 = "СП 35.13330.2011, таблица 7.21"
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 2, $StartColumn), $Sheet.Cells.Item($HeaderRow - 2, $StartColumn + 7)).Merge() | Out-Null
+    $Sheet.Cells.Item($HeaderRow - 2, $StartColumn).Font.Bold = $true
+    $Sheet.Cells.Item($HeaderRow - 2, $StartColumn).Interior.Color = 15921906
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = "Верхние значения для ненапрягаемой арматуры; используются только при Stability.Code = SP35."
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 7)).Merge() | Out-Null
+
+    $headers = @("l0/b", "l0/d", "l0/i", "phi_m q=0", "phi_m q=0.25", "phi_m q=0.50", "phi_m q=1.00", "phi_l")
+    for ($i = 0; $i -lt $headers.Count; $i++) {
+        $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
+        $cell.Value2 = $headers[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = $script:ConfigTableHeaderColor
+    }
+
+    $rows = @(
+        @(4, 3.5, 14, 1.00, 0.90, 0.81, 0.69, 1.00),
+        @(10, 8.7, 35, 1.00, 0.86, 0.77, 0.65, 0.84),
+        @(12, 10.4, 40, 0.95, 0.83, 0.74, 0.62, 0.79),
+        @(14, 12.1, 48.5, 0.90, 0.79, 0.70, 0.58, 0.70),
+        @(16, 13.8, 55, 0.86, 0.75, 0.66, 0.55, 0.65),
+        @(18, 15.6, 62.5, 0.82, 0.71, 0.62, 0.51, 0.56),
+        @(20, 17.3, 70, 0.78, 0.67, 0.57, 0.48, 0.47),
+        @(22, 19.1, 75, 0.72, 0.60, 0.52, 0.43, 0.41),
+        @(24, 20.8, 83, 0.67, 0.55, 0.47, 0.38, 0.32),
+        @(26, 22.5, 90, 0.62, 0.51, 0.44, 0.35, 0.25),
+        @(28, 24.3, 97, 0.58, 0.49, 0.43, 0.34, 0.20),
+        @(30, 26.0, 105, 0.53, 0.45, 0.39, 0.32, 0.16),
+        @(32, 27.7, 110, 0.48, 0.41, 0.36, 0.31, 0.14),
+        @(34, 29.0, 120, 0.43, 0.36, 0.31, 0.25, 0.10),
+        @(38, 33.0, 130, 0.38, 0.32, 0.28, 0.24, 0.08),
+        @(40, 34.6, 140, 0.35, 0.29, 0.25, 0.21, 0.07),
+        @(43, 37.5, 150, 0.33, 0.28, 0.24, 0.21, 0.06)
+    )
+
+    for ($r = 0; $r -lt $rows.Count; $r++) {
+        for ($c = 0; $c -lt $headers.Count; $c++) {
+            $rowIndex = [int]($HeaderRow + 1 + $r)
+            $columnIndex = [int]($StartColumn + $c)
+            $Sheet.Cells.Item($rowIndex, $columnIndex).Value2 = [double]$rows[$r][$c]
+        }
+    }
+
+    Set-WorkbookNameByBounds $Workbook "rngSP35Table721" $Sheet $HeaderRow $StartColumn ($HeaderRow + $rows.Count) ($StartColumn + 7)
 }
 
 # Расставляет ссылки "Подробнее" внутри табличных блоков, у которых есть
@@ -2671,11 +2854,13 @@ function Apply-SystemSettingsLayout {
     $materialChartTopRow = 1
     $materialChartColumn = 22
     Add-MaterialDiagramControlTables $Sheet $materialControlHeaderRow $materialControlColumn
+    Add-SP35Table721 $Workbook $Sheet 60 35
 
     Add-UnitSettingsTable $Workbook $Sheet $rightRow $rightColumn
     $rightRow += (Get-UnitSettingsCatalog).Count + 1 + $rightBlockGap
 
     Add-LoadCombinationsTable $Workbook $Sheet $loadCombinationsHeaderRow $loadCombinationsColumn
+    Add-StabilityDurationLoadsTable $Workbook $Sheet 27 16
 
     Add-SignConventionSettingsTable $Workbook $Sheet $rightRow $rightColumn
     $rightRow += (Get-SignConventionSettingsCatalog).Count + 1 + $rightBlockGap
@@ -2710,6 +2895,11 @@ function Apply-SystemSettingsLayout {
         "Geometry.Source" = @("Generated", "AutoCAD")
         "General.ExecutionReportEnabled" = @("Yes", "No")
         "General.NonCriticalMessagesEnabled" = @("Yes", "No")
+        "Stability.Code" = @("SP63", "SP35")
+        "Stability.SystemType" = @("Determinate", "Indeterminate")
+        "Stability.ZeroMomentEccentricitySign1" = @("1", "-1")
+        "Stability.ZeroMomentEccentricitySign2" = @("1", "-1")
+        "Stability.PhiLMode" = @("Auto", "PhiL2")
         "Geometry.Type" = @("RoundedRectangle", "Circle", "LShape")
         "Solver.Method" = @("Newton", "Secant")
         "Solver.DirectState.DiagramExtension" = @("Yes", "No")
@@ -2858,6 +3048,8 @@ function Add-CalculationProfilesValidation {
         "Calculation.Strength.DirectState" = @{ Column = $ListColumn; Values = @("Yes", "No") }
         "Calculation.Strength.Capacity" = @{ Column = $ListColumn; Values = @("Yes", "No") }
         "Calculation.Crack.Width" = @{ Column = $ListColumn; Values = @("Yes", "No") }
+        "Calculation.Stability.Enabled" = @{ Column = $ListColumn; Values = @("Yes", "No") }
+        "MaterialModel.Stability.ValueSet" = @{ Column = ($ListColumn + 1); Values = @("ULS(I)", "SLS(II)") }
         "MaterialModel.Strength.ValueSet" = @{ Column = ($ListColumn + 1); Values = @("ULS(I)", "SLS(II)") }
         "MaterialModel.CrackInitiation.ValueSet" = @{ Column = ($ListColumn + 1); Values = @("ULS(I)", "SLS(II)") }
         "MaterialModel.CrackedState.ValueSet" = @{ Column = ($ListColumn + 1); Values = @("ULS(I)", "SLS(II)") }

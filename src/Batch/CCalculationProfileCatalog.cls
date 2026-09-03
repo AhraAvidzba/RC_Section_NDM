@@ -78,7 +78,8 @@ Private Function BuildProfile(ByRef data As Variant, ByVal profileColumn As Long
         ProfileValue(values, "Profile.Description"), _
         YesNo(ProfileValue(values, "Calculation.Strength.DirectState")), _
         YesNo(ProfileValue(values, "Calculation.Strength.Capacity")), _
-        YesNo(ProfileValue(values, "Calculation.Crack.Width"))
+        YesNo(ProfileValue(values, "Calculation.Crack.Width")), _
+        YesNo(ProfileValue(values, "Calculation.Stability.Enabled"))
 
     Dim spec As CMaterialModelSpec
     Set spec = SpecFromValues(values, "MaterialModel.Strength")
@@ -89,6 +90,8 @@ Private Function BuildProfile(ByRef data As Variant, ByVal profileColumn As Long
 
     Set spec = SpecFromValues(values, "MaterialModel.CrackedState")
     If spec.IsComplete Then profile.SetCrackedStateSpec spec
+
+    profile.SetStabilityValueSet ProfileValue(values, "MaterialModel.Stability.ValueSet")
 
     profile.SetVisualization ProfileValue(values, "Visualization.State"), _
         ProfileValue(values, "Visualization.Quantity")

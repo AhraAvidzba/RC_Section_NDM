@@ -503,36 +503,100 @@ Public Function SteelTensionLimitFromSpec(ByVal spec As CMaterialModelSpec) As D
 End Function
 
 Public Function ConcreteCompressionResistanceFromSpec(ByVal spec As CMaterialModelSpec) As Double
-    Dim rb As Double
-    Dim rbt As Double
-    ConcreteStrengths LimitStateGroupFromSpec(spec), rb, rbt
-    ConcreteCompressionResistanceFromSpec = rb
+    ValidateSpec spec
+    ConcreteCompressionResistanceFromSpec = ConcreteCompressionResistanceFromValueSet(spec.ValueSet)
 End Function
 
 Public Function ConcreteTensionResistanceFromSpec(ByVal spec As CMaterialModelSpec) As Double
+    ValidateSpec spec
+    ConcreteTensionResistanceFromSpec = ConcreteTensionResistanceFromValueSet(spec.ValueSet)
+End Function
+
+' Возвращает Rb/Rb,ser по выбранному набору характеристик без привязки к
+' диаграмме. Это нужно для проверок, где СП использует расчетные параметры
+' материала, но не требует строить sigma-epsilon диаграмму.
+Public Function ConcreteCompressionResistanceFromValueSet(ByVal valueSet As EMaterialValueSet) As Double
+    EnsureInitialized
     Dim rb As Double
     Dim rbt As Double
-    ConcreteStrengths LimitStateGroupFromSpec(spec), rb, rbt
-    ConcreteTensionResistanceFromSpec = rbt
+    ConcreteStrengths LimitStateGroupFromValueSet(valueSet), rb, rbt
+    ConcreteCompressionResistanceFromValueSet = rb
+End Function
+
+' Возвращает Rbt/Rbt,ser по выбранному набору характеристик.
+Public Function ConcreteTensionResistanceFromValueSet(ByVal valueSet As EMaterialValueSet) As Double
+    EnsureInitialized
+    Dim rb As Double
+    Dim rbt As Double
+    ConcreteStrengths LimitStateGroupFromValueSet(valueSet), rb, rbt
+    ConcreteTensionResistanceFromValueSet = rbt
 End Function
 
 Public Function ConcreteElasticModulusFromSpec(ByVal spec As CMaterialModelSpec) As Double
     ValidateSpec spec
-    ConcreteElasticModulusFromSpec = mConcreteParameters.Eb
+    ConcreteElasticModulusFromSpec = ConcreteElasticModulusFromValueSet(spec.ValueSet)
+End Function
+
+' Начальный модуль бетона хранится отдельно от R/Rser; valueSet оставлен в
+' сигнатуре, чтобы вызывающий код явно передавал выбранную нормативную базу.
+Public Function ConcreteElasticModulusFromValueSet(ByVal valueSet As EMaterialValueSet) As Double
+    EnsureInitialized
+    ConcreteElasticModulusFromValueSet = mConcreteParameters.Eb
 End Function
 
 Public Function SteelElasticModulusFromSpec(ByVal spec As CMaterialModelSpec) As Double
     ValidateSpec spec
-    SteelElasticModulusFromSpec = mSteelParameters.Es
+    SteelElasticModulusFromSpec = SteelElasticModulusFromValueSet(spec.ValueSet)
+End Function
+
+' Модуль арматуры для выбранной базы характеристик. Сейчас Es общий, но
+' отдельный метод сохраняет явный контракт без передачи лишней диаграммы.
+Public Function SteelElasticModulusFromValueSet(ByVal valueSet As EMaterialValueSet) As Double
+    EnsureInitialized
+    SteelElasticModulusFromValueSet = mSteelParameters.Es
+End Function
+
+Public Function SteelCompressionResistanceFromSpec(ByVal spec As CMaterialModelSpec) As Double
+    ValidateSpec spec
+    SteelCompressionResistanceFromSpec = SteelCompressionResistanceFromValueSet(spec.ValueSet)
+End Function
+
+Public Function SteelTensionResistanceFromSpec(ByVal spec As CMaterialModelSpec) As Double
+    ValidateSpec spec
+    SteelTensionResistanceFromSpec = SteelTensionResistanceFromValueSet(spec.ValueSet)
+End Function
+
+' Возвращает Rsc/Rsc,ser по выбранному набору характеристик без построения
+' диаграммы арматуры.
+Public Function SteelCompressionResistanceFromValueSet(ByVal valueSet As EMaterialValueSet) As Double
+    EnsureInitialized
+    Dim rsc As Double
+    Dim rs As Double
+    SteelStrengths LimitStateGroupFromValueSet(valueSet), rsc, rs
+    SteelCompressionResistanceFromValueSet = rsc
+End Function
+
+' Возвращает Rs/Rs,ser по выбранному набору характеристик.
+Public Function SteelTensionResistanceFromValueSet(ByVal valueSet As EMaterialValueSet) As Double
+    EnsureInitialized
+    Dim rsc As Double
+    Dim rs As Double
+    SteelStrengths LimitStateGroupFromValueSet(valueSet), rsc, rs
+    SteelTensionResistanceFromValueSet = rs
 End Function
 
 ' ГПС определяется спецификацией профиля, а не расчетным классом.
 Private Function LimitStateGroupFromSpec(ByVal spec As CMaterialModelSpec) As String
     ValidateSpec spec
-    If spec.ValueSet = mvsSLS Then
-        LimitStateGroupFromSpec = "II"
+    LimitStateGroupFromSpec = LimitStateGroupFromValueSet(spec.ValueSet)
+End Function
+
+' Преобразует ValueSet в номер ГПС для общих helpers сопротивлений.
+Private Function LimitStateGroupFromValueSet(ByVal valueSet As EMaterialValueSet) As String
+    If valueSet = mvsSLS Then
+        LimitStateGroupFromValueSet = "II"
     Else
-        LimitStateGroupFromSpec = "I"
+        LimitStateGroupFromValueSet = "I"
     End If
 End Function
 
