@@ -53,7 +53,7 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Build-Workbook.ps1
 
 | Область | Диапазон | Назначение |
 |---|---|---|
-| Сводка batch-расчета | `rngBatchSummary = Results!A1:BC29` | определяющее сочетание, прямое НДС, единый блок предельной несущей способности по `CapacityLoadPath`, блок нормальных трещин и блок продольных трещин до 20 сочетаний |
+| Сводка batch-расчета | `rngBatchSummary = Results!A1:CU29` | определяющее сочетание, прямое НДС, единый блок предельной несущей способности по `CapacityLoadPath`, нормальные/продольные трещины и устойчивость с раздельными `Ncr`/`Nult,stab` в блоках СП 35 и СП 63 до 20 сочетаний |
 | Результаты НДМ по элементам | `rngNDMElementResults = Results!A32` | LC-зависимые данные: `RunID`, `LoadCase`, `ProfileId`, `StateType`, `ElementID`, `Strain`, `Stress`, `PhysicalState` |
 | Расчетная геометрия | `rngNDMSectionGeometry = Results!K32` | постоянные данные snapshot: `ElementID`, тип материала, координаты, площадь, размеры/диаметр и локальные моменты инерции |
 | Свойства всего сечения | `rngNDMSectionProperties = Results!AB32` | Bounds, центр тяжести, главные оси, output-единицы snapshot, `Epsilon0/KappaX/KappaY`, `ConcreteDiagramId`/`RebarDiagramId`, точка приложения нагрузки и другие свойства уровня LC |

@@ -17,9 +17,10 @@ Option Explicit
 ' текущие исходные данные Config и не пересчитывает единицы: схема всегда
 ' показывает сохраненный результат последнего расчета.
 '
-' Расчетные объекты (бетон, арматура, нейтральная линия, главные оси и точка
-' нагрузки) выводятся через XY-series. Shapes используются только для
-' оформительских аннотаций: размеров, выносных линий, подписей арматуры и легенд.
+' Расчетные элементы на обычных и средних сетках выводятся как Chart.Shapes:
+' так сохраняется фактический размер каждого бетонного волокна и стержня, а
+' лимит Excel Chart по числу series не заставляет раньше времени укрупнять
+' раскраску. Bucket-series остаются fallback-ом для очень больших сеток.
 
 Private Const CHART_NAME As String = "chtNDMSectionPlot"
 Private Const SHAPE_PREFIX As String = "NDMPlot_"
@@ -57,6 +58,8 @@ Private Const EXTENSION_WARNING_TEXT As String = "ВНЕ ФИЗИЧЕСКОЙ Д
 Private Const NUMERICAL_STATE_WARNING_TEXT As String = "ПРЯМОЕ НДС НЕ СОШЛОСЬ"
 Private Const RESULT_COLOR_BUCKET_COUNT As Long = 16 ' Число цветовых ступеней для расчетных маркеров Excel Chart.
 Private Const CONCRETE_MARKER_SIZE_BUCKET As Long = 3 ' Шаг группировки бетонных маркеров, чтобы Chart не превысил лимит series.
+Private Const ELEMENT_SHAPE_RENDER_MAX_COUNT As Long = 5000 ' До этого числа элементов геометрию рисуем поэлементно Shape-ами.
+Private Const CONCRETE_SHAPE_FILL_RATIO As Double = 0.7 ' Визуальный размер бетонной ячейки: оставляет зазор между соседними элементами.
 
 Private mChart As Object ' Excel Chart, внутри которого рисуются series и аннотационные Shapes.
 Private mChartObject As Object ' Контейнер ChartObject на листе Расчет; пользователь может двигать/масштабировать его.
@@ -94,6 +97,8 @@ Private mRebarCompressionColor As Long ' Цвет максимального с�
 Private mRebarTensionColor As Long ' Цвет максимального растяжения арматуры.
 Private mConcreteCompressionColor As Long ' Цвет максимального сжатия бетона.
 Private mConcreteTensionColor As Long ' Цвет максимального растяжения бетона.
+Private mElementShapeLayerEnabled As Boolean ' True - расчетные элементы выводятся Shape-ами без укрупнения.
+Private mElementGroupingEnabled As Boolean ' True - включено укрупнение элементов для обхода лимитов/перегрузки Excel Chart.
 
 ' Перестраивает схему по данным последнего расчета.
 ' Метод управляет порядком операций: подготовка chart, равный масштаб X/Y,
@@ -122,6 +127,8 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     ConfigureEqualScale data, settings
     ClearGeneratedShapes
     CalculateResultRange data
+    mElementShapeLayerEnabled = ShouldDrawElementShapeLayer(data)
+    mElementGroupingEnabled = Not mElementShapeLayerEnabled
     AddElementSeries data
     If data.GeometryOnly Then
         DrawGeometryReferenceSeries data, settings
@@ -405,10 +412,15 @@ Private Sub RegisterResultMagnitude(ByVal value As Double, ByRef maxAbs As Doubl
     End If
 End Sub
 
-' Группирует расчетные элементы в серии Excel по типу маркера, размеру и цветовой ступени.
-' Excel Chart ограничен примерно 256 рядами данных, поэтому при мелкой сетке нельзя
-' создавать отдельную series под каждый уникальный оттенок или размер бетонного волокна.
+' Добавляет расчетные элементы на схему. Основной путь - Shape-слой с точной
+' геометрией каждого элемента; bucket-series включаются только для очень
+' больших сеток, где тысячи отдельных Shapes заметно перегружают Excel.
 Private Sub AddElementSeries(ByVal data As CSectionPlotDataReader)
+    If mElementShapeLayerEnabled Then
+        AddElementShapes data
+        Exit Sub
+    End If
+
     Dim buckets As Object
     Set buckets = CreateObject("Scripting.Dictionary")
     buckets.CompareMode = vbTextCompare
@@ -435,22 +447,87 @@ Private Sub AddElementSeries(ByVal data As CSectionPlotDataReader)
     Next keyVariant
 End Sub
 
+' Проверяет, можно ли рисовать расчетные элементы отдельными Shapes.
+' Это обход лимита Excel Chart по числу series: геометрия остается поэлементной
+' на средних сетках, а укрупнение включается только при действительно тяжелом
+' количестве объектов.
+Private Function ShouldDrawElementShapeLayer(ByVal data As CSectionPlotDataReader) As Boolean
+    ShouldDrawElementShapeLayer = (data.Count <= ELEMENT_SHAPE_RENDER_MAX_COUNT)
+End Function
+
+' Рисует бетонные волокна и стержни поэлементно как Shapes.
+' В этом режиме размеры не усредняются, а цвет берется из того же правила,
+' что и для grouped-series fallback-а.
+Private Sub AddElementShapes(ByVal data As CSectionPlotDataReader)
+    Dim itemIndex As Long
+    For itemIndex = 1 To data.Count
+        If StrComp(data.MaterialType(itemIndex), "Rebar", vbTextCompare) = 0 Then
+            AddRebarElementShape data, itemIndex
+        Else
+            AddConcreteElementShape data, itemIndex
+        End If
+    Next itemIndex
+End Sub
+
+' Рисует бетонный конечный элемент с фактической шириной и высотой из Results.
+Private Sub AddConcreteElementShape(ByVal data As CSectionPlotDataReader, ByVal index As Long)
+    Dim widthValue As Double
+    Dim heightValue As Double
+    widthValue = ConcreteElementWidth(data, index) * CONCRETE_SHAPE_FILL_RATIO
+    heightValue = ConcreteElementHeight(data, index) * CONCRETE_SHAPE_FILL_RATIO
+    If widthValue <= 0# Or heightValue <= 0# Then Exit Sub
+
+    Dim colorValue As Long
+    colorValue = ElementColor(data, index)
+    DrawModelRectangle data.X(index) - widthValue / 2#, data.Y(index) - heightValue / 2#, _
+        data.X(index) + widthValue / 2#, data.Y(index) + heightValue / 2#, _
+        colorValue, colorValue, 0.15, "ElementConcrete"
+End Sub
+
+' Рисует арматурный стержень по диаметру из Results; если диаметр не сохранен,
+' используется эквивалентный круг по площади.
+Private Sub AddRebarElementShape(ByVal data As CSectionPlotDataReader, ByVal index As Long)
+    Dim diameterValue As Double
+    diameterValue = data.Diameter(index)
+    If diameterValue <= 0# Then diameterValue = EquivalentLengthFromArea(data.Area(index), data.AreaUnit, data.LengthUnit)
+    If diameterValue <= 0# Then Exit Sub
+
+    Dim colorValue As Long
+    colorValue = ElementColor(data, index)
+    DrawModelOval data.X(index) - diameterValue / 2#, data.Y(index) - diameterValue / 2#, _
+        data.X(index) + diameterValue / 2#, data.Y(index) + diameterValue / 2#, _
+        RGB(0, 0, 0), 0.55, "ElementRebar", True, colorValue
+End Sub
+
 Private Function ElementBucketKey(ByVal data As CSectionPlotDataReader, ByVal index As Long) As String
     Dim markerStyle As Long
     Dim markerSize As Long
-    If StrComp(data.MaterialType(index), "Rebar", vbTextCompare) = 0 Then
-        markerStyle = XL_MARKER_CIRCLE
-        markerSize = RoundToLong(ClampDouble(data.Diameter(index) * ChartScale(), 4#, 42#))
-    Else
-        markerStyle = XL_MARKER_SQUARE
-        markerSize = RoundToLong(ClampDouble(0.7 * ConcreteMarkerLength(data, index) * ChartScale(), 2#, 48#))
-        markerSize = BucketConcreteMarkerSize(markerSize)
-    End If
+    markerStyle = ElementMarkerStyle(data, index)
+    markerSize = ElementMarkerSize(data, index)
+    If StrComp(data.MaterialType(index), "Rebar", vbTextCompare) <> 0 Then markerSize = BucketConcreteMarkerSize(markerSize)
 
     Dim colorValue As Long
     colorValue = ElementColor(data, index)
     ElementBucketKey = CStr(markerStyle) & "|" & CStr(markerSize) & "|" & CStr(colorValue) & "|" & _
         data.MaterialType(index) & "|" & data.PhysicalState(index)
+End Function
+
+' Возвращает тип маркера Excel Chart для бетонного волокна или стержня.
+Private Function ElementMarkerStyle(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Long
+    If StrComp(data.MaterialType(index), "Rebar", vbTextCompare) = 0 Then
+        ElementMarkerStyle = XL_MARKER_CIRCLE
+    Else
+        ElementMarkerStyle = XL_MARKER_SQUARE
+    End If
+End Function
+
+' Возвращает размер маркера grouped-series в points.
+Private Function ElementMarkerSize(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Long
+    If StrComp(data.MaterialType(index), "Rebar", vbTextCompare) = 0 Then
+        ElementMarkerSize = RoundToLong(ClampDouble(data.Diameter(index) * ChartScale(), 4#, 42#))
+    Else
+        ElementMarkerSize = RoundToLong(ClampDouble(0.7 * ConcreteMarkerLength(data, index) * ChartScale(), 2#, 48#))
+    End If
 End Function
 
 ' Создает одну XY-series для группы одинаково оформленных элементов.
@@ -555,7 +632,9 @@ End Function
 ' Численное значение элемента остается точным в Results; дискретизация нужна
 ' только для устойчивой отрисовки большой расчетной сетки средствами Excel Chart.
 Private Function BucketResultColorRatio(ByVal t As Double) As Double
-    If RESULT_COLOR_BUCKET_COUNT <= 1 Then
+    If Not mElementGroupingEnabled Then
+        BucketResultColorRatio = ClampDouble(t, 0#, 1#)
+    ElseIf RESULT_COLOR_BUCKET_COUNT <= 1 Then
         BucketResultColorRatio = ClampDouble(t, 0#, 1#)
     Else
         BucketResultColorRatio = RoundToLong(ClampDouble(t, 0#, 1#) * RESULT_COLOR_BUCKET_COUNT) / RESULT_COLOR_BUCKET_COUNT
@@ -605,8 +684,9 @@ Private Function BlendColor(ByVal c1 As Long, ByVal c2 As Long, ByVal t As Doubl
     BlendColor = RGB(CLng(r1 + (r2 - r1) * t), CLng(g1 + (g2 - g1) * t), CLng(b1 + (b2 - b1) * t))
 End Function
 
-' Добавляет расчетные линии и точку нагрузки поверх маркеров элементов.
-' Нейтральная линия и главные оси остаются XY-series, а не Shapes.
+' Добавляет расчетные линии и точку нагрузки поверх элементов.
+' Когда элементы уже выведены Shape-ами, ориентиры тоже рисуются Shape-ами,
+' чтобы не оказаться под расчетным слоем Excel Chart.
 Private Sub DrawAnalysisSeries(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
     If settings.GetBoolean("Plot.NeutralLineEnabled", True) Then DrawNeutralLine data
     If settings.GetBoolean("Plot.PrincipalAxesEnabled", True) Then DrawPrincipalAxes data
@@ -765,8 +845,8 @@ Private Sub DrawNeutralLine(ByVal data As CSectionPlotDataReader)
     Next i
     If maxT <= minT Then Exit Sub
 
-    DrawModelLineSeries x0 + minT * dx, y0 + minT * dy, x0 + maxT * dx, y0 + maxT * dy, _
-        RGB(105, 105, 105), 0.7, "NeutralAxis"
+    DrawModelReferenceLine x0 + minT * dx, y0 + minT * dy, x0 + maxT * dx, y0 + maxT * dy, _
+        RGB(105, 105, 105), 0.7, "NeutralAxis", MSO_LINE_SOLID
 End Sub
 
 ' Собирает пересечения нейтральной линии с semantic-контуром.
@@ -1027,9 +1107,7 @@ Private Sub AddRectLineIntersection(ByVal a As Double, ByVal b As Double, ByVal 
     found = True
 End Sub
 
-' Рисует главные центральные оси приведенного сечения как XY-series.
-' Это дает корректный порядок поверх бетонных элементов и сохраняет единый
-' model-to-chart масштаб.
+' Рисует главные центральные оси приведенного сечения.
 Private Sub DrawPrincipalAxes(ByVal data As CSectionPlotDataReader)
     Dim lengthValue As Double
     lengthValue = 0.65 * Sqr((data.MaxX - data.MinX) * (data.MaxX - data.MinX) + _
@@ -1037,9 +1115,9 @@ Private Sub DrawPrincipalAxes(ByVal data As CSectionPlotDataReader)
     Dim ca As Double, sa As Double
     ca = Cos(data.PrincipalAngle)
     sa = Sin(data.PrincipalAngle)
-    DrawModelLineSeries data.CentroidX - lengthValue * ca, data.CentroidY - lengthValue * sa, _
+    DrawModelReferenceLine data.CentroidX - lengthValue * ca, data.CentroidY - lengthValue * sa, _
         data.CentroidX + lengthValue * ca, data.CentroidY + lengthValue * sa, RGB(0, 0, 0), 0.7, "Principal1", MSO_LINE_DASH
-    DrawModelLineSeries data.CentroidX + lengthValue * sa, data.CentroidY - lengthValue * ca, _
+    DrawModelReferenceLine data.CentroidX + lengthValue * sa, data.CentroidY - lengthValue * ca, _
         data.CentroidX - lengthValue * sa, data.CentroidY + lengthValue * ca, RGB(0, 0, 0), 0.7, "Principal2", MSO_LINE_DASH
 End Sub
 
@@ -1322,6 +1400,22 @@ Private Function DrawModelLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 
         colorValue, weight, suffix)
 End Function
 
+' Рисует расчетную линию поверх элементов текущим безопасным способом.
+' При Shape-слое линия тоже становится Shape, при grouped-series fallback-е
+' остается XY-series и не расходует лишние объектные фигуры.
+Private Sub DrawModelReferenceLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
+        ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String, Optional ByVal dashStyle As Long = MSO_LINE_SOLID)
+    If mElementShapeLayerEnabled Then
+        Dim lineShape As Object
+        Set lineShape = DrawModelLine(x1, y1, x2, y2, colorValue, weight, suffix)
+        On Error Resume Next
+        lineShape.Line.DashStyle = dashStyle
+        On Error GoTo 0
+    Else
+        DrawModelLineSeries x1, y1, x2, y2, colorValue, weight, suffix, dashStyle
+    End If
+End Sub
+
 ' Рисует линию в координатах Chart/PlotArea.
 ' Все model-to-chart преобразования должны быть сделаны до вызова этого метода.
 Private Function DrawChartLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
@@ -1363,15 +1457,36 @@ Private Sub DrawModelLineSeries(ByVal x1 As Double, ByVal y1 As Double, ByVal x2
     On Error GoTo 0
 End Sub
 
-' Рисует овал/круг в координатах модели как Shape.
-' Нужен для semantic-контура круга; сами арматурные стержни рисуются series.
-Private Function DrawModelOval(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
-        ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String, ByVal filled As Boolean) As Object
+' Рисует прямоугольный элемент в координатах модели как Shape.
+Private Function DrawModelRectangle(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
+        ByVal fillColor As Long, ByVal lineColor As Long, ByVal weight As Double, ByVal suffix As String) As Object
     Dim leftPos As Double, topPos As Double, widthValue As Double, heightValue As Double
     leftPos = ModelToChartX(MinDouble(x1, x2))
     topPos = ModelToChartY(MaxDouble(y1, y2))
     widthValue = Abs(ModelToChartX(x2) - ModelToChartX(x1))
     heightValue = Abs(ModelToChartY(y2) - ModelToChartY(y1))
+    If widthValue <= 0# Or heightValue <= 0# Then Exit Function
+
+    Dim rectShape As Object
+    Set rectShape = mChart.Shapes.AddShape(MSO_SHAPE_RECTANGLE, leftPos, topPos, widthValue, heightValue)
+    rectShape.Name = SHAPE_PREFIX & suffix & CStr(mChart.Shapes.Count)
+    rectShape.Fill.ForeColor.RGB = fillColor
+    rectShape.Line.ForeColor.RGB = lineColor
+    rectShape.Line.Weight = weight
+    Set DrawModelRectangle = rectShape
+End Function
+
+' Рисует овал/круг в координатах модели как Shape.
+' Нужен для semantic-контура круга; сами арматурные стержни рисуются series.
+Private Function DrawModelOval(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
+        ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String, ByVal filled As Boolean, _
+        Optional ByVal fillColor As Long = -1) As Object
+    Dim leftPos As Double, topPos As Double, widthValue As Double, heightValue As Double
+    leftPos = ModelToChartX(MinDouble(x1, x2))
+    topPos = ModelToChartY(MaxDouble(y1, y2))
+    widthValue = Abs(ModelToChartX(x2) - ModelToChartX(x1))
+    heightValue = Abs(ModelToChartY(y2) - ModelToChartY(y1))
+    If widthValue <= 0# Or heightValue <= 0# Then Exit Function
 
     Dim ovalShape As Object
     Set ovalShape = mChart.Shapes.AddShape(MSO_SHAPE_OVAL, leftPos, topPos, widthValue, heightValue)
@@ -1379,7 +1494,8 @@ Private Function DrawModelOval(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 
     ovalShape.Line.ForeColor.RGB = colorValue
     ovalShape.Line.Weight = weight
     If filled Then
-        ovalShape.Fill.ForeColor.RGB = colorValue
+        If fillColor = -1 Then fillColor = colorValue
+        ovalShape.Fill.ForeColor.RGB = fillColor
     Else
         ovalShape.Fill.Visible = False
     End If
@@ -1407,6 +1523,11 @@ End Sub
 ' а не в абсолютных координатах листа.
 Private Sub DrawPointMarker(ByVal xCoord As Double, ByVal yCoord As Double, ByVal sizeValue As Double, _
         ByVal colorValue As Long, ByVal markerStyle As Long, ByVal seriesName As String)
+    If mElementShapeLayerEnabled Then
+        DrawPoint xCoord, yCoord, sizeValue, colorValue, vbNullString, MarkerShapeType(markerStyle)
+        Exit Sub
+    End If
+
     Dim xValues(1 To 1) As Double
     Dim yValues(1 To 1) As Double
     xValues(1) = xCoord
@@ -1423,6 +1544,18 @@ Private Sub DrawPointMarker(ByVal xCoord As Double, ByVal yCoord As Double, ByVa
     series.MarkerForegroundColor = RGB(0, 0, 0)
     series.MarkerBackgroundColor = colorValue
 End Sub
+
+' Переводит тип маркера Chart в ближайшую Shape-форму.
+Private Function MarkerShapeType(ByVal markerStyle As Long) As Long
+    Select Case markerStyle
+        Case XL_MARKER_DIAMOND
+            MarkerShapeType = MSO_SHAPE_DIAMOND
+        Case XL_MARKER_CIRCLE
+            MarkerShapeType = MSO_SHAPE_OVAL
+        Case Else
+            MarkerShapeType = MSO_SHAPE_RECTANGLE
+    End Select
+End Function
 
 ' Размещает короткую подпись около точки модели.
 ' Используется для численных подписей результатов внутри бетонных элементов.

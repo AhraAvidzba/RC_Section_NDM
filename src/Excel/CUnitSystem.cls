@@ -118,6 +118,13 @@ Public Function InternalForceToOutput(ByVal value As Double) As Double
     InternalForceToOutput = value / ForceFactorToN(mOutputForce) * NSignFactor()
 End Function
 
+' Переводит жесткость размерности сила*длина^2 из внутренних Н*мм2
+' в выбранные пользователем OUTPUT-единицы силы и длины. Знак не применяется:
+' D является положительной жесткостью, а не направленной силой.
+Public Function InternalForceLengthSquaredToOutput(ByVal value As Double) As Double
+    InternalForceLengthSquaredToOutput = value / (ForceFactorToN(mOutputForce) * LengthFactorToMm(mOutputLength) ^ 2)
+End Function
+
 Public Function InputMomentMxToInternal(ByVal value As Double) As Double
     InputMomentMxToInternal = value * MomentFactorToNmm(mInputMoment) * MxSignFactor()
 End Function
@@ -176,6 +183,11 @@ End Property
 
 Public Property Get OutputForceUnit() As String
     OutputForceUnit = mOutputForce
+End Property
+
+' Возвращает подпись OUTPUT-единицы для жесткости D: сила*длина2.
+Public Property Get OutputForceLengthSquaredUnit() As String
+    OutputForceLengthSquaredUnit = mOutputForce & "*" & mOutputLength & "2"
 End Property
 
 Public Property Get OutputStressUnit() As String

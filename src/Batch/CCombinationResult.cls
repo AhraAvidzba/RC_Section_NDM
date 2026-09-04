@@ -73,15 +73,17 @@ Public CrackCentralBranch As Boolean ' True для отдельной ветки
 Public LongitudinalCrackRbMc2 As Double ' Допустимое Rb,mc2, с которым сравнивается сжатие бетона.
 Public LongitudinalCrackUtil As Double ' Использование по продольным трещинам: sigma_c,max / Rb,mc2.
 Public StabilityCode As String ' Выбранная нормативная ветвь: SP63 или SP35.
-Public StabilityBranch As String ' Расчетная ветвь/управляющая плоскость для трассировки Summary.
+Public StabilityBranch As String ' Внутренняя трассировка расчетной ветви устойчивости для diagnostics/report.
 Public StabilityDesignN As Double ' Продольная сила после фильтра устойчивости; в текущей схеме равна исходной N.
 Public StabilityDesignMx As Double ' Mx после учета продольного изгиба и случайного эксцентриситета.
 Public StabilityDesignMy As Double ' My после учета продольного изгиба и случайного эксцентриситета.
-Public StabilityCriticalForce As Double ' Минимальная применимая критическая сила Ncr, Н.
+Public StabilityCriticalForce As Double ' Минимальная контрольная сила устойчивости: Ncr или Nult,stab, Н.
 Public StabilityReserveFactor As Double ' Запас устойчивости: Ncr/N или Nult,stab/N по выбранной ветви.
 Public StabilityUtil As Double ' Использование устойчивости: 1 / StabilityReserveFactor.
-Public StabilityNcr1 As Double ' Критическая сила в первой главной плоскости, Н.
-Public StabilityNcr2 As Double ' Критическая сила во второй главной плоскости, Н.
+Public StabilityNcr1 As Double ' Критическая сила Ncr в первой главной плоскости, Н.
+Public StabilityNcr2 As Double ' Критическая сила Ncr во второй главной плоскости, Н.
+Public StabilityNultimate1 As Double ' Предельная сжимающая сила Nult,stab в первой главной плоскости, Н.
+Public StabilityNultimate2 As Double ' Предельная сжимающая сила Nult,stab во второй главной плоскости, Н.
 Public StabilityReserve1 As Double ' Запас по первой главной плоскости.
 Public StabilityReserve2 As Double ' Запас по второй главной плоскости.
 Public StabilityEta1 As Double ' Коэффициент увеличения момента eta в первой главной плоскости.
@@ -178,6 +180,8 @@ Public Sub StoreStabilityResult(ByVal statusText As String, ByVal stability As C
     If StabilityReserveFactor > 0# Then StabilityUtil = 1# / StabilityReserveFactor
     StabilityNcr1 = stability.Ncr1
     StabilityNcr2 = stability.Ncr2
+    StabilityNultimate1 = stability.Nultimate1
+    StabilityNultimate2 = stability.Nultimate2
     StabilityReserve1 = stability.Reserve1
     StabilityReserve2 = stability.Reserve2
     StabilityEta1 = stability.Eta1
@@ -207,6 +211,8 @@ Public Sub ClearStabilityResult()
     StabilityUtil = 0#
     StabilityNcr1 = 0#
     StabilityNcr2 = 0#
+    StabilityNultimate1 = 0#
+    StabilityNultimate2 = 0#
     StabilityReserve1 = 0#
     StabilityReserve2 = 0#
     StabilityEta1 = 0#

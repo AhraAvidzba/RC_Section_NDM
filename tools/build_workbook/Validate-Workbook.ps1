@@ -180,7 +180,7 @@ try {
         Add-Check $checks "Results ranges layout" (
             ([string]$batchSummaryRange.Worksheet.Name -eq "Results") -and
             ($batchSummaryRange.Row -eq 1) -and ($batchSummaryRange.Column -eq 1) -and
-            ($batchSummaryRange.Rows.Count -eq 29) -and ($batchSummaryRange.Columns.Count -eq 79) -and
+            ($batchSummaryRange.Rows.Count -eq 29) -and ($batchSummaryRange.Columns.Count -eq 99) -and
             ($elementResultsRange.Row -eq 32) -and ($elementResultsRange.Column -eq 1) -and
             ($geometryResultsRange.Row -eq 32) -and ($geometryResultsRange.Column -eq 11) -and
             ($sectionPropertiesRange.Row -eq 32) -and ($sectionPropertiesRange.Column -eq 28) -and

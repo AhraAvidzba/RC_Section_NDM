@@ -503,7 +503,7 @@ try {
     $system.Columns.Item(19).ColumnWidth = 15
     $system.Columns.Item(20).ColumnWidth = 18
     $system.Columns.Item(21).ColumnWidth = 22
-    $results.Range("A1:BC1").Font.Bold = $true
+    $results.Range("A1:CU1").Font.Bold = $true
     $results.Range("A32:F32").Font.Bold = $true
     $results.Range("K32:Y32").Font.Bold = $true
     $results.Range("AB32:AG32").Font.Bold = $true
@@ -516,7 +516,7 @@ try {
     $results.Columns.Item(49).ColumnWidth = 12
     Add-ResultsSummaryHelpLink $results $instructions
 
-    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$CA$29'
+    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$CU$29'
     Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$32'
     Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$K$32'
     Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AB$32'

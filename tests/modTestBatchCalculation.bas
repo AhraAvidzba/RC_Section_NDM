@@ -67,6 +67,14 @@ Public Function RunBatchCalculationTests() As String
     TestStabilitySkippedForTension stats
     AppendLine stats, "RUN: TestStabilitySP35UsesConfigTableAndProfileValueSet"
     TestStabilitySP35UsesConfigTableAndProfileValueSet stats
+    AppendLine stats, "RUN: TestStabilitySP35TableSeparatesNcrAndNult"
+    TestStabilitySP35TableSeparatesNcrAndNult stats
+    AppendLine stats, "RUN: TestStabilityCircleMxDoesNotCreateMy"
+    TestStabilityCircleMxDoesNotCreateMy stats
+    AppendLine stats, "RUN: TestStabilityUsesConcreteCentroidForEccentricity"
+    TestStabilityUsesConcreteCentroidForEccentricity stats
+    AppendLine stats, "RUN: TestBatchSummaryWritesOnlySelectedStabilityCode"
+    TestBatchSummaryWritesOnlySelectedStabilityCode stats
     AppendLine stats, "RUN: TestPR1RunsStrengthWithoutCrackWidth"
     TestPR1RunsStrengthWithoutCrackWidth stats
     AppendLine stats, "RUN: TestDirectStateReportsNumericalFailure"
@@ -1532,6 +1540,230 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
+' Проверяет, что табличная ветвь СП 35 хранит предельную силу отдельно от Ncr.
+' В этой ветви критическая сила по формуле Ncr не считается, поэтому Ncr остается 0,
+' а запас берется по Nult,stab.
+Private Sub TestStabilitySP35TableSeparatesNcrAndNult(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    Dim oldLength As String
+    Dim oldMu1 As String
+    Dim oldMu2 As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+    oldLength = GetSystemSetting("Stability.ElementLength")
+    oldMu1 = GetSystemSetting("Stability.Mu1")
+    oldMu2 = GetSystemSetting("Stability.Mu2")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP35"
+    SetSystemSetting "Stability.ElementLength", "1000"
+    SetSystemSetting "Stability.Mu1", "1"
+    SetSystemSetting "Stability.Mu2", "1"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    batch.AddCombination "STAB_SP35_TABLE", -120000#, 0#, 0#, "PR1", "sp35 table"
+    batch.Execute
+
+    AssertTrue stats, "batch.stability.sp35.table.status", _
+        batch.StabilityStatus(1) = "OK" Or batch.StabilityStatus(1) = "FAIL"
+    AssertClose stats, "batch.stability.sp35.table.ncr1.na", batch.StabilityNcr1(1), 0#, 0.000000001
+    AssertClose stats, "batch.stability.sp35.table.ncr2.na", batch.StabilityNcr2(1), 0#, 0.000000001
+    AssertTrue stats, "batch.stability.sp35.table.nult1", batch.StabilityNultimate1(1) > 0#
+    AssertTrue stats, "batch.stability.sp35.table.nult2", batch.StabilityNultimate2(1) > 0#
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.ElementLength", oldLength
+    SetSystemSetting "Stability.Mu1", oldMu1
+    SetSystemSetting "Stability.Mu2", oldMu2
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.sp35.tableNult; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет круговое сечение с моментом только в глобальной плоскости X.
+' Для почти изотропной геометрии главные оси фиксируются по X/Y, а случайный
+' эксцентриситет не должен создавать расчетный момент в пустой второй плоскости.
+Private Sub TestStabilityCircleMxDoesNotCreateMy(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP63"
+
+    Dim geom As ISectionGeometry
+    Set geom = CircleGeometry(500#, 0#, 0#)
+
+    Dim mesh As CFiberMeshBuilder
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geom, 20#, 20#, 1
+
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, CircleRebars(500#, 0#, 0#, 40#, 12, 20#), "CircleStability")
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = New CBatchSectionCalculator
+    batch.Initialize section, TestMaterialProvider()
+    Set batch.ProfileCatalog = TestProfileCatalog()
+    batch.ApplySettings settings
+    batch.AddCombination "CIRCLE_MX", -120000#, 1000000#, 0#, "PR1", "stability circle mx"
+    batch.Execute
+
+    AssertTrue stats, "batch.stability.circleMx.status", batch.StabilityStatus(1) = "OK" Or batch.StabilityStatus(1) = "FAIL"
+    AssertTrue stats, "batch.stability.circleMx.designMx", Abs(batch.StabilityDesignMx(1)) > 0#
+    AssertClose stats, "batch.stability.circleMx.noDesignMy", batch.StabilityDesignMy(1), 0#, 1#
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.circleMx; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет, что эксцентриситет устойчивости считается относительно центра
+' тяжести бетонного сечения, а не относительно начала внутренней сетки. Для
+' несимметричного Г-сечения чистое сжатие тогда дает только случайный e_a.
+Private Sub TestStabilityUsesConcreteCentroidForEccentricity(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP63"
+
+    Dim geom As ISectionGeometry
+    Set geom = LShapeGeometry(250#, 550#, 600#, 250#)
+
+    Dim mesh As CFiberMeshBuilder
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geom, 50#, 20#, 1
+
+    Dim rebars As CRebarLayout
+    Set rebars = New CRebarLayout
+
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, rebars, "LShapeStabilityCentroid")
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateConcrete section
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = New CBatchSectionCalculator
+    batch.Initialize section, TestMaterialProvider()
+    Set batch.ProfileCatalog = TestProfileCatalog()
+    batch.ApplySettings settings
+    batch.AddCombination "STAB_CENTROID", -100000#, 0#, 0#, "PR1", "stability centroid"
+    batch.ApplyLoadReference props.CentroidX, props.CentroidY, props.CentroidX, props.CentroidY
+    batch.Execute
+
+    AssertTrue stats, "batch.stability.centroid.status", batch.StabilityStatus(1) = "OK" Or batch.StabilityStatus(1) = "FAIL"
+    AssertTrue stats, "batch.stability.centroid.e1.small", Abs(batch.StabilityEccentricity1(1)) < 40#
+    AssertTrue stats, "batch.stability.centroid.e2.small", Abs(batch.StabilityEccentricity2(1)) < 40#
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.centroid; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет, что Summary заполняет значения только для выбранной методики
+' устойчивости. Заголовки СП 35 и СП 63 остаются всегда, но строка LC не должна
+' одновременно содержать расчетные значения двух нормативных блоков.
+Private Sub TestBatchSummaryWritesOnlySelectedStabilityCode(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP63"
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    batch.ApplySettings settings
+    batch.AddCombination "STAB_WRITER", -120000#, 1000000#, 0#, "PR1", "stability writer"
+    batch.Execute
+
+    Dim writer As CBatchResultWriter
+    Set writer = New CBatchResultWriter
+    writer.WriteSummary ThisWorkbook, batch
+
+    Dim rowIndex As Long
+    rowIndex = BatchSummaryStartRow() + 9
+    Dim resultsSheet As Object
+    Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
+    AssertTrue stats, "batch.writer.stability.sp35.empty", Len(CStr(resultsSheet.Cells.Item(rowIndex, 63).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(rowIndex, 72).Value2)) = 0
+    AssertTrue stats, "batch.writer.stability.sp63.filled", Len(CStr(resultsSheet.Cells.Item(rowIndex, 81).Value2)) > 0 Or _
+        Len(CStr(resultsSheet.Cells.Item(rowIndex, 90).Value2)) > 0
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.writer.stability.selectedCode; " & Err.Description
+    Resume Restore
+End Sub
+
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestBatchTwentyCombinations(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
@@ -1605,7 +1837,7 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     summaryRow = BatchSummaryStartRow()
     AssertTrue stats, "batch.writer.fixedRow", summaryRow = 1
     AssertTrue stats, "batch.writer.noResultOverlap", summaryRow + ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count - 1 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
-    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count = 29 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count >= 55
+    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count = 29 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count >= 99
     AssertTrue stats, "batch.writer.title", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = "Сводка пакетного расчета (Подробнее)"
     AssertTrue stats, "batch.writer.titleNotMerged", Not resultsSheet.Cells.Item(summaryRow, 1).MergeCells
     AssertTrue stats, "batch.writer.titleHyperlink", resultsSheet.Cells.Item(summaryRow, 1).Hyperlinks.Count > 0
@@ -1623,9 +1855,13 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.header.capacitySafety", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 26).Value2), "CapacitySafetyFactor", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.header.longitudinalCrackStatus", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 51).Value2), "LongitudinalCrackStatus", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.header.longitudinalCrackSafety", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 54).Value2), "LongitudinalCrackSafetyFactor", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.stabilityStatus", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 55).Value2), "StabilityStatus", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.stabilitySafety", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 59).Value2), "StabilitySafetyFactor", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 79).Value2), "MinSafetyFactor", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.stabilityStatus", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 55).Value2), "Статус устойчивости", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.stabilitySafety", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 57).Value2), "Запас устойчивости", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.subheader.stabilitySP35Plane1", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 63).Value2), "СП 35", vbTextCompare) > 0 And _
+        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 63).Value2), "плоскость 1", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.subheader.stabilitySP63Plane2", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 90).Value2), "СП 63", vbTextCompare) > 0 And _
+        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 90).Value2), "плоскость 2", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 99).Value2), "MinSafetyFactor", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.longitudinalFormula", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 54).Formula), "IFERROR", vbTextCompare) > 0 And _
         InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 54).Formula), "BA", vbTextCompare) > 0 And _
         InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 54).Formula), "AZ", vbTextCompare) > 0

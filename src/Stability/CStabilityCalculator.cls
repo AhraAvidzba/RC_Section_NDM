@@ -46,13 +46,15 @@ Private Type TPlaneResult
     Eta As Double
     StiffnessD As Double
     CriticalForce As Double
+    NcrForce As Double
+    NultimateForce As Double
     ReserveFactor As Double
     CheckPassed As Boolean
     Applicable As Boolean
 End Type
 
 Private mCode As String ' Нормативная ветвь, выбранная настройкой Stability.Code.
-Private mBranch As String ' Короткая трассировка: SP63, SP35-eta или SP35-table.
+Private mBranch As String ' Внутренняя трассировка расчетной ветви для execution report и диагностики.
 Private mApplicable As Boolean ' False, если сжатия нет и устойчивость не требуется.
 Private mInputValid As Boolean ' False при нехватке обязательных исходных данных.
 Private mCheckPassed As Boolean ' Итог проверки по выбранной ветви.
@@ -60,10 +62,12 @@ Private mStopReason As String ' Подробная внутренняя прич
 Private mDesignN As Double ' Продольная сила после фильтра; знак сохраняется как во внутреннем ядре.
 Private mDesignMx As Double ' Mx после учета случайного эксцентриситета и eta.
 Private mDesignMy As Double ' My после учета случайного эксцентриситета и eta.
-Private mCriticalForce As Double ' Минимальная критическая/предельная сила по активным плоскостям.
+Private mCriticalForce As Double ' Минимальная контрольная сила: Ncr для eta-ветвей или Nult,stab для табличной ветви.
 Private mReserveFactor As Double ' Минимальный запас по устойчивости.
-Private mNcr1 As Double ' Ncr или Nult,stab для первой главной плоскости.
-Private mNcr2 As Double ' Ncr или Nult,stab для второй главной плоскости.
+Private mNcr1 As Double ' Критическая сила Ncr первой главной плоскости; 0, если ветвь считает Nult вместо Ncr.
+Private mNcr2 As Double ' Критическая сила Ncr второй главной плоскости; 0, если ветвь считает Nult вместо Ncr.
+Private mNultimate1 As Double ' Предельная сжимающая сила Nult,stab первой главной плоскости для табличной ветви СП 35.
+Private mNultimate2 As Double ' Предельная сжимающая сила Nult,stab второй главной плоскости для табличной ветви СП 35.
 Private mReserve1 As Double ' Запас по первой главной плоскости.
 Private mReserve2 As Double ' Запас по второй главной плоскости.
 Private mEta1 As Double ' Коэффициент eta первой плоскости.
@@ -152,6 +156,7 @@ Private Sub Clear()
     mDesignN = 0#: mDesignMx = 0#: mDesignMy = 0#
     mCriticalForce = 0#: mReserveFactor = 0#
     mNcr1 = 0#: mNcr2 = 0#
+    mNultimate1 = 0#: mNultimate2 = 0#
     mReserve1 = 0#: mReserve2 = 0#
     mEta1 = 0#: mEta2 = 0#
     mPhiL1 = 0#: mPhiL2 = 0#
@@ -195,13 +200,26 @@ Private Sub PreparePlanes(ByVal section As CSectionModel, ByVal props As CSectio
     plane1.Applicable = True
     plane2.Applicable = True
 
-    FillAccidentalAndInitialEccentricity plane1, zeroMomentSign1, systemType
-    FillAccidentalAndInitialEccentricity plane2, zeroMomentSign2, systemType
+    ' Если момент уже задан в одной из главных плоскостей, случайный
+    ' эксцентриситет добавляется только к действующему направлению момента.
+    ' Для чистого сжатия без моментов остаются пользовательские направления +1/-1.
+    Dim hasMomentVector As Boolean
+    hasMomentVector = (Abs(plane1.Moment) > SMALL_VALUE Or Abs(plane2.Moment) > SMALL_VALUE)
+    FillAccidentalAndInitialEccentricity plane1, zeroMomentSign1, systemType, _
+        (Not hasMomentVector Or Abs(plane1.Moment) > SMALL_VALUE)
+    FillAccidentalAndInitialEccentricity plane2, zeroMomentSign2, systemType, _
+        (Not hasMomentVector Or Abs(plane2.Moment) > SMALL_VALUE)
 End Sub
 
 ' Назначает случайный и начальный эксцентриситет для одной главной плоскости.
 Private Sub FillAccidentalAndInitialEccentricity(ByRef plane As TPlaneResult, _
-        ByVal zeroMomentSign As Double, ByVal systemType As String)
+        ByVal zeroMomentSign As Double, ByVal systemType As String, ByVal allowZeroMomentAccidental As Boolean)
+    If Abs(plane.Moment) <= SMALL_VALUE And Not allowZeroMomentAccidental Then
+        plane.AccidentalEccentricity = 0#
+        plane.Eccentricity = 0#
+        Exit Sub
+    End If
+
     Dim signValue As Double
     signValue = SignForEccentricity(plane.Moment, zeroMomentSign)
     plane.AccidentalEccentricity = signValue * AccidentalEccentricity(plane.EffectiveLength, plane.Depth)
@@ -251,9 +269,10 @@ Private Sub CalculateSP63Plane(ByVal nCompression As Double, ByVal eb As Double,
     Dim kb As Double
     kb = 0.15 / (plane.PhiL * (0.3 + deltaE))
     plane.StiffnessD = kb * eb * plane.InertiaConcrete + ksValue * es * plane.InertiaSteel
-    plane.CriticalForce = GEOM_PI * GEOM_PI * plane.StiffnessD / (plane.EffectiveLength * plane.EffectiveLength)
-    plane.ReserveFactor = ReserveByCriticalForce(plane.CriticalForce, nCompression)
-    plane.Eta = EtaByCriticalForce(plane.CriticalForce, nCompression)
+    plane.NcrForce = GEOM_PI * GEOM_PI * plane.StiffnessD / (plane.EffectiveLength * plane.EffectiveLength)
+    plane.CriticalForce = plane.NcrForce
+    plane.ReserveFactor = ReserveByCriticalForce(plane.NcrForce, nCompression)
+    plane.Eta = EtaByCriticalForce(plane.NcrForce, nCompression)
     plane.DesignMoment = DesignMomentWithEta(nCompression, plane.Eccentricity, plane.Eta)
     plane.CheckPassed = (plane.ReserveFactor > 1# And plane.Eta > 0#)
 End Sub
@@ -299,7 +318,13 @@ Private Sub CalculateSP35Plane(ByVal concreteArea As Double, ByVal totalSteelAre
         Exit Sub
     End If
 
-    plane.AccidentalEccentricity = SignForEccentricity(plane.Moment, plane.AccidentalEccentricity) * plane.EffectiveLength / 400#
+    ' Нулевой accidental из PreparePlanes означает, что эта плоскость не должна
+    ' получать дополнительный момент даже в ветке СП 35 с заменой на l0/400.
+    If Abs(plane.Moment) <= SMALL_VALUE And Abs(plane.AccidentalEccentricity) <= SMALL_VALUE Then
+        plane.AccidentalEccentricity = 0#
+    Else
+        plane.AccidentalEccentricity = SignForEccentricity(plane.Moment, plane.AccidentalEccentricity) * plane.EffectiveLength / 400#
+    End If
     plane.Eccentricity = InitialEccentricity(plane.Moment, nCompression, _
         plane.AccidentalEccentricity, systemType)
 
@@ -334,7 +359,8 @@ Private Sub CalculateSP35TablePlane(ByVal concreteArea As Double, ByVal totalSte
     phiValue = PhiForSustainedCompression(phiM, plane.PhiL, nCompression, sustainedCompression)
     nUltimate = phiValue * (rb * concreteArea + rsc * totalSteelArea)
 
-    plane.CriticalForce = nUltimate
+    plane.NultimateForce = nUltimate
+    plane.CriticalForce = plane.NultimateForce
     plane.ReserveFactor = ReserveByCriticalForce(nUltimate, nCompression)
     plane.Eta = 1#
     plane.StiffnessD = 0#
@@ -361,12 +387,13 @@ Private Sub CalculateSP35EtaPlane(ByVal nCompression As Double, ByVal eb As Doub
     stiffnessFactor = 0.11 / (0.1 + deltaValue / phiPValue) + 0.1
     plane.StiffnessD = 6.4 * eb * (plane.InertiaConcrete / plane.PhiL * stiffnessFactor + _
         (es / eb) * plane.InertiaSteel)
-    plane.CriticalForce = plane.StiffnessD / (plane.EffectiveLength * plane.EffectiveLength)
-    plane.ReserveFactor = ReserveByCriticalForce(plane.CriticalForce, nCompression)
-    plane.Eta = EtaByCriticalForce(plane.CriticalForce, nCompression)
+    plane.NcrForce = plane.StiffnessD / (plane.EffectiveLength * plane.EffectiveLength)
+    plane.CriticalForce = plane.NcrForce
+    plane.ReserveFactor = ReserveByCriticalForce(plane.NcrForce, nCompression)
+    plane.Eta = EtaByCriticalForce(plane.NcrForce, nCompression)
     plane.DesignMoment = DesignMomentWithEta(nCompression, plane.Eccentricity, plane.Eta)
     plane.CheckPassed = (plane.ReserveFactor > 1# And plane.Eta > 0# And _
-        nCompression / plane.CriticalForce <= nOverNcrLimit)
+        nCompression / plane.NcrForce <= nOverNcrLimit)
     mBranch = "SP35-eta"
 End Sub
 
@@ -437,8 +464,10 @@ Private Sub StorePlaneResults(ByRef plane1 As TPlaneResult, ByRef plane2 As TPla
         Exit Sub
     End If
 
-    mNcr1 = plane1.CriticalForce
-    mNcr2 = plane2.CriticalForce
+    mNcr1 = plane1.NcrForce
+    mNcr2 = plane2.NcrForce
+    mNultimate1 = plane1.NultimateForce
+    mNultimate2 = plane2.NultimateForce
     mReserve1 = plane1.ReserveFactor
     mReserve2 = plane2.ReserveFactor
     mEta1 = plane1.Eta
@@ -659,8 +688,10 @@ Private Function NormalizeCode(ByVal value As String) As String
     Select Case UCase$(Trim$(value))
         Case "SP35", "СП35", "СП 35"
             NormalizeCode = CODE_SP35
-        Case Else
+        Case "SP63", "СП63", "СП 63"
             NormalizeCode = CODE_SP63
+        Case Else
+            NormalizeCode = Trim$(value)
     End Select
 End Function
 
@@ -721,6 +752,14 @@ End Property
 
 Public Property Get Ncr2() As Double
     Ncr2 = mNcr2
+End Property
+
+Public Property Get Nultimate1() As Double
+    Nultimate1 = mNultimate1
+End Property
+
+Public Property Get Nultimate2() As Double
+    Nultimate2 = mNultimate2
 End Property
 
 Public Property Get Reserve1() As Double

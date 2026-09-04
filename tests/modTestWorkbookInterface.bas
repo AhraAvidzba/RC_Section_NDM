@@ -738,8 +738,8 @@ End Sub
 
 ' ДЛЯ ТЕСТОВ
 ' Проверяет тяжелую схему с мелкой сеткой. Расчетные строки остаются полными,
-' а plotter обязан сгруппировать маркеры так, чтобы Excel Chart не превысил
-' свой внутренний лимит рядов диаграммы.
+' а plotter обязан рисовать элементы поэлементно Shape-ами до безопасного
+' предела и не раздувать число Excel Chart series.
 Private Sub TestLargeSnapshotPlotStress(ByRef stats As TUiTestStats)
     PrepareUserLShapeMomentUltimateInput
     PrepareFullStateProfile "PR3"
@@ -776,10 +776,13 @@ Private Sub TestLargeSnapshotPlotStress(ByRef stats As TUiTestStats)
 
     Dim seriesCount As Long
     seriesCount = PlotSeriesCount()
+    Dim elementShapeCount As Long
+    elementShapeCount = CountPlotShapes("Element")
 
     AppendLine stats, "INFO: ui.largeSnapshot.geometryRows=" & CStr(geometryRowCount) & _
         "; elementResultRows=" & CStr(UBound(elementResults, 1)) & _
-        "; plotSeries=" & CStr(seriesCount)
+        "; plotSeries=" & CStr(seriesCount) & _
+        "; elementShapes=" & CStr(elementShapeCount)
 
     AssertTrue stats, "ui.largeSnapshot.message", _
         InStr(1, message, "Расчет завершен", vbTextCompare) > 0
@@ -787,6 +790,7 @@ Private Sub TestLargeSnapshotPlotStress(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.largeSnapshot.elementRows", _
         UBound(elementResults, 1) = 1 + 20 * 5 * geometryRowCount
     AssertTrue stats, "ui.largeSnapshot.plotCreated", PlotChartExists()
+    AssertTrue stats, "ui.largeSnapshot.elementShapes", elementShapeCount >= geometryRowCount
     AssertTrue stats, "ui.largeSnapshot.plotSeriesLimit", seriesCount < 256
 End Sub
 

@@ -44,6 +44,8 @@ Private mPrincipalRadius1 As Double ' Радиус инерции по глав�
 Private mPrincipalRadius2 As Double ' Радиус инерции по главной оси I2.
 Private mLastCalculationSeconds As Double ' Время последнего расчета свойств для диагностики производительности.
 
+Private Const PRINCIPAL_AXIS_ISOTROPIC_RELATIVE_TOLERANCE As Double = 0.000001 ' Допуск для почти круговых/изотропных сечений.
+
 ' Считает геометрические характеристики только бетонной части сечения.
 ' Такой расчет не зависит от диаграмм материалов и продольной арматуры. Он
 ' используется для Load.ReferenceOffset: нулевое смещение означает, что N, Mx и
@@ -298,7 +300,11 @@ Private Sub FinalizeProperties(ByVal t0 As Double)
     Dim inertiaRef As Double
     inertiaRef = GeomMax(GeomMax(Abs(mIxc), Abs(mIyc)), 1#)
 
-    If Abs(mIxyc) / inertiaRef <= 0.000000001 And Abs(mIxc - mIyc) / inertiaRef <= 0.000000001 Then
+    ' Для круга и почти изотропных сечений направление главных осей
+    ' математически неопределено. Малый численный Ixy от дискретной сетки не
+    ' должен поворачивать оси и раскладывать чистый Mx/My на две плоскости.
+    If Abs(mIxyc) / inertiaRef <= PRINCIPAL_AXIS_ISOTROPIC_RELATIVE_TOLERANCE And _
+            Abs(mIxc - mIyc) / inertiaRef <= PRINCIPAL_AXIS_ISOTROPIC_RELATIVE_TOLERANCE Then
         mPrincipalAngleRad = 0#
     Else
         mPrincipalAngleRad = 0.5 * Atn2(-2# * mIxyc, mIyc - mIxc)

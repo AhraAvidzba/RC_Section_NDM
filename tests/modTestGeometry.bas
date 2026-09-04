@@ -23,6 +23,7 @@ Public Function RunGeometryTests() As String
     TestSymmetricRoundedRectangle stats
     TestAsymmetricRadii stats
     TestCircleGeometry stats
+    TestCirclePrincipalAxesStableOnCoarseMesh stats
     TestCircleInvalidData stats
     TestCircleAutoRebarLayout stats
     TestLShapeGeometry stats
@@ -522,6 +523,23 @@ Private Sub TestCircleGeometry(ByRef stats As TTestStats)
     AssertRelative stats, "circle.Iy", props.Iyc, analyticalI, 0.006
     AssertClose stats, "circle.Ixy", props.Ixyc, 0#, 0.000001 * props.Area * geom.Radius
     AssertClose stats, "circle.principal.angle", props.PrincipalAngleRad, 0#, 0.000001
+End Sub
+
+' Проверяет, что грубая, но симметричная сетка круга не разворачивает главные
+' оси из-за микроскопического численного Ixy. Для устойчивости это важно:
+' чистый пользовательский Mx не должен попадать во вторую плоскость только из-за
+' дискретизационного шума.
+Private Sub TestCirclePrincipalAxesStableOnCoarseMesh(ByRef stats As TTestStats)
+    Dim geom As CGeometryCircle
+    Set geom = New CGeometryCircle
+    geom.InitializeByDiameter 500#
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = MeshProps(geom, 20#, 20#)
+
+    AssertClose stats, "circle.coarse.principal.angle", props.PrincipalAngleRad, 0#, 0.000000001
+    AssertTrue stats, "circle.coarse.IxIy.nearlyEqual", _
+        Abs(props.Ixc - props.Iyc) / GeomMax(Abs(props.Ixc), Abs(props.Iyc)) < 0.000001
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.

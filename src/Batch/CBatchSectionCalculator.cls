@@ -105,10 +105,10 @@ Private mStabilitySP35Table721 As Variant ' Таблица 7.21 СП 35, про�
 Private mStabilityLoadCount As Long ' Число строк постоянных/длительных нагрузок для устойчивости.
 Private mStabilityLoadCombinationID(1 To MAX_COMBINATIONS) As String ' LC, к которому относится строка длительных нагрузок.
 Private mStabilityLoadN(1 To MAX_COMBINATIONS) As Double ' N от постоянных или постоянных+длительных нагрузок, Н.
-Private mStabilityLoadUserMx(1 To MAX_COMBINATIONS) As Double ' Пользовательский Mx длительной части до переноса к расчетной модели.
-Private mStabilityLoadUserMy(1 To MAX_COMBINATIONS) As Double ' Пользовательский My длительной части до переноса к расчетной модели.
-Private mStabilityLoadMx(1 To MAX_COMBINATIONS) As Double ' Mx длительной части после учета точки приложения нагрузки.
-Private mStabilityLoadMy(1 To MAX_COMBINATIONS) As Double ' My длительной части после учета точки приложения нагрузки.
+Private mStabilityLoadUserMx(1 To MAX_COMBINATIONS) As Double ' Пользовательский Mx длительной части в точке приложения нагрузки.
+Private mStabilityLoadUserMy(1 To MAX_COMBINATIONS) As Double ' Пользовательский My длительной части в точке приложения нагрузки.
+Private mStabilityLoadMx(1 To MAX_COMBINATIONS) As Double ' Mx длительной части относительно центра тяжести бетонного сечения.
+Private mStabilityLoadMy(1 To MAX_COMBINATIONS) As Double ' My длительной части относительно центра тяжести бетонного сечения.
 
 ' Инициализирует внутреннее состояние объекта значениями по умолчанию, безопасными для последующей настройки.
 Private Sub Class_Initialize()
@@ -361,8 +361,8 @@ Public Sub ApplyLoadReference(ByVal referenceX As Double, ByVal referenceY As Do
     Next i
 
     For i = 1 To mStabilityLoadCount
-        mStabilityLoadMx(i) = mStabilityLoadUserMx(i) + mStabilityLoadN(i) * referenceY
-        mStabilityLoadMy(i) = mStabilityLoadUserMy(i) + mStabilityLoadN(i) * referenceX
+        mStabilityLoadMx(i) = mStabilityLoadUserMx(i) + mStabilityLoadN(i) * mLoadReferenceOffsetY
+        mStabilityLoadMy(i) = mStabilityLoadUserMy(i) + mStabilityLoadN(i) * mLoadReferenceOffsetX
     Next i
 End Sub
 
@@ -514,8 +514,13 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
 
     Dim stability As CStabilityCalculator
     Set stability = New CStabilityCalculator
+    Dim centroidMx As Double
+    Dim centroidMy As Double
+    centroidMx = MomentMxAboutConcreteCentroid(index)
+    centroidMy = MomentMyAboutConcreteCentroid(index)
+
     stability.Calculate mSection, mMaterialProvider, valueSet, mStabilityCode, _
-        mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
+        mInputs(index).N, centroidMx, centroidMy, _
         sustainedN, sustainedMx, sustainedMy, _
         mStabilityElementLength, mStabilityMu1, mStabilityMu2, _
         mStabilitySystemType, mStabilityZeroSign1, mStabilityZeroSign2, _
@@ -530,7 +535,7 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
     ReportValue "Stability.Code", stability.Code
     ReportValue "Stability.ValueSet", MaterialValueSetToText(valueSet)
     ReportValue "Stability.Branch", stability.Branch
-    ReportValue "Stability.Ncr/reserve force", FormatNumberInvariant(stability.CriticalForce) & " Н"
+    ReportValue "Stability control force", FormatNumberInvariant(stability.CriticalForce) & " Н"
     ReportValue "Stability reserve", FormatNumberInvariant(stability.ReserveFactor)
     ReportValue "N/Mx/My после устойчивости", _
         FormatNumberInvariant(mInputs(index).N) & "; " & _
@@ -559,17 +564,40 @@ Private Sub StabilityDurationLoadForCombination(ByVal combinationID As String, _
     Next i
 End Sub
 
-' Подменяет усилия LC расчетными усилиями после фильтра устойчивости.
-' UserMx/UserMy также пересчитываются относительно той же точки приложения,
-' чтобы CapacityLoadPath продолжил строить Offset + lambda*Base без отдельной
-' ветви для устойчивости.
+' Подменяет усилия LC расчетными усилиями после фильтра устойчивости. Сам
+' CStabilityCalculator работает с моментами относительно центра тяжести
+' бетонного сечения, поэтому перед НДМ моменты снова переносятся к внутренней
+' системе координат элементов.
 Private Sub ApplyStabilityDesignLoads(ByVal index As Long, ByVal stability As CStabilityCalculator)
     mInputs(index).N = stability.DesignN
-    mInputs(index).Mx = stability.DesignMx
-    mInputs(index).My = stability.DesignMy
+    mInputs(index).Mx = stability.DesignMx + mInputs(index).N * ConcreteCentroidY()
+    mInputs(index).My = stability.DesignMy + mInputs(index).N * ConcreteCentroidX()
     mInputs(index).UserMx = mInputs(index).Mx - mInputs(index).N * mLoadReferenceY
     mInputs(index).UserMy = mInputs(index).My - mInputs(index).N * mLoadReferenceX
 End Sub
+
+' Возвращает момент LC относительно центра тяжести бетонного сечения. Это база
+' для расчета эксцентриситетов устойчивости: пользовательская точка 0,0
+' привязана именно к этому центру, а Load.ReferenceOffset добавляет только
+' заданное пользователем смещение от него.
+Private Function MomentMxAboutConcreteCentroid(ByVal index As Long) As Double
+    MomentMxAboutConcreteCentroid = mInputs(index).UserMx + mInputs(index).N * mLoadReferenceOffsetY
+End Function
+
+' Возвращает My относительно центра тяжести бетонного сечения.
+Private Function MomentMyAboutConcreteCentroid(ByVal index As Long) As Double
+    MomentMyAboutConcreteCentroid = mInputs(index).UserMy + mInputs(index).N * mLoadReferenceOffsetX
+End Function
+
+' X центра тяжести бетонного сечения во внутренней системе элементов.
+Private Function ConcreteCentroidX() As Double
+    ConcreteCentroidX = mLoadReferenceX - mLoadReferenceOffsetX
+End Function
+
+' Y центра тяжести бетонного сечения во внутренней системе элементов.
+Private Function ConcreteCentroidY() As Double
+    ConcreteCentroidY = mLoadReferenceY - mLoadReferenceOffsetY
+End Function
 
 ' Запускает поиск несущей способности для LC.
 ' Пользовательский столбец CapacityLoadPath задает, какие компоненты нагрузки
@@ -1390,6 +1418,17 @@ Public Property Get StabilityDesignMy(ByVal index As Long) As Double
     StabilityDesignMy = mResults(index).StabilityDesignMy
 End Property
 
+' Возвращает Mx после устойчивости в той же пользовательской точке задания
+' нагрузки, от которой исходно задавались Mx/My в rngLoadCombinations.
+Public Property Get StabilityLoadPointMx(ByVal index As Long) As Double
+    StabilityLoadPointMx = mResults(index).StabilityDesignMx - mResults(index).StabilityDesignN * mLoadReferenceOffsetY
+End Property
+
+' Возвращает My после устойчивости в пользовательской точке задания нагрузки.
+Public Property Get StabilityLoadPointMy(ByVal index As Long) As Double
+    StabilityLoadPointMy = mResults(index).StabilityDesignMy - mResults(index).StabilityDesignN * mLoadReferenceOffsetX
+End Property
+
 Public Property Get StabilityCriticalForce(ByVal index As Long) As Double
     StabilityCriticalForce = mResults(index).StabilityCriticalForce
 End Property
@@ -1404,6 +1443,14 @@ End Property
 
 Public Property Get StabilityNcr2(ByVal index As Long) As Double
     StabilityNcr2 = mResults(index).StabilityNcr2
+End Property
+
+Public Property Get StabilityNultimate1(ByVal index As Long) As Double
+    StabilityNultimate1 = mResults(index).StabilityNultimate1
+End Property
+
+Public Property Get StabilityNultimate2(ByVal index As Long) As Double
+    StabilityNultimate2 = mResults(index).StabilityNultimate2
 End Property
 
 Public Property Get StabilityReserve1(ByVal index As Long) As Double

@@ -20,7 +20,7 @@ Option Explicit
 ' формулами Excel, чтобы пользователь видел связь между исходными колонками.
 
 Private Const TARGET_ROWS As Long = 29 ' Высота фиксированного диапазона batch summary: 9 строк шапки + 20 LC.
-Private Const TARGET_COLUMNS As Long = 79 ' Ширина сводки до общего минимального запаса.
+Private Const TARGET_COLUMNS As Long = 99 ' Ширина сводки до общего минимального запаса.
 Private Const META_ROWS As Long = 6 ' Верхние строки с общими сведениями о запуске.
 Private Const GROUP_HEADER_ROW As Long = 7 ' Строка объединенных заголовков расчетных блоков.
 Private Const SUBGROUP_HEADER_ROW As Long = 8 ' Строка внутренних подзаголовков расчетных блоков.
@@ -87,31 +87,53 @@ Private Const COL_LONG_CRACK_RB_MC2 As Long = 53
 Private Const COL_LONG_CRACK_SF As Long = 54
 
 Private Const COL_STABILITY_STATUS As Long = 55
-Private Const COL_STABILITY_CODE As Long = 56
-Private Const COL_STABILITY_BRANCH As Long = 57
-Private Const COL_STABILITY_NCR_MIN As Long = 58
-Private Const COL_STABILITY_RESERVE As Long = 59
-Private Const COL_STABILITY_NCR1 As Long = 60
-Private Const COL_STABILITY_NCR2 As Long = 61
-Private Const COL_STABILITY_RESERVE1 As Long = 62
-Private Const COL_STABILITY_RESERVE2 As Long = 63
-Private Const COL_STABILITY_ETA1 As Long = 64
-Private Const COL_STABILITY_ETA2 As Long = 65
-Private Const COL_STABILITY_PHIL1 As Long = 66
-Private Const COL_STABILITY_PHIL2 As Long = 67
-Private Const COL_STABILITY_E1 As Long = 68
-Private Const COL_STABILITY_E2 As Long = 69
-Private Const COL_STABILITY_EA1 As Long = 70
-Private Const COL_STABILITY_EA2 As Long = 71
-Private Const COL_STABILITY_L01 As Long = 72
-Private Const COL_STABILITY_L02 As Long = 73
-Private Const COL_STABILITY_D1 As Long = 74
-Private Const COL_STABILITY_D2 As Long = 75
-Private Const COL_STABILITY_DESIGN_N As Long = 76
-Private Const COL_STABILITY_DESIGN_MX As Long = 77
-Private Const COL_STABILITY_DESIGN_MY As Long = 78
+Private Const COL_STABILITY_NCR_MIN As Long = 56
+Private Const COL_STABILITY_RESERVE As Long = 57
+Private Const COL_STABILITY_DESIGN_N As Long = 58
+Private Const COL_STABILITY_LOADPOINT_MX As Long = 59
+Private Const COL_STABILITY_LOADPOINT_MY As Long = 60
+Private Const COL_STABILITY_DESIGN_MX As Long = 61
+Private Const COL_STABILITY_DESIGN_MY As Long = 62
 
-Private Const COL_OVERALL_SF As Long = 79
+Private Const COL_STABILITY_SP35_NCR1 As Long = 63
+Private Const COL_STABILITY_SP35_NULT1 As Long = 64
+Private Const COL_STABILITY_SP35_RESERVE1 As Long = 65
+Private Const COL_STABILITY_SP35_ETA1 As Long = 66
+Private Const COL_STABILITY_SP35_PHIL1 As Long = 67
+Private Const COL_STABILITY_SP35_E1 As Long = 68
+Private Const COL_STABILITY_SP35_EA1 As Long = 69
+Private Const COL_STABILITY_SP35_L01 As Long = 70
+Private Const COL_STABILITY_SP35_D1 As Long = 71
+Private Const COL_STABILITY_SP35_NCR2 As Long = 72
+Private Const COL_STABILITY_SP35_NULT2 As Long = 73
+Private Const COL_STABILITY_SP35_RESERVE2 As Long = 74
+Private Const COL_STABILITY_SP35_ETA2 As Long = 75
+Private Const COL_STABILITY_SP35_PHIL2 As Long = 76
+Private Const COL_STABILITY_SP35_E2 As Long = 77
+Private Const COL_STABILITY_SP35_EA2 As Long = 78
+Private Const COL_STABILITY_SP35_L02 As Long = 79
+Private Const COL_STABILITY_SP35_D2 As Long = 80
+
+Private Const COL_STABILITY_SP63_NCR1 As Long = 81
+Private Const COL_STABILITY_SP63_NULT1 As Long = 82
+Private Const COL_STABILITY_SP63_RESERVE1 As Long = 83
+Private Const COL_STABILITY_SP63_ETA1 As Long = 84
+Private Const COL_STABILITY_SP63_PHIL1 As Long = 85
+Private Const COL_STABILITY_SP63_E1 As Long = 86
+Private Const COL_STABILITY_SP63_EA1 As Long = 87
+Private Const COL_STABILITY_SP63_L01 As Long = 88
+Private Const COL_STABILITY_SP63_D1 As Long = 89
+Private Const COL_STABILITY_SP63_NCR2 As Long = 90
+Private Const COL_STABILITY_SP63_NULT2 As Long = 91
+Private Const COL_STABILITY_SP63_RESERVE2 As Long = 92
+Private Const COL_STABILITY_SP63_ETA2 As Long = 93
+Private Const COL_STABILITY_SP63_PHIL2 As Long = 94
+Private Const COL_STABILITY_SP63_E2 As Long = 95
+Private Const COL_STABILITY_SP63_EA2 As Long = 96
+Private Const COL_STABILITY_SP63_L02 As Long = 97
+Private Const COL_STABILITY_SP63_D2 As Long = 98
+
+Private Const COL_OVERALL_SF As Long = 99
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Светло-серый фон заголовков.
 Private Const SAFETY_COLOR As Long = &HE7E6E6 ' Серый фон столбцов коэффициентов запаса.
@@ -267,10 +289,11 @@ Private Sub PutSubgroupHeaders(ByRef data() As Variant)
     data(SUBGROUP_HEADER_ROW, COL_CRACK_ES) = "Модуль арматуры"
     data(SUBGROUP_HEADER_ROW, COL_CRACK_WIDTH) = "Проверка a_crc"
     data(SUBGROUP_HEADER_ROW, COL_LONG_CRACK_STATUS) = "Проверка сжатого бетона"
-    data(SUBGROUP_HEADER_ROW, COL_STABILITY_STATUS) = "Статус и ветвь"
-    data(SUBGROUP_HEADER_ROW, COL_STABILITY_NCR_MIN) = "Итог по устойчивости"
-    data(SUBGROUP_HEADER_ROW, COL_STABILITY_NCR1) = "Плоскости 1/2"
-    data(SUBGROUP_HEADER_ROW, COL_STABILITY_DESIGN_N) = "Усилия после фильтра"
+    data(SUBGROUP_HEADER_ROW, COL_STABILITY_STATUS) = "Итог и усилия после фильтра"
+    data(SUBGROUP_HEADER_ROW, COL_STABILITY_SP35_NCR1) = "СП 35 - плоскость 1"
+    data(SUBGROUP_HEADER_ROW, COL_STABILITY_SP35_NCR2) = "СП 35 - плоскость 2"
+    data(SUBGROUP_HEADER_ROW, COL_STABILITY_SP63_NCR1) = "СП 63 - плоскость 1"
+    data(SUBGROUP_HEADER_ROW, COL_STABILITY_SP63_NCR2) = "СП 63 - плоскость 2"
     data(SUBGROUP_HEADER_ROW, COL_OVERALL_SF) = "Итог"
 End Sub
 
@@ -333,32 +356,33 @@ Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem
     data(COLUMN_HEADER_ROW, COL_LONG_CRACK_RB_MC2) = "Rb,mc2, " & OutputStressUnit(units) & " (допустимое сжатие)"
     data(COLUMN_HEADER_ROW, COL_LONG_CRACK_SF) = "LongitudinalCrackSafetyFactor (запас)"
 
-    data(COLUMN_HEADER_ROW, COL_STABILITY_STATUS) = "StabilityStatus (устойчивость)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_CODE) = "StabilityCode (СП)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_BRANCH) = "StabilityBranch (ветвь)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_NCR_MIN) = "Ncr,min, " & OutputForceUnit(units) & " (критическая сила)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_RESERVE) = "StabilitySafetyFactor (Ncr/N)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_NCR1) = "Ncr1, " & OutputForceUnit(units) & " (плоскость 1)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_NCR2) = "Ncr2, " & OutputForceUnit(units) & " (плоскость 2)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_RESERVE1) = "Reserve1 (запас 1)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_RESERVE2) = "Reserve2 (запас 2)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_ETA1) = "eta1 (плоскость 1)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_ETA2) = "eta2 (плоскость 2)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_PHIL1) = "phi_l1 (длительность 1)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_PHIL2) = "phi_l2 (длительность 2)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_E1) = "e1, " & OutputLengthUnit(units) & " (эксцентриситет 1)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_E2) = "e2, " & OutputLengthUnit(units) & " (эксцентриситет 2)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_EA1) = "ea1, " & OutputLengthUnit(units) & " (случайный 1)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_EA2) = "ea2, " & OutputLengthUnit(units) & " (случайный 2)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_L01) = "l0_1, " & OutputLengthUnit(units) & " (расчетная длина 1)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_L02) = "l0_2, " & OutputLengthUnit(units) & " (расчетная длина 2)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_D1) = "D1, Н*мм2 (жесткость 1)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_D2) = "D2, Н*мм2 (жесткость 2)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_DESIGN_N) = "Ndesign, " & OutputForceUnit(units) & " (после устойчивости)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_DESIGN_MX) = "Mxdesign, " & OutputMomentUnit(units) & " (после устойчивости)"
-    data(COLUMN_HEADER_ROW, COL_STABILITY_DESIGN_MY) = "Mydesign, " & OutputMomentUnit(units) & " (после устойчивости)"
+    data(COLUMN_HEADER_ROW, COL_STABILITY_STATUS) = "Статус устойчивости"
+    data(COLUMN_HEADER_ROW, COL_STABILITY_NCR_MIN) = "Контрольная сжимающая N, " & OutputForceUnit(units)
+    data(COLUMN_HEADER_ROW, COL_STABILITY_RESERVE) = "Запас устойчивости"
+    data(COLUMN_HEADER_ROW, COL_STABILITY_DESIGN_N) = "N после устойчивости, " & OutputForceUnit(units)
+    data(COLUMN_HEADER_ROW, COL_STABILITY_LOADPOINT_MX) = "Mx после устойчивости в точке нагрузки, " & OutputMomentUnit(units)
+    data(COLUMN_HEADER_ROW, COL_STABILITY_LOADPOINT_MY) = "My после устойчивости в точке нагрузки, " & OutputMomentUnit(units)
+    data(COLUMN_HEADER_ROW, COL_STABILITY_DESIGN_MX) = "Mx после устойчивости в ц.т. бетона, " & OutputMomentUnit(units)
+    data(COLUMN_HEADER_ROW, COL_STABILITY_DESIGN_MY) = "My после устойчивости в ц.т. бетона, " & OutputMomentUnit(units)
+    PutStabilityPlaneHeaders data, COL_STABILITY_SP35_NCR1, units
+    PutStabilityPlaneHeaders data, COL_STABILITY_SP35_NCR2, units
+    PutStabilityPlaneHeaders data, COL_STABILITY_SP63_NCR1, units
+    PutStabilityPlaneHeaders data, COL_STABILITY_SP63_NCR2, units
 
     data(COLUMN_HEADER_ROW, COL_OVERALL_SF) = "MinSafetyFactor (общий запас)"
+End Sub
+
+' Заполняет одинаковый набор заголовков для одной расчетной плоскости устойчивости.
+Private Sub PutStabilityPlaneHeaders(ByRef data() As Variant, ByVal firstColumn As Long, ByVal units As CUnitSystem)
+    data(COLUMN_HEADER_ROW, firstColumn) = "Ncr, " & OutputForceUnit(units)
+    data(COLUMN_HEADER_ROW, firstColumn + 1) = "Nult,stab, " & OutputForceUnit(units)
+    data(COLUMN_HEADER_ROW, firstColumn + 2) = "Запас"
+    data(COLUMN_HEADER_ROW, firstColumn + 3) = "eta"
+    data(COLUMN_HEADER_ROW, firstColumn + 4) = "phi_l"
+    data(COLUMN_HEADER_ROW, firstColumn + 5) = "Эксцентриситет e, " & OutputLengthUnit(units)
+    data(COLUMN_HEADER_ROW, firstColumn + 6) = "Случайный e_a, " & OutputLengthUnit(units)
+    data(COLUMN_HEADER_ROW, firstColumn + 7) = "Расчетная длина l0, " & OutputLengthUnit(units)
+    data(COLUMN_HEADER_ROW, firstColumn + 8) = "Жесткость D, " & OutputStiffnessUnit(units)
 End Sub
 
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVal batch As CBatchSectionCalculator, _
@@ -450,32 +474,62 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
 
     data(rowIndex, COL_STABILITY_STATUS) = policy.DisplayStatus(batch.StabilityStatus(index))
     If policy.DisplayStatus(batch.StabilityStatus(index)) <> policy.NotApplicable Then
-        data(rowIndex, COL_STABILITY_CODE) = batch.StabilityCode(index)
-        data(rowIndex, COL_STABILITY_BRANCH) = batch.StabilityBranch(index)
-        data(rowIndex, COL_STABILITY_NCR_MIN) = OutputForce(batch.StabilityCriticalForce(index), units)
+        data(rowIndex, COL_STABILITY_NCR_MIN) = OutputCompressionForce(batch.StabilityCriticalForce(index), units)
         data(rowIndex, COL_STABILITY_RESERVE) = StabilitySafetyFormula(rowIndex)
-        data(rowIndex, COL_STABILITY_NCR1) = OutputForce(batch.StabilityNcr1(index), units)
-        data(rowIndex, COL_STABILITY_NCR2) = OutputForce(batch.StabilityNcr2(index), units)
-        data(rowIndex, COL_STABILITY_RESERVE1) = batch.StabilityReserve1(index)
-        data(rowIndex, COL_STABILITY_RESERVE2) = batch.StabilityReserve2(index)
-        data(rowIndex, COL_STABILITY_ETA1) = batch.StabilityEta1(index)
-        data(rowIndex, COL_STABILITY_ETA2) = batch.StabilityEta2(index)
-        data(rowIndex, COL_STABILITY_PHIL1) = batch.StabilityPhiL1(index)
-        data(rowIndex, COL_STABILITY_PHIL2) = batch.StabilityPhiL2(index)
-        data(rowIndex, COL_STABILITY_E1) = OutputLength(batch.StabilityEccentricity1(index), units)
-        data(rowIndex, COL_STABILITY_E2) = OutputLength(batch.StabilityEccentricity2(index), units)
-        data(rowIndex, COL_STABILITY_EA1) = OutputLength(batch.StabilityAccidentalEcc1(index), units)
-        data(rowIndex, COL_STABILITY_EA2) = OutputLength(batch.StabilityAccidentalEcc2(index), units)
-        data(rowIndex, COL_STABILITY_L01) = OutputLength(batch.StabilityEffectiveLength1(index), units)
-        data(rowIndex, COL_STABILITY_L02) = OutputLength(batch.StabilityEffectiveLength2(index), units)
-        data(rowIndex, COL_STABILITY_D1) = batch.StabilityStiffnessD1(index)
-        data(rowIndex, COL_STABILITY_D2) = batch.StabilityStiffnessD2(index)
         data(rowIndex, COL_STABILITY_DESIGN_N) = OutputForce(batch.StabilityDesignN(index), units)
+        data(rowIndex, COL_STABILITY_LOADPOINT_MX) = OutputMx(batch.StabilityLoadPointMx(index), units)
+        data(rowIndex, COL_STABILITY_LOADPOINT_MY) = OutputMy(batch.StabilityLoadPointMy(index), units)
         data(rowIndex, COL_STABILITY_DESIGN_MX) = OutputMx(batch.StabilityDesignMx(index), units)
         data(rowIndex, COL_STABILITY_DESIGN_MY) = OutputMy(batch.StabilityDesignMy(index), units)
+        PutStabilityDetailsForSelectedCode data, rowIndex, batch, index, units
     End If
 
     data(rowIndex, COL_OVERALL_SF) = OverallSafetyFormula(rowIndex)
+End Sub
+
+' Заполняет только тот нормативный блок устойчивости, который реально выбран
+' настройкой Stability.Code. Соседний блок остается пустым, чтобы данные СП 35
+' и СП 63 не смешивались в одной группе колонок.
+Private Sub PutStabilityDetailsForSelectedCode(ByRef data() As Variant, ByVal rowIndex As Long, _
+        ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
+    Dim codeText As String
+    codeText = Trim$(batch.StabilityCode(index))
+    If StrComp(codeText, "SP35", vbTextCompare) = 0 Then
+        PutStabilityPlaneValues data, rowIndex, COL_STABILITY_SP35_NCR1, batch, index, 1, units
+        PutStabilityPlaneValues data, rowIndex, COL_STABILITY_SP35_NCR2, batch, index, 2, units
+    ElseIf StrComp(codeText, "SP63", vbTextCompare) = 0 Then
+        PutStabilityPlaneValues data, rowIndex, COL_STABILITY_SP63_NCR1, batch, index, 1, units
+        PutStabilityPlaneValues data, rowIndex, COL_STABILITY_SP63_NCR2, batch, index, 2, units
+    End If
+End Sub
+
+' Записывает данные одной главной плоскости устойчивости в выбранный блок СП.
+Private Sub PutStabilityPlaneValues(ByRef data() As Variant, ByVal rowIndex As Long, ByVal firstColumn As Long, _
+        ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long, ByVal units As CUnitSystem)
+    Dim notApplicableText As String
+    notApplicableText = StatusPolicy().NotApplicable
+
+    If planeIndex = 1 Then
+        data(rowIndex, firstColumn) = OptionalCompressionForce(batch.StabilityNcr1(index), units, notApplicableText)
+        data(rowIndex, firstColumn + 1) = OptionalCompressionForce(batch.StabilityNultimate1(index), units, notApplicableText)
+        data(rowIndex, firstColumn + 2) = batch.StabilityReserve1(index)
+        data(rowIndex, firstColumn + 3) = batch.StabilityEta1(index)
+        data(rowIndex, firstColumn + 4) = batch.StabilityPhiL1(index)
+        data(rowIndex, firstColumn + 5) = OutputLength(batch.StabilityEccentricity1(index), units)
+        data(rowIndex, firstColumn + 6) = OutputLength(batch.StabilityAccidentalEcc1(index), units)
+        data(rowIndex, firstColumn + 7) = OutputLength(batch.StabilityEffectiveLength1(index), units)
+        data(rowIndex, firstColumn + 8) = OutputStiffness(batch.StabilityStiffnessD1(index), units)
+    Else
+        data(rowIndex, firstColumn) = OptionalCompressionForce(batch.StabilityNcr2(index), units, notApplicableText)
+        data(rowIndex, firstColumn + 1) = OptionalCompressionForce(batch.StabilityNultimate2(index), units, notApplicableText)
+        data(rowIndex, firstColumn + 2) = batch.StabilityReserve2(index)
+        data(rowIndex, firstColumn + 3) = batch.StabilityEta2(index)
+        data(rowIndex, firstColumn + 4) = batch.StabilityPhiL2(index)
+        data(rowIndex, firstColumn + 5) = OutputLength(batch.StabilityEccentricity2(index), units)
+        data(rowIndex, firstColumn + 6) = OutputLength(batch.StabilityAccidentalEcc2(index), units)
+        data(rowIndex, firstColumn + 7) = OutputLength(batch.StabilityEffectiveLength2(index), units)
+        data(rowIndex, firstColumn + 8) = OutputStiffness(batch.StabilityStiffnessD2(index), units)
+    End If
 End Sub
 
 ' Записывает h/x для фактического состояния LC. Эти величины помогают
@@ -571,8 +625,8 @@ Private Function LongitudinalCrackSafetyFormula(ByVal rowIndex As Long) As Strin
 End Function
 
 Private Function StabilitySafetyFormula(ByVal rowIndex As Long) As String
-    StabilitySafetyFormula = "=IFERROR(IF(" & CellAddress(rowIndex, COL_STABILITY_NCR_MIN) & ">0," & _
-        CellAddress(rowIndex, COL_STABILITY_NCR_MIN) & "/" & _
+    StabilitySafetyFormula = "=IFERROR(IF(ABS(" & CellAddress(rowIndex, COL_STABILITY_NCR_MIN) & ")>0," & _
+        "ABS(" & CellAddress(rowIndex, COL_STABILITY_NCR_MIN) & ")/" & _
         "ABS(" & CellAddress(rowIndex, COL_STABILITY_DESIGN_N) & "),""""),"""")"
 End Function
 
@@ -630,7 +684,7 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     MergeSummaryHeader target, GROUP_HEADER_ROW, COL_CAPACITY_STATUS, COL_CAPACITY_SF
     MergeSummaryHeader target, GROUP_HEADER_ROW, COL_CRACK_STATUS, COL_CRACK_SF
     MergeSummaryHeader target, GROUP_HEADER_ROW, COL_LONG_CRACK_STATUS, COL_LONG_CRACK_SF
-    MergeSummaryHeader target, GROUP_HEADER_ROW, COL_STABILITY_STATUS, COL_STABILITY_DESIGN_MY
+    MergeSummaryHeader target, GROUP_HEADER_ROW, COL_STABILITY_STATUS, COL_STABILITY_SP63_D2
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_OVERALL_STATUS, COL_PROFILE_ID
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_DIRECT_STATUS, COL_STATE_C
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_LIM_C_COMP, COL_LIM_S_TENS
@@ -644,10 +698,11 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CRACK_NCRC, COL_CRACK_PSI
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_CRACK_WIDTH, COL_CRACK_SF
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_LONG_CRACK_STATUS, COL_LONG_CRACK_SF
-    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_STABILITY_STATUS, COL_STABILITY_BRANCH
-    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_STABILITY_NCR_MIN, COL_STABILITY_RESERVE
-    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_STABILITY_NCR1, COL_STABILITY_D2
-    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_STABILITY_DESIGN_N, COL_STABILITY_DESIGN_MY
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_STABILITY_STATUS, COL_STABILITY_DESIGN_MY
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_STABILITY_SP35_NCR1, COL_STABILITY_SP35_D1
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_STABILITY_SP35_NCR2, COL_STABILITY_SP35_D2
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_STABILITY_SP63_NCR1, COL_STABILITY_SP63_D1
+    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, COL_STABILITY_SP63_NCR2, COL_STABILITY_SP63_D2
 
     stage = "Alignment"
     target.Rows.Item(COLUMN_HEADER_ROW).HorizontalAlignment = -4131
@@ -664,8 +719,10 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     target.Offset(FIRST_DATA_ROW - 1, COL_CRACK_SF - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
     target.Offset(FIRST_DATA_ROW - 1, COL_LONG_CRACK_SF - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
     target.Offset(FIRST_DATA_ROW - 1, COL_STABILITY_RESERVE - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
-    target.Offset(FIRST_DATA_ROW - 1, COL_STABILITY_RESERVE1 - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
-    target.Offset(FIRST_DATA_ROW - 1, COL_STABILITY_RESERVE2 - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
+    target.Offset(FIRST_DATA_ROW - 1, COL_STABILITY_SP35_RESERVE1 - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
+    target.Offset(FIRST_DATA_ROW - 1, COL_STABILITY_SP35_RESERVE2 - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
+    target.Offset(FIRST_DATA_ROW - 1, COL_STABILITY_SP63_RESERVE1 - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
+    target.Offset(FIRST_DATA_ROW - 1, COL_STABILITY_SP63_RESERVE2 - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
     target.Offset(FIRST_DATA_ROW - 1, COL_OVERALL_SF - 1).Resize(dataRows, 1).Interior.Color = OVERALL_SAFETY_COLOR
     stage = "FormatOverallStatusRows"
     FormatOverallStatusRows target, batch
@@ -802,8 +859,33 @@ Private Function OutputForce(ByVal value As Double, ByVal units As CUnitSystem) 
     If units Is Nothing Then OutputForce = value Else OutputForce = units.InternalForceToOutput(value)
 End Function
 
+' Выводит критическую сжимающую силу со знаком пользовательской системы N.
+' Внутри расчета Ncr хранится положительной величиной сжатия, поэтому перед
+' обратным преобразованием ей возвращается внутренний знак сжатия.
+Private Function OutputCompressionForce(ByVal compressionMagnitude As Double, ByVal units As CUnitSystem) As Double
+    If compressionMagnitude <= 0# Then Exit Function
+    OutputCompressionForce = OutputForce(-Abs(compressionMagnitude), units)
+End Function
+
+Private Function OptionalCompressionForce(ByVal compressionMagnitude As Double, _
+        ByVal units As CUnitSystem, ByVal emptyText As String) As Variant
+    If compressionMagnitude > 0# Then
+        OptionalCompressionForce = OutputCompressionForce(compressionMagnitude, units)
+    Else
+        OptionalCompressionForce = emptyText
+    End If
+End Function
+
 Private Function OutputForceUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputForceUnit = "N" Else OutputForceUnit = units.OutputForceUnit
+End Function
+
+Private Function OutputStiffness(ByVal value As Double, ByVal units As CUnitSystem) As Double
+    If units Is Nothing Then OutputStiffness = value Else OutputStiffness = units.InternalForceLengthSquaredToOutput(value)
+End Function
+
+Private Function OutputStiffnessUnit(ByVal units As CUnitSystem) As String
+    If units Is Nothing Then OutputStiffnessUnit = "N*mm2" Else OutputStiffnessUnit = units.OutputForceLengthSquaredUnit
 End Function
 
 Private Function OutputMx(ByVal value As Double, ByVal units As CUnitSystem) As Double
