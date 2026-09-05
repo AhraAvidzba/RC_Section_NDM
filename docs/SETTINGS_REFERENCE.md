@@ -31,12 +31,13 @@
 | `rngSteelMaterialParameters` | Параметры арматуры для I/II ГПС: `Rsc/Rs`, `Rsc,ser/Rs,ser`, `Esc/Es` и предельные деформации диаграмм. |
 | `rngCalculationDiagramSettings` | Выбор расчетной диаграммы и режима растянутого бетона для `Strength`, `Mcrc` и `CrackedNDS`. |
 | `rngLoadCombinations` | До 20 сочетаний нагрузок: `CalculationType = Group1` для расчета по первой группе предельных состояний, `CalculationType = Group2` для расчета трещин по второй группе. |
-| `rngBatchSummary` | Сводка batch-расчета на `Results!A1:CU29`. |
-| `rngNDMElementResults` | LC-зависимые результаты элементов на `Results!A32`: `RunID`, `LoadCase`, `ProfileId`, `StateType`, `ElementID`, `Strain`, `Stress`, `PhysicalState`. |
-| `rngNDMSectionGeometry` | Неизменяемая расчетная геометрия snapshot на `Results!K32`: координаты, площадь, размеры/диаметр, материал и локальные характеристики. |
-| `rngNDMSectionProperties` | Общие свойства всего сечения и LC-зависимые свойства уровня сечения на `Results!AB32`: Bounds, центр тяжести, главные оси, единицы output, named-state metadata, точка приложения нагрузки. |
-| `rngNDMMaterialDiagrams` | Уникальный каталог фактических точек диаграмм материалов на `Results!AJ32`. Каждая диаграмма имеет `DiagramId`; named-state metadata в `rngNDMSectionProperties` ссылается на бетонную и арматурную диаграмму через `ConcreteDiagramId`/`RebarDiagramId`. |
-| `rngNDMSectionAnnotations` | Сохраненные semantic-аннотации оформления на `Results!AW32`: размерные линии и групповые подписи арматуры. |
+| `rngBatchSummary` | Компактная сводка batch-расчета на `Results!A1:BC29`. |
+| `rngStabilitySummaryAnchor` | Якорь первой строки данных подробной таблицы устойчивости на `Results!A37`; шапка таблицы формируется над якорем. |
+| `rngNDMElementResults` | LC-зависимые результаты элементов на `Results!A60`: `RunID`, `LoadCase`, `ProfileId`, `StateType`, `ElementID`, `Strain`, `Stress`, `PhysicalState`. |
+| `rngNDMSectionGeometry` | Неизменяемая расчетная геометрия snapshot на `Results!K60`: координаты, площадь, размеры/диаметр, материал и локальные характеристики. |
+| `rngNDMSectionProperties` | Общие свойства всего сечения и LC-зависимые свойства уровня сечения на `Results!AB60`: Bounds, центр тяжести, главные оси, единицы output, named-state metadata, точка приложения нагрузки. |
+| `rngNDMMaterialDiagrams` | Уникальный каталог фактических точек диаграмм материалов на `Results!AJ60`. Каждая диаграмма имеет `DiagramId`; named-state metadata в `rngNDMSectionProperties` ссылается на бетонную и арматурную диаграмму через `ConcreteDiagramId`/`RebarDiagramId`. |
+| `rngNDMSectionAnnotations` | Сохраненные semantic-аннотации оформления на `Results!AW60`: размерные линии и групповые подписи арматуры. |
 | `chtNDMSectionPlot` | ChartObject схемы сечения на листе `Расчет`; создается около столбца `AP` и дальше не пересоздается при обновлении. |
 
 ## Единицы И Знаки

@@ -156,7 +156,7 @@ Myint = sum(sigma_i * A_i * x_i)
 
 ## Вывод
 
-- `CBatchResultWriter` пишет сводку в `rngBatchSummary` на листе `Results`;
+- `CBatchResultWriter` пишет компактную сводку в `rngBatchSummary`, а `CStabilitySummaryWriter` пишет отдельную подробную таблицу устойчивости от `rngStabilitySummaryAnchor`;
 - `CNDMResultsWriter` пишет согласованный snapshot последнего расчета на лист `Results`: `rngNDMSectionGeometry` с постоянной геометрией, `rngNDMElementResults` с LC-зависимыми `Strain/Stress/PhysicalState`, `rngNDMSectionProperties` с общими свойствами сечения и состоянием выбранных LC, `rngNDMSectionAnnotations` с сохраненными semantic-аннотациями;
 - writer-ы получают `CUnitSystem` и выводят числовые результаты в выбранных `OUTPUT`-единицах и пользовательских знаках;
 - контрольная таблица арматуры и формульный блок трещин на `Config` больше не выводятся;

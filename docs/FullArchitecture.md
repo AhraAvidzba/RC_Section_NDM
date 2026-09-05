@@ -500,8 +500,8 @@ AutoCAD, обновления схемы и сборка общего польз
 
 #### CBatchResultWriter
 
-Роль: пишет верхнюю сводку `rngBatchSummary`, формулы запасов, словарь статусов
-и оформление строк.
+Роль: пишет верхнюю компактную сводку `rngBatchSummary`, формулы запасов,
+словарь статусов и оформление строк.
 
 Публичные методы: `WriteSummary`, `ClearSummary`, `UpdateElapsedSeconds`.
 
@@ -513,6 +513,17 @@ AutoCAD, обновления схемы и сборка общего польз
 `FormatSummary`, `FormatOverallStatusRows`, `WriteStatusDictionary`,
 `StatusPolicy` и unit-output helpers. Текст пользовательских статусов и
 подсветка строк берутся через `CBatchStatusPolicy`.
+
+#### CStabilitySummaryWriter
+
+Роль: пишет отдельную подробную таблицу продольного изгиба и устойчивости от
+якоря `rngStabilitySummaryAnchor`. Класс не рассчитывает устойчивость, а только
+выводит уже сохраненные в batch величины по выбранному нормативу СП 35 или СП 63.
+
+Публичные методы: `WriteSummary`, `ClearSummary`.
+
+Внутренние методы отвечают за шапку с объединениями, заполнение строк LC,
+перевод единиц и независимую подсветку блоков СП 35/СП 63.
 
 #### CNDMResultsWriter
 

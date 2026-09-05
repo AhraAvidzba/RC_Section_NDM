@@ -148,6 +148,7 @@ try {
         "rngRoundedRectangleGeometry",
         "rngLShapeGeometry",
         "rngBatchSummary",
+        "rngStabilitySummaryAnchor",
         "rngConcreteMaterialParameters",
         "rngSteelMaterialParameters",
         "rngCalculationProfiles",
@@ -170,6 +171,7 @@ try {
 
     if ($missingNames.Count -eq 0) {
         $batchSummaryRange = $workbook.Names.Item("rngBatchSummary").RefersToRange
+        $stabilitySummaryAnchorRange = $workbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
         $elementResultsRange = $workbook.Names.Item("rngNDMElementResults").RefersToRange
         $geometryResultsRange = $workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
         $sectionPropertiesRange = $workbook.Names.Item("rngNDMSectionProperties").RefersToRange
@@ -180,13 +182,15 @@ try {
         Add-Check $checks "Results ranges layout" (
             ([string]$batchSummaryRange.Worksheet.Name -eq "Results") -and
             ($batchSummaryRange.Row -eq 1) -and ($batchSummaryRange.Column -eq 1) -and
-            ($batchSummaryRange.Rows.Count -eq 29) -and ($batchSummaryRange.Columns.Count -eq 99) -and
-            ($elementResultsRange.Row -eq 32) -and ($elementResultsRange.Column -eq 1) -and
-            ($geometryResultsRange.Row -eq 32) -and ($geometryResultsRange.Column -eq 11) -and
-            ($sectionPropertiesRange.Row -eq 32) -and ($sectionPropertiesRange.Column -eq 28) -and
-            ($materialDiagramsRange.Row -eq 32) -and ($materialDiagramsRange.Column -eq 36) -and
-            ($sectionAnnotationsRange.Row -eq 32) -and ($sectionAnnotationsRange.Column -eq 49)
-        ) ("batch=$($batchSummaryRange.Worksheet.Name)!R$($batchSummaryRange.Row)C$($batchSummaryRange.Column):$($batchSummaryRange.Columns.Count) cols; elements=R$($elementResultsRange.Row)C$($elementResultsRange.Column); geometry=R$($geometryResultsRange.Row)C$($geometryResultsRange.Column); properties=R$($sectionPropertiesRange.Row)C$($sectionPropertiesRange.Column); annotations=R$($sectionAnnotationsRange.Row)C$($sectionAnnotationsRange.Column); materialDiagrams=R$($materialDiagramsRange.Row)C$($materialDiagramsRange.Column)")
+            ($batchSummaryRange.Rows.Count -eq 29) -and ($batchSummaryRange.Columns.Count -eq 55) -and
+            ($stabilitySummaryAnchorRange.Worksheet.Name -eq "Results") -and
+            ($stabilitySummaryAnchorRange.Row -eq 37) -and ($stabilitySummaryAnchorRange.Column -eq 1) -and
+            ($elementResultsRange.Row -eq 60) -and ($elementResultsRange.Column -eq 1) -and
+            ($geometryResultsRange.Row -eq 60) -and ($geometryResultsRange.Column -eq 11) -and
+            ($sectionPropertiesRange.Row -eq 60) -and ($sectionPropertiesRange.Column -eq 28) -and
+            ($materialDiagramsRange.Row -eq 60) -and ($materialDiagramsRange.Column -eq 36) -and
+            ($sectionAnnotationsRange.Row -eq 60) -and ($sectionAnnotationsRange.Column -eq 49)
+        ) ("batch=$($batchSummaryRange.Worksheet.Name)!R$($batchSummaryRange.Row)C$($batchSummaryRange.Column):$($batchSummaryRange.Columns.Count) cols; stabilityAnchor=R$($stabilitySummaryAnchorRange.Row)C$($stabilitySummaryAnchorRange.Column); elements=R$($elementResultsRange.Row)C$($elementResultsRange.Column); geometry=R$($geometryResultsRange.Row)C$($geometryResultsRange.Column); properties=R$($sectionPropertiesRange.Row)C$($sectionPropertiesRange.Column); annotations=R$($sectionAnnotationsRange.Row)C$($sectionAnnotationsRange.Column); materialDiagrams=R$($materialDiagramsRange.Row)C$($materialDiagramsRange.Column)")
         Add-Check $checks "Stability duration loads range" (
             ($stabilityLoadsRange.Worksheet.Name -eq "Config") -and
             ($stabilityLoadsRange.Row -eq 27) -and ($stabilityLoadsRange.Column -eq 16) -and

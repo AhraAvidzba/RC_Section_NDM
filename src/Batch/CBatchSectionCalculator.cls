@@ -1419,6 +1419,34 @@ Public Property Get StabilityDesignMy(ByVal index As Long) As Double
     StabilityDesignMy = mResults(index).StabilityDesignMy
 End Property
 
+Public Property Get StabilitySustainedN(ByVal index As Long) As Double
+    StabilitySustainedN = mResults(index).StabilitySustainedN
+End Property
+
+Public Property Get StabilityMoment1(ByVal index As Long) As Double
+    StabilityMoment1 = mResults(index).StabilityMoment1
+End Property
+
+Public Property Get StabilityMoment2(ByVal index As Long) As Double
+    StabilityMoment2 = mResults(index).StabilityMoment2
+End Property
+
+Public Property Get StabilitySustainedMoment1(ByVal index As Long) As Double
+    StabilitySustainedMoment1 = mResults(index).StabilitySustainedMoment1
+End Property
+
+Public Property Get StabilitySustainedMoment2(ByVal index As Long) As Double
+    StabilitySustainedMoment2 = mResults(index).StabilitySustainedMoment2
+End Property
+
+Public Property Get StabilityDesignMoment1(ByVal index As Long) As Double
+    StabilityDesignMoment1 = mResults(index).StabilityDesignMoment1
+End Property
+
+Public Property Get StabilityDesignMoment2(ByVal index As Long) As Double
+    StabilityDesignMoment2 = mResults(index).StabilityDesignMoment2
+End Property
+
 ' Возвращает Mx после устойчивости в той же пользовательской точке задания
 ' нагрузки, от которой исходно задавались Mx/My в rngLoadCombinations.
 Public Property Get StabilityLoadPointMx(ByVal index As Long) As Double
@@ -1480,6 +1508,38 @@ Public Property Get StabilityPhiL2(ByVal index As Long) As Double
     StabilityPhiL2 = mResults(index).StabilityPhiL2
 End Property
 
+Public Property Get StabilityPhiLTable1(ByVal index As Long) As Double
+    StabilityPhiLTable1 = mResults(index).StabilityPhiLTable1
+End Property
+
+Public Property Get StabilityPhiLTable2(ByVal index As Long) As Double
+    StabilityPhiLTable2 = mResults(index).StabilityPhiLTable2
+End Property
+
+Public Property Get StabilityPhiM1(ByVal index As Long) As Double
+    StabilityPhiM1 = mResults(index).StabilityPhiM1
+End Property
+
+Public Property Get StabilityPhiM2(ByVal index As Long) As Double
+    StabilityPhiM2 = mResults(index).StabilityPhiM2
+End Property
+
+Public Property Get StabilityPhiValue1(ByVal index As Long) As Double
+    StabilityPhiValue1 = mResults(index).StabilityPhiValue1
+End Property
+
+Public Property Get StabilityPhiValue2(ByVal index As Long) As Double
+    StabilityPhiValue2 = mResults(index).StabilityPhiValue2
+End Property
+
+Public Property Get StabilityPhiP1(ByVal index As Long) As Double
+    StabilityPhiP1 = mResults(index).StabilityPhiP1
+End Property
+
+Public Property Get StabilityPhiP2(ByVal index As Long) As Double
+    StabilityPhiP2 = mResults(index).StabilityPhiP2
+End Property
+
 Public Property Get StabilityEccentricity1(ByVal index As Long) As Double
     StabilityEccentricity1 = mResults(index).StabilityEccentricity1
 End Property
@@ -1504,12 +1564,84 @@ Public Property Get StabilityEffectiveLength2(ByVal index As Long) As Double
     StabilityEffectiveLength2 = mResults(index).StabilityEffectiveLength2
 End Property
 
+Public Property Get StabilityDepth1(ByVal index As Long) As Double
+    StabilityDepth1 = mResults(index).StabilityDepth1
+End Property
+
+Public Property Get StabilityDepth2(ByVal index As Long) As Double
+    StabilityDepth2 = mResults(index).StabilityDepth2
+End Property
+
+Public Property Get StabilityRadius1(ByVal index As Long) As Double
+    StabilityRadius1 = mResults(index).StabilityRadius1
+End Property
+
+Public Property Get StabilityRadius2(ByVal index As Long) As Double
+    StabilityRadius2 = mResults(index).StabilityRadius2
+End Property
+
+Public Property Get StabilityCoreDistance1(ByVal index As Long) As Double
+    StabilityCoreDistance1 = mResults(index).StabilityCoreDistance1
+End Property
+
+Public Property Get StabilityCoreDistance2(ByVal index As Long) As Double
+    StabilityCoreDistance2 = mResults(index).StabilityCoreDistance2
+End Property
+
+Public Property Get StabilityDelta1(ByVal index As Long) As Double
+    StabilityDelta1 = mResults(index).StabilityDelta1
+End Property
+
+Public Property Get StabilityDelta2(ByVal index As Long) As Double
+    StabilityDelta2 = mResults(index).StabilityDelta2
+End Property
+
+Public Property Get StabilityKb1(ByVal index As Long) As Double
+    StabilityKb1 = mResults(index).StabilityKb1
+End Property
+
+Public Property Get StabilityKb2(ByVal index As Long) As Double
+    StabilityKb2 = mResults(index).StabilityKb2
+End Property
+
+Public Property Get StabilityKs1(ByVal index As Long) As Double
+    StabilityKs1 = mResults(index).StabilityKs1
+End Property
+
+Public Property Get StabilityKs2(ByVal index As Long) As Double
+    StabilityKs2 = mResults(index).StabilityKs2
+End Property
+
 Public Property Get StabilityStiffnessD1(ByVal index As Long) As Double
     StabilityStiffnessD1 = mResults(index).StabilityStiffnessD1
 End Property
 
 Public Property Get StabilityStiffnessD2(ByVal index As Long) As Double
     StabilityStiffnessD2 = mResults(index).StabilityStiffnessD2
+End Property
+
+Public Property Get StabilityPlaneBranch1(ByVal index As Long) As String
+    StabilityPlaneBranch1 = mResults(index).StabilityPlaneBranch1
+End Property
+
+Public Property Get StabilityPlaneBranch2(ByVal index As Long) As String
+    StabilityPlaneBranch2 = mResults(index).StabilityPlaneBranch2
+End Property
+
+Public Property Get StabilityPlaneApplicable1(ByVal index As Long) As Boolean
+    StabilityPlaneApplicable1 = mResults(index).StabilityPlaneApplicable1
+End Property
+
+Public Property Get StabilityPlaneApplicable2(ByVal index As Long) As Boolean
+    StabilityPlaneApplicable2 = mResults(index).StabilityPlaneApplicable2
+End Property
+
+Public Property Get StabilityPlanePassed1(ByVal index As Long) As Boolean
+    StabilityPlanePassed1 = mResults(index).StabilityPlanePassed1
+End Property
+
+Public Property Get StabilityPlanePassed2(ByVal index As Long) As Boolean
+    StabilityPlanePassed2 = mResults(index).StabilityPlanePassed2
 End Property
 
 Public Property Get CrackFormed(ByVal index As Long) As Boolean

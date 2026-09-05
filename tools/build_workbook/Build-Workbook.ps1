@@ -503,25 +503,22 @@ try {
     $system.Columns.Item(19).ColumnWidth = 15
     $system.Columns.Item(20).ColumnWidth = 18
     $system.Columns.Item(21).ColumnWidth = 22
-    $results.Range("A1:CU1").Font.Bold = $true
-    $results.Range("A32:F32").Font.Bold = $true
-    $results.Range("K32:Y32").Font.Bold = $true
-    $results.Range("AB32:AG32").Font.Bold = $true
-    $results.Range("AJ32:AR32").Font.Bold = $true
-    $results.Range("AW32:BI32").Font.Bold = $true
-    $results.Columns.Item(1).ColumnWidth = 12
-    $results.Columns.Item(11).ColumnWidth = 12
-    $results.Columns.Item(28).ColumnWidth = 12
-    $results.Columns.Item(36).ColumnWidth = 12
-    $results.Columns.Item(49).ColumnWidth = 12
+    $results.Range("A1:BC1").Font.Bold = $true
+    $results.Range("A60:F60").Font.Bold = $true
+    $results.Range("K60:Y60").Font.Bold = $true
+    $results.Range("AB60:AG60").Font.Bold = $true
+    $results.Range("AJ60:AR60").Font.Bold = $true
+    $results.Range("AW60:BI60").Font.Bold = $true
+    $results.Columns.ColumnWidth = 8.43
     Add-ResultsSummaryHelpLink $results $instructions
 
-    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$CU$29'
-    Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$32'
-    Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$K$32'
-    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AB$32'
-    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AJ$32'
-    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$AW$32'
+    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$BC$29'
+    Add-WorkbookName $workbook "rngStabilitySummaryAnchor" $results '$A$37'
+    Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$60'
+    Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$K$60'
+    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AB$60'
+    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AJ$60'
+    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$AW$60'
 
     $calc.PageSetup.PaperSize = 9
     $calc.PageSetup.Orientation = 1

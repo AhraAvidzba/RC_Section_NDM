@@ -1755,14 +1755,15 @@ Private Sub TestBatchSummaryWritesOnlySelectedStabilityCode(ByRef stats As TBatc
     Set writer = New CBatchResultWriter
     writer.WriteSummary ThisWorkbook, batch
 
-    Dim rowIndex As Long
-    rowIndex = BatchSummaryStartRow() + 9
+    Dim stabilityAnchor As Object
+    Set stabilityAnchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
-    AssertTrue stats, "batch.writer.stability.sp35.empty", Len(CStr(resultsSheet.Cells.Item(rowIndex, 63).Value2)) = 0 And _
-        Len(CStr(resultsSheet.Cells.Item(rowIndex, 72).Value2)) = 0
-    AssertTrue stats, "batch.writer.stability.sp63.filled", Len(CStr(resultsSheet.Cells.Item(rowIndex, 81).Value2)) > 0 Or _
-        Len(CStr(resultsSheet.Cells.Item(rowIndex, 90).Value2)) > 0
+    AssertTrue stats, "batch.writer.stability.anchor", stabilityAnchor.Row = 37 And stabilityAnchor.Column = 1
+    AssertTrue stats, "batch.writer.stability.sp35.empty", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 28).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 43).Value2)) = 0
+    AssertTrue stats, "batch.writer.stability.sp63.filled", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 60).Value2)) > 0 Or _
+        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 71).Value2)) > 0
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -1849,7 +1850,9 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     summaryRow = BatchSummaryStartRow()
     AssertTrue stats, "batch.writer.fixedRow", summaryRow = 1
     AssertTrue stats, "batch.writer.noResultOverlap", summaryRow + ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count - 1 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
-    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count = 29 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count >= 99
+    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count = 29 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count = 55
+    AssertTrue stats, "batch.writer.stabilityBlockPosition", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 37 And _
+        ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row = 60
     AssertTrue stats, "batch.writer.title", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = "Сводка пакетного расчета (Подробнее)"
     AssertTrue stats, "batch.writer.titleNotMerged", Not resultsSheet.Cells.Item(summaryRow, 1).MergeCells
     AssertTrue stats, "batch.writer.titleHyperlink", resultsSheet.Cells.Item(summaryRow, 1).Hyperlinks.Count > 0
@@ -1867,16 +1870,33 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.header.capacitySafety", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 26).Value2), "CapacitySafetyFactor", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.header.longitudinalCrackStatus", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 51).Value2), "LongitudinalCrackStatus", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.header.longitudinalCrackSafety", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 54).Value2), "LongitudinalCrackSafetyFactor", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.stabilityStatus", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 55).Value2), "Статус устойчивости", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.stabilitySafety", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 57).Value2), "Запас устойчивости", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.subheader.stabilitySP35Plane1", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 63).Value2), "СП 35", vbTextCompare) > 0 And _
-        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 63).Value2), "плоскость 1", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.subheader.stabilitySP63Plane2", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 90).Value2), "СП 63", vbTextCompare) > 0 And _
-        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 90).Value2), "плоскость 2", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 99).Value2), "MinSafetyFactor", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 55).Value2), "MinSafetyFactor", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.longitudinalFormula", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 54).Formula), "IFERROR", vbTextCompare) > 0 And _
         InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 54).Formula), "BA", vbTextCompare) > 0 And _
         InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 54).Formula), "AZ", vbTextCompare) > 0
+    Dim stabilityAnchor As Object
+    Set stabilityAnchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
+    AssertTrue stats, "batch.writer.stability.header.summary", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 1).Value2) = _
+        "Итог по расчету (с учетом " & ChrW$(&H3B7) & ")"
+    AssertTrue stats, "batch.writer.stability.header.statusWidth", resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 2).MergeArea.Columns.Count = 1
+    AssertTrue stats, "batch.writer.stability.header.mainAxes", InStr(1, CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 3).Value2), _
+        "главных центральных осей", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.stability.header.noExtraTier", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 3).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 5).Value2)) = 0
+    AssertTrue stats, "batch.writer.stability.header.sp35", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 28).Value2) = "Расчет по СП 35"
+    AssertTrue stats, "batch.writer.stability.header.sp63", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 60).Value2) = "Расчет по СП 63"
+    AssertTrue stats, "batch.writer.stability.header.notes", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 3).Value2)) > 0 And _
+        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 60).Value2)) > 0
+    AssertTrue stats, "batch.writer.stability.header.notesPlain", Not resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 3).Font.Bold And _
+        resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 3).HorizontalAlignment = -4131
+    AssertTrue stats, "batch.writer.stability.header.notesFill", CLng(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 3).Interior.Color) = RGB(217, 217, 217)
+    AssertTrue stats, "batch.writer.stability.header.sp35NcrBranch", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 32).Value2) = "при ec > r"
+    AssertTrue stats, "batch.writer.stability.header.sp63PlaneHeight", resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 60).MergeArea.Rows.Count = 2
+    AssertTrue stats, "batch.writer.stability.header.sp35Ratio", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 1, 36).Value2) = "N/Ncr"
+    AssertClose stats, "batch.writer.stability.columnWidthA", CDbl(resultsSheet.Columns.Item(1).ColumnWidth), 8.43, 0.01
+    AssertClose stats, "batch.writer.stability.columnWidthN", CDbl(resultsSheet.Columns.Item(14).ColumnWidth), 8.43, 0.01
+    AssertClose stats, "batch.writer.stability.columnWidthCC", CDbl(resultsSheet.Columns.Item(81).ColumnWidth), 8.43, 0.01
+    AssertTrue stats, "batch.writer.stability.lowerRanges", stabilityAnchor.Row + 20 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
     Exit Sub
 
 Failed:

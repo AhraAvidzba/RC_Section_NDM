@@ -79,6 +79,13 @@ Public StabilityReferenceY As Double ' Y центра приведенного �
 Public StabilityDesignN As Double ' Продольная сила после фильтра устойчивости; в текущей схеме равна исходной N.
 Public StabilityDesignMx As Double ' Mx после учета продольного изгиба относительно центра приведенного сечения.
 Public StabilityDesignMy As Double ' My после учета продольного изгиба относительно центра приведенного сечения.
+Public StabilitySustainedN As Double ' Сжимающая часть постоянной/длительной силы, использованная для коэффициентов длительности.
+Public StabilityMoment1 As Double ' Исходный момент первой главной плоскости до умножения на eta.
+Public StabilityMoment2 As Double ' Исходный момент второй главной плоскости до умножения на eta.
+Public StabilitySustainedMoment1 As Double ' Постоянный/длительный момент первой главной плоскости.
+Public StabilitySustainedMoment2 As Double ' Постоянный/длительный момент второй главной плоскости.
+Public StabilityDesignMoment1 As Double ' Итоговый момент первой главной плоскости после учета eta.
+Public StabilityDesignMoment2 As Double ' Итоговый момент второй главной плоскости после учета eta.
 Public StabilityCriticalForce As Double ' Минимальная контрольная сила устойчивости: Ncr или Nult,stab, Н.
 Public StabilityReserveFactor As Double ' Запас устойчивости: Ncr/N или Nult,stab/N по выбранной ветви.
 Public StabilityUtil As Double ' Использование устойчивости: 1 / StabilityReserveFactor.
@@ -98,8 +105,34 @@ Public StabilityAccidentalEcc1 As Double ' Случайный эксцентри
 Public StabilityAccidentalEcc2 As Double ' Случайный эксцентриситет во второй главной плоскости, мм.
 Public StabilityEffectiveLength1 As Double ' Расчетная длина l0 первой главной плоскости, мм.
 Public StabilityEffectiveLength2 As Double ' Расчетная длина l0 второй главной плоскости, мм.
+Public StabilityPhiLTable1 As Double ' Табличный phi_l СП 35 первой плоскости до возможной замены на PhiL2.
+Public StabilityPhiLTable2 As Double ' Табличный phi_l СП 35 второй плоскости до возможной замены на PhiL2.
+Public StabilityPhiM1 As Double ' Табличный phi_m СП 35 первой плоскости.
+Public StabilityPhiM2 As Double ' Табличный phi_m СП 35 второй плоскости.
+Public StabilityPhiValue1 As Double ' Итоговый phi СП 35 первой плоскости для ветви ec <= r.
+Public StabilityPhiValue2 As Double ' Итоговый phi СП 35 второй плоскости для ветви ec <= r.
+Public StabilityPhiP1 As Double ' Коэффициент phi_p СП 35 первой плоскости для ветви ec > r.
+Public StabilityPhiP2 As Double ' Коэффициент phi_p СП 35 второй плоскости для ветви ec > r.
+Public StabilityDepth1 As Double ' Размер сечения h1 по нормали первой главной плоскости, мм.
+Public StabilityDepth2 As Double ' Размер сечения h2 по нормали второй главной плоскости, мм.
+Public StabilityRadius1 As Double ' Радиус инерции i1 приведенного сечения, мм.
+Public StabilityRadius2 As Double ' Радиус инерции i2 приведенного сечения, мм.
+Public StabilityCoreDistance1 As Double ' Ядровое расстояние r первой главной плоскости со стороны эксцентриситета, мм.
+Public StabilityCoreDistance2 As Double ' Ядровое расстояние r второй главной плоскости со стороны эксцентриситета, мм.
+Public StabilityDelta1 As Double ' Коэффициент delta или delta_e первой плоскости в выбранной ветви.
+Public StabilityDelta2 As Double ' Коэффициент delta или delta_e второй плоскости в выбранной ветви.
+Public StabilityKb1 As Double ' Коэффициент kb СП 63 первой плоскости.
+Public StabilityKb2 As Double ' Коэффициент kb СП 63 второй плоскости.
+Public StabilityKs1 As Double ' Коэффициент ks СП 63 первой плоскости.
+Public StabilityKs2 As Double ' Коэффициент ks СП 63 второй плоскости.
 Public StabilityStiffnessD1 As Double ' Условная жесткость D первой главной плоскости, Н*мм2.
 Public StabilityStiffnessD2 As Double ' Условная жесткость D второй главной плоскости, Н*мм2.
+Public StabilityPlaneBranch1 As String ' Фактическая ветвь расчета первой главной плоскости.
+Public StabilityPlaneBranch2 As String ' Фактическая ветвь расчета второй главной плоскости.
+Public StabilityPlaneApplicable1 As Boolean ' True, если первая плоскость участвовала в проверке.
+Public StabilityPlaneApplicable2 As Boolean ' True, если вторая плоскость участвовала в проверке.
+Public StabilityPlanePassed1 As Boolean ' True, если проверка первой плоскости прошла.
+Public StabilityPlanePassed2 As Boolean ' True, если проверка второй плоскости прошла.
 Public GoverningUtil As Double ' Наибольшее использование LC по применимым проверкам.
 Public StateAvailable As Boolean ' True, если есть сохраненное прямое состояние НДС.
 Public StateConverged As Boolean ' True, если прямой CSectionSolver сошелся.
@@ -180,6 +213,13 @@ Public Sub StoreStabilityResult(ByVal statusText As String, ByVal stability As C
     StabilityDesignN = stability.DesignN
     StabilityDesignMx = stability.DesignMx
     StabilityDesignMy = stability.DesignMy
+    StabilitySustainedN = stability.SustainedN
+    StabilityMoment1 = stability.Moment1
+    StabilityMoment2 = stability.Moment2
+    StabilitySustainedMoment1 = stability.SustainedMoment1
+    StabilitySustainedMoment2 = stability.SustainedMoment2
+    StabilityDesignMoment1 = stability.DesignMoment1
+    StabilityDesignMoment2 = stability.DesignMoment2
     StabilityCriticalForce = stability.CriticalForce
     StabilityReserveFactor = stability.ReserveFactor
     If StabilityReserveFactor > 0# Then StabilityUtil = 1# / StabilityReserveFactor
@@ -193,14 +233,40 @@ Public Sub StoreStabilityResult(ByVal statusText As String, ByVal stability As C
     StabilityEta2 = stability.Eta2
     StabilityPhiL1 = stability.PhiL1
     StabilityPhiL2 = stability.PhiL2
+    StabilityPhiLTable1 = stability.PhiLTable1
+    StabilityPhiLTable2 = stability.PhiLTable2
+    StabilityPhiM1 = stability.PhiM1
+    StabilityPhiM2 = stability.PhiM2
+    StabilityPhiValue1 = stability.PhiValue1
+    StabilityPhiValue2 = stability.PhiValue2
+    StabilityPhiP1 = stability.PhiP1
+    StabilityPhiP2 = stability.PhiP2
     StabilityEccentricity1 = stability.Eccentricity1
     StabilityEccentricity2 = stability.Eccentricity2
     StabilityAccidentalEcc1 = stability.AccidentalEccentricity1
     StabilityAccidentalEcc2 = stability.AccidentalEccentricity2
     StabilityEffectiveLength1 = stability.EffectiveLength1
     StabilityEffectiveLength2 = stability.EffectiveLength2
+    StabilityDepth1 = stability.Depth1
+    StabilityDepth2 = stability.Depth2
+    StabilityRadius1 = stability.Radius1
+    StabilityRadius2 = stability.Radius2
+    StabilityCoreDistance1 = stability.CoreDistance1
+    StabilityCoreDistance2 = stability.CoreDistance2
+    StabilityDelta1 = stability.Delta1
+    StabilityDelta2 = stability.Delta2
+    StabilityKb1 = stability.Kb1
+    StabilityKb2 = stability.Kb2
+    StabilityKs1 = stability.Ks1
+    StabilityKs2 = stability.Ks2
     StabilityStiffnessD1 = stability.StiffnessD1
     StabilityStiffnessD2 = stability.StiffnessD2
+    StabilityPlaneBranch1 = stability.PlaneBranch1
+    StabilityPlaneBranch2 = stability.PlaneBranch2
+    StabilityPlaneApplicable1 = stability.PlaneApplicable1
+    StabilityPlaneApplicable2 = stability.PlaneApplicable2
+    StabilityPlanePassed1 = stability.PlanePassed1
+    StabilityPlanePassed2 = stability.PlanePassed2
 End Sub
 
 ' Очищает только блок продольного изгиба/устойчивости.
@@ -213,6 +279,13 @@ Public Sub ClearStabilityResult()
     StabilityDesignN = 0#
     StabilityDesignMx = 0#
     StabilityDesignMy = 0#
+    StabilitySustainedN = 0#
+    StabilityMoment1 = 0#
+    StabilityMoment2 = 0#
+    StabilitySustainedMoment1 = 0#
+    StabilitySustainedMoment2 = 0#
+    StabilityDesignMoment1 = 0#
+    StabilityDesignMoment2 = 0#
     StabilityCriticalForce = 0#
     StabilityReserveFactor = 0#
     StabilityUtil = 0#
@@ -226,14 +299,40 @@ Public Sub ClearStabilityResult()
     StabilityEta2 = 0#
     StabilityPhiL1 = 0#
     StabilityPhiL2 = 0#
+    StabilityPhiLTable1 = 0#
+    StabilityPhiLTable2 = 0#
+    StabilityPhiM1 = 0#
+    StabilityPhiM2 = 0#
+    StabilityPhiValue1 = 0#
+    StabilityPhiValue2 = 0#
+    StabilityPhiP1 = 0#
+    StabilityPhiP2 = 0#
     StabilityEccentricity1 = 0#
     StabilityEccentricity2 = 0#
     StabilityAccidentalEcc1 = 0#
     StabilityAccidentalEcc2 = 0#
     StabilityEffectiveLength1 = 0#
     StabilityEffectiveLength2 = 0#
+    StabilityDepth1 = 0#
+    StabilityDepth2 = 0#
+    StabilityRadius1 = 0#
+    StabilityRadius2 = 0#
+    StabilityCoreDistance1 = 0#
+    StabilityCoreDistance2 = 0#
+    StabilityDelta1 = 0#
+    StabilityDelta2 = 0#
+    StabilityKb1 = 0#
+    StabilityKb2 = 0#
+    StabilityKs1 = 0#
+    StabilityKs2 = 0#
     StabilityStiffnessD1 = 0#
     StabilityStiffnessD2 = 0#
+    StabilityPlaneBranch1 = vbNullString
+    StabilityPlaneBranch2 = vbNullString
+    StabilityPlaneApplicable1 = False
+    StabilityPlaneApplicable2 = False
+    StabilityPlanePassed1 = False
+    StabilityPlanePassed2 = False
 End Sub
 
 ' Добавляет конечное named-state LC. Промежуточные итерации solver-а и

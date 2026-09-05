@@ -44,7 +44,15 @@ Private Type TPlaneResult
     EffectiveLength As Double
     AccidentalEccentricity As Double
     Eccentricity As Double
+    CoreDistance As Double
     PhiL As Double
+    PhiLTable As Double
+    PhiM As Double
+    PhiValue As Double
+    PhiP As Double
+    DeltaValue As Double
+    Kb As Double
+    Ks As Double
     Eta As Double
     StiffnessD As Double
     CriticalForce As Double
@@ -53,6 +61,7 @@ Private Type TPlaneResult
     ReserveFactor As Double
     CheckPassed As Boolean
     Applicable As Boolean
+    BranchName As String
 End Type
 
 Private mCode As String ' Нормативная ветвь, выбранная настройкой Stability.Code.
@@ -64,6 +73,13 @@ Private mStopReason As String ' Подробная внутренняя прич
 Private mDesignN As Double ' Продольная сила после фильтра; знак сохраняется как во внутреннем ядре.
 Private mDesignMx As Double ' Mx после учета случайного эксцентриситета и eta.
 Private mDesignMy As Double ' My после учета случайного эксцентриситета и eta.
+Private mSustainedN As Double ' Сжимающая часть постоянной/длительной силы, переданная для учета длительности.
+Private mMoment1 As Double ' Исходный расчетный момент в первой главной плоскости до eta.
+Private mMoment2 As Double ' Исходный расчетный момент во второй главной плоскости до eta.
+Private mSustainedMoment1 As Double ' Постоянный/длительный момент в первой главной плоскости.
+Private mSustainedMoment2 As Double ' Постоянный/длительный момент во второй главной плоскости.
+Private mDesignMoment1 As Double ' Итоговый момент первой главной плоскости после учета eta.
+Private mDesignMoment2 As Double ' Итоговый момент второй главной плоскости после учета eta.
 Private mCriticalForce As Double ' Минимальная контрольная сила: Ncr для eta-ветвей или Nult,stab для табличной ветви.
 Private mReserveFactor As Double ' Минимальный запас по устойчивости.
 Private mNcr1 As Double ' Критическая сила Ncr первой главной плоскости; 0, если ветвь считает Nult вместо Ncr.
@@ -76,14 +92,40 @@ Private mEta1 As Double ' Коэффициент eta первой плоскос
 Private mEta2 As Double ' Коэффициент eta второй плоскости.
 Private mPhiL1 As Double ' Коэффициент длительности первой плоскости.
 Private mPhiL2 As Double ' Коэффициент длительности второй плоскости.
+Private mPhiLTable1 As Double ' Табличный phi_l СП 35 первой плоскости до возможной замены на PhiL2.
+Private mPhiLTable2 As Double ' Табличный phi_l СП 35 второй плоскости до возможной замены на PhiL2.
+Private mPhiM1 As Double ' Табличный phi_m СП 35 первой плоскости.
+Private mPhiM2 As Double ' Табличный phi_m СП 35 второй плоскости.
+Private mPhiValue1 As Double ' Итоговый phi СП 35 первой плоскости в ветви ec <= r.
+Private mPhiValue2 As Double ' Итоговый phi СП 35 второй плоскости в ветви ec <= r.
+Private mPhiP1 As Double ' Коэффициент phi_p СП 35 первой плоскости в ветви ec > r.
+Private mPhiP2 As Double ' Коэффициент phi_p СП 35 второй плоскости в ветви ec > r.
 Private mEccentricity1 As Double ' Расчетный эксцентриситет первой плоскости, мм.
 Private mEccentricity2 As Double ' Расчетный эксцентриситет второй плоскости, мм.
 Private mAccidentalEccentricity1 As Double ' Случайный эксцентриситет первой плоскости, мм.
 Private mAccidentalEccentricity2 As Double ' Случайный эксцентриситет второй плоскости, мм.
 Private mEffectiveLength1 As Double ' l0 первой плоскости, мм.
 Private mEffectiveLength2 As Double ' l0 второй плоскости, мм.
+Private mDepth1 As Double ' Размер сечения h1 по нормали первой главной плоскости, мм.
+Private mDepth2 As Double ' Размер сечения h2 по нормали второй главной плоскости, мм.
+Private mRadius1 As Double ' Радиус инерции i1 приведенного сечения.
+Private mRadius2 As Double ' Радиус инерции i2 приведенного сечения.
+Private mCoreDistance1 As Double ' Ядровое расстояние r первой плоскости со стороны эксцентриситета.
+Private mCoreDistance2 As Double ' Ядровое расстояние r второй плоскости со стороны эксцентриситета.
+Private mDelta1 As Double ' delta или delta_e первой плоскости в выбранной расчетной ветви.
+Private mDelta2 As Double ' delta или delta_e второй плоскости в выбранной расчетной ветви.
+Private mKb1 As Double ' Коэффициент kb СП 63 первой плоскости.
+Private mKb2 As Double ' Коэффициент kb СП 63 второй плоскости.
+Private mKs1 As Double ' Коэффициент ks СП 63 первой плоскости.
+Private mKs2 As Double ' Коэффициент ks СП 63 второй плоскости.
 Private mStiffnessD1 As Double ' Условная жесткость D первой плоскости, Н*мм2.
 Private mStiffnessD2 As Double ' Условная жесткость D второй плоскости, Н*мм2.
+Private mPlaneBranch1 As String ' Фактическая ветвь расчета первой плоскости.
+Private mPlaneBranch2 As String ' Фактическая ветвь расчета второй плоскости.
+Private mPlaneApplicable1 As Boolean ' True, если первая плоскость участвовала в проверке.
+Private mPlaneApplicable2 As Boolean ' True, если вторая плоскость участвовала в проверке.
+Private mPlanePassed1 As Boolean ' True, если первая плоскость прошла свою проверку.
+Private mPlanePassed2 As Boolean ' True, если вторая плоскость прошла свою проверку.
 
 ' Выполняет расчет по выбранному нормативному блоку и возвращает расчетные
 ' усилия для дальнейшего НДМ. Если продольная сила не сжимает сечение, фильтр
@@ -103,6 +145,7 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
     mDesignN = nValue
     mDesignMx = mxValue
     mDesignMy = myValue
+    mSustainedN = CompressionForce(sustainedN)
 
     If section Is Nothing Then RaiseInput "Модель сечения не передана."
     If materialProvider Is Nothing Then RaiseInput "Material provider не передан."
@@ -166,16 +209,33 @@ Private Sub Clear()
     mCheckPassed = False
     mStopReason = vbNullString
     mDesignN = 0#: mDesignMx = 0#: mDesignMy = 0#
+    mSustainedN = 0#
+    mMoment1 = 0#: mMoment2 = 0#
+    mSustainedMoment1 = 0#: mSustainedMoment2 = 0#
+    mDesignMoment1 = 0#: mDesignMoment2 = 0#
     mCriticalForce = 0#: mReserveFactor = 0#
     mNcr1 = 0#: mNcr2 = 0#
     mNultimate1 = 0#: mNultimate2 = 0#
     mReserve1 = 0#: mReserve2 = 0#
     mEta1 = 0#: mEta2 = 0#
     mPhiL1 = 0#: mPhiL2 = 0#
+    mPhiLTable1 = 0#: mPhiLTable2 = 0#
+    mPhiM1 = 0#: mPhiM2 = 0#
+    mPhiValue1 = 0#: mPhiValue2 = 0#
+    mPhiP1 = 0#: mPhiP2 = 0#
     mEccentricity1 = 0#: mEccentricity2 = 0#
     mAccidentalEccentricity1 = 0#: mAccidentalEccentricity2 = 0#
     mEffectiveLength1 = 0#: mEffectiveLength2 = 0#
+    mDepth1 = 0#: mDepth2 = 0#
+    mRadius1 = 0#: mRadius2 = 0#
+    mCoreDistance1 = 0#: mCoreDistance2 = 0#
+    mDelta1 = 0#: mDelta2 = 0#
+    mKb1 = 0#: mKb2 = 0#
+    mKs1 = 0#: mKs2 = 0#
     mStiffnessD1 = 0#: mStiffnessD2 = 0#
+    mPlaneBranch1 = vbNullString: mPlaneBranch2 = vbNullString
+    mPlaneApplicable1 = False: mPlaneApplicable2 = False
+    mPlanePassed1 = False: mPlanePassed2 = False
 End Sub
 
 ' Подготавливает две главные расчетные плоскости: моменты переводятся в
@@ -285,6 +345,9 @@ Private Sub CalculateSP63Plane(ByVal nCompression As Double, ByVal eb As Double,
 
     Dim kb As Double
     kb = 0.15 / (plane.PhiL * (0.3 + deltaE))
+    plane.DeltaValue = deltaE
+    plane.Kb = kb
+    plane.Ks = ksValue
     plane.StiffnessD = kb * eb * plane.InertiaConcrete + ksValue * es * plane.InertiaSteel
     plane.NcrForce = GEOM_PI * GEOM_PI * plane.StiffnessD / (plane.EffectiveLength * plane.EffectiveLength)
     plane.CriticalForce = plane.NcrForce
@@ -292,6 +355,7 @@ Private Sub CalculateSP63Plane(ByVal nCompression As Double, ByVal eb As Double,
     plane.Eta = EtaByCriticalForce(plane.NcrForce, nCompression)
     plane.DesignMoment = DesignMomentWithEta(nCompression, plane.Eccentricity, plane.Eta)
     plane.CheckPassed = (plane.ReserveFactor > 1# And plane.Eta > 0#)
+    plane.BranchName = CODE_SP63
 End Sub
 
 ' ----------------------------- СП 35 --------------------------------------
@@ -351,6 +415,7 @@ Private Sub CalculateSP35Plane(ByVal concreteArea As Double, ByVal totalSteelAre
         plane.Applicable = False
         Exit Sub
     End If
+    plane.CoreDistance = coreDistance
 
     Dim q As Double
     q = Abs(plane.Eccentricity) / coreDistance
@@ -377,10 +442,13 @@ Private Sub CalculateSP35TablePlane(ByVal concreteArea As Double, ByVal totalSte
     Else
         plane.PhiL = phiLTable
     End If
+    plane.PhiM = phiM
+    plane.PhiLTable = phiLTable
 
     Dim nUltimate As Double
     Dim phiValue As Double
     phiValue = PhiForSustainedCompression(phiM, plane.PhiL, nCompression, sustainedCompression)
+    plane.PhiValue = phiValue
     nUltimate = phiValue * (rb * concreteArea + rsc * totalSteelArea)
 
     plane.NultimateForce = nUltimate
@@ -391,6 +459,7 @@ Private Sub CalculateSP35TablePlane(ByVal concreteArea As Double, ByVal totalSte
     plane.DesignMoment = nCompression * plane.Eccentricity
     plane.CheckPassed = (plane.ReserveFactor > 1#)
     mBranch = "SP35-table"
+    plane.BranchName = "SP35-table"
 End Sub
 
 ' Ветвь СП 35 через eta и Ncr для ec/r > 1.
@@ -407,8 +476,10 @@ Private Sub CalculateSP35EtaPlane(ByVal nCompression As Double, ByVal eb As Doub
 
     Dim phiPValue As Double
     phiPValue = phiP
+    plane.PhiP = phiPValue
     Dim stiffnessFactor As Double
     stiffnessFactor = 0.11 / (0.1 + deltaValue / phiPValue) + 0.1
+    plane.DeltaValue = deltaValue
     plane.StiffnessD = 6.4 * eb * (plane.InertiaConcrete / plane.PhiL * stiffnessFactor + _
         (es / eb) * plane.InertiaSteel)
     plane.NcrForce = plane.StiffnessD / (plane.EffectiveLength * plane.EffectiveLength)
@@ -419,6 +490,7 @@ Private Sub CalculateSP35EtaPlane(ByVal nCompression As Double, ByVal eb As Doub
     plane.CheckPassed = (plane.ReserveFactor > 1# And plane.Eta > 0# And _
         nCompression / plane.NcrForce <= nOverNcrLimit)
     mBranch = "SP35-eta"
+    plane.BranchName = "SP35-eta"
 End Sub
 
 ' Для табличной ветви СП 35 учитывает долю постоянной нагрузки в полном
@@ -492,20 +564,52 @@ Private Sub StorePlaneResults(ByRef plane1 As TPlaneResult, ByRef plane2 As TPla
     mNcr2 = plane2.NcrForce
     mNultimate1 = plane1.NultimateForce
     mNultimate2 = plane2.NultimateForce
+    mMoment1 = plane1.Moment
+    mMoment2 = plane2.Moment
+    mSustainedMoment1 = plane1.SustainedMoment
+    mSustainedMoment2 = plane2.SustainedMoment
+    mDesignMoment1 = plane1.DesignMoment
+    mDesignMoment2 = plane2.DesignMoment
     mReserve1 = plane1.ReserveFactor
     mReserve2 = plane2.ReserveFactor
     mEta1 = plane1.Eta
     mEta2 = plane2.Eta
     mPhiL1 = plane1.PhiL
     mPhiL2 = plane2.PhiL
+    mPhiLTable1 = plane1.PhiLTable
+    mPhiLTable2 = plane2.PhiLTable
+    mPhiM1 = plane1.PhiM
+    mPhiM2 = plane2.PhiM
+    mPhiValue1 = plane1.PhiValue
+    mPhiValue2 = plane2.PhiValue
+    mPhiP1 = plane1.PhiP
+    mPhiP2 = plane2.PhiP
     mEccentricity1 = plane1.Eccentricity
     mEccentricity2 = plane2.Eccentricity
     mAccidentalEccentricity1 = plane1.AccidentalEccentricity
     mAccidentalEccentricity2 = plane2.AccidentalEccentricity
     mEffectiveLength1 = plane1.EffectiveLength
     mEffectiveLength2 = plane2.EffectiveLength
+    mDepth1 = plane1.Depth
+    mDepth2 = plane2.Depth
+    mRadius1 = plane1.Radius
+    mRadius2 = plane2.Radius
+    mCoreDistance1 = plane1.CoreDistance
+    mCoreDistance2 = plane2.CoreDistance
+    mDelta1 = plane1.DeltaValue
+    mDelta2 = plane2.DeltaValue
+    mKb1 = plane1.Kb
+    mKb2 = plane2.Kb
+    mKs1 = plane1.Ks
+    mKs2 = plane2.Ks
     mStiffnessD1 = plane1.StiffnessD
     mStiffnessD2 = plane2.StiffnessD
+    mPlaneBranch1 = plane1.BranchName
+    mPlaneBranch2 = plane2.BranchName
+    mPlaneApplicable1 = plane1.Applicable
+    mPlaneApplicable2 = plane2.Applicable
+    mPlanePassed1 = plane1.CheckPassed
+    mPlanePassed2 = plane2.CheckPassed
 
     mCriticalForce = PositiveMinValue(plane1.CriticalForce, plane2.CriticalForce)
     mReserveFactor = PositiveMinValue(plane1.ReserveFactor, plane2.ReserveFactor)
@@ -773,6 +877,34 @@ Public Property Get DesignMy() As Double
     DesignMy = mDesignMy
 End Property
 
+Public Property Get SustainedN() As Double
+    SustainedN = mSustainedN
+End Property
+
+Public Property Get Moment1() As Double
+    Moment1 = mMoment1
+End Property
+
+Public Property Get Moment2() As Double
+    Moment2 = mMoment2
+End Property
+
+Public Property Get SustainedMoment1() As Double
+    SustainedMoment1 = mSustainedMoment1
+End Property
+
+Public Property Get SustainedMoment2() As Double
+    SustainedMoment2 = mSustainedMoment2
+End Property
+
+Public Property Get DesignMoment1() As Double
+    DesignMoment1 = mDesignMoment1
+End Property
+
+Public Property Get DesignMoment2() As Double
+    DesignMoment2 = mDesignMoment2
+End Property
+
 Public Property Get CriticalForce() As Double
     CriticalForce = mCriticalForce
 End Property
@@ -821,6 +953,38 @@ Public Property Get PhiL2() As Double
     PhiL2 = mPhiL2
 End Property
 
+Public Property Get PhiLTable1() As Double
+    PhiLTable1 = mPhiLTable1
+End Property
+
+Public Property Get PhiLTable2() As Double
+    PhiLTable2 = mPhiLTable2
+End Property
+
+Public Property Get PhiM1() As Double
+    PhiM1 = mPhiM1
+End Property
+
+Public Property Get PhiM2() As Double
+    PhiM2 = mPhiM2
+End Property
+
+Public Property Get PhiValue1() As Double
+    PhiValue1 = mPhiValue1
+End Property
+
+Public Property Get PhiValue2() As Double
+    PhiValue2 = mPhiValue2
+End Property
+
+Public Property Get PhiP1() As Double
+    PhiP1 = mPhiP1
+End Property
+
+Public Property Get PhiP2() As Double
+    PhiP2 = mPhiP2
+End Property
+
 Public Property Get Eccentricity1() As Double
     Eccentricity1 = mEccentricity1
 End Property
@@ -845,10 +1009,82 @@ Public Property Get EffectiveLength2() As Double
     EffectiveLength2 = mEffectiveLength2
 End Property
 
+Public Property Get Depth1() As Double
+    Depth1 = mDepth1
+End Property
+
+Public Property Get Depth2() As Double
+    Depth2 = mDepth2
+End Property
+
+Public Property Get Radius1() As Double
+    Radius1 = mRadius1
+End Property
+
+Public Property Get Radius2() As Double
+    Radius2 = mRadius2
+End Property
+
+Public Property Get CoreDistance1() As Double
+    CoreDistance1 = mCoreDistance1
+End Property
+
+Public Property Get CoreDistance2() As Double
+    CoreDistance2 = mCoreDistance2
+End Property
+
+Public Property Get Delta1() As Double
+    Delta1 = mDelta1
+End Property
+
+Public Property Get Delta2() As Double
+    Delta2 = mDelta2
+End Property
+
+Public Property Get Kb1() As Double
+    Kb1 = mKb1
+End Property
+
+Public Property Get Kb2() As Double
+    Kb2 = mKb2
+End Property
+
+Public Property Get Ks1() As Double
+    Ks1 = mKs1
+End Property
+
+Public Property Get Ks2() As Double
+    Ks2 = mKs2
+End Property
+
 Public Property Get StiffnessD1() As Double
     StiffnessD1 = mStiffnessD1
 End Property
 
 Public Property Get StiffnessD2() As Double
     StiffnessD2 = mStiffnessD2
+End Property
+
+Public Property Get PlaneBranch1() As String
+    PlaneBranch1 = mPlaneBranch1
+End Property
+
+Public Property Get PlaneBranch2() As String
+    PlaneBranch2 = mPlaneBranch2
+End Property
+
+Public Property Get PlaneApplicable1() As Boolean
+    PlaneApplicable1 = mPlaneApplicable1
+End Property
+
+Public Property Get PlaneApplicable2() As Boolean
+    PlaneApplicable2 = mPlaneApplicable2
+End Property
+
+Public Property Get PlanePassed1() As Boolean
+    PlanePassed1 = mPlanePassed1
+End Property
+
+Public Property Get PlanePassed2() As Boolean
+    PlanePassed2 = mPlanePassed2
 End Property
