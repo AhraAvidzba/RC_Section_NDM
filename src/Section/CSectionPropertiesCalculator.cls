@@ -21,8 +21,10 @@ Option Explicit
 ' учета продольной арматуры.
 '
 ' CalculateTransformed считает приведенное сечение бетон + арматура. Эти
-' свойства нужны для справочного вывода, главных осей и контроля расчетной
-' модели, но больше не являются базой для Load.ReferenceOffset.
+' свойства нужны для справочного вывода, главных осей, ядровых расстояний и
+' нормативных расчетов, где СП прямо требует центр приведенного сечения.
+' Пользовательская точка Load.ReferenceOffset при этом остается привязанной к
+' бетонному центру; перенос к приведенному центру выполняет вызывающий код.
 
 Private mArea As Double ' Площадь текущего представления: бетонная или приведенная к бетону, мм2.
 Private mStaticMomentX As Double ' Статический момент относительно оси X: сумма A*y.
@@ -88,17 +90,27 @@ Public Sub CalculateTransformed(ByVal section As CSectionModel, _
     If concrete Is Nothing Then Err.Raise vbObjectError + 2205, "CSectionPropertiesCalculator", "Материал бетона не передан."
     If steel Is Nothing Then Err.Raise vbObjectError + 2206, "CSectionPropertiesCalculator", "Материал арматуры не передан."
 
-    Clear
-
-    Dim t0 As Double
-    t0 = Timer
-
     Dim concreteModulus As Double ' Начальная жесткость бетона, базовый модуль для приведения.
     Dim steelModulus As Double ' Начальная жесткость арматуры, из нее получаем n = Es / Eb.
     concreteModulus = concrete.GetStress(probeStrain) / probeStrain
     steelModulus = steel.GetStress(probeStrain) / probeStrain
+    CalculateTransformedByModuli section, concreteModulus, steelModulus
+End Sub
+
+' Считает свойства приведенного сечения по уже известным модулям Eb и Es.
+' Этот вход используется нормативными проверками, которым нужны приведенный
+' центр и инерции, но не нужна полноценная диаграмма материала.
+Public Sub CalculateTransformedByModuli(ByVal section As CSectionModel, _
+        ByVal concreteModulus As Double, ByVal steelModulus As Double)
+    If section Is Nothing Then Err.Raise vbObjectError + 2203, "CSectionPropertiesCalculator", "Модель сечения не передана."
+    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 2204, "CSectionPropertiesCalculator", "В модели сечения нет бетонных элементов."
     If Abs(concreteModulus) <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2208, _
         "CSectionPropertiesCalculator", "Начальный модуль бетона для приведенного сечения равен нулю."
+
+    Clear
+
+    Dim t0 As Double
+    t0 = Timer
 
     Dim steelModularRatio As Double
     steelModularRatio = steelModulus / concreteModulus
@@ -226,6 +238,84 @@ Public Function RebarInertiaAboutAxis(ByVal section As CSectionModel, ByVal axis
         RebarInertiaAboutAxis = RebarInertiaAboutAxis + _
             section.RebarArea(i) * distanceToAxis * distanceToAxis + RebarCircleInertia(section.RebarArea(i))
     Next i
+End Function
+
+' Считает момент инерции бетонной части относительно произвольной оси.
+' Ось задается направлением и точкой прохождения. Для каждого бетонного
+' элемента учитываются его собственные локальные инерции и перенос площади.
+Public Function ConcreteInertiaAboutAxis(ByVal section As CSectionModel, ByVal axisX As Double, _
+        ByVal axisY As Double, ByVal originX As Double, ByVal originY As Double) As Double
+    If section Is Nothing Then Err.Raise vbObjectError + 2216, "CSectionPropertiesCalculator", "Модель сечения не передана."
+
+    Dim normValue As Double
+    normValue = Sqr(axisX * axisX + axisY * axisY)
+    If normValue <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2217, "CSectionPropertiesCalculator", "Ось инерции бетона имеет нулевую длину."
+
+    Dim nx As Double
+    Dim ny As Double
+    nx = axisX / normValue
+    ny = axisY / normValue
+
+    Dim i As Long
+    Dim dx As Double
+    Dim dy As Double
+    Dim distanceToAxis As Double
+    Dim localInertia As Double
+    For i = 1 To section.ConcreteCount
+        dx = section.ConcreteX(i) - originX
+        dy = section.ConcreteY(i) - originY
+        distanceToAxis = -ny * dx + nx * dy
+        localInertia = ny * ny * section.ConcreteLocalIy(i) + _
+            nx * nx * section.ConcreteLocalIx(i) - _
+            2# * nx * ny * section.ConcreteLocalIxy(i)
+        ConcreteInertiaAboutAxis = ConcreteInertiaAboutAxis + _
+            localInertia + section.ConcreteArea(i) * distanceToAxis * distanceToAxis
+    Next i
+End Function
+
+' Возвращает центральный момент инерции относительно оси, перпендикулярной
+' указанному направлению. Это величина I_n = integral(s^2 dA), где s - проекция
+' точки на направление. Она нужна для ядрового расстояния r = I/(A*c).
+Public Function ProjectedInertiaAboutCentroid(ByVal directionX As Double, ByVal directionY As Double) As Double
+    Dim normValue As Double
+    normValue = Sqr(directionX * directionX + directionY * directionY)
+    If normValue <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2218, "CSectionPropertiesCalculator", "Направление для инерции имеет нулевую длину."
+
+    Dim nx As Double
+    Dim ny As Double
+    nx = directionX / normValue
+    ny = directionY / normValue
+    ProjectedInertiaAboutCentroid = nx * nx * mIyc + ny * ny * mIxc + 2# * nx * ny * mIxyc
+End Function
+
+' Считает ядровое расстояние для выбранной стороны сечения.
+' direction задает сторону, куда направлен эксцентриситет. Метод универсален
+' для любой CSectionModel: крайняя точка ищется по бетонным элементам и, при
+' необходимости, по эквивалентным радиусам стержней.
+Public Function CoreDistanceAlong(ByVal section As CSectionModel, ByVal directionX As Double, _
+        ByVal directionY As Double, Optional ByVal includeRebar As Boolean = True) As Double
+    If mArea <= GEOM_TOLERANCE Then Exit Function
+
+    Dim normValue As Double
+    normValue = Sqr(directionX * directionX + directionY * directionY)
+    If normValue <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2219, "CSectionPropertiesCalculator", "Направление ядрового расстояния имеет нулевую длину."
+
+    Dim nx As Double
+    Dim ny As Double
+    nx = directionX / normValue
+    ny = directionY / normValue
+
+    Dim minProjection As Double
+    Dim maxProjection As Double
+    CalculateProjection section, nx, ny, includeRebar, minProjection, maxProjection
+
+    Dim centroidProjection As Double
+    Dim extremeDistance As Double
+    centroidProjection = nx * mCentroidX + ny * mCentroidY
+    extremeDistance = maxProjection - centroidProjection
+    If extremeDistance <= GEOM_TOLERANCE Then Exit Function
+
+    CoreDistanceAlong = ProjectedInertiaAboutCentroid(nx, ny) / (mArea * extremeDistance)
 End Function
 
 ' Расширяет накопленный диапазон проекций одним элементом.

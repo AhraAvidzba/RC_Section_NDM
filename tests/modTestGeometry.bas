@@ -23,6 +23,7 @@ Public Function RunGeometryTests() As String
     TestSymmetricRoundedRectangle stats
     TestAsymmetricRadii stats
     TestCircleGeometry stats
+    TestCircleCoreDistance stats
     TestCirclePrincipalAxesStableOnCoarseMesh stats
     TestCircleInvalidData stats
     TestCircleAutoRebarLayout stats
@@ -523,6 +524,28 @@ Private Sub TestCircleGeometry(ByRef stats As TTestStats)
     AssertRelative stats, "circle.Iy", props.Iyc, analyticalI, 0.006
     AssertClose stats, "circle.Ixy", props.Ixyc, 0#, 0.000001 * props.Area * geom.Radius
     AssertClose stats, "circle.principal.angle", props.PrincipalAngleRad, 0#, 0.000001
+End Sub
+
+' Проверяет ядровое расстояние на круге: для сплошного круга r = R/4.
+' Метод CoreDistanceAlong затем используется устойчивостью СП 35 для ветви e/r.
+Private Sub TestCircleCoreDistance(ByRef stats As TTestStats)
+    Dim geom As CGeometryCircle
+    Set geom = New CGeometryCircle
+    geom.InitializeByDiameter 300#
+
+    Dim mesh As CFiberMeshBuilder
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geom, 2.5, 2.5, 1
+
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, Nothing)
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateConcrete section
+
+    AssertRelative stats, "circle.core.xPositive", props.CoreDistanceAlong(section, 1#, 0#, False), 37.5, 0.02
+    AssertRelative stats, "circle.core.yNegative", props.CoreDistanceAlong(section, 0#, -1#, False), 37.5, 0.02
 End Sub
 
 ' Проверяет, что грубая, но симметричная сетка круга не разворачивает главные

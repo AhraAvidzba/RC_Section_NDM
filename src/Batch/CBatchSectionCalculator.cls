@@ -107,8 +107,6 @@ Private mStabilityLoadCombinationID(1 To MAX_COMBINATIONS) As String ' LC, к к
 Private mStabilityLoadN(1 To MAX_COMBINATIONS) As Double ' N от постоянных или постоянных+длительных нагрузок, Н.
 Private mStabilityLoadUserMx(1 To MAX_COMBINATIONS) As Double ' Пользовательский Mx длительной части в точке приложения нагрузки.
 Private mStabilityLoadUserMy(1 To MAX_COMBINATIONS) As Double ' Пользовательский My длительной части в точке приложения нагрузки.
-Private mStabilityLoadMx(1 To MAX_COMBINATIONS) As Double ' Mx длительной части относительно центра тяжести бетонного сечения.
-Private mStabilityLoadMy(1 To MAX_COMBINATIONS) As Double ' My длительной части относительно центра тяжести бетонного сечения.
 
 ' Инициализирует внутреннее состояние объекта значениями по умолчанию, безопасными для последующей настройки.
 Private Sub Class_Initialize()
@@ -278,8 +276,6 @@ Public Sub ClearStabilityDurationLoads()
         mStabilityLoadN(i) = 0#
         mStabilityLoadUserMx(i) = 0#
         mStabilityLoadUserMy(i) = 0#
-        mStabilityLoadMx(i) = 0#
-        mStabilityLoadMy(i) = 0#
     Next i
 End Sub
 
@@ -296,8 +292,6 @@ Public Sub AddStabilityDurationLoad(ByVal combinationID As String, ByVal nValue 
     mStabilityLoadN(mStabilityLoadCount) = nValue
     mStabilityLoadUserMx(mStabilityLoadCount) = mxValue
     mStabilityLoadUserMy(mStabilityLoadCount) = myValue
-    mStabilityLoadMx(mStabilityLoadCount) = mxValue
-    mStabilityLoadMy(mStabilityLoadCount) = myValue
 End Sub
 
 ' Принимает таблицу 7.21 СП 35 из Config. Таблица нужна только при выборе
@@ -360,10 +354,6 @@ Public Sub ApplyLoadReference(ByVal referenceX As Double, ByVal referenceY As Do
         End If
     Next i
 
-    For i = 1 To mStabilityLoadCount
-        mStabilityLoadMx(i) = mStabilityLoadUserMx(i) + mStabilityLoadN(i) * mLoadReferenceOffsetY
-        mStabilityLoadMy(i) = mStabilityLoadUserMy(i) + mStabilityLoadN(i) * mLoadReferenceOffsetX
-    Next i
 End Sub
 
 ' Последовательно считает все добавленные LC и выбирает определяющее сочетание.
@@ -507,20 +497,25 @@ End Sub
 Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialValueSet)
     On Error GoTo Failed
 
+    Dim referenceX As Double
+    Dim referenceY As Double
+    StabilityReferencePoint valueSet, referenceX, referenceY
+
     Dim sustainedN As Double
     Dim sustainedMx As Double
     Dim sustainedMy As Double
-    StabilityDurationLoadForCombination mInputs(index).CombinationID, sustainedN, sustainedMx, sustainedMy
+    StabilityDurationLoadForCombination mInputs(index).CombinationID, referenceX, referenceY, _
+        sustainedN, sustainedMx, sustainedMy
 
     Dim stability As CStabilityCalculator
     Set stability = New CStabilityCalculator
-    Dim centroidMx As Double
-    Dim centroidMy As Double
-    centroidMx = MomentMxAboutConcreteCentroid(index)
-    centroidMy = MomentMyAboutConcreteCentroid(index)
+    Dim referenceMx As Double
+    Dim referenceMy As Double
+    referenceMx = MomentMxAboutPoint(index, referenceY)
+    referenceMy = MomentMyAboutPoint(index, referenceX)
 
     stability.Calculate mSection, mMaterialProvider, valueSet, mStabilityCode, _
-        mInputs(index).N, centroidMx, centroidMy, _
+        mInputs(index).N, referenceMx, referenceMy, _
         sustainedN, sustainedMx, sustainedMy, _
         mStabilityElementLength, mStabilityMu1, mStabilityMu2, _
         mStabilitySystemType, mStabilityZeroSign1, mStabilityZeroSign2, _
@@ -528,8 +523,9 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
         mStabilitySP63DeltaEMax, mStabilitySP35PhiP, _
         mStabilitySP35NOverNcrLimit, mStabilitySP35Table721
 
-    mResults(index).StoreStabilityResult mStatusPolicy.StabilityStatusFromCalculator(stability), stability
-    If stability.InputValid And stability.Applicable Then ApplyStabilityDesignLoads index, stability
+    mResults(index).StoreStabilityResult mStatusPolicy.StabilityStatusFromCalculator(stability), _
+        stability, referenceX, referenceY
+    If stability.InputValid And stability.Applicable Then ApplyStabilityDesignLoads index, stability, referenceX, referenceY
 
     ReportValue "StabilityStatus", mResults(index).StabilityStatus
     ReportValue "Stability.Code", stability.Code
@@ -552,13 +548,14 @@ End Sub
 ' Берет длительную часть нагрузки для LC. Если пользователь не заполнил строку,
 ' принимаются нули: это допустимый ввод и не блокирует основной расчет.
 Private Sub StabilityDurationLoadForCombination(ByVal combinationID As String, _
+        ByVal referenceX As Double, ByVal referenceY As Double, _
         ByRef nValue As Double, ByRef mxValue As Double, ByRef myValue As Double)
     Dim i As Long
     For i = 1 To mStabilityLoadCount
         If StrComp(mStabilityLoadCombinationID(i), Trim$(combinationID), vbTextCompare) = 0 Then
             nValue = mStabilityLoadN(i)
-            mxValue = mStabilityLoadMx(i)
-            myValue = mStabilityLoadMy(i)
+            mxValue = mStabilityLoadUserMx(i) + mStabilityLoadN(i) * (mLoadReferenceY - referenceY)
+            myValue = mStabilityLoadUserMy(i) + mStabilityLoadN(i) * (mLoadReferenceX - referenceX)
             Exit Sub
         End If
     Next i
@@ -566,38 +563,42 @@ End Sub
 
 ' Подменяет усилия LC расчетными усилиями после фильтра устойчивости. Сам
 ' CStabilityCalculator работает с моментами относительно центра тяжести
-' бетонного сечения, поэтому перед НДМ моменты снова переносятся к внутренней
-' системе координат элементов.
-Private Sub ApplyStabilityDesignLoads(ByVal index As Long, ByVal stability As CStabilityCalculator)
+' приведенного сечения, как требуют СП 35/63. Перед НДМ моменты снова
+' переносятся к внутренней системе координат элементов.
+Private Sub ApplyStabilityDesignLoads(ByVal index As Long, ByVal stability As CStabilityCalculator, _
+        ByVal referenceX As Double, ByVal referenceY As Double)
     mInputs(index).N = stability.DesignN
-    mInputs(index).Mx = stability.DesignMx + mInputs(index).N * ConcreteCentroidY()
-    mInputs(index).My = stability.DesignMy + mInputs(index).N * ConcreteCentroidX()
+    mInputs(index).Mx = stability.DesignMx + mInputs(index).N * referenceY
+    mInputs(index).My = stability.DesignMy + mInputs(index).N * referenceX
     mInputs(index).UserMx = mInputs(index).Mx - mInputs(index).N * mLoadReferenceY
     mInputs(index).UserMy = mInputs(index).My - mInputs(index).N * mLoadReferenceX
 End Sub
 
-' Возвращает момент LC относительно центра тяжести бетонного сечения. Это база
-' для расчета эксцентриситетов устойчивости: пользовательская точка 0,0
-' привязана именно к этому центру, а Load.ReferenceOffset добавляет только
-' заданное пользователем смещение от него.
-Private Function MomentMxAboutConcreteCentroid(ByVal index As Long) As Double
-    MomentMxAboutConcreteCentroid = mInputs(index).UserMx + mInputs(index).N * mLoadReferenceOffsetY
+' Возвращает Mx LC относительно произвольной расчетной точки.
+' Для устойчивости сюда передается центр приведенного сечения, а для обычного
+' НДМ пользовательская точка остается привязанной к бетонному центру.
+Private Function MomentMxAboutPoint(ByVal index As Long, ByVal referenceY As Double) As Double
+    MomentMxAboutPoint = mInputs(index).UserMx + mInputs(index).N * (mLoadReferenceY - referenceY)
 End Function
 
-' Возвращает My относительно центра тяжести бетонного сечения.
-Private Function MomentMyAboutConcreteCentroid(ByVal index As Long) As Double
-    MomentMyAboutConcreteCentroid = mInputs(index).UserMy + mInputs(index).N * mLoadReferenceOffsetX
+' Возвращает My LC относительно произвольной расчетной точки.
+Private Function MomentMyAboutPoint(ByVal index As Long, ByVal referenceX As Double) As Double
+    MomentMyAboutPoint = mInputs(index).UserMy + mInputs(index).N * (mLoadReferenceX - referenceX)
 End Function
 
-' X центра тяжести бетонного сечения во внутренней системе элементов.
-Private Function ConcreteCentroidX() As Double
-    ConcreteCentroidX = mLoadReferenceX - mLoadReferenceOffsetX
-End Function
-
-' Y центра тяжести бетонного сечения во внутренней системе элементов.
-Private Function ConcreteCentroidY() As Double
-    ConcreteCentroidY = mLoadReferenceY - mLoadReferenceOffsetY
-End Function
+' Возвращает центр приведенного сечения для нормативного расчета устойчивости.
+' Приведение выполняется по модулю Eb/Es из того набора характеристик, который
+' выбран в профиле строкой MaterialModel.Stability.ValueSet.
+Private Sub StabilityReferencePoint(ByVal valueSet As EMaterialValueSet, _
+        ByRef referenceX As Double, ByRef referenceY As Double)
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateTransformedByModuli mSection, _
+        mMaterialProvider.ConcreteElasticModulusFromValueSet(valueSet), _
+        mMaterialProvider.SteelElasticModulusFromValueSet(valueSet)
+    referenceX = props.CentroidX
+    referenceY = props.CentroidY
+End Sub
 
 ' Запускает поиск несущей способности для LC.
 ' Пользовательский столбец CapacityLoadPath задает, какие компоненты нагрузки
@@ -1421,12 +1422,14 @@ End Property
 ' Возвращает Mx после устойчивости в той же пользовательской точке задания
 ' нагрузки, от которой исходно задавались Mx/My в rngLoadCombinations.
 Public Property Get StabilityLoadPointMx(ByVal index As Long) As Double
-    StabilityLoadPointMx = mResults(index).StabilityDesignMx - mResults(index).StabilityDesignN * mLoadReferenceOffsetY
+    StabilityLoadPointMx = mResults(index).StabilityDesignMx - _
+        mResults(index).StabilityDesignN * (mLoadReferenceY - mResults(index).StabilityReferenceY)
 End Property
 
 ' Возвращает My после устойчивости в пользовательской точке задания нагрузки.
 Public Property Get StabilityLoadPointMy(ByVal index As Long) As Double
-    StabilityLoadPointMy = mResults(index).StabilityDesignMy - mResults(index).StabilityDesignN * mLoadReferenceOffsetX
+    StabilityLoadPointMy = mResults(index).StabilityDesignMy - _
+        mResults(index).StabilityDesignN * (mLoadReferenceX - mResults(index).StabilityReferenceX)
 End Property
 
 Public Property Get StabilityCriticalForce(ByVal index As Long) As Double

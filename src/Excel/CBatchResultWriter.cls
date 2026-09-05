@@ -362,25 +362,33 @@ Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem
     data(COLUMN_HEADER_ROW, COL_STABILITY_DESIGN_N) = "N после устойчивости, " & OutputForceUnit(units)
     data(COLUMN_HEADER_ROW, COL_STABILITY_LOADPOINT_MX) = "Mx после устойчивости в точке нагрузки, " & OutputMomentUnit(units)
     data(COLUMN_HEADER_ROW, COL_STABILITY_LOADPOINT_MY) = "My после устойчивости в точке нагрузки, " & OutputMomentUnit(units)
-    data(COLUMN_HEADER_ROW, COL_STABILITY_DESIGN_MX) = "Mx после устойчивости в ц.т. бетона, " & OutputMomentUnit(units)
-    data(COLUMN_HEADER_ROW, COL_STABILITY_DESIGN_MY) = "My после устойчивости в ц.т. бетона, " & OutputMomentUnit(units)
-    PutStabilityPlaneHeaders data, COL_STABILITY_SP35_NCR1, units
-    PutStabilityPlaneHeaders data, COL_STABILITY_SP35_NCR2, units
-    PutStabilityPlaneHeaders data, COL_STABILITY_SP63_NCR1, units
-    PutStabilityPlaneHeaders data, COL_STABILITY_SP63_NCR2, units
+    data(COLUMN_HEADER_ROW, COL_STABILITY_DESIGN_MX) = "Mx после устойчивости в ц.т. приведенного сечения, " & OutputMomentUnit(units)
+    data(COLUMN_HEADER_ROW, COL_STABILITY_DESIGN_MY) = "My после устойчивости в ц.т. приведенного сечения, " & OutputMomentUnit(units)
+    PutStabilityPlaneHeaders data, COL_STABILITY_SP35_NCR1, units, "SP35"
+    PutStabilityPlaneHeaders data, COL_STABILITY_SP35_NCR2, units, "SP35"
+    PutStabilityPlaneHeaders data, COL_STABILITY_SP63_NCR1, units, "SP63"
+    PutStabilityPlaneHeaders data, COL_STABILITY_SP63_NCR2, units, "SP63"
 
     data(COLUMN_HEADER_ROW, COL_OVERALL_SF) = "MinSafetyFactor (общий запас)"
 End Sub
 
-' Заполняет одинаковый набор заголовков для одной расчетной плоскости устойчивости.
-Private Sub PutStabilityPlaneHeaders(ByRef data() As Variant, ByVal firstColumn As Long, ByVal units As CUnitSystem)
+' Заполняет набор заголовков для одной расчетной плоскости устойчивости.
+' Математически поля одинаковые, но обозначения эксцентриситетов в СП 35
+' и СП 63 разные, поэтому подписи формируются под конкретный нормативный блок.
+Private Sub PutStabilityPlaneHeaders(ByRef data() As Variant, ByVal firstColumn As Long, _
+        ByVal units As CUnitSystem, ByVal codeName As String)
     data(COLUMN_HEADER_ROW, firstColumn) = "Ncr, " & OutputForceUnit(units)
     data(COLUMN_HEADER_ROW, firstColumn + 1) = "Nult,stab, " & OutputForceUnit(units)
     data(COLUMN_HEADER_ROW, firstColumn + 2) = "Запас"
     data(COLUMN_HEADER_ROW, firstColumn + 3) = "eta"
     data(COLUMN_HEADER_ROW, firstColumn + 4) = "phi_l"
-    data(COLUMN_HEADER_ROW, firstColumn + 5) = "Эксцентриситет e, " & OutputLengthUnit(units)
-    data(COLUMN_HEADER_ROW, firstColumn + 6) = "Случайный e_a, " & OutputLengthUnit(units)
+    If StrComp(codeName, "SP35", vbTextCompare) = 0 Then
+        data(COLUMN_HEADER_ROW, firstColumn + 5) = "Расчетный ec, " & OutputLengthUnit(units)
+        data(COLUMN_HEADER_ROW, firstColumn + 6) = "Случайный ec,sl, " & OutputLengthUnit(units)
+    Else
+        data(COLUMN_HEADER_ROW, firstColumn + 5) = "Начальный e0, " & OutputLengthUnit(units)
+        data(COLUMN_HEADER_ROW, firstColumn + 6) = "Случайный ea, " & OutputLengthUnit(units)
+    End If
     data(COLUMN_HEADER_ROW, firstColumn + 7) = "Расчетная длина l0, " & OutputLengthUnit(units)
     data(COLUMN_HEADER_ROW, firstColumn + 8) = "Жесткость D, " & OutputStiffnessUnit(units)
 End Sub

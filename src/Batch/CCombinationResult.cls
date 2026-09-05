@@ -74,9 +74,11 @@ Public LongitudinalCrackRbMc2 As Double ' Допустимое Rb,mc2, с кот
 Public LongitudinalCrackUtil As Double ' Использование по продольным трещинам: sigma_c,max / Rb,mc2.
 Public StabilityCode As String ' Выбранная нормативная ветвь: SP63 или SP35.
 Public StabilityBranch As String ' Внутренняя трассировка расчетной ветви устойчивости для diagnostics/report.
+Public StabilityReferenceX As Double ' X центра приведенного сечения, относительно которого считалась устойчивость.
+Public StabilityReferenceY As Double ' Y центра приведенного сечения, относительно которого считалась устойчивость.
 Public StabilityDesignN As Double ' Продольная сила после фильтра устойчивости; в текущей схеме равна исходной N.
-Public StabilityDesignMx As Double ' Mx после учета продольного изгиба и случайного эксцентриситета.
-Public StabilityDesignMy As Double ' My после учета продольного изгиба и случайного эксцентриситета.
+Public StabilityDesignMx As Double ' Mx после учета продольного изгиба относительно центра приведенного сечения.
+Public StabilityDesignMy As Double ' My после учета продольного изгиба относительно центра приведенного сечения.
 Public StabilityCriticalForce As Double ' Минимальная контрольная сила устойчивости: Ncr или Nult,stab, Н.
 Public StabilityReserveFactor As Double ' Запас устойчивости: Ncr/N или Nult,stab/N по выбранной ветви.
 Public StabilityUtil As Double ' Использование устойчивости: 1 / StabilityReserveFactor.
@@ -167,8 +169,11 @@ End Sub
 ' Сохраняет результат изолированного фильтра продольного изгиба/устойчивости.
 ' Калькулятор не знает о batch-status policy, поэтому сюда копируются уже
 ' нормализованные численные величины и короткий пользовательский статус.
-Public Sub StoreStabilityResult(ByVal statusText As String, ByVal stability As CStabilityCalculator)
+Public Sub StoreStabilityResult(ByVal statusText As String, ByVal stability As CStabilityCalculator, _
+        Optional ByVal referenceX As Double = 0#, Optional ByVal referenceY As Double = 0#)
     StabilityStatus = statusText
+    StabilityReferenceX = referenceX
+    StabilityReferenceY = referenceY
     If stability Is Nothing Then Exit Sub
     StabilityCode = stability.Code
     StabilityBranch = stability.Branch
@@ -203,6 +208,8 @@ Public Sub ClearStabilityResult()
     StabilityStatus = vbNullString
     StabilityCode = vbNullString
     StabilityBranch = vbNullString
+    StabilityReferenceX = 0#
+    StabilityReferenceY = 0#
     StabilityDesignN = 0#
     StabilityDesignMx = 0#
     StabilityDesignMy = 0#

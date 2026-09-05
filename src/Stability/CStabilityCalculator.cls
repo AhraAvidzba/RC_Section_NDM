@@ -38,6 +38,8 @@ Private Type TPlaneResult
     InertiaConcrete As Double
     InertiaSteel As Double
     Radius As Double
+    CoreDistancePositive As Double
+    CoreDistanceNegative As Double
     Depth As Double
     EffectiveLength As Double
     AccidentalEccentricity As Double
@@ -116,9 +118,19 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
         Exit Sub
     End If
 
+    Dim ebForGeometry As Double
+    Dim esForGeometry As Double
+    ebForGeometry = materialProvider.ConcreteElasticModulusFromValueSet(valueSet)
+    esForGeometry = materialProvider.SteelElasticModulusFromValueSet(valueSet)
+    If ebForGeometry <= 0# Or esForGeometry <= 0# Then RaiseInput "Для расчета устойчивости нужны положительные Eb и Es."
+
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
-    props.CalculateConcrete section
+    props.CalculateTransformedByModuli section, ebForGeometry, esForGeometry
+
+    Dim concreteProps As CSectionPropertiesCalculator
+    Set concreteProps = New CSectionPropertiesCalculator
+    concreteProps.CalculateConcrete section
 
     Dim plane1 As TPlaneResult
     Dim plane2 As TPlaneResult
@@ -129,7 +141,7 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
         CalculateSP63 section, materialProvider, valueSet, nCompression, systemType, phiLMode, sp63Ks, _
             sp63DeltaEMin, sp63DeltaEMax, plane1, plane2
     Else
-        CalculateSP35 section, materialProvider, valueSet, props.Area, props.RebarAreaTotal(section), _
+        CalculateSP35 section, materialProvider, valueSet, concreteProps.Area, props.RebarAreaTotal(section), _
             nCompression, CompressionForce(sustainedN), systemType, phiLMode, _
             sp35PhiP, sp35NOverNcrLimit, sp35Table721, plane1, plane2
     End If
@@ -167,8 +179,9 @@ Private Sub Clear()
 End Sub
 
 ' Подготавливает две главные расчетные плоскости: моменты переводятся в
-' главные центральные оси бетонного сечения, а высоты берутся из общего
-' геометрического сервиса с учетом эквивалентного радиуса арматуры.
+' главные центральные оси приведенного сечения. Это нормативная база
+' эксцентриситетов устойчивости по СП 35 и СП 63; пользовательская точка
+' нагрузки к этому моменту уже перенесена batch-ом в тот же центр.
 Private Sub PreparePlanes(ByVal section As CSectionModel, ByVal props As CSectionPropertiesCalculator, _
         ByVal mxValue As Double, ByVal myValue As Double, ByVal sustainedMx As Double, _
         ByVal sustainedMy As Double, ByVal elementLength As Double, ByVal mu1 As Double, _
@@ -187,12 +200,16 @@ Private Sub PreparePlanes(ByVal section As CSectionModel, ByVal props As CSectio
     plane2.Moment = mxValue * axis2X + myValue * axis2Y
     plane1.SustainedMoment = sustainedMx * axis1X + sustainedMy * axis1Y
     plane2.SustainedMoment = sustainedMx * axis2X + sustainedMy * axis2Y
-    plane1.InertiaConcrete = props.PrincipalI1
-    plane2.InertiaConcrete = props.PrincipalI2
+    plane1.InertiaConcrete = props.ConcreteInertiaAboutAxis(section, axis1X, axis1Y, props.CentroidX, props.CentroidY)
+    plane2.InertiaConcrete = props.ConcreteInertiaAboutAxis(section, axis2X, axis2Y, props.CentroidX, props.CentroidY)
     plane1.InertiaSteel = props.RebarInertiaAboutAxis(section, axis1X, axis1Y, props.CentroidX, props.CentroidY)
     plane2.InertiaSteel = props.RebarInertiaAboutAxis(section, axis2X, axis2Y, props.CentroidX, props.CentroidY)
     plane1.Radius = props.PrincipalRadius1
     plane2.Radius = props.PrincipalRadius2
+    plane1.CoreDistancePositive = props.CoreDistanceAlong(section, axis2X, axis2Y, True)
+    plane1.CoreDistanceNegative = props.CoreDistanceAlong(section, -axis2X, -axis2Y, True)
+    plane2.CoreDistancePositive = props.CoreDistanceAlong(section, axis1X, axis1Y, True)
+    plane2.CoreDistanceNegative = props.CoreDistanceAlong(section, -axis1X, -axis1Y, True)
     plane1.Depth = props.ProjectionDepth(section, axis2X, axis2Y, True)
     plane2.Depth = props.ProjectionDepth(section, axis1X, axis1Y, True)
     plane1.EffectiveLength = elementLength * PositiveOrOne(mu1)
@@ -306,7 +323,7 @@ Private Sub CalculateSP35(ByVal section As CSectionModel, ByVal materialProvider
     CalculateSP35Plane concreteArea, totalSteelArea, nCompression, sustainedCompression, eb, es, rb, rsc, systemType, phiLMode, phiP, nOverNcrLimit, table721, plane2
 End Sub
 
-' Считает одну главную плоскость по СП 35: табличная ветвь при e/r <= 1,
+' Считает одну главную плоскость по СП 35: табличная ветвь при ec/r <= 1,
 ' иначе eta/Ncr. Таблица 7.21 передается с Config и не зашита в код.
 Private Sub CalculateSP35Plane(ByVal concreteArea As Double, ByVal totalSteelArea As Double, _
         ByVal nCompression As Double, ByVal sustainedCompression As Double, ByVal eb As Double, ByVal es As Double, _
@@ -328,8 +345,15 @@ Private Sub CalculateSP35Plane(ByVal concreteArea As Double, ByVal totalSteelAre
     plane.Eccentricity = InitialEccentricity(plane.Moment, nCompression, _
         plane.AccidentalEccentricity, systemType)
 
+    Dim coreDistance As Double
+    coreDistance = CoreDistanceForEccentricity(plane)
+    If coreDistance <= SMALL_VALUE Then
+        plane.Applicable = False
+        Exit Sub
+    End If
+
     Dim q As Double
-    q = Abs(plane.Eccentricity) / plane.Radius
+    q = Abs(plane.Eccentricity) / coreDistance
     If q <= 1# Then
         CalculateSP35TablePlane concreteArea, totalSteelArea, nCompression, sustainedCompression, rb, rsc, phiLMode, table721, q, plane
     Else
@@ -337,7 +361,7 @@ Private Sub CalculateSP35Plane(ByVal concreteArea As Double, ByVal totalSteelAre
     End If
 End Sub
 
-' Табличная ветвь СП 35 для e/r <= 1.
+' Табличная ветвь СП 35 для ec/r <= 1.
 Private Sub CalculateSP35TablePlane(ByVal concreteArea As Double, ByVal totalSteelArea As Double, _
         ByVal nCompression As Double, ByVal sustainedCompression As Double, ByVal rb As Double, ByVal rsc As Double, _
         ByVal phiLMode As String, ByVal table721 As Variant, ByVal q As Double, _
@@ -369,7 +393,7 @@ Private Sub CalculateSP35TablePlane(ByVal concreteArea As Double, ByVal totalSte
     mBranch = "SP35-table"
 End Sub
 
-' Ветвь СП 35 через eta и Ncr для e/r > 1.
+' Ветвь СП 35 через eta и Ncr для ec/r > 1.
 Private Sub CalculateSP35EtaPlane(ByVal nCompression As Double, ByVal eb As Double, ByVal es As Double, _
         ByVal rb As Double, ByVal phiLMode As String, ByVal phiP As Double, _
         ByVal nOverNcrLimit As Double, ByRef plane As TPlaneResult)
@@ -577,9 +601,20 @@ Private Function DesignMomentWithEta(ByVal nCompression As Double, ByVal eccentr
     End If
 End Function
 
+' Выбирает ядровое расстояние с той стороны сечения, куда направлен
+' расчетный эксцентриситет. Для несимметричного сечения положительная и
+' отрицательная стороны могут иметь разные r.
+Private Function CoreDistanceForEccentricity(ByRef plane As TPlaneResult) As Double
+    If plane.Eccentricity < 0# Then
+        CoreDistanceForEccentricity = plane.CoreDistanceNegative
+    Else
+        CoreDistanceForEccentricity = plane.CoreDistancePositive
+    End If
+End Function
+
 ' Интерполирует таблицу 7.21 СП 35, переданную с листа Config. В книге
 ' таблица сохранена в человекочитаемом виде: l0/b, l0/d, l0/i, далее phi_m
-' для нескольких e/r и табличный phi_l. Расчет использует l0/i и phi-колонки.
+' для нескольких ec/r и табличный phi_l. Расчет использует l0/i и phi-колонки.
 Private Sub InterpolateSP35Table(ByVal table721 As Variant, ByVal slenderness As Double, ByVal q As Double, _
         ByRef phiM As Double, ByRef phiL As Double)
     If IsEmpty(table721) Then RaiseInput "Для СП 35 нужна таблица 7.21 на Config."
@@ -636,7 +671,7 @@ Private Sub FindBoundingRows(ByVal tableData As Variant, ByVal rowCount As Long,
     If slenderness >= CDbl(tableData(rowCount, 3)) Then lowerRow = rowCount: upperRow = rowCount
 End Sub
 
-' Интерполяция phi_m по отношению e/r.
+' Интерполяция phi_m по отношению ec/r.
 Private Function InterpolatePhiMByQ(ByVal tableData As Variant, ByVal rowIndex As Long, ByVal q As Double) As Double
     Dim qValues(1 To 4) As Double
     qValues(1) = 0#: qValues(2) = 0.25: qValues(3) = 0.5: qValues(4) = 1#

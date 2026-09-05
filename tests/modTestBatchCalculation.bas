@@ -71,8 +71,8 @@ Public Function RunBatchCalculationTests() As String
     TestStabilitySP35TableSeparatesNcrAndNult stats
     AppendLine stats, "RUN: TestStabilityCircleMxDoesNotCreateMy"
     TestStabilityCircleMxDoesNotCreateMy stats
-    AppendLine stats, "RUN: TestStabilityUsesConcreteCentroidForEccentricity"
-    TestStabilityUsesConcreteCentroidForEccentricity stats
+    AppendLine stats, "RUN: TestStabilityUsesTransformedCentroidForEccentricity"
+    TestStabilityUsesTransformedCentroidForEccentricity stats
     AppendLine stats, "RUN: TestBatchSummaryWritesOnlySelectedStabilityCode"
     TestBatchSummaryWritesOnlySelectedStabilityCode stats
     AppendLine stats, "RUN: TestPR1RunsStrengthWithoutCrackWidth"
@@ -1653,9 +1653,10 @@ RestoreAndFail:
 End Sub
 
 ' Проверяет, что эксцентриситет устойчивости считается относительно центра
-' тяжести бетонного сечения, а не относительно начала внутренней сетки. Для
-' несимметричного Г-сечения чистое сжатие тогда дает только случайный e_a.
-Private Sub TestStabilityUsesConcreteCentroidForEccentricity(ByRef stats As TBatchTestStats)
+' тяжести приведенного сечения. Пользовательская точка нагрузки остается в
+' бетонном центре, поэтому несимметричная арматура должна дать реальный
+' статический эксцентриситет даже при пользовательском Mx=My=0.
+Private Sub TestStabilityUsesTransformedCentroidForEccentricity(ByRef stats As TBatchTestStats)
     Dim oldEnabled As String
     Dim oldValueSet As String
     Dim oldCode As String
@@ -1677,13 +1678,24 @@ Private Sub TestStabilityUsesConcreteCentroidForEccentricity(ByRef stats As TBat
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
+    rebars.AddBar "RSHIFT1", 560#, 60#, 120#, 0#, "A400", "shift transformed centroid", geom
+    rebars.AddBar "RSHIFT2", 560#, 150#, 120#, 0#, "A400", "shift transformed centroid", geom
 
     Dim section As CSectionModel
     Set section = BuildGeneratedSectionModel(mesh, rebars, "LShapeStabilityCentroid")
 
-    Dim props As CSectionPropertiesCalculator
-    Set props = New CSectionPropertiesCalculator
-    props.CalculateConcrete section
+    Dim concreteProps As CSectionPropertiesCalculator
+    Set concreteProps = New CSectionPropertiesCalculator
+    concreteProps.CalculateConcrete section
+
+    Dim transformedProps As CSectionPropertiesCalculator
+    Set transformedProps = New CSectionPropertiesCalculator
+    transformedProps.CalculateTransformedByModuli section, 32500#, 200000#
+
+    Dim centroidGap As Double
+    centroidGap = Sqr((transformedProps.CentroidX - concreteProps.CentroidX) ^ 2 + _
+        (transformedProps.CentroidY - concreteProps.CentroidY) ^ 2)
+    AssertTrue stats, "batch.stability.centroid.transformedShift", centroidGap > 25#
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -1695,12 +1707,12 @@ Private Sub TestStabilityUsesConcreteCentroidForEccentricity(ByRef stats As TBat
     Set batch.ProfileCatalog = TestProfileCatalog()
     batch.ApplySettings settings
     batch.AddCombination "STAB_CENTROID", -100000#, 0#, 0#, "PR1", "stability centroid"
-    batch.ApplyLoadReference props.CentroidX, props.CentroidY, props.CentroidX, props.CentroidY
+    batch.ApplyLoadReference concreteProps.CentroidX, concreteProps.CentroidY, concreteProps.CentroidX, concreteProps.CentroidY
     batch.Execute
 
     AssertTrue stats, "batch.stability.centroid.status", batch.StabilityStatus(1) = "OK" Or batch.StabilityStatus(1) = "FAIL"
-    AssertTrue stats, "batch.stability.centroid.e1.small", Abs(batch.StabilityEccentricity1(1)) < 40#
-    AssertTrue stats, "batch.stability.centroid.e2.small", Abs(batch.StabilityEccentricity2(1)) < 40#
+    AssertTrue stats, "batch.stability.centroid.eFromTransformedCenter", _
+        Sqr(batch.StabilityEccentricity1(1) ^ 2 + batch.StabilityEccentricity2(1) ^ 2) > centroidGap * 0.8
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
