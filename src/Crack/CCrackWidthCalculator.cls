@@ -20,6 +20,8 @@ Option Explicit
 ' Текущая версия считает только продолжительное раскрытие по формуле
 ' a_crc = a_crc1. Коэффициенты phi1, phi2, phi3 и psi_s задаются в Config:
 ' phi3 и psi_s могут быть приняты пользователем либо определены автоматически.
+' Способ определения расстояния a_s задается отдельно: локально до ближайшего
+' бетонного контура или глобально до дальней растянутой линии всего сечения.
 '
 ' В режиме User ширина считается по переданному НДС текущего сочетания:
 ' повторный solve не выполняется, а psi_s берется из настройки.
@@ -37,6 +39,8 @@ Private Const CRACK_STRAIN_RATIO_TOLERANCE As Double = 0.000001 ' Допуск �
 Private Const NEAR_ZERO_STRAIN As Double = 0.000000000001 ' Численный ноль для деформаций и кривизн.
 Private Const NEAR_ZERO_FORCE As Double = 0.000001 ' Численный ноль для отличия центрального растяжения от нулевой нагрузки.
 Private Const LARGE_LAMBDA As Double = 1E+30 ' Диагностическая отметка: трещина не достигнута при lambda = 1.
+Private Const COVER_MODE_NEAREST_CONTOUR As String = "NearestContour" ' a_s до ближайшего выхода бетонного контура по нормали.
+Private Const COVER_MODE_GLOBAL_EXTREME As String = "GlobalExtreme" ' a_s до дальней растянутой опорной линии всего сечения.
 
 Private mConverged As Boolean ' True, если расчет трещины завершился без ошибки входных данных или несходимости.
 Private mStopReason As String ' Короткое пояснение результата: расчет выполнен, трещина не образована или solver не сошелся.
@@ -51,6 +55,7 @@ Private mCrackFormed As Boolean ' True, если по выбранной вет�
 Private mPsiMode As String ' User или Auto: брать psi_s из Config или уточнять после неудачной первой проверки.
 Private mPhi3Mode As String ' User или Auto: брать phi3 из Config или выбирать по характеру продольной силы.
 Private mTensionZoneMode As String ' Effective или FullTension: способ задания бетонной зоны Abt.
+Private mCoverMode As String ' NearestContour или GlobalExtreme: способ измерения расстояния a_s.
 Private mPhi1Input As Double ' Пользовательское значение phi1 для формулы раскрытия.
 Private mPhi2Input As Double ' Пользовательское значение phi2 для формулы раскрытия.
 Private mPhi3Input As Double ' Пользовательское значение phi3, если Phi3Mode = User.
@@ -96,8 +101,8 @@ Private mPhi3 As Double ' Коэффициент характера нагруж
 Private mLambdaCrc As Double ' Множитель нагрузки на пороге трещины: eps_bt,ult для общей ветки или Ncrc/N для центрального растяжения.
 Private mNcrc As Double ' Усилие образования трещины для ветки истинного центрального растяжения, Н.
 
-Private mSectionDepthH As Double ' Габарит сечения по нормали к нейтральной линии с учетом эквивалентных кругов КЭ.
-Private mCoverA As Double ' Расстояние от внешней растянутой поверхности до оси крайнего растянутого стержня, мм.
+Private mSectionDepthH As Double ' Габарит сечения по нормали к нейтральной линии по общему бетонному контуру КЭ.
+Private mCoverA As Double ' Расстояние a_s по выбранному режиму CoverDistanceMode, мм.
 Private mTensionDepth As Double ' Фактическая глубина растянутой бетонной зоны до нейтральной линии, мм.
 Private mEffectiveZoneDepth As Double ' Глубина зоны Abt, реально использованная после ограничений, мм.
 Private mCentralTensionBranch As Boolean ' True, если сработала отдельная ветка центрального растяжения.
@@ -112,6 +117,7 @@ Private Sub Class_Initialize()
     mPsiMode = "User"
     mPhi3Mode = "Auto"
     mTensionZoneMode = "Effective"
+    mCoverMode = COVER_MODE_GLOBAL_EXTREME
     mPhi1Input = PHI1_LONG_TERM
     mPhi2Input = PHI2_DEFAULT
     mPhi3Input = PHI3_BENDING
@@ -147,6 +153,11 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mAllowableCrackWidth = settings.GetDouble("SLS.Crack.Allowable", mAllowableCrackWidth)
     mPsiMode = settings.GetString("SLS.Crack.PsiMode", mPsiMode)
     mTensionZoneMode = settings.GetString("SLS.Crack.TensionZoneMode", mTensionZoneMode)
+    If settings.HasKey("SLS.Crack.CoverDistanceMode") Then
+        mCoverMode = settings.GetString("SLS.Crack.CoverDistanceMode", mCoverMode)
+    Else
+        mCoverMode = settings.GetString("SLS.Crack.CoverMode", mCoverMode)
+    End If
     mPhi1Input = settings.GetDouble("SLS.Crack.Phi1", mPhi1Input)
     mPhi2Input = settings.GetDouble("SLS.Crack.Phi2", mPhi2Input)
     mPhi3Mode = settings.GetString("SLS.Crack.Phi3Mode", mPhi3Mode)
@@ -283,7 +294,7 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionSolver, ByVal
 
     Dim st As Double
     Dim sc As Double
-    ProjectionBoundsByEquivalentConcreteCircles section, nx, ny, st, sc
+    ProjectionBoundsByConcreteContour section, nx, ny, st, sc
     mSectionDepthH = st - sc
     If mSectionDepthH <= NEAR_ZERO_STRAIN Then
         mStopReason = "InputError: не удалось определить габарит сечения по нормали к нейтральной линии."
@@ -299,11 +310,12 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionSolver, ByVal
     End If
 
     Dim sBarMax As Double
-    If Not FindMostTensionRebarProjection(currentSolver, section, nx, ny, sBarMax) Then
+    Dim coverRebarIndex As Long
+    If Not FindMostTensionRebarProjection(currentSolver, section, nx, ny, sBarMax, coverRebarIndex) Then
         FinishNoCrack "В расчетной растянутой зоне не найдено растянутой арматуры."
         Exit Sub
     End If
-    mCoverA = st - sBarMax
+    mCoverA = CoverDistanceForRebar(section, coverRebarIndex, nx, ny, st, sBarMax)
     If mCoverA < 0# Then mCoverA = 0#
 
     Dim zoneLowerS As Double
@@ -834,16 +846,49 @@ End Sub
 
 ' Находит крайнюю растянутую арматуру по нормали к нейтральной линии.
 Private Function FindMostTensionRebarProjection(ByVal solver As CSectionSolver, ByVal section As CSectionModel, _
-        ByVal nx As Double, ByVal ny As Double, ByRef sBarMax As Double) As Boolean
+        ByVal nx As Double, ByVal ny As Double, ByRef sBarMax As Double, ByRef rebarIndex As Long) As Boolean
     Dim i As Long
     For i = 1 To section.RebarCount
         If RebarStrain(solver, section, i) > 0# Then
             Dim s As Double
             s = Projection(section.RebarX(i), section.RebarY(i), nx, ny)
             If Not FindMostTensionRebarProjection Or s > sBarMax Then sBarMax = s
+            If s >= sBarMax - NEAR_ZERO_STRAIN Then rebarIndex = i
             FindMostTensionRebarProjection = True
         End If
     Next i
+End Function
+
+' Выбирает пользовательский смысл расстояния a_s. В обычном режиме берется
+' локальный выход луча из выбранного стержня к ближайшему бетонному контуру.
+' Режим GlobalExtreme оставлен для проверки старой глобальной трактовки, когда
+' расстояние считается до дальней опорной линии всего сечения.
+Private Function CoverDistanceForRebar(ByVal section As CSectionModel, ByVal rebarIndex As Long, _
+        ByVal nx As Double, ByVal ny As Double, ByVal st As Double, ByVal sBarMax As Double) As Double
+    If StrComp(mCoverMode, COVER_MODE_GLOBAL_EXTREME, vbTextCompare) = 0 Then
+        CoverDistanceForRebar = st - sBarMax
+        Exit Function
+    End If
+
+    CoverDistanceForRebar = LocalConcreteCoverForRebar(section, rebarIndex, nx, ny)
+    If CoverDistanceForRebar < 0# Then CoverDistanceForRebar = st - sBarMax
+End Function
+
+' Для a_s нужна не глобальная крайняя проекция всего сечения, а расстояние от
+' оси выбранного растянутого стержня до ближайшего бетонного контура по нормали
+' к нейтральной линии. Это особенно важно для Г-сечений и импортированных
+' повернутых сеток, где глобальная опорная линия может лежать на другом выступе.
+Private Function LocalConcreteCoverForRebar(ByVal section As CSectionModel, ByVal rebarIndex As Long, _
+        ByVal nx As Double, ByVal ny As Double) As Double
+    If rebarIndex <= 0 Then
+        LocalConcreteCoverForRebar = -1#
+        Exit Function
+    End If
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    LocalConcreteCoverForRebar = props.ConcreteCoverFromPointAlongDirection(section, _
+        section.RebarX(rebarIndex), section.RebarY(rebarIndex), nx, ny)
 End Function
 
 ' Определяет нижнюю границу расчетной зоны в координате s.
@@ -901,25 +946,16 @@ Private Sub SelectRebarsInZone(ByVal solver As CSectionSolver, ByVal section As 
     Next i
 End Sub
 
-' Для восстановления внешней растянутой поверхности каждый бетонный КЭ
-' заменяется эквивалентным кругом той же площади. Это приближение используется
-' только для s_t, s_c, h и a; усилия solver-а от этого не меняются.
-Private Sub ProjectionBoundsByEquivalentConcreteCircles(ByVal section As CSectionModel, _
+' Внешняя растянутая поверхность берется через общий геометрический калькулятор.
+' Для сгенерированной сетки используются реальные размеры бетонных КЭ, а для
+' импортированных Region без габаритов сохраняется общий fallback: сначала
+' эквивалентный прямоугольник по A/I, затем квадрат той же площади. Та же
+' логика используется устойчивостью.
+Private Sub ProjectionBoundsByConcreteContour(ByVal section As CSectionModel, _
         ByVal nx As Double, ByVal ny As Double, ByRef st As Double, ByRef sc As Double)
-    Dim i As Long
-    For i = 1 To section.ConcreteCount
-        Dim s As Double
-        Dim r As Double
-        s = Projection(section.ConcreteX(i), section.ConcreteY(i), nx, ny)
-        r = Sqr(section.ConcreteArea(i) / GEOM_PI)
-        If i = 1 Then
-            st = s + r
-            sc = s - r
-        Else
-            st = MaxDouble(st, s + r)
-            sc = MinDouble(sc, s - r)
-        End If
-    Next i
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateProjection section, nx, ny, False, sc, st
 End Sub
 
 ' Считает средневзвешенное напряжение выбранной арматуры. В формулу раскрытия
@@ -1142,6 +1178,15 @@ Private Sub NormalizeSettings()
         Case Else: Err.Raise vbObjectError + 3708, "CCrackWidthCalculator", "SLS.Crack.TensionZoneMode должен быть Effective или FullTension."
     End Select
 
+    Select Case LCase$(Trim$(mCoverMode))
+        Case "nearestcontour", "nearest", "local"
+            mCoverMode = COVER_MODE_NEAREST_CONTOUR
+        Case "globalextreme", "global", "extreme"
+            mCoverMode = COVER_MODE_GLOBAL_EXTREME
+        Case Else
+            Err.Raise vbObjectError + 3721, "CCrackWidthCalculator", "SLS.Crack.CoverDistanceMode должен быть NearestContour или GlobalExtreme."
+    End Select
+
     If mAllowableCrackWidth <= 0# Then Err.Raise vbObjectError + 3710, "CCrackWidthCalculator", "SLS.Crack.Allowable должен быть положительным."
     If mPhi1Input <= 0# Then Err.Raise vbObjectError + 3717, "CCrackWidthCalculator", "SLS.Crack.Phi1 должен быть положительным."
     If mPhi2Input <= 0# Then Err.Raise vbObjectError + 3718, "CCrackWidthCalculator", "SLS.Crack.Phi2 должен быть положительным."
@@ -1276,6 +1321,10 @@ Public Property Get TensionZoneMode() As String
     TensionZoneMode = mTensionZoneMode
 End Property
 
+Public Property Get CoverMode() As String
+    CoverMode = mCoverMode
+End Property
+
 Public Property Get Phi1() As Double
     Phi1 = mPhi1
 End Property
@@ -1386,6 +1435,10 @@ End Property
 
 Public Property Let TensionZoneMode(ByVal value As String)
     mTensionZoneMode = value
+End Property
+
+Public Property Let CoverMode(ByVal value As String)
+    mCoverMode = value
 End Property
 
 Public Property Let SolverMethod(ByVal value As String)

@@ -133,6 +133,13 @@ Public Function InputMomentMyToInternal(ByVal value As Double) As Double
     InputMomentMyToInternal = value * MomentFactorToNmm(mInputMoment) * MySignFactor()
 End Function
 
+' Переводит пользовательскую настройку вида "момент на единицу длины" во
+' внутренние Н*мм/мм. Знак момента здесь не применяется: это положительный
+' инженерный порог, а не расчетное усилие.
+Public Function InputMomentPerLengthToInternal(ByVal value As Double) As Double
+    InputMomentPerLengthToInternal = Abs(value) * MomentFactorToNmm(mInputMoment) / LengthFactorToMm(mInputLength)
+End Function
+
 Public Function InternalMomentMxToOutput(ByVal value As Double) As Double
     InternalMomentMxToOutput = value / MomentFactorToNmm(mOutputMoment) * MxSignFactor()
 End Function
@@ -179,6 +186,11 @@ End Property
 
 Public Property Get OutputMomentUnit() As String
     OutputMomentUnit = mOutputMoment
+End Property
+
+' Возвращает подпись INPUT-единицы для настроек размерности момент/длина.
+Public Property Get InputMomentPerLengthUnit() As String
+    InputMomentPerLengthUnit = mInputMoment & "/" & mInputLength
 End Property
 
 Public Property Get OutputForceUnit() As String

@@ -25,7 +25,7 @@ Private Const SECTION_PROPERTY_COLUMNS As Long = 6 ' Общие свойства
 Private Const ANNOTATION_COLUMNS As Long = 13 ' Semantic-аннотации схемы: размеры, контур, групповые подписи арматуры.
 Private Const MATERIAL_DIAGRAM_COLUMNS As Long = 11 ' Каталог уникальных точек диаграмм, переданных solver-ам.
 Private Const PHYSICAL_TOLERANCE As Double = 0.000000001 ' Порог, ниже которого напряжение считается NearZero.
-Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 55 ' Строки общих свойств сечения до LC-зависимых блоков.
+Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 66 ' Строки общих свойств сечения до LC-зависимых блоков.
 Private Const LC_SECTION_PROPERTY_ROWS As Long = 23 ' Строки свойств одного LC без metadata named-state.
 Private Const STATE_SECTION_PROPERTY_ROWS As Long = 10 ' Строки metadata одного сохраненного named-state.
 
@@ -240,15 +240,18 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
 
     ' Бетонные свойства нужны как база пользовательской точки нагрузки.
     ' Приведенные свойства сохраняются отдельно: они используются для справки,
-    ' главных осей и совместимости существующего plot/export layer.
+    ' главных осей и совместимости существующего plot/export layer. Для
+    ' геометрического приведения берем обычные модули Eb/Es, а не наклон
+    ' выбранной диаграммы прочности: форма диаграммы не должна менять Ared/Ired.
     Dim concreteProps As CSectionPropertiesCalculator
     Set concreteProps = New CSectionPropertiesCalculator
     concreteProps.CalculateConcrete section
 
     Dim transformedProps As CSectionPropertiesCalculator
     Set transformedProps = New CSectionPropertiesCalculator
-    transformedProps.CalculateTransformed section, materialProvider.ConcreteMaterial(cpStrength), _
-        materialProvider.SteelMaterial(cpStrength)
+    transformedProps.CalculateTransformedByModuli section, _
+        materialProvider.ConcreteElasticModulusFromValueSet(mvsULS), _
+        materialProvider.SteelElasticModulusFromValueSet(mvsULS)
 
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MinX", OutputLength(minX, units), OutputLengthUnit(units), "Минимальный X расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxX", OutputLength(maxX, units), OutputLengthUnit(units), "Максимальный X расчетной модели."
@@ -257,8 +260,9 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     PutProperty data, rowIndex, runID, "ALL", "Geometry.Source", section.SourceType, "-", "Источник геометрии расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "LoadReferenceX", OutputLength(batch.LoadReferenceX, units), OutputLengthUnit(units), "Общая X точки приложения нагрузки относительно центра тяжести бетонного сечения."
     PutProperty data, rowIndex, runID, "ALL", "LoadReferenceY", OutputLength(batch.LoadReferenceY, units), OutputLengthUnit(units), "Общая Y точки приложения нагрузки относительно центра тяжести бетонного сечения."
-    PutConcreteSectionProperties data, rowIndex, runID, concreteProps, units
-    PutTransformedSectionProperties data, rowIndex, runID, transformedProps, units
+    PutConcreteSectionProperties data, rowIndex, runID, section, concreteProps, units
+    PutTransformedSectionProperties data, rowIndex, runID, section, transformedProps, units
+    PutGeneralSectionCheckProperties data, rowIndex, runID, section, concreteProps, transformedProps, batch
 
     ' Совместимые имена без префикса пока означают приведенное сечение. Их читают
     ' существующие plot/export-компоненты, поэтому aliases оставлены явно.
@@ -506,7 +510,8 @@ End Sub
 ' задается Load.ReferenceOffset и какие геометрические характеристики имеет
 ' бетонное сечение без учета продольной арматуры.
 Private Sub PutConcreteSectionProperties(ByRef data() As Variant, ByRef rowIndex As Long, _
-        ByVal runID As Variant, ByVal props As CSectionPropertiesCalculator, ByVal units As CUnitSystem)
+        ByVal runID As Variant, ByVal section As CSectionModel, _
+        ByVal props As CSectionPropertiesCalculator, ByVal units As CUnitSystem)
     PutProperty data, rowIndex, runID, "ALL", "Concrete.Area", OutputArea(props.Area, units), OutputAreaUnit(units), "Площадь бетонной части сечения по расчетной сетке."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.CentroidX", OutputLength(props.CentroidX, units), OutputLengthUnit(units), "X центра тяжести бетонного сечения; от этой точки задается Load.ReferenceOffsetX."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.CentroidY", OutputLength(props.CentroidY, units), OutputLengthUnit(units), "Y центра тяжести бетонного сечения; от этой точки задается Load.ReferenceOffsetY."
@@ -523,13 +528,16 @@ Private Sub PutConcreteSectionProperties(ByRef data() As Variant, ByRef rowIndex
     PutProperty data, rowIndex, runID, "ALL", "Concrete.RadiusY", OutputLength(props.RadiusY, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно центральной оси Y."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalRadius1", OutputLength(props.PrincipalRadius1, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения по главной оси I1."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalRadius2", OutputLength(props.PrincipalRadius2, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения по главной оси I2."
+    PutPrincipalCoreDistanceProperties data, rowIndex, runID, "Concrete", _
+        "бетонного сечения", section, props, units
 End Sub
 
 ' Записывает свойства приведенного сечения бетон + арматура.
 ' Они остаются отдельным набором справочных данных и совместимы с уже
 ' существующей логикой главных осей на схеме и в AutoCAD export.
 Private Sub PutTransformedSectionProperties(ByRef data() As Variant, ByRef rowIndex As Long, _
-        ByVal runID As Variant, ByVal props As CSectionPropertiesCalculator, ByVal units As CUnitSystem)
+        ByVal runID As Variant, ByVal section As CSectionModel, _
+        ByVal props As CSectionPropertiesCalculator, ByVal units As CUnitSystem)
     PutProperty data, rowIndex, runID, "ALL", "Transformed.Area", OutputArea(props.Area, units), OutputAreaUnit(units), "Площадь приведенного сечения в бетонной базе."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.CentroidX", OutputLength(props.CentroidX, units), OutputLengthUnit(units), "X центра тяжести приведенного сечения бетон + арматура."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.CentroidY", OutputLength(props.CentroidY, units), OutputLengthUnit(units), "Y центра тяжести приведенного сечения бетон + арматура."
@@ -546,7 +554,77 @@ Private Sub PutTransformedSectionProperties(ByRef data() As Variant, ByRef rowIn
     PutProperty data, rowIndex, runID, "ALL", "Transformed.RadiusY", OutputLength(props.RadiusY, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно центральной оси Y."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalRadius1", OutputLength(props.PrincipalRadius1, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения по главной оси I1."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalRadius2", OutputLength(props.PrincipalRadius2, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения по главной оси I2."
+    PutPrincipalCoreDistanceProperties data, rowIndex, runID, "Transformed", _
+        "приведенного сечения", section, props, units
 End Sub
+
+' Записывает ядровые расстояния по двум главным направлениям. Для
+' несимметричных сечений расстояния в сторону +оси и -оси могут отличаться,
+' поэтому сохраняем все четыре величины. Контур c берется по бетонной оболочке:
+' арматура влияет на A/I приведенного сечения, но не расширяет внешний бетон.
+Private Sub PutPrincipalCoreDistanceProperties(ByRef data() As Variant, ByRef rowIndex As Long, _
+        ByVal runID As Variant, ByVal prefix As String, ByVal description As String, _
+        ByVal section As CSectionModel, ByVal props As CSectionPropertiesCalculator, _
+        ByVal units As CUnitSystem)
+    Dim axis1X As Double
+    Dim axis1Y As Double
+    Dim axis2X As Double
+    Dim axis2Y As Double
+    axis1X = Cos(props.PrincipalAngleRad)
+    axis1Y = Sin(props.PrincipalAngleRad)
+    axis2X = -axis1Y
+    axis2Y = axis1X
+
+    PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance1Plus", _
+        OutputLength(props.CoreDistanceAlong(section, axis1X, axis1Y, False), units), _
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении +главной оси 1."
+    PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance1Minus", _
+        OutputLength(props.CoreDistanceAlong(section, -axis1X, -axis1Y, False), units), _
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении -главной оси 1."
+    PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance2Plus", _
+        OutputLength(props.CoreDistanceAlong(section, axis2X, axis2Y, False), units), _
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении +главной оси 2."
+    PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance2Minus", _
+        OutputLength(props.CoreDistanceAlong(section, -axis2X, -axis2Y, False), units), _
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении -главной оси 2."
+End Sub
+
+' Записывает общие расчетные характеристики, которые полезны не только в
+' подробном блоке устойчивости: процент продольного армирования и гибкость
+' l0/i по СП 35 для двух главных плоскостей приведенного сечения.
+Private Sub PutGeneralSectionCheckProperties(ByRef data() As Variant, ByRef rowIndex As Long, _
+        ByVal runID As Variant, ByVal section As CSectionModel, _
+        ByVal concreteProps As CSectionPropertiesCalculator, _
+        ByVal transformedProps As CSectionPropertiesCalculator, ByVal batch As CBatchSectionCalculator)
+    Dim steelArea As Double
+    Dim reinforcementRatio As Variant
+    steelArea = transformedProps.RebarAreaTotal(section)
+    If concreteProps.Area > 0# Then
+        reinforcementRatio = 100# * steelArea / concreteProps.Area
+    Else
+        reinforcementRatio = vbNullString
+    End If
+
+    PutProperty data, rowIndex, runID, "ALL", "Rebar.RatioPercent", reinforcementRatio, "%", _
+        "Процент продольного армирования: суммарная As / gross-площадь бетонной сетки."
+    PutProperty data, rowIndex, runID, "ALL", "SP35.Slenderness1", _
+        SlendernessValue(batch.StabilityElementLength, batch.StabilityMu1, transformedProps.PrincipalRadius1), _
+        "-", "Гибкость l0/i по СП 35 для главной плоскости 1 приведенного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "SP35.Slenderness2", _
+        SlendernessValue(batch.StabilityElementLength, batch.StabilityMu2, transformedProps.PrincipalRadius2), _
+        "-", "Гибкость l0/i по СП 35 для главной плоскости 2 приведенного сечения."
+End Sub
+
+' Возвращает безразмерную гибкость l0/i, если расчетная длина и радиус
+' инерции заданы корректно; иначе оставляет справочное поле пустым.
+Private Function SlendernessValue(ByVal geometricLength As Double, ByVal muValue As Double, _
+        ByVal radiusValue As Double) As Variant
+    If geometricLength <= 0# Or muValue <= 0# Or radiusValue <= 0# Then
+        SlendernessValue = vbNullString
+    Else
+        SlendernessValue = geometricLength * muValue / radiusValue
+    End If
+End Function
 
 ' Записывает компактную metadata по каждому конечному named-state LC.
 ' Поэлементная таблица хранит Stress/Strain, а здесь лежит то, что не нужно
@@ -655,7 +733,7 @@ Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal sectio
     Dim concreteProps As CSectionPropertiesCalculator
     Set concreteProps = New CSectionPropertiesCalculator
     concreteProps.CalculateConcrete section
-    PutConcreteSectionProperties data, rowIndex, runID, concreteProps, units
+    PutConcreteSectionProperties data, rowIndex, runID, section, concreteProps, units
 
     PutProperty data, rowIndex, runID, "ALL", "ConcreteCount", section.ConcreteCount, "шт", "Количество бетонных элементов."
     PutProperty data, rowIndex, runID, "ALL", "RebarCount", section.RebarCount, "шт", "Количество элементов арматуры."
@@ -1006,10 +1084,13 @@ Private Function OutputAnnotationComment(ByVal annotations As CSectionAnnotation
     End If
 End Function
 
-' Для AutoCAD-сетки у программы нет смысловых граней, но есть надежные Bounds
-' бетонных элементов. Поэтому сохраняем только две приблизительные размерные
-' аннотации: общую ширину и высоту. Знак приблизительного равенства показывает, что размер получен
-' по дискретной сетке Region, а не из параметрической геометрии.
+' Для AutoCAD-сетки у программы нет смысловых граней, но есть расчетная
+' проекционная оболочка бетонных элементов. Она строится тем же
+' CSectionPropertiesCalculator, что используют трещины и устойчивость:
+' реальные Width/Height/Rotation, затем прямоугольник по Ix/Iy/Ixy,
+' затем квадрат по площади.
+' Поэтому сохраняем только две приблизительные размерные аннотации: общую
+' ширину и высоту по импортированной дискретной сетке.
 Private Sub EnsureAutoCADBoundsAnnotations(ByVal section As CSectionModel)
     If section Is Nothing Then Exit Sub
     If StrComp(section.SourceType, "AutoCADImport", vbTextCompare) <> 0 Then Exit Sub
@@ -1023,9 +1104,9 @@ Private Sub EnsureAutoCADBoundsAnnotations(ByVal section As CSectionModel)
     GetConcreteBounds section, minX, maxX, minY, maxY
 
     section.Annotations.AddDimension "DIM_AUTO_BOUNDS_B", minX, minY, maxX, minY, 0#, -1#, _
-        ApproxSign(), maxX - minX, "Приблизительная общая ширина по Bounds импортированного бетона."
+        ApproxSign(), maxX - minX, "Приблизительная общая ширина по расчетным границам импортированного бетона."
     section.Annotations.AddDimension "DIM_AUTO_BOUNDS_H", minX, minY, minX, maxY, -1#, 0#, _
-        ApproxSign(), maxY - minY, "Приблизительная общая высота по Bounds импортированного бетона."
+        ApproxSign(), maxY - minY, "Приблизительная общая высота по расчетным границам импортированного бетона."
 End Sub
 
 ' Возвращает знак приблизительного равенства без литерала в исходнике. Так VBA-модуль

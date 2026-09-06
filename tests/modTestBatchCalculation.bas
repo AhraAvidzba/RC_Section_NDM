@@ -13,6 +13,9 @@ Private Type TBatchTestStats
     Report As String
 End Type
 
+Private Const TEST_TF_M_IN_NMM As Double = 9806650# ' 1 tf*m во внутренних Н*мм.
+Private Const TEST_DEFAULT_ZERO_MOMENT_PER_DEPTH As Double = 4903.325 ' 0.5 tf*m/m = 4903.325 Н*мм/мм.
+
 ' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
 Public Function RunBatchCalculationTests() As String
     On Error GoTo Failed
@@ -45,6 +48,14 @@ Public Function RunBatchCalculationTests() As String
     TestBatchCapacityLoadPathAllowsZeroInactiveComponents stats
     AppendLine stats, "RUN: TestBatchNMxyWithoutMomentsUsesStableForcePath"
     TestBatchNMxyWithoutMomentsUsesStableForcePath stats
+    AppendLine stats, "RUN: TestMomentZeroFilterDefaultThresholds"
+    TestMomentZeroFilterDefaultThresholds stats
+    AppendLine stats, "RUN: TestCapacityLoadPathFiltersEngineeringSmallMoments"
+    TestCapacityLoadPathFiltersEngineeringSmallMoments stats
+    AppendLine stats, "RUN: TestBatchZeroMomentFilterNormalizesCapacityPath"
+    TestBatchZeroMomentFilterNormalizesCapacityPath stats
+    AppendLine stats, "RUN: TestStabilityZeroMomentFilterUsesZeroMomentSigns"
+    TestStabilityZeroMomentFilterUsesZeroMomentSigns stats
     AppendLine stats, "RUN: TestBatchInvalidCapacityLoadPathReportsInputErr"
     TestBatchInvalidCapacityLoadPathReportsInputErr stats
     AppendLine stats, "RUN: TestPR2SkipsCapacityByProfile"
@@ -69,10 +80,44 @@ Public Function RunBatchCalculationTests() As String
     TestStabilitySP35UsesConfigTableAndProfileValueSet stats
     AppendLine stats, "RUN: TestStabilitySP35TableSeparatesNcrAndNult"
     TestStabilitySP35TableSeparatesNcrAndNult stats
+    AppendLine stats, "RUN: TestStabilitySP35TableIgnoresPhiL2"
+    TestStabilitySP35TableIgnoresPhiL2 stats
+    AppendLine stats, "RUN: TestStabilitySP35TableRebarAreaCorrection"
+    TestStabilitySP35TableRebarAreaCorrection stats
+    AppendLine stats, "RUN: TestStabilitySP35TableInterpolationIntermediate"
+    TestStabilitySP35TableInterpolationIntermediate stats
+    AppendLine stats, "RUN: TestStabilitySP35TableBoundaryReservePasses"
+    TestStabilitySP35TableBoundaryReservePasses stats
+    AppendLine stats, "RUN: TestStabilityFailStopsDownstream"
+    TestStabilityFailStopsDownstream stats
+    AppendLine stats, "RUN: TestStabilitySP63ShortSlendernessEtaIsOne"
+    TestStabilitySP63ShortSlendernessEtaIsOne stats
+    AppendLine stats, "RUN: TestStabilityInvalidMuReportsInputErr"
+    TestStabilityInvalidMuReportsInputErr stats
+    AppendLine stats, "RUN: TestStabilityInvalidSettingsReportInputErr"
+    TestStabilityInvalidSettingsReportInputErr stats
+    AppendLine stats, "RUN: TestStabilitySP35MixedBranchReportsMixed"
+    TestStabilitySP35MixedBranchReportsMixed stats
     AppendLine stats, "RUN: TestStabilityCircleMxDoesNotCreateMy"
     TestStabilityCircleMxDoesNotCreateMy stats
+    AppendLine stats, "RUN: TestStabilityAccidentalBothPlanes"
+    TestStabilityAccidentalBothPlanes stats
     AppendLine stats, "RUN: TestStabilityUsesTransformedCentroidForEccentricity"
     TestStabilityUsesTransformedCentroidForEccentricity stats
+    AppendLine stats, "RUN: TestStabilityAccidentalUsesGeometricLength"
+    TestStabilityAccidentalUsesGeometricLength stats
+    AppendLine stats, "RUN: TestStabilityAccidentalUserMode"
+    TestStabilityAccidentalUserMode stats
+    AppendLine stats, "RUN: TestStabilitySP35UsesCoreDistanceNotRadius"
+    TestStabilitySP35UsesCoreDistanceNotRadius stats
+    AppendLine stats, "RUN: TestStabilityDepthUsesConcreteContourOnly"
+    TestStabilityDepthUsesConcreteContourOnly stats
+    AppendLine stats, "RUN: TestStabilityPhiLUsesSignedSustainedMoment"
+    TestStabilityPhiLUsesSignedSustainedMoment stats
+    AppendLine stats, "RUN: TestStabilitySustainedNNotClamped"
+    TestStabilitySustainedNNotClamped stats
+    AppendLine stats, "RUN: TestStabilitySP35OppositeMomentSigns"
+    TestStabilitySP35OppositeMomentSigns stats
     AppendLine stats, "RUN: TestBatchSummaryWritesOnlySelectedStabilityCode"
     TestBatchSummaryWritesOnlySelectedStabilityCode stats
     AppendLine stats, "RUN: TestPR1RunsStrengthWithoutCrackWidth"
@@ -81,6 +126,8 @@ Public Function RunBatchCalculationTests() As String
     TestDirectStateReportsNumericalFailure stats
     AppendLine stats, "RUN: TestPR2PhysicalStateRunsCrackWithExtensionEnabled"
     TestPR2PhysicalStateRunsCrackWithExtensionEnabled stats
+    AppendLine stats, "RUN: TestBatchCrackCoverDistanceModeChangesAs"
+    TestBatchCrackCoverDistanceModeChangesAs stats
     AppendLine stats, "RUN: TestPR2AutoCrackStoresBeforeAndAfterMcrcStates"
     TestPR2AutoCrackStoresBeforeAndAfterMcrcStates stats
     AppendLine stats, "RUN: TestPR2AutoCrackPureBendingStoresMcrcStates"
@@ -350,7 +397,7 @@ End Sub
 Private Sub TestBatchExplicitCapacityLoadPathScalesMxy(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
-    batch.AddCombination "M_BRANCH", -150000#, -3000000#, -1000000#, "PR1", "moment branch", ChrW$(&H3BB) & "*Mxy"
+    batch.AddCombination "M_BRANCH", -150000#, -3000000#, -3000000#, "PR1", "moment branch", ChrW$(&H3BB) & "*Mxy"
     batch.Execute
 
     AssertTrue stats, "batch.capacityPath.mxy.value", batch.CapacityLoadPath(1) = ChrW$(&H3BB) & "*Mxy"
@@ -477,6 +524,143 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
+' Проверяет сам инженерный фильтр практически нулевого момента без solver-а.
+' Порог растет линейно с бетонным габаритом h: Mtol = value*h.
+Private Sub TestMomentZeroFilterDefaultThresholds(ByRef stats As TBatchTestStats)
+    Dim filter As CMomentZeroFilter
+    Set filter = New CMomentZeroFilter
+    filter.Initialize TEST_DEFAULT_ZERO_MOMENT_PER_DEPTH
+
+    AssertClose stats, "batch.zeroMoment.tinyResidual", filter.NormalizeMoment(0.000000000000000242, 1000#), 0#, 0#
+    AssertClose stats, "batch.zeroMoment.h1m.threshold", filter.NormalizeMoment(0.5 * TEST_TF_M_IN_NMM, 1000#), 0#, 0#
+    AssertTrue stats, "batch.zeroMoment.h1m.above", _
+        Abs(filter.NormalizeMoment(0.5002 * TEST_TF_M_IN_NMM, 1000#)) > 0#
+    AssertClose stats, "batch.zeroMoment.h02m.threshold", filter.NormalizeMoment(0.1 * TEST_TF_M_IN_NMM, 200#), 0#, 0#
+    AssertClose stats, "batch.zeroMoment.h3m.threshold", filter.NormalizeMoment(1.5 * TEST_TF_M_IN_NMM, 3000#), 0#, 0#
+End Sub
+
+' Проверяет, что CapacityLoadPath не пропускает в solver момент, который уже
+' меньше инженерного порога Calculation.ZeroMomentPerDepth * h.
+Private Sub TestCapacityLoadPathFiltersEngineeringSmallMoments(ByRef stats As TBatchTestStats)
+    Dim filter As CMomentZeroFilter
+    Set filter = New CMomentZeroFilter
+    filter.Initialize 0.001 * TEST_TF_M_IN_NMM
+
+    Dim pathMxy As CCapacityLoadPath
+    Set pathMxy = New CCapacityLoadPath
+    pathMxy.Initialize ChrW$(&H3BB) & "*Mxy", -100# * 9806.65, 0#, _
+        -0.158 * TEST_TF_M_IN_NMM, 0#, 0#, filter, 870#, 870#
+
+    AssertTrue stats, "batch.zeroMoment.pathMxy.noScaledMoment", Not pathMxy.HasScaledLoad
+    AssertClose stats, "batch.zeroMoment.pathMxy.myBase", pathMxy.MyBase, 0#, 0#
+
+    Dim pathNMxy As CCapacityLoadPath
+    Set pathNMxy = New CCapacityLoadPath
+    pathNMxy.Initialize ChrW$(&H3BB) & "*NMxy", -100# * 9806.65, 0#, _
+        -0.158 * TEST_TF_M_IN_NMM, 0#, 0#, filter, 870#, 870#
+
+    AssertTrue stats, "batch.zeroMoment.pathNMxy.forceOnly", pathNMxy.ForceOnly
+    AssertClose stats, "batch.zeroMoment.pathNMxy.myBase", pathNMxy.MyBase, 0#, 0#
+End Sub
+
+' Проверяет, что малый момент после чтения настроек и единиц не заставляет
+' capacity выбирать моментную lambda-траекторию вместо осевой.
+Private Sub TestBatchZeroMomentFilterNormalizesCapacityPath(ByRef stats As TBatchTestStats)
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings, units
+    batch.AddCombination "M_TINY", -200000#, 0.000000000000000242, 0#, "PR1", "tiny residual moment"
+    batch.Execute
+
+    AssertTrue stats, "batch.zeroMoment.capacityPath.axialDefault", batch.CapacityLoadPathKey(1) = "LambdaN"
+    AssertTrue stats, "batch.zeroMoment.capacityPath.notInputErr", batch.CapacityStatus(1) <> "InputErr"
+    AssertClose stats, "batch.zeroMoment.capacityPath.mx", batch.UserMx(1), 0#, 0#
+End Sub
+
+' Проверяет, что Stability в режиме OnlyMomentPlane считает отфильтрованный
+' микромомент нулевым и берет направление из ZeroMomentEccentricitySign1/2.
+Private Sub TestStabilityZeroMomentFilterUsesZeroMomentSigns(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    Dim oldAccMode As String
+    Dim oldAccPlanes As String
+    Dim oldSign1 As String
+    Dim oldSign2 As String
+    Dim oldAccUser1 As String
+    Dim oldAccUser2 As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+    oldSign1 = GetSystemSetting("Stability.ZeroMomentEccentricitySign1")
+    oldSign2 = GetSystemSetting("Stability.ZeroMomentEccentricitySign2")
+    oldAccUser1 = GetSystemSetting("Stability.AccidentalEccentricityUser1")
+    oldAccUser2 = GetSystemSetting("Stability.AccidentalEccentricityUser2")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP63"
+    SetSystemSetting "Stability.AccidentalEccentricityMode", "User"
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
+    SetSystemSetting "Stability.ZeroMomentEccentricitySign1", "-1"
+    SetSystemSetting "Stability.ZeroMomentEccentricitySign2", "-1"
+    SetSystemSetting "Stability.AccidentalEccentricityUser1", "1"
+    SetSystemSetting "Stability.AccidentalEccentricityUser2", "1"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings, units
+    batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    batch.AddCombination "STAB_TINY_M", -120000#, 0.000000000000000242, 0#, "PR1", "tiny stability moment"
+    batch.Execute
+
+    AssertTrue stats, "batch.zeroMoment.stability.status", batch.StabilityStatus(1) = "OK" Or batch.StabilityStatus(1) = "FAIL"
+    AssertTrue stats, "batch.zeroMoment.stability.sign1", batch.StabilityAccidentalEcc1(1) < 0#
+    AssertTrue stats, "batch.zeroMoment.stability.sign2", batch.StabilityAccidentalEcc2(1) < 0#
+    AssertClose stats, "batch.zeroMoment.stability.finalUserMx", batch.UserMx(1), 0#, 0#
+    AssertClose stats, "batch.zeroMoment.stability.finalUserMy", batch.UserMy(1), 0#, 0#
+    AssertClose stats, "batch.zeroMoment.stability.finalSummaryMx", batch.StabilityDesignMx(1), 0#, 0#
+    AssertClose stats, "batch.zeroMoment.stability.finalSummaryMy", batch.StabilityDesignMy(1), 0#, 0#
+    AssertTrue stats, "batch.zeroMoment.stability.capacityPath", batch.CapacityLoadPathKey(1) = "LambdaN"
+    AssertTrue stats, "batch.zeroMoment.stability.capacityNotNumFail", batch.CapacityStatus(1) <> "NumFail"
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    SetSystemSetting "Stability.ZeroMomentEccentricitySign1", oldSign1
+    SetSystemSetting "Stability.ZeroMomentEccentricitySign2", oldSign2
+    SetSystemSetting "Stability.AccidentalEccentricityUser1", oldAccUser1
+    SetSystemSetting "Stability.AccidentalEccentricityUser2", oldAccUser2
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.zeroMoment.stability; " & Err.Description
+    Resume Restore
+End Sub
+
 ' Проверяет, что ошибочный текст CapacityLoadPath не заменяется молча
 ' авто-выбором. Пользователь должен сразу увидеть ошибку в строке LC.
 Private Sub TestBatchInvalidCapacityLoadPathReportsInputErr(ByRef stats As TBatchTestStats)
@@ -523,6 +707,45 @@ Restore:
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: batch.group2.physical; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет, что настройка SLS.Crack.CoverDistanceMode проходит через полный
+' batch-конвейер до CCrackWidthCalculator. Ступенчатый бетонный контур выбран
+' специально: расстояние до ближайшего локального выхода и до дальней общей
+' растянутой линии у него заметно отличаются.
+Private Sub TestBatchCrackCoverDistanceModeChangesAs(ByRef stats As TBatchTestStats)
+    Dim oldCoverMode As String
+    Dim oldPsiMode As String
+    Dim oldZoneMode As String
+    oldCoverMode = GetSystemSetting("SLS.Crack.CoverDistanceMode")
+    oldPsiMode = GetSystemSetting("SLS.Crack.PsiMode")
+    oldZoneMode = GetSystemSetting("SLS.Crack.TensionZoneMode")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "SLS.Crack.PsiMode", "User"
+    SetSystemSetting "SLS.Crack.TensionZoneMode", "Effective"
+
+    Dim localCover As Double
+    localCover = BatchSteppedCrackCoverA("NearestContour")
+
+    Dim globalCover As Double
+    globalCover = BatchSteppedCrackCoverA("GlobalExtreme")
+
+    AppendLine stats, "INFO: batch.crack.coverDistanceMode local=" & FormatNumberInvariant(localCover) & _
+        "; global=" & FormatNumberInvariant(globalCover)
+    AssertTrue stats, "batch.crack.coverMode.localPositive", localCover > 0#
+    AssertTrue stats, "batch.crack.coverMode.globalLarger", globalCover > localCover * 2#
+
+Restore:
+    SetSystemSetting "SLS.Crack.CoverDistanceMode", oldCoverMode
+    SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
+    SetSystemSetting "SLS.Crack.TensionZoneMode", oldZoneMode
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.crack.coverDistanceMode; " & Err.Description
     Resume Restore
 End Sub
 
@@ -1149,13 +1372,13 @@ End Sub
 Private Sub TestLoadReferenceTransformsUserMoments(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
-    batch.AddCombination "REF", -1000#, 20000#, -30000#, "PR1", "reference"
+    batch.AddCombination "REF", -1000#, 3000000#, -3000000#, "PR1", "reference"
     batch.ApplyLoadReference 40#, -25#
 
-    AssertClose stats, "batch.reference.userMx", batch.UserMx(1), 20000#, 0.000001
-    AssertClose stats, "batch.reference.userMy", batch.UserMy(1), -30000#, 0.000001
-    AssertClose stats, "batch.reference.internalMx", batch.Mx(1), 45000#, 0.000001
-    AssertClose stats, "batch.reference.internalMy", batch.My(1), -70000#, 0.000001
+    AssertClose stats, "batch.reference.userMx", batch.UserMx(1), 3000000#, 0.000001
+    AssertClose stats, "batch.reference.userMy", batch.UserMy(1), -3000000#, 0.000001
+    AssertClose stats, "batch.reference.internalMx", batch.Mx(1), 3025000#, 0.000001
+    AssertClose stats, "batch.reference.internalMy", batch.My(1), -3040000#, 0.000001
     AssertClose stats, "batch.reference.x", batch.LoadReferenceX, 40#, 0.000001
     AssertClose stats, "batch.reference.y", batch.LoadReferenceY, -25#, 0.000001
     AssertClose stats, "batch.reference.offsetX.defaultBase", batch.LoadReferenceOffsetX, 40#, 0.000001
@@ -1427,14 +1650,17 @@ Private Sub TestStabilityProfileEnablesSP63ForCompression(ByRef stats As TBatchT
     Dim oldEnabled As String
     Dim oldValueSet As String
     Dim oldCode As String
+    Dim oldAccPlanes As String
     oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
     oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
     oldCode = GetSystemSetting("Stability.Code")
+    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
 
     On Error GoTo RestoreAndFail
     SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
     SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
     SetSystemSetting "Stability.Code", "SP63"
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -1454,6 +1680,7 @@ Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
     SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
     SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
     Exit Sub
 
 RestoreAndFail:
@@ -1598,6 +1825,611 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
+' Проверяет СП 35: в табличной ветви ec/r <= 1 коэффициент phi_l всегда
+' берется из таблицы 7.21. Режим PhiL2 не должен подменять это табличное
+' значение на 2, потому что он относится к ветвям с расчетом длительности.
+Private Sub TestStabilitySP35TableIgnoresPhiL2(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    Dim oldLength As String
+    Dim oldMu1 As String
+    Dim oldMu2 As String
+    Dim oldPhiMode As String
+    Dim oldAccMode As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+    oldLength = GetSystemSetting("Stability.ElementLength")
+    oldMu1 = GetSystemSetting("Stability.Mu1")
+    oldMu2 = GetSystemSetting("Stability.Mu2")
+    oldPhiMode = GetSystemSetting("Stability.PhiLMode")
+    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP35"
+    SetSystemSetting "Stability.ElementLength", "1000"
+    SetSystemSetting "Stability.Mu1", "1"
+    SetSystemSetting "Stability.Mu2", "1"
+    SetSystemSetting "Stability.PhiLMode", "PhiL2"
+    SetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithL"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    batch.AddCombination "SP35_TABLE_PHIL", -120000#, 0#, 0#, "PR1", "sp35 table phi_l"
+    batch.Execute
+
+    AssertTrue stats, "batch.stability.sp35.tablePhi.branch", _
+        batch.StabilityPlaneBranch1(1) = "SP35-table" Or batch.StabilityPlaneBranch2(1) = "SP35-table"
+    AssertClose stats, "batch.stability.sp35.tablePhi.phiL1", _
+        batch.StabilityPhiL1(1), batch.StabilityPhiLTable1(1), 0.000000001
+    AssertTrue stats, "batch.stability.sp35.tablePhi.notTwo", batch.StabilityPhiL1(1) < 1.99
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.ElementLength", oldLength
+    SetSystemSetting "Stability.Mu1", oldMu1
+    SetSystemSetting "Stability.Mu2", oldMu2
+    SetSystemSetting "Stability.PhiLMode", oldPhiMode
+    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.sp35.tablePhiL; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет табличную ветвь СП 35: если As/Ab больше 3%, бетонный вклад в
+' Nult уменьшается на As. Это не заменяет приведенное сечение (n - 1)As,
+' которое отвечает только за центр тяжести, оси и ядровое расстояние.
+Private Sub TestStabilitySP35TableRebarAreaCorrection(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldDirect As String
+    Dim oldCapacity As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    Dim oldLength As String
+    Dim oldMu1 As String
+    Dim oldMu2 As String
+    Dim oldAccMode As String
+    Dim oldAccPlanes As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldDirect = GetProfileValue("Calculation.Strength.DirectState", "PR1")
+    oldCapacity = GetProfileValue("Calculation.Strength.Capacity", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+    oldLength = GetSystemSetting("Stability.ElementLength")
+    oldMu1 = GetSystemSetting("Stability.Mu1")
+    oldMu2 = GetSystemSetting("Stability.Mu2")
+    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
+    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP35"
+    SetSystemSetting "Stability.ElementLength", "1000"
+    SetSystemSetting "Stability.Mu1", "1"
+    SetSystemSetting "Stability.Mu2", "1"
+    SetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithL"
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+
+    Dim concreteArea As Double
+    Dim steelArea As Double
+    Dim phiValue As Double
+    Dim nUltimate As Double
+
+    nUltimate = SP35TableNultForCircle(500#, 4, 12#, concreteArea, steelArea, phiValue)
+    AssertTrue stats, "batch.stability.sp35.rebarRatio.low", steelArea / concreteArea < 0.03
+    AssertClose stats, "batch.stability.sp35.rebarRatio.lowNult", nUltimate, _
+        phiValue * (15.5 * concreteArea + 350# * steelArea), nUltimate * 0.0000001
+
+    nUltimate = SP35TableNultForCircle(500#, 18, 25#, concreteArea, steelArea, phiValue)
+    AssertTrue stats, "batch.stability.sp35.rebarRatio.high", steelArea / concreteArea > 0.03
+    AssertClose stats, "batch.stability.sp35.rebarRatio.highNult", nUltimate, _
+        phiValue * (15.5 * (concreteArea - steelArea) + 350# * steelArea), nUltimate * 0.0000001
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", oldDirect
+    SetProfileValue "Calculation.Strength.Capacity", "PR1", oldCapacity
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.ElementLength", oldLength
+    SetSystemSetting "Stability.Mu1", oldMu1
+    SetSystemSetting "Stability.Mu2", oldMu2
+    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.sp35.rebarAreaCorrection; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет, что таблица 7.21 СП 35 интерполируется в два шага: сначала по
+' ec/r между столбцами q=0, 0.25, 0.50, 1.00, затем между строками по l0/i.
+Private Sub TestStabilitySP35TableInterpolationIntermediate(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldDirect As String
+    Dim oldCapacity As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    Dim oldLength As String
+    Dim oldMu1 As String
+    Dim oldMu2 As String
+    Dim oldAccMode As String
+    Dim oldAccPlanes As String
+    Dim oldAccUser1 As String
+    Dim oldAccUser2 As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldDirect = GetProfileValue("Calculation.Strength.DirectState", "PR1")
+    oldCapacity = GetProfileValue("Calculation.Strength.Capacity", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+    oldLength = GetSystemSetting("Stability.ElementLength")
+    oldMu1 = GetSystemSetting("Stability.Mu1")
+    oldMu2 = GetSystemSetting("Stability.Mu2")
+    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+    oldAccUser1 = GetSystemSetting("Stability.AccidentalEccentricityUser1")
+    oldAccUser2 = GetSystemSetting("Stability.AccidentalEccentricityUser2")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
+    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP35"
+    SetSystemSetting "Stability.Mu1", "1"
+    SetSystemSetting "Stability.Mu2", "1"
+    SetSystemSetting "Stability.AccidentalEccentricityMode", "User"
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+
+    AssertClose stats, "batch.stability.sp35.interp.q0125", _
+        SP35InterpolatedPhiM(0.125), 6.5, 0.000001
+    AssertClose stats, "batch.stability.sp35.interp.q0375", _
+        SP35InterpolatedPhiM(0.375), 7.5, 0.000001
+    AssertClose stats, "batch.stability.sp35.interp.q0750", _
+        SP35InterpolatedPhiM(0.75), 9#, 0.000001
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", oldDirect
+    SetProfileValue "Calculation.Strength.Capacity", "PR1", oldCapacity
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.ElementLength", oldLength
+    SetSystemSetting "Stability.Mu1", oldMu1
+    SetSystemSetting "Stability.Mu2", oldMu2
+    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    SetSystemSetting "Stability.AccidentalEccentricityUser1", oldAccUser1
+    SetSystemSetting "Stability.AccidentalEccentricityUser2", oldAccUser2
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.sp35.tableInterpolation; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет граничное условие табличной ветви СП 35: N <= Nult, поэтому
+' коэффициент запаса ровно 1.0 считается прохождением проверки.
+Private Sub TestStabilitySP35TableBoundaryReservePasses(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldDirect As String
+    Dim oldCapacity As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    Dim oldLength As String
+    Dim oldMu1 As String
+    Dim oldMu2 As String
+    Dim oldAccMode As String
+    Dim oldAccPlanes As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldDirect = GetProfileValue("Calculation.Strength.DirectState", "PR1")
+    oldCapacity = GetProfileValue("Calculation.Strength.Capacity", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+    oldLength = GetSystemSetting("Stability.ElementLength")
+    oldMu1 = GetSystemSetting("Stability.Mu1")
+    oldMu2 = GetSystemSetting("Stability.Mu2")
+    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
+    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP35"
+    SetSystemSetting "Stability.ElementLength", "1000"
+    SetSystemSetting "Stability.Mu1", "1"
+    SetSystemSetting "Stability.Mu2", "1"
+    SetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithL"
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+
+    Dim concreteArea As Double
+    Dim steelArea As Double
+    Dim phiValue As Double
+    Dim nUltimate As Double
+    nUltimate = SP35TableNultForCircle(500#, 4, 12#, concreteArea, steelArea, phiValue)
+
+    Dim section As CSectionModel
+    Set section = BuildCircleStabilitySection(500#, 4, 12#)
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = New CBatchSectionCalculator
+    batch.Initialize section, TestMaterialProvider()
+    Set batch.ProfileCatalog = TestProfileCatalog()
+    batch.ApplySettings settings
+    batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    batch.AddCombination "SP35_BOUNDARY", -nUltimate, 0#, 0#, "PR1", "sp35 boundary"
+    batch.Execute
+
+    AssertClose stats, "batch.stability.sp35.boundary.reserve", batch.StabilityReserveFactor(1), 1#, 0.0000001
+    AssertTrue stats, "batch.stability.sp35.boundary.status", batch.StabilityStatus(1) = "OK"
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", oldDirect
+    SetProfileValue "Calculation.Strength.Capacity", "PR1", oldCapacity
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.ElementLength", oldLength
+    SetSystemSetting "Stability.Mu1", oldMu1
+    SetSystemSetting "Stability.Mu2", oldMu2
+    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.sp35.boundaryReserve; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет orchestrator: если устойчивость уже дала FAIL, последующие
+' DirectState/Capacity/Crack не запускаются и не превращают итог в NumFail.
+Private Sub TestStabilityFailStopsDownstream(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldCrack As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    Dim oldLength As String
+    Dim oldMu1 As String
+    Dim oldMu2 As String
+    Dim oldAccMode As String
+    Dim oldAccPlanes As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldCrack = GetProfileValue("Calculation.Crack.Width", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+    oldLength = GetSystemSetting("Stability.ElementLength")
+    oldMu1 = GetSystemSetting("Stability.Mu1")
+    oldMu2 = GetSystemSetting("Stability.Mu2")
+    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "Calculation.Crack.Width", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP35"
+    SetSystemSetting "Stability.ElementLength", "1000"
+    SetSystemSetting "Stability.Mu1", "1"
+    SetSystemSetting "Stability.Mu2", "1"
+    SetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithL"
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    batch.ApplySettings settings
+    batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    batch.AddCombination "SP35_STOP", -50000000#, 0#, 0#, "PR1", "stability stop"
+    batch.Execute
+
+    AssertTrue stats, "batch.stability.stop.stabilityFail", batch.StabilityStatus(1) = "FAIL"
+    AssertTrue stats, "batch.stability.stop.overallFail", batch.Status(1) = "FAIL"
+    AssertTrue stats, "batch.stability.stop.directNA", batch.DirectStateStatus(1) = "N/A"
+    AssertTrue stats, "batch.stability.stop.capacityNA", batch.CapacityStatus(1) = "N/A"
+    AssertTrue stats, "batch.stability.stop.crackNA", batch.CrackStatus(1) = "N/A"
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "Calculation.Crack.Width", "PR1", oldCrack
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.ElementLength", oldLength
+    SetSystemSetting "Stability.Mu1", oldMu1
+    SetSystemSetting "Stability.Mu2", oldMu2
+    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.stopDownstream; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет СП 63: при гибкости l0/i <= 14 коэффициент eta не применяется и
+' принимается равным 1, но критическая сила Ncr все равно считается для справки.
+Private Sub TestStabilitySP63ShortSlendernessEtaIsOne(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    Dim oldLength As String
+    Dim oldMu1 As String
+    Dim oldMu2 As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+    oldLength = GetSystemSetting("Stability.ElementLength")
+    oldMu1 = GetSystemSetting("Stability.Mu1")
+    oldMu2 = GetSystemSetting("Stability.Mu2")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP63"
+    SetSystemSetting "Stability.ElementLength", "500"
+    SetSystemSetting "Stability.Mu1", "1"
+    SetSystemSetting "Stability.Mu2", "1"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.AddCombination "SP63_SHORT", -120000#, 1000000#, 0#, "PR1", "short slenderness"
+    batch.Execute
+
+    AssertTrue stats, "batch.stability.sp63.short.status", batch.StabilityStatus(1) = "OK" Or batch.StabilityStatus(1) = "FAIL"
+    AssertTrue stats, "batch.stability.sp63.short.slenderness1", batch.StabilitySlenderness1(1) > 0# And batch.StabilitySlenderness1(1) <= 14#
+    AssertTrue stats, "batch.stability.sp63.short.slenderness2", batch.StabilitySlenderness2(1) > 0# And batch.StabilitySlenderness2(1) <= 14#
+    AssertClose stats, "batch.stability.sp63.short.eta1", batch.StabilityEta1(1), 1#, 0.000000001
+    AssertClose stats, "batch.stability.sp63.short.eta2", batch.StabilityEta2(1), 1#, 0.000000001
+    AssertTrue stats, "batch.stability.sp63.short.ncr", batch.StabilityNcr1(1) > 0# And batch.StabilityNcr2(1) > 0#
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.ElementLength", oldLength
+    SetSystemSetting "Stability.Mu1", oldMu1
+    SetSystemSetting "Stability.Mu2", oldMu2
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.sp63.shortSlenderness; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет, что расчет устойчивости не заменяет некорректные mu1/mu2 на 1.
+' При включенной устойчивости оба коэффициента расчетной длины должны быть
+' заданы положительными числами, иначе пользователь получает InputErr.
+Private Sub TestStabilityInvalidMuReportsInputErr(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    Dim oldMu1 As String
+    Dim oldMu2 As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+    oldMu1 = GetSystemSetting("Stability.Mu1")
+    oldMu2 = GetSystemSetting("Stability.Mu2")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP63"
+    SetSystemSetting "Stability.Mu1", "0"
+    SetSystemSetting "Stability.Mu2", "1"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.AddCombination "BAD_MU", -120000#, 1000000#, 0#, "PR1", "bad mu"
+    batch.Execute
+
+    AssertTrue stats, "batch.stability.mu.inputErr", batch.StabilityStatus(1) = "InputErr"
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.Mu1", oldMu1
+    SetSystemSetting "Stability.Mu2", oldMu2
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.invalidMu; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет, что критичные настройки устойчивости не получают скрытые fallback
+' значения. Если пользователь очистил или неверно задал параметр, включенная
+' устойчивость должна вернуть InputErr через общую status policy.
+Private Sub TestStabilityInvalidSettingsReportInputErr(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    Dim oldKs As String
+    Dim oldPhiP As String
+    Dim oldLimit As String
+    Dim oldPhiMode As String
+    Dim oldAccMode As String
+    Dim oldAccPlanes As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+    oldKs = GetSystemSetting("Stability.SP63.Ks")
+    oldPhiP = GetSystemSetting("Stability.SP35.PhiP")
+    oldLimit = GetSystemSetting("Stability.SP35.NOverNcrLimit")
+    oldPhiMode = GetSystemSetting("Stability.PhiLMode")
+    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+
+    SetSystemSetting "Stability.Code", "SP63"
+    SetSystemSetting "Stability.SP63.Ks", ""
+    AssertTrue stats, "batch.stability.invalidSettings.ks", _
+        StabilityStatusForCurrentSettings() = "InputErr"
+    AssertTrue stats, "batch.stability.invalidSettings.ksMessage", _
+        InStr(1, StabilityFirstInvalidMessageForCurrentSettings(), "Stability.SP63.Ks", vbTextCompare) > 0
+    SetSystemSetting "Stability.SP63.Ks", oldKs
+
+    SetSystemSetting "Stability.PhiLMode", "WrongPhi"
+    AssertTrue stats, "batch.stability.invalidSettings.phiMode", _
+        StabilityStatusForCurrentSettings() = "InputErr"
+    SetSystemSetting "Stability.PhiLMode", oldPhiMode
+
+    SetSystemSetting "Stability.AccidentalEccentricityMode", "WrongAccidental"
+    AssertTrue stats, "batch.stability.invalidSettings.accMode", _
+        StabilityStatusForCurrentSettings() = "InputErr"
+    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "WrongPlanes"
+    AssertTrue stats, "batch.stability.invalidSettings.accPlanes", _
+        StabilityStatusForCurrentSettings() = "InputErr"
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+
+    SetSystemSetting "Stability.Code", "SP35"
+    SetSystemSetting "Stability.SP35.PhiP", "0"
+    AssertTrue stats, "batch.stability.invalidSettings.phiP", _
+        StabilityStatusForCurrentSettings() = "InputErr"
+    SetSystemSetting "Stability.SP35.PhiP", oldPhiP
+
+    SetSystemSetting "Stability.SP35.NOverNcrLimit", "0"
+    AssertTrue stats, "batch.stability.invalidSettings.nOverNcr", _
+        StabilityStatusForCurrentSettings() = "InputErr"
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.SP63.Ks", oldKs
+    SetSystemSetting "Stability.SP35.PhiP", oldPhiP
+    SetSystemSetting "Stability.SP35.NOverNcrLimit", oldLimit
+    SetSystemSetting "Stability.PhiLMode", oldPhiMode
+    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.invalidSettings; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет общий диагностический Branch для СП 35. Если первая и вторая
+' главные плоскости попали в разные ветви, общий Branch должен быть mixed,
+' а точная детализация остается в PlaneBranch1/2.
+Private Sub TestStabilitySP35MixedBranchReportsMixed(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    Dim oldLength As String
+    Dim oldMu1 As String
+    Dim oldMu2 As String
+    Dim oldAccMode As String
+    Dim oldAccPlanes As String
+    Dim oldAccUser1 As String
+    Dim oldAccUser2 As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+    oldLength = GetSystemSetting("Stability.ElementLength")
+    oldMu1 = GetSystemSetting("Stability.Mu1")
+    oldMu2 = GetSystemSetting("Stability.Mu2")
+    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+    oldAccUser1 = GetSystemSetting("Stability.AccidentalEccentricityUser1")
+    oldAccUser2 = GetSystemSetting("Stability.AccidentalEccentricityUser2")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP35"
+    SetSystemSetting "Stability.ElementLength", "3000"
+    SetSystemSetting "Stability.Mu1", "1"
+    SetSystemSetting "Stability.Mu2", "1"
+    SetSystemSetting "Stability.AccidentalEccentricityMode", "User"
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+    SetSystemSetting "Stability.AccidentalEccentricityUser1", "10"
+    SetSystemSetting "Stability.AccidentalEccentricityUser2", "200"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    batch.AddCombination "SP35_MIXED", -120000#, 0#, 0#, "PR1", "sp35 mixed branch"
+    batch.Execute
+
+    AssertTrue stats, "batch.stability.sp35Mixed.status", _
+        batch.StabilityStatus(1) = "OK" Or batch.StabilityStatus(1) = "FAIL"
+    AssertTrue stats, "batch.stability.sp35Mixed.planeBranches", _
+        StrComp(batch.StabilityPlaneBranch1(1), batch.StabilityPlaneBranch2(1), vbTextCompare) <> 0
+    AssertTrue stats, "batch.stability.sp35Mixed.branch", batch.StabilityBranch(1) = "SP35-mixed"
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.ElementLength", oldLength
+    SetSystemSetting "Stability.Mu1", oldMu1
+    SetSystemSetting "Stability.Mu2", oldMu2
+    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    SetSystemSetting "Stability.AccidentalEccentricityUser1", oldAccUser1
+    SetSystemSetting "Stability.AccidentalEccentricityUser2", oldAccUser2
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.sp35MixedBranch; " & Err.Description
+    Resume Restore
+End Sub
+
 ' Проверяет круговое сечение с моментом только в глобальной плоскости X.
 ' Для почти изотропной геометрии главные оси фиксируются по X/Y, а случайный
 ' эксцентриситет не должен создавать расчетный момент в пустой второй плоскости.
@@ -1605,14 +2437,17 @@ Private Sub TestStabilityCircleMxDoesNotCreateMy(ByRef stats As TBatchTestStats)
     Dim oldEnabled As String
     Dim oldValueSet As String
     Dim oldCode As String
+    Dim oldAccPlanes As String
     oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
     oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
     oldCode = GetSystemSetting("Stability.Code")
+    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
 
     On Error GoTo RestoreAndFail
     SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
     SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
     SetSystemSetting "Stability.Code", "SP63"
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
 
     Dim geom As ISectionGeometry
     Set geom = CircleGeometry(500#, 0#, 0#)
@@ -1644,11 +2479,70 @@ Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
     SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
     SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: batch.stability.circleMx; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет новую настройку плоскостей случайного эксцентриситета. В режиме
+' BothPlanes случайный эксцентриситет добавляется и во вторую главную плоскость,
+' даже если исходный момент был задан только в одной плоскости.
+Private Sub TestStabilityAccidentalBothPlanes(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    Dim oldLength As String
+    Dim oldMu1 As String
+    Dim oldMu2 As String
+    Dim oldAccMode As String
+    Dim oldAccPlanes As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+    oldLength = GetSystemSetting("Stability.ElementLength")
+    oldMu1 = GetSystemSetting("Stability.Mu1")
+    oldMu2 = GetSystemSetting("Stability.Mu2")
+    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP63"
+    SetSystemSetting "Stability.ElementLength", "12000"
+    SetSystemSetting "Stability.Mu1", "1"
+    SetSystemSetting "Stability.Mu2", "1"
+    SetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithL"
+
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
+    Dim onlyMomentPlane As Double
+    onlyMomentPlane = StabilityAccidentalForSingleMoment()
+
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+    Dim bothPlanes As Double
+    bothPlanes = StabilityAccidentalForSingleMoment()
+
+    AssertTrue stats, "batch.stability.accidentalPlanes.onlyPositive", onlyMomentPlane > 0#
+    AssertTrue stats, "batch.stability.accidentalPlanes.bothLarger", bothPlanes > onlyMomentPlane * 1.5
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.ElementLength", oldLength
+    SetSystemSetting "Stability.Mu1", oldMu1
+    SetSystemSetting "Stability.Mu2", oldMu2
+    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.accidentalBothPlanes; " & Err.Description
     Resume Restore
 End Sub
 
@@ -1713,6 +2607,10 @@ Private Sub TestStabilityUsesTransformedCentroidForEccentricity(ByRef stats As T
     AssertTrue stats, "batch.stability.centroid.status", batch.StabilityStatus(1) = "OK" Or batch.StabilityStatus(1) = "FAIL"
     AssertTrue stats, "batch.stability.centroid.eFromTransformedCenter", _
         Sqr(batch.StabilityEccentricity1(1) ^ 2 + batch.StabilityEccentricity2(1) ^ 2) > centroidGap * 0.8
+    AssertClose stats, "batch.stability.centroid.loadPointMxIsUserMx", _
+        batch.StabilityLoadPointMx(1), batch.UserMx(1), 0.000001
+    AssertClose stats, "batch.stability.centroid.loadPointMyIsUserMy", _
+        batch.StabilityLoadPointMy(1), batch.UserMy(1), 0.000001
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -1723,6 +2621,360 @@ Restore:
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: batch.stability.centroid; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет, что нормативный AutoWithL для случайного эксцентриситета берет
+' геометрическую длину L, а не расчетную длину l0 = mu*L. Режим AutoWithMuL
+' остается явной проверочной опцией и должен давать другое значение.
+Private Sub TestStabilityAccidentalUsesGeometricLength(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    Dim oldLength As String
+    Dim oldMu1 As String
+    Dim oldMu2 As String
+    Dim oldAccMode As String
+    Dim oldAccPlanes As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+    oldLength = GetSystemSetting("Stability.ElementLength")
+    oldMu1 = GetSystemSetting("Stability.Mu1")
+    oldMu2 = GetSystemSetting("Stability.Mu2")
+    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP63"
+    SetSystemSetting "Stability.ElementLength", "12000"
+    SetSystemSetting "Stability.Mu1", "2"
+    SetSystemSetting "Stability.Mu2", "2"
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
+
+    SetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithL"
+    Dim byGeometricLength As Double
+    byGeometricLength = StabilityAccidentalForSingleMoment()
+
+    SetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithMuL"
+    Dim byEffectiveLength As Double
+    byEffectiveLength = StabilityAccidentalForSingleMoment()
+
+    AssertClose stats, "batch.stability.accidental.L", byGeometricLength, 20#, 0.000001
+    AssertClose stats, "batch.stability.accidental.muL", byEffectiveLength, 40#, 0.000001
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.ElementLength", oldLength
+    SetSystemSetting "Stability.Mu1", oldMu1
+    SetSystemSetting "Stability.Mu2", oldMu2
+    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.accidentalLength; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет пользовательский режим случайного эксцентриситета: пользователь
+' задает только модуль, а знак по-прежнему выбирается по направлению момента
+' или настройкам для нулевого момента.
+Private Sub TestStabilityAccidentalUserMode(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    Dim oldAccMode As String
+    Dim oldAccUser1 As String
+    Dim oldAccUser2 As String
+    Dim oldAccPlanes As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccUser1 = GetSystemSetting("Stability.AccidentalEccentricityUser1")
+    oldAccUser2 = GetSystemSetting("Stability.AccidentalEccentricityUser2")
+    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP35"
+    SetSystemSetting "Stability.AccidentalEccentricityMode", "User"
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
+    SetSystemSetting "Stability.AccidentalEccentricityUser1", "25"
+    SetSystemSetting "Stability.AccidentalEccentricityUser2", "40"
+
+    AssertClose stats, "batch.stability.accidental.user", StabilityAccidentalForSingleMoment(), 25#, 0.000001
+
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+    AssertClose stats, "batch.stability.accidental.userBoth", StabilityAccidentalForSingleMoment(), 65#, 0.000001
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    SetSystemSetting "Stability.AccidentalEccentricityUser1", oldAccUser1
+    SetSystemSetting "Stability.AccidentalEccentricityUser2", oldAccUser2
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.accidentalUser; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет исправление СП 35: выбор ветви идет по ядровому расстоянию r, а
+' не по радиусу инерции i. Для круга D=500 мм ядровое расстояние примерно
+' равно половине радиуса инерции, поэтому перепутать эти величины легко.
+Private Sub TestStabilitySP35UsesCoreDistanceNotRadius(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    Dim oldLength As String
+    Dim oldMu1 As String
+    Dim oldMu2 As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+    oldLength = GetSystemSetting("Stability.ElementLength")
+    oldMu1 = GetSystemSetting("Stability.Mu1")
+    oldMu2 = GetSystemSetting("Stability.Mu2")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP35"
+    SetSystemSetting "Stability.ElementLength", "3000"
+    SetSystemSetting "Stability.Mu1", "1"
+    SetSystemSetting "Stability.Mu2", "1"
+
+    Dim geom As ISectionGeometry
+    Set geom = CircleGeometry(500#, 0#, 0#)
+
+    Dim mesh As CFiberMeshBuilder
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geom, 20#, 20#, 1
+
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, CircleRebars(500#, 0#, 0#, 40#, 12, 20#), "CircleCore")
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = New CBatchSectionCalculator
+    batch.Initialize section, TestMaterialProvider()
+    Set batch.ProfileCatalog = TestProfileCatalog()
+    batch.ApplySettings settings
+    batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    batch.AddCombination "SP35_CORE", -120000#, 10000000#, 0#, "PR1", "sp35 core"
+    batch.Execute
+
+    Dim coreDistance As Double
+    Dim radiusValue As Double
+    coreDistance = ActiveStabilityValue(batch.StabilityCoreDistance1(1), batch.StabilityCoreDistance2(1))
+    radiusValue = ActiveStabilityValue(batch.StabilityRadius1(1), batch.StabilityRadius2(1))
+    AssertTrue stats, "batch.stability.sp35.core.positive", coreDistance > 0# And radiusValue > 0#
+    AssertTrue stats, "batch.stability.sp35.core.notRadius", coreDistance < radiusValue * 0.75
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.ElementLength", oldLength
+    SetSystemSetting "Stability.Mu1", oldMu1
+    SetSystemSetting "Stability.Mu2", oldMu2
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.sp35.coreDistance; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет, что h для случайного эксцентриситета и delta_e берется по
+' бетонному контуру. Даже если в модели есть очень крупный стержень, он
+' участвует в приведенных характеристиках, но не расширяет внешний габарит h.
+Private Sub TestStabilityDepthUsesConcreteContourOnly(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP63"
+
+    Dim geom As ISectionGeometry
+    Set geom = RoundedRectangleGeometry(300#, 200#)
+
+    Dim mesh As CFiberMeshBuilder
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geom, 25#, 25#, 1
+
+    Dim rebars As CRebarLayout
+    Set rebars = New CRebarLayout
+    rebars.AddBar "RBIG", 0#, 90#, 160#, 0#, "A400", "large test bar", geom
+
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, rebars, "ConcreteDepth")
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = New CBatchSectionCalculator
+    batch.Initialize section, TestMaterialProvider()
+    Set batch.ProfileCatalog = TestProfileCatalog()
+    batch.ApplySettings settings
+    batch.AddCombination "DEPTH_CONCRETE", -120000#, 1000000#, 0#, "PR1", "depth concrete"
+    batch.Execute
+
+    AssertTrue stats, "batch.stability.depth.concreteOnly1", _
+        batch.StabilityDepth1(1) > 190# And batch.StabilityDepth1(1) < 310#
+    AssertTrue stats, "batch.stability.depth.concreteOnly2", _
+        batch.StabilityDepth2(1) > 190# And batch.StabilityDepth2(1) < 310#
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.depthConcrete; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет СП 63: phi_l считается как 1 + Ml1/M1 со знаком, а не по
+' модулю отношения. Длительный момент противоположного знака не должен
+' увеличивать phi_l сверх 1.
+Private Sub TestStabilityPhiLUsesSignedSustainedMoment(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    Dim oldPhiMode As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+    oldPhiMode = GetSystemSetting("Stability.PhiLMode")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP63"
+    SetSystemSetting "Stability.PhiLMode", "Auto"
+
+    Dim phiSameSign As Double
+    phiSameSign = StabilityPhiLForDurationLoad("PHIL_SAME", -120000#, 1000000#, 0#, -60000#, 500000#, 0#)
+
+    Dim phiOppositeSign As Double
+    phiOppositeSign = StabilityPhiLForDurationLoad("PHIL_OPP", -120000#, 1000000#, 0#, -60000#, -10000000#, 0#)
+
+    AssertTrue stats, "batch.stability.phil.sameSign", phiSameSign > 1.05
+    AssertClose stats, "batch.stability.phil.oppositeSign", phiOppositeSign, 1#, 0.000001
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.PhiLMode", oldPhiMode
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.phiLSp63; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет, что постоянная/длительная продольная сила не обрезается к диапазону
+' 0...N. Пользовательское значение передается в расчет как есть: сжатие
+' хранится положительным, растяжение отрицательным в формулах устойчивости.
+Private Sub TestStabilitySustainedNNotClamped(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP63"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.AddStabilityDurationLoad "SUSTAINED_FREE", -240000#, 500000#, 0#
+    batch.AddCombination "SUSTAINED_FREE", -120000#, 1000000#, 0#, "PR1", "sustained not clamped"
+    batch.Execute
+
+    AssertClose stats, "batch.stability.sustainedN.notClamped", batch.StabilitySustainedN(1), 240000#, 0.000001
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.sustainedNNotClamped; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет специальную ветвь СП 35 для противоположных знаков полного и
+' длительного моментов: Auto не должен превращать ее в Abs-отношение.
+Private Sub TestStabilitySP35OppositeMomentSigns(ByRef stats As TBatchTestStats)
+    Dim oldEnabled As String
+    Dim oldValueSet As String
+    Dim oldCode As String
+    Dim oldPhiMode As String
+    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = GetSystemSetting("Stability.Code")
+    oldPhiMode = GetSystemSetting("Stability.PhiLMode")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.Code", "SP35"
+    SetSystemSetting "Stability.PhiLMode", "Auto"
+
+    Dim phiValue As Double
+    phiValue = StabilityPhiLForDurationLoad("SP35_OPP", -120000#, 10000000#, 0#, -60000#, -10000000#, 0#)
+
+    AssertTrue stats, "batch.stability.sp35.opposite.phi", phiValue = 1# Or phiValue = 1.05
+
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    SetSystemSetting "Stability.Code", oldCode
+    SetSystemSetting "Stability.PhiLMode", oldPhiMode
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.stability.sp35.oppositePhiL; " & Err.Description
     Resume Restore
 End Sub
 
@@ -1936,6 +3188,63 @@ Private Function BuildBatchCalculator() As CBatchSectionCalculator
     Set BuildBatchCalculator = batch
 End Function
 
+' Собирает ступенчатую тестовую модель, где локальный и глобальный варианты
+' a_s дают разные расстояния. Это regression именно на передачу настройки из
+' batch в расчет трещин, а не на сам геометрический ray-cast.
+Private Function BuildSteppedCrackCoverBatch() As CBatchSectionCalculator
+    Dim geom As CGeometryRoundedRectangle
+    Set geom = New CGeometryRoundedRectangle
+    geom.Initialize 300#, 200#, 0#, 0#, 0#, 0#
+
+    Dim mesh As CFiberMeshBuilder
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geom, 30#, 20#, 1
+
+    Dim rebars As CRebarLayout
+    Set rebars = New CRebarLayout
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", geom
+
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, rebars, "SteppedCoverTest")
+    section.SourceType = "SteppedCoverTest"
+    ' Узкий малоплощадный выступ почти не меняет равновесие, но сдвигает
+    ' дальнюю растянутую опорную линию. Так batch-тест ловит именно передачу
+    ' CoverDistanceMode без превращения проверки в тяжелый численный сценарий.
+    section.AddConcreteElement -220#, -250#, 1#, 1, "", "", "Rectangle", 10#, 300#, 0#
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = New CBatchSectionCalculator
+    batch.Initialize section, TestMaterialProvider()
+    Set batch.ProfileCatalog = TestProfileCatalog()
+    Set BuildSteppedCrackCoverBatch = batch
+End Function
+
+' Возвращает a_s из полного batch-расчета для указанного режима расстояния.
+Private Function BatchSteppedCrackCoverA(ByVal coverMode As String) As Double
+    SetSystemSetting "SLS.Crack.CoverDistanceMode", coverMode
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildSteppedCrackCoverBatch()
+    batch.ApplySettings settings
+    batch.AddCombination "COVER_" & coverMode, -20000#, -15000000#, 0#, "PR2", "cover distance mode"
+    batch.Execute
+
+    If batch.CrackStatus(1) <> "OK" And batch.CrackStatus(1) <> "FAIL" Then
+        Err.Raise vbObjectError + 3935, "modTestBatchCalculation", _
+            "Crack calculation did not run for cover mode " & coverMode & _
+            ": crack=" & batch.CrackStatus(1) & "; direct=" & batch.DirectStateStatus(1) & _
+            "; overall=" & batch.OverallStatus(1)
+    End If
+    BatchSteppedCrackCoverA = batch.CrackCoverA(1)
+End Function
+
 ' Собирает Г-сечение из пользовательского примера: H1/B1/H2/B2 = 550/250/250/600,
 ' арматура Ø32 по всем внешним и внутренним граням. Этот сценарий нужен именно
 ' для проверки StateSolution при почти предельном осевом растяжении PR2.
@@ -2081,6 +3390,90 @@ Private Function StabilitySP35CriticalForceForValueSet(ByVal valueSetText As Str
     StabilitySP35CriticalForceForValueSet = batch.StabilityCriticalForce(1)
 End Function
 
+' Выполняет короткий расчет устойчивости с одним изгибающим моментом и
+' возвращает модуль фактически добавленного случайного эксцентриситета.
+Private Function StabilityAccidentalForSingleMoment() As Double
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    batch.AddCombination "ACC_E", -120000#, 1000000#, 0#, "PR1", "accidental eccentricity"
+    batch.Execute
+
+    StabilityAccidentalForSingleMoment = Abs(batch.StabilityAccidentalEcc1(1)) + _
+        Abs(batch.StabilityAccidentalEcc2(1))
+End Function
+
+' Запускает минимальный LC устойчивости с текущими настройками Config.
+' Нужен тестам валидации: они временно меняют одну настройку и проверяют,
+' что ошибка доходит до пользовательского StabilityStatus.
+Private Function StabilityStatusForCurrentSettings() As String
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    batch.AddCombination "STAB_BAD_SETTING", -120000#, 1000000#, 0#, "PR1", "bad stability setting"
+    batch.Execute
+
+    StabilityStatusForCurrentSettings = batch.StabilityStatus(1)
+End Function
+
+' Возвращает детальную причину первой ошибки при текущих настройках Config.
+' Это защищает пользовательское сообщение: короткий статус остается InputErr,
+' но popup должен показывать конкретную настройку или расчетную причину.
+Private Function StabilityFirstInvalidMessageForCurrentSettings() As String
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    batch.AddCombination "STAB_BAD_SETTING", -120000#, 1000000#, 0#, "PR1", "bad stability setting"
+    batch.Execute
+
+    StabilityFirstInvalidMessageForCurrentSettings = batch.FirstInvalidInputMessage
+End Function
+
+' Запускает устойчивость с заданной длительной частью нагрузки и возвращает
+' phi_l активной главной плоскости. Метод нужен тестам знаковой логики Ml/M.
+Private Function StabilityPhiLForDurationLoad(ByVal combinationID As String, _
+        ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
+        ByVal sustainedN As Double, ByVal sustainedMx As Double, ByVal sustainedMy As Double) As Double
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplySettings settings
+    batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    batch.AddStabilityDurationLoad combinationID, sustainedN, sustainedMx, sustainedMy
+    batch.AddCombination combinationID, nValue, mxValue, myValue, "PR1", "phi_l"
+    batch.Execute
+
+    StabilityPhiLForDurationLoad = ActiveStabilityValue(batch.StabilityPhiL1(1), batch.StabilityPhiL2(1))
+End Function
+
+' Возвращает ненулевое значение активной плоскости. В тестах используется для
+' сценариев, где нагрузка задана только в одной главной плоскости.
+Private Function ActiveStabilityValue(ByVal firstValue As Double, ByVal secondValue As Double) As Double
+    If Abs(firstValue) > 0.000000001 Then
+        ActiveStabilityValue = Abs(firstValue)
+    Else
+        ActiveStabilityValue = Abs(secondValue)
+    End If
+End Function
+
 Private Function CircleGeometry(ByVal diameter As Double, ByVal centerX As Double, ByVal centerY As Double) As ISectionGeometry
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -2160,6 +3553,101 @@ Private Function TestProfileCatalog() As CCalculationProfileCatalog
     Set profiles = New CCalculationProfileCatalog
     profiles.LoadFromWorkbook ThisWorkbook
     Set TestProfileCatalog = profiles
+End Function
+
+' Собирает круглое сечение для тестов устойчивости СП 35.
+Private Function BuildCircleStabilitySection(ByVal diameter As Double, ByVal barCount As Long, _
+        ByVal barDiameter As Double) As CSectionModel
+    Dim geom As ISectionGeometry
+    Set geom = CircleGeometry(diameter, 0#, 0#)
+
+    Dim mesh As CFiberMeshBuilder
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geom, 20#, 20#, 1
+
+    Set BuildCircleStabilitySection = BuildGeneratedSectionModel(mesh, _
+        CircleRebars(diameter, 0#, 0#, 40#, barCount, barDiameter), "CircleSP35Table")
+End Function
+
+' Возвращает Nult табличной ветви СП 35 и одновременно отдает площади,
+' чтобы тест мог проверить нормативную поправку при As/Ab больше 3%.
+Private Function SP35TableNultForCircle(ByVal diameter As Double, ByVal barCount As Long, _
+        ByVal barDiameter As Double, ByRef concreteArea As Double, ByRef steelArea As Double, _
+        ByRef phiValue As Double) As Double
+    Dim section As CSectionModel
+    Set section = BuildCircleStabilitySection(diameter, barCount, barDiameter)
+
+    Dim concreteProps As CSectionPropertiesCalculator
+    Set concreteProps = New CSectionPropertiesCalculator
+    concreteProps.CalculateConcrete section
+    concreteArea = concreteProps.Area
+
+    Dim transformedProps As CSectionPropertiesCalculator
+    Set transformedProps = New CSectionPropertiesCalculator
+    transformedProps.CalculateTransformedByModuli section, 32500#, 200000#
+    steelArea = transformedProps.RebarAreaTotal(section)
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = New CBatchSectionCalculator
+    batch.Initialize section, TestMaterialProvider()
+    Set batch.ProfileCatalog = TestProfileCatalog()
+    batch.ApplySettings settings
+    batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    batch.AddCombination "SP35_NULT_AREA", -100000#, 0#, 0#, "PR1", "sp35 nult area"
+    batch.Execute
+
+    phiValue = ActiveStabilityValue(batch.StabilityPhiValue1(1), batch.StabilityPhiValue2(1))
+    SP35TableNultForCircle = ActiveStabilityValue(batch.StabilityNultimate1(1), batch.StabilityNultimate2(1))
+End Function
+
+' Запускает расчет по искусственной таблице 7.21 и возвращает phi_m.
+' Таблица выбрана линейной, чтобы промежуточные значения проверялись точно.
+Private Function SP35InterpolatedPhiM(ByVal q As Double) As Double
+    Dim section As CSectionModel
+    Set section = BuildCircleStabilitySection(500#, 4, 12#)
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateTransformedByModuli section, 32500#, 200000#
+
+    Dim coreDistance As Double
+    coreDistance = props.CoreDistanceAlong(section, 0#, 1#, False)
+    SetSystemSetting "Stability.ElementLength", FormatNumberInvariant(15# * props.PrincipalRadius1)
+    SetSystemSetting "Stability.AccidentalEccentricityUser1", FormatNumberInvariant(q * coreDistance)
+    SetSystemSetting "Stability.AccidentalEccentricityUser2", FormatNumberInvariant(q * coreDistance)
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = New CBatchSectionCalculator
+    batch.Initialize section, TestMaterialProvider()
+    Set batch.ProfileCatalog = TestProfileCatalog()
+    batch.ApplySettings settings
+    batch.SetSP35Table721 SP35InterpolationTable()
+    batch.AddCombination "SP35_INTERP", -100000#, 0#, 0#, "PR1", "sp35 interpolation"
+    batch.Execute
+
+    SP35InterpolatedPhiM = ActiveStabilityValue(batch.StabilityPhiM1(1), batch.StabilityPhiM2(1))
+End Function
+
+' Искусственная таблица 7.21 с двумя строками по l0/i = 10 и 20.
+Private Function SP35InterpolationTable() As Variant
+    Dim tableData(1 To 3, 1 To 8) As Variant
+    tableData(1, 1) = "l0/b": tableData(1, 2) = "l0/d": tableData(1, 3) = "l0/i"
+    tableData(1, 4) = "phi_m q=0": tableData(1, 5) = "phi_m q=0.25"
+    tableData(1, 6) = "phi_m q=0.50": tableData(1, 7) = "phi_m q=1.00"
+    tableData(1, 8) = "phi_l"
+    tableData(2, 3) = 10#: tableData(2, 4) = 1#: tableData(2, 5) = 2#
+    tableData(2, 6) = 3#: tableData(2, 7) = 5#: tableData(2, 8) = 1.1
+    tableData(3, 3) = 20#: tableData(3, 4) = 11#: tableData(3, 5) = 12#
+    tableData(3, 6) = 13#: tableData(3, 7) = 15#: tableData(3, 8) = 1.3
+    SP35InterpolationTable = tableData
 End Function
 
 Private Function ProvisionalSteel() As CMaterialDiagram

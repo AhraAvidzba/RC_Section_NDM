@@ -459,18 +459,25 @@ End Function
 ' В этом режиме размеры не усредняются, а цвет берется из того же правила,
 ' что и для grouped-series fallback-а.
 Private Sub AddElementShapes(ByVal data As CSectionPlotDataReader)
+    Dim fallbackSquareRotation As Double
+    fallbackSquareRotation = AverageKnownConcreteElementRotation(data)
+
     Dim itemIndex As Long
     For itemIndex = 1 To data.Count
         If StrComp(data.MaterialType(itemIndex), "Rebar", vbTextCompare) = 0 Then
             AddRebarElementShape data, itemIndex
         Else
-            AddConcreteElementShape data, itemIndex
+            AddConcreteElementShape data, itemIndex, fallbackSquareRotation
         End If
     Next itemIndex
 End Sub
 
-' Рисует бетонный конечный элемент с фактической шириной и высотой из Results.
-Private Sub AddConcreteElementShape(ByVal data As CSectionPlotDataReader, ByVal index As Long)
+' Рисует бетонный конечный элемент с фактической шириной, высотой и
+' поворотом из Results. Если импортированный Region дошел до последнего
+' fallback-а по площади, он рисуется квадратом с углом средней ориентации
+' распознанной сетки.
+Private Sub AddConcreteElementShape(ByVal data As CSectionPlotDataReader, ByVal index As Long, _
+        ByVal fallbackSquareRotation As Double)
     Dim widthValue As Double
     Dim heightValue As Double
     widthValue = ConcreteElementWidth(data, index) * CONCRETE_SHAPE_FILL_RATIO
@@ -478,10 +485,11 @@ Private Sub AddConcreteElementShape(ByVal data As CSectionPlotDataReader, ByVal 
     If widthValue <= 0# Or heightValue <= 0# Then Exit Sub
 
     Dim colorValue As Long
+    Dim rotationValue As Double
     colorValue = ElementColor(data, index)
-    DrawModelRectangle data.X(index) - widthValue / 2#, data.Y(index) - heightValue / 2#, _
-        data.X(index) + widthValue / 2#, data.Y(index) + heightValue / 2#, _
-        colorValue, colorValue, 0.15, "ElementConcrete"
+    rotationValue = ConcreteElementVisualRotation(data, index, fallbackSquareRotation)
+    DrawModelRectangleCentered data.X(index), data.Y(index), widthValue, heightValue, _
+        rotationValue, colorValue, colorValue, 0.15, "ElementConcrete"
 End Sub
 
 ' Рисует арматурный стержень по диаметру из Results; если диаметр не сохранен,
@@ -1476,6 +1484,34 @@ Private Function DrawModelRectangle(ByVal x1 As Double, ByVal y1 As Double, ByVa
     Set DrawModelRectangle = rectShape
 End Function
 
+' Рисует прямоугольник с центром и поворотом в координатах модели.
+' Excel Shape вращается уже в координатах экрана, поэтому знак угла меняется:
+' в расчетной модели Y направлена вверх, а в координатах листа Excel - вниз.
+Private Function DrawModelRectangleCentered(ByVal centerX As Double, ByVal centerY As Double, _
+        ByVal widthModel As Double, ByVal heightModel As Double, ByVal rotationRad As Double, _
+        ByVal fillColor As Long, ByVal lineColor As Long, ByVal weight As Double, _
+        ByVal suffix As String) As Object
+    Dim centerChartX As Double
+    Dim centerChartY As Double
+    Dim widthValue As Double
+    Dim heightValue As Double
+    centerChartX = ModelToChartX(centerX)
+    centerChartY = ModelToChartY(centerY)
+    widthValue = Abs(ModelToChartX(centerX + widthModel / 2#) - ModelToChartX(centerX - widthModel / 2#))
+    heightValue = Abs(ModelToChartY(centerY + heightModel / 2#) - ModelToChartY(centerY - heightModel / 2#))
+    If widthValue <= 0# Or heightValue <= 0# Then Exit Function
+
+    Dim rectShape As Object
+    Set rectShape = mChart.Shapes.AddShape(MSO_SHAPE_RECTANGLE, centerChartX - widthValue / 2#, _
+        centerChartY - heightValue / 2#, widthValue, heightValue)
+    rectShape.Name = SHAPE_PREFIX & suffix & CStr(mChart.Shapes.Count)
+    rectShape.Fill.ForeColor.RGB = fillColor
+    rectShape.Line.ForeColor.RGB = lineColor
+    rectShape.Line.Weight = weight
+    If Abs(rotationRad) > 0.000000000001 Then rectShape.Rotation = -rotationRad * 180# / GEOM_PI
+    Set DrawModelRectangleCentered = rectShape
+End Function
+
 ' Рисует овал/круг в координатах модели как Shape.
 ' Нужен для semantic-контура круга; сами арматурные стержни рисуются series.
 Private Function DrawModelOval(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
@@ -1632,6 +1668,69 @@ End Function
 Private Function ConcreteElementHeight(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Double
     ConcreteElementHeight = data.Height(index)
     If ConcreteElementHeight <= 0# Then ConcreteElementHeight = EquivalentLengthFromArea(data.Area(index), data.AreaUnit, data.LengthUnit)
+End Function
+
+' Возвращает визуальный угол бетонного элемента. Для реальных прямоугольников
+' используется их собственный Rotation, а последний fallback по площади
+' получает средний угол импортированной сетки.
+Private Function ConcreteElementVisualRotation(ByVal data As CSectionPlotDataReader, ByVal index As Long, _
+        ByVal fallbackSquareRotation As Double) As Double
+    ConcreteElementVisualRotation = data.Rotation(index)
+    If IsEquivalentAreaFallbackElement(data, index) And Abs(ConcreteElementVisualRotation) <= 0.000000000001 Then
+        ConcreteElementVisualRotation = fallbackSquareRotation
+    End If
+End Function
+
+' Находит среднюю ориентацию бетонных элементов с известными Width/Height.
+' Угол прямоугольника усредняется через 2*angle, потому что поворот на 180
+' градусов описывает ту же самую ячейку.
+Private Function AverageKnownConcreteElementRotation(ByVal data As CSectionPlotDataReader) As Double
+    Dim sumCos As Double
+    Dim sumSin As Double
+    Dim count As Long
+    Dim i As Long
+    For i = 1 To data.Count
+        If StrComp(data.MaterialType(i), "Concrete", vbTextCompare) = 0 And _
+                Not IsEquivalentAreaFallbackElement(data, i) And _
+                data.Width(i) > 0# And data.Height(i) > 0# Then
+            sumCos = sumCos + Cos(2# * data.Rotation(i))
+            sumSin = sumSin + Sin(2# * data.Rotation(i))
+            count = count + 1
+        End If
+    Next i
+
+    If count > 0 And (Abs(sumCos) > 0.000000000001 Or Abs(sumSin) > 0.000000000001) Then
+        AverageKnownConcreteElementRotation = 0.5 * Atn2Local(sumSin, sumCos)
+    End If
+End Function
+
+' Определяет последний fallback бетонного Region по площади.
+' Новый импорт записывает для бетонного fallback-а EquivalentSquare.
+Private Function IsEquivalentAreaFallbackElement(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Boolean
+    IsEquivalentAreaFallbackElement = (StrComp(Trim$(data.ShapeType(index)), "EquivalentSquare", vbTextCompare) = 0) And _
+        (data.Width(index) <= 0# Or data.Height(index) <= 0#)
+End Function
+
+' Локальный atan2 для среднего угла визуальной сетки.
+Private Function Atn2Local(ByVal y As Double, ByVal x As Double) As Double
+    If Abs(x) <= 0.000000000001 Then
+        If y > 0# Then
+            Atn2Local = GEOM_PI / 2#
+        ElseIf y < 0# Then
+            Atn2Local = -GEOM_PI / 2#
+        Else
+            Atn2Local = 0#
+        End If
+    Else
+        Atn2Local = Atn(y / x)
+        If x < 0# Then
+            If y >= 0# Then
+                Atn2Local = Atn2Local + GEOM_PI
+            Else
+                Atn2Local = Atn2Local - GEOM_PI
+            End If
+        End If
+    End If
 End Function
 
 Private Function ConcreteMarkerLength(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Double

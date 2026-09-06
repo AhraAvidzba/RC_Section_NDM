@@ -404,7 +404,12 @@ Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiT
     section.SourceType = "AutoCADImport"
     section.AddConcreteElement 50#, 50#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
     section.AddConcreteElement 250#, 50#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
+    section.AddConcreteElement 450#, 50#, 7200#, 1, vbNullString, vbNullString, _
+        "Rectangle", 120#, 60#, GEOM_PI / 6#
+    section.AddConcreteElement 250#, 50#, 2500#, 1, vbNullString, vbNullString, _
+        "EquivalentSquare", 0#, 0#
     section.AddRebarElement 50#, 50#, 20#, 0#, "Rebar"
+    section.ApplyAverageRotationToEquivalentAreaFallbacks
 
     Dim writer As CNDMResultsWriter
     Set writer = New CNDMResultsWriter
@@ -417,6 +422,12 @@ Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiT
         InStr(1, CStr(annotationData(2, ResultHeaderColumn(annotationData, "Text"))), ChrW$(&H2248), vbTextCompare) > 0
     AssertTrue stats, "ui.autocad.preview.russianComment", _
         InStr(1, CStr(annotationData(2, ResultHeaderColumn(annotationData, "Comment"))), "Приблизительная", vbTextCompare) > 0
+    AssertClose stats, "ui.autocad.preview.boundsWidthUsesRotation", _
+        AnnotationValueByID(annotationData, "DIM_AUTO_BOUNDS_B"), _
+        450# + 0.5 * (120# * Cos(GEOM_PI / 6#) + 60# * Sin(GEOM_PI / 6#)), 0.001
+    AssertClose stats, "ui.autocad.preview.boundsHeightUsesRotation", _
+        AnnotationValueByID(annotationData, "DIM_AUTO_BOUNDS_H"), _
+        120# * Sin(GEOM_PI / 6#) + 60# * Cos(GEOM_PI / 6#), 0.001
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -429,6 +440,12 @@ Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiT
 
     UpdateSectionPlotForWorkbook ThisWorkbook
     AssertTrue stats, "ui.autocad.preview.dimensionShapes", CountPlotShapes("AnnotationLine") > 0
+    AssertTrue stats, "ui.autocad.preview.rotatedElementShape", _
+        PlotShapeRotationExists("ElementConcrete", -30#, 0.5)
+    Dim expectedFallbackDegrees As Double
+    expectedFallbackDegrees = -0.5 * Atn(Sin(GEOM_PI / 3#) / (2# + Cos(GEOM_PI / 3#))) * 180# / GEOM_PI
+    AssertTrue stats, "ui.autocad.preview.squareFallbackRotation", _
+        PlotShapeRotationExists("ElementConcrete", expectedFallbackDegrees, 0.5)
 End Sub
 
 ' Проверяет, что AutoCAD-preview не используется как запасная схема
@@ -646,6 +663,7 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
         ResultsPropertyExists("ALL", "LoadReferenceX") And ResultsPropertyExists("ALL", "LoadReferenceY")
     AssertTrue stats, "ui.results.properties.noLcLoadReference", _
         Not ResultsPropertyExists("LC1", "LoadReferenceX") And Not ResultsPropertyExists("LC1", "LoadReferenceY")
+    AssertTransformedAreaUsesElasticModuli stats
     AssertTrue stats, "ui.results.annotations.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Value2) = "RunID"
     AssertTrue stats, "ui.results.annotations.rows", ResultTableRowCount("rngNDMSectionAnnotations") > 1
     AssertTrue stats, "ui.results.materialDiagrams.header", CStr(ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Value2) = "RunID"
@@ -1176,6 +1194,8 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
         SystemSettingValidationHasOptions("General.NonCriticalMessagesEnabled", Array("Yes", "No"))
     AssertTrue stats, "ui.validation.capacitySearchMethod", _
         SystemSettingValidationHasOptions("Capacity.SearchMethod", Array("Bisection", "Brent", "Secant"))
+    AssertTrue stats, "ui.validation.crackCoverDistanceMode", _
+        SystemSettingValidationHasOptions("SLS.Crack.CoverDistanceMode", Array("NearestContour", "GlobalExtreme"))
     AssertTrue stats, "ui.validation.autocadLabelMode", _
         SystemSettingValidationHasOptions("AutoCAD.Export.LabelMode", Array("ValuesOnly", "NamesAndValues"))
     AssertTrue stats, "ui.validation.autocadNeutralLine", _
@@ -1332,6 +1352,39 @@ Private Function ResultsPropertyValue(ByVal loadCase As String, ByVal parameter 
 Failed:
 End Function
 
+' Проверяет, что справочные характеристики приведенного сечения в Results
+' считаются через обычный модульный коэффициент Es/Eb. Это важно для
+' устойчивости и ручной проверки геометрии: вид диаграммы TwoLine/ThreeLine
+' не должен менять Ared.
+Private Sub AssertTransformedAreaUsesElasticModuli(ByRef stats As TUiTestStats)
+    Dim concreteArea As Double
+    Dim transformedArea As Double
+    Dim rebarArea As Double
+    Dim expectedArea As Double
+    Dim r1Plus As Double
+    Dim r1Minus As Double
+    Dim r2Plus As Double
+    Dim r2Minus As Double
+
+    concreteArea = CDbl(ResultsPropertyValue("ALL", "Concrete.Area"))
+    transformedArea = CDbl(ResultsPropertyValue("ALL", "Transformed.Area"))
+    rebarArea = 8# * GEOM_PI * 20# * 20# / 4#
+    expectedArea = concreteArea + (200000# / 32500# - 1#) * rebarArea
+
+    AssertClose stats, "ui.results.properties.transformedArea.moduli", _
+        transformedArea, expectedArea, 0.001
+    r1Plus = CDbl(ResultsPropertyValue("ALL", "Transformed.CoreDistance1Plus"))
+    r1Minus = CDbl(ResultsPropertyValue("ALL", "Transformed.CoreDistance1Minus"))
+    r2Plus = CDbl(ResultsPropertyValue("ALL", "Transformed.CoreDistance2Plus"))
+    r2Minus = CDbl(ResultsPropertyValue("ALL", "Transformed.CoreDistance2Minus"))
+    AssertTrue stats, "ui.results.properties.transformedCoreDistance.positive", _
+        r1Plus > 0# And r1Minus > 0# And r2Plus > 0# And r2Minus > 0#
+    AssertClose stats, "ui.results.properties.transformedCoreDistance.axis1Sym", _
+        r1Plus, r1Minus, 0.001
+    AssertClose stats, "ui.results.properties.transformedCoreDistance.axis2Sym", _
+        r2Plus, r2Minus, 0.001
+End Sub
+
 Private Function PlotChartExists() As Boolean
     On Error GoTo Failed
     Dim chartObject As Object
@@ -1361,6 +1414,46 @@ Private Function CountPlotShapes(ByVal nameFragment As String) As Long
         End If
     Next shapeIndex
 Failed:
+End Function
+
+' Проверяет, что среди Shapes схемы есть объект с нужным углом поворота.
+' Excel может хранить один и тот же угол как -30 или 330 градусов, поэтому
+' сравниваем минимальную круговую разницу.
+Private Function PlotShapeRotationExists(ByVal nameFragment As String, _
+        ByVal expectedDegrees As Double, ByVal toleranceDegrees As Double) As Boolean
+    On Error GoTo Failed
+    Dim chartObject As Object
+    Set chartObject = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
+
+    Dim shapeIndex As Long
+    For shapeIndex = 1 To chartObject.Chart.Shapes.Count
+        If InStr(1, chartObject.Chart.Shapes.Item(shapeIndex).Name, nameFragment, vbTextCompare) > 0 Then
+            If AngleDistanceDegrees(CDbl(chartObject.Chart.Shapes.Item(shapeIndex).Rotation), expectedDegrees) <= toleranceDegrees Then
+                PlotShapeRotationExists = True
+                Exit Function
+            End If
+        End If
+    Next shapeIndex
+Failed:
+End Function
+
+' Возвращает минимальную разницу между углами в градусах с учетом периода 360.
+Private Function AngleDistanceDegrees(ByVal actualDegrees As Double, ByVal expectedDegrees As Double) As Double
+    Dim diff As Double
+    diff = Abs(NormalizeDegrees(actualDegrees) - NormalizeDegrees(expectedDegrees))
+    If diff > 180# Then diff = 360# - diff
+    AngleDistanceDegrees = diff
+End Function
+
+' Нормализует угол к диапазону 0...360 для устойчивого сравнения Excel Shapes.
+Private Function NormalizeDegrees(ByVal angleDegrees As Double) As Double
+    Do While angleDegrees < 0#
+        angleDegrees = angleDegrees + 360#
+    Loop
+    Do While angleDegrees >= 360#
+        angleDegrees = angleDegrees - 360#
+    Loop
+    NormalizeDegrees = angleDegrees
 End Function
 
 ' Ищет текст среди Shape-подписей текущей схемы.
@@ -1408,6 +1501,26 @@ Private Function CountAnnotationType(ByRef annotationData As Variant, ByVal anno
             CountAnnotationType = CountAnnotationType + 1
         End If
     Next rowIndex
+Failed:
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Возвращает численное значение semantic-аннотации из Results по ее ID.
+Private Function AnnotationValueByID(ByRef annotationData As Variant, ByVal annotationID As String) As Double
+    On Error GoTo Failed
+    Dim colID As Long
+    Dim colValue As Long
+    colID = ResultHeaderColumn(annotationData, "AnnotationID")
+    colValue = ResultHeaderColumn(annotationData, "Value")
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(annotationData, 1)
+        If StrComp(CStr(annotationData(rowIndex, colID)), annotationID, vbTextCompare) = 0 Then
+            AnnotationValueByID = CDbl(annotationData(rowIndex, colValue))
+            Exit Function
+        End If
+    Next rowIndex
+
 Failed:
 End Function
 
@@ -1803,6 +1916,34 @@ Private Function ResultTableColumnCount(ByVal anchor As Object) As Long
         If Len(Trim$(CStr(anchor.Offset(0, colOffset).Value2))) = 0 Then Exit For
         ResultTableColumnCount = ResultTableColumnCount + 1
     Next colOffset
+End Function
+
+' Проверяет, что единица настройки собрана формулой сразу из двух строк
+' rngUnitSettings. Это нужно для величин вида момент/длина, где видимый текст
+' меняется вместе с выбранной пользователем INPUT-системой единиц.
+Private Function SystemSettingUnitCellReferencesQuantities(ByVal key As String, _
+        ByVal quantity1 As String, ByVal quantity2 As String) As Boolean
+    On Error GoTo Failed
+
+    Dim settings As Object
+    Set settings = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To settings.Rows.Count
+        If StrComp(CStr(settings.Cells.Item(rowIndex, 1).Value2), key, vbTextCompare) = 0 Then
+            Dim formulaText As String
+            formulaText = CStr(settings.Cells.Item(rowIndex, 3).Formula)
+            If Left$(formulaText, 1) <> "=" Then Exit Function
+
+            SystemSettingUnitCellReferencesQuantities = _
+                InStr(1, formulaText, "rngUnitSettings", vbTextCompare) > 0 And _
+                InStr(1, formulaText, """" & quantity1 & """", vbTextCompare) > 0 And _
+                InStr(1, formulaText, """" & quantity2 & """", vbTextCompare) > 0
+            Exit Function
+        End If
+    Next rowIndex
+
+Failed:
 End Function
 
 ' Ограничивает чтение таблицы Results ближайшим соседним именованным
@@ -2290,6 +2431,8 @@ Private Sub TestCapacitySettingsUnitLabels(ByRef stats As TUiTestStats)
     AssertTextEquals stats, "ui.units.capacity.toleranceStrain", SystemSettingUnitText("Capacity.ToleranceStrain"), "-"
     AssertTextEquals stats, "ui.units.capacity.maxLambda", SystemSettingUnitText("Capacity.MaxLambda"), "-"
     AssertTextEquals stats, "ui.units.capacity.solverIterations", SystemSettingUnitText("Capacity.SolverMaxIterations"), "шт"
+    AssertTrue stats, "ui.units.zeroMomentPerDepth.dynamic", _
+        SystemSettingUnitCellReferencesQuantities("Calculation.ZeroMomentPerDepth", "Moment", "Length")
 End Sub
 
 Private Function SystemSettingUnitText(ByVal key As String) As String

@@ -105,8 +105,10 @@ Public StabilityAccidentalEcc1 As Double ' Случайный эксцентри
 Public StabilityAccidentalEcc2 As Double ' Случайный эксцентриситет во второй главной плоскости, мм.
 Public StabilityEffectiveLength1 As Double ' Расчетная длина l0 первой главной плоскости, мм.
 Public StabilityEffectiveLength2 As Double ' Расчетная длина l0 второй главной плоскости, мм.
-Public StabilityPhiLTable1 As Double ' Табличный phi_l СП 35 первой плоскости до возможной замены на PhiL2.
-Public StabilityPhiLTable2 As Double ' Табличный phi_l СП 35 второй плоскости до возможной замены на PhiL2.
+Public StabilitySlenderness1 As Double ' Гибкость l0/i первой главной плоскости.
+Public StabilitySlenderness2 As Double ' Гибкость l0/i второй главной плоскости.
+Public StabilityPhiLTable1 As Double ' Табличный phi_l СП 35 первой плоскости для ветви ec/r <= 1.
+Public StabilityPhiLTable2 As Double ' Табличный phi_l СП 35 второй плоскости для ветви ec/r <= 1.
 Public StabilityPhiM1 As Double ' Табличный phi_m СП 35 первой плоскости.
 Public StabilityPhiM2 As Double ' Табличный phi_m СП 35 второй плоскости.
 Public StabilityPhiValue1 As Double ' Итоговый phi СП 35 первой плоскости для ветви ec <= r.
@@ -210,6 +212,7 @@ Public Sub StoreStabilityResult(ByVal statusText As String, ByVal stability As C
     If stability Is Nothing Then Exit Sub
     StabilityCode = stability.Code
     StabilityBranch = stability.Branch
+    If Len(Trim$(stability.StopReason)) > 0 Then StabilityBranch = stability.StopReason
     StabilityDesignN = stability.DesignN
     StabilityDesignMx = stability.DesignMx
     StabilityDesignMy = stability.DesignMy
@@ -247,6 +250,8 @@ Public Sub StoreStabilityResult(ByVal statusText As String, ByVal stability As C
     StabilityAccidentalEcc2 = stability.AccidentalEccentricity2
     StabilityEffectiveLength1 = stability.EffectiveLength1
     StabilityEffectiveLength2 = stability.EffectiveLength2
+    StabilitySlenderness1 = stability.Slenderness1
+    StabilitySlenderness2 = stability.Slenderness2
     StabilityDepth1 = stability.Depth1
     StabilityDepth2 = stability.Depth2
     StabilityRadius1 = stability.Radius1
@@ -267,6 +272,19 @@ Public Sub StoreStabilityResult(ByVal statusText As String, ByVal stability As C
     StabilityPlaneApplicable2 = stability.PlaneApplicable2
     StabilityPlanePassed1 = stability.PlanePassed1
     StabilityPlanePassed2 = stability.PlanePassed2
+End Sub
+
+' Обновляет итоговые усилия после общего фильтра практически нулевых моментов.
+' CStabilityCalculator возвращает предварительный DesignLoad, а batch затем
+' применяет тот же zero-filter, через который идут DirectState/Capacity/Crack.
+' Поэтому Results должен хранить именно этот финальный вектор.
+Public Sub UpdateStabilityDesignLoads(ByVal designN As Double, ByVal designMx As Double, _
+        ByVal designMy As Double, ByVal principalAngleRad As Double)
+    StabilityDesignN = designN
+    StabilityDesignMx = designMx
+    StabilityDesignMy = designMy
+    StabilityDesignMoment1 = designMx * Cos(principalAngleRad) + designMy * Sin(principalAngleRad)
+    StabilityDesignMoment2 = -designMx * Sin(principalAngleRad) + designMy * Cos(principalAngleRad)
 End Sub
 
 ' Очищает только блок продольного изгиба/устойчивости.
@@ -313,6 +331,8 @@ Public Sub ClearStabilityResult()
     StabilityAccidentalEcc2 = 0#
     StabilityEffectiveLength1 = 0#
     StabilityEffectiveLength2 = 0#
+    StabilitySlenderness1 = 0#
+    StabilitySlenderness2 = 0#
     StabilityDepth1 = 0#
     StabilityDepth2 = 0#
     StabilityRadius1 = 0#

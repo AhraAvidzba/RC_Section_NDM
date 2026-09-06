@@ -246,6 +246,7 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
         End If
     Next rowIndex
 
+    model.ApplyAverageRotationToEquivalentAreaFallbacks
     If model.ConcreteCount <= 0 Then Err.Raise vbObjectError + 4351, "ReadSectionGeometryFromResults", _
         "В таблице Results нет бетонных элементов."
     Set ReadSectionGeometryFromResults = model
@@ -707,21 +708,29 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
     Dim resultValue As Double
     Dim physicalState As String
     Dim textHeight As Double
+    Dim fallbackSquareRotation As Double
+    fallbackSquareRotation = section.AverageKnownConcreteElementRotation()
 
     For i = 1 To section.ConcreteCount
         Dim concreteWidth As Double
         Dim concreteHeight As Double
+        Dim concreteRotation As Double
         concreteWidth = ConcreteDrawWidth(section, i)
         concreteHeight = ConcreteDrawHeight(section, i)
+        concreteRotation = ConcreteDrawRotation(section, i, fallbackSquareRotation)
         resultValue = LookupResultValue(resultByID, section.ConcreteID(i))
         physicalState = ResultPhysicalState(physicalStateByID, section.ConcreteID(i))
         textHeight = 0.22 * MinDouble(concreteWidth, concreteHeight)
         If textHeight <= 0# Then textHeight = 1#
-        AddAcadRectangleRegion ms, section.ConcreteX(i), section.ConcreteY(i), concreteWidth, concreteHeight, _
+        AddAcadRectangleRegion ms, section.ConcreteX(i), section.ConcreteY(i), concreteWidth, concreteHeight, concreteRotation, _
             exportSettings.ConcreteLayer, ResultColorByPhysicalState("Concrete", physicalState, exportSettings)
+
+        Dim labelX As Double
+        Dim labelY As Double
+        ConcreteLabelPoint section.ConcreteX(i), section.ConcreteY(i), concreteWidth, concreteHeight, concreteRotation, _
+            labelX, labelY
         AddAcadText ms, StressLabelText(section.ConcreteID(i), resultValue, exportSettings.IncludeElementNames), _
-            section.ConcreteX(i) - 0.45 * concreteWidth, _
-            section.ConcreteY(i) - 0.1 * concreteHeight, textHeight, _
+            labelX, labelY, textHeight, _
             ResultAnnotationLayerByPhysicalState("Concrete", physicalState, exportSettings), _
             ResultColorByPhysicalState("Concrete", physicalState, exportSettings)
     Next i
@@ -890,17 +899,13 @@ Private Sub GetSectionBounds(ByVal section As CSectionModel, ByRef minX As Doubl
     If section Is Nothing Then Err.Raise vbObjectError + 4340, "GetSectionBounds", "Модель сечения не передана."
     If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 4341, "GetSectionBounds", "В модели сечения нет бетонных элементов."
 
-    Dim i As Long
-    minX = section.ConcreteX(1) - ConcreteDrawWidth(section, 1) / 2#
-    maxX = section.ConcreteX(1) + ConcreteDrawWidth(section, 1) / 2#
-    minY = section.ConcreteY(1) - ConcreteDrawHeight(section, 1) / 2#
-    maxY = section.ConcreteY(1) + ConcreteDrawHeight(section, 1) / 2#
+    Dim fallbackSquareRotation As Double
+    fallbackSquareRotation = section.AverageKnownConcreteElementRotation()
 
-    For i = 2 To section.ConcreteCount
-        minX = MinDouble(minX, section.ConcreteX(i) - ConcreteDrawWidth(section, i) / 2#)
-        maxX = MaxDouble(maxX, section.ConcreteX(i) + ConcreteDrawWidth(section, i) / 2#)
-        minY = MinDouble(minY, section.ConcreteY(i) - ConcreteDrawHeight(section, i) / 2#)
-        maxY = MaxDouble(maxY, section.ConcreteY(i) + ConcreteDrawHeight(section, i) / 2#)
+    Dim i As Long
+    Dim hasBounds As Boolean
+    For i = 1 To section.ConcreteCount
+        ExpandSectionBoundsByConcreteElement section, i, fallbackSquareRotation, minX, maxX, minY, maxY, hasBounds
     Next i
 End Sub
 
@@ -913,6 +918,90 @@ Private Function ConcreteDrawHeight(ByVal section As CSectionModel, ByVal index 
     ConcreteDrawHeight = section.ConcreteHeight(index)
     If ConcreteDrawHeight <= 0# Then ConcreteDrawHeight = Sqr(section.ConcreteArea(index))
 End Function
+
+' Возвращает визуальный угол бетонного элемента для AutoCAD export.
+' Реальные прямоугольники сохраняют свой Rotation; fallback-квадрат по
+' площади получает средний угол импортированной сетки.
+Private Function ConcreteDrawRotation(ByVal section As CSectionModel, ByVal index As Long, _
+        ByVal fallbackSquareRotation As Double) As Double
+    ConcreteDrawRotation = section.ConcreteRotation(index)
+    If section.IsConcreteEquivalentAreaFallback(index) And Abs(ConcreteDrawRotation) <= 0.000000000001 Then
+        ConcreteDrawRotation = fallbackSquareRotation
+    End If
+End Function
+
+' Возвращает точку подписи бетонного элемента в его локальной системе осей.
+' Для повернутых AutoCAD Region подпись остается рядом с тем же локальным
+' углом элемента, а не уезжает в осевой прямоугольник глобальных X/Y.
+Private Sub ConcreteLabelPoint(ByVal x As Double, ByVal y As Double, _
+        ByVal width As Double, ByVal height As Double, ByVal rotationRad As Double, _
+        ByRef labelX As Double, ByRef labelY As Double)
+    Dim c As Double
+    Dim s As Double
+    c = Cos(rotationRad)
+    s = Sin(rotationRad)
+
+    labelX = x - 0.45# * width * c + 0.1# * height * s
+    labelY = y - 0.45# * width * s - 0.1# * height * c
+End Sub
+
+' Расширяет габарит AutoCAD export по фактическим углам бетонного элемента.
+' Это важно для импортированных повернутых прямоугольных Region: нейтральная
+' линия, оси и предупреждения получают рамку по той же геометрии, которая
+' реально будет выгружена в AutoCAD.
+Private Sub ExpandSectionBoundsByConcreteElement(ByVal section As CSectionModel, ByVal index As Long, _
+        ByVal fallbackSquareRotation As Double, _
+        ByRef minX As Double, ByRef maxX As Double, ByRef minY As Double, ByRef maxY As Double, _
+        ByRef hasBounds As Boolean)
+    Dim width As Double
+    Dim height As Double
+    Dim rotationRad As Double
+    width = ConcreteDrawWidth(section, index)
+    height = ConcreteDrawHeight(section, index)
+    rotationRad = ConcreteDrawRotation(section, index, fallbackSquareRotation)
+
+    IncludeRotatedRectangleCorner section.ConcreteX(index), section.ConcreteY(index), width, height, rotationRad, _
+        -1#, -1#, minX, maxX, minY, maxY, hasBounds
+    IncludeRotatedRectangleCorner section.ConcreteX(index), section.ConcreteY(index), width, height, rotationRad, _
+        1#, -1#, minX, maxX, minY, maxY, hasBounds
+    IncludeRotatedRectangleCorner section.ConcreteX(index), section.ConcreteY(index), width, height, rotationRad, _
+        1#, 1#, minX, maxX, minY, maxY, hasBounds
+    IncludeRotatedRectangleCorner section.ConcreteX(index), section.ConcreteY(index), width, height, rotationRad, _
+        -1#, 1#, minX, maxX, minY, maxY, hasBounds
+End Sub
+
+' Добавляет в общий габарит один угол прямоугольного элемента с учетом
+' локального поворота. sx/sy равны -1 или 1 и выбирают нужный угол.
+Private Sub IncludeRotatedRectangleCorner(ByVal x As Double, ByVal y As Double, _
+        ByVal width As Double, ByVal height As Double, ByVal rotationRad As Double, _
+        ByVal sx As Double, ByVal sy As Double, _
+        ByRef minX As Double, ByRef maxX As Double, ByRef minY As Double, ByRef maxY As Double, _
+        ByRef hasBounds As Boolean)
+    Dim hw As Double
+    Dim hh As Double
+    Dim c As Double
+    Dim s As Double
+    Dim px As Double
+    Dim py As Double
+    hw = width / 2#
+    hh = height / 2#
+    c = Cos(rotationRad)
+    s = Sin(rotationRad)
+
+    px = x + sx * hw * c - sy * hh * s
+    py = y + sx * hw * s + sy * hh * c
+
+    If Not hasBounds Then
+        minX = px: maxX = px
+        minY = py: maxY = py
+        hasBounds = True
+    Else
+        minX = MinDouble(minX, px)
+        maxX = MaxDouble(maxX, px)
+        minY = MinDouble(minY, py)
+        maxY = MaxDouble(maxY, py)
+    End If
+End Sub
 
 Private Sub DrawLoadPointMarker(ByVal ms As Object, ByVal x As Double, ByVal y As Double, ByVal size As Double)
     AddAcadLine ms, x - size, y, x + size, y, "RC_NDM_LoadPoint", 2
@@ -1048,13 +1137,23 @@ Private Sub AppendNeutralIntersection(ByRef pointX() As Double, ByRef pointY() A
 End Sub
 
 Private Sub AddAcadRectangleRegion(ByVal ms As Object, ByVal x As Double, ByVal y As Double, _
-        ByVal width As Double, ByVal height As Double, ByVal layerName As String, ByVal colorIndex As Long)
+        ByVal width As Double, ByVal height As Double, ByVal rotationRad As Double, _
+        ByVal layerName As String, ByVal colorIndex As Long)
+    Dim hw As Double
+    Dim hh As Double
+    Dim c As Double
+    Dim s As Double
+    hw = width / 2#
+    hh = height / 2#
+    c = Cos(rotationRad)
+    s = Sin(rotationRad)
+
     Dim p(0 To 9) As Double
-    p(0) = x - width / 2#: p(1) = y - height / 2#
-    p(2) = x + width / 2#: p(3) = y - height / 2#
-    p(4) = x + width / 2#: p(5) = y + height / 2#
-    p(6) = x - width / 2#: p(7) = y + height / 2#
-    p(8) = x - width / 2#: p(9) = y - height / 2#
+    p(0) = x - hw * c + hh * s: p(1) = y - hw * s - hh * c
+    p(2) = x + hw * c + hh * s: p(3) = y + hw * s - hh * c
+    p(4) = x + hw * c - hh * s: p(5) = y + hw * s + hh * c
+    p(6) = x - hw * c - hh * s: p(7) = y - hw * s + hh * c
+    p(8) = p(0): p(9) = p(1)
 
     Dim source As Object
     Set source = ms.AddLightWeightPolyline(p)

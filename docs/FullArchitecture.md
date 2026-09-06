@@ -438,7 +438,8 @@ AutoCAD, обновления схемы и сборка общего польз
 
 Внутренние методы: `AddConcreteRegionEntity`, `AddRebarRegionEntity`,
 `AddConcreteRegionArray`, `AddRebarRegionArray`, `AddConcreteRegion`,
-`AddRebarRegion`, `ReadCentralRegionInertia`, `EquivalentRectangleDimensions`,
+`AddRebarRegion`, `ReadCentralRegionInertia`, `ReadRegionRectangleGeometry`,
+`TryReadRotatedRectangleBounds`, `ApplyEquivalentSquareFallback`,
 `IsRegionEntity`, `SameLayer`, `EntityHandle`, `ValidateImportedModel`,
 `InputLength`, `InputArea`, `InputFourthPowerLength`.
 

@@ -465,7 +465,7 @@ Private Sub CalculateDepthsPerpendicularToNeutral(ByVal section As CSectionModel
     Dim maxS As Double
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
-    props.CalculateProjection section, nx, ny, True, minS, maxS
+    props.CalculateProjection section, nx, ny, False, minS, maxS
 
     depthH = maxS - minS
     If depthH <= 0# Then Exit Sub

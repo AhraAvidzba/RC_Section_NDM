@@ -30,7 +30,7 @@ Private Const KEY_MY As String = "LambdaMy" ' Масштабируется то�
 Private Const KEY_MXY As String = "LambdaMxy" ' Масштабируется пользовательский вектор Mx/My.
 Private Const KEY_N As String = "LambdaN" ' Масштабируется N вместе с моментом от эксцентриситета N.
 Private Const KEY_NMXY As String = "LambdaNMxy" ' Масштабируется весь расчетный вектор N/Mx/My.
-Private Const LOAD_TOLERANCE As Double = 0.000000001 ' Допуск для проверки нулевых пользовательских усилий.
+Private Const LOAD_TOLERANCE As Double = 0.000000001 ' Только численный guard после инженерного CMomentZeroFilter.
 
 Private mRawText As String ' Исходная строка из таблицы сочетаний.
 Private mKey As String ' Нормализованный внутренний ключ lambda-траектории.
@@ -61,10 +61,18 @@ End Sub
 ' поэтому момент от N попадает в постоянную или масштабируемую часть вместе с N.
 Public Sub Initialize(ByVal rawPath As String, ByVal nValue As Double, _
         ByVal userMxValue As Double, ByVal userMyValue As Double, _
-        ByVal loadReferenceX As Double, ByVal loadReferenceY As Double)
+        ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
+        Optional ByVal momentFilter As CMomentZeroFilter = Nothing, _
+        Optional ByVal concreteDepthForMx As Double = 0#, Optional ByVal concreteDepthForMy As Double = 0#)
     Clear
     mRawText = Trim$(rawPath)
-    mKey = ResolveKey(mRawText, nValue, userMxValue, userMyValue)
+
+    Dim normalizedUserMx As Double
+    Dim normalizedUserMy As Double
+    normalizedUserMx = NormalizeMomentForDepth(userMxValue, concreteDepthForMx, momentFilter)
+    normalizedUserMy = NormalizeMomentForDepth(userMyValue, concreteDepthForMy, momentFilter)
+
+    mKey = ResolveKey(mRawText, nValue, normalizedUserMx, normalizedUserMy)
 
     If Len(mKey) = 0 Then
         If Len(mRawText) > 0 Then
@@ -79,8 +87,9 @@ Public Sub Initialize(ByVal rawPath As String, ByVal nValue As Double, _
     mHasPath = (mKey <> KEY_NONE)
     If Not mHasPath Then Exit Sub
 
-    BuildFlags nValue, userMxValue, userMyValue
-    BuildOffsetBase nValue, userMxValue, userMyValue, loadReferenceX, loadReferenceY
+    BuildFlags nValue, normalizedUserMx, normalizedUserMy
+    BuildOffsetBase nValue, normalizedUserMx, normalizedUserMy, loadReferenceX, loadReferenceY
+    NormalizeOffsetBase momentFilter, concreteDepthForMx, concreteDepthForMy
 End Sub
 
 ' Нормализует текст пользователя. Пустая строка получает осторожный default:
@@ -184,6 +193,28 @@ Private Sub BuildOffsetBase(ByVal nValue As Double, ByVal userMxValue As Double,
             mMyBase = userMyValue + myFromN
     End Select
 End Sub
+
+' Пропускает все моментные компоненты Offset/Base через общий инженерный
+' фильтр. Это защищает capacity-поиск от случайной смены ветки из-за
+' ничтожного момента после переноса точки нагрузки или поворота осей.
+Private Sub NormalizeOffsetBase(ByVal momentFilter As CMomentZeroFilter, _
+        ByVal concreteDepthForMx As Double, ByVal concreteDepthForMy As Double)
+    mMxOffset = NormalizeMomentForDepth(mMxOffset, concreteDepthForMx, momentFilter)
+    mMxBase = NormalizeMomentForDepth(mMxBase, concreteDepthForMx, momentFilter)
+    mMyOffset = NormalizeMomentForDepth(mMyOffset, concreteDepthForMy, momentFilter)
+    mMyBase = NormalizeMomentForDepth(mMyBase, concreteDepthForMy, momentFilter)
+End Sub
+
+' Возвращает исходный момент без изменений, если фильтр не передан. Такой
+' режим нужен для изолированных проверок класса без полной batch-конфигурации.
+Private Function NormalizeMomentForDepth(ByVal momentValue As Double, ByVal concreteDepth As Double, _
+        ByVal momentFilter As CMomentZeroFilter) As Double
+    If momentFilter Is Nothing Then
+        NormalizeMomentForDepth = momentValue
+    Else
+        NormalizeMomentForDepth = momentFilter.NormalizeMoment(momentValue, concreteDepth)
+    End If
+End Function
 
 Private Function HasMomentVector(ByVal mxValue As Double, ByVal myValue As Double) As Boolean
     HasMomentVector = (Sqr(mxValue * mxValue + myValue * myValue) > LOAD_TOLERANCE)

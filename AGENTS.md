@@ -259,6 +259,11 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Validate-Workbook.
 powershell -ExecutionPolicy Bypass -File tools/build_workbook/Run-AllTests.ps1
 ```
 
+После любых изменений, которые должны попасть в Excel-книгу, обязательно проверять,
+что `workbook/output/RC_Section_NDM.xlsm` действительно пересобран и содержит
+ожидаемые настройки, именованные диапазоны, заголовки или выводимые столбцы.
+Проверять нужно сам output-файл, а не только исходные VBA/PowerShell-файлы.
+
 Если задача затрагивает только документацию, достаточно проверить отсутствие устаревших ссылок и явно указать, что расчетные тесты не требовались.
 
 ## Защита Пользовательских Данных

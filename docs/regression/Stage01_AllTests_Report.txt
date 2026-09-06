@@ -6,7 +6,7 @@ Sheets Config/Справка/Расчет/Results      True Config, Справк
 Required named ranges                     True Missing:                                                                
 Results ranges layout                     True batch=Results!R1C1:55 cols; stabilityAnchor=R37C1; elements=R60C1; ge...
 Stability duration loads range            True Address=$P$27:$S$47                                                     
-SP35 table 7.21 range                     True Address=$AI$60:$AP$77; Rows=18; Columns=8                               
+SP35 table 7.21 range                     True Address=$AI$60:$AP$78; Rows=19; Columns=8                               
 No duplicate names                        True Duplicates:                                                             
 No obsolete named ranges                  True Present:                                                                
 Print area                                True PageSetup=; Xml=Расчет!$A$1:$AJ$60                                      
@@ -107,6 +107,9 @@ OK: lshape.excludes.cutout
 OK: lshape.boundary.subcell.fibers.more
 OK: lshape.boundary.subcell.has.small.fibers
 OK: lshape.boundary.subcell.area; actual=296400.; expected=287500.; relDiff=0.030956521739
+OK: geometry.cover.localContour; actual=40.; expected=40.; absDiff=0.
+OK: geometry.cover.globalWouldBeWrong; actual=340.; expected=340.; absDiff=0.
+OK: geometry.cover.localLessThanGlobal
 OK: lshape.rebar.count
 OK: lshape.rebar.requested
 OK: lshape.rebar.perimeter; actual=3300.; expected=3300.; absDiff=0.
@@ -195,12 +198,43 @@ OK: autocad.import.rebar.count
 OK: autocad.import.concrete.id
 OK: autocad.import.concrete.x; actual=10.; expected=10.; absDiff=0.
 OK: autocad.import.concrete.y; actual=20.; expected=20.; absDiff=0.
-OK: autocad.import.concrete.width; actual=3.; expected=3.; absDiff=0.
-OK: autocad.import.concrete.height; actual=6.; expected=6.; absDiff=0.
-OK: autocad.import.concrete.localIx; actual=600.; expected=600.; absDiff=0.
-OK: autocad.import.concrete.localIy; actual=150.; expected=150.; absDiff=0.
+OK: autocad.import.concrete.width; actual=6.; expected=6.; absDiff=0.
+OK: autocad.import.concrete.height; actual=3.; expected=3.; absDiff=0.
+OK: autocad.import.concrete.rotation; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.concrete.localIx; actual=13.5; expected=13.5; absDiff=0.
+OK: autocad.import.concrete.localIy; actual=54.; expected=54.; absDiff=0.
 OK: autocad.import.rebar.diameter; actual=20.; expected=20.; absDiff=0.
 OK: autocad.import.rebar.marker
+OK: autocad.import.rebar.comment
+OK: autocad.import.concrete.xDepth; actual=6.; expected=6.; absDiff=0.
+OK: autocad.import.concrete.yDepth; actual=3.; expected=3.; absDiff=0.
+OK: autocad.import.rotated.shape
+OK: autocad.import.rotated.width; actual=80.; expected=80.; absDiff=0.
+OK: autocad.import.rotated.height; actual=30.; expected=30.; absDiff=0.
+OK: autocad.import.rotated.rotation; actual=0.785398163397; expected=0.785398163397; absDiff=0.
+OK: autocad.import.rotated.localIx; actual=730000.; expected=730000.; absDiff=0.
+OK: autocad.import.rotated.localIy; actual=730000.; expected=730000.; absDiff=0.
+OK: autocad.import.rotated.localIxy; actual=550000.; expected=550000.; absDiff=0.
+OK: autocad.import.rotated.uDepth; actual=80.; expected=80.; absDiff=0.
+OK: autocad.import.rotated.vDepth; actual=30.; expected=30.; absDiff=0.
+OK: autocad.import.principal.shape
+OK: autocad.import.principal.width; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.principal.height; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.principal.rotation; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.principal.uDepth; actual=100.; expected=100.; absDiff=0.
+OK: autocad.import.principal.vDepth; actual=20.; expected=20.; absDiff=0.
+OK: autocad.import.squareFallback.shape
+OK: autocad.import.squareFallback.width.empty; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.squareFallback.height.empty; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.squareFallback.localIx; actual=321276.184931294; expected=321276.184931294; absDiff=0.
+OK: autocad.import.squareFallback.xDepth; actual=44.311346272638; expected=44.311346272638; absDiff=0.
+OK: autocad.import.squareFallback.diagonalDepth; actual=62.665706865775; expected=62.665706865775; absDiff=0.
+OK: autocad.import.squareFallbackRotation.shape
+OK: autocad.import.squareFallbackRotation.angle; actual=0.523598775598; expected=0.523598775598; absDiff=0.
+OK: autocad.import.squareFallbackRotation.projectedSide; actual=238.205080756888; expected=238.205080756888; absDiff=0.
+OK: autocad.import.badInertia.shape
+OK: autocad.import.badInertia.localIxy; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.badInertia.xDepth; actual=44.311346272638; expected=44.311346272638; absDiff=0.
 OK: invalid.width
 OK: invalid.height
 OK: invalid.negative.radius
@@ -218,9 +252,9 @@ CONVERGENCE: step=12.5 area=88750.; cx=0.; cy=1.795774647887; Ix=366297131.74882
 OK: conv.area.25.12; actual=88750.; expected=88750.; relDiff=0.
 OK: conv.Ix.25.12; actual=366297131.748829; expected=366946339.495306; relDiff=0.001769217121
 OK: conv.Iy.25.12; actual=1154524739.58334; expected=1155989583.33333; relDiff=0.001267177292
-PERFORMANCE: section=800x500; step=10; fibers=3988; buildSec=0.0078125; propsSec=0.; area=398800.
+PERFORMANCE: section=800x500; step=10; fibers=3988; buildSec=0.015625; propsSec=0.015625; area=398800.
 OK: perf.fibers.positive
-TOTAL: passed=186; failed=0
+TOTAL: passed=220; failed=0
 
 
 ===== Run-MaterialTests.ps1 =====
@@ -278,7 +312,7 @@ OK: material.userSteelTwoLineCompressionLimit; actual=-0.03; expected=-0.03; abs
 OK: material.userSteelTwoLineTensionLimit; actual=0.031; expected=0.031; absDiff=0.
 OK: material.invalidConcrete
 OK: material.invalidSteel
-TOTAL_MATERIAL: passed=54; failed=0; elapsedSec=0.0390625
+TOTAL_MATERIAL: passed=54; failed=0; elapsedSec=0.0234375
 
 
 ===== Run-SectionSolverTests.ps1 =====
@@ -315,6 +349,7 @@ OK: settings.key.Sign.My.User
 OK: settings.key.Sign.My.Internal
 OK: settings.key.General.ExecutionReportEnabled
 OK: settings.key.General.NonCriticalMessagesEnabled
+OK: settings.key.Calculation.ZeroMomentPerDepth
 OK: settings.key.Geometry.Source
 OK: settings.key.Geometry.Type
 OK: settings.key.LShape.B1
@@ -443,6 +478,7 @@ OK: settings.key.SLS.Crack.Phi3
 OK: settings.key.SLS.Crack.PsiMode
 OK: settings.key.SLS.Crack.PsiS
 OK: settings.key.SLS.Crack.TensionZoneMode
+OK: settings.key.SLS.Crack.CoverDistanceMode
 OK: settings.key.AutoCAD.Export.CombinationID
 OK: settings.key.AutoCAD.Export.NeutralLineEnabled
 OK: settings.key.AutoCAD.Export.PrincipalAxesEnabled
@@ -569,6 +605,7 @@ OK: units.force.tf.toN.compression; actual=-9806.65; expected=-9806.65; absDiff=
 OK: units.force.N.toUser.compression; actual=1.; expected=1.; absDiff=0.
 OK: units.moment.tfm.toNmm; actual=9806650.; expected=9806650.; absDiff=0.
 OK: units.moment.Nmm.toUser; actual=1.; expected=1.; absDiff=0.
+OK: units.momentPerLength.defaultZero; actual=4903.325; expected=4903.325; absDiff=0.
 OK: units.loadcase.N.example; actual=-294199.5; expected=-294199.5; absDiff=0.
 OK: units.loadcase.Mx.example; actual=1470997500.; expected=1470997500.; absDiff=0.
 OK: linsys.solve
@@ -665,7 +702,7 @@ OK: section.method.emptyInput
 OK: section.method.emptyMessage
 OK: settings.solverMethod.defaultNewton
 OK: section.systemMethod.newtonBranch
-TOTAL_SECTION_SOLVER: passed=378; failed=0; elapsedSec=0.4609375
+TOTAL_SECTION_SOLVER: passed=381; failed=0; elapsedSec=0.296875
 
 
 ===== Run-CapacityTests.ps1 =====
@@ -816,24 +853,24 @@ OK: method.n_plus_mx.lambda; actual=3.098714243907; expected=3.09375; absDiff=0.
 OK: method.n_plus_mx.limitState
 OK: method.n_plus_mx.criticalElement
 OK: method.n_plus_mx.solverCalls
-COMPARE|method.n_plus_mx.load|converged=True|lambda=3.09375|limitState=ConcreteStrainLimit|criticalStrain=-0.001501652538|criticalElement=C136:Compression|solverCalls=15|elapsedSec=0.140625
-COMPARE|method.n_plus_mx.strain|converged=True|lambda=3.098714243907|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.0234375
+COMPARE|method.n_plus_mx.load|converged=True|lambda=3.09375|limitState=ConcreteStrainLimit|criticalStrain=-0.001501652538|criticalElement=C136:Compression|solverCalls=15|elapsedSec=0.171875
+COMPARE|method.n_plus_mx.strain|converged=True|lambda=3.098714243907|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.015625
 OK: method.n_plus_my.load.converged
 OK: method.n_plus_my.strain.converged
 OK: method.n_plus_my.lambda; actual=4.490409406947; expected=4.484375; absDiff=0.006034406947
 OK: method.n_plus_my.limitState
 OK: method.n_plus_my.criticalElement
 OK: method.n_plus_my.solverCalls
-COMPARE|method.n_plus_my.load|converged=True|lambda=4.484375|limitState=ConcreteStrainLimit|criticalStrain=-0.001500652149|criticalElement=C15:Compression|solverCalls=14|elapsedSec=0.109375
-COMPARE|method.n_plus_my.strain|converged=True|lambda=4.490409406947|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.015625
+COMPARE|method.n_plus_my.load|converged=True|lambda=4.484375|limitState=ConcreteStrainLimit|criticalStrain=-0.001500652149|criticalElement=C15:Compression|solverCalls=14|elapsedSec=0.1015625
+COMPARE|method.n_plus_my.strain|converged=True|lambda=4.490409406947|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.0078125
 OK: method.biaxial.load.converged
 OK: method.biaxial.strain.converged
 OK: method.biaxial.lambda; actual=3.583378108174; expected=3.578125; absDiff=0.005253108174
 OK: method.biaxial.limitState
 OK: method.biaxial.criticalElement
 OK: method.biaxial.solverCalls
-COMPARE|method.biaxial.load|converged=True|lambda=3.578125|limitState=ConcreteStrainLimit|criticalStrain=-0.001501063653|criticalElement=C150:Compression|solverCalls=12|elapsedSec=0.109375
-COMPARE|method.biaxial.strain|converged=True|lambda=3.583378108174|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=16|elapsedSec=0.03125
+COMPARE|method.biaxial.load|converged=True|lambda=3.578125|limitState=ConcreteStrainLimit|criticalStrain=-0.001501063653|criticalElement=C150:Compression|solverCalls=12|elapsedSec=0.125
+COMPARE|method.biaxial.strain|converged=True|lambda=3.583378108174|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=16|elapsedSec=0.0234375
 OK: method.circle.load.converged
 OK: method.circle.strain.converged
 OK: method.circle.symmetry; actual=31453125.; expected=31489108.1595385; relDiff=0.001142717646
@@ -1652,12 +1689,12 @@ OK: search.invalid.inputError
 OK: search.secant.controlledFailure
 RUN: TestSearchMethodPerformanceComparison
 OK: search.perf.Bisection.converged
-PERF_CAPACITY_SEARCH|Bisection|lambda=3.09375|iterations=15|functionEvaluations=15|avgSec=0.153645833333|residual=0.000000018633|converged=True|status=ConcreteStrainLimit
+PERF_CAPACITY_SEARCH|Bisection|lambda=3.09375|iterations=15|functionEvaluations=15|avgSec=0.161458333333|residual=0.000000018633|converged=True|status=ConcreteStrainLimit
 OK: search.perf.Brent.converged
-PERF_CAPACITY_SEARCH|Brent|lambda=3.09776378716|iterations=9|functionEvaluations=9|avgSec=0.0859375|residual=0.000000000975|converged=True|status=ConcreteStrainLimit
+PERF_CAPACITY_SEARCH|Brent|lambda=3.09776378716|iterations=9|functionEvaluations=9|avgSec=0.0703125|residual=0.000000000975|converged=True|status=ConcreteStrainLimit
 OK: search.perf.Secant.converged
-PERF_CAPACITY_SEARCH|Secant|lambda=3.098514991183|iterations=7|functionEvaluations=7|avgSec=0.0703125|residual=0.000000011376|converged=True|status=ConcreteStrainLimit
-TOTAL_CAPACITY: passed=925; failed=0; elapsedSec=15.40625
+PERF_CAPACITY_SEARCH|Secant|lambda=3.098514991183|iterations=7|functionEvaluations=7|avgSec=0.059895833333|residual=0.000000011376|converged=True|status=ConcreteStrainLimit
+TOTAL_CAPACITY: passed=925; failed=0; elapsedSec=15.640625
 
 
 ===== Run-CrackTests.ps1 =====
@@ -1695,6 +1732,22 @@ OK: crack.user.coeffs.phi3; actual=1.1; expected=1.1; absDiff=0.
 OK: crack.user.coeffs.psi; actual=0.8; expected=0.8; absDiff=0.
 OK: crack.user.coeffs.noLambda; actual=0.; expected=0.; absDiff=0.
 OK: crack.user.coeffs.noSigmaCrc; actual=0.; expected=0.; absDiff=0.
+OK: crack.cover.local.converged
+OK: crack.cover.local.formed
+OK: crack.cover.local.tensionBars
+OK: crack.cover.local.sigmaPositive
+OK: crack.cover.local.spacingPositive
+OK: crack.cover.local.widthFormula; actual=0.01041513196; expected=0.01041513196; absDiff=0.
+OK: crack.cover.local.utilization; actual=0.034717106533; expected=0.034717106533; absDiff=0.
+OK: crack.cover.local.mode
+OK: crack.cover.global.converged
+OK: crack.cover.global.formed
+OK: crack.cover.global.tensionBars
+OK: crack.cover.global.sigmaPositive
+OK: crack.cover.global.spacingPositive
+OK: crack.cover.global.widthFormula; actual=0.01041513196; expected=0.01041513196; absDiff=0.
+OK: crack.cover.global.utilization; actual=0.034717106533; expected=0.034717106533; absDiff=0.
+OK: crack.cover.global.mode
 OK: crack.zone.effective.converged
 OK: crack.zone.effective.formed
 OK: crack.zone.effective.tensionBars
@@ -1711,7 +1764,7 @@ OK: crack.zone.full.widthFormula; actual=0.059967963824; expected=0.059967963824
 OK: crack.zone.full.utilization; actual=0.199893212746; expected=0.199893212746; absDiff=0.
 OK: crack.zone.fullAbtPositive
 OK: crack.zone.effectiveAbtPositive
-OK: crack.zone.effectiveDepthFormula; actual=116.585582712157; expected=116.585582712157; absDiff=0.
+OK: crack.zone.effectiveDepthFormula; actual=116.371718374117; expected=116.371718374117; absDiff=0.
 OK: crack.auto.pass.converged
 OK: crack.auto.pass.formed
 OK: crack.auto.pass.tensionBars
@@ -1811,7 +1864,7 @@ OK: crack.central.eccentricLoadRejected
 OK: crack.noTension.converged
 OK: crack.noTension.notFormed
 OK: crack.noTension.width; actual=0.; expected=0.; absDiff=0.
-TOTAL_CRACK: passed=150; failed=0; elapsedSec=0.375
+TOTAL_CRACK: passed=166; failed=0; elapsedSec=0.4453125
 
 
 ===== Run-BatchTests.ps1 =====
@@ -1897,6 +1950,31 @@ OK: batch.capacityPath.nmxyZeroM.path
 OK: batch.capacityPath.nmxyZeroM.solutionMethod
 OK: batch.capacityPath.nmxyZeroM.notNumFail
 OK: batch.capacityPath.nmxyZeroM.nult
+RUN: TestMomentZeroFilterDefaultThresholds
+OK: batch.zeroMoment.tinyResidual; actual=0.; expected=0.
+OK: batch.zeroMoment.h1m.threshold; actual=0.; expected=0.
+OK: batch.zeroMoment.h1m.above
+OK: batch.zeroMoment.h02m.threshold; actual=0.; expected=0.
+OK: batch.zeroMoment.h3m.threshold; actual=0.; expected=0.
+RUN: TestCapacityLoadPathFiltersEngineeringSmallMoments
+OK: batch.zeroMoment.pathMxy.noScaledMoment
+OK: batch.zeroMoment.pathMxy.myBase; actual=0.; expected=0.
+OK: batch.zeroMoment.pathNMxy.forceOnly
+OK: batch.zeroMoment.pathNMxy.myBase; actual=0.; expected=0.
+RUN: TestBatchZeroMomentFilterNormalizesCapacityPath
+OK: batch.zeroMoment.capacityPath.axialDefault
+OK: batch.zeroMoment.capacityPath.notInputErr
+OK: batch.zeroMoment.capacityPath.mx; actual=0.; expected=0.
+RUN: TestStabilityZeroMomentFilterUsesZeroMomentSigns
+OK: batch.zeroMoment.stability.status
+OK: batch.zeroMoment.stability.sign1
+OK: batch.zeroMoment.stability.sign2
+OK: batch.zeroMoment.stability.finalUserMx; actual=0.; expected=0.
+OK: batch.zeroMoment.stability.finalUserMy; actual=0.; expected=0.
+OK: batch.zeroMoment.stability.finalSummaryMx; actual=0.; expected=0.
+OK: batch.zeroMoment.stability.finalSummaryMy; actual=0.; expected=0.
+OK: batch.zeroMoment.stability.capacityPath
+OK: batch.zeroMoment.stability.capacityNotNumFail
 RUN: TestBatchInvalidCapacityLoadPathReportsInputErr
 OK: batch.capacityPath.invalid.status
 OK: batch.capacityPath.invalid.overall
@@ -1905,10 +1983,10 @@ RUN: TestPR2SkipsCapacityByProfile
 OK: batch.profile.capacity.pr1.runs
 OK: batch.profile.capacity.pr2.skipped
 RUN: TestLoadReferenceTransformsUserMoments
-OK: batch.reference.userMx; actual=20000.; expected=20000.
-OK: batch.reference.userMy; actual=-30000.; expected=-30000.
-OK: batch.reference.internalMx; actual=45000.; expected=45000.
-OK: batch.reference.internalMy; actual=-70000.; expected=-70000.
+OK: batch.reference.userMx; actual=3000000.; expected=3000000.
+OK: batch.reference.userMy; actual=-3000000.; expected=-3000000.
+OK: batch.reference.internalMx; actual=3025000.; expected=3025000.
+OK: batch.reference.internalMy; actual=-3040000.; expected=-3040000.
 OK: batch.reference.x; actual=40.; expected=40.
 OK: batch.reference.y; actual=-25.; expected=-25.
 OK: batch.reference.offsetX.defaultBase; actual=40.; expected=40.
@@ -1968,14 +2046,81 @@ OK: batch.stability.sp35.table.ncr1.na; actual=0.; expected=0.
 OK: batch.stability.sp35.table.ncr2.na; actual=0.; expected=0.
 OK: batch.stability.sp35.table.nult1
 OK: batch.stability.sp35.table.nult2
+RUN: TestStabilitySP35TableIgnoresPhiL2
+OK: batch.stability.sp35.tablePhi.branch
+OK: batch.stability.sp35.tablePhi.phiL1; actual=1.; expected=1.
+OK: batch.stability.sp35.tablePhi.notTwo
+RUN: TestStabilitySP35TableRebarAreaCorrection
+OK: batch.stability.sp35.rebarRatio.low
+OK: batch.stability.sp35.rebarRatio.lowNult; actual=3139233.51715674; expected=3139233.51715674
+OK: batch.stability.sp35.rebarRatio.high
+OK: batch.stability.sp35.rebarRatio.highNult; actual=5898352.68407888; expected=5898352.68407888
+RUN: TestStabilitySP35TableInterpolationIntermediate
+OK: batch.stability.sp35.interp.q0125; actual=6.5; expected=6.5
+OK: batch.stability.sp35.interp.q0375; actual=7.5; expected=7.5
+OK: batch.stability.sp35.interp.q0750; actual=9.; expected=9.
+RUN: TestStabilitySP35TableBoundaryReservePasses
+OK: batch.stability.sp35.boundary.reserve; actual=1.; expected=1.
+OK: batch.stability.sp35.boundary.status
+RUN: TestStabilityFailStopsDownstream
+OK: batch.stability.stop.stabilityFail
+OK: batch.stability.stop.overallFail
+OK: batch.stability.stop.directNA
+OK: batch.stability.stop.capacityNA
+OK: batch.stability.stop.crackNA
+RUN: TestStabilitySP63ShortSlendernessEtaIsOne
+OK: batch.stability.sp63.short.status
+OK: batch.stability.sp63.short.slenderness1
+OK: batch.stability.sp63.short.slenderness2
+OK: batch.stability.sp63.short.eta1; actual=1.; expected=1.
+OK: batch.stability.sp63.short.eta2; actual=1.; expected=1.
+OK: batch.stability.sp63.short.ncr
+RUN: TestStabilityInvalidMuReportsInputErr
+OK: batch.stability.mu.inputErr
+RUN: TestStabilityInvalidSettingsReportInputErr
+OK: batch.stability.invalidSettings.ks
+OK: batch.stability.invalidSettings.ksMessage
+OK: batch.stability.invalidSettings.phiMode
+OK: batch.stability.invalidSettings.accMode
+OK: batch.stability.invalidSettings.accPlanes
+OK: batch.stability.invalidSettings.phiP
+OK: batch.stability.invalidSettings.nOverNcr
+RUN: TestStabilitySP35MixedBranchReportsMixed
+OK: batch.stability.sp35Mixed.status
+OK: batch.stability.sp35Mixed.planeBranches
+OK: batch.stability.sp35Mixed.branch
 RUN: TestStabilityCircleMxDoesNotCreateMy
 OK: batch.stability.circleMx.status
 OK: batch.stability.circleMx.designMx
-OK: batch.stability.circleMx.noDesignMy; actual=-0.000000000209; expected=0.
+OK: batch.stability.circleMx.noDesignMy; actual=0.; expected=0.
+RUN: TestStabilityAccidentalBothPlanes
+OK: batch.stability.accidentalPlanes.onlyPositive
+OK: batch.stability.accidentalPlanes.bothLarger
 RUN: TestStabilityUsesTransformedCentroidForEccentricity
 OK: batch.stability.centroid.transformedShift
 OK: batch.stability.centroid.status
 OK: batch.stability.centroid.eFromTransformedCenter
+OK: batch.stability.centroid.loadPointMxIsUserMx; actual=284283.490197003; expected=284283.490197003
+OK: batch.stability.centroid.loadPointMyIsUserMy; actual=4139820.62708254; expected=4139820.62708254
+RUN: TestStabilityAccidentalUsesGeometricLength
+OK: batch.stability.accidental.L; actual=20.; expected=20.
+OK: batch.stability.accidental.muL; actual=40.; expected=40.
+RUN: TestStabilityAccidentalUserMode
+OK: batch.stability.accidental.user; actual=25.; expected=25.
+OK: batch.stability.accidental.userBoth; actual=65.; expected=65.
+RUN: TestStabilitySP35UsesCoreDistanceNotRadius
+OK: batch.stability.sp35.core.positive
+OK: batch.stability.sp35.core.notRadius
+RUN: TestStabilityDepthUsesConcreteContourOnly
+OK: batch.stability.depth.concreteOnly1
+OK: batch.stability.depth.concreteOnly2
+RUN: TestStabilityPhiLUsesSignedSustainedMoment
+OK: batch.stability.phil.sameSign
+OK: batch.stability.phil.oppositeSign; actual=1.; expected=1.
+RUN: TestStabilitySustainedNNotClamped
+OK: batch.stability.sustainedN.notClamped; actual=240000.; expected=240000.
+RUN: TestStabilitySP35OppositeMomentSigns
+OK: batch.stability.sp35.opposite.phi
 RUN: TestBatchSummaryWritesOnlySelectedStabilityCode
 OK: batch.writer.stability.anchor
 OK: batch.writer.stability.sp35.empty
@@ -1993,6 +2138,10 @@ RUN: TestPR2PhysicalStateRunsCrackWithExtensionEnabled
 OK: batch.group2.physical.noExtension
 OK: batch.group2.physical.directOK
 OK: batch.group2.physical.crackRuns
+RUN: TestBatchCrackCoverDistanceModeChangesAs
+INFO: batch.crack.coverDistanceMode local=40.; global=340.
+OK: batch.crack.coverMode.localPositive
+OK: batch.crack.coverMode.globalLarger
 RUN: TestPR2AutoCrackStoresBeforeAndAfterMcrcStates
 OK: batch.group2.autoMcrc.crackCalculated
 OK: batch.group2.autoMcrc.beforeState
@@ -2233,7 +2382,7 @@ OK: batch.settings.capacity.maxLambda
 RUN: TestInvalidModeSettingsAreNotFallbacks
 OK: batch.invalid.CapacitySolutionStrategy.status
 OK: batch.invalid.CapacitySolutionStrategy.noLambda
-TOTAL_BATCH: passed=317; failed=0; elapsedSec=12.5234375
+TOTAL_BATCH: passed=390; failed=0; elapsedSec=15.015625
 
 
 ===== Run-WorkbookInterfaceTests.ps1 =====
@@ -2267,8 +2416,12 @@ OK: ui.autocad.import.generatedRejected
 OK: ui.autocad.preview.boundsAnnotations
 OK: ui.autocad.preview.approxText
 OK: ui.autocad.preview.russianComment
+OK: ui.autocad.preview.boundsWidthUsesRotation; actual=516.961524227066; expected=516.961524227066
+OK: ui.autocad.preview.boundsHeightUsesRotation; actual=111.961524227066; expected=111.961524227066
 OK: ui.autocad.preview.readerAnnotations
 OK: ui.autocad.preview.dimensionShapes
+OK: ui.autocad.preview.rotatedElementShape
+OK: ui.autocad.preview.squareFallbackRotation
 OK: ui.plot.preview.title
 OK: ui.plot.generated.noPreviewFallback.error
 OK: ui.plot.generated.noPreviewFallback.title
@@ -2320,6 +2473,10 @@ OK: ui.results.properties.noLegacyPlane
 OK: ui.results.properties.hasBounds
 OK: ui.results.properties.commonLoadReference
 OK: ui.results.properties.noLcLoadReference
+OK: ui.results.properties.transformedArea.moduli; actual=92953.0281717241; expected=92953.0281717241
+OK: ui.results.properties.transformedCoreDistance.positive
+OK: ui.results.properties.transformedCoreDistance.axis1Sym; actual=42.699438237415; expected=42.699438237415
+OK: ui.results.properties.transformedCoreDistance.axis2Sym; actual=42.699438237415; expected=42.699438237415
 OK: ui.results.annotations.header
 OK: ui.results.annotations.rows
 OK: ui.results.materialDiagrams.header
@@ -2401,6 +2558,7 @@ OK: ui.governing.message
 OK: ui.validation.CapacitySolutionStrategy
 OK: ui.validation.nonCriticalMessages
 OK: ui.validation.capacitySearchMethod
+OK: ui.validation.crackCoverDistanceMode
 OK: ui.validation.autocadLabelMode
 OK: ui.validation.autocadNeutralLine
 OK: ui.validation.autocadPrincipalAxes
@@ -2448,6 +2606,7 @@ OK: ui.units.capacity.baseLoadSteps; actual=шт
 OK: ui.units.capacity.toleranceStrain; actual=-
 OK: ui.units.capacity.maxLambda; actual=-
 OK: ui.units.capacity.solverIterations; actual=шт
+OK: ui.units.zeroMomentPerDepth.dynamic
 OK: ui.circle.blankDiameter.noRebar
 OK: ui.circle.blankDiameter.dimensionsRemain
 OK: ui.lshape.blankFaceDiameter.skipsLine
@@ -2460,7 +2619,7 @@ OK: ui.clear.results.properties
 OK: ui.clear.results.annotations
 OK: ui.clear.results.materialDiagrams
 OK: ui.clear.input
-TOTAL_WORKBOOK_UI: passed=218; failed=0; elapsedSec=16.5859375
+TOTAL_WORKBOOK_UI: passed=228; failed=0; elapsedSec=17.5859375
 
 
 ===== Run-RegressionBaselineTests.ps1 =====
@@ -2469,7 +2628,7 @@ OK: pure_compression.converged
 OK: pure_compression.N; actual=-99999.9999999997; expected=-100000.; relDiff=0.
 OK: pure_compression.Mx; actual=0.000000000201; expected=0.; absDiff=0.000000000201
 OK: pure_compression.My; actual=0.000000000242; expected=0.; absDiff=0.000000000242
-BASELINE|pure_compression|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=0.|Nint=-99999.9999999997|Mxint=0.000000000201|Myint=0.000000000242|resN=0.000000000291|resMx=0.000000000201|resMy=0.000000000242|lambda=NA|iterations=2|elapsedSec=0.0234375|fibers=177|rebars=8
+BASELINE|pure_compression|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=0.|Nint=-99999.9999999997|Mxint=0.000000000201|Myint=0.000000000242|resN=0.000000000291|resMx=0.000000000201|resMy=0.000000000242|lambda=NA|iterations=2|elapsedSec=0.03125|fibers=177|rebars=8
 OK: n_plus_mx_my_zero.converged
 OK: n_plus_mx_my_zero.N; actual=-100000.; expected=-100000.; relDiff=0.
 OK: n_plus_mx_my_zero.Mx; actual=-4000000.; expected=-4000000.; relDiff=0.
@@ -2479,7 +2638,7 @@ OK: n_plus_my_mx_zero.converged
 OK: n_plus_my_mx_zero.N; actual=-100000.; expected=-100000.; relDiff=0.
 OK: n_plus_my_mx_zero.Mx; actual=0.000000000001; expected=0.; absDiff=0.000000000001
 OK: n_plus_my_mx_zero.My; actual=-3000000.; expected=-3000000.; relDiff=0.
-BASELINE|n_plus_my_mx_zero|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=-0.000000428729|Nint=-100000.|Mxint=0.000000000001|Myint=-3000000.|resN=0.000000000015|resMx=0.000000000001|resMy=0.00000000326|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.015625|fibers=177|rebars=8
+BASELINE|n_plus_my_mx_zero|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=-0.000000428729|Nint=-100000.|Mxint=0.000000000001|Myint=-3000000.|resN=0.000000000015|resMx=0.000000000001|resMy=0.00000000326|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.|fibers=177|rebars=8
 OK: full_n_mx_my.converged
 OK: full_n_mx_my.N; actual=-100000.; expected=-100000.; relDiff=0.
 OK: full_n_mx_my.Mx; actual=-4000000.; expected=-4000000.; relDiff=0.
@@ -2489,7 +2648,7 @@ OK: symmetric_circle.converged
 OK: symmetric_circle.N; actual=-219999.999999999; expected=-220000.; relDiff=0.
 OK: symmetric_circle.Mx; actual=-6000000.00000002; expected=-6000000.; relDiff=0.
 OK: symmetric_circle.My; actual=0.000000000146; expected=0.; absDiff=0.000000000146
-BASELINE|symmetric_circle|converged=True|eps0=-0.000180839111|kappaX=-0.000000845237|kappaY=0.|Nint=-219999.999999999|Mxint=-6000000.00000002|Myint=0.000000000146|resN=0.000000000815|resMx=-0.000000019558|resMy=0.000000000146|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.046875|fibers=716|rebars=8
+BASELINE|symmetric_circle|converged=True|eps0=-0.000180839111|kappaX=-0.000000845237|kappaY=0.|Nint=-219999.999999999|Mxint=-6000000.00000002|Myint=0.000000000146|resN=0.000000000815|resMx=-0.000000019558|resMy=0.000000000146|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.0546875|fibers=716|rebars=8
 OK: repeated_run.first.converged
 OK: repeated_run.second.converged
 OK: repeated_run.epsilon0; actual=-0.000082335606; expected=-0.000082335606; absDiff=0.
@@ -2515,7 +2674,7 @@ OK: origin_shift.shifted.Mx; actual=1000000.; expected=1000000.; relDiff=0.
 OK: origin_shift.shifted.My; actual=-10500000.; expected=-10500000.; relDiff=0.
 BASELINE|origin_shift_base|converged=True|eps0=-0.000082335606|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=-4000000.|Myint=-3000000.|resN=0.|resMx=-0.000000003725|resMy=0.000000000931|lambda=NA|iterations=3|elapsedSec=0.|fibers=0|rebars=0
 BASELINE|origin_shift_shifted|converged=True|eps0=-0.00007872362|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=1000000.|Myint=-10500000.|resN=-0.000000000015|resMx=0.000000000815|resMy=0.000000003725|lambda=NA|iterations=3|elapsedSec=0.|fibers=0|rebars=0
-TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.8515625
+TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.8203125
 
 Regression baseline report: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Stage01_RegressionBaseline_Raw.txt
 

@@ -22,6 +22,7 @@ Option Explicit
 
 Private Const MAX_COMBINATIONS As Long = 20 ' Максимум LC, поддерживаемый таблицей книги.
 Private Const CAPACITY_PATH_NONE As String = "None" ' Capacity не запускался для LC.
+Private Const DEFAULT_ZERO_MOMENT_PER_DEPTH As Double = 4903.325 ' 0.5 tf*m/m во внутренних Н*мм/мм.
 
 ' Данные одной строки таблицы сочетаний. Batch хранит их отдельно от результатов,
 ' чтобы было видно, где исходные нагрузки пользователя, а где то, что вернул расчет.
@@ -51,6 +52,10 @@ Private mLoadReferenceX As Double ' X точки приложения нагру
 Private mLoadReferenceY As Double ' Y точки приложения нагрузки относительно расчетной модели, мм.
 Private mLoadReferenceOffsetX As Double ' Смещение точки нагрузки от центра тяжести бетонного сечения по X, мм.
 Private mLoadReferenceOffsetY As Double ' Смещение точки нагрузки от центра тяжести бетонного сечения по Y, мм.
+Private mMomentZeroFilter As CMomentZeroFilter ' Общий инженерный фильтр практически нулевых моментов.
+Private mZeroMomentPerDepth As Double ' Порог момента на единицу бетонного габарита, Н*мм/мм.
+Private mConcreteDepthForMx As Double ' Бетонный габарит по Y для проверки Mx, мм.
+Private mConcreteDepthForMy As Double ' Бетонный габарит по X для проверки My, мм.
 Private mGoverningCombinationIndex As Long ' Индекс LC, который стал определяющим в batch summary.
 Private mCrackGoverningCombinationIndex As Long ' Индекс LC с минимальным запасом по раскрытию трещин.
 Private mElapsedSeconds As Double ' Полное время пакетного расчета, сек.
@@ -64,6 +69,7 @@ Private mCrackPhi3Mode As String ' User или Auto: как принимать p
 Private mCrackPhi3 As Double ' Пользовательский коэффициент phi3, если Phi3Mode = User.
 Private mCrackPsiS As Double ' Пользовательский коэффициент psi_s, если PsiMode = User.
 Private mCrackTensionZoneMode As String ' Effective или FullTension: какая бетонная зона входит в Abt.
+Private mCrackCoverDistanceMode As String ' Как измерять a_s: до ближайшего контура или до дальней растянутой линии.
 Private mSolverMethod As String ' Newton или Secant для прямого равновесия.
 Private mSolverLoadSteps As Long ' Число ступеней приложения нагрузки в CSectionSolver.
 Private mSolverMaxIterations As Long ' Лимит итераций прямого solver-а на одной ступени.
@@ -92,10 +98,14 @@ Private mStabilityCode As String ' SP63 или SP35: выбранная норм
 Private mStabilityElementLength As Double ' Геометрическая длина элемента l, мм.
 Private mStabilityMu1 As Double ' Коэффициент расчетной длины для первой главной плоскости.
 Private mStabilityMu2 As Double ' Коэффициент расчетной длины для второй главной плоскости.
-Private mStabilitySystemType As String ' Determinate или Indeterminate для случайного эксцентриситета.
+Private mStabilitySystemType As String ' Determinate или Indeterminate: правило сложения основного и случайного эксцентриситета.
 Private mStabilityZeroSign1 As Double ' Направление случайного эксцентриситета при M1=0: +1 или -1.
 Private mStabilityZeroSign2 As Double ' Направление случайного эксцентриситета при M2=0: +1 или -1.
 Private mStabilityPhiLMode As String ' Auto или PhiL2.
+Private mStabilityAccidentalEccentricityMode As String ' AutoWithL, AutoWithMuL или User для ea/ec,sl.
+Private mStabilityAccidentalEccentricityPlanes As String ' OnlyMomentPlane или BothPlanes: в каких плоскостях учитывать случайный эксцентриситет.
+Private mStabilityAccidentalEccentricityUser1 As Double ' Модуль пользовательского случайного эксцентриситета первой главной плоскости, мм.
+Private mStabilityAccidentalEccentricityUser2 As Double ' Модуль пользовательского случайного эксцентриситета второй главной плоскости, мм.
 Private mStabilitySP63Ks As Double ' Коэффициент ks для арматуры в D по СП 63.
 Private mStabilitySP63DeltaEMin As Double ' Нижняя защита delta_e для численной устойчивости формулы.
 Private mStabilitySP63DeltaEMax As Double ' Верхняя защита delta_e для численной устойчивости формулы.
@@ -112,6 +122,9 @@ Private mStabilityLoadUserMy(1 To MAX_COMBINATIONS) As Double ' Пользова
 Private Sub Class_Initialize()
     Dim resultIndex As Long
     Set mStatusPolicy = New CBatchStatusPolicy
+    Set mMomentZeroFilter = New CMomentZeroFilter
+    mZeroMomentPerDepth = DEFAULT_ZERO_MOMENT_PER_DEPTH
+    mMomentZeroFilter.Initialize mZeroMomentPerDepth
     For resultIndex = 1 To MAX_COMBINATIONS
         Set mResults(resultIndex) = New CCombinationResult
         mResults(resultIndex).Clear CAPACITY_PATH_NONE
@@ -125,6 +138,7 @@ Private Sub Class_Initialize()
     mCrackPhi3 = 1#
     mCrackPsiS = 1#
     mCrackTensionZoneMode = "Effective"
+    mCrackCoverDistanceMode = "GlobalExtreme"
     mSolverMethod = "Newton"
     mSolverLoadSteps = 8
     mSolverMaxIterations = 80
@@ -155,6 +169,10 @@ Private Sub Class_Initialize()
     mStabilityZeroSign1 = 1#
     mStabilityZeroSign2 = 1#
     mStabilityPhiLMode = "Auto"
+    mStabilityAccidentalEccentricityMode = "AutoWithL"
+    mStabilityAccidentalEccentricityPlanes = "OnlyMomentPlane"
+    mStabilityAccidentalEccentricityUser1 = 10#
+    mStabilityAccidentalEccentricityUser2 = 10#
     mStabilitySP63Ks = 0.7
     mStabilitySP63DeltaEMin = 0.15
     mStabilitySP63DeltaEMax = 1.5
@@ -171,6 +189,7 @@ Public Sub Initialize(ByVal section As CSectionModel, ByVal materialProvider As 
     If materialProvider Is Nothing Then Err.Raise vbObjectError + 3902, "CBatchSectionCalculator", "Material provider не передан."
     Set mSection = section
     Set mMaterialProvider = materialProvider
+    ConfigureConcreteMomentDepths
 End Sub
 
 ' Подключает каталог профилей, прочитанный Excel-слоем из rngCalculationProfiles.
@@ -190,14 +209,22 @@ End Property
 ' сразу переводятся во внутренние единицы ядра.
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
+    Dim zeroMomentSettingRead As Boolean
+    zeroMomentSettingRead = settings.HasKey("Calculation.ZeroMomentPerDepth")
     mCrackAllowable = settings.GetDouble("SLS.Crack.Allowable", mCrackAllowable)
     mCrackPsiMode = settings.GetString("SLS.Crack.PsiMode", mCrackPsiMode)
     mCrackTensionZoneMode = settings.GetString("SLS.Crack.TensionZoneMode", mCrackTensionZoneMode)
+    If settings.HasKey("SLS.Crack.CoverDistanceMode") Then
+        mCrackCoverDistanceMode = settings.GetString("SLS.Crack.CoverDistanceMode", mCrackCoverDistanceMode)
+    Else
+        mCrackCoverDistanceMode = settings.GetString("SLS.Crack.CoverMode", mCrackCoverDistanceMode)
+    End If
     mCrackPhi1 = settings.GetDouble("SLS.Crack.Phi1", mCrackPhi1)
     mCrackPhi2 = settings.GetDouble("SLS.Crack.Phi2", mCrackPhi2)
     mCrackPhi3Mode = settings.GetString("SLS.Crack.Phi3Mode", mCrackPhi3Mode)
     mCrackPhi3 = settings.GetDouble("SLS.Crack.Phi3", mCrackPhi3)
     mCrackPsiS = settings.GetDouble("SLS.Crack.PsiS", mCrackPsiS)
+    mZeroMomentPerDepth = settings.GetDouble("Calculation.ZeroMomentPerDepth", mZeroMomentPerDepth)
     If settings.HasKey("Solver.Method") Then
         mSolverMethod = settings.GetRawString("Solver.Method", vbNullString)
     Else
@@ -229,27 +256,72 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mCapacityBaseLoadSteps = settings.GetLong("Capacity.BaseLoadSteps", mCapacityBaseLoadSteps)
     mCapacitySolverMaxIterations = settings.GetLong("Capacity.SolverMaxIterations", mCapacitySolverMaxIterations)
     mStabilityCode = settings.GetString("Stability.Code", mStabilityCode)
-    mStabilityElementLength = settings.GetDouble("Stability.ElementLength", mStabilityElementLength)
-    mStabilityMu1 = settings.GetDouble("Stability.Mu1", mStabilityMu1)
-    mStabilityMu2 = settings.GetDouble("Stability.Mu2", mStabilityMu2)
+    mStabilityElementLength = StabilityNumericSetting(settings, "Stability.ElementLength", mStabilityElementLength)
+    mStabilityMu1 = StabilityNumericSetting(settings, "Stability.Mu1", mStabilityMu1)
+    mStabilityMu2 = StabilityNumericSetting(settings, "Stability.Mu2", mStabilityMu2)
     mStabilitySystemType = settings.GetString("Stability.SystemType", mStabilitySystemType)
     mStabilityZeroSign1 = settings.GetDouble("Stability.ZeroMomentEccentricitySign1", mStabilityZeroSign1)
     mStabilityZeroSign2 = settings.GetDouble("Stability.ZeroMomentEccentricitySign2", mStabilityZeroSign2)
-    mStabilityPhiLMode = settings.GetString("Stability.PhiLMode", mStabilityPhiLMode)
-    mStabilitySP63Ks = settings.GetDouble("Stability.SP63.Ks", mStabilitySP63Ks)
-    mStabilitySP63DeltaEMin = settings.GetDouble("Stability.SP63.DeltaEMin", mStabilitySP63DeltaEMin)
-    mStabilitySP63DeltaEMax = settings.GetDouble("Stability.SP63.DeltaEMax", mStabilitySP63DeltaEMax)
-    mStabilitySP35PhiP = settings.GetDouble("Stability.SP35.PhiP", mStabilitySP35PhiP)
-    mStabilitySP35NOverNcrLimit = settings.GetDouble("Stability.SP35.NOverNcrLimit", mStabilitySP35NOverNcrLimit)
+    mStabilityPhiLMode = StabilityTextSetting(settings, "Stability.PhiLMode", mStabilityPhiLMode)
+    mStabilityAccidentalEccentricityMode = StabilityTextSetting(settings, "Stability.AccidentalEccentricityMode", mStabilityAccidentalEccentricityMode)
+    mStabilityAccidentalEccentricityPlanes = StabilityTextSetting(settings, "Stability.AccidentalEccentricityPlanes", mStabilityAccidentalEccentricityPlanes)
+    mStabilityAccidentalEccentricityUser1 = StabilityNumericSetting(settings, "Stability.AccidentalEccentricityUser1", mStabilityAccidentalEccentricityUser1)
+    mStabilityAccidentalEccentricityUser2 = StabilityNumericSetting(settings, "Stability.AccidentalEccentricityUser2", mStabilityAccidentalEccentricityUser2)
+    mStabilitySP63Ks = StabilityNumericSetting(settings, "Stability.SP63.Ks", mStabilitySP63Ks)
+    mStabilitySP63DeltaEMin = StabilityNumericSetting(settings, "Stability.SP63.DeltaEMin", mStabilitySP63DeltaEMin)
+    mStabilitySP63DeltaEMax = StabilityNumericSetting(settings, "Stability.SP63.DeltaEMax", mStabilitySP63DeltaEMax)
+    mStabilitySP35PhiP = StabilityNumericSetting(settings, "Stability.SP35.PhiP", mStabilitySP35PhiP)
+    mStabilitySP35NOverNcrLimit = StabilityNumericSetting(settings, "Stability.SP35.NOverNcrLimit", mStabilitySP35NOverNcrLimit)
     If Not units Is Nothing Then
         mCrackAllowable = units.InputLengthToInternal(mCrackAllowable)
         mStabilityElementLength = units.InputLengthToInternal(mStabilityElementLength)
+        mStabilityAccidentalEccentricityUser1 = units.InputLengthToInternal(mStabilityAccidentalEccentricityUser1)
+        mStabilityAccidentalEccentricityUser2 = units.InputLengthToInternal(mStabilityAccidentalEccentricityUser2)
         mSolverToleranceN = Abs(units.InputForceToInternal(mSolverToleranceN))
         mSolverToleranceMx = Abs(units.InputMomentMxToInternal(mSolverToleranceMx))
         mSolverToleranceMy = Abs(units.InputMomentMyToInternal(mSolverToleranceMy))
         mSolverMaxDeltaKappa = Abs(units.InputCurvatureToInternal(mSolverMaxDeltaKappa))
+        If zeroMomentSettingRead Then mZeroMomentPerDepth = units.InputMomentPerLengthToInternal(mZeroMomentPerDepth)
     End If
+    ConfigureMomentZeroFilter
+    NormalizeAllCombinationMoments
 End Sub
+
+' Читает числовую настройку устойчивости без подстановки default при пустой
+' ячейке. Пустота сохраняется как 0, чтобы профиль с включенной устойчивостью
+' получил InputErr в CStabilityCalculator, а не незаметный расчет по default.
+Private Function StabilityNumericSetting(ByVal settings As CSystemSettingsReader, _
+        ByVal key As String, ByVal defaultValue As Double) As Double
+    If Not settings.HasKey(key) Then
+        StabilityNumericSetting = defaultValue
+        Exit Function
+    End If
+
+    Dim textValue As String
+    textValue = Trim$(settings.GetRawString(key, vbNullString))
+    If Len(textValue) = 0 Or UCase$(textValue) = "TODO" Then
+        StabilityNumericSetting = 0#
+    Else
+        StabilityNumericSetting = CDbl(Replace$(textValue, ".", LocalDecimalSeparator()))
+    End If
+End Function
+
+' Читает текстовый переключатель устойчивости без подмены пустого значения.
+' Допустимые варианты проверяются внутри CStabilityCalculator.
+Private Function StabilityTextSetting(ByVal settings As CSystemSettingsReader, _
+        ByVal key As String, ByVal defaultValue As String) As String
+    If settings.HasKey(key) Then
+        StabilityTextSetting = Trim$(settings.GetRawString(key, vbNullString))
+    Else
+        StabilityTextSetting = defaultValue
+    End If
+End Function
+
+' Локальный десятичный разделитель нужен только для raw-чтения настроек,
+' когда обычный GetDouble нельзя использовать из-за его default-подстановки.
+Private Function LocalDecimalSeparator() As String
+    LocalDecimalSeparator = Mid$(CStr(1.1), 2, 1)
+End Function
 
 ' Очищает список LC и накопленные результаты.
 ' Используется перед чтением новой таблицы сочетаний, чтобы старые статусы не
@@ -332,6 +404,7 @@ Private Sub AddCombinationInternal(ByVal combinationID As String, ByVal nValue A
     mInputs(mCount).UserMy = myValue
     mInputs(mCount).InputValid = inputValid
     mInputs(mCount).InputError = inputError
+    If inputValid Then NormalizeCombinationMoments mCount
 End Sub
 
 ' Переносит пользовательские моменты из точки приложения нагрузки к координатам элементов.
@@ -351,9 +424,67 @@ Public Sub ApplyLoadReference(ByVal referenceX As Double, ByVal referenceY As Do
         If mInputs(i).InputValid Then
             mInputs(i).Mx = mInputs(i).UserMx + mInputs(i).N * referenceY
             mInputs(i).My = mInputs(i).UserMy + mInputs(i).N * referenceX
+            NormalizeCombinationMoments i
         End If
     Next i
 
+End Sub
+
+' Обновляет бетонные габариты, по которым общий фильтр решает, считать ли
+' Mx/My практически нулевыми. Для Mx нужен размер по Y, для My - по X.
+Private Sub ConfigureConcreteMomentDepths()
+    If mSection Is Nothing Then Exit Sub
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    mConcreteDepthForMx = props.ProjectionDepth(mSection, 0#, 1#, False)
+    mConcreteDepthForMy = props.ProjectionDepth(mSection, 1#, 0#, False)
+End Sub
+
+' Применяет пользовательский порог к общему фильтру. Отрицательное значение
+' считается ошибкой настройки, потому что порог является модулем момента.
+Private Sub ConfigureMomentZeroFilter()
+    If mMomentZeroFilter Is Nothing Then Set mMomentZeroFilter = New CMomentZeroFilter
+    mMomentZeroFilter.Initialize mZeroMomentPerDepth
+End Sub
+
+' Зануляет Mx, если он меньше инженерного порога для бетонного габарита по Y.
+Private Function NormalizeMomentMx(ByVal momentValue As Double) As Double
+    If mMomentZeroFilter Is Nothing Then
+        NormalizeMomentMx = momentValue
+    Else
+        NormalizeMomentMx = mMomentZeroFilter.NormalizeMoment(momentValue, mConcreteDepthForMx)
+    End If
+End Function
+
+' Зануляет My, если он меньше инженерного порога для бетонного габарита по X.
+Private Function NormalizeMomentMy(ByVal momentValue As Double) As Double
+    If mMomentZeroFilter Is Nothing Then
+        NormalizeMomentMy = momentValue
+    Else
+        NormalizeMomentMy = mMomentZeroFilter.NormalizeMoment(momentValue, mConcreteDepthForMy)
+    End If
+End Function
+
+' Нормализует пару пользовательских моментов и заново переносит их к системе
+' координат модели. Это единая точка для исходных LC и усилий после Stability.
+Private Sub NormalizeCombinationMoments(ByVal index As Long)
+    If index < 1 Or index > mCount Then Exit Sub
+    If Not mInputs(index).InputValid Then Exit Sub
+
+    mInputs(index).UserMx = NormalizeMomentMx(mInputs(index).UserMx)
+    mInputs(index).UserMy = NormalizeMomentMy(mInputs(index).UserMy)
+    mInputs(index).Mx = NormalizeMomentMx(mInputs(index).UserMx + mInputs(index).N * mLoadReferenceY)
+    mInputs(index).My = NormalizeMomentMy(mInputs(index).UserMy + mInputs(index).N * mLoadReferenceX)
+End Sub
+
+' Применяет текущую настройку фильтра к уже загруженным сочетаниям. Метод
+' нужен, если ApplySettings вызывается после чтения строк LC.
+Private Sub NormalizeAllCombinationMoments()
+    Dim i As Long
+    For i = 1 To mCount
+        NormalizeCombinationMoments i
+    Next i
 End Sub
 
 ' Последовательно считает все добавленные LC и выбирает определяющее сочетание.
@@ -363,6 +494,8 @@ Public Sub Execute()
     On Error GoTo Failed
 
     ValidateReady
+    ConfigureConcreteMomentDepths
+    NormalizeAllCombinationMoments
     Dim t0 As Double
     Dim stage As String
     Dim currentIndex As Long
@@ -453,6 +586,10 @@ Private Sub RunCombination(ByVal index As Long)
     If profile.StabilityEnabled Then
         ReportStep "Запускается фильтр продольного изгиба/устойчивости по профилю."
         RunStabilityFilter index, profile.StabilityValueSet
+        If StabilityStopsDownstream(index) Then
+            MarkDownstreamSkippedAfterStability index
+            GoTo FinalizeCombination
+        End If
     Else
         ReportStep "Устойчивость не запрошена профилем."
         mResults(index).ClearStabilityResult
@@ -476,6 +613,7 @@ Private Sub RunCombination(ByVal index As Long)
         RunCrackWidth index, profile
     End If
 
+FinalizeCombination:
     mResults(index).GoverningUtil = MaxDouble(MaxDouble(MaxDouble(mResults(index).UtilCapacity, mResults(index).CrackUtil), _
         mResults(index).LongitudinalCrackUtil), mResults(index).StabilityUtil)
     mResults(index).Status = mStatusPolicy.Aggregate(mResults(index).DirectStateStatus, _
@@ -511,21 +649,25 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
     Set stability = New CStabilityCalculator
     Dim referenceMx As Double
     Dim referenceMy As Double
-    referenceMx = MomentMxAboutPoint(index, referenceY)
-    referenceMy = MomentMyAboutPoint(index, referenceX)
+    referenceMx = NormalizeMomentMx(MomentMxAboutPoint(index, referenceY))
+    referenceMy = NormalizeMomentMy(MomentMyAboutPoint(index, referenceX))
 
     stability.Calculate mSection, mMaterialProvider, valueSet, mStabilityCode, _
         mInputs(index).N, referenceMx, referenceMy, _
         sustainedN, sustainedMx, sustainedMy, _
         mStabilityElementLength, mStabilityMu1, mStabilityMu2, _
         mStabilitySystemType, mStabilityZeroSign1, mStabilityZeroSign2, _
-        mStabilityPhiLMode, mStabilitySP63Ks, mStabilitySP63DeltaEMin, _
+        mStabilityPhiLMode, mStabilityAccidentalEccentricityMode, _
+        mStabilityAccidentalEccentricityPlanes, _
+        mStabilityAccidentalEccentricityUser1, mStabilityAccidentalEccentricityUser2, _
+        mStabilitySP63Ks, mStabilitySP63DeltaEMin, _
         mStabilitySP63DeltaEMax, mStabilitySP35PhiP, _
-        mStabilitySP35NOverNcrLimit, mStabilitySP35Table721
+        mStabilitySP35NOverNcrLimit, mStabilitySP35Table721, mMomentZeroFilter
 
     mResults(index).StoreStabilityResult mStatusPolicy.StabilityStatusFromCalculator(stability), _
         stability, referenceX, referenceY
-    If stability.InputValid And stability.Applicable Then ApplyStabilityDesignLoads index, stability, referenceX, referenceY
+    If stability.InputValid And stability.Applicable And stability.CheckPassed Then _
+        ApplyStabilityDesignLoads index, stability, referenceX, referenceY
 
     ReportValue "StabilityStatus", mResults(index).StabilityStatus
     ReportValue "Stability.Code", stability.Code
@@ -545,6 +687,24 @@ Failed:
     ReportStep "Устойчивость не рассчитана: " & Err.Description
 End Sub
 
+' Возвращает True, если фильтр устойчивости уже дал итог, после которого
+' нельзя передавать усилия в НДМ. Так FAIL устойчивости не маскируется
+' последующей численной несходимостью DirectState или Capacity.
+Private Function StabilityStopsDownstream(ByVal index As Long) As Boolean
+    StabilityStopsDownstream = mStatusPolicy.IsFailedOverall(mResults(index).StabilityStatus)
+End Function
+
+' Помечает последующие расчетные разделы как неприменимые к LC, который уже
+' не прошел устойчивость. Пользовательский статус берется из общей policy:
+' снаружи остается единый словарь OK/FAIL/NumFail/InputErr/N/A.
+Private Sub MarkDownstreamSkippedAfterStability(ByVal index As Long)
+    mResults(index).DirectStateStatus = mStatusPolicy.NotApplicable
+    mResults(index).CapacityStatus = mStatusPolicy.NotApplicable
+    mResults(index).CrackStatus = mStatusPolicy.NotApplicable
+    mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
+    ReportStep "НДС, несущая способность и трещины не запускались: сочетание не прошло проверку устойчивости."
+End Sub
+
 ' Берет длительную часть нагрузки для LC. Если пользователь не заполнил строку,
 ' принимаются нули: это допустимый ввод и не блокирует основной расчет.
 Private Sub StabilityDurationLoadForCombination(ByVal combinationID As String, _
@@ -554,8 +714,8 @@ Private Sub StabilityDurationLoadForCombination(ByVal combinationID As String, _
     For i = 1 To mStabilityLoadCount
         If StrComp(mStabilityLoadCombinationID(i), Trim$(combinationID), vbTextCompare) = 0 Then
             nValue = mStabilityLoadN(i)
-            mxValue = mStabilityLoadUserMx(i) + mStabilityLoadN(i) * (mLoadReferenceY - referenceY)
-            myValue = mStabilityLoadUserMy(i) + mStabilityLoadN(i) * (mLoadReferenceX - referenceX)
+            mxValue = NormalizeMomentMx(mStabilityLoadUserMx(i) + mStabilityLoadN(i) * (mLoadReferenceY - referenceY))
+            myValue = NormalizeMomentMy(mStabilityLoadUserMy(i) + mStabilityLoadN(i) * (mLoadReferenceX - referenceX))
             Exit Sub
         End If
     Next i
@@ -572,6 +732,16 @@ Private Sub ApplyStabilityDesignLoads(ByVal index As Long, ByVal stability As CS
     mInputs(index).My = stability.DesignMy + mInputs(index).N * referenceX
     mInputs(index).UserMx = mInputs(index).Mx - mInputs(index).N * mLoadReferenceY
     mInputs(index).UserMy = mInputs(index).My - mInputs(index).N * mLoadReferenceX
+    NormalizeCombinationMoments index
+
+    ' Summary должен показывать те же моменты, которые после zero-filter ушли
+    ' дальше в DirectState/Capacity/Crack, а не промежуточный DesignLoad.
+    Dim finalDesignMx As Double
+    Dim finalDesignMy As Double
+    finalDesignMx = NormalizeMomentMx(MomentMxAboutPoint(index, referenceY))
+    finalDesignMy = NormalizeMomentMy(MomentMyAboutPoint(index, referenceX))
+    mResults(index).UpdateStabilityDesignLoads mInputs(index).N, finalDesignMx, finalDesignMy, _
+        stability.PrincipalAngleRad
 End Sub
 
 ' Возвращает Mx LC относительно произвольной расчетной точки.
@@ -769,6 +939,8 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     ' внецентренное растяжение.
     centroidMxForCrack = mInputs(index).UserMx + mInputs(index).N * mLoadReferenceOffsetY
     centroidMyForCrack = mInputs(index).UserMy + mInputs(index).N * mLoadReferenceOffsetX
+    centroidMxForCrack = NormalizeMomentMx(centroidMxForCrack)
+    centroidMyForCrack = NormalizeMomentMy(centroidMyForCrack)
 
     crack.Calculate runner.ResultSolver, mSection, mMaterialProvider, profile.CrackedStateSpec, _
         profile.CrackInitiationSpec, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
@@ -796,7 +968,7 @@ Private Function BuildLoadPathForCombination(ByVal index As Long) As CCapacityLo
     Dim loadPath As CCapacityLoadPath
     Set loadPath = New CCapacityLoadPath
     loadPath.Initialize mInputs(index).CapacityLoadPath, mInputs(index).N, mInputs(index).UserMx, mInputs(index).UserMy, _
-        mLoadReferenceX, mLoadReferenceY
+        mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, mConcreteDepthForMx, mConcreteDepthForMy
     Set BuildLoadPathForCombination = loadPath
 End Function
 
@@ -1034,6 +1206,7 @@ Private Sub ConfigureCrackCalculator(ByVal crack As CCrackWidthCalculator)
     crack.Phi3 = mCrackPhi3
     crack.PsiS = mCrackPsiS
     crack.TensionZoneMode = mCrackTensionZoneMode
+    crack.CoverMode = mCrackCoverDistanceMode
     crack.SolverLoadSteps = mSolverLoadSteps
     crack.SolverMethod = mSolverMethod
     crack.SolverMaxIterations = mSolverMaxIterations
@@ -1279,6 +1452,18 @@ Public Property Get LoadReferenceOffsetY() As Double
     LoadReferenceOffsetY = mLoadReferenceOffsetY
 End Property
 
+Public Property Get StabilityElementLength() As Double
+    StabilityElementLength = mStabilityElementLength
+End Property
+
+Public Property Get StabilityMu1() As Double
+    StabilityMu1 = mStabilityMu1
+End Property
+
+Public Property Get StabilityMu2() As Double
+    StabilityMu2 = mStabilityMu2
+End Property
+
 Public Property Get Status(ByVal index As Long) As String
     Status = mResults(index).Status
 End Property
@@ -1448,16 +1633,15 @@ Public Property Get StabilityDesignMoment2(ByVal index As Long) As Double
 End Property
 
 ' Возвращает Mx после устойчивости в той же пользовательской точке задания
-' нагрузки, от которой исходно задавались Mx/My в rngLoadCombinations.
+' нагрузки. Берем нормализованное UserMx из текущего LC: это ровно тот момент,
+' который затем участвует в DirectState/Capacity/Crack через общий load-path.
 Public Property Get StabilityLoadPointMx(ByVal index As Long) As Double
-    StabilityLoadPointMx = mResults(index).StabilityDesignMx - _
-        mResults(index).StabilityDesignN * (mLoadReferenceY - mResults(index).StabilityReferenceY)
+    StabilityLoadPointMx = NormalizeMomentMx(mInputs(index).UserMx)
 End Property
 
 ' Возвращает My после устойчивости в пользовательской точке задания нагрузки.
 Public Property Get StabilityLoadPointMy(ByVal index As Long) As Double
-    StabilityLoadPointMy = mResults(index).StabilityDesignMy - _
-        mResults(index).StabilityDesignN * (mLoadReferenceX - mResults(index).StabilityReferenceX)
+    StabilityLoadPointMy = NormalizeMomentMy(mInputs(index).UserMy)
 End Property
 
 Public Property Get StabilityCriticalForce(ByVal index As Long) As Double
@@ -1562,6 +1746,14 @@ End Property
 
 Public Property Get StabilityEffectiveLength2(ByVal index As Long) As Double
     StabilityEffectiveLength2 = mResults(index).StabilityEffectiveLength2
+End Property
+
+Public Property Get StabilitySlenderness1(ByVal index As Long) As Double
+    StabilitySlenderness1 = mResults(index).StabilitySlenderness1
+End Property
+
+Public Property Get StabilitySlenderness2(ByVal index As Long) As Double
+    StabilitySlenderness2 = mResults(index).StabilitySlenderness2
 End Property
 
 Public Property Get StabilityDepth1(ByVal index As Long) As Double
@@ -1821,13 +2013,37 @@ Public Property Get FirstInvalidInputMessage() As String
     Dim i As Long
     For i = 1 To mCount
         If mStatusPolicy.IsInvalid(mResults(i).Status) Then
-            FirstInvalidInputMessage = mInputs(i).InputError
-            If Len(Trim$(FirstInvalidInputMessage)) = 0 Then FirstInvalidInputMessage = mResults(i).CapacityLimitState
-            If Len(Trim$(FirstInvalidInputMessage)) = 0 Then FirstInvalidInputMessage = mResults(i).Status
+            FirstInvalidInputMessage = DetailedInvalidInputMessage(i)
             Exit Property
         End If
     Next i
 End Property
+
+' Возвращает первую человекочитаемую причину InputErr для итогового сообщения.
+' Короткий статус остается в Results, а popup показывает, какая настройка,
+' профиль или геометрическая величина фактически остановила расчет.
+Private Function DetailedInvalidInputMessage(ByVal index As Long) As String
+    Dim detail As String
+    detail = Trim$(mInputs(index).InputError)
+    If Len(detail) = 0 And mStatusPolicy.IsInvalid(mResults(index).StabilityStatus) Then _
+        detail = Trim$(mResults(index).StabilityBranch)
+    If Len(detail) = 0 And mStatusPolicy.IsInvalid(mResults(index).CapacityStatus) Then _
+        detail = Trim$(mResults(index).CapacityLimitState)
+    If Len(detail) = 0 And mStatusPolicy.IsInvalid(mResults(index).DirectStateStatus) Then _
+        detail = Trim$(mResults(index).Status)
+    If Len(detail) = 0 Then detail = Trim$(mResults(index).Status)
+    If Len(detail) = 0 Then detail = mStatusPolicy.InputErr
+
+    DetailedInvalidInputMessage = "CombinationID=" & DisplayCombinationID(index) & _
+        ": " & detail & " (статус " & mResults(index).Status & ")"
+End Function
+
+' Формирует устойчивое имя LC для сообщения об ошибке даже при неполной строке
+' сочетания, когда пользователь мог оставить CombinationID пустым.
+Private Function DisplayCombinationID(ByVal index As Long) As String
+    DisplayCombinationID = Trim$(mInputs(index).CombinationID)
+    If Len(DisplayCombinationID) = 0 Then DisplayCombinationID = "#" & CStr(index)
+End Function
 
 Public Property Get StateAvailable(ByVal index As Long) As Boolean
     StateAvailable = mResults(index).StateAvailable

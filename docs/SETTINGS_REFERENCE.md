@@ -88,6 +88,12 @@
 
 При нулевых смещениях `Mx` и `My` из `rngLoadCombinations` считаются заданными относительно центра тяжести бетонного сечения без учета продольной арматуры.
 
+## Общие Расчетные Настройки
+
+| Ключ | Значения / ед. | Назначение |
+|---|---|---|
+| `Calculation.ZeroMomentPerDepth` | Moment/Length в INPUT-единицах | Инженерный фильтр практически нулевого момента. Для каждой плоскости программа считает `Mtol = Calculation.ZeroMomentPerDepth · h`, где `h` - бетонный габарит сечения в этой плоскости. Если `Abs(M) <= Mtol`, момент принимается равным нулю до выбора расчетной ветки. Настройка убирает численный остаток после переносов и поворотов, но слишком большое значение может обнулить реальный малый момент или эксцентриситет. |
+
 ## AutoCAD Import
 
 | Ключ | По умолчанию | Назначение |
@@ -101,6 +107,11 @@
 - импортируются только AutoCAD `Region`;
 - единицы AutoCAD всегда считаются миллиметрами;
 - материальная модель для расчета строится через `CMaterialModelProvider`; AutoCAD importer передает только геометрию и не выбирает диаграмму сам;
+- для бетонного прямоугольного `Region` сохраняются реальные `Width`, `Height` и `Rotation`; осевой прямоугольник определяется по `BoundingBox`, повернутый - по ребрам `Region`;
+- если реальные стороны бетонного `Region` недоступны, но есть надежные центральные `Ix/Iy/Ixy`, границы для высот и расстояний восстанавливаются как эквивалентный прямоугольник по площади и инерциям;
+- если нет ни сторон, ни надежных инерций, применяется квадрат той же площади; если часть сетки имеет распознанный поворот, такой квадрат получает средний угол этой сетки;
+- этот fallback нужен только для геометрических границ, расчетная площадь НДМ не меняется;
+- для арматурных `Region` диаметр и радиус стержня восстанавливаются по площади как эквивалентный круг, а не по `BoundingBox`;
 - коэффициент `phi2` при расчете трещин задается пользователем в `SLS.Crack.Phi2`;
 - разные материалы арматуры в одном сечении не поддерживаются;
 - при отсутствии AutoCAD, активного чертежа или нужных областей расчет останавливается с ошибкой ввода.
@@ -113,8 +124,7 @@
 | `AutoCAD.Export.NeutralLineEnabled` | `Yes` | Выгружать нейтральную линию: `Yes` - выводить; `No` - не выводить. |
 | `AutoCAD.Export.PrincipalAxesEnabled` | `Yes` | Выгружать главные центральные оси приведенного сечения: `Yes` - выводить; `No` - не выводить. |
 | `AutoCAD.Export.LoadPointEnabled` | `Yes` | Выгружать точку приложения нагрузки: `Yes` - выводить; `No` - не выводить. |
-| `AutoCAD.Export.ResultType` | `Stress` | Что экспортировать цветом и подписями: `Stress` или `Strain`. |
-| `AutoCAD.Export.LabelMode` | `NamesAndValues` | `ValuesOnly` - только значение выбранного `ResultType`; `NamesAndValues` - имя элемента и значение. |
+| `AutoCAD.Export.LabelMode` | `NamesAndValues` | `ValuesOnly` - только значение выбранной профильной величины `Visualization.Quantity`; `NamesAndValues` - имя элемента и значение. |
 | `AutoCAD.Layer.Concrete` | `Concrete` | Слой областей бетона. |
 | `AutoCAD.Layer.Rebar` | `Reinf` | Слой областей арматуры. |
 | `AutoCAD.Layer.ConcreteTension` | `Anno_Concrete_Positive` | Слой подписей растянутого бетона. |
@@ -144,7 +154,7 @@
 | `SLS.Crack.Phi3Mode` | `Auto`, `User` |
 | `SLS.Crack.PsiMode` | `User`, `Auto` |
 | `SLS.Crack.TensionZoneMode` | `Effective`, `FullTension` |
-| `AutoCAD.Export.ResultType` | `Stress`, `Strain` |
+| `SLS.Crack.CoverDistanceMode` | `NearestContour`, `GlobalExtreme` |
 | `AutoCAD.Export.LabelMode` | `ValuesOnly`, `NamesAndValues` |
 | `AutoCAD.Export.NeutralLineEnabled` | `Yes`, `No` |
 | `AutoCAD.Export.PrincipalAxesEnabled` | `Yes`, `No` |
@@ -153,7 +163,6 @@
 | `Plot.Enabled` | `Yes`, `No` |
 | `Plot.AutoUpdateAfterCalculation` | `Yes`, `No` |
 | `Plot.LoadCase` | Динамический список: `Worst` + значения `CombinationID` из `rngLoadCombinations` |
-| `Plot.ResultType` | `Stress`, `Strain` |
 | `Plot.ResultGradient` | `Yes`, `No` |
 | `Plot.ResultLabelsEnabled` | `Yes`, `No` |
 | `Plot.ResultPrecision` | целое число знаков после запятой |

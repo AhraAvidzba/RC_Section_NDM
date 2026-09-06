@@ -22,7 +22,7 @@ Option Explicit
 Private Const HEADER_ROWS As Long = 5 ' Количество строк шапки над якорем.
 Private Const DATA_ROWS As Long = 20 ' Максимальное количество LC в таблице.
 Private Const TOTAL_ROWS As Long = 25 ' Шапка плюс фиксированные 20 строк LC.
-Private Const TOTAL_COLUMNS As Long = 81 ' Ширина таблицы с пустыми разделителями между блоками.
+Private Const TOTAL_COLUMNS As Long = 83 ' Ширина таблицы с пустыми разделителями между блоками.
 
 Private Const COL_SUMMARY_FIRST As Long = 1
 Private Const COL_SUMMARY_LAST As Long = 13
@@ -31,12 +31,12 @@ Private Const COL_COMMON_LAST As Long = 26
 Private Const COL_SP35_FIRST As Long = 28
 Private Const COL_SP35_LAST As Long = 58
 Private Const COL_SP63_FIRST As Long = 60
-Private Const COL_SP63_LAST As Long = 81
+Private Const COL_SP63_LAST As Long = 83
 
 Private Const SP35_PLANE1_FIRST As Long = 29
 Private Const SP35_PLANE2_FIRST As Long = 44
 Private Const SP63_PLANE1_FIRST As Long = 60
-Private Const SP63_PLANE2_FIRST As Long = 71
+Private Const SP63_PLANE2_FIRST As Long = 72
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, как в остальных таблицах Results.
 Private Const FAILED_ROW_COLOR As Long = &HCEC7FF ' Светло-красный фон проблемного блока.
@@ -107,8 +107,8 @@ Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem)
     WriteSP35PlaneHeaders target, 44, "Плоскость 2"
 
     MergeCells target, 1, COL_SP63_FIRST, 1, BlockWidth(COL_SP63_FIRST, COL_SP63_LAST), "Расчет по СП 63"
-    WriteSP63PlaneHeaders target, 60, "Плоскость 1"
-    WriteSP63PlaneHeaders target, 71, "Плоскость 2"
+    WriteSP63PlaneHeaders target, SP63_PLANE1_FIRST, "Плоскость 1"
+    WriteSP63PlaneHeaders target, SP63_PLANE2_FIRST, "Плоскость 2"
 
     PutHeaderNotes target
     PutHeaderRowLabels target, units
@@ -124,7 +124,7 @@ End Sub
 
 ' Записывает верхние подписи для одной плоскости СП 63.
 Private Sub WriteSP63PlaneHeaders(ByVal target As Object, ByVal firstColumn As Long, ByVal titleText As String)
-    MergeCells target, 2, firstColumn, 2, 11, titleText
+    MergeCells target, 2, firstColumn, 2, 12, titleText
 End Sub
 
 ' Заполняет строку примечаний над обозначениями. Это обычный текст без переноса:
@@ -159,8 +159,8 @@ Private Sub PutHeaderNotes(ByVal target As Object)
     notes(1, 28) = "Коэффициент для ненапрягаемой арматуры"
     PutSP35PlaneNotes notes, 29
     PutSP35PlaneNotes notes, 44
-    PutSP63PlaneNotes notes, 60
-    PutSP63PlaneNotes notes, 71
+    PutSP63PlaneNotes notes, SP63_PLANE1_FIRST
+    PutSP63PlaneNotes notes, SP63_PLANE2_FIRST
 
     target.Offset(3, 0).Resize(1, TOTAL_COLUMNS).Value2 = notes
 End Sub
@@ -186,17 +186,18 @@ End Sub
 
 ' Заполняет примечания одной плоскости СП 63.
 Private Sub PutSP63PlaneNotes(ByRef notes() As Variant, ByVal firstColumn As Long)
-    notes(1, firstColumn) = "Случайный эксцентриситет для рассматриваемой плоскости"
-    notes(1, firstColumn + 1) = "Расчетный эксцентриситет продольной силы"
-    notes(1, firstColumn + 2) = "Коэффициент длительного действия нагрузки"
-    notes(1, firstColumn + 3) = "Коэффициент влияния эксцентриситета"
-    notes(1, firstColumn + 4) = "Коэффициент жесткости бетонной части"
-    notes(1, firstColumn + 5) = "Коэффициент жесткости арматуры"
-    notes(1, firstColumn + 6) = "Условная жесткость элемента"
-    notes(1, firstColumn + 7) = "Критическая продольная сила"
-    notes(1, firstColumn + 8) = "Коэффициент увеличения момента"
-    notes(1, firstColumn + 9) = "Отношение критической силы к действующей сжимающей"
-    notes(1, firstColumn + 10) = "Статус проверки рассматриваемой плоскости"
+    notes(1, firstColumn) = "Гибкость элемента в рассматриваемой главной плоскости"
+    notes(1, firstColumn + 1) = "Случайный эксцентриситет для рассматриваемой плоскости"
+    notes(1, firstColumn + 2) = "Расчетный эксцентриситет продольной силы"
+    notes(1, firstColumn + 3) = "Коэффициент длительного действия нагрузки"
+    notes(1, firstColumn + 4) = "Коэффициент влияния эксцентриситета"
+    notes(1, firstColumn + 5) = "Коэффициент жесткости бетонной части"
+    notes(1, firstColumn + 6) = "Коэффициент жесткости арматуры"
+    notes(1, firstColumn + 7) = "Условная жесткость элемента"
+    notes(1, firstColumn + 8) = "Критическая продольная сила"
+    notes(1, firstColumn + 9) = "Коэффициент увеличения момента"
+    notes(1, firstColumn + 10) = "Отношение критической силы к действующей сжимающей"
+    notes(1, firstColumn + 11) = "Статус проверки рассматриваемой плоскости"
 End Sub
 
 ' Заполняет строку обозначений под многоуровневой шапкой.
@@ -232,8 +233,8 @@ Private Sub PutHeaderRowLabels(ByVal target As Object, ByVal units As CUnitSyste
     labels(1, 28) = ChrW$(&H3C6) & "p"
     PutSP35PlaneLabels labels, 29, units
     PutSP35PlaneLabels labels, 44, units
-    PutSP63PlaneLabels labels, 60, units
-    PutSP63PlaneLabels labels, 71, units
+    PutSP63PlaneLabels labels, SP63_PLANE1_FIRST, units
+    PutSP63PlaneLabels labels, SP63_PLANE2_FIRST, units
 
     target.Offset(4, 0).Resize(1, TOTAL_COLUMNS).Value2 = labels
     ApplyHeaderSubscripts target
@@ -260,17 +261,18 @@ End Sub
 
 ' Заполняет обозначения одной плоскости СП 63.
 Private Sub PutSP63PlaneLabels(ByRef labels() As Variant, ByVal firstColumn As Long, ByVal units As CUnitSystem)
-    labels(1, firstColumn) = "ea, " & OutputLengthUnit(units)
-    labels(1, firstColumn + 1) = "e0, " & OutputLengthUnit(units)
-    labels(1, firstColumn + 2) = ChrW$(&H3C6) & "l (пост)"
-    labels(1, firstColumn + 3) = ChrW$(&H3B4) & "e"
-    labels(1, firstColumn + 4) = "kb"
-    labels(1, firstColumn + 5) = "ks"
-    labels(1, firstColumn + 6) = "D, " & OutputStiffnessUnit(units)
-    labels(1, firstColumn + 7) = "Ncr, " & OutputForceUnit(units)
-    labels(1, firstColumn + 8) = ChrW$(&H3B7)
-    labels(1, firstColumn + 9) = "Ncr/N"
-    labels(1, firstColumn + 10) = "статус"
+    labels(1, firstColumn) = "l0/i"
+    labels(1, firstColumn + 1) = "ea, " & OutputLengthUnit(units)
+    labels(1, firstColumn + 2) = "e0, " & OutputLengthUnit(units)
+    labels(1, firstColumn + 3) = ChrW$(&H3C6) & "l (пост)"
+    labels(1, firstColumn + 4) = ChrW$(&H3B4) & "e"
+    labels(1, firstColumn + 5) = "kb"
+    labels(1, firstColumn + 6) = "ks"
+    labels(1, firstColumn + 7) = "D, " & OutputStiffnessUnit(units)
+    labels(1, firstColumn + 8) = "Ncr, " & OutputForceUnit(units)
+    labels(1, firstColumn + 9) = ChrW$(&H3B7)
+    labels(1, firstColumn + 10) = "Ncr/N"
+    labels(1, firstColumn + 11) = "статус"
 End Sub
 
 ' Записывает строки LC одним массивом.
@@ -315,7 +317,7 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, 15) = OutputForce(batch.StabilityDesignN(index), units)
     data(rowIndex, 16) = OutputMomentMagnitude(batch.StabilityMoment1(index), units)
     data(rowIndex, 17) = OutputMomentMagnitude(batch.StabilityMoment2(index), units)
-    data(rowIndex, 18) = OutputCompressionForce(batch.StabilitySustainedN(index), units)
+    data(rowIndex, 18) = OutputSignedCompressionForce(batch.StabilitySustainedN(index), units)
     data(rowIndex, 19) = OutputMomentMagnitude(batch.StabilitySustainedMoment1(index), units)
     data(rowIndex, 20) = OutputMomentMagnitude(batch.StabilitySustainedMoment2(index), units)
     data(rowIndex, 21) = OutputLength(batch.StabilityDepth1(index), units)
@@ -369,17 +371,18 @@ End Sub
 Private Sub PutSP63PlaneValues(ByRef data() As Variant, ByVal rowIndex As Long, ByVal firstColumn As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long, _
         ByVal units As CUnitSystem)
-    data(rowIndex, firstColumn) = OutputLength(PlaneAccidentalEccentricity(batch, index, planeIndex), units)
-    data(rowIndex, firstColumn + 1) = OutputLength(PlaneEccentricity(batch, index, planeIndex), units)
-    data(rowIndex, firstColumn + 2) = OptionalValue(PlanePhiL(batch, index, planeIndex))
-    data(rowIndex, firstColumn + 3) = OptionalValue(PlaneDelta(batch, index, planeIndex))
-    data(rowIndex, firstColumn + 4) = OptionalValue(PlaneKb(batch, index, planeIndex))
-    data(rowIndex, firstColumn + 5) = OptionalValue(PlaneKs(batch, index, planeIndex))
-    data(rowIndex, firstColumn + 6) = OutputStiffness(PlaneStiffnessD(batch, index, planeIndex), units)
-    data(rowIndex, firstColumn + 7) = OptionalCompressionForce(PlaneNcr(batch, index, planeIndex), units)
-    data(rowIndex, firstColumn + 8) = OptionalValue(PlaneEta(batch, index, planeIndex))
-    data(rowIndex, firstColumn + 9) = RatioLimitToCompression(PlaneNcr(batch, index, planeIndex), batch.StabilityDesignN(index))
-    data(rowIndex, firstColumn + 10) = PlaneStatus(batch, index, planeIndex)
+    data(rowIndex, firstColumn) = OptionalValue(PlaneSlenderness(batch, index, planeIndex))
+    data(rowIndex, firstColumn + 1) = OutputLength(PlaneAccidentalEccentricity(batch, index, planeIndex), units)
+    data(rowIndex, firstColumn + 2) = OutputLength(PlaneEccentricity(batch, index, planeIndex), units)
+    data(rowIndex, firstColumn + 3) = OptionalValue(PlanePhiL(batch, index, planeIndex))
+    data(rowIndex, firstColumn + 4) = OptionalValue(PlaneDelta(batch, index, planeIndex))
+    data(rowIndex, firstColumn + 5) = OptionalValue(PlaneKb(batch, index, planeIndex))
+    data(rowIndex, firstColumn + 6) = OptionalValue(PlaneKs(batch, index, planeIndex))
+    data(rowIndex, firstColumn + 7) = OutputStiffness(PlaneStiffnessD(batch, index, planeIndex), units)
+    data(rowIndex, firstColumn + 8) = OptionalCompressionForce(PlaneNcr(batch, index, planeIndex), units)
+    data(rowIndex, firstColumn + 9) = OptionalValue(PlaneEta(batch, index, planeIndex))
+    data(rowIndex, firstColumn + 10) = RatioLimitToCompression(PlaneNcr(batch, index, planeIndex), batch.StabilityDesignN(index))
+    data(rowIndex, firstColumn + 11) = PlaneStatus(batch, index, planeIndex)
 End Sub
 
 ' Применяет общее оформление, границы блоков и независимую красную подсветку.
@@ -495,6 +498,7 @@ Private Sub ApplyHeaderSubscripts(ByVal target As Object)
         ApplySubscriptToken cell, "e0", 2, 1
         ApplySubscriptToken cell, "l01", 2, 2
         ApplySubscriptToken cell, "l02", 2, 2
+        ApplySubscriptToken cell, "l0/i", 2, 1
         ApplySubscriptToken cell, "Ncr", 2, 2
         ApplySubscriptToken cell, "Nult", 2, 3
         ApplySubscriptToken cell, "M1", 2, 1
@@ -584,6 +588,10 @@ Private Function PlaneAccidentalEccentricity(ByVal batch As CBatchSectionCalcula
     If planeIndex = 1 Then PlaneAccidentalEccentricity = batch.StabilityAccidentalEcc1(index) Else PlaneAccidentalEccentricity = batch.StabilityAccidentalEcc2(index)
 End Function
 
+Private Function PlaneSlenderness(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
+    If planeIndex = 1 Then PlaneSlenderness = batch.StabilitySlenderness1(index) Else PlaneSlenderness = batch.StabilitySlenderness2(index)
+End Function
+
 Private Function PlaneCoreDistance(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlaneCoreDistance = batch.StabilityCoreDistance1(index) Else PlaneCoreDistance = batch.StabilityCoreDistance2(index)
 End Function
@@ -637,6 +645,10 @@ End Function
 Private Function OutputCompressionForce(ByVal compressionMagnitude As Double, ByVal units As CUnitSystem) As Double
     If compressionMagnitude <= SMALL_VALUE Then Exit Function
     OutputCompressionForce = OutputForce(-Abs(compressionMagnitude), units)
+End Function
+
+Private Function OutputSignedCompressionForce(ByVal signedCompression As Double, ByVal units As CUnitSystem) As Double
+    OutputSignedCompressionForce = OutputForce(-signedCompression, units)
 End Function
 
 Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double

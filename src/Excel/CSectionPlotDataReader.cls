@@ -42,8 +42,10 @@ Private mX() As Double ' X элемента в output-единицах Results.
 Private mY() As Double ' Y элемента в output-единицах Results.
 Private mArea() As Double ' Площадь элемента в output-единицах Results.
 Private mDiameter() As Double ' Диаметр арматуры; для бетона обычно 0.
-Private mWidth() As Double ' Ширина эквивалентного бетонного маркера/области.
-Private mHeight() As Double ' Высота эквивалентного бетонного маркера/области.
+Private mShapeType() As String ' Форма бетонного элемента из Results: Rectangle, Region, EquivalentSquare.
+Private mWidth() As Double ' Реальная ширина бетонного элемента, если она сохранена в snapshot.
+Private mHeight() As Double ' Реальная высота бетонного элемента, если она сохранена в snapshot.
+Private mRotation() As Double ' Поворот прямоугольного бетонного элемента, рад; для fallback-а может хранить средний угол сетки.
 Private mResultValue() As Double ' Значение Stress или Strain для выбранного LC.
 Private mPhysicalState() As String ' Compression/Tension/InactiveTensionConcrete/NearZero.
 Private mMinX As Double ' Левая граница бетонной расчетной модели.
@@ -418,9 +420,11 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     Dim colX As Long: colX = ResultColumn(geom, "X")
     Dim colY As Long: colY = ResultColumn(geom, "Y")
     Dim colArea As Long: colArea = ResultColumn(geom, "Area")
+    Dim colShape As Long: colShape = ResultColumn(geom, "ShapeType")
     Dim colDiameter As Long: colDiameter = ResultColumn(geom, "Diameter")
     Dim colWidth As Long: colWidth = ResultColumn(geom, "Width")
     Dim colHeight As Long: colHeight = ResultColumn(geom, "Height")
+    Dim colRotation As Long: colRotation = ResultColumn(geom, "Rotation")
 
     ' На втором проходе геометрия соединяется с найденным состоянием. Plotter после этого
     ' получает готовые элементы и не обращается к Results напрямую.
@@ -430,8 +434,9 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
         If Len(elementID) > 0 And resultMap.Exists(elementID) Then
             AppendElement elementID, CStr(geom(rowIndex, colType)), CDbl(geom(rowIndex, colX)), _
                 CDbl(geom(rowIndex, colY)), CDbl(geom(rowIndex, colArea)), _
-                SafeDouble(geom(rowIndex, colDiameter)), SafeDouble(geom(rowIndex, colWidth)), _
-                SafeDouble(geom(rowIndex, colHeight)), resultMap(elementID)
+                SafeDouble(geom(rowIndex, colDiameter)), CStr(geom(rowIndex, colShape)), _
+                SafeDouble(geom(rowIndex, colWidth)), SafeDouble(geom(rowIndex, colHeight)), _
+                SafeDouble(geom(rowIndex, colRotation)), resultMap(elementID)
         End If
     Next rowIndex
 End Sub
@@ -450,9 +455,11 @@ Private Sub ReadGeometryPreview(ByVal workbook As Object)
     Dim colX As Long: colX = ResultColumn(geom, "X")
     Dim colY As Long: colY = ResultColumn(geom, "Y")
     Dim colArea As Long: colArea = ResultColumn(geom, "Area")
+    Dim colShape As Long: colShape = ResultColumn(geom, "ShapeType")
     Dim colDiameter As Long: colDiameter = ResultColumn(geom, "Diameter")
     Dim colWidth As Long: colWidth = ResultColumn(geom, "Width")
     Dim colHeight As Long: colHeight = ResultColumn(geom, "Height")
+    Dim colRotation As Long: colRotation = ResultColumn(geom, "Rotation")
 
     Dim neutralResult As Variant
     neutralResult = Array(0#, 0#, "NearZero")
@@ -464,15 +471,17 @@ Private Sub ReadGeometryPreview(ByVal workbook As Object)
         If Len(elementID) > 0 Then
             AppendElement elementID, CStr(geom(rowIndex, colType)), CDbl(geom(rowIndex, colX)), _
                 CDbl(geom(rowIndex, colY)), CDbl(geom(rowIndex, colArea)), _
-                SafeDouble(geom(rowIndex, colDiameter)), SafeDouble(geom(rowIndex, colWidth)), _
-                SafeDouble(geom(rowIndex, colHeight)), neutralResult
+                SafeDouble(geom(rowIndex, colDiameter)), CStr(geom(rowIndex, colShape)), _
+                SafeDouble(geom(rowIndex, colWidth)), SafeDouble(geom(rowIndex, colHeight)), _
+                SafeDouble(geom(rowIndex, colRotation)), neutralResult
         End If
     Next rowIndex
 End Sub
 
 Private Sub AppendElement(ByVal elementID As String, ByVal materialType As String, ByVal xCoord As Double, _
         ByVal yCoord As Double, ByVal area As Double, ByVal diameter As Double, _
-        ByVal width As Double, ByVal height As Double, ByVal resultData As Variant)
+        ByVal shapeType As String, ByVal width As Double, ByVal height As Double, _
+        ByVal rotation As Double, ByVal resultData As Variant)
     ' Сохраняем только элементы, у которых есть и геометрия, и результат
     ' выбранного LC. Так схема не рисует “пустые” элементы после ошибочного LC.
     mCount = mCount + 1
@@ -482,8 +491,10 @@ Private Sub AppendElement(ByVal elementID As String, ByVal materialType As Strin
     ReDim Preserve mY(1 To mCount)
     ReDim Preserve mArea(1 To mCount)
     ReDim Preserve mDiameter(1 To mCount)
+    ReDim Preserve mShapeType(1 To mCount)
     ReDim Preserve mWidth(1 To mCount)
     ReDim Preserve mHeight(1 To mCount)
+    ReDim Preserve mRotation(1 To mCount)
     ReDim Preserve mResultValue(1 To mCount)
     ReDim Preserve mPhysicalState(1 To mCount)
 
@@ -493,8 +504,10 @@ Private Sub AppendElement(ByVal elementID As String, ByVal materialType As Strin
     mY(mCount) = yCoord
     mArea(mCount) = area
     mDiameter(mCount) = diameter
+    mShapeType(mCount) = shapeType
     mWidth(mCount) = width
     mHeight(mCount) = height
+    mRotation(mCount) = rotation
     If StrComp(mVisualizationQuantity, "Strain", vbTextCompare) = 0 Then
         mResultValue(mCount) = CDbl(resultData(0))
     Else
@@ -580,8 +593,10 @@ Private Sub ResetReaderState()
     Erase mY
     Erase mArea
     Erase mDiameter
+    Erase mShapeType
     Erase mWidth
     Erase mHeight
+    Erase mRotation
     Erase mResultValue
     Erase mPhysicalState
     Erase mAnnotationType
@@ -707,8 +722,10 @@ Public Property Get X(ByVal index As Long) As Double: X = mX(index): End Propert
 Public Property Get Y(ByVal index As Long) As Double: Y = mY(index): End Property
 Public Property Get Area(ByVal index As Long) As Double: Area = mArea(index): End Property
 Public Property Get Diameter(ByVal index As Long) As Double: Diameter = mDiameter(index): End Property
+Public Property Get ShapeType(ByVal index As Long) As String: ShapeType = mShapeType(index): End Property
 Public Property Get Width(ByVal index As Long) As Double: Width = mWidth(index): End Property
 Public Property Get Height(ByVal index As Long) As Double: Height = mHeight(index): End Property
+Public Property Get Rotation(ByVal index As Long) As Double: Rotation = mRotation(index): End Property
 Public Property Get ResultValue(ByVal index As Long) As Double: ResultValue = mResultValue(index): End Property
 Public Property Get PhysicalState(ByVal index As Long) As String: PhysicalState = mPhysicalState(index): End Property
 Public Property Get LoadCase() As String: LoadCase = mLoadCase: End Property

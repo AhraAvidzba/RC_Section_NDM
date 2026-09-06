@@ -26,6 +26,7 @@ Public Function RunCrackWidthTests() As String
     TestCrackUserPsiMx stats
     TestCrackUserPsiMxy stats
     TestCrackUserCoefficients stats
+    TestCoverModeNormalization stats
     TestEffectiveAndFullTensionZones stats
     TestAutoPsiSkipsLambdaWhenFirstCheckPasses stats
     TestAutoPsiAndLambdaAfterFailedFirstCheck stats
@@ -109,6 +110,24 @@ End Sub
 ' ------------------------------
 ' FullTension не должен давать меньшую площадь бетона, чем Effective, потому
 ' что Effective является ограниченной полосой у растянутой поверхности.
+Private Sub TestCoverModeNormalization(ByRef stats As TCrackTestStats)
+    Dim solver As CSectionSolver
+    Dim section As CSectionModel
+    Set solver = SolveServiceState(section, -80000#, -5000000#, 0#)
+
+    Dim localCrack As CCrackWidthCalculator
+    Set localCrack = CalculateCrack(solver, section, -80000#, -5000000#, 0#, _
+        "User", "Effective", coverMode:="nearest")
+    AssertCrackCommon stats, "crack.cover.local", localCrack
+    AssertTrue stats, "crack.cover.local.mode", localCrack.CoverMode = "NearestContour"
+
+    Dim globalCrack As CCrackWidthCalculator
+    Set globalCrack = CalculateCrack(solver, section, -80000#, -5000000#, 0#, _
+        "User", "Effective", coverMode:="global")
+    AssertCrackCommon stats, "crack.cover.global", globalCrack
+    AssertTrue stats, "crack.cover.global.mode", globalCrack.CoverMode = "GlobalExtreme"
+End Sub
+
 Private Sub TestEffectiveAndFullTensionZones(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
@@ -397,7 +416,7 @@ Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As
         Optional ByVal allowable As Double = 0.3, _
         Optional ByVal phi1Value As Double = 1.4, Optional ByVal phi2Value As Double = 0.5, _
         Optional ByVal phi3Mode As String = "Auto", Optional ByVal phi3Value As Double = 1#, _
-        Optional ByVal psiSValue As Double = 1#) As CCrackWidthCalculator
+        Optional ByVal psiSValue As Double = 1#, Optional ByVal coverMode As String = "NearestContour") As CCrackWidthCalculator
     Dim crack As CCrackWidthCalculator
     Set crack = New CCrackWidthCalculator
     crack.AllowableCrackWidth = allowable
@@ -408,6 +427,7 @@ Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As
     crack.Phi3Mode = phi3Mode
     crack.Phi3 = phi3Value
     crack.PsiS = psiSValue
+    crack.CoverMode = coverMode
     crack.SolverLoadSteps = 8
     crack.SolverMaxIterations = 100
     crack.SolverToleranceN = 5#

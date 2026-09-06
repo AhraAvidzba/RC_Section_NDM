@@ -28,12 +28,18 @@ Public Function RunGeometryTests() As String
     TestCircleInvalidData stats
     TestCircleAutoRebarLayout stats
     TestLShapeGeometry stats
+    TestConcreteCoverUsesLocalContour stats
     TestLShapeAutoRebarLayout stats
     TestLShapeSeparateLineOffsets stats
     TestLShapeAdditionalRebarRows stats
     TestSectionModelFromGeneratedGeometry stats
     TestRebarAnnotationAnchors stats
     TestAutoCADImporterBuildsSectionModel stats
+    TestAutoCADImporterRotatedRectangleBounds stats
+    TestAutoCADImporterPrincipalInertiaBounds stats
+    TestAutoCADImporterAreaSquareFallback stats
+    TestAutoCADImporterAreaSquareFallbackAverageRotation stats
+    TestAutoCADImporterInvalidInertiaSquareFallback stats
     TestInvalidData stats
     TestBoundarySubcellMesh stats
     TestMeshConvergence stats
@@ -143,17 +149,20 @@ End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestAutoCADImporterBuildsSectionModel(ByRef stats As TTestStats)
-    Dim concreteRegions(1 To 2, 1 To 7) As Variant
+    Dim concreteRegions(1 To 2, 1 To 10) As Variant
     concreteRegions(1, 1) = 0.0000000001
     concreteRegions(1, 2) = 0#
     concreteRegions(1, 3) = 0#
-    concreteRegions(2, 1) = 200#
+    concreteRegions(2, 1) = 18#
     concreteRegions(2, 2) = 10#
     concreteRegions(2, 3) = 20#
-    concreteRegions(2, 4) = 600#
-    concreteRegions(2, 5) = 150#
+    concreteRegions(2, 4) = 0#
+    concreteRegions(2, 5) = 0#
     concreteRegions(2, 6) = 0#
     concreteRegions(2, 7) = "ABC"
+    concreteRegions(2, 8) = 6#
+    concreteRegions(2, 9) = 3#
+    concreteRegions(2, 10) = 0#
 
     Dim rebarRegions(1 To 1, 1 To 4) As Variant
     rebarRegions(1, 1) = GEOM_PI * 20# * 20# / 4#
@@ -173,12 +182,260 @@ Private Sub TestAutoCADImporterBuildsSectionModel(ByRef stats As TTestStats)
     AssertTrue stats, "autocad.import.concrete.id", model.ConcreteID(1) = "C1"
     AssertClose stats, "autocad.import.concrete.x", model.ConcreteX(1), 10#, 0.000001
     AssertClose stats, "autocad.import.concrete.y", model.ConcreteY(1), 20#, 0.000001
-    AssertClose stats, "autocad.import.concrete.width", model.ConcreteWidth(1), 3#, 0.000001
-    AssertClose stats, "autocad.import.concrete.height", model.ConcreteHeight(1), 6#, 0.000001
-    AssertClose stats, "autocad.import.concrete.localIx", model.ConcreteLocalIx(1), 600#, 0.000001
-    AssertClose stats, "autocad.import.concrete.localIy", model.ConcreteLocalIy(1), 150#, 0.000001
+    AssertClose stats, "autocad.import.concrete.width", model.ConcreteWidth(1), 6#, 0.000001
+    AssertClose stats, "autocad.import.concrete.height", model.ConcreteHeight(1), 3#, 0.000001
+    AssertClose stats, "autocad.import.concrete.rotation", model.ConcreteRotation(1), 0#, 0.000001
+    AssertClose stats, "autocad.import.concrete.localIx", model.ConcreteLocalIx(1), 18# * 3# * 3# / 12#, 0.000001
+    AssertClose stats, "autocad.import.concrete.localIy", model.ConcreteLocalIy(1), 18# * 6# * 6# / 12#, 0.000001
     AssertClose stats, "autocad.import.rebar.diameter", model.RebarDiameter(1), 20#, 0.000001
     AssertTrue stats, "autocad.import.rebar.marker", model.RebarSteelClass(1) = "Rebar"
+    AssertTrue stats, "autocad.import.rebar.comment", _
+        InStr(1, model.RebarComment(1), "по площади", vbTextCompare) > 0
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    Dim minProjection As Double
+    Dim maxProjection As Double
+    props.CalculateProjection model, 1#, 0#, False, minProjection, maxProjection
+    AssertClose stats, "autocad.import.concrete.xDepth", maxProjection - minProjection, 6#, 0.000001
+    props.CalculateProjection model, 0#, 1#, False, minProjection, maxProjection
+    AssertClose stats, "autocad.import.concrete.yDepth", maxProjection - minProjection, 3#, 0.000001
+End Sub
+
+' Проверяет, что импортированный повернутый прямоугольный элемент хранит
+' реальные Width/Height/Rotation, а расчетные габариты берутся по этой форме
+' без fallback-а по площади.
+Private Sub TestAutoCADImporterRotatedRectangleBounds(ByRef stats As TTestStats)
+    Dim widthValue As Double
+    Dim heightValue As Double
+    Dim angle As Double
+    widthValue = 80#
+    heightValue = 30#
+    angle = GEOM_PI / 4#
+
+    Dim concreteRegions(1 To 1, 1 To 10) As Variant
+    concreteRegions(1, 1) = widthValue * heightValue
+    concreteRegions(1, 2) = 0#
+    concreteRegions(1, 3) = 0#
+    concreteRegions(1, 8) = widthValue
+    concreteRegions(1, 9) = heightValue
+    concreteRegions(1, 10) = angle
+
+    Dim rebarRegions(1 To 1, 1 To 4) As Variant
+    rebarRegions(1, 1) = GEOM_PI * 12# * 12# / 4#
+    rebarRegions(1, 2) = 0#
+    rebarRegions(1, 3) = 0#
+    rebarRegions(1, 4) = "RB"
+
+    Dim importer As CAutoCADSectionModelImporter
+    Set importer = New CAutoCADSectionModelImporter
+    Dim model As CSectionModel
+    Set model = importer.BuildFromRegionArrays(concreteRegions, rebarRegions, "Rebar", 0.000001)
+
+    AssertTrue stats, "autocad.import.rotated.shape", model.ConcreteShapeType(1) = "Rectangle"
+    AssertClose stats, "autocad.import.rotated.width", model.ConcreteWidth(1), widthValue, 0.000001
+    AssertClose stats, "autocad.import.rotated.height", model.ConcreteHeight(1), heightValue, 0.000001
+    AssertClose stats, "autocad.import.rotated.rotation", model.ConcreteRotation(1), angle, 0.000001
+    Dim ixLocal As Double
+    Dim iyLocal As Double
+    Dim c As Double
+    Dim s As Double
+    ixLocal = concreteRegions(1, 1) * heightValue * heightValue / 12#
+    iyLocal = concreteRegions(1, 1) * widthValue * widthValue / 12#
+    c = Cos(angle)
+    s = Sin(angle)
+    AssertClose stats, "autocad.import.rotated.localIx", model.ConcreteLocalIx(1), _
+        ixLocal * c * c + iyLocal * s * s, 0.000001
+    AssertClose stats, "autocad.import.rotated.localIy", model.ConcreteLocalIy(1), _
+        ixLocal * s * s + iyLocal * c * c, 0.000001
+    AssertClose stats, "autocad.import.rotated.localIxy", model.ConcreteLocalIxy(1), _
+        (iyLocal - ixLocal) * s * c, 0.000001
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    Dim minProjection As Double
+    Dim maxProjection As Double
+    props.CalculateProjection model, Cos(angle), Sin(angle), False, minProjection, maxProjection
+    AssertClose stats, "autocad.import.rotated.uDepth", maxProjection - minProjection, widthValue, 0.000001
+    props.CalculateProjection model, -Sin(angle), Cos(angle), False, minProjection, maxProjection
+    AssertClose stats, "autocad.import.rotated.vDepth", maxProjection - minProjection, heightValue, 0.000001
+End Sub
+
+' Проверяет, что импортированный Region с ненулевым Ixy получает повернутую
+' эквивалентную оболочку, а расчетные проекции используют ее через общий
+' CSectionPropertiesCalculator.
+Private Sub TestAutoCADImporterPrincipalInertiaBounds(ByRef stats As TTestStats)
+    Dim area As Double
+    Dim expectedWidth As Double
+    Dim expectedHeight As Double
+    Dim angle As Double
+    area = 2000#
+    expectedWidth = 100#
+    expectedHeight = 20#
+    angle = GEOM_PI / 6#
+
+    Dim inertiaU As Double
+    Dim inertiaV As Double
+    Dim c As Double
+    Dim s As Double
+    inertiaU = area * expectedHeight * expectedHeight / 12#
+    inertiaV = area * expectedWidth * expectedWidth / 12#
+    c = Cos(angle)
+    s = Sin(angle)
+
+    Dim concreteRegions(1 To 1, 1 To 7) As Variant
+    concreteRegions(1, 1) = area
+    concreteRegions(1, 2) = 0#
+    concreteRegions(1, 3) = 0#
+    concreteRegions(1, 4) = inertiaU * c * c + inertiaV * s * s
+    concreteRegions(1, 5) = inertiaU * s * s + inertiaV * c * c
+    concreteRegions(1, 6) = (inertiaV - inertiaU) * s * c
+    concreteRegions(1, 7) = "ROT"
+
+    Dim rebarRegions(1 To 1, 1 To 4) As Variant
+    rebarRegions(1, 1) = GEOM_PI * 12# * 12# / 4#
+    rebarRegions(1, 2) = 0#
+    rebarRegions(1, 3) = 0#
+    rebarRegions(1, 4) = "RB"
+
+    Dim importer As CAutoCADSectionModelImporter
+    Set importer = New CAutoCADSectionModelImporter
+    Dim model As CSectionModel
+    Set model = importer.BuildFromRegionArrays(concreteRegions, rebarRegions, "Rebar", 0.000001)
+
+    AssertTrue stats, "autocad.import.principal.shape", model.ConcreteShapeType(1) = "Region"
+    AssertClose stats, "autocad.import.principal.width", model.ConcreteWidth(1), 0#, 0.000001
+    AssertClose stats, "autocad.import.principal.height", model.ConcreteHeight(1), 0#, 0.000001
+    AssertClose stats, "autocad.import.principal.rotation", model.ConcreteRotation(1), 0#, 0.000001
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    Dim minProjection As Double
+    Dim maxProjection As Double
+    props.CalculateProjection model, Cos(angle), Sin(angle), False, minProjection, maxProjection
+    AssertClose stats, "autocad.import.principal.uDepth", maxProjection - minProjection, expectedWidth, 0.000001
+    props.CalculateProjection model, -Sin(angle), Cos(angle), False, minProjection, maxProjection
+    AssertClose stats, "autocad.import.principal.vDepth", maxProjection - minProjection, expectedHeight, 0.000001
+End Sub
+
+' Проверяет последний fallback для Region без локальных инерций: габарит
+' берется как квадрат той же площади, а не как круговой радиус.
+Private Sub TestAutoCADImporterAreaSquareFallback(ByRef stats As TTestStats)
+    Dim concreteRegions(1 To 1, 1 To 7) As Variant
+    concreteRegions(1, 1) = GEOM_PI * 25# * 25#
+    concreteRegions(1, 2) = 0#
+    concreteRegions(1, 3) = 0#
+    concreteRegions(1, 7) = "AREA_ONLY"
+
+    Dim rebarRegions(1 To 1, 1 To 4) As Variant
+    rebarRegions(1, 1) = GEOM_PI * 12# * 12# / 4#
+    rebarRegions(1, 2) = 0#
+    rebarRegions(1, 3) = 0#
+    rebarRegions(1, 4) = "RB"
+
+    Dim importer As CAutoCADSectionModelImporter
+    Set importer = New CAutoCADSectionModelImporter
+    Dim model As CSectionModel
+    Set model = importer.BuildFromRegionArrays(concreteRegions, rebarRegions, "Rebar", 0.000001)
+
+    AssertTrue stats, "autocad.import.squareFallback.shape", model.ConcreteShapeType(1) = "EquivalentSquare"
+    AssertClose stats, "autocad.import.squareFallback.width.empty", model.ConcreteWidth(1), 0#, 0.000001
+    AssertClose stats, "autocad.import.squareFallback.height.empty", model.ConcreteHeight(1), 0#, 0.000001
+    AssertClose stats, "autocad.import.squareFallback.localIx", model.ConcreteLocalIx(1), _
+        model.ConcreteArea(1) * model.ConcreteArea(1) / 12#, 0.000001
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    Dim minProjection As Double
+    Dim maxProjection As Double
+    props.CalculateProjection model, 1#, 0#, False, minProjection, maxProjection
+    AssertClose stats, "autocad.import.squareFallback.xDepth", maxProjection - minProjection, Sqr(model.ConcreteArea(1)), 0.000001
+    props.CalculateProjection model, 1#, 1#, False, minProjection, maxProjection
+    AssertClose stats, "autocad.import.squareFallback.diagonalDepth", maxProjection - minProjection, _
+        Sqr(model.ConcreteArea(1)) * Sqr(2#), 0.000001
+End Sub
+
+' Проверяет, что fallback-квадрат по площади получает средний угол
+' распознанной импортированной сетки и поэтому одинаково работает в
+' расчетных проекциях, Excel-схеме и AutoCAD export.
+Private Sub TestAutoCADImporterAreaSquareFallbackAverageRotation(ByRef stats As TTestStats)
+    Dim widthValue As Double
+    Dim heightValue As Double
+    Dim angle As Double
+    widthValue = 80#
+    heightValue = 40#
+    angle = GEOM_PI / 6#
+
+    Dim concreteRegions(1 To 2, 1 To 10) As Variant
+    concreteRegions(1, 1) = widthValue * heightValue
+    concreteRegions(1, 2) = 0#
+    concreteRegions(1, 3) = 0#
+    concreteRegions(1, 8) = widthValue
+    concreteRegions(1, 9) = heightValue
+    concreteRegions(1, 10) = angle
+    concreteRegions(2, 1) = 2500#
+    concreteRegions(2, 2) = 200#
+    concreteRegions(2, 3) = 0#
+    concreteRegions(2, 7) = "AREA_ONLY"
+
+    Dim rebarRegions(1 To 1, 1 To 4) As Variant
+    rebarRegions(1, 1) = GEOM_PI * 12# * 12# / 4#
+    rebarRegions(1, 2) = 0#
+    rebarRegions(1, 3) = 0#
+    rebarRegions(1, 4) = "RB"
+
+    Dim importer As CAutoCADSectionModelImporter
+    Set importer = New CAutoCADSectionModelImporter
+    Dim model As CSectionModel
+    Set model = importer.BuildFromRegionArrays(concreteRegions, rebarRegions, "Rebar", 0.000001)
+
+    AssertTrue stats, "autocad.import.squareFallbackRotation.shape", model.ConcreteShapeType(2) = "EquivalentSquare"
+    AssertClose stats, "autocad.import.squareFallbackRotation.angle", model.ConcreteRotation(2), angle, 0.000001
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    Dim minProjection As Double
+    Dim maxProjection As Double
+    props.CalculateProjection model, Cos(angle), Sin(angle), False, minProjection, maxProjection
+    Dim expectedProjectionDepth As Double
+    expectedProjectionDepth = 200# * Cos(angle) + Sqr(model.ConcreteArea(2)) / 2# + widthValue / 2#
+    AssertClose stats, "autocad.import.squareFallbackRotation.projectedSide", _
+        maxProjection - minProjection, expectedProjectionDepth, 0.000001
+End Sub
+
+' Проверяет, что некорректная матрица Ix/Iy/Ixy импортированного Region не
+' ломает габариты устойчивости: если A/I нельзя трактовать физически, общий
+' геометрический fallback переходит на квадрат той же площади.
+Private Sub TestAutoCADImporterInvalidInertiaSquareFallback(ByRef stats As TTestStats)
+    Dim concreteRegions(1 To 1, 1 To 7) As Variant
+    concreteRegions(1, 1) = GEOM_PI * 25# * 25#
+    concreteRegions(1, 2) = 0#
+    concreteRegions(1, 3) = 0#
+    concreteRegions(1, 4) = 100#
+    concreteRegions(1, 5) = 100#
+    concreteRegions(1, 6) = 10000#
+    concreteRegions(1, 7) = "BAD_IXY"
+
+    Dim rebarRegions(1 To 1, 1 To 4) As Variant
+    rebarRegions(1, 1) = GEOM_PI * 12# * 12# / 4#
+    rebarRegions(1, 2) = 0#
+    rebarRegions(1, 3) = 0#
+    rebarRegions(1, 4) = "RB"
+
+    Dim importer As CAutoCADSectionModelImporter
+    Set importer = New CAutoCADSectionModelImporter
+    Dim model As CSectionModel
+    Set model = importer.BuildFromRegionArrays(concreteRegions, rebarRegions, "Rebar", 0.000001)
+
+    AssertTrue stats, "autocad.import.badInertia.shape", model.ConcreteShapeType(1) = "EquivalentSquare"
+    AssertClose stats, "autocad.import.badInertia.localIxy", model.ConcreteLocalIxy(1), 0#, 0.000001
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    Dim minProjection As Double
+    Dim maxProjection As Double
+    props.CalculateProjection model, 1#, 0#, False, minProjection, maxProjection
+    AssertClose stats, "autocad.import.badInertia.xDepth", maxProjection - minProjection, Sqr(model.ConcreteArea(1)), 0.000001
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -327,6 +584,29 @@ Private Sub TestLShapeGeometry(ByRef stats As TTestStats)
     AssertTrue stats, "lshape.boundary.subcell.fibers.more", subcellMesh.FiberCount > centerMesh.FiberCount
     AssertTrue stats, "lshape.boundary.subcell.has.small.fibers", MeshHasSmallFibers(subcellMesh, 80#)
     AssertRelative stats, "lshape.boundary.subcell.area", subcellProps.Area, analyticalArea, 0.04
+End Sub
+
+' Проверяет локальный поиск бетонной границы для a_s. На ступенчатом контуре
+' глобальная опорная линия всего сечения лежит на верхнем выступе, но луч из
+' точки должен выйти через ближайшую грань той ветви, где находится стержень.
+Private Sub TestConcreteCoverUsesLocalContour(ByRef stats As TTestStats)
+    Dim section As CSectionModel
+    Set section = New CSectionModel
+    section.AddConcreteElement 0#, 0#, 80000#, 1, "", "", "Rectangle", 400#, 200#, 0#
+    section.AddConcreteElement -150#, 200#, 40000#, 1, "", "", "Rectangle", 100#, 400#, 0#
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+
+    Dim localCover As Double
+    localCover = props.ConcreteCoverFromPointAlongDirection(section, 0#, 60#, 0#, 1#)
+    AssertClose stats, "geometry.cover.localContour", localCover, 40#, 0.000001
+
+    Dim minS As Double
+    Dim maxS As Double
+    props.CalculateProjection section, 0#, 1#, False, minS, maxS
+    AssertClose stats, "geometry.cover.globalWouldBeWrong", maxS - 60#, 340#, 0.000001
+    AssertTrue stats, "geometry.cover.localLessThanGlobal", localCover < maxS - 60#
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.

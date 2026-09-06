@@ -30,10 +30,10 @@ Private mConcreteX() As Double ' X центра тяжести бетонног�
 Private mConcreteY() As Double ' Y центра тяжести бетонного элемента во внутренней системе координат, мм.
 Private mConcreteArea() As Double ' Площадь бетонного элемента, мм2.
 Private mConcreteMaterialID() As Long ' Номер/тип материала бетона для будущего расширения на разные материалы.
-Private mConcreteShapeType() As String ' Упрощенная форма элемента для вывода: Rectangle, Circle и т.п.
-Private mConcreteWidth() As Double ' Ширина эквивалентного прямоугольника элемента для схемы/AutoCAD export, мм.
-Private mConcreteHeight() As Double ' Высота эквивалентного прямоугольника элемента для схемы/AutoCAD export, мм.
-Private mConcreteRotation() As Double ' Поворот эквивалентной области, рад.
+Private mConcreteShapeType() As String ' Форма элемента для вывода и расчетного fallback-а: Rectangle, Region, EquivalentSquare.
+Private mConcreteWidth() As Double ' Реальная ширина элемента, если источник геометрии ее знает; иначе 0.
+Private mConcreteHeight() As Double ' Реальная высота элемента, если источник геометрии ее знает; иначе 0.
+Private mConcreteRotation() As Double ' Поворот реальной прямоугольной области или fallback-квадрата по площади, рад.
 Private mConcreteLocalIx() As Double ' Собственный Ix элемента вокруг его центра, мм4.
 Private mConcreteLocalIy() As Double ' Собственный Iy элемента вокруг его центра, мм4.
 Private mConcreteLocalIxy() As Double ' Собственный центробежный момент элемента, мм4.
@@ -148,6 +148,50 @@ Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, By
     mConcreteLocalIxy(mConcreteCount) = localIxy
     mConcreteComment(mConcreteCount) = comment
 End Sub
+
+' Назначает бетонным fallback-элементам по площади общий угол ориентации.
+' Это нужно только для импортированной сетки AutoCAD: если отдельный Region не
+' дал надежные стороны, его рисуем и проецируем как квадрат той же площади,
+' повернутый так же, как средняя ориентация распознанных прямоугольных ячеек.
+Public Sub ApplyAverageRotationToEquivalentAreaFallbacks()
+    Dim fallbackRotation As Double
+    fallbackRotation = AverageKnownConcreteElementRotation()
+
+    Dim i As Long
+    For i = 1 To mConcreteCount
+        If IsConcreteEquivalentAreaFallback(i) Then mConcreteRotation(i) = fallbackRotation
+    Next i
+End Sub
+
+' Находит средний угол бетонных элементов с известными реальными размерами.
+' Угол прямоугольника периодичен через 180 градусов, поэтому усреднение идет
+' через двойной угол: так ориентации 0 и 180 градусов не гасят друг друга.
+Public Function AverageKnownConcreteElementRotation() As Double
+    Dim sumCos As Double
+    Dim sumSin As Double
+    Dim count As Long
+    Dim i As Long
+    For i = 1 To mConcreteCount
+        If Not IsEquivalentAreaFallbackShape(mConcreteShapeType(i)) And _
+                mConcreteWidth(i) > GEOM_TOLERANCE And mConcreteHeight(i) > GEOM_TOLERANCE Then
+            sumCos = sumCos + Cos(2# * mConcreteRotation(i))
+            sumSin = sumSin + Sin(2# * mConcreteRotation(i))
+            count = count + 1
+        End If
+    Next i
+
+    If count > 0 And (Abs(sumCos) > GEOM_TOLERANCE Or Abs(sumSin) > GEOM_TOLERANCE) Then
+        AverageKnownConcreteElementRotation = 0.5 * Atn2Local(sumSin, sumCos)
+    End If
+End Function
+
+' Проверяет, что бетонный элемент является последним fallback-ом по площади.
+' Для бетона этот fallback теперь всегда квадрат той же площади.
+Public Function IsConcreteEquivalentAreaFallback(ByVal index As Long) As Boolean
+    CheckConcreteIndex index
+    IsConcreteEquivalentAreaFallback = IsEquivalentAreaFallbackShape(mConcreteShapeType(index)) And _
+        (mConcreteWidth(index) <= GEOM_TOLERANCE Or mConcreteHeight(index) <= GEOM_TOLERANCE)
+End Function
 
 ' Добавляет один стержень арматуры.
 ' Если площадь не передана явно, она считается по диаметру. Это удобно для
@@ -336,6 +380,34 @@ End Sub
 Private Sub CheckRebarIndex(ByVal index As Long)
     If index < 1 Or index > mRebarCount Then Err.Raise vbObjectError + 5221, "CSectionModel", "Индекс арматурного элемента вне допустимого диапазона."
 End Sub
+
+' Узнает последнюю расчетную аппроксимацию бетонного Region по одной площади.
+Private Function IsEquivalentAreaFallbackShape(ByVal shapeType As String) As Boolean
+    IsEquivalentAreaFallbackShape = (StrComp(Trim$(shapeType), "EquivalentSquare", vbTextCompare) = 0)
+End Function
+
+' Возвращает atan2(y, x) без зависимости от внешних модулей.
+' Нужен только для усреднения ориентаций импортированных прямоугольных ячеек.
+Private Function Atn2Local(ByVal y As Double, ByVal x As Double) As Double
+    If Abs(x) <= GEOM_TOLERANCE Then
+        If y > 0# Then
+            Atn2Local = GEOM_PI / 2#
+        ElseIf y < 0# Then
+            Atn2Local = -GEOM_PI / 2#
+        Else
+            Atn2Local = 0#
+        End If
+    Else
+        Atn2Local = Atn(y / x)
+        If x < 0# Then
+            If y >= 0# Then
+                Atn2Local = Atn2Local + GEOM_PI
+            Else
+                Atn2Local = Atn2Local - GEOM_PI
+            End If
+        End If
+    End If
+End Function
 
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ

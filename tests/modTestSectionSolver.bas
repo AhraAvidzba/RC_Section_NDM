@@ -65,6 +65,7 @@ Private Sub TestUnitSystemConversions(ByRef stats As TSectionSolverTestStats)
     AssertClose stats, "units.force.N.toUser.compression", configured.InternalForceToOutput(-9806.65), 1#, 0.000001
     AssertClose stats, "units.moment.tfm.toNmm", configured.InputMomentMxToInternal(1#), 9806650#, 0.0001
     AssertClose stats, "units.moment.Nmm.toUser", configured.InternalMomentMxToOutput(9806650#), 1#, 0.000001
+    AssertClose stats, "units.momentPerLength.defaultZero", configured.InputMomentPerLengthToInternal(0.0005), 4903.325, 0.000001
 
     AssertClose stats, "units.loadcase.N.example", configured.InputForceToInternal(30#), -294199.5, 0.0001
     AssertClose stats, "units.loadcase.Mx.example", configured.InputMomentMxToInternal(150#), 1470997500#, 0.1
@@ -144,7 +145,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     AssertRequiredKeys stats, requiredKeys
 
     requiredKeys = Array( _
-        "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", _
+        "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "Calculation.ZeroMomentPerDepth", _
         "Geometry.Source", "Geometry.Type", "LShape.B1", "LShape.H1", "LShape.B2", "LShape.H2", _
         "Mesh.Step", "Mesh.BoundarySubdivisions", _
         "Load.ReferenceOffsetX", "Load.ReferenceOffsetY", _
@@ -188,7 +189,8 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "Capacity.MaxRetries", "Capacity.BaseLoadSteps", "Capacity.SolverMaxIterations", _
         "SLS.Crack.Allowable", _
         "SLS.Crack.Phi1", "SLS.Crack.Phi2", "SLS.Crack.Phi3Mode", "SLS.Crack.Phi3", _
-        "SLS.Crack.PsiMode", "SLS.Crack.PsiS", "SLS.Crack.TensionZoneMode")
+        "SLS.Crack.PsiMode", "SLS.Crack.PsiS", "SLS.Crack.TensionZoneMode", _
+        "SLS.Crack.CoverDistanceMode")
     AssertRequiredKeys stats, requiredKeys
 
     requiredKeys = Array( _

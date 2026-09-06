@@ -13,7 +13,7 @@ Target(lambda) = Offset + lambda * Base
 Основные места в коде:
 
 - `CBatchSectionCalculator.RunCapacity` - читает уже разобранный `CCapacityLoadPath` и выбирает численный путь по `Capacity.SolutionStrategy`.
-- `CCapacityLoadPath` - переводит пользовательский вариант `lambda*...` в шесть чисел: `NOffset`, `NBase`, `MxOffset`, `MxBase`, `MyOffset`, `MyBase`.
+- `CCapacityLoadPath` - переводит пользовательский вариант `lambda*...` в шесть чисел: `NOffset`, `NBase`, `MxOffset`, `MxBase`, `MyOffset`, `MyBase`; моментные компоненты проходят общий фильтр `Calculation.ZeroMomentPerDepth`.
 - `CCapacityLoadPath.ForceOnly` - определяет силовую осевую траекторию, когда пользователь масштабирует только `N` или `lambda*NMxy` фактически содержит только `N`; имя пользовательского пути при этом не меняется.
 - `CStateSolutionRunner` - управляет прямым `StateSolution`: стартовой плоскостью, retry, extension warm-start и повторными вызовами `CSectionSolver`.
 - `CCapacitySolver` - решает уже готовую математическую задачу `Offset + lambda*Base`.
