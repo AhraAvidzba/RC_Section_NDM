@@ -28,6 +28,7 @@ Public Function RunGeometryTests() As String
     TestCircleInvalidData stats
     TestCircleAutoRebarLayout stats
     TestLShapeGeometry stats
+    TestLShapePrincipalAxesAndCoreDistances stats
     TestConcreteCoverUsesLocalContour stats
     TestLShapeAutoRebarLayout stats
     TestLShapeSeparateLineOffsets stats
@@ -586,6 +587,101 @@ Private Sub TestLShapeGeometry(ByRef stats As TTestStats)
     AssertRelative stats, "lshape.boundary.subcell.area", subcellProps.Area, analyticalArea, 0.04
 End Sub
 
+' Проверяет, что PrincipalAngle задает физическую главную ось 1, а ядровые
+' расстояния главных плоскостей считаются через ту же нормаль, что и
+' устойчивость. Тест защищает Г-сечение, где ошибка знака угла сразу дает
+' заметный ненулевой I12 после поворота.
+Private Sub TestLShapePrincipalAxesAndCoreDistances(ByRef stats As TTestStats)
+    Dim geom As CGeometryLShape
+    Set geom = New CGeometryLShape
+    geom.Initialize 250#, 550#, 600#, 250#
+
+    Dim mesh As CFiberMeshBuilder
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geom, 25#, 25#, 1, 2
+
+    Dim concreteSection As CSectionModel
+    Set concreteSection = BuildGeneratedSectionModel(mesh, Nothing, "LShapePrincipalConcrete")
+
+    Dim concreteProps As CSectionPropertiesCalculator
+    Set concreteProps = New CSectionPropertiesCalculator
+    concreteProps.CalculateConcrete concreteSection
+    AssertPrincipalAxesConsistent stats, "lshape.concrete", concreteSection, concreteProps
+
+    Dim rebarBuilder As CLShapeRebarLayoutBuilder
+    Set rebarBuilder = New CLShapeRebarLayoutBuilder
+    Dim rebars As CRebarLayout
+    Set rebars = rebarBuilder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
+        Array(40#, 40#, 32#, 32#, 5, 5, 80#, 80#, 80#, 80#), _
+        Array(40#, 40#, 32#, 32#, 2, 2, 80#, 80#, 80#, 80#), _
+        Array(40#, 40#, 32#, 32#, 2, 2, 80#, 80#, 80#, 80#), _
+        Array(40#, 40#, 32#, 32#, 5, 5, 80#, 80#, 80#, 80#), _
+        "Rebar")
+
+    Dim transformedSection As CSectionModel
+    Set transformedSection = BuildGeneratedSectionModel(mesh, rebars, "LShapePrincipalTransformed")
+
+    Dim transformedProps As CSectionPropertiesCalculator
+    Set transformedProps = New CSectionPropertiesCalculator
+    transformedProps.CalculateTransformedByModuli transformedSection, 32500#, 200000#
+    AssertPrincipalAxesConsistent stats, "lshape.transformed", transformedSection, transformedProps
+End Sub
+
+' Проверяет общие инварианты главных осей для любого представления сечения.
+' Ось 1 должна давать I1, ось 2 - I2, а I12 в повернутой системе должен
+' исчезать. CoreDistance главной плоскости сверяется с прямым расчетом по
+' соответствующей нормали к оси изгиба.
+Private Sub AssertPrincipalAxesConsistent(ByRef stats As TTestStats, ByVal prefix As String, _
+        ByVal section As CSectionModel, ByVal props As CSectionPropertiesCalculator)
+    Dim axis1X As Double
+    Dim axis1Y As Double
+    Dim axis2X As Double
+    Dim axis2Y As Double
+    props.PrincipalAxisDirection 1, axis1X, axis1Y
+    props.PrincipalAxisDirection 2, axis2X, axis2Y
+
+    Dim inertia1 As Double
+    Dim inertia2 As Double
+    inertia1 = props.ConcreteInertiaAboutAxis(section, axis1X, axis1Y, props.CentroidX, props.CentroidY)
+    inertia2 = props.ConcreteInertiaAboutAxis(section, axis2X, axis2Y, props.CentroidX, props.CentroidY)
+    If section.RebarCount > 0 Then
+        inertia1 = inertia1 + (200000# / 32500# - 1#) * props.RebarInertiaAboutAxis(section, axis1X, axis1Y, props.CentroidX, props.CentroidY)
+        inertia2 = inertia2 + (200000# / 32500# - 1#) * props.RebarInertiaAboutAxis(section, axis2X, axis2Y, props.CentroidX, props.CentroidY)
+    End If
+
+    AssertRelative stats, prefix & ".axis1.inertia", inertia1, props.PrincipalI1, 0.0000001
+    AssertRelative stats, prefix & ".axis2.inertia", inertia2, props.PrincipalI2, 0.0000001
+
+    Dim c As Double
+    Dim s As Double
+    Dim rotatedIxy As Double
+    c = Cos(props.PrincipalAngleRad)
+    s = Sin(props.PrincipalAngleRad)
+    rotatedIxy = (props.Ixc - props.Iyc) * s * c + props.Ixyc * (c * c - s * s)
+    AssertTrue stats, prefix & ".principal.I12.zero", _
+        Abs(rotatedIxy) <= GeomMax(props.PrincipalI1, 1#) * 0.0000001
+
+    Dim normal1X As Double
+    Dim normal1Y As Double
+    props.PrincipalPlaneNormalDirection 1, normal1X, normal1Y
+    AssertClose stats, prefix & ".core.plane1.plus", _
+        props.PrincipalPlaneCoreDistance(section, 1, True, False), _
+        props.CoreDistanceAlong(section, normal1X, normal1Y, False), 0.000001
+    AssertClose stats, prefix & ".core.plane1.minus", _
+        props.PrincipalPlaneCoreDistance(section, 1, False, False), _
+        props.CoreDistanceAlong(section, -normal1X, -normal1Y, False), 0.000001
+
+    Dim normal2X As Double
+    Dim normal2Y As Double
+    props.PrincipalPlaneNormalDirection 2, normal2X, normal2Y
+    AssertClose stats, prefix & ".core.plane2.plus", _
+        props.PrincipalPlaneCoreDistance(section, 2, True, False), _
+        props.CoreDistanceAlong(section, normal2X, normal2Y, False), 0.000001
+    AssertClose stats, prefix & ".core.plane2.minus", _
+        props.PrincipalPlaneCoreDistance(section, 2, False, False), _
+        props.CoreDistanceAlong(section, -normal2X, -normal2Y, False), 0.000001
+End Sub
+
 ' Проверяет локальный поиск бетонной границы для a_s. На ступенчатом контуре
 ' глобальная опорная линия всего сечения лежит на верхнем выступе, но луч из
 ' точки должен выйти через ближайшую грань той ветви, где находится стержень.
@@ -876,7 +972,7 @@ Private Sub TestSymmetricRoundedRectangle(ByRef stats As TTestStats)
     AssertClose stats, "sym.cx", props.CentroidX, 0#, 0.05
     AssertClose stats, "sym.cy", props.CentroidY, 0#, 0.05
     AssertClose stats, "sym.Ixy", props.Ixyc, 0#, 0.000001 * props.Area
-    AssertClose stats, "sym.principal.angle", props.PrincipalAngleRad, 0#, 0.000001
+    AssertClose stats, "sym.principal.angle", props.PrincipalAngleRad, GEOM_PI / 2#, 0.000001
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.

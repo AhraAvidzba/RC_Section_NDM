@@ -553,8 +553,9 @@ named-state, спецификации материальной модели, м�
 Публичные свойства: данные элементов (`Count`, `ElementID`, `MaterialType`,
 `X/Y/Area/Diameter/Width/Height`, `ResultValue`, `PhysicalState`), состояние LC
 (`LoadCase`, `LoadCaseComment`, `Epsilon0/KappaX/KappaY`, `ExtensionUsed`,
-`DirectStateStatus`), свойства сечения (`MinX/MaxX/MinY/MaxY`, `CentroidX/Y`,
-`PrincipalAngle`, `LoadReferenceX/Y`) и annotation getters.
+`DirectStateStatus`), свойства сечения (`MinX/MaxX/MinY/MaxY`,
+`Transformed.CentroidX/Y`, `Transformed.PrincipalAngle`, `LoadReferenceX/Y`) и
+annotation getters.
 
 Внутренние методы: `ResolveLoadCase`, `FirstCalculatedLoadCaseFromResults`,
 `ReadSectionProperties`, `ReadGeometryAndResults`, `ReadGeometryPreview`,
@@ -750,12 +751,20 @@ Implements `ISectionGeometry`.
 
 Роль: геометрические характеристики бетонного и приведенного сечения.
 
-Публичные методы: `CalculateConcrete`, `CalculateTransformed`, `Clear`.
+Публичные методы: `CalculateConcrete`, `CalculateTransformed`,
+`CalculateTransformedByModuli`, `ProjectionDepth`, `CoreDistanceAlong`,
+`PrincipalAxisDirection`, `PrincipalPlaneNormalDirection`,
+`PrincipalPlaneDepth`, `PrincipalPlaneCoreDistance`, `Clear`.
 
 Публичные свойства: `Area`, `StaticMomentX`, `StaticMomentY`, `CentroidX`,
 `CentroidY`, `Ix`, `Iy`, `Ixy`, `Ixc`, `Iyc`, `Ixyc`, `PrincipalI1`,
 `PrincipalI2`, `PrincipalAngleRad`, `RadiusX`, `RadiusY`,
 `PrincipalRadius1`, `PrincipalRadius2`, `LastCalculationSeconds`.
+
+`PrincipalAngleRad` отсчитывается от глобальной `+X` к главной оси 1
+(`PrincipalI1`), положительное направление - против часовой стрелки. Расчет
+устойчивости и вывод `CoreDistance*` используют не собственные формулы поворота,
+а методы `Principal*` этого класса.
 
 ### Materials
 

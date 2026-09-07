@@ -260,11 +260,11 @@ RunID | LoadCase | Parameter | Value | Unit | Comment
 | `Bounds.MaxX` | output length | Максимальный X фактической расчетной модели |
 | `Bounds.MinY` | output length | Минимальный Y фактической расчетной модели |
 | `Bounds.MaxY` | output length | Максимальный Y фактической расчетной модели |
-| `CentroidX` | output length | Центр тяжести приведенного расчетного сечения |
-| `CentroidY` | output length | Центр тяжести приведенного расчетного сечения |
-| `PrincipalAngle` | rad | Угол главных центральных осей приведенного сечения |
-| `PrincipalI1` | output length^4 | Главный момент инерции I1 приведенного сечения |
-| `PrincipalI2` | output length^4 | Главный момент инерции I2 приведенного сечения |
+| `Transformed.CentroidX` | output length | Центр тяжести приведенного расчетного сечения |
+| `Transformed.CentroidY` | output length | Центр тяжести приведенного расчетного сечения |
+| `Transformed.PrincipalAngle` | rad | Угол от +X к главной оси 1 приведенного сечения; положительный против часовой стрелки |
+| `Transformed.PrincipalI1` | output length^4 | Главный момент инерции I1 приведенного сечения |
+| `Transformed.PrincipalI2` | output length^4 | Главный момент инерции I2 приведенного сечения |
 | `Output.LengthUnit` | - | Единица вывода длины |
 | `Output.AreaUnit` | - | Единица вывода площади |
 | `Output.ForceUnit` | - | Единица вывода силы |
@@ -435,11 +435,11 @@ CRebarAnnotation
 - `Bounds.MaxX`;
 - `Bounds.MinY`;
 - `Bounds.MaxY`;
-- `CentroidX`;
-- `CentroidY`;
-- `PrincipalAngle`;
-- `PrincipalI1`;
-- `PrincipalI2`.
+- `Transformed.CentroidX`;
+- `Transformed.CentroidY`;
+- `Transformed.PrincipalAngle`;
+- `Transformed.PrincipalI1`;
+- `Transformed.PrincipalI2`.
 
 `rngNDMSectionAnnotations`:
 
@@ -458,11 +458,11 @@ CRebarAnnotation
 - `Bounds.MaxX`;
 - `Bounds.MinY`;
 - `Bounds.MaxY`;
-- `CentroidX`;
-- `CentroidY`;
-- `PrincipalAngle`, если рассчитан;
-- `PrincipalI1`, если рассчитан;
-- `PrincipalI2`, если рассчитан.
+- `Transformed.CentroidX`;
+- `Transformed.CentroidY`;
+- `Transformed.PrincipalAngle`, если рассчитан;
+- `Transformed.PrincipalI1`, если рассчитан;
+- `Transformed.PrincipalI2`, если рассчитан.
 
 `rngNDMSectionAnnotations`:
 

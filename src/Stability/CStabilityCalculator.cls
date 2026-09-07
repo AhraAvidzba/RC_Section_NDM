@@ -89,7 +89,7 @@ Private mStopReason As String ' Подробная внутренняя прич
 Private mDesignN As Double ' Продольная сила после фильтра; знак сохраняется как во внутреннем ядре.
 Private mDesignMx As Double ' Mx после учета случайного эксцентриситета и eta.
 Private mDesignMy As Double ' My после учета случайного эксцентриситета и eta.
-Private mPrincipalAngleRad As Double ' Угол главных осей, по которому M1/M2 возвращаются в Mx/My.
+Private mPrincipalAngleRad As Double ' Угол от +X к главной оси 1 приведенного сечения.
 Private mSustainedN As Double ' Сжимающая часть постоянной/длительной силы, переданная для учета длительности.
 Private mMoment1 As Double ' Исходный расчетный момент в первой главной плоскости до eta.
 Private mMoment2 As Double ' Исходный расчетный момент во второй главной плоскости до eta.
@@ -217,7 +217,7 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
     End If
 
     StorePlaneResults plane1, plane2
-    TransformDesignMoments props.PrincipalAngleRad, plane1.DesignMoment, plane2.DesignMoment
+    TransformDesignMoments props, plane1.DesignMoment, plane2.DesignMoment
     Exit Sub
 
 Failed:
@@ -287,10 +287,8 @@ Private Sub PreparePlanes(ByVal section As CSectionModel, ByVal props As CSectio
     Dim axis1Y As Double
     Dim axis2X As Double
     Dim axis2Y As Double
-    axis1X = Cos(props.PrincipalAngleRad)
-    axis1Y = Sin(props.PrincipalAngleRad)
-    axis2X = -axis1Y
-    axis2Y = axis1X
+    props.PrincipalAxisDirection 1, axis1X, axis1Y
+    props.PrincipalAxisDirection 2, axis2X, axis2Y
 
     plane1.Moment = mxValue * axis1X + myValue * axis1Y
     plane2.Moment = mxValue * axis2X + myValue * axis2Y
@@ -302,22 +300,20 @@ Private Sub PreparePlanes(ByVal section As CSectionModel, ByVal props As CSectio
     plane2.InertiaSteel = props.RebarInertiaAboutAxis(section, axis2X, axis2Y, props.CentroidX, props.CentroidY)
     plane1.Radius = props.PrincipalRadius1
     plane2.Radius = props.PrincipalRadius2
-    plane1.NormalX = axis2X
-    plane1.NormalY = axis2Y
-    plane2.NormalX = axis1X
-    plane2.NormalY = axis1Y
+    props.PrincipalPlaneNormalDirection 1, plane1.NormalX, plane1.NormalY
+    props.PrincipalPlaneNormalDirection 2, plane2.NormalX, plane2.NormalY
     plane1.CentroidX = props.CentroidX
     plane1.CentroidY = props.CentroidY
     plane2.CentroidX = props.CentroidX
     plane2.CentroidY = props.CentroidY
     StoreConcreteProjectionBounds section, props, plane1
     StoreConcreteProjectionBounds section, props, plane2
-    plane1.CoreDistancePositive = props.CoreDistanceAlong(section, axis2X, axis2Y, False)
-    plane1.CoreDistanceNegative = props.CoreDistanceAlong(section, -axis2X, -axis2Y, False)
-    plane2.CoreDistancePositive = props.CoreDistanceAlong(section, axis1X, axis1Y, False)
-    plane2.CoreDistanceNegative = props.CoreDistanceAlong(section, -axis1X, -axis1Y, False)
-    plane1.Depth = props.ProjectionDepth(section, axis2X, axis2Y, False)
-    plane2.Depth = props.ProjectionDepth(section, axis1X, axis1Y, False)
+    plane1.CoreDistancePositive = props.PrincipalPlaneCoreDistance(section, 1, True, False)
+    plane1.CoreDistanceNegative = props.PrincipalPlaneCoreDistance(section, 1, False, False)
+    plane2.CoreDistancePositive = props.PrincipalPlaneCoreDistance(section, 2, True, False)
+    plane2.CoreDistanceNegative = props.PrincipalPlaneCoreDistance(section, 2, False, False)
+    plane1.Depth = props.PrincipalPlaneDepth(section, 1, False)
+    plane2.Depth = props.PrincipalPlaneDepth(section, 2, False)
     NormalizePlaneMoments plane1, momentFilter
     NormalizePlaneMoments plane2, momentFilter
     plane1.GeometricLength = elementLength
@@ -821,15 +817,13 @@ Private Sub StorePlaneResults(ByRef plane1 As TPlaneResult, ByRef plane2 As TPla
 End Sub
 
 ' Возвращает моменты из главных осей обратно в глобальные Mx/My.
-Private Sub TransformDesignMoments(ByVal angleValue As Double, ByVal moment1 As Double, ByVal moment2 As Double)
+Private Sub TransformDesignMoments(ByVal props As CSectionPropertiesCalculator, ByVal moment1 As Double, ByVal moment2 As Double)
     Dim axis1X As Double
     Dim axis1Y As Double
     Dim axis2X As Double
     Dim axis2Y As Double
-    axis1X = Cos(angleValue)
-    axis1Y = Sin(angleValue)
-    axis2X = -axis1Y
-    axis2Y = axis1X
+    props.PrincipalAxisDirection 1, axis1X, axis1Y
+    props.PrincipalAxisDirection 2, axis2X, axis2Y
     mDesignMx = moment1 * axis1X + moment2 * axis2X
     mDesignMy = moment1 * axis1Y + moment2 * axis2Y
 End Sub

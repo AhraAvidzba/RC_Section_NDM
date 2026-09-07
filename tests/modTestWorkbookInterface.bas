@@ -661,6 +661,18 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.results.properties.hasBounds", ResultsPropertyExists("ALL", "Bounds.MinX")
     AssertTrue stats, "ui.results.properties.commonLoadReference", _
         ResultsPropertyExists("ALL", "LoadReferenceX") And ResultsPropertyExists("ALL", "LoadReferenceY")
+    AssertTrue stats, "ui.results.properties.hasTransformedAxes", _
+        ResultsPropertyExists("ALL", "Transformed.CentroidX") And _
+        ResultsPropertyExists("ALL", "Transformed.CentroidY") And _
+        ResultsPropertyExists("ALL", "Transformed.PrincipalAngle") And _
+        ResultsPropertyExists("ALL", "Transformed.PrincipalI1") And _
+        ResultsPropertyExists("ALL", "Transformed.PrincipalI2")
+    AssertTrue stats, "ui.results.properties.noLegacyTransformedAliases", _
+        Not ResultsPropertyExists("ALL", "CentroidX") And _
+        Not ResultsPropertyExists("ALL", "CentroidY") And _
+        Not ResultsPropertyExists("ALL", "PrincipalAngle") And _
+        Not ResultsPropertyExists("ALL", "PrincipalI1") And _
+        Not ResultsPropertyExists("ALL", "PrincipalI2")
     AssertTrue stats, "ui.results.properties.noLcLoadReference", _
         Not ResultsPropertyExists("LC1", "LoadReferenceX") And Not ResultsPropertyExists("LC1", "LoadReferenceY")
     AssertTransformedAreaUsesElasticModuli stats

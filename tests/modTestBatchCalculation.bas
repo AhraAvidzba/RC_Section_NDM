@@ -2710,7 +2710,7 @@ Private Sub TestStabilityAccidentalUserMode(ByRef stats As TBatchTestStats)
     SetSystemSetting "Stability.AccidentalEccentricityUser1", "25"
     SetSystemSetting "Stability.AccidentalEccentricityUser2", "40"
 
-    AssertClose stats, "batch.stability.accidental.user", StabilityAccidentalForSingleMoment(), 25#, 0.000001
+    AssertClose stats, "batch.stability.accidental.user", StabilityAccidentalForSingleMoment(), 40#, 0.000001
 
     SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
     AssertClose stats, "batch.stability.accidental.userBoth", StabilityAccidentalForSingleMoment(), 65#, 0.000001
@@ -3461,7 +3461,20 @@ Private Function StabilityPhiLForDurationLoad(ByVal combinationID As String, _
     batch.AddCombination combinationID, nValue, mxValue, myValue, "PR1", "phi_l"
     batch.Execute
 
-    StabilityPhiLForDurationLoad = ActiveStabilityValue(batch.StabilityPhiL1(1), batch.StabilityPhiL2(1))
+    StabilityPhiLForDurationLoad = ActiveMomentPlaneValue(batch, batch.StabilityPhiL1(1), batch.StabilityPhiL2(1))
+End Function
+
+' Возвращает значение из той плоскости, где фактически есть больший главный
+' изгибающий момент. После явного соглашения "ось 1 = I1" у широкого
+' прямоугольника глобальный Mx попадает во вторую главную плоскость, поэтому
+' выбирать просто первое ненулевое значение нельзя.
+Private Function ActiveMomentPlaneValue(ByVal batch As CBatchSectionCalculator, _
+        ByVal firstValue As Double, ByVal secondValue As Double) As Double
+    If Abs(batch.StabilityMoment1(1)) >= Abs(batch.StabilityMoment2(1)) Then
+        ActiveMomentPlaneValue = firstValue
+    Else
+        ActiveMomentPlaneValue = secondValue
+    End If
 End Function
 
 ' Возвращает ненулевое значение активной плоскости. В тестах используется для

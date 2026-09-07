@@ -54,7 +54,7 @@ Private mMinY As Double ' Нижняя граница бетонной расч�
 Private mMaxY As Double ' Верхняя граница бетонной расчетной модели.
 Private mCentroidX As Double ' X центра тяжести приведенного сечения.
 Private mCentroidY As Double ' Y центра тяжести приведенного сечения.
-Private mPrincipalAngle As Double ' Угол главных центральных осей, рад.
+Private mPrincipalAngle As Double ' Угол от +X к главной оси 1 приведенного сечения, рад.
 Private mEpsilon0 As Double ' Свободный член сохраненной плоскости деформаций LC.
 Private mKappaX As Double ' Кривизна при y в сохраненной плоскости деформаций.
 Private mKappaY As Double ' Кривизна при x в сохраненной плоскости деформаций.
@@ -345,9 +345,9 @@ Private Sub ReadCommonProperty(ByVal parameter As String, ByVal value As Variant
         Case "bounds.maxx": mMaxX = CDbl(value)
         Case "bounds.miny": mMinY = CDbl(value)
         Case "bounds.maxy": mMaxY = CDbl(value)
-        Case "centroidx": mCentroidX = CDbl(value)
-        Case "centroidy": mCentroidY = CDbl(value)
-        Case "principalangle": mPrincipalAngle = CDbl(value)
+        Case "transformed.centroidx": mCentroidX = CDbl(value)
+        Case "transformed.centroidy": mCentroidY = CDbl(value)
+        Case "transformed.principalangle": mPrincipalAngle = CDbl(value)
         Case "loadreferencex": mLoadReferenceX = SafeDouble(value)
         Case "loadreferencey": mLoadReferenceY = SafeDouble(value)
         Case "output.lengthunit": mLengthUnit = CStr(value)

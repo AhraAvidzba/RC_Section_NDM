@@ -39,7 +39,7 @@ Private mIyc As Double ' Центральный момент инерции от
 Private mIxyc As Double ' Центральный центробежный момент инерции.
 Private mPrincipalI1 As Double ' Больший главный центральный момент инерции.
 Private mPrincipalI2 As Double ' Меньший главный центральный момент инерции.
-Private mPrincipalAngleRad As Double ' Угол поворота главных осей относительно исходной системы, рад.
+Private mPrincipalAngleRad As Double ' Угол от +X к физической главной оси 1, для которой момент инерции равен I1.
 Private mRadiusX As Double ' Радиус инерции относительно центральной оси X.
 Private mRadiusY As Double ' Радиус инерции относительно центральной оси Y.
 Private mPrincipalRadius1 As Double ' Радиус инерции по главной оси I1.
@@ -389,6 +389,65 @@ Public Function ProjectedInertiaAboutCentroid(ByVal directionX As Double, ByVal 
     ProjectedInertiaAboutCentroid = nx * nx * mIyc + ny * ny * mIxc + 2# * nx * ny * mIxyc
 End Function
 
+' Возвращает направление физической главной оси 1 или 2.
+' PrincipalAngleRad отсчитывается от глобальной +X против часовой стрелки до
+' оси 1, у которой момент инерции равен PrincipalI1. Ось 2 получается
+' поворотом оси 1 на +90 градусов и имеет момент инерции PrincipalI2.
+Public Sub PrincipalAxisDirection(ByVal axisIndex As Long, ByRef axisX As Double, ByRef axisY As Double)
+    Dim axis1X As Double
+    Dim axis1Y As Double
+    axis1X = Cos(mPrincipalAngleRad)
+    axis1Y = Sin(mPrincipalAngleRad)
+
+    If axisIndex = 1 Then
+        axisX = axis1X
+        axisY = axis1Y
+    ElseIf axisIndex = 2 Then
+        axisX = -axis1Y
+        axisY = axis1X
+    Else
+        Err.Raise vbObjectError + 2223, "CSectionPropertiesCalculator", "Номер главной оси должен быть 1 или 2."
+    End If
+End Sub
+
+' Возвращает положительное направление эксцентриситета для главной плоскости.
+' Для изгиба вокруг главной оси 1 плечо и габарит считаются по нормали к этой
+' оси, то есть вдоль главной оси 2. Для изгиба вокруг главной оси 2 - наоборот.
+Public Sub PrincipalPlaneNormalDirection(ByVal planeIndex As Long, ByRef normalX As Double, ByRef normalY As Double)
+    If planeIndex = 1 Then
+        PrincipalAxisDirection 2, normalX, normalY
+    ElseIf planeIndex = 2 Then
+        PrincipalAxisDirection 1, normalX, normalY
+    Else
+        Err.Raise vbObjectError + 2224, "CSectionPropertiesCalculator", "Номер главной плоскости должен быть 1 или 2."
+    End If
+End Sub
+
+' Считает габарит бетонного контура по нормали выбранной главной плоскости.
+' Это единая точка для устойчивости и справочного вывода: арматура не
+' расширяет внешний бетонный контур, если вызывающий код передает False.
+Public Function PrincipalPlaneDepth(ByVal section As CSectionModel, ByVal planeIndex As Long, _
+        Optional ByVal includeRebar As Boolean = False) As Double
+    Dim normalX As Double
+    Dim normalY As Double
+    PrincipalPlaneNormalDirection planeIndex, normalX, normalY
+    PrincipalPlaneDepth = ProjectionDepth(section, normalX, normalY, includeRebar)
+End Function
+
+' Считает ядровое расстояние для выбранной главной плоскости и стороны.
+' plusSide=True означает положительное направление нормали плоскости.
+Public Function PrincipalPlaneCoreDistance(ByVal section As CSectionModel, ByVal planeIndex As Long, _
+        ByVal plusSide As Boolean, Optional ByVal includeRebar As Boolean = False) As Double
+    Dim normalX As Double
+    Dim normalY As Double
+    PrincipalPlaneNormalDirection planeIndex, normalX, normalY
+    If plusSide Then
+        PrincipalPlaneCoreDistance = CoreDistanceAlong(section, normalX, normalY, includeRebar)
+    Else
+        PrincipalPlaneCoreDistance = CoreDistanceAlong(section, -normalX, -normalY, includeRebar)
+    End If
+End Function
+
 ' Считает ядровое расстояние для выбранной стороны сечения.
 ' direction задает сторону, куда направлен эксцентриситет. Само ядровое
 ' расстояние использует текущие накопленные A/I этого калькулятора: для
@@ -721,7 +780,7 @@ Private Sub FinalizeProperties(ByVal t0 As Double)
             Abs(mIxc - mIyc) / inertiaRef <= PRINCIPAL_AXIS_ISOTROPIC_RELATIVE_TOLERANCE Then
         mPrincipalAngleRad = 0#
     Else
-        mPrincipalAngleRad = 0.5 * Atn2(-2# * mIxyc, mIyc - mIxc)
+        mPrincipalAngleRad = 0.5 * Atn2(-2# * mIxyc, mIxc - mIyc)
     End If
 
     mRadiusX = Sqr(GeomMax(mIxc, 0#) / mArea)

@@ -393,11 +393,11 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
     For rowIndex = 2 To UBound(data, 1)
         If StrComp(CStr(data(rowIndex, colLoadCase)), "ALL", vbTextCompare) = 0 Then
             Select Case LCase$(Trim$(CStr(data(rowIndex, colParameter))))
-                Case "centroidx"
+                Case "transformed.centroidx"
                     centroidX = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
-                Case "centroidy"
+                Case "transformed.centroidy"
                     centroidY = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
-                Case "principalangle"
+                Case "transformed.principalangle"
                     principalAngle = CDbl(data(rowIndex, colValue))
                 Case "loadreferencex"
                     loadReferenceX = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
