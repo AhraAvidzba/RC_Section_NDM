@@ -1224,18 +1224,32 @@ Private Sub AddAcadRectangleRegion(ByVal ms As Object, ByVal x As Double, ByVal 
     c = Cos(rotationRad)
     s = Sin(rotationRad)
 
-    Dim p(0 To 9) As Double
-    p(0) = x - hw * c + hh * s: p(1) = y - hw * s - hh * c
-    p(2) = x + hw * c + hh * s: p(3) = y + hw * s - hh * c
-    p(4) = x + hw * c - hh * s: p(5) = y + hw * s + hh * c
-    p(6) = x - hw * c - hh * s: p(7) = y - hw * s + hh * c
-    p(8) = p(0): p(9) = p(1)
+    Dim px(0 To 3) As Double
+    Dim py(0 To 3) As Double
+    px(0) = x - hw * c + hh * s: py(0) = y - hw * s - hh * c
+    px(1) = x + hw * c + hh * s: py(1) = y + hw * s - hh * c
+    px(2) = x + hw * c - hh * s: py(2) = y + hw * s + hh * c
+    px(3) = x - hw * c - hh * s: py(3) = y - hw * s + hh * c
 
-    Dim source As Object
-    Set source = ms.AddLightWeightPolyline(p)
-    source.Closed = True
-    AddAcadRegionFromCurve ms, source, layerName, colorIndex
+    ' Строим Region из WCS-линий. LWPOLYLINE принимает 2D OCS-координаты и
+    ' может дать заметный перенос при нестандартной UCS/плоскости чертежа.
+    Dim sourceObjects(0 To 3) As Object
+    Set sourceObjects(0) = AddAcadSourceLine(ms, px(0), py(0), px(1), py(1))
+    Set sourceObjects(1) = AddAcadSourceLine(ms, px(1), py(1), px(2), py(2))
+    Set sourceObjects(2) = AddAcadSourceLine(ms, px(2), py(2), px(3), py(3))
+    Set sourceObjects(3) = AddAcadSourceLine(ms, px(3), py(3), px(0), py(0))
+    AddAcadRegionFromCurves ms, sourceObjects, layerName, colorIndex
 End Sub
+
+' Создает временный отрезок по WCS-точкам для последующего AddRegion.
+Private Function AddAcadSourceLine(ByVal ms As Object, ByVal x1 As Double, ByVal y1 As Double, _
+        ByVal x2 As Double, ByVal y2 As Double) As Object
+    Dim p1(0 To 2) As Double
+    Dim p2(0 To 2) As Double
+    p1(0) = x1: p1(1) = y1: p1(2) = 0#
+    p2(0) = x2: p2(1) = y2: p2(2) = 0#
+    Set AddAcadSourceLine = ms.AddLine(p1, p2)
+End Function
 
 Private Sub AddAcadLine(ByVal ms As Object, ByVal x1 As Double, ByVal y1 As Double, _
         ByVal x2 As Double, ByVal y2 As Double, ByVal layerName As String, ByVal colorIndex As Long)
@@ -1262,7 +1276,13 @@ Private Sub AddAcadRegionFromCurve(ByVal ms As Object, ByVal source As Object, _
         ByVal layerName As String, ByVal colorIndex As Long)
     Dim sourceObjects(0 To 0) As Object
     Set sourceObjects(0) = source
+    AddAcadRegionFromCurves ms, sourceObjects, layerName, colorIndex
+End Sub
 
+' Превращает временные AutoCAD-кривые в Region и удаляет исходные линии/окружности.
+Private Sub AddAcadRegionFromCurves(ByVal ms As Object, ByRef sourceObjects() As Object, _
+        ByVal layerName As String, ByVal colorIndex As Long)
+    On Error GoTo Failed
     Dim regions As Variant
     regions = ms.AddRegion(sourceObjects)
 
@@ -1270,7 +1290,22 @@ Private Sub AddAcadRegionFromCurve(ByVal ms As Object, ByVal source As Object, _
     Set entity = regions(LBound(regions))
     entity.Layer = layerName
     entity.Color = colorIndex
-    source.Delete
+    DeleteAcadSourceObjects sourceObjects
+    Exit Sub
+
+Failed:
+    DeleteAcadSourceObjects sourceObjects
+    Err.Raise Err.Number, Err.Source, Err.Description
+End Sub
+
+' Удаляет временные кривые, из которых был построен Region.
+Private Sub DeleteAcadSourceObjects(ByRef sourceObjects() As Object)
+    On Error Resume Next
+    Dim i As Long
+    For i = LBound(sourceObjects) To UBound(sourceObjects)
+        If Not sourceObjects(i) Is Nothing Then sourceObjects(i).Delete
+    Next i
+    On Error GoTo 0
 End Sub
 
 ' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.

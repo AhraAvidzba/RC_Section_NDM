@@ -33,6 +33,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestInvalidProfileIdDoesNotRunPlot stats
     TestAutoCADSourceRequiresManualImport stats
     TestAutoCADImportButtonRejectsGeneratedSource stats
+    TestAutoCADImporterTreatsDrawingUnitsAsMillimeters stats
     TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
     TestPlotClearsLegacyWorksheetShapes stats
     TestPlotOverlayCoordinatesMatchResults stats
@@ -399,6 +400,56 @@ Private Sub TestAutoCADImportButtonRejectsGeneratedSource(ByRef stats As TUiTest
         InStr(1, description, "Geometry.Source = AutoCAD", vbTextCompare) > 0
 End Sub
 
+' Проверяет, что live AutoCAD-import не масштабирует координаты DWG через
+' пользовательские INPUT-единицы. По контракту проекта AutoCAD-чертеж
+' импортируется как миллиметры, иначе смена Units.Length.Input сдвинула бы
+' весь imported snapshot относительно исходного чертежа.
+Private Sub TestAutoCADImporterTreatsDrawingUnitsAsMillimeters(ByRef stats As TUiTestStats)
+    PrepareCircleInput
+    SetSystemSetting "Units.Length.Input", "m"
+    SetSystemSetting "Units.Area.Input", "m2"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+
+    Dim concreteRegion As CFakeAcadRegion
+    Set concreteRegion = New CFakeAcadRegion
+    concreteRegion.Initialize 2500#, 1000#, 2000#, 2500# * 2500# / 12#, _
+        2500# * 2500# / 12#, 0#, "Concrete", "C1"
+
+    Dim rebarRegion As CFakeAcadRegion
+    Set rebarRegion = New CFakeAcadRegion
+    rebarRegion.Initialize GEOM_PI * 25# * 25# / 4#, 1100#, 1900#, 1#, 1#, 0#, _
+        "Reinf", "R1"
+
+    Dim modelSpace As Collection
+    Set modelSpace = New Collection
+    modelSpace.Add concreteRegion
+    modelSpace.Add rebarRegion
+
+    Dim importer As CAutoCADSectionModelImporter
+    Set importer = New CAutoCADSectionModelImporter
+
+    Dim section As CSectionModel
+    Set section = importer.ImportFromModelSpace(modelSpace, "Concrete", "Reinf", "Rebar", 0.000001, units)
+
+    AssertClose stats, "ui.autocad.importUnits.concreteX", section.ConcreteX(1), 1000#, 0.000001
+    AssertClose stats, "ui.autocad.importUnits.concreteY", section.ConcreteY(1), 2000#, 0.000001
+    AssertClose stats, "ui.autocad.importUnits.concreteArea", section.ConcreteArea(1), 2500#, 0.000001
+    AssertClose stats, "ui.autocad.importUnits.localIx", section.ConcreteLocalIx(1), _
+        2500# * 2500# / 12#, 0.001
+    AssertClose stats, "ui.autocad.importUnits.rebarX", section.RebarX(1), 1100#, 0.000001
+    AssertClose stats, "ui.autocad.importUnits.rebarDiameter", section.RebarDiameter(1), 25#, 0.000001
+
+    SetSystemSetting "Units.Length.Input", "mm"
+    SetSystemSetting "Units.Area.Input", "mm2"
+End Sub
+
 ' Проверяет preview импортированной геометрии без реального AutoCAD.
 ' Важна вся цепочка: CSectionModel(AutoCADImport) -> Results annotations ->
 ' CSectionPlotDataReader -> CSectionPlotter -> Chart.Shapes размерных линий.
@@ -695,16 +746,43 @@ Private Sub TestAutoCADCalculationMessageUsesSavedGeometry(ByRef stats As TUiTes
     units.LoadFromSettings settings
 
     Dim section As CSectionModel
-    Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
+    Set section = New CSectionModel
     section.SourceType = "AutoCADImport"
-    section.Annotations.Clear
+    section.AddConcreteElement 950#, -750#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
+    section.AddConcreteElement 1050#, -750#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
+    section.AddConcreteElement 950#, -650#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
+    section.AddConcreteElement 1050#, -650#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
+    section.AddRebarElement 930#, -770#, 20#, 0#, "Rebar"
+    section.AddRebarElement 1070#, -770#, 20#, 0#, "Rebar"
+    section.AddRebarElement 930#, -630#, 20#, 0#, "Rebar"
+    section.AddRebarElement 1070#, -630#, 20#, 0#, "Rebar"
 
     Dim writer As CNDMResultsWriter
     Set writer = New CNDMResultsWriter
     writer.WriteGeometryPreview ThisWorkbook, section, units
 
+    Dim beforeGeometry As Variant
+    beforeGeometry = ResultTable("rngNDMSectionGeometry")
+    Dim beforeConcreteX As Double
+    Dim beforeConcreteY As Double
+    Dim beforeRebarX As Double
+    Dim beforeRebarY As Double
+    beforeConcreteX = GeometryResultValue(beforeGeometry, "C1", "X")
+    beforeConcreteY = GeometryResultValue(beforeGeometry, "C1", "Y")
+    beforeRebarX = GeometryResultValue(beforeGeometry, "R1", "X")
+    beforeRebarY = GeometryResultValue(beforeGeometry, "R1", "Y")
+
     SetSystemSetting "Geometry.Source", "AutoCAD"
-    ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange.Cells.Item(2, 5).Value2 = "PR1"
+    Dim loads As Object
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    ClearDataRows loads
+    loads.Cells.Item(2, 1).Value2 = "LC1"
+    loads.Cells.Item(2, 2).Value2 = 0#
+    loads.Cells.Item(2, 3).Value2 = -1000000#
+    loads.Cells.Item(2, 4).Value2 = -750000#
+    loads.Cells.Item(2, 5).Value2 = "PR1"
+    loads.Cells.Item(2, 6).Value2 = ChrW$(&H3BB) & "*Mxy"
+    loads.Cells.Item(2, 7).Value2 = "saved geometry"
 
     Dim message As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
@@ -713,6 +791,17 @@ Private Sub TestAutoCADCalculationMessageUsesSavedGeometry(ByRef stats As TUiTes
         InStr(1, message, "Расчет импортированной из AutoCAD геометрии завершен", vbTextCompare) > 0
     AssertTrue stats, "ui.autocad.run.savedGeometry.noImportText", _
         InStr(1, message, "Импортировано из AutoCAD", vbTextCompare) = 0
+
+    Dim afterGeometry As Variant
+    afterGeometry = ResultTable("rngNDMSectionGeometry")
+    AssertClose stats, "ui.autocad.run.savedGeometry.concreteX", _
+        GeometryResultValue(afterGeometry, "C1", "X"), beforeConcreteX, 0.000001
+    AssertClose stats, "ui.autocad.run.savedGeometry.concreteY", _
+        GeometryResultValue(afterGeometry, "C1", "Y"), beforeConcreteY, 0.000001
+    AssertClose stats, "ui.autocad.run.savedGeometry.rebarX", _
+        GeometryResultValue(afterGeometry, "R1", "X"), beforeRebarX, 0.000001
+    AssertClose stats, "ui.autocad.run.savedGeometry.rebarY", _
+        GeometryResultValue(afterGeometry, "R1", "Y"), beforeRebarY, 0.000001
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -1501,6 +1590,46 @@ Private Function ResultsPropertyValue(ByVal loadCase As String, ByVal parameter 
         End If
     Next rowIndex
 Failed:
+End Function
+
+' Возвращает числовое поле элемента из rngNDMSectionGeometry.
+' Так UI-тест проверяет сохранность импортированных координат между
+' geometry-preview и расчетным snapshot после очистки Results.
+Private Function GeometryResultValue(ByRef data As Variant, ByVal elementID As String, _
+        ByVal headerText As String) As Double
+    Dim colID As Long
+    Dim colValue As Long
+    colID = ResultHeaderColumn(data, "ElementID")
+    colValue = ResultHeaderColumn(data, headerText)
+    If colValue = 0 Then colValue = ResultHeaderColumnByBaseName(data, headerText)
+    If colID = 0 Or colValue = 0 Then Err.Raise vbObjectError + 4850, "GeometryResultValue", _
+        "В rngNDMSectionGeometry не найдены нужные заголовки."
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(data, 1)
+        If StrComp(CStr(data(rowIndex, colID)), elementID, vbTextCompare) = 0 Then
+            GeometryResultValue = CDbl(data(rowIndex, colValue))
+            Exit Function
+        End If
+    Next rowIndex
+
+    Err.Raise vbObjectError + 4851, "GeometryResultValue", _
+        "В rngNDMSectionGeometry не найден элемент " & elementID & "."
+End Function
+
+' Ищет колонку по имени до запятой в заголовке вида "X, mm".
+Private Function ResultHeaderColumnByBaseName(ByRef data As Variant, ByVal headerText As String) As Long
+    Dim colIndex As Long
+    For colIndex = 1 To UBound(data, 2)
+        Dim actualHeader As String
+        actualHeader = CStr(data(1, colIndex))
+        If InStr(1, actualHeader, ",", vbTextCompare) > 0 Then _
+            actualHeader = Trim$(Left$(actualHeader, InStr(1, actualHeader, ",", vbTextCompare) - 1))
+        If StrComp(actualHeader, headerText, vbTextCompare) = 0 Then
+            ResultHeaderColumnByBaseName = colIndex
+            Exit Function
+        End If
+    Next colIndex
 End Function
 
 ' Проверяет, что справочные характеристики приведенного сечения в Results

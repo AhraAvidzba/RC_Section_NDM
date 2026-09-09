@@ -442,15 +442,21 @@ MissingValue:
 End Function
 
 Private Function InputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
-    If units Is Nothing Then InputLength = value Else InputLength = units.InputLengthToInternal(value)
+    ' AutoCAD Region импортируется в миллиметрах независимо от пользовательской
+    ' INPUT-единицы длины. Иначе смена Units.Length.Input масштабировала бы
+    ' координаты чертежа и сдвигала imported snapshot относительно AutoCAD.
+    InputLength = value
 End Function
 
 Private Function InputArea(ByVal value As Double, ByVal units As CUnitSystem) As Double
-    If units Is Nothing Then InputArea = value Else InputArea = units.InputAreaToInternal(value)
+    ' Площадь AutoCAD Region уже считается в мм2 по принятому контракту импорта.
+    InputArea = value
 End Function
 
 Private Function InputFourthPowerLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
-    If units Is Nothing Then InputFourthPowerLength = value Else InputFourthPowerLength = units.InputFourthPowerLengthToInternal(value)
+    ' Моменты инерции AutoCAD Region уже приходят в мм4 по принятому контракту
+    ' импорта; пользовательские INPUT-единицы не должны менять геометрию DWG.
+    InputFourthPowerLength = value
 End Function
 
 Private Function Atn2Local(ByVal y As Double, ByVal x As Double) As Double

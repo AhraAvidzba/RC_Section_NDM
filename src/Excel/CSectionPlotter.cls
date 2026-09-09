@@ -61,6 +61,8 @@ Private Const RESULT_COLOR_BUCKET_COUNT As Long = 16 ' Число цветовы
 Private Const CONCRETE_MARKER_SIZE_BUCKET As Long = 3 ' Шаг группировки бетонных маркеров, чтобы Chart не превысил лимит series.
 Private Const ELEMENT_SHAPE_RENDER_MAX_COUNT As Long = 5000 ' До этого числа элементов геометрию рисуем поэлементно Shape-ами.
 Private Const CONCRETE_SHAPE_FILL_RATIO As Double = 0.7 ' Визуальный размер бетонной ячейки: оставляет зазор между соседними элементами.
+Private Const REFERENCE_AXIS_WEIGHT As Double = 0.56 ' Толщина пунктирных главных осей; немного тоньше нейтральной линии.
+Private Const REFERENCE_BAND_MIN_THICKNESS As Double = 0.4 ' Минимальная толщина Freeform-полосы, чтобы тонкие оси оставались видимыми.
 Private Const PLOT_FRAME_LEFT As Double = 28# ' Левый край рабочей области схемы внутри Chart.
 Private Const PLOT_FRAME_TOP As Double = 36# ' Верхний край рабочей области схемы внутри Chart.
 Private Const PLOT_FRAME_WIDTH_MARGIN As Double = 180# ' Запас справа для легенд и подписей.
@@ -1161,9 +1163,9 @@ Private Sub DrawPrincipalAxes(ByVal data As CSectionPlotDataReader, ByVal axesMo
     ca = Cos(angle)
     sa = Sin(angle)
     DrawModelReferenceLine centroidX - lengthValue * ca, centroidY - lengthValue * sa, _
-        centroidX + lengthValue * ca, centroidY + lengthValue * sa, RGB(0, 0, 0), 0.7, "Principal1", MSO_LINE_DASH
+        centroidX + lengthValue * ca, centroidY + lengthValue * sa, RGB(0, 0, 0), REFERENCE_AXIS_WEIGHT, "Principal1", MSO_LINE_DASH
     DrawModelReferenceLine centroidX + lengthValue * sa, centroidY - lengthValue * ca, _
-        centroidX - lengthValue * sa, centroidY + lengthValue * ca, RGB(0, 0, 0), 0.7, "Principal2", MSO_LINE_DASH
+        centroidX - lengthValue * sa, centroidY + lengthValue * ca, RGB(0, 0, 0), REFERENCE_AXIS_WEIGHT, "Principal2", MSO_LINE_DASH
 End Sub
 
 ' Читает режим осей схемы. Старый Yes/No-ключ поддержан только как fallback
@@ -1499,7 +1501,7 @@ Private Sub DrawModelReferenceLine(ByVal x1 As Double, ByVal y1 As Double, ByVal
     If dashStyle = MSO_LINE_DASH Or dashStyle = MSO_LINE_DASH_DOT Then
         DrawChartDashedReferenceBand cx1, cy1, cx2, cy2, colorValue, weight, suffix
     Else
-        If Not ClipChartLineToPlotFrame(cx1, cy1, cx2, cy2, MaxDouble(weight, 0.75) / 2#) Then Exit Sub
+        If Not ClipChartLineToPlotFrame(cx1, cy1, cx2, cy2, MaxDouble(weight, REFERENCE_BAND_MIN_THICKNESS) / 2#) Then Exit Sub
         DrawChartReferenceBand cx1, cy1, cx2, cy2, colorValue, weight, suffix
     End If
 End Sub
@@ -1530,7 +1532,7 @@ Private Function DrawChartReferenceBand(ByVal x1 As Double, ByVal y1 As Double, 
     If lengthValue <= 0.0000001 Then Exit Function
 
     Dim thickness As Double
-    thickness = MaxDouble(weight, 0.75)
+    thickness = MaxDouble(weight, REFERENCE_BAND_MIN_THICKNESS)
     Dim nx As Double
     Dim ny As Double
     nx = -dy / lengthValue * thickness / 2#
@@ -1599,7 +1601,7 @@ Private Sub DrawChartDashedReferenceBand(ByVal x1 As Double, ByVal y1 As Double,
         sy1 = y1 + dy * t1
         sx2 = x1 + dx * t2
         sy2 = y1 + dy * t2
-        If ClipChartLineToPlotFrame(sx1, sy1, sx2, sy2, MaxDouble(weight, 0.75) / 2#) Then _
+        If ClipChartLineToPlotFrame(sx1, sy1, sx2, sy2, MaxDouble(weight, REFERENCE_BAND_MIN_THICKNESS) / 2#) Then _
             DrawChartReferenceBand sx1, sy1, sx2, sy2, colorValue, weight, suffix & "Dash" & CStr(segmentIndex)
 NextSegment:
         position = position + cycleLength
