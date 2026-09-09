@@ -1705,9 +1705,12 @@ Private Function AverageKnownConcreteElementRotation(ByVal data As CSectionPlotD
 End Function
 
 ' Определяет последний fallback бетонного Region по площади.
-' Новый импорт записывает для бетонного fallback-а EquivalentSquare.
+' Новый snapshot пишет Equivalent square, старое EquivalentSquare оставлено
+' только для просмотра ранее записанных Results.
 Private Function IsEquivalentAreaFallbackElement(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Boolean
-    IsEquivalentAreaFallbackElement = (StrComp(Trim$(data.ShapeType(index)), "EquivalentSquare", vbTextCompare) = 0) And _
+    Dim statusText As String
+    statusText = Replace$(Trim$(data.ShapeType(index)), " ", vbNullString)
+    IsEquivalentAreaFallbackElement = (StrComp(statusText, "EquivalentSquare", vbTextCompare) = 0) And _
         (data.Width(index) <= 0# Or data.Height(index) <= 0#)
 End Function
 

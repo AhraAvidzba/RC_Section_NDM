@@ -232,14 +232,22 @@ OK: autocad.import.rotated.localIxy; actual=550000.; expected=550000.; absDiff=0
 OK: autocad.import.rotated.uDepth; actual=80.; expected=80.; absDiff=0.
 OK: autocad.import.rotated.vDepth; actual=30.; expected=30.; absDiff=0.
 OK: autocad.import.principal.shape
-OK: autocad.import.principal.width; actual=0.; expected=0.; absDiff=0.
-OK: autocad.import.principal.height; actual=0.; expected=0.; absDiff=0.
-OK: autocad.import.principal.rotation; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.principal.localIx; actual=466666.666666667; expected=466666.666666667; absDiff=0.
+OK: autocad.import.principal.localIy; actual=1266666.66666667; expected=1266666.66666667; absDiff=0.
+OK: autocad.import.principal.localIxy; actual=692820.323027551; expected=692820.323027551; absDiff=0.
+OK: autocad.import.principal.areaShell; actual=2000.; expected=2000.; absDiff=0.
+OK: autocad.import.principal.noExplode; actual=0.; expected=0.; absDiff=0.
 OK: autocad.import.principal.uDepth; actual=100.; expected=100.; absDiff=0.
 OK: autocad.import.principal.vDepth; actual=20.; expected=20.; absDiff=0.
+OK: autocad.import.edgeProbe.rect.shape
+OK: autocad.import.edgeProbe.rect.noExplode; actual=1.; expected=1.; absDiff=0.
+OK: autocad.import.edgeProbe.square.shape
+OK: autocad.import.edgeProbe.square.width; actual=50.; expected=50.; absDiff=0.
+OK: autocad.import.edgeProbe.square.height; actual=50.; expected=50.; absDiff=0.
+OK: autocad.import.edgeProbe.square.rotation; actual=0.628318530718; expected=0.628318530718; absDiff=0.
 OK: autocad.import.squareFallback.shape
-OK: autocad.import.squareFallback.width.empty; actual=0.; expected=0.; absDiff=0.
-OK: autocad.import.squareFallback.height.empty; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.squareFallback.width; actual=44.311346272638; expected=44.311346272638; absDiff=0.
+OK: autocad.import.squareFallback.height; actual=44.311346272638; expected=44.311346272638; absDiff=0.
 OK: autocad.import.squareFallback.localIx; actual=321276.184931294; expected=321276.184931294; absDiff=0.
 OK: autocad.import.squareFallback.xDepth; actual=44.311346272638; expected=44.311346272638; absDiff=0.
 OK: autocad.import.squareFallback.diagonalDepth; actual=62.665706865775; expected=62.665706865775; absDiff=0.
@@ -249,6 +257,23 @@ OK: autocad.import.squareFallbackRotation.projectedSide; actual=238.205080756888
 OK: autocad.import.badInertia.shape
 OK: autocad.import.badInertia.localIxy; actual=0.; expected=0.; absDiff=0.
 OK: autocad.import.badInertia.xDepth; actual=44.311346272638; expected=44.311346272638; absDiff=0.
+OK: model.boundary.equivalentRectangle.status
+OK: model.boundary.equivalentRectangle.area; actual=2500.; expected=2500.; absDiff=0.
+OK: model.boundary.equivalentRectangle.ratio; actual=6.; expected=6.; absDiff=0.
+OK: model.boundary.equivalentRectangle.realIx; actual=259834.957055045; expected=259834.957055045; absDiff=0.
+OK: model.boundary.equivalentRectangle.realIy; actual=790165.042944955; expected=790165.042944955; absDiff=0.
+OK: model.boundary.equivalentRectangle.realIxy; actual=265165.042944955; expected=265165.042944955; absDiff=0.
+OK: model.boundary.realIx.priorityA; actual=111111.; expected=111111.; absDiff=0.
+OK: model.boundary.realIy.priorityA; actual=222222.; expected=222222.; absDiff=0.
+OK: model.boundary.realIxy.priorityA; actual=12345.; expected=12345.; absDiff=0.
+OK: model.boundary.realIx.independent; actual=111111.; expected=111111.; absDiff=0.
+OK: model.boundary.realIy.independent; actual=222222.; expected=222222.; absDiff=0.
+OK: model.boundary.realIxy.independent; actual=12345.; expected=12345.; absDiff=0.
+OK: model.fallback.square.status
+OK: model.fallback.square.width; actual=60.; expected=60.; absDiff=0.
+OK: model.fallback.square.localIx; actual=1080000.; expected=1080000.; absDiff=0.
+OK: model.fallback.square.localIy; actual=1080000.; expected=1080000.; absDiff=0.
+OK: model.fallback.square.localIxy; actual=0.; expected=0.; absDiff=0.
 OK: invalid.width
 OK: invalid.height
 OK: invalid.negative.radius
@@ -266,9 +291,9 @@ CONVERGENCE: step=12.5 area=88750.; cx=0.; cy=1.795774647887; Ix=366297131.74882
 OK: conv.area.25.12; actual=88750.; expected=88750.; relDiff=0.
 OK: conv.Ix.25.12; actual=366297131.748829; expected=366946339.495306; relDiff=0.001769217121
 OK: conv.Iy.25.12; actual=1154524739.58334; expected=1155989583.33333; relDiff=0.001267177292
-PERFORMANCE: section=800x500; step=10; fibers=3988; buildSec=0.01171875; propsSec=0.01171875; area=398800.
+PERFORMANCE: section=800x500; step=10; fibers=3988; buildSec=0.01953125; propsSec=0.00390625; area=398800.
 OK: perf.fibers.positive
-TOTAL: passed=234; failed=0
+TOTAL: passed=259; failed=0
 
 
 ===== Run-MaterialTests.ps1 =====
@@ -716,7 +741,7 @@ OK: section.method.emptyInput
 OK: section.method.emptyMessage
 OK: settings.solverMethod.defaultNewton
 OK: section.systemMethod.newtonBranch
-TOTAL_SECTION_SOLVER: passed=381; failed=0; elapsedSec=0.30859375
+TOTAL_SECTION_SOLVER: passed=381; failed=0; elapsedSec=0.2890625
 
 
 ===== Run-CapacityTests.ps1 =====
@@ -867,24 +892,24 @@ OK: method.n_plus_mx.lambda; actual=3.098714243907; expected=3.09375; absDiff=0.
 OK: method.n_plus_mx.limitState
 OK: method.n_plus_mx.criticalElement
 OK: method.n_plus_mx.solverCalls
-COMPARE|method.n_plus_mx.load|converged=True|lambda=3.09375|limitState=ConcreteStrainLimit|criticalStrain=-0.001501652538|criticalElement=C136:Compression|solverCalls=15|elapsedSec=0.14453125
-COMPARE|method.n_plus_mx.strain|converged=True|lambda=3.098714243907|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.015625
+COMPARE|method.n_plus_mx.load|converged=True|lambda=3.09375|limitState=ConcreteStrainLimit|criticalStrain=-0.001501652538|criticalElement=C136:Compression|solverCalls=15|elapsedSec=0.1796875
+COMPARE|method.n_plus_mx.strain|converged=True|lambda=3.098714243907|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.0234375
 OK: method.n_plus_my.load.converged
 OK: method.n_plus_my.strain.converged
 OK: method.n_plus_my.lambda; actual=4.490409406947; expected=4.484375; absDiff=0.006034406947
 OK: method.n_plus_my.limitState
 OK: method.n_plus_my.criticalElement
 OK: method.n_plus_my.solverCalls
-COMPARE|method.n_plus_my.load|converged=True|lambda=4.484375|limitState=ConcreteStrainLimit|criticalStrain=-0.001500652149|criticalElement=C15:Compression|solverCalls=14|elapsedSec=0.13671875
-COMPARE|method.n_plus_my.strain|converged=True|lambda=4.490409406947|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.01171875
+COMPARE|method.n_plus_my.load|converged=True|lambda=4.484375|limitState=ConcreteStrainLimit|criticalStrain=-0.001500652149|criticalElement=C15:Compression|solverCalls=14|elapsedSec=0.12109375
+COMPARE|method.n_plus_my.strain|converged=True|lambda=4.490409406947|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.015625
 OK: method.biaxial.load.converged
 OK: method.biaxial.strain.converged
 OK: method.biaxial.lambda; actual=3.583378108174; expected=3.578125; absDiff=0.005253108174
 OK: method.biaxial.limitState
 OK: method.biaxial.criticalElement
 OK: method.biaxial.solverCalls
-COMPARE|method.biaxial.load|converged=True|lambda=3.578125|limitState=ConcreteStrainLimit|criticalStrain=-0.001501063653|criticalElement=C150:Compression|solverCalls=12|elapsedSec=0.1015625
-COMPARE|method.biaxial.strain|converged=True|lambda=3.583378108174|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=16|elapsedSec=0.015625
+COMPARE|method.biaxial.load|converged=True|lambda=3.578125|limitState=ConcreteStrainLimit|criticalStrain=-0.001501063653|criticalElement=C150:Compression|solverCalls=12|elapsedSec=0.11328125
+COMPARE|method.biaxial.strain|converged=True|lambda=3.583378108174|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=16|elapsedSec=0.0234375
 OK: method.circle.load.converged
 OK: method.circle.strain.converged
 OK: method.circle.symmetry; actual=31453125.; expected=31489108.1595385; relDiff=0.001142717646
@@ -1703,12 +1728,12 @@ OK: search.invalid.inputError
 OK: search.secant.controlledFailure
 RUN: TestSearchMethodPerformanceComparison
 OK: search.perf.Bisection.converged
-PERF_CAPACITY_SEARCH|Bisection|lambda=3.09375|iterations=15|functionEvaluations=15|avgSec=0.16015625|residual=0.000000018633|converged=True|status=ConcreteStrainLimit
+PERF_CAPACITY_SEARCH|Bisection|lambda=3.09375|iterations=15|functionEvaluations=15|avgSec=0.170572916667|residual=0.000000018633|converged=True|status=ConcreteStrainLimit
 OK: search.perf.Brent.converged
-PERF_CAPACITY_SEARCH|Brent|lambda=3.09776378716|iterations=9|functionEvaluations=9|avgSec=0.069010416667|residual=0.000000000975|converged=True|status=ConcreteStrainLimit
+PERF_CAPACITY_SEARCH|Brent|lambda=3.09776378716|iterations=9|functionEvaluations=9|avgSec=0.084635416667|residual=0.000000000975|converged=True|status=ConcreteStrainLimit
 OK: search.perf.Secant.converged
-PERF_CAPACITY_SEARCH|Secant|lambda=3.098514991183|iterations=7|functionEvaluations=7|avgSec=0.067708333333|residual=0.000000011376|converged=True|status=ConcreteStrainLimit
-TOTAL_CAPACITY: passed=925; failed=0; elapsedSec=15.6484375
+PERF_CAPACITY_SEARCH|Secant|lambda=3.098514991183|iterations=7|functionEvaluations=7|avgSec=0.076822916667|residual=0.000000011376|converged=True|status=ConcreteStrainLimit
+TOTAL_CAPACITY: passed=925; failed=0; elapsedSec=15.65625
 
 
 ===== Run-CrackTests.ps1 =====
@@ -1878,7 +1903,7 @@ OK: crack.central.eccentricLoadRejected
 OK: crack.noTension.converged
 OK: crack.noTension.notFormed
 OK: crack.noTension.width; actual=0.; expected=0.; absDiff=0.
-TOTAL_CRACK: passed=166; failed=0; elapsedSec=0.76953125
+TOTAL_CRACK: passed=166; failed=0; elapsedSec=0.4921875
 
 
 ===== Run-BatchTests.ps1 =====
@@ -2153,7 +2178,7 @@ OK: batch.group2.physical.noExtension
 OK: batch.group2.physical.directOK
 OK: batch.group2.physical.crackRuns
 RUN: TestBatchCrackCoverDistanceModeChangesAs
-INFO: batch.crack.coverDistanceMode local=40.; global=340.
+INFO: batch.crack.coverDistanceMode local=40.; global=190.5
 OK: batch.crack.coverMode.localPositive
 OK: batch.crack.coverMode.globalLarger
 RUN: TestPR2AutoCrackStoresBeforeAndAfterMcrcStates
@@ -2396,7 +2421,7 @@ OK: batch.settings.capacity.maxLambda
 RUN: TestInvalidModeSettingsAreNotFallbacks
 OK: batch.invalid.CapacitySolutionStrategy.status
 OK: batch.invalid.CapacitySolutionStrategy.noLambda
-TOTAL_BATCH: passed=390; failed=0; elapsedSec=15.21484375
+TOTAL_BATCH: passed=390; failed=0; elapsedSec=14.59765625
 
 
 ===== Run-WorkbookInterfaceTests.ps1 =====
@@ -2635,7 +2660,7 @@ OK: ui.clear.results.properties
 OK: ui.clear.results.annotations
 OK: ui.clear.results.materialDiagrams
 OK: ui.clear.input
-TOTAL_WORKBOOK_UI: passed=230; failed=0; elapsedSec=18.8046875
+TOTAL_WORKBOOK_UI: passed=230; failed=0; elapsedSec=19.39453125
 
 
 ===== Run-RegressionBaselineTests.ps1 =====
@@ -2644,27 +2669,27 @@ OK: pure_compression.converged
 OK: pure_compression.N; actual=-99999.9999999997; expected=-100000.; relDiff=0.
 OK: pure_compression.Mx; actual=0.000000000201; expected=0.; absDiff=0.000000000201
 OK: pure_compression.My; actual=0.000000000242; expected=0.; absDiff=0.000000000242
-BASELINE|pure_compression|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=0.|Nint=-99999.9999999997|Mxint=0.000000000201|Myint=0.000000000242|resN=0.000000000291|resMx=0.000000000201|resMy=0.000000000242|lambda=NA|iterations=2|elapsedSec=0.02734375|fibers=177|rebars=8
+BASELINE|pure_compression|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=0.|Nint=-99999.9999999997|Mxint=0.000000000201|Myint=0.000000000242|resN=0.000000000291|resMx=0.000000000201|resMy=0.000000000242|lambda=NA|iterations=2|elapsedSec=0.03125|fibers=177|rebars=8
 OK: n_plus_mx_my_zero.converged
 OK: n_plus_mx_my_zero.N; actual=-100000.; expected=-100000.; relDiff=0.
 OK: n_plus_mx_my_zero.Mx; actual=-4000000.; expected=-4000000.; relDiff=0.
 OK: n_plus_mx_my_zero.My; actual=-0.000000000001; expected=0.; absDiff=0.000000000001
-BASELINE|n_plus_mx_my_zero|converged=True|eps0=-0.000082761977|kappaX=-0.000000571638|kappaY=0.|Nint=-100000.|Mxint=-4000000.|Myint=-0.000000000001|resN=0.000000000015|resMx=-0.000000000931|resMy=-0.000000000001|lambda=20.421600341797|iterations=2|elapsedSec=0.00390625|fibers=177|rebars=8
+BASELINE|n_plus_mx_my_zero|converged=True|eps0=-0.000082761977|kappaX=-0.000000571638|kappaY=0.|Nint=-100000.|Mxint=-4000000.|Myint=-0.000000000001|resN=0.000000000015|resMx=-0.000000000931|resMy=-0.000000000001|lambda=20.421600341797|iterations=2|elapsedSec=0.0078125|fibers=177|rebars=8
 OK: n_plus_my_mx_zero.converged
 OK: n_plus_my_mx_zero.N; actual=-100000.; expected=-100000.; relDiff=0.
 OK: n_plus_my_mx_zero.Mx; actual=0.000000000001; expected=0.; absDiff=0.000000000001
 OK: n_plus_my_mx_zero.My; actual=-3000000.; expected=-3000000.; relDiff=0.
-BASELINE|n_plus_my_mx_zero|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=-0.000000428729|Nint=-100000.|Mxint=0.000000000001|Myint=-3000000.|resN=0.000000000015|resMx=0.000000000001|resMy=0.00000000326|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.00390625|fibers=177|rebars=8
+BASELINE|n_plus_my_mx_zero|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=-0.000000428729|Nint=-100000.|Mxint=0.000000000001|Myint=-3000000.|resN=0.000000000015|resMx=0.000000000001|resMy=0.00000000326|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.0078125|fibers=177|rebars=8
 OK: full_n_mx_my.converged
 OK: full_n_mx_my.N; actual=-100000.; expected=-100000.; relDiff=0.
 OK: full_n_mx_my.Mx; actual=-4000000.; expected=-4000000.; relDiff=0.
 OK: full_n_mx_my.My; actual=-3000000.; expected=-3000000.; relDiff=0.
-BASELINE|full_n_mx_my|converged=True|eps0=-0.000082335606|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=-4000000.|Myint=-3000000.|resN=0.|resMx=-0.000000003725|resMy=0.000000000931|lambda=16.3359375|iterations=3|elapsedSec=0.00390625|fibers=177|rebars=8
+BASELINE|full_n_mx_my|converged=True|eps0=-0.000082335606|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=-4000000.|Myint=-3000000.|resN=0.|resMx=-0.000000003725|resMy=0.000000000931|lambda=16.3359375|iterations=3|elapsedSec=0.0078125|fibers=177|rebars=8
 OK: symmetric_circle.converged
 OK: symmetric_circle.N; actual=-219999.999999999; expected=-220000.; relDiff=0.
 OK: symmetric_circle.Mx; actual=-6000000.00000002; expected=-6000000.; relDiff=0.
 OK: symmetric_circle.My; actual=0.000000000146; expected=0.; absDiff=0.000000000146
-BASELINE|symmetric_circle|converged=True|eps0=-0.000180839111|kappaX=-0.000000845237|kappaY=0.|Nint=-219999.999999999|Mxint=-6000000.00000002|Myint=0.000000000146|resN=0.000000000815|resMx=-0.000000019558|resMy=0.000000000146|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.01171875|fibers=716|rebars=8
+BASELINE|symmetric_circle|converged=True|eps0=-0.000180839111|kappaX=-0.000000845237|kappaY=0.|Nint=-219999.999999999|Mxint=-6000000.00000002|Myint=0.000000000146|resN=0.000000000815|resMx=-0.000000019558|resMy=0.000000000146|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.01953125|fibers=716|rebars=8
 OK: repeated_run.first.converged
 OK: repeated_run.second.converged
 OK: repeated_run.epsilon0; actual=-0.000082335606; expected=-0.000082335606; absDiff=0.
@@ -2690,7 +2715,7 @@ OK: origin_shift.shifted.Mx; actual=1000000.; expected=1000000.; relDiff=0.
 OK: origin_shift.shifted.My; actual=-10500000.; expected=-10500000.; relDiff=0.
 BASELINE|origin_shift_base|converged=True|eps0=-0.000082335606|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=-4000000.|Myint=-3000000.|resN=0.|resMx=-0.000000003725|resMy=0.000000000931|lambda=NA|iterations=3|elapsedSec=0.|fibers=0|rebars=0
 BASELINE|origin_shift_shifted|converged=True|eps0=-0.00007872362|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=1000000.|Myint=-10500000.|resN=-0.000000000015|resMx=0.000000000815|resMy=0.000000003725|lambda=NA|iterations=3|elapsedSec=0.|fibers=0|rebars=0
-TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.77734375
+TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.68359375
 
 Regression baseline report: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Stage01_RegressionBaseline_Raw.txt
 

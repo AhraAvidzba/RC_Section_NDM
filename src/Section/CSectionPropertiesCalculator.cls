@@ -151,15 +151,15 @@ Private Sub AddWeightedArea(ByVal weight As Double, ByVal x As Double, ByVal y A
     mIxy = mIxy + localIxy + weight * x * y
 End Sub
 
-' Добавляет бетонный элемент в накопление A/I через единый fallback локальных
-' инерций. Если источник дал реальные размеры, они могут восстановить Ix/Iy;
-' если достоверных размеров и инерций нет, используется квадрат той же площади.
+' Добавляет бетонный элемент в накопление A/I через CSectionModel.
+' Модель сама возвращает реальные локальные инерции или последний fallback,
+' поэтому калькулятор свойств не интерпретирует Width/Height как источник I.
 Private Sub AddConcreteWeightedArea(ByVal section As CSectionModel, ByVal index As Long, _
         ByVal weightFactor As Double)
     Dim localIx As Double
     Dim localIy As Double
     Dim localIxy As Double
-    ConcreteElementLocalInertiaComponents section, index, localIx, localIy, localIxy
+    section.ConcreteLocalInertiaComponents index, localIx, localIy, localIxy
 
     AddWeightedArea section.ConcreteArea(index) * weightFactor, _
         section.ConcreteX(index), section.ConcreteY(index), _
@@ -189,13 +189,11 @@ Public Sub CalculateProjection(ByVal section As CSectionModel, ByVal axisX As Do
     ny = axisY / normValue
 
     Dim initialized As Boolean
-    Dim fallbackSquareRotation As Double
-    fallbackSquareRotation = section.AverageKnownConcreteElementRotation()
     Dim i As Long
     For i = 1 To section.ConcreteCount
         ExtendProjection initialized, minProjection, maxProjection, _
             nx * section.ConcreteX(i) + ny * section.ConcreteY(i), _
-            ConcreteHalfProjection(section, i, nx, ny, fallbackSquareRotation)
+            ConcreteHalfProjection(section, i, nx, ny)
     Next i
 
     If includeRebar And section.RebarCount > 0 Then
@@ -242,15 +240,12 @@ Public Function ConcreteCoverFromPointAlongDirection(ByVal section As CSectionMo
     ReDim intervalStart(1 To section.ConcreteCount)
     ReDim intervalEnd(1 To section.ConcreteCount)
 
-    Dim fallbackSquareRotation As Double
-    fallbackSquareRotation = section.AverageKnownConcreteElementRotation()
-
     Dim intervalCount As Long
     Dim i As Long
     For i = 1 To section.ConcreteCount
         Dim tMin As Double
         Dim tMax As Double
-        If ConcreteRayInterval(section, i, pointX, pointY, nx, ny, fallbackSquareRotation, tMin, tMax) Then
+        If ConcreteRayInterval(section, i, pointX, pointY, nx, ny, tMin, tMax) Then
             If tMax >= -PROJECTION_INTERVAL_TOLERANCE Then
                 intervalCount = intervalCount + 1
                 intervalStart(intervalCount) = tMin
@@ -367,7 +362,7 @@ Public Function ConcreteInertiaAboutAxis(ByVal section As CSectionModel, ByVal a
         Dim localIx As Double
         Dim localIy As Double
         Dim localIxy As Double
-        ConcreteElementLocalInertiaComponents section, i, localIx, localIy, localIxy
+        section.ConcreteLocalInertiaComponents i, localIx, localIy, localIxy
         localInertia = ny * ny * localIy + nx * nx * localIx - 2# * nx * ny * localIxy
         ConcreteInertiaAboutAxis = ConcreteInertiaAboutAxis + _
             localInertia + section.ConcreteArea(i) * distanceToAxis * distanceToAxis
@@ -495,73 +490,32 @@ Private Sub ExtendProjection(ByRef initialized As Boolean, ByRef minProjection A
 End Sub
 
 ' Проекция бетонного элемента для габаритов, ядровых расстояний и других
-' геометрических проверок. Каскад один для всего проекта:
-' 1) реальные размеры элемента Width/Height/Rotation, если источник их знает;
-' 2) расчетный эквивалентный прямоугольник по центральным Ix/Iy/Ixy;
-' 3) расчетный эквивалентный квадрат по площади.
-' Пункты 2-3 не являются визуальной формой элемента и не должны подменять
-' реальные размеры в CSectionModel.
+' геометрических проверок. CSectionModel является единственной точкой, где
+' реальные A/I переводятся в прямоугольную оболочку элемента.
 Private Function ConcreteHalfProjection(ByVal section As CSectionModel, ByVal index As Long, _
-        ByVal axisX As Double, ByVal axisY As Double, ByVal fallbackSquareRotation As Double) As Double
-    Dim widthValue As Double
-    Dim heightValue As Double
-    Dim angleValue As Double
-
-    If ConcreteProjectionRectangle(section, index, fallbackSquareRotation, widthValue, heightValue, angleValue) Then
-        ConcreteHalfProjection = RectangleHalfProjection(widthValue, heightValue, angleValue, axisX, axisY)
-    End If
+        ByVal axisX As Double, ByVal axisY As Double) As Double
+    ConcreteHalfProjection = section.ConcreteBoundaryHalfProjection(index, axisX, axisY)
 End Function
 
-' Возвращает расчетный прямоугольник, которым бетонный КЭ участвует в
-' проекциях и пересечениях с лучом. Если реальные размеры известны, берутся
-' только они; sqrt(A) применяется только для последнего fallback-а по площади.
+' Возвращает прямоугольник, которым бетонный КЭ участвует в пересечениях с
+' лучом. Интерпретация Rectangle/Equivalent rectangle/Equivalent square
+' находится в CSectionModel, чтобы схема, AutoCAD и расчетные габариты
+' использовали одну и ту же оболочку.
 Private Function ConcreteProjectionRectangle(ByVal section As CSectionModel, ByVal index As Long, _
-        ByVal fallbackSquareRotation As Double, ByRef widthValue As Double, _
-        ByRef heightValue As Double, ByRef angleValue As Double) As Boolean
-    widthValue = section.ConcreteWidth(index)
-    heightValue = section.ConcreteHeight(index)
-    angleValue = section.ConcreteRotation(index)
-
-    If widthValue > GEOM_TOLERANCE And heightValue > GEOM_TOLERANCE Then
-        ConcreteProjectionRectangle = True
-        Exit Function
-    End If
-
-    If IsEquivalentAreaFallbackShape(section.ConcreteShapeType(index)) And _
-            section.ConcreteArea(index) > GEOM_TOLERANCE Then
-        widthValue = Sqr(section.ConcreteArea(index))
-        heightValue = widthValue
-        If Abs(angleValue) <= GEOM_TOLERANCE Then angleValue = fallbackSquareRotation
-        ConcreteProjectionRectangle = True
-        Exit Function
-    End If
-
-    If IsPositiveDefiniteInertia(section.ConcreteLocalIx(index), _
-            section.ConcreteLocalIy(index), section.ConcreteLocalIxy(index)) Then
-        ConcreteProjectionRectangle = EquivalentRectangleDimensions(section.ConcreteArea(index), _
-            section.ConcreteLocalIx(index), section.ConcreteLocalIy(index), _
-            section.ConcreteLocalIxy(index), widthValue, heightValue, angleValue)
-        If ConcreteProjectionRectangle Then Exit Function
-    End If
-
-    If section.ConcreteArea(index) > GEOM_TOLERANCE Then
-        widthValue = Sqr(section.ConcreteArea(index))
-        heightValue = widthValue
-        angleValue = fallbackSquareRotation
-        ConcreteProjectionRectangle = True
-    End If
+        ByRef widthValue As Double, ByRef heightValue As Double, _
+        ByRef angleValue As Double) As Boolean
+    ConcreteProjectionRectangle = section.ConcreteBoundaryRectangle(index, widthValue, heightValue, angleValue)
 End Function
 
 ' Находит интервал параметра t, на котором луч P + t*n проходит внутри
 ' расчетного прямоугольника бетонного элемента.
 Private Function ConcreteRayInterval(ByVal section As CSectionModel, ByVal index As Long, _
         ByVal pointX As Double, ByVal pointY As Double, ByVal directionX As Double, _
-        ByVal directionY As Double, ByVal fallbackSquareRotation As Double, _
-        ByRef tMin As Double, ByRef tMax As Double) As Boolean
+        ByVal directionY As Double, ByRef tMin As Double, ByRef tMax As Double) As Boolean
     Dim widthValue As Double
     Dim heightValue As Double
     Dim angleValue As Double
-    If Not ConcreteProjectionRectangle(section, index, fallbackSquareRotation, widthValue, heightValue, angleValue) Then Exit Function
+    If Not ConcreteProjectionRectangle(section, index, widthValue, heightValue, angleValue) Then Exit Function
 
     ConcreteRayInterval = RectangleRayInterval(pointX, pointY, _
         section.ConcreteX(index), section.ConcreteY(index), _
@@ -623,123 +577,6 @@ Private Function ClipRectangleRayCoordinate(ByVal coord As Double, ByVal dirCoor
     tMin = GeomMax(tMin, t1)
     tMax = GeomMin(tMax, t2)
     ClipRectangleRayCoordinate = (tMin <= tMax + PROJECTION_INTERVAL_TOLERANCE)
-End Function
-
-' Возвращает локальные инерции бетонного элемента в глобальных осях.
-' Это централизует fallback для импортированной геометрии: реальные
-' Width/Height/Rotation, затем явно помеченный квадрат по площади, затем
-' надежные Ix/Iy/Ixy для Region, затем квадрат по площади.
-Private Sub ConcreteElementLocalInertiaComponents(ByVal section As CSectionModel, ByVal index As Long, _
-        ByRef localIx As Double, ByRef localIy As Double, ByRef localIxy As Double)
-    If section.ConcreteWidth(index) > GEOM_TOLERANCE And _
-            section.ConcreteHeight(index) > GEOM_TOLERANCE Then
-        RectangleLocalInertiaComponents section.ConcreteArea(index), _
-            section.ConcreteWidth(index), section.ConcreteHeight(index), _
-            section.ConcreteRotation(index), localIx, localIy, localIxy
-        Exit Sub
-    End If
-
-    If IsEquivalentAreaFallbackShape(section.ConcreteShapeType(index)) And _
-            section.ConcreteArea(index) > GEOM_TOLERANCE Then
-        EquivalentSquareLocalInertiaComponents section.ConcreteArea(index), localIx, localIy, localIxy
-        Exit Sub
-    End If
-
-    localIx = section.ConcreteLocalIx(index)
-    localIy = section.ConcreteLocalIy(index)
-    localIxy = section.ConcreteLocalIxy(index)
-    If IsPositiveDefiniteInertia(localIx, localIy, localIxy) Then Exit Sub
-
-    If section.ConcreteArea(index) > GEOM_TOLERANCE Then
-        EquivalentSquareLocalInertiaComponents section.ConcreteArea(index), localIx, localIy, localIxy
-    End If
-End Sub
-
-' Считает Ix/Iy/Ixy прямоугольного элемента с заданным поворотом.
-' Rotation задает направление стороны Width относительно глобальной оси X.
-Private Sub RectangleLocalInertiaComponents(ByVal areaValue As Double, _
-        ByVal widthValue As Double, ByVal heightValue As Double, ByVal angleValue As Double, _
-        ByRef localIx As Double, ByRef localIy As Double, ByRef localIxy As Double)
-    Dim ixLocal As Double
-    Dim iyLocal As Double
-    Dim c As Double
-    Dim s As Double
-    ixLocal = areaValue * heightValue * heightValue / 12#
-    iyLocal = areaValue * widthValue * widthValue / 12#
-    c = Cos(angleValue)
-    s = Sin(angleValue)
-
-    localIx = ixLocal * c * c + iyLocal * s * s
-    localIy = ixLocal * s * s + iyLocal * c * c
-    localIxy = (iyLocal - ixLocal) * s * c
-End Sub
-
-' Возвращает половину проекции прямоугольника с заданным поворотом.
-' Этот helper используют и реальные КЭ сетки, и восстановленный по A/I
-' эквивалентный прямоугольник импортированного Region.
-Private Function RectangleHalfProjection(ByVal widthValue As Double, ByVal heightValue As Double, _
-        ByVal angleValue As Double, ByVal axisX As Double, ByVal axisY As Double) As Double
-    Dim ux As Double
-    Dim uy As Double
-    Dim vx As Double
-    Dim vy As Double
-    ux = Cos(angleValue)
-    uy = Sin(angleValue)
-    vx = -uy
-    vy = ux
-    RectangleHalfProjection = 0.5 * (widthValue * Abs(axisX * ux + axisY * uy) + _
-        heightValue * Abs(axisX * vx + axisY * vy))
-End Function
-
-' Собственные инерции квадрата той же площади: b = sqrt(A), I = b^4 / 12 = A^2 / 12.
-Private Sub EquivalentSquareLocalInertiaComponents(ByVal areaValue As Double, _
-        ByRef localIx As Double, ByRef localIy As Double, ByRef localIxy As Double)
-    localIx = areaValue * areaValue / 12#
-    localIy = localIx
-    localIxy = 0#
-End Sub
-
-' Восстанавливает размеры и поворот эквивалентного прямоугольника по A/I.
-' Этот helper используют и общие габариты, и локальный луч для a_s, чтобы
-' fallback импортированного Region оставался единым по всему проекту.
-Private Function EquivalentRectangleDimensions(ByVal areaValue As Double, _
-        ByVal localIx As Double, ByVal localIy As Double, ByVal localIxy As Double, _
-        ByRef widthValue As Double, ByRef heightValue As Double, ByRef angleValue As Double) As Boolean
-    If areaValue <= GEOM_TOLERANCE Then Exit Function
-
-    Dim inertiaU As Double
-    Dim inertiaV As Double
-    angleValue = 0.5 * Atn2(2# * localIxy, localIy - localIx)
-    inertiaU = ConcreteLocalInertiaAboutAxis(localIx, localIy, localIxy, angleValue)
-    inertiaV = ConcreteLocalInertiaAboutAxis(localIx, localIy, localIxy, angleValue + GEOM_PI / 2#)
-    If inertiaU <= GEOM_TOLERANCE Or inertiaV <= GEOM_TOLERANCE Then Exit Function
-
-    heightValue = Sqr(12# * inertiaU / areaValue)
-    widthValue = Sqr(12# * inertiaV / areaValue)
-    EquivalentRectangleDimensions = (widthValue > GEOM_TOLERANCE And heightValue > GEOM_TOLERANCE)
-End Function
-
-' Собственная инерция элемента относительно локальной оси angleRad.
-Private Function ConcreteLocalInertiaAboutAxis(ByVal localIx As Double, ByVal localIy As Double, _
-        ByVal localIxy As Double, ByVal angleRad As Double) As Double
-    Dim nx As Double
-    Dim ny As Double
-    nx = Cos(angleRad)
-    ny = Sin(angleRad)
-    ConcreteLocalInertiaAboutAxis = nx * nx * localIx + ny * ny * localIy - 2# * nx * ny * localIxy
-End Function
-
-' ShapeType = EquivalentSquare означает расчетный fallback по квадрату той же площади.
-Private Function IsEquivalentAreaFallbackShape(ByVal shapeType As String) As Boolean
-    IsEquivalentAreaFallbackShape = (StrComp(Trim$(shapeType), "EquivalentSquare", vbTextCompare) = 0)
-End Function
-
-' Проверяет, что локальная матрица инерций физически пригодна для
-' восстановления эквивалентного прямоугольника и для суммарных A/I.
-Private Function IsPositiveDefiniteInertia(ByVal localIx As Double, ByVal localIy As Double, _
-        ByVal localIxy As Double) As Boolean
-    If localIx <= GEOM_TOLERANCE Or localIy <= GEOM_TOLERANCE Then Exit Function
-    IsPositiveDefiniteInertia = (localIx * localIy - localIxy * localIxy > GEOM_TOLERANCE)
 End Function
 
 ' Собственная инерция круглого стержня через его площадь: I = A^2/(4*pi).

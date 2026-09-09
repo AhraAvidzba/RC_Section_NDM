@@ -38,9 +38,13 @@ Public Function RunGeometryTests() As String
     TestAutoCADImporterBuildsSectionModel stats
     TestAutoCADImporterRotatedRectangleBounds stats
     TestAutoCADImporterPrincipalInertiaBounds stats
+    TestAutoCADImporterSquareRegionReadsEdgeRotation stats
     TestAutoCADImporterAreaSquareFallback stats
     TestAutoCADImporterAreaSquareFallbackAverageRotation stats
     TestAutoCADImporterInvalidInertiaSquareFallback stats
+    TestSectionModelEquivalentRectangleFromRealInertia stats
+    TestSectionModelBoundaryDoesNotReplaceRealInertia stats
+    TestSectionModelFallbackInertiaSquare stats
     TestInvalidData stats
     TestBoundarySubcellMesh stats
     TestMeshConvergence stats
@@ -262,9 +266,9 @@ Private Sub TestAutoCADImporterRotatedRectangleBounds(ByRef stats As TTestStats)
     AssertClose stats, "autocad.import.rotated.vDepth", maxProjection - minProjection, heightValue, 0.000001
 End Sub
 
-' Проверяет, что импортированный Region с ненулевым Ixy получает повернутую
-' эквивалентную оболочку, а расчетные проекции используют ее через общий
-' CSectionPropertiesCalculator.
+' Проверяет, что импортированный Region с реальными A/I настоящего
+' прямоугольника получает оболочку Rectangle из CSectionModel. Importer при
+' этом не передает Width/Height и не обращается к Explode.
 Private Sub TestAutoCADImporterPrincipalInertiaBounds(ByRef stats As TTestStats)
     Dim area As Double
     Dim expectedWidth As Double
@@ -277,20 +281,20 @@ Private Sub TestAutoCADImporterPrincipalInertiaBounds(ByRef stats As TTestStats)
 
     Dim inertiaU As Double
     Dim inertiaV As Double
-    Dim c As Double
-    Dim s As Double
+    Dim localIx As Double
+    Dim localIy As Double
+    Dim localIxy As Double
     inertiaU = area * expectedHeight * expectedHeight / 12#
     inertiaV = area * expectedWidth * expectedWidth / 12#
-    c = Cos(angle)
-    s = Sin(angle)
+    RotatedLocalInertia inertiaU, inertiaV, angle, localIx, localIy, localIxy
 
     Dim concreteRegions(1 To 1, 1 To 7) As Variant
     concreteRegions(1, 1) = area
     concreteRegions(1, 2) = 0#
     concreteRegions(1, 3) = 0#
-    concreteRegions(1, 4) = inertiaU * c * c + inertiaV * s * s
-    concreteRegions(1, 5) = inertiaU * s * s + inertiaV * c * c
-    concreteRegions(1, 6) = (inertiaV - inertiaU) * s * c
+    concreteRegions(1, 4) = localIx
+    concreteRegions(1, 5) = localIy
+    concreteRegions(1, 6) = localIxy
     concreteRegions(1, 7) = "ROT"
 
     Dim rebarRegions(1 To 1, 1 To 4) As Variant
@@ -304,10 +308,13 @@ Private Sub TestAutoCADImporterPrincipalInertiaBounds(ByRef stats As TTestStats)
     Dim model As CSectionModel
     Set model = importer.BuildFromRegionArrays(concreteRegions, rebarRegions, "Rebar", 0.000001)
 
-    AssertTrue stats, "autocad.import.principal.shape", model.ConcreteShapeType(1) = "Region"
-    AssertClose stats, "autocad.import.principal.width", model.ConcreteWidth(1), 0#, 0.000001
-    AssertClose stats, "autocad.import.principal.height", model.ConcreteHeight(1), 0#, 0.000001
-    AssertClose stats, "autocad.import.principal.rotation", model.ConcreteRotation(1), 0#, 0.000001
+    AssertTrue stats, "autocad.import.principal.shape", model.ConcreteShapeType(1) = "Rectangle"
+    AssertClose stats, "autocad.import.principal.localIx", model.ConcreteLocalIx(1), localIx, 0.000001
+    AssertClose stats, "autocad.import.principal.localIy", model.ConcreteLocalIy(1), localIy, 0.000001
+    AssertClose stats, "autocad.import.principal.localIxy", model.ConcreteLocalIxy(1), localIxy, 0.000001
+    AssertClose stats, "autocad.import.principal.areaShell", _
+        model.ConcreteWidth(1) * model.ConcreteHeight(1), area, 0.000001
+    AssertClose stats, "autocad.import.principal.noExplode", importer.DebugEdgeProbeCount, 0#, 0.000001
 
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
@@ -317,6 +324,52 @@ Private Sub TestAutoCADImporterPrincipalInertiaBounds(ByRef stats As TTestStats)
     AssertClose stats, "autocad.import.principal.uDepth", maxProjection - minProjection, expectedWidth, 0.000001
     props.CalculateProjection model, -Sin(angle), Cos(angle), False, minProjection, maxProjection
     AssertClose stats, "autocad.import.principal.vDepth", maxProjection - minProjection, expectedHeight, 0.000001
+End Sub
+
+' Проверяет живой путь AutoCAD-import: почти изотропный Region получает угол
+' простой грани через дешевый Explode, а неизотропный Region обходится без
+' Explode и интерпретируется по своим A/I уже в CSectionModel.
+Private Sub TestAutoCADImporterSquareRegionReadsEdgeRotation(ByRef stats As TTestStats)
+    Dim modelSpace As Collection
+    Set modelSpace = New Collection
+
+    Dim rectArea As Double
+    Dim rectWidth As Double
+    Dim rectHeight As Double
+    Dim rectAngle As Double
+    Dim rectIx As Double
+    Dim rectIy As Double
+    Dim rectIxy As Double
+    rectWidth = 80#
+    rectHeight = 30#
+    rectArea = rectWidth * rectHeight
+    rectAngle = GEOM_PI / 7#
+    RotatedLocalInertia rectArea * rectHeight * rectHeight / 12#, _
+        rectArea * rectWidth * rectWidth / 12#, rectAngle, rectIx, rectIy, rectIxy
+    modelSpace.Add FakeRegion(rectArea, 0#, 0#, rectIx, rectIy, rectIxy, _
+        "Concrete", "C_RECT", rectAngle, True)
+
+    Dim squareArea As Double
+    Dim squareAngle As Double
+    squareArea = 2500#
+    squareAngle = GEOM_PI / 5#
+    modelSpace.Add FakeRegion(squareArea, 120#, 0#, squareArea * squareArea / 12#, _
+        squareArea * squareArea / 12#, 0#, "Concrete", "C_SQ", squareAngle, True)
+
+    modelSpace.Add FakeRegion(GEOM_PI * 12# * 12# / 4#, 0#, -60#, 1#, 1#, 0#, _
+        "Reinf", "R1", 0#, False)
+
+    Dim importer As CAutoCADSectionModelImporter
+    Set importer = New CAutoCADSectionModelImporter
+    Dim model As CSectionModel
+    Set model = importer.ImportFromModelSpace(modelSpace, "Concrete", "Reinf", "Rebar", 0.000001)
+
+    AssertTrue stats, "autocad.import.edgeProbe.rect.shape", model.ConcreteShapeType(1) = "Rectangle"
+    AssertClose stats, "autocad.import.edgeProbe.rect.noExplode", importer.DebugEdgeProbeCount, 1#, 0.000001
+    AssertTrue stats, "autocad.import.edgeProbe.square.shape", model.ConcreteShapeType(2) = "Equivalent square"
+    AssertClose stats, "autocad.import.edgeProbe.square.width", model.ConcreteWidth(2), Sqr(squareArea), 0.000001
+    AssertClose stats, "autocad.import.edgeProbe.square.height", model.ConcreteHeight(2), Sqr(squareArea), 0.000001
+    AssertClose stats, "autocad.import.edgeProbe.square.rotation", model.ConcreteRotation(2), squareAngle, 0.000001
 End Sub
 
 ' Проверяет последний fallback для Region без локальных инерций: габарит
@@ -339,9 +392,9 @@ Private Sub TestAutoCADImporterAreaSquareFallback(ByRef stats As TTestStats)
     Dim model As CSectionModel
     Set model = importer.BuildFromRegionArrays(concreteRegions, rebarRegions, "Rebar", 0.000001)
 
-    AssertTrue stats, "autocad.import.squareFallback.shape", model.ConcreteShapeType(1) = "EquivalentSquare"
-    AssertClose stats, "autocad.import.squareFallback.width.empty", model.ConcreteWidth(1), 0#, 0.000001
-    AssertClose stats, "autocad.import.squareFallback.height.empty", model.ConcreteHeight(1), 0#, 0.000001
+    AssertTrue stats, "autocad.import.squareFallback.shape", model.ConcreteShapeType(1) = "Equivalent square"
+    AssertClose stats, "autocad.import.squareFallback.width", model.ConcreteWidth(1), Sqr(model.ConcreteArea(1)), 0.000001
+    AssertClose stats, "autocad.import.squareFallback.height", model.ConcreteHeight(1), Sqr(model.ConcreteArea(1)), 0.000001
     AssertClose stats, "autocad.import.squareFallback.localIx", model.ConcreteLocalIx(1), _
         model.ConcreteArea(1) * model.ConcreteArea(1) / 12#, 0.000001
 
@@ -390,7 +443,7 @@ Private Sub TestAutoCADImporterAreaSquareFallbackAverageRotation(ByRef stats As 
     Dim model As CSectionModel
     Set model = importer.BuildFromRegionArrays(concreteRegions, rebarRegions, "Rebar", 0.000001)
 
-    AssertTrue stats, "autocad.import.squareFallbackRotation.shape", model.ConcreteShapeType(2) = "EquivalentSquare"
+    AssertTrue stats, "autocad.import.squareFallbackRotation.shape", model.ConcreteShapeType(2) = "Equivalent square"
     AssertClose stats, "autocad.import.squareFallbackRotation.angle", model.ConcreteRotation(2), angle, 0.000001
 
     Dim props As CSectionPropertiesCalculator
@@ -428,7 +481,7 @@ Private Sub TestAutoCADImporterInvalidInertiaSquareFallback(ByRef stats As TTest
     Dim model As CSectionModel
     Set model = importer.BuildFromRegionArrays(concreteRegions, rebarRegions, "Rebar", 0.000001)
 
-    AssertTrue stats, "autocad.import.badInertia.shape", model.ConcreteShapeType(1) = "EquivalentSquare"
+    AssertTrue stats, "autocad.import.badInertia.shape", model.ConcreteShapeType(1) = "Equivalent square"
     AssertClose stats, "autocad.import.badInertia.localIxy", model.ConcreteLocalIxy(1), 0#, 0.000001
 
     Dim props As CSectionPropertiesCalculator
@@ -437,6 +490,93 @@ Private Sub TestAutoCADImporterInvalidInertiaSquareFallback(ByRef stats As TTest
     Dim maxProjection As Double
     props.CalculateProjection model, 1#, 0#, False, minProjection, maxProjection
     AssertClose stats, "autocad.import.badInertia.xDepth", maxProjection - minProjection, Sqr(model.ConcreteArea(1)), 0.000001
+End Sub
+
+' Проверяет произвольный неизотропный Region: оболочка сохраняет площадь и
+' отношение главных I, но реальные локальные I остаются расчетными данными.
+Private Sub TestSectionModelEquivalentRectangleFromRealInertia(ByRef stats As TTestStats)
+    Dim area As Double
+    Dim i1 As Double
+    Dim i2 As Double
+    Dim angle As Double
+    Dim localIx As Double
+    Dim localIy As Double
+    Dim localIxy As Double
+    area = 2500#
+    i1 = 900000#
+    i2 = 150000#
+    angle = GEOM_PI / 8#
+    RotatedLocalInertia i2, i1, angle, localIx, localIy, localIxy
+
+    Dim model As CSectionModel
+    Set model = New CSectionModel
+    model.AddConcreteElement 0#, 0#, area, 1, "arbitrary", "H1", "Region", _
+        0#, 0#, 0#, vbNullString, localIx, localIy, localIxy
+
+    AssertTrue stats, "model.boundary.equivalentRectangle.status", _
+        model.ConcreteShapeType(1) = "Equivalent rectangle"
+    AssertClose stats, "model.boundary.equivalentRectangle.area", _
+        model.ConcreteWidth(1) * model.ConcreteHeight(1), area, 0.000001
+    AssertClose stats, "model.boundary.equivalentRectangle.ratio", _
+        (model.ConcreteHeight(1) / model.ConcreteWidth(1)) ^ 2, i1 / i2, 0.000001
+    AssertClose stats, "model.boundary.equivalentRectangle.realIx", model.ConcreteLocalIx(1), localIx, 0.000001
+    AssertClose stats, "model.boundary.equivalentRectangle.realIy", model.ConcreteLocalIy(1), localIy, 0.000001
+    AssertClose stats, "model.boundary.equivalentRectangle.realIxy", model.ConcreteLocalIxy(1), localIxy, 0.000001
+End Sub
+
+' Проверяет главный контракт: оболочка элемента не подменяет реальные
+' локальные инерции, по которым считаются свойства бетонного сечения.
+Private Sub TestSectionModelBoundaryDoesNotReplaceRealInertia(ByRef stats As TTestStats)
+    Dim area As Double
+    Dim realIx As Double
+    Dim realIy As Double
+    Dim realIxy As Double
+    area = 1000#
+    realIx = 111111#
+    realIy = 222222#
+    realIxy = 12345#
+
+    Dim modelA As CSectionModel
+    Set modelA = New CSectionModel
+    modelA.AddConcreteElement 0#, 0#, area, 1, "A", "A", "Rectangle", _
+        100#, 10#, 0#, vbNullString, realIx, realIy, realIxy
+
+    Dim modelB As CSectionModel
+    Set modelB = New CSectionModel
+    modelB.AddConcreteElement 0#, 0#, area, 1, "B", "B", "Rectangle", _
+        10#, 100#, GEOM_PI / 3#, vbNullString, realIx, realIy, realIxy
+
+    Dim propsA As CSectionPropertiesCalculator
+    Set propsA = New CSectionPropertiesCalculator
+    propsA.CalculateConcrete modelA
+
+    Dim propsB As CSectionPropertiesCalculator
+    Set propsB = New CSectionPropertiesCalculator
+    propsB.CalculateConcrete modelB
+
+    AssertClose stats, "model.boundary.realIx.priorityA", propsA.Ixc, realIx, 0.000001
+    AssertClose stats, "model.boundary.realIy.priorityA", propsA.Iyc, realIy, 0.000001
+    AssertClose stats, "model.boundary.realIxy.priorityA", propsA.Ixyc, realIxy, 0.000001
+    AssertClose stats, "model.boundary.realIx.independent", propsB.Ixc, propsA.Ixc, 0.000001
+    AssertClose stats, "model.boundary.realIy.independent", propsB.Iyc, propsA.Iyc, 0.000001
+    AssertClose stats, "model.boundary.realIxy.independent", propsB.Ixyc, propsA.Ixyc, 0.000001
+End Sub
+
+' Проверяет последний расчетный fallback для элемента без сохраненных
+' инерций: CSectionModel возвращает квадрат по площади и валидные I.
+Private Sub TestSectionModelFallbackInertiaSquare(ByRef stats As TTestStats)
+    Dim area As Double
+    area = 3600#
+
+    Dim model As CSectionModel
+    Set model = New CSectionModel
+    model.AddConcreteElement 0#, 0#, area, 1, "noI", "noI", "Region"
+
+    AssertTrue stats, "model.fallback.square.status", model.ConcreteShapeType(1) = "Equivalent square"
+    AssertClose stats, "model.fallback.square.width", model.ConcreteWidth(1), 60#, 0.000001
+    AssertClose stats, "model.fallback.square.localIx", model.ConcreteLocalIx(1), area * area / 12#, 0.000001
+    AssertClose stats, "model.fallback.square.localIy", model.ConcreteLocalIy(1), area * area / 12#, 0.000001
+    AssertClose stats, "model.fallback.square.localIxy", model.ConcreteLocalIxy(1), 0#, 0.000001
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -1064,6 +1204,33 @@ Private Sub TestPerformance(ByRef stats As TTestStats)
         "; area=" & FormatNumberInvariant(calc.Area)
     AssertTrue stats, "perf.fibers.positive", builder.FiberCount > 0
 End Sub
+
+' Формирует локальные Ix/Iy/Ixy после поворота главных осей элемента.
+' minorInertia относится к оси вдоль локальной стороны width, majorInertia -
+' к перпендикулярной главной оси.
+Private Sub RotatedLocalInertia(ByVal minorInertia As Double, ByVal majorInertia As Double, _
+        ByVal angle As Double, ByRef localIx As Double, ByRef localIy As Double, _
+        ByRef localIxy As Double)
+    Dim c As Double
+    Dim s As Double
+    c = Cos(angle)
+    s = Sin(angle)
+    localIx = minorInertia * c * c + majorInertia * s * s
+    localIy = minorInertia * s * s + majorInertia * c * c
+    localIxy = (majorInertia - minorInertia) * s * c
+End Sub
+
+' Создает минимальный fake AutoCAD Region для тестов live-пути importer-а.
+Private Function FakeRegion(ByVal area As Double, ByVal xCoord As Double, ByVal yCoord As Double, _
+        ByVal localIx As Double, ByVal localIy As Double, ByVal localIxy As Double, _
+        ByVal layerName As String, ByVal handleText As String, _
+        Optional ByVal edgeRotation As Double = 0#, Optional ByVal hasEdge As Boolean = False) As CFakeAcadRegion
+    Dim region As CFakeAcadRegion
+    Set region = New CFakeAcadRegion
+    region.Initialize area, xCoord, yCoord, localIx, localIy, localIxy, _
+        layerName, handleText, edgeRotation, hasEdge
+    Set FakeRegion = region
+End Function
 
 Private Function MeshProps(ByVal geom As ISectionGeometry, ByVal stepX As Double, ByVal stepY As Double) As CSectionPropertiesCalculator
     On Error GoTo Failed

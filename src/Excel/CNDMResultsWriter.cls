@@ -950,7 +950,7 @@ Private Sub PutGeometryHeaders(ByRef data() As Variant, ByVal units As CUnitSyst
     data(1, 4) = "X, " & OutputLengthUnit(units)
     data(1, 5) = "Y, " & OutputLengthUnit(units)
     data(1, 6) = "Area, " & OutputAreaUnit(units)
-    data(1, 7) = "ShapeType"
+    data(1, 7) = "GeometryInterpretationStatus"
     data(1, 8) = "Width, " & OutputLengthUnit(units)
     data(1, 9) = "Height, " & OutputLengthUnit(units)
     data(1, 10) = "Diameter, " & OutputLengthUnit(units)
@@ -1068,11 +1068,11 @@ Private Function OutputAnnotationComment(ByVal annotations As CSectionAnnotation
     End If
 End Function
 
-' Для AutoCAD-сетки у программы нет смысловых граней, но есть расчетная
-' проекционная оболочка бетонных элементов. Она строится тем же
-' CSectionPropertiesCalculator, что используют трещины и устойчивость:
-' реальные Width/Height/Rotation, затем прямоугольник по Ix/Iy/Ixy,
-' затем квадрат по площади.
+' Для AutoCAD-сетки у программы нет смысловых граней, но есть согласованная
+' прямоугольная оболочка бетонных элементов. Ее строит CSectionModel:
+' фактический прямоугольник, эквивалентный прямоугольник по A/I или
+' последний эквивалентный квадрат по площади. Реальные A/I при этом остаются
+' расчетными характеристиками элемента.
 ' Поэтому сохраняем только две приблизительные размерные аннотации: общую
 ' ширину и высоту по импортированной дискретной сетке.
 Private Sub EnsureAutoCADBoundsAnnotations(ByVal section As CSectionModel)

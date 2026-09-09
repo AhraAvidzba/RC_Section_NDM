@@ -183,7 +183,7 @@ rngNDMSectionGeometry.ElementID
 - `Area`;
 - `Diameter` для арматуры;
 - `Material`;
-- `ShapeType`;
+- `GeometryInterpretationStatus`;
 - `Width`;
 - `Height`;
 - `Rotation`;
@@ -225,7 +225,7 @@ rngNDMSectionGeometry.ElementID
 - `Area`;
 - `Diameter`;
 - `Material`;
-- `ShapeType`;
+- `GeometryInterpretationStatus`;
 - другие постоянные свойства, которые уже однозначно доступны через `rngNDMSectionGeometry`.
 
 Не хранить `INTERNAL`-копии `Stress/Strain` только ради plotter-а. Если какие-либо внутренние значения уже нужны другим существующим функциям `Results`, их не удалять без отдельного анализа, но `Обновить схему` не должен использовать их для повторного `OUTPUT`-преобразования.
@@ -507,7 +507,7 @@ CRebarAnnotation
 - `Area`;
 - `Diameter`;
 - `Material`;
-- `ShapeType`;
+- `GeometryInterpretationStatus`;
 - другие постоянные данные геометрии, если они реально нужны plotter-у или AutoCAD export.
 
 `rngNDMElementResults`:
@@ -1327,7 +1327,7 @@ CBatchResultWriter / CNDMResultsWriter
 ```text
 rngNDMSectionGeometry
   = фактическая геометрия и арматура, записанные один раз для snapshot.
-    Источник X/Y/Area/Diameter/Material/ShapeType для plotter-а и AutoCAD export.
+    Источник X/Y/Area/Diameter/Material/GeometryInterpretationStatus для plotter-а и AutoCAD export.
 
 rngNDMElementResults
   = LC-зависимые результаты элементов.

@@ -210,7 +210,7 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
     Dim colX As Long: colX = ResultColumn(data, "X")
     Dim colY As Long: colY = ResultColumn(data, "Y")
     Dim colArea As Long: colArea = ResultColumn(data, "Area")
-    Dim colShape As Long: colShape = ResultColumn(data, "ShapeType")
+    Dim colShape As Long: colShape = GeometryStatusColumn(data)
     Dim colWidth As Long: colWidth = ResultColumn(data, "Width")
     Dim colHeight As Long: colHeight = ResultColumn(data, "Height")
     Dim colDiameter As Long: colDiameter = ResultColumn(data, "Diameter")
@@ -562,6 +562,20 @@ Private Function ResultColumn(ByRef data As Variant, ByVal headerName As String)
         End If
     Next colIndex
     Err.Raise vbObjectError + 4355, "ResultColumn", "В Results не найден столбец: " & headerName
+End Function
+
+' Геометрический snapshot теперь явно пишет статус интерпретации оболочки.
+' Старый ShapeType поддерживается только для чтения уже существующих Results.
+Private Function GeometryStatusColumn(ByRef data As Variant) As Long
+    On Error Resume Next
+    GeometryStatusColumn = ResultColumn(data, "GeometryInterpretationStatus")
+    If Err.Number = 0 And GeometryStatusColumn > 0 Then
+        On Error GoTo 0
+        Exit Function
+    End If
+    Err.Clear
+    GeometryStatusColumn = ResultColumn(data, "ShapeType")
+    On Error GoTo 0
 End Function
 
 Private Function ResultHeaderBase(ByVal headerText As String) As String

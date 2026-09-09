@@ -438,8 +438,8 @@ AutoCAD, обновления схемы и сборка общего польз
 
 Внутренние методы: `AddConcreteRegionEntity`, `AddRebarRegionEntity`,
 `AddConcreteRegionArray`, `AddRebarRegionArray`, `AddConcreteRegion`,
-`AddRebarRegion`, `ReadCentralRegionInertia`, `ReadRegionRectangleGeometry`,
-`TryReadRotatedRectangleBounds`, `ApplyEquivalentSquareFallback`,
+`AddRebarRegion`, `ReadCentralRegionInertia`, `BestCentralProductOfInertia`,
+`TryReadFirstStraightEdgeRotation`, `TryReadLineDirection`,
 `IsRegionEntity`, `SameLayer`, `EntityHandle`, `ValidateImportedModel`,
 `InputLength`, `InputArea`, `InputFourthPowerLength`.
 
@@ -655,12 +655,14 @@ Implements `ISectionGeometry`.
 
 Роль: единая расчетная модель сечения.
 
-Публичные методы: `Clear`, `AddConcreteElement`, `AddRebarElement`.
+Публичные методы: `Clear`, `AddConcreteElement`, `AddRebarElement`,
+`ConcreteBoundaryRectangle`, `ConcreteBoundaryShapeType`,
+`ConcreteBoundaryHalfProjection`, `ConcreteLocalInertiaComponents`.
 
 Публичные свойства: `SourceType`, `ConcreteCount`, `RebarCount`,
 все getters бетонных элементов (`ConcreteID`, `ConcreteX`, `ConcreteY`,
 `ConcreteArea`, `ConcreteShapeType`, `ConcreteWidth`, `ConcreteHeight`,
-`ConcreteLocalIx/Iy/Ixy`, `ConcreteComment`) и арматуры (`RebarID`, `RebarX`,
+`ConcreteRotation`, `ConcreteLocalIx/Iy/Ixy`, `ConcreteComment`) и арматуры (`RebarID`, `RebarX`,
 `RebarY`, `RebarArea`, `RebarDiameter`, `RebarSteelClass`, `RebarComment`),
 `Annotations`, `AnnotationCount`.
 

@@ -42,7 +42,7 @@ Private mX() As Double ' X элемента в output-единицах Results.
 Private mY() As Double ' Y элемента в output-единицах Results.
 Private mArea() As Double ' Площадь элемента в output-единицах Results.
 Private mDiameter() As Double ' Диаметр арматуры; для бетона обычно 0.
-Private mShapeType() As String ' Форма бетонного элемента из Results: Rectangle, Region, EquivalentSquare.
+Private mShapeType() As String ' Статус интерпретации оболочки: Rectangle, Equivalent rectangle, Equivalent square.
 Private mWidth() As Double ' Реальная ширина бетонного элемента, если она сохранена в snapshot.
 Private mHeight() As Double ' Реальная высота бетонного элемента, если она сохранена в snapshot.
 Private mRotation() As Double ' Поворот прямоугольного бетонного элемента, рад; для fallback-а может хранить средний угол сетки.
@@ -420,7 +420,7 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     Dim colX As Long: colX = ResultColumn(geom, "X")
     Dim colY As Long: colY = ResultColumn(geom, "Y")
     Dim colArea As Long: colArea = ResultColumn(geom, "Area")
-    Dim colShape As Long: colShape = ResultColumn(geom, "ShapeType")
+    Dim colShape As Long: colShape = GeometryStatusColumn(geom)
     Dim colDiameter As Long: colDiameter = ResultColumn(geom, "Diameter")
     Dim colWidth As Long: colWidth = ResultColumn(geom, "Width")
     Dim colHeight As Long: colHeight = ResultColumn(geom, "Height")
@@ -455,7 +455,7 @@ Private Sub ReadGeometryPreview(ByVal workbook As Object)
     Dim colX As Long: colX = ResultColumn(geom, "X")
     Dim colY As Long: colY = ResultColumn(geom, "Y")
     Dim colArea As Long: colArea = ResultColumn(geom, "Area")
-    Dim colShape As Long: colShape = ResultColumn(geom, "ShapeType")
+    Dim colShape As Long: colShape = GeometryStatusColumn(geom)
     Dim colDiameter As Long: colDiameter = ResultColumn(geom, "Diameter")
     Dim colWidth As Long: colWidth = ResultColumn(geom, "Width")
     Dim colHeight As Long: colHeight = ResultColumn(geom, "Height")
@@ -702,6 +702,20 @@ Private Function ResultColumn(ByRef data As Variant, ByVal headerName As String)
         End If
     Next colIndex
     Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", "В Results не найден столбец: " & headerName
+End Function
+
+' Новый snapshot пишет статус интерпретации оболочки явно. ShapeType оставлен
+' как совместимость со старыми файлами Results, созданными до переименования.
+Private Function GeometryStatusColumn(ByRef data As Variant) As Long
+    On Error Resume Next
+    GeometryStatusColumn = ResultColumn(data, "GeometryInterpretationStatus")
+    If Err.Number = 0 And GeometryStatusColumn > 0 Then
+        On Error GoTo 0
+        Exit Function
+    End If
+    Err.Clear
+    GeometryStatusColumn = ResultColumn(data, "ShapeType")
+    On Error GoTo 0
 End Function
 
 ' Возвращает имя столбца без единицы измерения.
