@@ -180,24 +180,47 @@ Public Sub ApplyAverageRotationToEquivalentAreaFallbacks()
     Next i
 End Sub
 
-' Находит средний угол бетонных элементов с известной прямоугольной оболочкой.
-' Угол прямоугольника периодичен через 180 градусов, поэтому усреднение идет
-' через двойной угол: так ориентации 0 и 180 градусов не гасят друг друга.
+' Находит средний угол бетонных элементов, для которых оболочка уже имеет
+' определенную ориентацию. Учитываются не только явно переданные Rectangle,
+' но и Rectangle/Equivalent rectangle, интерпретированные из реальных A/I.
+' Изотропный Equivalent square тоже может быть источником, если importer смог
+' получить его угол по простой грани; нулевой угол считается отсутствующим.
 Public Function AverageKnownConcreteElementRotation() As Double
     Dim sumCos As Double
     Dim sumSin As Double
     Dim count As Long
     Dim i As Long
     For i = 1 To mConcreteCount
-        If HasExplicitRectangleGeometry(i) Then
-            sumCos = sumCos + Cos(2# * mConcreteRotation(i))
-            sumSin = sumSin + Sin(2# * mConcreteRotation(i))
+        Dim statusText As String
+        Dim widthValue As Double
+        Dim heightValue As Double
+        Dim rotationValue As Double
+        InterpretConcreteBoundary i, statusText, widthValue, heightValue, rotationValue
+
+        If ElementContributesToAverageRotation(statusText, rotationValue, widthValue, heightValue) Then
+            sumCos = sumCos + Cos(2# * rotationValue)
+            sumSin = sumSin + Sin(2# * rotationValue)
             count = count + 1
         End If
     Next i
 
     If count > 0 And (Abs(sumCos) > GEOM_TOLERANCE Or Abs(sumSin) > GEOM_TOLERANCE) Then
         AverageKnownConcreteElementRotation = 0.5 * Atn2Local(sumSin, sumCos)
+    End If
+End Function
+
+' Решает, можно ли использовать элемент как источник средней ориентации сетки.
+' У Equivalent square ненулевой угол означает, что он был найден по грани
+' AutoCAD Region; нулевой угол оставляется как признак неизвестной ориентации.
+Private Function ElementContributesToAverageRotation(ByVal statusText As String, _
+        ByVal rotationValue As Double, ByVal widthValue As Double, _
+        ByVal heightValue As Double) As Boolean
+    If widthValue <= GEOM_TOLERANCE Or heightValue <= GEOM_TOLERANCE Then Exit Function
+
+    If StrComp(statusText, "Equivalent square", vbTextCompare) = 0 Then
+        ElementContributesToAverageRotation = (Abs(rotationValue) > GEOM_TOLERANCE)
+    Else
+        ElementContributesToAverageRotation = True
     End If
 End Function
 

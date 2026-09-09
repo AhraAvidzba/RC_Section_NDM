@@ -190,6 +190,10 @@ Public Function ImportGeometryFromAutoCADForWorkbook(ByVal workbook As Object) A
 
     Dim section As CSectionModel
     Set section = importer.ImportFromActiveDocument(settings, units)
+    ' Согласуем geometry-preview с расчетным путем: изотропные Region без
+    ' собственного угла получают среднюю ориентацию распознанной сетки до
+    ' записи snapshot, как это уже происходит при чтении Results для расчета.
+    section.ApplyAverageRotationToEquivalentAreaFallbacks
 
     Dim writer As CNDMResultsWriter
     Set writer = New CNDMResultsWriter

@@ -42,6 +42,7 @@ Public Function RunGeometryTests() As String
     TestAutoCADImporterSquareRegionReadsEdgeRotation stats
     TestAutoCADImporterAreaSquareFallback stats
     TestAutoCADImporterAreaSquareFallbackAverageRotation stats
+    TestSectionModelEquivalentSquareEdgeRotationAverageSource stats
     TestAutoCADImporterInvalidInertiaSquareFallback stats
     TestSectionModelEquivalentRectangleFromRealInertia stats
     TestSectionModelBoundaryDoesNotReplaceRealInertia stats
@@ -516,6 +517,35 @@ Private Sub TestAutoCADImporterAreaSquareFallbackAverageRotation(ByRef stats As 
     expectedProjectionDepth = 200# * Cos(angle) + Sqr(model.ConcreteArea(2)) / 2# + widthValue / 2#
     AssertClose stats, "autocad.import.squareFallbackRotation.projectedSide", _
         maxProjection - minProjection, expectedProjectionDepth, 0.000001
+End Sub
+
+' Проверяет, что почти изотропный Region с уже найденным углом простой грани
+' участвует в средней ориентации сетки. Такой элемент сам остается
+' Equivalent square, но его ненулевой Rotation является полезной подсказкой
+' для соседних элементов, у которых угол не удалось определить.
+Private Sub TestSectionModelEquivalentSquareEdgeRotationAverageSource(ByRef stats As TTestStats)
+    Dim areaKnown As Double
+    Dim areaUnknown As Double
+    Dim edgeAngle As Double
+    areaKnown = 2500#
+    areaUnknown = 1600#
+    edgeAngle = GEOM_PI / 7#
+
+    Dim model As CSectionModel
+    Set model = New CSectionModel
+    model.AddConcreteElement 0#, 0#, areaKnown, 1, "square", "S1", "Region", _
+        0#, 0#, edgeAngle, vbNullString, areaKnown * areaKnown / 12#, _
+        areaKnown * areaKnown / 12#, 0#
+    model.AddConcreteElement 100#, 0#, areaUnknown, 1, "unknown", "S2", "Region"
+
+    model.ApplyAverageRotationToEquivalentAreaFallbacks
+
+    AssertTrue stats, "model.squareEdgeAverage.source.shape", _
+        model.ConcreteShapeType(1) = "Equivalent square"
+    AssertTrue stats, "model.squareEdgeAverage.target.shape", _
+        model.ConcreteShapeType(2) = "Equivalent square"
+    AssertClose stats, "model.squareEdgeAverage.target.rotation", _
+        model.ConcreteRotation(2), edgeAngle, 0.000001
 End Sub
 
 ' Проверяет, что некорректная матрица Ix/Iy/Ixy импортированного Region не
