@@ -40,6 +40,12 @@ Private mConcreteLocalIxy() As Double ' Реальный собственный 
 Private mConcreteComment() As String ' Короткая диагностическая заметка для Results.
 Private mConcreteCount As Long ' Фактическое число бетонных элементов в модели.
 
+Private mBoundaryCacheValid() As Boolean ' True, если интерпретация оболочки элемента уже рассчитана и не требует повторения.
+Private mBoundaryCacheStatus() As String ' Кэшированный GeometryInterpretationStatus: Rectangle, Equivalent rectangle или Equivalent square.
+Private mBoundaryCacheWidth() As Double ' Кэшированная ширина интерпретированной геометрической оболочки, мм.
+Private mBoundaryCacheHeight() As Double ' Кэшированная высота интерпретированной геометрической оболочки, мм.
+Private mBoundaryCacheRotation() As Double ' Кэшированный угол интерпретированной геометрической оболочки, рад.
+
 Private mRebarID() As String ' Расчетные имена стержней: R1, R2, ...
 Private mRebarSourceName() As String ' Необязательное исходное имя арматурной области.
 Private mRebarSourceHandle() As String ' Необязательный AutoCAD handle арматурного Region.
@@ -79,6 +85,7 @@ Public Sub Clear()
     Erase mConcreteLocalIxy
     Erase mConcreteComment
     mConcreteCount = 0
+    ClearBoundaryCache
 
     Erase mRebarID
     Erase mRebarSourceName
@@ -134,6 +141,11 @@ Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, By
     ReDim Preserve mConcreteLocalIy(1 To mConcreteCount)
     ReDim Preserve mConcreteLocalIxy(1 To mConcreteCount)
     ReDim Preserve mConcreteComment(1 To mConcreteCount)
+    ReDim Preserve mBoundaryCacheValid(1 To mConcreteCount)
+    ReDim Preserve mBoundaryCacheStatus(1 To mConcreteCount)
+    ReDim Preserve mBoundaryCacheWidth(1 To mConcreteCount)
+    ReDim Preserve mBoundaryCacheHeight(1 To mConcreteCount)
+    ReDim Preserve mBoundaryCacheRotation(1 To mConcreteCount)
 
     mConcreteID(mConcreteCount) = "C" & CStr(mConcreteCount)
     mConcreteSourceName(mConcreteCount) = sourceName
@@ -176,6 +188,7 @@ Public Sub ApplyAverageRotationToEquivalentAreaFallbacks()
     For i = 1 To mConcreteCount
         If IsConcreteEquivalentAreaFallback(i) And Abs(mConcreteRotation(i)) <= GEOM_TOLERANCE Then
             mConcreteRotation(i) = fallbackRotation
+            InvalidateBoundaryCache i
         End If
     Next i
 End Sub
@@ -303,6 +316,23 @@ Private Sub InterpretConcreteBoundary(ByVal index As Long, ByRef statusText As S
         ByRef widthValue As Double, ByRef heightValue As Double, ByRef rotationValue As Double)
     CheckConcreteIndex index
 
+    If mBoundaryCacheValid(index) Then
+        statusText = mBoundaryCacheStatus(index)
+        widthValue = mBoundaryCacheWidth(index)
+        heightValue = mBoundaryCacheHeight(index)
+        rotationValue = mBoundaryCacheRotation(index)
+        Exit Sub
+    End If
+
+    CalculateConcreteBoundary index, statusText, widthValue, heightValue, rotationValue
+    StoreBoundaryCache index, statusText, widthValue, heightValue, rotationValue
+End Sub
+
+' Выполняет фактическую интерпретацию геометрической оболочки элемента.
+' Этот расчет может включать собственные значения тензора инерции, поэтому
+' CSectionModel кэширует результат и не повторяет его при каждом Width/Height.
+Private Sub CalculateConcreteBoundary(ByVal index As Long, ByRef statusText As String, _
+        ByRef widthValue As Double, ByRef heightValue As Double, ByRef rotationValue As Double)
     If HasExplicitRectangleGeometry(index) Then
         statusText = "Rectangle"
         widthValue = mConcreteWidth(index)
@@ -331,6 +361,38 @@ Private Sub InterpretConcreteBoundary(ByVal index As Long, ByRef statusText As S
     widthValue = Sqr(mConcreteArea(index))
     heightValue = widthValue
     rotationValue = NormalizeAnglePi(mConcreteRotation(index))
+End Sub
+
+' Запоминает рассчитанную оболочку бетонного элемента. Кэш хранит только
+' геометрическое представление для границ/схемы/AutoCAD и не меняет реальные
+' A/I, используемые в механических расчетах.
+Private Sub StoreBoundaryCache(ByVal index As Long, ByVal statusText As String, _
+        ByVal widthValue As Double, ByVal heightValue As Double, _
+        ByVal rotationValue As Double)
+    mBoundaryCacheStatus(index) = statusText
+    mBoundaryCacheWidth(index) = widthValue
+    mBoundaryCacheHeight(index) = heightValue
+    mBoundaryCacheRotation(index) = rotationValue
+    mBoundaryCacheValid(index) = True
+End Sub
+
+' Сбрасывает один элемент кэша после изменения данных, влияющих на оболочку.
+Private Sub InvalidateBoundaryCache(ByVal index As Long)
+    If index < 1 Or index > mConcreteCount Then Exit Sub
+    mBoundaryCacheValid(index) = False
+    mBoundaryCacheStatus(index) = vbNullString
+    mBoundaryCacheWidth(index) = 0#
+    mBoundaryCacheHeight(index) = 0#
+    mBoundaryCacheRotation(index) = 0#
+End Sub
+
+' Полностью очищает кэш интерпретации оболочек.
+Private Sub ClearBoundaryCache()
+    Erase mBoundaryCacheValid
+    Erase mBoundaryCacheStatus
+    Erase mBoundaryCacheWidth
+    Erase mBoundaryCacheHeight
+    Erase mBoundaryCacheRotation
 End Sub
 
 ' Восстанавливает оболочку неизотропного Region. Если реальные A/I совпадают
