@@ -774,7 +774,7 @@ End Sub
 Private Sub TestLargeSnapshotPlotStress(ByRef stats As TUiTestStats)
     PrepareUserLShapeMomentUltimateInput
     PrepareFullStateProfile "PR3"
-    SetSystemSetting "Mesh.Step", "10"
+    SetSystemSetting "Mesh.StepX", "10"
     SetSystemSetting "Mesh.StepY", "10"
     SetSystemSetting "Mesh.BoundarySubdivisions", "1"
     SetSystemSetting "SLS.Crack.PsiMode", "Auto"
@@ -2183,7 +2183,7 @@ Private Sub PrepareLShapeInput()
     SetSystemSetting "Geometry.Source", "Generated"
     SetSystemSetting "Geometry.Type", "LShape"
     SetSystemSetting "Plot.LoadCase", "LC_L"
-    SetSystemSetting "Mesh.Step", "40"
+    SetSystemSetting "Mesh.StepX", "40"
     SetSystemSetting "Mesh.StepY", "40"
     SetSystemSetting "Mesh.BoundarySubdivisions", "2"
     SetSystemSetting "LShape.B1", "160"
@@ -2268,7 +2268,7 @@ Private Sub PrepareUserLShapeMomentUltimateInput()
     SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
     SetSystemSetting "Solver.MaxIterations", "80"
     SetSystemSetting "Solver.LoadSteps", "1"
-    SetSystemSetting "Mesh.Step", "50"
+    SetSystemSetting "Mesh.StepX", "50"
     SetSystemSetting "Mesh.StepY", "50"
     SetSystemSetting "Mesh.BoundarySubdivisions", "1"
     SetSystemSetting "Load.ReferenceOffsetX", "0"
@@ -2318,7 +2318,7 @@ Private Sub PrepareUserLShapeAxialTensionInput()
     SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
     SetSystemSetting "Solver.MaxIterations", "80"
     SetSystemSetting "Solver.LoadSteps", "1"
-    SetSystemSetting "Mesh.Step", "50"
+    SetSystemSetting "Mesh.StepX", "50"
     SetSystemSetting "Mesh.StepY", "50"
     SetSystemSetting "Mesh.BoundarySubdivisions", "1"
     SetSystemSetting "Load.ReferenceOffsetX", "0"
@@ -2447,8 +2447,8 @@ Private Sub TestCapacitySettingsUnitLabels(ByRef stats As TUiTestStats)
     AssertTextEquals stats, "ui.units.capacity.toleranceStrain", SystemSettingUnitText("Capacity.ToleranceStrain"), "-"
     AssertTextEquals stats, "ui.units.capacity.maxLambda", SystemSettingUnitText("Capacity.MaxLambda"), "-"
     AssertTextEquals stats, "ui.units.capacity.solverIterations", SystemSettingUnitText("Capacity.SolverMaxIterations"), "шт"
-    AssertTrue stats, "ui.units.meshStep.dynamic", _
-        SystemSettingUnitCellReferencesQuantity("Mesh.Step", "Length")
+    AssertTrue stats, "ui.units.meshStepX.dynamic", _
+        SystemSettingUnitCellReferencesQuantity("Mesh.StepX", "Length")
     AssertTrue stats, "ui.units.meshStepY.dynamic", _
         SystemSettingUnitCellReferencesQuantity("Mesh.StepY", "Length")
     AssertTrue stats, "ui.units.zeroMomentPerDepth.dynamic", _

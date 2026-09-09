@@ -146,10 +146,10 @@ Public Function BuildGeneratedModel(ByVal settings As CSystemSettingsReader, ByV
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
 
-    Dim meshStepX As Double ' Шаг бетонной сетки по X во внутренних единицах.
+    Dim meshStepX As Double ' Шаг бетонной сетки по X во внутренних единицах; старый Mesh.Step читается только для совместимости.
     Dim meshStepY As Double ' Шаг бетонной сетки по Y; если ключа нет, сохраняем старое квадратное поведение.
-    meshStepX = units.InputLengthToInternal(settings.GetDouble("Mesh.Step", 10#))
-    meshStepY = units.InputLengthToInternal(settings.GetDouble("Mesh.StepY", settings.GetDouble("Mesh.Step", 10#)))
+    meshStepX = units.InputLengthToInternal(settings.GetDouble("Mesh.StepX", settings.GetDouble("Mesh.Step", 10#)))
+    meshStepY = units.InputLengthToInternal(settings.GetDouble("Mesh.StepY", settings.GetDouble("Mesh.StepX", settings.GetDouble("Mesh.Step", 10#))))
     mesh.BuildMesh geometry, meshStepX, meshStepY, 1, MeshBoundarySubdivisions(settings)
 
     Dim rebars As CRebarLayout

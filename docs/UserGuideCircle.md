@@ -25,7 +25,7 @@ workbook/output/RC_Section_NDM.xlsm
 | Параметр | Ед. | Пример |
 |---|---|---:|
 | `Geometry.Type` | | `Circle` |
-| `Mesh.Step` | мм | 50 |
+| `Mesh.StepX` | мм | 50 |
 | `Mesh.StepY` | мм | 50 |
 | `Mesh.BoundarySubdivisions` | шт | 1 |
 | `Load.ReferenceOffsetX` | мм | 0 |

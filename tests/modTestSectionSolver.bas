@@ -147,7 +147,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     requiredKeys = Array( _
         "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "Calculation.ZeroMomentPerDepth", _
         "Geometry.Source", "Geometry.Type", "LShape.B1", "LShape.H1", "LShape.B2", "LShape.H2", _
-        "Mesh.Step", "Mesh.StepY", "Mesh.BoundarySubdivisions", _
+        "Mesh.StepX", "Mesh.StepY", "Mesh.BoundarySubdivisions", _
         "Load.ReferenceOffsetX", "Load.ReferenceOffsetY", _
         "LShape.H1.as_1", "LShape.H1.as_2", "LShape.H1.d_1", "LShape.H1.d_2", _
         "LShape.H1.n_1", "LShape.H1.n_2", _
@@ -223,7 +223,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     Dim i As Long
     Dim removedKeys As Variant
     removedKeys = Array("Capacity.Enabled", "Capacity.CalculateMx", "Capacity.CalculateMy", _
-        "Capacity.CalculateMxy", "Mesh.BoundaryMode", "Mesh.StepX", "Circle.Radius", _
+        "Capacity.CalculateMxy", "Mesh.BoundaryMode", "Mesh.Step", "Circle.Radius", _
         "Batch.MaxCombinations", "Batch.Diagnostics", "Materials.SourceStatus", _
         "Concrete.Diagram", "Steel.Diagram", "Concrete.Point1.Eps", _
         "Concrete.Point1.Stress", "Concrete.Point2.Eps", "Concrete.Point2.Stress", _

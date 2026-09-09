@@ -272,8 +272,8 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddStep "Начато построение CSectionModel."
     report.AddValue "Geometry.Source", settings.GetRawString("Geometry.Source", "Generated")
     report.AddValue "Geometry.Type", settings.GetRawString("Geometry.Type", "-")
-    report.AddValue "Mesh.Step", settings.GetRawString("Mesh.Step", "-")
-    report.AddValue "Mesh.StepY", settings.GetRawString("Mesh.StepY", settings.GetRawString("Mesh.Step", "-"))
+    report.AddValue "Mesh.StepX", settings.GetRawString("Mesh.StepX", settings.GetRawString("Mesh.Step", "-"))
+    report.AddValue "Mesh.StepY", settings.GetRawString("Mesh.StepY", settings.GetRawString("Mesh.StepX", settings.GetRawString("Mesh.Step", "-")))
     report.AddValue "Mesh.BoundarySubdivisions", settings.GetRawString("Mesh.BoundarySubdivisions", "-")
     Set section = BuildWorkbookSectionModel(workbook, settings, units)
     report.AddStep "CSectionModel построен."
