@@ -38,6 +38,8 @@ Private Const MSO_TEXT_ORIENTATION_HORIZONTAL As Long = 1
 Private Const MSO_LINE_SOLID As Long = 1
 Private Const MSO_LINE_DASH As Long = 4
 Private Const MSO_LINE_DASH_DOT As Long = 5
+Private Const MSO_SEGMENT_LINE As Long = 0
+Private Const MSO_EDITING_AUTO As Long = 0
 Private Const MSO_ARROWHEAD_TRIANGLE As Long = 2
 Private Const MSO_ARROWHEAD_STEALTH As Long = 3
 Private Const MSO_ARROWHEAD_DIAMOND As Long = 4
@@ -1480,15 +1482,26 @@ Private Function DrawModelLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 
         colorValue, weight, suffix)
 End Function
 
-' Рисует расчетную опорную линию как Shape поверх сетки.
-' Координаты переводятся тем же ModelToChart mapper-ом, что и у элементов.
+' Рисует расчетную опорную линию поверх сетки устойчивыми Shape-полосами.
+' Для главных осей и нейтральной линии не используем Excel Line/Connector:
+' у диагональных линий Excel может нестабильно трактовать рамку объекта.
 Private Sub DrawModelReferenceLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
         ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String, Optional ByVal dashStyle As Long = MSO_LINE_SOLID)
-    Dim lineShape As Object
-    Set lineShape = DrawModelLine(x1, y1, x2, y2, colorValue, weight, suffix)
-    If lineShape Is Nothing Then Exit Sub
-    lineShape.Line.DashStyle = dashStyle
-    BringShapeToFront lineShape
+    Dim cx1 As Double
+    Dim cy1 As Double
+    Dim cx2 As Double
+    Dim cy2 As Double
+    cx1 = ModelToChartX(x1)
+    cy1 = ModelToChartY(y1)
+    cx2 = ModelToChartX(x2)
+    cy2 = ModelToChartY(y2)
+
+    If dashStyle = MSO_LINE_DASH Or dashStyle = MSO_LINE_DASH_DOT Then
+        DrawChartDashedReferenceBand cx1, cy1, cx2, cy2, colorValue, weight, suffix
+    Else
+        If Not ClipChartLineToPlotFrame(cx1, cy1, cx2, cy2, MaxDouble(weight, 0.75) / 2#) Then Exit Sub
+        DrawChartReferenceBand cx1, cy1, cx2, cy2, colorValue, weight, suffix
+    End If
 End Sub
 
 ' Рисует линию в координатах Chart/PlotArea.
@@ -1502,6 +1515,170 @@ Private Function DrawChartLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 
     lineShape.Line.Weight = weight
     Set DrawChartLine = lineShape
 End Function
+
+' Рисует служебную линию внутри ChartObject как тонкую Freeform-полосу.
+' Такая форма движется вместе с окном схемы, но не страдает от геометрии
+' стандартного Excel Line/Connector на диагональных направлениях.
+Private Function DrawChartReferenceBand(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
+        ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String) As Object
+    Dim dx As Double
+    Dim dy As Double
+    Dim lengthValue As Double
+    dx = x2 - x1
+    dy = y2 - y1
+    lengthValue = Sqr(dx * dx + dy * dy)
+    If lengthValue <= 0.0000001 Then Exit Function
+
+    Dim thickness As Double
+    thickness = MaxDouble(weight, 0.75)
+    Dim nx As Double
+    Dim ny As Double
+    nx = -dy / lengthValue * thickness / 2#
+    ny = dx / lengthValue * thickness / 2#
+
+    Dim builder As Object
+    Set builder = mChart.Shapes.BuildFreeform(MSO_EDITING_AUTO, x1 + nx, y1 + ny)
+    builder.AddNodes MSO_SEGMENT_LINE, MSO_EDITING_AUTO, x2 + nx, y2 + ny
+    builder.AddNodes MSO_SEGMENT_LINE, MSO_EDITING_AUTO, x2 - nx, y2 - ny
+    builder.AddNodes MSO_SEGMENT_LINE, MSO_EDITING_AUTO, x1 - nx, y1 - ny
+    builder.AddNodes MSO_SEGMENT_LINE, MSO_EDITING_AUTO, x1 + nx, y1 + ny
+
+    Dim bandShape As Object
+    Set bandShape = builder.ConvertToShape
+    bandShape.Name = SHAPE_PREFIX & suffix & CStr(mChart.Shapes.Count)
+    bandShape.Fill.ForeColor.RGB = colorValue
+    bandShape.Line.Visible = False
+    BringShapeToFront bandShape
+    Set DrawChartReferenceBand = bandShape
+End Function
+
+' Рисует пунктирную расчетную линию короткими Freeform-сегментами.
+' Объектов немного: пунктир нужен только для опорных осей, а не для сетки.
+Private Sub DrawChartDashedReferenceBand(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
+        ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String)
+    Dim dx As Double
+    Dim dy As Double
+    Dim lengthValue As Double
+    dx = x2 - x1
+    dy = y2 - y1
+    lengthValue = Sqr(dx * dx + dy * dy)
+    If lengthValue <= 0.0000001 Then Exit Sub
+
+    Const DASH_LENGTH As Double = 10#
+    Const GAP_LENGTH As Double = 6#
+
+    Dim cycleLength As Double
+    cycleLength = DASH_LENGTH + GAP_LENGTH
+
+    Dim position As Double
+    Dim segmentStart As Double
+    Dim segmentEnd As Double
+    Dim segmentIndex As Long
+    Dim t1 As Double
+    Dim t2 As Double
+    segmentIndex = 1
+    position = lengthValue / 2# - DASH_LENGTH / 2#
+    Do While position > 0#
+        position = position - cycleLength
+    Loop
+    Do While position + DASH_LENGTH < 0#
+        position = position + cycleLength
+    Loop
+
+    Do While position < lengthValue
+        segmentStart = MaxDouble(position, 0#)
+        segmentEnd = MinDouble(position + DASH_LENGTH, lengthValue)
+        If segmentEnd <= segmentStart Then GoTo NextSegment
+        t1 = segmentStart / lengthValue
+        t2 = segmentEnd / lengthValue
+        Dim sx1 As Double
+        Dim sy1 As Double
+        Dim sx2 As Double
+        Dim sy2 As Double
+        sx1 = x1 + dx * t1
+        sy1 = y1 + dy * t1
+        sx2 = x1 + dx * t2
+        sy2 = y1 + dy * t2
+        If ClipChartLineToPlotFrame(sx1, sy1, sx2, sy2, MaxDouble(weight, 0.75) / 2#) Then _
+            DrawChartReferenceBand sx1, sy1, sx2, sy2, colorValue, weight, suffix & "Dash" & CStr(segmentIndex)
+NextSegment:
+        position = position + cycleLength
+        segmentIndex = segmentIndex + 1
+    Loop
+End Sub
+
+' Обрезает линию по текущей координатной рамке схемы.
+' Это не меняет расчетную геометрию, а только не дает опорным осям выходить
+' за видимую область построения.
+Private Function ClipChartLineToPlotFrame(ByRef x1 As Double, ByRef y1 As Double, _
+        ByRef x2 As Double, ByRef y2 As Double, ByVal inset As Double) As Boolean
+    EnsurePlotAreaMetrics
+
+    Dim leftBound As Double
+    Dim rightBound As Double
+    Dim topBound As Double
+    Dim bottomBound As Double
+    leftBound = mPlotLeft + inset
+    rightBound = mPlotLeft + mPlotWidth - inset
+    topBound = mPlotTop + inset
+    bottomBound = mPlotTop + mPlotHeight - inset
+    If rightBound <= leftBound Or bottomBound <= topBound Then Exit Function
+
+    Dim dx As Double
+    Dim dy As Double
+    dx = x2 - x1
+    dy = y2 - y1
+
+    Dim tMin As Double
+    Dim tMax As Double
+    tMin = 0#
+    tMax = 1#
+    If Not ClipLineParameter(-dx, x1 - leftBound, tMin, tMax) Then Exit Function
+    If Not ClipLineParameter(dx, rightBound - x1, tMin, tMax) Then Exit Function
+    If Not ClipLineParameter(-dy, y1 - topBound, tMin, tMax) Then Exit Function
+    If Not ClipLineParameter(dy, bottomBound - y1, tMin, tMax) Then Exit Function
+    If tMax < tMin Then Exit Function
+
+    Dim originalX1 As Double
+    Dim originalY1 As Double
+    originalX1 = x1
+    originalY1 = y1
+    x1 = originalX1 + dx * tMin
+    y1 = originalY1 + dy * tMin
+    x2 = originalX1 + dx * tMax
+    y2 = originalY1 + dy * tMax
+    ClipChartLineToPlotFrame = True
+End Function
+
+' Обновляет параметры отсечения Liang-Barsky для одной стороны рамки.
+Private Function ClipLineParameter(ByVal p As Double, ByVal q As Double, _
+        ByRef tMin As Double, ByRef tMax As Double) As Boolean
+    Const CLIP_TOLERANCE As Double = 0.0000001
+    If Abs(p) <= CLIP_TOLERANCE Then
+        ClipLineParameter = (q >= -CLIP_TOLERANCE)
+        Exit Function
+    End If
+
+    Dim r As Double
+    r = q / p
+    If p < 0# Then
+        If r > tMax Then Exit Function
+        If r > tMin Then tMin = r
+    Else
+        If r < tMin Then Exit Function
+        If r < tMax Then tMax = r
+    End If
+    ClipLineParameter = True
+End Function
+
+' Возвращает Shape в заданный центр после поворота.
+' Excel может пересчитать рамку повернутого прямоугольника, поэтому центр
+' фиксируем после установки Rotation, а не только при создании объекта.
+Private Sub SetShapeCenter(ByVal shapeObject As Object, ByVal centerX As Double, ByVal centerY As Double)
+    If shapeObject Is Nothing Then Exit Sub
+    shapeObject.Left = centerX - CDbl(shapeObject.Width) / 2#
+    shapeObject.Top = centerY - CDbl(shapeObject.Height) / 2#
+End Sub
 
 ' Поднимает служебные Shape-объекты поверх сетки и аннотаций.
 ' Если конкретная версия Excel не поддержит ZOrder для объекта, отрисовка
@@ -1556,7 +1733,10 @@ Private Function DrawModelRectangleCentered(ByVal centerX As Double, ByVal cente
     rectShape.Fill.ForeColor.RGB = fillColor
     rectShape.Line.ForeColor.RGB = lineColor
     rectShape.Line.Weight = weight
-    If Abs(rotationRad) > 0.000000000001 Then rectShape.Rotation = -rotationRad * 180# / GEOM_PI
+    If Abs(rotationRad) > 0.000000000001 Then
+        rectShape.Rotation = -rotationRad * 180# / GEOM_PI
+        SetShapeCenter rectShape, centerChartX, centerChartY
+    End If
     Set DrawModelRectangleCentered = rectShape
 End Function
 
@@ -1774,10 +1954,9 @@ Private Sub ClearGeneratedShapes()
     Next i
 End Sub
 
-' Удаляет старые служебные Shape-объекты, которые прежние версии схемы могли
-' создать прямо на листе Расчет поверх ChartObject. Новая схема хранит все
-' NDMPlot_* внутри Chart, поэтому листовые одноименные остатки только мешают:
-' они не двигаются вместе с PlotArea и визуально сдвигают оси/точку нагрузки.
+' Удаляет служебные Shape-объекты схемы, созданные прямо на листе Расчет.
+' Актуальная схема хранит опорные линии и точку внутри ChartObject, но остатки
+' старых версий могли остаться на листе и должны очищаться перед перерисовкой.
 Private Sub ClearLegacyWorksheetGeneratedShapes()
     If mChartObject Is Nothing Then Exit Sub
 

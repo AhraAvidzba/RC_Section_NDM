@@ -13,6 +13,11 @@ Private Type TUiTestStats
     Report As String
 End Type
 
+Private Const TEST_PLOT_FRAME_LEFT As Double = 28#
+Private Const TEST_PLOT_FRAME_TOP As Double = 36#
+Private Const TEST_PLOT_FRAME_WIDTH_MARGIN As Double = 180#
+Private Const TEST_PLOT_FRAME_HEIGHT_MARGIN As Double = 72#
+
 ' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
 Public Function RunWorkbookInterfaceTests() As String
     On Error GoTo Failed
@@ -30,6 +35,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAutoCADImportButtonRejectsGeneratedSource stats
     TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
     TestPlotClearsLegacyWorksheetShapes stats
+    TestPlotOverlayCoordinatesMatchResults stats
     TestGeneratedSourceDoesNotReuseAutoCADPreview stats
     TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC stats
     TestProfileDrivenPlotUsesSnapshotState stats
@@ -478,7 +484,104 @@ Private Sub TestPlotClearsLegacyWorksheetShapes(ByRef stats As TUiTestStats)
 
     AssertTrue stats, "ui.plot.legacyWorksheetShape.removed", _
         CountWorksheetPlotShapes("LegacyWorksheetShapeForTest") = 0
-    AssertTrue stats, "ui.plot.legacyWorksheetShape.chartStillDraws", CountPlotShapes("LoadPoint") > 0
+    AssertTrue stats, "ui.plot.legacyWorksheetShape.chartStillDraws", CountPlotShapes("AnnotationLine") > 0
+End Sub
+
+' Проверяет не только наличие осей/точки, но и их взаимное положение.
+' Для режима Transformed центр главных осей берется из Transformed.Centroid,
+' а точка нагрузки - из LoadReference. Их экранный сдвиг должен совпадать с
+' расчетным сдвигом из Results после одного общего model-to-chart масштаба.
+Private Sub TestPlotOverlayCoordinatesMatchResults(ByRef stats As TUiTestStats)
+    PrepareUserLShapeMomentUltimateInput
+    SetSystemSetting "Plot.PrincipalAxesMode", "Transformed"
+    SetSystemSetting "Plot.LoadApplicationPointEnabled", "Yes"
+    SetSystemSetting "Plot.ResultLabelsEnabled", "No"
+    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
+
+    Dim message As String
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    AssertTrue stats, "ui.plot.overlay.run", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+
+    Dim loadX As Double
+    Dim loadY As Double
+    Dim centroidX As Double
+    Dim centroidY As Double
+    loadX = CDbl(ResultsPropertyValue("ALL", "LoadReferenceX"))
+    loadY = CDbl(ResultsPropertyValue("ALL", "LoadReferenceY"))
+    centroidX = CDbl(ResultsPropertyValue("ALL", "Transformed.CentroidX"))
+    centroidY = CDbl(ResultsPropertyValue("ALL", "Transformed.CentroidY"))
+
+    Dim loadPoint As Object
+    Set loadPoint = FirstGeneratedPlotShape("LoadPoint")
+    AssertTrue stats, "ui.plot.overlay.shapes", CountGeneratedPlotShapes("Principal1") > 0 And _
+        CountGeneratedPlotShapes("Principal2") > 0 And Not loadPoint Is Nothing
+    If CountGeneratedPlotShapes("Principal1") <= 0 Or CountGeneratedPlotShapes("Principal2") <= 0 Or loadPoint Is Nothing Then Exit Sub
+    AssertTrue stats, "ui.plot.overlay.chartLayer", CountPlotShapes("Principal1") > 0 And _
+        CountPlotShapes("Principal2") > 0 And CountPlotShapes("LoadPoint") > 0 And _
+        CountWorksheetPlotShapes("Principal1") = 0 And CountWorksheetPlotShapes("Principal2") = 0 And _
+        CountWorksheetPlotShapes("LoadPoint") = 0
+
+    Dim loadCenterX As Double
+    Dim loadCenterY As Double
+    AssertTrue stats, "ui.plot.overlay.loadCenter", GeneratedPlotShapeCenterAverage("LoadPoint", loadCenterX, loadCenterY)
+
+    Dim plot As Object
+    Set plot = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
+    AssertTrue stats, "ui.plot.overlay.clippedAxes", PlotShapesInsideStableFrame("Principal1", 1#) And _
+        PlotShapesInsideStableFrame("Principal2", 1#)
+
+    Dim minX As Double
+    Dim maxX As Double
+    Dim minY As Double
+    Dim maxY As Double
+    minX = CDbl(plot.Chart.Axes(1).MinimumScale)
+    maxX = CDbl(plot.Chart.Axes(1).MaximumScale)
+    minY = CDbl(plot.Chart.Axes(2).MinimumScale)
+    maxY = CDbl(plot.Chart.Axes(2).MaximumScale)
+
+    Dim scaleValue As Double
+    scaleValue = (CDbl(plot.Width) - TEST_PLOT_FRAME_WIDTH_MARGIN) / (maxX - minX)
+    If (CDbl(plot.Height) - TEST_PLOT_FRAME_HEIGHT_MARGIN) / (maxY - minY) < scaleValue Then _
+        scaleValue = (CDbl(plot.Height) - TEST_PLOT_FRAME_HEIGHT_MARGIN) / (maxY - minY)
+
+    Dim expectedCentroidX As Double
+    Dim expectedCentroidY As Double
+    Dim expectedLoadX As Double
+    Dim expectedLoadY As Double
+    expectedCentroidX = CDbl(plot.Left) + TEST_PLOT_FRAME_LEFT + (centroidX - minX) / (maxX - minX) * _
+        (CDbl(plot.Width) - TEST_PLOT_FRAME_WIDTH_MARGIN)
+    expectedCentroidY = CDbl(plot.Top) + TEST_PLOT_FRAME_TOP + (CDbl(plot.Height) - TEST_PLOT_FRAME_HEIGHT_MARGIN) - _
+        (centroidY - minY) / (maxY - minY) * (CDbl(plot.Height) - TEST_PLOT_FRAME_HEIGHT_MARGIN)
+    expectedLoadX = CDbl(plot.Left) + TEST_PLOT_FRAME_LEFT + (loadX - minX) / (maxX - minX) * _
+        (CDbl(plot.Width) - TEST_PLOT_FRAME_WIDTH_MARGIN)
+    expectedLoadY = CDbl(plot.Top) + TEST_PLOT_FRAME_TOP + (CDbl(plot.Height) - TEST_PLOT_FRAME_HEIGHT_MARGIN) - _
+        (loadY - minY) / (maxY - minY) * (CDbl(plot.Height) - TEST_PLOT_FRAME_HEIGHT_MARGIN)
+
+    AssertTrue stats, "ui.plot.overlay.principal1ThroughCentroid", _
+        PlotShapeBoundsContainAbsolutePoint("Principal1", expectedCentroidX, expectedCentroidY, 1.5)
+    AssertTrue stats, "ui.plot.overlay.principal2ThroughCentroid", _
+        PlotShapeBoundsContainAbsolutePoint("Principal2", expectedCentroidX, expectedCentroidY, 1.5)
+    AssertClose stats, "ui.plot.overlay.loadX", loadCenterX, expectedLoadX, 0.8
+    AssertClose stats, "ui.plot.overlay.loadY", loadCenterY, expectedLoadY, 0.8
+    AssertClose stats, "ui.plot.overlay.loadDx", loadCenterX - expectedCentroidX, (loadX - centroidX) * scaleValue, 0.8
+    AssertClose stats, "ui.plot.overlay.loadDy", loadCenterY - expectedCentroidY, -(loadY - centroidY) * scaleValue, 0.8
+
+    Dim beforeMoveX As Double
+    Dim beforeMoveY As Double
+    Dim afterMoveX As Double
+    Dim afterMoveY As Double
+    Dim oldLeft As Double
+    Dim oldTop As Double
+    oldLeft = CDbl(plot.Left)
+    oldTop = CDbl(plot.Top)
+    AssertTrue stats, "ui.plot.overlay.move.before", GeneratedPlotShapeCenterAverage("LoadPoint", beforeMoveX, beforeMoveY)
+    plot.Left = oldLeft + 17#
+    plot.Top = oldTop + 11#
+    AssertTrue stats, "ui.plot.overlay.move.after", GeneratedPlotShapeCenterAverage("LoadPoint", afterMoveX, afterMoveY)
+    AssertClose stats, "ui.plot.overlay.move.dx", afterMoveX - beforeMoveX, 17#, 0.3
+    AssertClose stats, "ui.plot.overlay.move.dy", afterMoveY - beforeMoveY, 11#, 0.3
+    plot.Left = oldLeft
+    plot.Top = oldTop
 End Sub
 
 ' Проверяет, что AutoCAD-preview не используется как запасная схема
@@ -1459,6 +1562,134 @@ Private Function CountPlotShapes(ByVal nameFragment As String) As Long
     For shapeIndex = 1 To chartObject.Chart.Shapes.Count
         If InStr(1, chartObject.Chart.Shapes.Item(shapeIndex).Name, nameFragment, vbTextCompare) > 0 Then
             CountPlotShapes = CountPlotShapes + 1
+        End If
+    Next shapeIndex
+Failed:
+End Function
+
+Private Function FirstGeneratedPlotShape(ByVal nameFragment As String) As Object
+    On Error GoTo Failed
+    Dim chartObject As Object
+    Set chartObject = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
+
+    Dim shapeIndex As Long
+    For shapeIndex = 1 To chartObject.Chart.Shapes.Count
+        If InStr(1, chartObject.Chart.Shapes.Item(shapeIndex).Name, nameFragment, vbTextCompare) > 0 Then
+            Set FirstGeneratedPlotShape = chartObject.Chart.Shapes.Item(shapeIndex)
+            Exit Function
+        End If
+    Next shapeIndex
+
+    Dim sheet As Object
+    Set sheet = ThisWorkbook.Worksheets.Item("Расчет")
+    For shapeIndex = 1 To sheet.Shapes.Count
+        If InStr(1, sheet.Shapes.Item(shapeIndex).Name, nameFragment, vbTextCompare) > 0 Then
+            Set FirstGeneratedPlotShape = sheet.Shapes.Item(shapeIndex)
+            Exit Function
+        End If
+    Next shapeIndex
+Failed:
+End Function
+
+Private Function ShapeCenterX(ByVal shapeObject As Object) As Double
+    ShapeCenterX = CDbl(shapeObject.Left) + CDbl(shapeObject.Width) / 2#
+End Function
+
+Private Function ShapeCenterY(ByVal shapeObject As Object) As Double
+    ShapeCenterY = CDbl(shapeObject.Top) + CDbl(shapeObject.Height) / 2#
+End Function
+
+Private Function CountGeneratedPlotShapes(ByVal nameFragment As String) As Long
+    CountGeneratedPlotShapes = CountPlotShapes(nameFragment) + CountWorksheetPlotShapes(nameFragment)
+End Function
+
+Private Function GeneratedPlotShapeCenterAverage(ByVal nameFragment As String, ByRef centerX As Double, ByRef centerY As Double) As Boolean
+    On Error GoTo Failed
+    Dim chartObject As Object
+    Set chartObject = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
+
+    Dim shapeIndex As Long
+    Dim count As Long
+    For shapeIndex = 1 To chartObject.Chart.Shapes.Count
+        If InStr(1, chartObject.Chart.Shapes.Item(shapeIndex).Name, nameFragment, vbTextCompare) > 0 Then
+            centerX = centerX + CDbl(chartObject.Left) + ShapeCenterX(chartObject.Chart.Shapes.Item(shapeIndex))
+            centerY = centerY + CDbl(chartObject.Top) + ShapeCenterY(chartObject.Chart.Shapes.Item(shapeIndex))
+            count = count + 1
+        End If
+    Next shapeIndex
+
+    Dim sheet As Object
+    Set sheet = ThisWorkbook.Worksheets.Item("Расчет")
+    For shapeIndex = 1 To sheet.Shapes.Count
+        If InStr(1, sheet.Shapes.Item(shapeIndex).Name, nameFragment, vbTextCompare) > 0 Then
+            centerX = centerX + ShapeCenterX(sheet.Shapes.Item(shapeIndex))
+            centerY = centerY + ShapeCenterY(sheet.Shapes.Item(shapeIndex))
+            count = count + 1
+        End If
+    Next shapeIndex
+
+    If count <= 0 Then Exit Function
+    centerX = centerX / count
+    centerY = centerY / count
+    GeneratedPlotShapeCenterAverage = True
+Failed:
+End Function
+
+Private Function PlotShapesInsideStableFrame(ByVal nameFragment As String, ByVal tolerance As Double) As Boolean
+    On Error GoTo Failed
+    Dim chartObject As Object
+    Set chartObject = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
+
+    Dim leftBound As Double
+    Dim topBound As Double
+    Dim rightBound As Double
+    Dim bottomBound As Double
+    leftBound = TEST_PLOT_FRAME_LEFT - tolerance
+    topBound = TEST_PLOT_FRAME_TOP - tolerance
+    rightBound = TEST_PLOT_FRAME_LEFT + CDbl(chartObject.Width) - TEST_PLOT_FRAME_WIDTH_MARGIN + tolerance
+    bottomBound = TEST_PLOT_FRAME_TOP + CDbl(chartObject.Height) - TEST_PLOT_FRAME_HEIGHT_MARGIN + tolerance
+
+    Dim shapeIndex As Long
+    Dim matched As Boolean
+    For shapeIndex = 1 To chartObject.Chart.Shapes.Count
+        If InStr(1, chartObject.Chart.Shapes.Item(shapeIndex).Name, nameFragment, vbTextCompare) > 0 Then
+            matched = True
+            If CDbl(chartObject.Chart.Shapes.Item(shapeIndex).Left) < leftBound Then Exit Function
+            If CDbl(chartObject.Chart.Shapes.Item(shapeIndex).Top) < topBound Then Exit Function
+            If CDbl(chartObject.Chart.Shapes.Item(shapeIndex).Left) + _
+                    CDbl(chartObject.Chart.Shapes.Item(shapeIndex).Width) > rightBound Then Exit Function
+            If CDbl(chartObject.Chart.Shapes.Item(shapeIndex).Top) + _
+                    CDbl(chartObject.Chart.Shapes.Item(shapeIndex).Height) > bottomBound Then Exit Function
+        End If
+    Next shapeIndex
+    PlotShapesInsideStableFrame = matched
+Failed:
+End Function
+
+Private Function PlotShapeBoundsContainAbsolutePoint(ByVal nameFragment As String, _
+        ByVal pointX As Double, ByVal pointY As Double, ByVal tolerance As Double) As Boolean
+    On Error GoTo Failed
+    Dim chartObject As Object
+    Set chartObject = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
+
+    Dim shapeIndex As Long
+    Dim leftValue As Double
+    Dim topValue As Double
+    Dim rightValue As Double
+    Dim bottomValue As Double
+    For shapeIndex = 1 To chartObject.Chart.Shapes.Count
+        If InStr(1, chartObject.Chart.Shapes.Item(shapeIndex).Name, nameFragment, vbTextCompare) > 0 Then
+            leftValue = CDbl(chartObject.Left) + CDbl(chartObject.Chart.Shapes.Item(shapeIndex).Left) - tolerance
+            topValue = CDbl(chartObject.Top) + CDbl(chartObject.Chart.Shapes.Item(shapeIndex).Top) - tolerance
+            rightValue = CDbl(chartObject.Left) + CDbl(chartObject.Chart.Shapes.Item(shapeIndex).Left) + _
+                CDbl(chartObject.Chart.Shapes.Item(shapeIndex).Width) + tolerance
+            bottomValue = CDbl(chartObject.Top) + CDbl(chartObject.Chart.Shapes.Item(shapeIndex).Top) + _
+                CDbl(chartObject.Chart.Shapes.Item(shapeIndex).Height) + tolerance
+            If pointX >= leftValue And pointX <= rightValue And _
+                    pointY >= topValue And pointY <= bottomValue Then
+                PlotShapeBoundsContainAbsolutePoint = True
+                Exit Function
+            End If
         End If
     Next shapeIndex
 Failed:
