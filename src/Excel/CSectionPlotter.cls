@@ -26,12 +26,10 @@ Private Const CHART_NAME As String = "chtNDMSectionPlot"
 Private Const SHAPE_PREFIX As String = "NDMPlot_"
 Private Const XL_XY_SCATTER As Long = -4169
 Private Const XL_XY_SCATTER_LINES As Long = 74
-Private Const XL_XY_SCATTER_LINES_NO_MARKERS As Long = 75
 Private Const XL_CATEGORY As Long = 1
 Private Const XL_VALUE As Long = 2
 Private Const XL_PRIMARY As Long = 1
 Private Const XL_MARKER_SQUARE As Long = 1
-Private Const XL_MARKER_DIAMOND As Long = 2
 Private Const XL_MARKER_CIRCLE As Long = 8
 Private Const XL_NONE As Long = -4142
 Private Const XL_CENTER As Long = -4108
@@ -51,6 +49,7 @@ Private Const MSO_ARROWHEAD_LENGTH_LONG As Long = 3
 Private Const MSO_ARROWHEAD_WIDTH_NARROW As Long = 1
 Private Const MSO_ARROWHEAD_WIDTH_MEDIUM As Long = 2
 Private Const MSO_ARROWHEAD_WIDTH_WIDE As Long = 3
+Private Const MSO_BRING_TO_FRONT As Long = 0
 Private Const MSO_SHAPE_RECTANGLE As Long = 1
 Private Const MSO_SHAPE_DIAMOND As Long = 4
 Private Const MSO_SHAPE_OVAL As Long = 9
@@ -60,6 +59,10 @@ Private Const RESULT_COLOR_BUCKET_COUNT As Long = 16 ' Число цветовы
 Private Const CONCRETE_MARKER_SIZE_BUCKET As Long = 3 ' Шаг группировки бетонных маркеров, чтобы Chart не превысил лимит series.
 Private Const ELEMENT_SHAPE_RENDER_MAX_COUNT As Long = 5000 ' До этого числа элементов геометрию рисуем поэлементно Shape-ами.
 Private Const CONCRETE_SHAPE_FILL_RATIO As Double = 0.7 ' Визуальный размер бетонной ячейки: оставляет зазор между соседними элементами.
+Private Const PLOT_FRAME_LEFT As Double = 28# ' Левый край рабочей области схемы внутри Chart.
+Private Const PLOT_FRAME_TOP As Double = 36# ' Верхний край рабочей области схемы внутри Chart.
+Private Const PLOT_FRAME_WIDTH_MARGIN As Double = 180# ' Запас справа для легенд и подписей.
+Private Const PLOT_FRAME_HEIGHT_MARGIN As Double = 72# ' Запас снизу для предупреждений и подписи режима.
 
 Private mChart As Object ' Excel Chart, внутри которого рисуются series и аннотационные Shapes.
 Private mChartObject As Object ' Контейнер ChartObject на листе Расчет; пользователь может двигать/масштабировать его.
@@ -67,6 +70,11 @@ Private mMinX As Double ' Минимум оси X после добавлени�
 Private mMaxX As Double ' Максимум оси X после добавления полей для аннотаций.
 Private mMinY As Double ' Минимум оси Y после добавления полей для аннотаций.
 Private mMaxY As Double ' Максимум оси Y после добавления полей для аннотаций.
+Private mPlotLeft As Double ' Зафиксированная левая граница PlotArea для всех Shape-объектов текущей схемы.
+Private mPlotTop As Double ' Зафиксированная верхняя граница PlotArea для всех Shape-объектов текущей схемы.
+Private mPlotWidth As Double ' Зафиксированная ширина PlotArea; не перечитывается во время отрисовки.
+Private mPlotHeight As Double ' Зафиксированная высота PlotArea; не перечитывается во время отрисовки.
+Private mPlotMetricsCaptured As Boolean ' True после снимка PlotArea для текущего прохода отрисовки.
 Private mResultMin As Double ' Минимальное значение выбранной визуальной величины среди рабочих элементов.
 Private mResultMax As Double ' Максимальное значение выбранной визуальной величины среди рабочих элементов.
 Private mCompressionMaxAbs As Double ' Максимальный модуль сжатия для общей легенды.
@@ -102,7 +110,7 @@ Private mElementGroupingEnabled As Boolean ' True - включено укруп�
 
 ' Перестраивает схему по данным последнего расчета.
 ' Метод управляет порядком операций: подготовка chart, равный масштаб X/Y,
-' series расчетных элементов, расчетные линии и Shape-аннотации.
+' расчетные элементы, Shape-аннотации и верхний служебный Shape-оверлей.
 Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4800, "CSectionPlotter", "Книга Excel не передана."
     If data Is Nothing Then Err.Raise vbObjectError + 4801, "CSectionPlotter", "Данные схемы не переданы."
@@ -123,19 +131,19 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     mConcreteCompressionColor = ParseRgb(settings.GetString("Plot.Color.ConcreteCompression", "125,35,210"), RGB(125, 35, 210))
     mConcreteTensionColor = ParseRgb(settings.GetString("Plot.Color.ConcreteTension", "0,155,85"), RGB(0, 155, 85))
 
+    mElementShapeLayerEnabled = ShouldDrawElementShapeLayer(data)
+    mElementGroupingEnabled = Not mElementShapeLayerEnabled
     PrepareChart data
     ConfigureEqualScale data, settings
     ClearGeneratedShapes
     CalculateResultRange data
-    mElementShapeLayerEnabled = ShouldDrawElementShapeLayer(data)
-    mElementGroupingEnabled = Not mElementShapeLayerEnabled
     AddElementSeries data
-    If data.GeometryOnly Then
-        DrawGeometryReferenceSeries data, settings
-    Else
-        DrawAnalysisSeries data, settings
-    End If
     DrawShapeDecorations data, settings
+    If data.GeometryOnly Then
+        DrawGeometryReferenceOverlay data, settings
+    Else
+        DrawAnalysisOverlay data, settings
+    End If
 End Sub
 
 ' Очищает существующую схему до нейтрального состояния без удаления ChartObject.
@@ -180,6 +188,12 @@ End Function
 ' Подготавливает Chart к новой отрисовке, сохраняя сам ChartObject.
 ' Старые series удаляются, но размеры и положение окна схемы остаются как у пользователя.
 Private Sub PrepareChart(ByVal data As CSectionPlotDataReader)
+    mPlotMetricsCaptured = False
+    mPlotLeft = 0#
+    mPlotTop = 0#
+    mPlotWidth = 0#
+    mPlotHeight = 0#
+
     mChart.ChartType = XL_XY_SCATTER
     mChart.HasLegend = False
     mChart.HasTitle = True
@@ -193,10 +207,10 @@ Private Sub PrepareChart(ByVal data As CSectionPlotDataReader)
     On Error Resume Next
     mChart.ChartArea.Format.Fill.ForeColor.RGB = RGB(255, 255, 255)
     mChart.PlotArea.Format.Fill.ForeColor.RGB = RGB(255, 255, 255)
-    mChart.PlotArea.Left = 28
-    mChart.PlotArea.Top = 36
-    mChart.PlotArea.Width = mChartObject.Width - 180
-    mChart.PlotArea.Height = mChartObject.Height - 72
+    mChart.PlotArea.Left = PLOT_FRAME_LEFT
+    mChart.PlotArea.Top = PLOT_FRAME_TOP
+    mChart.PlotArea.Width = StablePlotFrameWidth()
+    mChart.PlotArea.Height = StablePlotFrameHeight()
     On Error GoTo 0
 End Sub
 
@@ -225,8 +239,8 @@ Private Sub ConfigureEqualScale(ByVal data As CSectionPlotDataReader, ByVal sett
     rawMaxY = rawMaxY + MaxDouble(dy * 0.16, annotationMargin)
 
     Dim plotW As Double, plotH As Double
-    plotW = mChart.PlotArea.InsideWidth
-    plotH = mChart.PlotArea.InsideHeight
+    plotW = PlotCoordinateWidth()
+    plotH = PlotCoordinateHeight()
     If plotW <= 0# Or plotH <= 0# Then
         plotW = mChartObject.Width * 0.72
         plotH = mChartObject.Height * 0.72
@@ -302,8 +316,8 @@ Private Function AnnotationTextMetricModel(ByVal value As Double, ByVal unitName
     End If
 
     Dim plotW As Double, plotH As Double
-    plotW = mChart.PlotArea.InsideWidth
-    plotH = mChart.PlotArea.InsideHeight
+    plotW = PlotCoordinateWidth()
+    plotH = PlotCoordinateHeight()
     If plotW <= 0# Or plotH <= 0# Then
         plotW = mChartObject.Width * 0.72
         plotH = mChartObject.Height * 0.72
@@ -417,6 +431,7 @@ End Sub
 ' больших сеток, где тысячи отдельных Shapes заметно перегружают Excel.
 Private Sub AddElementSeries(ByVal data As CSectionPlotDataReader)
     If mElementShapeLayerEnabled Then
+        CapturePlotAreaMetrics
         AddElementShapes data
         Exit Sub
     End If
@@ -445,6 +460,8 @@ Private Sub AddElementSeries(ByVal data As CSectionPlotDataReader)
     For Each keyVariant In buckets.Keys
         AddBucketSeriesByIndexes data, CStr(keyVariant), buckets(keyVariant)
     Next keyVariant
+
+    CapturePlotAreaMetrics
 End Sub
 
 ' Проверяет, можно ли рисовать расчетные элементы отдельными Shapes.
@@ -692,31 +709,33 @@ Private Function BlendColor(ByVal c1 As Long, ByVal c2 As Long, ByVal t As Doubl
     BlendColor = RGB(CLng(r1 + (r2 - r1) * t), CLng(g1 + (g2 - g1) * t), CLng(b1 + (b2 - b1) * t))
 End Function
 
-' Добавляет расчетные линии и точку нагрузки поверх элементов.
-' Нейтральная линия, главные оси и точка нагрузки рисуются XY-series, чтобы
-' оставаться в единой системе координат графика.
-Private Sub DrawAnalysisSeries(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
+' Добавляет верхний служебный оверлей поверх элементов и аннотаций.
+' Нейтральная линия, главные оси и точка нагрузки рисуются Chart.Shape-ами
+' через тот же model-to-chart mapper, что и элементы, поэтому их координаты
+' остаются согласованы, а слой можно поднять поверх сетки.
+Private Sub DrawAnalysisOverlay(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
     Dim axesMode As String
     axesMode = PlotPrincipalAxesMode(settings)
     If settings.GetBoolean("Plot.NeutralLineEnabled", True) Then DrawNeutralLine data
     If PrincipalAxesModeDraws(axesMode) Then DrawPrincipalAxes data, axesMode
-    If settings.GetBoolean("Plot.LoadApplicationPointEnabled", True) Then DrawPointMarker data.LoadReferenceX, data.LoadReferenceY, 10, RGB(255, 128, 0), XL_MARKER_DIAMOND, "LoadPoint"
+    If settings.GetBoolean("Plot.LoadApplicationPointEnabled", True) Then DrawPointMarker data.LoadReferenceX, data.LoadReferenceY, 10, RGB(255, 128, 0), MSO_SHAPE_DIAMOND, "LoadPoint"
 End Sub
 
 ' Добавляет к geometry-only схеме только те ориентиры, которые не требуют
 ' найденной плоскости деформаций. Этот режим используется для preview после
 ' AutoCAD-import: можно показать геометрию, главные оси и точку нагрузки,
 ' но нельзя рисовать нейтральную линию, легенду и подписи Stress/Strain.
-Private Sub DrawGeometryReferenceSeries(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
+Private Sub DrawGeometryReferenceOverlay(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
     If Not data.GeometryReferenceItemsEnabled Then Exit Sub
     Dim axesMode As String
     axesMode = PlotPrincipalAxesMode(settings)
     If PrincipalAxesModeDraws(axesMode) Then DrawPrincipalAxes data, axesMode
-    If settings.GetBoolean("Plot.LoadApplicationPointEnabled", True) Then DrawPointMarker data.LoadReferenceX, data.LoadReferenceY, 10, RGB(255, 128, 0), XL_MARKER_DIAMOND, "LoadPoint"
+    If settings.GetBoolean("Plot.LoadApplicationPointEnabled", True) Then DrawPointMarker data.LoadReferenceX, data.LoadReferenceY, 10, RGB(255, 128, 0), MSO_SHAPE_DIAMOND, "LoadPoint"
 End Sub
 
 ' Рисует Shape-слой схемы: контур, размеры, групповые подписи и легенды.
-' Shapes используются только для оформления; расчетные объекты остаются series.
+' Shapes используются для оформления и служебного оверлея; расчетные значения
+' читаются только из snapshot Results.
 Private Sub DrawShapeDecorations(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
     DrawConcreteContour data
     DrawShapeAnnotations data, settings, settings.GetBoolean("Plot.Dimensions.Enabled", True), _
@@ -738,9 +757,10 @@ Private Sub DrawGeometryOnlyNote(ByVal data As CSectionPlotDataReader)
     Dim leftPos As Double
     Dim topPos As Double
     Dim widthValue As Double
-    leftPos = mChart.PlotArea.InsideLeft
-    topPos = mChart.PlotArea.InsideTop + mChart.PlotArea.InsideHeight + 16
-    widthValue = mChart.PlotArea.InsideWidth
+    EnsurePlotAreaMetrics
+    leftPos = mPlotLeft
+    topPos = mPlotTop + mPlotHeight + 16
+    widthValue = mPlotWidth
     AddChartText leftPos, topPos, widthValue, 42, data.GeometryOnlyNote, 0#, RGB(160, 40, 40), True, True, 12#
 End Sub
 
@@ -763,9 +783,10 @@ Private Sub DrawStateWarning(ByVal data As CSectionPlotDataReader)
     Dim leftPos As Double
     Dim topPos As Double
     Dim widthValue As Double
-    leftPos = mChart.PlotArea.InsideLeft
-    topPos = mChart.PlotArea.InsideTop + mChart.PlotArea.InsideHeight + 8
-    widthValue = mChart.PlotArea.InsideWidth
+    EnsurePlotAreaMetrics
+    leftPos = mPlotLeft
+    topPos = mPlotTop + mPlotHeight + 8
+    widthValue = mPlotWidth
     If widthValue <= 0# Then widthValue = mChartObject.Width - 40
 
     AddChartText leftPos, topPos, widthValue, 18, warningText, 0#, RGB(192, 0, 0), True, True, 10#
@@ -1185,8 +1206,9 @@ Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, ByVal set
     Dim layout As CPlotAnnotationLayout
     Set layout = New CPlotAnnotationLayout
     layout.ConfigureFromSettings settings
-    layout.Initialize mMinX, mMaxX, mMinY, mMaxY, mChart.PlotArea.InsideLeft, mChart.PlotArea.InsideTop, _
-        mChart.PlotArea.InsideWidth, mChart.PlotArea.InsideHeight, data.LengthUnit
+    EnsurePlotAreaMetrics
+    layout.Initialize mMinX, mMaxX, mMinY, mMaxY, mPlotLeft, mPlotTop, _
+        mPlotWidth, mPlotHeight, data.LengthUnit
 
     Dim i As Long
     If rebarLabelsEnabled Then
@@ -1454,12 +1476,15 @@ Private Function DrawModelLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 
         colorValue, weight, suffix)
 End Function
 
-' Рисует расчетную опорную линию как XY-series.
-' Оси и нейтральная линия должны жить в координатах графика, чтобы их положение
-' относительно точки приложения нагрузки не зависело от Shape-слоя элементов.
+' Рисует расчетную опорную линию как Shape поверх сетки.
+' Координаты переводятся тем же ModelToChart mapper-ом, что и у элементов.
 Private Sub DrawModelReferenceLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
         ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String, Optional ByVal dashStyle As Long = MSO_LINE_SOLID)
-    DrawModelLineSeries x1, y1, x2, y2, colorValue, weight, suffix, dashStyle
+    Dim lineShape As Object
+    Set lineShape = DrawModelLine(x1, y1, x2, y2, colorValue, weight, suffix)
+    If lineShape Is Nothing Then Exit Sub
+    lineShape.Line.DashStyle = dashStyle
+    BringShapeToFront lineShape
 End Sub
 
 ' Рисует линию в координатах Chart/PlotArea.
@@ -1474,32 +1499,13 @@ Private Function DrawChartLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 
     Set DrawChartLine = lineShape
 End Function
 
-' Рисует расчетную линию как XY-series.
-' Такой способ используется для нейтральной линии и главных осей, чтобы они
-' оставались поверх расчетных элементов и масштабировались вместе с осями.
-Private Sub DrawModelLineSeries(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
-        ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String, Optional ByVal dashStyle As Long = MSO_LINE_SOLID)
-    Dim xValues(1 To 2) As Double
-    Dim yValues(1 To 2) As Double
-    xValues(1) = x1
-    xValues(2) = x2
-    yValues(1) = y1
-    yValues(2) = y2
-
-    Dim series As Object
-    Set series = mChart.SeriesCollection.NewSeries
-    series.Name = SHAPE_PREFIX & suffix & CStr(mChart.SeriesCollection.Count)
-    series.ChartType = XL_XY_SCATTER_LINES_NO_MARKERS
-    series.XValues = xValues
-    series.Values = yValues
-    series.MarkerStyle = XL_NONE
-    series.Format.Line.Visible = True
-    series.Format.Line.ForeColor.RGB = colorValue
-    series.Format.Line.Weight = weight
+' Поднимает служебные Shape-объекты поверх сетки и аннотаций.
+' Если конкретная версия Excel не поддержит ZOrder для объекта, отрисовка
+' остается рабочей, просто без дополнительного изменения слоя.
+Private Sub BringShapeToFront(ByVal shapeObject As Object)
+    If shapeObject Is Nothing Then Exit Sub
     On Error Resume Next
-    series.Border.LineStyle = dashStyle
-    series.Format.Line.DashStyle = dashStyle
-    series.Smooth = False
+    shapeObject.ZOrder MSO_BRING_TO_FRONT
     On Error GoTo 0
 End Sub
 
@@ -1592,26 +1598,21 @@ Private Sub DrawPoint(ByVal xCoord As Double, ByVal yCoord As Double, ByVal size
     If Len(labelText) > 0 Then DrawTextAt xCoord, yCoord, labelText, 1#, 0#, RGB(30, 30, 30), True
 End Sub
 
-' Рисует одиночный маркер как XY-series.
-' Так выводится точка приложения нагрузки: она остается в координатах модели,
-' а не в абсолютных координатах листа.
+' Рисует одиночный служебный маркер как Shape поверх сетки.
+' Положение считается централизованно через ModelToChartX/Y.
 Private Sub DrawPointMarker(ByVal xCoord As Double, ByVal yCoord As Double, ByVal sizeValue As Double, _
-        ByVal colorValue As Long, ByVal markerStyle As Long, ByVal seriesName As String)
-    Dim xValues(1 To 1) As Double
-    Dim yValues(1 To 1) As Double
-    xValues(1) = xCoord
-    yValues(1) = yCoord
+        ByVal colorValue As Long, ByVal shapeType As Long, ByVal markerName As String)
+    Dim leftPos As Double
+    Dim topPos As Double
+    leftPos = ModelToChartX(xCoord) - sizeValue / 2#
+    topPos = ModelToChartY(yCoord) - sizeValue / 2#
 
-    Dim series As Object
-    Set series = mChart.SeriesCollection.NewSeries
-    series.Name = SHAPE_PREFIX & seriesName
-    series.XValues = xValues
-    series.Values = yValues
-    series.MarkerStyle = markerStyle
-    series.MarkerSize = sizeValue
-    series.Format.Line.Visible = False
-    series.MarkerForegroundColor = RGB(0, 0, 0)
-    series.MarkerBackgroundColor = colorValue
+    Dim pointShape As Object
+    Set pointShape = mChart.Shapes.AddShape(shapeType, leftPos, topPos, sizeValue, sizeValue)
+    pointShape.Name = SHAPE_PREFIX & markerName
+    pointShape.Fill.ForeColor.RGB = colorValue
+    pointShape.Line.ForeColor.RGB = RGB(0, 0, 0)
+    BringShapeToFront pointShape
 End Sub
 
 ' Размещает короткую подпись около точки модели.
@@ -1656,19 +1657,107 @@ Private Function AddChartText(ByVal leftPos As Double, ByVal topPos As Double, B
 End Function
 
 Private Function ModelToChartX(ByVal xCoord As Double) As Double
-    ModelToChartX = mChart.PlotArea.InsideLeft + (xCoord - mMinX) / (mMaxX - mMinX) * mChart.PlotArea.InsideWidth
+    EnsurePlotAreaMetrics
+    ModelToChartX = mPlotLeft + (xCoord - mMinX) / (mMaxX - mMinX) * mPlotWidth
 End Function
 
 Private Function ModelToChartY(ByVal yCoord As Double) As Double
-    ModelToChartY = mChart.PlotArea.InsideTop + mChart.PlotArea.InsideHeight - _
-        (yCoord - mMinY) / (mMaxY - mMinY) * mChart.PlotArea.InsideHeight
+    EnsurePlotAreaMetrics
+    ModelToChartY = mPlotTop + mPlotHeight - _
+        (yCoord - mMinY) / (mMaxY - mMinY) * mPlotHeight
 End Function
 
 Private Function ChartScale() As Double
     Dim sx As Double, sy As Double
-    sx = mChart.PlotArea.InsideWidth / (mMaxX - mMinX)
-    sy = mChart.PlotArea.InsideHeight / (mMaxY - mMinY)
+    Dim plotWidth As Double, plotHeight As Double
+    If mPlotMetricsCaptured Then
+        plotWidth = mPlotWidth
+        plotHeight = mPlotHeight
+    Else
+        plotWidth = PlotCoordinateWidth()
+        plotHeight = PlotCoordinateHeight()
+    End If
+    sx = plotWidth / (mMaxX - mMinX)
+    sy = plotHeight / (mMaxY - mMinY)
     ChartScale = MinDouble(sx, sy)
+End Function
+
+' Сохраняет координатную область PlotArea для текущего прохода отрисовки.
+' Excel может слегка пересчитать PlotArea после добавления Shapes и подписей,
+' поэтому все Shape-элементы, оси, нейтральная линия и точка нагрузки должны
+' использовать один и тот же снимок размеров.
+Private Sub CapturePlotAreaMetrics()
+    If mElementShapeLayerEnabled Then
+        ' В Shape-режиме все расчетные элементы и служебные линии живут в
+        ' нашей собственной рамке Chart. Это защищает схему от небольших
+        ' автоматических смещений Excel PlotArea между первым и повторным
+        ' построением одного и того же графика.
+        mPlotLeft = PLOT_FRAME_LEFT
+        mPlotTop = PLOT_FRAME_TOP
+        mPlotWidth = StablePlotFrameWidth()
+        mPlotHeight = StablePlotFrameHeight()
+    Else
+        ' В fallback-режиме элементы являются XY-series, поэтому Shapes должны
+        ' привязываться к реальной области построения этих series.
+        mPlotLeft = mChart.PlotArea.InsideLeft
+        mPlotTop = mChart.PlotArea.InsideTop
+        mPlotWidth = mChart.PlotArea.InsideWidth
+        mPlotHeight = mChart.PlotArea.InsideHeight
+    End If
+
+    If mPlotWidth <= 0# Or mPlotHeight <= 0# Then
+        mPlotLeft = mChart.PlotArea.Left
+        mPlotTop = mChart.PlotArea.Top
+        mPlotWidth = mChart.PlotArea.Width
+        mPlotHeight = mChart.PlotArea.Height
+    End If
+
+    If mPlotWidth <= 0# Or mPlotHeight <= 0# Then
+        mPlotLeft = PLOT_FRAME_LEFT
+        mPlotTop = PLOT_FRAME_TOP
+        mPlotWidth = StablePlotFrameWidth()
+        mPlotHeight = StablePlotFrameHeight()
+    End If
+
+    mPlotMetricsCaptured = True
+End Sub
+
+' Гарантирует, что model-to-chart преобразование не читает PlotArea повторно
+' в середине построения схемы.
+Private Sub EnsurePlotAreaMetrics()
+    If Not mPlotMetricsCaptured Then CapturePlotAreaMetrics
+End Sub
+
+' Возвращает ширину рабочей рамки Shape-схемы. Значение намеренно зависит
+' только от ChartObject, а не от живого Excel PlotArea.
+Private Function StablePlotFrameWidth() As Double
+    StablePlotFrameWidth = mChartObject.Width - PLOT_FRAME_WIDTH_MARGIN
+    If StablePlotFrameWidth <= 0# Then StablePlotFrameWidth = mChartObject.Width * 0.72
+End Function
+
+' Возвращает высоту рабочей рамки Shape-схемы.
+Private Function StablePlotFrameHeight() As Double
+    StablePlotFrameHeight = mChartObject.Height - PLOT_FRAME_HEIGHT_MARGIN
+    If StablePlotFrameHeight <= 0# Then StablePlotFrameHeight = mChartObject.Height * 0.72
+End Function
+
+' Выбирает ширину координатной области: стабильную рамку для Shape-схемы или
+' фактическую PlotArea для fallback-а на XY-series.
+Private Function PlotCoordinateWidth() As Double
+    If mElementShapeLayerEnabled Then
+        PlotCoordinateWidth = StablePlotFrameWidth()
+    Else
+        PlotCoordinateWidth = mChart.PlotArea.InsideWidth
+    End If
+End Function
+
+' Выбирает высоту координатной области с той же логикой, что и ширина.
+Private Function PlotCoordinateHeight() As Double
+    If mElementShapeLayerEnabled Then
+        PlotCoordinateHeight = StablePlotFrameHeight()
+    Else
+        PlotCoordinateHeight = mChart.PlotArea.InsideHeight
+    End If
 End Function
 
 ' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
