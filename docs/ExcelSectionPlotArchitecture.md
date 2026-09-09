@@ -754,9 +754,8 @@ PhysicalState = Compression
 | `Plot.ResultLabelsEnabled` | `Yes` | `Yes`, `No` | Показывать пространственно распределенные подписи выбранного `Plot.ResultType` по бетонным элементам. |
 | `Plot.ResultLabelSpacing` | `100` | длина в output units | Целевой пространственный шаг между подписями выбранного результата, а не “каждый N-й ElementID”. |
 | `Plot.NeutralLineEnabled` | `Yes` | `Yes`, `No` | Показывать нейтральную линию выбранного LC. |
-| `Plot.PrincipalAxesEnabled` | `Yes` | `Yes`, `No` | Показывать главные центральные оси приведенного сечения. |
+| `Plot.PrincipalAxesMode` | `Transformed` | `Transformed`, `Concrete`, `None` | Какие главные центральные оси показывать: приведенного сечения, бетонного сечения или не показывать. |
 | `Plot.LoadApplicationPointEnabled` | `Yes` | `Yes`, `No` | Показывать точку приложения нагрузки. |
-| `Plot.CentroidEnabled` | `Yes` | `Yes`, `No` | Показывать центр тяжести приведенного сечения. |
 | `Plot.Dimensions.Enabled` | `Yes` | `Yes`, `No` | Показывать характерные размеры из `rngNDMSectionAnnotations`; для AutoCAD без annotations - только `B/H` по `Bounds`. |
 | `Plot.RebarLabels.Enabled` | `Yes` | `Yes`, `No` | Показывать групповые подписи арматуры по граням, например `6Ø32 + 3Ø20`. |
 | `Plot.Dimensions.Placement` | `Outside` | `Outside`, `Inside` | Сторона текста размера относительно размерной линии; сама размерная линия остается на своей semantic-стороне. |
@@ -852,9 +851,8 @@ UpdateSectionPlot
 - `Plot.ResultLabelsEnabled`;
 - `Plot.ResultLabelSpacing`;
 - `Plot.NeutralLineEnabled`;
-- `Plot.CentroidEnabled`;
 - `Plot.LoadApplicationPointEnabled`;
-- `Plot.PrincipalAxesEnabled`;
+- `Plot.PrincipalAxesMode`;
 - `Plot.Dimensions.Enabled`;
 - `Plot.RebarLabels.Enabled`.
 

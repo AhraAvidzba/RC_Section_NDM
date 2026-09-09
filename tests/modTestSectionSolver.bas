@@ -195,7 +195,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
 
     requiredKeys = Array( _
         "AutoCAD.Export.CombinationID", "AutoCAD.Export.NeutralLineEnabled", _
-        "AutoCAD.Export.PrincipalAxesEnabled", "AutoCAD.Export.LoadPointEnabled", _
+        "AutoCAD.Export.PrincipalAxesMode", "AutoCAD.Export.LoadPointEnabled", _
         "AutoCAD.Export.LabelMode", _
         "AutoCAD.Layer.Concrete", "AutoCAD.Layer.Rebar", _
         "AutoCAD.Layer.ConcreteTension", "AutoCAD.Layer.ConcreteCompression", _
@@ -209,8 +209,8 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     requiredKeys = Array( _
         "Plot.Enabled", "Plot.AutoUpdateAfterCalculation", "Plot.LoadCase", _
         "Plot.ResultGradient", "Plot.ResultLabelsEnabled", "Plot.ResultLabelSpacing", "Plot.ResultPrecision", _
-        "Plot.NeutralLineEnabled", "Plot.PrincipalAxesEnabled", "Plot.LoadApplicationPointEnabled", _
-        "Plot.CentroidEnabled", "Plot.LegendEnabled", _
+        "Plot.NeutralLineEnabled", "Plot.PrincipalAxesMode", "Plot.LoadApplicationPointEnabled", _
+        "Plot.LegendEnabled", _
         "Plot.RebarLabels.Enabled", "Plot.Dimensions.Enabled", _
         "Plot.RebarLabels.Placement", "Plot.Dimensions.Placement", _
         "Plot.RebarLabels.Offset", "Plot.Dimensions.Offset", _
@@ -232,6 +232,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "Steel.Point2.Stress", "Steel.Point3.Eps", "Steel.Point3.Stress", _
         "Solver.DiagnosticsEnabled", "Circle.CenterX", "Circle.CenterY", _
         "LShape.OriginX", "LShape.OriginY", "Plot.DimensionsEnabled", "Plot.RebarLabelsEnabled", _
+        "Plot.PrincipalAxesEnabled", "Plot.CentroidEnabled", "AutoCAD.Export.PrincipalAxesEnabled", _
         "Concrete.TensionMode", "Capacity.ConcreteCompressionLimit", "Capacity.ConcreteTensionLimit", _
         "Capacity.SteelStrainLimit", "Concrete.Class", _
         "Steel.RebarProfile", _

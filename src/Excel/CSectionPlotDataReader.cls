@@ -55,6 +55,9 @@ Private mMaxY As Double ' Верхняя граница бетонной рас�
 Private mCentroidX As Double ' X центра тяжести приведенного сечения.
 Private mCentroidY As Double ' Y центра тяжести приведенного сечения.
 Private mPrincipalAngle As Double ' Угол от +X к главной оси 1 приведенного сечения, рад.
+Private mConcreteCentroidX As Double ' X центра тяжести бетонного сечения из Results.
+Private mConcreteCentroidY As Double ' Y центра тяжести бетонного сечения из Results.
+Private mConcretePrincipalAngle As Double ' Угол главной оси 1 бетонного сечения из Results.
 Private mEpsilon0 As Double ' Свободный член сохраненной плоскости деформаций LC.
 Private mKappaX As Double ' Кривизна при y в сохраненной плоскости деформаций.
 Private mKappaY As Double ' Кривизна при x в сохраненной плоскости деформаций.
@@ -345,6 +348,9 @@ Private Sub ReadCommonProperty(ByVal parameter As String, ByVal value As Variant
         Case "bounds.maxx": mMaxX = CDbl(value)
         Case "bounds.miny": mMinY = CDbl(value)
         Case "bounds.maxy": mMaxY = CDbl(value)
+        Case "concrete.centroidx": mConcreteCentroidX = CDbl(value)
+        Case "concrete.centroidy": mConcreteCentroidY = CDbl(value)
+        Case "concrete.principalangle": mConcretePrincipalAngle = CDbl(value)
         Case "transformed.centroidx": mCentroidX = CDbl(value)
         Case "transformed.centroidy": mCentroidY = CDbl(value)
         Case "transformed.principalangle": mPrincipalAngle = CDbl(value)
@@ -582,6 +588,7 @@ Private Sub ResetReaderState()
     mAnnotationCount = 0
     mMinX = 0#: mMaxX = 0#: mMinY = 0#: mMaxY = 0#
     mCentroidX = 0#: mCentroidY = 0#: mPrincipalAngle = 0#
+    mConcreteCentroidX = 0#: mConcreteCentroidY = 0#: mConcretePrincipalAngle = 0#
     mEpsilon0 = 0#: mKappaX = 0#: mKappaY = 0#
     mLoadReferenceX = 0#: mLoadReferenceY = 0#
     mExtensionUsed = False
@@ -762,6 +769,34 @@ Public Property Get MaxY() As Double: MaxY = mMaxY: End Property
 Public Property Get CentroidX() As Double: CentroidX = mCentroidX: End Property
 Public Property Get CentroidY() As Double: CentroidY = mCentroidY: End Property
 Public Property Get PrincipalAngle() As Double: PrincipalAngle = mPrincipalAngle: End Property
+
+' Возвращает X центра для выбранного набора главных осей.
+' Transformed - приведенное сечение бетон + арматура, Concrete - только бетон.
+Public Function PrincipalAxesCentroidX(ByVal axesMode As String) As Double
+    If StrComp(Trim$(axesMode), "Concrete", vbTextCompare) = 0 Then
+        PrincipalAxesCentroidX = mConcreteCentroidX
+    Else
+        PrincipalAxesCentroidX = mCentroidX
+    End If
+End Function
+
+' Возвращает Y центра для выбранного набора главных осей.
+Public Function PrincipalAxesCentroidY(ByVal axesMode As String) As Double
+    If StrComp(Trim$(axesMode), "Concrete", vbTextCompare) = 0 Then
+        PrincipalAxesCentroidY = mConcreteCentroidY
+    Else
+        PrincipalAxesCentroidY = mCentroidY
+    End If
+End Function
+
+' Возвращает угол главной оси 1 для выбранного набора осей.
+Public Function PrincipalAxesAngle(ByVal axesMode As String) As Double
+    If StrComp(Trim$(axesMode), "Concrete", vbTextCompare) = 0 Then
+        PrincipalAxesAngle = mConcretePrincipalAngle
+    Else
+        PrincipalAxesAngle = mPrincipalAngle
+    End If
+End Function
 Public Property Get Epsilon0() As Double: Epsilon0 = mEpsilon0: End Property
 Public Property Get KappaX() As Double: KappaX = mKappaX: End Property
 Public Property Get KappaY() As Double: KappaY = mKappaY: End Property

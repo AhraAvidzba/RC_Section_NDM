@@ -123,7 +123,7 @@
 |---|---:|---|
 | `AutoCAD.Export.CombinationID` | `Worst` | Какое сочетание экспортировать из `Results`: `Worst` - определяющее сочетание из batch summary, либо конкретный `CombinationID` из `rngLoadCombinations`. Выпадающий список формируется динамически по таблице сочетаний. |
 | `AutoCAD.Export.NeutralLineEnabled` | `Yes` | Выгружать нейтральную линию: `Yes` - выводить; `No` - не выводить. |
-| `AutoCAD.Export.PrincipalAxesEnabled` | `Yes` | Выгружать главные центральные оси приведенного сечения: `Yes` - выводить; `No` - не выводить. |
+| `AutoCAD.Export.PrincipalAxesMode` | `Transformed` | Какие главные центральные оси выгружать: `Transformed` - приведенного сечения, `Concrete` - бетонного сечения, `None` - не выводить. |
 | `AutoCAD.Export.LoadPointEnabled` | `Yes` | Выгружать точку приложения нагрузки: `Yes` - выводить; `No` - не выводить. |
 | `AutoCAD.Export.LabelMode` | `NamesAndValues` | `ValuesOnly` - только значение выбранной профильной величины `Visualization.Quantity`; `NamesAndValues` - имя элемента и значение. |
 | `AutoCAD.Layer.Concrete` | `Concrete` | Слой областей бетона. |
@@ -158,7 +158,7 @@
 | `SLS.Crack.CoverDistanceMode` | `NearestContour`, `GlobalExtreme` |
 | `AutoCAD.Export.LabelMode` | `ValuesOnly`, `NamesAndValues` |
 | `AutoCAD.Export.NeutralLineEnabled` | `Yes`, `No` |
-| `AutoCAD.Export.PrincipalAxesEnabled` | `Yes`, `No` |
+| `AutoCAD.Export.PrincipalAxesMode` | `Transformed`, `Concrete`, `None` |
 | `AutoCAD.Export.LoadPointEnabled` | `Yes`, `No` |
 | `AutoCAD.Export.CombinationID` | Динамический список: `Worst` + значения `CombinationID` из `rngLoadCombinations` |
 | `Plot.Enabled` | `Yes`, `No` |
@@ -168,9 +168,8 @@
 | `Plot.ResultLabelsEnabled` | `Yes`, `No` |
 | `Plot.ResultPrecision` | целое число знаков после запятой |
 | `Plot.NeutralLineEnabled` | `Yes`, `No` |
-| `Plot.PrincipalAxesEnabled` | `Yes`, `No` |
+| `Plot.PrincipalAxesMode` | `Transformed`, `Concrete`, `None` |
 | `Plot.LoadApplicationPointEnabled` | `Yes`, `No` |
-| `Plot.CentroidEnabled` | `Yes`, `No` |
 | `Plot.Dimensions.Enabled` | `Yes`, `No` |
 | `Plot.RebarLabels.Enabled` | `Yes`, `No` |
 | `Plot.Dimensions.Placement` | `Outside`, `Inside` |

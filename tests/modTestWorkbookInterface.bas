@@ -1214,7 +1214,7 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.validation.autocadNeutralLine", _
         SystemSettingValidationHasOptions("AutoCAD.Export.NeutralLineEnabled", Array("Yes", "No"))
     AssertTrue stats, "ui.validation.autocadPrincipalAxes", _
-        SystemSettingValidationHasOptions("AutoCAD.Export.PrincipalAxesEnabled", Array("Yes", "No"))
+        SystemSettingValidationHasOptions("AutoCAD.Export.PrincipalAxesMode", Array("Transformed", "Concrete", "None"))
     AssertTrue stats, "ui.validation.autocadLoadPoint", _
         SystemSettingValidationHasOptions("AutoCAD.Export.LoadPointEnabled", Array("Yes", "No"))
     AssertTrue stats, "ui.validation.autocadCombination", AutoCADCombinationValidationIsDynamic()
@@ -1223,6 +1223,8 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
         LoadCombinationValidationHasOptions(5, Array("PR1", "PR2", "PR3", "PR4"))
     AssertTrue stats, "ui.validation.plotLabels", _
         SystemSettingValidationHasOptions("Plot.ResultLabelsEnabled", Array("Yes", "No"))
+    AssertTrue stats, "ui.validation.plotPrincipalAxes", _
+        SystemSettingValidationHasOptions("Plot.PrincipalAxesMode", Array("Transformed", "Concrete", "None"))
     AssertTrue stats, "ui.validation.plotRebarAnnotationEnabled", _
         PlotAnnotationValidationHasOptions("Enabled", 2, Array("Yes", "No"))
     AssertTrue stats, "ui.validation.plotDimensionEnabled", _

@@ -23,7 +23,7 @@ Private Type TAutoCADExportSettings
     NeutralColor As Long
     IncludeElementNames As Boolean
     NeutralLineEnabled As Boolean
-    PrincipalAxesEnabled As Boolean
+    PrincipalAxesMode As String
     LoadPointEnabled As Boolean
 End Type
 
@@ -61,7 +61,7 @@ Public Sub ExportSectionStressToAutoCAD()
     Dim principalAngle As Double
     Dim extensionUsed As Boolean
     Dim stateWarningText As String
-    ReadResultsExportState ThisWorkbook, settings, units, section, resultByID, physicalStateByID, combinationID, _
+    ReadResultsExportState ThisWorkbook, settings, units, exportSettings.PrincipalAxesMode, section, resultByID, physicalStateByID, combinationID, _
         profileId, stateType, quantity, _
         epsilon0, kappaX, kappaY, loadReferenceX, loadReferenceY, _
         centroidX, centroidY, principalAngle, extensionUsed, stateWarningText
@@ -164,7 +164,7 @@ Private Function DeleteAutoCADEntitiesOnLayers(ByVal doc As Object, ByVal layers
 End Function
 
 Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
-        ByVal units As CUnitSystem, _
+        ByVal units As CUnitSystem, ByVal principalAxesMode As String, _
         ByRef section As CSectionModel, ByRef resultByID As Object, ByRef physicalStateByID As Object, ByRef combinationID As String, _
         ByRef profileId As String, ByRef stateType As String, ByRef quantity As String, _
         ByRef epsilon0 As Double, ByRef kappaX As Double, ByRef kappaY As Double, _
@@ -192,7 +192,7 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
     Set physicalStateByID = CreateObject("Scripting.Dictionary")
     physicalStateByID.CompareMode = vbTextCompare
     ReadElementResultsForCombination workbook, quantity, combinationID, stateType, resultByID, physicalStateByID
-    ReadSectionPropertiesForCombination workbook, units, combinationID, stateType, epsilon0, kappaX, kappaY, _
+    ReadSectionPropertiesForCombination workbook, units, combinationID, stateType, principalAxesMode, epsilon0, kappaX, kappaY, _
         loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, extensionUsed, stateWarningText
 End Sub
 
@@ -371,7 +371,8 @@ Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal res
 End Sub
 
 Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal units As CUnitSystem, _
-        ByVal combinationID As String, ByVal stateType As String, ByRef epsilon0 As Double, ByRef kappaX As Double, _
+        ByVal combinationID As String, ByVal stateType As String, ByVal principalAxesMode As String, _
+        ByRef epsilon0 As Double, ByRef kappaX As Double, _
         ByRef kappaY As Double, ByRef loadReferenceX As Double, ByRef loadReferenceY As Double, _
         ByRef centroidX As Double, ByRef centroidY As Double, ByRef principalAngle As Double, _
         ByRef extensionUsed As Boolean, ByRef stateWarningText As String)
@@ -389,16 +390,28 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
     Dim stateStatus As String
     Dim policy As CBatchStatusPolicy
     Dim rowIndex As Long
+    Dim concreteCentroidX As Double
+    Dim concreteCentroidY As Double
+    Dim concretePrincipalAngle As Double
+    Dim transformedCentroidX As Double
+    Dim transformedCentroidY As Double
+    Dim transformedPrincipalAngle As Double
     Set policy = New CBatchStatusPolicy
     For rowIndex = 2 To UBound(data, 1)
         If StrComp(CStr(data(rowIndex, colLoadCase)), "ALL", vbTextCompare) = 0 Then
             Select Case LCase$(Trim$(CStr(data(rowIndex, colParameter))))
+                Case "concrete.centroidx"
+                    concreteCentroidX = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                Case "concrete.centroidy"
+                    concreteCentroidY = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                Case "concrete.principalangle"
+                    concretePrincipalAngle = CDbl(data(rowIndex, colValue))
                 Case "transformed.centroidx"
-                    centroidX = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                    transformedCentroidX = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
                 Case "transformed.centroidy"
-                    centroidY = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                    transformedCentroidY = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
                 Case "transformed.principalangle"
-                    principalAngle = CDbl(data(rowIndex, colValue))
+                    transformedPrincipalAngle = CDbl(data(rowIndex, colValue))
                 Case "loadreferencex"
                     loadReferenceX = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
                 Case "loadreferencey"
@@ -435,6 +448,17 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
 
     If Not foundState Then Err.Raise vbObjectError + 4361, "ReadSectionPropertiesForCombination", _
         MissingExportStateMessage(combinationID, stateType)
+
+    Select Case principalAxesMode
+        Case "Concrete"
+            centroidX = concreteCentroidX
+            centroidY = concreteCentroidY
+            principalAngle = concretePrincipalAngle
+        Case Else
+            centroidX = transformedCentroidX
+            centroidY = transformedCentroidY
+            principalAngle = transformedPrincipalAngle
+    End Select
 End Sub
 
 Private Function MissingExportStateMessage(ByVal combinationID As String, ByVal stateType As String) As String
@@ -763,7 +787,7 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
 
     DrawCentroidAxesAndLoadPoint ms, section, centroidX, centroidY, principalAngle, _
         loadReferenceX, loadReferenceY, _
-        exportSettings.PrincipalAxesEnabled, exportSettings.LoadPointEnabled
+        exportSettings.PrincipalAxesMode, exportSettings.LoadPointEnabled
     If exportSettings.NeutralLineEnabled Then
         DrawNeutralLineByState ms, section, epsilon0, kappaX, kappaY, exportSettings.NeutralColor
     End If
@@ -823,7 +847,9 @@ End Function
 Private Sub DrawCentroidAxesAndLoadPoint(ByVal ms As Object, ByVal section As CSectionModel, _
         ByVal centroidX As Double, ByVal centroidY As Double, ByVal principalAngle As Double, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
-        ByVal principalAxesEnabled As Boolean, ByVal loadPointEnabled As Boolean)
+        ByVal principalAxesMode As String, ByVal loadPointEnabled As Boolean)
+    Dim principalAxesEnabled As Boolean
+    principalAxesEnabled = PrincipalAxesModeDraws(principalAxesMode)
     If Not principalAxesEnabled And Not loadPointEnabled Then Exit Sub
 
     Dim minX As Double
@@ -891,9 +917,45 @@ Private Function ReadAutoCADExportSettings(ByVal settings As CSystemSettingsRead
         .NeutralColor = settings.GetLong("AutoCAD.Color.Neutral", 8)
         .IncludeElementNames = AutoCADLabelModeIncludesNames(settings.GetRawString("AutoCAD.Export.LabelMode", "NamesAndValues"))
         .NeutralLineEnabled = settings.GetBoolean("AutoCAD.Export.NeutralLineEnabled", True)
-        .PrincipalAxesEnabled = settings.GetBoolean("AutoCAD.Export.PrincipalAxesEnabled", True)
+        .PrincipalAxesMode = AutoCADPrincipalAxesMode(settings)
         .LoadPointEnabled = settings.GetBoolean("AutoCAD.Export.LoadPointEnabled", True)
     End With
+End Function
+
+' Читает режим осей AutoCAD export. Старый Yes/No-ключ остается только
+' fallback-ом для старых книг; новый Config использует PrincipalAxesMode.
+Private Function AutoCADPrincipalAxesMode(ByVal settings As CSystemSettingsReader) As String
+    Dim rawValue As String
+    rawValue = Trim$(settings.GetString("AutoCAD.Export.PrincipalAxesMode", vbNullString))
+    If Len(rawValue) = 0 And settings.HasKey("AutoCAD.Export.PrincipalAxesEnabled") Then
+        If settings.GetBoolean("AutoCAD.Export.PrincipalAxesEnabled", True) Then
+            rawValue = "Transformed"
+        Else
+            rawValue = "None"
+        End If
+    End If
+    If Len(rawValue) = 0 Then rawValue = "Transformed"
+    AutoCADPrincipalAxesMode = NormalizePrincipalAxesMode(rawValue, "AutoCAD.Export.PrincipalAxesMode")
+End Function
+
+' Приводит пользовательский выбор осей к единому внутреннему тексту.
+Private Function NormalizePrincipalAxesMode(ByVal rawValue As String, ByVal settingKey As String) As String
+    Select Case LCase$(Trim$(rawValue))
+        Case "transformed", "приведенное", "приведенное сечение"
+            NormalizePrincipalAxesMode = "Transformed"
+        Case "concrete", "бетон", "бетонное", "бетонное сечение"
+            NormalizePrincipalAxesMode = "Concrete"
+        Case "none", "no", "off", "нет", "не выводить"
+            NormalizePrincipalAxesMode = "None"
+        Case Else
+            Err.Raise vbObjectError + 4313, "ReadAutoCADExportSettings", _
+                settingKey & " должен быть Transformed, Concrete или None."
+    End Select
+End Function
+
+' True, если оси нужно выгружать.
+Private Function PrincipalAxesModeDraws(ByVal axesMode As String) As Boolean
+    PrincipalAxesModeDraws = (StrComp(axesMode, "None", vbTextCompare) <> 0)
 End Function
 
 Private Function AutoCADLabelModeIncludesNames(ByVal labelMode As String) As Boolean

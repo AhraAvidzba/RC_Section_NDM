@@ -272,7 +272,9 @@ try {
         "Capacity.SteelStrainLimit", "Concrete.Class",
         "Circle.CenterX", "Circle.CenterY",
         "LShape.OriginX", "LShape.OriginY",
-        "Plot.DimensionsEnabled", "Plot.RebarLabelsEnabled"
+        "Plot.DimensionsEnabled", "Plot.RebarLabelsEnabled",
+        "Plot.PrincipalAxesEnabled", "Plot.CentroidEnabled",
+        "AutoCAD.Export.PrincipalAxesEnabled"
     )
     $presentObsoleteSettings = @($obsoleteSettingKeys | Where-Object { $settingKeys -contains $_ })
     Add-Check $checks "No obsolete Config settings" ($presentObsoleteSettings.Count -eq 0) ("Present: " + ($presentObsoleteSettings -join ", "))

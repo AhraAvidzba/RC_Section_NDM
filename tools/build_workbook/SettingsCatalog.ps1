@@ -89,7 +89,7 @@ function Get-SystemSettingsCatalog {
         @{ Name = "AutoCADExportSettings"; Title = "[AutoCAD export]"; Rows = @(
             @("AutoCAD.Export.CombinationID", "Worst", "-", "Какое сочетание экспортировать в AutoCAD: Worst - определяющее сочетание из последнего расчета; либо конкретный CombinationID из rngLoadCombinations."),
             @("AutoCAD.Export.NeutralLineEnabled", "Yes", "-", "Выгружать нейтральную линию в AutoCAD: Yes - выводить; No - не выводить."),
-            @("AutoCAD.Export.PrincipalAxesEnabled", "Yes", "-", "Выгружать главные центральные оси приведенного сечения в AutoCAD: Yes - выводить; No - не выводить."),
+            @("AutoCAD.Export.PrincipalAxesMode", "Transformed", "-", "Какие главные центральные оси выгружать в AutoCAD: Transformed - приведенного сечения; Concrete - бетонного; None - не выводить."),
             @("AutoCAD.Export.LoadPointEnabled", "Yes", "-", "Выгружать точку приложения нагрузки в AutoCAD: Yes - выводить; No - не выводить."),
             @("AutoCAD.Export.LabelMode", "NamesAndValues", "-", "Формат текстовых подписей при выгрузке в AutoCAD: ValuesOnly - только выбранная величина профиля; NamesAndValues - имя элемента и значение. При NamesAndValues имена выводятся для бетона и арматуры."),
             @("AutoCAD.Layer.Concrete", "Concrete", "-", "Слой для областей бетонных волокон. Цвет каждой области задается по PhysicalState из Results: сжатие, растяжение или нейтральное состояние."),
@@ -118,9 +118,8 @@ function Get-SystemSettingsCatalog {
             @("Plot.ResultLabelSpacing", "100", "мм", "Минимальный пространственный шаг между численными подписями результата на схеме."),
             @("Plot.ResultPrecision", "1", "шт", "Количество знаков после запятой для численных подписей и легенды схемы."),
             @("Plot.NeutralLineEnabled", "Yes", "-", "Показывать нейтральную линию выбранного сочетания по Epsilon0, KappaX, KappaY из Results."),
-            @("Plot.PrincipalAxesEnabled", "Yes", "-", "Показывать главные центральные оси приведенного сечения."),
+            @("Plot.PrincipalAxesMode", "Transformed", "-", "Какие главные центральные оси показывать на схеме: Transformed - приведенного сечения; Concrete - бетонного; None - не показывать."),
             @("Plot.LoadApplicationPointEnabled", "Yes", "-", "Показывать точку приложения нагрузки из последнего расчета."),
-            @("Plot.CentroidEnabled", "Yes", "-", "Показывать центр тяжести приведенного сечения."),
             @("Plot.LegendEnabled", "Yes", "-", "Показывать легенду физического состояния и выбранной величины профиля справа от схемы."),
             @("Plot.LegendMode", "Separate", "-", "Separate - отдельные легенды для арматуры и бетона; Common - одна общая легенда. В режиме Common используются цвета Plot.Color.RebarCompression и Plot.Color.RebarTension."),
             @("Plot.Color.RebarCompression", "30,80,220", "RGB", "Цвет максимального сжатия арматуры. В режиме Plot.LegendMode=Common используется как цвет сжатия для всех элементов."),
@@ -1007,6 +1006,12 @@ function Get-SettingInstructionLines {
             "NamesAndValues добавляет к значению имя расчетного элемента, например C1 или R1.",
             "При NamesAndValues имена выводятся и для бетона, и для арматуры, если они сохранены в Results."
         ) }
+        "AutoCAD.Export.PrincipalAxesMode" { return @($lead) + @(
+            "Transformed выводит главные центральные оси приведенного сечения бетон + арматура.",
+            "Concrete выводит главные центральные оси только бетонного сечения.",
+            "None полностью отключает выгрузку главных осей. Точка приложения нагрузки и нейтральная линия управляются своими настройками.",
+            "Экспорт берет центр и угол выбранных осей из сохраненного Results snapshot и не пересчитывает свойства сечения заново."
+        ) }
         "AutoCAD.Export.*Enabled" { return @($lead) + @(
             "Yes включает вывод соответствующего объекта в AutoCAD. No пропускает его.",
             "Настройка управляет только оформлением экспорта и не меняет расчетные результаты.",
@@ -1056,6 +1061,12 @@ function Get-SettingInstructionLines {
             "Separate строит две шкалы: отдельно для бетона и отдельно для арматуры.",
             "Common строит одну общую шкалу для всех элементов. В этом режиме цвета берутся из Plot.Color.RebarCompression и Plot.Color.RebarTension.",
             "Раздельные шкалы удобны, когда диапазоны напряжений бетона и арматуры сильно отличаются."
+        ) }
+        "Plot.PrincipalAxesMode" { return @($lead) + @(
+            "Transformed показывает главные центральные оси приведенного сечения бетон + арматура.",
+            "Concrete показывает главные центральные оси только бетонного сечения.",
+            "None полностью скрывает главные оси на схеме. Точка приложения нагрузки и нейтральная линия управляются отдельными настройками.",
+            "Схема берет центр и угол выбранных осей из Results snapshot. Изменение этого режима после расчета только меняет отображение уже сохраненных осей."
         ) }
         "Plot.Color.*" { return @($lead) + @(
             "Значение задается в формате R,G,B, например 30,80,220.",
@@ -3284,16 +3295,15 @@ function Apply-SystemSettingsLayout {
         "SLS.Crack.CoverDistanceMode" = @("NearestContour", "GlobalExtreme")
         "AutoCAD.Export.LabelMode" = @("ValuesOnly", "NamesAndValues")
         "AutoCAD.Export.NeutralLineEnabled" = @("Yes", "No")
-        "AutoCAD.Export.PrincipalAxesEnabled" = @("Yes", "No")
+        "AutoCAD.Export.PrincipalAxesMode" = @("Transformed", "Concrete", "None")
         "AutoCAD.Export.LoadPointEnabled" = @("Yes", "No")
         "Plot.Enabled" = @("Yes", "No")
         "Plot.AutoUpdateAfterCalculation" = @("Yes", "No")
         "Plot.ResultGradient" = @("Yes", "No")
         "Plot.ResultLabelsEnabled" = @("Yes", "No")
         "Plot.NeutralLineEnabled" = @("Yes", "No")
-        "Plot.PrincipalAxesEnabled" = @("Yes", "No")
+        "Plot.PrincipalAxesMode" = @("Transformed", "Concrete", "None")
         "Plot.LoadApplicationPointEnabled" = @("Yes", "No")
-        "Plot.CentroidEnabled" = @("Yes", "No")
         "Plot.LegendEnabled" = @("Yes", "No")
         "Plot.LegendMode" = @("Separate", "Common")
     }

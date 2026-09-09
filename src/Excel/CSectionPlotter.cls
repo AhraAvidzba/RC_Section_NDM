@@ -693,11 +693,13 @@ Private Function BlendColor(ByVal c1 As Long, ByVal c2 As Long, ByVal t As Doubl
 End Function
 
 ' Добавляет расчетные линии и точку нагрузки поверх элементов.
-' Когда элементы уже выведены Shape-ами, ориентиры тоже рисуются Shape-ами,
-' чтобы не оказаться под расчетным слоем Excel Chart.
+' Нейтральная линия, главные оси и точка нагрузки рисуются XY-series, чтобы
+' оставаться в единой системе координат графика.
 Private Sub DrawAnalysisSeries(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
+    Dim axesMode As String
+    axesMode = PlotPrincipalAxesMode(settings)
     If settings.GetBoolean("Plot.NeutralLineEnabled", True) Then DrawNeutralLine data
-    If settings.GetBoolean("Plot.PrincipalAxesEnabled", True) Then DrawPrincipalAxes data
+    If PrincipalAxesModeDraws(axesMode) Then DrawPrincipalAxes data, axesMode
     If settings.GetBoolean("Plot.LoadApplicationPointEnabled", True) Then DrawPointMarker data.LoadReferenceX, data.LoadReferenceY, 10, RGB(255, 128, 0), XL_MARKER_DIAMOND, "LoadPoint"
 End Sub
 
@@ -707,7 +709,9 @@ End Sub
 ' но нельзя рисовать нейтральную линию, легенду и подписи Stress/Strain.
 Private Sub DrawGeometryReferenceSeries(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
     If Not data.GeometryReferenceItemsEnabled Then Exit Sub
-    If settings.GetBoolean("Plot.PrincipalAxesEnabled", True) Then DrawPrincipalAxes data
+    Dim axesMode As String
+    axesMode = PlotPrincipalAxesMode(settings)
+    If PrincipalAxesModeDraws(axesMode) Then DrawPrincipalAxes data, axesMode
     If settings.GetBoolean("Plot.LoadApplicationPointEnabled", True) Then DrawPointMarker data.LoadReferenceX, data.LoadReferenceY, 10, RGB(255, 128, 0), XL_MARKER_DIAMOND, "LoadPoint"
 End Sub
 
@@ -1115,19 +1119,61 @@ Private Sub AddRectLineIntersection(ByVal a As Double, ByVal b As Double, ByVal 
     found = True
 End Sub
 
-' Рисует главные центральные оси приведенного сечения.
-Private Sub DrawPrincipalAxes(ByVal data As CSectionPlotDataReader)
+' Рисует выбранные главные центральные оси: бетонного или приведенного сечения.
+Private Sub DrawPrincipalAxes(ByVal data As CSectionPlotDataReader, ByVal axesMode As String)
     Dim lengthValue As Double
     lengthValue = 0.65 * Sqr((data.MaxX - data.MinX) * (data.MaxX - data.MinX) + _
         (data.MaxY - data.MinY) * (data.MaxY - data.MinY))
     Dim ca As Double, sa As Double
-    ca = Cos(data.PrincipalAngle)
-    sa = Sin(data.PrincipalAngle)
-    DrawModelReferenceLine data.CentroidX - lengthValue * ca, data.CentroidY - lengthValue * sa, _
-        data.CentroidX + lengthValue * ca, data.CentroidY + lengthValue * sa, RGB(0, 0, 0), 0.7, "Principal1", MSO_LINE_DASH
-    DrawModelReferenceLine data.CentroidX + lengthValue * sa, data.CentroidY - lengthValue * ca, _
-        data.CentroidX - lengthValue * sa, data.CentroidY + lengthValue * ca, RGB(0, 0, 0), 0.7, "Principal2", MSO_LINE_DASH
+    Dim angle As Double
+    Dim centroidX As Double
+    Dim centroidY As Double
+    angle = data.PrincipalAxesAngle(axesMode)
+    centroidX = data.PrincipalAxesCentroidX(axesMode)
+    centroidY = data.PrincipalAxesCentroidY(axesMode)
+    ca = Cos(angle)
+    sa = Sin(angle)
+    DrawModelReferenceLine centroidX - lengthValue * ca, centroidY - lengthValue * sa, _
+        centroidX + lengthValue * ca, centroidY + lengthValue * sa, RGB(0, 0, 0), 0.7, "Principal1", MSO_LINE_DASH
+    DrawModelReferenceLine centroidX + lengthValue * sa, centroidY - lengthValue * ca, _
+        centroidX - lengthValue * sa, centroidY + lengthValue * ca, RGB(0, 0, 0), 0.7, "Principal2", MSO_LINE_DASH
 End Sub
+
+' Читает режим осей схемы. Старый Yes/No-ключ поддержан только как fallback
+' для уже открытых старых книг, но новый Config использует PrincipalAxesMode.
+Private Function PlotPrincipalAxesMode(ByVal settings As CSystemSettingsReader) As String
+    Dim rawValue As String
+    rawValue = Trim$(settings.GetString("Plot.PrincipalAxesMode", vbNullString))
+    If Len(rawValue) = 0 And settings.HasKey("Plot.PrincipalAxesEnabled") Then
+        If settings.GetBoolean("Plot.PrincipalAxesEnabled", True) Then
+            rawValue = "Transformed"
+        Else
+            rawValue = "None"
+        End If
+    End If
+    If Len(rawValue) = 0 Then rawValue = "Transformed"
+    PlotPrincipalAxesMode = NormalizePrincipalAxesMode(rawValue, "Plot.PrincipalAxesMode")
+End Function
+
+' Приводит пользовательское значение режима осей к одному из трех вариантов.
+Private Function NormalizePrincipalAxesMode(ByVal rawValue As String, ByVal settingKey As String) As String
+    Select Case LCase$(Trim$(rawValue))
+        Case "transformed", "приведенное", "приведенное сечение"
+            NormalizePrincipalAxesMode = "Transformed"
+        Case "concrete", "бетон", "бетонное", "бетонное сечение"
+            NormalizePrincipalAxesMode = "Concrete"
+        Case "none", "no", "off", "нет", "не выводить"
+            NormalizePrincipalAxesMode = "None"
+        Case Else
+            Err.Raise vbObjectError + 4718, "CSectionPlotter", _
+                settingKey & " должен быть Transformed, Concrete или None."
+    End Select
+End Function
+
+' True, если выбранный режим требует вывода осей.
+Private Function PrincipalAxesModeDraws(ByVal axesMode As String) As Boolean
+    PrincipalAxesModeDraws = (StrComp(axesMode, "None", vbTextCompare) <> 0)
+End Function
 
 ' Передает semantic-аннотации Results в CPlotAnnotationLayout.
 ' Здесь нет логики конкретной формы: если аннотация есть, layout размещает ее;
@@ -1408,20 +1454,12 @@ Private Function DrawModelLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 
         colorValue, weight, suffix)
 End Function
 
-' Рисует расчетную линию поверх элементов текущим безопасным способом.
-' При Shape-слое линия тоже становится Shape, при grouped-series fallback-е
-' остается XY-series и не расходует лишние объектные фигуры.
+' Рисует расчетную опорную линию как XY-series.
+' Оси и нейтральная линия должны жить в координатах графика, чтобы их положение
+' относительно точки приложения нагрузки не зависело от Shape-слоя элементов.
 Private Sub DrawModelReferenceLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
         ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String, Optional ByVal dashStyle As Long = MSO_LINE_SOLID)
-    If mElementShapeLayerEnabled Then
-        Dim lineShape As Object
-        Set lineShape = DrawModelLine(x1, y1, x2, y2, colorValue, weight, suffix)
-        On Error Resume Next
-        lineShape.Line.DashStyle = dashStyle
-        On Error GoTo 0
-    Else
-        DrawModelLineSeries x1, y1, x2, y2, colorValue, weight, suffix, dashStyle
-    End If
+    DrawModelLineSeries x1, y1, x2, y2, colorValue, weight, suffix, dashStyle
 End Sub
 
 ' Рисует линию в координатах Chart/PlotArea.
@@ -1559,11 +1597,6 @@ End Sub
 ' а не в абсолютных координатах листа.
 Private Sub DrawPointMarker(ByVal xCoord As Double, ByVal yCoord As Double, ByVal sizeValue As Double, _
         ByVal colorValue As Long, ByVal markerStyle As Long, ByVal seriesName As String)
-    If mElementShapeLayerEnabled Then
-        DrawPoint xCoord, yCoord, sizeValue, colorValue, vbNullString, MarkerShapeType(markerStyle)
-        Exit Sub
-    End If
-
     Dim xValues(1 To 1) As Double
     Dim yValues(1 To 1) As Double
     xValues(1) = xCoord
@@ -1580,18 +1613,6 @@ Private Sub DrawPointMarker(ByVal xCoord As Double, ByVal yCoord As Double, ByVa
     series.MarkerForegroundColor = RGB(0, 0, 0)
     series.MarkerBackgroundColor = colorValue
 End Sub
-
-' Переводит тип маркера Chart в ближайшую Shape-форму.
-Private Function MarkerShapeType(ByVal markerStyle As Long) As Long
-    Select Case markerStyle
-        Case XL_MARKER_DIAMOND
-            MarkerShapeType = MSO_SHAPE_DIAMOND
-        Case XL_MARKER_CIRCLE
-            MarkerShapeType = MSO_SHAPE_OVAL
-        Case Else
-            MarkerShapeType = MSO_SHAPE_RECTANGLE
-    End Select
-End Function
 
 ' Размещает короткую подпись около точки модели.
 ' Используется для численных подписей результатов внутри бетонных элементов.
