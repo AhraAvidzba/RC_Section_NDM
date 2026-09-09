@@ -119,6 +119,8 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     Set mChartObject = EnsureChart(workbook.Worksheets.Item("Расчет"))
     Set mChart = mChartObject.Chart
 
+    ClearLegacyWorksheetGeneratedShapes
+
     mResultGradientEnabled = settings.GetBoolean("Plot.ResultGradient", True)
     mResultPrecision = settings.GetLong("Plot.ResultPrecision", 2)
     If mResultPrecision < 0 Then mResultPrecision = 0
@@ -154,6 +156,8 @@ Public Sub ClearExisting(ByVal workbook As Object, ByVal titleText As String)
 
     Set mChartObject = EnsureChart(workbook.Worksheets.Item("Расчет"))
     Set mChart = mChartObject.Chart
+
+    ClearLegacyWorksheetGeneratedShapes
 
     mChart.ChartType = XL_XY_SCATTER
     mChart.HasLegend = False
@@ -1766,6 +1770,25 @@ Private Sub ClearGeneratedShapes()
     For i = mChart.Shapes.Count To 1 Step -1
         If Left$(mChart.Shapes.Item(i).Name, Len(SHAPE_PREFIX)) = SHAPE_PREFIX Then
             mChart.Shapes.Item(i).Delete
+        End If
+    Next i
+End Sub
+
+' Удаляет старые служебные Shape-объекты, которые прежние версии схемы могли
+' создать прямо на листе Расчет поверх ChartObject. Новая схема хранит все
+' NDMPlot_* внутри Chart, поэтому листовые одноименные остатки только мешают:
+' они не двигаются вместе с PlotArea и визуально сдвигают оси/точку нагрузки.
+Private Sub ClearLegacyWorksheetGeneratedShapes()
+    If mChartObject Is Nothing Then Exit Sub
+
+    Dim sheet As Object
+    Set sheet = mChartObject.Parent
+    If sheet Is Nothing Then Exit Sub
+
+    Dim i As Long
+    For i = sheet.Shapes.Count To 1 Step -1
+        If Left$(sheet.Shapes.Item(i).Name, Len(SHAPE_PREFIX)) = SHAPE_PREFIX Then
+            sheet.Shapes.Item(i).Delete
         End If
     Next i
 End Sub

@@ -29,6 +29,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAutoCADSourceRequiresManualImport stats
     TestAutoCADImportButtonRejectsGeneratedSource stats
     TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
+    TestPlotClearsLegacyWorksheetShapes stats
     TestGeneratedSourceDoesNotReuseAutoCADPreview stats
     TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC stats
     TestProfileDrivenPlotUsesSnapshotState stats
@@ -446,6 +447,38 @@ Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiT
     expectedFallbackDegrees = -0.5 * Atn(Sin(GEOM_PI / 3#) / (2# + Cos(GEOM_PI / 3#))) * 180# / GEOM_PI
     AssertTrue stats, "ui.autocad.preview.squareFallbackRotation", _
         PlotShapeRotationExists("ElementConcrete", expectedFallbackDegrees, 0.5)
+End Sub
+
+' Проверяет, что новая Chart-схема удаляет старые листовые NDMPlot_*
+' объекты. Такие Shapes могли остаться от прежней реализации и визуально
+' сдвигать точку нагрузки или оси относительно актуальной схемы внутри Chart.
+Private Sub TestPlotClearsLegacyWorksheetShapes(ByRef stats As TUiTestStats)
+    PrepareCircleInput
+    SetSystemSetting "Geometry.Source", "AutoCAD"
+
+    Dim section As CSectionModel
+    Set section = New CSectionModel
+    section.SourceType = "AutoCADImport"
+    section.AddConcreteElement 50#, 50#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
+
+    Dim writer As CNDMResultsWriter
+    Set writer = New CNDMResultsWriter
+    writer.WriteGeometryPreview ThisWorkbook, section
+
+    Dim calc As Object
+    Set calc = ThisWorkbook.Worksheets.Item("Расчет")
+    Dim legacyShape As Object
+    Set legacyShape = calc.Shapes.AddShape(1, 10#, 10#, 20#, 20#)
+    legacyShape.Name = "NDMPlot_LegacyWorksheetShapeForTest"
+
+    AssertTrue stats, "ui.plot.legacyWorksheetShape.created", _
+        CountWorksheetPlotShapes("LegacyWorksheetShapeForTest") = 1
+
+    UpdateSectionPlotForWorkbook ThisWorkbook
+
+    AssertTrue stats, "ui.plot.legacyWorksheetShape.removed", _
+        CountWorksheetPlotShapes("LegacyWorksheetShapeForTest") = 0
+    AssertTrue stats, "ui.plot.legacyWorksheetShape.chartStillDraws", CountPlotShapes("LoadPoint") > 0
 End Sub
 
 ' Проверяет, что AutoCAD-preview не используется как запасная схема
@@ -1426,6 +1459,21 @@ Private Function CountPlotShapes(ByVal nameFragment As String) As Long
     For shapeIndex = 1 To chartObject.Chart.Shapes.Count
         If InStr(1, chartObject.Chart.Shapes.Item(shapeIndex).Name, nameFragment, vbTextCompare) > 0 Then
             CountPlotShapes = CountPlotShapes + 1
+        End If
+    Next shapeIndex
+Failed:
+End Function
+
+Private Function CountWorksheetPlotShapes(ByVal nameFragment As String) As Long
+    On Error GoTo Failed
+    Dim sheet As Object
+    Set sheet = ThisWorkbook.Worksheets.Item("Расчет")
+
+    Dim shapeIndex As Long
+    For shapeIndex = 1 To sheet.Shapes.Count
+        If Left$(sheet.Shapes.Item(shapeIndex).Name, Len("NDMPlot_")) = "NDMPlot_" And _
+                InStr(1, sheet.Shapes.Item(shapeIndex).Name, nameFragment, vbTextCompare) > 0 Then
+            CountWorksheetPlotShapes = CountWorksheetPlotShapes + 1
         End If
     Next shapeIndex
 Failed:
