@@ -146,9 +146,11 @@ Public Function BuildGeneratedModel(ByVal settings As CSystemSettingsReader, ByV
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
 
-    Dim meshStep As Double
-    meshStep = units.InputLengthToInternal(settings.GetDouble("Mesh.Step", 10#))
-    mesh.BuildMesh geometry, meshStep, meshStep, 1, MeshBoundarySubdivisions(settings)
+    Dim meshStepX As Double ' Шаг бетонной сетки по X во внутренних единицах.
+    Dim meshStepY As Double ' Шаг бетонной сетки по Y; если ключа нет, сохраняем старое квадратное поведение.
+    meshStepX = units.InputLengthToInternal(settings.GetDouble("Mesh.Step", 10#))
+    meshStepY = units.InputLengthToInternal(settings.GetDouble("Mesh.StepY", settings.GetDouble("Mesh.Step", 10#)))
+    mesh.BuildMesh geometry, meshStepX, meshStepY, 1, MeshBoundarySubdivisions(settings)
 
     Dim rebars As CRebarLayout
     Set rebars = CreateRebars(geometry, settings, units)

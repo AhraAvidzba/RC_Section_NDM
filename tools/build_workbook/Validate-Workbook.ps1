@@ -258,7 +258,7 @@ try {
 
     $obsoleteSettingKeys = @(
         "Capacity.Enabled", "Capacity.CalculateMx", "Capacity.CalculateMy",
-        "Capacity.CalculateMxy", "Mesh.BoundaryMode", "Mesh.StepX", "Mesh.StepY", "Circle.Radius",
+        "Capacity.CalculateMxy", "Mesh.BoundaryMode", "Mesh.StepX", "Circle.Radius",
         "Batch.MaxCombinations", "Batch.Diagnostics", "Materials.SourceStatus",
         "Concrete.Diagram", "Steel.Diagram",
         "Concrete.Point1.Eps", "Concrete.Point1.Stress",

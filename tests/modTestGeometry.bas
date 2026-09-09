@@ -48,6 +48,7 @@ Public Function RunGeometryTests() As String
     TestSectionModelFallbackInertiaSquare stats
     TestInvalidData stats
     TestBoundarySubcellMesh stats
+    TestRectangularMeshSteps stats
     TestMeshConvergence stats
     TestPerformance stats
 
@@ -1071,6 +1072,28 @@ Private Sub TestBoundarySubcellMesh(ByRef stats As TTestStats)
     AssertTrue stats, "boundary.subcell.area.better", Abs(subcellProps.Area - targetArea) < Abs(centerProps.Area - targetArea)
     AssertTrue stats, "boundary.subcell.has.small.fibers", MeshHasSmallFibers(subcellMesh, 40#)
     AssertClose stats, "boundary.subcell.small.width", FirstSmallFiberWidth(subcellMesh, 40#), 10#, 0.000001
+End Sub
+
+' Проверяет, что генератор бетонной сетки действительно поддерживает разные
+' шаги по X и Y и передает прямоугольную оболочку элемента дальше в модель.
+Private Sub TestRectangularMeshSteps(ByRef stats As TTestStats)
+    Dim geom As CGeometryRoundedRectangle
+    Set geom = New CGeometryRoundedRectangle
+    geom.Initialize 100#, 60#, 0#, 0#, 0#, 0#
+
+    Dim mesh As CFiberMeshBuilder
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geom, 25#, 15#, 1, 1
+
+    AssertTrue stats, "mesh.rectangularSteps.hasFibers", mesh.FiberCount > 0
+    AssertClose stats, "mesh.rectangularSteps.width", mesh.FiberWidth(1), 25#, 0.000001
+    AssertClose stats, "mesh.rectangularSteps.height", mesh.FiberHeight(1), 15#, 0.000001
+    AssertClose stats, "mesh.rectangularSteps.area", mesh.FiberArea(1), 25# * 15#, 0.000001
+
+    Dim model As CSectionModel
+    Set model = BuildGeneratedSectionModel(mesh, Nothing)
+    AssertClose stats, "mesh.rectangularSteps.modelWidth", model.ConcreteWidth(1), 25#, 0.000001
+    AssertClose stats, "mesh.rectangularSteps.modelHeight", model.ConcreteHeight(1), 15#, 0.000001
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.

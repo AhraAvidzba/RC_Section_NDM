@@ -775,6 +775,7 @@ Private Sub TestLargeSnapshotPlotStress(ByRef stats As TUiTestStats)
     PrepareUserLShapeMomentUltimateInput
     PrepareFullStateProfile "PR3"
     SetSystemSetting "Mesh.Step", "10"
+    SetSystemSetting "Mesh.StepY", "10"
     SetSystemSetting "Mesh.BoundarySubdivisions", "1"
     SetSystemSetting "SLS.Crack.PsiMode", "Auto"
     SetSystemSetting "SLS.Crack.Allowable", "0.000001"
@@ -2183,6 +2184,7 @@ Private Sub PrepareLShapeInput()
     SetSystemSetting "Geometry.Type", "LShape"
     SetSystemSetting "Plot.LoadCase", "LC_L"
     SetSystemSetting "Mesh.Step", "40"
+    SetSystemSetting "Mesh.StepY", "40"
     SetSystemSetting "Mesh.BoundarySubdivisions", "2"
     SetSystemSetting "LShape.B1", "160"
     SetSystemSetting "LShape.H1", "280"
@@ -2267,6 +2269,7 @@ Private Sub PrepareUserLShapeMomentUltimateInput()
     SetSystemSetting "Solver.MaxIterations", "80"
     SetSystemSetting "Solver.LoadSteps", "1"
     SetSystemSetting "Mesh.Step", "50"
+    SetSystemSetting "Mesh.StepY", "50"
     SetSystemSetting "Mesh.BoundarySubdivisions", "1"
     SetSystemSetting "Load.ReferenceOffsetX", "0"
     SetSystemSetting "Load.ReferenceOffsetY", "0"
@@ -2316,6 +2319,7 @@ Private Sub PrepareUserLShapeAxialTensionInput()
     SetSystemSetting "Solver.MaxIterations", "80"
     SetSystemSetting "Solver.LoadSteps", "1"
     SetSystemSetting "Mesh.Step", "50"
+    SetSystemSetting "Mesh.StepY", "50"
     SetSystemSetting "Mesh.BoundarySubdivisions", "1"
     SetSystemSetting "Load.ReferenceOffsetX", "0"
     SetSystemSetting "Load.ReferenceOffsetY", "0"
@@ -2443,6 +2447,10 @@ Private Sub TestCapacitySettingsUnitLabels(ByRef stats As TUiTestStats)
     AssertTextEquals stats, "ui.units.capacity.toleranceStrain", SystemSettingUnitText("Capacity.ToleranceStrain"), "-"
     AssertTextEquals stats, "ui.units.capacity.maxLambda", SystemSettingUnitText("Capacity.MaxLambda"), "-"
     AssertTextEquals stats, "ui.units.capacity.solverIterations", SystemSettingUnitText("Capacity.SolverMaxIterations"), "шт"
+    AssertTrue stats, "ui.units.meshStep.dynamic", _
+        SystemSettingUnitCellReferencesQuantity("Mesh.Step", "Length")
+    AssertTrue stats, "ui.units.meshStepY.dynamic", _
+        SystemSettingUnitCellReferencesQuantity("Mesh.StepY", "Length")
     AssertTrue stats, "ui.units.zeroMomentPerDepth.dynamic", _
         SystemSettingUnitCellReferencesQuantities("Calculation.ZeroMomentPerDepth", "Moment", "Length")
 End Sub
