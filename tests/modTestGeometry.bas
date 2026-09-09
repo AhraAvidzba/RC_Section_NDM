@@ -38,6 +38,7 @@ Public Function RunGeometryTests() As String
     TestAutoCADImporterBuildsSectionModel stats
     TestAutoCADImporterRotatedRectangleBounds stats
     TestAutoCADImporterPrincipalInertiaBounds stats
+    TestAutoCADImporterTranslatedRegionKeepsLocalGeometry stats
     TestAutoCADImporterSquareRegionReadsEdgeRotation stats
     TestAutoCADImporterAreaSquareFallback stats
     TestAutoCADImporterAreaSquareFallbackAverageRotation stats
@@ -324,6 +325,65 @@ Private Sub TestAutoCADImporterPrincipalInertiaBounds(ByRef stats As TTestStats)
     AssertClose stats, "autocad.import.principal.uDepth", maxProjection - minProjection, expectedWidth, 0.000001
     props.CalculateProjection model, -Sin(angle), Cos(angle), False, minProjection, maxProjection
     AssertClose stats, "autocad.import.principal.vDepth", maxProjection - minProjection, expectedHeight, 0.000001
+End Sub
+
+' Проверяет, что перенос одного и того же повернутого Region по чертежу
+' не меняет его центральные A/I и геометрическую оболочку.
+Private Sub TestAutoCADImporterTranslatedRegionKeepsLocalGeometry(ByRef stats As TTestStats)
+    Dim area As Double
+    Dim expectedWidth As Double
+    Dim expectedHeight As Double
+    Dim angle As Double
+    area = 2250#
+    expectedWidth = 90#
+    expectedHeight = 25#
+    angle = -GEOM_PI / 9#
+
+    Dim inertiaU As Double
+    Dim inertiaV As Double
+    Dim localIx As Double
+    Dim localIy As Double
+    Dim localIxy As Double
+    inertiaU = area * expectedHeight * expectedHeight / 12#
+    inertiaV = area * expectedWidth * expectedWidth / 12#
+    RotatedLocalInertia inertiaU, inertiaV, angle, localIx, localIy, localIxy
+
+    Dim modelSpace As Collection
+    Set modelSpace = New Collection
+    modelSpace.Add FakeRegion(area, 0#, 0#, localIx, localIy, localIxy, _
+        "Concrete", "C_NEAR", angle, False)
+    modelSpace.Add FakeRegion(area, 12000#, -8000#, localIx, localIy, localIxy, _
+        "Concrete", "C_FAR", angle, False)
+    modelSpace.Add FakeRegion(GEOM_PI * 12# * 12# / 4#, 0#, -60#, 1#, 1#, 0#, _
+        "Reinf", "R1", 0#, False)
+
+    Dim importer As CAutoCADSectionModelImporter
+    Set importer = New CAutoCADSectionModelImporter
+    Dim model As CSectionModel
+    Set model = importer.ImportFromModelSpace(modelSpace, "Concrete", "Reinf", "Rebar", 0.000001)
+
+    AssertClose stats, "autocad.import.translated.noExplode", importer.DebugEdgeProbeCount, 0#, 0.000001
+    AssertTrue stats, "autocad.import.translated.nearShape", model.ConcreteShapeType(1) = "Rectangle"
+    AssertTrue stats, "autocad.import.translated.farShape", model.ConcreteShapeType(2) = model.ConcreteShapeType(1)
+    AssertClose stats, "autocad.import.translated.localIx", model.ConcreteLocalIx(2), model.ConcreteLocalIx(1), 0.001
+    AssertClose stats, "autocad.import.translated.localIy", model.ConcreteLocalIy(2), model.ConcreteLocalIy(1), 0.001
+    AssertClose stats, "autocad.import.translated.localIxy", model.ConcreteLocalIxy(2), model.ConcreteLocalIxy(1), 0.001
+    AssertClose stats, "autocad.import.translated.width", model.ConcreteWidth(2), model.ConcreteWidth(1), 0.000001
+    AssertClose stats, "autocad.import.translated.height", model.ConcreteHeight(2), model.ConcreteHeight(1), 0.000001
+    AssertClose stats, "autocad.import.translated.rotation", model.ConcreteRotation(2), model.ConcreteRotation(1), 0.000001
+
+    Dim nearI1 As Double
+    Dim nearI2 As Double
+    Dim nearAngle As Double
+    Dim farI1 As Double
+    Dim farI2 As Double
+    Dim farAngle As Double
+    model.PrincipalLocalInertia model.ConcreteLocalIx(1), model.ConcreteLocalIy(1), _
+        model.ConcreteLocalIxy(1), nearI1, nearI2, nearAngle
+    model.PrincipalLocalInertia model.ConcreteLocalIx(2), model.ConcreteLocalIy(2), _
+        model.ConcreteLocalIxy(2), farI1, farI2, farAngle
+    AssertClose stats, "autocad.import.translated.i1", farI1, nearI1, 0.001
+    AssertClose stats, "autocad.import.translated.i2", farI2, nearI2, 0.001
 End Sub
 
 ' Проверяет живой путь AutoCAD-import: почти изотропный Region получает угол

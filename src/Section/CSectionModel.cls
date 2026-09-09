@@ -55,7 +55,7 @@ Private mRebarCount As Long ' Фактическое число стержней
 Private mAnnotations As CSectionAnnotations ' Semantic-аннотации, сформированные генератором сечения.
 
 Private Const LOCAL_INERTIA_SQUARE_REL_TOLERANCE As Double = 0.000001 ' Допуск, при котором главные локальные I считаются изотропными.
-Private Const LOCAL_INERTIA_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.02 ' Допуск проверки, что реальные A/I совместимы с прямоугольником.
+Private Const LOCAL_INERTIA_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.01 ' Допуск проверки, что реальные A/I совместимы с прямоугольником.
 
 ' Очищает модель перед новым построением сечения.
 ' После Clear объект снова готов принимать бетонные элементы, арматуру и
