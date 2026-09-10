@@ -20,7 +20,8 @@ Option Explicit
 ' Здесь нет чтения Excel-ячеек и нет генерации геометрии. На вход уже должны
 ' прийти CSectionModel, материалы и нормализованные усилия N + Mx + My.
 
-Private Const MAX_COMBINATIONS As Long = 20 ' Максимум LC, поддерживаемый таблицей книги.
+Private Const INITIAL_COMBINATION_CAPACITY As Long = 20 ' Начальный размер внутренних массивов; при расширении rngLoadCombinations хранилище растет.
+Private Const COMBINATION_CAPACITY_STEP As Long = 20 ' Шаг расширения, чтобы не делать ReDim Preserve на каждой новой строке LC.
 Private Const CAPACITY_PATH_NONE As String = "None" ' Capacity не запускался для LC.
 Private Const DEFAULT_ZERO_MOMENT_PER_DEPTH As Double = 4903.325 ' 0.5 tf*m/m во внутренних Н*мм/мм.
 
@@ -46,8 +47,8 @@ Private mProfiles As CCalculationProfileCatalog ' Каталог расчетн�
 Private mStatusPolicy As CBatchStatusPolicy ' Единый словарь пользовательских статусов и правил их агрегирования.
 Private mCount As Long ' Сколько сочетаний реально добавлено в пакет.
 
-Private mInputs(1 To MAX_COMBINATIONS) As TCombinationInput ' Исходные данные LC, прочитанные из таблицы сочетаний.
-Private mResults(1 To MAX_COMBINATIONS) As CCombinationResult ' Расчетные результаты LC для Summary/Results.
+Private mInputs() As TCombinationInput ' Исходные данные LC, прочитанные из фактических строк rngLoadCombinations.
+Private mResults() As CCombinationResult ' Расчетные результаты LC для Summary/Results; размер массива растет вместе с количеством LC.
 Private mLoadReferenceX As Double ' X точки приложения нагрузки относительно расчетной модели, мм.
 Private mLoadReferenceY As Double ' Y точки приложения нагрузки относительно расчетной модели, мм.
 Private mLoadReferenceOffsetX As Double ' Смещение точки нагрузки от центра тяжести бетонного сечения по X, мм.
@@ -113,22 +114,19 @@ Private mStabilitySP35PhiP As Double ' Коэффициент phi_p; для не
 Private mStabilitySP35NOverNcrLimit As Double ' Ограничение N/Ncr для ветви СП 35.
 Private mStabilitySP35Table721 As Variant ' Таблица 7.21 СП 35, прочитанная с Config.
 Private mStabilityLoadCount As Long ' Число строк постоянных/длительных нагрузок для устойчивости.
-Private mStabilityLoadCombinationID(1 To MAX_COMBINATIONS) As String ' LC, к которому относится строка длительных нагрузок.
-Private mStabilityLoadN(1 To MAX_COMBINATIONS) As Double ' N от постоянных или постоянных+длительных нагрузок, Н.
-Private mStabilityLoadUserMx(1 To MAX_COMBINATIONS) As Double ' Пользовательский Mx длительной части в точке приложения нагрузки.
-Private mStabilityLoadUserMy(1 To MAX_COMBINATIONS) As Double ' Пользовательский My длительной части в точке приложения нагрузки.
+Private mStabilityLoadCombinationID() As String ' LC, к которому относится строка длительных нагрузок.
+Private mStabilityLoadN() As Double ' N от постоянных или постоянных+длительных нагрузок, Н.
+Private mStabilityLoadUserMx() As Double ' Пользовательский Mx длительной части в точке приложения нагрузки.
+Private mStabilityLoadUserMy() As Double ' Пользовательский My длительной части в точке приложения нагрузки.
 
 ' Инициализирует внутреннее состояние объекта значениями по умолчанию, безопасными для последующей настройки.
 Private Sub Class_Initialize()
-    Dim resultIndex As Long
     Set mStatusPolicy = New CBatchStatusPolicy
     Set mMomentZeroFilter = New CMomentZeroFilter
     mZeroMomentPerDepth = DEFAULT_ZERO_MOMENT_PER_DEPTH
     mMomentZeroFilter.Initialize mZeroMomentPerDepth
-    For resultIndex = 1 To MAX_COMBINATIONS
-        Set mResults(resultIndex) = New CCombinationResult
-        mResults(resultIndex).Clear CAPACITY_PATH_NONE
-    Next resultIndex
+    EnsureCombinationCapacity INITIAL_COMBINATION_CAPACITY
+    EnsureStabilityLoadCapacity INITIAL_COMBINATION_CAPACITY
 
     mCrackAllowable = 0.3
     mCrackPsiMode = "User"
@@ -343,7 +341,7 @@ End Sub
 Public Sub ClearStabilityDurationLoads()
     mStabilityLoadCount = 0
     Dim i As Long
-    For i = 1 To MAX_COMBINATIONS
+    For i = 1 To StabilityLoadCapacity()
         mStabilityLoadCombinationID(i) = vbNullString
         mStabilityLoadN(i) = 0#
         mStabilityLoadUserMx(i) = 0#
@@ -357,8 +355,7 @@ End Sub
 ' значения во внутренних единицах.
 Public Sub AddStabilityDurationLoad(ByVal combinationID As String, ByVal nValue As Double, _
         ByVal mxValue As Double, ByVal myValue As Double)
-    If mStabilityLoadCount >= MAX_COMBINATIONS Then Err.Raise vbObjectError + 3925, _
-        "CBatchSectionCalculator", "Поддерживается не более 20 строк нагрузок для устойчивости."
+    EnsureStabilityLoadCapacity mStabilityLoadCount + 1
     mStabilityLoadCount = mStabilityLoadCount + 1
     mStabilityLoadCombinationID(mStabilityLoadCount) = Trim$(combinationID)
     mStabilityLoadN(mStabilityLoadCount) = nValue
@@ -390,7 +387,7 @@ End Sub
 Private Sub AddCombinationInternal(ByVal combinationID As String, ByVal nValue As Double, ByVal mxValue As Double, _
         ByVal myValue As Double, ByVal profileId As String, ByVal comment As String, _
         ByVal inputValid As Boolean, ByVal inputError As String, ByVal capacityLoadPath As String)
-    If mCount >= MAX_COMBINATIONS Then Err.Raise vbObjectError + 3911, "CBatchSectionCalculator", "Поддерживается не более 20 сочетаний нагрузок."
+    EnsureCombinationCapacity mCount + 1
     mCount = mCount + 1
     If Len(Trim$(combinationID)) = 0 Then combinationID = "ROW" & CStr(mCount)
     mInputs(mCount).CombinationID = combinationID
@@ -406,6 +403,76 @@ Private Sub AddCombinationInternal(ByVal combinationID As String, ByVal nValue A
     mInputs(mCount).InputError = inputError
     If inputValid Then NormalizeCombinationMoments mCount
 End Sub
+
+' Расширяет хранилище LC без изменения уже прочитанных нагрузок и результатов.
+Private Sub EnsureCombinationCapacity(ByVal requiredCount As Long)
+    If requiredCount <= CombinationCapacity() Then Exit Sub
+
+    Dim currentCapacity As Long
+    Dim newCapacity As Long
+    currentCapacity = CombinationCapacity()
+    newCapacity = currentCapacity
+    If newCapacity < INITIAL_COMBINATION_CAPACITY Then newCapacity = INITIAL_COMBINATION_CAPACITY
+    Do While newCapacity < requiredCount
+        newCapacity = newCapacity + COMBINATION_CAPACITY_STEP
+    Loop
+
+    If currentCapacity = 0 Then
+        ReDim mInputs(1 To newCapacity)
+        ReDim mResults(1 To newCapacity)
+    Else
+        ReDim Preserve mInputs(1 To newCapacity)
+        ReDim Preserve mResults(1 To newCapacity)
+    End If
+
+    Dim i As Long
+    For i = currentCapacity + 1 To newCapacity
+        Set mResults(i) = New CCombinationResult
+        mResults(i).Clear CAPACITY_PATH_NONE
+    Next i
+End Sub
+
+' Возвращает текущую емкость массива LC; неинициализированный массив дает 0.
+Private Function CombinationCapacity() As Long
+    On Error GoTo EmptyStorage
+    CombinationCapacity = UBound(mInputs)
+    Exit Function
+EmptyStorage:
+End Function
+
+' Расширяет таблицу длительных нагрузок устойчивости вместе с фактическим числом строк Config.
+Private Sub EnsureStabilityLoadCapacity(ByVal requiredCount As Long)
+    If requiredCount <= StabilityLoadCapacity() Then Exit Sub
+
+    Dim currentCapacity As Long
+    Dim newCapacity As Long
+    currentCapacity = StabilityLoadCapacity()
+    newCapacity = currentCapacity
+    If newCapacity < INITIAL_COMBINATION_CAPACITY Then newCapacity = INITIAL_COMBINATION_CAPACITY
+    Do While newCapacity < requiredCount
+        newCapacity = newCapacity + COMBINATION_CAPACITY_STEP
+    Loop
+
+    If currentCapacity = 0 Then
+        ReDim mStabilityLoadCombinationID(1 To newCapacity)
+        ReDim mStabilityLoadN(1 To newCapacity)
+        ReDim mStabilityLoadUserMx(1 To newCapacity)
+        ReDim mStabilityLoadUserMy(1 To newCapacity)
+    Else
+        ReDim Preserve mStabilityLoadCombinationID(1 To newCapacity)
+        ReDim Preserve mStabilityLoadN(1 To newCapacity)
+        ReDim Preserve mStabilityLoadUserMx(1 To newCapacity)
+        ReDim Preserve mStabilityLoadUserMy(1 To newCapacity)
+    End If
+End Sub
+
+' Возвращает текущую емкость массива длительных нагрузок; неинициализированный массив дает 0.
+Private Function StabilityLoadCapacity() As Long
+    On Error GoTo EmptyStorage
+    StabilityLoadCapacity = UBound(mStabilityLoadCombinationID)
+    Exit Function
+EmptyStorage:
+End Function
 
 ' Переносит пользовательские моменты из точки приложения нагрузки к координатам элементов.
 ' Пользователь задает Mx/My относительно выбранной точки нагрузки, а solver

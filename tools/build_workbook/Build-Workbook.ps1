@@ -504,10 +504,10 @@ try {
     $system.Columns.Item(20).ColumnWidth = 18
     $system.Columns.Item(21).ColumnWidth = 22
     $results.Range("A1:BC1").Font.Bold = $true
-    $results.Range("A60:F60").Font.Bold = $true
+    $results.Range("A60:H60").Font.Bold = $true
     $results.Range("K60:Y60").Font.Bold = $true
     $results.Range("AB60:AG60").Font.Bold = $true
-    $results.Range("AJ60:AR60").Font.Bold = $true
+    $results.Range("AJ60:AT60").Font.Bold = $true
     $results.Range("AW60:BI60").Font.Bold = $true
     $results.Columns.ColumnWidth = 8.43
     Add-ResultsSummaryHelpLink $results $instructions

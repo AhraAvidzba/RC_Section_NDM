@@ -29,6 +29,40 @@ Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 61 ' Строки общи�
 Private Const LC_SECTION_PROPERTY_ROWS As Long = 23 ' Строки свойств одного LC без metadata named-state.
 Private Const STATE_SECTION_PROPERTY_ROWS As Long = 10 ' Строки metadata одного сохраненного named-state.
 
+' Возвращает фактическую ширину одного из блоков Results, которые пишет этот writer.
+Public Function OutputColumnCount(ByVal rangeName As String) As Long
+    Select Case LCase$(Trim$(rangeName))
+        Case "rngndmelementresults"
+            OutputColumnCount = ELEMENT_RESULT_COLUMNS
+        Case "rngndmsectiongeometry"
+            OutputColumnCount = GEOMETRY_COLUMNS
+        Case "rngndmsectionproperties"
+            OutputColumnCount = SECTION_PROPERTY_COLUMNS
+        Case "rngndmmaterialdiagrams"
+            OutputColumnCount = MATERIAL_DIAGRAM_COLUMNS
+        Case "rngndmsectionannotations"
+            OutputColumnCount = ANNOTATION_COLUMNS
+        Case Else
+            Err.Raise vbObjectError + 4460, "CNDMResultsWriter.OutputColumnCount", _
+                "Неизвестный блок Results: " & rangeName
+    End Select
+End Function
+
+' Оценивает максимальную высоту rngNDMElementResults до запуска solver-а.
+Public Function EstimatedElementResultRows(ByVal elementCount As Long, ByVal namedStateCount As Long) As Long
+    If elementCount < 0 Then elementCount = 0
+    If namedStateCount < 0 Then namedStateCount = 0
+    EstimatedElementResultRows = 1 + elementCount * namedStateCount
+End Function
+
+' Оценивает высоту rngNDMSectionProperties до расчета по максимальному числу named-state.
+Public Function EstimatedSectionPropertyRows(ByVal combinationCount As Long, ByVal namedStateCount As Long) As Long
+    If combinationCount < 0 Then combinationCount = 0
+    If namedStateCount < 0 Then namedStateCount = 0
+    EstimatedSectionPropertyRows = 1 + COMMON_SECTION_PROPERTY_ROWS + _
+        combinationCount * LC_SECTION_PROPERTY_ROWS + namedStateCount * STATE_SECTION_PROPERTY_ROWS
+End Function
+
 ' ------------------------------
 ' Полная запись Results
 ' ------------------------------
@@ -651,8 +685,8 @@ Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As L
 End Sub
 
 ' Считает точную высоту rngNDMSectionProperties до выделения массива.
-' Это важно для полного snapshot-а: при 20 LC и нескольких named-state на LC
-' фиксированного запаса может не хватить, и VBA падает с Subscript out of range.
+' Это важно для полного snapshot-а: при динамическом числе LC и нескольких named-state
+' на LC фиксированного запаса может не хватить, и VBA падает с Subscript out of range.
 Private Function SectionPropertyRowCount(ByVal batch As CBatchSectionCalculator) As Long
     Dim rowCount As Long
     rowCount = 1 + COMMON_SECTION_PROPERTY_ROWS + batch.Count * LC_SECTION_PROPERTY_ROWS

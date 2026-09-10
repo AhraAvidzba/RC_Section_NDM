@@ -33,6 +33,10 @@ End Sub
 Public Sub LoadFromRange(ByVal source As Object, ByVal batch As CBatchSectionCalculator, Optional ByVal units As CUnitSystem = Nothing)
     If source Is Nothing Then Err.Raise vbObjectError + 3952, "CLoadCombinationReader", "Диапазон сочетаний нагрузок не найден."
     If batch Is Nothing Then Err.Raise vbObjectError + 3953, "CLoadCombinationReader", "Пакетный расчетчик не передан."
+    If source.Rows.Count < 2 Then Err.Raise vbObjectError + 3954, "CLoadCombinationReader", _
+        "rngLoadCombinations должен содержать строку заголовков и минимум одну строку сочетания."
+    If source.Columns.Count < 5 Then Err.Raise vbObjectError + 3955, "CLoadCombinationReader", _
+        "rngLoadCombinations должен содержать минимум столбцы CombinationID, N, Mx, My и ProfileId."
 
     Dim data As Variant
     data = source.Value2

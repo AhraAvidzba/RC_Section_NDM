@@ -20,8 +20,6 @@ Option Explicit
 ' подробную расшифровку по главным плоскостям и выбранному нормативу СП 35/СП 63.
 
 Private Const HEADER_ROWS As Long = 5 ' Количество строк шапки над якорем.
-Private Const DATA_ROWS As Long = 20 ' Максимальное количество LC в таблице.
-Private Const TOTAL_ROWS As Long = 25 ' Шапка плюс фиксированные 20 строк LC.
 Private Const TOTAL_COLUMNS As Long = 83 ' Ширина таблицы с пустыми разделителями между блоками.
 
 Private Const COL_SUMMARY_FIRST As Long = 1
@@ -44,6 +42,46 @@ Private Const FAILED_FONT_COLOR As Long = &H9C0006 ' Темно-красный �
 Private Const SMALL_VALUE As Double = 0.000000001 ' Малый порог для деления и пустых расчетных полей.
 Private Const RESULTS_COLUMN_WIDTH As Double = 8.43 ' В Results все столбцы оставляем стандартной одинаковой ширины.
 
+' Возвращает количество строк шапки, которые writer строит выше rngStabilitySummaryAnchor.
+Public Function HeaderRowsAboveAnchor() As Long
+    HeaderRowsAboveAnchor = HEADER_ROWS
+End Function
+
+' Возвращает полную высоту таблицы устойчивости с учетом шапки над якорем.
+Public Function RequiredRows(ByVal combinationCount As Long) As Long
+    If combinationCount < 1 Then combinationCount = 1
+    RequiredRows = HEADER_ROWS + combinationCount
+End Function
+
+' Возвращает число строк данных, которое нужно оформить под доступные LC.
+' Заполненные сочетания берутся из batch, а пустая сетка - из высоты rngLoadCombinations.
+Public Function RequiredDataRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
+    RequiredDataRowsForWorkbook = combinationCount
+    If RequiredDataRowsForWorkbook < 1 Then RequiredDataRowsForWorkbook = 1
+
+    On Error GoTo SafeExit
+    If workbook Is Nothing Then GoTo SafeExit
+    Dim loads As Object
+    Set loads = workbook.Names.Item("rngLoadCombinations").RefersToRange
+    If loads.Rows.Count > 1 Then
+        If loads.Rows.Count - 1 > RequiredDataRowsForWorkbook Then _
+            RequiredDataRowsForWorkbook = loads.Rows.Count - 1
+    End If
+SafeExit:
+    If RequiredDataRowsForWorkbook < 1 Then RequiredDataRowsForWorkbook = 1
+End Function
+
+' Возвращает полную высоту таблицы для фактической книги, включая пустые
+' доступные строки сочетаний, которые тоже должны иметь рамки.
+Public Function RequiredRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
+    RequiredRowsForWorkbook = RequiredRows(RequiredDataRowsForWorkbook(workbook, combinationCount))
+End Function
+
+' Возвращает полную ширину таблицы устойчивости, включая пустые столбцы-разделители.
+Public Function RequiredColumns() As Long
+    RequiredColumns = TOTAL_COLUMNS
+End Function
+
 ' Записывает детальную таблицу устойчивости от якоря rngStabilitySummaryAnchor.
 Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, _
         Optional ByVal units As CUnitSystem = Nothing)
@@ -52,7 +90,7 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
     If batch Is Nothing Then Err.Raise vbObjectError + 3981, "CStabilitySummaryWriter", "Пакетный расчетчик не передан."
 
     Dim target As Object
-    Set target = TargetRange(workbook)
+    Set target = TargetRange(workbook, RequiredDataRowsForWorkbook(workbook, batch.Count))
     PrepareTarget target
     WriteHeaders target, units
     WriteData target, batch, units
@@ -66,16 +104,40 @@ End Sub
 ' Полностью очищает старый блок устойчивости вместе с объединениями и форматами.
 Public Sub ClearSummary(ByVal workbook As Object)
     If workbook Is Nothing Then Err.Raise vbObjectError + 3982, "CStabilitySummaryWriter", "Книга Excel не передана."
-    PrepareTarget TargetRange(workbook)
+    PrepareTarget ClearTargetRange(workbook)
 End Sub
 
-' Возвращает полный диапазон таблицы: пять строк шапки над якорем и 20 строк данных.
-Private Function TargetRange(ByVal workbook As Object) As Object
+' Возвращает полный диапазон таблицы: пять строк шапки над якорем и фактические строки LC.
+Private Function TargetRange(ByVal workbook As Object, Optional ByVal dataRows As Long = 1) As Object
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
     If anchor.Row <= HEADER_ROWS Then Err.Raise vbObjectError + 3983, "CStabilitySummaryWriter", _
         "rngStabilitySummaryAnchor должен иметь место для шапки над собой."
-    Set TargetRange = anchor.Offset(-HEADER_ROWS, 0).Resize(TOTAL_ROWS, TOTAL_COLUMNS)
+    Set TargetRange = anchor.Offset(-HEADER_ROWS, 0).Resize(RequiredRows(dataRows), TOTAL_COLUMNS)
+End Function
+
+' Возвращает область очистки старой таблицы до следующего нижнего якоря Results.
+Private Function ClearTargetRange(ByVal workbook As Object) As Object
+    Dim anchor As Object
+    Set anchor = workbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
+    If anchor.Row <= HEADER_ROWS Then Err.Raise vbObjectError + 3983, "CStabilitySummaryWriter", _
+        "rngStabilitySummaryAnchor должен иметь место для шапки над собой."
+
+    Dim topRow As Long
+    topRow = anchor.Row - HEADER_ROWS
+
+    Dim rowsToClear As Long
+    rowsToClear = RequiredRows(1)
+
+    On Error GoTo UseDefaultHeight
+    Dim nextAnchor As Object
+    Set nextAnchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
+    If nextAnchor.Row > topRow Then rowsToClear = nextAnchor.Row - topRow
+
+UseDefaultHeight:
+    If topRow + rowsToClear - 1 > anchor.Worksheet.Rows.Count Then _
+        rowsToClear = anchor.Worksheet.Rows.Count - topRow + 1
+    Set ClearTargetRange = anchor.Worksheet.Cells(topRow, anchor.Column).Resize(rowsToClear, TOTAL_COLUMNS)
 End Function
 
 ' Снимает старые объединения и чистит область, чтобы при переносе якоря не осталось старой верстки.
@@ -278,15 +340,17 @@ End Sub
 ' Записывает строки LC одним массивом.
 Private Sub WriteData(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     Dim data() As Variant
-    ReDim data(1 To DATA_ROWS, 1 To TOTAL_COLUMNS)
+    Dim dataRows As Long
+    dataRows = batch.Count
+    If dataRows < 1 Then dataRows = 1
+    ReDim data(1 To dataRows, 1 To TOTAL_COLUMNS)
 
     Dim i As Long
     For i = 1 To batch.Count
-        If i > DATA_ROWS Then Exit For
         PutCombination data, i, batch, i, units
     Next i
 
-    target.Offset(HEADER_ROWS, 0).Resize(DATA_ROWS, TOTAL_COLUMNS).Value2 = data
+    target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).Value2 = data
 End Sub
 
 ' Заполняет одну строку LC: общий итог, общие исходные величины и выбранный блок СП.
@@ -401,9 +465,12 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     target.Offset(0, 0).Resize(HEADER_ROWS, TOTAL_COLUMNS).Font.Bold = True
     target.Offset(0, 0).Resize(HEADER_ROWS, TOTAL_COLUMNS).WrapText = True
     FormatHeaderNotes target
-    target.Offset(HEADER_ROWS, 0).Resize(DATA_ROWS, TOTAL_COLUMNS).WrapText = False
-    target.Offset(HEADER_ROWS, 0).Resize(DATA_ROWS, TOTAL_COLUMNS).NumberFormat = "0.000"
-    target.Offset(HEADER_ROWS, 0).Resize(DATA_ROWS, 2).NumberFormat = "@"
+    Dim dataRows As Long
+    dataRows = target.Rows.Count - HEADER_ROWS
+    If dataRows < 1 Then dataRows = 1
+    target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).WrapText = False
+    target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).NumberFormat = "0.000"
+    target.Offset(HEADER_ROWS, 0).Resize(dataRows, 2).NumberFormat = "@"
 
     SetColumnWidths target
 
@@ -433,7 +500,7 @@ End Sub
 ' Оформляет один смысловой блок и не трогает пустой столбец-разделитель рядом.
 Private Sub FormatBlock(ByVal target As Object, ByVal firstColumn As Long, ByVal lastColumn As Long)
     Dim block As Object
-    Set block = target.Offset(0, firstColumn - 1).Resize(TOTAL_ROWS, lastColumn - firstColumn + 1)
+    Set block = target.Offset(0, firstColumn - 1).Resize(target.Rows.Count, lastColumn - firstColumn + 1)
     block.Borders.LineStyle = 1
     block.Borders.Color = RGB(0, 0, 0)
     block.Borders.Weight = 2
@@ -451,7 +518,7 @@ Private Sub FormatFailedRows(ByVal target As Object, ByVal batch As CBatchSectio
 
     Dim i As Long
     For i = 1 To batch.Count
-        If i > DATA_ROWS Then Exit For
+        If HEADER_ROWS + i > target.Rows.Count Then Exit For
         If policy.IsFailedOverall(batch.StabilityStatus(i)) Then
             ColorRowBlock target, HEADER_ROWS + i, COL_SUMMARY_FIRST, COL_SUMMARY_LAST
             If StrComp(batch.StabilityCode(i), "SP35", vbTextCompare) = 0 Then

@@ -285,11 +285,6 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddValue "Стержней арматуры", CStr(section.RebarCount)
     report.AddValue "Semantic-аннотаций", CStr(section.AnnotationCount)
 
-    report.AddSection "Подготовка книги"
-    report.AddStep "Начата очистка старых результатов."
-    ClearSectionResultsForWorkbook workbook
-    report.AddStep "Очищены rngBatchSummary и таблицы расчетного снимка Results."
-
     Dim materialProvider As CMaterialModelProvider
     Set materialProvider = New CMaterialModelProvider
     report.AddStep "Начато построение material provider."
@@ -329,6 +324,15 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     ApplyLoadReferenceFromSettings section, settings, units, batch
     report.AddValue "Точка приложения нагрузки X", FormatReportNumber(batch.LoadReferenceX) & " мм"
     report.AddValue "Точка приложения нагрузки Y", FormatReportNumber(batch.LoadReferenceY) & " мм"
+
+    report.AddSection "Проверка вывода Results"
+    ValidateResultsOutputLayout workbook, section, batch, profiles
+    report.AddStep "Проверена раскладка Results для " & CStr(batch.Count) & " сочетаний."
+
+    report.AddSection "Подготовка книги"
+    report.AddStep "Начата очистка старых результатов."
+    ClearSectionResultsForWorkbook workbook
+    report.AddStep "Очищены rngBatchSummary и таблицы расчетного снимка Results."
 
     report.AddSection "Расчет сочетаний"
     batch.Execute
@@ -395,6 +399,222 @@ Failed:
     End If
     If Not excelGuard Is Nothing Then excelGuard.Restore
     Err.Raise errorNumber, errorSource, errorDescription
+End Function
+
+' Проверяет, поместятся ли все блоки Results до запуска solver-а.
+' Учитываются шапки над якорями, фактические ширины writer-ов и нижние
+' snapshot-блоки, между которыми по принятому правилу должны оставаться
+' два пустых столбца. Если раскладка тесная, расчет не запускается.
+Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section As CSectionModel, _
+        ByVal batch As CBatchSectionCalculator, ByVal profiles As CCalculationProfileCatalog)
+    If workbook Is Nothing Then Err.Raise vbObjectError + 4160, "ValidateResultsOutputLayout", "Книга Excel не передана."
+    If section Is Nothing Then Err.Raise vbObjectError + 4161, "ValidateResultsOutputLayout", "Модель сечения не передана."
+    If batch Is Nothing Then Err.Raise vbObjectError + 4162, "ValidateResultsOutputLayout", "Пакетный расчетчик не передан."
+
+    Const SNAPSHOT_GAP_COLUMNS As Long = 2
+    Const RESULTS_TABLE_GAP_ROWS As Long = 2
+
+    Dim issues As Collection
+    Set issues = New Collection
+
+    Dim summaryWriter As CBatchResultWriter
+    Dim stabilityWriter As CStabilitySummaryWriter
+    Dim ndmWriter As CNDMResultsWriter
+    Set summaryWriter = New CBatchResultWriter
+    Set stabilityWriter = New CStabilitySummaryWriter
+    Set ndmWriter = New CNDMResultsWriter
+
+    Dim summaryAnchor As Object
+    Dim stabilityAnchor As Object
+    Dim elementAnchor As Object
+    On Error GoTo MissingAnchor
+    Set summaryAnchor = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
+    Set stabilityAnchor = workbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
+    Set elementAnchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
+    On Error GoTo 0
+
+    Dim ws As Object
+    Set ws = summaryAnchor.Worksheet
+    If Not (stabilityAnchor.Worksheet Is ws) Or Not (elementAnchor.Worksheet Is ws) Then
+        AddLayoutIssue issues, "rngBatchSummary, rngStabilitySummaryAnchor и rngNDMElementResults должны находиться на одном листе Results."
+    End If
+
+    Dim summaryRows As Long
+    Dim summaryCols As Long
+    summaryRows = summaryWriter.RequiredSummaryOutputRows(batch.Count)
+    summaryCols = summaryWriter.RequiredSummaryOutputColumns()
+    CheckFootprintWithinSheet issues, ws, "rngBatchSummary + словарь статусов", _
+        summaryAnchor.Row, summaryAnchor.Column, summaryRows, summaryCols
+
+    Dim stabilityTopRow As Long
+    Dim stabilityRows As Long
+    Dim stabilityCols As Long
+    stabilityTopRow = stabilityAnchor.Row - stabilityWriter.HeaderRowsAboveAnchor
+    stabilityRows = stabilityWriter.RequiredRowsForWorkbook(workbook, batch.Count)
+    stabilityCols = stabilityWriter.RequiredColumns()
+    If stabilityTopRow < 1 Then
+        AddLayoutIssue issues, "rngStabilitySummaryAnchor расположен слишком высоко: над ним нет места для шапки таблицы устойчивости."
+    Else
+        CheckFootprintWithinSheet issues, ws, "rngStabilitySummaryAnchor с шапкой устойчивости", _
+            stabilityTopRow, stabilityAnchor.Column, stabilityRows, stabilityCols
+    End If
+
+    Dim summaryBottomRow As Long
+    Dim stabilityBottomRow As Long
+    summaryBottomRow = summaryAnchor.Row + summaryRows - 1
+    stabilityBottomRow = stabilityTopRow + stabilityRows - 1
+    If summaryBottomRow + RESULTS_TABLE_GAP_ROWS >= stabilityTopRow Then
+        AddLayoutIssue issues, "Между rngBatchSummary и шапкой rngStabilitySummaryAnchor нужны " & _
+            CStr(RESULTS_TABLE_GAP_ROWS) & " пустые строки: для " & _
+            CStr(batch.Count) & " LC она занимает строки до " & CStr(summaryBottomRow) & _
+            ", шапка устойчивости начинается со строки " & CStr(stabilityTopRow) & _
+            ". Опустите rngStabilitySummaryAnchor или сократите число строк rngLoadCombinations."
+    End If
+    If stabilityBottomRow + RESULTS_TABLE_GAP_ROWS >= elementAnchor.Row Then
+        AddLayoutIssue issues, "Между rngStabilitySummaryAnchor и rngNDMElementResults нужны " & _
+            CStr(RESULTS_TABLE_GAP_ROWS) & " пустые строки: для " & _
+            CStr(batch.Count) & " LC она занимает строки до " & CStr(stabilityBottomRow) & _
+            ", а rngNDMElementResults начинается со строки " & CStr(elementAnchor.Row) & _
+            ". Опустите rngNDMElementResults и нижние snapshot-якоря или сократите число строк rngLoadCombinations."
+    End If
+
+    Dim estimatedStateCount As Long
+    Dim elementCount As Long
+    estimatedStateCount = EstimatedNamedStateCountForOutput(batch, profiles)
+    elementCount = section.ConcreteCount + section.RebarCount
+    ValidateSnapshotOutputLayout issues, workbook, ws, ndmWriter, elementCount, _
+        estimatedStateCount, batch.Count, section.AnnotationCount, SNAPSHOT_GAP_COLUMNS
+
+    If issues.Count > 0 Then
+        Err.Raise vbObjectError + 4163, "ValidateResultsOutputLayout", _
+            ResultsOutputLayoutMessage(batch.Count, issues)
+    End If
+    Exit Sub
+
+MissingAnchor:
+    Err.Raise vbObjectError + 4164, "ValidateResultsOutputLayout", _
+        "На листе Results не найден один из обязательных якорей вывода: rngBatchSummary, rngStabilitySummaryAnchor или rngNDMElementResults."
+End Sub
+
+' Проверяет нижние соседние блоки Results по строкам листа и по ширине.
+Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workbook As Object, _
+        ByVal ws As Object, ByVal ndmWriter As CNDMResultsWriter, ByVal elementCount As Long, _
+        ByVal estimatedStateCount As Long, ByVal combinationCount As Long, _
+        ByVal annotationCount As Long, ByVal requiredGapColumns As Long)
+    Dim names(1 To 5) As String
+    Dim rows(1 To 5) As Long
+    Dim cols(1 To 5) As Long
+    names(1) = "rngNDMElementResults"
+    names(2) = "rngNDMSectionGeometry"
+    names(3) = "rngNDMSectionProperties"
+    names(4) = "rngNDMMaterialDiagrams"
+    names(5) = "rngNDMSectionAnnotations"
+
+    rows(1) = ndmWriter.EstimatedElementResultRows(elementCount, estimatedStateCount)
+    rows(2) = 1 + elementCount
+    rows(3) = ndmWriter.EstimatedSectionPropertyRows(combinationCount, estimatedStateCount)
+    rows(4) = 1 + MaxLong(1, estimatedStateCount) * 14
+    rows(5) = 1 + MaxLong(2, annotationCount)
+
+    Dim index As Long
+    Dim previousRightColumn As Long
+    previousRightColumn = 0
+    For index = 1 To 5
+        cols(index) = ndmWriter.OutputColumnCount(names(index))
+
+        Dim anchor As Object
+        On Error GoTo MissingSnapshotAnchor
+        Set anchor = workbook.Names.Item(names(index)).RefersToRange
+        On Error GoTo 0
+
+        If Not (anchor.Worksheet Is ws) Then
+            AddLayoutIssue issues, names(index) & " должен находиться на том же листе Results, что и остальные блоки вывода."
+        End If
+        CheckFootprintWithinSheet issues, ws, names(index), anchor.Row, anchor.Column, rows(index), cols(index)
+
+        If previousRightColumn > 0 Then
+            Dim gapColumns As Long
+            gapColumns = anchor.Column - previousRightColumn - 1
+            If gapColumns < requiredGapColumns Then
+                AddLayoutIssue issues, "Между нижними блоками Results должно быть не меньше " & _
+                    CStr(requiredGapColumns) & " пустых столбцов. Перед " & names(index) & _
+                    " сейчас " & CStr(gapColumns) & ". Раздвиньте якоря вправо."
+            End If
+        End If
+        previousRightColumn = anchor.Column + cols(index) - 1
+    Next index
+    Exit Sub
+
+MissingSnapshotAnchor:
+    AddLayoutIssue issues, "На листе Results не найден якорь " & names(index) & "."
+    On Error GoTo 0
+End Sub
+
+' Проверяет, что прямоугольник вывода не выходит за пределы листа Excel.
+Private Sub CheckFootprintWithinSheet(ByVal issues As Collection, ByVal ws As Object, _
+        ByVal blockName As String, ByVal firstRow As Long, ByVal firstColumn As Long, _
+        ByVal rowCount As Long, ByVal columnCount As Long)
+    If rowCount < 1 Then rowCount = 1
+    If columnCount < 1 Then columnCount = 1
+    If firstRow < 1 Or firstColumn < 1 Then
+        AddLayoutIssue issues, blockName & " имеет некорректный левый верхний угол вывода."
+        Exit Sub
+    End If
+
+    If firstRow + rowCount - 1 > ws.Rows.Count Then
+        AddLayoutIssue issues, blockName & " требует " & CStr(rowCount) & _
+            " строк от строки " & CStr(firstRow) & ", но ниже не хватает строк листа."
+    End If
+    If firstColumn + columnCount - 1 > ws.Columns.Count Then
+        AddLayoutIssue issues, blockName & " требует " & CStr(columnCount) & _
+            " столбцов от столбца " & CStr(firstColumn) & ", но справа не хватает столбцов листа."
+    End If
+End Sub
+
+' Оценивает максимальное число поэлементных named-state строк до расчета.
+Private Function EstimatedNamedStateCountForOutput(ByVal batch As CBatchSectionCalculator, _
+        ByVal profiles As CCalculationProfileCatalog) As Long
+    If batch Is Nothing Then Exit Function
+
+    Dim i As Long
+    For i = 1 To batch.Count
+        EstimatedNamedStateCountForOutput = EstimatedNamedStateCountForOutput + _
+            EstimatedNamedStateCountForProfile(batch.ProfileId(i), profiles)
+    Next i
+End Function
+
+' Возвращает верхнюю оценку named-state для профиля: трещины дают CrackedState
+' и две возможные Mcrc-точки, даже если в конкретном LC они могут не понадобиться.
+Private Function EstimatedNamedStateCountForProfile(ByVal profileId As String, _
+        ByVal profiles As CCalculationProfileCatalog) As Long
+    On Error GoTo UnknownProfile
+    If profiles Is Nothing Then Exit Function
+    If Not profiles.HasProfile(profileId) Then Exit Function
+
+    Dim profile As CCalculationProfile
+    Set profile = profiles.ProfileById(profileId)
+    If profile.StrengthDirectStateEnabled Then EstimatedNamedStateCountForProfile = EstimatedNamedStateCountForProfile + 1
+    If profile.StrengthCapacityEnabled Then EstimatedNamedStateCountForProfile = EstimatedNamedStateCountForProfile + 1
+    If profile.CrackWidthEnabled Then EstimatedNamedStateCountForProfile = EstimatedNamedStateCountForProfile + 3
+    Exit Function
+
+UnknownProfile:
+End Function
+
+Private Sub AddLayoutIssue(ByVal issues As Collection, ByVal text As String)
+    If issues Is Nothing Then Exit Sub
+    issues.Add text
+End Sub
+
+Private Function ResultsOutputLayoutMessage(ByVal combinationCount As Long, ByVal issues As Collection) As String
+    ResultsOutputLayoutMessage = "Results: не хватает места для " & _
+        CStr(combinationCount) & " сочетаний. Расчет не запущен." & _
+        vbCrLf & "Сдвиньте нужные якоря: rngStabilitySummaryAnchor, rngNDMElementResults, rngNDMSectionGeometry, rngNDMSectionProperties, rngNDMMaterialDiagrams, rngNDMSectionAnnotations; либо уменьшите rngLoadCombinations." & _
+        vbCrLf & JoinCollectionLines(issues)
+End Function
+
+Private Function MaxLong(ByVal a As Long, ByVal b As Long) As Long
+    If a > b Then MaxLong = a Else MaxLong = b
 End Function
 
 ' Пересчитывает только лист Results после блочной записи формул.

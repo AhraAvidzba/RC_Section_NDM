@@ -56,7 +56,7 @@ Get-Process EXCEL -ErrorAction SilentlyContinue | Stop-Process -Force
 | `Run-SectionSolverTests.ps1` | прямой `CSectionSolver`, `Newton`, `Secant`, настройки |
 | `Run-CapacityTests.ps1` | универсальная λ-траектория `CapacityLoadPath`, `Auto`, `UltimateStrain`, `LoadMultiplier`, `Bisection`, `Brent`, `Secant` |
 | `Run-CrackTests.ps1` | ширина раскрытия уже образовавшихся трещин |
-| `Run-BatchTests.ps1` | batch до 20 сочетаний, worst LC, summary |
+| `Run-BatchTests.ps1` | batch по фактическим строкам `rngLoadCombinations`, worst LC, summary |
 | `Run-WorkbookInterfaceTests.ps1` | кнопки, чтение книги, вывод результатов |
 | `Run-RegressionBaselineTests.ps1` | базовые сценарии `Stage01 TEMPORARY_BASELINE` |
 

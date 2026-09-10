@@ -247,7 +247,7 @@ lambda-траектории.
 
 #### CBatchSectionCalculator
 
-Роль: главный оркестратор пакетного расчета до 20 LC. Хранит входные LC,
+Роль: главный оркестратор пакетного расчета по фактическим строкам `rngLoadCombinations`. Хранит входные LC,
 вызывает прямое состояние, capacity и crack, передает статусы в
 `CBatchStatusPolicy`, выбирает governing и отдает готовые результаты writer-ам.
 Данные одного LC хранятся в `CCombinationResult`; сам batch не должен решать

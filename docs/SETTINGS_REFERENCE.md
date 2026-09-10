@@ -30,7 +30,7 @@
 | `rngConcreteMaterialParameters` | Параметры бетона для I/II ГПС: `Rb/Rbt`, `Rb,ser/Rbt,ser`, `Rb,mc2`, `Eb/Ebt` и расчетные деформационные точки. |
 | `rngSteelMaterialParameters` | Параметры арматуры для I/II ГПС: `Rsc/Rs`, `Rsc,ser/Rs,ser`, `Esc/Es` и предельные деформации диаграмм. |
 | `rngCalculationDiagramSettings` | Выбор расчетной диаграммы и режима растянутого бетона для `Strength`, `Mcrc` и `CrackedNDS`. |
-| `rngLoadCombinations` | До 20 сочетаний нагрузок: `CalculationType = Group1` для расчета по первой группе предельных состояний, `CalculationType = Group2` для расчета трещин по второй группе. |
+| `rngLoadCombinations` | Сочетания нагрузок; фактическое число сочетаний равно числу строк внутри именованного диапазона. В шаблоне подготовлено 20 строк, минимально допустима 1 строка под заголовком. |
 | `rngBatchSummary` | Компактная сводка batch-расчета на `Results!A1:BC29`. |
 | `rngStabilitySummaryAnchor` | Якорь первой строки данных подробной таблицы устойчивости на `Results!A37`; шапка таблицы формируется над якорем. |
 | `rngNDMElementResults` | LC-зависимые результаты элементов на `Results!A60`: `RunID`, `LoadCase`, `ProfileId`, `StateType`, `ElementID`, `Strain`, `Stress`, `PhysicalState`. |

@@ -148,8 +148,8 @@ Public Function RunBatchCalculationTests() As String
     TestPR2AxialCompressionBeyondPhysicalLimitUsesExtension stats
     AppendLine stats, "RUN: TestPR2BendingBeyondPhysicalLimitUsesExtension"
     TestPR2BendingBeyondPhysicalLimitUsesExtension stats
-    AppendLine stats, "RUN: TestBatchTwentyCombinations"
-    TestBatchTwentyCombinations stats
+    AppendLine stats, "RUN: TestBatchMoreThanTwentyCombinations"
+    TestBatchMoreThanTwentyCombinations stats
     AppendLine stats, "RUN: TestInvalidCombinationFromNamedRange"
     TestInvalidCombinationFromNamedRange stats
     AppendLine stats, "RUN: TestBatchSummaryWriter"
@@ -3030,20 +3030,20 @@ RestoreAndFail:
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
-Private Sub TestBatchTwentyCombinations(ByRef stats As TBatchTestStats)
+Private Sub TestBatchMoreThanTwentyCombinations(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
 
     Dim i As Long
-    For i = 1 To 20
+    For i = 1 To 24
         batch.AddCombination "LC" & CStr(i), -100000# - 2500# * i, -1800000# - 100000# * i, _
-            -1200000# - 75000# * i, "PR1", "twenty-" & CStr(i)
+            -1200000# - 75000# * i, "PR1", "dynamic-" & CStr(i)
     Next i
     batch.Execute
 
-    AssertTrue stats, "batch.twenty.count", batch.Count = 20
-    AssertTrue stats, "batch.twenty.governing.index", batch.GoverningCombinationIndex >= 1 And batch.GoverningCombinationIndex <= 20
-    AssertTrue stats, "batch.twenty.last.status", Len(batch.Status(20)) > 0
+    AssertTrue stats, "batch.dynamic.count", batch.Count = 24
+    AssertTrue stats, "batch.dynamic.governing.index", batch.GoverningCombinationIndex >= 1 And batch.GoverningCombinationIndex <= 24
+    AssertTrue stats, "batch.dynamic.last.status", Len(batch.Status(24)) > 0
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -3148,6 +3148,9 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertClose stats, "batch.writer.stability.columnWidthA", CDbl(resultsSheet.Columns.Item(1).ColumnWidth), 8.43, 0.01
     AssertClose stats, "batch.writer.stability.columnWidthN", CDbl(resultsSheet.Columns.Item(14).ColumnWidth), 8.43, 0.01
     AssertClose stats, "batch.writer.stability.columnWidthCC", CDbl(resultsSheet.Columns.Item(81).ColumnWidth), 8.43, 0.01
+    AssertTrue stats, "batch.writer.stability.availableRowsBorder", _
+        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row + 19, 1).Value2)) = 0 And _
+        resultsSheet.Cells.Item(stabilityAnchor.Row + 19, 1).Borders(9).LineStyle <> -4142
     AssertTrue stats, "batch.writer.stability.lowerRanges", stabilityAnchor.Row + 20 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
     Exit Sub
 

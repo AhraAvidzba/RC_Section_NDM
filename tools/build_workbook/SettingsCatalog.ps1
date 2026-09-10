@@ -1120,6 +1120,9 @@ function Get-SettingsInstructionCatalog {
     )}) | Out-Null
     $items.Add(@{ Key = "LoadCombinations"; Title = "Сочетания нагрузок"; Lines = @(
         "Таблица задает список сочетаний, которые будут рассчитаны при нажатии кнопки Выполнить расчет.",
+        "Количество сочетаний определяется количеством строк внутри таблицы. В шаблоне подготовлено 20 строк, но пользователь может добавить или удалить строки; минимально должна остаться одна строка сочетания.",
+        "Чтобы добавить сочетание, расширьте именно область rngLoadCombinations: например выделите нижнюю строку таблицы и сдвиньте ее вниз с сохранением пунктирной границы, либо измените адрес диапазона через Формулы -> Диспетчер имен. Не вставляйте целую строку листа, если рядом есть другие таблицы.",
+        "На Results между таблицами должны оставаться две чистые строки. Если места не хватает, расчет не начинается; сдвиньте вниз rngStabilitySummaryAnchor и/или rngNDMElementResults, а для правых snapshot-блоков при необходимости сдвиньте rngNDMSectionGeometry, rngNDMSectionProperties, rngNDMMaterialDiagrams, rngNDMSectionAnnotations.",
         "CombinationID - короткое имя сочетания. Оно используется в Results, в заголовке схемы, в выборе Plot.LoadCase и AutoCAD.Export.CombinationID.",
         "N, Mx и My вводятся в текущих INPUT-единицах из блока единиц. Пустой Mx или My считается нулем, поэтому одноосный изгиб можно задавать как N + Mx или N + My без заполнения второго момента.",
         "ProfileId задает расчетный профиль из таблицы расчетных профилей. В строке сочетания нужно указать заголовок того профильного столбца, по которому это сочетание должно рассчитываться.",
@@ -1155,6 +1158,7 @@ function Get-SettingsInstructionCatalog {
     $items.Add(@{ Key = "StabilityLoads"; Title = "Нагрузки для устойчивости"; Lines = @(
         "Эта таблица задает длительную часть нагрузок, которая нужна только для расчета коэффициентов продольного изгиба.",
         "LC должен совпадать с CombinationID из основной таблицы сочетаний. N, Mx и My вводятся в тех же INPUT-единицах и той же системе знаков, что и основные сочетания.",
+        "Если вы добавили дополнительные строки в таблицу сочетаний и для них нужна устойчивость, добавьте такие же строки в эту таблицу или расширьте ее через Формулы -> Диспетчер имен.",
         "Для Stability.Code = SP63 пользователь указывает постоянные + длительные нагрузки.",
         "Для Stability.Code = SP35 пользователь указывает постоянные нагрузки.",
         "Если строка не заполнена или все усилия равны нулю, это не ошибка само по себе. Расчет продолжится, если формулы выбранного СП не требуют ненулевой длительной части.",
@@ -1252,6 +1256,7 @@ function Get-SettingsInstructionCatalog {
     )}) | Out-Null
     $items.Add(@{ Key = "BatchSummary"; Title = "Сводка пакетного расчета"; Lines = @(
         "Этот раздел описывает верхнюю таблицу Results: rngBatchSummary. В ней собраны основные итоги по всем сочетаниям, чтобы быстро увидеть статусы, определяющее сочетание, запас по выбранной λ-траектории и что получилось по раскрытию трещин.",
+        "Высота сводки подстраивается под количество сочетаний. Перед расчетом программа проверяет, что под шапки и все строки Results хватает места; если места не хватает, старые результаты не очищаются и расчет не запускается.",
         "Первые строки - служебная часть. Определяющее сочетание по прочности берется по минимальному рассчитанному CapacitySafetyFactor. После перехода на CapacityLoadPath этот запас равен найденному lambda для выбранной траектории: λ*Mx, λ*My, λ*Mxy, λ*N или λ*NMxy. Проверка трещин в выбор worst для прочности не входит.",
         "Время расчета, с - полное время выполнения макроса от старта пользовательского расчета до завершения записи Results, обновления схемы и, если включен General.ExecutionReportEnabled, сохранения txt-отчета.",
         "Точка приложения нагрузки - смещение точки, относительно которой пользователь задает N, Mx и My, от центра тяжести бетонного сечения. При нулевых Load.ReferenceOffsetX/Y в summary выводится X=0 и Y=0.",
@@ -3326,12 +3331,13 @@ function Apply-SystemSettingsLayout {
     }
 
     $exportCombinationListColumn = $listColumn
+    $loadCasePickerHelperRows = 500
     $Sheet.Cells.Item(1, $exportCombinationListColumn).Value2 = "Worst"
-    for ($i = 1; $i -le 20; $i++) {
-        $Sheet.Cells.Item($i + 1, $exportCombinationListColumn).Formula = '=IF(INDEX(rngLoadCombinations,' + ($i + 1) + ',1)="","",INDEX(rngLoadCombinations,' + ($i + 1) + ',1))'
+    for ($i = 1; $i -le $loadCasePickerHelperRows; $i++) {
+        $Sheet.Cells.Item($i + 1, $exportCombinationListColumn).Formula = '=IF(ROW(A' + $i + ')>ROWS(rngLoadCombinations)-1,"",INDEX(rngLoadCombinations,ROW(A' + $i + ')+1,1))'
     }
     $exportCombinationColName = ConvertTo-ExcelColumn $exportCombinationListColumn
-    $exportCombinationListAddress = "=$" + $exportCombinationColName + '$1:$' + $exportCombinationColName + '$21'
+    $exportCombinationListAddress = "=$" + $exportCombinationColName + '$1:$' + $exportCombinationColName + '$' + ($loadCasePickerHelperRows + 1)
     for ($r = 2; $r -le $settingsRange.Rows.Count; $r++) {
         if ([string]$settingsRange.Cells.Item($r, 1).Value2 -eq "AutoCAD.Export.CombinationID" -or [string]$settingsRange.Cells.Item($r, 1).Value2 -eq "Plot.LoadCase") {
             $cell = $settingsRange.Cells.Item($r, 2)

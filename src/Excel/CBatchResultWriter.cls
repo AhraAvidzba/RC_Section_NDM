@@ -19,8 +19,10 @@ Option Explicit
 ' записывает их на лист одним массивом, а коэффициенты запаса и a_crc задает
 ' формулами Excel, чтобы пользователь видел связь между исходными колонками.
 
-Private Const TARGET_ROWS As Long = 29 ' Высота фиксированного диапазона batch summary: 9 строк шапки + 20 LC.
 Private Const TARGET_COLUMNS As Long = 55 ' Ширина верхней сводки без детального блока устойчивости.
+Private Const STATUS_DICTIONARY_ROWS As Long = 13 ' Служебная расшифровка статусов справа от Summary занимает строки ниже заголовка.
+Private Const STATUS_DICTIONARY_COLUMNS As Long = 2 ' Колонки "Статус" и "Расшифровка" рядом со сводкой.
+Private Const STATUS_DICTIONARY_SEPARATOR_COLUMNS As Long = 1 ' Пустой разделитель между Summary и словарем статусов.
 Private Const META_ROWS As Long = 6 ' Верхние строки с общими сведениями о запуске.
 Private Const GROUP_HEADER_ROW As Long = 7 ' Строка объединенных заголовков расчетных блоков.
 Private Const SUBGROUP_HEADER_ROW As Long = 8 ' Строка внутренних подзаголовков расчетных блоков.
@@ -87,6 +89,7 @@ Private Const COL_LONG_CRACK_RB_MC2 As Long = 53
 Private Const COL_LONG_CRACK_SF As Long = 54
 
 Private Const COL_OVERALL_SF As Long = 55
+Private Const DEFAULT_SUMMARY_ROWS As Long = 29 ' Штатная высота шаблона: 9 строк шапки и 20 строк LC.
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Светло-серый фон заголовков.
 Private Const SAFETY_COLOR As Long = &HE7E6E6 ' Серый фон столбцов коэффициентов запаса.
@@ -94,6 +97,31 @@ Private Const OVERALL_SAFETY_COLOR As Long = &HBFBFBF ' Более темный 
 Private Const FAILED_ROW_COLOR As Long = &HCEC7FF ' Светло-красный фон LC, где расчет не прошел или не сошелся.
 Private Const FAILED_FONT_COLOR As Long = &H9C0006 ' Темно-красный текст для строк FAIL/NumFail/InputErr.
 Private Const NOT_CALCULATED_SHORT As String = "NotCalcul." ' Короткий статус для компактной таблицы Results.
+
+' Возвращает высоту основной таблицы Summary для фактического количества LC.
+Public Function RequiredSummaryRows(ByVal combinationCount As Long) As Long
+    If combinationCount < 0 Then combinationCount = 0
+    RequiredSummaryRows = FIRST_DATA_ROW - 1 + combinationCount
+    If RequiredSummaryRows < COLUMN_HEADER_ROW Then RequiredSummaryRows = COLUMN_HEADER_ROW
+    If RequiredSummaryRows < DEFAULT_SUMMARY_ROWS Then RequiredSummaryRows = DEFAULT_SUMMARY_ROWS
+End Function
+
+' Возвращает ширину собственно rngBatchSummary без правого словаря статусов.
+Public Function RequiredSummaryColumns() As Long
+    RequiredSummaryColumns = TARGET_COLUMNS
+End Function
+
+' Возвращает полную ширину, которую writer затрагивает на Results: Summary,
+' пустой разделитель и правый словарь пользовательских статусов.
+Public Function RequiredSummaryOutputColumns() As Long
+    RequiredSummaryOutputColumns = TARGET_COLUMNS + STATUS_DICTIONARY_SEPARATOR_COLUMNS + STATUS_DICTIONARY_COLUMNS
+End Function
+
+' Возвращает полную высоту, которую занимает writer с учетом словаря статусов.
+Public Function RequiredSummaryOutputRows(ByVal combinationCount As Long) As Long
+    RequiredSummaryOutputRows = RequiredSummaryRows(combinationCount)
+    If RequiredSummaryOutputRows < STATUS_DICTIONARY_ROWS Then RequiredSummaryOutputRows = STATUS_DICTIONARY_ROWS
+End Function
 
 ' Записывает rngBatchSummary одним массивом и оформляет блоки.
 ' section нужен для геометрических величин h/x: в блоке деформаций они
@@ -108,15 +136,22 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
     If workbook Is Nothing Then Err.Raise vbObjectError + 3970, "CBatchResultWriter", "Книга Excel не передана."
     If batch Is Nothing Then Err.Raise vbObjectError + 3971, "CBatchResultWriter", "Пакетный расчетчик не передан."
 
+    Dim summaryRows As Long
+    summaryRows = RequiredSummaryRows(batch.Count)
+
+    stage = "PrepareSummaryTarget"
+    PrepareSummaryTarget SummaryClearRange(workbook)
+
     stage = "SummaryTargetRange"
     Dim target As Object
-    Set target = SummaryTargetRange(workbook)
-    stage = "PrepareSummaryTarget"
-    PrepareSummaryTarget target
+    Set target = SummaryTargetRange(workbook, summaryRows)
+
+    stage = "UpdateSummaryName"
+    UpdateWorkbookNameToRange workbook, "rngBatchSummary", target
 
     stage = "AllocateData"
     Dim data() As Variant
-    ReDim data(1 To TARGET_ROWS, 1 To TARGET_COLUMNS)
+    ReDim data(1 To summaryRows, 1 To TARGET_COLUMNS)
 
     stage = "PutMetaRows"
     PutMetaRows data, batch, units
@@ -148,7 +183,7 @@ End Sub
 ' Очищает текущую сводку перед новым расчетом или ручной очисткой Results.
 Public Sub ClearSummary(ByVal workbook As Object)
     If workbook Is Nothing Then Err.Raise vbObjectError + 3972, "CBatchResultWriter", "Книга Excel не передана."
-    ClearSummaryBody SummaryTargetRange(workbook)
+    ClearSummaryBody SummaryClearRange(workbook)
     ClearStabilitySummary workbook
 End Sub
 
@@ -163,13 +198,45 @@ Public Sub UpdateElapsedSeconds(ByVal workbook As Object, ByVal elapsedSeconds A
     target.Offset(4, 4).Resize(1, 1).Value2 = elapsedSeconds
 End Sub
 
-Private Function SummaryTargetRange(ByVal workbook As Object) As Object
+Private Function SummaryTargetRange(ByVal workbook As Object, Optional ByVal requiredRows As Long = 0) As Object
     Dim target As Object
-    Set target = workbook.Names.Item("rngBatchSummary").RefersToRange
-    If target.Rows.Count < TARGET_ROWS Or target.Columns.Count < TARGET_COLUMNS Then
-        Err.Raise vbObjectError + 3973, "CBatchResultWriter", "rngBatchSummary меньше требуемого размера сводки."
+    Set target = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
+    If requiredRows <= 0 Then requiredRows = RequiredSummaryRows(1)
+    If target.Row + requiredRows - 1 > target.Worksheet.Rows.Count Or _
+            target.Column + TARGET_COLUMNS - 1 > target.Worksheet.Columns.Count Then
+        Err.Raise vbObjectError + 3973, "CBatchResultWriter", _
+            "rngBatchSummary не имеет места для требуемого размера сводки."
     End If
-    Set SummaryTargetRange = target.Resize(TARGET_ROWS, TARGET_COLUMNS)
+    Set SummaryTargetRange = target.Resize(requiredRows, TARGET_COLUMNS)
+End Function
+
+Private Sub UpdateWorkbookNameToRange(ByVal workbook As Object, ByVal rangeName As String, ByVal target As Object)
+    If workbook Is Nothing Then Exit Sub
+    If target Is Nothing Then Exit Sub
+    workbook.Names.Item(rangeName).RefersTo = "=" & target.Address(True, True, 1, True)
+End Sub
+
+' Возвращает область безопасной очистки Summary до шапки следующего блока.
+' Так старые строки от большего числа LC не остаются после уменьшения rngLoadCombinations.
+Private Function SummaryClearRange(ByVal workbook As Object) As Object
+    Dim anchor As Object
+    Set anchor = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
+
+    Dim rowsToClear As Long
+    rowsToClear = RequiredSummaryOutputRows(1)
+
+    On Error GoTo UseDefaultHeight
+    Dim stabilityWriter As CStabilitySummaryWriter
+    Set stabilityWriter = New CStabilitySummaryWriter
+    Dim stabilityAnchor As Object
+    Set stabilityAnchor = workbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
+    Dim stabilityTopRow As Long
+    stabilityTopRow = stabilityAnchor.Row - stabilityWriter.HeaderRowsAboveAnchor
+    If stabilityTopRow > anchor.Row Then rowsToClear = MaxLong(rowsToClear, stabilityTopRow - anchor.Row)
+
+UseDefaultHeight:
+    If anchor.Row + rowsToClear - 1 > anchor.Worksheet.Rows.Count Then rowsToClear = anchor.Worksheet.Rows.Count - anchor.Row + 1
+    Set SummaryClearRange = anchor.Resize(rowsToClear, RequiredSummaryOutputColumns())
 End Function
 
 ' Снимает объединения и очищает текущую сводку до блочной записи массива.
@@ -181,25 +248,26 @@ Private Sub PrepareSummaryTarget(ByVal target As Object)
 End Sub
 
 Private Sub ClearSummaryBody(ByVal target As Object)
+    If target.Rows.Count <= 1 Then Exit Sub
     Dim body As Object
-    Set body = target.Offset(1, 0).Resize(TARGET_ROWS - 1, TARGET_COLUMNS)
+    Set body = target.Offset(1, 0).Resize(target.Rows.Count - 1, target.Columns.Count)
     body.UnMerge
     body.Clear
 End Sub
 
 Private Sub WriteSummaryBody(ByVal target As Object, ByRef data() As Variant)
     Dim body() As Variant
-    ReDim body(1 To TARGET_ROWS - 1, 1 To TARGET_COLUMNS)
+    ReDim body(1 To UBound(data, 1) - 1, 1 To TARGET_COLUMNS)
 
     Dim rowIndex As Long
     Dim columnIndex As Long
-    For rowIndex = 2 To TARGET_ROWS
+    For rowIndex = 2 To UBound(data, 1)
         For columnIndex = 1 To TARGET_COLUMNS
             body(rowIndex - 1, columnIndex) = data(rowIndex, columnIndex)
         Next columnIndex
     Next rowIndex
 
-    target.Offset(1, 0).Resize(TARGET_ROWS - 1, TARGET_COLUMNS).Formula = body
+    target.Offset(1, 0).Resize(UBound(data, 1) - 1, TARGET_COLUMNS).Formula = body
 End Sub
 
 ' Обновляет отдельную детальную таблицу устойчивости рядом с расчетным snapshot.
@@ -580,7 +648,8 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     target.Offset(0, 0).Resize(META_ROWS, TARGET_COLUMNS).HorizontalAlignment = -4131
 
     Dim dataRows As Long
-    dataRows = TARGET_ROWS - FIRST_DATA_ROW + 1
+    dataRows = target.Rows.Count - FIRST_DATA_ROW + 1
+    If dataRows < 1 Then dataRows = 1
     target.Offset(FIRST_DATA_ROW - 1, 0).Resize(dataRows, TARGET_COLUMNS).HorizontalAlignment = -4108
     target.Offset(FIRST_DATA_ROW - 1, COL_COMMENT - 1).Resize(dataRows, 1).HorizontalAlignment = -4152
     target.Offset(FIRST_DATA_ROW - 1, COL_CAPACITY_SF - 1).Resize(dataRows, 1).Interior.Color = SAFETY_COLOR
@@ -592,7 +661,7 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
 
     stage = "Borders"
     Dim borderedArea As Object
-    Set borderedArea = target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(TARGET_ROWS - GROUP_HEADER_ROW + 1, TARGET_COLUMNS)
+    Set borderedArea = target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, TARGET_COLUMNS)
     borderedArea.Borders.LineStyle = 1
     borderedArea.Borders.Color = RGB(0, 0, 0)
     borderedArea.Borders.Weight = 2
@@ -740,6 +809,10 @@ End Function
 
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
+End Function
+
+Private Function MaxLong(ByVal a As Long, ByVal b As Long) As Long
+    If a > b Then MaxLong = a Else MaxLong = b
 End Function
 
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double

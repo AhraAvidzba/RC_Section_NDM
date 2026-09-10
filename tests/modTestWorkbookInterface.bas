@@ -29,6 +29,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestButtons stats
     TestLoadCombinationsOnConfig stats
     TestSingleCombinationSkipsBlankRows stats
+    TestLoadCombinationRangeMinimumRows stats
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats
     TestAutoCADSourceRequiresManualImport stats
@@ -45,6 +46,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped stats
     TestCircleWorkbookRunWritesResults stats
     TestTwentyCombinationsWithFiveStatesWriteSnapshot stats
+    TestDynamicLoadCombinationRangeAndLayoutGuard stats
     TestExecutionReportFile stats
     TestExcelApplicationStateGuardRestoresSettings stats
     TestLShapeWorkbookRunWritesResults stats
@@ -315,6 +317,58 @@ Private Sub TestSingleCombinationSkipsBlankRows(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.loads.single.id", batch.CombinationID(1) = "LC1"
     AssertTrue stats, "ui.loads.single.elapsed", (Timer - t0) < 20#
     AssertTrue stats, "ui.loads.single.noBlankInvalid", InStr(1, batch.DiagnosticLog, "InputErr", vbTextCompare) = 0
+End Sub
+
+' Проверяет нижнюю допустимую высоту rngLoadCombinations: шапка плюс одна строка LC.
+Private Sub TestLoadCombinationRangeMinimumRows(ByRef stats As TUiTestStats)
+    On Error GoTo Failed
+
+    Dim app As Object
+    Set app = ThisWorkbook.Application
+    Dim oldDisplayAlerts As Boolean
+    oldDisplayAlerts = app.DisplayAlerts
+    app.DisplayAlerts = False
+
+    On Error Resume Next
+    ThisWorkbook.Worksheets.Item("__tmpMinLoads").Delete
+    On Error GoTo Failed
+
+    Dim tempSheet As Object
+    Set tempSheet = ThisWorkbook.Worksheets.Add(After:=ThisWorkbook.Worksheets.Item(ThisWorkbook.Worksheets.Count))
+    tempSheet.Name = "__tmpMinLoads"
+
+    Dim reader As CLoadCombinationReader
+    Set reader = New CLoadCombinationReader
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUiBatch()
+    FillLoadCombinationTestRange tempSheet.Range("A1:G2"), 1, "PR1", "LC_MIN_"
+    reader.LoadFromRange tempSheet.Range("A1:G2"), batch
+    AssertTrue stats, "ui.loads.minRows.oneDataRow", batch.Count = 1
+
+    Dim errorNumber As Long
+    Dim errorText As String
+    Set batch = BuildUiBatch()
+    On Error Resume Next
+    reader.LoadFromRange tempSheet.Range("A4:G4"), batch
+    errorNumber = Err.Number
+    errorText = Err.Description
+    Err.Clear
+    On Error GoTo Failed
+    AssertTrue stats, "ui.loads.minRows.headerOnlyRejected", errorNumber <> 0 And _
+        InStr(1, errorText, "минимум одну строку", vbTextCompare) > 0
+
+CleanUp:
+    On Error Resume Next
+    If Not tempSheet Is Nothing Then tempSheet.Delete
+    app.DisplayAlerts = oldDisplayAlerts
+    On Error GoTo 0
+    Exit Sub
+
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: ui.loads.minRows; err=" & CStr(Err.Number) & "; " & Err.Description
+    Resume CleanUp
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -992,6 +1046,102 @@ Private Sub TestTwentyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUi
         ResultTableRowCount("rngNDMSectionProperties") >= 1 + 55 + 20 * (23 + 5 * 10)
     AssertTrue stats, "ui.results.fullSnapshot.materialRows", _
         ResultTableRowCount("rngNDMMaterialDiagrams") > 1
+End Sub
+
+' Проверяет, что высота rngLoadCombinations управляет числом LC, а расчет
+' заранее останавливается, если текущие якоря Results не оставляют места для
+' всех строк, шапок и выводимых столбцов.
+Private Sub TestDynamicLoadCombinationRangeAndLayoutGuard(ByRef stats As TUiTestStats)
+    On Error GoTo Failed
+
+    PrepareCircleInput
+    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
+
+    Dim originalRefersTo As String
+    originalRefersTo = ThisWorkbook.Names.Item("rngLoadCombinations").RefersTo
+
+    Dim app As Object
+    Set app = ThisWorkbook.Application
+    Dim oldDisplayAlerts As Boolean
+    oldDisplayAlerts = app.DisplayAlerts
+    app.DisplayAlerts = False
+
+    On Error Resume Next
+    ThisWorkbook.Worksheets.Item("__tmpDynamicLoads").Delete
+    On Error GoTo Failed
+
+    Dim tempSheet As Object
+    Set tempSheet = ThisWorkbook.Worksheets.Add(After:=ThisWorkbook.Worksheets.Item(ThisWorkbook.Worksheets.Count))
+    tempSheet.Name = "__tmpDynamicLoads"
+
+    Dim tempRange As Object
+    Set tempRange = tempSheet.Range("A1:G22")
+    FillLoadCombinationTestRange tempRange, 21, "PR1", "LC_DYN_"
+    ThisWorkbook.Names.Item("rngLoadCombinations").RefersTo = "=" & tempRange.Address(True, True, 1, True)
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUiBatch()
+    Dim reader As CLoadCombinationReader
+    Set reader = New CLoadCombinationReader
+    reader.LoadFromWorkbook ThisWorkbook, batch
+    AssertTrue stats, "ui.loads.dynamicRange.count21", batch.Count = 21
+
+    Dim errorNumber As Long
+    Dim errorText As String
+    On Error Resume Next
+    Dim message As String
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    errorNumber = Err.Number
+    errorText = Err.Description
+    Err.Clear
+    On Error GoTo Failed
+
+    AssertTrue stats, "ui.results.layoutGuard.blocksCalculation", errorNumber <> 0
+    AssertTrue stats, "ui.results.layoutGuard.message", _
+        InStr(1, errorText, "не хватает места", vbTextCompare) > 0 And _
+        InStr(1, errorText, "Расчет не запущен", vbTextCompare) > 0 And _
+        InStr(1, errorText, "пустые строки", vbTextCompare) > 0 And _
+        InStr(1, errorText, "rngBatchSummary", vbTextCompare) > 0 And _
+        InStr(1, errorText, "rngStabilitySummaryAnchor", vbTextCompare) > 0
+
+CleanUp:
+    On Error Resume Next
+    ThisWorkbook.Names.Item("rngLoadCombinations").RefersTo = originalRefersTo
+    If Not tempSheet Is Nothing Then tempSheet.Delete
+    app.DisplayAlerts = oldDisplayAlerts
+    On Error GoTo 0
+    Exit Sub
+
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: ui.results.layoutGuard; err=" & CStr(Err.Number) & "; " & Err.Description
+    Resume CleanUp
+End Sub
+
+' Заполняет временную таблицу сочетаний с тем же frontend-контрактом, что и
+' rngLoadCombinations. Используется только для проверки динамической высоты
+' именованного диапазона, не затрагивая рабочий блок Config.
+Private Sub FillLoadCombinationTestRange(ByVal target As Object, ByVal combinationCount As Long, _
+        ByVal profileId As String, ByVal idPrefix As String)
+    target.ClearContents
+    target.Cells.Item(1, 1).Value2 = "CombinationID"
+    target.Cells.Item(1, 2).Value2 = "N"
+    target.Cells.Item(1, 3).Value2 = "Mx"
+    target.Cells.Item(1, 4).Value2 = "My"
+    target.Cells.Item(1, 5).Value2 = "ProfileId"
+    target.Cells.Item(1, 6).Value2 = "CapacityLoadPath"
+    target.Cells.Item(1, 7).Value2 = "Comment"
+
+    Dim rowIndex As Long
+    For rowIndex = 1 To combinationCount
+        target.Cells.Item(rowIndex + 1, 1).Value2 = idPrefix & Format$(rowIndex, "00")
+        target.Cells.Item(rowIndex + 1, 2).Value2 = -100000#
+        target.Cells.Item(rowIndex + 1, 3).Value2 = -1000000#
+        target.Cells.Item(rowIndex + 1, 4).Value2 = 0#
+        target.Cells.Item(rowIndex + 1, 5).Value2 = profileId
+        target.Cells.Item(rowIndex + 1, 6).Value2 = ChrW$(&H3BB) & "*Mx"
+        target.Cells.Item(rowIndex + 1, 7).Value2 = "dynamic range " & CStr(rowIndex)
+    Next rowIndex
 End Sub
 
 ' ДЛЯ ТЕСТОВ
