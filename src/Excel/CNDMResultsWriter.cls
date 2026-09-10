@@ -881,8 +881,10 @@ Private Sub PutCombinationElementResults(ByRef data() As Variant, ByRef rowIndex
     If stateResult Is Nothing Then Exit Sub
     If Not stateResult.Converged Then Exit Sub
 
-    Set concrete = materialProvider.ConcreteMaterialFromSpec(stateResult.MaterialSpec)
-    Set steel = materialProvider.SteelMaterialFromSpec(stateResult.MaterialSpec)
+    Set concrete = ConcreteDiagramForState(materialProvider, stateResult, _
+        batch.DirectStateDiagramExtensionEnabled(combinationIndex))
+    Set steel = SteelDiagramForState(materialProvider, stateResult, _
+        batch.DirectStateDiagramExtensionEnabled(combinationIndex))
 
     For i = 1 To section.ConcreteCount
         strain = stateResult.Epsilon0 + stateResult.KappaX * section.ConcreteY(i) + _

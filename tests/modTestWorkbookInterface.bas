@@ -653,7 +653,7 @@ Private Sub TestGeneratedSourceDoesNotReuseAutoCADPreview(ByRef stats As TUiTest
     writer.WriteGeometryPreview ThisWorkbook, section
 
     UpdateSectionPlotForWorkbook ThisWorkbook
-    AssertTrue stats, "ui.plot.preview.title", PlotChartTitleContains("Импортированная геометрия AutoCAD")
+    AssertTrue stats, "ui.plot.preview.title", PlotVisibleTitleContains("Импортированная геометрия AutoCAD")
 
     SetSystemSetting "Geometry.Source", "Generated"
     Dim errorDescription As String
@@ -665,7 +665,7 @@ Private Sub TestGeneratedSourceDoesNotReuseAutoCADPreview(ByRef stats As TUiTest
     AssertTrue stats, "ui.plot.generated.noPreviewFallback.error", _
         InStr(1, errorDescription, "Выполните расчет", vbTextCompare) > 0
     AssertTrue stats, "ui.plot.generated.noPreviewFallback.title", _
-        Not PlotChartTitleContains("Импортированная геометрия AutoCAD")
+        Not PlotVisibleTitleContains("Импортированная геометрия AutoCAD")
 End Sub
 
 ' Проверяет DirectState-сценарий без определяющего сочетания по прочности.
@@ -680,9 +680,9 @@ Private Sub TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC(ByRef stats
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
 
     AssertTrue stats, "ui.plot.generatedWorst.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
-    AssertTrue stats, "ui.plot.generatedWorst.drawsCalculatedLc", PlotChartTitleContains("LC1")
+    AssertTrue stats, "ui.plot.generatedWorst.drawsCalculatedLc", PlotVisibleTitleContains("LC1")
     AssertTrue stats, "ui.plot.generatedWorst.noImportTitle", _
-        Not PlotChartTitleContains("Импортированная геометрия AutoCAD")
+        Not PlotVisibleTitleContains("Импортированная геометрия AutoCAD")
 End Sub
 
 ' Проверяет, что схема после расчета выбирает состояние через профиль, а
@@ -697,9 +697,9 @@ Private Sub TestProfileDrivenPlotUsesSnapshotState(ByRef stats As TUiTestStats)
 
     AssertTrue stats, "ui.profilePlot.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
     AssertTrue stats, "ui.profilePlot.hasElementStateRows", ResultTableRowCount("rngNDMElementResults") > 1
-    AssertTrue stats, "ui.profilePlot.drawsLoadCase", PlotChartTitleContains("LC1")
+    AssertTrue stats, "ui.profilePlot.drawsLoadCase", PlotVisibleTitleContains("LC1")
     AssertTrue stats, "ui.profilePlot.noImportTitle", _
-        Not PlotChartTitleContains("Импортированная геометрия AutoCAD")
+        Not PlotVisibleTitleContains("Импортированная геометрия AutoCAD")
     AssertTrue stats, "ui.profilePlot.commonLoadReference", _
         Len(ResultsPropertyValue("ALL", "LoadReferenceX")) > 0 And Len(ResultsPropertyValue("ALL", "LoadReferenceY")) > 0
 
@@ -726,7 +726,7 @@ Private Sub TestMissingProfileStateDrawsGeometryOnly(ByRef stats As TUiTestStats
     On Error GoTo 0
 
     AssertTrue stats, "ui.plot.missingState.noError", Len(errorDescription) = 0
-    AssertTrue stats, "ui.plot.missingState.geometryTitle", PlotChartTitleContains("Геометрия расчетного сечения")
+    AssertTrue stats, "ui.plot.missingState.geometryTitle", PlotVisibleTitleContains("Геометрия расчетного сечения")
     AssertTrue stats, "ui.plot.missingState.note", PlotShapeTextContains("Запрашиваемое состояние")
 End Sub
 
@@ -917,7 +917,9 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.results.materialDiagrams.usedStates", _
         MaterialDiagramIdsMatchStateProperties(materialDiagrams)
     AssertTrue stats, "ui.plot.chart.created", PlotChartExists()
-    AssertTrue stats, "ui.plot.title.comment", PlotChartTitleContains("(ui test)")
+    AssertTrue stats, "ui.plot.title.comment", PlotVisibleTitleContains("(ui test)")
+    AssertTrue stats, "ui.plot.title.overlay", _
+        PlotShapeTextContains("Схема сечения") And PlotShapeTextContains("(ui test)")
 
     Dim profiles As Object
     Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
@@ -1221,6 +1223,8 @@ Private Sub TestLShapeAxialTensionExtensionFromWorkbookSettings(ByRef stats As T
     AssertTextEquals stats, "ui.lshape.axial900.crackSkipped", overCrack, "N/A"
     AssertTrue stats, "ui.lshape.axial900.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
     AssertTextEquals stats, "ui.lshape.axial900.extensionSnapshot", overExtension, "True"
+    AssertTrue stats, "ui.lshape.axial900.extensionStressSnapshot", _
+        MaxAbsElementStress(ResultTable("rngNDMElementResults"), "LC_OVER", "CrackedState") > 390.1
     AssertTrue stats, "ui.lshape.axial900.reportCreated", FileExists(reportPath)
 
     SetSystemSetting "General.ExecutionReportEnabled", "No"
@@ -1357,6 +1361,30 @@ Private Function ElementStateRowCount(ByRef data As Variant, ByVal loadCase As S
         If StrComp(CStr(data(rowIndex, loadCaseColumn)), loadCase, vbTextCompare) = 0 And _
                 StrComp(CStr(data(rowIndex, stateTypeColumn)), stateType, vbTextCompare) = 0 Then
             ElementStateRowCount = ElementStateRowCount + 1
+        End If
+    Next rowIndex
+End Function
+
+' Возвращает максимальное по модулю Stress для сохраненного named-state.
+' Тест защищает snapshot от рассинхрона: если StateSolution найден через
+' numerical extension, строки элементов должны соответствовать той же диаграмме.
+Private Function MaxAbsElementStress(ByRef data As Variant, ByVal loadCase As String, _
+        ByVal stateType As String) As Double
+    Dim loadCaseColumn As Long
+    Dim stateTypeColumn As Long
+    Dim stressColumn As Long
+    loadCaseColumn = ResultHeaderColumn(data, "LoadCase")
+    stateTypeColumn = ResultHeaderColumn(data, "StateType")
+    stressColumn = ResultHeaderColumnByBaseName(data, "Stress")
+    If loadCaseColumn = 0 Or stateTypeColumn = 0 Or stressColumn = 0 Then Exit Function
+
+    Dim rowIndex As Long
+    Dim stressValue As Double
+    For rowIndex = 2 To UBound(data, 1)
+        If StrComp(CStr(data(rowIndex, loadCaseColumn)), loadCase, vbTextCompare) = 0 And _
+                StrComp(CStr(data(rowIndex, stateTypeColumn)), stateType, vbTextCompare) = 0 Then
+            stressValue = Abs(CDbl(data(rowIndex, stressColumn)))
+            If stressValue > MaxAbsElementStress Then MaxAbsElementStress = stressValue
         End If
     Next rowIndex
 End Function
@@ -1673,12 +1701,20 @@ Private Function PlotChartExists() As Boolean
 Failed:
 End Function
 
-' Проверяет текст заголовка существующей схемы, чтобы не запускать повторную отрисовку только ради проверки подписи.
-Private Function PlotChartTitleContains(ByVal expectedText As String) As Boolean
+' Проверяет видимый Shape-заголовок существующей схемы.
+Private Function PlotVisibleTitleContains(ByVal expectedText As String) As Boolean
     On Error GoTo Failed
     Dim chartObject As Object
     Set chartObject = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
-    PlotChartTitleContains = InStr(1, chartObject.Chart.ChartTitle.Text, expectedText, vbTextCompare) > 0
+
+    Dim shapeIndex As Long
+    For shapeIndex = 1 To chartObject.Chart.Shapes.Count
+        If StrComp(chartObject.Chart.Shapes.Item(shapeIndex).Name, "NDMPlot_Title", vbTextCompare) = 0 Then
+            PlotVisibleTitleContains = _
+                (InStr(1, chartObject.Chart.Shapes.Item(shapeIndex).TextFrame.Characters().Text, expectedText, vbTextCompare) > 0)
+            Exit Function
+        End If
+    Next shapeIndex
 Failed:
 End Function
 

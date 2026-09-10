@@ -63,6 +63,8 @@ Private Const ELEMENT_SHAPE_RENDER_MAX_COUNT As Long = 5000 ' До этого ч
 Private Const CONCRETE_SHAPE_FILL_RATIO As Double = 0.7 ' Визуальный размер бетонной ячейки: оставляет зазор между соседними элементами.
 Private Const REFERENCE_AXIS_WEIGHT As Double = 0.56 ' Толщина пунктирных главных осей; немного тоньше нейтральной линии.
 Private Const REFERENCE_BAND_MIN_THICKNESS As Double = 0.4 ' Минимальная толщина Freeform-полосы, чтобы тонкие оси оставались видимыми.
+Private Const PLOT_TITLE_TOP As Double = 6# ' Верхний отступ собственного Shape-заголовка схемы внутри Chart.
+Private Const PLOT_TITLE_HEIGHT As Double = 22# ' Высота собственного Shape-заголовка схемы.
 Private Const PLOT_FRAME_LEFT As Double = 28# ' Левый край рабочей области схемы внутри Chart.
 Private Const PLOT_FRAME_TOP As Double = 36# ' Верхний край рабочей области схемы внутри Chart.
 Private Const PLOT_FRAME_WIDTH_MARGIN As Double = 180# ' Запас справа для легенд и подписей.
@@ -150,6 +152,7 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     Else
         DrawAnalysisOverlay data, settings
     End If
+    DrawPlotTitleOverlay PlotTitleText(data)
 End Sub
 
 ' Очищает существующую схему до нейтрального состояния без удаления ChartObject.
@@ -165,14 +168,13 @@ Public Sub ClearExisting(ByVal workbook As Object, ByVal titleText As String)
 
     mChart.ChartType = XL_XY_SCATTER
     mChart.HasLegend = False
-    mChart.HasTitle = True
-    mChart.ChartTitle.Text = titleText
-    mChart.ChartTitle.Font.Size = 12
+    mChart.HasTitle = False
 
     Do While mChart.SeriesCollection.Count > 0
         mChart.SeriesCollection(1).Delete
     Loop
     ClearGeneratedShapes
+    DrawPlotTitleOverlay titleText
 End Sub
 
 ' Возвращает существующий ChartObject или создает его при первом запуске.
@@ -204,9 +206,7 @@ Private Sub PrepareChart(ByVal data As CSectionPlotDataReader)
 
     mChart.ChartType = XL_XY_SCATTER
     mChart.HasLegend = False
-    mChart.HasTitle = True
-    mChart.ChartTitle.Text = PlotTitleText(data)
-    mChart.ChartTitle.Font.Size = 12
+    mChart.HasTitle = False
 
     Do While mChart.SeriesCollection.Count > 0
         mChart.SeriesCollection(1).Delete
@@ -770,6 +770,21 @@ Private Sub DrawGeometryOnlyNote(ByVal data As CSectionPlotDataReader)
     topPos = mPlotTop + mPlotHeight + 16
     widthValue = mPlotWidth
     AddChartText leftPos, topPos, widthValue, 42, data.GeometryOnlyNote, 0#, RGB(160, 40, 40), True, True, 12#
+End Sub
+
+' Рисует единственный заголовок схемы как Chart.Shape. Shape-заголовок живет
+' в той же системе координат Chart, что и элементы, оси и аннотации.
+Private Sub DrawPlotTitleOverlay(ByVal titleText As String)
+    If Len(Trim$(titleText)) = 0 Then Exit Sub
+
+    Dim titleWidth As Double
+    titleWidth = mChartObject.Width - 16#
+    If titleWidth <= 0# Then titleWidth = StablePlotFrameWidth()
+
+    Dim titleShape As Object
+    Set titleShape = AddChartText(8#, PLOT_TITLE_TOP, titleWidth, PLOT_TITLE_HEIGHT, _
+        titleText, 0#, RGB(20, 20, 20), True, True, 12#)
+    titleShape.Name = SHAPE_PREFIX & "Title"
 End Sub
 
 ' Показывает под схемой короткое красное предупреждение по сохраненному
