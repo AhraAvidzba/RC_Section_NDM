@@ -485,14 +485,8 @@ Public Sub ApplyLoadReference(ByVal referenceX As Double, ByVal referenceY As Do
     mLoadReferenceOffsetY = referenceY - baseY
 
     Dim i As Long
-    ' Эквивалентный перенос момента от продольной силы:
-    ' Mx_model = Mx_user + N * y_ref, My_model = My_user + N * x_ref.
     For i = 1 To mCount
-        If mInputs(i).InputValid Then
-            mInputs(i).Mx = mInputs(i).UserMx + mInputs(i).N * referenceY
-            mInputs(i).My = mInputs(i).UserMy + mInputs(i).N * referenceX
-            NormalizeCombinationMoments i
-        End If
+        If mInputs(i).InputValid Then NormalizeCombinationMoments i
     Next i
 
 End Sub
@@ -539,10 +533,12 @@ Private Sub NormalizeCombinationMoments(ByVal index As Long)
     If index < 1 Or index > mCount Then Exit Sub
     If Not mInputs(index).InputValid Then Exit Sub
 
-    mInputs(index).UserMx = NormalizeMomentMx(mInputs(index).UserMx)
-    mInputs(index).UserMy = NormalizeMomentMy(mInputs(index).UserMy)
-    mInputs(index).Mx = NormalizeMomentMx(mInputs(index).UserMx + mInputs(index).N * mLoadReferenceY)
-    mInputs(index).My = NormalizeMomentMy(mInputs(index).UserMy + mInputs(index).N * mLoadReferenceX)
+    Dim loadState As CSectionLoadState
+    Set loadState = LoadStateForCombination(index)
+    mInputs(index).UserMx = loadState.LoadPointMx
+    mInputs(index).UserMy = loadState.LoadPointMy
+    mInputs(index).Mx = loadState.InternalMx
+    mInputs(index).My = loadState.InternalMy
 End Sub
 
 ' Применяет текущую настройку фильтра к уже загруженным сочетаниям. Метод
@@ -704,7 +700,7 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
 
     Dim referenceX As Double
     Dim referenceY As Double
-    StabilityReferencePoint valueSet, referenceX, referenceY
+    TransformedReferencePoint valueSet, referenceX, referenceY
 
     Dim sustainedN As Double
     Dim sustainedMx As Double
@@ -714,10 +710,12 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
 
     Dim stability As CStabilityCalculator
     Set stability = New CStabilityCalculator
+    Dim loadState As CSectionLoadState
+    Set loadState = LoadStateForCombination(index)
     Dim referenceMx As Double
     Dim referenceMy As Double
-    referenceMx = NormalizeMomentMx(MomentMxAboutPoint(index, referenceY))
-    referenceMy = NormalizeMomentMy(MomentMyAboutPoint(index, referenceX))
+    referenceMx = loadState.MxAboutPoint(referenceY)
+    referenceMy = loadState.MyAboutPoint(referenceX)
 
     stability.Calculate mSection, mMaterialProvider, valueSet, mStabilityCode, _
         mInputs(index).N, referenceMx, referenceMy, _
@@ -780,9 +778,13 @@ Private Sub StabilityDurationLoadForCombination(ByVal combinationID As String, _
     Dim i As Long
     For i = 1 To mStabilityLoadCount
         If StrComp(mStabilityLoadCombinationID(i), Trim$(combinationID), vbTextCompare) = 0 Then
-            nValue = mStabilityLoadN(i)
-            mxValue = NormalizeMomentMx(mStabilityLoadUserMx(i) + mStabilityLoadN(i) * (mLoadReferenceY - referenceY))
-            myValue = NormalizeMomentMy(mStabilityLoadUserMy(i) + mStabilityLoadN(i) * (mLoadReferenceX - referenceX))
+            Dim loadState As CSectionLoadState
+            Set loadState = New CSectionLoadState
+            loadState.Initialize mStabilityLoadN(i), mStabilityLoadUserMx(i), mStabilityLoadUserMy(i), _
+                mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, mConcreteDepthForMx, mConcreteDepthForMy
+            nValue = loadState.N
+            mxValue = loadState.MxAboutPoint(referenceY)
+            myValue = loadState.MyAboutPoint(referenceX)
             Exit Sub
         End If
     Next i
@@ -794,39 +796,43 @@ End Sub
 ' переносятся к внутренней системе координат элементов.
 Private Sub ApplyStabilityDesignLoads(ByVal index As Long, ByVal stability As CStabilityCalculator, _
         ByVal referenceX As Double, ByVal referenceY As Double)
-    mInputs(index).N = stability.DesignN
-    mInputs(index).Mx = stability.DesignMx + mInputs(index).N * referenceY
-    mInputs(index).My = stability.DesignMy + mInputs(index).N * referenceX
-    mInputs(index).UserMx = mInputs(index).Mx - mInputs(index).N * mLoadReferenceY
-    mInputs(index).UserMy = mInputs(index).My - mInputs(index).N * mLoadReferenceX
-    NormalizeCombinationMoments index
+    Dim loadState As CSectionLoadState
+    Set loadState = New CSectionLoadState
+    loadState.InitializeFromPointMoments stability.DesignN, stability.DesignMx, stability.DesignMy, _
+        referenceX, referenceY, mLoadReferenceX, mLoadReferenceY, _
+        mMomentZeroFilter, mConcreteDepthForMx, mConcreteDepthForMy
+
+    mInputs(index).N = loadState.N
+    mInputs(index).UserMx = loadState.LoadPointMx
+    mInputs(index).UserMy = loadState.LoadPointMy
+    mInputs(index).Mx = loadState.InternalMx
+    mInputs(index).My = loadState.InternalMy
 
     ' Summary должен показывать те же моменты, которые после zero-filter ушли
     ' дальше в DirectState/Capacity/Crack, а не промежуточный DesignLoad.
     Dim finalDesignMx As Double
     Dim finalDesignMy As Double
-    finalDesignMx = NormalizeMomentMx(MomentMxAboutPoint(index, referenceY))
-    finalDesignMy = NormalizeMomentMy(MomentMyAboutPoint(index, referenceX))
+    finalDesignMx = loadState.MxAboutPoint(referenceY)
+    finalDesignMy = loadState.MyAboutPoint(referenceX)
     mResults(index).UpdateStabilityDesignLoads mInputs(index).N, finalDesignMx, finalDesignMy, _
         stability.PrincipalAngleRad
 End Sub
 
-' Возвращает Mx LC относительно произвольной расчетной точки.
-' Для устойчивости сюда передается центр приведенного сечения, а для обычного
-' НДМ пользовательская точка остается привязанной к бетонному центру.
-Private Function MomentMxAboutPoint(ByVal index As Long, ByVal referenceY As Double) As Double
-    MomentMxAboutPoint = mInputs(index).UserMx + mInputs(index).N * (mLoadReferenceY - referenceY)
+' Возвращает объект нагрузки LC: он единолично переносит моменты между
+' пользовательской точкой, произвольным центром и внутренним началом модели.
+Private Function LoadStateForCombination(ByVal index As Long) As CSectionLoadState
+    Dim loadState As CSectionLoadState
+    Set loadState = New CSectionLoadState
+    loadState.Initialize mInputs(index).N, mInputs(index).UserMx, mInputs(index).UserMy, _
+        mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, mConcreteDepthForMx, mConcreteDepthForMy
+    Set LoadStateForCombination = loadState
 End Function
 
-' Возвращает My LC относительно произвольной расчетной точки.
-Private Function MomentMyAboutPoint(ByVal index As Long, ByVal referenceX As Double) As Double
-    MomentMyAboutPoint = mInputs(index).UserMy + mInputs(index).N * (mLoadReferenceX - referenceX)
-End Function
-
-' Возвращает центр приведенного сечения для нормативного расчета устойчивости.
-' Приведение выполняется по модулю Eb/Es из того набора характеристик, который
-' выбран в профиле строкой MaterialModel.Stability.ValueSet.
-Private Sub StabilityReferencePoint(ByVal valueSet As EMaterialValueSet, _
+' Возвращает центр приведенного сечения для проверки относительно выбранного
+' набора характеристик. Stability и центральная ветка трещин используют один
+' и тот же расчетный смысл: моменты проверяются относительно приведенного
+' сечения бетон + арматура, а не только бетонного центра.
+Private Sub TransformedReferencePoint(ByVal valueSet As EMaterialValueSet, _
         ByRef referenceX As Double, ByRef referenceY As Double)
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
@@ -835,6 +841,20 @@ Private Sub StabilityReferencePoint(ByVal valueSet As EMaterialValueSet, _
         mMaterialProvider.SteelElasticModulusFromValueSet(valueSet)
     referenceX = props.CentroidX
     referenceY = props.CentroidY
+End Sub
+
+' Возвращает центр приведенного сечения для распознавания истинного
+' центрального растяжения в расчете трещин. Если задана модель Mcrc, берем ее
+' ValueSet, потому что Ncrc считается через Ared и Rbt этой модели; иначе
+' используем модель CrackedState, с которой работает текущий расчет трещин.
+Private Sub CrackCentralReferencePoint(ByVal profile As CCalculationProfile, _
+        ByRef referenceX As Double, ByRef referenceY As Double)
+    Dim valueSet As EMaterialValueSet
+    valueSet = profile.CrackedStateSpec.ValueSet
+    If Not profile.CrackInitiationSpec Is Nothing Then
+        If profile.CrackInitiationSpec.IsComplete Then valueSet = profile.CrackInitiationSpec.ValueSet
+    End If
+    TransformedReferencePoint valueSet, referenceX, referenceY
 End Sub
 
 ' Запускает поиск несущей способности для LC.
@@ -998,20 +1018,20 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     ConfigureCrackCalculator crack
     ReportStep "Запускается расчет ширины раскрытия нормальных трещин."
 
-    Dim centroidMxForCrack As Double
-    Dim centroidMyForCrack As Double
-    ' Для отдельной ветки центрального растяжения важны моменты относительно
-    ' центра тяжести бетонного сечения. Если точка приложения N смещена от
-    ' бетонного центра, то даже при Mx_user = My_user = 0 появляется
-    ' внецентренное растяжение.
-    centroidMxForCrack = mInputs(index).UserMx + mInputs(index).N * mLoadReferenceOffsetY
-    centroidMyForCrack = mInputs(index).UserMy + mInputs(index).N * mLoadReferenceOffsetX
-    centroidMxForCrack = NormalizeMomentMx(centroidMxForCrack)
-    centroidMyForCrack = NormalizeMomentMy(centroidMyForCrack)
+    Dim crackReferenceX As Double
+    Dim crackReferenceY As Double
+    CrackCentralReferencePoint profile, crackReferenceX, crackReferenceY
 
+    Dim loadState As CSectionLoadState
+    Set loadState = LoadStateForCombination(index)
+
+    ' Центральная ветка трещин проверяется относительно центра тяжести
+    ' приведенного сечения той материальной модели, по которой определяется
+    ' Ncrc. Load.ReferenceOffset и сдвиг от бетонного центра учтены внутри
+    ' CSectionLoadState, поэтому здесь нет ручной формулы N*dx/dy.
     crack.Calculate runner.ResultSolver, mSection, mMaterialProvider, profile.CrackedStateSpec, _
         profile.CrackInitiationSpec, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
-        centroidMxForCrack, centroidMyForCrack
+        loadState, crackReferenceX, crackReferenceY
     mResults(index).CrackStatus = mStatusPolicy.CrackStatusFromCalculator(crack)
     mResults(index).StoreCrackResult crack
     If Not crack.BeforeMcrcState Is Nothing Then mResults(index).AddState crack.BeforeMcrcState
@@ -1034,8 +1054,7 @@ End Sub
 Private Function BuildLoadPathForCombination(ByVal index As Long) As CCapacityLoadPath
     Dim loadPath As CCapacityLoadPath
     Set loadPath = New CCapacityLoadPath
-    loadPath.Initialize mInputs(index).CapacityLoadPath, mInputs(index).N, mInputs(index).UserMx, mInputs(index).UserMy, _
-        mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, mConcreteDepthForMx, mConcreteDepthForMy
+    loadPath.InitializeFromLoadState mInputs(index).CapacityLoadPath, LoadStateForCombination(index)
     Set BuildLoadPathForCombination = loadPath
 End Function
 

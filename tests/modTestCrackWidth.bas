@@ -218,7 +218,7 @@ Private Sub CheckAutoMcrcPureBending(ByRef stats As TCrackTestStats, ByVal prefi
 
     Dim crack As CCrackWidthCalculator
     Set crack = CalculateCrack(solver, section, nValue, mxValue, myValue, _
-        "Auto", "Effective", mxValue, myValue, allowable:=0.0001)
+        "Auto", "Effective", allowable:=0.0001)
     AssertCrackCommon stats, prefix, crack
     AssertTrue stats, prefix & ".lambda", crack.LambdaCrc > 0# And crack.LambdaCrc <= 1#
     AssertTrue stats, prefix & ".beforeMcrcState", Not crack.BeforeMcrcState Is Nothing
@@ -239,7 +239,7 @@ Private Sub TestAutoMcrcOneSignTensionUsesFormula854(ByRef stats As TCrackTestSt
 
     Dim crack As CCrackWidthCalculator
     Set crack = CalculateCrack(solver, section, 420000#, 800000#, 0#, _
-        "Auto", "Effective", 800000#, 0#, allowable:=0.0001)
+        "Auto", "Effective", allowable:=0.0001)
     AssertCrackCommon stats, "crack.auto.oneSign", crack
     AssertTrue stats, "crack.auto.oneSign.beforeMcrcState", Not crack.BeforeMcrcState Is Nothing
 
@@ -263,9 +263,9 @@ Private Sub TestCentralTensionBranch(ByRef stats As TCrackTestStats)
     Set solver = SolveServiceState(section, 200000#, 0#, 0#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, section, 200000#, 0#, 0#, "Auto", "Effective", 0#, 0#, allowable:=0.0001)
+    Set crack = CalculateCrack(solver, section, 200000#, 0#, 0#, "Auto", "Effective", allowable:=0.0001)
     Dim fullZoneCrack As CCrackWidthCalculator
-    Set fullZoneCrack = CalculateCrack(solver, section, 200000#, 0#, 0#, "Auto", "FullTension", 0#, 0#, allowable:=0.0001)
+    Set fullZoneCrack = CalculateCrack(solver, section, 200000#, 0#, 0#, "Auto", "FullTension", allowable:=0.0001)
     AssertCrackCommon stats, "crack.central", crack
     AssertTrue stats, "crack.central.branch", crack.CentralTensionBranch
     AssertTrue stats, "crack.central.ncrc", crack.Ncrc > 0#
@@ -279,8 +279,17 @@ Private Sub TestCentralTensionBranch(ByRef stats As TCrackTestStats)
     Set shiftedSolver = SolveServiceState(section, 200000#, 2500000#, -1500000#)
     Dim shiftedMomentCrack As CCrackWidthCalculator
     Set shiftedMomentCrack = CalculateCrack(shiftedSolver, section, 200000#, 2500000#, -1500000#, _
-        "User", "Effective", 2500000#, -1500000#)
+        "User", "Effective")
     AssertTrue stats, "crack.central.eccentricLoadRejected", Not shiftedMomentCrack.CentralTensionBranch
+
+    Dim offsetLoad As CSectionLoadState
+    Set offsetLoad = New CSectionLoadState
+    offsetLoad.Initialize 200000#, 0#, 0#, -7.5, 12.5
+    Dim offsetCrack As CCrackWidthCalculator
+    Set offsetCrack = CalculateCrack(shiftedSolver, section, offsetLoad.N, offsetLoad.InternalMx, offsetLoad.InternalMy, _
+        "User", "Effective", _
+        loadStateForClassification:=offsetLoad, centralReferenceX:=0#, centralReferenceY:=0#)
+    AssertTrue stats, "crack.central.offsetLoadStateRejected", Not offsetCrack.CentralTensionBranch
 End Sub
 
 ' ------------------------------
@@ -412,11 +421,12 @@ End Sub
 Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As CSectionModel, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
         ByVal psiMode As String, ByVal zoneMode As String, _
-        Optional ByVal centroidMxForCentralCheck As Variant, Optional ByVal centroidMyForCentralCheck As Variant, _
         Optional ByVal allowable As Double = 0.3, _
         Optional ByVal phi1Value As Double = 1.4, Optional ByVal phi2Value As Double = 0.5, _
         Optional ByVal phi3Mode As String = "Auto", Optional ByVal phi3Value As Double = 1#, _
-        Optional ByVal psiSValue As Double = 1#, Optional ByVal coverMode As String = "NearestContour") As CCrackWidthCalculator
+        Optional ByVal psiSValue As Double = 1#, Optional ByVal coverMode As String = "NearestContour", _
+        Optional ByVal loadStateForClassification As CSectionLoadState = Nothing, _
+        Optional ByVal centralReferenceX As Double = 0#, Optional ByVal centralReferenceY As Double = 0#) As CCrackWidthCalculator
     Dim crack As CCrackWidthCalculator
     Set crack = New CCrackWidthCalculator
     crack.AllowableCrackWidth = allowable
@@ -440,12 +450,15 @@ Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As
     Dim initiationSpec As CMaterialModelSpec
     Set initiationSpec = TestCrackInitiationSpec()
 
-    If IsMissing(centroidMxForCentralCheck) Or IsMissing(centroidMyForCentralCheck) Then
-        crack.Calculate solver, section, provider, crackedSpec, initiationSpec, nValue, mxValue, myValue
+    Dim classificationLoad As CSectionLoadState
+    If loadStateForClassification Is Nothing Then
+        Set classificationLoad = New CSectionLoadState
+        classificationLoad.Initialize nValue, mxValue, myValue, 0#, 0#
     Else
-        crack.Calculate solver, section, provider, crackedSpec, initiationSpec, nValue, mxValue, myValue, _
-            centroidMxForCentralCheck, centroidMyForCentralCheck
+        Set classificationLoad = loadStateForClassification
     End If
+    crack.Calculate solver, section, provider, crackedSpec, initiationSpec, nValue, mxValue, myValue, _
+        classificationLoad, centralReferenceX, centralReferenceY
     Set CalculateCrack = crack
 End Function
 

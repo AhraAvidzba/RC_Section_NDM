@@ -12,8 +12,9 @@ Target(lambda) = Offset + lambda * Base
 
 Основные места в коде:
 
+- `CBatchSectionCalculator.LoadStateForCombination` - собирает `CSectionLoadState`: переносит моменты от `Load.ReferenceOffsetX/Y` и применяет общий фильтр `Calculation.ZeroMomentPerDepth`.
 - `CBatchSectionCalculator.RunCapacity` - читает уже разобранный `CCapacityLoadPath` и выбирает численный путь по `Capacity.SolutionStrategy`.
-- `CCapacityLoadPath` - переводит пользовательский вариант `lambda*...` в шесть чисел: `NOffset`, `NBase`, `MxOffset`, `MxBase`, `MyOffset`, `MyBase`; моментные компоненты проходят общий фильтр `Calculation.ZeroMomentPerDepth`.
+- `CCapacityLoadPath` - получает готовый `CSectionLoadState` и переводит пользовательский вариант `lambda*...` в шесть чисел: `NOffset`, `NBase`, `MxOffset`, `MxBase`, `MyOffset`, `MyBase`.
 - `CCapacityLoadPath.ForceOnly` - определяет силовую осевую траекторию, когда пользователь масштабирует только `N` или `lambda*NMxy` фактически содержит только `N`; имя пользовательского пути при этом не меняется.
 - `CStateSolutionRunner` - управляет прямым `StateSolution`: стартовой плоскостью, retry, extension warm-start и повторными вызовами `CSectionSolver`.
 - `CCapacitySolver` - решает уже готовую математическую задачу `Offset + lambda*Base`.
@@ -35,7 +36,8 @@ Target(lambda) = Offset + lambda * Base
 
 ## Как собирается Offset/Base
 
-В `CCapacityLoadPath.BuildOffsetBase` учитываются две части момента:
+В `CCapacityLoadPath.BuildOffsetBase` используются две части момента, которые
+он берет из `CSectionLoadState`:
 
 - пользовательские `Mx/My`;
 - моменты от переноса продольной силы из точки приложения нагрузки к расчетной системе координат.

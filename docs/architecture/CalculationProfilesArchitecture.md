@@ -845,7 +845,7 @@ sequenceDiagram
 
 ```text
 1. Проверяется растягивающая продольная сила N и нулевые Mx/My относительно
-   центра тяжести бетонного сечения.
+   центра тяжести приведенного сечения, выбранного для расчета Ncrc.
 2. По СП 63 п. 8.2.13, формула (8.127), считается Ncrc = Ared * Rbt,ser.
 3. Если N <= Ncrc, трещина при текущей нагрузке не считается образованной.
 4. Если N > Ncrc, принимается lambda_crc = Ncrc / N.
@@ -888,7 +888,9 @@ Target(lambda) = Offset + lambda * Base
 If profile.StrengthCapacityEnabled Then
     spec = profile.StrengthModel
     materials = MaterialProvider.Build(spec)
-    path = CCapacityLoadPath.Build(loadCase, loadReference, loadCase.CapacityLoadPath)
+    loadState = LoadStateForCombination(loadCase)
+    path = New CCapacityLoadPath
+    path.InitializeFromLoadState loadCase.CapacityLoadPath, loadState
     capacityResult = CCapacitySolver.Solve(path, materials, capacitySettings)
     combinationResult.StoreCapacity(capacityResult)
 End If

@@ -294,8 +294,11 @@ Private Sub TestAutoCADExportUsesSharedLoadReference(ByRef stats As TUiTestStats
     AssertTrue stats, "ui.autocad.reference.point", Abs(batch.LoadReferenceX) > 0.000001 Or Abs(batch.LoadReferenceY) > 0.000001
     AssertClose stats, "ui.autocad.reference.concreteCenterX", props.CentroidX, batch.LoadReferenceX, 0.000001
     AssertClose stats, "ui.autocad.reference.concreteCenterY", props.CentroidY, batch.LoadReferenceY, 0.000001
-    AssertClose stats, "ui.autocad.reference.mxTransfer", batch.Mx(1), batch.N(1) * props.CentroidY, 0.000001
-    AssertClose stats, "ui.autocad.reference.myTransfer", batch.My(1), batch.N(1) * props.CentroidX, 0.000001
+    Dim expectedLoad As CSectionLoadState
+    Set expectedLoad = New CSectionLoadState
+    expectedLoad.Initialize batch.N(1), batch.UserMx(1), batch.UserMy(1), props.CentroidX, props.CentroidY
+    AssertClose stats, "ui.autocad.reference.mxTransfer", batch.Mx(1), expectedLoad.InternalMx, 0.000001
+    AssertClose stats, "ui.autocad.reference.myTransfer", batch.My(1), expectedLoad.InternalMy, 0.000001
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.

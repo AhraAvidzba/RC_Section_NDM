@@ -751,8 +751,11 @@ Private Sub TestLoadMultiplierWithWorkbookTfDefaults(ByRef stats As TCapacityTes
     nValue = units.InputForceToInternal(100#)
     mxValue = units.InputMomentMxToInternal(50#)
     myValue = 0#
-    mxOffset = nValue * props.CentroidY
-    myOffset = nValue * props.CentroidX
+    Dim loadState As CSectionLoadState
+    Set loadState = New CSectionLoadState
+    loadState.Initialize nValue, mxValue, myValue, props.CentroidX, props.CentroidY
+    mxOffset = loadState.AxialMxAboutPoint(0#)
+    myOffset = loadState.AxialMyAboutPoint(0#)
 
     Dim reference As CCapacitySolver
     Set reference = New CCapacitySolver
@@ -860,10 +863,17 @@ Private Sub TestLShapeCapacityLoadPathSmoke(ByRef stats As TCapacityTestStats)
     Set props = New CSectionPropertiesCalculator
     props.CalculateConcrete section
 
-    CheckLShapeCapacityPathMethods stats, "lshape.n.tension", section, 0#, 200# * 9806.65, _
-        0#, 200# * 9806.65 * props.CentroidY, 0#, 200# * 9806.65 * props.CentroidX, True
-    CheckLShapeCapacityPathMethods stats, "lshape.n.compression", section, 0#, -200# * 9806.65, _
-        0#, -200# * 9806.65 * props.CentroidY, 0#, -200# * 9806.65 * props.CentroidX, True
+    Dim tensionLoad As CSectionLoadState
+    Set tensionLoad = New CSectionLoadState
+    tensionLoad.Initialize 200# * 9806.65, 0#, 0#, props.CentroidX, props.CentroidY
+    CheckLShapeCapacityPathMethods stats, "lshape.n.tension", section, 0#, tensionLoad.N, _
+        0#, tensionLoad.AxialMxAboutPoint(0#), 0#, tensionLoad.AxialMyAboutPoint(0#), True
+
+    Dim compressionLoad As CSectionLoadState
+    Set compressionLoad = New CSectionLoadState
+    compressionLoad.Initialize -200# * 9806.65, 0#, 0#, props.CentroidX, props.CentroidY
+    CheckLShapeCapacityPathMethods stats, "lshape.n.compression", section, 0#, compressionLoad.N, _
+        0#, compressionLoad.AxialMxAboutPoint(0#), 0#, compressionLoad.AxialMyAboutPoint(0#), True
 
     ' Пользовательский сценарий из книги: Г-сечение, N задана относительно
     ' бетонного центра тяжести, а предельная способность ищется по lambda*Mx.
@@ -891,8 +901,11 @@ Private Sub CheckLShapeMomentUltimatePath(ByRef stats As TCapacityTestStats, ByV
 
     Dim mxOffset As Double
     Dim myOffset As Double
-    mxOffset = nValue * referenceY
-    myOffset = nValue * referenceX
+    Dim loadState As CSectionLoadState
+    Set loadState = New CSectionLoadState
+    loadState.Initialize nValue, userMxBase, userMyBase, referenceX, referenceY
+    mxOffset = loadState.AxialMxAboutPoint(0#)
+    myOffset = loadState.AxialMyAboutPoint(0#)
 
     cap.SolveByUltimateLoadPath section, ProvisionalConcrete(), ProvisionalSteel(), _
         nValue, 0#, mxOffset, userMxBase, myOffset, userMyBase
@@ -987,10 +1000,17 @@ Private Sub TestNultBaseLoadStepsSensitivity(ByRef stats As TCapacityTestStats)
     Set props = New CSectionPropertiesCalculator
     props.CalculateConcrete section
 
-    CheckNultBaseLoadSteps stats, "tension", section, 200# * 9806.65, _
-        200# * 9806.65 * props.CentroidY, 200# * 9806.65 * props.CentroidX
-    CheckNultBaseLoadSteps stats, "compression", section, -200# * 9806.65, _
-        -200# * 9806.65 * props.CentroidY, -200# * 9806.65 * props.CentroidX
+    Dim tensionLoad As CSectionLoadState
+    Set tensionLoad = New CSectionLoadState
+    tensionLoad.Initialize 200# * 9806.65, 0#, 0#, props.CentroidX, props.CentroidY
+    CheckNultBaseLoadSteps stats, "tension", section, tensionLoad.N, _
+        tensionLoad.AxialMxAboutPoint(0#), tensionLoad.AxialMyAboutPoint(0#)
+
+    Dim compressionLoad As CSectionLoadState
+    Set compressionLoad = New CSectionLoadState
+    compressionLoad.Initialize -200# * 9806.65, 0#, 0#, props.CentroidX, props.CentroidY
+    CheckNultBaseLoadSteps stats, "compression", section, compressionLoad.N, _
+        compressionLoad.AxialMxAboutPoint(0#), compressionLoad.AxialMyAboutPoint(0#)
 End Sub
 
 Private Sub CheckNultBaseLoadSteps(ByRef stats As TCapacityTestStats, ByVal prefix As String, _

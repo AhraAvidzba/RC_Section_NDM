@@ -62,6 +62,8 @@ Public Function RunBatchCalculationTests() As String
     TestPR2SkipsCapacityByProfile stats
     AppendLine stats, "RUN: TestLoadReferenceTransformsUserMoments"
     TestLoadReferenceTransformsUserMoments stats
+    AppendLine stats, "RUN: TestSectionLoadStateTransfersMoments"
+    TestSectionLoadStateTransfersMoments stats
     AppendLine stats, "RUN: TestAxialReferenceRemovesPureCompressionEccentricity"
     TestAxialReferenceRemovesPureCompressionEccentricity stats
     AppendLine stats, "RUN: TestAxialTensionReferenceAndEccentricity"
@@ -547,17 +549,23 @@ Private Sub TestCapacityLoadPathFiltersEngineeringSmallMoments(ByRef stats As TB
     filter.Initialize 0.001 * TEST_TF_M_IN_NMM
 
     Dim pathMxy As CCapacityLoadPath
+    Dim loadMxy As CSectionLoadState
+    Set loadMxy = New CSectionLoadState
+    loadMxy.Initialize -100# * 9806.65, 0#, -0.158 * TEST_TF_M_IN_NMM, _
+        0#, 0#, filter, 870#, 870#
     Set pathMxy = New CCapacityLoadPath
-    pathMxy.Initialize ChrW$(&H3BB) & "*Mxy", -100# * 9806.65, 0#, _
-        -0.158 * TEST_TF_M_IN_NMM, 0#, 0#, filter, 870#, 870#
+    pathMxy.InitializeFromLoadState ChrW$(&H3BB) & "*Mxy", loadMxy
 
     AssertTrue stats, "batch.zeroMoment.pathMxy.noScaledMoment", Not pathMxy.HasScaledLoad
     AssertClose stats, "batch.zeroMoment.pathMxy.myBase", pathMxy.MyBase, 0#, 0#
 
     Dim pathNMxy As CCapacityLoadPath
+    Dim loadNMxy As CSectionLoadState
+    Set loadNMxy = New CSectionLoadState
+    loadNMxy.Initialize -100# * 9806.65, 0#, -0.158 * TEST_TF_M_IN_NMM, _
+        0#, 0#, filter, 870#, 870#
     Set pathNMxy = New CCapacityLoadPath
-    pathNMxy.Initialize ChrW$(&H3BB) & "*NMxy", -100# * 9806.65, 0#, _
-        -0.158 * TEST_TF_M_IN_NMM, 0#, 0#, filter, 870#, 870#
+    pathNMxy.InitializeFromLoadState ChrW$(&H3BB) & "*NMxy", loadNMxy
 
     AssertTrue stats, "batch.zeroMoment.pathNMxy.forceOnly", pathNMxy.ForceOnly
     AssertClose stats, "batch.zeroMoment.pathNMxy.myBase", pathNMxy.MyBase, 0#, 0#
@@ -1392,6 +1400,43 @@ Private Sub TestLoadReferenceTransformsUserMoments(ByRef stats As TBatchTestStat
     AssertClose stats, "batch.reference.offsetY.centroidBase", shiftedBatch.LoadReferenceOffsetY, -25#, 0.000001
 End Sub
 
+' Проверяет единый объект нагрузки: он хранит Mx/My в пользовательской точке,
+' умеет переносить их к произвольному центру и обратно восстанавливает
+' пользовательские моменты из усилий, возвращенных stability-фильтром.
+Private Sub TestSectionLoadStateTransfersMoments(ByRef stats As TBatchTestStats)
+    Dim loadState As CSectionLoadState
+    Set loadState = New CSectionLoadState
+    loadState.Initialize -1000#, 3000000#, -3000000#, 40#, -25#
+
+    AssertClose stats, "batch.loadState.loadMx", loadState.LoadPointMx, 3000000#, 0.000001
+    AssertClose stats, "batch.loadState.loadMy", loadState.LoadPointMy, -3000000#, 0.000001
+    AssertClose stats, "batch.loadState.internalMx", loadState.InternalMx, 3025000#, 0.000001
+    AssertClose stats, "batch.loadState.internalMy", loadState.InternalMy, -3040000#, 0.000001
+    AssertClose stats, "batch.loadState.mxAboutShifted", loadState.MxAboutPoint(75#), 3100000#, 0.000001
+    AssertClose stats, "batch.loadState.myAboutShifted", loadState.MyAboutPoint(10#), -3030000#, 0.000001
+    AssertClose stats, "batch.loadState.axialMx", loadState.AxialMxAboutPoint(0#), 25000#, 0.000001
+    AssertClose stats, "batch.loadState.axialMy", loadState.AxialMyAboutPoint(0#), -40000#, 0.000001
+    AssertTrue stats, "batch.loadState.compression", loadState.IsCompression(0.000001)
+    AssertClose stats, "batch.loadState.compressionMagnitude", loadState.CompressionMagnitude(0.000001), 1000#, 0.000001
+    AssertClose stats, "batch.loadState.signedCompression", loadState.SignedCompression, 1000#, 0.000001
+
+    Dim fromPoint As CSectionLoadState
+    Set fromPoint = New CSectionLoadState
+    fromPoint.InitializeFromPointMoments -1000#, -12000#, 5000#, 10#, 20#, 40#, -25#
+    AssertClose stats, "batch.loadState.restoreMx", fromPoint.MxAboutPoint(20#), -12000#, 0.000001
+    AssertClose stats, "batch.loadState.restoreMy", fromPoint.MyAboutPoint(10#), 5000#, 0.000001
+
+    Dim central As CSectionLoadState
+    Set central = New CSectionLoadState
+    central.Initialize 200000#, 0#, 0#, 40#, -25#
+    AssertTrue stats, "batch.loadState.tension", central.IsTension(0.000001)
+    AssertClose stats, "batch.loadState.tensionSignedCompression", central.SignedCompression, -200000#, 0.000001
+    AssertTrue stats, "batch.loadState.centralAtLoadPoint", _
+        central.IsCentralTensionAbout(40#, -25#, 0.000001, 1#, 1#)
+    AssertTrue stats, "batch.loadState.eccentricAtShiftedPoint", _
+        Not central.IsCentralTensionAbout(50#, -25#, 0.000001, 1#, 1#)
+End Sub
+
 ' Проверяет осевое сжатие через бетонный центр тяжести.
 ' Для симметричных сечений это состояние не должно создавать кривизну. Для
 ' Г-сечения с несимметричной арматурой отдельная проверка ниже фиксирует именно
@@ -1439,7 +1484,10 @@ Private Sub CheckPureCompressionReference(ByRef stats As TBatchTestStats, ByVal 
     Set solver = New CSectionSolver
     solver.LoadSteps = 1
     solver.MaxIterations = 40
-    solver.Solve section, concrete, steel, nValue, nValue * refY, nValue * refX
+    Dim loadState As CSectionLoadState
+    Set loadState = New CSectionLoadState
+    loadState.Initialize nValue, 0#, 0#, refX, refY
+    solver.Solve section, concrete, steel, loadState.N, loadState.InternalMx, loadState.InternalMy
 
     AssertTrue stats, "batch.reference." & caseName & ".converged", solver.Converged
     AssertClose stats, "batch.reference." & caseName & ".kappaX", solver.KappaX, 0#, tolerance
@@ -1496,7 +1544,10 @@ Private Sub CheckPureTensionReference(ByRef stats As TBatchTestStats, ByVal case
     Set axialSolver = New CSectionSolver
     axialSolver.LoadSteps = 1
     axialSolver.MaxIterations = 60
-    axialSolver.Solve section, concrete, steel, nValue, nValue * refY, nValue * refX
+    Dim axialLoad As CSectionLoadState
+    Set axialLoad = New CSectionLoadState
+    axialLoad.Initialize nValue, 0#, 0#, refX, refY
+    axialSolver.Solve section, concrete, steel, axialLoad.N, axialLoad.InternalMx, axialLoad.InternalMy
 
     AssertTrue stats, "batch.tension." & caseName & ".central.converged", axialSolver.Converged
     AssertClose stats, "batch.tension." & caseName & ".central.kappaX", axialSolver.KappaX, 0#, tolerance
@@ -1506,8 +1557,10 @@ Private Sub CheckPureTensionReference(ByRef stats As TBatchTestStats, ByVal case
     Set eccentricSolver = New CSectionSolver
     eccentricSolver.LoadSteps = 1
     eccentricSolver.MaxIterations = 60
-    eccentricSolver.Solve section, concrete, steel, nValue, nValue * (refY + eccentricOffsetY), _
-        nValue * (refX + eccentricOffsetX)
+    Dim eccentricLoad As CSectionLoadState
+    Set eccentricLoad = New CSectionLoadState
+    eccentricLoad.Initialize nValue, 0#, 0#, refX + eccentricOffsetX, refY + eccentricOffsetY
+    eccentricSolver.Solve section, concrete, steel, eccentricLoad.N, eccentricLoad.InternalMx, eccentricLoad.InternalMy
 
     AssertTrue stats, "batch.tension." & caseName & ".eccentric.converged", eccentricSolver.Converged
     AssertTrue stats, "batch.tension." & caseName & ".eccentric.kappa", _

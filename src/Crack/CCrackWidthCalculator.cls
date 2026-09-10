@@ -198,9 +198,12 @@ Public Sub Calculate(ByVal currentSolver As CSectionSolver, ByVal section As CSe
         ByVal materialProvider As CMaterialModelProvider, ByVal crackedStateSpec As CMaterialModelSpec, _
         ByVal crackInitiationSpec As CMaterialModelSpec, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
-        Optional ByVal centroidMxForCentralCheck As Variant, Optional ByVal centroidMyForCentralCheck As Variant)
+        ByVal loadStateForClassification As CSectionLoadState, _
+        ByVal centralReferenceX As Double, ByVal centralReferenceY As Double)
     ClearResult
     ValidateInputs currentSolver, section, materialProvider
+    If loadStateForClassification Is Nothing Then _
+        Err.Raise vbObjectError + 3715, "CCrackWidthCalculator", "CSectionLoadState не передан."
     If crackedStateSpec Is Nothing Or Not crackedStateSpec.IsComplete Then _
         Err.Raise vbObjectError + 3714, "CCrackWidthCalculator", "MaterialModel.CrackedState не передан."
     Set mCrackedStateSpec = crackedStateSpec.Clone
@@ -210,10 +213,12 @@ Public Sub Calculate(ByVal currentSolver As CSectionSolver, ByVal section As CSe
     ApplyMaterialProviderProperties materialProvider
     NormalizeSettings
 
-    If IsCentralTensionState(targetN, centroidMxForCentralCheck, centroidMyForCentralCheck) Then
-        CalculateCentralTension currentSolver, section, materialProvider, targetN, targetMx, targetMy
+    If IsCentralTensionState(loadStateForClassification, centralReferenceX, centralReferenceY) Then
+        CalculateCentralTension currentSolver, section, materialProvider, targetN, targetMx, targetMy, _
+            loadStateForClassification
     Else
-        CalculateGeneralBending currentSolver, section, materialProvider, targetN, targetMx, targetMy
+        CalculateGeneralBending currentSolver, section, materialProvider, targetN, targetMx, targetMy, _
+            loadStateForClassification
     End If
 End Sub
 
@@ -240,11 +245,12 @@ End Sub
 ' бетона, а As - всей продольной арматуре, которая растянута в текущем НДС.
 Private Sub CalculateCentralTension(ByVal currentSolver As CSectionSolver, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal targetN As Double, _
-        ByVal targetMx As Double, ByVal targetMy As Double)
+        ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal loadStateForClassification As CSectionLoadState)
     mCentralTensionBranch = True
-    mPhi3 = ResolvePhi3(targetN)
+    mPhi3 = ResolvePhi3(loadStateForClassification)
 
-    If targetN <= NEAR_ZERO_FORCE Then
+    If Not IsTensionLoad(loadStateForClassification) Then
         FinishNoCrack "Центральная ветка: продольная сила не является растягивающей."
         Exit Sub
     End If
@@ -282,8 +288,9 @@ End Sub
 ' нейтральной линии, направленной в сторону растяжения.
 Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionSolver, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal targetN As Double, _
-        ByVal targetMx As Double, ByVal targetMy As Double)
-    mPhi3 = ResolvePhi3(targetN)
+        ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal loadStateForClassification As CSectionLoadState)
+    mPhi3 = ResolvePhi3(loadStateForClassification)
 
     Dim nx As Double
     Dim ny As Double
@@ -809,28 +816,21 @@ Private Sub ConfigureSolver(ByVal solver As CSectionSolver)
 End Sub
 
 ' Центральное растяжение для трещин определяется по моментному вектору
-' относительно центра тяжести бетонного сечения. В этот вектор уже должен
-' входить эксцентриситет точки приложения нагрузки: Mx_cg = Mx_user + N*dy,
-' My_cg = My_user + N*dx. Поэтому случай N при Mx/My = 0, но с ненулевым
-' Load.ReferenceOffset, не попадает в центральную ветку.
+' относительно центра тяжести приведенного сечения. Перенос от
+' Load.ReferenceOffset и обнуление практически нулевых моментов выполняет
+' CSectionLoadState; crack-калькулятор только спрашивает у него моменты
+' относительно нужного расчетного центра и не повторяет геометрию приложения
+' нагрузки.
 '
 ' Кривизны solver-а здесь сознательно не используются. Если при таком LC
 ' появляется заметная кривизна, это уже ошибка в переносе нагрузок, сетке или
 ' тестовом сценарии; она должна ловиться регрессионными проверками, а не
 ' менять расчетную ветку в рабочей книге.
-Private Function IsCentralTensionState(ByVal targetN As Double, _
-        Optional ByVal centroidMxForCentralCheck As Variant, Optional ByVal centroidMyForCentralCheck As Variant) As Boolean
-    If targetN <= NEAR_ZERO_FORCE Then Exit Function
-
-    If IsMissing(centroidMxForCentralCheck) Or IsMissing(centroidMyForCentralCheck) Then
-        AppendDiagnostic "Центральная ветка не проверялась: не переданы моменты относительно центра тяжести бетонного сечения."
-        Exit Function
-    End If
-
-    If Abs(CDbl(centroidMxForCentralCheck)) > MaxDouble(mSolverToleranceMx, 1#) Or _
-            Abs(CDbl(centroidMyForCentralCheck)) > MaxDouble(mSolverToleranceMy, 1#) Then Exit Function
-
-    IsCentralTensionState = True
+Private Function IsCentralTensionState(ByVal loadStateForClassification As CSectionLoadState, _
+        ByVal centralReferenceX As Double, ByVal centralReferenceY As Double) As Boolean
+    IsCentralTensionState = loadStateForClassification.IsCentralTensionAbout( _
+        centralReferenceX, centralReferenceY, NEAR_ZERO_FORCE, _
+        MaxDouble(mSolverToleranceMx, 1#), MaxDouble(mSolverToleranceMy, 1#))
 End Function
 
 ' Выбирает все растянутые стержни для центрального растяжения.
@@ -1141,14 +1141,21 @@ End Function
 ' Возвращает phi3 для текущего LC. В Auto используется принятое правило СП:
 ' при растягивающей продольной силе принимается 1.2, иначе 1.0. В User
 ' программа не выводит характер нагрузки из НДС, а берет введенное значение.
-Private Function ResolvePhi3(ByVal targetN As Double) As Double
+Private Function ResolvePhi3(ByVal loadStateForClassification As CSectionLoadState) As Double
     If StrComp(mPhi3Mode, "User", vbTextCompare) = 0 Then
         ResolvePhi3 = mPhi3Input
-    ElseIf targetN > NEAR_ZERO_FORCE Then
+    ElseIf IsTensionLoad(loadStateForClassification) Then
         ResolvePhi3 = PHI3_TENSION
     Else
         ResolvePhi3 = PHI3_BENDING
     End If
+End Function
+
+' Определяет растягивающий характер продольной силы только через единый
+' объект нагрузки. Так central tension и phi3 используют ту же интерпретацию
+' Load.ReferenceOffset и фильтра малых моментов, что batch/stability/capacity.
+Private Function IsTensionLoad(ByVal loadStateForClassification As CSectionLoadState) As Boolean
+    IsTensionLoad = loadStateForClassification.IsTension(NEAR_ZERO_FORCE)
 End Function
 
 ' Нормализует текстовые режимы и проверяет численные параметры до запуска

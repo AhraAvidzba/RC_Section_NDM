@@ -165,10 +165,19 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
     On Error GoTo Failed
     Clear
     mCode = NormalizeCode(codeText)
-    mDesignN = nValue
-    mDesignMx = mxValue
-    mDesignMy = myValue
-    mSustainedN = SignedCompressionForce(sustainedN)
+
+    Dim totalLoad As CSectionLoadState
+    Set totalLoad = New CSectionLoadState
+    totalLoad.Initialize nValue, mxValue, myValue, 0#, 0#
+
+    Dim sustainedLoad As CSectionLoadState
+    Set sustainedLoad = New CSectionLoadState
+    sustainedLoad.Initialize sustainedN, sustainedMx, sustainedMy, 0#, 0#
+
+    mDesignN = totalLoad.N
+    mDesignMx = totalLoad.InternalMx
+    mDesignMy = totalLoad.InternalMy
+    mSustainedN = sustainedLoad.SignedCompression
 
     If section Is Nothing Then RaiseInput "Модель сечения не передана."
     If materialProvider Is Nothing Then RaiseInput "Material provider не передан."
@@ -177,7 +186,7 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
     If mCode <> CODE_SP63 And mCode <> CODE_SP35 Then RaiseInput "Stability.Code должен быть SP63 или SP35."
 
     Dim nCompression As Double
-    nCompression = CompressionForce(nValue)
+    nCompression = totalLoad.CompressionMagnitude(SMALL_FORCE)
     If nCompression <= SMALL_FORCE Then
         mApplicable = False
         mCheckPassed = True
@@ -202,17 +211,17 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
 
     Dim plane1 As TPlaneResult
     Dim plane2 As TPlaneResult
-    PreparePlanes section, props, mxValue, myValue, sustainedMx, sustainedMy, _
+    PreparePlanes section, props, mDesignMx, mDesignMy, sustainedLoad.InternalMx, sustainedLoad.InternalMy, _
         elementLength, mu1, mu2, systemType, zeroMomentSign1, zeroMomentSign2, _
         accidentalMode, accidentalPlanes, accidentalUserValue1, accidentalUserValue2, _
         momentFilter, plane1, plane2
 
     If mCode = CODE_SP63 Then
-        CalculateSP63 section, materialProvider, valueSet, nCompression, SignedCompressionForce(sustainedN), _
+        CalculateSP63 section, materialProvider, valueSet, nCompression, sustainedLoad.SignedCompression, _
             systemType, phiLMode, sp63Ks, sp63DeltaEMin, sp63DeltaEMax, plane1, plane2
     Else
         CalculateSP35 section, materialProvider, valueSet, concreteProps.Area, props.RebarAreaTotal(section), _
-            nCompression, SignedCompressionForce(sustainedN), systemType, phiLMode, _
+            nCompression, sustainedLoad.SignedCompression, systemType, phiLMode, _
             sp35PhiP, sp35NOverNcrLimit, sp35Table721, plane1, plane2
     End If
 
@@ -827,18 +836,6 @@ Private Sub TransformDesignMoments(ByVal props As CSectionPropertiesCalculator, 
     mDesignMx = moment1 * axis1X + moment2 * axis2X
     mDesignMy = moment1 * axis1Y + moment2 * axis2Y
 End Sub
-
-' Возвращает сжимающую силу положительным числом. Во внутренней системе
-' проекта сжатие имеет отрицательный знак.
-Private Function CompressionForce(ByVal nValue As Double) As Double
-    If nValue < -SMALL_FORCE Then CompressionForce = -nValue
-End Function
-
-' Возвращает сжимающую силу со знаком для формул длительности: сжатие положительно,
-' растяжение отрицательно. В отличие от CompressionForce, значение не обнуляется.
-Private Function SignedCompressionForce(ByVal nValue As Double) As Double
-    SignedCompressionForce = -nValue
-End Function
 
 ' Считает модуль случайного эксцентриситета для выбранного СП и режима Config.
 ' В нормативном режиме AutoWithL используется геометрическая длина L:

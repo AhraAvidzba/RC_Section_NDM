@@ -55,24 +55,22 @@ Private Sub Class_Initialize()
     mKey = KEY_NONE
 End Sub
 
-' Разбирает load-path одной строки LC и сразу строит Offset/Base.
-' nValue, userMxValue и userMyValue уже должны быть во внутренних единицах.
-' loadReferenceX/Y задают точку приложения N в координатах расчетной модели,
-' поэтому момент от N попадает в постоянную или масштабируемую часть вместе с N.
-Public Sub Initialize(ByVal rawPath As String, ByVal nValue As Double, _
-        ByVal userMxValue As Double, ByVal userMyValue As Double, _
-        ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
-        Optional ByVal momentFilter As CMomentZeroFilter = Nothing, _
-        Optional ByVal concreteDepthForMx As Double = 0#, Optional ByVal concreteDepthForMy As Double = 0#)
+' Разбирает load-path через общий объект нагрузки. Так перенос от
+' Load.ReferenceOffset и фильтр малых моментов остаются в одном классе, а
+' CapacityLoadPath занимается только разложением Target = Offset + lambda*Base.
+Public Sub InitializeFromLoadState(ByVal rawPath As String, ByVal loadState As CSectionLoadState)
+    If loadState Is Nothing Then _
+        Err.Raise vbObjectError + 3821, "CCapacityLoadPath", "Не передан CSectionLoadState."
+
     Clear
     mRawText = Trim$(rawPath)
 
     Dim normalizedUserMx As Double
     Dim normalizedUserMy As Double
-    normalizedUserMx = NormalizeMomentForDepth(userMxValue, concreteDepthForMx, momentFilter)
-    normalizedUserMy = NormalizeMomentForDepth(userMyValue, concreteDepthForMy, momentFilter)
+    normalizedUserMx = loadState.LoadPointMx
+    normalizedUserMy = loadState.LoadPointMy
 
-    mKey = ResolveKey(mRawText, nValue, normalizedUserMx, normalizedUserMy)
+    mKey = ResolveKey(mRawText, loadState.N, normalizedUserMx, normalizedUserMy)
 
     If Len(mKey) = 0 Then
         If Len(mRawText) > 0 Then
@@ -87,9 +85,8 @@ Public Sub Initialize(ByVal rawPath As String, ByVal nValue As Double, _
     mHasPath = (mKey <> KEY_NONE)
     If Not mHasPath Then Exit Sub
 
-    BuildFlags nValue, normalizedUserMx, normalizedUserMy
-    BuildOffsetBase nValue, normalizedUserMx, normalizedUserMy, loadReferenceX, loadReferenceY
-    NormalizeOffsetBase momentFilter, concreteDepthForMx, concreteDepthForMy
+    BuildFlags loadState.N, normalizedUserMx, normalizedUserMy
+    BuildOffsetBase loadState, normalizedUserMx, normalizedUserMy
 End Sub
 
 ' Нормализует текст пользователя. Пустая строка получает осторожный default:
@@ -157,22 +154,24 @@ End Sub
 ' Момент от смещения точки приложения N остается связанным с N: если N
 ' масштабируется, этот момент масштабируется вместе с ней; если масштабируются
 ' только Mx/My, момент от N остается в Offset.
-Private Sub BuildOffsetBase(ByVal nValue As Double, ByVal userMxValue As Double, _
-        ByVal userMyValue As Double, ByVal loadReferenceX As Double, ByVal loadReferenceY As Double)
+Private Sub BuildOffsetBase(ByVal loadState As CSectionLoadState, ByVal userMxValue As Double, _
+        ByVal userMyValue As Double)
+    Dim nValue As Double
     Dim mxFromN As Double
     Dim myFromN As Double
-    mxFromN = nValue * loadReferenceY
-    myFromN = nValue * loadReferenceX
+    nValue = loadState.N
+    mxFromN = loadState.AxialMxAboutPoint(0#)
+    myFromN = loadState.AxialMyAboutPoint(0#)
 
     Select Case mKey
         Case KEY_MX
             mNOffset = nValue
             mMxOffset = mxFromN
             mMxBase = userMxValue
-            mMyOffset = myFromN + userMyValue
+            mMyOffset = loadState.InternalMy
         Case KEY_MY
             mNOffset = nValue
-            mMxOffset = mxFromN + userMxValue
+            mMxOffset = loadState.InternalMx
             mMyOffset = myFromN
             mMyBase = userMyValue
         Case KEY_MXY
@@ -189,32 +188,10 @@ Private Sub BuildOffsetBase(ByVal nValue As Double, ByVal userMxValue As Double,
             mMyBase = myFromN
         Case KEY_NMXY
             mNBase = nValue
-            mMxBase = userMxValue + mxFromN
-            mMyBase = userMyValue + myFromN
+            mMxBase = loadState.InternalMx
+            mMyBase = loadState.InternalMy
     End Select
 End Sub
-
-' Пропускает все моментные компоненты Offset/Base через общий инженерный
-' фильтр. Это защищает capacity-поиск от случайной смены ветки из-за
-' ничтожного момента после переноса точки нагрузки или поворота осей.
-Private Sub NormalizeOffsetBase(ByVal momentFilter As CMomentZeroFilter, _
-        ByVal concreteDepthForMx As Double, ByVal concreteDepthForMy As Double)
-    mMxOffset = NormalizeMomentForDepth(mMxOffset, concreteDepthForMx, momentFilter)
-    mMxBase = NormalizeMomentForDepth(mMxBase, concreteDepthForMx, momentFilter)
-    mMyOffset = NormalizeMomentForDepth(mMyOffset, concreteDepthForMy, momentFilter)
-    mMyBase = NormalizeMomentForDepth(mMyBase, concreteDepthForMy, momentFilter)
-End Sub
-
-' Возвращает исходный момент без изменений, если фильтр не передан. Такой
-' режим нужен для изолированных проверок класса без полной batch-конфигурации.
-Private Function NormalizeMomentForDepth(ByVal momentValue As Double, ByVal concreteDepth As Double, _
-        ByVal momentFilter As CMomentZeroFilter) As Double
-    If momentFilter Is Nothing Then
-        NormalizeMomentForDepth = momentValue
-    Else
-        NormalizeMomentForDepth = momentFilter.NormalizeMoment(momentValue, concreteDepth)
-    End If
-End Function
 
 Private Function HasMomentVector(ByVal mxValue As Double, ByVal myValue As Double) As Boolean
     HasMomentVector = (Sqr(mxValue * mxValue + myValue * myValue) > LOAD_TOLERANCE)

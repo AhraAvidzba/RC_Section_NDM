@@ -706,7 +706,10 @@ Private Function RatioLimitToCompression(ByVal limitCompression As Double, ByVal
 End Function
 
 Private Function CompressionMagnitude(ByVal nValue As Double) As Double
-    If nValue < 0# Then CompressionMagnitude = -nValue
+    Dim loadState As CSectionLoadState
+    Set loadState = New CSectionLoadState
+    loadState.Initialize nValue, 0#, 0#, 0#, 0#
+    CompressionMagnitude = loadState.CompressionMagnitude(SMALL_VALUE)
 End Function
 
 Private Function OutputCompressionForce(ByVal compressionMagnitude As Double, ByVal units As CUnitSystem) As Double

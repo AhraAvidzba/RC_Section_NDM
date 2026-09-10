@@ -266,13 +266,14 @@ lambda-траектории.
 - `ClearCombinations` - очищает список LC.
 - `AddCombination` - добавляет корректную строку LC.
 - `AddInvalidCombination` - добавляет строку LC с ошибкой ввода.
-- `ApplyLoadReference` - переносит пользовательскую точку приложения нагрузки к расчетным моментам.
+- `ApplyLoadReference` - сохраняет пользовательскую точку приложения нагрузки; перенос моментов выполняется через `CSectionLoadState`.
 - `Execute` - запускает весь batch.
 
 Ключевые внутренние методы:
 
 - `RunCombination`, `RunSectionStateAndCrack`, `RunCapacity` - сценарии расчета LC.
-- `BuildLoadPathForCombination` - создает `CCapacityLoadPath`.
+- `LoadStateForCombination` - создает единый объект нагрузки LC для переносов, zero-filter и распознавания характера нагрузки.
+- `BuildLoadPathForCombination` - создает `CCapacityLoadPath` из уже готового `CSectionLoadState`.
 - `ConfigureStateRunner`, `ConfigureCapacity`, `ConfigureCrackCalculator` - передают настройки специализированным расчетным компонентам.
 - `StoreSectionState`, `StoreCapacity`, `StoreSkippedCapacity`, `StoreInvalidCapacity` - заполняют `CCombinationResult`.
 - `IsBetterGoverningCandidate`, `StrengthSafetyFactorForGoverning`, `IsBetterCrackGoverningCandidate` - выбор governing.
@@ -323,11 +324,13 @@ calculator-ы и `CBatchStatusPolicy`.
 #### CCapacityLoadPath
 
 Роль: разбирает пользовательскую lambda-траекторию и строит численную форму
-`Offset + lambda * Base`.
+`Offset + lambda * Base`. Класс больше не принимает отдельные `N/Mx/My` и
+`Load.ReferenceOffset`: все переносы и фильтр практически нулевых моментов уже
+собраны в `CSectionLoadState`.
 
 Публичные методы:
 
-- `Initialize` - принимает raw path и компоненты нагрузки LC.
+- `InitializeFromLoadState` - принимает raw path и единый объект нагрузки LC.
 - `DisplayNameForKey` - возвращает подпись для Results.
 
 Публичные свойства: `Key`, `DisplayName`, `Valid`, `ErrorMessage`, `HasPath`,
@@ -338,6 +341,24 @@ calculator-ы и `CBatchStatusPolicy`.
 `HasMomentVector`, `Clear`.
 
 ### Common
+
+#### CSectionLoadState
+
+Роль: единый объект расчетного вектора нагрузки `N + Mx + My`. Он хранит
+моменты в пользовательской точке приложения нагрузки и умеет возвращать те же
+усилия относительно внутреннего начала модели, центра приведенного сечения или
+любой другой расчетной точки.
+
+Класс централизует:
+
+- перенос моментов от `Load.ReferenceOffsetX/Y`;
+- применение `Calculation.ZeroMomentPerDepth` через `CMomentZeroFilter`;
+- выделение момента, создаваемого только продольной силой;
+- проверку истинного центрального растяжения относительно заданного центра;
+- признак растягивающей/сжимающей продольной силы для crack/stability.
+
+DirectState, Capacity, Crack и Stability не должны повторять эти формулы
+локально.
 
 #### modCalculationPurpose
 

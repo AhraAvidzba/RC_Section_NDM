@@ -151,8 +151,11 @@ Private Sub TestOriginShift(ByRef stats As TRegressionStats)
 
     Dim shiftedMx As Double
     Dim shiftedMy As Double
-    shiftedMx = baseMx + baseN * shiftY
-    shiftedMy = baseMy + baseN * shiftX
+    Dim shiftedLoad As CSectionLoadState
+    Set shiftedLoad = New CSectionLoadState
+    shiftedLoad.Initialize baseN, baseMx, baseMy, shiftX, shiftY
+    shiftedMx = shiftedLoad.InternalMx
+    shiftedMy = shiftedLoad.InternalMy
 
     Dim shiftedSolver As CSectionSolver
     Set shiftedSolver = SolveCircleDirect(300#, shiftX, shiftY, 40#, 8, 20#, 20#, baseN, shiftedMx, shiftedMy)
