@@ -503,22 +503,23 @@ try {
     $system.Columns.Item(19).ColumnWidth = 15
     $system.Columns.Item(20).ColumnWidth = 18
     $system.Columns.Item(21).ColumnWidth = 22
-    $results.Range("A1:BC1").Font.Bold = $true
-    $results.Range("A60:I60").Font.Bold = $true
-    $results.Range("L60:Z60").Font.Bold = $true
-    $results.Range("AC60:AH60").Font.Bold = $true
-    $results.Range("AK60:AU60").Font.Bold = $true
-    $results.Range("AX60:BJ60").Font.Bold = $true
+    $results.Range("A1:AE1").Font.Bold = $true
+    $results.Range("A85:I85").Font.Bold = $true
+    $results.Range("L85:Z85").Font.Bold = $true
+    $results.Range("AC85:AH85").Font.Bold = $true
+    $results.Range("AK85:AU85").Font.Bold = $true
+    $results.Range("AX85:BJ85").Font.Bold = $true
     $results.Columns.ColumnWidth = 8.43
     Add-ResultsSummaryHelpLink $results $instructions
 
-    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$BC$29'
-    Add-WorkbookName $workbook "rngStabilitySummaryAnchor" $results '$A$37'
-    Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$60'
-    Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$L$60'
-    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AC$60'
-    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AK$60'
-    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$AX$60'
+    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$AE$29'
+    Add-WorkbookName $workbook "rngCrackSummaryAnchor" $results '$A$36'
+    Add-WorkbookName $workbook "rngStabilitySummaryAnchor" $results '$A$63'
+    Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$85'
+    Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$L$85'
+    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AC$85'
+    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AK$85'
+    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$AX$85'
 
     $calc.PageSetup.PaperSize = 9
     $calc.PageSetup.Orientation = 1

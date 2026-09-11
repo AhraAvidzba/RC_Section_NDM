@@ -64,7 +64,11 @@ Public CrackLsRaw As Double ' Базовое расстояние между т�
 Public CrackLs As Double ' Принятое расстояние между трещинами после ограничений.
 Public CrackLambdaCrc As Double ' Множитель нагрузки при образовании трещины.
 Public CrackNcrc As Double ' Продольная сила образования трещины для центрального растяжения.
+Public CrackMcrc As Double ' Модуль изгибающего момента образования трещины для общей ветки N+M.
+Public CrackAred As Double ' Площадь приведенного сечения для Ncrc при центральном растяжении.
+Public CrackRbtSer As Double ' Расчетное сопротивление бетона растяжению для II ГПС, использованное в Ncrc.
 Public CrackTensionRebarCount As Long ' Число стержней, попавших в расчет трещин.
+Public CrackTensionRebarIds As String ' Имена стержней, по которым определялись As и sigma_s.
 Public CrackSectionDepthH As Double ' Полная высота сечения по нормали к нейтральной линии.
 Public CrackCoverA As Double ' Расстояние от растянутой поверхности до крайней растянутой арматуры.
 Public CrackTensionDepth As Double ' Фактическая глубина растянутой зоны.
@@ -433,7 +437,11 @@ Public Sub StoreCrackResult(ByVal crack As CCrackWidthCalculator)
     CrackLs = crack.CrackSpacing
     CrackLambdaCrc = crack.LambdaCrc
     CrackNcrc = crack.Ncrc
+    CrackMcrc = crack.Mcrc
+    CrackAred = crack.Ared
+    CrackRbtSer = crack.RbtSer
     CrackTensionRebarCount = crack.TensionRebarCount
+    CrackTensionRebarIds = crack.TensionRebarIds
     CrackSectionDepthH = crack.SectionDepthH
     CrackCoverA = crack.CoverA
     CrackTensionDepth = crack.TensionDepth
@@ -480,7 +488,11 @@ Public Sub ClearCrackResult()
     CrackLs = 0#
     CrackLambdaCrc = 0#
     CrackNcrc = 0#
+    CrackMcrc = 0#
+    CrackAred = 0#
+    CrackRbtSer = 0#
     CrackTensionRebarCount = 0
+    CrackTensionRebarIds = vbNullString
     CrackSectionDepthH = 0#
     CrackCoverA = 0#
     CrackTensionDepth = 0#

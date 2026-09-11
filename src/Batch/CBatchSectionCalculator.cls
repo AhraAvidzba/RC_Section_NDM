@@ -857,6 +857,16 @@ Private Sub CrackCentralReferencePoint(ByVal profile As CCalculationProfile, _
     TransformedReferencePoint valueSet, referenceX, referenceY
 End Sub
 
+' Возвращает расчетный центр для табличного вывода трещин по конкретному LC.
+' Это тот же центр приведенного сечения, относительно которого crack-калькулятор
+' распознает центральное растяжение и считает стадию Ncrc/Mcrc.
+Private Sub CrackReferencePointForCombination(ByVal index As Long, _
+        ByRef referenceX As Double, ByRef referenceY As Double)
+    Dim profile As CCalculationProfile
+    Set profile = mProfiles.ProfileById(mInputs(index).ProfileId)
+    CrackCentralReferencePoint profile, referenceX, referenceY
+End Sub
+
 ' Запускает поиск несущей способности для LC.
 ' Пользовательский столбец CapacityLoadPath задает, какие компоненты нагрузки
 ' умножаются на lambda. Все варианты дальше сводятся к одной математике:
@@ -1984,8 +1994,24 @@ Public Property Get CrackNcrc(ByVal index As Long) As Double
     CrackNcrc = mResults(index).CrackNcrc
 End Property
 
+Public Property Get CrackMcrc(ByVal index As Long) As Double
+    CrackMcrc = mResults(index).CrackMcrc
+End Property
+
+Public Property Get CrackAred(ByVal index As Long) As Double
+    CrackAred = mResults(index).CrackAred
+End Property
+
+Public Property Get CrackRbtSer(ByVal index As Long) As Double
+    CrackRbtSer = mResults(index).CrackRbtSer
+End Property
+
 Public Property Get CrackTensionRebarCount(ByVal index As Long) As Long
     CrackTensionRebarCount = mResults(index).CrackTensionRebarCount
+End Property
+
+Public Property Get CrackTensionRebarIds(ByVal index As Long) As String
+    CrackTensionRebarIds = mResults(index).CrackTensionRebarIds
 End Property
 
 Public Property Get CrackSectionDepthH(ByVal index As Long) As Double
@@ -2006,6 +2032,36 @@ End Property
 
 Public Property Get CrackCentralBranch(ByVal index As Long) As Boolean
     CrackCentralBranch = mResults(index).CrackCentralBranch
+End Property
+
+Public Property Get CrackReferenceN(ByVal index As Long) As Double
+    CrackReferenceN = LoadStateForCombination(index).N
+End Property
+
+Public Property Get CrackReferenceMx(ByVal index As Long) As Double
+    Dim referenceX As Double
+    Dim referenceY As Double
+    CrackReferencePointForCombination index, referenceX, referenceY
+    CrackReferenceMx = LoadStateForCombination(index).MxAboutPoint(referenceY)
+End Property
+
+Public Property Get CrackReferenceMy(ByVal index As Long) As Double
+    Dim referenceX As Double
+    Dim referenceY As Double
+    CrackReferencePointForCombination index, referenceX, referenceY
+    CrackReferenceMy = LoadStateForCombination(index).MyAboutPoint(referenceX)
+End Property
+
+Public Property Get CrackLoadPointN(ByVal index As Long) As Double
+    CrackLoadPointN = LoadStateForCombination(index).N
+End Property
+
+Public Property Get CrackLoadPointMx(ByVal index As Long) As Double
+    CrackLoadPointMx = LoadStateForCombination(index).LoadPointMx
+End Property
+
+Public Property Get CrackLoadPointMy(ByVal index As Long) As Double
+    CrackLoadPointMy = LoadStateForCombination(index).LoadPointMy
 End Property
 
 Public Property Get GoverningUtilization(ByVal index As Long) As Double

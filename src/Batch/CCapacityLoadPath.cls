@@ -43,16 +43,12 @@ Private mScalesN As Boolean ' Масштабируется ли продольн
 Private mScalesMx As Boolean ' Масштабируется ли пользовательский Mx.
 Private mScalesMy As Boolean ' Масштабируется ли пользовательский My.
 
-Private mNOffset As Double ' Постоянная часть N в Target(lambda).
-Private mNBase As Double ' Масштабируемая часть N в Target(lambda).
-Private mMxOffset As Double ' Постоянная часть Mx в Target(lambda).
-Private mMxBase As Double ' Масштабируемая часть Mx в Target(lambda).
-Private mMyOffset As Double ' Постоянная часть My в Target(lambda).
-Private mMyBase As Double ' Масштабируемая часть My в Target(lambda).
+Private mPath As CLoadPathVector ' Общий вектор Offset + lambda*Base для передачи в solver.
 
 Private Sub Class_Initialize()
     mValid = True
     mKey = KEY_NONE
+    Set mPath = New CLoadPathVector
 End Sub
 
 ' Разбирает load-path через общий объект нагрузки. Так перенос от
@@ -165,31 +161,15 @@ Private Sub BuildOffsetBase(ByVal loadState As CSectionLoadState, ByVal userMxVa
 
     Select Case mKey
         Case KEY_MX
-            mNOffset = nValue
-            mMxOffset = mxFromN
-            mMxBase = userMxValue
-            mMyOffset = loadState.InternalMy
+            mPath.Initialize nValue, 0#, mxFromN, userMxValue, loadState.InternalMy, 0#
         Case KEY_MY
-            mNOffset = nValue
-            mMxOffset = loadState.InternalMx
-            mMyOffset = myFromN
-            mMyBase = userMyValue
+            mPath.Initialize nValue, 0#, loadState.InternalMx, 0#, myFromN, userMyValue
         Case KEY_MXY
-            mNOffset = nValue
-            mMxOffset = mxFromN
-            mMxBase = userMxValue
-            mMyOffset = myFromN
-            mMyBase = userMyValue
+            mPath.Initialize nValue, 0#, mxFromN, userMxValue, myFromN, userMyValue
         Case KEY_N
-            mNBase = nValue
-            mMxOffset = userMxValue
-            mMxBase = mxFromN
-            mMyOffset = userMyValue
-            mMyBase = myFromN
+            mPath.Initialize 0#, nValue, userMxValue, mxFromN, userMyValue, myFromN
         Case KEY_NMXY
-            mNBase = nValue
-            mMxBase = loadState.InternalMx
-            mMyBase = loadState.InternalMy
+            mPath.Initialize 0#, nValue, 0#, loadState.InternalMx, 0#, loadState.InternalMy
     End Select
 End Sub
 
@@ -208,9 +188,7 @@ Private Sub Clear()
     mScalesN = False
     mScalesMx = False
     mScalesMy = False
-    mNOffset = 0#: mNBase = 0#
-    mMxOffset = 0#: mMxBase = 0#
-    mMyOffset = 0#: mMyBase = 0#
+    Set mPath = New CLoadPathVector
 End Sub
 
 ' Возвращает подпись load-path в том же виде, в каком пользователь видит ее
@@ -274,26 +252,26 @@ Public Property Get ScalesMy() As Boolean
 End Property
 
 Public Property Get NOffset() As Double
-    NOffset = mNOffset
+    NOffset = mPath.NOffset
 End Property
 
 Public Property Get NBase() As Double
-    NBase = mNBase
+    NBase = mPath.NBase
 End Property
 
 Public Property Get MxOffset() As Double
-    MxOffset = mMxOffset
+    MxOffset = mPath.MxOffset
 End Property
 
 Public Property Get MxBase() As Double
-    MxBase = mMxBase
+    MxBase = mPath.MxBase
 End Property
 
 Public Property Get MyOffset() As Double
-    MyOffset = mMyOffset
+    MyOffset = mPath.MyOffset
 End Property
 
 Public Property Get MyBase() As Double
-    MyBase = mMyBase
+    MyBase = mPath.MyBase
 End Property
 

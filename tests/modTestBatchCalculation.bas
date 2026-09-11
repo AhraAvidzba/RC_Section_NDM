@@ -134,6 +134,8 @@ Public Function RunBatchCalculationTests() As String
     TestPR2AutoCrackStoresBeforeAndAfterMcrcStates stats
     AppendLine stats, "RUN: TestPR2AutoCrackPureBendingStoresMcrcStates"
     TestPR2AutoCrackPureBendingStoresMcrcStates stats
+    AppendLine stats, "RUN: TestPR2LShapeCompressionSmallMomentCrackDoesNotNumFail"
+    TestPR2LShapeCompressionSmallMomentCrackDoesNotNumFail stats
     AppendLine stats, "RUN: TestPR1AxialTensionBeyondPhysicalLimitUsesExtension"
     TestPR1AxialTensionBeyondPhysicalLimitUsesExtension stats
     AppendLine stats, "RUN: TestPR1AxialTensionNearLimitDoesNotJumpToNumFail"
@@ -842,6 +844,45 @@ Restore:
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: batch.group2.autoMcrcPure.states; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет пользовательский случай Г-сечения: при сжатии 100 тс и сравнительно
+' небольшом моменте Mx поиск стадии образования трещины должен завершаться
+' расчетным статусом, а не падать в NumFail из-за неудачного стартового НДС.
+Private Sub TestPR2LShapeCompressionSmallMomentCrackDoesNotNumFail(ByRef stats As TBatchTestStats)
+    Dim oldPsiMode As String
+    oldPsiMode = GetSystemSetting("SLS.Crack.PsiMode")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "SLS.Crack.PsiMode", "Auto"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim referenceX As Double
+    Dim referenceY As Double
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUserLShapeTensionBatch(referenceX, referenceY)
+    batch.ApplySettings settings
+    batch.AddCombination "G2_L_SMALL_M", -100# * 9806.65, 30# * TEST_TF_M_IN_NMM, 0#, _
+        "PR2", "lshape compression small moment crack"
+    batch.Execute
+
+    AppendLine stats, "INFO: batch.group2.lshapeSmallMoment crack=" & batch.CrackStatus(1) & _
+        "; formed=" & CStr(batch.CrackFormed(1)) & "; lambda=" & FormatNumberInvariant(batch.CrackLambdaCrc(1))
+    AssertTrue stats, "batch.group2.lshapeSmallMoment.notNumFail", batch.CrackStatus(1) <> "NumFail"
+    AssertTrue stats, "batch.group2.lshapeSmallMoment.finished", _
+        batch.CrackStatus(1) = "OK" Or batch.CrackStatus(1) = "FAIL"
+
+Restore:
+    SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.group2.lshapeSmallMoment; " & Err.Description
     Resume Restore
 End Sub
 
@@ -3067,7 +3108,7 @@ Private Sub TestBatchSummaryWritesOnlySelectedStabilityCode(ByRef stats As TBatc
     Set stabilityAnchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
-    AssertTrue stats, "batch.writer.stability.anchor", stabilityAnchor.Row = 37 And stabilityAnchor.Column = 1
+    AssertTrue stats, "batch.writer.stability.anchor", stabilityAnchor.Row = 63 And stabilityAnchor.Column = 1
     AssertTrue stats, "batch.writer.stability.sp35.empty", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 28).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 43).Value2)) = 0
     AssertTrue stats, "batch.writer.stability.sp63.filled", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 60).Value2)) > 0 Or _
@@ -3158,9 +3199,10 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     summaryRow = BatchSummaryStartRow()
     AssertTrue stats, "batch.writer.fixedRow", summaryRow = 1
     AssertTrue stats, "batch.writer.noResultOverlap", summaryRow + ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count - 1 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
-    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count = 29 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count = 55
-    AssertTrue stats, "batch.writer.stabilityBlockPosition", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 37 And _
-        ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row = 60
+    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count = 29 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count = 31
+    AssertTrue stats, "batch.writer.crackBlockPosition", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 36
+    AssertTrue stats, "batch.writer.stabilityBlockPosition", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 63 And _
+        ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row = 85
     AssertTrue stats, "batch.writer.title", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = "Сводка пакетного расчета (Подробнее)"
     AssertTrue stats, "batch.writer.titleNotMerged", Not resultsSheet.Cells.Item(summaryRow, 1).MergeCells
     AssertTrue stats, "batch.writer.titleHyperlink", resultsSheet.Cells.Item(summaryRow, 1).Hyperlinks.Count > 0
@@ -3168,7 +3210,6 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.crackGoverning.row", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 3, 1).Value2), "трещинам", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.loadPoint.relativeLabel", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 5, 1).Value2), "бетонного сечения", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.loadPoint.zeroX", CStr(resultsSheet.Cells.Item(summaryRow + 5, 5).Value2) = "X=0 mm"
-    AssertTrue stats, "batch.writer.subheader.psi", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 7, 42).Value2), "psi", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.capacityFormula.simple", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 26).Formula), "IFERROR", vbTextCompare) > 0 And _
         InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 9, 26).Formula), "IF(", vbTextCompare) = 0
     AssertTrue stats, "batch.writer.header.directStatus", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 5).Value2), "DirectStateStatus", vbTextCompare) > 0
@@ -3176,12 +3217,24 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.header.capacityPath", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 18).Value2), "CapacityLoadPath", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.header.capacitySolutionMethod", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 19).Value2), "CapacitySolutionMethod", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.header.capacitySafety", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 26).Value2), "CapacitySafetyFactor", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.longitudinalCrackStatus", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 51).Value2), "LongitudinalCrackStatus", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.longitudinalCrackSafety", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 54).Value2), "LongitudinalCrackSafetyFactor", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 55).Value2), "MinSafetyFactor", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.longitudinalFormula", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 54).Formula), "IFERROR", vbTextCompare) > 0 And _
-        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 54).Formula), "BA", vbTextCompare) > 0 And _
-        InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 54).Formula), "AZ", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.longitudinalCrackStatus", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 29).Value2), "LongitudinalCrackStatus", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.longitudinalCrackSafety", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 30).Value2), "LongitudinalCrackSafetyFactor", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 31).Value2), "MinSafetyFactor", vbTextCompare) > 0
+    Dim crackAnchor As Object
+    Set crackAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
+    AssertTrue stats, "batch.writer.crack.header.formationTitle", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 10).Value2) = "Момент образования трещин"
+    AssertTrue stats, "batch.writer.crack.header.title", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 17).Value2) = "нормальные и продольные трещины"
+    AssertTrue stats, "batch.writer.crack.header.mcrcNote", InStr(1, CStr(resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).Value2), "моментный уровень", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.crack.header.formationStatus", _
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 3, 16).Value2) = "статус трещин" And _
+        resultsSheet.Cells.Item(crackAnchor.Row - 3, 16).MergeArea.Rows.Count = 2
+    AssertTrue stats, "batch.writer.crack.header.state", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 16).Value2) = "state"
+    AssertTrue stats, "batch.writer.crack.header.notesPlain", Not resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).Font.Bold And _
+        resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).HorizontalAlignment = -4131
+    AssertTrue stats, "batch.writer.crack.header.notesFill", CLng(resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).Interior.Color) = RGB(217, 217, 217)
+    AssertTrue stats, "batch.writer.crack.availableRowsBorder", _
+        Len(CStr(resultsSheet.Cells.Item(crackAnchor.Row + 19, 1).Value2)) = 0 And _
+        resultsSheet.Cells.Item(crackAnchor.Row + 19, 1).Borders(9).LineStyle <> -4142
     Dim stabilityAnchor As Object
     Set stabilityAnchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
     AssertTrue stats, "batch.writer.stability.header.summary", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 1).Value2) = _

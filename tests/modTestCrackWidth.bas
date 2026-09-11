@@ -31,6 +31,7 @@ Public Function RunCrackWidthTests() As String
     TestAutoPsiSkipsLambdaWhenFirstCheckPasses stats
     TestAutoPsiAndLambdaAfterFailedFirstCheck stats
     TestAutoMcrcPureBendingConverges stats
+    TestAutoMcrcFixedNIndependentOfMomentMagnitude stats
     TestDangerousLoadsDoNotNumFail stats
     TestAutoMcrcOneSignTensionUsesFormula854 stats
     TestCentralTensionBranch stats
@@ -240,6 +241,42 @@ End Sub
 ' изгиб, центральное растяжение и чистое сжатие без момента. Тест не проверяет
 ' конкретную ширину, а фиксирует главный контракт: служебные НДС трещин идут
 ' через общий CStateSolutionRunner и не падают на выборе стартовой плоскости.
+' Проверяет смысл Mcrc для общей N+M ветки: при одной и той же продольной
+' силе и направлении изгиба lambda масштабирует только моментный вектор.
+' Поэтому Mcrc не должен зависеть от того, насколько далеко текущий LC
+' находится за порогом трещинообразования.
+Private Sub TestAutoMcrcFixedNIndependentOfMomentMagnitude(ByRef stats As TCrackTestStats)
+    Dim sectionLow As CSectionModel
+    Dim sectionHigh As CSectionModel
+    Dim solverLow As CSectionSolver
+    Dim solverHigh As CSectionSolver
+    Dim nValue As Double
+    Dim mxLow As Double
+    Dim mxHigh As Double
+    nValue = -20000#
+    mxLow = -12000000#
+    mxHigh = -18000000#
+
+    Set solverLow = SolveServiceStateWithRunner(sectionLow, nValue, mxLow, 0#)
+    Set solverHigh = SolveServiceStateWithRunner(sectionHigh, nValue, mxHigh, 0#)
+
+    Dim crackLow As CCrackWidthCalculator
+    Dim crackHigh As CCrackWidthCalculator
+    Set crackLow = CalculateCrack(solverLow, sectionLow, nValue, mxLow, 0#, "Auto", "Effective", allowable:=0.0001)
+    Set crackHigh = CalculateCrack(solverHigh, sectionHigh, nValue, mxHigh, 0#, "Auto", "Effective", allowable:=0.0001)
+
+    AssertCrackCommon stats, "crack.auto.mcrcFixedN.low", crackLow
+    AssertCrackCommon stats, "crack.auto.mcrcFixedN.high", crackHigh
+    AssertTrue stats, "crack.auto.mcrcFixedN.lowState", Not crackLow.BeforeMcrcState Is Nothing
+    AssertTrue stats, "crack.auto.mcrcFixedN.highState", Not crackHigh.BeforeMcrcState Is Nothing
+    AssertClose stats, "crack.auto.mcrcFixedN.mcrcInvariant", _
+        Abs(crackLow.Mcrc), Abs(crackHigh.Mcrc), 25000#
+    AssertClose stats, "crack.auto.mcrcFixedN.lambdaLowMoment", _
+        Abs(crackLow.LambdaCrc * mxLow), Abs(crackLow.Mcrc), 25000#
+    AssertClose stats, "crack.auto.mcrcFixedN.lambdaHighMoment", _
+        Abs(crackHigh.LambdaCrc * mxHigh), Abs(crackHigh.Mcrc), 25000#
+End Sub
+
 Private Sub TestDangerousLoadsDoNotNumFail(ByRef stats As TCrackTestStats)
     CheckDangerousCrackLoad stats, "crack.danger.pureMx", 0#, -15000000#, 0#, True
     CheckDangerousCrackLoad stats, "crack.danger.pureMy", 0#, 0#, -15000000#, True
@@ -274,10 +311,10 @@ End Sub
 Private Sub TestAutoMcrcOneSignTensionUsesFormula854(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
-    Set solver = SolveServiceState(section, 420000#, 800000#, 0#)
+    Set solver = SolveServiceState(section, 100000#, 3000000#, 0#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, section, 420000#, 800000#, 0#, _
+    Set crack = CalculateCrack(solver, section, 100000#, 3000000#, 0#, _
         "Auto", "Effective", allowable:=0.0001)
     AssertCrackCommon stats, "crack.auto.oneSign", crack
     AssertTrue stats, "crack.auto.oneSign.beforeMcrcState", Not crack.BeforeMcrcState Is Nothing

@@ -35,8 +35,11 @@ Private Const PHI1_LONG_TERM As Double = 1.4 ' Коэффициент длите
 Private Const PHI2_DEFAULT As Double = 0.5 ' Типовой default для обычной арматуры периодического профиля.
 Private Const PHI3_TENSION As Double = 1.2 ' Коэффициент для центрального/сквозного растяжения.
 Private Const PHI3_BENDING As Double = 1# ' Коэффициент для изгиба и внецентренного сжатия.
-Private Const CRACK_DIRECTION_TOLERANCE As Double = 0.001 ' Допуск сохранения направления вектора N/Mx/My в прямом поиске lambda_crc.
+Private Const CRACK_DIRECTION_TOLERANCE As Double = 0.001 ' Допуск сохранения направления моментного вектора в прямом поиске lambda_crc.
+Private Const CRACK_EQUILIBRIUM_TOLERANCE As Double = 1# ' Допуск равновесия N в долях пользовательского solver tolerance.
 Private Const CRACK_STRAIN_RATIO_TOLERANCE As Double = 0.000001 ' Допуск попадания в eps_bt,ult как в безразмерное условие.
+Private Const CRACK_LAMBDA_BRACKET_LIMIT As Double = 1024# ' Верхняя граница служебного поиска lambda_crc, если прямой Newton не сошелся.
+Private Const CRACK_LAMBDA_BISECTION_TOLERANCE As Double = 0.000001 ' Относительная точность fallback-бисекции lambda_crc.
 Private Const NEAR_ZERO_STRAIN As Double = 0.000000000001 ' Численный ноль для деформаций и кривизн.
 Private Const NEAR_ZERO_FORCE As Double = 0.000001 ' Численный ноль для отличия центрального растяжения от нулевой нагрузки.
 Private Const LARGE_LAMBDA As Double = 1E+30 ' Диагностическая отметка: трещина не достигнута при lambda = 1.
@@ -73,6 +76,10 @@ Private mBeforeMcrcSolver As CSectionSolver ' Solver состояния BeforeMc
 Private mAfterMcrcState As CSectionStateResult ' Необязательное состояние после выключения растянутого бетона для sigma_s,crc.
 Private mAfterMcrcSolver As CSectionSolver ' Solver состояния AfterMcrcState, чтобы не решать его повторно для sigma_s,crc.
 Private mFormationPrechecked As Boolean ' True, если Ncrc/Mcrc уже проверены перед расчетом полной ширины.
+Private mFormationLoadDefined As Boolean ' True, если сохранены внутренние усилия именно на уровне Mcrc/Ncrc.
+Private mFormationLoadN As Double ' Продольная сила служебного состояния образования трещины, Н.
+Private mFormationLoadMx As Double ' Внутренний Mx служебного состояния образования трещины, Н*мм.
+Private mFormationLoadMy As Double ' Внутренний My служебного состояния образования трещины, Н*мм.
 
 Private mSolverMethod As String ' Newton или Secant для внутренних прямых расчетов состояния сечения.
 Private mSolverLoadSteps As Long ' Число ступеней приложения нагрузки во внутреннем CSectionSolver.
@@ -104,6 +111,9 @@ Private mPhi2 As Double ' Пользовательский коэффициен�
 Private mPhi3 As Double ' Коэффициент характера нагружения.
 Private mLambdaCrc As Double ' Множитель нагрузки на пороге трещины: eps_bt,ult для общей ветки или Ncrc/N для центрального растяжения.
 Private mNcrc As Double ' Усилие образования трещины для ветки истинного центрального растяжения, Н.
+Private mMcrc As Double ' Модуль изгибающего момента на стадии образования трещины, Н*мм.
+Private mAred As Double ' Площадь приведенного сечения для Ncrc при центральном растяжении, мм2.
+Private mTensionRebarIds As String ' Имена стержней, вошедших в расчет sigma_s и As, через запятую.
 
 Private mSectionDepthH As Double ' Габарит сечения по нормали к нейтральной линии по общему бетонному контуру КЭ.
 Private mCoverA As Double ' Расстояние a_s по выбранному режиму CoverDistanceMode, мм.
@@ -335,6 +345,7 @@ Private Sub CheckCentralTensionFormation(ByVal section As CSectionModel, _
     End If
 
     mNcrc = CentralTensionCrackForce(section)
+    mMcrc = 0#
     If mNcrc <= 0# Or targetN <= 0# Then
         mStopReason = "InputError: для центрального растяжения не удалось определить Ncrc."
         Exit Sub
@@ -345,6 +356,7 @@ Private Sub CheckCentralTensionFormation(ByVal section As CSectionModel, _
         Exit Sub
     End If
 
+    StoreFormationLoad targetN * mLambdaCrc, targetMx * mLambdaCrc, targetMy * mLambdaCrc
     If Not BuildBeforeMcrcState(section, materialProvider, targetN, targetMx, targetMy) Then Exit Sub
     If Not EnsureAfterMcrcState(section, materialProvider, Nothing, targetN, targetMx, targetMy) Then Exit Sub
 
@@ -376,9 +388,26 @@ Private Sub CheckGeneralFormation(ByVal section As CSectionModel, _
         Exit Sub
     End If
 
+    ' Берем обычное решение CrackInitiation на полном LC только как старт.
+    ' Сам Mcrc по-прежнему ищется прямым условием eps_bt,ult, а не по факту
+    ' текущего НДС, поэтому нормативная ветка не меняется.
+    Dim formationStart As CSectionSolver
+    Set formationStart = SolveState(section, materialProvider.ConcreteMaterialFromSpec(mCrackInitiationSpec), _
+        materialProvider.SteelMaterialFromSpec(mCrackInitiationSpec), Nothing, targetN, targetMx, targetMy)
+    If Not formationStart Is Nothing Then
+        If Not formationStart.Converged Then Set formationStart = Nothing
+    End If
+
+    Dim momentMxAtReference As Double
+    Dim momentMyAtReference As Double
+    momentMxAtReference = loadStateForClassification.MxAboutPoint(centralReferenceY)
+    momentMyAtReference = loadStateForClassification.MyAboutPoint(centralReferenceX)
+
     If Not CalculateLambdaCrc(section, materialProvider.ConcreteMaterialFromSpec(mCrackInitiationSpec), _
-            materialProvider.SteelMaterialFromSpec(mCrackInitiationSpec), Nothing, _
-            targetN, targetMx, targetMy) Then Exit Sub
+            materialProvider.SteelMaterialFromSpec(mCrackInitiationSpec), formationStart, _
+            targetN, momentMxAtReference, momentMyAtReference, _
+            centralReferenceX, centralReferenceY) Then Exit Sub
+    mMcrc = CrackMomentFromLoadState(loadStateForClassification, centralReferenceX, centralReferenceY)
     If Not EnsureAfterMcrcState(section, materialProvider, Nothing, targetN, targetMx, targetMy) Then Exit Sub
 
     If mLambdaCrc > 1# Then
@@ -397,9 +426,13 @@ Private Function BuildBeforeMcrcState(ByVal section As CSectionModel, ByVal mate
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
     If mBeforeMcrcState Is Nothing Then
         Dim beforeSolver As CSectionSolver
+        Dim formationN As Double
+        Dim formationMx As Double
+        Dim formationMy As Double
+        FormationLoads formationN, formationMx, formationMy
         Set beforeSolver = SolveState(section, materialProvider.ConcreteMaterialFromSpec(mCrackInitiationSpec), _
             materialProvider.SteelMaterialFromSpec(mCrackInitiationSpec), Nothing, _
-            targetN * mLambdaCrc, targetMx * mLambdaCrc, targetMy * mLambdaCrc)
+            formationN, formationMx, formationMy)
         If Not beforeSolver.Converged Then
             mStopReason = "NumericalFailure: состояние Ncrc до образования трещины не сошлось: " & beforeSolver.StopReason
             Exit Function
@@ -428,9 +461,13 @@ Private Function EnsureAfterMcrcState(ByVal section As CSectionModel, ByVal mate
     Set effectiveStartSolver = startSolver
     If effectiveStartSolver Is Nothing Then Set effectiveStartSolver = mBeforeMcrcSolver
 
+    Dim formationN As Double
+    Dim formationMx As Double
+    Dim formationMy As Double
+    FormationLoads formationN, formationMx, formationMy
     Set mAfterMcrcSolver = SolveState(section, materialProvider.ConcreteMaterialFromSpec(mCrackedStateSpec), _
         materialProvider.SteelMaterialFromSpec(mCrackedStateSpec), effectiveStartSolver, _
-        targetN * mLambdaCrc, targetMx * mLambdaCrc, targetMy * mLambdaCrc)
+        formationN, formationMx, formationMy)
     If Not mAfterMcrcSolver.Converged Then
         mStopReason = "NumericalFailure: состояние lambda_crc после образования трещины не сошлось: " & mAfterMcrcSolver.StopReason
         Exit Function
@@ -440,6 +477,55 @@ Private Function EnsureAfterMcrcState(ByVal section As CSectionModel, ByVal mate
     mAfterMcrcState.InitializeFromSolver sstAfterMcrcState, cpCrackedNDS, _
         mCrackedStateSpec, mAfterMcrcSolver, False, "OK"
     EnsureAfterMcrcState = True
+End Function
+
+' Сохраняет внутренние усилия, соответствующие уже найденной стадии
+' трещинообразования. Дальше Before/AfterMcrcState решаются именно по ним,
+' чтобы повторные вызовы не пересчитывали lambda и не масштабировали не ту
+' часть нагрузки.
+Private Sub StoreFormationLoad(ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double)
+    mFormationLoadN = nValue
+    mFormationLoadMx = mxValue
+    mFormationLoadMy = myValue
+    mFormationLoadDefined = True
+End Sub
+
+' Для общей N+M ветки переводит моментный множитель lambda обратно во
+' внутренние усилия solver-а: N остается постоянной, а масштабируется только
+' момент относительно расчетного центра Mcrc.
+Private Sub StoreMomentFormationLoad(ByVal targetN As Double, ByVal targetMomentMx As Double, _
+        ByVal targetMomentMy As Double, ByVal referenceX As Double, ByVal referenceY As Double)
+    Dim loadPath As CLoadPathVector
+    Set loadPath = MomentFormationLoadPath(targetN, targetMomentMx, targetMomentMy, referenceX, referenceY)
+
+    Dim nValue As Double
+    Dim mxValue As Double
+    Dim myValue As Double
+    loadPath.Target mLambdaCrc, nValue, mxValue, myValue
+    StoreFormationLoad nValue, mxValue, myValue
+End Sub
+
+' Возвращает сохраненные усилия трещинообразования. Они должны быть
+' определены в той же ветке, которая нашла lambda_crc.
+Private Sub FormationLoads(ByRef nValue As Double, ByRef mxValue As Double, ByRef myValue As Double)
+    If Not mFormationLoadDefined Then _
+        Err.Raise vbObjectError + 3733, "CCrackWidthCalculator", "Внутренние усилия состояния образования трещины не сохранены."
+    nValue = mFormationLoadN
+    mxValue = mFormationLoadMx
+    myValue = mFormationLoadMy
+End Sub
+
+' Создает общую lambda-траекторию для общей ветки Mcrc: продольная сила
+' остается постоянной, а моментный вектор относительно расчетного центра
+' масштабируется. Сама формула Offset + lambda*Base живет в CLoadPathVector,
+' поэтому трещины и Capacity не держат две разные реализации load-path.
+Private Function MomentFormationLoadPath(ByVal targetN As Double, _
+        ByVal targetMomentMx As Double, ByVal targetMomentMy As Double, _
+        ByVal referenceX As Double, ByVal referenceY As Double) As CLoadPathVector
+    Dim loadPath As CLoadPathVector
+    Set loadPath = New CLoadPathVector
+    loadPath.InitializeFixedNAndMomentAboutPoint targetN, targetMomentMx, targetMomentMy, referenceX, referenceY
+    Set MomentFormationLoadPath = loadPath
 End Function
 
 ' Берет Rbt,ser, Eb, eps_bt0, eps_bt2 и Es из material provider-а.
@@ -574,49 +660,60 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionSolver, ByVal
             targetN, targetMx, targetMy, "Расчет выполнен для произвольного сечения по общей НДМ-ветке.") Then Exit Sub
 End Sub
 
-' Находит lambda_crc в режиме Auto. Нагрузка масштабируется целиком, чтобы
-' направление вектора N/Mx/My оставалось постоянным, а критерием служит
-' достижение eps_bt,ult по СП 63 п. 8.2.14 и п. 8.1.30:
+' Находит lambda_crc в режиме Auto для общей ветки N + M. Продольная сила
+' остается равной заданной N, а lambda масштабирует только моментный вектор
+' относительно расчетного центра Mcrc. Критерием служит достижение
+' eps_bt,ult по СП 63 п. 8.2.14 и п. 8.1.30:
 ' для двузначной эпюры eps_bt,ult = eps_bt2, для однозначно растянутой
 ' эпюры с ненулевой кривизной применяется формула (8.54).
-Private Function CalculateLambdaCrc(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
-        ByVal steelMaterial As Object, ByVal startSolver As CSectionSolver, _
-        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
+Private Function CalculateLambdaCrc(ByVal section As CSectionModel, ByVal concreteMaterial As CMaterialDiagram, _
+        ByVal steelMaterial As CMaterialDiagram, ByVal startSolver As CSectionSolver, _
+        ByVal targetN As Double, ByVal targetMomentMx As Double, ByVal targetMomentMy As Double, _
+        ByVal referenceX As Double, ByVal referenceY As Double) As Boolean
     On Error GoTo Failed
 
     If mConcreteEbt0 <= 0# Or mConcreteEbt2 <= 0# Then
         mStopReason = "InputError: для проверки образования трещины нужны положительные eps_bt0 и eps_bt2 в модели CrackInitiation."
         Exit Function
     End If
+    If targetMomentMx * targetMomentMx + targetMomentMy * targetMomentMy <= NEAR_ZERO_STRAIN Then
+        mStopReason = "InputError: для Mcrc нужен ненулевой моментный вектор относительно расчетного центра."
+        Exit Function
+    End If
 
     Dim eps0 As Double
     Dim kx As Double
     Dim ky As Double
-    InitializeCrcStrainGuess section, startSolver, targetN, targetMx, targetMy, mConcreteEbt2, eps0, kx, ky
+    InitializeCrcStrainGuess section, startSolver, targetN, targetMomentMx, targetMomentMy, mConcreteEbt2, eps0, kx, ky
 
     Dim iter As Long
-    Dim rDir1 As Double
-    Dim rDir2 As Double
+    Dim rForce As Double
+    Dim rMomentDirection As Double
     Dim rLimit As Double
     Dim lambdaValue As Double
     Dim solver As CSectionSolver
+    Dim directStopReason As String
 
-    ' Auto не подбирает lambda внешней бицекцией. Здесь ищется сама плоскость
-    ' деформаций образования трещины: направление полного вектора N/Mx/My
+    ' Основной путь ищет саму плоскость деформаций образования трещины:
+    ' N сохраняется, направление Mx/My относительно расчетного центра
     ' сохраняется, а максимальная растягивающая деформация бетона достигает
-    ' предельного значения eps_bt,ult по СП 63 п. 8.1.30.
+    ' eps_bt,ult по СП 63 п. 8.1.30.
+    ' Если прямой Newton не сошелся, ниже включается более медленный, но
+    ' устойчивый поиск lambda по масштабированию только моментной части LC.
     For iter = 1 To mSolverMaxIterations
-        If Not EvaluateCrcStrainResidual(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-                eps0, kx, ky, solver, rDir1, rDir2, rLimit, lambdaValue) Then Exit Function
+        If Not EvaluateCrcStrainResidual(section, concreteMaterial, steelMaterial, targetN, _
+                targetMomentMx, targetMomentMy, referenceX, referenceY, _
+                eps0, kx, ky, solver, rForce, rMomentDirection, rLimit, lambdaValue) Then Exit Function
 
-        If Abs(rDir1) <= CRACK_DIRECTION_TOLERANCE And _
-                Abs(rDir2) <= CRACK_DIRECTION_TOLERANCE And _
+        If Abs(rForce) <= CRACK_EQUILIBRIUM_TOLERANCE And _
+                Abs(rMomentDirection) <= CRACK_DIRECTION_TOLERANCE And _
                 Abs(rLimit) <= CRACK_STRAIN_RATIO_TOLERANCE Then
-            If lambdaValue <= 0# Then
-                mStopReason = "NumericalFailure: найденное состояние образования трещины имеет неположительный lambda_crc."
+            If lambdaValue < 0# Then
+                mStopReason = "NumericalFailure: найденное состояние образования трещины имеет отрицательный lambda_crc."
                 Exit Function
             End If
             mLambdaCrc = lambdaValue
+            StoreMomentFormationLoad targetN, targetMomentMx, targetMomentMy, referenceX, referenceY
             Set mBeforeMcrcSolver = solver
             Set mBeforeMcrcState = New CSectionStateResult
             mBeforeMcrcState.InitializeFromSolver sstBeforeMcrcState, cpMcrc, _
@@ -627,15 +724,170 @@ Private Function CalculateLambdaCrc(ByVal section As CSectionModel, ByVal concre
             Exit Function
         End If
 
-        If Not ApplyCrcNewtonStep(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-                eps0, kx, ky, rDir1, rDir2, rLimit) Then Exit Function
+        If Not ApplyCrcNewtonStep(section, concreteMaterial, steelMaterial, targetN, _
+                targetMomentMx, targetMomentMy, referenceX, referenceY, _
+                eps0, kx, ky, rForce, rMomentDirection, rLimit) Then
+            directStopReason = mStopReason
+            Exit For
+        End If
     Next iter
 
-    mStopReason = "NumericalFailure: прямой поиск lambda_crc по eps_bt,ult не сошелся за заданное число итераций."
+    If Len(directStopReason) = 0 Then _
+        directStopReason = "NumericalFailure: прямой поиск lambda_crc по eps_bt,ult не сошелся за заданное число итераций."
+    AppendDiagnostic "DirectCrackingStrain fallback: " & directStopReason
+    mStopReason = vbNullString
+    If CalculateLambdaCrcByLoadScaling(section, concreteMaterial, steelMaterial, startSolver, _
+            targetN, targetMomentMx, targetMomentMy, referenceX, referenceY) Then
+        CalculateLambdaCrc = True
+        Exit Function
+    End If
+    If Len(mStopReason) = 0 Then mStopReason = directStopReason
     Exit Function
 
 Failed:
     mStopReason = "NumericalFailure: расчет lambda_crc не выполнен: " & Err.Description
+End Function
+
+' Резервный поиск lambda_crc по одному параметру: N остается постоянной, а
+' момент относительно расчетного центра масштабируется как lambda*M. Для
+' каждого lambda обычный CStateSolutionRunner решает НДС по модели
+' CrackInitiation. Этот путь медленнее прямого Newton-поиска, но устойчив для
+' малых моментов, где при lambda=1 растяжение еще может отсутствовать.
+Private Function CalculateLambdaCrcByLoadScaling(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal startSolver As CSectionSolver, ByVal targetN As Double, _
+        ByVal targetMomentMx As Double, ByVal targetMomentMy As Double, _
+        ByVal referenceX As Double, ByVal referenceY As Double) As Boolean
+    On Error GoTo Failed
+
+    Dim lowerLambda As Double
+    Dim upperLambda As Double
+    Dim lowerSolver As CSectionSolver
+    Dim upperSolver As CSectionSolver
+    Dim lowerResidual As Double
+    Dim upperResidual As Double
+    lowerLambda = 0#
+    upperLambda = 1#
+
+    Dim loadPath As CLoadPathVector
+    Set loadPath = MomentFormationLoadPath(targetN, targetMomentMx, targetMomentMy, referenceX, referenceY)
+
+    Dim probeN As Double
+    Dim probeMx As Double
+    Dim probeMy As Double
+    loadPath.Target lowerLambda, probeN, probeMx, probeMy
+    Set lowerSolver = SolveState(section, concreteMaterial, steelMaterial, Nothing, _
+        probeN, probeMx, probeMy)
+    If Not SolverFormationResidual(section, lowerSolver, lowerResidual) Then
+        mStopReason = "NumericalFailure: fallback lambda_crc не получил НДС при lambda = 0."
+        Exit Function
+    End If
+    If lowerResidual >= 0# Then
+        mLambdaCrc = 0#
+        StoreMomentFormationLoad targetN, targetMomentMx, targetMomentMy, referenceX, referenceY
+        Set mBeforeMcrcSolver = lowerSolver
+        Set mBeforeMcrcState = New CSectionStateResult
+        mBeforeMcrcState.InitializeFromSolver sstBeforeMcrcState, cpMcrc, _
+            mCrackInitiationSpec, lowerSolver, False, "OK"
+        AppendDiagnostic "lambda_crc=0; method=LoadScaleBisection; crack reached by N without moment."
+        CalculateLambdaCrcByLoadScaling = True
+        Exit Function
+    End If
+
+    Set upperSolver = startSolver
+    If upperSolver Is Nothing Then
+        loadPath.Target upperLambda, probeN, probeMx, probeMy
+        Set upperSolver = SolveState(section, concreteMaterial, steelMaterial, Nothing, _
+            probeN, probeMx, probeMy)
+    End If
+    If Not SolverFormationResidual(section, upperSolver, upperResidual) Then
+        mStopReason = "NumericalFailure: fallback lambda_crc не получил НДС при lambda = 1."
+        Exit Function
+    End If
+
+    Do While upperResidual < 0# And upperLambda < CRACK_LAMBDA_BRACKET_LIMIT
+        lowerLambda = upperLambda
+        Set lowerSolver = upperSolver
+        upperLambda = MinDouble(upperLambda * 2#, CRACK_LAMBDA_BRACKET_LIMIT)
+        loadPath.Target upperLambda, probeN, probeMx, probeMy
+        Set upperSolver = SolveState(section, concreteMaterial, steelMaterial, lowerSolver, _
+            probeN, probeMx, probeMy)
+        If Not SolverFormationResidual(section, upperSolver, upperResidual) Then
+            mStopReason = "NumericalFailure: fallback lambda_crc не получил НДС при lambda = " & _
+                FormatNumberInvariant(upperLambda) & "."
+            Exit Function
+        End If
+    Loop
+
+    If upperResidual < 0# Then
+        FinishNoCrack "Трещина не образована: eps_bt,ult не достигнута при пропорциональном увеличении нагрузки до lambda = " & _
+            FormatNumberInvariant(CRACK_LAMBDA_BRACKET_LIMIT) & "."
+        Exit Function
+    End If
+
+    Dim iter As Long
+    For iter = 1 To mSolverMaxIterations
+        If upperLambda - lowerLambda <= CRACK_LAMBDA_BISECTION_TOLERANCE * MaxDouble(1#, upperLambda) Then Exit For
+
+        Dim midLambda As Double
+        Dim midSolver As CSectionSolver
+        Dim midResidual As Double
+        midLambda = 0.5 * (lowerLambda + upperLambda)
+        loadPath.Target midLambda, probeN, probeMx, probeMy
+        If lowerSolver Is Nothing Then
+            Set midSolver = SolveState(section, concreteMaterial, steelMaterial, upperSolver, _
+                probeN, probeMx, probeMy)
+        Else
+            Set midSolver = SolveState(section, concreteMaterial, steelMaterial, lowerSolver, _
+                probeN, probeMx, probeMy)
+        End If
+        If Not SolverFormationResidual(section, midSolver, midResidual) Then
+            mStopReason = "NumericalFailure: fallback lambda_crc не получил НДС при lambda = " & _
+                FormatNumberInvariant(midLambda) & "."
+            Exit Function
+        End If
+
+        If midResidual >= 0# Then
+            upperLambda = midLambda
+            Set upperSolver = midSolver
+            upperResidual = midResidual
+        Else
+            lowerLambda = midLambda
+            Set lowerSolver = midSolver
+        End If
+    Next iter
+
+    mLambdaCrc = upperLambda
+    StoreMomentFormationLoad targetN, targetMomentMx, targetMomentMy, referenceX, referenceY
+    Set mBeforeMcrcSolver = upperSolver
+    Set mBeforeMcrcState = New CSectionStateResult
+    mBeforeMcrcState.InitializeFromSolver sstBeforeMcrcState, cpMcrc, _
+        mCrackInitiationSpec, upperSolver, False, "OK"
+    AppendDiagnostic "lambda_crc=" & FormatNumberInvariant(mLambdaCrc) & _
+        "; iterations=" & CStr(iter) & "; method=LoadScaleBisection"
+    CalculateLambdaCrcByLoadScaling = True
+    Exit Function
+
+Failed:
+    mStopReason = "NumericalFailure: fallback lambda_crc не выполнен: " & Err.Description
+End Function
+
+' Возвращает безразмерную невязку образования трещины для уже решенного НДС:
+' отрицательная - eps_bt,ult еще не достигнута, положительная - порог пройден.
+Private Function SolverFormationResidual(ByVal section As CSectionModel, _
+        ByVal solver As CSectionSolver, ByRef residual As Double) As Boolean
+    If solver Is Nothing Then Exit Function
+    If Not solver.Converged Then Exit Function
+
+    Dim minConcreteStrain As Double
+    Dim maxConcreteStrain As Double
+    ConcreteStrainBounds solver, section, minConcreteStrain, maxConcreteStrain
+
+    Dim epsBtUlt As Double
+    epsBtUlt = ConcreteTensionUltimateStrain(minConcreteStrain, maxConcreteStrain)
+    If epsBtUlt <= 0# Then Exit Function
+    residual = maxConcreteStrain / epsBtUlt - 1#
+    SolverFormationResidual = True
 End Function
 
 
@@ -687,40 +939,46 @@ Private Sub InitializeCrcStrainGuess(ByVal section As CSectionModel, ByVal start
 End Sub
 
 ' Считает три безразмерных условия для прямого поиска lambda_crc:
-' два условия сохраняют направление полного вектора N/Mx/My, третье требует
-' достижения eps_bt,ult в наиболее растянутом бетонном конечном элементе.
+' первое держит заданную N, второе сохраняет направление Mx/My относительно
+' расчетного центра, третье требует достижения eps_bt,ult в наиболее
+' растянутом бетонном конечном элементе.
 Private Function EvaluateCrcStrainResidual(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
-        ByVal steelMaterial As Object, ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal steelMaterial As Object, ByVal targetN As Double, _
+        ByVal targetMomentMx As Double, ByVal targetMomentMy As Double, _
+        ByVal referenceX As Double, ByVal referenceY As Double, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
-        ByRef solver As CSectionSolver, ByRef rDir1 As Double, ByRef rDir2 As Double, _
+        ByRef solver As CSectionSolver, ByRef rForce As Double, ByRef rMomentDirection As Double, _
         ByRef rLimit As Double, ByRef lambdaValue As Double) As Boolean
     On Error GoTo Failed
 
     Set solver = New CSectionSolver
     solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
 
-    Dim baseN As Double
     Dim baseMx As Double
     Dim baseMy As Double
-    Dim intN As Double
     Dim intMx As Double
     Dim intMy As Double
-    baseN = targetN / MaxDouble(mSolverToleranceN, 1#)
-    baseMx = targetMx / MaxDouble(mSolverToleranceMx, 1#)
-    baseMy = targetMy / MaxDouble(mSolverToleranceMy, 1#)
-    intN = solver.Nint / MaxDouble(mSolverToleranceN, 1#)
-    intMx = solver.Mxint / MaxDouble(mSolverToleranceMx, 1#)
-    intMy = solver.Myint / MaxDouble(mSolverToleranceMy, 1#)
+    baseMx = targetMomentMx / MaxDouble(mSolverToleranceMx, 1#)
+    baseMy = targetMomentMy / MaxDouble(mSolverToleranceMy, 1#)
 
-    Dim baseNorm2 As Double
-    baseNorm2 = baseN * baseN + baseMx * baseMx + baseMy * baseMy
-    If baseNorm2 <= NEAR_ZERO_STRAIN Then
-        mStopReason = "InputError: для Auto нужен ненулевой вектор N/Mx/My."
+    Dim momentMxAtReference As Double
+    Dim momentMyAtReference As Double
+    momentMxAtReference = solver.Mxint - solver.Nint * referenceY
+    momentMyAtReference = solver.Myint - solver.Nint * referenceX
+    intMx = momentMxAtReference / MaxDouble(mSolverToleranceMx, 1#)
+    intMy = momentMyAtReference / MaxDouble(mSolverToleranceMy, 1#)
+
+    Dim baseMomentNorm2 As Double
+    baseMomentNorm2 = baseMx * baseMx + baseMy * baseMy
+    If baseMomentNorm2 <= NEAR_ZERO_STRAIN Then
+        mStopReason = "InputError: для Auto нужен ненулевой моментный вектор Mx/My."
         Exit Function
     End If
 
-    lambdaValue = (intN * baseN + intMx * baseMx + intMy * baseMy) / baseNorm2
-    SetCrcDirectionResiduals baseN, baseMx, baseMy, intN, intMx, intMy, rDir1, rDir2
+    rForce = (solver.Nint - targetN) / MaxDouble(mSolverToleranceN, 1#)
+    lambdaValue = (momentMxAtReference * targetMomentMx + momentMyAtReference * targetMomentMy) / _
+        (targetMomentMx * targetMomentMx + targetMomentMy * targetMomentMy)
+    SetCrcMomentDirectionResidual baseMx, baseMy, intMx, intMy, rMomentDirection
 
     Dim minConcreteStrain As Double
     Dim maxConcreteStrain As Double
@@ -735,8 +993,8 @@ Private Function EvaluateCrcStrainResidual(ByVal section As CSectionModel, ByVal
     rLimit = maxConcreteStrain / epsBtUlt - 1#
 
     AppendDiagnostic "lambda_crc_iter=" & FormatNumberInvariant(lambdaValue) & _
-        "; rDir1=" & FormatNumberInvariant(rDir1) & _
-        "; rDir2=" & FormatNumberInvariant(rDir2) & _
+        "; rN=" & FormatNumberInvariant(rForce) & _
+        "; rMomentDir=" & FormatNumberInvariant(rMomentDirection) & _
         "; rLimit=" & FormatNumberInvariant(rLimit) & _
         "; eps_bt_ult=" & FormatNumberInvariant(epsBtUlt)
     EvaluateCrcStrainResidual = True
@@ -746,32 +1004,24 @@ Failed:
     mStopReason = "NumericalFailure: оценка состояния образования трещины не выполнена: " & Err.Description
 End Function
 
-' Возвращает две независимые знаковые невязки направления. Они равны нулю,
-' когда внутренний вектор усилий параллелен заданному вектору N/Mx/My.
-Private Sub SetCrcDirectionResiduals(ByVal baseN As Double, ByVal baseMx As Double, ByVal baseMy As Double, _
-        ByVal intN As Double, ByVal intMx As Double, ByVal intMy As Double, _
-        ByRef rDir1 As Double, ByRef rDir2 As Double)
+' Возвращает знаковую невязку направления момента. Она равна нулю, когда
+' внутренний момент относительно расчетного центра параллелен заданному Mx/My.
+Private Sub SetCrcMomentDirectionResidual(ByVal baseMx As Double, ByVal baseMy As Double, _
+        ByVal intMx As Double, ByVal intMy As Double, ByRef rMomentDirection As Double)
     Dim denominator As Double
-    denominator = MaxDouble(Abs(baseN) + Abs(baseMx) + Abs(baseMy), 1#) ^ 2
-    If Abs(baseN) >= Abs(baseMx) And Abs(baseN) >= Abs(baseMy) Then
-        rDir1 = (intMx * baseN - intN * baseMx) / denominator
-        rDir2 = (intMy * baseN - intN * baseMy) / denominator
-    ElseIf Abs(baseMx) >= Abs(baseMy) Then
-        rDir1 = (intN * baseMx - intMx * baseN) / denominator
-        rDir2 = (intMy * baseMx - intMx * baseMy) / denominator
-    Else
-        rDir1 = (intN * baseMy - intMy * baseN) / denominator
-        rDir2 = (intMx * baseMy - intMy * baseMx) / denominator
-    End If
+    denominator = MaxDouble(Abs(baseMx) + Abs(baseMy), 1#) ^ 2
+    rMomentDirection = (intMy * baseMx - intMx * baseMy) / denominator
 End Sub
 
 ' Выполняет один Newton-шаг для прямой системы образования трещины. Якобиан
 ' строится численно, как в UltimateStrain, но предельным условием является
 ' нормативная предельная растягивающая деформация бетона eps_bt,ult.
 Private Function ApplyCrcNewtonStep(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
-        ByVal steelMaterial As Object, ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal steelMaterial As Object, ByVal targetN As Double, _
+        ByVal targetMomentMx As Double, ByVal targetMomentMy As Double, _
+        ByVal referenceX As Double, ByVal referenceY As Double, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double, _
-        ByVal rDir1 As Double, ByVal rDir2 As Double, ByVal rLimit As Double) As Boolean
+        ByVal rForce As Double, ByVal rMomentDirection As Double, ByVal rLimit As Double) As Boolean
     Dim hEps As Double
     Dim hKx As Double
     Dim hKy As Double
@@ -782,16 +1032,19 @@ Private Function ApplyCrcNewtonStep(ByVal section As CSectionModel, ByVal concre
     Dim j11 As Double, j21 As Double, j31 As Double
     Dim j12 As Double, j22 As Double, j32 As Double
     Dim j13 As Double, j23 As Double, j33 As Double
-    BuildCrcJacobianColumn section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-        eps0 + hEps, kx, ky, hEps, rDir1, rDir2, rLimit, j11, j21, j31
-    BuildCrcJacobianColumn section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-        eps0, kx + hKx, ky, hKx, rDir1, rDir2, rLimit, j12, j22, j32
-    BuildCrcJacobianColumn section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-        eps0, kx, ky + hKy, hKy, rDir1, rDir2, rLimit, j13, j23, j33
+    BuildCrcJacobianColumn section, concreteMaterial, steelMaterial, targetN, _
+        targetMomentMx, targetMomentMy, referenceX, referenceY, _
+        eps0 + hEps, kx, ky, hEps, rForce, rMomentDirection, rLimit, j11, j21, j31
+    BuildCrcJacobianColumn section, concreteMaterial, steelMaterial, targetN, _
+        targetMomentMx, targetMomentMy, referenceX, referenceY, _
+        eps0, kx + hKx, ky, hKx, rForce, rMomentDirection, rLimit, j12, j22, j32
+    BuildCrcJacobianColumn section, concreteMaterial, steelMaterial, targetN, _
+        targetMomentMx, targetMomentMy, referenceX, referenceY, _
+        eps0, kx, ky + hKy, hKy, rForce, rMomentDirection, rLimit, j13, j23, j33
 
     Dim system As CLinearSystem3x3
     Set system = New CLinearSystem3x3
-    If Not system.Solve(j11, j12, j13, j21, j22, j23, j31, j32, j33, -rDir1, -rDir2, -rLimit) Then
+    If Not system.Solve(j11, j12, j13, j21, j22, j23, j31, j32, j33, -rForce, -rMomentDirection, -rLimit) Then
         mStopReason = "NumericalFailure: матрица прямого поиска lambda_crc вырождена: " & system.StopReason
         Exit Function
     End If
@@ -805,17 +1058,18 @@ Private Function ApplyCrcNewtonStep(ByVal section As CSectionModel, ByVal concre
     LimitCrcIncrement dEps, dKx, dKy
 
     Dim baseNorm As Double
-    baseNorm = CrcResidualNorm(rDir1, rDir2, rLimit)
+    baseNorm = CrcResidualNorm(rForce, rMomentDirection, rLimit)
     Dim alpha As Double
     alpha = mSolverDampingInitial
     If alpha <= 0# Or alpha > 1# Then alpha = 1#
     Do While alpha >= mSolverMinLineSearchAlpha
         Dim trialSolver As CSectionSolver
-        Dim trialR1 As Double, trialR2 As Double, trialRLimit As Double, trialLambda As Double
-        If EvaluateCrcStrainResidual(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+        Dim trialRForce As Double, trialRMoment As Double, trialRLimit As Double, trialLambda As Double
+        If EvaluateCrcStrainResidual(section, concreteMaterial, steelMaterial, targetN, _
+                targetMomentMx, targetMomentMy, referenceX, referenceY, _
                 eps0 + alpha * dEps, kx + alpha * dKx, ky + alpha * dKy, _
-                trialSolver, trialR1, trialR2, trialRLimit, trialLambda) Then
-            If CrcResidualNorm(trialR1, trialR2, trialRLimit) < baseNorm Then
+                trialSolver, trialRForce, trialRMoment, trialRLimit, trialLambda) Then
+            If CrcResidualNorm(trialRForce, trialRMoment, trialRLimit) < baseNorm Then
                 eps0 = eps0 + alpha * dEps
                 kx = kx + alpha * dKx
                 ky = ky + alpha * dKy
@@ -832,23 +1086,26 @@ End Function
 
 ' Один столбец численного Якобиана для системы образования трещины.
 Private Sub BuildCrcJacobianColumn(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
-        ByVal steelMaterial As Object, ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal steelMaterial As Object, ByVal targetN As Double, _
+        ByVal targetMomentMx As Double, ByVal targetMomentMy As Double, _
+        ByVal referenceX As Double, ByVal referenceY As Double, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
-        ByVal stepValue As Double, ByVal rDir1 As Double, ByVal rDir2 As Double, ByVal rLimit As Double, _
+        ByVal stepValue As Double, ByVal rForce As Double, ByVal rMomentDirection As Double, ByVal rLimit As Double, _
         ByRef j1 As Double, ByRef j2 As Double, ByRef j3 As Double)
     Dim solver As CSectionSolver
-    Dim p1 As Double, p2 As Double, pLimit As Double, pLambda As Double
-    If Not EvaluateCrcStrainResidual(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-            eps0, kx, ky, solver, p1, p2, pLimit, pLambda) Then Exit Sub
-    j1 = (p1 - rDir1) / stepValue
-    j2 = (p2 - rDir2) / stepValue
+    Dim pForce As Double, pMoment As Double, pLimit As Double, pLambda As Double
+    If Not EvaluateCrcStrainResidual(section, concreteMaterial, steelMaterial, targetN, _
+            targetMomentMx, targetMomentMy, referenceX, referenceY, _
+            eps0, kx, ky, solver, pForce, pMoment, pLimit, pLambda) Then Exit Sub
+    j1 = (pForce - rForce) / stepValue
+    j2 = (pMoment - rMomentDirection) / stepValue
     j3 = (pLimit - rLimit) / stepValue
 End Sub
 
 ' Норма смешивает условие направления и условие предельной деформации только
 ' для line search. Она не имеет самостоятельного нормативного смысла.
-Private Function CrcResidualNorm(ByVal rDir1 As Double, ByVal rDir2 As Double, ByVal rLimit As Double) As Double
-    CrcResidualNorm = Abs(rDir1) * 100# + Abs(rDir2) * 100# + Abs(rLimit) * 10#
+Private Function CrcResidualNorm(ByVal rForce As Double, ByVal rMomentDirection As Double, ByVal rLimit As Double) As Double
+    CrcResidualNorm = Abs(rForce) + Abs(rMomentDirection) * 100# + Abs(rLimit) * 10#
 End Function
 
 ' Ограничивает приращение прямой плоскости образования трещины теми же
@@ -878,6 +1135,7 @@ Private Sub CompleteCrackFormula(ByVal solver As CSectionSolver, ByVal section A
     mPsiS = mPsiSInput
 
     mAs = SelectedRebarArea(section, selected)
+    mTensionRebarIds = SelectedRebarIds(section, selected)
     mDsEquivalent = EquivalentDiameter(section, selected)
     mSigmaS = AverageSelectedSteelStress(solver, section, steelMaterial, selected)
     If mAs <= 0# Or mAbt <= 0# Or mDsEquivalent <= 0# Or mSigmaS <= 0# Then
@@ -920,7 +1178,7 @@ Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal mater
     AppendDiagnostic "Auto psi_s: первая проверка с psi_s=1 не проходит; используется ранее найденный AfterMcrcState."
     mConverged = False
 
-    If mLambdaCrc <= 0# Then
+    If mLambdaCrc < 0# Then
         mStopReason = "InputError: lambda_crc предварительной проверки образования трещины не определена."
         Exit Function
     End If
@@ -1038,6 +1296,20 @@ Private Function HasNormalCrackDrivingAction(ByVal loadStateForClassification As
     If Abs(loadStateForClassification.MyAboutPoint(centralReferenceX)) > MaxDouble(mSolverToleranceMy, 1#) Then
         HasNormalCrackDrivingAction = True
     End If
+End Function
+
+' Возвращает модуль изгибающего момента на стадии образования трещины.
+' Моменты берутся в центре тяжести приведенного сечения, но относительно
+' глобальных X/Y, потому что именно так пользователь видит нагрузку в таблицах.
+Private Function CrackMomentFromLoadState(ByVal loadStateForClassification As CSectionLoadState, _
+        ByVal centralReferenceX As Double, ByVal centralReferenceY As Double) As Double
+    If mLambdaCrc <= 0# Then Exit Function
+
+    Dim mxRef As Double
+    Dim myRef As Double
+    mxRef = loadStateForClassification.MxAboutPoint(centralReferenceY)
+    myRef = loadStateForClassification.MyAboutPoint(centralReferenceX)
+    CrackMomentFromLoadState = mLambdaCrc * Sqr(mxRef * mxRef + myRef * myRef)
 End Function
 
 ' Выбирает все растянутые стержни для центрального растяжения.
@@ -1195,6 +1467,19 @@ Private Function SelectedRebarArea(ByVal section As CSectionModel, ByRef selecte
     Next i
 End Function
 
+' Перечисляет имена выбранных стержней для контрольной таблицы напряжений.
+Private Function SelectedRebarIds(ByVal section As CSectionModel, ByRef selected() As Boolean) As String
+    Dim result As String
+    Dim i As Long
+    For i = 1 To section.RebarCount
+        If selected(i) Then
+            If Len(result) > 0 Then result = result & ", "
+            result = result & section.RebarID(i)
+        End If
+    Next i
+    SelectedRebarIds = result
+End Function
+
 ' Для разных диаметров используется эквивалентный диаметр Eurocode:
 ' ds,eq = sum(n_i*d_i^2) / sum(n_i*d_i). В дискретной модели каждый стержень
 ' считается отдельным i, поэтому n_i фактически равен количеству совпадающих d.
@@ -1251,7 +1536,8 @@ Private Function CentralTensionCrackForce(ByVal section As CSectionModel) As Dou
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
     props.CalculateTransformedByModuli section, mConcreteEb, mSteelEs
-    CentralTensionCrackForce = props.Area * mConcreteRbtSer
+    mAred = props.Area
+    CentralTensionCrackForce = mAred * mConcreteRbtSer
 End Function
 
 ' Суммарная площадь бетона модели.
@@ -1455,6 +1741,9 @@ Private Sub ClearResult()
     mPhi3 = 0#
     mLambdaCrc = 0#
     mNcrc = 0#
+    mMcrc = 0#
+    mAred = 0#
+    mTensionRebarIds = vbNullString
     Set mBeforeMcrcState = Nothing
     Set mBeforeMcrcSolver = Nothing
     Set mAfterMcrcState = Nothing
@@ -1467,6 +1756,10 @@ Private Sub ClearResult()
     mEffectiveZoneDepth = 0#
     mCentralTensionBranch = False
     mFormationPrechecked = False
+    mFormationLoadDefined = False
+    mFormationLoadN = 0#
+    mFormationLoadMx = 0#
+    mFormationLoadMy = 0#
 End Sub
 
 ' Добавляет строку в диагностический журнал.
@@ -1596,6 +1889,22 @@ End Property
 
 Public Property Get Ncrc() As Double
     Ncrc = mNcrc
+End Property
+
+Public Property Get Mcrc() As Double
+    Mcrc = mMcrc
+End Property
+
+Public Property Get Ared() As Double
+    Ared = mAred
+End Property
+
+Public Property Get RbtSer() As Double
+    RbtSer = mConcreteRbtSer
+End Property
+
+Public Property Get TensionRebarIds() As String
+    TensionRebarIds = mTensionRebarIds
 End Property
 
 Public Property Get SectionDepthH() As Double
