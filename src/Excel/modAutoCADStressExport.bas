@@ -464,11 +464,39 @@ End Sub
 Private Function MissingExportStateMessage(ByVal combinationID As String, ByVal stateType As String) As String
     MissingExportStateMessage = "Запрашиваемое состояние """ & stateType & _
         """ не найдено в Results для AutoCAD export, сочетание " & combinationID & "."
-    If StrComp(stateType, "BeforeMcrcState", vbTextCompare) = 0 Or _
-            StrComp(stateType, "AfterMcrcState", vbTextCompare) = 0 Then
-        MissingExportStateMessage = MissingExportStateMessage & _
-            " Для состояния около Mcrc это нормально, если ветвь Mcrc в расчете трещин не потребовалась."
+    If IsCrackExportState(stateType) Then
+        If Not ExportCombinationHasCrackWidth(combinationID) Then
+            MissingExportStateMessage = MissingExportStateMessage & _
+                " Для запрашиваемого сочетания расчет трещин не выполнялся: этому сочетанию назначен профиль, где Calculation.Crack.Width = No."
+        ElseIf StrComp(stateType, "CrackedState", vbTextCompare) = 0 Then
+            MissingExportStateMessage = MissingExportStateMessage & _
+                " Для запрашиваемого сочетания расчет трещин был включен, поэтому CrackedState должен быть в snapshot. Проверьте статус расчета трещин и сообщения о сходимости CrackedState."
+        Else
+            MissingExportStateMessage = MissingExportStateMessage & _
+                " Для запрашиваемого сочетания расчет трещин был включен, но состояние около Mcrc/Ncrc не записано. Это штатно только когда нет действия для поиска нормальной трещины, например чистое сжатие без момента. Если растяжение или изгиб есть, проверьте статус проверки образования трещины."
+        End If
     End If
+End Function
+
+Private Function IsCrackExportState(ByVal stateType As String) As Boolean
+    IsCrackExportState = (StrComp(stateType, "BeforeMcrcState", vbTextCompare) = 0 Or _
+        StrComp(stateType, "AfterMcrcState", vbTextCompare) = 0 Or _
+        StrComp(stateType, "CrackedState", vbTextCompare) = 0)
+End Function
+
+Private Function ExportCombinationHasCrackWidth(ByVal combinationID As String) As Boolean
+    On Error GoTo Failed
+    Dim workbook As Object
+    Set workbook = ThisWorkbook
+    Dim profileId As String
+    profileId = ReadProfileIdForLoadCase(workbook, combinationID)
+    If Len(profileId) = 0 Then Exit Function
+
+    Dim profiles As CCalculationProfileCatalog
+    Set profiles = New CCalculationProfileCatalog
+    profiles.LoadFromWorkbook workbook
+    ExportCombinationHasCrackWidth = profiles.ProfileById(profileId).CrackWidthEnabled
+Failed:
 End Function
 
 Private Function ReadGoverningCombinationID(ByVal workbook As Object) As String

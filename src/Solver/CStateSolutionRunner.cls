@@ -73,6 +73,20 @@ Public Sub Solve(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         Optional ByVal allowExtensionWarmStart As Boolean = False)
+    SolveWithInitialSolver section, concreteMaterial, steelMaterial, _
+        targetN, targetMx, targetMy, Nothing, allowExtensionWarmStart
+End Sub
+
+' Решает прямое равновесие от заданного LC, начиная не с нулевой плоскости,
+' а с уже найденного solver-а. Это общий путь для служебных состояний вроде
+' AfterMcrcState: они получают ту же централизованную настройку solver-а,
+' диагностику и fallback-логику, что и обычные Strength/CrackedState, но могут
+' стартовать от близкого физического состояния на том же уровне нагрузки.
+Public Sub SolveWithInitialSolver(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal initialSolver As CSectionSolver, _
+        Optional ByVal allowExtensionWarmStart As Boolean = False)
     If section Is Nothing Then Err.Raise vbObjectError + 3480, "CStateSolutionRunner", "Модель сечения не передана."
     If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 3481, "CStateSolutionRunner", "Диаграмма бетона не передана."
     If steelMaterial Is Nothing Then Err.Raise vbObjectError + 3482, "CStateSolutionRunner", "Диаграмма арматуры не передана."
@@ -82,7 +96,8 @@ Public Sub Solve(ByVal section As CSectionModel, _
     Dim service As CSectionSolver
     Set service = New CSectionSolver
     ConfigureSolver service
-    ApplyInitialGuess section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, service
+    ApplyInitialSolverOrGuess section, concreteMaterial, steelMaterial, _
+        targetN, targetMx, targetMy, initialSolver, service
 
     service.Solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
     Set mSolver = service
@@ -103,6 +118,28 @@ Public Sub Solve(ByVal section As CSectionModel, _
             mExtensionUsed = False
         End If
     End If
+End Sub
+
+' Выбирает старт для прямого solve-а. Если вызывающий слой передал близкое
+' состояние, используем его как warm start. Иначе включается обычный общий
+' подбор стартовой плоскости через CStateGuessBuilder.
+Private Sub ApplyInitialSolverOrGuess(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal initialSolver As CSectionSolver, ByVal solver As CSectionSolver)
+    If Not initialSolver Is Nothing Then
+        If initialSolver.Converged Then
+            solver.SetInitialLoadState initialSolver.Epsilon0, initialSolver.KappaX, initialSolver.KappaY, _
+                initialSolver.Nint, initialSolver.Mxint, initialSolver.Myint
+        Else
+            solver.SetInitialState initialSolver.Epsilon0, initialSolver.KappaX, initialSolver.KappaY
+        End If
+        mInitialGuessApplied = True
+        AppendDiagnostic "initialGuess=warmStartSolver"
+        Exit Sub
+    End If
+
+    ApplyInitialGuess section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, solver
 End Sub
 
 ' Передает настройки в новый экземпляр CSectionSolver.

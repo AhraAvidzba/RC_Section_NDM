@@ -206,11 +206,13 @@ End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestBatchCapacityUsesSystemSettings(ByRef stats As TBatchTestStats)
-    Dim oldMode As String
+    Dim oldStrategy As String
     Dim oldMaxLambda As String
+    oldStrategy = GetSystemSetting("Capacity.SolutionStrategy")
     oldMaxLambda = GetSystemSetting("Capacity.MaxLambda")
 
     On Error GoTo RestoreAndFail
+    SetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
     SetSystemSetting "Capacity.MaxLambda", "0.5"
 
     Dim settings As CSystemSettingsReader
@@ -226,6 +228,7 @@ Private Sub TestBatchCapacityUsesSystemSettings(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.settings.capacity.maxLambda", batch.CapacityStatus(1) = "NumFail"
 
 Restore:
+    SetSystemSetting "Capacity.SolutionStrategy", oldStrategy
     SetSystemSetting "Capacity.MaxLambda", oldMaxLambda
     Exit Sub
 

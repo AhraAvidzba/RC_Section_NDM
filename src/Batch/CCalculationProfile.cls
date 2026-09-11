@@ -31,7 +31,7 @@ Private mStabilityEnabled As Boolean ' Запрошен фильтр продо�
 Private mStabilityValueSet As EMaterialValueSet ' Набор характеристик материала для устойчивости без диаграмм.
 Private mHasStabilityValueSet As Boolean ' True, если строка MaterialModel.Stability.ValueSet задана в профиле.
 Private mStrengthSpec As CMaterialModelSpec ' Материальная модель прочности.
-Private mCrackInitiationSpec As CMaterialModelSpec ' Материальная модель Mcrc для Auto psi_s.
+Private mCrackInitiationSpec As CMaterialModelSpec ' Материальная модель проверки образования трещины Mcrc/Ncrc.
 Private mCrackedStateSpec As CMaterialModelSpec ' Материальная модель НДС с раскрытой трещиной.
 Private mVisualizationState As ESectionStateType ' Какой StateType показывать на схеме и в AutoCAD.
 Private mVisualizationQuantity As EVisualizationQuantity ' Stress или Strain для визуализации.
@@ -64,7 +64,7 @@ Public Sub SetStrengthSpec(ByVal spec As CMaterialModelSpec)
     Set mStrengthSpec = spec.Clone
 End Sub
 
-' Сохраняет спецификацию модели образования трещины для ветки Auto.
+' Сохраняет спецификацию модели образования трещины для обязательной проверки Mcrc/Ncrc.
 Public Sub SetCrackInitiationSpec(ByVal spec As CMaterialModelSpec)
     If spec Is Nothing Then Exit Sub
     Set mCrackInitiationSpec = spec.Clone
@@ -108,7 +108,7 @@ End Function
 ' Валидирует профиль только для фактически назначенного LC. Visualization.State
 ' здесь не проверяется на наличие будущего состояния: это ошибка визуализации,
 ' а не причина блокировать batch-расчет.
-Public Function ValidateForCalculation(ByVal psiMode As String, ByRef errorText As String) As Boolean
+Public Function ValidateForCalculation(ByRef errorText As String) As Boolean
     ValidateForCalculation = False
     If Len(mProfileId) = 0 Then
         errorText = "ProfileId профиля не задан."
@@ -134,9 +134,8 @@ Public Function ValidateForCalculation(ByVal psiMode As String, ByRef errorText 
         errorText = "Профиль " & mProfileId & ": MaterialModel.CrackedState.ConcreteTension должен быть Ignore."
         Exit Function
     End If
-    If mCrackWidth And StrComp(Trim$(psiMode), "Auto", vbTextCompare) = 0 And _
-            Not mCrackInitiationSpec.IsComplete Then
-        errorText = "Профиль " & mProfileId & ": для SLS.Crack.PsiMode=Auto нужна MaterialModel.CrackInitiation."
+    If mCrackWidth And Not mCrackInitiationSpec.IsComplete Then
+        errorText = "Профиль " & mProfileId & ": для Calculation.Crack.Width нужна MaterialModel.CrackInitiation."
         Exit Function
     End If
     If mCrackWidth And mCrackInitiationSpec.IsComplete And mCrackInitiationSpec.ConcreteTension <> ctkUseDiagram Then

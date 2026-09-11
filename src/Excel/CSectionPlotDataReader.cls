@@ -25,6 +25,7 @@ Private mLoadCase As String ' LC, выбранный для схемы посл�
 Private mLoadCaseComment As String ' Комментарий LC для заголовка схемы.
 Private mProfileId As String ' ProfileId, сохраненный в snapshot для выбранного LC.
 Private mStateType As String ' StateType, выбранный через Visualization.State текущего профиля.
+Private mProfileCrackWidthEnabled As Boolean ' В профиле выбранного LC был запрошен Calculation.Crack.Width.
 Private mGeometryOnly As Boolean ' True для схемы без расчетных Stress/Strain.
 Private mGeometryOnlyTitle As String ' Заголовок схемы без НДС, например для import-preview.
 Private mGeometryOnlyNote As String ' Пояснение под схемой, если НДС намеренно отсутствует.
@@ -179,6 +180,7 @@ Private Sub ApplyVisualizationProfile(ByVal workbook As Object)
 
     Dim profile As CCalculationProfile
     Set profile = profiles.ProfileById(mProfileId)
+    mProfileCrackWidthEnabled = profile.CrackWidthEnabled
     mStateType = profile.VisualizationStateText
     mVisualizationQuantity = VisualizationQuantityToText(profile.VisualizationQuantity)
 End Sub
@@ -655,10 +657,24 @@ End Function
 
 Private Function MissingStateMessage(ByVal loadCase As String, ByVal stateType As String) As String
     MissingStateMessage = "Запрашиваемое состояние """ & stateType & """ не найдено в Results для сочетания " & loadCase & "."
-    If StrComp(stateType, "BeforeMcrcState", vbTextCompare) = 0 Or _
-            StrComp(stateType, "AfterMcrcState", vbTextCompare) = 0 Then
-        MissingStateMessage = MissingStateMessage & " Для состояния около Mcrc это нормально, если ветвь определения Mcrc в расчете трещин не потребовалась."
+    If IsCrackVisualizationState(stateType) Then
+        If Not mProfileCrackWidthEnabled Then
+            MissingStateMessage = MissingStateMessage & _
+                " Для запрашиваемого сочетания расчет трещин не выполнялся: этому сочетанию назначен профиль, где Calculation.Crack.Width = No."
+        ElseIf StrComp(stateType, "CrackedState", vbTextCompare) = 0 Then
+            MissingStateMessage = MissingStateMessage & _
+                " Для запрашиваемого сочетания расчет трещин был включен, поэтому CrackedState должен быть в snapshot. Проверьте статус расчета трещин и сообщения о сходимости CrackedState."
+        Else
+            MissingStateMessage = MissingStateMessage & _
+                " Для запрашиваемого сочетания расчет трещин был включен, но состояние около Mcrc/Ncrc не записано. Это штатно только когда нет действия для поиска нормальной трещины, например чистое сжатие без момента. Если растяжение или изгиб есть, проверьте статус проверки образования трещины."
+        End If
     End If
+End Function
+
+Private Function IsCrackVisualizationState(ByVal stateType As String) As Boolean
+    IsCrackVisualizationState = (StrComp(stateType, "BeforeMcrcState", vbTextCompare) = 0 Or _
+        StrComp(stateType, "AfterMcrcState", vbTextCompare) = 0 Or _
+        StrComp(stateType, "CrackedState", vbTextCompare) = 0)
 End Function
 
 ' Безопасно читает числовое поле Results, где часть колонок может быть пустой.

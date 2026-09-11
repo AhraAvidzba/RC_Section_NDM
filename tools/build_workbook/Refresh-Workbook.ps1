@@ -176,7 +176,7 @@ try {
     Import-VbaSourceTree $workbook $root
 
     Set-SystemSetting $workbook "Capacity.InitialLambda" "1" "1" "" "Начальный множитель для поиска верхней границы" "Проектная настройка этапа 5"
-    Set-SystemSetting $workbook "Capacity.MaxLambda" "64" "64" "" "Предельное значение lambda при расширении скобки" "Проектная настройка этапа 5"
+    Set-SystemSetting $workbook "Capacity.MaxLambda" "1024" "1024" "" "Предельное значение lambda при расширении скобки LoadMultiplier" "Проектная настройка этапа 5"
     Set-SystemSetting $workbook "Capacity.ToleranceLambda" "0.01" "0.01" "" "Допуск одномерного поиска предельного множителя" "Проектная настройка этапа 5"
     Set-SystemSetting $workbook "Capacity.MaxRetries" "4" "4" "шт" "Число повторов после численной несходимости пробы" "Проектная настройка этапа 5"
     Set-SystemSetting $workbook "Capacity.BaseLoadSteps" "8" "8" "шт" "Базовое число внутренних ступеней нагрузки в CSectionSolver" "Проектная настройка этапа 5"

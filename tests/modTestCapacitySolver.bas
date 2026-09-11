@@ -536,7 +536,7 @@ Private Sub TestCapacitySolutionStrategyComparisons(ByRef stats As TCapacityTest
     CompareCircleCapacitySolutionStrategys stats
     TestMethodStrainLimitState stats
     TestUltimateStrainNumericalFailure stats
-    TestUltimateStrainInvalidLambdaClearsMoments stats
+    TestUltimateStrainDoesNotApplyMaxLambda stats
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -686,8 +686,9 @@ Private Sub TestUltimateStrainNumericalFailure(ByRef stats As TCapacityTestStats
     AppendComparison stats, "method.numericalFailure.strain", cap, 0#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
-Private Sub TestUltimateStrainInvalidLambdaClearsMoments(ByRef stats As TCapacityTestStats)
+' Проверяет, что MaxLambda не отбрасывает уже найденное UltimateStrain-решение.
+' Эта настройка ограничивает только расширение скобки LoadMultiplier.
+Private Sub TestUltimateStrainDoesNotApplyMaxLambda(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
     PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
@@ -698,11 +699,9 @@ Private Sub TestUltimateStrainInvalidLambdaClearsMoments(ByRef stats As TCapacit
     cap.MaxLambda = 0.5
     cap.SolveByUltimateStrain BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), -300000#, -1000000#, 0#
 
-    AssertTrue stats, "method.invalidLambda.notConverged", Not cap.Converged
-    AssertEquals stats, "method.invalidLambda.state", cap.LimitState, "NumericalFailure"
-    AssertClose stats, "method.invalidLambda.lambdaZero", cap.LambdaUltimate, 0#, 0#
-    AssertClose stats, "method.invalidLambda.mxZero", cap.MxUltimate, 0#, 0#
-    AssertClose stats, "method.invalidLambda.momentZero", cap.MomentUltimate, 0#, 0#
+    AssertTrue stats, "method.maxLambdaIgnored.converged", cap.Converged
+    AssertTrue stats, "method.maxLambdaIgnored.lambdaAboveLimit", cap.LambdaUltimate > 0.5
+    AssertTrue stats, "method.maxLambdaIgnored.momentStored", Abs(cap.MomentUltimate) > 0#
 End Sub
 
 ' Проверяет пользовательский сценарий с дефолтными единицами книги.

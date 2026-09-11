@@ -356,8 +356,8 @@ Public Sub ClearStabilityResult()
 End Sub
 
 ' Добавляет конечное named-state LC. Промежуточные итерации solver-а и
-' probe-точки сюда не пишутся; состояния BeforeMcrc/AfterMcrc сохраняются
-' только если Auto-ветка трещин реально дошла до lambda_crc.
+' probe-точки сюда не пишутся; состояния BeforeMcrc/AfterMcrc сохраняются,
+' если обязательная проверка образования трещины реально дошла до lambda_crc.
 Public Sub AddState(ByVal stateResult As CSectionStateResult)
     If stateResult Is Nothing Then Exit Sub
     If mStates Is Nothing Then Set mStates = New Collection

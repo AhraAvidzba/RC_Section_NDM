@@ -311,7 +311,7 @@ CONVERGENCE: step=12.5 area=88750.; cx=0.; cy=1.795774647887; Ix=366297131.74882
 OK: conv.area.25.12; actual=88750.; expected=88750.; relDiff=0.
 OK: conv.Ix.25.12; actual=366297131.748829; expected=366946339.495306; relDiff=0.001769217121
 OK: conv.Iy.25.12; actual=1154524739.58334; expected=1155989583.33333; relDiff=0.001267177292
-PERFORMANCE: section=800x500; step=10; fibers=3988; buildSec=0.01171875; propsSec=0.0078125; area=398800.
+PERFORMANCE: section=800x500; step=10; fibers=3988; buildSec=0.015625; propsSec=0.; area=398800.
 OK: perf.fibers.positive
 TOTAL: passed=279; failed=0
 
@@ -371,7 +371,7 @@ OK: material.userSteelTwoLineCompressionLimit; actual=-0.03; expected=-0.03; abs
 OK: material.userSteelTwoLineTensionLimit; actual=0.031; expected=0.031; absDiff=0.
 OK: material.invalidConcrete
 OK: material.invalidSteel
-TOTAL_MATERIAL: passed=54; failed=0; elapsedSec=0.03125
+TOTAL_MATERIAL: passed=54; failed=0; elapsedSec=0.0234375
 
 
 ===== Run-SectionSolverTests.ps1 =====
@@ -763,7 +763,7 @@ OK: section.method.emptyInput
 OK: section.method.emptyMessage
 OK: settings.solverMethod.defaultNewton
 OK: section.systemMethod.newtonBranch
-TOTAL_SECTION_SOLVER: passed=383; failed=0; elapsedSec=0.3984375
+TOTAL_SECTION_SOLVER: passed=383; failed=0; elapsedSec=0.4453125
 
 
 ===== Run-CapacityTests.ps1 =====
@@ -914,7 +914,7 @@ OK: method.n_plus_mx.lambda; actual=3.098714243907; expected=3.09375; absDiff=0.
 OK: method.n_plus_mx.limitState
 OK: method.n_plus_mx.criticalElement
 OK: method.n_plus_mx.solverCalls
-COMPARE|method.n_plus_mx.load|converged=True|lambda=3.09375|limitState=ConcreteStrainLimit|criticalStrain=-0.001501652538|criticalElement=C136:Compression|solverCalls=15|elapsedSec=0.140625
+COMPARE|method.n_plus_mx.load|converged=True|lambda=3.09375|limitState=ConcreteStrainLimit|criticalStrain=-0.001501652538|criticalElement=C136:Compression|solverCalls=15|elapsedSec=0.15625
 COMPARE|method.n_plus_mx.strain|converged=True|lambda=3.098714243907|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.015625
 OK: method.n_plus_my.load.converged
 OK: method.n_plus_my.strain.converged
@@ -922,7 +922,7 @@ OK: method.n_plus_my.lambda; actual=4.490409406947; expected=4.484375; absDiff=0
 OK: method.n_plus_my.limitState
 OK: method.n_plus_my.criticalElement
 OK: method.n_plus_my.solverCalls
-COMPARE|method.n_plus_my.load|converged=True|lambda=4.484375|limitState=ConcreteStrainLimit|criticalStrain=-0.001500652149|criticalElement=C15:Compression|solverCalls=14|elapsedSec=0.11328125
+COMPARE|method.n_plus_my.load|converged=True|lambda=4.484375|limitState=ConcreteStrainLimit|criticalStrain=-0.001500652149|criticalElement=C15:Compression|solverCalls=14|elapsedSec=0.1015625
 COMPARE|method.n_plus_my.strain|converged=True|lambda=4.490409406947|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.0078125
 OK: method.biaxial.load.converged
 OK: method.biaxial.strain.converged
@@ -950,11 +950,9 @@ OK: method.numericalFailure.notConverged
 OK: method.numericalFailure.state
 OK: method.numericalFailure.noPhysicalUpper
 COMPARE|method.numericalFailure.strain|converged=False|lambda=0.|limitState=NumericalFailure|criticalStrain=-0.0015|criticalElement=C136:Compression|solverCalls=5|elapsedSec=0.
-OK: method.invalidLambda.notConverged
-OK: method.invalidLambda.state
-OK: method.invalidLambda.lambdaZero; actual=0.; expected=0.; absDiff=0.
-OK: method.invalidLambda.mxZero; actual=0.; expected=0.; absDiff=0.
-OK: method.invalidLambda.momentZero; actual=0.; expected=0.; absDiff=0.
+OK: method.maxLambdaIgnored.converged
+OK: method.maxLambdaIgnored.lambdaAboveLimit
+OK: method.maxLambdaIgnored.momentStored
 RUN: TestLoadMultiplierWithWorkbookTfDefaults
 OK: capacity.tfDefaults.geometry
 OK: capacity.tfDefaults.forceUnit
@@ -1750,12 +1748,12 @@ OK: search.invalid.inputError
 OK: search.secant.controlledFailure
 RUN: TestSearchMethodPerformanceComparison
 OK: search.perf.Bisection.converged
-PERF_CAPACITY_SEARCH|Bisection|lambda=3.09375|iterations=15|functionEvaluations=15|avgSec=0.1640625|residual=0.000000018633|converged=True|status=ConcreteStrainLimit
+PERF_CAPACITY_SEARCH|Bisection|lambda=3.09375|iterations=15|functionEvaluations=15|avgSec=0.130208333333|residual=0.000000018633|converged=True|status=ConcreteStrainLimit
 OK: search.perf.Brent.converged
-PERF_CAPACITY_SEARCH|Brent|lambda=3.09776378716|iterations=9|functionEvaluations=9|avgSec=0.0703125|residual=0.000000000975|converged=True|status=ConcreteStrainLimit
+PERF_CAPACITY_SEARCH|Brent|lambda=3.09776378716|iterations=9|functionEvaluations=9|avgSec=0.080729166667|residual=0.000000000975|converged=True|status=ConcreteStrainLimit
 OK: search.perf.Secant.converged
-PERF_CAPACITY_SEARCH|Secant|lambda=3.098514991183|iterations=7|functionEvaluations=7|avgSec=0.055989583333|residual=0.000000011376|converged=True|status=ConcreteStrainLimit
-TOTAL_CAPACITY: passed=925; failed=0; elapsedSec=15.4921875
+PERF_CAPACITY_SEARCH|Secant|lambda=3.098514991183|iterations=7|functionEvaluations=7|avgSec=0.059895833333|residual=0.000000011376|converged=True|status=ConcreteStrainLimit
+TOTAL_CAPACITY: passed=923; failed=0; elapsedSec=14.7421875
 
 
 ===== Run-CrackTests.ps1 =====
@@ -1769,8 +1767,8 @@ OK: crack.user.mx.formed
 OK: crack.user.mx.tensionBars
 OK: crack.user.mx.sigmaPositive
 OK: crack.user.mx.spacingPositive
-OK: crack.user.mx.widthFormula; actual=0.01041513196; expected=0.01041513196; absDiff=0.
-OK: crack.user.mx.utilization; actual=0.034717106533; expected=0.034717106533; absDiff=0.
+OK: crack.user.mx.widthFormula; actual=0.227495800226; expected=0.227495800226; absDiff=0.
+OK: crack.user.mx.utilization; actual=0.758319334085; expected=0.758319334085; absDiff=0.
 OK: crack.user.psi; actual=1.; expected=1.; absDiff=0.
 OK: crack.user.noSigmaCrc; actual=0.; expected=0.; absDiff=0.
 OK: crack.user.circleMxy.converged
@@ -1785,66 +1783,68 @@ OK: crack.user.coeffs.formed
 OK: crack.user.coeffs.tensionBars
 OK: crack.user.coeffs.sigmaPositive
 OK: crack.user.coeffs.spacingPositive
-OK: crack.user.coeffs.widthFormula; actual=0.014664505799; expected=0.014664505799; absDiff=0.
-OK: crack.user.coeffs.utilization; actual=0.048881685998; expected=0.048881685998; absDiff=0.
+OK: crack.user.coeffs.widthFormula; actual=0.320314086718; expected=0.320314086718; absDiff=0.
+OK: crack.user.coeffs.utilization; actual=1.067713622392; expected=1.067713622392; absDiff=0.
 OK: crack.user.coeffs.phi1; actual=1.6; expected=1.6; absDiff=0.
 OK: crack.user.coeffs.phi2; actual=0.7; expected=0.7; absDiff=0.
 OK: crack.user.coeffs.phi3; actual=1.1; expected=1.1; absDiff=0.
 OK: crack.user.coeffs.psi; actual=0.8; expected=0.8; absDiff=0.
-OK: crack.user.coeffs.noLambda; actual=0.; expected=0.; absDiff=0.
+OK: crack.user.coeffs.lambda
+OK: crack.user.coeffs.beforeMcrcState
+OK: crack.user.coeffs.afterMcrcState
 OK: crack.user.coeffs.noSigmaCrc; actual=0.; expected=0.; absDiff=0.
 OK: crack.cover.local.converged
 OK: crack.cover.local.formed
 OK: crack.cover.local.tensionBars
 OK: crack.cover.local.sigmaPositive
 OK: crack.cover.local.spacingPositive
-OK: crack.cover.local.widthFormula; actual=0.01041513196; expected=0.01041513196; absDiff=0.
-OK: crack.cover.local.utilization; actual=0.034717106533; expected=0.034717106533; absDiff=0.
+OK: crack.cover.local.widthFormula; actual=0.227495800226; expected=0.227495800226; absDiff=0.
+OK: crack.cover.local.utilization; actual=0.758319334085; expected=0.758319334085; absDiff=0.
 OK: crack.cover.local.mode
 OK: crack.cover.global.converged
 OK: crack.cover.global.formed
 OK: crack.cover.global.tensionBars
 OK: crack.cover.global.sigmaPositive
 OK: crack.cover.global.spacingPositive
-OK: crack.cover.global.widthFormula; actual=0.01041513196; expected=0.01041513196; absDiff=0.
-OK: crack.cover.global.utilization; actual=0.034717106533; expected=0.034717106533; absDiff=0.
+OK: crack.cover.global.widthFormula; actual=0.227495800226; expected=0.227495800226; absDiff=0.
+OK: crack.cover.global.utilization; actual=0.758319334085; expected=0.758319334085; absDiff=0.
 OK: crack.cover.global.mode
 OK: crack.zone.effective.converged
 OK: crack.zone.effective.formed
 OK: crack.zone.effective.tensionBars
 OK: crack.zone.effective.sigmaPositive
 OK: crack.zone.effective.spacingPositive
-OK: crack.zone.effective.widthFormula; actual=0.059967963824; expected=0.059967963824; absDiff=0.
-OK: crack.zone.effective.utilization; actual=0.199893212746; expected=0.199893212746; absDiff=0.
+OK: crack.zone.effective.widthFormula; actual=0.228673856712; expected=0.228673856712; absDiff=0.
+OK: crack.zone.effective.utilization; actual=0.762246189039; expected=0.762246189039; absDiff=0.
 OK: crack.zone.full.converged
 OK: crack.zone.full.formed
 OK: crack.zone.full.tensionBars
 OK: crack.zone.full.sigmaPositive
 OK: crack.zone.full.spacingPositive
-OK: crack.zone.full.widthFormula; actual=0.059967963824; expected=0.059967963824; absDiff=0.
-OK: crack.zone.full.utilization; actual=0.199893212746; expected=0.199893212746; absDiff=0.
+OK: crack.zone.full.widthFormula; actual=0.228673856712; expected=0.228673856712; absDiff=0.
+OK: crack.zone.full.utilization; actual=0.762246189039; expected=0.762246189039; absDiff=0.
 OK: crack.zone.fullAbtPositive
 OK: crack.zone.effectiveAbtPositive
-OK: crack.zone.effectiveDepthFormula; actual=116.371718374117; expected=116.371718374117; absDiff=0.
+OK: crack.zone.effectiveDepthFormula; actual=111.626764643974; expected=111.626764643974; absDiff=0.
 OK: crack.auto.pass.converged
 OK: crack.auto.pass.formed
 OK: crack.auto.pass.tensionBars
 OK: crack.auto.pass.sigmaPositive
 OK: crack.auto.pass.spacingPositive
-OK: crack.auto.pass.widthFormula; actual=0.01041513196; expected=0.01041513196; absDiff=0.
-OK: crack.auto.pass.utilization; actual=0.034717106533; expected=0.034717106533; absDiff=0.
+OK: crack.auto.pass.widthFormula; actual=0.227495800226; expected=0.227495800226; absDiff=0.
+OK: crack.auto.pass.utilization; actual=0.227495800226; expected=0.227495800226; absDiff=0.
 OK: crack.auto.pass.psi; actual=1.; expected=1.; absDiff=0.
-OK: crack.auto.pass.noLambda; actual=0.; expected=0.; absDiff=0.
+OK: crack.auto.pass.lambda
 OK: crack.auto.pass.noSigmaCrc; actual=0.; expected=0.; absDiff=0.
-OK: crack.auto.pass.noBeforeMcrcState
-OK: crack.auto.pass.noAfterMcrcState
+OK: crack.auto.pass.beforeMcrcState
+OK: crack.auto.pass.afterMcrcState
 OK: crack.auto.fail.converged
 OK: crack.auto.fail.formed
 OK: crack.auto.fail.tensionBars
 OK: crack.auto.fail.sigmaPositive
 OK: crack.auto.fail.spacingPositive
-OK: crack.auto.fail.widthFormula; actual=0.131351003693; expected=0.131351003693; absDiff=0.
-OK: crack.auto.fail.utilization; actual=1313.51003693239; expected=1313.51003693239; absDiff=0.
+OK: crack.auto.fail.widthFormula; actual=0.131540461231; expected=0.131540461231; absDiff=0.
+OK: crack.auto.fail.utilization; actual=1315.40461231191; expected=1315.40461231191; absDiff=0.
 OK: crack.auto.fail.lambda
 OK: crack.auto.fail.psiRange
 OK: crack.auto.fail.sigmaCrc
@@ -1877,7 +1877,7 @@ OK: crack.auto.pureMy.tensionBars
 OK: crack.auto.pureMy.sigmaPositive
 OK: crack.auto.pureMy.spacingPositive
 OK: crack.auto.pureMy.widthFormula; actual=0.068784054628; expected=0.068784054628; absDiff=0.
-OK: crack.auto.pureMy.utilization; actual=687.840546281965; expected=687.840546281965; absDiff=0.
+OK: crack.auto.pureMy.utilization; actual=687.840546281969; expected=687.840546281969; absDiff=0.
 OK: crack.auto.pureMy.lambda
 OK: crack.auto.pureMy.beforeMcrcState
 OK: crack.auto.pureMy.afterMcrcState
@@ -1889,44 +1889,73 @@ OK: crack.auto.pureMxy.formed
 OK: crack.auto.pureMxy.tensionBars
 OK: crack.auto.pureMxy.sigmaPositive
 OK: crack.auto.pureMxy.spacingPositive
-OK: crack.auto.pureMxy.widthFormula; actual=0.128218215517; expected=0.128218215517; absDiff=0.
-OK: crack.auto.pureMxy.utilization; actual=1282.18215516562; expected=1282.18215516562; absDiff=0.
+OK: crack.auto.pureMxy.widthFormula; actual=0.128223144212; expected=0.128223144212; absDiff=0.
+OK: crack.auto.pureMxy.utilization; actual=1282.23144212328; expected=1282.23144212328; absDiff=0.
 OK: crack.auto.pureMxy.lambda
 OK: crack.auto.pureMxy.beforeMcrcState
 OK: crack.auto.pureMxy.afterMcrcState
 OK: crack.auto.pureMxy.psiReduced
 OK: crack.auto.pureMxy.beforeMcrc.twoSign
 OK: crack.auto.pureMxy.beforeMcrc.epsBtUlt; actual=0.00015; expected=0.00015; absDiff=0.
+OK: crack.danger.pureMx.converged
+OK: crack.danger.pureMx.notNumFail
+OK: crack.danger.pureMx.formed
+OK: crack.danger.pureMx.lambda
+OK: crack.danger.pureMx.beforeMcrcState
+OK: crack.danger.pureMx.afterMcrcState
+OK: crack.danger.pureMy.converged
+OK: crack.danger.pureMy.notNumFail
+OK: crack.danger.pureMy.formed
+OK: crack.danger.pureMy.lambda
+OK: crack.danger.pureMy.beforeMcrcState
+OK: crack.danger.pureMy.afterMcrcState
+OK: crack.danger.pureMxy.converged
+OK: crack.danger.pureMxy.notNumFail
+OK: crack.danger.pureMxy.formed
+OK: crack.danger.pureMxy.lambda
+OK: crack.danger.pureMxy.beforeMcrcState
+OK: crack.danger.pureMxy.afterMcrcState
+OK: crack.danger.centralTension.converged
+OK: crack.danger.centralTension.notNumFail
+OK: crack.danger.centralTension.formed
+OK: crack.danger.centralTension.lambda
+OK: crack.danger.centralTension.beforeMcrcState
+OK: crack.danger.centralTension.afterMcrcState
+OK: crack.danger.pureCompression.converged
+OK: crack.danger.pureCompression.notNumFail
+OK: crack.danger.pureCompression.notFormed
+OK: crack.danger.pureCompression.width; actual=0.; expected=0.; absDiff=0.
 OK: crack.auto.oneSign.converged
 OK: crack.auto.oneSign.formed
 OK: crack.auto.oneSign.tensionBars
 OK: crack.auto.oneSign.sigmaPositive
 OK: crack.auto.oneSign.spacingPositive
-OK: crack.auto.oneSign.widthFormula; actual=0.4375532631; expected=0.4375532631; absDiff=0.
-OK: crack.auto.oneSign.utilization; actual=4375.53263100408; expected=4375.53263100408; absDiff=0.
+OK: crack.auto.oneSign.widthFormula; actual=0.437553263271; expected=0.437553263271; absDiff=0.
+OK: crack.auto.oneSign.utilization; actual=4375.53263270649; expected=4375.53263270649; absDiff=0.
 OK: crack.auto.oneSign.beforeMcrcState
 OK: crack.auto.oneSign.allTension
-OK: crack.auto.oneSign.formula854; actual=0.000109685155; expected=0.000109685154; absDiff=0.
+OK: crack.auto.oneSign.formula854; actual=0.000109685154; expected=0.000109685154; absDiff=0.
 OK: crack.central.converged
 OK: crack.central.formed
 OK: crack.central.tensionBars
 OK: crack.central.sigmaPositive
 OK: crack.central.spacingPositive
-OK: crack.central.widthFormula; actual=0.136984628281; expected=0.136984628281; absDiff=0.
-OK: crack.central.utilization; actual=1369.84628280626; expected=1369.84628280626; absDiff=0.
+OK: crack.central.widthFormula; actual=0.139403828281; expected=0.139403828281; absDiff=0.
+OK: crack.central.utilization; actual=1394.03828280626; expected=1394.03828280626; absDiff=0.
 OK: crack.central.branch
 OK: crack.central.ncrc
 OK: crack.central.lambda
-OK: crack.central.lambdaFromNcrc; actual=121919.672065136; expected=121919.672065136; absDiff=0.
+OK: crack.central.lambdaFromNcrc; actual=119657.725354552; expected=119657.725354552; absDiff=0.
+OK: crack.central.beforeMcrcState
 OK: crack.central.afterMcrcState
 OK: crack.central.phi3; actual=1.2; expected=1.2; absDiff=0.
-OK: crack.central.zoneModeInvariant; actual=0.136984628281; expected=0.136984628281; absDiff=0.
+OK: crack.central.zoneModeInvariant; actual=0.139403828281; expected=0.139403828281; absDiff=0.
 OK: crack.central.eccentricLoadRejected
 OK: crack.central.offsetLoadStateRejected
 OK: crack.noTension.converged
 OK: crack.noTension.notFormed
 OK: crack.noTension.width; actual=0.; expected=0.; absDiff=0.
-TOTAL_CRACK: passed=167; failed=0; elapsedSec=0.40234375
+TOTAL_CRACK: passed=198; failed=0; elapsedSec=0.75
 
 
 ===== Run-BatchTests.ps1 =====
@@ -2463,7 +2492,7 @@ OK: batch.settings.capacity.maxLambda
 RUN: TestInvalidModeSettingsAreNotFallbacks
 OK: batch.invalid.CapacitySolutionStrategy.status
 OK: batch.invalid.CapacitySolutionStrategy.noLambda
-TOTAL_BATCH: passed=408; failed=0; elapsedSec=14.94140625
+TOTAL_BATCH: passed=408; failed=0; elapsedSec=15.609375
 
 
 ===== Run-WorkbookInterfaceTests.ps1 =====
@@ -2565,6 +2594,7 @@ OK: ui.batchSummary.direct.noCapacityDepths
 OK: ui.results.elements.header
 OK: ui.results.elements.rows
 OK: ui.results.elements.noCombinationIndex
+OK: ui.results.elements.materialType
 OK: ui.results.elements.units
 OK: ui.results.elements.noGeometryDup
 OK: ui.results.elements.noPlaneDup
@@ -2740,7 +2770,7 @@ OK: ui.clear.results.properties
 OK: ui.clear.results.annotations
 OK: ui.clear.results.materialDiagrams
 OK: ui.clear.input
-TOTAL_WORKBOOK_UI: passed=268; failed=0; elapsedSec=15.7421875
+TOTAL_WORKBOOK_UI: passed=269; failed=0; elapsedSec=15.375
 
 
 ===== Run-RegressionBaselineTests.ps1 =====
@@ -2749,17 +2779,17 @@ OK: pure_compression.converged
 OK: pure_compression.N; actual=-99999.9999999997; expected=-100000.; relDiff=0.
 OK: pure_compression.Mx; actual=0.000000000201; expected=0.; absDiff=0.000000000201
 OK: pure_compression.My; actual=0.000000000242; expected=0.; absDiff=0.000000000242
-BASELINE|pure_compression|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=0.|Nint=-99999.9999999997|Mxint=0.000000000201|Myint=0.000000000242|resN=0.000000000291|resMx=0.000000000201|resMy=0.000000000242|lambda=NA|iterations=2|elapsedSec=0.0234375|fibers=177|rebars=8
+BASELINE|pure_compression|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=0.|Nint=-99999.9999999997|Mxint=0.000000000201|Myint=0.000000000242|resN=0.000000000291|resMx=0.000000000201|resMy=0.000000000242|lambda=NA|iterations=2|elapsedSec=0.03125|fibers=177|rebars=8
 OK: n_plus_mx_my_zero.converged
 OK: n_plus_mx_my_zero.N; actual=-100000.; expected=-100000.; relDiff=0.
 OK: n_plus_mx_my_zero.Mx; actual=-4000000.; expected=-4000000.; relDiff=0.
 OK: n_plus_mx_my_zero.My; actual=-0.000000000001; expected=0.; absDiff=0.000000000001
-BASELINE|n_plus_mx_my_zero|converged=True|eps0=-0.000082761977|kappaX=-0.000000571638|kappaY=0.|Nint=-100000.|Mxint=-4000000.|Myint=-0.000000000001|resN=0.000000000015|resMx=-0.000000000931|resMy=-0.000000000001|lambda=20.421600341797|iterations=2|elapsedSec=0.0078125|fibers=177|rebars=8
+BASELINE|n_plus_mx_my_zero|converged=True|eps0=-0.000082761977|kappaX=-0.000000571638|kappaY=0.|Nint=-100000.|Mxint=-4000000.|Myint=-0.000000000001|resN=0.000000000015|resMx=-0.000000000931|resMy=-0.000000000001|lambda=20.421600341797|iterations=2|elapsedSec=0.015625|fibers=177|rebars=8
 OK: n_plus_my_mx_zero.converged
 OK: n_plus_my_mx_zero.N; actual=-100000.; expected=-100000.; relDiff=0.
 OK: n_plus_my_mx_zero.Mx; actual=0.000000000001; expected=0.; absDiff=0.000000000001
 OK: n_plus_my_mx_zero.My; actual=-3000000.; expected=-3000000.; relDiff=0.
-BASELINE|n_plus_my_mx_zero|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=-0.000000428729|Nint=-100000.|Mxint=0.000000000001|Myint=-3000000.|resN=0.000000000015|resMx=0.000000000001|resMy=0.00000000326|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.0078125|fibers=177|rebars=8
+BASELINE|n_plus_my_mx_zero|converged=True|eps0=-0.000082761977|kappaX=0.|kappaY=-0.000000428729|Nint=-100000.|Mxint=0.000000000001|Myint=-3000000.|resN=0.000000000015|resMx=0.000000000001|resMy=0.00000000326|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.015625|fibers=177|rebars=8
 OK: full_n_mx_my.converged
 OK: full_n_mx_my.N; actual=-100000.; expected=-100000.; relDiff=0.
 OK: full_n_mx_my.Mx; actual=-4000000.; expected=-4000000.; relDiff=0.
@@ -2769,7 +2799,7 @@ OK: symmetric_circle.converged
 OK: symmetric_circle.N; actual=-219999.999999999; expected=-220000.; relDiff=0.
 OK: symmetric_circle.Mx; actual=-6000000.00000002; expected=-6000000.; relDiff=0.
 OK: symmetric_circle.My; actual=0.000000000146; expected=0.; absDiff=0.000000000146
-BASELINE|symmetric_circle|converged=True|eps0=-0.000180839111|kappaX=-0.000000845237|kappaY=0.|Nint=-219999.999999999|Mxint=-6000000.00000002|Myint=0.000000000146|resN=0.000000000815|resMx=-0.000000019558|resMy=0.000000000146|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.0234375|fibers=716|rebars=8
+BASELINE|symmetric_circle|converged=True|eps0=-0.000180839111|kappaX=-0.000000845237|kappaY=0.|Nint=-219999.999999999|Mxint=-6000000.00000002|Myint=0.000000000146|resN=0.000000000815|resMx=-0.000000019558|resMy=0.000000000146|lambda=FAIL:NumericalFailure|iterations=2|elapsedSec=0.0390625|fibers=716|rebars=8
 OK: repeated_run.first.converged
 OK: repeated_run.second.converged
 OK: repeated_run.epsilon0; actual=-0.000082335606; expected=-0.000082335606; absDiff=0.
@@ -2795,7 +2825,7 @@ OK: origin_shift.shifted.Mx; actual=1000000.; expected=1000000.; relDiff=0.
 OK: origin_shift.shifted.My; actual=-10500000.; expected=-10500000.; relDiff=0.
 BASELINE|origin_shift_base|converged=True|eps0=-0.000082335606|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=-4000000.|Myint=-3000000.|resN=0.|resMx=-0.000000003725|resMy=0.000000000931|lambda=NA|iterations=3|elapsedSec=0.|fibers=0|rebars=0
 BASELINE|origin_shift_shifted|converged=True|eps0=-0.00007872362|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=1000000.|Myint=-10500000.|resN=-0.000000000015|resMx=0.000000000815|resMy=0.000000003725|lambda=NA|iterations=3|elapsedSec=0.|fibers=0|rebars=0
-TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.8046875
+TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=1.015625
 
 Regression baseline report: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Stage01_RegressionBaseline_Raw.txt
 

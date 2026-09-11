@@ -87,7 +87,7 @@ Private mSolverSecantMinStepNorm As Double ' Минимальная норма �
 Private mCapacityInitialLambda As Double ' Начальный шаг/точка поиска lambda для LoadMultiplier.
 Private mCapacitySolutionStrategy As String ' Auto, LoadMultiplier или UltimateStrain.
 Private mCapacitySearchMethod As String ' Bisection, Brent или Secant для LoadMultiplier.
-Private mCapacityMaxLambda As Double ' Верхняя защитная граница lambda.
+Private mCapacityMaxLambda As Double ' Верхняя защитная граница lambda для расширения скобки LoadMultiplier.
 Private mCapacityToleranceLambda As Double ' Точность lambda в одномерном поиске LoadMultiplier.
 Private mCapacityToleranceStrain As Double ' Точность попадания в предельную деформацию UltimateStrain.
 Private mCapacityMaxRetries As Long ' Повторные попытки LoadMultiplier при несходимости пробной точки.
@@ -153,7 +153,7 @@ Private Sub Class_Initialize()
     mCapacityInitialLambda = 1#
     mCapacitySolutionStrategy = "Auto"
     mCapacitySearchMethod = "Bisection"
-    mCapacityMaxLambda = 64#
+    mCapacityMaxLambda = 1024#
     mCapacityToleranceLambda = 0.01
     mCapacityToleranceStrain = 0.00001
     mCapacityMaxRetries = 0
@@ -633,7 +633,7 @@ Private Sub RunCombination(ByVal index As Long)
     ReportValue "My расчетный", FormatNumberInvariant(mInputs(index).My) & " Н*мм"
 
     Dim profileError As String
-    If Not profile.ValidateForCalculation(NormalizedCrackPsiMode(), profileError) Then
+    If Not profile.ValidateForCalculation(profileError) Then
         ReportStep "Сочетание не рассчитано: " & profileError
         MarkInvalid index, profileError
         Exit Sub
@@ -991,32 +991,15 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
 End Function
 
 ' Выполняет весь расчет раскрытия трещин как один запрошенный расчет профиля.
-' Исходное CrackedState получает batch через общий StateSolutionRunner; сам
-' CCrackWidthCalculator не повторяет этот solve и работает с готовым НДС.
+' Сначала обязательно проверяется факт образования нормальной трещины по
+' Mcrc/Ncrc. Текущее CrackedState полного LC считается всегда: по нему
+' выполняется проверка продольных трещин и записывается snapshot. Формула
+' ширины раскрытия запускается только если нормальная трещина образована.
 Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProfile)
-    ReportStep "Запускается исходное НДС с раскрытой трещиной по профилю."
-
-    Dim runner As CStateSolutionRunner
-    Set runner = RunProfileState(index, sstCrackedState, cpCrackedNDS, profile.CrackedStateSpec)
-    If runner Is Nothing Or runner.ResultSolver Is Nothing Then
-        mResults(index).CrackStatus = mStatusPolicy.NotApplicable
-        mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
-        ReportStep "Расчет трещин не запускается: исходное CrackedState не получено."
-        Exit Sub
-    End If
-    If Not runner.Converged Or runner.ExtensionUsed Or Not runner.WithinPhysicalRange Then
-        mResults(index).CrackStatus = mStatusPolicy.NotApplicable
-        mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
-        ReportStep "Расчет трещин не запускается: исходное CrackedState не находится полностью в физическом диапазоне диаграммы."
-        Exit Sub
-    End If
-
-    StoreLongitudinalCrackWithinCrackWidth index
-
     Dim crack As CCrackWidthCalculator
     Set crack = New CCrackWidthCalculator
     ConfigureCrackCalculator crack
-    ReportStep "Запускается расчет ширины раскрытия нормальных трещин."
+    ReportStep "Запускается проверка образования нормальной трещины."
 
     Dim crackReferenceX As Double
     Dim crackReferenceY As Double
@@ -1029,7 +1012,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     ' приведенного сечения той материальной модели, по которой определяется
     ' Ncrc. Load.ReferenceOffset и сдвиг от бетонного центра учтены внутри
     ' CSectionLoadState, поэтому здесь нет ручной формулы N*dx/dy.
-    crack.Calculate runner.ResultSolver, mSection, mMaterialProvider, profile.CrackedStateSpec, _
+    crack.CheckFormationBeforeWidth mSection, mMaterialProvider, profile.CrackedStateSpec, _
         profile.CrackInitiationSpec, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
         loadState, crackReferenceX, crackReferenceY
     mResults(index).CrackStatus = mStatusPolicy.CrackStatusFromCalculator(crack)
@@ -1037,6 +1020,41 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     If Not crack.BeforeMcrcState Is Nothing Then mResults(index).AddState crack.BeforeMcrcState
     If Not crack.AfterMcrcState Is Nothing Then mResults(index).AddState crack.AfterMcrcState
 
+    ReportStep "Запускается текущее CrackedState полного сочетания по профилю трещин."
+    Dim runner As CStateSolutionRunner
+    Set runner = RunProfileState(index, sstCrackedState, cpCrackedNDS, profile.CrackedStateSpec)
+    If runner Is Nothing Or runner.ResultSolver Is Nothing Then
+        mResults(index).CrackStatus = mStatusPolicy.NotApplicable
+        mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
+        ReportStep "Расчет трещин не продолжается: CrackedState не получен."
+        GoTo ReportCrackResult
+    End If
+    If Not runner.Converged Or runner.ExtensionUsed Or Not runner.WithinPhysicalRange Then
+        mResults(index).CrackStatus = mStatusPolicy.NotApplicable
+        mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
+        ReportStep "Расчет трещин не продолжается: CrackedState не находится полностью в физическом диапазоне диаграммы."
+        GoTo ReportCrackResult
+    End If
+
+    StoreLongitudinalCrackWithinCrackWidth index
+
+    If Not crack.Converged Then
+        ReportStep "Проверка образования трещины не завершилась корректно: " & crack.StopReason
+        GoTo ReportCrackResult
+    End If
+    If Not crack.CrackFormed Then
+        ReportStep "Ширина раскрытия не считается: нормальная трещина не образуется при текущей нагрузке."
+        GoTo ReportCrackResult
+    End If
+
+    ReportStep "Запускается расчет ширины раскрытия нормальных трещин."
+    crack.CalculateAfterFormationCheck runner.ResultSolver, mSection, mMaterialProvider, profile.CrackedStateSpec, _
+        profile.CrackInitiationSpec, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
+        loadState, crackReferenceX, crackReferenceY
+    mResults(index).CrackStatus = mStatusPolicy.CrackStatusFromCalculator(crack)
+    mResults(index).StoreCrackResult crack
+
+ReportCrackResult:
     ReportValue "CrackStatus", mResults(index).CrackStatus
     ReportValue "Трещина образована", IIf(mResults(index).CrackFormed, "да", "нет")
     ReportValue "a_crc", FormatNumberInvariant(mResults(index).CrackWidth) & " мм"
@@ -1077,18 +1095,6 @@ Private Function NormalizedCapacitySolutionStrategy() As String
             NormalizedCapacitySolutionStrategy = "LoadMultiplier"
         Case "ultimatestrain"
             NormalizedCapacitySolutionStrategy = "UltimateStrain"
-    End Select
-End Function
-
-' Нормализует режим psi_s для проверки обязательности MaterialModel.CrackInitiation.
-Private Function NormalizedCrackPsiMode() As String
-    Select Case LCase$(Trim$(mCrackPsiMode))
-        Case "auto", "refined"
-            NormalizedCrackPsiMode = "Auto"
-        Case "user", "manual", "fixed1", "unity"
-            NormalizedCrackPsiMode = "User"
-        Case Else
-            NormalizedCrackPsiMode = "User"
     End Select
 End Function
 

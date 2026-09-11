@@ -918,6 +918,7 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     elementResults = ResultTable("rngNDMElementResults")
     AssertTrue stats, "ui.results.elements.rows", UBound(elementResults, 1) > 1
     AssertTrue stats, "ui.results.elements.noCombinationIndex", ResultHeaderColumn(elementResults, "CombinationIndex") = 0
+    AssertTrue stats, "ui.results.elements.materialType", ResultHeaderColumn(elementResults, "MaterialType") > 0
     AssertTrue stats, "ui.results.elements.units", ResultHeaderColumn(elementResults, "Stress, MPa") > 0
     AssertTrue stats, "ui.results.elements.noGeometryDup", ResultHeaderColumn(elementResults, "X, mm") = 0
     AssertTrue stats, "ui.results.elements.noPlaneDup", ResultHeaderColumn(elementResults, "Epsilon0") = 0
@@ -928,10 +929,10 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     geometryResults = ResultTable("rngNDMSectionGeometry")
     AssertTrue stats, "ui.results.geometry.rows", UBound(geometryResults, 1) > 1
     AssertTrue stats, "ui.results.stability.anchor", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 37 And ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Column = 1
-    AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 60 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 11
-    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 60 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 28
-    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 60 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 36
-    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 60 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 49
+    AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 60 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 12
+    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 60 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 29
+    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 60 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 37
+    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 60 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 50
     AssertTrue stats, "ui.results.geometry.noSource", ResultHeaderColumn(geometryResults, "SourceName") = 0
     AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(geometryResults, "MaterialClass") = 0
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
@@ -992,8 +993,9 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
 End Sub
 
 ' Проверяет полный предельный snapshot: 20 сочетаний, каждое с пятью
-' конечными named-state. Регрессия защищает writer-ы Results от фиксированных
-' размеров массивов, которые раньше давали Subscript out of range.
+' конечными named-state. Для устойчивого получения Before/AfterMcrcState
+' используется чистый изгиб: сжатие может подавить образование нормальной
+' трещины и тогда эти состояния физически не обязаны появляться.
 Private Sub TestTwentyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUiTestStats)
     PrepareUserLShapeMomentUltimateInput
     PrepareFullStateProfile "PR3"
@@ -1009,7 +1011,7 @@ Private Sub TestTwentyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUi
     Dim rowIndex As Long
     For rowIndex = 1 To 20
         loads.Cells.Item(rowIndex + 1, 1).Value2 = "LC_FULL_" & Format$(rowIndex, "00")
-        loads.Cells.Item(rowIndex + 1, 2).Value2 = 200#
+        loads.Cells.Item(rowIndex + 1, 2).Value2 = 0#
         loads.Cells.Item(rowIndex + 1, 3).Value2 = 50#
         loads.Cells.Item(rowIndex + 1, 4).ClearContents
         loads.Cells.Item(rowIndex + 1, 5).Value2 = "PR3"

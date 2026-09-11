@@ -59,7 +59,7 @@ Private mLambdaTolerance As Double ' Точность одномерного п�
 Private mStrainTolerance As Double ' Допуск достижения предельной деформации для UltimateStrain.
 Private mSearchMethod As String ' Алгоритм одномерного поиска LoadMultiplier: Bisection, Brent или Secant.
 Private mSolutionMethod As String ' Фактическая ветка, которая дала принятый результат: UltimateStrain или LoadMultiplier.
-Private mMaxLambda As Double ' Защитная верхняя граница lambda, чтобы поиск не уходил бесконечно.
+Private mMaxLambda As Double ' Верхняя граница расширения скобки LoadMultiplier, чтобы поиск не уходил бесконечно.
 Private mInitialLambdaStep As Double ' Первый шаг расширения lambda при поиске расчетной скобки.
 Private mMaxRetries As Long ' Допустимые повторы пробной точки после NumericalFailure.
 Private mSolverBaseLoadSteps As Long ' Базовое число ступеней CSectionSolver для каждой probe-точки.
@@ -106,7 +106,7 @@ Private Sub Class_Initialize()
     mLambdaTolerance = 0.001
     mStrainTolerance = 0.00001
     mSearchMethod = "Bisection"
-    mMaxLambda = 100#
+    mMaxLambda = 1024#
     mInitialLambdaStep = 1#
     mMaxRetries = 4
     mSolverBaseLoadSteps = 8
@@ -227,7 +227,7 @@ Public Sub SolveByUltimateLoadPath(ByVal section As CSectionModel, _
 
         If Abs(rPath1) <= 1# And Abs(rPath2) <= 1# And Abs(rLimit) <= UltimateStrainRatioTolerance() Then
             Set mLastSolver = solver
-            If lambdaValue <= 0# Or lambdaValue > mMaxLambda Then
+            If Not IsValidUltimateLambda(lambdaValue, nOffset, nBase, mxBase, myBase, mxOffset, myOffset) Then
                 mLimitState = STATE_NUMERICAL_FAILURE
                 mStopReason = "Ultimate strain solution has invalid lambda: " & FormatNumberInvariant(lambdaValue)
                 Exit Sub
@@ -288,7 +288,7 @@ Private Sub SolveMomentUltimateStrainPath(ByVal section As CSectionModel, _
         If Abs(rN) <= 1# And Abs(rDir) <= MOMENT_DIRECTION_TOLERANCE And _
                 Abs(rLimit) <= UltimateStrainRatioTolerance() Then
             Set mLastSolver = solver
-            If lambdaValue <= 0# Or lambdaValue > mMaxLambda Then
+            If Not IsValidUltimateLambda(lambdaValue, nSpecified, 0#, mxBase, myBase, mxOffset, myOffset) Then
                 mLimitState = STATE_NUMERICAL_FAILURE
                 mStopReason = "Ultimate strain solution has invalid lambda: " & FormatNumberInvariant(lambdaValue)
                 Exit Sub
@@ -1494,7 +1494,7 @@ Private Function ValidateLoadPathCapacityInputs(ByVal section As CSectionModel, 
         SetInvalidInput "Материал арматуры не передан."
     ElseIf Abs(nBase) <= 0.000000001 And Abs(mxBase) <= 0.000000001 And Abs(myBase) <= 0.000000001 Then
         SetInvalidInput "В траектории несущей способности нет масштабируемой нагрузки."
-    ElseIf mMaxLambda <= 0# Or mSolverMaxIterations <= 0 Then
+    ElseIf mSolverMaxIterations <= 0 Then
         SetInvalidInput "Настройки поиска несущей способности некорректны."
     Else
         ValidateLoadPathCapacityInputs = True
@@ -1514,7 +1514,7 @@ Private Function ValidateCapacityInputs(ByVal section As CSectionModel, ByVal co
         SetInvalidInput "Материал арматуры не передан."
     ElseIf Sqr(mxBase * mxBase + myBase * myBase) <= 0.000000001 Then
         SetInvalidInput "Базовый вектор момента должен быть ненулевым."
-    ElseIf mMaxLambda <= 0# Or mSolverMaxIterations <= 0 Then
+    ElseIf mSolverMaxIterations <= 0 Then
         SetInvalidInput "Настройки поиска несущей способности некорректны."
     Else
         ValidateCapacityInputs = True
@@ -1525,7 +1525,8 @@ End Function
 Private Function ValidateLoadMultiplierSettings() As Boolean
     If Len(NormalizedSearchMethod()) = 0 Then
         SetInvalidInput "Capacity.SearchMethod must be one of Bisection, Brent or Secant."
-    ElseIf mInitialLambdaStep <= 0# Or mLambdaTolerance <= 0# Or mMaxRetries < 0 Or mSolverBaseLoadSteps <= 0 Then
+    ElseIf mInitialLambdaStep <= 0# Or mLambdaTolerance <= 0# Or mMaxLambda <= 0# Or _
+            mMaxRetries < 0 Or mSolverBaseLoadSteps <= 0 Then
         SetInvalidInput "LoadMultiplier capacity settings are invalid."
     Else
         ValidateLoadMultiplierSettings = True
@@ -1545,6 +1546,21 @@ Private Sub SetInvalidInput(ByVal reason As String)
     mLimitState = STATE_INVALID_INPUT
     mStopReason = reason
 End Sub
+
+' Проверяет только численную пригодность найденного UltimateStrain-множителя.
+' MaxLambda здесь намеренно не применяется: это граница расширения скобки
+' LoadMultiplier, а UltimateStrain уже нашел предельную плоскость деформаций.
+Private Function IsValidUltimateLambda(ByVal lambdaValue As Double, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxBase As Double, ByVal myBase As Double, _
+        ByVal mxOffset As Double, ByVal myOffset As Double) As Boolean
+    If lambdaValue <= 0# Then Exit Function
+    If Not IsFiniteNumber(lambdaValue) Then Exit Function
+    If Not IsFiniteNumber(TargetN(lambdaValue, nOffset, nBase)) Then Exit Function
+    If Not IsFiniteNumber(TargetMx(lambdaValue, mxBase, mxOffset)) Then Exit Function
+    If Not IsFiniteNumber(TargetMy(lambdaValue, myBase, myOffset)) Then Exit Function
+    IsValidUltimateLambda = True
+End Function
 
 Private Function ProbeWithRetries(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _

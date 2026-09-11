@@ -23,12 +23,13 @@ Option Explicit
 ' Способ определения расстояния a_s задается отдельно: локально до ближайшего
 ' бетонного контура или глобально до дальней растянутой линии всего сечения.
 '
-' В режиме User ширина считается по переданному НДС текущего сочетания:
-' повторный solve не выполняется, а psi_s берется из настройки.
-' В режиме Auto расчет сначала выполняется с psi_s = 1. Только если
-' первая проверка не проходит, класс ищет состояние BeforeMcrcState с
-' растянутым бетоном, затем отдельно решает AfterMcrcState без растянутого
-' бетона. Именно AfterMcrcState дает sigma_s,crc для уточнения psi_s.
+' Перед расчетом ширины всегда проверяется факт образования нормальной трещины:
+' для центрального растяжения через Ncrc, для остальных случаев через Mcrc по
+' предельной растягивающей деформации бетона. Только если трещина образуется
+' при текущем LC, batch считает CrackedState и передает его сюда для формулы
+' раскрытия. Режим psi_s влияет только на коэффициент в этой формуле:
+' User берет введенное значение, Auto при необходимости уточняет psi_s по
+' уже найденному состоянию AfterMcrcState.
 
 Private Const PHI1_LONG_TERM As Double = 1.4 ' Коэффициент длительного действия нагрузки для a_crc1 по СП 63.
 Private Const PHI2_DEFAULT As Double = 0.5 ' Типовой default для обычной арматуры периодического профиля.
@@ -65,10 +66,13 @@ Private mConcreteEb As Double ' Eb для Ared в центральной вет�
 Private mConcreteEbt0 As Double ' eps_bt0 для формулы (8.54) СП 63 при однозначно растянутой эпюре.
 Private mConcreteEbt2 As Double ' eps_bt2: предельная растягивающая деформация при двузначной эпюре Mcrc.
 Private mSteelEs As Double ' Es для формулы раскрытия трещины, МПа.
-Private mCrackInitiationSpec As CMaterialModelSpec ' Спецификация модели Mcrc, если Auto потребует lambda_crc.
+Private mCrackInitiationSpec As CMaterialModelSpec ' Спецификация модели образования трещины для обязательной проверки Mcrc/Ncrc.
 Private mCrackedStateSpec As CMaterialModelSpec ' Спецификация модели раскрытой трещины текущего LC.
 Private mBeforeMcrcState As CSectionStateResult ' Необязательное состояние до выключения растянутого бетона.
+Private mBeforeMcrcSolver As CSectionSolver ' Solver состояния BeforeMcrcState для warm start состояния сразу после трещины.
 Private mAfterMcrcState As CSectionStateResult ' Необязательное состояние после выключения растянутого бетона для sigma_s,crc.
+Private mAfterMcrcSolver As CSectionSolver ' Solver состояния AfterMcrcState, чтобы не решать его повторно для sigma_s,crc.
+Private mFormationPrechecked As Boolean ' True, если Ncrc/Mcrc уже проверены перед расчетом полной ширины.
 
 Private mSolverMethod As String ' Newton или Secant для внутренних прямых расчетов состояния сечения.
 Private mSolverLoadSteps As Long ' Число ступеней приложения нагрузки во внутреннем CSectionSolver.
@@ -190,17 +194,79 @@ End Sub
 ' ------------------------------
 ' Основной расчет
 ' ------------------------------
-' Метод получает уже найденное НДС текущего сочетания и, в режиме User,
-' использует его напрямую без повторного вызова CSectionSolver. Дополнительные
-' solve-ы нужны только для Auto и только после неудачной первой проверки
-' раскрытия с psi_s = 1.
+' Метод оставлен как компактный сценарий для тестов: сначала выполняется
+' обязательная проверка образования трещины, затем по переданному CrackedState
+' считается ширина раскрытия. В рабочем batch эти два шага разделены явно:
+' orchestrator всегда сохраняет текущее CrackedState для профиля трещин, а
+' calculator считает a_crc только при положительной проверке образования.
 Public Sub Calculate(ByVal currentSolver As CSectionSolver, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal crackedStateSpec As CMaterialModelSpec, _
         ByVal crackInitiationSpec As CMaterialModelSpec, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal loadStateForClassification As CSectionLoadState, _
         ByVal centralReferenceX As Double, ByVal centralReferenceY As Double)
+    If Not CheckFormationBeforeWidth(section, materialProvider, crackedStateSpec, crackInitiationSpec, _
+            targetN, targetMx, targetMy, loadStateForClassification, centralReferenceX, centralReferenceY) Then Exit Sub
+    CalculateAfterFormationCheck currentSolver, section, materialProvider, crackedStateSpec, crackInitiationSpec, _
+        targetN, targetMx, targetMy, loadStateForClassification, centralReferenceX, centralReferenceY
+End Sub
+
+' Продолжает расчет ширины после обязательной предварительной проверки
+' образования трещины. Метод сохраняет уже найденные Before/After Mcrc-состояния
+' и использует AfterMcrcState для sigma_s,crc, если Auto-подбор psi_s потребует
+' уточнения коэффициента.
+Public Sub CalculateAfterFormationCheck(ByVal currentSolver As CSectionSolver, ByVal section As CSectionModel, _
+        ByVal materialProvider As CMaterialModelProvider, ByVal crackedStateSpec As CMaterialModelSpec, _
+        ByVal crackInitiationSpec As CMaterialModelSpec, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal loadStateForClassification As CSectionLoadState, _
+        ByVal centralReferenceX As Double, ByVal centralReferenceY As Double)
+    If Not mFormationPrechecked Then _
+        Err.Raise vbObjectError + 3724, "CCrackWidthCalculator", "Предварительная проверка образования трещины не выполнена."
+    If Not mCrackFormed Then _
+        Err.Raise vbObjectError + 3725, "CCrackWidthCalculator", "Нельзя считать ширину: проверка показала, что трещина не образована."
+
+    CalculateCore currentSolver, section, materialProvider, crackedStateSpec, crackInitiationSpec, _
+        targetN, targetMx, targetMy, loadStateForClassification, centralReferenceX, centralReferenceY
+End Sub
+
+' Выполняет только проверку факта образования трещины по Ncrc или Mcrc.
+' Если уровень образования трещины найден, сохраняются состояния
+' BeforeMcrcState/AfterMcrcState даже при lambda_crc > 1: они описывают
+' пороговое состояние, а не обязательно фактическую трещину при текущем LC.
+' Сама ширина a_crc еще не считается: для нее нужен полный CrackedState LC.
+Public Function CheckFormationBeforeWidth(ByVal section As CSectionModel, _
+        ByVal materialProvider As CMaterialModelProvider, ByVal crackedStateSpec As CMaterialModelSpec, _
+        ByVal crackInitiationSpec As CMaterialModelSpec, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal loadStateForClassification As CSectionLoadState, _
+        ByVal centralReferenceX As Double, ByVal centralReferenceY As Double) As Boolean
     ClearResult
+    ValidateFormationInputs section, materialProvider, loadStateForClassification, crackedStateSpec, crackInitiationSpec
+    Set mCrackedStateSpec = crackedStateSpec.Clone
+    If crackInitiationSpec.IsComplete Then Set mCrackInitiationSpec = crackInitiationSpec.Clone
+    ApplyMaterialProviderProperties materialProvider
+    NormalizeSettings
+
+    mFormationPrechecked = True
+    If IsCentralTensionState(loadStateForClassification, centralReferenceX, centralReferenceY) Then
+        CheckCentralTensionFormation section, materialProvider, targetN, targetMx, targetMy, loadStateForClassification
+    Else
+        CheckGeneralFormation section, materialProvider, targetN, targetMx, targetMy, _
+            loadStateForClassification, centralReferenceX, centralReferenceY
+    End If
+    CheckFormationBeforeWidth = (mConverged And mCrackFormed)
+End Function
+
+' Общая часть расчета ширины раскрытия. В обычном режиме вызывается после
+' ClearResult, а после обязательной Mcrc/Ncrc-проверки работает поверх уже
+' сохраненных состояний образования трещины.
+Private Sub CalculateCore(ByVal currentSolver As CSectionSolver, ByVal section As CSectionModel, _
+        ByVal materialProvider As CMaterialModelProvider, ByVal crackedStateSpec As CMaterialModelSpec, _
+        ByVal crackInitiationSpec As CMaterialModelSpec, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal loadStateForClassification As CSectionLoadState, _
+        ByVal centralReferenceX As Double, ByVal centralReferenceY As Double)
     ValidateInputs currentSolver, section, materialProvider
     If loadStateForClassification Is Nothing Then _
         Err.Raise vbObjectError + 3715, "CCrackWidthCalculator", "CSectionLoadState не передан."
@@ -212,6 +278,21 @@ Public Sub Calculate(ByVal currentSolver As CSectionSolver, ByVal section As CSe
     End If
     ApplyMaterialProviderProperties materialProvider
     NormalizeSettings
+    mConverged = False
+    mCrackFormed = False
+    mStopReason = vbNullString
+    mTensionRebarCount = 0
+    mMaxSteelStrain = 0#
+    mMaxSteelStress = 0#
+    mSigmaS = 0#
+    mSigmaSCrc = 0#
+    mAs = 0#
+    mAbt = 0#
+    mDsEquivalent = 0#
+    mLsRaw = 0#
+    mLs = 0#
+    mCrackWidth = 0#
+    mUtilization = 0#
 
     If IsCentralTensionState(loadStateForClassification, centralReferenceX, centralReferenceY) Then
         CalculateCentralTension currentSolver, section, materialProvider, targetN, targetMx, targetMy, _
@@ -221,6 +302,145 @@ Public Sub Calculate(ByVal currentSolver As CSectionSolver, ByVal section As CSe
             loadStateForClassification
     End If
 End Sub
+
+' Проверяет минимальный набор данных для предварительной Ncrc/Mcrc-проверки.
+' В отличие от основного Calculate здесь еще нет полного CrackedState solver-а,
+' поэтому проверяется только геометрия, material provider и модель Mcrc.
+Private Sub ValidateFormationInputs(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
+        ByVal loadStateForClassification As CSectionLoadState, ByVal crackedStateSpec As CMaterialModelSpec, _
+        ByVal crackInitiationSpec As CMaterialModelSpec)
+    If section Is Nothing Then Err.Raise vbObjectError + 3726, "CCrackWidthCalculator", "Модель расчетного сечения не передана."
+    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 3727, "CCrackWidthCalculator", "В модели расчетного сечения нет бетонных элементов."
+    If section.RebarCount <= 0 Then Err.Raise vbObjectError + 3728, "CCrackWidthCalculator", "В модели расчетного сечения нет арматурных элементов."
+    If materialProvider Is Nothing Then Err.Raise vbObjectError + 3729, "CCrackWidthCalculator", "Material provider не передан."
+    If loadStateForClassification Is Nothing Then Err.Raise vbObjectError + 3730, "CCrackWidthCalculator", "CSectionLoadState не передан."
+    If crackedStateSpec Is Nothing Or Not crackedStateSpec.IsComplete Then _
+        Err.Raise vbObjectError + 3731, "CCrackWidthCalculator", "MaterialModel.CrackedState не передан."
+    If crackInitiationSpec Is Nothing Or Not crackInitiationSpec.IsComplete Then _
+        Err.Raise vbObjectError + 3732, "CCrackWidthCalculator", "Для Calculation.Crack.Width нужна MaterialModel.CrackInitiation."
+End Sub
+
+' Проверяет центральное растяжение по Ncrc. Для единого snapshot-а состояния
+' до и после трещины сохраняются так же, как в общей Mcrc-ветке.
+Private Sub CheckCentralTensionFormation(ByVal section As CSectionModel, _
+        ByVal materialProvider As CMaterialModelProvider, ByVal targetN As Double, _
+        ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal loadStateForClassification As CSectionLoadState)
+    mCentralTensionBranch = True
+    mPhi3 = ResolvePhi3(loadStateForClassification)
+
+    If Not IsTensionLoad(loadStateForClassification) Then
+        FinishNoCrack "Центральная ветка: продольная сила не является растягивающей."
+        Exit Sub
+    End If
+
+    mNcrc = CentralTensionCrackForce(section)
+    If mNcrc <= 0# Or targetN <= 0# Then
+        mStopReason = "InputError: для центрального растяжения не удалось определить Ncrc."
+        Exit Sub
+    End If
+    mLambdaCrc = mNcrc / targetN
+    If mLambdaCrc <= 0# Then
+        mStopReason = "NumericalFailure: найденное lambda_crc по Ncrc неположительно."
+        Exit Sub
+    End If
+
+    If Not BuildBeforeMcrcState(section, materialProvider, targetN, targetMx, targetMy) Then Exit Sub
+    If Not EnsureAfterMcrcState(section, materialProvider, Nothing, targetN, targetMx, targetMy) Then Exit Sub
+
+    If mLambdaCrc > 1# Then
+        FinishNoCrack "Трещина не образована: Ncrc больше заданной растягивающей силы."
+        Exit Sub
+    End If
+
+    mConverged = True
+    mCrackFormed = True
+    mStopReason = "Предварительная проверка Ncrc: трещина образуется при текущей нагрузке."
+    AppendDiagnostic "formation=Ncrc; lambda_crc=" & FormatNumberInvariant(mLambdaCrc)
+End Sub
+
+' Проверяет общую изгибную/внецентренную ветку по предельной растягивающей
+' деформации бетона. Состояние AfterMcrcState решается сразу, чтобы затем не
+' пересчитывать его при уточнении psi_s.
+Private Sub CheckGeneralFormation(ByVal section As CSectionModel, _
+        ByVal materialProvider As CMaterialModelProvider, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal loadStateForClassification As CSectionLoadState, _
+        ByVal centralReferenceX As Double, ByVal centralReferenceY As Double)
+    If mCrackInitiationSpec Is Nothing Then
+        mStopReason = "InputError: для Calculation.Crack.Width требуется MaterialModel.CrackInitiation."
+        Exit Sub
+    End If
+    If Not HasNormalCrackDrivingAction(loadStateForClassification, centralReferenceX, centralReferenceY) Then
+        FinishNoCrack "Трещина не образована: нет растягивающей силы или изгибающего момента, вызывающего нормальную трещину."
+        Exit Sub
+    End If
+
+    If Not CalculateLambdaCrc(section, materialProvider.ConcreteMaterialFromSpec(mCrackInitiationSpec), _
+            materialProvider.SteelMaterialFromSpec(mCrackInitiationSpec), Nothing, _
+            targetN, targetMx, targetMy) Then Exit Sub
+    If Not EnsureAfterMcrcState(section, materialProvider, Nothing, targetN, targetMx, targetMy) Then Exit Sub
+
+    If mLambdaCrc > 1# Then
+        FinishNoCrack "Трещина не образована: предельная растянутая деформация бетона не достигнута при lambda = 1."
+        Exit Sub
+    End If
+
+    mConverged = True
+    mCrackFormed = True
+    mStopReason = "Предварительная проверка Mcrc: трещина образуется при текущей нагрузке."
+End Sub
+
+' Создает BeforeMcrcState для центрального растяжения, где lambda_crc задана
+' через Ncrc и нет отдельного прямого поиска плоскости по eps_bt,ult.
+Private Function BuildBeforeMcrcState(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
+    If mBeforeMcrcState Is Nothing Then
+        Dim beforeSolver As CSectionSolver
+        Set beforeSolver = SolveState(section, materialProvider.ConcreteMaterialFromSpec(mCrackInitiationSpec), _
+            materialProvider.SteelMaterialFromSpec(mCrackInitiationSpec), Nothing, _
+            targetN * mLambdaCrc, targetMx * mLambdaCrc, targetMy * mLambdaCrc)
+        If Not beforeSolver.Converged Then
+            mStopReason = "NumericalFailure: состояние Ncrc до образования трещины не сошлось: " & beforeSolver.StopReason
+            Exit Function
+        End If
+        Set mBeforeMcrcSolver = beforeSolver
+        Set mBeforeMcrcState = New CSectionStateResult
+        mBeforeMcrcState.InitializeFromSolver sstBeforeMcrcState, cpMcrc, _
+            mCrackInitiationSpec, beforeSolver, False, "OK"
+    End If
+    BuildBeforeMcrcState = True
+End Function
+
+' Возвращает AfterMcrcState для уже найденного lambda_crc. Предварительная
+' проверка создает это состояние заранее, а Auto-уточнение psi_s потом только
+' читает sigma_s,crc из сохраненного solver-а без повторного решения.
+Private Function EnsureAfterMcrcState(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
+        ByVal startSolver As CSectionSolver, ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
+    If Not mAfterMcrcSolver Is Nothing Then
+        If mAfterMcrcSolver.Converged Then
+            EnsureAfterMcrcState = True
+            Exit Function
+        End If
+    End If
+
+    Dim effectiveStartSolver As CSectionSolver
+    Set effectiveStartSolver = startSolver
+    If effectiveStartSolver Is Nothing Then Set effectiveStartSolver = mBeforeMcrcSolver
+
+    Set mAfterMcrcSolver = SolveState(section, materialProvider.ConcreteMaterialFromSpec(mCrackedStateSpec), _
+        materialProvider.SteelMaterialFromSpec(mCrackedStateSpec), effectiveStartSolver, _
+        targetN * mLambdaCrc, targetMx * mLambdaCrc, targetMy * mLambdaCrc)
+    If Not mAfterMcrcSolver.Converged Then
+        mStopReason = "NumericalFailure: состояние lambda_crc после образования трещины не сошлось: " & mAfterMcrcSolver.StopReason
+        Exit Function
+    End If
+
+    Set mAfterMcrcState = New CSectionStateResult
+    mAfterMcrcState.InitializeFromSolver sstAfterMcrcState, cpCrackedNDS, _
+        mCrackedStateSpec, mAfterMcrcSolver, False, "OK"
+    EnsureAfterMcrcState = True
+End Function
 
 ' Берет Rbt,ser, Eb, eps_bt0, eps_bt2 и Es из material provider-а.
 ' Эти значения больше не являются отдельными настройками crack-класса:
@@ -365,7 +585,7 @@ Private Function CalculateLambdaCrc(ByVal section As CSectionModel, ByVal concre
     On Error GoTo Failed
 
     If mConcreteEbt0 <= 0# Or mConcreteEbt2 <= 0# Then
-        mStopReason = "InputError: для Mcrc в режиме Auto нужны положительные eps_bt0 и eps_bt2 в модели CrackInitiation."
+        mStopReason = "InputError: для проверки образования трещины нужны положительные eps_bt0 и eps_bt2 в модели CrackInitiation."
         Exit Function
     End If
 
@@ -397,6 +617,7 @@ Private Function CalculateLambdaCrc(ByVal section As CSectionModel, ByVal concre
                 Exit Function
             End If
             mLambdaCrc = lambdaValue
+            Set mBeforeMcrcSolver = solver
             Set mBeforeMcrcState = New CSectionStateResult
             mBeforeMcrcState.InitializeFromSolver sstBeforeMcrcState, cpMcrc, _
                 mCrackInitiationSpec, solver, False, "OK"
@@ -671,11 +892,10 @@ End Sub
 ' Завершает расчет раскрытия с учетом режима psi_s.
 ' User заканчивает расчет после первой формулы с пользовательским psi_s.
 ' Auto сначала делает проверку с psi_s = 1; если a_crc <= a_crc,ult,
-' уточнение не запускается.
-' Только при непрохождении проверки Auto уточняет lambda_crc. В общей ветке
-' при этом появляется BeforeMcrcState, а AfterMcrcState решается для той же
-' lambda_crc уже без растянутого бетона. В центральной ветке lambda_crc берется
-' из Ncrc/N, поэтому создается только AfterMcrcState.
+' уточнение не запускается. Если уточнение нужно, lambda_crc и состояния
+' Before/AfterMcrcState уже должны быть найдены обязательной предварительной
+' проверкой образования трещины, поэтому повторный расчет Mcrc/Ncrc здесь не
+' выполняется.
 Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
         ByVal currentSolver As CSectionSolver, ByRef selected() As Boolean, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -692,52 +912,21 @@ Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal mater
     If Not mConverged Or Not mCrackFormed Then Exit Function
 
     If mAllowableCrackWidth > 0# And mCrackWidth <= mAllowableCrackWidth Then
-        AppendDiagnostic "Auto psi_s: первая проверка с psi_s=1 проходит; lambda_crc не считался."
+        AppendDiagnostic "Auto psi_s: первая проверка с psi_s=1 проходит; sigma_s,crc не уточнялся."
         FinalizeWithPsiMode = True
         Exit Function
     End If
 
-    AppendDiagnostic "Auto psi_s: первая проверка с psi_s=1 не проходит; запускается расчет lambda_crc."
+    AppendDiagnostic "Auto psi_s: первая проверка с psi_s=1 не проходит; используется ранее найденный AfterMcrcState."
     mConverged = False
 
-    ' При истинном центральном растяжении СП задает отдельный порог Ncrc.
-    ' В этой ветке lambda_crc уже получена как Ncrc/N, поэтому ее нельзя
-    ' перетирать общим поиском по eps_bt,ult для изгибных эпюр.
-    If mCentralTensionBranch Then
-        If mLambdaCrc <= 0# Then
-            mStopReason = "InputError: для центрального растяжения lambda_crc через Ncrc не определена."
-            Exit Function
-        End If
-    Else
-        If mCrackInitiationSpec Is Nothing Then
-            mStopReason = "InputError: для SLS.Crack.PsiMode=Auto требуется MaterialModel.CrackInitiation."
-            Exit Function
-        End If
-        If Not CalculateLambdaCrc(section, materialProvider.ConcreteMaterialFromSpec(mCrackInitiationSpec), _
-                materialProvider.SteelMaterialFromSpec(mCrackInitiationSpec), currentSolver, _
-                targetN, targetMx, targetMy) Then Exit Function
-    End If
-
-    If mLambdaCrc > 1# Then
-        FinishNoCrack "Трещина не образована: предельная растянутая деформация бетона не достигнута при lambda = 1."
-        FinalizeWithPsiMode = True
+    If mLambdaCrc <= 0# Then
+        mStopReason = "InputError: lambda_crc предварительной проверки образования трещины не определена."
         Exit Function
     End If
+    If Not EnsureAfterMcrcState(section, materialProvider, currentSolver, targetN, targetMx, targetMy) Then Exit Function
 
-    Dim crcSolver As CSectionSolver
-    Set crcSolver = SolveState(section, materialProvider.ConcreteMaterialFromSpec(mCrackedStateSpec), _
-        materialProvider.SteelMaterialFromSpec(mCrackedStateSpec), currentSolver, _
-        targetN * mLambdaCrc, targetMx * mLambdaCrc, targetMy * mLambdaCrc)
-    If Not crcSolver.Converged Then
-        mStopReason = "NumericalFailure: состояние lambda_crc после образования трещины не сошлось: " & crcSolver.StopReason
-        Exit Function
-    End If
-
-    Set mAfterMcrcState = New CSectionStateResult
-    mAfterMcrcState.InitializeFromSolver sstAfterMcrcState, cpCrackedNDS, _
-        mCrackedStateSpec, crcSolver, False, "OK"
-
-    mSigmaSCrc = AverageSelectedSteelStress(crcSolver, section, _
+    mSigmaSCrc = AverageSelectedSteelStress(mAfterMcrcSolver, section, _
         materialProvider.SteelMaterialFromSpec(mCrackedStateSpec), selected)
     mPsiS = AutoPsi(mSigmaS, mSigmaSCrc)
     FinalizeWidth finalReason & " Psi_s уточнен автоматически после непрохождения первой проверки."
@@ -777,42 +966,41 @@ Private Sub FinishNoCrack(ByVal reason As String)
     AppendDiagnostic reason
 End Sub
 
-' Создает и настраивает внутренний CSectionSolver. Сам решатель не изменяется:
-' класс трещин только выбирает режим бетона и передает готовые N, Mx, My.
-Private Function SolveState(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
-        ByVal steelMaterial As Object, ByVal startSolver As CSectionSolver, _
+' Запускает служебное НДС через общий CStateSolutionRunner. Так состояния
+' BeforeMcrc/AfterMcrc получают тот же централизованный подбор стартовой
+' плоскости, настройки solver-а и диагностику, что и Strength/CrackedState.
+Private Function SolveState(ByVal section As CSectionModel, ByVal concreteMaterial As CMaterialDiagram, _
+        ByVal steelMaterial As CMaterialDiagram, ByVal startSolver As CSectionSolver, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As CSectionSolver
-    Dim solver As CSectionSolver
-    Set solver = New CSectionSolver
-    ConfigureSolver solver
-    If Not startSolver Is Nothing Then
-        If startSolver.Converged Then
-            solver.SetInitialLoadState startSolver.Epsilon0, startSolver.KappaX, startSolver.KappaY, _
-                startSolver.Nint, startSolver.Mxint, startSolver.Myint
-        Else
-            solver.SetInitialState startSolver.Epsilon0, startSolver.KappaX, startSolver.KappaY
-        End If
+    Dim runner As CStateSolutionRunner
+    Set runner = New CStateSolutionRunner
+    ConfigureStateRunner runner
+    If startSolver Is Nothing Then
+        runner.Solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, False
+    Else
+        runner.SolveWithInitialSolver section, concreteMaterial, steelMaterial, _
+            targetN, targetMx, targetMy, startSolver, False
     End If
-    solver.Solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
-    Set SolveState = solver
+    If Len(runner.DiagnosticLog) > 0 Then AppendDiagnostic runner.DiagnosticLog
+    Set SolveState = runner.ResultSolver
 End Function
 
-' Передает внутренние настройки в CSectionSolver без чтения Config внутри solver-а.
-Private Sub ConfigureSolver(ByVal solver As CSectionSolver)
-    solver.LoadSteps = mSolverLoadSteps
-    solver.MaxIterations = mSolverMaxIterations
-    solver.ToleranceN = mSolverToleranceN
-    solver.ToleranceMx = mSolverToleranceMx
-    solver.ToleranceMy = mSolverToleranceMy
-    solver.LineSearchEnabled = mSolverLineSearchEnabled
-    solver.DampingInitial = mSolverDampingInitial
-    solver.MinLineSearchAlpha = mSolverMinLineSearchAlpha
-    solver.SolverMethod = mSolverMethod
-    solver.SecantMaxRestarts = mSolverSecantMaxRestarts
-    solver.SecantMinStepNorm = mSolverSecantMinStepNorm
-    solver.MaxDeltaEpsilon0 = mSolverMaxDeltaEpsilon0
-    solver.MaxDeltaKappa = mSolverMaxDeltaKappa
-    solver.DiagnosticsEnabled = mDiagnosticsEnabled
+' Передает crack-настройки в общий runner прямого НДС.
+Private Sub ConfigureStateRunner(ByVal runner As CStateSolutionRunner)
+    runner.LoadSteps = mSolverLoadSteps
+    runner.MaxIterations = mSolverMaxIterations
+    runner.ToleranceN = mSolverToleranceN
+    runner.ToleranceMx = mSolverToleranceMx
+    runner.ToleranceMy = mSolverToleranceMy
+    runner.LineSearchEnabled = mSolverLineSearchEnabled
+    runner.DampingInitial = mSolverDampingInitial
+    runner.MinLineSearchAlpha = mSolverMinLineSearchAlpha
+    runner.SolverMethod = mSolverMethod
+    runner.SecantMaxRestarts = mSolverSecantMaxRestarts
+    runner.SecantMinStepNorm = mSolverSecantMinStepNorm
+    runner.MaxDeltaEpsilon0 = mSolverMaxDeltaEpsilon0
+    runner.MaxDeltaKappa = mSolverMaxDeltaKappa
+    runner.DiagnosticsEnabled = mDiagnosticsEnabled
 End Sub
 
 ' Центральное растяжение для трещин определяется по моментному вектору
@@ -831,6 +1019,25 @@ Private Function IsCentralTensionState(ByVal loadStateForClassification As CSect
     IsCentralTensionState = loadStateForClassification.IsCentralTensionAbout( _
         centralReferenceX, centralReferenceY, NEAR_ZERO_FORCE, _
         MaxDouble(mSolverToleranceMx, 1#), MaxDouble(mSolverToleranceMy, 1#))
+End Function
+
+' Проверяет, есть ли в LC растяжение или изгиб относительно расчетного центра.
+' Если после централизованного переноса и ZeroMoment-фильтра нет ни
+' растягивающей силы, ни момента, нормальная трещина не может образоваться и
+' прямой поиск Mcrc запускать не нужно.
+Private Function HasNormalCrackDrivingAction(ByVal loadStateForClassification As CSectionLoadState, _
+        ByVal centralReferenceX As Double, ByVal centralReferenceY As Double) As Boolean
+    If loadStateForClassification.IsTension(NEAR_ZERO_FORCE) Then
+        HasNormalCrackDrivingAction = True
+        Exit Function
+    End If
+    If Abs(loadStateForClassification.MxAboutPoint(centralReferenceY)) > MaxDouble(mSolverToleranceMx, 1#) Then
+        HasNormalCrackDrivingAction = True
+        Exit Function
+    End If
+    If Abs(loadStateForClassification.MyAboutPoint(centralReferenceX)) > MaxDouble(mSolverToleranceMy, 1#) Then
+        HasNormalCrackDrivingAction = True
+    End If
 End Function
 
 ' Выбирает все растянутые стержни для центрального растяжения.
@@ -1034,13 +1241,17 @@ Private Function AutoPsi(ByVal sigmaS As Double, ByVal sigmaSCrc As Double) As D
     End If
 End Function
 
-' Возвращает усилие образования трещины при истинном центральном растяжении:
-' Ncrc = Ared * Rbt,ser, где Ared включает бетон и арматуру через Es/Eb.
+' Возвращает усилие образования трещины при истинном центральном растяжении.
+' Ared считаем через общий калькулятор приведенного сечения, чтобы ветка
+' трещин использовала ту же модель Ab + (Es/Eb - 1)As, что устойчивость,
+' свойства Results и остальные проверки, работающие с приведенной геометрией.
 Private Function CentralTensionCrackForce(ByVal section As CSectionModel) As Double
-    Dim aRed As Double
-    aRed = TotalConcreteArea(section)
-    If mConcreteEb > 0# Then aRed = aRed + TotalRebarArea(section) * mSteelEs / mConcreteEb
-    CentralTensionCrackForce = aRed * mConcreteRbtSer
+    If mConcreteEb <= 0# Or mSteelEs <= 0# Then Exit Function
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateTransformedByModuli section, mConcreteEb, mSteelEs
+    CentralTensionCrackForce = props.Area * mConcreteRbtSer
 End Function
 
 ' Суммарная площадь бетона модели.
@@ -1202,7 +1413,7 @@ Private Sub NormalizeSettings()
     If mConcreteRbtSer <= 0# Then Err.Raise vbObjectError + 3711, "CCrackWidthCalculator", "Concrete.Rbt.SLS должен быть положительным для расчета трещин."
     If mConcreteEb <= 0# Then Err.Raise vbObjectError + 3712, "CCrackWidthCalculator", "Concrete.Eb должен быть положительным для расчета трещин."
     If mSteelEs <= 0# Then Err.Raise vbObjectError + 3713, "CCrackWidthCalculator", "Steel.Es должен быть положительным для расчета трещин."
-    If StrComp(mPsiMode, "Auto", vbTextCompare) = 0 And Not mCrackInitiationSpec Is Nothing Then
+    If Not mCrackInitiationSpec Is Nothing Then
         If mConcreteEbt0 <= 0# Then Err.Raise vbObjectError + 3714, "CCrackWidthCalculator", "Concrete.Ebt0 должен быть положительным для расчета Mcrc."
         If mConcreteEbt2 <= 0# Then Err.Raise vbObjectError + 3715, "CCrackWidthCalculator", "Concrete.Ebt2 должен быть положительным для расчета Mcrc."
         If mConcreteEbt0 > mConcreteEbt2 Then Err.Raise vbObjectError + 3716, "CCrackWidthCalculator", "Concrete.Ebt0 не должен быть больше Concrete.Ebt2 для формулы (8.54)."
@@ -1245,7 +1456,9 @@ Private Sub ClearResult()
     mLambdaCrc = 0#
     mNcrc = 0#
     Set mBeforeMcrcState = Nothing
+    Set mBeforeMcrcSolver = Nothing
     Set mAfterMcrcState = Nothing
+    Set mAfterMcrcSolver = Nothing
     Set mCrackInitiationSpec = Nothing
     Set mCrackedStateSpec = Nothing
     mSectionDepthH = 0#
@@ -1253,6 +1466,7 @@ Private Sub ClearResult()
     mTensionDepth = 0#
     mEffectiveZoneDepth = 0#
     mCentralTensionBranch = False
+    mFormationPrechecked = False
 End Sub
 
 ' Добавляет строку в диагностический журнал.

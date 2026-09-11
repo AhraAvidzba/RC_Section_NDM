@@ -504,21 +504,21 @@ try {
     $system.Columns.Item(20).ColumnWidth = 18
     $system.Columns.Item(21).ColumnWidth = 22
     $results.Range("A1:BC1").Font.Bold = $true
-    $results.Range("A60:H60").Font.Bold = $true
-    $results.Range("K60:Y60").Font.Bold = $true
-    $results.Range("AB60:AG60").Font.Bold = $true
-    $results.Range("AJ60:AT60").Font.Bold = $true
-    $results.Range("AW60:BI60").Font.Bold = $true
+    $results.Range("A60:I60").Font.Bold = $true
+    $results.Range("L60:Z60").Font.Bold = $true
+    $results.Range("AC60:AH60").Font.Bold = $true
+    $results.Range("AK60:AU60").Font.Bold = $true
+    $results.Range("AX60:BJ60").Font.Bold = $true
     $results.Columns.ColumnWidth = 8.43
     Add-ResultsSummaryHelpLink $results $instructions
 
     Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$BC$29'
     Add-WorkbookName $workbook "rngStabilitySummaryAnchor" $results '$A$37'
     Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$60'
-    Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$K$60'
-    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AB$60'
-    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AJ$60'
-    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$AW$60'
+    Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$L$60'
+    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AC$60'
+    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AK$60'
+    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$AX$60'
 
     $calc.PageSetup.PaperSize = 9
     $calc.PageSetup.Orientation = 1

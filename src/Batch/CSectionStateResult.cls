@@ -13,7 +13,7 @@ Option Explicit
 ' ИМЕНОВАННОЕ НДС ОДНОГО СОЧЕТАНИЯ
 ' ==========================================================================
 ' Один LC может иметь несколько конечных расчетных состояний: StrengthState,
-' CapacityState, CrackedState и, при реально выполненной ветке Auto,
+' CapacityState, CrackedState и состояния образования трещины
 ' BeforeMcrcState/AfterMcrcState. CSectionStateResult хранит плоскость деформаций и
 ' фактическую спецификацию материала для такого named-state.
 '

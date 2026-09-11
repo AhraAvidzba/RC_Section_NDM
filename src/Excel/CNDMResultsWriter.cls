@@ -19,7 +19,7 @@ Option Explicit
 ' Writer не запускает solver, не генерирует геометрию и не читает текущие
 ' Inputs. Он только сериализует то состояние, которое уже рассчитано.
 
-Private Const ELEMENT_RESULT_COLUMNS As Long = 8 ' LC-зависимые результаты named-state: RunID, LoadCase, ProfileId, StateType, ElementID, Strain, Stress, PhysicalState.
+Private Const ELEMENT_RESULT_COLUMNS As Long = 9 ' LC-зависимые результаты named-state: RunID, LoadCase, ProfileId, StateType, ElementID, MaterialType, Strain, Stress, PhysicalState.
 Private Const GEOMETRY_COLUMNS As Long = 15 ' Постоянная геометрия элементов, записанная один раз на расчетный снимок.
 Private Const SECTION_PROPERTY_COLUMNS As Long = 6 ' Общие свойства сечения и LC-свойства уровня всего сечения.
 Private Const ANNOTATION_COLUMNS As Long = 13 ' Semantic-аннотации схемы: размеры, контур, групповые подписи арматуры.
@@ -925,7 +925,7 @@ Private Sub PutCombinationElementResults(ByRef data() As Variant, ByRef rowIndex
             stateResult.KappaY * section.ConcreteX(i)
         stress = concrete.GetStress(strain)
         PutElementRow data, rowIndex, runID, batch.CombinationID(combinationIndex), _
-            batch.ProfileId(combinationIndex), stateResult.StateTypeText, section.ConcreteID(i), _
+            batch.ProfileId(combinationIndex), stateResult.StateTypeText, section.ConcreteID(i), "Concrete", _
             strain, stress, PhysicalState("Concrete", strain, stress), units
         rowIndex = rowIndex + 1
     Next i
@@ -935,7 +935,7 @@ Private Sub PutCombinationElementResults(ByRef data() As Variant, ByRef rowIndex
             stateResult.KappaY * section.RebarX(i)
         stress = steel.GetStress(strain)
         PutElementRow data, rowIndex, runID, batch.CombinationID(combinationIndex), _
-            batch.ProfileId(combinationIndex), stateResult.StateTypeText, section.RebarID(i), _
+            batch.ProfileId(combinationIndex), stateResult.StateTypeText, section.RebarID(i), "Rebar", _
             strain, stress, PhysicalState("Rebar", strain, stress), units
         rowIndex = rowIndex + 1
     Next i
@@ -943,15 +943,16 @@ End Sub
 
 Private Sub PutElementRow(ByRef data() As Variant, ByVal rowIndex As Long, ByVal runID As Variant, _
         ByVal combinationID As String, ByVal profileId As String, ByVal stateType As String, ByVal elementID As String, _
-        ByVal strain As Double, ByVal stress As Double, ByVal state As String, ByVal units As CUnitSystem)
+        ByVal materialType As String, ByVal strain As Double, ByVal stress As Double, ByVal state As String, ByVal units As CUnitSystem)
     data(rowIndex, 1) = runID
     data(rowIndex, 2) = combinationID
     data(rowIndex, 3) = profileId
     data(rowIndex, 4) = stateType
     data(rowIndex, 5) = elementID
-    data(rowIndex, 6) = strain
-    data(rowIndex, 7) = OutputStress(stress, units)
-    data(rowIndex, 8) = state
+    data(rowIndex, 6) = materialType
+    data(rowIndex, 7) = strain
+    data(rowIndex, 8) = OutputStress(stress, units)
+    data(rowIndex, 9) = state
 End Sub
 
 Private Function PhysicalState(ByVal materialType As String, ByVal strain As Double, ByVal stress As Double) As String
@@ -974,9 +975,10 @@ Private Sub PutElementResultHeaders(ByRef data() As Variant, ByVal units As CUni
     data(1, 3) = "ProfileId"
     data(1, 4) = "StateType"
     data(1, 5) = "ElementID"
-    data(1, 6) = "Strain"
-    data(1, 7) = "Stress, " & OutputStressUnit(units)
-    data(1, 8) = "PhysicalState"
+    data(1, 6) = "MaterialType"
+    data(1, 7) = "Strain"
+    data(1, 8) = "Stress, " & OutputStressUnit(units)
+    data(1, 9) = "PhysicalState"
 End Sub
 
 Private Sub PutGeometryHeaders(ByRef data() As Variant, ByVal units As CUnitSystem)
