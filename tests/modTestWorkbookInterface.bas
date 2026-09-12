@@ -930,12 +930,13 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Dim geometryResults As Variant
     geometryResults = ResultTable("rngNDMSectionGeometry")
     AssertTrue stats, "ui.results.geometry.rows", UBound(geometryResults, 1) > 1
-    AssertTrue stats, "ui.results.crack.anchor", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 36 And ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Column = 1
-    AssertTrue stats, "ui.results.stability.anchor", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 63 And ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Column = 1
-    AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 85 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 12
-    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 85 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 29
-    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 85 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 37
-    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 85 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 50
+    AssertTrue stats, "ui.results.strength.anchor", ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row = 36 And ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Column = 1
+    AssertTrue stats, "ui.results.crack.anchor", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 62 And ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Column = 1
+    AssertTrue stats, "ui.results.stability.anchor", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 89 And ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Column = 1
+    AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 113 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 12
+    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 113 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 29
+    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 113 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 37
+    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 113 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 50
     AssertTrue stats, "ui.results.geometry.noSource", ResultHeaderColumn(geometryResults, "SourceName") = 0
     AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(geometryResults, "MaterialClass") = 0
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
@@ -1110,6 +1111,7 @@ Private Sub TestDynamicLoadCombinationRangeAndLayoutGuard(ByRef stats As TUiTest
         InStr(1, errorText, "Расчет не запущен", vbTextCompare) > 0 And _
         InStr(1, errorText, "пустые строки", vbTextCompare) > 0 And _
         InStr(1, errorText, "rngBatchSummary", vbTextCompare) > 0 And _
+        InStr(1, errorText, "rngStrengthSummaryAnchor", vbTextCompare) > 0 And _
         InStr(1, errorText, "rngCrackSummaryAnchor", vbTextCompare) > 0 And _
         InStr(1, errorText, "rngStabilitySummaryAnchor", vbTextCompare) > 0
 

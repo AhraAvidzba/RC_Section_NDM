@@ -3108,7 +3108,7 @@ Private Sub TestBatchSummaryWritesOnlySelectedStabilityCode(ByRef stats As TBatc
     Set stabilityAnchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
-    AssertTrue stats, "batch.writer.stability.anchor", stabilityAnchor.Row = 63 And stabilityAnchor.Column = 1
+    AssertTrue stats, "batch.writer.stability.anchor", stabilityAnchor.Row = 89 And stabilityAnchor.Column = 1
     AssertTrue stats, "batch.writer.stability.sp35.empty", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 28).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 43).Value2)) = 0
     AssertTrue stats, "batch.writer.stability.sp63.filled", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 60).Value2)) > 0 Or _
@@ -3184,6 +3184,7 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     stage = "AddCombination"
     batch.AddCombination "W1", -180000#, -3500000#, -2500000#, "PR1", "writer"
     batch.AddCombination "W2", -90000#, 0#, 0#, "PR2", "crack writer"
+    batch.AddCombination "WT", 10000#, 0#, 0#, "PR4", "pure tension strength writer"
     stage = "Execute"
     batch.Execute
 
@@ -3200,9 +3201,10 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.fixedRow", summaryRow = 1
     AssertTrue stats, "batch.writer.noResultOverlap", summaryRow + ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count - 1 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
     AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count = 29 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count = 31
-    AssertTrue stats, "batch.writer.crackBlockPosition", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 36
-    AssertTrue stats, "batch.writer.stabilityBlockPosition", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 63 And _
-        ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row = 85
+    AssertTrue stats, "batch.writer.strengthBlockPosition", ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row = 36
+    AssertTrue stats, "batch.writer.crackBlockPosition", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 62
+    AssertTrue stats, "batch.writer.stabilityBlockPosition", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 89 And _
+        ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row = 113
     AssertTrue stats, "batch.writer.title", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = "Сводка пакетного расчета (Подробнее)"
     AssertTrue stats, "batch.writer.titleNotMerged", Not resultsSheet.Cells.Item(summaryRow, 1).MergeCells
     AssertTrue stats, "batch.writer.titleHyperlink", resultsSheet.Cells.Item(summaryRow, 1).Hyperlinks.Count > 0
@@ -3220,6 +3222,18 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.header.longitudinalCrackStatus", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 29).Value2), "LongitudinalCrackStatus", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.header.longitudinalCrackSafety", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 30).Value2), "LongitudinalCrackSafetyFactor", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.header.overall", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 31).Value2), "MinSafetyFactor", vbTextCompare) > 0
+    Dim strengthAnchor As Object
+    Set strengthAnchor = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
+    AssertTrue stats, "batch.writer.strength.absentZonesBlank", _
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 14).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 15).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 16).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 18).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 19).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 20).Value2)) = 0
+    AssertTrue stats, "batch.writer.strength.presentTensionKept", _
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 17).Value2)) > 0 And _
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 21).Value2)) > 0
     Dim crackAnchor As Object
     Set crackAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     AssertTrue stats, "batch.writer.crack.header.formationTitle", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 10).Value2) = "Момент образования трещин"
@@ -3256,6 +3270,7 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.stability.header.sp35Ratio", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 1, 36).Value2) = "N/Ncr"
     AssertClose stats, "batch.writer.stability.columnWidthA", CDbl(resultsSheet.Columns.Item(1).ColumnWidth), 8.43, 0.01
     AssertClose stats, "batch.writer.stability.columnWidthN", CDbl(resultsSheet.Columns.Item(14).ColumnWidth), 8.43, 0.01
+    AssertClose stats, "batch.writer.stability.columnWidthAF", CDbl(resultsSheet.Columns.Item(32).ColumnWidth), 8.43, 0.01
     AssertClose stats, "batch.writer.stability.columnWidthCC", CDbl(resultsSheet.Columns.Item(81).ColumnWidth), 8.43, 0.01
     AssertTrue stats, "batch.writer.stability.availableRowsBorder", _
         Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row + 19, 1).Value2)) = 0 And _

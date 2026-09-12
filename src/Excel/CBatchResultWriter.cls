@@ -65,6 +65,7 @@ Private Const COL_LONG_CRACK_SF As Long = 30
 
 Private Const COL_OVERALL_SF As Long = 31
 Private Const DEFAULT_SUMMARY_ROWS As Long = 29 ' Штатная высота шаблона: 9 строк шапки и 20 строк LC.
+Private Const RESULTS_COLUMN_WIDTH As Double = 8.43 ' Единая ширина всех столбцов Results.
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Светло-серый фон заголовков.
 Private Const SAFETY_COLOR As Long = &HE7E6E6 ' Серый фон столбцов коэффициентов запаса.
@@ -147,6 +148,8 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
     WriteSummaryBody target, data
     stage = "FormatSummary"
     FormatSummary workbook, target, batch
+    stage = "WriteStrengthSummary"
+    WriteStrengthSummary workbook, batch, units, section
     stage = "WriteCrackSummary"
     WriteCrackSummary workbook, batch, units
     stage = "WriteStabilitySummary"
@@ -161,6 +164,7 @@ End Sub
 Public Sub ClearSummary(ByVal workbook As Object)
     If workbook Is Nothing Then Err.Raise vbObjectError + 3972, "CBatchResultWriter", "Книга Excel не передана."
     ClearSummaryBody SummaryClearRange(workbook)
+    ClearStrengthSummary workbook
     ClearCrackSummary workbook
     ClearStabilitySummary workbook
 End Sub
@@ -204,13 +208,13 @@ Private Function SummaryClearRange(ByVal workbook As Object) As Object
     rowsToClear = RequiredSummaryOutputRows(1)
 
     On Error GoTo UseDefaultHeight
-    Dim crackWriter As CCrackSummaryWriter
-    Set crackWriter = New CCrackSummaryWriter
-    Dim crackAnchor As Object
-    Set crackAnchor = workbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
-    Dim crackTopRow As Long
-    crackTopRow = crackAnchor.Row - crackWriter.HeaderRowsAboveAnchor
-    If crackTopRow > anchor.Row Then rowsToClear = MaxLong(rowsToClear, crackTopRow - anchor.Row)
+    Dim strengthWriter As CStrengthSummaryWriter
+    Set strengthWriter = New CStrengthSummaryWriter
+    Dim strengthAnchor As Object
+    Set strengthAnchor = workbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
+    Dim strengthTopRow As Long
+    strengthTopRow = strengthAnchor.Row - strengthWriter.HeaderRowsAboveAnchor
+    If strengthTopRow > anchor.Row Then rowsToClear = MaxLong(rowsToClear, strengthTopRow - anchor.Row)
 
 UseDefaultHeight:
     If anchor.Row + rowsToClear - 1 > anchor.Worksheet.Rows.Count Then rowsToClear = anchor.Worksheet.Rows.Count - anchor.Row + 1
@@ -255,11 +259,26 @@ Private Sub WriteStabilitySummary(ByVal workbook As Object, ByVal batch As CBatc
     writer.WriteSummary workbook, batch, units
 End Sub
 
+' Обновляет отдельную детальную таблицу НДС и capacity по модели прочности.
+Private Sub WriteStrengthSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, _
+        ByVal units As CUnitSystem, ByVal section As CSectionModel)
+    Dim writer As CStrengthSummaryWriter
+    Set writer = New CStrengthSummaryWriter
+    writer.WriteSummary workbook, batch, units, section
+End Sub
+
 ' Обновляет отдельную детальную таблицу нормальных и продольных трещин.
 Private Sub WriteCrackSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     Dim writer As CCrackSummaryWriter
     Set writer = New CCrackSummaryWriter
     writer.WriteSummary workbook, batch, units
+End Sub
+
+' Очищает отдельный блок прочности при общей очистке Results.
+Private Sub ClearStrengthSummary(ByVal workbook As Object)
+    Dim writer As CStrengthSummaryWriter
+    Set writer = New CStrengthSummaryWriter
+    writer.ClearSummary workbook
 End Sub
 
 ' Очищает отдельный блок устойчивости при общей очистке Results.
@@ -337,9 +356,9 @@ Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem
     data(COLUMN_HEADER_ROW, COL_CAPACITY_LOAD_PATH) = "CapacityLoadPath (что масштабируется)"
     data(COLUMN_HEADER_ROW, COL_CAPACITY_SOLUTION_METHOD) = "CapacitySolutionMethod (фактический метод)"
     data(COLUMN_HEADER_ROW, COL_CAPACITY_LAMBDA) = "lambdaUltimate (множитель)"
-    data(COLUMN_HEADER_ROW, COL_CAPACITY_N_ULT) = "Nult, " & OutputForceUnit(units) & " (предельная N)"
-    data(COLUMN_HEADER_ROW, COL_CAPACITY_MX_ULT) = "Mxult, " & OutputMomentUnit(units) & " (предельный Mx)"
-    data(COLUMN_HEADER_ROW, COL_CAPACITY_MY_ULT) = "Myult, " & OutputMomentUnit(units) & " (предельный My)"
+    data(COLUMN_HEADER_ROW, COL_CAPACITY_N_ULT) = "Nult, " & OutputForceUnit(units) & " (при λult в точке нагрузки)"
+    data(COLUMN_HEADER_ROW, COL_CAPACITY_MX_ULT) = "Mxult, " & OutputMomentUnit(units) & " (при λult в точке нагрузки)"
+    data(COLUMN_HEADER_ROW, COL_CAPACITY_MY_ULT) = "Myult, " & OutputMomentUnit(units) & " (при λult в точке нагрузки)"
     data(COLUMN_HEADER_ROW, COL_CAPACITY_H) = "h, " & OutputLengthUnit(units) & " (высота при lambdaUltimate)"
     data(COLUMN_HEADER_ROW, COL_CAPACITY_C) = "x, " & OutputLengthUnit(units) & " (сжатая зона при lambdaUltimate)"
     data(COLUMN_HEADER_ROW, COL_CAPACITY_SF) = "CapacitySafetyFactor (запас по " & ChrW$(&H3BB) & ")"
@@ -386,9 +405,9 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
     If policy.IsFinished(batch.CapacityStatus(index)) Then
         data(rowIndex, COL_CAPACITY_SOLUTION_METHOD) = batch.CapacitySolutionMethod(index)
         data(rowIndex, COL_CAPACITY_LAMBDA) = batch.LambdaCapacity(index)
-        If CapacityLoadPathScalesN(batch.CapacityLoadPathKey(index)) Then data(rowIndex, COL_CAPACITY_N_ULT) = OutputForce(batch.NUltimate(index), units)
-        If CapacityLoadPathScalesMx(batch.CapacityLoadPathKey(index)) Then data(rowIndex, COL_CAPACITY_MX_ULT) = OutputMx(batch.MxUltimate(index), units)
-        If CapacityLoadPathScalesMy(batch.CapacityLoadPathKey(index)) Then data(rowIndex, COL_CAPACITY_MY_ULT) = OutputMy(batch.MyUltimate(index), units)
+        data(rowIndex, COL_CAPACITY_N_ULT) = OutputForce(batch.NUltimate(index), units)
+        data(rowIndex, COL_CAPACITY_MX_ULT) = OutputMx(batch.MxUltimate(index), units)
+        data(rowIndex, COL_CAPACITY_MY_ULT) = OutputMy(batch.MyUltimate(index), units)
         data(rowIndex, COL_CAPACITY_SF) = CapacitySafetyFormula(rowIndex)
         PutCapacityStateGeometry data, rowIndex, batch, index, units, section
     End If
@@ -524,6 +543,8 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     target.WrapText = False
     target.Font.Name = "Arial"
     target.Font.Size = 9
+    target.Rows.RowHeight = 15
+    target.Worksheet.Columns.ColumnWidth = RESULTS_COLUMN_WIDTH
 
     stage = "HeaderStyle"
     target.Rows.Item(1).Font.Bold = True
@@ -576,6 +597,10 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     borderedArea.Borders.Weight = 2
     stage = "NumberFormat"
     target.Offset(0, 0).Resize(1, TARGET_COLUMNS).NumberFormat = "@"
+    If dataRows > 0 Then
+        target.Offset(FIRST_DATA_ROW - 1, COL_EPS_C_COMP - 1).Resize(dataRows, COL_EPS_S_TENS - COL_EPS_C_COMP + 1).NumberFormat = "0.0000"
+        target.Offset(FIRST_DATA_ROW - 1, COL_LIM_C_COMP - 1).Resize(dataRows, COL_LIM_S_TENS - COL_LIM_C_COMP + 1).NumberFormat = "0.0000"
+    End If
     stage = "WriteStatusDictionary"
     WriteStatusDictionary target
     Exit Sub
@@ -726,21 +751,4 @@ End Function
 
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
-End Function
-
-Private Function CapacityLoadPathScalesN(ByVal loadPath As String) As Boolean
-    CapacityLoadPathScalesN = (StrComp(loadPath, "LambdaN", vbTextCompare) = 0 Or _
-        StrComp(loadPath, "LambdaNMxy", vbTextCompare) = 0)
-End Function
-
-Private Function CapacityLoadPathScalesMx(ByVal loadPath As String) As Boolean
-    CapacityLoadPathScalesMx = (StrComp(loadPath, "LambdaMx", vbTextCompare) = 0 Or _
-        StrComp(loadPath, "LambdaMxy", vbTextCompare) = 0 Or _
-        StrComp(loadPath, "LambdaNMxy", vbTextCompare) = 0)
-End Function
-
-Private Function CapacityLoadPathScalesMy(ByVal loadPath As String) As Boolean
-    CapacityLoadPathScalesMy = (StrComp(loadPath, "LambdaMy", vbTextCompare) = 0 Or _
-        StrComp(loadPath, "LambdaMxy", vbTextCompare) = 0 Or _
-        StrComp(loadPath, "LambdaNMxy", vbTextCompare) = 0)
 End Function

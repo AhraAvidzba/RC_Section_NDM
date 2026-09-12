@@ -129,6 +129,7 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
     Dim target As Object
     Set target = TargetRange(workbook, RequiredDataRowsForWorkbook(workbook, batch.Count))
     PrepareTarget target
+    WriteBlockTitle target, "Расчет нормальных и продольных трещин"
     WriteHeaders target, units
     WriteData target, batch, units
     FormatTable target, batch
@@ -181,8 +182,36 @@ End Function
 
 ' Снимает старые объединения и очищает значения/форматы перед новой записью.
 Private Sub PrepareTarget(ByVal target As Object)
+    ClearBlockTitleRow target
     target.UnMerge
     target.Clear
+End Sub
+
+' Записывает отдельную строку-название над detailed-блоком трещин.
+Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
+    If target.Row <= 1 Then Exit Sub
+
+    Dim titleRow As Long
+    titleRow = target.Row - 1
+    target.Worksheet.Rows.Item(titleRow).Interior.Color = RGB(189, 215, 238)
+    target.Worksheet.Rows.Item(titleRow).RowHeight = 15
+    With target.Worksheet.Cells(titleRow, target.Column)
+        .Value2 = titleText
+        .Font.Name = "Arial"
+        .Font.Size = 12
+        .Font.Bold = True
+        .Font.Color = RGB(255, 0, 0)
+        .HorizontalAlignment = -4131
+        .VerticalAlignment = -4108
+        .WrapText = False
+    End With
+End Sub
+
+' Очищает старую строку-название, чтобы при переносе якоря не оставались старые форматы.
+Private Sub ClearBlockTitleRow(ByVal target As Object)
+    If target.Row <= 1 Then Exit Sub
+    target.Worksheet.Rows.Item(target.Row - 1).Clear
+    target.Worksheet.Rows.Item(target.Row - 1).RowHeight = 15
 End Sub
 
 ' Записывает многоуровневую шапку таблицы.
@@ -444,6 +473,7 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     target.HorizontalAlignment = -4108
     target.VerticalAlignment = -4108
     target.WrapText = False
+    target.Rows.RowHeight = 15
 
     SetColumnWidths target
     FormatBlock target, COL_LEFT_FIRST, COL_LEFT_LAST
@@ -456,7 +486,7 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     target.Rows(HEADER_NOTES_ROW).Font.Bold = False
     target.Rows(HEADER_NOTES_ROW).HorizontalAlignment = -4131
     target.Rows(HEADER_NOTES_ROW).WrapText = False
-    target.Worksheet.Rows.Item(target.Row + HEADER_NOTES_ROW - 1).RowHeight = 15
+    target.Rows(HEADER_LABEL_ROW).WrapText = False
     target.Cells(HEADER_LABEL_ROW, COL_RBT_SER).WrapText = False
 
     Dim dataRows As Long

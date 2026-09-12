@@ -1457,8 +1457,8 @@ End Function
 ' Записывает итоговые компоненты нагрузки для общей lambda-траектории.
 ' Этот низкоуровневый результат хранит полное предельное состояние solver-а:
 ' постоянные компоненты Offset и масштабируемые Base уже сложены вместе.
-' Batch summary дополнительно показывает только те пользовательские компоненты,
-' которые действительно входили в выбранный CapacityLoadPath.
+' Batch-слой при выводе дополнительно переносит полный найденный вектор
+' обратно в пользовательскую точку приложения нагрузки.
 Private Sub StoreLoadPathUltimateComponents(ByVal lambdaValue As Double, _
         ByVal nOffset As Double, ByVal nBase As Double, _
         ByVal mxBase As Double, ByVal myBase As Double, _

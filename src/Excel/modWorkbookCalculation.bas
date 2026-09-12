@@ -418,20 +418,24 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
     Set issues = New Collection
 
     Dim summaryWriter As CBatchResultWriter
+    Dim strengthWriter As CStrengthSummaryWriter
     Dim crackWriter As CCrackSummaryWriter
     Dim stabilityWriter As CStabilitySummaryWriter
     Dim ndmWriter As CNDMResultsWriter
     Set summaryWriter = New CBatchResultWriter
+    Set strengthWriter = New CStrengthSummaryWriter
     Set crackWriter = New CCrackSummaryWriter
     Set stabilityWriter = New CStabilitySummaryWriter
     Set ndmWriter = New CNDMResultsWriter
 
     Dim summaryAnchor As Object
+    Dim strengthAnchor As Object
     Dim crackAnchor As Object
     Dim stabilityAnchor As Object
     Dim elementAnchor As Object
     On Error GoTo MissingAnchor
     Set summaryAnchor = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
+    Set strengthAnchor = workbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
     Set crackAnchor = workbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     Set stabilityAnchor = workbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
     Set elementAnchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
@@ -439,8 +443,9 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
 
     Dim ws As Object
     Set ws = summaryAnchor.Worksheet
-    If Not (crackAnchor.Worksheet Is ws) Or Not (stabilityAnchor.Worksheet Is ws) Or Not (elementAnchor.Worksheet Is ws) Then
-        AddLayoutIssue issues, "rngBatchSummary, rngCrackSummaryAnchor, rngStabilitySummaryAnchor и rngNDMElementResults должны находиться на одном листе Results."
+    If Not (strengthAnchor.Worksheet Is ws) Or Not (crackAnchor.Worksheet Is ws) Or _
+            Not (stabilityAnchor.Worksheet Is ws) Or Not (elementAnchor.Worksheet Is ws) Then
+        AddLayoutIssue issues, "rngBatchSummary, rngStrengthSummaryAnchor, rngCrackSummaryAnchor, rngStabilitySummaryAnchor и rngNDMElementResults должны находиться на одном листе Results."
     End If
 
     Dim summaryRows As Long
@@ -449,6 +454,19 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
     summaryCols = summaryWriter.RequiredSummaryOutputColumns()
     CheckFootprintWithinSheet issues, ws, "rngBatchSummary + словарь статусов", _
         summaryAnchor.Row, summaryAnchor.Column, summaryRows, summaryCols
+
+    Dim strengthTopRow As Long
+    Dim strengthRows As Long
+    Dim strengthCols As Long
+    strengthTopRow = strengthAnchor.Row - strengthWriter.HeaderRowsAboveAnchor
+    strengthRows = strengthWriter.RequiredRowsForWorkbook(workbook, batch.Count)
+    strengthCols = strengthWriter.RequiredColumns()
+    If strengthTopRow < 1 Then
+        AddLayoutIssue issues, "rngStrengthSummaryAnchor расположен слишком высоко: над ним нет места для шапки таблицы прочности."
+    Else
+        CheckFootprintWithinSheet issues, ws, "rngStrengthSummaryAnchor с шапкой прочности", _
+            strengthTopRow, strengthAnchor.Column, strengthRows, strengthCols
+    End If
 
     Dim crackTopRow As Long
     Dim crackRows As Long
@@ -477,15 +495,26 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
     End If
 
     Dim summaryBottomRow As Long
+    Dim strengthBottomRow As Long
     Dim crackBottomRow As Long
     Dim stabilityBottomRow As Long
+    Dim snapshotTitleRow As Long
     summaryBottomRow = summaryAnchor.Row + summaryRows - 1
+    strengthBottomRow = strengthTopRow + strengthRows - 1
     crackBottomRow = crackTopRow + crackRows - 1
     stabilityBottomRow = stabilityTopRow + stabilityRows - 1
-    If summaryBottomRow + RESULTS_TABLE_GAP_ROWS >= crackTopRow Then
-        AddLayoutIssue issues, "Между rngBatchSummary и шапкой rngCrackSummaryAnchor нужны " & _
+    snapshotTitleRow = elementAnchor.Row - 2
+    If summaryBottomRow + RESULTS_TABLE_GAP_ROWS >= strengthTopRow Then
+        AddLayoutIssue issues, "Между rngBatchSummary и шапкой rngStrengthSummaryAnchor нужны " & _
             CStr(RESULTS_TABLE_GAP_ROWS) & " пустые строки: для " & _
             CStr(batch.Count) & " LC она занимает строки до " & CStr(summaryBottomRow) & _
+            ", шапка прочности начинается со строки " & CStr(strengthTopRow) & _
+            ". Опустите rngStrengthSummaryAnchor или сократите число строк rngLoadCombinations."
+    End If
+    If strengthBottomRow + RESULTS_TABLE_GAP_ROWS >= crackTopRow Then
+        AddLayoutIssue issues, "Между rngStrengthSummaryAnchor и шапкой rngCrackSummaryAnchor нужны " & _
+            CStr(RESULTS_TABLE_GAP_ROWS) & " пустые строки: для " & _
+            CStr(batch.Count) & " LC таблица прочности занимает строки до " & CStr(strengthBottomRow) & _
             ", шапка трещин начинается со строки " & CStr(crackTopRow) & _
             ". Опустите rngCrackSummaryAnchor или сократите число строк rngLoadCombinations."
     End If
@@ -496,11 +525,12 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
             ", шапка устойчивости начинается со строки " & CStr(stabilityTopRow) & _
             ". Опустите rngStabilitySummaryAnchor или сократите число строк rngLoadCombinations."
     End If
-    If stabilityBottomRow + RESULTS_TABLE_GAP_ROWS >= elementAnchor.Row Then
-        AddLayoutIssue issues, "Между rngStabilitySummaryAnchor и rngNDMElementResults нужны " & _
+    If stabilityBottomRow + RESULTS_TABLE_GAP_ROWS >= snapshotTitleRow Then
+        AddLayoutIssue issues, "Между rngStabilitySummaryAnchor и общей строкой нижнего snapshot нужны " & _
             CStr(RESULTS_TABLE_GAP_ROWS) & " пустые строки: для " & _
             CStr(batch.Count) & " LC она занимает строки до " & CStr(stabilityBottomRow) & _
-            ", а rngNDMElementResults начинается со строки " & CStr(elementAnchor.Row) & _
+            ", а общий заголовок snapshot начинается со строки " & CStr(snapshotTitleRow) & _
+            " перед rngNDMElementResults на строке " & CStr(elementAnchor.Row) & _
             ". Опустите rngNDMElementResults и нижние snapshot-якоря или сократите число строк rngLoadCombinations."
     End If
 
@@ -519,7 +549,7 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
 
 MissingAnchor:
     Err.Raise vbObjectError + 4164, "ValidateResultsOutputLayout", _
-        "На листе Results не найден один из обязательных якорей вывода: rngBatchSummary, rngCrackSummaryAnchor, rngStabilitySummaryAnchor или rngNDMElementResults."
+        "На листе Results не найден один из обязательных якорей вывода: rngBatchSummary, rngStrengthSummaryAnchor, rngCrackSummaryAnchor, rngStabilitySummaryAnchor или rngNDMElementResults."
 End Sub
 
 ' Проверяет нижние соседние блоки Results по строкам листа и по ширине.
@@ -635,7 +665,7 @@ End Sub
 Private Function ResultsOutputLayoutMessage(ByVal combinationCount As Long, ByVal issues As Collection) As String
     ResultsOutputLayoutMessage = "Results: не хватает места для " & _
         CStr(combinationCount) & " сочетаний. Расчет не запущен." & _
-        vbCrLf & "Сдвиньте нужные якоря: rngCrackSummaryAnchor, rngStabilitySummaryAnchor, rngNDMElementResults, rngNDMSectionGeometry, rngNDMSectionProperties, rngNDMMaterialDiagrams, rngNDMSectionAnnotations; либо уменьшите rngLoadCombinations." & _
+        vbCrLf & "Сдвиньте нужные якоря: rngStrengthSummaryAnchor, rngCrackSummaryAnchor, rngStabilitySummaryAnchor, rngNDMElementResults, rngNDMSectionGeometry, rngNDMSectionProperties, rngNDMMaterialDiagrams, rngNDMSectionAnnotations; либо уменьшите rngLoadCombinations." & _
         vbCrLf & JoinCollectionLines(issues)
 End Function
 

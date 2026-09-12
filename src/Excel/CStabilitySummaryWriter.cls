@@ -92,6 +92,7 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
     Dim target As Object
     Set target = TargetRange(workbook, RequiredDataRowsForWorkbook(workbook, batch.Count))
     PrepareTarget target
+    WriteBlockTitle target, "Расчет продольного изгиба и устойчивости"
     WriteHeaders target, units
     WriteData target, batch, units
     FormatTable target, batch
@@ -142,8 +143,36 @@ End Function
 
 ' Снимает старые объединения и чистит область, чтобы при переносе якоря не осталось старой верстки.
 Private Sub PrepareTarget(ByVal target As Object)
+    ClearBlockTitleRow target
     target.UnMerge
     target.Clear
+End Sub
+
+' Записывает отдельную строку-название над detailed-блоком устойчивости.
+Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
+    If target.Row <= 1 Then Exit Sub
+
+    Dim titleRow As Long
+    titleRow = target.Row - 1
+    target.Worksheet.Rows.Item(titleRow).Interior.Color = RGB(189, 215, 238)
+    target.Worksheet.Rows.Item(titleRow).RowHeight = 15
+    With target.Worksheet.Cells(titleRow, target.Column)
+        .Value2 = titleText
+        .Font.Name = "Arial"
+        .Font.Size = 12
+        .Font.Bold = True
+        .Font.Color = RGB(255, 0, 0)
+        .HorizontalAlignment = -4131
+        .VerticalAlignment = -4108
+        .WrapText = False
+    End With
+End Sub
+
+' Очищает строку-название вместе со старой заливкой, если якорь блока был перенесен.
+Private Sub ClearBlockTitleRow(ByVal target As Object)
+    If target.Row <= 1 Then Exit Sub
+    target.Worksheet.Rows.Item(target.Row - 1).Clear
+    target.Worksheet.Rows.Item(target.Row - 1).RowHeight = 15
 End Sub
 
 ' Формирует многоуровневую шапку таблицы. Разделительные столбцы остаются пустыми.
@@ -456,6 +485,7 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     target.HorizontalAlignment = -4108
     target.VerticalAlignment = -4108
     target.WrapText = False
+    target.Rows.RowHeight = 15
 
     FormatBlock target, COL_SUMMARY_FIRST, COL_SUMMARY_LAST
     FormatBlock target, COL_COMMON_FIRST, COL_COMMON_LAST
@@ -464,6 +494,7 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
 
     target.Offset(0, 0).Resize(HEADER_ROWS, TOTAL_COLUMNS).Font.Bold = True
     target.Offset(0, 0).Resize(HEADER_ROWS, TOTAL_COLUMNS).WrapText = True
+    target.Offset(HEADER_ROWS - 1, 0).Resize(1, TOTAL_COLUMNS).WrapText = False
     FormatHeaderNotes target
     Dim dataRows As Long
     dataRows = target.Rows.Count - HEADER_ROWS

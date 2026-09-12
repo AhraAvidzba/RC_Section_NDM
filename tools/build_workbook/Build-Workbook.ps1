@@ -477,6 +477,7 @@ try {
     $calc.Range("A1:AJ60").Font.Name = "Arial"
     $calc.Range("A1:AJ60").Font.Size = 9
     $calc.Range("A1:AJ60").VerticalAlignment = -4108
+    $results.Rows.RowHeight = 15
 
     $systemRanges = Add-SystemSettings $system
     Add-SettingsInstructions $workbook $system $instructions
@@ -504,22 +505,31 @@ try {
     $system.Columns.Item(20).ColumnWidth = 18
     $system.Columns.Item(21).ColumnWidth = 22
     $results.Range("A1:AE1").Font.Bold = $true
-    $results.Range("A85:I85").Font.Bold = $true
-    $results.Range("L85:Z85").Font.Bold = $true
-    $results.Range("AC85:AH85").Font.Bold = $true
-    $results.Range("AK85:AU85").Font.Bold = $true
-    $results.Range("AX85:BJ85").Font.Bold = $true
+    $results.Rows.Item(111).Interior.Color = 15652797
+    $results.Cells.Item(111, 1).Value2 = "Расчетный снимок Results: элементы, геометрия, свойства сечения, диаграммы материалов и аннотации"
+    $results.Cells.Item(111, 1).Font.Name = "Arial"
+    $results.Cells.Item(111, 1).Font.Size = 12
+    $results.Cells.Item(111, 1).Font.Bold = $true
+    $results.Cells.Item(111, 1).Font.Color = 255
+    $results.Cells.Item(111, 1).HorizontalAlignment = -4131
+    $results.Cells.Item(111, 1).VerticalAlignment = -4108
+    $results.Range("A113:I113").Font.Bold = $true
+    $results.Range("L113:Z113").Font.Bold = $true
+    $results.Range("AC113:AH113").Font.Bold = $true
+    $results.Range("AK113:AU113").Font.Bold = $true
+    $results.Range("AX113:BJ113").Font.Bold = $true
     $results.Columns.ColumnWidth = 8.43
     Add-ResultsSummaryHelpLink $results $instructions
 
     Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$AE$29'
-    Add-WorkbookName $workbook "rngCrackSummaryAnchor" $results '$A$36'
-    Add-WorkbookName $workbook "rngStabilitySummaryAnchor" $results '$A$63'
-    Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$85'
-    Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$L$85'
-    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AC$85'
-    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AK$85'
-    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$AX$85'
+    Add-WorkbookName $workbook "rngStrengthSummaryAnchor" $results '$A$36'
+    Add-WorkbookName $workbook "rngCrackSummaryAnchor" $results '$A$62'
+    Add-WorkbookName $workbook "rngStabilitySummaryAnchor" $results '$A$89'
+    Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$113'
+    Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$L$113'
+    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AC$113'
+    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AK$113'
+    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$AX$113'
 
     $calc.PageSetup.PaperSize = 9
     $calc.PageSetup.Orientation = 1

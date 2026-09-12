@@ -388,25 +388,45 @@ Private Sub CheckGeneralFormation(ByVal section As CSectionModel, _
         Exit Sub
     End If
 
-    ' Берем обычное решение CrackInitiation на полном LC только как старт.
-    ' Сам Mcrc по-прежнему ищется прямым условием eps_bt,ult, а не по факту
-    ' текущего НДС, поэтому нормативная ветка не меняется.
-    Dim formationStart As CSectionSolver
-    Set formationStart = SolveState(section, materialProvider.ConcreteMaterialFromSpec(mCrackInitiationSpec), _
-        materialProvider.SteelMaterialFromSpec(mCrackInitiationSpec), Nothing, targetN, targetMx, targetMy)
-    If Not formationStart Is Nothing Then
-        If Not formationStart.Converged Then Set formationStart = Nothing
-    End If
-
     Dim momentMxAtReference As Double
     Dim momentMyAtReference As Double
     momentMxAtReference = loadStateForClassification.MxAboutPoint(centralReferenceY)
     momentMyAtReference = loadStateForClassification.MyAboutPoint(centralReferenceX)
 
+    ' Сначала ищем Mcrc без обычного solve CrackInitiation на полном LC:
+    ' для большинства сочетаний геометрической стартовой плоскости достаточно,
+    ' а лишний solve полного LC только тратит время и может быть плохой
+    ' стартовой подсказкой при заведомо чрезмерной нагрузке. Если этот путь
+    ' не дал расчетного результата, ниже повторяем поиск со старым
+    ' страховочным стартом от полного CrackInitiation-состояния.
     If Not CalculateLambdaCrc(section, materialProvider.ConcreteMaterialFromSpec(mCrackInitiationSpec), _
-            materialProvider.SteelMaterialFromSpec(mCrackInitiationSpec), formationStart, _
+            materialProvider.SteelMaterialFromSpec(mCrackInitiationSpec), Nothing, _
             targetN, momentMxAtReference, momentMyAtReference, _
-            centralReferenceX, centralReferenceY) Then Exit Sub
+            centralReferenceX, centralReferenceY) Then
+        If mConverged And Not mCrackFormed Then Exit Sub
+        If InStr(1, mStopReason, "InputError", vbTextCompare) > 0 Then Exit Sub
+
+        Dim firstStopReason As String
+        firstStopReason = mStopReason
+        AppendDiagnostic "Mcrc без полного CrackInitiation-start не получен: " & firstStopReason
+        mStopReason = vbNullString
+
+        Dim formationStart As CSectionSolver
+        Set formationStart = SolveState(section, materialProvider.ConcreteMaterialFromSpec(mCrackInitiationSpec), _
+            materialProvider.SteelMaterialFromSpec(mCrackInitiationSpec), Nothing, targetN, targetMx, targetMy)
+        If formationStart Is Nothing Or Not formationStart.Converged Then
+            If Len(mStopReason) = 0 Then mStopReason = firstStopReason
+            Exit Sub
+        End If
+
+        If Not CalculateLambdaCrc(section, materialProvider.ConcreteMaterialFromSpec(mCrackInitiationSpec), _
+                materialProvider.SteelMaterialFromSpec(mCrackInitiationSpec), formationStart, _
+                targetN, momentMxAtReference, momentMyAtReference, _
+                centralReferenceX, centralReferenceY) Then
+            If Len(mStopReason) = 0 Then mStopReason = firstStopReason
+            Exit Sub
+        End If
+    End If
     mMcrc = CrackMomentFromLoadState(loadStateForClassification, centralReferenceX, centralReferenceY)
     If Not EnsureAfterMcrcState(section, materialProvider, Nothing, targetN, targetMx, targetMy) Then Exit Sub
 

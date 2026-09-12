@@ -37,6 +37,9 @@ Public CapacityPathResolved As String ' Нормализованный ключ 
 Public NUltimate As Double ' Предельная N, если N входит в lambda-траекторию.
 Public MxUltimate As Double ' Предельный Mx, если Mx входит в lambda-траекторию.
 Public MyUltimate As Double ' Предельный My, если My входит в lambda-траекторию.
+Public CapacityStateN As Double ' Полная N в найденном предельном CapacityState независимо от выбранной траектории.
+Public CapacityStateMx As Double ' Полный Mx в найденном предельном CapacityState независимо от выбранной траектории.
+Public CapacityStateMy As Double ' Полный My в найденном предельном CapacityState независимо от выбранной траектории.
 Public MomentUltimate As Double ' Полный предельный момент sqrt(Mx^2+My^2).
 Public CapacityStateAvailable As Boolean ' True, если есть плоскость деформаций capacity-состояния.
 Public CapacityEpsilon0 As Double ' epsilon0 в найденной capacity-точке.
@@ -177,6 +180,9 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     NUltimate = 0#
     MxUltimate = 0#
     MyUltimate = 0#
+    CapacityStateN = 0#
+    CapacityStateMx = 0#
+    CapacityStateMy = 0#
     MomentUltimate = 0#
     CapacityStateAvailable = False
     CapacityEpsilon0 = 0#

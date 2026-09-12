@@ -31,6 +31,18 @@ Private mExtensionUsed As Boolean ' True только для StateSolution с nu
 Private mConverged As Boolean ' Сошелся ли solver, из которого взята плоскость.
 Private mStopReason As String ' Служебная причина остановки solver-а.
 Private mStatus As String ' Короткий внутренний статус, если он нужен writer-у/тестам.
+Private mMinConcreteStrain As Double ' Минимальная деформация бетона в этом named-state.
+Private mMaxConcreteStrain As Double ' Максимальная деформация бетона в этом named-state.
+Private mMinSteelStrain As Double ' Минимальная деформация арматуры в этом named-state.
+Private mMaxSteelStrain As Double ' Максимальная деформация арматуры в этом named-state.
+Private mMinConcreteStress As Double ' Наиболее сжимающее напряжение бетона со знаком.
+Private mMaxConcreteStress As Double ' Наиболее растягивающее напряжение бетона со знаком.
+Private mMinSteelStress As Double ' Наиболее сжимающее напряжение арматуры со знаком.
+Private mMaxSteelStress As Double ' Наиболее растягивающее напряжение арматуры со знаком.
+Private mHasConcreteCompression As Boolean ' True, если в состоянии реально есть сжатый бетон.
+Private mHasConcreteTension As Boolean ' True, если бетон реально работает на растяжение.
+Private mHasSteelCompression As Boolean ' True, если есть сжатая арматура.
+Private mHasSteelTension As Boolean ' True, если есть растянутая арматура.
 
 ' Создает named-state по результату CSectionSolver.
 Public Sub InitializeFromSolver(ByVal stateType As ESectionStateType, _
@@ -50,6 +62,18 @@ Public Sub InitializeFromSolver(ByVal stateType As ESectionStateType, _
     mConverged = solver.Converged
     mStopReason = solver.StopReason
     mStatus = statusText
+    mMinConcreteStrain = solver.MinConcreteStrain
+    mMaxConcreteStrain = solver.MaxConcreteStrain
+    mMinSteelStrain = solver.MinSteelStrain
+    mMaxSteelStrain = solver.MaxSteelStrain
+    mMinConcreteStress = solver.MinConcreteStress
+    mMaxConcreteStress = solver.MaxConcreteStress
+    mMinSteelStress = solver.MinSteelStress
+    mMaxSteelStress = solver.MaxSteelStress
+    mHasConcreteCompression = solver.HasConcreteCompression
+    mHasConcreteTension = solver.HasConcreteTension
+    mHasSteelCompression = solver.HasSteelCompression
+    mHasSteelTension = solver.HasSteelTension
 End Sub
 
 ' Создает named-state по уже известной плоскости деформаций.
@@ -120,4 +144,52 @@ End Property
 
 Public Property Get Status() As String
     Status = mStatus
+End Property
+
+Public Property Get MinConcreteStrain() As Double
+    MinConcreteStrain = mMinConcreteStrain
+End Property
+
+Public Property Get MaxConcreteStrain() As Double
+    MaxConcreteStrain = mMaxConcreteStrain
+End Property
+
+Public Property Get MinSteelStrain() As Double
+    MinSteelStrain = mMinSteelStrain
+End Property
+
+Public Property Get MaxSteelStrain() As Double
+    MaxSteelStrain = mMaxSteelStrain
+End Property
+
+Public Property Get MinConcreteStress() As Double
+    MinConcreteStress = mMinConcreteStress
+End Property
+
+Public Property Get MaxConcreteStress() As Double
+    MaxConcreteStress = mMaxConcreteStress
+End Property
+
+Public Property Get MinSteelStress() As Double
+    MinSteelStress = mMinSteelStress
+End Property
+
+Public Property Get MaxSteelStress() As Double
+    MaxSteelStress = mMaxSteelStress
+End Property
+
+Public Property Get HasConcreteCompression() As Boolean
+    HasConcreteCompression = mHasConcreteCompression
+End Property
+
+Public Property Get HasConcreteTension() As Boolean
+    HasConcreteTension = mHasConcreteTension
+End Property
+
+Public Property Get HasSteelCompression() As Boolean
+    HasSteelCompression = mHasSteelCompression
+End Property
+
+Public Property Get HasSteelTension() As Boolean
+    HasSteelTension = mHasSteelTension
 End Property

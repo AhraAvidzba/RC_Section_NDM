@@ -28,6 +28,8 @@ Private Const PHYSICAL_TOLERANCE As Double = 0.000000001 ' Порог, ниже 
 Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 61 ' Строки общих свойств сечения до LC-зависимых блоков.
 Private Const LC_SECTION_PROPERTY_ROWS As Long = 23 ' Строки свойств одного LC без metadata named-state.
 Private Const STATE_SECTION_PROPERTY_ROWS As Long = 10 ' Строки metadata одного сохраненного named-state.
+Private Const RESULTS_COLUMN_WIDTH As Double = 8.43 ' Единая ширина всех столбцов Results.
+Private Const SNAPSHOT_TITLE_OFFSET As Long = 2 ' Общая синяя строка находится на две строки выше нижних snapshot-якорей.
 
 ' Возвращает фактическую ширину одного из блоков Results, которые пишет этот writer.
 Public Function OutputColumnCount(ByVal rangeName As String) As Long
@@ -81,6 +83,7 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
     Dim runID As Date
     runID = Now
 
+    WriteSnapshotTitle workbook
     WriteSectionGeometry workbook, section, runID, units
     WriteElementResults workbook, section, materialProvider, batch, runID, units
     WriteSectionProperties workbook, section, materialProvider, batch, runID, units
@@ -102,6 +105,7 @@ Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSect
     Dim runID As Date
     runID = Now
 
+    WriteSnapshotTitle workbook
     WriteSectionGeometry workbook, section, runID, units
     WriteEmptyElementResults workbook, runID, units
     WriteSectionPropertiesPreview workbook, section, runID, units
@@ -113,6 +117,7 @@ End Sub
 Public Sub ClearResults(ByVal workbook As Object)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4455, "CNDMResultsWriter", "Книга Excel не передана."
 
+    ClearSnapshotTitle workbook
     ClearNamedRegion workbook, "rngNDMElementResults"
     ClearNamedRegion workbook, "rngNDMSectionGeometry"
     ClearNamedRegion workbook, "rngNDMSectionProperties"
@@ -127,6 +132,41 @@ Private Sub ClearNamedRegion(ByVal workbook As Object, ByVal rangeName As String
     Set anchor = workbook.Names.Item(rangeName).RefersToRange
     anchor.CurrentRegion.ClearContents
     If anchor.Row > 1 Then anchor.Offset(-1, 0).Resize(1, 20).Clear
+MissingRange:
+End Sub
+
+' Записывает общий заголовок над нижними snapshot-таблицами Results.
+Private Sub WriteSnapshotTitle(ByVal workbook As Object)
+    On Error GoTo MissingRange
+    Dim anchor As Object
+    Set anchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
+    If anchor.Row <= SNAPSHOT_TITLE_OFFSET Then Exit Sub
+
+    Dim titleRow As Long
+    titleRow = anchor.Row - SNAPSHOT_TITLE_OFFSET
+    anchor.Worksheet.Rows.Item(titleRow).Interior.Color = RGB(189, 215, 238)
+    anchor.Worksheet.Rows.Item(titleRow).RowHeight = 15
+    With anchor.Worksheet.Cells(titleRow, anchor.Column)
+        .Value2 = "Расчетный снимок Results: элементы, геометрия, свойства сечения, диаграммы материалов и аннотации"
+        .Font.Name = "Arial"
+        .Font.Size = 12
+        .Font.Bold = True
+        .Font.Color = RGB(255, 0, 0)
+        .HorizontalAlignment = -4131
+        .VerticalAlignment = -4108
+        .WrapText = False
+    End With
+MissingRange:
+End Sub
+
+' Очищает общую строку-заголовок snapshot-блоков перед новой записью.
+Private Sub ClearSnapshotTitle(ByVal workbook As Object)
+    On Error GoTo MissingRange
+    Dim anchor As Object
+    Set anchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
+    If anchor.Row <= SNAPSHOT_TITLE_OFFSET Then Exit Sub
+    anchor.Worksheet.Rows.Item(anchor.Row - SNAPSHOT_TITLE_OFFSET).Clear
+    anchor.Worksheet.Rows.Item(anchor.Row - SNAPSHOT_TITLE_OFFSET).RowHeight = 15
 MissingRange:
 End Sub
 
@@ -332,20 +372,14 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacityLoadPath", batch.CapacityLoadPath(i), "-", "Какие компоненты нагрузки масштабировались при поиске несущей способности."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacitySolutionMethod", batch.CapacitySolutionMethod(i), "-", "Фактический численный метод, которым найдена предельная несущая способность."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "LambdaCapacity", batch.LambdaCapacity(i), "-", "Предельный множитель для выбранной lambda-траектории."
-        If Abs(batch.NUltimate(i)) > 0# Then
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nultimate", OutputForce(batch.NUltimate(i), units), OutputForceUnit(units), "Предельная продольная сила, если N входила в выбранную lambda-траекторию."
+        If batch.LambdaCapacity(i) > 0# Then
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nultimate", OutputForce(batch.NUltimate(i), units), OutputForceUnit(units), "Полная N при lambdaUltimate в точке приложения нагрузки."
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxUltimate", OutputMx(batch.MxUltimate(i), units), OutputMomentUnit(units), "Полный Mx при lambdaUltimate в точке приложения нагрузки."
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUltimate", OutputMy(batch.MyUltimate(i), units), OutputMomentUnit(units), "Полный My при lambdaUltimate в точке приложения нагрузки."
         Else
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nultimate", vbNullString, OutputForceUnit(units), "Заполняется только для траекторий lambda*N и lambda*NMxy."
-        End If
-        If Abs(batch.MxUltimate(i)) > 0# Then
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxUltimate", OutputMx(batch.MxUltimate(i), units), OutputMomentUnit(units), "Предельный пользовательский Mx, если Mx входил в выбранную lambda-траекторию."
-        Else
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxUltimate", vbNullString, OutputMomentUnit(units), "Заполняется только для траекторий, где масштабируется Mx."
-        End If
-        If Abs(batch.MyUltimate(i)) > 0# Then
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUltimate", OutputMy(batch.MyUltimate(i), units), OutputMomentUnit(units), "Предельный пользовательский My, если My входил в выбранную lambda-траекторию."
-        Else
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUltimate", vbNullString, OutputMomentUnit(units), "Заполняется только для траекторий, где масштабируется My."
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nultimate", vbNullString, OutputForceUnit(units), "Заполняется после успешного поиска несущей способности."
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxUltimate", vbNullString, OutputMomentUnit(units), "Заполняется после успешного поиска несущей способности."
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUltimate", vbNullString, OutputMomentUnit(units), "Заполняется после успешного поиска несущей способности."
         End If
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "CrackStatus", batch.CrackStatus(i), "-", "Статус расчета ширины раскрытия трещин."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrackStatus", batch.LongitudinalCrackStatus(i), "-", "Статус SLS(II)-проверки продольных трещин по сжатому бетону; выполняется как часть Calculation.Crack.Width."
@@ -837,6 +871,7 @@ Private Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, B
     tableRange.VerticalAlignment = -4108
     tableRange.Font.Name = "Arial"
     tableRange.Font.Size = 9
+    tableRange.Rows.RowHeight = 15
     tableRange.Borders.LineStyle = 1
     tableRange.Borders.Color = RGB(200, 200, 200)
     tableRange.Rows.Item(1).Interior.Color = RGB(217, 217, 217)
@@ -844,7 +879,13 @@ Private Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, B
     tableRange.Rows.Item(1).HorizontalAlignment = -4131
     tableRange.Columns.Item(1).NumberFormat = "dd.mm.yy"
 
+    Dim widthColumn As Long
+    For widthColumn = 1 To columnCount
+        target.Worksheet.Columns.Item(target.Column + widthColumn - 1).ColumnWidth = RESULTS_COLUMN_WIDTH
+    Next widthColumn
+
     AlignCommentColumns tableRange
+    ApplyResultNumberFormats tableRange
 
     If target.Row > 2 Then
         Dim titleRange As Object
@@ -859,7 +900,21 @@ Private Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, B
         titleRange.HorizontalAlignment = -4108
         titleRange.VerticalAlignment = -4108
         titleRange.Interior.Color = RGB(217, 217, 217)
+        titleRange.Rows.RowHeight = 15
     End If
+End Sub
+
+' Применяет точность к общим числовым столбцам Results, которые должны читаться одинаково во всех snapshot-таблицах.
+Private Sub ApplyResultNumberFormats(ByVal tableRange As Object)
+    Dim headers As Variant
+    headers = tableRange.Rows.Item(1).Value2
+
+    Dim colIndex As Long
+    For colIndex = 1 To tableRange.Columns.Count
+        If StrComp(ResultHeaderBase(CStr(headers(1, colIndex))), "Strain", vbTextCompare) = 0 Then
+            tableRange.Columns.Item(colIndex).NumberFormat = "0.0000"
+        End If
+    Next colIndex
 End Sub
 
 ' Ищет текстовые диагностические столбцы и выравнивает их вправо.

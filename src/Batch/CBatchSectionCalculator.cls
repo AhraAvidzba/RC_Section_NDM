@@ -867,6 +867,17 @@ Private Sub CrackReferencePointForCombination(ByVal index As Long, _
     CrackCentralReferencePoint profile, referenceX, referenceY
 End Sub
 
+' Возвращает центр приведенного сечения для расчетов по модели прочности.
+' Именно относительно этой точки новый strength summary показывает N/Mx/My
+' в группе "относительно центральных осей приведенного сечения".
+Private Sub StrengthReferencePointForCombination(ByVal index As Long, _
+        ByRef referenceX As Double, ByRef referenceY As Double)
+    Dim profile As CCalculationProfile
+    If Not mProfiles.HasProfile(mInputs(index).ProfileId) Then Exit Sub
+    Set profile = mProfiles.ProfileById(mInputs(index).ProfileId)
+    TransformedReferencePoint profile.StrengthSpec.ValueSet, referenceX, referenceY
+End Sub
+
 ' Запускает поиск несущей способности для LC.
 ' Пользовательский столбец CapacityLoadPath задает, какие компоненты нагрузки
 ' умножаются на lambda. Все варианты дальше сводятся к одной математике:
@@ -1147,6 +1158,9 @@ Private Sub StoreInvalidCapacity(ByVal index As Long, ByVal reason As String)
     mResults(index).NUltimate = 0#
     mResults(index).MxUltimate = 0#
     mResults(index).MyUltimate = 0#
+    mResults(index).CapacityStateN = 0#
+    mResults(index).CapacityStateMx = 0#
+    mResults(index).CapacityStateMy = 0#
     mResults(index).MomentUltimate = 0#
 End Sub
 
@@ -1161,9 +1175,17 @@ Private Sub StoreCapacity(ByVal index As Long, ByVal cap As CCapacitySolver, _
     mResults(index).CapacityPathResolved = loadPath.Key
     mResults(index).LambdaCapacity = cap.LambdaUltimate
     If cap.LambdaUltimate > 0# Then
-        If loadPath.ScalesN Then mResults(index).NUltimate = cap.LambdaUltimate * mInputs(index).N
-        If loadPath.ScalesMx Then mResults(index).MxUltimate = cap.LambdaUltimate * mInputs(index).UserMx
-        If loadPath.ScalesMy Then mResults(index).MyUltimate = cap.LambdaUltimate * mInputs(index).UserMy
+        If Not cap.LastSolver Is Nothing Then
+            mResults(index).CapacityStateN = cap.LastSolver.Nint
+            mResults(index).CapacityStateMx = cap.LastSolver.Mxint
+            mResults(index).CapacityStateMy = cap.LastSolver.Myint
+            StoreCapacityUltimateAtLoadPoint index, cap.LastSolver.Nint, cap.LastSolver.Mxint, cap.LastSolver.Myint
+        Else
+            StoreCapacityUltimateAtLoadPoint index, _
+                loadPath.NOffset + cap.LambdaUltimate * loadPath.NBase, _
+                loadPath.MxOffset + cap.LambdaUltimate * loadPath.MxBase, _
+                loadPath.MyOffset + cap.LambdaUltimate * loadPath.MyBase
+        End If
     End If
     mResults(index).MomentUltimate = Sqr(mResults(index).MxUltimate * mResults(index).MxUltimate + mResults(index).MyUltimate * mResults(index).MyUltimate)
     If cap.LambdaUltimate > 0# Then mResults(index).UtilCapacity = 1# / cap.LambdaUltimate
@@ -1186,6 +1208,23 @@ Private Sub StoreCapacity(ByVal index As Long, ByVal cap As CCapacitySolver, _
             mResults(index).AddState stateResult
         End If
     End If
+End Sub
+
+' Сохраняет полный предельный вектор CapacityState в пользовательской точке
+' приложения нагрузки. Внутри solver хранит моменты относительно начала
+' CSectionModel, поэтому для вывода Nult/Mxult/Myult используем общий класс
+' переносов нагрузки, а не локальную формулу writer-а.
+Private Sub StoreCapacityUltimateAtLoadPoint(ByVal index As Long, ByVal nValue As Double, _
+        ByVal mxAboutOrigin As Double, ByVal myAboutOrigin As Double)
+    Dim loadState As CSectionLoadState
+    Set loadState = New CSectionLoadState
+    loadState.InitializeFromPointMoments nValue, mxAboutOrigin, myAboutOrigin, _
+        0#, 0#, mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, _
+        mConcreteDepthForMx, mConcreteDepthForMy
+
+    mResults(index).NUltimate = loadState.N
+    mResults(index).MxUltimate = loadState.LoadPointMx
+    mResults(index).MyUltimate = loadState.LoadPointMy
 End Sub
 
 ' Фиксирует InvalidInput по конкретному LC и не дает этому сочетанию пройти
@@ -1624,6 +1663,18 @@ End Property
 
 Public Property Get MomentUltimate(ByVal index As Long) As Double
     MomentUltimate = mResults(index).MomentUltimate
+End Property
+
+Public Property Get CapacityStateN(ByVal index As Long) As Double
+    CapacityStateN = mResults(index).CapacityStateN
+End Property
+
+Public Property Get CapacityStateMx(ByVal index As Long) As Double
+    CapacityStateMx = mResults(index).CapacityStateMx
+End Property
+
+Public Property Get CapacityStateMy(ByVal index As Long) As Double
+    CapacityStateMy = mResults(index).CapacityStateMy
 End Property
 
 Public Property Get CapacityStateAvailable(ByVal index As Long) As Boolean
@@ -2118,6 +2169,61 @@ Private Function SummaryMaterialSpecForCombination(ByVal index As Long) As CMate
     If Not stateResult Is Nothing Then Set SummaryMaterialSpecForCombination = stateResult.MaterialSpec
 End Function
 
+' Предельная сжатая деформация бетона именно для модели прочности.
+Public Function StrengthConcreteCompressionLimitForCombination(ByVal index As Long) As Double
+    Dim spec As CMaterialModelSpec
+    Set spec = StrengthMaterialSpecForCombination(index)
+    If Not spec Is Nothing Then StrengthConcreteCompressionLimitForCombination = mMaterialProvider.ConcreteCompressionLimitFromSpec(spec)
+End Function
+
+' Предельная растянутая деформация бетона именно для модели прочности.
+Public Function StrengthConcreteTensionLimitForCombination(ByVal index As Long) As Double
+    Dim spec As CMaterialModelSpec
+    Set spec = StrengthMaterialSpecForCombination(index)
+    If Not spec Is Nothing Then StrengthConcreteTensionLimitForCombination = mMaterialProvider.ConcreteTensionLimitFromSpec(spec)
+End Function
+
+' True, если strength-диаграмма учитывает растянутый бетон и предел нужно показывать.
+Public Function StrengthConcreteTensionLimitEnabledForCombination(ByVal index As Long) As Boolean
+    Dim spec As CMaterialModelSpec
+    Set spec = StrengthMaterialSpecForCombination(index)
+    If Not spec Is Nothing Then StrengthConcreteTensionLimitEnabledForCombination = mMaterialProvider.ConcreteTensionLimitEnabledFromSpec(spec)
+End Function
+
+' Предельная сжатая деформация арматуры именно для модели прочности.
+Public Function StrengthSteelCompressionLimitForCombination(ByVal index As Long) As Double
+    Dim spec As CMaterialModelSpec
+    Set spec = StrengthMaterialSpecForCombination(index)
+    If Not spec Is Nothing Then StrengthSteelCompressionLimitForCombination = mMaterialProvider.SteelCompressionLimitFromSpec(spec)
+End Function
+
+' Предельная растянутая деформация арматуры именно для модели прочности.
+Public Function StrengthSteelTensionLimitForCombination(ByVal index As Long) As Double
+    Dim spec As CMaterialModelSpec
+    Set spec = StrengthMaterialSpecForCombination(index)
+    If Not spec Is Nothing Then StrengthSteelTensionLimitForCombination = mMaterialProvider.SteelTensionLimitFromSpec(spec)
+End Function
+
+' Возвращает спецификацию материала strength-модели для подробного блока прочности.
+' Сначала используем сохраненный named state, потому что он фиксирует реально
+' примененную спецификацию, а при отсутствии состояния берем профиль как fallback
+' для лимитов в строках, где расчет не запускался или завершился ошибкой.
+Private Function StrengthMaterialSpecForCombination(ByVal index As Long) As CMaterialModelSpec
+    Dim stateResult As CSectionStateResult
+    Set stateResult = mResults(index).FindState(sstStrengthState)
+    If stateResult Is Nothing Then Set stateResult = mResults(index).FindState(sstCapacityState)
+    If Not stateResult Is Nothing Then
+        Set StrengthMaterialSpecForCombination = stateResult.MaterialSpec
+        Exit Function
+    End If
+
+    Dim profile As CCalculationProfile
+    If mProfiles.HasProfile(mInputs(index).ProfileId) Then
+        Set profile = mProfiles.ProfileById(mInputs(index).ProfileId)
+        If Not profile Is Nothing Then Set StrengthMaterialSpecForCombination = profile.StrengthSpec
+    End If
+End Function
+
 Public Property Get GoverningCombinationIndex() As Long
     GoverningCombinationIndex = mGoverningCombinationIndex
 End Property
@@ -2208,6 +2314,46 @@ End Property
 Public Function FindNamedState(ByVal index As Long, ByVal stateType As ESectionStateType) As CSectionStateResult
     Set FindNamedState = mResults(index).FindState(stateType)
 End Function
+
+Public Property Get StrengthReferenceN(ByVal index As Long) As Double
+    StrengthReferenceN = LoadStateForCombination(index).N
+End Property
+
+Public Property Get StrengthReferenceMx(ByVal index As Long) As Double
+    Dim referenceX As Double
+    Dim referenceY As Double
+    StrengthReferencePointForCombination index, referenceX, referenceY
+    StrengthReferenceMx = LoadStateForCombination(index).MxAboutPoint(referenceY)
+End Property
+
+Public Property Get StrengthReferenceMy(ByVal index As Long) As Double
+    Dim referenceX As Double
+    Dim referenceY As Double
+    StrengthReferencePointForCombination index, referenceX, referenceY
+    StrengthReferenceMy = LoadStateForCombination(index).MyAboutPoint(referenceX)
+End Property
+
+Public Property Get StrengthLoadPointN(ByVal index As Long) As Double
+    StrengthLoadPointN = LoadStateForCombination(index).N
+End Property
+
+Public Property Get StrengthLoadPointMx(ByVal index As Long) As Double
+    StrengthLoadPointMx = LoadStateForCombination(index).LoadPointMx
+End Property
+
+Public Property Get StrengthLoadPointMy(ByVal index As Long) As Double
+    StrengthLoadPointMy = LoadStateForCombination(index).LoadPointMy
+End Property
+
+Public Property Get StrengthDirectStateRequested(ByVal index As Long) As Boolean
+    If mProfiles.HasProfile(mInputs(index).ProfileId) Then _
+        StrengthDirectStateRequested = mProfiles.ProfileById(mInputs(index).ProfileId).StrengthDirectStateEnabled
+End Property
+
+Public Property Get StrengthCapacityRequested(ByVal index As Long) As Boolean
+    If mProfiles.HasProfile(mInputs(index).ProfileId) Then _
+        StrengthCapacityRequested = mProfiles.ProfileById(mInputs(index).ProfileId).StrengthCapacityEnabled
+End Property
 
 Public Property Get StateAvailableCount() As Long
     Dim i As Long
