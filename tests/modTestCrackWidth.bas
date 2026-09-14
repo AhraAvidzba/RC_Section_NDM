@@ -304,6 +304,14 @@ Private Sub TestCrackInitiationLoadPaths(ByRef stats As TCrackTestStats)
     AssertTrue stats, "crack.path.n.central", crackN.CentralTensionBranch
     AssertClose stats, "crack.path.n.formationN", crackN.FormationNcrc, crackN.Ncrc, 0.001
 
+    Dim crackAutoN As CCrackWidthCalculator
+    Set crackAutoN = CalculateCrack(solverN, sectionN, 200000#, 0#, 0#, _
+        "Auto", "Effective", allowable:=0.0001, formationPath:="Auto")
+    AssertCrackCommon stats, "crack.path.autoN", crackAutoN
+    AssertTrue stats, "crack.path.autoN.central", crackAutoN.CentralTensionBranch
+    AssertTrue stats, "crack.path.autoN.method", crackAutoN.CrackFormationMethod = ChrW$(&H3BB) & "*N"
+    AssertClose stats, "crack.path.autoN.formationN", crackAutoN.FormationNcrc, crackAutoN.Ncrc, 0.001
+
     Dim sectionNMxy As CSectionModel
     Dim solverNMxy As CSectionSolver
     Set solverNMxy = SolveServiceStateWithRunner(sectionNMxy, -20000#, -15000000#, 0#)

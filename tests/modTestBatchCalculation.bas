@@ -142,6 +142,8 @@ Public Function RunBatchCalculationTests() As String
     TestPR2LShapeCompressionSmallMomentCrackDoesNotNumFail stats
     AppendLine stats, "RUN: TestCrackInitiationLoadPathsWriteFormationSummary"
     TestCrackInitiationLoadPathsWriteFormationSummary stats
+    AppendLine stats, "RUN: TestCrackAutoFormationPathSwitchesForLShape"
+    TestCrackAutoFormationPathSwitchesForLShape stats
     AppendLine stats, "RUN: TestPR1AxialTensionBeyondPhysicalLimitUsesExtension"
     TestPR1AxialTensionBeyondPhysicalLimitUsesExtension stats
     AppendLine stats, "RUN: TestPR1AxialTensionNearLimitDoesNotJumpToNumFail"
@@ -932,6 +934,9 @@ Private Sub TestCrackInitiationLoadPathsWriteFormationSummary(ByRef stats As TBa
     SetSystemSetting "SLS.Crack.PsiMode", "Auto"
     SetSystemSetting "SLS.Crack.Allowable", "0.0001"
 
+    CheckCrackFormationSummaryForPath stats, "Auto", _
+        "batch.crack.pathAuto.summary", 20# * 9806.65, _
+        0#, 0#, True, False
     CheckCrackFormationSummaryForPath stats, "lambda*N", _
         "batch.crack.pathN.summary", 20# * 9806.65, _
         0#, 0#, True, False
@@ -950,6 +955,83 @@ RestoreAndFail:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: batch.crack.path.summary; " & Err.Description
     Resume Restore
+End Sub
+
+' Жестко проверяет Auto-переключение пути образования трещины на пользовательском
+' Г-сечении: чистая N должна выбрать lambda*N, чистый момент - lambda*Mxy,
+' а сочетание, где N и M по отдельности уже дают трещину, должно дойти до
+' пропорционального пути lambda*NMxy вместо fallback psi_s=1.
+Private Sub TestCrackAutoFormationPathSwitchesForLShape(ByRef stats As TBatchTestStats)
+    Dim oldPath As String
+    Dim oldStrategy As String
+    Dim oldPsiMode As String
+    Dim oldAllowable As String
+    oldPath = GetSystemSetting("SLS.Crack.InitiationLoadPath")
+    oldStrategy = GetSystemSetting("SLS.Crack.InitiationSolutionStrategy")
+    oldPsiMode = GetSystemSetting("SLS.Crack.PsiMode")
+    oldAllowable = GetSystemSetting("SLS.Crack.Allowable")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "SLS.Crack.InitiationLoadPath", "Auto"
+    SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
+    SetSystemSetting "SLS.Crack.PsiMode", "Auto"
+    SetSystemSetting "SLS.Crack.Allowable", "0.0001"
+
+    CheckCrackAutoFormationCase stats, "batch.crack.auto.lshape.nOnly", _
+        100# * 9806.65, 0#, 0#, ChrW$(&H3BB) & "*N", True, False
+    CheckCrackAutoFormationCase stats, "batch.crack.auto.lshape.mOnly", _
+        0#, 50# * TEST_TF_M_IN_NMM, 0#, ChrW$(&H3BB) & "*Mxy", False, True
+    CheckCrackAutoFormationCase stats, "batch.crack.auto.lshape.nAndM", _
+        100# * 9806.65, 50# * TEST_TF_M_IN_NMM, 0#, ChrW$(&H3BB) & "*NMxy", True, True
+
+Restore:
+    SetSystemSetting "SLS.Crack.InitiationLoadPath", oldPath
+    SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", oldStrategy
+    SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
+    SetSystemSetting "SLS.Crack.Allowable", oldAllowable
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.crack.auto.lshape; " & Err.Description
+    Resume Restore
+End Sub
+
+' Выполняет один Auto-сценарий Mcrc/Ncrc на Г-сечении и проверяет, что
+' фактически принятый путь совпал с ожидаемым физическим случаем.
+Private Sub CheckCrackAutoFormationCase(ByRef stats As TBatchTestStats, _
+        ByVal prefix As String, ByVal nValue As Double, ByVal mxValue As Double, _
+        ByVal myValue As Double, ByVal expectedMethod As String, _
+        ByVal expectNcrc As Boolean, ByVal expectMcrc As Boolean)
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim referenceX As Double
+    Dim referenceY As Double
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUserLShapeTensionBatch(referenceX, referenceY)
+    batch.ApplySettings settings
+    batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
+    batch.AddCombination UCase$(Replace$(Replace$(expectedMethod, ChrW$(&H3BB) & "*", vbNullString), "*", vbNullString)), _
+        nValue, mxValue, myValue, "PR2", "auto crack formation"
+    batch.Execute
+
+    AppendLine stats, "INFO: " & prefix & "; status=" & batch.CrackStatus(1) & _
+        "; method=" & batch.CrackFormationMethod(1) & _
+        "; lambda=" & FormatNumberInvariant(batch.CrackLambdaCrc(1)) & _
+        "; Ncrc=" & FormatNumberInvariant(batch.CrackFormationNcrc(1)) & _
+        "; MxyCrc=" & FormatNumberInvariant(batch.CrackMcrc(1))
+    If batch.CrackFormationMethod(1) <> expectedMethod Or batch.CrackStatus(1) = "NumFail" Then _
+        AppendLine stats, "DIAG: " & prefix & vbCrLf & batch.DiagnosticLog
+
+    AssertTrue stats, prefix & ".notNumFail", batch.CrackStatus(1) <> "NumFail"
+    AssertTrue stats, prefix & ".method", batch.CrackFormationMethod(1) = expectedMethod
+    AssertTrue stats, prefix & ".lambda", batch.CrackLambdaCrc(1) > 0# And batch.CrackLambdaCrc(1) <= 1#
+    If expectNcrc Then _
+        AssertTrue stats, prefix & ".ncrc", Abs(batch.CrackFormationNcrc(1)) > 0#
+    If expectMcrc Then _
+        AssertTrue stats, prefix & ".mcrc", batch.CrackMcrc(1) > 0#
 End Sub
 
 ' Выполняет один сценарий трещинообразования и проверяет, что найденная точка
@@ -993,13 +1075,15 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
     Dim anchor As Object
     Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
+    AssertTrue stats, prefix & ".sheetMethod", _
+        CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 12).Value2)
     If expectNcrc Then
         AssertTrue stats, prefix & ".sheetNcrc", _
-            CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 14).Value2)
+            CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 15).Value2)
     End If
     If expectMcrc Then
         AssertTrue stats, prefix & ".sheetMcrc", _
-            CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 15).Value2)
+            CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 16).Value2)
     End If
 End Sub
 
@@ -3428,12 +3512,12 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     Dim crackAnchor As Object
     Set crackAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     AssertTrue stats, "batch.writer.crack.header.formationTitle", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 10).Value2) = "Момент образования трещин"
-    AssertTrue stats, "batch.writer.crack.header.title", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 18).Value2) = "нормальные и продольные трещины"
-    AssertTrue stats, "batch.writer.crack.header.mcrcNote", InStr(1, CStr(resultsSheet.Cells.Item(crackAnchor.Row - 2, 15).Value2), "моментного вектора", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.crack.header.title", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 19).Value2) = "нормальные и продольные трещины"
+    AssertTrue stats, "batch.writer.crack.header.mcrcNote", InStr(1, CStr(resultsSheet.Cells.Item(crackAnchor.Row - 2, 16).Value2), "моментного вектора", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.crack.header.formationStatus", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 3, 17).Value2) = "статус трещин" And _
-        resultsSheet.Cells.Item(crackAnchor.Row - 3, 17).MergeArea.Rows.Count = 2
-    AssertTrue stats, "batch.writer.crack.header.state", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 17).Value2) = "state"
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 3, 18).Value2) = "статус трещин" And _
+        resultsSheet.Cells.Item(crackAnchor.Row - 3, 18).MergeArea.Rows.Count = 2
+    AssertTrue stats, "batch.writer.crack.header.state", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 18).Value2) = "state"
     AssertTrue stats, "batch.writer.crack.header.notesPlain", Not resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).Font.Bold And _
         resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).HorizontalAlignment = -4131
     AssertTrue stats, "batch.writer.crack.header.notesFill", CLng(resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).Interior.Color) = RGB(217, 217, 217)

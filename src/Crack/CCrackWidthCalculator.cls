@@ -45,6 +45,7 @@ Private Const NEAR_ZERO_FORCE As Double = 0.000001 ' Численный ноль
 Private Const LARGE_LAMBDA As Double = 1E+30 ' Диагностическая отметка: трещина не достигнута при lambda = 1.
 Private Const COVER_MODE_NEAREST_CONTOUR As String = "NearestContour" ' a_s до ближайшего выхода бетонного контура по нормали.
 Private Const COVER_MODE_GLOBAL_EXTREME As String = "GlobalExtreme" ' a_s до дальней растянутой опорной линии всего сечения.
+Private Const CRACK_PATH_AUTO As String = "Auto" ' Последовательно пробует lambda*Mxy, lambda*N и lambda*NMxy.
 Private Const CRACK_PATH_MXY As String = "LambdaMxy" ' При поиске трещинообразования масштабируется только моментный вектор Mx/My.
 Private Const CRACK_PATH_N As String = "LambdaN" ' При поиске трещинообразования масштабируется только продольная сила N.
 Private Const CRACK_PATH_NMXY As String = "LambdaNMxy" ' При поиске трещинообразования масштабируется весь вектор N/Mx/My.
@@ -66,7 +67,8 @@ Private mPsiMode As String ' User или Auto: брать psi_s из Config ил
 Private mPhi3Mode As String ' User или Auto: брать phi3 из Config или выбирать по характеру продольной силы.
 Private mTensionZoneMode As String ' Effective или FullTension: способ задания бетонной зоны Abt.
 Private mCoverMode As String ' NearestContour или GlobalExtreme: способ измерения расстояния a_s.
-Private mCrackFormationPath As String ' LambdaMxy, LambdaN или LambdaNMxy: какая часть LC масштабируется при поиске образования трещины.
+Private mCrackFormationPath As String ' Auto, LambdaMxy, LambdaN или LambdaNMxy: какая часть LC масштабируется при поиске образования трещины.
+Private mResolvedCrackFormationPath As String ' Фактический путь, который дал принятую точку Mcrc/Ncrc.
 Private mCrackFormationSolutionStrategy As String ' Auto, UltimateStrain или LoadMultiplier для поиска стадии образования трещины.
 Private mPhi1Input As Double ' Пользовательское значение phi1 для формулы раскрытия.
 Private mPhi2Input As Double ' Пользовательское значение phi2 для формулы раскрытия.
@@ -366,9 +368,18 @@ Private Sub CheckCentralTensionFormation(ByVal section As CSectionModel, _
         Exit Sub
     End If
 
-    If StrComp(mCrackFormationPath, CRACK_PATH_MXY, vbTextCompare) = 0 Then
+    Dim activePath As String
+    activePath = mCrackFormationPath
+    If StrComp(activePath, CRACK_PATH_AUTO, vbTextCompare) = 0 Then
+        AppendDiagnostic "Auto path: центральное растяжение; " & ChrW$(&H3BB) & _
+            "*Mxy не масштабирует N, пробуем " & ChrW$(&H3BB) & "*N."
+        activePath = CRACK_PATH_N
+    End If
+
+    If StrComp(activePath, CRACK_PATH_MXY, vbTextCompare) = 0 Then
         If targetN >= mNcrc Then
             MarkFormationPathFallback "Центральное растяжение уже образует трещину, но выбран путь lambda*Mxy без масштабируемого момента; psi_s остается равным 1."
+            mResolvedCrackFormationPath = activePath
         Else
             FinishNoCrack "Трещина не образована: Ncrc больше заданной растягивающей силы, а выбранный путь lambda*Mxy не масштабирует N."
         End If
@@ -382,6 +393,7 @@ Private Sub CheckCentralTensionFormation(ByVal section As CSectionModel, _
     End If
 
     StoreFormationLoad targetN * mLambdaCrc, targetMx * mLambdaCrc, targetMy * mLambdaCrc
+    mResolvedCrackFormationPath = activePath
     If Not BuildBeforeMcrcState(section, materialProvider, targetN, targetMx, targetMy) Then Exit Sub
     If Not EnsureAfterMcrcState(section, materialProvider, Nothing, targetN, targetMx, targetMy) Then Exit Sub
 
@@ -449,6 +461,70 @@ Private Function FindGeneralFormationLambda(ByVal section As CSectionModel, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal momentMxAtReference As Double, ByVal momentMyAtReference As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double) As Boolean
+    If StrComp(mCrackFormationPath, CRACK_PATH_AUTO, vbTextCompare) = 0 Then
+        FindGeneralFormationLambda = FindGeneralFormationLambdaAuto(section, materialProvider, _
+            targetN, targetMx, targetMy, momentMxAtReference, momentMyAtReference, referenceX, referenceY)
+        Exit Function
+    End If
+
+    FindGeneralFormationLambda = FindGeneralFormationLambdaForCurrentPath(section, materialProvider, _
+        targetN, targetMx, targetMy, momentMxAtReference, momentMyAtReference, referenceX, referenceY)
+    If FindGeneralFormationLambda Then mResolvedCrackFormationPath = mCrackFormationPath
+End Function
+
+' В Auto-режиме по очереди пробует все разрешенные lambda-пути. Если путь
+' дал только fallback psi_s=1 без найденного состояния образования трещины,
+' это считается неудачной попыткой Auto и программа идет дальше.
+Private Function FindGeneralFormationLambdaAuto(ByVal section As CSectionModel, _
+        ByVal materialProvider As CMaterialModelProvider, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal momentMxAtReference As Double, ByVal momentMyAtReference As Double, _
+        ByVal referenceX As Double, ByVal referenceY As Double) As Boolean
+    Dim savedPath As String
+    savedPath = mCrackFormationPath
+
+    Dim paths(1 To 3) As String
+    paths(1) = CRACK_PATH_MXY
+    paths(2) = CRACK_PATH_N
+    paths(3) = CRACK_PATH_NMXY
+
+    Dim lastStopReason As String
+    Dim i As Long
+    For i = LBound(paths) To UBound(paths)
+        ClearFormationAttemptState
+        mCrackFormationPath = paths(i)
+        AppendDiagnostic "Auto path: пробуем " & CrackFormationPathDisplayName() & "."
+
+        If FindGeneralFormationLambdaForCurrentPath(section, materialProvider, _
+                targetN, targetMx, targetMy, momentMxAtReference, momentMyAtReference, referenceX, referenceY) Then
+            If mFormationPathFallbackPsi1 And i < UBound(paths) Then
+                lastStopReason = mStopReason
+                AppendDiagnostic "Auto path: " & CrackFormationPathDisplayName() & _
+                    " дал только fallback psi_s=1 без точки Mcrc/Ncrc; пробуем следующий путь."
+            Else
+                mResolvedCrackFormationPath = mCrackFormationPath
+                AppendDiagnostic "Auto path: выбран " & CrackFormationPathDisplayName() & "."
+                mCrackFormationPath = savedPath
+                FindGeneralFormationLambdaAuto = True
+                Exit Function
+            End If
+        Else
+            lastStopReason = mStopReason
+            AppendDiagnostic "Auto path: " & CrackFormationPathDisplayName() & _
+                " не дал точку образования трещины: " & mStopReason
+        End If
+    Next i
+
+    mCrackFormationPath = savedPath
+    If Len(mStopReason) = 0 Then mStopReason = lastStopReason
+End Function
+
+' Выполняет поиск по уже выбранному mCrackFormationPath без перебора путей.
+Private Function FindGeneralFormationLambdaForCurrentPath(ByVal section As CSectionModel, _
+        ByVal materialProvider As CMaterialModelProvider, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal momentMxAtReference As Double, ByVal momentMyAtReference As Double, _
+        ByVal referenceX As Double, ByVal referenceY As Double) As Boolean
     Dim concreteMaterial As CMaterialDiagram
     Dim steelMaterial As CMaterialDiagram
     Set concreteMaterial = materialProvider.ConcreteMaterialFromSpec(mCrackInitiationSpec)
@@ -456,11 +532,11 @@ Private Function FindGeneralFormationLambda(ByVal section As CSectionModel, _
 
     Select Case mCrackFormationSolutionStrategy
         Case STRATEGY_LOAD_MULTIPLIER
-            FindGeneralFormationLambda = CalculateLambdaCrcByLoadScaling(section, concreteMaterial, steelMaterial, _
+            FindGeneralFormationLambdaForCurrentPath = CalculateLambdaCrcByLoadScaling(section, concreteMaterial, steelMaterial, _
                 Nothing, targetN, momentMxAtReference, momentMyAtReference, referenceX, referenceY)
             Exit Function
         Case STRATEGY_ULTIMATE_STRAIN
-            FindGeneralFormationLambda = CalculateLambdaCrcByUltimateStrain(section, concreteMaterial, steelMaterial, _
+            FindGeneralFormationLambdaForCurrentPath = CalculateLambdaCrcByUltimateStrain(section, concreteMaterial, steelMaterial, _
                 targetN, targetMx, targetMy, momentMxAtReference, momentMyAtReference, referenceX, referenceY)
             Exit Function
     End Select
@@ -468,7 +544,7 @@ Private Function FindGeneralFormationLambda(ByVal section As CSectionModel, _
     Dim firstStopReason As String
     If CalculateLambdaCrcByUltimateStrain(section, concreteMaterial, steelMaterial, _
             targetN, targetMx, targetMy, momentMxAtReference, momentMyAtReference, referenceX, referenceY) Then
-        FindGeneralFormationLambda = True
+        FindGeneralFormationLambdaForCurrentPath = True
         Exit Function
     End If
     If FormationSearchStoppedTerminally() Then Exit Function
@@ -479,7 +555,7 @@ Private Function FindGeneralFormationLambda(ByVal section As CSectionModel, _
 
     If CalculateLambdaCrcByLoadScaling(section, concreteMaterial, steelMaterial, Nothing, _
             targetN, momentMxAtReference, momentMyAtReference, referenceX, referenceY) Then
-        FindGeneralFormationLambda = True
+        FindGeneralFormationLambdaForCurrentPath = True
     ElseIf Len(mStopReason) = 0 Then
         mStopReason = firstStopReason
     End If
@@ -495,6 +571,12 @@ Private Function CalculateLambdaCrcByUltimateStrain(ByVal section As CSectionMod
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal momentMxAtReference As Double, ByVal momentMyAtReference As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double) As Boolean
+    If TryMarkConstantPartFormationFallback(section, concreteMaterial, steelMaterial, _
+            FormationLoadPath(targetN, momentMxAtReference, momentMyAtReference, referenceX, referenceY), 0#) Then
+        CalculateLambdaCrcByUltimateStrain = True
+        Exit Function
+    End If
+
     If TryUltimateStrainFormation(section, concreteMaterial, steelMaterial, Nothing, _
             targetN, momentMxAtReference, momentMyAtReference, referenceX, referenceY) Then
         CalculateLambdaCrcByUltimateStrain = True
@@ -710,12 +792,31 @@ End Function
 ' Возвращает пользовательское имя пути для диагностики.
 Private Function CrackFormationPathDisplayName() As String
     Select Case mCrackFormationPath
+        Case CRACK_PATH_AUTO
+            CrackFormationPathDisplayName = "Auto"
         Case CRACK_PATH_N
             CrackFormationPathDisplayName = ChrW$(&H3BB) & "*N"
         Case CRACK_PATH_NMXY
             CrackFormationPathDisplayName = ChrW$(&H3BB) & "*NMxy"
         Case Else
             CrackFormationPathDisplayName = ChrW$(&H3BB) & "*Mxy"
+    End Select
+End Function
+
+' Возвращает имя фактически использованного пути. Для Auto это уже не Auto,
+' а конкретный lambda-путь, на котором была принята стадия образования.
+Private Function CrackFormationPathDisplayNameForKey(ByVal pathKey As String) As String
+    Select Case pathKey
+        Case CRACK_PATH_N
+            CrackFormationPathDisplayNameForKey = ChrW$(&H3BB) & "*N"
+        Case CRACK_PATH_NMXY
+            CrackFormationPathDisplayNameForKey = ChrW$(&H3BB) & "*NMxy"
+        Case CRACK_PATH_MXY
+            CrackFormationPathDisplayNameForKey = ChrW$(&H3BB) & "*Mxy"
+        Case CRACK_PATH_AUTO
+            CrackFormationPathDisplayNameForKey = "Auto"
+        Case Else
+            CrackFormationPathDisplayNameForKey = vbNullString
     End Select
 End Function
 
@@ -905,6 +1006,12 @@ Private Function CalculateLambdaCrc(ByVal section As CSectionModel, ByVal concre
                 Abs(rLimit) <= CRACK_STRAIN_RATIO_TOLERANCE Then
             If lambdaValue < 0# Then
                 mStopReason = "NumericalFailure: найденное состояние образования трещины имеет отрицательный lambda_crc."
+                Exit Function
+            End If
+            If TryMarkConstantPartFormationFallback(section, concreteMaterial, steelMaterial, _
+                    MomentFormationLoadPath(targetN, targetMomentMx, targetMomentMy, referenceX, referenceY), _
+                    lambdaValue) Then
+                CalculateLambdaCrc = True
                 Exit Function
             End If
             mLambdaCrc = lambdaValue
@@ -1100,6 +1207,11 @@ Private Function CalculateLambdaCrcByLoadPathNewton(ByVal section As CSectionMod
                 mStopReason = "NumericalFailure: найденное состояние образования трещины имеет отрицательный lambda_crc."
                 Exit Function
             End If
+            If TryMarkConstantPartFormationFallback(section, concreteMaterial, steelMaterial, _
+                    loadPath, lambdaValue) Then
+                CalculateLambdaCrcByLoadPathNewton = True
+                Exit Function
+            End If
             mLambdaCrc = lambdaValue
             StoreFormationLoadFromPath loadPath, mLambdaCrc
             Set mBeforeMcrcSolver = solver
@@ -1126,6 +1238,39 @@ Private Function CalculateLambdaCrcByLoadPathNewton(ByVal section As CSectionMod
 
 Failed:
     mStopReason = "NumericalFailure: прямой поиск lambda_crc по load-path не выполнен: " & Err.Description
+End Function
+
+' Превращает нулевую точку прямого UltimateStrain-поиска в тот же fallback,
+' который уже использует LoadMultiplier. Если трещина появляется при lambda=0,
+' выбранный путь не управляет причиной трещины: для lambda*Mxy это трещина от
+' постоянной N, для lambda*N - от постоянного Mxy. В Auto это не окончательный
+' успех, а сигнал попробовать следующий путь.
+Private Function TryMarkConstantPartFormationFallback(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double) As Boolean
+    If lambdaValue > CRACK_LAMBDA_BISECTION_TOLERANCE Then Exit Function
+    If StrComp(mCrackFormationPath, CRACK_PATH_NMXY, vbTextCompare) = 0 Then Exit Function
+    If loadPath Is Nothing Then Exit Function
+
+    Dim probeN As Double
+    Dim probeMx As Double
+    Dim probeMy As Double
+    loadPath.Target 0#, probeN, probeMx, probeMy
+    If IsZeroLoadProbe(probeN, probeMx, probeMy) Then Exit Function
+
+    Dim probeSolver As CSectionSolver
+    Set probeSolver = SolveState(section, concreteMaterial, steelMaterial, Nothing, _
+        probeN, probeMx, probeMy)
+    If probeSolver Is Nothing Then Exit Function
+    If Not probeSolver.Converged Then Exit Function
+
+    Dim residual As Double
+    If Not SolverFormationResidual(section, probeSolver, residual) Then Exit Function
+    If residual < 0# Then Exit Function
+
+    MarkFormationPathFallback "Трещина уже образуется в постоянной части выбранного пути " & _
+        CrackFormationPathDisplayName() & "; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1."
+    TryMarkConstantPartFormationFallback = True
 End Function
 
 ' Оценивает невязки для прямого поиска lambda_crc на общей линии нагрузки.
@@ -2346,6 +2491,8 @@ Private Function NormalizeCrackFormationPath(ByVal rawPath As String) As String
     value = Replace$(value, ChrW$(&H3BB), "lambda")
 
     Select Case value
+        Case "auto"
+            NormalizeCrackFormationPath = CRACK_PATH_AUTO
         Case vbNullString, "lambda*mxy", "lambdamxy", "mxy"
             NormalizeCrackFormationPath = CRACK_PATH_MXY
         Case "lambda*n", "lambdan", "n"
@@ -2354,7 +2501,7 @@ Private Function NormalizeCrackFormationPath(ByVal rawPath As String) As String
             NormalizeCrackFormationPath = CRACK_PATH_NMXY
         Case Else
             Err.Raise vbObjectError + 3734, "CCrackWidthCalculator", _
-                "SLS.Crack.InitiationLoadPath должен быть lambda*Mxy, lambda*N или lambda*NMxy."
+                "SLS.Crack.InitiationLoadPath должен быть Auto, lambda*Mxy, lambda*N или lambda*NMxy."
     End Select
 End Function
 
@@ -2430,6 +2577,30 @@ Private Sub ClearResult()
     mFormationLoadMx = 0#
     mFormationLoadMy = 0#
     mFormationPathFallbackPsi1 = False
+    mResolvedCrackFormationPath = vbNullString
+End Sub
+
+' Сбрасывает только данные одной попытки поиска Mcrc/Ncrc. Диагностический
+' журнал и выбранные материальные модели сохраняются, чтобы Auto мог показать
+' всю цепочку переключения путей.
+Private Sub ClearFormationAttemptState()
+    mConverged = False
+    mStopReason = vbNullString
+    mCrackFormed = False
+    mLambdaCrc = 0#
+    mNcrc = 0#
+    mFormationNcrc = 0#
+    mMcrc = 0#
+    Set mBeforeMcrcState = Nothing
+    Set mBeforeMcrcSolver = Nothing
+    Set mAfterMcrcState = Nothing
+    Set mAfterMcrcSolver = Nothing
+    mFormationLoadDefined = False
+    mFormationLoadN = 0#
+    mFormationLoadMx = 0#
+    mFormationLoadMy = 0#
+    mFormationPathFallbackPsi1 = False
+    mResolvedCrackFormationPath = vbNullString
 End Sub
 
 ' Добавляет строку в диагностический журнал.
@@ -2511,6 +2682,14 @@ End Property
 
 Public Property Get CrackFormationPath() As String
     CrackFormationPath = CrackFormationPathDisplayName()
+End Property
+
+Public Property Get CrackFormationMethod() As String
+    If Len(mResolvedCrackFormationPath) > 0 Then
+        CrackFormationMethod = CrackFormationPathDisplayNameForKey(mResolvedCrackFormationPath)
+    Else
+        CrackFormationMethod = vbNullString
+    End If
 End Property
 
 Public Property Get CrackFormationSolutionStrategy() As String

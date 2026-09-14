@@ -769,7 +769,7 @@ Private Sub DrawGeometryOnlyNote(ByVal data As CSectionPlotDataReader)
     leftPos = mPlotLeft
     topPos = mPlotTop + mPlotHeight + 16
     widthValue = mPlotWidth
-    AddChartText leftPos, topPos, widthValue, 42, data.GeometryOnlyNote, 0#, RGB(160, 40, 40), True, True, 12#
+    AddChartText leftPos, topPos, widthValue, 62, data.GeometryOnlyNote, 0#, RGB(160, 40, 40), True, True, 8.5
 End Sub
 
 ' Рисует единственный заголовок схемы как Chart.Shape. Shape-заголовок живет

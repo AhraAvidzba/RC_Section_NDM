@@ -66,6 +66,7 @@ Public CrackDsEquivalent As Double ' Эквивалентный диаметр �
 Public CrackLsRaw As Double ' Базовое расстояние между трещинами до нормативных ограничений.
 Public CrackLs As Double ' Принятое расстояние между трещинами после ограничений.
 Public CrackLambdaCrc As Double ' Множитель нагрузки при образовании трещины.
+Public CrackFormationMethod As String ' Фактически использованный путь поиска стадии образования трещины.
 Public CrackNcrc As Double ' Продольная сила образования трещины для центрального растяжения.
 Public CrackFormationNcrc As Double ' Продольная сила в найденной точке образования трещины выбранной lambda-траектории.
 Public CrackMcrc As Double ' Модуль изгибающего момента образования трещины для общей ветки N+M.
@@ -443,6 +444,7 @@ Public Sub StoreCrackResult(ByVal crack As CCrackWidthCalculator)
     CrackLsRaw = crack.CrackSpacingRaw
     CrackLs = crack.CrackSpacing
     CrackLambdaCrc = crack.LambdaCrc
+    CrackFormationMethod = crack.CrackFormationMethod
     CrackNcrc = crack.Ncrc
     CrackFormationNcrc = crack.FormationNcrc
     CrackMcrc = crack.Mcrc
@@ -495,6 +497,7 @@ Public Sub ClearCrackResult()
     CrackLsRaw = 0#
     CrackLs = 0#
     CrackLambdaCrc = 0#
+    CrackFormationMethod = vbNullString
     CrackNcrc = 0#
     CrackFormationNcrc = 0#
     CrackMcrc = 0#

@@ -71,7 +71,7 @@ Private mCrackPhi3 As Double ' Пользовательский коэффици
 Private mCrackPsiS As Double ' Пользовательский коэффициент psi_s, если PsiMode = User.
 Private mCrackTensionZoneMode As String ' Effective или FullTension: какая бетонная зона входит в Abt.
 Private mCrackCoverDistanceMode As String ' Как измерять a_s: до ближайшего контура или до дальней растянутой линии.
-Private mCrackFormationPath As String ' Путь поиска образования трещины: lambda*Mxy, lambda*N или lambda*NMxy.
+Private mCrackFormationPath As String ' Путь поиска образования трещины: Auto, lambda*Mxy, lambda*N или lambda*NMxy.
 Private mCrackFormationSolutionStrategy As String ' Auto, UltimateStrain или LoadMultiplier для поиска уровня трещинообразования.
 Private mSolverMethod As String ' Newton или Secant для прямого равновесия.
 Private mSolverLoadSteps As Long ' Число ступеней приложения нагрузки в CSectionSolver.
@@ -750,12 +750,62 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
         FormatNumberInvariant(mInputs(index).N) & "; " & _
         FormatNumberInvariant(mInputs(index).Mx) & "; " & _
         FormatNumberInvariant(mInputs(index).My)
+    ReportStabilityDetails stability
     Exit Sub
 
 Failed:
     mResults(index).StabilityStatus = mStatusPolicy.InputErr
     mResults(index).StabilityBranch = Err.Description
     ReportStep "Устойчивость не рассчитана: " & Err.Description
+End Sub
+
+' Пишет в txt-отчет подробные данные фильтра устойчивости по двум главным
+' плоскостям. Таблица Results остается основным машинным выводом, а этот блок
+' нужен для быстрой трассировки того, какая ветвь СП сработала в сценарии LC.
+Private Sub ReportStabilityDetails(ByVal stability As CStabilityCalculator)
+    If stability Is Nothing Then Exit Sub
+
+    ReportValue "Stability.StopReason", stability.StopReason
+    ReportValue "Stability.DesignN", FormatNumberInvariant(stability.DesignN) & " Н"
+    ReportValue "Stability.DesignM1/M2", _
+        FormatNumberInvariant(stability.DesignMoment1) & "; " & _
+        FormatNumberInvariant(stability.DesignMoment2) & " Н*мм"
+    ReportValue "Stability.SustainedN", FormatNumberInvariant(stability.SustainedN) & " Н"
+    ReportValue "Stability.SustainedM1/M2", _
+        FormatNumberInvariant(stability.SustainedMoment1) & "; " & _
+        FormatNumberInvariant(stability.SustainedMoment2) & " Н*мм"
+
+    ReportValue "Plane1 branch/pass", stability.PlaneBranch1 & "; " & IIf(stability.PlanePassed1, "PASS", "FAIL")
+    ReportValue "Plane1 eta/reserve", _
+        FormatNumberInvariant(stability.Eta1) & "; " & FormatNumberInvariant(stability.Reserve1)
+    ReportValue "Plane1 Ncr/Nult", _
+        FormatNumberInvariant(stability.Ncr1) & "; " & FormatNumberInvariant(stability.Nultimate1) & " Н"
+    ReportValue "Plane1 h/i/r/l0/i", _
+        FormatNumberInvariant(stability.Depth1) & "; " & _
+        FormatNumberInvariant(stability.Radius1) & "; " & _
+        FormatNumberInvariant(stability.CoreDistance1) & "; " & _
+        FormatNumberInvariant(stability.Slenderness1)
+    ReportValue "Plane1 e/ea/phi_l/D", _
+        FormatNumberInvariant(stability.Eccentricity1) & "; " & _
+        FormatNumberInvariant(stability.AccidentalEccentricity1) & "; " & _
+        FormatNumberInvariant(stability.PhiL1) & "; " & _
+        FormatNumberInvariant(stability.StiffnessD1)
+
+    ReportValue "Plane2 branch/pass", stability.PlaneBranch2 & "; " & IIf(stability.PlanePassed2, "PASS", "FAIL")
+    ReportValue "Plane2 eta/reserve", _
+        FormatNumberInvariant(stability.Eta2) & "; " & FormatNumberInvariant(stability.Reserve2)
+    ReportValue "Plane2 Ncr/Nult", _
+        FormatNumberInvariant(stability.Ncr2) & "; " & FormatNumberInvariant(stability.Nultimate2) & " Н"
+    ReportValue "Plane2 h/i/r/l0/i", _
+        FormatNumberInvariant(stability.Depth2) & "; " & _
+        FormatNumberInvariant(stability.Radius2) & "; " & _
+        FormatNumberInvariant(stability.CoreDistance2) & "; " & _
+        FormatNumberInvariant(stability.Slenderness2)
+    ReportValue "Plane2 e/ea/phi_l/D", _
+        FormatNumberInvariant(stability.Eccentricity2) & "; " & _
+        FormatNumberInvariant(stability.AccidentalEccentricity2) & "; " & _
+        FormatNumberInvariant(stability.PhiL2) & "; " & _
+        FormatNumberInvariant(stability.StiffnessD2)
 End Sub
 
 ' Возвращает True, если фильтр устойчивости уже дал итог, после которого
@@ -916,9 +966,11 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
 
     Set cap = New CCapacitySolver
     ConfigureCapacity cap, strengthSpec
+    ReportValue "Capacity.SolutionStrategy", NormalizedCapacitySolutionStrategy()
     Select Case NormalizedCapacitySolutionStrategy()
         Case "Auto"
             If loadPath.ForceOnly Then
+                ReportStep "Capacity Auto: силовая траектория запускается сразу через LoadMultiplier."
                 cap.SolveByLoadPathMultiplier mSection, mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
                     mMaterialProvider.SteelMaterialFromSpec(strengthSpec), loadPath.NOffset, loadPath.NBase, _
                     loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, True
@@ -952,6 +1004,7 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     StoreCapacity index, cap, loadPath, strengthSpec
 
     ReportValue "CapacityStatus", mResults(index).CapacityStatus
+    ReportValue "CapacitySolutionMethod", mResults(index).CapacitySolutionMethod
     ReportValue "LambdaCapacity", FormatNumberInvariant(mResults(index).LambdaCapacity)
     ReportValue "CapacityLoadPath", CapacityLoadPathDisplay(mResults(index).CapacityPathResolved)
     ReportBlock "Диагностика поиска несущей способности", cap.DiagnosticLog
@@ -1027,6 +1080,8 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     Set crack = New CCrackWidthCalculator
     ConfigureCrackCalculator crack
     ReportStep "Запускается проверка образования нормальной трещины."
+    ReportValue "Crack.InitiationLoadPath", mCrackFormationPath
+    ReportValue "Crack.InitiationSolutionStrategy", mCrackFormationSolutionStrategy
 
     Dim crackReferenceX As Double
     Dim crackReferenceY As Double
@@ -1047,6 +1102,11 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
     If Not crack.BeforeMcrcState Is Nothing Then mResults(index).AddState crack.BeforeMcrcState
     If Not crack.AfterMcrcState Is Nothing Then mResults(index).AddState crack.AfterMcrcState
+    ReportValue "CrackFormationMethod", mResults(index).CrackFormationMethod
+    ReportValue "CrackLambdaCrc", FormatNumberInvariant(mResults(index).CrackLambdaCrc)
+    ReportValue "CrackFormationNcrc", FormatNumberInvariant(mResults(index).CrackFormationNcrc) & " Н"
+    ReportValue "CrackMxyCrc", FormatNumberInvariant(mResults(index).CrackMcrc) & " Н*мм"
+    ReportValue "CrackFormationStopReason", crack.StopReason
 
     ReportStep "Запускается текущее CrackedState полного сочетания по профилю трещин."
     Dim runner As CStateSolutionRunner
@@ -1085,6 +1145,8 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
 
 ReportCrackResult:
     ReportValue "CrackStatus", mResults(index).CrackStatus
+    ReportValue "CrackFormationMethod", mResults(index).CrackFormationMethod
+    ReportValue "CrackLambdaCrc", FormatNumberInvariant(mResults(index).CrackLambdaCrc)
     ReportValue "Трещина образована", IIf(mResults(index).CrackFormed, "да", "нет")
     ReportValue "a_crc", FormatNumberInvariant(mResults(index).CrackWidth) & " мм"
     ReportValue "psi_s", FormatNumberInvariant(mResults(index).CrackPsiS)
@@ -2062,6 +2124,10 @@ End Property
 
 Public Property Get CrackLambdaCrc(ByVal index As Long) As Double
     CrackLambdaCrc = mResults(index).CrackLambdaCrc
+End Property
+
+Public Property Get CrackFormationMethod(ByVal index As Long) As String
+    CrackFormationMethod = mResults(index).CrackFormationMethod
 End Property
 
 Public Property Get CrackNcrc(ByVal index As Long) As Double

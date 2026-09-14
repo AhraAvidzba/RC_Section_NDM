@@ -22,13 +22,13 @@ Option Explicit
 ' блоком специально остается без рамок и заливки, как в таблице устойчивости.
 
 Private Const HEADER_ROWS As Long = 4 ' Сколько строк шапки строится над якорем первой строки LC.
-Private Const TOTAL_COLUMNS As Long = 42 ' Полная ширина таблицы, включая пустой разделитель.
+Private Const TOTAL_COLUMNS As Long = 43 ' Полная ширина таблицы, включая пустой разделитель.
 
 Private Const COL_LEFT_FIRST As Long = 1
 Private Const COL_LEFT_LAST As Long = 8
 Private Const COL_SEPARATOR As Long = 9
 Private Const COL_MAIN_FIRST As Long = 10
-Private Const COL_MAIN_LAST As Long = 42
+Private Const COL_MAIN_LAST As Long = 43
 
 Private Const COL_ID As Long = 1
 Private Const COL_STATUS As Long = 2
@@ -41,37 +41,38 @@ Private Const COL_LOAD_MY As Long = 8
 
 Private Const COL_ARED As Long = 10
 Private Const COL_RBT_SER As Long = 11
-Private Const COL_NCRC As Long = 12
-Private Const COL_LAMBDA_NCRC As Long = 13
-Private Const COL_FORMATION_NCRC As Long = 14
-Private Const COL_MCRC As Long = 15
-Private Const COL_LAMBDA_MCRC As Long = 16
-Private Const COL_FORMATION_STATE As Long = 17
-Private Const COL_XT As Long = 18
-Private Const COL_H As Long = 19
-Private Const COL_AS_COVER As Long = 20
-Private Const COL_HBT As Long = 21
-Private Const COL_ABT As Long = 22
-Private Const COL_AS As Long = 23
-Private Const COL_DS_EQ As Long = 24
-Private Const COL_LS0 As Long = 25
-Private Const COL_LS As Long = 26
-Private Const COL_PHI1 As Long = 27
-Private Const COL_PHI2 As Long = 28
-Private Const COL_PHI3 As Long = 29
-Private Const COL_PSI_S As Long = 30
-Private Const COL_REBARS As Long = 31
-Private Const COL_NREBARS As Long = 32
-Private Const COL_SIGMA_S_CRC As Long = 33
-Private Const COL_SIGMA_S As Long = 34
-Private Const COL_ACRC As Long = 35
-Private Const COL_ACRC_ULT As Long = 36
-Private Const COL_ACRC_RATIO As Long = 37
-Private Const COL_ACRC_STATUS As Long = 38
-Private Const COL_SIGMA_B_MAX As Long = 39
-Private Const COL_RB_MC2 As Long = 40
-Private Const COL_LONG_RATIO As Long = 41
-Private Const COL_LONG_STATUS As Long = 42
+Private Const COL_FORMATION_METHOD As Long = 12
+Private Const COL_NCRC As Long = 13
+Private Const COL_LAMBDA_NCRC As Long = 14
+Private Const COL_FORMATION_NCRC As Long = 15
+Private Const COL_MCRC As Long = 16
+Private Const COL_LAMBDA_MCRC As Long = 17
+Private Const COL_FORMATION_STATE As Long = 18
+Private Const COL_XT As Long = 19
+Private Const COL_H As Long = 20
+Private Const COL_AS_COVER As Long = 21
+Private Const COL_HBT As Long = 22
+Private Const COL_ABT As Long = 23
+Private Const COL_AS As Long = 24
+Private Const COL_DS_EQ As Long = 25
+Private Const COL_LS0 As Long = 26
+Private Const COL_LS As Long = 27
+Private Const COL_PHI1 As Long = 28
+Private Const COL_PHI2 As Long = 29
+Private Const COL_PHI3 As Long = 30
+Private Const COL_PSI_S As Long = 31
+Private Const COL_REBARS As Long = 32
+Private Const COL_NREBARS As Long = 33
+Private Const COL_SIGMA_S_CRC As Long = 34
+Private Const COL_SIGMA_S As Long = 35
+Private Const COL_ACRC As Long = 36
+Private Const COL_ACRC_ULT As Long = 37
+Private Const COL_ACRC_RATIO As Long = 38
+Private Const COL_ACRC_STATUS As Long = 39
+Private Const COL_SIGMA_B_MAX As Long = 40
+Private Const COL_RB_MC2 As Long = 41
+Private Const COL_LONG_RATIO As Long = 42
+Private Const COL_LONG_STATUS As Long = 43
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, единый для таблиц Results.
 Private Const FAILED_ROW_COLOR As Long = &HCEC7FF ' Светло-красный фон проблемного блока.
@@ -253,6 +254,7 @@ Private Sub PutHeaderNotes(ByRef headers() As Variant, ByVal units As CUnitSyste
     headers(HEADER_NOTES_ROW, COL_LOAD_MY) = "исходный My в пользовательской точке приложения"
     headers(HEADER_NOTES_ROW, COL_ARED) = "площадь приведенного сечения для Ncrc"
     headers(HEADER_NOTES_ROW, COL_RBT_SER) = "растяжение бетона II ГПС"
+    headers(HEADER_NOTES_ROW, COL_FORMATION_METHOD) = "фактически использованный путь поиска точки образования трещины"
     headers(HEADER_NOTES_ROW, COL_NCRC) = "сила образования трещины при центральном растяжении"
     headers(HEADER_NOTES_ROW, COL_LAMBDA_NCRC) = "доля заданной растягивающей силы для Ncrc"
     headers(HEADER_NOTES_ROW, COL_FORMATION_NCRC) = "продольная сила в найденной точке образования трещины для выбранного пути"
@@ -295,6 +297,7 @@ Private Sub PutColumnLabels(ByRef headers() As Variant, ByVal units As CUnitSyst
     headers(HEADER_LABEL_ROW, COL_LOAD_MY) = "My, " & OutputMomentUnit(units)
     headers(HEADER_LABEL_ROW, COL_ARED) = "Ared, " & OutputAreaUnit(units)
     headers(HEADER_LABEL_ROW, COL_RBT_SER) = "Rbt,ser, " & OutputStressUnit(units)
+    headers(HEADER_LABEL_ROW, COL_FORMATION_METHOD) = "Method"
     headers(HEADER_LABEL_ROW, COL_NCRC) = "Ncrc, " & OutputForceUnit(units)
     headers(HEADER_LABEL_ROW, COL_LAMBDA_NCRC) = ChrW$(&H3BB) & "crc"
     headers(HEADER_LABEL_ROW, COL_FORMATION_NCRC) = "Ncrc, " & OutputForceUnit(units)
@@ -401,6 +404,9 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
         data(rowIndex, COL_FORMATION_STATE) = policy.NotApplicable
         Exit Sub
     End If
+
+    If Len(batch.CrackFormationMethod(index)) > 0 Then _
+        data(rowIndex, COL_FORMATION_METHOD) = batch.CrackFormationMethod(index)
 
     If batch.CrackNcrc(index) > SMALL_VALUE Then
         data(rowIndex, COL_ARED) = OutputArea(batch.CrackAred(index), units)
