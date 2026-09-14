@@ -1639,8 +1639,9 @@ Private Function HumanReadableReportBlock(ByVal title As String, ByVal body As S
     HumanReadableReportBlock = text
 End Function
 
-' Сжимает подробный журнал трещин: оставляет смысловые Auto/ошибочные строки,
-' а однотипные итерации lambda_crc и warm-start заменяет короткой сводкой.
+' Приводит подробный журнал трещин к читаемому виду: смысловые строки и
+' итерации lambda_crc оставляет по порядку, а повторяющиеся warm-start
+' сообщения заменяет короткой сводкой.
 Private Function CompactCrackDiagnosticText(ByVal body As String) As String
     Dim lines() As String
     lines = Split(body, vbCrLf)
@@ -1738,7 +1739,8 @@ Private Function TranslateDiagnosticLine(ByVal lineText As String) As String
     End If
     translated = Replace$(translated, "lambda_crc=", "Найден lambda_crc=")
     translated = Replace$(translated, "lambda_crc_iter=", "итерация прямого поиска lambda_crc=")
-    translated = Replace$(translated, "lambda_crc_path_iter=", "итерация LoadMultiplier lambda_crc=")
+    translated = Replace$(translated, "lambda_crc_path_iter=", "итерация UltimateStrain по lambda-траектории lambda_crc=")
+    translated = Replace$(translated, "lambda_crc_load_probe=", "проба LoadMultiplier lambda_crc=")
     translated = Replace$(translated, "iterations=", "итераций=")
     translated = Replace$(translated, "method=", "метод=")
     translated = Replace$(translated, "formation=Ncrc", "Образование трещины найдено по центральному растяжению Ncrc")
@@ -1761,6 +1763,7 @@ Private Function TranslateDiagnosticLine(ByVal lineText As String) As String
     translated = Replace$(translated, "rPath1=", "невязка пути 1=")
     translated = Replace$(translated, "rPath2=", "невязка пути 2=")
     translated = Replace$(translated, "rLimit=", "невязка предельной деформации=")
+    translated = Replace$(translated, "residual=", "невязка образования трещины=")
     translated = Replace$(translated, "rN=", "невязка N=")
     translated = Replace$(translated, "rMomentDir=", "невязка направления момента=")
     translated = Replace$(translated, "eps_bt_ult=", "eps_bt,ult=")

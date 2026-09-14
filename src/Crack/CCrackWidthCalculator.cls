@@ -576,6 +576,9 @@ Private Function CalculateLambdaCrcByUltimateStrain(ByVal section As CSectionMod
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal momentMxAtReference As Double, ByVal momentMyAtReference As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double) As Boolean
+    AppendDiagnostic "UltimateStrain: начинаем прямой поиск точки образования трещины по eps_bt,ult; путь " & _
+        CrackFormationPathDisplayName() & "."
+
     If TryMarkConstantPartFormationFallback(section, concreteMaterial, steelMaterial, _
             FormationLoadPath(targetN, momentMxAtReference, momentMyAtReference, referenceX, referenceY), 0#) Then
         CalculateLambdaCrcByUltimateStrain = True
@@ -1062,6 +1065,8 @@ Private Function CalculateLambdaCrcByLoadScaling(ByVal section As CSectionModel,
         ByVal targetMomentMx As Double, ByVal targetMomentMy As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double) As Boolean
     On Error GoTo Failed
+    AppendDiagnostic "LoadMultiplier: начинаем подбор lambda_crc пробными расчетами НДС; путь " & _
+        CrackFormationPathDisplayName() & "."
 
     Dim lowerLambda As Double
     Dim upperLambda As Double
@@ -1557,6 +1562,7 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
     Set solver = SolveState(section, concreteMaterial, steelMaterial, effectiveStart, _
         probeN, probeMx, probeMy, True)
     If SolverFormationResidual(section, solver, residual) Then
+        AppendLoadScalingProbeDiagnostic lambdaValue, residual, True
         ProbeLoadScalingFormation = True
         Exit Function
     End If
@@ -1569,6 +1575,7 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
         Set solver = SolveState(section, concreteMaterial, steelMaterial, Nothing, _
             probeN, probeMx, probeMy, True)
         If SolverFormationResidual(section, solver, residual) Then
+            AppendLoadScalingProbeDiagnostic lambdaValue, residual, True
             ProbeLoadScalingFormation = True
             Exit Function
         End If
@@ -1586,9 +1593,28 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
             Set solver = SolveState(section, concreteMaterial, steelMaterial, probeGuess, _
                 probeN, probeMx, probeMy, True)
             ProbeLoadScalingFormation = SolverFormationResidual(section, solver, residual)
+            If ProbeLoadScalingFormation Then _
+                AppendLoadScalingProbeDiagnostic lambdaValue, residual, True
         End If
     End If
+    If Not ProbeLoadScalingFormation Then _
+        AppendLoadScalingProbeDiagnostic lambdaValue, 0#, False
 End Function
+
+' Записывает одну пробную точку fallback-метода LoadMultiplier. В отличие от
+' строк UltimateStrain, здесь lambda проверяется обычным НДС CrackInitiation,
+' поэтому отдельная подпись метода важна для читаемой хронологии отчета.
+Private Sub AppendLoadScalingProbeDiagnostic(ByVal lambdaValue As Double, _
+        ByVal residual As Double, ByVal converged As Boolean)
+    If converged Then
+        AppendDiagnostic "lambda_crc_load_probe=" & FormatNumberInvariant(lambdaValue) & _
+            "; residual=" & FormatNumberInvariant(residual) & _
+            "; result=converged"
+    Else
+        AppendDiagnostic "lambda_crc_load_probe=" & FormatNumberInvariant(lambdaValue) & _
+            "; result=failed"
+    End If
+End Sub
 
 ' Возвращает warm-start для probe solve только если в нем действительно есть
 ' ненулевая плоскость деформаций. Это защищает lambda*NMxy от плохого старта
