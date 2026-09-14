@@ -22,13 +22,13 @@ Option Explicit
 ' блоком специально остается без рамок и заливки, как в таблице устойчивости.
 
 Private Const HEADER_ROWS As Long = 4 ' Сколько строк шапки строится над якорем первой строки LC.
-Private Const TOTAL_COLUMNS As Long = 41 ' Полная ширина таблицы, включая пустой разделитель.
+Private Const TOTAL_COLUMNS As Long = 42 ' Полная ширина таблицы, включая пустой разделитель.
 
 Private Const COL_LEFT_FIRST As Long = 1
 Private Const COL_LEFT_LAST As Long = 8
 Private Const COL_SEPARATOR As Long = 9
 Private Const COL_MAIN_FIRST As Long = 10
-Private Const COL_MAIN_LAST As Long = 41
+Private Const COL_MAIN_LAST As Long = 42
 
 Private Const COL_ID As Long = 1
 Private Const COL_STATUS As Long = 2
@@ -43,39 +43,40 @@ Private Const COL_ARED As Long = 10
 Private Const COL_RBT_SER As Long = 11
 Private Const COL_NCRC As Long = 12
 Private Const COL_LAMBDA_NCRC As Long = 13
-Private Const COL_MCRC As Long = 14
-Private Const COL_LAMBDA_MCRC As Long = 15
-Private Const COL_FORMATION_STATE As Long = 16
-Private Const COL_XT As Long = 17
-Private Const COL_H As Long = 18
-Private Const COL_AS_COVER As Long = 19
-Private Const COL_HBT As Long = 20
-Private Const COL_ABT As Long = 21
-Private Const COL_AS As Long = 22
-Private Const COL_DS_EQ As Long = 23
-Private Const COL_LS0 As Long = 24
-Private Const COL_LS As Long = 25
-Private Const COL_PHI1 As Long = 26
-Private Const COL_PHI2 As Long = 27
-Private Const COL_PHI3 As Long = 28
-Private Const COL_PSI_S As Long = 29
-Private Const COL_REBARS As Long = 30
-Private Const COL_NREBARS As Long = 31
-Private Const COL_SIGMA_S_CRC As Long = 32
-Private Const COL_SIGMA_S As Long = 33
-Private Const COL_ACRC As Long = 34
-Private Const COL_ACRC_ULT As Long = 35
-Private Const COL_ACRC_RATIO As Long = 36
-Private Const COL_ACRC_STATUS As Long = 37
-Private Const COL_SIGMA_B_MAX As Long = 38
-Private Const COL_RB_MC2 As Long = 39
-Private Const COL_LONG_RATIO As Long = 40
-Private Const COL_LONG_STATUS As Long = 41
+Private Const COL_FORMATION_NCRC As Long = 14
+Private Const COL_MCRC As Long = 15
+Private Const COL_LAMBDA_MCRC As Long = 16
+Private Const COL_FORMATION_STATE As Long = 17
+Private Const COL_XT As Long = 18
+Private Const COL_H As Long = 19
+Private Const COL_AS_COVER As Long = 20
+Private Const COL_HBT As Long = 21
+Private Const COL_ABT As Long = 22
+Private Const COL_AS As Long = 23
+Private Const COL_DS_EQ As Long = 24
+Private Const COL_LS0 As Long = 25
+Private Const COL_LS As Long = 26
+Private Const COL_PHI1 As Long = 27
+Private Const COL_PHI2 As Long = 28
+Private Const COL_PHI3 As Long = 29
+Private Const COL_PSI_S As Long = 30
+Private Const COL_REBARS As Long = 31
+Private Const COL_NREBARS As Long = 32
+Private Const COL_SIGMA_S_CRC As Long = 33
+Private Const COL_SIGMA_S As Long = 34
+Private Const COL_ACRC As Long = 35
+Private Const COL_ACRC_ULT As Long = 36
+Private Const COL_ACRC_RATIO As Long = 37
+Private Const COL_ACRC_STATUS As Long = 38
+Private Const COL_SIGMA_B_MAX As Long = 39
+Private Const COL_RB_MC2 As Long = 40
+Private Const COL_LONG_RATIO As Long = 41
+Private Const COL_LONG_STATUS As Long = 42
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, единый для таблиц Results.
 Private Const FAILED_ROW_COLOR As Long = &HCEC7FF ' Светло-красный фон проблемного блока.
 Private Const FAILED_FONT_COLOR As Long = &H9C0006 ' Темно-красный текст проблемного блока.
-Private Const RESULTS_COLUMN_WIDTH As Double = 8.43 ' На Results оставляем стандартную одинаковую ширину.
+Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' На Results оставляем одинаковую ширину столбцов.
 Private Const SMALL_VALUE As Double = 0.000000001 ' Порог только для пустых расчетных полей writer-а.
 Private Const HEADER_NOTES_ROW As Long = 3 ' Строка коротких пояснений над нижними обозначениями.
 Private Const HEADER_LABEL_ROW As Long = 4 ' Строка итоговых обозначений с единицами.
@@ -226,7 +227,7 @@ Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem)
 
     headers(1, COL_ARED) = "Момент образования трещин"
     headers(2, COL_ARED) = "Осевое растяжение"
-    headers(2, COL_MCRC) = "Изгиб N + M"
+    headers(2, COL_FORMATION_NCRC) = "Изгиб N + M"
     headers(2, COL_FORMATION_STATE) = "статус трещин"
     headers(1, COL_XT) = "нормальные и продольные трещины"
     headers(2, COL_XT) = "данные при изгибе N + M"
@@ -254,8 +255,9 @@ Private Sub PutHeaderNotes(ByRef headers() As Variant, ByVal units As CUnitSyste
     headers(HEADER_NOTES_ROW, COL_RBT_SER) = "растяжение бетона II ГПС"
     headers(HEADER_NOTES_ROW, COL_NCRC) = "сила образования трещины при центральном растяжении"
     headers(HEADER_NOTES_ROW, COL_LAMBDA_NCRC) = "доля заданной растягивающей силы для Ncrc"
-    headers(HEADER_NOTES_ROW, COL_MCRC) = "моментный уровень образования трещины по направлению заданного Mx/My"
-    headers(HEADER_NOTES_ROW, COL_LAMBDA_MCRC) = "доля заданного моментного вектора для Mcrc"
+    headers(HEADER_NOTES_ROW, COL_FORMATION_NCRC) = "продольная сила в найденной точке образования трещины для выбранного пути"
+    headers(HEADER_NOTES_ROW, COL_MCRC) = "модуль моментного вектора в найденной точке образования трещины"
+    headers(HEADER_NOTES_ROW, COL_LAMBDA_MCRC) = "доля выбранного пути нагрузки до образования трещины"
     headers(HEADER_NOTES_ROW, COL_XT) = "фактическая высота растянутой зоны"
     headers(HEADER_NOTES_ROW, COL_H) = "полная высота сечения по нормали к нейтральной линии"
     headers(HEADER_NOTES_ROW, COL_AS_COVER) = "расстояние от оси выбранного стержня до бетонного контура"
@@ -275,11 +277,11 @@ Private Sub PutHeaderNotes(ByRef headers() As Variant, ByVal units As CUnitSyste
     headers(HEADER_NOTES_ROW, COL_SIGMA_S) = "напряжение выбранной арматуры при текущем НДС"
     headers(HEADER_NOTES_ROW, COL_ACRC) = "расчетная ширина раскрытия"
     headers(HEADER_NOTES_ROW, COL_ACRC_ULT) = "допустимая ширина раскрытия"
-    headers(HEADER_NOTES_ROW, COL_ACRC_RATIO) = "отношение расчетной ширины к допустимой"
+    headers(HEADER_NOTES_ROW, COL_ACRC_RATIO) = "запас: допустимая ширина делится на расчетную"
     headers(HEADER_NOTES_ROW, COL_ACRC_STATUS) = "статус проверки нормальных трещин"
     headers(HEADER_NOTES_ROW, COL_SIGMA_B_MAX) = "максимальное сжатие бетона для продольных трещин"
     headers(HEADER_NOTES_ROW, COL_RB_MC2) = "допустимое Rb,mc2"
-    headers(HEADER_NOTES_ROW, COL_LONG_RATIO) = "отношение сжатия бетона к Rb,mc2"
+    headers(HEADER_NOTES_ROW, COL_LONG_RATIO) = "запас: Rb,mc2 делится на сжатие бетона"
     headers(HEADER_NOTES_ROW, COL_LONG_STATUS) = "статус проверки продольных трещин"
 End Sub
 
@@ -295,7 +297,8 @@ Private Sub PutColumnLabels(ByRef headers() As Variant, ByVal units As CUnitSyst
     headers(HEADER_LABEL_ROW, COL_RBT_SER) = "Rbt,ser, " & OutputStressUnit(units)
     headers(HEADER_LABEL_ROW, COL_NCRC) = "Ncrc, " & OutputForceUnit(units)
     headers(HEADER_LABEL_ROW, COL_LAMBDA_NCRC) = ChrW$(&H3BB) & "crc"
-    headers(HEADER_LABEL_ROW, COL_MCRC) = "Mcrc, " & OutputMomentUnit(units)
+    headers(HEADER_LABEL_ROW, COL_FORMATION_NCRC) = "Ncrc, " & OutputForceUnit(units)
+    headers(HEADER_LABEL_ROW, COL_MCRC) = "Mxy,crc, " & OutputMomentUnit(units)
     headers(HEADER_LABEL_ROW, COL_LAMBDA_MCRC) = ChrW$(&H3BB) & "crc"
     headers(HEADER_LABEL_ROW, COL_FORMATION_STATE) = "state"
     headers(HEADER_LABEL_ROW, COL_XT) = "xt, " & OutputLengthUnit(units)
@@ -317,11 +320,11 @@ Private Sub PutColumnLabels(ByRef headers() As Variant, ByVal units As CUnitSyst
     headers(HEADER_LABEL_ROW, COL_SIGMA_S) = ChrW$(&H3C3) & "s"
     headers(HEADER_LABEL_ROW, COL_ACRC) = "acrc, " & OutputLengthUnit(units)
     headers(HEADER_LABEL_ROW, COL_ACRC_ULT) = "acrc,ult, " & OutputLengthUnit(units)
-    headers(HEADER_LABEL_ROW, COL_ACRC_RATIO) = "acrc/acrc,ult"
+    headers(HEADER_LABEL_ROW, COL_ACRC_RATIO) = "acrc,ult/acrc"
     headers(HEADER_LABEL_ROW, COL_ACRC_STATUS) = "status"
     headers(HEADER_LABEL_ROW, COL_SIGMA_B_MAX) = ChrW$(&H3C3) & "b,max"
     headers(HEADER_LABEL_ROW, COL_RB_MC2) = "Rb,mc2"
-    headers(HEADER_LABEL_ROW, COL_LONG_RATIO) = ChrW$(&H3C3) & "b/Rb,mc2"
+    headers(HEADER_LABEL_ROW, COL_LONG_RATIO) = "Rb,mc2/" & ChrW$(&H3C3) & "b"
     headers(HEADER_LABEL_ROW, COL_LONG_STATUS) = "status"
 End Sub
 
@@ -333,7 +336,7 @@ Private Sub MergeHeaders(ByVal target As Object)
     MergeRange target, 1, COL_LOAD_N, 2, COL_LOAD_MY
     MergeRange target, 1, COL_ARED, 1, COL_FORMATION_STATE
     MergeRange target, 2, COL_ARED, 2, COL_LAMBDA_NCRC
-    MergeRange target, 2, COL_MCRC, 2, COL_LAMBDA_MCRC
+    MergeRange target, 2, COL_FORMATION_NCRC, 2, COL_LAMBDA_MCRC
     MergeRange target, 2, COL_FORMATION_STATE, 3, COL_FORMATION_STATE
     MergeRange target, 1, COL_XT, 1, COL_MAIN_LAST
     MergeRange target, 2, COL_XT, 2, COL_AS
@@ -370,7 +373,8 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, COL_STATUS) = CrackOverallStatus(batch, index)
 
     If policy.DisplayStatus(batch.CrackStatus(index)) = policy.NotApplicable And _
-            policy.DisplayStatus(batch.LongitudinalCrackStatus(index)) = policy.NotApplicable Then
+            policy.DisplayStatus(batch.LongitudinalCrackStatus(index)) = policy.NotApplicable And _
+            Not HasCrackFormationData(batch, index) Then
         Exit Sub
     End If
 
@@ -390,7 +394,10 @@ End Sub
 Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal policy As CBatchStatusPolicy)
-    If policy.DisplayStatus(batch.CrackStatus(index)) = policy.NotApplicable Then
+    Dim hasFormationData As Boolean
+    hasFormationData = HasCrackFormationData(batch, index)
+
+    If policy.DisplayStatus(batch.CrackStatus(index)) = policy.NotApplicable And Not hasFormationData Then
         data(rowIndex, COL_FORMATION_STATE) = policy.NotApplicable
         Exit Sub
     End If
@@ -404,6 +411,12 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
         data(rowIndex, COL_NCRC) = policy.NotApplicable
     End If
 
+    If (Not batch.CrackCentralBranch(index)) And hasFormationData Then
+        data(rowIndex, COL_FORMATION_NCRC) = OutputForce(batch.CrackFormationNcrc(index), units)
+    ElseIf Not batch.CrackCentralBranch(index) And batch.CrackMcrc(index) > SMALL_VALUE Then
+        data(rowIndex, COL_FORMATION_NCRC) = policy.NotApplicable
+    End If
+
     If batch.CrackMcrc(index) > SMALL_VALUE Then
         data(rowIndex, COL_MCRC) = OutputMomentMagnitude(batch.CrackMcrc(index), units)
         data(rowIndex, COL_LAMBDA_MCRC) = batch.CrackLambdaCrc(index)
@@ -411,7 +424,7 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
         data(rowIndex, COL_MCRC) = policy.NotApplicable
     End If
 
-    If policy.IsFinished(batch.CrackStatus(index)) Then
+    If policy.IsFinished(batch.CrackStatus(index)) Or hasFormationData Then
         data(rowIndex, COL_FORMATION_STATE) = IIf(batch.CrackFormed(index), "Cracked", "NotCracked")
     Else
         data(rowIndex, COL_FORMATION_STATE) = policy.DisplayStatus(batch.CrackStatus(index))
@@ -419,6 +432,14 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
 End Sub
 
 ' Записывает ширину раскрытия нормальных трещин и все величины ее формулы.
+' Проверяет, есть ли сохраненные величины стадии образования нормальной трещины.
+Private Function HasCrackFormationData(ByVal batch As CBatchSectionCalculator, ByVal index As Long) As Boolean
+    HasCrackFormationData = batch.CrackNcrc(index) > SMALL_VALUE Or _
+        Abs(batch.CrackFormationNcrc(index)) > SMALL_VALUE Or _
+        batch.CrackMcrc(index) > SMALL_VALUE
+End Function
+
+' Записывает ширину раскрытия нормальных трещин и величины ее формулы.
 Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal policy As CBatchStatusPolicy)
@@ -447,7 +468,7 @@ Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, COL_SIGMA_S) = OutputStress(batch.CrackSigmaS(index), units)
     data(rowIndex, COL_ACRC) = OutputLength(batch.CrackWidth(index), units)
     data(rowIndex, COL_ACRC_ULT) = OutputLength(batch.CrackAllowable(index), units)
-    data(rowIndex, COL_ACRC_RATIO) = batch.CrackUtilization(index)
+    data(rowIndex, COL_ACRC_RATIO) = CrackReserveFactor(batch, index)
     data(rowIndex, COL_ACRC_STATUS) = policy.DisplayStatus(batch.CrackStatus(index))
 End Sub
 
@@ -462,9 +483,24 @@ Private Sub PutLongitudinalData(ByRef data() As Variant, ByVal rowIndex As Long,
 
     data(rowIndex, COL_SIGMA_B_MAX) = OutputStress(batch.MaxConcreteCompressionStress(index), units)
     data(rowIndex, COL_RB_MC2) = OutputStress(batch.LongitudinalCrackRbMc2(index), units)
-    data(rowIndex, COL_LONG_RATIO) = batch.LongitudinalCrackUtilization(index)
+    data(rowIndex, COL_LONG_RATIO) = LongitudinalCrackReserveFactor(batch, index)
     data(rowIndex, COL_LONG_STATUS) = policy.DisplayStatus(batch.LongitudinalCrackStatus(index))
 End Sub
+
+' Возвращает запас по нормальным трещинам для подробной пользовательской таблицы:
+' допустимая ширина делится на расчетную. При нулевой ширине запас бесконечный,
+' поэтому ячейка остается пустой, как и в верхнем batch summary.
+Private Function CrackReserveFactor(ByVal batch As CBatchSectionCalculator, ByVal index As Long) As Variant
+    If batch.CrackUtilization(index) > SMALL_VALUE Then _
+        CrackReserveFactor = 1# / batch.CrackUtilization(index)
+End Function
+
+' Возвращает запас по продольным трещинам: Rb,mc2 делится на фактическое
+' сжатие бетона. При отсутствии сжатия ячейка остается пустой.
+Private Function LongitudinalCrackReserveFactor(ByVal batch As CBatchSectionCalculator, ByVal index As Long) As Variant
+    If batch.LongitudinalCrackUtilization(index) > SMALL_VALUE Then _
+        LongitudinalCrackReserveFactor = 1# / batch.LongitudinalCrackUtilization(index)
+End Function
 
 ' Оформляет шапки, границы, числовые форматы и подсветку статусов.
 Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
@@ -564,6 +600,7 @@ Private Sub ApplyHeaderSubscripts(ByVal target As Object)
     ApplySubscriptToken labels.Cells(1, COL_RBT_SER), "ser"
     ApplySubscriptToken labels.Cells(1, COL_NCRC), "crc"
     ApplySubscriptToken labels.Cells(1, COL_LAMBDA_NCRC), "crc"
+    ApplySubscriptToken labels.Cells(1, COL_FORMATION_NCRC), "crc"
     ApplySubscriptToken labels.Cells(1, COL_MCRC), "crc"
     ApplySubscriptToken labels.Cells(1, COL_LAMBDA_MCRC), "crc"
     ApplySubscriptToken labels.Cells(1, COL_XT), "t"

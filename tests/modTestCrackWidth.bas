@@ -32,6 +32,7 @@ Public Function RunCrackWidthTests() As String
     TestAutoPsiAndLambdaAfterFailedFirstCheck stats
     TestAutoMcrcPureBendingConverges stats
     TestAutoMcrcFixedNIndependentOfMomentMagnitude stats
+    TestCrackInitiationLoadPaths stats
     TestDangerousLoadsDoNotNumFail stats
     TestAutoMcrcOneSignTensionUsesFormula854 stats
     TestCentralTensionBranch stats
@@ -277,24 +278,83 @@ Private Sub TestAutoMcrcFixedNIndependentOfMomentMagnitude(ByRef stats As TCrack
         Abs(crackHigh.LambdaCrc * mxHigh), Abs(crackHigh.Mcrc), 25000#
 End Sub
 
+' Проверяет три пользовательских пути поиска образования нормальной трещины.
+' λ*Mxy оставляет старую изгибную схему, λ*N нужен для центрального
+' растяжения, а λ*NMxy масштабирует весь вектор N/Mx/My как единую траекторию.
+Private Sub TestCrackInitiationLoadPaths(ByRef stats As TCrackTestStats)
+    Dim sectionMxy As CSectionModel
+    Dim solverMxy As CSectionSolver
+    Set solverMxy = SolveServiceStateWithRunner(sectionMxy, -20000#, -15000000#, 0#)
+
+    Dim crackMxy As CCrackWidthCalculator
+    Set crackMxy = CalculateCrack(solverMxy, sectionMxy, -20000#, -15000000#, 0#, _
+        "Auto", "Effective", allowable:=0.0001, formationPath:="lambda*Mxy")
+    AssertCrackCommon stats, "crack.path.mxy", crackMxy
+    AssertTrue stats, "crack.path.mxy.lambda", crackMxy.LambdaCrc > 0# And crackMxy.LambdaCrc <= 1#
+    AssertClose stats, "crack.path.mxy.nFixed", crackMxy.FormationNcrc, -20000#, 0.001
+
+    Dim sectionN As CSectionModel
+    Dim solverN As CSectionSolver
+    Set solverN = SolveServiceState(sectionN, 200000#, 0#, 0#)
+
+    Dim crackN As CCrackWidthCalculator
+    Set crackN = CalculateCrack(solverN, sectionN, 200000#, 0#, 0#, _
+        "Auto", "Effective", allowable:=0.0001, formationPath:="lambda*N")
+    AssertCrackCommon stats, "crack.path.n", crackN
+    AssertTrue stats, "crack.path.n.central", crackN.CentralTensionBranch
+    AssertClose stats, "crack.path.n.formationN", crackN.FormationNcrc, crackN.Ncrc, 0.001
+
+    Dim sectionNMxy As CSectionModel
+    Dim solverNMxy As CSectionSolver
+    Set solverNMxy = SolveServiceStateWithRunner(sectionNMxy, -20000#, -15000000#, 0#)
+
+    Dim crackNMxy As CCrackWidthCalculator
+    Set crackNMxy = CalculateCrack(solverNMxy, sectionNMxy, -20000#, -15000000#, 0#, _
+        "Auto", "Effective", allowable:=0.0001, formationPath:="lambda*NMxy")
+    AssertCrackCommon stats, "crack.path.nmxy", crackNMxy
+    AssertTrue stats, "crack.path.nmxy.lambda", crackNMxy.LambdaCrc > 0# And crackNMxy.LambdaCrc <= 1#
+    AssertClose stats, "crack.path.nmxy.nScaled", crackNMxy.FormationNcrc, crackNMxy.LambdaCrc * -20000#, 0.001
+    AssertClose stats, "crack.path.nmxy.mScaled", crackNMxy.Mcrc, Abs(crackNMxy.LambdaCrc * -15000000#), 50000#
+
+    Dim crackNFixedMomentFallback As CCrackWidthCalculator
+    Set crackNFixedMomentFallback = CalculateCrack(solverMxy, sectionMxy, -20000#, -15000000#, 0#, _
+        "Auto", "Effective", allowable:=0.0001, formationPath:="lambda*N")
+    AssertTrue stats, "crack.path.nFixedMomentFallback.converged", crackNFixedMomentFallback.Converged
+    AssertTrue stats, "crack.path.nFixedMomentFallback.formed", crackNFixedMomentFallback.CrackFormed
+    AssertClose stats, "crack.path.nFixedMomentFallback.lambda0", crackNFixedMomentFallback.LambdaCrc, 0#, 0.000000001
+    AssertClose stats, "crack.path.nFixedMomentFallback.noFormationN", crackNFixedMomentFallback.FormationNcrc, 0#, 0.000000001
+    AssertClose stats, "crack.path.nFixedMomentFallback.noMcrc", crackNFixedMomentFallback.Mcrc, 0#, 0.000000001
+    AssertTrue stats, "crack.path.nFixedMomentFallback.noBeforeState", crackNFixedMomentFallback.BeforeMcrcState Is Nothing
+    AssertTrue stats, "crack.path.nFixedMomentFallback.noAfterState", crackNFixedMomentFallback.AfterMcrcState Is Nothing
+    AssertClose stats, "crack.path.nFixedMomentFallback.psi1", crackNFixedMomentFallback.PsiS, 1#, 0.000000001
+
+    Dim crackFallback As CCrackWidthCalculator
+    Set crackFallback = CalculateCrack(solverN, sectionN, 200000#, 0#, 0#, _
+        "Auto", "Effective", allowable:=0.0001, formationPath:="lambda*Mxy")
+    AssertTrue stats, "crack.path.mxyAxialFallback.converged", crackFallback.Converged
+    AssertTrue stats, "crack.path.mxyAxialFallback.formed", crackFallback.CrackFormed
+    AssertClose stats, "crack.path.mxyAxialFallback.lambda0", crackFallback.LambdaCrc, 0#, 0.000000001
+    AssertClose stats, "crack.path.mxyAxialFallback.psi1", crackFallback.PsiS, 1#, 0.000000001
+End Sub
+
 Private Sub TestDangerousLoadsDoNotNumFail(ByRef stats As TCrackTestStats)
     CheckDangerousCrackLoad stats, "crack.danger.pureMx", 0#, -15000000#, 0#, True
     CheckDangerousCrackLoad stats, "crack.danger.pureMy", 0#, 0#, -15000000#, True
     CheckDangerousCrackLoad stats, "crack.danger.pureMxy", 0#, -12000000#, -9000000#, True
-    CheckDangerousCrackLoad stats, "crack.danger.centralTension", 200000#, 0#, 0#, True
+    CheckDangerousCrackLoad stats, "crack.danger.centralTension", 200000#, 0#, 0#, True, "lambda*N"
     CheckDangerousCrackLoad stats, "crack.danger.pureCompression", -100000#, 0#, 0#, False
 End Sub
 
 Private Sub CheckDangerousCrackLoad(ByRef stats As TCrackTestStats, ByVal prefix As String, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
-        ByVal shouldForm As Boolean)
+        ByVal shouldForm As Boolean, Optional ByVal formationPath As String = "lambda*Mxy")
     Dim solver As CSectionSolver
     Dim section As CSectionModel
     Set solver = SolveServiceStateWithRunner(section, nValue, mxValue, myValue)
 
     Dim crack As CCrackWidthCalculator
     Set crack = CalculateCrack(solver, section, nValue, mxValue, myValue, _
-        "Auto", "Effective", allowable:=0.0001)
+        "Auto", "Effective", allowable:=0.0001, formationPath:=formationPath)
     AssertTrue stats, prefix & ".converged", crack.Converged
     AssertTrue stats, prefix & ".notNumFail", InStr(1, crack.StopReason, "NumericalFailure", vbTextCompare) = 0
     If shouldForm Then
@@ -339,9 +399,11 @@ Private Sub TestCentralTensionBranch(ByRef stats As TCrackTestStats)
     Set solver = SolveServiceState(section, 200000#, 0#, 0#)
 
     Dim crack As CCrackWidthCalculator
-    Set crack = CalculateCrack(solver, section, 200000#, 0#, 0#, "Auto", "Effective", allowable:=0.0001)
+    Set crack = CalculateCrack(solver, section, 200000#, 0#, 0#, "Auto", "Effective", _
+        allowable:=0.0001, formationPath:="lambda*N")
     Dim fullZoneCrack As CCrackWidthCalculator
-    Set fullZoneCrack = CalculateCrack(solver, section, 200000#, 0#, 0#, "Auto", "FullTension", allowable:=0.0001)
+    Set fullZoneCrack = CalculateCrack(solver, section, 200000#, 0#, 0#, "Auto", "FullTension", _
+        allowable:=0.0001, formationPath:="lambda*N")
     AssertCrackCommon stats, "crack.central", crack
     AssertTrue stats, "crack.central.branch", crack.CentralTensionBranch
     AssertTrue stats, "crack.central.ncrc", crack.Ncrc > 0#
@@ -503,7 +565,8 @@ Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As
         Optional ByVal phi3Mode As String = "Auto", Optional ByVal phi3Value As Double = 1#, _
         Optional ByVal psiSValue As Double = 1#, Optional ByVal coverMode As String = "NearestContour", _
         Optional ByVal loadStateForClassification As CSectionLoadState = Nothing, _
-        Optional ByVal centralReferenceX As Double = 0#, Optional ByVal centralReferenceY As Double = 0#) As CCrackWidthCalculator
+        Optional ByVal centralReferenceX As Double = 0#, Optional ByVal centralReferenceY As Double = 0#, _
+        Optional ByVal formationPath As String = "lambda*Mxy") As CCrackWidthCalculator
     Dim crack As CCrackWidthCalculator
     Set crack = New CCrackWidthCalculator
     crack.AllowableCrackWidth = allowable
@@ -515,6 +578,7 @@ Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As
     crack.Phi3 = phi3Value
     crack.PsiS = psiSValue
     crack.CoverMode = coverMode
+    crack.CrackFormationPath = formationPath
     crack.SolverLoadSteps = 8
     crack.SolverMaxIterations = 100
     crack.SolverToleranceN = 5#

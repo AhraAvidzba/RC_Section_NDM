@@ -518,7 +518,7 @@ try {
     $results.Range("AC113:AH113").Font.Bold = $true
     $results.Range("AK113:AU113").Font.Bold = $true
     $results.Range("AX113:BJ113").Font.Bold = $true
-    $results.Columns.ColumnWidth = 8.43
+    $results.Columns.ColumnWidth = 10
     Add-ResultsSummaryHelpLink $results $instructions
 
     Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$AE$29'

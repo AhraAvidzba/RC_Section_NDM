@@ -40,7 +40,7 @@ Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, к
 Private Const FAILED_ROW_COLOR As Long = &HCEC7FF ' Светло-красный фон проблемного блока.
 Private Const FAILED_FONT_COLOR As Long = &H9C0006 ' Темно-красный текст проблемного блока.
 Private Const SMALL_VALUE As Double = 0.000000001 ' Малый порог для деления и пустых расчетных полей.
-Private Const RESULTS_COLUMN_WIDTH As Double = 8.43 ' В Results все столбцы оставляем стандартной одинаковой ширины.
+Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' В Results все столбцы оставляем одинаковой ширины.
 
 ' Возвращает количество строк шапки, которые writer строит выше rngStabilitySummaryAnchor.
 Public Function HeaderRowsAboveAnchor() As Long

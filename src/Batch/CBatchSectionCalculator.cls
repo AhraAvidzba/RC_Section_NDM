@@ -71,6 +71,8 @@ Private mCrackPhi3 As Double ' Пользовательский коэффици
 Private mCrackPsiS As Double ' Пользовательский коэффициент psi_s, если PsiMode = User.
 Private mCrackTensionZoneMode As String ' Effective или FullTension: какая бетонная зона входит в Abt.
 Private mCrackCoverDistanceMode As String ' Как измерять a_s: до ближайшего контура или до дальней растянутой линии.
+Private mCrackFormationPath As String ' Путь поиска образования трещины: lambda*Mxy, lambda*N или lambda*NMxy.
+Private mCrackFormationSolutionStrategy As String ' Auto, UltimateStrain или LoadMultiplier для поиска уровня трещинообразования.
 Private mSolverMethod As String ' Newton или Secant для прямого равновесия.
 Private mSolverLoadSteps As Long ' Число ступеней приложения нагрузки в CSectionSolver.
 Private mSolverMaxIterations As Long ' Лимит итераций прямого solver-а на одной ступени.
@@ -137,6 +139,8 @@ Private Sub Class_Initialize()
     mCrackPsiS = 1#
     mCrackTensionZoneMode = "Effective"
     mCrackCoverDistanceMode = "GlobalExtreme"
+    mCrackFormationPath = "lambda*Mxy"
+    mCrackFormationSolutionStrategy = "Auto"
     mSolverMethod = "Newton"
     mSolverLoadSteps = 8
     mSolverMaxIterations = 80
@@ -211,6 +215,8 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     zeroMomentSettingRead = settings.HasKey("Calculation.ZeroMomentPerDepth")
     mCrackAllowable = settings.GetDouble("SLS.Crack.Allowable", mCrackAllowable)
     mCrackPsiMode = settings.GetString("SLS.Crack.PsiMode", mCrackPsiMode)
+    mCrackFormationPath = settings.GetString("SLS.Crack.InitiationLoadPath", mCrackFormationPath)
+    mCrackFormationSolutionStrategy = settings.GetString("SLS.Crack.InitiationSolutionStrategy", mCrackFormationSolutionStrategy)
     mCrackTensionZoneMode = settings.GetString("SLS.Crack.TensionZoneMode", mCrackTensionZoneMode)
     If settings.HasKey("SLS.Crack.CoverDistanceMode") Then
         mCrackCoverDistanceMode = settings.GetString("SLS.Crack.CoverDistanceMode", mCrackCoverDistanceMode)
@@ -1038,6 +1044,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
         loadState, crackReferenceX, crackReferenceY
     mResults(index).CrackStatus = mStatusPolicy.CrackStatusFromCalculator(crack)
     mResults(index).StoreCrackResult crack
+    If Not crack.Converged Then AppendCrackDiagnostic index, crack
     If Not crack.BeforeMcrcState Is Nothing Then mResults(index).AddState crack.BeforeMcrcState
     If Not crack.AfterMcrcState Is Nothing Then mResults(index).AddState crack.AfterMcrcState
 
@@ -1074,6 +1081,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
         loadState, crackReferenceX, crackReferenceY
     mResults(index).CrackStatus = mStatusPolicy.CrackStatusFromCalculator(crack)
     mResults(index).StoreCrackResult crack
+    If Not crack.Converged Then AppendCrackDiagnostic index, crack
 
 ReportCrackResult:
     ReportValue "CrackStatus", mResults(index).CrackStatus
@@ -1085,6 +1093,19 @@ ReportCrackResult:
     ReportValue "ds_eq", FormatNumberInvariant(mResults(index).CrackDsEquivalent) & " мм"
     ReportValue "ls", FormatNumberInvariant(mResults(index).CrackLs) & " мм"
     ReportBlock "Диагностика расчета трещин", crack.DiagnosticLog
+End Sub
+
+' Добавляет в компактный batch-журнал причину несходимости трещин.
+' Подробный txt-отчет пишет тот же DiagnosticLog отдельно, а здесь строка
+' нужна unit/regression-тестам и пользователю, когда общий статус только NumFail.
+Private Sub AppendCrackDiagnostic(ByVal index As Long, ByVal crack As CCrackWidthCalculator)
+    If crack Is Nothing Then Exit Sub
+
+    mDiagnosticLog = mDiagnosticLog & "combination=" & mInputs(index).CombinationID & _
+        "; crackStopReason=" & crack.StopReason & vbCrLf
+    If Len(crack.DiagnosticLog) > 0 Then
+        mDiagnosticLog = mDiagnosticLog & crack.DiagnosticLog
+    End If
 End Sub
 
 ' Создает объект lambda-траектории для одной строки LC.
@@ -1348,6 +1369,8 @@ Private Sub ConfigureCrackCalculator(ByVal crack As CCrackWidthCalculator)
     crack.PsiS = mCrackPsiS
     crack.TensionZoneMode = mCrackTensionZoneMode
     crack.CoverMode = mCrackCoverDistanceMode
+    crack.CrackFormationPath = mCrackFormationPath
+    crack.CrackFormationSolutionStrategy = mCrackFormationSolutionStrategy
     crack.SolverLoadSteps = mSolverLoadSteps
     crack.SolverMethod = mSolverMethod
     crack.SolverMaxIterations = mSolverMaxIterations
@@ -2043,6 +2066,10 @@ End Property
 
 Public Property Get CrackNcrc(ByVal index As Long) As Double
     CrackNcrc = mResults(index).CrackNcrc
+End Property
+
+Public Property Get CrackFormationNcrc(ByVal index As Long) As Double
+    CrackFormationNcrc = mResults(index).CrackFormationNcrc
 End Property
 
 Public Property Get CrackMcrc(ByVal index As Long) As Double

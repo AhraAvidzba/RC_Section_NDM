@@ -42,6 +42,8 @@ Public Function RunBatchCalculationTests() As String
     TestBatchExplicitCapacityLoadPathScalesMxy stats
     AppendLine stats, "RUN: TestBatchExplicitCapacityLoadPathScalesNWithMoments"
     TestBatchExplicitCapacityLoadPathScalesNWithMoments stats
+    AppendLine stats, "RUN: TestCapacityLoadPathNReportsUltimateAtLoadPoint"
+    TestCapacityLoadPathNReportsUltimateAtLoadPoint stats
     AppendLine stats, "RUN: TestBatchCapacityLoadPathVariants"
     TestBatchCapacityLoadPathVariants stats
     AppendLine stats, "RUN: TestBatchCapacityLoadPathAllowsZeroInactiveComponents"
@@ -70,6 +72,8 @@ Public Function RunBatchCalculationTests() As String
     TestAxialTensionReferenceAndEccentricity stats
     AppendLine stats, "RUN: TestDirectStateReportsSectionStatus"
     TestDirectStateReportsSectionStatus stats
+    AppendLine stats, "RUN: TestPR1LShapeSmallTensionMomentDirectStateDoesNotNumFail"
+    TestPR1LShapeSmallTensionMomentDirectStateDoesNotNumFail stats
     AppendLine stats, "RUN: TestLongitudinalCrackCheckUsesDirectStateStress"
     TestLongitudinalCrackCheckUsesDirectStateStress stats
     AppendLine stats, "RUN: TestLongitudinalCrackSkippedForPR1"
@@ -136,6 +140,8 @@ Public Function RunBatchCalculationTests() As String
     TestPR2AutoCrackPureBendingStoresMcrcStates stats
     AppendLine stats, "RUN: TestPR2LShapeCompressionSmallMomentCrackDoesNotNumFail"
     TestPR2LShapeCompressionSmallMomentCrackDoesNotNumFail stats
+    AppendLine stats, "RUN: TestCrackInitiationLoadPathsWriteFormationSummary"
+    TestCrackInitiationLoadPathsWriteFormationSummary stats
     AppendLine stats, "RUN: TestPR1AxialTensionBeyondPhysicalLimitUsesExtension"
     TestPR1AxialTensionBeyondPhysicalLimitUsesExtension stats
     AppendLine stats, "RUN: TestPR1AxialTensionNearLimitDoesNotJumpToNumFail"
@@ -426,6 +432,27 @@ Private Sub TestBatchExplicitCapacityLoadPathScalesNWithMoments(ByRef stats As T
     AssertTrue stats, "batch.capacityPath.n.key", batch.CapacityLoadPathKey(1) = "LambdaN"
     AssertTrue stats, "batch.capacityPath.n.nult", Abs(batch.NUltimate(1)) > 0#
     AssertTrue stats, "batch.capacityPath.n.status", batch.CapacityStatus(1) = "OK" Or batch.CapacityStatus(1) = "FAIL" Or batch.CapacityStatus(1) = "NumFail"
+End Sub
+
+' Проверяет пользовательский вывод для lambda*N: solver внутри масштабирует
+' момент от эксцентриситета N, но предельные Mx/My в batch должны быть
+' перенесены обратно в точку приложения нагрузки через CSectionLoadState.
+Private Sub TestCapacityLoadPathNReportsUltimateAtLoadPoint(ByRef stats As TBatchTestStats)
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.AddCombination "N_REF", -150000#, 3000000#, 0#, "PR1", _
+        "lambda n at shifted load point", ChrW$(&H3BB) & "*N"
+    batch.ApplyLoadReference 40#, -25#
+    batch.Execute
+
+    AssertTrue stats, "batch.capacityPath.n.ref.status", _
+        batch.CapacityStatus(1) = "OK" Or batch.CapacityStatus(1) = "FAIL"
+    AssertClose stats, "batch.capacityPath.n.ref.mxAtLoadPoint", _
+        batch.MxUltimate(1), batch.UserMx(1), 100000#
+    AssertClose stats, "batch.capacityPath.n.ref.myAtLoadPoint", _
+        batch.MyUltimate(1), batch.UserMy(1), 100000#
+    AssertTrue stats, "batch.capacityPath.n.ref.internalDiffers", _
+        Abs(batch.CapacityStateMy(1) - batch.MyUltimate(1)) > 100000#
 End Sub
 
 ' Проверяет все пользовательские варианты CapacityLoadPath. Тест не
@@ -885,6 +912,103 @@ RestoreAndFail:
     AppendLine stats, "FAIL: batch.group2.lshapeSmallMoment; " & Err.Description
     Resume Restore
 End Sub
+
+' Проверяет полный путь batch + Results writer для новых траекторий
+' трещинообразования lambda*N и lambda*NMxy. Раньше найденные Ncrc/Mxy,crc
+' могли сохраниться в результате LC, но не попасть в таблицу трещин из-за
+' позднего N/A после проверки CrackedState.
+Private Sub TestCrackInitiationLoadPathsWriteFormationSummary(ByRef stats As TBatchTestStats)
+    Dim oldPath As String
+    Dim oldStrategy As String
+    Dim oldPsiMode As String
+    Dim oldAllowable As String
+    oldPath = GetSystemSetting("SLS.Crack.InitiationLoadPath")
+    oldStrategy = GetSystemSetting("SLS.Crack.InitiationSolutionStrategy")
+    oldPsiMode = GetSystemSetting("SLS.Crack.PsiMode")
+    oldAllowable = GetSystemSetting("SLS.Crack.Allowable")
+
+    On Error GoTo RestoreAndFail
+    SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
+    SetSystemSetting "SLS.Crack.PsiMode", "Auto"
+    SetSystemSetting "SLS.Crack.Allowable", "0.0001"
+
+    CheckCrackFormationSummaryForPath stats, "lambda*N", _
+        "batch.crack.pathN.summary", 20# * 9806.65, _
+        0#, 0#, True, False
+    CheckCrackFormationSummaryForPath stats, "lambda*NMxy", _
+        "batch.crack.pathNMxy.summary", 100# * 9806.65, _
+        50# * TEST_TF_M_IN_NMM, 0#, True, True
+
+Restore:
+    SetSystemSetting "SLS.Crack.InitiationLoadPath", oldPath
+    SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", oldStrategy
+    SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
+    SetSystemSetting "SLS.Crack.Allowable", oldAllowable
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.crack.path.summary; " & Err.Description
+    Resume Restore
+End Sub
+
+' Выполняет один сценарий трещинообразования и проверяет, что найденная точка
+' записана как в объект batch, так и в отдельный блок rngCrackSummaryAnchor.
+Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
+        ByVal pathText As String, ByVal prefix As String, _
+        ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
+        ByVal expectNcrc As Boolean, ByVal expectMcrc As Boolean)
+    SetSystemSetting "SLS.Crack.InitiationLoadPath", pathText
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    AssertTrue stats, prefix & ".pathSetting", _
+        StrComp(settings.GetString("SLS.Crack.InitiationLoadPath", vbNullString), pathText, vbTextCompare) = 0
+
+    Dim referenceX As Double
+    Dim referenceY As Double
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUserLShapeTensionBatch(referenceX, referenceY)
+    batch.ApplySettings settings
+    batch.AddCombination UCase$(Replace$(Replace$(pathText, "lambda*", vbNullString), "*", vbNullString)), _
+        nValue, mxValue, myValue, "PR2", "crack formation path"
+    batch.Execute
+
+    AppendLine stats, "INFO: " & prefix & "; status=" & batch.CrackStatus(1) & _
+        "; lambda=" & FormatNumberInvariant(batch.CrackLambdaCrc(1)) & _
+        "; Ncrc=" & FormatNumberInvariant(batch.CrackFormationNcrc(1)) & _
+        "; MxyCrc=" & FormatNumberInvariant(batch.CrackMcrc(1))
+    If batch.CrackStatus(1) = "NumFail" Or _
+            (expectNcrc And batch.CrackFormationNcrc(1) = 0#) Or _
+            (expectMcrc And batch.CrackMcrc(1) = 0#) Then
+        AppendLine stats, "DIAG: " & prefix & vbCrLf & batch.DiagnosticLog
+    End If
+
+    Dim writer As CCrackSummaryWriter
+    Set writer = New CCrackSummaryWriter
+    writer.WriteSummary ThisWorkbook, batch
+
+    Dim resultsSheet As Object
+    Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
+    Dim anchor As Object
+    Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
+    If expectNcrc Then
+        AssertTrue stats, prefix & ".sheetNcrc", _
+            CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 14).Value2)
+    End If
+    If expectMcrc Then
+        AssertTrue stats, prefix & ".sheetMcrc", _
+            CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 15).Value2)
+    End If
+End Sub
+
+' Отличает реально выведенную величину от пустой ячейки и статуса N/A.
+Private Function CellHasDisplayedResult(ByVal value As Variant) As Boolean
+    Dim text As String
+    text = Trim$(CStr(value))
+    CellHasDisplayedResult = Len(text) > 0 And StrComp(text, "N/A", vbTextCompare) <> 0
+End Function
 
 ' Проверяет сценарий из пользовательского расчета: большое осевое растяжение
 ' второй группы должно доходить до технического продолжения диаграммы и давать
@@ -1642,6 +1766,73 @@ Restore:
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: batch.direct.sectionStatus; " & Err.Description
+    Resume Restore
+End Sub
+
+' Проверяет внецентренное растяжение стандартного Г-сечения. Этот случай
+' регрессирует численную дырку прямого StrengthState: при N=-9 тс и Mx=50 тс*м
+' capacity находил предельное состояние, а прямой solve от заданных усилий мог
+' остановиться как NumFail из-за неудачного стартового приближения.
+Private Sub TestPR1LShapeSmallTensionMomentDirectStateDoesNotNumFail(ByRef stats As TBatchTestStats)
+    Dim oldDirect As String
+    Dim oldCapacity As String
+    Dim oldCrack As String
+    Dim oldStability As String
+    oldDirect = GetProfileValue("Calculation.Strength.DirectState", "PR1")
+    oldCapacity = GetProfileValue("Calculation.Strength.Capacity", "PR1")
+    oldCrack = GetProfileValue("Calculation.Crack.Width", "PR1")
+    oldStability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+
+    On Error GoTo RestoreAndFail
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
+    SetProfileValue "Calculation.Strength.Capacity", "PR1", "Yes"
+    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+
+    Dim provider As CMaterialModelProvider
+    Set provider = New CMaterialModelProvider
+    provider.Initialize settings, units
+
+    Dim referenceX As Double
+    Dim referenceY As Double
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUserLShapeTensionBatch(referenceX, referenceY, provider)
+    batch.ApplySettings settings, units
+    batch.AddCombination "G1_T9_MX50", 9# * 9806.65, 50# * TEST_TF_M_IN_NMM, 0#, _
+        "PR1", "user N=-9 tf and Mx=50 tf*m"
+    batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
+    batch.Execute
+
+    AppendLine stats, "INFO: batch.group1.tensionMoment.direct=" & batch.DirectStateStatus(1) & _
+        "; capacity=" & batch.CapacityStatus(1) & _
+        "; epsCmin=" & FormatNumberInvariant(batch.MinConcreteStrain(1)) & _
+        "; epsSmax=" & FormatNumberInvariant(batch.MaxSteelStrain(1))
+    If batch.DirectStateStatus(1) = "NumFail" Then
+        AppendLine stats, "DIAG: batch.group1.tensionMoment" & vbCrLf & batch.DiagnosticLog
+    End If
+    AssertTrue stats, "batch.group1.tensionMoment.directNotNumFail", _
+        batch.DirectStateStatus(1) = "OK" Or batch.DirectStateStatus(1) = "FAIL"
+    AssertTrue stats, "batch.group1.tensionMoment.capacityNotNumFail", _
+        batch.CapacityStatus(1) = "OK" Or batch.CapacityStatus(1) = "FAIL"
+
+Restore:
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", oldDirect
+    SetProfileValue "Calculation.Strength.Capacity", "PR1", oldCapacity
+    SetProfileValue "Calculation.Crack.Width", "PR1", oldCrack
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.group1.tensionMoment; " & Err.Description
     Resume Restore
 End Sub
 
@@ -3237,12 +3428,12 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     Dim crackAnchor As Object
     Set crackAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     AssertTrue stats, "batch.writer.crack.header.formationTitle", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 10).Value2) = "Момент образования трещин"
-    AssertTrue stats, "batch.writer.crack.header.title", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 17).Value2) = "нормальные и продольные трещины"
-    AssertTrue stats, "batch.writer.crack.header.mcrcNote", InStr(1, CStr(resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).Value2), "моментный уровень", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.crack.header.title", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 18).Value2) = "нормальные и продольные трещины"
+    AssertTrue stats, "batch.writer.crack.header.mcrcNote", InStr(1, CStr(resultsSheet.Cells.Item(crackAnchor.Row - 2, 15).Value2), "моментного вектора", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.crack.header.formationStatus", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 3, 16).Value2) = "статус трещин" And _
-        resultsSheet.Cells.Item(crackAnchor.Row - 3, 16).MergeArea.Rows.Count = 2
-    AssertTrue stats, "batch.writer.crack.header.state", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 16).Value2) = "state"
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 3, 17).Value2) = "статус трещин" And _
+        resultsSheet.Cells.Item(crackAnchor.Row - 3, 17).MergeArea.Rows.Count = 2
+    AssertTrue stats, "batch.writer.crack.header.state", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 17).Value2) = "state"
     AssertTrue stats, "batch.writer.crack.header.notesPlain", Not resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).Font.Bold And _
         resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).HorizontalAlignment = -4131
     AssertTrue stats, "batch.writer.crack.header.notesFill", CLng(resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).Interior.Color) = RGB(217, 217, 217)
@@ -3268,10 +3459,10 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.stability.header.sp35NcrBranch", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 32).Value2) = "при ec > r"
     AssertTrue stats, "batch.writer.stability.header.sp63PlaneHeight", resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 60).MergeArea.Rows.Count = 2
     AssertTrue stats, "batch.writer.stability.header.sp35Ratio", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 1, 36).Value2) = "N/Ncr"
-    AssertClose stats, "batch.writer.stability.columnWidthA", CDbl(resultsSheet.Columns.Item(1).ColumnWidth), 8.43, 0.01
-    AssertClose stats, "batch.writer.stability.columnWidthN", CDbl(resultsSheet.Columns.Item(14).ColumnWidth), 8.43, 0.01
-    AssertClose stats, "batch.writer.stability.columnWidthAF", CDbl(resultsSheet.Columns.Item(32).ColumnWidth), 8.43, 0.01
-    AssertClose stats, "batch.writer.stability.columnWidthCC", CDbl(resultsSheet.Columns.Item(81).ColumnWidth), 8.43, 0.01
+    AssertClose stats, "batch.writer.stability.columnWidthA", CDbl(resultsSheet.Columns.Item(1).ColumnWidth), 10#, 0.01
+    AssertClose stats, "batch.writer.stability.columnWidthN", CDbl(resultsSheet.Columns.Item(14).ColumnWidth), 10#, 0.01
+    AssertClose stats, "batch.writer.stability.columnWidthAF", CDbl(resultsSheet.Columns.Item(32).ColumnWidth), 10#, 0.01
+    AssertClose stats, "batch.writer.stability.columnWidthCC", CDbl(resultsSheet.Columns.Item(81).ColumnWidth), 10#, 0.01
     AssertTrue stats, "batch.writer.stability.availableRowsBorder", _
         Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row + 19, 1).Value2)) = 0 And _
         resultsSheet.Cells.Item(stabilityAnchor.Row + 19, 1).Borders(9).LineStyle <> -4142

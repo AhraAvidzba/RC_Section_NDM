@@ -34,9 +34,9 @@ Public DirectStateDiagramExtensionEnabled As Boolean ' Снимок настро
 Public LambdaCapacity As Double ' Предельный множитель выбранной lambda-траектории.
 Public UtilCapacity As Double ' Использование несущей способности, обычно 1/lambda.
 Public CapacityPathResolved As String ' Нормализованный ключ выбранной lambda-траектории.
-Public NUltimate As Double ' Предельная N, если N входит в lambda-траекторию.
-Public MxUltimate As Double ' Предельный Mx, если Mx входит в lambda-траекторию.
-Public MyUltimate As Double ' Предельный My, если My входит в lambda-траекторию.
+Public NUltimate As Double ' Полная предельная N CapacityState для вывода в пользовательской точке нагрузки.
+Public MxUltimate As Double ' Полный предельный Mx CapacityState, перенесенный в точку приложения нагрузки.
+Public MyUltimate As Double ' Полный предельный My CapacityState, перенесенный в точку приложения нагрузки.
 Public CapacityStateN As Double ' Полная N в найденном предельном CapacityState независимо от выбранной траектории.
 Public CapacityStateMx As Double ' Полный Mx в найденном предельном CapacityState независимо от выбранной траектории.
 Public CapacityStateMy As Double ' Полный My в найденном предельном CapacityState независимо от выбранной траектории.
@@ -67,6 +67,7 @@ Public CrackLsRaw As Double ' Базовое расстояние между т�
 Public CrackLs As Double ' Принятое расстояние между трещинами после ограничений.
 Public CrackLambdaCrc As Double ' Множитель нагрузки при образовании трещины.
 Public CrackNcrc As Double ' Продольная сила образования трещины для центрального растяжения.
+Public CrackFormationNcrc As Double ' Продольная сила в найденной точке образования трещины выбранной lambda-траектории.
 Public CrackMcrc As Double ' Модуль изгибающего момента образования трещины для общей ветки N+M.
 Public CrackAred As Double ' Площадь приведенного сечения для Ncrc при центральном растяжении.
 Public CrackRbtSer As Double ' Расчетное сопротивление бетона растяжению для II ГПС, использованное в Ncrc.
@@ -443,6 +444,7 @@ Public Sub StoreCrackResult(ByVal crack As CCrackWidthCalculator)
     CrackLs = crack.CrackSpacing
     CrackLambdaCrc = crack.LambdaCrc
     CrackNcrc = crack.Ncrc
+    CrackFormationNcrc = crack.FormationNcrc
     CrackMcrc = crack.Mcrc
     CrackAred = crack.Ared
     CrackRbtSer = crack.RbtSer
@@ -494,6 +496,7 @@ Public Sub ClearCrackResult()
     CrackLs = 0#
     CrackLambdaCrc = 0#
     CrackNcrc = 0#
+    CrackFormationNcrc = 0#
     CrackMcrc = 0#
     CrackAred = 0#
     CrackRbtSer = 0#

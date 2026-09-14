@@ -102,6 +102,13 @@ Public Sub SolveWithInitialSolver(ByVal section As CSectionModel, _
     service.Solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
     Set mSolver = service
 
+    If Not service.Converged Then
+        If TrySolveWithDirectStateGuess(section, concreteMaterial, steelMaterial, _
+                targetN, targetMx, targetMy, service) Then
+            Set mSolver = service
+        End If
+    End If
+
     If Not service.Converged And allowExtensionWarmStart Then
         If TrySolveWithExtensionWarmStart(section, concreteMaterial, steelMaterial, _
                 targetN, targetMx, targetMy, service) Then
@@ -119,6 +126,46 @@ Public Sub SolveWithInitialSolver(ByVal section As CSectionModel, _
         End If
     End If
 End Sub
+
+' Повторяет прямой solve от active-set плоскости для общего случая N+M.
+' Первый штатный старт сохраняется прежним; этот retry включается только после
+' несходимости и только если начальная подсказка еще не применялась. Так
+' внецентренное растяжение/сжатие получает тот же устойчивый старт, который уже
+' помогал чистому изгибу, без изменения результата успешно сходящихся LC.
+Private Function TrySolveWithDirectStateGuess(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByRef service As CSectionSolver) As Boolean
+    If mInitialGuessApplied Then Exit Function
+    If mMaxIterations <= 1 Then Exit Function
+    If Sqr(targetMx * targetMx + targetMy * targetMy) <= NEAR_ZERO Then Exit Function
+
+    Dim guessBuilder As CStateGuessBuilder
+    Set guessBuilder = New CStateGuessBuilder
+
+    Dim eps0 As Double
+    Dim kx As Double
+    Dim ky As Double
+    If Not guessBuilder.BuildForDirectState(section, concreteMaterial, steelMaterial, _
+            targetN, targetMx, targetMy, eps0, kx, ky) Then
+        Exit Function
+    End If
+
+    If TryRunRetry(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+            eps0, kx, ky, targetN, targetMx, targetMy, 1, _
+            "directStateActiveSet / direct target", service, False, "directStateRetry") Then
+        mInitialGuessApplied = True
+        TrySolveWithDirectStateGuess = True
+        Exit Function
+    End If
+
+    If TryRunRetry(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+            eps0, kx, ky, targetN, targetMx, targetMy, 1, _
+            "directStateActiveSet / direct target without line search", service, True, "directStateRetry") Then
+        mInitialGuessApplied = True
+        TrySolveWithDirectStateGuess = True
+    End If
+End Function
 
 ' Выбирает старт для прямого solve-а. Если вызывающий слой передал близкое
 ' состояние, используем его как warm start. Иначе включается обычный общий
@@ -259,7 +306,8 @@ Private Function TryRunRetry(ByVal section As CSectionModel, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
         ByVal initialN As Double, ByVal initialMx As Double, ByVal initialMy As Double, _
         ByVal loadSteps As Long, ByVal attemptName As String, ByRef service As CSectionSolver, _
-        Optional ByVal disableLineSearch As Boolean = False) As Boolean
+        Optional ByVal disableLineSearch As Boolean = False, _
+        Optional ByVal retryKind As String = "extensionRetry") As Boolean
     Dim retry As CSectionSolver
     Set retry = New CSectionSolver
     ConfigureSolver retry
@@ -270,10 +318,10 @@ Private Function TryRunRetry(ByVal section As CSectionModel, _
 
     If retry.Converged Then
         Set service = retry
-        AppendDiagnostic "extensionRetry=" & attemptName & "; result=converged"
+        AppendDiagnostic retryKind & "=" & attemptName & "; result=converged"
         TryRunRetry = True
     Else
-        AppendDiagnostic "extensionRetry=" & attemptName & _
+        AppendDiagnostic retryKind & "=" & attemptName & _
             "; result=failed; stop=" & retry.StopReason & _
             "; residualN=" & FormatNumberInvariant(retry.ResidualN) & _
             "; residualMx=" & FormatNumberInvariant(retry.ResidualMx) & _

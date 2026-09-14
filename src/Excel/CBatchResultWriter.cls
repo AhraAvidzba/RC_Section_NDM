@@ -65,7 +65,7 @@ Private Const COL_LONG_CRACK_SF As Long = 30
 
 Private Const COL_OVERALL_SF As Long = 31
 Private Const DEFAULT_SUMMARY_ROWS As Long = 29 ' Штатная высота шаблона: 9 строк шапки и 20 строк LC.
-Private Const RESULTS_COLUMN_WIDTH As Double = 8.43 ' Единая ширина всех столбцов Results.
+Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' Единая ширина всех столбцов Results.
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Светло-серый фон заголовков.
 Private Const SAFETY_COLOR As Long = &HE7E6E6 ' Серый фон столбцов коэффициентов запаса.

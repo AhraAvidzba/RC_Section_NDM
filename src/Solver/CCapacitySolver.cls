@@ -632,7 +632,9 @@ Private Sub BuildUltimateLoadPathJacobianColumn(ByVal section As CSectionModel, 
 End Sub
 
 Private Function UltimateLoadPathResidualNorm(ByVal rPath1 As Double, ByVal rPath2 As Double, ByVal rLimit As Double) As Double
-    UltimateLoadPathResidualNorm = Abs(rPath1) + Abs(rPath2) + Abs(rLimit) * 10#
+    Dim math As CLoadPathMath
+    Set math = NewLoadPathMath()
+    UltimateLoadPathResidualNorm = math.ResidualNorm(rPath1, rPath2, rLimit)
 End Function
 
 ' Стартовая плоскость нужна только как начальное приближение UltimateStrain.
@@ -1336,34 +1338,10 @@ Private Function LoadPathLambda(ByVal nValue As Double, ByVal mxValue As Double,
         ByVal nOffset As Double, ByVal nBase As Double, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
         ByVal myOffset As Double, ByVal myBase As Double) As Double
-    Select Case LoadPathAnchorComponent(nBase, mxBase, myBase)
-        Case 1
-            LoadPathLambda = (nValue - nOffset) / nBase
-        Case 2
-            LoadPathLambda = (mxValue - mxOffset) / mxBase
-        Case 3
-            LoadPathLambda = (myValue - myOffset) / myBase
-    End Select
-End Function
-
-' Возвращает номер опорной компоненты load-path:
-' 1 - N, 2 - Mx, 3 - My. Опорная компонента задает lambda, а остальные
-' компоненты проверяются как остаточные уравнения траектории.
-Private Function LoadPathAnchorComponent(ByVal nBase As Double, ByVal mxBase As Double, ByVal myBase As Double) As Long
-    Dim nScore As Double
-    Dim mxScore As Double
-    Dim myScore As Double
-    nScore = Abs(nBase) / MaxDouble(mSolverToleranceN, 1#)
-    mxScore = Abs(mxBase) / MaxDouble(mSolverToleranceMx, 1#)
-    myScore = Abs(myBase) / MaxDouble(mSolverToleranceMy, 1#)
-
-    If mxScore >= nScore And mxScore >= myScore And Abs(mxBase) > 0.000000001 Then
-        LoadPathAnchorComponent = 2
-    ElseIf myScore >= nScore And myScore >= mxScore And Abs(myBase) > 0.000000001 Then
-        LoadPathAnchorComponent = 3
-    Else
-        LoadPathAnchorComponent = 1
-    End If
+    Dim math As CLoadPathMath
+    Set math = NewLoadPathMath()
+    LoadPathLambda = math.Lambda(nValue, mxValue, myValue, _
+        LoadPathFromComponents(nOffset, nBase, mxOffset, mxBase, myOffset, myBase))
 End Function
 
 ' Собирает две независимые невязки, которые удерживают найденное внутреннее
@@ -1375,71 +1353,30 @@ Private Sub BuildLoadPathResiduals(ByVal nValue As Double, ByVal mxValue As Doub
         ByVal mxOffset As Double, ByVal mxBase As Double, _
         ByVal myOffset As Double, ByVal myBase As Double, _
         ByVal lambdaValue As Double, ByRef rPath1 As Double, ByRef rPath2 As Double)
-    Dim residualCount As Long
-    Dim anchorComponent As Long
-    Dim targetNValue As Double
-    Dim targetMxValue As Double
-    Dim targetMyValue As Double
-
-    rPath1 = 0#
-    rPath2 = 0#
-
-    anchorComponent = LoadPathAnchorComponent(nBase, mxBase, myBase)
-    targetNValue = TargetN(lambdaValue, nOffset, nBase)
-    targetMxValue = TargetMx(lambdaValue, mxBase, mxOffset)
-    targetMyValue = TargetMy(lambdaValue, myBase, myOffset)
-
-    If Abs(nBase) <= 0.000000001 Then
-        AddLoadPathResidual residualCount, rPath1, rPath2, _
-            (nValue - nOffset) / ComponentTolerance(1, nOffset, nValue)
-    End If
-    If Abs(mxBase) <= 0.000000001 Then
-        AddLoadPathResidual residualCount, rPath1, rPath2, _
-            (mxValue - mxOffset) / ComponentTolerance(2, mxOffset, mxValue)
-    End If
-    If Abs(myBase) <= 0.000000001 Then
-        AddLoadPathResidual residualCount, rPath1, rPath2, _
-            (myValue - myOffset) / ComponentTolerance(3, myOffset, myValue)
-    End If
-
-    If residualCount < 2 And Abs(nBase) > 0.000000001 And anchorComponent <> 1 Then
-        AddLoadPathResidual residualCount, rPath1, rPath2, _
-            (nValue - targetNValue) / ComponentTolerance(1, targetNValue, nValue)
-    End If
-    If residualCount < 2 And Abs(mxBase) > 0.000000001 And anchorComponent <> 2 Then
-        AddLoadPathResidual residualCount, rPath1, rPath2, _
-            (mxValue - targetMxValue) / ComponentTolerance(2, targetMxValue, mxValue)
-    End If
-    If residualCount < 2 And Abs(myBase) > 0.000000001 And anchorComponent <> 3 Then
-        AddLoadPathResidual residualCount, rPath1, rPath2, _
-            (myValue - targetMyValue) / ComponentTolerance(3, targetMyValue, myValue)
-    End If
+    Dim math As CLoadPathMath
+    Set math = NewLoadPathMath()
+    math.BuildResiduals nValue, mxValue, myValue, _
+        LoadPathFromComponents(nOffset, nBase, mxOffset, mxBase, myOffset, myBase), _
+        lambdaValue, rPath1, rPath2
 End Sub
 
-' Считает относительное отклонение внутреннего момента от направления Mbase.
-' Возвращаемое значение уже поделено на допустимый относительный угол, поэтому
-' общий критерий |rPath| <= 1 эквивалентен прежнему правилу UltimateStrain:
-' перпендикулярная составляющая момента не больше 0.001 от масштаба момента.
-Private Sub AddLoadPathResidual(ByRef residualCount As Long, ByRef rPath1 As Double, ByRef rPath2 As Double, _
-        ByVal residualValue As Double)
-    If residualCount >= 2 Then Exit Sub
-    residualCount = residualCount + 1
-    If residualCount = 1 Then
-        rPath1 = residualValue
-    Else
-        rPath2 = residualValue
-    End If
-End Sub
+' Создает общий helper load-path с текущими solver tolerance capacity.
+Private Function NewLoadPathMath() As CLoadPathMath
+    Dim math As CLoadPathMath
+    Set math = New CLoadPathMath
+    math.Configure mSolverToleranceN, mSolverToleranceMx, mSolverToleranceMy
+    Set NewLoadPathMath = math
+End Function
 
-Private Function ComponentTolerance(ByVal componentIndex As Long, ByVal targetValue As Double, ByVal actualValue As Double) As Double
-    Select Case componentIndex
-        Case 1
-            ComponentTolerance = MaxDouble(mSolverToleranceN, MaxDouble(Abs(targetValue), Abs(actualValue)) * 0.000000001)
-        Case 2
-            ComponentTolerance = MaxDouble(mSolverToleranceMx, MaxDouble(Abs(targetValue), Abs(actualValue)) * 0.000000001)
-        Case 3
-            ComponentTolerance = MaxDouble(mSolverToleranceMy, MaxDouble(Abs(targetValue), Abs(actualValue)) * 0.000000001)
-    End Select
+' Упаковывает старые аргументы CCapacitySolver в общий CLoadPathVector, чтобы
+' вся математика lambda-траектории проходила через CLoadPathMath.
+Private Function LoadPathFromComponents(ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double) As CLoadPathVector
+    Dim loadPath As CLoadPathVector
+    Set loadPath = New CLoadPathVector
+    loadPath.Initialize nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+    Set LoadPathFromComponents = loadPath
 End Function
 
 Private Function TargetMx(ByVal lambdaValue As Double, ByVal mxBase As Double, ByVal mxOffset As Double) As Double

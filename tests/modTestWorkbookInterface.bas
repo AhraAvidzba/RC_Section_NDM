@@ -903,7 +903,7 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
         IsNumeric(summary.Worksheet.Cells.Item(firstDataRow, 9).Value2)
     Dim crackAnchor As Object
     Set crackAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
-    AssertTrue stats, "ui.run.crack", Len(CStr(crackAnchor.Worksheet.Cells.Item(crackAnchor.Row, 37).Value2)) > 0
+    AssertTrue stats, "ui.run.crack", Len(CStr(crackAnchor.Worksheet.Cells.Item(crackAnchor.Row, 38).Value2)) > 0
     Dim sys As Object
     Set sys = ThisWorkbook.Worksheets.Item("Config")
     AssertTrue stats, "ui.run.system.noRebarTable", Len(CStr(sys.Cells.Item(130, 1).Value2)) = 0
@@ -1623,6 +1623,8 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
         SystemSettingValidationHasOptions("Capacity.SearchMethod", Array("Bisection", "Brent", "Secant"))
     AssertTrue stats, "ui.validation.crackCoverDistanceMode", _
         SystemSettingValidationHasOptions("SLS.Crack.CoverDistanceMode", Array("NearestContour", "GlobalExtreme"))
+    AssertTrue stats, "ui.validation.crackInitiationLoadPath", _
+        SystemSettingValidationHasOptions("SLS.Crack.InitiationLoadPath", Array(ChrW$(&H3BB) & "*Mxy", ChrW$(&H3BB) & "*N", ChrW$(&H3BB) & "*NMxy"))
     AssertTrue stats, "ui.validation.autocadLabelMode", _
         SystemSettingValidationHasOptions("AutoCAD.Export.LabelMode", Array("ValuesOnly", "NamesAndValues"))
     AssertTrue stats, "ui.validation.autocadNeutralLine", _

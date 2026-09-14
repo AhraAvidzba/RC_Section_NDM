@@ -28,7 +28,7 @@ Private Const PHYSICAL_TOLERANCE As Double = 0.000000001 ' Порог, ниже 
 Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 61 ' Строки общих свойств сечения до LC-зависимых блоков.
 Private Const LC_SECTION_PROPERTY_ROWS As Long = 23 ' Строки свойств одного LC без metadata named-state.
 Private Const STATE_SECTION_PROPERTY_ROWS As Long = 10 ' Строки metadata одного сохраненного named-state.
-Private Const RESULTS_COLUMN_WIDTH As Double = 8.43 ' Единая ширина всех столбцов Results.
+Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' Единая ширина всех столбцов Results.
 Private Const SNAPSHOT_TITLE_OFFSET As Long = 2 ' Общая синяя строка находится на две строки выше нижних snapshot-якорей.
 
 ' Возвращает фактическую ширину одного из блоков Results, которые пишет этот writer.
