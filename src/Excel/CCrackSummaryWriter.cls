@@ -41,9 +41,9 @@ Private Const COL_LOAD_MY As Long = 8
 
 Private Const COL_ARED As Long = 10
 Private Const COL_RBT_SER As Long = 11
-Private Const COL_FORMATION_METHOD As Long = 12
-Private Const COL_NCRC As Long = 13
-Private Const COL_LAMBDA_NCRC As Long = 14
+Private Const COL_NCRC As Long = 12
+Private Const COL_LAMBDA_NCRC As Long = 13
+Private Const COL_FORMATION_METHOD As Long = 14
 Private Const COL_FORMATION_NCRC As Long = 15
 Private Const COL_MCRC As Long = 16
 Private Const COL_LAMBDA_MCRC As Long = 17
@@ -228,7 +228,7 @@ Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem)
 
     headers(1, COL_ARED) = "Момент образования трещин"
     headers(2, COL_ARED) = "Осевое растяжение"
-    headers(2, COL_FORMATION_NCRC) = "Изгиб N + M"
+    headers(2, COL_FORMATION_METHOD) = "Изгиб N + M"
     headers(2, COL_FORMATION_STATE) = "статус трещин"
     headers(1, COL_XT) = "нормальные и продольные трещины"
     headers(2, COL_XT) = "данные при изгибе N + M"
@@ -339,7 +339,7 @@ Private Sub MergeHeaders(ByVal target As Object)
     MergeRange target, 1, COL_LOAD_N, 2, COL_LOAD_MY
     MergeRange target, 1, COL_ARED, 1, COL_FORMATION_STATE
     MergeRange target, 2, COL_ARED, 2, COL_LAMBDA_NCRC
-    MergeRange target, 2, COL_FORMATION_NCRC, 2, COL_LAMBDA_MCRC
+    MergeRange target, 2, COL_FORMATION_METHOD, 2, COL_LAMBDA_MCRC
     MergeRange target, 2, COL_FORMATION_STATE, 3, COL_FORMATION_STATE
     MergeRange target, 1, COL_XT, 1, COL_MAIN_LAST
     MergeRange target, 2, COL_XT, 2, COL_AS

@@ -367,10 +367,10 @@ Public Sub SolveByAutoLoadPath(ByVal section As CSectionModel, _
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase
 
     If mDiagnosticsEnabled Then
-        mDiagnosticLog = "auto primary=UltimateStrain; result=failed; state=" & firstLimitState & _
-            "; reason=" & firstStopReason & vbCrLf & _
+        mDiagnosticLog = "Auto: первая попытка UltimateStrain не дала принятую предельную точку; статус=" & _
+            firstLimitState & "; причина=" & firstStopReason & vbCrLf & _
             firstDiagnostics & _
-            "auto fallback=LoadMultiplier" & vbCrLf & _
+            "Auto: переходим к LoadMultiplier по той же lambda-траектории." & vbCrLf & _
             mDiagnosticLog
     End If
     If mConverged Then

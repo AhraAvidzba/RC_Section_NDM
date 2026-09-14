@@ -139,7 +139,7 @@ try {
     Set-SystemSetting $workbook "SLS.Crack.Phi2" "0.5" "0.5" "" "Crack coefficient phi2" "Stage 7 project setting"
     Set-SystemSetting $workbook "SLS.Crack.Phi3Mode" "Auto" "Auto" "Auto/User" "Phi3 mode" "Stage 7 project setting"
     Set-SystemSetting $workbook "SLS.Crack.Phi3" "1" "1" "" "User phi3 when Phi3Mode=User" "Stage 7 project setting"
-    Set-SystemSetting $workbook "SLS.Crack.PsiMode" "User" "User" "User/Auto" "Psi_s mode: user value or auto after failed first crack-width check" "Stage 7 project setting"
+    Set-SystemSetting $workbook "SLS.Crack.PsiMode" "Auto" "Auto" "User/Auto" "Psi_s mode: user value or auto after failed first crack-width check" "Stage 7 project setting"
     Set-SystemSetting $workbook "SLS.Crack.PsiS" "1" "1" "" "User psi_s when PsiMode=User" "Stage 7 project setting"
 
     $workbook.Save()

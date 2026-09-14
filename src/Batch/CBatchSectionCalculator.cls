@@ -131,7 +131,7 @@ Private Sub Class_Initialize()
     EnsureStabilityLoadCapacity INITIAL_COMBINATION_CAPACITY
 
     mCrackAllowable = 0.3
-    mCrackPsiMode = "User"
+    mCrackPsiMode = "Auto"
     mCrackPhi1 = 1.4
     mCrackPhi2 = 0.5
     mCrackPhi3Mode = "Auto"
@@ -139,7 +139,7 @@ Private Sub Class_Initialize()
     mCrackPsiS = 1#
     mCrackTensionZoneMode = "Effective"
     mCrackCoverDistanceMode = "GlobalExtreme"
-    mCrackFormationPath = "lambda*Mxy"
+    mCrackFormationPath = "Auto"
     mCrackFormationSolutionStrategy = "Auto"
     mSolverMethod = "Newton"
     mSolverLoadSteps = 8
@@ -652,6 +652,7 @@ Private Sub RunCombination(ByVal index As Long)
     mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
     mResults(index).StabilityStatus = mStatusPolicy.NotApplicable
 
+    ReportSection "Продольный изгиб и устойчивость"
     If profile.StabilityEnabled Then
         ReportStep "Запускается фильтр продольного изгиба/устойчивости по профилю."
         RunStabilityFilter index, profile.StabilityValueSet
@@ -665,6 +666,7 @@ Private Sub RunCombination(ByVal index As Long)
         mResults(index).StabilityStatus = mStatusPolicy.NotApplicable
     End If
 
+    ReportSection "Расчет по модели прочности"
     If profile.StrengthCapacityEnabled Then
         ReportStep "Запускается проверка несущей способности по профилю."
         RunCapacity index, profile.StrengthSpec
@@ -970,26 +972,30 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     Select Case NormalizedCapacitySolutionStrategy()
         Case "Auto"
             If loadPath.ForceOnly Then
-                ReportStep "Capacity Auto: силовая траектория запускается сразу через LoadMultiplier."
+                ReportStep "Несущая способность: стратегия Auto. Траектория масштабирует только продольную силу, поэтому сразу используется LoadMultiplier: для такой постановки UltimateStrain вырождается на горизонтальном участке диаграммы."
                 cap.SolveByLoadPathMultiplier mSection, mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
                     mMaterialProvider.SteelMaterialFromSpec(strengthSpec), loadPath.NOffset, loadPath.NBase, _
                     loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, True
             Else
+                ReportStep "Несущая способность: стратегия Auto сначала пробует UltimateStrain; если предельная плоскость не находится устойчиво, тот же путь нагрузки повторяется через LoadMultiplier."
                 cap.SolveByAutoLoadPath mSection, mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
                     mMaterialProvider.SteelMaterialFromSpec(strengthSpec), loadPath.NOffset, loadPath.NBase, _
                     loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase
             End If
         Case "UltimateStrain"
             If loadPath.ForceOnly Then
+                ReportStep "Несущая способность: выбран UltimateStrain, но силовая траектория λ*N считается через LoadMultiplier как более устойчивая одномерная постановка."
                 cap.SolveByLoadPathMultiplier mSection, mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
                     mMaterialProvider.SteelMaterialFromSpec(strengthSpec), loadPath.NOffset, loadPath.NBase, _
                     loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, True
             Else
+                ReportStep "Несущая способность: расчет идет напрямую через UltimateStrain по выбранной λ-траектории."
                 cap.SolveByUltimateLoadPath mSection, mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
                     mMaterialProvider.SteelMaterialFromSpec(strengthSpec), loadPath.NOffset, loadPath.NBase, _
                     loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase
             End If
         Case "LoadMultiplier"
+            ReportStep "Несущая способность: расчет идет через LoadMultiplier, то есть программа подбирает λ и для каждой пробной точки заново решает НДС."
             cap.SolveByLoadPathMultiplier mSection, mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
                 mMaterialProvider.SteelMaterialFromSpec(strengthSpec), loadPath.NOffset, loadPath.NBase, _
                 loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, loadPath.ForceOnly
@@ -1002,6 +1008,7 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     End Select
 
     StoreCapacity index, cap, loadPath, strengthSpec
+    ReportCapacityMethodChoice index, cap, loadPath
 
     ReportValue "CapacityStatus", mResults(index).CapacityStatus
     ReportValue "CapacitySolutionMethod", mResults(index).CapacitySolutionMethod
@@ -1010,6 +1017,34 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     ReportBlock "Диагностика поиска несущей способности", cap.DiagnosticLog
     If Not cap.LastSolver Is Nothing Then
         ReportBlock "Итерации внутреннего CSectionSolver для последней capacity-точки", cap.LastSolver.DiagnosticLog
+    End If
+End Sub
+
+' Поясняет в отчете, какая ветка поиска несущей фактически была принята.
+' Низкоуровневый DiagnosticLog остается рядом, но здесь пользователь сразу
+' видит смысл переключения Auto/UltimateStrain/LoadMultiplier по-русски.
+Private Sub ReportCapacityMethodChoice(ByVal index As Long, ByVal cap As CCapacitySolver, _
+        ByVal loadPath As CCapacityLoadPath)
+    If cap Is Nothing Then Exit Sub
+
+    Dim strategy As String
+    strategy = NormalizedCapacitySolutionStrategy()
+    Dim methodName As String
+    methodName = mResults(index).CapacitySolutionMethod
+
+    If StrComp(strategy, "Auto", vbTextCompare) = 0 Then
+        If StrComp(methodName, "UltimateStrain", vbTextCompare) = 0 Then
+            ReportStep "Итог поиска несущей: Auto принял результат UltimateStrain, резервный переход на LoadMultiplier не потребовался."
+        ElseIf StrComp(methodName, "LoadMultiplier", vbTextCompare) = 0 Then
+            If loadPath.ForceOnly Then
+                ReportStep "Итог поиска несущей: Auto использовал LoadMultiplier сразу, потому что выбранная траектория масштабирует только N."
+            Else
+                ReportStep "Итог поиска несущей: Auto переключился на LoadMultiplier, потому что UltimateStrain не дал устойчивую предельную точку; подробная причина ниже в диагностике solver-а."
+            End If
+        End If
+    ElseIf StrComp(strategy, "UltimateStrain", vbTextCompare) = 0 And _
+            StrComp(methodName, "LoadMultiplier", vbTextCompare) = 0 Then
+        ReportStep "Итог поиска несущей: фактически использован LoadMultiplier, так как силовая траектория λ*N не решается устойчиво прямым UltimateStrain."
     End If
 End Sub
 
@@ -1082,6 +1117,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     ReportStep "Запускается проверка образования нормальной трещины."
     ReportValue "Crack.InitiationLoadPath", mCrackFormationPath
     ReportValue "Crack.InitiationSolutionStrategy", mCrackFormationSolutionStrategy
+    ReportCrackFormationSearchStart
 
     Dim crackReferenceX As Double
     Dim crackReferenceY As Double
@@ -1107,6 +1143,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     ReportValue "CrackFormationNcrc", FormatNumberInvariant(mResults(index).CrackFormationNcrc) & " Н"
     ReportValue "CrackMxyCrc", FormatNumberInvariant(mResults(index).CrackMcrc) & " Н*мм"
     ReportValue "CrackFormationStopReason", crack.StopReason
+    ReportCrackFormationChoice crack
 
     ReportStep "Запускается текущее CrackedState полного сочетания по профилю трещин."
     Dim runner As CStateSolutionRunner
@@ -1155,6 +1192,40 @@ ReportCrackResult:
     ReportValue "ds_eq", FormatNumberInvariant(mResults(index).CrackDsEquivalent) & " мм"
     ReportValue "ls", FormatNumberInvariant(mResults(index).CrackLs) & " мм"
     ReportBlock "Диагностика расчета трещин", crack.DiagnosticLog
+End Sub
+
+' Поясняет в txt-отчете стартовую логику поиска образования нормальной трещины.
+' Низкоуровневый DiagnosticLog ниже сохраняет точные попытки, а эта строка
+' нужна пользователю как быстрый ответ, что именно программа собирается делать.
+Private Sub ReportCrackFormationSearchStart()
+    If StrComp(mCrackFormationPath, "Auto", vbTextCompare) = 0 Then
+        ReportStep "Трещинообразование: режим Auto. Программа пробует пути по порядку: " & _
+            ChrW$(&H3BB) & "*Mxy, затем " & ChrW$(&H3BB) & "*N, затем " & _
+            ChrW$(&H3BB) & "*NMxy. Если путь дает только резервный результат с " & _
+            ChrW$(&H3C8) & "s = 1 без точки Mcrc/Ncrc, программа переходит к следующему пути."
+    Else
+        ReportStep "Трещинообразование: используется фиксированный путь " & mCrackFormationPath & _
+            "; Auto-перебор других путей не выполняется."
+    End If
+End Sub
+
+' Поясняет итог выбора пути Mcrc/Ncrc для текущего LC. Это не заменяет
+' DiagnosticLog solver-а, а переводит ключевой результат Auto/резервного
+' нормальный инженерный язык прямо в отчете.
+Private Sub ReportCrackFormationChoice(ByVal crack As CCrackWidthCalculator)
+    If crack Is Nothing Then Exit Sub
+
+    If Len(crack.CrackFormationMethod) > 0 Then
+        ReportStep "Трещинообразование: принята точка по пути " & _
+            crack.CrackFormationMethod & ". По этой точке записаны Ncrc/Mxy,crc и состояния Before/AfterMcrcState, если они применимы."
+    ElseIf crack.CrackFormed And crack.Converged Then
+        ReportStep "Трещинообразование: нормальная трещина считается образованной, но выбранный путь не дал отдельную точку Mcrc/Ncrc. Для этой проверки принят резервный вариант " & _
+            ChrW$(&H3C8) & "s = 1; причина указана в CrackFormationStopReason и диагностике ниже."
+    ElseIf crack.Converged Then
+        ReportStep "Трещинообразование: проверка завершена, нормальная трещина при текущем сочетании не образуется."
+    Else
+        ReportStep "Трещинообразование: точку образования трещины найти не удалось; дальнейшая причина приведена в диагностике ниже."
+    End If
 End Sub
 
 ' Добавляет в компактный batch-журнал причину несходимости трещин.

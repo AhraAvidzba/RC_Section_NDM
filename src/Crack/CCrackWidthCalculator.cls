@@ -140,11 +140,11 @@ Private mCentralTensionBranch As Boolean ' True, если сработала о�
 ' эффективная зона СП и пользовательские коэффициенты с нормативными defaults.
 Private Sub Class_Initialize()
     mAllowableCrackWidth = 0.3
-    mPsiMode = "User"
+    mPsiMode = "Auto"
     mPhi3Mode = "Auto"
     mTensionZoneMode = "Effective"
     mCoverMode = COVER_MODE_GLOBAL_EXTREME
-    mCrackFormationPath = CRACK_PATH_MXY
+    mCrackFormationPath = CRACK_PATH_AUTO
     mCrackFormationSolutionStrategy = STRATEGY_AUTO
     mPhi1Input = PHI1_LONG_TERM
     mPhi2Input = PHI2_DEFAULT
@@ -371,8 +371,9 @@ Private Sub CheckCentralTensionFormation(ByVal section As CSectionModel, _
     Dim activePath As String
     activePath = mCrackFormationPath
     If StrComp(activePath, CRACK_PATH_AUTO, vbTextCompare) = 0 Then
-        AppendDiagnostic "Auto path: центральное растяжение; " & ChrW$(&H3BB) & _
-            "*Mxy не масштабирует N, пробуем " & ChrW$(&H3BB) & "*N."
+        AppendDiagnostic "Auto-путь: центральное растяжение распознано до перебора путей; " & ChrW$(&H3BB) & _
+            "*Mxy не масштабирует продольную силу N, поэтому эта попытка пропущена и программа переходит к " & _
+            ChrW$(&H3BB) & "*N."
         activePath = CRACK_PATH_N
     End If
 
@@ -473,7 +474,7 @@ Private Function FindGeneralFormationLambda(ByVal section As CSectionModel, _
 End Function
 
 ' В Auto-режиме по очереди пробует все разрешенные lambda-пути. Если путь
-' дал только fallback psi_s=1 без найденного состояния образования трещины,
+' дал только резервный psi_s=1 без найденного состояния образования трещины,
 ' это считается неудачной попыткой Auto и программа идет дальше.
 Private Function FindGeneralFormationLambdaAuto(ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, _
@@ -487,30 +488,33 @@ Private Function FindGeneralFormationLambdaAuto(ByVal section As CSectionModel, 
     paths(1) = CRACK_PATH_MXY
     paths(2) = CRACK_PATH_N
     paths(3) = CRACK_PATH_NMXY
+    AppendDiagnostic "Auto-путь: начинаем поиск образования нормальной трещины. Порядок попыток: " & _
+        ChrW$(&H3BB) & "*Mxy -> " & ChrW$(&H3BB) & "*N -> " & ChrW$(&H3BB) & "*NMxy."
 
     Dim lastStopReason As String
     Dim i As Long
     For i = LBound(paths) To UBound(paths)
         ClearFormationAttemptState
         mCrackFormationPath = paths(i)
-        AppendDiagnostic "Auto path: пробуем " & CrackFormationPathDisplayName() & "."
+        AppendDiagnostic "Auto-путь: попытка " & CStr(i) & " из " & CStr(UBound(paths)) & _
+            " - пробуем " & CrackFormationPathDisplayName() & "."
 
         If FindGeneralFormationLambdaForCurrentPath(section, materialProvider, _
                 targetN, targetMx, targetMy, momentMxAtReference, momentMyAtReference, referenceX, referenceY) Then
             If mFormationPathFallbackPsi1 And i < UBound(paths) Then
                 lastStopReason = mStopReason
-                AppendDiagnostic "Auto path: " & CrackFormationPathDisplayName() & _
-                    " дал только fallback psi_s=1 без точки Mcrc/Ncrc; пробуем следующий путь."
+                AppendDiagnostic "Auto-путь: " & CrackFormationPathDisplayName() & _
+                    " дал только резервный результат psi_s=1 без найденной точки Mcrc/Ncrc. Для более информативного результата переходим к следующему пути."
             Else
                 mResolvedCrackFormationPath = mCrackFormationPath
-                AppendDiagnostic "Auto path: выбран " & CrackFormationPathDisplayName() & "."
+                AppendDiagnostic "Auto-путь: выбран " & CrackFormationPathDisplayName() & "."
                 mCrackFormationPath = savedPath
                 FindGeneralFormationLambdaAuto = True
                 Exit Function
             End If
         Else
             lastStopReason = mStopReason
-            AppendDiagnostic "Auto path: " & CrackFormationPathDisplayName() & _
+            AppendDiagnostic "Auto-путь: " & CrackFormationPathDisplayName() & _
                 " не дал точку образования трещины: " & mStopReason
         End If
     Next i

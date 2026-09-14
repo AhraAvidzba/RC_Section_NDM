@@ -1076,7 +1076,7 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
     Dim anchor As Object
     Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     AssertTrue stats, prefix & ".sheetMethod", _
-        CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 12).Value2)
+        CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 14).Value2)
     If expectNcrc Then
         AssertTrue stats, prefix & ".sheetNcrc", _
             CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 15).Value2)
