@@ -554,7 +554,8 @@ Private Function FindGeneralFormationLambdaForCurrentPath(ByVal section As CSect
     If FormationSearchStoppedTerminally() Then Exit Function
 
     firstStopReason = mStopReason
-    AppendDiagnostic "UltimateStrain lambda_crc не получен: " & firstStopReason
+    AppendDiagnostic "UltimateStrain не дал точку образования трещины: " & firstStopReason
+    AppendDiagnostic "Пробуем LoadMultiplier по тому же пути образования трещины."
     mStopReason = vbNullString
 
     If CalculateLambdaCrcByLoadScaling(section, concreteMaterial, steelMaterial, Nothing, _
@@ -590,7 +591,8 @@ Private Function CalculateLambdaCrcByUltimateStrain(ByVal section As CSectionMod
 
     Dim firstStopReason As String
     firstStopReason = mStopReason
-    AppendDiagnostic "UltimateStrain без полного CrackInitiation-start не получен: " & firstStopReason
+    AppendDiagnostic "UltimateStrain: быстрый старт не дал устойчивую точку образования трещины: " & firstStopReason
+    AppendDiagnostic "UltimateStrain: пробуем дополнительный старт от полного НДС CrackInitiation."
     mStopReason = vbNullString
 
     ' Страховочный старт от полного состояния нужен только если быстрый старт
@@ -605,8 +607,10 @@ Private Function CalculateLambdaCrcByUltimateStrain(ByVal section As CSectionMod
 
     If TryUltimateStrainFormation(section, concreteMaterial, steelMaterial, formationStart, _
             targetN, momentMxAtReference, momentMyAtReference, referenceX, referenceY) Then
+        AppendDiagnostic "UltimateStrain: дополнительный старт от полного НДС успешно нашел точку образования трещины."
         CalculateLambdaCrcByUltimateStrain = True
     ElseIf Len(mStopReason) = 0 Then
+        AppendDiagnostic "UltimateStrain: дополнительный старт от полного НДС также не дал точку образования трещины."
         mStopReason = firstStopReason
     End If
 End Function
@@ -1026,6 +1030,7 @@ Private Function CalculateLambdaCrc(ByVal section As CSectionModel, ByVal concre
                 mCrackInitiationSpec, solver, False, "OK"
             AppendDiagnostic "lambda_crc=" & FormatNumberInvariant(mLambdaCrc) & _
                 "; iterations=" & CStr(iter) & "; method=DirectCrackingStrain"
+            AppendDiagnostic "UltimateStrain успешно нашел точку образования трещины по направлению момента."
             CalculateLambdaCrc = True
             Exit Function
         End If
@@ -1164,6 +1169,7 @@ Private Function CalculateLambdaCrcByLoadScaling(ByVal section As CSectionModel,
         mCrackInitiationSpec, upperSolver, False, "OK"
     AppendDiagnostic "lambda_crc=" & FormatNumberInvariant(mLambdaCrc) & _
         "; iterations=" & CStr(iter) & "; method=LoadMultiplier"
+    AppendDiagnostic "LoadMultiplier успешно нашел точку образования трещины."
     CalculateLambdaCrcByLoadScaling = True
     Exit Function
 
@@ -1224,6 +1230,7 @@ Private Function CalculateLambdaCrcByLoadPathNewton(ByVal section As CSectionMod
                 mCrackInitiationSpec, solver, False, "OK"
             AppendDiagnostic "lambda_crc=" & FormatNumberInvariant(mLambdaCrc) & _
                 "; iterations=" & CStr(iter) & "; method=LoadPathCrackingStrain"
+            AppendDiagnostic "UltimateStrain успешно нашел точку образования трещины по общей lambda-траектории."
             CalculateLambdaCrcByLoadPathNewton = True
             Exit Function
         End If

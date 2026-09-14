@@ -617,7 +617,7 @@ Private Sub RunCombination(ByVal index As Long)
     On Error GoTo Failed
     ReportSection "Сочетание " & CStr(index) & ": " & mInputs(index).CombinationID
     ReportValue "Комментарий", mInputs(index).Comment
-    ReportValue "ProfileId", mInputs(index).ProfileId
+    ReportValue "ID профиля", mInputs(index).ProfileId
     If Not mInputs(index).InputValid Then
         ReportStep "Сочетание не передано в solver из-за ошибки входных данных: " & mInputs(index).InputError
         MarkInvalid index, mInputs(index).InputError
@@ -680,8 +680,11 @@ Private Sub RunCombination(ByVal index As Long)
         RunProfileState index, sstStrengthState, cpStrength, profile.StrengthSpec
     End If
 
+    ReportSection "Расчет нормальных и продольных трещин"
     If profile.CrackWidthEnabled Then
         RunCrackWidth index, profile
+    Else
+        ReportStep "Расчет трещин не запрошен профилем."
     End If
 
 FinalizeCombination:
@@ -742,13 +745,13 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
     If stability.InputValid And stability.Applicable And stability.CheckPassed Then _
         ApplyStabilityDesignLoads index, stability, referenceX, referenceY
 
-    ReportValue "StabilityStatus", mResults(index).StabilityStatus
-    ReportValue "Stability.Code", stability.Code
-    ReportValue "Stability.ValueSet", MaterialValueSetToText(valueSet)
-    ReportValue "Stability.Branch", stability.Branch
-    ReportValue "Stability control force", FormatNumberInvariant(stability.CriticalForce) & " Н"
-    ReportValue "Stability reserve", FormatNumberInvariant(stability.ReserveFactor)
-    ReportValue "N/Mx/My после устойчивости", _
+    ReportValue "Статус устойчивости", mResults(index).StabilityStatus
+    ReportValue "Нормативный блок", StabilityCodeDisplayName(stability.Code)
+    ReportValue "Материалы для устойчивости", MaterialValueSetToText(valueSet)
+    ReportValue "Расчетная ветвь", StabilityBranchDisplayName(stability.Branch)
+    ReportValue "Контрольная сила устойчивости", FormatNumberInvariant(stability.CriticalForce) & " Н"
+    ReportValue "Минимальный запас устойчивости", FormatNumberInvariant(stability.ReserveFactor)
+    ReportValue "Итоговые N/Mx/My после фильтра", _
         FormatNumberInvariant(mInputs(index).N) & "; " & _
         FormatNumberInvariant(mInputs(index).Mx) & "; " & _
         FormatNumberInvariant(mInputs(index).My)
@@ -767,43 +770,46 @@ End Sub
 Private Sub ReportStabilityDetails(ByVal stability As CStabilityCalculator)
     If stability Is Nothing Then Exit Sub
 
-    ReportValue "Stability.StopReason", stability.StopReason
-    ReportValue "Stability.DesignN", FormatNumberInvariant(stability.DesignN) & " Н"
-    ReportValue "Stability.DesignM1/M2", _
+    If Len(stability.StopReason) > 0 Then _
+        ReportValue "Причина остановки устойчивости", stability.StopReason
+    ReportValue "Продольная сила для проверки", FormatNumberInvariant(stability.DesignN) & " Н"
+    ReportValue "Моменты после учета eta по главным плоскостям 1/2", _
         FormatNumberInvariant(stability.DesignMoment1) & "; " & _
         FormatNumberInvariant(stability.DesignMoment2) & " Н*мм"
-    ReportValue "Stability.SustainedN", FormatNumberInvariant(stability.SustainedN) & " Н"
-    ReportValue "Stability.SustainedM1/M2", _
+    ReportValue "Длительная часть продольной силы", FormatNumberInvariant(stability.SustainedN) & " Н"
+    ReportValue "Длительные моменты по главным плоскостям 1/2", _
         FormatNumberInvariant(stability.SustainedMoment1) & "; " & _
         FormatNumberInvariant(stability.SustainedMoment2) & " Н*мм"
 
-    ReportValue "Plane1 branch/pass", stability.PlaneBranch1 & "; " & IIf(stability.PlanePassed1, "PASS", "FAIL")
-    ReportValue "Plane1 eta/reserve", _
+    ReportValue "Плоскость 1: ветвь и итог", _
+        StabilityBranchDisplayName(stability.PlaneBranch1) & "; " & StabilityPassDisplayName(stability.PlanePassed1)
+    ReportValue "Плоскость 1: eta и запас", _
         FormatNumberInvariant(stability.Eta1) & "; " & FormatNumberInvariant(stability.Reserve1)
-    ReportValue "Plane1 Ncr/Nult", _
+    ReportValue "Плоскость 1: Ncr/Nult", _
         FormatNumberInvariant(stability.Ncr1) & "; " & FormatNumberInvariant(stability.Nultimate1) & " Н"
-    ReportValue "Plane1 h/i/r/l0/i", _
+    ReportValue "Плоскость 1: h, i, r и гибкость l0/i", _
         FormatNumberInvariant(stability.Depth1) & "; " & _
         FormatNumberInvariant(stability.Radius1) & "; " & _
         FormatNumberInvariant(stability.CoreDistance1) & "; " & _
         FormatNumberInvariant(stability.Slenderness1)
-    ReportValue "Plane1 e/ea/phi_l/D", _
+    ReportValue "Плоскость 1: e, ea, phi_l и D", _
         FormatNumberInvariant(stability.Eccentricity1) & "; " & _
         FormatNumberInvariant(stability.AccidentalEccentricity1) & "; " & _
         FormatNumberInvariant(stability.PhiL1) & "; " & _
         FormatNumberInvariant(stability.StiffnessD1)
 
-    ReportValue "Plane2 branch/pass", stability.PlaneBranch2 & "; " & IIf(stability.PlanePassed2, "PASS", "FAIL")
-    ReportValue "Plane2 eta/reserve", _
+    ReportValue "Плоскость 2: ветвь и итог", _
+        StabilityBranchDisplayName(stability.PlaneBranch2) & "; " & StabilityPassDisplayName(stability.PlanePassed2)
+    ReportValue "Плоскость 2: eta и запас", _
         FormatNumberInvariant(stability.Eta2) & "; " & FormatNumberInvariant(stability.Reserve2)
-    ReportValue "Plane2 Ncr/Nult", _
+    ReportValue "Плоскость 2: Ncr/Nult", _
         FormatNumberInvariant(stability.Ncr2) & "; " & FormatNumberInvariant(stability.Nultimate2) & " Н"
-    ReportValue "Plane2 h/i/r/l0/i", _
+    ReportValue "Плоскость 2: h, i, r и гибкость l0/i", _
         FormatNumberInvariant(stability.Depth2) & "; " & _
         FormatNumberInvariant(stability.Radius2) & "; " & _
         FormatNumberInvariant(stability.CoreDistance2) & "; " & _
         FormatNumberInvariant(stability.Slenderness2)
-    ReportValue "Plane2 e/ea/phi_l/D", _
+    ReportValue "Плоскость 2: e, ea, phi_l и D", _
         FormatNumberInvariant(stability.Eccentricity2) & "; " & _
         FormatNumberInvariant(stability.AccidentalEccentricity2) & "; " & _
         FormatNumberInvariant(stability.PhiL2) & "; " & _
@@ -946,7 +952,7 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
 
     Set loadPath = BuildLoadPathForCombination(index)
     mResults(index).CapacityPathResolved = loadPath.Key
-    ReportValue "CapacityLoadPath", IIf(loadPath.HasPath, loadPath.DisplayName, mInputs(index).CapacityLoadPath)
+    ReportValue "Путь нагрузки для несущей", IIf(loadPath.HasPath, loadPath.DisplayName, mInputs(index).CapacityLoadPath)
 
     If Not loadPath.Valid Then
         StoreInvalidCapacity index, loadPath.ErrorMessage
@@ -968,7 +974,7 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
 
     Set cap = New CCapacitySolver
     ConfigureCapacity cap, strengthSpec
-    ReportValue "Capacity.SolutionStrategy", NormalizedCapacitySolutionStrategy()
+    ReportValue "Стратегия поиска несущей", NormalizedCapacitySolutionStrategy()
     Select Case NormalizedCapacitySolutionStrategy()
         Case "Auto"
             If loadPath.ForceOnly Then
@@ -1010,10 +1016,10 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     StoreCapacity index, cap, loadPath, strengthSpec
     ReportCapacityMethodChoice index, cap, loadPath
 
-    ReportValue "CapacityStatus", mResults(index).CapacityStatus
-    ReportValue "CapacitySolutionMethod", mResults(index).CapacitySolutionMethod
-    ReportValue "LambdaCapacity", FormatNumberInvariant(mResults(index).LambdaCapacity)
-    ReportValue "CapacityLoadPath", CapacityLoadPathDisplay(mResults(index).CapacityPathResolved)
+    ReportValue "Статус несущей способности", mResults(index).CapacityStatus
+    ReportValue "Фактический метод несущей", mResults(index).CapacitySolutionMethod
+    ReportValue "lambda несущей", FormatNumberInvariant(mResults(index).LambdaCapacity)
+    ReportValue "Фактический путь несущей", CapacityLoadPathDisplay(mResults(index).CapacityPathResolved)
     ReportBlock "Диагностика поиска несущей способности", cap.DiagnosticLog
     If Not cap.LastSolver Is Nothing Then
         ReportBlock "Итерации внутреннего CSectionSolver для последней capacity-точки", cap.LastSolver.DiagnosticLog
@@ -1094,8 +1100,8 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
     Else
         MergeDirectStateStatus index, mStatusPolicy.OK
     End If
-    ReportValue "DirectStateStatus", mResults(index).DirectStateStatus
-    ReportValue "ExtensionUsed", IIf(runner.ExtensionUsed, "да", "нет")
+    ReportValue "Статус прямого НДС", mResults(index).DirectStateStatus
+    ReportValue "Использовано продолжение диаграммы", IIf(runner.ExtensionUsed, "да", "нет")
 
     Dim stateResult As CSectionStateResult
     Set stateResult = New CSectionStateResult
@@ -1115,8 +1121,8 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     Set crack = New CCrackWidthCalculator
     ConfigureCrackCalculator crack
     ReportStep "Запускается проверка образования нормальной трещины."
-    ReportValue "Crack.InitiationLoadPath", mCrackFormationPath
-    ReportValue "Crack.InitiationSolutionStrategy", mCrackFormationSolutionStrategy
+    ReportValue "Путь образования трещины", mCrackFormationPath
+    ReportValue "Стратегия поиска образования трещины", mCrackFormationSolutionStrategy
     ReportCrackFormationSearchStart
 
     Dim crackReferenceX As Double
@@ -1138,11 +1144,11 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
     If Not crack.BeforeMcrcState Is Nothing Then mResults(index).AddState crack.BeforeMcrcState
     If Not crack.AfterMcrcState Is Nothing Then mResults(index).AddState crack.AfterMcrcState
-    ReportValue "CrackFormationMethod", mResults(index).CrackFormationMethod
-    ReportValue "CrackLambdaCrc", FormatNumberInvariant(mResults(index).CrackLambdaCrc)
-    ReportValue "CrackFormationNcrc", FormatNumberInvariant(mResults(index).CrackFormationNcrc) & " Н"
-    ReportValue "CrackMxyCrc", FormatNumberInvariant(mResults(index).CrackMcrc) & " Н*мм"
-    ReportValue "CrackFormationStopReason", crack.StopReason
+    ReportValue "Фактический путь образования трещины", mResults(index).CrackFormationMethod
+    ReportValue "lambda образования трещины", FormatNumberInvariant(mResults(index).CrackLambdaCrc)
+    ReportValue "Ncrc", FormatNumberInvariant(mResults(index).CrackFormationNcrc) & " Н"
+    ReportValue "Mxy,crc", FormatNumberInvariant(mResults(index).CrackMcrc) & " Н*мм"
+    ReportValue "Причина остановки поиска трещины", crack.StopReason
     ReportCrackFormationChoice crack
 
     ReportStep "Запускается текущее CrackedState полного сочетания по профилю трещин."
@@ -1181,12 +1187,12 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
 
 ReportCrackResult:
-    ReportValue "CrackStatus", mResults(index).CrackStatus
-    ReportValue "CrackFormationMethod", mResults(index).CrackFormationMethod
-    ReportValue "CrackLambdaCrc", FormatNumberInvariant(mResults(index).CrackLambdaCrc)
+    ReportValue "Статус нормальных трещин", mResults(index).CrackStatus
+    ReportValue "Фактический путь образования трещины", mResults(index).CrackFormationMethod
+    ReportValue "lambda образования трещины", FormatNumberInvariant(mResults(index).CrackLambdaCrc)
     ReportValue "Трещина образована", IIf(mResults(index).CrackFormed, "да", "нет")
     ReportValue "a_crc", FormatNumberInvariant(mResults(index).CrackWidth) & " мм"
-    ReportValue "psi_s", FormatNumberInvariant(mResults(index).CrackPsiS)
+    ReportValue "ψs", FormatNumberInvariant(mResults(index).CrackPsiS)
     ReportValue "As", FormatNumberInvariant(mResults(index).CrackAs) & " мм2"
     ReportValue "Abt", FormatNumberInvariant(mResults(index).CrackAbt) & " мм2"
     ReportValue "ds_eq", FormatNumberInvariant(mResults(index).CrackDsEquivalent) & " мм"
@@ -1428,11 +1434,11 @@ Private Sub StoreLongitudinalCrackWithinCrackWidth(ByVal index As Long)
         mStatusPolicy.LongitudinalCrackStatus(maxCompressionStress, rbMc2), _
         maxCompressionStress, rbMc2, utilization
 
-    ReportValue "LongitudinalCrackStatus", mResults(index).LongitudinalCrackStatus
+    ReportValue "Статус продольных трещин", mResults(index).LongitudinalCrackStatus
     If mResults(index).LongitudinalCrackStatus <> mStatusPolicy.NotApplicable Then
-        ReportValue "sigma_c,max", FormatNumberInvariant(maxCompressionStress) & " МПа"
+        ReportValue "σc,max", FormatNumberInvariant(maxCompressionStress) & " МПа"
         ReportValue "Rb,mc2", FormatNumberInvariant(rbMc2) & " МПа"
-        ReportValue "LongitudinalCrackUtilization", FormatNumberInvariant(utilization)
+        ReportValue "Использование по продольным трещинам", FormatNumberInvariant(utilization)
     Else
         ReportStep "Проверка продольных трещин неприменима: в прямом НДС нет сжатого бетона."
     End If
@@ -1573,16 +1579,16 @@ End Sub
 ' Batch summary остается основным табличным выводом, а здесь пользователь
 ' видит ход выполнения без открытия Results и без чтения внутренних массивов.
 Private Sub ReportCombinationSummary(ByVal index As Long)
-    ReportValue "Итоговый Status", mResults(index).Status
-    ReportValue "DirectStateStatus", mResults(index).DirectStateStatus
-    ReportValue "ExtensionUsed", CStr(mResults(index).ExtensionUsed)
-    ReportValue "CapacityStatus", mResults(index).CapacityStatus
-    ReportValue "CrackStatus", mResults(index).CrackStatus
-    ReportValue "LongitudinalCrackStatus", mResults(index).LongitudinalCrackStatus
-    ReportValue "LongitudinalCrackUtilization", FormatNumberInvariant(mResults(index).LongitudinalCrackUtil)
-    ReportValue "StabilityStatus", mResults(index).StabilityStatus
-    ReportValue "StabilityUtilization", FormatNumberInvariant(mResults(index).StabilityUtil)
-    ReportValue "GoverningUtilization", FormatNumberInvariant(mResults(index).GoverningUtil)
+    ReportValue "Итоговый статус", mResults(index).Status
+    ReportValue "Статус прямого НДС", mResults(index).DirectStateStatus
+    ReportValue "Использовано продолжение диаграммы", YesNoRu(mResults(index).ExtensionUsed)
+    ReportValue "Статус несущей способности", mResults(index).CapacityStatus
+    ReportValue "Статус нормальных трещин", mResults(index).CrackStatus
+    ReportValue "Статус продольных трещин", mResults(index).LongitudinalCrackStatus
+    ReportValue "Использование по продольным трещинам", FormatNumberInvariant(mResults(index).LongitudinalCrackUtil)
+    ReportValue "Статус устойчивости", mResults(index).StabilityStatus
+    ReportValue "Использование устойчивости", FormatNumberInvariant(mResults(index).StabilityUtil)
+    ReportValue "Определяющее использование", FormatNumberInvariant(mResults(index).GoverningUtil)
 End Sub
 
 Private Sub ReportSection(ByVal title As String)
@@ -1606,8 +1612,219 @@ End Sub
 Private Sub ReportBlock(ByVal title As String, ByVal body As String)
     If mReport Is Nothing Then Exit Sub
     If Not mReport.Enabled Then Exit Sub
-    mReport.AddBlock title, body
+    mReport.AddBlock title, HumanReadableReportBlock(title, body)
 End Sub
+
+' Преобразует низкоуровневую диагностику solver-ов в форму, пригодную для
+' пользовательского txt-отчета. Внутренние DiagnosticLog остаются подробными
+' и машинно-проверяемыми, но отчет не должен забиваться сотнями строк
+' initialGuess/lambda_crc_iter без пояснений.
+Private Function HumanReadableReportBlock(ByVal title As String, ByVal body As String) As String
+    Dim text As String
+    text = body
+    If Len(text) = 0 Then Exit Function
+
+    If InStr(1, title, "Диагностика расчета трещин", vbTextCompare) > 0 Then
+        text = CompactCrackDiagnosticText(text)
+    End If
+    If InStr(1, title, "Сценарий прямого StateSolution", vbTextCompare) > 0 Or _
+            InStr(1, title, "Итерации прямого CSectionSolver", vbTextCompare) > 0 Or _
+            InStr(1, title, "Итерации внутреннего CSectionSolver", vbTextCompare) > 0 Then
+        text = CompactStateSolutionDiagnosticText(text)
+    End If
+    If InStr(1, title, "Диагностика поиска несущей способности", vbTextCompare) > 0 Then
+        text = CompactCapacityDiagnosticText(text)
+    End If
+
+    HumanReadableReportBlock = text
+End Function
+
+' Сжимает подробный журнал трещин: оставляет смысловые Auto/ошибочные строки,
+' а однотипные итерации lambda_crc и warm-start заменяет короткой сводкой.
+Private Function CompactCrackDiagnosticText(ByVal body As String) As String
+    Dim lines() As String
+    lines = Split(body, vbCrLf)
+
+    Dim result As String
+    Dim warmStartCount As Long
+    Dim i As Long
+    For i = LBound(lines) To UBound(lines)
+        Dim lineText As String
+        lineText = Trim$(lines(i))
+        If Len(lineText) = 0 Then
+            ' Пустые строки внутри diagnostic-блока не несут смысла.
+        ElseIf Left$(lineText, Len("lambda_crc_iter=")) = "lambda_crc_iter=" Then
+            AppendReportLine result, TranslateDiagnosticLine(lineText)
+        ElseIf Left$(lineText, Len("lambda_crc_path_iter=")) = "lambda_crc_path_iter=" Then
+            AppendReportLine result, TranslateDiagnosticLine(lineText)
+        ElseIf lineText = "initialGuess=warmStartSolver" Then
+            warmStartCount = warmStartCount + 1
+        Else
+            AppendReportLine result, TranslateDiagnosticLine(lineText)
+        End If
+    Next i
+
+    If warmStartCount > 0 Then _
+        AppendReportLine result, "Для повторных НДС использовалась стартовая плоскость из предыдущего близкого решения; повторов: " & CStr(warmStartCount) & "."
+
+    CompactCrackDiagnosticText = result
+End Function
+
+' Сжимает diagnostic CStateSolutionRunner. Особенно важно убрать десятки
+' одинаковых warm-start строк: они полезны разработчику, но не пользователю.
+Private Function CompactStateSolutionDiagnosticText(ByVal body As String) As String
+    Dim lines() As String
+    lines = Split(body, vbCrLf)
+
+    Dim result As String
+    Dim warmStartCount As Long
+    Dim activeGuessCount As Long
+    Dim i As Long
+    For i = LBound(lines) To UBound(lines)
+        Dim lineText As String
+        lineText = Trim$(lines(i))
+        If Len(lineText) = 0 Then
+            ' Пропускаем.
+        ElseIf Left$(lineText, Len("step=")) = "step=" Then
+            AppendReportLine result, TranslateDiagnosticLine(lineText)
+        ElseIf lineText = "initialGuess=warmStartSolver" Then
+            warmStartCount = warmStartCount + 1
+        ElseIf lineText = "initialGuess=directStateActiveSet" Then
+            activeGuessCount = activeGuessCount + 1
+        Else
+            AppendReportLine result, TranslateDiagnosticLine(lineText)
+        End If
+    Next i
+
+    If warmStartCount > 0 Then _
+        AppendReportLine result, "Стартовая плоскость: использовано предыдущее близкое решение; повторов: " & CStr(warmStartCount) & "."
+    If activeGuessCount > 0 Then _
+        AppendReportLine result, "Стартовая плоскость: подобрана по активной зоне сечения; повторов: " & CStr(activeGuessCount) & "."
+
+    CompactStateSolutionDiagnosticText = result
+End Function
+
+' Сжимает диагностический блок поиска несущей способности. Полный список
+' probe-точек слишком шумный, поэтому в отчете оставляем число проб и
+' последнюю строку как краткую трассировку результата.
+Private Function CompactCapacityDiagnosticText(ByVal body As String) As String
+    Dim lines() As String
+    lines = Split(body, vbCrLf)
+
+    Dim result As String
+    Dim i As Long
+    For i = LBound(lines) To UBound(lines)
+        Dim lineText As String
+        lineText = Trim$(lines(i))
+        If Len(lineText) = 0 Then
+            ' Пропускаем.
+        ElseIf Left$(lineText, Len("probe=")) = "probe=" Then
+            AppendReportLine result, TranslateDiagnosticLine(lineText)
+        Else
+            AppendReportLine result, TranslateDiagnosticLine(lineText)
+        End If
+    Next i
+
+    CompactCapacityDiagnosticText = result
+End Function
+
+' Переводит короткие машинные diagnostic-строки в более понятные фразы.
+Private Function TranslateDiagnosticLine(ByVal lineText As String) As String
+    Dim translated As String
+    translated = lineText
+    If translated = "ultimatePath pureAxial redirected=LoadMultiplier" Then
+        TranslateDiagnosticLine = "Силовая траектория lambda*N перенаправлена на LoadMultiplier, потому что UltimateStrain для нее вырождается."
+        Exit Function
+    End If
+    translated = Replace$(translated, "lambda_crc=", "Найден lambda_crc=")
+    translated = Replace$(translated, "lambda_crc_iter=", "итерация прямого поиска lambda_crc=")
+    translated = Replace$(translated, "lambda_crc_path_iter=", "итерация LoadMultiplier lambda_crc=")
+    translated = Replace$(translated, "iterations=", "итераций=")
+    translated = Replace$(translated, "method=", "метод=")
+    translated = Replace$(translated, "formation=Ncrc", "Образование трещины найдено по центральному растяжению Ncrc")
+    translated = Replace$(translated, "search=", "Поиск: ")
+    translated = Replace$(translated, "searchMethod=", "метод поиска=")
+    translated = Replace$(translated, "probe=", "проба=")
+    translated = Replace$(translated, "step=", "шаг=")
+    translated = Replace$(translated, "iter=", "итерация=")
+    translated = Replace$(translated, "attempt=", "попытка=")
+    translated = Replace$(translated, "converged=True", "сошлось=да")
+    translated = Replace$(translated, "converged=False", "сошлось=нет")
+    translated = Replace$(translated, "state=", "состояние=")
+    translated = Replace$(translated, "stop=", "причина=")
+    translated = Replace$(translated, "lineSearchUsed=", "line search использован=")
+    translated = Replace$(translated, "lineSearchIterations=", "итераций line search=")
+    translated = Replace$(translated, "internalForceEvaluationCount=", "оценок внутренних усилий=")
+    translated = Replace$(translated, "internalNewtonCallCount=", "вызовов Newton=")
+    translated = Replace$(translated, "result=converged", "результат=сошлось")
+    translated = Replace$(translated, "result=failed", "результат=не сошлось")
+    translated = Replace$(translated, "rPath1=", "невязка пути 1=")
+    translated = Replace$(translated, "rPath2=", "невязка пути 2=")
+    translated = Replace$(translated, "rLimit=", "невязка предельной деформации=")
+    translated = Replace$(translated, "rN=", "невязка N=")
+    translated = Replace$(translated, "rMomentDir=", "невязка направления момента=")
+    translated = Replace$(translated, "eps_bt_ult=", "eps_bt,ult=")
+    translated = Replace$(translated, "residualN=", "невязка N=")
+    translated = Replace$(translated, "residualMx=", "невязка Mx=")
+    translated = Replace$(translated, "residualMy=", "невязка My=")
+    TranslateDiagnosticLine = translated
+End Function
+
+' Единая короткая русская запись булевых значений для отчета.
+Private Function YesNoRu(ByVal value As Boolean) As String
+    If value Then
+        YesNoRu = "да"
+    Else
+        YesNoRu = "нет"
+    End If
+End Function
+
+' Аккуратно добавляет строку в собираемый многострочный блок отчета.
+Private Sub AppendReportLine(ByRef target As String, ByVal lineText As String)
+    If Len(lineText) = 0 Then Exit Sub
+    If Len(target) > 0 Then target = target & vbCrLf
+    target = target & lineText
+End Sub
+
+' Русское название нормативного блока устойчивости для txt-отчета.
+Private Function StabilityCodeDisplayName(ByVal codeText As String) As String
+    Select Case UCase$(Trim$(codeText))
+        Case "SP63"
+            StabilityCodeDisplayName = "СП 63"
+        Case "SP35"
+            StabilityCodeDisplayName = "СП 35"
+        Case Else
+            StabilityCodeDisplayName = codeText
+    End Select
+End Function
+
+' Русское описание внутренней ветви устойчивости. Расчетные идентификаторы
+' остаются в коде, но отчет должен читаться без знания этих имен.
+Private Function StabilityBranchDisplayName(ByVal branchText As String) As String
+    Select Case LCase$(Trim$(branchText))
+        Case "nocompression"
+            StabilityBranchDisplayName = "устойчивость не требуется: нет сжатия"
+        Case "sp63"
+            StabilityBranchDisplayName = "СП 63: расчет eta и Ncr"
+        Case "sp35-eta"
+            StabilityBranchDisplayName = "СП 35: ветвь ec > r через eta и Ncr"
+        Case "sp35-table"
+            StabilityBranchDisplayName = "СП 35: табличная ветвь ec <= r через Nult,stab"
+        Case "sp35-mixed"
+            StabilityBranchDisplayName = "СП 35: плоскости попали в разные ветви"
+        Case Else
+            StabilityBranchDisplayName = branchText
+    End Select
+End Function
+
+' Делает PASS/FAIL в отчете понятным русским текстом.
+Private Function StabilityPassDisplayName(ByVal passed As Boolean) As String
+    If passed Then
+        StabilityPassDisplayName = "проверка пройдена"
+    Else
+        StabilityPassDisplayName = "проверка не пройдена"
+    End If
+End Function
 
 ' Утилитарный максимум без WorksheetFunction, чтобы не тащить Excel в hot path.
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double

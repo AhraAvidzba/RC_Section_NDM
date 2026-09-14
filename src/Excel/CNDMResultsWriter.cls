@@ -18,6 +18,12 @@ Option Explicit
 '
 ' Writer не запускает solver, не генерирует геометрию и не читает текущие
 ' Inputs. Он только сериализует то состояние, которое уже рассчитано.
+'
+' Этот writer не является подробной таблицей расчета по модели прочности:
+' он пишет общий snapshot, включая строки named-state StrengthState,
+' CapacityState, CrackedState и т.п. Отдельный блок "НДС и несущая
+' способность по модели прочности" от rngStrengthSummaryAnchor оформляет
+' CStrengthSummaryWriter.
 
 Private Const ELEMENT_RESULT_COLUMNS As Long = 9 ' LC-зависимые результаты named-state: RunID, LoadCase, ProfileId, StateType, ElementID, MaterialType, Strain, Stress, PhysicalState.
 Private Const GEOMETRY_COLUMNS As Long = 15 ' Постоянная геометрия элементов, записанная один раз на расчетный снимок.
