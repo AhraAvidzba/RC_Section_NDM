@@ -1192,7 +1192,7 @@ ReportCrackResult:
     ReportValue "lambda образования трещины", FormatNumberInvariant(mResults(index).CrackLambdaCrc)
     ReportValue "Трещина образована", IIf(mResults(index).CrackFormed, "да", "нет")
     ReportValue "a_crc", FormatNumberInvariant(mResults(index).CrackWidth) & " мм"
-    ReportValue "ψs", FormatNumberInvariant(mResults(index).CrackPsiS)
+    ReportValue "psi_s", FormatNumberInvariant(mResults(index).CrackPsiS)
     ReportValue "As", FormatNumberInvariant(mResults(index).CrackAs) & " мм2"
     ReportValue "Abt", FormatNumberInvariant(mResults(index).CrackAbt) & " мм2"
     ReportValue "ds_eq", FormatNumberInvariant(mResults(index).CrackDsEquivalent) & " мм"
@@ -1436,7 +1436,7 @@ Private Sub StoreLongitudinalCrackWithinCrackWidth(ByVal index As Long)
 
     ReportValue "Статус продольных трещин", mResults(index).LongitudinalCrackStatus
     If mResults(index).LongitudinalCrackStatus <> mStatusPolicy.NotApplicable Then
-        ReportValue "σc,max", FormatNumberInvariant(maxCompressionStress) & " МПа"
+        ReportValue "sigma_c,max", FormatNumberInvariant(maxCompressionStress) & " МПа"
         ReportValue "Rb,mc2", FormatNumberInvariant(rbMc2) & " МПа"
         ReportValue "Использование по продольным трещинам", FormatNumberInvariant(utilization)
     Else
