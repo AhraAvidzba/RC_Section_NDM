@@ -1292,7 +1292,7 @@ CBatchResultWriter / CNDMResultsWriter
 
 Перед кодированием нужно уточнить:
 
-1. Точные позиции на листе `Results` зафиксированы под верхней сводкой, подробным блоком прочности, подробным блоком трещин и подробным блоком устойчивости: `rngStrengthSummaryAnchor = Results!A36`, `rngCrackSummaryAnchor = Results!A62`, `rngStabilitySummaryAnchor = Results!A89`, `rngNDMElementResults = Results!A113`, `rngNDMSectionGeometry = Results!L113`, `rngNDMSectionProperties = Results!AC113`, `rngNDMMaterialDiagrams = Results!AK113`, `rngNDMSectionAnnotations = Results!AX113`. Каждый следующий якорь расположен через две пустые строки по вертикали или два пустых столбца по горизонтали, поэтому блоки могут расти независимо друг от друга.
+1. Точные позиции на листе `Results` зафиксированы под верхней сводкой, подробным блоком прочности, подробным блоком трещин и подробным блоком устойчивости: `rngStrengthSummaryAnchor = Results!A38`, `rngCrackSummaryAnchor = Results!A64`, `rngStabilitySummaryAnchor = Results!A91`, `rngNDMElementResults = Results!A115`, `rngNDMSectionGeometry = Results!L115`, `rngNDMSectionProperties = Results!AC115`, `rngNDMMaterialDiagrams = Results!AK115`, `rngNDMSectionAnnotations = Results!AX115`. Каждый следующий якорь расположен через две пустые строки по вертикали или два пустых столбца по горизонтали, поэтому блоки могут расти независимо друг от друга.
 2. Итоговый формат `rngNDMSectionAnnotations` принят как широкая таблица строк `DIMENSION` и `REBAR_ANNOTATION`.
 3. Нужен ли `GeometrySource` как диагностическое свойство или его не записывать.
 4. Нужны ли `ConcreteCount/RebarCount` для контроля целостности или их вычислять при чтении.

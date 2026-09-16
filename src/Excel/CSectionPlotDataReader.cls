@@ -166,7 +166,7 @@ Private Function ReadWorstCombinationID(ByVal workbook As Object) As String
     On Error GoTo Failed
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
-    ReadWorstCombinationID = Trim$(SafeText(anchor.Offset(0, 1).Value2))
+    ReadWorstCombinationID = Trim$(SafeText(anchor.Value2))
 Failed:
 End Function
 
@@ -294,7 +294,7 @@ Private Function ReadBatchSummaryComment(ByVal workbook As Object, ByVal loadCas
     Set anchor = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
 
     Dim rowOffset As Long
-    For rowOffset = 9 To 1000
+    For rowOffset = 11 To 1000
         If StrComp(Trim$(SafeText(anchor.Offset(rowOffset, 0).Value2)), loadCase, vbTextCompare) = 0 Then
             ReadBatchSummaryComment = Trim$(SafeText(anchor.Offset(rowOffset, 1).Value2))
             Exit Function

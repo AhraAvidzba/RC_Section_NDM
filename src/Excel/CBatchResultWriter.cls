@@ -22,11 +22,12 @@ Option Explicit
 Private Const TARGET_COLUMNS As Long = 15 ' Ширина верхней сводки без детальных блоков трещин и устойчивости.
 Private Const LEGACY_SUMMARY_CLEAR_COLUMNS As Long = 34 ' Чистит старую широкую сводку и правый словарь статусов при первом запуске новой версии.
 Private Const META_ROWS As Long = 4 ' Верхние строки с общими сведениями о запуске.
-Private Const GROUP_HEADER_ROW As Long = 6 ' Строка объединенных заголовков расчетных блоков.
+Private Const GROUP_HEADER_ROW As Long = 6 ' Первая строка шестистрочной шапки основной таблицы.
 Private Const SUBGROUP_HEADER_ROW As Long = 7 ' Строка внутренних подзаголовков расчетных блоков.
-Private Const COMMENT_HEADER_ROW As Long = 8
-Private Const COLUMN_HEADER_ROW As Long = 9 ' Строка заголовков конкретных параметров.
-Private Const FIRST_DATA_ROW As Long = 10 ' Первая строка сочетаний.
+Private Const COLUMN_HEADER_ROW As Long = 8 ' Верх строки с обозначениями конкретных параметров.
+Private Const COLUMN_HEADER_LAST_ROW As Long = 10 ' Низ объединенных ячеек с обозначениями параметров.
+Private Const COMMENT_HEADER_ROW As Long = 11 ' Последняя строка шапки: короткие комментарии к столбцам.
+Private Const FIRST_DATA_ROW As Long = 12 ' Первая строка сочетаний.
 
 Private Const SUM_COL_ID As Long = 1 ' CombinationID в новой компактной сводке.
 Private Const SUM_COL_COMMENT As Long = 2 ' Пользовательский комментарий LC.
@@ -42,7 +43,7 @@ Private Const SUM_COL_RESERVE_CRACK As Long = 13 ' Запас по нормал�
 Private Const SUM_COL_RESERVE_LONG_CRACK As Long = 14 ' Запас по продольным трещинам.
 Private Const SUM_COL_RESERVE_STABILITY As Long = 15 ' Запас по устойчивости.
 
-Private Const DEFAULT_SUMMARY_ROWS As Long = 29 ' Штатная высота шаблона: 9 строк шапки и 20 строк LC.
+Private Const DEFAULT_SUMMARY_ROWS As Long = 31 ' Штатная высота шаблона: 11 строк до данных и 20 строк LC.
 Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' Единая ширина всех столбцов Results.
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Светло-серый фон заголовков.
@@ -148,7 +149,7 @@ Public Sub UpdateElapsedSeconds(ByVal workbook As Object, ByVal elapsedSeconds A
 
     Dim target As Object
     Set target = SummaryTargetRange(workbook)
-    target.Offset(3, 1).Resize(1, 1).Value2 = elapsedSeconds
+    target.Offset(3, 0).Resize(1, 1).Value2 = elapsedSeconds
 End Sub
 
 Private Function SummaryTargetRange(ByVal workbook As Object, Optional ByVal requiredRows As Long = 0) As Object
@@ -247,14 +248,14 @@ Private Sub ClearCrackSummary(ByVal workbook As Object)
 End Sub
 
 Private Sub PutMetaRows(ByRef data() As Variant, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
-    data(1, 1) = "Определяющее сочетание"
-    data(1, 2) = batch.WorstCombinationID
-    data(2, 1) = "Комментарий определяющего сочетания"
-    data(2, 2) = batch.WorstCombinationName
-    data(3, 1) = "Количество вызовов решателя"
-    data(3, 2) = batch.SolverCallCount
-    data(4, 1) = "Время расчета, с"
-    data(4, 2) = batch.ElapsedSeconds
+    data(1, 1) = batch.WorstCombinationID
+    data(1, 2) = "Определяющее сочетание"
+    data(2, 1) = batch.WorstCombinationName
+    data(2, 2) = "Комментарий определяющего сочетания"
+    data(3, 1) = batch.SolverCallCount
+    data(3, 2) = "Количество вызовов решателя"
+    data(4, 1) = batch.ElapsedSeconds
+    data(4, 2) = "Время расчета, с"
 End Sub
 
 Private Sub PutGroupHeaders(ByRef data() As Variant)
@@ -272,6 +273,9 @@ Private Sub PutSubgroupHeaders(ByRef data() As Variant)
 End Sub
 
 Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem)
+    data(COMMENT_HEADER_ROW, SUM_COL_ID) = "номер сочетания из таблицы нагрузок"
+    data(COMMENT_HEADER_ROW, SUM_COL_COMMENT) = "пользовательский комментарий сочетания"
+    data(COMMENT_HEADER_ROW, SUM_COL_OVERALL_STATUS) = "итоговый статус по всем включенным проверкам"
     data(COMMENT_HEADER_ROW, SUM_COL_STATUS_STRAIN) = "статус прямого НДС по модели прочности"
     data(COMMENT_HEADER_ROW, SUM_COL_STATUS_CAPACITY) = "статус поиска предельного состояния"
     data(COMMENT_HEADER_ROW, SUM_COL_STATUS_CRACK) = "статус нормальных трещин"
@@ -286,12 +290,12 @@ Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem
     data(COLUMN_HEADER_ROW, SUM_COL_ID) = "Combination ID"
     data(COLUMN_HEADER_ROW, SUM_COL_COMMENT) = "Comment"
     data(COLUMN_HEADER_ROW, SUM_COL_OVERALL_STATUS) = "общий статус"
-    data(COLUMN_HEADER_ROW, SUM_COL_STATUS_STRAIN) = "по деформациям ε"
+    data(COLUMN_HEADER_ROW, SUM_COL_STATUS_STRAIN) = "по деформациям " & ChrW$(&H3B5)
     data(COLUMN_HEADER_ROW, SUM_COL_STATUS_CAPACITY) = "по предельным усилиям"
     data(COLUMN_HEADER_ROW, SUM_COL_STATUS_CRACK) = "нормальные трещины"
     data(COLUMN_HEADER_ROW, SUM_COL_STATUS_LONG_CRACK) = "продольные трещины"
     data(COLUMN_HEADER_ROW, SUM_COL_STATUS_STABILITY) = "устойчивость"
-    data(COLUMN_HEADER_ROW, SUM_COL_RESERVE_STRAIN) = "по деформациям ε"
+    data(COLUMN_HEADER_ROW, SUM_COL_RESERVE_STRAIN) = "по деформациям " & ChrW$(&H3B5)
     data(COLUMN_HEADER_ROW, SUM_COL_RESERVE_CAPACITY) = "по предельным усилиям"
     data(COLUMN_HEADER_ROW, SUM_COL_RESERVE_CRACK) = "нормальные трещины"
     data(COLUMN_HEADER_ROW, SUM_COL_RESERVE_LONG_CRACK) = "продольные трещины"
@@ -362,30 +366,40 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     target.Worksheet.Columns.ColumnWidth = RESULTS_COLUMN_WIDTH
 
     stage = "HeaderStyle"
-    target.Offset(0, 0).Resize(META_ROWS, 2).Interior.Color = HEADER_COLOR
-    target.Offset(0, 0).Resize(META_ROWS, 1).Font.Bold = True
-    target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(COLUMN_HEADER_ROW - GROUP_HEADER_ROW + 1, TARGET_COLUMNS).Interior.Color = HEADER_COLOR
-    target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(SUBGROUP_HEADER_ROW - GROUP_HEADER_ROW + 1, TARGET_COLUMNS).Font.Bold = True
-    target.Rows.Item(COLUMN_HEADER_ROW).Font.Bold = True
+    target.Offset(0, 0).Resize(META_ROWS, 5).Interior.Color = HEADER_COLOR
+    target.Offset(0, 1).Resize(META_ROWS, 4).Font.Italic = True
+    target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(COMMENT_HEADER_ROW - GROUP_HEADER_ROW + 1, TARGET_COLUMNS).Interior.Color = HEADER_COLOR
+    target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(COMMENT_HEADER_ROW - GROUP_HEADER_ROW, TARGET_COLUMNS).Font.Bold = True
     target.Rows.Item(COMMENT_HEADER_ROW).Font.Bold = False
 
     stage = "MergeHeaders"
-    MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_ROW, SUM_COL_ID, SUM_COL_ID
-    MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_ROW, SUM_COL_COMMENT, SUM_COL_COMMENT
-    MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_ROW, SUM_COL_OVERALL_STATUS, SUM_COL_OVERALL_STATUS
+    MergeSummaryBlock target, 1, 1, 2, 5
+    MergeSummaryBlock target, 2, 2, 2, 5
+    MergeSummaryBlock target, 3, 3, 2, 5
+    MergeSummaryBlock target, 4, 4, 2, 5
+    MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_ID, SUM_COL_ID
+    MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_COMMENT, SUM_COL_COMMENT
+    MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_OVERALL_STATUS, SUM_COL_OVERALL_STATUS
     MergeSummaryHeader target, GROUP_HEADER_ROW, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_STABILITY
     MergeSummaryHeader target, GROUP_HEADER_ROW, SUM_COL_RESERVE_STRAIN, SUM_COL_RESERVE_STABILITY
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_CAPACITY
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_CRACK, SUM_COL_STATUS_LONG_CRACK
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, SUM_COL_RESERVE_STRAIN, SUM_COL_RESERVE_CAPACITY
     MergeSummaryHeader target, SUBGROUP_HEADER_ROW, SUM_COL_RESERVE_CRACK, SUM_COL_RESERVE_LONG_CRACK
+    MergeSummaryBlock target, SUBGROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_STATUS_STABILITY, SUM_COL_STATUS_STABILITY
+    MergeSummaryBlock target, SUBGROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_RESERVE_STABILITY, SUM_COL_RESERVE_STABILITY
+    MergeColumnLabels target, COLUMN_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_CAPACITY
+    MergeColumnLabels target, COLUMN_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_STATUS_CRACK, SUM_COL_STATUS_LONG_CRACK
+    MergeColumnLabels target, COLUMN_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_RESERVE_STRAIN, SUM_COL_RESERVE_CAPACITY
+    MergeColumnLabels target, COLUMN_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_RESERVE_CRACK, SUM_COL_RESERVE_LONG_CRACK
 
     stage = "Alignment"
-    target.Rows.Item(COLUMN_HEADER_ROW).HorizontalAlignment = -4131
-    target.Rows.Item(GROUP_HEADER_ROW).HorizontalAlignment = -4108
-    target.Rows.Item(SUBGROUP_HEADER_ROW).HorizontalAlignment = -4108
+    target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(COMMENT_HEADER_ROW - GROUP_HEADER_ROW + 1, TARGET_COLUMNS).HorizontalAlignment = -4108
     target.Rows.Item(COMMENT_HEADER_ROW).HorizontalAlignment = -4131
-    target.Offset(0, 0).Resize(META_ROWS, 2).HorizontalAlignment = -4131
+    target.Offset(0, 0).Resize(META_ROWS, 1).HorizontalAlignment = -4108
+    target.Offset(0, 1).Resize(META_ROWS, 4).HorizontalAlignment = -4131
+    target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(COMMENT_HEADER_ROW - GROUP_HEADER_ROW, TARGET_COLUMNS).WrapText = True
+    target.Rows.Item(COMMENT_HEADER_ROW).WrapText = False
 
     Dim dataRows As Long
     dataRows = target.Rows.Count - FIRST_DATA_ROW + 1
@@ -394,13 +408,13 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     target.Offset(FIRST_DATA_ROW - 1, SUM_COL_COMMENT - 1).Resize(dataRows, 1).HorizontalAlignment = -4131
     target.Offset(FIRST_DATA_ROW - 1, SUM_COL_RESERVE_STRAIN - 1).Resize(dataRows, _
         SUM_COL_RESERVE_STABILITY - SUM_COL_RESERVE_STRAIN + 1).Interior.Color = SAFETY_COLOR
-    target.Columns.Item(4).Interior.ColorIndex = -4142
-    target.Columns.Item(10).Interior.ColorIndex = -4142
+    target.Offset(GROUP_HEADER_ROW - 1, 3).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 1).Interior.ColorIndex = -4142
+    target.Offset(GROUP_HEADER_ROW - 1, 9).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 1).Interior.ColorIndex = -4142
     stage = "FormatOverallStatusRows"
     FormatOverallStatusRows target, batch
 
     stage = "Borders"
-    ApplySummaryBorders target.Offset(0, 0).Resize(META_ROWS, 2)
+    ApplySummaryBorders target.Offset(0, 0).Resize(META_ROWS, 5)
     ApplySummaryBorders target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 3)
     ApplySummaryBorders target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_STATUS_STRAIN - 1).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 5)
     ApplySummaryBorders target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_RESERVE_STRAIN - 1).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 5)
@@ -426,6 +440,15 @@ Private Sub MergeSummaryBlock(ByVal target As Object, ByVal firstRow As Long, By
     Dim area As Object
     Set area = target.Offset(firstRow - 1, firstColumn - 1).Resize(lastRow - firstRow + 1, lastColumn - firstColumn + 1)
     area.Merge
+End Sub
+
+' Объединяет вертикальные ячейки обозначений в шапке для группы соседних столбцов.
+Private Sub MergeColumnLabels(ByVal target As Object, ByVal firstRow As Long, ByVal lastRow As Long, _
+        ByVal firstColumn As Long, ByVal lastColumn As Long)
+    Dim columnIndex As Long
+    For columnIndex = firstColumn To lastColumn
+        MergeSummaryBlock target, firstRow, lastRow, columnIndex, columnIndex
+    Next columnIndex
 End Sub
 
 Private Sub ApplySummaryBorders(ByVal area As Object)

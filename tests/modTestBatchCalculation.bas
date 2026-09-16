@@ -926,6 +926,7 @@ Private Sub TestPR2LShapeCompressionSmallMomentCrackDoesNotNumFail(ByRef stats A
     AssertTrue stats, "batch.group2.lshapeSmallMoment.notNumFail", batch.CrackStatus(1) <> "NumFail"
     AssertTrue stats, "batch.group2.lshapeSmallMoment.finished", _
         batch.CrackStatus(1) = "OK" Or batch.CrackStatus(1) = "FAIL"
+    AssertTrue stats, "batch.group2.lshapeSmallMoment.solverCallsIncludeCrack", batch.SolverCallCount > 1
 
 Restore:
     SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
@@ -3410,7 +3411,7 @@ Private Sub TestBatchSummaryWritesOnlySelectedStabilityCode(ByRef stats As TBatc
     Set stabilityAnchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
-    AssertTrue stats, "batch.writer.stability.anchor", stabilityAnchor.Row = 89 And stabilityAnchor.Column = 1
+    AssertTrue stats, "batch.writer.stability.anchor", stabilityAnchor.Row = 91 And stabilityAnchor.Column = 1
     AssertTrue stats, "batch.writer.stability.sp35.empty", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 28).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 43).Value2)) = 0
     AssertTrue stats, "batch.writer.stability.sp63.filled", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 60).Value2)) > 0 Or _
@@ -3503,23 +3504,31 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.fixedRow", summaryRow = 1
     AssertTrue stats, "batch.writer.noResultOverlap", summaryRow + writer.RequiredSummaryOutputRows(batch.Count) - 1 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
     AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count = 1 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count = 1
-    AssertTrue stats, "batch.writer.strengthBlockPosition", ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row = 36
-    AssertTrue stats, "batch.writer.crackBlockPosition", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 62
-    AssertTrue stats, "batch.writer.stabilityBlockPosition", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 89 And _
-        ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row = 113
-    AssertTrue stats, "batch.writer.meta.worstLabel", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = "Определяющее сочетание"
-    AssertTrue stats, "batch.writer.meta.worstValue", CStr(resultsSheet.Cells.Item(summaryRow, 2).Value2) = batch.WorstCombinationID
-    AssertTrue stats, "batch.writer.meta.solverCalls", CStr(resultsSheet.Cells.Item(summaryRow + 2, 1).Value2) = "Количество вызовов решателя"
+    AssertTrue stats, "batch.writer.strengthBlockPosition", ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row = 38
+    AssertTrue stats, "batch.writer.crackBlockPosition", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 64
+    AssertTrue stats, "batch.writer.stabilityBlockPosition", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 91 And _
+        ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row = 115
+    AssertTrue stats, "batch.writer.meta.worstLabel", CStr(resultsSheet.Cells.Item(summaryRow, 2).Value2) = "Определяющее сочетание"
+    AssertTrue stats, "batch.writer.meta.worstValue", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = batch.WorstCombinationID
+    AssertTrue stats, "batch.writer.meta.solverCalls", CStr(resultsSheet.Cells.Item(summaryRow + 2, 2).Value2) = "Количество вызовов решателя"
+    AssertTrue stats, "batch.writer.meta.valuesCentered", resultsSheet.Cells.Item(summaryRow, 1).HorizontalAlignment = -4108 And _
+        resultsSheet.Cells.Item(summaryRow + 3, 1).HorizontalAlignment = -4108
     AssertTrue stats, "batch.writer.header.statusGroup", CStr(resultsSheet.Cells.Item(summaryRow + 5, 5).Value2) = "статус проверки"
     AssertTrue stats, "batch.writer.header.reserveGroup", CStr(resultsSheet.Cells.Item(summaryRow + 5, 11).Value2) = "минимальные коэффициенты запаса"
     AssertTrue stats, "batch.writer.header.statusStrength", CStr(resultsSheet.Cells.Item(summaryRow + 6, 5).Value2) = "прочность"
     AssertTrue stats, "batch.writer.header.reserveStrength", CStr(resultsSheet.Cells.Item(summaryRow + 6, 11).Value2) = "прочность"
+    AssertTrue stats, "batch.writer.header.centered", resultsSheet.Cells.Item(summaryRow + 5, 5).HorizontalAlignment = -4108 And _
+        resultsSheet.Cells.Item(summaryRow + 7, 11).HorizontalAlignment = -4108
+    AssertTrue stats, "batch.writer.header.commentLeft", resultsSheet.Cells.Item(summaryRow + 10, 11).HorizontalAlignment = -4131
+    AssertTrue stats, "batch.writer.header.epsilon", CStr(resultsSheet.Cells.Item(summaryRow + 7, 5).Value2) = _
+        "по деформациям " & ChrW$(&H3B5)
     AssertTrue stats, "batch.writer.header.id", _
-        CStr(resultsSheet.Cells.Item(summaryRow + 8, 1).MergeArea.Cells.Item(1, 1).Value2) = "Combination ID"
-    AssertTrue stats, "batch.writer.header.strainReserve", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 8, 11).Value2), "деформациям", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.data.firstId", CStr(resultsSheet.Cells.Item(summaryRow + 9, 1).Value2) = "W1"
-    AssertTrue stats, "batch.writer.data.capacityStatus", Len(CStr(resultsSheet.Cells.Item(summaryRow + 9, 6).Value2)) > 0
-    AssertTrue stats, "batch.writer.data.capacityReserve", IsNumeric(resultsSheet.Cells.Item(summaryRow + 9, 12).Value2)
+        CStr(resultsSheet.Cells.Item(summaryRow + 5, 1).MergeArea.Cells.Item(1, 1).Value2) = "Combination ID"
+    AssertTrue stats, "batch.writer.header.idMergeRows", resultsSheet.Cells.Item(summaryRow + 5, 1).MergeArea.Rows.Count = 5
+    AssertTrue stats, "batch.writer.header.commentRow", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 11).Value2), "деформациям", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.data.firstId", CStr(resultsSheet.Cells.Item(summaryRow + 11, 1).Value2) = "W1"
+    AssertTrue stats, "batch.writer.data.capacityStatus", Len(CStr(resultsSheet.Cells.Item(summaryRow + 11, 6).Value2)) > 0
+    AssertTrue stats, "batch.writer.data.capacityReserve", IsNumeric(resultsSheet.Cells.Item(summaryRow + 11, 12).Value2)
     Dim strengthAnchor As Object
     Set strengthAnchor = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
     AssertTrue stats, "batch.writer.strength.absentZonesBlank", _
@@ -3639,7 +3648,7 @@ Private Function SummaryRowByCombination(ByVal resultsSheet As Object, ByVal com
     Dim anchorRow As Long
     anchorRow = BatchSummaryStartRow()
     Dim rowIndex As Long
-    For rowIndex = anchorRow + 9 To anchorRow + 200
+    For rowIndex = anchorRow + 11 To anchorRow + 200
         If StrComp(CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2), combinationID, vbTextCompare) = 0 Then
             SummaryRowByCombination = rowIndex
             Exit Function

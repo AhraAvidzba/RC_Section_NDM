@@ -1153,7 +1153,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     crack.CheckFormationBeforeWidth mSection, mMaterialProvider, profile.CrackedStateSpec, _
         profile.CrackInitiationSpec, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
         loadState, crackReferenceX, crackReferenceY
-    mSolverCallCount = mSolverCallCount + 1
+    mSolverCallCount = mSolverCallCount + crack.SolverCallCount
     mResults(index).CrackStatus = mStatusPolicy.CrackStatusFromCalculator(crack)
     mResults(index).StoreCrackResult crack
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
@@ -1194,10 +1194,12 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     End If
 
     ReportStep "Запускается расчет ширины раскрытия нормальных трещин."
+    Dim crackSolverCountBeforeWidth As Long
+    crackSolverCountBeforeWidth = crack.SolverCallCount
     crack.CalculateAfterFormationCheck runner.ResultSolver, mSection, mMaterialProvider, profile.CrackedStateSpec, _
         profile.CrackInitiationSpec, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
         loadState, crackReferenceX, crackReferenceY
-    mSolverCallCount = mSolverCallCount + 1
+    mSolverCallCount = mSolverCallCount + MaxLong(0, crack.SolverCallCount - crackSolverCountBeforeWidth)
     mResults(index).CrackStatus = mStatusPolicy.CrackStatusFromCalculator(crack)
     mResults(index).StoreCrackResult crack
     If Not crack.Converged Then AppendCrackDiagnostic index, crack

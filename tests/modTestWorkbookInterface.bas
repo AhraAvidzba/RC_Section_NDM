@@ -896,7 +896,7 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Dim summary As Object
     Set summary = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
     Dim firstDataRow As Long
-    firstDataRow = BatchSummaryStartRow() + 9
+    firstDataRow = BatchSummaryStartRow() + 11
     AssertTrue stats, "ui.run.capacity.na", CStr(summary.Worksheet.Cells.Item(firstDataRow, 6).Value2) = "N/A"
     AssertTrue stats, "ui.run.direct.status", Len(CStr(summary.Worksheet.Cells.Item(firstDataRow, 5).Value2)) > 0
     Dim strengthAnchor As Object
@@ -931,13 +931,13 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Dim geometryResults As Variant
     geometryResults = ResultTable("rngNDMSectionGeometry")
     AssertTrue stats, "ui.results.geometry.rows", UBound(geometryResults, 1) > 1
-    AssertTrue stats, "ui.results.strength.anchor", ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row = 36 And ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Column = 1
-    AssertTrue stats, "ui.results.crack.anchor", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 62 And ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Column = 1
-    AssertTrue stats, "ui.results.stability.anchor", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 89 And ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Column = 1
-    AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 113 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 12
-    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 113 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 29
-    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 113 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 37
-    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 113 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 50
+    AssertTrue stats, "ui.results.strength.anchor", ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row = 38 And ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Column = 1
+    AssertTrue stats, "ui.results.crack.anchor", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 64 And ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Column = 1
+    AssertTrue stats, "ui.results.stability.anchor", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 91 And ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Column = 1
+    AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 115 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 12
+    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 115 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 29
+    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 115 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 37
+    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 115 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 50
     AssertTrue stats, "ui.results.geometry.noSource", ResultHeaderColumn(geometryResults, "SourceName") = 0
     AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(geometryResults, "MaterialClass") = 0
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
@@ -1224,7 +1224,7 @@ Private Sub TestLShapeWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.lshape.message", InStr(1, message, "завершен", vbTextCompare) > 0
     Dim summary As Object
     Set summary = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
-    AssertTrue stats, "ui.lshape.result.status", Len(CStr(summary.Worksheet.Cells.Item(BatchSummaryStartRow() + 9, 1).Value2)) > 0
+    AssertTrue stats, "ui.lshape.result.status", Len(CStr(summary.Worksheet.Cells.Item(BatchSummaryStartRow() + 11, 1).Value2)) > 0
 
     Dim sys As Object
     Set sys = ThisWorkbook.Worksheets.Item("Config")
@@ -1438,7 +1438,7 @@ Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTest
     Dim summaryRow As Long
     summaryRow = BatchSummaryStartRow()
     Dim governingID As String
-    governingID = CStr(resultsSheet.Cells.Item(summaryRow, 2).Value2)
+    governingID = CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2)
     Dim expectedID As String
     expectedID = ExpectedGoverningByLowestStrengthSafety(resultsSheet, summaryRow)
     AppendLine stats, "INFO: ui.governing actual=" & governingID & "; expected=" & expectedID
@@ -1450,7 +1450,7 @@ End Sub
 Private Function ExpectedGoverningByLowestStrengthSafety(ByVal resultsSheet As Object, ByVal summaryRow As Long) As String
     Dim rowIndex As Long
     Dim bestSafety As Double
-    For rowIndex = summaryRow + 9 To summaryRow + 28
+    For rowIndex = summaryRow + 11 To summaryRow + 30
         If Len(Trim$(CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2))) > 0 Then
             Dim safetyValue As Double
             safetyValue = StrengthSafetyForSummaryRow(resultsSheet, rowIndex)
@@ -1469,7 +1469,7 @@ End Function
 
 Private Function MomentUltimateForCombination(ByVal resultsSheet As Object, ByVal summaryRow As Long, ByVal combinationID As String) As Double
     Dim rowIndex As Long
-    For rowIndex = summaryRow + 9 To summaryRow + 28
+    For rowIndex = summaryRow + 11 To summaryRow + 30
         If StrComp(CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2), combinationID, vbTextCompare) = 0 Then
             Dim mxUltimate As Double
             Dim myUltimate As Double
@@ -1493,7 +1493,7 @@ Private Function BatchSummaryRowByCombination(ByVal resultsSheet As Object, ByVa
     Dim anchorRow As Long
     anchorRow = BatchSummaryStartRow()
     Dim rowIndex As Long
-    For rowIndex = anchorRow + 9 To anchorRow + 200
+    For rowIndex = anchorRow + 11 To anchorRow + 200
         If StrComp(CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2), combinationID, vbTextCompare) = 0 Then
             BatchSummaryRowByCombination = rowIndex
             Exit Function

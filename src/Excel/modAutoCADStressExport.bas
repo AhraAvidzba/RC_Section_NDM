@@ -503,7 +503,7 @@ Private Function ReadGoverningCombinationID(ByVal workbook As Object) As String
     On Error GoTo Failed
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
-    ReadGoverningCombinationID = Trim$(SafeText(anchor.Offset(0, 1).Value2))
+    ReadGoverningCombinationID = Trim$(SafeText(anchor.Value2))
 Failed:
 End Function
 

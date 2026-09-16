@@ -25,9 +25,10 @@ Option Explicit
 '
 ' Перед расчетом ширины всегда проверяется факт образования нормальной трещины:
 ' для центрального растяжения через Ncrc, для остальных случаев через Mcrc по
-' предельной растягивающей деформации бетона. Только если трещина образуется
-' при текущем LC, batch считает CrackedState и передает его сюда для формулы
-' раскрытия. Режим psi_s влияет только на коэффициент в этой формуле:
+' предельной растягивающей деформации бетона. Batch отдельно считает текущий
+' CrackedState полного LC для продольных трещин и, если нормальная трещина
+' образуется, передает это же состояние сюда для формулы раскрытия. Режим psi_s
+' влияет только на коэффициент в этой формуле:
 ' User берет введенное значение, Auto при необходимости уточняет psi_s по
 ' уже найденному состоянию AfterMcrcState.
 
@@ -57,6 +58,7 @@ Private mConverged As Boolean ' True, если расчет трещины за�
 Private mStopReason As String ' Короткое пояснение результата: расчет выполнен, трещина не образована или solver не сошелся.
 Private mDiagnosticLog As String ' Текстовая диагностика выбора зоны, арматуры, ls и psi_s.
 Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал, когда txt-отчет выполнения не нужен.
+Private mSolverCallCount As Long ' Сколько внутренних CSectionSolver/CStateSolutionRunner-вызовов выполнил расчет трещин.
 
 Private mAllowableCrackWidth As Double ' Пользовательский предел a_crc,ult во внутренних единицах длины, мм.
 Private mCrackWidth As Double ' Расчетная ширина раскрытия a_crc, мм.
@@ -1298,6 +1300,7 @@ Private Function EvaluateCrcLoadPathResidual(ByVal section As CSectionModel, _
     On Error GoTo Failed
 
     Set solver = New CSectionSolver
+    mSolverCallCount = mSolverCallCount + 1
     solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
 
     Dim loadPathMath As CLoadPathMath
@@ -1733,6 +1736,7 @@ Private Function EvaluateCrcStrainResidual(ByVal section As CSectionModel, ByVal
     On Error GoTo Failed
 
     Set solver = New CSectionSolver
+    mSolverCallCount = mSolverCallCount + 1
     solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
 
     Dim baseMx As Double
@@ -2037,8 +2041,10 @@ Private Function SolveState(ByVal section As CSectionModel, ByVal concreteMateri
     Set runner = New CStateSolutionRunner
     ConfigureStateRunner runner
     If startSolver Is Nothing Then
+        mSolverCallCount = mSolverCallCount + 1
         runner.Solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, allowRetryStarts
     Else
+        mSolverCallCount = mSolverCallCount + 1
         runner.SolveWithInitialSolver section, concreteMaterial, steelMaterial, _
             targetN, targetMx, targetMy, startSolver, allowRetryStarts
     End If
@@ -2574,6 +2580,7 @@ Private Sub ClearResult()
     mConverged = False
     mStopReason = vbNullString
     mDiagnosticLog = vbNullString
+    mSolverCallCount = 0
     mCrackWidth = 0#
     mUtilization = 0#
     mCrackFormed = False
@@ -2703,6 +2710,13 @@ End Property
 
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
+End Property
+
+' Возвращает число внутренних запусков/оценок solver-а, выполненных именно
+' этим расчетом трещин. Batch использует его для общей диагностической сводки,
+' чтобы не терять служебные solve при поиске Ncrc/Mcrc.
+Public Property Get SolverCallCount() As Long
+    SolverCallCount = mSolverCallCount
 End Property
 
 Public Property Get PsiMode() As String

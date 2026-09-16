@@ -32,14 +32,14 @@
 | `rngCalculationDiagramSettings` | Выбор расчетной диаграммы и режима растянутого бетона для `Strength`, `Mcrc` и `CrackedNDS`. |
 | `rngLoadCombinations` | Сочетания нагрузок; фактическое число сочетаний равно числу строк внутри именованного диапазона. В шаблоне подготовлено 20 строк, минимально допустима 1 строка под заголовком. |
 | `rngBatchSummary` | Компактная сводка batch-расчета на `Results!A1`. |
-| `rngStrengthSummaryAnchor` | Якорь первой строки данных подробной таблицы НДС и несущей способности по модели прочности на `Results!A36`; шапка таблицы формируется над якорем. |
-| `rngCrackSummaryAnchor` | Якорь первой строки данных подробной таблицы нормальных и продольных трещин на `Results!A62`; шапка таблицы формируется над якорем. |
-| `rngStabilitySummaryAnchor` | Якорь первой строки данных подробной таблицы устойчивости на `Results!A89`; шапка таблицы формируется над якорем. |
-| `rngNDMElementResults` | LC-зависимые результаты элементов на `Results!A113`: `RunID`, `LoadCase`, `ProfileId`, `StateType`, `ElementID`, `Strain`, `Stress`, `PhysicalState`. |
-| `rngNDMSectionGeometry` | Неизменяемая расчетная геометрия snapshot на `Results!L113`: координаты, площадь, размеры/диаметр, материал и локальные характеристики. |
-| `rngNDMSectionProperties` | Общие свойства всего сечения и LC-зависимые свойства уровня сечения на `Results!AC113`: Bounds, центр тяжести, главные оси, единицы output, named-state metadata, точка приложения нагрузки. |
-| `rngNDMMaterialDiagrams` | Уникальный каталог фактических точек диаграмм материалов на `Results!AK113`. Каждая диаграмма имеет `DiagramId`; named-state metadata в `rngNDMSectionProperties` ссылается на бетонную и арматурную диаграмму через `ConcreteDiagramId`/`RebarDiagramId`. |
-| `rngNDMSectionAnnotations` | Сохраненные semantic-аннотации оформления на `Results!AX113`: размерные линии и групповые подписи арматуры. |
+| `rngStrengthSummaryAnchor` | Якорь первой строки данных подробной таблицы НДС и несущей способности по модели прочности на `Results!A38`; шапка таблицы формируется над якорем. |
+| `rngCrackSummaryAnchor` | Якорь первой строки данных подробной таблицы нормальных и продольных трещин на `Results!A64`; шапка таблицы формируется над якорем. |
+| `rngStabilitySummaryAnchor` | Якорь первой строки данных подробной таблицы устойчивости на `Results!A91`; шапка таблицы формируется над якорем. |
+| `rngNDMElementResults` | LC-зависимые результаты элементов на `Results!A115`: `RunID`, `LoadCase`, `ProfileId`, `StateType`, `ElementID`, `Strain`, `Stress`, `PhysicalState`. |
+| `rngNDMSectionGeometry` | Неизменяемая расчетная геометрия snapshot на `Results!L115`: координаты, площадь, размеры/диаметр, материал и локальные характеристики. |
+| `rngNDMSectionProperties` | Общие свойства всего сечения и LC-зависимые свойства уровня сечения на `Results!AC115`: Bounds, центр тяжести, главные оси, единицы output, named-state metadata, точка приложения нагрузки. |
+| `rngNDMMaterialDiagrams` | Уникальный каталог фактических точек диаграмм материалов на `Results!AK115`. Каждая диаграмма имеет `DiagramId`; named-state metadata в `rngNDMSectionProperties` ссылается на бетонную и арматурную диаграмму через `ConcreteDiagramId`/`RebarDiagramId`. |
+| `rngNDMSectionAnnotations` | Сохраненные semantic-аннотации оформления на `Results!AX115`: размерные линии и групповые подписи арматуры. |
 | `chtNDMSectionPlot` | ChartObject схемы сечения на листе `Расчет`; создается около столбца `AP` и дальше не пересоздается при обновлении. |
 
 ## Единицы И Знаки
