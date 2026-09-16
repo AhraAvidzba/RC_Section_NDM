@@ -42,7 +42,7 @@ Private Type TCombinationInput
 End Type
 
 Private mSection As CSectionModel ' Расчетная модель сечения, общая для всех LC.
-Private mMaterialProvider As CMaterialModelProvider ' Единая точка выдачи диаграмм для Strength/Mcrc/CrackedNDS.
+Private mMaterialProvider As CMaterialModelProvider ' Единая точка выдачи диаграмм для Strength/CrackInitiation/CrackedNDS.
 Private mProfiles As CCalculationProfileCatalog ' Каталог расчетных профилей PR1/PR2/... из Config.
 Private mStatusPolicy As CBatchStatusPolicy ' Единый словарь пользовательских статусов и правил их агрегирования.
 Private mCount As Long ' Сколько сочетаний реально добавлено в пакет.
@@ -920,9 +920,10 @@ Private Sub TransformedReferencePoint(ByVal valueSet As EMaterialValueSet, _
 End Sub
 
 ' Возвращает центр приведенного сечения для распознавания истинного
-' центрального растяжения в расчете трещин. Если задана модель Mcrc, берем ее
-' ValueSet, потому что Ncrc считается через Ared и Rbt этой модели; иначе
-' используем модель CrackedState, с которой работает текущий расчет трещин.
+' центрального растяжения в расчете трещин. Если задана модель
+' CrackInitiation, берем ее ValueSet, потому что Ncrc считается через Ared
+' и Rbt этой модели; иначе используем модель CrackedState, с которой
+' работает текущий расчет трещин.
 Private Sub CrackCentralReferencePoint(ByVal profile As CCalculationProfile, _
         ByRef referenceX As Double, ByRef referenceY As Double)
     Dim valueSet As EMaterialValueSet
@@ -935,7 +936,8 @@ End Sub
 
 ' Возвращает расчетный центр для табличного вывода трещин по конкретному LC.
 ' Это тот же центр приведенного сечения, относительно которого crack-калькулятор
-' распознает центральное растяжение и считает стадию Ncrc/Mcrc.
+' распознает центральное растяжение и ищет точку образования нормальной
+' трещины.
 Private Sub CrackReferencePointForCombination(ByVal index As Long, _
         ByRef referenceX As Double, ByRef referenceY As Double)
     Dim profile As CCalculationProfile
@@ -1126,10 +1128,11 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
 End Function
 
 ' Выполняет весь расчет раскрытия трещин как один запрошенный расчет профиля.
-' Сначала обязательно проверяется факт образования нормальной трещины по
-' Mcrc/Ncrc. Текущее CrackedState полного LC считается всегда: по нему
-' выполняется проверка продольных трещин и записывается snapshot. Формула
-' ширины раскрытия запускается только если нормальная трещина образована.
+' Сначала обязательно проверяется факт образования нормальной трещины и
+' сохраняется найденная пороговая точка, если она определима. Текущее
+' CrackedState полного LC считается всегда: по нему выполняется проверка
+' продольных трещин и записывается snapshot. Формула ширины раскрытия
+' запускается только если нормальная трещина образована.
 Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProfile)
     Dim crack As CCrackWidthCalculator
     Set crack = New CCrackWidthCalculator
@@ -1226,14 +1229,14 @@ Private Sub ReportCrackFormationSearchStart()
         ReportStep "Трещинообразование: режим Auto. Программа пробует пути по порядку: " & _
             ChrW$(&H3BB) & "*Mxy, затем " & ChrW$(&H3BB) & "*N, затем " & _
             ChrW$(&H3BB) & "*NMxy. Если путь дает только резервный результат с " & _
-            ChrW$(&H3C8) & "s = 1 без точки Mcrc/Ncrc, программа переходит к следующему пути."
+            ChrW$(&H3C8) & "s = 1 без найденной точки образования трещины, программа переходит к следующему пути."
     Else
         ReportStep "Трещинообразование: используется фиксированный путь " & mCrackFormationPath & _
             "; Auto-перебор других путей не выполняется."
     End If
 End Sub
 
-' Поясняет итог выбора пути Mcrc/Ncrc для текущего LC. Это не заменяет
+' Поясняет итог выбора пути образования трещины для текущего LC. Это не заменяет
 ' DiagnosticLog solver-а, а переводит ключевой результат Auto/резервного
 ' нормальный инженерный язык прямо в отчете.
 Private Sub ReportCrackFormationChoice(ByVal crack As CCrackWidthCalculator)
@@ -1243,7 +1246,7 @@ Private Sub ReportCrackFormationChoice(ByVal crack As CCrackWidthCalculator)
         ReportStep "Трещинообразование: принята точка по пути " & _
             crack.CrackFormationMethod & ". По этой точке записаны Ncrc/Mxy,crc и состояния Before/AfterMcrcState, если они применимы."
     ElseIf crack.CrackFormed And crack.Converged Then
-        ReportStep "Трещинообразование: нормальная трещина считается образованной, но выбранный путь не дал отдельную точку Mcrc/Ncrc. Для этой проверки принят резервный вариант " & _
+        ReportStep "Трещинообразование: нормальная трещина считается образованной, но выбранный путь не дал отдельную расчетную точку образования трещины. Для этой проверки принят резервный вариант " & _
             ChrW$(&H3C8) & "s = 1; причина указана в CrackFormationStopReason и диагностике ниже."
     ElseIf crack.Converged Then
         ReportStep "Трещинообразование: проверка завершена, нормальная трещина при текущем сочетании не образуется."

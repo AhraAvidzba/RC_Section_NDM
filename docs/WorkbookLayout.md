@@ -41,7 +41,7 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Build-Workbook.ps1
 | Г-сечение | `rngLShapeGeometry` | размеры и автоматическая арматура по граням |
 | Параметры бетона | `rngConcreteMaterialParameters` | расчетные сопротивления и модули бетона для I/II ГПС, `Rb,mc2` для продольных трещин; по ним строятся диаграммы |
 | Параметры арматуры | `rngSteelMaterialParameters` | расчетные сопротивления, модули и профиль арматуры для I/II ГПС |
-| Настройки диаграмм | `rngCalculationDiagramSettings` | выбор TwoLine/ThreeLine и режима растянутого бетона для Strength, Mcrc и CrackedNDS |
+| Настройки диаграмм | `rngCalculationDiagramSettings` | выбор TwoLine/ThreeLine и режима растянутого бетона для Strength, CrackInitiation и CrackedNDS |
 
 В колонке `Ед.` у входных настроек используются формулы Excel, которые подтягивают выбранную пользователем единицу `INPUT` из `rngUnitSettings`. Например, для нагрузок в `rngLoadCombinations` по умолчанию выводятся `N, tf`, `Mx, tf*m`, `My, tf*m`.
 

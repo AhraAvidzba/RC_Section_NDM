@@ -31,7 +31,7 @@ Private mStabilityEnabled As Boolean ' Запрошен фильтр продо�
 Private mStabilityValueSet As EMaterialValueSet ' Набор характеристик материала для устойчивости без диаграмм.
 Private mHasStabilityValueSet As Boolean ' True, если строка MaterialModel.Stability.ValueSet задана в профиле.
 Private mStrengthSpec As CMaterialModelSpec ' Материальная модель прочности.
-Private mCrackInitiationSpec As CMaterialModelSpec ' Материальная модель проверки образования трещины Mcrc/Ncrc.
+Private mCrackInitiationSpec As CMaterialModelSpec ' Материальная модель проверки образования нормальной трещины.
 Private mCrackedStateSpec As CMaterialModelSpec ' Материальная модель НДС с раскрытой трещиной.
 Private mVisualizationState As ESectionStateType ' Какой StateType показывать на схеме и в AutoCAD.
 Private mVisualizationQuantity As EVisualizationQuantity ' Stress или Strain для визуализации.
@@ -64,7 +64,7 @@ Public Sub SetStrengthSpec(ByVal spec As CMaterialModelSpec)
     Set mStrengthSpec = spec.Clone
 End Sub
 
-' Сохраняет спецификацию модели образования трещины для обязательной проверки Mcrc/Ncrc.
+' Сохраняет спецификацию модели образования трещины для обязательной предварительной проверки.
 Public Sub SetCrackInitiationSpec(ByVal spec As CMaterialModelSpec)
     If spec Is Nothing Then Exit Sub
     Set mCrackInitiationSpec = spec.Clone

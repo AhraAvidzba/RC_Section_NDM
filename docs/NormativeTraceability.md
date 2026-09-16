@@ -26,7 +26,7 @@ norms/
 | Диаграмма бетона | `CMaterialModelProvider` строит универсальный `CMaterialDiagram` по параметрам `rngConcreteMaterialParameters` и режимам `rngCalculationDiagramSettings` | реализованы TwoLine/ThreeLine; формулы и область применимости требуют дальнейшей нормативной трассировки |
 | Диаграмма стали | `CMaterialModelProvider` строит универсальный `CMaterialDiagram` по параметрам `rngSteelMaterialParameters` и режимам `rngCalculationDiagramSettings` | реализованы TwoLine/ThreeLine; формулы и область применимости требуют дальнейшей нормативной трассировки |
 | Предельные деформации | берутся из построенной материальной диаграммы выбранного расчетного режима | отдельные дублирующие настройки предельных деформаций удалены |
-| Растянутый бетон | задается только режимом расчета в `rngCalculationDiagramSettings`: `Strength` - `Ignore/UseDiagram`, `Mcrc` - `UseDiagram`, `CrackedNDS` - `Ignore` | источник логики учета растянутого бетона централизован |
+| Растянутый бетон | задается только режимом расчета в `rngCalculationDiagramSettings`: `Strength` - `Ignore/UseDiagram`, `CrackInitiation` - `UseDiagram`, `CrackedNDS` - `Ignore` | источник логики учета растянутого бетона централизован |
 | НДС | `CSectionSolver` | расчетная механика реализована |
 | Несущая способность | `CCapacitySolver` | алгоритмы реализованы; нормативная приемка не завершена |
 | Трещины | `CCrackWidthCalculator`; продолжительное раскрытие нормальных трещин по II группе для общего `N + Mx + My` | реализовано по принятой проектной интерпретации СП 63; инженерные допущения вынесены в инструкции Config и `docs/CrackWidthMethodology_SP63.md` |

@@ -24,13 +24,13 @@ Option Explicit
 ' бетонного контура или глобально до дальней растянутой линии всего сечения.
 '
 ' Перед расчетом ширины всегда проверяется факт образования нормальной трещины:
-' для центрального растяжения через Ncrc, для остальных случаев через Mcrc по
-' предельной растягивающей деформации бетона. Batch отдельно считает текущий
-' CrackedState полного LC для продольных трещин и, если нормальная трещина
-' образуется, передает это же состояние сюда для формулы раскрытия. Режим psi_s
-' влияет только на коэффициент в этой формуле:
-' User берет введенное значение, Auto при необходимости уточняет psi_s по
-' уже найденному состоянию AfterMcrcState.
+' для центрального растяжения через Ncrc, для остальных случаев через точку
+' достижения eps_bt,ult по модели CrackInitiation. Batch отдельно считает
+' текущий CrackedState полного LC для продольных трещин и, если нормальная
+' трещина образуется, передает это же состояние сюда для формулы раскрытия.
+' Режим psi_s влияет только на коэффициент в этой формуле: User берет
+' введенное значение, Auto при необходимости уточняет psi_s по уже найденному
+' состоянию AfterMcrcState.
 
 Private Const PHI1_LONG_TERM As Double = 1.4 ' Коэффициент длительного действия нагрузки для a_crc1 по СП 63.
 Private Const PHI2_DEFAULT As Double = 0.5 ' Типовой default для обычной арматуры периодического профиля.
@@ -70,25 +70,25 @@ Private mPhi3Mode As String ' User или Auto: брать phi3 из Config ил
 Private mTensionZoneMode As String ' Effective или FullTension: способ задания бетонной зоны Abt.
 Private mCoverMode As String ' NearestContour или GlobalExtreme: способ измерения расстояния a_s.
 Private mCrackFormationPath As String ' Auto, LambdaMxy, LambdaN или LambdaNMxy: какая часть LC масштабируется при поиске образования трещины.
-Private mResolvedCrackFormationPath As String ' Фактический путь, который дал принятую точку Mcrc/Ncrc.
+Private mResolvedCrackFormationPath As String ' Фактический путь, который дал принятую точку образования трещины.
 Private mCrackFormationSolutionStrategy As String ' Auto, UltimateStrain или LoadMultiplier для поиска стадии образования трещины.
 Private mPhi1Input As Double ' Пользовательское значение phi1 для формулы раскрытия.
 Private mPhi2Input As Double ' Пользовательское значение phi2 для формулы раскрытия.
 Private mPhi3Input As Double ' Пользовательское значение phi3, если Phi3Mode = User.
 Private mPsiSInput As Double ' Пользовательское значение psi_s, если PsiMode = User.
-Private mConcreteRbtSer As Double ' Rbt,ser для центральной ветки Ncrc и справочных расчетов Mcrc, МПа.
+Private mConcreteRbtSer As Double ' Rbt,ser для центральной ветки Ncrc и модели образования трещины, МПа.
 Private mConcreteEb As Double ' Eb для Ared в центральной ветке Ncrc, МПа.
 Private mConcreteEbt0 As Double ' eps_bt0 для формулы (8.54) СП 63 при однозначно растянутой эпюре.
-Private mConcreteEbt2 As Double ' eps_bt2: предельная растягивающая деформация при двузначной эпюре Mcrc.
+Private mConcreteEbt2 As Double ' eps_bt2: предельная растягивающая деформация при двузначной эпюре.
 Private mSteelEs As Double ' Es для формулы раскрытия трещины, МПа.
-Private mCrackInitiationSpec As CMaterialModelSpec ' Спецификация модели образования трещины для обязательной проверки Mcrc/Ncrc.
+Private mCrackInitiationSpec As CMaterialModelSpec ' Спецификация модели образования трещины для обязательной предварительной проверки.
 Private mCrackedStateSpec As CMaterialModelSpec ' Спецификация модели раскрытой трещины текущего LC.
 Private mBeforeMcrcState As CSectionStateResult ' Необязательное состояние до выключения растянутого бетона.
 Private mBeforeMcrcSolver As CSectionSolver ' Solver состояния BeforeMcrcState для warm start состояния сразу после трещины.
 Private mAfterMcrcState As CSectionStateResult ' Необязательное состояние после выключения растянутого бетона для sigma_s,crc.
 Private mAfterMcrcSolver As CSectionSolver ' Solver состояния AfterMcrcState, чтобы не решать его повторно для sigma_s,crc.
 Private mFormationPrechecked As Boolean ' True, если Ncrc/Mcrc уже проверены перед расчетом полной ширины.
-Private mFormationLoadDefined As Boolean ' True, если сохранены внутренние усилия именно на уровне Mcrc/Ncrc.
+Private mFormationLoadDefined As Boolean ' True, если сохранены внутренние усилия именно на уровне образования трещины.
 Private mFormationLoadN As Double ' Продольная сила служебного состояния образования трещины, Н.
 Private mFormationLoadMx As Double ' Внутренний Mx служебного состояния образования трещины, Н*мм.
 Private mFormationLoadMy As Double ' Внутренний My служебного состояния образования трещины, Н*мм.
@@ -240,9 +240,9 @@ Public Sub Calculate(ByVal currentSolver As CSectionSolver, ByVal section As CSe
 End Sub
 
 ' Продолжает расчет ширины после обязательной предварительной проверки
-' образования трещины. Метод сохраняет уже найденные Before/After Mcrc-состояния
-' и использует AfterMcrcState для sigma_s,crc, если Auto-подбор psi_s потребует
-' уточнения коэффициента.
+' образования трещины. Метод сохраняет уже найденные Before/After-состояния
+' порога трещинообразования и использует AfterMcrcState для sigma_s,crc,
+' если Auto-подбор psi_s потребует уточнения коэффициента.
 Public Sub CalculateAfterFormationCheck(ByVal currentSolver As CSectionSolver, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal crackedStateSpec As CMaterialModelSpec, _
         ByVal crackInitiationSpec As CMaterialModelSpec, _
@@ -258,7 +258,8 @@ Public Sub CalculateAfterFormationCheck(ByVal currentSolver As CSectionSolver, B
         targetN, targetMx, targetMy, loadStateForClassification, centralReferenceX, centralReferenceY
 End Sub
 
-' Выполняет только проверку факта образования трещины по Ncrc или Mcrc.
+' Выполняет только проверку факта образования трещины по Ncrc или по общей
+' траектории N + M.
 ' Если уровень образования трещины найден, сохраняются состояния
 ' BeforeMcrcState/AfterMcrcState даже при lambda_crc > 1: они описывают
 ' пороговое состояние, а не обязательно фактическую трещину при текущем LC.
@@ -287,8 +288,8 @@ Public Function CheckFormationBeforeWidth(ByVal section As CSectionModel, _
 End Function
 
 ' Общая часть расчета ширины раскрытия. В обычном режиме вызывается после
-' ClearResult, а после обязательной Mcrc/Ncrc-проверки работает поверх уже
-' сохраненных состояний образования трещины.
+' ClearResult, а после обязательной проверки образования трещины работает
+' поверх уже сохраненных пороговых состояний.
 Private Sub CalculateCore(ByVal currentSolver As CSectionSolver, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal crackedStateSpec As CMaterialModelSpec, _
         ByVal crackInitiationSpec As CMaterialModelSpec, _
@@ -331,9 +332,11 @@ Private Sub CalculateCore(ByVal currentSolver As CSectionSolver, ByVal section A
     End If
 End Sub
 
-' Проверяет минимальный набор данных для предварительной Ncrc/Mcrc-проверки.
+' Проверяет минимальный набор данных для предварительной проверки образования
+' нормальной трещины.
 ' В отличие от основного Calculate здесь еще нет полного CrackedState solver-а,
-' поэтому проверяется только геометрия, material provider и модель Mcrc.
+' поэтому проверяется только геометрия, material provider и модель
+' CrackInitiation.
 Private Sub ValidateFormationInputs(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
         ByVal loadStateForClassification As CSectionLoadState, ByVal crackedStateSpec As CMaterialModelSpec, _
         ByVal crackInitiationSpec As CMaterialModelSpec)
@@ -349,7 +352,8 @@ Private Sub ValidateFormationInputs(ByVal section As CSectionModel, ByVal materi
 End Sub
 
 ' Проверяет центральное растяжение по Ncrc. Для единого snapshot-а состояния
-' до и после трещины сохраняются так же, как в общей Mcrc-ветке.
+' до и после трещины сохраняются так же, как в общей ветке образования
+' трещины.
 Private Sub CheckCentralTensionFormation(ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal targetN As Double, _
         ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -506,7 +510,7 @@ Private Function FindGeneralFormationLambdaAuto(ByVal section As CSectionModel, 
             If mFormationPathFallbackPsi1 And i < UBound(paths) Then
                 lastStopReason = mStopReason
                 AppendDiagnostic "Auto-путь: " & CrackFormationPathDisplayName() & _
-                    " дал только резервный результат psi_s=1 без найденной точки Mcrc/Ncrc. Для более информативного результата переходим к следующему пути."
+                    " дал только резервный результат psi_s=1 без найденной точки образования трещины. Для более информативного результата переходим к следующему пути."
             Else
                 mResolvedCrackFormationPath = mCrackFormationPath
                 AppendDiagnostic "Auto-путь: выбран " & CrackFormationPathDisplayName() & "."
@@ -718,7 +722,7 @@ End Sub
 
 ' Для общей N+M ветки переводит моментный множитель lambda обратно во
 ' внутренние усилия solver-а: N остается постоянной, а масштабируется только
-' момент относительно расчетного центра Mcrc.
+' момент относительно расчетного центра образования трещины.
 Private Sub StoreMomentFormationLoad(ByVal targetN As Double, ByVal targetMomentMx As Double, _
         ByVal targetMomentMy As Double, ByVal referenceX As Double, ByVal referenceY As Double)
     Dim loadPath As CLoadPathVector
@@ -746,10 +750,11 @@ Private Sub FormationLoads(ByRef nValue As Double, ByRef mxValue As Double, ByRe
     myValue = mFormationLoadMy
 End Sub
 
-' Создает общую lambda-траекторию для общей ветки Mcrc: продольная сила
-' остается постоянной, а моментный вектор относительно расчетного центра
-' масштабируется. Сама формула Offset + lambda*Base живет в CLoadPathVector,
-' поэтому трещины и Capacity не держат две разные реализации load-path.
+' Создает общую lambda-траекторию для общей ветки образования трещины:
+' продольная сила остается постоянной, а моментный вектор относительно
+' расчетного центра масштабируется. Сама формула Offset + lambda*Base живет
+' в CLoadPathVector, поэтому трещины и Capacity не держат две разные
+' реализации load-path.
 Private Function MomentFormationLoadPath(ByVal targetN As Double, _
         ByVal targetMomentMx As Double, ByVal targetMomentMy As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double) As CLoadPathVector
@@ -972,7 +977,7 @@ End Sub
 ' Находит lambda_crc прямым методом UltimateStrain для пути lambda*Mxy.
 ' Продольная сила
 ' остается равной заданной N, а lambda масштабирует только моментный вектор
-' относительно расчетного центра Mcrc. Критерием служит достижение
+' относительно расчетного центра образования трещины. Критерием служит достижение
 ' eps_bt,ult по СП 63 п. 8.2.14 и п. 8.1.30:
 ' для двузначной эпюры eps_bt,ult = eps_bt2, для однозначно растянутой
 ' эпюры с ненулевой кривизной применяется формула (8.54). Fallback на
@@ -988,7 +993,7 @@ Private Function CalculateLambdaCrc(ByVal section As CSectionModel, ByVal concre
         Exit Function
     End If
     If targetMomentMx * targetMomentMx + targetMomentMy * targetMomentMy <= NEAR_ZERO_STRAIN Then
-        mStopReason = "InputError: для Mcrc нужен ненулевой моментный вектор относительно расчетного центра."
+        mStopReason = "InputError: для пути λ*Mxy нужен ненулевой моментный вектор относительно расчетного центра."
         Exit Function
     End If
 
@@ -1937,8 +1942,8 @@ End Sub
 ' Auto сначала делает проверку с psi_s = 1; если a_crc <= a_crc,ult,
 ' уточнение не запускается. Если уточнение нужно, lambda_crc и состояния
 ' Before/AfterMcrcState уже должны быть найдены обязательной предварительной
-' проверкой образования трещины, поэтому повторный расчет Mcrc/Ncrc здесь не
-' выполняется.
+' проверкой образования трещины, поэтому повторный поиск точки образования
+' здесь не выполняется.
 Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
         ByVal currentSolver As CSectionSolver, ByRef selected() As Boolean, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -2091,7 +2096,7 @@ End Function
 ' Проверяет, есть ли в LC растяжение или изгиб относительно расчетного центра.
 ' Если после централизованного переноса и ZeroMoment-фильтра нет ни
 ' растягивающей силы, ни момента, нормальная трещина не может образоваться и
-' прямой поиск Mcrc запускать не нужно.
+' прямой поиск точки образования трещины запускать не нужно.
 Private Function HasNormalCrackDrivingAction(ByVal loadStateForClassification As CSectionLoadState, _
         ByVal centralReferenceX As Double, ByVal centralReferenceY As Double) As Boolean
     If loadStateForClassification.IsTension(NEAR_ZERO_FORCE) Then
@@ -2406,8 +2411,9 @@ Private Sub TrackMaxSteel(ByVal section As CSectionModel, ByVal index As Long, B
 End Sub
 
 ' Определяет минимальную и максимальную деформацию бетонных КЭ для пробной
-' плоскости Mcrc. Эти две величины нужны, чтобы отличить двузначную эпюру от
-' однозначно растянутой и выбрать нормативный eps_bt,ult по СП 63 п. 8.1.30.
+' плоскости образования трещины. Эти две величины нужны, чтобы отличить
+' двузначную эпюру от однозначно растянутой и выбрать нормативный eps_bt,ult
+' по СП 63 п. 8.1.30.
 Private Sub ConcreteStrainBounds(ByVal solver As CSectionSolver, ByVal section As CSectionModel, _
         ByRef minStrain As Double, ByRef maxStrain As Double)
     Dim i As Long
@@ -2518,8 +2524,8 @@ Private Sub NormalizeSettings()
     If mConcreteEb <= 0# Then Err.Raise vbObjectError + 3712, "CCrackWidthCalculator", "Concrete.Eb должен быть положительным для расчета трещин."
     If mSteelEs <= 0# Then Err.Raise vbObjectError + 3713, "CCrackWidthCalculator", "Steel.Es должен быть положительным для расчета трещин."
     If Not mCrackInitiationSpec Is Nothing Then
-        If mConcreteEbt0 <= 0# Then Err.Raise vbObjectError + 3714, "CCrackWidthCalculator", "Concrete.Ebt0 должен быть положительным для расчета Mcrc."
-        If mConcreteEbt2 <= 0# Then Err.Raise vbObjectError + 3715, "CCrackWidthCalculator", "Concrete.Ebt2 должен быть положительным для расчета Mcrc."
+        If mConcreteEbt0 <= 0# Then Err.Raise vbObjectError + 3714, "CCrackWidthCalculator", "Concrete.Ebt0 должен быть положительным для проверки образования трещины."
+        If mConcreteEbt2 <= 0# Then Err.Raise vbObjectError + 3715, "CCrackWidthCalculator", "Concrete.Ebt2 должен быть положительным для проверки образования трещины."
         If mConcreteEbt0 > mConcreteEbt2 Then Err.Raise vbObjectError + 3716, "CCrackWidthCalculator", "Concrete.Ebt0 не должен быть больше Concrete.Ebt2 для формулы (8.54)."
     End If
 End Sub
@@ -2624,7 +2630,7 @@ Private Sub ClearResult()
     mResolvedCrackFormationPath = vbNullString
 End Sub
 
-' Сбрасывает только данные одной попытки поиска Mcrc/Ncrc. Диагностический
+' Сбрасывает только данные одной попытки поиска точки образования трещины. Диагностический
 ' журнал и выбранные материальные модели сохраняются, чтобы Auto мог показать
 ' всю цепочку переключения путей.
 Private Sub ClearFormationAttemptState()

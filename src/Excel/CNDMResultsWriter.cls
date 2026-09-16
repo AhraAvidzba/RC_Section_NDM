@@ -475,8 +475,8 @@ End Sub
 
 ' Возвращает бетонную диаграмму именно в том виде, в котором ее мог получить
 ' solver для named-state. Прямые StateSolution при включенном numerical
-' extension используют state-диаграммы, а capacity/Mcrc-состояния остаются
-' строго физическими.
+' extension используют state-диаграммы, а capacity/CrackInitiation-состояния
+' остаются строго физическими.
 Private Function ConcreteDiagramForState(ByVal materialProvider As CMaterialModelProvider, _
         ByVal stateResult As CSectionStateResult, ByVal directExtensionEnabled As Boolean) As CMaterialDiagram
     If IsDirectStateResult(stateResult) And directExtensionEnabled Then

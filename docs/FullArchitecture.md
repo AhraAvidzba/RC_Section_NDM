@@ -215,7 +215,7 @@ StateSolution. `CMaterialDiagram` хранит готовые точки `sigma-
 ### Solver
 
 `CSectionSolver` решает равновесие `N + Mx + My` по готовым материалам. Он не
-знает про `Group1/Group2`, `Strength/Mcrc/CrackedNDS`, `Config`, Excel и AutoCAD.
+знает про `Group1/Group2`, `Strength/CrackInitiation/CrackedNDS`, `Config`, Excel и AutoCAD.
 
 `CStateSolutionRunner` управляет прямым НДС LC: initial guess, retry,
 extension warm-start, `ExtensionUsed` и проверка физических пределов.

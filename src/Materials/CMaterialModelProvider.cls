@@ -14,8 +14,9 @@ Option Explicit
 ' ==========================================================================
 ' Provider получает исходные параметры бетона и арматуры, читает режимы
 ' расчетов с листа Config и строит готовые CMaterialDiagram для физических
-' целей Strength, Mcrc и CrackedNDS. В этом классе остается выбор I/II ГПС,
-' сопротивлений R/Rser, типа TwoLine/ThreeLine и режима растянутого бетона.
+' целей Strength, CrackInitiation и CrackedNDS. В этом классе остается выбор
+' I/II ГПС, сопротивлений R/Rser, типа TwoLine/ThreeLine и режима
+' растянутого бетона.
 '
 ' Прямой расчет НДС использует отдельную цель StateSolution. Для нее provider
 ' берет одну из физических баз, Strength или CrackedNDS, и при включенной
@@ -446,8 +447,8 @@ End Function
 
 ' Возвращает бетонную диаграмму прямого StateSolution по спецификации профиля.
 ' Numerical extension добавляется только здесь и только если соответствующая
-' настройка включена. Capacity, Mcrc и crack-состояния вызывают физический
-' ConcreteMaterialFromSpec без extension.
+' настройка включена. Capacity, CrackInitiation и crack-состояния вызывают
+' физический ConcreteMaterialFromSpec без extension.
 Public Function ConcreteStateMaterialFromSpec(ByVal spec As CMaterialModelSpec) As CMaterialDiagram
     Dim physical As CMaterialDiagram
     Set physical = ConcreteMaterialFromSpec(spec)
@@ -480,9 +481,10 @@ Public Function ConcreteTensionLimitFromSpec(ByVal spec As CMaterialModelSpec) A
 End Function
 
 ' Возвращает eps_bt0 из исходных параметров бетона для нормативного критерия
-' Mcrc по СП 63 п. 8.1.30, формула (8.54). Значение берется из той же
-' профильной спецификации, что и диаграмма Mcrc, чтобы crack-калькулятор не
-' читал Config напрямую и не создавал параллельный источник материалов.
+' образования трещины по СП 63 п. 8.1.30, формула (8.54). Значение берется
+' из той же профильной спецификации, что и CrackInitiation-диаграмма, чтобы
+' crack-калькулятор не читал Config напрямую и не создавал параллельный
+' источник материалов.
 Public Function ConcreteTensionEbt0FromSpec(ByVal spec As CMaterialModelSpec) As Double
     ValidateSpec spec
     ConcreteTensionEbt0FromSpec = mConcreteParameters.Ebt0

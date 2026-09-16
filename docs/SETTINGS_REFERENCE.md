@@ -29,7 +29,7 @@
 | `rngLShapeGeometry` | Параметры Г-образного сечения и автоматической арматуры. |
 | `rngConcreteMaterialParameters` | Параметры бетона для I/II ГПС: `Rb/Rbt`, `Rb,ser/Rbt,ser`, `Rb,mc2`, `Eb/Ebt` и расчетные деформационные точки. |
 | `rngSteelMaterialParameters` | Параметры арматуры для I/II ГПС: `Rsc/Rs`, `Rsc,ser/Rs,ser`, `Esc/Es` и предельные деформации диаграмм. |
-| `rngCalculationDiagramSettings` | Выбор расчетной диаграммы и режима растянутого бетона для `Strength`, `Mcrc` и `CrackedNDS`. |
+| `rngCalculationDiagramSettings` | Выбор расчетной диаграммы и режима растянутого бетона для `Strength`, `CrackInitiation` и `CrackedNDS`. |
 | `rngLoadCombinations` | Сочетания нагрузок; фактическое число сочетаний равно числу строк внутри именованного диапазона. В шаблоне подготовлено 20 строк, минимально допустима 1 строка под заголовком. |
 | `rngBatchSummary` | Компактная сводка batch-расчета на `Results!A1`. |
 | `rngStrengthSummaryAnchor` | Якорь первой строки данных подробной таблицы НДС и несущей способности по модели прочности на `Results!A38`; шапка таблицы формируется над якорем. |

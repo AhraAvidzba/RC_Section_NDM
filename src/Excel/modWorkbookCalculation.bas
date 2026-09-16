@@ -289,7 +289,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     Set materialProvider = New CMaterialModelProvider
     report.AddStep "Начато построение material provider."
     materialProvider.Initialize settings, units
-    report.AddStep "Построены материалные модели Strength, Mcrc и CrackedNDS по параметрам Config."
+    report.AddStep "Построены материальные модели Strength, CrackInitiation и CrackedNDS по параметрам Config."
 
     Dim profiles As CCalculationProfileCatalog
     Set profiles = New CCalculationProfileCatalog
