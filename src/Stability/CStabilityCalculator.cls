@@ -693,14 +693,22 @@ Private Sub CalculateSP35EtaPlane(ByVal nCompression As Double, ByVal sustainedC
         (es / eb) * plane.InertiaSteel)
     plane.NcrForce = plane.StiffnessD / (plane.EffectiveLength * plane.EffectiveLength)
     plane.CriticalForce = plane.NcrForce
-    plane.ReserveFactor = ReserveByCriticalForce(plane.NcrForce, nCompression)
+    plane.ReserveFactor = SP35EtaReserveByLimit(plane.NcrForce, nCompression, nOverNcrLimit)
     plane.Eta = EtaByCriticalForce(plane.NcrForce, nCompression)
     plane.DesignMoment = DesignMomentWithEta(nCompression, plane.Eccentricity, plane.Eta)
-    plane.CheckPassed = (plane.ReserveFactor > 1# And plane.Eta > 0# And _
-        nCompression / plane.NcrForce <= nOverNcrLimit)
+    plane.CheckPassed = (plane.ReserveFactor + PASS_TOLERANCE >= 1# And plane.Eta > 0#)
     mBranch = "SP35-eta"
     plane.BranchName = "SP35-eta"
 End Sub
+
+' Возвращает запас для специального условия СП 35 eta-ветви:
+' N/Ncr <= Stability.SP35.NOverNcrLimit. В Results и batch summary
+' показывается именно проверочный запас limit*Ncr/N, а не сырое Ncr/N.
+Private Function SP35EtaReserveByLimit(ByVal ncrForce As Double, ByVal nCompression As Double, _
+        ByVal nOverNcrLimit As Double) As Double
+    If nOverNcrLimit <= 0# Then Exit Function
+    SP35EtaReserveByLimit = ReserveByCriticalForce(ncrForce, nCompression) * nOverNcrLimit
+End Function
 
 ' Для табличной ветви СП 35 учитывает долю постоянной нагрузки в полном
 ' сжимающем усилии по формуле (7.15). Если длительная часть равна нулю,

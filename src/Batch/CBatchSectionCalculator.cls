@@ -167,7 +167,7 @@ Private Sub Class_Initialize()
     mCapacityBaseLoadSteps = 1
     mCapacitySolverMaxIterations = 60
     mWorstCombinationCriterion = "StrengthCapacity"
-    mStabilityCode = "SP63"
+    mStabilityCode = "SP35"
     mStabilityElementLength = 3000#
     mStabilityMu1 = 1#
     mStabilityMu2 = 1#
@@ -2064,8 +2064,6 @@ Private Function StabilityPlaneReserveForSummary(ByVal index As Long, ByVal plan
     If rawReserve <= 0# Then Exit Function
 
     StabilityPlaneReserveForSummary = rawReserve
-    If InStr(1, branchText, "SP35-eta", vbTextCompare) > 0 And mStabilitySP35NOverNcrLimit > 0# Then _
-        StabilityPlaneReserveForSummary = rawReserve * mStabilitySP35NOverNcrLimit
 End Function
 
 ' Берет минимальное положительное значение из двух запасов.
@@ -2359,6 +2357,13 @@ End Property
 
 Public Property Get StabilityReserveFactor(ByVal index As Long) As Double
     StabilityReserveFactor = mResults(index).StabilityReserveFactor
+End Property
+
+' Возвращает пользовательский лимит N/Ncr для eta-ветви СП 35.
+' Writer-ы используют это значение в заголовках, чтобы формула запаса
+' в Results совпадала с фактически выбранной настройкой Config.
+Public Property Get StabilitySP35NOverNcrLimit() As Double
+    StabilitySP35NOverNcrLimit = mStabilitySP35NOverNcrLimit
 End Property
 
 Public Property Get StabilityNcr1(ByVal index As Long) As Double

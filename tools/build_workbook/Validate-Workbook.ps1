@@ -297,6 +297,16 @@ try {
     $solverMethodDefaultOk = ($solverMethodCell -ne $null) -and ([string]$solverMethodCell.Value2 -eq "Newton")
     Add-Check $checks "Solver.Method default" $solverMethodDefaultOk ("Value=" + [string]$(if ($solverMethodCell -eq $null) { "" } else { $solverMethodCell.Value2 }))
 
+    $stabilityCodeCell = $null
+    for ($i = 2; $i -le $settings.Rows.Count; $i++) {
+        if ([string]$settings.Cells.Item($i, 1).Value2 -eq "Stability.Code") {
+            $stabilityCodeCell = $settings.Cells.Item($i, 2)
+            break
+        }
+    }
+    $stabilityCodeDefaultOk = ($stabilityCodeCell -ne $null) -and ([string]$stabilityCodeCell.Value2 -eq "SP35")
+    Add-Check $checks "Stability.Code default" $stabilityCodeDefaultOk ("Value=" + [string]$(if ($stabilityCodeCell -eq $null) { "" } else { $stabilityCodeCell.Value2 }))
+
     $solverValidationOk = $false
     $solverValidationDetails = "Missing Solver.Method"
     if ($solverMethodCell -ne $null) {

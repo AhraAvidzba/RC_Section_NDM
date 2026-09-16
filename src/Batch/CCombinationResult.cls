@@ -96,7 +96,7 @@ Public StabilitySustainedMoment2 As Double ' Постоянный/длитель
 Public StabilityDesignMoment1 As Double ' Итоговый момент первой главной плоскости после учета eta.
 Public StabilityDesignMoment2 As Double ' Итоговый момент второй главной плоскости после учета eta.
 Public StabilityCriticalForce As Double ' Минимальная контрольная сила устойчивости: Ncr или Nult,stab, Н.
-Public StabilityReserveFactor As Double ' Запас устойчивости: Ncr/N или Nult,stab/N по выбранной ветви.
+Public StabilityReserveFactor As Double ' Запас устойчивости по выбранной ветви: для SP35 eta это limit*Ncr/N, для SP35-table Nult,stab/N, для SP63 Ncr/N.
 Public StabilityUtil As Double ' Использование устойчивости: 1 / StabilityReserveFactor.
 Public StabilityNcr1 As Double ' Критическая сила Ncr в первой главной плоскости, Н.
 Public StabilityNcr2 As Double ' Критическая сила Ncr во второй главной плоскости, Н.

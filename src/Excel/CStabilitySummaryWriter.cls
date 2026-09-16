@@ -93,7 +93,7 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
     Set target = TargetRange(workbook, RequiredDataRowsForWorkbook(workbook, batch.Count))
     PrepareTarget target
     WriteBlockTitle target, "Расчет продольного изгиба и устойчивости"
-    WriteHeaders target, units
+    WriteHeaders target, units, batch
     WriteData target, batch, units
     FormatTable target, batch
     Exit Sub
@@ -176,7 +176,8 @@ Private Sub ClearBlockTitleRow(ByVal target As Object)
 End Sub
 
 ' Формирует многоуровневую шапку таблицы. Разделительные столбцы остаются пустыми.
-Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem)
+Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem, _
+        ByVal batch As CBatchSectionCalculator)
     MergeCells target, 1, COL_SUMMARY_FIRST, 1, BlockWidth(COL_SUMMARY_FIRST, COL_SUMMARY_LAST), _
         "Итог по расчету (с учетом " & ChrW$(&H3B7) & ")"
     MergeCells target, 2, 1, 4, 1, "Combination ID"
@@ -202,7 +203,7 @@ Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem)
     WriteSP63PlaneHeaders target, SP63_PLANE2_FIRST, "Плоскость 2"
 
     PutHeaderNotes target
-    PutHeaderRowLabels target, units
+    PutHeaderRowLabels target, units, batch
 End Sub
 
 ' Записывает верхние подписи для одной плоскости СП 35.
@@ -292,7 +293,8 @@ Private Sub PutSP63PlaneNotes(ByRef notes() As Variant, ByVal firstColumn As Lon
 End Sub
 
 ' Заполняет строку обозначений под многоуровневой шапкой.
-Private Sub PutHeaderRowLabels(ByVal target As Object, ByVal units As CUnitSystem)
+Private Sub PutHeaderRowLabels(ByVal target As Object, ByVal units As CUnitSystem, _
+        ByVal batch As CBatchSectionCalculator)
     Dim labels(1 To 1, 1 To TOTAL_COLUMNS) As Variant
     labels(1, 1) = "Combination ID"
     labels(1, 2) = "общий статус"
@@ -322,8 +324,8 @@ Private Sub PutHeaderRowLabels(ByVal target As Object, ByVal units As CUnitSyste
     labels(1, 26) = "l02, " & OutputLengthUnit(units)
 
     labels(1, 28) = ChrW$(&H3C6) & "p"
-    PutSP35PlaneLabels labels, 29, units
-    PutSP35PlaneLabels labels, 44, units
+    PutSP35PlaneLabels labels, 29, units, SP35EtaReserveLabel(batch)
+    PutSP35PlaneLabels labels, 44, units, SP35EtaReserveLabel(batch)
     PutSP63PlaneLabels labels, SP63_PLANE1_FIRST, units
     PutSP63PlaneLabels labels, SP63_PLANE2_FIRST, units
 
@@ -332,7 +334,26 @@ Private Sub PutHeaderRowLabels(ByVal target As Object, ByVal units As CUnitSyste
 End Sub
 
 ' Заполняет обозначения одной плоскости СП 35.
-Private Sub PutSP35PlaneLabels(ByRef labels() As Variant, ByVal firstColumn As Long, ByVal units As CUnitSystem)
+' Формирует заголовок запаса для ветви СП 35 ec > r.
+' В нем показывается не условное k, а фактический лимит N/Ncr,
+' заданный пользователем в Stability.SP35.NOverNcrLimit.
+Private Function SP35EtaReserveLabel(ByVal batch As CBatchSectionCalculator) As String
+    Dim limitValue As Double
+    limitValue = 0.7
+    If Not batch Is Nothing Then
+        If batch.StabilitySP35NOverNcrLimit > SMALL_VALUE Then _
+            limitValue = batch.StabilitySP35NOverNcrLimit
+    End If
+    SP35EtaReserveLabel = FormatCoefficientInvariant(limitValue) & "*Ncr/N"
+End Function
+
+' Пишет коэффициент в заголовок с точкой в качестве десятичного разделителя.
+Private Function FormatCoefficientInvariant(ByVal value As Double) As String
+    FormatCoefficientInvariant = Replace$(Format$(value, "0.############"), ",", ".")
+End Function
+
+Private Sub PutSP35PlaneLabels(ByRef labels() As Variant, ByVal firstColumn As Long, _
+        ByVal units As CUnitSystem, ByVal etaReserveLabel As String)
     labels(1, firstColumn) = "ec,sl, " & OutputLengthUnit(units)
     labels(1, firstColumn + 1) = "ec, " & OutputLengthUnit(units)
     labels(1, firstColumn + 2) = "r, " & OutputLengthUnit(units)
@@ -340,7 +361,7 @@ Private Sub PutSP35PlaneLabels(ByRef labels() As Variant, ByVal firstColumn As L
     labels(1, firstColumn + 4) = ChrW$(&H3B4)
     labels(1, firstColumn + 5) = ChrW$(&H3C6) & "l (пост)"
     labels(1, firstColumn + 6) = ChrW$(&H3B7)
-    labels(1, firstColumn + 7) = "N/Ncr"
+    labels(1, firstColumn + 7) = etaReserveLabel
     labels(1, firstColumn + 8) = "статус"
     labels(1, firstColumn + 9) = ChrW$(&H3C6) & "l (табл)"
     labels(1, firstColumn + 10) = ChrW$(&H3C6) & "m"
@@ -446,7 +467,7 @@ Private Sub PutSP35PlaneValues(ByRef data() As Variant, ByVal rowIndex As Long, 
         data(rowIndex, firstColumn + 4) = OptionalValue(PlaneDelta(batch, index, planeIndex))
         data(rowIndex, firstColumn + 5) = OptionalValue(PlanePhiL(batch, index, planeIndex))
         data(rowIndex, firstColumn + 6) = OptionalValue(PlaneEta(batch, index, planeIndex))
-        data(rowIndex, firstColumn + 7) = RatioCompressionToLimit(batch.StabilityDesignN(index), PlaneNcr(batch, index, planeIndex))
+        data(rowIndex, firstColumn + 7) = OptionalValue(PlaneReserve(batch, index, planeIndex))
         data(rowIndex, firstColumn + 8) = PlaneStatus(batch, index, planeIndex)
         data(rowIndex, firstColumn + 14) = StatusPolicy().NotApplicable
     ElseIf StrComp(branchName, "SP35-table", vbTextCompare) = 0 Then
@@ -710,20 +731,16 @@ Private Function PlaneStiffnessD(ByVal batch As CBatchSectionCalculator, ByVal i
     If planeIndex = 1 Then PlaneStiffnessD = batch.StabilityStiffnessD1(index) Else PlaneStiffnessD = batch.StabilityStiffnessD2(index)
 End Function
 
+Private Function PlaneReserve(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
+    If planeIndex = 1 Then PlaneReserve = batch.StabilityReserve1(index) Else PlaneReserve = batch.StabilityReserve2(index)
+End Function
+
 Private Function OptionalValue(ByVal value As Double) As Variant
     If Abs(value) > SMALL_VALUE Then OptionalValue = value Else OptionalValue = vbNullString
 End Function
 
 Private Function OptionalCompressionForce(ByVal compressionMagnitude As Double, ByVal units As CUnitSystem) As Variant
     If compressionMagnitude > SMALL_VALUE Then OptionalCompressionForce = OutputCompressionForce(compressionMagnitude, units) Else OptionalCompressionForce = StatusPolicy().NotApplicable
-End Function
-
-Private Function RatioCompressionToLimit(ByVal nValue As Double, ByVal limitCompression As Double) As Variant
-    If limitCompression <= SMALL_VALUE Then
-        RatioCompressionToLimit = vbNullString
-    Else
-        RatioCompressionToLimit = CompressionMagnitude(nValue) / limitCompression
-    End If
 End Function
 
 Private Function RatioLimitToCompression(ByVal limitCompression As Double, ByVal nValue As Double) As Variant

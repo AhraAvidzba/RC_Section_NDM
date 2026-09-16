@@ -3574,7 +3574,7 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.stability.header.notesFill", CLng(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 3).Interior.Color) = RGB(217, 217, 217)
     AssertTrue stats, "batch.writer.stability.header.sp35NcrBranch", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 32).Value2) = "при ec > r"
     AssertTrue stats, "batch.writer.stability.header.sp63PlaneHeight", resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 60).MergeArea.Rows.Count = 2
-    AssertTrue stats, "batch.writer.stability.header.sp35Ratio", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 1, 36).Value2) = "N/Ncr"
+    AssertTrue stats, "batch.writer.stability.header.sp35Ratio", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 1, 36).Value2) = "0.7*Ncr/N"
     AssertClose stats, "batch.writer.stability.columnWidthA", CDbl(resultsSheet.Columns.Item(1).ColumnWidth), 10#, 0.01
     AssertClose stats, "batch.writer.stability.columnWidthN", CDbl(resultsSheet.Columns.Item(14).ColumnWidth), 10#, 0.01
     AssertClose stats, "batch.writer.stability.columnWidthAF", CDbl(resultsSheet.Columns.Item(32).ColumnWidth), 10#, 0.01
@@ -3695,14 +3695,11 @@ End Function
 
 Private Function StabilitySP35PlaneReserveFromDetailed(ByVal resultsSheet As Object, _
         ByVal rowIndex As Long, ByVal firstColumn As Long) As Double
-    Dim limitValue As Double
-    limitValue = CDbl(GetSystemSetting("Stability.SP35.NOverNcrLimit"))
-
-    Dim nOverNcr As Variant
-    nOverNcr = resultsSheet.Cells.Item(rowIndex, firstColumn + 7).Value2
-    If IsNumeric(nOverNcr) Then
-        If CDbl(nOverNcr) > 0# And limitValue > 0# Then
-            StabilitySP35PlaneReserveFromDetailed = limitValue / CDbl(nOverNcr)
+    Dim etaBranchReserve As Variant
+    etaBranchReserve = resultsSheet.Cells.Item(rowIndex, firstColumn + 7).Value2
+    If IsNumeric(etaBranchReserve) Then
+        If CDbl(etaBranchReserve) > 0# Then
+            StabilitySP35PlaneReserveFromDetailed = CDbl(etaBranchReserve)
             Exit Function
         End If
     End If

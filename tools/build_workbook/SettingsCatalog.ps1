@@ -58,7 +58,7 @@ function Get-SystemSettingsCatalog {
         )},
         @{ Name = "StabilitySettings"; Title = "[Продольный изгиб и устойчивость]"; Rows = @(
             @("[Общие настройки]", "", "-", ""),
-            @("Stability.Code", "SP63", "-", "Выбор методики учета продольного изгиба: SP63 или SP35. Расчет включается отдельно в профиле."),
+            @("Stability.Code", "SP35", "-", "Выбор методики учета продольного изгиба: SP63 или SP35. Расчет включается отдельно в профиле."),
             @("Stability.ElementLength", "3000", "мм", "Геометрическая длина элемента l. Расчетная длина по главным плоскостям получается как mu1*l и mu2*l."),
             @("Stability.Mu1", "1", "-", "Коэффициент расчетной длины для плоскости 1: изгиб вокруг главной оси 1 с моментом инерции I1."),
             @("Stability.Mu2", "1", "-", "Коэффициент расчетной длины для плоскости 2: изгиб вокруг главной оси 2 с моментом инерции I2."),
@@ -76,7 +76,7 @@ function Get-SystemSettingsCatalog {
             @("Stability.SP63.DeltaEMax", "1.5", "-", "Верхнее ограничение delta_e в формуле условной жесткости СП 63."),
             @("[СП 35]", "", "-", ""),
             @("Stability.SP35.PhiP", "1", "-", "Коэффициент phi_p. Для ненапрягаемой арматуры в текущей постановке обычно принимается 1."),
-            @("Stability.SP35.NOverNcrLimit", "0.7", "-", "Контрольное ограничение N/Ncr для ветви СП 35 с коэффициентом eta.")
+            @("Stability.SP35.NOverNcrLimit", "0.7", "-", "Контрольное ограничение N/Ncr для ветви СП 35 с коэффициентом eta; в Results выводится запас Stability.SP35.NOverNcrLimit*Ncr/N.")
         )},
         @{ Name = "OutputSettings"; Title = "[Трещины]"; Rows = @(
             @("SLS.Crack.Allowable", "0.3", "мм", "Допустимая ширина раскрытия a_crc,ult, задается пользователем по нормам и условиям эксплуатации."),
@@ -902,7 +902,7 @@ function Get-SettingInstructionLines {
         "Stability.SP35.*" { return @($lead) + @(
             "Эта настройка применяется только при Stability.Code = SP35.",
             "PhiP оставлен пользовательским коэффициентом. Для ненапрягаемой арматуры в текущей постановке обычно используется значение 1.",
-            "NOverNcrLimit контролирует условие N/Ncr для ветви eta СП 35.",
+            "NOverNcrLimit контролирует условие N/Ncr для ветви eta СП 35. В Results эта проверка выводится как коэффициент запаса NOverNcrLimit*Ncr/N: значение больше 1 означает, что условие выполняется.",
             "Табличные коэффициенты СП 35 берутся из отдельной таблицы rngSP35Table721 на Config, а не из кода."
         ) }
         "SLS.Crack.Allowable" { return @($lead) + @(
@@ -2219,7 +2219,7 @@ function Add-StabilityMethodologyGuide {
     ) "СП 35, п. 7.54, ф. (7.10)" "D = 6.4 · E_b · [I_b/?_l · k_1 + (E_s/E_b) · I_s]      СП 35, п. 7.54, ф. (7.10)"
     $row = Add-GuideFractionFormula $Sheet $row "N_cr =" "D" "l_0^2" "      СП 35, п. 7.54, ф. (7.10)"
     $row = Add-GuideFractionFormula $Sheet $row "? =" "1" "1 - N/N_cr" ""
-    $row = Add-GuideFormula $Sheet $row "N/N_cr ? 0.7      СП 35, п. 7.54"
+    $row = Add-GuideFormula $Sheet $row "N/N_cr <= limit, где limit = Stability.SP35.NOverNcrLimit      СП 35, п. 7.54"
     $row = Add-GuideFormula $Sheet $row "M_design = ? · N · e_c"
     $row = Add-GuideParagraph $Sheet $row "Stability.PhiLMode = PhiL2 в этой ветви принудительно принимает ?l = 2. В режиме Auto программа считает ?l по моментам полной и постоянной нагрузки и затем ограничивает его диапазоном 1...2."
     $row++
@@ -2240,7 +2240,7 @@ function Add-StabilityMethodologyGuide {
     $row = Add-GuideTitle $Sheet $row "10. Что выводится в Results" 13
     $row = Add-GuideParagraph $Sheet $row "Подробная таблица устойчивости показывает четыре блока: итог по расчету, общие данные по главным осям, расчет по СП 35 и расчет по СП 63. Таблица всегда имеет постоянную форму, но заполняется только тот нормативный блок, который выбран настройкой Stability.Code."
     $row = Add-GuideParagraph $Sheet $row "В блоке Итог по расчету моменты после учета ? выводятся в трех привязках: M1/M2 в главных осях приведенного сечения, Mx/My относительно центральных осей приведенного сечения и Mx/My в пользовательской точке приложения нагрузки. Эти значения уже прошли общий фильтр практически нулевого момента."
-    $row = Add-GuideParagraph $Sheet $row "Ncr/N или Nult/N в Results - это справочный запас по устойчивости. Если запас меньше единицы или нарушено специальное ограничение ветви СП 35 N/Ncr ? 0.7, LC получает FAIL по устойчивости."
+    $row = Add-GuideParagraph $Sheet $row "Для ветви СП 35 ec > r в Results выводится запас limit*Ncr/N, где limit берется из Stability.SP35.NOverNcrLimit. Для табличной ветви СП 35 выводится Nult/N, для СП 63 - Ncr/N. Если применимый запас меньше единицы, LC получает FAIL по устойчивости."
     $row = Add-GuideParagraph $Sheet $row "Все значения перед выводом проходят через CUnitSystem: единицы и знаки берутся из rngUnitSettings и rngSignConventionSettings."
     return $row + 2
 }
