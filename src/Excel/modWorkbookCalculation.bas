@@ -452,7 +452,7 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
     Dim summaryCols As Long
     summaryRows = summaryWriter.RequiredSummaryOutputRows(batch.Count)
     summaryCols = summaryWriter.RequiredSummaryOutputColumns()
-    CheckFootprintWithinSheet issues, ws, "rngBatchSummary + словарь статусов", _
+    CheckFootprintWithinSheet issues, ws, "rngBatchSummary", _
         summaryAnchor.Row, summaryAnchor.Column, summaryRows, summaryCols
 
     Dim strengthTopRow As Long
@@ -699,7 +699,7 @@ Private Function BuildCalculationMessage(ByVal section As CSectionModel, ByVal s
             "Первая ошибка: " & batch.FirstInvalidInputMessage
     Else
         BuildCalculationMessage = calculationCaption & " завершен. Обработано сочетаний: " & CStr(batch.Count) & _
-            ". Определяющее сочетание: " & batch.GoverningCombinationID
+            ". Определяющее сочетание: " & batch.WorstCombinationID
     End If
 End Function
 

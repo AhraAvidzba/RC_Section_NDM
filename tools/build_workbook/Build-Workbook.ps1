@@ -65,38 +65,6 @@ function Add-WorkbookName {
     catch { $Workbook.Names.Add($Name, $address) | Out-Null }
 }
 
-# Делает заголовок rngBatchSummary статической ссылкой на раздел справки.
-# Writer результатов дальше не трогает первую строку, поэтому ссылка не
-# пересоздается после каждого расчета и работает так же, как ссылки Config.
-function Add-ResultsSummaryHelpLink {
-    param(
-        [object]$ResultsSheet,
-        [object]$InstructionSheet
-    )
-
-    $title = "Сводка пакетного расчета"
-    $displayText = "$title (Подробнее)"
-    $cell = $ResultsSheet.Cells.Item(1, 1)
-    $cell.Hyperlinks.Delete()
-    $cell.Value2 = $displayText
-
-    $found = $InstructionSheet.Cells.Find($title)
-    if ($null -ne $found) {
-        $ResultsSheet.Hyperlinks.Add($cell, "", "'" + [string]$InstructionSheet.Name + "'!A" + [string]$found.Row, "", $displayText) | Out-Null
-    }
-
-    try {
-        $linkText = "(Подробнее)"
-        $linkStart = $displayText.IndexOf($linkText) + 1
-        $cell.Characters(1, $title.Length).Font.Color = 0
-        $cell.Characters(1, $title.Length).Font.Underline = -4142
-        $cell.Characters($linkStart, $linkText.Length).Font.Color = 16711680
-        $cell.Characters($linkStart, $linkText.Length).Font.Underline = 2
-    } catch {
-        # Ссылка остается рабочей даже если Excel не даст частично оформить текст.
-    }
-}
-
 # Импортирует исходные VBA-модули в книгу, сохраняя воспроизводимость сборки.
 function Import-VbaSourceTree {
     param(
@@ -519,9 +487,8 @@ try {
     $results.Range("AK113:AU113").Font.Bold = $true
     $results.Range("AX113:BJ113").Font.Bold = $true
     $results.Columns.ColumnWidth = 10
-    Add-ResultsSummaryHelpLink $results $instructions
 
-    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1:$AE$29'
+    Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1'
     Add-WorkbookName $workbook "rngStrengthSummaryAnchor" $results '$A$36'
     Add-WorkbookName $workbook "rngCrackSummaryAnchor" $results '$A$62'
     Add-WorkbookName $workbook "rngStabilitySummaryAnchor" $results '$A$89'

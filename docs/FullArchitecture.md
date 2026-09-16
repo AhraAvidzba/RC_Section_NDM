@@ -522,8 +522,8 @@ AutoCAD, обновления схемы и сборка общего польз
 
 #### CBatchResultWriter
 
-Роль: пишет верхнюю компактную сводку `rngBatchSummary`, формулы запасов,
-словарь статусов и оформление строк.
+Роль: пишет верхнюю компактную сводку `rngBatchSummary`, статусы проверок,
+минимальные коэффициенты запаса и оформление строк.
 
 Публичные методы: `WriteSummary`, `ClearSummary`, `UpdateElapsedSeconds`.
 
@@ -532,7 +532,7 @@ AutoCAD, обновления схемы и сборка общего польз
 `PutCurrentStateGeometry`, `PutCapacityStateGeometry`,
 `CalculateDepthsPerpendicularToNeutral`, `CapacitySafetyFormula`,
 `CrackWidthFormula`, `CrackSafetyFormula`, `OverallSafetyFormula`,
-`FormatSummary`, `FormatOverallStatusRows`, `WriteStatusDictionary`,
+`FormatSummary`, `FormatOverallStatusRows`,
 `StatusPolicy` и unit-output helpers. Текст пользовательских статусов и
 подсветка строк берутся через `CBatchStatusPolicy`.
 

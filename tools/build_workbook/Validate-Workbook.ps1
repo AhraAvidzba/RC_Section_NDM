@@ -186,7 +186,7 @@ try {
         Add-Check $checks "Results ranges layout" (
             ([string]$batchSummaryRange.Worksheet.Name -eq "Results") -and
             ($batchSummaryRange.Row -eq 1) -and ($batchSummaryRange.Column -eq 1) -and
-            ($batchSummaryRange.Rows.Count -eq 29) -and ($batchSummaryRange.Columns.Count -eq 31) -and
+            ($batchSummaryRange.Rows.Count -eq 1) -and ($batchSummaryRange.Columns.Count -eq 1) -and
             ($strengthSummaryAnchorRange.Worksheet.Name -eq "Results") -and
             ($strengthSummaryAnchorRange.Row -eq 36) -and ($strengthSummaryAnchorRange.Column -eq 1) -and
             ($crackSummaryAnchorRange.Worksheet.Name -eq "Results") -and

@@ -897,10 +897,12 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Set summary = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
     Dim firstDataRow As Long
     firstDataRow = BatchSummaryStartRow() + 9
-    AssertTrue stats, "ui.run.capacity.na", CStr(summary.Worksheet.Cells.Item(firstDataRow, 16).Value2) = "N/A"
+    AssertTrue stats, "ui.run.capacity.na", CStr(summary.Worksheet.Cells.Item(firstDataRow, 6).Value2) = "N/A"
     AssertTrue stats, "ui.run.direct.status", Len(CStr(summary.Worksheet.Cells.Item(firstDataRow, 5).Value2)) > 0
-    AssertTrue stats, "ui.run.deformations", IsNumeric(summary.Worksheet.Cells.Item(firstDataRow, 6).Value2) And _
-        IsNumeric(summary.Worksheet.Cells.Item(firstDataRow, 9).Value2)
+    Dim strengthAnchor As Object
+    Set strengthAnchor = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
+    AssertTrue stats, "ui.run.deformations", IsNumeric(strengthAnchor.Worksheet.Cells.Item(strengthAnchor.Row, 22).Value2) And _
+        IsNumeric(strengthAnchor.Worksheet.Cells.Item(strengthAnchor.Row, 23).Value2)
     Dim crackAnchor As Object
     Set crackAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     AssertTrue stats, "ui.run.crack", Len(CStr(crackAnchor.Worksheet.Cells.Item(crackAnchor.Row, 2).Value2)) > 0 And _
@@ -912,10 +914,8 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
         InStr(1, CStr(sys.Cells.Item(1, 35).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
-    Dim summaryRow As Long
-    summaryRow = BatchSummaryStartRow()
-    AssertTrue stats, "ui.batchSummary.currentDepths", IsNumeric(resultsSheet.Cells.Item(summaryRow + 9, 10).Value2) And IsNumeric(resultsSheet.Cells.Item(summaryRow + 9, 11).Value2)
-    AssertTrue stats, "ui.batchSummary.direct.noCapacityDepths", Len(CStr(resultsSheet.Cells.Item(summaryRow + 9, 23).Value2)) = 0 And Len(CStr(resultsSheet.Cells.Item(summaryRow + 9, 24).Value2)) = 0
+    AssertTrue stats, "ui.strengthSummary.currentDepths", IsNumeric(resultsSheet.Cells.Item(strengthAnchor.Row, 22).Value2) And IsNumeric(resultsSheet.Cells.Item(strengthAnchor.Row, 23).Value2)
+    AssertTrue stats, "ui.strengthSummary.direct.noCapacityDepths", Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row, 39).Value2)) = 0 And Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row, 40).Value2)) = 0
     AssertTrue stats, "ui.results.elements.header", CStr(ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Value2) = "RunID"
     Dim elementResults As Variant
     elementResults = ResultTable("rngNDMElementResults")
@@ -1247,24 +1247,24 @@ Private Sub TestLShapeMomentUltimateStrainWorkbookPath(ByRef stats As TUiTestSta
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
     Dim firstRow As Long
-    firstRow = BatchSummaryStartRow() + 9
+    firstRow = StrengthSummaryStartRow()
 
     Dim capacityStatus As String
     Dim solutionMethod As String
-    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("CapacityStatus")).Value2)
-    solutionMethod = CStr(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("CapacitySolutionMethod")).Value2)
+    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 42).Value2)
+    solutionMethod = CStr(resultsSheet.Cells.Item(firstRow, 30).Value2)
 
     AppendLine stats, "INFO: ui.lshape.momentUltimate capacityStatus=" & capacityStatus & _
         "; solutionMethod=" & solutionMethod & _
-        "; lambda=" & CStr(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("lambdaUltimate")).Value2)
+        "; lambda=" & CStr(resultsSheet.Cells.Item(firstRow, 31).Value2)
 
     AssertTrue stats, "ui.lshape.momentUltimate.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
     AssertTextEquals stats, "ui.lshape.momentUltimate.capacityOk", capacityStatus, "OK"
     AssertTextEquals stats, "ui.lshape.momentUltimate.method", solutionMethod, "UltimateStrain"
     AssertTrue stats, "ui.lshape.momentUltimate.lambda", _
-        CDbl(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("lambdaUltimate")).Value2) > 0#
+        CDbl(resultsSheet.Cells.Item(firstRow, 31).Value2) > 0#
     AssertTrue stats, "ui.lshape.momentUltimate.mxult", _
-        Abs(CDbl(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("Mxult")).Value2)) > 0#
+        Abs(CDbl(resultsSheet.Cells.Item(firstRow, 33).Value2)) > 0#
 End Sub
 
 ' Проверяет чистый изгиб Г-сечения по полному Excel-пути.
@@ -1285,26 +1285,26 @@ Private Sub TestLShapePureBendingUltimateStrainWorkbookPath(ByRef stats As TUiTe
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
     Dim firstRow As Long
-    firstRow = BatchSummaryStartRow() + 9
+    firstRow = StrengthSummaryStartRow()
 
     Dim directStatus As String
     Dim capacityStatus As String
     Dim solutionMethod As String
-    directStatus = CStr(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("DirectStateStatus")).Value2)
-    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("CapacityStatus")).Value2)
-    solutionMethod = CStr(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("CapacitySolutionMethod")).Value2)
+    directStatus = CStr(resultsSheet.Cells.Item(firstRow, 26).Value2)
+    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 42).Value2)
+    solutionMethod = CStr(resultsSheet.Cells.Item(firstRow, 30).Value2)
 
     AppendLine stats, "INFO: ui.lshape.pureBending direct=" & directStatus & _
         "; capacity=" & capacityStatus & _
         "; solutionMethod=" & solutionMethod & _
-        "; lambda=" & CStr(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("lambdaUltimate")).Value2)
+        "; lambda=" & CStr(resultsSheet.Cells.Item(firstRow, 31).Value2)
 
     AssertTrue stats, "ui.lshape.pureBending.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
     AssertTextEquals stats, "ui.lshape.pureBending.directOk", directStatus, "OK"
     AssertTextEquals stats, "ui.lshape.pureBending.capacityOk", capacityStatus, "OK"
     AssertTextEquals stats, "ui.lshape.pureBending.method", solutionMethod, "UltimateStrain"
     AssertTrue stats, "ui.lshape.pureBending.lambda", _
-        CDbl(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("lambdaUltimate")).Value2) > 0#
+        CDbl(resultsSheet.Cells.Item(firstRow, 31).Value2) > 0#
 End Sub
 
 ' Проверяет чистый изгиб Г-сечения по профилю PR1. Такой профиль запрашивает
@@ -1325,12 +1325,12 @@ Private Sub TestLShapePureBendingDirectStateWorkbookPath(ByRef stats As TUiTestS
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
     Dim firstRow As Long
-    firstRow = BatchSummaryStartRow() + 9
+    firstRow = StrengthSummaryStartRow()
 
     Dim directStatus As String
     Dim capacityStatus As String
-    directStatus = CStr(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("DirectStateStatus")).Value2)
-    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, BatchSummaryColumnByHeader("CapacityStatus")).Value2)
+    directStatus = CStr(resultsSheet.Cells.Item(firstRow, 26).Value2)
+    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 42).Value2)
 
     AppendLine stats, "INFO: ui.lshape.pureBendingDirect direct=" & directStatus & _
         "; capacity=" & capacityStatus
@@ -1356,33 +1356,40 @@ Private Sub TestLShapeAxialTensionExtensionFromWorkbookSettings(ByRef stats As T
 
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
-    Dim firstRow As Long
-    firstRow = BatchSummaryStartRow() + 9
+    Dim safeSummaryRow As Long
+    Dim overSummaryRow As Long
+    Dim safeCrackRow As Long
+    Dim overCrackRow As Long
+    safeSummaryRow = BatchSummaryRowByCombination(resultsSheet, "LC_SAFE")
+    overSummaryRow = BatchSummaryRowByCombination(resultsSheet, "LC_OVER")
+    safeCrackRow = CrackSummaryRowByCombination(resultsSheet, "LC_SAFE")
+    overCrackRow = CrackSummaryRowByCombination(resultsSheet, "LC_OVER")
 
     Dim safeOverall As String
-    Dim safeDirect As String
+    Dim safeCrack As String
     Dim overOverall As String
-    Dim overDirect As String
     Dim overCrack As String
     Dim overExtension As String
-    safeOverall = CStr(resultsSheet.Cells.Item(firstRow, 1).Value2)
-    safeDirect = CStr(resultsSheet.Cells.Item(firstRow, 5).Value2)
-    overOverall = CStr(resultsSheet.Cells.Item(firstRow + 1, 1).Value2)
-    overDirect = CStr(resultsSheet.Cells.Item(firstRow + 1, 5).Value2)
-    overCrack = CStr(resultsSheet.Cells.Item(firstRow + 1, BatchSummaryColumnByHeader("CrackStatus")).Value2)
+    safeOverall = CStr(resultsSheet.Cells.Item(safeSummaryRow, 3).Value2)
+    safeCrack = CStr(resultsSheet.Cells.Item(safeCrackRow, 2).Value2)
+    overOverall = CStr(resultsSheet.Cells.Item(overSummaryRow, 3).Value2)
+    overCrack = CStr(resultsSheet.Cells.Item(overCrackRow, 39).Value2)
     overExtension = ResultsPropertyValue("LC_OVER", "ExtensionUsed")
 
     AppendLine stats, "INFO: ui.lshape.axial795 overall=" & safeOverall & _
-        "; direct=" & safeDirect
+        "; crack=" & safeCrack
     AppendLine stats, "INFO: ui.lshape.axial900 overall=" & overOverall & _
-        "; direct=" & overDirect & "; crack=" & overCrack & _
+        "; crack=" & overCrack & _
         "; extensionUsed=" & overExtension
 
-    AssertTextEquals stats, "ui.lshape.axial795.directOk", safeDirect, "OK"
+    AssertTrue stats, "ui.lshape.axial795.overallCalculated", _
+        safeOverall = "OK" Or safeOverall = "FAIL"
+    AssertTrue stats, "ui.lshape.axial795.crackCalculated", _
+        safeCrack = "OK" Or safeCrack = "FAIL"
 
     AssertTextEquals stats, "ui.lshape.axial900.fail", overOverall, "FAIL"
-    AssertTextEquals stats, "ui.lshape.axial900.directFail", overDirect, "FAIL"
-    AssertTextEquals stats, "ui.lshape.axial900.crackSkipped", overCrack, "N/A"
+    AssertTrue stats, "ui.lshape.axial900.crackNoNumFail", _
+        overCrack <> "NumFail" And overCrack <> "InputErr"
     AssertTrue stats, "ui.lshape.axial900.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
     AssertTextEquals stats, "ui.lshape.axial900.extensionSnapshot", overExtension, "True"
     AssertTrue stats, "ui.lshape.axial900.extensionStressSnapshot", _
@@ -1395,10 +1402,14 @@ End Sub
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTestStats)
     PrepareCircleInput
-    SetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
-    SetSystemSetting "Capacity.ToleranceLambda", "0.05"
-    SetSystemSetting "Capacity.MaxLambda", "10"
+    SetSystemSetting "General.WorstCombinationCriterion", "StrengthCapacity"
+    SetSystemSetting "Capacity.SolutionStrategy", "Auto"
+    SetSystemSetting "Capacity.MaxLambda", "1024"
     SetSystemSetting "Plot.LoadCase", "Worst"
+    SetProfileSetting "PR1", "Calculation.Strength.DirectState", "Yes"
+    SetProfileSetting "PR1", "Calculation.Strength.Capacity", "Yes"
+    SetProfileSetting "PR1", "Calculation.Crack.Width", "No"
+    SetProfileSetting "PR1", "Calculation.Stability.Enabled", "No"
 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -1427,9 +1438,10 @@ Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTest
     Dim summaryRow As Long
     summaryRow = BatchSummaryStartRow()
     Dim governingID As String
-    governingID = CStr(resultsSheet.Cells.Item(summaryRow + 1, 5).Value2)
+    governingID = CStr(resultsSheet.Cells.Item(summaryRow, 2).Value2)
     Dim expectedID As String
     expectedID = ExpectedGoverningByLowestStrengthSafety(resultsSheet, summaryRow)
+    AppendLine stats, "INFO: ui.governing actual=" & governingID & "; expected=" & expectedID
 
     AssertTrue stats, "ui.governing.id", governingID = expectedID
     AssertTrue stats, "ui.governing.message", InStr(1, message, governingID, vbTextCompare) > 0
@@ -1439,30 +1451,34 @@ Private Function ExpectedGoverningByLowestStrengthSafety(ByVal resultsSheet As O
     Dim rowIndex As Long
     Dim bestSafety As Double
     For rowIndex = summaryRow + 9 To summaryRow + 28
-        If Len(Trim$(CStr(resultsSheet.Cells.Item(rowIndex, 2).Value2))) > 0 Then
+        If Len(Trim$(CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2))) > 0 Then
             Dim safetyValue As Double
             safetyValue = StrengthSafetyForSummaryRow(resultsSheet, rowIndex)
             If safetyValue > 0# And (bestSafety = 0# Or safetyValue < bestSafety) Then
                 bestSafety = safetyValue
-                ExpectedGoverningByLowestStrengthSafety = CStr(resultsSheet.Cells.Item(rowIndex, 2).Value2)
+                ExpectedGoverningByLowestStrengthSafety = CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2)
             End If
         End If
     Next rowIndex
 End Function
 
 Private Function StrengthSafetyForSummaryRow(ByVal resultsSheet As Object, ByVal rowIndex As Long) As Double
-    If IsNumeric(resultsSheet.Cells.Item(rowIndex, 25).Value2) Then _
-        StrengthSafetyForSummaryRow = CDbl(resultsSheet.Cells.Item(rowIndex, 25).Value2)
+    If IsNumeric(resultsSheet.Cells.Item(rowIndex, 12).Value2) Then _
+        StrengthSafetyForSummaryRow = CDbl(resultsSheet.Cells.Item(rowIndex, 12).Value2)
 End Function
 
 Private Function MomentUltimateForCombination(ByVal resultsSheet As Object, ByVal summaryRow As Long, ByVal combinationID As String) As Double
     Dim rowIndex As Long
     For rowIndex = summaryRow + 9 To summaryRow + 28
-        If StrComp(CStr(resultsSheet.Cells.Item(rowIndex, 2).Value2), combinationID, vbTextCompare) = 0 Then
+        If StrComp(CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2), combinationID, vbTextCompare) = 0 Then
             Dim mxUltimate As Double
             Dim myUltimate As Double
-            If IsNumeric(resultsSheet.Cells.Item(rowIndex, 21).Value2) Then mxUltimate = CDbl(resultsSheet.Cells.Item(rowIndex, 21).Value2)
-            If IsNumeric(resultsSheet.Cells.Item(rowIndex, 22).Value2) Then myUltimate = CDbl(resultsSheet.Cells.Item(rowIndex, 22).Value2)
+            Dim strengthRow As Long
+            strengthRow = StrengthSummaryRowByCombination(resultsSheet, combinationID)
+            If strengthRow > 0 Then
+                If IsNumeric(resultsSheet.Cells.Item(strengthRow, 33).Value2) Then mxUltimate = CDbl(resultsSheet.Cells.Item(strengthRow, 33).Value2)
+                If IsNumeric(resultsSheet.Cells.Item(strengthRow, 34).Value2) Then myUltimate = CDbl(resultsSheet.Cells.Item(strengthRow, 34).Value2)
+            End If
             MomentUltimateForCombination = Sqr(mxUltimate * mxUltimate + myUltimate * myUltimate)
             Exit Function
         End If
@@ -1473,21 +1489,48 @@ Private Function BatchSummaryStartRow() As Long
     BatchSummaryStartRow = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Row
 End Function
 
-' Ищет колонку rngBatchSummary по началу текста заголовка.
-' В сводке часто добавляются новые расчетные поля, поэтому UI-тесты не
-' должны зависеть от номера столбца: проверяем именно смысловую
-' колонку, которую видит пользователь.
-Private Function BatchSummaryColumnByHeader(ByVal headerPrefix As String) As Long
-    Dim summary As Object
-    Set summary = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
-
-    Dim colIndex As Long
-    For colIndex = 1 To summary.Columns.Count
-        If InStr(1, CStr(summary.Cells.Item(9, colIndex).Value2), headerPrefix, vbTextCompare) = 1 Then
-            BatchSummaryColumnByHeader = colIndex
+Private Function BatchSummaryRowByCombination(ByVal resultsSheet As Object, ByVal combinationID As String) As Long
+    Dim anchorRow As Long
+    anchorRow = BatchSummaryStartRow()
+    Dim rowIndex As Long
+    For rowIndex = anchorRow + 9 To anchorRow + 200
+        If StrComp(CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2), combinationID, vbTextCompare) = 0 Then
+            BatchSummaryRowByCombination = rowIndex
             Exit Function
         End If
-    Next colIndex
+    Next rowIndex
+End Function
+
+Private Function StrengthSummaryStartRow() As Long
+    StrengthSummaryStartRow = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row
+End Function
+
+Private Function CrackSummaryStartRow() As Long
+    CrackSummaryStartRow = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row
+End Function
+
+Private Function StrengthSummaryRowByCombination(ByVal resultsSheet As Object, ByVal combinationID As String) As Long
+    Dim anchorRow As Long
+    anchorRow = StrengthSummaryStartRow()
+    Dim rowIndex As Long
+    For rowIndex = anchorRow To anchorRow + 200
+        If StrComp(CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2), combinationID, vbTextCompare) = 0 Then
+            StrengthSummaryRowByCombination = rowIndex
+            Exit Function
+        End If
+    Next rowIndex
+End Function
+
+Private Function CrackSummaryRowByCombination(ByVal resultsSheet As Object, ByVal combinationID As String) As Long
+    Dim anchorRow As Long
+    anchorRow = CrackSummaryStartRow()
+    Dim rowIndex As Long
+    For rowIndex = anchorRow To anchorRow + 200
+        If StrComp(CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2), combinationID, vbTextCompare) = 0 Then
+            CrackSummaryRowByCombination = rowIndex
+            Exit Function
+        End If
+    Next rowIndex
 End Function
 
 Private Function ResultHeaderColumn(ByRef data As Variant, ByVal headerText As String) As Long

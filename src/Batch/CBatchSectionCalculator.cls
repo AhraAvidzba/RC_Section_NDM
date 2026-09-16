@@ -59,6 +59,9 @@ Private mConcreteDepthForMx As Double ' Бетонный габарит по Y �
 Private mConcreteDepthForMy As Double ' Бетонный габарит по X для проверки My, мм.
 Private mGoverningCombinationIndex As Long ' Индекс LC, который стал определяющим в batch summary.
 Private mCrackGoverningCombinationIndex As Long ' Индекс LC с минимальным запасом по раскрытию трещин.
+Private mWorstCombinationIndex As Long ' Индекс LC, выбранный как Worst по пользовательскому критерию Summary.
+Private mWorstCombinationCriterion As String ' StrengthStrain, StrengthCapacity, Cracks или Stability.
+Private mSolverCallCount As Long ' Диагностический счетчик запусков расчетных solver-веток в batch.
 Private mElapsedSeconds As Double ' Полное время пакетного расчета, сек.
 Private mDiagnosticLog As String ' Короткий текстовый журнал по LC для диагностики batch-потока.
 
@@ -163,6 +166,7 @@ Private Sub Class_Initialize()
     mCapacityMaxRetries = 0
     mCapacityBaseLoadSteps = 1
     mCapacitySolverMaxIterations = 60
+    mWorstCombinationCriterion = "StrengthCapacity"
     mStabilityCode = "SP63"
     mStabilityElementLength = 3000#
     mStabilityMu1 = 1#
@@ -217,6 +221,7 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mCrackPsiMode = settings.GetString("SLS.Crack.PsiMode", mCrackPsiMode)
     mCrackFormationPath = settings.GetString("SLS.Crack.InitiationLoadPath", mCrackFormationPath)
     mCrackFormationSolutionStrategy = settings.GetString("SLS.Crack.InitiationSolutionStrategy", mCrackFormationSolutionStrategy)
+    mWorstCombinationCriterion = settings.GetString("General.WorstCombinationCriterion", mWorstCombinationCriterion)
     mCrackTensionZoneMode = settings.GetString("SLS.Crack.TensionZoneMode", mCrackTensionZoneMode)
     If settings.HasKey("SLS.Crack.CoverDistanceMode") Then
         mCrackCoverDistanceMode = settings.GetString("SLS.Crack.CoverDistanceMode", mCrackCoverDistanceMode)
@@ -335,7 +340,9 @@ Public Sub ClearCombinations()
     ClearStabilityDurationLoads
     mGoverningCombinationIndex = 0
     mCrackGoverningCombinationIndex = 0
+    mWorstCombinationIndex = 0
     mElapsedSeconds = 0#
+    mSolverCallCount = 0
     mDiagnosticLog = vbNullString
     mLoadReferenceX = 0#
     mLoadReferenceY = 0#
@@ -573,6 +580,8 @@ Public Sub Execute()
     t0 = Timer
     mGoverningCombinationIndex = 0
     mCrackGoverningCombinationIndex = 0
+    mWorstCombinationIndex = 0
+    mSolverCallCount = 0
     mDiagnosticLog = vbNullString
     ReportStep "Начат пакетный расчет. Количество сочетаний: " & CStr(mCount) & "."
 
@@ -600,6 +609,8 @@ Public Sub Execute()
             End If
         End If
     Next i
+    stage = "SelectWorstCombination"
+    SelectWorstCombination
     stage = "Finalize"
     mElapsedSeconds = Timer - t0
     ReportStep "Пакетный расчет завершен. Время: " & FormatNumberInvariant(mElapsedSeconds) & " с."
@@ -739,6 +750,7 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
         mStabilitySP63Ks, mStabilitySP63DeltaEMin, _
         mStabilitySP63DeltaEMax, mStabilitySP35PhiP, _
         mStabilitySP35NOverNcrLimit, mStabilitySP35Table721, mMomentZeroFilter
+    mSolverCallCount = mSolverCallCount + 1
 
     mResults(index).StoreStabilityResult mStatusPolicy.StabilityStatusFromCalculator(stability), _
         stability, referenceX, referenceY
@@ -1014,6 +1026,7 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     End Select
 
     StoreCapacity index, cap, loadPath, strengthSpec
+    mSolverCallCount = mSolverCallCount + MaxLong(1, cap.Iterations)
     ReportCapacityMethodChoice index, cap, loadPath
 
     ReportValue "Статус несущей способности", mResults(index).CapacityStatus
@@ -1070,6 +1083,7 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
     ConfigureStateRunner runner
     runner.Solve mSection, concreteState, steelState, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
         mResults(index).DirectStateDiagramExtensionEnabled
+    mSolverCallCount = mSolverCallCount + 1
 
     Dim service As CSectionSolver
     Set service = runner.ResultSolver
@@ -1139,6 +1153,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     crack.CheckFormationBeforeWidth mSection, mMaterialProvider, profile.CrackedStateSpec, _
         profile.CrackInitiationSpec, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
         loadState, crackReferenceX, crackReferenceY
+    mSolverCallCount = mSolverCallCount + 1
     mResults(index).CrackStatus = mStatusPolicy.CrackStatusFromCalculator(crack)
     mResults(index).StoreCrackResult crack
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
@@ -1182,6 +1197,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     crack.CalculateAfterFormationCheck runner.ResultSolver, mSection, mMaterialProvider, profile.CrackedStateSpec, _
         profile.CrackInitiationSpec, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
         loadState, crackReferenceX, crackReferenceY
+    mSolverCallCount = mSolverCallCount + 1
     mResults(index).CrackStatus = mStatusPolicy.CrackStatusFromCalculator(crack)
     mResults(index).StoreCrackResult crack
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
@@ -1838,6 +1854,10 @@ Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
 
+Private Function MaxLong(ByVal a As Long, ByVal b As Long) As Long
+    If a > b Then MaxLong = a Else MaxLong = b
+End Function
+
 ' Выбирает худшее сочетание для batch summary и режима Worst.
 ' По пользовательскому требованию Worst относится именно к прочности: после
 ' отказа от пользовательского StrainSafetyFactor выбор идет по запасу
@@ -1886,6 +1906,164 @@ End Function
 ' Возвращает запас по трещинам как величину, обратную использованию.
 Private Function CrackSafetyFactorForGoverning(ByVal index As Long) As Double
     If mResults(index).CrackUtil > 0# Then CrackSafetyFactorForGoverning = 1# / mResults(index).CrackUtil
+End Function
+
+' Выбирает Worst-сочетание по пользовательскому критерию верхней сводки.
+' Этот же индекс затем читают Plot.LoadCase = Worst и AutoCAD.Export.CombinationID = Worst.
+Private Sub SelectWorstCombination()
+    Dim i As Long
+    mWorstCombinationIndex = 0
+    For i = 1 To mCount
+        If mInputs(i).InputValid Then
+            If IsBetterWorstCandidate(i, mWorstCombinationIndex) Then mWorstCombinationIndex = i
+        End If
+    Next i
+    If mWorstCombinationIndex <= 0 Then
+        If mGoverningCombinationIndex > 0 Then
+            mWorstCombinationIndex = mGoverningCombinationIndex
+        Else
+            For i = 1 To mCount
+                If mInputs(i).InputValid Then
+                    mWorstCombinationIndex = i
+                    Exit For
+                End If
+            Next i
+        End If
+    End If
+End Sub
+
+' Сравнивает LC по минимальному положительному запасу выбранного типа.
+' Нулевой запас означает, что соответствующая проверка для LC не применялась
+' или не дала физически интерпретируемого результата.
+Private Function IsBetterWorstCandidate(ByVal candidateIndex As Long, ByVal currentIndex As Long) As Boolean
+    Dim candidateSafety As Double
+    Dim currentSafety As Double
+    candidateSafety = WorstSafetyFactor(candidateIndex)
+    If candidateSafety <= 0# Then Exit Function
+
+    If currentIndex <= 0 Then
+        IsBetterWorstCandidate = True
+    Else
+        currentSafety = WorstSafetyFactor(currentIndex)
+        IsBetterWorstCandidate = (currentSafety <= 0# Or candidateSafety < currentSafety)
+    End If
+End Function
+
+' Возвращает запас LC по критерию General.WorstCombinationCriterion.
+' StrengthCapacity оставлен значением по умолчанию, чтобы сохранить старое
+' поведение Worst до явного выбора пользователем другого критерия.
+Public Function WorstSafetyFactor(ByVal index As Long) As Double
+    Select Case NormalizedWorstCombinationCriterion()
+        Case "StrengthStrain"
+            WorstSafetyFactor = StrengthStrainReserve(index)
+        Case "StrengthCapacity"
+            WorstSafetyFactor = StrengthCapacityReserve(index)
+        Case "Cracks"
+            WorstSafetyFactor = PositiveMin(CrackReserveFactor(index), LongitudinalCrackReserveFactor(index))
+        Case "Stability"
+            WorstSafetyFactor = StabilityReserveForSummary(index)
+    End Select
+End Function
+
+' Нормализует пользовательский критерий выбора Worst. Некорректная строка не
+' роняет расчет, а возвращает прежний консервативный смысл по capacity.
+Private Function NormalizedWorstCombinationCriterion() As String
+    Select Case LCase$(Trim$(mWorstCombinationCriterion))
+        Case "strengthstrain"
+            NormalizedWorstCombinationCriterion = "StrengthStrain"
+        Case "cracks"
+            NormalizedWorstCombinationCriterion = "Cracks"
+        Case "stability"
+            NormalizedWorstCombinationCriterion = "Stability"
+        Case Else
+            NormalizedWorstCombinationCriterion = "StrengthCapacity"
+    End Select
+End Function
+
+' Минимальный запас по предельным деформациям модели прочности.
+' Берутся только реально существующие зоны: если растянутого бетона или
+' сжатой арматуры в состоянии нет, эта составляющая не участвует в минимуме.
+Public Function StrengthStrainReserve(ByVal index As Long) As Double
+    Dim stateResult As CSectionStateResult
+    Set stateResult = mResults(index).FindState(sstStrengthState)
+    If stateResult Is Nothing Then Exit Function
+    If Not mStatusPolicy.IsFinished(stateResult.Status) Then Exit Function
+
+    Dim reserve As Double
+    reserve = 1E+100
+    AddStrainReserve reserve, stateResult.HasConcreteCompression, _
+        StrengthConcreteCompressionLimitForCombination(index), stateResult.MinConcreteStrain
+    If StrengthConcreteTensionLimitEnabledForCombination(index) Then _
+        AddStrainReserve reserve, stateResult.HasConcreteTension, _
+            StrengthConcreteTensionLimitForCombination(index), stateResult.MaxConcreteStrain
+    AddStrainReserve reserve, stateResult.HasSteelCompression, _
+        StrengthSteelCompressionLimitForCombination(index), stateResult.MinSteelStrain
+    AddStrainReserve reserve, stateResult.HasSteelTension, _
+        StrengthSteelTensionLimitForCombination(index), stateResult.MaxSteelStrain
+    If reserve < 1E+90 Then StrengthStrainReserve = reserve
+End Function
+
+' Добавляет одну деформационную составляющую в общий минимум запаса.
+Private Sub AddStrainReserve(ByRef reserve As Double, ByVal hasValue As Boolean, _
+        ByVal limitValue As Double, ByVal actualValue As Double)
+    If Not hasValue Then Exit Sub
+    If Abs(limitValue) <= 0.000000000000001 Then Exit Sub
+    If Abs(actualValue) <= 0.000000000000001 Then Exit Sub
+    reserve = MinDouble(reserve, Abs(limitValue) / Abs(actualValue))
+End Sub
+
+' Запас по несущей способности: фактически найденный lambda выбранной
+' траектории. Это ровно прежний критерий strength-Worst.
+Public Function StrengthCapacityReserve(ByVal index As Long) As Double
+    If mStatusPolicy.IsFinished(mResults(index).CapacityStatus) And mResults(index).LambdaCapacity > 0# Then _
+        StrengthCapacityReserve = mResults(index).LambdaCapacity
+End Function
+
+' Запас по нормальным трещинам как обратная величина к использованию a_crc.
+Public Function CrackReserveFactor(ByVal index As Long) As Double
+    If mStatusPolicy.IsFinished(mResults(index).CrackStatus) And mResults(index).CrackUtil > 0# Then _
+        CrackReserveFactor = 1# / mResults(index).CrackUtil
+End Function
+
+' Запас по продольным трещинам как обратная величина к sigma_b/Rb,mc2.
+Public Function LongitudinalCrackReserveFactor(ByVal index As Long) As Double
+    If mStatusPolicy.IsFinished(mResults(index).LongitudinalCrackStatus) And _
+            mResults(index).LongitudinalCrackUtil > 0# Then _
+        LongitudinalCrackReserveFactor = 1# / mResults(index).LongitudinalCrackUtil
+End Function
+
+' Минимальный запас по устойчивости с учетом пользовательского лимита СП 35
+' для ветви N/Ncr <= Stability.SP35.NOverNcrLimit.
+Public Function StabilityReserveForSummary(ByVal index As Long) As Double
+    If Not mStatusPolicy.IsFinished(mResults(index).StabilityStatus) Then Exit Function
+    StabilityReserveForSummary = PositiveMin( _
+        StabilityPlaneReserveForSummary(index, 1), _
+        StabilityPlaneReserveForSummary(index, 2))
+    If StabilityReserveForSummary <= 0# And mResults(index).StabilityReserveFactor > 0# Then _
+        StabilityReserveForSummary = mResults(index).StabilityReserveFactor
+End Function
+
+' Возвращает запас одной главной плоскости устойчивости. Для СП 35 eta-ветви
+' в расчетный запас входит не просто Ncr/N, а проверяемое условие N/Ncr <= limit.
+Private Function StabilityPlaneReserveForSummary(ByVal index As Long, ByVal planeIndex As Long) As Double
+    Dim applicable As Boolean
+    Dim rawReserve As Double
+    Dim branchText As String
+    If planeIndex = 1 Then
+        applicable = mResults(index).StabilityPlaneApplicable1
+        rawReserve = mResults(index).StabilityReserve1
+        branchText = mResults(index).StabilityPlaneBranch1
+    Else
+        applicable = mResults(index).StabilityPlaneApplicable2
+        rawReserve = mResults(index).StabilityReserve2
+        branchText = mResults(index).StabilityPlaneBranch2
+    End If
+    If Not applicable Then Exit Function
+    If rawReserve <= 0# Then Exit Function
+
+    StabilityPlaneReserveForSummary = rawReserve
+    If InStr(1, branchText, "SP35-eta", vbTextCompare) > 0 And mStabilitySP35NOverNcrLimit > 0# Then _
+        StabilityPlaneReserveForSummary = rawReserve * mStabilitySP35NOverNcrLimit
 End Function
 
 ' Берет минимальное положительное значение из двух запасов.
@@ -2632,6 +2810,26 @@ Public Property Get CrackGoverningCombinationName() As String
     If mCrackGoverningCombinationIndex > 0 Then CrackGoverningCombinationName = mInputs(mCrackGoverningCombinationIndex).Comment
 End Property
 
+Public Property Get WorstCombinationIndex() As Long
+    WorstCombinationIndex = mWorstCombinationIndex
+End Property
+
+Public Property Get WorstCombinationID() As String
+    If mWorstCombinationIndex > 0 Then WorstCombinationID = mInputs(mWorstCombinationIndex).CombinationID
+End Property
+
+Public Property Get WorstCombinationName() As String
+    If mWorstCombinationIndex > 0 Then WorstCombinationName = mInputs(mWorstCombinationIndex).Comment
+End Property
+
+Public Property Get WorstCombinationCriterion() As String
+    WorstCombinationCriterion = NormalizedWorstCombinationCriterion()
+End Property
+
+Public Property Get SolverCallCount() As Long
+    SolverCallCount = mSolverCallCount
+End Property
+
 Public Property Get ElapsedSeconds() As Double
     ElapsedSeconds = mElapsedSeconds
 End Property
@@ -2737,6 +2935,16 @@ End Property
 Public Property Get StrengthCapacityRequested(ByVal index As Long) As Boolean
     If mProfiles.HasProfile(mInputs(index).ProfileId) Then _
         StrengthCapacityRequested = mProfiles.ProfileById(mInputs(index).ProfileId).StrengthCapacityEnabled
+End Property
+
+Public Property Get CrackWidthRequested(ByVal index As Long) As Boolean
+    If mProfiles.HasProfile(mInputs(index).ProfileId) Then _
+        CrackWidthRequested = mProfiles.ProfileById(mInputs(index).ProfileId).CrackWidthEnabled
+End Property
+
+Public Property Get StabilityRequested(ByVal index As Long) As Boolean
+    If mProfiles.HasProfile(mInputs(index).ProfileId) Then _
+        StabilityRequested = mProfiles.ProfileById(mInputs(index).ProfileId).StabilityEnabled
 End Property
 
 Public Property Get StateAvailableCount() As Long

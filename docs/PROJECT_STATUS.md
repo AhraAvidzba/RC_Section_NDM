@@ -40,7 +40,7 @@
 - Все настройки берутся с `Config`; расчетное ядро не читает Excel-листы.
 - Материалы задаются параметрами I/II ГПС; готовые TwoLine/ThreeLine-диаграммы создает `CMaterialModelProvider`.
 - `Capacity.MaxLambda` является защитным верхним пределом расширения скобки `LoadMultiplier`; `UltimateStrain` не ограничивает уже найденную предельную lambda этой настройкой.
-- `rngBatchSummary` расположен на `Results!A1:AE29`; подробная прочность выводится отдельной таблицей от `rngStrengthSummaryAnchor = Results!A36`, подробные трещины - от `rngCrackSummaryAnchor = Results!A62`, а подробная устойчивость - от `rngStabilitySummaryAnchor = Results!A89`.
+- `rngBatchSummary` расположен на `Results!A1`; подробная прочность выводится отдельной таблицей от `rngStrengthSummaryAnchor = Results!A36`, подробные трещины - от `rngCrackSummaryAnchor = Results!A62`, а подробная устойчивость - от `rngStabilitySummaryAnchor = Results!A89`.
 
 ## Исторические этапы
 

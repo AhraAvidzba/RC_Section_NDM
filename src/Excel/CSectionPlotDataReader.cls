@@ -140,9 +140,8 @@ End Sub
 
 ' Определяет, какой LC показывать на схеме.
 ' Значение Worst разворачивается в LC из верхней строки batch summary
-' "Определяющее сочетание по прочности". Эта строка формируется batch-слоем
-' по прочностному правилу: минимальный CapacitySafetyFactor среди рассчитанных
-' сочетаний. Общий MinSafetyFactor остается только справочной колонкой.
+' "Определяющее сочетание". Критерий выбора задает
+' General.WorstCombinationCriterion, а схема только читает сохраненный результат.
 Private Function ResolveLoadCase(ByVal workbook As Object, ByVal requested As String) As String
     Dim valueText As String
     valueText = Trim$(requested)
@@ -154,16 +153,21 @@ Private Function ResolveLoadCase(ByVal workbook As Object, ByVal requested As St
         Exit Function
     End If
 
-    Dim data As Variant
-    data = workbook.Names.Item("rngBatchSummary").RefersToRange.Value2
-    If UBound(data, 1) >= 2 And UBound(data, 2) >= 5 Then
-        ResolveLoadCase = Trim$(SafeText(data(2, 5)))
-    End If
+    ResolveLoadCase = ReadWorstCombinationID(workbook)
     If Len(ResolveLoadCase) = 0 Then ResolveLoadCase = FirstCalculatedLoadCaseFromResults(workbook)
     If Len(ResolveLoadCase) = 0 Then ResolveLoadCase = FirstLoadCaseFromSectionProperties(workbook)
     mLoadCaseComment = ReadBatchSummaryComment(workbook, ResolveLoadCase)
     If Len(ResolveLoadCase) = 0 Then Err.Raise vbObjectError + 4702, "CSectionPlotDataReader", _
-        "В rngBatchSummary не найдено определяющее сочетание по прочности для Plot.LoadCase = Worst."
+        "В rngBatchSummary не найдено определяющее сочетание для Plot.LoadCase = Worst."
+End Function
+
+' Читает верхнее поле "Определяющее сочетание" из новой якорной сводки.
+Private Function ReadWorstCombinationID(ByVal workbook As Object) As String
+    On Error GoTo Failed
+    Dim anchor As Object
+    Set anchor = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
+    ReadWorstCombinationID = Trim$(SafeText(anchor.Offset(0, 1).Value2))
+Failed:
 End Function
 
 ' Применяет настройки визуализации профиля, назначенного выбранному LC.
@@ -286,16 +290,16 @@ Private Function ReadBatchSummaryComment(ByVal workbook As Object, ByVal loadCas
     On Error GoTo Failed
     If Len(Trim$(loadCase)) = 0 Then Exit Function
 
-    Dim data As Variant
-    data = workbook.Names.Item("rngBatchSummary").RefersToRange.Value2
+    Dim anchor As Object
+    Set anchor = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
 
-    Dim rowIndex As Long
-    For rowIndex = 10 To UBound(data, 1)
-        If StrComp(Trim$(SafeText(data(rowIndex, 2))), loadCase, vbTextCompare) = 0 Then
-            ReadBatchSummaryComment = Trim$(SafeText(data(rowIndex, 3)))
+    Dim rowOffset As Long
+    For rowOffset = 9 To 1000
+        If StrComp(Trim$(SafeText(anchor.Offset(rowOffset, 0).Value2)), loadCase, vbTextCompare) = 0 Then
+            ReadBatchSummaryComment = Trim$(SafeText(anchor.Offset(rowOffset, 1).Value2))
             Exit Function
         End If
-    Next rowIndex
+    Next rowOffset
 Failed:
 End Function
 

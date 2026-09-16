@@ -501,11 +501,9 @@ End Function
 
 Private Function ReadGoverningCombinationID(ByVal workbook As Object) As String
     On Error GoTo Failed
-    Dim data As Variant
-    data = workbook.Names.Item("rngBatchSummary").RefersToRange.Value2
-    If UBound(data, 1) >= 2 And UBound(data, 2) >= 5 Then
-        ReadGoverningCombinationID = Trim$(SafeText(data(2, 5)))
-    End If
+    Dim anchor As Object
+    Set anchor = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
+    ReadGoverningCombinationID = Trim$(SafeText(anchor.Offset(0, 1).Value2))
 Failed:
 End Function
 
