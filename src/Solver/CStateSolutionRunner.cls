@@ -45,6 +45,7 @@ Private mExtensionUsed As Boolean ' True, если найденное состо
 Private mWithinPhysicalRange As Boolean ' True, если все элементы остались в физических eps-пределах.
 Private mDiagnosticLog As String ' Короткие строки о retry-попытках прямого НДС.
 Private mInitialGuessApplied As Boolean ' True, если стартовая плоскость была задана не нулевой.
+Private mSolverCallCount As Long ' Сколько раз runner действительно запускал CSectionSolver.Solve.
 
 ' Задает безопасные настройки по умолчанию для unit-тестов и вызовов без Config.
 Private Sub Class_Initialize()
@@ -99,6 +100,7 @@ Public Sub SolveWithInitialSolver(ByVal section As CSectionModel, _
     ApplyInitialSolverOrGuess section, concreteMaterial, steelMaterial, _
         targetN, targetMx, targetMy, initialSolver, service
 
+    mSolverCallCount = mSolverCallCount + 1
     service.Solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
     Set mSolver = service
 
@@ -314,6 +316,7 @@ Private Function TryRunRetry(ByVal section As CSectionModel, _
     If disableLineSearch Then retry.LineSearchEnabled = False
     retry.LoadSteps = loadSteps
     retry.SetInitialLoadState eps0, kx, ky, initialN, initialMx, initialMy
+    mSolverCallCount = mSolverCallCount + 1
     retry.Solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
 
     If retry.Converged Then
@@ -381,6 +384,7 @@ Private Function ElementStrain(ByVal solver As CSectionSolver, ByVal x As Double
 End Function
 
 Private Sub AppendDiagnostic(ByVal lineText As String)
+    If Not mDiagnosticsEnabled Then Exit Sub
     If Len(lineText) = 0 Then Exit Sub
     mDiagnosticLog = mDiagnosticLog & lineText & vbCrLf
 End Sub
@@ -391,6 +395,7 @@ Private Sub ClearResult()
     mWithinPhysicalRange = False
     mDiagnosticLog = vbNullString
     mInitialGuessApplied = False
+    mSolverCallCount = 0
 End Sub
 
 Private Function FormatNumberInvariant(ByVal value As Double) As String
@@ -411,6 +416,10 @@ End Property
 
 Public Property Get Iterations() As Long
     If Not mSolver Is Nothing Then Iterations = mSolver.Iterations
+End Property
+
+Public Property Get SolverCallCount() As Long
+    SolverCallCount = mSolverCallCount
 End Property
 
 Public Property Get ExtensionUsed() As Boolean

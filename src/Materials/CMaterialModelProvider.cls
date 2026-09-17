@@ -54,10 +54,12 @@ Private mConcreteElasticModulus(1 To 3) As Double ' Eb выбранной бет
 Private mSteelElasticModulus(1 To 3) As Double ' Es выбранной модели арматуры, МПа.
 Private mDirectStateDiagramExtension As Boolean ' Разрешает numerical extension только для StateSolution.
 Private mInitialized As Boolean ' Защита от использования provider-а до чтения параметров.
+Private mDiagramCache As Object ' Кэш CMaterialDiagram по MaterialModelSpec; диаграммы после Initialize неизменяемы.
 
 ' Читает Config, создает параметры материалов и строит физические диаграммы.
 Public Sub Initialize(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Err.Raise vbObjectError + 3240, "CMaterialModelProvider", "Настройки материалов не переданы."
+    Set mDiagramCache = CreateObject("Scripting.Dictionary")
 
     Set mConcreteParameters = New CConcreteMaterialParameters
     mConcreteParameters.LoadFromSettings settings, units
@@ -434,15 +436,41 @@ End Function
 Public Function ConcreteMaterialFromSpec(ByVal spec As CMaterialModelSpec) As CMaterialDiagram
     EnsureInitialized
     ValidateSpec spec
-    Set ConcreteMaterialFromSpec = BuildConcreteDiagram(LimitStateGroupFromSpec(spec), _
+
+    Dim cacheKey As String
+    cacheKey = MaterialDiagramCacheKey("ConcretePhysical", spec)
+    Dim cached As CMaterialDiagram
+    Set cached = CachedDiagram(cacheKey)
+    If Not cached Is Nothing Then
+        Set ConcreteMaterialFromSpec = cached
+        Exit Function
+    End If
+
+    Dim diagram As CMaterialDiagram
+    Set diagram = BuildConcreteDiagram(LimitStateGroupFromSpec(spec), _
         spec.ConcreteDiagramText, spec.ConcreteTensionText)
+    StoreCachedDiagram cacheKey, diagram
+    Set ConcreteMaterialFromSpec = diagram
 End Function
 
 ' Возвращает физическую диаграмму арматуры по спецификации профиля.
 Public Function SteelMaterialFromSpec(ByVal spec As CMaterialModelSpec) As CMaterialDiagram
     EnsureInitialized
     ValidateSpec spec
-    Set SteelMaterialFromSpec = BuildSteelDiagram(LimitStateGroupFromSpec(spec), spec.SteelDiagramText)
+
+    Dim cacheKey As String
+    cacheKey = MaterialDiagramCacheKey("SteelPhysical", spec)
+    Dim cached As CMaterialDiagram
+    Set cached = CachedDiagram(cacheKey)
+    If Not cached Is Nothing Then
+        Set SteelMaterialFromSpec = cached
+        Exit Function
+    End If
+
+    Dim diagram As CMaterialDiagram
+    Set diagram = BuildSteelDiagram(LimitStateGroupFromSpec(spec), spec.SteelDiagramText)
+    StoreCachedDiagram cacheKey, diagram
+    Set SteelMaterialFromSpec = diagram
 End Function
 
 ' Возвращает бетонную диаграмму прямого StateSolution по спецификации профиля.
@@ -450,26 +478,56 @@ End Function
 ' настройка включена. Capacity, CrackInitiation и crack-состояния вызывают
 ' физический ConcreteMaterialFromSpec без extension.
 Public Function ConcreteStateMaterialFromSpec(ByVal spec As CMaterialModelSpec) As CMaterialDiagram
+    EnsureInitialized
+    ValidateSpec spec
+
+    Dim cacheKey As String
+    cacheKey = MaterialDiagramCacheKey("ConcreteState|" & CStr(mDirectStateDiagramExtension), spec)
+    Dim cached As CMaterialDiagram
+    Set cached = CachedDiagram(cacheKey)
+    If Not cached Is Nothing Then
+        Set ConcreteStateMaterialFromSpec = cached
+        Exit Function
+    End If
+
     Dim physical As CMaterialDiagram
     Set physical = ConcreteMaterialFromSpec(spec)
+    Dim diagram As CMaterialDiagram
     If mDirectStateDiagramExtension Then
-        Set ConcreteStateMaterialFromSpec = DiagramWithExtension(physical, _
+        Set diagram = DiagramWithExtension(physical, _
             mConcreteParameters.Eb, mConcreteParameters.Ebt, True, False)
     Else
-        Set ConcreteStateMaterialFromSpec = physical
+        Set diagram = physical
     End If
+    StoreCachedDiagram cacheKey, diagram
+    Set ConcreteStateMaterialFromSpec = diagram
 End Function
 
 ' Возвращает диаграмму арматуры прямого StateSolution по спецификации профиля.
 Public Function SteelStateMaterialFromSpec(ByVal spec As CMaterialModelSpec) As CMaterialDiagram
+    EnsureInitialized
+    ValidateSpec spec
+
+    Dim cacheKey As String
+    cacheKey = MaterialDiagramCacheKey("SteelState|" & CStr(mDirectStateDiagramExtension), spec)
+    Dim cached As CMaterialDiagram
+    Set cached = CachedDiagram(cacheKey)
+    If Not cached Is Nothing Then
+        Set SteelStateMaterialFromSpec = cached
+        Exit Function
+    End If
+
     Dim physical As CMaterialDiagram
     Set physical = SteelMaterialFromSpec(spec)
+    Dim diagram As CMaterialDiagram
     If mDirectStateDiagramExtension Then
-        Set SteelStateMaterialFromSpec = DiagramWithExtension(physical, _
+        Set diagram = DiagramWithExtension(physical, _
             mSteelParameters.Esc, mSteelParameters.Es, True, True)
     Else
-        Set SteelStateMaterialFromSpec = physical
+        Set diagram = physical
     End If
+    StoreCachedDiagram cacheKey, diagram
+    Set SteelStateMaterialFromSpec = diagram
 End Function
 
 Public Function ConcreteCompressionLimitFromSpec(ByVal spec As CMaterialModelSpec) As Double
@@ -608,6 +666,26 @@ Private Sub ValidateSpec(ByVal spec As CMaterialModelSpec)
     If Not spec.IsComplete Then Err.Raise vbObjectError + 3251, "CMaterialModelProvider", "MaterialModelSpec заполнен не полностью."
 End Sub
 
+' Возвращает диаграмму из кэша, если такой MaterialModelSpec уже запрашивался.
+Private Function CachedDiagram(ByVal cacheKey As String) As CMaterialDiagram
+    If mDiagramCache Is Nothing Then Set mDiagramCache = CreateObject("Scripting.Dictionary")
+    If mDiagramCache.Exists(cacheKey) Then Set CachedDiagram = mDiagramCache.Item(cacheKey)
+End Function
+
+' Сохраняет готовую диаграмму в кэш provider-а. Диаграммы используются как
+' read-only объекты, поэтому повторная выдача одного экземпляра безопасна.
+Private Sub StoreCachedDiagram(ByVal cacheKey As String, ByVal diagram As CMaterialDiagram)
+    If diagram Is Nothing Then Exit Sub
+    If mDiagramCache Is Nothing Then Set mDiagramCache = CreateObject("Scripting.Dictionary")
+    If mDiagramCache.Exists(cacheKey) Then mDiagramCache.Remove cacheKey
+    mDiagramCache.Add cacheKey, diagram
+End Sub
+
+' Формирует ключ кэша: роль диаграммы + полный профиль material spec.
+Private Function MaterialDiagramCacheKey(ByVal roleKey As String, ByVal spec As CMaterialModelSpec) As String
+    MaterialDiagramCacheKey = roleKey & "|" & spec.SpecKey
+End Function
+
 Public Function LimitStateGroup(ByVal purpose As ECalculationPurpose) As String
     EnsureInitialized
     LimitStateGroup = mLimitStateGroup(PhysicalPurposeSlot(purpose))
@@ -715,6 +793,7 @@ Public Sub InitializeFromParameters(ByVal concreteParameters As CConcreteMateria
 
     Set mConcreteParameters = concreteParameters
     Set mSteelParameters = steelParameters
+    Set mDiagramCache = CreateObject("Scripting.Dictionary")
     mDirectStateDiagramExtension = directStateDiagramExtension
     BuildPurpose cpStrength, "I", strengthConcreteDiagram, strengthConcreteTension, strengthSteelDiagram
     BuildPurpose cpMcrc, "II", mcrcConcreteDiagram, "UseDiagram", mcrcSteelDiagram

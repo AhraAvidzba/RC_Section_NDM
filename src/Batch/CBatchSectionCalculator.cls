@@ -64,6 +64,9 @@ Private mWorstCombinationCriterion As String ' StrengthStrain, StrengthCapacity,
 Private mSolverCallCount As Long ' Диагностический счетчик запусков расчетных solver-веток в batch.
 Private mElapsedSeconds As Double ' Полное время пакетного расчета, сек.
 Private mDiagnosticLog As String ' Короткий текстовый журнал по LC для диагностики batch-потока.
+Private mTransformedReferenceValid(1 To 2) As Boolean ' Кэш центров приведенного сечения для ULS/SLS внутри одного batch.
+Private mTransformedReferenceX(1 To 2) As Double ' X центра приведенного сечения, мм.
+Private mTransformedReferenceY(1 To 2) As Double ' Y центра приведенного сечения, мм.
 
 Private mCrackAllowable As Double ' Допустимая ширина раскрытия трещины a_crc,ult, мм.
 Private mCrackPsiMode As String ' User или Auto: как определять psi_s для нормальных трещин.
@@ -195,6 +198,7 @@ Public Sub Initialize(ByVal section As CSectionModel, ByVal materialProvider As 
     If materialProvider Is Nothing Then Err.Raise vbObjectError + 3902, "CBatchSectionCalculator", "Material provider не передан."
     Set mSection = section
     Set mMaterialProvider = materialProvider
+    ClearTransformedReferenceCache
     ConfigureConcreteMomentDepths
 End Sub
 
@@ -750,7 +754,6 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
         mStabilitySP63Ks, mStabilitySP63DeltaEMin, _
         mStabilitySP63DeltaEMax, mStabilitySP35PhiP, _
         mStabilitySP35NOverNcrLimit, mStabilitySP35Table721, mMomentZeroFilter
-    mSolverCallCount = mSolverCallCount + 1
 
     mResults(index).StoreStabilityResult mStatusPolicy.StabilityStatusFromCalculator(stability), _
         stability, referenceX, referenceY
@@ -910,6 +913,14 @@ End Function
 ' сечения бетон + арматура, а не только бетонного центра.
 Private Sub TransformedReferencePoint(ByVal valueSet As EMaterialValueSet, _
         ByRef referenceX As Double, ByRef referenceY As Double)
+    Dim slot As Long
+    slot = TransformedReferenceSlot(valueSet)
+    If mTransformedReferenceValid(slot) Then
+        referenceX = mTransformedReferenceX(slot)
+        referenceY = mTransformedReferenceY(slot)
+        Exit Sub
+    End If
+
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
     props.CalculateTransformedByModuli mSection, _
@@ -917,7 +928,31 @@ Private Sub TransformedReferencePoint(ByVal valueSet As EMaterialValueSet, _
         mMaterialProvider.SteelElasticModulusFromValueSet(valueSet)
     referenceX = props.CentroidX
     referenceY = props.CentroidY
+    mTransformedReferenceX(slot) = referenceX
+    mTransformedReferenceY(slot) = referenceY
+    mTransformedReferenceValid(slot) = True
 End Sub
+
+' Очищает кэш центров приведенного сечения, когда batch получает новую
+' геометрию или новый provider материалов. Сами значения зависят только от
+' CSectionModel и модулей Es/Eb выбранного набора характеристик.
+Private Sub ClearTransformedReferenceCache()
+    Dim i As Long
+    For i = 1 To 2
+        mTransformedReferenceValid(i) = False
+        mTransformedReferenceX(i) = 0#
+        mTransformedReferenceY(i) = 0#
+    Next i
+End Sub
+
+' Переводит набор характеристик материалов в маленький индекс кэша.
+Private Function TransformedReferenceSlot(ByVal valueSet As EMaterialValueSet) As Long
+    If valueSet = mvsSLS Then
+        TransformedReferenceSlot = 2
+    Else
+        TransformedReferenceSlot = 1
+    End If
+End Function
 
 ' Возвращает центр приведенного сечения для распознавания истинного
 ' центрального растяжения в расчете трещин. Если задана модель
@@ -1085,7 +1120,7 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
     ConfigureStateRunner runner
     runner.Solve mSection, concreteState, steelState, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
         mResults(index).DirectStateDiagramExtensionEnabled
-    mSolverCallCount = mSolverCallCount + 1
+    mSolverCallCount = mSolverCallCount + MaxLong(1, runner.SolverCallCount)
 
     Dim service As CSectionSolver
     Set service = runner.ResultSolver

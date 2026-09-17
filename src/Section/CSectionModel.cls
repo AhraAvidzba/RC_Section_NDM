@@ -621,6 +621,17 @@ Public Property Get ConcreteArea(ByVal index As Long) As Double
     ConcreteArea = mConcreteArea(index)
 End Property
 
+' Отдает координаты и площадь бетонного элемента одним обращением. Этот метод
+' нужен горячим расчетным циклам solver-а, чтобы не делать три одинаковые
+' проверки индекса через отдельные свойства на каждом конечном элементе.
+Public Sub ConcreteElementForSolver(ByVal index As Long, ByRef xCoord As Double, _
+        ByRef yCoord As Double, ByRef area As Double)
+    CheckConcreteIndex index
+    xCoord = mConcreteX(index)
+    yCoord = mConcreteY(index)
+    area = mConcreteArea(index)
+End Sub
+
 Public Property Get ConcreteMaterialID(ByVal index As Long) As Long
     CheckConcreteIndex index
     ConcreteMaterialID = mConcreteMaterialID(index)
@@ -714,6 +725,17 @@ Public Property Get RebarArea(ByVal index As Long) As Double
     CheckRebarIndex index
     RebarArea = mRebarArea(index)
 End Property
+
+' Отдает координаты и площадь стержня одним обращением для горячего цикла
+' равновесия. Расчетная механика не меняется: возвращаются те же данные, что
+' и через RebarX/RebarY/RebarArea.
+Public Sub RebarElementForSolver(ByVal index As Long, ByRef xCoord As Double, _
+        ByRef yCoord As Double, ByRef area As Double)
+    CheckRebarIndex index
+    xCoord = mRebarX(index)
+    yCoord = mRebarY(index)
+    area = mRebarArea(index)
+End Sub
 
 Public Property Get RebarDiameter(ByVal index As Long) As Double
     CheckRebarIndex index

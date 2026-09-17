@@ -2046,12 +2046,15 @@ Private Function SolveState(ByVal section As CSectionModel, ByVal concreteMateri
     Set runner = New CStateSolutionRunner
     ConfigureStateRunner runner
     If startSolver Is Nothing Then
-        mSolverCallCount = mSolverCallCount + 1
         runner.Solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, allowRetryStarts
     Else
-        mSolverCallCount = mSolverCallCount + 1
         runner.SolveWithInitialSolver section, concreteMaterial, steelMaterial, _
             targetN, targetMx, targetMy, startSolver, allowRetryStarts
+    End If
+    If runner.SolverCallCount > 0 Then
+        mSolverCallCount = mSolverCallCount + runner.SolverCallCount
+    Else
+        mSolverCallCount = mSolverCallCount + 1
     End If
     If Len(runner.DiagnosticLog) > 0 Then AppendDiagnostic runner.DiagnosticLog
     Set SolveState = runner.ResultSolver

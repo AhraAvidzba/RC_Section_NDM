@@ -684,9 +684,7 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
     If TypeName(steelMaterial) = "CMaterialDiagram" Then Set steelDiagram = steelMaterial
 
     For i = 1 To section.ConcreteCount
-        xCoord = section.ConcreteX(i)
-        yCoord = section.ConcreteY(i)
-        area = section.ConcreteArea(i)
+        section.ConcreteElementForSolver i, xCoord, yCoord, area
         strain = eps0 + kx * yCoord + ky * xCoord
         If buildTangent Then
             If strain < mMinConcreteStrain Then mMinConcreteStrain = strain
@@ -721,9 +719,7 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
 
     If section.RebarCount > 0 Then
         For i = 1 To section.RebarCount
-            xCoord = section.RebarX(i)
-            yCoord = section.RebarY(i)
-            area = section.RebarArea(i)
+            section.RebarElementForSolver i, xCoord, yCoord, area
             strain = eps0 + kx * yCoord + ky * xCoord
             If buildTangent Then
                 If strain < mMinSteelStrain Then mMinSteelStrain = strain
