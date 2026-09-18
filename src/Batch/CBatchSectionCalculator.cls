@@ -61,7 +61,7 @@ Private mGoverningCombinationIndex As Long ' Индекс LC, который с�
 Private mCrackGoverningCombinationIndex As Long ' Индекс LC с минимальным запасом по раскрытию трещин.
 Private mWorstCombinationIndex As Long ' Индекс LC, выбранный как Worst по пользовательскому критерию Summary.
 Private mWorstCombinationCriterion As String ' StrengthStrain, StrengthCapacity, Cracks или Stability.
-Private mSolverCallCount As Long ' Диагностический счетчик запусков расчетных solver-веток в batch.
+Private mSolverCallCount As Long ' Сколько раз за batch запускался CSectionSolver.Solve для поиска равновесия НДС.
 Private mElapsedSeconds As Double ' Полное время пакетного расчета, сек.
 Private mDiagnosticLog As String ' Короткий текстовый журнал по LC для диагностики batch-потока.
 Private mTransformedReferenceValid(1 To 2) As Boolean ' Кэш центров приведенного сечения для ULS/SLS внутри одного batch.
@@ -587,6 +587,7 @@ Public Sub Execute()
     mWorstCombinationIndex = 0
     mSolverCallCount = 0
     mDiagnosticLog = vbNullString
+    ResetSectionEquilibriumSolveCount
     ReportStep "Начат пакетный расчет. Количество сочетаний: " & CStr(mCount) & "."
 
     Dim i As Long
@@ -616,6 +617,7 @@ Public Sub Execute()
     stage = "SelectWorstCombination"
     SelectWorstCombination
     stage = "Finalize"
+    mSolverCallCount = SectionEquilibriumSolveCount()
     mElapsedSeconds = Timer - t0
     ReportStep "Пакетный расчет завершен. Время: " & FormatNumberInvariant(mElapsedSeconds) & " с."
     Exit Sub
@@ -1023,26 +1025,41 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
 
     Set cap = New CCapacitySolver
     ConfigureCapacity cap, strengthSpec
+
+    Dim pureAxialForMethod As Boolean
+    pureAxialForMethod = CapacityPathIsPureAxialForMethod(index, loadPath)
+
     ReportValue "Стратегия поиска несущей", NormalizedCapacitySolutionStrategy()
     Select Case NormalizedCapacitySolutionStrategy()
         Case "Auto"
-            If loadPath.ForceOnly Then
-                ReportStep "Несущая способность: стратегия Auto. Траектория масштабирует только продольную силу, поэтому сразу используется LoadMultiplier: для такой постановки UltimateStrain вырождается на горизонтальном участке диаграммы."
+            If pureAxialForMethod Then
+                ReportStep "Несущая способность: стратегия Auto. После переноса к центру приведенного сечения траектория является чисто осевой, поэтому сразу используется LoadMultiplier: для такой постановки UltimateStrain вырождается на горизонтальном участке диаграммы."
                 cap.SolveByLoadPathMultiplier mSection, mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
                     mMaterialProvider.SteelMaterialFromSpec(strengthSpec), loadPath.NOffset, loadPath.NBase, _
                     loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, True
             Else
-                ReportStep "Несущая способность: стратегия Auto сначала пробует UltimateStrain; если предельная плоскость не находится устойчиво, тот же путь нагрузки повторяется через LoadMultiplier."
+                If loadPath.ForceOnly Then
+                    ReportStep "Несущая способность: стратегия Auto. Пользователь масштабирует только N, но относительно центра приведенного сечения есть изгибающий момент; сначала пробуем UltimateStrain, затем при неудаче LoadMultiplier."
+                Else
+                    ReportStep "Несущая способность: стратегия Auto сначала пробует UltimateStrain; если предельная плоскость не находится устойчиво, тот же путь нагрузки повторяется через LoadMultiplier."
+                End If
                 cap.SolveByAutoLoadPath mSection, mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
                     mMaterialProvider.SteelMaterialFromSpec(strengthSpec), loadPath.NOffset, loadPath.NBase, _
-                    loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase
+                    loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, _
+                    False, loadPath.ForceOnly
             End If
         Case "UltimateStrain"
-            If loadPath.ForceOnly Then
-                ReportStep "Несущая способность: выбран UltimateStrain, но силовая траектория λ*N считается через LoadMultiplier как более устойчивая одномерная постановка."
+            If pureAxialForMethod Then
+                ReportStep "Несущая способность: выбран UltimateStrain, но после переноса к центру приведенного сечения траектория чисто осевая и считается через LoadMultiplier как более устойчивая одномерная постановка."
                 cap.SolveByLoadPathMultiplier mSection, mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
                     mMaterialProvider.SteelMaterialFromSpec(strengthSpec), loadPath.NOffset, loadPath.NBase, _
                     loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, True
+            ElseIf loadPath.ForceOnly Then
+                ReportStep "Несущая способность: выбран UltimateStrain. Пользователь масштабирует только N, но относительно центра приведенного сечения есть изгибающий момент; сначала пробуем UltimateStrain, затем при неудаче LoadMultiplier."
+                cap.SolveByAutoLoadPath mSection, mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
+                    mMaterialProvider.SteelMaterialFromSpec(strengthSpec), loadPath.NOffset, loadPath.NBase, _
+                    loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, _
+                    False, True
             Else
                 ReportStep "Несущая способность: расчет идет напрямую через UltimateStrain по выбранной λ-траектории."
                 cap.SolveByUltimateLoadPath mSection, mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
@@ -1063,8 +1080,7 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     End Select
 
     StoreCapacity index, cap, loadPath, strengthSpec
-    mSolverCallCount = mSolverCallCount + MaxLong(1, cap.Iterations)
-    ReportCapacityMethodChoice index, cap, loadPath
+    ReportCapacityMethodChoice index, cap, loadPath, pureAxialForMethod
 
     ReportValue "Статус несущей способности", mResults(index).CapacityStatus
     ReportValue "Фактический метод несущей", mResults(index).CapacitySolutionMethod
@@ -1076,11 +1092,43 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     End If
 End Sub
 
+' Определяет, является ли силовая lambda-траектория действительно чисто
+' осевой для выбора численного метода. Проверка выполняется не по сырым
+' Mx/My из таблицы, а через CSectionLoadState: усилия переносятся к центру
+' приведенного сечения модели прочности и проходят общий ZeroMoment-фильтр.
+Private Function CapacityPathIsPureAxialForMethod(ByVal index As Long, _
+        ByVal loadPath As CCapacityLoadPath) As Boolean
+    If loadPath Is Nothing Then Exit Function
+    If Not loadPath.ForceOnly Then Exit Function
+
+    Dim referenceX As Double
+    Dim referenceY As Double
+    StrengthReferencePointForCombination index, referenceX, referenceY
+
+    Dim loadState As CSectionLoadState
+    Set loadState = LoadStateForCombination(index)
+
+    CapacityPathIsPureAxialForMethod = MomentIsZeroForMethod(loadState.MxAboutPoint(referenceY), mConcreteDepthForMx) And _
+        MomentIsZeroForMethod(loadState.MyAboutPoint(referenceX), mConcreteDepthForMy)
+End Function
+
+' Единая локальная проверка инженерного нуля для выбора метода capacity.
+' Основное зануление уже делает CSectionLoadState, но повторная проверка
+' через CMomentZeroFilter оставляет поведение устойчивым при прямых тестах
+' или при отключенном фильтре.
+Private Function MomentIsZeroForMethod(ByVal momentValue As Double, ByVal concreteDepth As Double) As Boolean
+    If mMomentZeroFilter Is Nothing Then
+        MomentIsZeroForMethod = (Abs(momentValue) <= 0.000000001)
+    Else
+        MomentIsZeroForMethod = mMomentZeroFilter.IsMomentEffectivelyZero(momentValue, concreteDepth)
+    End If
+End Function
+
 ' Поясняет в отчете, какая ветка поиска несущей фактически была принята.
 ' Низкоуровневый DiagnosticLog остается рядом, но здесь пользователь сразу
 ' видит смысл переключения Auto/UltimateStrain/LoadMultiplier по-русски.
 Private Sub ReportCapacityMethodChoice(ByVal index As Long, ByVal cap As CCapacitySolver, _
-        ByVal loadPath As CCapacityLoadPath)
+        ByVal loadPath As CCapacityLoadPath, ByVal pureAxialForMethod As Boolean)
     If cap Is Nothing Then Exit Sub
 
     Dim strategy As String
@@ -1092,15 +1140,21 @@ Private Sub ReportCapacityMethodChoice(ByVal index As Long, ByVal cap As CCapaci
         If StrComp(methodName, "UltimateStrain", vbTextCompare) = 0 Then
             ReportStep "Итог поиска несущей: Auto принял результат UltimateStrain, резервный переход на LoadMultiplier не потребовался."
         ElseIf StrComp(methodName, "LoadMultiplier", vbTextCompare) = 0 Then
-            If loadPath.ForceOnly Then
-                ReportStep "Итог поиска несущей: Auto использовал LoadMultiplier сразу, потому что выбранная траектория масштабирует только N."
+            If pureAxialForMethod Then
+                ReportStep "Итог поиска несущей: Auto использовал LoadMultiplier сразу, потому что траектория чисто осевая относительно центра приведенного сечения."
             Else
                 ReportStep "Итог поиска несущей: Auto переключился на LoadMultiplier, потому что UltimateStrain не дал устойчивую предельную точку; подробная причина ниже в диагностике solver-а."
             End If
         End If
     ElseIf StrComp(strategy, "UltimateStrain", vbTextCompare) = 0 And _
             StrComp(methodName, "LoadMultiplier", vbTextCompare) = 0 Then
-        ReportStep "Итог поиска несущей: фактически использован LoadMultiplier, так как силовая траектория λ*N не решается устойчиво прямым UltimateStrain."
+        If pureAxialForMethod Then
+            ReportStep "Итог поиска несущей: фактически использован LoadMultiplier, так как траектория чисто осевая относительно центра приведенного сечения и не решается устойчиво прямым UltimateStrain."
+        ElseIf loadPath.ForceOnly Then
+            ReportStep "Итог поиска несущей: UltimateStrain не дал устойчивую предельную точку для силовой траектории с эксцентриситетом; фактически использован LoadMultiplier."
+        Else
+            ReportStep "Итог поиска несущей: фактически использован LoadMultiplier."
+        End If
     End If
 End Sub
 
@@ -1120,7 +1174,6 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
     ConfigureStateRunner runner
     runner.Solve mSection, concreteState, steelState, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
         mResults(index).DirectStateDiagramExtensionEnabled
-    mSolverCallCount = mSolverCallCount + MaxLong(1, runner.SolverCallCount)
 
     Dim service As CSectionSolver
     Set service = runner.ResultSolver
@@ -1191,7 +1244,6 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     crack.CheckFormationBeforeWidth mSection, mMaterialProvider, profile.CrackedStateSpec, _
         profile.CrackInitiationSpec, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
         loadState, crackReferenceX, crackReferenceY
-    mSolverCallCount = mSolverCallCount + crack.SolverCallCount
     mResults(index).CrackStatus = mStatusPolicy.CrackStatusFromCalculator(crack)
     mResults(index).StoreCrackResult crack
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
@@ -1232,12 +1284,9 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     End If
 
     ReportStep "Запускается расчет ширины раскрытия нормальных трещин."
-    Dim crackSolverCountBeforeWidth As Long
-    crackSolverCountBeforeWidth = crack.SolverCallCount
     crack.CalculateAfterFormationCheck runner.ResultSolver, mSection, mMaterialProvider, profile.CrackedStateSpec, _
         profile.CrackInitiationSpec, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
         loadState, crackReferenceX, crackReferenceY
-    mSolverCallCount = mSolverCallCount + MaxLong(0, crack.SolverCallCount - crackSolverCountBeforeWidth)
     mResults(index).CrackStatus = mStatusPolicy.CrackStatusFromCalculator(crack)
     mResults(index).StoreCrackResult crack
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
@@ -1397,10 +1446,11 @@ Private Sub StoreCapacity(ByVal index As Long, ByVal cap As CCapacitySolver, _
             mResults(index).CapacityStateMy = cap.LastSolver.Myint
             StoreCapacityUltimateAtLoadPoint index, cap.LastSolver.Nint, cap.LastSolver.Mxint, cap.LastSolver.Myint
         Else
-            StoreCapacityUltimateAtLoadPoint index, _
-                loadPath.NOffset + cap.LambdaUltimate * loadPath.NBase, _
-                loadPath.MxOffset + cap.LambdaUltimate * loadPath.MxBase, _
-                loadPath.MyOffset + cap.LambdaUltimate * loadPath.MyBase
+            Dim targetN As Double
+            Dim targetMx As Double
+            Dim targetMy As Double
+            loadPath.Target cap.LambdaUltimate, targetN, targetMx, targetMy
+            StoreCapacityUltimateAtLoadPoint index, targetN, targetMx, targetMy
         End If
     End If
     mResults(index).MomentUltimate = Sqr(mResults(index).MxUltimate * mResults(index).MxUltimate + mResults(index).MyUltimate * mResults(index).MyUltimate)
@@ -1805,7 +1855,7 @@ Private Function TranslateDiagnosticLine(ByVal lineText As String) As String
     translated = Replace$(translated, "probe=", "проба=")
     translated = Replace$(translated, "step=", "шаг=")
     translated = Replace$(translated, "iter=", "итерация=")
-    translated = Replace$(translated, "attempt=", "попытка=")
+    translated = Replace$(translated, "attempt=", "повтор НДС=")
     translated = Replace$(translated, "converged=True", "сошлось=да")
     translated = Replace$(translated, "converged=False", "сошлось=нет")
     translated = Replace$(translated, "state=", "состояние=")
@@ -2134,7 +2184,11 @@ Public Property Get CombinationName(ByVal index As Long) As String
 End Property
 
 Public Property Get ProfileId(ByVal index As Long) As String
-    ProfileId = mInputs(index).ProfileId
+    If Len(mResults(index).ProfileId) > 0 Then
+        ProfileId = mResults(index).ProfileId
+    Else
+        ProfileId = mInputs(index).ProfileId
+    End If
 End Property
 
 Public Property Get CapacityLoadPath(ByVal index As Long) As String

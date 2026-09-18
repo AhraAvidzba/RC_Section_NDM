@@ -188,7 +188,7 @@ function Get-SteelMaterialParametersCatalog {
 function Get-CalculationProfilesCatalog {
     @(
         @{ Caption = "[Общее]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
-        @{ Caption = "Имя профиля"; Key = "Profile.DisplayName"; PR1 = "Прочность"; PR2 = "Трещины"; PR3 = "Полный расчет"; PR4 = "НДС"; Comment = "Короткое имя профиля для пользователя." },
+        @{ Caption = "Имя профиля"; Key = "Profile.DisplayName"; PR1 = "PR1"; PR2 = "PR2"; PR3 = "PR3"; PR4 = "PR4"; Comment = "Короткое имя профиля для пользователя; можно переименовать без изменения технического ID профиля." },
         @{ Caption = "Описание"; Key = "Profile.Description"; PR1 = "НДС по прочности и несущая способность"; PR2 = "Расчет раскрытия нормальных и продольных трещин"; PR3 = "Прочность, capacity и трещины"; PR4 = "Только прямое НДС по прочности"; Comment = "Пояснение, что делает профиль." },
 
         @{ Caption = "[Запрашиваемые расчеты]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
@@ -1160,7 +1160,7 @@ function Get-SettingsInstructionCatalog {
         "На Results между таблицами должны оставаться две чистые строки. Если места не хватает, расчет не начинается; сдвиньте вниз rngStrengthSummaryAnchor, rngCrackSummaryAnchor, rngStabilitySummaryAnchor и/или rngNDMElementResults, а для правых snapshot-блоков при необходимости сдвиньте rngNDMSectionGeometry, rngNDMSectionProperties, rngNDMMaterialDiagrams, rngNDMSectionAnnotations.",
         "CombinationID - короткое имя сочетания. Оно используется в Results, в заголовке схемы, в выборе Plot.LoadCase и AutoCAD.Export.CombinationID.",
         "N, Mx и My вводятся в текущих INPUT-единицах из блока единиц. Пустой Mx или My считается нулем, поэтому одноосный изгиб можно задавать как N + Mx или N + My без заполнения второго момента.",
-        "ProfileId задает расчетный профиль из таблицы расчетных профилей. В строке сочетания нужно указать заголовок того профильного столбца, по которому это сочетание должно рассчитываться.",
+        "ProfileId задает расчетный профиль из таблицы расчетных профилей. В сочетании пользователь выбирает имя из строки Profile.DisplayName; если это имя переименовать в профилях, выпадающий список обновится. Технические PR1/PR2 остаются внутренними стабильными ID колонок и также принимаются для совместимости.",
         "Профиль определяет только, какие расчеты запрошены и какие материальные модели использовать. Порядок расчета и зависимости между состояниями задает программа, а не строка профиля.",
         "CapacityLoadPath задает, какие компоненты нагрузки масштабируются при поиске несущей способности: λ*Mx, λ*My, λ*Mxy, λ*N или λ*NMxy. Эта настройка находится в строке сочетания, потому что разные сочетания могут требовать разной траектории поиска.",
         "Если выбран λ*N, продольная сила N умножается на λ, а момент от ее смещенной линии действия масштабируется вместе с N. Если выбран λ*Mxy, N остается постоянной, а масштабируется только пользовательский вектор моментов.",
@@ -2460,20 +2460,10 @@ function Add-LoadCombinationsTable {
     $loadRange.Borders.Weight = 2
     $loadRange.Borders.Color = 12632256
 
-    $profileListColumn = 132
     $capacityLoadPathListColumn = 133
-    $profileOptions = @("PR1", "PR2", "PR3", "PR4")
-    for ($i = 0; $i -lt $profileOptions.Count; $i++) {
-        $Sheet.Cells.Item($i + 1, $profileListColumn).Value2 = $profileOptions[$i]
-    }
-    $profileColName = ConvertTo-ExcelColumn $profileListColumn
-    $profileListAddress = "=$" + $profileColName + '$1:$' + $profileColName + '$' + $profileOptions.Count
-    $profileRange = $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 4), $Sheet.Cells.Item($HeaderRow + 20, $StartColumn + 4))
-    $profileRange.Validation.Delete()
-    $profileRange.Validation.Add(3, 1, 1, $profileListAddress)
-    $profileRange.Validation.IgnoreBlank = $false
-    $profileRange.Validation.InCellDropdown = $true
-    $Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 4).Value2 = "PR1"
+    $defaultProfileRow = Get-CalculationProfilesCatalog | Where-Object { $_.Key -eq "Profile.DisplayName" } | Select-Object -First 1
+    $defaultProfileName = $defaultProfileRow.PR1
+    $Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 4).Value2 = $defaultProfileName
 
     $lambda = [char]0x03BB
     $capacityLoadPathOptions = @("$lambda*Mx", "$lambda*My", "$lambda*Mxy", "$lambda*N", "$lambda*NMxy")
@@ -2489,6 +2479,41 @@ function Add-LoadCombinationsTable {
     $capacityLoadPathRange.Validation.InCellDropdown = $true
 
     Set-WorkbookNameByBounds $Workbook "rngLoadCombinations" $Sheet $HeaderRow $StartColumn ($HeaderRow + 20) ($StartColumn + 6)
+}
+
+# Подключает выпадающий список профилей после создания rngCalculationProfiles.
+# Ячейки сочетаний остаются обычным пользовательским вводом без формул; динамика
+# сидит только в служебном списке, который ссылается на строку Profile.DisplayName.
+function Add-LoadProfileValidation {
+    param([object]$Workbook, [object]$Sheet, [int]$ListColumn)
+
+    $loadRange = $Workbook.Names.Item("rngLoadCombinations").RefersToRange
+    $profilesRange = $Workbook.Names.Item("rngCalculationProfiles").RefersToRange
+
+    $displayRow = 0
+    for ($r = 1; $r -le $profilesRange.Rows.Count; $r++) {
+        if ([string]$profilesRange.Cells.Item($r, 2).Value2 -eq "Profile.DisplayName") {
+            $displayRow = $r
+            break
+        }
+    }
+    if ($displayRow -eq 0) { return }
+
+    $profileCount = [Math]::Max(0, $profilesRange.Columns.Count - 3)
+    if ($profileCount -le 0) { return }
+
+    for ($i = 0; $i -lt $profileCount; $i++) {
+        $sourceCell = $profilesRange.Cells.Item($displayRow, 3 + $i)
+        $Sheet.Cells.Item($i + 1, $ListColumn).Formula = "=" + $sourceCell.Address($true, $true)
+    }
+
+    $colName = ConvertTo-ExcelColumn $ListColumn
+    $listAddress = "=$" + $colName + '$1:$' + $colName + '$' + $profileCount
+    $profileInputRange = $Sheet.Range($loadRange.Cells.Item(2, 5), $loadRange.Cells.Item($loadRange.Rows.Count, 5))
+    $profileInputRange.Validation.Delete()
+    $profileInputRange.Validation.Add(3, 1, 1, $listAddress)
+    $profileInputRange.Validation.IgnoreBlank = $false
+    $profileInputRange.Validation.InCellDropdown = $true
 }
 
 # Рисует таблицу постоянных/длительных нагрузок для расчета устойчивости.
@@ -3234,6 +3259,7 @@ function Apply-SystemSettingsLayout {
     $rightRow += $concreteRows.Count + 1 + $rightBlockGap
 
     Add-CalculationProfilesTable $Workbook $Sheet $rightRow $rightColumn
+    Add-LoadProfileValidation $Workbook $Sheet 132
     $rightRow += (Get-CalculationProfilesCatalog).Count + 2 + $rightBlockGap
 
     Add-PlotAnnotationSettingsTable $Workbook $Sheet $rightRow $rightColumn

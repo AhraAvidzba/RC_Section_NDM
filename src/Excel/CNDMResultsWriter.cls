@@ -33,7 +33,7 @@ Private Const MATERIAL_DIAGRAM_COLUMNS As Long = 11 ' Каталог уника�
 Private Const PHYSICAL_TOLERANCE As Double = 0.000000001 ' Порог, ниже которого напряжение считается NearZero.
 Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 61 ' Строки общих свойств сечения до LC-зависимых блоков.
 Private Const LC_SECTION_PROPERTY_ROWS As Long = 23 ' Строки свойств одного LC без metadata named-state.
-Private Const STATE_SECTION_PROPERTY_ROWS As Long = 10 ' Строки metadata одного сохраненного named-state.
+Private Const STATE_SECTION_PROPERTY_ROWS As Long = 12 ' Строки metadata одного сохраненного named-state.
 Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' Единая ширина всех столбцов Results.
 Private Const SNAPSHOT_TITLE_OFFSET As Long = 2 ' Общая синяя строка находится на две строки выше нижних snapshot-якорей.
 
@@ -714,6 +714,12 @@ Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As L
                 OutputCurvature(stateResult.KappaX, units), OutputCurvatureUnit(units), "Кривизна KappaX для named-state."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "KappaY", _
                 OutputCurvature(stateResult.KappaY, units), OutputCurvatureUnit(units), "Кривизна KappaY для named-state."
+            PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "NeutralLine.Angle", _
+                NeutralLineAngleValue(stateResult.KappaX, stateResult.KappaY), "rad", _
+                "Угол нейтральной линии от глобальной оси X против часовой стрелки."
+            PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "NeutralLine.SignedDistance", _
+                OutputLengthVariant(NeutralLineSignedDistanceValue(stateResult.Epsilon0, stateResult.KappaX, stateResult.KappaY), units), _
+                OutputLengthUnit(units), "Знаковое расстояние от начала координат до нейтральной линии по нормали (KappaY, KappaX)."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "ExtensionUsed", _
                 BooleanText(stateResult.ExtensionUsed), "-", "True, если этот StateSolution использовал numerical extension."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "Status", _
@@ -723,6 +729,66 @@ Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As L
         End If
     Next stateIndex
 End Sub
+
+' Возвращает угол нейтральной линии для поля eps = eps0 + kx*y + ky*x.
+' Если кривизны равны нулю, нейтральной линии нет и поле Results остается пустым.
+Private Function NeutralLineAngleValue(ByVal kappaX As Double, ByVal kappaY As Double) As Variant
+    If NeutralCurvatureNorm(kappaX, kappaY) <= 0.000000000000001 Then
+        NeutralLineAngleValue = vbNullString
+    Else
+        NeutralLineAngleValue = Atn2Local(-kappaY, kappaX)
+    End If
+End Function
+
+' Возвращает знаковое расстояние c/sqrt(a^2+b^2) для линии
+' kappaY*x + kappaX*y + epsilon0 = 0. Знак привязан к нормали (kappaY, kappaX).
+Private Function NeutralLineSignedDistanceValue(ByVal epsilon0 As Double, _
+        ByVal kappaX As Double, ByVal kappaY As Double) As Variant
+    Dim normValue As Double
+    normValue = NeutralCurvatureNorm(kappaX, kappaY)
+    If normValue <= 0.000000000000001 Then
+        NeutralLineSignedDistanceValue = vbNullString
+    Else
+        NeutralLineSignedDistanceValue = epsilon0 / normValue
+    End If
+End Function
+
+' Норма вектора нормали нейтральной линии. Она же показывает, существует ли
+' линия: при нулевых kappa все сечение имеет постоянную деформацию.
+Private Function NeutralCurvatureNorm(ByVal kappaX As Double, ByVal kappaY As Double) As Double
+    NeutralCurvatureNorm = Sqr(kappaX * kappaX + kappaY * kappaY)
+End Function
+
+' Переводит длину, которая может быть пустой Variant, в OUTPUT-единицы.
+Private Function OutputLengthVariant(ByVal value As Variant, ByVal units As CUnitSystem) As Variant
+    If Len(CStr(value)) = 0 Then
+        OutputLengthVariant = vbNullString
+    Else
+        OutputLengthVariant = OutputLength(CDbl(value), units)
+    End If
+End Function
+
+' Локальный atan2 нужен writer-у для справочного угла нейтральной линии.
+Private Function Atn2Local(ByVal y As Double, ByVal x As Double) As Double
+    If Abs(x) <= 0.000000000000001 Then
+        If y > 0# Then
+            Atn2Local = GEOM_PI / 2#
+        ElseIf y < 0# Then
+            Atn2Local = -GEOM_PI / 2#
+        Else
+            Atn2Local = 0#
+        End If
+    Else
+        Atn2Local = Atn(y / x)
+        If x < 0# Then
+            If y >= 0# Then
+                Atn2Local = Atn2Local + GEOM_PI
+            Else
+                Atn2Local = Atn2Local - GEOM_PI
+            End If
+        End If
+    End If
+End Function
 
 ' Считает точную высоту rngNDMSectionProperties до выделения массива.
 ' Это важно для полного snapshot-а: при динамическом числе LC и нескольких named-state

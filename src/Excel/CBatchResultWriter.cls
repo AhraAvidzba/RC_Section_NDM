@@ -253,7 +253,7 @@ Private Sub PutMetaRows(ByRef data() As Variant, ByVal batch As CBatchSectionCal
     data(2, 1) = batch.WorstCombinationName
     data(2, 2) = "Комментарий определяющего сочетания"
     data(3, 1) = batch.SolverCallCount
-    data(3, 2) = "Количество вызовов решателя"
+    data(3, 2) = "Количество решений НДС"
     data(4, 1) = batch.ElapsedSeconds
     data(4, 2) = "Время расчета, с"
 End Sub

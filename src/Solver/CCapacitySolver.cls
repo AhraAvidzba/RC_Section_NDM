@@ -190,13 +190,14 @@ Public Sub SolveByUltimateLoadPath(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nOffset As Double, ByVal nBase As Double, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
-        ByVal myOffset As Double, ByVal myBase As Double)
+        ByVal myOffset As Double, ByVal myBase As Double, _
+        Optional ByVal allowPureAxialRedirect As Boolean = True)
     ClearResult
     mSolutionMethod = "UltimateStrain"
 
     If Not ValidateLoadPathCapacityInputs(section, concreteMaterial, steelMaterial, nBase, mxBase, myBase) Then Exit Sub
     If Not ValidateUltimateStrainSettings() Then Exit Sub
-    If IsPureAxialLoadPath(nOffset, nBase, mxOffset, mxBase, myOffset, myBase) Then
+    If allowPureAxialRedirect And IsPureAxialLoadPath(nOffset, nBase, mxOffset, mxBase, myOffset, myBase) Then
         SolvePureAxialUltimateByLoadMultiplier section, concreteMaterial, steelMaterial, _
             nOffset, nBase, mxOffset, mxBase, myOffset, myBase
         Exit Sub
@@ -351,9 +352,11 @@ Public Sub SolveByAutoLoadPath(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nOffset As Double, ByVal nBase As Double, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
-        ByVal myOffset As Double, ByVal myBase As Double)
+        ByVal myOffset As Double, ByVal myBase As Double, _
+        Optional ByVal allowPureAxialRedirect As Boolean = True, _
+        Optional ByVal allowForcePathRetainedLimit As Boolean = False)
     SolveByUltimateLoadPath section, concreteMaterial, steelMaterial, _
-        nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowPureAxialRedirect
     If mConverged Or mLimitState = STATE_INVALID_INPUT Then Exit Sub
 
     Dim firstStopReason As String
@@ -364,7 +367,7 @@ Public Sub SolveByAutoLoadPath(ByVal section As CSectionModel, _
     firstDiagnostics = mDiagnosticLog
 
     SolveByLoadPathMultiplier section, concreteMaterial, steelMaterial, _
-        nOffset, nBase, mxOffset, mxBase, myOffset, myBase
+        nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathRetainedLimit
 
     If mDiagnosticsEnabled Then
         mDiagnosticLog = "Auto: первая попытка UltimateStrain не дала принятую предельную точку; статус=" & _

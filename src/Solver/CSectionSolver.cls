@@ -154,6 +154,7 @@ Public Sub Solve(ByVal section As CSectionModel, _
     ClearResult
     ValidateInputs section, concreteMaterial, steelMaterial
     If Not ValidateSolverMethod() Then Exit Sub
+    RecordSectionEquilibriumSolve
     If mUseInitialState Then
         mEpsilon0 = mInitialEpsilon0
         mKappaX = mInitialKappaX

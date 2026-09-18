@@ -36,6 +36,8 @@ Public Function RunBatchCalculationTests() As String
     TestBatchGoverningUsesStrengthProfilesOnly stats
     AppendLine stats, "RUN: TestBatchPureAxialCapacityUsesNult"
     TestBatchPureAxialCapacityUsesNult stats
+    AppendLine stats, "RUN: TestBatchEccentricAxialCapacityTriesUltimateStrain"
+    TestBatchEccentricAxialCapacityTriesUltimateStrain stats
     AppendLine stats, "RUN: TestBatchLShapeN200CapacityPathNDoesNotNumFail"
     TestBatchLShapeN200CapacityPathNDoesNotNumFail stats
     AppendLine stats, "RUN: TestBatchExplicitCapacityLoadPathScalesMxy"
@@ -352,6 +354,23 @@ Private Sub TestBatchPureAxialCapacityUsesNult(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.nult.axialUltimate", Abs(batch.NUltimate(1)) > Abs(batch.N(1))
     AssertTrue stats, "batch.nult.noMomentUltimate", Abs(batch.MomentUltimate(1)) < 0.000001
     AssertTrue stats, "batch.nult.governing", batch.GoverningCombinationID = "N_ONLY"
+End Sub
+
+' Проверяет, что "только N" не считается чистой осевой траекторией, если
+' после переноса в центр приведенного сечения остается изгибающий момент.
+' Путь lambda*N сохраняется, но стратегия Auto может пробовать UltimateStrain.
+Private Sub TestBatchEccentricAxialCapacityTriesUltimateStrain(ByRef stats As TBatchTestStats)
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.ApplyLoadReference 40#, -25#
+    batch.AddCombination "N_ECC", -150000#, 0#, 0#, "PR1", "eccentric axial", ChrW$(&H3BB) & "*N"
+    batch.Execute
+
+    AssertTrue stats, "batch.nEcc.path", batch.CapacityLoadPathKey(1) = "LambdaN"
+    AssertTrue stats, "batch.nEcc.status", batch.CapacityStatus(1) = "OK" Or batch.CapacityStatus(1) = "FAIL"
+    AssertTrue stats, "batch.nEcc.method", batch.CapacitySolutionMethod(1) = "UltimateStrain"
+    AssertTrue stats, "batch.nEcc.loadPointMomentsRemainZero", _
+        Abs(batch.MxUltimate(1)) < 100000# And Abs(batch.MyUltimate(1)) < 100000#
 End Sub
 
 ' Проверяет пользовательский сценарий из книги: Г-сечение, нагрузка
@@ -3510,7 +3529,7 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
         ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row = 115
     AssertTrue stats, "batch.writer.meta.worstLabel", CStr(resultsSheet.Cells.Item(summaryRow, 2).Value2) = "Определяющее сочетание"
     AssertTrue stats, "batch.writer.meta.worstValue", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = batch.WorstCombinationID
-    AssertTrue stats, "batch.writer.meta.solverCalls", CStr(resultsSheet.Cells.Item(summaryRow + 2, 2).Value2) = "Количество вызовов решателя"
+    AssertTrue stats, "batch.writer.meta.solverCalls", CStr(resultsSheet.Cells.Item(summaryRow + 2, 2).Value2) = "Количество решений НДС"
     AssertTrue stats, "batch.writer.meta.valuesCentered", resultsSheet.Cells.Item(summaryRow, 1).HorizontalAlignment = -4108 And _
         resultsSheet.Cells.Item(summaryRow + 3, 1).HorizontalAlignment = -4108
     AssertTrue stats, "batch.writer.header.statusGroup", CStr(resultsSheet.Cells.Item(summaryRow + 5, 5).Value2) = "статус проверки"

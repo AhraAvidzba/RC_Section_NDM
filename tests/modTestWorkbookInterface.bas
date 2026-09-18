@@ -942,6 +942,9 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(geometryResults, "MaterialClass") = 0
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
     AssertTrue stats, "ui.results.properties.hasStateEpsilon0", ResultsPropertyExists("LC1", "State.CrackedState.Epsilon0")
+    AssertTrue stats, "ui.results.properties.hasStateNeutralLine", _
+        ResultsPropertyExists("LC1", "State.CrackedState.NeutralLine.Angle") And _
+        ResultsPropertyExists("LC1", "State.CrackedState.NeutralLine.SignedDistance")
     AssertTrue stats, "ui.results.properties.noLegacyPlane", _
         Not ResultsPropertyExists("LC1", "Epsilon0") And _
         Not ResultsPropertyExists("LC1", "KappaX") And _
@@ -1679,8 +1682,8 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
         SystemSettingValidationHasOptions("AutoCAD.Export.LoadPointEnabled", Array("Yes", "No"))
     AssertTrue stats, "ui.validation.autocadCombination", AutoCADCombinationValidationIsDynamic()
     AssertTrue stats, "ui.validation.plotLoadCase", PlotLoadCaseValidationIsDynamic()
-    AssertTrue stats, "ui.validation.loadProfileId", _
-        LoadCombinationValidationHasOptions(5, Array("PR1", "PR2", "PR3", "PR4"))
+    AssertTrue stats, "ui.validation.loadProfileId", LoadProfileValidationUsesDisplayNames()
+    AssertTrue stats, "ui.validation.loadProfileId.noFormula", LoadProfileFirstValueHasNoFormula()
     AssertTrue stats, "ui.validation.plotLabels", _
         SystemSettingValidationHasOptions("Plot.ResultLabelsEnabled", Array("Yes", "No"))
     AssertTrue stats, "ui.validation.plotPrincipalAxes", _
@@ -2724,6 +2727,47 @@ Private Function LoadCombinationValidationHasOptions(ByVal valueColumn As Long, 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
     LoadCombinationValidationHasOptions = ValidationCellHasOptions(loads.Cells.Item(2, valueColumn), expectedOptions)
+    Exit Function
+Failed:
+End Function
+
+Private Function LoadProfileValidationUsesDisplayNames() As Boolean
+    On Error GoTo Failed
+
+    Dim loads As Object
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+
+    Dim formulaText As String
+    formulaText = CStr(loads.Cells.Item(2, 5).Validation.Formula1)
+    If Left$(formulaText, 1) <> "=" Then Exit Function
+
+    Dim listRange As Object
+    Set listRange = loads.Worksheet.Range(Mid$(formulaText, 2))
+
+    Dim profiles As Object
+    Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    Dim displayRow As Long
+    For displayRow = 1 To profiles.Rows.Count
+        If CStr(profiles.Cells.Item(displayRow, 2).Value2) = "Profile.DisplayName" Then Exit For
+    Next displayRow
+    If displayRow > profiles.Rows.Count Then Exit Function
+
+    Dim i As Long
+    For i = 1 To listRange.Cells.Count
+        If Not CBool(listRange.Cells.Item(i, 1).HasFormula) Then Exit Function
+        If CStr(listRange.Cells.Item(i, 1).Value2) <> CStr(profiles.Cells.Item(displayRow, i + 2).Value2) Then Exit Function
+    Next i
+    LoadProfileValidationUsesDisplayNames = True
+    Exit Function
+Failed:
+End Function
+
+Private Function LoadProfileFirstValueHasNoFormula() As Boolean
+    On Error GoTo Failed
+
+    Dim loads As Object
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    LoadProfileFirstValueHasNoFormula = Not CBool(loads.Cells.Item(2, 5).HasFormula)
     Exit Function
 Failed:
 End Function

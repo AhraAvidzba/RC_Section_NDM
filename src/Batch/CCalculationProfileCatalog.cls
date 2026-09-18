@@ -195,6 +195,14 @@ Private Function FindProfile(ByVal profileId As String) As Long
             Exit Function
         End If
     Next i
+    For i = 1 To mCount
+        If Not mProfiles(i) Is Nothing Then
+            If StrComp(mProfiles(i).DisplayName, Trim$(profileId), vbTextCompare) = 0 Then
+                FindProfile = i
+                Exit Function
+            End If
+        End If
+    Next i
 End Function
 
 Public Property Get Count() As Long
