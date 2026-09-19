@@ -110,7 +110,7 @@ Private Function ReadOptionalLoadDouble(ByVal value As Variant, ByVal fieldName 
     If Len(Trim$(CStr(value))) = 0 Then
         ReadOptionalLoadDouble = 0#
     ElseIf Not IsNumeric(value) Then
-        AppendError errorText, fieldName & " must be numeric"
+        AppendError errorText, fieldName & " должен быть числом"
     Else
         ReadOptionalLoadDouble = CDbl(value)
     End If

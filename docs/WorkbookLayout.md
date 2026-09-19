@@ -38,7 +38,7 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Build-Workbook.ps1
 | Общие настройки | `rngSystemSettings` | источник геометрии, сетка, материалы, решатели, несущая способность, трещины, AutoCAD |
 | Круг | `rngCircleGeometry` | диаметр и автоматическая арматура круглого сечения |
 | Скругленный прямоугольник | `rngRoundedRectangleGeometry` | размеры и радиусы углов |
-| Г-сечение | `rngLShapeGeometry` | размеры и автоматическая арматура по граням |
+| Г-сечение | `rngRectSetGeometry` | размеры и автоматическая арматура по граням |
 | Параметры бетона | `rngConcreteMaterialParameters` | расчетные сопротивления и модули бетона для I/II ГПС, `Rb,mc2` для продольных трещин; по ним строятся диаграммы |
 | Параметры арматуры | `rngSteelMaterialParameters` | расчетные сопротивления, модули и профиль арматуры для I/II ГПС |
 | Настройки диаграмм | `rngCalculationDiagramSettings` | выбор TwoLine/ThreeLine и режима растянутого бетона для Strength, CrackInitiation и CrackedNDS |
@@ -83,7 +83,7 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Build-Workbook.ps1
 
 Единицы AutoCAD считаются миллиметрами.
 
-## `rngLShapeGeometry`
+## `rngRectSetGeometry`
 
 Таблица Г-сечения:
 

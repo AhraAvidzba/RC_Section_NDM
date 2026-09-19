@@ -173,19 +173,19 @@ End Function
 Private Sub ValidateInputs(ByVal diameter As Double, ByVal axisDistance As Double, _
         ByVal barCount As Long, ByVal barDiameter As Double, ByVal row2Diameter As Double, _
         ByVal row3Diameter As Double, ByVal row2Location As String, ByVal row3Location As String)
-    If diameter <= 0# Then Err.Raise vbObjectError + 3150, "CCircleRebarLayoutBuilder", "Диаметр круга должен быть положительным."
-    If barCount < 0 Then Err.Raise vbObjectError + 3151, "CCircleRebarLayoutBuilder", "Количество стержней первого ряда не может быть отрицательным."
-    If barDiameter < 0# Then Err.Raise vbObjectError + 3152, "CCircleRebarLayoutBuilder", "Диаметр арматуры первого ряда не может быть отрицательным."
-    If row2Diameter < 0# Then Err.Raise vbObjectError + 3155, "CCircleRebarLayoutBuilder", "Диаметр второго ряда не может быть отрицательным."
-    If row3Diameter < 0# Then Err.Raise vbObjectError + 3156, "CCircleRebarLayoutBuilder", "Диаметр третьего ряда не может быть отрицательным."
+    If diameter <= 0# Then Err.Raise vbObjectError + 3150, "CCircleRebarLayoutBuilder", "Circle.Diameter должен быть положительным."
+    If barCount < 0 Then Err.Raise vbObjectError + 3151, "CCircleRebarLayoutBuilder", "Rebar.Count не может быть отрицательным."
+    If barDiameter < 0# Then Err.Raise vbObjectError + 3152, "CCircleRebarLayoutBuilder", "Rebar.Diameter не может быть отрицательным."
+    If row2Diameter < 0# Then Err.Raise vbObjectError + 3155, "CCircleRebarLayoutBuilder", "Rebar.Diameter2 не может быть отрицательным."
+    If row3Diameter < 0# Then Err.Raise vbObjectError + 3156, "CCircleRebarLayoutBuilder", "Rebar.Diameter3 не может быть отрицательным."
 
     If barCount = 0 Or barDiameter = 0# Then Exit Sub
 
-    If barCount < 2 Then Err.Raise vbObjectError + 3151, "CCircleRebarLayoutBuilder", "Количество стержней первого ряда должно быть не менее 2 или равно 0."
+    If barCount < 2 Then Err.Raise vbObjectError + 3151, "CCircleRebarLayoutBuilder", "Rebar.Count должен быть равен 0 или быть не меньше 2."
     If row2Diameter > 0# And Not IsSupportedRowLocation(row2Location) Then Err.Raise vbObjectError + 3157, "CCircleRebarLayoutBuilder", "Rebar.Loc2row должен быть SideBySide или Stacked."
     If row3Diameter > 0# And Not IsSupportedRowLocation(row3Location) Then Err.Raise vbObjectError + 3158, "CCircleRebarLayoutBuilder", "Rebar.Loc3row должен быть SideBySide или Stacked."
-    If axisDistance <= barDiameter / 2# Then Err.Raise vbObjectError + 3153, "CCircleRebarLayoutBuilder", "Расстояние до оси стержня должно быть больше половины диаметра арматуры."
-    If axisDistance >= diameter / 2# Then Err.Raise vbObjectError + 3154, "CCircleRebarLayoutBuilder", "Расстояние до оси стержня должно быть меньше половины диаметра круга."
+    If axisDistance <= barDiameter / 2# Then Err.Raise vbObjectError + 3153, "CCircleRebarLayoutBuilder", "Rebar.AxisDistance должен быть больше Rebar.Diameter/2."
+    If axisDistance >= diameter / 2# Then Err.Raise vbObjectError + 3154, "CCircleRebarLayoutBuilder", "Rebar.AxisDistance должен быть меньше Circle.Diameter/2."
 End Sub
 
 ' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
@@ -196,7 +196,7 @@ Private Sub ValidateBarInsideCircle(ByVal geom As CGeometryCircle, ByVal centerX
     dx = xCoord - centerX
     dy = yCoord - centerY
     If Sqr(dx * dx + dy * dy) + barDiameter / 2# > geom.Radius + GEOM_TOLERANCE Then
-        Err.Raise vbObjectError + 3159, "CCircleRebarLayoutBuilder", "Стержень дополнительного ряда не помещается внутри круглого сечения."
+        Err.Raise vbObjectError + 3159, "CCircleRebarLayoutBuilder", "Стержень дополнительного ряда Rebar.Diameter2/3 не помещается внутри круглого сечения."
     End If
 End Sub
 

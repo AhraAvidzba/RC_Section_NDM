@@ -29,7 +29,8 @@ try {
         $compileControl.Execute()
     }
 
-    $result = $excel.Run("'RC_Section_NDM.xlsm'!modTestGeometry.RunGeometryTests")
+    $macroName = "'" + $workbook.Name + "'!modTestGeometry.RunGeometryTests"
+    $result = $excel.Run($macroName)
     Write-Output $result
 }
 finally {

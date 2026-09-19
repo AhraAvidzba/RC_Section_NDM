@@ -65,8 +65,8 @@ Public Function RunCapacitySolverTests() As String
     TestCapacityLoadPathMethodMatrix stats
     AppendLine stats, "RUN: TestCapacityLoadPathZeroComponentMatrix"
     TestCapacityLoadPathZeroComponentMatrix stats
-    AppendLine stats, "RUN: TestLShapeCapacityLoadPathSmoke"
-    TestLShapeCapacityLoadPathSmoke stats
+    AppendLine stats, "RUN: TestRectSetCapacityLoadPathSmoke"
+    TestRectSetCapacityLoadPathSmoke stats
     AppendLine stats, "RUN: TestNultBaseLoadStepsSensitivity"
     TestNultBaseLoadStepsSensitivity stats
     AppendLine stats, "RUN: TestSearchMethodInputErrors"
@@ -445,14 +445,13 @@ Private Sub TestLoadMultiplierPureBendingUsesStateGuess(ByRef stats As TCapacity
 
     AssertTrue stats, "capacity.pureBendingGuess.converged", cap.Converged
     AssertTrue stats, "capacity.pureBendingGuess.physical", IsPhysicalLimitState(cap.LimitState)
-    AssertTrue stats, "capacity.pureBendingGuess.usedGuess", InStr(1, cap.DiagnosticLog, "pureBendingProbeGuess applied", vbTextCompare) > 0
+    AssertTrue stats, "capacity.pureBendingGuess.usedGuess", InStr(1, cap.DiagnosticLog, "для пробной точки чистого изгиба применена стартовая плоскость", vbTextCompare) > 0
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestAsymmetricCoupledCurvatures(ByRef stats As TCapacityTestStats)
-    Dim geom As CGeometryRoundedRectangle
-    Set geom = New CGeometryRoundedRectangle
-    geom.Initialize 320#, 220#, 0#, 70#, 20#, 0#
+    Dim geom As CGeometryRectSet
+    Set geom = CapacityAsymmetricGeometry()
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = BuildMesh(geom, 10#)
@@ -463,10 +462,10 @@ Private Sub TestAsymmetricCoupledCurvatures(ByRef stats As TCapacityTestStats)
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -110#, -70#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B2", 95#, -65#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B3", -90#, 65#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B4", 80#, 70#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B1", 50#, 50#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B2", 550#, 50#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B3", 50#, 700#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B4", 200#, 700#, 20#, 0#, "A400", "", geom
 
     Dim cap As CCapacitySolver
     Set cap = New CCapacitySolver
@@ -481,9 +480,8 @@ End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestAsymmetricMxy(ByRef stats As TCapacityTestStats)
-    Dim geom As CGeometryRoundedRectangle
-    Set geom = New CGeometryRoundedRectangle
-    geom.Initialize 320#, 220#, 0#, 70#, 20#, 0#
+    Dim geom As CGeometryRectSet
+    Set geom = CapacityAsymmetricGeometry()
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = BuildMesh(geom, 10#)
@@ -494,10 +492,10 @@ Private Sub TestAsymmetricMxy(ByRef stats As TCapacityTestStats)
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -110#, -70#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B2", 95#, -65#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B3", -90#, 65#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B4", 80#, 70#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B1", 50#, 50#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B2", 550#, 50#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B3", 50#, 700#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B4", 200#, 700#, 20#, 0#, "A400", "", geom
 
     Dim cap As CCapacitySolver
     Set cap = New CCapacitySolver
@@ -718,7 +716,7 @@ Private Sub TestLoadMultiplierWithWorkbookTfDefaults(ByRef stats As TCapacityTes
     Set units = New CUnitSystem
     units.LoadFromSettings settings
 
-    AssertEquals stats, "capacity.tfDefaults.geometry", settings.GetString("Geometry.Type", ""), "LShape"
+    AssertEquals stats, "capacity.tfDefaults.geometry", settings.GetString("Geometry.Type", ""), "RectSet"
     AssertEquals stats, "capacity.tfDefaults.forceUnit", settings.GetString("Units.Force.Input", ""), "tf"
     AssertEquals stats, "capacity.tfDefaults.momentUnit", settings.GetString("Units.Moment.Input", ""), "tf*m"
 
@@ -854,9 +852,9 @@ End Sub
 ' В этой задаче важно, что N приложена в бетонном центре тяжести: после
 ' переноса к координатам расчетных элементов внутри solver-а появляются
 ' связанные Mx/My, хотя пользователь масштабирует только продольную силу.
-Private Sub TestLShapeCapacityLoadPathSmoke(ByRef stats As TCapacityTestStats)
+Private Sub TestRectSetCapacityLoadPathSmoke(ByRef stats As TCapacityTestStats)
     Dim section As CSectionModel
-    Set section = LShapeCapacitySection()
+    Set section = RectSetCapacitySection()
 
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
@@ -865,24 +863,24 @@ Private Sub TestLShapeCapacityLoadPathSmoke(ByRef stats As TCapacityTestStats)
     Dim tensionLoad As CSectionLoadState
     Set tensionLoad = New CSectionLoadState
     tensionLoad.Initialize 200# * 9806.65, 0#, 0#, props.CentroidX, props.CentroidY
-    CheckLShapeCapacityPathMethods stats, "lshape.n.tension", section, 0#, tensionLoad.N, _
+    CheckRectSetCapacityPathMethods stats, "rectset.n.tension", section, 0#, tensionLoad.N, _
         0#, tensionLoad.AxialMxAboutPoint(0#), 0#, tensionLoad.AxialMyAboutPoint(0#), True
 
     Dim compressionLoad As CSectionLoadState
     Set compressionLoad = New CSectionLoadState
     compressionLoad.Initialize -200# * 9806.65, 0#, 0#, props.CentroidX, props.CentroidY
-    CheckLShapeCapacityPathMethods stats, "lshape.n.compression", section, 0#, compressionLoad.N, _
+    CheckRectSetCapacityPathMethods stats, "rectset.n.compression", section, 0#, compressionLoad.N, _
         0#, compressionLoad.AxialMxAboutPoint(0#), 0#, compressionLoad.AxialMyAboutPoint(0#), True
 
     ' Пользовательский сценарий из книги: Г-сечение, N задана относительно
     ' бетонного центра тяжести, а предельная способность ищется по lambda*Mx.
     ' Здесь обязана включаться быстрая моментная постановка
     ' UltimateStrain: N постоянна, направление Mx/My сохраняется.
-    CheckLShapeMomentUltimatePath stats, "lshape.moment.mx.userCase", section, _
+    CheckRectSetMomentUltimatePath stats, "rectset.moment.mx.userCase", section, _
         -200# * 9806.65, 50# * 9806.65 * 1000#, 0#, props.CentroidX, props.CentroidY
-    CheckLShapeMomentUltimatePath stats, "lshape.moment.my.userCase", section, _
+    CheckRectSetMomentUltimatePath stats, "rectset.moment.my.userCase", section, _
         -200# * 9806.65, 0#, 50# * 9806.65 * 1000#, props.CentroidX, props.CentroidY
-    CheckLShapeMomentUltimatePath stats, "lshape.moment.mxy.userCase", section, _
+    CheckRectSetMomentUltimatePath stats, "rectset.moment.mxy.userCase", section, _
         -200# * 9806.65, 50# * 9806.65 * 1000#, 25# * 9806.65 * 1000#, props.CentroidX, props.CentroidY
 End Sub
 
@@ -890,7 +888,7 @@ End Sub
 ' Внутри solver-а момент от N добавляется как постоянный offset, а
 ' пользовательский момент масштабируется через lambda. Такой тест защищает
 ' рабочую моментную постановку от случайного ухода в общий load-path residual.
-Private Sub CheckLShapeMomentUltimatePath(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
+Private Sub CheckRectSetMomentUltimatePath(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal section As CSectionModel, ByVal nValue As Double, _
         ByVal userMxBase As Double, ByVal userMyBase As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double)
@@ -927,24 +925,24 @@ Private Sub CheckLShapeMomentUltimatePath(ByRef stats As TCapacityTestStats, ByV
     AssertClose stats, prefix & ".myUltimate.user", cap.MyUltimate, cap.LambdaUltimate * userMyBase, 20000#
 End Sub
 
-Private Sub CheckLShapeCapacityPathMethods(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
+Private Sub CheckRectSetCapacityPathMethods(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal section As CSectionModel, ByVal nOffset As Double, ByVal nBase As Double, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
         ByVal myOffset As Double, ByVal myBase As Double, _
         Optional ByVal allowForcePathFallback As Boolean = False)
-    CheckLShapeCapacityPathMethod stats, prefix & ".auto", "Auto", "", section, _
+    CheckRectSetCapacityPathMethod stats, prefix & ".auto", "Auto", "", section, _
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathFallback
-    CheckLShapeCapacityPathMethod stats, prefix & ".ultimate", "UltimateStrain", "", section, _
+    CheckRectSetCapacityPathMethod stats, prefix & ".ultimate", "UltimateStrain", "", section, _
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathFallback
-    CheckLShapeCapacityPathMethod stats, prefix & ".bisection", "LoadMultiplier", "Bisection", section, _
+    CheckRectSetCapacityPathMethod stats, prefix & ".bisection", "LoadMultiplier", "Bisection", section, _
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathFallback
-    CheckLShapeCapacityPathMethod stats, prefix & ".brent", "LoadMultiplier", "Brent", section, _
+    CheckRectSetCapacityPathMethod stats, prefix & ".brent", "LoadMultiplier", "Brent", section, _
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathFallback
-    CheckLShapeCapacityPathMethod stats, prefix & ".secant", "LoadMultiplier", "Secant", section, _
+    CheckRectSetCapacityPathMethod stats, prefix & ".secant", "LoadMultiplier", "Secant", section, _
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathFallback
 End Sub
 
-Private Sub CheckLShapeCapacityPathMethod(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
+Private Sub CheckRectSetCapacityPathMethod(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal methodName As String, ByVal searchMethod As String, ByVal section As CSectionModel, _
         ByVal nOffset As Double, ByVal nBase As Double, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
@@ -993,7 +991,7 @@ End Sub
 ' она может заметно влиять на устойчивость отдельных probe-точек.
 Private Sub TestNultBaseLoadStepsSensitivity(ByRef stats As TCapacityTestStats)
     Dim section As CSectionModel
-    Set section = LShapeCapacitySection()
+    Set section = RectSetCapacitySection()
 
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
@@ -1097,31 +1095,31 @@ Private Sub CheckCapacityLoadPathMethod(ByRef stats As TCapacityTestStats, ByVal
     End If
 End Sub
 
-Private Function LShapeCapacitySection() As CSectionModel
-    Dim geom As CGeometryLShape
-    Set geom = New CGeometryLShape
+Private Function RectSetCapacitySection() As CSectionModel
+    Dim geom As CGeometryRectSet
+    Set geom = New CGeometryRectSet
     geom.Initialize 250#, 550#, 600#, 250#, 0#, 0#
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geom, 50#, 50#, 1
 
-    Dim builder As CLShapeRebarLayoutBuilder
-    Set builder = New CLShapeRebarLayoutBuilder
+    Dim builder As CRectSetRebarLayoutBuilder
+    Set builder = New CRectSetRebarLayoutBuilder
 
     Dim rebars As CRebarLayout
     Set rebars = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
-        LShapeCapacityFaceSettings(5, 5), _
-        LShapeCapacityFaceSettings(2, 2), _
-        LShapeCapacityFaceSettings(2, 2), _
-        LShapeCapacityFaceSettings(5, 5), _
+        RectSetCapacityFaceSettings(5, 5), _
+        RectSetCapacityFaceSettings(2, 2), _
+        RectSetCapacityFaceSettings(2, 2), _
+        RectSetCapacityFaceSettings(5, 5), _
         "A400")
 
-    Set LShapeCapacitySection = BuildGeneratedSectionModel(mesh, rebars, "LShapeCapacityTest")
+    Set RectSetCapacitySection = BuildGeneratedSectionModel(mesh, rebars, "RectSetCapacityTest")
 End Function
 
-Private Function LShapeCapacityFaceSettings(ByVal count1 As Long, ByVal count2 As Long) As Variant
-    LShapeCapacityFaceSettings = Array(40#, 40#, 32#, 32#, count1, count2, 80#, 80#, 80#, 80#, _
+Private Function RectSetCapacityFaceSettings(ByVal count1 As Long, ByVal count2 As Long) As Variant
+    RectSetCapacityFaceSettings = Array(40#, 40#, 32#, 32#, count1, count2, 80#, 80#, 80#, 80#, _
         0#, 0#, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
 End Function
 
@@ -1360,8 +1358,17 @@ Private Function RectangleGeometry(ByVal width As Double, ByVal height As Double
     Set RectangleGeometry = geom
 End Function
 
+' Возвращает тестовую несимметричную геометрию с заметным Ixy для проверки,
+' что capacity-решатель учитывает связанную кривизну в общей постановке N+Mx+My.
+Private Function CapacityAsymmetricGeometry() As CGeometryRectSet
+    Dim geom As CGeometryRectSet
+    Set geom = New CGeometryRectSet
+    geom.Initialize 250#, 550#, 600#, 250#, 0#, 0#, 0#, "LSection"
+    Set CapacityAsymmetricGeometry = geom
+End Function
+
 ' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
-Private Function BuildMesh(ByVal geom As CGeometryRoundedRectangle, ByVal stepSize As Double) As CFiberMeshBuilder
+Private Function BuildMesh(ByVal geom As ISectionGeometry, ByVal stepSize As Double) As CFiberMeshBuilder
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geom, stepSize, stepSize, 1

@@ -335,7 +335,7 @@ End Sub
 ' Проверяет минимальный набор данных для предварительной проверки образования
 ' нормальной трещины.
 ' В отличие от основного Calculate здесь еще нет полного CrackedState solver-а,
-' поэтому проверяется только геометрия, material provider и модель
+' поэтому проверяется только геометрия, поставщик материалов и модель
 ' CrackInitiation.
 Private Sub ValidateFormationInputs(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
         ByVal loadStateForClassification As CSectionLoadState, ByVal crackedStateSpec As CMaterialModelSpec, _
@@ -343,7 +343,7 @@ Private Sub ValidateFormationInputs(ByVal section As CSectionModel, ByVal materi
     If section Is Nothing Then Err.Raise vbObjectError + 3726, "CCrackWidthCalculator", "Модель расчетного сечения не передана."
     If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 3727, "CCrackWidthCalculator", "В модели расчетного сечения нет бетонных элементов."
     If section.RebarCount <= 0 Then Err.Raise vbObjectError + 3728, "CCrackWidthCalculator", "В модели расчетного сечения нет арматурных элементов."
-    If materialProvider Is Nothing Then Err.Raise vbObjectError + 3729, "CCrackWidthCalculator", "Material provider не передан."
+    If materialProvider Is Nothing Then Err.Raise vbObjectError + 3729, "CCrackWidthCalculator", "Поставщик материалов не передан."
     If loadStateForClassification Is Nothing Then Err.Raise vbObjectError + 3730, "CCrackWidthCalculator", "CSectionLoadState не передан."
     If crackedStateSpec Is Nothing Or Not crackedStateSpec.IsComplete Then _
         Err.Raise vbObjectError + 3731, "CCrackWidthCalculator", "MaterialModel.CrackedState не передан."
@@ -838,7 +838,7 @@ Private Function CrackFormationPathDisplayNameForKey(ByVal pathKey As String) As
     End Select
 End Function
 
-' Берет Rbt,ser, Eb, eps_bt0, eps_bt2 и Es из material provider-а.
+' Берет Rbt,ser, Eb, eps_bt0, eps_bt2 и Es из поставщика материалов.
 ' Эти значения больше не являются отдельными настройками crack-класса:
 ' они должны совпадать с диаграммами, которыми реально решается НДС.
 Private Sub ApplyMaterialProviderProperties(ByVal materialProvider As CMaterialModelProvider)
@@ -2581,7 +2581,7 @@ Private Sub ValidateInputs(ByVal currentSolver As CSectionSolver, ByVal section 
     If section Is Nothing Then Err.Raise vbObjectError + 3702, "CCrackWidthCalculator", "Модель расчетного сечения не передана."
     If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 3703, "CCrackWidthCalculator", "В модели расчетного сечения нет бетонных элементов."
     If section.RebarCount <= 0 Then Err.Raise vbObjectError + 3704, "CCrackWidthCalculator", "В модели расчетного сечения нет арматурных элементов."
-    If materialProvider Is Nothing Then Err.Raise vbObjectError + 3705, "CCrackWidthCalculator", "Material provider не передан."
+    If materialProvider Is Nothing Then Err.Raise vbObjectError + 3705, "CCrackWidthCalculator", "Поставщик материалов не передан."
 End Sub
 
 ' Сбрасывает результаты предыдущего вызова.

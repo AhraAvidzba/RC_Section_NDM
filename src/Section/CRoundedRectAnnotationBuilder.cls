@@ -10,11 +10,11 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Semantic-аннотации прямоугольника со скруглениями
+' Semantic-аннотации скругленного прямоугольника
 ' ==========================================================================
-' Builder формирует контур и основные размеры RoundedRectangle. Его результат
-' должен быть пригоден для того же универсального Reader/Layout/Plotter, что
-' и аннотации Circle или LShape.
+' Builder формирует контур, размеры B/H, при необходимости W левой/правой
+' tapered-части и групповые подписи арматуры. Он не строит расчетную сетку и
+' не принимает решений по NDM: это только semantic-слой для Results/схемы.
 
 Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, ByVal rebars As CRebarLayout)
     If model Is Nothing Then Err.Raise vbObjectError + 5305, "CRoundedRectAnnotationBuilder", "Модель сечения не передана."
@@ -24,17 +24,108 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
     Set annotations = model.Annotations
     annotations.Clear
 
-    annotations.AddContourLine "CONTOUR_LINE_1", geometry.MinX, geometry.MinY, geometry.MaxX, geometry.MinY
-    annotations.AddContourLine "CONTOUR_LINE_2", geometry.MaxX, geometry.MinY, geometry.MaxX, geometry.MaxY
-    annotations.AddContourLine "CONTOUR_LINE_3", geometry.MaxX, geometry.MaxY, geometry.MinX, geometry.MaxY
-    annotations.AddContourLine "CONTOUR_LINE_4", geometry.MinX, geometry.MaxY, geometry.MinX, geometry.MinY
-    annotations.AddDimension "DIM_B", geometry.MinX, geometry.MinY, geometry.MaxX, geometry.MinY, 0#, -1#, _
-        "B", geometry.MaxX - geometry.MinX, "Общая ширина прямоугольного сечения со скруглениями."
-    annotations.AddDimension "DIM_H", geometry.MinX, geometry.MinY, geometry.MinX, geometry.MaxY, -1#, 0#, _
-        "H", geometry.MaxY - geometry.MinY, "Общая высота прямоугольного сечения со скруглениями."
+    AddContour annotations, geometry
+    AddDimensions annotations, geometry
 
     Dim rebarLabels As CRebarGroupAnnotationBuilder
     Set rebarLabels = New CRebarGroupAnnotationBuilder
     rebarLabels.AddRebarLabels annotations, rebars
 End Sub
 
+Private Sub AddContour(ByVal annotations As CSectionAnnotations, ByVal geometry As ISectionGeometry)
+    Dim rounded As CGeometryRoundedRectangle
+    Dim geometryObject As Object
+    Set geometryObject = geometry
+    If TypeName(geometryObject) = "CGeometryRoundedRectangle" Then Set rounded = geometryObject
+
+    If Not rounded Is Nothing Then
+        AddRoundedContour annotations, rounded
+        Exit Sub
+    End If
+
+    Dim px() As Double
+    Dim py() As Double
+    geometry.GetExtremePoints px, py
+
+    Dim i As Long
+    Dim nextIndex As Long
+    For i = LBound(px) To UBound(px)
+        If i = UBound(px) Then
+            nextIndex = LBound(px)
+        Else
+            nextIndex = i + 1
+        End If
+        annotations.AddContourLine "CONTOUR_LINE_" & CStr(i), px(i), py(i), px(nextIndex), py(nextIndex), _
+            "Сегмент контура скругленного прямоугольника."
+    Next i
+End Sub
+
+' Добавляет точный semantic-контур RoundedRectangle: прямые остаются линиями,
+' а радиусы выводятся дугами, а не ломаной дискретизацией.
+Private Sub AddRoundedContour(ByVal annotations As CSectionAnnotations, ByVal rounded As CGeometryRoundedRectangle)
+    Dim segmentType() As String
+    Dim startX() As Double, startY() As Double
+    Dim endX() As Double, endY() As Double
+    Dim centerX() As Double, centerY() As Double
+    Dim radiusValue() As Double, sweepAngle() As Double
+    Dim segmentCount As Long
+    rounded.GetContourSegments segmentType, startX, startY, endX, endY, centerX, centerY, radiusValue, sweepAngle, segmentCount
+
+    Dim i As Long
+    For i = 1 To segmentCount
+        If StrComp(segmentType(i), "ARC", vbTextCompare) = 0 Then
+            annotations.AddContourArc "CONTOUR_ARC_" & CStr(i), startX(i), startY(i), endX(i), endY(i), _
+                centerX(i), centerY(i), radiusValue(i), sweepAngle(i), _
+                "Дуга контура скругленного прямоугольника."
+        Else
+            annotations.AddContourLine "CONTOUR_LINE_" & CStr(i), startX(i), startY(i), endX(i), endY(i), _
+                "Прямой участок контура скругленного прямоугольника."
+        End If
+    Next i
+End Sub
+
+Private Sub AddDimensions(ByVal annotations As CSectionAnnotations, ByVal geometry As ISectionGeometry)
+    Dim rounded As CGeometryRoundedRectangle
+    Dim geometryObject As Object
+    Set geometryObject = geometry
+    If TypeName(geometryObject) = "CGeometryRoundedRectangle" Then Set rounded = geometryObject
+
+    If rounded Is Nothing Then
+        annotations.AddDimension "DIM_B", geometry.MinX, geometry.MinY, geometry.MaxX, geometry.MinY, 0#, -1#, _
+            "B", geometry.MaxX - geometry.MinX, "Габаритная ширина скругленного прямоугольника."
+        annotations.AddDimension "DIM_H", geometry.MinX, geometry.MinY, geometry.MinX, geometry.MaxY, -1#, 0#, _
+            "H", geometry.MaxY - geometry.MinY, "Габаритная высота скругленного прямоугольника."
+        Exit Sub
+    End If
+
+    annotations.AddDimension "DIM_B", rounded.LeftBaseX, rounded.TopY, rounded.RightBaseX, rounded.TopY, 0#, 1#, _
+        "B", rounded.B, "Размер горизонтальной базы RoundedRectangle между левым и правым торцом."
+    annotations.AddDimension "DIM_H", rounded.MinX, rounded.BottomY, rounded.MinX, rounded.TopY, -1#, 0#, _
+        "H", rounded.H, "Полная высота RoundedRectangle."
+
+    Dim actualLeftW As Double
+    actualLeftW = rounded.LeftBaseX - rounded.MinX
+    If StrComp(rounded.LeftType, "Tapered", vbTextCompare) = 0 And actualLeftW > GEOM_TOLERANCE Then
+        annotations.AddDimension "DIM_W_LEFT", rounded.MinX, rounded.TopY, _
+            rounded.LeftBaseX, rounded.TopY, 0#, 1#, "W'", RoundedLengthForDisplay(actualLeftW), _
+            "Фактический вынос левого края бетона относительно левого торца базы B."
+    End If
+    Dim actualRightW As Double
+    actualRightW = rounded.MaxX - rounded.RightBaseX
+    If StrComp(rounded.RightType, "Tapered", vbTextCompare) = 0 And actualRightW > GEOM_TOLERANCE Then
+        annotations.AddDimension "DIM_W_RIGHT", rounded.RightBaseX, rounded.TopY, _
+            rounded.MaxX, rounded.TopY, 0#, 1#, "W'", RoundedLengthForDisplay(actualRightW), _
+            "Фактический вынос правого края бетона относительно правого торца базы B."
+    End If
+End Sub
+
+' Округляет справочный размер W' до целых миллиметров. Сам контур сечения
+' остается расчетным и строится по точным координатам; округляется только
+' числовая подпись размерной линии.
+Private Function RoundedLengthForDisplay(ByVal valueMm As Double) As Double
+    If valueMm >= 0# Then
+        RoundedLengthForDisplay = Int(valueMm + 0.5)
+    Else
+        RoundedLengthForDisplay = -Int(Abs(valueMm) + 0.5)
+    End If
+End Function

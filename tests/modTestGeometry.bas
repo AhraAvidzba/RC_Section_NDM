@@ -4,7 +4,7 @@ Option Explicit
 ' ==========================================================================
 ' Тесты геометрии, сетки и раскладки арматуры
 ' ==========================================================================
-' Модуль защищает договоренности по Circle, RoundedRectangle и LShape: габариты,
+' Модуль защищает договоренности по Circle, RoundedRectangle и RectSet: габариты,
 ' дискретизацию, автоматическую арматуру и semantic-аннотации для схемы.
 
 Private Type TTestStats
@@ -21,18 +21,21 @@ Public Function RunGeometryTests() As String
 
     TestRectangle stats
     TestSymmetricRoundedRectangle stats
-    TestAsymmetricRadii stats
+    TestTaperedRoundedRectangle stats
+    TestRoundedRectangleContourAnnotations stats
+    TestRoundedRectangleRebarLayout stats
     TestCircleGeometry stats
     TestCircleCoreDistance stats
     TestCirclePrincipalAxesStableOnCoarseMesh stats
     TestCircleInvalidData stats
     TestCircleAutoRebarLayout stats
-    TestLShapeGeometry stats
-    TestLShapePrincipalAxesAndCoreDistances stats
+    TestRectSetGeometry stats
+    TestRectSetGeometryModes stats
+    TestRectSetPrincipalAxesAndCoreDistances stats
     TestConcreteCoverUsesLocalContour stats
-    TestLShapeAutoRebarLayout stats
-    TestLShapeSeparateLineOffsets stats
-    TestLShapeAdditionalRebarRows stats
+    TestRectSetAutoRebarLayout stats
+    TestRectSetSeparateLineOffsets stats
+    TestRectSetAdditionalRebarRows stats
     TestSectionModelFromGeneratedGeometry stats
     TestRebarAnnotationAnchors stats
     TestAutoCADImporterBuildsSectionModel stats
@@ -58,7 +61,7 @@ Public Function RunGeometryTests() As String
     Exit Function
 
 Failed:
-    RunGeometryTests = "RUNTIME ERROR: " & CStr(Err.Number) & _
+    RunGeometryTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & _
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
 
@@ -102,27 +105,27 @@ Private Sub TestRebarAnnotationAnchors(ByRef stats As TTestStats)
     AssertClose stats, "annotation.circle.normalY", circleBars.AnnotationNormalY(1), 1#, 0.000001
     AssertClose stats, "annotation.circle.axisDistance", circleBars.AnnotationAxisDistance(1), 40#, 0.000001
 
-    Dim lshapeBuilder As CLShapeRebarLayoutBuilder
-    Set lshapeBuilder = New CLShapeRebarLayoutBuilder
-    Dim lshapeBars As CRebarLayout
-    Set lshapeBars = lshapeBuilder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
+    Dim rectsetBuilder As CRectSetRebarLayoutBuilder
+    Set rectsetBuilder = New CRectSetRebarLayoutBuilder
+    Dim rectsetBars As CRebarLayout
+    Set rectsetBars = rectsetBuilder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
         Array(40#, 40#, 20#, 20#, 3, 0, 50#, 70#, 0#, 0#, 0#, 0#, 0#, 0#, "Stacked", "Stacked"), _
         EmptyFaceSettings(), EmptyFaceSettings(), EmptyFaceSettings(), "A400")
 
-    AssertTrue stats, "annotation.lshape.count", lshapeBars.AnnotationCount = 1
-    AssertTrue stats, "annotation.lshape.group", lshapeBars.AnnotationGroupName(1) = "H1.as_1"
-    AssertClose stats, "annotation.lshape.startY", lshapeBars.AnnotationStartY(1), 300#, 0.000001
-    AssertClose stats, "annotation.lshape.endY", lshapeBars.AnnotationEndY(1), 730#, 0.000001
-    AssertClose stats, "annotation.lshape.normalX", lshapeBars.AnnotationNormalX(1), -1#, 0.000001
-    AssertClose stats, "annotation.lshape.axisDistance", lshapeBars.AnnotationAxisDistance(1), 40#, 0.000001
+    AssertTrue stats, "annotation.rectset.count", rectsetBars.AnnotationCount = 1
+    AssertTrue stats, "annotation.rectset.group", rectsetBars.AnnotationGroupName(1) = "H1.as_1"
+    AssertClose stats, "annotation.rectset.startY", rectsetBars.AnnotationStartY(1), 300#, 0.000001
+    AssertClose stats, "annotation.rectset.endY", rectsetBars.AnnotationEndY(1), 730#, 0.000001
+    AssertClose stats, "annotation.rectset.normalX", rectsetBars.AnnotationNormalX(1), -1#, 0.000001
+    AssertClose stats, "annotation.rectset.axisDistance", rectsetBars.AnnotationAxisDistance(1), 40#, 0.000001
 
     Dim noBars As CRebarLayout
     Set noBars = New CRebarLayout
     noBars.AddAnnotationAnchor "SyntheticOnly", 0#, 0#, 1#, 0#, 0#, 1#
     AssertTrue stats, "annotation.manual.anchor.allowed", noBars.AnnotationCount = 1
 
-    Dim zeroFaceBuilder As CLShapeRebarLayoutBuilder
-    Set zeroFaceBuilder = New CLShapeRebarLayoutBuilder
+    Dim zeroFaceBuilder As CRectSetRebarLayoutBuilder
+    Set zeroFaceBuilder = New CRectSetRebarLayoutBuilder
     Dim zeroFaceBars As CRebarLayout
     Set zeroFaceBars = zeroFaceBuilder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
         EmptyFaceSettings(), _
@@ -688,30 +691,30 @@ Private Sub TestRectangle(ByRef stats As TTestStats)
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
-Private Sub TestLShapeAdditionalRebarRows(ByRef stats As TTestStats)
-    Dim builder As CLShapeRebarLayoutBuilder
-    Set builder = New CLShapeRebarLayoutBuilder
+Private Sub TestRectSetAdditionalRebarRows(ByRef stats As TTestStats)
+    Dim builder As CRectSetRebarLayoutBuilder
+    Set builder = New CRectSetRebarLayoutBuilder
 
     Dim stacked As CRebarLayout
     Set stacked = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
         Array(50#, 50#, 20#, 20#, 1, 0, 100#, 100#, 100#, 100#, 20#, 0#, 30#, 0#, "Stacked", "Stacked"), _
         EmptyFaceSettings(), EmptyFaceSettings(), EmptyFaceSettings(), "A400")
 
-    AssertTrue stats, "lshape.rows.stacked.count", stacked.Count = 3
-    AssertClose stats, "lshape.rows.stacked.row1.x", stacked.X(1), 50#, 0.000001
-    AssertClose stats, "lshape.rows.stacked.row2.x", stacked.X(2), 70#, 0.000001
-    AssertClose stats, "lshape.rows.stacked.row3.x", stacked.X(3), 95#, 0.000001
-    AssertClose stats, "lshape.rows.stacked.sameY", stacked.Y(3), stacked.Y(1), 0.000001
+    AssertTrue stats, "rectset.rows.stacked.count", stacked.Count = 3
+    AssertClose stats, "rectset.rows.stacked.row1.x", stacked.X(1), 50#, 0.000001
+    AssertClose stats, "rectset.rows.stacked.row2.x", stacked.X(2), 70#, 0.000001
+    AssertClose stats, "rectset.rows.stacked.row3.x", stacked.X(3), 95#, 0.000001
+    AssertClose stats, "rectset.rows.stacked.sameY", stacked.Y(3), stacked.Y(1), 0.000001
 
     Dim sideVertical As CRebarLayout
     Set sideVertical = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
         Array(50#, 50#, 20#, 20#, 1, 0, 100#, 100#, 100#, 100#, 20#, 0#, 30#, 0#, "SideBySide", "SideBySide"), _
         EmptyFaceSettings(), EmptyFaceSettings(), EmptyFaceSettings(), "A400")
 
-    AssertTrue stats, "lshape.rows.side.vertical.count", sideVertical.Count = 3
-    AssertClose stats, "lshape.rows.side.vertical.sameX", sideVertical.X(3), sideVertical.X(1), 0.000001
-    AssertClose stats, "lshape.rows.side.vertical.row2.y", sideVertical.Y(2), sideVertical.Y(1) - 20#, 0.000001
-    AssertClose stats, "lshape.rows.side.vertical.row3.y", sideVertical.Y(3), sideVertical.Y(1) - 45#, 0.000001
+    AssertTrue stats, "rectset.rows.side.vertical.count", sideVertical.Count = 3
+    AssertClose stats, "rectset.rows.side.vertical.sameX", sideVertical.X(3), sideVertical.X(1), 0.000001
+    AssertClose stats, "rectset.rows.side.vertical.row2.y", sideVertical.Y(2), sideVertical.Y(1) - 20#, 0.000001
+    AssertClose stats, "rectset.rows.side.vertical.row3.y", sideVertical.Y(3), sideVertical.Y(1) - 45#, 0.000001
 
     Dim sideHorizontal As CRebarLayout
     Set sideHorizontal = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
@@ -719,19 +722,19 @@ Private Sub TestLShapeAdditionalRebarRows(ByRef stats As TTestStats)
         Array(50#, 50#, 20#, 20#, 1, 0, 50#, 50#, 50#, 50#, 20#, 0#, 30#, 0#, "SideBySide", "SideBySide"), _
         EmptyFaceSettings(), "A400")
 
-    AssertTrue stats, "lshape.rows.side.horizontal.count", sideHorizontal.Count = 3
-    AssertClose stats, "lshape.rows.side.horizontal.row2.x", sideHorizontal.X(2), sideHorizontal.X(1) + 20#, 0.000001
-    AssertClose stats, "lshape.rows.side.horizontal.row3.x", sideHorizontal.X(3), sideHorizontal.X(1) + 45#, 0.000001
-    AssertClose stats, "lshape.rows.side.horizontal.sameY", sideHorizontal.Y(3), sideHorizontal.Y(1), 0.000001
+    AssertTrue stats, "rectset.rows.side.horizontal.count", sideHorizontal.Count = 3
+    AssertClose stats, "rectset.rows.side.horizontal.row2.x", sideHorizontal.X(2), sideHorizontal.X(1) + 20#, 0.000001
+    AssertClose stats, "rectset.rows.side.horizontal.row3.x", sideHorizontal.X(3), sideHorizontal.X(1) + 45#, 0.000001
+    AssertClose stats, "rectset.rows.side.horizontal.sameY", sideHorizontal.Y(3), sideHorizontal.Y(1), 0.000001
 
     Dim thirdOnly As CRebarLayout
     Set thirdOnly = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
         Array(50#, 50#, 20#, 20#, 1, 0, 100#, 100#, 100#, 100#, 0#, 0#, 30#, 0#, "Stacked", "Stacked"), _
         EmptyFaceSettings(), EmptyFaceSettings(), EmptyFaceSettings(), "A400")
 
-    AssertTrue stats, "lshape.rows.thirdOnly.count", thirdOnly.Count = 2
-    AssertClose stats, "lshape.rows.thirdOnly.row3.x", thirdOnly.X(2), thirdOnly.X(1) + 25#, 0.000001
-    AssertClose stats, "lshape.rows.thirdOnly.sameY", thirdOnly.Y(2), thirdOnly.Y(1), 0.000001
+    AssertTrue stats, "rectset.rows.thirdOnly.count", thirdOnly.Count = 2
+    AssertClose stats, "rectset.rows.thirdOnly.row3.x", thirdOnly.X(2), thirdOnly.X(1) + 25#, 0.000001
+    AssertClose stats, "rectset.rows.thirdOnly.sameY", thirdOnly.Y(2), thirdOnly.Y(1), 0.000001
 
     Dim noFirstRow As CRebarLayout
     Set noFirstRow = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
@@ -739,47 +742,47 @@ Private Sub TestLShapeAdditionalRebarRows(ByRef stats As TTestStats)
         Array(50#, 50#, 20#, 20#, 1, 0, 100#, 100#, 100#, 100#, 0#, 0#, 0#, 0#, "Stacked", "Stacked"), _
         EmptyFaceSettings(), EmptyFaceSettings(), "A400")
 
-    AssertTrue stats, "lshape.rows.noFirstRow.ignored", noFirstRow.Count = 1
-    AssertTrue stats, "lshape.rows.noFirstRow.source", InStr(1, noFirstRow.BarID(1), "H2", vbTextCompare) > 0
+    AssertTrue stats, "rectset.rows.noFirstRow.ignored", noFirstRow.Count = 1
+    AssertTrue stats, "rectset.rows.noFirstRow.source", InStr(1, noFirstRow.BarID(1), "H2", vbTextCompare) > 0
 
     Dim mixed As CRebarLayout
     Set mixed = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
         Array(50#, 50#, 20#, 20#, 1, 0, 100#, 100#, 100#, 100#, 20#, 0#, 30#, 0#, "SideBySide", "Stacked"), _
         EmptyFaceSettings(), EmptyFaceSettings(), EmptyFaceSettings(), "A400")
 
-    AssertTrue stats, "lshape.rows.mixed.count", mixed.Count = 3
-    AssertClose stats, "lshape.rows.mixed.row2.y", mixed.Y(2), mixed.Y(1) - 20#, 0.000001
-    AssertClose stats, "lshape.rows.mixed.row3.x", mixed.X(3), mixed.X(1) + 25#, 0.000001
-    AssertClose stats, "lshape.rows.mixed.row3.y", mixed.Y(3), mixed.Y(1), 0.000001
+    AssertTrue stats, "rectset.rows.mixed.count", mixed.Count = 3
+    AssertClose stats, "rectset.rows.mixed.row2.y", mixed.Y(2), mixed.Y(1) - 20#, 0.000001
+    AssertClose stats, "rectset.rows.mixed.row3.x", mixed.X(3), mixed.X(1) + 25#, 0.000001
+    AssertClose stats, "rectset.rows.mixed.row3.y", mixed.Y(3), mixed.Y(1), 0.000001
 
     Dim separateLineDiameters As CRebarLayout
     Set separateLineDiameters = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
         Array(50#, 50#, 20#, 20#, 1, 1, 100#, 100#, 100#, 100#, 18#, 22#, 28#, 34#, "Stacked", "Stacked"), _
         EmptyFaceSettings(), EmptyFaceSettings(), EmptyFaceSettings(), "A400")
 
-    AssertTrue stats, "lshape.rows.separateLineDiameters.count", separateLineDiameters.Count = 6
-    AssertClose stats, "lshape.rows.separateLineDiameters.row2_1.d", separateLineDiameters.Diameter(2), 18#, 0.000001
-    AssertClose stats, "lshape.rows.separateLineDiameters.row3_1.d", separateLineDiameters.Diameter(3), 28#, 0.000001
-    AssertClose stats, "lshape.rows.separateLineDiameters.row2_2.d", separateLineDiameters.Diameter(5), 22#, 0.000001
-    AssertClose stats, "lshape.rows.separateLineDiameters.row3_2.d", separateLineDiameters.Diameter(6), 34#, 0.000001
+    AssertTrue stats, "rectset.rows.separateLineDiameters.count", separateLineDiameters.Count = 6
+    AssertClose stats, "rectset.rows.separateLineDiameters.row2_1.d", separateLineDiameters.Diameter(2), 18#, 0.000001
+    AssertClose stats, "rectset.rows.separateLineDiameters.row3_1.d", separateLineDiameters.Diameter(3), 28#, 0.000001
+    AssertClose stats, "rectset.rows.separateLineDiameters.row2_2.d", separateLineDiameters.Diameter(5), 22#, 0.000001
+    AssertClose stats, "rectset.rows.separateLineDiameters.row3_2.d", separateLineDiameters.Diameter(6), 34#, 0.000001
 
     Dim everySecond As CRebarLayout
     Set everySecond = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
         Array(50#, 50#, 20#, 20#, 5, 0, 50#, 50#, 50#, 50#, 20#, 0#, 30#, 0#, "Stacked", "Stacked", "EverySecondBar", "EachBar"), _
         EmptyFaceSettings(), EmptyFaceSettings(), EmptyFaceSettings(), "A400")
 
-    AssertTrue stats, "lshape.rows.everySecond.count", everySecond.Count = 13
-    AssertTrue stats, "lshape.rows.everySecond.row2.partial", CountBarsWithRow(everySecond, "row_2") = 3
-    AssertTrue stats, "lshape.rows.everySecond.row3.each", CountBarsWithRow(everySecond, "row_3") = 5
+    AssertTrue stats, "rectset.rows.everySecond.count", everySecond.Count = 13
+    AssertTrue stats, "rectset.rows.everySecond.row2.partial", CountBarsWithRow(everySecond, "row_2") = 3
+    AssertTrue stats, "rectset.rows.everySecond.row3.each", CountBarsWithRow(everySecond, "row_3") = 5
 
-    AssertLShapeRebarRowsError stats, "lshape.rows.invalid.location", _
+    AssertRectSetRebarRowsError stats, "rectset.rows.invalid.location", _
         Array(50#, 50#, 20#, 20#, 1, 0, 100#, 100#, 100#, 100#, 20#, 0#, 0#, 0#, "Diagonal", "Stacked")
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
-Private Sub TestLShapeGeometry(ByRef stats As TTestStats)
-    Dim geom As CGeometryLShape
-    Set geom = New CGeometryLShape
+Private Sub TestRectSetGeometry(ByRef stats As TTestStats)
+    Dim geom As CGeometryRectSet
+    Set geom = New CGeometryRectSet
     geom.Initialize 250#, 550#, 600#, 250#, 10#, -20#
 
     Dim available As Boolean
@@ -789,13 +792,13 @@ Private Sub TestLShapeGeometry(ByRef stats As TTestStats)
     analyticalArea = geom.AnalyticalArea(available)
     geom.AnalyticalCentroid available, centroidX, centroidY
 
-    AssertTrue stats, "lshape.area.available", available
-    AssertClose stats, "lshape.area.analytical", analyticalArea, 600# * 250# + 250# * 550#, 0.000001
-    AssertClose stats, "lshape.cx.analytical", centroidX, 226.304347826087, 0.000001
-    AssertClose stats, "lshape.cy.analytical", centroidY, 296.304347826087, 0.000001
-    AssertTrue stats, "lshape.contains.lower", geom.ContainsPoint(580#, 20#)
-    AssertTrue stats, "lshape.contains.vertical", geom.ContainsPoint(100#, 700#)
-    AssertTrue stats, "lshape.excludes.cutout", Not geom.ContainsPoint(500#, 700#)
+    AssertTrue stats, "rectset.area.available", available
+    AssertClose stats, "rectset.area.analytical", analyticalArea, 600# * 250# + 250# * 550#, 0.000001
+    AssertClose stats, "rectset.cx.analytical", centroidX, 226.304347826087, 0.000001
+    AssertClose stats, "rectset.cy.analytical", centroidY, 296.304347826087, 0.000001
+    AssertTrue stats, "rectset.contains.lower", geom.ContainsPoint(580#, 20#)
+    AssertTrue stats, "rectset.contains.vertical", geom.ContainsPoint(100#, 700#)
+    AssertTrue stats, "rectset.excludes.cutout", Not geom.ContainsPoint(500#, 700#)
 
     Dim centerMesh As CFiberMeshBuilder
     Set centerMesh = New CFiberMeshBuilder
@@ -813,18 +816,87 @@ Private Sub TestLShapeGeometry(ByRef stats As TTestStats)
     Set subcellProps = New CSectionPropertiesCalculator
     subcellProps.CalculateConcrete BuildGeneratedSectionModel(subcellMesh, Nothing)
 
-    AssertTrue stats, "lshape.boundary.subcell.fibers.more", subcellMesh.FiberCount > centerMesh.FiberCount
-    AssertTrue stats, "lshape.boundary.subcell.has.small.fibers", MeshHasSmallFibers(subcellMesh, 80#)
-    AssertRelative stats, "lshape.boundary.subcell.area", subcellProps.Area, analyticalArea, 0.04
+    AssertTrue stats, "rectset.boundary.subcell.fibers.more", subcellMesh.FiberCount > centerMesh.FiberCount
+    AssertTrue stats, "rectset.boundary.subcell.has.small.fibers", MeshHasSmallFibers(subcellMesh, 80#)
+    AssertRelative stats, "rectset.boundary.subcell.area", subcellProps.Area, analyticalArea, 0.04
+End Sub
+
+' Проверяет новые режимы RectSet без изменения старого LSection: один
+' прямоугольник, два прямоугольника без смещения и два прямоугольника со
+' смещением верхнего блока по X.
+Private Sub TestRectSetGeometryModes(ByRef stats As TTestStats)
+    Dim rectangle As CGeometryRectSet
+    Set rectangle = New CGeometryRectSet
+    rectangle.Initialize 250#, 550#, 600#, 250#, 0#, 0#, 0#, "Rectangle"
+
+    Dim available As Boolean
+    Dim cx As Double
+    Dim cy As Double
+    AssertClose stats, "rectset.rectangle.area", rectangle.AnalyticalArea(available), 250# * 550#, 0.000001
+    AssertTrue stats, "rectset.rectangle.area.available", available
+    rectangle.AnalyticalCentroid available, cx, cy
+    AssertClose stats, "rectset.rectangle.cx", cx, 125#, 0.000001
+    AssertClose stats, "rectset.rectangle.cy", cy, 275#, 0.000001
+    AssertTrue stats, "rectset.rectangle.hasNoLower", Not rectangle.HasLowerRectangle
+    AssertTrue stats, "rectset.rectangle.containsUpper", rectangle.ContainsPoint(100#, 500#)
+    AssertTrue stats, "rectset.rectangle.excludesOldLower", Not rectangle.ContainsPoint(500#, 20#)
+
+    Dim lsection As CGeometryRectSet
+    Dim twoZero As CGeometryRectSet
+    Set lsection = New CGeometryRectSet
+    Set twoZero = New CGeometryRectSet
+    lsection.Initialize 250#, 550#, 600#, 250#, 0#, 0#, 0#, "LSection"
+    twoZero.Initialize 250#, 550#, 600#, 250#, 0#, 0#, 0#, "TwoRectangles"
+    AssertClose stats, "rectset.twoZero.areaEqualsL", twoZero.AnalyticalArea(available), lsection.AnalyticalArea(available), 0.000001
+    AssertClose stats, "rectset.twoZero.minX", twoZero.MinX, lsection.MinX, 0.000001
+    AssertClose stats, "rectset.twoZero.maxX", twoZero.MaxX, lsection.MaxX, 0.000001
+    AssertTrue stats, "rectset.twoZero.cutout", Not twoZero.ContainsPoint(500#, 700#)
+
+    Dim tshape As CGeometryRectSet
+    Set tshape = New CGeometryRectSet
+    tshape.Initialize 600#, 200#, 250#, 250#, 0#, 0#, -175#, "TwoRectangles"
+    Dim validMessage As String
+    AssertTrue stats, "rectset.tshape.valid", tshape.IsValid(validMessage)
+    AssertClose stats, "rectset.tshape.minX", tshape.MinX, -175#, 0.000001
+    AssertClose stats, "rectset.tshape.maxX", tshape.MaxX, 425#, 0.000001
+    AssertTrue stats, "rectset.tshape.containsFlange", tshape.ContainsPoint(-100#, 300#)
+    AssertTrue stats, "rectset.tshape.containsWeb", tshape.ContainsPoint(125#, 100#)
+
+    Dim shifted As CGeometryRectSet
+    Set shifted = New CGeometryRectSet
+    shifted.Initialize 250#, 550#, 600#, 250#, 0#, 0#, 150#, "TwoRectangles"
+    shifted.AnalyticalCentroid available, cx, cy
+    AssertClose stats, "rectset.shifted.upperMinX", shifted.UpperMinX, 150#, 0.000001
+    AssertClose stats, "rectset.shifted.cx", cx, 288.04347826087, 0.000001
+    AssertClose stats, "rectset.shifted.cy", cy, 316.304347826087, 0.000001
+    AssertTrue stats, "rectset.shifted.containsUpper", shifted.ContainsPoint(250#, 700#)
+    AssertTrue stats, "rectset.shifted.excludesOldUpper", Not shifted.ContainsPoint(50#, 700#)
+
+    Dim builder As CRectSetRebarLayoutBuilder
+    Set builder = New CRectSetRebarLayoutBuilder
+    Dim shiftedBars As CRebarLayout
+    Set shiftedBars = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
+        Array(50#, 50#, 20#, 20#, 1, 0, 80#, 80#, 80#, 80#), _
+        EmptyFaceSettings(), EmptyFaceSettings(), EmptyFaceSettings(), "A400", 150#, "TwoRectangles")
+    AssertClose stats, "rectset.shifted.rebarX", shiftedBars.X(1), 200#, 0.000001
+
+    Dim rectangleBars As CRebarLayout
+    Set rectangleBars = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
+        EmptyFaceSettings(), _
+        Array(50#, 50#, 20#, 20#, 2, 2, 80#, 80#, 80#, 80#), _
+        Array(50#, 50#, 20#, 20#, 2, 0, 80#, 80#, 80#, 80#), _
+        Array(50#, 50#, 20#, 20#, 5, 5, 80#, 80#, 80#, 80#), _
+        "A400", 0#, "Rectangle")
+    AssertTrue stats, "rectset.rectangle.rebarSkipsLower", CountBarsWithSource(rectangleBars, "H2") = 0 And CountBarsWithSource(rectangleBars, "B2") = 0
 End Sub
 
 ' Проверяет, что PrincipalAngle задает физическую главную ось 1, а ядровые
 ' расстояния главных плоскостей считаются через ту же нормаль, что и
 ' устойчивость. Тест защищает Г-сечение, где ошибка знака угла сразу дает
 ' заметный ненулевой I12 после поворота.
-Private Sub TestLShapePrincipalAxesAndCoreDistances(ByRef stats As TTestStats)
-    Dim geom As CGeometryLShape
-    Set geom = New CGeometryLShape
+Private Sub TestRectSetPrincipalAxesAndCoreDistances(ByRef stats As TTestStats)
+    Dim geom As CGeometryRectSet
+    Set geom = New CGeometryRectSet
     geom.Initialize 250#, 550#, 600#, 250#
 
     Dim mesh As CFiberMeshBuilder
@@ -832,15 +904,15 @@ Private Sub TestLShapePrincipalAxesAndCoreDistances(ByRef stats As TTestStats)
     mesh.BuildMesh geom, 25#, 25#, 1, 2
 
     Dim concreteSection As CSectionModel
-    Set concreteSection = BuildGeneratedSectionModel(mesh, Nothing, "LShapePrincipalConcrete")
+    Set concreteSection = BuildGeneratedSectionModel(mesh, Nothing, "RectSetPrincipalConcrete")
 
     Dim concreteProps As CSectionPropertiesCalculator
     Set concreteProps = New CSectionPropertiesCalculator
     concreteProps.CalculateConcrete concreteSection
-    AssertPrincipalAxesConsistent stats, "lshape.concrete", concreteSection, concreteProps
+    AssertPrincipalAxesConsistent stats, "rectset.concrete", concreteSection, concreteProps
 
-    Dim rebarBuilder As CLShapeRebarLayoutBuilder
-    Set rebarBuilder = New CLShapeRebarLayoutBuilder
+    Dim rebarBuilder As CRectSetRebarLayoutBuilder
+    Set rebarBuilder = New CRectSetRebarLayoutBuilder
     Dim rebars As CRebarLayout
     Set rebars = rebarBuilder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
         Array(40#, 40#, 32#, 32#, 5, 5, 80#, 80#, 80#, 80#), _
@@ -850,12 +922,12 @@ Private Sub TestLShapePrincipalAxesAndCoreDistances(ByRef stats As TTestStats)
         "Rebar")
 
     Dim transformedSection As CSectionModel
-    Set transformedSection = BuildGeneratedSectionModel(mesh, rebars, "LShapePrincipalTransformed")
+    Set transformedSection = BuildGeneratedSectionModel(mesh, rebars, "RectSetPrincipalTransformed")
 
     Dim transformedProps As CSectionPropertiesCalculator
     Set transformedProps = New CSectionPropertiesCalculator
     transformedProps.CalculateTransformedByModuli transformedSection, 32500#, 200000#
-    AssertPrincipalAxesConsistent stats, "lshape.transformed", transformedSection, transformedProps
+    AssertPrincipalAxesConsistent stats, "rectset.transformed", transformedSection, transformedProps
 End Sub
 
 ' Проверяет общие инварианты главных осей для любого представления сечения.
@@ -937,9 +1009,9 @@ Private Sub TestConcreteCoverUsesLocalContour(ByRef stats As TTestStats)
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
-Private Sub TestLShapeAutoRebarLayout(ByRef stats As TTestStats)
-    Dim builder As CLShapeRebarLayoutBuilder
-    Set builder = New CLShapeRebarLayoutBuilder
+Private Sub TestRectSetAutoRebarLayout(ByRef stats As TTestStats)
+    Dim builder As CRectSetRebarLayoutBuilder
+    Set builder = New CRectSetRebarLayoutBuilder
 
     Dim layout As CRebarLayout
     Set layout = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
@@ -949,13 +1021,13 @@ Private Sub TestLShapeAutoRebarLayout(ByRef stats As TTestStats)
         Array(50#, 50#, 20#, 20#, 3, 0, 100#, 100#, 100#, 100#), _
         "A400")
 
-    AssertTrue stats, "lshape.rebar.count", layout.Count = 8
-    AssertTrue stats, "lshape.rebar.requested", builder.RequestedCount = 8
-    AssertClose stats, "lshape.rebar.perimeter", builder.Perimeter, 3300#, 0.000001
-    AssertClose stats, "lshape.rebar.step", builder.StepAlong, 200#, 0.000001
-    AssertClose stats, "lshape.rebar.firstX", layout.X(1), 50#, 0.000001
-    AssertClose stats, "lshape.rebar.firstY", layout.Y(1), 525#, 0.000001
-    AssertTrue stats, "lshape.rebar.zeroFaceSkipped", InStr(1, layout.BarID(1), "H2", vbTextCompare) = 0
+    AssertTrue stats, "rectset.rebar.count", layout.Count = 8
+    AssertTrue stats, "rectset.rebar.requested", builder.RequestedCount = 8
+    AssertClose stats, "rectset.rebar.perimeter", builder.Perimeter, 3300#, 0.000001
+    AssertClose stats, "rectset.rebar.step", builder.StepAlong, 200#, 0.000001
+    AssertClose stats, "rectset.rebar.firstX", layout.X(1), 50#, 0.000001
+    AssertClose stats, "rectset.rebar.firstY", layout.Y(1), 525#, 0.000001
+    AssertTrue stats, "rectset.rebar.zeroFaceSkipped", InStr(1, layout.BarID(1), "H2", vbTextCompare) = 0
 
     Dim noLineByDiameter As CRebarLayout
     Set noLineByDiameter = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
@@ -964,7 +1036,7 @@ Private Sub TestLShapeAutoRebarLayout(ByRef stats As TTestStats)
         Array(50#, 50#, 20#, 20#, 2, 0, 60#, 60#, 60#, 60#), _
         Array(50#, 50#, 20#, 20#, 3, 0, 100#, 100#, 100#, 100#), _
         "A400")
-    AssertTrue stats, "lshape.rebar.zeroDiameterSkipped", noLineByDiameter.Count = 5
+    AssertTrue stats, "rectset.rebar.zeroDiameterSkipped", noLineByDiameter.Count = 5
 
     Dim noBarsByDiameter As CRebarLayout
     Set noBarsByDiameter = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
@@ -973,26 +1045,26 @@ Private Sub TestLShapeAutoRebarLayout(ByRef stats As TTestStats)
         Array(50#, 50#, 0#, 0#, 2, 2, 60#, 60#, 60#, 60#), _
         Array(50#, 50#, 0#, 0#, 3, 3, 100#, 100#, 100#, 100#), _
         "A400")
-    AssertTrue stats, "lshape.rebar.allZeroDiameters.noError", noBarsByDiameter.Count = 0
+    AssertTrue stats, "rectset.rebar.allZeroDiameters.noError", noBarsByDiameter.Count = 0
 
-    Dim geom As CGeometryLShape
-    Set geom = New CGeometryLShape
+    Dim geom As CGeometryRectSet
+    Set geom = New CGeometryRectSet
     geom.Initialize 250#, 550#, 600#, 250#
 
     Dim i As Long
     For i = 1 To layout.Count
-        AssertTrue stats, "lshape.rebar.inside." & CStr(i), geom.ContainsPoint(layout.X(i), layout.Y(i))
+        AssertTrue stats, "rectset.rebar.inside." & CStr(i), geom.ContainsPoint(layout.X(i), layout.Y(i))
     Next i
 
-    AssertLShapeRebarError stats, "lshape.rebar.invalid.n", 600#, 550#, 250#, 250#, -1, 50#, 20#
-    AssertLShapeRebarError stats, "lshape.rebar.invalid.as.small", 600#, 550#, 250#, 250#, 2, 10#, 20#
-    AssertLShapeRebarError stats, "lshape.rebar.invalid.offsets", 600#, 550#, 250#, 250#, 2, 50#, 20#, 500#, 500#
+    AssertRectSetRebarError stats, "rectset.rebar.invalid.n", 600#, 550#, 250#, 250#, -1, 50#, 20#
+    AssertRectSetRebarError stats, "rectset.rebar.invalid.as.small", 600#, 550#, 250#, 250#, 2, 10#, 20#
+    AssertRectSetRebarError stats, "rectset.rebar.invalid.offsets", 600#, 550#, 250#, 250#, 2, 50#, 20#, 500#, 500#
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
-Private Sub TestLShapeSeparateLineOffsets(ByRef stats As TTestStats)
-    Dim builder As CLShapeRebarLayoutBuilder
-    Set builder = New CLShapeRebarLayoutBuilder
+Private Sub TestRectSetSeparateLineOffsets(ByRef stats As TTestStats)
+    Dim builder As CRectSetRebarLayoutBuilder
+    Set builder = New CRectSetRebarLayoutBuilder
 
     Dim layout As CRebarLayout
     Set layout = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
@@ -1002,11 +1074,11 @@ Private Sub TestLShapeSeparateLineOffsets(ByRef stats As TTestStats)
         Array(40#, 40#, 20#, 20#, 0, 0, 40#, 40#, 40#, 40#), _
         "A400")
 
-    AssertTrue stats, "lshape.offsets.separate.count", layout.Count = 4
-    AssertClose stats, "lshape.offsets.as_1.firstY", layout.Y(1), 680#, 0.000001
-    AssertClose stats, "lshape.offsets.as_1.edgeY", layout.Y(2), 330#, 0.000001
-    AssertClose stats, "lshape.offsets.as_2.firstY", layout.Y(3), 320#, 0.000001
-    AssertClose stats, "lshape.offsets.as_2.edgeY", layout.Y(4), 770#, 0.000001
+    AssertTrue stats, "rectset.offsets.separate.count", layout.Count = 4
+    AssertClose stats, "rectset.offsets.as_1.firstY", layout.Y(1), 680#, 0.000001
+    AssertClose stats, "rectset.offsets.as_1.edgeY", layout.Y(2), 330#, 0.000001
+    AssertClose stats, "rectset.offsets.as_2.firstY", layout.Y(3), 320#, 0.000001
+    AssertClose stats, "rectset.offsets.as_2.edgeY", layout.Y(4), 770#, 0.000001
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -1229,22 +1301,136 @@ Private Sub TestSymmetricRoundedRectangle(ByRef stats As TTestStats)
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
-Private Sub TestAsymmetricRadii(ByRef stats As TTestStats)
+Private Sub TestTaperedRoundedRectangle(ByRef stats As TTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
-    geom.Initialize 300#, 180#, 10#, 35#, 20#, 50#
+    geom.InitializeSides 300#, 180#, "Simple", "Tapered", 0#, 80#, 20#, 30#, 0#, 45#
 
     Dim props25 As CSectionPropertiesCalculator
     Dim props125 As CSectionPropertiesCalculator
     Set props25 = MeshProps(geom, 25#, 25#)
     Set props125 = MeshProps(geom, 12.5, 12.5)
 
-    AssertTrue stats, "asym.area.positive", props125.Area > 0#
-    AssertTrue stats, "asym.centroid.inside", geom.ContainsPoint(props125.CentroidX, props125.CentroidY)
-    AssertTrue stats, "asym.angle.valid", Abs(props125.PrincipalAngleRad) <= GEOM_PI / 2#
-    AssertRelative stats, "asym.area.convergence", props125.Area, props25.Area, 0.08
-    AssertRelative stats, "asym.Ix.convergence", props125.Ixc, props25.Ixc, 0.15
-    AssertTrue stats, "asym.Ixy.can_be_nonzero", Abs(props125.Ixyc) > GEOM_TOLERANCE
+    AssertTrue stats, "rounded.tapered.area.positive", props125.Area > 0#
+    AssertTrue stats, "rounded.tapered.centroid.inside", geom.ContainsPoint(props125.CentroidX, props125.CentroidY)
+    AssertTrue stats, "rounded.tapered.rightExtension", _
+        geom.MaxX > geom.RightBaseX And geom.MaxX < geom.RightBaseX + geom.RightW
+    AssertClose stats, "rounded.tapered.height", geom.MaxY - geom.MinY, 180#, 0.000001
+    AssertRelative stats, "rounded.tapered.area.convergence", props125.Area, props25.Area, 0.08
+    AssertRelative stats, "rounded.tapered.Ix.convergence", props125.Ixc, props25.Ixc, 0.15
+
+    Dim wideGeom As CGeometryRoundedRectangle
+    Set wideGeom = New CGeometryRoundedRectangle
+    wideGeom.InitializeSides 1000#, 500#, "Simple", "Tapered", 0#, 250#, 150#, 300#, 0#, 100#
+
+    Dim x1 As Double
+    Dim y1 As Double
+    Dim x2 As Double
+    Dim y2 As Double
+    Dim normalX As Double
+    Dim normalY As Double
+    wideGeom.GetHorizontalRebarLine True, 0#, x1, y1, x2, y2, normalX, normalY
+
+    Dim expectedTopTangent As Double
+    Dim expectedNoseMaxX As Double
+    expectedTopTangent = wideGeom.RightBaseX - 300# * (Sqr(2#) - 1#)
+    expectedNoseMaxX = wideGeom.RightBaseX + wideGeom.RightW - 100# * (Sqr(2#) - 1#)
+    AssertClose stats, "rounded.tapered.variableAngle.topTangent", x2, expectedTopTangent, 0.000001
+    AssertClose stats, "rounded.tapered.variableAngle.maxX", wideGeom.MaxX, expectedNoseMaxX, 0.000001
+    AssertTrue stats, "rounded.tapered.variableAngle.maxLessThanRawApex", _
+        wideGeom.MaxX < wideGeom.RightBaseX + wideGeom.RightW
+
+    Dim largeR1 As CGeometryRoundedRectangle
+    Set largeR1 = New CGeometryRoundedRectangle
+    largeR1.InitializeSides 800#, 250#, "Simple", "Tapered", 0#, 400#, 40#, 160#, 0#, 30#
+    Dim validMessage As String
+    AssertTrue stats, "rounded.tapered.r1GreaterThanHalfHeight.valid", largeR1.IsValid(validMessage)
+
+    Dim overlappingRadii As CGeometryRoundedRectangle
+    Set overlappingRadii = New CGeometryRoundedRectangle
+    overlappingRadii.InitializeSides 800#, 250#, "Simple", "Tapered", 0#, 80#, 40#, 300#, 0#, 120#
+    AssertTrue stats, "rounded.tapered.radiiOverlap.invalid", Not overlappingRadii.IsValid(validMessage)
+End Sub
+
+' Проверяет semantic-аннотации RoundedRectangle: скругления должны идти дугами,
+' а размер tapered-части выводится как фактический W' до края бетона.
+Private Sub TestRoundedRectangleContourAnnotations(ByRef stats As TTestStats)
+    Dim geom As CGeometryRoundedRectangle
+    Set geom = New CGeometryRoundedRectangle
+    geom.InitializeSides 1000#, 500#, "Simple", "Tapered", 0#, 250#, 150#, 300#, 0#, 100#
+
+    Dim model As CSectionModel
+    Set model = New CSectionModel
+    Dim rebars As CRebarLayout
+    Set rebars = New CRebarLayout
+
+    Dim builder As CRoundedRectAnnotationBuilder
+    Set builder = New CRoundedRectAnnotationBuilder
+    builder.Build model, geom, rebars
+
+    Dim annotations As CSectionAnnotations
+    Set annotations = model.Annotations
+
+    AssertTrue stats, "rounded.annotation.hasArcs", CountSectionAnnotationType(model, "CONTOUR_ARC") > 0
+    AssertTrue stats, "rounded.annotation.hasLines", CountSectionAnnotationType(model, "CONTOUR_LINE") > 0
+
+    Dim wIndex As Long
+    wIndex = FindSectionAnnotationIndex(model, "DIMENSION", "DIM_W_RIGHT")
+    AssertTrue stats, "rounded.annotation.wRight.exists", wIndex > 0
+    If wIndex > 0 Then
+        AssertTrue stats, "rounded.annotation.wRight.label", annotations.Text(wIndex) = "W'"
+        AssertClose stats, "rounded.annotation.wRight.value", annotations.Value(wIndex), _
+            RoundedDisplayLength(geom.MaxX - geom.RightBaseX), 0.000001
+    End If
+End Sub
+
+' Повторяет пользовательское округление справочного размера W' до целых мм.
+Private Function RoundedDisplayLength(ByVal valueMm As Double) As Double
+    If valueMm >= 0# Then
+        RoundedDisplayLength = Int(valueMm + 0.5)
+    Else
+        RoundedDisplayLength = -Int(Abs(valueMm) + 0.5)
+    End If
+End Function
+
+' Проверяет новую автоматическую раскладку RoundedRectangle: горизонтальные
+' линии B идут только по прямому участку между R1, а боковая H-линия может
+' идти по tapered-траектории.
+Private Sub TestRoundedRectangleRebarLayout(ByRef stats As TTestStats)
+    Dim geom As CGeometryRoundedRectangle
+    Set geom = New CGeometryRoundedRectangle
+    geom.InitializeSides 800#, 250#, "Simple", "Tapered", 0#, 150#, 40#, 40#, 0#, 80#
+
+    Dim builder As CRoundedRectRebarLayoutBuilder
+    Set builder = New CRoundedRectRebarLayoutBuilder
+
+    Dim layout As CRebarLayout
+    Set layout = builder.Build(geom, _
+        Array(40#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 5, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 5, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        "A400")
+
+    AssertTrue stats, "rounded.rebar.count", layout.Count = 16
+    AssertTrue stats, "rounded.rebar.requested", builder.RequestedCount = 16
+    AssertClose stats, "rounded.rebar.top.firstX", layout.X(1), -360#, 0.000001
+    AssertClose stats, "rounded.rebar.top.firstY", layout.Y(1), 85#, 0.000001
+    Dim topX1 As Double
+    Dim topY1 As Double
+    Dim topX2 As Double
+    Dim topY2 As Double
+    Dim normalX As Double
+    Dim normalY As Double
+    geom.GetHorizontalRebarLine True, 40#, topX1, topY1, topX2, topY2, normalX, normalY
+    AssertClose stats, "rounded.rebar.top.lastX", layout.X(5), topX2, 0.000001
+    AssertTrue stats, "rounded.rebar.top.lastX.followsTaperAngle", layout.X(5) > 360# And layout.X(5) < 400#
+    AssertClose stats, "rounded.rebar.bottom.firstY", layout.Y(6), -85#, 0.000001
+
+    Dim i As Long
+    For i = 1 To layout.Count
+        AssertTrue stats, "rounded.rebar.inside." & CStr(i), geom.ContainsPoint(layout.X(i), layout.Y(i))
+    Next i
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -1439,14 +1625,14 @@ GotError:
     AssertTrue stats, name, True
 End Sub
 
-Private Sub AssertLShapeRebarError(ByRef stats As TTestStats, ByVal name As String, _
+Private Sub AssertRectSetRebarError(ByRef stats As TTestStats, ByVal name As String, _
         ByVal lowerWidth As Double, ByVal upperHeight As Double, ByVal upperWidth As Double, ByVal lowerHeight As Double, _
         ByVal barCount As Long, ByVal axisDistance As Double, ByVal barDiameter As Double, _
         Optional ByVal startOffset As Double = 100#, Optional ByVal endOffset As Double = 100#)
 
     On Error GoTo GotError
-    Dim builder As CLShapeRebarLayoutBuilder
-    Set builder = New CLShapeRebarLayoutBuilder
+    Dim builder As CRectSetRebarLayoutBuilder
+    Set builder = New CRectSetRebarLayoutBuilder
     Dim layout As CRebarLayout
     Set layout = builder.Build(upperWidth, upperHeight, lowerWidth, lowerHeight, 0#, 0#, _
         Array(axisDistance, axisDistance, barDiameter, barDiameter, barCount, 0, startOffset, endOffset, startOffset, endOffset), _
@@ -1482,6 +1668,20 @@ Private Function HasSectionAnnotation(ByVal model As CSectionModel, ByVal annota
     HasSectionAnnotation = (FindSectionAnnotationIndex(model, annotationType, annotationID) > 0)
 End Function
 
+Private Function CountSectionAnnotationType(ByVal model As CSectionModel, ByVal annotationType As String) As Long
+    If model Is Nothing Then Exit Function
+
+    Dim annotations As CSectionAnnotations
+    Set annotations = model.Annotations
+
+    Dim i As Long
+    For i = 1 To annotations.Count
+        If StrComp(annotations.AnnotationType(i), annotationType, vbTextCompare) = 0 Then
+            CountSectionAnnotationType = CountSectionAnnotationType + 1
+        End If
+    Next i
+End Function
+
 Private Function FindSectionAnnotationIndex(ByVal model As CSectionModel, ByVal annotationType As String, _
         ByVal annotationID As String) As Long
     If model Is Nothing Then Exit Function
@@ -1499,10 +1699,10 @@ Private Function FindSectionAnnotationIndex(ByVal model As CSectionModel, ByVal 
     Next i
 End Function
 
-Private Sub AssertLShapeRebarRowsError(ByRef stats As TTestStats, ByVal name As String, ByVal h1Settings As Variant)
+Private Sub AssertRectSetRebarRowsError(ByRef stats As TTestStats, ByVal name As String, ByVal h1Settings As Variant)
     On Error GoTo Expected
-    Dim builder As CLShapeRebarLayoutBuilder
-    Set builder = New CLShapeRebarLayoutBuilder
+    Dim builder As CRectSetRebarLayoutBuilder
+    Set builder = New CRectSetRebarLayoutBuilder
     builder.Build 250#, 550#, 600#, 250#, 0#, 0#, h1Settings, _
         EmptyFaceSettings(), EmptyFaceSettings(), EmptyFaceSettings(), "A400"
     stats.Failed = stats.Failed + 1
@@ -1517,6 +1717,13 @@ Private Function CountBarsWithRow(ByVal layout As CRebarLayout, ByVal rowToken A
     Dim i As Long
     For i = 1 To layout.Count
         If InStr(1, layout.BarID(i), rowToken, vbTextCompare) > 0 Then CountBarsWithRow = CountBarsWithRow + 1
+    Next i
+End Function
+
+Private Function CountBarsWithSource(ByVal layout As CRebarLayout, ByVal sourceToken As String) As Long
+    Dim i As Long
+    For i = 1 To layout.Count
+        If InStr(1, layout.BarID(i), sourceToken, vbTextCompare) > 0 Then CountBarsWithSource = CountBarsWithSource + 1
     Next i
 End Function
 

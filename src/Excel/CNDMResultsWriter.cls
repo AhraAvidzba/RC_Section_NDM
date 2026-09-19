@@ -81,7 +81,7 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
         Optional ByVal units As CUnitSystem = Nothing)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4450, "CNDMResultsWriter", "Книга Excel не передана."
     If section Is Nothing Then Err.Raise vbObjectError + 4451, "CNDMResultsWriter", "Модель сечения не передана."
-    If materialProvider Is Nothing Then Err.Raise vbObjectError + 4452, "CNDMResultsWriter", "Material provider не передан."
+    If materialProvider Is Nothing Then Err.Raise vbObjectError + 4452, "CNDMResultsWriter", "Поставщик материалов не передан."
     If batch Is Nothing Then Err.Raise vbObjectError + 4454, "CNDMResultsWriter", "Пакетный расчетчик не передан."
 
     ClearResults workbook
@@ -699,7 +699,7 @@ Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As L
             Dim prefix As String
             prefix = "State." & stateResult.StateTypeText & "."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "MaterialModelRole", _
-                stateResult.MaterialModelRoleText, "-", "Смысловая роль материальной модели для named-state."
+                stateResult.MaterialModelRoleText, "-", "Смысловая роль материальной модели для именованного расчетного состояния."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "MaterialModelSpec", _
                 stateResult.MaterialSpec.SpecKey, "-", "Фактическая спецификация ValueSet/ConcreteDiagram/ConcreteTension/SteelDiagram."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "ConcreteDiagramId", _
@@ -709,11 +709,11 @@ Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As L
                 MaterialDiagramId(batch.ProfileId(combinationIndex), stateResult, "Rebar", batch.DirectStateDiagramExtensionEnabled(combinationIndex)), _
                 "-", "Ссылка на диаграмму арматуры в rngNDMMaterialDiagrams."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "Epsilon0", _
-                stateResult.Epsilon0, "-", "Деформация в начале координат для named-state."
+                stateResult.Epsilon0, "-", "Деформация в начале координат для именованного расчетного состояния."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "KappaX", _
-                OutputCurvature(stateResult.KappaX, units), OutputCurvatureUnit(units), "Кривизна KappaX для named-state."
+                OutputCurvature(stateResult.KappaX, units), OutputCurvatureUnit(units), "Кривизна KappaX для именованного расчетного состояния."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "KappaY", _
-                OutputCurvature(stateResult.KappaY, units), OutputCurvatureUnit(units), "Кривизна KappaY для named-state."
+                OutputCurvature(stateResult.KappaY, units), OutputCurvatureUnit(units), "Кривизна KappaY для именованного расчетного состояния."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "NeutralLine.Angle", _
                 NeutralLineAngleValue(stateResult.KappaX, stateResult.KappaY), "rad", _
                 "Угол нейтральной линии от глобальной оси X против часовой стрелки."
@@ -721,7 +721,7 @@ Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As L
                 OutputLengthVariant(NeutralLineSignedDistanceValue(stateResult.Epsilon0, stateResult.KappaX, stateResult.KappaY), units), _
                 OutputLengthUnit(units), "Знаковое расстояние от начала координат до нейтральной линии по нормали (KappaY, KappaX)."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "ExtensionUsed", _
-                BooleanText(stateResult.ExtensionUsed), "-", "True, если этот StateSolution использовал numerical extension."
+                BooleanText(stateResult.ExtensionUsed), "-", "True, если это расчетное состояние использовало numerical extension."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "Status", _
                 stateResult.Status, "-", "Короткий статус состояния, сохраненный orchestrator-ом."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "StopReason", _
@@ -1175,14 +1175,37 @@ Private Sub PutAnnotationRow(ByRef data() As Variant, ByRef rowIndex As Long, By
     data(rowIndex, 5) = OutputLength(annotations.StartY(annotationIndex), units)
     data(rowIndex, 6) = OutputLength(annotations.EndX(annotationIndex), units)
     data(rowIndex, 7) = OutputLength(annotations.EndY(annotationIndex), units)
-    data(rowIndex, 8) = annotations.NormalX(annotationIndex)
-    data(rowIndex, 9) = annotations.NormalY(annotationIndex)
+    data(rowIndex, 8) = OutputAnnotationNormalX(annotations, annotationIndex, units)
+    data(rowIndex, 9) = OutputAnnotationNormalY(annotations, annotationIndex, units)
     data(rowIndex, 10) = OutputAnnotationText(annotations, annotationIndex, units)
     data(rowIndex, 11) = OutputAnnotationValue(annotations, annotationIndex, units)
     data(rowIndex, 12) = OutputAnnotationUnit(annotations, annotationIndex, units)
     data(rowIndex, 13) = OutputAnnotationComment(annotations, annotationIndex)
     rowIndex = rowIndex + 1
 End Sub
+
+' Для обычных dimension/rebar-аннотаций NormalX/NormalY - безразмерная
+' нормаль. Для CONTOUR_ARC в этих полях хранится центр дуги, поэтому его
+' нужно выводить в тех же единицах длины, что Start/End.
+Private Function OutputAnnotationNormalX(ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long, _
+        ByVal units As CUnitSystem) As Variant
+    If StrComp(annotations.AnnotationType(annotationIndex), "CONTOUR_ARC", vbTextCompare) = 0 Then
+        OutputAnnotationNormalX = OutputLength(annotations.NormalX(annotationIndex), units)
+    Else
+        OutputAnnotationNormalX = annotations.NormalX(annotationIndex)
+    End If
+End Function
+
+' Смотри OutputAnnotationNormalX: для дуги это координата центра, а для
+' остальных annotation - безразмерная нормаль.
+Private Function OutputAnnotationNormalY(ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long, _
+        ByVal units As CUnitSystem) As Variant
+    If StrComp(annotations.AnnotationType(annotationIndex), "CONTOUR_ARC", vbTextCompare) = 0 Then
+        OutputAnnotationNormalY = OutputLength(annotations.NormalY(annotationIndex), units)
+    Else
+        OutputAnnotationNormalY = annotations.NormalY(annotationIndex)
+    End If
+End Function
 
 Private Function OutputAnnotationText(ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long, _
         ByVal units As CUnitSystem) As String

@@ -287,7 +287,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
 
     Dim materialProvider As CMaterialModelProvider
     Set materialProvider = New CMaterialModelProvider
-    report.AddStep "Начато построение material provider."
+    report.AddStep "Начато построение поставщика материалов."
     materialProvider.Initialize settings, units
     report.AddStep "Построены материальные модели Strength, CrackInitiation и CrackedNDS по параметрам Config."
 
@@ -361,7 +361,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
         If settings.GetBoolean("Plot.AutoUpdateAfterCalculation", True) Then
             ClearSectionPlotForNoData workbook, _
                 "Схема не обновлена: нет доступных расчетных состояний LC."
-            report.AddStep "Схема очищена: нет доступных named-state в Results."
+            report.AddStep "Схема очищена: в Results нет доступных именованных расчетных состояний."
         Else
             report.AddStep "Автообновление схемы пропущено: Plot.AutoUpdateAfterCalculation = No."
         End If

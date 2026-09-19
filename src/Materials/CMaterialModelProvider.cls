@@ -349,7 +349,7 @@ Private Function PhysicalPurposeSlot(ByVal purpose As ECalculationPurpose) As Lo
             PhysicalPurposeSlot = SLOT_CRACKED_NDS
         Case Else
             Err.Raise vbObjectError + 3241, "CMaterialModelProvider", _
-                "Для material provider требуется физическая расчетная цель, а не " & PurposeToText(purpose) & "."
+                "Для поставщика материалов требуется физическая расчетная цель, а не " & PurposeToText(purpose) & "."
     End Select
 End Function
 
@@ -369,7 +369,7 @@ Private Function NormalizeLimitStateGroup(ByVal limitStateGroup As String) As St
         Case "i", "1", "uls", "group1"
             NormalizeLimitStateGroup = "I"
         Case Else
-            Err.Raise vbObjectError + 3245, "CMaterialModelProvider", "ГПС material provider должна быть I или II."
+            Err.Raise vbObjectError + 3245, "CMaterialModelProvider", "Группа предельных состояний для поставщика материалов должна быть I или II."
     End Select
 End Function
 
@@ -768,7 +768,7 @@ End Property
 
 ' Проверяет, что provider уже построил диаграммы.
 Private Sub EnsureInitialized()
-    If Not mInitialized Then Err.Raise vbObjectError + 3242, "CMaterialModelProvider", "Material provider не инициализирован."
+    If Not mInitialized Then Err.Raise vbObjectError + 3242, "CMaterialModelProvider", "Поставщик материалов не инициализирован."
 End Sub
 
 ' ==========================================================================

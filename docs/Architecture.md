@@ -75,7 +75,7 @@ set in `CSectionTypeRegistry`. There is no separate provider class per section t
 
 Universal layers must not contain shape-specific checks after that point:
 
-- `CNDMResultsWriter` serializes `CSectionModel.Annotations`; it does not infer Circle/LShape/RoundedRectangle from elements.
+- `CNDMResultsWriter` serializes `CSectionModel.Annotations`; it does not infer Circle/RectSet/RoundedRectangle from elements.
 - `CSectionPlotDataReader` reads saved Results tables and does not call geometry builders.
 - `CPlotAnnotationLayout` only converts semantic annotations from model coordinates into chart layout.
 - `CSectionPlotter` only draws prepared series and annotation layouts.
@@ -122,9 +122,9 @@ output units when writing `rngNDMSectionAnnotations`.
 
 Встроенный путь используется при `Geometry.Source = Generated`:
 
-- `ISectionGeometry`, `CGeometryCircle`, `CGeometryRoundedRectangle`, `CGeometryLShape` описывают принадлежность точек бетонному сечению;
+- `ISectionGeometry`, `CGeometryCircle`, `CGeometryRoundedRectangle`, `CGeometryRectSet` описывают принадлежность точек бетонному сечению;
 - `CFiberMeshBuilder` строит бетонные элементы;
-- `CCircleRebarLayoutBuilder` и `CLShapeRebarLayoutBuilder` строят автоматическую арматуру;
+- `CCircleRebarLayoutBuilder` и `CRectSetRebarLayoutBuilder` строят автоматическую арматуру;
 - `CSectionModelBuilder.BuildFromGenerated` собирает `CSectionModel`.
 
 `CFiberMeshBuilder` и `CRebarLayout` остаются внутренними объектами генераторов и не передаются в решатели.

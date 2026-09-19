@@ -93,6 +93,15 @@ Public Sub AddContourCircle(ByVal annotationID As String, ByVal centerX As Doubl
     AddAnnotation "CONTOUR_CIRCLE", annotationID, centerX, centerY, radius, 0#, 0#, 0#, vbNullString, radius, vbNullString, commentValue
 End Sub
 
+' Добавляет дуговой сегмент контура. Начало/конец задают фактическую дугу,
+' NormalX/NormalY хранят центр окружности, а Text - signed sweep в радианах.
+Public Sub AddContourArc(ByVal annotationID As String, ByVal startX As Double, ByVal startY As Double, _
+        ByVal endX As Double, ByVal endY As Double, ByVal centerX As Double, ByVal centerY As Double, _
+        ByVal radius As Double, ByVal sweepAngle As Double, Optional ByVal commentValue As String = "Дуга контура параметрического сечения.")
+    AddAnnotation "CONTOUR_ARC", annotationID, startX, startY, endX, endY, centerX, centerY, _
+        FormatAnnotationNumber(sweepAngle), radius, vbNullString, commentValue
+End Sub
+
 Public Sub AddDimension(ByVal annotationID As String, ByVal startX As Double, ByVal startY As Double, _
         ByVal endX As Double, ByVal endY As Double, ByVal normalX As Double, ByVal normalY As Double, _
         ByVal labelText As String, ByVal numericValue As Double, Optional ByVal commentValue As String = "Размер сечения для отображения на схеме.")
@@ -174,3 +183,8 @@ Private Sub CheckIndex(ByVal index As Long)
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5282, "CSectionAnnotations", "Индекс аннотации вне допустимого диапазона."
 End Sub
 
+' Форматирует служебные числовые параметры аннотаций независимо от системной
+' десятичной запятой Excel/Windows.
+Private Function FormatAnnotationNumber(ByVal value As Double) As String
+    FormatAnnotationNumber = Replace$(Format$(value, "0.############"), ",", ".")
+End Function

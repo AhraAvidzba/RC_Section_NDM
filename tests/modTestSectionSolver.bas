@@ -146,29 +146,29 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
 
     requiredKeys = Array( _
         "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "Calculation.ZeroMomentPerDepth", _
-        "Geometry.Source", "Geometry.Type", "LShape.B1", "LShape.H1", "LShape.B2", "LShape.H2", _
+        "Geometry.Source", "Geometry.Type", "RectSet.B1", "RectSet.H1", "RectSet.B2", "RectSet.H2", _
         "Mesh.StepX", "Mesh.StepY", "Mesh.BoundarySubdivisions", _
         "Load.ReferenceOffsetX", "Load.ReferenceOffsetY", _
-        "LShape.H1.as_1", "LShape.H1.as_2", "LShape.H1.d_1", "LShape.H1.d_2", _
-        "LShape.H1.n_1", "LShape.H1.n_2", _
-        "LShape.H1.StartOffset1", "LShape.H1.EndOffset1", _
-        "LShape.H1.StartOffset2", "LShape.H1.EndOffset2", _
-        "LShape.H1.d_2row_1", "LShape.H1.d_2row_2", "LShape.H1.d_3row_1", "LShape.H1.d_3row_2", "LShape.H1.loc_2row", "LShape.H1.loc_3row", _
-        "LShape.H2.as_1", "LShape.H2.as_2", "LShape.H2.d_1", "LShape.H2.d_2", _
-        "LShape.H2.n_1", "LShape.H2.n_2", _
-        "LShape.H2.StartOffset1", "LShape.H2.EndOffset1", _
-        "LShape.H2.StartOffset2", "LShape.H2.EndOffset2", _
-        "LShape.H2.d_2row_1", "LShape.H2.d_2row_2", "LShape.H2.d_3row_1", "LShape.H2.d_3row_2", "LShape.H2.loc_2row", "LShape.H2.loc_3row", _
-        "LShape.B1.as_1", "LShape.B1.as_2", "LShape.B1.d_1", "LShape.B1.d_2", _
-        "LShape.B1.n_1", "LShape.B1.n_2", _
-        "LShape.B1.StartOffset1", "LShape.B1.EndOffset1", _
-        "LShape.B1.StartOffset2", "LShape.B1.EndOffset2", _
-        "LShape.B1.d_2row_1", "LShape.B1.d_2row_2", "LShape.B1.d_3row_1", "LShape.B1.d_3row_2", "LShape.B1.loc_2row", "LShape.B1.loc_3row", _
-        "LShape.B2.as_1", "LShape.B2.as_2", "LShape.B2.d_1", "LShape.B2.d_2", _
-        "LShape.B2.n_1", "LShape.B2.n_2", _
-        "LShape.B2.StartOffset1", "LShape.B2.EndOffset1", _
-        "LShape.B2.StartOffset2", "LShape.B2.EndOffset2", _
-        "LShape.B2.d_2row_1", "LShape.B2.d_2row_2", "LShape.B2.d_3row_1", "LShape.B2.d_3row_2", "LShape.B2.loc_2row", "LShape.B2.loc_3row")
+        "RectSet.H1.as_1", "RectSet.H1.as_2", "RectSet.H1.d_1", "RectSet.H1.d_2", _
+        "RectSet.H1.n_1", "RectSet.H1.n_2", _
+        "RectSet.H1.StartOffset1", "RectSet.H1.EndOffset1", _
+        "RectSet.H1.StartOffset2", "RectSet.H1.EndOffset2", _
+        "RectSet.H1.d_2row_1", "RectSet.H1.d_2row_2", "RectSet.H1.d_3row_1", "RectSet.H1.d_3row_2", "RectSet.H1.loc_2row", "RectSet.H1.loc_3row", _
+        "RectSet.H2.as_1", "RectSet.H2.as_2", "RectSet.H2.d_1", "RectSet.H2.d_2", _
+        "RectSet.H2.n_1", "RectSet.H2.n_2", _
+        "RectSet.H2.StartOffset1", "RectSet.H2.EndOffset1", _
+        "RectSet.H2.StartOffset2", "RectSet.H2.EndOffset2", _
+        "RectSet.H2.d_2row_1", "RectSet.H2.d_2row_2", "RectSet.H2.d_3row_1", "RectSet.H2.d_3row_2", "RectSet.H2.loc_2row", "RectSet.H2.loc_3row", _
+        "RectSet.B1.as_1", "RectSet.B1.as_2", "RectSet.B1.d_1", "RectSet.B1.d_2", _
+        "RectSet.B1.n_1", "RectSet.B1.n_2", _
+        "RectSet.B1.StartOffset1", "RectSet.B1.EndOffset1", _
+        "RectSet.B1.StartOffset2", "RectSet.B1.EndOffset2", _
+        "RectSet.B1.d_2row_1", "RectSet.B1.d_2row_2", "RectSet.B1.d_3row_1", "RectSet.B1.d_3row_2", "RectSet.B1.loc_2row", "RectSet.B1.loc_3row", _
+        "RectSet.B2.as_1", "RectSet.B2.as_2", "RectSet.B2.d_1", "RectSet.B2.d_2", _
+        "RectSet.B2.n_1", "RectSet.B2.n_2", _
+        "RectSet.B2.StartOffset1", "RectSet.B2.EndOffset1", _
+        "RectSet.B2.StartOffset2", "RectSet.B2.EndOffset2", _
+        "RectSet.B2.d_2row_1", "RectSet.B2.d_2row_2", "RectSet.B2.d_3row_1", "RectSet.B2.d_3row_2", "RectSet.B2.loc_2row", "RectSet.B2.loc_3row")
     AssertRequiredKeys stats, requiredKeys
 
     requiredKeys = Array( _
@@ -231,7 +231,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "Steel.Point1.Eps", "Steel.Point1.Stress", "Steel.Point2.Eps", _
         "Steel.Point2.Stress", "Steel.Point3.Eps", "Steel.Point3.Stress", _
         "Solver.DiagnosticsEnabled", "Circle.CenterX", "Circle.CenterY", _
-        "LShape.OriginX", "LShape.OriginY", "Plot.DimensionsEnabled", "Plot.RebarLabelsEnabled", _
+        "RectSet.OriginX", "RectSet.OriginY", "Plot.DimensionsEnabled", "Plot.RebarLabelsEnabled", _
         "Plot.PrincipalAxesEnabled", "Plot.CentroidEnabled", "AutoCAD.Export.PrincipalAxesEnabled", _
         "Concrete.TensionMode", "Capacity.ConcreteCompressionLimit", "Capacity.ConcreteTensionLimit", _
         "Capacity.SteelStrainLimit", "Concrete.Class", _
@@ -248,7 +248,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     Dim rangeNames As Variant
     rangeNames = Array("rngUnitSettings", "rngSignConventionSettings", _
         "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", _
-        "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngLShapeGeometry", _
+        "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngRectSetGeometry", _
         "rngNDMSectionProperties", "rngNDMSectionAnnotations", "rngNDMMaterialDiagrams")
     For i = LBound(rangeNames) To UBound(rangeNames)
         AssertTrue stats, "settings.range." & CStr(rangeNames(i)), NamedRangeExists(CStr(rangeNames(i)))

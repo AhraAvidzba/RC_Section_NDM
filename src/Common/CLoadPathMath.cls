@@ -61,15 +61,15 @@ Public Function Lambda(ByVal nValue As Double, ByVal mxValue As Double, _
     Select Case AnchorComponent(loadPath)
         Case 1
             If Abs(loadPath.NBase) <= mBaseTolerance Then _
-                Err.Raise vbObjectError + 3841, "CLoadPathMath", "Load-path не содержит ненулевой опорной компоненты N."
+                Err.Raise vbObjectError + 3841, "CLoadPathMath", "Траектория нагружения не содержит ненулевой опорной компоненты N."
             Lambda = (nValue - loadPath.NOffset) / loadPath.NBase
         Case 2
             If Abs(loadPath.MxBase) <= mBaseTolerance Then _
-                Err.Raise vbObjectError + 3842, "CLoadPathMath", "Load-path не содержит ненулевой опорной компоненты Mx."
+                Err.Raise vbObjectError + 3842, "CLoadPathMath", "Траектория нагружения не содержит ненулевой опорной компоненты Mx."
             Lambda = (mxValue - loadPath.MxOffset) / loadPath.MxBase
         Case 3
             If Abs(loadPath.MyBase) <= mBaseTolerance Then _
-                Err.Raise vbObjectError + 3843, "CLoadPathMath", "Load-path не содержит ненулевой опорной компоненты My."
+                Err.Raise vbObjectError + 3843, "CLoadPathMath", "Траектория нагружения не содержит ненулевой опорной компоненты My."
             Lambda = (myValue - loadPath.MyOffset) / loadPath.MyBase
     End Select
 End Function

@@ -19,7 +19,7 @@ function Get-SystemSettingsCatalog {
         )},
         @{ Name = "GeometrySettings"; Title = "[Геометрия и сетка]"; Rows = @(
             @("Geometry.Source", "Generated", "-", "Источник расчетной геометрии: Generated - построить сетку встроенными генераторами; AutoCAD - импортировать только Region из активного чертежа AutoCAD. Единицы AutoCAD всегда считаются мм."),
-            @("Geometry.Type", "LShape", "-", "Тип сечения для Geometry.Source = Generated. Поддерживается: RoundedRectangle, Circle или LShape."),
+            @("Geometry.Type", "RectSet", "-", "Тип сечения для Geometry.Source = Generated. Поддерживается: RoundedRectangle, Circle или RectSet."),
             @("Mesh.StepX", "50", "мм", "Шаг бетонной волоконной сетки по X для Geometry.Source = Generated."),
             @("Mesh.StepY", "50", "мм", "Шаг бетонной волоконной сетки по Y для Geometry.Source = Generated. При равенстве Mesh.StepX и Mesh.StepY элементы сетки квадратные."),
             @("Mesh.BoundarySubdivisions", "1", "шт", "Количество подъячеек по каждой оси для граничной базовой ячейки при Geometry.Source = Generated; 1 - быстрый режим по центру ячейки."),
@@ -238,26 +238,33 @@ function Get-GeometrySettingsCatalog {
             @("Rebar.Loc2row", "Stacked", "-", "Куда ставить второй ряд относительно каждого стержня первого ряда: Stacked - внутрь по радиусу, SideBySide - по касательной справа по часовой стрелке."),
             @("Rebar.Loc3row", "Stacked", "-", "Куда ставить третий ряд относительно первого ряда. Если выбран тот же путь, что у второго ряда, программа отодвигает третий ряд дальше.")
         )},
-        @{ RangeName = "rngRoundedRectangleGeometry"; Title = "Скругленный прямоугольник"; Rows = @(
-            @("RoundedRectangle.Width", "300", "мм", "Полная наружная ширина бетонного сечения по X до скругления углов."),
-            @("RoundedRectangle.Height", "200", "мм", "Полная наружная высота бетонного сечения по Y до скругления углов."),
-            @("RoundedRectangle.RadiusTopLeft", "0", "мм", "Радиус верхнего левого угла; 0 означает обычный прямой угол без скругления."),
-            @("RoundedRectangle.RadiusTopRight", "0", "мм", "Радиус верхнего правого угла; применяется только к форме бетона, арматура для этого типа отдельно не генерируется."),
-            @("RoundedRectangle.RadiusBottomRight", "0", "мм", "Радиус нижнего правого угла; слишком большой радиус будет ограничен проверками геометрии."),
-            @("RoundedRectangle.RadiusBottomLeft", "0", "мм", "Радиус нижнего левого угла; все радиусы задаются независимо друг от друга.")
+        @{ RangeName = "rngRoundedRectangleGeometry"; Title = "Скругленный прямоугольник"; RoundedRectangleTable = $true; Rows = @(
+            @("Размеры сечения", "800", "250", "мм", "B - длина горизонтальной базы, H - полная высота сечения."),
+            @("тип Simple / Tapered", "Simple", "Tapered", "-", "Simple - вертикальный торец с R1; Tapered - наклонный торец с R1 и носовым R2."),
+            @("W", "0", "150", "мм", "Вынос tapered-части наружу от базового положения торца; для Simple можно оставить 0."),
+            @("R1", "40", "40", "мм", "Радиус верхнего и нижнего скругления соответствующей стороны."),
+            @("R2", "0", "80", "мм", "Носовой радиус tapered-части; для Simple не используется."),
+            @("H - левая", "40", "32", "5", "мм", "Арматура вдоль левой боковой траектории H."),
+            @("H - правая", "40", "32", "5", "мм", "Арматура вдоль правой боковой траектории H."),
+            @("B - верхняя", "40", "32", "8", "мм", "Арматура по верхнему прямому участку B между скруглениями."),
+            @("B - нижняя", "40", "32", "8", "мм", "Арматура по нижнему прямому участку B между скруглениями."),
+            @("H - левая", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у левой боковой траектории H."),
+            @("H - правая", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у правой боковой траектории H."),
+            @("B - верхняя", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у верхней грани B."),
+            @("B - нижняя", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у нижней грани B.")
         )},
-        @{ RangeName = "rngLShapeGeometry"; Title = "Г-образное сечение"; FaceTable = $true; Rows = @(
-            @("величина размера", "550", "250", "250", "600", "мм", "Габариты двух прямоугольников Г-сечения: H1/B1 - верхняя полка/стенка, H2/B2 - нижняя полка; общая высота равна H1 + H2."),
+        @{ RangeName = "rngRectSetGeometry"; Title = "Сечение из прямоугольников"; FaceTable = $true; Rows = @(
+            @("величина размера", "550", "250", "250", "600", "мм", "Габариты прямоугольников RectSet: H1/B1 - верхний прямоугольник, H2/B2 - нижний; для двух прямоугольников полная высота равна H1 + H2."),
             @("as_1", "40", "40", "40", "40", "мм", "Расстояние от грани _1 до оси первого ряда стержней. Для H-граней _1 слева, для B-граней _1 сверху."),
             @("as_2", "40", "40", "40", "40", "мм", "Расстояние от грани _2 до оси первого ряда стержней. Для H-граней _2 справа, для B-граней _2 снизу."),
             @("d_1", "32", "32", "32", "32", "мм", "Диаметр первого ряда у грани _1. Пустая ячейка или 0 отключает этот ряд даже при n_1 > 0."),
             @("d_2", "32", "32", "32", "32", "мм", "Диаметр первого ряда у грани _2. Пустая ячейка или 0 отключает этот ряд даже при n_2 > 0."),
             @("n_1", "5", "2", "2", "5", "шт", "Количество стержней первого ряда у грани _1. Если 0, ряд и его дополнительные стержни не создаются."),
             @("n_2", "5", "2", "2", "5", "шт", "Количество стержней первого ряда у грани _2. Если 0, ряд и его дополнительные стержни не создаются."),
-            @("t1_1", "80", "80", "80", "80", "мм", "Отступ первого стержня от начала грани _1 по направлению обхода контура по часовой стрелке."),
-            @("t2_1", "80", "80", "80", "80", "мм", "Отступ последнего стержня от конца грани _1; вместе с t1_1 задает длину, на которой раскладывается n_1."),
-            @("t1_2", "80", "80", "80", "80", "мм", "Отступ первого стержня от начала грани _2 по направлению обхода контура по часовой стрелке."),
-            @("t2_2", "80", "80", "80", "80", "мм", "Отступ последнего стержня от конца грани _2; вместе с t1_2 задает длину, на которой раскладывается n_2."),
+            @("t1_1", "80", "80", "80", "80", "мм", "Отступ t нач. от начала линии осей стержней; линия уже смещена от грани на as."),
+            @("t2_1", "80", "80", "80", "80", "мм", "Отступ t кон. от конца линии осей стержней; as не вычитается из длины линии вдоль грани."),
+            @("t1_2", "80", "80", "80", "80", "мм", "Отступ t нач. от начала линии осей стержней; линия уже смещена от грани на as."),
+            @("t2_2", "80", "80", "80", "80", "мм", "Отступ t кон. от конца линии осей стержней; as не вычитается из длины линии вдоль грани."),
             @("дополнительные ряды арматуры", "", "", "", "", "-", "Параметры дополнительных рядов. Пустой диаметр означает, что ряд не создается. Суффикс _1 - левая грань для H или верхняя грань для B; _2 - правая грань для H или нижняя грань для B."),
             @("d_2row_1", "", "", "", "", "мм", "Диаметр второго ряда у грани _1. Ряд строится только от существующих стержней первого ряда этой же грани."),
             @("d_2row_2", "", "", "", "", "мм", "Диаметр второго ряда у грани _2. Ряд строится только от существующих стержней первого ряда этой же грани."),
@@ -303,8 +310,8 @@ function Get-ConfigNamedRangeNames {
         "rngUnitSettings",
         "rngSignConventionSettings",
         "rngCircleGeometry",
+        "rngRectSetGeometry",
         "rngRoundedRectangleGeometry",
-        "rngLShapeGeometry",
         "rngConcreteMaterialParameters",
         "rngSteelMaterialParameters",
         "rngCalculationProfiles",
@@ -423,7 +430,6 @@ function Apply-ConfigUserInputAlignment {
         @{ Name = "rngCalculationProfiles"; Columns = @(3, 4, 5, 6) },
         @{ Name = "rngPlotAnnotationSettings"; Columns = @(2, 3) },
         @{ Name = "rngCircleGeometry"; Columns = @(2) },
-        @{ Name = "rngRoundedRectangleGeometry"; Columns = @(2) },
         @{ Name = "rngLoadCombinations"; Columns = @(1, 2, 3, 4, 5, 6) },
         @{ Name = "rngStabilityDurationLoads"; Columns = @(1, 2, 3, 4) },
         @{ Name = "rngSP35Table721"; Columns = @(1, 2, 3, 4, 5, 6, 7, 8) }
@@ -445,22 +451,38 @@ function Apply-ConfigUserInputAlignment {
     }
 
     try {
-        $range = $Workbook.Names.Item("rngLShapeGeometry").RefersToRange
-        if ([string]$range.Worksheet.Name -eq "Config" -and $range.Rows.Count -ge 23) {
+        $range = $Workbook.Names.Item("rngRoundedRectangleGeometry").RefersToRange
+        if ([string]$range.Worksheet.Name -eq "Config" -and $range.Rows.Count -ge 22) {
             $sheet = $range.Worksheet
             $top = $range.Row
             $left = $range.Column
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 1, $left), $sheet.Cells.Item($top + 1, $left + 4))
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 2, $left), $sheet.Cells.Item($top + 2, $left + 3))
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 4, $left + 1), $sheet.Cells.Item($top + 4, $left + 6))
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 5, $left + 1), $sheet.Cells.Item($top + 12, $left + 5))
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 5, $left + 6), $sheet.Cells.Item($top + 12, $left + 6))
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 14, $left + 1), $sheet.Cells.Item($top + 14, $left + 7))
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 15, $left + 1), $sheet.Cells.Item($top + 22, $left + 6))
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 15, $left + 7), $sheet.Cells.Item($top + 22, $left + 7))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 2, $left + 1), $sheet.Cells.Item($top + 2, $left + 3))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 6, $left + 1), $sheet.Cells.Item($top + 9, $left + 3))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 12, $left + 1), $sheet.Cells.Item($top + 15, $left + 4))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 18, $left + 1), $sheet.Cells.Item($top + 21, $left + 7))
         }
     } catch {
-        # LShape имеет составную таблицу, поэтому его ячейки ввода форматируются отдельно.
+        # RoundedRectangle имеет составную таблицу, поэтому его ячейки ввода форматируются отдельно.
+    }
+
+    try {
+        $range = $Workbook.Names.Item("rngRectSetGeometry").RefersToRange
+        if ([string]$range.Worksheet.Name -eq "Config" -and $range.Rows.Count -ge 28) {
+            $sheet = $range.Worksheet
+            $top = $range.Row
+            $left = $range.Column
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 2, $left + 1), $sheet.Cells.Item($top + 3, $left + 1))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 6, $left), $sheet.Cells.Item($top + 6, $left + 4))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 7, $left), $sheet.Cells.Item($top + 7, $left + 3))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 9, $left + 1), $sheet.Cells.Item($top + 9, $left + 6))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 10, $left + 1), $sheet.Cells.Item($top + 17, $left + 5))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 10, $left + 6), $sheet.Cells.Item($top + 17, $left + 6))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 19, $left + 1), $sheet.Cells.Item($top + 19, $left + 7))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 20, $left + 1), $sheet.Cells.Item($top + 27, $left + 6))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 20, $left + 7), $sheet.Cells.Item($top + 27, $left + 7))
+        }
+    } catch {
+        # RectSet имеет составную таблицу, поэтому его ячейки ввода форматируются отдельно.
     }
 }
 
@@ -500,14 +522,14 @@ function Get-SettingInstructionLines {
             "Это не численный допуск solver-а и не способ улучшить сходимость любой ценой. Если задать слишком большой порог, можно случайно убрать реальный малый момент или эксцентриситет. Если нужно проверить очень малый изгиб, уменьшите значение настройки."
         ) }
         "Geometry.Source" { return @($lead) + @(
-            "Generated: программа сама строит бетонную сетку, автоматически расставляет арматуру и готовит подписи для схемы. Этот режим удобен для параметрических сечений Circle, RoundedRectangle и LShape.",
+            "Generated: программа сама строит бетонную сетку, автоматически расставляет арматуру и готовит подписи для схемы. Этот режим удобен для параметрических сечений Circle, RoundedRectangle и RectSet.",
             "AutoCAD: геометрия должна быть заранее загружена отдельной кнопкой 'Импортировать геометрию из AutoCAD'. Кнопка читает только объекты Region на слоях AutoCAD.Import.ConcreteLayer и AutoCAD.Import.RebarLayer, записывает их в Results и сразу показывает предварительную схему без расчетных значений.",
             "При последующем нажатии 'Выполнить расчет' программа не обращается к AutoCAD повторно. Она берет уже сохраненную импортированную геометрию из Results. Если Geometry.Source = AutoCAD, но предварительного импорта нет, расчет останавливается понятным сообщением.",
             "Все координаты и площади AutoCAD считаются заданными в миллиметрах. После импорта программа работает с такой геометрией так же, как с геометрией, построенной внутри книги.",
             "У импортированной из AutoCAD сетки обычно нет сведений о смысловых гранях и группах арматуры. Поэтому программа сохраняет фактические элементы и результаты, но не пытается угадывать специальные подписи граней по координатам."
         ) }
         "Geometry.Type" { return @($lead) + @(
-            "Поддерживаемые варианты: Circle, RoundedRectangle, LShape. Для выбранной формы программа строит геометрию, расставляет арматуру и, если умеет, готовит подписи для схемы.",
+            "Поддерживаемые варианты: Circle, RoundedRectangle, RectSet. Для выбранной формы программа строит геометрию, расставляет арматуру и, если умеет, готовит подписи для схемы.",
             "Не используется при Geometry.Source = AutoCAD, потому что в этом режиме фактическая сетка приходит из чертежа.",
             "Если для выбранной формы нет специальных аннотаций, расчет все равно выполняется. На схеме будут показаны геометрия и расчетные значения без этих дополнительных подписей."
         ) }
@@ -567,14 +589,15 @@ function Get-SettingInstructionLines {
             "Если второй ряд уже занимает выбранное направление, третий ряд ставится дальше, за вторым рядом."
         ) }
         "RoundedRectangle.*" { return @($lead) + @(
-            "Настройка относится к геометрии прямоугольного сечения со скруглениями.",
-            "Width и Height задают габариты бетона. RadiusTopLeft, RadiusTopRight, RadiusBottomRight и RadiusBottomLeft задают радиусы соответствующих углов.",
-            "Если радиус равен 0, угол остается прямым. Если радиусы несовместимы с габаритами, генератор должен остановиться с ошибкой входных данных.",
-            "Бетонная сетка строится с шагами Mesh.StepX и Mesh.StepY с уточнением границы через Mesh.BoundarySubdivisions.",
-            "Форма и радиусы являются геометрическими исходными данными пользователя. Программа не выполняет отдельную проверку конструктивных требований СП для скруглений."
+            "Настройка относится к геометрии скругленного прямоугольника с левой и правой стороной Simple/Tapered.",
+            "B задает длину горизонтальной базы между левым и правым торцом. H задает полную высоту сечения.",
+            "Simple - боковой торец с вертикальной вставкой и радиусами R1 сверху и снизу. Tapered - боковая часть с верхним/нижним R1, наклонными участками и носовым радиусом R2.",
+            "W задает вынос tapered-части наружу от базового торца. Для Simple W можно оставлять 0.",
+            "Арматура задается по линиям H - левая, H - правая, B - верхняя, B - нижняя. По B стержни идут по прямому участку между скруглениями, по H - по боковой траектории Simple/Tapered.",
+            "Бетонная сетка строится тем же общим генератором Mesh.StepX/Mesh.StepY; расчетное ядро дальше работает с обычным CSectionModel."
         ) }
         "Load.ReferenceOffset*" { return @($lead) + @(
-            "Если Load.ReferenceOffsetX = 0 и Load.ReferenceOffsetY = 0, заданные N, Mx и My относятся к центру тяжести бетонного сечения без учета продольной арматуры. Техническое начало координат формы, например нижний левый угол LShape, на физический результат не влияет.",
+            "Если Load.ReferenceOffsetX = 0 и Load.ReferenceOffsetY = 0, заданные N, Mx и My относятся к центру тяжести бетонного сечения без учета продольной арматуры. Техническое начало координат встроенной формы на физический результат не влияет.",
             "Если задан offset, программа учитывает дополнительный момент от смещения точки приложения нагрузки относительно бетонного центра.",
             "Инженерный смысл: осевая сила N при ненулевом offset создает дополнительный момент от эксцентриситета. Поэтому изменение offset при тех же N, Mx, My физически меняет расчетную задачу.",
             "Число вводится в текущей INPUT-единице длины. Например эксцентриситет 100 mm задается как 100 при mm, 10 при cm или 0.1 при m.",
@@ -1162,15 +1185,16 @@ function Get-SettingsInstructionCatalog {
         "N, Mx и My вводятся в текущих INPUT-единицах из блока единиц. Пустой Mx или My считается нулем, поэтому одноосный изгиб можно задавать как N + Mx или N + My без заполнения второго момента.",
         "ProfileId задает расчетный профиль из таблицы расчетных профилей. В сочетании пользователь выбирает имя из строки Profile.DisplayName; если это имя переименовать в профилях, выпадающий список обновится. Технические PR1/PR2 остаются внутренними стабильными ID колонок и также принимаются для совместимости.",
         "Профиль определяет только, какие расчеты запрошены и какие материальные модели использовать. Порядок расчета и зависимости между состояниями задает программа, а не строка профиля.",
-        "CapacityLoadPath задает, какие компоненты нагрузки масштабируются при поиске несущей способности: λ*Mx, λ*My, λ*Mxy, λ*N или λ*NMxy. Эта настройка находится в строке сочетания, потому что разные сочетания могут требовать разной траектории поиска.",
+        "CapacityLoadPath задает, какие компоненты нагрузки масштабируются при поиске несущей способности: Auto, λ*Mx, λ*My, λ*Mxy, λ*N или λ*NMxy. Эта настройка находится в строке сочетания, потому что разные сочетания могут требовать разной траектории поиска.",
         "Если выбран λ*N, продольная сила N умножается на λ, а момент от ее смещенной линии действия масштабируется вместе с N. Если выбран λ*Mxy, N остается постоянной, а масштабируется только пользовательский вектор моментов.",
-        "Если CapacityLoadPath оставлен пустым, программа сама выбирает понятный вариант: при наличии пользовательского Mx/My используется λ*Mxy, при чистой N - λ*N. Для прозрачности расчетов лучше задавать путь явно.",
+        "Если CapacityLoadPath = Auto или оставлен пустым, программа сама выбирает понятный вариант: при наличии пользовательского Mx/My используется λ*Mxy, при чистой N - λ*N. Для прозрачности расчетов лучше задавать путь явно.",
         "Comment - пользовательское пояснение к сочетанию. Оно выводится в Summary и добавляется в заголовок схемы в скобках."
     ); Tables = @(
         @{
             Title = "Варианты CapacityLoadPath"
             Headers = @("Вариант", "Что масштабируется", "Что остается постоянным", "Минимально нужно задать", "Недопустимо")
             Rows = @(
+                @("Auto", "Программа выбирает путь по ненулевым компонентам строки.", "Зависит от выбранного автоматически пути.", "N <> 0 или Mx/My <> 0.", "Полностью нулевая строка нагрузки."),
                 @("λ*Mx", "Пользовательский Mx.", "N, пользовательский My и моменты от эксцентриситета N.", "Mx <> 0.", "Пустой или нулевой Mx."),
                 @("λ*My", "Пользовательский My.", "N, пользовательский Mx и моменты от эксцентриситета N.", "My <> 0.", "Пустой или нулевой My."),
                 @("λ*Mxy", "Пользовательские Mx и My как один вектор изгиба.", "N и моменты от эксцентриситета N.", "Mx <> 0 или My <> 0.", "Одновременно Mx = 0 и My = 0."),
@@ -1185,7 +1209,7 @@ function Get-SettingsInstructionCatalog {
                 @("Capacity.SolutionStrategy = Auto и изгибная траектория λ*Mx/λ*My/λ*Mxy.", "Сначала пробует UltimateStrain; при численной неудаче повторяет тот же CapacityLoadPath через LoadMultiplier.", "CapacitySolutionMethod показывает фактический метод.", "Обычно это самый быстрый путь для предельного момента при заданной N.", "Пользовательский CapacityLoadPath не меняется."),
                 @("λ*N или λ*NMxy без пользовательских моментов.", "Использует LoadMultiplier как более устойчивую силовую ветку.", "CapacitySolutionMethod = LoadMultiplier.", "Чистая силовая траектория может быть вырожденной для UltimateStrain на плато диаграммы.", "CapacityLoadPath остается тем, который выбрал пользователь."),
                 @("Capacity.SolutionStrategy = LoadMultiplier.", "Сразу выполняет одномерный поиск λ через Capacity.SearchMethod.", "CapacitySolutionMethod = LoadMultiplier.", "Нужен для сложных траекторий и контрольных расчетов.", "Bisection обычно самый предсказуемый, Brent часто быстрее, Secant чувствительнее."),
-                @("CapacityLoadPath пустой.", "Автоматически выбирает λ*Mxy при наличии Mx/My, иначе λ*N при чистой N.", "В Results выводится фактически принятый CapacityLoadPath.", "Это защита для неполных строк сочетаний.", "Для прозрачности лучше заполнять путь явно."),
+                @("CapacityLoadPath = Auto или пустой.", "Автоматически выбирает λ*Mxy при наличии Mx/My, иначе λ*N при чистой N.", "В Results выводится фактически принятый CapacityLoadPath.", "Это защита для неполных строк сочетаний.", "Для прозрачности лучше задавать Auto явно."),
                 @("Выбрана траектория, но ее масштабируемые компоненты нулевые.", "Возвращает InputErr.", "CapacityStatus = InputErr.", "Нельзя искать множитель для нулевого вектора Base.", "Например λ*Mx при Mx = 0.")
             )
         }
@@ -1274,20 +1298,41 @@ function Get-SettingsInstructionCatalog {
         "Semantic-аннотации круга строятся отдельным shape-builder: габаритный размер диаметра и групповые подписи арматуры затем выводятся тем же универсальным механизмом схемы, что и для остальных сечений."
     )}) | Out-Null
     $items.Add(@{ Key = "RoundedRectangleGeometry"; Title = "Скругленный прямоугольник"; Lines = @(
-        "RoundedRectangle.Width и RoundedRectangle.Height задают основные габариты бетонного сечения.",
-        "Радиусы RoundedRectangle.RadiusTopLeft/TopRight/BottomRight/BottomLeft задаются независимо для каждого угла. Нулевой радиус означает обычный прямой угол.",
-        "Скругленный прямоугольник пока используется как геометрическая бетонная форма. Если для него не задан отдельный builder арматуры или аннотаций, расчет не падает: отсутствующие specialized-данные просто не выводятся.",
+        "B задает длину горизонтальной базы сечения между левым и правым торцом. H задает полную высоту сечения.",
+        "Для каждой стороны отдельно выбирается Simple или Tapered. Simple - боковой торец со скруглениями R1 сверху и снизу. Tapered - наклонная боковая часть с теми же R1 и отдельным носовым радиусом R2.",
+        "W используется для стороны Tapered и задает, насколько носовая часть выходит наружу от базового торца. Для Simple W можно оставлять равным 0.",
+        "R1 - радиус сопряжения верхней и нижней горизонтальных граней с боковой частью. R2 - носовой радиус Tapered-части.",
+        "Основная арматура задается по четырем строкам: H - левая, H - правая, B - верхняя, B - нижняя. as измеряется от бетонного контура до оси стержней внутрь сечения.",
+        "По B стержни ставятся равномерно на прямом участке между скруглениями. По H стержни ставятся равномерно вдоль боковой траектории с учетом Simple/Tapered-формы, as, W и радиусов.",
+        "Дополнительные ряды d2/d3 работают так же, как в других генераторах: Stacked ставит ряд внутрь сечения, SideBySide - вдоль текущей линии раскладки; EachBar/EverySecondBar управляет привязкой к первому ряду.",
         "После генерации программа работает с сечением одинаково независимо от того, было оно построено в книге или импортировано из AutoCAD."
     )}) | Out-Null
-    $items.Add(@{ Key = "LShapeGeometry"; Title = "Г-образное сечение"; Lines = @(
-        "H1/B1 описывают верхний прямоугольник Г-сечения, H2/B2 - нижний прямоугольник. Полная высота расчетной формы равна H = H1 + H2.",
-        "Основное армирование задается по смысловым граням H1, B1, H2, B2. Для каждой грани есть сторона _1 и _2: для вертикальных H это левая и правая грань, для горизонтальных B это верхняя и нижняя грань.",
-        "Нумерация граней идет слева направо для вертикальных граней и сверху вниз для горизонтальных. Это правило используется в именах as_1/as_2, d_1/d_2, n_1/n_2, t1_1/t2_1 и t1_2/t2_2.",
-        "Формула: step = (L_edge - t1 - t2) / (n - 1), если n > 1.",
-        "Если n = 1, создается один стержень в допустимой позиции по принятой реализации builder.",
-        "Если n_1 = 0 или d_1 = 0, ряд _1 не создается. Если первого ряда на стороне нет, дополнительные 2-й и 3-й ряды этой стороны также не создаются, даже если их диаметры указаны.",
-        "Дополнительные ряды строятся от координат первого ряда. loc_2row/loc_3row задает направление Stacked или SideBySide, а bind_2row/bind_3row задает EachBar или EverySecondBar.",
-        "Размеры и групповые подписи арматуры создаются по смысловым граням Г-сечения и затем сохраняются в Results. Схема не угадывает грани по координатам уже после расчета."
+    $items.Add(@{ Key = "RectSetGeometry"; Title = "Сечение из прямоугольников"; Lines = @(
+        "Этот блок задает параметрическое бетонное сечение RectSet: один прямоугольник H1/B1 или два прямоугольника H1/B1 и H2/B2.",
+        "RectSet.SectionType выбирает режим: Rectangle - работает только верхний прямоугольник H1/B1; LSection - Г-сечение из двух прямоугольников с общей левой гранью; TwoRectangles - два прямоугольника, где верхний можно сместить по X.",
+        "RectSet.UpperOffsetX используется только в режиме TwoRectangles. Offset = 0 означает базовое положение: левая грань верхнего прямоугольника совпадает с левой гранью нижнего. Положительный Offset смещает верхний прямоугольник вправо по принятой оси X.",
+        "Для LSection параметр UpperOffsetX не используется: положение верхнего прямоугольника задается самим режимом LSection.",
+        "Для Rectangle нижний прямоугольник H2/B2 полностью отключается: он не участвует в бетонной геометрии, арматуре H2/B2, контурах и размерах.",
+        "H1/B1 описывают верхний прямоугольник, H2/B2 - нижний прямоугольник. В двухпрямоугольных режимах полная высота расчетной формы равна H = H1 + H2.",
+        "as - расстояние от бетонной грани до оси первого ряда стержней, измеренное по нормали внутрь сечения. Для H-граней это расстояние по X от левой/правой грани; для B-граней - по Y от верхней/нижней грани.",
+        "d - диаметр стержней первого ряда на выбранной стороне грани. Пустая ячейка или 0 отключает этот ряд, даже если задано количество n.",
+        "n - количество стержней первого ряда на выбранной стороне грани. Если n = 0, ряд и его дополнительные стержни не создаются.",
+        "t нач. - отступ от начала линии раскладки до первого стержня. Начало линии определяется направлением обхода грани по часовой стрелке.",
+        "t кон. - отступ от конца линии раскладки до последнего стержня. Конец линии также берется по направлению обхода грани по часовой стрелке.",
+        "Линия раскладки - это линия осей первого ряда стержней, параллельная выбранной бетонной грани; она уже смещена внутрь сечения на расстояние as, идет от края до края соответствующего прямоугольника и не обрезается на as сверху, снизу или по бокам.",
+        "as влияет только на поперечное положение линии относительно бетонной грани. Доступную длину вдоль грани, на которой реально раскладываются стержни, уменьшают только t нач. и t кон.",
+        "Доступная длина линии равна Lдоступная = Lграни - t нач. - t кон. Если эта величина отрицательная, программа выдает ошибку по соответствующей грани и линии.",
+        "Шаг между стержнями при n > 1: step = Lдоступная / (n - 1). Если n = 1, единственный стержень ставится в середину доступного участка.",
+        "d_2row - диаметр второго ряда у той же стороны грани. Пустая ячейка или 0 означает, что второй ряд не создается.",
+        "d_3row - диаметр третьего ряда у той же стороны грани. Пустая ячейка или 0 означает, что третий ряд не создается.",
+        "loc_2row - направление второго ряда относительно первого: Stacked ставит стержень внутрь сечения, SideBySide ставит его вдоль грани рядом с первым рядом.",
+        "loc_3row - направление третьего ряда относительно первого. Если оно совпадает с loc_2row и второй ряд существует, третий ряд ставится дальше от первого, перескакивая второй.",
+        "bind_2row - привязка второго ряда к первому: EachBar ставит дополнительный стержень у каждого стержня первого ряда, EverySecondBar - через один.",
+        "bind_3row - привязка третьего ряда к первому: EachBar ставит дополнительный стержень у каждого стержня первого ряда, EverySecondBar - через один.",
+        "Служебные имена в настройках: H1 - вертикальные грани верхнего прямоугольника; B1 - горизонтальные грани верхнего прямоугольника; H2 - вертикальные грани нижнего прямоугольника; B2 - горизонтальные грани нижнего прямоугольника.",
+        "Суффикс _1 означает первую сторону грани: левая для H1/H2 и верхняя для B1/B2. Суффикс _2 означает вторую сторону: правая для H1/H2 и нижняя для B1/B2.",
+        "Пример: строка на Config 'H2 - левая' внутри читается как RectSet.H2.as_1, RectSet.H2.d_1, RectSet.H2.n_1, RectSet.H2.StartOffset1 и RectSet.H2.EndOffset1.",
+        "Размеры и групповые подписи арматуры создаются по смысловым граням RectSet-сечения и затем сохраняются в Results. Схема не угадывает грани по координатам уже после расчета."
     )}) | Out-Null
     foreach ($section in (Get-SystemSettingsCatalog)) {
         foreach ($row in $section.Rows) {
@@ -1310,7 +1355,7 @@ function Get-SettingsInstructionCatalog {
         $items.Add(@{ Key = $key; Title = $key; Lines = (Get-SettingInstructionLines $key ([string]$row[4])) }) | Out-Null
     }
     foreach ($geometry in (Get-GeometrySettingsCatalog)) {
-        if (-not ($geometry.ContainsKey("FaceTable") -and $geometry.FaceTable)) {
+        if (-not ($geometry.ContainsKey("FaceTable") -and $geometry.FaceTable) -and -not ($geometry.ContainsKey("RoundedRectangleTable") -and $geometry.RoundedRectangleTable)) {
             foreach ($row in $geometry.Rows) {
                 $key = [string]$row[0]
                 if ($key.Length -gt 0 -and $key -notlike "дополнительные*") {
@@ -2412,7 +2457,7 @@ function Add-SettingsInstructions {
         "Аннотации схемы" = "PlotAnnotationSettings"
         "Круглое сечение" = "CircleGeometry"
         "Скругленный прямоугольник" = "RoundedRectangleGeometry"
-        "Г-образное сечение" = "LShapeGeometry"
+        "Сечение из прямоугольников" = "RectSetGeometry"
     }
     for ($r = 1; $r -le ($used.Row + $used.Rows.Count + 40); $r++) {
         for ($c = 1; $c -le 40; $c++) {
@@ -2460,16 +2505,17 @@ function Add-LoadCombinationsTable {
     $loadRange.Borders.Weight = 2
     $loadRange.Borders.Color = 12632256
 
-    $capacityLoadPathListColumn = 133
+    $capacityLoadPathListColumn = 143
     $defaultProfileRow = Get-CalculationProfilesCatalog | Where-Object { $_.Key -eq "Profile.DisplayName" } | Select-Object -First 1
     $defaultProfileName = $defaultProfileRow.PR1
     $Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 4).Value2 = $defaultProfileName
 
     $lambda = [char]0x03BB
-    $capacityLoadPathOptions = @("$lambda*Mx", "$lambda*My", "$lambda*Mxy", "$lambda*N", "$lambda*NMxy")
+    $capacityLoadPathOptions = @("Auto", "$lambda*Mx", "$lambda*My", "$lambda*Mxy", "$lambda*N", "$lambda*NMxy")
     for ($i = 0; $i -lt $capacityLoadPathOptions.Count; $i++) {
         $Sheet.Cells.Item($i + 1, $capacityLoadPathListColumn).Value2 = $capacityLoadPathOptions[$i]
     }
+    $Sheet.Columns.Item($capacityLoadPathListColumn).Hidden = $true
     $capacityLoadPathColName = ConvertTo-ExcelColumn $capacityLoadPathListColumn
     $capacityLoadPathListAddress = "=$" + $capacityLoadPathColName + '$1:$' + $capacityLoadPathColName + '$' + $capacityLoadPathOptions.Count
     $capacityLoadPathRange = $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 5), $Sheet.Cells.Item($HeaderRow + 20, $StartColumn + 5))
@@ -2506,6 +2552,7 @@ function Add-LoadProfileValidation {
         $sourceCell = $profilesRange.Cells.Item($displayRow, 3 + $i)
         $Sheet.Cells.Item($i + 1, $ListColumn).Formula = "=" + $sourceCell.Address($true, $true)
     }
+    $Sheet.Columns.Item($ListColumn).Hidden = $true
 
     $colName = ConvertTo-ExcelColumn $ListColumn
     $listAddress = "=$" + $colName + '$1:$' + $colName + '$' + $profileCount
@@ -3259,16 +3306,23 @@ function Apply-SystemSettingsLayout {
     $rightRow += $concreteRows.Count + 1 + $rightBlockGap
 
     Add-CalculationProfilesTable $Workbook $Sheet $rightRow $rightColumn
-    Add-LoadProfileValidation $Workbook $Sheet 132
+    Add-LoadProfileValidation $Workbook $Sheet 142
     $rightRow += (Get-CalculationProfilesCatalog).Count + 2 + $rightBlockGap
 
     Add-PlotAnnotationSettingsTable $Workbook $Sheet $rightRow $rightColumn
     $rightRow += (Get-PlotAnnotationSettingsCatalog).Count + 1 + $rightBlockGap
 
-    foreach ($geometryTable in (Get-GeometrySettingsCatalog)) {
-        if ($geometryTable.ContainsKey("FaceTable") -and $geometryTable.FaceTable) {
-            Add-LShapeFaceSettingsTable $Workbook $Sheet $geometryTable.RangeName $rightRow $rightColumn $geometryTable.Title $geometryTable.Rows
+    $geometryTables = Get-GeometrySettingsCatalog
+    $geometryOrder = @("rngCircleGeometry", "rngRectSetGeometry", "rngRoundedRectangleGeometry")
+    foreach ($geometryRangeName in $geometryOrder) {
+        $geometryTable = $geometryTables | Where-Object { $_.RangeName -eq $geometryRangeName } | Select-Object -First 1
+        if ($null -eq $geometryTable) { continue }
+        if ($geometryTable.ContainsKey("RoundedRectangleTable") -and $geometryTable.RoundedRectangleTable) {
+            Add-RoundedRectangleSettingsTable $Workbook $Sheet $geometryTable.RangeName $rightRow $rightColumn $geometryTable.Title $geometryTable.Rows
             $rightRow += 23 + $rightBlockGap
+        } elseif ($geometryTable.ContainsKey("FaceTable") -and $geometryTable.FaceTable) {
+            Add-RectSetFaceSettingsTable $Workbook $Sheet $geometryTable.RangeName $rightRow $rightColumn $geometryTable.Title $geometryTable.Rows
+            $rightRow += 28 + $rightBlockGap
         } else {
             Add-GeometrySettingsTable $Workbook $Sheet $geometryTable.RangeName $rightRow $rightColumn $geometryTable.Title $geometryTable.Rows
             $rightRow += $geometryTable.Rows.Count + 1 + $rightBlockGap
@@ -3291,7 +3345,7 @@ function Apply-SystemSettingsLayout {
         "Stability.AccidentalEccentricityMode" = @("AutoWithL", "AutoWith$($mu)L", "User")
         "Stability.AccidentalEccentricityPlanes" = @("OnlyMomentPlane", "BothPlanes")
         "Stability.PhiLMode" = @("Auto", "PhiL2")
-        "Geometry.Type" = @("RoundedRectangle", "Circle", "LShape")
+        "Geometry.Type" = @("RoundedRectangle", "Circle", "RectSet")
         "Solver.Method" = @("Newton", "Secant")
         "Solver.DirectState.DiagramExtension" = @("Yes", "No")
         "Capacity.SolutionStrategy" = @("Auto", "UltimateStrain", "LoadMultiplier")
@@ -3545,8 +3599,155 @@ function Add-GeometrySettingsTable {
     Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($HeaderRow + $Rows.Count) ($StartColumn + 3)
 }
 
+# Добавляет секционную таблицу RoundedRectangle: геометрия сторон и арматура.
+function Add-RoundedRectangleSettingsTable {
+    param(
+        [object]$Workbook,
+        [object]$Sheet,
+        [string]$RangeName,
+        [int]$HeaderRow,
+        [int]$StartColumn,
+        [string]$Title,
+        [array]$Rows
+    )
+
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = $Title
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 8)).Merge() | Out-Null
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
+
+    $Sheet.Cells.Item($HeaderRow, $StartColumn).Value2 = "Общие настройки геометрии"
+    $commonTitleRange = $Sheet.Range($Sheet.Cells.Item($HeaderRow, $StartColumn), $Sheet.Cells.Item($HeaderRow, $StartColumn + 4))
+    $commonTitleRange.Merge() | Out-Null
+    $commonTitleRange.Font.Bold = $true
+    $commonTitleRange.Interior.Color = 15921906
+
+    $commonHeaders = @("Параметр", "B", "H", "Ед.", "Комментарий")
+    for ($i = 0; $i -lt $commonHeaders.Count; $i++) {
+        $cell = $Sheet.Cells.Item($HeaderRow + 1, $StartColumn + $i)
+        $cell.Value2 = $commonHeaders[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = 14277081
+    }
+    for ($c = 0; $c -lt 5; $c++) {
+        $Sheet.Cells.Item($HeaderRow + 2, $StartColumn + $c).Value2 = $Rows[0][$c]
+    }
+    Set-InputUnitCell $Sheet.Cells.Item($HeaderRow + 2, $StartColumn + 3) "мм"
+
+    $sideHeaderRow = $HeaderRow + 4
+    $Sheet.Cells.Item($sideHeaderRow, $StartColumn).Value2 = "Дополнительные настройки геометрии"
+    $sideTitleRange = $Sheet.Range($Sheet.Cells.Item($sideHeaderRow, $StartColumn), $Sheet.Cells.Item($sideHeaderRow, $StartColumn + 4))
+    $sideTitleRange.Merge() | Out-Null
+    $sideTitleRange.Font.Bold = $true
+    $sideTitleRange.Interior.Color = 15921906
+
+    $sideHeaders = @("Параметр", "слева", "справа", "Ед.", "Комментарий")
+    for ($i = 0; $i -lt $sideHeaders.Count; $i++) {
+        $cell = $Sheet.Cells.Item($sideHeaderRow + 1, $StartColumn + $i)
+        $cell.Value2 = $sideHeaders[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = 14277081
+    }
+    for ($r = 1; $r -le 4; $r++) {
+        for ($c = 0; $c -lt 5; $c++) {
+            $Sheet.Cells.Item($sideHeaderRow + 1 + $r, $StartColumn + $c).Value2 = $Rows[$r][$c]
+        }
+        Set-InputUnitCell $Sheet.Cells.Item($sideHeaderRow + 1 + $r, $StartColumn + 3) ([string]$Rows[$r][3])
+    }
+
+    $mainHeaderRow = $HeaderRow + 11
+    $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn).Value2 = "Основное армирование"
+    $mainSectionRange = $Sheet.Range($Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn), $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn + 5))
+    $mainSectionRange.Font.Bold = $true
+    $mainSectionRange.Interior.Color = 15921906
+    $mainSectionRange.HorizontalAlignment = -4131
+    $mainHeaders = @("Грань", "as", "d", "n", "Ед.", "Комментарий")
+    for ($i = 0; $i -lt $mainHeaders.Count; $i++) {
+        $cell = $Sheet.Cells.Item($mainHeaderRow, $StartColumn + $i)
+        $cell.Value2 = $mainHeaders[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = 14277081
+    }
+    for ($r = 5; $r -le 8; $r++) {
+        $targetRow = $mainHeaderRow + 1 + ($r - 5)
+        for ($c = 0; $c -lt 6; $c++) {
+            $Sheet.Cells.Item($targetRow, $StartColumn + $c).Value2 = $Rows[$r][$c]
+        }
+        Set-InputUnitCell $Sheet.Cells.Item($targetRow, $StartColumn + 4) "мм"
+    }
+
+    $extraHeaderRow = $mainHeaderRow + 6
+    $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn).Value2 = "Дополнительные ряды арматуры"
+    $extraSectionRange = $Sheet.Range($Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn), $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn + 8))
+    $extraSectionRange.Font.Bold = $true
+    $extraSectionRange.Interior.Color = 15921906
+    $extraSectionRange.HorizontalAlignment = -4131
+    $extraHeaders = @("Грань", "d2", "положение", "привязка", "d3", "положение", "привязка", "Ед.", "Комментарий")
+    for ($i = 0; $i -lt $extraHeaders.Count; $i++) {
+        $cell = $Sheet.Cells.Item($extraHeaderRow, $StartColumn + $i)
+        $cell.Value2 = $extraHeaders[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = 14277081
+    }
+    for ($r = 9; $r -le 12; $r++) {
+        $targetRow = $extraHeaderRow + 1 + ($r - 9)
+        for ($c = 0; $c -lt 9; $c++) {
+            $Sheet.Cells.Item($targetRow, $StartColumn + $c).Value2 = $Rows[$r][$c]
+        }
+        Set-InputUnitCell $Sheet.Cells.Item($targetRow, $StartColumn + 7) "мм"
+    }
+
+    $typeOptions = @("Simple", "Tapered")
+    $typeListColumn = 132
+    for ($i = 0; $i -lt $typeOptions.Count; $i++) { $Sheet.Cells.Item($i + 1, $typeListColumn).Value2 = $typeOptions[$i] }
+    $typeColName = ConvertTo-ExcelColumn $typeListColumn
+    $typeListAddress = "=$" + $typeColName + '$1:$' + $typeColName + '$' + $typeOptions.Count
+    foreach ($valueColumn in @(1, 2)) {
+        $cell = $Sheet.Cells.Item($sideHeaderRow + 2, $StartColumn + $valueColumn)
+        $cell.Validation.Delete()
+        $cell.Validation.Add(3, 1, 1, $typeListAddress)
+        $cell.Validation.IgnoreBlank = $false
+        $cell.Validation.InCellDropdown = $true
+    }
+
+    $locOptions = @("Stacked", "SideBySide")
+    $locListColumn = 133
+    for ($i = 0; $i -lt $locOptions.Count; $i++) { $Sheet.Cells.Item($i + 1, $locListColumn).Value2 = $locOptions[$i] }
+    $locColName = ConvertTo-ExcelColumn $locListColumn
+    $locListAddress = "=$" + $locColName + '$1:$' + $locColName + '$' + $locOptions.Count
+    $bindOptions = @("EachBar", "EverySecondBar")
+    $bindListColumn = 134
+    for ($i = 0; $i -lt $bindOptions.Count; $i++) { $Sheet.Cells.Item($i + 1, $bindListColumn).Value2 = $bindOptions[$i] }
+    $bindColName = ConvertTo-ExcelColumn $bindListColumn
+    $bindListAddress = "=$" + $bindColName + '$1:$' + $bindColName + '$' + $bindOptions.Count
+
+    for ($r = 0; $r -lt 4; $r++) {
+        foreach ($valueColumn in @(2, 5)) {
+            $cell = $Sheet.Cells.Item($extraHeaderRow + 1 + $r, $StartColumn + $valueColumn)
+            $cell.Validation.Delete()
+            $cell.Validation.Add(3, 1, 1, $locListAddress)
+            $cell.Validation.IgnoreBlank = $true
+            $cell.Validation.InCellDropdown = $true
+        }
+        foreach ($valueColumn in @(3, 6)) {
+            $cell = $Sheet.Cells.Item($extraHeaderRow + 1 + $r, $StartColumn + $valueColumn)
+            $cell.Validation.Delete()
+            $cell.Validation.Add(3, 1, 1, $bindListAddress)
+            $cell.Validation.IgnoreBlank = $true
+            $cell.Validation.InCellDropdown = $true
+        }
+    }
+
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn), $Sheet.Cells.Item($extraHeaderRow + 4, $StartColumn + 8)).VerticalAlignment = -4108
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 1), $Sheet.Cells.Item($extraHeaderRow + 4, $StartColumn + 7)).HorizontalAlignment = -4108
+    $Sheet.Range($Sheet.Cells.Item($mainHeaderRow, $StartColumn + 5), $Sheet.Cells.Item($mainHeaderRow + 4, $StartColumn + 5)).HorizontalAlignment = -4152
+    $Sheet.Range($Sheet.Cells.Item($extraHeaderRow, $StartColumn + 8), $Sheet.Cells.Item($extraHeaderRow + 4, $StartColumn + 8)).HorizontalAlignment = -4152
+
+    Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($extraHeaderRow + 4) ($StartColumn + 8)
+}
+
 # Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
-function Add-LShapeFaceSettingsTable {
+function Add-RectSetFaceSettingsTable {
     param(
         [object]$Workbook,
         [object]$Sheet,
@@ -3569,43 +3770,67 @@ function Add-LShapeFaceSettingsTable {
         "B2" = $Rows[0][4]
     }
     $mainRows = @(
-        @("H1 - левая",   $Rows[1][1], $Rows[3][1], $Rows[5][1], $Rows[7][1],  $Rows[8][1],  "мм", "Грань _1: левая грань H1."),
-        @("H1 - правая",  $Rows[2][1], $Rows[4][1], $Rows[6][1], $Rows[9][1],  $Rows[10][1], "мм", "Грань _2: правая грань H1."),
-        @("B1 - верхняя", $Rows[1][2], $Rows[3][2], $Rows[5][2], $Rows[7][2],  $Rows[8][2],  "мм", "Грань _1: верхняя грань B1."),
-        @("B1 - нижняя",  $Rows[2][2], $Rows[4][2], $Rows[6][2], $Rows[9][2],  $Rows[10][2], "мм", "Грань _2: нижняя грань B1."),
-        @("H2 - левая",   $Rows[1][3], $Rows[3][3], $Rows[5][3], $Rows[7][3],  $Rows[8][3],  "мм", "Грань _1: левая грань H2."),
-        @("H2 - правая",  $Rows[2][3], $Rows[4][3], $Rows[6][3], $Rows[9][3],  $Rows[10][3], "мм", "Грань _2: правая грань H2."),
-        @("B2 - верхняя", $Rows[1][4], $Rows[3][4], $Rows[5][4], $Rows[7][4],  $Rows[8][4],  "мм", "Грань _1: верхняя грань B2."),
-        @("B2 - нижняя",  $Rows[2][4], $Rows[4][4], $Rows[6][4], $Rows[9][4],  $Rows[10][4], "мм", "Грань _2: нижняя грань B2.")
+        @("H1 - левая",   $Rows[1][1], $Rows[3][1], $Rows[5][1], $Rows[7][1],  $Rows[8][1],  "мм", "Левая грань H1."),
+        @("H1 - правая",  $Rows[2][1], $Rows[4][1], $Rows[6][1], $Rows[9][1],  $Rows[10][1], "мм", "Правая грань H1."),
+        @("B1 - верхняя", $Rows[1][2], $Rows[3][2], $Rows[5][2], $Rows[7][2],  $Rows[8][2],  "мм", "Верхняя грань B1."),
+        @("B1 - нижняя",  $Rows[2][2], $Rows[4][2], $Rows[6][2], $Rows[9][2],  $Rows[10][2], "мм", "Нижняя грань B1."),
+        @("H2 - левая",   $Rows[1][3], $Rows[3][3], $Rows[5][3], $Rows[7][3],  $Rows[8][3],  "мм", "Левая грань H2."),
+        @("H2 - правая",  $Rows[2][3], $Rows[4][3], $Rows[6][3], $Rows[9][3],  $Rows[10][3], "мм", "Правая грань H2."),
+        @("B2 - верхняя", $Rows[1][4], $Rows[3][4], $Rows[5][4], $Rows[7][4],  $Rows[8][4],  "мм", "Верхняя грань B2."),
+        @("B2 - нижняя",  $Rows[2][4], $Rows[4][4], $Rows[6][4], $Rows[9][4],  $Rows[10][4], "мм", "Нижняя грань B2.")
     )
     $extraRows = @(
-        @("H1 - левая",   $Rows[12][1], $Rows[16][1], $Rows[18][1], $Rows[14][1], $Rows[17][1], $Rows[19][1], "мм", "Дополнительные ряды у левой грани H1 (грань _1)."),
-        @("H1 - правая",  $Rows[13][1], $Rows[16][1], $Rows[18][1], $Rows[15][1], $Rows[17][1], $Rows[19][1], "мм", "Дополнительные ряды у правой грани H1 (грань _2)."),
-        @("B1 - верхняя", $Rows[12][2], $Rows[16][2], $Rows[18][2], $Rows[14][2], $Rows[17][2], $Rows[19][2], "мм", "Дополнительные ряды у верхней грани B1 (грань _1)."),
-        @("B1 - нижняя",  $Rows[13][2], $Rows[16][2], $Rows[18][2], $Rows[15][2], $Rows[17][2], $Rows[19][2], "мм", "Дополнительные ряды у нижней грани B1 (грань _2)."),
-        @("H2 - левая",   $Rows[12][3], $Rows[16][3], $Rows[18][3], $Rows[14][3], $Rows[17][3], $Rows[19][3], "мм", "Дополнительные ряды у левой грани H2 (грань _1)."),
-        @("H2 - правая",  $Rows[13][3], $Rows[16][3], $Rows[18][3], $Rows[15][3], $Rows[17][3], $Rows[19][3], "мм", "Дополнительные ряды у правой грани H2 (грань _2)."),
-        @("B2 - верхняя", $Rows[12][4], $Rows[16][4], $Rows[18][4], $Rows[14][4], $Rows[17][4], $Rows[19][4], "мм", "Дополнительные ряды у верхней грани B2 (грань _1)."),
-        @("B2 - нижняя",  $Rows[13][4], $Rows[16][4], $Rows[18][4], $Rows[15][4], $Rows[17][4], $Rows[19][4], "мм", "Дополнительные ряды у нижней грани B2 (грань _2).")
+        @("H1 - левая",   $Rows[12][1], $Rows[16][1], $Rows[18][1], $Rows[14][1], $Rows[17][1], $Rows[19][1], "мм", "Дополнительные ряды у левой грани H1."),
+        @("H1 - правая",  $Rows[13][1], $Rows[16][1], $Rows[18][1], $Rows[15][1], $Rows[17][1], $Rows[19][1], "мм", "Дополнительные ряды у правой грани H1."),
+        @("B1 - верхняя", $Rows[12][2], $Rows[16][2], $Rows[18][2], $Rows[14][2], $Rows[17][2], $Rows[19][2], "мм", "Дополнительные ряды у верхней грани B1."),
+        @("B1 - нижняя",  $Rows[13][2], $Rows[16][2], $Rows[18][2], $Rows[15][2], $Rows[17][2], $Rows[19][2], "мм", "Дополнительные ряды у нижней грани B1."),
+        @("H2 - левая",   $Rows[12][3], $Rows[16][3], $Rows[18][3], $Rows[14][3], $Rows[17][3], $Rows[19][3], "мм", "Дополнительные ряды у левой грани H2."),
+        @("H2 - правая",  $Rows[13][3], $Rows[16][3], $Rows[18][3], $Rows[15][3], $Rows[17][3], $Rows[19][3], "мм", "Дополнительные ряды у правой грани H2."),
+        @("B2 - верхняя", $Rows[12][4], $Rows[16][4], $Rows[18][4], $Rows[14][4], $Rows[17][4], $Rows[19][4], "мм", "Дополнительные ряды у верхней грани B2."),
+        @("B2 - нижняя",  $Rows[13][4], $Rows[16][4], $Rows[18][4], $Rows[15][4], $Rows[17][4], $Rows[19][4], "мм", "Дополнительные ряды у нижней грани B2.")
     )
 
-    $Sheet.Cells.Item($HeaderRow, $StartColumn).Value2 = "Геометрия (H1/B1 - верхний прямоугольник; H2/B2 - нижний прямоугольник)"
-    $Sheet.Cells.Item($HeaderRow, $StartColumn).Font.Bold = $true
-    $Sheet.Cells.Item($HeaderRow, $StartColumn).Interior.Color = 15921906
-    $Sheet.Cells.Item($HeaderRow, $StartColumn).WrapText = $false
+    $Sheet.Cells.Item($HeaderRow, $StartColumn).Value2 = "Общие настройки геометрии"
+    $commonTitleRange = $Sheet.Range($Sheet.Cells.Item($HeaderRow, $StartColumn), $Sheet.Cells.Item($HeaderRow, $StartColumn + 3))
+    $commonTitleRange.Merge() | Out-Null
+    $commonTitleRange.Font.Bold = $true
+    $commonTitleRange.Interior.Color = 15921906
+    $commonHeaders = @("Параметр", "Значение", "Ед.", "Комментарий")
+    for ($i = 0; $i -lt $commonHeaders.Count; $i++) {
+        $cell = $Sheet.Cells.Item($HeaderRow + 1, $StartColumn + $i)
+        $cell.Value2 = $commonHeaders[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = 14277081
+    }
+    $commonRows = @(
+        @("RectSet.SectionType", "LSection", "-", "Тип формы: Rectangle - только H1/B1; LSection - Г-сечение из двух прямоугольников с общей левой гранью; TwoRectangles - два прямоугольника со смещением верхнего."),
+        @("RectSet.UpperOffsetX", "0", "мм", "Смещение верхнего прямоугольника по X относительно базового положения; плюс - вправо по оси X.")
+    )
+    for ($r = 0; $r -lt $commonRows.Count; $r++) {
+        for ($c = 0; $c -lt $commonRows[$r].Count; $c++) {
+            $Sheet.Cells.Item($HeaderRow + 2 + $r, $StartColumn + $c).Value2 = $commonRows[$r][$c]
+        }
+        Set-InputUnitCell $Sheet.Cells.Item($HeaderRow + 2 + $r, $StartColumn + 2) ([string]$commonRows[$r][2])
+    }
+
+    $geometryHeaderRow = $HeaderRow + 5
+    $Sheet.Cells.Item($geometryHeaderRow, $StartColumn).Value2 = "Геометрия (H1/B1 - верхний прямоугольник; H2/B2 - нижний прямоугольник)"
+    $Sheet.Cells.Item($geometryHeaderRow, $StartColumn).Font.Bold = $true
+    $Sheet.Cells.Item($geometryHeaderRow, $StartColumn).Interior.Color = 15921906
+    $Sheet.Cells.Item($geometryHeaderRow, $StartColumn).WrapText = $false
     $geomHeaders = @("H1", "B1", "H2", "B2", "Ед.")
     for ($i = 0; $i -lt $geomHeaders.Count; $i++) {
-        $cell = $Sheet.Cells.Item($HeaderRow + 1, $StartColumn + $i)
+        $cell = $Sheet.Cells.Item($geometryHeaderRow + 1, $StartColumn + $i)
         $cell.Value2 = $geomHeaders[$i]
         $cell.Font.Bold = $true
         $cell.Interior.Color = 14277081
         if ($i -lt 4) {
-            $Sheet.Cells.Item($HeaderRow + 2, $StartColumn + $i).Value2 = $geometryValues[$geomHeaders[$i]]
+            $Sheet.Cells.Item($geometryHeaderRow + 2, $StartColumn + $i).Value2 = $geometryValues[$geomHeaders[$i]]
         }
     }
-    Set-InputUnitCell $Sheet.Cells.Item($HeaderRow + 2, $StartColumn + 4) "мм"
+    Set-InputUnitCell $Sheet.Cells.Item($geometryHeaderRow + 2, $StartColumn + 4) "мм"
 
-    $mainHeaderRow = $HeaderRow + 4
+    $mainHeaderRow = $geometryHeaderRow + 4
     $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn).Value2 = "Основное армирование"
     $mainSectionRange = $Sheet.Range($Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn), $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn + 7))
     $mainSectionRange.Font.Bold = $true
@@ -3681,6 +3906,19 @@ function Add-LShapeFaceSettingsTable {
 
     $Sheet.Range($Sheet.Cells.Item($mainHeaderRow, $StartColumn + 7), $Sheet.Cells.Item($mainHeaderRow + $mainRows.Count, $StartColumn + 7)).HorizontalAlignment = -4152
     $Sheet.Range($Sheet.Cells.Item($extraHeaderRow, $StartColumn + 8), $Sheet.Cells.Item($extraHeaderRow + $extraRows.Count, $StartColumn + 8)).HorizontalAlignment = -4152
+
+    $sectionTypeOptions = @("Rectangle", "LSection", "TwoRectangles")
+    $sectionTypeListColumn = 129
+    for ($i = 0; $i -lt $sectionTypeOptions.Count; $i++) {
+        $Sheet.Cells.Item($i + 1, $sectionTypeListColumn).Value2 = $sectionTypeOptions[$i]
+    }
+    $sectionTypeListColName = ConvertTo-ExcelColumn $sectionTypeListColumn
+    $sectionTypeListAddress = "=$" + $sectionTypeListColName + '$1:$' + $sectionTypeListColName + '$' + $sectionTypeOptions.Count
+    $sectionTypeCell = $Sheet.Cells.Item($HeaderRow + 2, $StartColumn + 1)
+    $sectionTypeCell.Validation.Delete()
+    $sectionTypeCell.Validation.Add(3, 1, 1, $sectionTypeListAddress)
+    $sectionTypeCell.Validation.IgnoreBlank = $false
+    $sectionTypeCell.Validation.InCellDropdown = $true
 
     Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($extraHeaderRow + $extraRows.Count) ($StartColumn + 8)
 }

@@ -86,9 +86,9 @@ End Function
 Public Function IsValid(ByRef message As String) As Boolean
     message = vbNullString
     If Not mInitialized Then
-        message = "Circle geometry is not initialized."
+        message = "Геометрия круга не инициализирована."
     ElseIf mRadius <= 0# Then
-        message = "Circle radius must be positive."
+        message = "Радиус круга должен быть положительным."
     Else
         IsValid = True
     End If

@@ -194,9 +194,9 @@ Public Sub Solve(ByVal section As CSectionModel, _
     SetResiduals targetN, targetMx, targetMy
     mConverged = IsConverged(targetN, targetMx, targetMy)
     If mConverged Then
-        mStopReason = "Converged by " & mSolverMethod & " with load stepping."
+        mStopReason = "Равновесие найдено методом " & mSolverMethod & " со ступенчатым приложением нагрузки."
     Else
-        mStopReason = "Final residual check failed."
+        mStopReason = "Финальная проверка невязок равновесия не пройдена."
     End If
 End Sub
 
@@ -218,7 +218,7 @@ Public Sub EvaluateStrainPlane(ByVal section As CSectionModel, _
     EvaluateState section, concreteMaterial, steelMaterial, mEpsilon0, mKappaX, mKappaY, True
     SetResiduals mNint, mMxint, mMyint
     mConverged = True
-    mStopReason = "Evaluated at prescribed strain plane."
+    mStopReason = "Состояние вычислено по заданной плоскости деформаций."
 End Sub
 
 ' Выбирает Newton или Secant для одной ступени нагрузки. Неверное имя метода
@@ -233,7 +233,7 @@ Private Function SolveSelectedLoadStep(ByVal section As CSectionModel, _
         SolveSelectedLoadStep = SolveSecantLoadStep(section, concreteMaterial, steelMaterial, stepIndex, targetN, targetMx, targetMy)
     Else
         mConverged = False
-        mStopReason = "InputError: Solver.Method must be Newton or Secant."
+        mStopReason = "InputError: Solver.Method должен быть Newton или Secant."
         SolveSelectedLoadStep = False
     End If
 End Function
@@ -260,7 +260,7 @@ Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
         EvaluateState section, concreteMaterial, steelMaterial, mEpsilon0, mKappaX, mKappaY, True
         SetResiduals targetN, targetMx, targetMy
         If IsConverged(targetN, targetMx, targetMy) Then
-            AppendDiagnostics stepIndex, iter, 0#, 0#, targetN, targetMx, targetMy, "converged"
+            AppendDiagnostics stepIndex, iter, 0#, 0#, targetN, targetMx, targetMy, "сошлось"
             SolveNewtonLoadStep = True
             Exit Function
         End If
@@ -274,7 +274,7 @@ Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
                 mK(3, 1), mK(3, 2), mK(3, 3), _
                 -mResidualN, -mResidualMx, -mResidualMy) Then
             mConverged = False
-            mStopReason = "Tangent matrix solve failed: " & system.StopReason
+            mStopReason = "Не удалось решить касательную систему: " & system.StopReason
             AppendDiagnostics stepIndex, iter, 0#, 0#, targetN, targetMx, targetMy, mStopReason
             SolveNewtonLoadStep = False
             Exit Function
@@ -291,10 +291,10 @@ Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
         ' а затем line search подбирает alpha, который реально улучшает невязку.
         mLastDeltaScale = LimitIncrement(deltaEps, deltaKx, deltaKy)
         mLastAlpha = AcceptStep(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, deltaEps, deltaKx, deltaKy)
-        AppendDiagnostics stepIndex, iter, mLastAlpha, mLastDeltaScale, targetN, targetMx, targetMy, "iteration"
+        AppendDiagnostics stepIndex, iter, mLastAlpha, mLastDeltaScale, targetN, targetMx, targetMy, "итерация"
         If mLastAlpha <= 0# Then
             mConverged = False
-            mStopReason = "Line search failed to improve residual."
+            mStopReason = "Line search не смог уменьшить невязку."
             SolveNewtonLoadStep = False
             Exit Function
         End If
@@ -302,7 +302,7 @@ Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
 
     RefreshCurrentState section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
     mConverged = False
-    mStopReason = "Maximum iterations reached at load step " & CStr(stepIndex) & "."
+    mStopReason = "Достигнут лимит итераций на ступени нагрузки " & CStr(stepIndex) & "."
     SolveNewtonLoadStep = False
 End Function
 
@@ -326,7 +326,7 @@ Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
         mLastResidualNorm = ResidualNorm(mResidualN, mResidualMx, mResidualMy, targetN, targetMx, targetMy)
 
         If IsConverged(targetN, targetMx, targetMy) Then
-            AppendDiagnostics stepIndex, iter, 0#, 0#, targetN, targetMx, targetMy, "secant converged"
+            AppendDiagnostics stepIndex, iter, 0#, 0#, targetN, targetMx, targetMy, "Secant сошелся"
             SolveSecantLoadStep = True
             Exit Function
         End If
@@ -336,13 +336,13 @@ Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
         Dim deltaKy As Double
         If Not SolveSecantCorrection(b, deltaEps, deltaKx, deltaKy) Then
             If Not RestartSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-                    mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy, b, "linear solve failed") Then
+                    mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy, b, "линейная система не решена") Then
                 SolveSecantLoadStep = False
                 Exit Function
             End If
             If Not SolveSecantCorrection(b, deltaEps, deltaKx, deltaKy) Then
                 mConverged = False
-                mStopReason = "NumericalFailure: Secant matrix solve failed after restart."
+                mStopReason = "NumericalFailure: матрица Secant не решилась после перезапуска."
                 SolveSecantLoadStep = False
                 Exit Function
             End If
@@ -361,16 +361,16 @@ Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
         mLastStepNorm = SecantStepNorm(deltaEps, deltaKx, deltaKy)
         If Not IsFiniteNumber(mLastStepNorm) Or mLastStepNorm <= mSecantMinStepNorm Then
             If Not RestartSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-                    mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy, b, "step is too small") Then
+                    mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy, b, "шаг слишком мал") Then
                 SolveSecantLoadStep = False
                 Exit Function
             End If
-            AppendDiagnostics stepIndex, iter, 0#, mLastDeltaScale, targetN, targetMx, targetMy, "secant restarted"
+            AppendDiagnostics stepIndex, iter, 0#, mLastDeltaScale, targetN, targetMx, targetMy, "Secant перезапущен"
         Else
             mLastAlpha = AcceptStep(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, deltaEps, deltaKx, deltaKy)
             If mLastAlpha <= 0# Then
                 If Not RestartSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-                        oldEps, oldKx, oldKy, oldRN, oldRMx, oldRMy, b, "line search failed") Then
+                        oldEps, oldKx, oldKy, oldRN, oldRMx, oldRMy, b, "line search не дал улучшения") Then
                     SolveSecantLoadStep = False
                     Exit Function
                 End If
@@ -380,19 +380,19 @@ Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
                 If Not UpdateBroydenMatrix(b, mEpsilon0 - oldEps, mKappaX - oldKx, mKappaY - oldKy, _
                         mResidualN - oldRN, mResidualMx - oldRMx, mResidualMy - oldRMy) Then
                     If Not RestartSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-                            mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy, b, "Broyden update failed") Then
+                            mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy, b, "обновление Broyden не выполнено") Then
                         SolveSecantLoadStep = False
                         Exit Function
                     End If
                 End If
-                AppendDiagnostics stepIndex, iter, mLastAlpha, mLastDeltaScale, targetN, targetMx, targetMy, "secant iteration"
+                AppendDiagnostics stepIndex, iter, mLastAlpha, mLastDeltaScale, targetN, targetMx, targetMy, "итерация Secant"
             End If
         End If
     Next iter
 
     RefreshCurrentState section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
     mConverged = False
-    mStopReason = "NumericalFailure: Secant maximum iterations reached at load step " & CStr(stepIndex) & "."
+    mStopReason = "NumericalFailure: метод Secant достиг лимита итераций на ступени нагрузки " & CStr(stepIndex) & "."
     SolveSecantLoadStep = False
 End Function
 
@@ -538,11 +538,11 @@ Private Function RestartSecantMatrix(ByVal section As CSectionModel, _
 
     If mMatrixRestartCount >= mSecantMaxRestarts Then
         mConverged = False
-        mStopReason = "NumericalFailure: Secant matrix restart limit exceeded; reason=" & reason
+        mStopReason = "NumericalFailure: превышен лимит перезапусков матрицы Secant; причина=" & reason
         Exit Function
     End If
     mMatrixRestartCount = mMatrixRestartCount + 1
-    AppendDiagnostics mLoadStepsCompleted + 1, mIterations, 0#, 0#, targetN, targetMx, targetMy, "secant matrix restart: " & reason
+    AppendDiagnostics mLoadStepsCompleted + 1, mIterations, 0#, 0#, targetN, targetMx, targetMy, "перезапуск матрицы Secant: " & reason
     RestartSecantMatrix = BuildInitialSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
         eps0, kx, ky, resN, resMx, resMy, b)
 End Function
@@ -864,7 +864,7 @@ Private Function ValidateSolverMethod() As Boolean
         ValidateSolverMethod = True
     Else
         mConverged = False
-        mStopReason = "InputError: Solver.Method must be Newton or Secant."
+        mStopReason = "InputError: Solver.Method должен быть Newton или Secant."
     End If
 End Function
 

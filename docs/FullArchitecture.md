@@ -28,10 +28,10 @@ flowchart TB
 
     subgraph GeometryLayer["Геометрия и модель сечения"]
         Registry["CSectionTypeRegistry"]
-        Geometry["ISectionGeometry<br/>CGeometryCircle<br/>CGeometryLShape<br/>CGeometryRoundedRectangle"]
+        Geometry["ISectionGeometry<br/>CGeometryCircle<br/>CGeometryRectSet<br/>CGeometryRoundedRectangle"]
         Mesh["CFiberMeshBuilder"]
-        Rebars["CRebarLayout<br/>CCircleRebarLayoutBuilder<br/>CLShapeRebarLayoutBuilder"]
-        Annotations["CSectionAnnotations<br/>CCircleAnnotationBuilder<br/>CLShapeAnnotationBuilder<br/>CRoundedRectAnnotationBuilder<br/>CRebarGroupAnnotationBuilder"]
+        Rebars["CRebarLayout<br/>CCircleRebarLayoutBuilder<br/>CRectSetRebarLayoutBuilder"]
+        Annotations["CSectionAnnotations<br/>CCircleAnnotationBuilder<br/>CRectSetAnnotationBuilder<br/>CRoundedRectAnnotationBuilder<br/>CRebarGroupAnnotationBuilder"]
         Importer["CAutoCADSectionModelImporter"]
         SectionModel["CSectionModel"]
         SectionBuilder["CSectionModelBuilder"]
@@ -477,7 +477,7 @@ AutoCAD, обновления схемы и сборка общего польз
 `AppendConcreteMaterialParameters`, `AppendSteelMaterialParameters`,
 `AppendCalculationDiagramSettings`, `AppendUnitSettings`,
 `AppendSignConventionSettings`, `AppendPlotAnnotationSettings`,
-`AppendLShapeFaceSettings`, `AppendLShapeSectionedSettings`, `AppendSetting`,
+`AppendRectSetFaceSettings`, `AppendRectSetSectionedSettings`, `AppendSetting`,
 `FindKey`, `ApplicationDecimalSeparator`.
 
 #### CUnitSystem
@@ -637,7 +637,7 @@ annotation getters.
 `IsPointInside`, `IsValid`, `AnalyticalArea`, `AnalyticalCentroid`,
 `GetExtremePoints`.
 
-#### CGeometryLShape
+#### CGeometryRectSet
 
 Роль: математическая форма Г-образного сечения из двух прямоугольников.
 Implements `ISectionGeometry`.
@@ -715,7 +715,7 @@ Implements `ISectionGeometry`.
 `RowSkipDiameter`, `ValidateInputs`, `ValidateBarInsideCircle`,
 `IsSupportedRowLocation`, `IsStackedLocation`.
 
-#### CLShapeRebarLayoutBuilder
+#### CRectSetRebarLayoutBuilder
 
 Роль: строит арматуру Г-сечения по таблице граней и дополнительных рядов.
 
@@ -747,7 +747,7 @@ Implements `ISectionGeometry`.
 
 Публичные методы: `Build`.
 
-#### CLShapeAnnotationBuilder
+#### CRectSetAnnotationBuilder
 
 Роль: контур, габаритные размеры и подписи арматуры для Г-сечения.
 

@@ -35,6 +35,7 @@ Private Const XL_NONE As Long = -4142
 Private Const XL_CENTER As Long = -4108
 Private Const XL_VCENTER As Long = -4108
 Private Const MSO_TEXT_ORIENTATION_HORIZONTAL As Long = 1
+Private Const MSO_TEXT_ORIENTATION_UPWARD As Long = 2
 Private Const MSO_LINE_SOLID As Long = 1
 Private Const MSO_LINE_DASH As Long = 4
 Private Const MSO_LINE_DASH_DOT As Long = 5
@@ -829,7 +830,54 @@ Private Sub DrawConcreteContour(ByVal data As CSectionPlotDataReader)
                 data.AnnotationStartY(i) - data.AnnotationEndX(i), _
                 data.AnnotationStartX(i) + data.AnnotationEndX(i), _
                 data.AnnotationStartY(i) + data.AnnotationEndX(i), RGB(25, 25, 25), 1.7, "ContourCircle", False
+        ElseIf StrComp(data.AnnotationType(i), "CONTOUR_ARC", vbTextCompare) = 0 Then
+            DrawContourArcAsLines data.AnnotationNormalX(i), data.AnnotationNormalY(i), _
+                data.AnnotationStartX(i), data.AnnotationStartY(i), _
+                data.AnnotationEndX(i), data.AnnotationEndY(i), _
+                ParseInvariantDouble(data.AnnotationText(i)), RGB(25, 25, 25), 1.7
         End If
+    Next i
+End Sub
+
+' Рисует дугу контура обычными линейными Shape-сегментами. Это самый
+' устойчивый вариант для Excel: каждая малая хорда является отдельной линией,
+' поэтому программа не дорисовывает большую фаску между концами дуги.
+Private Sub DrawContourArcAsLines(ByVal centerX As Double, ByVal centerY As Double, _
+        ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, _
+        ByVal sweepAngle As Double, ByVal colorValue As Long, ByVal weight As Double)
+    Dim radius As Double
+    radius = Sqr((startX - centerX) * (startX - centerX) + (startY - centerY) * (startY - centerY))
+    If radius <= 0# Or Abs(sweepAngle) <= 0.000000000001 Then
+        DrawModelLine startX, startY, endX, endY, colorValue, weight, "ContourArcLine"
+        Exit Sub
+    End If
+
+    Dim startAngle As Double
+    startAngle = Atn2Local(startY - centerY, startX - centerX)
+
+    Dim segmentCount As Long
+    segmentCount = CLng(Int(Abs(sweepAngle) / (GEOM_PI / 36#)))
+    If Abs(sweepAngle) > segmentCount * (GEOM_PI / 36#) + 0.000000000001 Then segmentCount = segmentCount + 1
+    If segmentCount < 6 Then segmentCount = 6
+
+    Dim i As Long
+    Dim prevX As Double, prevY As Double
+    Dim nextX As Double, nextY As Double
+    Dim angleValue As Double
+    prevX = startX
+    prevY = startY
+    For i = 1 To segmentCount
+        angleValue = startAngle + sweepAngle * CDbl(i) / CDbl(segmentCount)
+        If i = segmentCount Then
+            nextX = endX
+            nextY = endY
+        Else
+            nextX = centerX + radius * Cos(angleValue)
+            nextY = centerY + radius * Sin(angleValue)
+        End If
+        DrawModelLine prevX, prevY, nextX, nextY, colorValue, weight, "ContourArcLine"
+        prevX = nextX
+        prevY = nextY
     Next i
 End Sub
 
@@ -919,6 +967,9 @@ Private Sub CollectContourIntersections(ByVal data As CSectionPlotDataReader, By
         ElseIf StrComp(data.AnnotationType(i), "CONTOUR_CIRCLE", vbTextCompare) = 0 Then
             AddCircleLineIntersectionT x0, y0, dirX, dirY, data.AnnotationStartX(i), _
                 data.AnnotationStartY(i), data.AnnotationEndX(i), values, count
+        ElseIf StrComp(data.AnnotationType(i), "CONTOUR_ARC", vbTextCompare) = 0 Then
+            AddArcLineIntersectionT x0, y0, dirX, dirY, data.AnnotationNormalX(i), data.AnnotationNormalY(i), _
+                data.AnnotationStartX(i), data.AnnotationStartY(i), ParseInvariantDouble(data.AnnotationText(i)), values, count
         End If
     Next i
 End Sub
@@ -989,6 +1040,75 @@ Private Sub AddCircleLineIntersectionT(ByVal x0 As Double, ByVal y0 As Double, _
     AddUniqueLineT tCenter - halfChord, values, count
     AddUniqueLineT tCenter + halfChord, values, count
 End Sub
+
+' Добавляет пересечения расчетной линии с дуговым сегментом контура.
+' Сначала решается пересечение с полной окружностью, затем точки фильтруются
+' по signed sweep дуги от ее начальной точки.
+Private Sub AddArcLineIntersectionT(ByVal x0 As Double, ByVal y0 As Double, _
+        ByVal dirX As Double, ByVal dirY As Double, ByVal centerX As Double, _
+        ByVal centerY As Double, ByVal arcStartX As Double, ByVal arcStartY As Double, _
+        ByVal sweepAngle As Double, ByRef values() As Double, ByRef count As Long)
+    Dim radius As Double
+    radius = Sqr((arcStartX - centerX) * (arcStartX - centerX) + (arcStartY - centerY) * (arcStartY - centerY))
+    If radius <= 0# Or Abs(sweepAngle) <= 0.000000000001 Then Exit Sub
+
+    Dim vx As Double, vy As Double, tCenter As Double, d2 As Double, halfChord As Double
+    vx = centerX - x0
+    vy = centerY - y0
+    tCenter = vx * dirX + vy * dirY
+    d2 = vx * vx + vy * vy - tCenter * tCenter
+    If d2 > radius * radius + 0.0000001 Then Exit Sub
+    If d2 < 0# Then d2 = 0#
+    halfChord = Sqr(MaxDouble(radius * radius - d2, 0#))
+    AddArcIntersectionCandidate x0, y0, dirX, dirY, centerX, centerY, arcStartX, arcStartY, _
+        sweepAngle, tCenter - halfChord, values, count
+    AddArcIntersectionCandidate x0, y0, dirX, dirY, centerX, centerY, arcStartX, arcStartY, _
+        sweepAngle, tCenter + halfChord, values, count
+End Sub
+
+' Проверяет одну кандидатную точку пересечения с окружностью и добавляет ее
+' только если точка лежит на нужном участке дуги.
+Private Sub AddArcIntersectionCandidate(ByVal x0 As Double, ByVal y0 As Double, _
+        ByVal dirX As Double, ByVal dirY As Double, ByVal centerX As Double, _
+        ByVal centerY As Double, ByVal arcStartX As Double, ByVal arcStartY As Double, _
+        ByVal sweepAngle As Double, ByVal tValue As Double, ByRef values() As Double, ByRef count As Long)
+    Dim x As Double, y As Double
+    x = x0 + tValue * dirX
+    y = y0 + tValue * dirY
+    If IsPointOnArcSweep(x, y, centerX, centerY, arcStartX, arcStartY, sweepAngle) Then
+        AddUniqueLineT tValue, values, count
+    End If
+End Sub
+
+' True, если точка находится на signed sweep дуги от ее начального радиуса.
+Private Function IsPointOnArcSweep(ByVal x As Double, ByVal y As Double, _
+        ByVal centerX As Double, ByVal centerY As Double, ByVal arcStartX As Double, _
+        ByVal arcStartY As Double, ByVal sweepAngle As Double) As Boolean
+    Dim startAngle As Double
+    Dim pointAngle As Double
+    startAngle = Atn2Local(arcStartY - centerY, arcStartX - centerX)
+    pointAngle = Atn2Local(y - centerY, x - centerX)
+
+    Dim delta As Double
+    If sweepAngle >= 0# Then
+        delta = NormalizePositiveAngle(pointAngle - startAngle)
+        IsPointOnArcSweep = (delta <= sweepAngle + 0.000001)
+    Else
+        delta = NormalizePositiveAngle(startAngle - pointAngle)
+        IsPointOnArcSweep = (delta <= -sweepAngle + 0.000001)
+    End If
+End Function
+
+' Нормализует угол к диапазону [0; 2*pi).
+Private Function NormalizePositiveAngle(ByVal angleValue As Double) As Double
+    Do While angleValue < 0#
+        angleValue = angleValue + 2# * GEOM_PI
+    Loop
+    Do While angleValue >= 2# * GEOM_PI
+        angleValue = angleValue - 2# * GEOM_PI
+    Loop
+    NormalizePositiveAngle = angleValue
+End Function
 
 ' Добавляет параметр t без дублей, чтобы вершины контура не создавали
 ' нулевые или повторные участки линии.
@@ -1279,7 +1399,7 @@ Private Sub RenderAnnotationLayout(ByVal layout As CPlotAnnotationLayout)
             End If
         ElseIf StrComp(layout.ItemKind(i), "TEXT", vbTextCompare) = 0 Then
             AddChartText layout.X1(i), layout.Y1(i), layout.X2(i), layout.Y2(i), _
-                layout.Text(i), layout.Rotation(i), layout.Color(i), layout.Bold(i), True, layout.FontSize(i)
+                layout.Text(i), layout.Rotation(i), layout.Color(i), layout.Bold(i), True, layout.FontSize(i), True
         End If
     Next i
 End Sub
@@ -1834,9 +1954,18 @@ End Sub
 Private Function AddChartText(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _
         ByVal heightValue As Double, ByVal textValue As String, ByVal rotation As Double, _
         ByVal colorValue As Long, ByVal isBold As Boolean, Optional ByVal centered As Boolean = False, _
-        Optional ByVal fontSize As Double = 8#) As Object
+        Optional ByVal fontSize As Double = 8#, Optional ByVal useNativeVerticalText As Boolean = False) As Object
+    Dim centerX As Double
+    Dim centerY As Double
+    centerX = leftPos + widthValue / 2#
+    centerY = topPos + heightValue / 2#
+
+    Dim orientation As Long
+    orientation = MSO_TEXT_ORIENTATION_HORIZONTAL
+    If useNativeVerticalText And Abs(rotation) = 90# Then orientation = MSO_TEXT_ORIENTATION_UPWARD
+
     Dim textShape As Object
-    Set textShape = mChart.Shapes.AddTextbox(MSO_TEXT_ORIENTATION_HORIZONTAL, leftPos, topPos, widthValue, heightValue)
+    Set textShape = mChart.Shapes.AddTextbox(orientation, leftPos, topPos, widthValue, heightValue)
     textShape.Name = SHAPE_PREFIX & "Text" & CStr(mChart.Shapes.Count)
     textShape.TextFrame.Characters().Text = textValue
     If fontSize <= 0# Then fontSize = 8#
@@ -1853,7 +1982,13 @@ Private Function AddChartText(ByVal leftPos As Double, ByVal topPos As Double, B
     End If
     textShape.Line.Visible = False
     textShape.Fill.Visible = False
-    If rotation <> 0# Then textShape.Rotation = rotation
+    If rotation <> 0# And orientation = MSO_TEXT_ORIENTATION_HORIZONTAL Then
+        textShape.Rotation = rotation
+        ' После поворота Excel меняет видимую рамку текстового Shape. Возвращаем
+        ' ее центр в рассчитанную точку, не меняя сам TextGap из layout.
+        textShape.Left = centerX - textShape.Width / 2#
+        textShape.Top = centerY - textShape.Height / 2#
+    End If
     Set AddChartText = textShape
 End Function
 
@@ -2160,6 +2295,14 @@ Private Function FormatPlotValue(ByVal value As Double) As String
         pattern = "0." & String$(mResultPrecision, "0")
     End If
     FormatPlotValue = Replace$(Format$(value, pattern), ",", ".")
+End Function
+
+Private Function ParseInvariantDouble(ByVal textValue As String) As Double
+    On Error GoTo InvalidValue
+    ParseInvariantDouble = CDbl(Replace$(Trim$(textValue), ".", Application.DecimalSeparator))
+    Exit Function
+InvalidValue:
+    ParseInvariantDouble = Val(Replace$(Trim$(textValue), ",", "."))
 End Function
 
 Private Function FormatNumberInvariant(ByVal value As Double) As String

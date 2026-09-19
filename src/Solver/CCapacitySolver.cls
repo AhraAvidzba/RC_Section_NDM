@@ -230,7 +230,7 @@ Public Sub SolveByUltimateLoadPath(ByVal section As CSectionModel, _
             Set mLastSolver = solver
             If Not IsValidUltimateLambda(lambdaValue, nOffset, nBase, mxBase, myBase, mxOffset, myOffset) Then
                 mLimitState = STATE_NUMERICAL_FAILURE
-                mStopReason = "Ultimate strain solution has invalid lambda: " & FormatNumberInvariant(lambdaValue)
+                mStopReason = "UltimateStrain: найден недопустимый lambda: " & FormatNumberInvariant(lambdaValue)
                 Exit Sub
             End If
             StoreLoadPathUltimateComponents lambdaValue, nOffset, nBase, mxBase, myBase, mxOffset, myOffset
@@ -247,7 +247,7 @@ Public Sub SolveByUltimateLoadPath(ByVal section As CSectionModel, _
 
     If Not mConverged Then
         If Len(mLimitState) = 0 Then mLimitState = STATE_NUMERICAL_FAILURE
-        If Len(mStopReason) = 0 Then mStopReason = "Ultimate strain Newton iteration did not converge."
+        If Len(mStopReason) = 0 Then mStopReason = "UltimateStrain: итерации Newton не сошлись."
         Exit Sub
     End If
 
@@ -257,7 +257,7 @@ Public Sub SolveByUltimateLoadPath(ByVal section As CSectionModel, _
     End If
     mSafetyFactor = mLambdaUltimate
     If mLambdaUltimate > 0# Then mUtilization = 1# / mLambdaUltimate
-    mStopReason = "Capacity search converged by direct ultimate strain equilibrium."
+    mStopReason = "Поиск несущей способности через UltimateStrain сошелся."
 End Sub
 
 ' Быстрая ветка UltimateStrain для моментных траекторий.
@@ -291,7 +291,7 @@ Private Sub SolveMomentUltimateStrainPath(ByVal section As CSectionModel, _
             Set mLastSolver = solver
             If Not IsValidUltimateLambda(lambdaValue, nSpecified, 0#, mxBase, myBase, mxOffset, myOffset) Then
                 mLimitState = STATE_NUMERICAL_FAILURE
-                mStopReason = "Ultimate strain solution has invalid lambda: " & FormatNumberInvariant(lambdaValue)
+                mStopReason = "UltimateStrain: найден недопустимый lambda: " & FormatNumberInvariant(lambdaValue)
                 Exit Sub
             End If
             StoreLoadPathUltimateComponents lambdaValue, nSpecified, 0#, mxBase, myBase, mxOffset, myOffset
@@ -308,7 +308,7 @@ Private Sub SolveMomentUltimateStrainPath(ByVal section As CSectionModel, _
 
     If Not mConverged Then
         If Len(mLimitState) = 0 Then mLimitState = STATE_NUMERICAL_FAILURE
-        If Len(mStopReason) = 0 Then mStopReason = "Ultimate strain Newton iteration did not converge."
+        If Len(mStopReason) = 0 Then mStopReason = "UltimateStrain: итерации Newton не сошлись."
         Exit Sub
     End If
 
@@ -318,7 +318,7 @@ Private Sub SolveMomentUltimateStrainPath(ByVal section As CSectionModel, _
     End If
     mSafetyFactor = mLambdaUltimate
     If mLambdaUltimate > 0# Then mUtilization = 1# / mLambdaUltimate
-    mStopReason = "Capacity search converged by direct ultimate strain equilibrium."
+    mStopReason = "Поиск несущей способности через UltimateStrain сошелся."
 End Sub
 
 ' Математически чистая lambda*N без моментов не имеет устойчивой уникальной
@@ -335,7 +335,7 @@ Private Sub SolvePureAxialUltimateByLoadMultiplier(ByVal section As CSectionMode
     If Not mConverged Then AcceptPureAxialRetainedCapacity section, concreteMaterial
 
     If mDiagnosticsEnabled Then
-        mDiagnosticLog = "ultimatePath pureAxial redirected=LoadMultiplier" & vbCrLf & mDiagnosticLog
+        mDiagnosticLog = "Силовая траектория UltimateStrain перенаправлена на LoadMultiplier." & vbCrLf & mDiagnosticLog
     End If
     If mConverged Then
         mStopReason = "Чистая осевая траектория рассчитана через LoadMultiplier как устойчивую одномерную постановку. " & mStopReason
@@ -427,8 +427,8 @@ Private Sub AcceptPureAxialRetainedCapacity(ByVal section As CSectionModel, ByVa
     mSafetyFactor = mLambdaUltimate
     mUtilization = 1# / mLambdaUltimate
     mConverged = True
-    AppendSearchDiagnostic "pureAxial retained lower lambda accepted as force plateau; lambda=" & _
-        FormatNumberInvariant(mLambdaUltimate) & "; state=" & mLimitState
+    AppendSearchDiagnostic "для чисто осевой траектории принята последняя сходящаяся lambda как силовое плато; lambda=" & _
+        FormatNumberInvariant(mLambdaUltimate) & "; состояние=" & mLimitState
 End Sub
 
 ' Стартовая плоскость для универсального UltimateStrain подбирается по
@@ -526,7 +526,7 @@ Private Function EvaluateUltimateLoadPathResidual(ByVal section As CSectionModel
 
 Failed:
     mLimitState = STATE_NUMERICAL_FAILURE
-    mStopReason = "Ultimate strain state evaluation failed: " & Err.Description
+    mStopReason = "UltimateStrain: не удалось оценить состояние: " & Err.Description
     EvaluateUltimateLoadPathResidual = False
 End Function
 
@@ -575,7 +575,7 @@ Private Function ApplyUltimateLoadPathNewtonStep(ByVal section As CSectionModel,
     Set system = New CLinearSystem3x3
     If Not system.Solve(j11, j12, j13, j21, j22, j23, j31, j32, j33, -rPath1, -rPath2, -rLimit) Then
         mLimitState = STATE_SINGULAR_TANGENT
-        mStopReason = "Ultimate strain tangent solve failed: " & system.StopReason
+        mStopReason = "UltimateStrain: не удалось решить касательную систему: " & system.StopReason
         Exit Function
     End If
 
@@ -605,12 +605,12 @@ Private Function ApplyUltimateLoadPathNewtonStep(ByVal section As CSectionModel,
     Loop
 
     mLimitState = STATE_NUMERICAL_FAILURE
-    mStopReason = "Ultimate strain line search failed."
+    mStopReason = "UltimateStrain: line search не дал улучшения."
     Exit Function
 
 Failed:
     mLimitState = STATE_NUMERICAL_FAILURE
-    mStopReason = "Ultimate strain Newton step failed: " & Err.Description
+    mStopReason = "UltimateStrain: шаг Newton не выполнен: " & Err.Description
 End Function
 
 ' Строит один столбец численного Якобиана универсальной предельной задачи.
@@ -731,7 +731,7 @@ Private Function EvaluateUltimateResidual(ByVal section As CSectionModel, _
 
 Failed:
     mLimitState = STATE_NUMERICAL_FAILURE
-    mStopReason = "Ultimate strain state evaluation failed: " & Err.Description
+    mStopReason = "UltimateStrain: не удалось оценить состояние: " & Err.Description
     EvaluateUltimateResidual = False
 End Function
 
@@ -769,7 +769,7 @@ Private Function ApplyUltimateNewtonStep(ByVal section As CSectionModel, _
     Set system = New CLinearSystem3x3
     If Not system.Solve(j11, j12, j13, j21, j22, j23, j31, j32, j33, -rN, -rDir, -rLimit) Then
         mLimitState = STATE_SINGULAR_TANGENT
-        mStopReason = "Ultimate strain tangent solve failed: " & system.StopReason
+        mStopReason = "UltimateStrain: не удалось решить касательную систему: " & system.StopReason
         Exit Function
     End If
 
@@ -808,12 +808,12 @@ Private Function ApplyUltimateNewtonStep(ByVal section As CSectionModel, _
     Loop
 
     mLimitState = STATE_NUMERICAL_FAILURE
-    mStopReason = "Ultimate strain line search failed."
+    mStopReason = "UltimateStrain: line search не дал улучшения."
     Exit Function
 
 Failed:
     mLimitState = STATE_NUMERICAL_FAILURE
-    mStopReason = "Ultimate strain Newton step failed: " & Err.Description
+    mStopReason = "UltimateStrain: шаг Newton не выполнен: " & Err.Description
 End Function
 
 ' Строит один столбец численного Якобиана UltimateStrain: меняем одну
@@ -931,7 +931,7 @@ Private Sub SolveLoadMultiplierCore(ByVal section As CSectionModel, _
         TargetMx(lowLambda, mxBase, mxOffset), TargetMy(lowLambda, myBase, myOffset), lowLambda)
     If probeState <> STATE_ACCEPTABLE Then
         mLimitState = probeState
-        mStopReason = "Initial N-only state is not acceptable: " & probeState & "."
+        mStopReason = "Начальное состояние при lambda = 0 не проходит физический критерий: " & probeState & "."
         Exit Sub
     End If
     RecordAcceptableState mLastSolver, TargetN(lowLambda, nOffset, nBase), TargetMx(lowLambda, mxBase, mxOffset), TargetMy(lowLambda, myBase, myOffset)
@@ -958,14 +958,14 @@ Private Sub SolveLoadMultiplierCore(ByVal section As CSectionModel, _
             End If
         Else
             mLimitState = probeState
-            mStopReason = "Capacity search stopped: " & probeState & "."
+            mStopReason = "Поиск несущей способности остановлен: " & probeState & "."
             Exit Sub
         End If
     Loop
 
     If Not bracketFound Then
         If Len(mLimitState) = 0 Then mLimitState = STATE_NUMERICAL_FAILURE
-        If Len(mStopReason) = 0 Then mStopReason = "Physical upper lambda was not found before MaxLambda."
+        If Len(mStopReason) = 0 Then mStopReason = "До Capacity.MaxLambda не найдена верхняя физическая граница lambda."
         mLambdaUltimate = lowLambda
         If allowForcePathRetainedLimit Then AcceptPureAxialRetainedCapacity section, concreteMaterial
         Exit Sub
@@ -981,7 +981,7 @@ Private Sub SolveLoadMultiplierCore(ByVal section As CSectionModel, _
         Case "Secant"
             SearchBySecant section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, lowLambda, highLambda
         Case Else
-            SetInvalidInput "Capacity.SearchMethod must be one of Bisection, Brent or Secant."
+            SetInvalidInput "Capacity.SearchMethod должен быть Bisection, Brent или Secant."
     End Select
     If Not mConverged And allowForcePathRetainedLimit Then AcceptPureAxialRetainedCapacity section, concreteMaterial
 End Sub
@@ -1009,13 +1009,13 @@ Private Sub SearchByBisection(ByVal section As CSectionModel, _
             mUpperLimitState = probeState
         ElseIf IsNumericalFailure(probeState) Then
             mLimitState = probeState
-            mStopReason = "Numerical failure occurred inside physical bracket; previous converged lambda retained."
+            mStopReason = "Внутри физической скобки возникла численная несходимость; сохранена последняя сходящаяся lambda."
             mLambdaUltimate = lowLambda
             If Not mLastAcceptableSolver Is Nothing Then Set mLastSolver = mLastAcceptableSolver
             Exit Sub
         Else
             mLimitState = probeState
-            mStopReason = "Capacity bisection stopped: " & probeState & "."
+            mStopReason = "Поиск Bisection остановлен: " & probeState & "."
             Exit Sub
         End If
     Loop
@@ -1030,7 +1030,7 @@ Private Sub SearchByBisection(ByVal section As CSectionModel, _
     If Not mLastAcceptableSolver Is Nothing Then Set mLastSolver = mLastAcceptableSolver
     mLimitState = mUpperLimitState
     mConverged = True
-    mStopReason = "Capacity search converged by bisection with physical upper state: " & mUpperLimitState & "."
+    mStopReason = "Поиск несущей способности методом Bisection сошелся; верхнее физическое состояние: " & mUpperLimitState & "."
 End Sub
 
 ' Защищенный Brent: хранит скобку как Bisection, но при хорошей геометрии
@@ -1054,7 +1054,7 @@ Private Sub SearchByBrent(ByVal section As CSectionModel, _
     If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, a, fa, stateA) Then Exit Sub
     If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, b, fb, stateB) Then Exit Sub
     If fa >= 0# Or fb <= 0# Then
-        SetInvalidInput "Brent requires a bracket with acceptable lower lambda and physical upper lambda."
+        SetInvalidInput "Методу Brent нужна скобка: нижняя lambda с запасом и верхняя lambda за физическим пределом."
         Exit Sub
     End If
 
@@ -1128,14 +1128,14 @@ Private Sub SearchByBrent(ByVal section As CSectionModel, _
 
         If b <= lowLambda Or b >= highLambda Or Not IsFiniteNumber(b) Then
             mLimitState = STATE_NUMERICAL_FAILURE
-            mStopReason = "Brent candidate left the physical bracket."
+            mStopReason = "Пробная точка Brent вышла за физическую скобку."
             Exit Sub
         End If
         If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, b, fb, stateB) Then Exit Sub
     Next iter
 
     mLimitState = STATE_NUMERICAL_FAILURE
-    mStopReason = "Brent search exceeded maximum iterations."
+    mStopReason = "Поиск Brent достиг лимита итераций."
 End Sub
 
 ' Честный метод секущих: новая lambda получается по двум предыдущим значениям
@@ -1161,7 +1161,7 @@ Private Sub SearchBySecant(ByVal section As CSectionModel, _
     If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, x0, f0, state0) Then Exit Sub
     If Not EvaluateLoadMultiplierFunction(section, concreteMaterial, steelMaterial, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, x1, f1, state1) Then Exit Sub
     If f0 >= 0# Or f1 <= 0# Then
-        SetInvalidInput "Secant requires a bracket with acceptable lower lambda and physical upper lambda."
+        SetInvalidInput "Методу Secant нужна скобка: нижняя lambda с запасом и верхняя lambda за физическим пределом."
         Exit Sub
     End If
     bracketLow = x0
@@ -1176,7 +1176,7 @@ Private Sub SearchBySecant(ByVal section As CSectionModel, _
 
         If Abs(f1 - f0) <= 0.000000000001 Then
             mLimitState = STATE_NUMERICAL_FAILURE
-            mStopReason = "Secant search stopped: function values are too close."
+            mStopReason = "Поиск Secant остановлен: значения целевой функции слишком близки."
             Exit Sub
         End If
 
@@ -1186,18 +1186,18 @@ Private Sub SearchBySecant(ByVal section As CSectionModel, _
         x2 = x1 - f1 * (x1 - x0) / (f1 - f0)
         If Not IsFiniteNumber(x2) Then
             mLimitState = STATE_NUMERICAL_FAILURE
-            mStopReason = "Secant search produced NaN or overflow."
+            mStopReason = "Поиск Secant получил NaN или переполнение."
             Exit Sub
         End If
         x2 = GuardSecantCandidate(x2, x1, bracketLow, bracketHigh)
         If x2 <= bracketLow Or x2 >= bracketHigh Or Not IsFiniteNumber(x2) Then
             mLimitState = STATE_NUMERICAL_FAILURE
-            mStopReason = "Secant search candidate left the physical bracket."
+            mStopReason = "Пробная точка Secant вышла за физическую скобку."
             Exit Sub
         End If
         If Abs(x2 - x1) <= 0.000000000001 Then
             mLimitState = STATE_NUMERICAL_FAILURE
-            mStopReason = "Secant search stagnated."
+            mStopReason = "Поиск Secant застрял: новая lambda почти не отличается от предыдущей."
             Exit Sub
         End If
 
@@ -1217,7 +1217,7 @@ Private Sub SearchBySecant(ByVal section As CSectionModel, _
     Next iter
 
     mLimitState = STATE_NUMERICAL_FAILURE
-    mStopReason = "Secant search exceeded maximum iterations."
+    mStopReason = "Поиск Secant достиг лимита итераций."
 End Sub
 
 ' Удерживает пробную lambda внутри найденной физической скобки.
@@ -1283,10 +1283,10 @@ Private Function EvaluateLoadMultiplierFunction(ByVal section As CSectionModel, 
         EvaluateLoadMultiplierFunction = True
     ElseIf IsNumericalFailure(probeState) Then
         mLimitState = probeState
-        mStopReason = "Numerical failure occurred during " & NormalizedSearchMethod() & " search."
+        mStopReason = "Во время поиска " & NormalizedSearchMethod() & " возникла численная несходимость."
     Else
         mLimitState = probeState
-        mStopReason = "Capacity search stopped: " & probeState & "."
+        mStopReason = "Поиск несущей способности остановлен: " & probeState & "."
     End If
 End Function
 
@@ -1305,7 +1305,7 @@ Private Sub FinalizeLoadMultiplierSearch(ByVal lambdaValue As Double, _
     mLimitState = limitState
     If Not IsPhysicalLimit(mLimitState) Then mLimitState = mUpperLimitState
     mConverged = True
-    mStopReason = "Capacity search converged by " & methodName & " with physical upper state: " & mUpperLimitState & "."
+    mStopReason = "Поиск несущей способности методом " & methodName & " сошелся; верхнее физическое состояние: " & mUpperLimitState & "."
 End Sub
 
 Private Sub FinalizeLoadMultiplierSearchAfterProbe(ByVal section As CSectionModel, _
@@ -1464,10 +1464,10 @@ End Function
 ' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
 Private Function ValidateLoadMultiplierSettings() As Boolean
     If Len(NormalizedSearchMethod()) = 0 Then
-        SetInvalidInput "Capacity.SearchMethod must be one of Bisection, Brent or Secant."
+        SetInvalidInput "Capacity.SearchMethod должен быть Bisection, Brent или Secant."
     ElseIf mInitialLambdaStep <= 0# Or mLambdaTolerance <= 0# Or mMaxLambda <= 0# Or _
             mMaxRetries < 0 Or mSolverBaseLoadSteps <= 0 Then
-        SetInvalidInput "LoadMultiplier capacity settings are invalid."
+        SetInvalidInput "Настройки LoadMultiplier для несущей способности некорректны."
     Else
         ValidateLoadMultiplierSettings = True
     End If
@@ -1476,7 +1476,7 @@ End Function
 ' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
 Private Function ValidateUltimateStrainSettings() As Boolean
     If mStrainTolerance <= 0# Then
-        SetInvalidInput "UltimateStrain capacity settings are invalid."
+        SetInvalidInput "Настройки UltimateStrain для несущей способности некорректны."
     Else
         ValidateUltimateStrainSettings = True
     End If
@@ -1582,7 +1582,7 @@ Private Function ProbeOnce(ByVal section As CSectionModel, _
 Failed:
     ProbeOnce = STATE_INVALID_INPUT
     mLimitState = STATE_INVALID_INPUT
-    mStopReason = "Capacity probe failed: " & Err.Description
+    mStopReason = "Пробная точка несущей способности не рассчиталась: " & Err.Description
 End Function
 
 ' Для чистого изгиба N=0 каждая probe-точка LoadMultiplier может оказаться
@@ -1619,7 +1619,7 @@ Private Sub ApplyPureBendingProbeGuess(ByVal section As CSectionModel, _
             nSpecified, mx, my, eps0, kx, ky) Then
         solver.ClearInitialState
         solver.SetInitialLoadState eps0, kx, ky, nSpecified, mx, my
-        AppendSearchDiagnostic "pureBendingProbeGuess applied; lambda target moments are nonzero"
+        AppendSearchDiagnostic "для пробной точки чистого изгиба применена стартовая плоскость; масштабируемые моменты ненулевые"
     End If
 End Sub
 
@@ -1637,7 +1637,7 @@ Private Function TryRestoreProbeCache(ByVal nSpecified As Double, ByVal mx As Do
             mCriticalStrain = mProbeCacheCriticalStrain(slot)
             mCriticalElement = mProbeCacheCriticalElement(slot)
             mCriticalStrainUtilization = mProbeCacheCriticalUtil(slot)
-            AppendSearchDiagnostic "probeCache hit; lambda=" & FormatNumberInvariant(lambdaValue) & "; state=" & probeState
+            AppendSearchDiagnostic "использована ранее рассчитанная пробная точка; lambda=" & FormatNumberInvariant(lambdaValue) & "; состояние=" & probeState
             TryRestoreProbeCache = True
             Exit Function
         End If
@@ -1707,9 +1707,9 @@ Private Function FailedProbeReachedPhysicalLimit(ByVal section As CSectionModel,
     UpdateCriticalState section, concreteMaterial, solver
     If mCriticalStrainUtilization >= 1# And IsFiniteNumber(mCriticalStrainUtilization) And _
             Len(mCriticalElement) > 0 Then
-        AppendSearchDiagnostic "non-converged probe reached physical strain limit; state=" & _
-            CriticalLimitState() & "; utilization=" & FormatNumberInvariant(mCriticalStrainUtilization) & _
-            "; element=" & mCriticalElement & "; solverReason=" & solver.StopReason
+        AppendSearchDiagnostic "несошедшаяся пробная точка достигла физического предела деформации; состояние=" & _
+            CriticalLimitState() & "; использование=" & FormatNumberInvariant(mCriticalStrainUtilization) & _
+            "; элемент=" & mCriticalElement & "; причина solver-а=" & solver.StopReason
         FailedProbeReachedPhysicalLimit = True
     End If
 End Function
@@ -1773,8 +1773,11 @@ End Function
 
 Private Function ClassifyNumericalFailure(ByVal reason As String) As String
     If InStr(1, reason, "Tangent matrix", vbTextCompare) > 0 Or _
+            InStr(1, reason, "касательн", vbTextCompare) > 0 Or _
             InStr(1, reason, "singular", vbTextCompare) > 0 Or _
-            InStr(1, reason, "solve failed", vbTextCompare) > 0 Then
+            InStr(1, reason, "вырожден", vbTextCompare) > 0 Or _
+            InStr(1, reason, "solve failed", vbTextCompare) > 0 Or _
+            InStr(1, reason, "не реш", vbTextCompare) > 0 Then
         ClassifyNumericalFailure = STATE_SINGULAR_TANGENT
     Else
         ClassifyNumericalFailure = STATE_NUMERICAL_FAILURE
@@ -1793,13 +1796,13 @@ Private Function ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, By
     reduced = lowLambda + (highLambda - lowLambda) / 2#
     If (reduced - lowLambda) <= mLambdaTolerance Then
         mLimitState = probeState
-        mStopReason = "Numerical failure before a physical upper boundary; last converged lambda retained."
+        mStopReason = "Численная несходимость возникла до нахождения верхней физической границы; сохранена последняя сходящаяся lambda."
         mLambdaUltimate = lowLambda
         If Not mLastAcceptableSolver Is Nothing Then Set mLastSolver = mLastAcceptableSolver
         ReduceLambdaAfterNumericalFailure = lowLambda
     Else
-        AppendSearchDiagnostic "numerical failure; reducing lambda high from " & FormatNumberInvariant(highLambda) & _
-            " to " & FormatNumberInvariant(reduced) & "; state=" & probeState
+        AppendSearchDiagnostic "численная несходимость; верхняя lambda уменьшена с " & FormatNumberInvariant(highLambda) & _
+            " до " & FormatNumberInvariant(reduced) & "; состояние=" & probeState
         ReduceLambdaAfterNumericalFailure = reduced
     End If
 End Function

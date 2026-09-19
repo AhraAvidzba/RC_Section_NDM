@@ -146,7 +146,7 @@ try {
         "rngSystemSettings",
         "rngCircleGeometry",
         "rngRoundedRectangleGeometry",
-        "rngLShapeGeometry",
+        "rngRectSetGeometry",
         "rngBatchSummary",
         "rngStrengthSummaryAnchor",
         "rngCrackSummaryAnchor",
@@ -279,7 +279,7 @@ try {
         "Capacity.ConcreteCompressionLimit", "Capacity.ConcreteTensionLimit",
         "Capacity.SteelStrainLimit", "Concrete.Class",
         "Circle.CenterX", "Circle.CenterY",
-        "LShape.OriginX", "LShape.OriginY",
+        "RectSet.OriginX", "RectSet.OriginY",
         "Plot.DimensionsEnabled", "Plot.RebarLabelsEnabled",
         "Plot.PrincipalAxesEnabled", "Plot.CentroidEnabled",
         "AutoCAD.Export.PrincipalAxesEnabled"
@@ -350,8 +350,8 @@ try {
         "rngCalculationProfiles",
         "rngPlotAnnotationSettings",
         "rngCircleGeometry",
-        "rngRoundedRectangleGeometry",
-        "rngLShapeGeometry"
+        "rngRectSetGeometry",
+        "rngRoundedRectangleGeometry"
     )
     $rightStackOk = $true
     $rightStackDetails = @()

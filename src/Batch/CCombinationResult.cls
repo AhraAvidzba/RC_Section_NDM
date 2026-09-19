@@ -383,8 +383,8 @@ End Property
 
 ' Возвращает named-state по порядковому номеру.
 Public Property Get StateAt(ByVal index As Long) As CSectionStateResult
-    If mStates Is Nothing Then Err.Raise vbObjectError + 3940, "CCombinationResult", "Коллекция states не инициализирована."
-    If index < 1 Or index > mStates.Count Then Err.Raise vbObjectError + 3941, "CCombinationResult", "Индекс named-state вне диапазона."
+    If mStates Is Nothing Then Err.Raise vbObjectError + 3940, "CCombinationResult", "Коллекция расчетных состояний не инициализирована."
+    If index < 1 Or index > mStates.Count Then Err.Raise vbObjectError + 3941, "CCombinationResult", "Индекс именованного состояния вне диапазона."
     Set StateAt = mStates.Item(index)
 End Property
 

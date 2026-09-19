@@ -106,8 +106,12 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object)
     Dim columnCount As Long
     columnCount = UBound(data, 2)
 
-    If IsLShapeFaceSettingsRange(data) Then
-        AppendLShapeFaceSettings data
+    If IsRoundedRectangleFaceSettingsRange(data) Then
+        AppendRoundedRectangleFaceSettings data
+        Exit Sub
+    End If
+    If IsRectSetFaceSettingsRange(data) Then
+        AppendRectSetFaceSettings data
         Exit Sub
     End If
     If IsUnitSettingsRange(data) Then
@@ -348,35 +352,143 @@ Private Function SignQuantityKey(ByVal caption As String) As String
     End Select
 End Function
 
-' Распознает табличную компоновку rngLShapeGeometry по заголовкам H1/B1/H2/B2.
-Private Function IsLShapeFaceSettingsRange(ByRef data As Variant) As Boolean
-    If UBound(data, 1) >= 3 And UBound(data, 2) >= 4 Then
-        If StrComp(Trim$(CStr(data(2, 1))), "H1", vbTextCompare) = 0 And _
-                StrComp(Trim$(CStr(data(2, 2))), "B1", vbTextCompare) = 0 And _
-                StrComp(Trim$(CStr(data(2, 3))), "H2", vbTextCompare) = 0 And _
-                StrComp(Trim$(CStr(data(2, 4))), "B2", vbTextCompare) = 0 Then
-            IsLShapeFaceSettingsRange = True
+' Распознает новую табличную компоновку RoundedRectangle: B/H, левая/правая
+' сторона и строки арматуры H/B.
+Private Function IsRoundedRectangleFaceSettingsRange(ByRef data As Variant) As Boolean
+    IsRoundedRectangleFaceSettingsRange = (RoundedRectangleGeometryHeaderRow(data) > 0)
+End Function
+
+' Ищет строку заголовков B/H в таблице скругленного прямоугольника.
+Private Function RoundedRectangleGeometryHeaderRow(ByRef data As Variant) As Long
+    If UBound(data, 2) < 3 Then Exit Function
+
+    Dim rowIndex As Long
+    For rowIndex = 1 To UBound(data, 1) - 1
+        If StrComp(Trim$(CStr(data(rowIndex, 2))), "B", vbTextCompare) = 0 And _
+                StrComp(Trim$(CStr(data(rowIndex, 3))), "H", vbTextCompare) = 0 Then
+            RoundedRectangleGeometryHeaderRow = rowIndex
             Exit Function
         End If
+    Next rowIndex
+End Function
+
+' Читает текущую таблицу RoundedRectangle и разворачивает видимые подписи
+' граней в устойчивые ключи настроек.
+Private Sub AppendRoundedRectangleFaceSettings(ByRef data As Variant)
+    Dim geometryHeaderRow As Long
+    geometryHeaderRow = RoundedRectangleGeometryHeaderRow(data)
+    If geometryHeaderRow = 0 Then Exit Sub
+
+    Dim valueRow As Long
+    valueRow = geometryHeaderRow + 1
+    AppendSetting "RoundedRectangle.B", Trim$(CStr(data(valueRow, 2))), Trim$(CStr(data(valueRow, 2))), "RoundedRectangle geometry"
+    AppendSetting "RoundedRectangle.H", Trim$(CStr(data(valueRow, 3))), Trim$(CStr(data(valueRow, 3))), "RoundedRectangle geometry"
+
+    Dim sideHeaderRow As Long
+    sideHeaderRow = FindRowWithCaption(data, "слева", 2, geometryHeaderRow + 1)
+    If sideHeaderRow > 0 And UBound(data, 1) >= sideHeaderRow + 4 Then
+        AppendSetting "RoundedRectangle.Left.Type", Trim$(CStr(data(sideHeaderRow + 1, 2))), Trim$(CStr(data(sideHeaderRow + 1, 2))), Trim$(CStr(data(sideHeaderRow + 1, 5)))
+        AppendSetting "RoundedRectangle.Right.Type", Trim$(CStr(data(sideHeaderRow + 1, 3))), Trim$(CStr(data(sideHeaderRow + 1, 3))), Trim$(CStr(data(sideHeaderRow + 1, 5)))
+        AppendSetting "RoundedRectangle.Left.W", Trim$(CStr(data(sideHeaderRow + 2, 2))), Trim$(CStr(data(sideHeaderRow + 2, 2))), Trim$(CStr(data(sideHeaderRow + 2, 5)))
+        AppendSetting "RoundedRectangle.Right.W", Trim$(CStr(data(sideHeaderRow + 2, 3))), Trim$(CStr(data(sideHeaderRow + 2, 3))), Trim$(CStr(data(sideHeaderRow + 2, 5)))
+        AppendSetting "RoundedRectangle.Left.R1", Trim$(CStr(data(sideHeaderRow + 3, 2))), Trim$(CStr(data(sideHeaderRow + 3, 2))), Trim$(CStr(data(sideHeaderRow + 3, 5)))
+        AppendSetting "RoundedRectangle.Right.R1", Trim$(CStr(data(sideHeaderRow + 3, 3))), Trim$(CStr(data(sideHeaderRow + 3, 3))), Trim$(CStr(data(sideHeaderRow + 3, 5)))
+        AppendSetting "RoundedRectangle.Left.R2", Trim$(CStr(data(sideHeaderRow + 4, 2))), Trim$(CStr(data(sideHeaderRow + 4, 2))), Trim$(CStr(data(sideHeaderRow + 4, 5)))
+        AppendSetting "RoundedRectangle.Right.R2", Trim$(CStr(data(sideHeaderRow + 4, 3))), Trim$(CStr(data(sideHeaderRow + 4, 3))), Trim$(CStr(data(sideHeaderRow + 4, 5)))
+    End If
+
+    Dim mainHeaderRow As Long
+    mainHeaderRow = FindRowWithCaption(data, "Грань", 1, geometryHeaderRow + 1)
+    Dim extraHeaderRow As Long
+    extraHeaderRow = FindRowWithCaption(data, "d2", 2, geometryHeaderRow + 1)
+    If mainHeaderRow > 0 Then AppendRoundedRectangleMainRebars data, mainHeaderRow
+    If extraHeaderRow > 0 Then AppendRoundedRectangleExtraRebars data, extraHeaderRow
+End Sub
+
+Private Function FindRowWithCaption(ByRef data As Variant, ByVal caption As String, ByVal columnIndex As Long, ByVal startRow As Long) As Long
+    Dim rowIndex As Long
+    For rowIndex = startRow To UBound(data, 1)
+        If StrComp(Trim$(CStr(data(rowIndex, columnIndex))), caption, vbTextCompare) = 0 Then
+            FindRowWithCaption = rowIndex
+            Exit Function
+        End If
+    Next rowIndex
+End Function
+
+Private Sub AppendRoundedRectangleMainRebars(ByRef data As Variant, ByVal mainHeaderRow As Long)
+    Dim rowIndex As Long
+    For rowIndex = mainHeaderRow + 1 To UBound(data, 1)
+        Dim faceKey As String
+        faceKey = RoundedRectangleFaceKey(Trim$(CStr(data(rowIndex, 1))))
+        If Len(faceKey) = 0 Then Exit For
+        AppendSetting "RoundedRectangle." & faceKey & ".as", Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 6)))
+        AppendSetting "RoundedRectangle." & faceKey & ".d", Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 6)))
+        AppendSetting "RoundedRectangle." & faceKey & ".n", Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 6)))
+    Next rowIndex
+End Sub
+
+Private Sub AppendRoundedRectangleExtraRebars(ByRef data As Variant, ByVal extraHeaderRow As Long)
+    Dim rowIndex As Long
+    For rowIndex = extraHeaderRow + 1 To UBound(data, 1)
+        Dim faceKey As String
+        faceKey = RoundedRectangleFaceKey(Trim$(CStr(data(rowIndex, 1))))
+        If Len(faceKey) = 0 Then Exit For
+        AppendSetting "RoundedRectangle." & faceKey & ".d_2row", Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 9)))
+        AppendSetting "RoundedRectangle." & faceKey & ".loc_2row", Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 9)))
+        AppendSetting "RoundedRectangle." & faceKey & ".bind_2row", Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 9)))
+        AppendSetting "RoundedRectangle." & faceKey & ".d_3row", Trim$(CStr(data(rowIndex, 5))), Trim$(CStr(data(rowIndex, 5))), Trim$(CStr(data(rowIndex, 9)))
+        AppendSetting "RoundedRectangle." & faceKey & ".loc_3row", Trim$(CStr(data(rowIndex, 6))), Trim$(CStr(data(rowIndex, 6))), Trim$(CStr(data(rowIndex, 9)))
+        AppendSetting "RoundedRectangle." & faceKey & ".bind_3row", Trim$(CStr(data(rowIndex, 7))), Trim$(CStr(data(rowIndex, 7))), Trim$(CStr(data(rowIndex, 9)))
+    Next rowIndex
+End Sub
+
+Private Function RoundedRectangleFaceKey(ByVal faceCaption As String) As String
+    Select Case LCase$(Trim$(faceCaption))
+        Case "h - левая", "h-left", "h.left": RoundedRectangleFaceKey = "H.Left"
+        Case "h - правая", "h-right", "h.right": RoundedRectangleFaceKey = "H.Right"
+        Case "b - верхняя", "b-top", "b.top": RoundedRectangleFaceKey = "B.Top"
+        Case "b - нижняя", "b-bottom", "b.bottom": RoundedRectangleFaceKey = "B.Bottom"
+    End Select
+End Function
+
+' Распознает табличную компоновку rngRectSetGeometry по заголовкам H1/B1/H2/B2.
+Private Function IsRectSetFaceSettingsRange(ByRef data As Variant) As Boolean
+    If RectSetGeometryHeaderRow(data) > 0 Then
+        IsRectSetFaceSettingsRange = True
+        Exit Function
     End If
 
     If UBound(data, 1) < 12 Or UBound(data, 2) < 7 Then Exit Function
-    IsLShapeFaceSettingsRange = _
+    IsRectSetFaceSettingsRange = _
         StrComp(Trim$(CStr(data(1, 2))), "H1", vbTextCompare) = 0 And _
         StrComp(Trim$(CStr(data(1, 3))), "B1", vbTextCompare) = 0 And _
         StrComp(Trim$(CStr(data(1, 4))), "H2", vbTextCompare) = 0 And _
         StrComp(Trim$(CStr(data(1, 5))), "B2", vbTextCompare) = 0
 End Function
 
-' Читает матричную компоновку LShape, если книга собрана в таком формате.
-' Основная новая компоновка распознается выше и уходит в AppendLShapeSectionedSettings.
-Private Sub AppendLShapeFaceSettings(ByRef data As Variant)
-    If UBound(data, 1) >= 23 And UBound(data, 2) >= 9 And _
-            StrComp(Trim$(CStr(data(2, 1))), "H1", vbTextCompare) = 0 And _
-            StrComp(Trim$(CStr(data(2, 2))), "B1", vbTextCompare) = 0 And _
-            StrComp(Trim$(CStr(data(2, 3))), "H2", vbTextCompare) = 0 And _
-            StrComp(Trim$(CStr(data(2, 4))), "B2", vbTextCompare) = 0 Then
-        AppendLShapeSectionedSettings data
+' Ищет строку заголовков H1/B1/H2/B2 в секционной таблице RectSet.
+Private Function RectSetGeometryHeaderRow(ByRef data As Variant) As Long
+    If UBound(data, 2) < 4 Then Exit Function
+
+    Dim rowIndex As Long
+    For rowIndex = 1 To UBound(data, 1) - 1
+        If StrComp(Trim$(CStr(data(rowIndex, 1))), "H1", vbTextCompare) = 0 And _
+                StrComp(Trim$(CStr(data(rowIndex, 2))), "B1", vbTextCompare) = 0 And _
+                StrComp(Trim$(CStr(data(rowIndex, 3))), "H2", vbTextCompare) = 0 And _
+                StrComp(Trim$(CStr(data(rowIndex, 4))), "B2", vbTextCompare) = 0 Then
+            RectSetGeometryHeaderRow = rowIndex
+            Exit Function
+        End If
+    Next rowIndex
+End Function
+
+' Читает табличную компоновку RectSet и разворачивает ее в ключи настроек.
+Private Sub AppendRectSetFaceSettings(ByRef data As Variant)
+    Dim geometryHeaderRow As Long
+    geometryHeaderRow = RectSetGeometryHeaderRow(data)
+    If geometryHeaderRow > 0 And UBound(data, 1) >= geometryHeaderRow + 21 And UBound(data, 2) >= 9 Then
+        AppendRectSetCommonSettings data, geometryHeaderRow
+        AppendRectSetSectionedSettings data, geometryHeaderRow
         Exit Sub
     End If
 
@@ -389,78 +501,94 @@ Private Sub AppendLShapeFaceSettings(ByRef data As Variant)
 
     Dim i As Long
     ' Для каждой стороны H1/B1/H2/B2 разворачиваем пары _1/_2 в обычные ключи
-    ' LShape.<грань>.<параметр>. Solver и builder дальше не знают о форме таблицы.
+    ' RectSet.<грань>.<параметр>. Solver и builder дальше не знают о форме таблицы.
     For i = 1 To 4
         Dim col As Long
         Dim faceName As String
         col = faceColumns(i)
         faceName = faceNames(i)
-        AppendSetting "LShape." & faceName, Trim$(CStr(data(2, col))), Trim$(CStr(data(2, col))), Trim$(CStr(data(2, 7)))
-        AppendSetting "LShape." & faceName & ".as_1", Trim$(CStr(data(3, col))), Trim$(CStr(data(3, col))), Trim$(CStr(data(3, 7)))
-        AppendSetting "LShape." & faceName & ".as_2", Trim$(CStr(data(4, col))), Trim$(CStr(data(4, col))), Trim$(CStr(data(4, 7)))
-        AppendSetting "LShape." & faceName & ".d_1", Trim$(CStr(data(5, col))), Trim$(CStr(data(5, col))), Trim$(CStr(data(5, 7)))
-        AppendSetting "LShape." & faceName & ".d_2", Trim$(CStr(data(6, col))), Trim$(CStr(data(6, col))), Trim$(CStr(data(6, 7)))
-        AppendSetting "LShape." & faceName & ".n_1", Trim$(CStr(data(7, col))), Trim$(CStr(data(7, col))), Trim$(CStr(data(7, 7)))
-        AppendSetting "LShape." & faceName & ".n_2", Trim$(CStr(data(8, col))), Trim$(CStr(data(8, col))), Trim$(CStr(data(8, 7)))
-        AppendSetting "LShape." & faceName & ".StartOffset1", Trim$(CStr(data(9, col))), Trim$(CStr(data(9, col))), Trim$(CStr(data(9, 7)))
-        AppendSetting "LShape." & faceName & ".EndOffset1", Trim$(CStr(data(10, col))), Trim$(CStr(data(10, col))), Trim$(CStr(data(10, 7)))
-        AppendSetting "LShape." & faceName & ".StartOffset2", Trim$(CStr(data(11, col))), Trim$(CStr(data(11, col))), Trim$(CStr(data(11, 7)))
-        AppendSetting "LShape." & faceName & ".EndOffset2", Trim$(CStr(data(12, col))), Trim$(CStr(data(12, col))), Trim$(CStr(data(12, 7)))
+        AppendSetting "RectSet." & faceName, Trim$(CStr(data(2, col))), Trim$(CStr(data(2, col))), Trim$(CStr(data(2, 7)))
+        AppendSetting "RectSet." & faceName & ".as_1", Trim$(CStr(data(3, col))), Trim$(CStr(data(3, col))), Trim$(CStr(data(3, 7)))
+        AppendSetting "RectSet." & faceName & ".as_2", Trim$(CStr(data(4, col))), Trim$(CStr(data(4, col))), Trim$(CStr(data(4, 7)))
+        AppendSetting "RectSet." & faceName & ".d_1", Trim$(CStr(data(5, col))), Trim$(CStr(data(5, col))), Trim$(CStr(data(5, 7)))
+        AppendSetting "RectSet." & faceName & ".d_2", Trim$(CStr(data(6, col))), Trim$(CStr(data(6, col))), Trim$(CStr(data(6, 7)))
+        AppendSetting "RectSet." & faceName & ".n_1", Trim$(CStr(data(7, col))), Trim$(CStr(data(7, col))), Trim$(CStr(data(7, 7)))
+        AppendSetting "RectSet." & faceName & ".n_2", Trim$(CStr(data(8, col))), Trim$(CStr(data(8, col))), Trim$(CStr(data(8, 7)))
+        AppendSetting "RectSet." & faceName & ".StartOffset1", Trim$(CStr(data(9, col))), Trim$(CStr(data(9, col))), Trim$(CStr(data(9, 7)))
+        AppendSetting "RectSet." & faceName & ".EndOffset1", Trim$(CStr(data(10, col))), Trim$(CStr(data(10, col))), Trim$(CStr(data(10, 7)))
+        AppendSetting "RectSet." & faceName & ".StartOffset2", Trim$(CStr(data(11, col))), Trim$(CStr(data(11, col))), Trim$(CStr(data(11, 7)))
+        AppendSetting "RectSet." & faceName & ".EndOffset2", Trim$(CStr(data(12, col))), Trim$(CStr(data(12, col))), Trim$(CStr(data(12, 7)))
         If UBound(data, 1) >= 19 Then
-            AppendSetting "LShape." & faceName & ".d_2row_1", Trim$(CStr(data(14, col))), Trim$(CStr(data(14, col))), Trim$(CStr(data(14, 7)))
-            AppendSetting "LShape." & faceName & ".d_2row_2", Trim$(CStr(data(15, col))), Trim$(CStr(data(15, col))), Trim$(CStr(data(15, 7)))
-            AppendSetting "LShape." & faceName & ".d_3row_1", Trim$(CStr(data(16, col))), Trim$(CStr(data(16, col))), Trim$(CStr(data(16, 7)))
-            AppendSetting "LShape." & faceName & ".d_3row_2", Trim$(CStr(data(17, col))), Trim$(CStr(data(17, col))), Trim$(CStr(data(17, 7)))
-            AppendSetting "LShape." & faceName & ".loc_2row", Trim$(CStr(data(18, col))), Trim$(CStr(data(18, col))), Trim$(CStr(data(18, 7)))
-            AppendSetting "LShape." & faceName & ".loc_3row", Trim$(CStr(data(19, col))), Trim$(CStr(data(19, col))), Trim$(CStr(data(19, 7)))
+            AppendSetting "RectSet." & faceName & ".d_2row_1", Trim$(CStr(data(14, col))), Trim$(CStr(data(14, col))), Trim$(CStr(data(14, 7)))
+            AppendSetting "RectSet." & faceName & ".d_2row_2", Trim$(CStr(data(15, col))), Trim$(CStr(data(15, col))), Trim$(CStr(data(15, 7)))
+            AppendSetting "RectSet." & faceName & ".d_3row_1", Trim$(CStr(data(16, col))), Trim$(CStr(data(16, col))), Trim$(CStr(data(16, 7)))
+            AppendSetting "RectSet." & faceName & ".d_3row_2", Trim$(CStr(data(17, col))), Trim$(CStr(data(17, col))), Trim$(CStr(data(17, 7)))
+            AppendSetting "RectSet." & faceName & ".loc_2row", Trim$(CStr(data(18, col))), Trim$(CStr(data(18, col))), Trim$(CStr(data(18, 7)))
+            AppendSetting "RectSet." & faceName & ".loc_3row", Trim$(CStr(data(19, col))), Trim$(CStr(data(19, col))), Trim$(CStr(data(19, 7)))
             If UBound(data, 1) >= 21 Then
-                AppendSetting "LShape." & faceName & ".bind_2row", Trim$(CStr(data(20, col))), Trim$(CStr(data(20, col))), Trim$(CStr(data(20, 7)))
-                AppendSetting "LShape." & faceName & ".bind_3row", Trim$(CStr(data(21, col))), Trim$(CStr(data(21, col))), Trim$(CStr(data(21, 7)))
+                AppendSetting "RectSet." & faceName & ".bind_2row", Trim$(CStr(data(20, col))), Trim$(CStr(data(20, col))), Trim$(CStr(data(20, 7)))
+                AppendSetting "RectSet." & faceName & ".bind_3row", Trim$(CStr(data(21, col))), Trim$(CStr(data(21, col))), Trim$(CStr(data(21, 7)))
             End If
         End If
     Next i
 End Sub
 
-' Читает текущую табличную компоновку Г-сечения:
+' Читает общие настройки RectSet над блоком H1/B1/H2/B2.
+Private Sub AppendRectSetCommonSettings(ByRef data As Variant, ByVal geometryHeaderRow As Long)
+    Dim rowIndex As Long
+    For rowIndex = 1 To geometryHeaderRow - 1
+        Dim keyValue As String
+        keyValue = Trim$(CStr(data(rowIndex, 1)))
+        If StrComp(keyValue, "RectSet.SectionType", vbTextCompare) = 0 Or _
+                StrComp(keyValue, "RectSet.UpperOffsetX", vbTextCompare) = 0 Then
+            Dim sourceValue As String
+            If UBound(data, 2) >= 4 Then sourceValue = Trim$(CStr(data(rowIndex, 4)))
+            AppendSetting keyValue, Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), sourceValue
+        End If
+    Next rowIndex
+End Sub
+
+' Читает текущую табличную компоновку RectSet-сечения:
 ' отдельный блок геометрии, блок основного армирования и блок дополнительных рядов.
-Private Sub AppendLShapeSectionedSettings(ByRef data As Variant)
-    AppendSetting "LShape.H1", Trim$(CStr(data(3, 1))), Trim$(CStr(data(3, 1))), "LShape geometry"
-    AppendSetting "LShape.B1", Trim$(CStr(data(3, 2))), Trim$(CStr(data(3, 2))), "LShape geometry"
-    AppendSetting "LShape.H2", Trim$(CStr(data(3, 3))), Trim$(CStr(data(3, 3))), "LShape geometry"
-    AppendSetting "LShape.B2", Trim$(CStr(data(3, 4))), Trim$(CStr(data(3, 4))), "LShape geometry"
+Private Sub AppendRectSetSectionedSettings(ByRef data As Variant, Optional ByVal geometryHeaderRow As Long = 2)
+    Dim valueRow As Long
+    valueRow = geometryHeaderRow + 1
+    AppendSetting "RectSet.H1", Trim$(CStr(data(valueRow, 1))), Trim$(CStr(data(valueRow, 1))), "RectSet geometry"
+    AppendSetting "RectSet.B1", Trim$(CStr(data(valueRow, 2))), Trim$(CStr(data(valueRow, 2))), "RectSet geometry"
+    AppendSetting "RectSet.H2", Trim$(CStr(data(valueRow, 3))), Trim$(CStr(data(valueRow, 3))), "RectSet geometry"
+    AppendSetting "RectSet.B2", Trim$(CStr(data(valueRow, 4))), Trim$(CStr(data(valueRow, 4))), "RectSet geometry"
 
     Dim faceNames(1 To 8) As String
     Dim sideIndexes(1 To 8) As Long
-    FillLShapeSectionedFaceOrder faceNames, sideIndexes
+    FillRectSetSectionedFaceOrder faceNames, sideIndexes
 
     Dim i As Long
-    ' Восемь строк граней превращаются в ключи с суффиксами _1/_2. Это сохраняет
-    ' понятный ввод на листе и прежний контракт для CLShapeRebarLayoutBuilder.
+    ' Восемь строк граней превращаются в ключи с суффиксами _1/_2.
     For i = 1 To 8
         Dim rowIndex As Long
-        rowIndex = 5 + i
-        AppendSetting "LShape." & faceNames(i) & ".as_" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 8)))
-        AppendSetting "LShape." & faceNames(i) & ".d_" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 8)))
-        AppendSetting "LShape." & faceNames(i) & ".n_" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 8)))
-        AppendSetting "LShape." & faceNames(i) & ".StartOffset" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 5))), Trim$(CStr(data(rowIndex, 5))), Trim$(CStr(data(rowIndex, 8)))
-        AppendSetting "LShape." & faceNames(i) & ".EndOffset" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 6))), Trim$(CStr(data(rowIndex, 6))), Trim$(CStr(data(rowIndex, 8)))
+        rowIndex = geometryHeaderRow + 3 + i
+        AppendSetting "RectSet." & faceNames(i) & ".as_" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 8)))
+        AppendSetting "RectSet." & faceNames(i) & ".d_" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 8)))
+        AppendSetting "RectSet." & faceNames(i) & ".n_" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 8)))
+        AppendSetting "RectSet." & faceNames(i) & ".StartOffset" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 5))), Trim$(CStr(data(rowIndex, 5))), Trim$(CStr(data(rowIndex, 8)))
+        AppendSetting "RectSet." & faceNames(i) & ".EndOffset" & CStr(sideIndexes(i)), Trim$(CStr(data(rowIndex, 6))), Trim$(CStr(data(rowIndex, 6))), Trim$(CStr(data(rowIndex, 8)))
 
         Dim extraRow As Long
-        extraRow = 15 + i
-        AppendSetting "LShape." & faceNames(i) & ".d_2row_" & CStr(sideIndexes(i)), Trim$(CStr(data(extraRow, 2))), Trim$(CStr(data(extraRow, 2))), Trim$(CStr(data(extraRow, 9)))
-        AppendSetting "LShape." & faceNames(i) & ".d_3row_" & CStr(sideIndexes(i)), Trim$(CStr(data(extraRow, 5))), Trim$(CStr(data(extraRow, 5))), Trim$(CStr(data(extraRow, 9)))
+        extraRow = geometryHeaderRow + 13 + i
+        AppendSetting "RectSet." & faceNames(i) & ".d_2row_" & CStr(sideIndexes(i)), Trim$(CStr(data(extraRow, 2))), Trim$(CStr(data(extraRow, 2))), Trim$(CStr(data(extraRow, 9)))
+        AppendSetting "RectSet." & faceNames(i) & ".d_3row_" & CStr(sideIndexes(i)), Trim$(CStr(data(extraRow, 5))), Trim$(CStr(data(extraRow, 5))), Trim$(CStr(data(extraRow, 9)))
         If sideIndexes(i) = 1 Then
-            AppendSetting "LShape." & faceNames(i) & ".loc_2row", Trim$(CStr(data(extraRow, 3))), Trim$(CStr(data(extraRow, 3))), Trim$(CStr(data(extraRow, 9)))
-            AppendSetting "LShape." & faceNames(i) & ".bind_2row", Trim$(CStr(data(extraRow, 4))), Trim$(CStr(data(extraRow, 4))), Trim$(CStr(data(extraRow, 9)))
-            AppendSetting "LShape." & faceNames(i) & ".loc_3row", Trim$(CStr(data(extraRow, 6))), Trim$(CStr(data(extraRow, 6))), Trim$(CStr(data(extraRow, 9)))
-            AppendSetting "LShape." & faceNames(i) & ".bind_3row", Trim$(CStr(data(extraRow, 7))), Trim$(CStr(data(extraRow, 7))), Trim$(CStr(data(extraRow, 9)))
+            AppendSetting "RectSet." & faceNames(i) & ".loc_2row", Trim$(CStr(data(extraRow, 3))), Trim$(CStr(data(extraRow, 3))), Trim$(CStr(data(extraRow, 9)))
+            AppendSetting "RectSet." & faceNames(i) & ".bind_2row", Trim$(CStr(data(extraRow, 4))), Trim$(CStr(data(extraRow, 4))), Trim$(CStr(data(extraRow, 9)))
+            AppendSetting "RectSet." & faceNames(i) & ".loc_3row", Trim$(CStr(data(extraRow, 6))), Trim$(CStr(data(extraRow, 6))), Trim$(CStr(data(extraRow, 9)))
+            AppendSetting "RectSet." & faceNames(i) & ".bind_3row", Trim$(CStr(data(extraRow, 7))), Trim$(CStr(data(extraRow, 7))), Trim$(CStr(data(extraRow, 9)))
         End If
     Next i
 End Sub
 
-' Задает порядок строк в секционной таблице LShape.
+' Задает порядок строк в секционной таблице RectSet.
 ' _1 означает левую/верхнюю грань, _2 - правую/нижнюю.
-Private Sub FillLShapeSectionedFaceOrder(ByRef faceNames() As String, ByRef sideIndexes() As Long)
+Private Sub FillRectSetSectionedFaceOrder(ByRef faceNames() As String, ByRef sideIndexes() As Long)
     faceNames(1) = "H1": sideIndexes(1) = 1
     faceNames(2) = "H1": sideIndexes(2) = 2
     faceNames(3) = "B1": sideIndexes(3) = 1

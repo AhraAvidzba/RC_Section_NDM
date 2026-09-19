@@ -261,7 +261,9 @@ Public Sub AddRebarLabel(ByVal startX As Double, ByVal startY As Double, ByVal e
 End Sub
 
 ' Определяет bbox текста размера вокруг середины размерной линии. TextGap
-' применяется вдоль выбранной наружной/внутренней нормали.
+' задает отступ центра подписи от размерной линии по выбранной нормали. Для
+' вертикальных размеров bbox сразу узкий и высокий: Excel затем создает
+' вертикальный текстовый Shape без поворота широкого горизонтального блока.
 Private Sub DimensionTextBox(ByVal sx As Double, ByVal sy As Double, ByVal ex As Double, ByVal ey As Double, _
         ByVal normalPxX As Double, ByVal normalPxY As Double, ByVal rotation As Double, _
         ByRef leftPos As Double, ByRef topPos As Double, ByRef widthValue As Double, ByRef heightValue As Double)
@@ -269,8 +271,8 @@ Private Sub DimensionTextBox(ByVal sx As Double, ByVal sy As Double, ByVal ex As
         widthValue = 150# * mVisualScale
         heightValue = MaxDouble(18# * mVisualScale, mDimensionFontSize * 1.65)
     Else
-        widthValue = 150# * mVisualScale
-        heightValue = MaxDouble(18# * mVisualScale, mDimensionFontSize * 1.65)
+        widthValue = MaxDouble(18# * mVisualScale, mDimensionFontSize * 1.65)
+        heightValue = 150# * mVisualScale
     End If
 
     Dim textGap As Double
@@ -285,7 +287,8 @@ Private Sub DimensionTextBox(ByVal sx As Double, ByVal sy As Double, ByVal ex As
 End Sub
 
 ' Определяет bbox групповой подписи арматуры. Положение считается от середины
-' anchor-линии, а не от крайних фактических стержней.
+' anchor-линии, а не от крайних фактических стержней. Вертикальные подписи
+' получают узкий высокий bbox по той же причине, что и размерные подписи.
 Private Sub RebarTextBox(ByVal anchorPxX As Double, ByVal anchorPxY As Double, ByVal normalPxX As Double, _
         ByVal normalPxY As Double, ByVal rotation As Double, ByRef leftPos As Double, ByRef topPos As Double, _
         ByRef widthValue As Double, ByRef heightValue As Double)
@@ -293,8 +296,8 @@ Private Sub RebarTextBox(ByVal anchorPxX As Double, ByVal anchorPxY As Double, B
         widthValue = 150# * mVisualScale
         heightValue = MaxDouble(18# * mVisualScale, mRebarFontSize * 1.65)
     Else
-        widthValue = 150# * mVisualScale
-        heightValue = MaxDouble(18# * mVisualScale, mRebarFontSize * 1.65)
+        widthValue = MaxDouble(18# * mVisualScale, mRebarFontSize * 1.65)
+        heightValue = 150# * mVisualScale
     End If
 
     Dim textGap As Double

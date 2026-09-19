@@ -49,11 +49,11 @@ Public Function RunWorkbookInterfaceTests() As String
     TestDynamicLoadCombinationRangeAndLayoutGuard stats
     TestExecutionReportFile stats
     TestExcelApplicationStateGuardRestoresSettings stats
-    TestLShapeWorkbookRunWritesResults stats
-    TestLShapeMomentUltimateStrainWorkbookPath stats
-    TestLShapePureBendingUltimateStrainWorkbookPath stats
-    TestLShapePureBendingDirectStateWorkbookPath stats
-    TestLShapeAxialTensionExtensionFromWorkbookSettings stats
+    TestRectSetWorkbookRunWritesResults stats
+    TestRectSetMomentUltimateStrainWorkbookPath stats
+    TestRectSetPureBendingUltimateStrainWorkbookPath stats
+    TestRectSetPureBendingDirectStateWorkbookPath stats
+    TestRectSetAxialTensionExtensionFromWorkbookSettings stats
     TestAutoCADExportUsesSharedLoadReference stats
     TestGoverningCombinationWritesDetailedResults stats
     TestCapacitySearchMethodValidation stats
@@ -106,7 +106,7 @@ Private Sub TestLoadCombinationsOnConfig(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.loads.layout.title", _
         InStr(1, CStr(loads.Worksheet.Cells.Item(2, 15).Value2), "Сочетания нагрузок", vbTextCompare) > 0
     Dim pathOptions As Variant
-    pathOptions = Array(ChrW$(&H3BB) & "*Mx", ChrW$(&H3BB) & "*My", _
+    pathOptions = Array("Auto", ChrW$(&H3BB) & "*Mx", ChrW$(&H3BB) & "*My", _
         ChrW$(&H3BB) & "*Mxy", ChrW$(&H3BB) & "*N", ChrW$(&H3BB) & "*NMxy")
     AssertTrue stats, "ui.loads.layout.capacityPathValidation", _
         LoadCombinationValidationHasOptions(6, pathOptions)
@@ -159,15 +159,19 @@ Private Sub TestBlankDiametersDisableGeneratedRebars(ByRef stats As TUiTestStats
     AssertTrue stats, "ui.circle.blankDiameter.noRebar", circleSection.RebarCount = 0
     AssertTrue stats, "ui.circle.blankDiameter.dimensionsRemain", circleSection.AnnotationCount >= 2
 
-    PrepareLShapeInput
-    SetSystemSetting "LShape.H1.d_1", vbNullString
+    PrepareRectSetInput
+    SetSystemSetting "RectSet.H1.d_1", vbNullString
 
-    Dim lshapeSection As CSectionModel
-    Set lshapeSection = BuildCurrentWorkbookSection()
-    AssertTrue stats, "ui.lshape.blankFaceDiameter.skipsLine", lshapeSection.RebarCount = 7
-    AssertTrue stats, "ui.lshape.blankFaceDiameter.dimensionsRemain", lshapeSection.AnnotationCount >= 4
+    Dim rectsetSection As CSectionModel
+    Set rectsetSection = BuildCurrentWorkbookSection()
+    AssertTrue stats, "ui.rectset.blankFaceDiameter.skipsLine", rectsetSection.RebarCount = 7
+    AssertTrue stats, "ui.rectset.blankFaceDiameter.dimensionsRemain", rectsetSection.AnnotationCount >= 4
 
     SetSystemSetting "Geometry.Type", "RoundedRectangle"
+    SetSystemSetting "RoundedRectangle.H.Left.d", vbNullString
+    SetSystemSetting "RoundedRectangle.H.Right.d", vbNullString
+    SetSystemSetting "RoundedRectangle.B.Top.d", vbNullString
+    SetSystemSetting "RoundedRectangle.B.Bottom.d", vbNullString
     Dim roundedSection As CSectionModel
     Set roundedSection = BuildCurrentWorkbookSection()
     AssertTrue stats, "ui.rounded.noAutoRebar.noError", roundedSection.RebarCount = 0
@@ -247,7 +251,7 @@ End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestAutoCADExportUsesSharedLoadReference(ByRef stats As TUiTestStats)
-    PrepareLShapeInput
+    PrepareRectSetInput
     SetSystemSetting "Load.ReferenceOffsetX", "0"
     SetSystemSetting "Load.ReferenceOffsetY", "0"
 
@@ -600,7 +604,7 @@ End Sub
 ' а точка нагрузки - из LoadReference. Их экранный сдвиг должен совпадать с
 ' расчетным сдвигом из Results после одного общего model-to-chart масштаба.
 Private Sub TestPlotOverlayCoordinatesMatchResults(ByRef stats As TUiTestStats)
-    PrepareUserLShapeMomentUltimateInput
+    PrepareUserRectSetMomentUltimateInput
     SetSystemSetting "Plot.PrincipalAxesMode", "Transformed"
     SetSystemSetting "Plot.LoadApplicationPointEnabled", "Yes"
     SetSystemSetting "Plot.ResultLabelsEnabled", "No"
@@ -1005,7 +1009,7 @@ End Sub
 ' используется чистый изгиб: сжатие может подавить образование нормальной
 ' трещины и тогда эти состояния физически не обязаны появляться.
 Private Sub TestTwentyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUiTestStats)
-    PrepareUserLShapeMomentUltimateInput
+    PrepareUserRectSetMomentUltimateInput
     PrepareFullStateProfile "PR3"
     SetSystemSetting "SLS.Crack.PsiMode", "Auto"
     SetSystemSetting "SLS.Crack.Allowable", "0.000001"
@@ -1164,7 +1168,7 @@ End Sub
 ' а plotter обязан рисовать элементы поэлементно Shape-ами до безопасного
 ' предела и не раздувать число Excel Chart series.
 Private Sub TestLargeSnapshotPlotStress(ByRef stats As TUiTestStats)
-    PrepareUserLShapeMomentUltimateInput
+    PrepareUserRectSetMomentUltimateInput
     PrepareFullStateProfile "PR3"
     SetSystemSetting "Mesh.StepX", "10"
     SetSystemSetting "Mesh.StepY", "10"
@@ -1219,20 +1223,20 @@ Private Sub TestLargeSnapshotPlotStress(ByRef stats As TUiTestStats)
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
-Private Sub TestLShapeWorkbookRunWritesResults(ByRef stats As TUiTestStats)
-    PrepareLShapeInput
+Private Sub TestRectSetWorkbookRunWritesResults(ByRef stats As TUiTestStats)
+    PrepareRectSetInput
     Dim message As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
 
-    AssertTrue stats, "ui.lshape.message", InStr(1, message, "завершен", vbTextCompare) > 0
+    AssertTrue stats, "ui.rectset.message", InStr(1, message, "завершен", vbTextCompare) > 0
     Dim summary As Object
     Set summary = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
-    AssertTrue stats, "ui.lshape.result.status", Len(CStr(summary.Worksheet.Cells.Item(BatchSummaryStartRow() + 11, 1).Value2)) > 0
+    AssertTrue stats, "ui.rectset.result.status", Len(CStr(summary.Worksheet.Cells.Item(BatchSummaryStartRow() + 11, 1).Value2)) > 0
 
     Dim sys As Object
     Set sys = ThisWorkbook.Worksheets.Item("Config")
-    AssertTrue stats, "ui.lshape.system.noRebarTable", Len(CStr(sys.Cells.Item(130, 1).Value2)) = 0
-    AssertTrue stats, "ui.lshape.system.materialDiagramControls", _
+    AssertTrue stats, "ui.rectset.system.noRebarTable", Len(CStr(sys.Cells.Item(130, 1).Value2)) = 0
+    AssertTrue stats, "ui.rectset.system.materialDiagramControls", _
         InStr(1, CStr(sys.Cells.Item(1, 35).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
 End Sub
 
@@ -1240,8 +1244,8 @@ End Sub
 ' траекторией lambda*Mx через полный путь книги. Этот тест защищает быстрый
 ' UltimateStrain-путь для обычного изгибного расчета: после универсализации
 ' CapacityLoadPath он не должен уходить в тяжелую общую residual-систему.
-Private Sub TestLShapeMomentUltimateStrainWorkbookPath(ByRef stats As TUiTestStats)
-    PrepareUserLShapeMomentUltimateInput
+Private Sub TestRectSetMomentUltimateStrainWorkbookPath(ByRef stats As TUiTestStats)
+    PrepareUserRectSetMomentUltimateInput
 
     Dim message As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
@@ -1257,24 +1261,24 @@ Private Sub TestLShapeMomentUltimateStrainWorkbookPath(ByRef stats As TUiTestSta
     capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 42).Value2)
     solutionMethod = CStr(resultsSheet.Cells.Item(firstRow, 30).Value2)
 
-    AppendLine stats, "INFO: ui.lshape.momentUltimate capacityStatus=" & capacityStatus & _
+    AppendLine stats, "INFO: ui.rectset.momentUltimate capacityStatus=" & capacityStatus & _
         "; solutionMethod=" & solutionMethod & _
         "; lambda=" & CStr(resultsSheet.Cells.Item(firstRow, 31).Value2)
 
-    AssertTrue stats, "ui.lshape.momentUltimate.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
-    AssertTextEquals stats, "ui.lshape.momentUltimate.capacityOk", capacityStatus, "OK"
-    AssertTextEquals stats, "ui.lshape.momentUltimate.method", solutionMethod, "UltimateStrain"
-    AssertTrue stats, "ui.lshape.momentUltimate.lambda", _
+    AssertTrue stats, "ui.rectset.momentUltimate.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    AssertTextEquals stats, "ui.rectset.momentUltimate.capacityOk", capacityStatus, "OK"
+    AssertTextEquals stats, "ui.rectset.momentUltimate.method", solutionMethod, "UltimateStrain"
+    AssertTrue stats, "ui.rectset.momentUltimate.lambda", _
         CDbl(resultsSheet.Cells.Item(firstRow, 31).Value2) > 0#
-    AssertTrue stats, "ui.lshape.momentUltimate.mxult", _
+    AssertTrue stats, "ui.rectset.momentUltimate.mxult", _
         Abs(CDbl(resultsSheet.Cells.Item(firstRow, 33).Value2)) > 0#
 End Sub
 
 ' Проверяет чистый изгиб Г-сечения по полному Excel-пути.
 ' Здесь N намеренно равен нулю: программа должна найти прямое НДС и
 ' предельный момент без перехода в осевую или аварийную ветку.
-Private Sub TestLShapePureBendingUltimateStrainWorkbookPath(ByRef stats As TUiTestStats)
-    PrepareUserLShapeMomentUltimateInput
+Private Sub TestRectSetPureBendingUltimateStrainWorkbookPath(ByRef stats As TUiTestStats)
+    PrepareUserRectSetMomentUltimateInput
 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -1297,24 +1301,24 @@ Private Sub TestLShapePureBendingUltimateStrainWorkbookPath(ByRef stats As TUiTe
     capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 42).Value2)
     solutionMethod = CStr(resultsSheet.Cells.Item(firstRow, 30).Value2)
 
-    AppendLine stats, "INFO: ui.lshape.pureBending direct=" & directStatus & _
+    AppendLine stats, "INFO: ui.rectset.pureBending direct=" & directStatus & _
         "; capacity=" & capacityStatus & _
         "; solutionMethod=" & solutionMethod & _
         "; lambda=" & CStr(resultsSheet.Cells.Item(firstRow, 31).Value2)
 
-    AssertTrue stats, "ui.lshape.pureBending.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
-    AssertTextEquals stats, "ui.lshape.pureBending.directOk", directStatus, "OK"
-    AssertTextEquals stats, "ui.lshape.pureBending.capacityOk", capacityStatus, "OK"
-    AssertTextEquals stats, "ui.lshape.pureBending.method", solutionMethod, "UltimateStrain"
-    AssertTrue stats, "ui.lshape.pureBending.lambda", _
+    AssertTrue stats, "ui.rectset.pureBending.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    AssertTextEquals stats, "ui.rectset.pureBending.directOk", directStatus, "OK"
+    AssertTextEquals stats, "ui.rectset.pureBending.capacityOk", capacityStatus, "OK"
+    AssertTextEquals stats, "ui.rectset.pureBending.method", solutionMethod, "UltimateStrain"
+    AssertTrue stats, "ui.rectset.pureBending.lambda", _
         CDbl(resultsSheet.Cells.Item(firstRow, 31).Value2) > 0#
 End Sub
 
 ' Проверяет чистый изгиб Г-сечения по профилю PR1. Такой профиль запрашивает
 ' и прямое НДС, и несущую способность, поэтому обе ветви должны проходить
 ' через полный workbook-path без специальных обходов.
-Private Sub TestLShapePureBendingDirectStateWorkbookPath(ByRef stats As TUiTestStats)
-    PrepareUserLShapeMomentUltimateInput
+Private Sub TestRectSetPureBendingDirectStateWorkbookPath(ByRef stats As TUiTestStats)
+    PrepareUserRectSetMomentUltimateInput
 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -1335,20 +1339,20 @@ Private Sub TestLShapePureBendingDirectStateWorkbookPath(ByRef stats As TUiTestS
     directStatus = CStr(resultsSheet.Cells.Item(firstRow, 26).Value2)
     capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 42).Value2)
 
-    AppendLine stats, "INFO: ui.lshape.pureBendingDirect direct=" & directStatus & _
+    AppendLine stats, "INFO: ui.rectset.pureBendingDirect direct=" & directStatus & _
         "; capacity=" & capacityStatus
 
-    AssertTrue stats, "ui.lshape.pureBendingDirect.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
-    AssertTextEquals stats, "ui.lshape.pureBendingDirect.directOk", directStatus, "OK"
-    AssertTextEquals stats, "ui.lshape.pureBendingDirect.capacityOk", capacityStatus, "OK"
+    AssertTrue stats, "ui.rectset.pureBendingDirect.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    AssertTextEquals stats, "ui.rectset.pureBendingDirect.directOk", directStatus, "OK"
+    AssertTextEquals stats, "ui.rectset.pureBendingDirect.capacityOk", capacityStatus, "OK"
 End Sub
 
 ' Проверяет пользовательский сценарий с сильным осевым растяжением Г-сечения
 ' через настоящий workbook-path: Config -> CUnitSystem -> batch -> Results.
 ' Это важно, потому что знак N и единицы tf здесь проходят ровно тем же путем,
 ' что и при нажатии кнопки "Расчет" в книге.
-Private Sub TestLShapeAxialTensionExtensionFromWorkbookSettings(ByRef stats As TUiTestStats)
-    PrepareUserLShapeAxialTensionInput
+Private Sub TestRectSetAxialTensionExtensionFromWorkbookSettings(ByRef stats As TUiTestStats)
+    PrepareUserRectSetAxialTensionInput
 
     Dim reportPath As String
     reportPath = ThisWorkbook.Path & "\RC_Section_NDM_execution_report.txt"
@@ -1379,25 +1383,25 @@ Private Sub TestLShapeAxialTensionExtensionFromWorkbookSettings(ByRef stats As T
     overCrack = CStr(resultsSheet.Cells.Item(overCrackRow, 39).Value2)
     overExtension = ResultsPropertyValue("LC_OVER", "ExtensionUsed")
 
-    AppendLine stats, "INFO: ui.lshape.axial795 overall=" & safeOverall & _
+    AppendLine stats, "INFO: ui.rectset.axial795 overall=" & safeOverall & _
         "; crack=" & safeCrack
-    AppendLine stats, "INFO: ui.lshape.axial900 overall=" & overOverall & _
+    AppendLine stats, "INFO: ui.rectset.axial900 overall=" & overOverall & _
         "; crack=" & overCrack & _
         "; extensionUsed=" & overExtension
 
-    AssertTrue stats, "ui.lshape.axial795.overallCalculated", _
+    AssertTrue stats, "ui.rectset.axial795.overallCalculated", _
         safeOverall = "OK" Or safeOverall = "FAIL"
-    AssertTrue stats, "ui.lshape.axial795.crackCalculated", _
+    AssertTrue stats, "ui.rectset.axial795.crackCalculated", _
         safeCrack = "OK" Or safeCrack = "FAIL"
 
-    AssertTextEquals stats, "ui.lshape.axial900.fail", overOverall, "FAIL"
-    AssertTrue stats, "ui.lshape.axial900.crackNoNumFail", _
+    AssertTextEquals stats, "ui.rectset.axial900.fail", overOverall, "FAIL"
+    AssertTrue stats, "ui.rectset.axial900.crackNoNumFail", _
         overCrack <> "NumFail" And overCrack <> "InputErr"
-    AssertTrue stats, "ui.lshape.axial900.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
-    AssertTextEquals stats, "ui.lshape.axial900.extensionSnapshot", overExtension, "True"
-    AssertTrue stats, "ui.lshape.axial900.extensionStressSnapshot", _
+    AssertTrue stats, "ui.rectset.axial900.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    AssertTextEquals stats, "ui.rectset.axial900.extensionSnapshot", overExtension, "True"
+    AssertTrue stats, "ui.rectset.axial900.extensionStressSnapshot", _
         MaxAbsElementStress(ResultTable("rngNDMElementResults"), "LC_OVER", "CrackedState") > 390.1
-    AssertTrue stats, "ui.lshape.axial900.reportCreated", FileExists(reportPath)
+    AssertTrue stats, "ui.rectset.axial900.reportCreated", FileExists(reportPath)
 
     SetSystemSetting "General.ExecutionReportEnabled", "No"
 End Sub
@@ -1727,11 +1731,13 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
         AnySettingValidationHasOptions("Rebar.Loc2row", Array("Stacked", "SideBySide"))
     AssertTrue stats, "ui.validation.circleLoc3row", _
         AnySettingValidationHasOptions("Rebar.Loc3row", Array("Stacked", "SideBySide"))
-    SetSystemSetting "Geometry.Type", "LShape"
-    AssertTrue stats, "ui.validation.lshapeLoc2row", _
-        LShapeAdditionalValidationHasOptions(16, 3, Array("Stacked", "SideBySide"))
-    AssertTrue stats, "ui.validation.lshapeBind2row", _
-        LShapeAdditionalValidationHasOptions(16, 4, Array("EachBar", "EverySecondBar"))
+    SetSystemSetting "Geometry.Type", "RectSet"
+    AssertTrue stats, "ui.validation.rectSetSectionType", _
+        RectSetAdditionalValidationHasOptions(3, 2, Array("Rectangle", "LSection", "TwoRectangles"))
+    AssertTrue stats, "ui.validation.rectsetLoc2row", _
+        RectSetAdditionalValidationHasOptions(21, 3, Array("Stacked", "SideBySide"))
+    AssertTrue stats, "ui.validation.rectsetBind2row", _
+        RectSetAdditionalValidationHasOptions(21, 4, Array("EachBar", "EverySecondBar"))
     Dim reader As CSystemSettingsReader
     Set reader = New CSystemSettingsReader
     SetSystemSetting "Geometry.Type", "Circle"
@@ -2230,7 +2236,8 @@ Private Sub SetSystemSetting(ByVal key As String, ByVal value As String)
         Next rowIndex
     Next rangeIndex
 
-    If TrySetLShapeFaceSetting(key, value) Then Exit Sub
+    If TrySetRectSetFaceSetting(key, value) Then Exit Sub
+    If TrySetRoundedRectangleSetting(key, value) Then Exit Sub
 
     Err.Raise vbObjectError + 4210, "modTestWorkbookInterface", "System setting not found: " & key
 End Sub
@@ -2373,100 +2380,212 @@ Private Function SignSettingAddress(ByVal key As String, ByRef rowIndex As Long,
     SignSettingAddress = True
 End Function
 
-Private Function TrySetLShapeFaceSetting(ByVal key As String, ByVal value As String) As Boolean
+Private Function TrySetRectSetFaceSetting(ByVal key As String, ByVal value As String) As Boolean
     Dim target As Object
-    Set target = ThisWorkbook.Names.Item("rngLShapeGeometry").RefersToRange
+    Set target = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
 
     Dim rowIndex As Long
     Dim columnIndex As Long
-    If Not LShapeSettingAddress(key, rowIndex, columnIndex) Then Exit Function
+    If Not RectSetSettingAddress(key, rowIndex, columnIndex) Then Exit Function
     target.Cells.Item(rowIndex, columnIndex).Value2 = value
-    TrySetLShapeFaceSetting = True
+    TrySetRectSetFaceSetting = True
 End Function
 
-Private Function LShapeSettingAddress(ByVal key As String, ByRef rowIndex As Long, ByRef columnIndex As Long) As Boolean
+Private Function RectSetSettingAddress(ByVal key As String, ByRef rowIndex As Long, ByRef columnIndex As Long) As Boolean
+    If StrComp(key, "RectSet.SectionType", vbTextCompare) = 0 Then
+        rowIndex = 3
+        columnIndex = 2
+        RectSetSettingAddress = True
+        Exit Function
+    ElseIf StrComp(key, "RectSet.UpperOffsetX", vbTextCompare) = 0 Then
+        rowIndex = 4
+        columnIndex = 2
+        RectSetSettingAddress = True
+        Exit Function
+    End If
+
     Dim faceName As String
-    If InStr(1, key, "LShape.H1", vbTextCompare) = 1 Then
+    If InStr(1, key, "RectSet.H1", vbTextCompare) = 1 Then
         faceName = "H1"
-    ElseIf InStr(1, key, "LShape.B1", vbTextCompare) = 1 Then
+    ElseIf InStr(1, key, "RectSet.B1", vbTextCompare) = 1 Then
         faceName = "B1"
-    ElseIf InStr(1, key, "LShape.H2", vbTextCompare) = 1 Then
+    ElseIf InStr(1, key, "RectSet.H2", vbTextCompare) = 1 Then
         faceName = "H2"
-    ElseIf InStr(1, key, "LShape.B2", vbTextCompare) = 1 Then
+    ElseIf InStr(1, key, "RectSet.B2", vbTextCompare) = 1 Then
         faceName = "B2"
     Else
         Exit Function
     End If
 
-    If StrComp(key, "LShape." & faceName, vbTextCompare) = 0 Then
-        rowIndex = 3
-        columnIndex = LShapeGeometryColumn(faceName)
-    ElseIf StrComp(key, "LShape." & faceName & ".as_1", vbTextCompare) = 0 Then
-        rowIndex = LShapeMainRow(faceName, 1): columnIndex = 2
-    ElseIf StrComp(key, "LShape." & faceName & ".as_2", vbTextCompare) = 0 Then
-        rowIndex = LShapeMainRow(faceName, 2): columnIndex = 2
-    ElseIf StrComp(key, "LShape." & faceName & ".d_1", vbTextCompare) = 0 Then
-        rowIndex = LShapeMainRow(faceName, 1): columnIndex = 3
-    ElseIf StrComp(key, "LShape." & faceName & ".d_2", vbTextCompare) = 0 Then
-        rowIndex = LShapeMainRow(faceName, 2): columnIndex = 3
-    ElseIf StrComp(key, "LShape." & faceName & ".n_1", vbTextCompare) = 0 Then
-        rowIndex = LShapeMainRow(faceName, 1): columnIndex = 4
-    ElseIf StrComp(key, "LShape." & faceName & ".n_2", vbTextCompare) = 0 Then
-        rowIndex = LShapeMainRow(faceName, 2): columnIndex = 4
-    ElseIf StrComp(key, "LShape." & faceName & ".StartOffset1", vbTextCompare) = 0 Then
-        rowIndex = LShapeMainRow(faceName, 1): columnIndex = 5
-    ElseIf StrComp(key, "LShape." & faceName & ".EndOffset1", vbTextCompare) = 0 Then
-        rowIndex = LShapeMainRow(faceName, 1): columnIndex = 6
-    ElseIf StrComp(key, "LShape." & faceName & ".StartOffset2", vbTextCompare) = 0 Then
-        rowIndex = LShapeMainRow(faceName, 2): columnIndex = 5
-    ElseIf StrComp(key, "LShape." & faceName & ".EndOffset2", vbTextCompare) = 0 Then
-        rowIndex = LShapeMainRow(faceName, 2): columnIndex = 6
-    ElseIf StrComp(key, "LShape." & faceName & ".d_2row_1", vbTextCompare) = 0 Then
-        rowIndex = LShapeExtraRow(faceName, 1): columnIndex = 2
-    ElseIf StrComp(key, "LShape." & faceName & ".d_2row_2", vbTextCompare) = 0 Then
-        rowIndex = LShapeExtraRow(faceName, 2): columnIndex = 2
-    ElseIf StrComp(key, "LShape." & faceName & ".d_3row_1", vbTextCompare) = 0 Then
-        rowIndex = LShapeExtraRow(faceName, 1): columnIndex = 5
-    ElseIf StrComp(key, "LShape." & faceName & ".d_3row_2", vbTextCompare) = 0 Then
-        rowIndex = LShapeExtraRow(faceName, 2): columnIndex = 5
-    ElseIf StrComp(key, "LShape." & faceName & ".loc_2row", vbTextCompare) = 0 Then
-        rowIndex = LShapeExtraRow(faceName, 1): columnIndex = 3
-    ElseIf StrComp(key, "LShape." & faceName & ".loc_3row", vbTextCompare) = 0 Then
-        rowIndex = LShapeExtraRow(faceName, 1): columnIndex = 6
-    ElseIf StrComp(key, "LShape." & faceName & ".bind_2row", vbTextCompare) = 0 Then
-        rowIndex = LShapeExtraRow(faceName, 1): columnIndex = 4
-    ElseIf StrComp(key, "LShape." & faceName & ".bind_3row", vbTextCompare) = 0 Then
-        rowIndex = LShapeExtraRow(faceName, 1): columnIndex = 7
+    If StrComp(key, "RectSet." & faceName, vbTextCompare) = 0 Then
+        rowIndex = 8
+        columnIndex = RectSetGeometryColumn(faceName)
+    ElseIf StrComp(key, "RectSet." & faceName & ".as_1", vbTextCompare) = 0 Then
+        rowIndex = RectSetMainRow(faceName, 1): columnIndex = 2
+    ElseIf StrComp(key, "RectSet." & faceName & ".as_2", vbTextCompare) = 0 Then
+        rowIndex = RectSetMainRow(faceName, 2): columnIndex = 2
+    ElseIf StrComp(key, "RectSet." & faceName & ".d_1", vbTextCompare) = 0 Then
+        rowIndex = RectSetMainRow(faceName, 1): columnIndex = 3
+    ElseIf StrComp(key, "RectSet." & faceName & ".d_2", vbTextCompare) = 0 Then
+        rowIndex = RectSetMainRow(faceName, 2): columnIndex = 3
+    ElseIf StrComp(key, "RectSet." & faceName & ".n_1", vbTextCompare) = 0 Then
+        rowIndex = RectSetMainRow(faceName, 1): columnIndex = 4
+    ElseIf StrComp(key, "RectSet." & faceName & ".n_2", vbTextCompare) = 0 Then
+        rowIndex = RectSetMainRow(faceName, 2): columnIndex = 4
+    ElseIf StrComp(key, "RectSet." & faceName & ".StartOffset1", vbTextCompare) = 0 Then
+        rowIndex = RectSetMainRow(faceName, 1): columnIndex = 5
+    ElseIf StrComp(key, "RectSet." & faceName & ".EndOffset1", vbTextCompare) = 0 Then
+        rowIndex = RectSetMainRow(faceName, 1): columnIndex = 6
+    ElseIf StrComp(key, "RectSet." & faceName & ".StartOffset2", vbTextCompare) = 0 Then
+        rowIndex = RectSetMainRow(faceName, 2): columnIndex = 5
+    ElseIf StrComp(key, "RectSet." & faceName & ".EndOffset2", vbTextCompare) = 0 Then
+        rowIndex = RectSetMainRow(faceName, 2): columnIndex = 6
+    ElseIf StrComp(key, "RectSet." & faceName & ".d_2row_1", vbTextCompare) = 0 Then
+        rowIndex = RectSetExtraRow(faceName, 1): columnIndex = 2
+    ElseIf StrComp(key, "RectSet." & faceName & ".d_2row_2", vbTextCompare) = 0 Then
+        rowIndex = RectSetExtraRow(faceName, 2): columnIndex = 2
+    ElseIf StrComp(key, "RectSet." & faceName & ".d_3row_1", vbTextCompare) = 0 Then
+        rowIndex = RectSetExtraRow(faceName, 1): columnIndex = 5
+    ElseIf StrComp(key, "RectSet." & faceName & ".d_3row_2", vbTextCompare) = 0 Then
+        rowIndex = RectSetExtraRow(faceName, 2): columnIndex = 5
+    ElseIf StrComp(key, "RectSet." & faceName & ".loc_2row", vbTextCompare) = 0 Then
+        rowIndex = RectSetExtraRow(faceName, 1): columnIndex = 3
+    ElseIf StrComp(key, "RectSet." & faceName & ".loc_3row", vbTextCompare) = 0 Then
+        rowIndex = RectSetExtraRow(faceName, 1): columnIndex = 6
+    ElseIf StrComp(key, "RectSet." & faceName & ".bind_2row", vbTextCompare) = 0 Then
+        rowIndex = RectSetExtraRow(faceName, 1): columnIndex = 4
+    ElseIf StrComp(key, "RectSet." & faceName & ".bind_3row", vbTextCompare) = 0 Then
+        rowIndex = RectSetExtraRow(faceName, 1): columnIndex = 7
     Else
         Exit Function
     End If
-    LShapeSettingAddress = True
+    RectSetSettingAddress = True
 End Function
 
-Private Function LShapeGeometryColumn(ByVal faceName As String) As Long
+Private Function RectSetGeometryColumn(ByVal faceName As String) As Long
     Select Case UCase$(faceName)
-        Case "H1": LShapeGeometryColumn = 1
-        Case "B1": LShapeGeometryColumn = 2
-        Case "H2": LShapeGeometryColumn = 3
-        Case "B2": LShapeGeometryColumn = 4
+        Case "H1": RectSetGeometryColumn = 1
+        Case "B1": RectSetGeometryColumn = 2
+        Case "H2": RectSetGeometryColumn = 3
+        Case "B2": RectSetGeometryColumn = 4
     End Select
 End Function
 
-Private Function LShapeMainRow(ByVal faceName As String, ByVal sideIndex As Long) As Long
-    LShapeMainRow = 5 + LShapeFaceOrdinal(faceName, sideIndex)
+Private Function RectSetMainRow(ByVal faceName As String, ByVal sideIndex As Long) As Long
+    RectSetMainRow = 10 + RectSetFaceOrdinal(faceName, sideIndex)
 End Function
 
-Private Function LShapeExtraRow(ByVal faceName As String, ByVal sideIndex As Long) As Long
-    LShapeExtraRow = 15 + LShapeFaceOrdinal(faceName, sideIndex)
+Private Function RectSetExtraRow(ByVal faceName As String, ByVal sideIndex As Long) As Long
+    RectSetExtraRow = 20 + RectSetFaceOrdinal(faceName, sideIndex)
 End Function
 
-Private Function LShapeFaceOrdinal(ByVal faceName As String, ByVal sideIndex As Long) As Long
+Private Function RectSetFaceOrdinal(ByVal faceName As String, ByVal sideIndex As Long) As Long
     Select Case UCase$(faceName)
-        Case "H1": LShapeFaceOrdinal = sideIndex
-        Case "B1": LShapeFaceOrdinal = 2 + sideIndex
-        Case "H2": LShapeFaceOrdinal = 4 + sideIndex
-        Case "B2": LShapeFaceOrdinal = 6 + sideIndex
+        Case "H1": RectSetFaceOrdinal = sideIndex
+        Case "B1": RectSetFaceOrdinal = 2 + sideIndex
+        Case "H2": RectSetFaceOrdinal = 4 + sideIndex
+        Case "B2": RectSetFaceOrdinal = 6 + sideIndex
     End Select
+End Function
+
+' Меняет одну ячейку новой таблицы RoundedRectangle в тестовой книге.
+' Таблица больше не является простым списком Key/Value, поэтому тесты
+' обращаются к тем же видимым блокам, которые заполняет пользователь.
+Private Function TrySetRoundedRectangleSetting(ByVal key As String, ByVal value As String) As Boolean
+    Dim target As Object
+    Set target = ThisWorkbook.Names.Item("rngRoundedRectangleGeometry").RefersToRange
+
+    Dim rowIndex As Long
+    Dim columnIndex As Long
+    If Not RoundedRectangleSettingAddress(key, rowIndex, columnIndex) Then Exit Function
+    target.Cells.Item(rowIndex, columnIndex).Value2 = value
+    TrySetRoundedRectangleSetting = True
+End Function
+
+' Возвращает адрес пользовательского параметра внутри табличного диапазона
+' RoundedRectangle. Номера строк привязаны к layout-у SettingsCatalog, а не к
+' старым внутренним ключам, которых пользователь в этой таблице не видит.
+Private Function RoundedRectangleSettingAddress(ByVal key As String, _
+        ByRef rowIndex As Long, ByRef columnIndex As Long) As Boolean
+    Select Case LCase$(key)
+        Case "roundedrectangle.b"
+            rowIndex = 3: columnIndex = 2
+        Case "roundedrectangle.h"
+            rowIndex = 3: columnIndex = 3
+        Case "roundedrectangle.left.type"
+            rowIndex = 7: columnIndex = 2
+        Case "roundedrectangle.right.type"
+            rowIndex = 7: columnIndex = 3
+        Case "roundedrectangle.left.w"
+            rowIndex = 8: columnIndex = 2
+        Case "roundedrectangle.right.w"
+            rowIndex = 8: columnIndex = 3
+        Case "roundedrectangle.left.r1"
+            rowIndex = 9: columnIndex = 2
+        Case "roundedrectangle.right.r1"
+            rowIndex = 9: columnIndex = 3
+        Case "roundedrectangle.left.r2"
+            rowIndex = 10: columnIndex = 2
+        Case "roundedrectangle.right.r2"
+            rowIndex = 10: columnIndex = 3
+        Case Else
+            If Not RoundedRectangleFaceSettingAddress(key, rowIndex, columnIndex) Then Exit Function
+    End Select
+    RoundedRectangleSettingAddress = True
+End Function
+
+' Возвращает адрес параметра арматуры по одной из четырех видимых граней:
+' H.Left, H.Right, B.Top или B.Bottom.
+Private Function RoundedRectangleFaceSettingAddress(ByVal key As String, _
+        ByRef rowIndex As Long, ByRef columnIndex As Long) As Boolean
+    Dim prefix As String
+    Dim faceOrdinal As Long
+    prefix = RoundedRectangleFacePrefix(key, faceOrdinal)
+    If Len(prefix) = 0 Then Exit Function
+
+    Dim tail As String
+    tail = Mid$(key, Len(prefix) + 2)
+    Select Case LCase$(tail)
+        Case "as"
+            rowIndex = 12 + faceOrdinal: columnIndex = 2
+        Case "d"
+            rowIndex = 12 + faceOrdinal: columnIndex = 3
+        Case "n"
+            rowIndex = 12 + faceOrdinal: columnIndex = 4
+        Case "d_2row"
+            rowIndex = 18 + faceOrdinal: columnIndex = 2
+        Case "loc_2row"
+            rowIndex = 18 + faceOrdinal: columnIndex = 3
+        Case "bind_2row"
+            rowIndex = 18 + faceOrdinal: columnIndex = 4
+        Case "d_3row"
+            rowIndex = 18 + faceOrdinal: columnIndex = 5
+        Case "loc_3row"
+            rowIndex = 18 + faceOrdinal: columnIndex = 6
+        Case "bind_3row"
+            rowIndex = 18 + faceOrdinal: columnIndex = 7
+        Case Else
+            Exit Function
+    End Select
+    RoundedRectangleFaceSettingAddress = True
+End Function
+
+' Нормализует имя грани RoundedRectangle и возвращает ее порядковый номер в
+' блоках основного и дополнительного армирования.
+Private Function RoundedRectangleFacePrefix(ByVal key As String, ByRef faceOrdinal As Long) As String
+    If InStr(1, key, "RoundedRectangle.H.Left.", vbTextCompare) = 1 Then
+        RoundedRectangleFacePrefix = "RoundedRectangle.H.Left"
+        faceOrdinal = 1
+    ElseIf InStr(1, key, "RoundedRectangle.H.Right.", vbTextCompare) = 1 Then
+        RoundedRectangleFacePrefix = "RoundedRectangle.H.Right"
+        faceOrdinal = 2
+    ElseIf InStr(1, key, "RoundedRectangle.B.Top.", vbTextCompare) = 1 Then
+        RoundedRectangleFacePrefix = "RoundedRectangle.B.Top"
+        faceOrdinal = 3
+    ElseIf InStr(1, key, "RoundedRectangle.B.Bottom.", vbTextCompare) = 1 Then
+        RoundedRectangleFacePrefix = "RoundedRectangle.B.Bottom"
+        faceOrdinal = 4
+    End If
 End Function
 
 Private Function GetSystemSetting(ByVal key As String) As String
@@ -2493,12 +2612,12 @@ End Function
 Private Function SettingsRangeSearchOrder() As Variant
     Dim geometryType As String
     geometryType = SystemGeometryType()
-    If StrComp(geometryType, "LShape", vbTextCompare) = 0 Then
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngLShapeGeometry", "rngCircleGeometry", "rngRoundedRectangleGeometry")
+    If StrComp(geometryType, "RectSet", vbTextCompare) = 0 Then
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngRectSetGeometry", "rngCircleGeometry", "rngRoundedRectangleGeometry")
     ElseIf StrComp(geometryType, "RoundedRectangle", vbTextCompare) = 0 Then
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngRoundedRectangleGeometry", "rngCircleGeometry", "rngLShapeGeometry")
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngRoundedRectangleGeometry", "rngCircleGeometry", "rngRectSetGeometry")
     Else
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngLShapeGeometry")
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngRectSetGeometry")
     End If
 End Function
 
@@ -2711,12 +2830,12 @@ Private Function PlotAnnotationValidationHasOptions(ByVal rowName As String, ByV
 Failed:
 End Function
 
-Private Function LShapeAdditionalValidationHasOptions(ByVal rowIndex As Long, ByVal valueColumn As Long, ByVal expectedOptions As Variant) As Boolean
+Private Function RectSetAdditionalValidationHasOptions(ByVal rowIndex As Long, ByVal valueColumn As Long, ByVal expectedOptions As Variant) As Boolean
     On Error GoTo Failed
 
     Dim settings As Object
-    Set settings = ThisWorkbook.Names.Item("rngLShapeGeometry").RefersToRange
-    LShapeAdditionalValidationHasOptions = ValidationCellHasOptions(settings.Cells.Item(rowIndex, valueColumn), expectedOptions)
+    Set settings = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
+    RectSetAdditionalValidationHasOptions = ValidationCellHasOptions(settings.Cells.Item(rowIndex, valueColumn), expectedOptions)
     Exit Function
 Failed:
 End Function
@@ -2867,7 +2986,7 @@ Private Sub PrepareCircleInput()
     loads.Cells.Item(2, 7).Value2 = "ui test"
 End Sub
 
-Private Sub PrepareLShapeInput()
+Private Sub PrepareRectSetInput()
     SetSystemSetting "Units.Force.Input", "N"
     SetSystemSetting "Units.Moment.Input", "N*mm"
     SetSystemSetting "Units.Length.Input", "mm"
@@ -2878,55 +2997,55 @@ Private Sub PrepareLShapeInput()
     SetSystemSetting "Sign.Mx.User", "+Y tension"
     SetSystemSetting "Sign.My.User", "+X tension"
     SetSystemSetting "Geometry.Source", "Generated"
-    SetSystemSetting "Geometry.Type", "LShape"
+    SetSystemSetting "Geometry.Type", "RectSet"
     SetSystemSetting "Plot.LoadCase", "LC_L"
     SetSystemSetting "Mesh.StepX", "40"
     SetSystemSetting "Mesh.StepY", "40"
     SetSystemSetting "Mesh.BoundarySubdivisions", "2"
-    SetSystemSetting "LShape.B1", "160"
-    SetSystemSetting "LShape.H1", "280"
-    SetSystemSetting "LShape.B2", "360"
-    SetSystemSetting "LShape.H2", "140"
-    SetSystemSetting "LShape.H1.as_1", "40"
-    SetSystemSetting "LShape.H1.as_2", "40"
-    SetSystemSetting "LShape.H1.d_1", "16"
-    SetSystemSetting "LShape.H1.d_2", "16"
-    SetSystemSetting "LShape.H1.n_1", "3"
-    SetSystemSetting "LShape.H1.n_2", "2"
-    SetSystemSetting "LShape.H1.StartOffset1", "40"
-    SetSystemSetting "LShape.H1.EndOffset1", "40"
-    SetSystemSetting "LShape.H1.StartOffset2", "40"
-    SetSystemSetting "LShape.H1.EndOffset2", "40"
-    SetSystemSetting "LShape.H2.as_1", "40"
-    SetSystemSetting "LShape.H2.as_2", "40"
-    SetSystemSetting "LShape.H2.d_1", "16"
-    SetSystemSetting "LShape.H2.d_2", "16"
-    SetSystemSetting "LShape.H2.n_1", "0"
-    SetSystemSetting "LShape.H2.n_2", "0"
-    SetSystemSetting "LShape.H2.StartOffset1", "40"
-    SetSystemSetting "LShape.H2.EndOffset1", "40"
-    SetSystemSetting "LShape.H2.StartOffset2", "40"
-    SetSystemSetting "LShape.H2.EndOffset2", "40"
-    SetSystemSetting "LShape.B1.as_1", "40"
-    SetSystemSetting "LShape.B1.as_2", "40"
-    SetSystemSetting "LShape.B1.d_1", "16"
-    SetSystemSetting "LShape.B1.d_2", "16"
-    SetSystemSetting "LShape.B1.n_1", "2"
-    SetSystemSetting "LShape.B1.n_2", "1"
-    SetSystemSetting "LShape.B1.StartOffset1", "20"
-    SetSystemSetting "LShape.B1.EndOffset1", "20"
-    SetSystemSetting "LShape.B1.StartOffset2", "20"
-    SetSystemSetting "LShape.B1.EndOffset2", "20"
-    SetSystemSetting "LShape.B2.as_1", "40"
-    SetSystemSetting "LShape.B2.as_2", "40"
-    SetSystemSetting "LShape.B2.d_1", "16"
-    SetSystemSetting "LShape.B2.d_2", "16"
-    SetSystemSetting "LShape.B2.n_1", "2"
-    SetSystemSetting "LShape.B2.n_2", "0"
-    SetSystemSetting "LShape.B2.StartOffset1", "60"
-    SetSystemSetting "LShape.B2.EndOffset1", "60"
-    SetSystemSetting "LShape.B2.StartOffset2", "60"
-    SetSystemSetting "LShape.B2.EndOffset2", "60"
+    SetSystemSetting "RectSet.B1", "160"
+    SetSystemSetting "RectSet.H1", "280"
+    SetSystemSetting "RectSet.B2", "360"
+    SetSystemSetting "RectSet.H2", "140"
+    SetSystemSetting "RectSet.H1.as_1", "40"
+    SetSystemSetting "RectSet.H1.as_2", "40"
+    SetSystemSetting "RectSet.H1.d_1", "16"
+    SetSystemSetting "RectSet.H1.d_2", "16"
+    SetSystemSetting "RectSet.H1.n_1", "3"
+    SetSystemSetting "RectSet.H1.n_2", "2"
+    SetSystemSetting "RectSet.H1.StartOffset1", "40"
+    SetSystemSetting "RectSet.H1.EndOffset1", "40"
+    SetSystemSetting "RectSet.H1.StartOffset2", "40"
+    SetSystemSetting "RectSet.H1.EndOffset2", "40"
+    SetSystemSetting "RectSet.H2.as_1", "40"
+    SetSystemSetting "RectSet.H2.as_2", "40"
+    SetSystemSetting "RectSet.H2.d_1", "16"
+    SetSystemSetting "RectSet.H2.d_2", "16"
+    SetSystemSetting "RectSet.H2.n_1", "0"
+    SetSystemSetting "RectSet.H2.n_2", "0"
+    SetSystemSetting "RectSet.H2.StartOffset1", "40"
+    SetSystemSetting "RectSet.H2.EndOffset1", "40"
+    SetSystemSetting "RectSet.H2.StartOffset2", "40"
+    SetSystemSetting "RectSet.H2.EndOffset2", "40"
+    SetSystemSetting "RectSet.B1.as_1", "40"
+    SetSystemSetting "RectSet.B1.as_2", "40"
+    SetSystemSetting "RectSet.B1.d_1", "16"
+    SetSystemSetting "RectSet.B1.d_2", "16"
+    SetSystemSetting "RectSet.B1.n_1", "2"
+    SetSystemSetting "RectSet.B1.n_2", "1"
+    SetSystemSetting "RectSet.B1.StartOffset1", "20"
+    SetSystemSetting "RectSet.B1.EndOffset1", "20"
+    SetSystemSetting "RectSet.B1.StartOffset2", "20"
+    SetSystemSetting "RectSet.B1.EndOffset2", "20"
+    SetSystemSetting "RectSet.B2.as_1", "40"
+    SetSystemSetting "RectSet.B2.as_2", "40"
+    SetSystemSetting "RectSet.B2.d_1", "16"
+    SetSystemSetting "RectSet.B2.d_2", "16"
+    SetSystemSetting "RectSet.B2.n_1", "2"
+    SetSystemSetting "RectSet.B2.n_2", "0"
+    SetSystemSetting "RectSet.B2.StartOffset1", "60"
+    SetSystemSetting "RectSet.B2.EndOffset1", "60"
+    SetSystemSetting "RectSet.B2.StartOffset2", "60"
+    SetSystemSetting "RectSet.B2.EndOffset2", "60"
     SetSystemSetting "SLS.Crack.Allowable", "0.3"
 
     Dim loads As Object
@@ -2938,14 +3057,14 @@ Private Sub PrepareLShapeInput()
     loads.Cells.Item(2, 4).Value2 = -1000000#
     loads.Cells.Item(2, 5).Value2 = "PR2"
     loads.Cells.Item(2, 6).Value2 = ChrW$(&H3BB) & "*Mxy"
-    loads.Cells.Item(2, 7).Value2 = "lshape ui test"
+    loads.Cells.Item(2, 7).Value2 = "rectset ui test"
 End Sub
 
 ' Настраивает книгу под типовой прочностной расчет Г-сечения:
 ' пользователь задает N и Mx, а несущая способность ищется увеличением Mx.
 ' Здесь специально выбран Capacity.SolutionStrategy = UltimateStrain, чтобы проверить,
 ' что быстрый изгибный путь работает без fallback на LoadMultiplier.
-Private Sub PrepareUserLShapeMomentUltimateInput()
+Private Sub PrepareUserRectSetMomentUltimateInput()
     SetSystemSetting "Units.Force.Input", "tf"
     SetSystemSetting "Units.Moment.Input", "tf*m"
     SetSystemSetting "Units.Length.Input", "mm"
@@ -2956,7 +3075,7 @@ Private Sub PrepareUserLShapeMomentUltimateInput()
     SetSystemSetting "Sign.Mx.User", "+Y tension"
     SetSystemSetting "Sign.My.User", "+X tension"
     SetSystemSetting "Geometry.Source", "Generated"
-    SetSystemSetting "Geometry.Type", "LShape"
+    SetSystemSetting "Geometry.Type", "RectSet"
     SetSystemSetting "Capacity.SolutionStrategy", "UltimateStrain"
     SetSystemSetting "Capacity.MaxLambda", "64"
     SetSystemSetting "Capacity.ToleranceStrain", "0.00001"
@@ -2973,16 +3092,16 @@ Private Sub PrepareUserLShapeMomentUltimateInput()
     SetSystemSetting "Plot.LoadCase", "LC_MX"
     SetSystemSetting "General.ExecutionReportEnabled", "No"
 
-    SetSystemSetting "LShape.H1", "550"
-    SetSystemSetting "LShape.B1", "250"
-    SetSystemSetting "LShape.H2", "250"
-    SetSystemSetting "LShape.B2", "600"
+    SetSystemSetting "RectSet.H1", "550"
+    SetSystemSetting "RectSet.B1", "250"
+    SetSystemSetting "RectSet.H2", "250"
+    SetSystemSetting "RectSet.B2", "600"
 
-    SetUserLShapeMainRow "H1", 5, 5
-    SetUserLShapeMainRow "B1", 2, 2
-    SetUserLShapeMainRow "H2", 2, 2
-    SetUserLShapeMainRow "B2", 5, 5
-    ClearUserLShapeExtraRows
+    SetUserRectSetMainRow "H1", 5, 5
+    SetUserRectSetMainRow "B1", 2, 2
+    SetUserRectSetMainRow "H2", 2, 2
+    SetUserRectSetMainRow "B2", 5, 5
+    ClearUserRectSetExtraRows
 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -2999,7 +3118,7 @@ End Sub
 ' Настраивает книгу ровно под пользовательский пример с Г-сечением и осевым
 ' растяжением в tf. Это дополняет unit-тест batch-слоя проверкой полного
 ' Excel-пути: пользовательский знак N, единицы, чтение Config и запись Results.
-Private Sub PrepareUserLShapeAxialTensionInput()
+Private Sub PrepareUserRectSetAxialTensionInput()
     SetSystemSetting "Units.Force.Input", "tf"
     SetSystemSetting "Units.Moment.Input", "tf*m"
     SetSystemSetting "Units.Length.Input", "mm"
@@ -3010,7 +3129,7 @@ Private Sub PrepareUserLShapeAxialTensionInput()
     SetSystemSetting "Sign.Mx.User", "+Y tension"
     SetSystemSetting "Sign.My.User", "+X tension"
     SetSystemSetting "Geometry.Source", "Generated"
-    SetSystemSetting "Geometry.Type", "LShape"
+    SetSystemSetting "Geometry.Type", "RectSet"
     SetSystemSetting "Solver.Method", "Newton"
     SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
     SetSystemSetting "Solver.MaxIterations", "80"
@@ -3023,16 +3142,16 @@ Private Sub PrepareUserLShapeAxialTensionInput()
     SetSystemSetting "Plot.LoadCase", "LC_OVER"
     SetSystemSetting "General.ExecutionReportEnabled", "Yes"
 
-    SetSystemSetting "LShape.H1", "550"
-    SetSystemSetting "LShape.B1", "250"
-    SetSystemSetting "LShape.H2", "250"
-    SetSystemSetting "LShape.B2", "600"
+    SetSystemSetting "RectSet.H1", "550"
+    SetSystemSetting "RectSet.B1", "250"
+    SetSystemSetting "RectSet.H2", "250"
+    SetSystemSetting "RectSet.B2", "600"
 
-    SetUserLShapeMainRow "H1", 5, 5
-    SetUserLShapeMainRow "B1", 2, 2
-    SetUserLShapeMainRow "H2", 2, 2
-    SetUserLShapeMainRow "B2", 5, 5
-    ClearUserLShapeExtraRows
+    SetUserRectSetMainRow "H1", 5, 5
+    SetUserRectSetMainRow "B1", 2, 2
+    SetUserRectSetMainRow "H2", 2, 2
+    SetUserRectSetMainRow "B2", 5, 5
+    ClearUserRectSetExtraRows
 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -3076,32 +3195,32 @@ Private Sub PrepareFullStateProfile(ByVal profileId As String)
     SetProfileSetting profileId, "Visualization.Quantity", "Stress"
 End Sub
 
-Private Sub SetUserLShapeMainRow(ByVal faceName As String, ByVal count1 As Long, ByVal count2 As Long)
-    SetSystemSetting "LShape." & faceName & ".as_1", "40"
-    SetSystemSetting "LShape." & faceName & ".as_2", "40"
-    SetSystemSetting "LShape." & faceName & ".d_1", "32"
-    SetSystemSetting "LShape." & faceName & ".d_2", "32"
-    SetSystemSetting "LShape." & faceName & ".n_1", CStr(count1)
-    SetSystemSetting "LShape." & faceName & ".n_2", CStr(count2)
-    SetSystemSetting "LShape." & faceName & ".StartOffset1", "80"
-    SetSystemSetting "LShape." & faceName & ".EndOffset1", "80"
-    SetSystemSetting "LShape." & faceName & ".StartOffset2", "80"
-    SetSystemSetting "LShape." & faceName & ".EndOffset2", "80"
+Private Sub SetUserRectSetMainRow(ByVal faceName As String, ByVal count1 As Long, ByVal count2 As Long)
+    SetSystemSetting "RectSet." & faceName & ".as_1", "40"
+    SetSystemSetting "RectSet." & faceName & ".as_2", "40"
+    SetSystemSetting "RectSet." & faceName & ".d_1", "32"
+    SetSystemSetting "RectSet." & faceName & ".d_2", "32"
+    SetSystemSetting "RectSet." & faceName & ".n_1", CStr(count1)
+    SetSystemSetting "RectSet." & faceName & ".n_2", CStr(count2)
+    SetSystemSetting "RectSet." & faceName & ".StartOffset1", "80"
+    SetSystemSetting "RectSet." & faceName & ".EndOffset1", "80"
+    SetSystemSetting "RectSet." & faceName & ".StartOffset2", "80"
+    SetSystemSetting "RectSet." & faceName & ".EndOffset2", "80"
 End Sub
 
-Private Sub ClearUserLShapeExtraRows()
+Private Sub ClearUserRectSetExtraRows()
     Dim faces As Variant
     faces = Array("H1", "B1", "H2", "B2")
     Dim i As Long
     For i = LBound(faces) To UBound(faces)
-        SetSystemSetting "LShape." & CStr(faces(i)) & ".d_2row_1", vbNullString
-        SetSystemSetting "LShape." & CStr(faces(i)) & ".d_2row_2", vbNullString
-        SetSystemSetting "LShape." & CStr(faces(i)) & ".d_3row_1", vbNullString
-        SetSystemSetting "LShape." & CStr(faces(i)) & ".d_3row_2", vbNullString
-        SetSystemSetting "LShape." & CStr(faces(i)) & ".loc_2row", "Stacked"
-        SetSystemSetting "LShape." & CStr(faces(i)) & ".loc_3row", "Stacked"
-        SetSystemSetting "LShape." & CStr(faces(i)) & ".bind_2row", "EachBar"
-        SetSystemSetting "LShape." & CStr(faces(i)) & ".bind_3row", "EachBar"
+        SetSystemSetting "RectSet." & CStr(faces(i)) & ".d_2row_1", vbNullString
+        SetSystemSetting "RectSet." & CStr(faces(i)) & ".d_2row_2", vbNullString
+        SetSystemSetting "RectSet." & CStr(faces(i)) & ".d_3row_1", vbNullString
+        SetSystemSetting "RectSet." & CStr(faces(i)) & ".d_3row_2", vbNullString
+        SetSystemSetting "RectSet." & CStr(faces(i)) & ".loc_2row", "Stacked"
+        SetSystemSetting "RectSet." & CStr(faces(i)) & ".loc_3row", "Stacked"
+        SetSystemSetting "RectSet." & CStr(faces(i)) & ".bind_2row", "EachBar"
+        SetSystemSetting "RectSet." & CStr(faces(i)) & ".bind_3row", "EachBar"
     Next i
 End Sub
 

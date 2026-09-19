@@ -64,7 +64,7 @@ Public Function Solve(ByVal a11 As Double, ByVal a12 As Double, ByVal a13 As Dou
         Next row
 
         If pivotAbs <= 1E-18 Then
-            mStopReason = "Singular matrix."
+        mStopReason = "Матрица вырождена."
             Solve = False
             Exit Function
         End If
@@ -113,13 +113,13 @@ Public Function Solve(ByVal a11 As Double, ByVal a12 As Double, ByVal a13 As Dou
     End If
 
     If mRelativeResidual > 1E-8 Then
-        mStopReason = "Residual check failed."
+        mStopReason = "Проверка невязки линейной системы не пройдена."
         Solve = False
         Exit Function
     End If
 
     mSolved = True
-    mStopReason = "Solved"
+    mStopReason = "Решено"
     Solve = True
 End Function
 

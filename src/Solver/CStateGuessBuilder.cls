@@ -106,12 +106,12 @@ End Property
 ' Дает короткое имя варианта старта для диагностического txt-отчета.
 Public Function ExtensionAttemptName(ByVal attemptIndex As Long) As String
     Select Case attemptIndex
-        Case 1: ExtensionAttemptName = "global extension equilibrium"
-        Case 2: ExtensionAttemptName = "failed-state active set"
-        Case 3: ExtensionAttemptName = "uniform extension shift"
-        Case 4: ExtensionAttemptName = "scaled failed state"
-        Case 5: ExtensionAttemptName = "axial zero guess"
-        Case Else: ExtensionAttemptName = "unknown"
+        Case 1: ExtensionAttemptName = "равновесие по продолженной диаграмме"
+        Case 2: ExtensionAttemptName = "активная зона несошедшегося состояния"
+        Case 3: ExtensionAttemptName = "равномерный сдвиг в продолжение диаграммы"
+        Case 4: ExtensionAttemptName = "масштабированное несошедшееся состояние"
+        Case 5: ExtensionAttemptName = "нулевое осевое приближение"
+        Case Else: ExtensionAttemptName = "неизвестное приближение"
     End Select
 End Function
 

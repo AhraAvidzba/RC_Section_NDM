@@ -62,7 +62,7 @@ Public Function PurposeFromText(ByVal purposeText As String) As ECalculationPurp
             PurposeFromText = cpStateSolution
         Case Else
             Err.Raise vbObjectError + 3301, "modCalculationPurpose", _
-                "Неизвестная расчетная цель material provider: " & purposeText
+                "Неизвестная расчетная цель поставщика материалов: " & purposeText
     End Select
 End Function
 

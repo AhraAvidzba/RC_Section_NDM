@@ -12,7 +12,7 @@
 |---|---|
 | Книга Excel | `workbook/output/RC_Section_NDM.xlsm`, листы `Config`, `Справка`, `Расчет`, `Results` |
 | Ввод | настройки только на `Config`; сочетания нагрузок на `Расчет` |
-| Геометрия | `Circle`, `RoundedRectangle`, `LShape` |
+| Геометрия | `Circle`, `RoundedRectangle`, `RectSet` |
 | Арматура | автоматическая расстановка для круга и Г-сечения, включая дополнительные ряды |
 | Волокна | сетка бетона с `Mesh.BoundarySubdivisions` |
 | Материалы | TwoLine/ThreeLine-диаграммы по параметрам бетона, арматуры и расчетного режима |

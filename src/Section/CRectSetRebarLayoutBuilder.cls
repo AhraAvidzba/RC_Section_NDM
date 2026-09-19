@@ -2,7 +2,7 @@
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "CLShapeRebarLayoutBuilder"
+Attribute VB_Name = "CRectSetRebarLayoutBuilder"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
@@ -10,11 +10,13 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Автоматическая раскладка арматуры Г-образного сечения
+' Автоматическая раскладка арматуры RectSet-сечения
 ' ==========================================================================
 ' Builder читает таблицу граней H1/B1/H2/B2, расставляет стержни первого ряда
-' и при необходимости добавляет второй/третий ряды. Он также формирует
-' semantic-группы, по которым затем строятся подписи вида 6Ø32 + 3Ø20.
+' и при необходимости добавляет второй/третий ряды. В режиме Rectangle активны
+' только грани верхнего прямоугольника H1/B1; LSection формирует Г-сечение;
+' в TwoRectangles верхний прямоугольник может быть смещен по X. Builder также
+' формирует semantic-группы для подписей вида 6Ø32 + 3Ø20.
 
 Private mStepAlong As Double
 Private mPerimeter As Double
@@ -24,56 +26,58 @@ Private mRequestedCount As Long
 Private mSkippedDuplicateCount As Long
 Private Const REBAR_STEEL_CLASS As String = "Rebar" ' Техническая метка типа элемента: расчетная арматура, не профиль для phi2.
 
-' Строит раскладку прямо по таблице rngLShapeGeometry.
-' Registry только выбирает, что активна форма LShape, а вся структура граней,
+' Строит раскладку прямо по таблице rngRectSetGeometry.
+' Registry только выбирает, что активна форма RectSet, а вся структура граней,
 ' строк d/n/as/t и дополнительных рядов остается здесь, рядом с логикой
 ' расстановки стержней и формирования rebar annotation anchors.
 Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As CRebarLayout
-    If settings Is Nothing Then Err.Raise vbObjectError + 3190, "CLShapeRebarLayoutBuilder", "Настройки Config не переданы."
-    If units Is Nothing Then Err.Raise vbObjectError + 3191, "CLShapeRebarLayoutBuilder", "Система единиц не передана."
+    If settings Is Nothing Then Err.Raise vbObjectError + 3190, "CRectSetRebarLayoutBuilder", "Настройки Config не переданы."
+    If units Is Nothing Then Err.Raise vbObjectError + 3191, "CRectSetRebarLayoutBuilder", "Система единиц не передана."
 
     Set BuildFromSettings = Build( _
-        units.InputLengthToInternal(settings.GetDouble("LShape.B1", 250#)), _
-        units.InputLengthToInternal(settings.GetDouble("LShape.H1", 550#)), _
-        units.InputLengthToInternal(settings.GetDouble("LShape.B2", 600#)), _
-        units.InputLengthToInternal(settings.GetDouble("LShape.H2", 250#)), _
+        units.InputLengthToInternal(settings.GetDouble("RectSet.B1", 250#)), _
+        units.InputLengthToInternal(settings.GetDouble("RectSet.H1", 550#)), _
+        units.InputLengthToInternal(settings.GetDouble("RectSet.B2", 600#)), _
+        units.InputLengthToInternal(settings.GetDouble("RectSet.H2", 250#)), _
         0#, _
         0#, _
         ReadFaceSettingsFromConfig(settings, units, "H1"), _
         ReadFaceSettingsFromConfig(settings, units, "H2"), _
         ReadFaceSettingsFromConfig(settings, units, "B1"), _
         ReadFaceSettingsFromConfig(settings, units, "B2"), _
-        REBAR_STEEL_CLASS)
+        REBAR_STEEL_CLASS, _
+        units.InputLengthToInternal(settings.GetDouble("RectSet.UpperOffsetX", 0#)), _
+        settings.GetString("RectSet.SectionType", "LSection"))
 End Function
 
-' Читает параметры одной смысловой грани Г-сечения.
+' Читает параметры одной смысловой грани RectSet-сечения.
 ' Для диаметров действует особое правило ввода: если ячейка существует, но
 ' оставлена пустой, это не default, а явное отсутствие арматуры на данной линии.
 Private Function ReadFaceSettingsFromConfig(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
         ByVal faceName As String) As Variant
     ReadFaceSettingsFromConfig = Array( _
-        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".as_1", 40#)), _
-        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".as_2", 40#)), _
-        OptionalDiameterFromSettings(settings, units, "LShape." & faceName & ".d_1", 32#), _
-        OptionalDiameterFromSettings(settings, units, "LShape." & faceName & ".d_2", 32#), _
-        settings.GetLong("LShape." & faceName & ".n_1", 0), _
-        settings.GetLong("LShape." & faceName & ".n_2", 0), _
-        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".StartOffset1", 80#)), _
-        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".EndOffset1", 80#)), _
-        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".StartOffset2", 80#)), _
-        units.InputLengthToInternal(settings.GetDouble("LShape." & faceName & ".EndOffset2", 80#)), _
-        OptionalDiameterFromSettings(settings, units, "LShape." & faceName & ".d_2row_1", 0#), _
-        OptionalDiameterFromSettings(settings, units, "LShape." & faceName & ".d_2row_2", 0#), _
-        OptionalDiameterFromSettings(settings, units, "LShape." & faceName & ".d_3row_1", 0#), _
-        OptionalDiameterFromSettings(settings, units, "LShape." & faceName & ".d_3row_2", 0#), _
-        settings.GetString("LShape." & faceName & ".loc_2row", "Stacked"), _
-        settings.GetString("LShape." & faceName & ".loc_3row", "Stacked"), _
-        settings.GetString("LShape." & faceName & ".bind_2row", "EachBar"), _
-        settings.GetString("LShape." & faceName & ".bind_3row", "EachBar"))
+        units.InputLengthToInternal(settings.GetDouble("RectSet." & faceName & ".as_1", 40#)), _
+        units.InputLengthToInternal(settings.GetDouble("RectSet." & faceName & ".as_2", 40#)), _
+        OptionalDiameterFromSettings(settings, units, "RectSet." & faceName & ".d_1", 32#), _
+        OptionalDiameterFromSettings(settings, units, "RectSet." & faceName & ".d_2", 32#), _
+        settings.GetLong("RectSet." & faceName & ".n_1", 0), _
+        settings.GetLong("RectSet." & faceName & ".n_2", 0), _
+        units.InputLengthToInternal(settings.GetDouble("RectSet." & faceName & ".StartOffset1", 80#)), _
+        units.InputLengthToInternal(settings.GetDouble("RectSet." & faceName & ".EndOffset1", 80#)), _
+        units.InputLengthToInternal(settings.GetDouble("RectSet." & faceName & ".StartOffset2", 80#)), _
+        units.InputLengthToInternal(settings.GetDouble("RectSet." & faceName & ".EndOffset2", 80#)), _
+        OptionalDiameterFromSettings(settings, units, "RectSet." & faceName & ".d_2row_1", 0#), _
+        OptionalDiameterFromSettings(settings, units, "RectSet." & faceName & ".d_2row_2", 0#), _
+        OptionalDiameterFromSettings(settings, units, "RectSet." & faceName & ".d_3row_1", 0#), _
+        OptionalDiameterFromSettings(settings, units, "RectSet." & faceName & ".d_3row_2", 0#), _
+        settings.GetString("RectSet." & faceName & ".loc_2row", "Stacked"), _
+        settings.GetString("RectSet." & faceName & ".loc_3row", "Stacked"), _
+        settings.GetString("RectSet." & faceName & ".bind_2row", "EachBar"), _
+        settings.GetString("RectSet." & faceName & ".bind_3row", "EachBar"))
 End Function
 
 ' Возвращает диаметр из Config с учетом пользовательского смысла пустой ячейки.
-' Если ключа вообще нет, используется default для старых тестовых сценариев.
+' Если ключа вообще нет, используется default для программных вызовов builder-а.
 ' Если ключ есть, но значение пустое или TODO, диаметр считается нулевым.
 Private Function OptionalDiameterFromSettings(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
         ByVal key As String, ByVal defaultValue As Double) As Double
@@ -99,13 +103,14 @@ Public Function Build(ByVal upperWidth As Double, ByVal upperHeight As Double, _
         ByVal originX As Double, ByVal originY As Double, _
         ByVal h1Settings As Variant, ByVal h2Settings As Variant, _
         ByVal b1Settings As Variant, ByVal b2Settings As Variant, _
-        ByVal steelClass As String) As CRebarLayout
+        ByVal steelClass As String, Optional ByVal upperOffsetX As Double = 0#, _
+        Optional ByVal sectionType As String = "LSection") As CRebarLayout
 
-    ValidateGeometry upperWidth, upperHeight, lowerWidth, lowerHeight
+    ValidateGeometry upperWidth, upperHeight, lowerWidth, lowerHeight, upperOffsetX, sectionType
 
-    Dim geom As CGeometryLShape
-    Set geom = New CGeometryLShape
-    geom.Initialize upperWidth, upperHeight, lowerWidth, lowerHeight, originX, originY
+    Dim geom As CGeometryRectSet
+    Set geom = New CGeometryRectSet
+    geom.Initialize upperWidth, upperHeight, lowerWidth, lowerHeight, originX, originY, upperOffsetX, sectionType
 
     Dim layout As CRebarLayout
     Set layout = New CRebarLayout
@@ -114,19 +119,26 @@ Public Function Build(ByVal upperWidth As Double, ByVal upperHeight As Double, _
     Dim sy As Double
     Dim nextIndex As Long
     nextIndex = 1
-    mPerimeter = 2# * (upperWidth + upperHeight) + 2# * (lowerWidth + lowerHeight)
+    mPerimeter = RebarDiagnosticPerimeter(geom, upperWidth, upperHeight, lowerWidth, lowerHeight)
     mStepAlong = 0#
     mRequestedCount = 0
     mSkippedDuplicateCount = 0
 
-    AddVerticalPair layout, geom, "H1", originX, originY + lowerHeight, upperHeight, _
+    Dim upperX As Double
+    Dim upperY As Double
+    upperX = geom.UpperMinX
+    upperY = geom.UpperMinY
+
+    AddVerticalPair layout, geom, "H1", upperX, upperY, upperHeight, _
         upperWidth, h1Settings, b1Settings, steelClass, nextIndex, sx, sy
-    AddHorizontalPair layout, geom, "B1", originX, originY + lowerHeight, upperWidth, _
+    AddHorizontalPair layout, geom, "B1", upperX, upperY, upperWidth, _
         upperHeight, b1Settings, h1Settings, steelClass, nextIndex, sx, sy
-    AddVerticalPair layout, geom, "H2", originX, originY, lowerHeight, _
-        lowerWidth, h2Settings, b2Settings, steelClass, nextIndex, sx, sy
-    AddHorizontalPair layout, geom, "B2", originX, originY, lowerWidth, _
-        lowerHeight, b2Settings, h2Settings, steelClass, nextIndex, sx, sy
+    If geom.HasLowerRectangle Then
+        AddVerticalPair layout, geom, "H2", originX, originY, lowerHeight, _
+            lowerWidth, h2Settings, b2Settings, steelClass, nextIndex, sx, sy
+        AddHorizontalPair layout, geom, "B2", originX, originY, lowerWidth, _
+            lowerHeight, b2Settings, h2Settings, steelClass, nextIndex, sx, sy
+    End If
 
     If layout.Count > 0 Then
         mCentroidX = sx / CDbl(layout.Count)
@@ -139,13 +151,41 @@ Public Function Build(ByVal upperWidth As Double, ByVal upperHeight As Double, _
 End Function
 
 ' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
-Private Sub ValidateGeometry(ByVal b1 As Double, ByVal h1 As Double, ByVal b2 As Double, ByVal h2 As Double)
-    Dim geom As CGeometryLShape
+Private Sub ValidateGeometry(ByVal b1 As Double, ByVal h1 As Double, ByVal b2 As Double, ByVal h2 As Double, _
+        Optional ByVal upperOffsetX As Double = 0#, Optional ByVal sectionType As String = "LSection")
+    Dim geom As CGeometryRectSet
     Dim message As String
-    Set geom = New CGeometryLShape
-    geom.Initialize b1, h1, b2, h2
-    If Not geom.IsValid(message) Then Err.Raise vbObjectError + 3170, "CLShapeRebarLayoutBuilder", message
+    Set geom = New CGeometryRectSet
+    geom.Initialize b1, h1, b2, h2, 0#, 0#, upperOffsetX, sectionType
+    If Not geom.IsValid(message) Then Err.Raise vbObjectError + 3170, "CRectSetRebarLayoutBuilder", message
 End Sub
+
+' Возвращает диагностическую длину контура для тестов и отчетности builder-а.
+' Для LSection используется сумма периметров двух прямоугольников, потому что
+' диагностическая величина описывает исходные линии раскладки арматуры, а не
+' внешний контур объединенной фигуры. Для остальных режимов берется фактический контур.
+Private Function RebarDiagnosticPerimeter(ByVal geom As CGeometryRectSet, ByVal upperWidth As Double, _
+        ByVal upperHeight As Double, ByVal lowerWidth As Double, ByVal lowerHeight As Double) As Double
+    If StrComp(geom.SectionType, "LSection", vbTextCompare) = 0 Then
+        RebarDiagnosticPerimeter = 2# * (upperWidth + upperHeight) + 2# * (lowerWidth + lowerHeight)
+        Exit Function
+    End If
+
+    Dim px() As Double
+    Dim py() As Double
+    geom.GetExtremePoints px, py
+
+    Dim i As Long
+    Dim nextIndex As Long
+    For i = LBound(px) To UBound(px)
+        If i = UBound(px) Then
+            nextIndex = LBound(px)
+        Else
+            nextIndex = i + 1
+        End If
+        RebarDiagnosticPerimeter = RebarDiagnosticPerimeter + Sqr((px(nextIndex) - px(i)) ^ 2 + (py(nextIndex) - py(i)) ^ 2)
+    Next i
+End Function
 
 Private Sub AddVerticalPair(ByVal layout As CRebarLayout, ByVal geom As ISectionGeometry, _
         ByVal faceName As String, ByVal xStart As Double, ByVal yStart As Double, _
@@ -209,16 +249,19 @@ Private Sub AddFaceBars(ByVal layout As CRebarLayout, ByVal geom As ISectionGeom
     row2Binding = LineRow2Binding(faceSettings)
     row3Binding = LineRow3Binding(faceSettings)
 
-    If barCount < 0 Then Err.Raise vbObjectError + 3171, "CLShapeRebarLayoutBuilder", faceName & " количество стержней должно быть нулевым или положительным."
-    If barDiameter < 0# Then Err.Raise vbObjectError + 3172, "CLShapeRebarLayoutBuilder", faceName & " диаметр стержня первого ряда не может быть отрицательным."
+    Dim lineLabel As String
+    lineLabel = RebarLineDisplayName(faceName)
+
+    If barCount < 0 Then Err.Raise vbObjectError + 3171, "CRectSetRebarLayoutBuilder", lineLabel & ": количество стержней n должно быть нулевым или положительным."
+    If barDiameter < 0# Then Err.Raise vbObjectError + 3172, "CRectSetRebarLayoutBuilder", lineLabel & ": диаметр d стержней первого ряда не может быть отрицательным."
     If barCount = 0 Or barDiameter = 0# Then Exit Sub
-    If axisDistance <= barDiameter / 2# Then Err.Raise vbObjectError + 3173, "CLShapeRebarLayoutBuilder", faceName & " расстояние до оси стержня должно быть больше половины диаметра."
-    If startOffset < 0# Or endOffset < 0# Then Err.Raise vbObjectError + 3174, "CLShapeRebarLayoutBuilder", faceName & " отступы должны быть неотрицательными."
-    ValidateAdditionalRows faceName, row2Diameter, row3Diameter, row2Location, row3Location, row2Binding, row3Binding
+    If axisDistance <= barDiameter / 2# Then Err.Raise vbObjectError + 3173, "CRectSetRebarLayoutBuilder", lineLabel & ": расстояние as до оси стержня должно быть больше d/2."
+    If startOffset < 0# Or endOffset < 0# Then Err.Raise vbObjectError + 3174, "CRectSetRebarLayoutBuilder", lineLabel & ": отступы t нач. и t кон. должны быть неотрицательными."
+    ValidateAdditionalRows lineLabel, row2Diameter, row3Diameter, row2Location, row3Location, row2Binding, row3Binding
 
     Dim usableLength As Double
     usableLength = faceLength - startOffset - endOffset
-    If usableLength < -GEOM_TOLERANCE Then Err.Raise vbObjectError + 3175, "CLShapeRebarLayoutBuilder", faceName & " сумма отступов превышает длину грани."
+    If usableLength < -GEOM_TOLERANCE Then Err.Raise vbObjectError + 3175, "CRectSetRebarLayoutBuilder", lineLabel & ": сумма отступов t нач. + t кон. превышает длину грани."
 
     Dim stepAlong As Double
     If barCount > 1 Then
@@ -345,7 +388,7 @@ Private Sub AddBarIfAvailable(ByVal layout As CRebarLayout, ByVal geom As ISecti
     Else
         layout.AddBar faceName & ".row_" & CStr(rowNumber) & "-" & CStr(nextIndex), _
             xCoord, yCoord, diameter, 0#, steelClass, _
-            "Г-сечение: грань " & faceName & ", ряд " & CStr(rowNumber), geom, faceName
+            "RectSet: " & RebarLineDisplayName(faceName) & ", ряд " & CStr(rowNumber), geom, faceName
         nextIndex = nextIndex + 1
         sx = sx + xCoord
         sy = sy + yCoord
@@ -406,14 +449,56 @@ Private Function LineRow3Binding(ByVal lineSettings As Variant) As String
     If Len(Trim$(CStr(lineSettings(LBound(lineSettings) + 10)))) > 0 Then LineRow3Binding = Trim$(CStr(lineSettings(LBound(lineSettings) + 10)))
 End Function
 
+' Возвращает пользовательскую подпись стороны арматуры для сообщений и Results.
+' Техническое имя H2.as_1 сохраняется для annotation-групп, но в ошибках
+' и комментариях показывается конкретная грань: левая/правая/верхняя/нижняя.
+Private Function RebarLineDisplayName(ByVal faceName As String) As String
+    Dim baseName As String
+    Dim sideIndex As Long
+    If Right$(faceName, 5) = ".as_1" Then
+        baseName = Left$(faceName, Len(faceName) - 5)
+        sideIndex = 1
+    ElseIf Right$(faceName, 5) = ".as_2" Then
+        baseName = Left$(faceName, Len(faceName) - 5)
+        sideIndex = 2
+    Else
+        RebarLineDisplayName = faceName
+        Exit Function
+    End If
+
+    RebarLineDisplayName = baseName & " - " & RectSetSideDisplayName(baseName, sideIndex)
+End Function
+
+' Переводит сторону RectSet в обычные слова пользователя.
+' Для H-граней стороны читаются как левая/правая, для B-граней - верхняя/нижняя.
+Private Function RectSetSideDisplayName(ByVal faceBaseName As String, ByVal sideIndex As Long) As String
+    Dim prefix As String
+    prefix = UCase$(Left$(faceBaseName, 1))
+    If prefix = "H" Then
+        If sideIndex = 1 Then
+            RectSetSideDisplayName = "левая грань"
+        Else
+            RectSetSideDisplayName = "правая грань"
+        End If
+    ElseIf prefix = "B" Then
+        If sideIndex = 1 Then
+            RectSetSideDisplayName = "верхняя грань"
+        Else
+            RectSetSideDisplayName = "нижняя грань"
+        End If
+    Else
+        RectSetSideDisplayName = "сторона " & CStr(sideIndex)
+    End If
+End Function
+
 ' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
 Private Sub ValidateAdditionalRows(ByVal faceName As String, ByVal row2Diameter As Double, ByVal row3Diameter As Double, _
         ByVal row2Location As String, ByVal row3Location As String, ByVal row2Binding As String, ByVal row3Binding As String)
-    If row2Diameter < 0# Or row3Diameter < 0# Then Err.Raise vbObjectError + 3180, "CLShapeRebarLayoutBuilder", faceName & " Диаметр дополнительного ряда должен быть неотрицательным."
-    If row2Diameter > 0# And Not IsSupportedRowLocation(row2Location) Then Err.Raise vbObjectError + 3182, "CLShapeRebarLayoutBuilder", faceName & " loc_2row должен быть SideBySide или Stacked."
-    If row3Diameter > 0# And Not IsSupportedRowLocation(row3Location) Then Err.Raise vbObjectError + 3183, "CLShapeRebarLayoutBuilder", faceName & " loc_3row должен быть SideBySide или Stacked."
-    If row2Diameter > 0# And Not IsSupportedRowBinding(row2Binding) Then Err.Raise vbObjectError + 3184, "CLShapeRebarLayoutBuilder", faceName & " bind_2row должен быть EachBar или EverySecondBar."
-    If row3Diameter > 0# And Not IsSupportedRowBinding(row3Binding) Then Err.Raise vbObjectError + 3185, "CLShapeRebarLayoutBuilder", faceName & " bind_3row должен быть EachBar или EverySecondBar."
+    If row2Diameter < 0# Or row3Diameter < 0# Then Err.Raise vbObjectError + 3180, "CRectSetRebarLayoutBuilder", faceName & ": диаметры дополнительных рядов d_2row и d_3row должны быть неотрицательными."
+    If row2Diameter > 0# And Not IsSupportedRowLocation(row2Location) Then Err.Raise vbObjectError + 3182, "CRectSetRebarLayoutBuilder", faceName & ": loc_2row должен быть SideBySide или Stacked."
+    If row3Diameter > 0# And Not IsSupportedRowLocation(row3Location) Then Err.Raise vbObjectError + 3183, "CRectSetRebarLayoutBuilder", faceName & ": loc_3row должен быть SideBySide или Stacked."
+    If row2Diameter > 0# And Not IsSupportedRowBinding(row2Binding) Then Err.Raise vbObjectError + 3184, "CRectSetRebarLayoutBuilder", faceName & ": bind_2row должен быть EachBar или EverySecondBar."
+    If row3Diameter > 0# And Not IsSupportedRowBinding(row3Binding) Then Err.Raise vbObjectError + 3185, "CRectSetRebarLayoutBuilder", faceName & ": bind_3row должен быть EachBar или EverySecondBar."
 End Sub
 
 Private Function IsSupportedRowLocation(ByVal value As String) As Boolean

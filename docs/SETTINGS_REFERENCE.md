@@ -26,7 +26,7 @@
 | `rngSystemSettings` | Общие настройки: источник геометрии, сетка, материалы, решатели, несущая способность, трещины, AutoCAD. |
 | `rngCircleGeometry` | Параметры круглого сечения и автоматической арматуры. |
 | `rngRoundedRectangleGeometry` | Параметры прямоугольного сечения со скруглениями. |
-| `rngLShapeGeometry` | Параметры Г-образного сечения и автоматической арматуры. |
+| `rngRectSetGeometry` | Параметры Г-образного сечения и автоматической арматуры. |
 | `rngConcreteMaterialParameters` | Параметры бетона для I/II ГПС: `Rb/Rbt`, `Rb,ser/Rbt,ser`, `Rb,mc2`, `Eb/Ebt` и расчетные деформационные точки. |
 | `rngSteelMaterialParameters` | Параметры арматуры для I/II ГПС: `Rsc/Rs`, `Rsc,ser/Rs,ser`, `Esc/Es` и предельные деформации диаграмм. |
 | `rngCalculationDiagramSettings` | Выбор расчетной диаграммы и режима растянутого бетона для `Strength`, `CrackInitiation` и `CrackedNDS`. |
@@ -83,7 +83,7 @@
 | Ключ | Значения / ед. | Назначение |
 |---|---|---|
 | `Geometry.Source` | `Generated`, `AutoCAD` | Источник расчетной модели. |
-| `Geometry.Type` | `RoundedRectangle`, `Circle`, `LShape` | Тип встроенной геометрии при `Geometry.Source = Generated`. |
+| `Geometry.Type` | `RoundedRectangle`, `Circle`, `RectSet` | Тип встроенной геометрии при `Geometry.Source = Generated`. |
 | `Mesh.StepX` | мм | Шаг бетонной сетки по X для встроенных генераторов. |
 | `Mesh.StepY` | мм | Шаг бетонной сетки по Y для встроенных генераторов. Если `Mesh.StepX = Mesh.StepY`, элементы квадратные; если значения отличаются, элементы прямоугольные. |
 | `Mesh.BoundarySubdivisions` | шт | Дробление граничных ячеек для встроенных генераторов; `1` означает быстрый режим без дополнительного дробления. |
@@ -147,7 +147,7 @@
 | Ключ | Значения |
 |---|---|
 | `Geometry.Source` | `Generated`, `AutoCAD` |
-| `Geometry.Type` | `RoundedRectangle`, `Circle`, `LShape` |
+| `Geometry.Type` | `RoundedRectangle`, `Circle`, `RectSet` |
 | `Strength.ConcreteTensionMode` в `rngCalculationDiagramSettings` | `Ignore`, `UseDiagram` |
 | `Calculation.Mode` | `DirectState`, `FullCapacity`, `CapacityOnly` |
 | `Solver.Method` | `Newton`, `Secant` |

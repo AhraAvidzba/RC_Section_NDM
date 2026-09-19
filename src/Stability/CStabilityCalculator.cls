@@ -180,7 +180,7 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
     mSustainedN = sustainedLoad.SignedCompression
 
     If section Is Nothing Then RaiseInput "Модель сечения не передана."
-    If materialProvider Is Nothing Then RaiseInput "Material provider не передан."
+    If materialProvider Is Nothing Then RaiseInput "Поставщик материалов не передан."
     If elementLength <= 0# Then RaiseInput "Stability.ElementLength должен быть положительным."
     If mu1 <= 0# Or mu2 <= 0# Then RaiseInput "Stability.Mu1 и Stability.Mu2 должны быть положительными при включенном расчете устойчивости."
     If mCode <> CODE_SP63 And mCode <> CODE_SP35 Then RaiseInput "Stability.Code должен быть SP63 или SP35."

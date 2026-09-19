@@ -12,8 +12,8 @@ Option Explicit
 ' ==========================================================================
 ' Универсальная lambda-траектория несущей способности
 ' ==========================================================================
-' CCapacityLoadPath переводит пользовательский выбор lambda*Mx, lambda*My,
-' lambda*Mxy, lambda*N или lambda*NMxy в единую математическую форму
+' CCapacityLoadPath переводит пользовательский выбор Auto, lambda*Mx,
+' lambda*My, lambda*Mxy, lambda*N или lambda*NMxy в единую математическую форму
 ' capacity solver-а:
 '
 '     Target(lambda) = Offset + lambda * Base
@@ -71,7 +71,7 @@ Public Sub InitializeFromLoadState(ByVal rawPath As String, ByVal loadState As C
     If Len(mKey) = 0 Then
         If Len(mRawText) > 0 Then
             mValid = False
-            mErrorMessage = "CapacityLoadPath должен быть lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy."
+            mErrorMessage = "CapacityLoadPath должен быть Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy."
         Else
             mKey = KEY_NONE
         End If
@@ -85,8 +85,9 @@ Public Sub InitializeFromLoadState(ByVal rawPath As String, ByVal loadState As C
     BuildOffsetBase loadState, normalizedUserMx, normalizedUserMy
 End Sub
 
-' Нормализует текст пользователя. Пустая строка получает осторожный default:
-' если есть пользовательский момент - lambda*Mxy, если есть только N - lambda*N.
+' Нормализует текст пользователя. Auto и пустая строка получают осторожный
+' default: если есть пользовательский момент - lambda*Mxy, если есть только N -
+' lambda*N.
 Private Function ResolveKey(ByVal rawPath As String, ByVal nValue As Double, _
         ByVal userMxValue As Double, ByVal userMyValue As Double) As String
     Dim value As String
@@ -105,6 +106,14 @@ Private Function ResolveKey(ByVal rawPath As String, ByVal nValue As Double, _
             ResolveKey = KEY_N
         Case "lambda*nmxy", "lambdanmxy", "nmxy", "all"
             ResolveKey = KEY_NMXY
+        Case "auto"
+            If HasMomentVector(userMxValue, userMyValue) Then
+                ResolveKey = KEY_MXY
+            ElseIf Abs(nValue) > LOAD_TOLERANCE Then
+                ResolveKey = KEY_N
+            Else
+                ResolveKey = KEY_NONE
+            End If
         Case Else
             If Len(value) > 0 Then
                 ResolveKey = vbNullString

@@ -50,7 +50,7 @@ Public Sub InitializeFromSolver(ByVal stateType As ESectionStateType, _
         ByVal solver As CSectionSolver, Optional ByVal extensionUsed As Boolean = False, _
         Optional ByVal statusText As String = vbNullString)
     If materialSpec Is Nothing Then Err.Raise vbObjectError + 3970, "CSectionStateResult", "MaterialModelSpec не передан."
-    If solver Is Nothing Then Err.Raise vbObjectError + 3971, "CSectionStateResult", "Solver для named-state не передан."
+    If solver Is Nothing Then Err.Raise vbObjectError + 3971, "CSectionStateResult", "Решатель для именованного состояния не передан."
 
     mStateType = stateType
     mMaterialModelRole = materialModelRole

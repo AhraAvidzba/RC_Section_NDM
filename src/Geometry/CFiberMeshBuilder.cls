@@ -29,8 +29,8 @@ Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, 
 
     Dim message As String
     If Not geometry.IsValid(message) Then Err.Raise vbObjectError + 2100, "CFiberMeshBuilder", message
-    If stepX <= 0# Then Err.Raise vbObjectError + 2101, "CFiberMeshBuilder", "Шаг сетки должен быть положительным."
-    If stepY <= 0# Then Err.Raise vbObjectError + 2102, "CFiberMeshBuilder", "Шаг сетки должен быть положительным."
+    If stepX <= 0# Then Err.Raise vbObjectError + 2101, "CFiberMeshBuilder", "Mesh.StepX должен быть положительным."
+    If stepY <= 0# Then Err.Raise vbObjectError + 2102, "CFiberMeshBuilder", "Mesh.StepY должен быть положительным."
     If boundarySubdivisions < 1 Then boundarySubdivisions = 1
 
     Dim t0 As Double
@@ -47,8 +47,8 @@ Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, 
 
     If maxX <= minX + GEOM_TOLERANCE Or maxY <= minY + GEOM_TOLERANCE Then
         Err.Raise vbObjectError + 2103, "CFiberMeshBuilder", _
-            "Degenerate geometry bounds: minX=" & CStr(minX) & _
-            "; maxX=" & CStr(maxX) & "; minY=" & CStr(minY) & "; maxY=" & CStr(maxY)
+            "Габариты бетонной геометрии вырождены: minX=" & CStr(minX) & _
+            "; maxX=" & CStr(maxX) & "; minY=" & CStr(minY) & "; maxY=" & CStr(maxY) & "."
     End If
 
     Dim nx As Long
@@ -94,9 +94,9 @@ Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, 
 
     If mFiberCount <= 0 Then
         Err.Raise vbObjectError + 2105, "CFiberMeshBuilder", _
-            "Mesh is empty: minX=" & CStr(minX) & "; maxX=" & CStr(maxX) & _
+            "Сетка бетонных элементов пуста: minX=" & CStr(minX) & "; maxX=" & CStr(maxX) & _
             "; minY=" & CStr(minY) & "; maxY=" & CStr(maxY) & _
-            "; stepX=" & CStr(stepX) & "; stepY=" & CStr(stepY)
+            "; Mesh.StepX=" & CStr(stepX) & "; Mesh.StepY=" & CStr(stepY) & "."
     End If
 
     mBuildSeconds = Timer - t0

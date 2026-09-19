@@ -195,7 +195,7 @@ End Sub
 Public Sub Initialize(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider)
     If section Is Nothing Then Err.Raise vbObjectError + 3900, "CBatchSectionCalculator", "Модель сечения не передана."
     If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 3901, "CBatchSectionCalculator", "В модели сечения нет бетонных элементов."
-    If materialProvider Is Nothing Then Err.Raise vbObjectError + 3902, "CBatchSectionCalculator", "Material provider не передан."
+    If materialProvider Is Nothing Then Err.Raise vbObjectError + 3902, "CBatchSectionCalculator", "Поставщик материалов не передан."
     Set mSection = section
     Set mMaterialProvider = materialProvider
     ClearTransformedReferenceCache
@@ -1646,7 +1646,7 @@ End Function
 ' одно сочетание должны быть уже загружены.
 Private Sub ValidateReady()
     If mSection Is Nothing Then Err.Raise vbObjectError + 3920, "CBatchSectionCalculator", "Пакетный расчетчик не инициализирован моделью сечения."
-    If mMaterialProvider Is Nothing Then Err.Raise vbObjectError + 3922, "CBatchSectionCalculator", "Пакетный расчетчик не инициализирован material provider-ом."
+    If mMaterialProvider Is Nothing Then Err.Raise vbObjectError + 3922, "CBatchSectionCalculator", "Пакетный расчетчик не инициализирован поставщиком материалов."
     If mProfiles Is Nothing Then Err.Raise vbObjectError + 3923, "CBatchSectionCalculator", "Каталог расчетных профилей не загружен."
     If mCount <= 0 Then Err.Raise vbObjectError + 3921, "CBatchSectionCalculator", "Не задано ни одного сочетания нагрузок."
 End Sub
@@ -1839,10 +1839,13 @@ End Function
 Private Function TranslateDiagnosticLine(ByVal lineText As String) As String
     Dim translated As String
     translated = lineText
-    If translated = "ultimatePath pureAxial redirected=LoadMultiplier" Then
+    If translated = "ultimatePath pureAxial redirected=LoadMultiplier" Or _
+            translated = "Силовая траектория UltimateStrain перенаправлена на LoadMultiplier." Then
         TranslateDiagnosticLine = "Силовая траектория lambda*N перенаправлена на LoadMultiplier, потому что UltimateStrain для нее вырождается."
         Exit Function
     End If
+    translated = Replace$(translated, "ultimatePath iter=", "итерация UltimateStrain по общей lambda-траектории=")
+    translated = Replace$(translated, "ultimate iter=", "итерация UltimateStrain по моментной траектории=")
     translated = Replace$(translated, "lambda_crc=", "Найден lambda_crc=")
     translated = Replace$(translated, "lambda_crc_iter=", "итерация прямого поиска lambda_crc=")
     translated = Replace$(translated, "lambda_crc_path_iter=", "итерация UltimateStrain по lambda-траектории lambda_crc=")
@@ -1852,9 +1855,21 @@ Private Function TranslateDiagnosticLine(ByVal lineText As String) As String
     translated = Replace$(translated, "formation=Ncrc", "Образование трещины найдено по центральному растяжению Ncrc")
     translated = Replace$(translated, "search=", "Поиск: ")
     translated = Replace$(translated, "searchMethod=", "метод поиска=")
+    translated = Replace$(translated, "secantGuard=insideBracket", "защита Secant=точка возвращена внутрь скобки")
+    translated = Replace$(translated, "rawLambda=", "исходная lambda=")
+    translated = Replace$(translated, "guardedLambda=", "защищенная lambda=")
+    translated = Replace$(translated, "bracketLow=", "нижняя граница=")
+    translated = Replace$(translated, "bracketHigh=", "верхняя граница=")
     translated = Replace$(translated, "probe=", "проба=")
     translated = Replace$(translated, "step=", "шаг=")
     translated = Replace$(translated, "iter=", "итерация=")
+    translated = Replace$(translated, "directStateRetry=", "повтор прямого НДС=")
+    translated = Replace$(translated, "extensionRetry=", "повтор после выхода за диаграмму=")
+    translated = Replace$(translated, "directStateActiveSet", "активная зона прямого НДС")
+    translated = Replace$(translated, "warmStartSolver", "предыдущее близкое решение")
+    translated = Replace$(translated, "direct target without line search", "целевая нагрузка без line search")
+    translated = Replace$(translated, "direct target", "целевая нагрузка")
+    translated = Replace$(translated, "stepped", "ступенчатая нагрузка")
     translated = Replace$(translated, "attempt=", "повтор НДС=")
     translated = Replace$(translated, "converged=True", "сошлось=да")
     translated = Replace$(translated, "converged=False", "сошлось=нет")
@@ -1869,6 +1884,7 @@ Private Function TranslateDiagnosticLine(ByVal lineText As String) As String
     translated = Replace$(translated, "rPath1=", "невязка пути 1=")
     translated = Replace$(translated, "rPath2=", "невязка пути 2=")
     translated = Replace$(translated, "rLimit=", "невязка предельной деформации=")
+    translated = Replace$(translated, "rDir=", "невязка направления=")
     translated = Replace$(translated, "residual=", "невязка образования трещины=")
     translated = Replace$(translated, "rN=", "невязка N=")
     translated = Replace$(translated, "rMomentDir=", "невязка направления момента=")
@@ -1876,6 +1892,10 @@ Private Function TranslateDiagnosticLine(ByVal lineText As String) As String
     translated = Replace$(translated, "residualN=", "невязка N=")
     translated = Replace$(translated, "residualMx=", "невязка Mx=")
     translated = Replace$(translated, "residualMy=", "невязка My=")
+    translated = Replace$(translated, "critical=", "критический элемент=")
+    translated = Replace$(translated, "minConcreteStrain=", "мин. деформация бетона=")
+    translated = Replace$(translated, "maxConcreteStrain=", "макс. деформация бетона=")
+    translated = Replace$(translated, "maxAbsSteelStrain=", "макс. модуль деформации арматуры=")
     TranslateDiagnosticLine = translated
 End Function
 
