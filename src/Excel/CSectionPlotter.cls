@@ -746,7 +746,7 @@ End Sub
 ' Shapes используются для оформления и служебного оверлея; расчетные значения
 ' читаются только из snapshot Results.
 Private Sub DrawShapeDecorations(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
-    DrawConcreteContour data
+    If settings.GetBoolean("Plot.ContourEnabled", True) Then DrawConcreteContour data
     DrawShapeAnnotations data, settings, settings.GetBoolean("Plot.Dimensions.Enabled", True), _
         settings.GetBoolean("Plot.RebarLabels.Enabled", True)
     If data.GeometryOnly Then

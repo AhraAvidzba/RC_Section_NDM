@@ -196,7 +196,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     requiredKeys = Array( _
         "AutoCAD.Export.CombinationID", "AutoCAD.Export.NeutralLineEnabled", _
         "AutoCAD.Export.PrincipalAxesMode", "AutoCAD.Export.LoadPointEnabled", _
-        "AutoCAD.Export.LabelMode", _
+        "AutoCAD.Export.ContourEnabled", "AutoCAD.Export.LabelMode", _
         "AutoCAD.Layer.Concrete", "AutoCAD.Layer.Rebar", _
         "AutoCAD.Layer.ConcreteTension", "AutoCAD.Layer.ConcreteCompression", _
         "AutoCAD.Layer.RebarTension", "AutoCAD.Layer.RebarCompression", _
@@ -210,7 +210,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "Plot.Enabled", "Plot.AutoUpdateAfterCalculation", "Plot.LoadCase", _
         "Plot.ResultGradient", "Plot.ResultLabelsEnabled", "Plot.ResultLabelSpacing", "Plot.ResultPrecision", _
         "Plot.NeutralLineEnabled", "Plot.PrincipalAxesMode", "Plot.LoadApplicationPointEnabled", _
-        "Plot.LegendEnabled", _
+        "Plot.ContourEnabled", "Plot.LegendEnabled", _
         "Plot.RebarLabels.Enabled", "Plot.Dimensions.Enabled", _
         "Plot.RebarLabels.Placement", "Plot.Dimensions.Placement", _
         "Plot.RebarLabels.Offset", "Plot.Dimensions.Offset", _

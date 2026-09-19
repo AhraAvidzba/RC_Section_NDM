@@ -96,6 +96,7 @@ function Get-SystemSettingsCatalog {
             @("AutoCAD.Export.NeutralLineEnabled", "Yes", "-", "Выгружать нейтральную линию в AutoCAD: Yes - выводить; No - не выводить."),
             @("AutoCAD.Export.PrincipalAxesMode", "Transformed", "-", "Какие главные центральные оси выгружать в AutoCAD: Transformed - приведенного сечения; Concrete - бетонного; None - не выводить."),
             @("AutoCAD.Export.LoadPointEnabled", "Yes", "-", "Выгружать точку приложения нагрузки в AutoCAD: Yes - выводить; No - не выводить."),
+            @("AutoCAD.Export.ContourEnabled", "Yes", "-", "Выгружать параметрический контур сечения в AutoCAD: Yes - вывести контур, если он есть в Results; No - не выводить."),
             @("AutoCAD.Export.LabelMode", "NamesAndValues", "-", "Формат текстовых подписей при выгрузке в AutoCAD: ValuesOnly - только выбранная величина профиля; NamesAndValues - имя элемента и значение. При NamesAndValues имена выводятся для бетона и арматуры."),
             @("AutoCAD.Layer.Concrete", "Concrete", "-", "Слой для областей бетонных волокон. Цвет каждой области задается по PhysicalState из Results: сжатие, растяжение или нейтральное состояние."),
             @("AutoCAD.Layer.Rebar", "Reinf", "-", "Слой для всех областей продольной арматуры. Цвет каждого стержня задается по PhysicalState из Results, а не по пользовательскому знаку Stress/Strain."),
@@ -125,6 +126,7 @@ function Get-SystemSettingsCatalog {
             @("Plot.NeutralLineEnabled", "Yes", "-", "Показывать нейтральную линию выбранного сочетания по Epsilon0, KappaX, KappaY из Results."),
             @("Plot.PrincipalAxesMode", "Transformed", "-", "Какие главные центральные оси показывать на схеме: Transformed - приведенного сечения; Concrete - бетонного; None - не показывать."),
             @("Plot.LoadApplicationPointEnabled", "Yes", "-", "Показывать точку приложения нагрузки из последнего расчета."),
+            @("Plot.ContourEnabled", "Yes", "-", "Показывать параметрический контур сечения на схеме, если он сохранен в Results. Для импортированной сетки контур не восстанавливается."),
             @("Plot.LegendEnabled", "Yes", "-", "Показывать легенду физического состояния и выбранной величины профиля справа от схемы."),
             @("Plot.LegendMode", "Separate", "-", "Separate - отдельные легенды для арматуры и бетона; Common - одна общая легенда. В режиме Common используются цвета Plot.Color.RebarCompression и Plot.Color.RebarTension."),
             @("Plot.Color.RebarCompression", "30,80,220", "RGB", "Цвет максимального сжатия арматуры. В режиме Plot.LegendMode=Common используется как цвет сжатия для всех элементов."),
@@ -1069,6 +1071,12 @@ function Get-SettingInstructionLines {
             "None полностью отключает выгрузку главных осей. Точка приложения нагрузки и нейтральная линия управляются своими настройками.",
             "Экспорт берет центр и угол выбранных осей из сохраненного Results snapshot и не пересчитывает свойства сечения заново."
         ) }
+        "AutoCAD.Export.ContourEnabled" { return @($lead) + @(
+            "Yes выгружает контур сечения отдельной замкнутой полилинией AutoCAD, если точный параметрический контур сохранен в Results.",
+            "Для Circle, RectSet и RoundedRectangle контур приходит из генератора вместе с прямыми участками и дугами. Дуги передаются как дуговые сегменты полилинии, а не как набор коротких линий.",
+            "Для импортированной AutoCAD-сетки программа не восстанавливает внешний контур по волокнам и не угадывает оболочку. Если в Results нет contour-аннотаций, настройка просто ничего не добавит к экспорту.",
+            "Контур лежит на служебном слое RC_NDM_Contour, чтобы очистка экспорта не трогала пользовательские объекты на слоях бетона, арматуры или 0."
+        ) }
         "AutoCAD.Export.*Enabled" { return @($lead) + @(
             "Yes включает вывод соответствующего объекта в AutoCAD. No пропускает его.",
             "Настройка управляет только оформлением экспорта и не меняет расчетные результаты.",
@@ -1124,6 +1132,11 @@ function Get-SettingInstructionLines {
             "Concrete показывает главные центральные оси только бетонного сечения.",
             "None полностью скрывает главные оси на схеме. Точка приложения нагрузки и нейтральная линия управляются отдельными настройками.",
             "Схема берет центр и угол выбранных осей из Results snapshot. Изменение этого режима после расчета только меняет отображение уже сохраненных осей."
+        ) }
+        "Plot.ContourEnabled" { return @($lead) + @(
+            "Yes показывает на Excel-схеме точный contour-слой из Results, если параметрический генератор сечения его записал.",
+            "Этот контур нужен как читаемая внешняя граница сечения поверх расчетной сетки. Он не влияет на расчет и не заменяет сами бетонные элементы.",
+            "Для импортированной AutoCAD-геометрии точного semantic-контура обычно нет, поэтому программа не строит контур по догадке."
         ) }
         "Plot.Color.*" { return @($lead) + @(
             "Значение задается в формате R,G,B, например 30,80,220.",
@@ -3361,6 +3374,7 @@ function Apply-SystemSettingsLayout {
         "AutoCAD.Export.NeutralLineEnabled" = @("Yes", "No")
         "AutoCAD.Export.PrincipalAxesMode" = @("Transformed", "Concrete", "None")
         "AutoCAD.Export.LoadPointEnabled" = @("Yes", "No")
+        "AutoCAD.Export.ContourEnabled" = @("Yes", "No")
         "Plot.Enabled" = @("Yes", "No")
         "Plot.AutoUpdateAfterCalculation" = @("Yes", "No")
         "Plot.ResultGradient" = @("Yes", "No")
@@ -3368,6 +3382,7 @@ function Apply-SystemSettingsLayout {
         "Plot.NeutralLineEnabled" = @("Yes", "No")
         "Plot.PrincipalAxesMode" = @("Transformed", "Concrete", "None")
         "Plot.LoadApplicationPointEnabled" = @("Yes", "No")
+        "Plot.ContourEnabled" = @("Yes", "No")
         "Plot.LegendEnabled" = @("Yes", "No")
         "Plot.LegendMode" = @("Separate", "Common")
     }
@@ -3873,14 +3888,14 @@ function Add-RectSetFaceSettingsTable {
     }
 
     $locOptions = @("Stacked", "SideBySide")
-    $listColumn = 130
+    $listColumn = 136
     for ($i = 0; $i -lt $locOptions.Count; $i++) {
         $Sheet.Cells.Item($i + 1, $listColumn).Value2 = $locOptions[$i]
     }
     $listColName = ConvertTo-ExcelColumn $listColumn
     $listAddress = "=$" + $listColName + '$1:$' + $listColName + '$' + $locOptions.Count
     $bindOptions = @("EachBar", "EverySecondBar")
-    $bindListColumn = 131
+    $bindListColumn = 137
     for ($i = 0; $i -lt $bindOptions.Count; $i++) {
         $Sheet.Cells.Item($i + 1, $bindListColumn).Value2 = $bindOptions[$i]
     }
@@ -3908,7 +3923,7 @@ function Add-RectSetFaceSettingsTable {
     $Sheet.Range($Sheet.Cells.Item($extraHeaderRow, $StartColumn + 8), $Sheet.Cells.Item($extraHeaderRow + $extraRows.Count, $StartColumn + 8)).HorizontalAlignment = -4152
 
     $sectionTypeOptions = @("Rectangle", "LSection", "TwoRectangles")
-    $sectionTypeListColumn = 129
+    $sectionTypeListColumn = 135
     for ($i = 0; $i -lt $sectionTypeOptions.Count; $i++) {
         $Sheet.Cells.Item($i + 1, $sectionTypeListColumn).Value2 = $sectionTypeOptions[$i]
     }

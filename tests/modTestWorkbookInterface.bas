@@ -1684,6 +1684,8 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
         SystemSettingValidationHasOptions("AutoCAD.Export.PrincipalAxesMode", Array("Transformed", "Concrete", "None"))
     AssertTrue stats, "ui.validation.autocadLoadPoint", _
         SystemSettingValidationHasOptions("AutoCAD.Export.LoadPointEnabled", Array("Yes", "No"))
+    AssertTrue stats, "ui.validation.autocadContour", _
+        SystemSettingValidationHasOptions("AutoCAD.Export.ContourEnabled", Array("Yes", "No"))
     AssertTrue stats, "ui.validation.autocadCombination", AutoCADCombinationValidationIsDynamic()
     AssertTrue stats, "ui.validation.plotLoadCase", PlotLoadCaseValidationIsDynamic()
     AssertTrue stats, "ui.validation.loadProfileId", LoadProfileValidationUsesDisplayNames()
@@ -1692,6 +1694,8 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
         SystemSettingValidationHasOptions("Plot.ResultLabelsEnabled", Array("Yes", "No"))
     AssertTrue stats, "ui.validation.plotPrincipalAxes", _
         SystemSettingValidationHasOptions("Plot.PrincipalAxesMode", Array("Transformed", "Concrete", "None"))
+    AssertTrue stats, "ui.validation.plotContour", _
+        SystemSettingValidationHasOptions("Plot.ContourEnabled", Array("Yes", "No"))
     AssertTrue stats, "ui.validation.plotRebarAnnotationEnabled", _
         PlotAnnotationValidationHasOptions("Enabled", 2, Array("Yes", "No"))
     AssertTrue stats, "ui.validation.plotDimensionEnabled", _
@@ -1733,11 +1737,11 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
         AnySettingValidationHasOptions("Rebar.Loc3row", Array("Stacked", "SideBySide"))
     SetSystemSetting "Geometry.Type", "RectSet"
     AssertTrue stats, "ui.validation.rectSetSectionType", _
-        RectSetAdditionalValidationHasOptions(3, 2, Array("Rectangle", "LSection", "TwoRectangles"))
+        RectSetParameterValidationHasOptions("RectSet.SectionType", Array("Rectangle", "LSection", "TwoRectangles"))
     AssertTrue stats, "ui.validation.rectsetLoc2row", _
-        RectSetAdditionalValidationHasOptions(21, 3, Array("Stacked", "SideBySide"))
+        RectSetExtraValidationHasOptions("H1 - левая", "положение", 1, Array("Stacked", "SideBySide"))
     AssertTrue stats, "ui.validation.rectsetBind2row", _
-        RectSetAdditionalValidationHasOptions(21, 4, Array("EachBar", "EverySecondBar"))
+        RectSetExtraValidationHasOptions("H1 - левая", "привязка", 1, Array("EachBar", "EverySecondBar"))
     Dim reader As CSystemSettingsReader
     Set reader = New CSystemSettingsReader
     SetSystemSetting "Geometry.Type", "Circle"
@@ -2830,12 +2834,65 @@ Private Function PlotAnnotationValidationHasOptions(ByVal rowName As String, ByV
 Failed:
 End Function
 
-Private Function RectSetAdditionalValidationHasOptions(ByVal rowIndex As Long, ByVal valueColumn As Long, ByVal expectedOptions As Variant) As Boolean
+Private Function RectSetParameterValidationHasOptions(ByVal parameterName As String, ByVal expectedOptions As Variant) As Boolean
     On Error GoTo Failed
 
     Dim settings As Object
     Set settings = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
-    RectSetAdditionalValidationHasOptions = ValidationCellHasOptions(settings.Cells.Item(rowIndex, valueColumn), expectedOptions)
+
+    Dim rowIndex As Long
+    For rowIndex = 1 To settings.Rows.Count
+        If StrComp(CStr(settings.Cells.Item(rowIndex, 1).Value2), parameterName, vbTextCompare) = 0 Then
+            RectSetParameterValidationHasOptions = ValidationCellHasOptions(settings.Cells.Item(rowIndex, 2), expectedOptions)
+            Exit Function
+        End If
+    Next rowIndex
+    Exit Function
+Failed:
+End Function
+
+' Проверяет выпадающие списки в табличной части дополнительных рядов RectSet.
+' В отличие от старой проверки по фиксированному номеру строки, helper ищет
+' строку грани и нужный заголовок, поэтому не ломается от вставки новых строк
+' выше блока геометрии.
+Private Function RectSetExtraValidationHasOptions(ByVal faceCaption As String, ByVal headerCaption As String, _
+        ByVal occurrenceIndex As Long, ByVal expectedOptions As Variant) As Boolean
+    On Error GoTo Failed
+
+    Dim settings As Object
+    Set settings = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
+
+    Dim headerRow As Long
+    Dim rowIndex As Long
+    For rowIndex = 1 To settings.Rows.Count
+        If StrComp(CStr(settings.Cells.Item(rowIndex, 1).Value2), "Грань", vbTextCompare) = 0 And _
+                StrComp(CStr(settings.Cells.Item(rowIndex, 2).Value2), "d2", vbTextCompare) = 0 Then
+            headerRow = rowIndex
+            Exit For
+        End If
+    Next rowIndex
+    If headerRow = 0 Then Exit Function
+
+    Dim valueColumn As Long
+    Dim foundCount As Long
+    Dim columnIndex As Long
+    For columnIndex = 1 To settings.Columns.Count
+        If StrComp(CStr(settings.Cells.Item(headerRow, columnIndex).Value2), headerCaption, vbTextCompare) = 0 Then
+            foundCount = foundCount + 1
+            If foundCount = occurrenceIndex Then
+                valueColumn = columnIndex
+                Exit For
+            End If
+        End If
+    Next columnIndex
+    If valueColumn = 0 Then Exit Function
+
+    For rowIndex = headerRow + 1 To settings.Rows.Count
+        If StrComp(CStr(settings.Cells.Item(rowIndex, 1).Value2), faceCaption, vbTextCompare) = 0 Then
+            RectSetExtraValidationHasOptions = ValidationCellHasOptions(settings.Cells.Item(rowIndex, valueColumn), expectedOptions)
+            Exit Function
+        End If
+    Next rowIndex
     Exit Function
 Failed:
 End Function
