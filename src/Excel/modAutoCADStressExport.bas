@@ -26,13 +26,14 @@ Private Type TAutoCADExportSettings
     PrincipalAxesMode As String
     LoadPointEnabled As Boolean
     ContourEnabled As Boolean
+    ContourLayer As String
 End Type
 
 Private Const EXTENSION_WARNING_TEXT As String = "ВНЕ ФИЗИЧЕСКОЙ ДИАГРАММЫ МАТЕРИАЛА"
 Private Const NUMERICAL_STATE_WARNING_TEXT As String = "ПРЯМОЕ НДС НЕ СОШЛОСЬ"
 Private Const EXTENSION_WARNING_LAYER As String = "RC_NDM_Warnings"
-Private Const CONTOUR_LAYER As String = "RC_NDM_Contour"
-Private Const CONTOUR_COLOR_INDEX As Long = 7
+Private Const DEFAULT_CONTOUR_LAYER As String = "RC_NDM_Contour"
+Private Const CONTOUR_LAYER_COLOR_INDEX As Long = 4 ' AutoCAD ColorIndex 4 - голубой/cyan для нового слоя параметрического контура.
 Private Const CONTOUR_POINT_TOLERANCE As Double = 0.000001
 
 Public Sub ExportSectionStressToAutoCAD()
@@ -137,7 +138,7 @@ Private Function AutoCADCleanupLayerSet(ByRef exportSettings As TAutoCADExportSe
     AddCleanupLayer layers, "RC_NDM_Axes"
     AddCleanupLayer layers, "RC_NDM_LoadPoint"
     AddCleanupLayer layers, "RC_NDM_NeutralLine"
-    AddCleanupLayer layers, CONTOUR_LAYER
+    AddCleanupLayer layers, exportSettings.ContourLayer
     AddCleanupLayer layers, EXTENSION_WARNING_LAYER
 
     Set AutoCADCleanupLayerSet = layers
@@ -771,10 +772,10 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
     EnsureAcadLayer doc, "RC_NDM_Axes", 3
     EnsureAcadLayer doc, "RC_NDM_LoadPoint", 2
     EnsureAcadLayer doc, "RC_NDM_NeutralLine", exportSettings.NeutralColor
-    EnsureAcadLayer doc, CONTOUR_LAYER, CONTOUR_COLOR_INDEX
+    EnsureAcadLayer doc, exportSettings.ContourLayer, CONTOUR_LAYER_COLOR_INDEX
     EnsureAcadLayer doc, EXTENSION_WARNING_LAYER, 1
 
-    If exportSettings.ContourEnabled Then DrawParametricSectionContour ThisWorkbook, ms
+    If exportSettings.ContourEnabled Then DrawParametricSectionContour ThisWorkbook, ms, exportSettings.ContourLayer
 
     Dim i As Long
     Dim resultValue As Double
@@ -834,7 +835,7 @@ End Sub
 ' Здесь намеренно не восстанавливается контур по бетонным волокнам: для
 ' импортированной AutoCAD-сетки такой контур неизвестен, а значит экспорт
 ' должен пропустить его, а не рисовать приближенную оболочку.
-Private Sub DrawParametricSectionContour(ByVal workbook As Object, ByVal ms As Object)
+Private Sub DrawParametricSectionContour(ByVal workbook As Object, ByVal ms As Object, ByVal contourLayer As String)
     Dim data As Variant
     data = ReadAnchoredResultTable(workbook, "rngNDMSectionAnnotations")
     If Not HasResultTableRows(data) Then Exit Sub
@@ -872,14 +873,14 @@ Private Sub DrawParametricSectionContour(ByVal workbook As Object, ByVal ms As O
                     OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndY)), lengthUnit), _
                     Tan(ParseInvariantDouble(SafeText(data(rowIndex, colText))) / 4#)
             Case "CONTOUR_CIRCLE"
-                DrawContourCirclePolyline ms, _
+                DrawContourCirclePolyline ms, contourLayer, _
                     OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartX)), lengthUnit), _
                     OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartY)), lengthUnit), _
                     OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndX)), lengthUnit)
         End Select
     Next rowIndex
 
-    If segCount > 0 Then DrawContourSegmentPolyline ms, segStartX, segStartY, segEndX, segEndY, segBulge, segCount
+    If segCount > 0 Then DrawContourSegmentPolyline ms, contourLayer, segStartX, segStartY, segEndX, segEndY, segBulge, segCount
 End Sub
 
 ' Накопляет линейный или дуговой сегмент будущей AutoCAD LWPOLYLINE.
@@ -907,7 +908,8 @@ End Sub
 ' Если будущий генератор случайно запишет сегменты с разрывом, экспорт
 ' останавливается с понятной ошибкой: лучше увидеть проблему, чем получить в
 ' AutoCAD контур с паразитной перемычкой.
-Private Sub DrawContourSegmentPolyline(ByVal ms As Object, ByRef startX() As Double, ByRef startY() As Double, _
+Private Sub DrawContourSegmentPolyline(ByVal ms As Object, ByVal contourLayer As String, _
+        ByRef startX() As Double, ByRef startY() As Double, _
         ByRef endX() As Double, ByRef endY() As Double, ByRef bulge() As Double, ByVal segmentCount As Long)
     Dim segmentIndex As Long
     For segmentIndex = 1 To segmentCount - 1
@@ -929,7 +931,7 @@ Private Sub DrawContourSegmentPolyline(ByVal ms As Object, ByRef startX() As Dou
     Next segmentIndex
 
     Dim entity As Object
-    Set entity = AddAcadLightWeightPolyline(ms, points, CONTOUR_LAYER, CONTOUR_COLOR_INDEX)
+    Set entity = AddAcadLightWeightPolyline(ms, points, contourLayer, CONTOUR_LAYER_COLOR_INDEX)
     For segmentIndex = 1 To segmentCount
         If Abs(bulge(segmentIndex)) > 0.000000000001 Then Call entity.SetBulge(segmentIndex - 1, bulge(segmentIndex))
     Next segmentIndex
@@ -938,7 +940,8 @@ End Sub
 
 ' Окружность тоже выводится LWPOLYLINE: четыре четверти с одинаковым bulge дают
 ' непрерывную замкнутую полилинию с дугами, а не отдельный объект Circle.
-Private Sub DrawContourCirclePolyline(ByVal ms As Object, ByVal centerX As Double, ByVal centerY As Double, ByVal radius As Double)
+Private Sub DrawContourCirclePolyline(ByVal ms As Object, ByVal contourLayer As String, _
+        ByVal centerX As Double, ByVal centerY As Double, ByVal radius As Double)
     If radius <= 0# Then Exit Sub
 
     Dim points(0 To 7) As Double
@@ -948,7 +951,7 @@ Private Sub DrawContourCirclePolyline(ByVal ms As Object, ByVal centerX As Doubl
     points(6) = centerX: points(7) = centerY - radius
 
     Dim entity As Object
-    Set entity = AddAcadLightWeightPolyline(ms, points, CONTOUR_LAYER, CONTOUR_COLOR_INDEX)
+    Set entity = AddAcadLightWeightPolyline(ms, points, contourLayer, CONTOUR_LAYER_COLOR_INDEX)
 
     Dim quarterBulge As Double
     quarterBulge = Tan((GEOM_PI / 2#) / 4#)
@@ -1105,6 +1108,7 @@ Private Function ReadAutoCADExportSettings(ByVal settings As CSystemSettingsRead
         .PrincipalAxesMode = AutoCADPrincipalAxesMode(settings)
         .LoadPointEnabled = settings.GetBoolean("AutoCAD.Export.LoadPointEnabled", True)
         .ContourEnabled = settings.GetBoolean("AutoCAD.Export.ContourEnabled", True)
+        .ContourLayer = settings.GetString("AutoCAD.Layer.Contour", DEFAULT_CONTOUR_LAYER)
     End With
 End Function
 
@@ -1494,13 +1498,21 @@ Private Sub DeleteAcadSourceObjects(ByRef sourceObjects() As Object)
     On Error GoTo 0
 End Sub
 
-' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
+' Гарантирует наличие слоя AutoCAD. Если слой уже есть в чертеже, его цвет и
+' другие свойства не меняются; цвет применяется только к вновь созданному слою.
 Private Sub EnsureAcadLayer(ByVal doc As Object, ByVal layerName As String, ByVal colorIndex As Long)
+    layerName = Trim$(layerName)
+    If Len(layerName) = 0 Then Err.Raise vbObjectError + 4385, "EnsureAcadLayer", "Не задано имя слоя AutoCAD для экспорта."
+
     On Error Resume Next
     Dim layer As Object
     Set layer = doc.Layers.Item(layerName)
-    If layer Is Nothing Then Set layer = doc.Layers.Add(layerName)
-    layer.Color = colorIndex
+    Dim layerCreated As Boolean
+    If layer Is Nothing Then
+        Set layer = doc.Layers.Add(layerName)
+        layerCreated = True
+    End If
+    If layerCreated Then layer.Color = colorIndex
     On Error GoTo 0
 End Sub
 

@@ -197,7 +197,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "AutoCAD.Export.CombinationID", "AutoCAD.Export.NeutralLineEnabled", _
         "AutoCAD.Export.PrincipalAxesMode", "AutoCAD.Export.LoadPointEnabled", _
         "AutoCAD.Export.ContourEnabled", "AutoCAD.Export.LabelMode", _
-        "AutoCAD.Layer.Concrete", "AutoCAD.Layer.Rebar", _
+        "AutoCAD.Layer.Concrete", "AutoCAD.Layer.Rebar", "AutoCAD.Layer.Contour", _
         "AutoCAD.Layer.ConcreteTension", "AutoCAD.Layer.ConcreteCompression", _
         "AutoCAD.Layer.RebarTension", "AutoCAD.Layer.RebarCompression", _
         "AutoCAD.Color.ConcreteTension", "AutoCAD.Color.ConcreteCompression", _
