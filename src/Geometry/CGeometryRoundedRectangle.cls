@@ -502,8 +502,12 @@ Public Sub GetHorizontalRebarLine(ByVal isTop As Boolean, ByVal axisDistance As 
     End If
 End Sub
 
-' Возвращает боковую траекторию арматуры, смещенную внутрь на as. Точки идут
-' сверху вниз для обеих сторон; builder сам расставляет стержни по длине пути.
+' Возвращает боковую траекторию арматуры H, смещенную внутрь на as.
+' Начальная точка берется в касательной точке верхней горизонтальной линии B,
+' конечная - в касательной точке нижней горизонтальной линии B. Между ними
+' путь идет по фактической боковой форме: Simple дает вертикальную вставку со
+' скруглениями, Tapered - скругление R1, наклонную часть, носовой R2 и нижнюю
+' наклонную часть. Builder дальше делит эту длину на n+1 равных интервалов.
 Public Sub GetSideRebarPath(ByVal isLeft As Boolean, ByVal axisDistance As Double, _
         ByRef pointX() As Double, ByRef pointY() As Double)
     Erase pointX
@@ -524,29 +528,35 @@ Public Sub GetSideRebarPath(ByVal isLeft As Boolean, ByVal axisDistance As Doubl
     bottomLeft = bottomRight + 1
 
     If isLeft Then
-        Dim leftNext As Long
+        Dim leftTopNext As Long ' Следующая вершина после верхнего левого угла вдоль H-линии.
+        Dim leftBottomPrev As Long ' Предыдущая вершина перед нижним левым углом вдоль H-линии.
         If mLeftType = SIDE_TAPERED Then
-            leftNext = rawCount
+            leftTopNext = rawCount
+            leftBottomPrev = rawCount
         Else
-            leftNext = bottomLeft
+            leftTopNext = bottomLeft
+            leftBottomPrev = 1
         End If
-        AppendCornerFromOffset raw, offsetX, offsetY, rawCount, 2, 1, leftNext, axisDistance, pointX, pointY, count
+        AppendCornerFromOffset raw, offsetX, offsetY, rawCount, 2, 1, leftTopNext, axisDistance, pointX, pointY, count
         If mLeftType = SIDE_TAPERED Then
             AppendCornerFromOffset raw, offsetX, offsetY, rawCount, 1, rawCount, bottomLeft, axisDistance, pointX, pointY, count
         End If
-        AppendCornerFromOffset raw, offsetX, offsetY, rawCount, leftNext, bottomLeft, bottomRight, axisDistance, pointX, pointY, count
+        AppendCornerFromOffset raw, offsetX, offsetY, rawCount, leftBottomPrev, bottomLeft, bottomRight, axisDistance, pointX, pointY, count
     Else
-        Dim rightNext As Long
+        Dim rightTopNext As Long ' Следующая вершина после верхнего правого угла вдоль H-линии.
+        Dim rightBottomPrev As Long ' Предыдущая вершина перед нижним правым углом вдоль H-линии.
         If mRightType = SIDE_TAPERED Then
-            rightNext = 3
+            rightTopNext = 3
+            rightBottomPrev = 3
         Else
-            rightNext = bottomRight
+            rightTopNext = bottomRight
+            rightBottomPrev = 2
         End If
-        AppendCornerFromOffset raw, offsetX, offsetY, rawCount, 1, 2, rightNext, axisDistance, pointX, pointY, count
+        AppendCornerFromOffset raw, offsetX, offsetY, rawCount, 1, 2, rightTopNext, axisDistance, pointX, pointY, count
         If mRightType = SIDE_TAPERED Then
             AppendCornerFromOffset raw, offsetX, offsetY, rawCount, 2, 3, bottomRight, axisDistance, pointX, pointY, count
         End If
-        AppendCornerFromOffset raw, offsetX, offsetY, rawCount, rightNext, bottomRight, bottomLeft, axisDistance, pointX, pointY, count
+        AppendCornerFromOffset raw, offsetX, offsetY, rawCount, rightBottomPrev, bottomRight, bottomLeft, axisDistance, pointX, pointY, count
     End If
     If count > 0 Then
         ReDim Preserve pointX(1 To count)

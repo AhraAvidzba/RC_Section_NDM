@@ -187,6 +187,10 @@ Private Function RebarDiagnosticPerimeter(ByVal geom As CGeometryRectSet, ByVal 
     Next i
 End Function
 
+' Добавляет две линии арматуры на вертикальной смысловой грани H.
+' Левая линия идет снизу вверх, правая - сверху вниз: такой порядок сохраняет
+' единую часовую нумерацию граней и согласует t нач./t кон. с пользовательской
+' справкой по RectSet.
 Private Sub AddVerticalPair(ByVal layout As CRebarLayout, ByVal geom As ISectionGeometry, _
         ByVal faceName As String, ByVal xStart As Double, ByVal yStart As Double, _
         ByVal heightValue As Double, ByVal widthValue As Double, _
@@ -202,6 +206,10 @@ Private Sub AddVerticalPair(ByVal layout As CRebarLayout, ByVal geom As ISection
         FaceLineSettings(verticalSettings, 2), steelClass, 1#, 0#, 0#, -1#, -1#, 0#, nextIndex, sx, sy
 End Sub
 
+' Добавляет две линии арматуры на горизонтальной смысловой грани B.
+' Верхняя линия идет слева направо, нижняя - справа налево, чтобы обход
+' прямоугольника оставался часовым и пользовательские отступы t читались
+' одинаково для всех граней.
 Private Sub AddHorizontalPair(ByVal layout As CRebarLayout, ByVal geom As ISectionGeometry, _
         ByVal faceName As String, ByVal xStart As Double, ByVal yStart As Double, _
         ByVal widthValue As Double, ByVal heightValue As Double, _
@@ -217,6 +225,9 @@ Private Sub AddHorizontalPair(ByVal layout As CRebarLayout, ByVal geom As ISecti
         FaceLineSettings(horizontalSettings, 2), steelClass, 0#, -1#, 1#, 0#, 0#, 1#, nextIndex, sx, sy
 End Sub
 
+' Раскладывает один ряд первого уровня по прямой линии грани и сразу добавляет
+' связанные второй/третий ряды. Линия задается начальной/конечной точками, а
+' side/stack-направления передаются явно, потому что для H и B они различаются.
 Private Sub AddFaceBars(ByVal layout As CRebarLayout, ByVal geom As ISectionGeometry, _
         ByVal faceName As String, ByVal x1 As Double, ByVal y1 As Double, _
         ByVal x2 As Double, ByVal y2 As Double, ByVal faceLength As Double, _
@@ -224,17 +235,17 @@ Private Sub AddFaceBars(ByVal layout As CRebarLayout, ByVal geom As ISectionGeom
         ByVal outsideNormalX As Double, ByVal outsideNormalY As Double, _
         ByVal sideX As Double, ByVal sideY As Double, ByVal stackX As Double, ByVal stackY As Double, _
         ByRef nextIndex As Long, ByRef sx As Double, ByRef sy As Double)
-    Dim axisDistance As Double
-    Dim barCount As Long
-    Dim barDiameter As Double
-    Dim startOffset As Double
-    Dim endOffset As Double
-    Dim row2Diameter As Double
-    Dim row3Diameter As Double
-    Dim row2Location As String
-    Dim row3Location As String
-    Dim row2Binding As String
-    Dim row3Binding As String
+    Dim axisDistance As Double ' as: расстояние от бетонной грани до оси первого ряда.
+    Dim barCount As Long ' n: число стержней первого ряда на этой линии.
+    Dim barDiameter As Double ' d: диаметр первого ряда.
+    Dim startOffset As Double ' t нач.: отступ первого стержня от начала линии обхода.
+    Dim endOffset As Double ' t кон.: отступ последнего стержня от конца линии обхода.
+    Dim row2Diameter As Double ' Диаметр дополнительного второго ряда.
+    Dim row3Diameter As Double ' Диаметр дополнительного третьего ряда.
+    Dim row2Location As String ' Stacked/SideBySide для второго ряда.
+    Dim row3Location As String ' Stacked/SideBySide для третьего ряда.
+    Dim row2Binding As String ' EachBar/EverySecondBar для второго ряда.
+    Dim row3Binding As String ' EachBar/EverySecondBar для третьего ряда.
     barCount = LineBarCount(faceSettings)
     If barCount = 0 Then Exit Sub
 
@@ -272,7 +283,7 @@ Private Sub AddFaceBars(ByVal layout As CRebarLayout, ByVal geom As ISectionGeom
     If stepAlong > mStepAlong Then mStepAlong = stepAlong
     mRequestedCount = mRequestedCount + barCount
 
-    Dim distances() As Double
+    Dim distances() As Double ' Расстояния стержней первого ряда от начала линии.
     ReDim distances(1 To barCount)
     Dim i As Long
     If barCount = 1 Then
@@ -289,7 +300,7 @@ Private Sub AddFaceBars(ByVal layout As CRebarLayout, ByVal geom As ISectionGeom
     Dim used() As Boolean
     ReDim used(1 To barCount)
     For i = 1 To barCount
-        Dim chosen As Long
+        Dim chosen As Long ' Номер еще не использованной позиции, ближайшей к середине линии.
         chosen = ClosestUnusedDistanceIndex(distances, used, faceLength)
         used(chosen) = True
 
@@ -310,6 +321,9 @@ Private Sub AddFaceBars(ByVal layout As CRebarLayout, ByVal geom As ISectionGeom
     Next i
 End Sub
 
+' Сохраняет semantic-anchor для групповой подписи арматуры на схеме.
+' Anchor берется не по полной бетонной грани, а между первым и последним
+' фактически поставленным стержнем, чтобы подпись визуально относилась к ряду.
 Private Sub AddFaceAnnotationAnchor(ByVal layout As CRebarLayout, ByVal faceName As String, _
         ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
         ByVal faceLength As Double, ByVal startDistance As Double, ByVal endDistance As Double, _
@@ -330,6 +344,9 @@ Private Sub AddFaceAnnotationAnchor(ByVal layout As CRebarLayout, ByVal faceName
         normalX, normalY, axisDistance
 End Sub
 
+' Добавляет второй и третий ряды для выбранного стержня первого ряда.
+' Если третий ряд имеет то же направление, что и второй, он "перепрыгивает"
+' второй ряд на его диаметр, чтобы стержни не наложились.
 Private Sub AddAdditionalRows(ByVal layout As CRebarLayout, ByVal geom As ISectionGeometry, _
         ByVal faceName As String, ByVal baseX As Double, ByVal baseY As Double, ByVal row1Diameter As Double, _
         ByVal row2Diameter As Double, ByVal row3Diameter As Double, ByVal row2Location As String, ByVal row3Location As String, _
@@ -356,6 +373,8 @@ Private Sub AddAdditionalRows(ByVal layout As CRebarLayout, ByVal geom As ISecti
     End If
 End Sub
 
+' Проверяет правило привязки дополнительного ряда к стержням первого ряда.
+' EverySecondBar оставляет только нечетные номера, считая от начала линии.
 Private Function ShouldAddAdditionalRow(ByVal baseBarOrdinal As Long, ByVal bindingMode As String) As Boolean
     If StrComp(bindingMode, "EverySecondBar", vbTextCompare) = 0 Then
         ShouldAddAdditionalRow = ((baseBarOrdinal Mod 2) = 1)
@@ -364,6 +383,9 @@ Private Function ShouldAddAdditionalRow(ByVal baseBarOrdinal As Long, ByVal bind
     End If
 End Function
 
+' Считает координаты дополнительного стержня от стержня первого ряда.
+' SideBySide смещает вдоль линии грани, Stacked - внутрь сечения по нормали,
+' а расстояние между осями равно сумме радиусов с учетом пропущенного ряда.
 Private Sub OffsetAdditionalRowFromFirst(ByVal baseX As Double, ByVal baseY As Double, _
         ByVal row1Diameter As Double, ByVal targetDiameter As Double, ByVal skippedDiameter As Double, ByVal locationMode As String, _
         ByVal sideX As Double, ByVal sideY As Double, ByVal stackX As Double, ByVal stackY As Double, _
@@ -380,6 +402,9 @@ Private Sub OffsetAdditionalRowFromFirst(ByVal baseX As Double, ByVal baseY As D
     End If
 End Sub
 
+' Добавляет стержень только если в этой координате еще нет арматуры.
+' Это защищает углы и пересечения прямоугольников от двойного учета одной и той
+' же физической позиции, когда пользователь задал соседние линии с совпадением.
 Private Sub AddBarIfAvailable(ByVal layout As CRebarLayout, ByVal geom As ISectionGeometry, _
         ByVal faceName As String, ByVal rowNumber As Long, ByVal xCoord As Double, ByVal yCoord As Double, _
         ByVal diameter As Double, ByVal steelClass As String, ByRef nextIndex As Long, ByRef sx As Double, ByRef sy As Double)
@@ -395,54 +420,65 @@ Private Sub AddBarIfAvailable(ByVal layout As CRebarLayout, ByVal geom As ISecti
     End If
 End Sub
 
+' Возвращает as одной линии из компактного массива настроек линии.
 Private Function LineAxisDistance(ByVal lineSettings As Variant) As Double
     LineAxisDistance = CDbl(lineSettings(LBound(lineSettings)))
 End Function
 
+' Возвращает n - число стержней первого ряда линии.
 Private Function LineBarCount(ByVal lineSettings As Variant) As Long
     LineBarCount = CLng(lineSettings(LBound(lineSettings) + 1))
 End Function
 
+' Возвращает d - диаметр первого ряда линии.
 Private Function LineBarDiameter(ByVal lineSettings As Variant) As Double
     LineBarDiameter = CDbl(lineSettings(LBound(lineSettings) + 2))
 End Function
 
+' Возвращает t нач. для первого стержня линии.
 Private Function LineStartOffset(ByVal lineSettings As Variant) As Double
     LineStartOffset = CDbl(lineSettings(LBound(lineSettings) + 3))
 End Function
 
+' Возвращает t кон. для последнего стержня линии.
 Private Function LineEndOffset(ByVal lineSettings As Variant) As Double
     LineEndOffset = CDbl(lineSettings(LBound(lineSettings) + 4))
 End Function
 
+' Возвращает диаметр второго ряда; для старых тестовых массивов допускает отсутствие поля.
 Private Function LineRow2Diameter(ByVal lineSettings As Variant) As Double
     If UBound(lineSettings) - LBound(lineSettings) < 5 Then Exit Function
     LineRow2Diameter = CDbl(lineSettings(LBound(lineSettings) + 5))
 End Function
 
+' Возвращает диаметр третьего ряда; для старых тестовых массивов допускает отсутствие поля.
 Private Function LineRow3Diameter(ByVal lineSettings As Variant) As Double
     If UBound(lineSettings) - LBound(lineSettings) < 6 Then Exit Function
     LineRow3Diameter = CDbl(lineSettings(LBound(lineSettings) + 6))
 End Function
 
+' Возвращает способ размещения второго ряда, по умолчанию Stacked.
 Private Function LineRow2Location(ByVal lineSettings As Variant) As String
     LineRow2Location = "Stacked"
     If UBound(lineSettings) - LBound(lineSettings) < 7 Then Exit Function
     If Len(Trim$(CStr(lineSettings(LBound(lineSettings) + 7)))) > 0 Then LineRow2Location = Trim$(CStr(lineSettings(LBound(lineSettings) + 7)))
 End Function
 
+' Возвращает способ размещения третьего ряда, по умолчанию Stacked.
 Private Function LineRow3Location(ByVal lineSettings As Variant) As String
     LineRow3Location = "Stacked"
     If UBound(lineSettings) - LBound(lineSettings) < 8 Then Exit Function
     If Len(Trim$(CStr(lineSettings(LBound(lineSettings) + 8)))) > 0 Then LineRow3Location = Trim$(CStr(lineSettings(LBound(lineSettings) + 8)))
 End Function
 
+' Возвращает правило привязки второго ряда к стержням первого ряда.
 Private Function LineRow2Binding(ByVal lineSettings As Variant) As String
     LineRow2Binding = "EachBar"
     If UBound(lineSettings) - LBound(lineSettings) < 9 Then Exit Function
     If Len(Trim$(CStr(lineSettings(LBound(lineSettings) + 9)))) > 0 Then LineRow2Binding = Trim$(CStr(lineSettings(LBound(lineSettings) + 9)))
 End Function
 
+' Возвращает правило привязки третьего ряда к стержням первого ряда.
 Private Function LineRow3Binding(ByVal lineSettings As Variant) As String
     LineRow3Binding = "EachBar"
     If UBound(lineSettings) - LBound(lineSettings) < 10 Then Exit Function
@@ -501,14 +537,18 @@ Private Sub ValidateAdditionalRows(ByVal faceName As String, ByVal row2Diameter 
     If row3Diameter > 0# And Not IsSupportedRowBinding(row3Binding) Then Err.Raise vbObjectError + 3185, "CRectSetRebarLayoutBuilder", faceName & ": bind_3row должен быть EachBar или EverySecondBar."
 End Sub
 
+' Проверяет пользовательское значение loc_2row/loc_3row.
 Private Function IsSupportedRowLocation(ByVal value As String) As Boolean
     IsSupportedRowLocation = (StrComp(value, "SideBySide", vbTextCompare) = 0 Or StrComp(value, "Stacked", vbTextCompare) = 0)
 End Function
 
+' Проверяет пользовательское значение bind_2row/bind_3row.
 Private Function IsSupportedRowBinding(ByVal value As String) As Boolean
     IsSupportedRowBinding = (StrComp(value, "EachBar", vbTextCompare) = 0 Or StrComp(value, "EverySecondBar", vbTextCompare) = 0)
 End Function
 
+' Собирает настройки одной стороны смысловой грани в компактный массив линии.
+' Это позволяет общей процедуре AddFaceBars одинаково работать с _1 и _2.
 Private Function FaceLineSettings(ByVal faceSettings As Variant, ByVal lineIndex As Long) As Variant
     If lineIndex = 1 Then
         FaceLineSettings = Array(FaceAs1(faceSettings), FaceCount1(faceSettings), FaceDiameter1(faceSettings), _
@@ -523,90 +563,111 @@ Private Function FaceLineSettings(ByVal faceSettings As Variant, ByVal lineIndex
     End If
 End Function
 
+' Возвращает as для стороны _1: левая для H или верхняя для B.
 Private Function FaceAs1(ByVal faceSettings As Variant) As Double
     FaceAs1 = CDbl(faceSettings(LBound(faceSettings)))
 End Function
 
+' Возвращает as для стороны _2: правая для H или нижняя для B.
 Private Function FaceAs2(ByVal faceSettings As Variant) As Double
     FaceAs2 = CDbl(faceSettings(LBound(faceSettings) + 1))
 End Function
 
+' Возвращает d первого ряда для стороны _1.
 Private Function FaceDiameter1(ByVal faceSettings As Variant) As Double
     FaceDiameter1 = CDbl(faceSettings(LBound(faceSettings) + 2))
 End Function
 
+' Возвращает d первого ряда для стороны _2.
 Private Function FaceDiameter2(ByVal faceSettings As Variant) As Double
     FaceDiameter2 = CDbl(faceSettings(LBound(faceSettings) + 3))
 End Function
 
+' Возвращает n первого ряда для стороны _1.
 Private Function FaceCount1(ByVal faceSettings As Variant) As Long
     FaceCount1 = CLng(faceSettings(LBound(faceSettings) + 4))
 End Function
 
+' Возвращает n первого ряда для стороны _2.
 Private Function FaceCount2(ByVal faceSettings As Variant) As Long
     FaceCount2 = CLng(faceSettings(LBound(faceSettings) + 5))
 End Function
 
+' Возвращает t нач. для стороны _1.
 Private Function FaceStartOffset1(ByVal faceSettings As Variant) As Double
     FaceStartOffset1 = CDbl(faceSettings(LBound(faceSettings) + 6))
 End Function
 
+' Возвращает t кон. для стороны _1.
 Private Function FaceEndOffset1(ByVal faceSettings As Variant) As Double
     FaceEndOffset1 = CDbl(faceSettings(LBound(faceSettings) + 7))
 End Function
 
+' Возвращает t нач. для стороны _2.
 Private Function FaceStartOffset2(ByVal faceSettings As Variant) As Double
     FaceStartOffset2 = CDbl(faceSettings(LBound(faceSettings) + 8))
 End Function
 
+' Возвращает t кон. для стороны _2.
 Private Function FaceEndOffset2(ByVal faceSettings As Variant) As Double
     FaceEndOffset2 = CDbl(faceSettings(LBound(faceSettings) + 9))
 End Function
 
+' Возвращает диаметр второго ряда для стороны _1, если он задан.
 Private Function FaceRow2Diameter1(ByVal faceSettings As Variant) As Double
     If UBound(faceSettings) - LBound(faceSettings) < 10 Then Exit Function
     FaceRow2Diameter1 = CDbl(faceSettings(LBound(faceSettings) + 10))
 End Function
 
+' Возвращает диаметр второго ряда для стороны _2, если он задан.
 Private Function FaceRow2Diameter2(ByVal faceSettings As Variant) As Double
     If UBound(faceSettings) - LBound(faceSettings) < 11 Then Exit Function
     FaceRow2Diameter2 = CDbl(faceSettings(LBound(faceSettings) + 11))
 End Function
 
+' Возвращает диаметр третьего ряда для стороны _1, если он задан.
 Private Function FaceRow3Diameter1(ByVal faceSettings As Variant) As Double
     If UBound(faceSettings) - LBound(faceSettings) < 12 Then Exit Function
     FaceRow3Diameter1 = CDbl(faceSettings(LBound(faceSettings) + 12))
 End Function
 
+' Возвращает диаметр третьего ряда для стороны _2, если он задан.
 Private Function FaceRow3Diameter2(ByVal faceSettings As Variant) As Double
     If UBound(faceSettings) - LBound(faceSettings) < 13 Then Exit Function
     FaceRow3Diameter2 = CDbl(faceSettings(LBound(faceSettings) + 13))
 End Function
 
+' Возвращает общий способ размещения второго ряда для грани.
 Private Function FaceRow2Location(ByVal faceSettings As Variant) As String
     FaceRow2Location = "Stacked"
     If UBound(faceSettings) - LBound(faceSettings) < 14 Then Exit Function
     If Len(Trim$(CStr(faceSettings(LBound(faceSettings) + 14)))) > 0 Then FaceRow2Location = Trim$(CStr(faceSettings(LBound(faceSettings) + 14)))
 End Function
 
+' Возвращает общий способ размещения третьего ряда для грани.
 Private Function FaceRow3Location(ByVal faceSettings As Variant) As String
     FaceRow3Location = "Stacked"
     If UBound(faceSettings) - LBound(faceSettings) < 15 Then Exit Function
     If Len(Trim$(CStr(faceSettings(LBound(faceSettings) + 15)))) > 0 Then FaceRow3Location = Trim$(CStr(faceSettings(LBound(faceSettings) + 15)))
 End Function
 
+' Возвращает правило привязки второго ряда для грани.
 Private Function FaceRow2Binding(ByVal faceSettings As Variant) As String
     FaceRow2Binding = "EachBar"
     If UBound(faceSettings) - LBound(faceSettings) < 16 Then Exit Function
     If Len(Trim$(CStr(faceSettings(LBound(faceSettings) + 16)))) > 0 Then FaceRow2Binding = Trim$(CStr(faceSettings(LBound(faceSettings) + 16)))
 End Function
 
+' Возвращает правило привязки третьего ряда для грани.
 Private Function FaceRow3Binding(ByVal faceSettings As Variant) As String
     FaceRow3Binding = "EachBar"
     If UBound(faceSettings) - LBound(faceSettings) < 17 Then Exit Function
     If Len(Trim$(CStr(faceSettings(LBound(faceSettings) + 17)))) > 0 Then FaceRow3Binding = Trim$(CStr(faceSettings(LBound(faceSettings) + 17)))
 End Function
 
+' Выбирает следующую позицию первого ряда, начиная с ближайшей к середине линии.
+' Такой порядок уменьшает шанс, что из-за дублей на углах сначала будут заняты
+' только крайние точки и групповой anchor получится визуально смещенным.
 Private Function ClosestUnusedDistanceIndex(ByRef distances() As Double, ByRef used() As Boolean, ByVal faceLength As Double) As Long
     Dim bestDistance As Double
     bestDistance = 1E+99
@@ -623,6 +684,7 @@ Private Function ClosestUnusedDistanceIndex(ByRef distances() As Double, ByRef u
     Next i
 End Function
 
+' Проверяет, есть ли уже стержень в той же точке с геометрическим допуском.
 Private Function HasBarAt(ByVal layout As CRebarLayout, ByVal xCoord As Double, ByVal yCoord As Double) As Boolean
     Dim i As Long
     For i = 1 To layout.Count
@@ -633,14 +695,17 @@ Private Function HasBarAt(ByVal layout As CRebarLayout, ByVal xCoord As Double, 
     Next i
 End Function
 
+' X-координата центра тяжести созданной арматуры после последнего Build.
 Public Property Get CentroidX() As Double
     CentroidX = mCentroidX
 End Property
 
+' Y-координата центра тяжести созданной арматуры после последнего Build.
 Public Property Get CentroidY() As Double
     CentroidY = mCentroidY
 End Property
 
+' Количество стержней, пропущенных из-за совпадения координат.
 Public Property Get SkippedDuplicateCount() As Long
     SkippedDuplicateCount = mSkippedDuplicateCount
 End Property
@@ -652,14 +717,17 @@ End Property
 ' Тесты используют их, чтобы проверить длину обхода и шаг расстановки без
 ' анализа уже созданных координат каждого стержня.
 
+' Максимальный шаг по прямым линиям первого ряда, найденный в последнем Build.
 Public Property Get StepAlong() As Double
     StepAlong = mStepAlong
 End Property
 
+' Диагностическая длина линий раскладки, использованная в последнем Build.
 Public Property Get Perimeter() As Double
     Perimeter = mPerimeter
 End Property
 
+' Количество стержней первого ряда, запрошенное пользователем до удаления дублей.
 Public Property Get RequestedCount() As Long
     RequestedCount = mRequestedCount
 End Property

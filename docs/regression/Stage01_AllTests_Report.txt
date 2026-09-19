@@ -66,6 +66,28 @@ OK: rounded.rebar.top.firstY; actual=85.; expected=85.; absDiff=0.
 OK: rounded.rebar.top.lastX; actual=385.518002592747; expected=385.518002592747; absDiff=0.
 OK: rounded.rebar.top.lastX.followsTaperAngle
 OK: rounded.rebar.bottom.firstY; actual=-85.; expected=-85.; absDiff=0.
+OK: rounded.rebar.hLeft.pathStartX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.hLeft.pathStartY; actual=85.; expected=85.; absDiff=0.
+OK: rounded.rebar.hLeft.pathEndX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.hLeft.pathEndY; actual=-85.; expected=-85.; absDiff=0.
+OK: rounded.rebar.hLeft.firstAtOneStepX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.hLeft.firstAtOneStepY; actual=42.5; expected=42.5; absDiff=0.
+OK: rounded.rebar.hLeft.lastAtOneStepX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.hLeft.lastAtOneStepY; actual=-42.5; expected=-42.5; absDiff=0.
+OK: rounded.rebar.hRight.pathStartX; actual=385.518002592747; expected=385.518002592747; absDiff=0.
+OK: rounded.rebar.hRight.pathStartY; actual=85.; expected=85.; absDiff=0.
+OK: rounded.rebar.hRight.pathEndX; actual=385.518002592747; expected=385.518002592747; absDiff=0.
+OK: rounded.rebar.hRight.pathEndY; actual=-85.; expected=-85.; absDiff=0.
+OK: rounded.rebar.hRight.firstAtOneStepX; actual=431.528867378695; expected=431.528867378695; absDiff=0.
+OK: rounded.rebar.hRight.firstAtOneStepY; actual=46.657612678376; expected=46.657612678376; absDiff=0.
+OK: rounded.rebar.simpleLeft.pathStartX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.simpleLeft.pathStartY; actual=105.; expected=105.; absDiff=0.
+OK: rounded.rebar.simpleLeft.pathEndX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.simpleLeft.pathEndY; actual=-105.; expected=-105.; absDiff=0.
+OK: rounded.rebar.simpleRight.pathStartX; actual=360.; expected=360.; absDiff=0.
+OK: rounded.rebar.simpleRight.pathStartY; actual=105.; expected=105.; absDiff=0.
+OK: rounded.rebar.simpleRight.pathEndX; actual=360.; expected=360.; absDiff=0.
+OK: rounded.rebar.simpleRight.pathEndY; actual=-105.; expected=-105.; absDiff=0.
 OK: rounded.rebar.inside.1
 OK: rounded.rebar.inside.2
 OK: rounded.rebar.inside.3
@@ -368,9 +390,9 @@ CONVERGENCE: step=12.5 area=88750.; cx=0.; cy=1.795774647887; Ix=366297131.74882
 OK: conv.area.25.12; actual=88750.; expected=88750.; relDiff=0.
 OK: conv.Ix.25.12; actual=366297131.748829; expected=366946339.495306; relDiff=0.001769217121
 OK: conv.Iy.25.12; actual=1154524739.58334; expected=1155989583.33333; relDiff=0.001267177292
-PERFORMANCE: section=800x500; step=10; fibers=3988; buildSec=0.046875; propsSec=0.0078125; area=398800.
+PERFORMANCE: section=800x500; step=10; fibers=3988; buildSec=0.0546875; propsSec=0.0078125; area=398800.
 OK: perf.fibers.positive
-TOTAL: passed=335; failed=0
+TOTAL: passed=357; failed=0
 
 
 ===== Run-MaterialTests.ps1 =====
@@ -821,7 +843,7 @@ OK: section.method.emptyInput
 OK: section.method.emptyMessage
 OK: settings.solverMethod.defaultNewton
 OK: section.systemMethod.newtonBranch
-TOTAL_SECTION_SOLVER: passed=384; failed=0; elapsedSec=0.5
+TOTAL_SECTION_SOLVER: passed=384; failed=0; elapsedSec=0.6328125
 
 
 ===== Run-CapacityTests.ps1 =====
@@ -972,16 +994,16 @@ OK: method.n_plus_mx.lambda; actual=3.098714243907; expected=3.09375; absDiff=0.
 OK: method.n_plus_mx.limitState
 OK: method.n_plus_mx.criticalElement
 OK: method.n_plus_mx.solverCalls
-COMPARE|method.n_plus_mx.load|converged=True|lambda=3.09375|limitState=ConcreteStrainLimit|criticalStrain=-0.001501652538|criticalElement=C136:Compression|solverCalls=15|elapsedSec=0.1015625
-COMPARE|method.n_plus_mx.strain|converged=True|lambda=3.098714243907|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.0234375
+COMPARE|method.n_plus_mx.load|converged=True|lambda=3.09375|limitState=ConcreteStrainLimit|criticalStrain=-0.001501652538|criticalElement=C136:Compression|solverCalls=15|elapsedSec=0.109375
+COMPARE|method.n_plus_mx.strain|converged=True|lambda=3.098714243907|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.015625
 OK: method.n_plus_my.load.converged
 OK: method.n_plus_my.strain.converged
 OK: method.n_plus_my.lambda; actual=4.490409406947; expected=4.484375; absDiff=0.006034406947
 OK: method.n_plus_my.limitState
 OK: method.n_plus_my.criticalElement
 OK: method.n_plus_my.solverCalls
-COMPARE|method.n_plus_my.load|converged=True|lambda=4.484375|limitState=ConcreteStrainLimit|criticalStrain=-0.001500652149|criticalElement=C15:Compression|solverCalls=14|elapsedSec=0.09375
-COMPARE|method.n_plus_my.strain|converged=True|lambda=4.490409406947|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.015625
+COMPARE|method.n_plus_my.load|converged=True|lambda=4.484375|limitState=ConcreteStrainLimit|criticalStrain=-0.001500652149|criticalElement=C15:Compression|solverCalls=14|elapsedSec=0.078125
+COMPARE|method.n_plus_my.strain|converged=True|lambda=4.490409406947|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.0078125
 OK: method.biaxial.load.converged
 OK: method.biaxial.strain.converged
 OK: method.biaxial.lambda; actual=3.583378108174; expected=3.578125; absDiff=0.005253108174
@@ -1806,12 +1828,12 @@ OK: search.invalid.inputError
 OK: search.secant.controlledFailure
 RUN: TestSearchMethodPerformanceComparison
 OK: search.perf.Bisection.converged
-PERF_CAPACITY_SEARCH|Bisection|lambda=3.09375|iterations=15|functionEvaluations=15|avgSec=0.1328125|residual=0.000000018633|converged=True|status=ConcreteStrainLimit
+PERF_CAPACITY_SEARCH|Bisection|lambda=3.09375|iterations=15|functionEvaluations=15|avgSec=0.161458333333|residual=0.000000018633|converged=True|status=ConcreteStrainLimit
 OK: search.perf.Brent.converged
 PERF_CAPACITY_SEARCH|Brent|lambda=3.09776378716|iterations=9|functionEvaluations=9|avgSec=0.083333333333|residual=0.000000000975|converged=True|status=ConcreteStrainLimit
 OK: search.perf.Secant.converged
-PERF_CAPACITY_SEARCH|Secant|lambda=3.098514991183|iterations=7|functionEvaluations=7|avgSec=0.0625|residual=0.000000011376|converged=True|status=ConcreteStrainLimit
-TOTAL_CAPACITY: passed=923; failed=0; elapsedSec=19.765625
+PERF_CAPACITY_SEARCH|Secant|lambda=3.098514991183|iterations=7|functionEvaluations=7|avgSec=0.059895833333|residual=0.000000011376|converged=True|status=ConcreteStrainLimit
+TOTAL_CAPACITY: passed=923; failed=0; elapsedSec=21.71875
 
 
 ===== Run-CrackTests.ps1 =====
@@ -2082,7 +2104,7 @@ OK: crack.central.offsetLoadStateRejected
 OK: crack.noTension.converged
 OK: crack.noTension.notFormed
 OK: crack.noTension.width; actual=0.; expected=0.; absDiff=0.
-TOTAL_CRACK: passed=267; failed=0; elapsedSec=1.0859375
+TOTAL_CRACK: passed=267; failed=0; elapsedSec=1.578125
 
 
 ===== Run-BatchTests.ps1 =====
@@ -2727,7 +2749,7 @@ OK: batch.settings.capacity.maxLambda
 RUN: TestInvalidModeSettingsAreNotFallbacks
 OK: batch.invalid.CapacitySolutionStrategy.status
 OK: batch.invalid.CapacitySolutionStrategy.noLambda
-TOTAL_BATCH: passed=502; failed=0; elapsedSec=15.6875
+TOTAL_BATCH: passed=502; failed=0; elapsedSec=14.140625
 
 
 ===== Run-WorkbookInterfaceTests.ps1 =====
@@ -3012,7 +3034,7 @@ OK: ui.clear.results.properties
 OK: ui.clear.results.annotations
 OK: ui.clear.results.materialDiagrams
 OK: ui.clear.input
-TOTAL_WORKBOOK_UI: passed=275; failed=0; elapsedSec=22.34375
+TOTAL_WORKBOOK_UI: passed=275; failed=0; elapsedSec=21.984375
 
 
 ===== Run-RegressionBaselineTests.ps1 =====
@@ -3036,7 +3058,7 @@ OK: full_n_mx_my.converged
 OK: full_n_mx_my.N; actual=-100000.; expected=-100000.; relDiff=0.
 OK: full_n_mx_my.Mx; actual=-4000000.; expected=-4000000.; relDiff=0.
 OK: full_n_mx_my.My; actual=-3000000.; expected=-3000000.; relDiff=0.
-BASELINE|full_n_mx_my|converged=True|eps0=-0.000082335606|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=-4000000.|Myint=-3000000.|resN=0.|resMx=-0.000000003725|resMy=0.000000000931|lambda=16.3359375|iterations=3|elapsedSec=0.|fibers=177|rebars=8
+BASELINE|full_n_mx_my|converged=True|eps0=-0.000082335606|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=-4000000.|Myint=-3000000.|resN=0.|resMx=-0.000000003725|resMy=0.000000000931|lambda=16.3359375|iterations=3|elapsedSec=0.0078125|fibers=177|rebars=8
 OK: symmetric_circle.converged
 OK: symmetric_circle.N; actual=-219999.999999999; expected=-220000.; relDiff=0.
 OK: symmetric_circle.Mx; actual=-6000000.00000002; expected=-6000000.; relDiff=0.
@@ -3067,7 +3089,7 @@ OK: origin_shift.shifted.Mx; actual=1000000.; expected=1000000.; relDiff=0.
 OK: origin_shift.shifted.My; actual=-10500000.; expected=-10500000.; relDiff=0.
 BASELINE|origin_shift_base|converged=True|eps0=-0.000082335606|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=-4000000.|Myint=-3000000.|resN=0.|resMx=-0.000000003725|resMy=0.000000000931|lambda=NA|iterations=3|elapsedSec=0.|fibers=0|rebars=0
 BASELINE|origin_shift_shifted|converged=True|eps0=-0.00007872362|kappaX=-0.000000579583|kappaY=-0.000000434549|Nint=-100000.|Mxint=1000000.|Myint=-10500000.|resN=-0.000000000015|resMx=0.000000000815|resMy=0.000000003725|lambda=NA|iterations=3|elapsedSec=0.|fibers=0|rebars=0
-TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.5546875
+TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.5625
 
 Regression baseline report: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Stage01_RegressionBaseline_Raw.txt
 

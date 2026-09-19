@@ -1393,6 +1393,39 @@ Private Function RoundedDisplayLength(ByVal valueMm As Double) As Double
     End If
 End Function
 
+' Считает длину проверяемой линии раскладки по ее фактической ломаной.
+Private Function TestPolylineLength(ByRef px() As Double, ByRef py() As Double) As Double
+    Dim i As Long
+    For i = LBound(px) To UBound(px) - 1
+        TestPolylineLength = TestPolylineLength + Sqr((px(i + 1) - px(i)) ^ 2 + (py(i + 1) - py(i)) ^ 2)
+    Next i
+End Function
+
+' Возвращает точку на тестовой линии раскладки на заданном расстоянии от начала.
+Private Sub TestPointAtDistance(ByRef px() As Double, ByRef py() As Double, ByVal targetDistance As Double, _
+        ByRef xCoord As Double, ByRef yCoord As Double)
+    Dim accumulated As Double
+    Dim i As Long
+    For i = LBound(px) To UBound(px) - 1
+        Dim segLen As Double
+        segLen = Sqr((px(i + 1) - px(i)) ^ 2 + (py(i + 1) - py(i)) ^ 2)
+        If segLen <= GEOM_TOLERANCE Then GoTo NextSegment
+        If accumulated + segLen >= targetDistance - GEOM_TOLERANCE Then
+            Dim t As Double
+            t = (targetDistance - accumulated) / segLen
+            If t < 0# Then t = 0#
+            If t > 1# Then t = 1#
+            xCoord = px(i) + t * (px(i + 1) - px(i))
+            yCoord = py(i) + t * (py(i + 1) - py(i))
+            Exit Sub
+        End If
+        accumulated = accumulated + segLen
+NextSegment:
+    Next i
+    xCoord = px(UBound(px))
+    yCoord = py(UBound(py))
+End Sub
+
 ' Проверяет новую автоматическую раскладку RoundedRectangle: горизонтальные
 ' линии B идут только по прямому участку между R1, а боковая H-линия может
 ' идти по tapered-траектории.
@@ -1426,6 +1459,75 @@ Private Sub TestRoundedRectangleRebarLayout(ByRef stats As TTestStats)
     AssertClose stats, "rounded.rebar.top.lastX", layout.X(5), topX2, 0.000001
     AssertTrue stats, "rounded.rebar.top.lastX.followsTaperAngle", layout.X(5) > 360# And layout.X(5) < 400#
     AssertClose stats, "rounded.rebar.bottom.firstY", layout.Y(6), -85#, 0.000001
+
+    Dim bottomX1 As Double
+    Dim bottomY1 As Double
+    Dim bottomX2 As Double
+    Dim bottomY2 As Double
+    geom.GetHorizontalRebarLine False, 40#, bottomX1, bottomY1, bottomX2, bottomY2, normalX, normalY
+
+    Dim leftPathX() As Double
+    Dim leftPathY() As Double
+    geom.GetSideRebarPath True, 40#, leftPathX, leftPathY
+    AssertClose stats, "rounded.rebar.hLeft.pathStartX", leftPathX(LBound(leftPathX)), topX1, 0.000001
+    AssertClose stats, "rounded.rebar.hLeft.pathStartY", leftPathY(LBound(leftPathY)), topY1, 0.000001
+    AssertClose stats, "rounded.rebar.hLeft.pathEndX", leftPathX(UBound(leftPathX)), bottomX1, 0.000001
+    AssertClose stats, "rounded.rebar.hLeft.pathEndY", leftPathY(UBound(leftPathY)), bottomY1, 0.000001
+
+    Dim leftStep As Double
+    leftStep = TestPolylineLength(leftPathX, leftPathY) / 4#
+    Dim expectedX As Double
+    Dim expectedY As Double
+    TestPointAtDistance leftPathX, leftPathY, leftStep, expectedX, expectedY
+    AssertClose stats, "rounded.rebar.hLeft.firstAtOneStepX", layout.X(11), expectedX, 0.000001
+    AssertClose stats, "rounded.rebar.hLeft.firstAtOneStepY", layout.Y(11), expectedY, 0.000001
+    TestPointAtDistance leftPathX, leftPathY, leftStep * 3#, expectedX, expectedY
+    AssertClose stats, "rounded.rebar.hLeft.lastAtOneStepX", layout.X(13), expectedX, 0.000001
+    AssertClose stats, "rounded.rebar.hLeft.lastAtOneStepY", layout.Y(13), expectedY, 0.000001
+
+    Dim rightPathX() As Double
+    Dim rightPathY() As Double
+    geom.GetSideRebarPath False, 40#, rightPathX, rightPathY
+    AssertClose stats, "rounded.rebar.hRight.pathStartX", rightPathX(LBound(rightPathX)), topX2, 0.000001
+    AssertClose stats, "rounded.rebar.hRight.pathStartY", rightPathY(LBound(rightPathY)), topY2, 0.000001
+    AssertClose stats, "rounded.rebar.hRight.pathEndX", rightPathX(UBound(rightPathX)), bottomX2, 0.000001
+    AssertClose stats, "rounded.rebar.hRight.pathEndY", rightPathY(UBound(rightPathY)), bottomY2, 0.000001
+    Dim rightStep As Double
+    rightStep = TestPolylineLength(rightPathX, rightPathY) / 4#
+    TestPointAtDistance rightPathX, rightPathY, rightStep, expectedX, expectedY
+    AssertClose stats, "rounded.rebar.hRight.firstAtOneStepX", layout.X(14), expectedX, 0.000001
+    AssertClose stats, "rounded.rebar.hRight.firstAtOneStepY", layout.Y(14), expectedY, 0.000001
+
+    Dim simpleGeom As CGeometryRoundedRectangle
+    Set simpleGeom = New CGeometryRoundedRectangle
+    simpleGeom.InitializeSides 800#, 250#, "Simple", "Simple", 0#, 0#, 40#, 40#, 0#, 0#
+
+    Dim simpleTopX1 As Double
+    Dim simpleTopY1 As Double
+    Dim simpleTopX2 As Double
+    Dim simpleTopY2 As Double
+    Dim simpleBottomX1 As Double
+    Dim simpleBottomY1 As Double
+    Dim simpleBottomX2 As Double
+    Dim simpleBottomY2 As Double
+    simpleGeom.GetHorizontalRebarLine True, 20#, simpleTopX1, simpleTopY1, simpleTopX2, simpleTopY2, normalX, normalY
+    simpleGeom.GetHorizontalRebarLine False, 20#, simpleBottomX1, simpleBottomY1, simpleBottomX2, simpleBottomY2, normalX, normalY
+
+    Dim simpleLeftPathX() As Double
+    Dim simpleLeftPathY() As Double
+    simpleGeom.GetSideRebarPath True, 20#, simpleLeftPathX, simpleLeftPathY
+    AssertClose stats, "rounded.rebar.simpleLeft.pathStartX", simpleLeftPathX(LBound(simpleLeftPathX)), simpleTopX1, 0.000001
+    AssertClose stats, "rounded.rebar.simpleLeft.pathStartY", simpleLeftPathY(LBound(simpleLeftPathY)), simpleTopY1, 0.000001
+    AssertClose stats, "rounded.rebar.simpleLeft.pathEndX", simpleLeftPathX(UBound(simpleLeftPathX)), simpleBottomX1, 0.000001
+    AssertClose stats, "rounded.rebar.simpleLeft.pathEndY", simpleLeftPathY(UBound(simpleLeftPathY)), simpleBottomY1, 0.000001
+
+    Dim simpleRightPathX() As Double
+    Dim simpleRightPathY() As Double
+    simpleGeom.GetSideRebarPath False, 20#, simpleRightPathX, simpleRightPathY
+    AssertClose stats, "rounded.rebar.simpleRight.pathStartX", simpleRightPathX(LBound(simpleRightPathX)), simpleTopX2, 0.000001
+    AssertClose stats, "rounded.rebar.simpleRight.pathStartY", simpleRightPathY(LBound(simpleRightPathY)), simpleTopY2, 0.000001
+    AssertClose stats, "rounded.rebar.simpleRight.pathEndX", simpleRightPathX(UBound(simpleRightPathX)), simpleBottomX2, 0.000001
+    AssertClose stats, "rounded.rebar.simpleRight.pathEndY", simpleRightPathY(UBound(simpleRightPathY)), simpleBottomY2, 0.000001
 
     Dim i As Long
     For i = 1 To layout.Count

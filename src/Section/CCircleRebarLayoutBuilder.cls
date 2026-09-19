@@ -82,6 +82,8 @@ Public Function Build(ByVal diameter As Double, ByVal centerX As Double, ByVal c
     Dim layout As CRebarLayout
     Set layout = New CRebarLayout
 
+    ' Сбрасываем диагностические величины последнего построения. Их читают
+    ' тесты и справочная логика, но на расчетную модель они не влияют.
     mCentroidX = centerX
     mCentroidY = centerY
     mAxisRadius = 0#
@@ -94,14 +96,17 @@ Public Function Build(ByVal diameter As Double, ByVal centerX As Double, ByVal c
 
     mAxisRadius = diameter / 2# - axisDistance
     mAngleStep = 2# * GEOM_PI / CDbl(barCount)
+
+    ' Anchor подписи арматуры идет по хорде первого ряда, чтобы схема могла
+    ' вывести одну групповую надпись вместо подписи каждого стержня.
     layout.AddAnnotationAnchor "Circle", centerX - mAxisRadius, centerY + mAxisRadius, _
         centerX + mAxisRadius, centerY + mAxisRadius, 0#, 1#, axisDistance
 
     Dim i As Long
-    Dim alpha As Double
-    Dim xCoord As Double
+    Dim alpha As Double ' Угол текущего стержня первого ряда от глобальной +X.
+    Dim xCoord As Double ' Координата оси текущего стержня.
     Dim yCoord As Double
-    Dim sx As Double
+    Dim sx As Double ' Суммы координат нужны только для контрольной проверки центра первого ряда.
     Dim sy As Double
     For i = 0 To barCount - 1
         alpha = mAngleStep * CDbl(i)
@@ -132,6 +137,10 @@ Public Function Build(ByVal diameter As Double, ByVal centerX As Double, ByVal c
     Set Build = layout
 End Function
 
+' Добавляет второй или третий ряд относительно одного стержня первого ряда.
+' Stacked смещает стержень к центру круга, SideBySide - по касательной по
+' часовой стрелке. Перед записью проверяется, что новый круг целиком остается
+' внутри бетонного контура.
 Private Sub AddAdditionalCircleBar(ByVal layout As CRebarLayout, ByVal geom As CGeometryCircle, _
         ByVal barName As String, ByVal centerX As Double, ByVal centerY As Double, _
         ByVal baseX As Double, ByVal baseY As Double, ByVal alpha As Double, _
@@ -139,20 +148,22 @@ Private Sub AddAdditionalCircleBar(ByVal layout As CRebarLayout, ByVal geom As C
         ByVal skipDiameter As Double, ByVal steelClass As String)
     If addDiameter <= 0# Then Exit Sub
 
-    Dim offsetDistance As Double
+    Dim offsetDistance As Double ' Расстояние между осями соседних стержней с учетом возможного пропущенного ряда.
     offsetDistance = baseDiameter / 2# + skipDiameter + addDiameter / 2#
 
-    Dim dirX As Double
+    Dim dirX As Double ' Единичное направление смещения дополнительного стержня.
     Dim dirY As Double
     If IsStackedLocation(location) Then
+        ' Радиальное направление внутрь: от стержня первого ряда к центру.
         dirX = -Cos(alpha)
         dirY = -Sin(alpha)
     Else
+        ' Касательная по часовой стрелке в локальной точке окружности.
         dirX = Sin(alpha)
         dirY = -Cos(alpha)
     End If
 
-    Dim xCoord As Double
+    Dim xCoord As Double ' Координаты оси добавляемого стержня.
     Dim yCoord As Double
     xCoord = baseX + offsetDistance * dirX
     yCoord = baseY + offsetDistance * dirY
@@ -161,6 +172,9 @@ Private Sub AddAdditionalCircleBar(ByVal layout As CRebarLayout, ByVal geom As C
         "Круг: дополнительный ряд арматуры", geom, "Circle"
 End Sub
 
+' Возвращает диаметр промежуточного ряда, который надо "перепрыгнуть" третьему
+' ряду. Это нужно, когда второй и третий ряды имеют одинаковую схему смещения:
+' третий ряд ставится за вторым, а не накладывается на него.
 Private Function RowSkipDiameter(ByVal row2Diameter As Double, ByVal row2Location As String, ByVal row3Location As String) As Double
     If row2Diameter > 0# And StrComp(Trim$(row2Location), Trim$(row3Location), vbTextCompare) = 0 Then
         RowSkipDiameter = row2Diameter
@@ -200,18 +214,26 @@ Private Sub ValidateBarInsideCircle(ByVal geom As CGeometryCircle, ByVal centerX
     End If
 End Sub
 
+' Проверяет, что текстовый режим дополнительного ряда относится к известным
+' пользовательским вариантам. Проверка отделена от Build, чтобы одинаково
+' обслуживать второй и третий ряд.
 Private Function IsSupportedRowLocation(ByVal value As String) As Boolean
     IsSupportedRowLocation = IsStackedLocation(value) Or StrComp(Trim$(value), "SideBySide", vbTextCompare) = 0
 End Function
 
+' Возвращает True для режима Stacked; отдельная функция нужна, чтобы не
+' размазывать регистронезависимое сравнение по нескольким расчетным веткам.
 Private Function IsStackedLocation(ByVal value As String) As Boolean
     IsStackedLocation = (StrComp(Trim$(value), "Stacked", vbTextCompare) = 0)
 End Function
 
+' Центр тяжести первого ряда арматуры после последнего Build. Используется
+' тестами как контроль равномерности круговой раскладки.
 Public Property Get CentroidX() As Double
     CentroidX = mCentroidX
 End Property
 
+' Y-координата центра первого ряда арматуры после последнего Build.
 Public Property Get CentroidY() As Double
     CentroidY = mCentroidY
 End Property
@@ -226,6 +248,7 @@ Public Property Get AngleStep() As Double
     AngleStep = mAngleStep
 End Property
 
+' Радиус линии осей первого ряда после последнего построения круговой раскладки.
 Public Property Get AxisRadius() As Double
     AxisRadius = mAxisRadius
 End Property

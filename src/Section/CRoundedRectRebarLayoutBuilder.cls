@@ -108,6 +108,11 @@ Private Function OptionalDiameterFromSettings(ByVal settings As CSystemSettingsR
     End If
 End Function
 
+' Добавляет один ряд арматуры вдоль верхней или нижней смысловой грани B.
+' Геометрия возвращает уже смещенную внутрь линию между касательными точками
+' соседних скруглений R1. В отличие от H-граней, B-ряд занимает весь этот
+' прямой участок: первый и последний стержни ставятся в начальную и конечную
+' точки линии, а промежуточные равномерно делят оставшуюся длину.
 Private Sub AddHorizontalFace(ByVal layout As CRebarLayout, ByVal geom As CGeometryRoundedRectangle, _
         ByVal faceName As String, ByVal isTop As Boolean, ByVal settings As Variant, _
         ByVal steelClass As String, ByRef nextIndex As Long)
@@ -156,6 +161,16 @@ Private Sub AddHorizontalFace(ByVal layout As CRebarLayout, ByVal geom As CGeome
     Next i
 End Sub
 
+' Добавляет арматуру вдоль левой или правой смысловой грани H.
+' Путь H идет по внутренней линии, параллельной соответствующей боковой части
+' контура: для Simple это вертикальная вставка со скругленными концами, для
+' Tapered - верхнее скругление R1, наклонная часть, носовой радиус R2,
+' нижняя наклонная часть и нижнее скругление R1. Начало и конец пути совпадают
+' с точками, где горизонтальные прямые B переходят в свои скругления.
+'
+' Стержни H не ставятся непосредственно в эти конечные точки: линия длиной L
+' делится на n+1 равных интервалов, поэтому первый и последний стержни имеют
+' одинаковый отступ от начала и конца, равный принятому шагу L/(n+1).
 Private Sub AddSideFace(ByVal layout As CRebarLayout, ByVal geom As CGeometryRoundedRectangle, _
         ByVal faceName As String, ByVal isLeft As Boolean, ByVal settings As Variant, _
         ByVal steelClass As String, ByRef nextIndex As Long)
@@ -186,10 +201,13 @@ Private Sub AddSideFace(ByVal layout As CRebarLayout, ByVal geom As CGeometryRou
     Dim anchorMinY As Double
     Dim anchorMaxY As Double
     Dim anchorInitialized As Boolean
+    Dim spacing As Double
+    spacing = totalLength / CDbl(barCount + 1)
+
     Dim i As Long
     For i = 1 To barCount
         Dim distanceAlong As Double
-        distanceAlong = totalLength * CDbl(i) / CDbl(barCount + 1)
+        distanceAlong = spacing * CDbl(i)
         Dim xCoord As Double, yCoord As Double, tx As Double, ty As Double
         PointAtDistance px, py, distanceAlong, xCoord, yCoord, tx, ty
 
@@ -230,6 +248,11 @@ Private Sub AccumulateSideLabelAnchor(ByVal isLeft As Boolean, ByVal xCoord As D
     End If
 End Sub
 
+' Добавляет второй и третий ряды для уже найденного стержня первого ряда.
+' Stacked смещает стержень внутрь сечения по нормали к текущей линии
+' раскладки, SideBySide - вдоль касательной к этой линии. Для криволинейной
+' H-грани касательная и нормаль берутся в фактической точке первого ряда,
+' поэтому дополнительные ряды следуют форме боковой траектории.
 Private Sub AddAdditionalRows(ByVal layout As CRebarLayout, ByVal geom As CGeometryRoundedRectangle, _
         ByVal faceName As String, ByVal baseX As Double, ByVal baseY As Double, ByVal row1Diameter As Double, _
         ByVal settings As Variant, ByVal baseBarOrdinal As Long, ByVal tangentX As Double, ByVal tangentY As Double, _
@@ -257,6 +280,10 @@ Private Sub AddAdditionalRows(ByVal layout As CRebarLayout, ByVal geom As CGeome
     End If
 End Sub
 
+' Возвращает координату дополнительного стержня относительно базового стержня.
+' Расстояние между осями считается по сумме радиусов стержней; если третий ряд
+' ставится в том же направлении, что и второй, диаметр второго ряда добавляется
+' как пропущенный промежуток между первым и третьим рядами.
 Private Sub OffsetAdditionalRow(ByVal baseX As Double, ByVal baseY As Double, _
         ByVal row1Diameter As Double, ByVal targetDiameter As Double, ByVal skippedDiameter As Double, _
         ByVal locationMode As String, ByVal tangentX As Double, ByVal tangentY As Double, _
@@ -272,6 +299,9 @@ Private Sub OffsetAdditionalRow(ByVal baseX As Double, ByVal baseY As Double, _
     End If
 End Sub
 
+' Проверяет, нужно ли привязывать дополнительный ряд к конкретному стержню
+' первого ряда. EachBar дублирует каждый стержень, EverySecondBar - только
+' нечетные номера, чтобы можно было разреженно поставить второй/третий ряд.
 Private Function ShouldAddAdditionalRow(ByVal baseBarOrdinal As Long, ByVal bindingMode As String) As Boolean
     If StrComp(bindingMode, "EverySecondBar", vbTextCompare) = 0 Then
         ShouldAddAdditionalRow = ((baseBarOrdinal Mod 2) = 1)
@@ -280,6 +310,10 @@ Private Function ShouldAddAdditionalRow(ByVal baseBarOrdinal As Long, ByVal bind
     End If
 End Function
 
+' Добавляет стержень, если в этой точке еще нет ранее созданного стержня.
+' Такая защита нужна в местах, где линии B и H могут геометрически сблизиться:
+' пользователь видит запрошенное число отдельно по граням, а расчетная модель
+' не получает две арматуры с одинаковыми координатами.
 Private Sub AddBarIfAvailable(ByVal layout As CRebarLayout, ByVal geom As CGeometryRoundedRectangle, _
         ByVal faceName As String, ByVal rowNumber As Long, ByVal xCoord As Double, ByVal yCoord As Double, _
         ByVal diameter As Double, ByVal steelClass As String, ByRef nextIndex As Long)
@@ -293,6 +327,9 @@ Private Sub AddBarIfAvailable(ByVal layout As CRebarLayout, ByVal geom As CGeome
     nextIndex = nextIndex + 1
 End Sub
 
+' Проверяет пользовательскую строку арматуры одной смысловой грани.
+' Пустой/нулевой диаметр или n=0 означает "линию не создавать"; ошибки
+' выдаются только для активной линии или явно некорректных дополнительных рядов.
 Private Sub ValidateFace(ByVal faceName As String, ByVal axisDistance As Double, ByVal diameter As Double, _
         ByVal barCount As Long, ByVal row2Diameter As Double, ByVal row3Diameter As Double, _
         ByVal row2Location As String, ByVal row3Location As String, ByVal row2Binding As String, ByVal row3Binding As String)
@@ -307,14 +344,19 @@ Private Sub ValidateFace(ByVal faceName As String, ByVal axisDistance As Double,
     If row3Diameter > 0# And Not IsSupportedRowBinding(row3Binding) Then Err.Raise vbObjectError + 3237, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": привязка третьего ряда должна быть EachBar или EverySecondBar."
 End Sub
 
+' Поддерживаемые способы размещения дополнительного ряда относительно первого.
 Private Function IsSupportedRowLocation(ByVal value As String) As Boolean
     IsSupportedRowLocation = (StrComp(value, "SideBySide", vbTextCompare) = 0 Or StrComp(value, "Stacked", vbTextCompare) = 0)
 End Function
 
+' Поддерживаемые способы привязки дополнительного ряда к стержням первого ряда.
 Private Function IsSupportedRowBinding(ByVal value As String) As Boolean
     IsSupportedRowBinding = (StrComp(value, "EachBar", vbTextCompare) = 0 Or StrComp(value, "EverySecondBar", vbTextCompare) = 0)
 End Function
 
+' Считает фактическую длину ломаной/дискретизированной кривой, по которой
+' раскладывается H-арматура. Длина нужна именно по пути, а не по хорде между
+' концами, чтобы шаг по tapered-части и дугам был равномерным.
 Private Function PolylineLength(ByRef px() As Double, ByRef py() As Double) As Double
     Dim i As Long
     For i = LBound(px) To UBound(px) - 1
@@ -322,6 +364,9 @@ Private Function PolylineLength(ByRef px() As Double, ByRef py() As Double) As D
     Next i
 End Function
 
+' Находит точку и локальную касательную на заданном расстоянии от начала
+' бокового пути. Этим методом H-арматура получает равномерный шаг по фактической
+' траектории, а дополнительные ряды - правильное локальное направление.
 Private Sub PointAtDistance(ByRef px() As Double, ByRef py() As Double, ByVal targetDistance As Double, _
         ByRef xCoord As Double, ByRef yCoord As Double, ByRef tangentX As Double, ByRef tangentY As Double)
     Dim accumulated As Double
@@ -350,6 +395,7 @@ NextSegment:
     tangentY = -1#
 End Sub
 
+' Нормирует локальную нормаль или касательную перед смещением дополнительных рядов.
 Private Sub NormalizeVector(ByRef xValue As Double, ByRef yValue As Double)
     Dim lenValue As Double
     lenValue = Sqr(xValue * xValue + yValue * yValue)
@@ -358,6 +404,9 @@ Private Sub NormalizeVector(ByRef xValue As Double, ByRef yValue As Double)
     yValue = yValue / lenValue
 End Sub
 
+' Проверяет совпадение координат с уже добавленными стержнями с геометрическим
+' допуском. Используется только внутри автоматической раскладки, чтобы убрать
+' дубли на сопряжениях граней.
 Private Function HasBarAt(ByVal layout As CRebarLayout, ByVal xCoord As Double, ByVal yCoord As Double) As Boolean
     Dim i As Long
     For i = 1 To layout.Count
@@ -368,42 +417,53 @@ Private Function HasBarAt(ByVal layout As CRebarLayout, ByVal xCoord As Double, 
     Next i
 End Function
 
+' Возвращает расстояние as из компактного массива настроек одной грани.
 Private Function FaceAs(ByVal settings As Variant) As Double
     FaceAs = CDbl(settings(LBound(settings)))
 End Function
 
+' Возвращает диаметр первого ряда; ноль означает, что грань не армируется.
 Private Function FaceDiameter(ByVal settings As Variant) As Double
     FaceDiameter = CDbl(settings(LBound(settings) + 1))
 End Function
 
+' Возвращает количество стержней первого ряда на смысловой грани.
 Private Function FaceCount(ByVal settings As Variant) As Long
     FaceCount = CLng(settings(LBound(settings) + 2))
 End Function
 
+' Возвращает диаметр второго ряда, если он задан пользователем.
 Private Function FaceRow2Diameter(ByVal settings As Variant) As Double
     FaceRow2Diameter = CDbl(settings(LBound(settings) + 3))
 End Function
 
+' Возвращает диаметр третьего ряда, если он задан пользователем.
 Private Function FaceRow3Diameter(ByVal settings As Variant) As Double
     FaceRow3Diameter = CDbl(settings(LBound(settings) + 4))
 End Function
 
+' Возвращает способ размещения второго ряда относительно первого.
 Private Function FaceRow2Location(ByVal settings As Variant) As String
     FaceRow2Location = CStr(settings(LBound(settings) + 5))
 End Function
 
+' Возвращает способ размещения третьего ряда относительно первого.
 Private Function FaceRow3Location(ByVal settings As Variant) As String
     FaceRow3Location = CStr(settings(LBound(settings) + 6))
 End Function
 
+' Возвращает правило привязки второго ряда к стержням первого ряда.
 Private Function FaceRow2Binding(ByVal settings As Variant) As String
     FaceRow2Binding = CStr(settings(LBound(settings) + 7))
 End Function
 
+' Возвращает правило привязки третьего ряда к стержням первого ряда.
 Private Function FaceRow3Binding(ByVal settings As Variant) As String
     FaceRow3Binding = CStr(settings(LBound(settings) + 8))
 End Function
 
+' Переводит внутренний идентификатор смысловой грани RoundedRectangle в
+' короткое пользовательское имя для ошибок и комментариев Results.
 Private Function RoundedFaceDisplayName(ByVal faceName As String) As String
     Select Case LCase$(Trim$(faceName))
         Case "h.left": RoundedFaceDisplayName = "H - левая грань"
@@ -414,10 +474,12 @@ Private Function RoundedFaceDisplayName(ByVal faceName As String) As String
     End Select
 End Function
 
+' Количество стержней первого ряда, которое пользователь запросил по всем граням.
 Public Property Get RequestedCount() As Long
     RequestedCount = mRequestedCount
 End Property
 
+' Количество стержней, не добавленных из-за совпадения с уже созданной арматурой.
 Public Property Get SkippedDuplicateCount() As Long
     SkippedDuplicateCount = mSkippedDuplicateCount
 End Property
