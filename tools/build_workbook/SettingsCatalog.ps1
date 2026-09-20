@@ -127,6 +127,8 @@ function Get-SystemSettingsCatalog {
             @("Plot.NeutralLineEnabled", "Yes", "-", "Показывать нейтральную линию выбранного сочетания по Epsilon0, KappaX, KappaY из Results."),
             @("Plot.PrincipalAxesMode", "Transformed", "-", "Какие главные центральные оси показывать на схеме: Transformed - приведенного сечения; Concrete - бетонного; None - не показывать."),
             @("Plot.LoadApplicationPointEnabled", "Yes", "-", "Показывать точку приложения нагрузки из последнего расчета."),
+            @("Plot.AxisLabelsEnabled", "Yes", "-", "Показывать маленькие курсивные подписи глобальных осей X и Y внутри рабочей области схемы."),
+            @("Plot.AxisLabelsFontSize", "7.5", "pt", "Размер шрифта подписей осей X и Y на схеме в пунктах Excel."),
             @("Plot.ContourEnabled", "Yes", "-", "Показывать параметрический контур сечения на схеме, если он сохранен в Results. Для импортированной сетки контур не восстанавливается."),
             @("Plot.LegendEnabled", "Yes", "-", "Показывать легенду физического состояния и выбранной величины профиля справа от схемы."),
             @("Plot.LegendMode", "Separate", "-", "Separate - отдельные легенды для арматуры и бетона; Common - одна общая легенда. В режиме Common используются цвета Plot.Color.RebarCompression и Plot.Color.RebarTension."),
@@ -1177,6 +1179,16 @@ function Get-SettingInstructionLines {
             "Concrete показывает главные центральные оси только бетонного сечения.",
             "None полностью скрывает главные оси на схеме. Точка приложения нагрузки и нейтральная линия управляются отдельными настройками.",
             "Схема берет центр и угол выбранных осей из Results snapshot. Изменение этого режима после расчета только меняет отображение уже сохраненных осей."
+        ) }
+        "Plot.AxisLabelsEnabled" { return @($lead) + @(
+            "Yes показывает маленькие курсивные подписи Ось X и Ось Y внутри рабочей области схемы.",
+            "No скрывает только эти подписи. Сами оси, нейтральная линия, контур и точка приложения нагрузки управляются своими настройками.",
+            "Подписи нужны как визуальная подсказка направления глобальных осей и не влияют на расчет или данные Results."
+        ) }
+        "Plot.AxisLabelsFontSize" { return @($lead) + @(
+            "Размер задается в пунктах Excel (pt), как обычный размер шрифта в книге.",
+            "По умолчанию используется 7.5 pt - это текущий небольшой размер подписей осей.",
+            "Если задано неположительное значение, программа использует размер по умолчанию."
         ) }
         "Plot.ContourEnabled" { return @($lead) + @(
             "Yes показывает на Excel-схеме точный contour-слой из Results, если параметрический генератор сечения его записал.",
@@ -3445,6 +3457,7 @@ function Apply-SystemSettingsLayout {
         "Plot.NeutralLineEnabled" = @("Yes", "No")
         "Plot.PrincipalAxesMode" = @("Transformed", "Concrete", "None")
         "Plot.LoadApplicationPointEnabled" = @("Yes", "No")
+        "Plot.AxisLabelsEnabled" = @("Yes", "No")
         "Plot.ContourEnabled" = @("Yes", "No")
         "Plot.LegendEnabled" = @("Yes", "No")
         "Plot.LegendMode" = @("Separate", "Common")

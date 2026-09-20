@@ -70,6 +70,11 @@ Private Const PLOT_FRAME_LEFT As Double = 28# ' Левый край рабоче
 Private Const PLOT_FRAME_TOP As Double = 36# ' Верхний край рабочей области схемы внутри Chart.
 Private Const PLOT_FRAME_WIDTH_MARGIN As Double = 180# ' Запас справа для легенд и подписей.
 Private Const PLOT_FRAME_HEIGHT_MARGIN As Double = 72# ' Запас снизу для предупреждений и подписи режима.
+Private Const AXIS_LABEL_DEFAULT_FONT_SIZE As Double = 7.5 ' Небольшой читаемый шрифт подписей глобальных осей X/Y по умолчанию.
+Private Const AXIS_LABEL_MARGIN As Double = 6# ' Отступ подписей осей от внутренней рамки построения.
+Private Const AXIS_LABEL_X_WIDTH As Double = 48# ' Ширина горизонтальной подписи "Ось X".
+Private Const AXIS_LABEL_Y_HEIGHT As Double = 48# ' Высота вертикальной подписи "Ось Y".
+Private Const AXIS_LABEL_TEXT_HEIGHT As Double = 14# ' Толщина текстового блока подписи оси.
 
 Private mChart As Object ' Excel Chart, внутри которого рисуются series и аннотационные Shapes.
 Private mChartObject As Object ' Контейнер ChartObject на листе Расчет; пользователь может двигать/масштабировать его.
@@ -114,6 +119,8 @@ Private mConcreteCompressionColor As Long ' Цвет максимального 
 Private mConcreteTensionColor As Long ' Цвет максимального растяжения бетона.
 Private mElementShapeLayerEnabled As Boolean ' True - расчетные элементы выводятся Shape-ами без укрупнения.
 Private mElementGroupingEnabled As Boolean ' True - включено укрупнение элементов для обхода лимитов/перегрузки Excel Chart.
+Private mAxisLabelsEnabled As Boolean ' Нужно ли выводить маленькие подписи глобальных осей X/Y.
+Private mAxisLabelFontSize As Double ' Размер шрифта подписей глобальных осей X/Y в пунктах Excel.
 
 ' Перестраивает схему по данным последнего расчета.
 ' Метод управляет порядком операций: подготовка chart, равный масштаб X/Y,
@@ -139,6 +146,9 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     mRebarTensionColor = ParseRgb(settings.GetString("Plot.Color.RebarTension", "210,30,20"), RGB(210, 30, 20))
     mConcreteCompressionColor = ParseRgb(settings.GetString("Plot.Color.ConcreteCompression", "125,35,210"), RGB(125, 35, 210))
     mConcreteTensionColor = ParseRgb(settings.GetString("Plot.Color.ConcreteTension", "0,155,85"), RGB(0, 155, 85))
+    mAxisLabelsEnabled = settings.GetBoolean("Plot.AxisLabelsEnabled", True)
+    mAxisLabelFontSize = settings.GetDouble("Plot.AxisLabelsFontSize", AXIS_LABEL_DEFAULT_FONT_SIZE)
+    If mAxisLabelFontSize <= 0# Then mAxisLabelFontSize = AXIS_LABEL_DEFAULT_FONT_SIZE
 
     mElementShapeLayerEnabled = ShouldDrawElementShapeLayer(data)
     mElementGroupingEnabled = Not mElementShapeLayerEnabled
@@ -153,6 +163,7 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     Else
         DrawAnalysisOverlay data, settings
     End If
+    If mAxisLabelsEnabled Then DrawAxisNameLabels
     DrawPlotTitleOverlay PlotTitleText(data)
 End Sub
 
@@ -799,6 +810,45 @@ Private Sub DrawPlotTitleOverlay(ByVal titleText As String)
     Set titleShape = AddChartText(8#, PLOT_TITLE_TOP, titleWidth, PLOT_TITLE_HEIGHT, _
         titleText, 0#, RGB(20, 20, 20), True, True, 12#)
     titleShape.Name = SHAPE_PREFIX & "Title"
+End Sub
+
+' Добавляет маленькие курсивные подписи глобальных осей X/Y внутри рабочей
+' области схемы. Подписи живут в Chart.Shapes, поэтому двигаются вместе с
+' окном схемы и не попадают в правую область легенд.
+Private Sub DrawAxisNameLabels()
+    EnsurePlotAreaMetrics
+    If mPlotWidth <= 0# Or mPlotHeight <= 0# Then Exit Sub
+
+    Dim textHeight As Double
+    Dim xWidth As Double
+    Dim yHeight As Double
+    textHeight = MaxDouble(AXIS_LABEL_TEXT_HEIGHT, mAxisLabelFontSize + 6#)
+    xWidth = MaxDouble(AXIS_LABEL_X_WIDTH, mAxisLabelFontSize * 7#)
+    yHeight = MaxDouble(AXIS_LABEL_Y_HEIGHT, mAxisLabelFontSize * 7#)
+
+    Dim xLeft As Double
+    Dim xTop As Double
+    xLeft = mPlotLeft + mPlotWidth - xWidth - AXIS_LABEL_MARGIN
+    xTop = mPlotTop + mPlotHeight - textHeight - AXIS_LABEL_MARGIN
+    If xLeft < mPlotLeft + AXIS_LABEL_MARGIN Then xLeft = mPlotLeft + AXIS_LABEL_MARGIN
+    If xTop < mPlotTop + AXIS_LABEL_MARGIN Then xTop = mPlotTop + AXIS_LABEL_MARGIN
+
+    Dim xLabel As Object
+    Set xLabel = AddChartText(xLeft, xTop, xWidth, textHeight, _
+        "Ось X", 0#, RGB(80, 80, 80), False, True, mAxisLabelFontSize, False, True)
+    xLabel.Name = SHAPE_PREFIX & "AxisLabelX"
+    BringShapeToFront xLabel
+
+    Dim yLeft As Double
+    Dim yTop As Double
+    yLeft = mPlotLeft + AXIS_LABEL_MARGIN
+    yTop = mPlotTop + AXIS_LABEL_MARGIN
+
+    Dim yLabel As Object
+    Set yLabel = AddChartText(yLeft, yTop, textHeight, yHeight, _
+        "Ось Y", 90#, RGB(80, 80, 80), False, True, mAxisLabelFontSize, True, True)
+    yLabel.Name = SHAPE_PREFIX & "AxisLabelY"
+    BringShapeToFront yLabel
 End Sub
 
 ' Показывает под схемой короткое красное предупреждение по сохраненному
@@ -1967,7 +2017,8 @@ End Sub
 Private Function AddChartText(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _
         ByVal heightValue As Double, ByVal textValue As String, ByVal rotation As Double, _
         ByVal colorValue As Long, ByVal isBold As Boolean, Optional ByVal centered As Boolean = False, _
-        Optional ByVal fontSize As Double = 8#, Optional ByVal useNativeVerticalText As Boolean = False) As Object
+        Optional ByVal fontSize As Double = 8#, Optional ByVal useNativeVerticalText As Boolean = False, _
+        Optional ByVal isItalic As Boolean = False) As Object
     Dim centerX As Double
     Dim centerY As Double
     centerX = leftPos + widthValue / 2#
@@ -1985,6 +2036,7 @@ Private Function AddChartText(ByVal leftPos As Double, ByVal topPos As Double, B
     textShape.TextFrame.Characters().Font.Size = fontSize
     textShape.TextFrame.Characters().Font.Color = colorValue
     textShape.TextFrame.Characters().Font.Bold = isBold
+    textShape.TextFrame.Characters().Font.Italic = isItalic
     If centered Then
         textShape.TextFrame.HorizontalAlignment = XL_CENTER
         textShape.TextFrame.VerticalAlignment = XL_VCENTER

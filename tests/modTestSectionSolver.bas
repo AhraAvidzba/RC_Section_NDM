@@ -210,6 +210,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "Plot.Enabled", "Plot.AutoUpdateAfterCalculation", "Plot.LoadCase", _
         "Plot.ResultGradient", "Plot.ResultLabelsEnabled", "Plot.ResultLabelSpacing", "Plot.ResultPrecision", _
         "Plot.NeutralLineEnabled", "Plot.PrincipalAxesMode", "Plot.LoadApplicationPointEnabled", _
+        "Plot.AxisLabelsEnabled", "Plot.AxisLabelsFontSize", _
         "Plot.ContourEnabled", "Plot.LegendEnabled", _
         "Plot.RebarLabels.Enabled", "Plot.Dimensions.Enabled", _
         "Plot.RebarLabels.Placement", "Plot.Dimensions.Placement", _

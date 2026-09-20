@@ -604,9 +604,16 @@ End Sub
 ' а точка нагрузки - из LoadReference. Их экранный сдвиг должен совпадать с
 ' расчетным сдвигом из Results после одного общего model-to-chart масштаба.
 Private Sub TestPlotOverlayCoordinatesMatchResults(ByRef stats As TUiTestStats)
+    Dim oldAxisLabelsEnabled As String
+    Dim oldAxisLabelsFontSize As String
+    oldAxisLabelsEnabled = GetSystemSetting("Plot.AxisLabelsEnabled")
+    oldAxisLabelsFontSize = GetSystemSetting("Plot.AxisLabelsFontSize")
+
     PrepareUserRectSetMomentUltimateInput
     SetSystemSetting "Plot.PrincipalAxesMode", "Transformed"
     SetSystemSetting "Plot.LoadApplicationPointEnabled", "Yes"
+    SetSystemSetting "Plot.AxisLabelsEnabled", "Yes"
+    SetSystemSetting "Plot.AxisLabelsFontSize", "9"
     SetSystemSetting "Plot.ResultLabelsEnabled", "No"
     SetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
 
@@ -627,11 +634,21 @@ Private Sub TestPlotOverlayCoordinatesMatchResults(ByRef stats As TUiTestStats)
     Set loadPoint = FirstGeneratedPlotShape("LoadPoint")
     AssertTrue stats, "ui.plot.overlay.shapes", CountGeneratedPlotShapes("Principal1") > 0 And _
         CountGeneratedPlotShapes("Principal2") > 0 And Not loadPoint Is Nothing
-    If CountGeneratedPlotShapes("Principal1") <= 0 Or CountGeneratedPlotShapes("Principal2") <= 0 Or loadPoint Is Nothing Then Exit Sub
+    If CountGeneratedPlotShapes("Principal1") <= 0 Or CountGeneratedPlotShapes("Principal2") <= 0 Or loadPoint Is Nothing Then
+        SetSystemSetting "Plot.AxisLabelsEnabled", oldAxisLabelsEnabled
+        SetSystemSetting "Plot.AxisLabelsFontSize", oldAxisLabelsFontSize
+        Exit Sub
+    End If
     AssertTrue stats, "ui.plot.overlay.chartLayer", CountPlotShapes("Principal1") > 0 And _
         CountPlotShapes("Principal2") > 0 And CountPlotShapes("LoadPoint") > 0 And _
         CountWorksheetPlotShapes("Principal1") = 0 And CountWorksheetPlotShapes("Principal2") = 0 And _
         CountWorksheetPlotShapes("LoadPoint") = 0
+    AssertTrue stats, "ui.plot.axisLabels.exists", CountPlotShapes("AxisLabelX") = 1 And CountPlotShapes("AxisLabelY") = 1
+    AssertTrue stats, "ui.plot.axisLabels.text", PlotShapeTextContains("Ось X") And PlotShapeTextContains("Ось Y")
+    AssertTrue stats, "ui.plot.axisLabels.italic", PlotShapeTextItalic("AxisLabelX") And PlotShapeTextItalic("AxisLabelY")
+    AssertClose stats, "ui.plot.axisLabels.fontSize", PlotShapeTextFontSize("AxisLabelX"), 9#, 0.01
+    AssertTrue stats, "ui.plot.axisLabels.insideFrame", PlotShapesInsideStableFrame("AxisLabelX", 0.5) And _
+        PlotShapesInsideStableFrame("AxisLabelY", 0.5)
 
     Dim loadCenterX As Double
     Dim loadCenterY As Double
@@ -694,6 +711,8 @@ Private Sub TestPlotOverlayCoordinatesMatchResults(ByRef stats As TUiTestStats)
     AssertClose stats, "ui.plot.overlay.move.dy", afterMoveY - beforeMoveY, 11#, 0.3
     plot.Left = oldLeft
     plot.Top = oldTop
+    SetSystemSetting "Plot.AxisLabelsEnabled", oldAxisLabelsEnabled
+    SetSystemSetting "Plot.AxisLabelsFontSize", oldAxisLabelsFontSize
 End Sub
 
 ' Проверяет, что AutoCAD-preview не используется как запасная схема
@@ -1694,6 +1713,9 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
         SystemSettingValidationHasOptions("Plot.ResultLabelsEnabled", Array("Yes", "No"))
     AssertTrue stats, "ui.validation.plotPrincipalAxes", _
         SystemSettingValidationHasOptions("Plot.PrincipalAxesMode", Array("Transformed", "Concrete", "None"))
+    AssertTrue stats, "ui.validation.plotAxisLabels", _
+        SystemSettingValidationHasOptions("Plot.AxisLabelsEnabled", Array("Yes", "No"))
+    AssertClose stats, "ui.validation.plotAxisLabelsFontSize.default", Val(CStr(GetSystemSetting("Plot.AxisLabelsFontSize"))), 7.5, 0.000000001
     AssertTrue stats, "ui.validation.plotContour", _
         SystemSettingValidationHasOptions("Plot.ContourEnabled", Array("Yes", "No"))
     AssertTrue stats, "ui.validation.plotRebarAnnotationEnabled", _
@@ -2153,6 +2175,38 @@ Private Function PlotShapeTextContains(ByVal expectedText As String) As Boolean
         On Error GoTo Failed
         If InStr(1, textValue, expectedText, vbTextCompare) > 0 Then
             PlotShapeTextContains = True
+            Exit Function
+        End If
+    Next shapeIndex
+Failed:
+End Function
+
+' Проверяет курсив у текстового Shape схемы по фрагменту имени.
+Private Function PlotShapeTextItalic(ByVal nameFragment As String) As Boolean
+    On Error GoTo Failed
+    Dim chartObject As Object
+    Set chartObject = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
+
+    Dim shapeIndex As Long
+    For shapeIndex = 1 To chartObject.Chart.Shapes.Count
+        If InStr(1, chartObject.Chart.Shapes.Item(shapeIndex).Name, nameFragment, vbTextCompare) > 0 Then
+            PlotShapeTextItalic = (chartObject.Chart.Shapes.Item(shapeIndex).TextFrame.Characters().Font.Italic <> 0)
+            Exit Function
+        End If
+    Next shapeIndex
+Failed:
+End Function
+
+' Возвращает размер шрифта текстового Shape схемы по фрагменту имени.
+Private Function PlotShapeTextFontSize(ByVal nameFragment As String) As Double
+    On Error GoTo Failed
+    Dim chartObject As Object
+    Set chartObject = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
+
+    Dim shapeIndex As Long
+    For shapeIndex = 1 To chartObject.Chart.Shapes.Count
+        If InStr(1, chartObject.Chart.Shapes.Item(shapeIndex).Name, nameFragment, vbTextCompare) > 0 Then
+            PlotShapeTextFontSize = CDbl(chartObject.Chart.Shapes.Item(shapeIndex).TextFrame.Characters().Font.Size)
             Exit Function
         End If
     Next shapeIndex
