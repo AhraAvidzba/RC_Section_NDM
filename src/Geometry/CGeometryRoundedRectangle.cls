@@ -256,6 +256,7 @@ Public Property Get MaxY() As Double
     MaxY = mMaxY
 End Property
 
+' Проверяет точку через быстрый bounding-box и точный polygon-contour.
 Public Function ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
     Dim message As String
     If Not IsValid(message) Then Exit Function
@@ -264,10 +265,12 @@ Public Function ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
     ContainsPoint = PointInContour(X, Y)
 End Function
 
+' Совместимый псевдоним для интерфейса ISectionGeometry.
 Public Function IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
     IsPointInside = ContainsPoint(X, Y)
 End Function
 
+' Валидирует размеры, типы боковых граней и возможность построить невырожденный скругленный контур.
 Public Function IsValid(ByRef message As String) As Boolean
     message = vbNullString
 
@@ -445,12 +448,14 @@ Private Function RoundedEdgeLabel(ByVal firstIndex As Long, ByVal secondIndex As
     End If
 End Function
 
+' Возвращает площадь расчетного polygon-представления скругленного контура.
 Public Function AnalyticalArea(ByRef available As Boolean) As Double
     Dim message As String
     available = IsValid(message)
     If available Then AnalyticalArea = mArea
 End Function
 
+' Возвращает центр тяжести polygon-представления скругленного контура.
 Public Sub AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByRef Y As Double)
     Dim message As String
     available = IsValid(message)
@@ -459,6 +464,7 @@ Public Sub AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByR
     Y = mCentroidY
 End Sub
 
+' Возвращает точки внешнего polygon-контура для сетки, габаритов и визуализации.
 Public Sub GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
     ReDim pointX(1 To mPointCount)
     ReDim pointY(1 To mPointCount)
@@ -580,30 +586,37 @@ Private Property Get ISectionGeometry_MaxY() As Double
     ISectionGeometry_MaxY = MaxY
 End Property
 
+' Делегирует проверку точки в реализацию класса для интерфейса ISectionGeometry.
 Private Function ISectionGeometry_ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
     ISectionGeometry_ContainsPoint = ContainsPoint(X, Y)
 End Function
 
+' Делегирует IsPointInside в реализацию класса для интерфейса ISectionGeometry.
 Private Function ISectionGeometry_IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
     ISectionGeometry_IsPointInside = IsPointInside(X, Y)
 End Function
 
+' Делегирует валидацию в реализацию класса для интерфейса ISectionGeometry.
 Private Function ISectionGeometry_IsValid(ByRef message As String) As Boolean
     ISectionGeometry_IsValid = IsValid(message)
 End Function
 
+' Делегирует аналитическую площадь в реализацию класса для интерфейса ISectionGeometry.
 Private Function ISectionGeometry_AnalyticalArea(ByRef available As Boolean) As Double
     ISectionGeometry_AnalyticalArea = AnalyticalArea(available)
 End Function
 
+' Делегирует аналитический центр тяжести в реализацию класса для интерфейса ISectionGeometry.
 Private Sub ISectionGeometry_AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByRef Y As Double)
     AnalyticalCentroid available, X, Y
 End Sub
 
+' Делегирует внешний контур в реализацию класса для интерфейса ISectionGeometry.
 Private Sub ISectionGeometry_GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
     GetExtremePoints pointX, pointY
 End Sub
 
+' Нормализует тип боковой стороны: Simple или Tapered.
 Private Function NormalizeSideType(ByVal rawValue As String) As String
     Select Case LCase$(Trim$(rawValue))
         Case vbNullString, SIDE_SIMPLE
@@ -615,6 +628,7 @@ Private Function NormalizeSideType(ByVal rawValue As String) As String
     End Select
 End Function
 
+' Возвращает пользовательскую подпись нормализованного типа боковой стороны.
 Private Function DisplaySideType(ByVal normalizedValue As String) As String
     If normalizedValue = SIDE_TAPERED Then
         DisplaySideType = "Tapered"
@@ -623,6 +637,7 @@ Private Function DisplaySideType(ByVal normalizedValue As String) As String
     End If
 End Function
 
+' Полностью пересобирает расчетный контур: raw-ломаная, скругления, затем свойства polygon-а.
 Private Sub RebuildContour()
     mPointCount = 0
     Erase mPointX
@@ -1084,6 +1099,7 @@ Private Function Atn2Local(ByVal Y As Double, ByVal X As Double) As Double
     End If
 End Function
 
+' Убирает последнюю точку, если она повторяет первую после замыкания контура.
 Private Sub RemoveClosingDuplicate()
     If mPointCount < 2 Then Exit Sub
     If Abs(mPointX(1) - mPointX(mPointCount)) <= GEOM_TOLERANCE And _
@@ -1094,6 +1110,7 @@ Private Sub RemoveClosingDuplicate()
     ReDim Preserve mPointY(1 To mPointCount)
 End Sub
 
+' Пересчитывает площадь, центр тяжести и bounds по текущему polygon-контуру.
 Private Sub RecalculatePolygonProperties()
     mArea = 0#
     mCentroidX = 0#
@@ -1130,6 +1147,7 @@ Private Sub RecalculatePolygonProperties()
     mCentroidY = cySum / (3# * twiceArea)
 End Sub
 
+' Выполняет ray-casting проверку попадания точки внутрь расчетного polygon-контура.
 Private Function PointInContour(ByVal X As Double, ByVal Y As Double) As Boolean
     Dim inside As Boolean
     Dim i As Long

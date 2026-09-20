@@ -352,6 +352,8 @@ Private Function FormatCoefficientInvariant(ByVal value As Double) As String
     FormatCoefficientInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
 
+' Заполняет подписи одной плоскости СП 35, сохраняя раздельные колонки для
+' ветвей ec > r и ec <= r.
 Private Sub PutSP35PlaneLabels(ByRef labels() As Variant, ByVal firstColumn As Long, _
         ByVal units As CUnitSystem, ByVal etaReserveLabel As String)
     labels(1, firstColumn) = "ec,sl, " & OutputLengthUnit(units)
@@ -659,90 +661,116 @@ Private Function PlaneStatus(ByVal batch As CBatchSectionCalculator, ByVal index
     End If
 End Function
 
+' Однотипные accessors ниже выбирают данные первой или второй главной
+' плоскости из batch-результата. Они держат разметку таблицы независимой от
+' конкретных имен свойств Stability...1/Stability...2.
 Private Function PlaneApplicable(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Boolean
     If planeIndex = 1 Then PlaneApplicable = batch.StabilityPlaneApplicable1(index) Else PlaneApplicable = batch.StabilityPlaneApplicable2(index)
 End Function
 
+' Возвращает итог PASS/FAIL одной плоскости устойчивости.
 Private Function PlanePassed(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Boolean
     If planeIndex = 1 Then PlanePassed = batch.StabilityPlanePassed1(index) Else PlanePassed = batch.StabilityPlanePassed2(index)
 End Function
 
+' Возвращает расчетную ветвь одной плоскости: SP35-table, SP35-eta или SP63.
 Private Function PlaneBranch(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As String
     If planeIndex = 1 Then PlaneBranch = batch.StabilityPlaneBranch1(index) Else PlaneBranch = batch.StabilityPlaneBranch2(index)
 End Function
 
+' Возвращает критическую силу Ncr одной плоскости.
 Private Function PlaneNcr(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlaneNcr = batch.StabilityNcr1(index) Else PlaneNcr = batch.StabilityNcr2(index)
 End Function
 
+' Возвращает табличную несущую силу Nult для ветви СП 35 ec <= r.
 Private Function PlaneNultimate(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlaneNultimate = batch.StabilityNultimate1(index) Else PlaneNultimate = batch.StabilityNultimate2(index)
 End Function
 
+' Возвращает коэффициент eta одной плоскости.
 Private Function PlaneEta(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlaneEta = batch.StabilityEta1(index) Else PlaneEta = batch.StabilityEta2(index)
 End Function
 
+' Возвращает коэффициент длительности phi_l одной плоскости.
 Private Function PlanePhiL(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlanePhiL = batch.StabilityPhiL1(index) Else PlanePhiL = batch.StabilityPhiL2(index)
 End Function
 
+' Возвращает табличный phi_l для ветви СП 35 ec <= r.
 Private Function PlanePhiLTable(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlanePhiLTable = batch.StabilityPhiLTable1(index) Else PlanePhiLTable = batch.StabilityPhiLTable2(index)
 End Function
 
+' Возвращает табличный phi_m для ветви СП 35 ec <= r.
 Private Function PlanePhiM(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlanePhiM = batch.StabilityPhiM1(index) Else PlanePhiM = batch.StabilityPhiM2(index)
 End Function
 
+' Возвращает итоговый phi для табличной ветви СП 35.
 Private Function PlanePhiValue(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlanePhiValue = batch.StabilityPhiValue1(index) Else PlanePhiValue = batch.StabilityPhiValue2(index)
 End Function
 
+' Возвращает полный эксцентриситет ec/e0 одной плоскости.
 Private Function PlaneEccentricity(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlaneEccentricity = batch.StabilityEccentricity1(index) Else PlaneEccentricity = batch.StabilityEccentricity2(index)
 End Function
 
+' Возвращает случайный эксцентриситет ec,sl/ea одной плоскости.
 Private Function PlaneAccidentalEccentricity(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlaneAccidentalEccentricity = batch.StabilityAccidentalEcc1(index) Else PlaneAccidentalEccentricity = batch.StabilityAccidentalEcc2(index)
 End Function
 
+' Возвращает гибкость l0/i одной плоскости.
 Private Function PlaneSlenderness(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlaneSlenderness = batch.StabilitySlenderness1(index) Else PlaneSlenderness = batch.StabilitySlenderness2(index)
 End Function
 
+' Возвращает ядровое расстояние r в направлении эксцентриситета.
 Private Function PlaneCoreDistance(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlaneCoreDistance = batch.StabilityCoreDistance1(index) Else PlaneCoreDistance = batch.StabilityCoreDistance2(index)
 End Function
 
+' Возвращает расчетную delta одной плоскости.
 Private Function PlaneDelta(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlaneDelta = batch.StabilityDelta1(index) Else PlaneDelta = batch.StabilityDelta2(index)
 End Function
 
+' Возвращает коэффициент kb для ветви СП 63.
 Private Function PlaneKb(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlaneKb = batch.StabilityKb1(index) Else PlaneKb = batch.StabilityKb2(index)
 End Function
 
+' Возвращает коэффициент ks для ветви СП 63.
 Private Function PlaneKs(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlaneKs = batch.StabilityKs1(index) Else PlaneKs = batch.StabilityKs2(index)
 End Function
 
+' Возвращает жесткость D одной плоскости.
 Private Function PlaneStiffnessD(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlaneStiffnessD = batch.StabilityStiffnessD1(index) Else PlaneStiffnessD = batch.StabilityStiffnessD2(index)
 End Function
 
+' Возвращает проверочный запас одной плоскости.
 Private Function PlaneReserve(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlaneReserve = batch.StabilityReserve1(index) Else PlaneReserve = batch.StabilityReserve2(index)
 End Function
 
+' Возвращает пустую ячейку для численного нуля, чтобы summary не шумела
+' несущественными расчетными величинами.
 Private Function OptionalValue(ByVal value As Double) As Variant
     If Abs(value) > SMALL_VALUE Then OptionalValue = value Else OptionalValue = vbNullString
 End Function
 
+' Выводит сжимающую силу только когда она физически есть; иначе возвращает
+' стандартный N/A из политики статусов.
 Private Function OptionalCompressionForce(ByVal compressionMagnitude As Double, ByVal units As CUnitSystem) As Variant
     If compressionMagnitude > SMALL_VALUE Then OptionalCompressionForce = OutputCompressionForce(compressionMagnitude, units) Else OptionalCompressionForce = StatusPolicy().NotApplicable
 End Function
 
+' Возвращает коэффициент запаса limit/Ncompression для ограничения СП 35.
 Private Function RatioLimitToCompression(ByVal limitCompression As Double, ByVal nValue As Double) As Variant
     Dim compression As Double
     compression = CompressionMagnitude(nValue)
@@ -753,6 +781,7 @@ Private Function RatioLimitToCompression(ByVal limitCompression As Double, ByVal
     End If
 End Function
 
+' Преобразует signed N во внутреннюю положительную величину сжатия.
 Private Function CompressionMagnitude(ByVal nValue As Double) As Double
     Dim loadState As CSectionLoadState
     Set loadState = New CSectionLoadState
@@ -760,59 +789,75 @@ Private Function CompressionMagnitude(ByVal nValue As Double) As Double
     CompressionMagnitude = loadState.CompressionMagnitude(SMALL_VALUE)
 End Function
 
+' Переводит положительную величину сжатия в пользовательские единицы силы
+' с учетом принятого знака Output.SignConvention.N.
 Private Function OutputCompressionForce(ByVal compressionMagnitude As Double, ByVal units As CUnitSystem) As Double
     If compressionMagnitude <= SMALL_VALUE Then Exit Function
     OutputCompressionForce = OutputForce(-Abs(compressionMagnitude), units)
 End Function
 
+' Выводит подписанную сжимающую силу как пользовательское значение N.
 Private Function OutputSignedCompressionForce(ByVal signedCompression As Double, ByVal units As CUnitSystem) As Double
     OutputSignedCompressionForce = OutputForce(-signedCompression, units)
 End Function
 
+' Группа функций Output... ниже только переводит внутренние единицы устойчивости
+' в пользовательские выходные единицы для Results.
 Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputLength = value Else OutputLength = units.InternalLengthToOutput(value)
 End Function
 
+' Возвращает подпись выходной единицы длины.
 Private Function OutputLengthUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputLengthUnit = "mm" Else OutputLengthUnit = units.OutputLengthUnit
 End Function
 
+' Переводит внутреннюю силу в пользовательские выходные единицы.
 Private Function OutputForce(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputForce = value Else OutputForce = units.InternalForceToOutput(value)
 End Function
 
+' Возвращает подпись выходной единицы силы.
 Private Function OutputForceUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputForceUnit = "N" Else OutputForceUnit = units.OutputForceUnit
 End Function
 
+' Переводит внутренний Mx в пользовательские выходные единицы и знак.
 Private Function OutputMx(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputMx = value Else OutputMx = units.InternalMomentMxToOutput(value)
 End Function
 
+' Переводит внутренний My в пользовательские выходные единицы и знак.
 Private Function OutputMy(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputMy = value Else OutputMy = units.InternalMomentMyToOutput(value)
 End Function
 
+' Переводит модуль момента без назначения знака конкретной оси.
 Private Function OutputMomentMagnitude(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputMomentMagnitude = value Else OutputMomentMagnitude = units.InternalMomentMagnitudeToOutput(value)
 End Function
 
+' Возвращает подпись выходной единицы момента.
 Private Function OutputMomentUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputMomentUnit = "N*mm" Else OutputMomentUnit = units.OutputMomentUnit
 End Function
 
+' Переводит жесткость D из Н*мм2 в выбранные выходные единицы.
 Private Function OutputStiffness(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputStiffness = value Else OutputStiffness = units.InternalForceLengthSquaredToOutput(value)
 End Function
 
+' Возвращает подпись выходной единицы жесткости.
 Private Function OutputStiffnessUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputStiffnessUnit = "N*mm2" Else OutputStiffnessUnit = units.OutputForceLengthSquaredUnit
 End Function
 
+' Утилитарный максимум без WorksheetFunction для форматирования таблицы.
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
 
+' Возвращает общую политику отображения статусов PASS/FAIL/N/A.
 Private Function StatusPolicy() As CBatchStatusPolicy
     Static policy As CBatchStatusPolicy
     If policy Is Nothing Then Set policy = New CBatchStatusPolicy

@@ -243,6 +243,7 @@ Private Sub BuildSegmentCache()
     Next i
 End Sub
 
+' Находит участок диаграммы, которому принадлежит заданная деформация.
 Private Function FindSegmentIndex(ByVal strain As Double) As Long
     Dim i As Long
     For i = 1 To mPointCount - 1
@@ -313,6 +314,7 @@ Public Sub InitializeFromTwoCompressionPoints(ByVal eps1 As Double, ByVal stress
     InitializeFromArrays strains, stresses, 3
 End Sub
 
+' ДЛЯ ТЕСТОВ: создает сжатую трехучастковую диаграмму с нулевой точкой.
 Public Sub InitializeFromThreeCompressionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
         ByVal eps2 As Double, ByVal stress2 As Double, ByVal eps3 As Double, ByVal stress3 As Double)
     Dim strains(1 To 4) As Double
@@ -328,6 +330,7 @@ Public Sub InitializeFromThreeCompressionPoints(ByVal eps1 As Double, ByVal stre
     InitializeFromArrays strains, stresses, 4
 End Sub
 
+' ДЛЯ ТЕСТОВ: создает симметричную растянутую двухточечную диаграмму.
 Public Sub InitializeFromTwoTensionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
         ByVal eps2 As Double, ByVal stress2 As Double)
     Dim strains(1 To 5) As Double
@@ -344,6 +347,7 @@ Public Sub InitializeFromTwoTensionPoints(ByVal eps1 As Double, ByVal stress1 As
     InitializeFromArrays strains, stresses, 5
 End Sub
 
+' ДЛЯ ТЕСТОВ: создает симметричную растянутую трехточечную диаграмму.
 Public Sub InitializeFromThreeTensionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
         ByVal eps2 As Double, ByVal stress2 As Double, ByVal eps3 As Double, ByVal stress3 As Double)
     Dim strains(1 To 7) As Double
@@ -362,6 +366,7 @@ Public Sub InitializeFromThreeTensionPoints(ByVal eps1 As Double, ByVal stress1 
     InitializeFromArrays strains, stresses, 7
 End Sub
 
+' ДЛЯ ТЕСТОВ: совместимый короткий initializer для старых unit-тестов диаграммы.
 Public Sub Initialize(ByVal eps1 As Double, ByVal stress1 As Double, ByVal eps2 As Double, _
         Optional ByVal stress2 As Variant)
     If IsMissing(stress2) Then
@@ -375,12 +380,14 @@ Public Property Get PointCount() As Long
     PointCount = mPointCount
 End Property
 
+' ДЛЯ ТЕСТОВ: возвращает деформацию контрольной точки диаграммы по индексу.
 Public Function PointStrain(ByVal index As Long) As Double
     EnsureInitialized
     If index < 1 Or index > mPointCount Then Err.Raise vbObjectError + 3109, "CMaterialDiagram", "Индекс точки диаграммы вне диапазона."
     PointStrain = mStrains(index)
 End Function
 
+' ДЛЯ ТЕСТОВ: возвращает напряжение контрольной точки диаграммы по индексу.
 Public Function PointStress(ByVal index As Long) As Double
     EnsureInitialized
     If index < 1 Or index > mPointCount Then Err.Raise vbObjectError + 3110, "CMaterialDiagram", "Индекс точки диаграммы вне диапазона."

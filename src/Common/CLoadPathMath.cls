@@ -31,6 +31,7 @@ Private mToleranceMx As Double ' Допуск равновесия по Mx, Н*�
 Private mToleranceMy As Double ' Допуск равновесия по My, Н*мм.
 Private mBaseTolerance As Double ' Численный ноль для определения ненулевой компоненты Base.
 
+' Инициализирует расчетные допуски равновесия значениями, совместимыми с default solver.
 Private Sub Class_Initialize()
     mToleranceN = 5#
     mToleranceMx = 5000#

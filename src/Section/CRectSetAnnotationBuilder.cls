@@ -33,6 +33,7 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
     rebarLabels.AddRebarLabels annotations, rebars
 End Sub
 
+' Добавляет внешний контур RectSet как набор прямых semantic-сегментов.
 Private Sub AddContour(ByVal annotations As CSectionAnnotations, ByVal geometry As ISectionGeometry)
     Dim px() As Double
     Dim py() As Double
@@ -50,6 +51,7 @@ Private Sub AddContour(ByVal annotations As CSectionAnnotations, ByVal geometry 
     Next i
 End Sub
 
+' Добавляет основные размеры RectSet и, при необходимости, смещение верхнего прямоугольника.
 Private Sub AddDimensions(ByVal annotations As CSectionAnnotations, ByVal geometry As ISectionGeometry)
     Dim minX As Double, maxX As Double, minY As Double, maxY As Double
     minX = geometry.MinX

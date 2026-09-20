@@ -56,6 +56,7 @@ MissingRange:
     On Error GoTo 0
 End Sub
 
+' Находит все входные geometry-диапазоны Config и добавляет их настройки в общий словарь.
 Private Sub AppendGeometrySettingsRanges(ByVal workbook As Object)
     Dim nameObject As Object
     ' Проходим по именованным диапазонам и выбираем только входные таблицы
@@ -75,6 +76,7 @@ Private Sub AppendGeometrySettingsRanges(ByVal workbook As Object)
     Next nameObject
 End Sub
 
+' Убирает префикс имени книги/листа у именованного диапазона, оставляя локальное имя.
 Private Function LocalName(ByVal workbookName As String) As String
     Dim bangPos As Long
     bangPos = InStrRev(workbookName, "!")
@@ -100,6 +102,7 @@ Public Sub LoadFromRange(ByVal settingsRange As Object)
     AppendSettingsRange settingsRange
 End Sub
 
+' Добавляет один диапазон настроек; специальные геометрические таблицы сначала распознаются по шапке.
 Private Sub AppendSettingsRange(ByVal settingsRange As Object)
     Dim data As Variant
     data = settingsRange.Value2
@@ -420,6 +423,7 @@ Private Sub AppendHollowRectangleCommonSettings(ByRef data As Variant, ByVal geo
     Next rowIndex
 End Sub
 
+' Читает основной ряд арматуры HollowRectangle по видимым пользователю граням H/B и Opening.
 Private Sub AppendHollowRectangleMainRebars(ByRef data As Variant, ByVal mainHeaderRow As Long)
     Dim rowIndex As Long
     For rowIndex = mainHeaderRow + 1 To UBound(data, 1)
@@ -434,6 +438,7 @@ Private Sub AppendHollowRectangleMainRebars(ByRef data As Variant, ByVal mainHea
     Next rowIndex
 End Sub
 
+' Читает дополнительные ряды HollowRectangle и сохраняет их в единый набор ключей по граням.
 Private Sub AppendHollowRectangleExtraRebars(ByRef data As Variant, ByVal extraHeaderRow As Long)
     Dim rowIndex As Long
     For rowIndex = extraHeaderRow + 1 To UBound(data, 1)
@@ -449,6 +454,7 @@ Private Sub AppendHollowRectangleExtraRebars(ByRef data As Variant, ByVal extraH
     Next rowIndex
 End Sub
 
+' Переводит подпись строки HollowRectangle в устойчивый внутренний ключ грани.
 Private Function HollowRectangleFaceKey(ByVal faceCaption As String) As String
     Select Case LCase$(Trim$(faceCaption))
         Case "h - левая", "h-left", "h.left": HollowRectangleFaceKey = "H.Left"
@@ -462,6 +468,7 @@ Private Function HollowRectangleFaceKey(ByVal faceCaption As String) As String
     End Select
 End Function
 
+' Проверяет, можно ли строку настройки трактовать как число, не считая прочерки активными значениями.
 Private Function IsNumericSettingText(ByVal value As Variant) As Boolean
     Dim textValue As String
     textValue = Trim$(CStr(value))
@@ -522,6 +529,7 @@ Private Sub AppendRoundedRectangleFaceSettings(ByRef data As Variant)
     If extraHeaderRow > 0 Then AppendRoundedRectangleExtraRebars data, extraHeaderRow
 End Sub
 
+' Ищет служебную строку шапки внутри табличной геометрии, начиная ниже уже найденного блока размеров.
 Private Function FindRowWithCaption(ByRef data As Variant, ByVal caption As String, ByVal columnIndex As Long, ByVal startRow As Long) As Long
     Dim rowIndex As Long
     For rowIndex = startRow To UBound(data, 1)
@@ -532,6 +540,7 @@ Private Function FindRowWithCaption(ByRef data As Variant, ByVal caption As Stri
     Next rowIndex
 End Function
 
+' Читает основной ряд арматуры RoundedRectangle по четырем смысловым граням H/B.
 Private Sub AppendRoundedRectangleMainRebars(ByRef data As Variant, ByVal mainHeaderRow As Long)
     Dim rowIndex As Long
     For rowIndex = mainHeaderRow + 1 To UBound(data, 1)
@@ -544,6 +553,7 @@ Private Sub AppendRoundedRectangleMainRebars(ByRef data As Variant, ByVal mainHe
     Next rowIndex
 End Sub
 
+' Читает дополнительные ряды RoundedRectangle и сохраняет привязку каждого ряда к своей грани.
 Private Sub AppendRoundedRectangleExtraRebars(ByRef data As Variant, ByVal extraHeaderRow As Long)
     Dim rowIndex As Long
     For rowIndex = extraHeaderRow + 1 To UBound(data, 1)
@@ -559,6 +569,7 @@ Private Sub AppendRoundedRectangleExtraRebars(ByRef data As Variant, ByVal extra
     Next rowIndex
 End Sub
 
+' Переводит подпись строки RoundedRectangle в устойчивый внутренний ключ грани.
 Private Function RoundedRectangleFaceKey(ByVal faceCaption As String) As String
     Select Case LCase$(Trim$(faceCaption))
         Case "h - левая", "h-left", "h.left": RoundedRectangleFaceKey = "H.Left"

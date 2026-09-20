@@ -152,6 +152,7 @@ Public Sub UpdateElapsedSeconds(ByVal workbook As Object, ByVal elapsedSeconds A
     target.Offset(3, 0).Resize(1, 1).Value2 = elapsedSeconds
 End Sub
 
+' Возвращает область rngBatchSummary нужного размера и сразу проверяет, хватает ли листа Results.
 Private Function SummaryTargetRange(ByVal workbook As Object, Optional ByVal requiredRows As Long = 0) As Object
     Dim target As Object
     Set target = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
@@ -195,11 +196,13 @@ Private Sub PrepareSummaryTarget(ByVal target As Object)
     ClearSummaryBody target
 End Sub
 
+' Полностью очищает область summary, включая старые объединения и форматы.
 Private Sub ClearSummaryBody(ByVal target As Object)
     target.UnMerge
     target.Clear
 End Sub
 
+' Записывает уже подготовленный двумерный массив в Excel одним присваиванием.
 Private Sub WriteSummaryBody(ByVal target As Object, ByRef data() As Variant)
     target.Resize(UBound(data, 1), TARGET_COLUMNS).Value2 = data
 End Sub
@@ -247,6 +250,8 @@ Private Sub ClearCrackSummary(ByVal workbook As Object)
     writer.ClearSummary workbook
 End Sub
 
+' Заполняет четыре верхние строки summary: worst-сочетание, комментарий,
+' число вызовов CSectionSolver и общее время расчета.
 Private Sub PutMetaRows(ByRef data() As Variant, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     data(1, 1) = batch.WorstCombinationID
     data(1, 2) = "Определяющее сочетание"
@@ -258,11 +263,14 @@ Private Sub PutMetaRows(ByRef data() As Variant, ByVal batch As CBatchSectionCal
     data(4, 2) = "Время расчета, с"
 End Sub
 
+' Заполняет верхний уровень шапки compact summary: статусы и коэффициенты
+' запаса как два независимых смысловых блока.
 Private Sub PutGroupHeaders(ByRef data() As Variant)
     data(GROUP_HEADER_ROW, SUM_COL_STATUS_STRAIN) = "статус проверки"
     data(GROUP_HEADER_ROW, SUM_COL_RESERVE_STRAIN) = "минимальные коэффициенты запаса"
 End Sub
 
+' Заполняет второй уровень шапки: прочность, трещины и устойчивость.
 Private Sub PutSubgroupHeaders(ByRef data() As Variant)
     data(SUBGROUP_HEADER_ROW, SUM_COL_STATUS_STRAIN) = "прочность"
     data(SUBGROUP_HEADER_ROW, SUM_COL_STATUS_CRACK) = "трещины"
@@ -272,6 +280,7 @@ Private Sub PutSubgroupHeaders(ByRef data() As Variant)
     data(SUBGROUP_HEADER_ROW, SUM_COL_RESERVE_STABILITY) = "устойчивость"
 End Sub
 
+' Заполняет строки обозначений и комментариев к каждому столбцу summary.
 Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem)
     data(COMMENT_HEADER_ROW, SUM_COL_ID) = "номер сочетания из таблицы нагрузок"
     data(COMMENT_HEADER_ROW, SUM_COL_COMMENT) = "пользовательский комментарий сочетания"
@@ -302,6 +311,9 @@ Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem
     data(COLUMN_HEADER_ROW, SUM_COL_RESERVE_STABILITY) = "устойчивость"
 End Sub
 
+' Записывает одну строку сочетания в compact summary. Все статусы идут через
+' CBatchStatusPolicy, а коэффициенты берутся из подробных расчетных результатов
+' batch, чтобы summary совпадала с детальными таблицами ниже.
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVal batch As CBatchSectionCalculator, _
         ByVal index As Long, ByVal units As CUnitSystem, ByVal section As CSectionModel)
     Dim policy As CBatchStatusPolicy
@@ -347,6 +359,8 @@ Private Sub PutReserveCell(ByRef data() As Variant, ByVal rowIndex As Long, _
     If reserveValue > 0# Then data(rowIndex, columnIndex) = reserveValue
 End Sub
 
+' Применяет визуальное оформление compact summary: объединения, серые шапки,
+' подсветку failed-статусов, единые шрифты и рамки.
 Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVal batch As CBatchSectionCalculator)
     On Error GoTo Failed
 
@@ -429,12 +443,14 @@ Failed:
     Err.Raise Err.Number, "CBatchResultWriter.FormatSummary", stage & ": " & Err.Description
 End Sub
 
+' Объединяет горизонтальный заголовок одной строки.
 Private Sub MergeSummaryHeader(ByVal target As Object, ByVal rowIndex As Long, ByVal firstColumn As Long, ByVal lastColumn As Long)
     Dim area As Object
     Set area = target.Offset(rowIndex - 1, firstColumn - 1).Resize(1, lastColumn - firstColumn + 1)
     area.Merge
 End Sub
 
+' Объединяет прямоугольный блок шапки summary.
 Private Sub MergeSummaryBlock(ByVal target As Object, ByVal firstRow As Long, ByVal lastRow As Long, _
         ByVal firstColumn As Long, ByVal lastColumn As Long)
     Dim area As Object
@@ -451,6 +467,7 @@ Private Sub MergeColumnLabels(ByVal target As Object, ByVal firstRow As Long, By
     Next columnIndex
 End Sub
 
+' Наносит стандартные черные рамки для компактных блоков Results.
 Private Sub ApplySummaryBorders(ByVal area As Object)
     area.Borders.LineStyle = 1
     area.Borders.Color = RGB(0, 0, 0)
@@ -479,6 +496,7 @@ Private Sub FormatOverallStatusRows(ByVal target As Object, ByVal batch As CBatc
     Next i
 End Sub
 
+' Подсвечивает пару "статус + запас", если соответствующая проверка не прошла.
 Private Sub HighlightFailedPair(ByVal target As Object, ByVal rowNumber As Long, _
         ByVal statusColumn As Long, ByVal reserveColumn As Long, _
         ByVal policy As CBatchStatusPolicy, ByVal statusText As String)
@@ -487,11 +505,13 @@ Private Sub HighlightFailedPair(ByVal target As Object, ByVal rowNumber As Long,
     HighlightCell target, rowNumber, reserveColumn
 End Sub
 
+' Подсвечивает одиночный статус, если CBatchStatusPolicy считает его failing.
 Private Sub HighlightFailedCell(ByVal target As Object, ByVal rowNumber As Long, _
         ByVal columnIndex As Long, ByVal policy As CBatchStatusPolicy, ByVal statusText As String)
     If policy.IsFailedOverall(statusText) Then HighlightCell target, rowNumber, columnIndex
 End Sub
 
+' Применяет цветовую подсветку к одной ячейке summary.
 Private Sub HighlightCell(ByVal target As Object, ByVal rowNumber As Long, ByVal columnIndex As Long)
     With target.Offset(rowNumber, columnIndex - 1).Resize(1, 1)
         .Interior.Color = FAILED_ROW_COLOR
@@ -499,12 +519,14 @@ Private Sub HighlightCell(ByVal target As Object, ByVal rowNumber As Long, ByVal
     End With
 End Sub
 
+' Возвращает общий объект политики статусов для writer-а.
 Private Function StatusPolicy() As CBatchStatusPolicy
     Static policy As CBatchStatusPolicy
     If policy Is Nothing Then Set policy = New CBatchStatusPolicy
     Set StatusPolicy = policy
 End Function
 
+' Утилитарный максимум для размеров диапазонов Results.
 Private Function MaxLong(ByVal a As Long, ByVal b As Long) As Long
     If a > b Then MaxLong = a Else MaxLong = b
 End Function

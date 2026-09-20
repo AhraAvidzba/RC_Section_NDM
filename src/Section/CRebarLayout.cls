@@ -59,6 +59,7 @@ Public Sub Clear()
     mAnnotationCount = 0
 End Sub
 
+' Добавляет стержень в промежуточную раскладку с проверкой ID, площади, диаметра и положения в бетоне.
 Public Sub AddBar(ByVal barName As String, ByVal xCoord As Double, ByVal yCoord As Double, _
         ByVal diameter As Double, ByVal area As Double, ByVal steelClass As String, _
         Optional ByVal comment As String = vbNullString, Optional ByVal geometry As ISectionGeometry = Nothing, _
@@ -151,6 +152,7 @@ Public Property Get BarAnnotationGroupName(ByVal index As Long) As String
     BarAnnotationGroupName = mBarAnnotationGroupName(index)
 End Property
 
+' Добавляет опорную линию группы арматуры, по которой потом строится групповая подпись на схеме.
 Public Sub AddAnnotationAnchor(ByVal groupName As String, ByVal startX As Double, ByVal startY As Double, _
         ByVal endX As Double, ByVal endY As Double, ByVal normalX As Double, ByVal normalY As Double, _
         Optional ByVal axisDistance As Double = 0#)
@@ -220,10 +222,12 @@ Public Property Get AnnotationAxisDistance(ByVal index As Long) As Double
     AnnotationAxisDistance = mAnnotationAxisDistance(index)
 End Property
 
+' Проверяет индекс стержня перед доступом к массивам раскладки.
 Private Sub CheckIndex(ByVal index As Long)
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3106, "CRebarLayout", "Индекс стержня вне допустимого диапазона."
 End Sub
 
+' Проверяет индекс аннотационной линии перед доступом к массивам раскладки.
 Private Sub CheckAnnotationIndex(ByVal index As Long)
     If index < 1 Or index > mAnnotationCount Then Err.Raise vbObjectError + 3107, "CRebarLayout", "Индекс аннотации арматуры вне допустимого диапазона."
 End Sub

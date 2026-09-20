@@ -379,16 +379,22 @@ Private Function StateWithinPhysicalRange(ByVal section As CSectionModel, ByVal 
     StateWithinPhysicalRange = True
 End Function
 
+' Вычисляет деформацию произвольной точки по найденной solver-плоскости
+' epsilon0/kappaX/kappaY. Используется для проверки диаграмм после решения.
 Private Function ElementStrain(ByVal solver As CSectionSolver, ByVal x As Double, ByVal y As Double) As Double
     ElementStrain = solver.Epsilon0 + solver.KappaX * y + solver.KappaY * x
 End Function
 
+' Добавляет строку в диагностический журнал только когда диагностика включена.
+' Так рабочий расчет не тратит время на лишний текстовый вывод.
 Private Sub AppendDiagnostic(ByVal lineText As String)
     If Not mDiagnosticsEnabled Then Exit Sub
     If Len(lineText) = 0 Then Exit Sub
     mDiagnosticLog = mDiagnosticLog & lineText & vbCrLf
 End Sub
 
+' Сбрасывает результат одного запуска runner-а перед новым решением НДС.
+' Настройки solver-а при этом не меняются.
 Private Sub ClearResult()
     Set mSolver = Nothing
     mExtensionUsed = False
@@ -398,6 +404,8 @@ Private Sub ClearResult()
     mSolverCallCount = 0
 End Sub
 
+' Форматирует числа диагностики с точкой как десятичным разделителем, чтобы
+' отчет одинаково читался при русской и английской локали Excel/Windows.
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function

@@ -239,6 +239,8 @@ Public Function ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
     ContainsPoint = (mOuter.ContainsPoint(X, Y) And Not mOpening.ContainsPoint(X, Y))
 End Function
 
+' Дублирует семантику ContainsPoint для общего интерфейса геометрий проекта:
+' точка считается внутри, только если она попадает в бетонное кольцо, а не в пустоту.
 Public Function IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
     IsPointInside = ContainsPoint(X, Y)
 End Function
@@ -279,12 +281,18 @@ Public Function IsValid(ByRef message As String) As Boolean
     IsValid = True
 End Function
 
+' Возвращает аналитическую площадь бетонного кольца, если геометрия прошла
+' валидацию. Для расчетной сетки это справочная точная площадь исходной формы:
+' наружный скругленный прямоугольник минус Opening.
 Public Function AnalyticalArea(ByRef available As Boolean) As Double
     Dim message As String
     available = IsValid(message)
     If available Then AnalyticalArea = mArea
 End Function
 
+' Возвращает аналитический центр тяжести бетонной части. При смещенном Opening
+' центр смещается в сторону, противоположную отверстию; этот результат нужен
+' для согласованной схемы, аннотаций и контрольных свойств сечения.
 Public Sub AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByRef Y As Double)
     Dim message As String
     available = IsValid(message)
@@ -299,6 +307,12 @@ Public Sub GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
     mOuter.GetExtremePoints pointX, pointY
 End Sub
 
+' ----------
+' Реализация интерфейса ISectionGeometry.
+' Эти методы являются тонкими переходниками к публичной API класса, чтобы
+' HollowRectangle мог использоваться тем же pipeline сетки и расчета, что и
+' остальные параметрические типы сечений.
+' ----------
 Private Property Get ISectionGeometry_MinX() As Double
     ISectionGeometry_MinX = MinX
 End Property
@@ -315,26 +329,33 @@ Private Property Get ISectionGeometry_MaxY() As Double
     ISectionGeometry_MaxY = MaxY
 End Property
 
+' Передает интерфейсный запрос попадания точки в бетонную часть HollowRectangle.
 Private Function ISectionGeometry_ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
     ISectionGeometry_ContainsPoint = ContainsPoint(X, Y)
 End Function
 
+' Сохраняет совместимость со старым именем проверки точки внутри геометрии.
 Private Function ISectionGeometry_IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
     ISectionGeometry_IsPointInside = IsPointInside(X, Y)
 End Function
 
+' Передает интерфейсную валидацию в основной метод IsValid с теми же сообщениями.
 Private Function ISectionGeometry_IsValid(ByRef message As String) As Boolean
     ISectionGeometry_IsValid = IsValid(message)
 End Function
 
+' Отдает аналитическую площадь через интерфейс ISectionGeometry.
 Private Function ISectionGeometry_AnalyticalArea(ByRef available As Boolean) As Double
     ISectionGeometry_AnalyticalArea = AnalyticalArea(available)
 End Function
 
+' Отдает аналитический центр тяжести через интерфейс ISectionGeometry.
 Private Sub ISectionGeometry_AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByRef Y As Double)
     AnalyticalCentroid available, X, Y
 End Sub
 
+' Отдает точки внешнего контура через интерфейс. Для сетки и габаритов берется
+' именно наружная оболочка, а отверстие учитывается проверкой ContainsPoint.
 Private Sub ISectionGeometry_GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
     GetExtremePoints pointX, pointY
 End Sub

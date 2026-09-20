@@ -519,6 +519,7 @@ Private Function IsPositiveDefiniteInertia(ByVal localIx As Double, ByVal localI
     IsPositiveDefiniteInertia = ((localIx * localIy - localIxy * localIxy) / scaleValue > GEOM_TOLERANCE)
 End Function
 
+' Проверяет, можно ли считать локальный тензор инерции изотропным для выбора оболочки элемента.
 Private Function LocalInertiaIsNumericallyIsotropic(ByVal localIx As Double, _
         ByVal localIy As Double, ByVal localIxy As Double) As Boolean
     Dim scaleValue As Double
@@ -765,10 +766,12 @@ Public Property Get AnnotationCount() As Long
     End If
 End Property
 
+' Проверяет индекс бетонного элемента перед доступом к массивам модели.
 Private Sub CheckConcreteIndex(ByVal index As Long)
     If index < 1 Or index > mConcreteCount Then Err.Raise vbObjectError + 5220, "CSectionModel", "Индекс бетонного элемента вне допустимого диапазона."
 End Sub
 
+' Проверяет индекс арматурного элемента перед доступом к массивам модели.
 Private Sub CheckRebarIndex(ByVal index As Long)
     If index < 1 Or index > mRebarCount Then Err.Raise vbObjectError + 5221, "CSectionModel", "Индекс арматурного элемента вне допустимого диапазона."
 End Sub

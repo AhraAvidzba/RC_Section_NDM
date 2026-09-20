@@ -32,6 +32,7 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
     rebarLabels.AddRebarLabels annotations, rebars
 End Sub
 
+' Добавляет контур RoundedRectangle; для родного класса использует дуги, для fallback-геометрии - линии.
 Private Sub AddContour(ByVal annotations As CSectionAnnotations, ByVal geometry As ISectionGeometry)
     Dim rounded As CGeometryRoundedRectangle
     Dim geometryObject As Object
@@ -84,6 +85,7 @@ Private Sub AddRoundedContour(ByVal annotations As CSectionAnnotations, ByVal ro
     Next i
 End Sub
 
+' Добавляет размеры B/H и фактический W' для tapered-сторон RoundedRectangle.
 Private Sub AddDimensions(ByVal annotations As CSectionAnnotations, ByVal geometry As ISectionGeometry)
     Dim rounded As CGeometryRoundedRectangle
     Dim geometryObject As Object

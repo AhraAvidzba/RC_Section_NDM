@@ -714,34 +714,43 @@ Private Sub CalculateDepthsPerpendicularToNeutral(ByVal section As CSectionModel
     End If
 End Sub
 
+' Ниже собраны адаптеры единиц для strength-блока, чтобы все значения в таблице
+' выводились теми же единицами и знаками, что и остальная программа.
 Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputLength = value Else OutputLength = units.InternalLengthToOutput(value)
 End Function
 
+' Возвращает подпись выходной единицы длины для заголовков strength-таблицы.
 Private Function OutputLengthUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputLengthUnit = "mm" Else OutputLengthUnit = units.OutputLengthUnit
 End Function
 
+' Переводит напряжение из внутренних МПа в выбранную пользователем единицу.
 Private Function OutputStress(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputStress = value Else OutputStress = units.InternalStressToOutput(value)
 End Function
 
+' Переводит продольную силу из внутренних Н в пользовательскую систему вывода.
 Private Function OutputForce(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputForce = value Else OutputForce = units.InternalForceToOutput(value)
 End Function
 
+' Возвращает подпись выходной единицы силы для заголовков strength-таблицы.
 Private Function OutputForceUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputForceUnit = "N" Else OutputForceUnit = units.OutputForceUnit
 End Function
 
+' Переводит Mx с учетом пользовательской системы знаков.
 Private Function OutputMx(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputMx = value Else OutputMx = units.InternalMomentMxToOutput(value)
 End Function
 
+' Переводит My с учетом пользовательской системы знаков.
 Private Function OutputMy(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputMy = value Else OutputMy = units.InternalMomentMyToOutput(value)
 End Function
 
+' Возвращает подпись выходной единицы момента для заголовков strength-таблицы.
 Private Function OutputMomentUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputMomentUnit = "N*mm" Else OutputMomentUnit = units.OutputMomentUnit
 End Function
@@ -753,10 +762,12 @@ Private Function StatusPolicy() As CBatchStatusPolicy
     Set StatusPolicy = policy
 End Function
 
+' Локальный максимум нужен для компактных геометрических расчетов внутри writer-а.
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a >= b Then MaxDouble = a Else MaxDouble = b
 End Function
 
+' Локальный минимум нужен для компактных геометрических расчетов внутри writer-а.
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a <= b Then MinDouble = a Else MinDouble = b
 End Function

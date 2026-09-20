@@ -306,6 +306,9 @@ Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
     SolveNewtonLoadStep = False
 End Function
 
+' Решает одну ступень нагрузки методом Secant/Broyden без аналитической
+' касательной матрицы. Метод использует численную начальную матрицу,
+' обновляет ее по Бройдену и при необходимости ограниченно перезапускает.
 Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal stepIndex As Long, ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
@@ -396,6 +399,8 @@ Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
     SolveSecantLoadStep = False
 End Function
 
+' Пересчитывает внутренние усилия для текущей плоскости деформаций и сразу
+' обновляет невязки относительно целевого вектора нагрузки.
 Private Sub RefreshCurrentState(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double)
@@ -403,6 +408,9 @@ Private Sub RefreshCurrentState(ByVal section As CSectionModel, _
     SetResiduals targetN, targetMx, targetMy
 End Sub
 
+' Служебно оценивает невязку Secant в произвольной плоскости деформаций.
+' Основное состояние solver-а после вызова остается синхронизированным через
+' SetResiduals, чтобы диагностика и последующий шаг видели актуальные R.
 Private Sub EvaluateSecantResidual(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -416,7 +424,9 @@ Private Sub EvaluateSecantResidual(ByVal section As CSectionModel, _
     SetResiduals targetN, targetMx, targetMy
 End Sub
 
-' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
+' Строит начальную численную матрицу чувствительности для Secant. Производные
+' берутся центральными разностями по epsilon0, kappaX и kappaY, чтобы метод
+' мог стартовать без касательной матрицы материала.
 Private Function BuildInitialSecantMatrix(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -441,7 +451,9 @@ Private Function BuildInitialSecantMatrix(ByVal section As CSectionModel, _
     BuildInitialSecantMatrix = IsFiniteNumber(mLastMatrixConditionEstimate)
 End Function
 
-' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
+' Заполняет один столбец начальной Secant-матрицы центральной разностью.
+' В колонку попадает изменение невязок N/Mx/My при малом изменении одного
+' параметра плоскости деформаций.
 Private Sub BuildSecantJacobianColumn(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -475,6 +487,8 @@ Private Sub BuildSecantJacobianColumn(ByVal section As CSectionModel, _
     b(3, columnIndex) = (rMy - minusRMy) / h
 End Sub
 
+' Решает линейную систему Secant для поправки плоскости деформаций.
+' Возвращает False, если матрица вырождена или полученный шаг нечисловой.
 Private Function SolveSecantCorrection(ByRef b() As Double, ByRef deltaEps As Double, _
         ByRef deltaKx As Double, ByRef deltaKy As Double) As Boolean
 
@@ -493,6 +507,9 @@ Private Function SolveSecantCorrection(ByRef b() As Double, ByRef deltaEps As Do
     SolveSecantCorrection = IsFiniteNumber(deltaEps) And IsFiniteNumber(deltaKx) And IsFiniteNumber(deltaKy)
 End Function
 
+' Обновляет приближенную матрицу чувствительности по формуле Бройдена.
+' Если шаг слишком мал или новая матрица выглядит нечисловой, вызывающий код
+' должен пересобрать матрицу с нуля.
 Private Function UpdateBroydenMatrix(ByRef b() As Double, ByVal s1 As Double, ByVal s2 As Double, _
         ByVal s3 As Double, ByVal y1 As Double, ByVal y2 As Double, ByVal y3 As Double) As Boolean
 
@@ -529,6 +546,8 @@ Private Function UpdateBroydenMatrix(ByRef b() As Double, ByVal s1 As Double, By
     UpdateBroydenMatrix = IsFiniteNumber(mLastMatrixConditionEstimate)
 End Function
 
+' Пересобирает Secant-матрицу после застоя, плохого line search или неудачного
+' обновления Бройдена. Количество перезапусков ограничено настройкой solver-а.
 Private Function RestartSecantMatrix(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -547,10 +566,14 @@ Private Function RestartSecantMatrix(ByVal section As CSectionModel, _
         eps0, kx, ky, resN, resMx, resMy, b)
 End Function
 
+' Возвращает простую норму шага Secant по трем параметрам плоскости.
+' Она нужна только для обнаружения численного застоя.
 Private Function SecantStepNorm(ByVal deltaEps As Double, ByVal deltaKx As Double, ByVal deltaKy As Double) As Double
     SecantStepNorm = Abs(deltaEps) + Abs(deltaKx) + Abs(deltaKy)
 End Function
 
+' Дает грубую оценку разброса элементов матрицы чувствительности.
+' Это диагностический индикатор вырожденности, а не строгий condition number.
 Private Function EstimateMatrixCondition(ByRef b() As Double) As Double
     Dim maxAbs As Double
     Dim minAbs As Double
@@ -570,6 +593,8 @@ Private Function EstimateMatrixCondition(ByRef b() As Double) As Double
     End If
 End Function
 
+' Принимает или отклоняет найденную поправку Newton/Secant. При включенном
+' line search метод дробит шаг, пока норма невязки не перестанет ухудшаться.
 Private Function AcceptStep(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -615,6 +640,8 @@ Private Function AcceptStep(ByVal section As CSectionModel, _
     AcceptStep = 0#
 End Function
 
+' Ограничивает приращения epsilon0 и кривизн пользовательскими лимитами.
+' Возвращает множитель, на который был уменьшен исходный расчетный шаг.
 Private Function LimitIncrement(ByRef deltaEps As Double, ByRef deltaKx As Double, ByRef deltaKy As Double) As Double
     Dim scaleFactor As Double
     scaleFactor = 1#
@@ -635,12 +662,18 @@ Private Function LimitIncrement(ByRef deltaEps As Double, ByRef deltaKx As Doubl
     LimitIncrement = scaleFactor
 End Function
 
+' Пересчитывает состояние и записывает внутренние усилия в поля solver-а.
+' Если buildTangent=True, дополнительно собираются касательная матрица и
+' экстремальные деформации/напряжения для Results.
 Private Sub EvaluateState(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, ByVal buildTangent As Boolean)
     EvaluateStateInto section, concreteMaterial, steelMaterial, eps0, kx, ky, buildTangent, mNint, mMxint, mMyint
 End Sub
 
+' Интегрирует напряжения по бетонным и арматурным элементам для заданной
+' плоскости деформаций. Это самая горячая операция solver-а; она работает
+' через CSectionModel и не обращается к Excel.
 Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, ByVal buildTangent As Boolean, _
@@ -765,7 +798,7 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
     End If
 End Sub
 
-' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
+' Очищает касательную матрицу перед новой сборкой производных равновесия.
 Private Sub ClearTangent()
     Dim i As Long
     For i = 1 To 3
@@ -773,6 +806,9 @@ Private Sub ClearTangent()
     Next i
 End Sub
 
+' Добавляет вклад одного элемента в касательную матрицу равновесия.
+' axialStiffness уже включает E_tangent * Area, поэтому здесь остается только
+' умножение на координаты по правилу моментов.
 Private Sub AddTangent(ByVal axialStiffness As Double, ByVal xCoord As Double, ByVal yCoord As Double)
     mK(1, 1) = mK(1, 1) + axialStiffness
     mK(1, 2) = mK(1, 2) + axialStiffness * yCoord
@@ -785,6 +821,8 @@ Private Sub AddTangent(ByVal axialStiffness As Double, ByVal xCoord As Double, B
     mK(3, 3) = mK(3, 3) + axialStiffness * xCoord * xCoord
 End Sub
 
+' Обновляет абсолютные и относительные невязки равновесия после очередной
+' оценки внутренних усилий.
 Private Sub SetResiduals(ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double)
     mResidualN = mNint - targetN
     mResidualMx = mMxint - targetMx
@@ -794,12 +832,17 @@ Private Sub SetResiduals(ByVal targetN As Double, ByVal targetMx As Double, ByVa
     mRelativeResidualMy = RelativeResidual(mResidualMy, targetMy)
 End Sub
 
+' Проверяет выполнение трех независимых условий равновесия по абсолютным
+' допускам solver-а.
 Private Function IsConverged(ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
     IsConverged = Abs(mResidualN) <= mToleranceN And _
         Abs(mResidualMx) <= mToleranceMx And _
         Abs(mResidualMy) <= mToleranceMy
 End Function
 
+' Собирает безразмерную норму невязки для line search и диагностики.
+' Нормировка идет по максимуму из заданного solver tolerance и малой доли
+' целевого усилия, чтобы крупные нагрузки не доминировали численно.
 Private Function ResidualNorm(ByVal resN As Double, ByVal resMx As Double, ByVal resMy As Double, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Double
     ResidualNorm = Abs(resN) / MaxDouble(mToleranceN, Abs(targetN) * 0.000000001) + _
@@ -807,6 +850,7 @@ Private Function ResidualNorm(ByVal resN As Double, ByVal resMx As Double, ByVal
         Abs(resMy) / MaxDouble(mToleranceMy, Abs(targetMy) * 0.000000001)
 End Function
 
+' Возвращает относительную невязку, а для нулевого target - абсолютную.
 Private Function RelativeResidual(ByVal residual As Double, ByVal target As Double) As Double
     If Abs(target) > 0.000000000001 Then
         RelativeResidual = Abs(residual / target)
@@ -815,6 +859,8 @@ Private Function RelativeResidual(ByVal residual As Double, ByVal target As Doub
     End If
 End Function
 
+' Записывает одну строку подробной диагностики итераций solver-а.
+' Диагностика включается только для отчета/тестов и не влияет на расчет.
 Private Sub AppendDiagnostics(ByVal stepIndex As Long, ByVal iter As Long, ByVal alpha As Double, _
         ByVal deltaScale As Double, ByVal targetN As Double, ByVal targetMx As Double, _
         ByVal targetMy As Double, ByVal state As String)
@@ -842,7 +888,7 @@ Private Sub AppendDiagnostics(ByVal stepIndex As Long, ByVal iter As Long, ByVal
         "; deltaScale=" & FormatNumberInvariant(deltaScale) & vbCrLf
 End Sub
 
-' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
+' Проверяет входные данные solver-а перед запуском численного равновесия.
 Private Sub ValidateInputs(ByVal section As CSectionModel, ByVal concreteMaterial As Object, ByVal steelMaterial As Object)
     If section Is Nothing Then Err.Raise vbObjectError + 3400, "CSectionSolver", "Модель сечения не передана."
     If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 3401, "CSectionSolver", "В модели сечения нет бетонных элементов."
@@ -854,7 +900,8 @@ Private Sub ValidateInputs(ByVal section As CSectionModel, ByVal concreteMateria
     If mSecantMinStepNorm <= 0# Then Err.Raise vbObjectError + 3407, "CSectionSolver", "Solver.SecantMinStepNorm должен быть положительным."
 End Sub
 
-' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
+' Нормализует выбранный численный метод и формирует InputError при неизвестном
+' значении Solver.Method.
 Private Function ValidateSolverMethod() As Boolean
     If StrComp(mSolverMethod, "Newton", vbTextCompare) = 0 Then
         mSolverMethod = "Newton"
@@ -868,7 +915,8 @@ Private Function ValidateSolverMethod() As Boolean
     End If
 End Function
 
-' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
+' Очищает результаты последнего solve, но не сбрасывает настройки solver-а и
+' заданное начальное приближение.
 Public Sub ClearResult()
     mConverged = False
     mStopReason = vbNullString
@@ -899,6 +947,8 @@ Public Sub ClearResult()
     ClearTangent
 End Sub
 
+' Задает стартовую плоскость деформаций для следующего solve. Используется
+' warm-start сценариями: трещины, несущая способность и continuation-поиски.
 Public Sub SetInitialState(ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double)
     mUseInitialState = True
     mInitialEpsilon0 = epsilon0
@@ -906,6 +956,9 @@ Public Sub SetInitialState(ByVal epsilon0 As Double, ByVal kappaX As Double, ByV
     mInitialKappaY = kappaY
 End Sub
 
+' Задает стартовую плоскость вместе с нагрузкой, относительно которой эта
+' плоскость уже была уравновешена. Это позволяет прикладывать следующую
+' нагрузку ступенями от известной точки, а не от нуля.
 Public Sub SetInitialLoadState(ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double)
     SetInitialState epsilon0, kappaX, kappaY
@@ -915,7 +968,7 @@ Public Sub SetInitialLoadState(ByVal epsilon0 As Double, ByVal kappaX As Double,
     mInitialTargetMy = targetMy
 End Sub
 
-' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
+' Сбрасывает warm-start перед независимым расчетом нового состояния.
 Public Sub ClearInitialState()
     mUseInitialState = False
     mInitialEpsilon0 = 0#: mInitialKappaX = 0#: mInitialKappaY = 0#
@@ -923,18 +976,23 @@ Public Sub ClearInitialState()
     mInitialTargetN = 0#: mInitialTargetMx = 0#: mInitialTargetMy = 0#
 End Sub
 
+' Утилитарный минимум без WorksheetFunction в горячем коде solver-а.
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
 
+' Утилитарный максимум без WorksheetFunction в горячем коде solver-а.
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
 
+' Форматирует число для диагностического журнала с точкой как разделителем,
+' чтобы отчет был одинаковым при разных региональных настройках Excel.
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
 
+' Проверяет, что число конечно и не является NaN/overflow-маркером.
 Private Function IsFiniteNumber(ByVal value As Double) As Boolean
     IsFiniteNumber = (value = value And Abs(value) < 1E+100)
 End Function

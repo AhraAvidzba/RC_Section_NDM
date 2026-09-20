@@ -401,6 +401,10 @@ Public Sub AddInvalidCombination(ByVal combinationID As String, ByVal profileId 
     AddCombinationInternal combinationID, 0#, 0#, 0#, profileId, comment, False, reason, capacityLoadPath
 End Sub
 
+' Единая точка добавления строки сочетания. Через нее проходят и корректные
+' LC, и строки с ошибкой ввода; это гарантирует одинаковую нумерацию,
+' сохранение комментариев и нормализацию малых моментов только для валидных
+' нагрузок.
 Private Sub AddCombinationInternal(ByVal combinationID As String, ByVal nValue As Double, ByVal mxValue As Double, _
         ByVal myValue As Double, ByVal profileId As String, ByVal comment As String, _
         ByVal inputValid As Boolean, ByVal inputError As String, ByVal capacityLoadPath As String)
@@ -1697,24 +1701,32 @@ Private Sub ReportCombinationSummary(ByVal index As Long)
     ReportValue "Определяющее использование", FormatNumberInvariant(mResults(index).GoverningUtil)
 End Sub
 
+' Добавляет смысловой заголовок в txt-отчет выполнения, если отчет включен
+' пользователем. Вызов безопасен при выключенном отчете.
 Private Sub ReportSection(ByVal title As String)
     If mReport Is Nothing Then Exit Sub
     If Not mReport.Enabled Then Exit Sub
     mReport.AddSection title
 End Sub
 
+' Добавляет строку-этап в txt-отчет выполнения. Используется orchestration-ом,
+' чтобы показать пользователю, какая расчетная ветка запускается сейчас.
 Private Sub ReportStep(ByVal text As String)
     If mReport Is Nothing Then Exit Sub
     If Not mReport.Enabled Then Exit Sub
     mReport.AddStep text
 End Sub
 
+' Добавляет пару "параметр - значение" в txt-отчет. Метод держит всю проверку
+' включенности отчета в одном месте, чтобы расчетный код не дублировал guard.
 Private Sub ReportValue(ByVal label As String, ByVal valueText As String)
     If mReport Is Nothing Then Exit Sub
     If Not mReport.Enabled Then Exit Sub
     mReport.AddValue label, valueText
 End Sub
 
+' Добавляет многострочный диагностический блок в txt-отчет и перед записью
+' переводит низкоуровневую диагностику solver-а в более читаемый вид.
 Private Sub ReportBlock(ByVal title As String, ByVal body As String)
     If mReport Is Nothing Then Exit Sub
     If Not mReport.Enabled Then Exit Sub
@@ -1960,10 +1972,13 @@ Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
 
+' Утилитарный минимум без WorksheetFunction; используется в расчетном слое,
+' где нельзя вводить лишнюю зависимость от Excel-объектов.
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
 
+' Утилитарный максимум для Long без WorksheetFunction и без неявного Variant.
 Private Function MaxLong(ByVal a As Long, ByVal b As Long) As Long
     If a > b Then MaxLong = a Else MaxLong = b
 End Function
@@ -3012,6 +3027,8 @@ Public Property Get NamedState(ByVal index As Long, ByVal stateIndex As Long) As
     Set NamedState = mResults(index).StateAt(stateIndex)
 End Property
 
+' Ищет сохраненное named-state по типу состояния. Этим пользуются схема,
+' AutoCAD export и подробные writer-ы, чтобы не пересчитывать НДС повторно.
 Public Function FindNamedState(ByVal index As Long, ByVal stateType As ESectionStateType) As CSectionStateResult
     Set FindNamedState = mResults(index).FindState(stateType)
 End Function

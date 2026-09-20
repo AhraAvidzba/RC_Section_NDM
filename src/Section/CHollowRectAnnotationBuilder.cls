@@ -25,12 +25,16 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
     Set annotations = model.Annotations
     annotations.Clear
 
+    ' Аннотации HollowRectangle требуют именно concrete geometry этого типа:
+    ' наружная и внутренняя петли контура нужны AutoCAD export и Excel-схеме.
     Dim hollow As CGeometryHollowRectangle
     Dim geometryObject As Object
     Set geometryObject = geometry
     If TypeName(geometryObject) = "CGeometryHollowRectangle" Then Set hollow = geometryObject
     If hollow Is Nothing Then Err.Raise vbObjectError + 5317, "CHollowRectAnnotationBuilder", "Ожидалась геометрия CGeometryHollowRectangle."
 
+    ' Контуры пишутся первыми, затем размерные линии и подписи групп арматуры.
+    ' Такой порядок удобен для чтения Results и не влияет на расчетную модель.
     AddContourLoop annotations, hollow, False, "OUTER", "наружного контура"
     AddContourLoop annotations, hollow, True, "OPENING", "внутреннего контура Opening"
     AddDimensions annotations, hollow
@@ -52,6 +56,8 @@ Private Sub AddContourLoop(ByVal annotations As CSectionAnnotations, ByVal hollo
     Dim segmentCount As Long
     hollow.GetContourSegments openingLoop, segmentType, startX, startY, endX, endY, centerX, centerY, radiusValue, sweepAngle, segmentCount
 
+    ' Каждая дуга и линия получает отдельную semantic-аннотацию. Позже plotter и
+    ' AutoCAD export сами решают, как визуально отрисовать эти сегменты.
     Dim i As Long
     For i = 1 To segmentCount
         If StrComp(segmentType(i), "ARC", vbTextCompare) = 0 Then

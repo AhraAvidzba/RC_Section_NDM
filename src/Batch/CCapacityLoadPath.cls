@@ -45,6 +45,7 @@ Private mScalesMy As Boolean ' Масштабируется ли пользов�
 
 Private mPath As CLoadPathVector ' Общий вектор Offset + lambda*Base для передачи в solver.
 
+' Задает безопасное начальное состояние: путь отсутствует, объект вектора уже создан.
 Private Sub Class_Initialize()
     mValid = True
     mKey = KEY_NONE
@@ -182,10 +183,12 @@ Private Sub BuildOffsetBase(ByVal loadState As CSectionLoadState, ByVal userMxVa
     End Select
 End Sub
 
+' Проверяет наличие ненулевого пользовательского вектора момента после общего фильтра малых моментов.
 Private Function HasMomentVector(ByVal mxValue As Double, ByVal myValue As Double) As Boolean
     HasMomentVector = (Sqr(mxValue * mxValue + myValue * myValue) > LOAD_TOLERANCE)
 End Function
 
+' Сбрасывает разобранный путь перед чтением новой строки сочетания нагрузок.
 Private Sub Clear()
     mRawText = vbNullString
     mKey = KEY_NONE

@@ -530,10 +530,12 @@ Public Function SteelStateMaterialFromSpec(ByVal spec As CMaterialModelSpec) As 
     Set SteelStateMaterialFromSpec = diagram
 End Function
 
+' Возвращает предельную сжатую деформацию бетона для заданной профильной спецификации.
 Public Function ConcreteCompressionLimitFromSpec(ByVal spec As CMaterialModelSpec) As Double
     ConcreteCompressionLimitFromSpec = ConcreteMaterialFromSpec(spec).UltimateCompressionStrain
 End Function
 
+' Возвращает предельную растянутую деформацию бетона для заданной профильной спецификации.
 Public Function ConcreteTensionLimitFromSpec(ByVal spec As CMaterialModelSpec) As Double
     ConcreteTensionLimitFromSpec = ConcreteMaterialFromSpec(spec).UltimateTensionStrain
 End Function
@@ -548,25 +550,30 @@ Public Function ConcreteTensionEbt0FromSpec(ByVal spec As CMaterialModelSpec) As
     ConcreteTensionEbt0FromSpec = mConcreteParameters.Ebt0
 End Function
 
+' Показывает, активен ли физический предел растянутого бетона в данной спецификации.
 Public Function ConcreteTensionLimitEnabledFromSpec(ByVal spec As CMaterialModelSpec) As Boolean
     Dim diagram As CMaterialDiagram
     Set diagram = ConcreteMaterialFromSpec(spec)
     ConcreteTensionLimitEnabledFromSpec = (diagram.HasPhysicalTensionLimit And spec.ConcreteTension = ctkUseDiagram)
 End Function
 
+' Возвращает предельную сжатую деформацию арматуры для заданной профильной спецификации.
 Public Function SteelCompressionLimitFromSpec(ByVal spec As CMaterialModelSpec) As Double
     SteelCompressionLimitFromSpec = SteelMaterialFromSpec(spec).UltimateCompressionStrain
 End Function
 
+' Возвращает предельную растянутую деформацию арматуры для заданной профильной спецификации.
 Public Function SteelTensionLimitFromSpec(ByVal spec As CMaterialModelSpec) As Double
     SteelTensionLimitFromSpec = SteelMaterialFromSpec(spec).UltimateTensionStrain
 End Function
 
+' Возвращает расчетное/нормативное сопротивление бетона сжатию по ValueSet спецификации.
 Public Function ConcreteCompressionResistanceFromSpec(ByVal spec As CMaterialModelSpec) As Double
     ValidateSpec spec
     ConcreteCompressionResistanceFromSpec = ConcreteCompressionResistanceFromValueSet(spec.ValueSet)
 End Function
 
+' Возвращает расчетное/нормативное сопротивление бетона растяжению по ValueSet спецификации.
 Public Function ConcreteTensionResistanceFromSpec(ByVal spec As CMaterialModelSpec) As Double
     ValidateSpec spec
     ConcreteTensionResistanceFromSpec = ConcreteTensionResistanceFromValueSet(spec.ValueSet)
@@ -592,6 +599,7 @@ Public Function ConcreteTensionResistanceFromValueSet(ByVal valueSet As EMateria
     ConcreteTensionResistanceFromValueSet = rbt
 End Function
 
+' Возвращает модуль бетона для приведенных характеристик, связанных с указанной спецификацией.
 Public Function ConcreteElasticModulusFromSpec(ByVal spec As CMaterialModelSpec) As Double
     ValidateSpec spec
     ConcreteElasticModulusFromSpec = ConcreteElasticModulusFromValueSet(spec.ValueSet)
@@ -604,6 +612,7 @@ Public Function ConcreteElasticModulusFromValueSet(ByVal valueSet As EMaterialVa
     ConcreteElasticModulusFromValueSet = mConcreteParameters.Eb
 End Function
 
+' Возвращает модуль арматуры для приведенных характеристик, связанных с указанной спецификацией.
 Public Function SteelElasticModulusFromSpec(ByVal spec As CMaterialModelSpec) As Double
     ValidateSpec spec
     SteelElasticModulusFromSpec = SteelElasticModulusFromValueSet(spec.ValueSet)
@@ -616,11 +625,13 @@ Public Function SteelElasticModulusFromValueSet(ByVal valueSet As EMaterialValue
     SteelElasticModulusFromValueSet = mSteelParameters.Es
 End Function
 
+' Возвращает сопротивление арматуры сжатию по ValueSet спецификации.
 Public Function SteelCompressionResistanceFromSpec(ByVal spec As CMaterialModelSpec) As Double
     ValidateSpec spec
     SteelCompressionResistanceFromSpec = SteelCompressionResistanceFromValueSet(spec.ValueSet)
 End Function
 
+' Возвращает сопротивление арматуры растяжению по ValueSet спецификации.
 Public Function SteelTensionResistanceFromSpec(ByVal spec As CMaterialModelSpec) As Double
     ValidateSpec spec
     SteelTensionResistanceFromSpec = SteelTensionResistanceFromValueSet(spec.ValueSet)
@@ -686,76 +697,91 @@ Private Function MaterialDiagramCacheKey(ByVal roleKey As String, ByVal spec As 
     MaterialDiagramCacheKey = roleKey & "|" & spec.SpecKey
 End Function
 
+' Возвращает группу предельных состояний для исторического API по расчетной роли.
 Public Function LimitStateGroup(ByVal purpose As ECalculationPurpose) As String
     EnsureInitialized
     LimitStateGroup = mLimitStateGroup(PhysicalPurposeSlot(purpose))
 End Function
 
+' Возвращает тип бетонной диаграммы для исторического API по расчетной роли.
 Public Function ConcreteDiagramType(ByVal purpose As ECalculationPurpose) As String
     EnsureInitialized
     ConcreteDiagramType = mConcreteDiagramType(PhysicalPurposeSlot(purpose))
 End Function
 
+' Возвращает режим учета растянутого бетона для исторического API по расчетной роли.
 Public Function ConcreteTensionBehavior(ByVal purpose As ECalculationPurpose) As String
     EnsureInitialized
     ConcreteTensionBehavior = mConcreteTensionBehavior(PhysicalPurposeSlot(purpose))
 End Function
 
+' Возвращает тип диаграммы арматуры для исторического API по расчетной роли.
 Public Function SteelDiagramType(ByVal purpose As ECalculationPurpose) As String
     EnsureInitialized
     SteelDiagramType = mSteelDiagramType(PhysicalPurposeSlot(purpose))
 End Function
 
+' Возвращает предельную сжатую деформацию бетона для исторического API по расчетной роли.
 Public Function ConcreteCompressionLimit(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     ConcreteCompressionLimit = mConcreteCompressionLimit(PhysicalPurposeSlot(purpose))
 End Function
 
+' Возвращает предельную растянутую деформацию бетона для исторического API по расчетной роли.
 Public Function ConcreteTensionLimit(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     ConcreteTensionLimit = mConcreteTensionLimit(PhysicalPurposeSlot(purpose))
 End Function
 
+' Показывает, включен ли предел растянутого бетона для исторического API по расчетной роли.
 Public Function ConcreteTensionLimitEnabled(ByVal purpose As ECalculationPurpose) As Boolean
     EnsureInitialized
     ConcreteTensionLimitEnabled = mConcreteTensionLimitEnabled(PhysicalPurposeSlot(purpose))
 End Function
 
+' Возвращает предельную сжатую деформацию арматуры для исторического API по расчетной роли.
 Public Function SteelCompressionLimit(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     SteelCompressionLimit = mSteelCompressionLimit(PhysicalPurposeSlot(purpose))
 End Function
 
+' Возвращает предельную растянутую деформацию арматуры для исторического API по расчетной роли.
 Public Function SteelTensionLimit(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     SteelTensionLimit = mSteelTensionLimit(PhysicalPurposeSlot(purpose))
 End Function
 
+' Возвращает сопротивление бетона сжатию для исторического API по расчетной роли.
 Public Function ConcreteCompressionResistance(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     ConcreteCompressionResistance = mConcreteCompressionResistance(PhysicalPurposeSlot(purpose))
 End Function
 
+' Возвращает сопротивление бетона растяжению для исторического API по расчетной роли.
 Public Function ConcreteTensionResistance(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     ConcreteTensionResistance = mConcreteTensionResistance(PhysicalPurposeSlot(purpose))
 End Function
 
+' Возвращает модуль бетона для исторического API по расчетной роли.
 Public Function ConcreteElasticModulus(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     ConcreteElasticModulus = mConcreteElasticModulus(PhysicalPurposeSlot(purpose))
 End Function
 
+' Возвращает сопротивление арматуры сжатию для исторического API по расчетной роли.
 Public Function SteelCompressionResistance(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     SteelCompressionResistance = mSteelCompressionResistance(PhysicalPurposeSlot(purpose))
 End Function
 
+' Возвращает сопротивление арматуры растяжению для исторического API по расчетной роли.
 Public Function SteelTensionResistance(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     SteelTensionResistance = mSteelTensionResistance(PhysicalPurposeSlot(purpose))
 End Function
 
+' Возвращает модуль арматуры для исторического API по расчетной роли.
 Public Function SteelElasticModulus(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     SteelElasticModulus = mSteelElasticModulus(PhysicalPurposeSlot(purpose))

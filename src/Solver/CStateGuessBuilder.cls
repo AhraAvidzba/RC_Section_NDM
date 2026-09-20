@@ -683,10 +683,13 @@ Private Function ExtensionPlaneClose(ByVal oldEps0 As Double, ByVal oldKx As Dou
         Abs(newKy - oldKy) <= ACTIVE_SET_KAPPA_TOLERANCE
 End Function
 
+' Локальный минимум/максимум оставлены в классе, чтобы построение стартовых
+' плоскостей не зависело от Excel WorksheetFunction и не создавало Variant.
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
 
+' Парная утилита к MaxDouble для ограничений и масштабов стартовой плоскости.
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function

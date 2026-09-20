@@ -122,6 +122,7 @@ Private Function SpecFromValues(ByVal values As Object, ByVal prefix As String) 
     Set SpecFromValues = spec
 End Function
 
+' Возвращает строковое значение параметра профиля по ключу, если такая строка есть в таблице.
 Private Function ProfileValue(ByVal values As Object, ByVal keyText As String) As String
     If values.Exists(keyText) Then ProfileValue = Trim$(CStr(values(keyText)))
 End Function
@@ -157,16 +158,19 @@ Private Sub CollectProfileColumns(ByRef data As Variant, ByVal headerRow As Long
     Next colIndex
 End Sub
 
+' Проверяет, что заголовок столбца выглядит как расчетный ProfileId вида PR1, PR2 и т.п.
 Private Function IsProfileIdText(ByVal value As String) As Boolean
     value = UCase$(Trim$(value))
     IsProfileIdText = (Len(value) >= 3 And Left$(value, 2) = "PR" And IsNumeric(Mid$(value, 3)))
 End Function
 
+' Приводит пользовательское Yes/No-значение к Boolean с учетом русской записи "Да".
 Private Function YesNo(ByVal value As String) As Boolean
     value = UCase$(Trim$(value))
     YesNo = (value = "YES" Or value = "TRUE" Or value = "1" Or value = "ДА")
 End Function
 
+' Очищает ранее прочитанный каталог перед новой загрузкой из workbook.
 Private Sub Clear()
     Erase mProfiles
     Erase mProfileIds
@@ -187,6 +191,7 @@ Public Function HasProfile(ByVal profileId As String) As Boolean
     HasProfile = (FindProfile(profileId) > 0)
 End Function
 
+' Ищет профиль сначала по стабильному ID столбца, затем по пользовательскому имени профиля.
 Private Function FindProfile(ByVal profileId As String) As Long
     Dim i As Long
     For i = 1 To mCount

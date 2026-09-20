@@ -38,6 +38,7 @@ Private mVisualizationQuantity As EVisualizationQuantity ' Stress или Strain 
 Private mHasVisualizationState As Boolean ' Визуальная настройка задана в профиле.
 Private mHasVisualizationQuantity As Boolean ' Визуальная величина задана в профиле.
 
+' Создает пустые спецификации материалов для трех расчетных ролей профиля.
 Private Sub Class_Initialize()
     Set mStrengthSpec = New CMaterialModelSpec
     Set mCrackInitiationSpec = New CMaterialModelSpec

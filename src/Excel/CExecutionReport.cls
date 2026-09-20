@@ -125,11 +125,13 @@ Public Property Get FilePath() As String
     FilePath = mFilePath
 End Property
 
+' Добавляет строку без форматирования во внутренний буфер отчета.
 Private Sub AddRawLine(ByVal text As String)
     If mLines Is Nothing Then Set mLines = New Collection
     mLines.Add text
 End Sub
 
+' Собирает коллекцию строк в один текст с Windows-переносами строк.
 Private Function JoinLines() As String
     Dim parts() As String
     ReDim parts(0 To mLines.Count - 1)
@@ -141,20 +143,24 @@ Private Function JoinLines() As String
     JoinLines = Join(parts, vbCrLf)
 End Function
 
+' Возвращает префикс вида [0.123 с] для строк пошагового отчета.
 Private Function TimePrefix() As String
     TimePrefix = "[" & Format$(ElapsedSeconds(), "0.000") & " с]"
 End Function
 
+' Считает прошедшее время с учетом перехода Timer через полночь.
 Private Function ElapsedSeconds() As Double
     ElapsedSeconds = Timer - mStartTimer
     If ElapsedSeconds < 0# Then ElapsedSeconds = ElapsedSeconds + 86400#
 End Function
 
+' Возвращает папку книги или текущую папку, если книга еще не сохранена.
 Private Function WorkbookFolder(ByVal workbook As Object) As String
     WorkbookFolder = Trim$(CStr(workbook.Path))
     If Len(WorkbookFolder) = 0 Then WorkbookFolder = CurDir$
 End Function
 
+' Безопасно читает имя книги для отчета выполнения.
 Private Function SafeWorkbookName(ByVal workbook As Object) As String
     On Error GoTo Failed
     SafeWorkbookName = CStr(workbook.Name)

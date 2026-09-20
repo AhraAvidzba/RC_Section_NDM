@@ -34,6 +34,7 @@ Private mUpperOffsetX As Double
 Private mSectionType As String
 Private mInitialized As Boolean
 
+' Инициализирует RectSet в одном из трех режимов: Rectangle, LSection или TwoRectangles.
 Public Sub Initialize(ByVal b1Mm As Double, ByVal h1Mm As Double, _
         ByVal b2Mm As Double, ByVal h2Mm As Double, _
         Optional ByVal originXMm As Double = 0#, Optional ByVal originYMm As Double = 0#, _
@@ -149,6 +150,7 @@ Public Property Get MaxY() As Double
     MaxY = ActiveUpperMaxY()
 End Property
 
+' Проверяет попадание точки в объединение активных прямоугольников с учетом геометрического допуска.
 Public Function ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
     Dim message As String
     If Not IsValid(message) Then Exit Function
@@ -165,10 +167,12 @@ Public Function ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
     ContainsPoint = insideLower Or insideUpper
 End Function
 
+' Совместимый псевдоним для интерфейса ISectionGeometry.
 Public Function IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
     IsPointInside = ContainsPoint(X, Y)
 End Function
 
+' Проверяет, что выбранный режим RectSet имеет положительные размеры и связную геометрию.
 Public Function IsValid(ByRef message As String) As Boolean
     message = vbNullString
     If Not mInitialized Then
@@ -192,6 +196,7 @@ Public Function IsValid(ByRef message As String) As Boolean
     End If
 End Function
 
+' Возвращает точную аналитическую площадь активных прямоугольников.
 Public Function AnalyticalArea(ByRef available As Boolean) As Double
     Dim message As String
     available = IsValid(message)
@@ -201,6 +206,7 @@ Public Function AnalyticalArea(ByRef available As Boolean) As Double
     If LowerRectangleActive() Then AnalyticalArea = AnalyticalArea + mB2 * mH2
 End Function
 
+' Возвращает точный центр тяжести активных прямоугольников без обращения к дискретной сетке.
 Public Sub AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByRef Y As Double)
     Dim message As String
     available = IsValid(message)
@@ -220,6 +226,7 @@ Public Sub AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByR
     Y = (areaLower * (mOriginY + mH2 / 2#) + areaUpper * (ActiveUpperMinY() + mH1 / 2#)) / (areaLower + areaUpper)
 End Sub
 
+' Возвращает внешний контур активной RectSet-геометрии для аннотаций, схемы и AutoCAD export.
 Public Sub GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
     If Not LowerRectangleActive() Then
         ReDim pointX(1 To 4)
@@ -245,6 +252,7 @@ Public Sub GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
     ReDim Preserve pointY(1 To count)
 End Sub
 
+' Нормализует пользовательский тип сечения и сохраняет обратную совместимость старого RectSet.
 Private Function NormalizeSectionType(ByVal rawValue As String) As String
     Dim value As String
     value = LCase$(Trim$(rawValue))
@@ -260,22 +268,27 @@ Private Function NormalizeSectionType(ByVal rawValue As String) As String
     End Select
 End Function
 
+' Возвращает True, если нижний прямоугольник участвует в текущем режиме геометрии.
 Private Function LowerRectangleActive() As Boolean
     LowerRectangleActive = (mSectionType <> SECTION_RECTANGLE)
 End Function
 
+' Возвращает фактическое смещение верхнего прямоугольника: только TwoRectangles использует Offset.
 Private Function ActiveUpperOffsetX() As Double
     If mSectionType = SECTION_TWO_RECTANGLES Then ActiveUpperOffsetX = mUpperOffsetX
 End Function
 
+' Возвращает левую X-границу активного верхнего прямоугольника.
 Private Function ActiveUpperMinX() As Double
     ActiveUpperMinX = mOriginX + ActiveUpperOffsetX()
 End Function
 
+' Возвращает правую X-границу активного верхнего прямоугольника.
 Private Function ActiveUpperMaxX() As Double
     ActiveUpperMaxX = ActiveUpperMinX() + mB1
 End Function
 
+' Возвращает нижнюю Y-границу активного верхнего прямоугольника.
 Private Function ActiveUpperMinY() As Double
     If LowerRectangleActive() Then
         ActiveUpperMinY = mOriginY + mH2
@@ -284,15 +297,18 @@ Private Function ActiveUpperMinY() As Double
     End If
 End Function
 
+' Возвращает верхнюю Y-границу активного верхнего прямоугольника.
 Private Function ActiveUpperMaxY() As Double
     ActiveUpperMaxY = ActiveUpperMinY() + mH1
 End Function
 
+' Проверяет горизонтальное пересечение прямоугольников, чтобы TwoRectangles оставался связным сечением.
 Private Function RectanglesOverlapByX() As Boolean
     RectanglesOverlapByX = (ActiveUpperMinX() < mOriginX + mB2 - GEOM_TOLERANCE _
         And ActiveUpperMaxX() > mOriginX + GEOM_TOLERANCE)
 End Function
 
+' Добавляет точку контура, пропуская дубли на стыках прямоугольников.
 Private Sub AddOutlinePoint(ByRef pointX() As Double, ByRef pointY() As Double, ByRef count As Long, _
         ByVal X As Double, ByVal Y As Double)
     If count = 0 Then
@@ -326,26 +342,32 @@ Private Property Get ISectionGeometry_MaxY() As Double
     ISectionGeometry_MaxY = MaxY
 End Property
 
+' Делегирует проверку точки в реализацию класса для интерфейса ISectionGeometry.
 Private Function ISectionGeometry_ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
     ISectionGeometry_ContainsPoint = ContainsPoint(X, Y)
 End Function
 
+' Делегирует IsPointInside в реализацию класса для интерфейса ISectionGeometry.
 Private Function ISectionGeometry_IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
     ISectionGeometry_IsPointInside = IsPointInside(X, Y)
 End Function
 
+' Делегирует валидацию в реализацию класса для интерфейса ISectionGeometry.
 Private Function ISectionGeometry_IsValid(ByRef message As String) As Boolean
     ISectionGeometry_IsValid = IsValid(message)
 End Function
 
+' Делегирует аналитическую площадь в реализацию класса для интерфейса ISectionGeometry.
 Private Function ISectionGeometry_AnalyticalArea(ByRef available As Boolean) As Double
     ISectionGeometry_AnalyticalArea = AnalyticalArea(available)
 End Function
 
+' Делегирует аналитический центр тяжести в реализацию класса для интерфейса ISectionGeometry.
 Private Sub ISectionGeometry_AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByRef Y As Double)
     AnalyticalCentroid available, X, Y
 End Sub
 
+' Делегирует контур в реализацию класса для интерфейса ISectionGeometry.
 Private Sub ISectionGeometry_GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
     GetExtremePoints pointX, pointY
 End Sub

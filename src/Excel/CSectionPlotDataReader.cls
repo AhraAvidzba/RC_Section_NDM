@@ -200,6 +200,8 @@ Private Function ReadProfileIdForLoadCase(ByVal workbook As Object, ByVal loadCa
     End If
 End Function
 
+' Ищет ProfileId в LC-зависимой таблице элементов Results. Это основной
+' путь, потому что именно в ней каждое состояние связано с расчетным профилем.
 Private Function ReadProfileIdFromElementResults(ByVal workbook As Object, ByVal loadCase As String) As String
     On Error GoTo Failed
     Dim data As Variant
@@ -219,6 +221,8 @@ Private Function ReadProfileIdFromElementResults(ByVal workbook As Object, ByVal
 Failed:
 End Function
 
+' Ищет текстовое свойство конкретного LC в rngNDMSectionProperties.
+' Используется как fallback, если для состояния нет строк элементов.
 Private Function ReadLoadCasePropertyText(ByVal workbook As Object, ByVal loadCase As String, ByVal propertyName As String) As String
     On Error GoTo Failed
     Dim data As Variant
@@ -490,6 +494,8 @@ Private Sub ReadGeometryPreview(ByVal workbook As Object)
     Next rowIndex
 End Sub
 
+' Добавляет элемент схемы во внутренние массивы reader-а. Значение результата
+' выбирается по текущему режиму визуализации: Stress или Strain.
 Private Sub AppendElement(ByVal elementID As String, ByVal materialType As String, ByVal xCoord As Double, _
         ByVal yCoord As Double, ByVal area As Double, ByVal diameter As Double, _
         ByVal shapeType As String, ByVal width As Double, ByVal height As Double, _
@@ -659,6 +665,8 @@ Private Function AnchoredRowCount(ByVal anchor As Object) As Long
     Next rowOffset
 End Function
 
+' Формирует понятное сообщение, если пользователь запросил состояние, которого
+' нет в snapshot Results для выбранного сочетания и профиля.
 Private Function MissingStateMessage(ByVal loadCase As String, ByVal stateType As String) As String
     MissingStateMessage = "Запрашиваемое состояние """ & stateType & """ не найдено в Results для сочетания " & loadCase & "."
     If IsCrackVisualizationState(stateType) Then
@@ -675,6 +683,8 @@ Private Function MissingStateMessage(ByVal loadCase As String, ByVal stateType A
     End If
 End Function
 
+' Проверяет, относится ли запрошенный StateType к расчету трещин. Для таких
+' состояний можно дать пользователю более точную причину отсутствия snapshot.
 Private Function IsCrackVisualizationState(ByVal stateType As String) As Boolean
     IsCrackVisualizationState = (StrComp(stateType, "BeforeMcrcState", vbTextCompare) = 0 Or _
         StrComp(stateType, "AfterMcrcState", vbTextCompare) = 0 Or _

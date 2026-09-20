@@ -25,6 +25,7 @@ Private mElasticModulus As Double
 ' простую линейную связь stress/strain, чтобы тестировать равновесие без
 ' влияния нелинейных диаграмм и нормативного provider-а.
 
+' Задает модуль упругости линейного тестового бетона.
 Public Sub Initialize(ByVal elasticModulus As Double)
     If elasticModulus <= 0# Then Err.Raise vbObjectError + 3000, "CLinearConcreteMaterial", "Модуль упругости бетона должен быть положительным."
     mElasticModulus = elasticModulus
@@ -34,14 +35,17 @@ Public Property Get ElasticModulus() As Double
     ElasticModulus = mElasticModulus
 End Property
 
+' Возвращает напряжение по линейному закону sigma = E * epsilon.
 Public Function GetStress(ByVal strain As Double) As Double
     GetStress = mElasticModulus * strain
 End Function
 
+' Возвращает постоянный касательный модуль для линейного тестового материала.
 Public Function GetTangentModulus(ByVal strain As Double) As Double
     GetTangentModulus = mElasticModulus
 End Function
 
+' Возвращает постоянный секущий модуль для линейного тестового материала.
 Public Function GetSecantModulus(ByVal strain As Double) As Double
     GetSecantModulus = mElasticModulus
 End Function

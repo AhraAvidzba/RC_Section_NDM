@@ -359,6 +359,9 @@ Private Sub NormalizePlaneMoments(ByRef plane As TPlaneResult, ByVal momentFilte
     plane.SustainedMoment = momentFilter.NormalizeMoment(plane.SustainedMoment, plane.Depth)
 End Sub
 
+' Назначает случайный и начальный эксцентриситет одной главной плоскости.
+' Здесь сходятся пользовательский режим Auto/User, выбор L или mu*L и правило
+' OnlyMomentPlane/BothPlanes для нулевых исходных моментов.
 Private Sub FillAccidentalAndInitialEccentricity(ByRef plane As TPlaneResult, _
         ByVal zeroMomentSign As Double, ByVal systemType As String, _
         ByVal accidentalMode As String, ByVal accidentalUserValue As Double, _
@@ -667,6 +670,8 @@ Private Function SP35ConcreteAreaForTableNult(ByVal concreteArea As Double, _
     End If
 End Function
 
+' Рассчитывает ветвь СП 35 для ec/r > 1: phi_l по моментам относительно
+' требуемой грани, delta, D, Ncr, eta и запас по условию N <= k*Ncr.
 Private Sub CalculateSP35EtaPlane(ByVal nCompression As Double, ByVal sustainedCompression As Double, _
         ByVal eb As Double, ByVal es As Double, _
         ByVal rb As Double, ByVal phiLMode As String, ByVal phiP As Double, _

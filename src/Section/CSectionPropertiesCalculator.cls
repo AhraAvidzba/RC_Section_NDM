@@ -723,6 +723,9 @@ Public Property Get PrincipalRadius2() As Double
     PrincipalRadius2 = mPrincipalRadius2
 End Property
 
+' Возвращает atan2(y, x) в диапазоне VBA-арифметики. Нужен для главных осей:
+' стандартной функции Atn хватает только на отношение y/x и она не знает
+' квадрант исходного вектора.
 Private Function Atn2(ByVal y As Double, ByVal x As Double) As Double
     If Abs(x) <= GEOM_TOLERANCE Then
         If y > 0# Then

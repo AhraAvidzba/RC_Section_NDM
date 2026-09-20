@@ -26,6 +26,9 @@ Private Const EXPLICIT_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.02 ' Допу�
 
 Private mEdgeProbeCount As Long ' ДЛЯ ТЕСТОВ: сколько раз импорт обращался к Explode за углом простой грани.
 
+' Читает активный документ AutoCAD через COM и запускает общий импорт
+' ModelSpace. Метод остается тонкой оболочкой: проверяет доступность AutoCAD,
+' берет слои из Config и не выполняет расчетную интерпретацию сечения.
 Public Function ImportFromActiveDocument(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
     If settings Is Nothing Then Err.Raise vbObjectError + 4400, "CAutoCADSectionModelImporter", "Настройки Config не переданы."
 
@@ -50,6 +53,9 @@ Public Function ImportFromActiveDocument(ByVal settings As CSystemSettingsReader
         InputArea(settings.GetDouble("AutoCAD.Import.MinArea", 0.000001), units), units)
 End Function
 
+' Проходит по ModelSpace и отбирает только Region на пользовательских слоях
+' бетона и арматуры. На выходе возвращает полностью заполненный CSectionModel,
+' пригодный для того же расчетного pipeline, что и встроенные генераторы.
 Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteLayer As String, _
         ByVal rebarLayer As String, ByVal steelClass As String, ByVal minArea As Double, Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
     If modelSpace Is Nothing Then Err.Raise vbObjectError + 4403, "CAutoCADSectionModelImporter", "ModelSpace AutoCAD не передан."
@@ -74,6 +80,9 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
     Set ImportFromModelSpace = model
 End Function
 
+' Читает один бетонный Region из AutoCAD: площадь, центр тяжести, реальные
+' центральные инерции и, только для почти изотропного случая, подсказку угла
+' по первой прямой грани. Width/Height здесь не восстанавливаются.
 Private Sub AddConcreteRegionEntity(ByVal model As CSectionModel, ByVal entity As Object, ByVal minArea As Double, ByVal units As CUnitSystem)
     Dim area As Double
     area = InputArea(CDbl(entity.Area), units)
@@ -101,6 +110,9 @@ Private Sub AddConcreteRegionEntity(ByVal model As CSectionModel, ByVal entity A
         0#, 0#, rotationHint, entity.Layer, EntityHandle(entity)
 End Sub
 
+' Читает один арматурный Region. Для арматуры программа хранит площадь и
+' эквивалентный круговой диаметр, потому что механика стержня задается As,
+' а визуальная оболочка стержня должна оставаться круглой.
 Private Sub AddRebarRegionEntity(ByVal model As CSectionModel, ByVal entity As Object, _
         ByVal steelClass As String, ByVal minArea As Double, ByVal units As CUnitSystem)
     Dim area As Double
@@ -113,6 +125,9 @@ Private Sub AddRebarRegionEntity(ByVal model As CSectionModel, ByVal entity As O
         InputLength(CDbl(centroid(LBound(centroid) + 1)), units), steelClass, entity.Layer, EntityHandle(entity)
 End Sub
 
+' Тестовый/подготовленный путь импорта бетонных Region из массива значений.
+' Он повторяет контракт живого импорта, но позволяет regression-тестам
+' проверять CSectionModel без запуска AutoCAD.
 Private Sub AddConcreteRegionArray(ByVal model As CSectionModel, ByVal regions As Variant, ByVal minArea As Double)
     If Not HasArrayRows(regions) Then Exit Sub
 
@@ -130,6 +145,8 @@ Private Sub AddConcreteRegionArray(ByVal model As CSectionModel, ByVal regions A
     Next rowIndex
 End Sub
 
+' Тестовый/подготовленный путь импорта арматурных Region из массива значений.
+' Используется только для локальных проверок чтения snapshot-подобных данных.
 Private Sub AddRebarRegionArray(ByVal model As CSectionModel, ByVal regions As Variant, _
         ByVal steelClass As String, ByVal minArea As Double)
     If Not HasArrayRows(regions) Then Exit Sub
@@ -145,6 +162,9 @@ Private Sub AddRebarRegionArray(ByVal model As CSectionModel, ByVal regions As V
     Next rowIndex
 End Sub
 
+' Передает бетонный элемент в CSectionModel, сохраняя реальные A/I отдельно
+' от подсказок геометрической оболочки. Именно CSectionModel решает, будет ли
+' оболочка Rectangle, Equivalent rectangle или Equivalent square.
 Private Sub AddConcreteRegion(ByVal model As CSectionModel, ByVal area As Double, _
         ByVal xCoord As Double, ByVal yCoord As Double, _
         ByVal localIx As Double, ByVal localIy As Double, ByVal localIxy As Double, _
@@ -179,6 +199,9 @@ Private Sub AddConcreteRegion(ByVal model As CSectionModel, ByVal area As Double
         localIx, localIy, localIxy
 End Sub
 
+' Добавляет арматурный Region как расчетный стержень с площадью AutoCAD.
+' Диаметр нужен для схемы и AutoCAD export; расчетная площадь не выводится
+' обратно из диаметра, а берется из исходной площади Region.
 Private Sub AddRebarRegion(ByVal model As CSectionModel, ByVal area As Double, _
         ByVal xCoord As Double, ByVal yCoord As Double, ByVal steelClass As String, _
         ByVal sourceName As String, ByVal sourceHandle As String)
@@ -188,6 +211,10 @@ Private Sub AddRebarRegion(ByVal model As CSectionModel, ByVal area As Double, _
         "AutoCAD Region: стержень арматуры; диаметр и радиус восстановлены по площади как эквивалентный круг."
 End Sub
 
+' Приводит инерции AutoCAD Region к центральным локальным характеристикам
+' элемента. Если AutoCAD не отдал пригодные A/I или матрица физически
+' невозможна, значения сбрасываются, а CSectionModel применит последний
+' fallback только для такого элемента.
 Private Sub ReadCentralRegionInertia(ByVal entity As Object, ByVal area As Double, _
         ByVal xCoord As Double, ByVal yCoord As Double, _
         ByVal units As CUnitSystem, ByRef localIx As Double, ByRef localIy As Double, ByRef localIxy As Double)
@@ -339,6 +366,9 @@ Private Function TryReadLineDirection(ByVal lineEntity As Object, ByVal units As
     TryReadLineDirection = True
 End Function
 
+' Проверяет, является ли фрагмент Explode простой прямой линией.
+' Это вспомогательная COM-проверка для изотропных Region, где тензор инерции
+' не задает ориентацию оболочки.
 Private Function IsLineEntity(ByVal entity As Object) As Boolean
     On Error Resume Next
     IsLineEntity = (StrComp(CStr(entity.ObjectName), "AcDbLine", vbTextCompare) = 0)
@@ -357,6 +387,9 @@ Private Sub DeleteExplodedPiecesQuietly(ByVal pieces As Variant)
     On Error GoTo 0
 End Sub
 
+' Безопасно удаляет временный AutoCAD-объект. Ошибки удаления намеренно
+' подавляются, чтобы диагностика импорта не ломалась из-за мусорной копии
+' Region или уже удаленного фрагмента Explode.
 Private Sub DeleteAcadObjectQuietly(ByVal entity As Object)
     On Error Resume Next
     If Not entity Is Nothing Then entity.Delete
@@ -386,16 +419,23 @@ Private Function IsPositiveDefiniteInertia(ByVal localIx As Double, ByVal localI
     IsPositiveDefiniteInertia = (localIx * localIy - localIxy * localIxy > GEOM_TOLERANCE)
 End Function
 
+' Проверяет тип AutoCAD-сущности по ObjectName. Импорт сознательно работает
+' только с Region, чтобы не смешивать реальные массовые характеристики с
+' произвольной графикой чертежа.
 Private Function IsRegionEntity(ByVal entity As Object) As Boolean
     On Error Resume Next
     IsRegionEntity = (StrComp(CStr(entity.ObjectName), "AcDbRegion", vbTextCompare) = 0)
     On Error GoTo 0
 End Function
 
+' Сравнивает имена слоев без учета регистра и лишних пробелов, чтобы
+' пользовательский ввод Config был устойчив к обычным опечаткам форматирования.
 Private Function SameLayer(ByVal actualLayer As String, ByVal expectedLayer As String) As Boolean
     SameLayer = (StrComp(Trim$(actualLayer), Trim$(expectedLayer), vbTextCompare) = 0)
 End Function
 
+' Возвращает AutoCAD handle исходной сущности для трассировки. Если COM
+' не отдал handle, импорт продолжается без него.
 Private Function EntityHandle(ByVal entity As Object) As String
     On Error Resume Next
     EntityHandle = CStr(entity.Handle)
@@ -410,6 +450,9 @@ Private Sub ValidateImportedModel(ByVal model As CSectionModel)
         "Не найдено арматурных AutoCAD Region на заданном слое импорта."
 End Sub
 
+' Проверяет, что двумерный Variant действительно содержит хотя бы одну строку.
+' Нужен тестовому импорту из массивов, где пустой массив не должен падать на
+' LBound/UBound до валидации модели.
 Private Function HasArrayRows(ByVal values As Variant) As Boolean
     On Error GoTo NoRows
     Dim firstRow As Long
@@ -420,6 +463,9 @@ NoRows:
     HasArrayRows = False
 End Function
 
+' Безопасно читает числовую ячейку подготовленного массива Region.
+' Отсутствующая, пустая или выходящая за границы колонка трактуется как 0,
+' чтобы тестовые массивы могли задавать только нужные поля.
 Private Function OptionalRegionDouble(ByVal values As Variant, ByVal rowIndex As Long, _
         ByVal colIndex As Long) As Double
     On Error GoTo MissingValue
@@ -431,6 +477,9 @@ MissingValue:
     OptionalRegionDouble = 0#
 End Function
 
+' Безопасно читает текстовую ячейку подготовленного массива Region.
+' Отсутствующие поля превращаются в пустую строку, например когда source handle
+' не нужен конкретному regression-тесту.
 Private Function OptionalRegionString(ByVal values As Variant, ByVal rowIndex As Long, _
         ByVal colIndex As Long) As String
     On Error GoTo MissingValue
@@ -441,6 +490,8 @@ MissingValue:
     OptionalRegionString = vbNullString
 End Function
 
+' Возвращает AutoCAD-длину во внутренних миллиметрах. Параметр units оставлен
+' в сигнатуре для единообразия, но импорт DWG уже работает в мм по контракту.
 Private Function InputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
     ' AutoCAD Region импортируется в миллиметрах независимо от пользовательской
     ' INPUT-единицы длины. Иначе смена Units.Length.Input масштабировала бы
@@ -448,17 +499,23 @@ Private Function InputLength(ByVal value As Double, ByVal units As CUnitSystem) 
     InputLength = value
 End Function
 
+' Возвращает AutoCAD-площадь во внутренних мм2. Пользовательские Input-единицы
+' не должны масштабировать геометрию, считанную из чертежа.
 Private Function InputArea(ByVal value As Double, ByVal units As CUnitSystem) As Double
     ' Площадь AutoCAD Region уже считается в мм2 по принятому контракту импорта.
     InputArea = value
 End Function
 
+' Возвращает AutoCAD-момент инерции во внутренних мм4. Это сохраняет
+' координатную совместимость импорта и обратного AutoCAD export.
 Private Function InputFourthPowerLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
     ' Моменты инерции AutoCAD Region уже приходят в мм4 по принятому контракту
     ' импорта; пользовательские INPUT-единицы не должны менять геометрию DWG.
     InputFourthPowerLength = value
 End Function
 
+' Локальная реализация atan2 для VBA. Нужна, чтобы получить устойчивый угол
+' прямой грани во всех квадрантах без зависимости от внешних библиотек.
 Private Function Atn2Local(ByVal y As Double, ByVal x As Double) As Double
     If Abs(x) <= GEOM_TOLERANCE Then
         If y > 0# Then
@@ -486,6 +543,9 @@ End Function
 ' Тесты собирают AutoCAD-import модель из массивов, чтобы проверить фильтрацию,
 ' заполнение CSectionModel и расчетные поля без запуска AutoCAD COM.
 
+' ДЛЯ ТЕСТОВ
+' Создает импортированную модель по двум массивам Region и прогоняет ту же
+' валидацию, что живой импорт из ModelSpace.
 Public Function BuildFromRegionArrays(ByVal concreteRegions As Variant, ByVal rebarRegions As Variant, _
         ByVal steelClass As String, Optional ByVal minArea As Double = 0.000001) As CSectionModel
     Dim model As CSectionModel

@@ -1917,6 +1917,9 @@ Private Sub LimitCrcIncrement(ByRef dEps As Double, ByRef dKx As Double, ByRef d
     dKy = dKy * scaleFactor
 End Sub
 
+' Завершает подготовку нормативной формулы раскрытия трещин после выбора
+' растянутой зоны и арматуры. Метод собирает As, Abt, d_s,eq, sigma_s и
+' расстояние между трещинами l_s; сам коэффициент psi_s уточняется ниже.
 Private Sub CompleteCrackFormula(ByVal solver As CSectionSolver, ByVal section As CSectionModel, _
         ByVal steelMaterial As Object, ByRef selected() As Boolean)
     mPhi1 = mPhi1Input
@@ -2667,10 +2670,12 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
 
+' Утилитарный минимум без WorksheetFunction в расчетном ядре трещин.
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
 
+' Утилитарный максимум без WorksheetFunction в расчетном ядре трещин.
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function

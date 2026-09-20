@@ -72,6 +72,8 @@ Public Sub AddRebarLabels(ByVal annotations As CSectionAnnotations, ByVal rebars
     Next i
 End Sub
 
+' Форматирует диаметр стержня для групповой подписи без зависимости от
+' регионального десятичного разделителя Windows.
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     Dim textValue As String
     textValue = Replace$(Format$(value, "0.###"), ",", ".")

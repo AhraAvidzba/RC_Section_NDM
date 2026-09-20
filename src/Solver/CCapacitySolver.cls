@@ -634,6 +634,9 @@ Private Sub BuildUltimateLoadPathJacobianColumn(ByVal section As CSectionModel, 
     j3 = (pLimit - rLimit) / stepValue
 End Sub
 
+' Сводит три невязки UltimateStrain в один скаляр для line-search и контроля
+' улучшения решения: две невязки удерживают load-path, третья отвечает за
+' достижение предельной деформации.
 Private Function UltimateLoadPathResidualNorm(ByVal rPath1 As Double, ByVal rPath2 As Double, ByVal rLimit As Double) As Double
     Dim math As CLoadPathMath
     Set math = NewLoadPathMath()
@@ -1290,6 +1293,8 @@ Private Function EvaluateLoadMultiplierFunction(ByVal section As CSectionModel, 
     End If
 End Function
 
+' Фиксирует успешный результат LoadMultiplier: сохраняет lambda, предельные
+' компоненты, запас и человекочитаемую причину остановки.
 Private Sub FinalizeLoadMultiplierSearch(ByVal lambdaValue As Double, _
         ByVal nOffset As Double, ByVal nBase As Double, _
         ByVal mxBase As Double, ByVal myBase As Double, _
@@ -1308,6 +1313,8 @@ Private Sub FinalizeLoadMultiplierSearch(ByVal lambdaValue As Double, _
     mStopReason = "Поиск несущей способности методом " & methodName & " сошелся; верхнее физическое состояние: " & mUpperLimitState & "."
 End Sub
 
+' Перед финализацией пересчитывает probe в найденной точке, чтобы mLastSolver
+' и критическое состояние соответствовали именно итоговой lambda.
 Private Sub FinalizeLoadMultiplierSearchAfterProbe(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nOffset As Double, ByVal nBase As Double, _
@@ -1321,6 +1328,8 @@ Private Sub FinalizeLoadMultiplierSearchAfterProbe(ByVal section As CSectionMode
     FinalizeLoadMultiplierSearch lambdaValue, nOffset, nBase, mxBase, myBase, mxOffset, myOffset, probeState, methodName
 End Sub
 
+' При двух физических граничных точках выбирает нижнюю lambda со стороны
+' безопасной ветви, не полагаясь на порядок, в котором точки были найдены.
 Private Function ChooseLowerPhysicalLambda(ByVal x0 As Double, ByVal f0 As Double, ByVal state0 As String, _
         ByVal x1 As Double, ByVal f1 As Double, ByVal state1 As String) As Double
     If f0 < 0# And f1 >= 0# Then
@@ -1382,14 +1391,17 @@ Private Function LoadPathFromComponents(ByVal nOffset As Double, ByVal nBase As 
     Set LoadPathFromComponents = loadPath
 End Function
 
+' Возвращает целевой Mx на lambda-траектории.
 Private Function TargetMx(ByVal lambdaValue As Double, ByVal mxBase As Double, ByVal mxOffset As Double) As Double
     TargetMx = mxOffset + lambdaValue * mxBase
 End Function
 
+' Возвращает целевой My на lambda-траектории.
 Private Function TargetMy(ByVal lambdaValue As Double, ByVal myBase As Double, ByVal myOffset As Double) As Double
     TargetMy = myOffset + lambdaValue * myBase
 End Function
 
+' Возвращает целевую продольную силу на lambda-траектории.
 Private Function TargetN(ByVal lambdaValue As Double, ByVal nOffset As Double, ByVal nBase As Double) As Double
     TargetN = nOffset + lambdaValue * nBase
 End Function
@@ -1415,6 +1427,8 @@ Private Sub StoreLoadPathUltimateComponents(ByVal lambdaValue As Double, _
     mMomentUltimate = Sqr(mMxUltimate * mMxUltimate + mMyUltimate * mMyUltimate)
 End Sub
 
+' Определяет, входит ли продольная сила в масштабируемую часть capacity-path.
+' Для чисто моментной траектории N хранится как постоянный offset.
 Private Function CapacityScalesAxial(ByVal nBase As Double) As Boolean
     CapacityScalesAxial = (Abs(nBase) > 0.000000001)
 End Function
@@ -1461,7 +1475,9 @@ Private Function ValidateCapacityInputs(ByVal section As CSectionModel, ByVal co
     End If
 End Function
 
-' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
+' Проверяет настройки ветки LoadMultiplier перед одномерным поиском lambda.
+' Здесь контролируются только параметры самой скобки/поиска, а не геометрия
+' или материалы, которые проверяются выше по цепочке.
 Private Function ValidateLoadMultiplierSettings() As Boolean
     If Len(NormalizedSearchMethod()) = 0 Then
         SetInvalidInput "Capacity.SearchMethod должен быть Bisection, Brent или Secant."
@@ -1473,7 +1489,9 @@ Private Function ValidateLoadMultiplierSettings() As Boolean
     End If
 End Function
 
-' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
+' Проверяет настройки ветки UltimateStrain. В отличие от LoadMultiplier,
+' здесь нет искусственного Capacity.MaxLambda: после найденной предельной
+' плоскости достаточно проверить численную корректность lambda.
 Private Function ValidateUltimateStrainSettings() As Boolean
     If mStrainTolerance <= 0# Then
         SetInvalidInput "Настройки UltimateStrain для несущей способности некорректны."
@@ -1482,6 +1500,8 @@ Private Function ValidateUltimateStrainSettings() As Boolean
     End If
 End Function
 
+' Переводит расчет в InputErr без выбрасывания VBA-ошибки. Capacity solver
+' возвращает статус пользователю через batch summary и подробный writer.
 Private Sub SetInvalidInput(ByVal reason As String)
     mLimitState = STATE_INVALID_INPUT
     mStopReason = reason
@@ -1502,6 +1522,9 @@ Private Function IsValidUltimateLambda(ByVal lambdaValue As Double, _
     IsValidUltimateLambda = True
 End Function
 
+' Выполняет probe-точку LoadMultiplier с ограниченным числом повторов.
+' Повтор меняет только численные настройки внутреннего CSectionSolver
+' (ступени/шаги), а физическая точка нагрузки lambda остается той же.
 Private Function ProbeWithRetries(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nSpecified As Double, ByVal mx As Double, ByVal my As Double, ByVal lambdaValue As Double) As String
@@ -1528,6 +1551,8 @@ Private Function ProbeWithRetries(ByVal section As CSectionModel, _
     ProbeWithRetries = probeState
 End Function
 
+' Решает одну probe-точку capacity-поиска и классифицирует ее как приемлемую,
+' физический предел, численную несходимость или ошибку входных данных.
 Private Function ProbeOnce(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nSpecified As Double, ByVal mx As Double, ByVal my As Double, _
@@ -1714,6 +1739,9 @@ Private Function FailedProbeReachedPhysicalLimit(ByVal section As CSectionModel,
     End If
 End Function
 
+' Обновляет управляющую деформацию для последней probe-точки. Проверяются
+' бетон, растянутый бетон при включенном лимите и арматура; максимальная
+' utilization определяет тип предельного состояния.
 Private Sub UpdateCriticalState(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal solver As CSectionSolver)
     mCriticalStrainUtilization = 0#
@@ -1751,6 +1779,7 @@ Private Sub UpdateCriticalState(ByVal section As CSectionModel, _
     End If
 End Sub
 
+' Сохраняет наиболее опасный элемент, если его utilization больше текущего.
 Private Sub StoreCriticalIfLarger(ByVal utilization As Double, ByVal strain As Double, ByVal elementName As String)
     If utilization > mCriticalStrainUtilization Then
         mCriticalStrainUtilization = utilization
@@ -1759,6 +1788,7 @@ Private Sub StoreCriticalIfLarger(ByVal utilization As Double, ByVal strain As D
     End If
 End Sub
 
+' Переводит имя критического элемента в расчетный LimitState.
 Private Function CriticalLimitState() As String
     If InStr(1, mCriticalElement, ":Compression", vbTextCompare) > 0 Then
         CriticalLimitState = STATE_CONCRETE_LIMIT
@@ -1771,6 +1801,8 @@ Private Function CriticalLimitState() As String
     End If
 End Function
 
+' Разделяет обычную NumericalFailure и подозрение на вырожденную касательную
+' матрицу по тексту причины CSectionSolver.
 Private Function ClassifyNumericalFailure(ByVal reason As String) As String
     If InStr(1, reason, "Tangent matrix", vbTextCompare) > 0 Or _
             InStr(1, reason, "касательн", vbTextCompare) > 0 Or _
@@ -1784,6 +1816,9 @@ Private Function ClassifyNumericalFailure(ByVal reason As String) As String
     End If
 End Function
 
+' Запоминает последнюю сходящуюся probe-точку. Она используется как warm-start
+' для следующих lambda и как fallback, если верхняя физическая граница не
+' найдена из-за численной несходимости.
 Private Sub RecordAcceptableState(ByVal solver As CSectionSolver, ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double)
     Set mLastAcceptableSolver = solver
     mLastAcceptableN = nValue
@@ -1791,6 +1826,9 @@ Private Sub RecordAcceptableState(ByVal solver As CSectionSolver, ByVal nValue A
     mLastAcceptableMy = myValue
 End Sub
 
+' Уменьшает верхнюю границу lambda после NumericalFailure. Если интервал уже
+' слишком мал, поиск возвращает последнюю acceptable-точку вместо того, чтобы
+' выдавать неустойчивый физический предел.
 Private Function ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, ByVal highLambda As Double, ByVal probeState As String) As Double
     Dim reduced As Double
     reduced = lowLambda + (highLambda - lowLambda) / 2#
@@ -1807,15 +1845,20 @@ Private Function ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, By
     End If
 End Function
 
+' Проверяет, является ли состояние физическим пределом несущей способности.
 Private Function IsPhysicalLimit(ByVal state As String) As Boolean
     IsPhysicalLimit = (state = STATE_CONCRETE_LIMIT Or state = STATE_CONCRETE_TENSION_LIMIT Or _
         state = STATE_STEEL_LIMIT)
 End Function
 
+' Проверяет, является ли состояние численной неудачей, которую можно пытаться
+' обходить retry, уменьшением lambda или fallback-стратегией.
 Private Function IsNumericalFailure(ByVal state As String) As Boolean
     IsNumericalFailure = (state = STATE_NUMERICAL_FAILURE Or state = STATE_SINGULAR_TANGENT)
 End Function
 
+' Нормализует метод одномерного поиска LoadMultiplier из пользовательской
+' настройки Capacity.SearchMethod.
 Private Function NormalizedSearchMethod() As String
     Select Case LCase$(Trim$(mSearchMethod))
         Case "bisection"
@@ -1827,12 +1870,15 @@ Private Function NormalizedSearchMethod() As String
     End Select
 End Function
 
+' Проверяет, что число конечно и пригодно для дальнейшей арифметики.
 Private Function IsFiniteNumber(ByVal value As Double) As Boolean
     If value <> value Then Exit Function
     If Abs(value) > 1E+100 Then Exit Function
     IsFiniteNumber = True
 End Function
 
+' Записывает диагностическую строку одной probe-точки LoadMultiplier.
+' Поле attempt означает номер retry той же физической lambda-точки.
 Private Sub AppendDiagnostic(ByVal solver As CSectionSolver, ByVal mx As Double, ByVal my As Double, _
         ByVal lambdaValue As Double, ByVal attempt As Long, ByVal probeState As String)
     If Not mDiagnosticsEnabled Then Exit Sub
@@ -1849,12 +1895,14 @@ Private Sub AppendDiagnostic(ByVal solver As CSectionSolver, ByVal mx As Double,
         "; maxAbsSteelStrain=" & FormatNumberInvariant(solver.MaxAbsSteelStrain) & vbCrLf
 End Sub
 
+' Добавляет человекочитаемое сообщение о ходе одномерного поиска lambda.
 Private Sub AppendSearchDiagnostic(ByVal message As String)
     If Not mDiagnosticsEnabled Then Exit Sub
     mDiagnosticLog = mDiagnosticLog & "search=" & message & vbCrLf
 End Sub
 
-' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
+' Очищает результаты предыдущего capacity-поиска, не меняя настройки solver-а
+' и предельные деформации материалов.
 Private Sub ClearResult()
     mConverged = False
     mStopReason = vbNullString
@@ -1880,14 +1928,17 @@ Private Sub ClearResult()
     ClearProbeCache
 End Sub
 
+' Форматирует число для диагностического журнала с точкой как разделителем.
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
 
+' Утилитарный минимум без WorksheetFunction в расчетном ядре.
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
 
+' Утилитарный максимум без WorksheetFunction в расчетном ядре.
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function

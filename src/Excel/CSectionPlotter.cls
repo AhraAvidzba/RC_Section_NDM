@@ -283,6 +283,9 @@ Private Sub ConfigureEqualScale(ByVal data As CSectionPlotDataReader, ByVal sett
     HideChartAxes
 End Sub
 
+' Оценивает запас координатной области под размерные линии и подписи арматуры.
+' Значение считается в единицах модели, чтобы оси графика сразу оставляли
+' место для внешних аннотаций.
 Private Function AnnotationMarginModel(ByVal settings As CSystemSettingsReader, ByVal lengthUnit As String, _
         ByVal rangeX As Double, ByVal rangeY As Double) As Double
     If settings Is Nothing Then Exit Function
@@ -338,6 +341,8 @@ Private Function AnnotationTextMetricModel(ByVal value As Double, ByVal unitName
     AnnotationTextMetricModel = value / scaleValue
 End Function
 
+' Прячет штатные оси Excel-графика: схема использует собственные осевые линии,
+' размерные аннотации и подписи.
 Private Sub HideChartAxes()
     On Error Resume Next
     With mChart.Axes(XL_CATEGORY)
@@ -359,6 +364,8 @@ Private Sub HideChartAxes()
     On Error GoTo 0
 End Sub
 
+' Определяет диапазон значений Stress/Strain для окраски элементов и легенды.
+' Неактивный растянутый бетон исключается, чтобы "нет" не расширяло шкалу.
 Private Sub CalculateResultRange(ByVal data As CSectionPlotDataReader)
     Dim found As Boolean
     Dim i As Long
@@ -396,7 +403,7 @@ Private Sub CalculateResultRange(ByVal data As CSectionPlotDataReader)
     End If
 End Sub
 
-' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
+' Очищает накопленные пределы раздельной легенды бетона и арматуры.
 Private Sub ResetMaterialLegendRanges()
     mConcreteCompressionMaxAbs = 0#
     mConcreteTensionMaxAbs = 0#
@@ -408,6 +415,8 @@ Private Sub ResetMaterialLegendRanges()
     mRebarHasTension = False
 End Sub
 
+' Добавляет значение элемента в соответствующую подшкалу легенды материала:
+' бетон/арматура и сжатие/растяжение хранятся отдельно.
 Private Sub RegisterMaterialLegendMagnitude(ByVal materialType As String, ByVal compression As Boolean, ByVal value As Double)
     If StrComp(materialType, "Concrete", vbTextCompare) = 0 Then
         If compression Then
@@ -424,6 +433,7 @@ Private Sub RegisterMaterialLegendMagnitude(ByVal materialType As String, ByVal 
     End If
 End Sub
 
+' Запоминает значение с максимальным модулем для одной группы легенды.
 Private Sub RegisterResultMagnitude(ByVal value As Double, ByRef maxAbs As Double, _
         ByRef valueAtMaxAbs As Double, ByRef found As Boolean)
     Dim absValue As Double
@@ -533,6 +543,9 @@ Private Sub AddRebarElementShape(ByVal data As CSectionPlotDataReader, ByVal ind
         RGB(0, 0, 0), 0.55, "ElementRebar", True, colorValue
 End Sub
 
+' Формирует ключ группировки точек диаграммы: элементы с одинаковым маркером,
+' размером, цветом, материалом и физическим состоянием можно рисовать одной
+' chart-серией, что сильно уменьшает число Excel-объектов.
 Private Function ElementBucketKey(ByVal data As CSectionPlotDataReader, ByVal index As Long) As String
     Dim markerStyle As Long
     Dim markerSize As Long
@@ -1992,17 +2005,21 @@ Private Function AddChartText(ByVal leftPos As Double, ByVal topPos As Double, B
     Set AddChartText = textShape
 End Function
 
+' Переводит X-координату модели в координату Shape внутри ChartObject.
 Private Function ModelToChartX(ByVal xCoord As Double) As Double
     EnsurePlotAreaMetrics
     ModelToChartX = mPlotLeft + (xCoord - mMinX) / (mMaxX - mMinX) * mPlotWidth
 End Function
 
+' Переводит Y-координату модели в координату Shape внутри ChartObject.
+' Направление Y в Excel идет вниз, поэтому формула инвертирует вертикаль.
 Private Function ModelToChartY(ByVal yCoord As Double) As Double
     EnsurePlotAreaMetrics
     ModelToChartY = mPlotTop + mPlotHeight - _
         (yCoord - mMinY) / (mMaxY - mMinY) * mPlotHeight
 End Function
 
+' Возвращает единый масштаб модели в points для текущей области построения.
 Private Function ChartScale() As Double
     Dim sx As Double, sy As Double
     Dim plotWidth As Double, plotHeight As Double
@@ -2097,6 +2114,7 @@ Private Function PlotCoordinateHeight() As Double
 End Function
 
 ' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
+' Удаляет все Shape-объекты, созданные текущим plotter-ом внутри графика.
 Private Sub ClearGeneratedShapes()
     Dim i As Long
     For i = mChart.Shapes.Count To 1 Step -1
@@ -2124,11 +2142,14 @@ Private Sub ClearLegacyWorksheetGeneratedShapes()
     Next i
 End Sub
 
+' Возвращает визуальную ширину бетонного элемента. Если snapshot не хранит
+' размеры оболочки, используется fallback по площади.
 Private Function ConcreteElementWidth(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Double
     ConcreteElementWidth = data.Width(index)
     If ConcreteElementWidth <= 0# Then ConcreteElementWidth = EquivalentLengthFromArea(data.Area(index), data.AreaUnit, data.LengthUnit)
 End Function
 
+' Возвращает визуальную высоту бетонного элемента с тем же fallback, что и ширина.
 Private Function ConcreteElementHeight(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Double
     ConcreteElementHeight = data.Height(index)
     If ConcreteElementHeight <= 0# Then ConcreteElementHeight = EquivalentLengthFromArea(data.Area(index), data.AreaUnit, data.LengthUnit)
@@ -2200,6 +2221,7 @@ Private Function Atn2Local(ByVal y As Double, ByVal x As Double) As Double
     End If
 End Function
 
+' Возвращает характерный размер маркера для fallback-отрисовки через series.
 Private Function ConcreteMarkerLength(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Double
     If data.Width(index) > 0# And data.Height(index) > 0# Then
         ConcreteMarkerLength = Sqr(data.Width(index) * data.Height(index))
@@ -2212,6 +2234,7 @@ Private Function ConcreteMarkerLength(ByVal data As CSectionPlotDataReader, ByVa
     End If
 End Function
 
+' Восстанавливает сторону эквивалентного квадрата по площади элемента.
 Private Function EquivalentLengthFromArea(ByVal areaValue As Double, ByVal areaUnit As String, ByVal lengthUnit As String) As Double
     If areaValue <= 0# Then
         EquivalentLengthFromArea = 0#
@@ -2220,6 +2243,7 @@ Private Function EquivalentLengthFromArea(ByVal areaValue As Double, ByVal areaU
     End If
 End Function
 
+' Возвращает множитель перевода указанной единицы длины в миллиметры.
 Private Function LengthFactorToMm(ByVal unitName As String) As Double
     Select Case LCase$(Trim$(unitName))
         Case "mm": LengthFactorToMm = 1#
@@ -2229,6 +2253,7 @@ Private Function LengthFactorToMm(ByVal unitName As String) As Double
     End Select
 End Function
 
+' Возвращает множитель перевода указанной единицы площади в мм2.
 Private Function AreaFactorToMm2(ByVal unitName As String) As Double
     Select Case LCase$(Trim$(unitName))
         Case "mm2": AreaFactorToMm2 = 1#
@@ -2238,6 +2263,8 @@ Private Function AreaFactorToMm2(ByVal unitName As String) As Double
     End Select
 End Function
 
+' Возвращает русскую приставку заголовка схемы без зависимости от кодировки
+' исходного VBA-файла.
 Private Function PlotTitlePrefix() As String
     PlotTitlePrefix = ChrW$(&H421) & ChrW$(&H445) & ChrW$(&H435) & ChrW$(&H43C) & ChrW$(&H430) & " " & _
         ChrW$(&H441) & ChrW$(&H435) & ChrW$(&H447) & ChrW$(&H435) & ChrW$(&H43D) & ChrW$(&H438) & ChrW$(&H44F) & " " & _
@@ -2245,6 +2272,7 @@ Private Function PlotTitlePrefix() As String
         ChrW$(&H440) & ChrW$(&H443) & ChrW$(&H436) & ChrW$(&H435) & ChrW$(&H43D) & ChrW$(&H438) & ChrW$(&H438) & " "
 End Function
 
+' Формирует заголовок схемы для выбранного LC или режима просмотра геометрии.
 Private Function PlotTitleText(ByVal data As CSectionPlotDataReader) As String
     If data.GeometryOnly Then
         If Len(Trim$(data.GeometryOnlyTitle)) > 0 Then
@@ -2258,6 +2286,7 @@ Private Function PlotTitleText(ByVal data As CSectionPlotDataReader) As String
     If Len(Trim$(data.LoadCaseComment)) > 0 Then PlotTitleText = PlotTitleText & " (" & data.LoadCaseComment & ")"
 End Function
 
+' Нормализует режим легенды: Common или Separate.
 Private Function NormalizeLegendMode(ByVal value As String) As String
     Select Case LCase$(Trim$(value))
         Case "common": NormalizeLegendMode = "Common"
@@ -2266,6 +2295,8 @@ Private Function NormalizeLegendMode(ByVal value As String) As String
     End Select
 End Function
 
+' Читает RGB-цвет из строки Config вида "r,g,b". При ошибке возвращает
+' безопасный default.
 Private Function ParseRgb(ByVal value As String, ByVal defaultColor As Long) As Long
     Dim parts As Variant
     parts = Split(Replace$(Trim$(value), ";", ","), ",")
@@ -2287,6 +2318,7 @@ InvalidColor:
     ParseRgb = defaultColor
 End Function
 
+' Форматирует значение Stress/Strain с заданной точностью схемы.
 Private Function FormatPlotValue(ByVal value As Double) As String
     Dim pattern As String
     If mResultPrecision <= 0 Then
@@ -2297,6 +2329,7 @@ Private Function FormatPlotValue(ByVal value As Double) As String
     FormatPlotValue = Replace$(Format$(value, pattern), ",", ".")
 End Function
 
+' Читает число с точкой как десятичным разделителем независимо от локали Excel.
 Private Function ParseInvariantDouble(ByVal textValue As String) As Double
     On Error GoTo InvalidValue
     ParseInvariantDouble = CDbl(Replace$(Trim$(textValue), ".", Application.DecimalSeparator))
@@ -2305,6 +2338,7 @@ InvalidValue:
     ParseInvariantDouble = Val(Replace$(Trim$(textValue), ",", "."))
 End Function
 
+' Форматирует число компактно и независимо от локали для подписей схемы.
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     Dim textValue As String
     textValue = Replace$(Format$(value, "0.######"), ",", ".")
@@ -2315,24 +2349,29 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = textValue
 End Function
 
+' Округляет значение для подписей и вспомогательных размеров.
 Private Function RoundTo(ByVal value As Double, ByVal digits As Long) As Double
     RoundTo = Round(value, digits)
 End Function
 
+' Округляет положительное значение до ближайшего Long для количества делений.
 Private Function RoundToLong(ByVal value As Double) As Long
     RoundToLong = CLng(value + 0.5)
 End Function
 
+' Ограничивает значение заданным диапазоном.
 Private Function ClampDouble(ByVal value As Double, ByVal minValue As Double, ByVal maxValue As Double) As Double
     ClampDouble = value
     If ClampDouble < minValue Then ClampDouble = minValue
     If ClampDouble > maxValue Then ClampDouble = maxValue
 End Function
 
+' Утилитарный максимум без WorksheetFunction в коде схемы.
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
 
+' Утилитарный минимум без WorksheetFunction в коде схемы.
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function

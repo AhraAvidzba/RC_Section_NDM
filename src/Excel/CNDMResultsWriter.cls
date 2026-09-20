@@ -1029,6 +1029,9 @@ Private Function ResultHeaderBase(ByVal headerText As String) As String
     End If
 End Function
 
+' Записывает LC-зависимые напряжения/деформации по всем бетонным и арматурным элементам
+' для одного сохраненного состояния НДС. Используется только уже найденное состояние,
+' solver здесь не запускается.
 Private Sub PutCombinationElementResults(ByRef data() As Variant, ByRef rowIndex As Long, _
         ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
         ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, _
@@ -1068,6 +1071,7 @@ Private Sub PutCombinationElementResults(ByRef data() As Variant, ByRef rowIndex
     Next i
 End Sub
 
+' Кладет одну строку rngNDMElementResults в общий массив перед блочной записью на лист.
 Private Sub PutElementRow(ByRef data() As Variant, ByVal rowIndex As Long, ByVal runID As Variant, _
         ByVal combinationID As String, ByVal profileId As String, ByVal stateType As String, ByVal elementID As String, _
         ByVal materialType As String, ByVal strain As Double, ByVal stress As Double, ByVal state As String, ByVal units As CUnitSystem)
@@ -1082,6 +1086,7 @@ Private Sub PutElementRow(ByRef data() As Variant, ByVal rowIndex As Long, ByVal
     data(rowIndex, 9) = state
 End Sub
 
+' Классифицирует физическое состояние элемента для визуализации и диагностики Results.
 Private Function PhysicalState(ByVal materialType As String, ByVal strain As Double, ByVal stress As Double) As String
     If Abs(stress) <= PHYSICAL_TOLERANCE Then
         If StrComp(materialType, "Concrete", vbTextCompare) = 0 And strain > PHYSICAL_TOLERANCE Then
@@ -1096,6 +1101,7 @@ Private Function PhysicalState(ByVal materialType As String, ByVal strain As Dou
     End If
 End Function
 
+' Формирует заголовки таблицы LC-зависимых результатов элементов.
 Private Sub PutElementResultHeaders(ByRef data() As Variant, ByVal units As CUnitSystem)
     data(1, 1) = "RunID"
     data(1, 2) = "LoadCase"
@@ -1108,6 +1114,7 @@ Private Sub PutElementResultHeaders(ByRef data() As Variant, ByVal units As CUni
     data(1, 9) = "PhysicalState"
 End Sub
 
+' Формирует заголовки геометрического snapshot: реальные A/I и геометрическая оболочка идут рядом.
 Private Sub PutGeometryHeaders(ByRef data() As Variant, ByVal units As CUnitSystem)
     data(1, 1) = "RunID"
     data(1, 2) = "ElementID"
@@ -1126,6 +1133,7 @@ Private Sub PutGeometryHeaders(ByRef data() As Variant, ByVal units As CUnitSyst
     data(1, 15) = "Comment"
 End Sub
 
+' Формирует заголовки таблицы общих и LC-зависимых свойств сечения.
 Private Sub PutSectionPropertyHeaders(ByRef data() As Variant)
     data(1, 1) = "RunID"
     data(1, 2) = "LoadCase"
@@ -1135,6 +1143,7 @@ Private Sub PutSectionPropertyHeaders(ByRef data() As Variant)
     data(1, 6) = "Comment"
 End Sub
 
+' Формирует заголовки semantic-аннотаций для схемы и AutoCAD export.
 Private Sub PutAnnotationHeaders(ByRef data() As Variant)
     data(1, 1) = "RunID"
     data(1, 2) = "AnnotationType"
@@ -1151,6 +1160,7 @@ Private Sub PutAnnotationHeaders(ByRef data() As Variant)
     data(1, 13) = "Comment"
 End Sub
 
+' Добавляет одну строку свойства сечения в массив rngNDMSectionProperties.
 Private Sub PutProperty(ByRef data() As Variant, ByRef rowIndex As Long, ByVal runID As Variant, _
         ByVal loadCase As String, ByVal parameter As String, ByVal value As Variant, _
         ByVal unitText As String, ByVal comment As String)
@@ -1163,6 +1173,7 @@ Private Sub PutProperty(ByRef data() As Variant, ByRef rowIndex As Long, ByVal r
     rowIndex = rowIndex + 1
 End Sub
 
+' Добавляет одну semantic-аннотацию в массив rngNDMSectionAnnotations с переводом координат в output units.
 Private Sub PutAnnotationRow(ByRef data() As Variant, ByRef rowIndex As Long, ByVal runID As Variant, _
         ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long, ByVal units As CUnitSystem)
     Dim annotationType As String
@@ -1207,6 +1218,7 @@ Private Function OutputAnnotationNormalY(ByVal annotations As CSectionAnnotation
     End If
 End Function
 
+' Готовит видимый текст аннотации: для размеров пересобирает подпись уже в пользовательских единицах.
 Private Function OutputAnnotationText(ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long, _
         ByVal units As CUnitSystem) As String
     Dim annotationType As String
@@ -1229,6 +1241,7 @@ Private Function OutputAnnotationText(ByVal annotations As CSectionAnnotations, 
     End If
 End Function
 
+' Переводит технические комментарии builders в понятные пользователю строки Results.
 Private Function OutputAnnotationComment(ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long) As String
     Dim commentValue As String
     commentValue = Trim$(annotations.Comment(annotationIndex))
@@ -1287,6 +1300,7 @@ Private Function ApproxSign() As String
     ApproxSign = ChrW$(&H2248)
 End Function
 
+' Переводит численное значение аннотации, если оно задано как длина.
 Private Function OutputAnnotationValue(ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long, _
         ByVal units As CUnitSystem) As Variant
     If StrComp(annotations.Unit(annotationIndex), "Length", vbTextCompare) = 0 Then
@@ -1298,6 +1312,7 @@ Private Function OutputAnnotationValue(ByVal annotations As CSectionAnnotations,
     End If
 End Function
 
+' Возвращает пользовательскую единицу для длиновых аннотаций и исходную подпись для прочих типов.
 Private Function OutputAnnotationUnit(ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long, _
         ByVal units As CUnitSystem) As String
     If StrComp(annotations.Unit(annotationIndex), "Length", vbTextCompare) = 0 Then
@@ -1307,6 +1322,7 @@ Private Function OutputAnnotationUnit(ByVal annotations As CSectionAnnotations, 
     End If
 End Function
 
+' Получает внешние границы бетона через общую проекционную геометрию CSectionPropertiesCalculator.
 Private Sub GetConcreteBounds(ByVal section As CSectionModel, ByRef minX As Double, ByRef maxX As Double, _
         ByRef minY As Double, ByRef maxY As Double)
     Dim props As CSectionPropertiesCalculator
@@ -1315,74 +1331,92 @@ Private Sub GetConcreteBounds(ByVal section As CSectionModel, ByRef minX As Doub
     props.CalculateProjection section, 0#, 1#, False, minY, maxY
 End Sub
 
+' Ниже собраны адаптеры output units для полного снимка Results.
 Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputLength = value Else OutputLength = units.InternalLengthToOutput(value)
 End Function
 
+' Переводит площадь из внутренних мм2 в пользовательскую единицу.
 Private Function OutputArea(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputArea = value Else OutputArea = units.InternalAreaToOutput(value)
 End Function
 
+' Переводит момент инерции из внутренних мм4 в пользовательскую единицу длины в четвертой степени.
 Private Function OutputFourthPowerLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputFourthPowerLength = value Else OutputFourthPowerLength = units.InternalFourthPowerLengthToOutput(value)
 End Function
 
+' Переводит продольную силу из внутренних Н в пользовательскую систему вывода.
 Private Function OutputForce(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputForce = value Else OutputForce = units.InternalForceToOutput(value)
 End Function
 
+' Переводит Mx с учетом пользовательской системы знаков.
 Private Function OutputMx(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputMx = value Else OutputMx = units.InternalMomentMxToOutput(value)
 End Function
 
+' Переводит My с учетом пользовательской системы знаков.
 Private Function OutputMy(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputMy = value Else OutputMy = units.InternalMomentMyToOutput(value)
 End Function
 
+' Переводит напряжение из внутренних МПа в пользовательскую единицу.
 Private Function OutputStress(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputStress = value Else OutputStress = units.InternalStressToOutput(value)
 End Function
 
+' Переводит кривизну из внутренних 1/мм в пользовательскую единицу.
 Private Function OutputCurvature(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputCurvature = value Else OutputCurvature = units.InternalCurvatureToOutput(value)
 End Function
 
+' Возвращает подпись выходной единицы длины для заголовков Results.
 Private Function OutputLengthUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputLengthUnit = "mm" Else OutputLengthUnit = units.OutputLengthUnit
 End Function
 
+' Возвращает подпись выходной единицы площади для заголовков Results.
 Private Function OutputAreaUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputAreaUnit = "mm2" Else OutputAreaUnit = units.OutputAreaUnit
 End Function
 
+' Возвращает подпись выходной единицы силы для заголовков Results.
 Private Function OutputForceUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputForceUnit = "N" Else OutputForceUnit = units.OutputForceUnit
 End Function
 
+' Возвращает подпись выходной единицы момента для заголовков Results.
 Private Function OutputMomentUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputMomentUnit = "N*mm" Else OutputMomentUnit = units.OutputMomentUnit
 End Function
 
+' Возвращает подпись выходной единицы напряжения для заголовков Results.
 Private Function OutputStressUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputStressUnit = "MPa" Else OutputStressUnit = units.OutputStressUnit
 End Function
 
+' Возвращает подпись выходной единицы кривизны для заголовков Results.
 Private Function OutputCurvatureUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputCurvatureUnit = "1/mm" Else OutputCurvatureUnit = units.OutputCurvatureUnit
 End Function
 
+' Возвращает пользовательское соглашение знаков для N справочной строкой в Results.
 Private Function OutputSignN(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputSignN = "Tension" Else OutputSignN = units.OutputSignN
 End Function
 
+' Возвращает пользовательское соглашение знаков для Mx справочной строкой в Results.
 Private Function OutputSignMx(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputSignMx = "+Y tension" Else OutputSignMx = units.OutputSignMx
 End Function
 
+' Возвращает пользовательское соглашение знаков для My справочной строкой в Results.
 Private Function OutputSignMy(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputSignMy = "+X tension" Else OutputSignMy = units.OutputSignMy
 End Function
 
+' Форматирует числа для подписей размеров с точкой как десятичным разделителем.
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     Dim textValue As String
     textValue = Replace$(Format$(value, "0.###"), ",", ".")
@@ -1393,10 +1427,12 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = textValue
 End Function
 
+' Локальный максимум нужен для компактного расчета границ и значений snapshot.
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
 
+' Локальный минимум нужен для компактного расчета границ и значений snapshot.
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function

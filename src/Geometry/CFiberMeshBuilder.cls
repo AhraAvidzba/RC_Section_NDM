@@ -23,7 +23,9 @@ Private mFibers() As TFiber
 Private mFiberCount As Long
 Private mBuildSeconds As Double
 
-' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
+' Дискретизирует бетонную область регулярной сеткой. Ячейки полностью внутри
+' формы добавляются целиком; пограничные ячейки при необходимости дробятся на
+' подячейки через Mesh.BoundarySubdivisions.
 Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, ByVal stepY As Double, _
         Optional ByVal materialID As Long = 1, Optional ByVal boundarySubdivisions As Long = 1)
 
@@ -102,6 +104,8 @@ Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, 
     mBuildSeconds = Timer - t0
 End Sub
 
+' Дробит пограничную ячейку на более мелкие прямоугольники и добавляет только
+' те центры подъячеек, которые попали внутрь исходной геометрии.
 Private Sub AddSubcellFibers(ByVal geometry As ISectionGeometry, ByVal cellMinX As Double, ByVal cellMinY As Double, _
         ByVal stepX As Double, ByVal stepY As Double, ByVal boundarySubdivisions As Long, ByVal materialID As Long)
     Dim subX As Double
@@ -122,6 +126,8 @@ Private Sub AddSubcellFibers(ByVal geometry As ISectionGeometry, ByVal cellMinX 
     Next iy
 End Sub
 
+' Проверяет четыре угла расчетной ячейки. Это быстрый способ понять, можно ли
+' взять всю ячейку целиком или нужно уточнять границу подъячеечным разбиением.
 Private Sub GetCornerStatus(ByVal geometry As ISectionGeometry, ByVal cellMinX As Double, ByVal cellMinY As Double, _
         ByVal width As Double, ByVal height As Double, ByRef allInside As Boolean, ByRef anyInside As Boolean)
     Dim p1 As Boolean
@@ -136,6 +142,9 @@ Private Sub GetCornerStatus(ByVal geometry As ISectionGeometry, ByVal cellMinX A
     anyInside = p1 Or p2 Or p3 Or p4
 End Sub
 
+' Добавляет один бетонный волоконный элемент в память builder-а.
+' Width/Height сохраняются как реальная прямоугольная оболочка generated-сетки
+' и потом используются для границ, h, a_s и визуализации.
 Private Sub AddFiber(ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double, ByVal materialID As Long)
     mFiberCount = mFiberCount + 1
     If mFiberCount > UBound(mFibers) Then ReDim Preserve mFibers(1 To UBound(mFibers) * 2)
@@ -187,6 +196,8 @@ Public Property Get FiberMaterialID(ByVal index As Long) As Long
     FiberMaterialID = mFibers(index).MaterialID
 End Property
 
+' Проверяет обращение к существующему волокну и выдает понятную ошибку,
+' если reader/builder вышел за границы построенной сетки.
 Private Sub CheckFiberIndex(ByVal index As Long)
     If index < 1 Or index > mFiberCount Then
         Err.Raise vbObjectError + 2106, "CFiberMeshBuilder", "Индекс бетонного элемента вне допустимого диапазона."

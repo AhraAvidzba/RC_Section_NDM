@@ -675,54 +675,68 @@ Private Sub MergeRange(ByVal target As Object, ByVal firstRow As Long, ByVal fir
     target.Worksheet.Range(target.Cells(firstRow, firstCol), target.Cells(lastRow, lastCol)).Merge
 End Sub
 
+' Ниже собраны маленькие адаптеры единиц для crack-блока: они оставляют внутренние единицы,
+' если CUnitSystem не передан, и применяют пользовательские выходные единицы в штатном расчете.
 Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputLength = value Else OutputLength = units.InternalLengthToOutput(value)
 End Function
 
+' Возвращает подпись выходной единицы длины для заголовков crack-таблицы.
 Private Function OutputLengthUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputLengthUnit = "mm" Else OutputLengthUnit = units.OutputLengthUnit
 End Function
 
+' Переводит площадь из внутренних мм2 в выбранную пользователем единицу площади.
 Private Function OutputArea(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputArea = value Else OutputArea = units.InternalAreaToOutput(value)
 End Function
 
+' Возвращает подпись выходной единицы площади для заголовков crack-таблицы.
 Private Function OutputAreaUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputAreaUnit = "mm2" Else OutputAreaUnit = units.OutputAreaUnit
 End Function
 
+' Переводит продольную силу из внутренних Н в пользовательскую выходную систему знаков и единиц.
 Private Function OutputForce(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputForce = value Else OutputForce = units.InternalForceToOutput(value)
 End Function
 
+' Возвращает подпись выходной единицы силы для заголовков crack-таблицы.
 Private Function OutputForceUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputForceUnit = "N" Else OutputForceUnit = units.OutputForceUnit
 End Function
 
+' Переводит момент Mx с учетом пользовательской системы знаков.
 Private Function OutputMx(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputMx = value Else OutputMx = units.InternalMomentMxToOutput(value)
 End Function
 
+' Переводит момент My с учетом пользовательской системы знаков.
 Private Function OutputMy(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputMy = value Else OutputMy = units.InternalMomentMyToOutput(value)
 End Function
 
+' Переводит модуль момента; знак здесь не применяется, потому что величина скалярная.
 Private Function OutputMomentMagnitude(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputMomentMagnitude = value Else OutputMomentMagnitude = units.InternalMomentMagnitudeToOutput(value)
 End Function
 
+' Возвращает подпись выходной единицы момента для заголовков crack-таблицы.
 Private Function OutputMomentUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputMomentUnit = "N*mm" Else OutputMomentUnit = units.OutputMomentUnit
 End Function
 
+' Переводит напряжение из внутренних МПа в пользовательскую выходную единицу.
 Private Function OutputStress(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputStress = value Else OutputStress = units.InternalStressToOutput(value)
 End Function
 
+' Возвращает подпись выходной единицы напряжения для заголовков crack-таблицы.
 Private Function OutputStressUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputStressUnit = "MPa" Else OutputStressUnit = units.OutputStressUnit
 End Function
 
+' Возвращает единый словарь статусов для подробного crack-блока.
 Private Function StatusPolicy() As CBatchStatusPolicy
     Static policy As CBatchStatusPolicy
     If policy Is Nothing Then Set policy = New CBatchStatusPolicy
