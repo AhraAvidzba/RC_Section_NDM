@@ -4,7 +4,7 @@ Option Explicit
 ' ==========================================================================
 ' Тесты геометрии, сетки и раскладки арматуры
 ' ==========================================================================
-' Модуль защищает договоренности по Circle, RoundedRectangle и RectSet: габариты,
+' Модуль защищает договоренности по Circle, RoundedRectangle, HollowRectangle и RectSet: габариты,
 ' дискретизацию, автоматическую арматуру и semantic-аннотации для схемы.
 
 Private Type TTestStats
@@ -24,6 +24,10 @@ Public Function RunGeometryTests() As String
     TestTaperedRoundedRectangle stats
     TestRoundedRectangleContourAnnotations stats
     TestRoundedRectangleRebarLayout stats
+    TestHollowRectangleGeometry stats
+    TestHollowRectangleContourAnnotations stats
+    TestHollowRectangleRebarLayout stats
+    TestHollowRectangleSharpOpeningBProjection stats
     TestCircleGeometry stats
     TestCircleCoreDistance stats
     TestCirclePrincipalAxesStableOnCoarseMesh stats
@@ -1535,6 +1539,188 @@ Private Sub TestRoundedRectangleRebarLayout(ByRef stats As TTestStats)
     Next i
 End Sub
 
+' Проверяет базовую математику HollowRectangle: бетонная область равна
+' наружному RoundedRectangle минус Opening, а точки внутри отверстия не входят
+' в бетонную часть сечения.
+Private Sub TestHollowRectangleGeometry(ByRef stats As TTestStats)
+    Dim geom As CGeometryHollowRectangle
+    Set geom = New CGeometryHollowRectangle
+    geom.Initialize 500#, 800#, 0#, 200#, 500#, 0#
+
+    Dim message As String
+    AssertTrue stats, "hollow.geometry.valid", geom.IsValid(message)
+
+    Dim available As Boolean
+    Dim areaValue As Double
+    areaValue = geom.AnalyticalArea(available)
+    AssertTrue stats, "hollow.geometry.areaAvailable", available
+    AssertClose stats, "hollow.geometry.area", areaValue, 500# * 800# - 200# * 500#, 0.000001
+
+    Dim cx As Double
+    Dim cy As Double
+    geom.AnalyticalCentroid available, cx, cy
+    AssertClose stats, "hollow.geometry.cx", cx, 0#, 0.000001
+    AssertClose stats, "hollow.geometry.cy", cy, 0#, 0.000001
+
+    AssertTrue stats, "hollow.geometry.outerConcrete", geom.ContainsPoint(0#, 350#)
+    AssertTrue stats, "hollow.geometry.openingExcluded", Not geom.ContainsPoint(0#, 0#)
+    AssertTrue stats, "hollow.geometry.outsideExcluded", Not geom.ContainsPoint(260#, 0#)
+
+    Dim offsetGeom As CGeometryHollowRectangle
+    Set offsetGeom = New CGeometryHollowRectangle
+    offsetGeom.Initialize 500#, 800#, 30#, 200#, 300#, 20#, 40#, -30#
+    areaValue = offsetGeom.AnalyticalArea(available)
+    offsetGeom.AnalyticalCentroid available, cx, cy
+    AssertTrue stats, "hollow.geometry.offset.valid", offsetGeom.IsValid(message)
+    AssertTrue stats, "hollow.geometry.offset.cxOppositeOpening", cx < 0#
+    AssertTrue stats, "hollow.geometry.offset.cyOppositeOpening", cy > 0#
+End Sub
+
+' Проверяет semantic-контуры HollowRectangle. Наружная граница и Opening должны
+' сохраняться разными петлями, чтобы схема и AutoCAD export не соединяли их
+' случайной линией.
+Private Sub TestHollowRectangleContourAnnotations(ByRef stats As TTestStats)
+    Dim geom As CGeometryHollowRectangle
+    Set geom = New CGeometryHollowRectangle
+    geom.Initialize 500#, 800#, 180#, 200#, 500#, 30#
+
+    Dim model As CSectionModel
+    Set model = New CSectionModel
+    Dim rebars As CRebarLayout
+    Set rebars = New CRebarLayout
+
+    Dim builder As CHollowRectAnnotationBuilder
+    Set builder = New CHollowRectAnnotationBuilder
+    builder.Build model, geom, rebars
+
+    AssertTrue stats, "hollow.annotation.outerLoop", HasSectionAnnotationIDPrefix(model, "CONTOUR_OUTER_")
+    AssertTrue stats, "hollow.annotation.openingLoop", HasSectionAnnotationIDPrefix(model, "CONTOUR_OPENING_")
+    AssertTrue stats, "hollow.annotation.arcs", CountSectionAnnotationType(model, "CONTOUR_ARC") >= 8
+    AssertTrue stats, "hollow.annotation.dimB", HasSectionAnnotation(model, "DIMENSION", "DIM_B")
+    AssertTrue stats, "hollow.annotation.dimOpeningB", HasSectionAnnotation(model, "DIMENSION", "DIM_B_OPENING")
+End Sub
+
+' Проверяет раскладку HollowRectangle: внешние грани получают пользовательское
+' количество стержней, а внутренние грани Opening заполняются проекциями
+' соответствующих внешних граней.
+Private Sub TestHollowRectangleRebarLayout(ByRef stats As TTestStats)
+    Dim geom As CGeometryHollowRectangle
+    Set geom = New CGeometryHollowRectangle
+    geom.Initialize 500#, 800#, 180#, 200#, 500#, 30#
+
+    Dim builder As CHollowRectRebarLayoutBuilder
+    Set builder = New CHollowRectRebarLayoutBuilder
+
+    Dim layout As CRebarLayout
+    Set layout = builder.Build(geom, _
+        Array(40#, 20#, 6, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 6, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 8, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 8, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        "A400")
+
+    AssertTrue stats, "hollow.rebar.external.top", CountBarsInAnnotationGroup(layout, "B.Top") = 8
+    AssertTrue stats, "hollow.rebar.external.bottom", CountBarsInAnnotationGroup(layout, "B.Bottom") = 8
+    AssertTrue stats, "hollow.rebar.external.left", CountBarsInAnnotationGroup(layout, "H.Left") = 6
+    AssertTrue stats, "hollow.rebar.external.right", CountBarsInAnnotationGroup(layout, "H.Right") = 6
+
+    Dim hLeftX1 As Double, hLeftY1 As Double, hLeftX2 As Double, hLeftY2 As Double
+    Dim hLeftNormalX As Double, hLeftNormalY As Double
+    geom.GetVerticalRebarLine False, True, 40#, hLeftX1, hLeftY1, hLeftX2, hLeftY2, hLeftNormalX, hLeftNormalY
+    Dim firstHLeft As Long, lastHLeft As Long
+    FindFirstLastBarInAnnotationGroup layout, "H.Left", firstHLeft, lastHLeft
+    AssertClose stats, "hollow.rebar.hLeft.firstX", layout.X(firstHLeft), hLeftX1, 0.000001
+    AssertClose stats, "hollow.rebar.hLeft.firstY", layout.Y(firstHLeft), hLeftY1, 0.000001
+    AssertClose stats, "hollow.rebar.hLeft.lastX", layout.X(lastHLeft), hLeftX2, 0.000001
+    AssertClose stats, "hollow.rebar.hLeft.lastY", layout.Y(lastHLeft), hLeftY2, 0.000001
+
+    Dim annotationBTop As Long
+    annotationBTop = FindRebarAnnotationAnchor(layout, "B.Top")
+    Dim bTopMaxY As Double
+    bTopMaxY = ExtremeYInAnnotationGroup(layout, "B.Top", True)
+    AssertClose stats, "hollow.rebar.bTop.anchorStartY", layout.AnnotationStartY(annotationBTop), bTopMaxY, 0.000001
+    AssertClose stats, "hollow.rebar.bTop.anchorEndY", layout.AnnotationEndY(annotationBTop), bTopMaxY, 0.000001
+
+    Dim annotationBBottom As Long
+    annotationBBottom = FindRebarAnnotationAnchor(layout, "B.Bottom")
+    Dim bBottomMinY As Double
+    bBottomMinY = ExtremeYInAnnotationGroup(layout, "B.Bottom", False)
+    AssertClose stats, "hollow.rebar.bBottom.anchorStartY", layout.AnnotationStartY(annotationBBottom), bBottomMinY, 0.000001
+    AssertClose stats, "hollow.rebar.bBottom.anchorEndY", layout.AnnotationEndY(annotationBBottom), bBottomMinY, 0.000001
+
+    Dim annotationOpeningBTop As Long
+    annotationOpeningBTop = FindRebarAnnotationAnchor(layout, "Opening.B.Top")
+    Dim openingBTopMaxY As Double
+    openingBTopMaxY = ExtremeYInAnnotationGroup(layout, "Opening.B.Top", True)
+    AssertClose stats, "hollow.rebar.openingBTop.anchorStartY", layout.AnnotationStartY(annotationOpeningBTop), openingBTopMaxY, 0.000001
+    AssertClose stats, "hollow.rebar.openingBTop.anchorEndY", layout.AnnotationEndY(annotationOpeningBTop), openingBTopMaxY, 0.000001
+
+    Dim annotationOpeningBBottom As Long
+    annotationOpeningBBottom = FindRebarAnnotationAnchor(layout, "Opening.B.Bottom")
+    Dim openingBBottomMinY As Double
+    openingBBottomMinY = ExtremeYInAnnotationGroup(layout, "Opening.B.Bottom", False)
+    AssertClose stats, "hollow.rebar.openingBBottom.anchorStartY", layout.AnnotationStartY(annotationOpeningBBottom), openingBBottomMinY, 0.000001
+    AssertClose stats, "hollow.rebar.openingBBottom.anchorEndY", layout.AnnotationEndY(annotationOpeningBBottom), openingBBottomMinY, 0.000001
+
+    AssertTrue stats, "hollow.rebar.opening.topProjected", CountBarsInAnnotationGroup(layout, "Opening.B.Top") > 0
+    AssertTrue stats, "hollow.rebar.opening.bottomProjected", CountBarsInAnnotationGroup(layout, "Opening.B.Bottom") > 0
+    AssertTrue stats, "hollow.rebar.opening.leftProjected", CountBarsInAnnotationGroup(layout, "Opening.H.Left") > 0
+    AssertTrue stats, "hollow.rebar.opening.rightProjected", CountBarsInAnnotationGroup(layout, "Opening.H.Right") > 0
+
+    Dim i As Long
+    For i = 1 To layout.Count
+        AssertTrue stats, "hollow.rebar.inside." & CStr(i), geom.ContainsPoint(layout.X(i), layout.Y(i))
+    Next i
+End Sub
+
+' Фиксирует прямоугольный случай R=R_o=0: внутренняя B-линия Opening должна
+' быть прямой offset-линией, продленной до боковых offset-линий H.Left/H.Right.
+' Крайние проекции не должны падать на вертикальные стороны Opening и уходить
+' по Y от заданного as_B.
+Private Sub TestHollowRectangleSharpOpeningBProjection(ByRef stats As TTestStats)
+    Dim geom As CGeometryHollowRectangle
+    Set geom = New CGeometryHollowRectangle
+    geom.Initialize 500#, 800#, 0#, 200#, 500#, 0#
+
+    Dim builder As CHollowRectRebarLayoutBuilder
+    Set builder = New CHollowRectRebarLayoutBuilder
+
+    Dim layout As CRebarLayout
+    Set layout = builder.Build(geom, _
+        Array(40#, 20#, 6, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 6, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 8, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 8, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        "A400")
+
+    AssertTrue stats, "hollow.rebar.sharp.openingTop.count", CountBarsInAnnotationGroup(layout, "Opening.B.Top") = 6
+    AssertTrue stats, "hollow.rebar.sharp.openingBottom.count", CountBarsInAnnotationGroup(layout, "Opening.B.Bottom") = 6
+    AssertTrue stats, "hollow.rebar.sharp.openingLeft.count", CountBarsInAnnotationGroup(layout, "Opening.H.Left") = 4
+    AssertTrue stats, "hollow.rebar.sharp.openingRight.count", CountBarsInAnnotationGroup(layout, "Opening.H.Right") = 4
+
+    Dim x1 As Double, y1 As Double, x2 As Double, y2 As Double
+    Dim normalX As Double, normalY As Double
+    geom.GetHorizontalRebarLine True, True, 40#, x1, y1, x2, y2, normalX, normalY
+    AssertBarsInGroupHaveY stats, layout, "Opening.B.Top", y1, "hollow.rebar.sharp.openingTop"
+
+    geom.GetHorizontalRebarLine True, False, 40#, x1, y1, x2, y2, normalX, normalY
+    AssertBarsInGroupHaveY stats, layout, "Opening.B.Bottom", y1, "hollow.rebar.sharp.openingBottom"
+
+    geom.GetVerticalRebarLine True, True, 40#, x1, y1, x2, y2, normalX, normalY
+    AssertBarsInGroupHaveX stats, layout, "Opening.H.Left", x1, "hollow.rebar.sharp.openingLeft"
+
+    geom.GetVerticalRebarLine True, False, 40#, x1, y1, x2, y2, normalX, normalY
+    AssertBarsInGroupHaveX stats, layout, "Opening.H.Right", x1, "hollow.rebar.sharp.openingRight"
+End Sub
+
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestInvalidData(ByRef stats As TTestStats)
     AssertInvalid stats, "invalid.width", -100#, 100#, 0#, 0#, 0#, 0#
@@ -1770,6 +1956,21 @@ Private Function HasSectionAnnotation(ByVal model As CSectionModel, ByVal annota
     HasSectionAnnotation = (FindSectionAnnotationIndex(model, annotationType, annotationID) > 0)
 End Function
 
+Private Function HasSectionAnnotationIDPrefix(ByVal model As CSectionModel, ByVal annotationIDPrefix As String) As Boolean
+    If model Is Nothing Then Exit Function
+
+    Dim annotations As CSectionAnnotations
+    Set annotations = model.Annotations
+
+    Dim i As Long
+    For i = 1 To annotations.Count
+        If InStr(1, annotations.AnnotationID(i), annotationIDPrefix, vbTextCompare) = 1 Then
+            HasSectionAnnotationIDPrefix = True
+            Exit Function
+        End If
+    Next i
+End Function
+
 Private Function CountSectionAnnotationType(ByVal model As CSectionModel, ByVal annotationType As String) As Long
     If model Is Nothing Then Exit Function
 
@@ -1826,6 +2027,81 @@ Private Function CountBarsWithSource(ByVal layout As CRebarLayout, ByVal sourceT
     Dim i As Long
     For i = 1 To layout.Count
         If InStr(1, layout.BarID(i), sourceToken, vbTextCompare) > 0 Then CountBarsWithSource = CountBarsWithSource + 1
+    Next i
+End Function
+
+Private Function CountBarsInAnnotationGroup(ByVal layout As CRebarLayout, ByVal groupName As String) As Long
+    Dim i As Long
+    For i = 1 To layout.Count
+        If StrComp(layout.BarAnnotationGroupName(i), groupName, vbTextCompare) = 0 Then
+            CountBarsInAnnotationGroup = CountBarsInAnnotationGroup + 1
+        End If
+    Next i
+End Function
+
+Private Function ExtremeYInAnnotationGroup(ByVal layout As CRebarLayout, ByVal groupName As String, ByVal findMax As Boolean) As Double
+    Dim initialized As Boolean
+    Dim i As Long
+    For i = 1 To layout.Count
+        If StrComp(layout.BarAnnotationGroupName(i), groupName, vbTextCompare) = 0 Then
+            If Not initialized Then
+                ExtremeYInAnnotationGroup = layout.Y(i)
+                initialized = True
+            ElseIf findMax And layout.Y(i) > ExtremeYInAnnotationGroup Then
+                ExtremeYInAnnotationGroup = layout.Y(i)
+            ElseIf Not findMax And layout.Y(i) < ExtremeYInAnnotationGroup Then
+                ExtremeYInAnnotationGroup = layout.Y(i)
+            End If
+        End If
+    Next i
+End Function
+
+Private Sub AssertBarsInGroupHaveY(ByRef stats As TTestStats, ByVal layout As CRebarLayout, _
+        ByVal groupName As String, ByVal expectedY As Double, ByVal prefix As String)
+    Dim found As Boolean
+    Dim i As Long
+    For i = 1 To layout.Count
+        If StrComp(layout.BarAnnotationGroupName(i), groupName, vbTextCompare) = 0 Then
+            found = True
+            AssertClose stats, prefix & ".barY." & CStr(i), layout.Y(i), expectedY, 0.000001
+        End If
+    Next i
+    AssertTrue stats, prefix & ".hasBars", found
+End Sub
+
+Private Sub AssertBarsInGroupHaveX(ByRef stats As TTestStats, ByVal layout As CRebarLayout, _
+        ByVal groupName As String, ByVal expectedX As Double, ByVal prefix As String)
+    Dim found As Boolean
+    Dim i As Long
+    For i = 1 To layout.Count
+        If StrComp(layout.BarAnnotationGroupName(i), groupName, vbTextCompare) = 0 Then
+            found = True
+            AssertClose stats, prefix & ".barX." & CStr(i), layout.X(i), expectedX, 0.000001
+        End If
+    Next i
+    AssertTrue stats, prefix & ".hasBars", found
+End Sub
+
+Private Sub FindFirstLastBarInAnnotationGroup(ByVal layout As CRebarLayout, ByVal groupName As String, _
+        ByRef firstIndex As Long, ByRef lastIndex As Long)
+    Dim i As Long
+    firstIndex = 0
+    lastIndex = 0
+    For i = 1 To layout.Count
+        If StrComp(layout.BarAnnotationGroupName(i), groupName, vbTextCompare) = 0 Then
+            If firstIndex = 0 Then firstIndex = i
+            lastIndex = i
+        End If
+    Next i
+End Sub
+
+Private Function FindRebarAnnotationAnchor(ByVal layout As CRebarLayout, ByVal groupName As String) As Long
+    Dim i As Long
+    For i = 1 To layout.AnnotationCount
+        If StrComp(layout.AnnotationGroupName(i), groupName, vbTextCompare) = 0 Then
+            FindRebarAnnotationAnchor = i
+            Exit Function
+        End If
     Next i
 End Function
 

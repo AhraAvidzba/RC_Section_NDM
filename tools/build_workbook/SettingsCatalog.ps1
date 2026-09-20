@@ -19,7 +19,7 @@ function Get-SystemSettingsCatalog {
         )},
         @{ Name = "GeometrySettings"; Title = "[Геометрия и сетка]"; Rows = @(
             @("Geometry.Source", "Generated", "-", "Источник расчетной геометрии: Generated - построить сетку встроенными генераторами; AutoCAD - импортировать только Region из активного чертежа AutoCAD. Единицы AutoCAD всегда считаются мм."),
-            @("Geometry.Type", "RectSet", "-", "Тип сечения для Geometry.Source = Generated. Поддерживается: RoundedRectangle, Circle или RectSet."),
+            @("Geometry.Type", "RectSet", "-", "Тип сечения для Geometry.Source = Generated. Поддерживается: RoundedRectangle, HollowRectangle, Circle или RectSet."),
             @("Mesh.StepX", "50", "мм", "Шаг бетонной волоконной сетки по X для Geometry.Source = Generated."),
             @("Mesh.StepY", "50", "мм", "Шаг бетонной волоконной сетки по Y для Geometry.Source = Generated. При равенстве Mesh.StepX и Mesh.StepY элементы сетки квадратные."),
             @("Mesh.BoundarySubdivisions", "1", "шт", "Количество подъячеек по каждой оси для граничной базовой ячейки при Geometry.Source = Generated; 1 - быстрый режим по центру ячейки."),
@@ -256,6 +256,27 @@ function Get-GeometrySettingsCatalog {
             @("B - верхняя", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у верхней грани B."),
             @("B - нижняя", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у нижней грани B.")
         )},
+        @{ RangeName = "rngHollowRectangleGeometry"; Title = "Пустотелый скругленный прямоугольник"; HollowRectangleTable = $true; Rows = @(
+            @("HollowRectangle.InnerOffsetX", "0", "мм", "Смещение центра Opening по X относительно центра наружного прямоугольника; плюс - вправо по оси X."),
+            @("HollowRectangle.InnerOffsetY", "0", "мм", "Смещение центра Opening по Y относительно центра наружного прямоугольника; плюс - вверх по оси Y."),
+            @("geometry", "800", "500", "180", "500", "200", "30", "мм", "H/B/R - наружный скругленный прямоугольник; H_o/B_o/R_o - внутреннее отверстие Opening."),
+            @("H - левая", "40", "20", "6", "мм", "Арматура вдоль левой наружной грани H."),
+            @("H - правая", "40", "20", "6", "мм", "Арматура вдоль правой наружной грани H."),
+            @("B - верхняя", "40", "20", "8", "мм", "Арматура вдоль верхней наружной грани B между началами скруглений."),
+            @("B - нижняя", "40", "20", "8", "мм", "Арматура вдоль нижней наружной грани B между началами скруглений."),
+            @("H_o - левая", "40", "20", "-", "мм", "Арматура у левой грани Opening; количество берется проекцией с наружной H-грани."),
+            @("H_o - правая", "40", "20", "-", "мм", "Арматура у правой грани Opening; количество берется проекцией с наружной H-грани."),
+            @("B_o - верхняя", "40", "20", "-", "мм", "Арматура у верхней грани Opening; количество берется проекцией с наружной B-грани."),
+            @("B_o - нижняя", "40", "20", "-", "мм", "Арматура у нижней грани Opening; количество берется проекцией с наружной B-грани."),
+            @("H - левая", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у левой наружной грани H."),
+            @("H - правая", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у правой наружной грани H."),
+            @("B - верхняя", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у верхней наружной грани B."),
+            @("B - нижняя", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у нижней наружной грани B."),
+            @("H_o - левая", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у левой грани Opening."),
+            @("H_o - правая", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у правой грани Opening."),
+            @("B_o - верхняя", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у верхней грани Opening."),
+            @("B_o - нижняя", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у нижней грани Opening.")
+        )},
         @{ RangeName = "rngRectSetGeometry"; Title = "Сечение из прямоугольников"; FaceTable = $true; Rows = @(
             @("величина размера", "550", "250", "250", "600", "мм", "Габариты прямоугольников RectSet: H1/B1 - верхний прямоугольник, H2/B2 - нижний; для двух прямоугольников полная высота равна H1 + H2."),
             @("as_1", "40", "40", "40", "40", "мм", "Расстояние от грани _1 до оси первого ряда стержней. Для H-граней _1 слева, для B-граней _1 сверху."),
@@ -315,6 +336,7 @@ function Get-ConfigNamedRangeNames {
         "rngCircleGeometry",
         "rngRectSetGeometry",
         "rngRoundedRectangleGeometry",
+        "rngHollowRectangleGeometry",
         "rngConcreteMaterialParameters",
         "rngSteelMaterialParameters",
         "rngCalculationProfiles",
@@ -469,6 +491,21 @@ function Apply-ConfigUserInputAlignment {
     }
 
     try {
+        $range = $Workbook.Names.Item("rngHollowRectangleGeometry").RefersToRange
+        if ([string]$range.Worksheet.Name -eq "Config" -and $range.Rows.Count -ge 28) {
+            $sheet = $range.Worksheet
+            $top = $range.Row
+            $left = $range.Column
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 3, $left + 1), $sheet.Cells.Item($top + 4, $left + 1))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 7, $left + 1), $sheet.Cells.Item($top + 7, $left + 6))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 10, $left + 1), $sheet.Cells.Item($top + 17, $left + 3))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 20, $left + 1), $sheet.Cells.Item($top + 27, $left + 6))
+        }
+    } catch {
+        # HollowRectangle имеет составную таблицу, поэтому его ячейки ввода форматируются отдельно.
+    }
+
+    try {
         $range = $Workbook.Names.Item("rngRectSetGeometry").RefersToRange
         if ([string]$range.Worksheet.Name -eq "Config" -and $range.Rows.Count -ge 28) {
             $sheet = $range.Worksheet
@@ -525,14 +562,14 @@ function Get-SettingInstructionLines {
             "Это не численный допуск solver-а и не способ улучшить сходимость любой ценой. Если задать слишком большой порог, можно случайно убрать реальный малый момент или эксцентриситет. Если нужно проверить очень малый изгиб, уменьшите значение настройки."
         ) }
         "Geometry.Source" { return @($lead) + @(
-            "Generated: программа сама строит бетонную сетку, автоматически расставляет арматуру и готовит подписи для схемы. Этот режим удобен для параметрических сечений Circle, RoundedRectangle и RectSet.",
+            "Generated: программа сама строит бетонную сетку, автоматически расставляет арматуру и готовит подписи для схемы. Этот режим удобен для параметрических сечений Circle, RoundedRectangle, HollowRectangle и RectSet.",
             "AutoCAD: геометрия должна быть заранее загружена отдельной кнопкой 'Импортировать геометрию из AutoCAD'. Кнопка читает только объекты Region на слоях AutoCAD.Import.ConcreteLayer и AutoCAD.Import.RebarLayer, записывает их в Results и сразу показывает предварительную схему без расчетных значений.",
             "При последующем нажатии 'Выполнить расчет' программа не обращается к AutoCAD повторно. Она берет уже сохраненную импортированную геометрию из Results. Если Geometry.Source = AutoCAD, но предварительного импорта нет, расчет останавливается понятным сообщением.",
             "Все координаты и площади AutoCAD считаются заданными в миллиметрах. После импорта программа работает с такой геометрией так же, как с геометрией, построенной внутри книги.",
             "У импортированной из AutoCAD сетки обычно нет сведений о смысловых гранях и группах арматуры. Поэтому программа сохраняет фактические элементы и результаты, но не пытается угадывать специальные подписи граней по координатам."
         ) }
         "Geometry.Type" { return @($lead) + @(
-            "Поддерживаемые варианты: Circle, RoundedRectangle, RectSet. Для выбранной формы программа строит геометрию, расставляет арматуру и, если умеет, готовит подписи для схемы.",
+            "Поддерживаемые варианты: Circle, RoundedRectangle, HollowRectangle, RectSet. Для выбранной формы программа строит геометрию, расставляет арматуру и, если умеет, готовит подписи для схемы.",
             "Не используется при Geometry.Source = AutoCAD, потому что в этом режиме фактическая сетка приходит из чертежа.",
             "Если для выбранной формы нет специальных аннотаций, расчет все равно выполняется. На схеме будут показаны геометрия и расчетные значения без этих дополнительных подписей."
         ) }
@@ -1074,7 +1111,7 @@ function Get-SettingInstructionLines {
         ) }
         "AutoCAD.Export.ContourEnabled" { return @($lead) + @(
             "Yes выгружает контур сечения отдельной замкнутой полилинией AutoCAD, если точный параметрический контур сохранен в Results.",
-            "Для Circle, RectSet и RoundedRectangle контур приходит из генератора вместе с прямыми участками и дугами. Дуги передаются как дуговые сегменты полилинии, а не как набор коротких линий.",
+            "Для Circle, RectSet, RoundedRectangle и HollowRectangle контур приходит из генератора вместе с прямыми участками и дугами. Дуги передаются как дуговые сегменты полилинии, а не как набор коротких линий.",
             "Для импортированной AutoCAD-сетки программа не восстанавливает внешний контур по волокнам и не угадывает оболочку. Если в Results нет contour-аннотаций, настройка просто ничего не добавит к экспорту.",
             "Имя слоя задается настройкой AutoCAD.Layer.Contour. Это позволяет отделить контур от слоев бетона, арматуры и подписей."
         ) }
@@ -1328,6 +1365,20 @@ function Get-SettingsInstructionCatalog {
         "Дополнительные ряды d2/d3 работают так же, как в других генераторах: Stacked ставит ряд внутрь сечения, SideBySide - вдоль текущей линии раскладки; EachBar/EverySecondBar управляет привязкой к первому ряду.",
         "После генерации программа работает с сечением одинаково независимо от того, было оно построено в книге или импортировано из AutoCAD."
     )}) | Out-Null
+    $items.Add(@{ Key = "HollowRectangleGeometry"; Title = "Пустотелый скругленный прямоугольник"; Lines = @(
+        "HollowRectangle задает бетонное кольцо: наружный скругленный прямоугольник H/B/R и внутреннее отверстие Opening H_o/B_o/R_o.",
+        "H и B - наружные габариты, R - радиус наружных углов. Если R = 0, наружный контур становится обычным прямоугольником.",
+        "H_o и B_o - габариты внутреннего отверстия Opening, R_o - радиус его углов. Если R_o = 0, отверстие становится прямоугольным.",
+        "HollowRectangle.InnerOffsetX и HollowRectangle.InnerOffsetY смещают центр Opening относительно центра наружного прямоугольника. Положительный X смещает отверстие вправо, положительный Y - вверх.",
+        "Opening должен целиком находиться внутри наружного контура. Если отверстие выходит за границы или площадь бетона становится нулевой, расчет останавливается с сообщением об ошибке ввода.",
+        "Наружные строки H - левая, H - правая, B - верхняя, B - нижняя задают as, d и n напрямую. as измеряется от наружного бетонного контура до оси стержней внутрь бетонного кольца.",
+        "Для наружных граней B стержни раскладываются по прямому участку между началами скруглений противоположных сторон. Первый и последний стержни имеют одинаковый отступ от начала и конца участка, равный принятому шагу.",
+        "Внутренние строки H_o/B_o относятся к граням Opening. Пользователь задает только as и d; количество стержней n вычисляется автоматически проекцией соответствующих наружных стержней по нормали к внутренней линии раскладки.",
+        "Для Opening направление 'внутрь сечения' противоположно пустоте: стержни смещаются от границы отверстия в тело бетона. Для наружных граней 'внутрь' направлено от наружного контура к центру бетонного кольца.",
+        "Настройка Placement в аннотациях также учитывает это различие. Для внутренних граней Outside означает сторону пустоты, то есть от грани Opening к центру отверстия; для наружных граней Outside означает сторону вне сечения.",
+        "Дополнительные ряды d2/d3 работают одинаково для наружных и внутренних граней: Stacked ставит ряд внутрь бетона, SideBySide - вдоль текущей линии раскладки; EachBar/EverySecondBar управляет привязкой к первому ряду.",
+        "Контур HollowRectangle сохраняется в Results двумя петлями: наружный контур и Opening. При AutoCAD export они выводятся отдельными замкнутыми полилиниями, чтобы отверстие не соединялось с наружной границей паразитной линией."
+    )}) | Out-Null
     $items.Add(@{ Key = "RectSetGeometry"; Title = "Сечение из прямоугольников"; Lines = @(
         "Этот блок задает параметрическое бетонное сечение RectSet: один прямоугольник H1/B1 или два прямоугольника H1/B1 и H2/B2.",
         "RectSet.SectionType выбирает режим: Rectangle - работает только верхний прямоугольник H1/B1; LSection - Г-сечение из двух прямоугольников с общей левой гранью; TwoRectangles - два прямоугольника, где верхний можно сместить по X.",
@@ -1376,7 +1427,7 @@ function Get-SettingsInstructionCatalog {
         $items.Add(@{ Key = $key; Title = $key; Lines = (Get-SettingInstructionLines $key ([string]$row[4])) }) | Out-Null
     }
     foreach ($geometry in (Get-GeometrySettingsCatalog)) {
-        if (-not ($geometry.ContainsKey("FaceTable") -and $geometry.FaceTable) -and -not ($geometry.ContainsKey("RoundedRectangleTable") -and $geometry.RoundedRectangleTable)) {
+        if (-not ($geometry.ContainsKey("FaceTable") -and $geometry.FaceTable) -and -not ($geometry.ContainsKey("RoundedRectangleTable") -and $geometry.RoundedRectangleTable) -and -not ($geometry.ContainsKey("HollowRectangleTable") -and $geometry.HollowRectangleTable)) {
             foreach ($row in $geometry.Rows) {
                 $key = [string]$row[0]
                 if ($key.Length -gt 0 -and $key -notlike "дополнительные*") {
@@ -2478,6 +2529,7 @@ function Add-SettingsInstructions {
         "Аннотации схемы" = "PlotAnnotationSettings"
         "Круглое сечение" = "CircleGeometry"
         "Скругленный прямоугольник" = "RoundedRectangleGeometry"
+        "Пустотелый скругленный прямоугольник" = "HollowRectangleGeometry"
         "Сечение из прямоугольников" = "RectSetGeometry"
     }
     for ($r = 1; $r -le ($used.Row + $used.Rows.Count + 40); $r++) {
@@ -3334,11 +3386,14 @@ function Apply-SystemSettingsLayout {
     $rightRow += (Get-PlotAnnotationSettingsCatalog).Count + 1 + $rightBlockGap
 
     $geometryTables = Get-GeometrySettingsCatalog
-    $geometryOrder = @("rngCircleGeometry", "rngRectSetGeometry", "rngRoundedRectangleGeometry")
+    $geometryOrder = @("rngCircleGeometry", "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry")
     foreach ($geometryRangeName in $geometryOrder) {
         $geometryTable = $geometryTables | Where-Object { $_.RangeName -eq $geometryRangeName } | Select-Object -First 1
         if ($null -eq $geometryTable) { continue }
-        if ($geometryTable.ContainsKey("RoundedRectangleTable") -and $geometryTable.RoundedRectangleTable) {
+        if ($geometryTable.ContainsKey("HollowRectangleTable") -and $geometryTable.HollowRectangleTable) {
+            Add-HollowRectangleSettingsTable $Workbook $Sheet $geometryTable.RangeName $rightRow $rightColumn $geometryTable.Title $geometryTable.Rows
+            $rightRow += 29 + $rightBlockGap
+        } elseif ($geometryTable.ContainsKey("RoundedRectangleTable") -and $geometryTable.RoundedRectangleTable) {
             Add-RoundedRectangleSettingsTable $Workbook $Sheet $geometryTable.RangeName $rightRow $rightColumn $geometryTable.Title $geometryTable.Rows
             $rightRow += 23 + $rightBlockGap
         } elseif ($geometryTable.ContainsKey("FaceTable") -and $geometryTable.FaceTable) {
@@ -3366,7 +3421,7 @@ function Apply-SystemSettingsLayout {
         "Stability.AccidentalEccentricityMode" = @("AutoWithL", "AutoWith$($mu)L", "User")
         "Stability.AccidentalEccentricityPlanes" = @("OnlyMomentPlane", "BothPlanes")
         "Stability.PhiLMode" = @("Auto", "PhiL2")
-        "Geometry.Type" = @("RoundedRectangle", "Circle", "RectSet")
+        "Geometry.Type" = @("RoundedRectangle", "HollowRectangle", "Circle", "RectSet")
         "Solver.Method" = @("Newton", "Secant")
         "Solver.DirectState.DiagramExtension" = @("Yes", "No")
         "Capacity.SolutionStrategy" = @("Auto", "UltimateStrain", "LoadMultiplier")
@@ -3620,6 +3675,143 @@ function Add-GeometrySettingsTable {
     }
 
     Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($HeaderRow + $Rows.Count) ($StartColumn + 3)
+}
+
+# Добавляет секционную таблицу HollowRectangle: наружный контур, Opening и
+# восемь смысловых граней арматуры. Opening не имеет пользовательского n:
+# количество стержней рассчитывается кодом по проекциям внешних рядов.
+function Add-HollowRectangleSettingsTable {
+    param(
+        [object]$Workbook,
+        [object]$Sheet,
+        [string]$RangeName,
+        [int]$HeaderRow,
+        [int]$StartColumn,
+        [string]$Title,
+        [array]$Rows
+    )
+
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = $Title
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 8)).Merge() | Out-Null
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Color = 255
+    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
+
+    $Sheet.Cells.Item($HeaderRow, $StartColumn).Value2 = "Общие настройки геометрии"
+    $commonTitleRange = $Sheet.Range($Sheet.Cells.Item($HeaderRow, $StartColumn), $Sheet.Cells.Item($HeaderRow, $StartColumn + 4))
+    $commonTitleRange.Merge() | Out-Null
+    $commonTitleRange.Font.Bold = $true
+    $commonTitleRange.Interior.Color = 15921906
+
+    $commonHeaders = @("Параметр", "Значение", "Ед.", "Комментарий")
+    for ($i = 0; $i -lt $commonHeaders.Count; $i++) {
+        $cell = $Sheet.Cells.Item($HeaderRow + 1, $StartColumn + $i)
+        $cell.Value2 = $commonHeaders[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = 14277081
+    }
+    for ($r = 0; $r -lt 2; $r++) {
+        for ($c = 0; $c -lt 4; $c++) {
+            $Sheet.Cells.Item($HeaderRow + 2 + $r, $StartColumn + $c).Value2 = $Rows[$r][$c]
+        }
+        Set-InputUnitCell $Sheet.Cells.Item($HeaderRow + 2 + $r, $StartColumn + 2) ([string]$Rows[$r][2])
+    }
+
+    $geometryHeaderRow = $HeaderRow + 5
+    $Sheet.Cells.Item($geometryHeaderRow - 1, $StartColumn).Value2 = "Геометрия (наружный H/B/R; Opening H_o/B_o/R_o)"
+    $geometryTitleRange = $Sheet.Range($Sheet.Cells.Item($geometryHeaderRow - 1, $StartColumn), $Sheet.Cells.Item($geometryHeaderRow - 1, $StartColumn + 6))
+    $geometryTitleRange.Font.Bold = $true
+    $geometryTitleRange.Interior.Color = 15921906
+    $geomHeaders = @("H", "B", "R", "H_o", "B_o", "R_o", "Ед.")
+    for ($i = 0; $i -lt $geomHeaders.Count; $i++) {
+        $cell = $Sheet.Cells.Item($geometryHeaderRow, $StartColumn + $i)
+        $cell.Value2 = $geomHeaders[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = 14277081
+    }
+    for ($i = 1; $i -le 6; $i++) {
+        $Sheet.Cells.Item($geometryHeaderRow + 1, $StartColumn + $i - 1).Value2 = $Rows[2][$i]
+    }
+    Set-InputUnitCell $Sheet.Cells.Item($geometryHeaderRow + 1, $StartColumn + 6) "мм"
+
+    $mainHeaderRow = $HeaderRow + 9
+    $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn).Value2 = "Основное армирование"
+    $mainSectionRange = $Sheet.Range($Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn), $Sheet.Cells.Item($mainHeaderRow - 1, $StartColumn + 5))
+    $mainSectionRange.Font.Bold = $true
+    $mainSectionRange.Interior.Color = 15921906
+    $mainSectionRange.HorizontalAlignment = -4131
+    $mainHeaders = @("Грань", "as", "d", "n", "Ед.", "Комментарий")
+    for ($i = 0; $i -lt $mainHeaders.Count; $i++) {
+        $cell = $Sheet.Cells.Item($mainHeaderRow, $StartColumn + $i)
+        $cell.Value2 = $mainHeaders[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = 14277081
+    }
+    for ($r = 3; $r -le 10; $r++) {
+        $targetRow = $mainHeaderRow + 1 + ($r - 3)
+        for ($c = 0; $c -lt 6; $c++) {
+            $Sheet.Cells.Item($targetRow, $StartColumn + $c).Value2 = $Rows[$r][$c]
+        }
+        Set-InputUnitCell $Sheet.Cells.Item($targetRow, $StartColumn + 4) "мм"
+    }
+
+    $extraHeaderRow = $mainHeaderRow + 10
+    $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn).Value2 = "Дополнительные ряды арматуры"
+    $extraSectionRange = $Sheet.Range($Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn), $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn + 8))
+    $extraSectionRange.Font.Bold = $true
+    $extraSectionRange.Interior.Color = 15921906
+    $extraSectionRange.HorizontalAlignment = -4131
+    $extraHeaders = @("Грань", "d2", "положение", "привязка", "d3", "положение", "привязка", "Ед.", "Комментарий")
+    for ($i = 0; $i -lt $extraHeaders.Count; $i++) {
+        $cell = $Sheet.Cells.Item($extraHeaderRow, $StartColumn + $i)
+        $cell.Value2 = $extraHeaders[$i]
+        $cell.Font.Bold = $true
+        $cell.Interior.Color = 14277081
+    }
+    for ($r = 11; $r -le 18; $r++) {
+        $targetRow = $extraHeaderRow + 1 + ($r - 11)
+        for ($c = 0; $c -lt 9; $c++) {
+            $Sheet.Cells.Item($targetRow, $StartColumn + $c).Value2 = $Rows[$r][$c]
+        }
+        Set-InputUnitCell $Sheet.Cells.Item($targetRow, $StartColumn + 7) "мм"
+    }
+
+    $locOptions = @("Stacked", "SideBySide")
+    $locListColumn = 138
+    for ($i = 0; $i -lt $locOptions.Count; $i++) { $Sheet.Cells.Item($i + 1, $locListColumn).Value2 = $locOptions[$i] }
+    $locColName = ConvertTo-ExcelColumn $locListColumn
+    $locListAddress = "=$" + $locColName + '$1:$' + $locColName + '$' + $locOptions.Count
+
+    $bindOptions = @("EachBar", "EverySecondBar")
+    $bindListColumn = 139
+    for ($i = 0; $i -lt $bindOptions.Count; $i++) { $Sheet.Cells.Item($i + 1, $bindListColumn).Value2 = $bindOptions[$i] }
+    $bindColName = ConvertTo-ExcelColumn $bindListColumn
+    $bindListAddress = "=$" + $bindColName + '$1:$' + $bindColName + '$' + $bindOptions.Count
+
+    for ($r = 0; $r -lt 8; $r++) {
+        foreach ($valueColumn in @(2, 5)) {
+            $cell = $Sheet.Cells.Item($extraHeaderRow + 1 + $r, $StartColumn + $valueColumn)
+            $cell.Validation.Delete()
+            $cell.Validation.Add(3, 1, 1, $locListAddress)
+            $cell.Validation.IgnoreBlank = $true
+            $cell.Validation.InCellDropdown = $true
+        }
+        foreach ($valueColumn in @(3, 6)) {
+            $cell = $Sheet.Cells.Item($extraHeaderRow + 1 + $r, $StartColumn + $valueColumn)
+            $cell.Validation.Delete()
+            $cell.Validation.Add(3, 1, 1, $bindListAddress)
+            $cell.Validation.IgnoreBlank = $true
+            $cell.Validation.InCellDropdown = $true
+        }
+    }
+
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn), $Sheet.Cells.Item($extraHeaderRow + 8, $StartColumn + 8)).VerticalAlignment = -4108
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 1), $Sheet.Cells.Item($extraHeaderRow + 8, $StartColumn + 7)).HorizontalAlignment = -4108
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 3), $Sheet.Cells.Item($HeaderRow + 3, $StartColumn + 3)).HorizontalAlignment = -4152
+    $Sheet.Range($Sheet.Cells.Item($mainHeaderRow, $StartColumn + 5), $Sheet.Cells.Item($mainHeaderRow + 8, $StartColumn + 5)).HorizontalAlignment = -4152
+    $Sheet.Range($Sheet.Cells.Item($extraHeaderRow, $StartColumn + 8), $Sheet.Cells.Item($extraHeaderRow + 8, $StartColumn + 8)).HorizontalAlignment = -4152
+
+    Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($extraHeaderRow + 8) ($StartColumn + 8)
 }
 
 # Добавляет секционную таблицу RoundedRectangle: геометрия сторон и арматура.

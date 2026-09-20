@@ -106,6 +106,10 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object)
     Dim columnCount As Long
     columnCount = UBound(data, 2)
 
+    If IsHollowRectangleSettingsRange(data) Then
+        AppendHollowRectangleSettings data
+        Exit Sub
+    End If
     If IsRoundedRectangleFaceSettingsRange(data) Then
         AppendRoundedRectangleFaceSettings data
         Exit Sub
@@ -350,6 +354,119 @@ Private Function SignQuantityKey(ByVal caption As String) As String
         Case "+mx": SignQuantityKey = "Mx"
         Case "+my": SignQuantityKey = "My"
     End Select
+End Function
+
+' Распознает таблицу HollowRectangle по строке H/B/R/H_o/B_o/R_o.
+Private Function IsHollowRectangleSettingsRange(ByRef data As Variant) As Boolean
+    IsHollowRectangleSettingsRange = (HollowRectangleGeometryHeaderRow(data) > 0)
+End Function
+
+' Ищет строку основных размеров пустотелого скругленного прямоугольника.
+Private Function HollowRectangleGeometryHeaderRow(ByRef data As Variant) As Long
+    If UBound(data, 2) < 6 Then Exit Function
+
+    Dim rowIndex As Long
+    For rowIndex = 1 To UBound(data, 1) - 1
+        If StrComp(Trim$(CStr(data(rowIndex, 1))), "H", vbTextCompare) = 0 And _
+                StrComp(Trim$(CStr(data(rowIndex, 2))), "B", vbTextCompare) = 0 And _
+                StrComp(Trim$(CStr(data(rowIndex, 3))), "R", vbTextCompare) = 0 And _
+                StrComp(Trim$(CStr(data(rowIndex, 4))), "H_o", vbTextCompare) = 0 And _
+                StrComp(Trim$(CStr(data(rowIndex, 5))), "B_o", vbTextCompare) = 0 And _
+                StrComp(Trim$(CStr(data(rowIndex, 6))), "R_o", vbTextCompare) = 0 Then
+            HollowRectangleGeometryHeaderRow = rowIndex
+            Exit Function
+        End If
+    Next rowIndex
+End Function
+
+' Читает таблицу HollowRectangle: общие смещения Opening, геометрию,
+' наружную арматуру и строки Opening с автоматическим числом стержней.
+Private Sub AppendHollowRectangleSettings(ByRef data As Variant)
+    Dim geometryHeaderRow As Long
+    geometryHeaderRow = HollowRectangleGeometryHeaderRow(data)
+    If geometryHeaderRow = 0 Then Exit Sub
+
+    AppendHollowRectangleCommonSettings data, geometryHeaderRow
+
+    Dim valueRow As Long
+    valueRow = geometryHeaderRow + 1
+    AppendSetting "HollowRectangle.H", Trim$(CStr(data(valueRow, 1))), Trim$(CStr(data(valueRow, 1))), "HollowRectangle geometry"
+    AppendSetting "HollowRectangle.B", Trim$(CStr(data(valueRow, 2))), Trim$(CStr(data(valueRow, 2))), "HollowRectangle geometry"
+    AppendSetting "HollowRectangle.R", Trim$(CStr(data(valueRow, 3))), Trim$(CStr(data(valueRow, 3))), "HollowRectangle geometry"
+    AppendSetting "HollowRectangle.OpeningH", Trim$(CStr(data(valueRow, 4))), Trim$(CStr(data(valueRow, 4))), "HollowRectangle geometry"
+    AppendSetting "HollowRectangle.OpeningB", Trim$(CStr(data(valueRow, 5))), Trim$(CStr(data(valueRow, 5))), "HollowRectangle geometry"
+    AppendSetting "HollowRectangle.OpeningR", Trim$(CStr(data(valueRow, 6))), Trim$(CStr(data(valueRow, 6))), "HollowRectangle geometry"
+
+    Dim mainHeaderRow As Long
+    mainHeaderRow = FindRowWithCaption(data, "Грань", 1, geometryHeaderRow + 1)
+    Dim extraHeaderRow As Long
+    extraHeaderRow = FindRowWithCaption(data, "d2", 2, geometryHeaderRow + 1)
+    If mainHeaderRow > 0 Then AppendHollowRectangleMainRebars data, mainHeaderRow
+    If extraHeaderRow > 0 Then AppendHollowRectangleExtraRebars data, extraHeaderRow
+End Sub
+
+' Читает строки смещения отверстия над блоком геометрии.
+Private Sub AppendHollowRectangleCommonSettings(ByRef data As Variant, ByVal geometryHeaderRow As Long)
+    Dim rowIndex As Long
+    For rowIndex = 1 To geometryHeaderRow - 1
+        Dim keyValue As String
+        keyValue = Trim$(CStr(data(rowIndex, 1)))
+        If StrComp(keyValue, "HollowRectangle.InnerOffsetX", vbTextCompare) = 0 Or _
+                StrComp(keyValue, "HollowRectangle.InnerOffsetY", vbTextCompare) = 0 Then
+            Dim sourceValue As String
+            If UBound(data, 2) >= 4 Then sourceValue = Trim$(CStr(data(rowIndex, 4)))
+            AppendSetting keyValue, Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), sourceValue
+        End If
+    Next rowIndex
+End Sub
+
+Private Sub AppendHollowRectangleMainRebars(ByRef data As Variant, ByVal mainHeaderRow As Long)
+    Dim rowIndex As Long
+    For rowIndex = mainHeaderRow + 1 To UBound(data, 1)
+        Dim faceKey As String
+        faceKey = HollowRectangleFaceKey(Trim$(CStr(data(rowIndex, 1))))
+        If Len(faceKey) = 0 Then Exit For
+        AppendSetting "HollowRectangle." & faceKey & ".as", Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 6)))
+        AppendSetting "HollowRectangle." & faceKey & ".d", Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 6)))
+        If IsNumericSettingText(data(rowIndex, 4)) Then
+            AppendSetting "HollowRectangle." & faceKey & ".n", Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 6)))
+        End If
+    Next rowIndex
+End Sub
+
+Private Sub AppendHollowRectangleExtraRebars(ByRef data As Variant, ByVal extraHeaderRow As Long)
+    Dim rowIndex As Long
+    For rowIndex = extraHeaderRow + 1 To UBound(data, 1)
+        Dim faceKey As String
+        faceKey = HollowRectangleFaceKey(Trim$(CStr(data(rowIndex, 1))))
+        If Len(faceKey) = 0 Then Exit For
+        AppendSetting "HollowRectangle." & faceKey & ".d_2row", Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 9)))
+        AppendSetting "HollowRectangle." & faceKey & ".loc_2row", Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 9)))
+        AppendSetting "HollowRectangle." & faceKey & ".bind_2row", Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 9)))
+        AppendSetting "HollowRectangle." & faceKey & ".d_3row", Trim$(CStr(data(rowIndex, 5))), Trim$(CStr(data(rowIndex, 5))), Trim$(CStr(data(rowIndex, 9)))
+        AppendSetting "HollowRectangle." & faceKey & ".loc_3row", Trim$(CStr(data(rowIndex, 6))), Trim$(CStr(data(rowIndex, 6))), Trim$(CStr(data(rowIndex, 9)))
+        AppendSetting "HollowRectangle." & faceKey & ".bind_3row", Trim$(CStr(data(rowIndex, 7))), Trim$(CStr(data(rowIndex, 7))), Trim$(CStr(data(rowIndex, 9)))
+    Next rowIndex
+End Sub
+
+Private Function HollowRectangleFaceKey(ByVal faceCaption As String) As String
+    Select Case LCase$(Trim$(faceCaption))
+        Case "h - левая", "h-left", "h.left": HollowRectangleFaceKey = "H.Left"
+        Case "h - правая", "h-right", "h.right": HollowRectangleFaceKey = "H.Right"
+        Case "b - верхняя", "b-top", "b.top": HollowRectangleFaceKey = "B.Top"
+        Case "b - нижняя", "b-bottom", "b.bottom": HollowRectangleFaceKey = "B.Bottom"
+        Case "h_o - левая", "ho-left", "opening.h.left": HollowRectangleFaceKey = "Opening.H.Left"
+        Case "h_o - правая", "ho-right", "opening.h.right": HollowRectangleFaceKey = "Opening.H.Right"
+        Case "b_o - верхняя", "bo-top", "opening.b.top": HollowRectangleFaceKey = "Opening.B.Top"
+        Case "b_o - нижняя", "bo-bottom", "opening.b.bottom": HollowRectangleFaceKey = "Opening.B.Bottom"
+    End Select
+End Function
+
+Private Function IsNumericSettingText(ByVal value As Variant) As Boolean
+    Dim textValue As String
+    textValue = Trim$(CStr(value))
+    If Len(textValue) = 0 Or textValue = "-" Or UCase$(textValue) = "TODO" Then Exit Function
+    IsNumericSettingText = IsNumeric(Replace$(textValue, ".", ApplicationDecimalSeparator()))
 End Function
 
 ' Распознает новую табличную компоновку RoundedRectangle: B/H, левая/правая

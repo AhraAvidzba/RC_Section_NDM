@@ -23,6 +23,7 @@ Option Explicit
 Private Const TYPE_CIRCLE As String = "circle" ' Ключ круглого сечения в Geometry.Type.
 Private Const TYPE_RECTSET As String = "rectset" ' Ключ сечения из одного или двух прямоугольников в Geometry.Type.
 Private Const TYPE_ROUNDED_RECTANGLE As String = "roundedrectangle" ' Ключ скругленного прямоугольника.
+Private Const TYPE_HOLLOW_RECTANGLE As String = "hollowrectangle" ' Ключ пустотелого скругленного прямоугольника.
 
 ' Возвращает нормализованный тип встроенной геометрии из Config.
 ' Все публичные методы registry пользуются одним и тем же значением, поэтому
@@ -36,7 +37,7 @@ Private Function ActiveGeometryType(ByVal settings As CSystemSettingsReader) As 
     If Len(Trim$(geometryType)) = 0 Then geometryType = TYPE_RECTSET
 
     Select Case geometryType
-        Case TYPE_CIRCLE, TYPE_RECTSET, TYPE_ROUNDED_RECTANGLE
+        Case TYPE_CIRCLE, TYPE_RECTSET, TYPE_ROUNDED_RECTANGLE, TYPE_HOLLOW_RECTANGLE
             ActiveGeometryType = geometryType
         Case Else
             Err.Raise vbObjectError + 4134, "CSectionTypeRegistry", _
@@ -51,6 +52,7 @@ Public Function CreateGeometry(ByVal settings As CSystemSettingsReader, ByVal un
     Dim circleGeometry As CGeometryCircle ' Конкретная математическая форма круга.
     Dim rectSetGeometry As CGeometryRectSet ' Математическая форма из одного/двух прямоугольников.
     Dim roundedGeometry As CGeometryRoundedRectangle ' Конкретная математическая форма скругленного прямоугольника.
+    Dim hollowGeometry As CGeometryHollowRectangle ' Пустотелая форма: внешний RoundedRectangle минус Opening.
 
     Select Case ActiveGeometryType(settings)
         Case TYPE_CIRCLE
@@ -82,6 +84,19 @@ Public Function CreateGeometry(ByVal settings As CSystemSettingsReader, ByVal un
                 units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Left.R2", 0#)), _
                 units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Right.R2", 0#))
             Set CreateGeometry = roundedGeometry
+
+        Case TYPE_HOLLOW_RECTANGLE
+            Set hollowGeometry = New CGeometryHollowRectangle
+            hollowGeometry.Initialize _
+                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.B", 500#)), _
+                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.H", 800#)), _
+                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.R", 180#)), _
+                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.OpeningB", 200#)), _
+                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.OpeningH", 500#)), _
+                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.OpeningR", 30#)), _
+                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.InnerOffsetX", 0#)), _
+                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.InnerOffsetY", 0#))
+            Set CreateGeometry = hollowGeometry
     End Select
 End Function
 
@@ -94,6 +109,7 @@ Public Function CreateRebars(ByVal geometry As ISectionGeometry, ByVal settings 
     Dim circleRebars As CCircleRebarLayoutBuilder ' Генератор раскладки арматуры для кругового сечения.
     Dim rectSetRebars As CRectSetRebarLayoutBuilder ' Генератор раскладки арматуры для RectSet-сечения.
     Dim roundedRebars As CRoundedRectRebarLayoutBuilder ' Генератор арматуры для RoundedRectangle-сечения.
+    Dim hollowRebars As CHollowRectRebarLayoutBuilder ' Генератор арматуры для HollowRectangle-сечения.
 
     Select Case ActiveGeometryType(settings)
         Case TYPE_CIRCLE
@@ -107,6 +123,10 @@ Public Function CreateRebars(ByVal geometry As ISectionGeometry, ByVal settings 
         Case TYPE_ROUNDED_RECTANGLE
             Set roundedRebars = New CRoundedRectRebarLayoutBuilder
             Set CreateRebars = roundedRebars.BuildFromSettings(settings, units)
+
+        Case TYPE_HOLLOW_RECTANGLE
+            Set hollowRebars = New CHollowRectRebarLayoutBuilder
+            Set CreateRebars = hollowRebars.BuildFromSettings(settings, units)
     End Select
 End Function
 
@@ -124,6 +144,7 @@ Public Sub BuildAnnotations(ByVal model As CSectionModel, ByVal geometry As ISec
     Dim circleAnnotations As CCircleAnnotationBuilder ' Формирует semantic-размеры и подписи арматуры для круга.
     Dim rectSetAnnotations As CRectSetAnnotationBuilder ' Формирует semantic-аннотации для граней RectSet-сечения.
     Dim roundedAnnotations As CRoundedRectAnnotationBuilder ' Формирует semantic-аннотации скругленного прямоугольника.
+    Dim hollowAnnotations As CHollowRectAnnotationBuilder ' Формирует semantic-аннотации наружного контура и Opening.
 
     model.Annotations.Clear
 
@@ -139,6 +160,10 @@ Public Sub BuildAnnotations(ByVal model As CSectionModel, ByVal geometry As ISec
         Case TYPE_ROUNDED_RECTANGLE
             Set roundedAnnotations = New CRoundedRectAnnotationBuilder
             roundedAnnotations.Build model, geometry, rebars
+
+        Case TYPE_HOLLOW_RECTANGLE
+            Set hollowAnnotations = New CHollowRectAnnotationBuilder
+            hollowAnnotations.Build model, geometry, rebars
     End Select
 End Sub
 

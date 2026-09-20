@@ -841,6 +841,7 @@ Private Sub DrawParametricSectionContour(ByVal workbook As Object, ByVal ms As O
     If Not HasResultTableRows(data) Then Exit Sub
 
     Dim colType As Long: colType = ResultColumn(data, "AnnotationType")
+    Dim colID As Long: colID = ResultColumn(data, "AnnotationID")
     Dim colStartX As Long: colStartX = ResultColumn(data, "StartX")
     Dim colStartY As Long: colStartY = ResultColumn(data, "StartY")
     Dim colEndX As Long: colEndX = ResultColumn(data, "EndX")
@@ -854,10 +855,28 @@ Private Sub DrawParametricSectionContour(ByVal workbook As Object, ByVal ms As O
     Dim segEndY() As Double
     Dim segBulge() As Double
     Dim segCount As Long
+    Dim currentLoopKey As String
 
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
-        Select Case UCase$(Trim$(SafeText(data(rowIndex, colType))))
+        Dim annotationType As String
+        annotationType = UCase$(Trim$(SafeText(data(rowIndex, colType))))
+        If Left$(annotationType, 8) = "CONTOUR_" Then
+            Dim loopKey As String
+            loopKey = ContourLoopKey(SafeText(data(rowIndex, colID)))
+            If segCount > 0 And StrComp(loopKey, currentLoopKey, vbTextCompare) <> 0 Then
+                DrawContourSegmentPolyline ms, contourLayer, segStartX, segStartY, segEndX, segEndY, segBulge, segCount
+                Erase segStartX
+                Erase segStartY
+                Erase segEndX
+                Erase segEndY
+                Erase segBulge
+                segCount = 0
+            End If
+            currentLoopKey = loopKey
+        End If
+
+        Select Case annotationType
             Case "CONTOUR_LINE"
                 AppendContourSegment segStartX, segStartY, segEndX, segEndY, segBulge, segCount, _
                     OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartX)), lengthUnit), _
@@ -873,6 +892,16 @@ Private Sub DrawParametricSectionContour(ByVal workbook As Object, ByVal ms As O
                     OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndY)), lengthUnit), _
                     Tan(ParseInvariantDouble(SafeText(data(rowIndex, colText))) / 4#)
             Case "CONTOUR_CIRCLE"
+                If segCount > 0 Then
+                    DrawContourSegmentPolyline ms, contourLayer, segStartX, segStartY, segEndX, segEndY, segBulge, segCount
+                    Erase segStartX
+                    Erase segStartY
+                    Erase segEndX
+                    Erase segEndY
+                    Erase segBulge
+                    segCount = 0
+                    currentLoopKey = vbNullString
+                End If
                 DrawContourCirclePolyline ms, contourLayer, _
                     OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartX)), lengthUnit), _
                     OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartY)), lengthUnit), _
@@ -882,6 +911,19 @@ Private Sub DrawParametricSectionContour(ByVal workbook As Object, ByVal ms As O
 
     If segCount > 0 Then DrawContourSegmentPolyline ms, contourLayer, segStartX, segStartY, segEndX, segEndY, segBulge, segCount
 End Sub
+
+' Возвращает имя петли contour-аннотаций. Старые ID вида CONTOUR_LINE_1
+' попадают в одну пустую петлю; новые CONTOUR_OUTER_* и CONTOUR_OPENING_*
+' экспортируются как независимые замкнутые полилинии.
+Private Function ContourLoopKey(ByVal annotationID As String) As String
+    Dim parts() As String
+    parts = Split(UCase$(Trim$(annotationID)), "_")
+    If UBound(parts) >= 3 Then
+        If parts(0) = "CONTOUR" And (parts(1) = "OUTER" Or parts(1) = "OPENING") Then
+            ContourLoopKey = parts(1)
+        End If
+    End If
+End Function
 
 ' Накопляет линейный или дуговой сегмент будущей AutoCAD LWPOLYLINE.
 ' Bulge хранится на начальной вершине сегмента: 0 для прямого участка и

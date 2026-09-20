@@ -146,6 +146,7 @@ try {
         "rngSystemSettings",
         "rngCircleGeometry",
         "rngRoundedRectangleGeometry",
+        "rngHollowRectangleGeometry",
         "rngRectSetGeometry",
         "rngBatchSummary",
         "rngStrengthSummaryAnchor",
@@ -351,7 +352,8 @@ try {
         "rngPlotAnnotationSettings",
         "rngCircleGeometry",
         "rngRectSetGeometry",
-        "rngRoundedRectangleGeometry"
+        "rngRoundedRectangleGeometry",
+        "rngHollowRectangleGeometry"
     )
     $rightStackOk = $true
     $rightStackDetails = @()

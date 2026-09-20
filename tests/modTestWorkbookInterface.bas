@@ -2242,6 +2242,7 @@ Private Sub SetSystemSetting(ByVal key As String, ByVal value As String)
 
     If TrySetRectSetFaceSetting(key, value) Then Exit Sub
     If TrySetRoundedRectangleSetting(key, value) Then Exit Sub
+    If TrySetHollowRectangleSetting(key, value) Then Exit Sub
 
     Err.Raise vbObjectError + 4210, "modTestWorkbookInterface", "System setting not found: " & key
 End Sub
@@ -2592,6 +2593,99 @@ Private Function RoundedRectangleFacePrefix(ByVal key As String, ByRef faceOrdin
     End If
 End Function
 
+' Меняет одну ячейку таблицы HollowRectangle. Таблица содержит наружный
+' контур, Opening и восемь смысловых граней, поэтому адреса задаются не
+' обычным Key/Value-списком, а видимой структурой блока Config.
+Private Function TrySetHollowRectangleSetting(ByVal key As String, ByVal value As String) As Boolean
+    Dim target As Object
+    Set target = ThisWorkbook.Names.Item("rngHollowRectangleGeometry").RefersToRange
+
+    Dim rowIndex As Long
+    Dim columnIndex As Long
+    If Not HollowRectangleSettingAddress(key, rowIndex, columnIndex) Then Exit Function
+    target.Cells.Item(rowIndex, columnIndex).Value2 = value
+    TrySetHollowRectangleSetting = True
+End Function
+
+Private Function HollowRectangleSettingAddress(ByVal key As String, _
+        ByRef rowIndex As Long, ByRef columnIndex As Long) As Boolean
+    Select Case LCase$(key)
+        Case "hollowrectangle.inneroffsetx"
+            rowIndex = 3: columnIndex = 2
+        Case "hollowrectangle.inneroffsety"
+            rowIndex = 4: columnIndex = 2
+        Case "hollowrectangle.h"
+            rowIndex = 7: columnIndex = 1
+        Case "hollowrectangle.b"
+            rowIndex = 7: columnIndex = 2
+        Case "hollowrectangle.r"
+            rowIndex = 7: columnIndex = 3
+        Case "hollowrectangle.openingh"
+            rowIndex = 7: columnIndex = 4
+        Case "hollowrectangle.openingb"
+            rowIndex = 7: columnIndex = 5
+        Case "hollowrectangle.openingr"
+            rowIndex = 7: columnIndex = 6
+        Case Else
+            If Not HollowRectangleFaceSettingAddress(key, rowIndex, columnIndex) Then Exit Function
+    End Select
+    HollowRectangleSettingAddress = True
+End Function
+
+Private Function HollowRectangleFaceSettingAddress(ByVal key As String, _
+        ByRef rowIndex As Long, ByRef columnIndex As Long) As Boolean
+    Dim prefix As String
+    Dim faceOrdinal As Long
+    prefix = HollowRectangleFacePrefix(key, faceOrdinal)
+    If Len(prefix) = 0 Then Exit Function
+
+    Dim tail As String
+    tail = Mid$(key, Len(prefix) + 2)
+    Select Case LCase$(tail)
+        Case "as"
+            rowIndex = 10 + faceOrdinal: columnIndex = 2
+        Case "d"
+            rowIndex = 10 + faceOrdinal: columnIndex = 3
+        Case "n"
+            rowIndex = 10 + faceOrdinal: columnIndex = 4
+        Case "d_2row"
+            rowIndex = 20 + faceOrdinal: columnIndex = 2
+        Case "loc_2row"
+            rowIndex = 20 + faceOrdinal: columnIndex = 3
+        Case "bind_2row"
+            rowIndex = 20 + faceOrdinal: columnIndex = 4
+        Case "d_3row"
+            rowIndex = 20 + faceOrdinal: columnIndex = 5
+        Case "loc_3row"
+            rowIndex = 20 + faceOrdinal: columnIndex = 6
+        Case "bind_3row"
+            rowIndex = 20 + faceOrdinal: columnIndex = 7
+        Case Else
+            Exit Function
+    End Select
+    HollowRectangleFaceSettingAddress = True
+End Function
+
+Private Function HollowRectangleFacePrefix(ByVal key As String, ByRef faceOrdinal As Long) As String
+    If InStr(1, key, "HollowRectangle.H.Left.", vbTextCompare) = 1 Then
+        HollowRectangleFacePrefix = "HollowRectangle.H.Left": faceOrdinal = 1
+    ElseIf InStr(1, key, "HollowRectangle.H.Right.", vbTextCompare) = 1 Then
+        HollowRectangleFacePrefix = "HollowRectangle.H.Right": faceOrdinal = 2
+    ElseIf InStr(1, key, "HollowRectangle.B.Top.", vbTextCompare) = 1 Then
+        HollowRectangleFacePrefix = "HollowRectangle.B.Top": faceOrdinal = 3
+    ElseIf InStr(1, key, "HollowRectangle.B.Bottom.", vbTextCompare) = 1 Then
+        HollowRectangleFacePrefix = "HollowRectangle.B.Bottom": faceOrdinal = 4
+    ElseIf InStr(1, key, "HollowRectangle.Opening.H.Left.", vbTextCompare) = 1 Then
+        HollowRectangleFacePrefix = "HollowRectangle.Opening.H.Left": faceOrdinal = 5
+    ElseIf InStr(1, key, "HollowRectangle.Opening.H.Right.", vbTextCompare) = 1 Then
+        HollowRectangleFacePrefix = "HollowRectangle.Opening.H.Right": faceOrdinal = 6
+    ElseIf InStr(1, key, "HollowRectangle.Opening.B.Top.", vbTextCompare) = 1 Then
+        HollowRectangleFacePrefix = "HollowRectangle.Opening.B.Top": faceOrdinal = 7
+    ElseIf InStr(1, key, "HollowRectangle.Opening.B.Bottom.", vbTextCompare) = 1 Then
+        HollowRectangleFacePrefix = "HollowRectangle.Opening.B.Bottom": faceOrdinal = 8
+    End If
+End Function
+
 Private Function GetSystemSetting(ByVal key As String) As String
     Dim settings As Object
     Dim ranges As Variant
@@ -2617,11 +2711,13 @@ Private Function SettingsRangeSearchOrder() As Variant
     Dim geometryType As String
     geometryType = SystemGeometryType()
     If StrComp(geometryType, "RectSet", vbTextCompare) = 0 Then
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngRectSetGeometry", "rngCircleGeometry", "rngRoundedRectangleGeometry")
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngRectSetGeometry", "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry")
     ElseIf StrComp(geometryType, "RoundedRectangle", vbTextCompare) = 0 Then
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngRoundedRectangleGeometry", "rngCircleGeometry", "rngRectSetGeometry")
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngRoundedRectangleGeometry", "rngCircleGeometry", "rngRectSetGeometry", "rngHollowRectangleGeometry")
+    ElseIf StrComp(geometryType, "HollowRectangle", vbTextCompare) = 0 Then
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngHollowRectangleGeometry", "rngRoundedRectangleGeometry", "rngCircleGeometry", "rngRectSetGeometry")
     Else
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngRectSetGeometry")
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngRectSetGeometry")
     End If
 End Function
 
