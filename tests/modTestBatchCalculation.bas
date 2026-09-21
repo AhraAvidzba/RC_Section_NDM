@@ -3430,7 +3430,7 @@ Private Sub TestBatchSummaryWritesOnlySelectedStabilityCode(ByRef stats As TBatc
     Set stabilityAnchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
-    AssertTrue stats, "batch.writer.stability.anchor", stabilityAnchor.Row = 121 And stabilityAnchor.Column = 1
+    AssertTrue stats, "batch.writer.stability.anchor", stabilityAnchor.Row = 122 And stabilityAnchor.Column = 1
     AssertTrue stats, "batch.writer.stability.sp35.empty", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 28).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 43).Value2)) = 0
     AssertTrue stats, "batch.writer.stability.sp63.filled", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 60).Value2)) > 0 Or _
@@ -3523,31 +3523,35 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.fixedRow", summaryRow = 1
     AssertTrue stats, "batch.writer.noResultOverlap", summaryRow + writer.RequiredSummaryOutputRows(batch.Count) - 1 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
     AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count = 1 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count = 1
-    AssertTrue stats, "batch.writer.strengthBlockPosition", ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row = 48
-    AssertTrue stats, "batch.writer.crackBlockPosition", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 84
-    AssertTrue stats, "batch.writer.stabilityBlockPosition", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 121 And _
-        ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row = 155
+    AssertTrue stats, "batch.writer.strengthBlockPosition", ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row = 49
+    AssertTrue stats, "batch.writer.crackBlockPosition", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 85
+    AssertTrue stats, "batch.writer.stabilityBlockPosition", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 122 And _
+        ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row = 156
     AssertTrue stats, "batch.writer.meta.worstLabel", CStr(resultsSheet.Cells.Item(summaryRow, 2).Value2) = "Определяющее сочетание"
     AssertTrue stats, "batch.writer.meta.worstValue", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = batch.WorstCombinationID
     AssertTrue stats, "batch.writer.meta.solverCalls", CStr(resultsSheet.Cells.Item(summaryRow + 2, 2).Value2) = "Количество решений НДС"
     AssertTrue stats, "batch.writer.meta.valuesCentered", resultsSheet.Cells.Item(summaryRow, 1).HorizontalAlignment = -4108 And _
         resultsSheet.Cells.Item(summaryRow + 3, 1).HorizontalAlignment = -4108
     AssertTrue stats, "batch.writer.header.statusGroup", CStr(resultsSheet.Cells.Item(summaryRow + 5, 5).Value2) = "статус проверки"
-    AssertTrue stats, "batch.writer.header.reserveGroup", CStr(resultsSheet.Cells.Item(summaryRow + 5, 11).Value2) = "минимальные коэффициенты запаса"
+    AssertTrue stats, "batch.writer.header.reserveGroup", CStr(resultsSheet.Cells.Item(summaryRow + 5, 16).Value2) = "минимальные коэффициенты запаса"
     AssertTrue stats, "batch.writer.header.statusStrength", CStr(resultsSheet.Cells.Item(summaryRow + 6, 5).Value2) = "прочность"
-    AssertTrue stats, "batch.writer.header.reserveStrength", CStr(resultsSheet.Cells.Item(summaryRow + 6, 11).Value2) = "прочность"
+    AssertTrue stats, "batch.writer.header.reserveStrength", CStr(resultsSheet.Cells.Item(summaryRow + 6, 16).Value2) = "прочность"
     AssertTrue stats, "batch.writer.header.centered", resultsSheet.Cells.Item(summaryRow + 5, 5).HorizontalAlignment = -4108 And _
-        resultsSheet.Cells.Item(summaryRow + 7, 11).HorizontalAlignment = -4108
-    AssertTrue stats, "batch.writer.header.commentLeft", resultsSheet.Cells.Item(summaryRow + 10, 11).HorizontalAlignment = -4131
+        resultsSheet.Cells.Item(summaryRow + 7, 16).HorizontalAlignment = -4108
+    AssertTrue stats, "batch.writer.header.commentLeft", resultsSheet.Cells.Item(summaryRow + 10, 16).HorizontalAlignment = -4131
     AssertTrue stats, "batch.writer.header.epsilon", CStr(resultsSheet.Cells.Item(summaryRow + 7, 5).Value2) = _
         "по деформациям " & ChrW$(&H3B5)
     AssertTrue stats, "batch.writer.header.id", _
         CStr(resultsSheet.Cells.Item(summaryRow + 5, 1).MergeArea.Cells.Item(1, 1).Value2) = "Combination ID"
     AssertTrue stats, "batch.writer.header.idMergeRows", resultsSheet.Cells.Item(summaryRow + 5, 1).MergeArea.Rows.Count = 5
-    AssertTrue stats, "batch.writer.header.commentRow", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 11).Value2), "деформациям", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.data.firstId", CStr(resultsSheet.Cells.Item(summaryRow + 11, 1).Value2) = "W1"
-    AssertTrue stats, "batch.writer.data.capacityStatus", Len(CStr(resultsSheet.Cells.Item(summaryRow + 11, 6).Value2)) > 0
-    AssertTrue stats, "batch.writer.data.capacityReserve", IsNumeric(resultsSheet.Cells.Item(summaryRow + 11, 12).Value2)
+    AssertTrue stats, "batch.writer.header.commentRow", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 16).Value2), "деформациям", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.worst.label", CStr(resultsSheet.Cells.Item(summaryRow + 11, 1).Value2) = "worst LC"
+    AssertTrue stats, "batch.writer.worst.bold", resultsSheet.Cells.Item(summaryRow + 11, 1).Font.Bold And _
+        resultsSheet.Cells.Item(summaryRow + 11, 16).Font.Bold
+    AssertWorstSummaryRowMatchesData stats, resultsSheet
+    AssertTrue stats, "batch.writer.data.firstId", CStr(resultsSheet.Cells.Item(summaryRow + 12, 1).Value2) = "W1"
+    AssertTrue stats, "batch.writer.data.capacityStatus", Len(CStr(resultsSheet.Cells.Item(summaryRow + 12, 6).Value2)) > 0
+    AssertTrue stats, "batch.writer.data.capacityReserve", IsNumeric(resultsSheet.Cells.Item(summaryRow + 12, 17).Value2)
     Dim strengthAnchor As Object
     Set strengthAnchor = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
     AssertTrue stats, "batch.writer.strength.absentZonesBlank", _
@@ -3645,25 +3649,39 @@ Private Sub AssertBatchSummaryReservesMatchDetailed(ByRef stats As TBatchTestSta
 
     If checkStrength And strengthRow > 0 Then
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".strain", _
-            resultsSheet.Cells.Item(summaryRow, 11).Value2, _
+            resultsSheet.Cells.Item(summaryRow, 16).Value2, _
             resultsSheet.Cells.Item(strengthRow, 25).Value2
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".capacity", _
-            resultsSheet.Cells.Item(summaryRow, 12).Value2, _
+            resultsSheet.Cells.Item(summaryRow, 17).Value2, _
             resultsSheet.Cells.Item(strengthRow, 41).Value2
     End If
     If checkCrack And crackRow > 0 Then
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".crack", _
-            resultsSheet.Cells.Item(summaryRow, 13).Value2, _
+            resultsSheet.Cells.Item(summaryRow, 18).Value2, _
             resultsSheet.Cells.Item(crackRow, 38).Value2
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".longCrack", _
-            resultsSheet.Cells.Item(summaryRow, 14).Value2, _
+            resultsSheet.Cells.Item(summaryRow, 19).Value2, _
             resultsSheet.Cells.Item(crackRow, 42).Value2
     End If
     If checkStability And stabilityRow > 0 Then
-        Dim detailedStabilityReserve As Double
-        detailedStabilityReserve = StabilityReserveFromDetailedRow(resultsSheet, stabilityRow)
-        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".stability", _
-            resultsSheet.Cells.Item(summaryRow, 15).Value2, detailedStabilityReserve
+        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p1eta", _
+            resultsSheet.Cells.Item(summaryRow, 20).Value2, _
+            resultsSheet.Cells.Item(stabilityRow, 36).Value2
+        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p1table", _
+            resultsSheet.Cells.Item(summaryRow, 21).Value2, _
+            resultsSheet.Cells.Item(stabilityRow, 42).Value2
+        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p2eta", _
+            resultsSheet.Cells.Item(summaryRow, 22).Value2, _
+            resultsSheet.Cells.Item(stabilityRow, 51).Value2
+        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p2table", _
+            resultsSheet.Cells.Item(summaryRow, 23).Value2, _
+            resultsSheet.Cells.Item(stabilityRow, 57).Value2
+        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp63p1", _
+            resultsSheet.Cells.Item(summaryRow, 24).Value2, _
+            resultsSheet.Cells.Item(stabilityRow, 70).Value2
+        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp63p2", _
+            resultsSheet.Cells.Item(summaryRow, 25).Value2, _
+            resultsSheet.Cells.Item(stabilityRow, 82).Value2
     End If
 End Sub
 
@@ -3671,7 +3689,7 @@ Private Function SummaryRowByCombination(ByVal resultsSheet As Object, ByVal com
     Dim anchorRow As Long
     anchorRow = BatchSummaryStartRow()
     Dim rowIndex As Long
-    For rowIndex = anchorRow + 11 To anchorRow + 200
+    For rowIndex = anchorRow + 12 To anchorRow + 200
         If StrComp(CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2), combinationID, vbTextCompare) = 0 Then
             SummaryRowByCombination = rowIndex
             Exit Function
@@ -3692,6 +3710,47 @@ Private Function DetailedRowByCombination(ByVal resultsSheet As Object, ByVal an
     Next rowIndex
 End Function
 
+' Проверяет строку worst LC: в статусном блоке должен стоять номер LC,
+' а в блоке запасов - коэффициент из той же строки LC и того же столбца проверки.
+Private Sub AssertWorstSummaryRowMatchesData(ByRef stats As TBatchTestStats, ByVal resultsSheet As Object)
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "strain", 5, 16
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "capacity", 6, 17
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "crack", 7, 18
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "longCrack", 8, 19
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p1eta", 9, 20
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p1table", 10, 21
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p2eta", 11, 22
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p2table", 12, 23
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp63p1", 13, 24
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp63p2", 14, 25
+End Sub
+
+' Сверяет одну пару столбцов worst LC: номер сочетания и соответствующий запас.
+Private Sub AssertWorstSummaryColumnMatchesData(ByRef stats As TBatchTestStats, _
+        ByVal resultsSheet As Object, ByVal name As String, _
+        ByVal statusColumn As Long, ByVal reserveColumn As Long)
+    Dim anchorRow As Long
+    anchorRow = BatchSummaryStartRow()
+    Dim worstRow As Long
+    worstRow = anchorRow + 11
+    Dim worstCombination As String
+    worstCombination = Trim$(CStr(resultsSheet.Cells.Item(worstRow, statusColumn).Value2))
+    If Len(worstCombination) = 0 Or StrComp(worstCombination, "N/A", vbTextCompare) = 0 Then
+        AssertTrue stats, "batch.writer.worst." & name & ".notApplicable", _
+            Not IsNumeric(resultsSheet.Cells.Item(worstRow, reserveColumn).Value2)
+        Exit Sub
+    End If
+
+    Dim dataRow As Long
+    dataRow = SummaryRowByCombination(resultsSheet, worstCombination)
+    AssertTrue stats, "batch.writer.worst." & name & ".combinationFound", dataRow > 0
+    If dataRow > 0 Then
+        AssertOptionalReserve stats, "batch.writer.worst." & name & ".reserve", _
+            resultsSheet.Cells.Item(worstRow, reserveColumn).Value2, _
+            resultsSheet.Cells.Item(dataRow, reserveColumn).Value2
+    End If
+End Sub
+
 Private Sub AssertOptionalReserve(ByRef stats As TBatchTestStats, ByVal name As String, _
         ByVal summaryValue As Variant, ByVal detailedValue As Variant)
     Dim hasSummary As Boolean
@@ -3708,57 +3767,8 @@ Private Sub AssertOptionalReserve(ByRef stats As TBatchTestStats, ByVal name As 
         AssertClose stats, name, CDbl(summaryValue), CDbl(detailedValue), MaxDouble(0.0000001, Abs(CDbl(detailedValue)) * 0.0000001)
 End Sub
 
-Private Function StabilityReserveFromDetailedRow(ByVal resultsSheet As Object, ByVal rowIndex As Long) As Double
-    StabilityReserveFromDetailedRow = PositiveMinForTest( _
-        PositiveMinForTest(StabilitySP35PlaneReserveFromDetailed(resultsSheet, rowIndex, 29), _
-                           StabilitySP35PlaneReserveFromDetailed(resultsSheet, rowIndex, 44)), _
-        PositiveMinForTest(StabilitySP63PlaneReserveFromDetailed(resultsSheet, rowIndex, 60), _
-                           StabilitySP63PlaneReserveFromDetailed(resultsSheet, rowIndex, 72)))
-End Function
-
-Private Function StabilitySP35PlaneReserveFromDetailed(ByVal resultsSheet As Object, _
-        ByVal rowIndex As Long, ByVal firstColumn As Long) As Double
-    Dim etaBranchReserve As Variant
-    etaBranchReserve = resultsSheet.Cells.Item(rowIndex, firstColumn + 7).Value2
-    If IsNumeric(etaBranchReserve) Then
-        If CDbl(etaBranchReserve) > 0# Then
-            StabilitySP35PlaneReserveFromDetailed = CDbl(etaBranchReserve)
-            Exit Function
-        End If
-    End If
-
-    Dim nultOverN As Variant
-    nultOverN = resultsSheet.Cells.Item(rowIndex, firstColumn + 13).Value2
-    If IsNumeric(nultOverN) Then
-        If CDbl(nultOverN) > 0# Then StabilitySP35PlaneReserveFromDetailed = CDbl(nultOverN)
-    End If
-End Function
-
-Private Function StabilitySP63PlaneReserveFromDetailed(ByVal resultsSheet As Object, _
-        ByVal rowIndex As Long, ByVal firstColumn As Long) As Double
-    Dim ncrOverN As Variant
-    ncrOverN = resultsSheet.Cells.Item(rowIndex, firstColumn + 10).Value2
-    If IsNumeric(ncrOverN) Then
-        If CDbl(ncrOverN) > 0# Then StabilitySP63PlaneReserveFromDetailed = CDbl(ncrOverN)
-    End If
-End Function
-
-Private Function PositiveMinForTest(ByVal firstValue As Double, ByVal secondValue As Double) As Double
-    If firstValue > 0# And secondValue > 0# Then
-        PositiveMinForTest = MinDouble(firstValue, secondValue)
-    ElseIf firstValue > 0# Then
-        PositiveMinForTest = firstValue
-    ElseIf secondValue > 0# Then
-        PositiveMinForTest = secondValue
-    End If
-End Function
-
 Private Function MaxDouble(ByVal firstValue As Double, ByVal secondValue As Double) As Double
     If firstValue > secondValue Then MaxDouble = firstValue Else MaxDouble = secondValue
-End Function
-
-Private Function MinDouble(ByVal firstValue As Double, ByVal secondValue As Double) As Double
-    If firstValue < secondValue Then MinDouble = firstValue Else MinDouble = secondValue
 End Function
 
 ' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.

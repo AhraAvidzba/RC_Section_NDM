@@ -189,16 +189,16 @@ try {
             ($batchSummaryRange.Row -eq 1) -and ($batchSummaryRange.Column -eq 1) -and
             ($batchSummaryRange.Rows.Count -eq 1) -and ($batchSummaryRange.Columns.Count -eq 1) -and
             ($strengthSummaryAnchorRange.Worksheet.Name -eq "Results") -and
-            ($strengthSummaryAnchorRange.Row -eq 48) -and ($strengthSummaryAnchorRange.Column -eq 1) -and
+            ($strengthSummaryAnchorRange.Row -eq 49) -and ($strengthSummaryAnchorRange.Column -eq 1) -and
             ($crackSummaryAnchorRange.Worksheet.Name -eq "Results") -and
-            ($crackSummaryAnchorRange.Row -eq 84) -and ($crackSummaryAnchorRange.Column -eq 1) -and
+            ($crackSummaryAnchorRange.Row -eq 85) -and ($crackSummaryAnchorRange.Column -eq 1) -and
             ($stabilitySummaryAnchorRange.Worksheet.Name -eq "Results") -and
-            ($stabilitySummaryAnchorRange.Row -eq 121) -and ($stabilitySummaryAnchorRange.Column -eq 1) -and
-            ($elementResultsRange.Row -eq 155) -and ($elementResultsRange.Column -eq 1) -and
-            ($geometryResultsRange.Row -eq 155) -and ($geometryResultsRange.Column -eq 12) -and
-            ($sectionPropertiesRange.Row -eq 155) -and ($sectionPropertiesRange.Column -eq 29) -and
-            ($materialDiagramsRange.Row -eq 155) -and ($materialDiagramsRange.Column -eq 37) -and
-            ($sectionAnnotationsRange.Row -eq 155) -and ($sectionAnnotationsRange.Column -eq 50)
+            ($stabilitySummaryAnchorRange.Row -eq 122) -and ($stabilitySummaryAnchorRange.Column -eq 1) -and
+            ($elementResultsRange.Row -eq 156) -and ($elementResultsRange.Column -eq 1) -and
+            ($geometryResultsRange.Row -eq 156) -and ($geometryResultsRange.Column -eq 12) -and
+            ($sectionPropertiesRange.Row -eq 156) -and ($sectionPropertiesRange.Column -eq 29) -and
+            ($materialDiagramsRange.Row -eq 156) -and ($materialDiagramsRange.Column -eq 37) -and
+            ($sectionAnnotationsRange.Row -eq 156) -and ($sectionAnnotationsRange.Column -eq 50)
         ) ("batch=$($batchSummaryRange.Worksheet.Name)!R$($batchSummaryRange.Row)C$($batchSummaryRange.Column):$($batchSummaryRange.Columns.Count) cols; strengthAnchor=R$($strengthSummaryAnchorRange.Row)C$($strengthSummaryAnchorRange.Column); crackAnchor=R$($crackSummaryAnchorRange.Row)C$($crackSummaryAnchorRange.Column); stabilityAnchor=R$($stabilitySummaryAnchorRange.Row)C$($stabilitySummaryAnchorRange.Column); elements=R$($elementResultsRange.Row)C$($elementResultsRange.Column); geometry=R$($geometryResultsRange.Row)C$($geometryResultsRange.Column); properties=R$($sectionPropertiesRange.Row)C$($sectionPropertiesRange.Column); annotations=R$($sectionAnnotationsRange.Row)C$($sectionAnnotationsRange.Column); materialDiagrams=R$($materialDiagramsRange.Row)C$($materialDiagramsRange.Column)")
         Add-Check $checks "Stability duration loads range" (
             ($stabilityLoadsRange.Worksheet.Name -eq "Config") -and
