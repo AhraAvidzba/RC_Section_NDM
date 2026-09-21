@@ -280,7 +280,7 @@ function Add-MainInputBlock {
     $Sheet.Cells.Item(40, 2).Formula = "=`"N, `"&INDEX(rngUnitSettings,MATCH(`"Force`",INDEX(rngUnitSettings,,1),0),2)"
     $Sheet.Cells.Item(40, 3).Formula = "=`"Mx, `"&INDEX(rngUnitSettings,MATCH(`"Moment`",INDEX(rngUnitSettings,,1),0),2)"
     $Sheet.Cells.Item(40, 4).Formula = "=`"My, `"&INDEX(rngUnitSettings,MATCH(`"Moment`",INDEX(rngUnitSettings,,1),0),2)"
-    $loadRange = $Sheet.Range($Sheet.Cells.Item(40, 1), $Sheet.Cells.Item(60, 7))
+    $loadRange = $Sheet.Range($Sheet.Cells.Item(40, 1), $Sheet.Cells.Item(70, 7))
     Set-Border $loadRange
 
     $profileListColumn = 52
@@ -290,7 +290,7 @@ function Add-MainInputBlock {
         $Sheet.Cells.Item($i + 1, $profileListColumn).Value2 = $profileOptions[$i]
     }
     $profileListAddress = '=$AZ$1:$AZ$' + $profileOptions.Count
-    $profileRange = $Sheet.Range($Sheet.Cells.Item(41, 5), $Sheet.Cells.Item(60, 5))
+    $profileRange = $Sheet.Range($Sheet.Cells.Item(41, 5), $Sheet.Cells.Item(70, 5))
     $profileRange.Validation.Delete()
     $profileRange.Validation.Add(3, 1, 1, $profileListAddress)
     $profileRange.Validation.IgnoreBlank = $false
@@ -302,7 +302,7 @@ function Add-MainInputBlock {
         $Sheet.Cells.Item($i + 1, $capacityLoadPathListColumn).Value2 = $capacityLoadPathOptions[$i]
     }
     $capacityLoadPathListAddress = '=$BA$1:$BA$' + $capacityLoadPathOptions.Count
-    $capacityLoadPathRange = $Sheet.Range($Sheet.Cells.Item(41, 6), $Sheet.Cells.Item(60, 6))
+    $capacityLoadPathRange = $Sheet.Range($Sheet.Cells.Item(41, 6), $Sheet.Cells.Item(70, 6))
     $capacityLoadPathRange.Validation.Delete()
     $capacityLoadPathRange.Validation.Add(3, 1, 1, $capacityLoadPathListAddress)
     $capacityLoadPathRange.Validation.IgnoreBlank = $true
@@ -473,30 +473,30 @@ try {
     $system.Columns.Item(20).ColumnWidth = 18
     $system.Columns.Item(21).ColumnWidth = 22
     $results.Range("A1:AE1").Font.Bold = $true
-    $results.Rows.Item(113).Interior.Color = 15652797
-    $results.Cells.Item(113, 1).Value2 = "Расчетный снимок Results: элементы, геометрия, свойства сечения, диаграммы материалов и аннотации"
-    $results.Cells.Item(113, 1).Font.Name = "Arial"
-    $results.Cells.Item(113, 1).Font.Size = 12
-    $results.Cells.Item(113, 1).Font.Bold = $true
-    $results.Cells.Item(113, 1).Font.Color = 255
-    $results.Cells.Item(113, 1).HorizontalAlignment = -4131
-    $results.Cells.Item(113, 1).VerticalAlignment = -4108
-    $results.Range("A115:I115").Font.Bold = $true
-    $results.Range("L115:Z115").Font.Bold = $true
-    $results.Range("AC115:AH115").Font.Bold = $true
-    $results.Range("AK115:AU115").Font.Bold = $true
-    $results.Range("AX115:BJ115").Font.Bold = $true
+    $results.Rows.Item(153).Interior.Color = 15652797
+    $results.Cells.Item(153, 1).Value2 = "Расчетный снимок Results: элементы, геометрия, свойства сечения, диаграммы материалов и аннотации"
+    $results.Cells.Item(153, 1).Font.Name = "Arial"
+    $results.Cells.Item(153, 1).Font.Size = 12
+    $results.Cells.Item(153, 1).Font.Bold = $true
+    $results.Cells.Item(153, 1).Font.Color = 255
+    $results.Cells.Item(153, 1).HorizontalAlignment = -4131
+    $results.Cells.Item(153, 1).VerticalAlignment = -4108
+    $results.Range("A155:I155").Font.Bold = $true
+    $results.Range("L155:Z155").Font.Bold = $true
+    $results.Range("AC155:AH155").Font.Bold = $true
+    $results.Range("AK155:AU155").Font.Bold = $true
+    $results.Range("AX155:BJ155").Font.Bold = $true
     $results.Columns.ColumnWidth = 10
 
     Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1'
-    Add-WorkbookName $workbook "rngStrengthSummaryAnchor" $results '$A$38'
-    Add-WorkbookName $workbook "rngCrackSummaryAnchor" $results '$A$64'
-    Add-WorkbookName $workbook "rngStabilitySummaryAnchor" $results '$A$91'
-    Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$115'
-    Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$L$115'
-    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AC$115'
-    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AK$115'
-    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$AX$115'
+    Add-WorkbookName $workbook "rngStrengthSummaryAnchor" $results '$A$48'
+    Add-WorkbookName $workbook "rngCrackSummaryAnchor" $results '$A$84'
+    Add-WorkbookName $workbook "rngStabilitySummaryAnchor" $results '$A$121'
+    Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$155'
+    Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$L$155'
+    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AC$155'
+    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AK$155'
+    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$AX$155'
 
     $calc.PageSetup.PaperSize = 9
     $calc.PageSetup.Orientation = 1

@@ -1248,7 +1248,7 @@ function Get-SettingsInstructionCatalog {
     )}) | Out-Null
     $items.Add(@{ Key = "LoadCombinations"; Title = "Сочетания нагрузок"; Lines = @(
         "Таблица задает список сочетаний, которые будут рассчитаны при нажатии кнопки Выполнить расчет.",
-        "Количество сочетаний определяется количеством строк внутри таблицы. В шаблоне подготовлено 20 строк, но пользователь может добавить или удалить строки; минимально должна остаться одна строка сочетания.",
+        "Количество сочетаний определяется количеством строк внутри таблицы. В шаблоне подготовлено 30 строк, но пользователь может добавить или удалить строки; минимально должна остаться одна строка сочетания.",
         "Чтобы добавить сочетание, расширьте именно область rngLoadCombinations: например выделите нижнюю строку таблицы и сдвиньте ее вниз с сохранением пунктирной границы, либо измените адрес диапазона через Формулы -> Диспетчер имен. Не вставляйте целую строку листа, если рядом есть другие таблицы.",
         "На Results между таблицами должны оставаться две чистые строки. Если места не хватает, расчет не начинается; сдвиньте вниз rngStrengthSummaryAnchor, rngCrackSummaryAnchor, rngStabilitySummaryAnchor и/или rngNDMElementResults, а для правых snapshot-блоков при необходимости сдвиньте rngNDMSectionGeometry, rngNDMSectionProperties, rngNDMMaterialDiagrams, rngNDMSectionAnnotations.",
         "CombinationID - короткое имя сочетания. Оно используется в Results, в заголовке схемы, в выборе Plot.LoadCase и AutoCAD.Export.CombinationID.",
@@ -2585,7 +2585,7 @@ function Add-LoadCombinationsTable {
     $Sheet.Cells.Item($HeaderRow, $StartColumn + 2).Formula = "=`"Mx, `"&INDEX(rngUnitSettings,MATCH(`"Moment`",INDEX(rngUnitSettings,,1),0),2)"
     $Sheet.Cells.Item($HeaderRow, $StartColumn + 3).Formula = "=`"My, `"&INDEX(rngUnitSettings,MATCH(`"Moment`",INDEX(rngUnitSettings,,1),0),2)"
 
-    $loadRange = $Sheet.Range($Sheet.Cells.Item($HeaderRow, $StartColumn), $Sheet.Cells.Item($HeaderRow + 20, $StartColumn + 6))
+    $loadRange = $Sheet.Range($Sheet.Cells.Item($HeaderRow, $StartColumn), $Sheet.Cells.Item($HeaderRow + 30, $StartColumn + 6))
     $loadRange.Borders.LineStyle = 1
     $loadRange.Borders.Weight = 2
     $loadRange.Borders.Color = 12632256
@@ -2603,13 +2603,13 @@ function Add-LoadCombinationsTable {
     $Sheet.Columns.Item($capacityLoadPathListColumn).Hidden = $true
     $capacityLoadPathColName = ConvertTo-ExcelColumn $capacityLoadPathListColumn
     $capacityLoadPathListAddress = "=$" + $capacityLoadPathColName + '$1:$' + $capacityLoadPathColName + '$' + $capacityLoadPathOptions.Count
-    $capacityLoadPathRange = $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 5), $Sheet.Cells.Item($HeaderRow + 20, $StartColumn + 5))
+    $capacityLoadPathRange = $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 5), $Sheet.Cells.Item($HeaderRow + 30, $StartColumn + 5))
     $capacityLoadPathRange.Validation.Delete()
     $capacityLoadPathRange.Validation.Add(3, 1, 1, $capacityLoadPathListAddress)
     $capacityLoadPathRange.Validation.IgnoreBlank = $true
     $capacityLoadPathRange.Validation.InCellDropdown = $true
 
-    Set-WorkbookNameByBounds $Workbook "rngLoadCombinations" $Sheet $HeaderRow $StartColumn ($HeaderRow + 20) ($StartColumn + 6)
+    Set-WorkbookNameByBounds $Workbook "rngLoadCombinations" $Sheet $HeaderRow $StartColumn ($HeaderRow + 30) ($StartColumn + 6)
 }
 
 # Подключает выпадающий список профилей после создания rngCalculationProfiles.
@@ -2676,14 +2676,14 @@ function Add-StabilityDurationLoadsTable {
     $Sheet.Cells.Item($HeaderRow, $StartColumn + 2).Formula = "=`"Mx, `"&INDEX(rngUnitSettings,MATCH(`"Moment`",INDEX(rngUnitSettings,,1),0),2)"
     $Sheet.Cells.Item($HeaderRow, $StartColumn + 3).Formula = "=`"My, `"&INDEX(rngUnitSettings,MATCH(`"Moment`",INDEX(rngUnitSettings,,1),0),2)"
 
-    for ($r = 1; $r -le 20; $r++) {
+    for ($r = 1; $r -le 30; $r++) {
         $Sheet.Cells.Item($HeaderRow + $r, $StartColumn).Formula = '=IF(INDEX(rngLoadCombinations,' + ($r + 1) + ',1)="","",INDEX(rngLoadCombinations,' + ($r + 1) + ',1))'
         $Sheet.Cells.Item($HeaderRow + $r, $StartColumn + 1).Value2 = 0
         $Sheet.Cells.Item($HeaderRow + $r, $StartColumn + 2).Value2 = 0
         $Sheet.Cells.Item($HeaderRow + $r, $StartColumn + 3).Value2 = 0
     }
 
-    Set-WorkbookNameByBounds $Workbook "rngStabilityDurationLoads" $Sheet $HeaderRow $StartColumn ($HeaderRow + 20) ($StartColumn + 3)
+    Set-WorkbookNameByBounds $Workbook "rngStabilityDurationLoads" $Sheet $HeaderRow $StartColumn ($HeaderRow + 30) ($StartColumn + 3)
 }
 
 # Размещает на Config таблицу 7.21 СП 35. Расчетный код читает ее как
@@ -3377,7 +3377,7 @@ function Apply-SystemSettingsLayout {
     $rightRow += (Get-UnitSettingsCatalog).Count + 1 + $rightBlockGap
 
     Add-LoadCombinationsTable $Workbook $Sheet $loadCombinationsHeaderRow $loadCombinationsColumn
-    Add-StabilityDurationLoadsTable $Workbook $Sheet 27 16
+    Add-StabilityDurationLoadsTable $Workbook $Sheet 37 16
 
     Add-SignConventionSettingsTable $Workbook $Sheet $rightRow $rightColumn
     $rightRow += (Get-SignConventionSettingsCatalog).Count + 1 + $rightBlockGap

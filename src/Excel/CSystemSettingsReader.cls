@@ -22,7 +22,7 @@ Option Explicit
 ' дать понятную ошибку, если обязательный ключ или таблица отсутствуют.
 
 Private mKeys() As String ' Имена настроек Config: Solver.Method, Capacity.SolutionStrategy и т.п.
-Private mValues() As String ' Значения, которые ввел пользователь или сгенерировала таблица.
+Private mValues() As String ' Значения, которые ввел пользователь или подставили формулы таблицы.
 Private mDefaults() As String ' Значения по умолчанию из таблицы Config.
 Private mSources() As String ' Комментарий/источник строки для диагностики.
 Private mCount As Long ' Количество загруженных ключей.

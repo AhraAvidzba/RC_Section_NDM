@@ -140,8 +140,8 @@ End Function
 
 ' Очищает содержимое существующего ChartObject, но не удаляет само окно схемы.
 ' Это нужно, когда расчет не дал ни одного доступного состояния LC: пользователь
-' не должен видеть подпись или AutoCAD-preview схему как будто она
-' относится к текущим Generated-настройкам.
+' не должен видеть подпись или AutoCAD-preview схему, ошибочно связанную
+' с текущими Generated-настройками.
 Private Sub ClearSectionPlotForNoData(ByVal workbook As Object, ByVal titleText As String)
     On Error GoTo Done
     Dim plotter As CSectionPlotter
@@ -314,7 +314,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     reader.LoadFromWorkbook workbook, batch, units
     If batch.Count = 0 Then Err.Raise vbObjectError + 4101, "RunSectionCalculationForWorkbook", "Не задано ни одного сочетания нагрузок."
     report.AddValue "Прочитано сочетаний", CStr(batch.Count)
-    report.AddBlock "Список сочетаний", CombinationListForReport(batch)
+    report.AddBlock "Список сочетаний", CombinationListForReport(batch, units)
     LoadStabilityDurationLoadsFromWorkbook workbook, batch, units
     batch.SetSP35Table721 ReadSP35Table721FromWorkbook(workbook)
     report.AddStep "Прочитаны нагрузки и таблицы для расчета устойчивости."
@@ -322,8 +322,8 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddSection "Точка приложения нагрузки"
     report.AddStep "Расчет центра тяжести бетонного сечения для пользовательской точки нагрузки."
     ApplyLoadReferenceFromSettings section, settings, units, batch
-    report.AddValue "Точка приложения нагрузки X", FormatReportNumber(batch.LoadReferenceX) & " мм"
-    report.AddValue "Точка приложения нагрузки Y", FormatReportNumber(batch.LoadReferenceY) & " мм"
+    report.AddValue "Точка приложения нагрузки X", ReportLengthText(batch.LoadReferenceX, units)
+    report.AddValue "Точка приложения нагрузки Y", ReportLengthText(batch.LoadReferenceY, units)
 
     report.AddSection "Проверка вывода Results"
     ValidateResultsOutputLayout workbook, section, batch, profiles
@@ -715,9 +715,9 @@ Private Function IsAutoCADSnapshotCalculation(ByVal section As CSectionModel, By
 End Function
 
 ' Собирает компактный список всех сочетаний, которые reader реально добавил
-' в batch. В отчет попадают уже внутренние усилия после пересчета единиц и
-' пользовательской системы знаков, потому что именно с ними работает solver.
-Private Function CombinationListForReport(ByVal batch As CBatchSectionCalculator) As String
+' в batch. В расчет batch получает внутренние усилия, но в человекочитаемый
+' отчет они возвращаются в пользовательские OUTPUT-единицы и знаки.
+Private Function CombinationListForReport(ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem) As String
     If batch Is Nothing Then Exit Function
 
     Dim lines As Collection
@@ -727,13 +727,51 @@ Private Function CombinationListForReport(ByVal batch As CBatchSectionCalculator
     For i = 1 To batch.Count
         lines.Add CStr(i) & ". " & batch.CombinationID(i) & _
             "; profile=" & batch.ProfileId(i) & _
-            "; N=" & FormatReportNumber(batch.N(i)) & " Н" & _
-            "; Mx=" & FormatReportNumber(batch.Mx(i)) & " Н*мм" & _
-            "; My=" & FormatReportNumber(batch.My(i)) & " Н*мм" & _
+            "; N=" & ReportForceText(batch.N(i), units) & _
+            "; Mx=" & ReportMxText(batch.Mx(i), units) & _
+            "; My=" & ReportMyText(batch.My(i), units) & _
             "; comment=" & batch.CombinationName(i)
     Next i
 
     CombinationListForReport = JoinCollectionLines(lines)
+End Function
+
+' Форматирует длину для execution_report в той же выходной системе единиц,
+' что и лист Results. Отчет должен совпадать с пользовательским выводом, а не
+' показывать внутренние миллиметры без необходимости.
+Private Function ReportLengthText(ByVal value As Double, ByVal units As CUnitSystem) As String
+    If units Is Nothing Then
+        ReportLengthText = FormatReportNumber(value) & " мм"
+    Else
+        ReportLengthText = FormatReportNumber(units.InternalLengthToOutput(value)) & " " & units.OutputLengthUnit
+    End If
+End Function
+
+' Форматирует продольную силу с учетом выбранной пользователем системы знаков.
+Private Function ReportForceText(ByVal value As Double, ByVal units As CUnitSystem) As String
+    If units Is Nothing Then
+        ReportForceText = FormatReportNumber(value) & " Н"
+    Else
+        ReportForceText = FormatReportNumber(units.InternalForceToOutput(value)) & " " & units.OutputForceUnit
+    End If
+End Function
+
+' Форматирует Mx с тем же знаком и единицей, что в подробном выводе Results.
+Private Function ReportMxText(ByVal value As Double, ByVal units As CUnitSystem) As String
+    If units Is Nothing Then
+        ReportMxText = FormatReportNumber(value) & " Н*мм"
+    Else
+        ReportMxText = FormatReportNumber(units.InternalMomentMxToOutput(value)) & " " & units.OutputMomentUnit
+    End If
+End Function
+
+' Форматирует My с тем же знаком и единицей, что в подробном выводе Results.
+Private Function ReportMyText(ByVal value As Double, ByVal units As CUnitSystem) As String
+    If units Is Nothing Then
+        ReportMyText = FormatReportNumber(value) & " Н*мм"
+    Else
+        ReportMyText = FormatReportNumber(units.InternalMomentMyToOutput(value)) & " " & units.OutputMomentUnit
+    End If
 End Function
 
 ' Склеивает строки коллекции через переносы. Это маленькая локальная утилита

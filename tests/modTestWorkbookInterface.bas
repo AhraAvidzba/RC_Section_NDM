@@ -45,7 +45,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAutoCADCalculationMessageUsesSavedGeometry stats
     TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped stats
     TestCircleWorkbookRunWritesResults stats
-    TestTwentyCombinationsWithFiveStatesWriteSnapshot stats
+    TestThirtyCombinationsWithFiveStatesWriteSnapshot stats
     TestDynamicLoadCombinationRangeAndLayoutGuard stats
     TestExecutionReportFile stats
     TestExcelApplicationStateGuardRestoresSettings stats
@@ -103,6 +103,7 @@ Private Sub TestLoadCombinationsOnConfig(ByRef stats As TUiTestStats)
 
     AssertTrue stats, "ui.loads.layout.sheet", loads.Worksheet.Name = "Config"
     AssertTrue stats, "ui.loads.layout.position", loads.Row = 3 And loads.Column = 15
+    AssertTrue stats, "ui.loads.layout.defaultRows30", loads.Rows.Count = 31
     AssertTrue stats, "ui.loads.layout.title", _
         InStr(1, CStr(loads.Worksheet.Cells.Item(2, 15).Value2), "Сочетания нагрузок", vbTextCompare) > 0
     Dim pathOptions As Variant
@@ -954,13 +955,13 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Dim geometryResults As Variant
     geometryResults = ResultTable("rngNDMSectionGeometry")
     AssertTrue stats, "ui.results.geometry.rows", UBound(geometryResults, 1) > 1
-    AssertTrue stats, "ui.results.strength.anchor", ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row = 38 And ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Column = 1
-    AssertTrue stats, "ui.results.crack.anchor", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 64 And ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Column = 1
-    AssertTrue stats, "ui.results.stability.anchor", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 91 And ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Column = 1
-    AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 115 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 12
-    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 115 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 29
-    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 115 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 37
-    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 115 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 50
+    AssertTrue stats, "ui.results.strength.anchor", ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row = 48 And ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Column = 1
+    AssertTrue stats, "ui.results.crack.anchor", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 84 And ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Column = 1
+    AssertTrue stats, "ui.results.stability.anchor", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 121 And ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Column = 1
+    AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 155 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 12
+    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 155 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 29
+    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 155 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 37
+    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 155 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 50
     AssertTrue stats, "ui.results.geometry.noSource", ResultHeaderColumn(geometryResults, "SourceName") = 0
     AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(geometryResults, "MaterialClass") = 0
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
@@ -1023,11 +1024,11 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
         ProfileSettingValue("PR4", "Visualization.Quantity") = "Strain"
 End Sub
 
-' Проверяет полный предельный snapshot: 20 сочетаний, каждое с пятью
+' Проверяет полный предельный snapshot: 30 сочетаний, каждое с пятью
 ' конечными named-state. Для устойчивого получения Before/AfterMcrcState
 ' используется чистый изгиб: сжатие может подавить образование нормальной
 ' трещины и тогда эти состояния физически не обязаны появляться.
-Private Sub TestTwentyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUiTestStats)
+Private Sub TestThirtyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUiTestStats)
     PrepareUserRectSetMomentUltimateInput
     PrepareFullStateProfile "PR3"
     SetSystemSetting "SLS.Crack.PsiMode", "Auto"
@@ -1040,7 +1041,7 @@ Private Sub TestTwentyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUi
     ClearDataRows loads
 
     Dim rowIndex As Long
-    For rowIndex = 1 To 20
+    For rowIndex = 1 To 30
         loads.Cells.Item(rowIndex + 1, 1).Value2 = "LC_FULL_" & Format$(rowIndex, "00")
         loads.Cells.Item(rowIndex + 1, 2).Value2 = 0#
         loads.Cells.Item(rowIndex + 1, 3).Value2 = 50#
@@ -1063,7 +1064,7 @@ Private Sub TestTwentyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUi
     Dim elementResults As Variant
     elementResults = ResultTable("rngNDMElementResults")
     Dim expectedElementRows As Long
-    expectedElementRows = 1 + 20 * 5 * geometryRowCount
+    expectedElementRows = 1 + 30 * 5 * geometryRowCount
     AssertTrue stats, "ui.results.fullSnapshot.elementRows", _
         UBound(elementResults, 1) = expectedElementRows
 
@@ -1072,14 +1073,14 @@ Private Sub TestTwentyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUi
     AssertElementStateRows stats, elementResults, "LC_FULL_01", "CrackedState", geometryRowCount
     AssertElementStateRows stats, elementResults, "LC_FULL_01", "BeforeMcrcState", geometryRowCount
     AssertElementStateRows stats, elementResults, "LC_FULL_01", "AfterMcrcState", geometryRowCount
-    AssertElementStateRows stats, elementResults, "LC_FULL_20", "StrengthState", geometryRowCount
-    AssertElementStateRows stats, elementResults, "LC_FULL_20", "CapacityState", geometryRowCount
-    AssertElementStateRows stats, elementResults, "LC_FULL_20", "CrackedState", geometryRowCount
-    AssertElementStateRows stats, elementResults, "LC_FULL_20", "BeforeMcrcState", geometryRowCount
-    AssertElementStateRows stats, elementResults, "LC_FULL_20", "AfterMcrcState", geometryRowCount
+    AssertElementStateRows stats, elementResults, "LC_FULL_30", "StrengthState", geometryRowCount
+    AssertElementStateRows stats, elementResults, "LC_FULL_30", "CapacityState", geometryRowCount
+    AssertElementStateRows stats, elementResults, "LC_FULL_30", "CrackedState", geometryRowCount
+    AssertElementStateRows stats, elementResults, "LC_FULL_30", "BeforeMcrcState", geometryRowCount
+    AssertElementStateRows stats, elementResults, "LC_FULL_30", "AfterMcrcState", geometryRowCount
 
     AssertTrue stats, "ui.results.fullSnapshot.propertiesRows", _
-        ResultTableRowCount("rngNDMSectionProperties") >= 1 + 55 + 20 * (23 + 5 * 10)
+        ResultTableRowCount("rngNDMSectionProperties") >= 1 + 55 + 30 * (23 + 5 * 10)
     AssertTrue stats, "ui.results.fullSnapshot.materialRows", _
         ResultTableRowCount("rngNDMMaterialDiagrams") > 1
 End Sub
@@ -1111,8 +1112,8 @@ Private Sub TestDynamicLoadCombinationRangeAndLayoutGuard(ByRef stats As TUiTest
     tempSheet.Name = "__tmpDynamicLoads"
 
     Dim tempRange As Object
-    Set tempRange = tempSheet.Range("A1:G22")
-    FillLoadCombinationTestRange tempRange, 21, "PR1", "LC_DYN_"
+    Set tempRange = tempSheet.Range("A1:G46")
+    FillLoadCombinationTestRange tempRange, 45, "PR1", "LC_DYN_"
     ThisWorkbook.Names.Item("rngLoadCombinations").RefersTo = "=" & tempRange.Address(True, True, 1, True)
 
     Dim batch As CBatchSectionCalculator
@@ -1120,7 +1121,7 @@ Private Sub TestDynamicLoadCombinationRangeAndLayoutGuard(ByRef stats As TUiTest
     Dim reader As CLoadCombinationReader
     Set reader = New CLoadCombinationReader
     reader.LoadFromWorkbook ThisWorkbook, batch
-    AssertTrue stats, "ui.loads.dynamicRange.count21", batch.Count = 21
+    AssertTrue stats, "ui.loads.dynamicRange.count45", batch.Count = 45
 
     Dim errorNumber As Long
     Dim errorText As String

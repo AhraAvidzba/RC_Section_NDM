@@ -43,7 +43,7 @@ Private Const SUM_COL_RESERVE_CRACK As Long = 13 ' Запас по нормал�
 Private Const SUM_COL_RESERVE_LONG_CRACK As Long = 14 ' Запас по продольным трещинам.
 Private Const SUM_COL_RESERVE_STABILITY As Long = 15 ' Запас по устойчивости.
 
-Private Const DEFAULT_SUMMARY_ROWS As Long = 31 ' Штатная высота шаблона: 11 строк до данных и 20 строк LC.
+Private Const DEFAULT_SUMMARY_ROWS As Long = 41 ' Штатная высота шаблона: 11 строк до данных и 30 строк LC.
 Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' Единая ширина всех столбцов Results.
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Светло-серый фон заголовков.

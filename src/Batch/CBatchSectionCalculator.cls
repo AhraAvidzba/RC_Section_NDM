@@ -102,6 +102,7 @@ Private mCapacityMaxRetries As Long ' Повторные попытки LoadMult
 Private mCapacityBaseLoadSteps As Long ' Базовое число load steps для пробной точки capacity.
 Private mCapacitySolverMaxIterations As Long ' Лимит итераций внутреннего solver-а при capacity-поиске.
 Private mReport As CExecutionReport ' Необязательный человекочитаемый отчет выполнения; расчетная логика от него не зависит.
+Private mReportUnits As CUnitSystem ' Единицы и знаки для человекочитаемых физических величин execution_report.
 
 Private mStabilityCode As String ' SP63 или SP35: выбранная нормативная ветвь фильтра устойчивости.
 Private mStabilityElementLength As Double ' Геометрическая длина элемента l, мм.
@@ -219,6 +220,7 @@ End Property
 ' сразу переводятся во внутренние единицы ядра.
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
+    Set mReportUnits = units
     Dim zeroMomentSettingRead As Boolean
     zeroMomentSettingRead = settings.HasKey("Calculation.ZeroMomentPerDepth")
     mCrackAllowable = settings.GetDouble("SLS.Crack.Allowable", mCrackAllowable)
@@ -655,9 +657,9 @@ Private Sub RunCombination(ByVal index As Long)
     Set profile = mProfiles.ProfileById(mInputs(index).ProfileId)
     mResults(index).ProfileId = profile.ProfileId
     ReportValue "Профиль", profile.ProfileId & " / " & profile.DisplayName
-    ReportValue "N", FormatNumberInvariant(mInputs(index).N) & " Н"
-    ReportValue "Mx расчетный", FormatNumberInvariant(mInputs(index).Mx) & " Н*мм"
-    ReportValue "My расчетный", FormatNumberInvariant(mInputs(index).My) & " Н*мм"
+    ReportValue "N", ReportForceText(mInputs(index).N)
+    ReportValue "Mx расчетный", ReportMxText(mInputs(index).Mx)
+    ReportValue "My расчетный", ReportMyText(mInputs(index).My)
 
     Dim profileError As String
     If Not profile.ValidateForCalculation(profileError) Then
@@ -770,12 +772,12 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
     ReportValue "Нормативный блок", StabilityCodeDisplayName(stability.Code)
     ReportValue "Материалы для устойчивости", MaterialValueSetToText(valueSet)
     ReportValue "Расчетная ветвь", StabilityBranchDisplayName(stability.Branch)
-    ReportValue "Контрольная сила устойчивости", FormatNumberInvariant(stability.CriticalForce) & " Н"
+    ReportValue "Контрольная сила устойчивости", ReportCompressionForceText(stability.CriticalForce)
     ReportValue "Минимальный запас устойчивости", FormatNumberInvariant(stability.ReserveFactor)
     ReportValue "Итоговые N/Mx/My после фильтра", _
-        FormatNumberInvariant(mInputs(index).N) & "; " & _
-        FormatNumberInvariant(mInputs(index).Mx) & "; " & _
-        FormatNumberInvariant(mInputs(index).My)
+        "N=" & ReportForceText(mInputs(index).N) & "; " & _
+        "Mx=" & ReportMxText(mInputs(index).Mx) & "; " & _
+        "My=" & ReportMyText(mInputs(index).My)
     ReportStabilityDetails stability
     Exit Sub
 
@@ -793,48 +795,48 @@ Private Sub ReportStabilityDetails(ByVal stability As CStabilityCalculator)
 
     If Len(stability.StopReason) > 0 Then _
         ReportValue "Причина остановки устойчивости", stability.StopReason
-    ReportValue "Продольная сила для проверки", FormatNumberInvariant(stability.DesignN) & " Н"
+    ReportValue "Продольная сила для проверки", ReportForceText(stability.DesignN)
     ReportValue "Моменты после учета eta по главным плоскостям 1/2", _
-        FormatNumberInvariant(stability.DesignMoment1) & "; " & _
-        FormatNumberInvariant(stability.DesignMoment2) & " Н*мм"
-    ReportValue "Длительная часть продольной силы", FormatNumberInvariant(stability.SustainedN) & " Н"
+        "M1=" & ReportMomentMagnitudeText(stability.DesignMoment1) & "; " & _
+        "M2=" & ReportMomentMagnitudeText(stability.DesignMoment2)
+    ReportValue "Длительная часть продольной силы", ReportSignedCompressionForceText(stability.SustainedN)
     ReportValue "Длительные моменты по главным плоскостям 1/2", _
-        FormatNumberInvariant(stability.SustainedMoment1) & "; " & _
-        FormatNumberInvariant(stability.SustainedMoment2) & " Н*мм"
+        "M1l=" & ReportMomentMagnitudeText(stability.SustainedMoment1) & "; " & _
+        "M2l=" & ReportMomentMagnitudeText(stability.SustainedMoment2)
 
     ReportValue "Плоскость 1: ветвь и итог", _
         StabilityBranchDisplayName(stability.PlaneBranch1) & "; " & StabilityPassDisplayName(stability.PlanePassed1)
     ReportValue "Плоскость 1: eta и запас", _
         FormatNumberInvariant(stability.Eta1) & "; " & FormatNumberInvariant(stability.Reserve1)
     ReportValue "Плоскость 1: Ncr/Nult", _
-        FormatNumberInvariant(stability.Ncr1) & "; " & FormatNumberInvariant(stability.Nultimate1) & " Н"
+        "Ncr=" & ReportCompressionForceText(stability.Ncr1) & "; Nult=" & ReportCompressionForceText(stability.Nultimate1)
     ReportValue "Плоскость 1: h, i, r и гибкость l0/i", _
-        FormatNumberInvariant(stability.Depth1) & "; " & _
-        FormatNumberInvariant(stability.Radius1) & "; " & _
-        FormatNumberInvariant(stability.CoreDistance1) & "; " & _
-        FormatNumberInvariant(stability.Slenderness1)
+        "h=" & ReportLengthText(stability.Depth1) & "; " & _
+        "i=" & ReportLengthText(stability.Radius1) & "; " & _
+        "r=" & ReportLengthText(stability.CoreDistance1) & "; " & _
+        "l0/i=" & FormatNumberInvariant(stability.Slenderness1)
     ReportValue "Плоскость 1: e, ea, phi_l и D", _
-        FormatNumberInvariant(stability.Eccentricity1) & "; " & _
-        FormatNumberInvariant(stability.AccidentalEccentricity1) & "; " & _
-        FormatNumberInvariant(stability.PhiL1) & "; " & _
-        FormatNumberInvariant(stability.StiffnessD1)
+        "e=" & ReportLengthText(stability.Eccentricity1) & "; " & _
+        "ea=" & ReportLengthText(stability.AccidentalEccentricity1) & "; " & _
+        "phi_l=" & FormatNumberInvariant(stability.PhiL1) & "; " & _
+        "D=" & ReportStiffnessText(stability.StiffnessD1)
 
     ReportValue "Плоскость 2: ветвь и итог", _
         StabilityBranchDisplayName(stability.PlaneBranch2) & "; " & StabilityPassDisplayName(stability.PlanePassed2)
     ReportValue "Плоскость 2: eta и запас", _
         FormatNumberInvariant(stability.Eta2) & "; " & FormatNumberInvariant(stability.Reserve2)
     ReportValue "Плоскость 2: Ncr/Nult", _
-        FormatNumberInvariant(stability.Ncr2) & "; " & FormatNumberInvariant(stability.Nultimate2) & " Н"
+        "Ncr=" & ReportCompressionForceText(stability.Ncr2) & "; Nult=" & ReportCompressionForceText(stability.Nultimate2)
     ReportValue "Плоскость 2: h, i, r и гибкость l0/i", _
-        FormatNumberInvariant(stability.Depth2) & "; " & _
-        FormatNumberInvariant(stability.Radius2) & "; " & _
-        FormatNumberInvariant(stability.CoreDistance2) & "; " & _
-        FormatNumberInvariant(stability.Slenderness2)
+        "h=" & ReportLengthText(stability.Depth2) & "; " & _
+        "i=" & ReportLengthText(stability.Radius2) & "; " & _
+        "r=" & ReportLengthText(stability.CoreDistance2) & "; " & _
+        "l0/i=" & FormatNumberInvariant(stability.Slenderness2)
     ReportValue "Плоскость 2: e, ea, phi_l и D", _
-        FormatNumberInvariant(stability.Eccentricity2) & "; " & _
-        FormatNumberInvariant(stability.AccidentalEccentricity2) & "; " & _
-        FormatNumberInvariant(stability.PhiL2) & "; " & _
-        FormatNumberInvariant(stability.StiffnessD2)
+        "e=" & ReportLengthText(stability.Eccentricity2) & "; " & _
+        "ea=" & ReportLengthText(stability.AccidentalEccentricity2) & "; " & _
+        "phi_l=" & FormatNumberInvariant(stability.PhiL2) & "; " & _
+        "D=" & ReportStiffnessText(stability.StiffnessD2)
 End Sub
 
 ' Возвращает True, если фильтр устойчивости уже дал итог, после которого
@@ -1255,8 +1257,8 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     If Not crack.AfterMcrcState Is Nothing Then mResults(index).AddState crack.AfterMcrcState
     ReportValue "Фактический путь образования трещины", mResults(index).CrackFormationMethod
     ReportValue "lambda образования трещины", FormatNumberInvariant(mResults(index).CrackLambdaCrc)
-    ReportValue "Ncrc", FormatNumberInvariant(mResults(index).CrackFormationNcrc) & " Н"
-    ReportValue "Mxy,crc", FormatNumberInvariant(mResults(index).CrackMcrc) & " Н*мм"
+    ReportValue "Ncrc", ReportForceText(mResults(index).CrackFormationNcrc)
+    ReportValue "Mxy,crc", ReportMomentMagnitudeText(mResults(index).CrackMcrc)
     ReportValue "Причина остановки поиска трещины", crack.StopReason
     ReportCrackFormationChoice crack
 
@@ -1300,12 +1302,12 @@ ReportCrackResult:
     ReportValue "Фактический путь образования трещины", mResults(index).CrackFormationMethod
     ReportValue "lambda образования трещины", FormatNumberInvariant(mResults(index).CrackLambdaCrc)
     ReportValue "Трещина образована", IIf(mResults(index).CrackFormed, "да", "нет")
-    ReportValue "a_crc", FormatNumberInvariant(mResults(index).CrackWidth) & " мм"
+    ReportValue "a_crc", ReportLengthText(mResults(index).CrackWidth)
     ReportValue "psi_s", FormatNumberInvariant(mResults(index).CrackPsiS)
-    ReportValue "As", FormatNumberInvariant(mResults(index).CrackAs) & " мм2"
-    ReportValue "Abt", FormatNumberInvariant(mResults(index).CrackAbt) & " мм2"
-    ReportValue "ds_eq", FormatNumberInvariant(mResults(index).CrackDsEquivalent) & " мм"
-    ReportValue "ls", FormatNumberInvariant(mResults(index).CrackLs) & " мм"
+    ReportValue "As", ReportAreaText(mResults(index).CrackAs)
+    ReportValue "Abt", ReportAreaText(mResults(index).CrackAbt)
+    ReportValue "ds_eq", ReportLengthText(mResults(index).CrackDsEquivalent)
+    ReportValue "ls", ReportLengthText(mResults(index).CrackLs)
     ReportBlock "Диагностика расчета трещин", crack.DiagnosticLog
 End Sub
 
@@ -1546,8 +1548,8 @@ Private Sub StoreLongitudinalCrackWithinCrackWidth(ByVal index As Long)
 
     ReportValue "Статус продольных трещин", mResults(index).LongitudinalCrackStatus
     If mResults(index).LongitudinalCrackStatus <> mStatusPolicy.NotApplicable Then
-        ReportValue "sigma_c,max", FormatNumberInvariant(maxCompressionStress) & " МПа"
-        ReportValue "Rb,mc2", FormatNumberInvariant(rbMc2) & " МПа"
+        ReportValue "sigma_c,max", ReportStressText(maxCompressionStress)
+        ReportValue "Rb,mc2", ReportStressText(rbMc2)
         ReportValue "Использование по продольным трещинам", FormatNumberInvariant(utilization)
     Else
         ReportStep "Проверка продольных трещин неприменима: в прямом НДС нет сжатого бетона."
@@ -1724,6 +1726,106 @@ Private Sub ReportValue(ByVal label As String, ByVal valueText As String)
     If Not mReport.Enabled Then Exit Sub
     mReport.AddValue label, valueText
 End Sub
+
+' Форматирует длину для execution_report в той же выходной единице, что и
+' табличный Results. Внутри batch все еще хранит миллиметры.
+Private Function ReportLengthText(ByVal value As Double) As String
+    If mReportUnits Is Nothing Then
+        ReportLengthText = FormatNumberInvariant(value) & " мм"
+    Else
+        ReportLengthText = FormatNumberInvariant(mReportUnits.InternalLengthToOutput(value)) & " " & mReportUnits.OutputLengthUnit
+    End If
+End Function
+
+' Форматирует площадь в пользовательской выходной единице площади.
+Private Function ReportAreaText(ByVal value As Double) As String
+    If mReportUnits Is Nothing Then
+        ReportAreaText = FormatNumberInvariant(value) & " мм2"
+    Else
+        ReportAreaText = FormatNumberInvariant(mReportUnits.InternalAreaToOutput(value)) & " " & mReportUnits.OutputAreaUnit
+    End If
+End Function
+
+' Форматирует обычную знаковую продольную силу N с учетом Output.SignConvention.N.
+Private Function ReportForceText(ByVal value As Double) As String
+    If mReportUnits Is Nothing Then
+        ReportForceText = FormatNumberInvariant(value) & " Н"
+    Else
+        ReportForceText = FormatNumberInvariant(mReportUnits.InternalForceToOutput(value)) & " " & mReportUnits.OutputForceUnit
+    End If
+End Function
+
+' Форматирует положительную величину сжимающей силы, например Ncr или Nult.
+' Внутренний знак восстанавливается как сжатие, чтобы пользователь видел
+' тот же знак, что в таблице устойчивости.
+Private Function ReportCompressionForceText(ByVal compressionMagnitude As Double) As String
+    If mReportUnits Is Nothing Then
+        ReportCompressionForceText = FormatNumberInvariant(-Abs(compressionMagnitude)) & " Н"
+    Else
+        ReportCompressionForceText = FormatNumberInvariant(mReportUnits.InternalForceToOutput(-Abs(compressionMagnitude))) & _
+            " " & mReportUnits.OutputForceUnit
+    End If
+End Function
+
+' Форматирует уже подписанную сжимающую силу, где положительное значение
+' означает сжатие в локальной нормативной формуле устойчивости.
+Private Function ReportSignedCompressionForceText(ByVal signedCompression As Double) As String
+    If mReportUnits Is Nothing Then
+        ReportSignedCompressionForceText = FormatNumberInvariant(-signedCompression) & " Н"
+    Else
+        ReportSignedCompressionForceText = FormatNumberInvariant(mReportUnits.InternalForceToOutput(-signedCompression)) & _
+            " " & mReportUnits.OutputForceUnit
+    End If
+End Function
+
+' Форматирует Mx с пользовательским знаком Output.SignConvention.Mx.
+Private Function ReportMxText(ByVal value As Double) As String
+    If mReportUnits Is Nothing Then
+        ReportMxText = FormatNumberInvariant(value) & " Н*мм"
+    Else
+        ReportMxText = FormatNumberInvariant(mReportUnits.InternalMomentMxToOutput(value)) & " " & mReportUnits.OutputMomentUnit
+    End If
+End Function
+
+' Форматирует My с пользовательским знаком Output.SignConvention.My.
+Private Function ReportMyText(ByVal value As Double) As String
+    If mReportUnits Is Nothing Then
+        ReportMyText = FormatNumberInvariant(value) & " Н*мм"
+    Else
+        ReportMyText = FormatNumberInvariant(mReportUnits.InternalMomentMyToOutput(value)) & " " & mReportUnits.OutputMomentUnit
+    End If
+End Function
+
+' Форматирует скалярный момент без смены знака: используется для M1/M2,
+' Mxy,crc и других величин, где в отчете нужен модуль, а не глобальный Mx/My.
+Private Function ReportMomentMagnitudeText(ByVal value As Double) As String
+    If mReportUnits Is Nothing Then
+        ReportMomentMagnitudeText = FormatNumberInvariant(value) & " Н*мм"
+    Else
+        ReportMomentMagnitudeText = FormatNumberInvariant(mReportUnits.InternalMomentMagnitudeToOutput(value)) & _
+            " " & mReportUnits.OutputMomentUnit
+    End If
+End Function
+
+' Форматирует напряжение/модуль в пользовательской выходной единице напряжений.
+Private Function ReportStressText(ByVal value As Double) As String
+    If mReportUnits Is Nothing Then
+        ReportStressText = FormatNumberInvariant(value) & " МПа"
+    Else
+        ReportStressText = FormatNumberInvariant(mReportUnits.InternalStressToOutput(value)) & " " & mReportUnits.OutputStressUnit
+    End If
+End Function
+
+' Форматирует жесткость D устойчивости. Размерность задается как сила*длина2
+' и использует ту же пару output-единиц силы и длины, что Results.
+Private Function ReportStiffnessText(ByVal value As Double) As String
+    If mReportUnits Is Nothing Then
+        ReportStiffnessText = FormatNumberInvariant(value) & " Н*мм2"
+    Else
+        ReportStiffnessText = FormatNumberInvariant(mReportUnits.InternalForceLengthSquaredToOutput(value)) & _
+            " " & mReportUnits.OutputForceLengthSquaredUnit
+    End If
+End Function
 
 ' Добавляет многострочный диагностический блок в txt-отчет и перед записью
 ' переводит низкоуровневую диагностику solver-а в более читаемый вид.
