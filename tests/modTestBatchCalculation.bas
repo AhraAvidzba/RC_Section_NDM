@@ -3569,6 +3569,10 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
         CStr(resultsSheet.Cells.Item(crackAnchor.Row - 3, 18).Value2) = "статус трещин" And _
         resultsSheet.Cells.Item(crackAnchor.Row - 3, 18).MergeArea.Rows.Count = 2
     AssertTrue stats, "batch.writer.crack.header.state", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 18).Value2) = "state"
+    AssertTrue stats, "batch.writer.crack.header.normalStatusRu", _
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 39).Value2) = "статус"
+    AssertTrue stats, "batch.writer.crack.header.longStatusRu", _
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 43).Value2) = "статус"
     AssertTrue stats, "batch.writer.crack.header.notesPlain", Not resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).Font.Bold And _
         resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).HorizontalAlignment = -4131
     AssertTrue stats, "batch.writer.crack.header.notesFill", CLng(resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).Interior.Color) = RGB(217, 217, 217)
