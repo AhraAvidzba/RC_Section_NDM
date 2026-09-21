@@ -1,6 +1,6 @@
 # Architecture
 
-Дата актуализации: 2026-08-14.
+Дата актуализации: 2026-09-21.
 
 ## Общая Схема
 
@@ -10,24 +10,25 @@ Config + rngLoadCombinations
   -> CUnitSystem
   -> CLoadCombinationReader
   -> BuildWorkbookSectionModel
-       -> Generated: ISectionGeometry + CFiberMeshBuilder + CRebarLayout
+       -> Generated: CSectionTypeRegistry + ISectionGeometry + builders
        -> AutoCAD: CAutoCADSectionModelImporter
   -> CSectionModel
   -> CBatchSectionCalculator
+       -> CSectionLoadState / CMomentZeroFilter
        -> CStateSolutionRunner -> CSectionSolver
-       -> CCapacityLoadPath
        -> CCapacitySolver
        -> CCrackWidthCalculator
-  -> CBatchResultWriter / CNDMResultsWriter
+       -> CStabilityCalculator
+  -> Results writers
   -> Results sheet
-  -> AutoCAD export
+  -> Excel plot / AutoCAD export
 ```
 
-Расчетное ядро работает только с `CSectionModel`, материалами и настройками. Источник геометрии для решателей не важен.
+Расчетное ядро работает с `CSectionModel`, материалами и настройками. Источник геометрии для решателей не важен: встроенный генератор и AutoCAD-import должны приводить данные к одной модели.
 
 `CUnitSystem` является границей между пользовательским интерфейсом и расчетным ядром. Он читает `rngUnitSettings` и `rngSignConventionSettings`, переводит входные значения в фиксированные внутренние единицы/знаки и переводит результаты обратно в выбранный пользователем формат вывода.
 
-Внутри расчетного ядра:
+Внутренние единицы:
 
 ```text
 length    = mm
@@ -41,48 +42,39 @@ curvature = 1/mm
 +My       = +X tension
 ```
 
-Классы `CLoadCase`, `CSectionModel`, `CSectionSolver`, `CCapacitySolver`, `CCrackWidthCalculator` не должны выполнять пользовательские пересчеты единиц и знаков самостоятельно.
+Классы расчетного ядра не выполняют пользовательские пересчеты единиц и знаков самостоятельно.
 
 ## Источники Геометрии
 
-Настройка `Geometry.Source` выбирает источник расчетной модели:
+Настройка `Geometry.Source` выбирает источник расчетной модели.
 
 | Значение | Поведение |
 |---|---|
 | `Generated` | Сетка и арматура строятся встроенными генераторами по `Geometry.Type`. |
-| `AutoCAD` | Импортируются только AutoCAD `Region` из активного чертежа на слоях `AutoCAD.Import.ConcreteLayer` и `AutoCAD.Import.RebarLayer`. |
+| `AutoCAD` | Импортируются AutoCAD `Region` из активного чертежа на слоях `AutoCAD.Import.ConcreteLayer` и `AutoCAD.Import.RebarLayer`. |
 
-При AutoCAD-импорте единицы чертежа считаются миллиметрами. Импортер передает в расчет только геометрию и не выбирает материальные диаграммы. Готовые модели бетона и арматуры выбирает `CMaterialModelProvider` по расчетному контексту, а импортированные стержни получают только техническую метку `Rebar`. Коэффициент `phi2` для раскрытия трещин задается отдельно в `SLS.Crack.Phi2`.
+При AutoCAD-импорте единицы чертежа считаются миллиметрами. Импортер передает фактические данные Region: площадь, центр, локальные центральные моменты инерции, произведение инерции и доступные подсказки ориентации. Он не выбирает материалы и не восстанавливает тип сечения.
 
-## Section Type Extension Contract
+## Расширение Типов Сечений
 
-Built-in generated geometry is assembled through one registry point:
+Встроенные геометрии собираются через одну точку выбора `CSectionTypeRegistry`:
 
 ```text
 CSectionTypeRegistry
-  -> CGeometry*              (mathematical shape)
-  -> C*RebarLayoutBuilder    (bars and semantic rebar groups)
-  -> C*AnnotationBuilder     (contours, dimensions, rebar labels)
+  -> CGeometry*
+  -> C*RebarLayoutBuilder
+  -> C*AnnotationBuilder
   -> CSectionModel
-  -> CNDMResultsWriter
-  -> rngNDMSectionGeometry / rngNDMElementResults / rngNDMSectionProperties / rngNDMSectionAnnotations
 ```
 
-`CSectionTypeRegistry` is the only place where a generated section type is selected by
-`Geometry.Type`. To add a new generated section, add the shape-specific classes, for example
-`CGeometryTShape`, `CTShapeRebarBuilder`, `CTShapeAnnotationBuilder`, and register that
-set in `CSectionTypeRegistry`. There is no separate provider class per section type.
+Поддерживаемые типы:
 
-Universal layers must not contain shape-specific checks after that point:
+- `Circle`;
+- `RectSet`;
+- `RoundedRectangle`;
+- `HollowRectangle`.
 
-- `CNDMResultsWriter` serializes `CSectionModel.Annotations`; it does not infer Circle/RectSet/RoundedRectangle from elements.
-- `CSectionPlotDataReader` reads saved Results tables and does not call geometry builders.
-- `CPlotAnnotationLayout` only converts semantic annotations from model coordinates into chart layout.
-- `CSectionPlotter` only draws prepared series and annotation layouts.
-
-Semantic annotation coordinates are model/internal coordinates when they are created by a
-shape-specific annotation builder. The output writer converts them to the selected snapshot
-output units when writing `rngNDMSectionAnnotations`.
+Каждый тип сечения отвечает за свою параметрическую геометрию, автоматическую арматуру и semantic-аннотации. Универсальные слои не должны содержать частных проверок вида “если Circle” или “если RectSet” после выбора типа в реестре.
 
 ## CSectionModel
 
@@ -90,7 +82,11 @@ output units when writing `rngNDMSectionAnnotations`.
 
 - бетонные элементы: `ID`, `SourceName`, `SourceHandle`, `X`, `Y`, `Area`, `MaterialID`, `GeometryInterpretationStatus`, `Width`, `Height`, `Rotation`, `LocalIx`, `LocalIy`, `LocalIxy`, `Comment`;
 - арматурные элементы: `ID`, `SourceName`, `SourceHandle`, `X`, `Y`, `Area`, `Diameter`, `SteelClass`, `MaterialID`, `Comment`;
-- `SourceType` для трассировки источника модели.
+- источник модели и параметрический контур, если он известен.
+
+Реальные `Area/LocalIx/LocalIy/LocalIxy` являются расчетными характеристиками. `Width/Height/Rotation` описывают только геометрическую оболочку элемента для границ, схемы, расстояний и AutoCAD.
+
+Если реальные локальные инерции элемента отсутствуют, последний fallback выполняется в `CSectionModel`: элемент получает характеристики эквивалентного квадрата по площади. Если реальные инерции есть, оболочка никогда не подменяет их в механических расчетах.
 
 Расчетные имена элементов создаются только внутри `CSectionModel`:
 
@@ -99,13 +95,13 @@ output units when writing `rngNDMSectionAnnotations`.
 арматура: R1, R2, ...
 ```
 
-Имена генераторов и AutoCAD handles сохраняются только как трассировочные поля `SourceName`/`SourceHandle`.
+Имена генераторов и AutoCAD handles сохраняются только как трассировочные поля.
 
 ## AutoCAD Import
 
-`CAutoCADSectionModelImporter` находится вне `CSectionModel` и является адаптером внешнего источника данных.
+`CAutoCADSectionModelImporter` является адаптером внешнего источника данных.
 
-Импортёр:
+Импортер:
 
 - подключается к активному AutoCAD через COM;
 - перебирает `ModelSpace`;
@@ -113,25 +109,40 @@ output units when writing `rngNDMSectionAnnotations`.
 - фильтрует бетон и арматуру по слоям из `Config`;
 - игнорирует области меньше `AutoCAD.Import.MinArea`;
 - для арматуры вычисляет эквивалентный диаметр из площади Region;
-- для бетона сохраняет площадь, центр и, если AutoCAD отдаёт данные, центральные моменты инерции;
-- для последующего экспорта строит эквивалентный прямоугольник по площади и моментам инерции.
+- для бетона сохраняет фактические `Area`, `CentroidX/Y`, `LocalIx`, `LocalIy`, `LocalIxy`;
+- для изотропных элементов может получить подсказку угла по первой прямой грани, если направление из инерций неопределимо.
 
-Если AutoCAD закрыт, активного чертежа нет или нужные Region не найдены, расчет прерывается понятным сообщением.
+Интерпретация оболочки `Rectangle` / `Equivalent rectangle` / `Equivalent square` выполняется в `CSectionModel`.
 
 ## Встроенные Генераторы
 
-Встроенный путь используется при `Geometry.Source = Generated`:
+Встроенный путь используется при `Geometry.Source = Generated`.
 
-- `ISectionGeometry`, `CGeometryCircle`, `CGeometryRoundedRectangle`, `CGeometryRectSet` описывают принадлежность точек бетонному сечению;
-- `CFiberMeshBuilder` строит бетонные элементы;
-- `CCircleRebarLayoutBuilder` и `CRectSetRebarLayoutBuilder` строят автоматическую арматуру;
-- `CSectionModelBuilder.BuildFromGenerated` собирает `CSectionModel`.
+| Тип | Геометрия | Арматура | Аннотации |
+|---|---|---|---|
+| `Circle` | `CGeometryCircle` | `CCircleRebarLayoutBuilder` | `CCircleAnnotationBuilder` |
+| `RectSet` | `CGeometryRectSet` | `CRectSetRebarLayoutBuilder` | `CRectSetAnnotationBuilder` |
+| `RoundedRectangle` | `CGeometryRoundedRectangle` | `CRoundedRectRebarLayoutBuilder` | `CRoundedRectAnnotationBuilder` |
+| `HollowRectangle` | `CGeometryHollowRectangle` | `CHollowRectRebarLayoutBuilder` | `CHollowRectAnnotationBuilder` |
 
 `CFiberMeshBuilder` и `CRebarLayout` остаются внутренними объектами генераторов и не передаются в решатели.
 
+## Нагрузки
+
+Нагрузки читаются через `CLoadCombinationReader` и дальше интерпретируются централизованно. Перенос между точкой приложения нагрузки, центром тяжести бетонного сечения, центром приведенного сечения и главными осями выполняется в общем слое работы с нагрузками.
+
+Фильтр практически нулевого момента использует настройку `Calculation.ZeroMomentPerDepth`:
+
+```text
+Mtol = ZeroMomentPerDepth * h
+Abs(M) <= Mtol => M = 0
+```
+
+Для глобальных осей используется бетонный габарит по соответствующей оси, для главных осей - габарит по повернутой главной плоскости.
+
 ## Расчетное Ядро
 
-`CSectionSolver`, `CCapacitySolver`, `CCrackWidthCalculator`, `CBatchSectionCalculator` и `CSectionPropertiesCalculator` работают с `CSectionModel`.
+`CSectionSolver`, `CCapacitySolver`, `CCrackWidthCalculator`, `CStabilityCalculator`, `CBatchSectionCalculator` и `CSectionPropertiesCalculator` работают с `CSectionModel`.
 
 Расчетное ядро:
 
@@ -156,10 +167,10 @@ Myint = sum(sigma_i * A_i * x_i)
 
 ## Вывод
 
-- `CBatchResultWriter` пишет компактную сводку в `rngBatchSummary`, `CStrengthSummaryWriter` пишет отдельную подробную таблицу НДС/несущей способности от `rngStrengthSummaryAnchor`, `CCrackSummaryWriter` пишет отдельную подробную таблицу трещин от `rngCrackSummaryAnchor`, а `CStabilitySummaryWriter` пишет отдельную подробную таблицу устойчивости от `rngStabilitySummaryAnchor`;
-- `CNDMResultsWriter` пишет согласованный snapshot последнего расчета на лист `Results`: `rngNDMSectionGeometry` с постоянной геометрией, `rngNDMElementResults` с LC-зависимыми `Strain/Stress/PhysicalState`, `rngNDMSectionProperties` с общими свойствами сечения и состоянием выбранных LC, `rngNDMSectionAnnotations` с сохраненными semantic-аннотациями;
-- writer-ы получают `CUnitSystem` и выводят числовые результаты в выбранных `OUTPUT`-единицах и пользовательских знаках;
-- контрольная таблица арматуры и формульный блок трещин на `Config` больше не выводятся;
-- AutoCAD export читает данные из листа `Results`, поэтому не хранит последнюю модель в памяти и не запускает повторный AutoCAD-import при выгрузке.
-- `UpdateSectionPlot` строит схему на листе `Расчет` только по сохраненному snapshot `Results`; смена `Plot.LoadCase` или `Plot.ResultType` не запускает расчет и не меняет `Results`.
-- Старый численный блок на листе `Расчет` удален: governing LC больше не пересчитывается отдельной веткой, а весь пользовательский вывод берется из batch/snapshot.
+- `CBatchResultWriter` пишет компактную сводку в `rngBatchSummary`;
+- `CStrengthSummaryWriter` пишет подробную таблицу НДС и несущей способности от `rngStrengthSummaryAnchor`;
+- `CCrackSummaryWriter` пишет подробную таблицу трещин от `rngCrackSummaryAnchor`;
+- `CStabilitySummaryWriter` пишет подробную таблицу устойчивости от `rngStabilitySummaryAnchor`;
+- `CNDMResultsWriter` пишет расчетный snapshot: `rngNDMSectionGeometry`, `rngNDMElementResults`, `rngNDMSectionProperties`, `rngNDMSectionAnnotations`.
+
+AutoCAD export и Excel-схема читают последний снимок `Results`. Они не запускают решатель, не читают исходную геометрию заново и не держат модель в памяти между макросами.

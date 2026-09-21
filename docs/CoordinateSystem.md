@@ -1,6 +1,8 @@
 # CoordinateSystem
 
-## Актуальное уточнение 2026-08-28
+Дата актуализации: 2026-09-21.
+
+## Пользовательская Точка Приложения
 
 Пользовательские усилия `N`, `Mx`, `My` задаются относительно центра тяжести бетонного сечения плюс оффсеты `Load.ReferenceOffsetX` и `Load.ReferenceOffsetY`.
 
@@ -35,7 +37,7 @@ Xref = Xcentroid(mesh) + Load.ReferenceOffsetX
 Yref = Ycentroid(mesh) + Load.ReferenceOffsetY
 ```
 
-Если `Load.ReferenceOffsetX = 0` и `Load.ReferenceOffsetY = 0`, моменты пользователя относятся к центру тяжести бетонной сетки для любой поддерживаемой геометрии: `Circle`, `RoundedRectangle`, `RectSet`.
+Если `Load.ReferenceOffsetX = 0` и `Load.ReferenceOffsetY = 0`, моменты пользователя относятся к центру тяжести бетонной сетки для любой поддерживаемой геометрии: `Circle`, `RectSet`, `RoundedRectangle`, `HollowRectangle` и импортированной AutoCAD-сетки.
 
 Расчетное ядро по-прежнему суммирует моменты относительно текущих координат волокон. Поэтому перед запуском решателей входные моменты переносятся:
 
@@ -43,8 +45,6 @@ Yref = Ycentroid(mesh) + Load.ReferenceOffsetY
 Mx_internal = Mx_user + N * Yref
 My_internal = My_user + N * Xref
 ```
-
-Дата актуализации: 2026-08-28.
 
 ## Внутренние единицы
 
@@ -68,11 +68,7 @@ My_internal = My_user + N * Xref
 
 Используется локальная декартова система `X, Y` с координатами в миллиметрах.
 
-Для круга:
-
-- `Circle.Diameter`.
-
-Для `RoundedRectangle` текущая реализация задает сечение относительно локального центра.
+Для параметрических генераторов локальная система задается самим типом сечения. Для импортированной AutoCAD-сетки координаты берутся из чертежа в миллиметрах.
 
 ## Знаки
 
@@ -135,4 +131,4 @@ epsilon0' = epsilon0 + kappaX * dy + kappaY * dx
 MomentUltimate = Sqr(MxUltimate^2 + MyUltimate^2)
 ```
 
-В выводе на лист `Расчет` моменты переводятся из внутренних `Н*мм` в выбранную пользователем единицу `OUTPUT` для `Moment`.
+В выводе на лист `Results`, на Excel-схему и в AutoCAD моменты переводятся из внутренних `Н*мм` в выбранную пользователем единицу `OUTPUT` для `Moment`.

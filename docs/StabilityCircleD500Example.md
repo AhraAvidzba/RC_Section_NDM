@@ -26,6 +26,7 @@
 | `Stability.SystemType` | `Determinate` |
 | `Stability.PhiLMode` | `Auto` |
 | `Stability.AccidentalEccentricityMode` | `AutoWithL` |
+| `Stability.AccidentalEccentricityPlanes` | `OnlyMomentPlane` |
 | Длительная часть нагрузки | 0 |
 | `MaterialModel.Stability.ValueSet` | `ULS(I)` |
 | `E_b` | 32500 МПа |

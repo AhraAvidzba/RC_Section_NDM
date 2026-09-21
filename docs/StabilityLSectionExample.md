@@ -53,6 +53,7 @@
 | `R_sc` | 350 МПа |
 | `Stability.SystemType` | `Determinate` |
 | `Stability.AccidentalEccentricityMode` | `AutoWithL` |
+| `Stability.AccidentalEccentricityPlanes` | `OnlyMomentPlane` |
 | `Stability.PhiLMode` | `Auto` |
 | `Stability.SP63.Ks` | 0.7 |
 | `Stability.SP63.DeltaEMin / DeltaEMax` | 0.15 / 1.5 |
