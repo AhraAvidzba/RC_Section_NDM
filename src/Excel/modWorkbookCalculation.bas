@@ -9,6 +9,8 @@ Option Explicit
 ' схемы и экспорт в AutoCAD. Сложная математика остается в классах solver-ов,
 ' а этот модуль держит пользовательский сценарий целиком.
 
+Private Const RESULTS_TABLE_GAP_ROWS As Long = 2 ' Минимум пустых строк между крупными таблицами Results.
+
 Public Sub RunSectionCalculation()
     On Error GoTo Failed
     Dim message As String
@@ -404,7 +406,7 @@ End Function
 ' Проверяет, поместятся ли все блоки Results до запуска solver-а.
 ' Учитываются шапки над якорями, фактические ширины writer-ов и нижние
 ' snapshot-блоки, между которыми по принятому правилу должны оставаться
-' два пустых столбца. Если раскладка тесная, расчет не запускается.
+' две пустые строки. Если раскладка тесная, расчет не запускается.
 Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal batch As CBatchSectionCalculator, ByVal profiles As CCalculationProfileCatalog)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4160, "ValidateResultsOutputLayout", "Книга Excel не передана."
@@ -412,7 +414,6 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
     If batch Is Nothing Then Err.Raise vbObjectError + 4162, "ValidateResultsOutputLayout", "Пакетный расчетчик не передан."
 
     Const SNAPSHOT_GAP_COLUMNS As Long = 2
-    Const RESULTS_TABLE_GAP_ROWS As Long = 2
 
     Dim issues As Collection
     Set issues = New Collection
@@ -448,9 +449,12 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
         AddLayoutIssue issues, "rngBatchSummary, rngStrengthSummaryAnchor, rngCrackSummaryAnchor, rngStabilitySummaryAnchor и rngNDMElementResults должны находиться на одном листе Results."
     End If
 
+    Dim outputCombinationRows As Long
+    outputCombinationRows = summaryWriter.RequiredDataRowsForWorkbook(workbook, batch.Count)
+
     Dim summaryRows As Long
     Dim summaryCols As Long
-    summaryRows = summaryWriter.RequiredSummaryOutputRows(batch.Count)
+    summaryRows = summaryWriter.RequiredSummaryOutputRowsForWorkbook(workbook, batch.Count)
     summaryCols = summaryWriter.RequiredSummaryOutputColumns()
     CheckFootprintWithinSheet issues, ws, "rngBatchSummary", _
         summaryAnchor.Row, summaryAnchor.Column, summaryRows, summaryCols
@@ -505,33 +509,16 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
     stabilityBottomRow = stabilityTopRow + stabilityRows - 1
     snapshotTitleRow = elementAnchor.Row - 2
     If summaryBottomRow + RESULTS_TABLE_GAP_ROWS >= strengthTopRow Then
-        AddLayoutIssue issues, "Между rngBatchSummary и шапкой rngStrengthSummaryAnchor нужны " & _
-            CStr(RESULTS_TABLE_GAP_ROWS) & " пустые строки: для " & _
-            CStr(batch.Count) & " LC она занимает строки до " & CStr(summaryBottomRow) & _
-            ", шапка прочности начинается со строки " & CStr(strengthTopRow) & _
-            ". Опустите rngStrengthSummaryAnchor или сократите число строк rngLoadCombinations."
+        AddRowsGapIssue issues, "rngStrengthSummaryAnchor", summaryBottomRow, strengthTopRow, strengthTopRow - 1
     End If
     If strengthBottomRow + RESULTS_TABLE_GAP_ROWS >= crackTopRow Then
-        AddLayoutIssue issues, "Между rngStrengthSummaryAnchor и шапкой rngCrackSummaryAnchor нужны " & _
-            CStr(RESULTS_TABLE_GAP_ROWS) & " пустые строки: для " & _
-            CStr(batch.Count) & " LC таблица прочности занимает строки до " & CStr(strengthBottomRow) & _
-            ", шапка трещин начинается со строки " & CStr(crackTopRow) & _
-            ". Опустите rngCrackSummaryAnchor или сократите число строк rngLoadCombinations."
+        AddRowsGapIssue issues, "rngCrackSummaryAnchor", strengthBottomRow, crackTopRow, crackTopRow - 1
     End If
     If crackBottomRow + RESULTS_TABLE_GAP_ROWS >= stabilityTopRow Then
-        AddLayoutIssue issues, "Между rngCrackSummaryAnchor и шапкой rngStabilitySummaryAnchor нужны " & _
-            CStr(RESULTS_TABLE_GAP_ROWS) & " пустые строки: для " & _
-            CStr(batch.Count) & " LC таблица трещин занимает строки до " & CStr(crackBottomRow) & _
-            ", шапка устойчивости начинается со строки " & CStr(stabilityTopRow) & _
-            ". Опустите rngStabilitySummaryAnchor или сократите число строк rngLoadCombinations."
+        AddRowsGapIssue issues, "rngStabilitySummaryAnchor", crackBottomRow, stabilityTopRow, stabilityTopRow - 1
     End If
     If stabilityBottomRow + RESULTS_TABLE_GAP_ROWS >= snapshotTitleRow Then
-        AddLayoutIssue issues, "Между rngStabilitySummaryAnchor и общей строкой нижнего snapshot нужны " & _
-            CStr(RESULTS_TABLE_GAP_ROWS) & " пустые строки: для " & _
-            CStr(batch.Count) & " LC она занимает строки до " & CStr(stabilityBottomRow) & _
-            ", а общий заголовок snapshot начинается со строки " & CStr(snapshotTitleRow) & _
-            " перед rngNDMElementResults на строке " & CStr(elementAnchor.Row) & _
-            ". Опустите rngNDMElementResults и нижние snapshot-якоря или сократите число строк rngLoadCombinations."
+        AddRowsGapIssue issues, "rngNDMElementResults и нижних snapshot-диапазонов", stabilityBottomRow, snapshotTitleRow, snapshotTitleRow
     End If
 
     Dim estimatedStateCount As Long
@@ -543,7 +530,7 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
 
     If issues.Count > 0 Then
         Err.Raise vbObjectError + 4163, "ValidateResultsOutputLayout", _
-            ResultsOutputLayoutMessage(batch.Count, issues)
+            ResultsOutputLayoutMessage(outputCombinationRows, issues)
     End If
     Exit Sub
 
@@ -662,11 +649,57 @@ Private Sub AddLayoutIssue(ByVal issues As Collection, ByVal text As String)
     issues.Add text
 End Sub
 
+' Добавляет короткую практическую рекомендацию по вертикальному разрыву
+' между соседними anchor-блоками Results. rowsToInsert считается до первой
+' строки таблицы следующего блока, а insertBeforeRow указывает пользователю
+' строку синего заголовка, над которой реально надо вставлять строки.
+Private Sub AddRowsGapIssue(ByVal issues As Collection, ByVal rangeName As String, _
+        ByVal previousBottomRow As Long, ByVal nextTopRow As Long, ByVal insertBeforeRow As Long)
+    Dim rowsToInsert As Long
+    rowsToInsert = previousBottomRow + RESULTS_TABLE_GAP_ROWS + 1 - nextTopRow
+    If rowsToInsert < 1 Then rowsToInsert = 1
+    If insertBeforeRow < 1 Then insertBeforeRow = nextTopRow
+
+    AddLayoutIssue issues, "На листе Results вставьте " & CStr(rowsToInsert) & " " & RowsWord(rowsToInsert) & _
+        " над строкой " & CStr(insertBeforeRow) & ", чтобы опустить диапазон " & rangeName & "."
+End Sub
+
+' Возвращает короткое русское склонение слова "строка" для пользовательской подсказки.
+Private Function RowsWord(ByVal count As Long) As String
+    Dim lastTwo As Long
+    lastTwo = Abs(count) Mod 100
+    If lastTwo >= 11 And lastTwo <= 14 Then
+        RowsWord = "строк"
+        Exit Function
+    End If
+
+    Select Case Abs(count) Mod 10
+        Case 1
+            RowsWord = "строку"
+        Case 2, 3, 4
+            RowsWord = "строки"
+        Case Else
+            RowsWord = "строк"
+    End Select
+End Function
+
 Private Function ResultsOutputLayoutMessage(ByVal combinationCount As Long, ByVal issues As Collection) As String
-    ResultsOutputLayoutMessage = "Results: не хватает места для " & _
-        CStr(combinationCount) & " сочетаний. Расчет не запущен." & _
-        vbCrLf & "Сдвиньте нужные якоря: rngStrengthSummaryAnchor, rngCrackSummaryAnchor, rngStabilitySummaryAnchor, rngNDMElementResults, rngNDMSectionGeometry, rngNDMSectionProperties, rngNDMMaterialDiagrams, rngNDMSectionAnnotations; либо уменьшите rngLoadCombinations." & _
-        vbCrLf & JoinCollectionLines(issues)
+    ResultsOutputLayoutMessage = "Все сочетания (" & CStr(combinationCount) & _
+        ") не помещаются между нужными диапазонами Results. Расчет не запущен." & _
+        vbCrLf & "Что сделать:" & _
+        vbCrLf & NumberedCollectionLines(issues) & _
+        vbCrLf & CStr(issues.Count + 1) & ") Либо на листе Config уменьшите число строк в rngLoadCombinations."
+End Function
+
+' Собирает список действий компактным нумерованным перечнем для MsgBox.
+Private Function NumberedCollectionLines(ByVal items As Collection) As String
+    Dim lines As String
+    Dim i As Long
+    For i = 1 To items.Count
+        If Len(lines) > 0 Then lines = lines & vbCrLf
+        lines = lines & CStr(i) & ") " & CStr(items.Item(i))
+    Next i
+    NumberedCollectionLines = lines
 End Function
 
 Private Function MaxLong(ByVal a As Long, ByVal b As Long) As Long

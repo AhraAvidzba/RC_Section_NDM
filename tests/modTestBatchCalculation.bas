@@ -168,6 +168,8 @@ Public Function RunBatchCalculationTests() As String
     TestInvalidCombinationFromNamedRange stats
     AppendLine stats, "RUN: TestBatchSummaryWriter"
     TestBatchSummaryWriter stats
+    AppendLine stats, "RUN: TestBatchSummaryRowsUseAvailableLoadRange"
+    TestBatchSummaryRowsUseAvailableLoadRange stats
     AppendLine stats, "RUN: TestBatchCapacityUsesSystemSettings"
     TestBatchCapacityUsesSystemSettings stats
     AppendLine stats, "RUN: TestInvalidModeSettingsAreNotFallbacks"
@@ -3495,6 +3497,53 @@ Private Sub TestInvalidCombinationFromNamedRange(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.invalid.reader.status", batch.Status(1) = "InputErr"
 End Sub
 
+' Проверяет, что высота верхней сводки берется не только по заполненным LC,
+' но и по доступным строкам rngLoadCombinations. Иначе пользователь видит
+' неполную сетку при ручном расширении таблицы сочетаний.
+Private Sub TestBatchSummaryRowsUseAvailableLoadRange(ByRef stats As TBatchTestStats)
+    On Error GoTo Failed
+
+    Dim originalRefersTo As String
+    originalRefersTo = ThisWorkbook.Names.Item("rngLoadCombinations").RefersTo
+
+    Dim app As Object
+    Set app = ThisWorkbook.Application
+    Dim oldDisplayAlerts As Boolean
+    oldDisplayAlerts = app.DisplayAlerts
+    app.DisplayAlerts = False
+
+    Dim tempSheet As Object
+    On Error Resume Next
+    ThisWorkbook.Worksheets.Item("__tmpBatchSummaryRows").Delete
+    On Error GoTo Failed
+    Set tempSheet = ThisWorkbook.Worksheets.Add(After:=ThisWorkbook.Worksheets.Item(ThisWorkbook.Worksheets.Count))
+    tempSheet.Name = "__tmpBatchSummaryRows"
+
+    Dim tempRange As Object
+    Set tempRange = tempSheet.Range("A1:G32")
+    ThisWorkbook.Names.Item("rngLoadCombinations").RefersTo = "=" & tempRange.Address(True, True, 1, True)
+
+    Dim writer As CBatchResultWriter
+    Set writer = New CBatchResultWriter
+    AssertTrue stats, "batch.writer.availableRows.dataRows31", _
+        writer.RequiredDataRowsForWorkbook(ThisWorkbook, 1) = 31
+    AssertTrue stats, "batch.writer.availableRows.summaryRows43", _
+        writer.RequiredSummaryOutputRowsForWorkbook(ThisWorkbook, 1) = 43
+
+CleanUp:
+    On Error Resume Next
+    ThisWorkbook.Names.Item("rngLoadCombinations").RefersTo = originalRefersTo
+    If Not tempSheet Is Nothing Then tempSheet.Delete
+    app.DisplayAlerts = oldDisplayAlerts
+    On Error GoTo 0
+    Exit Sub
+
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.writer.availableRows; " & Err.Description
+    Resume CleanUp
+End Sub
+
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
 Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     On Error GoTo Failed
@@ -3521,7 +3570,7 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     Dim summaryRow As Long
     summaryRow = BatchSummaryStartRow()
     AssertTrue stats, "batch.writer.fixedRow", summaryRow = 1
-    AssertTrue stats, "batch.writer.noResultOverlap", summaryRow + writer.RequiredSummaryOutputRows(batch.Count) - 1 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
+    AssertTrue stats, "batch.writer.noResultOverlap", summaryRow + writer.RequiredSummaryOutputRowsForWorkbook(ThisWorkbook, batch.Count) - 1 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
     AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count = 1 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count = 1
     AssertTrue stats, "batch.writer.strengthBlockPosition", ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row = 49
     AssertTrue stats, "batch.writer.crackBlockPosition", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 85
@@ -3541,13 +3590,46 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.header.commentLeft", resultsSheet.Cells.Item(summaryRow + 10, 16).HorizontalAlignment = -4131
     AssertTrue stats, "batch.writer.header.epsilon", CStr(resultsSheet.Cells.Item(summaryRow + 7, 5).Value2) = _
         "по деформациям " & ChrW$(&H3B5)
+    AssertTrue stats, "batch.writer.header.sp63StatusPlaneMerge", _
+        CStr(resultsSheet.Cells.Item(summaryRow + 7, 13).MergeArea.Cells.Item(1, 1).Value2) = "Плоскость 1" And _
+        resultsSheet.Cells.Item(summaryRow + 7, 13).MergeArea.Rows.Count = 2 And _
+        resultsSheet.Cells.Item(summaryRow + 7, 13).MergeArea.Columns.Count = 1 And _
+        CStr(resultsSheet.Cells.Item(summaryRow + 9, 13).Value2) = "Ncr/N" And _
+        Not resultsSheet.Cells.Item(summaryRow + 9, 13).MergeCells
+    AssertTrue stats, "batch.writer.header.sp63ReservePlaneMerge", _
+        CStr(resultsSheet.Cells.Item(summaryRow + 7, 24).MergeArea.Cells.Item(1, 1).Value2) = "Плоскость 1" And _
+        resultsSheet.Cells.Item(summaryRow + 7, 24).MergeArea.Rows.Count = 2 And _
+        resultsSheet.Cells.Item(summaryRow + 7, 24).MergeArea.Columns.Count = 1 And _
+        CStr(resultsSheet.Cells.Item(summaryRow + 9, 24).Value2) = "Ncr/N" And _
+        Not resultsSheet.Cells.Item(summaryRow + 9, 24).MergeCells
     AssertTrue stats, "batch.writer.header.id", _
         CStr(resultsSheet.Cells.Item(summaryRow + 5, 1).MergeArea.Cells.Item(1, 1).Value2) = "Combination ID"
     AssertTrue stats, "batch.writer.header.idMergeRows", resultsSheet.Cells.Item(summaryRow + 5, 1).MergeArea.Rows.Count = 5
     AssertTrue stats, "batch.writer.header.commentRow", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 16).Value2), "деформациям", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.worst.label", CStr(resultsSheet.Cells.Item(summaryRow + 11, 1).Value2) = "worst LC"
+    AssertTrue stats, "batch.writer.worst.commentDash", CStr(resultsSheet.Cells.Item(summaryRow + 11, 2).Value2) = "-"
+    AssertTrue stats, "batch.writer.worst.overallDash", CStr(resultsSheet.Cells.Item(summaryRow + 11, 3).Value2) = "-"
+    AssertTrue stats, "batch.writer.worst.noNa", Not BatchSummaryWorstRowContainsText(resultsSheet, "N/A")
     AssertTrue stats, "batch.writer.worst.bold", resultsSheet.Cells.Item(summaryRow + 11, 1).Font.Bold And _
         resultsSheet.Cells.Item(summaryRow + 11, 16).Font.Bold
+    AssertTrue stats, "batch.writer.statusLegend.title", BatchSummaryCellText(resultsSheet, summaryRow + 5, 27) = "Расшифровка статусов"
+    AssertTrue stats, "batch.writer.statusLegend.header", _
+        BatchSummaryCellText(resultsSheet, summaryRow + 6, 27) = "Статус" And _
+        BatchSummaryCellText(resultsSheet, summaryRow + 6, 28) = "Описание"
+    AssertTrue stats, "batch.writer.statusLegend.values", _
+        BatchSummaryCellText(resultsSheet, summaryRow + 7, 27) = "OK" And _
+        BatchSummaryCellText(resultsSheet, summaryRow + 10, 27) = "InputErr"
+    AssertTrue stats, "batch.writer.statusLegend.mergeOnlyTitle", _
+        resultsSheet.Cells.Item(summaryRow + 5, 27).MergeArea.Columns.Count = 2 And _
+        Not resultsSheet.Cells.Item(summaryRow + 6, 27).MergeCells And _
+        Not resultsSheet.Cells.Item(summaryRow + 7, 28).MergeCells
+    AssertTrue stats, "batch.writer.statusLegend.noWrap", _
+        Not resultsSheet.Cells.Item(summaryRow + 7, 28).WrapText
+    AssertTrue stats, "batch.writer.statusLegend.italicValues", _
+        resultsSheet.Cells.Item(summaryRow + 7, 27).Font.Italic And _
+        resultsSheet.Cells.Item(summaryRow + 11, 28).Font.Italic
+    AssertTrue stats, "batch.writer.reserve.dataNotHeaderFill", _
+        resultsSheet.Cells.Item(summaryRow + 12, 16).Interior.ColorIndex = -4142
     AssertWorstSummaryRowMatchesData stats, resultsSheet
     AssertTrue stats, "batch.writer.data.firstId", CStr(resultsSheet.Cells.Item(summaryRow + 12, 1).Value2) = "W1"
     AssertTrue stats, "batch.writer.data.capacityStatus", Len(CStr(resultsSheet.Cells.Item(summaryRow + 12, 6).Value2)) > 0
@@ -3725,6 +3807,30 @@ Private Sub AssertWorstSummaryRowMatchesData(ByRef stats As TBatchTestStats, ByV
     AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp63p2", 14, 25
 End Sub
 
+' Проверяет строку worst LC по расчетным столбцам compact summary.
+Private Function BatchSummaryWorstRowContainsText(ByVal resultsSheet As Object, ByVal textValue As String) As Boolean
+    Dim anchorRow As Long
+    anchorRow = BatchSummaryStartRow()
+
+    Dim columnIndex As Long
+    For columnIndex = 5 To 25
+        If StrComp(Trim$(CStr(resultsSheet.Cells.Item(anchorRow + 11, columnIndex).Value2)), _
+                textValue, vbTextCompare) = 0 Then
+            BatchSummaryWorstRowContainsText = True
+            Exit Function
+        End If
+    Next columnIndex
+End Function
+
+' Читает отображаемое значение ячейки summary, корректно работая с объединенными
+' областями шапки и правого словаря статусов.
+Private Function BatchSummaryCellText(ByVal resultsSheet As Object, ByVal rowIndex As Long, ByVal columnIndex As Long) As String
+    Dim cell As Object
+    Set cell = resultsSheet.Cells.Item(rowIndex, columnIndex)
+    If cell.MergeCells Then Set cell = cell.MergeArea.Cells.Item(1, 1)
+    BatchSummaryCellText = Trim$(CStr(cell.Value2))
+End Function
+
 ' Сверяет одну пару столбцов worst LC: номер сочетания и соответствующий запас.
 Private Sub AssertWorstSummaryColumnMatchesData(ByRef stats As TBatchTestStats, _
         ByVal resultsSheet As Object, ByVal name As String, _
@@ -3736,8 +3842,10 @@ Private Sub AssertWorstSummaryColumnMatchesData(ByRef stats As TBatchTestStats, 
     Dim worstCombination As String
     worstCombination = Trim$(CStr(resultsSheet.Cells.Item(worstRow, statusColumn).Value2))
     If Len(worstCombination) = 0 Or StrComp(worstCombination, "N/A", vbTextCompare) = 0 Then
+        Dim reserveText As String
+        reserveText = Trim$(CStr(resultsSheet.Cells.Item(worstRow, reserveColumn).Value2))
         AssertTrue stats, "batch.writer.worst." & name & ".notApplicable", _
-            Not IsNumeric(resultsSheet.Cells.Item(worstRow, reserveColumn).Value2)
+            Len(reserveText) = 0 Or Not IsNumeric(reserveText)
         Exit Sub
     End If
 

@@ -54,11 +54,14 @@ Private Const SUM_COL_RESERVE_SP35_P2_TABLE As Long = 23 ' Запас СП35, п
 Private Const SUM_COL_RESERVE_SP63_P1 As Long = 24 ' Запас СП63, плоскость 1: Ncr/N.
 Private Const SUM_COL_RESERVE_SP63_P2 As Long = 25 ' Запас СП63, плоскость 2: Ncr/N.
 
+Private Const STATUS_LEGEND_GAP_COLUMNS As Long = 1 ' Один пустой столбец между summary и словарем статусов.
+Private Const STATUS_LEGEND_COLUMNS As Long = 2 ' Ширина правого словаря статусов: код и текстовая расшифровка.
+Private Const STATUS_LEGEND_ROWS As Long = 7 ' Заголовок, шапка и пять пользовательских статусов.
+
 Private Const DEFAULT_SUMMARY_ROWS As Long = 42 ' Штатная высота шаблона: 12 строк до данных и 30 строк LC.
 Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' Единая ширина всех столбцов Results.
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Светло-серый фон заголовков.
-Private Const SAFETY_COLOR As Long = &HE7E6E6 ' Серый фон столбцов коэффициентов запаса.
 Private Const FAILED_ROW_COLOR As Long = &HCEC7FF ' Светло-красный фон LC, где расчет не прошел или не сошелся.
 Private Const FAILED_FONT_COLOR As Long = &H9C0006 ' Темно-красный текст для строк FAIL/NumFail/InputErr.
 
@@ -70,6 +73,30 @@ Public Function RequiredSummaryRows(ByVal combinationCount As Long) As Long
     If RequiredSummaryRows < DEFAULT_SUMMARY_ROWS Then RequiredSummaryRows = DEFAULT_SUMMARY_ROWS
 End Function
 
+' Возвращает число строк LC по высоте rngLoadCombinations. Это нужно для
+' пустой сетки summary: пользователь видит все доступные строки сочетаний,
+' даже если часть из них сейчас не заполнена.
+Public Function RequiredDataRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
+    RequiredDataRowsForWorkbook = combinationCount
+    If RequiredDataRowsForWorkbook < 1 Then RequiredDataRowsForWorkbook = 1
+
+    On Error GoTo SafeExit
+    If workbook Is Nothing Then GoTo SafeExit
+    Dim loads As Object
+    Set loads = workbook.Names.Item("rngLoadCombinations").RefersToRange
+    If loads.Rows.Count > 1 Then
+        If loads.Rows.Count - 1 > RequiredDataRowsForWorkbook Then _
+            RequiredDataRowsForWorkbook = loads.Rows.Count - 1
+    End If
+SafeExit:
+    If RequiredDataRowsForWorkbook < 1 Then RequiredDataRowsForWorkbook = 1
+End Function
+
+' Возвращает высоту summary для фактической книги с учетом доступных строк rngLoadCombinations.
+Public Function RequiredSummaryRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
+    RequiredSummaryRowsForWorkbook = RequiredSummaryRows(RequiredDataRowsForWorkbook(workbook, combinationCount))
+End Function
+
 ' Возвращает ширину собственно rngBatchSummary.
 Public Function RequiredSummaryColumns() As Long
     RequiredSummaryColumns = TARGET_COLUMNS
@@ -77,12 +104,17 @@ End Function
 
 ' Возвращает полную ширину, которую writer затрагивает на Results.
 Public Function RequiredSummaryOutputColumns() As Long
-    RequiredSummaryOutputColumns = TARGET_COLUMNS
+    RequiredSummaryOutputColumns = TARGET_COLUMNS + STATUS_LEGEND_GAP_COLUMNS + STATUS_LEGEND_COLUMNS
 End Function
 
 ' Возвращает полную высоту, которую занимает компактная сводка.
 Public Function RequiredSummaryOutputRows(ByVal combinationCount As Long) As Long
     RequiredSummaryOutputRows = RequiredSummaryRows(combinationCount)
+End Function
+
+' Возвращает полную высоту summary для проверки раскладки Results в фактической книге.
+Public Function RequiredSummaryOutputRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
+    RequiredSummaryOutputRowsForWorkbook = RequiredSummaryRowsForWorkbook(workbook, combinationCount)
 End Function
 
 ' Записывает rngBatchSummary одним массивом и оформляет блоки.
@@ -99,7 +131,7 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
     If batch Is Nothing Then Err.Raise vbObjectError + 3971, "CBatchResultWriter", "Пакетный расчетчик не передан."
 
     Dim summaryRows As Long
-    summaryRows = RequiredSummaryRows(batch.Count)
+    summaryRows = RequiredSummaryRowsForWorkbook(workbook, batch.Count)
 
     stage = "PrepareSummaryTarget"
     PrepareSummaryTarget SummaryClearRange(workbook)
@@ -171,7 +203,7 @@ Private Function SummaryTargetRange(ByVal workbook As Object, Optional ByVal req
     Set target = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
     If requiredRows <= 0 Then requiredRows = RequiredSummaryRows(1)
     If target.Row + requiredRows - 1 > target.Worksheet.Rows.Count Or _
-            target.Column + TARGET_COLUMNS - 1 > target.Worksheet.Columns.Count Then
+            target.Column + RequiredSummaryOutputColumns() - 1 > target.Worksheet.Columns.Count Then
         Err.Raise vbObjectError + 3973, "CBatchResultWriter", _
             "rngBatchSummary не имеет места для требуемого размера сводки."
     End If
@@ -357,8 +389,8 @@ Private Sub PutStabilityColumnHeaders(ByRef data() As Variant, ByVal sp35FirstCo
 
     data(COLUMN_HEADER_ROW, sp63FirstColumn) = "Плоскость 1"
     data(COLUMN_HEADER_ROW, sp63FirstColumn + 1) = "Плоскость 2"
-    data(COLUMN_HEADER_ROW + 1, sp63FirstColumn) = "Ncr/N"
-    data(COLUMN_HEADER_ROW + 1, sp63FirstColumn + 1) = "Ncr/N"
+    data(COLUMN_HEADER_ROW + 2, sp63FirstColumn) = "Ncr/N"
+    data(COLUMN_HEADER_ROW + 2, sp63FirstColumn + 1) = "Ncr/N"
 End Sub
 
 ' Заполняет строку "worst LC" отдельно по каждой проверке. В левом блоке
@@ -366,27 +398,25 @@ End Sub
 ' этот минимальный запас. Так сводка сразу показывает, какое LC управляет
 ' каждой конкретной проверкой.
 Private Sub PutWorstRow(ByRef data() As Variant, ByVal batch As CBatchSectionCalculator)
-    Dim policy As CBatchStatusPolicy
-    Set policy = StatusPolicy()
-
     data(WORST_HEADER_ROW, SUM_COL_ID) = "worst LC"
-    PutWorstCheck data, batch, policy, SUM_COL_STATUS_STRAIN, SUM_COL_RESERVE_STRAIN, "StrengthStrain"
-    PutWorstCheck data, batch, policy, SUM_COL_STATUS_CAPACITY, SUM_COL_RESERVE_CAPACITY, "StrengthCapacity"
-    PutWorstCheck data, batch, policy, SUM_COL_STATUS_CRACK, SUM_COL_RESERVE_CRACK, "Crack"
-    PutWorstCheck data, batch, policy, SUM_COL_STATUS_LONG_CRACK, SUM_COL_RESERVE_LONG_CRACK, "LongCrack"
-    PutWorstCheck data, batch, policy, SUM_COL_STATUS_SP35_P1_ETA, SUM_COL_RESERVE_SP35_P1_ETA, "SP35P1Eta"
-    PutWorstCheck data, batch, policy, SUM_COL_STATUS_SP35_P1_TABLE, SUM_COL_RESERVE_SP35_P1_TABLE, "SP35P1Table"
-    PutWorstCheck data, batch, policy, SUM_COL_STATUS_SP35_P2_ETA, SUM_COL_RESERVE_SP35_P2_ETA, "SP35P2Eta"
-    PutWorstCheck data, batch, policy, SUM_COL_STATUS_SP35_P2_TABLE, SUM_COL_RESERVE_SP35_P2_TABLE, "SP35P2Table"
-    PutWorstCheck data, batch, policy, SUM_COL_STATUS_SP63_P1, SUM_COL_RESERVE_SP63_P1, "SP63P1"
-    PutWorstCheck data, batch, policy, SUM_COL_STATUS_SP63_P2, SUM_COL_RESERVE_SP63_P2, "SP63P2"
+    data(WORST_HEADER_ROW, SUM_COL_COMMENT) = "-"
+    data(WORST_HEADER_ROW, SUM_COL_OVERALL_STATUS) = "-"
+    PutWorstCheck data, batch, SUM_COL_STATUS_STRAIN, SUM_COL_RESERVE_STRAIN, "StrengthStrain"
+    PutWorstCheck data, batch, SUM_COL_STATUS_CAPACITY, SUM_COL_RESERVE_CAPACITY, "StrengthCapacity"
+    PutWorstCheck data, batch, SUM_COL_STATUS_CRACK, SUM_COL_RESERVE_CRACK, "Crack"
+    PutWorstCheck data, batch, SUM_COL_STATUS_LONG_CRACK, SUM_COL_RESERVE_LONG_CRACK, "LongCrack"
+    PutWorstCheck data, batch, SUM_COL_STATUS_SP35_P1_ETA, SUM_COL_RESERVE_SP35_P1_ETA, "SP35P1Eta"
+    PutWorstCheck data, batch, SUM_COL_STATUS_SP35_P1_TABLE, SUM_COL_RESERVE_SP35_P1_TABLE, "SP35P1Table"
+    PutWorstCheck data, batch, SUM_COL_STATUS_SP35_P2_ETA, SUM_COL_RESERVE_SP35_P2_ETA, "SP35P2Eta"
+    PutWorstCheck data, batch, SUM_COL_STATUS_SP35_P2_TABLE, SUM_COL_RESERVE_SP35_P2_TABLE, "SP35P2Table"
+    PutWorstCheck data, batch, SUM_COL_STATUS_SP63_P1, SUM_COL_RESERVE_SP63_P1, "SP63P1"
+    PutWorstCheck data, batch, SUM_COL_STATUS_SP63_P2, SUM_COL_RESERVE_SP63_P2, "SP63P2"
 End Sub
 
 ' Выбирает худшее LC для одного столбца проверки по минимальному положительному
 ' запасу. Неприменимые ветви и пустые запасы не участвуют в выборе.
 Private Sub PutWorstCheck(ByRef data() As Variant, ByVal batch As CBatchSectionCalculator, _
-        ByVal policy As CBatchStatusPolicy, ByVal statusColumn As Long, ByVal reserveColumn As Long, _
-        ByVal checkKey As String)
+        ByVal statusColumn As Long, ByVal reserveColumn As Long, ByVal checkKey As String)
     Dim worstIndex As Long
     Dim worstReserve As Double
     Dim i As Long
@@ -404,9 +434,6 @@ Private Sub PutWorstCheck(ByRef data() As Variant, ByVal batch As CBatchSectionC
     If worstIndex > 0 Then
         data(WORST_HEADER_ROW, statusColumn) = batch.CombinationID(worstIndex)
         data(WORST_HEADER_ROW, reserveColumn) = worstReserve
-    Else
-        data(WORST_HEADER_ROW, statusColumn) = policy.NotApplicable
-        data(WORST_HEADER_ROW, reserveColumn) = policy.NotApplicable
     End If
 End Sub
 
@@ -612,8 +639,8 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     MergeSummaryHeader target, COLUMN_HEADER_ROW, SUM_COL_STATUS_SP35_P2_ETA, SUM_COL_STATUS_SP35_P2_TABLE
     MergeSummaryHeader target, COLUMN_HEADER_ROW, SUM_COL_RESERVE_SP35_P1_ETA, SUM_COL_RESERVE_SP35_P1_TABLE
     MergeSummaryHeader target, COLUMN_HEADER_ROW, SUM_COL_RESERVE_SP35_P2_ETA, SUM_COL_RESERVE_SP35_P2_TABLE
-    MergeColumnLabels target, COLUMN_HEADER_ROW + 1, COLUMN_HEADER_LAST_ROW, SUM_COL_STATUS_SP63_P1, SUM_COL_STATUS_SP63_P2
-    MergeColumnLabels target, COLUMN_HEADER_ROW + 1, COLUMN_HEADER_LAST_ROW, SUM_COL_RESERVE_SP63_P1, SUM_COL_RESERVE_SP63_P2
+    MergeColumnLabels target, COLUMN_HEADER_ROW, COLUMN_HEADER_ROW + 1, SUM_COL_STATUS_SP63_P1, SUM_COL_STATUS_SP63_P2
+    MergeColumnLabels target, COLUMN_HEADER_ROW, COLUMN_HEADER_ROW + 1, SUM_COL_RESERVE_SP63_P1, SUM_COL_RESERVE_SP63_P2
 
     stage = "Alignment"
     target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(WORST_HEADER_ROW - GROUP_HEADER_ROW + 1, TARGET_COLUMNS).HorizontalAlignment = -4108
@@ -629,12 +656,12 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     If dataRows < 1 Then dataRows = 1
     target.Offset(FIRST_DATA_ROW - 1, 0).Resize(dataRows, TARGET_COLUMNS).HorizontalAlignment = -4108
     target.Offset(FIRST_DATA_ROW - 1, SUM_COL_COMMENT - 1).Resize(dataRows, 1).HorizontalAlignment = -4131
-    target.Offset(WORST_HEADER_ROW - 1, SUM_COL_RESERVE_STRAIN - 1).Resize(target.Rows.Count - WORST_HEADER_ROW + 1, _
-        SUM_COL_RESERVE_SP63_P2 - SUM_COL_RESERVE_STRAIN + 1).Interior.Color = SAFETY_COLOR
     target.Offset(GROUP_HEADER_ROW - 1, 3).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 1).Interior.ColorIndex = -4142
     target.Offset(GROUP_HEADER_ROW - 1, 14).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 1).Interior.ColorIndex = -4142
     stage = "FormatOverallStatusRows"
     FormatOverallStatusRows target, batch
+    stage = "WriteStatusLegend"
+    WriteStatusLegend target
 
     stage = "Borders"
     ApplySummaryBorders target.Offset(0, 0).Resize(META_ROWS, 5)
@@ -652,10 +679,55 @@ Failed:
     Err.Raise Err.Number, "CBatchResultWriter.FormatSummary", stage & ": " & Err.Description
 End Sub
 
+' Пишет справа от rngBatchSummary небольшой словарь пользовательских статусов.
+' Положение считается от якоря summary, поэтому при переносе rngBatchSummary
+' поясняющий блок переезжает вместе с основной сводкой.
+Private Sub WriteStatusLegend(ByVal target As Object)
+    Dim legend As Object
+    Set legend = target.Offset(GROUP_HEADER_ROW - 1, TARGET_COLUMNS + STATUS_LEGEND_GAP_COLUMNS). _
+        Resize(STATUS_LEGEND_ROWS, STATUS_LEGEND_COLUMNS)
+
+    legend.UnMerge
+    legend.Clear
+    legend.Font.Name = "Arial"
+    legend.Font.Size = 9
+    legend.VerticalAlignment = -4108
+    legend.WrapText = False
+
+    Dim data() As Variant
+    ReDim data(1 To STATUS_LEGEND_ROWS, 1 To STATUS_LEGEND_COLUMNS)
+    data(1, 1) = "Расшифровка статусов"
+    data(2, 1) = "Статус"
+    data(2, 2) = "Описание"
+    data(3, 1) = "OK"
+    data(3, 2) = "Расчетная ветка выполнена, проверка пройдена."
+    data(4, 1) = "FAIL"
+    data(4, 2) = "Равновесие найдено, но физический предел или проверка не проходят."
+    data(5, 1) = "NumFail"
+    data(5, 2) = "Равновесие или пробная точка не сошлись численно."
+    data(6, 1) = "InputErr"
+    data(6, 2) = "Ошибка исходных данных или настройки."
+    data(7, 1) = "N/A"
+    data(7, 2) = "Проверка не применялась для данного сочетания."
+    legend.Value2 = data
+
+    MergeSummaryHeader legend, 1, 1, STATUS_LEGEND_COLUMNS
+
+    legend.Rows.Item(1).Font.Bold = True
+    legend.Rows.Item(2).Font.Bold = True
+    legend.Offset(2, 0).Resize(STATUS_LEGEND_ROWS - 2, STATUS_LEGEND_COLUMNS).Font.Italic = True
+    legend.Rows.Item(1).Interior.Color = HEADER_COLOR
+    legend.Rows.Item(2).Interior.Color = HEADER_COLOR
+    legend.Columns.Item(1).HorizontalAlignment = -4108
+    legend.Columns.Item(2).HorizontalAlignment = -4131
+    ApplySummaryBorders legend
+End Sub
+
 ' Объединяет горизонтальный заголовок одной строки.
 Private Sub MergeSummaryHeader(ByVal target As Object, ByVal rowIndex As Long, ByVal firstColumn As Long, ByVal lastColumn As Long)
     Dim area As Object
-    Set area = target.Offset(rowIndex - 1, firstColumn - 1).Resize(1, lastColumn - firstColumn + 1)
+    Set area = target.Resize(1, 1).Offset(rowIndex - 1, firstColumn - 1). _
+        Resize(1, lastColumn - firstColumn + 1)
     area.Merge
 End Sub
 
@@ -663,7 +735,8 @@ End Sub
 Private Sub MergeSummaryBlock(ByVal target As Object, ByVal firstRow As Long, ByVal lastRow As Long, _
         ByVal firstColumn As Long, ByVal lastColumn As Long)
     Dim area As Object
-    Set area = target.Offset(firstRow - 1, firstColumn - 1).Resize(lastRow - firstRow + 1, lastColumn - firstColumn + 1)
+    Set area = target.Resize(1, 1).Offset(firstRow - 1, firstColumn - 1). _
+        Resize(lastRow - firstRow + 1, lastColumn - firstColumn + 1)
     area.Merge
 End Sub
 

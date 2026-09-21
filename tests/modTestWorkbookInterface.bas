@@ -1135,13 +1135,25 @@ Private Sub TestDynamicLoadCombinationRangeAndLayoutGuard(ByRef stats As TUiTest
 
     AssertTrue stats, "ui.results.layoutGuard.blocksCalculation", errorNumber <> 0
     AssertTrue stats, "ui.results.layoutGuard.message", _
-        InStr(1, errorText, "не хватает места", vbTextCompare) > 0 And _
+        InStr(1, errorText, "не помещаются", vbTextCompare) > 0 And _
         InStr(1, errorText, "Расчет не запущен", vbTextCompare) > 0 And _
-        InStr(1, errorText, "пустые строки", vbTextCompare) > 0 And _
-        InStr(1, errorText, "rngBatchSummary", vbTextCompare) > 0 And _
+        InStr(1, errorText, "Что сделать", vbTextCompare) > 0 And _
+        InStr(1, errorText, "Вставьте", vbTextCompare) > 0 And _
+        InStr(1, errorText, "на листе Results", vbTextCompare) > 0 And _
+        InStr(1, errorText, "над строкой", vbTextCompare) > 0 And _
+        InStr(1, errorText, "над строкой 44", vbTextCompare) > 0 And _
+        InStr(1, errorText, "над строкой 80", vbTextCompare) > 0 And _
+        InStr(1, errorText, "над строкой 116", vbTextCompare) > 0 And _
+        InStr(1, errorText, "над строкой 45", vbTextCompare) = 0 And _
+        InStr(1, errorText, "над строкой 81", vbTextCompare) = 0 And _
+        InStr(1, errorText, "над строкой 117", vbTextCompare) = 0 And _
+        InStr(1, errorText, "на листе Config", vbTextCompare) > 0 And _
+        InStr(1, errorText, vbCrLf & "1)", vbBinaryCompare) > 0 And _
+        InStr(1, errorText, vbCrLf & "2)", vbBinaryCompare) > 0 And _
         InStr(1, errorText, "rngStrengthSummaryAnchor", vbTextCompare) > 0 And _
         InStr(1, errorText, "rngCrackSummaryAnchor", vbTextCompare) > 0 And _
-        InStr(1, errorText, "rngStabilitySummaryAnchor", vbTextCompare) > 0
+        InStr(1, errorText, "rngStabilitySummaryAnchor", vbTextCompare) > 0 And _
+        InStr(1, errorText, "rngLoadCombinations", vbTextCompare) > 0
 
 CleanUp:
     On Error Resume Next
