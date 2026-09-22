@@ -563,6 +563,10 @@ Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiT
     AssertTrue stats, "ui.autocad.preview.boundsAnnotations", CountAnnotationType(annotationData, "DIMENSION") = 2
     AssertTrue stats, "ui.autocad.preview.approxText", _
         InStr(1, CStr(annotationData(2, ResultHeaderColumn(annotationData, "Text"))), ChrW$(&H2248), vbTextCompare) > 0
+    AssertTextEquals stats, "ui.autocad.preview.roundedWidthText", _
+        AnnotationTextByID(annotationData, "DIM_AUTO_BOUNDS_B"), ChrW$(&H2248) & " 517 mm"
+    AssertTextEquals stats, "ui.autocad.preview.roundedHeightText", _
+        AnnotationTextByID(annotationData, "DIM_AUTO_BOUNDS_H"), ChrW$(&H2248) & " 112 mm"
     AssertTrue stats, "ui.autocad.preview.russianComment", _
         InStr(1, CStr(annotationData(2, ResultHeaderColumn(annotationData, "Comment"))), "Приблизительная", vbTextCompare) > 0
     AssertClose stats, "ui.autocad.preview.boundsWidthUsesRotation", _
@@ -2270,6 +2274,26 @@ Private Function CountAnnotationType(ByRef annotationData As Variant, ByVal anno
             CountAnnotationType = CountAnnotationType + 1
         End If
     Next rowIndex
+Failed:
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Возвращает видимую подпись semantic-аннотации из Results по ее ID.
+Private Function AnnotationTextByID(ByRef annotationData As Variant, ByVal annotationID As String) As String
+    On Error GoTo Failed
+    Dim colID As Long
+    Dim colText As Long
+    colID = ResultHeaderColumn(annotationData, "AnnotationID")
+    colText = ResultHeaderColumn(annotationData, "Text")
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(annotationData, 1)
+        If StrComp(CStr(annotationData(rowIndex, colID)), annotationID, vbTextCompare) = 0 Then
+            AnnotationTextByID = CStr(annotationData(rowIndex, colText))
+            Exit Function
+        End If
+    Next rowIndex
+
 Failed:
 End Function
 

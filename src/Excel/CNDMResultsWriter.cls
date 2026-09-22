@@ -1253,6 +1253,9 @@ Private Function OutputAnnotationNormalY(ByVal annotations As CSectionAnnotation
 End Function
 
 ' Готовит видимый текст аннотации: для размеров пересобирает подпись уже в пользовательских единицах.
+' На схему выводятся целые миллиметры, поэтому текст размера округляется, а
+' числовое поле Value ниже остается точным для проверок и диагностического
+' snapshot-а Results.
 Private Function OutputAnnotationText(ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long, _
         ByVal units As CUnitSystem) As String
     Dim annotationType As String
@@ -1263,7 +1266,7 @@ Private Function OutputAnnotationText(ByVal annotations As CSectionAnnotations, 
     End If
 
     Dim valueText As String
-    valueText = FormatNumberInvariant(OutputLength(annotations.Value(annotationIndex), units))
+    valueText = FormatRoundedAnnotationLength(OutputLength(annotations.Value(annotationIndex), units))
     Dim unitText As String
     unitText = OutputLengthUnit(units)
     If StrComp(Trim$(annotations.Text(annotationIndex)), ApproxSign(), vbTextCompare) = 0 Then
@@ -1273,6 +1276,19 @@ Private Function OutputAnnotationText(ByVal annotations As CSectionAnnotations, 
     Else
         OutputAnnotationText = valueText & " " & unitText
     End If
+End Function
+
+' Округляет видимую подпись размерной линии до ближайшего целого миллиметра.
+' VBA.Round использует банковское округление, поэтому здесь явно применено
+' инженерно ожидаемое правило: половина миллиметра округляется от нуля.
+Private Function FormatRoundedAnnotationLength(ByVal value As Double) As String
+    Dim roundedValue As Double
+    If value >= 0# Then
+        roundedValue = Int(value + 0.5)
+    Else
+        roundedValue = -Int(Abs(value) + 0.5)
+    End If
+    FormatRoundedAnnotationLength = FormatNumberInvariant(roundedValue)
 End Function
 
 ' Переводит технические комментарии builders в понятные пользователю строки Results.
