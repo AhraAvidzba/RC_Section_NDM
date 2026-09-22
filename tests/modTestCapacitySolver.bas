@@ -445,7 +445,7 @@ Private Sub TestLoadMultiplierPureBendingUsesStateGuess(ByRef stats As TCapacity
 
     AssertTrue stats, "capacity.pureBendingGuess.converged", cap.Converged
     AssertTrue stats, "capacity.pureBendingGuess.physical", IsPhysicalLimitState(cap.LimitState)
-    AssertTrue stats, "capacity.pureBendingGuess.usedGuess", InStr(1, cap.DiagnosticLog, "для пробной точки чистого изгиба применена стартовая плоскость", vbTextCompare) > 0
+    AssertTrue stats, "capacity.pureBendingGuess.usedGuess", InStr(1, cap.DiagnosticLog, "для lambda-точки чистого изгиба применена стартовая плоскость", vbTextCompare) > 0
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.

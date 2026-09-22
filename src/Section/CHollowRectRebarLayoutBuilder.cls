@@ -635,7 +635,7 @@ End Sub
 
 ' Выбирает нормаль второго/третьего ряда в сторону бетона. Это надежнее, чем
 ' вручную угадывать знак для верхней/нижней и внутренней/наружной кривой:
-' пробная точка должна оставаться внутри бетонного кольца.
+' контрольная точка должна оставаться внутри бетонного кольца.
 Private Sub ConcreteInwardVector(ByVal geom As CGeometryHollowRectangle, ByVal xCoord As Double, ByVal yCoord As Double, _
         ByVal tangentX As Double, ByVal tangentY As Double, ByVal axisDistance As Double, _
         ByRef inwardX As Double, ByRef inwardY As Double)

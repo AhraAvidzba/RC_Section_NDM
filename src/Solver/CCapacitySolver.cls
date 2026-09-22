@@ -31,7 +31,7 @@ Private Const STATE_NUMERICAL_FAILURE As String = "NumericalFailure"
 Private Const STATE_SINGULAR_TANGENT As String = "SingularTangent"
 Private Const STATE_INVALID_INPUT As String = "InvalidInput"
 Private Const MOMENT_DIRECTION_TOLERANCE As Double = 0.001 ' Допустимое относительное отклонение от выбранной моментной траектории.
-Private Const PROBE_CACHE_SIZE As Long = 12 ' Небольшое кольцо последних probe-точек LoadMultiplier.
+Private Const PROBE_CACHE_SIZE As Long = 12 ' Небольшое кольцо последних lambda-точек LoadMultiplier.
 
 Private mConverged As Boolean ' True, если выбранный метод capacity нашел предельное состояние.
 Private mStopReason As String ' Причина остановки capacity solver для вывода в результаты и тесты.
@@ -61,8 +61,8 @@ Private mSearchMethod As String ' Алгоритм одномерного пои
 Private mSolutionMethod As String ' Фактическая ветка, которая дала принятый результат: UltimateStrain или LoadMultiplier.
 Private mMaxLambda As Double ' Верхняя граница расширения скобки LoadMultiplier, чтобы поиск не уходил бесконечно.
 Private mInitialLambdaStep As Double ' Первый шаг расширения lambda при поиске расчетной скобки.
-Private mMaxRetries As Long ' Допустимые повторы пробной точки после NumericalFailure.
-Private mSolverBaseLoadSteps As Long ' Базовое число ступеней CSectionSolver для каждой probe-точки.
+Private mMaxRetries As Long ' Допустимые повторы той же lambda-точки после NumericalFailure.
+Private mSolverBaseLoadSteps As Long ' Базовое число ступеней CSectionSolver для первой попытки lambda-точки.
 Private mSolverMaxIterations As Long ' Максимум внешних/внутренних итераций capacity-поиска.
 Private mSolverToleranceN As Double ' Допуск внутреннего равновесия CSectionSolver по N.
 Private mSolverToleranceMx As Double ' Допуск внутреннего равновесия CSectionSolver по Mx.
@@ -76,22 +76,22 @@ Private mSolverMaxDeltaKappa As Double ' Ограничение шага кри�
 Private mSolverSecantMaxRestarts As Long ' Настройка рестартов внутреннего secant-решателя.
 Private mSolverSecantMinStepNorm As Double ' Минимальный шаг внутреннего secant-решателя.
 Private mMomentEquilibriumResidual As Double ' Невязка направления/момента в найденном предельном состоянии.
-Private mDiagnosticLog As String ' Текстовая трассировка probe-точек и причин остановки.
+Private mDiagnosticLog As String ' Текстовая трассировка lambda-точек и причин остановки.
 Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал в массовом пользовательском расчете без txt-отчета.
 Private mCriticalStrain As Double ' Деформация критического волокна или стержня.
 Private mCriticalElement As String ' ID элемента, который первым определил предельное состояние.
 Private mCriticalStrainUtilization As Double ' Отношение фактической деформации к своему пределу.
 Private mProbeCacheCount As Long ' Сколько ячеек cache реально заполнено.
 Private mProbeCacheNextSlot As Long ' Следующая ячейка кольцевого cache для записи.
-Private mProbeCacheLambda(1 To PROBE_CACHE_SIZE) As Double ' Lambda ранее посчитанной probe-точки.
-Private mProbeCacheN(1 To PROBE_CACHE_SIZE) As Double ' N этой probe-точки; нужен, чтобы не спутать разные траектории.
-Private mProbeCacheMx(1 To PROBE_CACHE_SIZE) As Double ' Mx этой probe-точки.
-Private mProbeCacheMy(1 To PROBE_CACHE_SIZE) As Double ' My этой probe-точки.
-Private mProbeCacheState(1 To PROBE_CACHE_SIZE) As String ' Классификация probe-точки: acceptable/limit/numerical.
+Private mProbeCacheLambda(1 To PROBE_CACHE_SIZE) As Double ' Lambda ранее посчитанной точки поиска.
+Private mProbeCacheN(1 To PROBE_CACHE_SIZE) As Double ' N этой lambda-точки; нужен, чтобы не спутать разные траектории.
+Private mProbeCacheMx(1 To PROBE_CACHE_SIZE) As Double ' Mx этой lambda-точки.
+Private mProbeCacheMy(1 To PROBE_CACHE_SIZE) As Double ' My этой lambda-точки.
+Private mProbeCacheState(1 To PROBE_CACHE_SIZE) As String ' Классификация lambda-точки: acceptable/limit/numerical.
 Private mProbeCacheCriticalStrain(1 To PROBE_CACHE_SIZE) As Double ' Критическая деформация, восстановленная без повторного solve.
 Private mProbeCacheCriticalElement(1 To PROBE_CACHE_SIZE) As String ' Критический элемент, соответствующий cache-записи.
 Private mProbeCacheCriticalUtil(1 To PROBE_CACHE_SIZE) As Double ' Utilization критической деформации для целевой функции.
-Private mProbeCacheSolver(1 To PROBE_CACHE_SIZE) As CSectionSolver ' Solver-состояние probe-точки для дальнейшего warm-start.
+Private mProbeCacheSolver(1 To PROBE_CACHE_SIZE) As CSectionSolver ' Solver-состояние lambda-точки для дальнейшего warm-start.
 
 ' ------------------------------
 ' Настройки по умолчанию
@@ -108,8 +108,8 @@ Private Sub Class_Initialize()
     mSearchMethod = "Bisection"
     mMaxLambda = 1024#
     mInitialLambdaStep = 1#
-    mMaxRetries = 4
-    mSolverBaseLoadSteps = 8
+    mMaxRetries = 0
+    mSolverBaseLoadSteps = 1
     mSolverMaxIterations = 60
     mSolverToleranceN = 5#
     mSolverToleranceMx = 5000#
@@ -130,7 +130,7 @@ End Sub
 ' Чтение настроек capacity solver
 ' ------------------------------
 ' Настройки делятся на два уровня: внешний поиск несущей способности и
-' внутренний CSectionSolver, который каждый раз ищет равновесие для probe-точки.
+' внутренний CSectionSolver, который каждый раз ищет равновесие для lambda-точки.
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
     mInitialLambdaStep = settings.GetDouble("Capacity.InitialLambda", mInitialLambdaStep)
@@ -405,7 +405,7 @@ Private Function IsMomentOnlyLoadPath(ByVal nBase As Double, ByVal mxBase As Dou
 End Function
 
 ' При чистой lambda*N траектории горизонтальное плато диаграммы может дать
-' устойчивую нижнюю границу capacity, а следующая probe-точка уже теряет
+' устойчивую нижнюю границу capacity, а следующая lambda-точка уже теряет
 ' касательную жесткость до формального пересечения eps_ult. Для такого
 ' осевого случая это означает достижение силового плато, поэтому принимаем
 ' последнюю сходящуюся lambda как найденную несущую способность.
@@ -881,7 +881,7 @@ End Sub
 ' ------------------------------
 ' Метод LoadMultiplier
 ' ------------------------------
-' Сохраняет N постоянным, а Mx/My масштабирует одним lambda. Каждая probe-точка
+' Сохраняет N постоянным, а Mx/My масштабирует одним lambda. Каждая lambda-точка
 ' вызывает CSectionSolver; внешний алгоритм только ищет границу между
 ' acceptable-состоянием и физическим пределом.
 Public Sub SolveByLoadMultiplier(ByVal section As CSectionModel, _
@@ -913,7 +913,7 @@ Public Sub SolveByLoadPathMultiplier(ByVal section As CSectionModel, _
 End Sub
 
 ' Общий одномерный поиск предельного множителя. Входные Offset/Base задают
-' любую допустимую lambda-траекторию нагрузки, а алгоритм скобки, probe-точек и
+' любую допустимую lambda-траекторию нагрузки, а алгоритм скобки, lambda-точек и
 ' Bisection/Brent/Secant остается одним для всех вариантов.
 Private Sub SolveLoadMultiplierCore(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
@@ -1184,7 +1184,7 @@ Private Sub SearchBySecant(ByVal section As CSectionModel, _
         End If
 
         ' Сначала строим настоящий шаг секущей по двум предыдущим значениям.
-        ' Если он выходит за физическую скобку, не запускаем probe-точку
+        ' Если он выходит за физическую скобку, не запускаем lambda-точку
         ' заведомо вне диапазона, а демпфируем этот же шаг внутрь скобки.
         x2 = x1 - f1 * (x1 - x0) / (f1 - f0)
         If Not IsFiniteNumber(x2) Then
@@ -1253,7 +1253,7 @@ End Function
 
 ' Обновляет только защитную физическую скобку Secant.
 ' Отрицательная функция означает, что деформационный предел еще не достигнут;
-' неотрицательная - что probe-точка уже является верхним физическим состоянием.
+' неотрицательная - что lambda-точка уже является верхним физическим состоянием.
 Private Sub UpdateSecantBracket(ByVal lambdaValue As Double, ByVal functionValue As Double, _
         ByVal probeState As String, ByRef bracketLow As Double, ByRef bracketHigh As Double)
     If functionValue < 0# Then
@@ -1313,7 +1313,7 @@ Private Sub FinalizeLoadMultiplierSearch(ByVal lambdaValue As Double, _
     mStopReason = "Поиск несущей способности методом " & methodName & " сошелся; верхнее физическое состояние: " & mUpperLimitState & "."
 End Sub
 
-' Перед финализацией пересчитывает probe в найденной точке, чтобы mLastSolver
+' Перед финализацией пересчитывает найденную lambda-точку, чтобы mLastSolver
 ' и критическое состояние соответствовали именно итоговой lambda.
 Private Sub FinalizeLoadMultiplierSearchAfterProbe(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
@@ -1522,7 +1522,7 @@ Private Function IsValidUltimateLambda(ByVal lambdaValue As Double, _
     IsValidUltimateLambda = True
 End Function
 
-' Выполняет probe-точку LoadMultiplier с ограниченным числом повторов.
+' Выполняет lambda-точку LoadMultiplier с ограниченным числом повторов.
 ' Повтор меняет только численные настройки внутреннего CSectionSolver
 ' (ступени/шаги), а физическая точка нагрузки lambda остается той же.
 Private Function ProbeWithRetries(ByVal section As CSectionModel, _
@@ -1551,7 +1551,7 @@ Private Function ProbeWithRetries(ByVal section As CSectionModel, _
     ProbeWithRetries = probeState
 End Function
 
-' Решает одну probe-точку capacity-поиска и классифицирует ее как приемлемую,
+' Решает одну lambda-точку capacity-поиска и классифицирует ее как приемлемую,
 ' физический предел, численную несходимость или ошибку входных данных.
 Private Function ProbeOnce(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
@@ -1610,10 +1610,10 @@ Failed:
     mStopReason = "Пробная точка несущей способности не рассчиталась: " & Err.Description
 End Function
 
-' Для чистого изгиба N=0 каждая probe-точка LoadMultiplier может оказаться
+' Для чистого изгиба N=0 каждая lambda-точка LoadMultiplier может оказаться
 ' в той же численной ловушке, что и прямой DirectState: нулевая плоскость
 ' деформаций лежит ровно на изломе "сжатый бетон / выключенное растяжение".
-' Поэтому для такой probe-точки старт строится от ее собственных целевых
+' Поэтому для такой lambda-точки старт строится от ее собственных целевых
 ' усилий, а не от предыдущей lambda: это устойчивее около границы плато и не
 ' зависит от того, какая точка перед этим была последней acceptable.
 ' Траектория Target = Offset + lambda*Base при этом не меняется: мы только
@@ -1644,11 +1644,11 @@ Private Sub ApplyPureBendingProbeGuess(ByVal section As CSectionModel, _
             nSpecified, mx, my, eps0, kx, ky) Then
         solver.ClearInitialState
         solver.SetInitialLoadState eps0, kx, ky, nSpecified, mx, my
-        AppendSearchDiagnostic "для пробной точки чистого изгиба применена стартовая плоскость; масштабируемые моменты ненулевые"
+        AppendSearchDiagnostic "для lambda-точки чистого изгиба применена стартовая плоскость; масштабируемые моменты ненулевые"
     End If
 End Sub
 
-' Возвращает уже посчитанную probe-точку LoadMultiplier.
+' Возвращает уже посчитанную lambda-точку LoadMultiplier.
 ' Brent/Secant после нахождения скобки могут повторно спросить те же lambda,
 ' особенно нижнюю и верхнюю границы. Cache убирает этот повторный solve и
 ' восстанавливает все поля, от которых зависит целевая функция и warm-start.
@@ -1662,14 +1662,14 @@ Private Function TryRestoreProbeCache(ByVal nSpecified As Double, ByVal mx As Do
             mCriticalStrain = mProbeCacheCriticalStrain(slot)
             mCriticalElement = mProbeCacheCriticalElement(slot)
             mCriticalStrainUtilization = mProbeCacheCriticalUtil(slot)
-            AppendSearchDiagnostic "использована ранее рассчитанная пробная точка; lambda=" & FormatNumberInvariant(lambdaValue) & "; состояние=" & probeState
+            AppendSearchDiagnostic "использована ранее рассчитанная lambda-точка; lambda=" & FormatNumberInvariant(lambdaValue) & "; состояние=" & probeState
             TryRestoreProbeCache = True
             Exit Function
         End If
     Next slot
 End Function
 
-' Сравнивает probe-точку по lambda и целевым усилиям.
+' Сравнивает lambda-точку по lambda и целевым усилиям.
 ' Усилия проверяются отдельно от lambda, чтобы cache оставался безопасным даже
 ' после будущих расширений траектории нагрузки внутри одного solver-а.
 Private Function ProbeCacheMatches(ByVal slot As Long, ByVal nSpecified As Double, ByVal mx As Double, ByVal my As Double, _
@@ -1681,7 +1681,7 @@ Private Function ProbeCacheMatches(ByVal slot As Long, ByVal nSpecified As Doubl
     ProbeCacheMatches = True
 End Function
 
-' Запоминает итог probe-точки после всех retry.
+' Запоминает итог lambda-точки после всех повторов.
 ' NumericalFailure тоже можно сохранить: если метод снова спросит ту же lambda,
 ' повторная попытка с теми же настройками даст тот же отказ, а cache не даст
 ' впустую запускать внутренний CSectionSolver.
@@ -1718,7 +1718,7 @@ Private Sub ClearProbeCache()
     mProbeCacheNextSlot = 1
 End Sub
 
-' Проверяет неудачную probe-точку LoadMultiplier на физический предел.
+' Проверяет неудачную lambda-точку LoadMultiplier на физический предел.
 ' Около разрушения внутренний CSectionSolver может не успеть закрыть невязку
 ' равновесия, хотя рассчитанная плоскость деформаций уже прошла допустимую
 ' сжимающую/растягивающую деформацию. Такое состояние годится как верхняя
@@ -1732,14 +1732,14 @@ Private Function FailedProbeReachedPhysicalLimit(ByVal section As CSectionModel,
     UpdateCriticalState section, concreteMaterial, solver
     If mCriticalStrainUtilization >= 1# And IsFiniteNumber(mCriticalStrainUtilization) And _
             Len(mCriticalElement) > 0 Then
-        AppendSearchDiagnostic "несошедшаяся пробная точка достигла физического предела деформации; состояние=" & _
+        AppendSearchDiagnostic "несошедшаяся lambda-точка достигла физического предела деформации; состояние=" & _
             CriticalLimitState() & "; использование=" & FormatNumberInvariant(mCriticalStrainUtilization) & _
             "; элемент=" & mCriticalElement & "; причина solver-а=" & solver.StopReason
         FailedProbeReachedPhysicalLimit = True
     End If
 End Function
 
-' Обновляет управляющую деформацию для последней probe-точки. Проверяются
+' Обновляет управляющую деформацию для последней lambda-точки. Проверяются
 ' бетон, растянутый бетон при включенном лимите и арматура; максимальная
 ' utilization определяет тип предельного состояния.
 Private Sub UpdateCriticalState(ByVal section As CSectionModel, _
@@ -1816,7 +1816,7 @@ Private Function ClassifyNumericalFailure(ByVal reason As String) As String
     End If
 End Function
 
-' Запоминает последнюю сходящуюся probe-точку. Она используется как warm-start
+' Запоминает последнюю сходящуюся lambda-точку. Она используется как warm-start
 ' для следующих lambda и как fallback, если верхняя физическая граница не
 ' найдена из-за численной несходимости.
 Private Sub RecordAcceptableState(ByVal solver As CSectionSolver, ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double)
@@ -1877,8 +1877,9 @@ Private Function IsFiniteNumber(ByVal value As Double) As Boolean
     IsFiniteNumber = True
 End Function
 
-' Записывает диагностическую строку одной probe-точки LoadMultiplier.
-' Поле attempt означает номер retry той же физической lambda-точки.
+' Записывает диагностическую строку одной lambda-точки LoadMultiplier.
+' Поле attempt - это номер попытки НДС для той же физической lambda-точки:
+' 0 означает первую попытку, 1 - первый retry с более мягкими настройками.
 Private Sub AppendDiagnostic(ByVal solver As CSectionSolver, ByVal mx As Double, ByVal my As Double, _
         ByVal lambdaValue As Double, ByVal attempt As Long, ByVal probeState As String)
     If Not mDiagnosticsEnabled Then Exit Sub

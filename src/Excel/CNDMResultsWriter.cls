@@ -31,7 +31,8 @@ Private Const SECTION_PROPERTY_COLUMNS As Long = 6 ' Общие свойства
 Private Const ANNOTATION_COLUMNS As Long = 13 ' Semantic-аннотации схемы: размеры, контур, групповые подписи арматуры.
 Private Const MATERIAL_DIAGRAM_COLUMNS As Long = 11 ' Каталог уникальных точек диаграмм, переданных solver-ам.
 Private Const PHYSICAL_TOLERANCE As Double = 0.000000001 ' Порог, ниже которого напряжение считается NearZero.
-Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 61 ' Строки общих свойств сечения до LC-зависимых блоков.
+Private Const AUTOCAD_REBAR_LABEL_EXTRA_OFFSET_MM As Double = 5# ' Дополнительный зазор сводной подписи арматуры AutoCAD над бетонным габаритом.
+Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 69 ' Строки общих свойств сечения до LC-зависимых блоков.
 Private Const LC_SECTION_PROPERTY_ROWS As Long = 23 ' Строки свойств одного LC без metadata named-state.
 Private Const STATE_SECTION_PROPERTY_ROWS As Long = 12 ' Строки metadata одного сохраненного named-state.
 Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' Единая ширина всех столбцов Results.
@@ -94,7 +95,7 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
     WriteElementResults workbook, section, materialProvider, batch, runID, units
     WriteSectionProperties workbook, section, materialProvider, batch, runID, units
     WriteMaterialDiagrams workbook, materialProvider, batch, runID, units
-    EnsureAutoCADBoundsAnnotations section
+    EnsureAutoCADImportAnnotations section
     WriteSectionAnnotations workbook, section, runID, units
 End Sub
 
@@ -115,7 +116,7 @@ Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSect
     WriteSectionGeometry workbook, section, runID, units
     WriteEmptyElementResults workbook, runID, units
     WriteSectionPropertiesPreview workbook, section, runID, units
-    EnsureAutoCADBoundsAnnotations section
+    EnsureAutoCADImportAnnotations section
     WriteSectionAnnotations workbook, section, runID, units
 End Sub
 
@@ -627,6 +628,8 @@ Private Sub PutConcreteSectionProperties(ByRef data() As Variant, ByRef rowIndex
     PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalI2", OutputFourthPowerLength(props.PrincipalI2, units), OutputLengthUnit(units) & "4", "Меньший главный момент инерции бетонного сечения."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.RadiusX", OutputLength(props.RadiusX, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно центральной оси X."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.RadiusY", OutputLength(props.RadiusY, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно центральной оси Y."
+    PutAxisCoreDistanceProperties data, rowIndex, runID, "Concrete", _
+        "бетонного сечения", section, props, units
     PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalRadius1", OutputLength(props.PrincipalRadius1, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения по главной оси I1."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalRadius2", OutputLength(props.PrincipalRadius2, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения по главной оси I2."
     PutPrincipalCoreDistanceProperties data, rowIndex, runID, "Concrete", _
@@ -653,10 +656,34 @@ Private Sub PutTransformedSectionProperties(ByRef data() As Variant, ByRef rowIn
     PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalI2", OutputFourthPowerLength(props.PrincipalI2, units), OutputLengthUnit(units) & "4", "Главный момент инерции I2 приведенного сечения."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.RadiusX", OutputLength(props.RadiusX, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно центральной оси X."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.RadiusY", OutputLength(props.RadiusY, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно центральной оси Y."
+    PutAxisCoreDistanceProperties data, rowIndex, runID, "Transformed", _
+        "приведенного сечения", section, props, units
     PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalRadius1", OutputLength(props.PrincipalRadius1, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения по главной оси I1."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalRadius2", OutputLength(props.PrincipalRadius2, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения по главной оси I2."
     PutPrincipalCoreDistanceProperties data, rowIndex, runID, "Transformed", _
         "приведенного сечения", section, props, units
+End Sub
+
+' Записывает ядровые расстояния по глобальным центральным осям X/Y.
+' Расчет идет через тот же CoreDistanceAlong, что и устойчивость СП 35:
+' A/I берутся из переданного калькулятора, а крайняя точка c - по бетонной
+' оболочке section, без расширения контура арматурой.
+Private Sub PutAxisCoreDistanceProperties(ByRef data() As Variant, ByRef rowIndex As Long, _
+        ByVal runID As Variant, ByVal prefix As String, ByVal description As String, _
+        ByVal section As CSectionModel, ByVal props As CSectionPropertiesCalculator, _
+        ByVal units As CUnitSystem)
+    PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistanceXPlus", _
+        OutputLength(props.CoreDistanceAlong(section, 1#, 0#, False), units), _
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении +X."
+    PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistanceXMinus", _
+        OutputLength(props.CoreDistanceAlong(section, -1#, 0#, False), units), _
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении -X."
+    PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistanceYPlus", _
+        OutputLength(props.CoreDistanceAlong(section, 0#, 1#, False), units), _
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении +Y."
+    PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistanceYMinus", _
+        OutputLength(props.CoreDistanceAlong(section, 0#, -1#, False), units), _
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении -Y."
 End Sub
 
 ' Записывает ядровые расстояния по двум главным направлениям. Для
@@ -873,7 +900,7 @@ Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal sectio
     Set target = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
 
     Dim data() As Variant
-    ReDim data(1 To 35, 1 To SECTION_PROPERTY_COLUMNS)
+    ReDim data(1 To 43, 1 To SECTION_PROPERTY_COLUMNS)
     PutSectionPropertyHeaders data
 
     Dim rowIndex As Long
@@ -1323,13 +1350,12 @@ End Function
 ' прямоугольная оболочка бетонных элементов. Ее строит CSectionModel:
 ' фактический прямоугольник, эквивалентный прямоугольник по A/I или
 ' последний эквивалентный квадрат по площади. Реальные A/I при этом остаются
-' расчетными характеристиками элемента.
-' Поэтому сохраняем только две приблизительные размерные аннотации: общую
-' ширину и высоту по импортированной дискретной сетке.
-Private Sub EnsureAutoCADBoundsAnnotations(ByVal section As CSectionModel)
+' расчетными характеристиками элемента. Здесь добавляются только общие
+' semantic-аннотации импортированной сетки: приблизительные габариты и
+' сводная подпись всей распознанной арматуры.
+Private Sub EnsureAutoCADImportAnnotations(ByVal section As CSectionModel)
     If section Is Nothing Then Exit Sub
     If StrComp(section.SourceType, "AutoCADImport", vbTextCompare) <> 0 Then Exit Sub
-    If section.AnnotationCount > 0 Then Exit Sub
     If section.ConcreteCount <= 0 Then Exit Sub
 
     Dim minX As Double
@@ -1338,11 +1364,152 @@ Private Sub EnsureAutoCADBoundsAnnotations(ByVal section As CSectionModel)
     Dim maxY As Double
     GetConcreteBounds section, minX, maxX, minY, maxY
 
-    section.Annotations.AddDimension "DIM_AUTO_BOUNDS_B", minX, minY, maxX, minY, 0#, -1#, _
-        ApproxSign(), maxX - minX, "Приблизительная общая ширина по расчетным границам импортированного бетона."
-    section.Annotations.AddDimension "DIM_AUTO_BOUNDS_H", minX, minY, minX, maxY, -1#, 0#, _
-        ApproxSign(), maxY - minY, "Приблизительная общая высота по расчетным границам импортированного бетона."
+    Dim annotations As CSectionAnnotations
+    Set annotations = section.Annotations
+
+    If Not AnnotationExists(annotations, "DIM_AUTO_BOUNDS_B") Then
+        annotations.AddDimension "DIM_AUTO_BOUNDS_B", minX, minY, maxX, minY, 0#, -1#, _
+            ApproxSign(), maxX - minX, "Приблизительная общая ширина по расчетным границам импортированного бетона."
+    End If
+    If Not AnnotationExists(annotations, "DIM_AUTO_BOUNDS_H") Then
+        annotations.AddDimension "DIM_AUTO_BOUNDS_H", minX, minY, minX, maxY, -1#, 0#, _
+            ApproxSign(), maxY - minY, "Приблизительная общая высота по расчетным границам импортированного бетона."
+    End If
+
+    If section.RebarCount > 0 And Not AnnotationExists(annotations, "REBAR_AUTO_ALL") Then
+        Dim labelText As String
+        labelText = AutoCADRebarSummaryText(section)
+        If Len(labelText) > 0 Then
+            Dim labelY As Double
+            labelY = maxY + AUTOCAD_REBAR_LABEL_EXTRA_OFFSET_MM
+            annotations.AddRebarLabel "REBAR_AUTO_ALL", minX, labelY, maxX, labelY, 0#, 1#, _
+                labelText, "Сводная подпись всей арматуры, распознанной при импорте AutoCAD."
+        End If
+    End If
 End Sub
+
+' Проверяет, есть ли semantic-аннотация с таким ID. Это защищает повторную
+' запись одного и того же CSectionModel от дублирования размеров и подписей.
+Private Function AnnotationExists(ByVal annotations As CSectionAnnotations, ByVal annotationID As String) As Boolean
+    If annotations Is Nothing Then Exit Function
+
+    Dim i As Long
+    For i = 1 To annotations.Count
+        If StrComp(annotations.AnnotationID(i), annotationID, vbTextCompare) = 0 Then
+            AnnotationExists = True
+            Exit Function
+        End If
+    Next i
+End Function
+
+' Собирает одну подпись для всей арматуры AutoCAD import. Диаметры группируются
+' по видимому инженерному значению, сортируются по убыванию и выводятся без
+' пробелов вокруг плюса: ALL: 3∅32+23∅16.
+Private Function AutoCADRebarSummaryText(ByVal section As CSectionModel) As String
+    If section Is Nothing Then Exit Function
+    If section.RebarCount <= 0 Then Exit Function
+
+    Dim diameterTexts() As String
+    Dim diameterValues() As Double
+    Dim counts() As Long
+    Dim groupCount As Long
+
+    Dim i As Long
+    For i = 1 To section.RebarCount
+        Dim diameterValue As Double
+        diameterValue = section.RebarDiameter(i)
+        If diameterValue > 0# Then
+            AddRebarDiameterGroup diameterTexts, diameterValues, counts, groupCount, _
+                FormatRebarDiameterForAnnotation(diameterValue), diameterValue
+        End If
+    Next i
+    If groupCount <= 0 Then Exit Function
+
+    SortRebarDiameterGroupsDescending diameterTexts, diameterValues, counts, groupCount
+
+    Dim resultText As String
+    resultText = "ALL: "
+    For i = 1 To groupCount
+        If i > 1 Then resultText = resultText & "+"
+        resultText = resultText & CStr(counts(i)) & RebarDiameterSymbol() & diameterTexts(i)
+    Next i
+    AutoCADRebarSummaryText = resultText
+End Function
+
+' Добавляет диаметр в существующую группу или создает новую группу. Группировка
+' идет по уже отформатированному тексту, чтобы 32 и 32.0000001 попали в одну
+' пользовательскую запись ∅32.
+Private Sub AddRebarDiameterGroup(ByRef diameterTexts() As String, ByRef diameterValues() As Double, _
+        ByRef counts() As Long, ByRef groupCount As Long, ByVal diameterText As String, ByVal diameterValue As Double)
+    Dim i As Long
+    For i = 1 To groupCount
+        If StrComp(diameterTexts(i), diameterText, vbTextCompare) = 0 Then
+            counts(i) = counts(i) + 1
+            Exit Sub
+        End If
+    Next i
+
+    groupCount = groupCount + 1
+    ReDim Preserve diameterTexts(1 To groupCount)
+    ReDim Preserve diameterValues(1 To groupCount)
+    ReDim Preserve counts(1 To groupCount)
+    diameterTexts(groupCount) = diameterText
+    diameterValues(groupCount) = diameterValue
+    counts(groupCount) = 1
+End Sub
+
+' Стабилизирует порядок сводной подписи: сначала идут стержни большего
+' диаметра. Для типичного импорта это дает привычный вид 3∅32+23∅16.
+Private Sub SortRebarDiameterGroupsDescending(ByRef diameterTexts() As String, ByRef diameterValues() As Double, _
+        ByRef counts() As Long, ByVal groupCount As Long)
+    Dim i As Long
+    Dim j As Long
+    For i = 1 To groupCount - 1
+        For j = i + 1 To groupCount
+            If diameterValues(j) > diameterValues(i) Then
+                SwapRebarDiameterGroups diameterTexts, diameterValues, counts, i, j
+            End If
+        Next j
+    Next i
+End Sub
+
+' Меняет местами две группы диаметров при простой сортировке сводной подписи.
+Private Sub SwapRebarDiameterGroups(ByRef diameterTexts() As String, ByRef diameterValues() As Double, _
+        ByRef counts() As Long, ByVal firstIndex As Long, ByVal secondIndex As Long)
+    Dim textBuffer As String
+    Dim valueBuffer As Double
+    Dim countBuffer As Long
+
+    textBuffer = diameterTexts(firstIndex)
+    valueBuffer = diameterValues(firstIndex)
+    countBuffer = counts(firstIndex)
+
+    diameterTexts(firstIndex) = diameterTexts(secondIndex)
+    diameterValues(firstIndex) = diameterValues(secondIndex)
+    counts(firstIndex) = counts(secondIndex)
+
+    diameterTexts(secondIndex) = textBuffer
+    diameterValues(secondIndex) = valueBuffer
+    counts(secondIndex) = countBuffer
+End Sub
+
+' Форматирует диаметр для подписи арматуры без зависимости от десятичной
+' запятой Windows и без незначащих хвостовых нулей.
+Private Function FormatRebarDiameterForAnnotation(ByVal value As Double) As String
+    Dim textValue As String
+    textValue = Replace$(Format$(value, "0.###"), ",", ".")
+    Do While InStr(1, textValue, ".", vbTextCompare) > 0 And Right$(textValue, 1) = "0"
+        textValue = Left$(textValue, Len(textValue) - 1)
+    Loop
+    If Right$(textValue, 1) = "." Then textValue = Left$(textValue, Len(textValue) - 1)
+    FormatRebarDiameterForAnnotation = textValue
+End Function
+
+' Возвращает символ диаметра для AutoCAD-сводки через ChrW$, чтобы модуль не
+' зависел от кодировки исходного .cls-файла.
+Private Function RebarDiameterSymbol() As String
+    RebarDiameterSymbol = ChrW$(&H2205)
+End Function
 
 ' Возвращает знак приблизительного равенства без литерала в исходнике. Так VBA-модуль
 ' не зависит от кодировки файла, а на лист Results попадает настоящий знак приблизительного равенства.

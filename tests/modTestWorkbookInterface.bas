@@ -552,6 +552,8 @@ Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiT
     section.AddConcreteElement 250#, 50#, 2500#, 1, vbNullString, vbNullString, _
         "EquivalentSquare", 0#, 0#
     section.AddRebarElement 50#, 50#, 20#, 0#, "Rebar"
+    section.AddRebarElement 250#, 80#, 20#, 0#, "Rebar"
+    section.AddRebarElement 450#, 80#, 32#, 0#, "Rebar"
     section.ApplyAverageRotationToEquivalentAreaFallbacks
 
     Dim writer As CNDMResultsWriter
@@ -561,6 +563,9 @@ Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiT
     Dim annotationData As Variant
     annotationData = ResultTable("rngNDMSectionAnnotations")
     AssertTrue stats, "ui.autocad.preview.boundsAnnotations", CountAnnotationType(annotationData, "DIMENSION") = 2
+    AssertTrue stats, "ui.autocad.preview.rebarAnnotation", CountAnnotationType(annotationData, "REBAR_ANNOTATION") = 1
+    AssertTextEquals stats, "ui.autocad.preview.rebarText", _
+        AnnotationTextByID(annotationData, "REBAR_AUTO_ALL"), "ALL: 1" & ChrW$(&H2205) & "32+2" & ChrW$(&H2205) & "20"
     AssertTrue stats, "ui.autocad.preview.approxText", _
         InStr(1, CStr(annotationData(2, ResultHeaderColumn(annotationData, "Text"))), ChrW$(&H2248), vbTextCompare) > 0
     AssertTextEquals stats, "ui.autocad.preview.roundedWidthText", _
@@ -583,10 +588,11 @@ Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiT
     Dim reader As CSectionPlotDataReader
     Set reader = New CSectionPlotDataReader
     reader.LoadGeometryPreviewFromWorkbook ThisWorkbook, settings
-    AssertTrue stats, "ui.autocad.preview.readerAnnotations", reader.AnnotationCount = 2
+    AssertTrue stats, "ui.autocad.preview.readerAnnotations", reader.AnnotationCount = 3
 
     UpdateSectionPlotForWorkbook ThisWorkbook
     AssertTrue stats, "ui.autocad.preview.dimensionShapes", CountPlotShapes("AnnotationLine") > 0
+    AssertTrue stats, "ui.autocad.preview.rebarTextShape", PlotShapeTextContains("ALL: 1")
     AssertTrue stats, "ui.autocad.preview.rotatedElementShape", _
         PlotShapeRotationExists("ElementConcrete", -30#, 0.5)
     Dim expectedFallbackDegrees As Double
@@ -910,6 +916,10 @@ Private Sub TestAutoCADCalculationMessageUsesSavedGeometry(ByRef stats As TUiTes
         GeometryResultValue(afterGeometry, "R1", "X"), beforeRebarX, 0.000001
     AssertClose stats, "ui.autocad.run.savedGeometry.rebarY", _
         GeometryResultValue(afterGeometry, "R1", "Y"), beforeRebarY, 0.000001
+    Dim afterAnnotations As Variant
+    afterAnnotations = ResultTable("rngNDMSectionAnnotations")
+    AssertTextEquals stats, "ui.autocad.run.savedGeometry.rebarText", _
+        AnnotationTextByID(afterAnnotations, "REBAR_AUTO_ALL"), "ALL: 4" & ChrW$(&H2205) & "20"
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -1955,6 +1965,10 @@ Private Sub AssertTransformedAreaUsesElasticModuli(ByRef stats As TUiTestStats)
     Dim r1Minus As Double
     Dim r2Plus As Double
     Dim r2Minus As Double
+    Dim xPlus As Double
+    Dim xMinus As Double
+    Dim yPlus As Double
+    Dim yMinus As Double
 
     concreteArea = CDbl(ResultsPropertyValue("ALL", "Concrete.Area"))
     transformedArea = CDbl(ResultsPropertyValue("ALL", "Transformed.Area"))
@@ -1973,6 +1987,15 @@ Private Sub AssertTransformedAreaUsesElasticModuli(ByRef stats As TUiTestStats)
         r1Plus, r1Minus, 0.001
     AssertClose stats, "ui.results.properties.transformedCoreDistance.axis2Sym", _
         r2Plus, r2Minus, 0.001
+    xPlus = CDbl(ResultsPropertyValue("ALL", "Transformed.CoreDistanceXPlus"))
+    xMinus = CDbl(ResultsPropertyValue("ALL", "Transformed.CoreDistanceXMinus"))
+    yPlus = CDbl(ResultsPropertyValue("ALL", "Transformed.CoreDistanceYPlus"))
+    yMinus = CDbl(ResultsPropertyValue("ALL", "Transformed.CoreDistanceYMinus"))
+    AssertTrue stats, "ui.results.properties.transformedCoreDistanceXY.positive", _
+        xPlus > 0# And xMinus > 0# And yPlus > 0# And yMinus > 0#
+    AssertTrue stats, "ui.results.properties.concreteCoreDistanceXY.exists", _
+        Len(ResultsPropertyValue("ALL", "Concrete.CoreDistanceXPlus")) > 0 And _
+        Len(ResultsPropertyValue("ALL", "Concrete.CoreDistanceYMinus")) > 0
 End Sub
 
 Private Function PlotChartExists() As Boolean

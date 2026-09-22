@@ -98,8 +98,8 @@ Private mCapacitySearchMethod As String ' Bisection, Brent или Secant для 
 Private mCapacityMaxLambda As Double ' Верхняя защитная граница lambda для расширения скобки LoadMultiplier.
 Private mCapacityToleranceLambda As Double ' Точность lambda в одномерном поиске LoadMultiplier.
 Private mCapacityToleranceStrain As Double ' Точность попадания в предельную деформацию UltimateStrain.
-Private mCapacityMaxRetries As Long ' Повторные попытки LoadMultiplier при несходимости пробной точки.
-Private mCapacityBaseLoadSteps As Long ' Базовое число load steps для пробной точки capacity.
+Private mCapacityMaxRetries As Long ' Повторные попытки LoadMultiplier при несходимости той же lambda-точки.
+Private mCapacityBaseLoadSteps As Long ' Базовое число load steps для первой попытки lambda-точки capacity.
 Private mCapacitySolverMaxIterations As Long ' Лимит итераций внутреннего solver-а при capacity-поиске.
 Private mReport As CExecutionReport ' Необязательный человекочитаемый отчет выполнения; расчетная логика от него не зависит.
 Private mReportUnits As CUnitSystem ' Единицы и знаки для человекочитаемых физических величин execution_report.
@@ -1073,7 +1073,7 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
                     loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase
             End If
         Case "LoadMultiplier"
-            ReportStep "Несущая способность: расчет идет через LoadMultiplier, то есть программа подбирает λ и для каждой пробной точки заново решает НДС."
+            ReportStep "Несущая способность: расчет идет через LoadMultiplier, то есть программа подбирает λ и для каждой lambda-точки заново решает НДС."
             cap.SolveByLoadPathMultiplier mSection, mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
                 mMaterialProvider.SteelMaterialFromSpec(strengthSpec), loadPath.NOffset, loadPath.NBase, _
                 loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, loadPath.ForceOnly
@@ -1926,8 +1926,8 @@ Private Function CompactStateSolutionDiagnosticText(ByVal body As String) As Str
 End Function
 
 ' Сжимает диагностический блок поиска несущей способности. Полный список
-' probe-точек слишком шумный, поэтому в отчете оставляем число проб и
-' последнюю строку как краткую трассировку результата.
+' lambda-точек может быть большим, но для инженерной диагностики полезно
+' видеть каждую проверенную точку и возможный retry НДС.
 Private Function CompactCapacityDiagnosticText(ByVal body As String) As String
     Dim lines() As String
     lines = Split(body, vbCrLf)
@@ -1963,7 +1963,7 @@ Private Function TranslateDiagnosticLine(ByVal lineText As String) As String
     translated = Replace$(translated, "lambda_crc=", "Найден lambda_crc=")
     translated = Replace$(translated, "lambda_crc_iter=", "итерация прямого поиска lambda_crc=")
     translated = Replace$(translated, "lambda_crc_path_iter=", "итерация UltimateStrain по lambda-траектории lambda_crc=")
-    translated = Replace$(translated, "lambda_crc_load_probe=", "проба LoadMultiplier lambda_crc=")
+    translated = Replace$(translated, "lambda_crc_load_probe=", "точка LoadMultiplier lambda_crc=")
     translated = Replace$(translated, "iterations=", "итераций=")
     translated = Replace$(translated, "method=", "метод=")
     translated = Replace$(translated, "formation=Ncrc", "Образование трещины найдено по центральному растяжению Ncrc")
@@ -1974,7 +1974,7 @@ Private Function TranslateDiagnosticLine(ByVal lineText As String) As String
     translated = Replace$(translated, "guardedLambda=", "защищенная lambda=")
     translated = Replace$(translated, "bracketLow=", "нижняя граница=")
     translated = Replace$(translated, "bracketHigh=", "верхняя граница=")
-    translated = Replace$(translated, "probe=", "проба=")
+    translated = Replace$(translated, "probe=", "точка lambda=")
     translated = Replace$(translated, "step=", "шаг=")
     translated = Replace$(translated, "iter=", "итерация=")
     translated = Replace$(translated, "directStateRetry=", "повтор прямого НДС=")

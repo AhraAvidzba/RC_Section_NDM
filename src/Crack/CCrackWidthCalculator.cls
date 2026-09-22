@@ -1456,7 +1456,7 @@ Private Function NewLoadPathMath() As CLoadPathMath
     Set NewLoadPathMath = loadPathMath
 End Function
 
-' Проверяет, что пробная точка lambda действительно не содержит усилий.
+' Проверяет, что lambda-точка действительно не содержит усилий.
 ' Такой случай возникает у lambda*NMxy при lambda=0: это не расчетное НДС, а
 ' только нижняя граница bracket-а "трещины еще нет".
 Private Function IsZeroLoadProbe(ByVal nValue As Double, ByVal mxValue As Double, _
@@ -1546,7 +1546,7 @@ UpperSolved:
     FindLoadScalingFormationBracket = True
 End Function
 
-' Решает одну пробную точку lambda выбранного пути и возвращает residual
+' Решает одну lambda-точку выбранного пути и возвращает residual
 ' образования трещины. startSolver используется только как стартовая плоскость.
 Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
@@ -1590,7 +1590,7 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
     End If
 
     ' Если warm-start от соседней lambda-точки оказался неудачным, пробуем
-    ' стартовую плоскость от самой probe-нагрузки. Это тот же общий механизм,
+    ' стартовую плоскость от нагрузки в текущей lambda-точке. Это тот же общий механизм,
     ' которым пользуются опасные траектории DirectState/Capacity: меняется
     ' только начальная плоскость Newton, а не сама траектория lambda.
     If Not startSolver Is Nothing Then
@@ -1609,7 +1609,7 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
         AppendLoadScalingProbeDiagnostic lambdaValue, 0#, False
 End Function
 
-' Записывает одну пробную точку fallback-метода LoadMultiplier. В отличие от
+' Записывает одну lambda-точку fallback-метода LoadMultiplier. В отличие от
 ' строк UltimateStrain, здесь lambda проверяется обычным НДС CrackInitiation,
 ' поэтому отдельная подпись метода важна для читаемой хронологии отчета.
 Private Sub AppendLoadScalingProbeDiagnostic(ByVal lambdaValue As Double, _
@@ -1624,7 +1624,7 @@ Private Sub AppendLoadScalingProbeDiagnostic(ByVal lambdaValue As Double, _
     End If
 End Sub
 
-' Возвращает warm-start для probe solve только если в нем действительно есть
+' Возвращает warm-start для решения НДС только если в нем действительно есть
 ' ненулевая плоскость деформаций. Это защищает lambda*NMxy от плохого старта
 ' из полностью нулевого НДС при lambda=0.
 Private Function EffectiveLoadScalingWarmStart(ByVal startSolver As CSectionSolver) As CSectionSolver
@@ -1636,7 +1636,7 @@ Private Function EffectiveLoadScalingWarmStart(ByVal startSolver As CSectionSolv
     Set EffectiveLoadScalingWarmStart = startSolver
 End Function
 
-' Строит активную стартовую плоскость для отдельной probe-точки lambda.
+' Строит активную стартовую плоскость для отдельной lambda-точки.
 ' Используется тем же CStateGuessBuilder, что и общий runner прямого НДС:
 ' это помогает lambda*N/lambda*NMxy начинать не с нулевой плоскости и не
 ' зависеть от плохой соседней точки bracket-а.
