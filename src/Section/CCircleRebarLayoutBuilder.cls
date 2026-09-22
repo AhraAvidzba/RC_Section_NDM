@@ -36,7 +36,7 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
         centerX, _
         centerY, _
         units.InputLengthToInternal(settings.GetDouble("Rebar.AxisDistance", 40#)), _
-        settings.GetLong("Rebar.Count", 8), _
+        settings.GetLong("Rebar.Count", 0), _
         OptionalDiameterFromSettings(settings, units, "Rebar.Diameter", 20#), _
         REBAR_STEEL_CLASS, _
         OptionalDiameterFromSettings(settings, units, "Rebar.Diameter2", 0#), _

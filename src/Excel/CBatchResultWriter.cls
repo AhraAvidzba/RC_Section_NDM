@@ -20,7 +20,6 @@ Option Explicit
 ' CBatchSectionCalculator и записывает их на лист одним массивом.
 
 Private Const TARGET_COLUMNS As Long = 25 ' Ширина верхней сводки с разложением устойчивости по СП, плоскостям и ветвям.
-Private Const LEGACY_SUMMARY_CLEAR_COLUMNS As Long = 34 ' Чистит старую широкую сводку и правый словарь статусов при первом запуске новой версии.
 Private Const META_ROWS As Long = 4 ' Верхние строки с общими сведениями о запуске.
 Private Const GROUP_HEADER_ROW As Long = 6 ' Первая строка шестистрочной шапки основной таблицы.
 Private Const SUBGROUP_HEADER_ROW As Long = 7 ' Строка внутренних подзаголовков расчетных блоков.
@@ -228,7 +227,7 @@ Private Function SummaryClearRange(ByVal workbook As Object) As Object
 
 UseDefaultHeight:
     If anchor.Row + rowsToClear - 1 > anchor.Worksheet.Rows.Count Then rowsToClear = anchor.Worksheet.Rows.Count - anchor.Row + 1
-    Set SummaryClearRange = anchor.Resize(rowsToClear, MaxLong(RequiredSummaryOutputColumns(), LEGACY_SUMMARY_CLEAR_COLUMNS))
+    Set SummaryClearRange = anchor.Resize(rowsToClear, RequiredSummaryOutputColumns())
 End Function
 
 ' Снимает объединения и очищает текущую сводку до блочной записи массива.

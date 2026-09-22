@@ -43,10 +43,10 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
         units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Right.R2", 0#))
 
     Set BuildFromSettings = Build(geom, _
-        ReadFaceSettingsFromConfig(settings, units, "H.Left", "40", "32", "5"), _
-        ReadFaceSettingsFromConfig(settings, units, "H.Right", "40", "32", "5"), _
-        ReadFaceSettingsFromConfig(settings, units, "B.Top", "40", "32", "8"), _
-        ReadFaceSettingsFromConfig(settings, units, "B.Bottom", "40", "32", "8"), _
+        ReadFaceSettingsFromConfig(settings, units, "H.Left", "40", "32"), _
+        ReadFaceSettingsFromConfig(settings, units, "H.Right", "40", "32"), _
+        ReadFaceSettingsFromConfig(settings, units, "B.Top", "40", "32"), _
+        ReadFaceSettingsFromConfig(settings, units, "B.Bottom", "40", "32"), _
         REBAR_STEEL_CLASS)
 End Function
 
@@ -78,11 +78,11 @@ End Function
 
 ' Читает параметры одной строки арматуры RoundedRectangle.
 Private Function ReadFaceSettingsFromConfig(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
-        ByVal faceName As String, ByVal defaultAs As String, ByVal defaultD As String, ByVal defaultN As String) As Variant
+        ByVal faceName As String, ByVal defaultAs As String, ByVal defaultD As String) As Variant
     ReadFaceSettingsFromConfig = Array( _
         units.InputLengthToInternal(settings.GetDouble("RoundedRectangle." & faceName & ".as", CDbl(defaultAs))), _
         OptionalDiameterFromSettings(settings, units, "RoundedRectangle." & faceName & ".d", CDbl(defaultD)), _
-        settings.GetLong("RoundedRectangle." & faceName & ".n", CLng(defaultN)), _
+        settings.GetLong("RoundedRectangle." & faceName & ".n", 0), _
         OptionalDiameterFromSettings(settings, units, "RoundedRectangle." & faceName & ".d_2row", 0#), _
         OptionalDiameterFromSettings(settings, units, "RoundedRectangle." & faceName & ".d_3row", 0#), _
         settings.GetString("RoundedRectangle." & faceName & ".loc_2row", "Stacked"), _

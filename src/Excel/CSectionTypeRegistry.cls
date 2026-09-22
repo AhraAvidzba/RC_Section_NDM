@@ -185,6 +185,11 @@ Public Function BuildGeneratedModel(ByVal settings As CSystemSettingsReader, ByV
 
     Dim rebars As CRebarLayout
     Set rebars = CreateRebars(geometry, settings, units)
+    If rebars Is Nothing Or rebars.Count = 0 Then
+        Err.Raise vbObjectError + 4138, "CSectionTypeRegistry", _
+            "Для выбранного параметрического сечения не задан ни один стержень арматуры. " & _
+            "Допустимо оставить отдельные грани без арматуры, но в сечении должен быть хотя бы один стержень."
+    End If
 
     Dim model As CSectionModel
     Dim modelBuilder As CSectionModelBuilder

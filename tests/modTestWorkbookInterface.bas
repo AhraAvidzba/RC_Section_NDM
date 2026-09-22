@@ -59,7 +59,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestCapacitySearchMethodValidation stats
     TestSolverToleranceUnitLabels stats
     TestCapacitySettingsUnitLabels stats
-    TestBlankDiametersDisableGeneratedRebars stats
+    TestRebarInputValidationDoesNotUseHiddenDefaults stats
     TestClearResultsKeepsInputs stats
 
     AppendLine stats, "TOTAL_WORKBOOK_UI: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
@@ -149,34 +149,42 @@ Private Function ButtonTextIsCentered(ByVal buttonShape As Object) As Boolean
         buttonShape.TextFrame.VerticalAlignment = -4108)
 End Function
 
-' Проверяет пользовательское правило: пустой диаметр арматуры означает
-' отсутствие ряда, а не подстановку типового default-диаметра из кода.
-Private Sub TestBlankDiametersDisableGeneratedRebars(ByRef stats As TUiTestStats)
+' Проверяет пользовательское правило: количество стержней не подставляется из
+' кода, а локальное n=0 или d=0 просто отключает соответствующую линию.
+Private Sub TestRebarInputValidationDoesNotUseHiddenDefaults(ByRef stats As TUiTestStats)
     PrepareCircleInput
     SetSystemSetting "Rebar.Diameter", vbNullString
 
-    Dim circleSection As CSectionModel
-    Set circleSection = BuildCurrentWorkbookSection()
-    AssertTrue stats, "ui.circle.blankDiameter.noRebar", circleSection.RebarCount = 0
-    AssertTrue stats, "ui.circle.blankDiameter.dimensionsRemain", circleSection.AnnotationCount >= 2
+    Dim errorText As String
+    errorText = BuildCurrentWorkbookSectionError()
+    AssertTrue stats, "ui.circle.blankDiameter.noHiddenDefaults", _
+        InStr(1, errorText, "не задан ни один стержень", vbTextCompare) > 0
 
     PrepareRectSetInput
     SetSystemSetting "RectSet.H1.d_1", vbNullString
 
     Dim rectsetSection As CSectionModel
     Set rectsetSection = BuildCurrentWorkbookSection()
-    AssertTrue stats, "ui.rectset.blankFaceDiameter.skipsLine", rectsetSection.RebarCount = 7
-    AssertTrue stats, "ui.rectset.blankFaceDiameter.dimensionsRemain", rectsetSection.AnnotationCount >= 4
+    AssertTrue stats, "ui.rectset.blankDiameterWithCount.skipsLine", rectsetSection.RebarCount = 7
+    AssertTrue stats, "ui.rectset.blankDiameterWithCount.dimensionsRemain", rectsetSection.AnnotationCount >= 4
+
+    PrepareRectSetInput
+    SetSystemSetting "RectSet.H1.n_1", "0"
+    SetSystemSetting "RectSet.H1.d_1", vbNullString
+
+    Set rectsetSection = BuildCurrentWorkbookSection()
+    AssertTrue stats, "ui.rectset.zeroCountBlankDiameter.skipsLine", rectsetSection.RebarCount = 7
+    AssertTrue stats, "ui.rectset.zeroCountBlankDiameter.dimensionsRemain", rectsetSection.AnnotationCount >= 4
 
     SetSystemSetting "Geometry.Type", "RoundedRectangle"
-    SetSystemSetting "RoundedRectangle.H.Left.d", vbNullString
-    SetSystemSetting "RoundedRectangle.H.Right.d", vbNullString
-    SetSystemSetting "RoundedRectangle.B.Top.d", vbNullString
-    SetSystemSetting "RoundedRectangle.B.Bottom.d", vbNullString
-    Dim roundedSection As CSectionModel
-    Set roundedSection = BuildCurrentWorkbookSection()
-    AssertTrue stats, "ui.rounded.noAutoRebar.noError", roundedSection.RebarCount = 0
-    AssertTrue stats, "ui.rounded.noAutoRebar.dimensionsRemain", roundedSection.AnnotationCount >= 2
+    SetSystemSetting "RoundedRectangle.H.Left.n", vbNullString
+    SetSystemSetting "RoundedRectangle.H.Right.n", vbNullString
+    SetSystemSetting "RoundedRectangle.B.Top.n", vbNullString
+    SetSystemSetting "RoundedRectangle.B.Bottom.n", vbNullString
+
+    errorText = BuildCurrentWorkbookSectionError()
+    AssertTrue stats, "ui.rounded.blankCounts.noHiddenDefaults", _
+        InStr(1, errorText, "не задан ни один стержень", vbTextCompare) > 0
 
     PrepareCircleInput
 End Sub
@@ -193,6 +201,21 @@ Private Function BuildCurrentWorkbookSection() As CSectionModel
     units.LoadFromSettings settings
 
     Set BuildCurrentWorkbookSection = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
+End Function
+
+' Возвращает текст ошибки при сборке модели или пустую строку, если модель
+' построилась. Нужна для тестов пользовательской валидации Config без остановки
+' всего набора workbook-тестов.
+Private Function BuildCurrentWorkbookSectionError() As String
+    On Error GoTo GotError
+    Dim section As CSectionModel
+    Set section = BuildCurrentWorkbookSection()
+    BuildCurrentWorkbookSectionError = vbNullString
+    Exit Function
+
+GotError:
+    BuildCurrentWorkbookSectionError = Err.Description
+    Err.Clear
 End Function
 
 ' Проверяет, что включенный общий флаг создает человекочитаемый txt-отчет
@@ -3153,7 +3176,7 @@ Private Function BuildUiBatch() As CBatchSectionCalculator
         0#, _
         0#, _
         settings.GetDouble("Rebar.AxisDistance", 40#), _
-        settings.GetLong("Rebar.Count", 8), _
+        settings.GetLong("Rebar.Count", 0), _
         settings.GetDouble("Rebar.Diameter", 20#), _
         "Rebar")
     Dim materialProvider As CMaterialModelProvider

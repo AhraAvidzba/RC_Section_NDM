@@ -41,14 +41,14 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
         units.InputLengthToInternal(settings.GetDouble("HollowRectangle.InnerOffsetY", 0#))
 
     Set BuildFromSettings = Build(geom, _
-        ReadFaceSettingsFromConfig(settings, units, "H.Left", "40", "20", "6"), _
-        ReadFaceSettingsFromConfig(settings, units, "H.Right", "40", "20", "6"), _
-        ReadFaceSettingsFromConfig(settings, units, "B.Top", "40", "20", "8"), _
-        ReadFaceSettingsFromConfig(settings, units, "B.Bottom", "40", "20", "8"), _
-        ReadFaceSettingsFromConfig(settings, units, "Opening.H.Left", "40", "20", "0"), _
-        ReadFaceSettingsFromConfig(settings, units, "Opening.H.Right", "40", "20", "0"), _
-        ReadFaceSettingsFromConfig(settings, units, "Opening.B.Top", "40", "20", "0"), _
-        ReadFaceSettingsFromConfig(settings, units, "Opening.B.Bottom", "40", "20", "0"), _
+        ReadFaceSettingsFromConfig(settings, units, "H.Left", "40", "20"), _
+        ReadFaceSettingsFromConfig(settings, units, "H.Right", "40", "20"), _
+        ReadFaceSettingsFromConfig(settings, units, "B.Top", "40", "20"), _
+        ReadFaceSettingsFromConfig(settings, units, "B.Bottom", "40", "20"), _
+        ReadFaceSettingsFromConfig(settings, units, "Opening.H.Left", "40", "20"), _
+        ReadFaceSettingsFromConfig(settings, units, "Opening.H.Right", "40", "20"), _
+        ReadFaceSettingsFromConfig(settings, units, "Opening.B.Top", "40", "20"), _
+        ReadFaceSettingsFromConfig(settings, units, "Opening.B.Bottom", "40", "20"), _
         REBAR_STEEL_CLASS)
 End Function
 
@@ -102,11 +102,11 @@ End Function
 
 ' Читает компактную строку параметров одной смысловой грани.
 Private Function ReadFaceSettingsFromConfig(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
-        ByVal faceName As String, ByVal defaultAs As String, ByVal defaultD As String, ByVal defaultN As String) As Variant
+        ByVal faceName As String, ByVal defaultAs As String, ByVal defaultD As String) As Variant
     ReadFaceSettingsFromConfig = Array( _
         units.InputLengthToInternal(settings.GetDouble("HollowRectangle." & faceName & ".as", CDbl(defaultAs))), _
         OptionalDiameterFromSettings(settings, units, "HollowRectangle." & faceName & ".d", CDbl(defaultD)), _
-        settings.GetLong("HollowRectangle." & faceName & ".n", CLng(defaultN)), _
+        settings.GetLong("HollowRectangle." & faceName & ".n", 0), _
         OptionalDiameterFromSettings(settings, units, "HollowRectangle." & faceName & ".d_2row", 0#), _
         OptionalDiameterFromSettings(settings, units, "HollowRectangle." & faceName & ".d_3row", 0#), _
         settings.GetString("HollowRectangle." & faceName & ".loc_2row", "Stacked"), _

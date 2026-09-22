@@ -536,8 +536,56 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
 
 MissingAnchor:
     Err.Raise vbObjectError + 4164, "ValidateResultsOutputLayout", _
-        "На листе Results не найден один из обязательных якорей вывода: rngBatchSummary, rngStrengthSummaryAnchor, rngCrackSummaryAnchor, rngStabilitySummaryAnchor или rngNDMElementResults."
+        MissingResultsAnchorMessage(workbook)
 End Sub
+
+' Формирует понятное сообщение о конкретных Results-якорях, без которых
+' невозможно заранее проверить раскладку блоков вывода.
+Private Function MissingResultsAnchorMessage(ByVal workbook As Object) As String
+    Dim requiredNames As Variant
+    requiredNames = Array( _
+        "rngBatchSummary", _
+        "rngStrengthSummaryAnchor", _
+        "rngCrackSummaryAnchor", _
+        "rngStabilitySummaryAnchor", _
+        "rngNDMElementResults")
+
+    Dim missing As String
+    Dim index As Long
+    For index = LBound(requiredNames) To UBound(requiredNames)
+        If Not WorkbookNameHasRange(workbook, CStr(requiredNames(index))) Then
+            If Len(missing) > 0 Then missing = missing & ", "
+            missing = missing & CStr(requiredNames(index))
+        End If
+    Next index
+
+    If Len(missing) = 0 Then
+        MissingResultsAnchorMessage = _
+            "На листе Results не удалось прочитать один из обязательных якорей вывода. " & _
+            "Проверьте именованные диапазоны rngBatchSummary, rngStrengthSummaryAnchor, " & _
+            "rngCrackSummaryAnchor, rngStabilitySummaryAnchor и rngNDMElementResults."
+    ElseIf InStr(1, missing, ",", vbBinaryCompare) > 0 Then
+        MissingResultsAnchorMessage = _
+            "На листе Results не найдены обязательные якоря вывода: " & missing & ". " & _
+            "Добавьте эти именованные диапазоны на лист Results."
+    Else
+        MissingResultsAnchorMessage = _
+            "На листе Results не найден обязательный якорь вывода: " & missing & ". " & _
+            "Добавьте именованный диапазон " & missing & " на лист Results."
+    End If
+End Function
+
+' Проверяет, что имя существует в книге и действительно ссылается на диапазон.
+Private Function WorkbookNameHasRange(ByVal workbook As Object, ByVal rangeName As String) As Boolean
+    On Error GoTo MissingName
+    Dim anchor As Object
+    Set anchor = workbook.Names.Item(rangeName).RefersToRange
+    WorkbookNameHasRange = Not anchor Is Nothing
+    Exit Function
+
+MissingName:
+    WorkbookNameHasRange = False
+End Function
 
 ' Проверяет нижние соседние блоки Results по строкам листа и по ширине.
 Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workbook As Object, _

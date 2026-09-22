@@ -131,15 +131,49 @@ Public Sub ClearResults(ByVal workbook As Object)
     ClearNamedRegion workbook, "rngNDMMaterialDiagrams"
 End Sub
 
-' Безопасно чистит именованный диапазон, если он существует в книге.
+' Безопасно чистит только фактический прямоугольник одной snapshot-таблицы.
+' Ширина берется из схемы writer-а, а высота - по заполненному первому
+' столбцу старой таблицы. CurrentRegion здесь не используется: он может
+' захватить соседние Results-блоки из-за старого форматирования листа.
 Private Sub ClearNamedRegion(ByVal workbook As Object, ByVal rangeName As String)
     On Error GoTo MissingRange
     Dim anchor As Object
     Set anchor = workbook.Names.Item(rangeName).RefersToRange
-    anchor.CurrentRegion.ClearContents
-    If anchor.Row > 1 Then anchor.Offset(-1, 0).Resize(1, 20).Clear
+
+    Dim columnCount As Long
+    columnCount = OutputColumnCount(rangeName)
+
+    Dim rowCount As Long
+    rowCount = ExistingAnchoredRowCount(anchor)
+    If rowCount < 1 Then rowCount = 1
+
+    Dim tableRange As Object
+    Set tableRange = anchor.Resize(rowCount, columnCount)
+    tableRange.UnMerge
+    tableRange.Clear
+
+    If anchor.Row > 1 Then
+        Dim titleRange As Object
+        Set titleRange = anchor.Offset(-1, 0).Resize(1, columnCount)
+        titleRange.UnMerge
+        titleRange.Clear
+    End If
 MissingRange:
 End Sub
+
+' Определяет высоту уже записанной anchored-таблицы по первому столбцу.
+' Все нижние Results-таблицы имеют непустой первый столбец в строке шапки
+' и в каждой строке данных, поэтому первая пустая ячейка завершает блок.
+Private Function ExistingAnchoredRowCount(ByVal anchor As Object) As Long
+    Dim maxOffset As Long
+    maxOffset = anchor.Worksheet.Rows.Count - anchor.Row
+
+    Dim rowOffset As Long
+    For rowOffset = 0 To maxOffset
+        If Len(Trim$(CStr(anchor.Offset(rowOffset, 0).Value2))) = 0 Then Exit For
+        ExistingAnchoredRowCount = ExistingAnchoredRowCount + 1
+    Next rowOffset
+End Function
 
 ' Записывает общий заголовок над нижними snapshot-таблицами Results.
 Private Sub WriteSnapshotTitle(ByVal workbook As Object)
