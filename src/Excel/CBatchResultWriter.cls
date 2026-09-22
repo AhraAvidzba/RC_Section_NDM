@@ -62,8 +62,6 @@ Private Const DEFAULT_SUMMARY_ROWS As Long = 42 ' Штатная высота ш
 Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' Единая ширина всех столбцов Results.
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Светло-серый фон заголовков.
-Private Const FAILED_ROW_COLOR As Long = &HCEC7FF ' Светло-красный фон LC, где расчет не прошел или не сошелся.
-Private Const FAILED_FONT_COLOR As Long = &H9C0006 ' Темно-красный текст для строк FAIL/NumFail/InputErr.
 
 ' Возвращает высоту основной таблицы Summary для фактического количества LC.
 Public Function RequiredSummaryRows(ByVal combinationCount As Long) As Long
@@ -586,7 +584,7 @@ Private Sub PutReserveCell(ByRef data() As Variant, ByVal rowIndex As Long, _
 End Sub
 
 ' Применяет визуальное оформление compact summary: объединения, серые шапки,
-' подсветку failed-статусов, единые шрифты и рамки.
+' статусную палитру, единые шрифты и рамки.
 Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVal batch As CBatchSectionCalculator)
     On Error GoTo Failed
 
@@ -658,8 +656,8 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     target.Offset(FIRST_DATA_ROW - 1, SUM_COL_COMMENT - 1).Resize(dataRows, 1).HorizontalAlignment = -4131
     target.Offset(GROUP_HEADER_ROW - 1, 3).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 1).Interior.ColorIndex = -4142
     target.Offset(GROUP_HEADER_ROW - 1, 14).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 1).Interior.ColorIndex = -4142
-    stage = "FormatOverallStatusRows"
-    FormatOverallStatusRows target, batch
+    stage = "FormatStatusCells"
+    FormatStatusCells target, batch
     stage = "WriteStatusLegend"
     WriteStatusLegend target
 
@@ -718,6 +716,10 @@ Private Sub WriteStatusLegend(ByVal target As Object)
     legend.Offset(2, 0).Resize(STATUS_LEGEND_ROWS - 2, STATUS_LEGEND_COLUMNS).Font.Italic = True
     legend.Rows.Item(1).Interior.Color = HEADER_COLOR
     legend.Rows.Item(2).Interior.Color = HEADER_COLOR
+    Dim rowIndex As Long
+    For rowIndex = 3 To STATUS_LEGEND_ROWS
+        ApplyStatusFill legend.Cells(rowIndex, 1), CStr(data(rowIndex, 1))
+    Next rowIndex
     legend.Columns.Item(1).HorizontalAlignment = -4108
     legend.Columns.Item(2).HorizontalAlignment = -4131
     ApplySummaryBorders legend
@@ -756,65 +758,35 @@ Private Sub ApplySummaryBorders(ByVal area As Object)
     area.Borders.Weight = 2
 End Sub
 
-' Подсвечивает только конкретные ячейки проверок, которые не прошли.
-' Соседние блоки LC остаются без красной заливки, если их собственный статус OK.
-Private Sub FormatOverallStatusRows(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
+' Красит статусные ячейки compact summary по единой палитре OK/FAIL/NumFail/InputErr/N/A.
+Private Sub FormatStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
     If batch Is Nothing Then Exit Sub
     If batch.Count <= 0 Then Exit Sub
-
-    Dim policy As CBatchStatusPolicy
-    Set policy = StatusPolicy()
 
     Dim i As Long
     For i = 1 To batch.Count
         Dim rowNumber As Long
         rowNumber = FIRST_DATA_ROW + i - 2
-        HighlightFailedCell target, rowNumber, SUM_COL_OVERALL_STATUS, policy, batch.OverallStatus(i)
-        HighlightFailedPair target, rowNumber, SUM_COL_STATUS_STRAIN, SUM_COL_RESERVE_STRAIN, policy, batch.DirectStateStatus(i)
-        HighlightFailedPair target, rowNumber, SUM_COL_STATUS_CAPACITY, SUM_COL_RESERVE_CAPACITY, policy, batch.CapacityStatus(i)
-        HighlightFailedPair target, rowNumber, SUM_COL_STATUS_CRACK, SUM_COL_RESERVE_CRACK, policy, batch.CrackStatus(i)
-        HighlightFailedPair target, rowNumber, SUM_COL_STATUS_LONG_CRACK, SUM_COL_RESERVE_LONG_CRACK, policy, batch.LongitudinalCrackStatus(i)
-        HighlightStabilityFailedPair target, rowNumber, SUM_COL_STATUS_SP35_P1_ETA, SUM_COL_RESERVE_SP35_P1_ETA, batch, i, 1, "SP35-eta"
-        HighlightStabilityFailedPair target, rowNumber, SUM_COL_STATUS_SP35_P1_TABLE, SUM_COL_RESERVE_SP35_P1_TABLE, batch, i, 1, "SP35-table"
-        HighlightStabilityFailedPair target, rowNumber, SUM_COL_STATUS_SP35_P2_ETA, SUM_COL_RESERVE_SP35_P2_ETA, batch, i, 2, "SP35-eta"
-        HighlightStabilityFailedPair target, rowNumber, SUM_COL_STATUS_SP35_P2_TABLE, SUM_COL_RESERVE_SP35_P2_TABLE, batch, i, 2, "SP35-table"
-        HighlightStabilityFailedPair target, rowNumber, SUM_COL_STATUS_SP63_P1, SUM_COL_RESERVE_SP63_P1, batch, i, 1, "SP63"
-        HighlightStabilityFailedPair target, rowNumber, SUM_COL_STATUS_SP63_P2, SUM_COL_RESERVE_SP63_P2, batch, i, 2, "SP63"
+        ApplyStatusCell target, rowNumber, SUM_COL_OVERALL_STATUS
+        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_STRAIN
+        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_CAPACITY
+        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_CRACK
+        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_LONG_CRACK
+        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_SP35_P1_ETA
+        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_SP35_P1_TABLE
+        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_SP35_P2_ETA
+        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_SP35_P2_TABLE
+        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_SP63_P1
+        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_SP63_P2
     Next i
 End Sub
 
-' Подсвечивает только ту ветвь устойчивости, которая реально применялась к LC.
-Private Sub HighlightStabilityFailedPair(ByVal target As Object, ByVal rowNumber As Long, _
-        ByVal statusColumn As Long, ByVal reserveColumn As Long, _
-        ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal planeIndex As Long, ByVal branchKey As String)
-    If Not StabilityBranchApplies(batch, index, planeIndex, branchKey) Then Exit Sub
-    If StabilityPlanePassed(batch, index, planeIndex) Then Exit Sub
-    HighlightCell target, rowNumber, statusColumn
-    HighlightCell target, rowNumber, reserveColumn
-End Sub
-
-' Подсвечивает пару "статус + запас", если соответствующая проверка не прошла.
-Private Sub HighlightFailedPair(ByVal target As Object, ByVal rowNumber As Long, _
-        ByVal statusColumn As Long, ByVal reserveColumn As Long, _
-        ByVal policy As CBatchStatusPolicy, ByVal statusText As String)
-    If Not policy.IsFailedOverall(statusText) Then Exit Sub
-    HighlightCell target, rowNumber, statusColumn
-    HighlightCell target, rowNumber, reserveColumn
-End Sub
-
-' Подсвечивает одиночный статус, если CBatchStatusPolicy считает его failing.
-Private Sub HighlightFailedCell(ByVal target As Object, ByVal rowNumber As Long, _
-        ByVal columnIndex As Long, ByVal policy As CBatchStatusPolicy, ByVal statusText As String)
-    If policy.IsFailedOverall(statusText) Then HighlightCell target, rowNumber, columnIndex
-End Sub
-
-' Применяет цветовую подсветку к одной ячейке summary.
-Private Sub HighlightCell(ByVal target As Object, ByVal rowNumber As Long, ByVal columnIndex As Long)
-    With target.Offset(rowNumber, columnIndex - 1).Resize(1, 1)
-        .Interior.Color = FAILED_ROW_COLOR
-        .Font.Color = FAILED_FONT_COLOR
-    End With
+' Красит одну статусную ячейку строки LC, не затрагивая соседние коэффициенты запаса.
+Private Sub ApplyStatusCell(ByVal target As Object, ByVal rowNumber As Long, ByVal columnIndex As Long)
+    Dim cell As Object
+    Set cell = target.Offset(rowNumber, columnIndex - 1).Resize(1, 1)
+    If Len(Trim$(CStr(cell.Value2))) = 0 Then Exit Sub
+    ApplyStatusFill cell, CStr(cell.Value2)
 End Sub
 
 ' Возвращает общий объект политики статусов для writer-а.

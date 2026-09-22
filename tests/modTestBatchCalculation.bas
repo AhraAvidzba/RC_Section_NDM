@@ -3434,9 +3434,21 @@ Private Sub TestBatchSummaryWritesOnlySelectedStabilityCode(ByRef stats As TBatc
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
     AssertTrue stats, "batch.writer.stability.anchor", stabilityAnchor.Row = 122 And stabilityAnchor.Column = 1
     AssertTrue stats, "batch.writer.stability.sp35.empty", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 28).Value2)) = 0 And _
-        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 43).Value2)) = 0
+        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 29).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 44).Value2)) = 0
+    AssertTrue stats, "batch.writer.stability.sp35.naStatus", _
+        CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 37).Value2) = "N/A" And _
+        CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 43).Value2) = "N/A" And _
+        CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 52).Value2) = "N/A" And _
+        CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 58).Value2) = "N/A" And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 37) And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 43)
     AssertTrue stats, "batch.writer.stability.sp63.filled", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 60).Value2)) > 0 Or _
         Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 71).Value2)) > 0
+    AssertTrue stats, "batch.writer.stability.sp63.statusColor", _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 71) And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 83) And _
+        CellHasNoFill(resultsSheet, stabilityAnchor.Row, 60)
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -3628,14 +3640,39 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.statusLegend.italicValues", _
         resultsSheet.Cells.Item(summaryRow + 7, 27).Font.Italic And _
         resultsSheet.Cells.Item(summaryRow + 11, 28).Font.Italic
+    AssertTrue stats, "batch.writer.statusLegend.colors", _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 7, 27) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 8, 27) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 9, 27) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 10, 27) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 11, 27)
     AssertTrue stats, "batch.writer.reserve.dataNotHeaderFill", _
         resultsSheet.Cells.Item(summaryRow + 12, 16).Interior.ColorIndex = -4142
     AssertWorstSummaryRowMatchesData stats, resultsSheet
     AssertTrue stats, "batch.writer.data.firstId", CStr(resultsSheet.Cells.Item(summaryRow + 12, 1).Value2) = "W1"
     AssertTrue stats, "batch.writer.data.capacityStatus", Len(CStr(resultsSheet.Cells.Item(summaryRow + 12, 6).Value2)) > 0
     AssertTrue stats, "batch.writer.data.capacityReserve", IsNumeric(resultsSheet.Cells.Item(summaryRow + 12, 17).Value2)
+    AssertTrue stats, "batch.writer.data.statusColors", _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 3) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 5) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 6) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 7) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 8) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 9) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 10) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 11) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 12) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 13) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 14)
     Dim strengthAnchor As Object
     Set strengthAnchor = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
+    AssertTrue stats, "batch.writer.strength.statusColors", _
+        StatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 2) And _
+        StatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 26) And _
+        StatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 42) And _
+        CellHasNoFill(resultsSheet, strengthAnchor.Row, 1) And _
+        CellHasNoFill(resultsSheet, strengthAnchor.Row, 10) And _
+        CellHasNoFill(resultsSheet, strengthAnchor.Row, 28)
     AssertTrue stats, "batch.writer.strength.absentZonesBlank", _
         Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 14).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 15).Value2)) = 0 And _
@@ -3648,6 +3685,13 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
         Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 21).Value2)) > 0
     Dim crackAnchor As Object
     Set crackAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
+    AssertTrue stats, "batch.writer.crack.statusColors", _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 2) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 39) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 43) And _
+        CellHasNoFill(resultsSheet, crackAnchor.Row, 1) And _
+        CellHasNoFill(resultsSheet, crackAnchor.Row, 10) And _
+        CellHasNoFill(resultsSheet, crackAnchor.Row, 40)
     AssertTrue stats, "batch.writer.crack.header.formationTitle", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 10).Value2) = "Момент образования трещин"
     AssertTrue stats, "batch.writer.crack.header.title", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 19).Value2) = "нормальные и продольные трещины"
     AssertTrue stats, "batch.writer.crack.header.mcrcNote", InStr(1, CStr(resultsSheet.Cells.Item(crackAnchor.Row - 2, 16).Value2), "моментного вектора", vbTextCompare) > 0
@@ -3667,6 +3711,15 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
         resultsSheet.Cells.Item(crackAnchor.Row + 19, 1).Borders(9).LineStyle <> -4142
     Dim stabilityAnchor As Object
     Set stabilityAnchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
+    AssertTrue stats, "batch.writer.stability.statusColor", _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 2) And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 37) And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 43) And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 52) And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 58) And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 71) And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 83) And _
+        CellHasNoFill(resultsSheet, stabilityAnchor.Row, 1)
     AssertTrue stats, "batch.writer.stability.header.summary", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 1).Value2) = _
         "Итог по расчету (с учетом " & ChrW$(&H3B7) & ")"
     AssertTrue stats, "batch.writer.stability.header.statusWidth", resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 2).MergeArea.Columns.Count = 1
@@ -3829,6 +3882,19 @@ Private Function BatchSummaryCellText(ByVal resultsSheet As Object, ByVal rowInd
     Set cell = resultsSheet.Cells.Item(rowIndex, columnIndex)
     If cell.MergeCells Then Set cell = cell.MergeArea.Cells.Item(1, 1)
     BatchSummaryCellText = Trim$(CStr(cell.Value2))
+End Function
+
+' Проверяет, что одна статусная ячейка окрашена по единой палитре Results.
+Private Function StatusCellHasExpectedFill(ByVal resultsSheet As Object, _
+        ByVal rowIndex As Long, ByVal columnIndex As Long) As Boolean
+    Dim statusText As String
+    statusText = CStr(resultsSheet.Cells.Item(rowIndex, columnIndex).Value2)
+    StatusCellHasExpectedFill = (CLng(resultsSheet.Cells.Item(rowIndex, columnIndex).Interior.Color) = StatusFillColor(statusText))
+End Function
+
+' Проверяет, что расчетная ячейка рядом со статусом не получила статусную заливку всего блока.
+Private Function CellHasNoFill(ByVal resultsSheet As Object, ByVal rowIndex As Long, ByVal columnIndex As Long) As Boolean
+    CellHasNoFill = (CLng(resultsSheet.Cells.Item(rowIndex, columnIndex).Interior.ColorIndex) = -4142)
 End Function
 
 ' Сверяет одну пару столбцов worst LC: номер сочетания и соответствующий запас.

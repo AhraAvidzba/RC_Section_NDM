@@ -37,8 +37,6 @@ Private Const SP63_PLANE1_FIRST As Long = 60
 Private Const SP63_PLANE2_FIRST As Long = 72
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, как в остальных таблицах Results.
-Private Const FAILED_ROW_COLOR As Long = &HCEC7FF ' Светло-красный фон проблемного блока.
-Private Const FAILED_FONT_COLOR As Long = &H9C0006 ' Темно-красный текст проблемного блока.
 Private Const SMALL_VALUE As Double = 0.000000001 ' Малый порог для деления и пустых расчетных полей.
 Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' В Results все столбцы оставляем одинаковой ширины.
 
@@ -415,6 +413,7 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
     statusText = policy.DisplayStatus(batch.StabilityStatus(index))
     data(rowIndex, 1) = batch.CombinationID(index)
     data(rowIndex, 2) = statusText
+    PutDefaultStatusCells data, rowIndex, policy.NotApplicable
     If statusText = policy.NotApplicable Then Exit Sub
     If Not policy.IsFinished(statusText) Then Exit Sub
 
@@ -528,7 +527,7 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
 
     SetColumnWidths target
 
-    FormatFailedRows target, batch
+    FormatStatusCells target, batch
 End Sub
 
 ' Оформляет строку примечаний как обычный текст, а не как дополнительный заголовок.
@@ -563,33 +562,39 @@ Private Sub FormatBlock(ByVal target As Object, ByVal firstColumn As Long, ByVal
     target.Offset(0, firstColumn - 1).Resize(HEADER_ROWS, lastColumn - firstColumn + 1).Interior.Color = HEADER_COLOR
 End Sub
 
-' Красит только те блоки строки LC, которые относятся к непрошедшей проверке.
-Private Sub FormatFailedRows(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
+' Красит блоки строки LC по итоговому статусу расчета устойчивости.
+Private Sub FormatStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
     If batch Is Nothing Then Exit Sub
-
-    Dim policy As CBatchStatusPolicy
-    Set policy = StatusPolicy()
 
     Dim i As Long
     For i = 1 To batch.Count
         If HEADER_ROWS + i > target.Rows.Count Then Exit For
-        If policy.IsFailedOverall(batch.StabilityStatus(i)) Then
-            ColorRowBlock target, HEADER_ROWS + i, COL_SUMMARY_FIRST, COL_SUMMARY_LAST
-            If StrComp(batch.StabilityCode(i), "SP35", vbTextCompare) = 0 Then
-                ColorRowBlock target, HEADER_ROWS + i, COL_SP35_FIRST, COL_SP35_LAST
-            ElseIf StrComp(batch.StabilityCode(i), "SP63", vbTextCompare) = 0 Then
-                ColorRowBlock target, HEADER_ROWS + i, COL_SP63_FIRST, COL_SP63_LAST
-            End If
-        End If
+
+        ApplyStatusCell target, HEADER_ROWS + i, 2
+        ApplyStatusCell target, HEADER_ROWS + i, SP35_PLANE1_FIRST + 8
+        ApplyStatusCell target, HEADER_ROWS + i, SP35_PLANE1_FIRST + 14
+        ApplyStatusCell target, HEADER_ROWS + i, SP35_PLANE2_FIRST + 8
+        ApplyStatusCell target, HEADER_ROWS + i, SP35_PLANE2_FIRST + 14
+        ApplyStatusCell target, HEADER_ROWS + i, SP63_PLANE1_FIRST + 11
+        ApplyStatusCell target, HEADER_ROWS + i, SP63_PLANE2_FIRST + 11
     Next i
 End Sub
 
-' Красит одну строку внутри выбранного блока.
-Private Sub ColorRowBlock(ByVal target As Object, ByVal rowIndex As Long, ByVal firstColumn As Long, ByVal lastColumn As Long)
-    With target.Offset(rowIndex - 1, firstColumn - 1).Resize(1, lastColumn - firstColumn + 1)
-        .Interior.Color = FAILED_ROW_COLOR
-        .Font.Color = FAILED_FONT_COLOR
-    End With
+' Заполняет все статусные колонки нормативных ветвей значением N/A до записи выбранной методики.
+Private Sub PutDefaultStatusCells(ByRef data() As Variant, ByVal rowIndex As Long, ByVal statusText As String)
+    data(rowIndex, SP35_PLANE1_FIRST + 8) = statusText
+    data(rowIndex, SP35_PLANE1_FIRST + 14) = statusText
+    data(rowIndex, SP35_PLANE2_FIRST + 8) = statusText
+    data(rowIndex, SP35_PLANE2_FIRST + 14) = statusText
+    data(rowIndex, SP63_PLANE1_FIRST + 11) = statusText
+    data(rowIndex, SP63_PLANE2_FIRST + 11) = statusText
+End Sub
+
+' Красит одну статусную ячейку detailed-блока устойчивости по единой палитре Results.
+Private Sub ApplyStatusCell(ByVal target As Object, ByVal rowIndex As Long, ByVal columnIndex As Long)
+    Dim cell As Object
+    Set cell = target.Cells(rowIndex, columnIndex)
+    ApplyStatusFill cell, CStr(cell.Value2)
 End Sub
 
 ' Объединяет ячейки шапки и записывает текст.

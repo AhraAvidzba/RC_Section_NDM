@@ -75,8 +75,6 @@ Private Const COL_LONG_RATIO As Long = 42
 Private Const COL_LONG_STATUS As Long = 43
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, единый для таблиц Results.
-Private Const FAILED_ROW_COLOR As Long = &HCEC7FF ' Светло-красный фон проблемного блока.
-Private Const FAILED_FONT_COLOR As Long = &H9C0006 ' Темно-красный текст проблемного блока.
 Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' На Results оставляем одинаковую ширину столбцов.
 Private Const SMALL_VALUE As Double = 0.000000001 ' Порог только для пустых расчетных полей writer-а.
 Private Const HEADER_NOTES_ROW As Long = 3 ' Строка коротких пояснений над нижними обозначениями.
@@ -374,6 +372,8 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
 
     data(rowIndex, COL_ID) = batch.CombinationID(index)
     data(rowIndex, COL_STATUS) = CrackOverallStatus(batch, index)
+    data(rowIndex, COL_ACRC_STATUS) = policy.DisplayStatus(batch.CrackStatus(index))
+    data(rowIndex, COL_LONG_STATUS) = policy.DisplayStatus(batch.LongitudinalCrackStatus(index))
 
     If policy.DisplayStatus(batch.CrackStatus(index)) = policy.NotApplicable And _
             policy.DisplayStatus(batch.LongitudinalCrackStatus(index)) = policy.NotApplicable And _
@@ -542,7 +542,7 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
         target.Offset(HEADER_ROWS, COL_FORMATION_STATE - 1).Resize(dataRows, 1).NumberFormat = "@"
         target.Offset(HEADER_ROWS, COL_ACRC_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
         target.Offset(HEADER_ROWS, COL_LONG_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
-        ApplyFailedRows target, batch, dataRows
+        ApplyStatusCells target, batch, dataRows
     End If
     ApplyHeaderSubscripts target
 End Sub
@@ -565,33 +565,25 @@ Private Sub FormatBlock(ByVal target As Object, ByVal firstCol As Long, ByVal la
     target.Offset(0, firstCol - 1).Resize(HEADER_ROWS, lastCol - firstCol + 1).Interior.Color = HEADER_COLOR
 End Sub
 
-' Подсвечивает только те части таблицы, где проверка трещин не прошла.
-Private Sub ApplyFailedRows(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal dataRows As Long)
-    Dim policy As CBatchStatusPolicy
-    Set policy = StatusPolicy()
+' Красит блоки строки по статусу общей проверки, нормальных и продольных трещин.
+Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal dataRows As Long)
+    If batch Is Nothing Then Exit Sub
 
     Dim i As Long
     For i = 1 To dataRows
         If i <= batch.Count Then
-            If policy.IsFailedOverall(batch.CrackStatus(i)) Or policy.IsFailedOverall(batch.LongitudinalCrackStatus(i)) Then
-                PaintFailed target.Offset(HEADER_ROWS + i - 1, 0).Resize(1, COL_LEFT_LAST)
-            End If
-            If policy.IsFailedOverall(batch.CrackStatus(i)) Then
-                PaintFailed target.Offset(HEADER_ROWS + i - 1, COL_MAIN_FIRST - 1).Resize(1, COL_ACRC_STATUS - COL_MAIN_FIRST + 1)
-            End If
-            If policy.IsFailedOverall(batch.LongitudinalCrackStatus(i)) Then
-                PaintFailed target.Offset(HEADER_ROWS + i - 1, COL_SIGMA_B_MAX - 1).Resize(1, COL_LONG_STATUS - COL_SIGMA_B_MAX + 1)
-            End If
+            ApplyStatusCell target, HEADER_ROWS + i, COL_STATUS
+            ApplyStatusCell target, HEADER_ROWS + i, COL_ACRC_STATUS
+            ApplyStatusCell target, HEADER_ROWS + i, COL_LONG_STATUS
         End If
     Next i
 End Sub
 
-' Красит проблемный фрагмент строки.
-Private Sub PaintFailed(ByVal rangeObject As Object)
-    With rangeObject
-        .Interior.Color = FAILED_ROW_COLOR
-        .Font.Color = FAILED_FONT_COLOR
-    End With
+' Красит одну статусную ячейку detailed-блока, оставляя числовые поля без статусной заливки.
+Private Sub ApplyStatusCell(ByVal target As Object, ByVal rowIndex As Long, ByVal columnIndex As Long)
+    Dim cell As Object
+    Set cell = target.Cells(rowIndex, columnIndex)
+    ApplyStatusFill cell, CStr(cell.Value2)
 End Sub
 
 ' Выставляет нижние индексы в обозначениях нижнего яруса заголовков.

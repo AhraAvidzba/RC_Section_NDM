@@ -81,8 +81,6 @@ Private Const COL_CAP_RESERVE As Long = 41
 Private Const COL_CAP_STATUS As Long = 42
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, как в остальных подробных блоках.
-Private Const FAILED_ROW_COLOR As Long = &HCEC7FF ' Светло-красный фон проблемного блока.
-Private Const FAILED_FONT_COLOR As Long = &H9C0006 ' Темно-красный текст проблемного блока.
 Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' На Results все столбцы держим одной ширины.
 Private Const SMALL_VALUE As Double = 0.000000001 ' Численный порог только для пустых расчетных полей writer-а.
 Private Const HEADER_NOTES_ROW As Long = 3
@@ -379,6 +377,8 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
 
     data(rowIndex, COL_ID) = batch.CombinationID(index)
     data(rowIndex, COL_STATUS) = StrengthOverallStatus(batch, index)
+    data(rowIndex, COL_STATE_STATUS) = policy.NotApplicable
+    data(rowIndex, COL_CAP_STATUS) = policy.NotApplicable
 
     If Not batch.StrengthDirectStateRequested(index) And Not batch.StrengthCapacityRequested(index) Then Exit Sub
 
@@ -556,7 +556,7 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
         target.Offset(HEADER_ROWS, COL_CAP_LIMIT_STATE - 1).Resize(dataRows, 3).NumberFormat = "@"
         target.Offset(HEADER_ROWS, COL_CAP_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
         ApplyStrainNumberFormat target, dataRows
-        ApplyFailedRows target, batch, dataRows
+        ApplyStatusCells target, batch, dataRows
     End If
     ApplyHeaderSubscripts target
 End Sub
@@ -585,30 +585,25 @@ Private Sub FormatBlock(ByVal target As Object, ByVal firstCol As Long, ByVal la
     target.Offset(0, firstCol - 1).Resize(HEADER_ROWS, lastCol - firstCol + 1).Interior.Color = HEADER_COLOR
 End Sub
 
-' Подсвечивает только те части строки, где strength/capacity реально не прошли.
-Private Sub ApplyFailedRows(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal dataRows As Long)
-    Dim policy As CBatchStatusPolicy
-    Set policy = StatusPolicy()
+' Красит строковые блоки подробной таблицы по фактическому статусу каждой проверки.
+Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal dataRows As Long)
+    If batch Is Nothing Then Exit Sub
 
     Dim i As Long
     For i = 1 To dataRows
         If i <= batch.Count Then
-            If policy.IsFailedOverall(StrengthOverallStatus(batch, i)) Then _
-                PaintFailed target.Offset(HEADER_ROWS + i - 1, 0).Resize(1, COL_LEFT_LAST)
-            If batch.StrengthDirectStateRequested(i) And policy.IsFailedOverall(StrengthStateStatus(batch, i)) Then _
-                PaintFailed target.Offset(HEADER_ROWS + i - 1, COL_STATE_FIRST - 1).Resize(1, COL_STATE_LAST - COL_STATE_FIRST + 1)
-            If batch.StrengthCapacityRequested(i) And policy.IsFailedOverall(batch.CapacityStatus(i)) Then _
-                PaintFailed target.Offset(HEADER_ROWS + i - 1, COL_CAPACITY_FIRST - 1).Resize(1, COL_CAPACITY_LAST - COL_CAPACITY_FIRST + 1)
+            ApplyStatusCell target, HEADER_ROWS + i, COL_STATUS
+            ApplyStatusCell target, HEADER_ROWS + i, COL_STATE_STATUS
+            ApplyStatusCell target, HEADER_ROWS + i, COL_CAP_STATUS
         End If
     Next i
 End Sub
 
-' Красит проблемный фрагмент строки.
-Private Sub PaintFailed(ByVal rangeObject As Object)
-    With rangeObject
-        .Interior.Color = FAILED_ROW_COLOR
-        .Font.Color = FAILED_FONT_COLOR
-    End With
+' Красит одну статусную ячейку detailed-блока, не затрагивая соседние расчетные значения строки.
+Private Sub ApplyStatusCell(ByVal target As Object, ByVal rowIndex As Long, ByVal columnIndex As Long)
+    Dim cell As Object
+    Set cell = target.Cells(rowIndex, columnIndex)
+    ApplyStatusFill cell, CStr(cell.Value2)
 End Sub
 
 ' Проставляет нижние индексы в обозначениях нижнего яруса шапки.
