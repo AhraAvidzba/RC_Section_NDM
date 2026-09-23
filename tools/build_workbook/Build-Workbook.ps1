@@ -111,13 +111,150 @@ function Add-WorkbookEventHandlers {
     $code = @'
 Option Explicit
 
+' При переходе по ссылке "Подробнее" раскрывает скрытый блок справки и
+' ставит целевую строку в верхнюю часть окна, чтобы пользователь сразу видел описание настройки.
 Private Sub Workbook_SheetFollowHyperlink(ByVal Sh As Object, ByVal Target As Hyperlink)
     On Error GoTo SafeExit
-    If InStr(1, Target.SubAddress, "'Справка'!", vbTextCompare) = 0 Then Exit Sub
 
     Dim addressText As String
-    addressText = Replace(Target.SubAddress, "'Справка'!", vbNullString)
-    Application.Goto ThisWorkbook.Worksheets("Справка").Range(addressText), True
+    Dim helpSheet As Worksheet
+    Dim targetCell As Range
+
+    If Not TryGetHelpAddress(Target.SubAddress, addressText) Then Exit Sub
+    Set helpSheet = ThisWorkbook.Worksheets("Справка")
+    Set targetCell = helpSheet.Range(addressText)
+
+    RevealHelpOutlineGroup helpSheet, targetCell.Row
+    Application.Goto targetCell, True
+    If Not ActiveWindow Is Nothing Then
+        ActiveWindow.ScrollRow = targetCell.Row
+        ActiveWindow.ScrollColumn = 1
+    End If
+SafeExit:
+End Sub
+
+' Возвращает адрес ячейки на листе "Справка" из SubAddress гиперссылки.
+' Excel может записать имя листа с кавычками или без них, поэтому не
+' привязываемся к одному текстовому варианту "'Справка'!A1".
+Private Function TryGetHelpAddress(ByVal subAddress As String, ByRef addressText As String) As Boolean
+    Dim bangPos As Long
+    Dim sheetName As String
+
+    bangPos = InStrRev(subAddress, "!")
+    If bangPos <= 1 Or bangPos >= Len(subAddress) Then Exit Function
+
+    sheetName = Left$(subAddress, bangPos - 1)
+    sheetName = Replace(sheetName, "'", vbNullString)
+    If StrComp(sheetName, "Справка", vbTextCompare) <> 0 Then Exit Function
+
+    addressText = Mid$(subAddress, bangPos + 1)
+    TryGetHelpAddress = Len(addressText) > 0
+End Function
+
+' Раскрывает outline-группу листа "Справка", если целевая строка была скрыта
+' свернутым методическим или настроечным разделом.
+Private Sub RevealHelpOutlineGroup(ByVal helpSheet As Worksheet, ByVal targetRow As Long)
+    On Error GoTo SafeExit
+
+    Dim usedLastRow As Long
+    usedLastRow = helpSheet.Cells(helpSheet.Rows.Count, 1).End(xlUp).Row
+
+    ' Сначала приводим лист в полностью раскрытое состояние. Это сбрасывает
+    ' внутренний Excel Hidden=True, который появляется после сворачивания группы.
+    On Error Resume Next
+    helpSheet.Outline.ShowLevels 8
+    helpSheet.Rows.Hidden = False
+    helpSheet.Columns.Hidden = False
+    On Error GoTo SafeExit
+
+    Dim configTitleRow As Long
+    configTitleRow = FindConfigHelpTitleRow(helpSheet, usedLastRow)
+    If configTitleRow > 0 And targetRow > configTitleRow Then
+        On Error Resume Next
+        helpSheet.Outline.ShowLevels 1
+        helpSheet.Rows(configTitleRow).ShowDetail = True
+        On Error GoTo SafeExit
+        helpSheet.Rows(CStr(configTitleRow + 1) & ":" & CStr(usedLastRow)).Hidden = False
+        On Error Resume Next
+        helpSheet.Columns.Hidden = False
+        On Error GoTo SafeExit
+        Exit Sub
+    End If
+
+    UnhideContiguousHelpRows helpSheet, targetRow, usedLastRow
+    If targetRow < usedLastRow Then
+        UnhideContiguousHelpRows helpSheet, targetRow + 1, usedLastRow
+    End If
+
+    If Not helpSheet.Rows(targetRow).Hidden Then Exit Sub
+
+    Dim targetLevel As Long
+    targetLevel = helpSheet.Rows(targetRow).OutlineLevel
+    helpSheet.Rows(targetRow).Hidden = False
+
+    If targetLevel <= 1 Then Exit Sub
+
+    Dim firstRow As Long
+    Dim lastRow As Long
+
+    firstRow = targetRow
+    Do While firstRow > 1 And helpSheet.Rows(firstRow - 1).OutlineLevel >= targetLevel
+        firstRow = firstRow - 1
+    Loop
+
+    usedLastRow = helpSheet.Cells(helpSheet.Rows.Count, 1).End(xlUp).Row
+    lastRow = targetRow
+    Do While lastRow < usedLastRow And helpSheet.Rows(lastRow + 1).OutlineLevel >= targetLevel
+        lastRow = lastRow + 1
+    Loop
+
+    helpSheet.Rows(CStr(firstRow) & ":" & CStr(lastRow)).Hidden = False
+    If firstRow > 1 Then helpSheet.Rows(firstRow - 1).ShowDetail = True
+SafeExit:
+End Sub
+
+' Находит заголовок последней группы справки: это раскрытый по умолчанию блок,
+' куда ведут ссылки "Подробнее" с листа Config.
+Private Function FindConfigHelpTitleRow(ByVal helpSheet As Worksheet, ByVal usedLastRow As Long) As Long
+    On Error GoTo SafeExit
+
+    Dim rowIndex As Long
+    For rowIndex = 1 To usedLastRow
+        If InStr(1, CStr(helpSheet.Cells(rowIndex, 1).Value2), "Справка по настройкам листа Config", vbTextCompare) > 0 Then
+            FindConfigHelpTitleRow = rowIndex
+            Exit Function
+        End If
+    Next rowIndex
+SafeExit:
+End Function
+
+' Раскрывает непрерывный физически скрытый фрагмент строк вокруг seedRow.
+' Это нужно после ручного сворачивания outline-группы: Excel может оставить
+' строки Hidden=True даже после перехода по гиперссылке.
+Private Sub UnhideContiguousHelpRows(ByVal helpSheet As Worksheet, ByVal seedRow As Long, ByVal usedLastRow As Long)
+    On Error GoTo SafeExit
+    If seedRow < 1 Or seedRow > usedLastRow Then Exit Sub
+    If Not helpSheet.Rows(seedRow).Hidden Then Exit Sub
+
+    Dim firstRow As Long
+    Dim lastRow As Long
+
+    firstRow = seedRow
+    Do While firstRow > 1 And helpSheet.Rows(firstRow - 1).Hidden
+        firstRow = firstRow - 1
+    Loop
+
+    lastRow = seedRow
+    Do While lastRow < usedLastRow And helpSheet.Rows(lastRow + 1).Hidden
+        lastRow = lastRow + 1
+    Loop
+
+    helpSheet.Rows(CStr(firstRow) & ":" & CStr(lastRow)).Hidden = False
+    If firstRow > 1 Then
+        On Error Resume Next
+        helpSheet.Rows(firstRow - 1).ShowDetail = True
+        On Error GoTo SafeExit
+    End If
 SafeExit:
 End Sub
 '@

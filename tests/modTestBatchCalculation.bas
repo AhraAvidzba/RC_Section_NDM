@@ -21,8 +21,16 @@ Public Function RunBatchCalculationTests() As String
     On Error GoTo Failed
 
     Dim stats As TBatchTestStats
+    Dim originalPr1Stability As String
+    Dim hasOriginalPr1Stability As Boolean
     Dim t0 As Double
     t0 = Timer
+
+    ' Общий batch-набор исторически проверяет прочность PR1 без фильтра устойчивости.
+    ' Пользовательский дефолт книги при этом не меняем: значение возвращается в конце.
+    originalPr1Stability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    hasOriginalPr1Stability = True
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
 
     AppendLine stats, "RUN: TestBatchOneCombination"
     TestBatchOneCombination stats
@@ -177,13 +185,27 @@ Public Function RunBatchCalculationTests() As String
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
+    RestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability
     RunBatchCalculationTests = stats.Report
     Exit Function
 
 Failed:
+    RestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability
     RunBatchCalculationTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & _
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
+
+' Возвращает настройки профиля, временно измененные общим batch-прогоном.
+' Отдельные stability-тесты внутри набора сами включают устойчивость и восстанавливают
+' ее к этому временному тестовому базису, поэтому здесь нужен только финальный возврат.
+Private Sub RestoreBatchSuiteProfileDefaults(ByVal originalPr1Stability As String, _
+                                             ByVal hasOriginalPr1Stability As Boolean)
+    If Not hasOriginalPr1Stability Then Exit Sub
+
+    On Error Resume Next
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", originalPr1Stability
+    On Error GoTo 0
+End Sub
 
 ' ДЛЯ ТЕСТОВ: запускает только сверку верхнего batch summary с подробными
 ' блоками Results. Нужен как быстрый диагностический вход, когда общий набор
