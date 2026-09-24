@@ -51,7 +51,7 @@ Private Sub TestUnitSystemConversions(ByRef stats As TSectionSolverTestStats)
     Set units = New CUnitSystem
     units.InitializeDefaults
 
-    AssertClose stats, "units.length.mm.cm", units.InternalLengthToOutput(units.InputLengthToInternal(25#)), 25#, 0.000000000001
+    AssertClose stats, "units.length.mm.m", units.InternalLengthToOutput(units.InputLengthToInternal(25#)), 0.025, 0.000000000001
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -208,7 +208,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
 
     requiredKeys = Array( _
         "Plot.Enabled", "Plot.AutoUpdateAfterCalculation", "Plot.LoadCase", _
-        "Plot.ResultGradient", "Plot.ResultLabelsEnabled", "Plot.ResultLabelSpacing", "Plot.ResultPrecision", _
+        "Plot.ResultGradient", "Plot.ResultLabelsEnabled", "Plot.ResultLabelSpacing", _
         "Plot.NeutralLineEnabled", "Plot.PrincipalAxesMode", "Plot.LoadApplicationPointEnabled", _
         "Plot.AxisLabelsEnabled", "Plot.AxisLabelsFontSize", _
         "Plot.ContourEnabled", "Plot.LegendEnabled", _

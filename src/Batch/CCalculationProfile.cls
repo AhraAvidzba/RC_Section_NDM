@@ -37,6 +37,13 @@ Private mVisualizationState As ESectionStateType ' Какой StateType пока
 Private mVisualizationQuantity As EVisualizationQuantity ' Stress или Strain для визуализации.
 Private mHasVisualizationState As Boolean ' Визуальная настройка задана в профиле.
 Private mHasVisualizationQuantity As Boolean ' Визуальная величина задана в профиле.
+Private mVisualizationStressPrecision As Long ' Знаки после запятой для подписей Stress.
+Private mVisualizationStrainPrecision As Long ' Знаки после запятой для подписей Strain.
+Private mHasVisualizationStressPrecision As Boolean ' True, если точность Stress задана в профиле.
+Private mHasVisualizationStrainPrecision As Boolean ' True, если точность Strain задана в профиле.
+
+Private Const DEFAULT_VISUALIZATION_STRESS_PRECISION As Long = 1
+Private Const DEFAULT_VISUALIZATION_STRAIN_PRECISION As Long = 6
 
 ' Создает пустые спецификации материалов для трех расчетных ролей профиля.
 Private Sub Class_Initialize()
@@ -88,7 +95,9 @@ End Sub
 ' Сохраняет настройки визуализации. Их несоответствие фактически полученным
 ' состояниям не блокирует расчет: ошибка появится только при построении схемы
 ' или AutoCAD export по отсутствующему StateType.
-Public Sub SetVisualization(ByVal stateText As String, ByVal quantityText As String)
+Public Sub SetVisualization(ByVal stateText As String, ByVal quantityText As String, _
+        Optional ByVal stressPrecisionText As String = vbNullString, _
+        Optional ByVal strainPrecisionText As String = vbNullString)
     If Len(Trim$(stateText)) > 0 Then
         mVisualizationState = SectionStateTypeFromText(stateText)
         mHasVisualizationState = True
@@ -96,6 +105,16 @@ Public Sub SetVisualization(ByVal stateText As String, ByVal quantityText As Str
     If Len(Trim$(quantityText)) > 0 Then
         mVisualizationQuantity = VisualizationQuantityFromText(quantityText)
         mHasVisualizationQuantity = True
+    End If
+    If Len(Trim$(stressPrecisionText)) > 0 Then
+        mVisualizationStressPrecision = ParseVisualizationPrecision(stressPrecisionText, _
+            "Visualization.StressPrecision")
+        mHasVisualizationStressPrecision = True
+    End If
+    If Len(Trim$(strainPrecisionText)) > 0 Then
+        mVisualizationStrainPrecision = ParseVisualizationPrecision(strainPrecisionText, _
+            "Visualization.StrainPrecision")
+        mHasVisualizationStrainPrecision = True
     End If
 End Sub
 
@@ -221,3 +240,40 @@ End Property
 Public Property Get VisualizationQuantityText() As String
     VisualizationQuantityText = VisualizationQuantityToText(VisualizationQuantity)
 End Property
+
+Public Property Get VisualizationStressPrecision() As Long
+    If mHasVisualizationStressPrecision Then
+        VisualizationStressPrecision = mVisualizationStressPrecision
+    Else
+        VisualizationStressPrecision = DEFAULT_VISUALIZATION_STRESS_PRECISION
+    End If
+End Property
+
+Public Property Get VisualizationStrainPrecision() As Long
+    If mHasVisualizationStrainPrecision Then
+        VisualizationStrainPrecision = mVisualizationStrainPrecision
+    Else
+        VisualizationStrainPrecision = DEFAULT_VISUALIZATION_STRAIN_PRECISION
+    End If
+End Property
+
+' Возвращает точность числовых подписей для выбранной визуализируемой величины.
+Public Function VisualizationPrecisionForQuantity(ByVal quantity As EVisualizationQuantity) As Long
+    If quantity = vqStrain Then
+        VisualizationPrecisionForQuantity = VisualizationStrainPrecision
+    Else
+        VisualizationPrecisionForQuantity = VisualizationStressPrecision
+    End If
+End Function
+
+' Читает пользовательское количество знаков после запятой для Stress/Strain.
+' Ограничение защищает Excel-подписи от чрезмерно длинных строк.
+Private Function ParseVisualizationPrecision(ByVal valueText As String, ByVal settingName As String) As Long
+    If Not IsNumeric(valueText) Then Err.Raise vbObjectError + 3991, "CCalculationProfile", _
+        settingName & " должен быть целым числом от 0 до 10."
+
+    ParseVisualizationPrecision = CLng(CDbl(valueText))
+    If ParseVisualizationPrecision < 0 Or ParseVisualizationPrecision > 10 Then _
+        Err.Raise vbObjectError + 3992, "CCalculationProfile", _
+            settingName & " должен быть целым числом от 0 до 10."
+End Function

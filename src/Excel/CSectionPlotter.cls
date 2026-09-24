@@ -109,7 +109,6 @@ Private mRebarTensionValueAtMaxAbs As Double ' Подпись края арма�
 Private mRebarHasCompression As Boolean ' В расчетном состоянии есть сжатая арматура.
 Private mRebarHasTension As Boolean ' В расчетном состоянии есть растянутая арматура.
 Private mResultGradientEnabled As Boolean ' Включена ли цветовая шкала по Stress/Strain.
-Private mResultPrecision As Long ' Число знаков после запятой для подписей результатов.
 Private mDimensionArrowType As String ' Тип стрелок размерных линий из Config.
 Private mDimensionArrowSize As String ' Размер стрелок размерных линий из Config.
 Private mLegendMode As String ' Separate или Common для легенд бетона/арматуры.
@@ -136,9 +135,6 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     ClearLegacyWorksheetGeneratedShapes
 
     mResultGradientEnabled = settings.GetBoolean("Plot.ResultGradient", True)
-    mResultPrecision = settings.GetLong("Plot.ResultPrecision", 2)
-    If mResultPrecision < 0 Then mResultPrecision = 0
-    If mResultPrecision > 8 Then mResultPrecision = 8
     mDimensionArrowType = NormalizeArrowType(settings.GetString("Plot.Dimensions.ArrowType", "Triangle"))
     mDimensionArrowSize = NormalizeArrowSize(settings.GetString("Plot.Dimensions.ArrowSize", "Wide"))
     mLegendMode = NormalizeLegendMode(settings.GetString("Plot.LegendMode", "Separate"))
@@ -1563,7 +1559,7 @@ Private Sub DrawResultLabels(ByVal data As CSectionPlotDataReader, ByVal spacing
     Dim cellKey As Variant
     For Each cellKey In bestIndexByCell.Keys
         i = CLng(bestIndexByCell(cellKey))
-        DrawTextAt data.X(i), data.Y(i), FormatPlotValue(data.ResultValue(i)), 1#, 0#, RGB(60, 60, 60), False
+        DrawTextAt data.X(i), data.Y(i), FormatPlotValue(data.ResultValue(i), data.ResultPrecision), 1#, 0#, RGB(60, 60, 60), False
     Next cellKey
 End Sub
 
@@ -1605,9 +1601,9 @@ Private Sub DrawChartLegendScale(ByVal data As CSectionPlotDataReader, ByVal lef
         AddLegendRect leftPos, topPos + i * barH / 12#, barW, barH / 12# + 1, MaterialLegendColor(materialType, t)
     Next i
     AddChartText leftPos + 24, topPos - 12, 88, 14, LegendCompressionText(), 0#, RGB(40, 40, 40), True
-    AddChartText leftPos + 24, topPos + 4, 84, 16, LegendValueText(hasCompression, compressionValue), 0#, RGB(40, 40, 40), False
+    AddChartText leftPos + 24, topPos + 4, 84, 16, LegendValueText(hasCompression, compressionValue, data.ResultPrecision), 0#, RGB(40, 40, 40), False
     AddChartText leftPos + 24, topPos + barH / 2# - 8, 84, 16, "0", 0#, RGB(40, 40, 40), False
-    AddChartText leftPos + 24, topPos + barH - 10, 84, 16, LegendValueText(hasTension, tensionValue), 0#, RGB(40, 40, 40), False
+    AddChartText leftPos + 24, topPos + barH - 10, 84, 16, LegendValueText(hasTension, tensionValue, data.ResultPrecision), 0#, RGB(40, 40, 40), False
     AddChartText leftPos + 24, topPos + barH + 4, 88, 14, LegendTensionText(), 0#, RGB(40, 40, 40), True
 End Sub
 
@@ -1656,9 +1652,9 @@ Private Function IsCommonLegendMode() As Boolean
 End Function
 
 ' Формирует подпись min/max легенды; если состояния нет, показывает "нет".
-Private Function LegendValueText(ByVal hasValue As Boolean, ByVal value As Double) As String
+Private Function LegendValueText(ByVal hasValue As Boolean, ByVal value As Double, ByVal precision As Long) As String
     If hasValue Then
-        LegendValueText = FormatPlotValue(value)
+        LegendValueText = FormatPlotValue(value, precision)
     Else
         LegendValueText = "нет"
     End If
@@ -2370,13 +2366,16 @@ InvalidColor:
     ParseRgb = defaultColor
 End Function
 
-' Форматирует значение Stress/Strain с заданной точностью схемы.
-Private Function FormatPlotValue(ByVal value As Double) As String
+' Форматирует значение Stress/Strain с профильной точностью выбранной величины.
+Private Function FormatPlotValue(ByVal value As Double, ByVal precision As Long) As String
+    If precision < 0 Then precision = 0
+    If precision > 10 Then precision = 10
+
     Dim pattern As String
-    If mResultPrecision <= 0 Then
+    If precision <= 0 Then
         pattern = "0"
     Else
-        pattern = "0." & String$(mResultPrecision, "0")
+        pattern = "0." & String$(precision, "0")
     End If
     FormatPlotValue = Replace$(Format$(value, pattern), ",", ".")
 End Function

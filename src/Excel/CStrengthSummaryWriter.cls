@@ -267,7 +267,7 @@ Private Sub PutHeaderNotes(ByRef headers() As Variant)
     headers(HEADER_NOTES_ROW, COL_LIM_EBT) = "предельная деформация бетона при растяжении; пусто, если растянутый бетон не работает"
     headers(HEADER_NOTES_ROW, COL_LIM_ESC) = "предельная деформация арматуры при сжатии"
     headers(HEADER_NOTES_ROW, COL_LIM_EST) = "предельная деформация арматуры при растяжении"
-    headers(HEADER_NOTES_ROW, COL_STATE_EPS0) = "epsilon0 плоскости eps=eps0+kx*y+ky*x во внутренней системе координат модели"
+    headers(HEADER_NOTES_ROW, COL_STATE_EPS0) = ChrW$(&H3B5) & "0 в точке (0;0) внутренней системы координат модели; от этой точки заданы координаты всех элементов сечения"
     headers(HEADER_NOTES_ROW, COL_STATE_KX) = "кривизна kx при координате y во внутренней системе координат модели"
     headers(HEADER_NOTES_ROW, COL_STATE_KY) = "кривизна ky при координате x во внутренней системе координат модели"
     headers(HEADER_NOTES_ROW, COL_STATE_EBC) = "максимальная сжимающая деформация бетона, если такая зона есть"
@@ -283,7 +283,7 @@ Private Sub PutHeaderNotes(ByRef headers() As Variant)
     headers(HEADER_NOTES_ROW, COL_STATE_DIAGEXT) = "использовалось ли продолжение физической диаграммы при фактическом НДС"
     headers(HEADER_NOTES_ROW, COL_STATE_RESERVE) = "минимальный запас по предельным деформациям"
     headers(HEADER_NOTES_ROW, COL_STATE_STATUS) = "статус фактического НДС по модели прочности"
-    headers(HEADER_NOTES_ROW, COL_CAP_EPS0) = "epsilon0 плоскости eps=eps0+kx*y+ky*x во внутренней системе координат модели"
+    headers(HEADER_NOTES_ROW, COL_CAP_EPS0) = ChrW$(&H3B5) & "0 в точке (0;0) внутренней системы координат модели; от этой точки заданы координаты всех элементов сечения"
     headers(HEADER_NOTES_ROW, COL_CAP_KX) = "кривизна kx при координате y во внутренней системе координат модели"
     headers(HEADER_NOTES_ROW, COL_CAP_KY) = "кривизна ky при координате x во внутренней системе координат модели"
     headers(HEADER_NOTES_ROW, COL_CAP_LIMIT_STATE) = "причина найденного предельного состояния"
@@ -488,8 +488,8 @@ Private Sub PutCapacityLoadPointComponents(ByRef data() As Variant, ByVal rowInd
     data(rowIndex, COL_CAP_MY) = OutputMy(batch.MyUltimate(index), units)
 End Sub
 
-' Пишет параметры плоскости деформаций saved-state: свободный член epsilon0
-' и две кривизны в координатной системе расчетной модели.
+' Пишет параметры плоскости деформаций saved-state: epsilon0 в начале
+' внутренней системы координат модели и две кривизны в OUTPUT-единицах.
 Private Sub PutStatePlane(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal stateResult As CSectionStateResult, ByVal units As CUnitSystem, _
         ByVal colEps0 As Long, ByVal colKx As Long, ByVal colKy As Long)

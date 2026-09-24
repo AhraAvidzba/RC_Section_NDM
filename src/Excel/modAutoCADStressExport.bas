@@ -56,6 +56,7 @@ Public Sub ExportSectionStressToAutoCAD()
     Dim profileId As String
     Dim stateType As String
     Dim quantity As String
+    Dim resultPrecision As Long
     Dim epsilon0 As Double
     Dim kappaX As Double
     Dim kappaY As Double
@@ -67,13 +68,13 @@ Public Sub ExportSectionStressToAutoCAD()
     Dim extensionUsed As Boolean
     Dim stateWarningText As String
     ReadResultsExportState ThisWorkbook, settings, units, exportSettings.PrincipalAxesMode, section, resultByID, physicalStateByID, combinationID, _
-        profileId, stateType, quantity, _
+        profileId, stateType, quantity, resultPrecision, _
         epsilon0, kappaX, kappaY, loadReferenceX, loadReferenceY, _
         centroidX, centroidY, principalAngle, extensionUsed, stateWarningText
 
     Dim contourExportCount As Long
     DrawResultsStressExport section, resultByID, physicalStateByID, epsilon0, kappaX, kappaY, _
-        loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, stateWarningText, exportSettings, _
+        loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, resultPrecision, stateWarningText, exportSettings, _
         contourExportCount
     If NonCriticalMessagesEnabled(ThisWorkbook) Then
         MsgBox "Экспорт в AutoCAD завершен. Волокон бетона: " & CStr(section.ConcreteCount) & _
@@ -175,7 +176,7 @@ End Function
 Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
         ByVal units As CUnitSystem, ByVal principalAxesMode As String, _
         ByRef section As CSectionModel, ByRef resultByID As Object, ByRef physicalStateByID As Object, ByRef combinationID As String, _
-        ByRef profileId As String, ByRef stateType As String, ByRef quantity As String, _
+        ByRef profileId As String, ByRef stateType As String, ByRef quantity As String, ByRef resultPrecision As Long, _
         ByRef epsilon0 As Double, ByRef kappaX As Double, ByRef kappaY As Double, _
         ByRef loadReferenceX As Double, ByRef loadReferenceY As Double, _
         ByRef centroidX As Double, ByRef centroidY As Double, ByRef principalAngle As Double, _
@@ -195,6 +196,7 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
     Set profile = profiles.ProfileById(profileId)
     stateType = profile.VisualizationStateText
     quantity = VisualizationQuantityToText(profile.VisualizationQuantity)
+    resultPrecision = profile.VisualizationPrecisionForQuantity(profile.VisualizationQuantity)
 
     Set resultByID = CreateObject("Scripting.Dictionary")
     resultByID.CompareMode = vbTextCompare
@@ -756,7 +758,7 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
         ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
         ByVal centroidX As Double, ByVal centroidY As Double, ByVal principalAngle As Double, _
-        ByVal stateWarningText As String, ByRef exportSettings As TAutoCADExportSettings, _
+        ByVal resultPrecision As Long, ByVal stateWarningText As String, ByRef exportSettings As TAutoCADExportSettings, _
         ByRef contourExportCount As Long)
     Dim acad As Object
     Set acad = ConnectToRunningAutoCAD()
@@ -804,7 +806,7 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
         Dim labelY As Double
         ConcreteLabelPoint section.ConcreteX(i), section.ConcreteY(i), concreteWidth, concreteHeight, concreteRotation, _
             labelX, labelY
-        AddAcadText ms, StressLabelText(section.ConcreteID(i), resultValue, exportSettings.IncludeElementNames), _
+        AddAcadText ms, ResultLabelText(section.ConcreteID(i), resultValue, exportSettings.IncludeElementNames, resultPrecision), _
             labelX, labelY, textHeight, _
             ResultAnnotationLayerByPhysicalState("Concrete", physicalState, exportSettings), _
             ResultColorByPhysicalState("Concrete", physicalState, exportSettings)
@@ -815,7 +817,7 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
         physicalState = ResultPhysicalState(physicalStateByID, section.RebarID(i))
         AddAcadCircleRegion ms, section.RebarX(i), section.RebarY(i), section.RebarDiameter(i) / 2#, _
             exportSettings.RebarLayer, ResultColorByPhysicalState("Rebar", physicalState, exportSettings)
-        AddAcadText ms, StressLabelText(section.RebarID(i), resultValue, exportSettings.IncludeElementNames), _
+        AddAcadText ms, ResultLabelText(section.RebarID(i), resultValue, exportSettings.IncludeElementNames, resultPrecision), _
             section.RebarX(i) + section.RebarDiameter(i) / 2#, section.RebarY(i) + section.RebarDiameter(i) / 2#, _
             MaxDouble(2.5, section.RebarDiameter(i) * 0.18), _
             ResultAnnotationLayerByPhysicalState("Rebar", physicalState, exportSettings), _
@@ -1132,7 +1134,8 @@ End Function
 
 ' Возвращает физическое состояние элемента из snapshot Results.
 ' Цвет и слой AutoCAD выбираются по этому полю, а не по знаку Stress/Strain,
-' потому что знак числа уже мог быть преобразован в пользовательскую convention.
+' потому что пользовательская SignConvention относится к N/Mx/My, а не к
+' физическому знаку напряжений и деформаций элемента.
 Private Function ResultPhysicalState(ByVal physicalStateByID As Object, ByVal elementID As String) As String
     If physicalStateByID.Exists(elementID) Then
         ResultPhysicalState = CStr(physicalStateByID.Item(elementID))
@@ -1141,15 +1144,31 @@ Private Function ResultPhysicalState(ByVal physicalStateByID As Object, ByVal el
     End If
 End Function
 
-Private Function StressLabelText(ByVal elementID As String, ByVal stress As Double, _
-        ByVal includeElementName As Boolean) As String
+' Формирует подпись Stress/Strain для AutoCAD. Само значение уже прочитано из
+' Results в пользовательской единице, поэтому здесь меняется только формат.
+Private Function ResultLabelText(ByVal elementID As String, ByVal value As Double, _
+        ByVal includeElementName As Boolean, ByVal precision As Long) As String
     Dim valueText As String
-    valueText = Format$(stress, "0.0")
+    valueText = FormatResultValue(value, precision)
     If includeElementName And Len(Trim$(elementID)) > 0 Then
-        StressLabelText = elementID & " " & valueText
+        ResultLabelText = elementID & " " & valueText
     Else
-        StressLabelText = valueText
+        ResultLabelText = valueText
     End If
+End Function
+
+' Форматирует число с точностью визуализации профиля независимо от локали Excel.
+Private Function FormatResultValue(ByVal value As Double, ByVal precision As Long) As String
+    If precision < 0 Then precision = 0
+    If precision > 10 Then precision = 10
+
+    Dim pattern As String
+    If precision = 0 Then
+        pattern = "0"
+    Else
+        pattern = "0." & String$(precision, "0")
+    End If
+    FormatResultValue = Replace$(Format$(value, pattern), ",", ".")
 End Function
 
 Private Sub DrawCentroidAxesAndLoadPoint(ByVal ms As Object, ByVal section As CSectionModel, _

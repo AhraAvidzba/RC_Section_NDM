@@ -94,7 +94,9 @@ Private Function BuildProfile(ByRef data As Variant, ByVal profileColumn As Long
     profile.SetStabilityValueSet ProfileValue(values, "MaterialModel.Stability.ValueSet")
 
     profile.SetVisualization ProfileValue(values, "Visualization.State"), _
-        ProfileValue(values, "Visualization.Quantity")
+        ProfileValue(values, "Visualization.Quantity"), _
+        ProfileValue(values, "Visualization.StressPrecision"), _
+        ProfileValue(values, "Visualization.StrainPrecision")
 
     Set BuildProfile = profile
 End Function

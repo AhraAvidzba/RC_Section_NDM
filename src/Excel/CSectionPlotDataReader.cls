@@ -17,8 +17,9 @@ Option Explicit
 ' rngNDMSectionGeometry с rngNDMElementResults по ElementID и отдает Plotter-у
 ' уже готовую модель отображения.
 '
-' Reader не запускает расчет, не читает текущую геометрию Config и не
-' пересчитывает единицы: схема показывает ровно то, что записано в Results.
+' Reader не запускает расчет и не читает текущую геометрию Config. Длины и
+' кривизны из Results он переводит обратно во внутренние мм/1 мм только для
+' согласованной отрисовки схемы; Stress/Strain остаются сохраненными значениями.
 
 Private mVisualizationQuantity As String ' Что сейчас визуализируется по профилю: Stress или Strain.
 Private mLoadCase As String ' LC, выбранный для схемы после обработки Worst/конкретного ID.
@@ -32,16 +33,20 @@ Private mGeometryOnlyNote As String ' Пояснение под схемой, е
 Private mGeometryReferenceItemsEnabled As Boolean ' Можно ли показывать оси/точку нагрузки без НДС.
 Private mResultUnit As String ' Единица выбранной величины из сохраненных Results.
 Private mResultCaption As String ' Название выбранной величины для легенды.
-Private mLengthUnit As String ' Единица длины, в которой записаны координаты Results.
-Private mAreaUnit As String ' Единица площади, в которой записаны площади Results.
+Private mResultPrecision As Long ' Количество знаков после запятой для выбранной Stress/Strain.
+Private mLengthUnit As String ' Единица модельной геометрии после чтения Results; для Plotter это всегда mm.
+Private mAreaUnit As String ' Единица площади после чтения Results; для Plotter это всегда mm2.
+Private mSnapshotLengthUnit As String ' Исходная OUTPUT-единица длины, сохраненная в Results.
+Private mSnapshotAreaUnit As String ' Исходная OUTPUT-единица площади, сохраненная в Results.
 Private mStressUnit As String ' Единица напряжений, сохраненная при последнем расчете.
-Private mCurvatureUnit As String ' Единица кривизн, сохраненная при последнем расчете.
+Private mCurvatureUnit As String ' Единица кривизн после чтения Results; для Plotter это всегда 1/mm.
+Private mSnapshotCurvatureUnit As String ' Исходная OUTPUT-единица кривизн, сохраненная в Results.
 Private mCount As Long ' Количество элементов, у которых есть геометрия и результат выбранного LC.
 Private mElementID() As String ' ID элемента для связи геометрии, результатов и подписей.
 Private mMaterialType() As String ' Concrete/Rebar; Plotter использует это для выбора маркера.
-Private mX() As Double ' X элемента в output-единицах Results.
-Private mY() As Double ' Y элемента в output-единицах Results.
-Private mArea() As Double ' Площадь элемента в output-единицах Results.
+Private mX() As Double ' X элемента во внутренних мм после чтения snapshot.
+Private mY() As Double ' Y элемента во внутренних мм после чтения snapshot.
+Private mArea() As Double ' Площадь элемента во внутренних мм2 после чтения snapshot.
 Private mDiameter() As Double ' Диаметр арматуры; для бетона обычно 0.
 Private mShapeType() As String ' Статус интерпретации оболочки: Rectangle, Equivalent rectangle, Equivalent square.
 Private mWidth() As Double ' Реальная ширина бетонного элемента, если она сохранена в snapshot.
@@ -187,6 +192,7 @@ Private Sub ApplyVisualizationProfile(ByVal workbook As Object)
     mProfileCrackWidthEnabled = profile.CrackWidthEnabled
     mStateType = profile.VisualizationStateText
     mVisualizationQuantity = VisualizationQuantityToText(profile.VisualizationQuantity)
+    mResultPrecision = profile.VisualizationPrecisionForQuantity(profile.VisualizationQuantity)
 End Sub
 
 ' Находит ProfileId выбранного LC в Results. Поэлементная таблица является
@@ -330,17 +336,20 @@ Private Sub ReadSectionProperties(ByVal workbook As Object)
         loadCase = Trim$(CStr(data(rowIndex, colLoadCase)))
         If Len(parameter) > 0 Then
             If StrComp(loadCase, "ALL", vbTextCompare) = 0 Or Len(loadCase) = 0 Then
-                ReadCommonProperty parameter, data(rowIndex, colValue)
+                ReadCommonProperty parameter, data(rowIndex, colValue), data(rowIndex, ResultColumn(data, "Unit"))
             ElseIf StrComp(loadCase, mLoadCase, vbTextCompare) = 0 Then
-                ReadLoadCaseProperty parameter, data(rowIndex, colValue)
+                ReadLoadCaseProperty parameter, data(rowIndex, colValue), data(rowIndex, ResultColumn(data, "Unit"))
             End If
         End If
     Next rowIndex
 
-    If Len(mLengthUnit) = 0 Then mLengthUnit = "mm"
-    If Len(mAreaUnit) = 0 Then mAreaUnit = mLengthUnit & "2"
+    If Len(mSnapshotLengthUnit) = 0 Then mSnapshotLengthUnit = "mm"
+    If Len(mSnapshotAreaUnit) = 0 Then mSnapshotAreaUnit = mSnapshotLengthUnit & "2"
     If Len(mStressUnit) = 0 Then mStressUnit = "MPa"
-    If Len(mCurvatureUnit) = 0 Then mCurvatureUnit = "1/mm"
+    If Len(mSnapshotCurvatureUnit) = 0 Then mSnapshotCurvatureUnit = "1/mm"
+    mLengthUnit = "mm"
+    mAreaUnit = "mm2"
+    mCurvatureUnit = "1/mm"
     If StrComp(mVisualizationQuantity, "Strain", vbTextCompare) = 0 Then
         mResultUnit = "-"
         mResultCaption = "Strain"
@@ -352,41 +361,45 @@ End Sub
 
 ' Запоминает общие свойства расчетного снимка Results.
 ' Эти данные одинаково подходят для Generated и AutoCAD-геометрии.
-Private Sub ReadCommonProperty(ByVal parameter As String, ByVal value As Variant)
+Private Sub ReadCommonProperty(ByVal parameter As String, ByVal value As Variant, ByVal unitValue As Variant)
+    Dim unitText As String
+    unitText = Trim$(SafeText(unitValue))
     Select Case LCase$(parameter)
-        Case "bounds.minx": mMinX = CDbl(value)
-        Case "bounds.maxx": mMaxX = CDbl(value)
-        Case "bounds.miny": mMinY = CDbl(value)
-        Case "bounds.maxy": mMaxY = CDbl(value)
-        Case "concrete.centroidx": mConcreteCentroidX = CDbl(value)
-        Case "concrete.centroidy": mConcreteCentroidY = CDbl(value)
+        Case "bounds.minx": mMinX = OutputLengthToInternalByUnit(CDbl(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
+        Case "bounds.maxx": mMaxX = OutputLengthToInternalByUnit(CDbl(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
+        Case "bounds.miny": mMinY = OutputLengthToInternalByUnit(CDbl(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
+        Case "bounds.maxy": mMaxY = OutputLengthToInternalByUnit(CDbl(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
+        Case "concrete.centroidx": mConcreteCentroidX = OutputLengthToInternalByUnit(CDbl(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
+        Case "concrete.centroidy": mConcreteCentroidY = OutputLengthToInternalByUnit(CDbl(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
         Case "concrete.principalangle": mConcretePrincipalAngle = CDbl(value)
-        Case "transformed.centroidx": mCentroidX = CDbl(value)
-        Case "transformed.centroidy": mCentroidY = CDbl(value)
+        Case "transformed.centroidx": mCentroidX = OutputLengthToInternalByUnit(CDbl(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
+        Case "transformed.centroidy": mCentroidY = OutputLengthToInternalByUnit(CDbl(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
         Case "transformed.principalangle": mPrincipalAngle = CDbl(value)
-        Case "loadreferencex": mLoadReferenceX = SafeDouble(value)
-        Case "loadreferencey": mLoadReferenceY = SafeDouble(value)
-        Case "output.lengthunit": mLengthUnit = CStr(value)
-        Case "output.areaunit": mAreaUnit = CStr(value)
+        Case "loadreferencex": mLoadReferenceX = OutputLengthToInternalByUnit(SafeDouble(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
+        Case "loadreferencey": mLoadReferenceY = OutputLengthToInternalByUnit(SafeDouble(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
+        Case "output.lengthunit": mSnapshotLengthUnit = CStr(value)
+        Case "output.areaunit": mSnapshotAreaUnit = CStr(value)
         Case "output.stressunit": mStressUnit = CStr(value)
-        Case "output.curvatureunit": mCurvatureUnit = CStr(value)
+        Case "output.curvatureunit": mSnapshotCurvatureUnit = CStr(value)
     End Select
 End Sub
 
 ' Запоминает свойства выбранного LC: плоскость деформаций и признаки
 ' допустимости найденного состояния. Точка приложения нагрузки читается из
 ' общего блока ALL, потому что она задается один раз для всего snapshot.
-Private Sub ReadLoadCaseProperty(ByVal parameter As String, ByVal value As Variant)
+Private Sub ReadLoadCaseProperty(ByVal parameter As String, ByVal value As Variant, ByVal unitValue As Variant)
     Dim key As String
     Dim prefix As String
     key = LCase$(Trim$(parameter))
     prefix = "state." & LCase$(mStateType) & "."
     If Left$(key, Len(prefix)) <> prefix Then Exit Sub
 
+    Dim unitText As String
+    unitText = Trim$(SafeText(unitValue))
     Select Case Mid$(key, Len(prefix) + 1)
         Case "epsilon0": mEpsilon0 = SafeDouble(value)
-        Case "kappax": mKappaX = SafeDouble(value)
-        Case "kappay": mKappaY = SafeDouble(value)
+        Case "kappax": mKappaX = OutputCurvatureToInternalByUnit(SafeDouble(value), UnitOrDefault(unitText, mSnapshotCurvatureUnit, "1/mm"))
+        Case "kappay": mKappaY = OutputCurvatureToInternalByUnit(SafeDouble(value), UnitOrDefault(unitText, mSnapshotCurvatureUnit, "1/mm"))
         Case "extensionused": mExtensionUsed = SafeBoolean(value)
         Case "status": mStateStatus = Trim$(SafeText(value))
     End Select
@@ -441,6 +454,8 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     Dim colWidth As Long: colWidth = ResultColumn(geom, "Width")
     Dim colHeight As Long: colHeight = ResultColumn(geom, "Height")
     Dim colRotation As Long: colRotation = ResultColumn(geom, "Rotation")
+    Dim lengthUnit As String: lengthUnit = ResultHeaderUnit(geom, colX, mSnapshotLengthUnit)
+    Dim areaUnit As String: areaUnit = ResultHeaderUnit(geom, colArea, mSnapshotAreaUnit)
 
     ' На втором проходе геометрия соединяется с найденным состоянием. Plotter после этого
     ' получает готовые элементы и не обращается к Results напрямую.
@@ -448,10 +463,10 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
         Dim elementID As String
         elementID = Trim$(CStr(geom(rowIndex, colID)))
         If Len(elementID) > 0 And resultMap.Exists(elementID) Then
-            AppendElement elementID, CStr(geom(rowIndex, colType)), CDbl(geom(rowIndex, colX)), _
-                CDbl(geom(rowIndex, colY)), CDbl(geom(rowIndex, colArea)), _
-                SafeDouble(geom(rowIndex, colDiameter)), CStr(geom(rowIndex, colShape)), _
-                SafeDouble(geom(rowIndex, colWidth)), SafeDouble(geom(rowIndex, colHeight)), _
+            AppendElement elementID, CStr(geom(rowIndex, colType)), OutputLengthToInternalByUnit(CDbl(geom(rowIndex, colX)), lengthUnit), _
+                OutputLengthToInternalByUnit(CDbl(geom(rowIndex, colY)), lengthUnit), OutputAreaToInternalByUnit(CDbl(geom(rowIndex, colArea)), areaUnit), _
+                OutputLengthToInternalByUnit(SafeDouble(geom(rowIndex, colDiameter)), lengthUnit), CStr(geom(rowIndex, colShape)), _
+                OutputLengthToInternalByUnit(SafeDouble(geom(rowIndex, colWidth)), lengthUnit), OutputLengthToInternalByUnit(SafeDouble(geom(rowIndex, colHeight)), lengthUnit), _
                 SafeDouble(geom(rowIndex, colRotation)), resultMap(elementID)
         End If
     Next rowIndex
@@ -476,6 +491,8 @@ Private Sub ReadGeometryPreview(ByVal workbook As Object)
     Dim colWidth As Long: colWidth = ResultColumn(geom, "Width")
     Dim colHeight As Long: colHeight = ResultColumn(geom, "Height")
     Dim colRotation As Long: colRotation = ResultColumn(geom, "Rotation")
+    Dim lengthUnit As String: lengthUnit = ResultHeaderUnit(geom, colX, mSnapshotLengthUnit)
+    Dim areaUnit As String: areaUnit = ResultHeaderUnit(geom, colArea, mSnapshotAreaUnit)
 
     Dim neutralResult As Variant
     neutralResult = Array(0#, 0#, "NearZero")
@@ -485,10 +502,10 @@ Private Sub ReadGeometryPreview(ByVal workbook As Object)
         Dim elementID As String
         elementID = Trim$(CStr(geom(rowIndex, colID)))
         If Len(elementID) > 0 Then
-            AppendElement elementID, CStr(geom(rowIndex, colType)), CDbl(geom(rowIndex, colX)), _
-                CDbl(geom(rowIndex, colY)), CDbl(geom(rowIndex, colArea)), _
-                SafeDouble(geom(rowIndex, colDiameter)), CStr(geom(rowIndex, colShape)), _
-                SafeDouble(geom(rowIndex, colWidth)), SafeDouble(geom(rowIndex, colHeight)), _
+            AppendElement elementID, CStr(geom(rowIndex, colType)), OutputLengthToInternalByUnit(CDbl(geom(rowIndex, colX)), lengthUnit), _
+                OutputLengthToInternalByUnit(CDbl(geom(rowIndex, colY)), lengthUnit), OutputAreaToInternalByUnit(CDbl(geom(rowIndex, colArea)), areaUnit), _
+                OutputLengthToInternalByUnit(SafeDouble(geom(rowIndex, colDiameter)), lengthUnit), CStr(geom(rowIndex, colShape)), _
+                OutputLengthToInternalByUnit(SafeDouble(geom(rowIndex, colWidth)), lengthUnit), OutputLengthToInternalByUnit(SafeDouble(geom(rowIndex, colHeight)), lengthUnit), _
                 SafeDouble(geom(rowIndex, colRotation)), neutralResult
         End If
     Next rowIndex
@@ -551,10 +568,15 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
     Dim colNormalX As Long: colNormalX = ResultColumn(data, "OutsideNormalX")
     Dim colNormalY As Long: colNormalY = ResultColumn(data, "OutsideNormalY")
     Dim colText As Long: colText = ResultColumn(data, "Text")
+    Dim colUnit As Long: colUnit = ResultColumn(data, "Unit")
 
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
-        If Len(Trim$(CStr(data(rowIndex, colType)))) > 0 Then
+        Dim annotationType As String
+        annotationType = Trim$(CStr(data(rowIndex, colType)))
+        If Len(annotationType) > 0 Then
+            Dim lengthUnit As String
+            lengthUnit = AnnotationLengthUnit(data, rowIndex, colUnit, mSnapshotLengthUnit)
             mAnnotationCount = mAnnotationCount + 1
             ReDim Preserve mAnnotationType(1 To mAnnotationCount)
             ReDim Preserve mAnnotationStartX(1 To mAnnotationCount)
@@ -564,13 +586,18 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
             ReDim Preserve mAnnotationNormalX(1 To mAnnotationCount)
             ReDim Preserve mAnnotationNormalY(1 To mAnnotationCount)
             ReDim Preserve mAnnotationText(1 To mAnnotationCount)
-            mAnnotationType(mAnnotationCount) = CStr(data(rowIndex, colType))
-            mAnnotationStartX(mAnnotationCount) = SafeDouble(data(rowIndex, colStartX))
-            mAnnotationStartY(mAnnotationCount) = SafeDouble(data(rowIndex, colStartY))
-            mAnnotationEndX(mAnnotationCount) = SafeDouble(data(rowIndex, colEndX))
-            mAnnotationEndY(mAnnotationCount) = SafeDouble(data(rowIndex, colEndY))
-            mAnnotationNormalX(mAnnotationCount) = SafeDouble(data(rowIndex, colNormalX))
-            mAnnotationNormalY(mAnnotationCount) = SafeDouble(data(rowIndex, colNormalY))
+            mAnnotationType(mAnnotationCount) = annotationType
+            mAnnotationStartX(mAnnotationCount) = OutputLengthToInternalByUnit(SafeDouble(data(rowIndex, colStartX)), lengthUnit)
+            mAnnotationStartY(mAnnotationCount) = OutputLengthToInternalByUnit(SafeDouble(data(rowIndex, colStartY)), lengthUnit)
+            mAnnotationEndX(mAnnotationCount) = OutputLengthToInternalByUnit(SafeDouble(data(rowIndex, colEndX)), lengthUnit)
+            mAnnotationEndY(mAnnotationCount) = OutputLengthToInternalByUnit(SafeDouble(data(rowIndex, colEndY)), lengthUnit)
+            If StrComp(annotationType, "CONTOUR_ARC", vbTextCompare) = 0 Then
+                mAnnotationNormalX(mAnnotationCount) = OutputLengthToInternalByUnit(SafeDouble(data(rowIndex, colNormalX)), lengthUnit)
+                mAnnotationNormalY(mAnnotationCount) = OutputLengthToInternalByUnit(SafeDouble(data(rowIndex, colNormalY)), lengthUnit)
+            Else
+                mAnnotationNormalX(mAnnotationCount) = SafeDouble(data(rowIndex, colNormalX))
+                mAnnotationNormalY(mAnnotationCount) = SafeDouble(data(rowIndex, colNormalY))
+            End If
             mAnnotationText(mAnnotationCount) = CStr(data(rowIndex, colText))
         End If
     Next rowIndex
@@ -592,10 +619,14 @@ Private Sub ResetReaderState()
     mStateType = vbNullString
     mResultUnit = vbNullString
     mResultCaption = vbNullString
+    mResultPrecision = 1
     mLengthUnit = vbNullString
     mAreaUnit = vbNullString
+    mSnapshotLengthUnit = vbNullString
+    mSnapshotAreaUnit = vbNullString
     mStressUnit = vbNullString
     mCurvatureUnit = vbNullString
+    mSnapshotCurvatureUnit = vbNullString
     mCount = 0
     mAnnotationCount = 0
     mMinX = 0#: mMaxX = 0#: mMinY = 0#: mMaxY = 0#
@@ -719,6 +750,28 @@ Private Function SafeText(ByVal value As Variant) As String
     SafeText = CStr(value)
 End Function
 
+' Возвращает единицу измерения из строки аннотации. Если строка не содержит
+' единицу или хранит служебный "-", используется единица длины всего snapshot.
+Private Function AnnotationLengthUnit(ByRef data As Variant, ByVal rowIndex As Long, _
+        ByVal colUnit As Long, ByVal defaultUnit As String) As String
+    AnnotationLengthUnit = UnitOrDefault(SafeText(data(rowIndex, colUnit)), defaultUnit, "mm")
+End Function
+
+' Выбирает рабочую единицу для числового поля Results. Пустые и служебные
+' значения не должны ломать старые snapshots, где часть Unit-колонки пустая.
+Private Function UnitOrDefault(ByVal unitText As String, ByVal fallbackUnit As String, _
+        ByVal hardDefault As String) As String
+    Dim normalized As String
+    normalized = Trim$(unitText)
+    If Len(normalized) > 0 And normalized <> "-" Then
+        UnitOrDefault = normalized
+    ElseIf Len(Trim$(fallbackUnit)) > 0 Then
+        UnitOrDefault = Trim$(fallbackUnit)
+    Else
+        UnitOrDefault = hardDefault
+    End If
+End Function
+
 ' Проверяет, что табличный массив содержит хотя бы заголовок и одну строку данных.
 Private Function HasRows(ByVal data As Variant) As Boolean
     On Error GoTo Failed
@@ -766,6 +819,82 @@ Private Function ResultHeaderBase(ByVal headerText As String) As String
     End If
 End Function
 
+' Достает единицу из заголовка Results вида "X, mm". Если заголовок без
+' запятой, берется единица, сохраненная в Output.*Unit.
+Private Function ResultHeaderUnit(ByRef data As Variant, ByVal colIndex As Long, _
+        ByVal defaultUnit As String) As String
+    Dim headerText As String
+    headerText = CStr(data(1, colIndex))
+
+    Dim commaPos As Long
+    commaPos = InStr(1, headerText, ",", vbTextCompare)
+    If commaPos <= 0 Then
+        ResultHeaderUnit = UnitOrDefault(vbNullString, defaultUnit, "mm")
+        Exit Function
+    End If
+
+    Dim unitText As String
+    unitText = Trim$(Mid$(headerText, commaPos + 1))
+    Dim bracketPos As Long
+    bracketPos = InStr(1, unitText, "(", vbTextCompare)
+    If bracketPos > 0 Then unitText = Trim$(Left$(unitText, bracketPos - 1))
+    ResultHeaderUnit = UnitOrDefault(unitText, defaultUnit, "mm")
+End Function
+
+' Переводит длину из единицы, сохраненной в Results, во внутренние мм.
+Private Function OutputLengthToInternalByUnit(ByVal value As Double, ByVal unitText As String) As Double
+    OutputLengthToInternalByUnit = value * LengthFactorToMmByUnit(unitText)
+End Function
+
+' Переводит площадь из единицы, сохраненной в Results, во внутренние мм2.
+Private Function OutputAreaToInternalByUnit(ByVal value As Double, ByVal unitText As String) As Double
+    OutputAreaToInternalByUnit = value * AreaFactorToMm2ByUnit(unitText)
+End Function
+
+' Переводит кривизну из единицы Results во внутренние 1/мм, чтобы нейтральная
+' линия строилась в той же системе, что и координаты схемы.
+Private Function OutputCurvatureToInternalByUnit(ByVal value As Double, ByVal unitText As String) As Double
+    Select Case LCase$(Trim$(unitText))
+        Case "1/mm"
+            OutputCurvatureToInternalByUnit = value
+        Case "1/m"
+            OutputCurvatureToInternalByUnit = value / 1000#
+        Case Else
+            Err.Raise vbObjectError + 4715, "CSectionPlotDataReader", _
+                "В Results неизвестная единица кривизны: " & unitText
+    End Select
+End Function
+
+' Возвращает множитель перевода длины в мм.
+Private Function LengthFactorToMmByUnit(ByVal unitText As String) As Double
+    Select Case LCase$(Trim$(unitText))
+        Case "mm"
+            LengthFactorToMmByUnit = 1#
+        Case "cm"
+            LengthFactorToMmByUnit = 10#
+        Case "m"
+            LengthFactorToMmByUnit = 1000#
+        Case Else
+            Err.Raise vbObjectError + 4716, "CSectionPlotDataReader", _
+                "В Results неизвестная единица длины: " & unitText
+    End Select
+End Function
+
+' Возвращает множитель перевода площади в мм2.
+Private Function AreaFactorToMm2ByUnit(ByVal unitText As String) As Double
+    Select Case LCase$(Trim$(unitText))
+        Case "mm2"
+            AreaFactorToMm2ByUnit = 1#
+        Case "cm2"
+            AreaFactorToMm2ByUnit = 100#
+        Case "m2"
+            AreaFactorToMm2ByUnit = 1000000#
+        Case Else
+            Err.Raise vbObjectError + 4717, "CSectionPlotDataReader", _
+                "В Results неизвестная единица площади: " & unitText
+    End Select
+End Function
+
 Public Property Get Count() As Long: Count = mCount: End Property
 Public Property Get ElementID(ByVal index As Long) As String: ElementID = mElementID(index): End Property
 Public Property Get MaterialType(ByVal index As Long) As String: MaterialType = mMaterialType(index): End Property
@@ -790,6 +919,7 @@ Public Property Get GeometryReferenceItemsEnabled() As Boolean: GeometryReferenc
 Public Property Get VisualizationQuantity() As String: VisualizationQuantity = mVisualizationQuantity: End Property
 Public Property Get ResultUnit() As String: ResultUnit = mResultUnit: End Property
 Public Property Get ResultCaption() As String: ResultCaption = mResultCaption: End Property
+Public Property Get ResultPrecision() As Long: ResultPrecision = mResultPrecision: End Property
 Public Property Get LengthUnit() As String: LengthUnit = mLengthUnit: End Property
 Public Property Get AreaUnit() As String: AreaUnit = mAreaUnit: End Property
 Public Property Get MinX() As Double: MinX = mMinX: End Property

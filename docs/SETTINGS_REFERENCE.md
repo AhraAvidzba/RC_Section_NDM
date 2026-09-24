@@ -177,7 +177,6 @@
 | `Plot.LoadCase` | Динамический список: `Worst` + значения `CombinationID` из `rngLoadCombinations` |
 | `Plot.ResultGradient` | `Yes`, `No` |
 | `Plot.ResultLabelsEnabled` | `Yes`, `No` |
-| `Plot.ResultPrecision` | целое число знаков после запятой |
 | `Plot.NeutralLineEnabled` | `Yes`, `No` |
 | `Plot.PrincipalAxesMode` | `Transformed`, `Concrete`, `None` |
 | `Plot.LoadApplicationPointEnabled` | `Yes`, `No` |

@@ -775,11 +775,11 @@ Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As L
                 MaterialDiagramId(batch.ProfileId(combinationIndex), stateResult, "Rebar", batch.DirectStateDiagramExtensionEnabled(combinationIndex)), _
                 "-", "Ссылка на диаграмму арматуры в rngNDMMaterialDiagrams."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "Epsilon0", _
-                stateResult.Epsilon0, "-", "Деформация в начале внутренней системы координат модели для именованного расчетного состояния."
+                stateResult.Epsilon0, "-", "Деформация в точке (0;0) внутренней системы координат модели для именованного расчетного состояния."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "KappaX", _
-                OutputCurvature(stateResult.KappaX, units), OutputCurvatureUnit(units), "Кривизна KappaX в поле eps = eps0 + KappaX*y + KappaY*x; координаты x/y берутся в системе модели."
+                OutputCurvature(stateResult.KappaX, units), OutputCurvatureUnit(units), "Кривизна KappaX при координате Y внутренней системы координат модели."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "KappaY", _
-                OutputCurvature(stateResult.KappaY, units), OutputCurvatureUnit(units), "Кривизна KappaY в поле eps = eps0 + KappaX*y + KappaY*x; координаты x/y берутся в системе модели."
+                OutputCurvature(stateResult.KappaY, units), OutputCurvatureUnit(units), "Кривизна KappaY при координате X внутренней системы координат модели."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "NeutralLine.Angle", _
                 NeutralLineAngleValue(stateResult.KappaX, stateResult.KappaY), "rad", _
                 "Угол нейтральной линии от оси X внутренней системы координат модели против часовой стрелки."

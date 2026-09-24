@@ -52,6 +52,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestExcelApplicationStateGuardRestoresSettings stats
     TestRectSetWorkbookRunWritesResults stats
     TestRectSetMomentUltimateStrainWorkbookPath stats
+    TestStrengthSummaryUsesOutputCurvatureUnit stats
     TestRectSetPureBendingUltimateStrainWorkbookPath stats
     TestRectSetPureBendingDirectStateWorkbookPath stats
     TestRectSetAxialTensionExtensionFromWorkbookSettings stats
@@ -707,10 +708,10 @@ Private Sub TestPlotOverlayCoordinatesMatchResults(ByRef stats As TUiTestStats)
     Dim loadY As Double
     Dim centroidX As Double
     Dim centroidY As Double
-    loadX = CDbl(ResultsPropertyValue("ALL", "LoadReferenceX"))
-    loadY = CDbl(ResultsPropertyValue("ALL", "LoadReferenceY"))
-    centroidX = CDbl(ResultsPropertyValue("ALL", "Transformed.CentroidX"))
-    centroidY = CDbl(ResultsPropertyValue("ALL", "Transformed.CentroidY"))
+    loadX = ResultsLengthPropertyMm("ALL", "LoadReferenceX")
+    loadY = ResultsLengthPropertyMm("ALL", "LoadReferenceY")
+    centroidX = ResultsLengthPropertyMm("ALL", "Transformed.CentroidX")
+    centroidY = ResultsLengthPropertyMm("ALL", "Transformed.CentroidY")
 
     Dim loadPoint As Object
     Set loadPoint = FirstGeneratedPlotShape("LoadPoint")
@@ -1107,7 +1108,10 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
         ProfileSettingValue("PR3", "Calculation.Crack.Width") = "Yes"
     AssertTrue stats, "ui.profiles.pr4.default", _
         Len(ProfileSettingValue("PR4", "Profile.DisplayName")) > 0 And _
-        ProfileSettingValue("PR4", "Visualization.Quantity") = "Strain"
+        ProfileSettingValue("PR4", "Visualization.Quantity") = "Strain" And _
+        ProfileSettingValue("PR4", "Visualization.StrainPrecision") = "6"
+    AssertTrue stats, "ui.profiles.visualizationStressPrecision.default", _
+        ProfileSettingValue("PR1", "Visualization.StressPrecision") = "1"
 End Sub
 
 ' Проверяет полный предельный snapshot: 30 сочетаний, каждое с пятью
@@ -1390,6 +1394,57 @@ Private Sub TestRectSetMomentUltimateStrainWorkbookPath(ByRef stats As TUiTestSt
         CDbl(resultsSheet.Cells.Item(firstRow, 37).Value2) > 0#
     AssertTrue stats, "ui.rectset.momentUltimate.mxult", _
         Abs(CDbl(resultsSheet.Cells.Item(firstRow, 39).Value2)) > 0#
+End Sub
+
+' Проверяет, что подробный блок прочности не держит кривизны в 1/мм
+' жестко, а использует OUTPUT-единицу из Units.Curvature.Output.
+Private Sub TestStrengthSummaryUsesOutputCurvatureUnit(ByRef stats As TUiTestStats)
+    Dim oldOutputCurvature As String
+    oldOutputCurvature = GetSystemSetting("Units.Curvature.Output")
+
+    On Error GoTo RestoreAndFail
+    PrepareUserRectSetMomentUltimateInput
+    SetSystemSetting "Units.Curvature.Output", "1/m"
+
+    Dim message As String
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    ThisWorkbook.Application.CalculateFull
+
+    Dim resultsSheet As Object
+    Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
+    Dim firstRow As Long
+    firstRow = StrengthSummaryStartRow()
+    Dim labelRow As Long
+    labelRow = firstRow - 1
+
+    AssertTrue stats, "ui.strength.curvatureOutput.message", _
+        InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    AssertTextEquals stats, "ui.strength.curvatureOutput.snapshotUnit", _
+        ResultsPropertyValue("ALL", "Output.CurvatureUnit"), "1/m"
+    AssertTrue stats, "ui.strength.curvatureOutput.stateHeaderKx", _
+        InStr(1, CStr(resultsSheet.Cells.Item(labelRow, 15).Value2), "1/m", vbTextCompare) > 0
+    AssertTrue stats, "ui.strength.curvatureOutput.stateHeaderKy", _
+        InStr(1, CStr(resultsSheet.Cells.Item(labelRow, 16).Value2), "1/m", vbTextCompare) > 0
+    AssertTrue stats, "ui.strength.curvatureOutput.capacityHeaderKx", _
+        InStr(1, CStr(resultsSheet.Cells.Item(labelRow, 32).Value2), "1/m", vbTextCompare) > 0
+    AssertTrue stats, "ui.strength.curvatureOutput.capacityHeaderKy", _
+        InStr(1, CStr(resultsSheet.Cells.Item(labelRow, 33).Value2), "1/m", vbTextCompare) > 0
+
+    AssertClose stats, "ui.strength.curvatureOutput.stateKxValue", _
+        CDbl(resultsSheet.Cells.Item(firstRow, 15).Value2), _
+        CDbl(ResultsPropertyValue("LC_MX", "State.StrengthState.KappaX")), 0.000000000001
+    AssertClose stats, "ui.strength.curvatureOutput.capacityKxValue", _
+        CDbl(resultsSheet.Cells.Item(firstRow, 32).Value2), _
+        CDbl(ResultsPropertyValue("LC_MX", "State.CapacityState.KappaX")), 0.000000000001
+
+Restore:
+    SetSystemSetting "Units.Curvature.Output", oldOutputCurvature
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: ui.strength.curvatureOutput; " & Err.Description
+    Resume Restore
 End Sub
 
 ' Проверяет чистый изгиб Г-сечения по полному Excel-пути.
@@ -1959,6 +2014,30 @@ Private Function ResultsPropertyValue(ByVal loadCase As String, ByVal parameter 
         End If
     Next rowIndex
 Failed:
+End Function
+
+' Возвращает длину из rngNDMSectionProperties во внутренних мм.
+' Results хранит числовые значения в пользовательских OUTPUT-единицах последнего
+' расчета, а Excel-схема строится во внутренних координатах модели.
+Private Function ResultsLengthPropertyMm(ByVal loadCase As String, ByVal parameter As String) As Double
+    ResultsLengthPropertyMm = CDbl(ResultsPropertyValue(loadCase, parameter)) * ResultsOutputLengthFactorToMm()
+End Function
+
+' Читает сохраненную в Results единицу вывода длины и возвращает множитель к мм.
+' Тест намеренно опирается на snapshot Results, а не на текущий Config: пользователь
+' может поменять настройки после расчета, но уже нарисованная схема должна
+' соответствовать именно сохраненному расчетному снимку.
+Private Function ResultsOutputLengthFactorToMm() As Double
+    Select Case LCase$(Trim$(ResultsPropertyValue("ALL", "Output.LengthUnit")))
+        Case "mm"
+            ResultsOutputLengthFactorToMm = 1#
+        Case "cm"
+            ResultsOutputLengthFactorToMm = 10#
+        Case "m"
+            ResultsOutputLengthFactorToMm = 1000#
+        Case Else
+            ResultsOutputLengthFactorToMm = 1#
+    End Select
 End Function
 
 ' Возвращает числовое поле элемента из rngNDMSectionGeometry.
