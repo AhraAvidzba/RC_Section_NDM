@@ -665,23 +665,24 @@ End Sub
 ' Записывает ядровые расстояния по глобальным центральным осям X/Y.
 ' Расчет идет через тот же CoreDistanceAlong, что и устойчивость СП 35:
 ' A/I берутся из переданного калькулятора, а крайняя точка c - по бетонной
-' оболочке section, без расширения контура арматурой.
+' оболочке section, без расширения контура арматурой. Plus/Minus относятся
+' к направлению эксцентриситета, а не к стороне крайнего волокна.
 Private Sub PutAxisCoreDistanceProperties(ByRef data() As Variant, ByRef rowIndex As Long, _
         ByVal runID As Variant, ByVal prefix As String, ByVal description As String, _
         ByVal section As CSectionModel, ByVal props As CSectionPropertiesCalculator, _
         ByVal units As CUnitSystem)
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistanceXPlus", _
         OutputLength(props.CoreDistanceAlong(section, 1#, 0#, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении +X центральных осей X/Y."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для эксцентриситета в направлении +X центральных осей X/Y."
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistanceXMinus", _
         OutputLength(props.CoreDistanceAlong(section, -1#, 0#, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении -X центральных осей X/Y."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для эксцентриситета в направлении -X центральных осей X/Y."
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistanceYPlus", _
         OutputLength(props.CoreDistanceAlong(section, 0#, 1#, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении +Y центральных осей X/Y."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для эксцентриситета в направлении +Y центральных осей X/Y."
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistanceYMinus", _
         OutputLength(props.CoreDistanceAlong(section, 0#, -1#, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении -Y центральных осей X/Y."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для эксцентриситета в направлении -Y центральных осей X/Y."
 End Sub
 
 ' Записывает справочные ядровые расстояния именно по главным центральным осям
@@ -701,16 +702,16 @@ Private Sub PutPrincipalCoreDistanceProperties(ByRef data() As Variant, ByRef ro
 
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance1Plus", _
         OutputLength(props.CoreDistanceAlong(section, axis1X, axis1Y, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении +главной центральной оси 1."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для эксцентриситета в направлении +главной центральной оси 1."
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance1Minus", _
         OutputLength(props.CoreDistanceAlong(section, -axis1X, -axis1Y, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении -главной центральной оси 1."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для эксцентриситета в направлении -главной центральной оси 1."
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance2Plus", _
         OutputLength(props.CoreDistanceAlong(section, axis2X, axis2Y, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении +главной центральной оси 2."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для эксцентриситета в направлении +главной центральной оси 2."
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance2Minus", _
         OutputLength(props.CoreDistanceAlong(section, -axis2X, -axis2Y, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении -главной центральной оси 2."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для эксцентриситета в направлении -главной центральной оси 2."
 End Sub
 
 ' Записывает общие расчетные характеристики, которые полезны не только в

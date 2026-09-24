@@ -30,6 +30,7 @@ Public Function RunGeometryTests() As String
     TestHollowRectangleSharpOpeningBProjection stats
     TestCircleGeometry stats
     TestCircleCoreDistance stats
+    TestAsymmetricCoreDistanceUsesOppositeFiber stats
     TestPrincipalAxisCoreDistanceIsAxisBased stats
     TestCirclePrincipalAxesStableOnCoarseMesh stats
     TestCircleInvalidData stats
@@ -1261,6 +1262,38 @@ Private Sub TestCircleCoreDistance(ByRef stats As TTestStats)
 
     AssertRelative stats, "circle.core.xPositive", props.CoreDistanceAlong(section, 1#, 0#, False), 37.5, 0.02
     AssertRelative stats, "circle.core.yNegative", props.CoreDistanceAlong(section, 0#, -1#, False), 37.5, 0.02
+End Sub
+
+' Проверяет соглашение Plus/Minus на несимметричном сечении. Направление
+' CoreDistanceAlong задает направление эксцентриситета, поэтому для +X в
+' формуле r = I/(A*c) используется крайнее волокно с противоположной стороны,
+' то есть расстояние от центра тяжести до левой границы.
+Private Sub TestAsymmetricCoreDistanceUsesOppositeFiber(ByRef stats As TTestStats)
+    Dim section As CSectionModel
+    Set section = New CSectionModel
+    section.AddConcreteElement 0#, 0#, 10000#, 1, "", "", "Rectangle", 100#, 100#, 0#
+    section.AddConcreteElement 125#, 0#, 5000#, 1, "", "", "Rectangle", 50#, 100#, 0#
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateConcrete section
+
+    Dim minProjection As Double
+    Dim maxProjection As Double
+    props.CalculateProjection section, 1#, 0#, False, minProjection, maxProjection
+
+    Dim inertiaForX As Double
+    Dim expectedXPlus As Double
+    Dim expectedXMinus As Double
+    inertiaForX = props.ProjectedInertiaAboutCentroid(1#, 0#)
+    expectedXPlus = inertiaForX / (props.Area * (props.CentroidX - minProjection))
+    expectedXMinus = inertiaForX / (props.Area * (maxProjection - props.CentroidX))
+
+    AssertTrue stats, "core.asymmetric.expectedDifferent", Abs(expectedXPlus - expectedXMinus) > 0.000001
+    AssertClose stats, "core.asymmetric.xPlus.oppositeFiber", _
+        props.CoreDistanceAlong(section, 1#, 0#, False), expectedXPlus, 0.000001
+    AssertClose stats, "core.asymmetric.xMinus.oppositeFiber", _
+        props.CoreDistanceAlong(section, -1#, 0#, False), expectedXMinus, 0.000001
 End Sub
 
 ' Фиксирует соглашение по справочным ядровым расстояниям главных осей.

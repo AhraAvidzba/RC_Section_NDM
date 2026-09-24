@@ -146,20 +146,39 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object)
     ' в квадратных скобках пропускаются.
     For rowIndex = 2 To UBound(data, 1)
         Dim keyValue As String
-        keyValue = Trim$(CStr(data(rowIndex, 1)))
+        keyValue = ConfigCellText(data(rowIndex, 1), "ключ настройки", rowIndex, vbNullString)
         If Len(keyValue) > 0 And Left$(keyValue, 1) <> "[" Then
             Dim sourceValue As String
             If columnCount >= 6 Then
-                sourceValue = Trim$(CStr(data(rowIndex, 6)))
+                sourceValue = ConfigCellText(data(rowIndex, 6), "комментарий", rowIndex, keyValue, True)
             ElseIf columnCount >= 4 Then
-                sourceValue = Trim$(CStr(data(rowIndex, 4)))
+                sourceValue = ConfigCellText(data(rowIndex, 4), "комментарий", rowIndex, keyValue, True)
             Else
                 sourceValue = vbNullString
             End If
-            AppendSetting keyValue, Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 3))), sourceValue
+            AppendSetting keyValue, _
+                ConfigCellText(data(rowIndex, 2), "значение", rowIndex, keyValue), _
+                ConfigCellText(data(rowIndex, 3), "единица измерения", rowIndex, keyValue, True), _
+                sourceValue
         End If
     Next rowIndex
 End Sub
+
+' Возвращает видимый текст ячейки Config и отдельно перехватывает ошибки формул.
+' Без этой проверки Excel-ошибка в формульной ячейке превращалась в малопонятный
+' VBA Type mismatch при CStr(...), без указания проблемной настройки.
+Private Function ConfigCellText(ByVal cellValue As Variant, ByVal columnName As String, _
+        ByVal rowIndex As Long, ByVal keyValue As String, _
+        Optional ByVal allowFormulaErrorAsEmpty As Boolean = False) As String
+    If IsError(cellValue) Then
+        If allowFormulaErrorAsEmpty Then Exit Function
+        If Len(keyValue) = 0 Then keyValue = "строка " & CStr(rowIndex)
+        Err.Raise vbObjectError + 4309, "CSystemSettingsReader", _
+            "На листе Config настройка " & keyValue & " содержит ошибку Excel в колонке """ & _
+            columnName & """. Проверьте формулу или замените ее числом/текстом."
+    End If
+    ConfigCellText = Trim$(CStr(cellValue))
+End Function
 
 ' Распознает компактную таблицу параметров бетона:
 ' Параметр | Сжатие | Растяжение | Ед. | Комментарий | Справка.
@@ -786,8 +805,15 @@ Public Function GetDouble(ByVal key As String, Optional ByVal defaultValue As Do
     If Len(textValue) = 0 Then
         GetDouble = defaultValue
     Else
+        On Error GoTo InvalidNumber
         GetDouble = CDbl(Replace$(textValue, ".", ApplicationDecimalSeparator()))
     End If
+    Exit Function
+
+InvalidNumber:
+    Err.Raise vbObjectError + 4312, "CSystemSettingsReader.GetDouble", _
+        "Настройка " & key & " должна быть числом, но сейчас прочитано: """ & _
+        textValue & """. Проверьте значение или формулу на листе Config."
 End Function
 
 ' Читает обязательную числовую настройку без скрытой подстановки значения.
@@ -800,7 +826,14 @@ Public Function GetRequiredDouble(ByVal key As String) As Double
         Err.Raise vbObjectError + 4310, "CSystemSettingsReader", _
             "Обязательная числовая настройка " & key & " не задана."
     End If
+    On Error GoTo InvalidNumber
     GetRequiredDouble = CDbl(Replace$(textValue, ".", ApplicationDecimalSeparator()))
+    Exit Function
+
+InvalidNumber:
+    Err.Raise vbObjectError + 4313, "CSystemSettingsReader.GetRequiredDouble", _
+        "Обязательная числовая настройка " & key & " должна быть числом, но сейчас прочитано: """ & _
+        textValue & """. Проверьте значение или формулу на листе Config."
 End Function
 
 ' Читает обязательную текстовую настройку без default-значения.

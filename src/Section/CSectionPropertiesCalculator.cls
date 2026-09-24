@@ -432,7 +432,8 @@ Public Function PrincipalPlaneDepth(ByVal section As CSectionModel, ByVal planeI
 End Function
 
 ' Считает ядровое расстояние для выбранной главной плоскости и стороны.
-' plusSide=True означает положительное направление нормали плоскости.
+' plusSide=True означает эксцентриситет в положительном направлении нормали
+' плоскости; крайнее волокно для c берется с противоположной стороны.
 Public Function PrincipalPlaneCoreDistance(ByVal section As CSectionModel, ByVal planeIndex As Long, _
         ByVal plusSide As Boolean, Optional ByVal includeRebar As Boolean = False) As Double
     Dim normalX As Double
@@ -445,13 +446,16 @@ Public Function PrincipalPlaneCoreDistance(ByVal section As CSectionModel, ByVal
     End If
 End Function
 
-' Считает ядровое расстояние для выбранной стороны сечения.
+' Считает ядровое расстояние для выбранного направления эксцентриситета.
 ' direction задает сторону, куда направлен эксцентриситет. Само ядровое
 ' расстояние использует текущие накопленные A/I этого калькулятора: для
 ' приведенного сечения их надо заранее получить через CalculateTransformedByModuli.
 ' includeRebar влияет только на выбор крайней внешней точки c в формуле
 ' r = I/(A*c). Для устойчивости c берется до бетонного контура, поэтому туда
 ' передается False: арматура влияет на A/I, но не раздувает габарит h и плечо c.
+' Для положительного эксцентриситета критическая граница ядра определяется
+' противоположным крайним волокном, поэтому для direction=+X расстояние c
+' берется до стороны -X, а не до одноименной стороны +X.
 Public Function CoreDistanceAlong(ByVal section As CSectionModel, ByVal directionX As Double, _
         ByVal directionY As Double, Optional ByVal includeRebar As Boolean = True) As Double
     If mArea <= GEOM_TOLERANCE Then Exit Function
@@ -472,7 +476,7 @@ Public Function CoreDistanceAlong(ByVal section As CSectionModel, ByVal directio
     Dim centroidProjection As Double
     Dim extremeDistance As Double
     centroidProjection = nx * mCentroidX + ny * mCentroidY
-    extremeDistance = maxProjection - centroidProjection
+    extremeDistance = centroidProjection - minProjection
     If extremeDistance <= GEOM_TOLERANCE Then Exit Function
 
     CoreDistanceAlong = ProjectedInertiaAboutCentroid(nx, ny) / (mArea * extremeDistance)
