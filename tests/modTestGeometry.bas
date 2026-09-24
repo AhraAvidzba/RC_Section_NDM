@@ -30,6 +30,7 @@ Public Function RunGeometryTests() As String
     TestHollowRectangleSharpOpeningBProjection stats
     TestCircleGeometry stats
     TestCircleCoreDistance stats
+    TestPrincipalAxisCoreDistanceIsAxisBased stats
     TestCirclePrincipalAxesStableOnCoarseMesh stats
     TestCircleInvalidData stats
     TestCircleAutoRebarLayout stats
@@ -1260,6 +1261,38 @@ Private Sub TestCircleCoreDistance(ByRef stats As TTestStats)
 
     AssertRelative stats, "circle.core.xPositive", props.CoreDistanceAlong(section, 1#, 0#, False), 37.5, 0.02
     AssertRelative stats, "circle.core.yNegative", props.CoreDistanceAlong(section, 0#, -1#, False), 37.5, 0.02
+End Sub
+
+' Фиксирует соглашение по справочным ядровым расстояниям главных осей.
+' Для высокого симметричного прямоугольника главная ось 1 совпадает с +X,
+' поэтому r по оси 1 должен совпасть с r по центральной оси X. Отдельно
+' проверяем, что плоскость устойчивости 1 остается другой сущностью: ее
+' нормаль направлена по оси 2, потому что изгиб идет вокруг оси 1.
+Private Sub TestPrincipalAxisCoreDistanceIsAxisBased(ByRef stats As TTestStats)
+    Dim section As CSectionModel
+    Set section = New CSectionModel
+    section.AddConcreteElement 0#, 0#, 120000#, 1, "", "", "Rectangle", 200#, 600#, 0#
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateConcrete section
+
+    Dim axis1X As Double
+    Dim axis1Y As Double
+    Dim axis2X As Double
+    Dim axis2Y As Double
+    props.PrincipalAxisDirection 1, axis1X, axis1Y
+    props.PrincipalAxisDirection 2, axis2X, axis2Y
+
+    AssertClose stats, "principal.core.axis1.matchesX", _
+        props.CoreDistanceAlong(section, axis1X, axis1Y, False), _
+        props.CoreDistanceAlong(section, 1#, 0#, False), 0.000001
+    AssertClose stats, "principal.core.axis2.matchesY", _
+        props.CoreDistanceAlong(section, axis2X, axis2Y, False), _
+        props.CoreDistanceAlong(section, 0#, 1#, False), 0.000001
+    AssertClose stats, "principal.core.plane1.normalIsAxis2", _
+        props.PrincipalPlaneCoreDistance(section, 1, True, False), _
+        props.CoreDistanceAlong(section, axis2X, axis2Y, False), 0.000001
 End Sub
 
 ' Проверяет, что грубая, но симметричная сетка круга не разворачивает главные

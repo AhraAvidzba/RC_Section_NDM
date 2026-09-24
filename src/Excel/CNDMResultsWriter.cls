@@ -368,19 +368,15 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
         materialProvider.ConcreteElasticModulusFromValueSet(mvsULS), _
         materialProvider.SteelElasticModulusFromValueSet(mvsULS)
 
-    PutProperty data, rowIndex, runID, "ALL", "Bounds.MinX", OutputLength(minX, units), OutputLengthUnit(units), "Минимальный X расчетной модели."
-    PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxX", OutputLength(maxX, units), OutputLengthUnit(units), "Максимальный X расчетной модели."
-    PutProperty data, rowIndex, runID, "ALL", "Bounds.MinY", OutputLength(minY, units), OutputLengthUnit(units), "Минимальный Y расчетной модели."
-    PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxY", OutputLength(maxY, units), OutputLengthUnit(units), "Максимальный Y расчетной модели."
+    PutProperty data, rowIndex, runID, "ALL", "Bounds.MinX", OutputLength(minX, units), OutputLengthUnit(units), "Минимальный X бетонной расчетной модели в координатах модели."
+    PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxX", OutputLength(maxX, units), OutputLengthUnit(units), "Максимальный X бетонной расчетной модели в координатах модели."
+    PutProperty data, rowIndex, runID, "ALL", "Bounds.MinY", OutputLength(minY, units), OutputLengthUnit(units), "Минимальный Y бетонной расчетной модели в координатах модели."
+    PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxY", OutputLength(maxY, units), OutputLengthUnit(units), "Максимальный Y бетонной расчетной модели в координатах модели."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.Source", section.SourceType, "-", "Источник геометрии расчетной модели."
-    PutProperty data, rowIndex, runID, "ALL", "LoadReferenceX", OutputLength(batch.LoadReferenceX, units), OutputLengthUnit(units), "X фактической точки приложения нагрузки в координатах модели; равно Concrete.CentroidX + Load.ReferenceOffsetX."
-    PutProperty data, rowIndex, runID, "ALL", "LoadReferenceY", OutputLength(batch.LoadReferenceY, units), OutputLengthUnit(units), "Y фактической точки приложения нагрузки в координатах модели; равно Concrete.CentroidY + Load.ReferenceOffsetY."
-    PutConcreteSectionProperties data, rowIndex, runID, section, concreteProps, units
-    PutTransformedSectionProperties data, rowIndex, runID, section, transformedProps, units
-    PutGeneralSectionCheckProperties data, rowIndex, runID, section, concreteProps, transformedProps, batch
-
-    PutProperty data, rowIndex, runID, "ALL", "ConcreteCount", section.ConcreteCount, "шт", "Количество бетонных элементов."
-    PutProperty data, rowIndex, runID, "ALL", "RebarCount", section.RebarCount, "шт", "Количество элементов арматуры."
+    PutProperty data, rowIndex, runID, "ALL", "LoadReferenceX", OutputLength(batch.LoadReferenceX, units), OutputLengthUnit(units), "X точки приложения нагрузки в координатах модели; это центр тяжести бетонного сечения плюс Load.ReferenceOffsetX."
+    PutProperty data, rowIndex, runID, "ALL", "LoadReferenceY", OutputLength(batch.LoadReferenceY, units), OutputLengthUnit(units), "Y точки приложения нагрузки в координатах модели; это центр тяжести бетонного сечения плюс Load.ReferenceOffsetY."
+    PutProperty data, rowIndex, runID, "ALL", "ConcreteCount", section.ConcreteCount, "шт", "Количество бетонных элементов расчетной модели."
+    PutProperty data, rowIndex, runID, "ALL", "RebarCount", section.RebarCount, "шт", "Количество элементов продольной арматуры расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Output.LengthUnit", OutputLengthUnit(units), "-", "Единица вывода длины на момент расчета."
     PutProperty data, rowIndex, runID, "ALL", "Output.AreaUnit", OutputAreaUnit(units), "-", "Единица вывода площади на момент расчета."
     PutProperty data, rowIndex, runID, "ALL", "Output.ForceUnit", OutputForceUnit(units), "-", "Единица вывода силы на момент расчета."
@@ -390,6 +386,9 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     PutProperty data, rowIndex, runID, "ALL", "Output.SignConvention.N", OutputSignN(units), "-", "Пользовательский знак N на момент расчета."
     PutProperty data, rowIndex, runID, "ALL", "Output.SignConvention.Mx", OutputSignMx(units), "-", "Пользовательский знак Mx на момент расчета."
     PutProperty data, rowIndex, runID, "ALL", "Output.SignConvention.My", OutputSignMy(units), "-", "Пользовательский знак My на момент расчета."
+    PutConcreteSectionProperties data, rowIndex, runID, section, concreteProps, units
+    PutTransformedSectionProperties data, rowIndex, runID, section, transformedProps, units
+    PutGeneralSectionCheckProperties data, rowIndex, runID, section, concreteProps, transformedProps, batch
     Dim i As Long
     ' LC-зависимые свойства уровня сечения хранятся отдельно от поэлементных
     ' строк. Плоскости деформаций пишутся ниже только как State.<StateType>.*,
@@ -397,15 +396,15 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     ' неоднозначных legacy-полей.
     For i = 1 To batch.Count
         If batch.StateAvailable(i) Then
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nint", OutputForce(batch.Nint(i), units), OutputForceUnit(units), "Внутренняя продольная сила."
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nint", OutputForce(batch.Nint(i), units), OutputForceUnit(units), "Равнодействующая продольная сила внутреннего НДС для выбранного сочетания."
         Else
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nint", vbNullString, OutputForceUnit(units), "Внутренняя продольная сила."
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nint", vbNullString, OutputForceUnit(units), "Равнодействующая продольная сила внутреннего НДС для выбранного сочетания."
         End If
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "N", OutputForce(batch.N(i), units), OutputForceUnit(units), "Заданная продольная сила."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxUser", OutputMx(batch.UserMx(i), units), OutputMomentUnit(units), "Пользовательский Mx."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUser", OutputMy(batch.UserMy(i), units), OutputMomentUnit(units), "Пользовательский My."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxInternal", OutputMx(batch.Mx(i), units), OutputMomentUnit(units), "Mx после переноса к координатам элементов."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyInternal", OutputMy(batch.My(i), units), OutputMomentUnit(units), "My после переноса к координатам элементов."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "N", OutputForce(batch.N(i), units), OutputForceUnit(units), "Заданная пользователем продольная сила сочетания."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxUser", OutputMx(batch.UserMx(i), units), OutputMomentUnit(units), "Пользовательский Mx в точке приложения нагрузки."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUser", OutputMy(batch.UserMy(i), units), OutputMomentUnit(units), "Пользовательский My в точке приложения нагрузки."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxInternal", OutputMx(batch.Mx(i), units), OutputMomentUnit(units), "Mx того же сочетания после переноса к началу внутренней системы координат модели."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyInternal", OutputMy(batch.My(i), units), OutputMomentUnit(units), "My того же сочетания после переноса к началу внутренней системы координат модели."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "OverallStatus", batch.OverallStatus(i), "-", "Итоговый пользовательский статус сочетания."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "ProfileId", batch.ProfileId(i), "-", "Расчетный профиль, назначенный сочетанию в rngLoadCombinations."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "DirectStateStatus", batch.DirectStateStatus(i), "-", "Статус прямого решения НДС фактического сочетания."
@@ -616,21 +615,21 @@ Private Sub PutConcreteSectionProperties(ByRef data() As Variant, ByRef rowIndex
     PutProperty data, rowIndex, runID, "ALL", "Concrete.Area", OutputArea(props.Area, units), OutputAreaUnit(units), "Площадь бетонной части сечения по расчетной сетке."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.CentroidX", OutputLength(props.CentroidX, units), OutputLengthUnit(units), "X центра тяжести бетонного сечения в координатах модели; от этой точки задается Load.ReferenceOffsetX."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.CentroidY", OutputLength(props.CentroidY, units), OutputLengthUnit(units), "Y центра тяжести бетонного сечения в координатах модели; от этой точки задается Load.ReferenceOffsetY."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.Ix", OutputFourthPowerLength(props.Ix, units), OutputLengthUnit(units) & "4", "Момент инерции бетонного сечения относительно исходной оси X."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.Iy", OutputFourthPowerLength(props.Iy, units), OutputLengthUnit(units) & "4", "Момент инерции бетонного сечения относительно исходной оси Y."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.Ixy", OutputFourthPowerLength(props.Ixy, units), OutputLengthUnit(units) & "4", "Центробежный момент бетонного сечения относительно исходных осей."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.Ixc", OutputFourthPowerLength(props.Ixc, units), OutputLengthUnit(units) & "4", "Центральный момент инерции бетонного сечения относительно оси X."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.Iyc", OutputFourthPowerLength(props.Iyc, units), OutputLengthUnit(units) & "4", "Центральный момент инерции бетонного сечения относительно оси Y."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.Ixyc", OutputFourthPowerLength(props.Ixyc, units), OutputLengthUnit(units) & "4", "Центральный центробежный момент бетонного сечения."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalAngle", props.PrincipalAngleRad, "rad", "Угол от +X к главной оси 1 бетонного сечения; положительный против часовой стрелки."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalI1", OutputFourthPowerLength(props.PrincipalI1, units), OutputLengthUnit(units) & "4", "Больший главный момент инерции бетонного сечения."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalI2", OutputFourthPowerLength(props.PrincipalI2, units), OutputLengthUnit(units) & "4", "Меньший главный момент инерции бетонного сечения."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.RadiusX", OutputLength(props.RadiusX, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно центральной оси X."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.RadiusY", OutputLength(props.RadiusY, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно центральной оси Y."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.Ix", OutputFourthPowerLength(props.Ix, units), OutputLengthUnit(units) & "4", "Момент инерции бетонного сечения относительно оси X внутренней системы координат модели."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.Iy", OutputFourthPowerLength(props.Iy, units), OutputLengthUnit(units) & "4", "Момент инерции бетонного сечения относительно оси Y внутренней системы координат модели."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.Ixy", OutputFourthPowerLength(props.Ixy, units), OutputLengthUnit(units) & "4", "Центробежный момент бетонного сечения относительно осей X/Y внутренней системы координат модели."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.Ixc", OutputFourthPowerLength(props.Ixc, units), OutputLengthUnit(units) & "4", "Момент инерции бетонного сечения относительно центральной оси X через ц.т. бетонного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.Iyc", OutputFourthPowerLength(props.Iyc, units), OutputLengthUnit(units) & "4", "Момент инерции бетонного сечения относительно центральной оси Y через ц.т. бетонного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.Ixyc", OutputFourthPowerLength(props.Ixyc, units), OutputLengthUnit(units) & "4", "Центробежный момент бетонного сечения относительно центральных осей X/Y через ц.т. бетонного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.RadiusX", OutputLength(props.RadiusX, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно центральной оси X через ц.т. бетонного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.RadiusY", OutputLength(props.RadiusY, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно центральной оси Y через ц.т. бетонного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalAngle", props.PrincipalAngleRad, "rad", "Угол от +X модели к главной центральной оси 1 бетонного сечения; положительный против часовой стрелки."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalI1", OutputFourthPowerLength(props.PrincipalI1, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции бетонного сечения относительно главной оси 1 (больший)."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalI2", OutputFourthPowerLength(props.PrincipalI2, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции бетонного сечения относительно главной оси 2 (меньший)."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalRadius1", OutputLength(props.PrincipalRadius1, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно главной центральной оси 1."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalRadius2", OutputLength(props.PrincipalRadius2, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно главной центральной оси 2."
     PutAxisCoreDistanceProperties data, rowIndex, runID, "Concrete", _
         "бетонного сечения", section, props, units
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalRadius1", OutputLength(props.PrincipalRadius1, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения по главной оси I1."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalRadius2", OutputLength(props.PrincipalRadius2, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения по главной оси I2."
     PutPrincipalCoreDistanceProperties data, rowIndex, runID, "Concrete", _
         "бетонного сечения", section, props, units
 End Sub
@@ -642,23 +641,23 @@ Private Sub PutTransformedSectionProperties(ByRef data() As Variant, ByRef rowIn
         ByVal runID As Variant, ByVal section As CSectionModel, _
         ByVal props As CSectionPropertiesCalculator, ByVal units As CUnitSystem)
     PutProperty data, rowIndex, runID, "ALL", "Transformed.Area", OutputArea(props.Area, units), OutputAreaUnit(units), "Площадь приведенного сечения в бетонной базе."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.CentroidX", OutputLength(props.CentroidX, units), OutputLengthUnit(units), "X центра тяжести приведенного сечения бетон + арматура в координатах модели."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.CentroidY", OutputLength(props.CentroidY, units), OutputLengthUnit(units), "Y центра тяжести приведенного сечения бетон + арматура в координатах модели."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.Ix", OutputFourthPowerLength(props.Ix, units), OutputLengthUnit(units) & "4", "Момент инерции приведенного сечения относительно исходной оси X."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.Iy", OutputFourthPowerLength(props.Iy, units), OutputLengthUnit(units) & "4", "Момент инерции приведенного сечения относительно исходной оси Y."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.Ixy", OutputFourthPowerLength(props.Ixy, units), OutputLengthUnit(units) & "4", "Центробежный момент приведенного сечения относительно исходных осей."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.Ixc", OutputFourthPowerLength(props.Ixc, units), OutputLengthUnit(units) & "4", "Центральный момент инерции приведенного сечения относительно оси X."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.Iyc", OutputFourthPowerLength(props.Iyc, units), OutputLengthUnit(units) & "4", "Центральный момент инерции приведенного сечения относительно оси Y."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.Ixyc", OutputFourthPowerLength(props.Ixyc, units), OutputLengthUnit(units) & "4", "Центральный центробежный момент приведенного сечения."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalAngle", props.PrincipalAngleRad, "rad", "Угол от +X к главной оси 1 приведенного сечения; положительный против часовой стрелки."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalI1", OutputFourthPowerLength(props.PrincipalI1, units), OutputLengthUnit(units) & "4", "Главный момент инерции I1 приведенного сечения."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalI2", OutputFourthPowerLength(props.PrincipalI2, units), OutputLengthUnit(units) & "4", "Главный момент инерции I2 приведенного сечения."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.RadiusX", OutputLength(props.RadiusX, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно центральной оси X."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.RadiusY", OutputLength(props.RadiusY, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно центральной оси Y."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.CentroidX", OutputLength(props.CentroidX, units), OutputLengthUnit(units), "X центра тяжести приведенного сечения бетон + арматура в координатах модели; это смещение ц.т. приведенного сечения относительно бетонной модели."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.CentroidY", OutputLength(props.CentroidY, units), OutputLengthUnit(units), "Y центра тяжести приведенного сечения бетон + арматура в координатах модели; это смещение ц.т. приведенного сечения относительно бетонной модели."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.Ix", OutputFourthPowerLength(props.Ix, units), OutputLengthUnit(units) & "4", "Момент инерции приведенного сечения относительно оси X внутренней системы координат модели."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.Iy", OutputFourthPowerLength(props.Iy, units), OutputLengthUnit(units) & "4", "Момент инерции приведенного сечения относительно оси Y внутренней системы координат модели."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.Ixy", OutputFourthPowerLength(props.Ixy, units), OutputLengthUnit(units) & "4", "Центробежный момент приведенного сечения относительно осей X/Y внутренней системы координат модели."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.Ixc", OutputFourthPowerLength(props.Ixc, units), OutputLengthUnit(units) & "4", "Момент инерции приведенного сечения относительно центральной оси X через ц.т. приведенного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.Iyc", OutputFourthPowerLength(props.Iyc, units), OutputLengthUnit(units) & "4", "Момент инерции приведенного сечения относительно центральной оси Y через ц.т. приведенного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.Ixyc", OutputFourthPowerLength(props.Ixyc, units), OutputLengthUnit(units) & "4", "Центробежный момент приведенного сечения относительно центральных осей X/Y через ц.т. приведенного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.RadiusX", OutputLength(props.RadiusX, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно центральной оси X через ц.т. приведенного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.RadiusY", OutputLength(props.RadiusY, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно центральной оси Y через ц.т. приведенного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalAngle", props.PrincipalAngleRad, "rad", "Угол от +X модели к главной центральной оси 1 приведенного сечения; положительный против часовой стрелки."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalI1", OutputFourthPowerLength(props.PrincipalI1, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции приведенного сечения относительно главной оси 1 (больший)."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalI2", OutputFourthPowerLength(props.PrincipalI2, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции приведенного сечения относительно главной оси 2 (меньший)."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalRadius1", OutputLength(props.PrincipalRadius1, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно главной центральной оси 1."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalRadius2", OutputLength(props.PrincipalRadius2, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно главной центральной оси 2."
     PutAxisCoreDistanceProperties data, rowIndex, runID, "Transformed", _
         "приведенного сечения", section, props, units
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalRadius1", OutputLength(props.PrincipalRadius1, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения по главной оси I1."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalRadius2", OutputLength(props.PrincipalRadius2, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения по главной оси I2."
     PutPrincipalCoreDistanceProperties data, rowIndex, runID, "Transformed", _
         "приведенного сечения", section, props, units
 End Sub
@@ -673,38 +672,45 @@ Private Sub PutAxisCoreDistanceProperties(ByRef data() As Variant, ByRef rowInde
         ByVal units As CUnitSystem)
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistanceXPlus", _
         OutputLength(props.CoreDistanceAlong(section, 1#, 0#, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении +X."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении +X центральных осей X/Y."
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistanceXMinus", _
         OutputLength(props.CoreDistanceAlong(section, -1#, 0#, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении -X."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении -X центральных осей X/Y."
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistanceYPlus", _
         OutputLength(props.CoreDistanceAlong(section, 0#, 1#, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении +Y."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении +Y центральных осей X/Y."
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistanceYMinus", _
         OutputLength(props.CoreDistanceAlong(section, 0#, -1#, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении -Y."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении -Y центральных осей X/Y."
 End Sub
 
-' Записывает ядровые расстояния по двум главным направлениям. Для
-' несимметричных сечений расстояния в сторону +оси и -оси могут отличаться,
-' поэтому сохраняем все четыре величины. Контур c берется по бетонной оболочке:
-' арматура влияет на A/I приведенного сечения, но не расширяет внешний бетон.
+' Записывает справочные ядровые расстояния именно по главным центральным осям
+' 1 и 2. Это не то же самое, что "главная плоскость" в расчете устойчивости:
+' плоскость 1 изгибается вокруг оси 1, а ее габарит и r берутся по нормали,
+' то есть по оси 2. Здесь же имя CoreDistance1Plus означает направление +оси 1.
 Private Sub PutPrincipalCoreDistanceProperties(ByRef data() As Variant, ByRef rowIndex As Long, _
         ByVal runID As Variant, ByVal prefix As String, ByVal description As String, _
         ByVal section As CSectionModel, ByVal props As CSectionPropertiesCalculator, _
         ByVal units As CUnitSystem)
+    Dim axis1X As Double
+    Dim axis1Y As Double
+    Dim axis2X As Double
+    Dim axis2Y As Double
+    props.PrincipalAxisDirection 1, axis1X, axis1Y
+    props.PrincipalAxisDirection 2, axis2X, axis2Y
+
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance1Plus", _
-        OutputLength(props.PrincipalPlaneCoreDistance(section, 1, True, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для изгиба вокруг главной оси 1, в положительную сторону эксцентриситета."
+        OutputLength(props.CoreDistanceAlong(section, axis1X, axis1Y, False), units), _
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении +главной центральной оси 1."
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance1Minus", _
-        OutputLength(props.PrincipalPlaneCoreDistance(section, 1, False, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для изгиба вокруг главной оси 1, в отрицательную сторону эксцентриситета."
+        OutputLength(props.CoreDistanceAlong(section, -axis1X, -axis1Y, False), units), _
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении -главной центральной оси 1."
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance2Plus", _
-        OutputLength(props.PrincipalPlaneCoreDistance(section, 2, True, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для изгиба вокруг главной оси 2, в положительную сторону эксцентриситета."
+        OutputLength(props.CoreDistanceAlong(section, axis2X, axis2Y, False), units), _
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении +главной центральной оси 2."
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance2Minus", _
-        OutputLength(props.PrincipalPlaneCoreDistance(section, 2, False, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для изгиба вокруг главной оси 2, в отрицательную сторону эксцентриситета."
+        OutputLength(props.CoreDistanceAlong(section, -axis2X, -axis2Y, False), units), _
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " в направлении -главной центральной оси 2."
 End Sub
 
 ' Записывает общие расчетные характеристики, которые полезны не только в
@@ -727,10 +733,10 @@ Private Sub PutGeneralSectionCheckProperties(ByRef data() As Variant, ByRef rowI
         "Процент продольного армирования: суммарная As / gross-площадь бетонной сетки."
     PutProperty data, rowIndex, runID, "ALL", "SP35.Slenderness1", _
         SlendernessValue(batch.StabilityElementLength, batch.StabilityMu1, transformedProps.PrincipalRadius1), _
-        "-", "Гибкость l0/i по СП 35 для главной плоскости 1 приведенного сечения."
+        "-", "Гибкость l0/i по СП 35 для плоскости 1: расчет изгиба вокруг главной оси 1 приведенного сечения."
     PutProperty data, rowIndex, runID, "ALL", "SP35.Slenderness2", _
         SlendernessValue(batch.StabilityElementLength, batch.StabilityMu2, transformedProps.PrincipalRadius2), _
-        "-", "Гибкость l0/i по СП 35 для главной плоскости 2 приведенного сечения."
+        "-", "Гибкость l0/i по СП 35 для плоскости 2: расчет изгиба вокруг главной оси 2 приведенного сечения."
 End Sub
 
 ' Возвращает безразмерную гибкость l0/i, если расчетная длина и радиус
@@ -769,17 +775,17 @@ Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As L
                 MaterialDiagramId(batch.ProfileId(combinationIndex), stateResult, "Rebar", batch.DirectStateDiagramExtensionEnabled(combinationIndex)), _
                 "-", "Ссылка на диаграмму арматуры в rngNDMMaterialDiagrams."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "Epsilon0", _
-                stateResult.Epsilon0, "-", "Деформация в начале координат для именованного расчетного состояния."
+                stateResult.Epsilon0, "-", "Деформация в начале внутренней системы координат модели для именованного расчетного состояния."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "KappaX", _
-                OutputCurvature(stateResult.KappaX, units), OutputCurvatureUnit(units), "Кривизна KappaX для именованного расчетного состояния."
+                OutputCurvature(stateResult.KappaX, units), OutputCurvatureUnit(units), "Кривизна KappaX в поле eps = eps0 + KappaX*y + KappaY*x; координаты x/y берутся в системе модели."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "KappaY", _
-                OutputCurvature(stateResult.KappaY, units), OutputCurvatureUnit(units), "Кривизна KappaY для именованного расчетного состояния."
+                OutputCurvature(stateResult.KappaY, units), OutputCurvatureUnit(units), "Кривизна KappaY в поле eps = eps0 + KappaX*y + KappaY*x; координаты x/y берутся в системе модели."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "NeutralLine.Angle", _
                 NeutralLineAngleValue(stateResult.KappaX, stateResult.KappaY), "rad", _
-                "Угол нейтральной линии от глобальной оси X против часовой стрелки."
+                "Угол нейтральной линии от оси X внутренней системы координат модели против часовой стрелки."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "NeutralLine.SignedDistance", _
                 OutputLengthVariant(NeutralLineSignedDistanceValue(stateResult.Epsilon0, stateResult.KappaX, stateResult.KappaY), units), _
-                OutputLengthUnit(units), "Знаковое расстояние от начала координат до нейтральной линии по нормали (KappaY, KappaX)."
+                OutputLengthUnit(units), "Знаковое расстояние от начала внутренней системы координат модели до нейтральной линии по нормали (KappaY, KappaX)."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "ExtensionUsed", _
                 BooleanText(stateResult.ExtensionUsed), "-", "True, если это расчетное состояние использовало numerical extension."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "Status", _
@@ -908,23 +914,22 @@ Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal sectio
     Dim minX As Double, maxX As Double, minY As Double, maxY As Double
     GetConcreteBounds section, minX, maxX, minY, maxY
 
-    PutProperty data, rowIndex, runID, "ALL", "Bounds.MinX", OutputLength(minX, units), OutputLengthUnit(units), "Минимальный X расчетной модели."
-    PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxX", OutputLength(maxX, units), OutputLengthUnit(units), "Максимальный X расчетной модели."
-    PutProperty data, rowIndex, runID, "ALL", "Bounds.MinY", OutputLength(minY, units), OutputLengthUnit(units), "Минимальный Y расчетной модели."
-    PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxY", OutputLength(maxY, units), OutputLengthUnit(units), "Максимальный Y расчетной модели."
+    PutProperty data, rowIndex, runID, "ALL", "Bounds.MinX", OutputLength(minX, units), OutputLengthUnit(units), "Минимальный X бетонной расчетной модели в координатах модели."
+    PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxX", OutputLength(maxX, units), OutputLengthUnit(units), "Максимальный X бетонной расчетной модели в координатах модели."
+    PutProperty data, rowIndex, runID, "ALL", "Bounds.MinY", OutputLength(minY, units), OutputLengthUnit(units), "Минимальный Y бетонной расчетной модели в координатах модели."
+    PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxY", OutputLength(maxY, units), OutputLengthUnit(units), "Максимальный Y бетонной расчетной модели в координатах модели."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.Source", section.SourceType, "-", "Источник геометрии расчетной модели."
 
     Dim concreteProps As CSectionPropertiesCalculator
     Set concreteProps = New CSectionPropertiesCalculator
     concreteProps.CalculateConcrete section
-    PutConcreteSectionProperties data, rowIndex, runID, section, concreteProps, units
-
-    PutProperty data, rowIndex, runID, "ALL", "ConcreteCount", section.ConcreteCount, "шт", "Количество бетонных элементов."
-    PutProperty data, rowIndex, runID, "ALL", "RebarCount", section.RebarCount, "шт", "Количество элементов арматуры."
+    PutProperty data, rowIndex, runID, "ALL", "ConcreteCount", section.ConcreteCount, "шт", "Количество бетонных элементов расчетной модели."
+    PutProperty data, rowIndex, runID, "ALL", "RebarCount", section.RebarCount, "шт", "Количество элементов продольной арматуры расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Output.LengthUnit", OutputLengthUnit(units), "-", "Единица вывода длины на момент импорта."
     PutProperty data, rowIndex, runID, "ALL", "Output.AreaUnit", OutputAreaUnit(units), "-", "Единица вывода площади на момент импорта."
     PutProperty data, rowIndex, runID, "ALL", "Output.StressUnit", OutputStressUnit(units), "-", "Единица вывода напряжения на момент импорта."
     PutProperty data, rowIndex, runID, "ALL", "Output.CurvatureUnit", OutputCurvatureUnit(units), "-", "Единица вывода кривизны на момент импорта."
+    PutConcreteSectionProperties data, rowIndex, runID, section, concreteProps, units
 
     target.Resize(UBound(data, 1), SECTION_PROPERTY_COLUMNS).Value2 = data
     FormatResultsBlock target, UBound(data, 1), SECTION_PROPERTY_COLUMNS, "Свойства всего сечения"

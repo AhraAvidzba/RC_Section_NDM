@@ -123,8 +123,8 @@ Private mAccidentalEccentricity1 As Double ' Случайный эксцентр
 Private mAccidentalEccentricity2 As Double ' Случайный эксцентриситет второй плоскости, мм.
 Private mEffectiveLength1 As Double ' l0 первой плоскости, мм.
 Private mEffectiveLength2 As Double ' l0 второй плоскости, мм.
-Private mSlenderness1 As Double ' Гибкость l0/i первой главной плоскости.
-Private mSlenderness2 As Double ' Гибкость l0/i второй главной плоскости.
+Private mSlenderness1 As Double ' Гибкость l0/i для плоскости 1: изгиб вокруг главной оси 1.
+Private mSlenderness2 As Double ' Гибкость l0/i для плоскости 2: изгиб вокруг главной оси 2.
 Private mDepth1 As Double ' Размер сечения h1 по нормали первой главной плоскости, мм.
 Private mDepth2 As Double ' Размер сечения h2 по нормали второй главной плоскости, мм.
 Private mRadius1 As Double ' Радиус инерции i1 приведенного сечения.

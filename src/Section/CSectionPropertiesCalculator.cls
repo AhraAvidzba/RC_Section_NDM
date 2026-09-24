@@ -406,8 +406,10 @@ Public Sub PrincipalAxisDirection(ByVal axisIndex As Long, ByRef axisX As Double
 End Sub
 
 ' Возвращает положительное направление эксцентриситета для главной плоскости.
-' Для изгиба вокруг главной оси 1 плечо и габарит считаются по нормали к этой
-' оси, то есть вдоль главной оси 2. Для изгиба вокруг главной оси 2 - наоборот.
+' Важно: главная плоскость и главная ось - не одно и то же направление.
+' Плоскость 1 означает изгиб вокруг главной оси 1; плечо, h и ядровое
+' расстояние этой плоскости считаются по нормали к оси 1, то есть вдоль оси 2.
+' Плоскость 2 аналогично связана с изгибом вокруг оси 2 и нормалью вдоль оси 1.
 Public Sub PrincipalPlaneNormalDirection(ByVal planeIndex As Long, ByRef normalX As Double, ByRef normalY As Double)
     If planeIndex = 1 Then
         PrincipalAxisDirection 2, normalX, normalY

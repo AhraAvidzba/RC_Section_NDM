@@ -87,13 +87,13 @@ End Sub
 ' Добавляет прямой сегмент параметрического контура сечения.
 Public Sub AddContourLine(ByVal annotationID As String, ByVal startX As Double, ByVal startY As Double, _
         ByVal endX As Double, ByVal endY As Double, Optional ByVal commentValue As String = "Сегмент контура параметрического сечения.")
-    AddAnnotation "CONTOUR_LINE", annotationID, startX, startY, endX, endY, 0#, 0#, vbNullString, 0#, vbNullString, commentValue
+    AddAnnotation "CONTOUR_LINE", annotationID, startX, startY, endX, endY, 0#, 0#, vbNullString, 0#, "Length", commentValue
 End Sub
 
 ' Добавляет круговой контур для параметрического круглого сечения.
 Public Sub AddContourCircle(ByVal annotationID As String, ByVal centerX As Double, ByVal centerY As Double, _
         ByVal radius As Double, Optional ByVal commentValue As String = "Контур круглого параметрического сечения.")
-    AddAnnotation "CONTOUR_CIRCLE", annotationID, centerX, centerY, radius, 0#, 0#, 0#, vbNullString, radius, vbNullString, commentValue
+    AddAnnotation "CONTOUR_CIRCLE", annotationID, centerX, centerY, radius, 0#, 0#, 0#, vbNullString, radius, "Length", commentValue
 End Sub
 
 ' Добавляет дуговой сегмент контура. Начало/конец задают фактическую дугу,
@@ -102,7 +102,7 @@ Public Sub AddContourArc(ByVal annotationID As String, ByVal startX As Double, B
         ByVal endX As Double, ByVal endY As Double, ByVal centerX As Double, ByVal centerY As Double, _
         ByVal radius As Double, ByVal sweepAngle As Double, Optional ByVal commentValue As String = "Дуга контура параметрического сечения.")
     AddAnnotation "CONTOUR_ARC", annotationID, startX, startY, endX, endY, centerX, centerY, _
-        FormatAnnotationNumber(sweepAngle), radius, vbNullString, commentValue
+        FormatAnnotationNumber(sweepAngle), radius, "Length", commentValue
 End Sub
 
 ' Добавляет размерную линию с числовым значением в единицах длины модели.

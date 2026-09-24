@@ -26,16 +26,16 @@ Option Explicit
 ' значениями другого знака.
 
 Private Const HEADER_ROWS As Long = 4 ' Строки шапки над первой строкой LC.
-Private Const TOTAL_COLUMNS As Long = 42 ' Полная ширина с двумя пустыми разделителями.
+Private Const TOTAL_COLUMNS As Long = 48 ' Полная ширина с двумя пустыми разделителями.
 
 Private Const COL_LEFT_FIRST As Long = 1
 Private Const COL_LEFT_LAST As Long = 8
 Private Const COL_SEPARATOR1 As Long = 9
 Private Const COL_STATE_FIRST As Long = 10
-Private Const COL_STATE_LAST As Long = 26
-Private Const COL_SEPARATOR2 As Long = 27
-Private Const COL_CAPACITY_FIRST As Long = 28
-Private Const COL_CAPACITY_LAST As Long = 42
+Private Const COL_STATE_LAST As Long = 29
+Private Const COL_SEPARATOR2 As Long = 30
+Private Const COL_CAPACITY_FIRST As Long = 31
+Private Const COL_CAPACITY_LAST As Long = 48
 
 Private Const COL_ID As Long = 1
 Private Const COL_STATUS As Long = 2
@@ -50,35 +50,41 @@ Private Const COL_LIM_EBC As Long = 10
 Private Const COL_LIM_EBT As Long = 11
 Private Const COL_LIM_ESC As Long = 12
 Private Const COL_LIM_EST As Long = 13
-Private Const COL_STATE_EBC As Long = 14
-Private Const COL_STATE_EBT As Long = 15
-Private Const COL_STATE_ESC As Long = 16
-Private Const COL_STATE_EST As Long = 17
-Private Const COL_STATE_SBC As Long = 18
-Private Const COL_STATE_SBT As Long = 19
-Private Const COL_STATE_SSC As Long = 20
-Private Const COL_STATE_SST As Long = 21
-Private Const COL_STATE_H As Long = 22
-Private Const COL_STATE_X As Long = 23
-Private Const COL_STATE_DIAGEXT As Long = 24
-Private Const COL_STATE_RESERVE As Long = 25
-Private Const COL_STATE_STATUS As Long = 26
+Private Const COL_STATE_EPS0 As Long = 14
+Private Const COL_STATE_KX As Long = 15
+Private Const COL_STATE_KY As Long = 16
+Private Const COL_STATE_EBC As Long = 17
+Private Const COL_STATE_EBT As Long = 18
+Private Const COL_STATE_ESC As Long = 19
+Private Const COL_STATE_EST As Long = 20
+Private Const COL_STATE_SBC As Long = 21
+Private Const COL_STATE_SBT As Long = 22
+Private Const COL_STATE_SSC As Long = 23
+Private Const COL_STATE_SST As Long = 24
+Private Const COL_STATE_H As Long = 25
+Private Const COL_STATE_X As Long = 26
+Private Const COL_STATE_DIAGEXT As Long = 27
+Private Const COL_STATE_RESERVE As Long = 28
+Private Const COL_STATE_STATUS As Long = 29
 
-Private Const COL_CAP_LIMIT_STATE As Long = 28
-Private Const COL_CAP_LOAD_PATH As Long = 29
-Private Const COL_CAP_METHOD As Long = 30
-Private Const COL_CAP_LAMBDA As Long = 31
-Private Const COL_CAP_N As Long = 32
-Private Const COL_CAP_MX As Long = 33
-Private Const COL_CAP_MY As Long = 34
-Private Const COL_CAP_EBC As Long = 35
-Private Const COL_CAP_EBT As Long = 36
-Private Const COL_CAP_ESC As Long = 37
-Private Const COL_CAP_EST As Long = 38
-Private Const COL_CAP_H As Long = 39
-Private Const COL_CAP_X As Long = 40
-Private Const COL_CAP_RESERVE As Long = 41
-Private Const COL_CAP_STATUS As Long = 42
+Private Const COL_CAP_EPS0 As Long = 31
+Private Const COL_CAP_KX As Long = 32
+Private Const COL_CAP_KY As Long = 33
+Private Const COL_CAP_LIMIT_STATE As Long = 34
+Private Const COL_CAP_LOAD_PATH As Long = 35
+Private Const COL_CAP_METHOD As Long = 36
+Private Const COL_CAP_LAMBDA As Long = 37
+Private Const COL_CAP_N As Long = 38
+Private Const COL_CAP_MX As Long = 39
+Private Const COL_CAP_MY As Long = 40
+Private Const COL_CAP_EBC As Long = 41
+Private Const COL_CAP_EBT As Long = 42
+Private Const COL_CAP_ESC As Long = 43
+Private Const COL_CAP_EST As Long = 44
+Private Const COL_CAP_H As Long = 45
+Private Const COL_CAP_X As Long = 46
+Private Const COL_CAP_RESERVE As Long = 47
+Private Const COL_CAP_STATUS As Long = 48
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, как в остальных подробных блоках.
 Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' На Results все столбцы держим одной ширины.
@@ -230,12 +236,14 @@ Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem)
     headers(1, COL_REF_N) = "относительно центральных осей приведенного сечения"
     headers(1, COL_LOAD_N) = "в точке приложения нагрузок"
     headers(1, COL_LIM_EBC) = "Общие данные"
-    headers(1, COL_STATE_EBC) = "НДС от заданного сочетания нагрузок (по модели прочности)"
-    headers(1, COL_CAP_LIMIT_STATE) = "Расчет предельной несущей способности по выбранной " & ChrW$(&H3BB) & "-траектории (по модели прочности)"
+    headers(1, COL_STATE_EPS0) = "НДС от заданного сочетания нагрузок (по модели прочности)"
+    headers(1, COL_CAP_EPS0) = "Расчет предельной несущей способности по выбранной " & ChrW$(&H3BB) & "-траектории (по модели прочности)"
 
+    headers(2, COL_STATE_EPS0) = "плоскость деформации"
     headers(2, COL_STATE_EBC) = "фактические макс. деформации"
     headers(2, COL_STATE_SBC) = "фактические напряжения"
     headers(2, COL_STATE_H) = "параметры сечения и статус"
+    headers(2, COL_CAP_EPS0) = "плоскость деформации"
     headers(2, COL_CAP_LIMIT_STATE) = "параметры расчета"
     headers(2, COL_CAP_LAMBDA) = "предельные компоненты"
     headers(2, COL_CAP_EBC) = "фактические макс. деформации"
@@ -259,6 +267,9 @@ Private Sub PutHeaderNotes(ByRef headers() As Variant)
     headers(HEADER_NOTES_ROW, COL_LIM_EBT) = "предельная деформация бетона при растяжении; пусто, если растянутый бетон не работает"
     headers(HEADER_NOTES_ROW, COL_LIM_ESC) = "предельная деформация арматуры при сжатии"
     headers(HEADER_NOTES_ROW, COL_LIM_EST) = "предельная деформация арматуры при растяжении"
+    headers(HEADER_NOTES_ROW, COL_STATE_EPS0) = "epsilon0 плоскости eps=eps0+kx*y+ky*x во внутренней системе координат модели"
+    headers(HEADER_NOTES_ROW, COL_STATE_KX) = "кривизна kx при координате y во внутренней системе координат модели"
+    headers(HEADER_NOTES_ROW, COL_STATE_KY) = "кривизна ky при координате x во внутренней системе координат модели"
     headers(HEADER_NOTES_ROW, COL_STATE_EBC) = "максимальная сжимающая деформация бетона, если такая зона есть"
     headers(HEADER_NOTES_ROW, COL_STATE_EBT) = "максимальная растягивающая деформация бетона, если такая зона есть"
     headers(HEADER_NOTES_ROW, COL_STATE_ESC) = "максимальная сжимающая деформация арматуры, если такая зона есть"
@@ -272,6 +283,9 @@ Private Sub PutHeaderNotes(ByRef headers() As Variant)
     headers(HEADER_NOTES_ROW, COL_STATE_DIAGEXT) = "использовалось ли продолжение физической диаграммы при фактическом НДС"
     headers(HEADER_NOTES_ROW, COL_STATE_RESERVE) = "минимальный запас по предельным деформациям"
     headers(HEADER_NOTES_ROW, COL_STATE_STATUS) = "статус фактического НДС по модели прочности"
+    headers(HEADER_NOTES_ROW, COL_CAP_EPS0) = "epsilon0 плоскости eps=eps0+kx*y+ky*x во внутренней системе координат модели"
+    headers(HEADER_NOTES_ROW, COL_CAP_KX) = "кривизна kx при координате y во внутренней системе координат модели"
+    headers(HEADER_NOTES_ROW, COL_CAP_KY) = "кривизна ky при координате x во внутренней системе координат модели"
     headers(HEADER_NOTES_ROW, COL_CAP_LIMIT_STATE) = "причина найденного предельного состояния"
     headers(HEADER_NOTES_ROW, COL_CAP_LOAD_PATH) = "какие компоненты масштабировались"
     headers(HEADER_NOTES_ROW, COL_CAP_METHOD) = "фактический метод поиска"
@@ -302,6 +316,9 @@ Private Sub PutColumnLabels(ByRef headers() As Variant, ByVal units As CUnitSyst
     headers(HEADER_LABEL_ROW, COL_LIM_EBT) = ChrW$(&H3B5) & "bt,ult"
     headers(HEADER_LABEL_ROW, COL_LIM_ESC) = ChrW$(&H3B5) & "sc,ult"
     headers(HEADER_LABEL_ROW, COL_LIM_EST) = ChrW$(&H3B5) & "st,ult"
+    headers(HEADER_LABEL_ROW, COL_STATE_EPS0) = ChrW$(&H3B5) & "0"
+    headers(HEADER_LABEL_ROW, COL_STATE_KX) = ChrW$(&H3BA) & "x, " & OutputCurvatureUnit(units)
+    headers(HEADER_LABEL_ROW, COL_STATE_KY) = ChrW$(&H3BA) & "y, " & OutputCurvatureUnit(units)
     headers(HEADER_LABEL_ROW, COL_STATE_EBC) = ChrW$(&H3B5) & "bc"
     headers(HEADER_LABEL_ROW, COL_STATE_EBT) = ChrW$(&H3B5) & "bt"
     headers(HEADER_LABEL_ROW, COL_STATE_ESC) = ChrW$(&H3B5) & "sc"
@@ -316,6 +333,9 @@ Private Sub PutColumnLabels(ByRef headers() As Variant, ByVal units As CUnitSyst
     headers(HEADER_LABEL_ROW, COL_STATE_RESERVE) = "запас (" & ChrW$(&H3B5) & ")"
     headers(HEADER_LABEL_ROW, COL_STATE_STATUS) = "статус"
 
+    headers(HEADER_LABEL_ROW, COL_CAP_EPS0) = ChrW$(&H3B5) & "0"
+    headers(HEADER_LABEL_ROW, COL_CAP_KX) = ChrW$(&H3BA) & "x, " & OutputCurvatureUnit(units)
+    headers(HEADER_LABEL_ROW, COL_CAP_KY) = ChrW$(&H3BA) & "y, " & OutputCurvatureUnit(units)
     headers(HEADER_LABEL_ROW, COL_CAP_LIMIT_STATE) = "LimitState"
     headers(HEADER_LABEL_ROW, COL_CAP_LOAD_PATH) = "LoadPath"
     headers(HEADER_LABEL_ROW, COL_CAP_METHOD) = "Method"
@@ -340,11 +360,13 @@ Private Sub MergeHeaders(ByVal target As Object)
     MergeRange target, 1, COL_REF_N, 2, COL_REF_MY
     MergeRange target, 1, COL_LOAD_N, 2, COL_LOAD_MY
     MergeRange target, 1, COL_LIM_EBC, 2, COL_LIM_EST
-    MergeRange target, 1, COL_STATE_EBC, 1, COL_STATE_STATUS
+    MergeRange target, 1, COL_STATE_EPS0, 1, COL_STATE_STATUS
+    MergeRange target, 2, COL_STATE_EPS0, 2, COL_STATE_KY
     MergeRange target, 2, COL_STATE_EBC, 2, COL_STATE_EST
     MergeRange target, 2, COL_STATE_SBC, 2, COL_STATE_SST
     MergeRange target, 2, COL_STATE_H, 2, COL_STATE_STATUS
-    MergeRange target, 1, COL_CAP_LIMIT_STATE, 1, COL_CAP_STATUS
+    MergeRange target, 1, COL_CAP_EPS0, 1, COL_CAP_STATUS
+    MergeRange target, 2, COL_CAP_EPS0, 2, COL_CAP_KY
     MergeRange target, 2, COL_CAP_LIMIT_STATE, 2, COL_CAP_METHOD
     MergeRange target, 2, COL_CAP_LAMBDA, 2, COL_CAP_MY
     MergeRange target, 2, COL_CAP_EBC, 2, COL_CAP_EST
@@ -420,6 +442,7 @@ Private Sub PutStrengthState(ByRef data() As Variant, ByVal rowIndex As Long, _
         Exit Sub
     End If
 
+    PutStatePlane data, rowIndex, stateResult, units, COL_STATE_EPS0, COL_STATE_KX, COL_STATE_KY
     PutStateExtremes data, rowIndex, stateResult, units, _
         COL_STATE_EBC, COL_STATE_EBT, COL_STATE_ESC, COL_STATE_EST, _
         COL_STATE_SBC, COL_STATE_SBT, COL_STATE_SSC, COL_STATE_SST
@@ -446,6 +469,7 @@ Private Sub PutCapacityState(ByRef data() As Variant, ByVal rowIndex As Long, _
     Dim stateResult As CSectionStateResult
     Set stateResult = batch.FindNamedState(index, sstCapacityState)
     If Not stateResult Is Nothing Then
+        PutStatePlane data, rowIndex, stateResult, units, COL_CAP_EPS0, COL_CAP_KX, COL_CAP_KY
         PutCapacityLoadPointComponents data, rowIndex, batch, index, units
         PutStateExtremes data, rowIndex, stateResult, units, _
             COL_CAP_EBC, COL_CAP_EBT, COL_CAP_ESC, COL_CAP_EST, _
@@ -462,6 +486,16 @@ Private Sub PutCapacityLoadPointComponents(ByRef data() As Variant, ByVal rowInd
     data(rowIndex, COL_CAP_N) = OutputForce(batch.NUltimate(index), units)
     data(rowIndex, COL_CAP_MX) = OutputMx(batch.MxUltimate(index), units)
     data(rowIndex, COL_CAP_MY) = OutputMy(batch.MyUltimate(index), units)
+End Sub
+
+' Пишет параметры плоскости деформаций saved-state: свободный член epsilon0
+' и две кривизны в координатной системе расчетной модели.
+Private Sub PutStatePlane(ByRef data() As Variant, ByVal rowIndex As Long, _
+        ByVal stateResult As CSectionStateResult, ByVal units As CUnitSystem, _
+        ByVal colEps0 As Long, ByVal colKx As Long, ByVal colKy As Long)
+    data(rowIndex, colEps0) = stateResult.Epsilon0
+    data(rowIndex, colKx) = OutputCurvature(stateResult.KappaX, units)
+    data(rowIndex, colKy) = OutputCurvature(stateResult.KappaY, units)
 End Sub
 
 ' Пишет экстремумы состояния по флагам наличия физической зоны.
@@ -561,9 +595,14 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     ApplyHeaderSubscripts target
 End Sub
 
-' Форматирует все относительные деформации detailed-блока с одинаковой точностью вывода.
+' Форматирует относительные деформации и кривизны плоскости НДС с нужной точностью вывода.
 Private Sub ApplyStrainNumberFormat(ByVal target As Object, ByVal dataRows As Long)
-    target.Offset(HEADER_ROWS, COL_LIM_EBC - 1).Resize(dataRows, COL_STATE_EST - COL_LIM_EBC + 1).NumberFormat = "0.0000"
+    target.Offset(HEADER_ROWS, COL_LIM_EBC - 1).Resize(dataRows, COL_LIM_EST - COL_LIM_EBC + 1).NumberFormat = "0.0000"
+    target.Offset(HEADER_ROWS, COL_STATE_EPS0 - 1).Resize(dataRows, 1).NumberFormat = "0.0000"
+    target.Offset(HEADER_ROWS, COL_STATE_KX - 1).Resize(dataRows, 2).NumberFormat = "0.000000"
+    target.Offset(HEADER_ROWS, COL_STATE_EBC - 1).Resize(dataRows, COL_STATE_EST - COL_STATE_EBC + 1).NumberFormat = "0.0000"
+    target.Offset(HEADER_ROWS, COL_CAP_EPS0 - 1).Resize(dataRows, 1).NumberFormat = "0.0000"
+    target.Offset(HEADER_ROWS, COL_CAP_KX - 1).Resize(dataRows, 2).NumberFormat = "0.000000"
     target.Offset(HEADER_ROWS, COL_CAP_EBC - 1).Resize(dataRows, COL_CAP_EST - COL_CAP_EBC + 1).NumberFormat = "0.0000"
 End Sub
 
@@ -613,9 +652,11 @@ Private Sub ApplyHeaderSubscripts(ByVal target As Object)
 
     Dim cols As Variant
     cols = Array(COL_LIM_EBC, COL_LIM_EBT, COL_LIM_ESC, COL_LIM_EST, _
+        COL_STATE_EPS0, COL_STATE_KX, COL_STATE_KY, _
         COL_STATE_EBC, COL_STATE_EBT, COL_STATE_ESC, COL_STATE_EST, _
         COL_STATE_SBC, COL_STATE_SBT, COL_STATE_SSC, COL_STATE_SST, _
         COL_CAP_LAMBDA, COL_CAP_N, COL_CAP_MX, COL_CAP_MY, _
+        COL_CAP_EPS0, COL_CAP_KX, COL_CAP_KY, _
         COL_CAP_EBC, COL_CAP_EBT, COL_CAP_ESC, COL_CAP_EST)
 
     Dim i As Long
@@ -627,6 +668,12 @@ Private Sub ApplyHeaderSubscripts(ByVal target As Object)
         ApplySubscriptToken labels.Cells(1, CLng(cols(i))), "ult"
     Next i
     ApplySubscriptToken labels.Cells(1, COL_CAP_LAMBDA), "ult"
+    ApplySubscriptToken labels.Cells(1, COL_STATE_EPS0), "0"
+    ApplySubscriptToken labels.Cells(1, COL_STATE_KX), "x"
+    ApplySubscriptToken labels.Cells(1, COL_STATE_KY), "y"
+    ApplySubscriptToken labels.Cells(1, COL_CAP_EPS0), "0"
+    ApplySubscriptToken labels.Cells(1, COL_CAP_KX), "x"
+    ApplySubscriptToken labels.Cells(1, COL_CAP_KY), "y"
 End Sub
 
 ' Ставит нижний индекс найденному текстовому токену внутри одной ячейки.
@@ -723,6 +770,17 @@ End Function
 ' Переводит напряжение из внутренних МПа в выбранную пользователем единицу.
 Private Function OutputStress(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputStress = value Else OutputStress = units.InternalStressToOutput(value)
+End Function
+
+' Переводит кривизну плоскости деформаций из внутренних 1/мм
+' в пользовательскую единицу вывода.
+Private Function OutputCurvature(ByVal value As Double, ByVal units As CUnitSystem) As Double
+    If units Is Nothing Then OutputCurvature = value Else OutputCurvature = units.InternalCurvatureToOutput(value)
+End Function
+
+' Возвращает подпись выходной единицы кривизны для kx/ky.
+Private Function OutputCurvatureUnit(ByVal units As CUnitSystem) As String
+    If units Is Nothing Then OutputCurvatureUnit = "1/mm" Else OutputCurvatureUnit = units.OutputCurvatureUnit
 End Function
 
 ' Переводит продольную силу из внутренних Н в пользовательскую систему вывода.

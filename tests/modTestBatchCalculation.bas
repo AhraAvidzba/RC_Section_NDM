@@ -3690,21 +3690,21 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     Set strengthAnchor = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
     AssertTrue stats, "batch.writer.strength.statusColors", _
         StatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 2) And _
-        StatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 26) And _
-        StatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 42) And _
+        StatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 29) And _
+        StatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 48) And _
         CellHasNoFill(resultsSheet, strengthAnchor.Row, 1) And _
         CellHasNoFill(resultsSheet, strengthAnchor.Row, 10) And _
-        CellHasNoFill(resultsSheet, strengthAnchor.Row, 28)
+        CellHasNoFill(resultsSheet, strengthAnchor.Row, 31)
     AssertTrue stats, "batch.writer.strength.absentZonesBlank", _
-        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 14).Value2)) = 0 And _
-        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 15).Value2)) = 0 And _
-        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 16).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 17).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 18).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 19).Value2)) = 0 And _
-        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 20).Value2)) = 0
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 21).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 22).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 23).Value2)) = 0
     AssertTrue stats, "batch.writer.strength.presentTensionKept", _
-        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 17).Value2)) > 0 And _
-        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 21).Value2)) > 0
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 20).Value2)) > 0 And _
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 24).Value2)) > 0
     Dim crackAnchor As Object
     Set crackAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     AssertTrue stats, "batch.writer.crack.statusColors", _
@@ -3807,10 +3807,10 @@ Private Sub AssertBatchSummaryReservesMatchDetailed(ByRef stats As TBatchTestSta
     If checkStrength And strengthRow > 0 Then
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".strain", _
             resultsSheet.Cells.Item(summaryRow, 16).Value2, _
-            resultsSheet.Cells.Item(strengthRow, 25).Value2
+            resultsSheet.Cells.Item(strengthRow, 28).Value2
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".capacity", _
             resultsSheet.Cells.Item(summaryRow, 17).Value2, _
-            resultsSheet.Cells.Item(strengthRow, 41).Value2
+            resultsSheet.Cells.Item(strengthRow, 47).Value2
     End If
     If checkCrack And crackRow > 0 Then
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".crack", _

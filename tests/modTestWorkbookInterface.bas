@@ -558,7 +558,13 @@ Private Sub TestAnnotationDimensionTextRoundsInMillimeters(ByRef stats As TUiTes
 
     Dim writer As CNDMResultsWriter
     Set writer = New CNDMResultsWriter
-    writer.WriteGeometryPreview ThisWorkbook, section
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+    writer.WriteGeometryPreview ThisWorkbook, section, units
 
     Dim annotationData As Variant
     annotationData = ResultTable("rngNDMSectionAnnotations")
@@ -1004,21 +1010,22 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.run.direct.status", Len(CStr(summary.Worksheet.Cells.Item(firstDataRow, 5).Value2)) > 0
     Dim strengthAnchor As Object
     Set strengthAnchor = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
-    AssertTrue stats, "ui.run.deformations", IsNumeric(strengthAnchor.Worksheet.Cells.Item(strengthAnchor.Row, 22).Value2) And _
-        IsNumeric(strengthAnchor.Worksheet.Cells.Item(strengthAnchor.Row, 23).Value2)
+    AssertTrue stats, "ui.run.strainPlane", IsNumeric(strengthAnchor.Worksheet.Cells.Item(strengthAnchor.Row, 14).Value2) And _
+        IsNumeric(strengthAnchor.Worksheet.Cells.Item(strengthAnchor.Row, 15).Value2) And _
+        IsNumeric(strengthAnchor.Worksheet.Cells.Item(strengthAnchor.Row, 16).Value2)
     Dim crackAnchor As Object
     Set crackAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     AssertTrue stats, "ui.run.crack", Len(CStr(crackAnchor.Worksheet.Cells.Item(crackAnchor.Row, 2).Value2)) > 0 And _
         Len(CStr(crackAnchor.Worksheet.Cells.Item(crackAnchor.Row, 18).Value2)) > 0
     Dim sys As Object
     Set sys = ThisWorkbook.Worksheets.Item("Config")
-    AssertTrue stats, "ui.run.system.noRebarTable", Len(CStr(sys.Cells.Item(130, 1).Value2)) = 0
+    AssertTrue stats, "ui.run.system.noLegacyMainInput", Not WorkbookNameExists("rngMainInput")
     AssertTrue stats, "ui.run.system.materialDiagramControls", _
         InStr(1, CStr(sys.Cells.Item(1, 35).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
-    AssertTrue stats, "ui.strengthSummary.currentDepths", IsNumeric(resultsSheet.Cells.Item(strengthAnchor.Row, 22).Value2) And IsNumeric(resultsSheet.Cells.Item(strengthAnchor.Row, 23).Value2)
-    AssertTrue stats, "ui.strengthSummary.direct.noCapacityDepths", Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row, 39).Value2)) = 0 And Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row, 40).Value2)) = 0
+    AssertTrue stats, "ui.strengthSummary.currentDepths", IsNumeric(resultsSheet.Cells.Item(strengthAnchor.Row, 25).Value2) And IsNumeric(resultsSheet.Cells.Item(strengthAnchor.Row, 26).Value2)
+    AssertTrue stats, "ui.strengthSummary.direct.noCapacityDepths", Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row, 45).Value2)) = 0 And Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row, 46).Value2)) = 0
     AssertTrue stats, "ui.results.elements.header", CStr(ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Value2) = "RunID"
     Dim elementResults As Variant
     elementResults = ResultTable("rngNDMElementResults")
@@ -1346,7 +1353,7 @@ Private Sub TestRectSetWorkbookRunWritesResults(ByRef stats As TUiTestStats)
 
     Dim sys As Object
     Set sys = ThisWorkbook.Worksheets.Item("Config")
-    AssertTrue stats, "ui.rectset.system.noRebarTable", Len(CStr(sys.Cells.Item(130, 1).Value2)) = 0
+    AssertTrue stats, "ui.rectset.system.noLegacyRebarInput", Not WorkbookNameExists("rngRebarInput")
     AssertTrue stats, "ui.rectset.system.materialDiagramControls", _
         InStr(1, CStr(sys.Cells.Item(1, 35).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
 End Sub
@@ -1369,20 +1376,20 @@ Private Sub TestRectSetMomentUltimateStrainWorkbookPath(ByRef stats As TUiTestSt
 
     Dim capacityStatus As String
     Dim solutionMethod As String
-    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 42).Value2)
-    solutionMethod = CStr(resultsSheet.Cells.Item(firstRow, 30).Value2)
+    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 48).Value2)
+    solutionMethod = CStr(resultsSheet.Cells.Item(firstRow, 36).Value2)
 
     AppendLine stats, "INFO: ui.rectset.momentUltimate capacityStatus=" & capacityStatus & _
         "; solutionMethod=" & solutionMethod & _
-        "; lambda=" & CStr(resultsSheet.Cells.Item(firstRow, 31).Value2)
+        "; lambda=" & CStr(resultsSheet.Cells.Item(firstRow, 37).Value2)
 
     AssertTrue stats, "ui.rectset.momentUltimate.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
     AssertTextEquals stats, "ui.rectset.momentUltimate.capacityOk", capacityStatus, "OK"
     AssertTextEquals stats, "ui.rectset.momentUltimate.method", solutionMethod, "UltimateStrain"
     AssertTrue stats, "ui.rectset.momentUltimate.lambda", _
-        CDbl(resultsSheet.Cells.Item(firstRow, 31).Value2) > 0#
+        CDbl(resultsSheet.Cells.Item(firstRow, 37).Value2) > 0#
     AssertTrue stats, "ui.rectset.momentUltimate.mxult", _
-        Abs(CDbl(resultsSheet.Cells.Item(firstRow, 33).Value2)) > 0#
+        Abs(CDbl(resultsSheet.Cells.Item(firstRow, 39).Value2)) > 0#
 End Sub
 
 ' Проверяет чистый изгиб Г-сечения по полному Excel-пути.
@@ -1408,21 +1415,21 @@ Private Sub TestRectSetPureBendingUltimateStrainWorkbookPath(ByRef stats As TUiT
     Dim directStatus As String
     Dim capacityStatus As String
     Dim solutionMethod As String
-    directStatus = CStr(resultsSheet.Cells.Item(firstRow, 26).Value2)
-    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 42).Value2)
-    solutionMethod = CStr(resultsSheet.Cells.Item(firstRow, 30).Value2)
+    directStatus = CStr(resultsSheet.Cells.Item(firstRow, 29).Value2)
+    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 48).Value2)
+    solutionMethod = CStr(resultsSheet.Cells.Item(firstRow, 36).Value2)
 
     AppendLine stats, "INFO: ui.rectset.pureBending direct=" & directStatus & _
         "; capacity=" & capacityStatus & _
         "; solutionMethod=" & solutionMethod & _
-        "; lambda=" & CStr(resultsSheet.Cells.Item(firstRow, 31).Value2)
+        "; lambda=" & CStr(resultsSheet.Cells.Item(firstRow, 37).Value2)
 
     AssertTrue stats, "ui.rectset.pureBending.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
     AssertTextEquals stats, "ui.rectset.pureBending.directOk", directStatus, "OK"
     AssertTextEquals stats, "ui.rectset.pureBending.capacityOk", capacityStatus, "OK"
     AssertTextEquals stats, "ui.rectset.pureBending.method", solutionMethod, "UltimateStrain"
     AssertTrue stats, "ui.rectset.pureBending.lambda", _
-        CDbl(resultsSheet.Cells.Item(firstRow, 31).Value2) > 0#
+        CDbl(resultsSheet.Cells.Item(firstRow, 37).Value2) > 0#
 End Sub
 
 ' Проверяет чистый изгиб Г-сечения по профилю PR1. Такой профиль запрашивает
@@ -1447,8 +1454,8 @@ Private Sub TestRectSetPureBendingDirectStateWorkbookPath(ByRef stats As TUiTest
 
     Dim directStatus As String
     Dim capacityStatus As String
-    directStatus = CStr(resultsSheet.Cells.Item(firstRow, 26).Value2)
-    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 42).Value2)
+    directStatus = CStr(resultsSheet.Cells.Item(firstRow, 29).Value2)
+    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 48).Value2)
 
     AppendLine stats, "INFO: ui.rectset.pureBendingDirect direct=" & directStatus & _
         "; capacity=" & capacityStatus
@@ -2015,7 +2022,13 @@ Private Sub AssertTransformedAreaUsesElasticModuli(ByRef stats As TUiTestStats)
     concreteArea = CDbl(ResultsPropertyValue("ALL", "Concrete.Area"))
     transformedArea = CDbl(ResultsPropertyValue("ALL", "Transformed.Area"))
     rebarArea = 8# * GEOM_PI * 20# * 20# / 4#
-    expectedArea = concreteArea + (200000# / 32500# - 1#) * rebarArea
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+    expectedArea = concreteArea + units.InternalAreaToOutput((200000# / 32500# - 1#) * rebarArea)
 
     AssertClose stats, "ui.results.properties.transformedArea.moduli", _
         transformedArea, expectedArea, 0.001
@@ -2866,6 +2879,12 @@ Private Function HollowRectangleFacePrefix(ByVal key As String, ByRef faceOrdina
 End Function
 
 Private Function GetSystemSetting(ByVal key As String) As String
+    Dim directValue As String
+    If TryGetUnitOrSignSetting(key, directValue) Then
+        GetSystemSetting = directValue
+        Exit Function
+    End If
+
     Dim settings As Object
     Dim ranges As Variant
     ranges = SettingsRangeSearchOrder()
@@ -2884,6 +2903,40 @@ Private Function GetSystemSetting(ByVal key As String) As String
     Next rangeIndex
 
     Err.Raise vbObjectError + 4211, "modTestWorkbookInterface", "System setting not found: " & key
+End Function
+
+' Проверяет наличие имени книги без падения теста на ошибке Excel.
+' Используется для контроля, что старые входные диапазоны не вернулись после
+' перестройки листа Config.
+Private Function WorkbookNameExists(ByVal nameText As String) As Boolean
+    On Error Resume Next
+    Dim nm As Object
+    Set nm = ThisWorkbook.Names.Item(nameText)
+    WorkbookNameExists = (Err.Number = 0 And Not nm Is Nothing)
+    Err.Clear
+    On Error GoTo 0
+End Function
+
+' Читает настройки из специальных таблиц единиц и знаков. Эти диапазоны не
+' имеют обычного формата Key/Value, поэтому используют ту же адресацию, что и
+' SetSystemSetting при записи тестового значения.
+Private Function TryGetUnitOrSignSetting(ByVal key As String, ByRef value As String) As Boolean
+    Dim target As Object
+    Dim rowIndex As Long
+    Dim columnIndex As Long
+
+    If UnitSettingAddress(key, rowIndex, columnIndex) Then
+        Set target = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
+        value = CStr(target.Cells.Item(rowIndex, columnIndex).Value2)
+        TryGetUnitOrSignSetting = True
+        Exit Function
+    End If
+
+    If SignSettingAddress(key, rowIndex, columnIndex) Then
+        Set target = ThisWorkbook.Names.Item("rngSignConventionSettings").RefersToRange
+        value = CStr(target.Cells.Item(rowIndex, columnIndex).Value2)
+        TryGetUnitOrSignSetting = True
+    End If
 End Function
 
 Private Function SettingsRangeSearchOrder() As Variant

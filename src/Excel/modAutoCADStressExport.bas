@@ -71,11 +71,14 @@ Public Sub ExportSectionStressToAutoCAD()
         epsilon0, kappaX, kappaY, loadReferenceX, loadReferenceY, _
         centroidX, centroidY, principalAngle, extensionUsed, stateWarningText
 
+    Dim contourExportCount As Long
     DrawResultsStressExport section, resultByID, physicalStateByID, epsilon0, kappaX, kappaY, _
-        loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, stateWarningText, exportSettings
+        loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, stateWarningText, exportSettings, _
+        contourExportCount
     If NonCriticalMessagesEnabled(ThisWorkbook) Then
         MsgBox "Экспорт в AutoCAD завершен. Волокон бетона: " & CStr(section.ConcreteCount) & _
             "; стержней арматуры: " & CStr(section.RebarCount) & _
+            "; контурных полилиний: " & ContourExportStatusText(exportSettings.ContourEnabled, contourExportCount) & _
             "; сочетание: " & combinationID & _
             "; профиль: " & profileId & _
             "; состояние: " & stateType & _
@@ -753,7 +756,8 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
         ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
         ByVal centroidX As Double, ByVal centroidY As Double, ByVal principalAngle As Double, _
-        ByVal stateWarningText As String, ByRef exportSettings As TAutoCADExportSettings)
+        ByVal stateWarningText As String, ByRef exportSettings As TAutoCADExportSettings, _
+        ByRef contourExportCount As Long)
     Dim acad As Object
     Set acad = ConnectToRunningAutoCAD()
 
@@ -774,8 +778,6 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
     EnsureAcadLayer doc, "RC_NDM_NeutralLine", exportSettings.NeutralColor
     EnsureAcadLayer doc, exportSettings.ContourLayer, CONTOUR_LAYER_COLOR_INDEX
     EnsureAcadLayer doc, EXTENSION_WARNING_LAYER, 1
-
-    If exportSettings.ContourEnabled Then DrawParametricSectionContour ThisWorkbook, ms, exportSettings.ContourLayer
 
     Dim i As Long
     Dim resultValue As Double
@@ -820,6 +822,12 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
             ResultColorByPhysicalState("Rebar", physicalState, exportSettings)
     Next i
 
+    ' Контур выводим после бетонных и арматурных объектов, чтобы он не
+    ' оказался закрыт AutoCAD Region, созданными для волокон расчетной сетки.
+    If exportSettings.ContourEnabled Then
+        contourExportCount = DrawParametricSectionContour(ThisWorkbook, ms, exportSettings.ContourLayer)
+    End If
+
     DrawCentroidAxesAndLoadPoint ms, section, centroidX, centroidY, principalAngle, _
         loadReferenceX, loadReferenceY, _
         exportSettings.PrincipalAxesMode, exportSettings.LoadPointEnabled
@@ -835,10 +843,10 @@ End Sub
 ' Здесь намеренно не восстанавливается контур по бетонным волокнам: для
 ' импортированной AutoCAD-сетки такой контур неизвестен, а значит экспорт
 ' должен пропустить его, а не рисовать приближенную оболочку.
-Private Sub DrawParametricSectionContour(ByVal workbook As Object, ByVal ms As Object, ByVal contourLayer As String)
+Private Function DrawParametricSectionContour(ByVal workbook As Object, ByVal ms As Object, ByVal contourLayer As String) As Long
     Dim data As Variant
     data = ReadAnchoredResultTable(workbook, "rngNDMSectionAnnotations")
-    If Not HasResultTableRows(data) Then Exit Sub
+    If Not HasResultTableRows(data) Then Exit Function
 
     Dim colType As Long: colType = ResultColumn(data, "AnnotationType")
     Dim colID As Long: colID = ResultColumn(data, "AnnotationID")
@@ -847,7 +855,10 @@ Private Sub DrawParametricSectionContour(ByVal workbook As Object, ByVal ms As O
     Dim colEndX As Long: colEndX = ResultColumn(data, "EndX")
     Dim colEndY As Long: colEndY = ResultColumn(data, "EndY")
     Dim colText As Long: colText = ResultColumn(data, "Text")
-    Dim lengthUnit As String: lengthUnit = ResultHeaderUnit(data, colStartX, "mm")
+    Dim colUnit As Long: colUnit = ResultColumn(data, "Unit")
+    Dim defaultLengthUnit As String
+    defaultLengthUnit = ResultsOutputLengthUnit(workbook)
+    If Len(defaultLengthUnit) = 0 Then defaultLengthUnit = ResultHeaderUnit(data, colStartX, "mm")
 
     Dim segStartX() As Double
     Dim segStartY() As Double
@@ -865,7 +876,8 @@ Private Sub DrawParametricSectionContour(ByVal workbook As Object, ByVal ms As O
             Dim loopKey As String
             loopKey = ContourLoopKey(SafeText(data(rowIndex, colID)))
             If segCount > 0 And StrComp(loopKey, currentLoopKey, vbTextCompare) <> 0 Then
-                DrawContourSegmentPolyline ms, contourLayer, segStartX, segStartY, segEndX, segEndY, segBulge, segCount
+                DrawParametricSectionContour = DrawParametricSectionContour + _
+                    DrawContourSegmentPolyline(ms, contourLayer, segStartX, segStartY, segEndX, segEndY, segBulge, segCount)
                 Erase segStartX
                 Erase segStartY
                 Erase segEndX
@@ -878,22 +890,27 @@ Private Sub DrawParametricSectionContour(ByVal workbook As Object, ByVal ms As O
 
         Select Case annotationType
             Case "CONTOUR_LINE"
+                Dim lineUnit As String
+                lineUnit = AnnotationLengthUnit(data, rowIndex, colUnit, defaultLengthUnit)
                 AppendContourSegment segStartX, segStartY, segEndX, segEndY, segBulge, segCount, _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartX)), lengthUnit), _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartY)), lengthUnit), _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndX)), lengthUnit), _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndY)), lengthUnit), _
+                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartX)), lineUnit), _
+                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartY)), lineUnit), _
+                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndX)), lineUnit), _
+                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndY)), lineUnit), _
                     0#
             Case "CONTOUR_ARC"
+                Dim arcUnit As String
+                arcUnit = AnnotationLengthUnit(data, rowIndex, colUnit, defaultLengthUnit)
                 AppendContourSegment segStartX, segStartY, segEndX, segEndY, segBulge, segCount, _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartX)), lengthUnit), _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartY)), lengthUnit), _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndX)), lengthUnit), _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndY)), lengthUnit), _
+                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartX)), arcUnit), _
+                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartY)), arcUnit), _
+                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndX)), arcUnit), _
+                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndY)), arcUnit), _
                     Tan(ParseInvariantDouble(SafeText(data(rowIndex, colText))) / 4#)
             Case "CONTOUR_CIRCLE"
                 If segCount > 0 Then
-                    DrawContourSegmentPolyline ms, contourLayer, segStartX, segStartY, segEndX, segEndY, segBulge, segCount
+                    DrawParametricSectionContour = DrawParametricSectionContour + _
+                        DrawContourSegmentPolyline(ms, contourLayer, segStartX, segStartY, segEndX, segEndY, segBulge, segCount)
                     Erase segStartX
                     Erase segStartY
                     Erase segEndX
@@ -902,15 +919,58 @@ Private Sub DrawParametricSectionContour(ByVal workbook As Object, ByVal ms As O
                     segCount = 0
                     currentLoopKey = vbNullString
                 End If
-                DrawContourCirclePolyline ms, contourLayer, _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartX)), lengthUnit), _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartY)), lengthUnit), _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndX)), lengthUnit)
+                Dim circleUnit As String
+                circleUnit = AnnotationLengthUnit(data, rowIndex, colUnit, defaultLengthUnit)
+                DrawParametricSectionContour = DrawParametricSectionContour + _
+                    DrawContourCirclePolyline(ms, contourLayer, _
+                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartX)), circleUnit), _
+                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartY)), circleUnit), _
+                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndX)), circleUnit))
         End Select
     Next rowIndex
 
-    If segCount > 0 Then DrawContourSegmentPolyline ms, contourLayer, segStartX, segStartY, segEndX, segEndY, segBulge, segCount
-End Sub
+    If segCount > 0 Then
+        DrawParametricSectionContour = DrawParametricSectionContour + _
+            DrawContourSegmentPolyline(ms, contourLayer, segStartX, segStartY, segEndX, segEndY, segBulge, segCount)
+    End If
+End Function
+
+' Читает единицу длины последнего расчетного снимка. Для annotation-таблицы это
+' важнее заголовков StartX/EndX: сами заголовки исторически без ", mm", но
+' значения уже переведены writer-ом в Output.LengthUnit.
+Private Function ResultsOutputLengthUnit(ByVal workbook As Object) As String
+    On Error GoTo Failed
+    Dim data As Variant
+    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    If Not HasResultTableRows(data) Then Exit Function
+
+    Dim colParameter As Long: colParameter = ResultColumn(data, "Parameter")
+    Dim colValue As Long: colValue = ResultColumn(data, "Value")
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(data, 1)
+        If StrComp(Trim$(SafeText(data(rowIndex, colParameter))), "Output.LengthUnit", vbTextCompare) = 0 Then
+            ResultsOutputLengthUnit = Trim$(SafeText(data(rowIndex, colValue)))
+            Exit Function
+        End If
+    Next rowIndex
+Failed:
+End Function
+
+' Возвращает единицу длины для одной строки semantic-аннотации.
+' В таблице rngNDMSectionAnnotations координатные заголовки не содержат ", mm":
+' координаты уже сохранены в пользовательских output-единицах. В новых снимках
+' contour-строки явно несут Unit, а для старых снимков без Unit берем общий
+' Output.LengthUnit из свойств сечения. Иначе при Output.LengthUnit = m контур
+' получается в 1000 раз меньше бетонной и арматурной геометрии.
+Private Function AnnotationLengthUnit(ByRef data As Variant, ByVal rowIndex As Long, _
+        ByVal colUnit As Long, ByVal defaultUnit As String) As String
+    Dim unitText As String
+    unitText = Trim$(SafeText(data(rowIndex, colUnit)))
+    If Len(unitText) = 0 Or unitText = "-" Then unitText = defaultUnit
+    If Len(unitText) = 0 Or unitText = "-" Then unitText = "mm"
+    AnnotationLengthUnit = unitText
+End Function
 
 ' Возвращает имя петли contour-аннотаций. Старые ID вида CONTOUR_LINE_1
 ' попадают в одну пустую петлю; новые CONTOUR_OUTER_* и CONTOUR_OPENING_*
@@ -950,9 +1010,9 @@ End Sub
 ' Если будущий генератор случайно запишет сегменты с разрывом, экспорт
 ' останавливается с понятной ошибкой: лучше увидеть проблему, чем получить в
 ' AutoCAD контур с паразитной перемычкой.
-Private Sub DrawContourSegmentPolyline(ByVal ms As Object, ByVal contourLayer As String, _
+Private Function DrawContourSegmentPolyline(ByVal ms As Object, ByVal contourLayer As String, _
         ByRef startX() As Double, ByRef startY() As Double, _
-        ByRef endX() As Double, ByRef endY() As Double, ByRef bulge() As Double, ByVal segmentCount As Long)
+        ByRef endX() As Double, ByRef endY() As Double, ByRef bulge() As Double, ByVal segmentCount As Long) As Long
     Dim segmentIndex As Long
     For segmentIndex = 1 To segmentCount - 1
         If Not PointsAreClose(endX(segmentIndex), endY(segmentIndex), startX(segmentIndex + 1), startY(segmentIndex + 1)) Then
@@ -978,13 +1038,15 @@ Private Sub DrawContourSegmentPolyline(ByVal ms As Object, ByVal contourLayer As
         If Abs(bulge(segmentIndex)) > 0.000000000001 Then Call entity.SetBulge(segmentIndex - 1, bulge(segmentIndex))
     Next segmentIndex
     entity.Closed = True
-End Sub
+    entity.Update
+    DrawContourSegmentPolyline = 1
+End Function
 
 ' Окружность тоже выводится LWPOLYLINE: четыре четверти с одинаковым bulge дают
 ' непрерывную замкнутую полилинию с дугами, а не отдельный объект Circle.
-Private Sub DrawContourCirclePolyline(ByVal ms As Object, ByVal contourLayer As String, _
-        ByVal centerX As Double, ByVal centerY As Double, ByVal radius As Double)
-    If radius <= 0# Then Exit Sub
+Private Function DrawContourCirclePolyline(ByVal ms As Object, ByVal contourLayer As String, _
+        ByVal centerX As Double, ByVal centerY As Double, ByVal radius As Double) As Long
+    If radius <= 0# Then Exit Function
 
     Dim points(0 To 7) As Double
     points(0) = centerX + radius: points(1) = centerY
@@ -1002,7 +1064,23 @@ Private Sub DrawContourCirclePolyline(ByVal ms As Object, ByVal contourLayer As 
         Call entity.SetBulge(i, quarterBulge)
     Next i
     entity.Closed = True
-End Sub
+    entity.Update
+    DrawContourCirclePolyline = 1
+End Function
+
+' Формирует короткий фрагмент итогового сообщения по экспорту контура.
+' Ноль при включенной настройке означает, что в Results не было параметрических
+' contour-аннотаций: для импортированной сетки это штатно, для генератора -
+' признак устаревшего расчетного снимка или ошибки записи аннотаций.
+Private Function ContourExportStatusText(ByVal contourEnabled As Boolean, ByVal contourCount As Long) As String
+    If Not contourEnabled Then
+        ContourExportStatusText = "выключено"
+    ElseIf contourCount > 0 Then
+        ContourExportStatusText = CStr(contourCount)
+    Else
+        ContourExportStatusText = "0 (в Results нет параметрического контура)"
+    End If
+End Function
 
 ' Создает служебную полилинию AutoCAD на отдельном слое контура.
 Private Function AddAcadLightWeightPolyline(ByVal ms As Object, ByRef points() As Double, _

@@ -114,8 +114,8 @@ Public StabilityAccidentalEcc1 As Double ' Случайный эксцентри
 Public StabilityAccidentalEcc2 As Double ' Случайный эксцентриситет во второй главной плоскости, мм.
 Public StabilityEffectiveLength1 As Double ' Расчетная длина l0 первой главной плоскости, мм.
 Public StabilityEffectiveLength2 As Double ' Расчетная длина l0 второй главной плоскости, мм.
-Public StabilitySlenderness1 As Double ' Гибкость l0/i первой главной плоскости.
-Public StabilitySlenderness2 As Double ' Гибкость l0/i второй главной плоскости.
+Public StabilitySlenderness1 As Double ' Гибкость l0/i для плоскости 1: изгиб вокруг главной оси 1.
+Public StabilitySlenderness2 As Double ' Гибкость l0/i для плоскости 2: изгиб вокруг главной оси 2.
 Public StabilityPhiLTable1 As Double ' Табличный phi_l СП 35 первой плоскости для ветви ec/r <= 1.
 Public StabilityPhiLTable2 As Double ' Табличный phi_l СП 35 второй плоскости для ветви ec/r <= 1.
 Public StabilityPhiM1 As Double ' Табличный phi_m СП 35 первой плоскости.
