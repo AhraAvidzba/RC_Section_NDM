@@ -42,8 +42,8 @@ Private mSignMy As String
 
 ' Устанавливает внутренние defaults, используемые до чтения Config или в автономных тестах.
 Public Sub InitializeDefaults()
-    mInputLength = "mm": mOutputLength = "mm"
-    mInputArea = "mm2": mOutputArea = "mm2"
+    mInputLength = "mm": mOutputLength = "m"
+    mInputArea = "mm2": mOutputArea = "m2"
     mInputForce = "N": mOutputForce = "N"
     mInputMoment = "N*mm": mOutputMoment = "N*mm"
     mInputStress = "MPa": mOutputStress = "MPa"

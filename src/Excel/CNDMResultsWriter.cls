@@ -373,8 +373,8 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MinY", OutputLength(minY, units), OutputLengthUnit(units), "Минимальный Y расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxY", OutputLength(maxY, units), OutputLengthUnit(units), "Максимальный Y расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.Source", section.SourceType, "-", "Источник геометрии расчетной модели."
-    PutProperty data, rowIndex, runID, "ALL", "LoadReferenceX", OutputLength(batch.LoadReferenceX, units), OutputLengthUnit(units), "Общая X точки приложения нагрузки относительно центра тяжести бетонного сечения."
-    PutProperty data, rowIndex, runID, "ALL", "LoadReferenceY", OutputLength(batch.LoadReferenceY, units), OutputLengthUnit(units), "Общая Y точки приложения нагрузки относительно центра тяжести бетонного сечения."
+    PutProperty data, rowIndex, runID, "ALL", "LoadReferenceX", OutputLength(batch.LoadReferenceX, units), OutputLengthUnit(units), "X фактической точки приложения нагрузки в координатах модели; равно Concrete.CentroidX + Load.ReferenceOffsetX."
+    PutProperty data, rowIndex, runID, "ALL", "LoadReferenceY", OutputLength(batch.LoadReferenceY, units), OutputLengthUnit(units), "Y фактической точки приложения нагрузки в координатах модели; равно Concrete.CentroidY + Load.ReferenceOffsetY."
     PutConcreteSectionProperties data, rowIndex, runID, section, concreteProps, units
     PutTransformedSectionProperties data, rowIndex, runID, section, transformedProps, units
     PutGeneralSectionCheckProperties data, rowIndex, runID, section, concreteProps, transformedProps, batch
@@ -608,15 +608,14 @@ Private Sub PutMaterialDiagramHeaders(ByRef data() As Variant, ByVal units As CU
 End Sub
 
 ' Записывает справочные свойства бетонной части сечения.
-' Эти строки нужны, чтобы на Results было видно, от какой точки реально
-' задается Load.ReferenceOffset и какие геометрические характеристики имеет
-' бетонное сечение без учета продольной арматуры.
+' Координаты бетонного центра нужны для трассировки пользовательского
+' Load.ReferenceOffset и для вывода бетонных главных осей на схему/AutoCAD.
 Private Sub PutConcreteSectionProperties(ByRef data() As Variant, ByRef rowIndex As Long, _
         ByVal runID As Variant, ByVal section As CSectionModel, _
         ByVal props As CSectionPropertiesCalculator, ByVal units As CUnitSystem)
     PutProperty data, rowIndex, runID, "ALL", "Concrete.Area", OutputArea(props.Area, units), OutputAreaUnit(units), "Площадь бетонной части сечения по расчетной сетке."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.CentroidX", OutputLength(props.CentroidX, units), OutputLengthUnit(units), "X центра тяжести бетонного сечения; от этой точки задается Load.ReferenceOffsetX."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.CentroidY", OutputLength(props.CentroidY, units), OutputLengthUnit(units), "Y центра тяжести бетонного сечения; от этой точки задается Load.ReferenceOffsetY."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.CentroidX", OutputLength(props.CentroidX, units), OutputLengthUnit(units), "X центра тяжести бетонного сечения в координатах модели; от этой точки задается Load.ReferenceOffsetX."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.CentroidY", OutputLength(props.CentroidY, units), OutputLengthUnit(units), "Y центра тяжести бетонного сечения в координатах модели; от этой точки задается Load.ReferenceOffsetY."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.Ix", OutputFourthPowerLength(props.Ix, units), OutputLengthUnit(units) & "4", "Момент инерции бетонного сечения относительно исходной оси X."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.Iy", OutputFourthPowerLength(props.Iy, units), OutputLengthUnit(units) & "4", "Момент инерции бетонного сечения относительно исходной оси Y."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.Ixy", OutputFourthPowerLength(props.Ixy, units), OutputLengthUnit(units) & "4", "Центробежный момент бетонного сечения относительно исходных осей."
@@ -643,8 +642,8 @@ Private Sub PutTransformedSectionProperties(ByRef data() As Variant, ByRef rowIn
         ByVal runID As Variant, ByVal section As CSectionModel, _
         ByVal props As CSectionPropertiesCalculator, ByVal units As CUnitSystem)
     PutProperty data, rowIndex, runID, "ALL", "Transformed.Area", OutputArea(props.Area, units), OutputAreaUnit(units), "Площадь приведенного сечения в бетонной базе."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.CentroidX", OutputLength(props.CentroidX, units), OutputLengthUnit(units), "X центра тяжести приведенного сечения бетон + арматура."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.CentroidY", OutputLength(props.CentroidY, units), OutputLengthUnit(units), "Y центра тяжести приведенного сечения бетон + арматура."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.CentroidX", OutputLength(props.CentroidX, units), OutputLengthUnit(units), "X центра тяжести приведенного сечения бетон + арматура в координатах модели."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.CentroidY", OutputLength(props.CentroidY, units), OutputLengthUnit(units), "Y центра тяжести приведенного сечения бетон + арматура в координатах модели."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.Ix", OutputFourthPowerLength(props.Ix, units), OutputLengthUnit(units) & "4", "Момент инерции приведенного сечения относительно исходной оси X."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.Iy", OutputFourthPowerLength(props.Iy, units), OutputLengthUnit(units) & "4", "Момент инерции приведенного сечения относительно исходной оси Y."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.Ixy", OutputFourthPowerLength(props.Ixy, units), OutputLengthUnit(units) & "4", "Центробежный момент приведенного сечения относительно исходных осей."
@@ -1293,7 +1292,7 @@ Private Function OutputAnnotationText(ByVal annotations As CSectionAnnotations, 
     End If
 
     Dim valueText As String
-    valueText = FormatRoundedAnnotationLength(OutputLength(annotations.Value(annotationIndex), units))
+    valueText = FormatRoundedAnnotationLength(annotations.Value(annotationIndex), units)
     Dim unitText As String
     unitText = OutputLengthUnit(units)
     If StrComp(Trim$(annotations.Text(annotationIndex)), ApproxSign(), vbTextCompare) = 0 Then
@@ -1305,17 +1304,20 @@ Private Function OutputAnnotationText(ByVal annotations As CSectionAnnotations, 
     End If
 End Function
 
-' Округляет видимую подпись размерной линии до ближайшего целого миллиметра.
+' Округляет видимую подпись размерной линии до ближайшего целого миллиметра,
+' а затем переводит округленное значение в выбранные пользователем единицы.
+' Поэтому 500 мм при выводе в метрах пишется как 0.5 m, а не как 1 m или 0 m.
 ' VBA.Round использует банковское округление, поэтому здесь явно применено
 ' инженерно ожидаемое правило: половина миллиметра округляется от нуля.
-Private Function FormatRoundedAnnotationLength(ByVal value As Double) As String
-    Dim roundedValue As Double
-    If value >= 0# Then
-        roundedValue = Int(value + 0.5)
+Private Function FormatRoundedAnnotationLength(ByVal internalMmValue As Double, ByVal units As CUnitSystem) As String
+    Dim roundedMmValue As Double
+    If internalMmValue >= 0# Then
+        roundedMmValue = Int(internalMmValue + 0.5)
     Else
-        roundedValue = -Int(Abs(value) + 0.5)
+        roundedMmValue = -Int(Abs(internalMmValue) + 0.5)
     End If
-    FormatRoundedAnnotationLength = FormatNumberInvariant(roundedValue)
+
+    FormatRoundedAnnotationLength = FormatNumberInvariant(OutputLength(roundedMmValue, units))
 End Function
 
 ' Переводит технические комментарии builders в понятные пользователю строки Results.

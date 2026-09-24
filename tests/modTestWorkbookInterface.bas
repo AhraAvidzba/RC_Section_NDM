@@ -36,6 +36,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAutoCADImportButtonRejectsGeneratedSource stats
     TestAutoCADImporterTreatsDrawingUnitsAsMillimeters stats
     TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
+    TestAnnotationDimensionTextRoundsInMillimeters stats
     TestPlotClearsLegacyWorksheetShapes stats
     TestPlotOverlayCoordinatesMatchResults stats
     TestGeneratedSourceDoesNotReuseAutoCADPreview stats
@@ -533,6 +534,47 @@ Private Sub TestAutoCADImporterTreatsDrawingUnitsAsMillimeters(ByRef stats As TU
 
     SetSystemSetting "Units.Length.Input", "mm"
     SetSystemSetting "Units.Area.Input", "mm2"
+End Sub
+
+' Проверяет, что подпись размера округляется до целого миллиметра до перевода
+' в пользовательскую единицу вывода. При Units.Length.Output = m размер 517 мм
+' должен отображаться как 0.517 m, а не как 1 m или 0 m.
+Private Sub TestAnnotationDimensionTextRoundsInMillimeters(ByRef stats As TUiTestStats)
+    Dim oldOutputLength As String
+    oldOutputLength = GetSystemSetting("Units.Length.Output")
+
+    On Error GoTo RestoreAndFail
+    PrepareCircleInput
+    SetSystemSetting "Geometry.Source", "AutoCAD"
+    SetSystemSetting "Units.Length.Output", "m"
+
+    Dim section As CSectionModel
+    Set section = New CSectionModel
+    section.SourceType = "AutoCADImport"
+    section.AddConcreteElement 50#, 50#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
+    section.AddConcreteElement 250#, 50#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
+    section.AddConcreteElement 450#, 50#, 7200#, 1, vbNullString, vbNullString, _
+        "Rectangle", 120#, 60#, GEOM_PI / 6#
+
+    Dim writer As CNDMResultsWriter
+    Set writer = New CNDMResultsWriter
+    writer.WriteGeometryPreview ThisWorkbook, section
+
+    Dim annotationData As Variant
+    annotationData = ResultTable("rngNDMSectionAnnotations")
+    AssertTextEquals stats, "ui.autocad.preview.roundedWidthTextMeters", _
+        AnnotationTextByID(annotationData, "DIM_AUTO_BOUNDS_B"), ChrW$(&H2248) & " 0.517 m"
+    AssertTextEquals stats, "ui.autocad.preview.roundedHeightTextMeters", _
+        AnnotationTextByID(annotationData, "DIM_AUTO_BOUNDS_H"), ChrW$(&H2248) & " 0.112 m"
+
+Restore:
+    SetSystemSetting "Units.Length.Output", oldOutputLength
+    Exit Sub
+
+RestoreAndFail:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: ui.autocad.preview.roundedDimensionTextMeters; " & Err.Description
+    Resume Restore
 End Sub
 
 ' Проверяет preview импортированной геометрии без реального AutoCAD.

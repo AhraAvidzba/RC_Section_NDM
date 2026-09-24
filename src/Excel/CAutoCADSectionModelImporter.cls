@@ -46,11 +46,18 @@ Public Function ImportFromActiveDocument(ByVal settings As CSystemSettingsReader
     If doc Is Nothing Then Err.Raise vbObjectError + 4402, "CAutoCADSectionModelImporter", _
         "AutoCAD открыт, но активный чертеж не найден. Откройте или создайте чертеж и повторите импорт."
 
+    Dim importUnits As CUnitSystem
+    Set importUnits = units
+    If importUnits Is Nothing Then
+        Set importUnits = New CUnitSystem
+        importUnits.InitializeDefaults
+    End If
+
     Set ImportFromActiveDocument = ImportFromModelSpace(doc.ModelSpace, _
         settings.GetString("AutoCAD.Import.ConcreteLayer", "Concrete"), _
         settings.GetString("AutoCAD.Import.RebarLayer", "Reinf"), _
         REBAR_STEEL_CLASS, _
-        InputArea(settings.GetDouble("AutoCAD.Import.MinArea", 0.000001), units), units)
+        importUnits.InputAreaToInternal(settings.GetDouble("AutoCAD.Import.MinArea", 0.000001)), importUnits)
 End Function
 
 ' Проходит по ModelSpace и отбирает только Region на пользовательских слоях

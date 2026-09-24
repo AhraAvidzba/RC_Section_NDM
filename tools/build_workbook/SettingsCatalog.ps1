@@ -146,8 +146,8 @@ function Get-SystemSettingsCatalog {
 # Возвращает подготовленные данные или справочное значение для дальнейшего шага сборки.
 function Get-UnitSettingsCatalog {
     @(
-        @("Length", "mm", "mm", "mm"),
-        @("Area", "mm2", "mm2", "mm2"),
+        @("Length", "mm", "mm", "m"),
+        @("Area", "mm2", "mm2", "m2"),
         @("Force", "tf", "N", "tf"),
         @("Moment", "tf*m", "N*mm", "tf*m"),
         @("Stress", "MPa", "MPa", "MPa"),
