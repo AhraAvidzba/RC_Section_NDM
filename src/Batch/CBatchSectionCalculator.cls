@@ -105,6 +105,8 @@ Private mCapacityBaseLoadSteps As Long ' Базовое число load steps д
 Private mCapacitySolverMaxIterations As Long ' Лимит итераций внутреннего solver-а при capacity-поиске.
 Private mReport As CExecutionReport ' Необязательный человекочитаемый отчет выполнения; расчетная логика от него не зависит.
 Private mReportUnits As CUnitSystem ' Единицы и знаки для человекочитаемых физических величин execution_report.
+Private mSettingsValid As Boolean ' False, если ApplySettings нашел ошибку Config и все LC должны получить InputErr.
+Private mSettingsError As String ' Человекочитаемая причина ошибки чтения настроек Config.
 
 Private mStabilityCode As String ' SP63 или SP35: выбранная нормативная ветвь фильтра устойчивости.
 Private mStabilityElementLength As Double ' Геометрическая длина элемента l, мм.
@@ -134,6 +136,8 @@ Private mStabilityLoadUserMy() As Double ' Пользовательский My �
 Private Sub Class_Initialize()
     Set mStatusPolicy = New CBatchStatusPolicy
     Set mMomentZeroFilter = New CMomentZeroFilter
+    mSettingsValid = True
+    mSettingsError = vbNullString
     mZeroMomentPerDepth = DEFAULT_ZERO_MOMENT_PER_DEPTH
     mMomentZeroFilter.Initialize mZeroMomentPerDepth
     EnsureCombinationCapacity INITIAL_COMBINATION_CAPACITY
@@ -175,9 +179,9 @@ Private Sub Class_Initialize()
     mCapacitySolverMaxIterations = 60
     mWorstCombinationCriterion = "StrengthCapacity"
     mStabilityCode = "SP35"
-    mStabilityElementLength = 3000#
-    mStabilityMu1 = 1#
-    mStabilityMu2 = 1#
+    mStabilityElementLength = 8000#
+    mStabilityMu1 = 2#
+    mStabilityMu2 = 2#
     mStabilitySystemType = "Determinate"
     mStabilityZeroSign1 = 1#
     mStabilityZeroSign2 = 1#
@@ -222,7 +226,10 @@ End Property
 ' Если передан CUnitSystem, пользовательские допуски в силе/моменте/длине
 ' сразу переводятся во внутренние единицы ядра.
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
+    On Error GoTo InvalidSettings
     If settings Is Nothing Then Exit Sub
+    mSettingsValid = True
+    mSettingsError = vbNullString
     Set mReportUnits = units
     Dim zeroMomentSettingRead As Boolean
     zeroMomentSettingRead = settings.HasKey("Calculation.ZeroMomentPerDepth")
@@ -274,23 +281,23 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mCapacityMaxRetries = settings.GetLong("Capacity.MaxRetries", mCapacityMaxRetries)
     mCapacityBaseLoadSteps = settings.GetLong("Capacity.BaseLoadSteps", mCapacityBaseLoadSteps)
     mCapacitySolverMaxIterations = settings.GetLong("Capacity.SolverMaxIterations", mCapacitySolverMaxIterations)
-    mStabilityCode = settings.GetString("Stability.Code", mStabilityCode)
-    mStabilityElementLength = StabilityNumericSetting(settings, "Stability.ElementLength", mStabilityElementLength)
-    mStabilityMu1 = StabilityNumericSetting(settings, "Stability.Mu1", mStabilityMu1)
-    mStabilityMu2 = StabilityNumericSetting(settings, "Stability.Mu2", mStabilityMu2)
-    mStabilitySystemType = settings.GetString("Stability.SystemType", mStabilitySystemType)
-    mStabilityZeroSign1 = settings.GetDouble("Stability.ZeroMomentEccentricitySign1", mStabilityZeroSign1)
-    mStabilityZeroSign2 = settings.GetDouble("Stability.ZeroMomentEccentricitySign2", mStabilityZeroSign2)
-    mStabilityPhiLMode = StabilityTextSetting(settings, "Stability.PhiLMode", mStabilityPhiLMode)
-    mStabilityAccidentalEccentricityMode = StabilityTextSetting(settings, "Stability.AccidentalEccentricityMode", mStabilityAccidentalEccentricityMode)
-    mStabilityAccidentalEccentricityPlanes = StabilityTextSetting(settings, "Stability.AccidentalEccentricityPlanes", mStabilityAccidentalEccentricityPlanes)
-    mStabilityAccidentalEccentricityUser1 = StabilityNumericSetting(settings, "Stability.AccidentalEccentricityUser1", mStabilityAccidentalEccentricityUser1)
-    mStabilityAccidentalEccentricityUser2 = StabilityNumericSetting(settings, "Stability.AccidentalEccentricityUser2", mStabilityAccidentalEccentricityUser2)
-    mStabilitySP63Ks = StabilityNumericSetting(settings, "Stability.SP63.Ks", mStabilitySP63Ks)
-    mStabilitySP63DeltaEMin = StabilityNumericSetting(settings, "Stability.SP63.DeltaEMin", mStabilitySP63DeltaEMin)
-    mStabilitySP63DeltaEMax = StabilityNumericSetting(settings, "Stability.SP63.DeltaEMax", mStabilitySP63DeltaEMax)
-    mStabilitySP35PhiP = StabilityNumericSetting(settings, "Stability.SP35.PhiP", mStabilitySP35PhiP)
-    mStabilitySP35NOverNcrLimit = StabilityNumericSetting(settings, "Stability.SP35.NOverNcrLimit", mStabilitySP35NOverNcrLimit)
+    mStabilityCode = StabilityTextSetting(settings, "Stability.Code")
+    mStabilityElementLength = StabilityNumericSetting(settings, "Stability.ElementLength")
+    mStabilityMu1 = StabilityNumericSetting(settings, "Stability.Mu1")
+    mStabilityMu2 = StabilityNumericSetting(settings, "Stability.Mu2")
+    mStabilitySystemType = settings.GetRequiredString("Stability.SystemType")
+    mStabilityZeroSign1 = StabilityNumericSetting(settings, "Stability.ZeroMomentEccentricitySign1")
+    mStabilityZeroSign2 = StabilityNumericSetting(settings, "Stability.ZeroMomentEccentricitySign2")
+    mStabilityPhiLMode = StabilityTextSetting(settings, "Stability.PhiLMode")
+    mStabilityAccidentalEccentricityMode = StabilityTextSetting(settings, "Stability.AccidentalEccentricityMode")
+    mStabilityAccidentalEccentricityPlanes = StabilityTextSetting(settings, "Stability.AccidentalEccentricityPlanes")
+    mStabilityAccidentalEccentricityUser1 = StabilityNumericSetting(settings, "Stability.AccidentalEccentricityUser1")
+    mStabilityAccidentalEccentricityUser2 = StabilityNumericSetting(settings, "Stability.AccidentalEccentricityUser2")
+    mStabilitySP63Ks = StabilityNumericSetting(settings, "Stability.SP63.Ks")
+    mStabilitySP63DeltaEMin = StabilityNumericSetting(settings, "Stability.SP63.DeltaEMin")
+    mStabilitySP63DeltaEMax = StabilityNumericSetting(settings, "Stability.SP63.DeltaEMax")
+    mStabilitySP35PhiP = StabilityNumericSetting(settings, "Stability.SP35.PhiP")
+    mStabilitySP35NOverNcrLimit = StabilityNumericSetting(settings, "Stability.SP35.NOverNcrLimit")
     If Not units Is Nothing Then
         mCrackAllowable = units.InputLengthToInternal(mCrackAllowable)
         mStabilityElementLength = units.InputLengthToInternal(mStabilityElementLength)
@@ -304,42 +311,27 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     End If
     ConfigureMomentZeroFilter
     NormalizeAllCombinationMoments
+    Exit Sub
+
+InvalidSettings:
+    mSettingsValid = False
+    mSettingsError = Err.Description
+    ReportStep "Настройки расчета содержат ошибку: " & mSettingsError
 End Sub
 
-' Читает числовую настройку устойчивости без подстановки default при пустой
-' ячейке. Пустота сохраняется как 0, чтобы профиль с включенной устойчивостью
-' получил InputErr в CStabilityCalculator, а не незаметный расчет по default.
+' Читает обязательную числовую настройку устойчивости без скрытой подстановки
+' default. Если строка Config не прочиталась, пуста или содержит не число,
+' расчет останавливается как ошибка исходных данных.
 Private Function StabilityNumericSetting(ByVal settings As CSystemSettingsReader, _
-        ByVal key As String, ByVal defaultValue As Double) As Double
-    If Not settings.HasKey(key) Then
-        StabilityNumericSetting = defaultValue
-        Exit Function
-    End If
-
-    Dim textValue As String
-    textValue = Trim$(settings.GetRawString(key, vbNullString))
-    If Len(textValue) = 0 Or UCase$(textValue) = "TODO" Then
-        StabilityNumericSetting = 0#
-    Else
-        StabilityNumericSetting = CDbl(Replace$(textValue, ".", LocalDecimalSeparator()))
-    End If
+        ByVal key As String) As Double
+    StabilityNumericSetting = settings.GetRequiredDouble(key)
 End Function
 
-' Читает текстовый переключатель устойчивости без подмены пустого значения.
-' Допустимые варианты проверяются внутри CStabilityCalculator.
+' Читает обязательный текстовый переключатель устойчивости без подмены пустого
+' значения. Допустимые варианты проверяются внутри CStabilityCalculator.
 Private Function StabilityTextSetting(ByVal settings As CSystemSettingsReader, _
-        ByVal key As String, ByVal defaultValue As String) As String
-    If settings.HasKey(key) Then
-        StabilityTextSetting = Trim$(settings.GetRawString(key, vbNullString))
-    Else
-        StabilityTextSetting = defaultValue
-    End If
-End Function
-
-' Локальный десятичный разделитель нужен только для raw-чтения настроек,
-' когда обычный GetDouble нельзя использовать из-за его default-подстановки.
-Private Function LocalDecimalSeparator() As String
-    LocalDecimalSeparator = Mid$(CStr(1.1), 2, 1)
+        ByVal key As String) As String
+    StabilityTextSetting = settings.GetRequiredString(key)
 End Function
 
 ' Очищает список LC и накопленные результаты.
@@ -654,6 +646,12 @@ Private Sub RunCombination(ByVal index As Long)
         Exit Sub
     End If
 
+    If Not mSettingsValid Then
+        ReportStep "Сочетание не передано в solver из-за ошибки настроек: " & mSettingsError
+        MarkInvalid index, mSettingsError
+        Exit Sub
+    End If
+
     If Len(Trim$(mInputs(index).ProfileId)) = 0 Then
         ReportStep "Сочетание не рассчитано: ProfileId не задан."
         MarkInvalid index, "ProfileId должен быть назначен сочетанию."
@@ -686,10 +684,6 @@ Private Sub RunCombination(ByVal index As Long)
     If profile.StabilityEnabled Then
         ReportStep "Запускается фильтр продольного изгиба/устойчивости по профилю."
         RunStabilityFilter index, profile.StabilityValueSet
-        If StabilityStopsDownstream(index) Then
-            MarkDownstreamSkippedAfterStability index
-            GoTo FinalizeCombination
-        End If
     Else
         ReportStep "Устойчивость не запрошена профилем."
         mResults(index).ClearStabilityResult
@@ -844,24 +838,6 @@ Private Sub ReportStabilityDetails(ByVal stability As CStabilityCalculator)
         "ea=" & ReportLengthText(stability.AccidentalEccentricity2) & "; " & _
         "phi_l=" & FormatNumberInvariant(stability.PhiL2) & "; " & _
         "D=" & ReportStiffnessText(stability.StiffnessD2)
-End Sub
-
-' Возвращает True, если фильтр устойчивости уже дал итог, после которого
-' нельзя передавать усилия в НДМ. Так FAIL устойчивости не маскируется
-' последующей численной несходимостью DirectState или Capacity.
-Private Function StabilityStopsDownstream(ByVal index As Long) As Boolean
-    StabilityStopsDownstream = mStatusPolicy.IsFailedOverall(mResults(index).StabilityStatus)
-End Function
-
-' Помечает последующие расчетные разделы как неприменимые к LC, который уже
-' не прошел устойчивость. Пользовательский статус берется из общей policy:
-' снаружи остается единый словарь OK/FAIL/NumFail/InputErr/N/A.
-Private Sub MarkDownstreamSkippedAfterStability(ByVal index As Long)
-    mResults(index).DirectStateStatus = mStatusPolicy.NotApplicable
-    mResults(index).CapacityStatus = mStatusPolicy.NotApplicable
-    mResults(index).CrackStatus = mStatusPolicy.NotApplicable
-    mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
-    ReportStep "НДС, несущая способность и трещины не запускались: сочетание не прошло проверку устойчивости."
 End Sub
 
 ' Берет длительную часть нагрузки для LC. Если пользователь не заполнил строку,
@@ -1175,23 +1151,30 @@ End Sub
 ' Материальная модель строится по спецификации профиля, а управление retry и
 ' extension остается внутри CStateSolutionRunner.
 Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectionStateType, _
-        ByVal materialRole As ECalculationPurpose, ByVal spec As CMaterialModelSpec) As CStateSolutionRunner
+        ByVal materialRole As ECalculationPurpose, ByVal spec As CMaterialModelSpec, _
+        Optional ByVal useDirectStateExtension As Boolean = True, _
+        Optional ByVal mergeIntoDirectStateStatus As Boolean = True) As CStateSolutionRunner
     Dim concreteState As CMaterialDiagram
     Dim steelState As CMaterialDiagram
-    Set concreteState = mMaterialProvider.ConcreteStateMaterialFromSpec(spec)
-    Set steelState = mMaterialProvider.SteelStateMaterialFromSpec(spec)
+    If useDirectStateExtension Then
+        Set concreteState = mMaterialProvider.ConcreteStateMaterialFromSpec(spec)
+        Set steelState = mMaterialProvider.SteelStateMaterialFromSpec(spec)
+    Else
+        Set concreteState = mMaterialProvider.ConcreteMaterialFromSpec(spec)
+        Set steelState = mMaterialProvider.SteelMaterialFromSpec(spec)
+    End If
     mResults(index).DirectStateDiagramExtensionEnabled = mMaterialProvider.DirectStateDiagramExtensionEnabled
 
     Dim runner As CStateSolutionRunner
     Set runner = New CStateSolutionRunner
     ConfigureStateRunner runner
     runner.Solve mSection, concreteState, steelState, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
-        mResults(index).DirectStateDiagramExtensionEnabled
+        (useDirectStateExtension And mResults(index).DirectStateDiagramExtensionEnabled)
 
     Dim service As CSectionSolver
     Set service = runner.ResultSolver
     If service Is Nothing Then
-        MergeDirectStateStatus index, mStatusPolicy.NumFail
+        If mergeIntoDirectStateStatus Then MergeDirectStateStatus index, mStatusPolicy.NumFail
         ReportStep "Прямое НДС " & SectionStateTypeToText(stateType) & " не вернуло состояние solver-а."
         Set RunProfileState = runner
         Exit Function
@@ -1204,26 +1187,29 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
     ReportBlock "Итерации прямого CSectionSolver", service.DiagnosticLog
 
     If Not service.Converged Then
-        MergeDirectStateStatus index, mStatusPolicy.NumFail
+        If mergeIntoDirectStateStatus Then MergeDirectStateStatus index, mStatusPolicy.NumFail
         ReportStep "Прямое НДС " & SectionStateTypeToText(stateType) & " не сошлось: " & service.StopReason
         Set RunProfileState = runner
         Exit Function
     End If
 
     mResults(index).ExtensionUsed = (mResults(index).ExtensionUsed Or runner.ExtensionUsed)
+    Dim stateStatus As String
     If runner.ExtensionUsed Or Not runner.WithinPhysicalRange Then
-        MergeDirectStateStatus index, mStatusPolicy.Fail
+        stateStatus = mStatusPolicy.Fail
+        If mergeIntoDirectStateStatus Then MergeDirectStateStatus index, stateStatus
         ReportStep "Прямое НДС " & SectionStateTypeToText(stateType) & " найдено, но вышло за физический диапазон диаграммы материала."
     Else
-        MergeDirectStateStatus index, mStatusPolicy.OK
+        stateStatus = mStatusPolicy.OK
+        If mergeIntoDirectStateStatus Then MergeDirectStateStatus index, stateStatus
     End If
-    ReportValue "Статус прямого НДС", mResults(index).DirectStateStatus
+    ReportValue "Статус прямого НДС", stateStatus
     ReportValue "Использовано продолжение диаграммы", IIf(runner.ExtensionUsed, "да", "нет")
 
     Dim stateResult As CSectionStateResult
     Set stateResult = New CSectionStateResult
     stateResult.InitializeFromSolver stateType, materialRole, spec, service, runner.ExtensionUsed, _
-        mResults(index).DirectStateStatus
+        stateStatus
     mResults(index).AddState stateResult
     Set RunProfileState = runner
 End Function
@@ -1271,17 +1257,23 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
 
     ReportStep "Запускается текущее CrackedState полного сочетания по профилю трещин."
     Dim runner As CStateSolutionRunner
-    Set runner = RunProfileState(index, sstCrackedState, cpCrackedNDS, profile.CrackedStateSpec)
+    Set runner = RunProfileState(index, sstCrackedState, cpCrackedNDS, profile.CrackedStateSpec, True, False)
     If runner Is Nothing Or runner.ResultSolver Is Nothing Then
-        mResults(index).CrackStatus = mStatusPolicy.NotApplicable
+        mResults(index).CrackStatus = mStatusPolicy.NumFail
         mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
         ReportStep "Расчет трещин не продолжается: CrackedState не получен."
         GoTo ReportCrackResult
     End If
-    If Not runner.Converged Or runner.ExtensionUsed Or Not runner.WithinPhysicalRange Then
-        mResults(index).CrackStatus = mStatusPolicy.NotApplicable
+    If Not runner.Converged Then
+        mResults(index).CrackStatus = mStatusPolicy.NumFail
         mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
-        ReportStep "Расчет трещин не продолжается: CrackedState не находится полностью в физическом диапазоне диаграммы."
+        ReportStep "Расчет трещин не продолжается: CrackedState не сошелся."
+        GoTo ReportCrackResult
+    End If
+    If runner.ExtensionUsed Or Not runner.WithinPhysicalRange Then
+        mResults(index).CrackStatus = mStatusPolicy.Fail
+        mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
+        ReportStep "Расчет трещин не продолжается: равновесие CrackedState найдено только через продолжение диаграммы или вышло за физический диапазон."
         GoTo ReportCrackResult
     End If
 
@@ -1515,6 +1507,7 @@ Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     mResults(index).Status = mStatusPolicy.InputErr
     mResults(index).DirectStateStatus = mStatusPolicy.InputErr
     mResults(index).CapacityStatus = mStatusPolicy.InputErr
+    mResults(index).StabilityStatus = mStatusPolicy.InputErr
     mResults(index).CapacityLimitState = reason
     mResults(index).CapacitySolutionMethod = vbNullString
     mResults(index).CapacityPathResolved = CAPACITY_PATH_NONE

@@ -508,9 +508,10 @@ Private Sub PutCombinationMaterialDiagrams(ByRef data() As Variant, ByRef rowInd
 End Sub
 
 ' Возвращает бетонную диаграмму именно в том виде, в котором ее мог получить
-' solver для named-state. Прямые StateSolution при включенном numerical
-' extension используют state-диаграммы, а capacity/CrackInitiation-состояния
-' остаются строго физическими.
+' solver для named-state. Numerical extension относится к прямому НДС от
+' заданного сочетания: StrengthState по модели прочности и CrackedState по
+' модели трещин. Точки образования трещин и несущая способность остаются
+' на физических диаграммах без технического продолжения.
 Private Function ConcreteDiagramForState(ByVal materialProvider As CMaterialModelProvider, _
         ByVal stateResult As CSectionStateResult, ByVal directExtensionEnabled As Boolean) As CMaterialDiagram
     If IsDirectStateResult(stateResult) And directExtensionEnabled Then
@@ -531,12 +532,13 @@ Private Function SteelDiagramForState(ByVal materialProvider As CMaterialModelPr
     End If
 End Function
 
-' Прямые состояния LC строятся через CStateSolutionRunner; только они могут
-' получать numerical extension. Остальные named-state рассчитываются по
-' физическим диаграммам соответствующей MaterialModelSpec.
+' Numerical extension может использоваться только для прямого StateSolution
+' текущего сочетания: StrengthState и CrackedState. Before/AfterMcrcState и
+' CapacityState не включаются в эту ветку.
 Private Function IsDirectStateResult(ByVal stateResult As CSectionStateResult) As Boolean
     If stateResult Is Nothing Then Exit Function
-    IsDirectStateResult = (stateResult.StateType = sstStrengthState Or stateResult.StateType = sstCrackedState)
+    IsDirectStateResult = (stateResult.StateType = sstStrengthState Or _
+        stateResult.StateType = sstCrackedState)
 End Function
 
 ' Формирует стабильный идентификатор уникальной диаграммы текущего snapshot.

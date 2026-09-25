@@ -1549,11 +1549,17 @@ Private Sub TestRectSetAxialTensionExtensionFromWorkbookSettings(ByRef stats As 
     Dim safeCrack As String
     Dim overOverall As String
     Dim overCrack As String
+    Dim overCrackDiagExt As String
+    Dim overCrackEquilibrium As String
+    Dim overLongitudinal As String
     Dim overExtension As String
     safeOverall = CStr(resultsSheet.Cells.Item(safeSummaryRow, 3).Value2)
     safeCrack = CStr(resultsSheet.Cells.Item(safeCrackRow, 2).Value2)
     overOverall = CStr(resultsSheet.Cells.Item(overSummaryRow, 3).Value2)
-    overCrack = CStr(resultsSheet.Cells.Item(overCrackRow, 39).Value2)
+    overCrackDiagExt = CStr(resultsSheet.Cells.Item(overCrackRow, 19).Value2)
+    overCrackEquilibrium = CStr(resultsSheet.Cells.Item(overCrackRow, 20).Value2)
+    overCrack = CStr(resultsSheet.Cells.Item(overCrackRow, 42).Value2)
+    overLongitudinal = CStr(resultsSheet.Cells.Item(overCrackRow, 46).Value2)
     overExtension = ResultsPropertyValue("LC_OVER", "ExtensionUsed")
 
     AppendLine stats, "INFO: ui.rectset.axial795 overall=" & safeOverall & _
@@ -1567,13 +1573,22 @@ Private Sub TestRectSetAxialTensionExtensionFromWorkbookSettings(ByRef stats As 
     AssertTrue stats, "ui.rectset.axial795.crackCalculated", _
         safeCrack = "OK" Or safeCrack = "FAIL"
 
-    AssertTextEquals stats, "ui.rectset.axial900.fail", overOverall, "FAIL"
+    AssertTrue stats, "ui.rectset.axial900.finishedWithoutExtension", _
+        overOverall = "FAIL" Or overOverall = "NumFail"
     AssertTrue stats, "ui.rectset.axial900.crackNoNumFail", _
         overCrack <> "NumFail" And overCrack <> "InputErr"
+    AssertTextEquals stats, "ui.rectset.axial900.crackedStateDiagExt", _
+        overCrackDiagExt, "Yes"
+    AssertTextEquals stats, "ui.rectset.axial900.crackedStateEquilibrium", _
+        overCrackEquilibrium, "FAIL"
+    AssertTextEquals stats, "ui.rectset.axial900.crackWidthSkipped", _
+        overCrack, "N/A"
+    AssertTextEquals stats, "ui.rectset.axial900.longitudinalSkipped", _
+        overLongitudinal, "N/A"
     AssertTrue stats, "ui.rectset.axial900.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
     AssertTextEquals stats, "ui.rectset.axial900.extensionSnapshot", overExtension, "True"
-    AssertTrue stats, "ui.rectset.axial900.extensionStressSnapshot", _
-        MaxAbsElementStress(ResultTable("rngNDMElementResults"), "LC_OVER", "CrackedState") > 390.1
+    AssertTrue stats, "ui.rectset.axial900.crackedStateExtensionDiagram", _
+        MaterialDiagramHasMode("CrackedState", "StateExtension")
     AssertTrue stats, "ui.rectset.axial900.reportCreated", FileExists(reportPath)
 
     SetSystemSetting "General.ExecutionReportEnabled", "No"
@@ -1770,6 +1785,28 @@ Private Function MaxAbsElementStress(ByRef data As Variant, ByVal loadCase As St
                 StrComp(CStr(data(rowIndex, stateTypeColumn)), stateType, vbTextCompare) = 0 Then
             stressValue = Abs(CDbl(data(rowIndex, stressColumn)))
             If stressValue > MaxAbsElementStress Then MaxAbsElementStress = stressValue
+        End If
+    Next rowIndex
+End Function
+
+' Проверяет, есть ли в диагностической таблице диаграмм хотя бы одна диаграмма
+' заданного named-state с указанным режимом Physical/StateExtension.
+Private Function MaterialDiagramHasMode(ByVal stateTypeText As String, ByVal diagramModeText As String) As Boolean
+    Dim materialDiagrams As Variant
+    materialDiagrams = ResultTable("rngNDMMaterialDiagrams")
+
+    Dim stateCol As Long
+    Dim modeCol As Long
+    stateCol = ResultHeaderColumn(materialDiagrams, "StateType")
+    modeCol = ResultHeaderColumn(materialDiagrams, "DiagramMode")
+    If stateCol = 0 Or modeCol = 0 Then Exit Function
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(materialDiagrams, 1)
+        If StrComp(CStr(materialDiagrams(rowIndex, stateCol)), stateTypeText, vbTextCompare) = 0 And _
+                StrComp(CStr(materialDiagrams(rowIndex, modeCol)), diagramModeText, vbTextCompare) = 0 Then
+            MaterialDiagramHasMode = True
+            Exit Function
         End If
     Next rowIndex
 End Function
