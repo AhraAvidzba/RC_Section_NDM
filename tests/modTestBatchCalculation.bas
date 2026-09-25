@@ -176,6 +176,8 @@ Public Function RunBatchCalculationTests() As String
     TestInvalidCombinationFromNamedRange stats
     AppendLine stats, "RUN: TestBatchSummaryWriter"
     TestBatchSummaryWriter stats
+    AppendLine stats, "RUN: TestBatchSummaryPreservesSourceRowGaps"
+    TestBatchSummaryPreservesSourceRowGaps stats
     AppendLine stats, "RUN: TestBatchSummaryRowsUseAvailableLoadRange"
     TestBatchSummaryRowsUseAvailableLoadRange stats
     AppendLine stats, "RUN: TestBatchCapacityUsesSystemSettings"
@@ -1150,6 +1152,13 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
     If expectMcrc Then
         AssertTrue stats, prefix & ".sheetMcrc", _
             CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 16).Value2)
+    End If
+    If nValue > 0# And Abs(mxValue) <= 0.000000001 And Abs(myValue) <= 0.000000001 Then
+        AssertTrue stats, prefix & ".centralDepthsBlank", _
+            Len(CStr(resultsSheet.Cells.Item(anchor.Row, 19).Value2)) = 0 And _
+            Len(CStr(resultsSheet.Cells.Item(anchor.Row, 20).Value2)) = 0 And _
+            Len(CStr(resultsSheet.Cells.Item(anchor.Row, 21).Value2)) = 0 And _
+            Len(CStr(resultsSheet.Cells.Item(anchor.Row, 22).Value2)) = 0
     End If
 End Sub
 
@@ -3709,11 +3718,11 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     Set crackAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     AssertTrue stats, "batch.writer.crack.statusColors", _
         StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 2) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 39) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 43) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 40) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 44) And _
         CellHasNoFill(resultsSheet, crackAnchor.Row, 1) And _
         CellHasNoFill(resultsSheet, crackAnchor.Row, 10) And _
-        CellHasNoFill(resultsSheet, crackAnchor.Row, 40)
+        CellHasNoFill(resultsSheet, crackAnchor.Row, 41)
     AssertTrue stats, "batch.writer.crack.header.formationTitle", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 10).Value2) = "Момент образования трещин"
     AssertTrue stats, "batch.writer.crack.header.title", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 19).Value2) = "нормальные и продольные трещины"
     AssertTrue stats, "batch.writer.crack.header.mcrcNote", InStr(1, CStr(resultsSheet.Cells.Item(crackAnchor.Row - 2, 16).Value2), "моментного вектора", vbTextCompare) > 0
@@ -3721,10 +3730,12 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
         CStr(resultsSheet.Cells.Item(crackAnchor.Row - 3, 18).Value2) = "статус трещин" And _
         resultsSheet.Cells.Item(crackAnchor.Row - 3, 18).MergeArea.Rows.Count = 2
     AssertTrue stats, "batch.writer.crack.header.state", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 18).Value2) = "state"
+    AssertTrue stats, "batch.writer.crack.header.es", _
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 36).Value2) = "Es, MPa"
     AssertTrue stats, "batch.writer.crack.header.normalStatusRu", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 39).Value2) = "статус"
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 40).Value2) = "статус"
     AssertTrue stats, "batch.writer.crack.header.longStatusRu", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 43).Value2) = "статус"
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 44).Value2) = "статус"
     AssertTrue stats, "batch.writer.crack.header.notesPlain", Not resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).Font.Bold And _
         resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).HorizontalAlignment = -4131
     AssertTrue stats, "batch.writer.crack.header.notesFill", CLng(resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).Interior.Color) = RGB(217, 217, 217)
@@ -3779,6 +3790,69 @@ Failed:
     Err.Raise Err.Number, Err.Source, "TestBatchSummaryWriter." & stage & ": " & Err.Description
 End Sub
 
+' Проверяет, что Results сохраняет пустые строки из rngLoadCombinations:
+' LC с source-offset 1 и 4 должны попасть в первую и четвертую строки данных,
+' а промежуточные строки остаются пустыми без N/A и статусной заливки.
+Private Sub TestBatchSummaryPreservesSourceRowGaps(ByRef stats As TBatchTestStats)
+    On Error GoTo Failed
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.AddCombination "GAP1", -150000#, -2000000#, -1000000#, "PR1", "first source row", vbNullString, 1
+    batch.AddCombination "GAP4", -90000#, 0#, 0#, "PR2", "fourth source row", vbNullString, 4
+    batch.Execute
+
+    Dim writer As CBatchResultWriter
+    Set writer = New CBatchResultWriter
+    writer.WriteSummary ThisWorkbook, batch
+
+    Dim resultsSheet As Object
+    Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
+    Dim summaryRow As Long
+    summaryRow = BatchSummaryStartRow()
+
+    AssertTrue stats, "batch.writer.gaps.summary.first", _
+        CStr(resultsSheet.Cells.Item(summaryRow + 12, 1).Value2) = "GAP1"
+    AssertTrue stats, "batch.writer.gaps.summary.blank2", _
+        Len(CStr(resultsSheet.Cells.Item(summaryRow + 13, 1).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(summaryRow + 13, 3).Value2)) = 0 And _
+        CellHasNoFill(resultsSheet, summaryRow + 13, 3)
+    AssertTrue stats, "batch.writer.gaps.summary.blank3", _
+        Len(CStr(resultsSheet.Cells.Item(summaryRow + 14, 1).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(summaryRow + 14, 3).Value2)) = 0 And _
+        CellHasNoFill(resultsSheet, summaryRow + 14, 3)
+    AssertTrue stats, "batch.writer.gaps.summary.fourth", _
+        CStr(resultsSheet.Cells.Item(summaryRow + 15, 1).Value2) = "GAP4"
+
+    Dim strengthAnchor As Object
+    Dim crackAnchor As Object
+    Dim stabilityAnchor As Object
+    Set strengthAnchor = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
+    Set crackAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
+    Set stabilityAnchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
+
+    AssertTrue stats, "batch.writer.gaps.strength", _
+        CStr(resultsSheet.Cells.Item(strengthAnchor.Row, 1).Value2) = "GAP1" And _
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 1, 1).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 1).Value2)) = 0 And _
+        CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 3, 1).Value2) = "GAP4"
+    AssertTrue stats, "batch.writer.gaps.crack", _
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row, 1).Value2) = "GAP1" And _
+        Len(CStr(resultsSheet.Cells.Item(crackAnchor.Row + 1, 1).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(crackAnchor.Row + 2, 1).Value2)) = 0 And _
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row + 3, 1).Value2) = "GAP4"
+    AssertTrue stats, "batch.writer.gaps.stability", _
+        CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 1).Value2) = "GAP1" And _
+        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row + 1, 1).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row + 2, 1).Value2)) = 0 And _
+        CStr(resultsSheet.Cells.Item(stabilityAnchor.Row + 3, 1).Value2) = "GAP4"
+    Exit Sub
+
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.writer.gaps; " & Err.Description
+End Sub
+
 Private Function BatchSummaryStartRow() As Long
     BatchSummaryStartRow = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Row
 End Function
@@ -3815,10 +3889,10 @@ Private Sub AssertBatchSummaryReservesMatchDetailed(ByRef stats As TBatchTestSta
     If checkCrack And crackRow > 0 Then
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".crack", _
             resultsSheet.Cells.Item(summaryRow, 18).Value2, _
-            resultsSheet.Cells.Item(crackRow, 38).Value2
+            resultsSheet.Cells.Item(crackRow, 39).Value2
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".longCrack", _
             resultsSheet.Cells.Item(summaryRow, 19).Value2, _
-            resultsSheet.Cells.Item(crackRow, 42).Value2
+            resultsSheet.Cells.Item(crackRow, 43).Value2
     End If
     If checkStability And stabilityRow > 0 Then
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p1eta", _

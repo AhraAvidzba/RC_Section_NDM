@@ -161,7 +161,8 @@
 | `Capacity.SearchMethod` | `Bisection`, `Brent`, `Secant` |
 | `Solver.LineSearchEnabled` | `Yes`, `No` |
 | `SLS.Crack.Phi3Mode` | `Auto`, `User` |
-| `SLS.Crack.PsiMode` | `User`, `Auto` |
+| `SLS.Crack.PsiMode` | `User`, `Auto`, `AlwaysCalc` |
+| `SLS.Crack.SigmaSCrcAveragingMode` | `AllSelected`, `TensionOnly` |
 | `SLS.Crack.InitiationLoadPath` | `Auto`, `λ*Mxy`, `λ*N`, `λ*NMxy` |
 | `SLS.Crack.InitiationSolutionStrategy` | `Auto`, `UltimateStrain`, `LoadMultiplier` |
 | `SLS.Crack.TensionZoneMode` | `Effective`, `FullTension` |

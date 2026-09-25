@@ -29,6 +29,8 @@ Public Function RunCrackWidthTests() As String
     TestCoverModeNormalization stats
     TestEffectiveAndFullTensionZones stats
     TestAutoPsiSkipsLambdaWhenFirstCheckPasses stats
+    TestAlwaysCalcPsiAppliesSigmaCrcWhenAutoPasses stats
+    TestSigmaSCrcAveragingModeAllSelected stats
     TestAutoPsiAndLambdaAfterFailedFirstCheck stats
     TestAutoMcrcPureBendingConverges stats
     TestAutoMcrcFixedNIndependentOfMomentMagnitude stats
@@ -78,7 +80,7 @@ Private Sub TestCrackUserPsiMx(ByRef stats As TCrackTestStats)
     Set crack = CalculateCrack(solver, section, -20000#, -15000000#, 0#, "User", "Effective")
     AssertCrackCommon stats, "crack.user.mx", crack
     AssertClose stats, "crack.user.psi", crack.PsiS, 1#, 0.000000001
-    AssertClose stats, "crack.user.noSigmaCrc", crack.SigmaSCrc, 0#, 0.000000001
+    AssertTrue stats, "crack.user.sigmaCrcAvailable", crack.SigmaSCrc > 0#
 End Sub
 
 Private Sub TestCrackUserPsiMxy(ByRef stats As TCrackTestStats)
@@ -107,7 +109,7 @@ Private Sub TestCrackUserCoefficients(ByRef stats As TCrackTestStats)
     AssertTrue stats, "crack.user.coeffs.lambda", crack.LambdaCrc > 0# And crack.LambdaCrc <= 1#
     AssertTrue stats, "crack.user.coeffs.beforeMcrcState", Not crack.BeforeMcrcState Is Nothing
     AssertTrue stats, "crack.user.coeffs.afterMcrcState", Not crack.AfterMcrcState Is Nothing
-    AssertClose stats, "crack.user.coeffs.noSigmaCrc", crack.SigmaSCrc, 0#, 0.000000001
+    AssertTrue stats, "crack.user.coeffs.sigmaCrcAvailable", crack.SigmaSCrc > 0#
 End Sub
 
 ' ------------------------------
@@ -166,9 +168,43 @@ Private Sub TestAutoPsiSkipsLambdaWhenFirstCheckPasses(ByRef stats As TCrackTest
     AssertCrackCommon stats, "crack.auto.pass", crack
     AssertClose stats, "crack.auto.pass.psi", crack.PsiS, 1#, 0.000000001
     AssertTrue stats, "crack.auto.pass.lambda", crack.LambdaCrc > 0# And crack.LambdaCrc <= 1#
-    AssertClose stats, "crack.auto.pass.noSigmaCrc", crack.SigmaSCrc, 0#, 0.000000001
+    AssertTrue stats, "crack.auto.pass.sigmaCrcAvailable", crack.SigmaSCrc > 0#
     AssertTrue stats, "crack.auto.pass.beforeMcrcState", Not crack.BeforeMcrcState Is Nothing
     AssertTrue stats, "crack.auto.pass.afterMcrcState", Not crack.AfterMcrcState Is Nothing
+End Sub
+
+Private Sub TestAlwaysCalcPsiAppliesSigmaCrcWhenAutoPasses(ByRef stats As TCrackTestStats)
+    Dim solver As CSectionSolver
+    Dim section As CSectionModel
+    Set solver = SolveServiceState(section, -20000#, -15000000#, 0#)
+
+    Dim autoCrack As CCrackWidthCalculator
+    Set autoCrack = CalculateCrack(solver, section, -20000#, -15000000#, 0#, "Auto", "Effective", allowable:=1#)
+
+    Dim alwaysCrack As CCrackWidthCalculator
+    Set alwaysCrack = CalculateCrack(solver, section, -20000#, -15000000#, 0#, "AlwaysCalc", "Effective", allowable:=1#)
+
+    AssertCrackCommon stats, "crack.alwaysCalc.pass", alwaysCrack
+    AssertTrue stats, "crack.alwaysCalc.sigmaCrc", alwaysCrack.SigmaSCrc > 0#
+    AssertTrue stats, "crack.alwaysCalc.psiReduced", alwaysCrack.PsiS < 1#
+    AssertTrue stats, "crack.alwaysCalc.widthLessThanAuto", alwaysCrack.CrackWidth < autoCrack.CrackWidth
+End Sub
+
+' Новый режим усреднения относится только к sigma_s,crc. Проверяем, что
+' AllSelected проходит нормализацию и расчет как самостоятельная настройка.
+Private Sub TestSigmaSCrcAveragingModeAllSelected(ByRef stats As TCrackTestStats)
+    Dim solver As CSectionSolver
+    Dim section As CSectionModel
+    Set solver = SolveServiceState(section, -20000#, -15000000#, 0#)
+
+    Dim crack As CCrackWidthCalculator
+    Set crack = CalculateCrack(solver, section, -20000#, -15000000#, 0#, "AlwaysCalc", "Effective", _
+        allowable:=1#, sigmaSCrcAveragingMode:="AllSelected")
+
+    AssertCrackCommon stats, "crack.sigmaCrcMode.allSelected", crack
+    AssertTrue stats, "crack.sigmaCrcMode.allSelected.normalized", _
+        StrComp(crack.SigmaSCrcAveragingMode, "AllSelected", vbTextCompare) = 0
+    AssertTrue stats, "crack.sigmaCrcMode.allSelected.sigmaCrcAvailable", crack.SigmaSCrc > 0#
 End Sub
 
 Private Sub TestAutoPsiAndLambdaAfterFailedFirstCheck(ByRef stats As TCrackTestStats)
@@ -574,11 +610,13 @@ Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As
         Optional ByVal psiSValue As Double = 1#, Optional ByVal coverMode As String = "NearestContour", _
         Optional ByVal loadStateForClassification As CSectionLoadState = Nothing, _
         Optional ByVal centralReferenceX As Double = 0#, Optional ByVal centralReferenceY As Double = 0#, _
-        Optional ByVal formationPath As String = "lambda*Mxy") As CCrackWidthCalculator
+        Optional ByVal formationPath As String = "lambda*Mxy", _
+        Optional ByVal sigmaSCrcAveragingMode As String = "TensionOnly") As CCrackWidthCalculator
     Dim crack As CCrackWidthCalculator
     Set crack = New CCrackWidthCalculator
     crack.AllowableCrackWidth = allowable
     crack.PsiMode = psiMode
+    crack.SigmaSCrcAveragingMode = sigmaSCrcAveragingMode
     crack.TensionZoneMode = zoneMode
     crack.Phi1 = phi1Value
     crack.Phi2 = phi2Value

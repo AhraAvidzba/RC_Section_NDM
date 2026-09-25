@@ -22,13 +22,13 @@ Option Explicit
 ' блоком специально остается без рамок и заливки, как в таблице устойчивости.
 
 Private Const HEADER_ROWS As Long = 4 ' Сколько строк шапки строится над якорем первой строки LC.
-Private Const TOTAL_COLUMNS As Long = 43 ' Полная ширина таблицы, включая пустой разделитель.
+Private Const TOTAL_COLUMNS As Long = 44 ' Полная ширина таблицы, включая пустой разделитель.
 
 Private Const COL_LEFT_FIRST As Long = 1
 Private Const COL_LEFT_LAST As Long = 8
 Private Const COL_SEPARATOR As Long = 9
 Private Const COL_MAIN_FIRST As Long = 10
-Private Const COL_MAIN_LAST As Long = 43
+Private Const COL_MAIN_LAST As Long = 44
 
 Private Const COL_ID As Long = 1
 Private Const COL_STATUS As Long = 2
@@ -65,14 +65,15 @@ Private Const COL_REBARS As Long = 32
 Private Const COL_NREBARS As Long = 33
 Private Const COL_SIGMA_S_CRC As Long = 34
 Private Const COL_SIGMA_S As Long = 35
-Private Const COL_ACRC As Long = 36
-Private Const COL_ACRC_ULT As Long = 37
-Private Const COL_ACRC_RATIO As Long = 38
-Private Const COL_ACRC_STATUS As Long = 39
-Private Const COL_SIGMA_B_MAX As Long = 40
-Private Const COL_RB_MC2 As Long = 41
-Private Const COL_LONG_RATIO As Long = 42
-Private Const COL_LONG_STATUS As Long = 43
+Private Const COL_ES As Long = 36
+Private Const COL_ACRC As Long = 37
+Private Const COL_ACRC_ULT As Long = 38
+Private Const COL_ACRC_RATIO As Long = 39
+Private Const COL_ACRC_STATUS As Long = 40
+Private Const COL_SIGMA_B_MAX As Long = 41
+Private Const COL_RB_MC2 As Long = 42
+Private Const COL_LONG_RATIO As Long = 43
+Private Const COL_LONG_STATUS As Long = 44
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, единый для таблиц Results.
 Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' На Results оставляем одинаковую ширину столбцов.
@@ -229,7 +230,7 @@ Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem)
     headers(2, COL_FORMATION_METHOD) = "Изгиб N + M"
     headers(2, COL_FORMATION_STATE) = "статус трещин"
     headers(1, COL_XT) = "нормальные и продольные трещины"
-    headers(2, COL_XT) = "данные при изгибе N + M"
+    headers(2, COL_XT) = "данные для расстояния между трещинами ls"
     headers(2, COL_DS_EQ) = "Расстояние между трещинами ls"
     headers(2, COL_PHI1) = "Коэффициенты"
     headers(2, COL_REBARS) = "Напряжения"
@@ -271,10 +272,11 @@ Private Sub PutHeaderNotes(ByRef headers() As Variant, ByVal units As CUnitSyste
     headers(HEADER_NOTES_ROW, COL_PHI2) = "коэффициент профиля арматуры из Config"
     headers(HEADER_NOTES_ROW, COL_PHI3) = "коэффициент характера нагружения"
     headers(HEADER_NOTES_ROW, COL_PSI_S) = "коэффициент неравномерности деформаций арматуры"
-    headers(HEADER_NOTES_ROW, COL_REBARS) = "стержни, использованные для As и σs"
+    headers(HEADER_NOTES_ROW, COL_REBARS) = "стержни, использованные для As и " & ChrW$(&H3C3) & "s"
     headers(HEADER_NOTES_ROW, COL_NREBARS) = "количество выбранных стержней"
     headers(HEADER_NOTES_ROW, COL_SIGMA_S_CRC) = "напряжение выбранной арматуры сразу после образования трещины"
     headers(HEADER_NOTES_ROW, COL_SIGMA_S) = "напряжение выбранной арматуры при текущем НДС"
+    headers(HEADER_NOTES_ROW, COL_ES) = "модуль упругости арматуры для формулы раскрытия трещины"
     headers(HEADER_NOTES_ROW, COL_ACRC) = "расчетная ширина раскрытия"
     headers(HEADER_NOTES_ROW, COL_ACRC_ULT) = "допустимая ширина раскрытия"
     headers(HEADER_NOTES_ROW, COL_ACRC_RATIO) = "запас: допустимая ширина делится на расчетную"
@@ -319,6 +321,7 @@ Private Sub PutColumnLabels(ByRef headers() As Variant, ByVal units As CUnitSyst
     headers(HEADER_LABEL_ROW, COL_NREBARS) = "nrebars"
     headers(HEADER_LABEL_ROW, COL_SIGMA_S_CRC) = ChrW$(&H3C3) & "s,crc"
     headers(HEADER_LABEL_ROW, COL_SIGMA_S) = ChrW$(&H3C3) & "s"
+    headers(HEADER_LABEL_ROW, COL_ES) = "Es, " & OutputStressUnit(units)
     headers(HEADER_LABEL_ROW, COL_ACRC) = "acrc, " & OutputLengthUnit(units)
     headers(HEADER_LABEL_ROW, COL_ACRC_ULT) = "acrc,ult, " & OutputLengthUnit(units)
     headers(HEADER_LABEL_ROW, COL_ACRC_RATIO) = "acrc,ult/acrc"
@@ -344,7 +347,7 @@ Private Sub MergeHeaders(ByVal target As Object)
     MergeRange target, 2, COL_DS_EQ, 2, COL_LS
     MergeRange target, 2, COL_PHI1, 2, COL_PSI_S
     MergeRange target, 2, COL_REBARS, 2, COL_SIGMA_S
-    MergeRange target, 2, COL_ACRC, 2, COL_ACRC_STATUS
+    MergeRange target, 2, COL_ES, 2, COL_ACRC_STATUS
     MergeRange target, 2, COL_SIGMA_B_MAX, 2, COL_LONG_STATUS
 End Sub
 
@@ -358,8 +361,8 @@ Private Sub WriteData(ByVal target As Object, ByVal batch As CBatchSectionCalcul
     ReDim data(1 To dataRows, 1 To TOTAL_COLUMNS)
 
     Dim i As Long
-    For i = 1 To dataRows
-        If i <= batch.Count Then PutCombination data, i, batch, i, units
+    For i = 1 To batch.Count
+        PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units
     Next i
     target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).Value2 = data
 End Sub
@@ -394,6 +397,15 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
 End Sub
 
 ' Записывает данные проверки стадии образования нормальной трещины.
+' Возвращает позицию LC внутри data-части подробной таблицы.
+' Основной поток читает offset из rngLoadCombinations; прямые тесты без offset продолжают выводиться компактно.
+Private Function OutputDataOffset(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal dataRows As Long) As Long
+    OutputDataOffset = batch.SourceDataOffset(index)
+    If OutputDataOffset < 1 Then OutputDataOffset = index
+    If OutputDataOffset > dataRows Then OutputDataOffset = index
+    If OutputDataOffset > dataRows Then OutputDataOffset = dataRows
+End Function
+
 Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal policy As CBatchStatusPolicy)
@@ -455,10 +467,12 @@ Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
         Exit Sub
     End If
 
-    data(rowIndex, COL_XT) = OutputLength(batch.CrackTensionDepth(index), units)
-    data(rowIndex, COL_H) = OutputLength(batch.CrackSectionDepthH(index), units)
-    data(rowIndex, COL_AS_COVER) = OutputLength(batch.CrackCoverA(index), units)
-    data(rowIndex, COL_HBT) = OutputLength(batch.CrackEffectiveZoneDepth(index), units)
+    If Not batch.CrackCentralBranch(index) Then
+        data(rowIndex, COL_XT) = OutputLength(batch.CrackTensionDepth(index), units)
+        data(rowIndex, COL_H) = OutputLength(batch.CrackSectionDepthH(index), units)
+        data(rowIndex, COL_AS_COVER) = OutputLength(batch.CrackCoverA(index), units)
+        data(rowIndex, COL_HBT) = OutputLength(batch.CrackEffectiveZoneDepth(index), units)
+    End If
     data(rowIndex, COL_ABT) = OutputArea(batch.CrackAbt(index), units)
     data(rowIndex, COL_AS) = OutputArea(batch.CrackAs(index), units)
     data(rowIndex, COL_DS_EQ) = OutputLength(batch.CrackDsEquivalent(index), units)
@@ -472,6 +486,7 @@ Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, COL_NREBARS) = batch.CrackTensionRebarCount(index)
     data(rowIndex, COL_SIGMA_S_CRC) = OptionalStress(batch.CrackSigmaSCrc(index), units, policy)
     data(rowIndex, COL_SIGMA_S) = OutputStress(batch.CrackSigmaS(index), units)
+    data(rowIndex, COL_ES) = OutputStress(batch.CrackSteelElasticModulus, units)
     data(rowIndex, COL_ACRC) = OutputLength(batch.CrackWidth(index), units)
     data(rowIndex, COL_ACRC_ULT) = OutputLength(batch.CrackAllowable(index), units)
     data(rowIndex, COL_ACRC_RATIO) = CrackReserveFactor(batch, index)
@@ -570,12 +585,12 @@ Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectio
     If batch Is Nothing Then Exit Sub
 
     Dim i As Long
-    For i = 1 To dataRows
-        If i <= batch.Count Then
-            ApplyStatusCell target, HEADER_ROWS + i, COL_STATUS
-            ApplyStatusCell target, HEADER_ROWS + i, COL_ACRC_STATUS
-            ApplyStatusCell target, HEADER_ROWS + i, COL_LONG_STATUS
-        End If
+    For i = 1 To batch.Count
+        Dim rowOffset As Long
+        rowOffset = OutputDataOffset(batch, i, dataRows)
+        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_STATUS
+        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_ACRC_STATUS
+        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_LONG_STATUS
     Next i
 End Sub
 
@@ -619,6 +634,7 @@ Private Sub ApplyHeaderSubscripts(ByVal target As Object)
     ApplySubscriptToken labels.Cells(1, COL_SIGMA_S_CRC), "s"
     ApplySubscriptToken labels.Cells(1, COL_SIGMA_S_CRC), "crc"
     ApplySubscriptToken labels.Cells(1, COL_SIGMA_S), "s"
+    ApplySubscriptToken labels.Cells(1, COL_ES), "s"
     ApplySubscriptToken labels.Cells(1, COL_ACRC), "crc"
     ApplySubscriptToken labels.Cells(1, COL_ACRC_ULT), "crc"
     ApplySubscriptToken labels.Cells(1, COL_ACRC_ULT), "ult"

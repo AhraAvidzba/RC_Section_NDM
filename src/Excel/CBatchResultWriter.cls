@@ -155,7 +155,7 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
     Dim i As Long
     For i = 1 To batch.Count
         stage = "PutCombination " & CStr(i)
-        PutCombination data, FIRST_DATA_ROW + i - 1, batch, i, units, section
+        PutCombination data, FIRST_DATA_ROW + OutputDataOffset(batch, i, summaryRows - FIRST_DATA_ROW + 1) - 1, batch, i, units, section
     Next i
 
     stage = "WriteSummaryBody"
@@ -475,6 +475,15 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
     PutReserveCell data, rowIndex, SUM_COL_RESERVE_SP63_P2, SummaryReserveByKey(batch, index, "SP63P2")
 End Sub
 
+' Возвращает строку данных Results, соответствующую строке LC в rngLoadCombinations.
+' Если batch был создан старым тестовым кодом без source-offset, writer сохраняет прежнюю компактную раскладку.
+Private Function OutputDataOffset(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal dataRows As Long) As Long
+    OutputDataOffset = batch.SourceDataOffset(index)
+    If OutputDataOffset < 1 Then OutputDataOffset = index
+    If OutputDataOffset > dataRows Then OutputDataOffset = index
+    If OutputDataOffset > dataRows Then OutputDataOffset = dataRows
+End Function
+
 ' Возвращает запас для одного столбца компактной сводки. Для устойчивости
 ' ключ задает одновременно СП, главную плоскость и расчетную ветвь.
 Private Function SummaryReserveByKey(ByVal batch As CBatchSectionCalculator, _
@@ -765,7 +774,7 @@ Private Sub FormatStatusCells(ByVal target As Object, ByVal batch As CBatchSecti
     Dim i As Long
     For i = 1 To batch.Count
         Dim rowNumber As Long
-        rowNumber = FIRST_DATA_ROW + i - 2
+        rowNumber = FIRST_DATA_ROW + OutputDataOffset(batch, i, target.Rows.Count - FIRST_DATA_ROW + 1) - 2
         ApplyStatusCell target, rowNumber, SUM_COL_OVERALL_STATUS
         ApplyStatusCell target, rowNumber, SUM_COL_STATUS_STRAIN
         ApplyStatusCell target, rowNumber, SUM_COL_STATUS_CAPACITY

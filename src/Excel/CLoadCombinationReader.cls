@@ -84,14 +84,14 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     If Len(profileId) = 0 Then AppendError errorText, "ProfileId не заполнен"
 
     If Len(errorText) > 0 Then
-        batch.AddInvalidCombination combinationID, profileId, comment, errorText, capacityLoadPath
+        batch.AddInvalidCombination combinationID, profileId, comment, errorText, capacityLoadPath, rowIndex - 1
     Else
         If Not units Is Nothing Then
             nValue = units.InputForceToInternal(nValue)
             mxValue = units.InputMomentMxToInternal(mxValue)
             myValue = units.InputMomentMyToInternal(myValue)
         End If
-        batch.AddCombination combinationID, nValue, mxValue, myValue, profileId, comment, capacityLoadPath
+        batch.AddCombination combinationID, nValue, mxValue, myValue, profileId, comment, capacityLoadPath, rowIndex - 1
     End If
 End Sub
 

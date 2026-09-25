@@ -391,19 +391,28 @@ End Sub
 Private Sub WriteData(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     Dim data() As Variant
     Dim dataRows As Long
-    dataRows = batch.Count
+    dataRows = target.Rows.Count - HEADER_ROWS
     If dataRows < 1 Then dataRows = 1
     ReDim data(1 To dataRows, 1 To TOTAL_COLUMNS)
 
     Dim i As Long
     For i = 1 To batch.Count
-        PutCombination data, i, batch, i, units
+        PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units
     Next i
 
     target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).Value2 = data
 End Sub
 
 ' Заполняет одну строку LC: общий итог, общие исходные величины и выбранный блок СП.
+' Возвращает позицию LC внутри data-части подробной таблицы.
+' Основной поток читает offset из rngLoadCombinations; прямые тесты без offset продолжают выводиться компактно.
+Private Function OutputDataOffset(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal dataRows As Long) As Long
+    OutputDataOffset = batch.SourceDataOffset(index)
+    If OutputDataOffset < 1 Then OutputDataOffset = index
+    If OutputDataOffset > dataRows Then OutputDataOffset = index
+    If OutputDataOffset > dataRows Then OutputDataOffset = dataRows
+End Function
+
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
     Dim policy As CBatchStatusPolicy
@@ -568,15 +577,17 @@ Private Sub FormatStatusCells(ByVal target As Object, ByVal batch As CBatchSecti
 
     Dim i As Long
     For i = 1 To batch.Count
-        If HEADER_ROWS + i > target.Rows.Count Then Exit For
+        Dim rowOffset As Long
+        rowOffset = OutputDataOffset(batch, i, target.Rows.Count - HEADER_ROWS)
+        If HEADER_ROWS + rowOffset > target.Rows.Count Then Exit For
 
-        ApplyStatusCell target, HEADER_ROWS + i, 2
-        ApplyStatusCell target, HEADER_ROWS + i, SP35_PLANE1_FIRST + 8
-        ApplyStatusCell target, HEADER_ROWS + i, SP35_PLANE1_FIRST + 14
-        ApplyStatusCell target, HEADER_ROWS + i, SP35_PLANE2_FIRST + 8
-        ApplyStatusCell target, HEADER_ROWS + i, SP35_PLANE2_FIRST + 14
-        ApplyStatusCell target, HEADER_ROWS + i, SP63_PLANE1_FIRST + 11
-        ApplyStatusCell target, HEADER_ROWS + i, SP63_PLANE2_FIRST + 11
+        ApplyStatusCell target, HEADER_ROWS + rowOffset, 2
+        ApplyStatusCell target, HEADER_ROWS + rowOffset, SP35_PLANE1_FIRST + 8
+        ApplyStatusCell target, HEADER_ROWS + rowOffset, SP35_PLANE1_FIRST + 14
+        ApplyStatusCell target, HEADER_ROWS + rowOffset, SP35_PLANE2_FIRST + 8
+        ApplyStatusCell target, HEADER_ROWS + rowOffset, SP35_PLANE2_FIRST + 14
+        ApplyStatusCell target, HEADER_ROWS + rowOffset, SP63_PLANE1_FIRST + 11
+        ApplyStatusCell target, HEADER_ROWS + rowOffset, SP63_PLANE2_FIRST + 11
     Next i
 End Sub
 

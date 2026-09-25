@@ -384,8 +384,8 @@ Private Sub WriteData(ByVal target As Object, ByVal batch As CBatchSectionCalcul
     ReDim data(1 To dataRows, 1 To TOTAL_COLUMNS)
 
     Dim i As Long
-    For i = 1 To dataRows
-        If i <= batch.Count Then PutCombination data, i, batch, i, units, section
+    For i = 1 To batch.Count
+        PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units, section
     Next i
     target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).Value2 = data
 End Sub
@@ -417,6 +417,15 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
 End Sub
 
 ' Пишет предельные деформации модели прочности.
+' Возвращает позицию LC внутри data-части подробной таблицы.
+' Основной поток читает offset из rngLoadCombinations; прямые тесты без offset продолжают выводиться компактно.
+Private Function OutputDataOffset(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal dataRows As Long) As Long
+    OutputDataOffset = batch.SourceDataOffset(index)
+    If OutputDataOffset < 1 Then OutputDataOffset = index
+    If OutputDataOffset > dataRows Then OutputDataOffset = index
+    If OutputDataOffset > dataRows Then OutputDataOffset = dataRows
+End Function
+
 Private Sub PutStrengthLimits(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
     data(rowIndex, COL_LIM_EBC) = batch.StrengthConcreteCompressionLimitForCombination(index)
@@ -629,12 +638,12 @@ Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectio
     If batch Is Nothing Then Exit Sub
 
     Dim i As Long
-    For i = 1 To dataRows
-        If i <= batch.Count Then
-            ApplyStatusCell target, HEADER_ROWS + i, COL_STATUS
-            ApplyStatusCell target, HEADER_ROWS + i, COL_STATE_STATUS
-            ApplyStatusCell target, HEADER_ROWS + i, COL_CAP_STATUS
-        End If
+    For i = 1 To batch.Count
+        Dim rowOffset As Long
+        rowOffset = OutputDataOffset(batch, i, dataRows)
+        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_STATUS
+        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_STATE_STATUS
+        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_CAP_STATUS
     Next i
 End Sub
 

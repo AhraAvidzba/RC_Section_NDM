@@ -189,7 +189,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "Capacity.MaxRetries", "Capacity.BaseLoadSteps", "Capacity.SolverMaxIterations", _
         "SLS.Crack.Allowable", "SLS.Crack.InitiationLoadPath", _
         "SLS.Crack.Phi1", "SLS.Crack.Phi2", "SLS.Crack.Phi3Mode", "SLS.Crack.Phi3", _
-        "SLS.Crack.PsiMode", "SLS.Crack.PsiS", "SLS.Crack.TensionZoneMode", _
+        "SLS.Crack.PsiMode", "SLS.Crack.SigmaSCrcAveragingMode", "SLS.Crack.PsiS", "SLS.Crack.TensionZoneMode", _
         "SLS.Crack.CoverDistanceMode")
     AssertRequiredKeys stats, requiredKeys
 

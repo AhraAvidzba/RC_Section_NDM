@@ -29,6 +29,7 @@ Private Const DEFAULT_ZERO_MOMENT_PER_DEPTH As Double = 4903.325 ' 0.5 tf*m/m в
 ' чтобы было видно, где исходные нагрузки пользователя, а где то, что вернул расчет.
 Private Type TCombinationInput
     CombinationID As String
+    SourceDataOffset As Long
     N As Double
     Mx As Double
     My As Double
@@ -69,7 +70,8 @@ Private mTransformedReferenceX(1 To 2) As Double ' X центра приведе
 Private mTransformedReferenceY(1 To 2) As Double ' Y центра приведенного сечения, мм.
 
 Private mCrackAllowable As Double ' Допустимая ширина раскрытия трещины a_crc,ult, мм.
-Private mCrackPsiMode As String ' User или Auto: как определять psi_s для нормальных трещин.
+Private mCrackPsiMode As String ' User, Auto или AlwaysCalc: как определять psi_s для нормальных трещин.
+Private mCrackSigmaSCrcAveragingMode As String ' Как усреднять sigma_s,crc при уточнении psi_s по AfterMcrcState.
 Private mCrackPhi1 As Double ' Пользовательский коэффициент phi1 для формулы раскрытия.
 Private mCrackPhi2 As Double ' Пользовательский коэффициент phi2 для формулы раскрытия.
 Private mCrackPhi3Mode As String ' User или Auto: как принимать phi3.
@@ -138,7 +140,8 @@ Private Sub Class_Initialize()
     EnsureStabilityLoadCapacity INITIAL_COMBINATION_CAPACITY
 
     mCrackAllowable = 0.3
-    mCrackPsiMode = "Auto"
+    mCrackPsiMode = "AlwaysCalc"
+    mCrackSigmaSCrcAveragingMode = "AllSelected"
     mCrackPhi1 = 1.4
     mCrackPhi2 = 0.5
     mCrackPhi3Mode = "Auto"
@@ -179,7 +182,7 @@ Private Sub Class_Initialize()
     mStabilityZeroSign1 = 1#
     mStabilityZeroSign2 = 1#
     mStabilityPhiLMode = "Auto"
-    mStabilityAccidentalEccentricityMode = "AutoWithL"
+    mStabilityAccidentalEccentricityMode = "AutoWithMuL"
     mStabilityAccidentalEccentricityPlanes = "OnlyMomentPlane"
     mStabilityAccidentalEccentricityUser1 = 10#
     mStabilityAccidentalEccentricityUser2 = 10#
@@ -225,6 +228,7 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     zeroMomentSettingRead = settings.HasKey("Calculation.ZeroMomentPerDepth")
     mCrackAllowable = settings.GetDouble("SLS.Crack.Allowable", mCrackAllowable)
     mCrackPsiMode = settings.GetString("SLS.Crack.PsiMode", mCrackPsiMode)
+    mCrackSigmaSCrcAveragingMode = settings.GetString("SLS.Crack.SigmaSCrcAveragingMode", mCrackSigmaSCrcAveragingMode)
     mCrackFormationPath = settings.GetString("SLS.Crack.InitiationLoadPath", mCrackFormationPath)
     mCrackFormationSolutionStrategy = settings.GetString("SLS.Crack.InitiationSolutionStrategy", mCrackFormationSolutionStrategy)
     mWorstCombinationCriterion = settings.GetString("General.WorstCombinationCriterion", mWorstCombinationCriterion)
@@ -392,15 +396,16 @@ End Sub
 ' Усилия уже должны быть во внутренних единицах и в INTERNAL-системе знаков.
 Public Sub AddCombination(ByVal combinationID As String, ByVal nValue As Double, ByVal mxValue As Double, _
         ByVal myValue As Double, ByVal profileId As String, ByVal comment As String, _
-        Optional ByVal capacityLoadPath As String = vbNullString)
-    AddCombinationInternal combinationID, nValue, mxValue, myValue, profileId, comment, True, vbNullString, capacityLoadPath
+        Optional ByVal capacityLoadPath As String = vbNullString, Optional ByVal sourceDataOffset As Long = 0)
+    AddCombinationInternal combinationID, nValue, mxValue, myValue, profileId, comment, True, vbNullString, capacityLoadPath, sourceDataOffset
 End Sub
 
 ' Сохраняет строку LC с ошибкой ввода, чтобы пользователь увидел ее в отчете.
 ' Такие сочетания не передаются в solver, но отображаются как InvalidInput.
 Public Sub AddInvalidCombination(ByVal combinationID As String, ByVal profileId As String, _
-        ByVal comment As String, ByVal reason As String, Optional ByVal capacityLoadPath As String = vbNullString)
-    AddCombinationInternal combinationID, 0#, 0#, 0#, profileId, comment, False, reason, capacityLoadPath
+        ByVal comment As String, ByVal reason As String, Optional ByVal capacityLoadPath As String = vbNullString, _
+        Optional ByVal sourceDataOffset As Long = 0)
+    AddCombinationInternal combinationID, 0#, 0#, 0#, profileId, comment, False, reason, capacityLoadPath, sourceDataOffset
 End Sub
 
 ' Единая точка добавления строки сочетания. Через нее проходят и корректные
@@ -409,11 +414,13 @@ End Sub
 ' нагрузок.
 Private Sub AddCombinationInternal(ByVal combinationID As String, ByVal nValue As Double, ByVal mxValue As Double, _
         ByVal myValue As Double, ByVal profileId As String, ByVal comment As String, _
-        ByVal inputValid As Boolean, ByVal inputError As String, ByVal capacityLoadPath As String)
+        ByVal inputValid As Boolean, ByVal inputError As String, ByVal capacityLoadPath As String, _
+        ByVal sourceDataOffset As Long)
     EnsureCombinationCapacity mCount + 1
     mCount = mCount + 1
     If Len(Trim$(combinationID)) = 0 Then combinationID = "ROW" & CStr(mCount)
     mInputs(mCount).CombinationID = combinationID
+    mInputs(mCount).SourceDataOffset = sourceDataOffset
     mInputs(mCount).N = nValue
     mInputs(mCount).Mx = mxValue
     mInputs(mCount).My = myValue
@@ -1613,6 +1620,7 @@ End Sub
 Private Sub ConfigureCrackCalculator(ByVal crack As CCrackWidthCalculator)
     crack.AllowableCrackWidth = mCrackAllowable
     crack.PsiMode = mCrackPsiMode
+    crack.SigmaSCrcAveragingMode = mCrackSigmaSCrcAveragingMode
     crack.Phi1 = mCrackPhi1
     crack.Phi2 = mCrackPhi2
     crack.Phi3Mode = mCrackPhi3Mode
@@ -2314,6 +2322,12 @@ End Property
 
 Public Property Get CombinationID(ByVal index As Long) As String
     CombinationID = mInputs(index).CombinationID
+End Property
+
+' Возвращает 1-based позицию LC внутри data-строк rngLoadCombinations.
+' Это служебная величина только для writer-ов Results; расчетный индекс batch остается компактным.
+Public Property Get SourceDataOffset(ByVal index As Long) As Long
+    SourceDataOffset = mInputs(index).SourceDataOffset
 End Property
 
 Public Property Get CombinationName(ByVal index As Long) As String

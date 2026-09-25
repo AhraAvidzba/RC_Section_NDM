@@ -29,8 +29,9 @@ Option Explicit
 ' текущий CrackedState полного LC для продольных трещин и, если нормальная
 ' трещина образуется, передает это же состояние сюда для формулы раскрытия.
 ' Режим psi_s влияет только на коэффициент в этой формуле: User берет
-' введенное значение, Auto при необходимости уточняет psi_s по уже найденному
-' состоянию AfterMcrcState.
+' введенное значение, Auto уточняет psi_s только после непрохождения первой
+' проверки, AlwaysCalc всегда применяет уточнение, если есть честное
+' состояние AfterMcrcState.
 
 Private Const PHI1_LONG_TERM As Double = 1.4 ' Коэффициент длительного действия нагрузки для a_crc1 по СП 63.
 Private Const PHI2_DEFAULT As Double = 0.5 ' Типовой default для обычной арматуры периодического профиля.
@@ -43,6 +44,7 @@ Private Const CRACK_LAMBDA_BRACKET_LIMIT As Double = 1024# ' Верхняя гр
 Private Const CRACK_LAMBDA_BISECTION_TOLERANCE As Double = 0.000001 ' Относительная точность fallback-бисекции lambda_crc.
 Private Const NEAR_ZERO_STRAIN As Double = 0.000000000001 ' Численный ноль для деформаций и кривизн.
 Private Const NEAR_ZERO_FORCE As Double = 0.000001 ' Численный ноль для отличия центрального растяжения от нулевой нагрузки.
+Private Const NEAR_ZERO_STRESS As Double = 0.000000001 ' Численный ноль для справочных напряжений, МПа.
 Private Const LARGE_LAMBDA As Double = 1E+30 ' Диагностическая отметка: трещина не достигнута при lambda = 1.
 Private Const COVER_MODE_NEAREST_CONTOUR As String = "NearestContour" ' a_s до ближайшего выхода бетонного контура по нормали.
 Private Const COVER_MODE_GLOBAL_EXTREME As String = "GlobalExtreme" ' a_s до дальней растянутой опорной линии всего сечения.
@@ -53,6 +55,11 @@ Private Const CRACK_PATH_NMXY As String = "LambdaNMxy" ' При поиске т�
 Private Const STRATEGY_AUTO As String = "Auto" ' Сначала UltimateStrain, при численной неудаче LoadMultiplier.
 Private Const STRATEGY_ULTIMATE_STRAIN As String = "UltimateStrain" ' Прямой поиск плоскости по eps_bt,ult без одномерной скобки.
 Private Const STRATEGY_LOAD_MULTIPLIER As String = "LoadMultiplier" ' Одномерный поиск lambda через серию обычных solve.
+Private Const PSI_MODE_USER As String = "User" ' psi_s задает пользователь через SLS.Crack.PsiS.
+Private Const PSI_MODE_AUTO As String = "Auto" ' psi_s уточняется только если первая проверка с psi_s = 1 не прошла.
+Private Const PSI_MODE_ALWAYS_CALC As String = "AlwaysCalc" ' psi_s всегда считается по sigma_s,crc, если такая точка доступна.
+Private Const SIGMA_S_CRC_AVERAGE_ALL_SELECTED As String = "AllSelected" ' Для sigma_s,crc учитывать все выбранные стержни со знаком напряжения.
+Private Const SIGMA_S_CRC_AVERAGE_TENSION_ONLY As String = "TensionOnly" ' Сжатые напряжения в sigma_s,crc принимать равными нулю.
 
 Private mConverged As Boolean ' True, если расчет трещины завершился без ошибки входных данных или несходимости.
 Private mStopReason As String ' Короткое пояснение результата: расчет выполнен, трещина не образована или solver не сошелся.
@@ -65,7 +72,8 @@ Private mCrackWidth As Double ' Расчетная ширина раскрыти
 Private mUtilization As Double ' Коэффициент использования по трещине: a_crc / a_crc,ult.
 Private mCrackFormed As Boolean ' True, если по выбранной ветке расчета трещина считается образованной.
 
-Private mPsiMode As String ' User или Auto: брать psi_s из Config или уточнять после неудачной первой проверки.
+Private mPsiMode As String ' User, Auto или AlwaysCalc: как принимать psi_s в формуле раскрытия.
+Private mSigmaSCrcAveragingMode As String ' Как усреднять sigma_s,crc по ранее выбранной группе стержней.
 Private mPhi3Mode As String ' User или Auto: брать phi3 из Config или выбирать по характеру продольной силы.
 Private mTensionZoneMode As String ' Effective или FullTension: способ задания бетонной зоны Abt.
 Private mCoverMode As String ' NearestContour или GlobalExtreme: способ измерения расстояния a_s.
@@ -142,7 +150,8 @@ Private mCentralTensionBranch As Boolean ' True, если сработала о�
 ' эффективная зона СП и пользовательские коэффициенты с нормативными defaults.
 Private Sub Class_Initialize()
     mAllowableCrackWidth = 0.3
-    mPsiMode = "Auto"
+    mPsiMode = PSI_MODE_ALWAYS_CALC
+    mSigmaSCrcAveragingMode = SIGMA_S_CRC_AVERAGE_ALL_SELECTED
     mPhi3Mode = "Auto"
     mTensionZoneMode = "Effective"
     mCoverMode = COVER_MODE_GLOBAL_EXTREME
@@ -182,6 +191,7 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
 
     mAllowableCrackWidth = settings.GetDouble("SLS.Crack.Allowable", mAllowableCrackWidth)
     mPsiMode = settings.GetString("SLS.Crack.PsiMode", mPsiMode)
+    mSigmaSCrcAveragingMode = settings.GetString("SLS.Crack.SigmaSCrcAveragingMode", mSigmaSCrcAveragingMode)
     mCrackFormationPath = settings.GetString("SLS.Crack.InitiationLoadPath", mCrackFormationPath)
     mCrackFormationSolutionStrategy = settings.GetString("SLS.Crack.InitiationSolutionStrategy", mCrackFormationSolutionStrategy)
     mTensionZoneMode = settings.GetString("SLS.Crack.TensionZoneMode", mTensionZoneMode)
@@ -1942,28 +1952,44 @@ End Sub
 
 ' Завершает расчет раскрытия с учетом режима psi_s.
 ' User заканчивает расчет после первой формулы с пользовательским psi_s.
-' Auto сначала делает проверку с psi_s = 1; если a_crc <= a_crc,ult,
-' уточнение не запускается. Если уточнение нужно, lambda_crc и состояния
-' Before/AfterMcrcState уже должны быть найдены обязательной предварительной
-' проверкой образования трещины, поэтому повторный поиск точки образования
-' здесь не выполняется.
+' Auto сначала делает проверку с psi_s = 1 и уточняет коэффициент только при
+' непрохождении. AlwaysCalc сразу пытается применить уточненный psi_s. Точка
+' lambda_crc и состояния Before/AfterMcrcState уже найдены обязательной
+' предварительной проверкой образования трещины, поэтому повторный поиск точки
+' образования здесь не выполняется.
 Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
         ByVal currentSolver As CSectionSolver, ByRef selected() As Boolean, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal finalReason As String) As Boolean
-    If StrComp(mPsiMode, "Auto", vbTextCompare) <> 0 Then
+    If StrComp(mPsiMode, PSI_MODE_USER, vbTextCompare) = 0 Then
         mPsiS = mPsiSInput
+        CaptureSigmaSCrcIfAvailable section, materialProvider, selected
         FinalizeWidth finalReason & " Psi_s принят из настройки SLS.Crack.PsiS."
         FinalizeWithPsiMode = mConverged
         Exit Function
     End If
 
+    If StrComp(mPsiMode, PSI_MODE_ALWAYS_CALC, vbTextCompare) = 0 Then
+        If ResolveAutoPsiIfPossible(section, materialProvider, currentSolver, selected, _
+                targetN, targetMx, targetMy, "AlwaysCalc psi_s") Then
+            FinalizeWidth finalReason & " Psi_s рассчитан по состоянию сразу после образования трещины."
+        ElseIf mFormationPathFallbackPsi1 Then
+            mPsiS = 1#
+            FinalizeWidth finalReason & " Psi_s оставлен равным 1, потому что выбранный путь не дает отдельной точки sigma_s,crc."
+        Else
+            Exit Function
+        End If
+        FinalizeWithPsiMode = mConverged
+        Exit Function
+    End If
+
     mPsiS = 1#
+    CaptureSigmaSCrcIfAvailable section, materialProvider, selected
     FinalizeWidth finalReason & " Auto psi_s: первая проверка выполнена с psi_s=1."
     If Not mConverged Or Not mCrackFormed Then Exit Function
 
     If mAllowableCrackWidth > 0# And mCrackWidth <= mAllowableCrackWidth Then
-        AppendDiagnostic "Auto psi_s: первая проверка с psi_s=1 проходит; sigma_s,crc не уточнялся."
+        AppendDiagnostic "Auto psi_s: первая проверка с psi_s=1 проходит; sigma_s,crc для уточнения psi_s не потребовался."
         FinalizeWithPsiMode = True
         Exit Function
     End If
@@ -1977,18 +2003,58 @@ Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal mater
     AppendDiagnostic "Auto psi_s: первая проверка с psi_s=1 не проходит; используется ранее найденный AfterMcrcState."
     mConverged = False
 
+    If Not ResolveAutoPsiIfPossible(section, materialProvider, currentSolver, selected, _
+            targetN, targetMx, targetMy, "Auto psi_s") Then Exit Function
+    FinalizeWidth finalReason & " Psi_s уточнен автоматически после непрохождения первой проверки."
+    FinalizeWithPsiMode = mConverged
+End Function
+
+' Готовит и применяет автоматическое значение psi_s по sigma_s,crc.
+' Метод не ищет новую точку образования трещины: он использует ранее найденный
+' AfterMcrcState, а при его отсутствии только достраивает это состояние по
+' уже известной lambda_crc.
+Private Function ResolveAutoPsiIfPossible(ByVal section As CSectionModel, _
+        ByVal materialProvider As CMaterialModelProvider, ByVal currentSolver As CSectionSolver, _
+        ByRef selected() As Boolean, ByVal targetN As Double, ByVal targetMx As Double, _
+        ByVal targetMy As Double, ByVal contextText As String) As Boolean
+    If mFormationPathFallbackPsi1 Then
+        AppendDiagnostic contextText & ": выбранный путь не дает отдельной точки sigma_s,crc."
+        Exit Function
+    End If
+
     If mLambdaCrc < 0# Then
         mStopReason = "InputError: lambda_crc предварительной проверки образования трещины не определена."
         Exit Function
     End If
-    If Not EnsureAfterMcrcState(section, materialProvider, currentSolver, targetN, targetMx, targetMy) Then Exit Function
+
+    If mSigmaSCrc <= NEAR_ZERO_STRESS Then
+        If Not EnsureAfterMcrcState(section, materialProvider, currentSolver, targetN, targetMx, targetMy) Then Exit Function
+        CaptureSigmaSCrcIfAvailable section, materialProvider, selected
+    End If
+
+    If mSigmaSCrc <= NEAR_ZERO_STRESS Then
+        AppendDiagnostic contextText & ": sigma_s,crc не получен; psi_s оставлен равным 1."
+        Exit Function
+    End If
+
+    mPsiS = AutoPsi(mSigmaS, mSigmaSCrc)
+    ResolveAutoPsiIfPossible = True
+End Function
+
+' Заполняет справочное sigma_s,crc без дополнительных solve-вызовов.
+' Если состояние AfterMcrcState уже найдено предварительной проверкой
+' образования трещины, берем среднее напряжение выбранной арматуры из
+' сохраненного solver-а. Для fallback-путей честной точки sigma_s,crc нет.
+Private Sub CaptureSigmaSCrcIfAvailable(ByVal section As CSectionModel, _
+        ByVal materialProvider As CMaterialModelProvider, ByRef selected() As Boolean)
+    If mSigmaSCrc > NEAR_ZERO_STRESS Then Exit Sub
+    If mFormationPathFallbackPsi1 Then Exit Sub
+    If mAfterMcrcSolver Is Nothing Then Exit Sub
+    If Not mAfterMcrcSolver.Converged Then Exit Sub
 
     mSigmaSCrc = AverageSelectedSteelStress(mAfterMcrcSolver, section, _
-        materialProvider.SteelMaterialFromSpec(mCrackedStateSpec), selected)
-    mPsiS = AutoPsi(mSigmaS, mSigmaSCrc)
-    FinalizeWidth finalReason & " Psi_s уточнен автоматически после непрохождения первой проверки."
-    FinalizeWithPsiMode = mConverged
-End Function
+        materialProvider.SteelMaterialFromSpec(mCrackedStateSpec), selected, False, IncludeCompressedStressForSigmaSCrc())
+End Sub
 
 ' Завершает расчет по формуле СП 63 п. 8.2.15 для продолжительного раскрытия.
 Private Sub FinalizeWidth(ByVal reason As String)
@@ -2266,7 +2332,9 @@ End Sub
 ' Считает средневзвешенное напряжение выбранной арматуры. В формулу раскрытия
 ' идет одно глобальное sigma_s, а не локальные значения по отдельным зонам.
 Private Function AverageSelectedSteelStress(ByVal solver As CSectionSolver, ByVal section As CSectionModel, _
-        ByVal steelMaterial As Object, ByRef selected() As Boolean) As Double
+        ByVal steelMaterial As Object, ByRef selected() As Boolean, _
+        Optional ByVal trackCurrentMaxima As Boolean = True, _
+        Optional ByVal includeCompressedStress As Boolean = False) As Double
     Dim weightedStress As Double
     Dim areaSum As Double
     Dim i As Long
@@ -2276,13 +2344,22 @@ Private Function AverageSelectedSteelStress(ByVal solver As CSectionSolver, ByVa
             Dim stress As Double
             strain = RebarStrain(solver, section, i)
             stress = steelMaterial.GetStress(strain)
-            If stress < 0# Then stress = 0#
+            If (Not includeCompressedStress) And stress < 0# Then stress = 0#
             weightedStress = weightedStress + section.RebarArea(i) * stress
             areaSum = areaSum + section.RebarArea(i)
-            TrackMaxSteel section, i, strain, stress
+            If trackCurrentMaxima Then TrackMaxSteel section, i, strain, stress
         End If
     Next i
     If areaSum > 0# Then AverageSelectedSteelStress = weightedStress / areaSum
+End Function
+
+' Возвращает режим усреднения именно для sigma_s,crc. Текущее sigma_s основной
+' формулы раскрытия по-прежнему считается только по растягивающей части
+' выбранной группы; этот переключатель нужен для состояния AfterMcrcState,
+' где часть той же группы может перейти в сжатие сразу после образования трещины.
+Private Function IncludeCompressedStressForSigmaSCrc() As Boolean
+    IncludeCompressedStressForSigmaSCrc = (StrComp(mSigmaSCrcAveragingMode, _
+        SIGMA_S_CRC_AVERAGE_ALL_SELECTED, vbTextCompare) = 0)
 End Function
 
 ' Считает площадь выбранной арматуры.
@@ -2487,11 +2564,23 @@ End Function
 Private Sub NormalizeSettings()
     Select Case LCase$(Trim$(mPsiMode))
         Case "user", "manual", "fixed1", "unity"
-            mPsiMode = "User"
+            mPsiMode = PSI_MODE_USER
         Case "auto", "refined"
-            mPsiMode = "Auto"
+            mPsiMode = PSI_MODE_AUTO
+        Case "alwayscalc", "alwayscalculate", "always", "calc"
+            mPsiMode = PSI_MODE_ALWAYS_CALC
         Case Else
-            Err.Raise vbObjectError + 3707, "CCrackWidthCalculator", "SLS.Crack.PsiMode должен быть User или Auto."
+            Err.Raise vbObjectError + 3707, "CCrackWidthCalculator", "SLS.Crack.PsiMode должен быть User, Auto или AlwaysCalc."
+    End Select
+
+    Select Case LCase$(Trim$(mSigmaSCrcAveragingMode))
+        Case vbNullString, "allselected", "all", "includecompression", "withcompression", "signed"
+            mSigmaSCrcAveragingMode = SIGMA_S_CRC_AVERAGE_ALL_SELECTED
+        Case "tensiononly", "tension", "positiveonly", "old"
+            mSigmaSCrcAveragingMode = SIGMA_S_CRC_AVERAGE_TENSION_ONLY
+        Case Else
+            Err.Raise vbObjectError + 3736, "CCrackWidthCalculator", _
+                "SLS.Crack.SigmaSCrcAveragingMode должен быть AllSelected или TensionOnly."
     End Select
 
     Select Case LCase$(Trim$(mPhi3Mode))
@@ -2737,6 +2826,10 @@ Public Property Get PsiMode() As String
     PsiMode = mPsiMode
 End Property
 
+Public Property Get SigmaSCrcAveragingMode() As String
+    SigmaSCrcAveragingMode = mSigmaSCrcAveragingMode
+End Property
+
 Public Property Get TensionZoneMode() As String
     TensionZoneMode = mTensionZoneMode
 End Property
@@ -2867,6 +2960,10 @@ End Property
 
 Public Property Let PsiMode(ByVal value As String)
     mPsiMode = value
+End Property
+
+Public Property Let SigmaSCrcAveragingMode(ByVal value As String)
+    mSigmaSCrcAveragingMode = value
 End Property
 
 Public Property Let Phi1(ByVal value As Double)
