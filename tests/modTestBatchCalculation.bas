@@ -1165,10 +1165,10 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
     End If
     If nValue > 0# And Abs(mxValue) <= 0.000000001 And Abs(myValue) <= 0.000000001 Then
         AssertTrue stats, prefix & ".centralDepthsBlank", _
-            Len(CStr(resultsSheet.Cells.Item(anchor.Row, 21).Value2)) = 0 And _
-            Len(CStr(resultsSheet.Cells.Item(anchor.Row, 22).Value2)) = 0 And _
             Len(CStr(resultsSheet.Cells.Item(anchor.Row, 23).Value2)) = 0 And _
-            Len(CStr(resultsSheet.Cells.Item(anchor.Row, 24).Value2)) = 0
+            Len(CStr(resultsSheet.Cells.Item(anchor.Row, 24).Value2)) = 0 And _
+            Len(CStr(resultsSheet.Cells.Item(anchor.Row, 25).Value2)) = 0 And _
+            Len(CStr(resultsSheet.Cells.Item(anchor.Row, 26).Value2)) = 0
     End If
 End Sub
 
@@ -3733,28 +3733,30 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     Set crackAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     AssertTrue stats, "batch.writer.crack.statusColors", _
         StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 2) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 20) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 42) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 46) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 18) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 19) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 22) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 44) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 48) And _
         CellHasNoFill(resultsSheet, crackAnchor.Row, 1) And _
         CellHasNoFill(resultsSheet, crackAnchor.Row, 10) And _
-        CellHasNoFill(resultsSheet, crackAnchor.Row, 43)
+        CellHasNoFill(resultsSheet, crackAnchor.Row, 45)
     AssertTrue stats, "batch.writer.crack.header.formationTitle", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 10).Value2) = "Момент образования трещин"
     AssertTrue stats, "batch.writer.crack.header.crackedStateTitle", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 19).Value2) = "равновесие при заданных нагрузках"
-    AssertTrue stats, "batch.writer.crack.header.title", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 21).Value2) = "нормальные и продольные трещины"
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 21).Value2) = "равновесие при заданных нагрузках"
+    AssertTrue stats, "batch.writer.crack.header.title", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 23).Value2) = "нормальные и продольные трещины"
     AssertTrue stats, "batch.writer.crack.header.mcrcNote", InStr(1, CStr(resultsSheet.Cells.Item(crackAnchor.Row - 2, 16).Value2), "моментного вектора", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.crack.header.formationStatus", _
         CStr(resultsSheet.Cells.Item(crackAnchor.Row - 3, 18).Value2) = "статус трещин" And _
-        resultsSheet.Cells.Item(crackAnchor.Row - 3, 18).MergeArea.Rows.Count = 2
-    AssertTrue stats, "batch.writer.crack.header.state", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 18).Value2) = "state"
-    AssertTrue stats, "batch.writer.crack.header.crackedStateStatus", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 20).Value2) = "статус"
+        resultsSheet.Cells.Item(crackAnchor.Row - 3, 18).MergeArea.Columns.Count = 3
+    AssertTrue stats, "batch.writer.crack.header.state", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 20).Value2) = "state"
+    AssertTrue stats, "batch.writer.crack.header.crackedStateStatus", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 22).Value2) = "статус"
     AssertTrue stats, "batch.writer.crack.header.es", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 38).Value2) = "Es, MPa"
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 40).Value2) = "Es, MPa"
     AssertTrue stats, "batch.writer.crack.header.normalStatusRu", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 42).Value2) = "статус"
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 44).Value2) = "статус"
     AssertTrue stats, "batch.writer.crack.header.longStatusRu", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 46).Value2) = "статус"
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 48).Value2) = "статус"
     AssertTrue stats, "batch.writer.crack.header.notesPlain", Not resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).Font.Bold And _
         resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).HorizontalAlignment = -4131
     AssertTrue stats, "batch.writer.crack.header.notesFill", CLng(resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).Interior.Color) = RGB(217, 217, 217)
@@ -3908,10 +3910,10 @@ Private Sub AssertBatchSummaryReservesMatchDetailed(ByRef stats As TBatchTestSta
     If checkCrack And crackRow > 0 Then
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".crack", _
             resultsSheet.Cells.Item(summaryRow, 18).Value2, _
-            resultsSheet.Cells.Item(crackRow, 41).Value2
+            resultsSheet.Cells.Item(crackRow, 43).Value2
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".longCrack", _
             resultsSheet.Cells.Item(summaryRow, 19).Value2, _
-            resultsSheet.Cells.Item(crackRow, 45).Value2
+            resultsSheet.Cells.Item(crackRow, 47).Value2
     End If
     If checkStability And stabilityRow > 0 Then
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p1eta", _

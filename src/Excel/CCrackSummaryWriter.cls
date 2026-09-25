@@ -22,13 +22,13 @@ Option Explicit
 ' блоком специально остается без рамок и заливки, как в таблице устойчивости.
 
 Private Const HEADER_ROWS As Long = 4 ' Сколько строк шапки строится над якорем первой строки LC.
-Private Const TOTAL_COLUMNS As Long = 46 ' Полная ширина таблицы, включая пустой разделитель.
+Private Const TOTAL_COLUMNS As Long = 48 ' Полная ширина таблицы, включая пустой разделитель.
 
 Private Const COL_LEFT_FIRST As Long = 1
 Private Const COL_LEFT_LAST As Long = 8
 Private Const COL_SEPARATOR As Long = 9
 Private Const COL_MAIN_FIRST As Long = 10
-Private Const COL_MAIN_LAST As Long = 46
+Private Const COL_MAIN_LAST As Long = 48
 
 Private Const COL_ID As Long = 1
 Private Const COL_STATUS As Long = 2
@@ -47,35 +47,37 @@ Private Const COL_FORMATION_METHOD As Long = 14
 Private Const COL_FORMATION_NCRC As Long = 15
 Private Const COL_MCRC As Long = 16
 Private Const COL_LAMBDA_MCRC As Long = 17
-Private Const COL_FORMATION_STATE As Long = 18
-Private Const COL_CRACK_STATE_DIAGEXT As Long = 19
-Private Const COL_CRACK_STATE_STATUS As Long = 20
-Private Const COL_XT As Long = 21
-Private Const COL_H As Long = 22
-Private Const COL_AS_COVER As Long = 23
-Private Const COL_HBT As Long = 24
-Private Const COL_ABT As Long = 25
-Private Const COL_AS As Long = 26
-Private Const COL_DS_EQ As Long = 27
-Private Const COL_LS0 As Long = 28
-Private Const COL_LS As Long = 29
-Private Const COL_PHI1 As Long = 30
-Private Const COL_PHI2 As Long = 31
-Private Const COL_PHI3 As Long = 32
-Private Const COL_PSI_S As Long = 33
-Private Const COL_REBARS As Long = 34
-Private Const COL_NREBARS As Long = 35
-Private Const COL_SIGMA_S_CRC As Long = 36
-Private Const COL_SIGMA_S As Long = 37
-Private Const COL_ES As Long = 38
-Private Const COL_ACRC As Long = 39
-Private Const COL_ACRC_ULT As Long = 40
-Private Const COL_ACRC_RATIO As Long = 41
-Private Const COL_ACRC_STATUS As Long = 42
-Private Const COL_SIGMA_B_MAX As Long = 43
-Private Const COL_RB_MC2 As Long = 44
-Private Const COL_LONG_RATIO As Long = 45
-Private Const COL_LONG_STATUS As Long = 46
+Private Const COL_BEFORE_MCRC_STATUS As Long = 18
+Private Const COL_AFTER_MCRC_STATUS As Long = 19
+Private Const COL_FORMATION_STATE As Long = 20
+Private Const COL_CRACK_STATE_DIAGEXT As Long = 21
+Private Const COL_CRACK_STATE_STATUS As Long = 22
+Private Const COL_XT As Long = 23
+Private Const COL_H As Long = 24
+Private Const COL_AS_COVER As Long = 25
+Private Const COL_HBT As Long = 26
+Private Const COL_ABT As Long = 27
+Private Const COL_AS As Long = 28
+Private Const COL_DS_EQ As Long = 29
+Private Const COL_LS0 As Long = 30
+Private Const COL_LS As Long = 31
+Private Const COL_PHI1 As Long = 32
+Private Const COL_PHI2 As Long = 33
+Private Const COL_PHI3 As Long = 34
+Private Const COL_PSI_S As Long = 35
+Private Const COL_REBARS As Long = 36
+Private Const COL_NREBARS As Long = 37
+Private Const COL_SIGMA_S_CRC As Long = 38
+Private Const COL_SIGMA_S As Long = 39
+Private Const COL_ES As Long = 40
+Private Const COL_ACRC As Long = 41
+Private Const COL_ACRC_ULT As Long = 42
+Private Const COL_ACRC_RATIO As Long = 43
+Private Const COL_ACRC_STATUS As Long = 44
+Private Const COL_SIGMA_B_MAX As Long = 45
+Private Const COL_RB_MC2 As Long = 46
+Private Const COL_LONG_RATIO As Long = 47
+Private Const COL_LONG_STATUS As Long = 48
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, единый для таблиц Results.
 Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' На Results оставляем одинаковую ширину столбцов.
@@ -230,7 +232,7 @@ Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem)
     headers(1, COL_ARED) = "Момент образования трещин"
     headers(2, COL_ARED) = "Осевое растяжение"
     headers(2, COL_FORMATION_METHOD) = "Изгиб N + M"
-    headers(2, COL_FORMATION_STATE) = "статус трещин"
+    headers(2, COL_BEFORE_MCRC_STATUS) = "статус трещин"
     headers(1, COL_CRACK_STATE_DIAGEXT) = "равновесие при заданных нагрузках"
     headers(1, COL_XT) = "нормальные и продольные трещины"
     headers(2, COL_XT) = "данные для расстояния между трещинами ls"
@@ -262,6 +264,9 @@ Private Sub PutHeaderNotes(ByRef headers() As Variant, ByVal units As CUnitSyste
     headers(HEADER_NOTES_ROW, COL_FORMATION_NCRC) = "продольная сила в найденной точке образования трещины для выбранного пути"
     headers(HEADER_NOTES_ROW, COL_MCRC) = "модуль моментного вектора в найденной точке образования трещины"
     headers(HEADER_NOTES_ROW, COL_LAMBDA_MCRC) = "доля выбранного пути нагрузки до образования трещины"
+    headers(HEADER_NOTES_ROW, COL_BEFORE_MCRC_STATUS) = "статус НДС непосредственно перед образованием нормальной трещины"
+    headers(HEADER_NOTES_ROW, COL_AFTER_MCRC_STATUS) = "статус НДС сразу после образования нормальной трещины"
+    headers(HEADER_NOTES_ROW, COL_FORMATION_STATE) = "итог: нормальная трещина образуется при заданном сочетании или нет"
     headers(HEADER_NOTES_ROW, COL_CRACK_STATE_DIAGEXT) = "Yes - текущее равновесие для расчета трещин найдено через продолжение диаграммы за физические пределы; такое состояние не используется в формулах раскрытия"
     headers(HEADER_NOTES_ROW, COL_CRACK_STATE_STATUS) = "OK - равновесие при заданных нагрузках сошлось без продолжения диаграммы и все материалы остались в физическом диапазоне; FAIL/NumFail останавливают расчет трещин"
     headers(HEADER_NOTES_ROW, COL_XT) = "фактическая высота растянутой зоны"
@@ -308,6 +313,8 @@ Private Sub PutColumnLabels(ByRef headers() As Variant, ByVal units As CUnitSyst
     headers(HEADER_LABEL_ROW, COL_FORMATION_NCRC) = "Ncrc, " & OutputForceUnit(units)
     headers(HEADER_LABEL_ROW, COL_MCRC) = "Mxy,crc, " & OutputMomentUnit(units)
     headers(HEADER_LABEL_ROW, COL_LAMBDA_MCRC) = ChrW$(&H3BB) & "crc"
+    headers(HEADER_LABEL_ROW, COL_BEFORE_MCRC_STATUS) = "BeforeMcrcState"
+    headers(HEADER_LABEL_ROW, COL_AFTER_MCRC_STATUS) = "AfterMcrcState"
     headers(HEADER_LABEL_ROW, COL_FORMATION_STATE) = "state"
     headers(HEADER_LABEL_ROW, COL_CRACK_STATE_DIAGEXT) = "DiagExt"
     headers(HEADER_LABEL_ROW, COL_CRACK_STATE_STATUS) = "статус"
@@ -348,7 +355,7 @@ Private Sub MergeHeaders(ByVal target As Object)
     MergeRange target, 1, COL_ARED, 1, COL_FORMATION_STATE
     MergeRange target, 2, COL_ARED, 2, COL_LAMBDA_NCRC
     MergeRange target, 2, COL_FORMATION_METHOD, 2, COL_LAMBDA_MCRC
-    MergeRange target, 2, COL_FORMATION_STATE, 3, COL_FORMATION_STATE
+    MergeRange target, 2, COL_BEFORE_MCRC_STATUS, 2, COL_FORMATION_STATE
     MergeRange target, 1, COL_CRACK_STATE_DIAGEXT, 2, COL_CRACK_STATE_STATUS
     MergeRange target, 1, COL_XT, 1, COL_MAIN_LAST
     MergeRange target, 2, COL_XT, 2, COL_AS
@@ -449,7 +456,10 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
         data(rowIndex, COL_MCRC) = policy.NotApplicable
     End If
 
-    If policy.IsFinished(batch.CrackStatus(index)) Or hasFormationData Then
+    data(rowIndex, COL_BEFORE_MCRC_STATUS) = NamedStateStatus(batch, index, sstBeforeMcrcState, policy)
+    data(rowIndex, COL_AFTER_MCRC_STATUS) = NamedStateStatus(batch, index, sstAfterMcrcState, policy)
+
+    If hasFormationData Then
         data(rowIndex, COL_FORMATION_STATE) = IIf(batch.CrackFormed(index), "Cracked", "NotCracked")
     Else
         data(rowIndex, COL_FORMATION_STATE) = policy.DisplayStatus(batch.CrackStatus(index))
@@ -458,6 +468,23 @@ End Sub
 
 ' Записывает ширину раскрытия нормальных трещин и все величины ее формулы.
 ' Проверяет, есть ли сохраненные величины стадии образования нормальной трещины.
+' Возвращает статус сохраненного named-state. Если состояние штатно не создавалось,
+' detailed-таблица показывает N/A, а не общий статус всей проверки трещин.
+Private Function NamedStateStatus(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
+        ByVal stateType As ESectionStateType, ByVal policy As CBatchStatusPolicy) As String
+    Dim stateResult As CSectionStateResult
+    Set stateResult = batch.FindNamedState(index, stateType)
+    If stateResult Is Nothing Then
+        NamedStateStatus = policy.NotApplicable
+    ElseIf Len(stateResult.Status) > 0 Then
+        NamedStateStatus = policy.DisplayStatus(stateResult.Status)
+    ElseIf Not stateResult.Converged Then
+        NamedStateStatus = policy.NumFail
+    Else
+        NamedStateStatus = policy.OK
+    End If
+End Function
+
 Private Function HasCrackFormationData(ByVal batch As CBatchSectionCalculator, ByVal index As Long) As Boolean
     HasCrackFormationData = batch.CrackNcrc(index) > SMALL_VALUE Or _
         Abs(batch.CrackFormationNcrc(index)) > SMALL_VALUE Or _
@@ -630,7 +657,7 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
         target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).NumberFormat = "0.000"
         target.Offset(HEADER_ROWS, COL_ID - 1).Resize(dataRows, 2).NumberFormat = "@"
         target.Offset(HEADER_ROWS, COL_REBARS - 1).Resize(dataRows, 1).NumberFormat = "@"
-        target.Offset(HEADER_ROWS, COL_FORMATION_STATE - 1).Resize(dataRows, 1).NumberFormat = "@"
+        target.Offset(HEADER_ROWS, COL_BEFORE_MCRC_STATUS - 1).Resize(dataRows, 3).NumberFormat = "@"
         target.Offset(HEADER_ROWS, COL_CRACK_STATE_DIAGEXT - 1).Resize(dataRows, 2).NumberFormat = "@"
         target.Offset(HEADER_ROWS, COL_ACRC_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
         target.Offset(HEADER_ROWS, COL_LONG_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
@@ -666,6 +693,8 @@ Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectio
         Dim rowOffset As Long
         rowOffset = OutputDataOffset(batch, i, dataRows)
         ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_STATUS
+        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_BEFORE_MCRC_STATUS
+        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_AFTER_MCRC_STATUS
         ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_CRACK_STATE_STATUS
         ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_ACRC_STATUS
         ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_LONG_STATUS

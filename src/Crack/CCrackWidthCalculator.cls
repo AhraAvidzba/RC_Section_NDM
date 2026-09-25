@@ -454,14 +454,14 @@ Private Sub CheckGeneralFormation(ByVal section As CSectionModel, _
         mFormationNcrc = FormationNValue()
         mMcrc = CrackMomentFromFormationLoad(centralReferenceX, centralReferenceY)
     End If
-    If mFormationPathFallbackPsi1 Then Exit Sub
-
-    If Not EnsureAfterMcrcState(section, materialProvider, Nothing, targetN, targetMx, targetMy) Then Exit Sub
-
     If mLambdaCrc > 1# Then
         FinishNoCrack "Трещина не образована: предельная растянутая деформация бетона не достигнута при lambda = 1."
         Exit Sub
     End If
+
+    If mFormationPathFallbackPsi1 Then Exit Sub
+
+    If Not EnsureAfterMcrcState(section, materialProvider, Nothing, targetN, targetMx, targetMy) Then Exit Sub
 
     mConverged = True
     mCrackFormed = True
@@ -672,8 +672,12 @@ Private Function BuildBeforeMcrcState(ByVal section As CSectionModel, ByVal mate
         FormationLoads formationN, formationMx, formationMy
         Set beforeSolver = SolveState(section, materialProvider.ConcreteMaterialFromSpec(mCrackInitiationSpec), _
             materialProvider.SteelMaterialFromSpec(mCrackInitiationSpec), Nothing, _
-            formationN, formationMx, formationMy)
+            formationN, formationMx, formationMy, True)
         If Not beforeSolver.Converged Then
+            Set mBeforeMcrcSolver = beforeSolver
+            Set mBeforeMcrcState = New CSectionStateResult
+            mBeforeMcrcState.InitializeFromSolver sstBeforeMcrcState, cpMcrc, _
+                mCrackInitiationSpec, beforeSolver, False, "NumFail"
             mStopReason = "NumericalFailure: состояние Ncrc до образования трещины не сошлось: " & beforeSolver.StopReason
             Exit Function
         End If
@@ -707,8 +711,11 @@ Private Function EnsureAfterMcrcState(ByVal section As CSectionModel, ByVal mate
     FormationLoads formationN, formationMx, formationMy
     Set mAfterMcrcSolver = SolveState(section, materialProvider.ConcreteMaterialFromSpec(mCrackedStateSpec), _
         materialProvider.SteelMaterialFromSpec(mCrackedStateSpec), effectiveStartSolver, _
-        formationN, formationMx, formationMy)
+        formationN, formationMx, formationMy, True)
     If Not mAfterMcrcSolver.Converged Then
+        Set mAfterMcrcState = New CSectionStateResult
+        mAfterMcrcState.InitializeFromSolver sstAfterMcrcState, cpCrackedNDS, _
+            mCrackedStateSpec, mAfterMcrcSolver, False, "NumFail"
         mStopReason = "NumericalFailure: состояние lambda_crc после образования трещины не сошлось: " & mAfterMcrcSolver.StopReason
         Exit Function
     End If
@@ -2034,6 +2041,8 @@ Private Function ResolveAutoPsiIfPossible(ByVal section As CSectionModel, _
 
     If mSigmaSCrc <= NEAR_ZERO_STRESS Then
         AppendDiagnostic contextText & ": sigma_s,crc не получен; psi_s оставлен равным 1."
+        mPsiS = 1#
+        ResolveAutoPsiIfPossible = True
         Exit Function
     End If
 
