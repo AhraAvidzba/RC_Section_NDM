@@ -31,6 +31,7 @@ Public Function RunGeometryTests() As String
     TestCircleGeometry stats
     TestCircleCoreDistance stats
     TestAsymmetricCoreDistanceUsesOppositeFiber stats
+    TestCoreDistanceWithProductInertiaMatchesLinearBoundary stats
     TestPrincipalAxisCoreDistanceIsAxisBased stats
     TestCirclePrincipalAxesStableOnCoarseMesh stats
     TestCircleInvalidData stats
@@ -1294,6 +1295,147 @@ Private Sub TestAsymmetricCoreDistanceUsesOppositeFiber(ByRef stats As TTestStat
         props.CoreDistanceAlong(section, 1#, 0#, False), expectedXPlus, 0.000001
     AssertClose stats, "core.asymmetric.xMinus.oppositeFiber", _
         props.CoreDistanceAlong(section, -1#, 0#, False), expectedXMinus, 0.000001
+End Sub
+
+' Проверяет общий случай центральных осей, когда Ixy не равен нулю. Для
+' несимметричного Г-сечения ядровое расстояние по глобальным X/Y нельзя
+' получать как I/(A*c) без учета произведения инерции: граница ядра должна
+' обнулять линейный множитель напряжений по полной матрице I.
+Private Sub TestCoreDistanceWithProductInertiaMatchesLinearBoundary(ByRef stats As TTestStats)
+    Dim geom As CGeometryRectSet
+    Set geom = New CGeometryRectSet
+    geom.Initialize 250#, 550#, 600#, 250#, 0#, 0#, 0#, "LSection"
+
+    Dim mesh As CFiberMeshBuilder
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geom, 25#, 25#, 1, 2
+
+    Dim rebarBuilder As CRectSetRebarLayoutBuilder
+    Set rebarBuilder = New CRectSetRebarLayoutBuilder
+
+    Dim rebars As CRebarLayout
+    Set rebars = rebarBuilder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
+        Array(40#, 40#, 32#, 32#, 5, 5, 80#, 80#, 80#, 80#), _
+        Array(40#, 40#, 32#, 32#, 2, 2, 80#, 80#, 80#, 80#), _
+        Array(40#, 40#, 32#, 32#, 2, 2, 80#, 80#, 80#, 80#), _
+        Array(40#, 40#, 32#, 32#, 5, 5, 80#, 80#, 80#, 80#), _
+        "Rebar")
+
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, rebars, "RectSetCoreDistance")
+
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateTransformedByModuli section, 32500#, 200000#
+
+    AssertCoreDistanceBoundary stats, "core.general.xPlus", section, props, 1#, 0#
+    AssertCoreDistanceBoundary stats, "core.general.xMinus", section, props, -1#, 0#
+    AssertCoreDistanceBoundary stats, "core.general.yPlus", section, props, 0#, 1#
+    AssertCoreDistanceBoundary stats, "core.general.yMinus", section, props, 0#, -1#
+End Sub
+
+' Сверяет r с прямым линейным условием ядра: при 0.95*r вся граница еще
+' сжата, при r крайняя точка имеет нулевую деформацию, при 1.05*r появляется
+' растяжение.
+Private Sub AssertCoreDistanceBoundary(ByRef stats As TTestStats, ByVal prefix As String, _
+        ByVal section As CSectionModel, ByVal props As CSectionPropertiesCalculator, _
+        ByVal directionX As Double, ByVal directionY As Double)
+    Dim rValue As Double
+    rValue = props.CoreDistanceAlong(section, directionX, directionY, False)
+
+    Dim insideValue As Double
+    Dim edgeValue As Double
+    Dim outsideValue As Double
+    insideValue = LinearKernelMinimum(section, props, directionX, directionY, 0.95 * rValue)
+    edgeValue = LinearKernelMinimum(section, props, directionX, directionY, rValue)
+    outsideValue = LinearKernelMinimum(section, props, directionX, directionY, 1.05 * rValue)
+
+    AssertTrue stats, prefix & ".inside", insideValue > 0#
+    AssertClose stats, prefix & ".edge", edgeValue, 0#, 0.000000000001
+    AssertTrue stats, prefix & ".outside", outsideValue < 0#
+End Sub
+
+' Возвращает минимальное по бетонной оболочке значение скобки:
+' 1/A + e * g(x,y). Для сжатой N вся скобка должна оставаться
+' неотрицательной; отрицательное значение означает появление растяжения.
+Private Function LinearKernelMinimum(ByVal section As CSectionModel, _
+        ByVal props As CSectionPropertiesCalculator, ByVal directionX As Double, _
+        ByVal directionY As Double, ByVal eccentricity As Double) As Double
+    Dim normValue As Double
+    normValue = Sqr(directionX * directionX + directionY * directionY)
+
+    Dim nx As Double
+    Dim ny As Double
+    nx = directionX / normValue
+    ny = directionY / normValue
+
+    Dim determinant As Double
+    determinant = props.Ixc * props.Iyc - props.Ixyc * props.Ixyc
+
+    Dim kxPerEccentricity As Double
+    Dim kyPerEccentricity As Double
+    kxPerEccentricity = (props.Iyc * ny - props.Ixyc * nx) / determinant
+    kyPerEccentricity = (-props.Ixyc * ny + props.Ixc * nx) / determinant
+
+    Dim minProjection As Double
+    minProjection = MinimumLinearBoundaryProjection(section, kyPerEccentricity, kxPerEccentricity)
+
+    LinearKernelMinimum = 1# / props.Area + eccentricity * _
+        (minProjection - kyPerEccentricity * props.CentroidX - kxPerEccentricity * props.CentroidY)
+End Function
+
+' Ищет минимум линейного функционала axisX*x+axisY*y по расчетной бетонной
+' оболочке. Для прямоугольной оболочки линейная функция достигает экстремума
+' в одном из углов, поэтому достаточно перебрать углы каждого бетонного КЭ.
+Private Function MinimumLinearBoundaryProjection(ByVal section As CSectionModel, _
+        ByVal axisX As Double, ByVal axisY As Double) As Double
+    Dim initialized As Boolean
+    Dim minValue As Double
+    Dim i As Long
+    For i = 1 To section.ConcreteCount
+        Dim widthValue As Double
+        Dim heightValue As Double
+        Dim angleValue As Double
+        If section.ConcreteBoundaryRectangle(i, widthValue, heightValue, angleValue) Then
+            IncludeRectangleProjectionMinimum section.ConcreteX(i), section.ConcreteY(i), _
+                widthValue, heightValue, angleValue, axisX, axisY, initialized, minValue
+        Else
+            IncludeProjectionMinimum axisX * section.ConcreteX(i) + axisY * section.ConcreteY(i), _
+                initialized, minValue
+        End If
+    Next i
+    MinimumLinearBoundaryProjection = minValue
+End Function
+
+' Добавляет четыре угла бетонной оболочки в поиск минимума линейной формы.
+Private Sub IncludeRectangleProjectionMinimum(ByVal centerX As Double, ByVal centerY As Double, _
+        ByVal widthValue As Double, ByVal heightValue As Double, ByVal angleValue As Double, _
+        ByVal axisX As Double, ByVal axisY As Double, ByRef initialized As Boolean, _
+        ByRef minValue As Double)
+    Dim ux As Double
+    Dim uy As Double
+    Dim vx As Double
+    Dim vy As Double
+    ux = Cos(angleValue)
+    uy = Sin(angleValue)
+    vx = -uy
+    vy = ux
+
+    IncludeProjectionMinimum axisX * (centerX + ux * widthValue / 2# + vx * heightValue / 2#) + _
+        axisY * (centerY + uy * widthValue / 2# + vy * heightValue / 2#), initialized, minValue
+    IncludeProjectionMinimum axisX * (centerX + ux * widthValue / 2# - vx * heightValue / 2#) + _
+        axisY * (centerY + uy * widthValue / 2# - vy * heightValue / 2#), initialized, minValue
+    IncludeProjectionMinimum axisX * (centerX - ux * widthValue / 2# + vx * heightValue / 2#) + _
+        axisY * (centerY - uy * widthValue / 2# + vy * heightValue / 2#), initialized, minValue
+    IncludeProjectionMinimum axisX * (centerX - ux * widthValue / 2# - vx * heightValue / 2#) + _
+        axisY * (centerY - uy * widthValue / 2# - vy * heightValue / 2#), initialized, minValue
+End Sub
+
+' Обновляет минимум линейной формы одним кандидатом.
+Private Sub IncludeProjectionMinimum(ByVal candidate As Double, ByRef initialized As Boolean, _
+        ByRef minValue As Double)
+    If Not initialized Or candidate < minValue Then minValue = candidate
+    initialized = True
 End Sub
 
 ' Фиксирует соглашение по справочным ядровым расстояниям главных осей.

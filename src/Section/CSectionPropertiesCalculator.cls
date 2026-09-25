@@ -451,11 +451,16 @@ End Function
 ' расстояние использует текущие накопленные A/I этого калькулятора: для
 ' приведенного сечения их надо заранее получить через CalculateTransformedByModuli.
 ' includeRebar влияет только на выбор крайней внешней точки c в формуле
-' r = I/(A*c). Для устойчивости c берется до бетонного контура, поэтому туда
-' передается False: арматура влияет на A/I, но не раздувает габарит h и плечо c.
+' ядра. Для устойчивости c берется до бетонного контура, поэтому туда
+' передается False: арматура влияет на A/I, но не раздувает габарит h и плечо.
 ' Для положительного эксцентриситета критическая граница ядра определяется
 ' противоположным крайним волокном, поэтому для direction=+X расстояние c
 ' берется до стороны -X, а не до одноименной стороны +X.
+' Для произвольного направления и ненулевого Ixy нельзя пользоваться
+' упрощенной формулой I/(A*c): она верна только в главной системе. Поэтому
+' здесь строится единичная кривизна от единичного эксцентриситета через
+' полную центральную матрицу инерции и ищется крайняя точка, где линейная
+' деформация первой станет нулевой.
 Public Function CoreDistanceAlong(ByVal section As CSectionModel, ByVal directionX As Double, _
         ByVal directionY As Double, Optional ByVal includeRebar As Boolean = True) As Double
     If mArea <= GEOM_TOLERANCE Then Exit Function
@@ -469,18 +474,61 @@ Public Function CoreDistanceAlong(ByVal section As CSectionModel, ByVal directio
     nx = directionX / normValue
     ny = directionY / normValue
 
+    Dim determinant As Double
+    determinant = mIxc * mIyc - mIxyc * mIxyc
+    If Abs(determinant) <= GEOM_TOLERANCE Then Exit Function
+
+    ' При эксцентриситете e = lambda * direction моменты на единицу lambda:
+    ' Mx/N = directionY, My/N = directionX. Умножаем этот вектор на обратную
+    ' центральную матрицу инерции, чтобы получить форму линейного добавочного
+    ' члена деформации от единичного эксцентриситета.
+    Dim kxPerEccentricity As Double
+    Dim kyPerEccentricity As Double
+    kxPerEccentricity = (mIyc * ny - mIxyc * nx) / determinant
+    kyPerEccentricity = (-mIxyc * ny + mIxc * nx) / determinant
+
     Dim minProjection As Double
     Dim maxProjection As Double
-    CalculateProjection section, nx, ny, includeRebar, minProjection, maxProjection
+    CalculateLinearProjection section, kyPerEccentricity, kxPerEccentricity, includeRebar, minProjection, maxProjection
 
     Dim centroidProjection As Double
-    Dim extremeDistance As Double
-    centroidProjection = nx * mCentroidX + ny * mCentroidY
-    extremeDistance = centroidProjection - minProjection
-    If extremeDistance <= GEOM_TOLERANCE Then Exit Function
+    Dim criticalShapeValue As Double
+    centroidProjection = kyPerEccentricity * mCentroidX + kxPerEccentricity * mCentroidY
+    criticalShapeValue = minProjection - centroidProjection
+    If criticalShapeValue >= -GEOM_TOLERANCE Then Exit Function
 
-    CoreDistanceAlong = ProjectedInertiaAboutCentroid(nx, ny) / (mArea * extremeDistance)
+    CoreDistanceAlong = -1# / (mArea * criticalShapeValue)
 End Function
+
+' Возвращает проекционную оболочку на линейный функционал axisX*x+axisY*y
+' без нормализации axis. Обычный CalculateProjection специально нормирует ось,
+' чтобы вернуть длины в миллиметрах. Для ядра нужен не геометрический габарит,
+' а именно масштабированный коэффициент деформации g(x,y), поэтому масштаб
+' вектора оси сохраняется.
+Private Sub CalculateLinearProjection(ByVal section As CSectionModel, ByVal axisX As Double, _
+        ByVal axisY As Double, ByVal includeRebar As Boolean, _
+        ByRef minProjection As Double, ByRef maxProjection As Double)
+    If Abs(axisX) <= 0# And Abs(axisY) <= 0# Then Err.Raise vbObjectError + 2225, _
+        "CSectionPropertiesCalculator", "Линейная ось проекции имеет нулевую длину."
+
+    Dim initialized As Boolean
+    Dim i As Long
+    For i = 1 To section.ConcreteCount
+        ExtendProjection initialized, minProjection, maxProjection, _
+            axisX * section.ConcreteX(i) + axisY * section.ConcreteY(i), _
+            ConcreteHalfProjection(section, i, axisX, axisY)
+    Next i
+
+    If includeRebar And section.RebarCount > 0 Then
+        Dim axisNorm As Double
+        axisNorm = Sqr(axisX * axisX + axisY * axisY)
+        For i = 1 To section.RebarCount
+            ExtendProjection initialized, minProjection, maxProjection, _
+                axisX * section.RebarX(i) + axisY * section.RebarY(i), _
+                RebarEquivalentRadius(section.RebarArea(i)) * axisNorm
+        Next i
+    End If
+End Sub
 
 ' Расширяет накопленный диапазон проекций одним элементом.
 Private Sub ExtendProjection(ByRef initialized As Boolean, ByRef minProjection As Double, ByRef maxProjection As Double, _

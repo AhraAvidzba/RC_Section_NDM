@@ -209,7 +209,7 @@ function Get-CalculationProfilesCatalog {
 
         @{ Caption = "[Модель прочности]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
         @{ Caption = "Характеристики материалов"; Key = "MaterialModel.Strength.ValueSet"; PR1 = "ULS(I)"; PR2 = "ULS(I)"; PR3 = "ULS(I)"; PR4 = "ULS(I)"; Comment = "Для прочности по СП используются характеристики I ГПС: бетон Rb/Rbt, арматура Rsc/Rs." },
-        @{ Caption = "Диаграмма бетона"; Key = "MaterialModel.Strength.ConcreteDiagram"; PR1 = "TwoLine"; PR2 = "TwoLine"; PR3 = "TwoLine"; PR4 = "TwoLine"; Comment = "СП 63, п. 6.1.23: для прочности применяется двух- или трехлинейная диаграмма бетона." },
+        @{ Caption = "Диаграмма бетона"; Key = "MaterialModel.Strength.ConcreteDiagram"; PR1 = "ThreeLine"; PR2 = "ThreeLine"; PR3 = "ThreeLine"; PR4 = "ThreeLine"; Comment = "СП 63, п. 6.1.23: для прочности применяется двух- или трехлинейная диаграмма бетона." },
         @{ Caption = "Растянутый бетон"; Key = "MaterialModel.Strength.ConcreteTension"; PR1 = "Ignore"; PR2 = "Ignore"; PR3 = "Ignore"; PR4 = "Ignore"; Comment = "СП 63, п. 8.1.20: при расчете прочности растянутый бетон допускается не учитывать." },
         @{ Caption = "Диаграмма арматуры"; Key = "MaterialModel.Strength.SteelDiagram"; PR1 = "TwoLine"; PR2 = "TwoLine"; PR3 = "TwoLine"; PR4 = "TwoLine"; Comment = "СП 63, п. 6.2.13: TwoLine для физического предела текучести, ThreeLine для условного." },
 
