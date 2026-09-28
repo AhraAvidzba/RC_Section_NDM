@@ -280,7 +280,7 @@ Private Sub PutHeaderNotes(ByRef headers() As Variant)
     headers(HEADER_NOTES_ROW, COL_STATE_SST) = "максимальное растяжение арматуры"
     headers(HEADER_NOTES_ROW, COL_STATE_H) = "полная высота сечения по нормали к нейтральной линии"
     headers(HEADER_NOTES_ROW, COL_STATE_X) = "высота сжатой зоны по нормали к нейтральной линии"
-    headers(HEADER_NOTES_ROW, COL_STATE_DIAGEXT) = "использовалось ли продолжение физической диаграммы при фактическом НДС"
+    headers(HEADER_NOTES_ROW, COL_STATE_DIAGEXT) = "yes - равновесие найдено через продолжение диаграммы; no - продолжение было разрешено, но не понадобилось; - - продолжение выключено"
     headers(HEADER_NOTES_ROW, COL_STATE_RESERVE) = "минимальный запас по предельным деформациям"
     headers(HEADER_NOTES_ROW, COL_STATE_STATUS) = "статус фактического НДС по модели прочности"
     headers(HEADER_NOTES_ROW, COL_CAP_EPS0) = ChrW$(&H3B5) & "0 в точке (0;0) внутренней системы координат модели; от этой точки заданы координаты всех элементов сечения"
@@ -329,7 +329,7 @@ Private Sub PutColumnLabels(ByRef headers() As Variant, ByVal units As CUnitSyst
     headers(HEADER_LABEL_ROW, COL_STATE_SST) = ChrW$(&H3C3) & "st"
     headers(HEADER_LABEL_ROW, COL_STATE_H) = "h, " & OutputLengthUnit(units)
     headers(HEADER_LABEL_ROW, COL_STATE_X) = "x, " & OutputLengthUnit(units)
-    headers(HEADER_LABEL_ROW, COL_STATE_DIAGEXT) = "DiagExt"
+    headers(HEADER_LABEL_ROW, COL_STATE_DIAGEXT) = "ExtUsed"
     headers(HEADER_LABEL_ROW, COL_STATE_RESERVE) = "запас (" & ChrW$(&H3B5) & ")"
     headers(HEADER_LABEL_ROW, COL_STATE_STATUS) = "статус"
 
@@ -456,12 +456,27 @@ Private Sub PutStrengthState(ByRef data() As Variant, ByVal rowIndex As Long, _
         COL_STATE_EBC, COL_STATE_EBT, COL_STATE_ESC, COL_STATE_EST, _
         COL_STATE_SBC, COL_STATE_SBT, COL_STATE_SSC, COL_STATE_SST
     PutStateGeometry data, rowIndex, stateResult, units, section, COL_STATE_H, COL_STATE_X
-    data(rowIndex, COL_STATE_DIAGEXT) = IIf(stateResult.ExtensionUsed, "Yes", "No")
+    data(rowIndex, COL_STATE_DIAGEXT) = ExtensionUsedText(batch, index, stateResult)
     data(rowIndex, COL_STATE_RESERVE) = StrainReserve(batch, index, stateResult)
     data(rowIndex, COL_STATE_STATUS) = policy.DisplayStatus(stateResult.Status)
 End Sub
 
 ' Пишет CapacityState и предельные компоненты найденной точки.
+' Показывает использование продолжения диаграммы только тогда, когда само
+' продолжение разрешено настройкой Solver.DirectState.DiagramExtension.
+' При выключенной настройке выводится "-", потому что extension не мог
+' применяться и обычная пара yes/no здесь не несет полезного смысла.
+Private Function ExtensionUsedText(ByVal batch As CBatchSectionCalculator, _
+        ByVal index As Long, ByVal stateResult As CSectionStateResult) As String
+    If Not batch.DirectStateDiagramExtensionEnabled(index) Then
+        ExtensionUsedText = "-"
+    ElseIf stateResult.ExtensionUsed Then
+        ExtensionUsedText = "yes"
+    Else
+        ExtensionUsedText = "no"
+    End If
+End Function
+
 Private Sub PutCapacityState(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal section As CSectionModel, ByVal policy As CBatchStatusPolicy)

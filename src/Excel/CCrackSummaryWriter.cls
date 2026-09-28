@@ -267,7 +267,7 @@ Private Sub PutHeaderNotes(ByRef headers() As Variant, ByVal units As CUnitSyste
     headers(HEADER_NOTES_ROW, COL_BEFORE_MCRC_STATUS) = "статус НДС непосредственно перед образованием нормальной трещины"
     headers(HEADER_NOTES_ROW, COL_AFTER_MCRC_STATUS) = "статус НДС сразу после образования нормальной трещины"
     headers(HEADER_NOTES_ROW, COL_FORMATION_STATE) = "итог: нормальная трещина образуется при заданном сочетании или нет"
-    headers(HEADER_NOTES_ROW, COL_CRACK_STATE_DIAGEXT) = "Yes - текущее равновесие для расчета трещин найдено через продолжение диаграммы за физические пределы; такое состояние не используется в формулах раскрытия"
+    headers(HEADER_NOTES_ROW, COL_CRACK_STATE_DIAGEXT) = "yes - равновесие найдено через продолжение диаграммы; no - продолжение было разрешено, но не понадобилось; - - продолжение выключено в настройках"
     headers(HEADER_NOTES_ROW, COL_CRACK_STATE_STATUS) = "OK - равновесие при заданных нагрузках сошлось без продолжения диаграммы и все материалы остались в физическом диапазоне; FAIL/NumFail останавливают расчет трещин"
     headers(HEADER_NOTES_ROW, COL_XT) = "фактическая высота растянутой зоны"
     headers(HEADER_NOTES_ROW, COL_H) = "полная высота сечения по нормали к нейтральной линии"
@@ -316,7 +316,7 @@ Private Sub PutColumnLabels(ByRef headers() As Variant, ByVal units As CUnitSyst
     headers(HEADER_LABEL_ROW, COL_BEFORE_MCRC_STATUS) = "BeforeMcrcState"
     headers(HEADER_LABEL_ROW, COL_AFTER_MCRC_STATUS) = "AfterMcrcState"
     headers(HEADER_LABEL_ROW, COL_FORMATION_STATE) = "state"
-    headers(HEADER_LABEL_ROW, COL_CRACK_STATE_DIAGEXT) = "DiagExt"
+    headers(HEADER_LABEL_ROW, COL_CRACK_STATE_DIAGEXT) = "ExtUsed"
     headers(HEADER_LABEL_ROW, COL_CRACK_STATE_STATUS) = "статус"
     headers(HEADER_LABEL_ROW, COL_XT) = "xt, " & OutputLengthUnit(units)
     headers(HEADER_LABEL_ROW, COL_H) = "h, " & OutputLengthUnit(units)
@@ -511,7 +511,7 @@ Private Sub PutCrackedStateData(ByRef data() As Variant, ByVal rowIndex As Long,
         Exit Sub
     End If
 
-    data(rowIndex, COL_CRACK_STATE_DIAGEXT) = IIf(stateResult.ExtensionUsed, "Yes", "No")
+    data(rowIndex, COL_CRACK_STATE_DIAGEXT) = ExtensionUsedText(batch, index, stateResult)
     If Len(stateResult.Status) > 0 Then
         data(rowIndex, COL_CRACK_STATE_STATUS) = policy.DisplayStatus(stateResult.Status)
     ElseIf Not stateResult.Converged Then
@@ -529,6 +529,20 @@ End Sub
 ' продолжение диаграммы или помечено как FAIL/NumFail, формульные блоки
 ' a_crc и продольных трещин в подробной таблице должны оставаться N/A:
 ' это не результаты этих проверок, а остановка на более раннем шаге.
+' Показывает, использовало ли текущее CrackedState продолжение диаграммы.
+' Значение "-" означает, что Solver.DirectState.DiagramExtension был выключен
+' для этого LC, поэтому extension в принципе не мог применяться.
+Private Function ExtensionUsedText(ByVal batch As CBatchSectionCalculator, _
+        ByVal index As Long, ByVal stateResult As CSectionStateResult) As String
+    If Not batch.DirectStateDiagramExtensionEnabled(index) Then
+        ExtensionUsedText = "-"
+    ElseIf stateResult.ExtensionUsed Then
+        ExtensionUsedText = "yes"
+    Else
+        ExtensionUsedText = "no"
+    End If
+End Function
+
 Private Function CrackedStateAllowsCrackChecks(ByVal batch As CBatchSectionCalculator, _
         ByVal index As Long, ByVal policy As CBatchStatusPolicy) As Boolean
     Dim stateResult As CSectionStateResult
@@ -560,7 +574,11 @@ Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
     End If
 
     If Not policy.IsFinished(batch.CrackStatus(index)) Then
-        data(rowIndex, COL_ACRC_STATUS) = policy.DisplayStatus(batch.CrackStatus(index))
+        If policy.DisplayStatus(batch.CrackStatus(index)) = policy.NumFail Then
+            data(rowIndex, COL_ACRC_STATUS) = policy.NotApplicable
+        Else
+            data(rowIndex, COL_ACRC_STATUS) = policy.DisplayStatus(batch.CrackStatus(index))
+        End If
         Exit Sub
     End If
 

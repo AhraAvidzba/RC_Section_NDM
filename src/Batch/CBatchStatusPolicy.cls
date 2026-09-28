@@ -177,7 +177,7 @@ End Function
 ' a_crc,ult при корректно найденном НДС.
 Public Function CrackStatusFromCalculator(ByVal crack As CCrackWidthCalculator) As String
     If crack Is Nothing Then
-        CrackStatusFromCalculator = STATUS_NUMFAIL
+        CrackStatusFromCalculator = STATUS_INPUTERR
     ElseIf crack.Converged Then
         If crack.CrackFormed And crack.AllowableCrackWidth > 0# And _
                 crack.CrackWidth > crack.AllowableCrackWidth Then
@@ -187,8 +187,10 @@ Public Function CrackStatusFromCalculator(ByVal crack As CCrackWidthCalculator) 
         End If
     ElseIf IsInvalid(crack.StopReason) Then
         CrackStatusFromCalculator = STATUS_INPUTERR
-    Else
+    ElseIf IsNumerical(crack.StopReason) Then
         CrackStatusFromCalculator = STATUS_NUMFAIL
+    Else
+        CrackStatusFromCalculator = STATUS_INPUTERR
     End If
 End Function
 
@@ -211,7 +213,7 @@ End Function
 ' отдается только общий словарь Summary.
 Public Function StabilityStatusFromCalculator(ByVal stability As CStabilityCalculator) As String
     If stability Is Nothing Then
-        StabilityStatusFromCalculator = STATUS_NUMFAIL
+        StabilityStatusFromCalculator = STATUS_INPUTERR
     ElseIf Not stability.InputValid Then
         StabilityStatusFromCalculator = STATUS_INPUTERR
     ElseIf Not stability.Applicable Then

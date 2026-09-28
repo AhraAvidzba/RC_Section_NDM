@@ -31,7 +31,7 @@ function Get-SystemSettingsCatalog {
             @("Solver.Method", "Newton", "-", "Метод поиска равновесия НДС. Допустимо только Newton или Secant; пустое или неизвестное значение считается ошибкой исходных данных."),
             @("Solver.MaxIterations", "80", "шт", "Применяется к Newton и Secant. Максимальное число итераций на ступень нагрузки; увеличение повышает шанс сходимости, но увеличивает время."),
             @("Solver.LoadSteps", "1", "шт", "Применяется к Newton и Secant. Число ступеней приложения нагрузки в прямом НДМ; больше ступеней обычно устойчивее, но медленнее."),
-            @("Solver.DirectState.DiagramExtension", "Yes", "-", "Помогает найти равновесие для перегруженного сочетания и показать FAIL вместо численной несходимости. Несущую способность и трещины не увеличивает."),
+            @("Solver.DirectState.DiagramExtension", "Yes", "-", "Помогает найти прямое равновесие для перегруженного сочетания по модели прочности или трещин. Несущую способность и Mcrc/Ncrc не увеличивает."),
             @("Solver.ToleranceN", "0.0001", "Н", "Применяется к Newton и Secant. Абсолютный допуск равновесия по продольной силе в выбранной INPUT-единице силы; значение переводится во внутренние Н."),
             @("Solver.ToleranceMx", "0.0001", "Н*мм", "Применяется к Newton и Secant. Абсолютный допуск равновесия по моменту Mx в выбранной INPUT-единице момента; значение переводится во внутренние Н*мм."),
             @("Solver.ToleranceMy", "0.0001", "Н*мм", "Применяется к Newton и Secant. Абсолютный допуск равновесия по моменту My в выбранной INPUT-единице момента; значение переводится во внутренние Н*мм."),
@@ -185,8 +185,8 @@ function Get-SteelMaterialParametersCatalog {
         @("Steel.R.ULS(I)", "350", "350", "МПа", "I ГПС по СП: Сжатие = R_sc, Растяжение = R_s."),
         @("Steel.R.SLS(II)", "390", "390", "МПа", "II ГПС: Сжатие = R_sc,ser, Растяжение = R_s,ser; R_sc,ser - программный параметр для симметрии."),
         @("Steel.E", "200000", "200000", "МПа", "Модуль арматуры: E_sc при сжатии и E_s при растяжении; по СП 63 модуль принимается одинаковым."),
-        @("Steel.TwoLine.Es2", "0.025", "0.025", "-", "Для TwoLine: ε_sc2 при сжатии и ε_s2 при растяжении."),
-        @("Steel.ThreeLine.Es2", "0.015", "0.015", "-", "Для ThreeLine: ε_sc2 при сжатии и ε_s2 при растяжении.")
+        @("Steel.TwoLine.Es2", "0.025", "0.025", "-", "Для TwoLine: предельные деформации арматуры ε_sc2 при сжатии и ε_s2 при растяжении."),
+        @("Steel.ThreeLine.Es2", "0.015", "0.015", "-", "Для ThreeLine: предельные деформации арматуры ε_sc2 при сжатии и ε_s2 при растяжении.")
     )
 }
 
@@ -760,8 +760,8 @@ function Get-SettingInstructionLines {
             "Эта настройка нужна для прямого расчета состояния сечения от заданного сочетания N + Mx + My.",
             "Если нагрузка немного больше того, что описывает физическая диаграмма материала, обычная диаграмма выходит на последнюю точку и расчет может не найти равновесие. При Yes программа добавляет слабое техническое продолжение за последней физической деформацией, чтобы равновесие можно было найти и явно показать пользователю перегрузку.",
             "Такой результат не считается нормальным расчетным состоянием. Если техническое продолжение действительно понадобилось, в Summary будет FAIL, а на схеме и в AutoCAD появится предупреждение: ВНЕ ФИЗИЧЕСКОЙ ДИАГРАММЫ МАТЕРИАЛА.",
-            "Extension не увеличивает несущую способность сечения. Расчет Capacity, образование трещины и расчет раскрытия трещин выполняются только по обычным физическим диаграммам без этого продолжения.",
-            "Раскрытие трещин считается только тогда, когда исходное состояние с трещинами найдено внутри физической диаграммы: DirectStateStatus = OK и ExtensionUsed = False. Само включение этой настройки расчет трещин не запрещает."
+            "Extension не увеличивает несущую способность сечения и не применяется к поиску момента образования трещины Mcrc/Ncrc. Capacity и CrackInitiation выполняются только по обычным физическим диаграммам без этого продолжения.",
+            "Для расчета трещин эта же настройка применяется только к текущему CrackedState от заданного сочетания. Формулы раскрытия считаются только тогда, когда это состояние найдено внутри физической диаграммы: статус равновесия OK и ExtUsed = no. Само включение настройки расчет трещин не запрещает."
         ) }
         "Solver.ToleranceN" { return @($lead) + @(
             "Это абсолютный допуск невязки по продольной силе N. Число в Config вводится в текущей INPUT-единице силы, указанной в блоке Units.",
@@ -1325,6 +1325,7 @@ function Get-SettingsInstructionCatalog {
         "Для Strength используется I группа: R_b и R_bt. Для CrackInitiation и CrackedNDS используется II группа: R_b,ser и R_bt,ser.",
         "E_b и E_bt оставлены отдельными полями. Нормативно E_bt = E_b, потому что СП 63.13330.2018, п. 6.1.15 принимает начальный модуль бетона одинаковым при сжатии и растяжении.",
         "0.4·E_b в СП относится к модулю сдвига G, а не к E_bt.",
+        "Concrete.TwoThreeLine.Eb2 задает предельные деформации бетона: ε_b2 для сжатой ветви и ε_bt2 для растянутой ветви диаграмм TwoLine/ThreeLine.",
         "Деформационные параметры и контрольные точки бетонных диаграмм строятся по СП 63.13330.2018, пп. 6.1.14, 6.1.20-6.1.24 и 6.1.26.",
         "Серые контрольные таблицы точек на Config предназначены только для проверки человеком и формулами Excel. Расчетное ядро эти таблицы не читает."
     )}) | Out-Null
@@ -1333,6 +1334,7 @@ function Get-SettingsInstructionCatalog {
         "Для Strength используется I группа: R_sc и R_s. Для CrackInitiation и CrackedNDS используется II группа: R_s,ser и программный параметр R_sc,ser.",
         "СП 63 отдельно не вводит R_sc,ser в том виде, как оно выведено в таблице. В программе поле оставлено для симметричного задания сжатой ветви; принято R_sc,ser = R_s,ser.",
         "E_sc также является программным расширением для симметрии. Нормативно E_sc = E_s, потому что СП 63.13330.2018, п. 6.2.12 принимает модуль арматуры одинаковым при растяжении и сжатии.",
+        "Steel.TwoLine.Es2 и Steel.ThreeLine.Es2 задают предельные деформации арматуры: ε_sc2 для сжатой ветви и ε_s2 для растянутой ветви соответствующей диаграммы.",
         "Производные точки арматурных диаграмм строятся по СП 63.13330.2018, пп. 6.2.11, 6.2.14 и 6.2.15. П. 6.2.13 задает смысл: TwoLine для физического предела текучести, ThreeLine для условного.",
         "Коэффициент φ_2 для раскрытия трещин больше не берется из материала арматуры: он задается отдельной настройкой SLS.Crack.Phi2."
     )}) | Out-Null
@@ -2400,7 +2402,7 @@ function Add-DirectStateMethodologyGuide {
     $row = Add-GuideParagraph $Sheet $row "Общие настройки решателя: Solver.Method выбирает численный метод: Newton или Secant. Solver.MaxIterations ограничивает число итераций на одной ступени нагрузки, Solver.LoadSteps задает число ступеней приложения нагрузки, а Solver.ToleranceN, Solver.ToleranceMx и Solver.ToleranceMy задают допустимые остаточные невязки по силе и моментам."
     $row = Add-GuideParagraph $Sheet $row "Контроль шага: Solver.LineSearchEnabled, Solver.DampingInitial, Solver.MinLineSearchAlpha, Solver.MaxDeltaEpsilon0 и Solver.MaxDeltaKappa ограничивают слишком резкие изменения плоскости деформаций. Эти настройки применяются и к Newton, и к Secant."
     $row = Add-GuideParagraph $Sheet $row "Secant: Solver.SecantMaxRestarts и Solver.SecantMinStepNorm нужны только для Solver.Method = Secant. Для Newton отдельных специальных настроек сейчас нет: Newton использует общие допуски, ограничения шага и line search."
-    $row = Add-GuideParagraph $Sheet $row "DiagramExtension: Solver.DirectState.DiagramExtension относится только к пользовательскому прямому НДС по модели прочности. Если заданное сочетание уже лежит вне физической диаграммы, программа может временно продолжить диаграммы материалов, найти равновесие для диагностики и показать FAIL вместо NumFail. Несущая способность, CrackInitiation и CrackedState используют физические диаграммы без такого продолжения."
+    $row = Add-GuideParagraph $Sheet $row "DiagramExtension: Solver.DirectState.DiagramExtension относится к прямому НДС от заданного сочетания: по модели прочности и по модели трещин. Если заданное сочетание уже лежит вне физической диаграммы, программа может временно продолжить диаграммы материалов, найти равновесие для диагностики и показать FAIL вместо NumFail. Несущая способность и CrackInitiation используют физические диаграммы без такого продолжения."
     $row = Add-GuideParagraph $Sheet $row "Отчет и малые моменты: General.ExecutionReportEnabled только включает txt-отчет и не меняет математику. Calculation.ZeroMomentPerDepth применяется до расчета: моменты меньше M_tol = значение·h обнуляются как инженерно ничтожные."
     $row++
 
@@ -3823,7 +3825,13 @@ function Add-MaterialDiagramControlTables {
 
     function New-MaterialParameterRef {
         param([string]$RangeName, [string]$ParameterName, [int]$ValueColumn)
-        return ('INDEX({0},MATCH("{1}",INDEX({0},,1),0),{2})' -f $RangeName, $ParameterName, $ValueColumn)
+        $range = $Sheet.Range($RangeName)
+        for ($rowIndex = 1; $rowIndex -le $range.Rows.Count; $rowIndex++) {
+            if ([string]$range.Cells.Item($rowIndex, 1).Value2 -eq $ParameterName) {
+                return $range.Cells.Item($rowIndex, $ValueColumn).Address($true, $true)
+            }
+        }
+        throw "Не найден параметр $ParameterName в диапазоне $RangeName для контрольных точек диаграмм."
     }
 
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = "Контрольные точки диаграмм"
@@ -4101,7 +4109,6 @@ function Apply-SystemSettingsLayout {
     $materialControlColumn = 35
     $materialChartTopRow = 1
     $materialChartColumn = 22
-    Add-MaterialDiagramControlTables $Sheet $materialControlHeaderRow $materialControlColumn
     Add-SP35Table721 $Workbook $Sheet 60 35
 
     Add-UnitSettingsTable $Workbook $Sheet $rightRow $rightColumn
@@ -4120,6 +4127,8 @@ function Apply-SystemSettingsLayout {
     $concreteRows = Get-ConcreteMaterialParametersCatalog
     Add-MaterialParameterTable $Workbook $Sheet "rngConcreteMaterialParameters" $rightRow $rightColumn "Материал бетона" $concreteRows
     $rightRow += $concreteRows.Count + 1 + $rightBlockGap
+
+    Add-MaterialDiagramControlTables $Sheet $materialControlHeaderRow $materialControlColumn
 
     Add-CalculationProfilesTable $Workbook $Sheet $rightRow $rightColumn
     Add-LoadProfileValidation $Workbook $Sheet 142

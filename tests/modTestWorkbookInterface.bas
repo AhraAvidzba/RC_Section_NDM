@@ -1549,17 +1549,17 @@ Private Sub TestRectSetAxialTensionExtensionFromWorkbookSettings(ByRef stats As 
     Dim safeCrack As String
     Dim overOverall As String
     Dim overCrack As String
-    Dim overCrackDiagExt As String
+    Dim overCrackExtUsed As String
     Dim overCrackEquilibrium As String
     Dim overLongitudinal As String
     Dim overExtension As String
     safeOverall = CStr(resultsSheet.Cells.Item(safeSummaryRow, 3).Value2)
     safeCrack = CStr(resultsSheet.Cells.Item(safeCrackRow, 2).Value2)
     overOverall = CStr(resultsSheet.Cells.Item(overSummaryRow, 3).Value2)
-    overCrackDiagExt = CStr(resultsSheet.Cells.Item(overCrackRow, 19).Value2)
-    overCrackEquilibrium = CStr(resultsSheet.Cells.Item(overCrackRow, 20).Value2)
-    overCrack = CStr(resultsSheet.Cells.Item(overCrackRow, 42).Value2)
-    overLongitudinal = CStr(resultsSheet.Cells.Item(overCrackRow, 46).Value2)
+    overCrackExtUsed = CStr(resultsSheet.Cells.Item(overCrackRow, 21).Value2)
+    overCrackEquilibrium = CStr(resultsSheet.Cells.Item(overCrackRow, 22).Value2)
+    overCrack = CStr(resultsSheet.Cells.Item(overCrackRow, 44).Value2)
+    overLongitudinal = CStr(resultsSheet.Cells.Item(overCrackRow, 48).Value2)
     overExtension = ResultsPropertyValue("LC_OVER", "ExtensionUsed")
 
     AppendLine stats, "INFO: ui.rectset.axial795 overall=" & safeOverall & _
@@ -1577,8 +1577,8 @@ Private Sub TestRectSetAxialTensionExtensionFromWorkbookSettings(ByRef stats As 
         overOverall = "FAIL" Or overOverall = "NumFail"
     AssertTrue stats, "ui.rectset.axial900.crackNoNumFail", _
         overCrack <> "NumFail" And overCrack <> "InputErr"
-    AssertTextEquals stats, "ui.rectset.axial900.crackedStateDiagExt", _
-        overCrackDiagExt, "Yes"
+    AssertTextEquals stats, "ui.rectset.axial900.crackedStateExtUsed", _
+        overCrackExtUsed, "yes"
     AssertTextEquals stats, "ui.rectset.axial900.crackedStateEquilibrium", _
         overCrackEquilibrium, "FAIL"
     AssertTextEquals stats, "ui.rectset.axial900.crackWidthSkipped", _

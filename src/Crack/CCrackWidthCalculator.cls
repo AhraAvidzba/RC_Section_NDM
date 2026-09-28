@@ -454,14 +454,15 @@ Private Sub CheckGeneralFormation(ByVal section As CSectionModel, _
         mFormationNcrc = FormationNValue()
         mMcrc = CrackMomentFromFormationLoad(centralReferenceX, centralReferenceY)
     End If
-    If mLambdaCrc > 1# Then
-        FinishNoCrack "Трещина не образована: предельная растянутая деформация бетона не достигнута при lambda = 1."
-        Exit Sub
-    End If
 
     If mFormationPathFallbackPsi1 Then Exit Sub
 
     If Not EnsureAfterMcrcState(section, materialProvider, Nothing, targetN, targetMx, targetMy) Then Exit Sub
+
+    If mLambdaCrc > 1# Then
+        FinishNoCrack "Трещина не образована: предельная растянутая деформация бетона не достигнута при lambda = 1."
+        Exit Sub
+    End If
 
     mConverged = True
     mCrackFormed = True

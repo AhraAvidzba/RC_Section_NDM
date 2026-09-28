@@ -1292,7 +1292,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     crack.CalculateAfterFormationCheck runner.ResultSolver, mSection, mMaterialProvider, profile.CrackedStateSpec, _
         profile.CrackInitiationSpec, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
         loadState, crackReferenceX, crackReferenceY
-    mResults(index).CrackStatus = mStatusPolicy.CrackStatusFromCalculator(crack)
+    mResults(index).CrackStatus = CrackWidthStatusAfterFormula(index, crack)
     mResults(index).StoreCrackResult crack
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
 
@@ -1309,6 +1309,45 @@ ReportCrackResult:
     ReportValue "ls", ReportLengthText(mResults(index).CrackLs)
     ReportBlock "Диагностика расчета трещин", crack.DiagnosticLog
 End Sub
+
+' Возвращает пользовательский статус именно формульного этапа раскрытия
+' нормальной трещины. NumFail допустим только если он уже виден в одном из
+' НДС-состояний трещин: BeforeMcrcState, AfterMcrcState или CrackedState.
+' Если эти состояния сошлись, а калькулятор ширины оставил техническую
+' NumericalFailure-причину, это не отдельная несходимость равновесия, поэтому
+' для пользователя показывается FAIL, а подробность остается в txt-диагностике.
+Private Function CrackWidthStatusAfterFormula(ByVal index As Long, _
+        ByVal crack As CCrackWidthCalculator) As String
+    Dim statusText As String
+    statusText = mStatusPolicy.CrackStatusFromCalculator(crack)
+    If statusText = mStatusPolicy.NumFail And Not HasNumFailCrackState(index) Then
+        CrackWidthStatusAfterFormula = mStatusPolicy.Fail
+    Else
+        CrackWidthStatusAfterFormula = statusText
+    End If
+End Function
+
+' Проверяет только те состояния трещин, где действительно решается равновесие
+' сечения. Именно они имеют право поднимать пользовательский NumFail.
+Private Function HasNumFailCrackState(ByVal index As Long) As Boolean
+    HasNumFailCrackState = CrackStateStatusIsNumFail(index, sstBeforeMcrcState) Or _
+        CrackStateStatusIsNumFail(index, sstAfterMcrcState) Or _
+        CrackStateStatusIsNumFail(index, sstCrackedState)
+End Function
+
+' Возвращает True, если конкретный named-state трещин сохранен как NumFail
+' или содержит несошедшийся solver без более мягкого статуса.
+Private Function CrackStateStatusIsNumFail(ByVal index As Long, _
+        ByVal stateType As ESectionStateType) As Boolean
+    Dim stateResult As CSectionStateResult
+    Set stateResult = mResults(index).FindState(stateType)
+    If stateResult Is Nothing Then Exit Function
+    If mStatusPolicy.DisplayStatus(stateResult.Status) = mStatusPolicy.NumFail Then
+        CrackStateStatusIsNumFail = True
+    ElseIf Len(stateResult.Status) = 0 And Not stateResult.Converged Then
+        CrackStateStatusIsNumFail = True
+    End If
+End Function
 
 ' Поясняет в txt-отчете стартовую логику поиска образования нормальной трещины.
 ' Низкоуровневый DiagnosticLog ниже сохраняет точные попытки, а эта строка
