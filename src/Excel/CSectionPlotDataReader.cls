@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -717,9 +717,12 @@ End Function
 ' Проверяет, относится ли запрошенный StateType к расчету трещин. Для таких
 ' состояний можно дать пользователю более точную причину отсутствия snapshot.
 Private Function IsCrackVisualizationState(ByVal stateType As String) As Boolean
-    IsCrackVisualizationState = (StrComp(stateType, "BeforeMcrcState", vbTextCompare) = 0 Or _
-        StrComp(stateType, "AfterMcrcState", vbTextCompare) = 0 Or _
-        StrComp(stateType, "CrackedState", vbTextCompare) = 0)
+    On Error GoTo NotCrackState
+    Select Case SectionStateTypeFromText(stateType)
+        Case sstPreCrackState, sstPostCrackState, sstCrackedState
+            IsCrackVisualizationState = True
+    End Select
+NotCrackState:
 End Function
 
 ' Безопасно читает числовое поле Results, где часть колонок может быть пустой.

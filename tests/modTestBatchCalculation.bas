@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestBatchCalculation"
+Attribute VB_Name = "modTestBatchCalculation"
 Option Explicit
 
 ' ==========================================================================
@@ -144,8 +144,8 @@ Public Function RunBatchCalculationTests() As String
     TestPR2PhysicalStateRunsCrackWithExtensionEnabled stats
     AppendLine stats, "RUN: TestBatchCrackCoverDistanceModeChangesAs"
     TestBatchCrackCoverDistanceModeChangesAs stats
-    AppendLine stats, "RUN: TestPR2AutoCrackStoresBeforeAndAfterMcrcStates"
-    TestPR2AutoCrackStoresBeforeAndAfterMcrcStates stats
+    AppendLine stats, "RUN: TestPR2AutoCrackStoresPreAndPostCrackStates"
+    TestPR2AutoCrackStoresPreAndPostCrackStates stats
     AppendLine stats, "RUN: TestPR2AutoCrackPureBendingStoresMcrcStates"
     TestPR2AutoCrackPureBendingStoresMcrcStates stats
     AppendLine stats, "RUN: TestPR2RectSetCompressionSmallMomentCrackDoesNotNumFail"
@@ -190,6 +190,10 @@ Public Function RunBatchCalculationTests() As String
     TestResultMetaAggregateSkipsNotApplicable stats
     AppendLine stats, "RUN: TestFormulaChecksDoNotCreateNumFail"
     TestFormulaChecksDoNotCreateNumFail stats
+    AppendLine stats, "RUN: TestSectionStateResultStoresEquilibriumData"
+    TestSectionStateResultStoresEquilibriumData stats
+    AppendLine stats, "RUN: TestPrePostCrackStateAliases"
+    TestPrePostCrackStateAliases stats
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -872,9 +876,9 @@ RestoreAndFail:
 End Sub
 
 ' Проверяет, что Auto-ветка трещин сохраняет оба состояния около Mcrc.
-' BeforeMcrcState нужен для контроля состояния с работающим растянутым бетоном,
-' AfterMcrcState - для ручной проверки sigma_s,crc после раскрытия трещины.
-Private Sub TestPR2AutoCrackStoresBeforeAndAfterMcrcStates(ByRef stats As TBatchTestStats)
+' PreCrackState нужен для контроля состояния с работающим растянутым бетоном,
+' PostCrackState - для ручной проверки sigma_s,crc после раскрытия трещины.
+Private Sub TestPR2AutoCrackStoresPreAndPostCrackStates(ByRef stats As TBatchTestStats)
     Dim oldPsiMode As String
     Dim oldAllowable As String
     oldPsiMode = GetSystemSetting("SLS.Crack.PsiMode")
@@ -897,11 +901,11 @@ Private Sub TestPR2AutoCrackStoresBeforeAndAfterMcrcStates(ByRef stats As TBatch
     AssertTrue stats, "batch.group2.autoMcrc.crackCalculated", _
         batch.CrackStatus(1) = "OK" Or batch.CrackStatus(1) = "FAIL"
     AssertTrue stats, "batch.group2.autoMcrc.beforeState", _
-        Not batch.FindNamedState(1, sstBeforeMcrcState) Is Nothing
+        Not batch.FindNamedState(1, sstPreCrackState) Is Nothing
     AssertTrue stats, "batch.group2.autoMcrc.afterState", _
-        Not batch.FindNamedState(1, sstAfterMcrcState) Is Nothing
+        Not batch.FindNamedState(1, sstPostCrackState) Is Nothing
     AssertTrue stats, "batch.group2.autoMcrc.afterRole", _
-        batch.FindNamedState(1, sstAfterMcrcState).MaterialModelRoleText = "CrackedState"
+        batch.FindNamedState(1, sstPostCrackState).MaterialModelRoleText = "CrackedState"
 
 Restore:
     SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
@@ -944,9 +948,9 @@ Private Sub TestPR2AutoCrackPureBendingStoresMcrcStates(ByRef stats As TBatchTes
     AssertTrue stats, "batch.group2.autoMcrcPure.crackCalculated", _
         batch.CrackStatus(1) = "OK" Or batch.CrackStatus(1) = "FAIL"
     AssertTrue stats, "batch.group2.autoMcrcPure.beforeState", _
-        Not batch.FindNamedState(1, sstBeforeMcrcState) Is Nothing
+        Not batch.FindNamedState(1, sstPreCrackState) Is Nothing
     AssertTrue stats, "batch.group2.autoMcrcPure.afterState", _
-        Not batch.FindNamedState(1, sstAfterMcrcState) Is Nothing
+        Not batch.FindNamedState(1, sstPostCrackState) Is Nothing
 
 Restore:
     SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
@@ -4510,6 +4514,49 @@ Private Sub TestFormulaChecksDoNotCreateNumFail(ByRef stats As TBatchTestStats)
         policy.LongitudinalCrackStatus(20#, 14.6) <> "NumFail"
 End Sub
 
+' Проверяет Stage 2: named-state хранит не только плоскость деформаций, но и
+' целевые/внутренние усилия, невязки и diagnostic metadata solver-а.
+Private Sub TestSectionStateResultStoresEquilibriumData(ByRef stats As TBatchTestStats)
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.AddCombination "STATE_META", -100000#, 12000000#, 3000000#, "PR1", "state metadata"
+    batch.Execute
+
+    Dim stateResult As CSectionStateResult
+    Set stateResult = batch.FindNamedState(1, sstStrengthState)
+
+    AssertTrue stats, "stateMeta.exists", Not stateResult Is Nothing
+    If stateResult Is Nothing Then Exit Sub
+
+    AssertClose stats, "stateMeta.epsilon0", stateResult.Epsilon0, batch.Epsilon0(1), 0.000000000001
+    AssertClose stats, "stateMeta.kappaX", stateResult.KappaX, batch.KappaX(1), 0.000000000001
+    AssertClose stats, "stateMeta.kappaY", stateResult.KappaY, batch.KappaY(1), 0.000000000001
+    AssertClose stats, "stateMeta.targetN", stateResult.TargetN, batch.N(1), 0.001
+    AssertClose stats, "stateMeta.targetMx", stateResult.TargetMx, batch.Mx(1), 0.001
+    AssertClose stats, "stateMeta.targetMy", stateResult.TargetMy, batch.My(1), 0.001
+    AssertClose stats, "stateMeta.nint", stateResult.Nint, batch.Nint(1), 0.001
+    AssertClose stats, "stateMeta.mxint", stateResult.Mxint, batch.Mxint(1), 0.001
+    AssertClose stats, "stateMeta.myint", stateResult.Myint, batch.Myint(1), 0.001
+    AssertTrue stats, "stateMeta.solverCalls", stateResult.SolverCallCount >= 1
+    AssertTrue stats, "stateMeta.iterations", stateResult.IterationCount >= 0
+    AssertTrue stats, "stateMeta.resultMeta", Not stateResult.ResultMeta Is Nothing
+End Sub
+
+' Проверяет совместимость этапа переименования: старые строки читаются как
+' aliases, а канонический текст state уже выводится как Pre/PostCrackState.
+Private Sub TestPrePostCrackStateAliases(ByRef stats As TBatchTestStats)
+    AssertTrue stats, "stateAlias.before", _
+        SectionStateTypeFromText("BeforeMcrcState") = sstPreCrackState
+    AssertTrue stats, "stateAlias.after", _
+        SectionStateTypeFromText("AfterMcrcState") = sstPostCrackState
+    AssertTrue stats, "stateAlias.preCanonical", _
+        SectionStateTypeFromText("PreCrackState") = sstPreCrackState
+    AssertTrue stats, "stateAlias.postCanonical", _
+        SectionStateTypeFromText("PostCrackState") = sstPostCrackState
+    AssertEquals stats, "stateAlias.preText", SectionStateTypeToText(sstPreCrackState), "PreCrackState"
+    AssertEquals stats, "stateAlias.postText", SectionStateTypeToText(sstPostCrackState), "PostCrackState"
+End Sub
+
 Private Function RectangleRebars(ByVal geom As ISectionGeometry) As CRebarLayout
     Dim layout As CRebarLayout
     Set layout = New CRebarLayout
@@ -4694,8 +4741,3 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
-
-
-
-
-

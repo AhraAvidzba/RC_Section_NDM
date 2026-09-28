@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modAutoCADStressExport"
+Attribute VB_Name = "modAutoCADStressExport"
 Option Explicit
 
 ' ==========================================================================
@@ -490,9 +490,12 @@ Private Function MissingExportStateMessage(ByVal combinationID As String, ByVal 
 End Function
 
 Private Function IsCrackExportState(ByVal stateType As String) As Boolean
-    IsCrackExportState = (StrComp(stateType, "BeforeMcrcState", vbTextCompare) = 0 Or _
-        StrComp(stateType, "AfterMcrcState", vbTextCompare) = 0 Or _
-        StrComp(stateType, "CrackedState", vbTextCompare) = 0)
+    On Error GoTo NotCrackState
+    Select Case SectionStateTypeFromText(stateType)
+        Case sstPreCrackState, sstPostCrackState, sstCrackedState
+            IsCrackExportState = True
+    End Select
+NotCrackState:
 End Function
 
 Private Function ExportCombinationHasCrackWidth(ByVal combinationID As String) As Boolean

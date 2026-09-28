@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -80,7 +80,7 @@ End Sub
 
 ' Решает прямое равновесие от заданного LC, начиная не с нулевой плоскости,
 ' а с уже найденного solver-а. Это общий путь для служебных состояний вроде
-' AfterMcrcState: они получают ту же централизованную настройку solver-а,
+' PostCrackState: они получают ту же централизованную настройку solver-а,
 ' диагностику и fallback-логику, что и обычные Strength/CrackedState, но могут
 ' стартовать от близкого физического состояния на том же уровне нагрузки.
 Public Sub SolveWithInitialSolver(ByVal section As CSectionModel, _

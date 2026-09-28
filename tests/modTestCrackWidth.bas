@@ -107,8 +107,8 @@ Private Sub TestCrackUserCoefficients(ByRef stats As TCrackTestStats)
     AssertClose stats, "crack.user.coeffs.phi3", crack.Phi3, 1.1, 0.000000001
     AssertClose stats, "crack.user.coeffs.psi", crack.PsiS, 0.8, 0.000000001
     AssertTrue stats, "crack.user.coeffs.lambda", crack.LambdaCrc > 0# And crack.LambdaCrc <= 1#
-    AssertTrue stats, "crack.user.coeffs.beforeMcrcState", Not crack.BeforeMcrcState Is Nothing
-    AssertTrue stats, "crack.user.coeffs.afterMcrcState", Not crack.AfterMcrcState Is Nothing
+    AssertTrue stats, "crack.user.coeffs.preCrackState", Not crack.PreCrackState Is Nothing
+    AssertTrue stats, "crack.user.coeffs.postCrackState", Not crack.PostCrackState Is Nothing
     AssertTrue stats, "crack.user.coeffs.sigmaCrcAvailable", crack.SigmaSCrc > 0#
 End Sub
 
@@ -169,8 +169,8 @@ Private Sub TestAutoPsiSkipsLambdaWhenFirstCheckPasses(ByRef stats As TCrackTest
     AssertClose stats, "crack.auto.pass.psi", crack.PsiS, 1#, 0.000000001
     AssertTrue stats, "crack.auto.pass.lambda", crack.LambdaCrc > 0# And crack.LambdaCrc <= 1#
     AssertTrue stats, "crack.auto.pass.sigmaCrcAvailable", crack.SigmaSCrc > 0#
-    AssertTrue stats, "crack.auto.pass.beforeMcrcState", Not crack.BeforeMcrcState Is Nothing
-    AssertTrue stats, "crack.auto.pass.afterMcrcState", Not crack.AfterMcrcState Is Nothing
+    AssertTrue stats, "crack.auto.pass.preCrackState", Not crack.PreCrackState Is Nothing
+    AssertTrue stats, "crack.auto.pass.postCrackState", Not crack.PostCrackState Is Nothing
 End Sub
 
 Private Sub TestAlwaysCalcPsiAppliesSigmaCrcWhenAutoPasses(ByRef stats As TCrackTestStats)
@@ -219,23 +219,23 @@ Private Sub TestAutoPsiAndLambdaAfterFailedFirstCheck(ByRef stats As TCrackTestS
     AssertTrue stats, "crack.auto.fail.psiRange", crack.PsiS >= 0# And crack.PsiS <= 1#
     AssertTrue stats, "crack.auto.fail.sigmaCrc", crack.SigmaSCrc >= 0#
     AssertTrue stats, "crack.auto.fail.psiReduced", crack.PsiS < 1#
-    AssertTrue stats, "crack.auto.fail.beforeMcrcState", Not crack.BeforeMcrcState Is Nothing
-    AssertTrue stats, "crack.auto.fail.afterMcrcState", Not crack.AfterMcrcState Is Nothing
-    AssertTrue stats, "crack.auto.fail.beforeMcrcState.type", _
-        crack.BeforeMcrcState.StateTypeText = "BeforeMcrcState"
-    AssertTrue stats, "crack.auto.fail.afterMcrcState.type", _
-        crack.AfterMcrcState.StateTypeText = "AfterMcrcState"
-    AssertTrue stats, "crack.auto.fail.beforeMcrcState.role", _
-        crack.BeforeMcrcState.MaterialModelRoleText = "CrackInitiation"
-    AssertTrue stats, "crack.auto.fail.afterMcrcState.role", _
-        crack.AfterMcrcState.MaterialModelRoleText = "CrackedState"
+    AssertTrue stats, "crack.auto.fail.preCrackState", Not crack.PreCrackState Is Nothing
+    AssertTrue stats, "crack.auto.fail.postCrackState", Not crack.PostCrackState Is Nothing
+    AssertTrue stats, "crack.auto.fail.preCrackState.type", _
+        crack.PreCrackState.StateTypeText = "PreCrackState"
+    AssertTrue stats, "crack.auto.fail.postCrackState.type", _
+        crack.PostCrackState.StateTypeText = "PostCrackState"
+    AssertTrue stats, "crack.auto.fail.preCrackState.role", _
+        crack.PreCrackState.MaterialModelRoleText = "CrackInitiation"
+    AssertTrue stats, "crack.auto.fail.postCrackState.role", _
+        crack.PostCrackState.MaterialModelRoleText = "CrackedState"
 
     Dim minConcreteStrain As Double
     Dim maxConcreteStrain As Double
-    ConcreteStateStrainBounds crack.BeforeMcrcState, section, minConcreteStrain, maxConcreteStrain
-    AssertTrue stats, "crack.auto.fail.beforeMcrc.twoSign", minConcreteStrain < 0#
-    AssertClose stats, "crack.auto.fail.beforeMcrc.epsBtUlt", maxConcreteStrain, 0.00015, 0.000001
-    AssertTrue stats, "crack.auto.fail.beforeMcrc.notElasticRbtEb", maxConcreteStrain > 1.8 / 32500#
+    ConcreteStateStrainBounds crack.PreCrackState, section, minConcreteStrain, maxConcreteStrain
+    AssertTrue stats, "crack.auto.fail.preCrack.twoSign", minConcreteStrain < 0#
+    AssertClose stats, "crack.auto.fail.preCrack.epsBtUlt", maxConcreteStrain, 0.00015, 0.000001
+    AssertTrue stats, "crack.auto.fail.preCrack.notElasticRbtEb", maxConcreteStrain > 1.8 / 32500#
 End Sub
 
 ' ------------------------------
@@ -243,7 +243,7 @@ End Sub
 ' ------------------------------
 ' Проверяет production-сценарий, где исходное CrackedState при N=0 сначала
 ' находится через CStateSolutionRunner с удобной стартовой плоскостью, а затем
-' CCrackWidthCalculator ищет BeforeMcrcState/AfterMcrcState без отдельного
+' CCrackWidthCalculator ищет PreCrackState/PostCrackState без отдельного
 ' пользовательского N. Такой случай раньше был численно чувствителен в capacity.
 Private Sub TestAutoMcrcPureBendingConverges(ByRef stats As TCrackTestStats)
     CheckAutoMcrcPureBending stats, "crack.auto.pureMx", 0#, -15000000#, 0#
@@ -262,15 +262,15 @@ Private Sub CheckAutoMcrcPureBending(ByRef stats As TCrackTestStats, ByVal prefi
         "Auto", "Effective", allowable:=0.0001)
     AssertCrackCommon stats, prefix, crack
     AssertTrue stats, prefix & ".lambda", crack.LambdaCrc > 0# And crack.LambdaCrc <= 1#
-    AssertTrue stats, prefix & ".beforeMcrcState", Not crack.BeforeMcrcState Is Nothing
-    AssertTrue stats, prefix & ".afterMcrcState", Not crack.AfterMcrcState Is Nothing
+    AssertTrue stats, prefix & ".preCrackState", Not crack.PreCrackState Is Nothing
+    AssertTrue stats, prefix & ".postCrackState", Not crack.PostCrackState Is Nothing
     AssertTrue stats, prefix & ".psiReduced", crack.PsiS < 1#
 
     Dim minConcreteStrain As Double
     Dim maxConcreteStrain As Double
-    ConcreteStateStrainBounds crack.BeforeMcrcState, section, minConcreteStrain, maxConcreteStrain
-    AssertTrue stats, prefix & ".beforeMcrc.twoSign", minConcreteStrain < 0#
-    AssertClose stats, prefix & ".beforeMcrc.epsBtUlt", maxConcreteStrain, 0.00015, 0.000001
+    ConcreteStateStrainBounds crack.PreCrackState, section, minConcreteStrain, maxConcreteStrain
+    AssertTrue stats, prefix & ".preCrack.twoSign", minConcreteStrain < 0#
+    AssertClose stats, prefix & ".preCrack.epsBtUlt", maxConcreteStrain, 0.00015, 0.000001
 End Sub
 
 ' Проверяет опасные для сходимости сочетания, где нулевая стартовая плоскость
@@ -304,8 +304,8 @@ Private Sub TestAutoMcrcFixedNIndependentOfMomentMagnitude(ByRef stats As TCrack
 
     AssertCrackCommon stats, "crack.auto.mcrcFixedN.low", crackLow
     AssertCrackCommon stats, "crack.auto.mcrcFixedN.high", crackHigh
-    AssertTrue stats, "crack.auto.mcrcFixedN.lowState", Not crackLow.BeforeMcrcState Is Nothing
-    AssertTrue stats, "crack.auto.mcrcFixedN.highState", Not crackHigh.BeforeMcrcState Is Nothing
+    AssertTrue stats, "crack.auto.mcrcFixedN.lowState", Not crackLow.PreCrackState Is Nothing
+    AssertTrue stats, "crack.auto.mcrcFixedN.highState", Not crackHigh.PreCrackState Is Nothing
     AssertClose stats, "crack.auto.mcrcFixedN.mcrcInvariant", _
         Abs(crackLow.Mcrc), Abs(crackHigh.Mcrc), 25000#
     AssertClose stats, "crack.auto.mcrcFixedN.lambdaLowMoment", _
@@ -368,8 +368,8 @@ Private Sub TestCrackInitiationLoadPaths(ByRef stats As TCrackTestStats)
     AssertClose stats, "crack.path.nFixedMomentFallback.lambda0", crackNFixedMomentFallback.LambdaCrc, 0#, 0.000000001
     AssertClose stats, "crack.path.nFixedMomentFallback.noFormationN", crackNFixedMomentFallback.FormationNcrc, 0#, 0.000000001
     AssertClose stats, "crack.path.nFixedMomentFallback.noMcrc", crackNFixedMomentFallback.Mcrc, 0#, 0.000000001
-    AssertTrue stats, "crack.path.nFixedMomentFallback.noBeforeState", crackNFixedMomentFallback.BeforeMcrcState Is Nothing
-    AssertTrue stats, "crack.path.nFixedMomentFallback.noAfterState", crackNFixedMomentFallback.AfterMcrcState Is Nothing
+    AssertTrue stats, "crack.path.nFixedMomentFallback.noBeforeState", crackNFixedMomentFallback.PreCrackState Is Nothing
+    AssertTrue stats, "crack.path.nFixedMomentFallback.noAfterState", crackNFixedMomentFallback.PostCrackState Is Nothing
     AssertClose stats, "crack.path.nFixedMomentFallback.psi1", crackNFixedMomentFallback.PsiS, 1#, 0.000000001
 
     Dim crackFallback As CCrackWidthCalculator
@@ -404,8 +404,8 @@ Private Sub CheckDangerousCrackLoad(ByRef stats As TCrackTestStats, ByVal prefix
     If shouldForm Then
         AssertTrue stats, prefix & ".formed", crack.CrackFormed
         AssertTrue stats, prefix & ".lambda", crack.LambdaCrc > 0# And crack.LambdaCrc <= 1#
-        AssertTrue stats, prefix & ".beforeMcrcState", Not crack.BeforeMcrcState Is Nothing
-        AssertTrue stats, prefix & ".afterMcrcState", Not crack.AfterMcrcState Is Nothing
+        AssertTrue stats, prefix & ".preCrackState", Not crack.PreCrackState Is Nothing
+        AssertTrue stats, prefix & ".postCrackState", Not crack.PostCrackState Is Nothing
     Else
         AssertTrue stats, prefix & ".notFormed", Not crack.CrackFormed
         AssertClose stats, prefix & ".width", crack.CrackWidth, 0#, 0.000000000001
@@ -421,11 +421,11 @@ Private Sub TestAutoMcrcOneSignTensionUsesFormula854(ByRef stats As TCrackTestSt
     Set crack = CalculateCrack(solver, section, 100000#, 3000000#, 0#, _
         "Auto", "Effective", allowable:=0.0001)
     AssertCrackCommon stats, "crack.auto.oneSign", crack
-    AssertTrue stats, "crack.auto.oneSign.beforeMcrcState", Not crack.BeforeMcrcState Is Nothing
+    AssertTrue stats, "crack.auto.oneSign.preCrackState", Not crack.PreCrackState Is Nothing
 
     Dim minConcreteStrain As Double
     Dim maxConcreteStrain As Double
-    ConcreteStateStrainBounds crack.BeforeMcrcState, section, minConcreteStrain, maxConcreteStrain
+    ConcreteStateStrainBounds crack.PreCrackState, section, minConcreteStrain, maxConcreteStrain
     AssertTrue stats, "crack.auto.oneSign.allTension", minConcreteStrain > 0#
 
     Dim expectedUlt As Double
@@ -453,8 +453,8 @@ Private Sub TestCentralTensionBranch(ByRef stats As TCrackTestStats)
     AssertTrue stats, "crack.central.ncrc", crack.Ncrc > 0#
     AssertTrue stats, "crack.central.lambda", crack.LambdaCrc > 0# And crack.LambdaCrc <= 1#
     AssertClose stats, "crack.central.lambdaFromNcrc", crack.LambdaCrc * 200000#, crack.Ncrc, 0.001
-    AssertTrue stats, "crack.central.beforeMcrcState", Not crack.BeforeMcrcState Is Nothing
-    AssertTrue stats, "crack.central.afterMcrcState", Not crack.AfterMcrcState Is Nothing
+    AssertTrue stats, "crack.central.preCrackState", Not crack.PreCrackState Is Nothing
+    AssertTrue stats, "crack.central.postCrackState", Not crack.PostCrackState Is Nothing
     AssertClose stats, "crack.central.phi3", crack.Phi3, 1.2, 0.000000001
     AssertClose stats, "crack.central.zoneModeInvariant", fullZoneCrack.CrackWidth, crack.CrackWidth, 0.000000001
 

@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -228,7 +228,7 @@ Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSect
     Dim stateCount As Long
     Dim i As Long
     ' Считаем только конечные named states. Один LC может дать несколько
-    ' состояний: StrengthState, CapacityState, CrackedState, BeforeMcrcState и AfterMcrcState.
+    ' состояний: StrengthState, CapacityState, CrackedState, PreCrackState и PostCrackState.
     For i = 1 To batch.Count
         stateCount = stateCount + batch.NamedStateCount(i)
     Next i
@@ -533,7 +533,7 @@ Private Function SteelDiagramForState(ByVal materialProvider As CMaterialModelPr
 End Function
 
 ' Numerical extension может использоваться только для прямого StateSolution
-' текущего сочетания: StrengthState и CrackedState. Before/AfterMcrcState и
+' текущего сочетания: StrengthState и CrackedState. PreCrackState/PostCrackState и
 ' CapacityState не включаются в эту ветку.
 Private Function IsDirectStateResult(ByVal stateResult As CSectionStateResult) As Boolean
     If stateResult Is Nothing Then Exit Function

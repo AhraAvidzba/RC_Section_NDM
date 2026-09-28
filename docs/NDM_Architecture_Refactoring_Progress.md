@@ -22,16 +22,20 @@ regression-отчеты.
   а не через разрозненные диагностические строки.
 - Добавлены regression-тесты на словарь статусов, нейтральность `N/A` и запрет
   `NumFail` для формульных проверок без solver/search.
+- Этап 2 завершен: `CSectionStateResult` хранит целевые и фактические усилия,
+  невязки, признак физического диапазона, `ResultMeta` и диагностические данные
+  solver-а; состояния трещинообразования переименованы в `PreCrackState` и
+  `PostCrackState` с совместимым чтением старых alias-ов.
 
 ## In progress
 
-- Следующие изменения должны начинаться с этапа 2 migration plan.
+- Следующие изменения должны начинаться с этапа 3 migration plan.
 
 ## Next
 
-- Использовать baseline commit и отчеты `Stage00`/`Stage01` как точки сравнения
+- Использовать baseline commit и отчеты `Stage00`/`Stage01`/`Stage02` как точки сравнения
   для следующих этапов.
-- Перед началом этапа 2 снова проверить `git status` и убедиться, что нет
+- Перед началом этапа 3 снова проверить `git status` и убедиться, что нет
   посторонних пользовательских изменений.
 
 ## Known risks / open questions
@@ -59,6 +63,9 @@ regression-отчеты.
 - `NumFail` должен соответствовать реальной численной несходимости solver/search,
   а не обычной инженерной проверке типа ширины трещины, продольных трещин или
   устойчивости.
+- Канонические имена состояний трещинообразования в snapshot и настройках:
+  `PreCrackState` и `PostCrackState`. Старые `BeforeMcrcState` и
+  `AfterMcrcState` принимаются только как compatibility aliases.
 
 ## Baseline Test Scenarios
 
@@ -78,10 +85,11 @@ regression-отчеты.
 
 ## Last verified
 
-- 2026-09-28: `tools/build_workbook/Build-Workbook.ps1` завершился успешно.
-- 2026-09-28: `tools/build_workbook/Run-BatchTests.ps1` завершился успешно:
-  `passed=606`, `failed=0`.
+- 2026-09-28: после этапа 2 `tools/build_workbook/Build-Workbook.ps1`
+  завершился успешно.
+- 2026-09-28: после этапа 2 `tools/build_workbook/Run-BatchTests.ps1`
+  завершился успешно: `passed=625`, `failed=0`.
 - 2026-09-28: `tools/build_workbook/Run-AllTests.ps1` завершился успешно;
-  итоговый отчет сохранен в `docs/regression/Stage01_AllTests_Report.txt`,
+  итоговый отчет этапа 2 сохранен в `docs/regression/Stage02_AllTests_Report.txt`,
   regression baseline raw report сохранен в
-  `docs/regression/Stage01_RegressionBaseline_Raw.txt`.
+  `docs/regression/Stage02_RegressionBaseline_Raw.txt`.

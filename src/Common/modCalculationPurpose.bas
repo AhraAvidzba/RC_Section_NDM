@@ -39,8 +39,10 @@ End Enum
 Public Enum ESectionStateType
     sstStrengthState = 1          ' Прямое НДС по модели прочности.
     sstCapacityState = 2          ' Предельное НДС, найденное capacity solver-ом.
-    sstBeforeMcrcState = 3        ' НДС на пороге Mcrc до выключения растянутого бетона.
-    sstAfterMcrcState = 4         ' НДС при lambda_crc сразу после выключения растянутого бетона.
+    sstPreCrackState = 3          ' НДС на пороге образования трещины до выключения растянутого бетона.
+    sstPostCrackState = 4         ' НДС на пороге образования трещины после выключения растянутого бетона.
+    sstBeforeMcrcState = 3        ' Alias для чтения старого кода/настроек; канонический текст - PreCrackState.
+    sstAfterMcrcState = 4         ' Alias для чтения старого кода/настроек; канонический текст - PostCrackState.
     sstCrackedState = 5           ' Текущее НДС с раскрытой трещиной.
 End Enum
 
@@ -203,15 +205,15 @@ Public Function SectionStateTypeFromText(ByVal valueText As String) As ESectionS
             SectionStateTypeFromText = sstStrengthState
         Case "capacitystate", "capacity", "предельное ндс"
             SectionStateTypeFromText = sstCapacityState
-        Case "beforemcrcstate", "beforemcrc", "mcrc"
-            SectionStateTypeFromText = sstBeforeMcrcState
-        Case "aftermcrcstate", "aftermcrc"
-            SectionStateTypeFromText = sstAfterMcrcState
+        Case "precrackstate", "precrack", "beforemcrcstate", "beforemcrc", "mcrc"
+            SectionStateTypeFromText = sstPreCrackState
+        Case "postcrackstate", "postcrack", "aftermcrcstate", "aftermcrc"
+            SectionStateTypeFromText = sstPostCrackState
         Case "crackedstate", "crack", "crackednds", "ндс при трещинах"
             SectionStateTypeFromText = sstCrackedState
         Case Else
             Err.Raise vbObjectError + 3319, "modCalculationPurpose", _
-                "Visualization.State должен быть StrengthState, CapacityState, BeforeMcrcState, AfterMcrcState или CrackedState."
+                "Visualization.State должен быть StrengthState, CapacityState, PreCrackState, PostCrackState или CrackedState."
     End Select
 End Function
 
@@ -221,10 +223,10 @@ Public Function SectionStateTypeToText(ByVal stateType As ESectionStateType) As 
             SectionStateTypeToText = "StrengthState"
         Case sstCapacityState
             SectionStateTypeToText = "CapacityState"
-        Case sstBeforeMcrcState
-            SectionStateTypeToText = "BeforeMcrcState"
-        Case sstAfterMcrcState
-            SectionStateTypeToText = "AfterMcrcState"
+        Case sstPreCrackState
+            SectionStateTypeToText = "PreCrackState"
+        Case sstPostCrackState
+            SectionStateTypeToText = "PostCrackState"
         Case sstCrackedState
             SectionStateTypeToText = "CrackedState"
         Case Else
@@ -236,9 +238,9 @@ Public Function MaterialRoleFromStateType(ByVal stateType As ESectionStateType) 
     Select Case stateType
         Case sstStrengthState, sstCapacityState
             MaterialRoleFromStateType = cpStrength
-        Case sstBeforeMcrcState
+        Case sstPreCrackState
             MaterialRoleFromStateType = cpMcrc
-        Case sstAfterMcrcState, sstCrackedState
+        Case sstPostCrackState, sstCrackedState
             MaterialRoleFromStateType = cpCrackedNDS
         Case Else
             Err.Raise vbObjectError + 3321, "modCalculationPurpose", _

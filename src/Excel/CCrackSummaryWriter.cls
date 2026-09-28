@@ -47,8 +47,8 @@ Private Const COL_FORMATION_METHOD As Long = 14
 Private Const COL_FORMATION_NCRC As Long = 15
 Private Const COL_MCRC As Long = 16
 Private Const COL_LAMBDA_MCRC As Long = 17
-Private Const COL_BEFORE_MCRC_STATUS As Long = 18
-Private Const COL_AFTER_MCRC_STATUS As Long = 19
+Private Const COL_PRE_CRACK_STATUS As Long = 18
+Private Const COL_POST_CRACK_STATUS As Long = 19
 Private Const COL_FORMATION_STATE As Long = 20
 Private Const COL_CRACK_STATE_DIAGEXT As Long = 21
 Private Const COL_CRACK_STATE_STATUS As Long = 22
@@ -232,7 +232,7 @@ Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem)
     headers(1, COL_ARED) = "Момент образования трещин"
     headers(2, COL_ARED) = "Осевое растяжение"
     headers(2, COL_FORMATION_METHOD) = "Изгиб N + M"
-    headers(2, COL_BEFORE_MCRC_STATUS) = "статус трещин"
+    headers(2, COL_PRE_CRACK_STATUS) = "статус трещин"
     headers(1, COL_CRACK_STATE_DIAGEXT) = "равновесие при заданных нагрузках"
     headers(1, COL_XT) = "нормальные и продольные трещины"
     headers(2, COL_XT) = "данные для расстояния между трещинами ls"
@@ -264,8 +264,8 @@ Private Sub PutHeaderNotes(ByRef headers() As Variant, ByVal units As CUnitSyste
     headers(HEADER_NOTES_ROW, COL_FORMATION_NCRC) = "продольная сила в найденной точке образования трещины для выбранного пути"
     headers(HEADER_NOTES_ROW, COL_MCRC) = "модуль моментного вектора в найденной точке образования трещины"
     headers(HEADER_NOTES_ROW, COL_LAMBDA_MCRC) = "доля выбранного пути нагрузки до образования трещины"
-    headers(HEADER_NOTES_ROW, COL_BEFORE_MCRC_STATUS) = "статус НДС непосредственно перед образованием нормальной трещины"
-    headers(HEADER_NOTES_ROW, COL_AFTER_MCRC_STATUS) = "статус НДС сразу после образования нормальной трещины"
+    headers(HEADER_NOTES_ROW, COL_PRE_CRACK_STATUS) = "статус НДС непосредственно перед образованием нормальной трещины"
+    headers(HEADER_NOTES_ROW, COL_POST_CRACK_STATUS) = "статус НДС сразу после образования нормальной трещины"
     headers(HEADER_NOTES_ROW, COL_FORMATION_STATE) = "итог: нормальная трещина образуется при заданном сочетании или нет"
     headers(HEADER_NOTES_ROW, COL_CRACK_STATE_DIAGEXT) = "yes - равновесие найдено через продолжение диаграммы; no - продолжение было разрешено, но не понадобилось; - - продолжение выключено в настройках"
     headers(HEADER_NOTES_ROW, COL_CRACK_STATE_STATUS) = "OK - равновесие при заданных нагрузках сошлось без продолжения диаграммы и все материалы остались в физическом диапазоне; FAIL/NumFail останавливают расчет трещин"
@@ -313,8 +313,8 @@ Private Sub PutColumnLabels(ByRef headers() As Variant, ByVal units As CUnitSyst
     headers(HEADER_LABEL_ROW, COL_FORMATION_NCRC) = "Ncrc, " & OutputForceUnit(units)
     headers(HEADER_LABEL_ROW, COL_MCRC) = "Mxy,crc, " & OutputMomentUnit(units)
     headers(HEADER_LABEL_ROW, COL_LAMBDA_MCRC) = ChrW$(&H3BB) & "crc"
-    headers(HEADER_LABEL_ROW, COL_BEFORE_MCRC_STATUS) = "BeforeMcrcState"
-    headers(HEADER_LABEL_ROW, COL_AFTER_MCRC_STATUS) = "AfterMcrcState"
+    headers(HEADER_LABEL_ROW, COL_PRE_CRACK_STATUS) = "PreCrackState"
+    headers(HEADER_LABEL_ROW, COL_POST_CRACK_STATUS) = "PostCrackState"
     headers(HEADER_LABEL_ROW, COL_FORMATION_STATE) = "state"
     headers(HEADER_LABEL_ROW, COL_CRACK_STATE_DIAGEXT) = "ExtUsed"
     headers(HEADER_LABEL_ROW, COL_CRACK_STATE_STATUS) = "статус"
@@ -355,7 +355,7 @@ Private Sub MergeHeaders(ByVal target As Object)
     MergeRange target, 1, COL_ARED, 1, COL_FORMATION_STATE
     MergeRange target, 2, COL_ARED, 2, COL_LAMBDA_NCRC
     MergeRange target, 2, COL_FORMATION_METHOD, 2, COL_LAMBDA_MCRC
-    MergeRange target, 2, COL_BEFORE_MCRC_STATUS, 2, COL_FORMATION_STATE
+    MergeRange target, 2, COL_PRE_CRACK_STATUS, 2, COL_FORMATION_STATE
     MergeRange target, 1, COL_CRACK_STATE_DIAGEXT, 2, COL_CRACK_STATE_STATUS
     MergeRange target, 1, COL_XT, 1, COL_MAIN_LAST
     MergeRange target, 2, COL_XT, 2, COL_AS
@@ -456,8 +456,8 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
         data(rowIndex, COL_MCRC) = policy.NotApplicable
     End If
 
-    data(rowIndex, COL_BEFORE_MCRC_STATUS) = NamedStateStatus(batch, index, sstBeforeMcrcState, policy)
-    data(rowIndex, COL_AFTER_MCRC_STATUS) = NamedStateStatus(batch, index, sstAfterMcrcState, policy)
+    data(rowIndex, COL_PRE_CRACK_STATUS) = NamedStateStatus(batch, index, sstPreCrackState, policy)
+    data(rowIndex, COL_POST_CRACK_STATUS) = NamedStateStatus(batch, index, sstPostCrackState, policy)
 
     If hasFormationData Then
         data(rowIndex, COL_FORMATION_STATE) = IIf(batch.CrackFormed(index), "Cracked", "NotCracked")
@@ -675,7 +675,7 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
         target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).NumberFormat = "0.000"
         target.Offset(HEADER_ROWS, COL_ID - 1).Resize(dataRows, 2).NumberFormat = "@"
         target.Offset(HEADER_ROWS, COL_REBARS - 1).Resize(dataRows, 1).NumberFormat = "@"
-        target.Offset(HEADER_ROWS, COL_BEFORE_MCRC_STATUS - 1).Resize(dataRows, 3).NumberFormat = "@"
+        target.Offset(HEADER_ROWS, COL_PRE_CRACK_STATUS - 1).Resize(dataRows, 3).NumberFormat = "@"
         target.Offset(HEADER_ROWS, COL_CRACK_STATE_DIAGEXT - 1).Resize(dataRows, 2).NumberFormat = "@"
         target.Offset(HEADER_ROWS, COL_ACRC_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
         target.Offset(HEADER_ROWS, COL_LONG_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
@@ -711,8 +711,8 @@ Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectio
         Dim rowOffset As Long
         rowOffset = OutputDataOffset(batch, i, dataRows)
         ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_STATUS
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_BEFORE_MCRC_STATUS
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_AFTER_MCRC_STATUS
+        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_PRE_CRACK_STATUS
+        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_POST_CRACK_STATUS
         ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_CRACK_STATE_STATUS
         ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_ACRC_STATUS
         ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_LONG_STATUS

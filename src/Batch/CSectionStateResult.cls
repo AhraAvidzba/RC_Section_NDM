@@ -14,8 +14,9 @@ Option Explicit
 ' ==========================================================================
 ' Один LC может иметь несколько конечных расчетных состояний: StrengthState,
 ' CapacityState, CrackedState и состояния образования трещины
-' BeforeMcrcState/AfterMcrcState. CSectionStateResult хранит плоскость деформаций и
-' фактическую спецификацию материала для такого named-state.
+' PreCrackState/PostCrackState. CSectionStateResult хранит плоскость деформаций,
+' усилия, невязки, диагностические признаки solver-а и фактическую спецификацию
+' материала для такого named-state.
 '
 ' Класс не пишет лист Results и не решает равновесие. Он только переносит
 ' состояние solver-а в компактный объект, который CCombinationResult хранит
@@ -27,11 +28,28 @@ Private mMaterialSpec As CMaterialModelSpec ' Фактически исполь�
 Private mEpsilon0 As Double ' Деформация в начале координат расчетной модели.
 Private mKappaX As Double ' Кривизна kappaX, 1/мм.
 Private mKappaY As Double ' Кривизна kappaY, 1/мм.
+Private mTargetN As Double ' Целевое N named-state, Н.
+Private mTargetMx As Double ' Целевой Mx named-state, Н*мм.
+Private mTargetMy As Double ' Целевой My named-state, Н*мм.
+Private mNint As Double ' Внутреннее N, полученное интегрированием напряжений, Н.
+Private mMxint As Double ' Внутренний Mx, полученный интегрированием напряжений, Н*мм.
+Private mMyint As Double ' Внутренний My, полученный интегрированием напряжений, Н*мм.
+Private mResidualN As Double ' Невязка Nint - Ntarget, Н.
+Private mResidualMx As Double ' Невязка Mxint - Mxtarget, Н*мм.
+Private mResidualMy As Double ' Невязка Myint - Mytarget, Н*мм.
+Private mRelativeResidualN As Double ' Относительная невязка по N для диагностики качества состояния.
+Private mRelativeResidualMx As Double ' Относительная невязка по Mx для диагностики качества состояния.
+Private mRelativeResidualMy As Double ' Относительная невязка по My для диагностики качества состояния.
+Private mLastResidualNorm As Double ' Норма невязки последней оценки solver-а.
 Private mExtensionUsed As Boolean ' True только для StateSolution с numerical extension.
+Private mWithinPhysicalRange As Boolean ' True, если state принят в пределах физической диаграммы.
 Private mConverged As Boolean ' Сошелся ли solver, из которого взята плоскость.
 Private mStopReason As String ' Служебная причина остановки solver-а.
 Private mStatus As String ' Короткий внутренний статус, если он нужен writer-у/тестам.
 Private mResultMeta As CResultMeta ' Типизированный статус named-state для будущего StateRepository/result graph.
+Private mSolverCallCount As Long ' Число запусков CSectionSolver.Solve, связанных с получением state.
+Private mIterationCount As Long ' Число итераций последнего solver-а, давшего state.
+Private mDiagnosticLog As String ' Диагностика runner-а или solver-а для последующего result graph.
 Private mMinConcreteStrain As Double ' Минимальная деформация бетона в этом named-state.
 Private mMaxConcreteStrain As Double ' Максимальная деформация бетона в этом named-state.
 Private mMinSteelStrain As Double ' Минимальная деформация арматуры в этом named-state.
@@ -49,7 +67,10 @@ Private mHasSteelTension As Boolean ' True, если есть растянута
 Public Sub InitializeFromSolver(ByVal stateType As ESectionStateType, _
         ByVal materialModelRole As ECalculationPurpose, ByVal materialSpec As CMaterialModelSpec, _
         ByVal solver As CSectionSolver, Optional ByVal extensionUsed As Boolean = False, _
-        Optional ByVal statusText As String = vbNullString)
+        Optional ByVal statusText As String = vbNullString, _
+        Optional ByVal withinPhysicalRange As Boolean = True, _
+        Optional ByVal solverCallCount As Long = 0, _
+        Optional ByVal diagnosticLog As String = vbNullString)
     If materialSpec Is Nothing Then Err.Raise vbObjectError + 3970, "CSectionStateResult", "MaterialModelSpec не передан."
     If solver Is Nothing Then Err.Raise vbObjectError + 3971, "CSectionStateResult", "Решатель для именованного состояния не передан."
 
@@ -59,11 +80,16 @@ Public Sub InitializeFromSolver(ByVal stateType As ESectionStateType, _
     mEpsilon0 = solver.Epsilon0
     mKappaX = solver.KappaX
     mKappaY = solver.KappaY
+    CaptureEquilibriumData solver
     mExtensionUsed = extensionUsed
+    mWithinPhysicalRange = (withinPhysicalRange And solver.Converged)
     mConverged = solver.Converged
     mStopReason = solver.StopReason
     mStatus = statusText
     Set mResultMeta = BuildMetaFromSolver(stateType, solver, statusText, mStopReason)
+    mSolverCallCount = solverCallCount
+    mIterationCount = solver.Iterations
+    mDiagnosticLog = diagnosticLog
     mMinConcreteStrain = solver.MinConcreteStrain
     mMaxConcreteStrain = solver.MaxConcreteStrain
     mMinSteelStrain = solver.MinSteelStrain
@@ -95,10 +121,30 @@ Public Sub InitializeFromPlane(ByVal stateType As ESectionStateType, _
     mKappaX = kx
     mKappaY = ky
     mExtensionUsed = extensionUsed
+    mWithinPhysicalRange = True
     mConverged = True
     mStatus = statusText
     mStopReason = stopReason
     Set mResultMeta = BuildMetaFromStatus(stateType, statusText, stopReason)
+End Sub
+
+' Копирует из solver-а все данные равновесия, которые определяют качество
+' найденного НДС. Target восстанавливается как Nint - residual, потому что
+' сам CSectionSolver хранит невязку именно в виде внутреннее усилие минус цель.
+Private Sub CaptureEquilibriumData(ByVal solver As CSectionSolver)
+    mNint = solver.Nint
+    mMxint = solver.Mxint
+    mMyint = solver.Myint
+    mResidualN = solver.ResidualN
+    mResidualMx = solver.ResidualMx
+    mResidualMy = solver.ResidualMy
+    mTargetN = mNint - mResidualN
+    mTargetMx = mMxint - mResidualMx
+    mTargetMy = mMyint - mResidualMy
+    mRelativeResidualN = solver.RelativeResidualN
+    mRelativeResidualMx = solver.RelativeResidualMx
+    mRelativeResidualMy = solver.RelativeResidualMy
+    mLastResidualNorm = solver.LastResidualNorm
 End Sub
 
 Public Property Get StateType() As ESectionStateType
@@ -137,6 +183,10 @@ Public Property Get ExtensionUsed() As Boolean
     ExtensionUsed = mExtensionUsed
 End Property
 
+Public Property Get WithinPhysicalRange() As Boolean
+    WithinPhysicalRange = mWithinPhysicalRange
+End Property
+
 Public Property Get Converged() As Boolean
     Converged = mConverged
 End Property
@@ -164,6 +214,70 @@ End Property
 
 Public Property Get ResultComment() As String
     ResultComment = ResultMeta.ResultComment
+End Property
+
+Public Property Get TargetN() As Double
+    TargetN = mTargetN
+End Property
+
+Public Property Get TargetMx() As Double
+    TargetMx = mTargetMx
+End Property
+
+Public Property Get TargetMy() As Double
+    TargetMy = mTargetMy
+End Property
+
+Public Property Get Nint() As Double
+    Nint = mNint
+End Property
+
+Public Property Get Mxint() As Double
+    Mxint = mMxint
+End Property
+
+Public Property Get Myint() As Double
+    Myint = mMyint
+End Property
+
+Public Property Get ResidualN() As Double
+    ResidualN = mResidualN
+End Property
+
+Public Property Get ResidualMx() As Double
+    ResidualMx = mResidualMx
+End Property
+
+Public Property Get ResidualMy() As Double
+    ResidualMy = mResidualMy
+End Property
+
+Public Property Get RelativeResidualN() As Double
+    RelativeResidualN = mRelativeResidualN
+End Property
+
+Public Property Get RelativeResidualMx() As Double
+    RelativeResidualMx = mRelativeResidualMx
+End Property
+
+Public Property Get RelativeResidualMy() As Double
+    RelativeResidualMy = mRelativeResidualMy
+End Property
+
+Public Property Get LastResidualNorm() As Double
+    LastResidualNorm = mLastResidualNorm
+End Property
+
+Public Property Get SolverCallCount() As Long
+    SolverCallCount = mSolverCallCount
+End Property
+
+Public Property Get IterationCount() As Long
+    IterationCount = mIterationCount
+End Property
+
+Public Property Get DiagnosticLog() As String
+    DiagnosticLog = mDiagnosticLog
 End Property
 
 Public Property Get MinConcreteStrain() As Double
@@ -252,7 +366,7 @@ Private Function ResultKindFromStateType(ByVal stateType As ESectionStateType) A
     Select Case stateType
         Case sstCapacityState
             ResultKindFromStateType = rkCapacity
-        Case sstBeforeMcrcState, sstAfterMcrcState
+        Case sstPreCrackState, sstPostCrackState
             ResultKindFromStateType = rkCrackFormation
         Case sstCrackedState
             ResultKindFromStateType = rkDirectState

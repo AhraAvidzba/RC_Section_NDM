@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestWorkbookInterface"
+Attribute VB_Name = "modTestWorkbookInterface"
 Option Explicit
 
 ' ==========================================================================
@@ -1115,7 +1115,7 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
 End Sub
 
 ' Проверяет полный предельный snapshot: 30 сочетаний, каждое с пятью
-' конечными named-state. Для устойчивого получения Before/AfterMcrcState
+' конечными named-state. Для устойчивого получения PreCrackState/PostCrackState
 ' используется чистый изгиб: сжатие может подавить образование нормальной
 ' трещины и тогда эти состояния физически не обязаны появляться.
 Private Sub TestThirtyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUiTestStats)
@@ -1161,13 +1161,13 @@ Private Sub TestThirtyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUi
     AssertElementStateRows stats, elementResults, "LC_FULL_01", "StrengthState", geometryRowCount
     AssertElementStateRows stats, elementResults, "LC_FULL_01", "CapacityState", geometryRowCount
     AssertElementStateRows stats, elementResults, "LC_FULL_01", "CrackedState", geometryRowCount
-    AssertElementStateRows stats, elementResults, "LC_FULL_01", "BeforeMcrcState", geometryRowCount
-    AssertElementStateRows stats, elementResults, "LC_FULL_01", "AfterMcrcState", geometryRowCount
+    AssertElementStateRows stats, elementResults, "LC_FULL_01", "PreCrackState", geometryRowCount
+    AssertElementStateRows stats, elementResults, "LC_FULL_01", "PostCrackState", geometryRowCount
     AssertElementStateRows stats, elementResults, "LC_FULL_30", "StrengthState", geometryRowCount
     AssertElementStateRows stats, elementResults, "LC_FULL_30", "CapacityState", geometryRowCount
     AssertElementStateRows stats, elementResults, "LC_FULL_30", "CrackedState", geometryRowCount
-    AssertElementStateRows stats, elementResults, "LC_FULL_30", "BeforeMcrcState", geometryRowCount
-    AssertElementStateRows stats, elementResults, "LC_FULL_30", "AfterMcrcState", geometryRowCount
+    AssertElementStateRows stats, elementResults, "LC_FULL_30", "PreCrackState", geometryRowCount
+    AssertElementStateRows stats, elementResults, "LC_FULL_30", "PostCrackState", geometryRowCount
 
     AssertTrue stats, "ui.results.fullSnapshot.propertiesRows", _
         ResultTableRowCount("rngNDMSectionProperties") >= 1 + 55 + 30 * (23 + 5 * 10)

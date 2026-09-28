@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -71,7 +71,7 @@ Private mTransformedReferenceY(1 To 2) As Double ' Y центра приведе
 
 Private mCrackAllowable As Double ' Допустимая ширина раскрытия трещины a_crc,ult, мм.
 Private mCrackPsiMode As String ' User, Auto или AlwaysCalc: как определять psi_s для нормальных трещин.
-Private mCrackSigmaSCrcAveragingMode As String ' Как усреднять sigma_s,crc при уточнении psi_s по AfterMcrcState.
+Private mCrackSigmaSCrcAveragingMode As String ' Как усреднять sigma_s,crc при уточнении psi_s по PostCrackState.
 Private mCrackPhi1 As Double ' Пользовательский коэффициент phi1 для формулы раскрытия.
 Private mCrackPhi2 As Double ' Пользовательский коэффициент phi2 для формулы раскрытия.
 Private mCrackPhi3Mode As String ' User или Auto: как принимать phi3.
@@ -1210,7 +1210,7 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
     Dim stateResult As CSectionStateResult
     Set stateResult = New CSectionStateResult
     stateResult.InitializeFromSolver stateType, materialRole, spec, service, runner.ExtensionUsed, _
-        stateStatus
+        stateStatus, runner.WithinPhysicalRange, runner.SolverCallCount, runner.DiagnosticLog
     mResults(index).AddState stateResult
     Set RunProfileState = runner
 End Function
@@ -1247,8 +1247,8 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     mResults(index).CrackStatus = mStatusPolicy.CrackStatusFromCalculator(crack)
     mResults(index).StoreCrackResult crack
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
-    If Not crack.BeforeMcrcState Is Nothing Then mResults(index).AddState crack.BeforeMcrcState
-    If Not crack.AfterMcrcState Is Nothing Then mResults(index).AddState crack.AfterMcrcState
+    If Not crack.PreCrackState Is Nothing Then mResults(index).AddState crack.PreCrackState
+    If Not crack.PostCrackState Is Nothing Then mResults(index).AddState crack.PostCrackState
     ReportValue "Фактический путь образования трещины", mResults(index).CrackFormationMethod
     ReportValue "lambda образования трещины", FormatNumberInvariant(mResults(index).CrackLambdaCrc)
     ReportValue "Ncrc", ReportForceText(mResults(index).CrackFormationNcrc)
@@ -1313,7 +1313,7 @@ End Sub
 
 ' Возвращает пользовательский статус именно формульного этапа раскрытия
 ' нормальной трещины. NumFail допустим только если он уже виден в одном из
-' НДС-состояний трещин: BeforeMcrcState, AfterMcrcState или CrackedState.
+' НДС-состояний трещин: PreCrackState, PostCrackState или CrackedState.
 ' Если эти состояния сошлись, а калькулятор ширины оставил техническую
 ' NumericalFailure-причину, это не отдельная несходимость равновесия, поэтому
 ' для пользователя показывается FAIL, а подробность остается в txt-диагностике.
@@ -1331,8 +1331,8 @@ End Function
 ' Проверяет только те состояния трещин, где действительно решается равновесие
 ' сечения. Именно они имеют право поднимать пользовательский NumFail.
 Private Function HasNumFailCrackState(ByVal index As Long) As Boolean
-    HasNumFailCrackState = CrackStateStatusIsNumFail(index, sstBeforeMcrcState) Or _
-        CrackStateStatusIsNumFail(index, sstAfterMcrcState) Or _
+    HasNumFailCrackState = CrackStateStatusIsNumFail(index, sstPreCrackState) Or _
+        CrackStateStatusIsNumFail(index, sstPostCrackState) Or _
         CrackStateStatusIsNumFail(index, sstCrackedState)
 End Function
 
@@ -1373,7 +1373,7 @@ Private Sub ReportCrackFormationChoice(ByVal crack As CCrackWidthCalculator)
 
     If Len(crack.CrackFormationMethod) > 0 Then
         ReportStep "Трещинообразование: принята точка по пути " & _
-            crack.CrackFormationMethod & ". По этой точке записаны Ncrc/Mxy,crc и состояния Before/AfterMcrcState, если они применимы."
+            crack.CrackFormationMethod & ". По этой точке записаны Ncrc/Mxy,crc и состояния PreCrackState/PostCrackState, если они применимы."
     ElseIf crack.CrackFormed And crack.Converged Then
         ReportStep "Трещинообразование: нормальная трещина считается образованной, но выбранный путь не дал отдельную расчетную точку образования трещины. Для этой проверки принят резервный вариант " & _
             ChrW$(&H3C8) & "s = 1; причина указана в CrackFormationStopReason и диагностике ниже."
@@ -1515,7 +1515,7 @@ Private Sub StoreCapacity(ByVal index As Long, ByVal cap As CCapacitySolver, _
             Dim stateResult As CSectionStateResult
             Set stateResult = New CSectionStateResult
             stateResult.InitializeFromSolver sstCapacityState, cpStrength, strengthSpec, cap.LastSolver, False, _
-                mResults(index).CapacityStatus
+                mResults(index).CapacityStatus, True, 0, cap.DiagnosticLog
             mResults(index).AddState stateResult
         End If
     End If
@@ -3295,6 +3295,3 @@ End Property
 Public Property Get StateConverged(ByVal index As Long) As Boolean
     StateConverged = mResults(index).StateConverged
 End Property
-
-
-
