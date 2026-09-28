@@ -184,6 +184,12 @@ Public Function RunBatchCalculationTests() As String
     TestBatchCapacityUsesSystemSettings stats
     AppendLine stats, "RUN: TestInvalidModeSettingsAreNotFallbacks"
     TestInvalidModeSettingsAreNotFallbacks stats
+    AppendLine stats, "RUN: TestResultMetaStatusDictionary"
+    TestResultMetaStatusDictionary stats
+    AppendLine stats, "RUN: TestResultMetaAggregateSkipsNotApplicable"
+    TestResultMetaAggregateSkipsNotApplicable stats
+    AppendLine stats, "RUN: TestFormulaChecksDoNotCreateNumFail"
+    TestFormulaChecksDoNotCreateNumFail stats
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -4428,6 +4434,82 @@ Private Function RectSetRebars(ByVal b1 As Double, ByVal h1 As Double, ByVal b2 
         "A400")
 End Function
 
+' Проверяет утвержденный словарь ResultMeta -> внешний статус.
+' Отдельно фиксируется правило этапа 1: capacity с INITIAL_STATE_BEYOND_LIMIT
+' выводится как BaseFail, а не как NumFail.
+Private Sub TestResultMetaStatusDictionary(ByRef stats As TBatchTestStats)
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+
+    meta.SetResult rsSuccess, rcCheckPassed, rkGeneric, vbNullString
+    AssertEquals stats, "resultMeta.ok", policy.ExternalStatus(meta), "OK"
+
+    meta.SetResult rsCheckFailed, rcCheckFailed, rkGeneric, vbNullString
+    AssertEquals stats, "resultMeta.fail", policy.ExternalStatus(meta), "FAIL"
+
+    meta.SetResult rsNumericalFailure, rcNumericalFailure, rkDirectState, vbNullString
+    AssertEquals stats, "resultMeta.numFail", policy.ExternalStatus(meta), "NumFail"
+
+    meta.SetResult rsInvalidInput, rcInvalidInput, rkGeneric, vbNullString
+    AssertEquals stats, "resultMeta.inputErr", policy.ExternalStatus(meta), "InputErr"
+
+    meta.SetResult rsInternalError, rcInternalError, rkGeneric, vbNullString
+    AssertEquals stats, "resultMeta.calcErr", policy.ExternalStatus(meta), "CalcErr"
+
+    meta.SetResult rsCheckFailed, rcInitialStateBeyondLimit, rkCapacity, vbNullString
+    AssertEquals stats, "resultMeta.baseFail", policy.ExternalStatus(meta), "BaseFail"
+End Sub
+
+' Проверяет, что неприменимые ветви не ухудшают итоговый статус LC.
+' Это защищает batch summary от ситуации, когда незапрошенный расчет перебивает
+' реально выполненные OK/FAIL-ветки.
+Private Sub TestResultMetaAggregateSkipsNotApplicable(ByRef stats As TBatchTestStats)
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+
+    Dim directMeta As CResultMeta
+    Set directMeta = New CResultMeta
+    directMeta.SetResult rsSuccess, rcCheckPassed, rkDirectState, vbNullString
+
+    Dim skippedMeta As CResultMeta
+    Set skippedMeta = New CResultMeta
+    skippedMeta.SetNotApplicable rkCapacity, vbNullString
+
+    Dim failedMeta As CResultMeta
+    Set failedMeta = New CResultMeta
+    failedMeta.SetResult rsCheckFailed, rcCheckFailed, rkCrackWidth, vbNullString
+
+    AssertEquals stats, "resultMeta.aggregate.okWithNA", _
+        policy.AggregateMeta(directMeta, skippedMeta, Nothing), "OK"
+    AssertEquals stats, "resultMeta.aggregate.failWithNA", _
+        policy.AggregateMeta(directMeta, skippedMeta, failedMeta), "FAIL"
+    AssertEquals stats, "resultMeta.aggregate.onlyNA", _
+        policy.AggregateMeta(skippedMeta, Nothing, Nothing), "N/A"
+End Sub
+
+' Проверяет, что проверки без поиска равновесия не создают NumFail.
+' Продольные трещины и устойчивость являются инженерскими проверками готовых
+' величин; их отрицательный результат должен быть FAIL/InputErr/N/A, но не NumFail.
+Private Sub TestFormulaChecksDoNotCreateNumFail(ByRef stats As TBatchTestStats)
+    Dim policy As CBatchStatusPolicy
+    Set policy = New CBatchStatusPolicy
+
+    AssertEquals stats, "status.longitudinal.pass", _
+        policy.LongitudinalCrackStatus(10#, 14.6), "OK"
+    AssertEquals stats, "status.longitudinal.fail", _
+        policy.LongitudinalCrackStatus(20#, 14.6), "FAIL"
+    AssertEquals stats, "status.longitudinal.na", _
+        policy.LongitudinalCrackStatus(0#, 14.6), "N/A"
+    AssertEquals stats, "status.longitudinal.input", _
+        policy.LongitudinalCrackStatus(10#, 0#), "InputErr"
+
+    AssertTrue stats, "status.longitudinal.noNumFail", _
+        policy.LongitudinalCrackStatus(20#, 14.6) <> "NumFail"
+End Sub
+
 Private Function RectangleRebars(ByVal geom As ISectionGeometry) As CRebarLayout
     Dim layout As CRebarLayout
     Set layout = New CRebarLayout
@@ -4578,6 +4660,17 @@ Private Sub AssertTrue(ByRef stats As TBatchTestStats, ByVal name As String, ByV
     Else
         stats.Failed = stats.Failed + 1
         AppendLine stats, "FAIL: " & name
+    End If
+End Sub
+
+Private Sub AssertEquals(ByRef stats As TBatchTestStats, ByVal name As String, _
+        ByVal actual As String, ByVal expected As String)
+    If actual = expected Then
+        stats.Passed = stats.Passed + 1
+        AppendLine stats, "OK: " & name
+    Else
+        stats.Failed = stats.Failed + 1
+        AppendLine stats, "FAIL: " & name & "; actual=" & actual & "; expected=" & expected
     End If
 End Sub
 

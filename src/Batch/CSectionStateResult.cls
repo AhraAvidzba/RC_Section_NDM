@@ -31,6 +31,7 @@ Private mExtensionUsed As Boolean ' True только для StateSolution с nu
 Private mConverged As Boolean ' Сошелся ли solver, из которого взята плоскость.
 Private mStopReason As String ' Служебная причина остановки solver-а.
 Private mStatus As String ' Короткий внутренний статус, если он нужен writer-у/тестам.
+Private mResultMeta As CResultMeta ' Типизированный статус named-state для будущего StateRepository/result graph.
 Private mMinConcreteStrain As Double ' Минимальная деформация бетона в этом named-state.
 Private mMaxConcreteStrain As Double ' Максимальная деформация бетона в этом named-state.
 Private mMinSteelStrain As Double ' Минимальная деформация арматуры в этом named-state.
@@ -62,6 +63,7 @@ Public Sub InitializeFromSolver(ByVal stateType As ESectionStateType, _
     mConverged = solver.Converged
     mStopReason = solver.StopReason
     mStatus = statusText
+    Set mResultMeta = BuildMetaFromSolver(stateType, solver, statusText, mStopReason)
     mMinConcreteStrain = solver.MinConcreteStrain
     mMaxConcreteStrain = solver.MaxConcreteStrain
     mMinSteelStrain = solver.MinSteelStrain
@@ -96,6 +98,7 @@ Public Sub InitializeFromPlane(ByVal stateType As ESectionStateType, _
     mConverged = True
     mStatus = statusText
     mStopReason = stopReason
+    Set mResultMeta = BuildMetaFromStatus(stateType, statusText, stopReason)
 End Sub
 
 Public Property Get StateType() As ESectionStateType
@@ -146,6 +149,23 @@ Public Property Get Status() As String
     Status = mStatus
 End Property
 
+Public Property Get ResultMeta() As CResultMeta
+    If mResultMeta Is Nothing Then Set mResultMeta = BuildMetaFromStatus(mStateType, mStatus, mStopReason)
+    Set ResultMeta = mResultMeta
+End Property
+
+Public Property Get InternalStatus() As EResultInternalStatus
+    InternalStatus = ResultMeta.InternalStatus
+End Property
+
+Public Property Get ResultCode() As EResultCode
+    ResultCode = ResultMeta.ResultCode
+End Property
+
+Public Property Get ResultComment() As String
+    ResultComment = ResultMeta.ResultComment
+End Property
+
 Public Property Get MinConcreteStrain() As Double
     MinConcreteStrain = mMinConcreteStrain
 End Property
@@ -193,3 +213,58 @@ End Property
 Public Property Get HasSteelTension() As Boolean
     HasSteelTension = mHasSteelTension
 End Property
+
+' Создает ResultMeta для named-state, построенного напрямую из CSectionSolver.
+Private Function BuildMetaFromSolver(ByVal stateType As ESectionStateType, ByVal solver As CSectionSolver, _
+        ByVal statusText As String, ByVal stopReason As String) As CResultMeta
+    If Len(Trim$(statusText)) = 0 Then
+        If solver Is Nothing Then
+            Set BuildMetaFromSolver = MetaFromStatus(stateType, "NumFail", "Solver не вернул состояние.")
+        ElseIf solver.Converged Then
+            Set BuildMetaFromSolver = MetaFromStatus(stateType, "OK", stopReason)
+        ElseIf IsInputStateFailure(stopReason) Then
+            Set BuildMetaFromSolver = MetaFromStatus(stateType, "InputErr", stopReason)
+        Else
+            Set BuildMetaFromSolver = MetaFromStatus(stateType, "NumFail", stopReason)
+        End If
+    Else
+        Set BuildMetaFromSolver = MetaFromStatus(stateType, statusText, stopReason)
+    End If
+End Function
+
+' Создает ResultMeta для named-state, построенного из готовой плоскости.
+Private Function BuildMetaFromStatus(ByVal stateType As ESectionStateType, ByVal statusText As String, _
+        ByVal resultComment As String) As CResultMeta
+    If Len(Trim$(statusText)) = 0 Then statusText = "OK"
+    Set BuildMetaFromStatus = MetaFromStatus(stateType, statusText, resultComment)
+End Function
+
+' Переводит status named-state в типизированный ResultMeta через общую policy.
+Private Function MetaFromStatus(ByVal stateType As ESectionStateType, ByVal statusText As String, _
+        ByVal resultComment As String) As CResultMeta
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    Set MetaFromStatus = policy.MetaFromLegacyStatus(statusText, ResultKindFromStateType(stateType), resultComment)
+End Function
+
+' Определяет инженерный контекст результата по типу named-state.
+Private Function ResultKindFromStateType(ByVal stateType As ESectionStateType) As EResultKind
+    Select Case stateType
+        Case sstCapacityState
+            ResultKindFromStateType = rkCapacity
+        Case sstBeforeMcrcState, sstAfterMcrcState
+            ResultKindFromStateType = rkCrackFormation
+        Case sstCrackedState
+            ResultKindFromStateType = rkDirectState
+        Case Else
+            ResultKindFromStateType = rkDirectState
+    End Select
+End Function
+
+' Отличает ошибку исходных данных solver-а от настоящей численной несходимости.
+' Это нужно, чтобы ResultMeta named-state не превращал InputError в NumFail.
+Private Function IsInputStateFailure(ByVal reason As String) As Boolean
+    IsInputStateFailure = (InStr(1, reason, "InputError", vbTextCompare) > 0 Or _
+        InStr(1, reason, "InvalidInput", vbTextCompare) > 0 Or _
+        InStr(1, reason, "InvalidConfiguration", vbTextCompare) > 0)
+End Function

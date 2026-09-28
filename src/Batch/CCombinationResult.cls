@@ -145,6 +145,9 @@ Public StabilityPlaneApplicable2 As Boolean ' True, если вторая пло
 Public StabilityPlanePassed1 As Boolean ' True, если проверка первой плоскости прошла.
 Public StabilityPlanePassed2 As Boolean ' True, если проверка второй плоскости прошла.
 Public GoverningUtil As Double ' Наибольшее использование LC по применимым проверкам.
+Public InternalStatus As EResultInternalStatus ' Итоговый внутренний статус LC после агрегирования ResultMeta.
+Public ResultCode As EResultCode ' Итоговый машинный код LC после агрегирования ResultMeta.
+Public ResultComment As String ' Итоговый пользовательский комментарий LC без технического DiagnosticLog.
 Public StateAvailable As Boolean ' True, если есть сохраненное прямое состояние НДС.
 Public StateConverged As Boolean ' True, если прямой CSectionSolver сошелся.
 Public Epsilon0 As Double ' epsilon0 прямого состояния НДС.
@@ -159,6 +162,7 @@ Public ResidualMy As Double ' Остаточная невязка по My.
 Public StateIterations As Long ' Число итераций прямого StateSolution.
 
 Private mStates As Collection ' Конечные именованные НДС, которые должны попасть в Results snapshot.
+Private mResultPolicy As CResultStatusPolicy ' Политика преобразования legacy status -> ResultMeta на переходном этапе.
 
 ' Полностью очищает результат LC перед новым расчетом.
 ' Исходные нагрузки и комментарий сочетания здесь не хранятся, поэтому метод
@@ -199,6 +203,9 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     ClearLongitudinalCrackResult
     ClearStabilityResult
     GoverningUtil = 0#
+    InternalStatus = rsNotApplicable
+    ResultCode = rcNotApplicable
+    ResultComment = vbNullString
     StateAvailable = False
     StateConverged = False
     Epsilon0 = 0#
@@ -212,6 +219,63 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     ResidualMy = 0#
     StateIterations = 0
 End Sub
+
+' Возвращает ResultMeta итогового LC, построенный из уже агрегированного Status.
+Public Property Get OverallMeta() As CResultMeta
+    Set OverallMeta = MetaFromStatus(Status, rkGeneric, ResultComment)
+End Property
+
+' Возвращает ResultMeta прямого НДС заданного LC.
+Public Property Get DirectStateMeta() As CResultMeta
+    Set DirectStateMeta = MetaFromStatus(DirectStateStatus, rkDirectState)
+End Property
+
+' Возвращает ResultMeta поиска несущей способности.
+Public Property Get CapacityMeta() As CResultMeta
+    Set CapacityMeta = MetaFromStatus(CapacityStatus, rkCapacity, CapacityLimitState)
+End Property
+
+' Возвращает ResultMeta расчета нормальных трещин.
+Public Property Get CrackMeta() As CResultMeta
+    Set CrackMeta = MetaFromStatus(CrackStatus, rkCrackWidth)
+End Property
+
+' Возвращает ResultMeta проверки продольных трещин.
+Public Property Get LongitudinalCrackMeta() As CResultMeta
+    Set LongitudinalCrackMeta = MetaFromStatus(LongitudinalCrackStatus, rkLongitudinalCrack)
+End Property
+
+' Возвращает ResultMeta проверки устойчивости.
+Public Property Get StabilityMeta() As CResultMeta
+    Set StabilityMeta = MetaFromStatus(StabilityStatus, rkStability, StabilityBranch)
+End Property
+
+' Сохраняет итоговую meta-информацию LC рядом со старым строковым Status.
+Public Sub StoreOverallMeta(ByVal meta As CResultMeta)
+    If meta Is Nothing Then
+        InternalStatus = rsInternalError
+        ResultCode = rcInternalError
+        ResultComment = "Итоговый статус LC не сформирован."
+    Else
+        InternalStatus = meta.InternalStatus
+        ResultCode = meta.ResultCode
+        ResultComment = meta.ResultComment
+    End If
+End Sub
+
+' Переходный helper этапа 1: строит типизированную meta-запись из текущих
+' строковых полей, пока отдельные result-объекты еще не вынесены в result graph.
+Private Function MetaFromStatus(ByVal statusText As String, ByVal resultKind As EResultKind, _
+        Optional ByVal resultComment As String = vbNullString) As CResultMeta
+    Set MetaFromStatus = Policy.MetaFromLegacyStatus(statusText, resultKind, resultComment)
+End Function
+
+' Лениво создает policy, чтобы CCombinationResult оставался простым контейнером
+' и не зависел от порядка вызова Clear/Class_Initialize.
+Private Function Policy() As CResultStatusPolicy
+    If mResultPolicy Is Nothing Then Set mResultPolicy = New CResultStatusPolicy
+    Set Policy = mResultPolicy
+End Function
 
 ' Сохраняет результат изолированного фильтра продольного изгиба/устойчивости.
 ' Калькулятор не знает о batch-status policy, поэтому сюда копируются уже

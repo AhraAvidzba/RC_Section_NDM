@@ -18,17 +18,26 @@ Option Explicit
 '
 ' Внутренний слой может хранить подробные StopReason, LimitState и другие
 ' технические строки. Наружный слой, который выводится пользователю, всегда
-' сводится только к OK, FAIL, NumFail, InputErr или N/A. Класс не запускает
+' сводится только к OK, FAIL, BaseFail, NumFail, InputErr, CalcErr или N/A. Класс не запускает
 ' расчет и не знает о сочетаниях нагрузок: его граница ответственности -
 ' только перевод и агрегирование статусов.
 
 Private Const STATUS_OK As String = "OK" ' Расчетная ветка завершилась без ошибки.
 Private Const STATUS_FAIL As String = "FAIL" ' Равновесие найдено, но физический предел или проверка не проходят.
+Private Const STATUS_BASEFAIL As String = "BaseFail" ' Capacity: базовая точка траектории уже за предельным состоянием.
 Private Const STATUS_NUMFAIL As String = "NumFail" ' Solver не нашел равновесие в заданных численных ограничениях.
 Private Const STATUS_INPUTERR As String = "InputErr" ' Ошибка исходных данных, а не численная несходимость.
+Private Const STATUS_CALCERR As String = "CalcErr" ' Внутренняя ошибка программы или несформированный result.
 Private Const STATUS_NA As String = "N/A" ' Расчетная проверка не относится к этому LC/режиму.
 Private Const STATUS_NOT_CALCULATED_SHORT As String = "NotCalcul." ' Короткая подпись для служебных нерассчитанных полей.
 Private Const STRESS_ZERO_TOLERANCE As Double = 0.000000001 ' Малые численные шумы напряжений не должны запускать проверку сжатого бетона.
+
+Private mResultPolicy As CResultStatusPolicy ' Новый типизированный слой status policy; этот класс остается совместимым фасадом.
+
+' Создает внутреннюю policy, которая знает про InternalStatus/ResultCode.
+Private Sub Class_Initialize()
+    Set mResultPolicy = New CResultStatusPolicy
+End Sub
 
 ' Возвращает статус успешной расчетной ветки.
 Public Property Get OK() As String
@@ -38,6 +47,11 @@ End Property
 ' Возвращает статус физически непрошедшей проверки при найденном равновесии.
 Public Property Get Fail() As String
     Fail = STATUS_FAIL
+End Property
+
+' Возвращает специальный статус capacity, когда базовая точка траектории уже за пределом.
+Public Property Get BaseFail() As String
+    BaseFail = STATUS_BASEFAIL
 End Property
 
 ' Возвращает статус настоящей численной несходимости.
@@ -50,6 +64,11 @@ Public Property Get InputErr() As String
     InputErr = STATUS_INPUTERR
 End Property
 
+' Возвращает статус внутренней ошибки программы.
+Public Property Get CalcErr() As String
+    CalcErr = STATUS_CALCERR
+End Property
+
 ' Возвращает статус неприменимой или не запущенной проверки.
 Public Property Get NotApplicable() As String
     NotApplicable = STATUS_NA
@@ -60,42 +79,23 @@ End Property
 Public Function Aggregate(ByVal directStateStatus As String, ByVal capacityStatus As String, _
         ByVal crackStatus As String, Optional ByVal longitudinalCrackStatus As String = vbNullString, _
         Optional ByVal stabilityStatus As String = vbNullString) As String
-    Dim resultStatus As String
-    resultStatus = STATUS_NA
-    resultStatus = Merge(resultStatus, directStateStatus)
-    resultStatus = Merge(resultStatus, capacityStatus)
-    resultStatus = Merge(resultStatus, crackStatus)
-    resultStatus = Merge(resultStatus, longitudinalCrackStatus)
-    resultStatus = Merge(resultStatus, stabilityStatus)
-    Aggregate = resultStatus
+    Aggregate = Policy.AggregateText(directStateStatus, capacityStatus, crackStatus, _
+        longitudinalCrackStatus, stabilityStatus)
+End Function
+
+' Собирает OverallStatus из типизированных ResultMeta. Это основной путь для
+' новой архитектуры, где writer-ы не должны парсить StopReason.
+Public Function AggregateMeta(ByVal directMeta As CResultMeta, ByVal capacityMeta As CResultMeta, _
+        ByVal crackMeta As CResultMeta, Optional ByVal longitudinalMeta As CResultMeta = Nothing, _
+        Optional ByVal stabilityMeta As CResultMeta = Nothing) As String
+    AggregateMeta = Policy.AggregateMeta(directMeta, capacityMeta, crackMeta, longitudinalMeta, stabilityMeta)
 End Function
 
 ' Переводит внутренний текст расчетной ветки в один из пяти пользовательских
 ' статусов. Этот метод используется там, где нужна именно оценка результата:
 ' агрегирование OverallStatus, подсветка строк и проверка завершенности ветки.
 Public Function ToUserStatus(ByVal statusText As String) As String
-    Dim value As String
-    value = Trim$(statusText)
-    Select Case UCase$(value)
-        Case "OK"
-            ToUserStatus = STATUS_OK
-        Case "FAIL", "STRENGTHFAILED", "STRAINLIMITEXCEEDED"
-            ToUserStatus = STATUS_FAIL
-        Case "NUMFAIL", "NUMERICALFAILURE", "SINGULARTANGENT"
-            ToUserStatus = STATUS_NUMFAIL
-        Case "INPUTERR", "INPUTERROR", "INVALIDINPUT"
-            ToUserStatus = STATUS_INPUTERR
-        Case "N/A", "NA", "NOTCALCULATED", "NOTCALCUL.", "SKIPPEDZEROMOMENT", "SKIPPEDZEROBASEMOMENT", ""
-            ToUserStatus = STATUS_NA
-        Case Else
-            If IsInvalid(statusText) Then
-                ToUserStatus = STATUS_INPUTERR
-            ElseIf IsNumerical(statusText) Then
-                ToUserStatus = STATUS_NUMFAIL
-            Else
-                ToUserStatus = STATUS_FAIL
-            End If
-    End Select
+    ToUserStatus = Policy.ToUserStatus(statusText)
 End Function
 
 ' Совместимое имя для старых вызовов внутри проекта. Новая расчетная логика
@@ -114,10 +114,14 @@ Public Function DisplayStatus(ByVal statusText As String) As String
             DisplayStatus = STATUS_OK
         Case "FAIL", "STRENGTHFAILED", "STRAINLIMITEXCEEDED"
             DisplayStatus = STATUS_FAIL
+        Case "BASEFAIL"
+            DisplayStatus = STATUS_BASEFAIL
         Case "NUMFAIL", "NUMERICALFAILURE", "SINGULARTANGENT"
             DisplayStatus = STATUS_NUMFAIL
         Case "INPUTERR", "INPUTERROR", "INVALIDINPUT"
             DisplayStatus = STATUS_INPUTERR
+        Case "CALCERR", "INTERNALERROR"
+            DisplayStatus = STATUS_CALCERR
         Case "N/A", "NA", "NOTCALCULATED", "NOTCALCUL.", "SKIPPEDZEROMOMENT", "SKIPPEDZEROBASEMOMENT", ""
             DisplayStatus = STATUS_NA
         Case Else
@@ -128,131 +132,157 @@ End Function
 ' True для расчетов, которые дали физически интерпретируемый результат:
 ' проверка либо прошла, либо показала недостаточную несущую способность.
 Public Function IsFinished(ByVal statusText As String) As Boolean
-    statusText = ToUserStatus(statusText)
-    IsFinished = (statusText = STATUS_OK Or statusText = STATUS_FAIL)
+    IsFinished = Policy.IsFinished(statusText)
 End Function
 
 ' True для OverallStatus, при котором строку LC нужно выделить как проблемную.
 ' N/A сюда не входит: это нейтральный пропуск неприменимой проверки.
 Public Function IsFailedOverall(ByVal statusText As String) As Boolean
-    statusText = ToUserStatus(statusText)
-    IsFailedOverall = (statusText = STATUS_FAIL Or statusText = STATUS_NUMFAIL Or statusText = STATUS_INPUTERR)
+    IsFailedOverall = Policy.IsFailedOverall(statusText)
 End Function
 
 ' Распознает статусы, означающие именно численную несходимость.
 Public Function IsNumerical(ByVal statusText As String) As Boolean
-    IsNumerical = (InStr(1, statusText, STATUS_NUMFAIL, vbTextCompare) > 0 Or _
-        InStr(1, statusText, "NumericalFailure", vbTextCompare) > 0 Or _
-        InStr(1, statusText, "SingularTangent", vbTextCompare) > 0)
+    IsNumerical = Policy.IsNumerical(statusText)
 End Function
 
 ' Распознает статусы ошибок исходных данных.
 Public Function IsInvalid(ByVal statusText As String) As Boolean
-    IsInvalid = (InStr(1, statusText, STATUS_INPUTERR, vbTextCompare) > 0 Or _
-        InStr(1, statusText, "InputError", vbTextCompare) > 0 Or _
-        InStr(1, statusText, "InvalidInput", vbTextCompare) > 0)
+    IsInvalid = Policy.IsInvalid(statusText)
 End Function
 
 ' Переводит результат capacity solver-а в короткий пользовательский статус.
 ' Lambda меньше единицы считается FAIL, потому что равновесие найдено, но
 ' заданный уровень нагрузки выше рассчитанной несущей способности.
 Public Function CapacityStatusFromSolver(ByVal cap As CCapacitySolver) As String
+    CapacityStatusFromSolver = Policy.ExternalStatus(CapacityMetaFromSolver(cap))
+End Function
+
+' Формирует типизированный результат поиска несущей способности.
+' BaseFail здесь отделяется от NumFail: если базовая точка lambda=0 уже за
+' физическим пределом, это инженерный результат траектории, а не численная ошибка.
+Public Function CapacityMetaFromSolver(ByVal cap As CCapacitySolver) As CResultMeta
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+
     If cap Is Nothing Then
-        CapacityStatusFromSolver = STATUS_NUMFAIL
+        meta.SetResult rsNumericalFailure, rcSolverDidNotReturnState, rkCapacity, _
+            "Capacity solver не вернул объект результата."
     ElseIf Not cap.Converged Then
         If IsInvalid(cap.StopReason) Or IsInvalid(cap.LimitState) Then
-            CapacityStatusFromSolver = STATUS_INPUTERR
+            meta.SetResult rsInvalidInput, rcInvalidInput, rkCapacity, cap.StopReason
+        ElseIf IsInitialStateBeyondLimit(cap.StopReason) Then
+            meta.SetResult rsCheckFailed, rcInitialStateBeyondLimit, rkCapacity, cap.StopReason
         Else
-            CapacityStatusFromSolver = STATUS_NUMFAIL
+            meta.SetResult rsNumericalFailure, rcNumericalFailure, rkCapacity, cap.StopReason
         End If
     ElseIf cap.LambdaUltimate > 0# And cap.LambdaUltimate < 1# Then
-        CapacityStatusFromSolver = STATUS_FAIL
+        meta.SetResult rsCheckFailed, rcPhysicalLimitExceeded, rkCapacity, cap.LimitState
     Else
-        CapacityStatusFromSolver = STATUS_OK
+        meta.SetResult rsSuccess, rcCheckPassed, rkCapacity, cap.LimitState
     End If
+
+    Set CapacityMetaFromSolver = meta
 End Function
 
 ' Переводит результат расчета трещин в тот же пользовательский словарь.
 ' Для трещин FAIL означает, что ширина раскрытия превышает пользовательский
 ' a_crc,ult при корректно найденном НДС.
 Public Function CrackStatusFromCalculator(ByVal crack As CCrackWidthCalculator) As String
+    CrackStatusFromCalculator = Policy.ExternalStatus(CrackMetaFromCalculator(crack))
+End Function
+
+' Формирует типизированный результат расчета нормальных трещин.
+' Численная несходимость допускается только как отражение уже выполненного
+' state/search-поиска внутри калькулятора; чистые формулы ширины сами NumFail не создают.
+Public Function CrackMetaFromCalculator(ByVal crack As CCrackWidthCalculator) As CResultMeta
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+
     If crack Is Nothing Then
-        CrackStatusFromCalculator = STATUS_INPUTERR
+        meta.SetResult rsInvalidInput, rcInvalidInput, rkCrackWidth, "Crack calculator не создан."
     ElseIf crack.Converged Then
         If crack.CrackFormed And crack.AllowableCrackWidth > 0# And _
                 crack.CrackWidth > crack.AllowableCrackWidth Then
-            CrackStatusFromCalculator = STATUS_FAIL
+            meta.SetResult rsCheckFailed, rcCrackWidthExceeded, rkCrackWidth, crack.StopReason
         Else
-            CrackStatusFromCalculator = STATUS_OK
+            meta.SetResult rsSuccess, rcCheckPassed, rkCrackWidth, crack.StopReason
         End If
     ElseIf IsInvalid(crack.StopReason) Then
-        CrackStatusFromCalculator = STATUS_INPUTERR
+        meta.SetResult rsInvalidInput, rcInvalidInput, rkCrackWidth, crack.StopReason
     ElseIf IsNumerical(crack.StopReason) Then
-        CrackStatusFromCalculator = STATUS_NUMFAIL
+        meta.SetResult rsNumericalFailure, rcNumericalFailure, rkCrackWidth, crack.StopReason
     Else
-        CrackStatusFromCalculator = STATUS_INPUTERR
+        meta.SetResult rsInvalidInput, rcInvalidInput, rkCrackWidth, crack.StopReason
     End If
+
+    Set CrackMetaFromCalculator = meta
 End Function
 
 ' Возвращает статус проверки продольных трещин по сжатию бетона.
 ' Если сжатого бетона в найденном НДС нет, проверка неприменима и не ухудшает OverallStatus.
 Public Function LongitudinalCrackStatus(ByVal maxCompressionStress As Double, ByVal rbMc2 As Double) As String
+    LongitudinalCrackStatus = Policy.ExternalStatus(LongitudinalCrackMeta(maxCompressionStress, rbMc2))
+End Function
+
+' Формирует типизированный результат проверки продольных трещин.
+' Эта проверка не решает равновесие и поэтому не может сама породить NumFail.
+Public Function LongitudinalCrackMeta(ByVal maxCompressionStress As Double, ByVal rbMc2 As Double) As CResultMeta
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+
     If maxCompressionStress <= STRESS_ZERO_TOLERANCE Then
-        LongitudinalCrackStatus = STATUS_NA
+        meta.SetNotApplicable rkLongitudinalCrack, "Сжатого бетона для проверки продольных трещин нет."
     ElseIf rbMc2 <= 0# Then
-        LongitudinalCrackStatus = STATUS_INPUTERR
+        meta.SetResult rsInvalidInput, rcInvalidInput, rkLongitudinalCrack, "Rb,mc2 должен быть больше нуля."
     ElseIf maxCompressionStress <= rbMc2 Then
-        LongitudinalCrackStatus = STATUS_OK
+        meta.SetResult rsSuccess, rcCheckPassed, rkLongitudinalCrack, vbNullString
     Else
-        LongitudinalCrackStatus = STATUS_FAIL
+        meta.SetResult rsCheckFailed, rcLongitudinalCrackExceeded, rkLongitudinalCrack, vbNullString
     End If
+
+    Set LongitudinalCrackMeta = meta
 End Function
 
 ' Возвращает пользовательский статус из результата фильтра устойчивости.
 ' Сам CStabilityCalculator хранит подробные расчетные причины, а наружу
 ' отдается только общий словарь Summary.
 Public Function StabilityStatusFromCalculator(ByVal stability As CStabilityCalculator) As String
+    StabilityStatusFromCalculator = Policy.ExternalStatus(StabilityMetaFromCalculator(stability))
+End Function
+
+' Формирует типизированный результат устойчивости.
+' Фильтр устойчивости является инженерской проверкой по найденным усилиям и
+' геометрическим характеристикам; численную несходимость он не создает.
+Public Function StabilityMetaFromCalculator(ByVal stability As CStabilityCalculator) As CResultMeta
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+
     If stability Is Nothing Then
-        StabilityStatusFromCalculator = STATUS_INPUTERR
+        meta.SetResult rsInvalidInput, rcInvalidInput, rkStability, "Stability calculator не создан."
     ElseIf Not stability.InputValid Then
-        StabilityStatusFromCalculator = STATUS_INPUTERR
+        meta.SetResult rsInvalidInput, rcInvalidInput, rkStability, stability.StopReason
     ElseIf Not stability.Applicable Then
-        StabilityStatusFromCalculator = STATUS_NA
+        meta.SetNotApplicable rkStability, stability.StopReason
     ElseIf stability.CheckPassed Then
-        StabilityStatusFromCalculator = STATUS_OK
+        meta.SetResult rsSuccess, rcCheckPassed, rkStability, stability.StopReason
     Else
-        StabilityStatusFromCalculator = STATUS_FAIL
+        meta.SetResult rsCheckFailed, rcCheckFailed, rkStability, stability.StopReason
     End If
+
+    Set StabilityMetaFromCalculator = meta
 End Function
 
-' Объединяет два статуса по утвержденному приоритету:
-' InputErr -> NumFail -> FAIL -> OK, при этом N/A пропускается.
-Private Function Merge(ByVal currentStatus As String, ByVal candidateStatus As String) As String
-    candidateStatus = ToUserStatus(candidateStatus)
-    currentStatus = ToUserStatus(currentStatus)
-    If candidateStatus = STATUS_NA Then
-        Merge = currentStatus
-    ElseIf currentStatus = STATUS_NA Then
-        Merge = candidateStatus
-    ElseIf StatusPriority(candidateStatus) > StatusPriority(currentStatus) Then
-        Merge = candidateStatus
-    Else
-        Merge = currentStatus
-    End If
+' Возвращает новый типизированный слой policy и лениво создает его, если VBA
+' восстановил объект без вызова Class_Initialize.
+Private Function Policy() As CResultStatusPolicy
+    If mResultPolicy Is Nothing Then Set mResultPolicy = New CResultStatusPolicy
+    Set Policy = mResultPolicy
 End Function
 
-' Численный приоритет нужен только для выбора худшего OverallStatus.
-Private Function StatusPriority(ByVal statusText As String) As Long
-    Select Case ToUserStatus(statusText)
-        Case STATUS_INPUTERR
-            StatusPriority = 4
-        Case STATUS_NUMFAIL
-            StatusPriority = 3
-        Case STATUS_FAIL
-            StatusPriority = 2
-        Case STATUS_OK
-            StatusPriority = 1
-        Case Else
-            StatusPriority = 0
-    End Select
+' Распознает ситуацию, когда capacity-путь не стартует, потому что начальная
+' точка lambda=0 уже вышла за физический предел выбранной траектории.
+Private Function IsInitialStateBeyondLimit(ByVal reason As String) As Boolean
+    IsInitialStateBeyondLimit = (InStr(1, reason, "lambda = 0", vbTextCompare) > 0 Or _
+        InStr(1, reason, "Начальное состояние", vbTextCompare) > 0)
 End Function

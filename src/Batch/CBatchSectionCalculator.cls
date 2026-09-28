@@ -714,9 +714,10 @@ Private Sub RunCombination(ByVal index As Long)
 FinalizeCombination:
     mResults(index).GoverningUtil = MaxDouble(MaxDouble(MaxDouble(mResults(index).UtilCapacity, mResults(index).CrackUtil), _
         mResults(index).LongitudinalCrackUtil), mResults(index).StabilityUtil)
-    mResults(index).Status = mStatusPolicy.Aggregate(mResults(index).DirectStateStatus, _
-        mResults(index).CapacityStatus, mResults(index).CrackStatus, _
-        mResults(index).LongitudinalCrackStatus, mResults(index).StabilityStatus)
+    mResults(index).Status = mStatusPolicy.AggregateMeta(mResults(index).DirectStateMeta, _
+        mResults(index).CapacityMeta, mResults(index).CrackMeta, _
+        mResults(index).LongitudinalCrackMeta, mResults(index).StabilityMeta)
+    mResults(index).StoreOverallMeta mResults(index).OverallMeta
     AppendDiagnostic index
     ReportCombinationSummary index
     Exit Sub
@@ -1556,6 +1557,8 @@ Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
         mResults(index).DirectStateDiagramExtensionEnabled = mMaterialProvider.DirectStateDiagramExtensionEnabled
     End If
     mResults(index).GoverningUtil = 0#
+    mResults(index).ResultComment = reason
+    mResults(index).StoreOverallMeta mResults(index).OverallMeta
     AppendDiagnostic index
 End Sub
 
