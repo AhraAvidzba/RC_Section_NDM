@@ -161,14 +161,14 @@ Public ResidualMx As Double ' Остаточная невязка по Mx.
 Public ResidualMy As Double ' Остаточная невязка по My.
 Public StateIterations As Long ' Число итераций прямого StateSolution.
 
-Private mStates As Collection ' Конечные именованные НДС, которые должны попасть в Results snapshot.
+Private mStateRepository As CStateRepository ' Единое хранилище конечных именованных НДС текущего LC.
 Private mResultPolicy As CResultStatusPolicy ' Политика преобразования legacy status -> ResultMeta на переходном этапе.
 
 ' Полностью очищает результат LC перед новым расчетом.
 ' Исходные нагрузки и комментарий сочетания здесь не хранятся, поэтому метод
 ' не может случайно стереть пользовательский ввод.
 Public Sub Clear(ByVal defaultCapacityPath As String)
-    Set mStates = New Collection
+    Set mStateRepository = New CStateRepository
     Status = vbNullString
     ProfileId = vbNullString
     DirectStateStatus = vbNullString
@@ -436,35 +436,33 @@ End Sub
 ' если обязательная проверка образования трещины реально дошла до lambda_crc.
 Public Sub AddState(ByVal stateResult As CSectionStateResult)
     If stateResult Is Nothing Then Exit Sub
-    If mStates Is Nothing Then Set mStates = New Collection
-    mStates.Add stateResult
+    If mStateRepository Is Nothing Then Set mStateRepository = New CStateRepository
+    mStateRepository.StoreState stateResult
 End Sub
 
 ' Возвращает количество сохраненных named states.
 Public Property Get StateCount() As Long
-    If Not mStates Is Nothing Then StateCount = mStates.Count
+    If Not mStateRepository Is Nothing Then StateCount = mStateRepository.StateCount
 End Property
 
 ' Возвращает named-state по порядковому номеру.
 Public Property Get StateAt(ByVal index As Long) As CSectionStateResult
-    If mStates Is Nothing Then Err.Raise vbObjectError + 3940, "CCombinationResult", "Коллекция расчетных состояний не инициализирована."
-    If index < 1 Or index > mStates.Count Then Err.Raise vbObjectError + 3941, "CCombinationResult", "Индекс именованного состояния вне диапазона."
-    Set StateAt = mStates.Item(index)
+    If mStateRepository Is Nothing Then Err.Raise vbObjectError + 3940, "CCombinationResult", "Хранилище расчетных состояний не инициализировано."
+    Set StateAt = mStateRepository.StateAt(index)
 End Property
 
 ' Ищет named-state по типу. Если состояние не рассчитывалось, возвращает Nothing.
 Public Function FindState(ByVal stateType As ESectionStateType) As CSectionStateResult
-    If mStates Is Nothing Then Exit Function
-    Dim i As Long
-    For i = 1 To mStates.Count
-        Dim stateResult As CSectionStateResult
-        Set stateResult = mStates.Item(i)
-        If stateResult.StateType = stateType Then
-            Set FindState = stateResult
-            Exit Function
-        End If
-    Next i
+    If mStateRepository Is Nothing Then Exit Function
+    Set FindState = mStateRepository.FindState(stateType)
 End Function
+
+' Возвращает repository текущего LC. Его используют только слои orchestration,
+' которые имеют право добавлять или переиспользовать конечные named-state.
+Public Property Get StateRepository() As CStateRepository
+    If mStateRepository Is Nothing Then Set mStateRepository = New CStateRepository
+    Set StateRepository = mStateRepository
+End Property
 
 ' Сохраняет найденную плоскость деформаций и внутренние усилия прямого НДС.
 ' Эти данные используются Results snapshot, Excel-схемой и AutoCAD export.
@@ -486,6 +484,31 @@ Public Sub StoreSectionState(ByVal solver As CSectionSolver)
     ResidualMx = solver.ResidualMx
     ResidualMy = solver.ResidualMy
     StateIterations = solver.Iterations
+End Sub
+
+' Копирует в краткий LC-снимок уже сохраненный named-state. Такой путь нужен,
+' когда StateProvider вернул эквивалентное состояние из repository без нового
+' запуска CSectionSolver, но batch summary и подробный Results всё равно должны
+' видеть те же деформации, внутренние усилия и невязки.
+Public Sub StoreSectionStateResult(ByVal stateResult As CSectionStateResult)
+    If stateResult Is Nothing Then Exit Sub
+    StateAvailable = True
+    StateConverged = stateResult.Converged
+    Epsilon0 = stateResult.Epsilon0
+    KappaX = stateResult.KappaX
+    KappaY = stateResult.KappaY
+    Nint = stateResult.Nint
+    Mxint = stateResult.Mxint
+    Myint = stateResult.Myint
+    MinConcreteStrain = stateResult.MinConcreteStrain
+    MaxConcreteStrain = stateResult.MaxConcreteStrain
+    MaxConcreteCompressionStress = Abs(stateResult.MinConcreteStress)
+    MinSteelStrain = stateResult.MinSteelStrain
+    MaxSteelStrain = stateResult.MaxSteelStrain
+    ResidualN = stateResult.ResidualN
+    ResidualMx = stateResult.ResidualMx
+    ResidualMy = stateResult.ResidualMy
+    StateIterations = stateResult.IterationCount
 End Sub
 
 ' Копирует инженерные величины расчета трещин из специализированного

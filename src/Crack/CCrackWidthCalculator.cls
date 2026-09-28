@@ -95,6 +95,7 @@ Private mPreCrackState As CSectionStateResult ' Необязательное с�
 Private mPreCrackSolver As CSectionSolver ' Solver состояния PreCrackState для warm start состояния сразу после трещины.
 Private mPostCrackState As CSectionStateResult ' Необязательное состояние после выключения растянутого бетона для sigma_s,crc.
 Private mPostCrackSolver As CSectionSolver ' Solver состояния PostCrackState, чтобы не решать его повторно для sigma_s,crc.
+Private mStateProvider As CStateProvider ' Внешний provider конечных named-state; search-probes трещин через него не кэшируются.
 Private mFormationPrechecked As Boolean ' True, если Ncrc/Mcrc уже проверены перед расчетом полной ширины.
 Private mFormationLoadDefined As Boolean ' True, если сохранены внутренние усилия именно на уровне образования трещины.
 Private mFormationLoadN As Double ' Продольная сила служебного состояния образования трещины, Н.
@@ -671,21 +672,40 @@ Private Function BuildPreCrackState(ByVal section As CSectionModel, ByVal materi
         Dim formationMx As Double
         Dim formationMy As Double
         FormationLoads formationN, formationMx, formationMy
-        Set beforeSolver = SolveState(section, materialProvider.ConcreteMaterialFromSpec(mCrackInitiationSpec), _
-            materialProvider.SteelMaterialFromSpec(mCrackInitiationSpec), Nothing, _
-            formationN, formationMx, formationMy, True)
-        If Not beforeSolver.Converged Then
-            Set mPreCrackSolver = beforeSolver
+
+        If Not mStateProvider Is Nothing Then
+            Dim request As CStateRequest
+            Set request = New CStateRequest
+            request.Initialize sstPreCrackState, cpMcrc, mCrackInitiationSpec, _
+                formationN, formationMx, formationMy, False, True
+            Set mPreCrackState = mStateProvider.GetOrSolve(request)
+            If Not mStateProvider.LastRunner Is Nothing Then
+                mSolverCallCount = mSolverCallCount + mStateProvider.LastRunner.SolverCallCount
+                Set beforeSolver = mStateProvider.LastRunner.ResultSolver
+            End If
+        Else
+            Set beforeSolver = SolveState(section, materialProvider.ConcreteMaterialFromSpec(mCrackInitiationSpec), _
+                materialProvider.SteelMaterialFromSpec(mCrackInitiationSpec), Nothing, _
+                formationN, formationMx, formationMy, True)
             Set mPreCrackState = New CSectionStateResult
             mPreCrackState.InitializeFromSolver sstPreCrackState, cpMcrc, _
-                mCrackInitiationSpec, beforeSolver, False, "NumFail"
-            mStopReason = "NumericalFailure: состояние Ncrc до образования трещины не сошлось: " & beforeSolver.StopReason
+                mCrackInitiationSpec, beforeSolver, False, IIf(beforeSolver.Converged, "OK", "NumFail")
+        End If
+
+        If mPreCrackState Is Nothing Then
+            mStopReason = "NumericalFailure: состояние Ncrc до образования трещины не получено."
+            Exit Function
+        End If
+        If Not mPreCrackState.Converged Then
+            If Not beforeSolver Is Nothing Then Set mPreCrackSolver = beforeSolver
+            mStopReason = "NumericalFailure: состояние Ncrc до образования трещины не сошлось: " & mPreCrackState.StopReason
+            Exit Function
+        End If
+        If beforeSolver Is Nothing Then
+            mStopReason = "NumericalFailure: состояние Ncrc было найдено, но solver-снимок недоступен для дальнейшего расчета."
             Exit Function
         End If
         Set mPreCrackSolver = beforeSolver
-        Set mPreCrackState = New CSectionStateResult
-        mPreCrackState.InitializeFromSolver sstPreCrackState, cpMcrc, _
-            mCrackInitiationSpec, beforeSolver, False, "OK"
     End If
     BuildPreCrackState = True
 End Function
@@ -710,20 +730,38 @@ Private Function EnsurePostCrackState(ByVal section As CSectionModel, ByVal mate
     Dim formationMx As Double
     Dim formationMy As Double
     FormationLoads formationN, formationMx, formationMy
-    Set mPostCrackSolver = SolveState(section, materialProvider.ConcreteMaterialFromSpec(mCrackedStateSpec), _
-        materialProvider.SteelMaterialFromSpec(mCrackedStateSpec), effectiveStartSolver, _
-        formationN, formationMx, formationMy, True)
-    If Not mPostCrackSolver.Converged Then
+    If Not mStateProvider Is Nothing Then
+        Dim request As CStateRequest
+        Set request = New CStateRequest
+        request.Initialize sstPostCrackState, cpCrackedNDS, mCrackedStateSpec, _
+            formationN, formationMx, formationMy, False, True
+        Set mPostCrackState = mStateProvider.GetOrSolve(request, effectiveStartSolver)
+        If Not mStateProvider.LastRunner Is Nothing Then
+            mSolverCallCount = mSolverCallCount + mStateProvider.LastRunner.SolverCallCount
+            Set mPostCrackSolver = mStateProvider.LastRunner.ResultSolver
+        End If
+    Else
+        Set mPostCrackSolver = SolveState(section, materialProvider.ConcreteMaterialFromSpec(mCrackedStateSpec), _
+            materialProvider.SteelMaterialFromSpec(mCrackedStateSpec), effectiveStartSolver, _
+            formationN, formationMx, formationMy, True)
         Set mPostCrackState = New CSectionStateResult
         mPostCrackState.InitializeFromSolver sstPostCrackState, cpCrackedNDS, _
-            mCrackedStateSpec, mPostCrackSolver, False, "NumFail"
-        mStopReason = "NumericalFailure: состояние lambda_crc после образования трещины не сошлось: " & mPostCrackSolver.StopReason
+            mCrackedStateSpec, mPostCrackSolver, False, IIf(mPostCrackSolver.Converged, "OK", "NumFail")
+    End If
+
+    If mPostCrackState Is Nothing Then
+        mStopReason = "NumericalFailure: состояние lambda_crc после образования трещины не получено."
+        Exit Function
+    End If
+    If Not mPostCrackState.Converged Then
+        mStopReason = "NumericalFailure: состояние lambda_crc после образования трещины не сошлось: " & mPostCrackState.StopReason
+        Exit Function
+    End If
+    If mPostCrackSolver Is Nothing Then
+        mStopReason = "NumericalFailure: состояние lambda_crc после образования трещины найдено, но solver-снимок недоступен для sigma_s,crc."
         Exit Function
     End If
 
-    Set mPostCrackState = New CSectionStateResult
-    mPostCrackState.InitializeFromSolver sstPostCrackState, cpCrackedNDS, _
-        mCrackedStateSpec, mPostCrackSolver, False, "OK"
     EnsurePostCrackState = True
 End Function
 
@@ -2964,6 +3002,13 @@ End Property
 ' Возвращает состояние на том же уровне нагрузки сразу после выключения растянутого бетона.
 Public Property Get PostCrackState() As CSectionStateResult
     Set PostCrackState = mPostCrackState
+End Property
+
+' Подключает общий provider конечных named-state. Если свойство не задано,
+' калькулятор остается пригодным для изолированных тестов и решает состояния
+' собственным локальным CStateSolutionRunner.
+Public Property Set StateProvider(ByVal value As CStateProvider)
+    Set mStateProvider = value
 End Property
 
 Public Property Let AllowableCrackWidth(ByVal value As Double)

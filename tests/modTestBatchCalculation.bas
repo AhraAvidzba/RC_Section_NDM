@@ -192,6 +192,10 @@ Public Function RunBatchCalculationTests() As String
     TestFormulaChecksDoNotCreateNumFail stats
     AppendLine stats, "RUN: TestSectionStateResultStoresEquilibriumData"
     TestSectionStateResultStoresEquilibriumData stats
+    AppendLine stats, "RUN: TestStateRequestEquivalenceIgnoresSolveOptions"
+    TestStateRequestEquivalenceIgnoresSolveOptions stats
+    AppendLine stats, "RUN: TestStateRepositoryReusesOnlyConvergedStates"
+    TestStateRepositoryReusesOnlyConvergedStates stats
     AppendLine stats, "RUN: TestPrePostCrackStateAliases"
     TestPrePostCrackStateAliases stats
 
@@ -4540,6 +4544,81 @@ Private Sub TestSectionStateResultStoresEquilibriumData(ByRef stats As TBatchTes
     AssertTrue stats, "stateMeta.solverCalls", stateResult.SolverCallCount >= 1
     AssertTrue stats, "stateMeta.iterations", stateResult.IterationCount >= 0
     AssertTrue stats, "stateMeta.resultMeta", Not stateResult.ResultMeta Is Nothing
+End Sub
+
+' Проверяет Stage 3: технические solve-options не входят в ключ
+' эквивалентности named-state, если они не меняют физический результат.
+Private Sub TestStateRequestEquivalenceIgnoresSolveOptions(ByRef stats As TBatchTestStats)
+    Dim spec As CMaterialModelSpec
+    Set spec = New CMaterialModelSpec
+    spec.Initialize "ULS(I)", "ThreeLine", "Ignore", "TwoLine"
+
+    Dim requestA As CStateRequest
+    Set requestA = New CStateRequest
+    requestA.Initialize sstStrengthState, cpStrength, spec, 1000#, 2000#, 3000#, True, False
+
+    Dim requestB As CStateRequest
+    Set requestB = New CStateRequest
+    requestB.Initialize sstStrengthState, cpStrength, spec, 1000#, 2000#, 3000#, True, True
+
+    Dim requestDifferent As CStateRequest
+    Set requestDifferent = New CStateRequest
+    requestDifferent.Initialize sstStrengthState, cpStrength, spec, 1000#, 2500#, 3000#, True, False
+
+    AssertEquals stats, "stateRequest.key.solveOptionsIgnored", _
+        requestA.EquivalenceKey, requestB.EquivalenceKey
+    AssertTrue stats, "stateRequest.key.loadsMatter", _
+        requestA.EquivalenceKey <> requestDifferent.EquivalenceKey
+End Sub
+
+' Проверяет Stage 3: repository может переиспользовать только реально найденное
+' физическое НДС. Неуспешная попытка хранится для вывода, но не блокирует
+' будущий solve того же физического запроса.
+Private Sub TestStateRepositoryReusesOnlyConvergedStates(ByRef stats As TBatchTestStats)
+    Dim spec As CMaterialModelSpec
+    Set spec = New CMaterialModelSpec
+    spec.Initialize "ULS(I)", "ThreeLine", "Ignore", "TwoLine"
+
+    Dim request As CStateRequest
+    Set request = New CStateRequest
+    request.Initialize sstStrengthState, cpStrength, spec, 1000#, 2000#, 3000#, True, False
+
+    Dim repository As CStateRepository
+    Set repository = New CStateRepository
+
+    Dim failedSolver As CSectionSolver
+    Set failedSolver = New CSectionSolver
+
+    Dim failedState As CSectionStateResult
+    Set failedState = New CSectionStateResult
+    failedState.InitializeFromSolver sstStrengthState, cpStrength, spec, failedSolver, False, "NumFail"
+    repository.StoreForRequest request, failedState
+
+    AssertTrue stats, "stateRepository.failedNotReusable", repository.FindEquivalent(request) Is Nothing
+    AssertTrue stats, "stateRepository.failedStillInSnapshot", repository.StateCount = 1
+
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.AddCombination "STATE_REUSE", -100000#, 12000000#, 3000000#, "PR1", "state repository"
+    batch.Execute
+
+    Dim successfulState As CSectionStateResult
+    Set successfulState = batch.FindNamedState(1, sstStrengthState)
+    AssertTrue stats, "stateRepository.successSource", Not successfulState Is Nothing
+    If successfulState Is Nothing Then Exit Sub
+
+    Dim successfulRequest As CStateRequest
+    Set successfulRequest = New CStateRequest
+    successfulRequest.Initialize sstStrengthState, cpStrength, successfulState.MaterialSpec, _
+        successfulState.TargetN, successfulState.TargetMx, successfulState.TargetMy, _
+        successfulState.ExtensionUsed, False
+
+    Dim successfulRepository As CStateRepository
+    Set successfulRepository = New CStateRepository
+    successfulRepository.StoreForRequest successfulRequest, successfulState
+
+    AssertTrue stats, "stateRepository.successReusable", _
+        successfulRepository.FindEquivalent(successfulRequest) Is successfulState
 End Sub
 
 ' Проверяет совместимость этапа переименования: старые строки читаются как

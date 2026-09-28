@@ -1155,48 +1155,58 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
         ByVal materialRole As ECalculationPurpose, ByVal spec As CMaterialModelSpec, _
         Optional ByVal useDirectStateExtension As Boolean = True, _
         Optional ByVal mergeIntoDirectStateStatus As Boolean = True) As CStateSolutionRunner
-    Dim concreteState As CMaterialDiagram
-    Dim steelState As CMaterialDiagram
-    If useDirectStateExtension Then
-        Set concreteState = mMaterialProvider.ConcreteStateMaterialFromSpec(spec)
-        Set steelState = mMaterialProvider.SteelStateMaterialFromSpec(spec)
-    Else
-        Set concreteState = mMaterialProvider.ConcreteMaterialFromSpec(spec)
-        Set steelState = mMaterialProvider.SteelMaterialFromSpec(spec)
-    End If
     mResults(index).DirectStateDiagramExtensionEnabled = mMaterialProvider.DirectStateDiagramExtensionEnabled
 
+    Dim request As CStateRequest
+    Set request = New CStateRequest
+    request.Initialize stateType, materialRole, spec, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
+        useDirectStateExtension, (useDirectStateExtension And mResults(index).DirectStateDiagramExtensionEnabled)
+
+    Dim provider As CStateProvider
+    Set provider = CreateStateProvider(index)
+
+    Dim stateResult As CSectionStateResult
+    Set stateResult = provider.GetOrSolve(request)
+
     Dim runner As CStateSolutionRunner
-    Set runner = New CStateSolutionRunner
-    ConfigureStateRunner runner
-    runner.Solve mSection, concreteState, steelState, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
-        (useDirectStateExtension And mResults(index).DirectStateDiagramExtensionEnabled)
+    Set runner = provider.LastRunner
+
+    If stateResult Is Nothing Then
+        If mergeIntoDirectStateStatus Then MergeDirectStateStatus index, mStatusPolicy.NumFail
+        ReportStep "Прямое НДС " & SectionStateTypeToText(stateType) & " не вернуло расчетное состояние."
+        Set RunProfileState = runner
+        Exit Function
+    End If
 
     Dim service As CSectionSolver
-    Set service = runner.ResultSolver
-    If service Is Nothing Then
+    If Not runner Is Nothing Then Set service = runner.ResultSolver
+    If Not service Is Nothing Then
+        StoreSectionState index, service
+    Else
+        mResults(index).StoreSectionStateResult stateResult
+    End If
+
+    ReportValue "НДС " & SectionStateTypeToText(stateType) & " сошлось", IIf(stateResult.Converged, "да", "нет")
+    If provider.LastStateWasReused Then
+        ReportStep "Прямое НДС " & SectionStateTypeToText(stateType) & " переиспользовано из StateRepository."
+    ElseIf Not runner Is Nothing Then
+        ReportValue "Итераций НДС", CStr(runner.Iterations)
+        ReportBlock "Сценарий прямого StateSolution", runner.DiagnosticLog
+        If Not service Is Nothing Then ReportBlock "Итерации прямого CSectionSolver", service.DiagnosticLog
+    End If
+
+    If Not stateResult.Converged Then
         If mergeIntoDirectStateStatus Then MergeDirectStateStatus index, mStatusPolicy.NumFail
-        ReportStep "Прямое НДС " & SectionStateTypeToText(stateType) & " не вернуло состояние solver-а."
+        ReportStep "Прямое НДС " & SectionStateTypeToText(stateType) & " не сошлось: " & stateResult.StopReason
         Set RunProfileState = runner
         Exit Function
     End If
 
-    StoreSectionState index, service
-    ReportValue "НДС " & SectionStateTypeToText(stateType) & " сошлось", IIf(service.Converged, "да", "нет")
-    ReportValue "Итераций НДС", CStr(runner.Iterations)
-    ReportBlock "Сценарий прямого StateSolution", runner.DiagnosticLog
-    ReportBlock "Итерации прямого CSectionSolver", service.DiagnosticLog
-
-    If Not service.Converged Then
-        If mergeIntoDirectStateStatus Then MergeDirectStateStatus index, mStatusPolicy.NumFail
-        ReportStep "Прямое НДС " & SectionStateTypeToText(stateType) & " не сошлось: " & service.StopReason
-        Set RunProfileState = runner
-        Exit Function
-    End If
-
-    mResults(index).ExtensionUsed = (mResults(index).ExtensionUsed Or runner.ExtensionUsed)
+    mResults(index).ExtensionUsed = (mResults(index).ExtensionUsed Or stateResult.ExtensionUsed)
     Dim stateStatus As String
-    If runner.ExtensionUsed Or Not runner.WithinPhysicalRange Then
+    stateStatus = stateResult.Status
+    If Len(Trim$(stateStatus)) = 0 Then stateStatus = mStatusPolicy.OK
+    If stateResult.ExtensionUsed Or Not stateResult.WithinPhysicalRange Then
         stateStatus = mStatusPolicy.Fail
         If mergeIntoDirectStateStatus Then MergeDirectStateStatus index, stateStatus
         ReportStep "Прямое НДС " & SectionStateTypeToText(stateType) & " найдено, но вышло за физический диапазон диаграммы материала."
@@ -1205,13 +1215,7 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
         If mergeIntoDirectStateStatus Then MergeDirectStateStatus index, stateStatus
     End If
     ReportValue "Статус прямого НДС", stateStatus
-    ReportValue "Использовано продолжение диаграммы", IIf(runner.ExtensionUsed, "да", "нет")
-
-    Dim stateResult As CSectionStateResult
-    Set stateResult = New CSectionStateResult
-    stateResult.InitializeFromSolver stateType, materialRole, spec, service, runner.ExtensionUsed, _
-        stateStatus, runner.WithinPhysicalRange, runner.SolverCallCount, runner.DiagnosticLog
-    mResults(index).AddState stateResult
+    ReportValue "Использовано продолжение диаграммы", IIf(stateResult.ExtensionUsed, "да", "нет")
     Set RunProfileState = runner
 End Function
 
@@ -1225,6 +1229,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     Dim crack As CCrackWidthCalculator
     Set crack = New CCrackWidthCalculator
     ConfigureCrackCalculator crack
+    Set crack.StateProvider = CreateStateProvider(index)
     ReportStep "Запускается проверка образования нормальной трещины."
     ReportValue "Путь образования трещины", mCrackFormationPath
     ReportValue "Стратегия поиска образования трещины", mCrackFormationSolutionStrategy
@@ -1646,6 +1651,36 @@ Private Sub ConfigureStateRunner(ByVal runner As CStateSolutionRunner)
     runner.SecantMaxRestarts = mSolverSecantMaxRestarts
     runner.SecantMinStepNorm = mSolverSecantMinStepNorm
     runner.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
+End Sub
+
+' Создает provider именованных НДС для одного LC и подключает к нему repository
+' этого сочетания. Сам provider не знает о профилях и статусной политике batch:
+' он только переиспользует либо решает физическое состояние.
+Private Function CreateStateProvider(ByVal index As Long) As CStateProvider
+    Dim provider As CStateProvider
+    Set provider = New CStateProvider
+    provider.Initialize mSection, mMaterialProvider, mResults(index).StateRepository
+    ConfigureStateProvider provider
+    Set CreateStateProvider = provider
+End Function
+
+' Передает в StateProvider ровно те же настройки прямого НДС, которые раньше
+' получал CStateSolutionRunner напрямую из batch-калькулятора.
+Private Sub ConfigureStateProvider(ByVal provider As CStateProvider)
+    provider.LoadSteps = mSolverLoadSteps
+    provider.SolverMethod = mSolverMethod
+    provider.MaxIterations = mSolverMaxIterations
+    provider.ToleranceN = mSolverToleranceN
+    provider.ToleranceMx = mSolverToleranceMx
+    provider.ToleranceMy = mSolverToleranceMy
+    provider.LineSearchEnabled = mSolverLineSearchEnabled
+    provider.DampingInitial = mSolverDampingInitial
+    provider.MinLineSearchAlpha = mSolverMinLineSearchAlpha
+    provider.MaxDeltaEpsilon0 = mSolverMaxDeltaEpsilon0
+    provider.MaxDeltaKappa = mSolverMaxDeltaKappa
+    provider.SecantMaxRestarts = mSolverSecantMaxRestarts
+    provider.SecantMinStepNorm = mSolverSecantMinStepNorm
+    provider.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
 End Sub
 
 ' Передает в расчет трещин те же настройки прямого равновесия, что и в
