@@ -26,16 +26,23 @@ regression-отчеты.
   невязки, признак физического диапазона, `ResultMeta` и диагностические данные
   solver-а; состояния трещинообразования переименованы в `PreCrackState` и
   `PostCrackState` с совместимым чтением старых alias-ов.
+- Этап 3 завершен: добавлен общий state-provider слой для решения именованных
+  НДС без изменения расчетной постановки и существующих writer-контрактов.
+- Этап 4 начат безопасным срезом для Capacity: введены `CLimitSearchRequest`,
+  `CLimitSearchResult`, `CLimitSearchCoordinator`, `CUltimateStrainSearch` и
+  `CLoadMultiplierSearch`; batch-слой больше не выбирает capacity-ветку сам,
+  но низкоуровневая математика пока остается в проверенном `CCapacitySolver`.
 
 ## In progress
 
-- Следующие изменения должны начинаться с этапа 3 migration plan.
+- Следующий срез этапа 4 должен переносить CrackFormation на общий
+  limit-search только после отдельной проверки capacity baseline.
 
 ## Next
 
 - Использовать baseline commit и отчеты `Stage00`/`Stage01`/`Stage02` как точки сравнения
   для следующих этапов.
-- Перед началом этапа 3 снова проверить `git status` и убедиться, что нет
+- Перед продолжением этапа 4 снова проверить `git status` и убедиться, что нет
   посторонних пользовательских изменений.
 
 ## Known risks / open questions
@@ -93,3 +100,11 @@ regression-отчеты.
   итоговый отчет этапа 2 сохранен в `docs/regression/Stage02_AllTests_Report.txt`,
   regression baseline raw report сохранен в
   `docs/regression/Stage02_RegressionBaseline_Raw.txt`.
+- 2026-09-28: после первого среза этапа 4 `tools/build_workbook/Build-Workbook.ps1`
+  завершился успешно.
+- 2026-09-28: после первого среза этапа 4 `tools/build_workbook/Run-CapacityTests.ps1`
+  завершился успешно: `passed=923`, `failed=0`.
+- 2026-09-28: после первого среза этапа 4 `tools/build_workbook/Run-BatchTests.ps1`
+  завершился успешно: `passed=631`, `failed=0`.
+- 2026-09-28: после первого среза этапа 4 `tools/build_workbook/Run-AllTests.ps1`
+  завершился успешно.

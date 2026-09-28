@@ -1020,54 +1020,30 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     pureAxialForMethod = CapacityPathIsPureAxialForMethod(index, loadPath)
 
     ReportValue "Стратегия поиска несущей", NormalizedCapacitySolutionStrategy()
-    Select Case NormalizedCapacitySolutionStrategy()
-        Case "Auto"
-            If pureAxialForMethod Then
-                ReportStep "Несущая способность: стратегия Auto. После переноса к центру приведенного сечения траектория является чисто осевой, поэтому сразу используется LoadMultiplier: для такой постановки UltimateStrain вырождается на горизонтальном участке диаграммы."
-                cap.SolveByLoadPathMultiplier mSection, mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
-                    mMaterialProvider.SteelMaterialFromSpec(strengthSpec), loadPath.NOffset, loadPath.NBase, _
-                    loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, True
-            Else
-                If loadPath.ForceOnly Then
-                    ReportStep "Несущая способность: стратегия Auto. Пользователь масштабирует только N, но относительно центра приведенного сечения есть изгибающий момент; сначала пробуем UltimateStrain, затем при неудаче LoadMultiplier."
-                Else
-                    ReportStep "Несущая способность: стратегия Auto сначала пробует UltimateStrain; если предельная плоскость не находится устойчиво, тот же путь нагрузки повторяется через LoadMultiplier."
-                End If
-                cap.SolveByAutoLoadPath mSection, mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
-                    mMaterialProvider.SteelMaterialFromSpec(strengthSpec), loadPath.NOffset, loadPath.NBase, _
-                    loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, _
-                    False, loadPath.ForceOnly
-            End If
-        Case "UltimateStrain"
-            If pureAxialForMethod Then
-                ReportStep "Несущая способность: выбран UltimateStrain, но после переноса к центру приведенного сечения траектория чисто осевая и считается через LoadMultiplier как более устойчивая одномерная постановка."
-                cap.SolveByLoadPathMultiplier mSection, mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
-                    mMaterialProvider.SteelMaterialFromSpec(strengthSpec), loadPath.NOffset, loadPath.NBase, _
-                    loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, True
-            ElseIf loadPath.ForceOnly Then
-                ReportStep "Несущая способность: выбран UltimateStrain. Пользователь масштабирует только N, но относительно центра приведенного сечения есть изгибающий момент; сначала пробуем UltimateStrain, затем при неудаче LoadMultiplier."
-                cap.SolveByAutoLoadPath mSection, mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
-                    mMaterialProvider.SteelMaterialFromSpec(strengthSpec), loadPath.NOffset, loadPath.NBase, _
-                    loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, _
-                    False, True
-            Else
-                ReportStep "Несущая способность: расчет идет напрямую через UltimateStrain по выбранной λ-траектории."
-                cap.SolveByUltimateLoadPath mSection, mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
-                    mMaterialProvider.SteelMaterialFromSpec(strengthSpec), loadPath.NOffset, loadPath.NBase, _
-                    loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase
-            End If
-        Case "LoadMultiplier"
-            ReportStep "Несущая способность: расчет идет через LoadMultiplier, то есть программа подбирает λ и для каждой lambda-точки заново решает НДС."
-            cap.SolveByLoadPathMultiplier mSection, mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
-                mMaterialProvider.SteelMaterialFromSpec(strengthSpec), loadPath.NOffset, loadPath.NBase, _
-                loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, loadPath.ForceOnly
-        Case Else
-            mResults(index).CapacityStatus = mStatusPolicy.InputErr
-            mResults(index).CapacityLimitState = "Capacity.SolutionStrategy должен быть Auto, LoadMultiplier или UltimateStrain."
-            mResults(index).CapacitySolutionMethod = vbNullString
-            ReportStep "Capacity остановлен: неизвестный Capacity.SolutionStrategy."
-            Exit Sub
-    End Select
+    ReportCapacitySearchPlan loadPath, pureAxialForMethod
+
+    Dim request As CLimitSearchRequest
+    Set request = New CLimitSearchRequest
+    request.InitializeCapacity cap, mSection, _
+        mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
+        mMaterialProvider.SteelMaterialFromSpec(strengthSpec), _
+        NormalizedCapacitySolutionStrategy(), _
+        loadPath.NOffset, loadPath.NBase, loadPath.MxOffset, loadPath.MxBase, _
+        loadPath.MyOffset, loadPath.MyBase, loadPath.ForceOnly, pureAxialForMethod
+
+    Dim coordinator As CLimitSearchCoordinator
+    Set coordinator = New CLimitSearchCoordinator
+
+    Dim searchResult As CLimitSearchResult
+    Set searchResult = coordinator.ExecuteCapacity(request)
+    If searchResult.CapacitySolver Is Nothing Then
+        mResults(index).CapacityStatus = mStatusPolicy.InputErr
+        mResults(index).CapacityLimitState = searchResult.Meta.ResultComment
+        mResults(index).CapacitySolutionMethod = vbNullString
+        ReportStep "Capacity остановлен: " & searchResult.Meta.ResultComment
+        Exit Sub
+    End If
+    Set cap = searchResult.CapacitySolver
 
     StoreCapacity index, cap, loadPath, strengthSpec
     ReportCapacityMethodChoice index, cap, loadPath, pureAxialForMethod
@@ -1113,6 +1089,35 @@ Private Function MomentIsZeroForMethod(ByVal momentValue As Double, ByVal concre
         MomentIsZeroForMethod = mMomentZeroFilter.IsMomentEffectivelyZero(momentValue, concreteDepth)
     End If
 End Function
+
+' Записывает в execution report смысл выбранной ветки limit-search до запуска
+' координатора. Сам выбор и вызов метода выполняет CLimitSearchCoordinator;
+' здесь остается только пользовательское пояснение без расчетной логики.
+Private Sub ReportCapacitySearchPlan(ByVal loadPath As CCapacityLoadPath, _
+        ByVal pureAxialForMethod As Boolean)
+    Select Case NormalizedCapacitySolutionStrategy()
+        Case "Auto"
+            If pureAxialForMethod Then
+                ReportStep "Несущая способность: стратегия Auto. После переноса к центру приведенного сечения траектория является чисто осевой, поэтому сразу используется LoadMultiplier: для такой постановки UltimateStrain вырождается на горизонтальном участке диаграммы."
+            ElseIf loadPath.ForceOnly Then
+                ReportStep "Несущая способность: стратегия Auto. Пользователь масштабирует только N, но относительно центра приведенного сечения есть изгибающий момент; сначала пробуем UltimateStrain, затем при неудаче LoadMultiplier."
+            Else
+                ReportStep "Несущая способность: стратегия Auto сначала пробует UltimateStrain; если предельная плоскость не находится устойчиво, тот же путь нагрузки повторяется через LoadMultiplier."
+            End If
+        Case "UltimateStrain"
+            If pureAxialForMethod Then
+                ReportStep "Несущая способность: выбран UltimateStrain, но после переноса к центру приведенного сечения траектория чисто осевая и считается через LoadMultiplier как более устойчивая одномерная постановка."
+            ElseIf loadPath.ForceOnly Then
+                ReportStep "Несущая способность: выбран UltimateStrain. Пользователь масштабирует только N, но относительно центра приведенного сечения есть изгибающий момент; сначала пробуем UltimateStrain, затем при неудаче LoadMultiplier."
+            Else
+                ReportStep "Несущая способность: расчет идет напрямую через UltimateStrain по выбранной lambda-траектории."
+            End If
+        Case "LoadMultiplier"
+            ReportStep "Несущая способность: расчет идет через LoadMultiplier, то есть программа подбирает lambda и для каждой lambda-точки заново решает НДС."
+        Case Else
+            ReportStep "Capacity остановлен: неизвестный Capacity.SolutionStrategy."
+    End Select
+End Sub
 
 ' Поясняет в отчете, какая ветка поиска несущей фактически была принята.
 ' Низкоуровневый DiagnosticLog остается рядом, но здесь пользователь сразу
