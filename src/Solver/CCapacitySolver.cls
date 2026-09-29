@@ -1488,6 +1488,33 @@ Public Function LimitSearchCapacityStateIsNumericalFailure(ByVal state As String
     LimitSearchCapacityStateIsNumericalFailure = IsNumericalFailure(state)
 End Function
 
+' Проверяет, что доменный callback остановился из-за ошибки исходных данных.
+' Общий coordinator использует это, чтобы не запускать fallback LoadMultiplier
+' после заведомо некорректной постановки задачи.
+Public Function LimitSearchCapacityStateIsInvalidInput(ByVal state As String) As Boolean
+    LimitSearchCapacityStateIsInvalidInput = (state = STATE_INVALID_INPUT)
+End Function
+
+' Объединяет диагностику неудачной первой ветки с последующим fallback-расчетом
+' LoadMultiplier. Search-слой сам выбирает порядок попыток, но только
+' CCapacitySolver имеет право менять свой внутренний журнал и StopReason.
+Public Sub LimitSearchMergeCapacityFallback(ByVal firstLimitState As String, _
+        ByVal firstStopReason As String, ByVal firstDiagnostics As String, _
+        ByVal firstAttemptMessage As String, ByVal transitionMessage As String, _
+        ByVal successMessage As String)
+    If mDiagnosticsEnabled Then
+        Dim mergedDiagnostics As String
+        mergedDiagnostics = firstAttemptMessage & "; статус=" & firstLimitState & _
+            "; причина=" & firstStopReason & vbCrLf
+        If Len(firstDiagnostics) > 0 Then mergedDiagnostics = mergedDiagnostics & firstDiagnostics
+        mergedDiagnostics = mergedDiagnostics & transitionMessage & vbCrLf & mDiagnosticLog
+        mDiagnosticLog = mergedDiagnostics
+    End If
+
+    If mConverged And Len(Trim$(successMessage)) > 0 Then _
+        mStopReason = successMessage & " " & mStopReason
+End Sub
+
 ' Возвращает нормализованное имя одномерного метода LoadMultiplier.
 Public Function LimitSearchCapacitySearchMethod() As String
     LimitSearchCapacitySearchMethod = NormalizedSearchMethod()

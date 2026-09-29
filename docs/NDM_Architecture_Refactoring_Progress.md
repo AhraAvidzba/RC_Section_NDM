@@ -105,12 +105,21 @@ regression-отчеты.
   результата. Ссылки на `request.CapacitySolver` остаются только внутри
   search-слоя и переходного `CLimitSearchRequest`, а execution report читает
   capacity-диагностику из сохраненного снимка result.
+- Этап 5 завершен по основному batch-пути: `Capacity.SolutionStrategy = Auto`
+  больше не вызывает старый shortcut `CCapacitySolver.SolveByAutoLoadPath`.
+  Coordinator сначала запускает `CUltimateStrainSearch`, затем при необходимости
+  повторяет ту же траекторию через `CLoadMultiplierSearch`; диагностика первой
+  попытки объединяется в доменном `CCapacitySolver` без возврата search-логики
+  в batch.
+- `CCapacityLoadPath` оставлен как capacity-адаптер пользовательской настройки
+  `CapacityLoadPath`. Для CrackFormation напрямую используется общий
+  `CLoadPathVector` и `CLoadPathMath`; тащить `CCapacityLoadPath` в трещины
+  не нужно, потому что он содержит capacity-специфичные правила Auto/ForceOnly.
 
 ## In progress
 
-- Этап 5 продолжается: следующий срез должен постепенно выносить оставшиеся
-  инженерные детали Capacity из batch-слоя, но без изменения численного search,
-  уже объединенного на этапе 4.
+- Нет активного этапа. Следующий крупный блок по migration plan - этап 6:
+  перестройка Crack без изменения согласованной расчетной методики.
 
 ## Next
 

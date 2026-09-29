@@ -12,10 +12,11 @@ Option Explicit
 ' ==========================================================================
 ' Адаптер поиска UltimateStrain
 ' ==========================================================================
-' Класс является тонкой оболочкой над текущей реализацией CCapacitySolver.
-' Его задача не менять алгоритм, а отделить выбор search-ветки от batch-класса.
-' Для силовой траектории с эксцентриситетом сохраняется утвержденный fallback через
-' SolveByAutoLoadPath: сначала UltimateStrain, затем LoadMultiplier при неудаче.
+' Класс выполняет прямой поиск по предельной деформации и переиспользует общий
+' Newton/line-search цикл для Capacity и CrackFormation. Если для силовой
+' capacity-траектории прямой поиск не дал устойчивой точки, fallback на
+' LoadMultiplier запускается через общий CLoadMultiplierSearch, без отдельной
+' параллельной search-реализации.
 
 ' Выполняет ветку UltimateStrain для request-а несущей способности.
 ' Чисто осевая траектория переводится в LoadMultiplier тем же правилом, что и
@@ -27,25 +28,66 @@ Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitS
     Set cap = request.CapacitySolver
 
     If request.PureAxialForMethod Then
-        cap.SolveByLoadPathMultiplier request.Section, request.ConcreteMaterial, request.SteelMaterial, _
-            request.NOffset, request.NBase, request.MxOffset, request.MxBase, _
-            request.MyOffset, request.MyBase, True
-    ElseIf request.ForceOnly Then
-        cap.SolveByAutoLoadPath request.Section, request.ConcreteMaterial, request.SteelMaterial, _
-            request.NOffset, request.NBase, request.MxOffset, request.MxBase, _
-            request.MyOffset, request.MyBase, False, True
-    Else
-        Dim loadPath As CLoadPathVector
-        Set loadPath = New CLoadPathVector
-        loadPath.Initialize request.NOffset, request.NBase, request.MxOffset, request.MxBase, _
-            request.MyOffset, request.MyBase
-        RunCapacityUltimateNewton request, loadPath
+        Set ExecuteCapacity = ExecuteCapacityLoadMultiplier(request)
+        Exit Function
+    End If
+
+    Dim loadPath As CLoadPathVector
+    Set loadPath = New CLoadPathVector
+    loadPath.Initialize request.NOffset, request.NBase, request.MxOffset, request.MxBase, _
+        request.MyOffset, request.MyBase
+    RunCapacityUltimateNewton request, loadPath
+
+    If request.ForceOnly And _
+            StrComp(request.SolutionStrategy, "UltimateStrain", vbTextCompare) = 0 And _
+            Not cap.Converged And _
+            Not cap.LimitSearchCapacityStateIsInvalidInput(cap.LimitState) Then
+        Set ExecuteCapacity = ExecuteCapacityFallbackToLoadMultiplier(request, _
+            "UltimateStrain не дал принятую предельную точку для силовой траектории", _
+            "Переходим к LoadMultiplier по той же lambda-траектории.", _
+            "UltimateStrain не сошелся, предельная точка найдена через резервный LoadMultiplier.")
+        Exit Function
     End If
 
     Dim result As CLimitSearchResult
     Set result = New CLimitSearchResult
     result.InitializeFromCapacitySolver cap, request.SolutionStrategy
     Set ExecuteCapacity = result
+End Function
+
+' Запускает ветку LoadMultiplier для capacity через общий search-класс.
+' Используется для чисто осевых траекторий, где прямой UltimateStrain
+' численно вырожден, и для fallback после неудачной force-only попытки.
+Private Function ExecuteCapacityLoadMultiplier(ByVal request As CLimitSearchRequest) As CLimitSearchResult
+    Dim multiplier As CLoadMultiplierSearch
+    Set multiplier = New CLoadMultiplierSearch
+    Set ExecuteCapacityLoadMultiplier = multiplier.ExecuteCapacity(request)
+End Function
+
+' Повторяет ту же capacity-траекторию через LoadMultiplier и возвращает новый
+' snapshot результата после объединения диагностики первой попытки и fallback.
+Private Function ExecuteCapacityFallbackToLoadMultiplier(ByVal request As CLimitSearchRequest, _
+        ByVal firstAttemptMessage As String, ByVal transitionMessage As String, _
+        ByVal successMessage As String) As CLimitSearchResult
+    Dim cap As CCapacitySolver
+    Set cap = request.CapacitySolver
+
+    Dim firstStopReason As String
+    Dim firstLimitState As String
+    Dim firstDiagnostics As String
+    firstStopReason = cap.StopReason
+    firstLimitState = cap.LimitState
+    firstDiagnostics = cap.DiagnosticLog
+
+    Dim ignoredResult As CLimitSearchResult
+    Set ignoredResult = ExecuteCapacityLoadMultiplier(request)
+    cap.LimitSearchMergeCapacityFallback firstLimitState, firstStopReason, _
+        firstDiagnostics, firstAttemptMessage, transitionMessage, successMessage
+
+    Dim result As CLimitSearchResult
+    Set result = New CLimitSearchResult
+    result.InitializeFromCapacitySolver cap, request.SolutionStrategy
+    Set ExecuteCapacityFallbackToLoadMultiplier = result
 End Function
 
 ' Выполняет ветку UltimateStrain для поиска образования нормальной трещины.

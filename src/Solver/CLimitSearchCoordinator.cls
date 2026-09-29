@@ -71,25 +71,63 @@ End Function
 
 ' Сохраняет принятую Auto-логику: чисто осевая траектория сразу идет в
 ' LoadMultiplier, остальные траектории сначала пробуют UltimateStrain и только
-' затем fallback на LoadMultiplier внутри CCapacitySolver.
+' затем fallback на LoadMultiplier. Обе ветки запускаются через общий
+' LimitSearch-слой, а CCapacitySolver остается только доменным callback-ом.
 Private Function ExecuteAutoCapacity(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     Dim cap As CCapacitySolver
     Set cap = request.CapacitySolver
 
     If request.PureAxialForMethod Then
-        cap.SolveByLoadPathMultiplier request.Section, request.ConcreteMaterial, request.SteelMaterial, _
-            request.NOffset, request.NBase, request.MxOffset, request.MxBase, _
-            request.MyOffset, request.MyBase, True
-    Else
-        cap.SolveByAutoLoadPath request.Section, request.ConcreteMaterial, request.SteelMaterial, _
-            request.NOffset, request.NBase, request.MxOffset, request.MxBase, _
-            request.MyOffset, request.MyBase, False, request.ForceOnly
+        Dim axialMultiplier As CLoadMultiplierSearch
+        Set axialMultiplier = New CLoadMultiplierSearch
+        Set ExecuteAutoCapacity = axialMultiplier.ExecuteCapacity(request)
+        Exit Function
     End If
+
+    Dim ultimate As CUltimateStrainSearch
+    Set ultimate = New CUltimateStrainSearch
+
+    Dim firstResult As CLimitSearchResult
+    Set firstResult = ultimate.ExecuteCapacity(request)
+    If firstResult.Succeeded Then
+        Set ExecuteAutoCapacity = firstResult
+        Exit Function
+    End If
+    If cap.LimitSearchCapacityStateIsInvalidInput(cap.LimitState) Then
+        Set ExecuteAutoCapacity = firstResult
+        Exit Function
+    End If
+
+    Set ExecuteAutoCapacity = ExecuteAutoCapacityLoadMultiplierFallback(request, cap)
+End Function
+
+' Повторяет Auto-поиск capacity через LoadMultiplier после неудачного
+' UltimateStrain и возвращает обновленный snapshot результата. Диагностика
+' первой попытки сохраняется перед тем, как LoadMultiplier очистит поля solver-а.
+Private Function ExecuteAutoCapacityLoadMultiplierFallback(ByVal request As CLimitSearchRequest, _
+        ByVal cap As CCapacitySolver) As CLimitSearchResult
+    Dim firstStopReason As String
+    Dim firstLimitState As String
+    Dim firstDiagnostics As String
+    firstStopReason = cap.StopReason
+    firstLimitState = cap.LimitState
+    firstDiagnostics = cap.DiagnosticLog
+
+    Dim multiplier As CLoadMultiplierSearch
+    Set multiplier = New CLoadMultiplierSearch
+    Dim ignoredResult As CLimitSearchResult
+    Set ignoredResult = multiplier.ExecuteCapacity(request)
+
+    cap.LimitSearchMergeCapacityFallback firstLimitState, firstStopReason, _
+        firstDiagnostics, _
+        "Auto: первая попытка UltimateStrain не дала принятую предельную точку", _
+        "Auto: переходим к LoadMultiplier по той же lambda-траектории.", _
+        "Auto: UltimateStrain не сошелся, предельная точка найдена через LoadMultiplier."
 
     Dim result As CLimitSearchResult
     Set result = New CLimitSearchResult
     result.InitializeFromCapacitySolver cap, request.SolutionStrategy
-    Set ExecuteAutoCapacity = result
+    Set ExecuteAutoCapacityLoadMultiplierFallback = result
 End Function
 
 ' В Auto-режиме образования трещины по очереди пробует lambda*Mxy, lambda*N и
