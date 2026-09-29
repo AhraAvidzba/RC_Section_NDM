@@ -63,6 +63,11 @@ regression-отчеты.
 - Этап 5 продолжен следующим небольшим срезом: признак чисто осевой capacity-траектории
   после переноса нагрузок к расчетному центру больше не вычисляется в `CBatchSectionCalculator`.
   Его определяет `CCapacityCalculator`, а `CCapacityResult` хранит этот признак только для отчета.
+- Этап 5 продолжен переносом ранних исходов Capacity: некорректный path,
+  нулевая траектория и отсутствие ненулевой масштабируемой нагрузки теперь
+  формируются в `CCapacityCalculator`/`CCapacityResult`. `RunCapacity` больше
+  не записывает capacity-поля вручную для skipped/input-error веток, а только
+  сохраняет готовый инженерный результат и пишет пояснение в отчет.
 
 ## In progress
 
@@ -158,4 +163,13 @@ regression-отчеты.
 - 2026-09-29: первый срез этапа 5 прошел
   `tools/build_workbook/Run-BatchTests.ps1`: `passed=631`, `failed=0`.
 - 2026-09-29: первый срез этапа 5 прошел
+  `tools/build_workbook/Run-CrackTests.ps1`: `passed=286`, `failed=0`.
+- 2026-09-29: следующий срез этапа 5 с переносом skipped/input-error
+  capacity-path в `CCapacityCalculator` пересобрал
+  `workbook/output/RC_Section_NDM.xlsm` через `tools/build_workbook/Build-Workbook.ps1`.
+- 2026-09-29: этот же срез этапа 5 прошел
+  `tools/build_workbook/Run-CapacityTests.ps1`: `passed=923`, `failed=0`.
+- 2026-09-29: этот же срез этапа 5 прошел
+  `tools/build_workbook/Run-BatchTests.ps1`: `passed=631`, `failed=0`.
+- 2026-09-29: этот же срез этапа 5 прошел
   `tools/build_workbook/Run-CrackTests.ps1`: `passed=286`, `failed=0`.

@@ -106,6 +106,14 @@ Public Sub InitializeInvalid(ByVal statusText As String, ByVal reason As String,
     Set mStateResult = Nothing
 End Sub
 
+' Заполняет результат штатным пропуском capacity без запуска search.
+' Нулевая траектория не является ошибкой ввода: для нее просто нет направления,
+' по которому можно искать предельный множитель lambda.
+Public Sub InitializeSkipped(ByVal statusText As String, ByVal reason As String, _
+        Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
+    InitializeInvalid statusText, reason, pathKey
+End Sub
+
 ' Переносит найденный полный предельный вектор в пользовательскую точку
 ' приложения нагрузки через общий CSectionLoadState.
 Private Sub StoreUltimateVector(ByVal loadPath As CCapacityLoadPath, _

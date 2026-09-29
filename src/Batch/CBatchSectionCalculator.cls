@@ -995,24 +995,6 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     mResults(index).CapacityPathResolved = loadPath.Key
     ReportValue "Путь нагрузки для несущей", IIf(loadPath.HasPath, loadPath.DisplayName, mInputs(index).CapacityLoadPath)
 
-    If Not loadPath.Valid Then
-        StoreInvalidCapacity index, loadPath.ErrorMessage
-        ReportStep "Capacity остановлен: неизвестное значение CapacityLoadPath."
-        Exit Sub
-    End If
-
-    If Not loadPath.HasPath Then
-        ReportStep "Capacity не запускается: в сочетании нет ни момента, ни продольной силы."
-        StoreSkippedCapacity index
-        Exit Sub
-    End If
-
-    If Not loadPath.HasScaledLoad Then
-        StoreInvalidCapacity index, "Для выбранного CapacityLoadPath соответствующая нагрузка должна быть ненулевой."
-        ReportStep "Capacity остановлен: выбранная lambda-траектория не содержит ненулевой масштабируемой нагрузки."
-        Exit Sub
-    End If
-
     Set cap = New CCapacitySolver
     ConfigureCapacity cap, strengthSpec
 
@@ -1033,15 +1015,14 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
         strengthReferenceX, strengthReferenceY, mStatusPolicy, mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, _
         mConcreteDepthForMx, mConcreteDepthForMy)
 
-    ReportCapacitySearchPlan loadPath, capacityResult.PureAxialForMethod
-
     mResults(index).StoreCapacityResult capacityResult
     If capacityResult.CapacitySolver Is Nothing Then
-        ReportStep "Capacity остановлен: " & capacityResult.LimitState
+        ReportCapacityEarlyStop loadPath, capacityResult
         Exit Sub
     End If
     Set cap = capacityResult.CapacitySolver
 
+    ReportCapacitySearchPlan loadPath, capacityResult.PureAxialForMethod
     ReportCapacityMethodChoice index, cap, loadPath, capacityResult.PureAxialForMethod
 
     ReportValue "Статус несущей способности", mResults(index).CapacityStatus
@@ -1051,6 +1032,23 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     ReportBlock "Диагностика поиска несущей способности", capacityResult.DiagnosticLog
     If Not cap.LastSolver Is Nothing Then
         ReportBlock "Итерации внутреннего CSectionSolver для последней capacity-точки", cap.LastSolver.DiagnosticLog
+    End If
+End Sub
+
+' Поясняет раннюю остановку capacity до запуска общего LimitSearch.
+' Сам результат уже сформирован CCapacityCalculator; batch только пишет понятный отчет.
+Private Sub ReportCapacityEarlyStop(ByVal loadPath As CCapacityLoadPath, _
+        ByVal capacityResult As CCapacityResult)
+    If loadPath Is Nothing Then
+        ReportStep "Capacity остановлен: CapacityLoadPath не подготовлен."
+    ElseIf Not loadPath.Valid Then
+        ReportStep "Capacity остановлен: неизвестное значение CapacityLoadPath."
+    ElseIf Not loadPath.HasPath Then
+        ReportStep "Capacity не запускается: в сочетании нет ни момента, ни продольной силы."
+    ElseIf Not loadPath.HasScaledLoad Then
+        ReportStep "Capacity остановлен: выбранная lambda-траектория не содержит ненулевой масштабируемой нагрузки."
+    ElseIf Not capacityResult Is Nothing Then
+        ReportStep "Capacity остановлен: " & capacityResult.LimitState
     End If
 End Sub
 
@@ -1417,35 +1415,6 @@ Private Sub StoreNotCalculatedCapacity(ByVal index As Long)
     mResults(index).CapacityLimitState = mStatusPolicy.NotApplicable
     mResults(index).CapacitySolutionMethod = vbNullString
     mResults(index).CapacityPathResolved = CAPACITY_PATH_NONE
-End Sub
-
-' Помечает capacity как пропущенную из-за нулевой нагрузки.
-' Это не ошибка исходных данных: для нулевых N, Mx и My нельзя построить
-' направление внешнего поиска несущей способности.
-Private Sub StoreSkippedCapacity(ByVal index As Long)
-    mResults(index).CapacityStatus = mStatusPolicy.NotApplicable
-    mResults(index).CapacityLimitState = "ZeroBaseLoad"
-    mResults(index).CapacitySolutionMethod = vbNullString
-    mResults(index).CapacityPathResolved = CAPACITY_PATH_NONE
-End Sub
-
-' Помечает только ветку capacity как ошибку исходных данных.
-' Прямое НДС при этом все равно может быть посчитано: ошибка относится к
-' выбору траектории несущей способности, а не к самим нагрузкам LC.
-Private Sub StoreInvalidCapacity(ByVal index As Long, ByVal reason As String)
-    mResults(index).CapacityStatus = mStatusPolicy.InputErr
-    mResults(index).CapacityLimitState = reason
-    mResults(index).CapacitySolutionMethod = vbNullString
-    mResults(index).CapacityPathResolved = CAPACITY_PATH_NONE
-    mResults(index).LambdaCapacity = 0#
-    mResults(index).UtilCapacity = 0#
-    mResults(index).NUltimate = 0#
-    mResults(index).MxUltimate = 0#
-    mResults(index).MyUltimate = 0#
-    mResults(index).CapacityStateN = 0#
-    mResults(index).CapacityStateMx = 0#
-    mResults(index).CapacityStateMy = 0#
-    mResults(index).MomentUltimate = 0#
 End Sub
 
 ' Фиксирует InvalidInput по конкретному LC и не дает этому сочетанию пройти

@@ -35,9 +35,29 @@ Public Function Calculate(ByVal section As CSectionModel, _
         ByVal concreteDepthForMy As Double) As CCapacityResult
     Dim result As CCapacityResult
     Set result = New CCapacityResult
+    If statusPolicy Is Nothing Then Set statusPolicy = New CBatchStatusPolicy
 
     If loadPath Is Nothing Then
         result.InitializeInvalid statusPolicy.InputErr, "CapacityLoadPath не подготовлен."
+        Set Calculate = result
+        Exit Function
+    End If
+
+    If Not loadPath.Valid Then
+        result.InitializeInvalid statusPolicy.InputErr, loadPath.ErrorMessage
+        Set Calculate = result
+        Exit Function
+    End If
+
+    If Not loadPath.HasPath Then
+        result.InitializeSkipped statusPolicy.NotApplicable, "ZeroBaseLoad"
+        Set Calculate = result
+        Exit Function
+    End If
+
+    If Not loadPath.HasScaledLoad Then
+        result.InitializeInvalid statusPolicy.InputErr, _
+            "Для выбранного CapacityLoadPath соответствующая нагрузка должна быть ненулевой."
         Set Calculate = result
         Exit Function
     End If
