@@ -44,6 +44,14 @@ Private mCapacityEpsilon0 As Double ' epsilon0 найденного CapacityStat
 Private mCapacityKappaX As Double ' kappaX найденного CapacityState.
 Private mCapacityKappaY As Double ' kappaY найденного CapacityState.
 Private mPureAxialForMethod As Boolean ' True, если capacity-calculator выбрал осевую численную ветку после переноса нагрузок к центру.
+Private mResultMeta As CResultMeta ' Типизированный статус CapacityResult для общего result/status слоя.
+
+' Инициализирует meta как неприменимую ветку, чтобы даже ранний выход имел
+' безопасное машинное состояние.
+Private Sub Class_Initialize()
+    Set mResultMeta = New CResultMeta
+    mResultMeta.SetNotApplicable rkCapacity
+End Sub
 
 ' Формирует результат по успешному или неуспешному search-слою.
 ' Даже при numerical/input failure объект остается заполненным: batch получает
@@ -73,6 +81,7 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
     End If
 
     Set mCapacitySolver = searchResult.CapacitySolver
+    Set mResultMeta = statusPolicy.CapacityMetaFromSolver(mCapacitySolver)
     mStatus = statusPolicy.CapacityStatusFromSolver(mCapacitySolver)
     mLimitState = mCapacitySolver.LimitState
     mSolutionMethod = mCapacitySolver.SolutionMethod
@@ -104,6 +113,7 @@ Public Sub InitializeInvalid(ByVal statusText As String, ByVal reason As String,
     mCapacityStateAvailable = False
     mPureAxialForMethod = False
     Set mStateResult = Nothing
+    StoreMetaFromStatus statusText, reason
 End Sub
 
 ' Заполняет результат штатным пропуском capacity без запуска search.
@@ -183,10 +193,25 @@ Public Property Get SearchResult() As CLimitSearchResult
     Set SearchResult = mSearchResult
 End Property
 
+' Возвращает типизированный статус capacity-результата. CombinationResult
+' хранит эту meta рядом со строковым статусом, чтобы итоговый OverallStatus
+' собирался из InternalStatus/ResultCode, а не из повторного парсинга текста.
+Public Property Get ResultMeta() As CResultMeta
+    If mResultMeta Is Nothing Then StoreMetaFromStatus mStatus, mLimitState
+    Set ResultMeta = mResultMeta.Clone
+End Property
+
 ' Возвращает подробный журнал поиска через общий search-result.
 ' Batch-слой не должен обращаться к внутреннему DiagnosticLog solver-а напрямую.
 Public Property Get DiagnosticLog() As String
     If Not mSearchResult Is Nothing Then DiagnosticLog = mSearchResult.DiagnosticLog
+End Property
+
+' Возвращает True, если для capacity действительно запускался LimitSearch.
+' Ранние исходы вроде N/A или InputErr остаются полноценным результатом,
+' но не содержат solver-фасад и не должны трактоваться batch-слоем как search.
+Public Property Get SearchExecuted() As Boolean
+    SearchExecuted = Not mCapacitySolver Is Nothing
 End Property
 
 ' Возвращает диагностический журнал последнего внутреннего CSectionSolver,
@@ -241,10 +266,6 @@ Public Function MethodChoiceReport(ByVal solutionStrategy As String, _
         End If
     End If
 End Function
-
-Public Property Get CapacitySolver() As CCapacitySolver
-    Set CapacitySolver = mCapacitySolver
-End Property
 
 Public Property Get StateResult() As CSectionStateResult
     Set StateResult = mStateResult
@@ -321,3 +342,11 @@ End Property
 Public Property Get PureAxialForMethod() As Boolean
     PureAxialForMethod = mPureAxialForMethod
 End Property
+
+' Совместимо строит meta для ранних исходов, где общего search-result еще нет.
+' Это закрывает skipped/input-error capacity-ветки тем же типизированным путем.
+Private Sub StoreMetaFromStatus(ByVal statusText As String, ByVal resultComment As String)
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    Set mResultMeta = policy.MetaFromLegacyStatus(statusText, rkCapacity, resultComment)
+End Sub

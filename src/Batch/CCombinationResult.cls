@@ -163,12 +163,14 @@ Public StateIterations As Long ' Число итераций прямого Stat
 
 Private mStateRepository As CStateRepository ' Единое хранилище конечных именованных НДС текущего LC.
 Private mResultPolicy As CResultStatusPolicy ' Политика преобразования legacy status -> ResultMeta на переходном этапе.
+Private mCapacityMeta As CResultMeta ' Типизированный результат capacity, если он уже пришел из CCapacityResult.
 
 ' Полностью очищает результат LC перед новым расчетом.
 ' Исходные нагрузки и комментарий сочетания здесь не хранятся, поэтому метод
 ' не может случайно стереть пользовательский ввод.
 Public Sub Clear(ByVal defaultCapacityPath As String)
     Set mStateRepository = New CStateRepository
+    Set mCapacityMeta = Nothing
     Status = vbNullString
     ProfileId = vbNullString
     DirectStateStatus = vbNullString
@@ -232,6 +234,10 @@ End Property
 
 ' Возвращает ResultMeta поиска несущей способности.
 Public Property Get CapacityMeta() As CResultMeta
+    If Not mCapacityMeta Is Nothing Then
+        Set CapacityMeta = mCapacityMeta.Clone
+        Exit Property
+    End If
     Set CapacityMeta = MetaFromStatus(CapacityStatus, rkCapacity, CapacityLimitState)
 End Property
 
@@ -488,6 +494,7 @@ Public Sub StoreCapacityResult(ByVal capacity As CCapacityResult)
     CapacityEpsilon0 = capacity.CapacityEpsilon0
     CapacityKappaX = capacity.CapacityKappaX
     CapacityKappaY = capacity.CapacityKappaY
+    Set mCapacityMeta = capacity.ResultMeta
     If Not capacity.StateResult Is Nothing Then AddState capacity.StateResult
 End Sub
 

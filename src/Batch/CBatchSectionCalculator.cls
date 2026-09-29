@@ -997,7 +997,6 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     ConfigureCapacityCalculator capacityCalculator
     Set loadState = LoadStateForCombination(index)
     Set loadPath = capacityCalculator.BuildLoadPath(mInputs(index).CapacityLoadPath, loadState)
-    mResults(index).CapacityPathResolved = loadPath.Key
     ReportValue "Путь нагрузки для несущей", IIf(loadPath.HasPath, loadPath.DisplayName, mInputs(index).CapacityLoadPath)
 
     ReportValue "Стратегия поиска несущей", capacityCalculator.SolutionStrategy
@@ -1015,7 +1014,7 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
         mConcreteDepthForMx, mConcreteDepthForMy)
 
     mResults(index).StoreCapacityResult capacityResult
-    If capacityResult.CapacitySolver Is Nothing Then
+    If Not capacityResult.SearchExecuted Then
         ReportStep capacityResult.EarlyStopReport(loadPath)
         Exit Sub
     End If
@@ -1307,10 +1306,10 @@ End Sub
 ' Заполняет capacity-поля нейтральным статусом, когда эта проверка не должна
 ' выполняться для выбранной группы/режима.
 Private Sub StoreNotCalculatedCapacity(ByVal index As Long)
-    mResults(index).CapacityStatus = mStatusPolicy.NotApplicable
-    mResults(index).CapacityLimitState = mStatusPolicy.NotApplicable
-    mResults(index).CapacitySolutionMethod = vbNullString
-    mResults(index).CapacityPathResolved = CAPACITY_PATH_NONE
+    Dim capacityResult As CCapacityResult
+    Set capacityResult = New CCapacityResult
+    capacityResult.InitializeSkipped mStatusPolicy.NotApplicable, mStatusPolicy.NotApplicable
+    mResults(index).StoreCapacityResult capacityResult
 End Sub
 
 ' Фиксирует InvalidInput по конкретному LC и не дает этому сочетанию пройти
