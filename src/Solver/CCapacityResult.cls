@@ -24,7 +24,6 @@ Option Explicit
 Private Const CAPACITY_PATH_NONE As String = "None" ' Единый маркер: capacity для LC не выполнялся.
 
 Private mSearchResult As CLimitSearchResult ' Типизированный результат общего LimitSearch.
-Private mCapacitySolver As CCapacitySolver ' Solver-фасад, который хранит legacy capacity-поля переходного периода.
 Private mStateResult As CSectionStateResult ' Итоговый reusable named-state CapacityState, если он найден.
 Private mStatus As String ' Пользовательский статус capacity для существующего вывода.
 Private mLimitState As String ' Физическая причина предела или текст ошибки.
@@ -72,7 +71,7 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
     End If
 
     mPathResolved = loadPath.Key
-    If searchResult Is Nothing Or searchResult.CapacitySolver Is Nothing Then
+    If searchResult Is Nothing Then
         Dim reason As String
         If Not searchResult Is Nothing Then reason = searchResult.Meta.ResultComment
         If Len(Trim$(reason)) = 0 Then reason = "Поиск несущей способности не вернул solver."
@@ -80,12 +79,17 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
         Exit Sub
     End If
 
-    Set mCapacitySolver = searchResult.CapacitySolver
-    Set mResultMeta = statusPolicy.CapacityMetaFromSolver(mCapacitySolver)
-    mStatus = statusPolicy.CapacityStatusFromSolver(mCapacitySolver)
-    mLimitState = mCapacitySolver.LimitState
-    mSolutionMethod = mCapacitySolver.SolutionMethod
-    mLambdaCapacity = mCapacitySolver.LambdaUltimate
+    If searchResult.ResultKind <> rkCapacity Then
+        InitializeInvalid statusPolicy.CalcErr, "LimitSearch returned non-capacity result.", loadPath.Key
+        Exit Sub
+    End If
+
+    Set mResultMeta = searchResult.Meta.Clone
+    mStatus = statusPolicy.StatusFromMeta(mResultMeta)
+    mLimitState = searchResult.LimitState
+    If Len(Trim$(mLimitState)) = 0 Then mLimitState = mResultMeta.ResultComment
+    mSolutionMethod = searchResult.ActualMethod
+    mLambdaCapacity = searchResult.LambdaUltimate
 
     StoreUltimateVector loadPath, loadReferenceX, loadReferenceY, momentFilter, _
         concreteDepthForMx, concreteDepthForMy
@@ -97,6 +101,7 @@ End Sub
 ' Такой путь используется для некорректного или неприменимого capacity path.
 Public Sub InitializeInvalid(ByVal statusText As String, ByVal reason As String, _
         Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
+    Set mSearchResult = Nothing
     mStatus = statusText
     mLimitState = reason
     mSolutionMethod = vbNullString
@@ -130,22 +135,22 @@ Private Sub StoreUltimateVector(ByVal loadPath As CCapacityLoadPath, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
         ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepthForMx As Double, _
         ByVal concreteDepthForMy As Double)
-    If mCapacitySolver Is Nothing Then Exit Sub
-    If mCapacitySolver.LambdaUltimate <= 0# Then Exit Sub
+    If mSearchResult Is Nothing Then Exit Sub
+    If mSearchResult.LambdaUltimate <= 0# Then Exit Sub
 
     Dim nValue As Double
     Dim mxAboutOrigin As Double
     Dim myAboutOrigin As Double
 
-    If Not mCapacitySolver.LastSolver Is Nothing Then
-        nValue = mCapacitySolver.LastSolver.Nint
-        mxAboutOrigin = mCapacitySolver.LastSolver.Mxint
-        myAboutOrigin = mCapacitySolver.LastSolver.Myint
+    If Not mSearchResult.LastSolver Is Nothing Then
+        nValue = mSearchResult.LastSolver.Nint
+        mxAboutOrigin = mSearchResult.LastSolver.Mxint
+        myAboutOrigin = mSearchResult.LastSolver.Myint
         mCapacityStateN = nValue
         mCapacityStateMx = mxAboutOrigin
         mCapacityStateMy = myAboutOrigin
     Else
-        loadPath.Target mCapacitySolver.LambdaUltimate, nValue, mxAboutOrigin, myAboutOrigin
+        loadPath.Target mSearchResult.LambdaUltimate, nValue, mxAboutOrigin, myAboutOrigin
         mCapacityStateN = nValue
         mCapacityStateMx = mxAboutOrigin
         mCapacityStateMy = myAboutOrigin
@@ -166,27 +171,27 @@ End Sub
 ' Сохраняет utilization по тем же правилам, что раньше применялись в batch.
 ' Если solver сам посчитал utilization, он является приоритетным источником.
 Private Sub StoreUtilization()
-    If mCapacitySolver Is Nothing Then Exit Sub
-    If mCapacitySolver.LambdaUltimate > 0# Then mUtilCapacity = 1# / mCapacitySolver.LambdaUltimate
-    If mCapacitySolver.Converged Then mUtilCapacity = mCapacitySolver.Utilization
+    If mSearchResult Is Nothing Then Exit Sub
+    If mSearchResult.LambdaUltimate > 0# Then mUtilCapacity = 1# / mSearchResult.LambdaUltimate
+    If mSearchResult.Converged Then mUtilCapacity = mSearchResult.Utilization
 End Sub
 
 ' Готовит CapacityState только для физически найденной предельной точки.
 ' Неуспешные probes и numerical failure не становятся reusable named-state.
 Private Sub StoreCapacityStateIfAvailable(ByVal strengthSpec As CMaterialModelSpec)
-    If mCapacitySolver Is Nothing Then Exit Sub
-    If Not mCapacitySolver.Converged Then Exit Sub
-    If mCapacitySolver.LambdaUltimate <= 0# Then Exit Sub
-    If mCapacitySolver.LastSolver Is Nothing Then Exit Sub
+    If mSearchResult Is Nothing Then Exit Sub
+    If Not mSearchResult.Converged Then Exit Sub
+    If mSearchResult.LambdaUltimate <= 0# Then Exit Sub
+    If mSearchResult.LastSolver Is Nothing Then Exit Sub
 
     mCapacityStateAvailable = True
-    mCapacityEpsilon0 = mCapacitySolver.LastSolver.Epsilon0
-    mCapacityKappaX = mCapacitySolver.LastSolver.KappaX
-    mCapacityKappaY = mCapacitySolver.LastSolver.KappaY
+    mCapacityEpsilon0 = mSearchResult.LastSolver.Epsilon0
+    mCapacityKappaX = mSearchResult.LastSolver.KappaX
+    mCapacityKappaY = mSearchResult.LastSolver.KappaY
 
     Set mStateResult = New CSectionStateResult
     mStateResult.InitializeFromSolver sstCapacityState, cpStrength, strengthSpec, _
-        mCapacitySolver.LastSolver, False, mStatus, True, 0, mCapacitySolver.DiagnosticLog
+        mSearchResult.LastSolver, False, mStatus, True, 0, mSearchResult.DiagnosticLog
 End Sub
 
 Public Property Get SearchResult() As CLimitSearchResult
@@ -211,15 +216,14 @@ End Property
 ' Ранние исходы вроде N/A или InputErr остаются полноценным результатом,
 ' но не содержат solver-фасад и не должны трактоваться batch-слоем как search.
 Public Property Get SearchExecuted() As Boolean
-    SearchExecuted = Not mCapacitySolver Is Nothing
+    If Not mSearchResult Is Nothing Then SearchExecuted = mSearchResult.SearchExecuted
 End Property
 
 ' Возвращает диагностический журнал последнего внутреннего CSectionSolver,
 ' если предельная lambda-точка действительно была решена равновесием.
 Public Property Get LastSolverDiagnosticLog() As String
-    If mCapacitySolver Is Nothing Then Exit Property
-    If mCapacitySolver.LastSolver Is Nothing Then Exit Property
-    LastSolverDiagnosticLog = mCapacitySolver.LastSolver.DiagnosticLog
+    If mSearchResult Is Nothing Then Exit Property
+    LastSolverDiagnosticLog = mSearchResult.LastSolverDiagnosticLog
 End Property
 
 ' Формирует русское пояснение ранней остановки до запуска LimitSearch.

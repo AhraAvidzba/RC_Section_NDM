@@ -146,43 +146,14 @@ Public Function IsNumerical(ByVal statusText As String) As Boolean
     IsNumerical = Policy.IsNumerical(statusText)
 End Function
 
+' Переводит типизированный InternalStatus/ResultCode в внешний статус Results.
+Public Function StatusFromMeta(ByVal meta As CResultMeta) As String
+    StatusFromMeta = Policy.ExternalStatus(meta)
+End Function
+
 ' Распознает статусы ошибок исходных данных.
 Public Function IsInvalid(ByVal statusText As String) As Boolean
     IsInvalid = Policy.IsInvalid(statusText)
-End Function
-
-' Переводит результат capacity solver-а в короткий пользовательский статус.
-' Lambda меньше единицы считается FAIL, потому что равновесие найдено, но
-' заданный уровень нагрузки выше рассчитанной несущей способности.
-Public Function CapacityStatusFromSolver(ByVal cap As CCapacitySolver) As String
-    CapacityStatusFromSolver = Policy.ExternalStatus(CapacityMetaFromSolver(cap))
-End Function
-
-' Формирует типизированный результат поиска несущей способности.
-' BaseFail здесь отделяется от NumFail: если базовая точка lambda=0 уже за
-' физическим пределом, это инженерный результат траектории, а не численная ошибка.
-Public Function CapacityMetaFromSolver(ByVal cap As CCapacitySolver) As CResultMeta
-    Dim meta As CResultMeta
-    Set meta = New CResultMeta
-
-    If cap Is Nothing Then
-        meta.SetResult rsNumericalFailure, rcSolverDidNotReturnState, rkCapacity, _
-            "Capacity solver не вернул объект результата."
-    ElseIf Not cap.Converged Then
-        If IsInvalid(cap.StopReason) Or IsInvalid(cap.LimitState) Then
-            meta.SetResult rsInvalidInput, rcInvalidInput, rkCapacity, cap.StopReason
-        ElseIf IsInitialStateBeyondLimit(cap.StopReason) Then
-            meta.SetResult rsCheckFailed, rcInitialStateBeyondLimit, rkCapacity, cap.StopReason
-        Else
-            meta.SetResult rsNumericalFailure, rcNumericalFailure, rkCapacity, cap.StopReason
-        End If
-    ElseIf cap.LambdaUltimate > 0# And cap.LambdaUltimate < 1# Then
-        meta.SetResult rsCheckFailed, rcPhysicalLimitExceeded, rkCapacity, cap.LimitState
-    Else
-        meta.SetResult rsSuccess, rcCheckPassed, rkCapacity, cap.LimitState
-    End If
-
-    Set CapacityMetaFromSolver = meta
 End Function
 
 ' Переводит результат расчета трещин в тот же пользовательский словарь.
@@ -278,11 +249,4 @@ End Function
 Private Function Policy() As CResultStatusPolicy
     If mResultPolicy Is Nothing Then Set mResultPolicy = New CResultStatusPolicy
     Set Policy = mResultPolicy
-End Function
-
-' Распознает ситуацию, когда capacity-путь не стартует, потому что начальная
-' точка lambda=0 уже вышла за физический предел выбранной траектории.
-Private Function IsInitialStateBeyondLimit(ByVal reason As String) As Boolean
-    IsInitialStateBeyondLimit = (InStr(1, reason, "lambda = 0", vbTextCompare) > 0 Or _
-        InStr(1, reason, "Начальное состояние", vbTextCompare) > 0)
 End Function

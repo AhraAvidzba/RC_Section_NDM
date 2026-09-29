@@ -27,8 +27,69 @@ Private mActualMethod As String ' Метод, который фактическ�
 Private mResultKind As EResultKind ' Инженерный контекст результата.
 Private mSucceeded As Boolean ' True, если search-слой получил корректный результат для своей задачи.
 
+Private mSearchExecuted As Boolean ' True, если численный search действительно запускался.
+Private mConverged As Boolean ' Итоговый флаг сходимости физической limit-точки.
+Private mStopReason As String ' Техническая причина остановки search.
+Private mLimitState As String ' Инженерная причина предельного состояния или ошибки.
+Private mLambdaUltimate As Double ' Найденный множитель lambda.
+Private mNUltimate As Double ' Предельная N в собственном представлении search.
+Private mMxUltimate As Double ' Предельный Mx в собственном представлении search.
+Private mMyUltimate As Double ' Предельный My в собственном представлении search.
+Private mMomentUltimate As Double ' Модуль предельного момента, если он сформирован search.
+Private mUtilization As Double ' Использование несущей способности, сформированное search.
+Private mLastSolver As CSectionSolver ' Последний solver равновесия для физически найденной точки.
+Private mLastSolverDiagnosticLog As String ' Снимок диагностики последнего solver-а.
+
 Private Sub Class_Initialize()
     Set mMeta = New CResultMeta
+End Sub
+
+' Сбрасывает численный снимок limit-search перед заполнением результата.
+Private Sub ResetSearchSnapshot()
+    mSearchExecuted = False
+    mConverged = False
+    mStopReason = vbNullString
+    mLimitState = vbNullString
+    mLambdaUltimate = 0#
+    mNUltimate = 0#
+    mMxUltimate = 0#
+    mMyUltimate = 0#
+    mMomentUltimate = 0#
+    mUtilization = 0#
+    Set mLastSolver = Nothing
+    mLastSolverDiagnosticLog = vbNullString
+End Sub
+
+' Сохраняет capacity-числа сразу в общий result, чтобы downstream-слой не разбирал CCapacitySolver.
+Private Sub CaptureCapacitySnapshot(ByVal cap As CCapacitySolver)
+    ResetSearchSnapshot
+    If cap Is Nothing Then Exit Sub
+
+    mSearchExecuted = True
+    mConverged = cap.Converged
+    mStopReason = cap.StopReason
+    mLimitState = cap.LimitState
+    mLambdaUltimate = cap.LambdaUltimate
+    mNUltimate = cap.NUltimate
+    mMxUltimate = cap.MxUltimate
+    mMyUltimate = cap.MyUltimate
+    mMomentUltimate = cap.MomentUltimate
+    mUtilization = cap.Utilization
+    If Not cap.LastSolver Is Nothing Then
+        Set mLastSolver = cap.LastSolver
+        mLastSolverDiagnosticLog = cap.LastSolver.DiagnosticLog
+    End If
+End Sub
+
+' Сохраняет краткую диагностику CrackFormation в той же result-структуре.
+Private Sub CaptureCrackSnapshot(ByVal crack As CCrackWidthCalculator)
+    ResetSearchSnapshot
+    If crack Is Nothing Then Exit Sub
+
+    mSearchExecuted = True
+    mConverged = crack.Converged
+    mStopReason = crack.StopReason
+    mLimitState = crack.StopReason
 End Sub
 
 ' Заполняет result по уже выполненному CCapacitySolver.
@@ -40,6 +101,7 @@ Public Sub InitializeFromCapacitySolver(ByVal cap As CCapacitySolver, ByVal requ
     mRequestedStrategy = requestedStrategy
     mResultKind = rkCapacity
     mSucceeded = False
+    CaptureCapacitySnapshot cap
     If cap Is Nothing Then
         mActualMethod = vbNullString
         mMeta.SetResult rsNumericalFailure, rcSolverDidNotReturnState, rkCapacity, _
@@ -75,6 +137,7 @@ Public Sub InitializeFromCrackFormation(ByVal crack As CCrackWidthCalculator, _
     mResultKind = rkCrackFormation
     mActualMethod = requestedStrategy
     mSucceeded = searchSucceeded
+    CaptureCrackSnapshot crack
 
     If crack Is Nothing Then
         mMeta.SetResult rsNumericalFailure, rcSolverDidNotReturnState, rkCrackFormation, _
@@ -107,6 +170,9 @@ Public Sub InitializeInvalidConfiguration(ByVal requestedStrategy As String, ByV
     mActualMethod = vbNullString
     mResultKind = resultKind
     mSucceeded = False
+    ResetSearchSnapshot
+    mStopReason = message
+    mLimitState = message
     mMeta.SetResult rsInvalidConfiguration, rcInvalidConfiguration, resultKind, message
 End Sub
 
@@ -138,9 +204,56 @@ Public Property Get Succeeded() As Boolean
     Succeeded = mSucceeded
 End Property
 
+' Простые свойства ниже отдают снимок search-result без обращения к вызывающему batch-слою.
+Public Property Get SearchExecuted() As Boolean
+    SearchExecuted = mSearchExecuted
+End Property
+
+Public Property Get Converged() As Boolean
+    Converged = mConverged
+End Property
+
+Public Property Get StopReason() As String
+    StopReason = mStopReason
+End Property
+
+Public Property Get LimitState() As String
+    LimitState = mLimitState
+End Property
+
+Public Property Get LambdaUltimate() As Double
+    LambdaUltimate = mLambdaUltimate
+End Property
+
+Public Property Get NUltimate() As Double
+    NUltimate = mNUltimate
+End Property
+
+Public Property Get MxUltimate() As Double
+    MxUltimate = mMxUltimate
+End Property
+
+Public Property Get MyUltimate() As Double
+    MyUltimate = mMyUltimate
+End Property
+
+Public Property Get MomentUltimate() As Double
+    MomentUltimate = mMomentUltimate
+End Property
+
+Public Property Get Utilization() As Double
+    Utilization = mUtilization
+End Property
+
+Public Property Get LastSolver() As CSectionSolver
+    Set LastSolver = mLastSolver
+End Property
+
+Public Property Get LastSolverDiagnosticLog() As String
+    LastSolverDiagnosticLog = mLastSolverDiagnosticLog
+End Property
+
 ' Возвращает подробную диагностику фактического search-объекта.
-' На переходном этапе текст еще хранится в доменных solver/calculator-классах,
-' но внешний orchestration-слой читает его через CLimitSearchResult.
 Public Property Get DiagnosticLog() As String
     If Not mCapacitySolver Is Nothing Then
         DiagnosticLog = mCapacitySolver.DiagnosticLog

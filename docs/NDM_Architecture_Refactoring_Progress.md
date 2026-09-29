@@ -94,6 +94,12 @@ regression-отчеты.
   для NumFail/InputErr capacity-веток. Локальный вызов `MaxDouble` в настройке
   `CCapacityCalculator` заменен явным сравнением пределов арматуры, чтобы исключить
   compile-зависимость от helper-а в этом классе.
+- Этап 5 продолжен отвязкой downstream-слоя Capacity от `CCapacitySolver`:
+  `CLimitSearchResult` сохраняет численный snapshot найденной limit-точки
+  (`lambda`, компоненты усилий, utilization, последний solver и диагностику),
+  `CCapacityResult` читает эти данные из общего result, а внешний статус берет
+  из `CResultMeta` через `CBatchStatusPolicy`. Старый batch-маппинг
+  `CCapacitySolver -> display status` удален.
 
 ## In progress
 
