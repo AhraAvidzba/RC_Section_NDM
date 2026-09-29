@@ -287,8 +287,15 @@ Private Function CreateConfiguredSolver(ByVal concreteMaterial As Object, _
     If Not strengthSpec Is Nothing Then _
         cap.ConcreteTensionLimitEnabled = (concreteMaterial.HasPhysicalTensionLimit And _
             strengthSpec.ConcreteTension = ctkUseDiagram)
-    cap.SteelStrainLimit = MaxDouble(Abs(steelMaterial.UltimateCompressionStrain), _
-        Abs(steelMaterial.UltimateTensionStrain))
+    Dim steelCompressionLimit As Double
+    Dim steelTensionLimit As Double
+    steelCompressionLimit = Abs(steelMaterial.UltimateCompressionStrain)
+    steelTensionLimit = Abs(steelMaterial.UltimateTensionStrain)
+    If steelCompressionLimit >= steelTensionLimit Then
+        cap.SteelStrainLimit = steelCompressionLimit
+    Else
+        cap.SteelStrainLimit = steelTensionLimit
+    End If
 
     cap.LambdaTolerance = mLambdaTolerance
     cap.StrainTolerance = mStrainTolerance
@@ -312,14 +319,4 @@ Private Function CreateConfiguredSolver(ByVal concreteMaterial As Object, _
     cap.DiagnosticsEnabled = mDiagnosticsEnabled
 
     Set CreateConfiguredSolver = cap
-End Function
-
-' Возвращает большее из двух Double-значений. Helper оставлен локальным,
-' потому что VBA-классы проекта не имеют общего модуля математических функций.
-Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
-    If a >= b Then
-        MaxDouble = a
-    Else
-        MaxDouble = b
-    End If
 End Function

@@ -300,6 +300,8 @@ Private Sub TestBatchCapacityUsesSystemSettings(ByRef stats As TBatchTestStats)
     batch.Execute
 
     AssertTrue stats, "batch.settings.capacity.maxLambda", batch.CapacityStatus(1) = "NumFail"
+    AssertClose stats, "batch.settings.capacity.maxLambda.noReserve", _
+        batch.StrengthCapacityReserve(1), 0#, 0#
 
 Restore:
     SetSystemSetting "Capacity.SolutionStrategy", oldStrategy
@@ -331,6 +333,8 @@ Private Sub TestInvalidModeSettingsAreNotFallbacks(ByRef stats As TBatchTestStat
     batch.Execute
     AssertTrue stats, "batch.invalid.CapacitySolutionStrategy.status", batch.Status(1) = "InputErr"
     AssertTrue stats, "batch.invalid.CapacitySolutionStrategy.noLambda", batch.LambdaCapacity(1) = 0#
+    AssertClose stats, "batch.invalid.CapacitySolutionStrategy.noReserve", _
+        batch.StrengthCapacityReserve(1), 0#, 0#
 
 Restore:
     SetSystemSetting "Capacity.SolutionStrategy", oldCapacitySolutionStrategy

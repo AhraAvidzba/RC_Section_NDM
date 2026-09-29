@@ -88,6 +88,12 @@ regression-отчеты.
   `CCombinationResult` теперь сам отдает display-name траектории и запас
   несущей способности через typed meta. Batch и detailed strength writer больше
   не вычисляют `запас(λ)` напрямую из `LambdaCapacity` для NumFail/InputErr/N/A.
+- Этап 5 продолжен защитой downstream-вывода Capacity: `CNDMResultsWriter` выводит
+  предельные компоненты `Nultimate/MxUltimate/MyUltimate` только при наличии
+  физически пригодного capacity reserve, а regression-тесты фиксируют нулевой запас
+  для NumFail/InputErr capacity-веток. Локальный вызов `MaxDouble` в настройке
+  `CCapacityCalculator` заменен явным сравнением пределов арматуры, чтобы исключить
+  compile-зависимость от helper-а в этом классе.
 
 ## In progress
 
@@ -191,6 +197,13 @@ regression-отчеты.
   `tools/build_workbook/Run-CapacityTests.ps1`: `passed=923`, `failed=0`.
 - 2026-09-29: этот же срез этапа 5 прошел
   `tools/build_workbook/Run-BatchTests.ps1`: `passed=631`, `failed=0`.
+- 2026-09-29: срез этапа 5 с защитой capacity reserve в `CNDMResultsWriter`
+  пересобрал `workbook/output/RC_Section_NDM.xlsm` через
+  `tools/build_workbook/Build-Workbook.ps1`.
+- 2026-09-29: этот же срез этапа 5 прошел
+  `tools/build_workbook/Run-CapacityTests.ps1`: `passed=923`, `failed=0`.
+- 2026-09-29: этот же срез этапа 5 прошел
+  `tools/build_workbook/Run-BatchTests.ps1`: `passed=633`, `failed=0`.
 - 2026-09-29: срез этапа 5 с переносом typed capacity-meta пересобрал
   `workbook/output/RC_Section_NDM.xlsm` через `tools/build_workbook/Build-Workbook.ps1`.
 - 2026-09-29: этот же срез этапа 5 прошел
