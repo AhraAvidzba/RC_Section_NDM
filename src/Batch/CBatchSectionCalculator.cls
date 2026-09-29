@@ -1303,6 +1303,16 @@ Private Sub StoreNotCalculatedCapacity(ByVal index As Long)
     mResults(index).StoreCapacityResult capacityResult
 End Sub
 
+' Сохраняет ошибку входных данных в capacity-блок через общий CCapacityResult.
+' Даже когда общий LC отбрасывается до solver-а, capacity-часть Results должна
+' проходить тем же result/meta-контрактом, что и штатный поиск несущей.
+Private Sub StoreInvalidCapacity(ByVal index As Long, ByVal reason As String)
+    Dim capacityResult As CCapacityResult
+    Set capacityResult = New CCapacityResult
+    capacityResult.InitializeInvalid mStatusPolicy.InputErr, reason, CAPACITY_PATH_NONE
+    mResults(index).StoreCapacityResult capacityResult
+End Sub
+
 ' Фиксирует InvalidInput по конкретному LC и не дает этому сочетанию пройти
 ' в solver. Так пользователь видит причину в таблице, а остальные LC считаются.
 Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
@@ -1311,11 +1321,8 @@ Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     mResults(index).ProfileId = mInputs(index).ProfileId
     mResults(index).Status = mStatusPolicy.InputErr
     mResults(index).DirectStateStatus = mStatusPolicy.InputErr
-    mResults(index).CapacityStatus = mStatusPolicy.InputErr
     mResults(index).StabilityStatus = mStatusPolicy.InputErr
-    mResults(index).CapacityLimitState = reason
-    mResults(index).CapacitySolutionMethod = vbNullString
-    mResults(index).CapacityPathResolved = CAPACITY_PATH_NONE
+    StoreInvalidCapacity index, reason
     mResults(index).CrackStatus = mStatusPolicy.NotApplicable
     mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
     If Not mMaterialProvider Is Nothing Then
