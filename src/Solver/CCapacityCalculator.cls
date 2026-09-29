@@ -21,13 +21,101 @@ Option Explicit
 ' Такой слой оставляет CCapacitySolver переходным фасадом с legacy-полями, но
 ' больше не заставляет batch-калькулятор вручную разбирать детали search.
 
+Private mInitialLambdaStep As Double ' Первый шаг расширения lambda для LoadMultiplier.
+Private mSolutionStrategy As String ' Пользовательская стратегия Capacity.SolutionStrategy после чтения Config.
+Private mSearchMethod As String ' Алгоритм одномерного LoadMultiplier-поиска.
+Private mMaxLambda As Double ' Защитная верхняя граница lambda при расширении скобки.
+Private mLambdaTolerance As Double ' Допуск по lambda для одномерного поиска.
+Private mStrainTolerance As Double ' Допуск попадания в предельную деформацию UltimateStrain.
+Private mMaxRetries As Long ' Число повторов lambda-точки при численной неудаче.
+Private mBaseLoadSteps As Long ' Базовое число load steps внутреннего CSectionSolver.
+Private mCapacitySolverMaxIterations As Long ' Лимит итераций search/внутренних solves для capacity.
+Private mSolverToleranceN As Double ' Допуск равновесия внутреннего CSectionSolver по N.
+Private mSolverToleranceMx As Double ' Допуск равновесия внутреннего CSectionSolver по Mx.
+Private mSolverToleranceMy As Double ' Допуск равновесия внутреннего CSectionSolver по My.
+Private mSolverMethod As String ' Newton или Secant для внутренних расчетов равновесия.
+Private mSolverLineSearchEnabled As Boolean ' Включен ли line search во внутренних расчетах.
+Private mSolverDampingInitial As Double ' Начальный коэффициент демпфирования Newton.
+Private mSolverMinLineSearchAlpha As Double ' Минимальный alpha line search.
+Private mSolverMaxDeltaEpsilon0 As Double ' Ограничение шага epsilon0.
+Private mSolverMaxDeltaKappa As Double ' Ограничение шага кривизн.
+Private mSolverSecantMaxRestarts As Long ' Максимум рестартов Secant-решателя.
+Private mSolverSecantMinStepNorm As Double ' Минимальная норма шага Secant-решателя.
+Private mDiagnosticsEnabled As Boolean ' True, если нужно писать подробный журнал итераций.
+
+' Задает безопасные значения по умолчанию на случай прямых unit-тестов.
+' Основной batch-сценарий всегда переопределяет их настройками Config.
+Private Sub Class_Initialize()
+    mInitialLambdaStep = 1#
+    mSolutionStrategy = "Auto"
+    mSearchMethod = "Bisection"
+    mMaxLambda = 1024#
+    mLambdaTolerance = 0.01
+    mStrainTolerance = 0.00001
+    mMaxRetries = 0
+    mBaseLoadSteps = 1
+    mCapacitySolverMaxIterations = 60
+    mSolverToleranceN = 0.01
+    mSolverToleranceMx = 0.01
+    mSolverToleranceMy = 0.01
+    mSolverMethod = "Newton"
+    mSolverLineSearchEnabled = True
+    mSolverDampingInitial = 1#
+    mSolverMinLineSearchAlpha = 0.000001
+    mSolverMaxDeltaEpsilon0 = 0#
+    mSolverMaxDeltaKappa = 0#
+    mSolverSecantMaxRestarts = 0
+    mSolverSecantMinStepNorm = 0#
+    mDiagnosticsEnabled = False
+End Sub
+
+' Принимает пользовательские настройки capacity-search, уже прочитанные из
+' Config. Класс не обращается к Excel, но именно здесь они превращаются в
+' настройки переходного CCapacitySolver.
+Public Sub ConfigureSearch(ByVal initialLambdaStep As Double, ByVal solutionStrategy As String, _
+        ByVal searchMethod As String, ByVal maxLambda As Double, ByVal lambdaTolerance As Double, _
+        ByVal strainTolerance As Double, ByVal maxRetries As Long, ByVal baseLoadSteps As Long, _
+        ByVal capacitySolverMaxIterations As Long)
+    mInitialLambdaStep = initialLambdaStep
+    mSolutionStrategy = solutionStrategy
+    mSearchMethod = searchMethod
+    mMaxLambda = maxLambda
+    mLambdaTolerance = lambdaTolerance
+    mStrainTolerance = strainTolerance
+    mMaxRetries = maxRetries
+    mBaseLoadSteps = baseLoadSteps
+    mCapacitySolverMaxIterations = capacitySolverMaxIterations
+End Sub
+
+' Принимает настройки внутреннего CSectionSolver, который вызывается для
+' пробных lambda-точек Capacity. Это те же параметры равновесия, что применяет
+' batch для прямого НДС, но владение ими в capacity-сценарии остается здесь.
+Public Sub ConfigureEquilibriumSolver(ByVal toleranceN As Double, ByVal toleranceMx As Double, _
+        ByVal toleranceMy As Double, ByVal solverMethod As String, ByVal lineSearchEnabled As Boolean, _
+        ByVal dampingInitial As Double, ByVal minLineSearchAlpha As Double, _
+        ByVal maxDeltaEpsilon0 As Double, ByVal maxDeltaKappa As Double, _
+        ByVal secantMaxRestarts As Long, ByVal secantMinStepNorm As Double, _
+        ByVal diagnosticsEnabled As Boolean)
+    mSolverToleranceN = toleranceN
+    mSolverToleranceMx = toleranceMx
+    mSolverToleranceMy = toleranceMy
+    mSolverMethod = solverMethod
+    mSolverLineSearchEnabled = lineSearchEnabled
+    mSolverDampingInitial = dampingInitial
+    mSolverMinLineSearchAlpha = minLineSearchAlpha
+    mSolverMaxDeltaEpsilon0 = maxDeltaEpsilon0
+    mSolverMaxDeltaKappa = maxDeltaKappa
+    mSolverSecantMaxRestarts = secantMaxRestarts
+    mSolverSecantMinStepNorm = secantMinStepNorm
+    mDiagnosticsEnabled = diagnosticsEnabled
+End Sub
+
 ' Выполняет расчет несущей способности для одного LC.
 ' Все аргументы уже нормализованы во внутренние единицы и знаки; Config сюда
 ' напрямую не читается.
 Public Function Calculate(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal strengthSpec As CMaterialModelSpec, ByVal loadPath As CCapacityLoadPath, _
-        ByVal configuredSolver As CCapacitySolver, ByVal solutionStrategy As String, _
         ByVal loadState As CSectionLoadState, ByVal strengthReferenceX As Double, _
         ByVal strengthReferenceY As Double, ByVal statusPolicy As CBatchStatusPolicy, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
@@ -66,10 +154,13 @@ Public Function Calculate(ByVal section As CSectionModel, _
     pureAxialForMethod = IsPureAxialForMethod(loadPath, loadState, strengthReferenceX, _
         strengthReferenceY, momentFilter, concreteDepthForMx, concreteDepthForMy)
 
+    Dim configuredSolver As CCapacitySolver
+    Set configuredSolver = CreateConfiguredSolver(concreteMaterial, steelMaterial, strengthSpec)
+
     Dim request As CLimitSearchRequest
     Set request = New CLimitSearchRequest
     request.InitializeCapacity configuredSolver, section, concreteMaterial, steelMaterial, _
-        solutionStrategy, loadPath.NOffset, loadPath.NBase, loadPath.MxOffset, _
+        SolutionStrategy, loadPath.NOffset, loadPath.NBase, loadPath.MxOffset, _
         loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, loadPath.ForceOnly, _
         pureAxialForMethod
 
@@ -84,6 +175,20 @@ Public Function Calculate(ByVal section As CSectionModel, _
 
     Set Calculate = result
 End Function
+
+' Возвращает нормализованную стратегию Capacity.SolutionStrategy.
+' Пустая строка сохраняет прежнее поведение для невалидной настройки: дальше
+' search-слой сформирует controlled InputErr, а не молча подставит fallback.
+Public Property Get SolutionStrategy() As String
+    Select Case LCase$(Trim$(mSolutionStrategy))
+        Case "auto"
+            SolutionStrategy = "Auto"
+        Case "loadmultiplier"
+            SolutionStrategy = "LoadMultiplier"
+        Case "ultimatestrain"
+            SolutionStrategy = "UltimateStrain"
+    End Select
+End Property
 
 ' Создает capacity load-path из пользовательского текста и уже нормализованного
 ' состояния нагрузки. Это часть инженерной подготовки Capacity, поэтому batch
@@ -131,5 +236,56 @@ Private Function MomentIsZeroForMethod(ByVal momentValue As Double, _
         MomentIsZeroForMethod = (Abs(momentValue) <= 0.000000001)
     Else
         MomentIsZeroForMethod = momentFilter.IsMomentEffectivelyZero(momentValue, concreteDepth)
+    End If
+End Function
+
+' Создает и настраивает переходный CCapacitySolver для текущего material spec.
+' Материальные пределы берутся из уже построенных диаграмм; пользовательские
+' search-настройки и настройки внутреннего равновесия применяются из полей
+' CCapacityCalculator.
+Private Function CreateConfiguredSolver(ByVal concreteMaterial As Object, _
+        ByVal steelMaterial As Object, ByVal strengthSpec As CMaterialModelSpec) As CCapacitySolver
+    Dim cap As CCapacitySolver
+    Set cap = New CCapacitySolver
+
+    cap.ConcreteCompressionLimit = concreteMaterial.UltimateCompressionStrain
+    cap.ConcreteTensionLimit = concreteMaterial.UltimateTensionStrain
+    If Not strengthSpec Is Nothing Then _
+        cap.ConcreteTensionLimitEnabled = (concreteMaterial.HasPhysicalTensionLimit And _
+            strengthSpec.ConcreteTension = ctkUseDiagram)
+    cap.SteelStrainLimit = MaxDouble(Abs(steelMaterial.UltimateCompressionStrain), _
+        Abs(steelMaterial.UltimateTensionStrain))
+
+    cap.LambdaTolerance = mLambdaTolerance
+    cap.StrainTolerance = mStrainTolerance
+    cap.SearchMethod = mSearchMethod
+    cap.MaxLambda = mMaxLambda
+    cap.InitialLambdaStep = mInitialLambdaStep
+    cap.MaxRetries = mMaxRetries
+    cap.SolverBaseLoadSteps = mBaseLoadSteps
+    cap.SolverMaxIterations = mCapacitySolverMaxIterations
+    cap.SolverToleranceN = mSolverToleranceN
+    cap.SolverToleranceMx = mSolverToleranceMx
+    cap.SolverToleranceMy = mSolverToleranceMy
+    cap.SolverMethod = mSolverMethod
+    cap.SolverLineSearchEnabled = mSolverLineSearchEnabled
+    cap.SolverDampingInitial = mSolverDampingInitial
+    cap.SolverMinLineSearchAlpha = mSolverMinLineSearchAlpha
+    cap.SolverMaxDeltaEpsilon0 = mSolverMaxDeltaEpsilon0
+    cap.SolverMaxDeltaKappa = mSolverMaxDeltaKappa
+    cap.SolverSecantMaxRestarts = mSolverSecantMaxRestarts
+    cap.SolverSecantMinStepNorm = mSolverSecantMinStepNorm
+    cap.DiagnosticsEnabled = mDiagnosticsEnabled
+
+    Set CreateConfiguredSolver = cap
+End Function
+
+' Возвращает большее из двух Double-значений. Helper оставлен локальным,
+' потому что VBA-классы проекта не имеют общего модуля математических функций.
+Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
+    If a >= b Then
+        MaxDouble = a
+    Else
+        MaxDouble = b
     End If
 End Function

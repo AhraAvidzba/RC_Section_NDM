@@ -994,15 +994,13 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     Dim loadState As CSectionLoadState
 
     Set capacityCalculator = New CCapacityCalculator
+    ConfigureCapacityCalculator capacityCalculator
     Set loadState = LoadStateForCombination(index)
     Set loadPath = capacityCalculator.BuildLoadPath(mInputs(index).CapacityLoadPath, loadState)
     mResults(index).CapacityPathResolved = loadPath.Key
     ReportValue "Путь нагрузки для несущей", IIf(loadPath.HasPath, loadPath.DisplayName, mInputs(index).CapacityLoadPath)
 
-    Set cap = New CCapacitySolver
-    ConfigureCapacity cap, strengthSpec
-
-    ReportValue "Стратегия поиска несущей", NormalizedCapacitySolutionStrategy()
+    ReportValue "Стратегия поиска несущей", capacityCalculator.SolutionStrategy
 
     Dim strengthReferenceX As Double
     Dim strengthReferenceY As Double
@@ -1012,7 +1010,7 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     Set capacityResult = capacityCalculator.Calculate(mSection, _
         mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
         mMaterialProvider.SteelMaterialFromSpec(strengthSpec), strengthSpec, _
-        loadPath, cap, NormalizedCapacitySolutionStrategy(), loadState, _
+        loadPath, loadState, _
         strengthReferenceX, strengthReferenceY, mStatusPolicy, mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, _
         mConcreteDepthForMx, mConcreteDepthForMy)
 
@@ -1023,8 +1021,8 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     End If
     Set cap = capacityResult.CapacitySolver
 
-    ReportCapacitySearchPlan loadPath, capacityResult.PureAxialForMethod
-    ReportCapacityMethodChoice index, cap, loadPath, capacityResult.PureAxialForMethod
+    ReportCapacitySearchPlan loadPath, capacityResult.PureAxialForMethod, capacityCalculator.SolutionStrategy
+    ReportCapacityMethodChoice index, cap, loadPath, capacityResult.PureAxialForMethod, capacityCalculator.SolutionStrategy
 
     ReportValue "Статус несущей способности", mResults(index).CapacityStatus
     ReportValue "Фактический метод несущей", mResults(index).CapacitySolutionMethod
@@ -1057,8 +1055,8 @@ End Sub
 ' координатора. Сам выбор и вызов метода выполняет CLimitSearchCoordinator;
 ' здесь остается только пользовательское пояснение без расчетной логики.
 Private Sub ReportCapacitySearchPlan(ByVal loadPath As CCapacityLoadPath, _
-        ByVal pureAxialForMethod As Boolean)
-    Select Case NormalizedCapacitySolutionStrategy()
+        ByVal pureAxialForMethod As Boolean, ByVal solutionStrategy As String)
+    Select Case solutionStrategy
         Case "Auto"
             If pureAxialForMethod Then
                 ReportStep "Несущая способность: стратегия Auto. После переноса к центру приведенного сечения траектория является чисто осевой, поэтому сразу используется LoadMultiplier: для такой постановки UltimateStrain вырождается на горизонтальном участке диаграммы."
@@ -1086,11 +1084,12 @@ End Sub
 ' Низкоуровневый DiagnosticLog остается рядом, но здесь пользователь сразу
 ' видит смысл переключения Auto/UltimateStrain/LoadMultiplier по-русски.
 Private Sub ReportCapacityMethodChoice(ByVal index As Long, ByVal cap As CCapacitySolver, _
-        ByVal loadPath As CCapacityLoadPath, ByVal pureAxialForMethod As Boolean)
+        ByVal loadPath As CCapacityLoadPath, ByVal pureAxialForMethod As Boolean, _
+        ByVal solutionStrategy As String)
     If cap Is Nothing Then Exit Sub
 
     Dim strategy As String
-    strategy = NormalizedCapacitySolutionStrategy()
+    strategy = solutionStrategy
     Dim methodName As String
     methodName = mResults(index).CapacitySolutionMethod
 
@@ -1379,19 +1378,6 @@ Private Function CapacityLoadPathDisplay(ByVal loadPathKey As String) As String
     CapacityLoadPathDisplay = calculator.DisplayNameForKey(loadPathKey)
 End Function
 
-' Приводит пользовательскую строку Capacity.SolutionStrategy к одному из трех
-' внутренних имен. Пустой результат дальше превращается в InvalidInput.
-Private Function NormalizedCapacitySolutionStrategy() As String
-    Select Case LCase$(Trim$(mCapacitySolutionStrategy))
-        Case "auto"
-            NormalizedCapacitySolutionStrategy = "Auto"
-        Case "loadmultiplier"
-            NormalizedCapacitySolutionStrategy = "LoadMultiplier"
-        Case "ultimatestrain"
-            NormalizedCapacitySolutionStrategy = "UltimateStrain"
-    End Select
-End Function
-
 ' Объединяет статусы нескольких прямых StateSolution одного LC.
 ' N/A не ухудшает итог, а FAIL/NumFail/InputErr сохраняют общий смысл строки.
 Private Sub MergeDirectStateStatus(ByVal index As Long, ByVal statusText As String)
@@ -1468,34 +1454,19 @@ Private Sub StoreLongitudinalCrackWithinCrackWidth(ByVal index As Long)
     End If
 End Sub
 
-' Передает в CCapacitySolver ровно те настройки, которые относятся к поиску
-' несущей способности и внутренним пробным расчетам равновесия.
-Private Sub ConfigureCapacity(ByVal cap As CCapacitySolver, ByVal strengthSpec As CMaterialModelSpec)
-    cap.ConcreteCompressionLimit = mMaterialProvider.ConcreteCompressionLimitFromSpec(strengthSpec)
-    cap.ConcreteTensionLimit = mMaterialProvider.ConcreteTensionLimitFromSpec(strengthSpec)
-    cap.ConcreteTensionLimitEnabled = mMaterialProvider.ConcreteTensionLimitEnabledFromSpec(strengthSpec)
-    cap.SteelStrainLimit = MaxDouble(Abs(mMaterialProvider.SteelCompressionLimitFromSpec(strengthSpec)), _
-        Abs(mMaterialProvider.SteelTensionLimitFromSpec(strengthSpec)))
-    cap.LambdaTolerance = mCapacityToleranceLambda
-    cap.StrainTolerance = mCapacityToleranceStrain
-    cap.SearchMethod = mCapacitySearchMethod
-    cap.MaxLambda = mCapacityMaxLambda
-    cap.InitialLambdaStep = mCapacityInitialLambda
-    cap.MaxRetries = mCapacityMaxRetries
-    cap.SolverBaseLoadSteps = mCapacityBaseLoadSteps
-    cap.SolverMaxIterations = mCapacitySolverMaxIterations
-    cap.SolverToleranceN = mSolverToleranceN
-    cap.SolverToleranceMx = mSolverToleranceMx
-    cap.SolverToleranceMy = mSolverToleranceMy
-    cap.SolverMethod = mSolverMethod
-    cap.SolverLineSearchEnabled = mSolverLineSearchEnabled
-    cap.SolverDampingInitial = mSolverDampingInitial
-    cap.SolverMinLineSearchAlpha = mSolverMinLineSearchAlpha
-    cap.SolverMaxDeltaEpsilon0 = mSolverMaxDeltaEpsilon0
-    cap.SolverMaxDeltaKappa = mSolverMaxDeltaKappa
-    cap.SolverSecantMaxRestarts = mSolverSecantMaxRestarts
-    cap.SolverSecantMinStepNorm = mSolverSecantMinStepNorm
-    cap.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
+' Передает в CCapacityCalculator настройки поиска несущей и внутреннего
+' равновесия. Материальные пределы calculator берет из построенных диаграмм
+' для конкретного профиля, поэтому batch больше не настраивает CCapacitySolver.
+Private Sub ConfigureCapacityCalculator(ByVal calculator As CCapacityCalculator)
+    calculator.ConfigureSearch mCapacityInitialLambda, mCapacitySolutionStrategy, _
+        mCapacitySearchMethod, mCapacityMaxLambda, mCapacityToleranceLambda, _
+        mCapacityToleranceStrain, mCapacityMaxRetries, mCapacityBaseLoadSteps, _
+        mCapacitySolverMaxIterations
+    calculator.ConfigureEquilibriumSolver mSolverToleranceN, mSolverToleranceMx, _
+        mSolverToleranceMy, mSolverMethod, mSolverLineSearchEnabled, _
+        mSolverDampingInitial, mSolverMinLineSearchAlpha, mSolverMaxDeltaEpsilon0, _
+        mSolverMaxDeltaKappa, mSolverSecantMaxRestarts, mSolverSecantMinStepNorm, _
+        DetailedDiagnosticsEnabled()
 End Sub
 
 ' Настраивает runner прямого НДС общими solver-параметрами batch-расчета.

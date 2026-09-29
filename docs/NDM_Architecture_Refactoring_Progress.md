@@ -72,6 +72,11 @@ regression-отчеты.
   больше не содержит локальный `BuildLoadPathForCombination`. Траекторию из
   пользовательской строки и `CSectionLoadState` строит `CCapacityCalculator`,
   а batch-слой использует ее как готовую инженерную подготовку Capacity.
+- Этап 5 продолжен переносом настройки capacity-solver-а: `CBatchSectionCalculator`
+  больше не создает и не конфигурирует `CCapacitySolver`. Search-настройки,
+  настройки внутреннего равновесия и strategy передаются в `CCapacityCalculator`,
+  а материальные пределы берутся из построенных диаграмм конкретного
+  material spec при создании переходного solver-а.
 
 ## In progress
 
@@ -170,6 +175,12 @@ regression-отчеты.
   `tools/build_workbook/Run-CrackTests.ps1`: `passed=286`, `failed=0`.
 - 2026-09-29: следующий срез этапа 5 с переносом skipped/input-error
   capacity-path в `CCapacityCalculator` пересобрал
+  `workbook/output/RC_Section_NDM.xlsm` через `tools/build_workbook/Build-Workbook.ps1`.
+- 2026-09-29: этот же срез этапа 5 прошел
+  `tools/build_workbook/Run-CapacityTests.ps1`: `passed=923`, `failed=0`.
+- 2026-09-29: этот же срез этапа 5 прошел
+  `tools/build_workbook/Run-BatchTests.ps1`: `passed=631`, `failed=0`.
+- 2026-09-29: срез этапа 5 с переносом настройки capacity-solver-а пересобрал
   `workbook/output/RC_Section_NDM.xlsm` через `tools/build_workbook/Build-Workbook.ps1`.
 - 2026-09-29: этот же срез этапа 5 прошел
   `tools/build_workbook/Run-CapacityTests.ps1`: `passed=923`, `failed=0`.
