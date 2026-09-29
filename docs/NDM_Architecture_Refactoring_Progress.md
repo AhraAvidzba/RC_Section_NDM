@@ -100,6 +100,11 @@ regression-отчеты.
   `CCapacityResult` читает эти данные из общего result, а внешний статус берет
   из `CResultMeta` через `CBatchStatusPolicy`. Старый batch-маппинг
   `CCapacitySolver -> display status` удален.
+- Этап 5 продолжен сужением переходной зависимости от capacity-фасада:
+  `CLimitSearchResult` больше не хранит и не отдает `CCapacitySolver` как часть
+  результата. Ссылки на `request.CapacitySolver` остаются только внутри
+  search-слоя и переходного `CLimitSearchRequest`, а execution report читает
+  capacity-диагностику из сохраненного снимка result.
 
 ## In progress
 

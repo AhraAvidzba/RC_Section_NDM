@@ -12,18 +12,18 @@ Option Explicit
 ' ==========================================================================
 ' Результат общего поиска предельной точки
 ' ==========================================================================
-' CLimitSearchResult хранит типизированный итог search-слоя и ссылку на существующий
-' CCapacitySolver. Ссылка нужна на переходном этапе: существующий вывод,
-' snapshot и тесты уже читают много полей именно из CCapacitySolver.
+' CLimitSearchResult хранит типизированный итог search-слоя и численный снимок
+' найденной limit-точки. Downstream-слои читают именно этот result, а не
+' доменный solver-фасад.
 '
-' По мере дальнейшей миграции численные поля и ResultMeta можно будет читать
-' напрямую из этого класса, не меняя публичную расчетную методику.
+' Для CrackFormation временно сохраняется ссылка на расчетчик: Auto-путь может
+' дописывать диагностический журнал после промежуточной попытки, и этот текст
+' должен остаться видимым в отчете до полного выделения crack-result.
 
-Private mCapacitySolver As CCapacitySolver ' Фактический solver, выполнивший расчет capacity.
 Private mCrackCalculator As CCrackWidthCalculator ' Расчетчик, выполнивший поиск точки трещинообразования.
 Private mMeta As CResultMeta ' Машинная оценка результата для будущего ResultStatusPolicy-пути.
 Private mRequestedStrategy As String ' Стратегия, заданная настройкой.
-Private mActualMethod As String ' Метод, который фактически записал CCapacitySolver.
+Private mActualMethod As String ' Метод, который фактически дал результат поиска.
 Private mResultKind As EResultKind ' Инженерный контекст результата.
 Private mSucceeded As Boolean ' True, если search-слой получил корректный результат для своей задачи.
 
@@ -39,6 +39,7 @@ Private mMomentUltimate As Double ' Модуль предельного моме
 Private mUtilization As Double ' Использование несущей способности, сформированное search.
 Private mLastSolver As CSectionSolver ' Последний solver равновесия для физически найденной точки.
 Private mLastSolverDiagnosticLog As String ' Снимок диагностики последнего solver-а.
+Private mDiagnosticLog As String ' Снимок диагностического журнала search-слоя.
 
 Private Sub Class_Initialize()
     Set mMeta = New CResultMeta
@@ -58,6 +59,7 @@ Private Sub ResetSearchSnapshot()
     mUtilization = 0#
     Set mLastSolver = Nothing
     mLastSolverDiagnosticLog = vbNullString
+    mDiagnosticLog = vbNullString
 End Sub
 
 ' Сохраняет capacity-числа сразу в общий result, чтобы downstream-слой не разбирал CCapacitySolver.
@@ -75,6 +77,7 @@ Private Sub CaptureCapacitySnapshot(ByVal cap As CCapacitySolver)
     mMyUltimate = cap.MyUltimate
     mMomentUltimate = cap.MomentUltimate
     mUtilization = cap.Utilization
+    mDiagnosticLog = cap.DiagnosticLog
     If Not cap.LastSolver Is Nothing Then
         Set mLastSolver = cap.LastSolver
         mLastSolverDiagnosticLog = cap.LastSolver.DiagnosticLog
@@ -90,13 +93,13 @@ Private Sub CaptureCrackSnapshot(ByVal crack As CCrackWidthCalculator)
     mConverged = crack.Converged
     mStopReason = crack.StopReason
     mLimitState = crack.StopReason
+    mDiagnosticLog = crack.DiagnosticLog
 End Sub
 
 ' Заполняет result по уже выполненному CCapacitySolver.
 ' Маппинг здесь намеренно простой: внешний статус по-прежнему формируется
 ' существующим CBatchStatusPolicy, а meta нужна как задел общей result-схемы.
 Public Sub InitializeFromCapacitySolver(ByVal cap As CCapacitySolver, ByVal requestedStrategy As String)
-    Set mCapacitySolver = cap
     Set mCrackCalculator = Nothing
     mRequestedStrategy = requestedStrategy
     mResultKind = rkCapacity
@@ -131,7 +134,6 @@ End Sub
 ' search-результате Ncrc/Mcrc и связанных состояниях.
 Public Sub InitializeFromCrackFormation(ByVal crack As CCrackWidthCalculator, _
         ByVal requestedStrategy As String, ByVal searchSucceeded As Boolean)
-    Set mCapacitySolver = Nothing
     Set mCrackCalculator = crack
     mRequestedStrategy = requestedStrategy
     mResultKind = rkCrackFormation
@@ -164,7 +166,6 @@ End Sub
 ' Заполняет result как ошибку настройки, когда стратегия поиска неизвестна.
 Public Sub InitializeInvalidConfiguration(ByVal requestedStrategy As String, ByVal message As String, _
         Optional ByVal resultKind As EResultKind = rkCapacity)
-    Set mCapacitySolver = Nothing
     Set mCrackCalculator = Nothing
     mRequestedStrategy = requestedStrategy
     mActualMethod = vbNullString
@@ -175,10 +176,6 @@ Public Sub InitializeInvalidConfiguration(ByVal requestedStrategy As String, ByV
     mLimitState = message
     mMeta.SetResult rsInvalidConfiguration, rcInvalidConfiguration, resultKind, message
 End Sub
-
-Public Property Get CapacitySolver() As CCapacitySolver
-    Set CapacitySolver = mCapacitySolver
-End Property
 
 Public Property Get CrackCalculator() As CCrackWidthCalculator
     Set CrackCalculator = mCrackCalculator
@@ -255,11 +252,9 @@ End Property
 
 ' Возвращает подробную диагностику фактического search-объекта.
 Public Property Get DiagnosticLog() As String
-    If Not mCapacitySolver Is Nothing Then
-        DiagnosticLog = mCapacitySolver.DiagnosticLog
-    ElseIf Not mCrackCalculator Is Nothing Then
+    If Not mCrackCalculator Is Nothing Then
         DiagnosticLog = mCrackCalculator.DiagnosticLog
     Else
-        DiagnosticLog = vbNullString
+        DiagnosticLog = mDiagnosticLog
     End If
 End Property
