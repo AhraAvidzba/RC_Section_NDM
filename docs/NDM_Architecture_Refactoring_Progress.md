@@ -37,13 +37,23 @@ regression-отчеты.
   crack-диспетчер пути/стратегии убран, отдельная параллельная search-логика не
   вводилась; различия CrackFormation остались в критерии `eps_bt,ult`, пути
   нагрузки и material spec внутри `CCrackWidthCalculator`.
+- Этап 4 продолжен на уровне `LoadMultiplier`: bisection-цикл Capacity и
+  CrackFormation сведен в общий `CLoadMultiplierSearch.SearchByBisectionCore`.
+  Capacity и CrackFormation теперь отличаются callback-ом оценки одной
+  lambda-точки и финализацией найденной границы, а не отдельной копией
+  bisection-алгоритма.
+- Этап 4 завершен по низкоуровневому search-ядру: `LoadMultiplier` и
+  `UltimateStrain` для Capacity и CrackFormation используют общие классы
+  `CLoadMultiplierSearch` и `CUltimateStrainSearch`. Различия остались в
+  критерии предела, load-path, material spec и callback-ах доменного слоя.
+  Старые параллельные Newton/line-search/bisection реализации для
+  CrackFormation и Capacity удалены из доменных классов.
 
 ## In progress
 
-- Этап 4 остается в миграционном состоянии: общая маршрутизация LimitSearch уже
-  подключена к Capacity и CrackFormation, но низкоуровневые численные
-  реализации пока остаются в существующих проверенных классах
-  `CCapacitySolver` и `CCrackWidthCalculator`.
+- Следующий архитектурный срез должен начинаться с этапа 5 migration plan.
+  Перед ним нужно снова проверить рабочее дерево и не смешивать новые изменения
+  с уже завершенным refactoring-срезом LimitSearch.
 
 ## Next
 
@@ -119,3 +129,10 @@ regression-отчеты.
   `tools/build_workbook/Build-Workbook.ps1` завершился успешно; отдельные
   `Run-CrackTests.ps1`, `Run-CapacityTests.ps1`, `Run-BatchTests.ps1` и полный
   `Run-AllTests.ps1` завершились успешно.
+- 2026-09-29: после полного объединения низкоуровневой search-логики
+  Capacity/CrackFormation основной `workbook/output/RC_Section_NDM.xlsm`
+  пересобран успешно.
+- 2026-09-29: финальная книга после этапа 4 прошла
+  `tools/build_workbook/Run-CapacityTests.ps1`: `passed=923`, `failed=0`.
+- 2026-09-29: финальная книга после этапа 4 прошла
+  `tools/build_workbook/Run-CrackTests.ps1`: `passed=286`, `failed=0`.
