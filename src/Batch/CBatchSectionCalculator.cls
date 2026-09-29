@@ -1026,7 +1026,7 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     ReportValue "Статус несущей способности", mResults(index).CapacityStatus
     ReportValue "Фактический метод несущей", mResults(index).CapacitySolutionMethod
     ReportValue "lambda несущей", FormatNumberInvariant(mResults(index).LambdaCapacity)
-    ReportValue "Фактический путь несущей", CapacityLoadPathDisplay(mResults(index).CapacityPathResolved)
+    ReportValue "Фактический путь несущей", mResults(index).CapacityPathDisplayName
     ReportBlock "Диагностика поиска несущей способности", capacityResult.DiagnosticLog
     reportText = capacityResult.LastSolverDiagnosticLog
     If Len(reportText) > 0 Then _
@@ -1286,15 +1286,6 @@ Private Sub AppendCrackDiagnostic(ByVal index As Long, ByVal crack As CCrackWidt
         mDiagnosticLog = mDiagnosticLog & crack.DiagnosticLog
     End If
 End Sub
-
-' Формирует человекочитаемую подпись load-path для Results и отчета.
-' Само соответствие ключа и подписи хранится в capacity-слое, чтобы batch не
-' становился вторым местом интерпретации lambda-траекторий.
-Private Function CapacityLoadPathDisplay(ByVal loadPathKey As String) As String
-    Dim calculator As CCapacityCalculator
-    Set calculator = New CCapacityCalculator
-    CapacityLoadPathDisplay = calculator.DisplayNameForKey(loadPathKey)
-End Function
 
 ' Объединяет статусы нескольких прямых StateSolution одного LC.
 ' N/A не ухудшает итог, а FAIL/NumFail/InputErr сохраняют общий смысл строки.
@@ -1941,9 +1932,7 @@ End Function
 ' lambda*My, lambda*Mxy, lambda*N и lambda*NMxy; отдельные отношения Nult/N или Mult/Mxy больше
 ' не нужны для выбора Worst.
 Private Function StrengthSafetyFactorForGoverning(ByVal index As Long) As Double
-    If mStatusPolicy.IsFinished(mResults(index).CapacityStatus) And mResults(index).LambdaCapacity > 0# Then
-        StrengthSafetyFactorForGoverning = mResults(index).LambdaCapacity
-    End If
+    StrengthSafetyFactorForGoverning = mResults(index).CapacityReserveFactor
 End Function
 
 ' Сравнивает только запасы по раскрытию трещин. Нулевой запас означает, что
@@ -2074,8 +2063,7 @@ End Sub
 ' Запас по несущей способности: фактически найденный lambda выбранной
 ' траектории. Это ровно прежний критерий strength-Worst.
 Public Function StrengthCapacityReserve(ByVal index As Long) As Double
-    If mStatusPolicy.IsFinished(mResults(index).CapacityStatus) And mResults(index).LambdaCapacity > 0# Then _
-        StrengthCapacityReserve = mResults(index).LambdaCapacity
+    StrengthCapacityReserve = mResults(index).CapacityReserveFactor
 End Function
 
 ' Запас по нормальным трещинам как обратная величина к использованию a_crc.
@@ -2167,7 +2155,9 @@ Public Property Get ProfileId(ByVal index As Long) As String
 End Property
 
 Public Property Get CapacityLoadPath(ByVal index As Long) As String
-    CapacityLoadPath = CapacityLoadPathDisplay(CapacityLoadPathKey(index))
+    Dim loadPath As CCapacityLoadPath
+    Set loadPath = New CCapacityLoadPath
+    CapacityLoadPath = loadPath.DisplayNameForKey(CapacityLoadPathKey(index))
 End Property
 
 Public Property Get CapacityLoadPathKey(ByVal index As Long) As String

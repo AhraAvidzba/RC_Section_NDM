@@ -241,6 +241,25 @@ Public Property Get CapacityMeta() As CResultMeta
     Set CapacityMeta = MetaFromStatus(CapacityStatus, rkCapacity, CapacityLimitState)
 End Property
 
+' Возвращает отображаемое имя фактически принятой capacity-траектории.
+' Это только presentation-слой результата LC: расчетный ключ остается в
+' CapacityPathResolved, а преобразование в lambda*... делается единообразно
+' через CCapacityLoadPath.
+Public Property Get CapacityPathDisplayName() As String
+    Dim loadPath As CCapacityLoadPath
+    Set loadPath = New CCapacityLoadPath
+    CapacityPathDisplayName = loadPath.DisplayNameForKey(CapacityPathResolved)
+End Property
+
+' Возвращает расчетный запас по несущей способности, если capacity-результат
+' действительно физически интерпретируем. Lambda остается доступной отдельно,
+' но NumFail/InputErr/N/A не должны попадать в summary как запас.
+Public Property Get CapacityReserveFactor() As Double
+    If LambdaCapacity <= 0# Then Exit Property
+    If Not Policy.IsFinished(Policy.ExternalStatus(CapacityMeta)) Then Exit Property
+    CapacityReserveFactor = LambdaCapacity
+End Property
+
 ' Возвращает ResultMeta расчета нормальных трещин.
 Public Property Get CrackMeta() As CResultMeta
     Set CrackMeta = MetaFromStatus(CrackStatus, rkCrackWidth)

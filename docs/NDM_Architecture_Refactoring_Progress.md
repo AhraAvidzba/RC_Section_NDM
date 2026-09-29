@@ -84,6 +84,10 @@ regression-отчеты.
 - Этап 5 продолжен переносом typed capacity-meta: `CCapacityResult` теперь хранит
   `CResultMeta`, `CCombinationResult` использует его при `CapacityMeta`, а skipped
   capacity проходит через тот же `CCapacityResult` без ручного заполнения batch-полей.
+- Этап 5 продолжен переносом интерпретации capacity-результата в LC-result:
+  `CCombinationResult` теперь сам отдает display-name траектории и запас
+  несущей способности через typed meta. Batch и detailed strength writer больше
+  не вычисляют `запас(λ)` напрямую из `LambdaCapacity` для NumFail/InputErr/N/A.
 
 ## In progress
 
@@ -189,6 +193,13 @@ regression-отчеты.
   `tools/build_workbook/Run-BatchTests.ps1`: `passed=631`, `failed=0`.
 - 2026-09-29: срез этапа 5 с переносом typed capacity-meta пересобрал
   `workbook/output/RC_Section_NDM.xlsm` через `tools/build_workbook/Build-Workbook.ps1`.
+- 2026-09-29: этот же срез этапа 5 прошел
+  `tools/build_workbook/Run-CapacityTests.ps1`: `passed=923`, `failed=0`.
+- 2026-09-29: этот же срез этапа 5 прошел
+  `tools/build_workbook/Run-BatchTests.ps1`: `passed=631`, `failed=0`.
+- 2026-09-29: срез этапа 5 с переносом display path и capacity reserve в
+  `CCombinationResult` пересобрал `workbook/output/RC_Section_NDM.xlsm` через
+  `tools/build_workbook/Build-Workbook.ps1`.
 - 2026-09-29: этот же срез этапа 5 прошел
   `tools/build_workbook/Run-CapacityTests.ps1`: `passed=923`, `failed=0`.
 - 2026-09-29: этот же срез этапа 5 прошел

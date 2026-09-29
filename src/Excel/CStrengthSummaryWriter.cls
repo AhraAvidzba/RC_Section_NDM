@@ -500,7 +500,8 @@ Private Sub PutCapacityState(ByRef data() As Variant, ByVal rowIndex As Long, _
             0, 0, 0, 0
         PutStateGeometry data, rowIndex, stateResult, units, section, COL_CAP_H, COL_CAP_X
     End If
-    If batch.LambdaCapacity(index) > SMALL_VALUE Then data(rowIndex, COL_CAP_RESERVE) = batch.LambdaCapacity(index)
+    If batch.StrengthCapacityReserve(index) > SMALL_VALUE Then _
+        data(rowIndex, COL_CAP_RESERVE) = batch.StrengthCapacityReserve(index)
     data(rowIndex, COL_CAP_STATUS) = policy.DisplayStatus(batch.CapacityStatus(index))
 End Sub
 
