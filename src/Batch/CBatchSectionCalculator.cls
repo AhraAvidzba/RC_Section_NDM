@@ -1016,22 +1016,24 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     Set cap = New CCapacitySolver
     ConfigureCapacity cap, strengthSpec
 
-    Dim pureAxialForMethod As Boolean
-    pureAxialForMethod = CapacityPathIsPureAxialForMethod(index, loadPath)
-
     ReportValue "Стратегия поиска несущей", NormalizedCapacitySolutionStrategy()
-    ReportCapacitySearchPlan loadPath, pureAxialForMethod
 
     Dim capacityCalculator As CCapacityCalculator
     Set capacityCalculator = New CCapacityCalculator
+
+    Dim strengthReferenceX As Double
+    Dim strengthReferenceY As Double
+    StrengthReferencePointForCombination index, strengthReferenceX, strengthReferenceY
 
     Dim capacityResult As CCapacityResult
     Set capacityResult = capacityCalculator.Calculate(mSection, _
         mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
         mMaterialProvider.SteelMaterialFromSpec(strengthSpec), strengthSpec, _
-        loadPath, cap, NormalizedCapacitySolutionStrategy(), pureAxialForMethod, _
-        mStatusPolicy, mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, _
+        loadPath, cap, NormalizedCapacitySolutionStrategy(), LoadStateForCombination(index), _
+        strengthReferenceX, strengthReferenceY, mStatusPolicy, mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, _
         mConcreteDepthForMx, mConcreteDepthForMy)
+
+    ReportCapacitySearchPlan loadPath, capacityResult.PureAxialForMethod
 
     mResults(index).StoreCapacityResult capacityResult
     If capacityResult.CapacitySolver Is Nothing Then
@@ -1040,7 +1042,7 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     End If
     Set cap = capacityResult.CapacitySolver
 
-    ReportCapacityMethodChoice index, cap, loadPath, pureAxialForMethod
+    ReportCapacityMethodChoice index, cap, loadPath, capacityResult.PureAxialForMethod
 
     ReportValue "Статус несущей способности", mResults(index).CapacityStatus
     ReportValue "Фактический метод несущей", mResults(index).CapacitySolutionMethod
@@ -1051,38 +1053,6 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
         ReportBlock "Итерации внутреннего CSectionSolver для последней capacity-точки", cap.LastSolver.DiagnosticLog
     End If
 End Sub
-
-' Определяет, является ли силовая lambda-траектория действительно чисто
-' осевой для выбора численного метода. Проверка выполняется не по сырым
-' Mx/My из таблицы, а через CSectionLoadState: усилия переносятся к центру
-' приведенного сечения модели прочности и проходят общий ZeroMoment-фильтр.
-Private Function CapacityPathIsPureAxialForMethod(ByVal index As Long, _
-        ByVal loadPath As CCapacityLoadPath) As Boolean
-    If loadPath Is Nothing Then Exit Function
-    If Not loadPath.ForceOnly Then Exit Function
-
-    Dim referenceX As Double
-    Dim referenceY As Double
-    StrengthReferencePointForCombination index, referenceX, referenceY
-
-    Dim loadState As CSectionLoadState
-    Set loadState = LoadStateForCombination(index)
-
-    CapacityPathIsPureAxialForMethod = MomentIsZeroForMethod(loadState.MxAboutPoint(referenceY), mConcreteDepthForMx) And _
-        MomentIsZeroForMethod(loadState.MyAboutPoint(referenceX), mConcreteDepthForMy)
-End Function
-
-' Единая локальная проверка инженерного нуля для выбора метода capacity.
-' Основное зануление уже делает CSectionLoadState, но повторная проверка
-' через CMomentZeroFilter оставляет поведение устойчивым при прямых тестах
-' или при отключенном фильтре.
-Private Function MomentIsZeroForMethod(ByVal momentValue As Double, ByVal concreteDepth As Double) As Boolean
-    If mMomentZeroFilter Is Nothing Then
-        MomentIsZeroForMethod = (Abs(momentValue) <= 0.000000001)
-    Else
-        MomentIsZeroForMethod = mMomentZeroFilter.IsMomentEffectivelyZero(momentValue, concreteDepth)
-    End If
-End Function
 
 ' Записывает в execution report смысл выбранной ветки limit-search до запуска
 ' координатора. Сам выбор и вызов метода выполняет CLimitSearchCoordinator;

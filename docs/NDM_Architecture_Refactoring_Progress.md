@@ -60,6 +60,9 @@ regression-отчеты.
 - Execution report для Capacity больше не читает `CCapacitySolver.DiagnosticLog`
   напрямую из batch-слоя: диагностический текст проходит через
   `CLimitSearchResult` и `CCapacityResult`.
+- Этап 5 продолжен следующим небольшим срезом: признак чисто осевой capacity-траектории
+  после переноса нагрузок к расчетному центру больше не вычисляется в `CBatchSectionCalculator`.
+  Его определяет `CCapacityCalculator`, а `CCapacityResult` хранит этот признак только для отчета.
 
 ## In progress
 

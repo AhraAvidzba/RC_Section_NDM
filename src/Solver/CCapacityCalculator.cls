@@ -28,7 +28,8 @@ Public Function Calculate(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal strengthSpec As CMaterialModelSpec, ByVal loadPath As CCapacityLoadPath, _
         ByVal configuredSolver As CCapacitySolver, ByVal solutionStrategy As String, _
-        ByVal pureAxialForMethod As Boolean, ByVal statusPolicy As CBatchStatusPolicy, _
+        ByVal loadState As CSectionLoadState, ByVal strengthReferenceX As Double, _
+        ByVal strengthReferenceY As Double, ByVal statusPolicy As CBatchStatusPolicy, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
         ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepthForMx As Double, _
         ByVal concreteDepthForMy As Double) As CCapacityResult
@@ -40,6 +41,10 @@ Public Function Calculate(ByVal section As CSectionModel, _
         Set Calculate = result
         Exit Function
     End If
+
+    Dim pureAxialForMethod As Boolean
+    pureAxialForMethod = IsPureAxialForMethod(loadPath, loadState, strengthReferenceX, _
+        strengthReferenceY, momentFilter, concreteDepthForMx, concreteDepthForMy)
 
     Dim request As CLimitSearchRequest
     Set request = New CLimitSearchRequest
@@ -54,7 +59,37 @@ Public Function Calculate(ByVal section As CSectionModel, _
     Dim searchResult As CLimitSearchResult
     Set searchResult = coordinator.ExecuteCapacity(request)
     result.InitializeFromSearch searchResult, loadPath, strengthSpec, statusPolicy, _
-        loadReferenceX, loadReferenceY, momentFilter, concreteDepthForMx, concreteDepthForMy
+        pureAxialForMethod, loadReferenceX, loadReferenceY, momentFilter, _
+        concreteDepthForMx, concreteDepthForMy
 
     Set Calculate = result
+End Function
+
+' Определяет, остается ли силовая lambda-траектория чисто осевой после переноса
+' к расчетному центру приведенного сечения. Это влияет только на выбор численной
+' ветки Capacity: для действительно осевой траектории устойчивее сразу работать
+' через LoadMultiplier, а не через вырожденный UltimateStrain.
+Private Function IsPureAxialForMethod(ByVal loadPath As CCapacityLoadPath, _
+        ByVal loadState As CSectionLoadState, ByVal referenceX As Double, _
+        ByVal referenceY As Double, ByVal momentFilter As CMomentZeroFilter, _
+        ByVal concreteDepthForMx As Double, ByVal concreteDepthForMy As Double) As Boolean
+    If loadPath Is Nothing Then Exit Function
+    If loadState Is Nothing Then Exit Function
+    If Not loadPath.ForceOnly Then Exit Function
+
+    IsPureAxialForMethod = MomentIsZeroForMethod(loadState.MxAboutPoint(referenceY), _
+        momentFilter, concreteDepthForMx) And _
+        MomentIsZeroForMethod(loadState.MyAboutPoint(referenceX), momentFilter, concreteDepthForMy)
+End Function
+
+' Проверяет инженерно нулевой момент тем же фильтром, которым batch уже
+' нормализует нагрузки перед solver-ом. Без фильтра остается только маленький
+' численный guard, чтобы прямые unit-тесты не зависели от Nothing-объекта.
+Private Function MomentIsZeroForMethod(ByVal momentValue As Double, _
+        ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepth As Double) As Boolean
+    If momentFilter Is Nothing Then
+        MomentIsZeroForMethod = (Abs(momentValue) <= 0.000000001)
+    Else
+        MomentIsZeroForMethod = momentFilter.IsMomentEffectivelyZero(momentValue, concreteDepth)
+    End If
 End Function

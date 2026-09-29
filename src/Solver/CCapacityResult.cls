@@ -43,16 +43,19 @@ Private mCapacityStateAvailable As Boolean ' True, если есть найде�
 Private mCapacityEpsilon0 As Double ' epsilon0 найденного CapacityState.
 Private mCapacityKappaX As Double ' kappaX найденного CapacityState.
 Private mCapacityKappaY As Double ' kappaY найденного CapacityState.
+Private mPureAxialForMethod As Boolean ' True, если capacity-calculator выбрал осевую численную ветку после переноса нагрузок к центру.
 
 ' Формирует результат по успешному или неуспешному search-слою.
 ' Даже при numerical/input failure объект остается заполненным: batch получает
 ' единый контейнер и не разбирает поля CCapacitySolver вручную.
 Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
         ByVal loadPath As CCapacityLoadPath, ByVal strengthSpec As CMaterialModelSpec, _
-        ByVal statusPolicy As CBatchStatusPolicy, ByVal loadReferenceX As Double, _
-        ByVal loadReferenceY As Double, ByVal momentFilter As CMomentZeroFilter, _
-        ByVal concreteDepthForMx As Double, ByVal concreteDepthForMy As Double)
+        ByVal statusPolicy As CBatchStatusPolicy, ByVal pureAxialForMethod As Boolean, _
+        ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
+        ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepthForMx As Double, _
+        ByVal concreteDepthForMy As Double)
     Set mSearchResult = searchResult
+    mPureAxialForMethod = pureAxialForMethod
     If statusPolicy Is Nothing Then Set statusPolicy = New CBatchStatusPolicy
 
     If loadPath Is Nothing Then
@@ -99,6 +102,7 @@ Public Sub InitializeInvalid(ByVal statusText As String, ByVal reason As String,
     mCapacityStateMy = 0#
     mMomentUltimate = 0#
     mCapacityStateAvailable = False
+    mPureAxialForMethod = False
     Set mStateResult = Nothing
 End Sub
 
@@ -251,4 +255,8 @@ End Property
 
 Public Property Get CapacityKappaY() As Double
     CapacityKappaY = mCapacityKappaY
+End Property
+
+Public Property Get PureAxialForMethod() As Boolean
+    PureAxialForMethod = mPureAxialForMethod
 End Property
