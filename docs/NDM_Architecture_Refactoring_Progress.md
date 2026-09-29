@@ -77,6 +77,10 @@ regression-отчеты.
   настройки внутреннего равновесия и strategy передаются в `CCapacityCalculator`,
   а материальные пределы берутся из построенных диаграмм конкретного
   material spec при создании переходного solver-а.
+- Этап 5 продолжен переносом capacity-report пояснений: план поиска,
+  ранняя остановка, фактически выбранный метод и диагностический журнал
+  последнего внутреннего solver-а выдаются `CCapacityCalculator`/`CCapacityResult`.
+  Batch-слой только выводит готовые строки отчета.
 
 ## In progress
 
@@ -175,6 +179,12 @@ regression-отчеты.
   `tools/build_workbook/Run-CrackTests.ps1`: `passed=286`, `failed=0`.
 - 2026-09-29: следующий срез этапа 5 с переносом skipped/input-error
   capacity-path в `CCapacityCalculator` пересобрал
+  `workbook/output/RC_Section_NDM.xlsm` через `tools/build_workbook/Build-Workbook.ps1`.
+- 2026-09-29: этот же срез этапа 5 прошел
+  `tools/build_workbook/Run-CapacityTests.ps1`: `passed=923`, `failed=0`.
+- 2026-09-29: этот же срез этапа 5 прошел
+  `tools/build_workbook/Run-BatchTests.ps1`: `passed=631`, `failed=0`.
+- 2026-09-29: срез этапа 5 с переносом capacity-report пояснений пересобрал
   `workbook/output/RC_Section_NDM.xlsm` через `tools/build_workbook/Build-Workbook.ps1`.
 - 2026-09-29: этот же срез этапа 5 прошел
   `tools/build_workbook/Run-CapacityTests.ps1`: `passed=923`, `failed=0`.

@@ -189,6 +189,59 @@ Public Property Get DiagnosticLog() As String
     If Not mSearchResult Is Nothing Then DiagnosticLog = mSearchResult.DiagnosticLog
 End Property
 
+' Возвращает диагностический журнал последнего внутреннего CSectionSolver,
+' если предельная lambda-точка действительно была решена равновесием.
+Public Property Get LastSolverDiagnosticLog() As String
+    If mCapacitySolver Is Nothing Then Exit Property
+    If mCapacitySolver.LastSolver Is Nothing Then Exit Property
+    LastSolverDiagnosticLog = mCapacitySolver.LastSolver.DiagnosticLog
+End Property
+
+' Формирует русское пояснение ранней остановки до запуска LimitSearch.
+' Batch-слой только выводит эту строку в отчет и не повторяет domain-логику.
+Public Function EarlyStopReport(ByVal loadPath As CCapacityLoadPath) As String
+    If loadPath Is Nothing Then
+        EarlyStopReport = "Capacity остановлен: CapacityLoadPath не подготовлен."
+    ElseIf Not loadPath.Valid Then
+        EarlyStopReport = "Capacity остановлен: неизвестное значение CapacityLoadPath."
+    ElseIf Not loadPath.HasPath Then
+        EarlyStopReport = "Capacity не запускается: в сочетании нет ни момента, ни продольной силы."
+    ElseIf Not loadPath.HasScaledLoad Then
+        EarlyStopReport = "Capacity остановлен: выбранная lambda-траектория не содержит ненулевой масштабируемой нагрузки."
+    Else
+        EarlyStopReport = "Capacity остановлен: " & mLimitState
+    End If
+End Function
+
+' Формирует пояснение, какая ветка поиска несущей была фактически принята.
+' Сам выбор уже сделан search-слоем; здесь остается только инженерная трактовка
+' для execution report.
+Public Function MethodChoiceReport(ByVal solutionStrategy As String, _
+        ByVal loadPath As CCapacityLoadPath) As String
+    If Len(Trim$(mSolutionMethod)) = 0 Then Exit Function
+
+    If StrComp(solutionStrategy, "Auto", vbTextCompare) = 0 Then
+        If StrComp(mSolutionMethod, "UltimateStrain", vbTextCompare) = 0 Then
+            MethodChoiceReport = "Итог поиска несущей: Auto принял результат UltimateStrain, резервный переход на LoadMultiplier не потребовался."
+        ElseIf StrComp(mSolutionMethod, "LoadMultiplier", vbTextCompare) = 0 Then
+            If mPureAxialForMethod Then
+                MethodChoiceReport = "Итог поиска несущей: Auto использовал LoadMultiplier сразу, потому что траектория чисто осевая относительно центра приведенного сечения."
+            Else
+                MethodChoiceReport = "Итог поиска несущей: Auto переключился на LoadMultiplier, потому что UltimateStrain не дал устойчивую предельную точку; подробная причина ниже в диагностике solver-а."
+            End If
+        End If
+    ElseIf StrComp(solutionStrategy, "UltimateStrain", vbTextCompare) = 0 And _
+            StrComp(mSolutionMethod, "LoadMultiplier", vbTextCompare) = 0 Then
+        If mPureAxialForMethod Then
+            MethodChoiceReport = "Итог поиска несущей: фактически использован LoadMultiplier, так как траектория чисто осевая относительно центра приведенного сечения и не решается устойчиво прямым UltimateStrain."
+        ElseIf Not loadPath Is Nothing And loadPath.ForceOnly Then
+            MethodChoiceReport = "Итог поиска несущей: UltimateStrain не дал устойчивую предельную точку для силовой траектории с эксцентриситетом; фактически использован LoadMultiplier."
+        Else
+            MethodChoiceReport = "Итог поиска несущей: фактически использован LoadMultiplier."
+        End If
+    End If
+End Function
+
 Public Property Get CapacitySolver() As CCapacitySolver
     Set CapacitySolver = mCapacitySolver
 End Property

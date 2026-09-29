@@ -989,9 +989,9 @@ End Sub
 ' Target = Offset + lambda*Base для N, Mx и My.
 Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialModelSpec)
     Dim loadPath As CCapacityLoadPath
-    Dim cap As CCapacitySolver
     Dim capacityCalculator As CCapacityCalculator
     Dim loadState As CSectionLoadState
+    Dim reportText As String
 
     Set capacityCalculator = New CCapacityCalculator
     ConfigureCapacityCalculator capacityCalculator
@@ -1016,103 +1016,22 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
 
     mResults(index).StoreCapacityResult capacityResult
     If capacityResult.CapacitySolver Is Nothing Then
-        ReportCapacityEarlyStop loadPath, capacityResult
+        ReportStep capacityResult.EarlyStopReport(loadPath)
         Exit Sub
     End If
-    Set cap = capacityResult.CapacitySolver
 
-    ReportCapacitySearchPlan loadPath, capacityResult.PureAxialForMethod, capacityCalculator.SolutionStrategy
-    ReportCapacityMethodChoice index, cap, loadPath, capacityResult.PureAxialForMethod, capacityCalculator.SolutionStrategy
+    ReportStep capacityCalculator.SearchPlanReport(loadPath, capacityResult.PureAxialForMethod)
+    reportText = capacityResult.MethodChoiceReport(capacityCalculator.SolutionStrategy, loadPath)
+    If Len(reportText) > 0 Then ReportStep reportText
 
     ReportValue "Статус несущей способности", mResults(index).CapacityStatus
     ReportValue "Фактический метод несущей", mResults(index).CapacitySolutionMethod
     ReportValue "lambda несущей", FormatNumberInvariant(mResults(index).LambdaCapacity)
     ReportValue "Фактический путь несущей", CapacityLoadPathDisplay(mResults(index).CapacityPathResolved)
     ReportBlock "Диагностика поиска несущей способности", capacityResult.DiagnosticLog
-    If Not cap.LastSolver Is Nothing Then
-        ReportBlock "Итерации внутреннего CSectionSolver для последней capacity-точки", cap.LastSolver.DiagnosticLog
-    End If
-End Sub
-
-' Поясняет раннюю остановку capacity до запуска общего LimitSearch.
-' Сам результат уже сформирован CCapacityCalculator; batch только пишет понятный отчет.
-Private Sub ReportCapacityEarlyStop(ByVal loadPath As CCapacityLoadPath, _
-        ByVal capacityResult As CCapacityResult)
-    If loadPath Is Nothing Then
-        ReportStep "Capacity остановлен: CapacityLoadPath не подготовлен."
-    ElseIf Not loadPath.Valid Then
-        ReportStep "Capacity остановлен: неизвестное значение CapacityLoadPath."
-    ElseIf Not loadPath.HasPath Then
-        ReportStep "Capacity не запускается: в сочетании нет ни момента, ни продольной силы."
-    ElseIf Not loadPath.HasScaledLoad Then
-        ReportStep "Capacity остановлен: выбранная lambda-траектория не содержит ненулевой масштабируемой нагрузки."
-    ElseIf Not capacityResult Is Nothing Then
-        ReportStep "Capacity остановлен: " & capacityResult.LimitState
-    End If
-End Sub
-
-' Записывает в execution report смысл выбранной ветки limit-search до запуска
-' координатора. Сам выбор и вызов метода выполняет CLimitSearchCoordinator;
-' здесь остается только пользовательское пояснение без расчетной логики.
-Private Sub ReportCapacitySearchPlan(ByVal loadPath As CCapacityLoadPath, _
-        ByVal pureAxialForMethod As Boolean, ByVal solutionStrategy As String)
-    Select Case solutionStrategy
-        Case "Auto"
-            If pureAxialForMethod Then
-                ReportStep "Несущая способность: стратегия Auto. После переноса к центру приведенного сечения траектория является чисто осевой, поэтому сразу используется LoadMultiplier: для такой постановки UltimateStrain вырождается на горизонтальном участке диаграммы."
-            ElseIf loadPath.ForceOnly Then
-                ReportStep "Несущая способность: стратегия Auto. Пользователь масштабирует только N, но относительно центра приведенного сечения есть изгибающий момент; сначала пробуем UltimateStrain, затем при неудаче LoadMultiplier."
-            Else
-                ReportStep "Несущая способность: стратегия Auto сначала пробует UltimateStrain; если предельная плоскость не находится устойчиво, тот же путь нагрузки повторяется через LoadMultiplier."
-            End If
-        Case "UltimateStrain"
-            If pureAxialForMethod Then
-                ReportStep "Несущая способность: выбран UltimateStrain, но после переноса к центру приведенного сечения траектория чисто осевая и считается через LoadMultiplier как более устойчивая одномерная постановка."
-            ElseIf loadPath.ForceOnly Then
-                ReportStep "Несущая способность: выбран UltimateStrain. Пользователь масштабирует только N, но относительно центра приведенного сечения есть изгибающий момент; сначала пробуем UltimateStrain, затем при неудаче LoadMultiplier."
-            Else
-                ReportStep "Несущая способность: расчет идет напрямую через UltimateStrain по выбранной lambda-траектории."
-            End If
-        Case "LoadMultiplier"
-            ReportStep "Несущая способность: расчет идет через LoadMultiplier, то есть программа подбирает lambda и для каждой lambda-точки заново решает НДС."
-        Case Else
-            ReportStep "Capacity остановлен: неизвестный Capacity.SolutionStrategy."
-    End Select
-End Sub
-
-' Поясняет в отчете, какая ветка поиска несущей фактически была принята.
-' Низкоуровневый DiagnosticLog остается рядом, но здесь пользователь сразу
-' видит смысл переключения Auto/UltimateStrain/LoadMultiplier по-русски.
-Private Sub ReportCapacityMethodChoice(ByVal index As Long, ByVal cap As CCapacitySolver, _
-        ByVal loadPath As CCapacityLoadPath, ByVal pureAxialForMethod As Boolean, _
-        ByVal solutionStrategy As String)
-    If cap Is Nothing Then Exit Sub
-
-    Dim strategy As String
-    strategy = solutionStrategy
-    Dim methodName As String
-    methodName = mResults(index).CapacitySolutionMethod
-
-    If StrComp(strategy, "Auto", vbTextCompare) = 0 Then
-        If StrComp(methodName, "UltimateStrain", vbTextCompare) = 0 Then
-            ReportStep "Итог поиска несущей: Auto принял результат UltimateStrain, резервный переход на LoadMultiplier не потребовался."
-        ElseIf StrComp(methodName, "LoadMultiplier", vbTextCompare) = 0 Then
-            If pureAxialForMethod Then
-                ReportStep "Итог поиска несущей: Auto использовал LoadMultiplier сразу, потому что траектория чисто осевая относительно центра приведенного сечения."
-            Else
-                ReportStep "Итог поиска несущей: Auto переключился на LoadMultiplier, потому что UltimateStrain не дал устойчивую предельную точку; подробная причина ниже в диагностике solver-а."
-            End If
-        End If
-    ElseIf StrComp(strategy, "UltimateStrain", vbTextCompare) = 0 And _
-            StrComp(methodName, "LoadMultiplier", vbTextCompare) = 0 Then
-        If pureAxialForMethod Then
-            ReportStep "Итог поиска несущей: фактически использован LoadMultiplier, так как траектория чисто осевая относительно центра приведенного сечения и не решается устойчиво прямым UltimateStrain."
-        ElseIf loadPath.ForceOnly Then
-            ReportStep "Итог поиска несущей: UltimateStrain не дал устойчивую предельную точку для силовой траектории с эксцентриситетом; фактически использован LoadMultiplier."
-        Else
-            ReportStep "Итог поиска несущей: фактически использован LoadMultiplier."
-        End If
-    End If
+    reportText = capacityResult.LastSolverDiagnosticLog
+    If Len(reportText) > 0 Then _
+        ReportBlock "Итерации внутреннего CSectionSolver для последней capacity-точки", reportText
 End Sub
 
 ' Выполняет один прямой StateSolution для заданного named-state профиля.

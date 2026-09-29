@@ -210,6 +210,40 @@ Public Function DisplayNameForKey(ByVal loadPathKey As String) As String
     DisplayNameForKey = loadPath.DisplayNameForKey(loadPathKey)
 End Function
 
+' Формирует русское пояснение для execution report перед запуском общего
+' search. Это не меняет расчет: текст только объясняет, какую стратегию и
+' почему выбрал capacity-calculator для текущей траектории.
+Public Function SearchPlanReport(ByVal loadPath As CCapacityLoadPath, _
+        ByVal pureAxialForMethod As Boolean) As String
+    If loadPath Is Nothing Then
+        SearchPlanReport = "Capacity остановлен: CapacityLoadPath не подготовлен."
+        Exit Function
+    End If
+
+    Select Case SolutionStrategy
+        Case "Auto"
+            If pureAxialForMethod Then
+                SearchPlanReport = "Несущая способность: стратегия Auto. После переноса к центру приведенного сечения траектория является чисто осевой, поэтому сразу используется LoadMultiplier: для такой постановки UltimateStrain вырождается на горизонтальном участке диаграммы."
+            ElseIf loadPath.ForceOnly Then
+                SearchPlanReport = "Несущая способность: стратегия Auto. Пользователь масштабирует только N, но относительно центра приведенного сечения есть изгибающий момент; сначала пробуем UltimateStrain, затем при неудаче LoadMultiplier."
+            Else
+                SearchPlanReport = "Несущая способность: стратегия Auto сначала пробует UltimateStrain; если предельная плоскость не находится устойчиво, тот же путь нагрузки повторяется через LoadMultiplier."
+            End If
+        Case "UltimateStrain"
+            If pureAxialForMethod Then
+                SearchPlanReport = "Несущая способность: выбран UltimateStrain, но после переноса к центру приведенного сечения траектория чисто осевая и считается через LoadMultiplier как более устойчивая одномерная постановка."
+            ElseIf loadPath.ForceOnly Then
+                SearchPlanReport = "Несущая способность: выбран UltimateStrain. Пользователь масштабирует только N, но относительно центра приведенного сечения есть изгибающий момент; сначала пробуем UltimateStrain, затем при неудаче LoadMultiplier."
+            Else
+                SearchPlanReport = "Несущая способность: расчет идет напрямую через UltimateStrain по выбранной lambda-траектории."
+            End If
+        Case "LoadMultiplier"
+            SearchPlanReport = "Несущая способность: расчет идет через LoadMultiplier, то есть программа подбирает lambda и для каждой lambda-точки заново решает НДС."
+        Case Else
+            SearchPlanReport = "Capacity остановлен: неизвестный Capacity.SolutionStrategy."
+    End Select
+End Function
+
 ' Определяет, остается ли силовая lambda-траектория чисто осевой после переноса
 ' к расчетному центру приведенного сечения. Это влияет только на выбор численной
 ' ветки Capacity: для действительно осевой траектории устойчивее сразу работать
