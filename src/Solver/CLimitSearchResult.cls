@@ -137,3 +137,16 @@ End Property
 Public Property Get Succeeded() As Boolean
     Succeeded = mSucceeded
 End Property
+
+' Возвращает подробную диагностику фактического search-объекта.
+' На переходном этапе текст еще хранится в доменных solver/calculator-классах,
+' но внешний orchestration-слой читает его через CLimitSearchResult.
+Public Property Get DiagnosticLog() As String
+    If Not mCapacitySolver Is Nothing Then
+        DiagnosticLog = mCapacitySolver.DiagnosticLog
+    ElseIf Not mCrackCalculator Is Nothing Then
+        DiagnosticLog = mCrackCalculator.DiagnosticLog
+    Else
+        DiagnosticLog = vbNullString
+    End If
+End Property

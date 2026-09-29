@@ -464,6 +464,33 @@ Public Property Get StateRepository() As CStateRepository
     Set StateRepository = mStateRepository
 End Property
 
+' Копирует готовый инженерный результат capacity в LC-снимок.
+' Batch-калькулятор больше не разбирает CCapacitySolver вручную: найденный
+' lambda, полный предельный вектор, плоскость деформаций и CapacityState
+' приходят из CCapacityResult одним согласованным набором.
+Public Sub StoreCapacityResult(ByVal capacity As CCapacityResult)
+    If capacity Is Nothing Then Exit Sub
+
+    CapacityStatus = capacity.Status
+    CapacityLimitState = capacity.LimitState
+    CapacitySolutionMethod = capacity.SolutionMethod
+    CapacityPathResolved = capacity.PathResolved
+    LambdaCapacity = capacity.LambdaCapacity
+    UtilCapacity = capacity.UtilCapacity
+    NUltimate = capacity.NUltimate
+    MxUltimate = capacity.MxUltimate
+    MyUltimate = capacity.MyUltimate
+    CapacityStateN = capacity.CapacityStateN
+    CapacityStateMx = capacity.CapacityStateMx
+    CapacityStateMy = capacity.CapacityStateMy
+    MomentUltimate = capacity.MomentUltimate
+    CapacityStateAvailable = capacity.CapacityStateAvailable
+    CapacityEpsilon0 = capacity.CapacityEpsilon0
+    CapacityKappaX = capacity.CapacityKappaX
+    CapacityKappaY = capacity.CapacityKappaY
+    If Not capacity.StateResult Is Nothing Then AddState capacity.StateResult
+End Sub
+
 ' Сохраняет найденную плоскость деформаций и внутренние усилия прямого НДС.
 ' Эти данные используются Results snapshot, Excel-схемой и AutoCAD export.
 Public Sub StoreSectionState(ByVal solver As CSectionSolver)

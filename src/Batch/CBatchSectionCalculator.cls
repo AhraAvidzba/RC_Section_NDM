@@ -1022,37 +1022,31 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     ReportValue "Стратегия поиска несущей", NormalizedCapacitySolutionStrategy()
     ReportCapacitySearchPlan loadPath, pureAxialForMethod
 
-    Dim request As CLimitSearchRequest
-    Set request = New CLimitSearchRequest
-    request.InitializeCapacity cap, mSection, _
+    Dim capacityCalculator As CCapacityCalculator
+    Set capacityCalculator = New CCapacityCalculator
+
+    Dim capacityResult As CCapacityResult
+    Set capacityResult = capacityCalculator.Calculate(mSection, _
         mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
-        mMaterialProvider.SteelMaterialFromSpec(strengthSpec), _
-        NormalizedCapacitySolutionStrategy(), _
-        loadPath.NOffset, loadPath.NBase, loadPath.MxOffset, loadPath.MxBase, _
-        loadPath.MyOffset, loadPath.MyBase, loadPath.ForceOnly, pureAxialForMethod
+        mMaterialProvider.SteelMaterialFromSpec(strengthSpec), strengthSpec, _
+        loadPath, cap, NormalizedCapacitySolutionStrategy(), pureAxialForMethod, _
+        mStatusPolicy, mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, _
+        mConcreteDepthForMx, mConcreteDepthForMy)
 
-    Dim coordinator As CLimitSearchCoordinator
-    Set coordinator = New CLimitSearchCoordinator
-
-    Dim searchResult As CLimitSearchResult
-    Set searchResult = coordinator.ExecuteCapacity(request)
-    If searchResult.CapacitySolver Is Nothing Then
-        mResults(index).CapacityStatus = mStatusPolicy.InputErr
-        mResults(index).CapacityLimitState = searchResult.Meta.ResultComment
-        mResults(index).CapacitySolutionMethod = vbNullString
-        ReportStep "Capacity остановлен: " & searchResult.Meta.ResultComment
+    mResults(index).StoreCapacityResult capacityResult
+    If capacityResult.CapacitySolver Is Nothing Then
+        ReportStep "Capacity остановлен: " & capacityResult.LimitState
         Exit Sub
     End If
-    Set cap = searchResult.CapacitySolver
+    Set cap = capacityResult.CapacitySolver
 
-    StoreCapacity index, cap, loadPath, strengthSpec
     ReportCapacityMethodChoice index, cap, loadPath, pureAxialForMethod
 
     ReportValue "Статус несущей способности", mResults(index).CapacityStatus
     ReportValue "Фактический метод несущей", mResults(index).CapacitySolutionMethod
     ReportValue "lambda несущей", FormatNumberInvariant(mResults(index).LambdaCapacity)
     ReportValue "Фактический путь несущей", CapacityLoadPathDisplay(mResults(index).CapacityPathResolved)
-    ReportBlock "Диагностика поиска несущей способности", cap.DiagnosticLog
+    ReportBlock "Диагностика поиска несущей способности", capacityResult.DiagnosticLog
     If Not cap.LastSolver Is Nothing Then
         ReportBlock "Итерации внутреннего CSectionSolver для последней capacity-точки", cap.LastSolver.DiagnosticLog
     End If
@@ -1482,70 +1476,6 @@ Private Sub StoreInvalidCapacity(ByVal index As Long, ByVal reason As String)
     mResults(index).CapacityStateMx = 0#
     mResults(index).CapacityStateMy = 0#
     mResults(index).MomentUltimate = 0#
-End Sub
-
-' Переносит результат CCapacitySolver в массивы batch-отчета.
-' Здесь разделяется математическая сходимость capacity solver-а и простая
-' инженерная проверка: lambda меньше или больше единицы.
-Private Sub StoreCapacity(ByVal index As Long, ByVal cap As CCapacitySolver, _
-        ByVal loadPath As CCapacityLoadPath, ByVal strengthSpec As CMaterialModelSpec)
-    mResults(index).CapacityStatus = mStatusPolicy.CapacityStatusFromSolver(cap)
-    mResults(index).CapacityLimitState = cap.LimitState
-    mResults(index).CapacitySolutionMethod = cap.SolutionMethod
-    mResults(index).CapacityPathResolved = loadPath.Key
-    mResults(index).LambdaCapacity = cap.LambdaUltimate
-    If cap.LambdaUltimate > 0# Then
-        If Not cap.LastSolver Is Nothing Then
-            mResults(index).CapacityStateN = cap.LastSolver.Nint
-            mResults(index).CapacityStateMx = cap.LastSolver.Mxint
-            mResults(index).CapacityStateMy = cap.LastSolver.Myint
-            StoreCapacityUltimateAtLoadPoint index, cap.LastSolver.Nint, cap.LastSolver.Mxint, cap.LastSolver.Myint
-        Else
-            Dim targetN As Double
-            Dim targetMx As Double
-            Dim targetMy As Double
-            loadPath.Target cap.LambdaUltimate, targetN, targetMx, targetMy
-            StoreCapacityUltimateAtLoadPoint index, targetN, targetMx, targetMy
-        End If
-    End If
-    mResults(index).MomentUltimate = Sqr(mResults(index).MxUltimate * mResults(index).MxUltimate + mResults(index).MyUltimate * mResults(index).MyUltimate)
-    If cap.LambdaUltimate > 0# Then mResults(index).UtilCapacity = 1# / cap.LambdaUltimate
-    If cap.Converged Then mResults(index).UtilCapacity = cap.Utilization
-
-    ' h/x в блоке предельного момента должны относиться к найденному
-    ' предельному состоянию, а не к фактическому НДС LC. Поэтому сохраняем
-    ' отдельную плоскость деформаций только когда capacity-поиск действительно
-    ' дал физически принятое предельное состояние.
-    If cap.Converged And cap.LambdaUltimate > 0# Then
-        If Not cap.LastSolver Is Nothing Then
-            mResults(index).CapacityStateAvailable = True
-            mResults(index).CapacityEpsilon0 = cap.LastSolver.Epsilon0
-            mResults(index).CapacityKappaX = cap.LastSolver.KappaX
-            mResults(index).CapacityKappaY = cap.LastSolver.KappaY
-            Dim stateResult As CSectionStateResult
-            Set stateResult = New CSectionStateResult
-            stateResult.InitializeFromSolver sstCapacityState, cpStrength, strengthSpec, cap.LastSolver, False, _
-                mResults(index).CapacityStatus, True, 0, cap.DiagnosticLog
-            mResults(index).AddState stateResult
-        End If
-    End If
-End Sub
-
-' Сохраняет полный предельный вектор CapacityState в пользовательской точке
-' приложения нагрузки. Внутри solver хранит моменты относительно начала
-' CSectionModel, поэтому для вывода Nult/Mxult/Myult используем общий класс
-' переносов нагрузки, а не локальную формулу writer-а.
-Private Sub StoreCapacityUltimateAtLoadPoint(ByVal index As Long, ByVal nValue As Double, _
-        ByVal mxAboutOrigin As Double, ByVal myAboutOrigin As Double)
-    Dim loadState As CSectionLoadState
-    Set loadState = New CSectionLoadState
-    loadState.InitializeFromPointMoments nValue, mxAboutOrigin, myAboutOrigin, _
-        0#, 0#, mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, _
-        mConcreteDepthForMx, mConcreteDepthForMy
-
-    mResults(index).NUltimate = loadState.N
-    mResults(index).MxUltimate = loadState.LoadPointMx
-    mResults(index).MyUltimate = loadState.LoadPointMy
 End Sub
 
 ' Фиксирует InvalidInput по конкретному LC и не дает этому сочетанию пройти

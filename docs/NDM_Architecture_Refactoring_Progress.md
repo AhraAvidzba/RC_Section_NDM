@@ -48,19 +48,31 @@ regression-отчеты.
   критерии предела, load-path, material spec и callback-ах доменного слоя.
   Старые параллельные Newton/line-search/bisection реализации для
   CrackFormation и Capacity удалены из доменных классов.
+- Этап 5 начат безопасным срезом для Capacity: добавлены `CCapacityCalculator`
+  и `CCapacityResult`. `CBatchSectionCalculator` больше не строит
+  `CLimitSearchRequest`, не вызывает `CLimitSearchCoordinator` напрямую и не
+  раскладывает поля `CCapacitySolver` вручную. Batch получает готовый
+  инженерный capacity-результат через `CCombinationResult.StoreCapacityResult`.
+- Старые batch-методы ручного переноса capacity-данных (`StoreCapacity`,
+  `StoreCapacityUltimateAtLoadPoint`) удалены. Перенос `Nult/Mxult/Myult` в
+  пользовательскую точку приложения нагрузки и создание `CapacityState` теперь
+  живут в `CCapacityResult`, без изменения расчетной математики.
+- Execution report для Capacity больше не читает `CCapacitySolver.DiagnosticLog`
+  напрямую из batch-слоя: диагностический текст проходит через
+  `CLimitSearchResult` и `CCapacityResult`.
 
 ## In progress
 
-- Следующий архитектурный срез должен начинаться с этапа 5 migration plan.
-  Перед ним нужно снова проверить рабочее дерево и не смешивать новые изменения
-  с уже завершенным refactoring-срезом LimitSearch.
+- Этап 5 продолжается: следующий срез должен постепенно выносить оставшиеся
+  инженерные детали Capacity из batch-слоя, но без изменения численного search,
+  уже объединенного на этапе 4.
 
 ## Next
 
 - Использовать baseline commit и отчеты `Stage00`/`Stage01`/`Stage02` как точки сравнения
   для следующих этапов.
-- Перед продолжением этапа 4 снова проверить `git status` и убедиться, что нет
-  посторонних пользовательских изменений.
+- Перед следующим срезом этапа 5 снова проверить `git status` и убедиться, что
+  нет посторонних пользовательских изменений.
 
 ## Known risks / open questions
 
@@ -135,4 +147,12 @@ regression-отчеты.
 - 2026-09-29: финальная книга после этапа 4 прошла
   `tools/build_workbook/Run-CapacityTests.ps1`: `passed=923`, `failed=0`.
 - 2026-09-29: финальная книга после этапа 4 прошла
+  `tools/build_workbook/Run-CrackTests.ps1`: `passed=286`, `failed=0`.
+- 2026-09-29: первый срез этапа 5 пересобрал
+  `workbook/output/RC_Section_NDM.xlsm` через `tools/build_workbook/Build-Workbook.ps1`.
+- 2026-09-29: первый срез этапа 5 прошел
+  `tools/build_workbook/Run-CapacityTests.ps1`: `passed=923`, `failed=0`.
+- 2026-09-29: первый срез этапа 5 прошел
+  `tools/build_workbook/Run-BatchTests.ps1`: `passed=631`, `failed=0`.
+- 2026-09-29: первый срез этапа 5 прошел
   `tools/build_workbook/Run-CrackTests.ps1`: `passed=286`, `failed=0`.
