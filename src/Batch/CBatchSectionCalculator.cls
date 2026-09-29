@@ -1302,10 +1302,46 @@ Private Function CurrentCrackedStateMeta(ByVal stateResult As CSectionStateResul
         End If
     End If
 
+    Set CurrentCrackedStateMeta = MissingCurrentCrackedStateMeta(runner, blockReason)
+End Function
+
+' Формирует meta для случая, когда CurrentCrackedState не был создан вообще.
+' Это не всегда численная несходимость: если причина пришла из проверки входа
+' или конфигурации, сохраняем именно ее, а не подменяем NumFail.
+Private Function MissingCurrentCrackedStateMeta(ByVal runner As CStateSolutionRunner, _
+        ByVal blockReason As String) As CResultMeta
     Dim meta As CResultMeta
     Set meta = New CResultMeta
-    meta.SetResult rsNumericalFailure, rcSolverDidNotReturnState, rkDirectState, blockReason
-    Set CurrentCrackedStateMeta = meta
+
+    If Not runner Is Nothing Then
+        If Not runner.ResultSolver Is Nothing Then
+            If Not runner.ResultSolver.Converged Then
+                If IsInvalidInputReason(blockReason) Then
+                    meta.SetResult rsInvalidInput, rcInvalidInput, rkDirectState, blockReason
+                ElseIf IsInvalidConfigurationReason(blockReason) Then
+                    meta.SetResult rsInvalidConfiguration, rcInvalidConfiguration, rkDirectState, blockReason
+                Else
+                    meta.SetResult rsNumericalFailure, rcNumericalFailure, rkDirectState, blockReason
+                End If
+                Set MissingCurrentCrackedStateMeta = meta
+                Exit Function
+            End If
+        End If
+    End If
+
+    meta.SetResult rsInternalError, rcSolverDidNotReturnState, rkDirectState, blockReason
+    Set MissingCurrentCrackedStateMeta = meta
+End Function
+
+' Распознает ошибки пользовательских данных в текстовой причине solver-а.
+Private Function IsInvalidInputReason(ByVal reason As String) As Boolean
+    IsInvalidInputReason = (InStr(1, reason, "InputError", vbTextCompare) > 0 Or _
+        InStr(1, reason, "InvalidInput", vbTextCompare) > 0)
+End Function
+
+' Распознает ошибки конфигурации профиля или Config в текстовой причине solver-а.
+Private Function IsInvalidConfigurationReason(ByVal reason As String) As Boolean
+    IsInvalidConfigurationReason = (InStr(1, reason, "InvalidConfiguration", vbTextCompare) > 0)
 End Function
 
 ' Возвращает пользовательский статус именно формульного этапа раскрытия

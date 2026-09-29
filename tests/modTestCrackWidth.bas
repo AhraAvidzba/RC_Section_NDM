@@ -23,6 +23,7 @@ Public Function RunCrackWidthTests() As String
     t0 = Timer
 
     TestConcreteTensionBranches stats
+    TestCrackWidthFormulaCalculatorPure stats
     TestCrackUserPsiMx stats
     TestCrackUserPsiMxy stats
     TestCrackUserCoefficients stats
@@ -64,6 +65,22 @@ Private Sub TestConcreteTensionBranches(ByRef stats As TCrackTestStats)
     AssertClose stats, "crack.concrete.useStress", concrete.GetStress(0.00002), 0.65, 0.000000000001
     AssertClose stats, "crack.concrete.useLimit", concrete.GetStress(0.001), 1.8, 0.000000000001
     AssertClose stats, "crack.concrete.useTangent", concrete.GetTangentModulus(0.00002), 32500#, 0.000000001
+End Sub
+
+' Проверяет границу новой архитектуры: формульный калькулятор получает только
+' готовые числа и не зависит от State-объектов, статусов и выбора арматуры.
+Private Sub TestCrackWidthFormulaCalculatorPure(ByRef stats As TCrackTestStats)
+    Dim formula As CCrackWidthFormulaCalculator
+    Set formula = New CCrackWidthFormulaCalculator
+
+    AssertClose stats, "crack.formula.width", _
+        formula.CrackWidth(1.4, 0.5, 1#, 0.8, 200#, 200000#, 320#), _
+        0.1792, 0.000000000001
+    AssertClose stats, "crack.formula.utilization", _
+        formula.Utilization(0.1792, 0.4), 0.448, 0.000000000001
+    AssertClose stats, "crack.formula.noSteelEs", _
+        formula.CrackWidth(1#, 1#, 1#, 1#, 100#, 0#, 100#), _
+        0#, 0.000000000001
 End Sub
 
 ' ------------------------------
@@ -371,6 +388,7 @@ Private Sub TestCrackInitiationLoadPaths(ByRef stats As TCrackTestStats)
     AssertTrue stats, "crack.path.nFixedMomentFallback.noBeforeState", crackNFixedMomentFallback.PreCrackState Is Nothing
     AssertTrue stats, "crack.path.nFixedMomentFallback.noAfterState", crackNFixedMomentFallback.PostCrackState Is Nothing
     AssertClose stats, "crack.path.nFixedMomentFallback.psi1", crackNFixedMomentFallback.PsiS, 1#, 0.000000001
+    AssertCrackCalculatorNotNumFail stats, "crack.path.nFixedMomentFallback.status", crackNFixedMomentFallback
 
     Dim crackFallback As CCrackWidthCalculator
     Set crackFallback = CalculateCrack(solverN, sectionN, 200000#, 0#, 0#, _
@@ -379,6 +397,7 @@ Private Sub TestCrackInitiationLoadPaths(ByRef stats As TCrackTestStats)
     AssertTrue stats, "crack.path.mxyAxialFallback.formed", crackFallback.CrackFormed
     AssertClose stats, "crack.path.mxyAxialFallback.lambda0", crackFallback.LambdaCrc, 0#, 0.000000001
     AssertClose stats, "crack.path.mxyAxialFallback.psi1", crackFallback.PsiS, 1#, 0.000000001
+    AssertCrackCalculatorNotNumFail stats, "crack.path.mxyAxialFallback.status", crackFallback
 End Sub
 
 Private Sub TestDangerousLoadsDoNotNumFail(ByRef stats As TCrackTestStats)
@@ -708,6 +727,16 @@ Private Sub AssertCrackCommon(ByRef stats As TCrackTestStats, ByVal prefix As St
     AssertClose stats, prefix & ".widthFormula", crack.CrackWidth, _
         crack.Phi1 * crack.Phi2 * crack.Phi3 * crack.PsiS * (crack.SigmaS / 200000#) * crack.CrackSpacing, 0.000000001
     AssertClose stats, prefix & ".utilization", crack.Utilization, crack.CrackWidth / crack.AllowableCrackWidth, 0.000000001
+End Sub
+
+' Проверяет, что физический fallback образования трещины не превращается
+' в пользовательский NumFail. NumFail допустим только при реальной численной
+' несходимости state/search, а не при штатном резервном psi_s = 1.
+Private Sub AssertCrackCalculatorNotNumFail(ByRef stats As TCrackTestStats, _
+        ByVal name As String, ByVal crack As CCrackWidthCalculator)
+    Dim policy As CBatchStatusPolicy
+    Set policy = New CBatchStatusPolicy
+    AssertTrue stats, name, policy.CrackStatusFromCalculator(crack) <> policy.NumFail
 End Sub
 
 Private Sub AssertTrue(ByRef stats As TCrackTestStats, ByVal name As String, ByVal condition As Boolean)

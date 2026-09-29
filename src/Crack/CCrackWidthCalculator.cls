@@ -251,7 +251,7 @@ Public Sub Calculate(ByVal currentSolver As CSectionSolver, ByVal section As CSe
 End Sub
 
 ' Продолжает расчет ширины после обязательной предварительной проверки
-' образования трещины. Метод сохраняет уже найденные Before/After-состояния
+' образования трещины. Метод сохраняет уже найденные PreCrackState/PostCrackState
 ' порога трещинообразования и использует PostCrackState для sigma_s,crc,
 ' если Auto-подбор psi_s потребует уточнения коэффициента.
 Public Sub CalculateAfterFormationCheck(ByVal currentSolver As CSectionSolver, ByVal section As CSectionModel, _
@@ -472,7 +472,7 @@ End Sub
 
 ' Передает поиск стадии образования нормальной трещины в общий LimitSearch.
 ' CCrackWidthCalculator остается владельцем crack-критерия, диагностического
-' журнала и сохранения Before/After-состояний, а выбор пути/стратегии теперь
+' журнала и сохранения PreCrackState/PostCrackState, а выбор пути/стратегии теперь
 ' централизован вместе с capacity-поиском.
 Private Function FindGeneralFormationLambda(ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, _
@@ -1551,8 +1551,8 @@ Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal mater
     End If
 
     If StrComp(mPsiMode, PSI_MODE_ALWAYS_CALC, vbTextCompare) = 0 Then
-        If ResolveAutoPsiIfPossible(section, materialProvider, currentSolver, selected, _
-                targetN, targetMx, targetMy, "AlwaysCalc psi_s") Then
+        If ResolveAutoPsiIfPossible(section, materialProvider, selected, _
+                "AlwaysCalc psi_s") Then
             FinalizeWidth finalReason & " Psi_s рассчитан по состоянию сразу после образования трещины."
         ElseIf mFormationPathFallbackPsi1 Then
             mPsiS = 1#
@@ -1584,20 +1584,19 @@ Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal mater
     AppendDiagnostic "Auto psi_s: первая проверка с psi_s=1 не проходит; используется ранее найденный PostCrackState."
     mConverged = False
 
-    If Not ResolveAutoPsiIfPossible(section, materialProvider, currentSolver, selected, _
-            targetN, targetMx, targetMy, "Auto psi_s") Then Exit Function
+    If Not ResolveAutoPsiIfPossible(section, materialProvider, selected, _
+            "Auto psi_s") Then Exit Function
     FinalizeWidth finalReason & " Psi_s уточнен автоматически после непрохождения первой проверки."
     FinalizeWithPsiMode = mConverged
 End Function
 
 ' Готовит и применяет автоматическое значение psi_s по sigma_s,crc.
-' Метод не ищет новую точку образования трещины: он использует ранее найденный
-' PostCrackState, а при его отсутствии только достраивает это состояние по
-' уже известной lambda_crc.
+' Метод не запускает solve и не достраивает PostCrackState: на этом этапе
+' используются только данные, уже подготовленные проверкой образования трещины.
+' Если sigma_s,crc получить нельзя, psi_s остается равным 1 с диагностикой.
 Private Function ResolveAutoPsiIfPossible(ByVal section As CSectionModel, _
-        ByVal materialProvider As CMaterialModelProvider, ByVal currentSolver As CSectionSolver, _
-        ByRef selected() As Boolean, ByVal targetN As Double, ByVal targetMx As Double, _
-        ByVal targetMy As Double, ByVal contextText As String) As Boolean
+        ByVal materialProvider As CMaterialModelProvider, ByRef selected() As Boolean, _
+        ByVal contextText As String) As Boolean
     If mFormationPathFallbackPsi1 Then
         AppendDiagnostic contextText & ": выбранный путь не дает отдельной точки sigma_s,crc."
         Exit Function
@@ -1608,10 +1607,8 @@ Private Function ResolveAutoPsiIfPossible(ByVal section As CSectionModel, _
         Exit Function
     End If
 
-    If mSigmaSCrc <= NEAR_ZERO_STRESS Then
-        If Not EnsurePostCrackState(section, materialProvider, currentSolver, targetN, targetMx, targetMy) Then Exit Function
+    If mSigmaSCrc <= NEAR_ZERO_STRESS Then _
         CaptureSigmaSCrcIfAvailable section, materialProvider, selected
-    End If
 
     If mSigmaSCrc <= NEAR_ZERO_STRESS Then
         AppendDiagnostic contextText & ": sigma_s,crc не получен; psi_s оставлен равным 1."

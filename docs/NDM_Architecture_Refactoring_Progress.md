@@ -115,17 +115,29 @@ regression-отчеты.
   `CapacityLoadPath`. Для CrackFormation напрямую используется общий
   `CLoadPathVector` и `CLoadPathMath`; тащить `CCapacityLoadPath` в трещины
   не нужно, потому что он содержит capacity-специфичные правила Auto/ForceOnly.
+- Этап 6 завершен основным срезом Crack: добавлены отдельные result-объекты
+  `CCrackFormationResult`, `CCrackWidthResult`, `CLongitudinalCrackResult` и
+  `CCrackResult`. Batch-слой хранит typed result-tree трещин, а внешний статус
+  по-прежнему формируется через `CResultStatusPolicy`/`CBatchStatusPolicy`.
+- Чистая формула раскрытия нормальной трещины вынесена в
+  `CCrackWidthFormulaCalculator`. Она получает только готовые численные
+  `phi/psi/sigma_s/E_s/l_s` и не получает State-объекты, не выбирает зону,
+  не выбирает арматуру и не запускает solver.
+- Для `CurrentCrackedState` больше не назначается `rsNumericalFailure`
+  автоматически при любом отсутствии результата: сохраняется фактическая
+  причина `InvalidInput`, `InvalidConfiguration`, `NumericalFailure` или
+  `InternalError`; downstream width/longitudinal блокируются через dependency.
 
 ## In progress
 
-- Нет активного этапа. Следующий крупный блок по migration plan - этап 6:
-  перестройка Crack без изменения согласованной расчетной методики.
+- Нет активного этапа. Следующий крупный блок по migration plan - этап 7:
+  перестройка `CCombinationResult` без изменения расчетной методики.
 
 ## Next
 
 - Использовать baseline commit и отчеты `Stage00`/`Stage01`/`Stage02` как точки сравнения
   для следующих этапов.
-- Перед следующим срезом этапа 5 снова проверить `git status` и убедиться, что
+- Перед следующим срезом этапа 7 снова проверить `git status` и убедиться, что
   нет посторонних пользовательских изменений.
 
 ## Known risks / open questions
@@ -217,6 +229,14 @@ regression-отчеты.
   `tools/build_workbook/Run-CapacityTests.ps1`: `passed=923`, `failed=0`.
 - 2026-09-29: этот же срез этапа 5 прошел
   `tools/build_workbook/Run-BatchTests.ps1`: `passed=631`, `failed=0`.
+- 2026-09-29: этап 6 пересобрал `workbook/output/RC_Section_NDM.xlsm`
+  через `tools/build_workbook/Build-Workbook.ps1`.
+- 2026-09-29: этап 6 прошел `tools/build_workbook/Run-CrackTests.ps1`:
+  `passed=291`, `failed=0`.
+- 2026-09-29: этап 6 прошел `tools/build_workbook/Run-BatchTests.ps1`:
+  `passed=633`, `failed=0`.
+- 2026-09-29: этап 6 прошел полный `tools/build_workbook/Run-AllTests.ps1`
+  без failures.
 - 2026-09-29: срез этапа 5 с защитой capacity reserve в `CNDMResultsWriter`
   пересобрал `workbook/output/RC_Section_NDM.xlsm` через
   `tools/build_workbook/Build-Workbook.ps1`.
