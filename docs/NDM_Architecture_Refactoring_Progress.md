@@ -32,11 +32,18 @@ regression-отчеты.
   `CLimitSearchResult`, `CLimitSearchCoordinator`, `CUltimateStrainSearch` и
   `CLoadMultiplierSearch`; batch-слой больше не выбирает capacity-ветку сам,
   но низкоуровневая математика пока остается в проверенном `CCapacitySolver`.
+- Этап 4 продолжен для CrackFormation: проверка образования нормальной трещины
+  теперь идет через тот же `CLimitSearchCoordinator`, что и Capacity. Старый
+  crack-диспетчер пути/стратегии убран, отдельная параллельная search-логика не
+  вводилась; различия CrackFormation остались в критерии `eps_bt,ult`, пути
+  нагрузки и material spec внутри `CCrackWidthCalculator`.
 
 ## In progress
 
-- Следующий срез этапа 4 должен переносить CrackFormation на общий
-  limit-search только после отдельной проверки capacity baseline.
+- Этап 4 остается в миграционном состоянии: общая маршрутизация LimitSearch уже
+  подключена к Capacity и CrackFormation, но низкоуровневые численные
+  реализации пока остаются в существующих проверенных классах
+  `CCapacitySolver` и `CCrackWidthCalculator`.
 
 ## Next
 
@@ -108,3 +115,7 @@ regression-отчеты.
   завершился успешно: `passed=631`, `failed=0`.
 - 2026-09-28: после первого среза этапа 4 `tools/build_workbook/Run-AllTests.ps1`
   завершился успешно.
+- 2026-09-29: после подключения CrackFormation к общему `CLimitSearchCoordinator`
+  `tools/build_workbook/Build-Workbook.ps1` завершился успешно; отдельные
+  `Run-CrackTests.ps1`, `Run-CapacityTests.ps1`, `Run-BatchTests.ps1` и полный
+  `Run-AllTests.ps1` завершились успешно.

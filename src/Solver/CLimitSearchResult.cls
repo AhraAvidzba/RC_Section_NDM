@@ -20,10 +20,12 @@ Option Explicit
 ' напрямую из этого класса, не меняя публичную расчетную методику.
 
 Private mCapacitySolver As CCapacitySolver ' Фактический solver, выполнивший расчет capacity.
+Private mCrackCalculator As CCrackWidthCalculator ' Расчетчик, выполнивший поиск точки трещинообразования.
 Private mMeta As CResultMeta ' Машинная оценка результата для будущего ResultStatusPolicy-пути.
 Private mRequestedStrategy As String ' Стратегия, заданная настройкой.
 Private mActualMethod As String ' Метод, который фактически записал CCapacitySolver.
 Private mResultKind As EResultKind ' Инженерный контекст результата.
+Private mSucceeded As Boolean ' True, если search-слой получил корректный результат для своей задачи.
 
 Private Sub Class_Initialize()
     Set mMeta = New CResultMeta
@@ -34,8 +36,10 @@ End Sub
 ' существующим CBatchStatusPolicy, а meta нужна как задел общей result-схемы.
 Public Sub InitializeFromCapacitySolver(ByVal cap As CCapacitySolver, ByVal requestedStrategy As String)
     Set mCapacitySolver = cap
+    Set mCrackCalculator = Nothing
     mRequestedStrategy = requestedStrategy
     mResultKind = rkCapacity
+    mSucceeded = False
     If cap Is Nothing Then
         mActualMethod = vbNullString
         mMeta.SetResult rsNumericalFailure, rcSolverDidNotReturnState, rkCapacity, _
@@ -43,6 +47,7 @@ Public Sub InitializeFromCapacitySolver(ByVal cap As CCapacitySolver, ByVal requ
     Else
         mActualMethod = cap.SolutionMethod
         If cap.Converged Then
+            mSucceeded = True
             If cap.LambdaUltimate > 0# And cap.LambdaUltimate < 1# Then
                 mMeta.SetResult rsCheckFailed, rcPhysicalLimitExceeded, rkCapacity, cap.LimitState
             Else
@@ -59,17 +64,58 @@ Public Sub InitializeFromCapacitySolver(ByVal cap As CCapacitySolver, ByVal requ
     End If
 End Sub
 
-' Заполняет result как ошибку настройки, когда стратегия поиска неизвестна.
-Public Sub InitializeInvalidConfiguration(ByVal requestedStrategy As String, ByVal message As String)
+' Заполняет result по уже выполненному CCrackWidthCalculator в стадии
+' образования трещины. Формульная ширина здесь не оценивается: речь только о
+' search-результате Ncrc/Mcrc и связанных состояниях.
+Public Sub InitializeFromCrackFormation(ByVal crack As CCrackWidthCalculator, _
+        ByVal requestedStrategy As String, ByVal searchSucceeded As Boolean)
     Set mCapacitySolver = Nothing
+    Set mCrackCalculator = crack
+    mRequestedStrategy = requestedStrategy
+    mResultKind = rkCrackFormation
+    mActualMethod = requestedStrategy
+    mSucceeded = searchSucceeded
+
+    If crack Is Nothing Then
+        mMeta.SetResult rsNumericalFailure, rcSolverDidNotReturnState, rkCrackFormation, _
+            "Поиск образования трещины не вернул расчетчик."
+    ElseIf searchSucceeded Then
+        If crack.CrackFormed Then
+            mMeta.SetResult rsSuccess, rcCheckPassed, rkCrackFormation, crack.StopReason
+        Else
+            mMeta.SetResult rsSuccess, rcCriterionNotReached, rkCrackFormation, crack.StopReason
+        End If
+    ElseIf crack.Converged And Not crack.CrackFormed Then
+        mMeta.SetResult rsSuccess, rcCriterionNotReached, rkCrackFormation, crack.StopReason
+    ElseIf InStr(1, crack.StopReason, "Input", vbTextCompare) > 0 Or _
+            InStr(1, crack.StopReason, "ошиб", vbTextCompare) > 0 Then
+        mMeta.SetResult rsInvalidInput, rcInvalidInput, rkCrackFormation, crack.StopReason
+    ElseIf InStr(1, crack.StopReason, "Config", vbTextCompare) > 0 Or _
+            InStr(1, crack.StopReason, "настрой", vbTextCompare) > 0 Then
+        mMeta.SetResult rsInvalidConfiguration, rcInvalidConfiguration, rkCrackFormation, crack.StopReason
+    Else
+        mMeta.SetResult rsNumericalFailure, rcNumericalFailure, rkCrackFormation, crack.StopReason
+    End If
+End Sub
+
+' Заполняет result как ошибку настройки, когда стратегия поиска неизвестна.
+Public Sub InitializeInvalidConfiguration(ByVal requestedStrategy As String, ByVal message As String, _
+        Optional ByVal resultKind As EResultKind = rkCapacity)
+    Set mCapacitySolver = Nothing
+    Set mCrackCalculator = Nothing
     mRequestedStrategy = requestedStrategy
     mActualMethod = vbNullString
-    mResultKind = rkCapacity
-    mMeta.SetResult rsInvalidConfiguration, rcInvalidConfiguration, rkCapacity, message
+    mResultKind = resultKind
+    mSucceeded = False
+    mMeta.SetResult rsInvalidConfiguration, rcInvalidConfiguration, resultKind, message
 End Sub
 
 Public Property Get CapacitySolver() As CCapacitySolver
     Set CapacitySolver = mCapacitySolver
+End Property
+
+Public Property Get CrackCalculator() As CCrackWidthCalculator
+    Set CrackCalculator = mCrackCalculator
 End Property
 
 Public Property Get Meta() As CResultMeta
@@ -86,4 +132,8 @@ End Property
 
 Public Property Get ResultKind() As EResultKind
     ResultKind = mResultKind
+End Property
+
+Public Property Get Succeeded() As Boolean
+    Succeeded = mSucceeded
 End Property

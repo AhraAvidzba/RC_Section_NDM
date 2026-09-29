@@ -33,3 +33,28 @@ Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitS
     result.InitializeFromCapacitySolver cap, request.SolutionStrategy
     Set ExecuteCapacity = result
 End Function
+
+' Выполняет LoadMultiplier для поиска образования нормальной трещины.
+' Общий LimitSearch выбирает эту ветку, а сам одномерный расчет lambda_crc
+' остается внутри CCrackWidthCalculator, где уже хранится crack-контекст.
+Public Function ExecuteCrackFormation(ByVal request As CLimitSearchRequest) As CLimitSearchResult
+    If request Is Nothing Then Err.Raise vbObjectError + 4221, "CLoadMultiplierSearch", "Не передан запрос limit-search."
+
+    Dim crack As CCrackWidthCalculator
+    Set crack = request.CrackCalculator
+    Dim concreteMaterial As CMaterialDiagram
+    Dim steelMaterial As CMaterialDiagram
+    Set concreteMaterial = request.ConcreteMaterial
+    Set steelMaterial = request.SteelMaterial
+
+    Dim searchSucceeded As Boolean
+    searchSucceeded = crack.LimitSearchRunCrackFormationLoadMultiplier(request.Section, _
+        concreteMaterial, steelMaterial, Nothing, request.TargetN, _
+        request.MomentMxAtReference, request.MomentMyAtReference, _
+        request.ReferenceX, request.ReferenceY)
+
+    Dim result As CLimitSearchResult
+    Set result = New CLimitSearchResult
+    result.InitializeFromCrackFormation crack, request.SolutionStrategy, searchSucceeded
+    Set ExecuteCrackFormation = result
+End Function

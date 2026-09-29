@@ -470,79 +470,11 @@ Private Sub CheckGeneralFormation(ByVal section As CSectionModel, _
     mStopReason = "Предварительная проверка Mcrc: трещина образуется при текущей нагрузке."
 End Sub
 
-' Выбирает численную стратегию поиска стадии образования трещины для общей
-' ветки N+M. Путь нагрузки и метод решения разделены так же, как в capacity:
-' UltimateStrain ищет плоскость по eps_bt,ult, LoadMultiplier перебирает
-' lambda обычными solve, Auto сначала пробует UltimateStrain и только при
-' численной неудаче переходит на LoadMultiplier.
+' Передает поиск стадии образования нормальной трещины в общий LimitSearch.
+' CCrackWidthCalculator остается владельцем crack-критерия, диагностического
+' журнала и сохранения Before/After-состояний, а выбор пути/стратегии теперь
+' централизован вместе с capacity-поиском.
 Private Function FindGeneralFormationLambda(ByVal section As CSectionModel, _
-        ByVal materialProvider As CMaterialModelProvider, _
-        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
-        ByVal momentMxAtReference As Double, ByVal momentMyAtReference As Double, _
-        ByVal referenceX As Double, ByVal referenceY As Double) As Boolean
-    If StrComp(mCrackFormationPath, CRACK_PATH_AUTO, vbTextCompare) = 0 Then
-        FindGeneralFormationLambda = FindGeneralFormationLambdaAuto(section, materialProvider, _
-            targetN, targetMx, targetMy, momentMxAtReference, momentMyAtReference, referenceX, referenceY)
-        Exit Function
-    End If
-
-    FindGeneralFormationLambda = FindGeneralFormationLambdaForCurrentPath(section, materialProvider, _
-        targetN, targetMx, targetMy, momentMxAtReference, momentMyAtReference, referenceX, referenceY)
-    If FindGeneralFormationLambda Then mResolvedCrackFormationPath = mCrackFormationPath
-End Function
-
-' В Auto-режиме по очереди пробует все разрешенные lambda-пути. Если путь
-' дал только резервный psi_s=1 без найденного состояния образования трещины,
-' это считается неудачной попыткой Auto и программа идет дальше.
-Private Function FindGeneralFormationLambdaAuto(ByVal section As CSectionModel, _
-        ByVal materialProvider As CMaterialModelProvider, _
-        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
-        ByVal momentMxAtReference As Double, ByVal momentMyAtReference As Double, _
-        ByVal referenceX As Double, ByVal referenceY As Double) As Boolean
-    Dim savedPath As String
-    savedPath = mCrackFormationPath
-
-    Dim paths(1 To 3) As String
-    paths(1) = CRACK_PATH_MXY
-    paths(2) = CRACK_PATH_N
-    paths(3) = CRACK_PATH_NMXY
-    AppendDiagnostic "Auto-путь: начинаем поиск образования нормальной трещины. Порядок попыток: " & _
-        ChrW$(&H3BB) & "*Mxy -> " & ChrW$(&H3BB) & "*N -> " & ChrW$(&H3BB) & "*NMxy."
-
-    Dim lastStopReason As String
-    Dim i As Long
-    For i = LBound(paths) To UBound(paths)
-        ClearFormationAttemptState
-        mCrackFormationPath = paths(i)
-        AppendDiagnostic "Auto-путь: попытка " & CStr(i) & " из " & CStr(UBound(paths)) & _
-            " - пробуем " & CrackFormationPathDisplayName() & "."
-
-        If FindGeneralFormationLambdaForCurrentPath(section, materialProvider, _
-                targetN, targetMx, targetMy, momentMxAtReference, momentMyAtReference, referenceX, referenceY) Then
-            If mFormationPathFallbackPsi1 And i < UBound(paths) Then
-                lastStopReason = mStopReason
-                AppendDiagnostic "Auto-путь: " & CrackFormationPathDisplayName() & _
-                    " дал только резервный результат psi_s=1 без найденной точки образования трещины. Для более информативного результата переходим к следующему пути."
-            Else
-                mResolvedCrackFormationPath = mCrackFormationPath
-                AppendDiagnostic "Auto-путь: выбран " & CrackFormationPathDisplayName() & "."
-                mCrackFormationPath = savedPath
-                FindGeneralFormationLambdaAuto = True
-                Exit Function
-            End If
-        Else
-            lastStopReason = mStopReason
-            AppendDiagnostic "Auto-путь: " & CrackFormationPathDisplayName() & _
-                " не дал точку образования трещины: " & mStopReason
-        End If
-    Next i
-
-    mCrackFormationPath = savedPath
-    If Len(mStopReason) = 0 Then mStopReason = lastStopReason
-End Function
-
-' Выполняет поиск по уже выбранному mCrackFormationPath без перебора путей.
-Private Function FindGeneralFormationLambdaForCurrentPath(ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal momentMxAtReference As Double, ByVal momentMyAtReference As Double, _
@@ -552,36 +484,100 @@ Private Function FindGeneralFormationLambdaForCurrentPath(ByVal section As CSect
     Set concreteMaterial = materialProvider.ConcreteMaterialFromSpec(mCrackInitiationSpec)
     Set steelMaterial = materialProvider.SteelMaterialFromSpec(mCrackInitiationSpec)
 
-    Select Case mCrackFormationSolutionStrategy
-        Case STRATEGY_LOAD_MULTIPLIER
-            FindGeneralFormationLambdaForCurrentPath = CalculateLambdaCrcByLoadScaling(section, concreteMaterial, steelMaterial, _
-                Nothing, targetN, momentMxAtReference, momentMyAtReference, referenceX, referenceY)
-            Exit Function
-        Case STRATEGY_ULTIMATE_STRAIN
-            FindGeneralFormationLambdaForCurrentPath = CalculateLambdaCrcByUltimateStrain(section, concreteMaterial, steelMaterial, _
-                targetN, targetMx, targetMy, momentMxAtReference, momentMyAtReference, referenceX, referenceY)
-            Exit Function
-    End Select
+    Dim request As CLimitSearchRequest
+    Set request = New CLimitSearchRequest
+    request.InitializeCrackFormation Me, section, concreteMaterial, steelMaterial, _
+        mCrackFormationSolutionStrategy, mCrackFormationPath, targetN, targetMx, targetMy, _
+        momentMxAtReference, momentMyAtReference, referenceX, referenceY
 
-    Dim firstStopReason As String
-    If CalculateLambdaCrcByUltimateStrain(section, concreteMaterial, steelMaterial, _
-            targetN, targetMx, targetMy, momentMxAtReference, momentMyAtReference, referenceX, referenceY) Then
-        FindGeneralFormationLambdaForCurrentPath = True
-        Exit Function
-    End If
-    If FormationSearchStoppedTerminally() Then Exit Function
+    Dim coordinator As CLimitSearchCoordinator
+    Set coordinator = New CLimitSearchCoordinator
 
-    firstStopReason = mStopReason
-    AppendDiagnostic "UltimateStrain не дал точку образования трещины: " & firstStopReason
-    AppendDiagnostic "Пробуем LoadMultiplier по тому же пути образования трещины."
+    Dim searchResult As CLimitSearchResult
+    Set searchResult = coordinator.ExecuteCrackFormation(request)
+    FindGeneralFormationLambda = searchResult.Succeeded
+End Function
+
+' Готовит одну попытку поиска образования трещины для общего LimitSearch.
+' Диагностика сохраняется общей для всего Auto-перебора, а расчетные поля
+' конкретной попытки очищаются.
+Public Sub LimitSearchBeginCrackFormationAttempt(ByVal pathKey As String)
+    ClearFormationAttemptState
+    mCrackFormationPath = pathKey
+End Sub
+
+' Временно задает текущий путь трещинообразования. Координатор использует это
+' при восстановлении пользовательского Auto/фиксированного пути после попытки.
+Public Sub LimitSearchSetCurrentFormationPath(ByVal pathKey As String)
+    mCrackFormationPath = pathKey
+End Sub
+
+' Сохраняет фактически выбранный путь образования трещины для Results и отчета.
+Public Sub LimitSearchSetResolvedCrackFormationPath(ByVal pathKey As String)
+    mResolvedCrackFormationPath = pathKey
+End Sub
+
+' Возвращает True, если текущая попытка дала только резервный psi_s=1 без
+' честной точки образования трещины.
+Public Property Get LimitSearchFormationFallbackOnly() As Boolean
+    LimitSearchFormationFallbackOnly = mFormationPathFallbackPsi1
+End Property
+
+' Сообщает координатору, что текущий результат окончательный и переключаться
+' с UltimateStrain на LoadMultiplier уже не нужно.
+Public Function LimitSearchStoppedTerminally() As Boolean
+    LimitSearchStoppedTerminally = FormationSearchStoppedTerminally()
+End Function
+
+' Возвращает отображаемое имя текущего пути lambda для диагностического отчета.
+Public Function LimitSearchCrackFormationPathDisplayName() As String
+    LimitSearchCrackFormationPathDisplayName = CrackFormationPathDisplayName()
+End Function
+
+' Возвращает отображаемое имя указанного пути lambda для Auto-диагностики.
+Public Function LimitSearchCrackFormationPathDisplayNameForKey(ByVal pathKey As String) As String
+    LimitSearchCrackFormationPathDisplayNameForKey = CrackFormationPathDisplayNameForKey(pathKey)
+End Function
+
+' Добавляет строку в crack-диагностику из общего LimitSearch.
+Public Sub LimitSearchAppendDiagnostic(ByVal text As String)
+    AppendDiagnostic text
+End Sub
+
+' Очищает текущую причину остановки перед fallback-веткой того же пути.
+Public Sub LimitSearchClearStopReason()
     mStopReason = vbNullString
+End Sub
 
-    If CalculateLambdaCrcByLoadScaling(section, concreteMaterial, steelMaterial, Nothing, _
-            targetN, momentMxAtReference, momentMyAtReference, referenceX, referenceY) Then
-        FindGeneralFormationLambdaForCurrentPath = True
-    ElseIf Len(mStopReason) = 0 Then
-        mStopReason = firstStopReason
-    End If
+' Возвращает предыдущую причину, если fallback-ветка не сформировала своей.
+Public Sub LimitSearchSetStopReasonIfEmpty(ByVal text As String)
+    If Len(mStopReason) = 0 Then mStopReason = text
+End Sub
+
+' Запускает низкоуровневый UltimateStrain-критерий образования трещины.
+' Метод публичен только для общего LimitSearch; инженерная логика crack-расчета
+' продолжает вызываться через CheckFormationBeforeWidth.
+Public Function LimitSearchRunCrackFormationUltimate(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal momentMxAtReference As Double, ByVal momentMyAtReference As Double, _
+        ByVal referenceX As Double, ByVal referenceY As Double) As Boolean
+    LimitSearchRunCrackFormationUltimate = CalculateLambdaCrcByUltimateStrain(section, _
+        concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+        momentMxAtReference, momentMyAtReference, referenceX, referenceY)
+End Function
+
+' Запускает низкоуровневый LoadMultiplier-критерий образования трещины.
+' Пробные lambda-точки остаются локальными внутри этого search-вызова и не
+' становятся переиспользуемыми named-state в общем CStateRepository.
+Public Function LimitSearchRunCrackFormationLoadMultiplier(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal startSolver As CSectionSolver, ByVal targetN As Double, _
+        ByVal momentMxAtReference As Double, ByVal momentMyAtReference As Double, _
+        ByVal referenceX As Double, ByVal referenceY As Double) As Boolean
+    LimitSearchRunCrackFormationLoadMultiplier = CalculateLambdaCrcByLoadScaling(section, _
+        concreteMaterial, steelMaterial, startSolver, targetN, momentMxAtReference, _
+        momentMyAtReference, referenceX, referenceY)
 End Function
 
 ' Пытается найти lambda_crc прямым решением по предельной растягивающей
