@@ -151,6 +151,27 @@ Public Function StatusFromMeta(ByVal meta As CResultMeta) As String
     StatusFromMeta = Policy.ExternalStatus(meta)
 End Function
 
+' Создает meta из уже принятого внешнего статуса для переходных мест, где
+' строковый статус пока формируется раньше result-объекта.
+Public Function MetaFromStatus(ByVal statusText As String, ByVal resultKind As EResultKind, _
+        Optional ByVal resultComment As String = vbNullString) As CResultMeta
+    Set MetaFromStatus = Policy.MetaFromLegacyStatus(statusText, resultKind, resultComment)
+End Function
+
+' Формирует meta для этапа, который не запускался из-за отсутствия обязательного
+' предыдущего результата. Внешний N/A появится позже только через CResultStatusPolicy.
+Public Function BlockedByDependencyMeta(ByVal resultKind As EResultKind, _
+        ByVal dependencyName As String, Optional ByVal reason As String = vbNullString) As CResultMeta
+    Dim comment As String
+    comment = "Расчет не выполнен: нет обязательного результата " & dependencyName & "."
+    If Len(Trim$(reason)) > 0 Then comment = comment & " " & reason
+
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    meta.SetResult rsBlockedByDependency, rcBlockedByDependency, resultKind, comment
+    Set BlockedByDependencyMeta = meta
+End Function
+
 ' Распознает статусы ошибок исходных данных.
 Public Function IsInvalid(ByVal statusText As String) As Boolean
     IsInvalid = Policy.IsInvalid(statusText)
@@ -163,6 +184,30 @@ Public Function CrackStatusFromCalculator(ByVal crack As CCrackWidthCalculator) 
     CrackStatusFromCalculator = Policy.ExternalStatus(CrackMetaFromCalculator(crack))
 End Function
 
+' Формирует типизированный результат этапа образования нормальной трещины.
+' CRITERION_NOT_REACHED считается корректным физическим исходом search: трещина
+' не образовалась, но численной ошибки при этом нет.
+Public Function CrackFormationMetaFromCalculator(ByVal crack As CCrackWidthCalculator) As CResultMeta
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+
+    If crack Is Nothing Then
+        meta.SetResult rsInvalidInput, rcInvalidInput, rkCrackFormation, "Crack calculator не создан."
+    ElseIf crack.Converged And crack.CrackFormed Then
+        meta.SetResult rsSuccess, rcCheckPassed, rkCrackFormation, crack.StopReason
+    ElseIf crack.Converged Then
+        meta.SetResult rsSuccess, rcCriterionNotReached, rkCrackFormation, crack.StopReason
+    ElseIf IsInvalid(crack.StopReason) Then
+        meta.SetResult rsInvalidInput, rcInvalidInput, rkCrackFormation, crack.StopReason
+    ElseIf IsNumerical(crack.StopReason) Then
+        meta.SetResult rsNumericalFailure, rcNumericalFailure, rkCrackFormation, crack.StopReason
+    Else
+        meta.SetResult rsInternalError, rcInternalError, rkCrackFormation, crack.StopReason
+    End If
+
+    Set CrackFormationMetaFromCalculator = meta
+End Function
+
 ' Формирует типизированный результат расчета нормальных трещин.
 ' Численная несходимость допускается только как отражение уже выполненного
 ' state/search-поиска внутри калькулятора; чистые формулы ширины сами NumFail не создают.
@@ -172,6 +217,9 @@ Public Function CrackMetaFromCalculator(ByVal crack As CCrackWidthCalculator) As
 
     If crack Is Nothing Then
         meta.SetResult rsInvalidInput, rcInvalidInput, rkCrackWidth, "Crack calculator не создан."
+    ElseIf crack.Converged And Not crack.CrackFormed Then
+        meta.SetResult rsNotApplicable, rcCrackNotFormed, rkCrackWidth, crack.StopReason, _
+            vbNullString, False, True
     ElseIf crack.Converged Then
         If crack.CrackFormed And crack.AllowableCrackWidth > 0# And _
                 crack.CrackWidth > crack.AllowableCrackWidth Then
@@ -188,6 +236,21 @@ Public Function CrackMetaFromCalculator(ByVal crack As CCrackWidthCalculator) As
     End If
 
     Set CrackMetaFromCalculator = meta
+End Function
+
+' Формирует meta формульного этапа из уже подготовленного result-объекта.
+' Метод нужен, чтобы writer-ы и batch не читали внутренности calculator-а после
+' того, как формула раскрытия вынесена в отдельный слой.
+Public Function CrackMetaFromResult(ByVal widthResult As CCrackWidthResult) As CResultMeta
+    If widthResult Is Nothing Then
+        Dim meta As CResultMeta
+        Set meta = New CResultMeta
+        meta.SetResult rsBlockedByDependency, rcBlockedByDependency, rkCrackWidth, _
+            "Результат ширины нормальной трещины не сформирован."
+        Set CrackMetaFromResult = meta
+    Else
+        Set CrackMetaFromResult = widthResult.ResultMeta
+    End If
 End Function
 
 ' Возвращает статус проверки продольных трещин по сжатию бетона.

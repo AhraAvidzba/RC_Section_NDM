@@ -164,6 +164,10 @@ Public StateIterations As Long ' Число итераций прямого Stat
 Private mStateRepository As CStateRepository ' Единое хранилище конечных именованных НДС текущего LC.
 Private mResultPolicy As CResultStatusPolicy ' Политика преобразования legacy status -> ResultMeta на переходном этапе.
 Private mCapacityMeta As CResultMeta ' Типизированный результат capacity, если он уже пришел из CCapacityResult.
+Private mCrackFormationMeta As CResultMeta ' Типизированный результат поиска образования нормальной трещины.
+Private mCrackCurrentStateMeta As CResultMeta ' Типизированный результат обязательного CurrentCrackedState в расчете трещин.
+Private mCrackWidthMeta As CResultMeta ' Типизированный результат расчета ширины нормальной трещины.
+Private mLongitudinalCrackMeta As CResultMeta ' Типизированный результат продольных трещин.
 
 ' Полностью очищает результат LC перед новым расчетом.
 ' Исходные нагрузки и комментарий сочетания здесь не хранятся, поэтому метод
@@ -262,11 +266,49 @@ End Property
 
 ' Возвращает ResultMeta расчета нормальных трещин.
 Public Property Get CrackMeta() As CResultMeta
+    Dim problemMeta As CResultMeta
+    Set problemMeta = FirstProblemMeta(mCrackFormationMeta)
+    If Not problemMeta Is Nothing Then
+        Set CrackMeta = problemMeta
+        Exit Property
+    End If
+    Set problemMeta = FirstProblemMeta(mCrackCurrentStateMeta)
+    If Not problemMeta Is Nothing Then
+        Set CrackMeta = problemMeta
+        Exit Property
+    End If
+    Set problemMeta = FirstProblemMeta(mCrackWidthMeta)
+    If Not problemMeta Is Nothing Then
+        Set CrackMeta = problemMeta
+        Exit Property
+    End If
+
+    If Not mCrackWidthMeta Is Nothing Then
+        Set CrackMeta = mCrackWidthMeta.Clone
+        Exit Property
+    End If
+    If Not mCrackFormationMeta Is Nothing Then
+        Set CrackMeta = mCrackFormationMeta.Clone
+        Exit Property
+    End If
     Set CrackMeta = MetaFromStatus(CrackStatus, rkCrackWidth)
+End Property
+
+' Возвращает ResultMeta проверки образования нормальной трещины.
+Public Property Get CrackFormationMeta() As CResultMeta
+    If Not mCrackFormationMeta Is Nothing Then
+        Set CrackFormationMeta = mCrackFormationMeta.Clone
+        Exit Property
+    End If
+    Set CrackFormationMeta = MetaFromStatus(CrackStatus, rkCrackFormation)
 End Property
 
 ' Возвращает ResultMeta проверки продольных трещин.
 Public Property Get LongitudinalCrackMeta() As CResultMeta
+    If Not mLongitudinalCrackMeta Is Nothing Then
+        Set LongitudinalCrackMeta = mLongitudinalCrackMeta.Clone
+        Exit Property
+    End If
     Set LongitudinalCrackMeta = MetaFromStatus(LongitudinalCrackStatus, rkLongitudinalCrack)
 End Property
 
@@ -293,6 +335,19 @@ End Sub
 Private Function MetaFromStatus(ByVal statusText As String, ByVal resultKind As EResultKind, _
         Optional ByVal resultComment As String = vbNullString) As CResultMeta
     Set MetaFromStatus = Policy.MetaFromLegacyStatus(statusText, resultKind, resultComment)
+End Function
+
+' Возвращает копию meta только для результата, который должен ухудшить общий статус.
+' Нейтральные OK и N/A остаются в своих подробных блоках и не блокируют остальные проверки.
+Private Function FirstProblemMeta(ByVal meta As CResultMeta) As CResultMeta
+    If meta Is Nothing Then Exit Function
+
+    Dim statusText As String
+    statusText = Policy.ExternalStatus(meta)
+    Select Case statusText
+        Case Policy.Fail, Policy.BaseFail, Policy.NumFail, Policy.InputErr, Policy.CalcErr
+            Set FirstProblemMeta = meta.Clone
+    End Select
 End Function
 
 ' Лениво создает policy, чтобы CCombinationResult оставался простым контейнером
@@ -599,12 +654,82 @@ Public Sub StoreCrackResult(ByVal crack As CCrackWidthCalculator)
     CrackCentralBranch = crack.CentralTensionBranch
 End Sub
 
+' Сохраняет новый структурированный результат трещин и одновременно обновляет
+' существующие плоские поля, которые пока читают writer-ы Results.
+Public Sub StoreCrackAggregateResult(ByVal crackResult As CCrackResult)
+    If crackResult Is Nothing Then Exit Sub
+
+    If Not crackResult.Formation Is Nothing Then
+        StoreCrackFormationResult crackResult.Formation
+    End If
+    If Not crackResult.CurrentStateMeta Is Nothing Then
+        Set mCrackCurrentStateMeta = crackResult.CurrentStateMeta
+    End If
+    If Not crackResult.Width Is Nothing Then
+        StoreCrackWidthResult crackResult.Width
+    End If
+    If Not crackResult.Longitudinal Is Nothing Then
+        StoreLongitudinalCrackResultObject crackResult.Longitudinal
+    End If
+    CrackStatus = Policy.ExternalStatus(CrackMeta)
+End Sub
+
+' Копирует formation-часть result-tree в совместимые поля CCombinationResult.
+Private Sub StoreCrackFormationResult(ByVal formation As CCrackFormationResult)
+    Set mCrackFormationMeta = formation.ResultMeta
+    CrackFormed = formation.CrackFormed
+    CrackFormationMethod = formation.FormationMethod
+    CrackLambdaCrc = formation.LambdaCrc
+    CrackNcrc = formation.Ncrc
+    CrackFormationNcrc = formation.FormationNcrc
+    CrackMcrc = formation.Mcrc
+    CrackAred = formation.Ared
+    CrackRbtSer = formation.RbtSer
+End Sub
+
+' Копирует width-часть result-tree в совместимые поля CCombinationResult.
+Private Sub StoreCrackWidthResult(ByVal widthResult As CCrackWidthResult)
+    Set mCrackWidthMeta = widthResult.ResultMeta
+    CrackStatus = Policy.ExternalStatus(mCrackWidthMeta)
+    CrackWidth = widthResult.CrackWidth
+    CrackAllowableValue = widthResult.AllowableCrackWidth
+    CrackUtil = widthResult.Utilization
+    CrackPhi1 = widthResult.Phi1
+    CrackPhi2 = widthResult.Phi2
+    CrackPhi3 = widthResult.Phi3
+    CrackPsiS = widthResult.PsiS
+    CrackSigmaS = widthResult.SigmaS
+    CrackSigmaSCrc = widthResult.SigmaSCrc
+    CrackAs = widthResult.AsTension
+    CrackAbt = widthResult.Abt
+    CrackDsEquivalent = widthResult.DsEquivalent
+    CrackLsRaw = widthResult.CrackSpacingRaw
+    CrackLs = widthResult.CrackSpacing
+    CrackTensionRebarCount = widthResult.TensionRebarCount
+    CrackTensionRebarIds = widthResult.TensionRebarIds
+    CrackSectionDepthH = widthResult.SectionDepthH
+    CrackCoverA = widthResult.CoverA
+    CrackTensionDepth = widthResult.TensionDepth
+    CrackEffectiveZoneDepth = widthResult.EffectiveZoneDepth
+    CrackCentralBranch = widthResult.CentralTensionBranch
+End Sub
+
+' Копирует longitudinal-часть result-tree в совместимые поля CCombinationResult.
+Private Sub StoreLongitudinalCrackResultObject(ByVal longitudinal As CLongitudinalCrackResult)
+    Set mLongitudinalCrackMeta = longitudinal.ResultMeta
+    LongitudinalCrackStatus = Policy.ExternalStatus(mLongitudinalCrackMeta)
+    MaxConcreteCompressionStress = longitudinal.MaxCompressionStress
+    LongitudinalCrackRbMc2 = longitudinal.RbMc2
+    LongitudinalCrackUtil = longitudinal.Utilization
+End Sub
+
 ' Сохраняет результат проверки продольных трещин по сжатому бетону.
 ' Проверка использует уже найденные напряжения прямого НДС и не запускает
 ' отдельный material purpose или повторный solve.
 Public Sub StoreLongitudinalCrackResult(ByVal statusText As String, ByVal maxCompressionStress As Double, _
         ByVal rbMc2 As Double, ByVal utilization As Double)
     LongitudinalCrackStatus = statusText
+    Set mLongitudinalCrackMeta = MetaFromStatus(statusText, rkLongitudinalCrack)
     MaxConcreteCompressionStress = maxCompressionStress
     LongitudinalCrackRbMc2 = rbMc2
     LongitudinalCrackUtil = utilization
@@ -614,6 +739,7 @@ End Sub
 ' нет сжатого бетона или прямое НДС не было получено.
 Public Sub ClearLongitudinalCrackResult()
     LongitudinalCrackStatus = vbNullString
+    Set mLongitudinalCrackMeta = Nothing
     LongitudinalCrackRbMc2 = 0#
     LongitudinalCrackUtil = 0#
 End Sub
@@ -621,6 +747,9 @@ End Sub
 ' Очищает только блок трещин. Это удобно для режимов, где прямое НДС и capacity
 ' уже заполнены, а расчет раскрытия неприменим или отключен.
 Public Sub ClearCrackResult()
+    Set mCrackFormationMeta = Nothing
+    Set mCrackCurrentStateMeta = Nothing
+    Set mCrackWidthMeta = Nothing
     CrackWidth = 0#
     CrackAllowableValue = 0#
     CrackUtil = 0#

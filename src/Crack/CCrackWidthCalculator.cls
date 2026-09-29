@@ -1646,8 +1646,10 @@ Private Sub FinalizeWidth(ByVal reason As String)
         Exit Sub
     End If
 
-    mCrackWidth = mPhi1 * mPhi2 * mPhi3 * mPsiS * (mSigmaS / mSteelEs) * mLs
-    If mAllowableCrackWidth > 0# Then mUtilization = mCrackWidth / mAllowableCrackWidth
+    Dim formula As CCrackWidthFormulaCalculator
+    Set formula = New CCrackWidthFormulaCalculator
+    mCrackWidth = formula.CrackWidth(mPhi1, mPhi2, mPhi3, mPsiS, mSigmaS, mSteelEs, mLs)
+    mUtilization = formula.Utilization(mCrackWidth, mAllowableCrackWidth)
     mCrackFormed = True
     mConverged = True
     mStopReason = reason
@@ -2459,6 +2461,10 @@ End Property
 
 Public Property Get SigmaSCrc() As Double
     SigmaSCrc = mSigmaSCrc
+End Property
+
+Public Property Get SteelEs() As Double
+    SteelEs = mSteelEs
 End Property
 
 Public Property Get AsTension() As Double
