@@ -990,8 +990,12 @@ End Sub
 Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialModelSpec)
     Dim loadPath As CCapacityLoadPath
     Dim cap As CCapacitySolver
+    Dim capacityCalculator As CCapacityCalculator
+    Dim loadState As CSectionLoadState
 
-    Set loadPath = BuildLoadPathForCombination(index)
+    Set capacityCalculator = New CCapacityCalculator
+    Set loadState = LoadStateForCombination(index)
+    Set loadPath = capacityCalculator.BuildLoadPath(mInputs(index).CapacityLoadPath, loadState)
     mResults(index).CapacityPathResolved = loadPath.Key
     ReportValue "Путь нагрузки для несущей", IIf(loadPath.HasPath, loadPath.DisplayName, mInputs(index).CapacityLoadPath)
 
@@ -999,9 +1003,6 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     ConfigureCapacity cap, strengthSpec
 
     ReportValue "Стратегия поиска несущей", NormalizedCapacitySolutionStrategy()
-
-    Dim capacityCalculator As CCapacityCalculator
-    Set capacityCalculator = New CCapacityCalculator
 
     Dim strengthReferenceX As Double
     Dim strengthReferenceY As Double
@@ -1011,7 +1012,7 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     Set capacityResult = capacityCalculator.Calculate(mSection, _
         mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
         mMaterialProvider.SteelMaterialFromSpec(strengthSpec), strengthSpec, _
-        loadPath, cap, NormalizedCapacitySolutionStrategy(), LoadStateForCombination(index), _
+        loadPath, cap, NormalizedCapacitySolutionStrategy(), loadState, _
         strengthReferenceX, strengthReferenceY, mStatusPolicy, mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, _
         mConcreteDepthForMx, mConcreteDepthForMy)
 
@@ -1369,23 +1370,13 @@ Private Sub AppendCrackDiagnostic(ByVal index As Long, ByVal crack As CCrackWidt
     End If
 End Sub
 
-' Создает объект lambda-траектории для одной строки LC.
-' Batch передает сюда только уже нормализованные усилия и точку приложения
-' нагрузки, а все подробности интерпретации lambda*Mx/lambda*N остаются в CCapacityLoadPath.
-Private Function BuildLoadPathForCombination(ByVal index As Long) As CCapacityLoadPath
-    Dim loadPath As CCapacityLoadPath
-    Set loadPath = New CCapacityLoadPath
-    loadPath.InitializeFromLoadState mInputs(index).CapacityLoadPath, LoadStateForCombination(index)
-    Set BuildLoadPathForCombination = loadPath
-End Function
-
 ' Формирует человекочитаемую подпись load-path для Results и отчета.
-' Само соответствие ключа и подписи хранится в CCapacityLoadPath, чтобы batch
-' не становился вторым местом интерпретации lambda-траекторий.
+' Само соответствие ключа и подписи хранится в capacity-слое, чтобы batch не
+' становился вторым местом интерпретации lambda-траекторий.
 Private Function CapacityLoadPathDisplay(ByVal loadPathKey As String) As String
-    Dim loadPath As CCapacityLoadPath
-    Set loadPath = New CCapacityLoadPath
-    CapacityLoadPathDisplay = loadPath.DisplayNameForKey(loadPathKey)
+    Dim calculator As CCapacityCalculator
+    Set calculator = New CCapacityCalculator
+    CapacityLoadPathDisplay = calculator.DisplayNameForKey(loadPathKey)
 End Function
 
 ' Приводит пользовательскую строку Capacity.SolutionStrategy к одному из трех
@@ -2294,7 +2285,9 @@ Public Property Get CapacityLoadPathKey(ByVal index As Long) As String
     If Len(mResults(index).CapacityPathResolved) > 0 And mResults(index).CapacityPathResolved <> CAPACITY_PATH_NONE Then
         CapacityLoadPathKey = mResults(index).CapacityPathResolved
     Else
-        CapacityLoadPathKey = BuildLoadPathForCombination(index).Key
+        Dim calculator As CCapacityCalculator
+        Set calculator = New CCapacityCalculator
+        CapacityLoadPathKey = calculator.BuildLoadPath(mInputs(index).CapacityLoadPath, LoadStateForCombination(index)).Key
     End If
 End Property
 

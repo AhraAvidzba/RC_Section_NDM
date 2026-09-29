@@ -85,6 +85,26 @@ Public Function Calculate(ByVal section As CSectionModel, _
     Set Calculate = result
 End Function
 
+' Создает capacity load-path из пользовательского текста и уже нормализованного
+' состояния нагрузки. Это часть инженерной подготовки Capacity, поэтому batch
+' не должен иметь собственную копию такой фабрики.
+Public Function BuildLoadPath(ByVal rawPath As String, _
+        ByVal loadState As CSectionLoadState) As CCapacityLoadPath
+    Dim loadPath As CCapacityLoadPath
+    Set loadPath = New CCapacityLoadPath
+    loadPath.InitializeFromLoadState rawPath, loadState
+    Set BuildLoadPath = loadPath
+End Function
+
+' Возвращает пользовательскую подпись нормализованного capacity-path для
+' Results и execution report. Соответствие ключей и подписей остается рядом с
+' объектом траектории, а calculator дает batch-слою короткую точку входа.
+Public Function DisplayNameForKey(ByVal loadPathKey As String) As String
+    Dim loadPath As CCapacityLoadPath
+    Set loadPath = New CCapacityLoadPath
+    DisplayNameForKey = loadPath.DisplayNameForKey(loadPathKey)
+End Function
+
 ' Определяет, остается ли силовая lambda-траектория чисто осевой после переноса
 ' к расчетному центру приведенного сечения. Это влияет только на выбор численной
 ' ветки Capacity: для действительно осевой траектории устойчивее сразу работать
