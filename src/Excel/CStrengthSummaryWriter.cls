@@ -447,7 +447,7 @@ Private Sub PutStrengthState(ByRef data() As Variant, ByVal rowIndex As Long, _
     Dim stateResult As CSectionStateResult
     Set stateResult = batch.FindNamedState(index, sstStrengthState)
     If stateResult Is Nothing Then
-        data(rowIndex, COL_STATE_STATUS) = policy.DisplayStatus(batch.DirectStateStatus(index))
+        data(rowIndex, COL_STATE_STATUS) = DirectStatusText(batch, index, policy)
         Exit Sub
     End If
 
@@ -502,7 +502,7 @@ Private Sub PutCapacityState(ByRef data() As Variant, ByVal rowIndex As Long, _
     End If
     If batch.StrengthCapacityReserve(index) > SMALL_VALUE Then _
         data(rowIndex, COL_CAP_RESERVE) = batch.StrengthCapacityReserve(index)
-    data(rowIndex, COL_CAP_STATUS) = policy.DisplayStatus(batch.CapacityStatus(index))
+    data(rowIndex, COL_CAP_STATUS) = CapacityStatusText(batch, index, policy)
 End Sub
 
 ' Выводит полный предельный вектор CapacityState в точке приложения нагрузки.
@@ -723,9 +723,9 @@ Private Function StrengthStateStatus(ByVal batch As CBatchSectionCalculator, ByV
     Dim stateResult As CSectionStateResult
     Set stateResult = batch.FindNamedState(index, sstStrengthState)
     If Not stateResult Is Nothing Then
-        StrengthStateStatus = stateResult.Status
+        StrengthStateStatus = StatusPolicy().DisplayStatus(stateResult.Status)
     Else
-        StrengthStateStatus = batch.DirectStateStatus(index)
+        StrengthStateStatus = DirectStatusText(batch, index, StatusPolicy())
     End If
 End Function
 
@@ -737,8 +737,33 @@ Private Function StrengthOverallStatus(ByVal batch As CBatchSectionCalculator, B
     capacityStatus = StatusPolicy().NotApplicable
 
     If batch.StrengthDirectStateRequested(index) Then directStatus = StrengthStateStatus(batch, index)
-    If batch.StrengthCapacityRequested(index) Then capacityStatus = batch.CapacityStatus(index)
+    If batch.StrengthCapacityRequested(index) Then capacityStatus = CapacityStatusText(batch, index, StatusPolicy())
     StrengthOverallStatus = StatusPolicy().Aggregate(directStatus, capacityStatus, StatusPolicy().NotApplicable)
+End Function
+
+' Возвращает внешний статус прямого НДС по ResultMeta. Строковый статус остается
+' только переходным fallback для старых тестовых объектов без result-tree.
+Private Function DirectStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
+        ByVal policy As CBatchStatusPolicy) As String
+    Dim meta As CResultMeta
+    Set meta = batch.DirectStateMeta(index)
+    If Not meta Is Nothing Then
+        DirectStatusText = policy.StatusFromMeta(meta)
+    Else
+        DirectStatusText = policy.DisplayStatus(batch.DirectStateStatus(index))
+    End If
+End Function
+
+' Возвращает внешний статус несущей способности по ResultMeta.
+Private Function CapacityStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
+        ByVal policy As CBatchStatusPolicy) As String
+    Dim meta As CResultMeta
+    Set meta = batch.CapacityMeta(index)
+    If Not meta Is Nothing Then
+        CapacityStatusText = policy.StatusFromMeta(meta)
+    Else
+        CapacityStatusText = policy.DisplayStatus(batch.CapacityStatus(index))
+    End If
 End Function
 
 ' Объединяет прямоугольный участок шапки.

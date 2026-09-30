@@ -413,13 +413,26 @@ Private Function OutputDataOffset(ByVal batch As CBatchSectionCalculator, ByVal 
     If OutputDataOffset > dataRows Then OutputDataOffset = dataRows
 End Function
 
+' Возвращает внешний статус устойчивости по ResultMeta. Старое строковое поле
+' используется только как fallback для переходных тестовых результатов.
+Private Function StabilityStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
+        ByVal policy As CBatchStatusPolicy) As String
+    Dim meta As CResultMeta
+    Set meta = batch.StabilityMeta(index)
+    If Not meta Is Nothing Then
+        StabilityStatusText = policy.StatusFromMeta(meta)
+    Else
+        StabilityStatusText = policy.DisplayStatus(batch.StabilityStatus(index))
+    End If
+End Function
+
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
     Dim policy As CBatchStatusPolicy
     Set policy = StatusPolicy()
 
     Dim statusText As String
-    statusText = policy.DisplayStatus(batch.StabilityStatus(index))
+    statusText = StabilityStatusText(batch, index, policy)
     data(rowIndex, 1) = batch.CombinationID(index)
     data(rowIndex, 2) = statusText
     PutDefaultStatusCells data, rowIndex, policy.NotApplicable

@@ -2358,19 +2358,40 @@ Public Property Get StabilityMu2() As Double
 End Property
 
 Public Property Get Status(ByVal index As Long) As String
-    Status = mResults(index).Status
+    Status = ExternalStatusFromMeta(mResults(index).OverallMeta, mResults(index).Status)
 End Property
 
 Public Property Get OverallStatus(ByVal index As Long) As String
-    OverallStatus = mResults(index).Status
+    OverallStatus = ExternalStatusFromMeta(mResults(index).OverallMeta, mResults(index).Status)
+End Property
+
+' Возвращает meta общего статуса LC. Writer-ы используют его как основной источник
+' внешнего статуса, а старые строковые поля остаются переходным совместимым фасадом.
+Public Property Get OverallMeta(ByVal index As Long) As CResultMeta
+    Set OverallMeta = mResults(index).OverallMeta
 End Property
 
 Public Property Get DirectStateStatus(ByVal index As Long) As String
-    DirectStateStatus = mResults(index).DirectStateStatus
+    DirectStateStatus = ExternalStatusFromMeta(mResults(index).DirectStateMeta, mResults(index).DirectStateStatus)
+End Property
+
+' Возвращает result-subtree расчетов по модели прочности для пассивных writer-ов.
+Public Property Get StrengthResult(ByVal index As Long) As CStrengthResult
+    Set StrengthResult = mResults(index).StrengthResult
+End Property
+
+' Возвращает meta прямого НДС по модели прочности.
+Public Property Get DirectStateMeta(ByVal index As Long) As CResultMeta
+    Set DirectStateMeta = mResults(index).DirectStateMeta
 End Property
 
 Public Property Get CapacityStatus(ByVal index As Long) As String
-    CapacityStatus = mResults(index).CapacityStatus
+    CapacityStatus = ExternalStatusFromMeta(mResults(index).CapacityMeta, mResults(index).CapacityStatus)
+End Property
+
+' Возвращает meta поиска несущей способности.
+Public Property Get CapacityMeta(ByVal index As Long) As CResultMeta
+    Set CapacityMeta = mResults(index).CapacityMeta
 End Property
 
 Public Property Get CapacityLimitState(ByVal index As Long) As String
@@ -2382,11 +2403,41 @@ Public Property Get CapacitySolutionMethod(ByVal index As Long) As String
 End Property
 
 Public Property Get CrackStatus(ByVal index As Long) As String
-    CrackStatus = mResults(index).CrackStatus
+    CrackStatus = ExternalStatusFromMeta(mResults(index).CrackMeta, mResults(index).CrackStatus)
+End Property
+
+' Возвращает result-subtree расчета трещин.
+Public Property Get CrackResult(ByVal index As Long) As CCrackResult
+    Set CrackResult = mResults(index).CrackResult
+End Property
+
+' Возвращает сводную meta нормальных трещин: formation/current-state/width.
+Public Property Get CrackMeta(ByVal index As Long) As CResultMeta
+    Set CrackMeta = mResults(index).CrackMeta
+End Property
+
+' Возвращает meta поиска момента образования нормальной трещины.
+Public Property Get CrackFormationMeta(ByVal index As Long) As CResultMeta
+    Set CrackFormationMeta = mResults(index).CrackFormationMeta
+End Property
+
+' Возвращает meta прямого CrackedState при заданных нагрузках.
+Public Property Get CrackCurrentStateMeta(ByVal index As Long) As CResultMeta
+    Set CrackCurrentStateMeta = mResults(index).CrackCurrentStateMeta
+End Property
+
+' Возвращает meta формульной проверки ширины нормальной трещины.
+Public Property Get CrackWidthMeta(ByVal index As Long) As CResultMeta
+    Set CrackWidthMeta = mResults(index).CrackWidthMeta
 End Property
 
 Public Property Get LongitudinalCrackStatus(ByVal index As Long) As String
-    LongitudinalCrackStatus = mResults(index).LongitudinalCrackStatus
+    LongitudinalCrackStatus = ExternalStatusFromMeta(mResults(index).LongitudinalCrackMeta, mResults(index).LongitudinalCrackStatus)
+End Property
+
+' Возвращает meta проверки продольных трещин.
+Public Property Get LongitudinalCrackMeta(ByVal index As Long) As CResultMeta
+    Set LongitudinalCrackMeta = mResults(index).LongitudinalCrackMeta
 End Property
 
 Public Property Get ExtensionUsed(ByVal index As Long) As Boolean
@@ -2486,7 +2537,17 @@ Public Property Get LongitudinalCrackUtilization(ByVal index As Long) As Double
 End Property
 
 Public Property Get StabilityStatus(ByVal index As Long) As String
-    StabilityStatus = mResults(index).StabilityStatus
+    StabilityStatus = ExternalStatusFromMeta(mResults(index).StabilityMeta, mResults(index).StabilityStatus)
+End Property
+
+' Возвращает result-subtree проверки устойчивости.
+Public Property Get StabilityResult(ByVal index As Long) As CStabilityResult
+    Set StabilityResult = mResults(index).StabilityResult
+End Property
+
+' Возвращает meta проверки устойчивости.
+Public Property Get StabilityMeta(ByVal index As Long) As CResultMeta
+    Set StabilityMeta = mResults(index).StabilityMeta
 End Property
 
 Public Property Get StabilityCode(ByVal index As Long) As String
@@ -3200,6 +3261,18 @@ End Property
 Public Property Get StateIterations(ByVal index As Long) As Long
     StateIterations = mResults(index).StateIterations
 End Property
+
+' Возвращает внешний статус через новую ResultMeta-модель. Старый строковый статус
+' остается только fallback для переходных тестовых объектов без result-tree.
+Private Function ExternalStatusFromMeta(ByVal meta As CResultMeta, ByVal fallbackStatus As String) As String
+    Dim policy As CBatchStatusPolicy
+    Set policy = New CBatchStatusPolicy
+    If Not meta Is Nothing Then
+        ExternalStatusFromMeta = policy.StatusFromMeta(meta)
+    Else
+        ExternalStatusFromMeta = policy.DisplayStatus(fallbackStatus)
+    End If
+End Function
 
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ

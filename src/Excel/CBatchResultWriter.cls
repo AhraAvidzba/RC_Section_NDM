@@ -446,16 +446,16 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
 
     data(rowIndex, SUM_COL_ID) = batch.CombinationID(index)
     data(rowIndex, SUM_COL_COMMENT) = batch.CombinationName(index)
-    data(rowIndex, SUM_COL_OVERALL_STATUS) = policy.DisplayStatus(batch.OverallStatus(index))
+    data(rowIndex, SUM_COL_OVERALL_STATUS) = MetaStatus(policy, batch.OverallMeta(index), batch.OverallStatus(index))
 
     PutStatusCell data, rowIndex, SUM_COL_STATUS_STRAIN, policy, _
-        batch.StrengthDirectStateRequested(index), batch.DirectStateStatus(index)
+        batch.StrengthDirectStateRequested(index), batch.DirectStateMeta(index), batch.DirectStateStatus(index)
     PutStatusCell data, rowIndex, SUM_COL_STATUS_CAPACITY, policy, _
-        batch.StrengthCapacityRequested(index), batch.CapacityStatus(index)
+        batch.StrengthCapacityRequested(index), batch.CapacityMeta(index), batch.CapacityStatus(index)
     PutStatusCell data, rowIndex, SUM_COL_STATUS_CRACK, policy, _
-        batch.CrackWidthRequested(index), batch.CrackStatus(index)
+        batch.CrackWidthRequested(index), batch.CrackWidthMeta(index), batch.CrackStatus(index)
     PutStatusCell data, rowIndex, SUM_COL_STATUS_LONG_CRACK, policy, _
-        batch.CrackWidthRequested(index), batch.LongitudinalCrackStatus(index)
+        batch.CrackWidthRequested(index), batch.LongitudinalCrackMeta(index), batch.LongitudinalCrackStatus(index)
     PutStabilityBranchStatus data, rowIndex, SUM_COL_STATUS_SP35_P1_ETA, policy, batch, index, 1, "SP35-eta"
     PutStabilityBranchStatus data, rowIndex, SUM_COL_STATUS_SP35_P1_TABLE, policy, batch, index, 1, "SP35-table"
     PutStabilityBranchStatus data, rowIndex, SUM_COL_STATUS_SP35_P2_ETA, policy, batch, index, 2, "SP35-eta"
@@ -520,8 +520,8 @@ Private Sub PutStabilityBranchStatus(ByRef data() As Variant, ByVal rowIndex As 
         ByVal planeIndex As Long, ByVal branchKey As String)
     If Not StabilityBranchApplies(batch, index, planeIndex, branchKey) Then
         data(rowIndex, columnIndex) = policy.NotApplicable
-    ElseIf Not policy.IsFinished(batch.StabilityStatus(index)) Then
-        data(rowIndex, columnIndex) = policy.DisplayStatus(batch.StabilityStatus(index))
+    ElseIf Not policy.IsFinished(MetaStatus(policy, batch.StabilityMeta(index), batch.StabilityStatus(index))) Then
+        data(rowIndex, columnIndex) = MetaStatus(policy, batch.StabilityMeta(index), batch.StabilityStatus(index))
     ElseIf StabilityPlanePassed(batch, index, planeIndex) Then
         data(rowIndex, columnIndex) = policy.OK
     Else
@@ -577,13 +577,25 @@ End Function
 
 ' Записывает статус проверки или N/A, если расчетная ветка не была включена профилем.
 Private Sub PutStatusCell(ByRef data() As Variant, ByVal rowIndex As Long, ByVal columnIndex As Long, _
-        ByVal policy As CBatchStatusPolicy, ByVal requested As Boolean, ByVal statusText As String)
+        ByVal policy As CBatchStatusPolicy, ByVal requested As Boolean, ByVal meta As CResultMeta, _
+        ByVal fallbackStatus As String)
     If requested Then
-        data(rowIndex, columnIndex) = policy.DisplayStatus(statusText)
+        data(rowIndex, columnIndex) = MetaStatus(policy, meta, fallbackStatus)
     Else
         data(rowIndex, columnIndex) = policy.NotApplicable
     End If
 End Sub
+
+' Возвращает внешний статус из ResultMeta. Старый текстовый статус используется только
+' как переходный fallback для тестов или старых результатов, где meta еще не создана.
+Private Function MetaStatus(ByVal policy As CBatchStatusPolicy, ByVal meta As CResultMeta, _
+        ByVal fallbackStatus As String) As String
+    If Not meta Is Nothing Then
+        MetaStatus = policy.StatusFromMeta(meta)
+    Else
+        MetaStatus = policy.DisplayStatus(fallbackStatus)
+    End If
+End Function
 
 ' Записывает только положительные расчетные коэффициенты запаса.
 Private Sub PutReserveCell(ByRef data() As Variant, ByVal rowIndex As Long, _

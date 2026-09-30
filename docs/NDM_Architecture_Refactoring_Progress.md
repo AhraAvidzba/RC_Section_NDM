@@ -135,10 +135,15 @@ regression-отчеты.
 
 ## In progress
 
-- Нет активного этапа. Следующий крупный блок по migration plan - этап 8:
-  постепенный перевод writer-ов и summary-чтения с плоских compatibility-полей
-  на вложенные result-объекты, без изменения расчетной методики и структуры
-  пользовательского вывода.
+- Этап 8 начат крупным срезом без изменения расчетной методики и структуры
+  пользовательского вывода: batch summary, detailed strength/crack/stability
+  writer-ы и compatibility-фасады `CBatchSectionCalculator` теперь получают
+  display-статусы через `ResultMeta` и `CBatchStatusPolicy`, а не принимают
+  самостоятельные решения по строковым статусам. Для трещин отдельно разведены
+  aggregate crack status, current-state status, width status и longitudinal status.
+- Этап 8 еще не закрыт полностью: впереди перенос ResultComment/output-comment
+  сборки в result-subtree и дальнейшее сужение прямых чтений compatibility-полей
+  там, где это можно сделать без изменения layout Results.
 
 ## Next
 
@@ -146,6 +151,8 @@ regression-отчеты.
   для следующих этапов.
 - Перед следующим срезом этапа 8 снова проверить `git status` и убедиться, что
   нет посторонних пользовательских изменений.
+- В следующем срезе этапа 8 продолжить перенос комментариев и численных
+  output-значений writer-ов на typed result objects, сохраняя текущий Excel layout.
 
 ## Known risks / open questions
 
@@ -248,6 +255,9 @@ regression-отчеты.
   через `tools/build_workbook/Build-Workbook.ps1`.
 - 2026-09-30: этап 7 прошел `tools/build_workbook/Run-BatchTests.ps1`:
   `passed=641`, `failed=0`.
+- 2026-09-30: первый крупный срез этапа 8 пересобрал книгу и прошел полный
+  `tools/build_workbook/Run-AllTests.ps1` без failures. Отдельно проверены
+  batch-тесты `passed=641`, `failed=0` и UI-тесты `passed=308`, `failed=0`.
 - 2026-09-29: срез этапа 5 с защитой capacity reserve в `CNDMResultsWriter`
   пересобрал `workbook/output/RC_Section_NDM.xlsm` через
   `tools/build_workbook/Build-Workbook.ps1`.

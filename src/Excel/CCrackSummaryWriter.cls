@@ -391,8 +391,8 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, COL_ID) = batch.CombinationID(index)
     data(rowIndex, COL_STATUS) = CrackOverallStatus(batch, index)
 
-    If policy.DisplayStatus(batch.CrackStatus(index)) = policy.NotApplicable And _
-            policy.DisplayStatus(batch.LongitudinalCrackStatus(index)) = policy.NotApplicable And _
+    If CrackWidthStatusText(batch, index, policy) = policy.NotApplicable And _
+            LongitudinalStatusText(batch, index, policy) = policy.NotApplicable And _
             Not HasCrackFormationData(batch, index) Then
         Exit Sub
     End If
@@ -426,7 +426,7 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
     Dim hasFormationData As Boolean
     hasFormationData = HasCrackFormationData(batch, index)
 
-    If policy.DisplayStatus(batch.CrackStatus(index)) = policy.NotApplicable And Not hasFormationData Then
+    If CrackFormationStatusText(batch, index, policy) = policy.NotApplicable And Not hasFormationData Then
         data(rowIndex, COL_FORMATION_STATE) = policy.NotApplicable
         Exit Sub
     End If
@@ -462,7 +462,7 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
     If hasFormationData Then
         data(rowIndex, COL_FORMATION_STATE) = IIf(batch.CrackFormed(index), "Cracked", "NotCracked")
     Else
-        data(rowIndex, COL_FORMATION_STATE) = policy.DisplayStatus(batch.CrackStatus(index))
+        data(rowIndex, COL_FORMATION_STATE) = CrackFormationStatusText(batch, index, policy)
     End If
 End Sub
 
@@ -506,8 +506,8 @@ Private Sub PutCrackedStateData(ByRef data() As Variant, ByVal rowIndex As Long,
     Set stateResult = batch.FindNamedState(index, sstCrackedState)
 
     If stateResult Is Nothing Then
-        If policy.DisplayStatus(batch.CrackStatus(index)) <> policy.NotApplicable Then _
-            data(rowIndex, COL_CRACK_STATE_STATUS) = policy.DisplayStatus(batch.CrackStatus(index))
+        If CrackCurrentStateStatusText(batch, index, policy) <> policy.NotApplicable Then _
+            data(rowIndex, COL_CRACK_STATE_STATUS) = CrackCurrentStateStatusText(batch, index, policy)
         Exit Sub
     End If
 
@@ -563,8 +563,7 @@ Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal policy As CBatchStatusPolicy)
     If Not CrackedStateAllowsCrackChecks(batch, index, policy) Then
-        If policy.DisplayStatus(batch.CrackStatus(index)) <> policy.NotApplicable Then _
-            data(rowIndex, COL_ACRC_STATUS) = policy.NotApplicable
+        data(rowIndex, COL_ACRC_STATUS) = policy.NotApplicable
         Exit Sub
     End If
 
@@ -573,11 +572,11 @@ Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
         Exit Sub
     End If
 
-    If Not policy.IsFinished(batch.CrackStatus(index)) Then
-        If policy.DisplayStatus(batch.CrackStatus(index)) = policy.NumFail Then
+    If Not policy.IsFinished(CrackWidthStatusText(batch, index, policy)) Then
+        If CrackWidthStatusText(batch, index, policy) = policy.NumFail Then
             data(rowIndex, COL_ACRC_STATUS) = policy.NotApplicable
         Else
-            data(rowIndex, COL_ACRC_STATUS) = policy.DisplayStatus(batch.CrackStatus(index))
+            data(rowIndex, COL_ACRC_STATUS) = CrackWidthStatusText(batch, index, policy)
         End If
         Exit Sub
     End If
@@ -605,7 +604,7 @@ Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, COL_ACRC) = OutputLength(batch.CrackWidth(index), units)
     data(rowIndex, COL_ACRC_ULT) = OutputLength(batch.CrackAllowable(index), units)
     data(rowIndex, COL_ACRC_RATIO) = CrackReserveFactor(batch, index)
-    data(rowIndex, COL_ACRC_STATUS) = policy.DisplayStatus(batch.CrackStatus(index))
+    data(rowIndex, COL_ACRC_STATUS) = CrackWidthStatusText(batch, index, policy)
 End Sub
 
 ' Записывает проверку продольных трещин по сжатому бетону.
@@ -613,20 +612,19 @@ Private Sub PutLongitudinalData(ByRef data() As Variant, ByVal rowIndex As Long,
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal policy As CBatchStatusPolicy)
     If Not CrackedStateAllowsCrackChecks(batch, index, policy) Then
-        If policy.DisplayStatus(batch.CrackStatus(index)) <> policy.NotApplicable Then _
-            data(rowIndex, COL_LONG_STATUS) = policy.NotApplicable
+        data(rowIndex, COL_LONG_STATUS) = policy.NotApplicable
         Exit Sub
     End If
 
-    If Not policy.IsFinished(batch.LongitudinalCrackStatus(index)) Then
-        data(rowIndex, COL_LONG_STATUS) = policy.DisplayStatus(batch.LongitudinalCrackStatus(index))
+    If Not policy.IsFinished(LongitudinalStatusText(batch, index, policy)) Then
+        data(rowIndex, COL_LONG_STATUS) = LongitudinalStatusText(batch, index, policy)
         Exit Sub
     End If
 
     data(rowIndex, COL_SIGMA_B_MAX) = OutputStress(batch.MaxConcreteCompressionStress(index), units)
     data(rowIndex, COL_RB_MC2) = OutputStress(batch.LongitudinalCrackRbMc2(index), units)
     data(rowIndex, COL_LONG_RATIO) = LongitudinalCrackReserveFactor(batch, index)
-    data(rowIndex, COL_LONG_STATUS) = policy.DisplayStatus(batch.LongitudinalCrackStatus(index))
+    data(rowIndex, COL_LONG_STATUS) = LongitudinalStatusText(batch, index, policy)
 End Sub
 
 ' Возвращает запас по нормальным трещинам для подробной пользовательской таблицы:
@@ -789,7 +787,55 @@ End Sub
 Private Function CrackOverallStatus(ByVal batch As CBatchSectionCalculator, ByVal index As Long) As String
     CrackOverallStatus = StatusPolicy().Aggregate( _
         StatusPolicy().NotApplicable, StatusPolicy().NotApplicable, _
-        batch.CrackStatus(index), batch.LongitudinalCrackStatus(index))
+        CrackWidthStatusText(batch, index, StatusPolicy()), LongitudinalStatusText(batch, index, StatusPolicy()))
+End Function
+
+' Возвращает внешний статус поиска образования нормальной трещины.
+Private Function CrackFormationStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
+        ByVal policy As CBatchStatusPolicy) As String
+    Dim meta As CResultMeta
+    Set meta = batch.CrackFormationMeta(index)
+    If Not meta Is Nothing Then
+        CrackFormationStatusText = policy.StatusFromMeta(meta)
+    Else
+        CrackFormationStatusText = policy.DisplayStatus(batch.CrackStatus(index))
+    End If
+End Function
+
+' Возвращает внешний статус прямого CrackedState от заданного сочетания.
+Private Function CrackCurrentStateStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
+        ByVal policy As CBatchStatusPolicy) As String
+    Dim meta As CResultMeta
+    Set meta = batch.CrackCurrentStateMeta(index)
+    If Not meta Is Nothing Then
+        CrackCurrentStateStatusText = policy.StatusFromMeta(meta)
+    Else
+        CrackCurrentStateStatusText = policy.DisplayStatus(batch.CrackStatus(index))
+    End If
+End Function
+
+' Возвращает внешний статус формульной проверки ширины нормальной трещины.
+Private Function CrackWidthStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
+        ByVal policy As CBatchStatusPolicy) As String
+    Dim meta As CResultMeta
+    Set meta = batch.CrackWidthMeta(index)
+    If Not meta Is Nothing Then
+        CrackWidthStatusText = policy.StatusFromMeta(meta)
+    Else
+        CrackWidthStatusText = policy.DisplayStatus(batch.CrackStatus(index))
+    End If
+End Function
+
+' Возвращает внешний статус проверки продольных трещин.
+Private Function LongitudinalStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
+        ByVal policy As CBatchStatusPolicy) As String
+    Dim meta As CResultMeta
+    Set meta = batch.LongitudinalCrackMeta(index)
+    If Not meta Is Nothing Then
+        LongitudinalStatusText = policy.StatusFromMeta(meta)
+    Else
+        LongitudinalStatusText = policy.DisplayStatus(batch.LongitudinalCrackStatus(index))
+    End If
 End Function
 
 ' Возвращает напряжение или N/A для величин, которые расчетно могут отсутствовать.

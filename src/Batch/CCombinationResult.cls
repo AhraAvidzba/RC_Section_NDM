@@ -328,6 +328,28 @@ Public Property Get CrackFormationMeta() As CResultMeta
     Set CrackFormationMeta = MetaFromStatus(CrackStatus, rkCrackFormation)
 End Property
 
+' Возвращает ResultMeta равновесного CrackedState, найденного от заданного сочетания нагрузок.
+' Этот статус нужен writer-ам отдельно от ширины раскрытия: если само НДС не найдено,
+' формульные проверки должны быть заблокированы зависимостью, а не создавать собственный NumFail.
+Public Property Get CrackCurrentStateMeta() As CResultMeta
+    If Not mCrackCurrentStateMeta Is Nothing Then
+        Set CrackCurrentStateMeta = mCrackCurrentStateMeta.Clone
+        Exit Property
+    End If
+    Set CrackCurrentStateMeta = MetaFromStatus(CrackStatus, rkDirectState)
+End Property
+
+' Возвращает ResultMeta формульной проверки ширины нормальной трещины.
+' Это отдельный result-subtree: статус width не должен подменять статус поиска Mcrc/Ncrc
+' или статус прямого CrackedState, если один из более ранних этапов был неприменим.
+Public Property Get CrackWidthMeta() As CResultMeta
+    If Not mCrackWidthMeta Is Nothing Then
+        Set CrackWidthMeta = mCrackWidthMeta.Clone
+        Exit Property
+    End If
+    Set CrackWidthMeta = MetaFromStatus(CrackStatus, rkCrackWidth)
+End Property
+
 ' Возвращает ResultMeta проверки продольных трещин.
 Public Property Get LongitudinalCrackMeta() As CResultMeta
     If Not mLongitudinalCrackMeta Is Nothing Then
