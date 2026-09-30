@@ -1184,25 +1184,27 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
     AssertTrue stats, prefix & ".sheetRow", detailRow > 0
     If detailRow <= 0 Then Exit Sub
 
+    Dim baseColumn As Long
+    baseColumn = anchor.Column
     Dim isCentralAxial As Boolean
-    isCentralAxial = (nValue > 0# And Abs(mxValue) <= 0.000000001 And Abs(myValue) <= 0.000000001)
+    isCentralAxial = batch.CrackCentralBranch(1)
     If Not isCentralAxial Then _
         AssertTrue stats, prefix & ".sheetMethod", _
-            CellHasDisplayedResult(resultsSheet.Cells.Item(detailRow, 15).Value2)
+            CellHasDisplayedResult(resultsSheet.Cells.Item(detailRow, baseColumn + 15 - 1).Value2)
     If expectNcrc Then
         AssertTrue stats, prefix & ".sheetNcrc", _
-            CellHasDisplayedResult(resultsSheet.Cells.Item(detailRow, IIf(isCentralAxial, 13, 16)).Value2)
+            CellHasDisplayedResult(resultsSheet.Cells.Item(detailRow, baseColumn + IIf(isCentralAxial, 13, 16) - 1).Value2)
     End If
     If expectMcrc Then
         AssertTrue stats, prefix & ".sheetMcrc", _
-            CellHasDisplayedResult(resultsSheet.Cells.Item(detailRow, 17).Value2)
+            CellHasDisplayedResult(resultsSheet.Cells.Item(detailRow, baseColumn + 17 - 1).Value2)
     End If
     If isCentralAxial Then
         AssertTrue stats, prefix & ".centralDepthsBlank", _
-            Len(CStr(resultsSheet.Cells.Item(detailRow, 24).Value2)) = 0 And _
-            Len(CStr(resultsSheet.Cells.Item(detailRow, 25).Value2)) = 0 And _
-            Len(CStr(resultsSheet.Cells.Item(detailRow, 26).Value2)) = 0 And _
-            Len(CStr(resultsSheet.Cells.Item(detailRow, 27).Value2)) = 0
+            Len(CStr(resultsSheet.Cells.Item(detailRow, baseColumn + 24 - 1).Value2)) = 0 And _
+            Len(CStr(resultsSheet.Cells.Item(detailRow, baseColumn + 25 - 1).Value2)) = 0 And _
+            Len(CStr(resultsSheet.Cells.Item(detailRow, baseColumn + 26 - 1).Value2)) = 0 And _
+            Len(CStr(resultsSheet.Cells.Item(detailRow, baseColumn + 27 - 1).Value2)) = 0
     End If
 End Sub
 
