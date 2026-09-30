@@ -4649,6 +4649,31 @@ Private Sub TestCrackAggregateIncludesCurrentStateFailure(ByRef stats As TBatchT
         result.CrackStatus, "NumFail"
     AssertTrue stats, "combinationTree.crack.comment.currentStateFailure", _
         InStr(1, result.CrackMeta.ResultComment, "CrackedState от заданного сочетания", vbTextCompare) > 0
+
+    Dim longitudinalMeta As CResultMeta
+    Set longitudinalMeta = New CResultMeta
+    longitudinalMeta.SetResult rsCheckFailed, rcCheckFailed, rkLongitudinalCrack, _
+        "Продольные трещины: напряжение сжатого бетона выше допустимого."
+
+    Dim longitudinalResult As CLongitudinalCrackResult
+    Set longitudinalResult = New CLongitudinalCrackResult
+    longitudinalResult.Initialize longitudinalMeta, 20#, 14.6, 20# / 14.6
+
+    Dim summaryTree As CCrackResult
+    Set summaryTree = New CCrackResult
+    summaryTree.Initialize Nothing, Nothing, Nothing, longitudinalResult
+
+    Dim summaryResult As CCombinationResult
+    Set summaryResult = New CCombinationResult
+    summaryResult.Clear "LambdaMxy"
+    summaryResult.StoreCrackAggregateResult summaryTree
+
+    AssertEquals stats, "combinationTree.crack.normalOnly.na", _
+        policy.ExternalStatus(summaryResult.CrackMeta), "N/A"
+    AssertEquals stats, "combinationTree.crack.summary.longitudinalFail", _
+        policy.ExternalStatus(summaryResult.CrackSummaryMeta), "FAIL"
+    AssertTrue stats, "combinationTree.crack.summary.comment", _
+        InStr(1, summaryResult.CrackSummaryMeta.ResultComment, "Продольные трещины", vbTextCompare) > 0
 End Sub
 
 ' Проверяет, что проверки без поиска равновесия не создают NumFail.

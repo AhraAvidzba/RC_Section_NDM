@@ -2397,6 +2397,17 @@ Public Property Get CrackMeta(ByVal index As Long) As CResultMeta
     Set CrackMeta = mResults(index).CrackMeta
 End Property
 
+' Возвращает сводную meta всего detailed-блока трещин: нормальные трещины
+' плюс продольные трещины. Это готовый источник для writer-а Results.
+Public Property Get CrackSummaryMeta(ByVal index As Long) As CResultMeta
+    Set CrackSummaryMeta = mResults(index).CrackSummaryMeta
+End Property
+
+' Возвращает внешний статус detailed-блока трещин из единой status-policy.
+Public Property Get CrackSummaryStatus(ByVal index As Long) As String
+    CrackSummaryStatus = ExternalStatusFromMeta(mResults(index).CrackSummaryMeta, mResults(index).CrackStatus)
+End Property
+
 ' Возвращает meta поиска момента образования нормальной трещины.
 Public Property Get CrackFormationMeta(ByVal index As Long) As CResultMeta
     Set CrackFormationMeta = mResults(index).CrackFormationMeta

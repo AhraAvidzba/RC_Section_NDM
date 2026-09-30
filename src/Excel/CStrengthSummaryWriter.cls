@@ -403,7 +403,7 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
 
     data(rowIndex, COL_ID) = batch.CombinationID(index)
     data(rowIndex, COL_RESULT_COMMENT) = MetaComment(batch.StrengthMeta(index))
-    data(rowIndex, COL_STATUS) = StrengthOverallStatus(batch, index)
+    data(rowIndex, COL_STATUS) = policy.StatusFromMeta(batch.StrengthMeta(index))
     data(rowIndex, COL_STATE_STATUS) = policy.NotApplicable
     data(rowIndex, COL_CAP_STATUS) = policy.NotApplicable
 
@@ -718,34 +718,6 @@ Private Sub ApplySubscriptToken(ByVal cell As Object, ByVal token As String)
         startPos = InStr(startPos + Len(token), textValue, token, vbTextCompare)
     Loop
 End Sub
-
-' Возвращает статус StrengthState для отдельного блока.
-Private Function StrengthStateStatus(ByVal batch As CBatchSectionCalculator, ByVal index As Long) As String
-    If Not batch.StrengthDirectStateRequested(index) Then
-        StrengthStateStatus = StatusPolicy().NotApplicable
-        Exit Function
-    End If
-
-    Dim stateResult As CSectionStateResult
-    Set stateResult = batch.FindNamedState(index, sstStrengthState)
-    If Not stateResult Is Nothing Then
-        StrengthStateStatus = StatusPolicy().DisplayStatus(stateResult.Status)
-    Else
-        StrengthStateStatus = DirectStatusText(batch, index, StatusPolicy())
-    End If
-End Function
-
-' Возвращает общий статус именно detailed-блока прочности.
-Private Function StrengthOverallStatus(ByVal batch As CBatchSectionCalculator, ByVal index As Long) As String
-    Dim directStatus As String
-    Dim capacityStatus As String
-    directStatus = StatusPolicy().NotApplicable
-    capacityStatus = StatusPolicy().NotApplicable
-
-    If batch.StrengthDirectStateRequested(index) Then directStatus = StrengthStateStatus(batch, index)
-    If batch.StrengthCapacityRequested(index) Then capacityStatus = CapacityStatusText(batch, index, StatusPolicy())
-    StrengthOverallStatus = StatusPolicy().Aggregate(directStatus, capacityStatus, StatusPolicy().NotApplicable)
-End Function
 
 ' Возвращает внешний статус прямого НДС по ResultMeta. Текстовый fallback нужен
 ' только для неполных тестовых объектов, где meta явно не создана.

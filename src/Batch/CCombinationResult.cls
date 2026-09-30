@@ -330,6 +330,14 @@ Public Property Get CrackMeta() As CResultMeta
     End If
 End Property
 
+' Возвращает ResultMeta всего detailed-блока трещин, который на Results
+' показывает нормальные и продольные трещины одной таблицей. Writer получает
+' уже готовый статус и комментарий: он не должен сам агрегировать normal/longitudinal.
+Public Property Get CrackSummaryMeta() As CResultMeta
+    Set CrackSummaryMeta = AggregateResultMeta(rkGeneric, BuildCrackSummaryResultComment(), _
+        CrackMeta, LongitudinalCrackMeta)
+End Property
+
 ' Возвращает ResultMeta проверки образования нормальной трещины.
 Public Property Get CrackFormationMeta() As CResultMeta
     If Not mCrackFormationMeta Is Nothing Then
@@ -509,6 +517,18 @@ Private Function BuildCrackResultComment() As String
     AppendMetaComment resultText, CrackCurrentStateMeta
     AppendMetaComment resultText, CrackWidthMeta
     BuildCrackResultComment = resultText
+End Function
+
+' Собирает комментарий для всей detailed-таблицы трещин. В отличие от
+' CrackMeta сюда входит и проверка продольных трещин, потому что она выводится
+' в том же пользовательском блоке Results.
+Private Function BuildCrackSummaryResultComment() As String
+    Dim resultText As String
+    AppendMetaComment resultText, CrackFormationMeta
+    AppendMetaComment resultText, CrackCurrentStateMeta
+    AppendMetaComment resultText, CrackWidthMeta
+    AppendMetaComment resultText, LongitudinalCrackMeta
+    BuildCrackSummaryResultComment = resultText
 End Function
 
 ' Собирает комментарий ветки образования нормальной трещины без примешивания

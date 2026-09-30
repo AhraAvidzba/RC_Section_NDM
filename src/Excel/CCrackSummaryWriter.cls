@@ -393,8 +393,8 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
     Set policy = StatusPolicy()
 
     data(rowIndex, COL_ID) = batch.CombinationID(index)
-    data(rowIndex, COL_RESULT_COMMENT) = MetaComment(batch.CrackMeta(index))
-    data(rowIndex, COL_STATUS) = CrackOverallStatus(batch, index)
+    data(rowIndex, COL_RESULT_COMMENT) = MetaComment(batch.CrackSummaryMeta(index))
+    data(rowIndex, COL_STATUS) = batch.CrackSummaryStatus(index)
 
     If CrackWidthStatusText(batch, index, policy) = policy.NotApplicable And _
             LongitudinalStatusText(batch, index, policy) = policy.NotApplicable And _
@@ -788,14 +788,6 @@ Private Sub ApplySubscriptToken(ByVal cell As Object, ByVal token As String)
         startPos = InStr(startPos + Len(token), textValue, token, vbTextCompare)
     Loop
 End Sub
-
-' Возвращает общий статус именно для crack-блока.
-Private Function CrackOverallStatus(ByVal batch As CBatchSectionCalculator, ByVal index As Long) As String
-    Dim policy As CBatchStatusPolicy
-    Set policy = StatusPolicy()
-    CrackOverallStatus = policy.AggregateMeta(Nothing, Nothing, batch.CrackMeta(index), _
-        batch.LongitudinalCrackMeta(index))
-End Function
 
 ' Возвращает внешний статус поиска образования нормальной трещины.
 Private Function CrackFormationStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
