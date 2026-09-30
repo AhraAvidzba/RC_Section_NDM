@@ -132,27 +132,25 @@ regression-отчеты.
   остаются синхронизированным фасадом для существующих writer-ов. Direct state,
   capacity, crack aggregate и stability теперь проходят через вложенные
   result-объекты без изменения расчетной математики и структуры Results.
+- Этап 8 завершен для текущего миграционного среза: batch summary и подробные
+  writer-ы прочности, трещин, устойчивости и named-state properties выводят
+  `ResultComment` из соответствующих `ResultMeta`/result-subtree. Статусы и
+  окраска status-ячеек остаются централизованы через status policy, а layout
+  Results сохранен с согласованным добавлением `ResultComment`.
 
 ## In progress
 
-- Этап 8 начат крупным срезом без изменения расчетной методики и структуры
-  пользовательского вывода: batch summary, detailed strength/crack/stability
-  writer-ы и compatibility-фасады `CBatchSectionCalculator` теперь получают
-  display-статусы через `ResultMeta` и `CBatchStatusPolicy`, а не принимают
-  самостоятельные решения по строковым статусам. Для трещин отдельно разведены
-  aggregate crack status, current-state status, width status и longitudinal status.
-- Этап 8 еще не закрыт полностью: впереди перенос ResultComment/output-comment
-  сборки в result-subtree и дальнейшее сужение прямых чтений compatibility-полей
-  там, где это можно сделать без изменения layout Results.
+- Нет активного этапа после завершения этапа 8.
 
 ## Next
 
 - Использовать baseline commit и отчеты `Stage00`/`Stage01`/`Stage02` как точки сравнения
   для следующих этапов.
-- Перед следующим срезом этапа 8 снова проверить `git status` и убедиться, что
+- Перед следующим этапом снова проверить `git status` и убедиться, что
   нет посторонних пользовательских изменений.
-- В следующем срезе этапа 8 продолжить перенос комментариев и численных
-  output-значений writer-ов на typed result objects, сохраняя текущий Excel layout.
+- Следующий этап плана - execution report и diagnostics: отчет должен брать
+  статусы, коды и пользовательские комментарии из result graph, не дублируя
+  инженерную интерпретацию writer-ов.
 
 ## Known risks / open questions
 

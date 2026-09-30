@@ -239,6 +239,26 @@ Public Property Get OverallMeta() As CResultMeta
 End Property
 
 ' Возвращает ResultMeta прямого НДС заданного LC.
+' Возвращает сводную ResultMeta блока прочности: сначала ищет
+' проблемный direct/capacity-result, затем оставляет агрегированный
+' статус без попытки заново интерпретировать численные результаты.
+Public Property Get StrengthMeta() As CResultMeta
+    Dim problemMeta As CResultMeta
+    Set problemMeta = FirstProblemMeta(DirectStateMeta)
+    If Not problemMeta Is Nothing Then
+        Set StrengthMeta = problemMeta
+        Exit Property
+    End If
+
+    Set problemMeta = FirstProblemMeta(CapacityMeta)
+    If Not problemMeta Is Nothing Then
+        Set StrengthMeta = problemMeta
+        Exit Property
+    End If
+
+    Set StrengthMeta = MetaFromStatus(Policy.AggregateText(DirectStateStatus, CapacityStatus, vbNullString), rkGeneric)
+End Property
+
 Public Property Get DirectStateMeta() As CResultMeta
     If Not mStrengthResult Is Nothing Then
         If Not mStrengthResult.DirectState Is Nothing Then

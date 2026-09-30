@@ -1176,21 +1176,21 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
     Dim anchor As Object
     Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     AssertTrue stats, prefix & ".sheetMethod", _
-        CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 14).Value2)
+        CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 15).Value2)
     If expectNcrc Then
         AssertTrue stats, prefix & ".sheetNcrc", _
-            CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 15).Value2)
+            CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 16).Value2)
     End If
     If expectMcrc Then
         AssertTrue stats, prefix & ".sheetMcrc", _
-            CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 16).Value2)
+            CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 17).Value2)
     End If
     If nValue > 0# And Abs(mxValue) <= 0.000000001 And Abs(myValue) <= 0.000000001 Then
         AssertTrue stats, prefix & ".centralDepthsBlank", _
-            Len(CStr(resultsSheet.Cells.Item(anchor.Row, 23).Value2)) = 0 And _
             Len(CStr(resultsSheet.Cells.Item(anchor.Row, 24).Value2)) = 0 And _
             Len(CStr(resultsSheet.Cells.Item(anchor.Row, 25).Value2)) = 0 And _
-            Len(CStr(resultsSheet.Cells.Item(anchor.Row, 26).Value2)) = 0
+            Len(CStr(resultsSheet.Cells.Item(anchor.Row, 26).Value2)) = 0 And _
+            Len(CStr(resultsSheet.Cells.Item(anchor.Row, 27).Value2)) = 0
     End If
 End Sub
 
@@ -3501,22 +3501,22 @@ Private Sub TestBatchSummaryWritesOnlySelectedStabilityCode(ByRef stats As TBatc
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
     AssertTrue stats, "batch.writer.stability.anchor", stabilityAnchor.Row = 122 And stabilityAnchor.Column = 1
-    AssertTrue stats, "batch.writer.stability.sp35.empty", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 28).Value2)) = 0 And _
-        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 29).Value2)) = 0 And _
-        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 44).Value2)) = 0
+    AssertTrue stats, "batch.writer.stability.sp35.empty", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 29).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 30).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 45).Value2)) = 0
     AssertTrue stats, "batch.writer.stability.sp35.naStatus", _
-        CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 37).Value2) = "N/A" And _
-        CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 43).Value2) = "N/A" And _
-        CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 52).Value2) = "N/A" And _
-        CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 58).Value2) = "N/A" And _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 37) And _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 43)
-    AssertTrue stats, "batch.writer.stability.sp63.filled", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 60).Value2)) > 0 Or _
-        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 71).Value2)) > 0
+        CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 38).Value2) = "N/A" And _
+        CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 44).Value2) = "N/A" And _
+        CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 53).Value2) = "N/A" And _
+        CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 59).Value2) = "N/A" And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 38) And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 44)
+    AssertTrue stats, "batch.writer.stability.sp63.filled", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 61).Value2)) > 0 Or _
+        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 72).Value2)) > 0
     AssertTrue stats, "batch.writer.stability.sp63.statusColor", _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 71) And _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 83) And _
-        CellHasNoFill(resultsSheet, stabilityAnchor.Row, 60)
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 72) And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 84) And _
+        CellHasNoFill(resultsSheet, stabilityAnchor.Row, 61)
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -3661,68 +3661,68 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.meta.solverCalls", CStr(resultsSheet.Cells.Item(summaryRow + 2, 2).Value2) = "Количество решений НДС"
     AssertTrue stats, "batch.writer.meta.valuesCentered", resultsSheet.Cells.Item(summaryRow, 1).HorizontalAlignment = -4108 And _
         resultsSheet.Cells.Item(summaryRow + 3, 1).HorizontalAlignment = -4108
-    AssertTrue stats, "batch.writer.header.statusGroup", CStr(resultsSheet.Cells.Item(summaryRow + 5, 5).Value2) = "статус проверки"
-    AssertTrue stats, "batch.writer.header.reserveGroup", CStr(resultsSheet.Cells.Item(summaryRow + 5, 16).Value2) = "минимальные коэффициенты запаса"
-    AssertTrue stats, "batch.writer.header.statusStrength", CStr(resultsSheet.Cells.Item(summaryRow + 6, 5).Value2) = "прочность"
-    AssertTrue stats, "batch.writer.header.reserveStrength", CStr(resultsSheet.Cells.Item(summaryRow + 6, 16).Value2) = "прочность"
-    AssertTrue stats, "batch.writer.header.centered", resultsSheet.Cells.Item(summaryRow + 5, 5).HorizontalAlignment = -4108 And _
-        resultsSheet.Cells.Item(summaryRow + 7, 16).HorizontalAlignment = -4108
-    AssertTrue stats, "batch.writer.header.commentLeft", resultsSheet.Cells.Item(summaryRow + 10, 16).HorizontalAlignment = -4131
-    AssertTrue stats, "batch.writer.header.epsilon", CStr(resultsSheet.Cells.Item(summaryRow + 7, 5).Value2) = _
+    AssertTrue stats, "batch.writer.header.statusGroup", CStr(resultsSheet.Cells.Item(summaryRow + 5, 6).Value2) = "статус проверки"
+    AssertTrue stats, "batch.writer.header.reserveGroup", CStr(resultsSheet.Cells.Item(summaryRow + 5, 17).Value2) = "минимальные коэффициенты запаса"
+    AssertTrue stats, "batch.writer.header.statusStrength", CStr(resultsSheet.Cells.Item(summaryRow + 6, 6).Value2) = "прочность"
+    AssertTrue stats, "batch.writer.header.reserveStrength", CStr(resultsSheet.Cells.Item(summaryRow + 6, 17).Value2) = "прочность"
+    AssertTrue stats, "batch.writer.header.centered", resultsSheet.Cells.Item(summaryRow + 5, 6).HorizontalAlignment = -4108 And _
+        resultsSheet.Cells.Item(summaryRow + 7, 17).HorizontalAlignment = -4108
+    AssertTrue stats, "batch.writer.header.commentLeft", resultsSheet.Cells.Item(summaryRow + 10, 17).HorizontalAlignment = -4131
+    AssertTrue stats, "batch.writer.header.epsilon", CStr(resultsSheet.Cells.Item(summaryRow + 7, 6).Value2) = _
         "по деформациям " & ChrW$(&H3B5)
     AssertTrue stats, "batch.writer.header.sp63StatusPlaneMerge", _
-        CStr(resultsSheet.Cells.Item(summaryRow + 7, 13).MergeArea.Cells.Item(1, 1).Value2) = "Плоскость 1" And _
-        resultsSheet.Cells.Item(summaryRow + 7, 13).MergeArea.Rows.Count = 2 And _
-        resultsSheet.Cells.Item(summaryRow + 7, 13).MergeArea.Columns.Count = 1 And _
-        CStr(resultsSheet.Cells.Item(summaryRow + 9, 13).Value2) = "Ncr/N" And _
-        Not resultsSheet.Cells.Item(summaryRow + 9, 13).MergeCells
+        CStr(resultsSheet.Cells.Item(summaryRow + 7, 14).MergeArea.Cells.Item(1, 1).Value2) = "Плоскость 1" And _
+        resultsSheet.Cells.Item(summaryRow + 7, 14).MergeArea.Rows.Count = 2 And _
+        resultsSheet.Cells.Item(summaryRow + 7, 14).MergeArea.Columns.Count = 1 And _
+        CStr(resultsSheet.Cells.Item(summaryRow + 9, 14).Value2) = "Ncr/N" And _
+        Not resultsSheet.Cells.Item(summaryRow + 9, 14).MergeCells
     AssertTrue stats, "batch.writer.header.sp63ReservePlaneMerge", _
-        CStr(resultsSheet.Cells.Item(summaryRow + 7, 24).MergeArea.Cells.Item(1, 1).Value2) = "Плоскость 1" And _
-        resultsSheet.Cells.Item(summaryRow + 7, 24).MergeArea.Rows.Count = 2 And _
-        resultsSheet.Cells.Item(summaryRow + 7, 24).MergeArea.Columns.Count = 1 And _
-        CStr(resultsSheet.Cells.Item(summaryRow + 9, 24).Value2) = "Ncr/N" And _
-        Not resultsSheet.Cells.Item(summaryRow + 9, 24).MergeCells
+        CStr(resultsSheet.Cells.Item(summaryRow + 7, 25).MergeArea.Cells.Item(1, 1).Value2) = "Плоскость 1" And _
+        resultsSheet.Cells.Item(summaryRow + 7, 25).MergeArea.Rows.Count = 2 And _
+        resultsSheet.Cells.Item(summaryRow + 7, 25).MergeArea.Columns.Count = 1 And _
+        CStr(resultsSheet.Cells.Item(summaryRow + 9, 25).Value2) = "Ncr/N" And _
+        Not resultsSheet.Cells.Item(summaryRow + 9, 25).MergeCells
     AssertTrue stats, "batch.writer.header.id", _
         CStr(resultsSheet.Cells.Item(summaryRow + 5, 1).MergeArea.Cells.Item(1, 1).Value2) = "Combination ID"
     AssertTrue stats, "batch.writer.header.idMergeRows", resultsSheet.Cells.Item(summaryRow + 5, 1).MergeArea.Rows.Count = 5
-    AssertTrue stats, "batch.writer.header.commentRow", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 16).Value2), "деформациям", vbTextCompare) > 0
+    AssertTrue stats, "batch.writer.header.commentRow", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 17).Value2), "деформациям", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.worst.label", CStr(resultsSheet.Cells.Item(summaryRow + 11, 1).Value2) = "worst LC"
     AssertTrue stats, "batch.writer.worst.commentDash", CStr(resultsSheet.Cells.Item(summaryRow + 11, 2).Value2) = "-"
-    AssertTrue stats, "batch.writer.worst.overallDash", CStr(resultsSheet.Cells.Item(summaryRow + 11, 3).Value2) = "-"
+    AssertTrue stats, "batch.writer.worst.resultCommentDash", CStr(resultsSheet.Cells.Item(summaryRow + 11, 3).Value2) = "-"
+    AssertTrue stats, "batch.writer.worst.overallDash", CStr(resultsSheet.Cells.Item(summaryRow + 11, 4).Value2) = "-"
     AssertTrue stats, "batch.writer.worst.noNa", Not BatchSummaryWorstRowContainsText(resultsSheet, "N/A")
     AssertTrue stats, "batch.writer.worst.bold", resultsSheet.Cells.Item(summaryRow + 11, 1).Font.Bold And _
-        resultsSheet.Cells.Item(summaryRow + 11, 16).Font.Bold
-    AssertTrue stats, "batch.writer.statusLegend.title", BatchSummaryCellText(resultsSheet, summaryRow + 5, 27) = "Расшифровка статусов"
+        resultsSheet.Cells.Item(summaryRow + 11, 17).Font.Bold
+    AssertTrue stats, "batch.writer.statusLegend.title", BatchSummaryCellText(resultsSheet, summaryRow + 5, 28) = "Расшифровка статусов"
     AssertTrue stats, "batch.writer.statusLegend.header", _
-        BatchSummaryCellText(resultsSheet, summaryRow + 6, 27) = "Статус" And _
-        BatchSummaryCellText(resultsSheet, summaryRow + 6, 28) = "Описание"
+        BatchSummaryCellText(resultsSheet, summaryRow + 6, 28) = "Статус" And _
+        BatchSummaryCellText(resultsSheet, summaryRow + 6, 29) = "Описание"
     AssertTrue stats, "batch.writer.statusLegend.values", _
-        BatchSummaryCellText(resultsSheet, summaryRow + 7, 27) = "OK" And _
-        BatchSummaryCellText(resultsSheet, summaryRow + 10, 27) = "InputErr"
+        BatchSummaryCellText(resultsSheet, summaryRow + 7, 28) = "OK" And _
+        BatchSummaryCellText(resultsSheet, summaryRow + 10, 28) = "InputErr"
     AssertTrue stats, "batch.writer.statusLegend.mergeOnlyTitle", _
-        resultsSheet.Cells.Item(summaryRow + 5, 27).MergeArea.Columns.Count = 2 And _
-        Not resultsSheet.Cells.Item(summaryRow + 6, 27).MergeCells And _
-        Not resultsSheet.Cells.Item(summaryRow + 7, 28).MergeCells
+        resultsSheet.Cells.Item(summaryRow + 5, 28).MergeArea.Columns.Count = 2 And _
+        Not resultsSheet.Cells.Item(summaryRow + 6, 28).MergeCells And _
+        Not resultsSheet.Cells.Item(summaryRow + 7, 29).MergeCells
     AssertTrue stats, "batch.writer.statusLegend.noWrap", _
-        Not resultsSheet.Cells.Item(summaryRow + 7, 28).WrapText
+        Not resultsSheet.Cells.Item(summaryRow + 7, 29).WrapText
     AssertTrue stats, "batch.writer.statusLegend.italicValues", _
-        resultsSheet.Cells.Item(summaryRow + 7, 27).Font.Italic And _
-        resultsSheet.Cells.Item(summaryRow + 11, 28).Font.Italic
+        resultsSheet.Cells.Item(summaryRow + 7, 28).Font.Italic And _
+        resultsSheet.Cells.Item(summaryRow + 11, 29).Font.Italic
     AssertTrue stats, "batch.writer.statusLegend.colors", _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 7, 27) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 8, 27) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 9, 27) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 10, 27) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 11, 27)
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 7, 28) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 8, 28) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 9, 28) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 10, 28) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 11, 28)
     AssertTrue stats, "batch.writer.reserve.dataNotHeaderFill", _
-        resultsSheet.Cells.Item(summaryRow + 12, 16).Interior.ColorIndex = -4142
+        resultsSheet.Cells.Item(summaryRow + 12, 17).Interior.ColorIndex = -4142
     AssertWorstSummaryRowMatchesData stats, resultsSheet
     AssertTrue stats, "batch.writer.data.firstId", CStr(resultsSheet.Cells.Item(summaryRow + 12, 1).Value2) = "W1"
-    AssertTrue stats, "batch.writer.data.capacityStatus", Len(CStr(resultsSheet.Cells.Item(summaryRow + 12, 6).Value2)) > 0
-    AssertTrue stats, "batch.writer.data.capacityReserve", IsNumeric(resultsSheet.Cells.Item(summaryRow + 12, 17).Value2)
+    AssertTrue stats, "batch.writer.data.capacityStatus", Len(CStr(resultsSheet.Cells.Item(summaryRow + 12, 7).Value2)) > 0
+    AssertTrue stats, "batch.writer.data.capacityReserve", IsNumeric(resultsSheet.Cells.Item(summaryRow + 12, 18).Value2)
     AssertTrue stats, "batch.writer.data.statusColors", _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 3) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 5) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 4) And _
         StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 6) And _
         StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 7) And _
         StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 8) And _
@@ -3731,88 +3731,89 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
         StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 11) And _
         StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 12) And _
         StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 13) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 14)
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 14) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 15)
     Dim strengthAnchor As Object
     Set strengthAnchor = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
     AssertTrue stats, "batch.writer.strength.statusColors", _
-        StatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 2) And _
-        StatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 29) And _
-        StatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 48) And _
+        StatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 3) And _
+        StatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 30) And _
+        StatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 49) And _
         CellHasNoFill(resultsSheet, strengthAnchor.Row, 1) And _
         CellHasNoFill(resultsSheet, strengthAnchor.Row, 10) And _
         CellHasNoFill(resultsSheet, strengthAnchor.Row, 31)
     AssertTrue stats, "batch.writer.strength.absentZonesBlank", _
-        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 17).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 18).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 19).Value2)) = 0 And _
-        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 21).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 20).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 22).Value2)) = 0 And _
-        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 23).Value2)) = 0
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 23).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 24).Value2)) = 0
     AssertTrue stats, "batch.writer.strength.presentTensionKept", _
-        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 20).Value2)) > 0 And _
-        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 24).Value2)) > 0
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 21).Value2)) > 0 And _
+        Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 25).Value2)) > 0
     Dim crackAnchor As Object
     Set crackAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     AssertTrue stats, "batch.writer.crack.statusColors", _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 2) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 18) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 3) And _
         StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 19) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 22) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 44) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 48) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 20) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 23) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 45) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 49) And _
         CellHasNoFill(resultsSheet, crackAnchor.Row, 1) And _
         CellHasNoFill(resultsSheet, crackAnchor.Row, 10) And _
-        CellHasNoFill(resultsSheet, crackAnchor.Row, 45)
-    AssertTrue stats, "batch.writer.crack.header.formationTitle", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 10).Value2) = "Момент образования трещин"
+        CellHasNoFill(resultsSheet, crackAnchor.Row, 46)
+    AssertTrue stats, "batch.writer.crack.header.formationTitle", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 11).Value2) = "Момент образования трещин"
     AssertTrue stats, "batch.writer.crack.header.crackedStateTitle", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 21).Value2) = "равновесие при заданных нагрузках"
-    AssertTrue stats, "batch.writer.crack.header.title", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 23).Value2) = "нормальные и продольные трещины"
-    AssertTrue stats, "batch.writer.crack.header.mcrcNote", InStr(1, CStr(resultsSheet.Cells.Item(crackAnchor.Row - 2, 16).Value2), "моментного вектора", vbTextCompare) > 0
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 22).Value2) = "равновесие при заданных нагрузках"
+    AssertTrue stats, "batch.writer.crack.header.title", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 24).Value2) = "нормальные и продольные трещины"
+    AssertTrue stats, "batch.writer.crack.header.mcrcNote", InStr(1, CStr(resultsSheet.Cells.Item(crackAnchor.Row - 2, 17).Value2), "моментного вектора", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.crack.header.formationStatus", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 3, 18).Value2) = "статус трещин" And _
-        resultsSheet.Cells.Item(crackAnchor.Row - 3, 18).MergeArea.Columns.Count = 3
-    AssertTrue stats, "batch.writer.crack.header.state", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 20).Value2) = "state"
-    AssertTrue stats, "batch.writer.crack.header.crackedStateStatus", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 22).Value2) = "статус"
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 3, 19).Value2) = "статус трещин" And _
+        resultsSheet.Cells.Item(crackAnchor.Row - 3, 19).MergeArea.Columns.Count = 3
+    AssertTrue stats, "batch.writer.crack.header.state", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 21).Value2) = "state"
+    AssertTrue stats, "batch.writer.crack.header.crackedStateStatus", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 23).Value2) = "статус"
     AssertTrue stats, "batch.writer.crack.header.es", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 40).Value2) = "Es, MPa"
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 41).Value2) = "Es, MPa"
     AssertTrue stats, "batch.writer.crack.header.normalStatusRu", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 44).Value2) = "статус"
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 45).Value2) = "статус"
     AssertTrue stats, "batch.writer.crack.header.longStatusRu", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 48).Value2) = "статус"
-    AssertTrue stats, "batch.writer.crack.header.notesPlain", Not resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).Font.Bold And _
-        resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).HorizontalAlignment = -4131
-    AssertTrue stats, "batch.writer.crack.header.notesFill", CLng(resultsSheet.Cells.Item(crackAnchor.Row - 2, 14).Interior.Color) = RGB(217, 217, 217)
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 49).Value2) = "статус"
+    AssertTrue stats, "batch.writer.crack.header.notesPlain", Not resultsSheet.Cells.Item(crackAnchor.Row - 2, 15).Font.Bold And _
+        resultsSheet.Cells.Item(crackAnchor.Row - 2, 15).HorizontalAlignment = -4131
+    AssertTrue stats, "batch.writer.crack.header.notesFill", CLng(resultsSheet.Cells.Item(crackAnchor.Row - 2, 15).Interior.Color) = RGB(217, 217, 217)
     AssertTrue stats, "batch.writer.crack.availableRowsBorder", _
         Len(CStr(resultsSheet.Cells.Item(crackAnchor.Row + 19, 1).Value2)) = 0 And _
         resultsSheet.Cells.Item(crackAnchor.Row + 19, 1).Borders(9).LineStyle <> -4142
     Dim stabilityAnchor As Object
     Set stabilityAnchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
     AssertTrue stats, "batch.writer.stability.statusColor", _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 2) And _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 37) And _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 43) And _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 52) And _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 58) And _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 71) And _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 83) And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 3) And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 38) And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 44) And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 53) And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 59) And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 72) And _
+        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 84) And _
         CellHasNoFill(resultsSheet, stabilityAnchor.Row, 1)
     AssertTrue stats, "batch.writer.stability.header.summary", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 1).Value2) = _
         "Итог по расчету (с учетом " & ChrW$(&H3B7) & ")"
-    AssertTrue stats, "batch.writer.stability.header.statusWidth", resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 2).MergeArea.Columns.Count = 1
-    AssertTrue stats, "batch.writer.stability.header.mainAxes", InStr(1, CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 3).Value2), _
+    AssertTrue stats, "batch.writer.stability.header.statusWidth", resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 3).MergeArea.Columns.Count = 1
+    AssertTrue stats, "batch.writer.stability.header.mainAxes", InStr(1, CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 4).Value2), _
         "главных центральных осей", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.stability.header.noExtraTier", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 3).Value2)) = 0 And _
-        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 5).Value2)) = 0
-    AssertTrue stats, "batch.writer.stability.header.sp35", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 28).Value2) = "Расчет по СП 35"
-    AssertTrue stats, "batch.writer.stability.header.sp63", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 60).Value2) = "Расчет по СП 63"
-    AssertTrue stats, "batch.writer.stability.header.notes", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 3).Value2)) > 0 And _
-        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 60).Value2)) > 0
-    AssertTrue stats, "batch.writer.stability.header.notesPlain", Not resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 3).Font.Bold And _
-        resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 3).HorizontalAlignment = -4131
-    AssertTrue stats, "batch.writer.stability.header.notesFill", CLng(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 3).Interior.Color) = RGB(217, 217, 217)
-    AssertTrue stats, "batch.writer.stability.header.sp35NcrBranch", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 32).Value2) = "при ec > r"
-    AssertTrue stats, "batch.writer.stability.header.sp63PlaneHeight", resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 60).MergeArea.Rows.Count = 2
-    AssertTrue stats, "batch.writer.stability.header.sp35Ratio", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 1, 36).Value2) = "0.7*Ncr/N"
+    AssertTrue stats, "batch.writer.stability.header.noExtraTier", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 4).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 6).Value2)) = 0
+    AssertTrue stats, "batch.writer.stability.header.sp35", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 29).Value2) = "Расчет по СП 35"
+    AssertTrue stats, "batch.writer.stability.header.sp63", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 61).Value2) = "Расчет по СП 63"
+    AssertTrue stats, "batch.writer.stability.header.notes", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 4).Value2)) > 0 And _
+        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 61).Value2)) > 0
+    AssertTrue stats, "batch.writer.stability.header.notesPlain", Not resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 4).Font.Bold And _
+        resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 4).HorizontalAlignment = -4131
+    AssertTrue stats, "batch.writer.stability.header.notesFill", CLng(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 4).Interior.Color) = RGB(217, 217, 217)
+    AssertTrue stats, "batch.writer.stability.header.sp35NcrBranch", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 33).Value2) = "при ec > r"
+    AssertTrue stats, "batch.writer.stability.header.sp63PlaneHeight", resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 61).MergeArea.Rows.Count = 2
+    AssertTrue stats, "batch.writer.stability.header.sp35Ratio", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 1, 37).Value2) = "0.7*Ncr/N"
     AssertClose stats, "batch.writer.stability.columnWidthA", CDbl(resultsSheet.Columns.Item(1).ColumnWidth), 10#, 0.01
     AssertClose stats, "batch.writer.stability.columnWidthN", CDbl(resultsSheet.Columns.Item(14).ColumnWidth), 10#, 0.01
     AssertClose stats, "batch.writer.stability.columnWidthAF", CDbl(resultsSheet.Columns.Item(32).ColumnWidth), 10#, 0.01
@@ -3858,12 +3859,12 @@ Private Sub TestBatchSummaryPreservesSourceRowGaps(ByRef stats As TBatchTestStat
         CStr(resultsSheet.Cells.Item(summaryRow + 12, 1).Value2) = "GAP1"
     AssertTrue stats, "batch.writer.gaps.summary.blank2", _
         Len(CStr(resultsSheet.Cells.Item(summaryRow + 13, 1).Value2)) = 0 And _
-        Len(CStr(resultsSheet.Cells.Item(summaryRow + 13, 3).Value2)) = 0 And _
-        CellHasNoFill(resultsSheet, summaryRow + 13, 3)
+        Len(CStr(resultsSheet.Cells.Item(summaryRow + 13, 4).Value2)) = 0 And _
+        CellHasNoFill(resultsSheet, summaryRow + 13, 4)
     AssertTrue stats, "batch.writer.gaps.summary.blank3", _
         Len(CStr(resultsSheet.Cells.Item(summaryRow + 14, 1).Value2)) = 0 And _
-        Len(CStr(resultsSheet.Cells.Item(summaryRow + 14, 3).Value2)) = 0 And _
-        CellHasNoFill(resultsSheet, summaryRow + 14, 3)
+        Len(CStr(resultsSheet.Cells.Item(summaryRow + 14, 4).Value2)) = 0 And _
+        CellHasNoFill(resultsSheet, summaryRow + 14, 4)
     AssertTrue stats, "batch.writer.gaps.summary.fourth", _
         CStr(resultsSheet.Cells.Item(summaryRow + 15, 1).Value2) = "GAP4"
 
@@ -3923,39 +3924,39 @@ Private Sub AssertBatchSummaryReservesMatchDetailed(ByRef stats As TBatchTestSta
 
     If checkStrength And strengthRow > 0 Then
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".strain", _
-            resultsSheet.Cells.Item(summaryRow, 16).Value2, _
-            resultsSheet.Cells.Item(strengthRow, 28).Value2
-        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".capacity", _
             resultsSheet.Cells.Item(summaryRow, 17).Value2, _
-            resultsSheet.Cells.Item(strengthRow, 47).Value2
+            resultsSheet.Cells.Item(strengthRow, 29).Value2
+        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".capacity", _
+            resultsSheet.Cells.Item(summaryRow, 18).Value2, _
+            resultsSheet.Cells.Item(strengthRow, 48).Value2
     End If
     If checkCrack And crackRow > 0 Then
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".crack", _
-            resultsSheet.Cells.Item(summaryRow, 18).Value2, _
-            resultsSheet.Cells.Item(crackRow, 43).Value2
-        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".longCrack", _
             resultsSheet.Cells.Item(summaryRow, 19).Value2, _
-            resultsSheet.Cells.Item(crackRow, 47).Value2
+            resultsSheet.Cells.Item(crackRow, 44).Value2
+        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".longCrack", _
+            resultsSheet.Cells.Item(summaryRow, 20).Value2, _
+            resultsSheet.Cells.Item(crackRow, 48).Value2
     End If
     If checkStability And stabilityRow > 0 Then
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p1eta", _
-            resultsSheet.Cells.Item(summaryRow, 20).Value2, _
-            resultsSheet.Cells.Item(stabilityRow, 36).Value2
-        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p1table", _
             resultsSheet.Cells.Item(summaryRow, 21).Value2, _
-            resultsSheet.Cells.Item(stabilityRow, 42).Value2
-        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p2eta", _
+            resultsSheet.Cells.Item(stabilityRow, 37).Value2
+        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p1table", _
             resultsSheet.Cells.Item(summaryRow, 22).Value2, _
-            resultsSheet.Cells.Item(stabilityRow, 51).Value2
-        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p2table", _
+            resultsSheet.Cells.Item(stabilityRow, 43).Value2
+        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p2eta", _
             resultsSheet.Cells.Item(summaryRow, 23).Value2, _
-            resultsSheet.Cells.Item(stabilityRow, 57).Value2
-        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp63p1", _
+            resultsSheet.Cells.Item(stabilityRow, 52).Value2
+        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p2table", _
             resultsSheet.Cells.Item(summaryRow, 24).Value2, _
-            resultsSheet.Cells.Item(stabilityRow, 70).Value2
-        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp63p2", _
+            resultsSheet.Cells.Item(stabilityRow, 58).Value2
+        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp63p1", _
             resultsSheet.Cells.Item(summaryRow, 25).Value2, _
-            resultsSheet.Cells.Item(stabilityRow, 82).Value2
+            resultsSheet.Cells.Item(stabilityRow, 71).Value2
+        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp63p2", _
+            resultsSheet.Cells.Item(summaryRow, 26).Value2, _
+            resultsSheet.Cells.Item(stabilityRow, 83).Value2
     End If
 End Sub
 
@@ -3987,16 +3988,16 @@ End Function
 ' Проверяет строку worst LC: в статусном блоке должен стоять номер LC,
 ' а в блоке запасов - коэффициент из той же строки LC и того же столбца проверки.
 Private Sub AssertWorstSummaryRowMatchesData(ByRef stats As TBatchTestStats, ByVal resultsSheet As Object)
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "strain", 5, 16
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "capacity", 6, 17
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "crack", 7, 18
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "longCrack", 8, 19
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p1eta", 9, 20
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p1table", 10, 21
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p2eta", 11, 22
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p2table", 12, 23
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp63p1", 13, 24
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp63p2", 14, 25
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "strain", 6, 17
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "capacity", 7, 18
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "crack", 8, 19
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "longCrack", 9, 20
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p1eta", 10, 21
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p1table", 11, 22
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p2eta", 12, 23
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p2table", 13, 24
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp63p1", 14, 25
+    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp63p2", 15, 26
 End Sub
 
 ' Проверяет строку worst LC по расчетным столбцам compact summary.
@@ -4005,7 +4006,7 @@ Private Function BatchSummaryWorstRowContainsText(ByVal resultsSheet As Object, 
     anchorRow = BatchSummaryStartRow()
 
     Dim columnIndex As Long
-    For columnIndex = 5 To 25
+    For columnIndex = 6 To 26
         If StrComp(Trim$(CStr(resultsSheet.Cells.Item(anchorRow + 11, columnIndex).Value2)), _
                 textValue, vbTextCompare) = 0 Then
             BatchSummaryWorstRowContainsText = True

@@ -22,62 +22,63 @@ Option Explicit
 ' блоком специально остается без рамок и заливки, как в таблице устойчивости.
 
 Private Const HEADER_ROWS As Long = 4 ' Сколько строк шапки строится над якорем первой строки LC.
-Private Const TOTAL_COLUMNS As Long = 48 ' Полная ширина таблицы, включая пустой разделитель.
+Private Const TOTAL_COLUMNS As Long = 49 ' Полная ширина таблицы, включая пустой разделитель.
 
 Private Const COL_LEFT_FIRST As Long = 1
-Private Const COL_LEFT_LAST As Long = 8
-Private Const COL_SEPARATOR As Long = 9
-Private Const COL_MAIN_FIRST As Long = 10
-Private Const COL_MAIN_LAST As Long = 48
+Private Const COL_LEFT_LAST As Long = 9
+Private Const COL_SEPARATOR As Long = 10
+Private Const COL_MAIN_FIRST As Long = 11
+Private Const COL_MAIN_LAST As Long = 49
 
 Private Const COL_ID As Long = 1
-Private Const COL_STATUS As Long = 2
-Private Const COL_REF_N As Long = 3
-Private Const COL_REF_MX As Long = 4
-Private Const COL_REF_MY As Long = 5
-Private Const COL_LOAD_N As Long = 6
-Private Const COL_LOAD_MX As Long = 7
-Private Const COL_LOAD_MY As Long = 8
+Private Const COL_RESULT_COMMENT As Long = 2
+Private Const COL_STATUS As Long = 3
+Private Const COL_REF_N As Long = 4
+Private Const COL_REF_MX As Long = 5
+Private Const COL_REF_MY As Long = 6
+Private Const COL_LOAD_N As Long = 7
+Private Const COL_LOAD_MX As Long = 8
+Private Const COL_LOAD_MY As Long = 9
 
-Private Const COL_ARED As Long = 10
-Private Const COL_RBT_SER As Long = 11
-Private Const COL_NCRC As Long = 12
-Private Const COL_LAMBDA_NCRC As Long = 13
-Private Const COL_FORMATION_METHOD As Long = 14
-Private Const COL_FORMATION_NCRC As Long = 15
-Private Const COL_MCRC As Long = 16
-Private Const COL_LAMBDA_MCRC As Long = 17
-Private Const COL_PRE_CRACK_STATUS As Long = 18
-Private Const COL_POST_CRACK_STATUS As Long = 19
-Private Const COL_FORMATION_STATE As Long = 20
-Private Const COL_CRACK_STATE_DIAGEXT As Long = 21
-Private Const COL_CRACK_STATE_STATUS As Long = 22
-Private Const COL_XT As Long = 23
-Private Const COL_H As Long = 24
-Private Const COL_AS_COVER As Long = 25
-Private Const COL_HBT As Long = 26
-Private Const COL_ABT As Long = 27
-Private Const COL_AS As Long = 28
-Private Const COL_DS_EQ As Long = 29
-Private Const COL_LS0 As Long = 30
-Private Const COL_LS As Long = 31
-Private Const COL_PHI1 As Long = 32
-Private Const COL_PHI2 As Long = 33
-Private Const COL_PHI3 As Long = 34
-Private Const COL_PSI_S As Long = 35
-Private Const COL_REBARS As Long = 36
-Private Const COL_NREBARS As Long = 37
-Private Const COL_SIGMA_S_CRC As Long = 38
-Private Const COL_SIGMA_S As Long = 39
-Private Const COL_ES As Long = 40
-Private Const COL_ACRC As Long = 41
-Private Const COL_ACRC_ULT As Long = 42
-Private Const COL_ACRC_RATIO As Long = 43
-Private Const COL_ACRC_STATUS As Long = 44
-Private Const COL_SIGMA_B_MAX As Long = 45
-Private Const COL_RB_MC2 As Long = 46
-Private Const COL_LONG_RATIO As Long = 47
-Private Const COL_LONG_STATUS As Long = 48
+Private Const COL_ARED As Long = 11
+Private Const COL_RBT_SER As Long = 12
+Private Const COL_NCRC As Long = 13
+Private Const COL_LAMBDA_NCRC As Long = 14
+Private Const COL_FORMATION_METHOD As Long = 15
+Private Const COL_FORMATION_NCRC As Long = 16
+Private Const COL_MCRC As Long = 17
+Private Const COL_LAMBDA_MCRC As Long = 18
+Private Const COL_PRE_CRACK_STATUS As Long = 19
+Private Const COL_POST_CRACK_STATUS As Long = 20
+Private Const COL_FORMATION_STATE As Long = 21
+Private Const COL_CRACK_STATE_DIAGEXT As Long = 22
+Private Const COL_CRACK_STATE_STATUS As Long = 23
+Private Const COL_XT As Long = 24
+Private Const COL_H As Long = 25
+Private Const COL_AS_COVER As Long = 26
+Private Const COL_HBT As Long = 27
+Private Const COL_ABT As Long = 28
+Private Const COL_AS As Long = 29
+Private Const COL_DS_EQ As Long = 30
+Private Const COL_LS0 As Long = 31
+Private Const COL_LS As Long = 32
+Private Const COL_PHI1 As Long = 33
+Private Const COL_PHI2 As Long = 34
+Private Const COL_PHI3 As Long = 35
+Private Const COL_PSI_S As Long = 36
+Private Const COL_REBARS As Long = 37
+Private Const COL_NREBARS As Long = 38
+Private Const COL_SIGMA_S_CRC As Long = 39
+Private Const COL_SIGMA_S As Long = 40
+Private Const COL_ES As Long = 41
+Private Const COL_ACRC As Long = 42
+Private Const COL_ACRC_ULT As Long = 43
+Private Const COL_ACRC_RATIO As Long = 44
+Private Const COL_ACRC_STATUS As Long = 45
+Private Const COL_SIGMA_B_MAX As Long = 46
+Private Const COL_RB_MC2 As Long = 47
+Private Const COL_LONG_RATIO As Long = 48
+Private Const COL_LONG_STATUS As Long = 49
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, единый для таблиц Results.
 Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' На Results оставляем одинаковую ширину столбцов.
@@ -225,6 +226,7 @@ Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem)
     ReDim headers(1 To HEADER_ROWS, 1 To TOTAL_COLUMNS)
 
     headers(1, COL_ID) = "Combination ID"
+    headers(1, COL_RESULT_COMMENT) = "ResultComment"
     headers(1, COL_STATUS) = "общий статус"
     headers(1, COL_REF_N) = "относительно центральных осей приведенного сечения"
     headers(1, COL_LOAD_N) = "в точке приложения нагрузок"
@@ -250,6 +252,7 @@ End Sub
 
 ' Заполняет строку пояснений над нижним ярусом заголовков.
 Private Sub PutHeaderNotes(ByRef headers() As Variant, ByVal units As CUnitSystem)
+    headers(HEADER_NOTES_ROW, COL_RESULT_COMMENT) = "пояснение расчетного статуса блока трещин"
     headers(HEADER_NOTES_ROW, COL_REF_N) = "нагрузки, переданные в расчет трещин, в центре приведенного сечения"
     headers(HEADER_NOTES_ROW, COL_REF_MX) = "момент Mx там же, вокруг глобальной оси X/Y принятой системы"
     headers(HEADER_NOTES_ROW, COL_REF_MY) = "момент My там же, вокруг глобальной оси X/Y принятой системы"
@@ -349,6 +352,7 @@ End Sub
 ' Объединяет ячейки многоуровневой шапки.
 Private Sub MergeHeaders(ByVal target As Object)
     MergeRange target, 1, COL_ID, HEADER_LABEL_ROW, COL_ID
+    MergeRange target, 1, COL_RESULT_COMMENT, HEADER_LABEL_ROW, COL_RESULT_COMMENT
     MergeRange target, 1, COL_STATUS, HEADER_LABEL_ROW, COL_STATUS
     MergeRange target, 1, COL_REF_N, 2, COL_REF_MY
     MergeRange target, 1, COL_LOAD_N, 2, COL_LOAD_MY
@@ -389,6 +393,7 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
     Set policy = StatusPolicy()
 
     data(rowIndex, COL_ID) = batch.CombinationID(index)
+    data(rowIndex, COL_RESULT_COMMENT) = MetaComment(batch.CrackMeta(index))
     data(rowIndex, COL_STATUS) = CrackOverallStatus(batch, index)
 
     If CrackWidthStatusText(batch, index, policy) = policy.NotApplicable And _
@@ -671,7 +676,8 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
         target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).HorizontalAlignment = -4108
         target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).VerticalAlignment = -4108
         target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).NumberFormat = "0.000"
-        target.Offset(HEADER_ROWS, COL_ID - 1).Resize(dataRows, 2).NumberFormat = "@"
+        target.Offset(HEADER_ROWS, COL_ID - 1).Resize(dataRows, 3).NumberFormat = "@"
+        target.Offset(HEADER_ROWS, COL_RESULT_COMMENT - 1).Resize(dataRows, 1).HorizontalAlignment = -4131
         target.Offset(HEADER_ROWS, COL_REBARS - 1).Resize(dataRows, 1).NumberFormat = "@"
         target.Offset(HEADER_ROWS, COL_PRE_CRACK_STATUS - 1).Resize(dataRows, 3).NumberFormat = "@"
         target.Offset(HEADER_ROWS, COL_CRACK_STATE_DIAGEXT - 1).Resize(dataRows, 2).NumberFormat = "@"
@@ -836,6 +842,13 @@ Private Function LongitudinalStatusText(ByVal batch As CBatchSectionCalculator, 
     Else
         LongitudinalStatusText = policy.DisplayStatus(batch.LongitudinalCrackStatus(index))
     End If
+End Function
+
+' Возвращает готовое пользовательское пояснение из ResultMeta блока.
+' Writer не анализирует технические StopReason и не собирает комментарий заново.
+Private Function MetaComment(ByVal meta As CResultMeta) As String
+    If meta Is Nothing Then Exit Function
+    MetaComment = meta.ResultComment
 End Function
 
 ' Возвращает напряжение или N/A для величин, которые расчетно могут отсутствовать.

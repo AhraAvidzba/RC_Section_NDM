@@ -20,21 +20,21 @@ Option Explicit
 ' подробную расшифровку по главным плоскостям и выбранному нормативу СП 35/СП 63.
 
 Private Const HEADER_ROWS As Long = 5 ' Количество строк шапки над якорем.
-Private Const TOTAL_COLUMNS As Long = 83 ' Ширина таблицы с пустыми разделителями между блоками.
+Private Const TOTAL_COLUMNS As Long = 84 ' Ширина таблицы с пустыми разделителями между блоками.
 
 Private Const COL_SUMMARY_FIRST As Long = 1
-Private Const COL_SUMMARY_LAST As Long = 13
-Private Const COL_COMMON_FIRST As Long = 15
-Private Const COL_COMMON_LAST As Long = 26
-Private Const COL_SP35_FIRST As Long = 28
-Private Const COL_SP35_LAST As Long = 58
-Private Const COL_SP63_FIRST As Long = 60
-Private Const COL_SP63_LAST As Long = 83
+Private Const COL_SUMMARY_LAST As Long = 14
+Private Const COL_COMMON_FIRST As Long = 16
+Private Const COL_COMMON_LAST As Long = 27
+Private Const COL_SP35_FIRST As Long = 29
+Private Const COL_SP35_LAST As Long = 59
+Private Const COL_SP63_FIRST As Long = 61
+Private Const COL_SP63_LAST As Long = 84
 
-Private Const SP35_PLANE1_FIRST As Long = 29
-Private Const SP35_PLANE2_FIRST As Long = 44
-Private Const SP63_PLANE1_FIRST As Long = 60
-Private Const SP63_PLANE2_FIRST As Long = 72
+Private Const SP35_PLANE1_FIRST As Long = 30
+Private Const SP35_PLANE2_FIRST As Long = 45
+Private Const SP63_PLANE1_FIRST As Long = 61
+Private Const SP63_PLANE2_FIRST As Long = 73
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, как в остальных таблицах Results.
 Private Const SMALL_VALUE As Double = 0.000000001 ' Малый порог для деления и пустых расчетных полей.
@@ -179,22 +179,23 @@ Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem, _
     MergeCells target, 1, COL_SUMMARY_FIRST, 1, BlockWidth(COL_SUMMARY_FIRST, COL_SUMMARY_LAST), _
         "Итог по расчету (с учетом " & ChrW$(&H3B7) & ")"
     MergeCells target, 2, 1, 4, 1, "Combination ID"
-    MergeCells target, 2, 2, 4, 1, "общий статус"
-    MergeCells target, 2, 3, 2, 5, "относительно главных центральных осей приведенного сечения"
-    MergeCells target, 2, 8, 2, 3, "относительно центральных осей приведенного сечения"
-    MergeCells target, 2, 11, 2, 3, "в точке приложения нагрузок"
+    MergeCells target, 2, 2, 4, 1, "ResultComment"
+    MergeCells target, 2, 3, 4, 1, "общий статус"
+    MergeCells target, 2, 4, 2, 5, "относительно главных центральных осей приведенного сечения"
+    MergeCells target, 2, 9, 2, 3, "относительно центральных осей приведенного сечения"
+    MergeCells target, 2, 12, 2, 3, "в точке приложения нагрузок"
 
     MergeCells target, 1, COL_COMMON_FIRST, 1, BlockWidth(COL_COMMON_FIRST, COL_COMMON_LAST), _
         "Общие данные для учета продольного изгиба и проверки устойчивости (по главным осям 1, 2)"
-    MergeCells target, 2, 15, 1, 6, "Нагрузки до применения " & ChrW$(&H3B7) & " в ц.т. приведенного сечения"
-    MergeCells target, 3, 15, 1, 3, "постоянные + временные"
-    MergeCells target, 3, 18, 1, 3, "постоянные"
-    MergeCells target, 2, 21, 2, 6, "характеристики сечения"
+    MergeCells target, 2, 16, 1, 6, "Нагрузки до применения " & ChrW$(&H3B7) & " в ц.т. приведенного сечения"
+    MergeCells target, 3, 16, 1, 3, "постоянные + временные"
+    MergeCells target, 3, 19, 1, 3, "постоянные"
+    MergeCells target, 2, 22, 2, 6, "характеристики сечения"
 
     MergeCells target, 1, COL_SP35_FIRST, 1, BlockWidth(COL_SP35_FIRST, COL_SP35_LAST), "Расчет по СП 35"
-    MergeCells target, 2, 28, 3, 1, "общие для СП"
-    WriteSP35PlaneHeaders target, 29, "Плоскость 1 (изгиб вокруг главной оси 1)"
-    WriteSP35PlaneHeaders target, 44, "Плоскость 2 (изгиб вокруг главной оси 2)"
+    MergeCells target, 2, 29, 3, 1, "общие для СП"
+    WriteSP35PlaneHeaders target, SP35_PLANE1_FIRST, "Плоскость 1 (изгиб вокруг главной оси 1)"
+    WriteSP35PlaneHeaders target, SP35_PLANE2_FIRST, "Плоскость 2 (изгиб вокруг главной оси 2)"
 
     MergeCells target, 1, COL_SP63_FIRST, 1, BlockWidth(COL_SP63_FIRST, COL_SP63_LAST), "Расчет по СП 63"
     WriteSP63PlaneHeaders target, SP63_PLANE1_FIRST, "Плоскость 1 (изгиб вокруг главной оси 1)"
@@ -221,34 +222,35 @@ End Sub
 ' если он не помещается, Excel просто обрезает его по ширине ячейки.
 Private Sub PutHeaderNotes(ByVal target As Object)
     Dim notes(1 To 1, 1 To TOTAL_COLUMNS) As Variant
-    notes(1, 3) = "Коэффициент продольного изгиба в плоскости 1: изгиб вокруг главной оси 1"
-    notes(1, 4) = "Коэффициент продольного изгиба в плоскости 2: изгиб вокруг главной оси 2"
-    notes(1, 5) = "Продольная сила после учета продольного изгиба"
-    notes(1, 6) = "Момент после учета продольного изгиба в плоскости 1, вокруг главной оси 1"
-    notes(1, 7) = "Момент после учета продольного изгиба в плоскости 2, вокруг главной оси 2"
-    notes(1, 8) = "Продольная сила относительно центральных осей приведенного сечения"
-    notes(1, 9) = "Момент Mx относительно центральных осей приведенного сечения"
-    notes(1, 10) = "Момент My относительно центральных осей приведенного сечения"
-    notes(1, 11) = "Продольная сила в пользовательской точке приложения нагрузок"
-    notes(1, 12) = "Момент Mx в пользовательской точке приложения нагрузок"
-    notes(1, 13) = "Момент My в пользовательской точке приложения нагрузок"
+    notes(1, 2) = "пояснение расчетного статуса блока устойчивости"
+    notes(1, 4) = "Коэффициент продольного изгиба в плоскости 1: изгиб вокруг главной оси 1"
+    notes(1, 5) = "Коэффициент продольного изгиба в плоскости 2: изгиб вокруг главной оси 2"
+    notes(1, 6) = "Продольная сила после учета продольного изгиба"
+    notes(1, 7) = "Момент после учета продольного изгиба в плоскости 1, вокруг главной оси 1"
+    notes(1, 8) = "Момент после учета продольного изгиба в плоскости 2, вокруг главной оси 2"
+    notes(1, 9) = "Продольная сила относительно центральных осей приведенного сечения"
+    notes(1, 10) = "Момент Mx относительно центральных осей приведенного сечения"
+    notes(1, 11) = "Момент My относительно центральных осей приведенного сечения"
+    notes(1, 12) = "Продольная сила в пользовательской точке приложения нагрузок"
+    notes(1, 13) = "Момент Mx в пользовательской точке приложения нагрузок"
+    notes(1, 14) = "Момент My в пользовательской точке приложения нагрузок"
 
-    notes(1, 15) = "Продольная сила до учета продольного изгиба"
-    notes(1, 16) = "Момент в плоскости 1, вокруг главной оси 1, до учета продольного изгиба"
-    notes(1, 17) = "Момент в плоскости 2, вокруг главной оси 2, до учета продольного изгиба"
-    notes(1, 18) = "Продольная сила от постоянной или длительной части нагрузки"
-    notes(1, 19) = "Момент в плоскости 1, вокруг главной оси 1, от постоянной или длительной части"
-    notes(1, 20) = "Момент в плоскости 2, вокруг главной оси 2, от постоянной или длительной части"
-    notes(1, 21) = "Размер сечения по нормали к плоскости 1, то есть вдоль главной оси 2"
-    notes(1, 22) = "Размер сечения по нормали к плоскости 2, то есть вдоль главной оси 1"
-    notes(1, 23) = "Радиус инерции для изгиба вокруг главной оси 1"
-    notes(1, 24) = "Радиус инерции для изгиба вокруг главной оси 2"
-    notes(1, 25) = "Расчетная длина для плоскости 1: изгиб вокруг главной оси 1"
-    notes(1, 26) = "Расчетная длина для плоскости 2: изгиб вокруг главной оси 2"
+    notes(1, 16) = "Продольная сила до учета продольного изгиба"
+    notes(1, 17) = "Момент в плоскости 1, вокруг главной оси 1, до учета продольного изгиба"
+    notes(1, 18) = "Момент в плоскости 2, вокруг главной оси 2, до учета продольного изгиба"
+    notes(1, 19) = "Продольная сила от постоянной или длительной части нагрузки"
+    notes(1, 20) = "Момент в плоскости 1, вокруг главной оси 1, от постоянной или длительной части"
+    notes(1, 21) = "Момент в плоскости 2, вокруг главной оси 2, от постоянной или длительной части"
+    notes(1, 22) = "Размер сечения по нормали к плоскости 1, то есть вдоль главной оси 2"
+    notes(1, 23) = "Размер сечения по нормали к плоскости 2, то есть вдоль главной оси 1"
+    notes(1, 24) = "Радиус инерции для изгиба вокруг главной оси 1"
+    notes(1, 25) = "Радиус инерции для изгиба вокруг главной оси 2"
+    notes(1, 26) = "Расчетная длина для плоскости 1: изгиб вокруг главной оси 1"
+    notes(1, 27) = "Расчетная длина для плоскости 2: изгиб вокруг главной оси 2"
 
-    notes(1, 28) = "Коэффициент для ненапрягаемой арматуры"
-    PutSP35PlaneNotes notes, 29
-    PutSP35PlaneNotes notes, 44
+    notes(1, 29) = "Коэффициент для ненапрягаемой арматуры"
+    PutSP35PlaneNotes notes, SP35_PLANE1_FIRST
+    PutSP35PlaneNotes notes, SP35_PLANE2_FIRST
     PutSP63PlaneNotes notes, SP63_PLANE1_FIRST
     PutSP63PlaneNotes notes, SP63_PLANE2_FIRST
 
@@ -295,35 +297,36 @@ Private Sub PutHeaderRowLabels(ByVal target As Object, ByVal units As CUnitSyste
         ByVal batch As CBatchSectionCalculator)
     Dim labels(1 To 1, 1 To TOTAL_COLUMNS) As Variant
     labels(1, 1) = "Combination ID"
-    labels(1, 2) = "общий статус"
-    labels(1, 3) = ChrW$(&H3B7) & "1"
-    labels(1, 4) = ChrW$(&H3B7) & "2"
-    labels(1, 5) = "N, " & OutputForceUnit(units)
-    labels(1, 6) = "M1, " & OutputMomentUnit(units)
-    labels(1, 7) = "M2, " & OutputMomentUnit(units)
-    labels(1, 8) = "N, " & OutputForceUnit(units)
-    labels(1, 9) = "Mx, " & OutputMomentUnit(units)
-    labels(1, 10) = "My, " & OutputMomentUnit(units)
-    labels(1, 11) = "N, " & OutputForceUnit(units)
-    labels(1, 12) = "Mx, " & OutputMomentUnit(units)
-    labels(1, 13) = "My, " & OutputMomentUnit(units)
+    labels(1, 2) = "ResultComment"
+    labels(1, 3) = "общий статус"
+    labels(1, 4) = ChrW$(&H3B7) & "1"
+    labels(1, 5) = ChrW$(&H3B7) & "2"
+    labels(1, 6) = "N, " & OutputForceUnit(units)
+    labels(1, 7) = "M1, " & OutputMomentUnit(units)
+    labels(1, 8) = "M2, " & OutputMomentUnit(units)
+    labels(1, 9) = "N, " & OutputForceUnit(units)
+    labels(1, 10) = "Mx, " & OutputMomentUnit(units)
+    labels(1, 11) = "My, " & OutputMomentUnit(units)
+    labels(1, 12) = "N, " & OutputForceUnit(units)
+    labels(1, 13) = "Mx, " & OutputMomentUnit(units)
+    labels(1, 14) = "My, " & OutputMomentUnit(units)
 
-    labels(1, 15) = "N, " & OutputForceUnit(units)
-    labels(1, 16) = "M1, " & OutputMomentUnit(units)
-    labels(1, 17) = "M2, " & OutputMomentUnit(units)
-    labels(1, 18) = "N" & ChrW$(&H2097) & ", " & OutputForceUnit(units)
-    labels(1, 19) = "M1" & ChrW$(&H2097) & ", " & OutputMomentUnit(units)
-    labels(1, 20) = "M2" & ChrW$(&H2097) & ", " & OutputMomentUnit(units)
-    labels(1, 21) = "h1, " & OutputLengthUnit(units)
-    labels(1, 22) = "h2, " & OutputLengthUnit(units)
-    labels(1, 23) = "i1, " & OutputLengthUnit(units)
-    labels(1, 24) = "i2, " & OutputLengthUnit(units)
-    labels(1, 25) = "l01, " & OutputLengthUnit(units)
-    labels(1, 26) = "l02, " & OutputLengthUnit(units)
+    labels(1, 16) = "N, " & OutputForceUnit(units)
+    labels(1, 17) = "M1, " & OutputMomentUnit(units)
+    labels(1, 18) = "M2, " & OutputMomentUnit(units)
+    labels(1, 19) = "N" & ChrW$(&H2097) & ", " & OutputForceUnit(units)
+    labels(1, 20) = "M1" & ChrW$(&H2097) & ", " & OutputMomentUnit(units)
+    labels(1, 21) = "M2" & ChrW$(&H2097) & ", " & OutputMomentUnit(units)
+    labels(1, 22) = "h1, " & OutputLengthUnit(units)
+    labels(1, 23) = "h2, " & OutputLengthUnit(units)
+    labels(1, 24) = "i1, " & OutputLengthUnit(units)
+    labels(1, 25) = "i2, " & OutputLengthUnit(units)
+    labels(1, 26) = "l01, " & OutputLengthUnit(units)
+    labels(1, 27) = "l02, " & OutputLengthUnit(units)
 
-    labels(1, 28) = ChrW$(&H3C6) & "p"
-    PutSP35PlaneLabels labels, 29, units, SP35EtaReserveLabel(batch)
-    PutSP35PlaneLabels labels, 44, units, SP35EtaReserveLabel(batch)
+    labels(1, 29) = ChrW$(&H3C6) & "p"
+    PutSP35PlaneLabels labels, SP35_PLANE1_FIRST, units, SP35EtaReserveLabel(batch)
+    PutSP35PlaneLabels labels, SP35_PLANE2_FIRST, units, SP35EtaReserveLabel(batch)
     PutSP63PlaneLabels labels, SP63_PLANE1_FIRST, units
     PutSP63PlaneLabels labels, SP63_PLANE2_FIRST, units
 
@@ -426,6 +429,13 @@ Private Function StabilityStatusText(ByVal batch As CBatchSectionCalculator, ByV
     End If
 End Function
 
+' Возвращает готовое пользовательское пояснение из ResultMeta блока.
+' Writer не анализирует технические StopReason и не собирает комментарий заново.
+Private Function MetaComment(ByVal meta As CResultMeta) As String
+    If meta Is Nothing Then Exit Function
+    MetaComment = meta.ResultComment
+End Function
+
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
     Dim policy As CBatchStatusPolicy
@@ -434,38 +444,39 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
     Dim statusText As String
     statusText = StabilityStatusText(batch, index, policy)
     data(rowIndex, 1) = batch.CombinationID(index)
-    data(rowIndex, 2) = statusText
+    data(rowIndex, 2) = MetaComment(batch.StabilityMeta(index))
+    data(rowIndex, 3) = statusText
     PutDefaultStatusCells data, rowIndex, policy.NotApplicable
     If statusText = policy.NotApplicable Then Exit Sub
     If Not policy.IsFinished(statusText) Then Exit Sub
 
-    data(rowIndex, 3) = OptionalValue(batch.StabilityEta1(index))
-    data(rowIndex, 4) = OptionalValue(batch.StabilityEta2(index))
-    data(rowIndex, 5) = OutputForce(batch.StabilityDesignN(index), units)
-    data(rowIndex, 6) = OutputMomentMagnitude(batch.StabilityDesignMoment1(index), units)
-    data(rowIndex, 7) = OutputMomentMagnitude(batch.StabilityDesignMoment2(index), units)
-    data(rowIndex, 8) = OutputForce(batch.StabilityDesignN(index), units)
-    data(rowIndex, 9) = OutputMx(batch.StabilityDesignMx(index), units)
-    data(rowIndex, 10) = OutputMy(batch.StabilityDesignMy(index), units)
-    data(rowIndex, 11) = OutputForce(batch.StabilityDesignN(index), units)
-    data(rowIndex, 12) = OutputMx(batch.StabilityLoadPointMx(index), units)
-    data(rowIndex, 13) = OutputMy(batch.StabilityLoadPointMy(index), units)
+    data(rowIndex, 4) = OptionalValue(batch.StabilityEta1(index))
+    data(rowIndex, 5) = OptionalValue(batch.StabilityEta2(index))
+    data(rowIndex, 6) = OutputForce(batch.StabilityDesignN(index), units)
+    data(rowIndex, 7) = OutputMomentMagnitude(batch.StabilityDesignMoment1(index), units)
+    data(rowIndex, 8) = OutputMomentMagnitude(batch.StabilityDesignMoment2(index), units)
+    data(rowIndex, 9) = OutputForce(batch.StabilityDesignN(index), units)
+    data(rowIndex, 10) = OutputMx(batch.StabilityDesignMx(index), units)
+    data(rowIndex, 11) = OutputMy(batch.StabilityDesignMy(index), units)
+    data(rowIndex, 12) = OutputForce(batch.StabilityDesignN(index), units)
+    data(rowIndex, 13) = OutputMx(batch.StabilityLoadPointMx(index), units)
+    data(rowIndex, 14) = OutputMy(batch.StabilityLoadPointMy(index), units)
 
-    data(rowIndex, 15) = OutputForce(batch.StabilityDesignN(index), units)
-    data(rowIndex, 16) = OutputMomentMagnitude(batch.StabilityMoment1(index), units)
-    data(rowIndex, 17) = OutputMomentMagnitude(batch.StabilityMoment2(index), units)
-    data(rowIndex, 18) = OutputSignedCompressionForce(batch.StabilitySustainedN(index), units)
-    data(rowIndex, 19) = OutputMomentMagnitude(batch.StabilitySustainedMoment1(index), units)
-    data(rowIndex, 20) = OutputMomentMagnitude(batch.StabilitySustainedMoment2(index), units)
-    data(rowIndex, 21) = OutputLength(batch.StabilityDepth1(index), units)
-    data(rowIndex, 22) = OutputLength(batch.StabilityDepth2(index), units)
-    data(rowIndex, 23) = OutputLength(batch.StabilityRadius1(index), units)
-    data(rowIndex, 24) = OutputLength(batch.StabilityRadius2(index), units)
-    data(rowIndex, 25) = OutputLength(batch.StabilityEffectiveLength1(index), units)
-    data(rowIndex, 26) = OutputLength(batch.StabilityEffectiveLength2(index), units)
+    data(rowIndex, 16) = OutputForce(batch.StabilityDesignN(index), units)
+    data(rowIndex, 17) = OutputMomentMagnitude(batch.StabilityMoment1(index), units)
+    data(rowIndex, 18) = OutputMomentMagnitude(batch.StabilityMoment2(index), units)
+    data(rowIndex, 19) = OutputSignedCompressionForce(batch.StabilitySustainedN(index), units)
+    data(rowIndex, 20) = OutputMomentMagnitude(batch.StabilitySustainedMoment1(index), units)
+    data(rowIndex, 21) = OutputMomentMagnitude(batch.StabilitySustainedMoment2(index), units)
+    data(rowIndex, 22) = OutputLength(batch.StabilityDepth1(index), units)
+    data(rowIndex, 23) = OutputLength(batch.StabilityDepth2(index), units)
+    data(rowIndex, 24) = OutputLength(batch.StabilityRadius1(index), units)
+    data(rowIndex, 25) = OutputLength(batch.StabilityRadius2(index), units)
+    data(rowIndex, 26) = OutputLength(batch.StabilityEffectiveLength1(index), units)
+    data(rowIndex, 27) = OutputLength(batch.StabilityEffectiveLength2(index), units)
 
     If StrComp(batch.StabilityCode(index), "SP35", vbTextCompare) = 0 Then
-        data(rowIndex, 28) = OptionalValue(MaxDouble(batch.StabilityPhiP1(index), batch.StabilityPhiP2(index)))
+        data(rowIndex, 29) = OptionalValue(MaxDouble(batch.StabilityPhiP1(index), batch.StabilityPhiP2(index)))
         PutSP35PlaneValues data, rowIndex, SP35_PLANE1_FIRST, batch, index, 1, units
         PutSP35PlaneValues data, rowIndex, SP35_PLANE2_FIRST, batch, index, 2, units
     ElseIf StrComp(batch.StabilityCode(index), "SP63", vbTextCompare) = 0 Then
@@ -545,7 +556,8 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     If dataRows < 1 Then dataRows = 1
     target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).WrapText = False
     target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).NumberFormat = "0.000"
-    target.Offset(HEADER_ROWS, 0).Resize(dataRows, 2).NumberFormat = "@"
+    target.Offset(HEADER_ROWS, 0).Resize(dataRows, 3).NumberFormat = "@"
+    target.Offset(HEADER_ROWS, 1).Resize(dataRows, 1).HorizontalAlignment = -4131
 
     SetColumnWidths target
 
@@ -594,7 +606,7 @@ Private Sub FormatStatusCells(ByVal target As Object, ByVal batch As CBatchSecti
         rowOffset = OutputDataOffset(batch, i, target.Rows.Count - HEADER_ROWS)
         If HEADER_ROWS + rowOffset > target.Rows.Count Then Exit For
 
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, 2
+        ApplyStatusCell target, HEADER_ROWS + rowOffset, 3
         ApplyStatusCell target, HEADER_ROWS + rowOffset, SP35_PLANE1_FIRST + 8
         ApplyStatusCell target, HEADER_ROWS + rowOffset, SP35_PLANE1_FIRST + 14
         ApplyStatusCell target, HEADER_ROWS + rowOffset, SP35_PLANE2_FIRST + 8

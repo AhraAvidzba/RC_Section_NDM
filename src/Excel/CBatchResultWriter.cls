@@ -19,7 +19,7 @@ Option Explicit
 ' Расчетные алгоритмы здесь не запускаются: класс только берет готовые данные
 ' CBatchSectionCalculator и записывает их на лист одним массивом.
 
-Private Const TARGET_COLUMNS As Long = 25 ' Ширина верхней сводки с разложением устойчивости по СП, плоскостям и ветвям.
+Private Const TARGET_COLUMNS As Long = 26 ' Ширина верхней сводки с разложением устойчивости по СП, плоскостям и ветвям.
 Private Const META_ROWS As Long = 4 ' Верхние строки с общими сведениями о запуске.
 Private Const GROUP_HEADER_ROW As Long = 6 ' Первая строка шестистрочной шапки основной таблицы.
 Private Const SUBGROUP_HEADER_ROW As Long = 7 ' Строка внутренних подзаголовков расчетных блоков.
@@ -31,27 +31,28 @@ Private Const FIRST_DATA_ROW As Long = 13 ' Первая строка сочет
 
 Private Const SUM_COL_ID As Long = 1 ' CombinationID в новой компактной сводке.
 Private Const SUM_COL_COMMENT As Long = 2 ' Пользовательский комментарий LC.
-Private Const SUM_COL_OVERALL_STATUS As Long = 3 ' Итоговый статус LC по всем включенным проверкам.
-Private Const SUM_COL_STATUS_STRAIN As Long = 5 ' Статус прямого НДС по модели прочности.
-Private Const SUM_COL_STATUS_CAPACITY As Long = 6 ' Статус проверки несущей способности.
-Private Const SUM_COL_STATUS_CRACK As Long = 7 ' Статус нормальных трещин.
-Private Const SUM_COL_STATUS_LONG_CRACK As Long = 8 ' Статус продольных трещин.
-Private Const SUM_COL_STATUS_SP35_P1_ETA As Long = 9 ' СП35, плоскость 1, ветвь ec > r.
-Private Const SUM_COL_STATUS_SP35_P1_TABLE As Long = 10 ' СП35, плоскость 1, ветвь ec <= r.
-Private Const SUM_COL_STATUS_SP35_P2_ETA As Long = 11 ' СП35, плоскость 2, ветвь ec > r.
-Private Const SUM_COL_STATUS_SP35_P2_TABLE As Long = 12 ' СП35, плоскость 2, ветвь ec <= r.
-Private Const SUM_COL_STATUS_SP63_P1 As Long = 13 ' СП63, плоскость 1.
-Private Const SUM_COL_STATUS_SP63_P2 As Long = 14 ' СП63, плоскость 2.
-Private Const SUM_COL_RESERVE_STRAIN As Long = 16 ' Запас по деформациям strength-модели.
-Private Const SUM_COL_RESERVE_CAPACITY As Long = 17 ' Запас по предельным усилиям.
-Private Const SUM_COL_RESERVE_CRACK As Long = 18 ' Запас по нормальным трещинам.
-Private Const SUM_COL_RESERVE_LONG_CRACK As Long = 19 ' Запас по продольным трещинам.
-Private Const SUM_COL_RESERVE_SP35_P1_ETA As Long = 20 ' Запас СП35, плоскость 1, ec > r: limit*Ncr/N.
-Private Const SUM_COL_RESERVE_SP35_P1_TABLE As Long = 21 ' Запас СП35, плоскость 1, ec <= r: Nult/N.
-Private Const SUM_COL_RESERVE_SP35_P2_ETA As Long = 22 ' Запас СП35, плоскость 2, ec > r: limit*Ncr/N.
-Private Const SUM_COL_RESERVE_SP35_P2_TABLE As Long = 23 ' Запас СП35, плоскость 2, ec <= r: Nult/N.
-Private Const SUM_COL_RESERVE_SP63_P1 As Long = 24 ' Запас СП63, плоскость 1: Ncr/N.
-Private Const SUM_COL_RESERVE_SP63_P2 As Long = 25 ' Запас СП63, плоскость 2: Ncr/N.
+Private Const SUM_COL_RESULT_COMMENT As Long = 3 ' Пояснение итогового результата LC из result-subtree.
+Private Const SUM_COL_OVERALL_STATUS As Long = 4 ' Итоговый статус LC по всем включенным проверкам.
+Private Const SUM_COL_STATUS_STRAIN As Long = 6 ' Статус прямого НДС по модели прочности.
+Private Const SUM_COL_STATUS_CAPACITY As Long = 7 ' Статус проверки несущей способности.
+Private Const SUM_COL_STATUS_CRACK As Long = 8 ' Статус нормальных трещин.
+Private Const SUM_COL_STATUS_LONG_CRACK As Long = 9 ' Статус продольных трещин.
+Private Const SUM_COL_STATUS_SP35_P1_ETA As Long = 10 ' СП35, плоскость 1, ветвь ec > r.
+Private Const SUM_COL_STATUS_SP35_P1_TABLE As Long = 11 ' СП35, плоскость 1, ветвь ec <= r.
+Private Const SUM_COL_STATUS_SP35_P2_ETA As Long = 12 ' СП35, плоскость 2, ветвь ec > r.
+Private Const SUM_COL_STATUS_SP35_P2_TABLE As Long = 13 ' СП35, плоскость 2, ветвь ec <= r.
+Private Const SUM_COL_STATUS_SP63_P1 As Long = 14 ' СП63, плоскость 1.
+Private Const SUM_COL_STATUS_SP63_P2 As Long = 15 ' СП63, плоскость 2.
+Private Const SUM_COL_RESERVE_STRAIN As Long = 17 ' Запас по деформациям strength-модели.
+Private Const SUM_COL_RESERVE_CAPACITY As Long = 18 ' Запас по предельным усилиям.
+Private Const SUM_COL_RESERVE_CRACK As Long = 19 ' Запас по нормальным трещинам.
+Private Const SUM_COL_RESERVE_LONG_CRACK As Long = 20 ' Запас по продольным трещинам.
+Private Const SUM_COL_RESERVE_SP35_P1_ETA As Long = 21 ' Запас СП35, плоскость 1, ec > r: limit*Ncr/N.
+Private Const SUM_COL_RESERVE_SP35_P1_TABLE As Long = 22 ' Запас СП35, плоскость 1, ec <= r: Nult/N.
+Private Const SUM_COL_RESERVE_SP35_P2_ETA As Long = 23 ' Запас СП35, плоскость 2, ec > r: limit*Ncr/N.
+Private Const SUM_COL_RESERVE_SP35_P2_TABLE As Long = 24 ' Запас СП35, плоскость 2, ec <= r: Nult/N.
+Private Const SUM_COL_RESERVE_SP63_P1 As Long = 25 ' Запас СП63, плоскость 1: Ncr/N.
+Private Const SUM_COL_RESERVE_SP63_P2 As Long = 26 ' Запас СП63, плоскость 2: Ncr/N.
 
 Private Const STATUS_LEGEND_GAP_COLUMNS As Long = 1 ' Один пустой столбец между summary и словарем статусов.
 Private Const STATUS_LEGEND_COLUMNS As Long = 2 ' Ширина правого словаря статусов: код и текстовая расшифровка.
@@ -331,6 +332,7 @@ Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem
 
     data(COMMENT_HEADER_ROW, SUM_COL_ID) = "номер сочетания из таблицы нагрузок"
     data(COMMENT_HEADER_ROW, SUM_COL_COMMENT) = "пользовательский комментарий сочетания"
+    data(COMMENT_HEADER_ROW, SUM_COL_RESULT_COMMENT) = "пояснение итогового расчетного статуса"
     data(COMMENT_HEADER_ROW, SUM_COL_OVERALL_STATUS) = "итоговый статус по всем включенным проверкам"
     data(COMMENT_HEADER_ROW, SUM_COL_STATUS_STRAIN) = "статус прямого НДС по модели прочности"
     data(COMMENT_HEADER_ROW, SUM_COL_STATUS_CAPACITY) = "статус поиска предельного состояния"
@@ -355,6 +357,7 @@ Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem
 
     data(COLUMN_HEADER_ROW, SUM_COL_ID) = "Combination ID"
     data(COLUMN_HEADER_ROW, SUM_COL_COMMENT) = "Comment"
+    data(COLUMN_HEADER_ROW, SUM_COL_RESULT_COMMENT) = "ResultComment"
     data(COLUMN_HEADER_ROW, SUM_COL_OVERALL_STATUS) = "общий статус"
     data(COLUMN_HEADER_ROW, SUM_COL_STATUS_STRAIN) = "по деформациям " & ChrW$(&H3B5)
     data(COLUMN_HEADER_ROW, SUM_COL_STATUS_CAPACITY) = "по предельным усилиям"
@@ -397,6 +400,7 @@ End Sub
 Private Sub PutWorstRow(ByRef data() As Variant, ByVal batch As CBatchSectionCalculator)
     data(WORST_HEADER_ROW, SUM_COL_ID) = "worst LC"
     data(WORST_HEADER_ROW, SUM_COL_COMMENT) = "-"
+    data(WORST_HEADER_ROW, SUM_COL_RESULT_COMMENT) = "-"
     data(WORST_HEADER_ROW, SUM_COL_OVERALL_STATUS) = "-"
     PutWorstCheck data, batch, SUM_COL_STATUS_STRAIN, SUM_COL_RESERVE_STRAIN, "StrengthStrain"
     PutWorstCheck data, batch, SUM_COL_STATUS_CAPACITY, SUM_COL_RESERVE_CAPACITY, "StrengthCapacity"
@@ -446,6 +450,7 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
 
     data(rowIndex, SUM_COL_ID) = batch.CombinationID(index)
     data(rowIndex, SUM_COL_COMMENT) = batch.CombinationName(index)
+    data(rowIndex, SUM_COL_RESULT_COMMENT) = MetaComment(batch.OverallMeta(index))
     data(rowIndex, SUM_COL_OVERALL_STATUS) = MetaStatus(policy, batch.OverallMeta(index), batch.OverallStatus(index))
 
     PutStatusCell data, rowIndex, SUM_COL_STATUS_STRAIN, policy, _
@@ -597,6 +602,12 @@ Private Function MetaStatus(ByVal policy As CBatchStatusPolicy, ByVal meta As CR
     End If
 End Function
 
+' Возвращает пользовательское пояснение из typed-meta без анализа StopReason в writer-е.
+Private Function MetaComment(ByVal meta As CResultMeta) As String
+    If meta Is Nothing Then Exit Function
+    MetaComment = meta.ResultComment
+End Function
+
 ' Записывает только положительные расчетные коэффициенты запаса.
 Private Sub PutReserveCell(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal columnIndex As Long, ByVal reserveValue As Double)
@@ -638,6 +649,7 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     MergeSummaryBlock target, 4, 4, 2, 5
     MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_ID, SUM_COL_ID
     MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_COMMENT, SUM_COL_COMMENT
+    MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_RESULT_COMMENT, SUM_COL_RESULT_COMMENT
     MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_OVERALL_STATUS, SUM_COL_OVERALL_STATUS
     MergeSummaryHeader target, GROUP_HEADER_ROW, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_SP63_P2
     MergeSummaryHeader target, GROUP_HEADER_ROW, SUM_COL_RESERVE_STRAIN, SUM_COL_RESERVE_SP63_P2
@@ -674,8 +686,9 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     If dataRows < 1 Then dataRows = 1
     target.Offset(FIRST_DATA_ROW - 1, 0).Resize(dataRows, TARGET_COLUMNS).HorizontalAlignment = -4108
     target.Offset(FIRST_DATA_ROW - 1, SUM_COL_COMMENT - 1).Resize(dataRows, 1).HorizontalAlignment = -4131
-    target.Offset(GROUP_HEADER_ROW - 1, 3).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 1).Interior.ColorIndex = -4142
-    target.Offset(GROUP_HEADER_ROW - 1, 14).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 1).Interior.ColorIndex = -4142
+    target.Offset(FIRST_DATA_ROW - 1, SUM_COL_RESULT_COMMENT - 1).Resize(dataRows, 1).HorizontalAlignment = -4131
+    target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_STATUS_STRAIN - 2).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 1).Interior.ColorIndex = -4142
+    target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_RESERVE_STRAIN - 2).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 1).Interior.ColorIndex = -4142
     stage = "FormatStatusCells"
     FormatStatusCells target, batch
     stage = "WriteStatusLegend"
@@ -683,7 +696,7 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
 
     stage = "Borders"
     ApplySummaryBorders target.Offset(0, 0).Resize(META_ROWS, 5)
-    ApplySummaryBorders target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 3)
+    ApplySummaryBorders target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, SUM_COL_OVERALL_STATUS)
     ApplySummaryBorders target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_STATUS_STRAIN - 1).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, _
         SUM_COL_STATUS_SP63_P2 - SUM_COL_STATUS_STRAIN + 1)
     ApplySummaryBorders target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_RESERVE_STRAIN - 1).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, _

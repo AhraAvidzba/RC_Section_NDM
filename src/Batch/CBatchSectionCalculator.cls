@@ -2380,6 +2380,11 @@ Public Property Get StrengthResult(ByVal index As Long) As CStrengthResult
     Set StrengthResult = mResults(index).StrengthResult
 End Property
 
+' Возвращает сводную meta-запись блока прочности для detailed-writer-ов.
+Public Property Get StrengthMeta(ByVal index As Long) As CResultMeta
+    Set StrengthMeta = mResults(index).StrengthMeta
+End Property
+
 ' Возвращает meta прямого НДС по модели прочности.
 Public Property Get DirectStateMeta(ByVal index As Long) As CResultMeta
     Set DirectStateMeta = mResults(index).DirectStateMeta

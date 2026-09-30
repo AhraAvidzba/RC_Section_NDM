@@ -34,7 +34,7 @@ Private Const PHYSICAL_TOLERANCE As Double = 0.000000001 ' Порог, ниже 
 Private Const AUTOCAD_REBAR_LABEL_EXTRA_OFFSET_MM As Double = 5# ' Дополнительный зазор сводной подписи арматуры AutoCAD над бетонным габаритом.
 Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 69 ' Строки общих свойств сечения до LC-зависимых блоков.
 Private Const LC_SECTION_PROPERTY_ROWS As Long = 23 ' Строки свойств одного LC без metadata named-state.
-Private Const STATE_SECTION_PROPERTY_ROWS As Long = 12 ' Строки metadata одного сохраненного named-state.
+Private Const STATE_SECTION_PROPERTY_ROWS As Long = 13 ' Строки metadata одного сохраненного named-state.
 Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' Единая ширина всех столбцов Results.
 Private Const SNAPSHOT_TITLE_OFFSET As Long = 2 ' Общая синяя строка находится на две строки выше нижних snapshot-якорей.
 
@@ -793,6 +793,8 @@ Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As L
                 BooleanText(stateResult.ExtensionUsed), "-", "True, если это расчетное состояние использовало numerical extension."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "Status", _
                 stateResult.Status, "-", "Короткий статус состояния, сохраненный orchestrator-ом."
+            PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "ResultComment", _
+                stateResult.ResultComment, "-", "Пользовательское пояснение результата named-state из ResultMeta."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "StopReason", _
                 stateResult.StopReason, "-", "Служебная причина остановки solver-а для диагностики."
         End If

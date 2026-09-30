@@ -26,65 +26,66 @@ Option Explicit
 ' значениями другого знака.
 
 Private Const HEADER_ROWS As Long = 4 ' Строки шапки над первой строкой LC.
-Private Const TOTAL_COLUMNS As Long = 48 ' Полная ширина с двумя пустыми разделителями.
+Private Const TOTAL_COLUMNS As Long = 49 ' Полная ширина с двумя пустыми разделителями.
 
 Private Const COL_LEFT_FIRST As Long = 1
-Private Const COL_LEFT_LAST As Long = 8
-Private Const COL_SEPARATOR1 As Long = 9
-Private Const COL_STATE_FIRST As Long = 10
-Private Const COL_STATE_LAST As Long = 29
-Private Const COL_SEPARATOR2 As Long = 30
-Private Const COL_CAPACITY_FIRST As Long = 31
-Private Const COL_CAPACITY_LAST As Long = 48
+Private Const COL_LEFT_LAST As Long = 9
+Private Const COL_SEPARATOR1 As Long = 10
+Private Const COL_STATE_FIRST As Long = 11
+Private Const COL_STATE_LAST As Long = 30
+Private Const COL_SEPARATOR2 As Long = 31
+Private Const COL_CAPACITY_FIRST As Long = 32
+Private Const COL_CAPACITY_LAST As Long = 49
 
 Private Const COL_ID As Long = 1
-Private Const COL_STATUS As Long = 2
-Private Const COL_REF_N As Long = 3
-Private Const COL_REF_MX As Long = 4
-Private Const COL_REF_MY As Long = 5
-Private Const COL_LOAD_N As Long = 6
-Private Const COL_LOAD_MX As Long = 7
-Private Const COL_LOAD_MY As Long = 8
+Private Const COL_RESULT_COMMENT As Long = 2
+Private Const COL_STATUS As Long = 3
+Private Const COL_REF_N As Long = 4
+Private Const COL_REF_MX As Long = 5
+Private Const COL_REF_MY As Long = 6
+Private Const COL_LOAD_N As Long = 7
+Private Const COL_LOAD_MX As Long = 8
+Private Const COL_LOAD_MY As Long = 9
 
-Private Const COL_LIM_EBC As Long = 10
-Private Const COL_LIM_EBT As Long = 11
-Private Const COL_LIM_ESC As Long = 12
-Private Const COL_LIM_EST As Long = 13
-Private Const COL_STATE_EPS0 As Long = 14
-Private Const COL_STATE_KX As Long = 15
-Private Const COL_STATE_KY As Long = 16
-Private Const COL_STATE_EBC As Long = 17
-Private Const COL_STATE_EBT As Long = 18
-Private Const COL_STATE_ESC As Long = 19
-Private Const COL_STATE_EST As Long = 20
-Private Const COL_STATE_SBC As Long = 21
-Private Const COL_STATE_SBT As Long = 22
-Private Const COL_STATE_SSC As Long = 23
-Private Const COL_STATE_SST As Long = 24
-Private Const COL_STATE_H As Long = 25
-Private Const COL_STATE_X As Long = 26
-Private Const COL_STATE_DIAGEXT As Long = 27
-Private Const COL_STATE_RESERVE As Long = 28
-Private Const COL_STATE_STATUS As Long = 29
+Private Const COL_LIM_EBC As Long = 11
+Private Const COL_LIM_EBT As Long = 12
+Private Const COL_LIM_ESC As Long = 13
+Private Const COL_LIM_EST As Long = 14
+Private Const COL_STATE_EPS0 As Long = 15
+Private Const COL_STATE_KX As Long = 16
+Private Const COL_STATE_KY As Long = 17
+Private Const COL_STATE_EBC As Long = 18
+Private Const COL_STATE_EBT As Long = 19
+Private Const COL_STATE_ESC As Long = 20
+Private Const COL_STATE_EST As Long = 21
+Private Const COL_STATE_SBC As Long = 22
+Private Const COL_STATE_SBT As Long = 23
+Private Const COL_STATE_SSC As Long = 24
+Private Const COL_STATE_SST As Long = 25
+Private Const COL_STATE_H As Long = 26
+Private Const COL_STATE_X As Long = 27
+Private Const COL_STATE_DIAGEXT As Long = 28
+Private Const COL_STATE_RESERVE As Long = 29
+Private Const COL_STATE_STATUS As Long = 30
 
-Private Const COL_CAP_EPS0 As Long = 31
-Private Const COL_CAP_KX As Long = 32
-Private Const COL_CAP_KY As Long = 33
-Private Const COL_CAP_LIMIT_STATE As Long = 34
-Private Const COL_CAP_LOAD_PATH As Long = 35
-Private Const COL_CAP_METHOD As Long = 36
-Private Const COL_CAP_LAMBDA As Long = 37
-Private Const COL_CAP_N As Long = 38
-Private Const COL_CAP_MX As Long = 39
-Private Const COL_CAP_MY As Long = 40
-Private Const COL_CAP_EBC As Long = 41
-Private Const COL_CAP_EBT As Long = 42
-Private Const COL_CAP_ESC As Long = 43
-Private Const COL_CAP_EST As Long = 44
-Private Const COL_CAP_H As Long = 45
-Private Const COL_CAP_X As Long = 46
-Private Const COL_CAP_RESERVE As Long = 47
-Private Const COL_CAP_STATUS As Long = 48
+Private Const COL_CAP_EPS0 As Long = 32
+Private Const COL_CAP_KX As Long = 33
+Private Const COL_CAP_KY As Long = 34
+Private Const COL_CAP_LIMIT_STATE As Long = 35
+Private Const COL_CAP_LOAD_PATH As Long = 36
+Private Const COL_CAP_METHOD As Long = 37
+Private Const COL_CAP_LAMBDA As Long = 38
+Private Const COL_CAP_N As Long = 39
+Private Const COL_CAP_MX As Long = 40
+Private Const COL_CAP_MY As Long = 41
+Private Const COL_CAP_EBC As Long = 42
+Private Const COL_CAP_EBT As Long = 43
+Private Const COL_CAP_ESC As Long = 44
+Private Const COL_CAP_EST As Long = 45
+Private Const COL_CAP_H As Long = 46
+Private Const COL_CAP_X As Long = 47
+Private Const COL_CAP_RESERVE As Long = 48
+Private Const COL_CAP_STATUS As Long = 49
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, как в остальных подробных блоках.
 Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' На Results все столбцы держим одной ширины.
@@ -232,6 +233,7 @@ Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem)
     ReDim headers(1 To HEADER_ROWS, 1 To TOTAL_COLUMNS)
 
     headers(1, COL_ID) = "Combination ID"
+    headers(1, COL_RESULT_COMMENT) = "ResultComment"
     headers(1, COL_STATUS) = "общий статус"
     headers(1, COL_REF_N) = "относительно центральных осей приведенного сечения"
     headers(1, COL_LOAD_N) = "в точке приложения нагрузок"
@@ -257,6 +259,7 @@ End Sub
 
 ' Заполняет строку обычных пояснений над нижним ярусом обозначений.
 Private Sub PutHeaderNotes(ByRef headers() As Variant)
+    headers(HEADER_NOTES_ROW, COL_RESULT_COMMENT) = "пояснение расчетного статуса блока прочности"
     headers(HEADER_NOTES_ROW, COL_REF_N) = "нагрузки, переданные в расчет прочности, в центре приведенного сечения"
     headers(HEADER_NOTES_ROW, COL_REF_MX) = "Mx там же, вокруг оси X принятой системы"
     headers(HEADER_NOTES_ROW, COL_REF_MY) = "My там же, вокруг оси Y принятой системы"
@@ -356,6 +359,7 @@ End Sub
 ' Объединяет прямоугольные участки шапки.
 Private Sub MergeHeaders(ByVal target As Object)
     MergeRange target, 1, COL_ID, HEADER_LABEL_ROW, COL_ID
+    MergeRange target, 1, COL_RESULT_COMMENT, HEADER_LABEL_ROW, COL_RESULT_COMMENT
     MergeRange target, 1, COL_STATUS, HEADER_LABEL_ROW, COL_STATUS
     MergeRange target, 1, COL_REF_N, 2, COL_REF_MY
     MergeRange target, 1, COL_LOAD_N, 2, COL_LOAD_MY
@@ -398,6 +402,7 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
     Set policy = StatusPolicy()
 
     data(rowIndex, COL_ID) = batch.CombinationID(index)
+    data(rowIndex, COL_RESULT_COMMENT) = MetaComment(batch.StrengthMeta(index))
     data(rowIndex, COL_STATUS) = StrengthOverallStatus(batch, index)
     data(rowIndex, COL_STATE_STATUS) = policy.NotApplicable
     data(rowIndex, COL_CAP_STATUS) = policy.NotApplicable
@@ -609,7 +614,8 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
         target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).HorizontalAlignment = -4108
         target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).VerticalAlignment = -4108
         target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).NumberFormat = "0.000"
-        target.Offset(HEADER_ROWS, COL_ID - 1).Resize(dataRows, 2).NumberFormat = "@"
+        target.Offset(HEADER_ROWS, COL_ID - 1).Resize(dataRows, 3).NumberFormat = "@"
+        target.Offset(HEADER_ROWS, COL_RESULT_COMMENT - 1).Resize(dataRows, 1).HorizontalAlignment = -4131
         target.Offset(HEADER_ROWS, COL_STATE_DIAGEXT - 1).Resize(dataRows, 1).NumberFormat = "@"
         target.Offset(HEADER_ROWS, COL_STATE_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
         target.Offset(HEADER_ROWS, COL_CAP_LIMIT_STATE - 1).Resize(dataRows, 3).NumberFormat = "@"
@@ -764,6 +770,13 @@ Private Function CapacityStatusText(ByVal batch As CBatchSectionCalculator, ByVa
     Else
         CapacityStatusText = policy.DisplayStatus(batch.CapacityStatus(index))
     End If
+End Function
+
+' Возвращает готовое пользовательское пояснение из ResultMeta блока.
+' Writer не анализирует технические StopReason и не собирает комментарий заново.
+Private Function MetaComment(ByVal meta As CResultMeta) As String
+    If meta Is Nothing Then Exit Function
+    MetaComment = meta.ResultComment
 End Function
 
 ' Объединяет прямоугольный участок шапки.

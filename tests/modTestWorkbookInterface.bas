@@ -1007,16 +1007,16 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Set summary = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
     Dim firstDataRow As Long
     firstDataRow = BatchSummaryStartRow() + 12
-    AssertTrue stats, "ui.run.capacity.na", CStr(summary.Worksheet.Cells.Item(firstDataRow, 6).Value2) = "N/A"
-    AssertTrue stats, "ui.run.direct.status", Len(CStr(summary.Worksheet.Cells.Item(firstDataRow, 5).Value2)) > 0
+    AssertTrue stats, "ui.run.capacity.na", CStr(summary.Worksheet.Cells.Item(firstDataRow, 7).Value2) = "N/A"
+    AssertTrue stats, "ui.run.direct.status", Len(CStr(summary.Worksheet.Cells.Item(firstDataRow, 6).Value2)) > 0
     Dim strengthAnchor As Object
     Set strengthAnchor = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
-    AssertTrue stats, "ui.run.strainPlane", IsNumeric(strengthAnchor.Worksheet.Cells.Item(strengthAnchor.Row, 14).Value2) And _
-        IsNumeric(strengthAnchor.Worksheet.Cells.Item(strengthAnchor.Row, 15).Value2) And _
-        IsNumeric(strengthAnchor.Worksheet.Cells.Item(strengthAnchor.Row, 16).Value2)
+    AssertTrue stats, "ui.run.strainPlane", IsNumeric(strengthAnchor.Worksheet.Cells.Item(strengthAnchor.Row, 15).Value2) And _
+        IsNumeric(strengthAnchor.Worksheet.Cells.Item(strengthAnchor.Row, 16).Value2) And _
+        IsNumeric(strengthAnchor.Worksheet.Cells.Item(strengthAnchor.Row, 17).Value2)
     Dim crackAnchor As Object
     Set crackAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
-    AssertTrue stats, "ui.run.crack", Len(CStr(crackAnchor.Worksheet.Cells.Item(crackAnchor.Row, 2).Value2)) > 0 And _
+    AssertTrue stats, "ui.run.crack", Len(CStr(crackAnchor.Worksheet.Cells.Item(crackAnchor.Row, 3).Value2)) > 0 And _
         Len(CStr(crackAnchor.Worksheet.Cells.Item(crackAnchor.Row, 18).Value2)) > 0
     Dim sys As Object
     Set sys = ThisWorkbook.Worksheets.Item("Config")
@@ -1025,8 +1025,8 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
         InStr(1, CStr(sys.Cells.Item(1, 35).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
-    AssertTrue stats, "ui.strengthSummary.currentDepths", IsNumeric(resultsSheet.Cells.Item(strengthAnchor.Row, 25).Value2) And IsNumeric(resultsSheet.Cells.Item(strengthAnchor.Row, 26).Value2)
-    AssertTrue stats, "ui.strengthSummary.direct.noCapacityDepths", Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row, 45).Value2)) = 0 And Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row, 46).Value2)) = 0
+    AssertTrue stats, "ui.strengthSummary.currentDepths", IsNumeric(resultsSheet.Cells.Item(strengthAnchor.Row, 26).Value2) And IsNumeric(resultsSheet.Cells.Item(strengthAnchor.Row, 27).Value2)
+    AssertTrue stats, "ui.strengthSummary.direct.noCapacityDepths", Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row, 46).Value2)) = 0 And Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row, 47).Value2)) = 0
     AssertTrue stats, "ui.results.elements.header", CStr(ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Value2) = "RunID"
     Dim elementResults As Variant
     elementResults = ResultTable("rngNDMElementResults")
@@ -1380,20 +1380,20 @@ Private Sub TestRectSetMomentUltimateStrainWorkbookPath(ByRef stats As TUiTestSt
 
     Dim capacityStatus As String
     Dim solutionMethod As String
-    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 48).Value2)
-    solutionMethod = CStr(resultsSheet.Cells.Item(firstRow, 36).Value2)
+    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 49).Value2)
+    solutionMethod = CStr(resultsSheet.Cells.Item(firstRow, 37).Value2)
 
     AppendLine stats, "INFO: ui.rectset.momentUltimate capacityStatus=" & capacityStatus & _
         "; solutionMethod=" & solutionMethod & _
-        "; lambda=" & CStr(resultsSheet.Cells.Item(firstRow, 37).Value2)
+        "; lambda=" & CStr(resultsSheet.Cells.Item(firstRow, 38).Value2)
 
     AssertTrue stats, "ui.rectset.momentUltimate.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
     AssertTextEquals stats, "ui.rectset.momentUltimate.capacityOk", capacityStatus, "OK"
     AssertTextEquals stats, "ui.rectset.momentUltimate.method", solutionMethod, "UltimateStrain"
     AssertTrue stats, "ui.rectset.momentUltimate.lambda", _
-        CDbl(resultsSheet.Cells.Item(firstRow, 37).Value2) > 0#
+        CDbl(resultsSheet.Cells.Item(firstRow, 38).Value2) > 0#
     AssertTrue stats, "ui.rectset.momentUltimate.mxult", _
-        Abs(CDbl(resultsSheet.Cells.Item(firstRow, 39).Value2)) > 0#
+        Abs(CDbl(resultsSheet.Cells.Item(firstRow, 40).Value2)) > 0#
 End Sub
 
 ' Проверяет, что подробный блок прочности не держит кривизны в 1/мм
@@ -1422,19 +1422,19 @@ Private Sub TestStrengthSummaryUsesOutputCurvatureUnit(ByRef stats As TUiTestSta
     AssertTextEquals stats, "ui.strength.curvatureOutput.snapshotUnit", _
         ResultsPropertyValue("ALL", "Output.CurvatureUnit"), "1/m"
     AssertTrue stats, "ui.strength.curvatureOutput.stateHeaderKx", _
-        InStr(1, CStr(resultsSheet.Cells.Item(labelRow, 15).Value2), "1/m", vbTextCompare) > 0
-    AssertTrue stats, "ui.strength.curvatureOutput.stateHeaderKy", _
         InStr(1, CStr(resultsSheet.Cells.Item(labelRow, 16).Value2), "1/m", vbTextCompare) > 0
+    AssertTrue stats, "ui.strength.curvatureOutput.stateHeaderKy", _
+        InStr(1, CStr(resultsSheet.Cells.Item(labelRow, 17).Value2), "1/m", vbTextCompare) > 0
     AssertTrue stats, "ui.strength.curvatureOutput.capacityHeaderKx", _
-        InStr(1, CStr(resultsSheet.Cells.Item(labelRow, 32).Value2), "1/m", vbTextCompare) > 0
-    AssertTrue stats, "ui.strength.curvatureOutput.capacityHeaderKy", _
         InStr(1, CStr(resultsSheet.Cells.Item(labelRow, 33).Value2), "1/m", vbTextCompare) > 0
+    AssertTrue stats, "ui.strength.curvatureOutput.capacityHeaderKy", _
+        InStr(1, CStr(resultsSheet.Cells.Item(labelRow, 34).Value2), "1/m", vbTextCompare) > 0
 
     AssertClose stats, "ui.strength.curvatureOutput.stateKxValue", _
-        CDbl(resultsSheet.Cells.Item(firstRow, 15).Value2), _
+        CDbl(resultsSheet.Cells.Item(firstRow, 16).Value2), _
         CDbl(ResultsPropertyValue("LC_MX", "State.StrengthState.KappaX")), 0.000000000001
     AssertClose stats, "ui.strength.curvatureOutput.capacityKxValue", _
-        CDbl(resultsSheet.Cells.Item(firstRow, 32).Value2), _
+        CDbl(resultsSheet.Cells.Item(firstRow, 33).Value2), _
         CDbl(ResultsPropertyValue("LC_MX", "State.CapacityState.KappaX")), 0.000000000001
 
 Restore:
@@ -1470,21 +1470,21 @@ Private Sub TestRectSetPureBendingUltimateStrainWorkbookPath(ByRef stats As TUiT
     Dim directStatus As String
     Dim capacityStatus As String
     Dim solutionMethod As String
-    directStatus = CStr(resultsSheet.Cells.Item(firstRow, 29).Value2)
-    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 48).Value2)
-    solutionMethod = CStr(resultsSheet.Cells.Item(firstRow, 36).Value2)
+    directStatus = CStr(resultsSheet.Cells.Item(firstRow, 30).Value2)
+    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 49).Value2)
+    solutionMethod = CStr(resultsSheet.Cells.Item(firstRow, 37).Value2)
 
     AppendLine stats, "INFO: ui.rectset.pureBending direct=" & directStatus & _
         "; capacity=" & capacityStatus & _
         "; solutionMethod=" & solutionMethod & _
-        "; lambda=" & CStr(resultsSheet.Cells.Item(firstRow, 37).Value2)
+        "; lambda=" & CStr(resultsSheet.Cells.Item(firstRow, 38).Value2)
 
     AssertTrue stats, "ui.rectset.pureBending.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
     AssertTextEquals stats, "ui.rectset.pureBending.directOk", directStatus, "OK"
     AssertTextEquals stats, "ui.rectset.pureBending.capacityOk", capacityStatus, "OK"
     AssertTextEquals stats, "ui.rectset.pureBending.method", solutionMethod, "UltimateStrain"
     AssertTrue stats, "ui.rectset.pureBending.lambda", _
-        CDbl(resultsSheet.Cells.Item(firstRow, 37).Value2) > 0#
+        CDbl(resultsSheet.Cells.Item(firstRow, 38).Value2) > 0#
 End Sub
 
 ' Проверяет чистый изгиб Г-сечения по профилю PR1. Такой профиль запрашивает
@@ -1509,8 +1509,8 @@ Private Sub TestRectSetPureBendingDirectStateWorkbookPath(ByRef stats As TUiTest
 
     Dim directStatus As String
     Dim capacityStatus As String
-    directStatus = CStr(resultsSheet.Cells.Item(firstRow, 29).Value2)
-    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 48).Value2)
+    directStatus = CStr(resultsSheet.Cells.Item(firstRow, 30).Value2)
+    capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 49).Value2)
 
     AppendLine stats, "INFO: ui.rectset.pureBendingDirect direct=" & directStatus & _
         "; capacity=" & capacityStatus
@@ -1553,13 +1553,13 @@ Private Sub TestRectSetAxialTensionExtensionFromWorkbookSettings(ByRef stats As 
     Dim overCrackEquilibrium As String
     Dim overLongitudinal As String
     Dim overExtension As String
-    safeOverall = CStr(resultsSheet.Cells.Item(safeSummaryRow, 3).Value2)
-    safeCrack = CStr(resultsSheet.Cells.Item(safeCrackRow, 2).Value2)
-    overOverall = CStr(resultsSheet.Cells.Item(overSummaryRow, 3).Value2)
-    overCrackExtUsed = CStr(resultsSheet.Cells.Item(overCrackRow, 21).Value2)
-    overCrackEquilibrium = CStr(resultsSheet.Cells.Item(overCrackRow, 22).Value2)
-    overCrack = CStr(resultsSheet.Cells.Item(overCrackRow, 44).Value2)
-    overLongitudinal = CStr(resultsSheet.Cells.Item(overCrackRow, 48).Value2)
+    safeOverall = CStr(resultsSheet.Cells.Item(safeSummaryRow, 4).Value2)
+    safeCrack = CStr(resultsSheet.Cells.Item(safeCrackRow, 3).Value2)
+    overOverall = CStr(resultsSheet.Cells.Item(overSummaryRow, 4).Value2)
+    overCrackExtUsed = CStr(resultsSheet.Cells.Item(overCrackRow, 22).Value2)
+    overCrackEquilibrium = CStr(resultsSheet.Cells.Item(overCrackRow, 23).Value2)
+    overCrack = CStr(resultsSheet.Cells.Item(overCrackRow, 45).Value2)
+    overLongitudinal = CStr(resultsSheet.Cells.Item(overCrackRow, 49).Value2)
     overExtension = ResultsPropertyValue("LC_OVER", "ExtensionUsed")
 
     AppendLine stats, "INFO: ui.rectset.axial795 overall=" & safeOverall & _
