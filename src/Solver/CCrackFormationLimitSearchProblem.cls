@@ -63,6 +63,14 @@ Private Property Get ILimitSearchProblem_UsesRetainedForceCapacity() As Boolean
     ILimitSearchProblem_UsesRetainedForceCapacity = False
 End Property
 
+Private Property Get ILimitSearchProblem_Converged() As Boolean
+    ILimitSearchProblem_Converged = mCrack.Converged
+End Property
+
+Private Property Get ILimitSearchProblem_LimitState() As String
+    ILimitSearchProblem_LimitState = mCrack.StopReason
+End Property
+
 ' Для CrackFormation специальной подготовки перед LoadMultiplier нет:
 ' материалы и путь уже переданы вызывающим слоем.
 Private Function ILimitSearchProblem_Prepare(ByVal request As CLimitSearchRequest) As Boolean
@@ -97,6 +105,15 @@ End Function
 
 Private Function ILimitSearchProblem_IsNumericalFailureState(ByVal probeState As String) As Boolean
     ILimitSearchProblem_IsNumericalFailureState = (probeState = STATE_NUMERICAL_FAILURE)
+End Function
+
+Private Function ILimitSearchProblem_IsInvalidInputState(ByVal probeState As String) As Boolean
+    ILimitSearchProblem_IsInvalidInputState = False
+End Function
+
+Private Function ILimitSearchProblem_ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, _
+        ByVal highLambda As Double, ByVal probeState As String) As Double
+    ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = 0.5 * (lowLambda + highLambda)
 End Function
 
 Private Sub ILimitSearchProblem_RecordAcceptable(ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double)
@@ -145,11 +162,17 @@ Private Sub ILimitSearchProblem_AppendDiagnostic(ByVal message As String)
     mCrack.LimitSearchAppendDiagnostic message
 End Sub
 
-Private Sub ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchRequest, _
+Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByVal probeState As String, ByVal methodName As String, _
-        ByVal solver As CSectionSolver, ByVal iterations As Long)
-    mCrack.LimitSearchFinalizeCrackFormationLoadMultiplier loadPath, lambdaValue, solver, iterations
+        ByVal solver As CSectionSolver, ByVal iterations As Long) As Boolean
+    ILimitSearchProblem_FinalizeAt = _
+        mCrack.LimitSearchFinalizeCrackFormationLoadMultiplier(loadPath, lambdaValue, solver, iterations)
+End Function
+
+Private Sub ILimitSearchProblem_FinalizeFromRetainedAcceptable(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
+        ByVal methodName As String)
 End Sub
 
 Private Sub ILimitSearchProblem_AcceptRetainedCapacity(ByVal request As CLimitSearchRequest)
@@ -169,6 +192,10 @@ End Sub
 
 Private Sub ILimitSearchProblem_SetResolvedFormationPath(ByVal pathName As String)
     mCrack.LimitSearchSetResolvedCrackFormationPath pathName
+End Sub
+
+Private Sub ILimitSearchProblem_SetCurrentFormationPath(ByVal pathName As String)
+    mCrack.LimitSearchSetCurrentFormationPath pathName
 End Sub
 
 Private Property Get ILimitSearchProblem_FormationFallbackOnly() As Boolean
@@ -196,6 +223,25 @@ Private Function ILimitSearchProblem_FormationPathDisplayName() As String
 End Function
 
 ' Форматирует число для диагностического журнала с точкой как разделителем.
+Private Function ILimitSearchProblem_HasScaledFormationLoad(ByVal request As CLimitSearchRequest) As Boolean
+    ILimitSearchProblem_HasScaledFormationLoad = _
+        mCrack.LimitSearchCrackFormationHasScaledLoad(request.TargetN, _
+            request.MomentMxAtReference, request.MomentMyAtReference)
+End Function
+
+Private Sub ILimitSearchProblem_MarkFormationPathFallback(ByVal reason As String)
+    mCrack.LimitSearchMarkFormationPathFallback reason
+End Sub
+
+Private Sub ILimitSearchProblem_FinishNoCrack(ByVal reason As String)
+    mCrack.LimitSearchFinishNoCrack reason
+End Sub
+
+Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
+        ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
+        ByVal transitionMessage As String, ByVal successMessage As String)
+End Sub
+
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function

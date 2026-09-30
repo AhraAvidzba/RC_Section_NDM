@@ -106,7 +106,7 @@ Private Function FindCapacityBracket(ByVal request As CLimitSearchRequest, _
             FindCapacityBracket = True
             Exit Function
         ElseIf IsNumericalFailureState(request, probeState) Then
-            highLambda = ReduceLambdaAfterNumericalFailure(lowLambda, highLambda)
+            highLambda = request.Problem.ReduceLambdaAfterNumericalFailure(lowLambda, highLambda, probeState)
             If highLambda <= lowLambda Then Exit Function
         Else
             request.Problem.SetNumericalFailure "Поиск несущей способности остановлен: " & probeState & "."
@@ -138,10 +138,10 @@ Private Function RunCrackFormationSearch(ByVal request As CLimitSearchRequest, _
 
     If StrComp(request.CrackFormationPath, "LambdaN", vbTextCompare) = 0 And request.TargetN <= 0.000001 Then
         If lowResidual >= 0# Then
-            MarkFormationPathFallback request, "Трещина уже образуется от постоянного момента выбранного пути " & _
+            request.Problem.MarkFormationPathFallback "Трещина уже образуется от постоянного момента выбранного пути " & _
                 request.Problem.FormationPathDisplayName() & "; сжимающая или нулевая N не масштабируется для поиска Ncrc, psi_s остается равным 1."
         Else
-            FinishNoCrack request, "Трещина не образована от постоянного момента, а выбранный путь " & _
+            request.Problem.FinishNoCrack "Трещина не образована от постоянного момента, а выбранный путь " & _
                 request.Problem.FormationPathDisplayName() & " не масштабирует растягивающую продольную силу."
         End If
         RunCrackFormationSearch = True
@@ -149,14 +149,14 @@ Private Function RunCrackFormationSearch(ByVal request As CLimitSearchRequest, _
     End If
 
     If lowResidual >= 0# Then
-        MarkFormationPathFallback request, "Трещина уже образуется в постоянной части выбранного пути " & _
+        request.Problem.MarkFormationPathFallback "Трещина уже образуется в постоянной части выбранного пути " & _
             request.Problem.FormationPathDisplayName() & "; точка sigma_s,crc по lambda не определяется, psi_s остается равным 1."
         RunCrackFormationSearch = True
         Exit Function
     End If
 
-    If Not HasScaledCrackFormationLoad(request) Then
-        FinishNoCrack request, "Трещина не образована в постоянной части, а выбранный путь " & _
+    If Not request.Problem.HasScaledFormationLoad(request) Then
+        request.Problem.FinishNoCrack "Трещина не образована в постоянной части, а выбранный путь " & _
             request.Problem.FormationPathDisplayName() & " не содержит ненулевой масштабируемой нагрузки."
         RunCrackFormationSearch = True
         Exit Function

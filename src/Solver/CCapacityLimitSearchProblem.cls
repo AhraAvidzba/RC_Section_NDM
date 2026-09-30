@@ -60,6 +60,14 @@ Private Property Get ILimitSearchProblem_UsesRetainedForceCapacity() As Boolean
     ILimitSearchProblem_UsesRetainedForceCapacity = True
 End Property
 
+Private Property Get ILimitSearchProblem_Converged() As Boolean
+    ILimitSearchProblem_Converged = mCapacity.Converged
+End Property
+
+Private Property Get ILimitSearchProblem_LimitState() As String
+    ILimitSearchProblem_LimitState = mCapacity.LimitState
+End Property
+
 ' Подготавливает CCapacitySolver к LoadMultiplier-поиску.
 Private Function ILimitSearchProblem_Prepare(ByVal request As CLimitSearchRequest) As Boolean
     ILimitSearchProblem_Prepare = mCapacity.LimitSearchPrepareCapacityLoadMultiplier( _
@@ -97,6 +105,16 @@ End Function
 
 Private Function ILimitSearchProblem_IsNumericalFailureState(ByVal probeState As String) As Boolean
     ILimitSearchProblem_IsNumericalFailureState = mCapacity.LimitSearchCapacityStateIsNumericalFailure(probeState)
+End Function
+
+Private Function ILimitSearchProblem_IsInvalidInputState(ByVal probeState As String) As Boolean
+    ILimitSearchProblem_IsInvalidInputState = mCapacity.LimitSearchCapacityStateIsInvalidInput(probeState)
+End Function
+
+Private Function ILimitSearchProblem_ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, _
+        ByVal highLambda As Double, ByVal probeState As String) As Double
+    ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = _
+        mCapacity.LimitSearchReduceCapacityLambdaAfterNumericalFailure(lowLambda, highLambda, probeState)
 End Function
 
 Private Sub ILimitSearchProblem_RecordAcceptable(ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double)
@@ -140,11 +158,18 @@ Private Sub ILimitSearchProblem_AppendDiagnostic(ByVal message As String)
     mCapacity.LimitSearchAppendCapacityDiagnostic message
 End Sub
 
-Private Sub ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchRequest, _
+Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByVal probeState As String, ByVal methodName As String, _
-        ByVal solver As CSectionSolver, ByVal iterations As Long)
+        ByVal solver As CSectionSolver, ByVal iterations As Long) As Boolean
     mCapacity.LimitSearchFinalizeCapacityLoadMultiplier lambdaValue, loadPath, probeState, methodName
+    ILimitSearchProblem_FinalizeAt = mCapacity.Converged
+End Function
+
+Private Sub ILimitSearchProblem_FinalizeFromRetainedAcceptable(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
+        ByVal methodName As String)
+    mCapacity.LimitSearchFinalizeCapacityFromRetainedAcceptable lambdaValue, loadPath, methodName
 End Sub
 
 Private Sub ILimitSearchProblem_AcceptRetainedCapacity(ByVal request As CLimitSearchRequest)
@@ -165,6 +190,9 @@ Private Sub ILimitSearchProblem_BeginFormationAttempt(ByVal pathName As String)
 End Sub
 
 Private Sub ILimitSearchProblem_SetResolvedFormationPath(ByVal pathName As String)
+End Sub
+
+Private Sub ILimitSearchProblem_SetCurrentFormationPath(ByVal pathName As String)
 End Sub
 
 Private Property Get ILimitSearchProblem_FormationFallbackOnly() As Boolean
@@ -188,6 +216,27 @@ Private Function ILimitSearchProblem_FormationPathDisplayName() As String
 End Function
 
 ' Форматирует число для диагностического журнала с точкой как разделителем.
+Private Function ILimitSearchProblem_HasScaledFormationLoad(ByVal request As CLimitSearchRequest) As Boolean
+    ILimitSearchProblem_HasScaledFormationLoad = True
+End Function
+
+Private Sub ILimitSearchProblem_MarkFormationPathFallback(ByVal reason As String)
+End Sub
+
+Private Sub ILimitSearchProblem_FinishNoCrack(ByVal reason As String)
+End Sub
+
+Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
+        ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
+        ByVal transitionMessage As String, ByVal successMessage As String)
+    mCapacity.LimitSearchMergeCapacityFallback firstLimitState, firstStopReason, _
+        firstDiagnostics, firstAttemptMessage, transitionMessage, successMessage
+End Sub
+
+Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
+    If a > b Then MaxDouble = a Else MaxDouble = b
+End Function
+
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function

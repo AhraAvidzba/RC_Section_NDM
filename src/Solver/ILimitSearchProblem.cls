@@ -51,6 +51,12 @@ End Property
 Public Property Get UsesRetainedForceCapacity() As Boolean
 End Property
 
+Public Property Get Converged() As Boolean
+End Property
+
+Public Property Get LimitState() As String
+End Property
+
 ' Выполняет доменную подготовку перед LoadMultiplier.
 Public Function Prepare(ByVal request As CLimitSearchRequest) As Boolean
 End Function
@@ -77,6 +83,13 @@ End Function
 
 ' Проверяет, что probe завершился численной неудачей.
 Public Function IsNumericalFailureState(ByVal probeState As String) As Boolean
+End Function
+
+Public Function IsInvalidInputState(ByVal probeState As String) As Boolean
+End Function
+
+Public Function ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, _
+        ByVal highLambda As Double, ByVal probeState As String) As Double
 End Function
 
 ' Запоминает последнюю допустимую lambda-точку.
@@ -118,10 +131,15 @@ Public Sub AppendDiagnostic(ByVal message As String)
 End Sub
 
 ' Финализирует найденную lambda-точку.
-Public Sub FinalizeAt(ByVal request As CLimitSearchRequest, _
+Public Function FinalizeAt(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByVal probeState As String, ByVal methodName As String, _
-        ByVal solver As CSectionSolver, ByVal iterations As Long)
+        ByVal solver As CSectionSolver, ByVal iterations As Long) As Boolean
+End Function
+
+Public Sub FinalizeFromRetainedAcceptable(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
+        ByVal methodName As String)
 End Sub
 
 ' Принимает удержанную чисто осевую несущую способность, если это применимо.
@@ -141,6 +159,9 @@ End Sub
 Public Sub SetResolvedFormationPath(ByVal pathName As String)
 End Sub
 
+Public Sub SetCurrentFormationPath(ByVal pathName As String)
+End Sub
+
 Public Property Get FormationFallbackOnly() As Boolean
 End Property
 
@@ -158,3 +179,17 @@ End Sub
 
 Public Function FormationPathDisplayName() As String
 End Function
+
+Public Function HasScaledFormationLoad(ByVal request As CLimitSearchRequest) As Boolean
+End Function
+
+Public Sub MarkFormationPathFallback(ByVal reason As String)
+End Sub
+
+Public Sub FinishNoCrack(ByVal reason As String)
+End Sub
+
+Public Sub MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
+        ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
+        ByVal transitionMessage As String, ByVal successMessage As String)
+End Sub
