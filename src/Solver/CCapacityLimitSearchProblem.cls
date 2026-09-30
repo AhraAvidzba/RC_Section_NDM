@@ -68,6 +68,10 @@ Private Property Get ILimitSearchProblem_LimitState() As String
     ILimitSearchProblem_LimitState = mCapacity.LimitState
 End Property
 
+Private Property Get ILimitSearchProblem_DiagnosticLog() As String
+    If Not mCapacity Is Nothing Then ILimitSearchProblem_DiagnosticLog = mCapacity.DiagnosticLog
+End Property
+
 ' Подготавливает CCapacitySolver к LoadMultiplier-поиску.
 Private Function ILimitSearchProblem_Prepare(ByVal request As CLimitSearchRequest) As Boolean
     ILimitSearchProblem_Prepare = mCapacity.LimitSearchPrepareCapacityLoadMultiplier( _

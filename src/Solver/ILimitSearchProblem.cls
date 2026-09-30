@@ -57,6 +57,9 @@ End Property
 Public Property Get LimitState() As String
 End Property
 
+Public Property Get DiagnosticLog() As String
+End Property
+
 ' Выполняет доменную подготовку перед LoadMultiplier.
 Public Function Prepare(ByVal request As CLimitSearchRequest) As Boolean
 End Function

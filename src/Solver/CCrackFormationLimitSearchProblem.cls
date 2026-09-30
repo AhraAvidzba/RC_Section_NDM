@@ -71,6 +71,10 @@ Private Property Get ILimitSearchProblem_LimitState() As String
     ILimitSearchProblem_LimitState = mCrack.StopReason
 End Property
 
+Private Property Get ILimitSearchProblem_DiagnosticLog() As String
+    If Not mCrack Is Nothing Then ILimitSearchProblem_DiagnosticLog = mCrack.DiagnosticLog
+End Property
+
 ' Для CrackFormation специальной подготовки перед LoadMultiplier нет:
 ' материалы и путь уже переданы вызывающим слоем.
 Private Function ILimitSearchProblem_Prepare(ByVal request As CLimitSearchRequest) As Boolean

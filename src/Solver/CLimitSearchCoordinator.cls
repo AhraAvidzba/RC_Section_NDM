@@ -60,11 +60,11 @@ Public Function ExecuteCrackFormation(ByVal request As CLimitSearchRequest) As C
     If StrComp(NormalizeCrackPath(request.CrackFormationPath), CRACK_PATH_AUTO, vbTextCompare) = 0 Then
         Set ExecuteCrackFormation = ExecuteAutoCrackFormation(request)
     Else
-        request.CrackCalculator.LimitSearchBeginCrackFormationAttempt NormalizeCrackPath(request.CrackFormationPath)
+        request.Problem.BeginFormationAttempt NormalizeCrackPath(request.CrackFormationPath)
         Dim result As CLimitSearchResult
         Set result = ExecuteCrackFormationCurrentPath(request)
         If result.Succeeded Then _
-            request.CrackCalculator.LimitSearchSetResolvedCrackFormationPath NormalizeCrackPath(request.CrackFormationPath)
+            request.Problem.SetResolvedFormationPath NormalizeCrackPath(request.CrackFormationPath)
         Set ExecuteCrackFormation = result
     End If
 End Function
@@ -74,9 +74,6 @@ End Function
 ' затем fallback на LoadMultiplier. Обе ветки запускаются через общий
 ' LimitSearch-слой, а CCapacitySolver остается только доменным callback-ом.
 Private Function ExecuteAutoCapacity(ByVal request As CLimitSearchRequest) As CLimitSearchResult
-    Dim cap As CCapacitySolver
-    Set cap = request.CapacitySolver
-
     If request.PureAxialForMethod Then
         Dim axialMultiplier As CLoadMultiplierSearch
         Set axialMultiplier = New CLoadMultiplierSearch
@@ -93,41 +90,37 @@ Private Function ExecuteAutoCapacity(ByVal request As CLimitSearchRequest) As CL
         Set ExecuteAutoCapacity = firstResult
         Exit Function
     End If
-    If cap.LimitSearchCapacityStateIsInvalidInput(cap.LimitState) Then
+    If request.Problem.IsInvalidInputState(request.Problem.LimitState) Then
         Set ExecuteAutoCapacity = firstResult
         Exit Function
     End If
 
-    Set ExecuteAutoCapacity = ExecuteAutoCapacityLoadMultiplierFallback(request, cap)
+    Set ExecuteAutoCapacity = ExecuteAutoCapacityLoadMultiplierFallback(request)
 End Function
 
 ' Повторяет Auto-поиск capacity через LoadMultiplier после неудачного
 ' UltimateStrain и возвращает обновленный snapshot результата. Диагностика
 ' первой попытки сохраняется перед тем, как LoadMultiplier очистит поля solver-а.
-Private Function ExecuteAutoCapacityLoadMultiplierFallback(ByVal request As CLimitSearchRequest, _
-        ByVal cap As CCapacitySolver) As CLimitSearchResult
+Private Function ExecuteAutoCapacityLoadMultiplierFallback(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     Dim firstStopReason As String
     Dim firstLimitState As String
     Dim firstDiagnostics As String
-    firstStopReason = cap.StopReason
-    firstLimitState = cap.LimitState
-    firstDiagnostics = cap.DiagnosticLog
+    firstStopReason = request.Problem.StopReason
+    firstLimitState = request.Problem.LimitState
+    firstDiagnostics = request.Problem.DiagnosticLog
 
     Dim multiplier As CLoadMultiplierSearch
     Set multiplier = New CLoadMultiplierSearch
     Dim ignoredResult As CLimitSearchResult
     Set ignoredResult = multiplier.ExecuteCapacity(request)
 
-    cap.LimitSearchMergeCapacityFallback firstLimitState, firstStopReason, _
+    request.Problem.MergeFallback firstLimitState, firstStopReason, _
         firstDiagnostics, _
         "Auto: первая попытка UltimateStrain не дала принятую предельную точку", _
         "Auto: переходим к LoadMultiplier по той же lambda-траектории.", _
         "Auto: UltimateStrain не сошелся, предельная точка найдена через LoadMultiplier."
 
-    Dim result As CLimitSearchResult
-    Set result = New CLimitSearchResult
-    result.InitializeFromCapacitySolver cap, request.SolutionStrategy
-    Set ExecuteAutoCapacityLoadMultiplierFallback = result
+    Set ExecuteAutoCapacityLoadMultiplierFallback = request.Problem.BuildResult(request, False)
 End Function
 
 ' В Auto-режиме образования трещины по очереди пробует lambda*Mxy, lambda*N и
@@ -142,8 +135,6 @@ Private Function ExecuteAutoCrackFormation(ByVal request As CLimitSearchRequest)
     paths(2) = CRACK_PATH_N
     paths(3) = CRACK_PATH_NMXY
 
-    Dim crack As CCrackWidthCalculator
-    Set crack = request.CrackCalculator
     crack.LimitSearchAppendDiagnostic "Auto-путь: начинаем поиск образования нормальной трещины. Порядок попыток: " & _
         ChrW$(&H3BB) & "*Mxy -> " & ChrW$(&H3BB) & "*N -> " & ChrW$(&H3BB) & "*NMxy."
 

@@ -188,9 +188,6 @@ Private Function FindCrackFormationBracket(ByVal request As CLimitSearchRequest,
         ByRef lowerSolver As CSectionSolver, ByRef lowerResidual As Double, _
         ByRef upperLambda As Double, ByRef upperSolver As CSectionSolver, _
         ByRef upperResidual As Double) As Boolean
-    Dim crack As CCrackWidthCalculator
-    Set crack = request.CrackCalculator
-
     Dim probeState As String
     If EvaluateCrackFunction(request, loadPath, lowerSolver, upperLambda, upperResidual, probeState, upperSolver) Then
         GoTo UpperSolved
@@ -202,24 +199,24 @@ Private Function FindCrackFormationBracket(ByVal request As CLimitSearchRequest,
         Exit Function
     End If
 
-    crack.LimitSearchSetCrackFormationStopReason _
+    request.Problem.SetNumericalFailure _
         "Не удалось подобрать сходящуюся точку образования трещины до перегруженной точки lambda = " & _
         FormatNumberInvariant(upperLambda) & "."
     Exit Function
 
 UpperSolved:
-    Do While upperResidual < 0# And upperLambda < crack.LimitSearchCrackBracketLimit
+    Do While upperResidual < 0# And upperLambda < request.Problem.MaxLambda
         lowerLambda = upperLambda
         Set lowerSolver = upperSolver
         lowerResidual = upperResidual
-        upperLambda = MinDouble(upperLambda * 2#, crack.LimitSearchCrackBracketLimit)
+        upperLambda = MinDouble(upperLambda * 2#, request.Problem.MaxLambda)
         If Not EvaluateCrackFunction(request, loadPath, lowerSolver, upperLambda, upperResidual, probeState, upperSolver) Then
             If TryRecoverCrackBracketBeforeFailedUpper(request, loadPath, lowerLambda, lowerSolver, lowerResidual, _
                     upperLambda, upperSolver, upperResidual) Then
                 FindCrackFormationBracket = True
                 Exit Function
             End If
-            crack.LimitSearchSetCrackFormationStopReason _
+            request.Problem.SetNumericalFailure _
                 "Не удалось найти равновесие при lambda = " & FormatNumberInvariant(upperLambda) & _
                 " в поиске трещинообразования."
             Exit Function
@@ -237,15 +234,12 @@ Private Function TryRecoverCrackBracketBeforeFailedUpper(ByVal request As CLimit
         ByRef lowerSolver As CSectionSolver, ByRef lowerResidual As Double, _
         ByRef upperLambda As Double, ByRef upperSolver As CSectionSolver, _
         ByRef upperResidual As Double) As Boolean
-    Dim crack As CCrackWidthCalculator
-    Set crack = request.CrackCalculator
-
     Dim failedLambda As Double
     failedLambda = upperLambda
 
     Dim iter As Long
-    For iter = 1 To crack.LimitSearchCrackMaxIterations
-        If failedLambda - lowerLambda <= crack.LimitSearchCrackLambdaTolerance * MaxDouble(1#, failedLambda) Then Exit For
+    For iter = 1 To request.Problem.MaxIterations
+        If failedLambda - lowerLambda <= request.Problem.LambdaTolerance * MaxDouble(1#, failedLambda) Then Exit For
 
         Dim midLambda As Double
         Dim midSolver As CSectionSolver
@@ -269,7 +263,7 @@ Private Function TryRecoverCrackBracketBeforeFailedUpper(ByVal request As CLimit
     Next iter
 
     If Not lowerSolver Is Nothing Then
-        crack.LimitSearchAppendDiagnostic _
+        request.Problem.AppendDiagnostic _
             "Поиск трещинообразования: последняя сходящаяся точка перед перегрузкой lambda=" & _
             FormatNumberInvariant(lowerLambda) & "; невязка=" & FormatNumberInvariant(lowerResidual)
     End If
@@ -282,12 +276,9 @@ Private Function SearchCrackByBisection(ByVal request As CLimitSearchRequest, _
         ByVal lowerSolver As CSectionSolver, ByVal upperLambda As Double, _
         ByVal upperSolver As CSectionSolver, ByRef acceptedLambda As Double, _
         ByRef acceptedSolver As CSectionSolver, ByRef iterations As Long) As Boolean
-    Dim crack As CCrackWidthCalculator
-    Set crack = request.CrackCalculator
-
     If Not SearchByBisectionCore(request, loadPath, lowerLambda, lowerSolver, _
-            upperLambda, upperSolver, crack.LimitSearchCrackLambdaTolerance, _
-            crack.LimitSearchCrackMaxIterations, iterations) Then Exit Function
+            upperLambda, upperSolver, request.Problem.LambdaTolerance, _
+            request.Problem.MaxIterations, iterations) Then Exit Function
 
     acceptedLambda = upperLambda
     Set acceptedSolver = upperSolver
@@ -307,7 +298,7 @@ Private Sub RunSearchInsideBracket(ByVal request As CLimitSearchRequest, _
         Case "Secant"
             SearchBySecant request, loadPath, lowLambda, highLambda, tolerance, maxIterations
         Case Else
-            request.CapacitySolver.LimitSearchSetCapacityInvalidInput _
+            request.Problem.SetInvalidInput _
                 "Capacity.SearchMethod должен быть Bisection, Brent или Secant."
     End Select
 End Sub
@@ -316,7 +307,7 @@ End Sub
 Private Sub SearchByBisection(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, _
         ByVal highLambda As Double, ByVal tolerance As Double)
-    request.CapacitySolver.LimitSearchAppendCapacityDiagnostic "searchMethod=Bisection"
+    request.Problem.AppendDiagnostic "searchMethod=Bisection"
 
     Dim lowSolver As CSectionSolver
     Dim highSolver As CSectionSolver
@@ -324,8 +315,8 @@ Private Sub SearchByBisection(ByVal request As CLimitSearchRequest, _
     If Not SearchByBisectionCore(request, loadPath, lowLambda, lowSolver, _
             highLambda, highSolver, tolerance, 0, iterations) Then Exit Sub
 
-    request.CapacitySolver.LimitSearchFinalizeCapacityFromRetainedAcceptable _
-        lowLambda, loadPath, "Bisection"
+    request.Problem.FinalizeFromRetainedAcceptable request, loadPath, _
+        lowLambda, "Bisection"
 End Sub
 
 ' Выполняет общий цикл bisection для уже найденной lambda-скобки.
@@ -383,7 +374,7 @@ End Function
 Private Sub SearchByBrent(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, _
         ByVal highLambda As Double, ByVal tolerance As Double, ByVal maxIterations As Long)
-    request.CapacitySolver.LimitSearchAppendCapacityDiagnostic "searchMethod=Brent"
+    request.Problem.AppendDiagnostic "searchMethod=Brent"
 
     Dim a As Double, b As Double, c As Double
     Dim fa As Double, fb As Double, fc As Double
@@ -395,7 +386,7 @@ Private Sub SearchByBrent(ByVal request As CLimitSearchRequest, _
     If Not EvaluateLimitFunction(request, loadPath, a, fa, stateA) Then Exit Sub
     If Not EvaluateLimitFunction(request, loadPath, b, fb, stateB) Then Exit Sub
     If fa >= 0# Or fb <= 0# Then
-        request.CapacitySolver.LimitSearchSetCapacityInvalidInput _
+        request.Problem.SetInvalidInput _
             "Методу Brent нужна скобка: нижняя lambda с запасом и верхняя lambda за физическим пределом."
         Exit Sub
     End If
@@ -465,14 +456,14 @@ Private Sub SearchByBrent(ByVal request As CLimitSearchRequest, _
             b = b + Sgn(xm) * tol
         End If
         If b <= lowLambda Or b >= highLambda Or Not IsFiniteNumber(b) Then
-            request.CapacitySolver.LimitSearchSetCapacityNumericalFailure _
+            request.Problem.SetNumericalFailure _
                 "Пробная точка Brent вышла за физическую скобку."
             Exit Sub
         End If
         If Not EvaluateLimitFunction(request, loadPath, b, fb, stateB) Then Exit Sub
     Next iter
 
-    request.CapacitySolver.LimitSearchSetCapacityNumericalFailure "Поиск Brent достиг лимита итераций."
+    request.Problem.SetNumericalFailure "Поиск Brent достиг лимита итераций."
 End Sub
 
 ' Метод секущих: строит следующую lambda по двум предыдущим значениям функции,
@@ -480,7 +471,7 @@ End Sub
 Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, _
         ByVal highLambda As Double, ByVal tolerance As Double, ByVal maxIterations As Long)
-    request.CapacitySolver.LimitSearchAppendCapacityDiagnostic "searchMethod=Secant"
+    request.Problem.AppendDiagnostic "searchMethod=Secant"
 
     Dim x0 As Double, x1 As Double, x2 As Double
     Dim f0 As Double, f1 As Double, f2 As Double
@@ -494,7 +485,7 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
     If Not EvaluateLimitFunction(request, loadPath, x0, f0, state0) Then Exit Sub
     If Not EvaluateLimitFunction(request, loadPath, x1, f1, state1) Then Exit Sub
     If f0 >= 0# Or f1 <= 0# Then
-        request.CapacitySolver.LimitSearchSetCapacityInvalidInput _
+        request.Problem.SetInvalidInput _
             "Методу Secant нужна скобка: нижняя lambda с запасом и верхняя lambda за физическим пределом."
         Exit Sub
     End If
@@ -511,25 +502,25 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
             Exit Sub
         End If
         If Abs(f1 - f0) <= 0.000000000001 Then
-            request.CapacitySolver.LimitSearchSetCapacityNumericalFailure _
+            request.Problem.SetNumericalFailure _
                 "Поиск Secant остановлен: значения целевой функции слишком близки."
             Exit Sub
         End If
 
         x2 = x1 - f1 * (x1 - x0) / (f1 - f0)
         If Not IsFiniteNumber(x2) Then
-            request.CapacitySolver.LimitSearchSetCapacityNumericalFailure _
+            request.Problem.SetNumericalFailure _
                 "Поиск Secant получил NaN или переполнение."
             Exit Sub
         End If
         x2 = GuardSecantCandidate(request, x2, x1, bracketLow, bracketHigh)
         If x2 <= bracketLow Or x2 >= bracketHigh Or Not IsFiniteNumber(x2) Then
-            request.CapacitySolver.LimitSearchSetCapacityNumericalFailure _
+            request.Problem.SetNumericalFailure _
                 "Пробная точка Secant вышла за физическую скобку."
             Exit Sub
         End If
         If Abs(x2 - x1) <= 0.000000000001 Then
-            request.CapacitySolver.LimitSearchSetCapacityNumericalFailure _
+            request.Problem.SetNumericalFailure _
                 "Поиск Secant застрял: новая lambda почти не отличается от предыдущей."
             Exit Sub
         End If
@@ -553,7 +544,7 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
         state1 = state2
     Next iter
 
-    request.CapacitySolver.LimitSearchSetCapacityNumericalFailure "Поиск Secant достиг лимита итераций."
+    request.Problem.SetNumericalFailure "Поиск Secant достиг лимита итераций."
 End Sub
 
 ' Фиксирует исчерпание итераций bisection как численную неудачу, если скобка
@@ -568,11 +559,7 @@ Private Sub HandleBisectionIterationLimit(ByVal request As CLimitSearchRequest, 
         reason = "Поиск Bisection остановлен до достижения заданной точности: ширина скобки " & _
             FormatNumberInvariant(remainingWidth) & ", допуск " & FormatNumberInvariant(tolerance) & "."
 
-    If request.ResultKind = rkCapacity Then
-        request.CapacitySolver.LimitSearchSetCapacityNumericalFailure reason
-    Else
-        request.CrackCalculator.LimitSearchSetCrackFormationStopReason reason
-    End If
+    request.Problem.HandleIterationLimit maxIterations, remainingWidth, tolerance
 End Sub
 
 ' Пересчитывает итоговую lambda и передает доменному объекту финализацию.
@@ -581,8 +568,10 @@ Private Sub FinalizeAfterProbe(ByVal request As CLimitSearchRequest, _
         ByVal methodName As String)
     Dim functionValue As Double
     Dim probeState As String
-    If Not EvaluateLimitFunction(request, loadPath, lambdaValue, functionValue, probeState) Then Exit Sub
-    request.CapacitySolver.LimitSearchFinalizeCapacityLoadMultiplier lambdaValue, loadPath, probeState, methodName
+    Dim solver As CSectionSolver
+    If Not request.Problem.EvaluatePoint(request, loadPath, Nothing, _
+            lambdaValue, functionValue, probeState, solver) Then Exit Sub
+    request.Problem.FinalizeAt request, loadPath, lambdaValue, probeState, methodName, solver, 0
 End Sub
 
 ' Выбирает стартовое НДС для следующей bisection-пробы.
@@ -604,22 +593,15 @@ Private Function EvaluateBisectionPoint(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByVal lambdaValue As Double, ByRef functionValue As Double, _
         ByRef probeState As String, ByRef solver As CSectionSolver) As Boolean
-    If request.ResultKind = rkCapacity Then
-        Set solver = Nothing
-        EvaluateBisectionPoint = EvaluateLimitFunction(request, loadPath, _
-            lambdaValue, functionValue, probeState)
-    Else
-        EvaluateBisectionPoint = EvaluateCrackFunction(request, loadPath, _
-            startSolver, lambdaValue, functionValue, probeState, solver)
-    End If
+    EvaluateBisectionPoint = request.Problem.EvaluatePoint(request, loadPath, _
+        startSolver, lambdaValue, functionValue, probeState, solver)
 End Function
 
 ' Возвращает доменному объекту понятную причину отказа пробной lambda-точки.
 ' Для Capacity callback обычно уже записывает статус; для CrackFormation фиксируем stop-reason явно.
 Private Sub HandleBisectionEvaluationFailure(ByVal request As CLimitSearchRequest, _
         ByVal lambdaValue As Double)
-    If request.ResultKind = rkCapacity Then Exit Sub
-    request.CrackCalculator.LimitSearchSetCrackFormationStopReason _
+    request.Problem.SetNumericalFailure _
         "Не удалось найти равновесие при lambda = " & _
         FormatNumberInvariant(lambdaValue) & " в поиске трещинообразования."
 End Sub
@@ -628,9 +610,9 @@ End Sub
 Private Sub HandleBisectionNumericalFailure(ByVal request As CLimitSearchRequest, _
         ByVal lowLambda As Double, ByVal failedLambda As Double, ByVal probeState As String)
     If request.ResultKind = rkCapacity Then
-        request.CapacitySolver.LimitSearchHandleCapacityBracketNumericalFailure lowLambda, probeState
+        request.Problem.HandleBracketNumericalFailure lowLambda, failedLambda, probeState
     Else
-        request.CrackCalculator.LimitSearchSetCrackFormationStopReason _
+        request.Problem.SetNumericalFailure _
             "Не удалось найти равновесие при lambda = " & _
             FormatNumberInvariant(failedLambda) & " в поиске трещинообразования."
     End If
@@ -641,10 +623,10 @@ End Sub
 Private Sub HandleBisectionUnexpectedState(ByVal request As CLimitSearchRequest, _
         ByVal probeState As String)
     If request.ResultKind = rkCapacity Then
-        request.CapacitySolver.LimitSearchSetCapacityNumericalFailure _
+        request.Problem.SetNumericalFailure _
             "Поиск Bisection остановлен: " & probeState & "."
     Else
-        request.CrackCalculator.LimitSearchSetCrackFormationStopReason _
+        request.Problem.SetNumericalFailure _
             "Поиск трещинообразования остановлен: " & probeState & "."
     End If
 End Sub
@@ -654,9 +636,9 @@ End Sub
 Private Function EvaluateLimitFunction(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByRef functionValue As Double, ByRef probeState As String) As Boolean
-    EvaluateLimitFunction = request.CapacitySolver.LimitSearchEvaluateCapacityLoadMultiplier( _
-        request.Section, request.ConcreteMaterial, request.SteelMaterial, _
-        loadPath, lambdaValue, functionValue, probeState)
+    Dim solver As CSectionSolver
+    EvaluateLimitFunction = request.Problem.EvaluatePoint(request, loadPath, Nothing, _
+        lambdaValue, functionValue, probeState, solver)
 End Function
 
 ' Оценивает crack lambda-точку и возвращает solver, пригодный для последующего
@@ -665,41 +647,23 @@ Private Function EvaluateCrackFunction(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByVal lambdaValue As Double, ByRef functionValue As Double, _
         ByRef probeState As String, ByRef solver As CSectionSolver) As Boolean
-    Dim concreteMaterial As CMaterialDiagram
-    Dim steelMaterial As CMaterialDiagram
-    Set concreteMaterial = request.ConcreteMaterial
-    Set steelMaterial = request.SteelMaterial
-
-    EvaluateCrackFunction = request.CrackCalculator.LimitSearchEvaluateCrackFormationLoadMultiplier( _
-        request.Section, concreteMaterial, steelMaterial, _
-        loadPath, startSolver, lambdaValue, functionValue, probeState, solver)
+    EvaluateCrackFunction = request.Problem.EvaluatePoint(request, loadPath, _
+        startSolver, lambdaValue, functionValue, probeState, solver)
 End Function
 
 ' Проверяет, что lambda-точка находится ниже предела.
 Private Function IsAcceptableState(ByVal request As CLimitSearchRequest, ByVal probeState As String) As Boolean
-    If request.ResultKind = rkCapacity Then
-        IsAcceptableState = request.CapacitySolver.LimitSearchCapacityStateIsAcceptable(probeState)
-    Else
-        IsAcceptableState = (probeState = STATE_ACCEPTABLE)
-    End If
+    IsAcceptableState = request.Problem.IsAcceptableState(probeState)
 End Function
 
 ' Проверяет, что lambda-точка находится на физическом пределе.
 Private Function IsLimitState(ByVal request As CLimitSearchRequest, ByVal probeState As String) As Boolean
-    If request.ResultKind = rkCapacity Then
-        IsLimitState = request.CapacitySolver.LimitSearchCapacityStateIsPhysicalLimit(probeState)
-    Else
-        IsLimitState = (probeState = STATE_CRACK_LIMIT)
-    End If
+    IsLimitState = request.Problem.IsLimitState(probeState)
 End Function
 
 ' Проверяет, что отказ lambda-точки является численной неудачей.
 Private Function IsNumericalFailureState(ByVal request As CLimitSearchRequest, ByVal probeState As String) As Boolean
-    If request.ResultKind = rkCapacity Then
-        IsNumericalFailureState = request.CapacitySolver.LimitSearchCapacityStateIsNumericalFailure(probeState)
-    Else
-        IsNumericalFailureState = (probeState = STATE_NUMERICAL_FAILURE)
-    End If
+    IsNumericalFailureState = request.Problem.IsNumericalFailureState(probeState)
 End Function
 
 ' Удерживает Secant-кандидат внутри найденной физической скобки.
@@ -723,7 +687,7 @@ Private Function GuardSecantCandidate(ByVal request As CLimitSearchRequest, _
         End If
     End If
 
-    request.CapacitySolver.LimitSearchAppendCapacityDiagnostic _
+    request.Problem.AppendDiagnostic _
         "secantGuard=insideBracket; rawLambda=" & FormatNumberInvariant(rawCandidate) & _
         "; guardedLambda=" & FormatNumberInvariant(GuardSecantCandidate) & _
         "; bracketLow=" & FormatNumberInvariant(bracketLow) & _
