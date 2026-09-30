@@ -129,6 +129,52 @@ Public Sub SolveWithInitialSolver(ByVal section As CSectionModel, _
     End If
 End Sub
 
+' Решает прямое равновесие от заданного LC с явной стартовой нагрузкой.
+' Этот вход нужен search-probe-ам Capacity: предыдущая lambda-точка задает не
+' только eps0/kappa, но и уровень нагрузки, от которого solver должен перейти к
+' новой target-точке. Warm-start остается solve-option и не попадает в
+' repository/reuse-ключи.
+Public Sub SolveWithInitialLoadState(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
+        ByVal initialN As Double, ByVal initialMx As Double, ByVal initialMy As Double, _
+        Optional ByVal allowExtensionWarmStart As Boolean = False)
+    If section Is Nothing Then Err.Raise vbObjectError + 3483, "CStateSolutionRunner", "Модель сечения не передана."
+    If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 3484, "CStateSolutionRunner", "Диаграмма бетона не передана."
+    If steelMaterial Is Nothing Then Err.Raise vbObjectError + 3485, "CStateSolutionRunner", "Диаграмма арматуры не передана."
+
+    ClearResult
+
+    Dim service As CSectionSolver
+    Set service = New CSectionSolver
+    ConfigureSolver service
+    service.SetInitialLoadState eps0, kx, ky, initialN, initialMx, initialMy
+    mInitialGuessApplied = True
+    AppendDiagnostic "initialGuess=warmStartLoadState"
+
+    mSolverCallCount = mSolverCallCount + 1
+    service.Solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
+    Set mSolver = service
+
+    If Not service.Converged And allowExtensionWarmStart Then
+        If TrySolveWithExtensionWarmStart(section, concreteMaterial, steelMaterial, _
+                targetN, targetMx, targetMy, service) Then
+            Set mSolver = service
+        End If
+    End If
+
+    If Not mSolver Is Nothing Then
+        If mSolver.Converged Then
+            mWithinPhysicalRange = StateWithinPhysicalRange(section, mSolver, concreteMaterial, steelMaterial)
+            mExtensionUsed = StateUsesExtension(section, mSolver, concreteMaterial, steelMaterial)
+        Else
+            mWithinPhysicalRange = False
+            mExtensionUsed = False
+        End If
+    End If
+End Sub
+
 ' Повторяет прямой solve от active-set плоскости для общего случая N+M.
 ' Первый штатный старт сохраняется прежним; этот retry включается только после
 ' несходимости и только если начальная подсказка еще не применялась. Так

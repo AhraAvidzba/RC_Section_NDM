@@ -1124,30 +1124,33 @@ Private Function ProbeOnce(ByVal section As CSectionModel, _
     On Error GoTo Failed
     mIterations = mIterations + 1
 
-    Dim solver As CSectionSolver
-    Set solver = New CSectionSolver
-    solver.LoadSteps = mSolverBaseLoadSteps * (2 ^ attempt)
-    solver.SolverMethod = mSolverMethod
-    solver.MaxIterations = mSolverMaxIterations
-    solver.ToleranceN = mSolverToleranceN
-    solver.ToleranceMx = mSolverToleranceMx
-    solver.ToleranceMy = mSolverToleranceMy
-    solver.LineSearchEnabled = mSolverLineSearchEnabled
-    solver.DampingInitial = mSolverDampingInitial
-    solver.MinLineSearchAlpha = mSolverMinLineSearchAlpha
-    solver.MaxDeltaEpsilon0 = mSolverMaxDeltaEpsilon0
-    solver.MaxDeltaKappa = mSolverMaxDeltaKappa / (2 ^ attempt)
-    solver.SecantMaxRestarts = mSolverSecantMaxRestarts
-    solver.SecantMinStepNorm = mSolverSecantMinStepNorm
-    solver.DiagnosticsEnabled = mDiagnosticsEnabled
-    If Not mLastAcceptableSolver Is Nothing Then
-        solver.SetInitialLoadState mLastAcceptableSolver.Epsilon0, mLastAcceptableSolver.KappaX, mLastAcceptableSolver.KappaY, _
-            mLastAcceptableN, mLastAcceptableMx, mLastAcceptableMy
-    End If
-    ApplyPureBendingProbeGuess section, concreteMaterial, steelMaterial, solver, nSpecified, mx, my
+    Dim runner As CStateSolutionRunner
+    Set runner = New CStateSolutionRunner
+    ConfigureCapacityProbeRunner runner, attempt
 
-    solver.Solve section, concreteMaterial, steelMaterial, nSpecified, mx, my
+    ' Для обычной probe-точки используем общий state-solve pipeline. Если есть
+    ' предыдущая acceptable lambda, передаем ее как warm-start с явной стартовой
+    ' нагрузкой; чистый изгиб оставляем runner-у, чтобы он применил общий
+    ' active-set старт так же, как прямые НДС.
+    If Not mLastAcceptableSolver Is Nothing And Not IsPureBendingProbe(nSpecified, mx, my) Then
+        runner.SolveWithInitialLoadState section, concreteMaterial, steelMaterial, _
+            nSpecified, mx, my, mLastAcceptableSolver.Epsilon0, _
+            mLastAcceptableSolver.KappaX, mLastAcceptableSolver.KappaY, _
+            mLastAcceptableN, mLastAcceptableMx, mLastAcceptableMy, False
+    Else
+        runner.Solve section, concreteMaterial, steelMaterial, nSpecified, mx, my, False
+    End If
+
+    Dim solver As CSectionSolver
+    Set solver = runner.ResultSolver
     Set mLastSolver = solver
+    If solver Is Nothing Then
+        ProbeOnce = STATE_NUMERICAL_FAILURE
+        mLimitState = STATE_NUMERICAL_FAILURE
+        mStopReason = "Пробная точка несущей способности не вернула solver."
+        Exit Function
+    End If
+    If Len(runner.DiagnosticLog) > 0 Then AppendSearchDiagnostic Trim$(runner.DiagnosticLog)
 
     If Not solver.Converged Then
         If FailedProbeReachedPhysicalLimit(section, concreteMaterial, solver) Then
@@ -1173,43 +1176,34 @@ Failed:
     mStopReason = "Пробная точка несущей способности не рассчиталась: " & Err.Description
 End Function
 
-' Для чистого изгиба N=0 каждая lambda-точка LoadMultiplier может оказаться
-' в той же численной ловушке, что и прямой DirectState: нулевая плоскость
-' деформаций лежит ровно на изломе "сжатый бетон / выключенное растяжение".
-' Поэтому для такой lambda-точки старт строится от ее собственных целевых
-' усилий, а не от предыдущей lambda: это устойчивее около границы плато и не
-' зависит от того, какая точка перед этим была последней acceptable.
-' Траектория Target = Offset + lambda*Base при этом не меняется: мы только
-' подсказываем внутреннему CSectionSolver, с какой стороны излома начинать.
-Private Sub ApplyPureBendingProbeGuess(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
-        ByVal solver As CSectionSolver, ByVal nSpecified As Double, _
-        ByVal mx As Double, ByVal my As Double)
-    If solver Is Nothing Then Exit Sub
-    If section Is Nothing Then Exit Sub
-    If Abs(nSpecified) > 0.000000001 Then Exit Sub
-    If Sqr(mx * mx + my * my) <= 0.000000001 Then Exit Sub
-    If TypeName(concreteMaterial) <> "CMaterialDiagram" Then Exit Sub
-    If TypeName(steelMaterial) <> "CMaterialDiagram" Then Exit Sub
-
-    Dim concreteDiagram As CMaterialDiagram
-    Dim steelDiagram As CMaterialDiagram
-    Set concreteDiagram = concreteMaterial
-    Set steelDiagram = steelMaterial
-
-    Dim guessBuilder As CStateGuessBuilder
-    Set guessBuilder = New CStateGuessBuilder
-
-    Dim eps0 As Double
-    Dim kx As Double
-    Dim ky As Double
-    If guessBuilder.BuildForDirectState(section, concreteDiagram, steelDiagram, _
-            nSpecified, mx, my, eps0, kx, ky) Then
-        solver.ClearInitialState
-        solver.SetInitialLoadState eps0, kx, ky, nSpecified, mx, my
-        AppendSearchDiagnostic "для lambda-точки чистого изгиба применена стартовая плоскость; масштабируемые моменты ненулевые"
-    End If
+' Передает настройки внутреннего CSectionSolver в общий runner для одной
+' capacity-probe. Retry попытки меняют только численные параметры solve-а,
+' физическая lambda-точка остается прежней.
+Private Sub ConfigureCapacityProbeRunner(ByVal runner As CStateSolutionRunner, ByVal attempt As Long)
+    runner.LoadSteps = mSolverBaseLoadSteps * (2 ^ attempt)
+    runner.SolverMethod = mSolverMethod
+    runner.MaxIterations = mSolverMaxIterations
+    runner.ToleranceN = mSolverToleranceN
+    runner.ToleranceMx = mSolverToleranceMx
+    runner.ToleranceMy = mSolverToleranceMy
+    runner.LineSearchEnabled = mSolverLineSearchEnabled
+    runner.DampingInitial = mSolverDampingInitial
+    runner.MinLineSearchAlpha = mSolverMinLineSearchAlpha
+    runner.MaxDeltaEpsilon0 = mSolverMaxDeltaEpsilon0
+    runner.MaxDeltaKappa = mSolverMaxDeltaKappa / (2 ^ attempt)
+    runner.SecantMaxRestarts = mSolverSecantMaxRestarts
+    runner.SecantMinStepNorm = mSolverSecantMinStepNorm
+    runner.DiagnosticsEnabled = mDiagnosticsEnabled
 End Sub
+
+' True для probe чистого изгиба. В этом случае предыдущая acceptable lambda
+' не используется как warm-start: общий runner сам строит active-set плоскость
+' по целевым моментам текущей lambda-точки.
+Private Function IsPureBendingProbe(ByVal nSpecified As Double, _
+        ByVal mx As Double, ByVal my As Double) As Boolean
+    IsPureBendingProbe = (Abs(nSpecified) <= 0.000000001 And _
+        Sqr(mx * mx + my * my) > 0.000000001)
+End Function
 
 ' Возвращает уже посчитанную lambda-точку LoadMultiplier.
 ' Brent/Secant после нахождения скобки могут повторно спросить те же lambda,
