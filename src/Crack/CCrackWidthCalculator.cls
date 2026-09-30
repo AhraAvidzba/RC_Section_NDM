@@ -66,6 +66,10 @@ Private mStopReason As String ' Короткое пояснение резуль
 Private mDiagnosticLog As String ' Текстовая диагностика выбора зоны, арматуры, ls и psi_s.
 Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал, когда txt-отчет выполнения не нужен.
 Private mSolverCallCount As Long ' Сколько внутренних CSectionSolver/CStateSolutionRunner-вызовов выполнил расчет трещин.
+Private mFormationInternalStatus As EResultInternalStatus ' Машинный статус этапа образования нормальной трещины.
+Private mFormationResultCode As EResultCode ' Машинный код причины результата образования нормальной трещины.
+Private mWidthInternalStatus As EResultInternalStatus ' Машинный статус формульного расчета ширины нормальной трещины.
+Private mWidthResultCode As EResultCode ' Машинный код причины результата формульной ширины трещины.
 
 Private mAllowableCrackWidth As Double ' Пользовательский предел a_crc,ult во внутренних единицах длины, мм.
 Private mCrackWidth As Double ' Расчетная ширина раскрытия a_crc, мм.
@@ -321,6 +325,8 @@ Private Sub CalculateCore(ByVal currentSolver As CSectionSolver, ByVal section A
     mConverged = False
     mCrackFormed = False
     mStopReason = vbNullString
+    mWidthInternalStatus = rsUnset
+    mWidthResultCode = rcNone
     mTensionRebarCount = 0
     mMaxSteelStrain = 0#
     mMaxSteelStress = 0#
@@ -381,7 +387,7 @@ Private Sub CheckCentralTensionFormation(ByVal section As CSectionModel, _
     mFormationNcrc = mNcrc
     mMcrc = 0#
     If mNcrc <= 0# Or targetN <= 0# Then
-        mStopReason = "InputError: для центрального растяжения не удалось определить Ncrc."
+        SetFormationInvalidInput "InputError: для центрального растяжения не удалось определить Ncrc."
         Exit Sub
     End If
 
@@ -406,7 +412,7 @@ Private Sub CheckCentralTensionFormation(ByVal section As CSectionModel, _
 
     mLambdaCrc = mNcrc / targetN
     If mLambdaCrc <= 0# Then
-        mStopReason = "NumericalFailure: найденное lambda_crc по Ncrc неположительно."
+        SetFormationNumericalFailure "NumericalFailure: найденное lambda_crc по Ncrc неположительно."
         Exit Sub
     End If
 
@@ -422,7 +428,7 @@ Private Sub CheckCentralTensionFormation(ByVal section As CSectionModel, _
 
     mConverged = True
     mCrackFormed = True
-    mStopReason = "Предварительная проверка Ncrc: трещина образуется при текущей нагрузке."
+    SetFormationSuccess "Предварительная проверка Ncrc: трещина образуется при текущей нагрузке."
     AppendDiagnostic "formation=Ncrc; lambda_crc=" & FormatNumberInvariant(mLambdaCrc)
 End Sub
 
@@ -435,7 +441,7 @@ Private Sub CheckGeneralFormation(ByVal section As CSectionModel, _
         ByVal loadStateForClassification As CSectionLoadState, _
         ByVal centralReferenceX As Double, ByVal centralReferenceY As Double)
     If mCrackInitiationSpec Is Nothing Then
-        mStopReason = "InputError: для Calculation.Crack.Width требуется MaterialModel.CrackInitiation."
+        SetFormationInvalidInput "InputError: для Calculation.Crack.Width требуется MaterialModel.CrackInitiation."
         Exit Sub
     End If
     If Not HasNormalCrackDrivingAction(loadStateForClassification, centralReferenceX, centralReferenceY) Then
@@ -467,7 +473,7 @@ Private Sub CheckGeneralFormation(ByVal section As CSectionModel, _
 
     mConverged = True
     mCrackFormed = True
-    mStopReason = "Предварительная проверка Mcrc: трещина образуется при текущей нагрузке."
+    SetFormationSuccess "Предварительная проверка Mcrc: трещина образуется при текущей нагрузке."
 End Sub
 
 ' Передает поиск стадии образования нормальной трещины в общий LimitSearch.
@@ -547,11 +553,13 @@ End Sub
 ' Очищает текущую причину остановки перед fallback-веткой того же пути.
 Public Sub LimitSearchClearStopReason()
     mStopReason = vbNullString
+    mFormationInternalStatus = rsUnset
+    mFormationResultCode = rcNone
 End Sub
 
 ' Возвращает предыдущую причину, если fallback-ветка не сформировала своей.
 Public Sub LimitSearchSetStopReasonIfEmpty(ByVal text As String)
-    If Len(mStopReason) = 0 Then mStopReason = text
+    If Len(mStopReason) = 0 Then SetFormationNumericalFailure text
 End Sub
 
 ' Запускает низкоуровневый UltimateStrain-критерий образования трещины.
@@ -635,7 +643,7 @@ End Function
 Public Function LimitSearchFinalizeCrackFormationLoadMultiplier(ByVal loadPath As CLoadPathVector, _
         ByVal lambdaValue As Double, ByVal solver As CSectionSolver, ByVal iterations As Long) As Boolean
     If solver Is Nothing Or Not solver.Converged Then
-        mStopReason = "NumericalFailure: точка образования трещины не имеет сходящегося НДС."
+        SetFormationNumericalFailure "NumericalFailure: точка образования трещины не имеет сходящегося НДС."
         Exit Function
     End If
 
@@ -644,10 +652,11 @@ Public Function LimitSearchFinalizeCrackFormationLoadMultiplier(ByVal loadPath A
     Set mPreCrackSolver = solver
     Set mPreCrackState = New CSectionStateResult
     mPreCrackState.InitializeFromSolver sstPreCrackState, cpMcrc, _
-        mCrackInitiationSpec, solver, False, "OK"
+        mCrackInitiationSpec, solver, False, True
     AppendDiagnostic "lambda_crc=" & FormatNumberInvariant(mLambdaCrc) & _
         "; iterations=" & CStr(iterations) & "; method=LoadMultiplier"
     AppendDiagnostic "LoadMultiplier успешно нашел точку образования трещины."
+    SetFormationSuccess "Точка образования трещины найдена методом LoadMultiplier."
     LimitSearchFinalizeCrackFormationLoadMultiplier = True
 End Function
 
@@ -664,7 +673,7 @@ End Sub
 
 ' Записывает причину численной остановки LoadMultiplier-поиска трещины.
 Public Sub LimitSearchSetCrackFormationStopReason(ByVal reason As String)
-    mStopReason = reason
+    SetFormationNumericalFailure reason
 End Sub
 
 ' Возвращает допуск бисекции для точки образования трещины.
@@ -735,7 +744,7 @@ Public Function LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel
         ByVal lambdaValue As Double, ByVal solver As CSectionSolver, _
         ByVal state As String, ByVal iterations As Long) As Boolean
     If lambdaValue < 0# Then
-        mStopReason = "NumericalFailure: найденное состояние образования трещины имеет отрицательный lambda_crc."
+        SetFormationNumericalFailure "NumericalFailure: найденное состояние образования трещины имеет отрицательный lambda_crc."
         Exit Function
     End If
     If TryMarkConstantPartFormationFallback(section, concreteMaterial, steelMaterial, _
@@ -749,16 +758,17 @@ Public Function LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel
     Set mPreCrackSolver = solver
     Set mPreCrackState = New CSectionStateResult
     mPreCrackState.InitializeFromSolver sstPreCrackState, cpMcrc, _
-        mCrackInitiationSpec, solver, False, "OK"
+        mCrackInitiationSpec, solver, False, True
     AppendDiagnostic "lambda_crc=" & FormatNumberInvariant(mLambdaCrc) & _
         "; iterations=" & CStr(iterations) & "; method=UltimateStrain"
     AppendDiagnostic "UltimateStrain успешно нашел точку образования трещины."
+    SetFormationSuccess "Точка образования трещины найдена методом UltimateStrain."
     LimitSearchFinalizeUltimateResult = True
 End Function
 
 ' Переводит UltimateStrain-поиск трещины в численную остановку.
 Public Sub LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
-    mStopReason = reason
+    SetFormationNumericalFailure reason
 End Sub
 
 ' Настройки общего UltimateStrain-цикла для трещинообразования.
@@ -817,6 +827,8 @@ Private Function CalculateLambdaCrcByUltimateStrain(ByVal section As CSectionMod
     AppendDiagnostic "UltimateStrain: быстрый старт не дал устойчивую точку образования трещины: " & firstStopReason
     AppendDiagnostic "UltimateStrain: пробуем дополнительный старт от полного НДС CrackInitiation."
     mStopReason = vbNullString
+    mFormationInternalStatus = rsUnset
+    mFormationResultCode = rcNone
 
     ' Страховочный старт от полного состояния нужен только если быстрый старт
     ' не сработал. Это сохраняет производительность и одновременно помогает
@@ -824,7 +836,7 @@ Private Function CalculateLambdaCrcByUltimateStrain(ByVal section As CSectionMod
     Dim formationStart As CSectionSolver
     Set formationStart = SolveState(section, concreteMaterial, steelMaterial, Nothing, targetN, targetMx, targetMy)
     If formationStart Is Nothing Or Not formationStart.Converged Then
-        If Len(mStopReason) = 0 Then mStopReason = firstStopReason
+        If Len(mStopReason) = 0 Then SetFormationNumericalFailure firstStopReason
         Exit Function
     End If
 
@@ -834,7 +846,7 @@ Private Function CalculateLambdaCrcByUltimateStrain(ByVal section As CSectionMod
         CalculateLambdaCrcByUltimateStrain = True
     ElseIf Len(mStopReason) = 0 Then
         AppendDiagnostic "UltimateStrain: дополнительный старт от полного НДС также не дал точку образования трещины."
-        mStopReason = firstStopReason
+        SetFormationNumericalFailure firstStopReason
     End If
 End Function
 
@@ -859,7 +871,8 @@ End Function
 Private Function FormationSearchStoppedTerminally() As Boolean
     FormationSearchStoppedTerminally = (mConverged And Not mCrackFormed) Or _
         mFormationPathFallbackPsi1 Or _
-        (InStr(1, mStopReason, "InputError", vbTextCompare) > 0)
+        (mFormationInternalStatus = rsInvalidInput) Or _
+        (mFormationInternalStatus = rsInvalidConfiguration)
 End Function
 
 ' Старт для прямого поиска по общей lambda-траектории. Сначала используем
@@ -938,7 +951,7 @@ Private Function EvaluateCrcLoadPathResidual(ByVal section As CSectionModel, _
     Dim epsBtUlt As Double
     epsBtUlt = ConcreteTensionUltimateStrain(minConcreteStrain, maxConcreteStrain)
     If epsBtUlt <= 0# Then
-        mStopReason = "InputError: не удалось определить eps_bt,ult для состояния образования трещины."
+        SetFormationInvalidInput "InputError: не удалось определить eps_bt,ult для состояния образования трещины."
         Exit Function
     End If
     rLimit = maxConcreteStrain / epsBtUlt - 1#
@@ -952,7 +965,7 @@ Private Function EvaluateCrcLoadPathResidual(ByVal section As CSectionModel, _
     Exit Function
 
 Failed:
-    mStopReason = "NumericalFailure: оценка lambda_crc по load-path не выполнена: " & Err.Description
+    SetFormationNumericalFailure "NumericalFailure: оценка lambda_crc по load-path не выполнена: " & Err.Description
 End Function
 
 ' Создает общий helper lambda-траектории с текущими допусками crack solver-а.
@@ -988,20 +1001,20 @@ Private Function BuildPreCrackState(ByVal section As CSectionModel, ByVal materi
                 formationN, formationMx, formationMy, True)
             Set mPreCrackState = New CSectionStateResult
             mPreCrackState.InitializeFromSolver sstPreCrackState, cpMcrc, _
-                mCrackInitiationSpec, beforeSolver, False, IIf(beforeSolver.Converged, "OK", "NumFail")
+                mCrackInitiationSpec, beforeSolver, False, True
         End If
 
         If mPreCrackState Is Nothing Then
-            mStopReason = "NumericalFailure: состояние Ncrc до образования трещины не получено."
+            SetFormationNumericalFailure "NumericalFailure: состояние Ncrc до образования трещины не получено."
             Exit Function
         End If
         If Not mPreCrackState.Converged Then
             If Not beforeSolver Is Nothing Then Set mPreCrackSolver = beforeSolver
-            mStopReason = "NumericalFailure: состояние Ncrc до образования трещины не сошлось: " & mPreCrackState.StopReason
+            SetFormationNumericalFailure "NumericalFailure: состояние Ncrc до образования трещины не сошлось: " & mPreCrackState.StopReason
             Exit Function
         End If
         If beforeSolver Is Nothing Then
-            mStopReason = "NumericalFailure: состояние Ncrc было найдено, но solver-снимок недоступен для дальнейшего расчета."
+            SetFormationNumericalFailure "NumericalFailure: состояние Ncrc было найдено, но solver-снимок недоступен для дальнейшего расчета."
             Exit Function
         End If
         Set mPreCrackSolver = beforeSolver
@@ -1045,19 +1058,19 @@ Private Function EnsurePostCrackState(ByVal section As CSectionModel, ByVal mate
             formationN, formationMx, formationMy, True)
         Set mPostCrackState = New CSectionStateResult
         mPostCrackState.InitializeFromSolver sstPostCrackState, cpCrackedNDS, _
-            mCrackedStateSpec, mPostCrackSolver, False, IIf(mPostCrackSolver.Converged, "OK", "NumFail")
+            mCrackedStateSpec, mPostCrackSolver, False, True
     End If
 
     If mPostCrackState Is Nothing Then
-        mStopReason = "NumericalFailure: состояние lambda_crc после образования трещины не получено."
+        SetFormationNumericalFailure "NumericalFailure: состояние lambda_crc после образования трещины не получено."
         Exit Function
     End If
     If Not mPostCrackState.Converged Then
-        mStopReason = "NumericalFailure: состояние lambda_crc после образования трещины не сошлось: " & mPostCrackState.StopReason
+        SetFormationNumericalFailure "NumericalFailure: состояние lambda_crc после образования трещины не сошлось: " & mPostCrackState.StopReason
         Exit Function
     End If
     If mPostCrackSolver Is Nothing Then
-        mStopReason = "NumericalFailure: состояние lambda_crc после образования трещины найдено, но solver-снимок недоступен для sigma_s,crc."
+        SetFormationNumericalFailure "NumericalFailure: состояние lambda_crc после образования трещины найдено, но solver-снимок недоступен для sigma_s,crc."
         Exit Function
     End If
 
@@ -1238,7 +1251,7 @@ Private Sub CalculateCentralTension(ByVal currentSolver As CSectionSolver, ByVal
     mAs = SelectedRebarArea(section, selected)
     mNcrc = CentralTensionCrackForce(section)
     If mNcrc <= 0# Then
-        mStopReason = "InputError: для центрального растяжения не удалось определить Ncrc."
+        SetWidthInvalidInput "InputError: для центрального растяжения не удалось определить Ncrc."
         Exit Sub
     End If
 
@@ -1279,7 +1292,7 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionSolver, ByVal
     ProjectionBoundsByConcreteContour section, nx, ny, st, sc
     mSectionDepthH = st - sc
     If mSectionDepthH <= NEAR_ZERO_STRAIN Then
-        mStopReason = "InputError: не удалось определить габарит сечения по нормали к нейтральной линии."
+        SetWidthInvalidInput "InputError: не удалось определить габарит сечения по нормали к нейтральной линии."
         Exit Sub
     End If
 
@@ -1603,7 +1616,7 @@ Private Function ResolveAutoPsiIfPossible(ByVal section As CSectionModel, _
     End If
 
     If mLambdaCrc < 0# Then
-        mStopReason = "InputError: lambda_crc предварительной проверки образования трещины не определена."
+        SetWidthInvalidInput "InputError: lambda_crc предварительной проверки образования трещины не определена."
         Exit Function
     End If
 
@@ -1649,7 +1662,11 @@ Private Sub FinalizeWidth(ByVal reason As String)
     mUtilization = formula.Utilization(mCrackWidth, mAllowableCrackWidth)
     mCrackFormed = True
     mConverged = True
-    mStopReason = reason
+    If mAllowableCrackWidth > 0# And mCrackWidth > mAllowableCrackWidth Then
+        SetWidthResult rsCheckFailed, rcCrackWidthExceeded, reason
+    Else
+        SetWidthResult rsSuccess, rcCheckPassed, reason
+    End If
     AppendDiagnostic "a_crc=" & FormatNumberInvariant(mCrackWidth) & _
         "; phi1=" & FormatNumberInvariant(mPhi1) & _
         "; phi2=" & FormatNumberInvariant(mPhi2) & _
@@ -1657,6 +1674,49 @@ Private Sub FinalizeWidth(ByVal reason As String)
         "; psi_s=" & FormatNumberInvariant(mPsiS) & _
         "; sigma_s=" & FormatNumberInvariant(mSigmaS) & _
         "; ls=" & FormatNumberInvariant(mLs)
+End Sub
+
+' Записывает машинный результат этапа образования трещины. StopReason остается
+' только пользовательским комментарием и больше не используется для классификации.
+Private Sub SetFormationResult(ByVal internalStatus As EResultInternalStatus, _
+        ByVal resultCode As EResultCode, ByVal reason As String)
+    mFormationInternalStatus = internalStatus
+    mFormationResultCode = resultCode
+    mStopReason = reason
+End Sub
+
+' Помечает успешное нахождение точки образования нормальной трещины.
+Private Sub SetFormationSuccess(ByVal reason As String)
+    SetFormationResult rsSuccess, rcCheckPassed, reason
+End Sub
+
+' Помечает ошибку пользовательских данных или обязательных входов crack-этапа.
+Private Sub SetFormationInvalidInput(ByVal reason As String)
+    mConverged = False
+    mCrackFormed = False
+    SetFormationResult rsInvalidInput, rcInvalidInput, reason
+End Sub
+
+' Помечает именно численную неудачу поиска состояния/предела.
+Private Sub SetFormationNumericalFailure(ByVal reason As String)
+    mConverged = False
+    mCrackFormed = False
+    SetFormationResult rsNumericalFailure, rcNumericalFailure, reason
+End Sub
+
+' Записывает машинный результат формульной части ширины раскрытия.
+Private Sub SetWidthResult(ByVal internalStatus As EResultInternalStatus, _
+        ByVal resultCode As EResultCode, ByVal reason As String)
+    mWidthInternalStatus = internalStatus
+    mWidthResultCode = resultCode
+    mStopReason = reason
+End Sub
+
+' Помечает ошибку входных данных, найденную уже при подготовке данных формулы.
+Private Sub SetWidthInvalidInput(ByVal reason As String)
+    mConverged = False
+    mCrackFormed = False
+    SetWidthResult rsInvalidInput, rcInvalidInput, reason
 End Sub
 
 ' Помечает расчет как корректно завершенный без раскрытой трещины.
@@ -1668,6 +1728,10 @@ Private Sub FinishNoCrack(ByVal reason As String)
     mCrackWidth = 0#
     mUtilization = 0#
     mStopReason = reason
+    If mFormationInternalStatus = rsUnset Then _
+        SetFormationResult rsSuccess, rcCriterionNotReached, reason
+    If mWidthInternalStatus = rsUnset Then _
+        SetWidthResult rsNotApplicable, rcCrackNotFormed, reason
     AppendDiagnostic reason
 End Sub
 
@@ -1682,7 +1746,7 @@ Private Sub MarkFormationPathFallback(ByVal reason As String)
     mFormationPathFallbackPsi1 = True
     mConverged = True
     mCrackFormed = True
-    mStopReason = reason
+    SetFormationResult rsSuccessWithWarning, rcCheckPassed, reason
     AppendDiagnostic reason
 End Sub
 
@@ -2264,6 +2328,10 @@ Private Sub ClearResult()
     mStopReason = vbNullString
     mDiagnosticLog = vbNullString
     mSolverCallCount = 0
+    mFormationInternalStatus = rsUnset
+    mFormationResultCode = rcNone
+    mWidthInternalStatus = rsUnset
+    mWidthResultCode = rcNone
     mCrackWidth = 0#
     mUtilization = 0#
     mCrackFormed = False
@@ -2314,6 +2382,8 @@ Private Sub ClearFormationAttemptState()
     mConverged = False
     mStopReason = vbNullString
     mCrackFormed = False
+    mFormationInternalStatus = rsUnset
+    mFormationResultCode = rcNone
     mLambdaCrc = 0#
     mNcrc = 0#
     mFormationNcrc = 0#
@@ -2363,6 +2433,22 @@ End Property
 
 Public Property Get StopReason() As String
     StopReason = mStopReason
+End Property
+
+Public Property Get CrackFormationInternalStatus() As EResultInternalStatus
+    CrackFormationInternalStatus = mFormationInternalStatus
+End Property
+
+Public Property Get CrackFormationResultCode() As EResultCode
+    CrackFormationResultCode = mFormationResultCode
+End Property
+
+Public Property Get CrackWidthInternalStatus() As EResultInternalStatus
+    CrackWidthInternalStatus = mWidthInternalStatus
+End Property
+
+Public Property Get CrackWidthResultCode() As EResultCode
+    CrackWidthResultCode = mWidthResultCode
 End Property
 
 Public Property Get CrackFormed() As Boolean

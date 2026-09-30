@@ -416,8 +416,8 @@ Private Function OutputDataOffset(ByVal batch As CBatchSectionCalculator, ByVal 
     If OutputDataOffset > dataRows Then OutputDataOffset = dataRows
 End Function
 
-' Возвращает внешний статус устойчивости по ResultMeta. Старое строковое поле
-' используется только как fallback для переходных тестовых результатов.
+' Возвращает внешний статус устойчивости по ResultMeta. Текстовый fallback нужен
+' только для неполных тестовых результатов, где meta явно не создана.
 Private Function StabilityStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal policy As CBatchStatusPolicy) As String
     Dim meta As CResultMeta

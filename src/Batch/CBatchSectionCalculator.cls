@@ -335,7 +335,7 @@ Private Function StabilityTextSetting(ByVal settings As CSystemSettingsReader, _
 End Function
 
 ' Очищает список LC и накопленные результаты.
-' Используется перед чтением новой таблицы сочетаний, чтобы старые статусы не
+' Используется перед чтением новой таблицы сочетаний, чтобы предыдущие статусы не
 ' попали в новый batch summary.
 Public Sub ClearCombinations()
     mCount = 0
@@ -674,11 +674,11 @@ Private Sub RunCombination(ByVal index As Long)
     End If
 
     mResults(index).Status = mStatusPolicy.NotApplicable
-    mResults(index).SetDirectStateStatus mStatusPolicy.NotApplicable
+    mResults(index).SetDirectStateMeta NotApplicableMeta(rkDirectState)
     mResults(index).CapacityStatus = mStatusPolicy.NotApplicable
     mResults(index).CrackStatus = mStatusPolicy.NotApplicable
     mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
-    mResults(index).SetStabilityStatus mStatusPolicy.NotApplicable
+    mResults(index).SetStabilityMeta NotApplicableMeta(rkStability)
 
     ReportSection "Продольный изгиб и устойчивость"
     If profile.StabilityEnabled Then
@@ -687,7 +687,7 @@ Private Sub RunCombination(ByVal index As Long)
     Else
         ReportStep "Устойчивость не запрошена профилем."
         mResults(index).ClearStabilityResult
-        mResults(index).SetStabilityStatus mStatusPolicy.NotApplicable
+        mResults(index).SetStabilityMeta NotApplicableMeta(rkStability)
     End If
 
     ReportSection "Расчет по модели прочности"
@@ -765,12 +765,14 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
         mStabilitySP63DeltaEMax, mStabilitySP35PhiP, _
         mStabilitySP35NOverNcrLimit, mStabilitySP35Table721, mMomentZeroFilter
 
-    mResults(index).StoreStabilityResult mStatusPolicy.StabilityStatusFromCalculator(stability), _
-        stability, referenceX, referenceY
+    Dim stabilityMeta As CResultMeta
+    Set stabilityMeta = mStatusPolicy.StabilityMetaFromCalculator(stability)
+    mResults(index).StoreStabilityResult stabilityMeta, stability, referenceX, referenceY
     If stability.InputValid And stability.Applicable And stability.CheckPassed Then _
         ApplyStabilityDesignLoads index, stability, referenceX, referenceY
 
     ReportValue "Статус устойчивости", mResults(index).StabilityStatus
+    ReportMetaComment "Комментарий результата устойчивости", mResults(index).StabilityMeta
     ReportValue "Нормативный блок", StabilityCodeDisplayName(stability.Code)
     ReportValue "Материалы для устойчивости", MaterialValueSetToText(valueSet)
     ReportValue "Расчетная ветвь", StabilityBranchDisplayName(stability.Branch)
@@ -784,7 +786,7 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
     Exit Sub
 
 Failed:
-    mResults(index).SetStabilityStatus mStatusPolicy.InputErr, Err.Description
+    mResults(index).SetStabilityMeta InvalidInputMeta(rkStability, Err.Description), Err.Description
     ReportStep "Устойчивость не рассчитана: " & Err.Description
 End Sub
 
@@ -1023,6 +1025,7 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     If Len(reportText) > 0 Then ReportStep reportText
 
     ReportValue "Статус несущей способности", mResults(index).CapacityStatus
+    ReportMetaComment "Комментарий результата несущей", mResults(index).CapacityMeta
     ReportValue "Фактический метод несущей", mResults(index).CapacitySolutionMethod
     ReportValue "lambda несущей", FormatNumberInvariant(mResults(index).LambdaCapacity)
     ReportValue "Фактический путь несущей", mResults(index).CapacityPathDisplayName
@@ -1056,7 +1059,8 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
     Set runner = provider.LastRunner
 
     If stateResult Is Nothing Then
-        If mergeIntoDirectStateStatus Then MergeDirectStateStatus index, mStatusPolicy.NumFail
+        If mergeIntoDirectStateStatus Then MergeDirectStateMeta index, _
+            NumericalFailureMeta(rkDirectState, "Прямое НДС не вернуло расчетное состояние.")
         ReportStep "Прямое НДС " & SectionStateTypeToText(stateType) & " не вернуло расчетное состояние."
         Set RunProfileState = runner
         Exit Function
@@ -1080,7 +1084,7 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
     End If
 
     If Not stateResult.Converged Then
-        If mergeIntoDirectStateStatus Then MergeDirectStateStatus index, mStatusPolicy.NumFail
+        If mergeIntoDirectStateStatus Then MergeDirectStateMeta index, stateResult.ResultMeta
         ReportStep "Прямое НДС " & SectionStateTypeToText(stateType) & " не сошлось: " & stateResult.StopReason
         Set RunProfileState = runner
         Exit Function
@@ -1088,17 +1092,15 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
 
     mResults(index).ExtensionUsed = (mResults(index).ExtensionUsed Or stateResult.ExtensionUsed)
     Dim stateStatus As String
-    stateStatus = stateResult.Status
-    If Len(Trim$(stateStatus)) = 0 Then stateStatus = mStatusPolicy.OK
+    stateStatus = mStatusPolicy.StatusFromMeta(stateResult.ResultMeta)
     If stateResult.ExtensionUsed Or Not stateResult.WithinPhysicalRange Then
-        stateStatus = mStatusPolicy.Fail
-        If mergeIntoDirectStateStatus Then MergeDirectStateStatus index, stateStatus
+        If mergeIntoDirectStateStatus Then MergeDirectStateMeta index, stateResult.ResultMeta
         ReportStep "Прямое НДС " & SectionStateTypeToText(stateType) & " найдено, но вышло за физический диапазон диаграммы материала."
     Else
-        stateStatus = mStatusPolicy.OK
-        If mergeIntoDirectStateStatus Then MergeDirectStateStatus index, stateStatus
+        If mergeIntoDirectStateStatus Then MergeDirectStateMeta index, stateResult.ResultMeta
     End If
     ReportValue "Статус прямого НДС", stateStatus
+    ReportMetaComment "Комментарий результата НДС", stateResult.ResultMeta
     ReportValue "Использовано продолжение диаграммы", IIf(stateResult.ExtensionUsed, "да", "нет")
     Set RunProfileState = runner
 End Function
@@ -1137,7 +1139,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
         mMaterialProvider, profile.CrackedStateSpec, profile.CrackInitiationSpec, _
         mInputs(index).N, mInputs(index).Mx, mInputs(index).My, loadState, _
         crackReferenceX, crackReferenceY)
-    mResults(index).CrackStatus = mStatusPolicy.CrackStatusFromCalculator(crack)
+    mResults(index).CrackStatus = mStatusPolicy.StatusFromMeta(mStatusPolicy.CrackMetaFromCalculator(crack))
     StoreCrackAggregateSnapshot index, crack, formationResult
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
     If Not formationResult.PreCrackState Is Nothing Then mResults(index).AddState formationResult.PreCrackState
@@ -1192,7 +1194,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     crack.CalculateAfterFormationCheck runner.ResultSolver, mSection, mMaterialProvider, profile.CrackedStateSpec, _
         profile.CrackInitiationSpec, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
         loadState, crackReferenceX, crackReferenceY
-    mResults(index).CrackStatus = CrackWidthStatusAfterFormula(index, crack)
+    mResults(index).CrackStatus = mStatusPolicy.StatusFromMeta(mStatusPolicy.CrackMetaFromCalculator(crack))
     StoreCrackAggregateSnapshot index, crack, formationResult, currentStateMeta, _
         longitudinalResult:=longitudinalResult
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
@@ -1201,6 +1203,10 @@ ReportCrackResult:
     StoreCrackAggregateSnapshot index, crack, formationResult, currentStateMeta, _
         crackWidthMetaOverride, longitudinalResult
     ReportValue "Статус нормальных трещин", mResults(index).CrackStatus
+    ReportMetaComment "Комментарий образования трещины", mResults(index).CrackFormationMeta
+    ReportMetaComment "Комментарий равновесия CrackedState", mResults(index).CrackCurrentStateMeta
+    ReportMetaComment "Комментарий ширины нормальных трещин", mResults(index).CrackWidthMeta
+    ReportMetaComment "Комментарий продольных трещин", mResults(index).LongitudinalCrackMeta
     ReportValue "Фактический путь образования трещины", mResults(index).CrackFormationMethod
     ReportValue "lambda образования трещины", FormatNumberInvariant(mResults(index).CrackLambdaCrc)
     ReportValue "Трещина образована", IIf(mResults(index).CrackFormed, "да", "нет")
@@ -1213,8 +1219,8 @@ ReportCrackResult:
     ReportBlock "Диагностика расчета трещин", crack.DiagnosticLog
 End Sub
 
-' Собирает переходный result-tree трещин и синхронизирует его с плоскими
-' полями CCombinationResult, которые пока читаются существующими writer-ами.
+' Собирает result-tree трещин и синхронизирует его с плоскими полями
+' CCombinationResult, которые являются форматом вывода Results.
 Private Sub StoreCrackAggregateSnapshot(ByVal index As Long, ByVal crack As CCrackWidthCalculator, _
         ByVal formationResult As CCrackFormationResult, _
         Optional ByVal currentStateMeta As CResultMeta = Nothing, _
@@ -1246,23 +1252,11 @@ Private Sub StoreCrackAggregateSnapshot(ByVal index As Long, ByVal crack As CCra
 End Sub
 
 ' Возвращает meta формульного этапа раскрытия, согласованную с уже выбранным
-' внешним статусом. Это сохраняет прежний вывод и одновременно не дает чистой
-' формуле превращать обычный инженерный FAIL в NumFail.
+' внешним статусом. Статус берется из typed-result калькулятора или из
+' заранее подготовленной block-meta, а не из текста диагностического комментария.
 Private Function CrackWidthMetaForCurrentStatus(ByVal index As Long, _
         ByVal crack As CCrackWidthCalculator) As CResultMeta
-    Dim calculatedMeta As CResultMeta
-    Set calculatedMeta = mStatusPolicy.CrackMetaFromCalculator(crack)
-
-    Dim currentStatus As String
-    currentStatus = mStatusPolicy.DisplayStatus(mResults(index).CrackStatus)
-    If Len(currentStatus) = 0 Then currentStatus = mStatusPolicy.StatusFromMeta(calculatedMeta)
-
-    If currentStatus = mStatusPolicy.StatusFromMeta(calculatedMeta) Then
-        Set CrackWidthMetaForCurrentStatus = calculatedMeta
-    Else
-        Set CrackWidthMetaForCurrentStatus = mStatusPolicy.MetaFromStatus(currentStatus, _
-            rkCrackWidth, crack.StopReason)
-    End If
+    Set CrackWidthMetaForCurrentStatus = mStatusPolicy.CrackMetaFromCalculator(crack)
 End Function
 
 ' Проверяет, можно ли использовать CurrentCrackedState как исходные данные для
@@ -1305,8 +1299,9 @@ Private Function CurrentCrackedStateMeta(ByVal stateResult As CSectionStateResul
 End Function
 
 ' Формирует meta для случая, когда CurrentCrackedState не был создан вообще.
-' Это не всегда численная несходимость: если причина пришла из проверки входа
-' или конфигурации, сохраняем именно ее, а не подменяем NumFail.
+' Статус не выводится из текста blockReason: если typed-state не создан,
+' runner может дать только факт отсутствия физического НДС, а подробная строка
+' остается комментарием/diagnostic.
 Private Function MissingCurrentCrackedStateMeta(ByVal runner As CStateSolutionRunner, _
         ByVal blockReason As String) As CResultMeta
     Dim meta As CResultMeta
@@ -1315,13 +1310,7 @@ Private Function MissingCurrentCrackedStateMeta(ByVal runner As CStateSolutionRu
     If Not runner Is Nothing Then
         If Not runner.ResultSolver Is Nothing Then
             If Not runner.ResultSolver.Converged Then
-                If IsInvalidInputReason(blockReason) Then
-                    meta.SetResult rsInvalidInput, rcInvalidInput, rkDirectState, blockReason
-                ElseIf IsInvalidConfigurationReason(blockReason) Then
-                    meta.SetResult rsInvalidConfiguration, rcInvalidConfiguration, rkDirectState, blockReason
-                Else
-                    meta.SetResult rsNumericalFailure, rcNumericalFailure, rkDirectState, blockReason
-                End If
+                meta.SetResult rsNumericalFailure, rcNumericalFailure, rkDirectState, blockReason
                 Set MissingCurrentCrackedStateMeta = meta
                 Exit Function
             End If
@@ -1330,56 +1319,6 @@ Private Function MissingCurrentCrackedStateMeta(ByVal runner As CStateSolutionRu
 
     meta.SetResult rsInternalError, rcSolverDidNotReturnState, rkDirectState, blockReason
     Set MissingCurrentCrackedStateMeta = meta
-End Function
-
-' Распознает ошибки пользовательских данных в текстовой причине solver-а.
-Private Function IsInvalidInputReason(ByVal reason As String) As Boolean
-    IsInvalidInputReason = (InStr(1, reason, "InputError", vbTextCompare) > 0 Or _
-        InStr(1, reason, "InvalidInput", vbTextCompare) > 0)
-End Function
-
-' Распознает ошибки конфигурации профиля или Config в текстовой причине solver-а.
-Private Function IsInvalidConfigurationReason(ByVal reason As String) As Boolean
-    IsInvalidConfigurationReason = (InStr(1, reason, "InvalidConfiguration", vbTextCompare) > 0)
-End Function
-
-' Возвращает пользовательский статус именно формульного этапа раскрытия
-' нормальной трещины. NumFail допустим только если он уже виден в одном из
-' НДС-состояний трещин: PreCrackState, PostCrackState или CrackedState.
-' Если эти состояния сошлись, а калькулятор ширины оставил техническую
-' NumericalFailure-причину, это не отдельная несходимость равновесия, поэтому
-' для пользователя показывается FAIL, а подробность остается в txt-диагностике.
-Private Function CrackWidthStatusAfterFormula(ByVal index As Long, _
-        ByVal crack As CCrackWidthCalculator) As String
-    Dim statusText As String
-    statusText = mStatusPolicy.CrackStatusFromCalculator(crack)
-    If statusText = mStatusPolicy.NumFail And Not HasNumFailCrackState(index) Then
-        CrackWidthStatusAfterFormula = mStatusPolicy.Fail
-    Else
-        CrackWidthStatusAfterFormula = statusText
-    End If
-End Function
-
-' Проверяет только те состояния трещин, где действительно решается равновесие
-' сечения. Именно они имеют право поднимать пользовательский NumFail.
-Private Function HasNumFailCrackState(ByVal index As Long) As Boolean
-    HasNumFailCrackState = CrackStateStatusIsNumFail(index, sstPreCrackState) Or _
-        CrackStateStatusIsNumFail(index, sstPostCrackState) Or _
-        CrackStateStatusIsNumFail(index, sstCrackedState)
-End Function
-
-' Возвращает True, если конкретный named-state трещин сохранен как NumFail
-' или содержит несошедшийся solver без более мягкого статуса.
-Private Function CrackStateStatusIsNumFail(ByVal index As Long, _
-        ByVal stateType As ESectionStateType) As Boolean
-    Dim stateResult As CSectionStateResult
-    Set stateResult = mResults(index).FindState(stateType)
-    If stateResult Is Nothing Then Exit Function
-    If mStatusPolicy.DisplayStatus(stateResult.Status) = mStatusPolicy.NumFail Then
-        CrackStateStatusIsNumFail = True
-    ElseIf Len(stateResult.Status) = 0 And Not stateResult.Converged Then
-        CrackStateStatusIsNumFail = True
-    End If
 End Function
 
 ' Поясняет в txt-отчете стартовую логику поиска образования нормальной трещины.
@@ -1429,10 +1368,10 @@ Private Sub AppendCrackDiagnostic(ByVal index As Long, ByVal crack As CCrackWidt
     End If
 End Sub
 
-' Объединяет статусы нескольких прямых StateSolution одного LC.
+' Объединяет meta нескольких прямых StateSolution одного LC.
 ' N/A не ухудшает итог, а FAIL/NumFail/InputErr сохраняют общий смысл строки.
-Private Sub MergeDirectStateStatus(ByVal index As Long, ByVal statusText As String)
-    mResults(index).MergeDirectStateStatus statusText, mStatusPolicy.NotApplicable
+Private Sub MergeDirectStateMeta(ByVal index As Long, ByVal meta As CResultMeta)
+    mResults(index).MergeDirectStateMeta meta
 End Sub
 
 ' Заполняет capacity-поля нейтральным статусом, когда эта проверка не должна
@@ -1440,7 +1379,7 @@ End Sub
 Private Sub StoreNotCalculatedCapacity(ByVal index As Long)
     Dim capacityResult As CCapacityResult
     Set capacityResult = New CCapacityResult
-    capacityResult.InitializeSkipped mStatusPolicy.NotApplicable, mStatusPolicy.NotApplicable
+    capacityResult.InitializeSkipped "Проверка несущей способности не запрошена профилем."
     mResults(index).StoreCapacityResult capacityResult
 End Sub
 
@@ -1450,9 +1389,36 @@ End Sub
 Private Sub StoreInvalidCapacity(ByVal index As Long, ByVal reason As String)
     Dim capacityResult As CCapacityResult
     Set capacityResult = New CCapacityResult
-    capacityResult.InitializeInvalid mStatusPolicy.InputErr, reason, CAPACITY_PATH_NONE
+    capacityResult.InitializeInvalidInput reason, CAPACITY_PATH_NONE
     mResults(index).StoreCapacityResult capacityResult
 End Sub
+
+' Создает meta для отключенной или неприменимой ветки расчета.
+Private Function NotApplicableMeta(ByVal resultKind As EResultKind, _
+        Optional ByVal reason As String = vbNullString) As CResultMeta
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    meta.SetNotApplicable resultKind, reason
+    Set NotApplicableMeta = meta
+End Function
+
+' Создает meta для ошибки пользовательских данных или настроек.
+Private Function InvalidInputMeta(ByVal resultKind As EResultKind, _
+        ByVal reason As String) As CResultMeta
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    meta.SetResult rsInvalidInput, rcInvalidInput, resultKind, reason
+    Set InvalidInputMeta = meta
+End Function
+
+' Создает meta для настоящей численной несходимости state-solve/search.
+Private Function NumericalFailureMeta(ByVal resultKind As EResultKind, _
+        ByVal reason As String) As CResultMeta
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    meta.SetResult rsNumericalFailure, rcNumericalFailure, resultKind, reason
+    Set NumericalFailureMeta = meta
+End Function
 
 ' Фиксирует InvalidInput по конкретному LC и не дает этому сочетанию пройти
 ' в solver. Так пользователь видит причину в таблице, а остальные LC считаются.
@@ -1461,8 +1427,8 @@ Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     mInputs(index).InputError = reason
     mResults(index).ProfileId = mInputs(index).ProfileId
     mResults(index).Status = mStatusPolicy.InputErr
-    mResults(index).SetDirectStateStatus mStatusPolicy.InputErr, reason
-    mResults(index).SetStabilityStatus mStatusPolicy.InputErr, reason
+    mResults(index).SetDirectStateMeta InvalidInputMeta(rkDirectState, reason)
+    mResults(index).SetStabilityMeta InvalidInputMeta(rkStability, reason), reason
     StoreInvalidCapacity index, reason
     mResults(index).CrackStatus = mStatusPolicy.NotApplicable
     mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
@@ -1663,6 +1629,7 @@ Private Sub ReportCombinationSummary(ByVal index As Long)
     ReportValue "Статус устойчивости", mResults(index).StabilityStatus
     ReportValue "Использование устойчивости", FormatNumberInvariant(mResults(index).StabilityUtil)
     ReportValue "Определяющее использование", FormatNumberInvariant(mResults(index).GoverningUtil)
+    ReportMetaComment "Итоговый комментарий", mResults(index).OverallMeta
 End Sub
 
 ' Добавляет смысловой заголовок в txt-отчет выполнения, если отчет включен
@@ -1687,6 +1654,15 @@ Private Sub ReportValue(ByVal label As String, ByVal valueText As String)
     If mReport Is Nothing Then Exit Sub
     If Not mReport.Enabled Then Exit Sub
     mReport.AddValue label, valueText
+End Sub
+
+' Добавляет в txt-отчет комментарий из ResultMeta конкретного result-subtree.
+' Это общий путь Stage 9: writer/report не склеивает причины сам, а только
+' показывает уже сформированный ResultComment ответственного расчетного слоя.
+Private Sub ReportMetaComment(ByVal label As String, ByVal meta As CResultMeta)
+    If meta Is Nothing Then Exit Sub
+    If Len(Trim$(meta.ResultComment)) = 0 Then Exit Sub
+    ReportValue label, meta.ResultComment
 End Sub
 
 ' Форматирует длину для execution_report в той же выходной единице, что и
@@ -2067,7 +2043,7 @@ Private Function IsBetterGoverningCandidate(ByVal candidateIndex As Long, ByVal 
 End Function
 
 ' Возвращает прочностной запас LC как найденный множитель lambda.
-' После перехода на CapacityLoadPath это единая величина для lambda*Mx,
+' Для CapacityLoadPath это единая величина для lambda*Mx,
 ' lambda*My, lambda*Mxy, lambda*N и lambda*NMxy; отдельные отношения Nult/N или Mult/Mxy больше
 ' не нужны для выбора Worst.
 Private Function StrengthSafetyFactorForGoverning(ByVal index As Long) As Double
@@ -2366,7 +2342,7 @@ Public Property Get OverallStatus(ByVal index As Long) As String
 End Property
 
 ' Возвращает meta общего статуса LC. Writer-ы используют его как основной источник
-' внешнего статуса, а старые строковые поля остаются переходным совместимым фасадом.
+' внешнего статуса; строковые свойства нужны только как готовый display-слой.
 Public Property Get OverallMeta(ByVal index As Long) As CResultMeta
     Set OverallMeta = mResults(index).OverallMeta
 End Property
@@ -3267,8 +3243,8 @@ Public Property Get StateIterations(ByVal index As Long) As Long
     StateIterations = mResults(index).StateIterations
 End Property
 
-' Возвращает внешний статус через новую ResultMeta-модель. Старый строковый статус
-' остается только fallback для переходных тестовых объектов без result-tree.
+' Возвращает внешний статус через ResultMeta. Fallback используется только для
+' неполных тестовых объектов, где meta явно не была сформирована.
 Private Function ExternalStatusFromMeta(ByVal meta As CResultMeta, ByVal fallbackStatus As String) As String
     Dim policy As CBatchStatusPolicy
     Set policy = New CBatchStatusPolicy

@@ -32,7 +32,7 @@ Private Const STATUS_NA As String = "N/A" ' Расчетная проверка 
 Private Const STATUS_NOT_CALCULATED_SHORT As String = "NotCalcul." ' Короткая подпись для служебных нерассчитанных полей.
 Private Const STRESS_ZERO_TOLERANCE As Double = 0.000000001 ' Малые численные шумы напряжений не должны запускать проверку сжатого бетона.
 
-Private mResultPolicy As CResultStatusPolicy ' Новый типизированный слой status policy; этот класс остается совместимым фасадом.
+Private mResultPolicy As CResultStatusPolicy ' Единая политика преобразования typed ResultMeta во внешний display-статус.
 
 ' Создает внутреннюю policy, которая знает про InternalStatus/ResultCode.
 Private Sub Class_Initialize()
@@ -79,7 +79,7 @@ End Property
 Public Function Aggregate(ByVal directStateStatus As String, ByVal capacityStatus As String, _
         ByVal crackStatus As String, Optional ByVal longitudinalCrackStatus As String = vbNullString, _
         Optional ByVal stabilityStatus As String = vbNullString) As String
-    Aggregate = Policy.AggregateText(directStateStatus, capacityStatus, crackStatus, _
+    Aggregate = Policy.AggregateExternalStatus(directStateStatus, capacityStatus, crackStatus, _
         longitudinalCrackStatus, stabilityStatus)
 End Function
 
@@ -91,16 +91,15 @@ Public Function AggregateMeta(ByVal directMeta As CResultMeta, ByVal capacityMet
     AggregateMeta = Policy.AggregateMeta(directMeta, capacityMeta, crackMeta, longitudinalMeta, stabilityMeta)
 End Function
 
-' Переводит внутренний текст расчетной ветки в один из пяти пользовательских
+' Переводит внутренний текст расчетной ветки в один из семи пользовательских
 ' статусов. Этот метод используется там, где нужна именно оценка результата:
 ' агрегирование OverallStatus, подсветка строк и проверка завершенности ветки.
 Public Function ToUserStatus(ByVal statusText As String) As String
     ToUserStatus = Policy.ToUserStatus(statusText)
 End Function
 
-' Совместимое имя для старых вызовов внутри проекта. Новая расчетная логика
-' должна использовать ToUserStatus, чтобы было видно различие внутреннего
-' технического текста и пользовательского статуса.
+' Нормализует уже сформированный внешний статус из краткого словаря Results.
+' Метод не должен получать solver StopReason или другие технические строки.
 Public Function Normalize(ByVal statusText As String) As String
     Normalize = ToUserStatus(statusText)
 End Function
@@ -112,17 +111,17 @@ Public Function DisplayStatus(ByVal statusText As String) As String
     Select Case UCase$(Trim$(statusText))
         Case "OK"
             DisplayStatus = STATUS_OK
-        Case "FAIL", "STRENGTHFAILED", "STRAINLIMITEXCEEDED"
+        Case "FAIL"
             DisplayStatus = STATUS_FAIL
         Case "BASEFAIL"
             DisplayStatus = STATUS_BASEFAIL
-        Case "NUMFAIL", "NUMERICALFAILURE", "SINGULARTANGENT"
+        Case "NUMFAIL"
             DisplayStatus = STATUS_NUMFAIL
-        Case "INPUTERR", "INPUTERROR", "INVALIDINPUT"
+        Case "INPUTERR"
             DisplayStatus = STATUS_INPUTERR
-        Case "CALCERR", "INTERNALERROR"
+        Case "CALCERR"
             DisplayStatus = STATUS_CALCERR
-        Case "N/A", "NA", "NOTCALCULATED", "NOTCALCUL.", "SKIPPEDZEROMOMENT", "SKIPPEDZEROBASEMOMENT", ""
+        Case "N/A", ""
             DisplayStatus = STATUS_NA
         Case Else
             DisplayStatus = Replace$(statusText, "NotCalculated", STATUS_NOT_CALCULATED_SHORT, 1, -1, vbTextCompare)
@@ -151,13 +150,6 @@ Public Function StatusFromMeta(ByVal meta As CResultMeta) As String
     StatusFromMeta = Policy.ExternalStatus(meta)
 End Function
 
-' Создает meta из уже принятого внешнего статуса для переходных мест, где
-' строковый статус пока формируется раньше result-объекта.
-Public Function MetaFromStatus(ByVal statusText As String, ByVal resultKind As EResultKind, _
-        Optional ByVal resultComment As String = vbNullString) As CResultMeta
-    Set MetaFromStatus = Policy.MetaFromLegacyStatus(statusText, resultKind, resultComment)
-End Function
-
 ' Формирует meta для этапа, который не запускался из-за отсутствия обязательного
 ' предыдущего результата. Внешний N/A появится позже только через CResultStatusPolicy.
 Public Function BlockedByDependencyMeta(ByVal resultKind As EResultKind, _
@@ -177,13 +169,6 @@ Public Function IsInvalid(ByVal statusText As String) As Boolean
     IsInvalid = Policy.IsInvalid(statusText)
 End Function
 
-' Переводит результат расчета трещин в тот же пользовательский словарь.
-' Для трещин FAIL означает, что ширина раскрытия превышает пользовательский
-' a_crc,ult при корректно найденном НДС.
-Public Function CrackStatusFromCalculator(ByVal crack As CCrackWidthCalculator) As String
-    CrackStatusFromCalculator = Policy.ExternalStatus(CrackMetaFromCalculator(crack))
-End Function
-
 ' Формирует типизированный результат этапа образования нормальной трещины.
 ' CRITERION_NOT_REACHED считается корректным физическим исходом search: трещина
 ' не образовалась, но численной ошибки при этом нет.
@@ -193,14 +178,13 @@ Public Function CrackFormationMetaFromCalculator(ByVal crack As CCrackWidthCalcu
 
     If crack Is Nothing Then
         meta.SetResult rsInvalidInput, rcInvalidInput, rkCrackFormation, "Crack calculator не создан."
+    ElseIf crack.CrackFormationInternalStatus <> rsUnset Then
+        meta.SetResult crack.CrackFormationInternalStatus, crack.CrackFormationResultCode, _
+            rkCrackFormation, crack.StopReason
     ElseIf crack.Converged And crack.CrackFormed Then
         meta.SetResult rsSuccess, rcCheckPassed, rkCrackFormation, crack.StopReason
     ElseIf crack.Converged Then
         meta.SetResult rsSuccess, rcCriterionNotReached, rkCrackFormation, crack.StopReason
-    ElseIf IsInvalid(crack.StopReason) Then
-        meta.SetResult rsInvalidInput, rcInvalidInput, rkCrackFormation, crack.StopReason
-    ElseIf IsNumerical(crack.StopReason) Then
-        meta.SetResult rsNumericalFailure, rcNumericalFailure, rkCrackFormation, crack.StopReason
     Else
         meta.SetResult rsInternalError, rcInternalError, rkCrackFormation, crack.StopReason
     End If
@@ -217,6 +201,9 @@ Public Function CrackMetaFromCalculator(ByVal crack As CCrackWidthCalculator) As
 
     If crack Is Nothing Then
         meta.SetResult rsInvalidInput, rcInvalidInput, rkCrackWidth, "Crack calculator не создан."
+    ElseIf crack.CrackWidthInternalStatus <> rsUnset Then
+        meta.SetResult crack.CrackWidthInternalStatus, crack.CrackWidthResultCode, _
+            rkCrackWidth, crack.StopReason
     ElseIf crack.Converged And Not crack.CrackFormed Then
         meta.SetResult rsNotApplicable, rcCrackNotFormed, rkCrackWidth, crack.StopReason, _
             vbNullString, False, True
@@ -227,12 +214,14 @@ Public Function CrackMetaFromCalculator(ByVal crack As CCrackWidthCalculator) As
         Else
             meta.SetResult rsSuccess, rcCheckPassed, rkCrackWidth, crack.StopReason
         End If
-    ElseIf IsInvalid(crack.StopReason) Then
-        meta.SetResult rsInvalidInput, rcInvalidInput, rkCrackWidth, crack.StopReason
-    ElseIf IsNumerical(crack.StopReason) Then
-        meta.SetResult rsNumericalFailure, rcNumericalFailure, rkCrackWidth, crack.StopReason
+    ElseIf crack.CrackFormationInternalStatus = rsNumericalFailure Or _
+            crack.CrackFormationInternalStatus = rsInvalidInput Or _
+            crack.CrackFormationInternalStatus = rsInvalidConfiguration Or _
+            crack.CrackFormationInternalStatus = rsInternalError Then
+        meta.SetResult rsBlockedByDependency, rcBlockedByDependency, rkCrackWidth, _
+            "Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины."
     Else
-        meta.SetResult rsInvalidInput, rcInvalidInput, rkCrackWidth, crack.StopReason
+        meta.SetResult rsInternalError, rcInternalError, rkCrackWidth, crack.StopReason
     End If
 
     Set CrackMetaFromCalculator = meta
@@ -253,12 +242,6 @@ Public Function CrackMetaFromResult(ByVal widthResult As CCrackWidthResult) As C
     End If
 End Function
 
-' Возвращает статус проверки продольных трещин по сжатию бетона.
-' Если сжатого бетона в найденном НДС нет, проверка неприменима и не ухудшает OverallStatus.
-Public Function LongitudinalCrackStatus(ByVal maxCompressionStress As Double, ByVal rbMc2 As Double) As String
-    LongitudinalCrackStatus = Policy.ExternalStatus(LongitudinalCrackMeta(maxCompressionStress, rbMc2))
-End Function
-
 ' Формирует типизированный результат проверки продольных трещин.
 ' Эта проверка не решает равновесие и поэтому не может сама породить NumFail.
 Public Function LongitudinalCrackMeta(ByVal maxCompressionStress As Double, ByVal rbMc2 As Double) As CResultMeta
@@ -276,13 +259,6 @@ Public Function LongitudinalCrackMeta(ByVal maxCompressionStress As Double, ByVa
     End If
 
     Set LongitudinalCrackMeta = meta
-End Function
-
-' Возвращает пользовательский статус из результата фильтра устойчивости.
-' Сам CStabilityCalculator хранит подробные расчетные причины, а наружу
-' отдается только общий словарь Summary.
-Public Function StabilityStatusFromCalculator(ByVal stability As CStabilityCalculator) As String
-    StabilityStatusFromCalculator = Policy.ExternalStatus(StabilityMetaFromCalculator(stability))
 End Function
 
 ' Формирует типизированный результат устойчивости.

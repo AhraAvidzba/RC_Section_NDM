@@ -108,13 +108,10 @@ Public Function GetOrSolve(ByVal request As CStateRequest, _
     Set service = runner.ResultSolver
     If service Is Nothing Then Exit Function
 
-    Dim stateStatus As String
-    stateStatus = StatusFromRunner(runner, service)
-
     Dim stateResult As CSectionStateResult
     Set stateResult = New CSectionStateResult
     stateResult.InitializeFromSolver request.StateType, request.MaterialRole, request.MaterialSpec, _
-        service, runner.ExtensionUsed, stateStatus, runner.WithinPhysicalRange, _
+        service, runner.ExtensionUsed, runner.WithinPhysicalRange, _
         runner.SolverCallCount, runner.DiagnosticLog
 
     If Not mRepository Is Nothing Then mRepository.StoreForRequest request, stateResult
@@ -154,19 +151,6 @@ Private Function SteelMaterialForRequest(ByVal request As CStateRequest) As CMat
         Set SteelMaterialForRequest = mMaterialProvider.SteelStateMaterialFromSpec(request.MaterialSpec)
     Else
         Set SteelMaterialForRequest = mMaterialProvider.SteelMaterialFromSpec(request.MaterialSpec)
-    End If
-End Function
-
-' Переводит результат runner-а в текущий внешний статус named-state.
-Private Function StatusFromRunner(ByVal runner As CStateSolutionRunner, ByVal solver As CSectionSolver) As String
-    If solver Is Nothing Then
-        StatusFromRunner = "NumFail"
-    ElseIf Not solver.Converged Then
-        StatusFromRunner = "NumFail"
-    ElseIf runner.ExtensionUsed Or Not runner.WithinPhysicalRange Then
-        StatusFromRunner = "FAIL"
-    Else
-        StatusFromRunner = "OK"
     End If
 End Function
 

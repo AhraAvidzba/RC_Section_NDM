@@ -25,7 +25,7 @@ regression-отчеты.
 - Этап 2 завершен: `CSectionStateResult` хранит целевые и фактические усилия,
   невязки, признак физического диапазона, `ResultMeta` и диагностические данные
   solver-а; состояния трещинообразования переименованы в `PreCrackState` и
-  `PostCrackState` с совместимым чтением старых alias-ов.
+  `PostCrackState`.
 - Этап 3 завершен: добавлен общий state-provider слой для решения именованных
   НДС без изменения расчетной постановки и существующих writer-контрактов.
 - Этап 4 начат безопасным срезом для Capacity: введены `CLimitSearchRequest`,
@@ -76,7 +76,7 @@ regression-отчеты.
   больше не создает и не конфигурирует `CCapacitySolver`. Search-настройки,
   настройки внутреннего равновесия и strategy передаются в `CCapacityCalculator`,
   а материальные пределы берутся из построенных диаграмм конкретного
-  material spec при создании переходного solver-а.
+  material spec при создании solver-а.
 - Этап 5 продолжен переносом capacity-report пояснений: план поиска,
   ранняя остановка, фактически выбранный метод и диагностический журнал
   последнего внутреннего solver-а выдаются `CCapacityCalculator`/`CCapacityResult`.
@@ -100,13 +100,14 @@ regression-отчеты.
   `CCapacityResult` читает эти данные из общего result, а внешний статус берет
   из `CResultMeta` через `CBatchStatusPolicy`. Старый batch-маппинг
   `CCapacitySolver -> display status` удален.
-- Этап 5 продолжен сужением переходной зависимости от capacity-фасада:
+- Этап 5 продолжен сужением зависимости от capacity-фасада:
   `CLimitSearchResult` больше не хранит и не отдает `CCapacitySolver` как часть
   результата. Ссылки на `request.CapacitySolver` остаются только внутри
-  search-слоя и переходного `CLimitSearchRequest`, а execution report читает
+  search-слоя и `CLimitSearchRequest`, а execution report читает
   capacity-диагностику из сохраненного снимка result.
 - Этап 5 завершен по основному batch-пути: `Capacity.SolutionStrategy = Auto`
-  больше не вызывает старый shortcut `CCapacitySolver.SolveByAutoLoadPath`.
+  идет через `CLimitSearchCoordinator`, а не через shortcut внутри
+  `CCapacitySolver`.
   Coordinator сначала запускает `CUltimateStrainSearch`, затем при необходимости
   повторяет ту же траекторию через `CLoadMultiplierSearch`; диагностика первой
   попытки объединяется в доменном `CCapacitySolver` без возврата search-логики
@@ -127,20 +128,33 @@ regression-отчеты.
   автоматически при любом отсутствии результата: сохраняется фактическая
   причина `InvalidInput`, `InvalidConfiguration`, `NumericalFailure` или
   `InternalError`; downstream width/longitudinal блокируются через dependency.
-- Этап 7 завершен переходным result-tree: `CCombinationResult` хранит
-  `StrengthResult`, `CrackResult` и `StabilityResult`, а старые плоские поля
-  остаются синхронизированным фасадом для существующих writer-ов. Direct state,
-  capacity, crack aggregate и stability теперь проходят через вложенные
-  result-объекты без изменения расчетной математики и структуры Results.
+- Этап 7 завершен по result-tree: `CCombinationResult` хранит
+  `StrengthResult`, `CrackResult` и `StabilityResult`, а display-поля
+  синхронизируются из typed result-объектов для существующего формата Results.
+  Direct state, capacity, crack aggregate и stability теперь проходят через
+  вложенные result-объекты без изменения расчетной математики и структуры
+  Results.
 - Этап 8 завершен для текущего миграционного среза: batch summary и подробные
   writer-ы прочности, трещин, устойчивости и named-state properties выводят
   `ResultComment` из соответствующих `ResultMeta`/result-subtree. Статусы и
   окраска status-ячеек остаются централизованы через status policy, а layout
   Results сохранен с согласованным добавлением `ResultComment`.
+- Этап 9 завершен: execution report берет пользовательские комментарии из
+  result graph/`ResultMeta`, а не собирает инженерные причины в writer-е или
+  batch-report слое. Подробные diagnostic-логи solver/search сохранены для
+  анализа итераций и fallback-веток.
+- Убрана зависимость назначения статусов от произвольного текста
+  `StopReason`/`ResultComment`: внешний статус формируется через
+  `CResultStatusPolicy` по `InternalStatus`, `ResultCode` и `ResultKind`.
+- Этап 10 завершен по очистке status/state paths: удалены старые crack-state
+  alias-ы, локальные string-status -> meta helper-ы и текстовый маппинг
+  инженерных причин в пользовательские статусы. Допустимые внешние display
+  statuses остаются только `OK`, `FAIL`, `BaseFail`, `NumFail`, `InputErr`,
+  `CalcErr`, `N/A`.
 
 ## In progress
 
-- Нет активного этапа после завершения этапа 8.
+- Нет активного этапа после завершения этапа 10.
 
 ## Next
 
@@ -148,9 +162,8 @@ regression-отчеты.
   для следующих этапов.
 - Перед следующим этапом снова проверить `git status` и убедиться, что
   нет посторонних пользовательских изменений.
-- Следующий этап плана - execution report и diagnostics: отчет должен брать
-  статусы, коды и пользовательские комментарии из result graph, не дублируя
-  инженерную интерпретацию writer-ов.
+- Для следующих этапов сохранять финальную цепочку
+  `InternalStatus/ResultCode -> CResultStatusPolicy -> ExternalStatus`.
 
 ## Known risks / open questions
 
@@ -158,9 +171,8 @@ regression-отчеты.
   тестовый AutoCAD недоступен в автоматическом прогоне.
 - В дальнейшем не смешивать миграционные изменения разных этапов в один diff
   без отдельной проверки.
-- Этап 1 оставляет часть старых строковых status-полей как совместимый внешний
-  контракт writer-ов. Полный перенос на result graph выполняется последующими
-  этапами плана.
+- Строковые display-поля остаются только форматом вывода Results; расчетная
+  семантика статуса должна идти через `ResultMeta`.
 
 ## Important decisions
 
@@ -178,8 +190,7 @@ regression-отчеты.
   а не обычной инженерной проверке типа ширины трещины, продольных трещин или
   устойчивости.
 - Канонические имена состояний трещинообразования в snapshot и настройках:
-  `PreCrackState` и `PostCrackState`. Старые `BeforeMcrcState` и
-  `AfterMcrcState` принимаются только как compatibility aliases.
+  `PreCrackState` и `PostCrackState`. Другие имена не принимаются.
 
 ## Baseline Test Scenarios
 
@@ -199,6 +210,11 @@ regression-отчеты.
 
 ## Last verified
 
+- 2026-09-30: этап 10 пересобрал `workbook/output/RC_Section_NDM.xlsm` через
+  `tools/build_workbook/Build-Workbook.ps1` и прошел полный
+  `tools/build_workbook/Run-AllTests.ps1` без failures. В отчете UI-тестов:
+  `passed=308`, `failed=0`; batch: `passed=644`, `failed=0`;
+  regression baseline: `passed=39`, `failed=0`.
 - 2026-09-28: после этапа 2 `tools/build_workbook/Build-Workbook.ps1`
   завершился успешно.
 - 2026-09-28: после этапа 2 `tools/build_workbook/Run-BatchTests.ps1`

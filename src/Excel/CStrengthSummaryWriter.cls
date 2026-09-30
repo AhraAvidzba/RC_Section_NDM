@@ -747,8 +747,8 @@ Private Function StrengthOverallStatus(ByVal batch As CBatchSectionCalculator, B
     StrengthOverallStatus = StatusPolicy().Aggregate(directStatus, capacityStatus, StatusPolicy().NotApplicable)
 End Function
 
-' Возвращает внешний статус прямого НДС по ResultMeta. Строковый статус остается
-' только переходным fallback для старых тестовых объектов без result-tree.
+' Возвращает внешний статус прямого НДС по ResultMeta. Текстовый fallback нужен
+' только для неполных тестовых объектов, где meta явно не создана.
 Private Function DirectStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal policy As CBatchStatusPolicy) As String
     Dim meta As CResultMeta

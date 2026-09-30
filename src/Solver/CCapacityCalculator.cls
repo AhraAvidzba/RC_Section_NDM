@@ -18,8 +18,8 @@ Option Explicit
 ' материалы, load path и настройки solver-а, выполнить общий LimitSearch и
 ' вернуть CCapacityResult.
 '
-' Такой слой оставляет CCapacitySolver переходным фасадом с legacy-полями, но
-' больше не заставляет batch-калькулятор вручную разбирать детали search.
+' Такой слой скрывает детали CCapacitySolver от batch-калькулятора: batch
+' получает готовый CCapacityResult и не разбирает внутренние шаги search.
 
 Private mInitialLambdaStep As Double ' Первый шаг расширения lambda для LoadMultiplier.
 Private mSolutionStrategy As String ' Пользовательская стратегия Capacity.SolutionStrategy после чтения Config.
@@ -71,7 +71,7 @@ End Sub
 
 ' Принимает пользовательские настройки capacity-search, уже прочитанные из
 ' Config. Класс не обращается к Excel, но именно здесь они превращаются в
-' настройки переходного CCapacitySolver.
+' настройки CCapacitySolver.
 Public Sub ConfigureSearch(ByVal initialLambdaStep As Double, ByVal solutionStrategy As String, _
         ByVal searchMethod As String, ByVal maxLambda As Double, ByVal lambdaTolerance As Double, _
         ByVal strainTolerance As Double, ByVal maxRetries As Long, ByVal baseLoadSteps As Long, _
@@ -126,25 +126,25 @@ Public Function Calculate(ByVal section As CSectionModel, _
     If statusPolicy Is Nothing Then Set statusPolicy = New CBatchStatusPolicy
 
     If loadPath Is Nothing Then
-        result.InitializeInvalid statusPolicy.InputErr, "CapacityLoadPath не подготовлен."
+        result.InitializeInvalidInput "CapacityLoadPath не подготовлен."
         Set Calculate = result
         Exit Function
     End If
 
     If Not loadPath.Valid Then
-        result.InitializeInvalid statusPolicy.InputErr, loadPath.ErrorMessage
+        result.InitializeInvalidInput loadPath.ErrorMessage
         Set Calculate = result
         Exit Function
     End If
 
     If Not loadPath.HasPath Then
-        result.InitializeSkipped statusPolicy.NotApplicable, "ZeroBaseLoad"
+        result.InitializeSkipped "ZeroBaseLoad"
         Set Calculate = result
         Exit Function
     End If
 
     If Not loadPath.HasScaledLoad Then
-        result.InitializeInvalid statusPolicy.InputErr, _
+        result.InitializeInvalidInput _
             "Для выбранного CapacityLoadPath соответствующая нагрузка должна быть ненулевой."
         Set Calculate = result
         Exit Function
@@ -273,7 +273,7 @@ Private Function MomentIsZeroForMethod(ByVal momentValue As Double, _
     End If
 End Function
 
-' Создает и настраивает переходный CCapacitySolver для текущего material spec.
+' Создает и настраивает CCapacitySolver для текущего material spec.
 ' Материальные пределы берутся из уже построенных диаграмм; пользовательские
 ' search-настройки и настройки внутреннего равновесия применяются из полей
 ' CCapacityCalculator.

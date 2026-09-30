@@ -162,7 +162,7 @@ Public ResidualMy As Double ' Остаточная невязка по My.
 Public StateIterations As Long ' Число итераций прямого StateSolution.
 
 Private mStateRepository As CStateRepository ' Единое хранилище конечных именованных НДС текущего LC.
-Private mResultPolicy As CResultStatusPolicy ' Политика преобразования legacy status -> ResultMeta на переходном этапе.
+Private mResultPolicy As CResultStatusPolicy ' Единая политика преобразования typed ResultMeta во внешний display-статус.
 Private mStrengthResult As CStrengthResult ' Структурированный результат прямого НДС и несущей способности.
 Private mCrackResult As CCrackResult ' Структурированный результат расчета трещин.
 Private mStabilityResult As CStabilityResult ' Структурированный результат проверки устойчивости.
@@ -233,46 +233,33 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     StateIterations = 0
 End Sub
 
-' Возвращает ResultMeta итогового LC, построенный из уже агрегированного Status.
+' Возвращает ResultMeta итогового LC, построенный из агрегированного статуса
+' и комментариев проблемных дочерних результатов. Writer-ы берут уже готовый
+' текст из result-tree и не склеивают пояснения самостоятельно.
 Public Property Get OverallMeta() As CResultMeta
-    Set OverallMeta = MetaFromStatus(Status, rkGeneric, ResultComment)
+    Dim commentText As String
+    commentText = BuildOverallResultComment()
+    If Len(Trim$(commentText)) = 0 Then commentText = ResultComment
+    Set OverallMeta = AggregateResultMeta(rkGeneric, commentText, DirectStateMeta, _
+        CapacityMeta, CrackMeta, LongitudinalCrackMeta, StabilityMeta)
 End Property
 
-' Возвращает ResultMeta прямого НДС заданного LC.
 ' Возвращает сводную ResultMeta блока прочности: сначала ищет
 ' проблемный direct/capacity-result, затем оставляет агрегированный
 ' статус без попытки заново интерпретировать численные результаты.
 Public Property Get StrengthMeta() As CResultMeta
-    Dim problemMeta As CResultMeta
-    Set problemMeta = FirstProblemMeta(DirectStateMeta)
-    If Not problemMeta Is Nothing Then
-        Set StrengthMeta = problemMeta
-        Exit Property
-    End If
-
-    Set problemMeta = FirstProblemMeta(CapacityMeta)
-    If Not problemMeta Is Nothing Then
-        Set StrengthMeta = problemMeta
-        Exit Property
-    End If
-
-    Set StrengthMeta = MetaFromStatus(Policy.AggregateText(DirectStateStatus, CapacityStatus, vbNullString), rkGeneric)
+    Set StrengthMeta = AggregateResultMeta(rkGeneric, BuildStrengthResultComment(), _
+        DirectStateMeta, CapacityMeta)
 End Property
 
 Public Property Get DirectStateMeta() As CResultMeta
     If Not mStrengthResult Is Nothing Then
         If Not mStrengthResult.DirectState Is Nothing Then
-            If Len(Trim$(DirectStateStatus)) > 0 Then
-                If StrComp(Policy.ExternalStatus(mStrengthResult.DirectMeta), _
-                        Policy.ToUserStatus(DirectStateStatus), vbTextCompare) <> 0 Then
-                    mStrengthResult.SetDirectStatus DirectStateStatus
-                End If
-            End If
             Set DirectStateMeta = mStrengthResult.DirectMeta
             Exit Property
         End If
     End If
-    Set DirectStateMeta = MetaFromStatus(DirectStateStatus, rkDirectState)
+    Set DirectStateMeta = NotApplicableMeta(rkDirectState)
 End Property
 
 ' Возвращает ResultMeta поиска несущей способности.
@@ -287,7 +274,7 @@ Public Property Get CapacityMeta() As CResultMeta
         Set CapacityMeta = mCapacityMeta.Clone
         Exit Property
     End If
-    Set CapacityMeta = MetaFromStatus(CapacityStatus, rkCapacity, CapacityLimitState)
+    Set CapacityMeta = NotApplicableMeta(rkCapacity, CapacityLimitState)
 End Property
 
 ' Возвращает отображаемое имя фактически принятой capacity-траектории.
@@ -311,32 +298,8 @@ End Property
 
 ' Возвращает ResultMeta расчета нормальных трещин.
 Public Property Get CrackMeta() As CResultMeta
-    Dim problemMeta As CResultMeta
-    Set problemMeta = FirstProblemMeta(mCrackFormationMeta)
-    If Not problemMeta Is Nothing Then
-        Set CrackMeta = problemMeta
-        Exit Property
-    End If
-    Set problemMeta = FirstProblemMeta(mCrackCurrentStateMeta)
-    If Not problemMeta Is Nothing Then
-        Set CrackMeta = problemMeta
-        Exit Property
-    End If
-    Set problemMeta = FirstProblemMeta(mCrackWidthMeta)
-    If Not problemMeta Is Nothing Then
-        Set CrackMeta = problemMeta
-        Exit Property
-    End If
-
-    If Not mCrackWidthMeta Is Nothing Then
-        Set CrackMeta = mCrackWidthMeta.Clone
-        Exit Property
-    End If
-    If Not mCrackFormationMeta Is Nothing Then
-        Set CrackMeta = mCrackFormationMeta.Clone
-        Exit Property
-    End If
-    Set CrackMeta = MetaFromStatus(CrackStatus, rkCrackWidth)
+    Set CrackMeta = AggregateResultMeta(rkCrackWidth, BuildCrackResultComment(), _
+        CrackFormationMeta, CrackCurrentStateMeta, CrackWidthMeta)
 End Property
 
 ' Возвращает ResultMeta проверки образования нормальной трещины.
@@ -345,7 +308,7 @@ Public Property Get CrackFormationMeta() As CResultMeta
         Set CrackFormationMeta = mCrackFormationMeta.Clone
         Exit Property
     End If
-    Set CrackFormationMeta = MetaFromStatus(CrackStatus, rkCrackFormation)
+    Set CrackFormationMeta = NotApplicableMeta(rkCrackFormation)
 End Property
 
 ' Возвращает ResultMeta равновесного CrackedState, найденного от заданного сочетания нагрузок.
@@ -356,7 +319,7 @@ Public Property Get CrackCurrentStateMeta() As CResultMeta
         Set CrackCurrentStateMeta = mCrackCurrentStateMeta.Clone
         Exit Property
     End If
-    Set CrackCurrentStateMeta = MetaFromStatus(CrackStatus, rkDirectState)
+    Set CrackCurrentStateMeta = NotApplicableMeta(rkDirectState)
 End Property
 
 ' Возвращает ResultMeta формульной проверки ширины нормальной трещины.
@@ -367,7 +330,7 @@ Public Property Get CrackWidthMeta() As CResultMeta
         Set CrackWidthMeta = mCrackWidthMeta.Clone
         Exit Property
     End If
-    Set CrackWidthMeta = MetaFromStatus(CrackStatus, rkCrackWidth)
+    Set CrackWidthMeta = NotApplicableMeta(rkCrackWidth)
 End Property
 
 ' Возвращает ResultMeta проверки продольных трещин.
@@ -376,7 +339,7 @@ Public Property Get LongitudinalCrackMeta() As CResultMeta
         Set LongitudinalCrackMeta = mLongitudinalCrackMeta.Clone
         Exit Property
     End If
-    Set LongitudinalCrackMeta = MetaFromStatus(LongitudinalCrackStatus, rkLongitudinalCrack)
+    Set LongitudinalCrackMeta = NotApplicableMeta(rkLongitudinalCrack)
 End Property
 
 ' Возвращает ResultMeta проверки устойчивости.
@@ -385,7 +348,7 @@ Public Property Get StabilityMeta() As CResultMeta
         Set StabilityMeta = mStabilityResult.Meta
         Exit Property
     End If
-    Set StabilityMeta = MetaFromStatus(StabilityStatus, rkStability, StabilityBranch)
+    Set StabilityMeta = NotApplicableMeta(rkStability, StabilityBranch)
 End Property
 
 ' Возвращает structured-subtree расчетов по модели прочности.
@@ -403,7 +366,7 @@ Public Property Get StabilityResult() As CStabilityResult
     Set StabilityResult = mStabilityResult
 End Property
 
-' Сохраняет итоговую meta-информацию LC рядом со старым строковым Status.
+' Сохраняет итоговую meta-информацию LC и обновляет display Status.
 Public Sub StoreOverallMeta(ByVal meta As CResultMeta)
     If meta Is Nothing Then
         InternalStatus = rsInternalError
@@ -413,14 +376,76 @@ Public Sub StoreOverallMeta(ByVal meta As CResultMeta)
         InternalStatus = meta.InternalStatus
         ResultCode = meta.ResultCode
         ResultComment = meta.ResultComment
+        If Len(Trim$(ResultComment)) = 0 Then ResultComment = BuildOverallResultComment()
     End If
 End Sub
 
-' Переходный helper этапа 1: строит типизированную meta-запись из текущих
-' строковых полей, пока отдельные result-объекты еще не вынесены в result graph.
-Private Function MetaFromStatus(ByVal statusText As String, ByVal resultKind As EResultKind, _
+' Собирает сводный meta-результат из дочерних typed meta. Побеждает худший
+' применимый дочерний статус; комментарий передается уже централизованно
+' собранным ResultComment без повторного склеивания во writer-ах.
+Private Function AggregateResultMeta(ByVal fallbackKind As EResultKind, ByVal resultComment As String, _
+        ParamArray metas() As Variant) As CResultMeta
+    Dim selected As CResultMeta
+    Dim candidate As CResultMeta
+    Dim i As Long
+    For i = LBound(metas) To UBound(metas)
+        Set candidate = Nothing
+        If IsObject(metas(i)) Then Set candidate = metas(i)
+        If Not candidate Is Nothing Then
+            Set selected = WorseMeta(selected, candidate)
+        End If
+    Next i
+
+    If selected Is Nothing Then
+        Set AggregateResultMeta = NotApplicableMeta(fallbackKind, resultComment)
+    Else
+        Set AggregateResultMeta = selected.Clone
+        AggregateResultMeta.ResultComment = resultComment
+    End If
+End Function
+
+' Выбирает худший из двух meta-результатов по утвержденному внешнему словарю
+' статусов. Здесь не анализируются комментарии или StopReason.
+Private Function WorseMeta(ByVal currentMeta As CResultMeta, ByVal candidateMeta As CResultMeta) As CResultMeta
+    If candidateMeta Is Nothing Then
+        Set WorseMeta = currentMeta
+    ElseIf currentMeta Is Nothing Then
+        Set WorseMeta = candidateMeta
+    ElseIf StatusPriority(Policy.ExternalStatus(candidateMeta)) > _
+            StatusPriority(Policy.ExternalStatus(currentMeta)) Then
+        Set WorseMeta = candidateMeta
+    Else
+        Set WorseMeta = currentMeta
+    End If
+End Function
+
+' Приоритет внешних display-статусов нужен только для сводных узлов Results.
+Private Function StatusPriority(ByVal statusText As String) As Long
+    Select Case Policy.ToUserStatus(statusText)
+        Case Policy.CalcErr
+            StatusPriority = 6
+        Case Policy.InputErr
+            StatusPriority = 5
+        Case Policy.NumFail
+            StatusPriority = 4
+        Case Policy.BaseFail
+            StatusPriority = 3
+        Case Policy.Fail
+            StatusPriority = 2
+        Case Policy.OK
+            StatusPriority = 1
+        Case Else
+            StatusPriority = 0
+    End Select
+End Function
+
+' Создает typed N/A для веток, которые не запускались или неприменимы.
+Private Function NotApplicableMeta(ByVal resultKind As EResultKind, _
         Optional ByVal resultComment As String = vbNullString) As CResultMeta
-    Set MetaFromStatus = Policy.MetaFromLegacyStatus(statusText, resultKind, resultComment)
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    meta.SetNotApplicable resultKind, resultComment
+    Set NotApplicableMeta = meta
 End Function
 
 ' Возвращает копию meta только для результата, который должен ухудшить общий статус.
@@ -433,6 +458,134 @@ Private Function FirstProblemMeta(ByVal meta As CResultMeta) As CResultMeta
     Select Case statusText
         Case Policy.Fail, Policy.BaseFail, Policy.NumFail, Policy.InputErr, Policy.CalcErr
             Set FirstProblemMeta = meta.Clone
+            EnsureMetaComment FirstProblemMeta
+    End Select
+End Function
+
+' Собирает пользовательский комментарий для batch summary из всех дочерних
+' result-subtree. В подробных таблицах каждый writer продолжает получать только
+' свой meta-комментарий, а верхняя сводка показывает полный набор причин LC.
+Private Function BuildOverallResultComment() As String
+    Dim resultText As String
+    AppendMetaComment resultText, DirectStateMeta
+    AppendMetaComment resultText, CapacityMeta
+    AppendMetaComment resultText, CrackFormationMeta
+    AppendMetaComment resultText, CrackCurrentStateMeta
+    AppendMetaComment resultText, CrackWidthMeta
+    AppendMetaComment resultText, LongitudinalCrackMeta
+    AppendMetaComment resultText, StabilityMeta
+    AppendUniqueComment resultText, ResultComment
+    BuildOverallResultComment = resultText
+End Function
+
+' Собирает комментарий только для detailed-блока прочности. В него входят
+' причины прямого НДС по модели прочности и поиска несущей способности; crack
+' и stability-комментарии остаются в своих блоках и в общей batch-сводке.
+Private Function BuildStrengthResultComment() As String
+    Dim resultText As String
+    AppendMetaComment resultText, DirectStateMeta
+    AppendMetaComment resultText, CapacityMeta
+    BuildStrengthResultComment = resultText
+End Function
+
+' Собирает комментарий только для detailed-блока трещин: образование трещины,
+' равновесное CrackedState и формульная проверка ширины раскрытия.
+Private Function BuildCrackResultComment() As String
+    Dim resultText As String
+    AppendMetaComment resultText, CrackFormationMeta
+    AppendMetaComment resultText, CrackCurrentStateMeta
+    AppendMetaComment resultText, CrackWidthMeta
+    BuildCrackResultComment = resultText
+End Function
+
+' Возвращает сводный внешний статус нормальных трещин без продольной проверки:
+' продольные трещины выводятся отдельным столбцом и имеют собственный meta.
+Private Function CrackAggregateStatus() As String
+    CrackAggregateStatus = Policy.AggregateExternalStatus( _
+        Policy.ExternalStatus(CrackFormationMeta), _
+        Policy.ExternalStatus(CrackCurrentStateMeta), _
+        Policy.ExternalStatus(CrackWidthMeta))
+End Function
+
+' Добавляет комментарий только для проблемного результата. OK и N/A остаются
+' нейтральными, потому что они не объясняют неудачу проверки в summary.
+Private Sub AppendMetaComment(ByRef targetText As String, ByVal meta As CResultMeta)
+    If meta Is Nothing Then Exit Sub
+
+    Dim statusText As String
+    statusText = Policy.ExternalStatus(meta)
+    If Not IsProblemStatus(statusText) Then Exit Sub
+
+    Dim commentText As String
+    commentText = Trim$(meta.ResultComment)
+    If Len(commentText) = 0 Then commentText = DefaultProblemComment(statusText)
+    If Len(commentText) = 0 Then Exit Sub
+
+    AppendUniqueComment targetText, ResultKindLabel(meta.ResultKind) & ": " & commentText
+End Sub
+
+' Добавляет фразу без дублей; batch summary может собрать одну причину из
+' нескольких result-subtree одного LC.
+Private Sub AppendUniqueComment(ByRef targetText As String, ByVal commentText As String)
+    commentText = Trim$(commentText)
+    If Len(commentText) = 0 Then Exit Sub
+    If InStr(1, targetText, commentText, vbTextCompare) > 0 Then Exit Sub
+
+    If Len(targetText) > 0 Then targetText = targetText & "; "
+    targetText = targetText & commentText
+End Sub
+
+' Гарантирует, что problem-meta, который попадет в подробный output-блок,
+' имеет понятное пояснение даже при неполном результате без комментария.
+Private Sub EnsureMetaComment(ByVal meta As CResultMeta)
+    If meta Is Nothing Then Exit Sub
+    If Len(Trim$(meta.ResultComment)) > 0 Then Exit Sub
+    meta.ResultComment = DefaultProblemComment(Policy.ExternalStatus(meta))
+End Sub
+
+' Возвращает короткое пользовательское пояснение для типовых проблем, когда
+' ответственный расчетный объект не передал более конкретную причину.
+Private Function DefaultProblemComment(ByVal statusText As String) As String
+    Select Case statusText
+        Case Policy.BaseFail
+            DefaultProblemComment = "Базовая часть пути несущей уже за предельным состоянием."
+        Case Policy.Fail
+            DefaultProblemComment = "Проверка не проходит."
+        Case Policy.NumFail
+            DefaultProblemComment = "Численная процедура не сошлась."
+        Case Policy.InputErr
+            DefaultProblemComment = "Ошибка исходных данных или настроек."
+        Case Policy.CalcErr
+            DefaultProblemComment = "Внутренняя ошибка расчета или несформированный результат."
+    End Select
+End Function
+
+' Отделяет проблемные пользовательские статусы от нейтральных OK/N/A.
+Private Function IsProblemStatus(ByVal statusText As String) As Boolean
+    Select Case statusText
+        Case Policy.Fail, Policy.BaseFail, Policy.NumFail, Policy.InputErr, Policy.CalcErr
+            IsProblemStatus = True
+    End Select
+End Function
+
+' Дает короткую русскую метку result-subtree для агрегированного комментария
+' batch summary, чтобы пользователь видел, какой раздел сформировал причину.
+Private Function ResultKindLabel(ByVal resultKind As EResultKind) As String
+    Select Case resultKind
+        Case rkDirectState
+            ResultKindLabel = "НДС"
+        Case rkCapacity
+            ResultKindLabel = "Несущая"
+        Case rkCrackFormation
+            ResultKindLabel = "Трещинообразование"
+        Case rkCrackWidth
+            ResultKindLabel = "Ширина трещин"
+        Case rkLongitudinalCrack
+            ResultKindLabel = "Продольные трещины"
+        Case rkStability
+            ResultKindLabel = "Устойчивость"
+        Case Else
+            ResultKindLabel = "Расчет"
     End Select
 End Function
 
@@ -443,37 +596,35 @@ Private Function Policy() As CResultStatusPolicy
     Set Policy = mResultPolicy
 End Function
 
-' Синхронизирует старое строковое поле direct-state и новый StrengthResult.
-Public Sub SetDirectStateStatus(ByVal statusText As String, Optional ByVal resultComment As String = vbNullString)
-    DirectStateStatus = Policy.ToUserStatus(statusText)
+' Синхронизирует typed meta direct-state с плоским display-полем Results.
+Public Sub SetDirectStateMeta(ByVal meta As CResultMeta)
     If mStrengthResult Is Nothing Then Set mStrengthResult = New CStrengthResult
-    mStrengthResult.SetDirectStatus DirectStateStatus, resultComment
+    mStrengthResult.SetDirectMeta meta
+    DirectStateStatus = Policy.ExternalStatus(meta)
 End Sub
 
-' Объединяет очередной direct-state статус с уже накопленным статусом LC.
-Public Sub MergeDirectStateStatus(ByVal statusText As String, ByVal neutralStatus As String)
-    Dim batchPolicy As CBatchStatusPolicy
-    Set batchPolicy = New CBatchStatusPolicy
-    SetDirectStateStatus batchPolicy.Aggregate(DirectStateStatus, statusText, neutralStatus)
+' Объединяет очередной direct-state meta с уже накопленным статусом LC.
+Public Sub MergeDirectStateMeta(ByVal meta As CResultMeta)
+    SetDirectStateMeta AggregateResultMeta(rkDirectState, vbNullString, DirectStateMeta, meta)
 End Sub
 
-' Синхронизирует короткий статус устойчивости со structured-subtree, когда подробный
+' Синхронизирует typed meta устойчивости со structured-subtree, когда подробный
 ' CStabilityCalculator не создает полный набор расчетных величин.
-Public Sub SetStabilityStatus(ByVal statusText As String, Optional ByVal resultComment As String = vbNullString)
-    StabilityStatus = Policy.ToUserStatus(statusText)
+Public Sub SetStabilityMeta(ByVal meta As CResultMeta, Optional ByVal resultComment As String = vbNullString)
     If mStabilityResult Is Nothing Then Set mStabilityResult = New CStabilityResult
-    mStabilityResult.SetStatus StabilityStatus, resultComment
+    mStabilityResult.SetMeta meta, resultComment
+    StabilityStatus = Policy.ExternalStatus(meta)
     StabilityBranch = resultComment
 End Sub
 
 ' Сохраняет результат изолированного фильтра продольного изгиба/устойчивости.
 ' Калькулятор не знает о batch-status policy, поэтому сюда копируются уже
 ' нормализованные численные величины и короткий пользовательский статус.
-Public Sub StoreStabilityResult(ByVal statusText As String, ByVal stability As CStabilityCalculator, _
+Public Sub StoreStabilityResult(ByVal meta As CResultMeta, ByVal stability As CStabilityCalculator, _
         Optional ByVal referenceX As Double = 0#, Optional ByVal referenceY As Double = 0#)
     Set mStabilityResult = New CStabilityResult
-    mStabilityResult.InitializeFromCalculator statusText, stability, referenceX, referenceY
-    StabilityStatus = Policy.ToUserStatus(statusText)
+    mStabilityResult.InitializeFromCalculator meta, stability, referenceX, referenceY
+    StabilityStatus = Policy.ExternalStatus(meta)
     StabilityReferenceX = referenceX
     StabilityReferenceY = referenceY
     If stability Is Nothing Then Exit Sub
@@ -795,7 +946,7 @@ Public Sub StoreCrackAggregateResult(ByVal crackResult As CCrackResult)
     CrackStatus = Policy.ExternalStatus(CrackMeta)
 End Sub
 
-' Копирует formation-часть result-tree в совместимые поля CCombinationResult.
+' Копирует formation-часть result-tree в плоские поля вывода CCombinationResult.
 Private Sub StoreCrackFormationResult(ByVal formation As CCrackFormationResult)
     Set mCrackFormationMeta = formation.ResultMeta
     CrackFormed = formation.CrackFormed
@@ -808,7 +959,7 @@ Private Sub StoreCrackFormationResult(ByVal formation As CCrackFormationResult)
     CrackRbtSer = formation.RbtSer
 End Sub
 
-' Копирует width-часть result-tree в совместимые поля CCombinationResult.
+' Копирует width-часть result-tree в плоские поля вывода CCombinationResult.
 Private Sub StoreCrackWidthResult(ByVal widthResult As CCrackWidthResult)
     Set mCrackWidthMeta = widthResult.ResultMeta
     CrackStatus = Policy.ExternalStatus(mCrackWidthMeta)
@@ -835,25 +986,13 @@ Private Sub StoreCrackWidthResult(ByVal widthResult As CCrackWidthResult)
     CrackCentralBranch = widthResult.CentralTensionBranch
 End Sub
 
-' Копирует longitudinal-часть result-tree в совместимые поля CCombinationResult.
+' Копирует longitudinal-часть result-tree в плоские поля вывода CCombinationResult.
 Private Sub StoreLongitudinalCrackResultObject(ByVal longitudinal As CLongitudinalCrackResult)
     Set mLongitudinalCrackMeta = longitudinal.ResultMeta
     LongitudinalCrackStatus = Policy.ExternalStatus(mLongitudinalCrackMeta)
     MaxConcreteCompressionStress = longitudinal.MaxCompressionStress
     LongitudinalCrackRbMc2 = longitudinal.RbMc2
     LongitudinalCrackUtil = longitudinal.Utilization
-End Sub
-
-' Сохраняет результат проверки продольных трещин по сжатому бетону.
-' Проверка использует уже найденные напряжения прямого НДС и не запускает
-' отдельный material purpose или повторный solve.
-Public Sub StoreLongitudinalCrackResult(ByVal statusText As String, ByVal maxCompressionStress As Double, _
-        ByVal rbMc2 As Double, ByVal utilization As Double)
-    LongitudinalCrackStatus = statusText
-    Set mLongitudinalCrackMeta = MetaFromStatus(statusText, rkLongitudinalCrack)
-    MaxConcreteCompressionStress = maxCompressionStress
-    LongitudinalCrackRbMc2 = rbMc2
-    LongitudinalCrackUtil = utilization
 End Sub
 
 ' Очищает только проверку продольных трещин. N/A здесь означает, что для LC

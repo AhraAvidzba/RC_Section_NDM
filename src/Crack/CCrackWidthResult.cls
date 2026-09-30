@@ -51,8 +51,8 @@ Private Sub Class_Initialize()
 End Sub
 
 ' Копирует все подготовленные crack-width величины из calculator-а.
-' Calculator на переходном этапе остается источником подготовки данных, но
-' downstream-слой работает уже с отдельным result-объектом и ResultMeta.
+' Downstream-слой работает с отдельным result-объектом и ResultMeta, не
+' обращаясь к внутренним временным полям calculator-а.
 Public Sub InitializeFromCalculator(ByVal crack As CCrackWidthCalculator, ByVal meta As CResultMeta)
     If meta Is Nothing Then
         mMeta.SetResult rsInternalError, rcInternalError, rkCrackWidth, _

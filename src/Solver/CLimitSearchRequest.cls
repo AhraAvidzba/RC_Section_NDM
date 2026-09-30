@@ -21,7 +21,7 @@ Option Explicit
 ' UltimateStrain / LoadMultiplier. Различаются только критерий предела,
 ' материал и смысл траектории, а не сам механизм выбора search-ветки.
 
-Private mCapacitySolver As CCapacitySolver ' Настроенный solver несущей способности для переходного этапа миграции.
+Private mCapacitySolver As CCapacitySolver ' Настроенный контекст несущей способности с допусками и material limits.
 Private mCrackCalculator As CCrackWidthCalculator ' Контекст расчета образования трещины: критерий, диагностика и результат.
 Private mSection As CSectionModel ' Расчетная модель сечения, общая для всех lambda-проб.
 Private mConcreteMaterial As Object ' Диаграмма бетона для выбранной инженерной задачи.

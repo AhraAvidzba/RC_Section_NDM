@@ -40,9 +40,8 @@ Private Sub Class_Initialize()
     mMeta.SetNotApplicable rkCrackFormation
 End Sub
 
-' Заполняет результат по существующему calculator-у образования трещины.
-' На переходном этапе calculator все еще выполняет подготовку, но наружу batch
-' уже получает отдельный result-объект с типизированным статусом.
+' Заполняет результат по calculator-у образования трещины. Calculator отвечает
+' за физику поиска, а этот объект фиксирует итоговые величины и typed status для batch.
 Public Sub InitializeFromCalculator(ByVal crack As CCrackWidthCalculator, ByVal meta As CResultMeta)
     If meta Is Nothing Then
         mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, _

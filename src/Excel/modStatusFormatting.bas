@@ -18,10 +18,14 @@ Public Function StatusFillColor(ByVal statusText As String) As Long
             StatusFillColor = RGB(188, 222, 158)
         Case policy.Fail
             StatusFillColor = RGB(255, 190, 206)
+        Case policy.BaseFail
+            StatusFillColor = RGB(255, 190, 206)
         Case policy.NumFail
             StatusFillColor = RGB(255, 71, 71)
         Case policy.InputErr
             StatusFillColor = RGB(255, 230, 153)
+        Case policy.CalcErr
+            StatusFillColor = RGB(255, 71, 71)
         Case Else
             StatusFillColor = RGB(237, 237, 237)
     End Select

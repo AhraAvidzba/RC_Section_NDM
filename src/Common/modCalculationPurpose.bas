@@ -41,8 +41,6 @@ Public Enum ESectionStateType
     sstCapacityState = 2          ' Предельное НДС, найденное capacity solver-ом.
     sstPreCrackState = 3          ' НДС на пороге образования трещины до выключения растянутого бетона.
     sstPostCrackState = 4         ' НДС на пороге образования трещины после выключения растянутого бетона.
-    sstBeforeMcrcState = 3        ' Alias для чтения старого кода/настроек; канонический текст - PreCrackState.
-    sstAfterMcrcState = 4         ' Alias для чтения старого кода/настроек; канонический текст - PostCrackState.
     sstCrackedState = 5           ' Текущее НДС с раскрытой трещиной.
 End Enum
 
@@ -205,9 +203,9 @@ Public Function SectionStateTypeFromText(ByVal valueText As String) As ESectionS
             SectionStateTypeFromText = sstStrengthState
         Case "capacitystate", "capacity", "предельное ндс"
             SectionStateTypeFromText = sstCapacityState
-        Case "precrackstate", "precrack", "beforemcrcstate", "beforemcrc", "mcrc"
+        Case "precrackstate", "precrack", "mcrc"
             SectionStateTypeFromText = sstPreCrackState
-        Case "postcrackstate", "postcrack", "aftermcrcstate", "aftermcrc"
+        Case "postcrackstate", "postcrack"
             SectionStateTypeFromText = sstPostCrackState
         Case "crackedstate", "crack", "crackednds", "ндс при трещинах"
             SectionStateTypeFromText = sstCrackedState

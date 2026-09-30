@@ -17,9 +17,9 @@ Option Explicit
 ' решает, как это будет выглядеть на листе Results: внешний статус OK/FAIL/
 ' NumFail/N/A формирует CResultStatusPolicy.
 '
-' Класс нужен как промежуточный слой миграции: существующие result-объекты
-' могут продолжать отдавать старые строковые Status, но одновременно уже
-' имеют типизированную причину для будущего result graph.
+' ResultMeta является постоянным машинным контрактом между расчетными слоями,
+' batch-orchestration и writer-ами. Внешний текстовый статус получается только
+' через CResultStatusPolicy.
 
 Private mInternalStatus As EResultInternalStatus ' Внутренний статус, на котором работает расчетная логика.
 Private mResultCode As EResultCode ' Машинный код точной причины результата.

@@ -18,8 +18,8 @@ Option Explicit
 ' внутренние усилия, невязки и экстремальные деформации/напряжения.
 '
 ' Класс не запускает solver и не принимает расчетных решений. Он является узлом
-' result-tree для этапа 7 миграции: CCombinationResult пока сохраняет старый
-' фасад для writer-ов, но источник meta/status постепенно переносится сюда.
+' result-tree для прямого НДС, а внешний статус получается из ResultMeta через
+' единую CResultStatusPolicy.
 
 Public Status As String ' Пользовательский статус direct-state блока: OK/FAIL/NumFail/InputErr/N/A.
 Public ResultMeta As CResultMeta ' Типизированная причина результата direct-state.
@@ -74,13 +74,19 @@ Public Sub Clear()
     MaxSteelStrain = 0#
 End Sub
 
-' Устанавливает статус и синхронную typed meta без изменения численных данных state.
-Public Sub SetStatus(ByVal statusText As String, Optional ByVal resultComment As String = vbNullString)
+' Устанавливает typed meta без изменения численных данных state.
+Public Sub SetMeta(ByVal meta As CResultMeta)
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
 
-    Status = policy.ToUserStatus(statusText)
-    Set ResultMeta = policy.MetaFromLegacyStatus(Status, rkDirectState, resultComment)
+    If meta Is Nothing Then
+        Set ResultMeta = New CResultMeta
+        ResultMeta.SetResult rsInternalError, rcInternalError, rkDirectState, _
+            "DirectState получил пустой ResultMeta."
+    Else
+        Set ResultMeta = meta.Clone
+    End If
+    Status = policy.ExternalStatus(ResultMeta)
 End Sub
 
 ' Запоминает данные direct-state, полученные напрямую из CSectionSolver.
@@ -138,6 +144,10 @@ End Sub
 
 ' Возвращает копию typed meta, чтобы внешний код не менял состояние result-tree.
 Public Property Get Meta() As CResultMeta
-    If ResultMeta Is Nothing Then SetStatus Status
+    If ResultMeta Is Nothing Then
+        Set ResultMeta = New CResultMeta
+        ResultMeta.SetResult rsInternalError, rcInternalError, rkDirectState, _
+            "DirectState ResultMeta не сформирован."
+    End If
     Set Meta = ResultMeta.Clone
 End Property

@@ -56,7 +56,7 @@ Private Const SUM_COL_RESERVE_SP63_P2 As Long = 26 ' Запас СП63, плос
 
 Private Const STATUS_LEGEND_GAP_COLUMNS As Long = 1 ' Один пустой столбец между summary и словарем статусов.
 Private Const STATUS_LEGEND_COLUMNS As Long = 2 ' Ширина правого словаря статусов: код и текстовая расшифровка.
-Private Const STATUS_LEGEND_ROWS As Long = 7 ' Заголовок, шапка и пять пользовательских статусов.
+Private Const STATUS_LEGEND_ROWS As Long = 9 ' Заголовок, шапка и семь пользовательских статусов.
 
 Private Const DEFAULT_SUMMARY_ROWS As Long = 42 ' Штатная высота шаблона: 12 строк до данных и 30 строк LC.
 Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' Единая ширина всех столбцов Results.
@@ -591,8 +591,8 @@ Private Sub PutStatusCell(ByRef data() As Variant, ByVal rowIndex As Long, ByVal
     End If
 End Sub
 
-' Возвращает внешний статус из ResultMeta. Старый текстовый статус используется только
-' как переходный fallback для тестов или старых результатов, где meta еще не создана.
+' Возвращает внешний статус из ResultMeta. Текстовый fallback нужен только для
+' неполных тестовых результатов, где meta явно не создана.
 Private Function MetaStatus(ByVal policy As CBatchStatusPolicy, ByVal meta As CResultMeta, _
         ByVal fallbackStatus As String) As String
     If Not meta Is Nothing Then
@@ -734,12 +734,16 @@ Private Sub WriteStatusLegend(ByVal target As Object)
     data(3, 2) = "Расчетная ветка выполнена, проверка пройдена."
     data(4, 1) = "FAIL"
     data(4, 2) = "Равновесие найдено, но физический предел или проверка не проходят."
-    data(5, 1) = "NumFail"
-    data(5, 2) = "Равновесие или расчетная точка не сошлись численно."
-    data(6, 1) = "InputErr"
-    data(6, 2) = "Ошибка исходных данных или настройки."
-    data(7, 1) = "N/A"
-    data(7, 2) = "Проверка не применялась для данного сочетания."
+    data(5, 1) = "BaseFail"
+    data(5, 2) = "Базовая часть пути несущей уже за предельным состоянием."
+    data(6, 1) = "NumFail"
+    data(6, 2) = "Равновесие или расчетная точка не сошлись численно."
+    data(7, 1) = "InputErr"
+    data(7, 2) = "Ошибка исходных данных или настройки."
+    data(8, 1) = "CalcErr"
+    data(8, 2) = "Внутренняя ошибка программы или несформированный результат."
+    data(9, 1) = "N/A"
+    data(9, 2) = "Проверка не применялась для данного сочетания."
     legend.Value2 = data
 
     MergeSummaryHeader legend, 1, 1, STATUS_LEGEND_COLUMNS
@@ -791,7 +795,7 @@ Private Sub ApplySummaryBorders(ByVal area As Object)
     area.Borders.Weight = 2
 End Sub
 
-' Красит статусные ячейки compact summary по единой палитре OK/FAIL/NumFail/InputErr/N/A.
+' Красит статусные ячейки compact summary по единой палитре OK/FAIL/BaseFail/NumFail/InputErr/CalcErr/N/A.
 Private Sub FormatStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
     If batch Is Nothing Then Exit Sub
     If batch.Count <= 0 Then Exit Sub

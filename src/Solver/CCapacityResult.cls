@@ -63,10 +63,8 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
         ByVal concreteDepthForMy As Double)
     Set mSearchResult = searchResult
     mPureAxialForMethod = pureAxialForMethod
-    If statusPolicy Is Nothing Then Set statusPolicy = New CBatchStatusPolicy
-
     If loadPath Is Nothing Then
-        InitializeInvalid statusPolicy.InputErr, "CapacityLoadPath не подготовлен.", CAPACITY_PATH_NONE
+        InitializeInvalidInput "CapacityLoadPath не подготовлен.", CAPACITY_PATH_NONE
         Exit Sub
     End If
 
@@ -75,15 +73,16 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
         Dim reason As String
         If Not searchResult Is Nothing Then reason = searchResult.Meta.ResultComment
         If Len(Trim$(reason)) = 0 Then reason = "Поиск несущей способности не вернул solver."
-        InitializeInvalid statusPolicy.InputErr, reason, loadPath.Key
+        InitializeInvalidInput reason, loadPath.Key
         Exit Sub
     End If
 
     If searchResult.ResultKind <> rkCapacity Then
-        InitializeInvalid statusPolicy.CalcErr, "LimitSearch returned non-capacity result.", loadPath.Key
+        InitializeCalcError "LimitSearch returned non-capacity result.", loadPath.Key
         Exit Sub
     End If
 
+    If statusPolicy Is Nothing Then Set statusPolicy = New CBatchStatusPolicy
     Set mResultMeta = searchResult.Meta.Clone
     mStatus = statusPolicy.StatusFromMeta(mResultMeta)
     mLimitState = searchResult.LimitState
@@ -97,12 +96,38 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
     StoreCapacityStateIfAvailable strengthSpec
 End Sub
 
-' Заполняет результат известной ошибкой до запуска search.
-' Такой путь используется для некорректного или неприменимого capacity path.
-Public Sub InitializeInvalid(ByVal statusText As String, ByVal reason As String, _
+' Заполняет результат ошибкой входных данных до запуска search.
+Public Sub InitializeInvalidInput(ByVal reason As String, _
         Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
+    InitializeEarlyResult rsInvalidInput, rcInvalidInput, reason, pathKey
+End Sub
+
+' Заполняет результат внутренней ошибкой до запуска search.
+Public Sub InitializeCalcError(ByVal reason As String, _
+        Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
+    InitializeEarlyResult rsInternalError, rcInternalError, reason, pathKey
+End Sub
+
+' Заполняет результат штатным пропуском capacity без запуска search.
+' Нулевая траектория не является ошибкой ввода: для нее просто нет направления,
+' по которому можно искать предельный множитель lambda.
+Public Sub InitializeSkipped(ByVal reason As String, _
+        Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
+    InitializeEarlyResult rsNotApplicable, rcNotApplicable, reason, pathKey
+End Sub
+
+' Заполняет результат, когда базовая точка lambda=0 уже нарушает критерий
+' несущей способности. Для Capacity такая связка отображается как BaseFail.
+Public Sub InitializeBaseFail(ByVal reason As String, _
+        Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
+    InitializeEarlyResult rsCheckFailed, rcInitialStateBeyondLimit, reason, pathKey
+End Sub
+
+' Общая запись раннего capacity-result без обратного маппинга из display-строки.
+Private Sub InitializeEarlyResult(ByVal internalStatus As EResultInternalStatus, _
+        ByVal resultCode As EResultCode, ByVal reason As String, _
+        ByVal pathKey As String)
     Set mSearchResult = Nothing
-    mStatus = statusText
     mLimitState = reason
     mSolutionMethod = vbNullString
     mPathResolved = pathKey
@@ -118,15 +143,12 @@ Public Sub InitializeInvalid(ByVal statusText As String, ByVal reason As String,
     mCapacityStateAvailable = False
     mPureAxialForMethod = False
     Set mStateResult = Nothing
-    StoreMetaFromStatus statusText, reason
-End Sub
+    Set mResultMeta = New CResultMeta
+    mResultMeta.SetResult internalStatus, resultCode, rkCapacity, reason
 
-' Заполняет результат штатным пропуском capacity без запуска search.
-' Нулевая траектория не является ошибкой ввода: для нее просто нет направления,
-' по которому можно искать предельный множитель lambda.
-Public Sub InitializeSkipped(ByVal statusText As String, ByVal reason As String, _
-        Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
-    InitializeInvalid statusText, reason, pathKey
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    mStatus = policy.ExternalStatus(mResultMeta)
 End Sub
 
 ' Переносит найденный полный предельный вектор в пользовательскую точку
@@ -191,7 +213,7 @@ Private Sub StoreCapacityStateIfAvailable(ByVal strengthSpec As CMaterialModelSp
 
     Set mStateResult = New CSectionStateResult
     mStateResult.InitializeFromSolver sstCapacityState, cpStrength, strengthSpec, _
-        mSearchResult.LastSolver, False, mStatus, True, 0, mSearchResult.DiagnosticLog
+        mSearchResult.LastSolver, False, True, 0, mSearchResult.DiagnosticLog
 End Sub
 
 Public Property Get SearchResult() As CLimitSearchResult
@@ -202,7 +224,7 @@ End Property
 ' хранит эту meta рядом со строковым статусом, чтобы итоговый OverallStatus
 ' собирался из InternalStatus/ResultCode, а не из повторного парсинга текста.
 Public Property Get ResultMeta() As CResultMeta
-    If mResultMeta Is Nothing Then StoreMetaFromStatus mStatus, mLimitState
+    If mResultMeta Is Nothing Then InitializeCalcError "CapacityResult ResultMeta не сформирован.", mPathResolved
     Set ResultMeta = mResultMeta.Clone
 End Property
 
@@ -346,11 +368,3 @@ End Property
 Public Property Get PureAxialForMethod() As Boolean
     PureAxialForMethod = mPureAxialForMethod
 End Property
-
-' Совместимо строит meta для ранних исходов, где общего search-result еще нет.
-' Это закрывает skipped/input-error capacity-ветки тем же типизированным путем.
-Private Sub StoreMetaFromStatus(ByVal statusText As String, ByVal resultComment As String)
-    Dim policy As CResultStatusPolicy
-    Set policy = New CResultStatusPolicy
-    Set mResultMeta = policy.MetaFromLegacyStatus(statusText, rkCapacity, resultComment)
-End Sub

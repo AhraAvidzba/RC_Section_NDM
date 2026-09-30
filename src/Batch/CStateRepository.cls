@@ -33,7 +33,7 @@ Public Sub Clear()
 End Sub
 
 ' Сохраняет state без ключа переиспользования. Такой путь нужен для уже
-' найденных capacity-точек и переходного кода, где request пока не создается.
+' найденных capacity-точек и других физических states без CStateRequest.
 Public Sub StoreState(ByVal stateResult As CSectionStateResult)
     If stateResult Is Nothing Then Exit Sub
     If HasStateType(stateResult.StateType) Then Exit Sub

@@ -86,60 +86,29 @@ Public Function ExternalStatus(ByVal meta As CResultMeta) As String
     End Select
 End Function
 
-' Совместимый перевод старой строковой причины в meta. Метод нужен только для
-' переходного этапа: новые расчетные блоки должны формировать CResultMeta сами.
-Public Function MetaFromLegacyStatus(ByVal statusText As String, ByVal resultKind As EResultKind, _
-        Optional ByVal resultComment As String = vbNullString) As CResultMeta
-    Dim meta As CResultMeta
-    Set meta = New CResultMeta
-
-    Select Case ToUserStatus(statusText)
-        Case STATUS_OK
-            meta.SetResult rsSuccess, rcCheckPassed, resultKind, resultComment
-        Case STATUS_FAIL
-            meta.SetResult rsCheckFailed, rcCheckFailed, resultKind, resultComment
-        Case STATUS_BASEFAIL
-            meta.SetResult rsCheckFailed, rcInitialStateBeyondLimit, resultKind, resultComment
-        Case STATUS_NUMFAIL
-            meta.SetResult rsNumericalFailure, rcNumericalFailure, resultKind, resultComment
-        Case STATUS_INPUTERR
-            meta.SetResult rsInvalidInput, rcInvalidInput, resultKind, resultComment
-        Case STATUS_CALCERR
-            meta.SetResult rsInternalError, rcInternalError, resultKind, resultComment
-        Case Else
-            meta.SetNotApplicable resultKind, resultComment
-    End Select
-
-    Set MetaFromLegacyStatus = meta
-End Function
-
-' Переводит исторический текстовый статус в утвержденный внешний словарь.
+' Нормализует уже внешний display-статус. Метод не создает CResultMeta и не
+' анализирует StopReason/ResultComment: смысл результата должен приходить
+' через InternalStatus + ResultCode, а неизвестная строка считается CalcErr.
 Public Function ToUserStatus(ByVal statusText As String) As String
     Dim value As String
     value = Trim$(statusText)
     Select Case UCase$(value)
         Case "OK"
             ToUserStatus = STATUS_OK
-        Case "FAIL", "STRENGTHFAILED", "STRAINLIMITEXCEEDED"
+        Case "FAIL"
             ToUserStatus = STATUS_FAIL
         Case "BASEFAIL"
             ToUserStatus = STATUS_BASEFAIL
-        Case "NUMFAIL", "NUMERICALFAILURE", "SINGULARTANGENT"
+        Case "NUMFAIL"
             ToUserStatus = STATUS_NUMFAIL
-        Case "INPUTERR", "INPUTERROR", "INVALIDINPUT", "INVALIDCONFIGURATION"
+        Case "INPUTERR"
             ToUserStatus = STATUS_INPUTERR
-        Case "CALCERR", "INTERNALERROR"
+        Case "CALCERR"
             ToUserStatus = STATUS_CALCERR
-        Case "N/A", "NA", "NOTCALCULATED", "NOTCALCUL.", "SKIPPEDZEROMOMENT", "SKIPPEDZEROBASEMOMENT", ""
+        Case "N/A", ""
             ToUserStatus = STATUS_NA
         Case Else
-            If IsInvalid(statusText) Then
-                ToUserStatus = STATUS_INPUTERR
-            ElseIf IsNumerical(statusText) Then
-                ToUserStatus = STATUS_NUMFAIL
-            Else
-                ToUserStatus = STATUS_FAIL
-            End If
+            ToUserStatus = STATUS_CALCERR
     End Select
 End Function
 
@@ -158,8 +127,10 @@ Public Function AggregateMeta(ByVal directMeta As CResultMeta, ByVal capacityMet
     AggregateMeta = resultStatus
 End Function
 
-' Историческое агрегирование строк оставлено для переходных участков и тестов.
-Public Function AggregateText(ByVal directStateStatus As String, ByVal capacityStatus As String, _
+' Агрегирует уже внешние display-статусы там, где формат Results хранит их
+' плоскими строковыми полями. Этот метод не выводит внутренний смысл из текста,
+' а только выбирает худший из утвержденных внешних статусов.
+Public Function AggregateExternalStatus(ByVal directStateStatus As String, ByVal capacityStatus As String, _
         ByVal crackStatus As String, Optional ByVal longitudinalCrackStatus As String = vbNullString, _
         Optional ByVal stabilityStatus As String = vbNullString) As String
     Dim resultStatus As String
@@ -169,7 +140,7 @@ Public Function AggregateText(ByVal directStateStatus As String, ByVal capacityS
     resultStatus = Merge(resultStatus, crackStatus)
     resultStatus = Merge(resultStatus, longitudinalCrackStatus)
     resultStatus = Merge(resultStatus, stabilityStatus)
-    AggregateText = resultStatus
+    AggregateExternalStatus = resultStatus
 End Function
 
 ' True для расчетов, которые дали физически интерпретируемый результат.
@@ -185,19 +156,18 @@ Public Function IsFailedOverall(ByVal statusText As String) As Boolean
         statusText = STATUS_NUMFAIL Or statusText = STATUS_INPUTERR Or statusText = STATUS_CALCERR)
 End Function
 
-' Распознает численную несходимость в старых StopReason/status-строках.
+' Распознает только утвержденные внешние статусы численной несходимости.
+' Текстовые причины solver-а не анализируются, чтобы статус не зависел от
+' формулировки комментария или языка diagnostic-сообщения.
 Public Function IsNumerical(ByVal statusText As String) As Boolean
-    IsNumerical = (InStr(1, statusText, STATUS_NUMFAIL, vbTextCompare) > 0 Or _
-        InStr(1, statusText, "NumericalFailure", vbTextCompare) > 0 Or _
-        InStr(1, statusText, "SingularTangent", vbTextCompare) > 0)
+    IsNumerical = (ToUserStatus(statusText) = STATUS_NUMFAIL)
 End Function
 
-' Распознает ошибку исходных данных или конфигурации в старых строках.
+' Распознает только утвержденные внешние статусы ошибки ввода/Config.
+' Подстроки StopReason вроде InputError/InvalidConfiguration не являются
+' источником статуса; для этого используется CResultMeta.
 Public Function IsInvalid(ByVal statusText As String) As Boolean
-    IsInvalid = (InStr(1, statusText, STATUS_INPUTERR, vbTextCompare) > 0 Or _
-        InStr(1, statusText, "InputError", vbTextCompare) > 0 Or _
-        InStr(1, statusText, "InvalidInput", vbTextCompare) > 0 Or _
-        InStr(1, statusText, "InvalidConfiguration", vbTextCompare) > 0)
+    IsInvalid = (ToUserStatus(statusText) = STATUS_INPUTERR)
 End Function
 
 ' Объединяет два внешних статуса по единому приоритету.

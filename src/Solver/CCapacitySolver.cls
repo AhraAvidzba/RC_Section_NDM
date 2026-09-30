@@ -37,6 +37,7 @@ Private mConverged As Boolean ' True, если выбранный метод cap
 Private mStopReason As String ' Причина остановки capacity solver для вывода в результаты и тесты.
 Private mLimitState As String ' Физический или численный статус найденного предела.
 Private mUpperLimitState As String ' Статус верхней границы при LoadMultiplier.
+Private mInitialLambdaRejected As Boolean ' True, если lambda=0 уже не является acceptable-точкой capacity path.
 Private mLambdaUltimate As Double ' Предельный множитель к выбранной lambda-траектории нагрузки.
 Private mNUltimate As Double ' Предельная продольная сила, если N входит в масштабируемый путь.
 Private mMomentUltimate As Double ' Результирующий предельный момент sqrt(MxUltimate^2 + MyUltimate^2).
@@ -617,11 +618,16 @@ Public Function LimitSearchEvaluateCapacityLoadMultiplier(ByVal section As CSect
 End Function
 
 ' Обрабатывает ситуацию, когда нижняя точка lambda = 0 уже не является
-' приемлемой. Для capacity это физический BaseFail, а не численный поиск
-' внутри найденной скобки.
+' приемлемой для capacity path. Здесь фиксируется только capacity-факт;
+' внешний BaseFail позже формируется через ResultCode, а не через текст.
 Public Sub LimitSearchHandleCapacityInitialFailure(ByVal probeState As String)
     mLimitState = probeState
-    mStopReason = "Начальное состояние при lambda = 0 не проходит физический критерий: " & probeState & "."
+    mInitialLambdaRejected = True
+    If LimitSearchCapacityStateIsInvalidInput(probeState) Then
+        mStopReason = "InputError: начальное состояние при lambda = 0 не может быть проверено: " & probeState & "."
+    Else
+        mStopReason = "Начальное состояние при lambda = 0 не проходит физический критерий: " & probeState & "."
+    End If
 End Sub
 
 ' Фиксирует, что до верхней границы MaxLambda физический предел не найден.
@@ -906,7 +912,7 @@ Private Function NewLoadPathMath() As CLoadPathMath
     Set NewLoadPathMath = math
 End Function
 
-' Упаковывает старые аргументы CCapacitySolver в общий CLoadPathVector, чтобы
+' Упаковывает компонентную форму CCapacitySolver в общий CLoadPathVector, чтобы
 ' вся математика lambda-траектории проходила через CLoadPathMath.
 Private Function LoadPathFromComponents(ByVal nOffset As Double, ByVal nBase As Double, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
@@ -1435,6 +1441,7 @@ Private Sub ClearResult()
     mStopReason = vbNullString
     mLimitState = vbNullString
     mUpperLimitState = vbNullString
+    mInitialLambdaRejected = False
     mLambdaUltimate = 0#
     mNUltimate = 0#
     mMomentUltimate = 0#
@@ -1494,6 +1501,13 @@ End Function
 Public Function LimitSearchCapacityStateIsInvalidInput(ByVal state As String) As Boolean
     LimitSearchCapacityStateIsInvalidInput = (state = STATE_INVALID_INPUT)
 End Function
+
+' Возвращает True, если capacity-path был остановлен уже на lambda=0.
+' Низкоуровневый search только сообщает о rejected lower point; смысл
+' "базовая часть пути уже не проходит" назначается capacity-result слоем.
+Public Property Get LimitSearchInitialLambdaRejected() As Boolean
+    LimitSearchInitialLambdaRejected = mInitialLambdaRejected
+End Property
 
 ' Объединяет диагностику неудачной первой ветки с последующим fallback-расчетом
 ' LoadMultiplier. Search-слой сам выбирает порядок попыток, но только

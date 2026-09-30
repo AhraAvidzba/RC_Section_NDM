@@ -16,9 +16,8 @@ Option Explicit
 ' state и capacity. Он не знает о профилях, Config и таблицах Results: сюда
 ' складываются уже полученные CDirectStateResult и CCapacityResult.
 '
-' На этапе 7 объект сосуществует со старым плоским фасадом CCombinationResult.
-' Это позволяет постепенно переводить worst-combination, summary и writers на
-' structured result graph без одномоментной большой переделки вывода.
+' Объект является источником typed meta для вывода strength-блока: writer-ы
+' получают внешний статус через CResultStatusPolicy, а не выводят его из текста ошибок.
 
 Private mDirectState As CDirectStateResult ' Прямое НДС от заданного сочетания.
 Private mCapacity As CCapacityResult ' Предельная несущая способность по выбранной lambda-траектории.
@@ -34,10 +33,10 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     Set mCapacity = Nothing
 End Sub
 
-' Сохраняет статус прямого НДС без изменения его численных данных.
-Public Sub SetDirectStatus(ByVal statusText As String, Optional ByVal resultComment As String = vbNullString)
+' Сохраняет typed meta прямого НДС без изменения его численных данных.
+Public Sub SetDirectMeta(ByVal meta As CResultMeta)
     If mDirectState Is Nothing Then Set mDirectState = New CDirectStateResult
-    mDirectState.SetStatus statusText, resultComment
+    mDirectState.SetMeta meta
 End Sub
 
 ' Копирует прямое НДС из solver-а в структурированный direct-state result.
@@ -57,8 +56,7 @@ Public Sub StoreCapacityResult(ByVal capacity As CCapacityResult)
     Set mCapacity = capacity
 End Sub
 
-' Возвращает direct-state branch. Writer-ы пока читают старый фасад, но тесты
-' и последующая миграция могут проверять именно этот typed branch.
+' Возвращает direct-state branch с численными данными и typed ResultMeta.
 Public Property Get DirectState() As CDirectStateResult
     Set DirectState = mDirectState
 End Property

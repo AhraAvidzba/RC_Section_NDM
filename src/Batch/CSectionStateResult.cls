@@ -67,7 +67,6 @@ Private mHasSteelTension As Boolean ' True, если есть растянута
 Public Sub InitializeFromSolver(ByVal stateType As ESectionStateType, _
         ByVal materialModelRole As ECalculationPurpose, ByVal materialSpec As CMaterialModelSpec, _
         ByVal solver As CSectionSolver, Optional ByVal extensionUsed As Boolean = False, _
-        Optional ByVal statusText As String = vbNullString, _
         Optional ByVal withinPhysicalRange As Boolean = True, _
         Optional ByVal solverCallCount As Long = 0, _
         Optional ByVal diagnosticLog As String = vbNullString)
@@ -85,8 +84,8 @@ Public Sub InitializeFromSolver(ByVal stateType As ESectionStateType, _
     mWithinPhysicalRange = (withinPhysicalRange And solver.Converged)
     mConverged = solver.Converged
     mStopReason = solver.StopReason
-    mStatus = statusText
-    Set mResultMeta = BuildMetaFromSolver(stateType, solver, statusText, mStopReason)
+    Set mResultMeta = BuildMetaFromSolver(stateType, solver, extensionUsed, withinPhysicalRange, mStopReason)
+    mStatus = ExternalStatus(mResultMeta)
     mSolverCallCount = solverCallCount
     mIterationCount = solver.Iterations
     mDiagnosticLog = diagnosticLog
@@ -110,7 +109,7 @@ End Sub
 Public Sub InitializeFromPlane(ByVal stateType As ESectionStateType, _
         ByVal materialModelRole As ECalculationPurpose, ByVal materialSpec As CMaterialModelSpec, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
-        Optional ByVal extensionUsed As Boolean = False, Optional ByVal statusText As String = vbNullString, _
+        Optional ByVal extensionUsed As Boolean = False, _
         Optional ByVal stopReason As String = vbNullString)
     If materialSpec Is Nothing Then Err.Raise vbObjectError + 3972, "CSectionStateResult", "MaterialModelSpec не передан."
 
@@ -123,9 +122,9 @@ Public Sub InitializeFromPlane(ByVal stateType As ESectionStateType, _
     mExtensionUsed = extensionUsed
     mWithinPhysicalRange = True
     mConverged = True
-    mStatus = statusText
     mStopReason = stopReason
-    Set mResultMeta = BuildMetaFromStatus(stateType, statusText, stopReason)
+    Set mResultMeta = BuildSuccessMeta(stateType, stopReason)
+    mStatus = ExternalStatus(mResultMeta)
 End Sub
 
 ' Копирует из solver-а все данные равновесия, которые определяют качество
@@ -200,7 +199,7 @@ Public Property Get Status() As String
 End Property
 
 Public Property Get ResultMeta() As CResultMeta
-    If mResultMeta Is Nothing Then Set mResultMeta = BuildMetaFromStatus(mStateType, mStatus, mStopReason)
+    If mResultMeta Is Nothing Then Set mResultMeta = BuildSuccessMeta(mStateType, mStopReason)
     Set ResultMeta = mResultMeta
 End Property
 
@@ -329,36 +328,55 @@ Public Property Get HasSteelTension() As Boolean
 End Property
 
 ' Создает ResultMeta для named-state, построенного напрямую из CSectionSolver.
+' Здесь не разбирается текст StopReason: результат определяется только
+' машинными признаками solver-а и физической допустимостью диаграммы.
 Private Function BuildMetaFromSolver(ByVal stateType As ESectionStateType, ByVal solver As CSectionSolver, _
-        ByVal statusText As String, ByVal stopReason As String) As CResultMeta
-    If Len(Trim$(statusText)) = 0 Then
-        If solver Is Nothing Then
-            Set BuildMetaFromSolver = MetaFromStatus(stateType, "NumFail", "Solver не вернул состояние.")
-        ElseIf solver.Converged Then
-            Set BuildMetaFromSolver = MetaFromStatus(stateType, "OK", stopReason)
-        ElseIf IsInputStateFailure(stopReason) Then
-            Set BuildMetaFromSolver = MetaFromStatus(stateType, "InputErr", stopReason)
-        Else
-            Set BuildMetaFromSolver = MetaFromStatus(stateType, "NumFail", stopReason)
-        End If
+        ByVal extensionUsed As Boolean, ByVal withinPhysicalRange As Boolean, _
+        ByVal stopReason As String) As CResultMeta
+    If solver Is Nothing Then
+        Set BuildMetaFromSolver = BuildNumericalFailureMeta(stateType, "Solver не вернул состояние.")
+    ElseIf Not solver.Converged Then
+        Set BuildMetaFromSolver = BuildNumericalFailureMeta(stateType, stopReason)
+    ElseIf extensionUsed Or Not withinPhysicalRange Then
+        Set BuildMetaFromSolver = BuildPhysicalRangeMeta(stateType, stopReason)
     Else
-        Set BuildMetaFromSolver = MetaFromStatus(stateType, statusText, stopReason)
+        Set BuildMetaFromSolver = BuildSuccessMeta(stateType, stopReason)
     End If
 End Function
 
-' Создает ResultMeta для named-state, построенного из готовой плоскости.
-Private Function BuildMetaFromStatus(ByVal stateType As ESectionStateType, ByVal statusText As String, _
+' Создает успешную meta для готовой физической плоскости деформаций.
+Private Function BuildSuccessMeta(ByVal stateType As ESectionStateType, _
         ByVal resultComment As String) As CResultMeta
-    If Len(Trim$(statusText)) = 0 Then statusText = "OK"
-    Set BuildMetaFromStatus = MetaFromStatus(stateType, statusText, resultComment)
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    meta.SetResult rsSuccess, rcCheckPassed, ResultKindFromStateType(stateType), resultComment
+    Set BuildSuccessMeta = meta
 End Function
 
-' Переводит status named-state в типизированный ResultMeta через общую policy.
-Private Function MetaFromStatus(ByVal stateType As ESectionStateType, ByVal statusText As String, _
+' Создает meta для состояния, которое численно не сошлось.
+Private Function BuildNumericalFailureMeta(ByVal stateType As ESectionStateType, _
         ByVal resultComment As String) As CResultMeta
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    meta.SetResult rsNumericalFailure, rcNumericalFailure, ResultKindFromStateType(stateType), resultComment
+    Set BuildNumericalFailureMeta = meta
+End Function
+
+' Создает meta для сходящегося состояния, которое найдено только за пределами
+' физической диаграммы. Это физический FAIL, а не численная несходимость.
+Private Function BuildPhysicalRangeMeta(ByVal stateType As ESectionStateType, _
+        ByVal resultComment As String) As CResultMeta
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    meta.SetResult rsCheckFailed, rcStateOutsidePhysicalRange, ResultKindFromStateType(stateType), resultComment
+    Set BuildPhysicalRangeMeta = meta
+End Function
+
+' Возвращает внешний статус для плоских полей Results.
+Private Function ExternalStatus(ByVal meta As CResultMeta) As String
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
-    Set MetaFromStatus = policy.MetaFromLegacyStatus(statusText, ResultKindFromStateType(stateType), resultComment)
+    ExternalStatus = policy.ExternalStatus(meta)
 End Function
 
 ' Определяет инженерный контекст результата по типу named-state.
@@ -373,12 +391,4 @@ Private Function ResultKindFromStateType(ByVal stateType As ESectionStateType) A
         Case Else
             ResultKindFromStateType = rkDirectState
     End Select
-End Function
-
-' Отличает ошибку исходных данных solver-а от настоящей численной несходимости.
-' Это нужно, чтобы ResultMeta named-state не превращал InputError в NumFail.
-Private Function IsInputStateFailure(ByVal reason As String) As Boolean
-    IsInputStateFailure = (InStr(1, reason, "InputError", vbTextCompare) > 0 Or _
-        InStr(1, reason, "InvalidInput", vbTextCompare) > 0 Or _
-        InStr(1, reason, "InvalidConfiguration", vbTextCompare) > 0)
 End Function

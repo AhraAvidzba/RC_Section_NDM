@@ -736,7 +736,7 @@ Private Sub AssertCrackCalculatorNotNumFail(ByRef stats As TCrackTestStats, _
         ByVal name As String, ByVal crack As CCrackWidthCalculator)
     Dim policy As CBatchStatusPolicy
     Set policy = New CBatchStatusPolicy
-    AssertTrue stats, name, policy.CrackStatusFromCalculator(crack) <> policy.NumFail
+    AssertTrue stats, name, policy.StatusFromMeta(policy.CrackMetaFromCalculator(crack)) <> policy.NumFail
 End Sub
 
 Private Sub AssertTrue(ByRef stats As TCrackTestStats, ByVal name As String, ByVal condition As Boolean)

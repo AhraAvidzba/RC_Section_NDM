@@ -14,10 +14,7 @@ Option Explicit
 ' ==========================================================================
 ' CStabilityResult хранит typed meta и инженерные величины, которые CStabilityCalculator
 ' уже посчитал для LC. Класс не запускает расчет устойчивости; его задача - быть
-' stability-subtree внутри CCombinationResult и постепенно заменить плоские поля.
-'
-' Поля оставлены публичными намеренно: это переходный объект этапа 7, который
-' копируется из калькулятора и затем зеркалится в существующий фасад Results.
+' stability-subtree внутри CCombinationResult и единым источником данных для Results.
 
 Public Status As String ' Пользовательский статус ветки устойчивости.
 Public ResultMeta As CResultMeta ' Типизированный статус устойчивости.
@@ -114,30 +111,41 @@ Public Sub Clear()
     Utilization = 0#
 End Sub
 
-' Синхронизирует короткий пользовательский статус с типизированной meta-записью.
-' Используется для веток, где подробный CStabilityCalculator не запускался или остановился
-' до появления численных величин, но статус все равно должен попадать в общий result-tree.
-Public Sub SetStatus(ByVal statusText As String, Optional ByVal resultComment As String = vbNullString)
+' Синхронизирует typed meta со строкой display-статуса для Results.
+Public Sub SetMeta(ByVal meta As CResultMeta, Optional ByVal resultComment As String = vbNullString)
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
 
-    Status = policy.ToUserStatus(statusText)
-    Set ResultMeta = policy.MetaFromLegacyStatus(Status, rkStability, resultComment)
+    If meta Is Nothing Then
+        Set ResultMeta = New CResultMeta
+        ResultMeta.SetResult rsInternalError, rcInternalError, rkStability, _
+            "Результат устойчивости не сформирован."
+    Else
+        Set ResultMeta = meta.Clone
+        If Len(Trim$(resultComment)) > 0 Then ResultMeta.ResultComment = resultComment
+    End If
+    Status = policy.ExternalStatus(ResultMeta)
     Branch = resultComment
 End Sub
 
 ' Копирует результат CStabilityCalculator и формирует typed meta для summary.
-Public Sub InitializeFromCalculator(ByVal statusText As String, ByVal stability As CStabilityCalculator, _
+Public Sub InitializeFromCalculator(ByVal meta As CResultMeta, ByVal stability As CStabilityCalculator, _
         ByVal referenceXValue As Double, ByVal referenceYValue As Double)
-    Status = statusText
     ReferenceX = referenceXValue
     ReferenceY = referenceYValue
 
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
+    If meta Is Nothing Then
+        Set ResultMeta = New CResultMeta
+        ResultMeta.SetResult rsInternalError, rcInternalError, rkStability, _
+            "Результат устойчивости не сформирован."
+    Else
+        Set ResultMeta = meta.Clone
+    End If
+    Status = policy.ExternalStatus(ResultMeta)
 
     If stability Is Nothing Then
-        Set ResultMeta = policy.MetaFromLegacyStatus(Status, rkStability)
         Exit Sub
     End If
 
@@ -203,7 +211,8 @@ Public Sub InitializeFromCalculator(ByVal statusText As String, ByVal stability 
     PlaneApplicable2 = stability.PlaneApplicable2
     PlanePassed1 = stability.PlanePassed1
     PlanePassed2 = stability.PlanePassed2
-    Set ResultMeta = policy.MetaFromLegacyStatus(Status, rkStability, Branch)
+    If Len(Trim$(Branch)) > 0 And Len(Trim$(ResultMeta.ResultComment)) = 0 Then _
+        ResultMeta.ResultComment = Branch
 End Sub
 
 ' Обновляет финальный расчетный вектор после общего zero-filter batch-слоя.
@@ -219,9 +228,9 @@ End Sub
 ' Возвращает копию meta, чтобы вызывающий код не менял status-subtree напрямую.
 Public Property Get Meta() As CResultMeta
     If ResultMeta Is Nothing Then
-        Dim policy As CResultStatusPolicy
-        Set policy = New CResultStatusPolicy
-        Set ResultMeta = policy.MetaFromLegacyStatus(Status, rkStability, Branch)
+        Set ResultMeta = New CResultMeta
+        ResultMeta.SetResult rsInternalError, rcInternalError, rkStability, _
+            "Результат устойчивости не сформирован."
     End If
     Set Meta = ResultMeta.Clone
 End Property

@@ -118,16 +118,30 @@ Public Sub InitializeFromCapacitySolver(ByVal cap As CCapacitySolver, ByVal requ
             Else
                 mMeta.SetResult rsSuccess, rcCheckPassed, rkCapacity, cap.LimitState
             End If
-        ElseIf InStr(1, cap.StopReason, "INITIAL_STATE_BEYOND_LIMIT", vbTextCompare) > 0 Then
-            mMeta.SetResult rsCheckFailed, rcInitialStateBeyondLimit, rkCapacity, cap.StopReason
-        ElseIf InStr(1, cap.StopReason, "Input", vbTextCompare) > 0 Or _
-                InStr(1, cap.StopReason, "ошиб", vbTextCompare) > 0 Then
+        ElseIf cap.LimitSearchInitialLambdaRejected And _
+                Not cap.LimitSearchCapacityStateIsInvalidInput(cap.LimitState) Then
+            mMeta.SetResult rsCheckFailed, rcInitialStateBeyondLimit, rkCapacity, _
+                CapacityInitialLambdaRejectedComment(cap.StopReason)
+        ElseIf cap.LimitSearchCapacityStateIsInvalidInput(cap.LimitState) Then
             mMeta.SetResult rsInvalidInput, rcInvalidInput, rkCapacity, cap.StopReason
-        Else
+        ElseIf cap.LimitSearchCapacityStateIsNumericalFailure(cap.LimitState) Then
             mMeta.SetResult rsNumericalFailure, rcNumericalFailure, rkCapacity, cap.StopReason
+        Else
+            mMeta.SetResult rsInternalError, rcInternalError, rkCapacity, cap.StopReason
         End If
     End If
 End Sub
+
+' Возвращает пользовательский комментарий без служебных префиксов search.
+' Сам ResultCode хранит машинный смысл BaseFail.
+Private Function CapacityInitialLambdaRejectedComment(ByVal stopReason As String) As String
+    Dim commentText As String
+    commentText = Trim$(stopReason)
+    commentText = Replace$(commentText, "INITIAL_STATE_BEYOND_LIMIT:", vbNullString, 1, 1, vbTextCompare)
+    CapacityInitialLambdaRejectedComment = Trim$(commentText)
+    If Len(CapacityInitialLambdaRejectedComment) = 0 Then _
+        CapacityInitialLambdaRejectedComment = "Начальное состояние при lambda = 0 не проходит физический критерий."
+End Function
 
 ' Заполняет result по уже выполненному CCrackWidthCalculator в стадии
 ' образования трещины. Формульная ширина здесь не оценивается: речь только о
@@ -145,19 +159,17 @@ Public Sub InitializeFromCrackFormation(ByVal crack As CCrackWidthCalculator, _
         mMeta.SetResult rsNumericalFailure, rcSolverDidNotReturnState, rkCrackFormation, _
             "Поиск образования трещины не вернул расчетчик."
     ElseIf searchSucceeded Then
-        If crack.CrackFormed Then
+        If crack.CrackFormationResultCode = rcCheckPassed Then
             mMeta.SetResult rsSuccess, rcCheckPassed, rkCrackFormation, crack.StopReason
         Else
-            mMeta.SetResult rsSuccess, rcCriterionNotReached, rkCrackFormation, crack.StopReason
+            mMeta.SetResult crack.CrackFormationInternalStatus, crack.CrackFormationResultCode, _
+                rkCrackFormation, crack.StopReason
         End If
     ElseIf crack.Converged And Not crack.CrackFormed Then
         mMeta.SetResult rsSuccess, rcCriterionNotReached, rkCrackFormation, crack.StopReason
-    ElseIf InStr(1, crack.StopReason, "Input", vbTextCompare) > 0 Or _
-            InStr(1, crack.StopReason, "ошиб", vbTextCompare) > 0 Then
-        mMeta.SetResult rsInvalidInput, rcInvalidInput, rkCrackFormation, crack.StopReason
-    ElseIf InStr(1, crack.StopReason, "Config", vbTextCompare) > 0 Or _
-            InStr(1, crack.StopReason, "настрой", vbTextCompare) > 0 Then
-        mMeta.SetResult rsInvalidConfiguration, rcInvalidConfiguration, rkCrackFormation, crack.StopReason
+    ElseIf crack.CrackFormationInternalStatus <> rsUnset Then
+        mMeta.SetResult crack.CrackFormationInternalStatus, crack.CrackFormationResultCode, _
+            rkCrackFormation, crack.StopReason
     Else
         mMeta.SetResult rsNumericalFailure, rcNumericalFailure, rkCrackFormation, crack.StopReason
     End If

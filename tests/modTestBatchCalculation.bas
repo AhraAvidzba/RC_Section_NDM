@@ -188,8 +188,8 @@ Public Function RunBatchCalculationTests() As String
     TestResultMetaStatusDictionary stats
     AppendLine stats, "RUN: TestResultMetaAggregateSkipsNotApplicable"
     TestResultMetaAggregateSkipsNotApplicable stats
-    AppendLine stats, "RUN: TestCombinationResultTreeMirrorsLegacyFacade"
-    TestCombinationResultTreeMirrorsLegacyFacade stats
+    AppendLine stats, "RUN: TestCombinationResultTreeDrivesDisplayFields"
+    TestCombinationResultTreeDrivesDisplayFields stats
     AppendLine stats, "RUN: TestFormulaChecksDoNotCreateNumFail"
     TestFormulaChecksDoNotCreateNumFail stats
     AppendLine stats, "RUN: TestSectionStateResultStoresEquilibriumData"
@@ -198,8 +198,8 @@ Public Function RunBatchCalculationTests() As String
     TestStateRequestEquivalenceIgnoresSolveOptions stats
     AppendLine stats, "RUN: TestStateRepositoryReusesOnlyConvergedStates"
     TestStateRepositoryReusesOnlyConvergedStates stats
-    AppendLine stats, "RUN: TestPrePostCrackStateAliases"
-    TestPrePostCrackStateAliases stats
+    AppendLine stats, "RUN: TestPrePostCrackStateNames"
+    TestPrePostCrackStateNames stats
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -3699,7 +3699,9 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
         BatchSummaryCellText(resultsSheet, summaryRow + 6, 29) = "Описание"
     AssertTrue stats, "batch.writer.statusLegend.values", _
         BatchSummaryCellText(resultsSheet, summaryRow + 7, 28) = "OK" And _
-        BatchSummaryCellText(resultsSheet, summaryRow + 10, 28) = "InputErr"
+        BatchSummaryCellText(resultsSheet, summaryRow + 9, 28) = "BaseFail" And _
+        BatchSummaryCellText(resultsSheet, summaryRow + 11, 28) = "InputErr" And _
+        BatchSummaryCellText(resultsSheet, summaryRow + 12, 28) = "CalcErr"
     AssertTrue stats, "batch.writer.statusLegend.mergeOnlyTitle", _
         resultsSheet.Cells.Item(summaryRow + 5, 28).MergeArea.Columns.Count = 2 And _
         Not resultsSheet.Cells.Item(summaryRow + 6, 28).MergeCells And _
@@ -3708,13 +3710,15 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
         Not resultsSheet.Cells.Item(summaryRow + 7, 29).WrapText
     AssertTrue stats, "batch.writer.statusLegend.italicValues", _
         resultsSheet.Cells.Item(summaryRow + 7, 28).Font.Italic And _
-        resultsSheet.Cells.Item(summaryRow + 11, 29).Font.Italic
+        resultsSheet.Cells.Item(summaryRow + 13, 29).Font.Italic
     AssertTrue stats, "batch.writer.statusLegend.colors", _
         StatusCellHasExpectedFill(resultsSheet, summaryRow + 7, 28) And _
         StatusCellHasExpectedFill(resultsSheet, summaryRow + 8, 28) And _
         StatusCellHasExpectedFill(resultsSheet, summaryRow + 9, 28) And _
         StatusCellHasExpectedFill(resultsSheet, summaryRow + 10, 28) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 11, 28)
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 11, 28) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 28) And _
+        StatusCellHasExpectedFill(resultsSheet, summaryRow + 13, 28)
     AssertTrue stats, "batch.writer.reserve.dataNotHeaderFill", _
         resultsSheet.Cells.Item(summaryRow + 12, 17).Interior.ColorIndex = -4142
     AssertWorstSummaryRowMatchesData stats, resultsSheet
@@ -4503,9 +4507,9 @@ Private Sub TestResultMetaAggregateSkipsNotApplicable(ByRef stats As TBatchTestS
         policy.AggregateMeta(skippedMeta, Nothing, Nothing), "N/A"
 End Sub
 
-' Проверяет переходный фасад этапа 7: старые строковые поля CCombinationResult
-' и новые structured-subtree должны отдавать один и тот же внешний статус.
-Private Sub TestCombinationResultTreeMirrorsLegacyFacade(ByRef stats As TBatchTestStats)
+' Проверяет финальный result-tree: плоские display-поля CCombinationResult
+' получают статус только из structured ResultMeta.
+Private Sub TestCombinationResultTreeDrivesDisplayFields(ByRef stats As TBatchTestStats)
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
 
@@ -4513,28 +4517,59 @@ Private Sub TestCombinationResultTreeMirrorsLegacyFacade(ByRef stats As TBatchTe
     Set result = New CCombinationResult
     result.Clear "LambdaMxy"
 
-    result.SetDirectStateStatus "OK"
+    Dim okMeta As CResultMeta
+    Set okMeta = New CResultMeta
+    okMeta.SetResult rsSuccess, rcCheckPassed, rkDirectState, vbNullString
+    result.SetDirectStateMeta okMeta
     AssertEquals stats, "combinationTree.direct.flat", result.DirectStateStatus, "OK"
     AssertEquals stats, "combinationTree.direct.meta", _
         policy.ExternalStatus(result.DirectStateMeta), "OK"
 
-    result.MergeDirectStateStatus "FAIL", "N/A"
+    Dim failMeta As CResultMeta
+    Set failMeta = New CResultMeta
+    failMeta.SetResult rsCheckFailed, rcCheckFailed, rkDirectState, "Проверка не проходит."
+    result.MergeDirectStateMeta failMeta
     AssertEquals stats, "combinationTree.direct.merge.flat", result.DirectStateStatus, "FAIL"
     AssertEquals stats, "combinationTree.direct.merge.meta", _
         policy.ExternalStatus(result.StrengthResult.DirectMeta), "FAIL"
 
     Dim capacity As CCapacityResult
     Set capacity = New CCapacityResult
-    capacity.InitializeSkipped "N/A", "capacity не запрошена", "None"
+    capacity.InitializeSkipped "capacity не запрошена", "None"
     result.StoreCapacityResult capacity
     AssertTrue stats, "combinationTree.capacity.exists", Not result.StrengthResult.Capacity Is Nothing
     AssertEquals stats, "combinationTree.capacity.meta", _
         policy.ExternalStatus(result.CapacityMeta), "N/A"
 
-    result.SetStabilityStatus "InputErr", "ошибка настройки устойчивости"
+    Dim stabilityMeta As CResultMeta
+    Set stabilityMeta = New CResultMeta
+    stabilityMeta.SetResult rsInvalidInput, rcInvalidInput, rkStability, "ошибка настройки устойчивости"
+    result.SetStabilityMeta stabilityMeta, "ошибка настройки устойчивости"
     AssertEquals stats, "combinationTree.stability.flat", result.StabilityStatus, "InputErr"
     AssertEquals stats, "combinationTree.stability.meta", _
         policy.ExternalStatus(result.StabilityMeta), "InputErr"
+
+    result.Status = "InputErr"
+    Dim overall As CResultMeta
+    Set overall = result.OverallMeta
+    AssertTrue stats, "combinationTree.overallComment.direct", _
+        InStr(1, overall.ResultComment, "НДС:", vbTextCompare) > 0
+    AssertTrue stats, "combinationTree.overallComment.stability", _
+        InStr(1, overall.ResultComment, "Устойчивость: ошибка настройки устойчивости", vbTextCompare) > 0
+
+    Dim baseResult As CCombinationResult
+    Set baseResult = New CCombinationResult
+    baseResult.Clear "LambdaMxy"
+    baseResult.SetDirectStateMeta failMeta
+    Dim baseCapacity As CCapacityResult
+    Set baseCapacity = New CCapacityResult
+    baseCapacity.InitializeBaseFail "Начальное состояние при lambda = 0 не проходит физический критерий: ConcreteStrainLimit."
+    baseResult.StoreCapacityResult baseCapacity
+    AssertEquals stats, "combinationTree.strength.baseFail.meta", _
+        policy.ExternalStatus(baseResult.StrengthMeta), "BaseFail"
+    AssertTrue stats, "combinationTree.strength.baseFail.comment", _
+        InStr(1, baseResult.StrengthMeta.ResultComment, "НДС: Проверка не проходит.", vbTextCompare) > 0 And _
+        InStr(1, baseResult.StrengthMeta.ResultComment, "Несущая: Начальное состояние при lambda = 0", vbTextCompare) > 0
 End Sub
 
 ' Проверяет, что проверки без поиска равновесия не создают NumFail.
@@ -4545,16 +4580,16 @@ Private Sub TestFormulaChecksDoNotCreateNumFail(ByRef stats As TBatchTestStats)
     Set policy = New CBatchStatusPolicy
 
     AssertEquals stats, "status.longitudinal.pass", _
-        policy.LongitudinalCrackStatus(10#, 14.6), "OK"
+        policy.StatusFromMeta(policy.LongitudinalCrackMeta(10#, 14.6)), "OK"
     AssertEquals stats, "status.longitudinal.fail", _
-        policy.LongitudinalCrackStatus(20#, 14.6), "FAIL"
+        policy.StatusFromMeta(policy.LongitudinalCrackMeta(20#, 14.6)), "FAIL"
     AssertEquals stats, "status.longitudinal.na", _
-        policy.LongitudinalCrackStatus(0#, 14.6), "N/A"
+        policy.StatusFromMeta(policy.LongitudinalCrackMeta(0#, 14.6)), "N/A"
     AssertEquals stats, "status.longitudinal.input", _
-        policy.LongitudinalCrackStatus(10#, 0#), "InputErr"
+        policy.StatusFromMeta(policy.LongitudinalCrackMeta(10#, 0#)), "InputErr"
 
     AssertTrue stats, "status.longitudinal.noNumFail", _
-        policy.LongitudinalCrackStatus(20#, 14.6) <> "NumFail"
+        policy.StatusFromMeta(policy.LongitudinalCrackMeta(20#, 14.6)) <> "NumFail"
 End Sub
 
 ' Проверяет Stage 2: named-state хранит не только плоскость деформаций, но и
@@ -4630,7 +4665,7 @@ Private Sub TestStateRepositoryReusesOnlyConvergedStates(ByRef stats As TBatchTe
 
     Dim failedState As CSectionStateResult
     Set failedState = New CSectionStateResult
-    failedState.InitializeFromSolver sstStrengthState, cpStrength, spec, failedSolver, False, "NumFail"
+    failedState.InitializeFromSolver sstStrengthState, cpStrength, spec, failedSolver, False
     repository.StoreForRequest request, failedState
 
     AssertTrue stats, "stateRepository.failedNotReusable", repository.FindEquivalent(request) Is Nothing
@@ -4660,19 +4695,15 @@ Private Sub TestStateRepositoryReusesOnlyConvergedStates(ByRef stats As TBatchTe
         successfulRepository.FindEquivalent(successfulRequest) Is successfulState
 End Sub
 
-' Проверяет совместимость этапа переименования: старые строки читаются как
-' aliases, а канонический текст state уже выводится как Pre/PostCrackState.
-Private Sub TestPrePostCrackStateAliases(ByRef stats As TBatchTestStats)
-    AssertTrue stats, "stateAlias.before", _
-        SectionStateTypeFromText("BeforeMcrcState") = sstPreCrackState
-    AssertTrue stats, "stateAlias.after", _
-        SectionStateTypeFromText("AfterMcrcState") = sstPostCrackState
-    AssertTrue stats, "stateAlias.preCanonical", _
+' Проверяет финальный контракт именования: после миграции принимаются только
+' канонические PreCrackState/PostCrackState без старых Before/AfterMcrc alias.
+Private Sub TestPrePostCrackStateNames(ByRef stats As TBatchTestStats)
+    AssertTrue stats, "stateName.preCanonical", _
         SectionStateTypeFromText("PreCrackState") = sstPreCrackState
-    AssertTrue stats, "stateAlias.postCanonical", _
+    AssertTrue stats, "stateName.postCanonical", _
         SectionStateTypeFromText("PostCrackState") = sstPostCrackState
-    AssertEquals stats, "stateAlias.preText", SectionStateTypeToText(sstPreCrackState), "PreCrackState"
-    AssertEquals stats, "stateAlias.postText", SectionStateTypeToText(sstPostCrackState), "PostCrackState"
+    AssertEquals stats, "stateName.preText", SectionStateTypeToText(sstPreCrackState), "PreCrackState"
+    AssertEquals stats, "stateName.postText", SectionStateTypeToText(sstPostCrackState), "PostCrackState"
 End Sub
 
 Private Function RectangleRebars(ByVal geom As ISectionGeometry) As CRebarLayout
