@@ -462,7 +462,8 @@ Private Sub PutStrengthState(ByRef data() As Variant, ByVal rowIndex As Long, _
         COL_STATE_SBC, COL_STATE_SBT, COL_STATE_SSC, COL_STATE_SST
     PutStateGeometry data, rowIndex, stateResult, units, section, COL_STATE_H, COL_STATE_X
     data(rowIndex, COL_STATE_DIAGEXT) = ExtensionUsedText(batch, index, stateResult)
-    data(rowIndex, COL_STATE_RESERVE) = StrainReserve(batch, index, stateResult)
+    If batch.StrengthStrainReserve(index) > SMALL_VALUE Then _
+        data(rowIndex, COL_STATE_RESERVE) = batch.StrengthStrainReserve(index)
     data(rowIndex, COL_STATE_STATUS) = policy.DisplayStatus(stateResult.Status)
 End Sub
 
@@ -556,32 +557,6 @@ Private Sub PutStateGeometry(ByRef data() As Variant, ByVal rowIndex As Long, _
         depthH, compressedDepth
     If depthH > 0# Then data(rowIndex, colH) = OutputLength(depthH, units)
     If compressedDepth >= 0# Then data(rowIndex, colX) = OutputLength(compressedDepth, units)
-End Sub
-
-' Рассчитывает минимальный запас по доступным предельным деформациям.
-Private Function StrainReserve(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal stateResult As CSectionStateResult) As Variant
-    Dim reserve As Double
-    reserve = 1E+100
-
-    AddReserve reserve, stateResult.HasConcreteCompression, _
-        batch.StrengthConcreteCompressionLimitForCombination(index), stateResult.MinConcreteStrain
-    If batch.StrengthConcreteTensionLimitEnabledForCombination(index) Then _
-        AddReserve reserve, stateResult.HasConcreteTension, _
-            batch.StrengthConcreteTensionLimitForCombination(index), stateResult.MaxConcreteStrain
-    AddReserve reserve, stateResult.HasSteelCompression, _
-        batch.StrengthSteelCompressionLimitForCombination(index), stateResult.MinSteelStrain
-    AddReserve reserve, stateResult.HasSteelTension, _
-        batch.StrengthSteelTensionLimitForCombination(index), stateResult.MaxSteelStrain
-
-    If reserve < 1E+90 Then StrainReserve = reserve
-End Function
-
-' Добавляет один частный запас, если зона и предельная деформация существуют.
-Private Sub AddReserve(ByRef reserve As Double, ByVal hasValue As Boolean, ByVal limitValue As Double, ByVal actualValue As Double)
-    If Not hasValue Then Exit Sub
-    If Abs(limitValue) <= SMALL_VALUE Or Abs(actualValue) <= SMALL_VALUE Then Exit Sub
-    reserve = MinDouble(reserve, Abs(limitValue) / Abs(actualValue))
 End Sub
 
 ' Оформляет шапку, рамки, число и подсветку статусов.

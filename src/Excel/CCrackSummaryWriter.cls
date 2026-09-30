@@ -608,7 +608,8 @@ Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, COL_ES) = OutputStress(batch.CrackSteelElasticModulus, units)
     data(rowIndex, COL_ACRC) = OutputLength(batch.CrackWidth(index), units)
     data(rowIndex, COL_ACRC_ULT) = OutputLength(batch.CrackAllowable(index), units)
-    data(rowIndex, COL_ACRC_RATIO) = CrackReserveFactor(batch, index)
+    If batch.CrackReserveFactor(index) > SMALL_VALUE Then _
+        data(rowIndex, COL_ACRC_RATIO) = batch.CrackReserveFactor(index)
     data(rowIndex, COL_ACRC_STATUS) = CrackWidthStatusText(batch, index, policy)
 End Sub
 
@@ -628,24 +629,10 @@ Private Sub PutLongitudinalData(ByRef data() As Variant, ByVal rowIndex As Long,
 
     data(rowIndex, COL_SIGMA_B_MAX) = OutputStress(batch.MaxConcreteCompressionStress(index), units)
     data(rowIndex, COL_RB_MC2) = OutputStress(batch.LongitudinalCrackRbMc2(index), units)
-    data(rowIndex, COL_LONG_RATIO) = LongitudinalCrackReserveFactor(batch, index)
+    If batch.LongitudinalCrackReserveFactor(index) > SMALL_VALUE Then _
+        data(rowIndex, COL_LONG_RATIO) = batch.LongitudinalCrackReserveFactor(index)
     data(rowIndex, COL_LONG_STATUS) = LongitudinalStatusText(batch, index, policy)
 End Sub
-
-' Возвращает запас по нормальным трещинам для подробной пользовательской таблицы:
-' допустимая ширина делится на расчетную. При нулевой ширине запас бесконечный,
-' поэтому ячейка остается пустой, как и в верхнем batch summary.
-Private Function CrackReserveFactor(ByVal batch As CBatchSectionCalculator, ByVal index As Long) As Variant
-    If batch.CrackUtilization(index) > SMALL_VALUE Then _
-        CrackReserveFactor = 1# / batch.CrackUtilization(index)
-End Function
-
-' Возвращает запас по продольным трещинам: Rb,mc2 делится на фактическое
-' сжатие бетона. При отсутствии сжатия ячейка остается пустой.
-Private Function LongitudinalCrackReserveFactor(ByVal batch As CBatchSectionCalculator, ByVal index As Long) As Variant
-    If batch.LongitudinalCrackUtilization(index) > SMALL_VALUE Then _
-        LongitudinalCrackReserveFactor = 1# / batch.LongitudinalCrackUtilization(index)
-End Function
 
 ' Оформляет шапки, границы, числовые форматы и подсветку статусов.
 Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
