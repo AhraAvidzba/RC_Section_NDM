@@ -84,7 +84,7 @@ Private Sub RunCapacitySearch(ByVal request As CLimitSearchRequest, _
 
     RunSearchInsideBracket request, loadPath, lowLambda, highLambda, _
         request.Problem.SearchMethod, request.Problem.LambdaTolerance, request.Problem.MaxIterations
-    If request.ForceOnly Then request.Problem.AcceptRetainedCapacity request
+    If request.ForceOnly And Not request.Problem.Converged Then request.Problem.AcceptRetainedCapacity request
 End Sub
 
 ' Ищет верхнюю физическую границу capacity так же, как прежний
@@ -476,14 +476,17 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
     Dim x0 As Double, x1 As Double, x2 As Double
     Dim f0 As Double, f1 As Double, f2 As Double
     Dim state0 As String, state1 As String, state2 As String
+    Dim solver0 As CSectionSolver, solver1 As CSectionSolver, solver2 As CSectionSolver
     Dim bracketLow As Double
     Dim bracketHigh As Double
+    Dim bracketLowSolver As CSectionSolver
+    Dim bracketHighSolver As CSectionSolver
     Dim iter As Long
 
     x0 = lowLambda
     x1 = highLambda
-    If Not EvaluateLimitFunction(request, loadPath, x0, f0, state0) Then Exit Sub
-    If Not EvaluateLimitFunction(request, loadPath, x1, f1, state1) Then Exit Sub
+    If Not EvaluateLimitPoint(request, loadPath, x0, f0, state0, solver0) Then Exit Sub
+    If Not EvaluateLimitPoint(request, loadPath, x1, f1, state1, solver1) Then Exit Sub
     If f0 >= 0# Or f1 <= 0# Then
         request.Problem.SetInvalidInput _
             "Методу Secant нужна скобка: нижняя lambda с запасом и верхняя lambda за физическим пределом."
@@ -491,14 +494,16 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
     End If
     bracketLow = x0
     bracketHigh = x1
+    Set bracketLowSolver = solver0
+    Set bracketHighSolver = solver1
 
     For iter = 1 To maxIterations
-        If Abs(f1) <= tolerance Then
-            FinalizeAfterProbe request, loadPath, x1, "Secant"
+        If Abs(f1) <= tolerance And CanFinalizeSecantProbe(request, state1, solver1) Then
+            FinalizeKnownProbe request, loadPath, x1, state1, "Secant", solver1, iter
             Exit Sub
         End If
         If Abs(bracketHigh - bracketLow) <= tolerance Then
-            FinalizeAfterProbe request, loadPath, bracketLow, "Secant"
+            FinalizeKnownProbe request, loadPath, bracketLow, vbNullString, "Secant", bracketLowSolver, iter
             Exit Sub
         End If
         If Abs(f1 - f0) <= 0.000000000001 Then
@@ -525,23 +530,26 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
             Exit Sub
         End If
 
-        If Not EvaluateLimitFunction(request, loadPath, x2, f2, state2) Then Exit Sub
-        UpdateSecantBracket request, x2, f2, state2, bracketLow, bracketHigh
-        If Abs(f2) <= tolerance Then
-            FinalizeAfterProbe request, loadPath, x2, "Secant"
+        If Not EvaluateLimitPoint(request, loadPath, x2, f2, state2, solver2) Then Exit Sub
+        UpdateSecantBracket request, x2, f2, state2, solver2, _
+            bracketLow, bracketHigh, bracketLowSolver, bracketHighSolver
+        If Abs(f2) <= tolerance And CanFinalizeSecantProbe(request, state2, solver2) Then
+            FinalizeKnownProbe request, loadPath, x2, state2, "Secant", solver2, iter
             Exit Sub
         End If
         If Abs(bracketHigh - bracketLow) <= tolerance Then
-            FinalizeAfterProbe request, loadPath, bracketLow, "Secant"
+            FinalizeKnownProbe request, loadPath, bracketLow, vbNullString, "Secant", bracketLowSolver, iter
             Exit Sub
         End If
 
         x0 = x1
         f0 = f1
         state0 = state1
+        Set solver0 = solver1
         x1 = x2
         f1 = f2
         state1 = state2
+        Set solver1 = solver2
     Next iter
 
     request.Problem.SetNumericalFailure "Поиск Secant достиг лимита итераций."
@@ -572,6 +580,20 @@ Private Sub FinalizeAfterProbe(ByVal request As CLimitSearchRequest, _
     If Not request.Problem.EvaluatePoint(request, loadPath, Nothing, _
             lambdaValue, functionValue, probeState, solver) Then Exit Sub
     request.Problem.FinalizeAt request, loadPath, lambdaValue, probeState, methodName, solver, 0
+End Sub
+
+' Финализирует уже рассчитанную probe-точку без повторного solve.
+' Это важно для Secant: верхняя точка физической скобки может быть найденной
+' несошедшейся probe, пригодной как граница, но не как итоговое НДС.
+Private Sub FinalizeKnownProbe(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
+        ByVal probeState As String, ByVal methodName As String, _
+        ByVal solver As CSectionSolver, ByVal iterations As Long)
+    If solver Is Nothing Then
+        FinalizeAfterProbe request, loadPath, lambdaValue, methodName
+    Else
+        request.Problem.FinalizeAt request, loadPath, lambdaValue, probeState, methodName, solver, iterations
+    End If
 End Sub
 
 ' Выбирает стартовое НДС для следующей bisection-пробы.
@@ -641,6 +663,17 @@ Private Function EvaluateLimitFunction(ByVal request As CLimitSearchRequest, _
         lambdaValue, functionValue, probeState, solver)
 End Function
 
+' Оценивает capacity lambda-точку и возвращает связанный с ней solver-снимок.
+' Secant хранит этот снимок вместе с границей скобки, чтобы финализация не
+' брала LastSolver от другой probe-точки.
+Private Function EvaluateLimitPoint(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
+        ByRef functionValue As Double, ByRef probeState As String, _
+        ByRef solver As CSectionSolver) As Boolean
+    EvaluateLimitPoint = request.Problem.EvaluatePoint(request, loadPath, Nothing, _
+        lambdaValue, functionValue, probeState, solver)
+End Function
+
 ' Оценивает crack lambda-точку и возвращает solver, пригодный для последующего
 ' warm-start или сохранения PreCrackState.
 Private Function EvaluateCrackFunction(ByVal request As CLimitSearchRequest, _
@@ -664,6 +697,19 @@ End Function
 ' Проверяет, что отказ lambda-точки является численной неудачей.
 Private Function IsNumericalFailureState(ByVal request As CLimitSearchRequest, ByVal probeState As String) As Boolean
     IsNumericalFailureState = request.Problem.IsNumericalFailureState(probeState)
+End Function
+
+' Проверяет, можно ли использовать Secant-probe как итоговое НДС.
+' Acceptable-точка уже находится с безопасной стороны. Limit-точка допустима
+' только если внутренний CSectionSolver действительно сошелся; несошедшаяся
+' физическая probe остается только верхней границей поиска.
+Private Function CanFinalizeSecantProbe(ByVal request As CLimitSearchRequest, _
+        ByVal probeState As String, ByVal solver As CSectionSolver) As Boolean
+    If IsAcceptableState(request, probeState) Then
+        CanFinalizeSecantProbe = True
+    ElseIf IsLimitState(request, probeState) Then
+        CanFinalizeSecantProbe = (Not solver Is Nothing And solver.Converged)
+    End If
 End Function
 
 ' Удерживает Secant-кандидат внутри найденной физической скобки.
@@ -697,11 +743,19 @@ End Function
 ' Обновляет защитную физическую скобку Secant.
 Private Sub UpdateSecantBracket(ByVal request As CLimitSearchRequest, _
         ByVal lambdaValue As Double, ByVal functionValue As Double, _
-        ByVal probeState As String, ByRef bracketLow As Double, ByRef bracketHigh As Double)
+        ByVal probeState As String, ByVal solver As CSectionSolver, _
+        ByRef bracketLow As Double, ByRef bracketHigh As Double, _
+        ByRef bracketLowSolver As CSectionSolver, ByRef bracketHighSolver As CSectionSolver)
     If functionValue < 0# Then
-        If lambdaValue > bracketLow Then bracketLow = lambdaValue
+        If lambdaValue > bracketLow Then
+            bracketLow = lambdaValue
+            Set bracketLowSolver = solver
+        End If
     Else
-        If lambdaValue < bracketHigh Then bracketHigh = lambdaValue
+        If lambdaValue < bracketHigh Then
+            bracketHigh = lambdaValue
+            Set bracketHighSolver = solver
+        End If
     End If
 End Sub
 
