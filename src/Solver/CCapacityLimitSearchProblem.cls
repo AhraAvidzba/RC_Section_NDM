@@ -97,6 +97,12 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
     ILimitSearchProblem_EvaluatePoint = mCapacity.LimitSearchEvaluateCapacityLoadMultiplier( _
         request.Section, request.ConcreteMaterial, request.SteelMaterial, _
         loadPath, lambdaValue, functionValue, probeState)
+    If ILimitSearchProblem_EvaluatePoint Then
+        ' Возвращаем общий search-слой ровно тот solver-снимок, который capacity
+        ' использовал для оценки этой lambda-точки. Без этого финальный result
+        ' может получить устаревшее LastSolver-состояние из предыдущей probe.
+        Set solver = mCapacity.LastSolver
+    End If
 End Function
 
 Private Function ILimitSearchProblem_IsAcceptableState(ByVal probeState As String) As Boolean
