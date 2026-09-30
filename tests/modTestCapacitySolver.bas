@@ -71,6 +71,8 @@ Public Function RunCapacitySolverTests() As String
     TestNultBaseLoadStepsSensitivity stats
     AppendLine stats, "RUN: TestSearchMethodInputErrors"
     TestSearchMethodInputErrors stats
+    AppendLine stats, "RUN: TestInitialLambdaFailureStatusMapping"
+    TestInitialLambdaFailureStatusMapping stats
     AppendLine stats, "RUN: TestSearchMethodPerformanceComparison"
     TestSearchMethodPerformanceComparison stats
 
@@ -1204,6 +1206,34 @@ Private Sub TestSearchMethodInputErrors(ByRef stats As TCapacityTestStats)
     AssertTrue stats, "search.invalid.inputError", Not invalidMethod.Converged And invalidMethod.LimitState = "InvalidInput"
     AssertTrue stats, "search.secant.controlledFailure", Not secantFail.Converged And _
         (secantFail.LimitState = "NumericalFailure" Or secantFail.LimitState = "InvalidInput")
+End Sub
+
+' Проверяет, что lambda=0 разделяет физический BaseFail и численную ошибку.
+' Search сообщает только состояние первой точки, а внешний статус обязан
+' формироваться из InternalStatus/ResultCode, а не из текста комментария.
+Private Sub TestInitialLambdaFailureStatusMapping(ByRef stats As TCapacityTestStats)
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+
+    Dim numericalCap As CCapacitySolver
+    Set numericalCap = New CCapacitySolver
+    numericalCap.LimitSearchHandleCapacityInitialFailure "NumericalFailure"
+
+    Dim numericalResult As CLimitSearchResult
+    Set numericalResult = New CLimitSearchResult
+    numericalResult.InitializeFromCapacitySolver numericalCap, "LoadMultiplier"
+    AssertEquals stats, "capacity.initialLambda.numerical.external", _
+        policy.ExternalStatus(numericalResult.Meta), "NumFail"
+
+    Dim physicalCap As CCapacitySolver
+    Set physicalCap = New CCapacitySolver
+    physicalCap.LimitSearchHandleCapacityInitialFailure "ConcreteStrainLimit"
+
+    Dim physicalResult As CLimitSearchResult
+    Set physicalResult = New CLimitSearchResult
+    physicalResult.InitializeFromCapacitySolver physicalCap, "LoadMultiplier"
+    AssertEquals stats, "capacity.initialLambda.physical.external", _
+        policy.ExternalStatus(physicalResult.Meta), "BaseFail"
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.

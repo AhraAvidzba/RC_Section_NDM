@@ -4651,28 +4651,6 @@ End Sub
 ' физическое НДС. Неуспешная попытка хранится для вывода, но не блокирует
 ' будущий solve того же физического запроса.
 Private Sub TestStateRepositoryReusesOnlyConvergedStates(ByRef stats As TBatchTestStats)
-    Dim spec As CMaterialModelSpec
-    Set spec = New CMaterialModelSpec
-    spec.Initialize "ULS(I)", "ThreeLine", "Ignore", "TwoLine"
-
-    Dim request As CStateRequest
-    Set request = New CStateRequest
-    request.Initialize sstStrengthState, cpStrength, spec, 1000#, 2000#, 3000#, True, False
-
-    Dim repository As CStateRepository
-    Set repository = New CStateRepository
-
-    Dim failedSolver As CSectionSolver
-    Set failedSolver = New CSectionSolver
-
-    Dim failedState As CSectionStateResult
-    Set failedState = New CSectionStateResult
-    failedState.InitializeFromSolver sstStrengthState, cpStrength, spec, failedSolver, False
-    repository.StoreForRequest request, failedState
-
-    AssertTrue stats, "stateRepository.failedNotReusable", repository.FindEquivalent(request) Is Nothing
-    AssertTrue stats, "stateRepository.failedStillInSnapshot", repository.StateCount = 1
-
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
     batch.AddCombination "STATE_REUSE", -100000#, 12000000#, 3000000#, "PR1", "state repository"
@@ -4695,6 +4673,26 @@ Private Sub TestStateRepositoryReusesOnlyConvergedStates(ByRef stats As TBatchTe
 
     AssertTrue stats, "stateRepository.successReusable", _
         successfulRepository.FindEquivalent(successfulRequest) Is successfulState
+
+    Dim retryRepository As CStateRepository
+    Set retryRepository = New CStateRepository
+
+    Dim failedSolver As CSectionSolver
+    Set failedSolver = New CSectionSolver
+
+    Dim failedState As CSectionStateResult
+    Set failedState = New CSectionStateResult
+    failedState.InitializeFromSolver sstStrengthState, cpStrength, successfulState.MaterialSpec, failedSolver, False
+    retryRepository.StoreForRequest successfulRequest, failedState
+
+    AssertTrue stats, "stateRepository.failedNotReusable", retryRepository.FindEquivalent(successfulRequest) Is Nothing
+    AssertTrue stats, "stateRepository.failedStillInSnapshot", retryRepository.StateCount = 1
+
+    retryRepository.StoreForRequest successfulRequest, successfulState
+    AssertTrue stats, "stateRepository.retrySuccessReusable", _
+        retryRepository.FindEquivalent(successfulRequest) Is successfulState
+    AssertTrue stats, "stateRepository.retrySuccessSnapshot", _
+        retryRepository.FindState(sstStrengthState) Is successfulState
 End Sub
 
 ' Проверяет финальный контракт именования: после миграции принимаются только

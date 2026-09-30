@@ -36,7 +36,13 @@ End Sub
 ' найденных capacity-точек и других физических states без CStateRequest.
 Public Sub StoreState(ByVal stateResult As CSectionStateResult)
     If stateResult Is Nothing Then Exit Sub
-    If HasStateType(stateResult.StateType) Then Exit Sub
+    Dim existingIndex As Long
+    existingIndex = StateIndex(stateResult.StateType)
+    If existingIndex > 0 Then
+        If ShouldReplaceSnapshotState(mStates.Item(existingIndex), stateResult) Then _
+            ReplaceStateAt existingIndex, stateResult
+        Exit Sub
+    End If
     mStates.Add stateResult
 End Sub
 
@@ -87,10 +93,33 @@ Public Function FindState(ByVal stateType As ESectionStateType) As CSectionState
     Next i
 End Function
 
-' Проверяет, есть ли уже state такого типа в snapshot. В текущей архитектуре у
-' одного LC должен быть не более одного StrengthState, CrackedState и т. п.
-Private Function HasStateType(ByVal stateType As ESectionStateType) As Boolean
-    HasStateType = Not FindState(stateType) Is Nothing
+' Возвращает позицию named-state в snapshot. Нужна не для обычного чтения, а для
+' безопасной замены неуспешной попытки на последующий успешный retry.
+Private Function StateIndex(ByVal stateType As ESectionStateType) As Long
+    Dim i As Long
+    For i = 1 To mStates.Count
+        Dim stateResult As CSectionStateResult
+        Set stateResult = mStates.Item(i)
+        If stateResult.StateType = stateType Then
+            StateIndex = i
+            Exit Function
+        End If
+    Next i
+End Function
+
+' Заменяет элемент Collection с сохранением его позиции в Results snapshot.
+Private Sub ReplaceStateAt(ByVal index As Long, ByVal stateResult As CSectionStateResult)
+    mStates.Add stateResult, , index
+    mStates.Remove index + 1
+End Sub
+
+' Определяет, когда более новое состояние должно заменить уже сохраненное.
+' Неуспешный solve полезен как диагностика, но если позднее тот же named-state
+' получен физически корректно, snapshot и FindState должны показывать именно его.
+Private Function ShouldReplaceSnapshotState(ByVal existingState As CSectionStateResult, _
+        ByVal candidateState As CSectionStateResult) As Boolean
+    If existingState Is Nothing Or candidateState Is Nothing Then Exit Function
+    ShouldReplaceSnapshotState = (Not existingState.Converged And candidateState.Converged)
 End Function
 
 ' Определяет, можно ли отдавать state через FindEquivalent. Физический FAIL из-за

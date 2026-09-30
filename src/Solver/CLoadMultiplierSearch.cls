@@ -413,6 +413,11 @@ Private Function SearchByBisectionCore(ByVal request As CLimitSearchRequest, _
         End If
     Loop
 
+    If (highLambda - lowLambda) > tolerance Then
+        HandleBisectionIterationLimit request, maxIterations, highLambda - lowLambda, tolerance
+        Exit Function
+    End If
+
     SearchByBisectionCore = True
 End Function
 
@@ -540,7 +545,11 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
     bracketHigh = x1
 
     For iter = 1 To maxIterations
-        If Abs(bracketHigh - bracketLow) <= tolerance Or Abs(f1) <= tolerance Then
+        If Abs(f1) <= tolerance Then
+            FinalizeAfterProbe request, loadPath, x1, "Secant"
+            Exit Sub
+        End If
+        If Abs(bracketHigh - bracketLow) <= tolerance Then
             FinalizeAfterProbe request, loadPath, bracketLow, "Secant"
             Exit Sub
         End If
@@ -570,7 +579,11 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
 
         If Not EvaluateLimitFunction(request, loadPath, x2, f2, state2) Then Exit Sub
         UpdateSecantBracket request, x2, f2, state2, bracketLow, bracketHigh
-        If Abs(f2) <= tolerance Or Abs(bracketHigh - bracketLow) <= tolerance Then
+        If Abs(f2) <= tolerance Then
+            FinalizeAfterProbe request, loadPath, x2, "Secant"
+            Exit Sub
+        End If
+        If Abs(bracketHigh - bracketLow) <= tolerance Then
             FinalizeAfterProbe request, loadPath, bracketLow, "Secant"
             Exit Sub
         End If
@@ -584,6 +597,25 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
     Next iter
 
     request.CapacitySolver.LimitSearchSetCapacityNumericalFailure "Поиск Secant достиг лимита итераций."
+End Sub
+
+' Фиксирует исчерпание итераций bisection как численную неудачу, если скобка
+' все еще шире заданного допуска. Иначе search мог бы выдать недоточненную
+' нижнюю границу как успешную найденную точку.
+Private Sub HandleBisectionIterationLimit(ByVal request As CLimitSearchRequest, _
+        ByVal maxIterations As Long, ByVal remainingWidth As Double, ByVal tolerance As Double)
+    Dim reason As String
+    reason = "Поиск Bisection достиг лимита итераций до заданной точности: ширина скобки " & _
+        FormatNumberInvariant(remainingWidth) & ", допуск " & FormatNumberInvariant(tolerance) & "."
+    If maxIterations <= 0 Then _
+        reason = "Поиск Bisection остановлен до достижения заданной точности: ширина скобки " & _
+            FormatNumberInvariant(remainingWidth) & ", допуск " & FormatNumberInvariant(tolerance) & "."
+
+    If request.ResultKind = rkCapacity Then
+        request.CapacitySolver.LimitSearchSetCapacityNumericalFailure reason
+    Else
+        request.CrackCalculator.LimitSearchSetCrackFormationStopReason reason
+    End If
 End Sub
 
 ' Пересчитывает итоговую lambda и передает доменному объекту финализацию.

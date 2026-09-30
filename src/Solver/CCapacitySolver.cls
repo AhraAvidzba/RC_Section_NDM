@@ -622,11 +622,18 @@ End Function
 ' внешний BaseFail позже формируется через ResultCode, а не через текст.
 Public Sub LimitSearchHandleCapacityInitialFailure(ByVal probeState As String)
     mLimitState = probeState
-    mInitialLambdaRejected = True
     If LimitSearchCapacityStateIsInvalidInput(probeState) Then
-        mStopReason = "Исходную точку пути несущей проверить нельзя: " & CapacityStateDisplayName(probeState) & "."
-    Else
+        SetInvalidInput "Исходную точку пути несущей проверить нельзя: " & CapacityStateDisplayName(probeState) & "."
+    ElseIf LimitSearchCapacityStateIsNumericalFailure(probeState) Then
+        mStopReason = "Равновесие для исходной точки пути несущей не найдено численно: " & _
+            CapacityStateDisplayName(probeState) & "."
+    ElseIf LimitSearchCapacityStateIsPhysicalLimit(probeState) Then
+        mInitialLambdaRejected = True
         mStopReason = "Несущая способность не проходит уже для исходной части выбранного пути: " & _
+            CapacityStateDisplayName(probeState) & "."
+    Else
+        mLimitState = STATE_NUMERICAL_FAILURE
+        mStopReason = "Исходная точка пути несущей вернула неизвестный статус: " & _
             CapacityStateDisplayName(probeState) & "."
     End If
 End Sub
