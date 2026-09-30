@@ -450,22 +450,7 @@ End Function
 
 ' Приоритет внешних display-статусов нужен только для сводных узлов Results.
 Private Function StatusPriority(ByVal statusText As String) As Long
-    Select Case Policy.ToUserStatus(statusText)
-        Case Policy.CalcErr
-            StatusPriority = 6
-        Case Policy.InputErr
-            StatusPriority = 5
-        Case Policy.NumFail
-            StatusPriority = 4
-        Case Policy.BaseFail
-            StatusPriority = 3
-        Case Policy.Fail
-            StatusPriority = 2
-        Case Policy.OK
-            StatusPriority = 1
-        Case Else
-            StatusPriority = 0
-    End Select
+    StatusPriority = Policy.StatusPriority(statusText)
 End Function
 
 ' Создает typed N/A для веток, которые не запускались или неприменимы.

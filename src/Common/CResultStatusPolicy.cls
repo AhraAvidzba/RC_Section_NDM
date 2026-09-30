@@ -186,7 +186,7 @@ Private Function Merge(ByVal currentStatus As String, ByVal candidateStatus As S
 End Function
 
 ' Численный приоритет нужен только для выбора худшего OverallStatus.
-Private Function StatusPriority(ByVal statusText As String) As Long
+Public Function StatusPriority(ByVal statusText As String) As Long
     Select Case ToUserStatus(statusText)
         Case STATUS_CALCERR
             StatusPriority = 6

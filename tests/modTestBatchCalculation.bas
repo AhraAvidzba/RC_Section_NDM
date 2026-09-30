@@ -1159,6 +1159,9 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
 
     AppendLine stats, "INFO: " & prefix & "; status=" & batch.CrackStatus(1) & _
         "; lambda=" & FormatNumberInvariant(batch.CrackLambdaCrc(1)) & _
+        "; method=" & batch.CrackFormationMethod(1) & _
+        "; central=" & CStr(batch.CrackCentralBranch(1)) & _
+        "; NcrcCentral=" & FormatNumberInvariant(batch.CrackNcrc(1)) & _
         "; Ncrc=" & FormatNumberInvariant(batch.CrackFormationNcrc(1)) & _
         "; MxyCrc=" & FormatNumberInvariant(batch.CrackMcrc(1))
     If batch.CrackStatus(1) = "NumFail" Or _
@@ -1176,22 +1179,30 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
     Dim anchor As Object
     Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
-    AssertTrue stats, prefix & ".sheetMethod", _
-        CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 15).Value2)
+    Dim detailRow As Long
+    detailRow = DetailedRowByCombination(resultsSheet, "rngCrackSummaryAnchor", batch.CombinationID(1))
+    AssertTrue stats, prefix & ".sheetRow", detailRow > 0
+    If detailRow <= 0 Then Exit Sub
+
+    Dim isCentralAxial As Boolean
+    isCentralAxial = (nValue > 0# And Abs(mxValue) <= 0.000000001 And Abs(myValue) <= 0.000000001)
+    If Not isCentralAxial Then _
+        AssertTrue stats, prefix & ".sheetMethod", _
+            CellHasDisplayedResult(resultsSheet.Cells.Item(detailRow, 15).Value2)
     If expectNcrc Then
         AssertTrue stats, prefix & ".sheetNcrc", _
-            CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 16).Value2)
+            CellHasDisplayedResult(resultsSheet.Cells.Item(detailRow, IIf(isCentralAxial, 13, 16)).Value2)
     End If
     If expectMcrc Then
         AssertTrue stats, prefix & ".sheetMcrc", _
-            CellHasDisplayedResult(resultsSheet.Cells.Item(anchor.Row, 17).Value2)
+            CellHasDisplayedResult(resultsSheet.Cells.Item(detailRow, 17).Value2)
     End If
-    If nValue > 0# And Abs(mxValue) <= 0.000000001 And Abs(myValue) <= 0.000000001 Then
+    If isCentralAxial Then
         AssertTrue stats, prefix & ".centralDepthsBlank", _
-            Len(CStr(resultsSheet.Cells.Item(anchor.Row, 24).Value2)) = 0 And _
-            Len(CStr(resultsSheet.Cells.Item(anchor.Row, 25).Value2)) = 0 And _
-            Len(CStr(resultsSheet.Cells.Item(anchor.Row, 26).Value2)) = 0 And _
-            Len(CStr(resultsSheet.Cells.Item(anchor.Row, 27).Value2)) = 0
+            Len(CStr(resultsSheet.Cells.Item(detailRow, 24).Value2)) = 0 And _
+            Len(CStr(resultsSheet.Cells.Item(detailRow, 25).Value2)) = 0 And _
+            Len(CStr(resultsSheet.Cells.Item(detailRow, 26).Value2)) = 0 And _
+            Len(CStr(resultsSheet.Cells.Item(detailRow, 27).Value2)) = 0
     End If
 End Sub
 

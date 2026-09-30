@@ -791,9 +791,10 @@ End Sub
 
 ' Возвращает общий статус именно для crack-блока.
 Private Function CrackOverallStatus(ByVal batch As CBatchSectionCalculator, ByVal index As Long) As String
-    CrackOverallStatus = StatusPolicy().Aggregate( _
-        StatusPolicy().NotApplicable, StatusPolicy().NotApplicable, _
-        CrackWidthStatusText(batch, index, StatusPolicy()), LongitudinalStatusText(batch, index, StatusPolicy()))
+    Dim policy As CBatchStatusPolicy
+    Set policy = StatusPolicy()
+    CrackOverallStatus = policy.AggregateMeta(Nothing, Nothing, batch.CrackMeta(index), _
+        batch.LongitudinalCrackMeta(index))
 End Function
 
 ' Возвращает внешний статус поиска образования нормальной трещины.

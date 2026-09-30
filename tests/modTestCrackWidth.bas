@@ -36,6 +36,9 @@ Public Function RunCrackWidthTests() As String
     TestAutoMcrcPureBendingConverges stats
     TestAutoMcrcFixedNIndependentOfMomentMagnitude stats
     TestCrackInitiationLoadPaths stats
+    TestCrackFormationSearchBoundIsNumericalFailure stats
+    TestCrackFormationNoCrackDoesNotBuildPostState stats
+    TestCrackFormationCacheHitWithoutLastRunner stats
     TestDangerousLoadsDoNotNumFail stats
     TestAutoMcrcOneSignTensionUsesFormula854 stats
     TestCentralTensionBranch stats
@@ -400,6 +403,77 @@ Private Sub TestCrackInitiationLoadPaths(ByRef stats As TCrackTestStats)
     AssertCrackCalculatorNotNumFail stats, "crack.path.mxyAxialFallback.status", crackFallback
 End Sub
 
+Private Sub TestCrackFormationSearchBoundIsNumericalFailure(ByRef stats As TCrackTestStats)
+    Dim solver As CSectionSolver
+    Dim section As CSectionModel
+    Set solver = SolveServiceStateWithRunner(section, -20000#, -6000#, 0#)
+
+    Dim crack As CCrackWidthCalculator
+    Set crack = CalculateCrack(solver, section, -20000#, -6000#, 0#, _
+        "Auto", "Effective", allowable:=0.0001, formationPath:="lambda*Mxy", _
+        formationStrategy:="LoadMultiplier")
+
+    AssertTrue stats, "crack.searchBound.notConverged", Not crack.Converged
+    AssertTrue stats, "crack.searchBound.notFormed", Not crack.CrackFormed
+    AssertTrue stats, "crack.searchBound.internalStatus", _
+        crack.CrackFormationInternalStatus = rsNumericalFailure
+    AssertTrue stats, "crack.searchBound.resultCode", _
+        crack.CrackFormationResultCode = rcSearchBoundReached
+    AssertTrue stats, "crack.searchBound.noPostState", crack.PostCrackState Is Nothing
+End Sub
+
+Private Sub TestCrackFormationNoCrackDoesNotBuildPostState(ByRef stats As TCrackTestStats)
+    Dim solver As CSectionSolver
+    Dim section As CSectionModel
+    Set solver = SolveServiceStateWithRunner(section, -20000#, -10000#, 0#)
+
+    Dim crack As CCrackWidthCalculator
+    Set crack = CalculateCrack(solver, section, -20000#, -10000#, 0#, _
+        "Auto", "Effective", allowable:=0.0001, formationPath:="lambda*N")
+
+    AssertTrue stats, "crack.noCrack.converged", crack.Converged
+    AssertTrue stats, "crack.noCrack.notFormed", Not crack.CrackFormed
+    AssertTrue stats, "crack.noCrack.criterion", _
+        crack.CrackFormationResultCode = rcCriterionNotReached
+    AssertTrue stats, "crack.noCrack.widthNotApplicable", _
+        crack.CrackWidthResultCode = rcCrackNotFormed
+    AssertTrue stats, "crack.noCrack.noBeforeState", crack.PreCrackState Is Nothing
+    AssertTrue stats, "crack.noCrack.noPostState", crack.PostCrackState Is Nothing
+    AssertCrackCalculatorNotNumFail stats, "crack.noCrack.notNumFail", crack
+End Sub
+
+Private Sub TestCrackFormationCacheHitWithoutLastRunner(ByRef stats As TCrackTestStats)
+    Dim solver As CSectionSolver
+    Dim section As CSectionModel
+    Set solver = SolveServiceStateWithRunner(section, -20000#, -15000000#, 0#)
+
+    Dim repository As CStateRepository
+    Set repository = New CStateRepository
+
+    Dim provider As CStateProvider
+    Set provider = New CStateProvider
+    provider.Initialize section, TestMaterialProvider(), repository
+    ConfigureTestStateProvider provider
+
+    Dim firstCrack As CCrackWidthCalculator
+    Set firstCrack = CalculateCrack(solver, section, -20000#, -15000000#, 0#, _
+        "AlwaysCalc", "Effective", allowable:=1#, stateProvider:=provider)
+    AssertCrackCommon stats, "crack.cache.first", firstCrack
+    AssertTrue stats, "crack.cache.first.sigmaCrc", firstCrack.SigmaSCrc > 0#
+    AssertTrue stats, "crack.cache.first.preState", Not firstCrack.PreCrackState Is Nothing
+    AssertTrue stats, "crack.cache.first.postState", Not firstCrack.PostCrackState Is Nothing
+
+    Dim secondCrack As CCrackWidthCalculator
+    Set secondCrack = CalculateCrack(solver, section, -20000#, -15000000#, 0#, _
+        "AlwaysCalc", "Effective", allowable:=1#, stateProvider:=provider)
+    AssertCrackCommon stats, "crack.cache.second", secondCrack
+    AssertTrue stats, "crack.cache.second.reused", provider.LastStateWasReused
+    AssertTrue stats, "crack.cache.second.noLastRunner", provider.LastRunner Is Nothing
+    AssertTrue stats, "crack.cache.second.sigmaCrc", secondCrack.SigmaSCrc > 0#
+    AssertTrue stats, "crack.cache.second.preState", Not secondCrack.PreCrackState Is Nothing
+    AssertTrue stats, "crack.cache.second.postState", Not secondCrack.PostCrackState Is Nothing
+End Sub
+
 Private Sub TestDangerousLoadsDoNotNumFail(ByRef stats As TCrackTestStats)
     CheckDangerousCrackLoad stats, "crack.danger.pureMx", 0#, -15000000#, 0#, True
     CheckDangerousCrackLoad stats, "crack.danger.pureMy", 0#, 0#, -15000000#, True
@@ -620,6 +694,14 @@ Private Sub ConfigureTestStateRunner(ByVal runner As CStateSolutionRunner)
     runner.ToleranceMy = 5000#
 End Sub
 
+Private Sub ConfigureTestStateProvider(ByVal provider As CStateProvider)
+    provider.LoadSteps = 8
+    provider.MaxIterations = 80
+    provider.ToleranceN = 5#
+    provider.ToleranceMx = 5000#
+    provider.ToleranceMy = 5000#
+End Sub
+
 Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As CSectionModel, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
         ByVal psiMode As String, ByVal zoneMode As String, _
@@ -630,7 +712,9 @@ Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As
         Optional ByVal loadStateForClassification As CSectionLoadState = Nothing, _
         Optional ByVal centralReferenceX As Double = 0#, Optional ByVal centralReferenceY As Double = 0#, _
         Optional ByVal formationPath As String = "lambda*Mxy", _
-        Optional ByVal sigmaSCrcAveragingMode As String = "TensionOnly") As CCrackWidthCalculator
+        Optional ByVal sigmaSCrcAveragingMode As String = "TensionOnly", _
+        Optional ByVal formationStrategy As String = "Auto", _
+        Optional ByVal stateProvider As CStateProvider = Nothing) As CCrackWidthCalculator
     Dim crack As CCrackWidthCalculator
     Set crack = New CCrackWidthCalculator
     crack.AllowableCrackWidth = allowable
@@ -644,11 +728,13 @@ Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As
     crack.PsiS = psiSValue
     crack.CoverMode = coverMode
     crack.CrackFormationPath = formationPath
+    crack.CrackFormationSolutionStrategy = formationStrategy
     crack.SolverLoadSteps = 8
     crack.SolverMaxIterations = 100
     crack.SolverToleranceN = 5#
     crack.SolverToleranceMx = 5000#
     crack.SolverToleranceMy = 5000#
+    If Not stateProvider Is Nothing Then Set crack.StateProvider = stateProvider
     Dim provider As CMaterialModelProvider
     Set provider = TestMaterialProvider()
     Dim crackedSpec As CMaterialModelSpec

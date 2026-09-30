@@ -507,7 +507,9 @@ Private Function FindGeneralFormationLambda(ByVal section As CSectionModel, _
     If searchResult Is Nothing Then Exit Function
 
     Select Case searchResult.Meta.ResultCode
-        Case rcCriterionNotReached, rcCrackNotFormed
+        Case rcCriterionNotReached
+            FindGeneralFormationLambda = mFormationLoadDefined
+        Case rcCrackNotFormed
             Exit Function
         Case rcCheckPassed
             If mFormationPathFallbackPsi1 Or mFormationLoadDefined Then
