@@ -92,8 +92,8 @@ Public Sub InitializeCrackFormation(ByVal crackCalculator As CCrackWidthCalculat
     If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 4206, "CLimitSearchRequest", "Не передана диаграмма бетона для поиска трещинообразования."
     If steelMaterial Is Nothing Then Err.Raise vbObjectError + 4207, "CLimitSearchRequest", "Не передана диаграмма арматуры для поиска трещинообразования."
 
-    Dim problem As CCrackFormationLimitSearchProblem
-    Set problem = New CCrackFormationLimitSearchProblem
+    Dim problem As CCrackLimitSearchProblem
+    Set problem = New CCrackLimitSearchProblem
     problem.Initialize crackCalculator
     Set mProblem = problem
     Set mSection = section

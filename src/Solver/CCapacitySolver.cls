@@ -701,7 +701,9 @@ End Sub
 ' Финализирует найденный LoadMultiplier-результат после того, как общий
 ' одномерный поиск выбрал итоговую lambda со стороны acceptable-ветки.
 Public Sub LimitSearchFinalizeCapacityLoadMultiplier(ByVal lambdaValue As Double, _
-        ByVal loadPath As CLoadPathVector, ByVal limitState As String, ByVal methodName As String)
+        ByVal loadPath As CLoadPathVector, ByVal limitState As String, ByVal methodName As String, _
+        ByVal solver As CSectionSolver)
+    If Not solver Is Nothing Then Set mLastSolver = solver
     FinalizeLoadMultiplierSearch lambdaValue, _
         loadPath.NOffset, loadPath.NBase, loadPath.MxBase, loadPath.MyBase, _
         loadPath.MxOffset, loadPath.MyOffset, limitState, methodName

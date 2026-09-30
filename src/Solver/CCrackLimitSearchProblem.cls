@@ -2,7 +2,7 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "CCrackFormationLimitSearchProblem"
+Attribute VB_Name = "CCrackLimitSearchProblem"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
@@ -26,7 +26,7 @@ Private mCrack As CCrackWidthCalculator ' Доменный расчетчик т
 
 ' Подключает существующий расчетчик трещин без изменения его настроек.
 Public Sub Initialize(ByVal crackCalculator As CCrackWidthCalculator)
-    If crackCalculator Is Nothing Then Err.Raise vbObjectError + 4250, "CCrackFormationLimitSearchProblem", _
+    If crackCalculator Is Nothing Then Err.Raise vbObjectError + 4250, "CCrackLimitSearchProblem", _
         "Не передан расчетчик трещинообразования."
     Set mCrack = crackCalculator
 End Sub

@@ -25,7 +25,7 @@ Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitS
     If request Is Nothing Then Err.Raise vbObjectError + 4210, "CUltimateStrainSearch", "Не передан запрос limit-search."
 
     Dim cap As CCapacitySolver
-    Set cap = request.CapacitySolver
+    Set cap = request.Problem.DomainContext
 
     If request.PureAxialForMethod Then
         Set ExecuteCapacity = ExecuteCapacityLoadMultiplier(request)
@@ -70,7 +70,7 @@ Private Function ExecuteCapacityFallbackToLoadMultiplier(ByVal request As CLimit
         ByVal firstAttemptMessage As String, ByVal transitionMessage As String, _
         ByVal successMessage As String) As CLimitSearchResult
     Dim cap As CCapacitySolver
-    Set cap = request.CapacitySolver
+    Set cap = request.Problem.DomainContext
 
     Dim firstStopReason As String
     Dim firstLimitState As String
@@ -97,7 +97,7 @@ Public Function ExecuteCrackFormation(ByVal request As CLimitSearchRequest) As C
     If request Is Nothing Then Err.Raise vbObjectError + 4211, "CUltimateStrainSearch", "Не передан запрос limit-search."
 
     Dim crack As CCrackWidthCalculator
-    Set crack = request.CrackCalculator
+    Set crack = request.Problem.DomainContext
     Dim concreteMaterial As CMaterialDiagram
     Dim steelMaterial As CMaterialDiagram
     Set concreteMaterial = request.ConcreteMaterial
@@ -120,7 +120,7 @@ End Function
 Public Function RunCapacityUltimateNewton(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector) As Boolean
     Dim cap As CCapacitySolver
-    Set cap = request.CapacitySolver
+    Set cap = request.Problem.DomainContext
     If Not cap.LimitSearchPrepareCapacityUltimate(request.Section, request.ConcreteMaterial, _
             request.SteelMaterial, loadPath) Then Exit Function
 

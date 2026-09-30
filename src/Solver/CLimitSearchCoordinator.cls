@@ -135,42 +135,42 @@ Private Function ExecuteAutoCrackFormation(ByVal request As CLimitSearchRequest)
     paths(2) = CRACK_PATH_N
     paths(3) = CRACK_PATH_NMXY
 
-    crack.LimitSearchAppendDiagnostic "Auto-путь: начинаем поиск образования нормальной трещины. Порядок попыток: " & _
+    request.Problem.AppendDiagnostic "Auto-путь: начинаем поиск образования нормальной трещины. Порядок попыток: " & _
         ChrW$(&H3BB) & "*Mxy -> " & ChrW$(&H3BB) & "*N -> " & ChrW$(&H3BB) & "*NMxy."
 
     Dim lastResult As CLimitSearchResult
     Dim lastStopReason As String
     Dim i As Long
     For i = LBound(paths) To UBound(paths)
-        crack.LimitSearchBeginCrackFormationAttempt paths(i)
-        crack.LimitSearchAppendDiagnostic "Auto-путь: попытка " & CStr(i) & " из " & _
+        request.Problem.BeginFormationAttempt paths(i)
+        request.Problem.AppendDiagnostic "Auto-путь: попытка " & CStr(i) & " из " & _
             CStr(UBound(paths)) & " - пробуем " & _
-            crack.LimitSearchCrackFormationPathDisplayName() & "."
+            request.Problem.FormationPathDisplayName() & "."
 
         Set lastResult = ExecuteCrackFormationCurrentPath(request)
         If lastResult.Succeeded Then
-            If crack.LimitSearchFormationFallbackOnly And i < UBound(paths) Then
-                lastStopReason = crack.StopReason
-                crack.LimitSearchAppendDiagnostic "Auto-путь: " & _
-                    crack.LimitSearchCrackFormationPathDisplayName() & _
+            If request.Problem.FormationFallbackOnly And i < UBound(paths) Then
+                lastStopReason = request.Problem.StopReason
+                request.Problem.AppendDiagnostic "Auto-путь: " & _
+                    request.Problem.FormationPathDisplayName() & _
                     " дал только резервный результат psi_s=1 без найденной точки образования трещины. Для более информативного результата переходим к следующему пути."
             Else
-                crack.LimitSearchSetResolvedCrackFormationPath paths(i)
-                crack.LimitSearchAppendDiagnostic "Auto-путь: выбран " & _
-                    crack.LimitSearchCrackFormationPathDisplayName() & "."
-                crack.LimitSearchSetCurrentFormationPath savedPath
+                request.Problem.SetResolvedFormationPath paths(i)
+                request.Problem.AppendDiagnostic "Auto-путь: выбран " & _
+                    request.Problem.FormationPathDisplayName() & "."
+                request.Problem.SetCurrentFormationPath savedPath
                 Set ExecuteAutoCrackFormation = lastResult
                 Exit Function
             End If
         Else
-            lastStopReason = crack.StopReason
-            crack.LimitSearchAppendDiagnostic "Auto-путь: " & _
-                crack.LimitSearchCrackFormationPathDisplayName() & _
-                " не дал точку образования трещины: " & crack.StopReason
+            lastStopReason = request.Problem.StopReason
+            request.Problem.AppendDiagnostic "Auto-путь: " & _
+                request.Problem.FormationPathDisplayName() & _
+                " не дал точку образования трещины: " & request.Problem.StopReason
         End If
     Next i
 
-    crack.LimitSearchSetCurrentFormationPath savedPath
+    request.Problem.SetCurrentFormationPath savedPath
     If Not lastResult Is Nothing Then Set ExecuteAutoCrackFormation = lastResult
 End Function
 
@@ -212,25 +212,25 @@ Private Function ExecuteAutoStrategyCrackFormation(ByVal request As CLimitSearch
         Set ExecuteAutoStrategyCrackFormation = firstResult
         Exit Function
     End If
-    If request.CrackCalculator.LimitSearchStoppedTerminally() Then
+    If request.Problem.StoppedTerminally Then
         Set ExecuteAutoStrategyCrackFormation = firstResult
         Exit Function
     End If
 
     Dim firstStopReason As String
-    firstStopReason = request.CrackCalculator.StopReason
-    request.CrackCalculator.LimitSearchAppendDiagnostic _
+    firstStopReason = request.Problem.StopReason
+    request.Problem.AppendDiagnostic _
         "UltimateStrain не дал точку образования трещины: " & firstStopReason
-    request.CrackCalculator.LimitSearchAppendDiagnostic _
+    request.Problem.AppendDiagnostic _
         "Пробуем LoadMultiplier по тому же пути образования трещины."
-    request.CrackCalculator.LimitSearchClearStopReason
+    request.Problem.ClearStopReason
 
     Dim multiplier As CLoadMultiplierSearch
     Set multiplier = New CLoadMultiplierSearch
     Dim secondResult As CLimitSearchResult
     Set secondResult = multiplier.ExecuteCrackFormation(request)
-    If Not secondResult.Succeeded And Len(request.CrackCalculator.StopReason) = 0 Then _
-        request.CrackCalculator.LimitSearchSetStopReasonIfEmpty firstStopReason
+    If Not secondResult.Succeeded And Len(request.Problem.StopReason) = 0 Then _
+        request.Problem.SetStopReasonIfEmpty firstStopReason
     Set ExecuteAutoStrategyCrackFormation = secondResult
 End Function
 
