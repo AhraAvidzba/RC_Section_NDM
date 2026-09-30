@@ -708,7 +708,7 @@ Private Function CanFinalizeSecantProbe(ByVal request As CLimitSearchRequest, _
     If IsAcceptableState(request, probeState) Then
         CanFinalizeSecantProbe = True
     ElseIf IsLimitState(request, probeState) Then
-        CanFinalizeSecantProbe = (Not solver Is Nothing And solver.Converged)
+        If Not solver Is Nothing Then CanFinalizeSecantProbe = solver.Converged
     End If
 End Function
 
