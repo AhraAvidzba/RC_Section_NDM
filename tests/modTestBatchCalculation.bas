@@ -1170,6 +1170,11 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
             (expectNcrc And batch.CrackFormationNcrc(1) = 0#) Or _
             (expectMcrc And batch.CrackMcrc(1) = 0#) Then
         AppendLine stats, "DIAG: " & prefix & vbCrLf & batch.DiagnosticLog
+        AppendLine stats, "DIAG_META: " & prefix & "; formation=" & _
+            MetaDebugText(batch.CrackFormationMeta(1)) & "; current=" & _
+            MetaDebugText(batch.CrackCurrentStateMeta(1)) & "; width=" & _
+            MetaDebugText(batch.CrackWidthMeta(1)) & "; longitudinal=" & _
+            MetaDebugText(batch.LongitudinalCrackMeta(1))
     End If
     AssertTrue stats, prefix & ".notNumFail", batch.CrackStatus(1) <> "NumFail"
 
@@ -1215,6 +1220,17 @@ Private Function CellHasDisplayedResult(ByVal value As Variant) As Boolean
     Dim text As String
     text = Trim$(CStr(value))
     CellHasDisplayedResult = Len(text) > 0 And StrComp(text, "N/A", vbTextCompare) <> 0
+End Function
+
+' ДЛЯ ТЕСТОВ: возвращает компактную строку typed-result для диагностики
+' регрессионных проверок, чтобы было видно, какой именно этап дал статус.
+Private Function MetaDebugText(ByVal meta As CResultMeta) As String
+    If meta Is Nothing Then
+        MetaDebugText = "<nothing>"
+    Else
+        MetaDebugText = ResultInternalStatusToText(meta.InternalStatus) & "/" & _
+            ResultCodeToText(meta.ResultCode) & "/" & meta.ResultComment
+    End If
 End Function
 
 ' Проверяет сценарий второй группы с большим осевым растяжением: расчет
