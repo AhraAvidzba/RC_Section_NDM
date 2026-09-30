@@ -307,12 +307,11 @@ Public Property Get CrackMeta() As CResultMeta
     If IsProblemStatus(Policy.ExternalStatus(formationMeta)) Then
         Set CrackMeta = AggregateResultMeta(rkCrackFormation, BuildCrackResultComment(), formationMeta)
     ElseIf CrackFormationNotReached(formationMeta) Then
-        If currentStateProblem Is Nothing Then
-            Set CrackMeta = AggregateResultMeta(rkCrackFormation, BuildCrackResultComment(), formationMeta)
-        Else
-            Set CrackMeta = AggregateResultMeta(rkCrackFormation, BuildCrackResultComment(), _
-                formationMeta, currentStateProblem)
-        End If
+        ' Если нормальная трещина при текущем сочетании не образована, формула
+        ' ширины не вызывается. Ошибка отдельного CurrentCrackedState может быть
+        ' видна в своей колонке/продольной проверке, но не должна превращать
+        ' физический результат NotCracked в NumFail нормальных трещин.
+        Set CrackMeta = AggregateResultMeta(rkCrackFormation, BuildCrackFormationResultComment(), formationMeta)
     ElseIf CrackFormed Then
         If currentStateProblem Is Nothing Then
             Set CrackMeta = AggregateResultMeta(rkCrackWidth, BuildCrackResultComment(), CrackWidthMeta)
@@ -510,6 +509,15 @@ Private Function BuildCrackResultComment() As String
     AppendMetaComment resultText, CrackCurrentStateMeta
     AppendMetaComment resultText, CrackWidthMeta
     BuildCrackResultComment = resultText
+End Function
+
+' Собирает комментарий ветки образования нормальной трещины без примешивания
+' CurrentCrackedState. Эта ветка используется, когда search корректно показал,
+' что нормальная трещина при текущем сочетании еще не образована.
+Private Function BuildCrackFormationResultComment() As String
+    Dim resultText As String
+    AppendMetaComment resultText, CrackFormationMeta
+    BuildCrackFormationResultComment = resultText
 End Function
 
 ' Возвращает сводный внешний статус нормальных трещин без продольной проверки:
