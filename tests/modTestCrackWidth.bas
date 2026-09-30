@@ -39,6 +39,7 @@ Public Function RunCrackWidthTests() As String
     TestCrackFormationSearchBoundIsNumericalFailure stats
     TestCrackFormationNoCrackDoesNotBuildPostState stats
     TestCrackFormationCacheHitWithoutLastRunner stats
+    TestLimitSearchResultKeepsCrackDiagnosticSnapshot stats
     TestDangerousLoadsDoNotNumFail stats
     TestAutoMcrcOneSignTensionUsesFormula854 stats
     TestCentralTensionBranch stats
@@ -472,6 +473,26 @@ Private Sub TestCrackFormationCacheHitWithoutLastRunner(ByRef stats As TCrackTes
     AssertTrue stats, "crack.cache.second.sigmaCrc", secondCrack.SigmaSCrc > 0#
     AssertTrue stats, "crack.cache.second.preState", Not secondCrack.PreCrackState Is Nothing
     AssertTrue stats, "crack.cache.second.postState", Not secondCrack.PostCrackState Is Nothing
+End Sub
+
+' Проверяет, что общий LimitSearch-result хранит собственный снимок diagnostics.
+' Если result будет читать живой CCrackWidthCalculator, последующие Auto-попытки
+' смогут задним числом менять уже сохраненный отчет.
+Private Sub TestLimitSearchResultKeepsCrackDiagnosticSnapshot(ByRef stats As TCrackTestStats)
+    Dim crack As CCrackWidthCalculator
+    Set crack = New CCrackWidthCalculator
+    crack.LimitSearchAppendDiagnostic "diagnostic-before"
+
+    Dim result As CLimitSearchResult
+    Set result = New CLimitSearchResult
+    result.InitializeFromCrackFormation crack, "lambda*Mxy", False
+
+    crack.LimitSearchAppendDiagnostic "diagnostic-after"
+
+    AssertTrue stats, "limitSearch.crackSnapshot.hasBefore", _
+        InStr(1, result.DiagnosticLog, "diagnostic-before", vbTextCompare) > 0
+    AssertTrue stats, "limitSearch.crackSnapshot.noAfter", _
+        InStr(1, result.DiagnosticLog, "diagnostic-after", vbTextCompare) = 0
 End Sub
 
 Private Sub TestDangerousLoadsDoNotNumFail(ByRef stats As TCrackTestStats)

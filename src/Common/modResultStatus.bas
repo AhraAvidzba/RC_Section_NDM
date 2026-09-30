@@ -56,6 +56,15 @@ Public Enum EResultKind
     rkStability = 6              ' Проверка продольного изгиба и устойчивости.
 End Enum
 
+' Машинная причина неуспешного вызова CSectionSolver. Этот enum нужен
+' расчетным слоям, чтобы не выводить смысл ошибки из текста StopReason.
+Public Enum ESolverFailureCode
+    sfcNone = 0                 ' Ошибки solver-а нет или равновесие найдено.
+    sfcNumericalFailure = 1     ' Обычная численная несходимость без более точной классификации.
+    sfcSingularTangent = 2      ' Не решилась касательная/секущая матрица равновесия.
+    sfcInvalidInput = 3         ' Ошибка настройки solver-а или входных данных.
+End Enum
+
 ' Возвращает каноническое имя внутреннего статуса для diagnostic/report.
 Public Function ResultInternalStatusToText(ByVal value As EResultInternalStatus) As String
     Select Case value

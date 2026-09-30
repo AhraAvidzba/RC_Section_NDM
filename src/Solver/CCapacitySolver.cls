@@ -1151,7 +1151,7 @@ Private Function ProbeOnce(ByVal section As CSectionModel, _
         If FailedProbeReachedPhysicalLimit(section, concreteMaterial, solver) Then
             ProbeOnce = CriticalLimitState()
         Else
-            ProbeOnce = ClassifyNumericalFailure(solver.StopReason)
+            ProbeOnce = ClassifyNumericalFailure(solver.FailureCode)
         End If
     Else
         UpdateCriticalState section, concreteMaterial, solver
@@ -1362,19 +1362,18 @@ Private Function CriticalLimitState() As String
     End If
 End Function
 
-' Разделяет обычную NumericalFailure и подозрение на вырожденную касательную
-' матрицу по тексту причины CSectionSolver.
-Private Function ClassifyNumericalFailure(ByVal reason As String) As String
-    If InStr(1, reason, "Tangent matrix", vbTextCompare) > 0 Or _
-            InStr(1, reason, "касательн", vbTextCompare) > 0 Or _
-            InStr(1, reason, "singular", vbTextCompare) > 0 Or _
-            InStr(1, reason, "вырожден", vbTextCompare) > 0 Or _
-            InStr(1, reason, "solve failed", vbTextCompare) > 0 Or _
-            InStr(1, reason, "не реш", vbTextCompare) > 0 Then
-        ClassifyNumericalFailure = STATE_SINGULAR_TANGENT
-    Else
-        ClassifyNumericalFailure = STATE_NUMERICAL_FAILURE
-    End If
+' Разделяет виды неуспешного CSectionSolver по машинному коду, а не по тексту
+' StopReason. Текст остается только пользовательской диагностикой и не влияет
+' на статусную цепочку.
+Private Function ClassifyNumericalFailure(ByVal failureCode As ESolverFailureCode) As String
+    Select Case failureCode
+        Case sfcSingularTangent
+            ClassifyNumericalFailure = STATE_SINGULAR_TANGENT
+        Case sfcInvalidInput
+            ClassifyNumericalFailure = STATE_INVALID_INPUT
+        Case Else
+            ClassifyNumericalFailure = STATE_NUMERICAL_FAILURE
+    End Select
 End Function
 
 ' Запоминает последнюю сходящуюся lambda-точку. Она используется как warm-start

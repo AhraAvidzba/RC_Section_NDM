@@ -23,6 +23,7 @@ Option Explicit
 
 Private mConverged As Boolean ' True, если равновесие достигнуто в заданных допусках по N/Mx/My.
 Private mStopReason As String ' Человекочитаемая причина остановки: сходимость, InputError или NumericalFailure.
+Private mFailureCode As ESolverFailureCode ' Машинная причина неуспеха без парсинга текста StopReason.
 Private mEpsilon0 As Double ' Равномерная составляющая деформации в формуле epsilon = epsilon0 + kappaX*y + kappaY*x.
 Private mKappaX As Double ' Кривизна, которая умножается на координату y и дает вклад изгиба вокруг X.
 Private mKappaY As Double ' Кривизна, которая умножается на координату x и дает вклад изгиба вокруг Y.
@@ -195,8 +196,10 @@ Public Sub Solve(ByVal section As CSectionModel, _
     mConverged = IsConverged(targetN, targetMx, targetMy)
     If mConverged Then
         mStopReason = "Равновесие найдено методом " & mSolverMethod & " со ступенчатым приложением нагрузки."
+        mFailureCode = sfcNone
     Else
         mStopReason = "Финальная проверка невязок равновесия не пройдена."
+        mFailureCode = sfcNumericalFailure
     End If
 End Sub
 
@@ -218,6 +221,7 @@ Public Sub EvaluateStrainPlane(ByVal section As CSectionModel, _
     EvaluateState section, concreteMaterial, steelMaterial, mEpsilon0, mKappaX, mKappaY, True
     SetResiduals mNint, mMxint, mMyint
     mConverged = True
+    mFailureCode = sfcNone
     mStopReason = "Состояние вычислено по заданной плоскости деформаций."
 End Sub
 
@@ -233,6 +237,7 @@ Private Function SolveSelectedLoadStep(ByVal section As CSectionModel, _
         SolveSelectedLoadStep = SolveSecantLoadStep(section, concreteMaterial, steelMaterial, stepIndex, targetN, targetMx, targetMy)
     Else
         mConverged = False
+        mFailureCode = sfcInvalidInput
         mStopReason = "InputError: Solver.Method должен быть Newton или Secant."
         SolveSelectedLoadStep = False
     End If
@@ -274,6 +279,7 @@ Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
                 mK(3, 1), mK(3, 2), mK(3, 3), _
                 -mResidualN, -mResidualMx, -mResidualMy) Then
             mConverged = False
+            mFailureCode = sfcSingularTangent
             mStopReason = "Не удалось решить касательную систему: " & system.StopReason
             AppendDiagnostics stepIndex, iter, 0#, 0#, targetN, targetMx, targetMy, mStopReason
             SolveNewtonLoadStep = False
@@ -294,6 +300,7 @@ Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
         AppendDiagnostics stepIndex, iter, mLastAlpha, mLastDeltaScale, targetN, targetMx, targetMy, "итерация"
         If mLastAlpha <= 0# Then
             mConverged = False
+            mFailureCode = sfcNumericalFailure
             mStopReason = "Line search не смог уменьшить невязку."
             SolveNewtonLoadStep = False
             Exit Function
@@ -302,6 +309,7 @@ Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
 
     RefreshCurrentState section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
     mConverged = False
+    mFailureCode = sfcNumericalFailure
     mStopReason = "Достигнут лимит итераций на ступени нагрузки " & CStr(stepIndex) & "."
     SolveNewtonLoadStep = False
 End Function
@@ -345,6 +353,7 @@ Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
             End If
             If Not SolveSecantCorrection(b, deltaEps, deltaKx, deltaKy) Then
                 mConverged = False
+                mFailureCode = sfcSingularTangent
                 mStopReason = "NumericalFailure: матрица Secant не решилась после перезапуска."
                 SolveSecantLoadStep = False
                 Exit Function
@@ -395,6 +404,7 @@ Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
 
     RefreshCurrentState section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
     mConverged = False
+    mFailureCode = sfcNumericalFailure
     mStopReason = "NumericalFailure: метод Secant достиг лимита итераций на ступени нагрузки " & CStr(stepIndex) & "."
     SolveSecantLoadStep = False
 End Function
@@ -557,6 +567,7 @@ Private Function RestartSecantMatrix(ByVal section As CSectionModel, _
 
     If mMatrixRestartCount >= mSecantMaxRestarts Then
         mConverged = False
+        mFailureCode = sfcNumericalFailure
         mStopReason = "NumericalFailure: превышен лимит перезапусков матрицы Secant; причина=" & reason
         Exit Function
     End If
@@ -911,6 +922,7 @@ Private Function ValidateSolverMethod() As Boolean
         ValidateSolverMethod = True
     Else
         mConverged = False
+        mFailureCode = sfcInvalidInput
         mStopReason = "InputError: Solver.Method должен быть Newton или Secant."
     End If
 End Function
@@ -920,6 +932,7 @@ End Function
 Public Sub ClearResult()
     mConverged = False
     mStopReason = vbNullString
+    mFailureCode = sfcNone
     mEpsilon0 = 0#: mKappaX = 0#: mKappaY = 0#
     mNint = 0#: mMxint = 0#: mMyint = 0#
     mResidualN = 0#: mResidualMx = 0#: mResidualMy = 0#
@@ -1003,6 +1016,12 @@ End Property
 
 Public Property Get StopReason() As String
     StopReason = mStopReason
+End Property
+
+' Возвращает машинную причину отказа последнего solve. Расчетные слои
+' используют ее вместо анализа текста StopReason.
+Public Property Get FailureCode() As ESolverFailureCode
+    FailureCode = mFailureCode
 End Property
 
 Public Property Get Epsilon0() As Double

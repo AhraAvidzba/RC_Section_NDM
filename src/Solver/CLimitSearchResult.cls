@@ -16,11 +16,10 @@ Option Explicit
 ' найденной limit-точки. Downstream-слои читают именно этот result, а не
 ' доменный solver-фасад.
 '
-' Для CrackFormation временно сохраняется ссылка на расчетчик: Auto-путь может
-' дописывать диагностический журнал после промежуточной попытки, и этот текст
-' должен остаться видимым в отчете до полного выделения crack-result.
+' Result является снимком результата search: он не держит ссылок на доменные
+' калькуляторы, чтобы последующие попытки Auto-пути не меняли уже сохраненную
+' диагностику.
 
-Private mCrackCalculator As CCrackWidthCalculator ' Расчетчик, выполнивший поиск точки трещинообразования.
 Private mMeta As CResultMeta ' Машинная оценка результата для будущего ResultStatusPolicy-пути.
 Private mRequestedStrategy As String ' Стратегия, заданная настройкой.
 Private mActualMethod As String ' Метод, который фактически дал результат поиска.
@@ -100,7 +99,6 @@ End Sub
 ' Маппинг здесь намеренно простой: внешний статус по-прежнему формируется
 ' существующим CBatchStatusPolicy, а meta нужна как задел общей result-схемы.
 Public Sub InitializeFromCapacitySolver(ByVal cap As CCapacitySolver, ByVal requestedStrategy As String)
-    Set mCrackCalculator = Nothing
     mRequestedStrategy = requestedStrategy
     mResultKind = rkCapacity
     mSucceeded = False
@@ -152,7 +150,6 @@ End Function
 ' search-результате Ncrc/Mcrc и связанных состояниях.
 Public Sub InitializeFromCrackFormation(ByVal crack As CCrackWidthCalculator, _
         ByVal requestedStrategy As String, ByVal searchSucceeded As Boolean)
-    Set mCrackCalculator = crack
     mRequestedStrategy = requestedStrategy
     mResultKind = rkCrackFormation
     mActualMethod = requestedStrategy
@@ -192,7 +189,6 @@ End Function
 ' Заполняет result как ошибку настройки, когда стратегия поиска неизвестна.
 Public Sub InitializeInvalidConfiguration(ByVal requestedStrategy As String, ByVal message As String, _
         Optional ByVal resultKind As EResultKind = rkCapacity)
-    Set mCrackCalculator = Nothing
     mRequestedStrategy = requestedStrategy
     mActualMethod = vbNullString
     mResultKind = resultKind
@@ -202,10 +198,6 @@ Public Sub InitializeInvalidConfiguration(ByVal requestedStrategy As String, ByV
     mLimitState = message
     mMeta.SetResult rsInvalidConfiguration, rcInvalidConfiguration, resultKind, message
 End Sub
-
-Public Property Get CrackCalculator() As CCrackWidthCalculator
-    Set CrackCalculator = mCrackCalculator
-End Property
 
 Public Property Get Meta() As CResultMeta
     Set Meta = mMeta
@@ -276,11 +268,7 @@ Public Property Get LastSolverDiagnosticLog() As String
     LastSolverDiagnosticLog = mLastSolverDiagnosticLog
 End Property
 
-' Возвращает подробную диагностику фактического search-объекта.
+' Возвращает подробную диагностику search как сохраненный снимок.
 Public Property Get DiagnosticLog() As String
-    If Not mCrackCalculator Is Nothing Then
-        DiagnosticLog = mCrackCalculator.DiagnosticLog
-    Else
-        DiagnosticLog = mDiagnosticLog
-    End If
+    DiagnosticLog = mDiagnosticLog
 End Property

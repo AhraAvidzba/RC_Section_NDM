@@ -542,22 +542,33 @@ Private Function CrackCurrentPhysicalFailureMeta() As CResultMeta
     End If
 End Function
 
-' Добавляет комментарий только для проблемного результата. OK и N/A остаются
-' нейтральными, потому что они не объясняют неудачу проверки в summary.
+' Добавляет комментарий для проблемного результата или успешного результата с
+' предупреждением. Обычные OK и N/A остаются нейтральными, но fallback-комментарий
+' rsSuccessWithWarning нельзя терять только потому, что внешний статус равен OK.
 Private Sub AppendMetaComment(ByRef targetText As String, ByVal meta As CResultMeta)
     If meta Is Nothing Then Exit Sub
 
-    Dim statusText As String
-    statusText = Policy.ExternalStatus(meta)
-    If Not IsProblemStatus(statusText) Then Exit Sub
+    If Not ShouldIncludeMetaComment(meta) Then Exit Sub
 
     Dim commentText As String
     commentText = Trim$(meta.ResultComment)
-    If Len(commentText) = 0 Then commentText = DefaultProblemComment(statusText)
+    If Len(commentText) = 0 Then commentText = DefaultProblemComment(Policy.ExternalStatus(meta))
     If Len(commentText) = 0 Then Exit Sub
 
     AppendUniqueComment targetText, ResultKindLabel(meta.ResultKind) & ": " & commentText
 End Sub
+
+' Решает, должен ли комментарий дочернего result попасть в сводный текст.
+' Логика опирается на InternalStatus/ExternalStatus, но не анализирует сам текст
+' комментария и не назначает по нему новые статусы.
+Private Function ShouldIncludeMetaComment(ByVal meta As CResultMeta) As Boolean
+    If meta Is Nothing Then Exit Function
+    If IsProblemStatus(Policy.ExternalStatus(meta)) Then
+        ShouldIncludeMetaComment = True
+    ElseIf meta.InternalStatus = rsSuccessWithWarning Then
+        ShouldIncludeMetaComment = True
+    End If
+End Function
 
 ' Добавляет фразу без дублей; batch summary может собрать одну причину из
 ' нескольких result-subtree одного LC.

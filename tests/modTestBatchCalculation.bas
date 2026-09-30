@@ -4539,6 +4539,21 @@ Private Sub TestCombinationResultTreeDrivesDisplayFields(ByRef stats As TBatchTe
     AssertEquals stats, "combinationTree.direct.meta", _
         policy.ExternalStatus(result.DirectStateMeta), "OK"
 
+    Dim warningResult As CCombinationResult
+    Set warningResult = New CCombinationResult
+    warningResult.Clear "LambdaMxy"
+    Dim warningMeta As CResultMeta
+    Set warningMeta = New CResultMeta
+    warningMeta.SetResult rsSuccessWithWarning, rcCheckPassed, rkDirectState, _
+        "Равновесие найдено через резервный старт."
+    warningResult.SetDirectStateMeta warningMeta
+    Dim warningOverall As CResultMeta
+    Set warningOverall = warningResult.OverallMeta
+    AssertEquals stats, "combinationTree.warning.externalOk", _
+        policy.ExternalStatus(warningOverall), "OK"
+    AssertTrue stats, "combinationTree.warning.commentKept", _
+        InStr(1, warningOverall.ResultComment, "Равновесие найдено через резервный старт", vbTextCompare) > 0
+
     Dim failMeta As CResultMeta
     Set failMeta = New CResultMeta
     failMeta.SetResult rsCheckFailed, rcCheckFailed, rkDirectState, "Проверка не проходит."
