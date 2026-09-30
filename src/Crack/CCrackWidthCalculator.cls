@@ -504,7 +504,21 @@ Private Function FindGeneralFormationLambda(ByVal section As CSectionModel, _
 
     Dim searchResult As CLimitSearchResult
     Set searchResult = coordinator.ExecuteCrackFormation(request)
-    FindGeneralFormationLambda = searchResult.Succeeded
+    If searchResult Is Nothing Then Exit Function
+
+    Select Case searchResult.Meta.ResultCode
+        Case rcCriterionNotReached, rcCrackNotFormed
+            Exit Function
+        Case rcCheckPassed
+            If mFormationPathFallbackPsi1 Or mFormationLoadDefined Then
+                FindGeneralFormationLambda = True
+            Else
+                SetFormationNumericalFailure _
+                    "NumericalFailure: поиск сообщил об образовании трещины, но не передал усилия точки трещинообразования."
+            End If
+        Case Else
+            FindGeneralFormationLambda = searchResult.Succeeded
+    End Select
 End Function
 
 ' Готовит одну попытку поиска образования трещины для общего LimitSearch.
@@ -682,6 +696,15 @@ End Sub
 ' Записывает причину численной остановки LoadMultiplier-поиска трещины.
 Public Sub LimitSearchSetCrackFormationStopReason(ByVal reason As String)
     SetFormationNumericalFailure reason
+End Sub
+
+' Фиксирует техническое достижение границы crack-search без доказанного физического результата.
+' Для Auto-пути это сигнал перейти к следующей траектории, для фиксированного пути - численная ошибка поиска.
+Public Sub LimitSearchSetCrackFormationSearchBoundReached(ByVal reason As String)
+    mConverged = False
+    mCrackFormed = False
+    SetFormationResult rsNumericalFailure, rcSearchBoundReached, reason
+    AppendDiagnostic reason
 End Sub
 
 ' Возвращает допуск бисекции для точки образования трещины.
@@ -1007,6 +1030,8 @@ Private Function BuildPreCrackState(ByVal section As CSectionModel, ByVal materi
             If Not mStateProvider.LastRunner Is Nothing Then
                 mSolverCallCount = mSolverCallCount + mStateProvider.LastRunner.SolverCallCount
                 Set beforeSolver = mStateProvider.LastRunner.ResultSolver
+            ElseIf Not mPreCrackState Is Nothing Then
+                Set beforeSolver = SolverSnapshotFromState(section, materialProvider, mPreCrackState)
             End If
         Else
             Set beforeSolver = SolveState(section, materialProvider.ConcreteMaterialFromSpec(mCrackInitiationSpec), _
@@ -1064,6 +1089,8 @@ Private Function EnsurePostCrackState(ByVal section As CSectionModel, ByVal mate
         If Not mStateProvider.LastRunner Is Nothing Then
             mSolverCallCount = mSolverCallCount + mStateProvider.LastRunner.SolverCallCount
             Set mPostCrackSolver = mStateProvider.LastRunner.ResultSolver
+        ElseIf Not mPostCrackState Is Nothing Then
+            Set mPostCrackSolver = SolverSnapshotFromState(section, materialProvider, mPostCrackState)
         End If
     Else
         Set mPostCrackSolver = SolveState(section, materialProvider.ConcreteMaterialFromSpec(mCrackedStateSpec), _
@@ -1088,6 +1115,32 @@ Private Function EnsurePostCrackState(ByVal section As CSectionModel, ByVal mate
     End If
 
     EnsurePostCrackState = True
+End Function
+
+' Восстанавливает solver-снимок для cached named-state без повторного решения равновесия.
+' Сохраненная плоскость деформаций уже является физическим результатом, поэтому здесь нужна только
+' оценка напряжений/усилий на той же диаграмме материала.
+Private Function SolverSnapshotFromState(ByVal section As CSectionModel, _
+        ByVal materialProvider As CMaterialModelProvider, _
+        ByVal stateResult As CSectionStateResult) As CSectionSolver
+    If stateResult Is Nothing Then Exit Function
+    If Not stateResult.Converged Then Exit Function
+
+    Dim concreteMaterial As CMaterialDiagram
+    Dim steelMaterial As CMaterialDiagram
+    If stateResult.ExtensionUsed Then
+        Set concreteMaterial = materialProvider.ConcreteStateMaterialFromSpec(stateResult.MaterialSpec)
+        Set steelMaterial = materialProvider.SteelStateMaterialFromSpec(stateResult.MaterialSpec)
+    Else
+        Set concreteMaterial = materialProvider.ConcreteMaterialFromSpec(stateResult.MaterialSpec)
+        Set steelMaterial = materialProvider.SteelMaterialFromSpec(stateResult.MaterialSpec)
+    End If
+
+    Dim solver As CSectionSolver
+    Set solver = New CSectionSolver
+    solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, _
+        stateResult.Epsilon0, stateResult.KappaX, stateResult.KappaY
+    Set SolverSnapshotFromState = solver
 End Function
 
 ' Сохраняет внутренние усилия, соответствующие уже найденной стадии

@@ -208,9 +208,10 @@ Private Function RunCrackFormationSearch(ByVal request As CLimitSearchRequest, _
             highLambda, highSolver, highResidual) Then Exit Function
 
     If highResidual < 0# Then
-        crack.LimitSearchFinishNoCrack "Трещина не образована: eps_bt,ult не достигнута при пропорциональном увеличении нагрузки до lambda = " & _
-            FormatNumberInvariant(crack.LimitSearchCrackBracketLimit) & "."
-        RunCrackFormationSearch = True
+        crack.LimitSearchSetCrackFormationSearchBoundReached _
+            "Поиск трещинообразования достиг технической границы lambda = " & _
+            FormatNumberInvariant(crack.LimitSearchCrackBracketLimit) & _
+            ", но критерий eps_bt,ult не был достигнут. Это не доказывает отсутствие трещины."
         Exit Function
     End If
 
