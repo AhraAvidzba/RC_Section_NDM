@@ -30,21 +30,16 @@ Private Const STATE_INVALID_INPUT As String = "InvalidInput" ' Ошибка ис
 Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     If request Is Nothing Then Err.Raise vbObjectError + 4220, "CLoadMultiplierSearch", "Не передан запрос limit-search."
 
-    Dim cap As CCapacitySolver
-    Set cap = request.CapacitySolver
-    If Not cap.LimitSearchPrepareCapacityLoadMultiplier(request.Section, request.ConcreteMaterial, _
-            request.SteelMaterial, request.NBase, request.MxBase, request.MyBase) Then
-        Set ExecuteCapacity = CapacityResult(cap, request)
+    If Not request.Problem.Prepare(request) Then
+        Set ExecuteCapacity = request.Problem.BuildResult(request, False)
         Exit Function
     End If
 
     Dim loadPath As CLoadPathVector
-    Set loadPath = New CLoadPathVector
-    loadPath.Initialize request.NOffset, request.NBase, request.MxOffset, request.MxBase, _
-        request.MyOffset, request.MyBase
+    Set loadPath = request.Problem.BuildLoadPath(request)
 
     RunCapacitySearch request, loadPath
-    Set ExecuteCapacity = CapacityResult(cap, request)
+    Set ExecuteCapacity = request.Problem.BuildResult(request, False)
 End Function
 
 ' Выполняет LoadMultiplier для точки образования нормальной трещины. Crack-слой
@@ -52,71 +47,44 @@ End Function
 Public Function ExecuteCrackFormation(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     If request Is Nothing Then Err.Raise vbObjectError + 4221, "CLoadMultiplierSearch", "Не передан запрос limit-search."
 
-    Dim crack As CCrackWidthCalculator
-    Set crack = request.CrackCalculator
-
-    Dim concreteMaterial As CMaterialDiagram
-    Dim steelMaterial As CMaterialDiagram
-    Set concreteMaterial = request.ConcreteMaterial
-    Set steelMaterial = request.SteelMaterial
-
-    crack.LimitSearchAppendDiagnostic "LoadMultiplier: начинаем подбор lambda_crc пробными расчетами НДС; путь " & _
-        crack.LimitSearchCrackFormationPathDisplayName() & "."
+    request.Problem.AppendDiagnostic "LoadMultiplier: начинаем подбор lambda_crc пробными расчетами НДС; путь " & _
+        request.Problem.FormationPathDisplayName() & "."
 
     Dim loadPath As CLoadPathVector
-    Set loadPath = crack.LimitSearchCrackFormationLoadPath(request.TargetN, _
-        request.MomentMxAtReference, request.MomentMyAtReference, request.ReferenceX, request.ReferenceY)
+    Set loadPath = request.Problem.BuildLoadPath(request)
 
     Dim searchSucceeded As Boolean
-    searchSucceeded = RunCrackFormationSearch(request, loadPath, concreteMaterial, steelMaterial)
-
-    Dim result As CLimitSearchResult
-    Set result = New CLimitSearchResult
-    result.InitializeFromCrackFormation crack, request.SolutionStrategy, searchSucceeded
-    Set ExecuteCrackFormation = result
-End Function
-
-' Формирует результат capacity без дублирования mapping-а статусов.
-Private Function CapacityResult(ByVal cap As CCapacitySolver, _
-        ByVal request As CLimitSearchRequest) As CLimitSearchResult
-    Dim result As CLimitSearchResult
-    Set result = New CLimitSearchResult
-    result.InitializeFromCapacitySolver cap, request.SolutionStrategy
-    Set CapacityResult = result
+    searchSucceeded = RunCrackFormationSearch(request, loadPath)
+    Set ExecuteCrackFormation = request.Problem.BuildResult(request, searchSucceeded)
 End Function
 
 ' Запускает общий поиск для capacity: нижняя lambda=0 должна быть acceptable,
 ' верхняя граница расширяется до первого физического предела.
 Private Sub RunCapacitySearch(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector)
-    Dim cap As CCapacitySolver
-    Set cap = request.CapacitySolver
-
     Dim lowLambda As Double
     Dim highLambda As Double
     Dim probeState As String
     Dim functionValue As Double
     lowLambda = 0#
-    highLambda = cap.LimitSearchInitialLambdaStep
+    highLambda = request.Problem.InitialLambdaStep
     If highLambda <= 0# Then highLambda = 1#
 
     If Not EvaluateLimitFunction(request, loadPath, lowLambda, functionValue, probeState) Then Exit Sub
     If Not IsAcceptableState(request, probeState) Then
-        cap.LimitSearchHandleCapacityInitialFailure probeState
+        request.Problem.HandleInitialFailure probeState
         Exit Sub
     End If
-    cap.LimitSearchRecordCapacityAcceptable loadPath.TargetN(lowLambda), _
-        loadPath.TargetMx(lowLambda), loadPath.TargetMy(lowLambda)
+    request.Problem.RecordAcceptable loadPath, lowLambda
 
     If Not FindCapacityBracket(request, loadPath, lowLambda, highLambda) Then
-        If request.ForceOnly Then cap.LimitSearchAcceptPureAxialRetainedCapacity request.Section, request.ConcreteMaterial
+        If request.ForceOnly Then request.Problem.AcceptRetainedCapacity request
         Exit Sub
     End If
 
     RunSearchInsideBracket request, loadPath, lowLambda, highLambda, _
-        cap.LimitSearchCapacitySearchMethod(), cap.LimitSearchLambdaTolerance, cap.LimitSearchMaxIterations
-    If Not cap.Converged And request.ForceOnly Then _
-        cap.LimitSearchAcceptPureAxialRetainedCapacity request.Section, request.ConcreteMaterial
+        request.Problem.SearchMethod, request.Problem.LambdaTolerance, request.Problem.MaxIterations
+    If request.ForceOnly Then request.Problem.AcceptRetainedCapacity request
 End Sub
 
 ' Ищет верхнюю физическую границу capacity так же, как прежний
@@ -125,42 +93,34 @@ End Sub
 Private Function FindCapacityBracket(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByRef lowLambda As Double, _
         ByRef highLambda As Double) As Boolean
-    Dim cap As CCapacitySolver
-    Set cap = request.CapacitySolver
-
     Dim probeState As String
     Dim functionValue As Double
-    Do While highLambda <= cap.LimitSearchMaxLambda
+    Do While highLambda <= request.Problem.MaxLambda
         If Not EvaluateLimitFunction(request, loadPath, highLambda, functionValue, probeState) Then Exit Function
 
         If IsAcceptableState(request, probeState) Then
             lowLambda = highLambda
-            cap.LimitSearchRecordCapacityAcceptable loadPath.TargetN(highLambda), _
-                loadPath.TargetMx(highLambda), loadPath.TargetMy(highLambda)
+            request.Problem.RecordAcceptable loadPath, highLambda
             highLambda = highLambda * 2#
         ElseIf IsLimitState(request, probeState) Then
             FindCapacityBracket = True
             Exit Function
         ElseIf IsNumericalFailureState(request, probeState) Then
-            highLambda = cap.LimitSearchReduceCapacityLambdaAfterNumericalFailure(lowLambda, highLambda, probeState)
+            highLambda = ReduceLambdaAfterNumericalFailure(lowLambda, highLambda)
             If highLambda <= lowLambda Then Exit Function
         Else
-            cap.LimitSearchSetCapacityNumericalFailure "Поиск несущей способности остановлен: " & probeState & "."
+            request.Problem.SetNumericalFailure "Поиск несущей способности остановлен: " & probeState & "."
             Exit Function
         End If
     Loop
 
-    cap.LimitSearchHandleCapacityBracketNotFound lowLambda
+    request.Problem.HandleBracketNotFound lowLambda
 End Function
 
 ' Запускает LoadMultiplier для CrackFormation. Начальная точка lambda=0 может
 ' быть не обычным solve, а нулевой нагрузкой; это обрабатывает crack-критерий.
 Private Function RunCrackFormationSearch(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByVal concreteMaterial As CMaterialDiagram, _
-        ByVal steelMaterial As CMaterialDiagram) As Boolean
-    Dim crack As CCrackWidthCalculator
-    Set crack = request.CrackCalculator
-
+        ByVal loadPath As CLoadPathVector) As Boolean
     Dim lowLambda As Double
     Dim highLambda As Double
     Dim lowSolver As CSectionSolver
@@ -172,34 +132,32 @@ Private Function RunCrackFormationSearch(ByVal request As CLimitSearchRequest, _
     highLambda = 1#
 
     If Not EvaluateCrackFunction(request, loadPath, Nothing, lowLambda, lowResidual, probeState, lowSolver) Then
-        crack.LimitSearchSetCrackFormationStopReason _
-            "Не удалось найти равновесие в начальной точке пути трещинообразования."
+        request.Problem.HandleInitialFailure probeState
         Exit Function
     End If
 
     If StrComp(request.CrackFormationPath, "LambdaN", vbTextCompare) = 0 And request.TargetN <= 0.000001 Then
         If lowResidual >= 0# Then
-            crack.LimitSearchMarkFormationPathFallback "Трещина уже образуется от постоянного момента выбранного пути " & _
-                crack.LimitSearchCrackFormationPathDisplayName() & "; сжимающая или нулевая N не масштабируется для поиска Ncrc, psi_s остается равным 1."
+            MarkFormationPathFallback request, "Трещина уже образуется от постоянного момента выбранного пути " & _
+                request.Problem.FormationPathDisplayName() & "; сжимающая или нулевая N не масштабируется для поиска Ncrc, psi_s остается равным 1."
         Else
-            crack.LimitSearchFinishNoCrack "Трещина не образована от постоянного момента, а выбранный путь " & _
-                crack.LimitSearchCrackFormationPathDisplayName() & " не масштабирует растягивающую продольную силу."
+            FinishNoCrack request, "Трещина не образована от постоянного момента, а выбранный путь " & _
+                request.Problem.FormationPathDisplayName() & " не масштабирует растягивающую продольную силу."
         End If
         RunCrackFormationSearch = True
         Exit Function
     End If
 
     If lowResidual >= 0# Then
-        crack.LimitSearchMarkFormationPathFallback "Трещина уже образуется в постоянной части выбранного пути " & _
-            crack.LimitSearchCrackFormationPathDisplayName() & "; точка sigma_s,crc по lambda не определяется, psi_s остается равным 1."
+        MarkFormationPathFallback request, "Трещина уже образуется в постоянной части выбранного пути " & _
+            request.Problem.FormationPathDisplayName() & "; точка sigma_s,crc по lambda не определяется, psi_s остается равным 1."
         RunCrackFormationSearch = True
         Exit Function
     End If
 
-    If Not crack.LimitSearchCrackFormationHasScaledLoad(request.TargetN, _
-            request.MomentMxAtReference, request.MomentMyAtReference) Then
-        crack.LimitSearchFinishNoCrack "Трещина не образована в постоянной части, а выбранный путь " & _
-            crack.LimitSearchCrackFormationPathDisplayName() & " не содержит ненулевой масштабируемой нагрузки."
+    If Not HasScaledCrackFormationLoad(request) Then
+        FinishNoCrack request, "Трещина не образована в постоянной части, а выбранный путь " & _
+            request.Problem.FormationPathDisplayName() & " не содержит ненулевой масштабируемой нагрузки."
         RunCrackFormationSearch = True
         Exit Function
     End If
@@ -208,10 +166,7 @@ Private Function RunCrackFormationSearch(ByVal request As CLimitSearchRequest, _
             highLambda, highSolver, highResidual) Then Exit Function
 
     If highResidual < 0# Then
-        crack.LimitSearchSetCrackFormationSearchBoundReached _
-            "Поиск трещинообразования достиг технической границы lambda = " & _
-            FormatNumberInvariant(crack.LimitSearchCrackBracketLimit) & _
-            ", но критерий eps_bt,ult не был достигнут. Это не доказывает отсутствие трещины."
+        request.Problem.HandleBracketNotFound highLambda
         Exit Function
     End If
 
@@ -220,8 +175,9 @@ Private Function RunCrackFormationSearch(ByVal request As CLimitSearchRequest, _
     Dim iterations As Long
     If SearchCrackByBisection(request, loadPath, lowLambda, lowSolver, highLambda, highSolver, _
             acceptedLambda, acceptedSolver, iterations) Then
-        RunCrackFormationSearch = crack.LimitSearchFinalizeCrackFormationLoadMultiplier( _
-            loadPath, acceptedLambda, acceptedSolver, iterations)
+        request.Problem.FinalizeAt request, loadPath, acceptedLambda, vbNullString, _
+            "Bisection", acceptedSolver, iterations
+        RunCrackFormationSearch = True
     End If
 End Function
 

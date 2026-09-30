@@ -21,8 +21,7 @@ Option Explicit
 ' UltimateStrain / LoadMultiplier. Различаются только критерий предела,
 ' материал и смысл траектории, а не сам механизм выбора search-ветки.
 
-Private mCapacitySolver As CCapacitySolver ' Настроенный контекст несущей способности с допусками и material limits.
-Private mCrackCalculator As CCrackWidthCalculator ' Контекст расчета образования трещины: критерий, диагностика и результат.
+Private mProblem As ILimitSearchProblem ' Общий callback инженерной задачи для LimitSearch.
 Private mSection As CSectionModel ' Расчетная модель сечения, общая для всех lambda-проб.
 Private mConcreteMaterial As Object ' Диаграмма бетона для выбранной инженерной задачи.
 Private mSteelMaterial As Object ' Диаграмма арматуры для выбранной инженерной задачи.
@@ -60,7 +59,10 @@ Public Sub InitializeCapacity(ByVal capacitySolver As CCapacitySolver, _
     If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 4202, "CLimitSearchRequest", "Не передана диаграмма бетона для limit-search."
     If steelMaterial Is Nothing Then Err.Raise vbObjectError + 4203, "CLimitSearchRequest", "Не передана диаграмма арматуры для limit-search."
 
-    Set mCapacitySolver = capacitySolver
+    Dim problem As CCapacityLimitSearchProblem
+    Set problem = New CCapacityLimitSearchProblem
+    problem.Initialize capacitySolver
+    Set mProblem = problem
     Set mSection = section
     Set mConcreteMaterial = concreteMaterial
     Set mSteelMaterial = steelMaterial
@@ -90,7 +92,10 @@ Public Sub InitializeCrackFormation(ByVal crackCalculator As CCrackWidthCalculat
     If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 4206, "CLimitSearchRequest", "Не передана диаграмма бетона для поиска трещинообразования."
     If steelMaterial Is Nothing Then Err.Raise vbObjectError + 4207, "CLimitSearchRequest", "Не передана диаграмма арматуры для поиска трещинообразования."
 
-    Set mCrackCalculator = crackCalculator
+    Dim problem As CCrackFormationLimitSearchProblem
+    Set problem = New CCrackFormationLimitSearchProblem
+    problem.Initialize crackCalculator
+    Set mProblem = problem
     Set mSection = section
     Set mConcreteMaterial = concreteMaterial
     Set mSteelMaterial = steelMaterial
@@ -106,12 +111,8 @@ Public Sub InitializeCrackFormation(ByVal crackCalculator As CCrackWidthCalculat
     mResultKind = rkCrackFormation
 End Sub
 
-Public Property Get CapacitySolver() As CCapacitySolver
-    Set CapacitySolver = mCapacitySolver
-End Property
-
-Public Property Get CrackCalculator() As CCrackWidthCalculator
-    Set CrackCalculator = mCrackCalculator
+Public Property Get Problem() As ILimitSearchProblem
+    Set Problem = mProblem
 End Property
 
 Public Property Get Section() As CSectionModel
