@@ -138,9 +138,13 @@ Private Function CapacityInitialLambdaRejectedComment(ByVal stopReason As String
     Dim commentText As String
     commentText = Trim$(stopReason)
     commentText = Replace$(commentText, "INITIAL_STATE_BEYOND_LIMIT:", vbNullString, 1, 1, vbTextCompare)
+    commentText = Replace$(commentText, _
+        "Начальное состояние при lambda = 0 не проходит физический критерий:", _
+        "Несущая способность не проходит уже для исходной части выбранного пути:", _
+        1, 1, vbTextCompare)
     CapacityInitialLambdaRejectedComment = Trim$(commentText)
     If Len(CapacityInitialLambdaRejectedComment) = 0 Then _
-        CapacityInitialLambdaRejectedComment = "Начальное состояние при lambda = 0 не проходит физический критерий."
+        CapacityInitialLambdaRejectedComment = "Несущая способность не проходит уже для исходной части выбранного пути."
 End Function
 
 ' Заполняет result по уже выполненному CCrackWidthCalculator в стадии
@@ -173,7 +177,17 @@ Public Sub InitializeFromCrackFormation(ByVal crack As CCrackWidthCalculator, _
     Else
         mMeta.SetResult rsNumericalFailure, rcNumericalFailure, rkCrackFormation, crack.StopReason
     End If
+    mSucceeded = LimitSearchMetaSucceeded(mMeta)
 End Sub
+
+' Возвращает True для корректного search-результата, включая физическое
+' недостижение критерия. Численная ошибка и ошибка входных данных остаются
+' неуспешными результатами.
+Private Function LimitSearchMetaSucceeded(ByVal meta As CResultMeta) As Boolean
+    If meta Is Nothing Then Exit Function
+    LimitSearchMetaSucceeded = (meta.InternalStatus = rsSuccess Or _
+        meta.InternalStatus = rsSuccessWithWarning)
+End Function
 
 ' Заполняет result как ошибку настройки, когда стратегия поиска неизвестна.
 Public Sub InitializeInvalidConfiguration(ByVal requestedStrategy As String, ByVal message As String, _

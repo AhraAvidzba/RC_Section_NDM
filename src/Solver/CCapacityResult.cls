@@ -120,8 +120,20 @@ End Sub
 ' несущей способности. Для Capacity такая связка отображается как BaseFail.
 Public Sub InitializeBaseFail(ByVal reason As String, _
         Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
-    InitializeEarlyResult rsCheckFailed, rcInitialStateBeyondLimit, reason, pathKey
+    InitializeEarlyResult rsCheckFailed, rcInitialStateBeyondLimit, NormalizeBaseFailReason(reason), pathKey
 End Sub
+
+' Убирает старые технические формулировки из пользовательского BaseFail.
+' Машинный код причины остается в ResultCode = INITIAL_STATE_BEYOND_LIMIT.
+Private Function NormalizeBaseFailReason(ByVal reason As String) As String
+    NormalizeBaseFailReason = Trim$(reason)
+    NormalizeBaseFailReason = Replace$(NormalizeBaseFailReason, _
+        "Начальное состояние при lambda = 0 не проходит физический критерий:", _
+        "Несущая способность не проходит уже для исходной части выбранного пути:", _
+        1, 1, vbTextCompare)
+    If Len(NormalizeBaseFailReason) = 0 Then _
+        NormalizeBaseFailReason = "Несущая способность не проходит уже для исходной части выбранного пути."
+End Function
 
 ' Общая запись раннего capacity-result без обратного маппинга из display-строки.
 Private Sub InitializeEarlyResult(ByVal internalStatus As EResultInternalStatus, _

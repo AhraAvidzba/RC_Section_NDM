@@ -1166,6 +1166,7 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
             (expectMcrc And batch.CrackMcrc(1) = 0#) Then
         AppendLine stats, "DIAG: " & prefix & vbCrLf & batch.DiagnosticLog
     End If
+    AssertTrue stats, prefix & ".notNumFail", batch.CrackStatus(1) <> "NumFail"
 
     Dim writer As CCrackSummaryWriter
     Set writer = New CCrackSummaryWriter
@@ -4569,7 +4570,8 @@ Private Sub TestCombinationResultTreeDrivesDisplayFields(ByRef stats As TBatchTe
         policy.ExternalStatus(baseResult.StrengthMeta), "BaseFail"
     AssertTrue stats, "combinationTree.strength.baseFail.comment", _
         InStr(1, baseResult.StrengthMeta.ResultComment, "НДС: Проверка не проходит.", vbTextCompare) > 0 And _
-        InStr(1, baseResult.StrengthMeta.ResultComment, "Несущая: Начальное состояние при lambda = 0", vbTextCompare) > 0
+        InStr(1, baseResult.StrengthMeta.ResultComment, _
+            "Несущая: Несущая способность не проходит уже для исходной части выбранного пути", vbTextCompare) > 0
 End Sub
 
 ' Проверяет, что проверки без поиска равновесия не создают NumFail.

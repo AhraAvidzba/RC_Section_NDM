@@ -172,7 +172,8 @@ Private Function RunCrackFormationSearch(ByVal request As CLimitSearchRequest, _
     highLambda = 1#
 
     If Not EvaluateCrackFunction(request, loadPath, Nothing, lowLambda, lowResidual, probeState, lowSolver) Then
-        crack.LimitSearchSetCrackFormationStopReason "NumericalFailure: fallback lambda_crc не получил НДС при lambda = 0."
+        crack.LimitSearchSetCrackFormationStopReason _
+            "Не удалось найти равновесие в начальной точке пути трещинообразования."
         Exit Function
     End If
 
@@ -238,8 +239,53 @@ Private Function FindCrackFormationBracket(ByVal request As CLimitSearchRequest,
         GoTo UpperSolved
     End If
 
+    If TryRecoverCrackBracketBeforeFailedUpper(request, loadPath, lowerLambda, lowerSolver, lowerResidual, _
+            upperLambda, upperSolver, upperResidual) Then
+        FindCrackFormationBracket = True
+        Exit Function
+    End If
+
+    crack.LimitSearchSetCrackFormationStopReason _
+        "Не удалось подобрать сходящуюся точку образования трещины до перегруженной точки lambda = " & _
+        FormatNumberInvariant(upperLambda) & "."
+    Exit Function
+
+UpperSolved:
+    Do While upperResidual < 0# And upperLambda < crack.LimitSearchCrackBracketLimit
+        lowerLambda = upperLambda
+        Set lowerSolver = upperSolver
+        lowerResidual = upperResidual
+        upperLambda = MinDouble(upperLambda * 2#, crack.LimitSearchCrackBracketLimit)
+        If Not EvaluateCrackFunction(request, loadPath, lowerSolver, upperLambda, upperResidual, probeState, upperSolver) Then
+            If TryRecoverCrackBracketBeforeFailedUpper(request, loadPath, lowerLambda, lowerSolver, lowerResidual, _
+                    upperLambda, upperSolver, upperResidual) Then
+                FindCrackFormationBracket = True
+                Exit Function
+            End If
+            crack.LimitSearchSetCrackFormationStopReason _
+                "Не удалось найти равновесие при lambda = " & FormatNumberInvariant(upperLambda) & _
+                " в поиске трещинообразования."
+            Exit Function
+        End If
+    Loop
+    FindCrackFormationBracket = True
+End Function
+
+' Если верхняя crack-проба не сошлась, ищет рабочую точку с образованием
+' трещины между последней сходящейся нижней точкой и перегруженной lambda.
+' Это не меняет критерий трещинообразования, а только не дает перегруженной
+' пробе преждевременно превращать весь поиск в NumFail.
+Private Function TryRecoverCrackBracketBeforeFailedUpper(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByRef lowerLambda As Double, _
+        ByRef lowerSolver As CSectionSolver, ByRef lowerResidual As Double, _
+        ByRef upperLambda As Double, ByRef upperSolver As CSectionSolver, _
+        ByRef upperResidual As Double) As Boolean
+    Dim crack As CCrackWidthCalculator
+    Set crack = request.CrackCalculator
+
     Dim failedLambda As Double
     failedLambda = upperLambda
+
     Dim iter As Long
     For iter = 1 To crack.LimitSearchCrackMaxIterations
         If failedLambda - lowerLambda <= crack.LimitSearchCrackLambdaTolerance * MaxDouble(1#, failedLambda) Then Exit For
@@ -247,13 +293,14 @@ Private Function FindCrackFormationBracket(ByVal request As CLimitSearchRequest,
         Dim midLambda As Double
         Dim midSolver As CSectionSolver
         Dim midResidual As Double
+        Dim probeState As String
         midLambda = 0.5 * (lowerLambda + failedLambda)
         If EvaluateCrackFunction(request, loadPath, lowerSolver, midLambda, midResidual, probeState, midSolver) Then
             If midResidual >= 0# Then
                 upperLambda = midLambda
                 Set upperSolver = midSolver
                 upperResidual = midResidual
-                FindCrackFormationBracket = True
+                TryRecoverCrackBracketBeforeFailedUpper = True
                 Exit Function
             End If
             lowerLambda = midLambda
@@ -264,33 +311,11 @@ Private Function FindCrackFormationBracket(ByVal request As CLimitSearchRequest,
         End If
     Next iter
 
-    If Not lowerSolver Is Nothing And lowerLambda > 0# Then
-        upperLambda = lowerLambda
-        Set upperSolver = lowerSolver
-        upperResidual = lowerResidual
-        crack.LimitSearchAppendDiagnostic "lambda_crc bracket принят по последней сходящейся точке перед несходящейся верхней границей; residual=" & _
-            FormatNumberInvariant(lowerResidual)
-        FindCrackFormationBracket = True
-        Exit Function
+    If Not lowerSolver Is Nothing Then
+        crack.LimitSearchAppendDiagnostic _
+            "Поиск трещинообразования: последняя сходящаяся точка перед перегрузкой lambda=" & _
+            FormatNumberInvariant(lowerLambda) & "; невязка=" & FormatNumberInvariant(lowerResidual)
     End If
-
-    crack.LimitSearchSetCrackFormationStopReason _
-        "NumericalFailure: fallback lambda_crc не нашел сходящееся НДС с eps_bt,ult до перегруженной точки lambda = 1."
-    Exit Function
-
-UpperSolved:
-    Do While upperResidual < 0# And upperLambda < crack.LimitSearchCrackBracketLimit
-        lowerLambda = upperLambda
-        Set lowerSolver = upperSolver
-        lowerResidual = upperResidual
-        upperLambda = MinDouble(upperLambda * 2#, crack.LimitSearchCrackBracketLimit)
-        If Not EvaluateCrackFunction(request, loadPath, lowerSolver, upperLambda, upperResidual, probeState, upperSolver) Then
-            crack.LimitSearchSetCrackFormationStopReason _
-                "NumericalFailure: fallback lambda_crc не получил НДС при lambda = " & FormatNumberInvariant(upperLambda) & "."
-            Exit Function
-        End If
-    Loop
-    FindCrackFormationBracket = True
 End Function
 
 ' Для CrackFormation используется тот же bisection-цикл, что и для Capacity.
@@ -606,8 +631,8 @@ Private Sub HandleBisectionEvaluationFailure(ByVal request As CLimitSearchReques
         ByVal lambdaValue As Double)
     If request.ResultKind = rkCapacity Then Exit Sub
     request.CrackCalculator.LimitSearchSetCrackFormationStopReason _
-        "NumericalFailure: fallback lambda_crc не получил НДС при lambda = " & _
-        FormatNumberInvariant(lambdaValue) & "."
+        "Не удалось найти равновесие при lambda = " & _
+        FormatNumberInvariant(lambdaValue) & " в поиске трещинообразования."
 End Sub
 
 ' Обрабатывает статус NumericalFailure, если callback смог классифицировать точку без обычного False.
@@ -617,8 +642,8 @@ Private Sub HandleBisectionNumericalFailure(ByVal request As CLimitSearchRequest
         request.CapacitySolver.LimitSearchHandleCapacityBracketNumericalFailure lowLambda, probeState
     Else
         request.CrackCalculator.LimitSearchSetCrackFormationStopReason _
-            "NumericalFailure: fallback lambda_crc не получил НДС при lambda = " & _
-            FormatNumberInvariant(failedLambda) & "."
+            "Не удалось найти равновесие при lambda = " & _
+            FormatNumberInvariant(failedLambda) & " в поиске трещинообразования."
     End If
 End Sub
 
@@ -631,7 +656,7 @@ Private Sub HandleBisectionUnexpectedState(ByVal request As CLimitSearchRequest,
             "Поиск Bisection остановлен: " & probeState & "."
     Else
         request.CrackCalculator.LimitSearchSetCrackFormationStopReason _
-            "NumericalFailure: fallback lambda_crc остановлен: " & probeState & "."
+            "Поиск трещинообразования остановлен: " & probeState & "."
     End If
 End Sub
 

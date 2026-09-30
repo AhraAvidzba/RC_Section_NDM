@@ -122,10 +122,10 @@ Public Sub SetMeta(ByVal meta As CResultMeta, Optional ByVal resultComment As St
             "Результат устойчивости не сформирован."
     Else
         Set ResultMeta = meta.Clone
-        If Len(Trim$(resultComment)) > 0 Then ResultMeta.ResultComment = resultComment
+        If Len(Trim$(resultComment)) > 0 Then ResultMeta.ResultComment = StabilityBranchDisplayName(resultComment)
     End If
     Status = policy.ExternalStatus(ResultMeta)
-    Branch = resultComment
+    Branch = StabilityBranchDisplayName(resultComment)
 End Sub
 
 ' Копирует результат CStabilityCalculator и формирует typed meta для summary.
@@ -150,7 +150,7 @@ Public Sub InitializeFromCalculator(ByVal meta As CResultMeta, ByVal stability A
     End If
 
     Code = stability.Code
-    Branch = stability.Branch
+    Branch = StabilityBranchDisplayName(stability.Branch)
     If Len(Trim$(stability.StopReason)) > 0 Then Branch = stability.StopReason
     DesignN = stability.DesignN
     DesignMx = stability.DesignMx
@@ -214,6 +214,25 @@ Public Sub InitializeFromCalculator(ByVal meta As CResultMeta, ByVal stability A
     If Len(Trim$(Branch)) > 0 And Len(Trim$(ResultMeta.ResultComment)) = 0 Then _
         ResultMeta.ResultComment = Branch
 End Sub
+
+' Переводит внутренние коды ветвей устойчивости в русский текст для Results.
+' Сами коды SP35-eta/SP35-table/SP35-mixed остаются во внутренних полях batch.
+Private Function StabilityBranchDisplayName(ByVal branchText As String) As String
+    Select Case LCase$(Trim$(branchText))
+        Case "nocompression"
+            StabilityBranchDisplayName = "устойчивость не требуется: нет сжатия"
+        Case "sp63"
+            StabilityBranchDisplayName = "СП 63: расчет eta и Ncr"
+        Case "sp35-eta"
+            StabilityBranchDisplayName = "СП 35: ветвь ec > r через eta и Ncr"
+        Case "sp35-table"
+            StabilityBranchDisplayName = "СП 35: ветвь ec <= r через Nult,stab"
+        Case "sp35-mixed"
+            StabilityBranchDisplayName = "СП 35: плоскости попали в разные расчетные ветви"
+        Case Else
+            StabilityBranchDisplayName = branchText
+    End Select
+End Function
 
 ' Обновляет финальный расчетный вектор после общего zero-filter batch-слоя.
 Public Sub UpdateDesignLoads(ByVal designNValue As Double, ByVal designMxValue As Double, _

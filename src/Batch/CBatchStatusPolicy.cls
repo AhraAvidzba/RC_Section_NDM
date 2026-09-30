@@ -24,7 +24,7 @@ Option Explicit
 
 Private Const STATUS_OK As String = "OK" ' Расчетная ветка завершилась без ошибки.
 Private Const STATUS_FAIL As String = "FAIL" ' Равновесие найдено, но физический предел или проверка не проходят.
-Private Const STATUS_BASEFAIL As String = "BaseFail" ' Capacity: базовая точка траектории уже за предельным состоянием.
+Private Const STATUS_BASEFAIL As String = "BaseFail" ' Capacity: исходная часть траектории уже не проходит проверку.
 Private Const STATUS_NUMFAIL As String = "NumFail" ' Solver не нашел равновесие в заданных численных ограничениях.
 Private Const STATUS_INPUTERR As String = "InputErr" ' Ошибка исходных данных, а не численная несходимость.
 Private Const STATUS_CALCERR As String = "CalcErr" ' Внутренняя ошибка программы или несформированный result.
@@ -49,7 +49,7 @@ Public Property Get Fail() As String
     Fail = STATUS_FAIL
 End Property
 
-' Возвращает специальный статус capacity, когда базовая точка траектории уже за пределом.
+' Возвращает специальный статус capacity, когда исходная часть пути уже не проходит проверку.
 Public Property Get BaseFail() As String
     BaseFail = STATUS_BASEFAIL
 End Property

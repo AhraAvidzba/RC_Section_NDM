@@ -624,11 +624,33 @@ Public Sub LimitSearchHandleCapacityInitialFailure(ByVal probeState As String)
     mLimitState = probeState
     mInitialLambdaRejected = True
     If LimitSearchCapacityStateIsInvalidInput(probeState) Then
-        mStopReason = "InputError: начальное состояние при lambda = 0 не может быть проверено: " & probeState & "."
+        mStopReason = "Исходную точку пути несущей проверить нельзя: " & CapacityStateDisplayName(probeState) & "."
     Else
-        mStopReason = "Начальное состояние при lambda = 0 не проходит физический критерий: " & probeState & "."
+        mStopReason = "Несущая способность не проходит уже для исходной части выбранного пути: " & _
+            CapacityStateDisplayName(probeState) & "."
     End If
 End Sub
+
+' Переводит внутренний код capacity-пробы в короткую инженерную причину для
+' Results и batch summary. Машинный код остается в LimitState/ResultCode.
+Private Function CapacityStateDisplayName(ByVal probeState As String) As String
+    Select Case probeState
+        Case STATE_CONCRETE_LIMIT
+            CapacityStateDisplayName = "предельная деформация бетона уже превышена"
+        Case STATE_CONCRETE_TENSION_LIMIT
+            CapacityStateDisplayName = "предельная растягивающая деформация бетона уже превышена"
+        Case STATE_STEEL_LIMIT
+            CapacityStateDisplayName = "предельная деформация арматуры уже превышена"
+        Case STATE_NUMERICAL_FAILURE
+            CapacityStateDisplayName = "равновесие не сошлось численно"
+        Case STATE_SINGULAR_TANGENT
+            CapacityStateDisplayName = "касательная матрица вырождена"
+        Case STATE_INVALID_INPUT
+            CapacityStateDisplayName = "ошибка исходных данных или настроек"
+        Case Else
+            CapacityStateDisplayName = probeState
+    End Select
+End Function
 
 ' Фиксирует, что до верхней границы MaxLambda физический предел не найден.
 Public Sub LimitSearchHandleCapacityBracketNotFound(ByVal lowLambda As Double)

@@ -275,9 +275,10 @@ End Sub
 
 ' Выполняет только проверку факта образования трещины по Ncrc или по общей
 ' траектории N + M.
-' Если уровень образования трещины найден, сохраняются состояния
-' PreCrackState/PostCrackState даже при lambda_crc > 1: они описывают
-' пороговое состояние, а не обязательно фактическую трещину при текущем LC.
+' Если уровень образования трещины найден в пределах текущей нагрузки,
+' сохраняются состояния PreCrackState/PostCrackState. При lambda_crc > 1
+' выводятся пороговые Ncrc/Mxy,crc, но ширина не считается: текущая нагрузка
+' еще не достигла трещинообразования.
 ' Сама ширина a_crc еще не считается: для нее нужен полный CrackedState LC.
 Public Function CheckFormationBeforeWidth(ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal crackedStateSpec As CMaterialModelSpec, _
@@ -416,15 +417,17 @@ Private Sub CheckCentralTensionFormation(ByVal section As CSectionModel, _
         Exit Sub
     End If
 
+    If mLambdaCrc > 1# Then
+        StoreFormationLoad targetN * mLambdaCrc, targetMx * mLambdaCrc, targetMy * mLambdaCrc
+        mResolvedCrackFormationPath = activePath
+        FinishFormationNotReached "Трещина не образована: расчетная сила образования трещины больше заданной растягивающей силы."
+        Exit Sub
+    End If
+
     StoreFormationLoad targetN * mLambdaCrc, targetMx * mLambdaCrc, targetMy * mLambdaCrc
     mResolvedCrackFormationPath = activePath
     If Not BuildPreCrackState(section, materialProvider, targetN, targetMx, targetMy) Then Exit Sub
     If Not EnsurePostCrackState(section, materialProvider, Nothing, targetN, targetMx, targetMy) Then Exit Sub
-
-    If mLambdaCrc > 1# Then
-        FinishNoCrack "Трещина не образована: Ncrc больше заданной растягивающей силы."
-        Exit Sub
-    End If
 
     mConverged = True
     mCrackFormed = True
@@ -462,14 +465,14 @@ Private Sub CheckGeneralFormation(ByVal section As CSectionModel, _
         mMcrc = CrackMomentFromFormationLoad(centralReferenceX, centralReferenceY)
     End If
 
+    If mLambdaCrc > 1# Then
+        FinishFormationNotReached "Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой."
+        Exit Sub
+    End If
+
     If mFormationPathFallbackPsi1 Then Exit Sub
 
     If Not EnsurePostCrackState(section, materialProvider, Nothing, targetN, targetMx, targetMy) Then Exit Sub
-
-    If mLambdaCrc > 1# Then
-        FinishNoCrack "Трещина не образована: предельная растянутая деформация бетона не достигнута при lambda = 1."
-        Exit Sub
-    End If
 
     mConverged = True
     mCrackFormed = True
@@ -653,6 +656,11 @@ Public Function LimitSearchFinalizeCrackFormationLoadMultiplier(ByVal loadPath A
     Set mPreCrackState = New CSectionStateResult
     mPreCrackState.InitializeFromSolver sstPreCrackState, cpMcrc, _
         mCrackInitiationSpec, solver, False, True
+    If mLambdaCrc > 1# Then
+        FinishFormationNotReached "Трещина не образована: найденная точка трещинообразования находится за текущей нагрузкой."
+        LimitSearchFinalizeCrackFormationLoadMultiplier = True
+        Exit Function
+    End If
     AppendDiagnostic "lambda_crc=" & FormatNumberInvariant(mLambdaCrc) & _
         "; iterations=" & CStr(iterations) & "; method=LoadMultiplier"
     AppendDiagnostic "LoadMultiplier успешно нашел точку образования трещины."
@@ -759,6 +767,11 @@ Public Function LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel
     Set mPreCrackState = New CSectionStateResult
     mPreCrackState.InitializeFromSolver sstPreCrackState, cpMcrc, _
         mCrackInitiationSpec, solver, False, True
+    If mLambdaCrc > 1# Then
+        FinishFormationNotReached "Трещина не образована: найденная точка трещинообразования находится за текущей нагрузкой."
+        LimitSearchFinalizeUltimateResult = True
+        Exit Function
+    End If
     AppendDiagnostic "lambda_crc=" & FormatNumberInvariant(mLambdaCrc) & _
         "; iterations=" & CStr(iterations) & "; method=UltimateStrain"
     AppendDiagnostic "UltimateStrain успешно нашел точку образования трещины."
@@ -1682,7 +1695,7 @@ Private Sub SetFormationResult(ByVal internalStatus As EResultInternalStatus, _
         ByVal resultCode As EResultCode, ByVal reason As String)
     mFormationInternalStatus = internalStatus
     mFormationResultCode = resultCode
-    mStopReason = reason
+    mStopReason = UserStopReason(reason)
 End Sub
 
 ' Помечает успешное нахождение точки образования нормальной трещины.
@@ -1709,8 +1722,25 @@ Private Sub SetWidthResult(ByVal internalStatus As EResultInternalStatus, _
         ByVal resultCode As EResultCode, ByVal reason As String)
     mWidthInternalStatus = internalStatus
     mWidthResultCode = resultCode
-    mStopReason = reason
+    mStopReason = UserStopReason(reason)
 End Sub
+
+' Готовит короткий пользовательский комментарий из внутренней причины.
+' Машинная классификация уже сохранена в InternalStatus/ResultCode, поэтому
+' технические префиксы NumericalFailure/InputError на лист выводить не нужно.
+Private Function UserStopReason(ByVal reason As String) As String
+    UserStopReason = Trim$(reason)
+    If Len(UserStopReason) = 0 Then Exit Function
+
+    UserStopReason = Replace$(UserStopReason, "NumericalFailure:", vbNullString, 1, 1, vbTextCompare)
+    UserStopReason = Replace$(UserStopReason, "InputError:", vbNullString, 1, 1, vbTextCompare)
+    UserStopReason = Replace$(UserStopReason, "lambda_crc", "lambda трещинообразования", 1, -1, vbTextCompare)
+    UserStopReason = Replace$(UserStopReason, "eps_bt,ult", "предельная растягивающая деформация бетона", 1, -1, vbTextCompare)
+    UserStopReason = Trim$(UserStopReason)
+    Do While InStr(1, UserStopReason, "..", vbBinaryCompare) > 0
+        UserStopReason = Replace$(UserStopReason, "..", ".")
+    Loop
+End Function
 
 ' Помечает ошибку входных данных, найденную уже при подготовке данных формулы.
 Private Sub SetWidthInvalidInput(ByVal reason As String)
@@ -1732,6 +1762,22 @@ Private Sub FinishNoCrack(ByVal reason As String)
         SetFormationResult rsSuccess, rcCriterionNotReached, reason
     If mWidthInternalStatus = rsUnset Then _
         SetWidthResult rsNotApplicable, rcCrackNotFormed, reason
+    AppendDiagnostic reason
+End Sub
+
+' Завершает именно этап проверки образования трещины как корректный результат
+' "порог найден, но текущая нагрузка его еще не достигла". В отличие от общего
+' FinishNoCrack этот метод явно переписывает formation-meta в
+' CRITERION_NOT_REACHED: ранее найденная lambda-точка может быть сохранена для
+' вывода Ncrc/Mxy,crc, но отсутствие PostCrackState не является NumFail
+' текущего сочетания.
+Private Sub FinishFormationNotReached(ByVal reason As String)
+    mConverged = True
+    mCrackFormed = False
+    mCrackWidth = 0#
+    mUtilization = 0#
+    SetFormationResult rsSuccess, rcCriterionNotReached, reason
+    SetWidthResult rsNotApplicable, rcCrackNotFormed, reason
     AppendDiagnostic reason
 End Sub
 

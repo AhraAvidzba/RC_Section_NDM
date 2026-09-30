@@ -298,8 +298,37 @@ End Property
 
 ' Возвращает ResultMeta расчета нормальных трещин.
 Public Property Get CrackMeta() As CResultMeta
-    Set CrackMeta = AggregateResultMeta(rkCrackWidth, BuildCrackResultComment(), _
-        CrackFormationMeta, CrackCurrentStateMeta, CrackWidthMeta)
+    Dim formationMeta As CResultMeta
+    Set formationMeta = CrackFormationMeta
+
+    Dim currentStatePhysicalFailure As CResultMeta
+    Set currentStatePhysicalFailure = CrackCurrentPhysicalFailureMeta()
+
+    If IsProblemStatus(Policy.ExternalStatus(formationMeta)) Then
+        Set CrackMeta = AggregateResultMeta(rkCrackFormation, BuildCrackResultComment(), formationMeta)
+    ElseIf CrackFormationNotReached(formationMeta) Then
+        If currentStatePhysicalFailure Is Nothing Then
+            Set CrackMeta = AggregateResultMeta(rkCrackFormation, BuildCrackResultComment(), formationMeta)
+        Else
+            Set CrackMeta = AggregateResultMeta(rkCrackFormation, BuildCrackResultComment(), _
+                formationMeta, currentStatePhysicalFailure)
+        End If
+    ElseIf CrackFormed Then
+        If currentStatePhysicalFailure Is Nothing Then
+            Set CrackMeta = AggregateResultMeta(rkCrackWidth, BuildCrackResultComment(), CrackWidthMeta)
+        Else
+            Set CrackMeta = AggregateResultMeta(rkCrackWidth, BuildCrackResultComment(), _
+                currentStatePhysicalFailure, CrackWidthMeta)
+        End If
+    Else
+        If currentStatePhysicalFailure Is Nothing Then
+            Set CrackMeta = AggregateResultMeta(rkCrackWidth, BuildCrackResultComment(), _
+                formationMeta, CrackWidthMeta)
+        Else
+            Set CrackMeta = AggregateResultMeta(rkCrackWidth, BuildCrackResultComment(), _
+                formationMeta, currentStatePhysicalFailure, CrackWidthMeta)
+        End If
+    End If
 End Property
 
 ' Возвращает ResultMeta проверки образования нормальной трещины.
@@ -507,6 +536,27 @@ Private Function CrackAggregateStatus() As String
         Policy.ExternalStatus(CrackWidthMeta))
 End Function
 
+' True, если search образования нормальной трещины корректно показал,
+' что при текущем сочетании критерий трещинообразования еще не достигнут.
+Private Function CrackFormationNotReached(ByVal meta As CResultMeta) As Boolean
+    If meta Is Nothing Then Exit Function
+    CrackFormationNotReached = (meta.InternalStatus = rsSuccess And _
+        (meta.ResultCode = rcCriterionNotReached Or meta.ResultCode = rcCrackNotFormed))
+End Function
+
+' Возвращает physical FAIL текущего CrackedState, если равновесие найдено только за пределами
+' физической диаграммы. Численная несходимость этого состояния остается в своем отдельном
+' столбце подробного вывода и не подменяет статус формульного расчета ширины трещины.
+Private Function CrackCurrentPhysicalFailureMeta() As CResultMeta
+    Dim meta As CResultMeta
+    Set meta = CrackCurrentStateMeta
+    If meta Is Nothing Then Exit Function
+
+    If meta.InternalStatus = rsCheckFailed And meta.ResultCode = rcStateOutsidePhysicalRange Then
+        Set CrackCurrentPhysicalFailureMeta = meta.Clone
+    End If
+End Function
+
 ' Добавляет комментарий только для проблемного результата. OK и N/A остаются
 ' нейтральными, потому что они не объясняют неудачу проверки в summary.
 Private Sub AppendMetaComment(ByRef targetText As String, ByVal meta As CResultMeta)
@@ -548,7 +598,7 @@ End Sub
 Private Function DefaultProblemComment(ByVal statusText As String) As String
     Select Case statusText
         Case Policy.BaseFail
-            DefaultProblemComment = "Базовая часть пути несущей уже за предельным состоянием."
+            DefaultProblemComment = "Несущая способность не проходит уже для исходной части выбранного пути."
         Case Policy.Fail
             DefaultProblemComment = "Проверка не проходит."
         Case Policy.NumFail
