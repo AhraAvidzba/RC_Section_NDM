@@ -188,6 +188,8 @@ Public Function RunBatchCalculationTests() As String
     TestResultMetaStatusDictionary stats
     AppendLine stats, "RUN: TestResultMetaAggregateSkipsNotApplicable"
     TestResultMetaAggregateSkipsNotApplicable stats
+    AppendLine stats, "RUN: TestCombinationResultTreeMirrorsLegacyFacade"
+    TestCombinationResultTreeMirrorsLegacyFacade stats
     AppendLine stats, "RUN: TestFormulaChecksDoNotCreateNumFail"
     TestFormulaChecksDoNotCreateNumFail stats
     AppendLine stats, "RUN: TestSectionStateResultStoresEquilibriumData"
@@ -4498,6 +4500,40 @@ Private Sub TestResultMetaAggregateSkipsNotApplicable(ByRef stats As TBatchTestS
         policy.AggregateMeta(directMeta, skippedMeta, failedMeta), "FAIL"
     AssertEquals stats, "resultMeta.aggregate.onlyNA", _
         policy.AggregateMeta(skippedMeta, Nothing, Nothing), "N/A"
+End Sub
+
+' Проверяет переходный фасад этапа 7: старые строковые поля CCombinationResult
+' и новые structured-subtree должны отдавать один и тот же внешний статус.
+Private Sub TestCombinationResultTreeMirrorsLegacyFacade(ByRef stats As TBatchTestStats)
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+
+    Dim result As CCombinationResult
+    Set result = New CCombinationResult
+    result.Clear "LambdaMxy"
+
+    result.SetDirectStateStatus "OK"
+    AssertEquals stats, "combinationTree.direct.flat", result.DirectStateStatus, "OK"
+    AssertEquals stats, "combinationTree.direct.meta", _
+        policy.ExternalStatus(result.DirectStateMeta), "OK"
+
+    result.MergeDirectStateStatus "FAIL", "N/A"
+    AssertEquals stats, "combinationTree.direct.merge.flat", result.DirectStateStatus, "FAIL"
+    AssertEquals stats, "combinationTree.direct.merge.meta", _
+        policy.ExternalStatus(result.StrengthResult.DirectMeta), "FAIL"
+
+    Dim capacity As CCapacityResult
+    Set capacity = New CCapacityResult
+    capacity.InitializeSkipped "N/A", "capacity не запрошена", "None"
+    result.StoreCapacityResult capacity
+    AssertTrue stats, "combinationTree.capacity.exists", Not result.StrengthResult.Capacity Is Nothing
+    AssertEquals stats, "combinationTree.capacity.meta", _
+        policy.ExternalStatus(result.CapacityMeta), "N/A"
+
+    result.SetStabilityStatus "InputErr", "ошибка настройки устойчивости"
+    AssertEquals stats, "combinationTree.stability.flat", result.StabilityStatus, "InputErr"
+    AssertEquals stats, "combinationTree.stability.meta", _
+        policy.ExternalStatus(result.StabilityMeta), "InputErr"
 End Sub
 
 ' Проверяет, что проверки без поиска равновесия не создают NumFail.

@@ -674,11 +674,11 @@ Private Sub RunCombination(ByVal index As Long)
     End If
 
     mResults(index).Status = mStatusPolicy.NotApplicable
-    mResults(index).DirectStateStatus = mStatusPolicy.NotApplicable
+    mResults(index).SetDirectStateStatus mStatusPolicy.NotApplicable
     mResults(index).CapacityStatus = mStatusPolicy.NotApplicable
     mResults(index).CrackStatus = mStatusPolicy.NotApplicable
     mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
-    mResults(index).StabilityStatus = mStatusPolicy.NotApplicable
+    mResults(index).SetStabilityStatus mStatusPolicy.NotApplicable
 
     ReportSection "Продольный изгиб и устойчивость"
     If profile.StabilityEnabled Then
@@ -687,7 +687,7 @@ Private Sub RunCombination(ByVal index As Long)
     Else
         ReportStep "Устойчивость не запрошена профилем."
         mResults(index).ClearStabilityResult
-        mResults(index).StabilityStatus = mStatusPolicy.NotApplicable
+        mResults(index).SetStabilityStatus mStatusPolicy.NotApplicable
     End If
 
     ReportSection "Расчет по модели прочности"
@@ -784,8 +784,7 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
     Exit Sub
 
 Failed:
-    mResults(index).StabilityStatus = mStatusPolicy.InputErr
-    mResults(index).StabilityBranch = Err.Description
+    mResults(index).SetStabilityStatus mStatusPolicy.InputErr, Err.Description
     ReportStep "Устойчивость не рассчитана: " & Err.Description
 End Sub
 
@@ -1433,8 +1432,7 @@ End Sub
 ' Объединяет статусы нескольких прямых StateSolution одного LC.
 ' N/A не ухудшает итог, а FAIL/NumFail/InputErr сохраняют общий смысл строки.
 Private Sub MergeDirectStateStatus(ByVal index As Long, ByVal statusText As String)
-    mResults(index).DirectStateStatus = mStatusPolicy.Aggregate(mResults(index).DirectStateStatus, _
-        statusText, mStatusPolicy.NotApplicable)
+    mResults(index).MergeDirectStateStatus statusText, mStatusPolicy.NotApplicable
 End Sub
 
 ' Заполняет capacity-поля нейтральным статусом, когда эта проверка не должна
@@ -1463,8 +1461,8 @@ Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     mInputs(index).InputError = reason
     mResults(index).ProfileId = mInputs(index).ProfileId
     mResults(index).Status = mStatusPolicy.InputErr
-    mResults(index).DirectStateStatus = mStatusPolicy.InputErr
-    mResults(index).StabilityStatus = mStatusPolicy.InputErr
+    mResults(index).SetDirectStateStatus mStatusPolicy.InputErr, reason
+    mResults(index).SetStabilityStatus mStatusPolicy.InputErr, reason
     StoreInvalidCapacity index, reason
     mResults(index).CrackStatus = mStatusPolicy.NotApplicable
     mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable

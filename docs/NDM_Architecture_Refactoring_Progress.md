@@ -127,17 +127,24 @@ regression-отчеты.
   автоматически при любом отсутствии результата: сохраняется фактическая
   причина `InvalidInput`, `InvalidConfiguration`, `NumericalFailure` или
   `InternalError`; downstream width/longitudinal блокируются через dependency.
+- Этап 7 завершен переходным result-tree: `CCombinationResult` хранит
+  `StrengthResult`, `CrackResult` и `StabilityResult`, а старые плоские поля
+  остаются синхронизированным фасадом для существующих writer-ов. Direct state,
+  capacity, crack aggregate и stability теперь проходят через вложенные
+  result-объекты без изменения расчетной математики и структуры Results.
 
 ## In progress
 
-- Нет активного этапа. Следующий крупный блок по migration plan - этап 7:
-  перестройка `CCombinationResult` без изменения расчетной методики.
+- Нет активного этапа. Следующий крупный блок по migration plan - этап 8:
+  постепенный перевод writer-ов и summary-чтения с плоских compatibility-полей
+  на вложенные result-объекты, без изменения расчетной методики и структуры
+  пользовательского вывода.
 
 ## Next
 
 - Использовать baseline commit и отчеты `Stage00`/`Stage01`/`Stage02` как точки сравнения
   для следующих этапов.
-- Перед следующим срезом этапа 7 снова проверить `git status` и убедиться, что
+- Перед следующим срезом этапа 8 снова проверить `git status` и убедиться, что
   нет посторонних пользовательских изменений.
 
 ## Known risks / open questions
@@ -237,6 +244,10 @@ regression-отчеты.
   `passed=633`, `failed=0`.
 - 2026-09-29: этап 6 прошел полный `tools/build_workbook/Run-AllTests.ps1`
   без failures.
+- 2026-09-30: этап 7 пересобрал `workbook/output/RC_Section_NDM.xlsm`
+  через `tools/build_workbook/Build-Workbook.ps1`.
+- 2026-09-30: этап 7 прошел `tools/build_workbook/Run-BatchTests.ps1`:
+  `passed=641`, `failed=0`.
 - 2026-09-29: срез этапа 5 с защитой capacity reserve в `CNDMResultsWriter`
   пересобрал `workbook/output/RC_Section_NDM.xlsm` через
   `tools/build_workbook/Build-Workbook.ps1`.

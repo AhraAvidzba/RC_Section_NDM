@@ -163,6 +163,9 @@ Public StateIterations As Long ' Число итераций прямого Stat
 
 Private mStateRepository As CStateRepository ' Единое хранилище конечных именованных НДС текущего LC.
 Private mResultPolicy As CResultStatusPolicy ' Политика преобразования legacy status -> ResultMeta на переходном этапе.
+Private mStrengthResult As CStrengthResult ' Структурированный результат прямого НДС и несущей способности.
+Private mCrackResult As CCrackResult ' Структурированный результат расчета трещин.
+Private mStabilityResult As CStabilityResult ' Структурированный результат проверки устойчивости.
 Private mCapacityMeta As CResultMeta ' Типизированный результат capacity, если он уже пришел из CCapacityResult.
 Private mCrackFormationMeta As CResultMeta ' Типизированный результат поиска образования нормальной трещины.
 Private mCrackCurrentStateMeta As CResultMeta ' Типизированный результат обязательного CurrentCrackedState в расчете трещин.
@@ -174,6 +177,10 @@ Private mLongitudinalCrackMeta As CResultMeta ' Типизированный р�
 ' не может случайно стереть пользовательский ввод.
 Public Sub Clear(ByVal defaultCapacityPath As String)
     Set mStateRepository = New CStateRepository
+    Set mStrengthResult = New CStrengthResult
+    mStrengthResult.Clear defaultCapacityPath
+    Set mCrackResult = Nothing
+    Set mStabilityResult = New CStabilityResult
     Set mCapacityMeta = Nothing
     Status = vbNullString
     ProfileId = vbNullString
@@ -233,11 +240,29 @@ End Property
 
 ' Возвращает ResultMeta прямого НДС заданного LC.
 Public Property Get DirectStateMeta() As CResultMeta
+    If Not mStrengthResult Is Nothing Then
+        If Not mStrengthResult.DirectState Is Nothing Then
+            If Len(Trim$(DirectStateStatus)) > 0 Then
+                If StrComp(Policy.ExternalStatus(mStrengthResult.DirectMeta), _
+                        Policy.ToUserStatus(DirectStateStatus), vbTextCompare) <> 0 Then
+                    mStrengthResult.SetDirectStatus DirectStateStatus
+                End If
+            End If
+            Set DirectStateMeta = mStrengthResult.DirectMeta
+            Exit Property
+        End If
+    End If
     Set DirectStateMeta = MetaFromStatus(DirectStateStatus, rkDirectState)
 End Property
 
 ' Возвращает ResultMeta поиска несущей способности.
 Public Property Get CapacityMeta() As CResultMeta
+    If Not mStrengthResult Is Nothing Then
+        If Not mStrengthResult.Capacity Is Nothing Then
+            Set CapacityMeta = mStrengthResult.CapacityMeta
+            Exit Property
+        End If
+    End If
     If Not mCapacityMeta Is Nothing Then
         Set CapacityMeta = mCapacityMeta.Clone
         Exit Property
@@ -314,7 +339,26 @@ End Property
 
 ' Возвращает ResultMeta проверки устойчивости.
 Public Property Get StabilityMeta() As CResultMeta
+    If Not mStabilityResult Is Nothing Then
+        Set StabilityMeta = mStabilityResult.Meta
+        Exit Property
+    End If
     Set StabilityMeta = MetaFromStatus(StabilityStatus, rkStability, StabilityBranch)
+End Property
+
+' Возвращает structured-subtree расчетов по модели прочности.
+Public Property Get StrengthResult() As CStrengthResult
+    Set StrengthResult = mStrengthResult
+End Property
+
+' Возвращает structured-subtree расчета трещин.
+Public Property Get CrackResult() As CCrackResult
+    Set CrackResult = mCrackResult
+End Property
+
+' Возвращает structured-subtree проверки устойчивости.
+Public Property Get StabilityResult() As CStabilityResult
+    Set StabilityResult = mStabilityResult
 End Property
 
 ' Сохраняет итоговую meta-информацию LC рядом со старым строковым Status.
@@ -357,12 +401,37 @@ Private Function Policy() As CResultStatusPolicy
     Set Policy = mResultPolicy
 End Function
 
+' Синхронизирует старое строковое поле direct-state и новый StrengthResult.
+Public Sub SetDirectStateStatus(ByVal statusText As String, Optional ByVal resultComment As String = vbNullString)
+    DirectStateStatus = Policy.ToUserStatus(statusText)
+    If mStrengthResult Is Nothing Then Set mStrengthResult = New CStrengthResult
+    mStrengthResult.SetDirectStatus DirectStateStatus, resultComment
+End Sub
+
+' Объединяет очередной direct-state статус с уже накопленным статусом LC.
+Public Sub MergeDirectStateStatus(ByVal statusText As String, ByVal neutralStatus As String)
+    Dim batchPolicy As CBatchStatusPolicy
+    Set batchPolicy = New CBatchStatusPolicy
+    SetDirectStateStatus batchPolicy.Aggregate(DirectStateStatus, statusText, neutralStatus)
+End Sub
+
+' Синхронизирует короткий статус устойчивости со structured-subtree, когда подробный
+' CStabilityCalculator не создает полный набор расчетных величин.
+Public Sub SetStabilityStatus(ByVal statusText As String, Optional ByVal resultComment As String = vbNullString)
+    StabilityStatus = Policy.ToUserStatus(statusText)
+    If mStabilityResult Is Nothing Then Set mStabilityResult = New CStabilityResult
+    mStabilityResult.SetStatus StabilityStatus, resultComment
+    StabilityBranch = resultComment
+End Sub
+
 ' Сохраняет результат изолированного фильтра продольного изгиба/устойчивости.
 ' Калькулятор не знает о batch-status policy, поэтому сюда копируются уже
 ' нормализованные численные величины и короткий пользовательский статус.
 Public Sub StoreStabilityResult(ByVal statusText As String, ByVal stability As CStabilityCalculator, _
         Optional ByVal referenceX As Double = 0#, Optional ByVal referenceY As Double = 0#)
-    StabilityStatus = statusText
+    Set mStabilityResult = New CStabilityResult
+    mStabilityResult.InitializeFromCalculator statusText, stability, referenceX, referenceY
+    StabilityStatus = Policy.ToUserStatus(statusText)
     StabilityReferenceX = referenceX
     StabilityReferenceY = referenceY
     If stability Is Nothing Then Exit Sub
@@ -436,6 +505,8 @@ End Sub
 ' Поэтому Results должен хранить именно этот финальный вектор.
 Public Sub UpdateStabilityDesignLoads(ByVal designN As Double, ByVal designMx As Double, _
         ByVal designMy As Double, ByVal principalAngleRad As Double)
+    If Not mStabilityResult Is Nothing Then _
+        mStabilityResult.UpdateDesignLoads designN, designMx, designMy, principalAngleRad
     StabilityDesignN = designN
     StabilityDesignMx = designMx
     StabilityDesignMy = designMy
@@ -445,6 +516,7 @@ End Sub
 
 ' Очищает только блок продольного изгиба/устойчивости.
 Public Sub ClearStabilityResult()
+    Set mStabilityResult = New CStabilityResult
     StabilityStatus = vbNullString
     StabilityCode = vbNullString
     StabilityBranch = vbNullString
@@ -550,6 +622,8 @@ End Property
 ' приходят из CCapacityResult одним согласованным набором.
 Public Sub StoreCapacityResult(ByVal capacity As CCapacityResult)
     If capacity Is Nothing Then Exit Sub
+    If mStrengthResult Is Nothing Then Set mStrengthResult = New CStrengthResult
+    mStrengthResult.StoreCapacityResult capacity
 
     CapacityStatus = capacity.Status
     CapacityLimitState = capacity.LimitState
@@ -575,6 +649,8 @@ End Sub
 ' Сохраняет найденную плоскость деформаций и внутренние усилия прямого НДС.
 ' Эти данные используются Results snapshot, Excel-схемой и AutoCAD export.
 Public Sub StoreSectionState(ByVal solver As CSectionSolver)
+    If mStrengthResult Is Nothing Then Set mStrengthResult = New CStrengthResult
+    mStrengthResult.StoreDirectFromSolver solver, DirectStateDiagramExtensionEnabled
     StateAvailable = True
     StateConverged = solver.Converged
     Epsilon0 = solver.Epsilon0
@@ -600,6 +676,8 @@ End Sub
 ' видеть те же деформации, внутренние усилия и невязки.
 Public Sub StoreSectionStateResult(ByVal stateResult As CSectionStateResult)
     If stateResult Is Nothing Then Exit Sub
+    If mStrengthResult Is Nothing Then Set mStrengthResult = New CStrengthResult
+    mStrengthResult.StoreDirectFromStateResult stateResult, DirectStateDiagramExtensionEnabled
     StateAvailable = True
     StateConverged = stateResult.Converged
     Epsilon0 = stateResult.Epsilon0
@@ -658,6 +736,7 @@ End Sub
 ' существующие плоские поля, которые пока читают writer-ы Results.
 Public Sub StoreCrackAggregateResult(ByVal crackResult As CCrackResult)
     If crackResult Is Nothing Then Exit Sub
+    Set mCrackResult = crackResult
 
     If Not crackResult.Formation Is Nothing Then
         StoreCrackFormationResult crackResult.Formation
