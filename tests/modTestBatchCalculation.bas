@@ -190,6 +190,8 @@ Public Function RunBatchCalculationTests() As String
     TestResultMetaAggregateSkipsNotApplicable stats
     AppendLine stats, "RUN: TestCombinationResultTreeDrivesDisplayFields"
     TestCombinationResultTreeDrivesDisplayFields stats
+    AppendLine stats, "RUN: TestCrackAggregateIncludesCurrentStateFailure"
+    TestCrackAggregateIncludesCurrentStateFailure stats
     AppendLine stats, "RUN: TestFormulaChecksDoNotCreateNumFail"
     TestFormulaChecksDoNotCreateNumFail stats
     AppendLine stats, "RUN: TestSectionStateResultStoresEquilibriumData"
@@ -4600,6 +4602,37 @@ Private Sub TestCombinationResultTreeDrivesDisplayFields(ByRef stats As TBatchTe
         InStr(1, baseResult.StrengthMeta.ResultComment, "НДС: Проверка не проходит.", vbTextCompare) > 0 And _
         InStr(1, baseResult.StrengthMeta.ResultComment, _
             "Несущая: Несущая способность не проходит уже для исходной части выбранного пути", vbTextCompare) > 0
+End Sub
+
+' Проверяет, что общий статус detailed-блока трещин не скрывает ошибку
+' обязательного CurrentCrackedState. Формульные проверки при такой ошибке
+' остаются N/A/blocked, но сводный crack-meta обязан сохранить NumFail/InputErr/CalcErr.
+Private Sub TestCrackAggregateIncludesCurrentStateFailure(ByRef stats As TBatchTestStats)
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+
+    Dim currentStateMeta As CResultMeta
+    Set currentStateMeta = New CResultMeta
+    currentStateMeta.SetResult rsNumericalFailure, rcNumericalFailure, rkDirectState, _
+        "CrackedState от заданного сочетания не найден численно."
+
+    Dim crackTree As CCrackResult
+    Set crackTree = New CCrackResult
+    crackTree.Initialize Nothing, currentStateMeta, Nothing, Nothing
+
+    Dim result As CCombinationResult
+    Set result = New CCombinationResult
+    result.Clear "LambdaMxy"
+    result.StoreCrackAggregateResult crackTree
+
+    AssertEquals stats, "combinationTree.crack.currentState.meta", _
+        policy.ExternalStatus(result.CrackCurrentStateMeta), "NumFail"
+    AssertEquals stats, "combinationTree.crack.aggregate.currentStateFailure", _
+        policy.ExternalStatus(result.CrackMeta), "NumFail"
+    AssertEquals stats, "combinationTree.crack.flat.currentStateFailure", _
+        result.CrackStatus, "NumFail"
+    AssertTrue stats, "combinationTree.crack.comment.currentStateFailure", _
+        InStr(1, result.CrackMeta.ResultComment, "CrackedState от заданного сочетания", vbTextCompare) > 0
 End Sub
 
 ' Проверяет, что проверки без поиска равновесия не создают NumFail.

@@ -301,32 +301,32 @@ Public Property Get CrackMeta() As CResultMeta
     Dim formationMeta As CResultMeta
     Set formationMeta = CrackFormationMeta
 
-    Dim currentStatePhysicalFailure As CResultMeta
-    Set currentStatePhysicalFailure = CrackCurrentPhysicalFailureMeta()
+    Dim currentStateProblem As CResultMeta
+    Set currentStateProblem = CrackCurrentProblemMeta()
 
     If IsProblemStatus(Policy.ExternalStatus(formationMeta)) Then
         Set CrackMeta = AggregateResultMeta(rkCrackFormation, BuildCrackResultComment(), formationMeta)
     ElseIf CrackFormationNotReached(formationMeta) Then
-        If currentStatePhysicalFailure Is Nothing Then
+        If currentStateProblem Is Nothing Then
             Set CrackMeta = AggregateResultMeta(rkCrackFormation, BuildCrackResultComment(), formationMeta)
         Else
             Set CrackMeta = AggregateResultMeta(rkCrackFormation, BuildCrackResultComment(), _
-                formationMeta, currentStatePhysicalFailure)
+                formationMeta, currentStateProblem)
         End If
     ElseIf CrackFormed Then
-        If currentStatePhysicalFailure Is Nothing Then
+        If currentStateProblem Is Nothing Then
             Set CrackMeta = AggregateResultMeta(rkCrackWidth, BuildCrackResultComment(), CrackWidthMeta)
         Else
             Set CrackMeta = AggregateResultMeta(rkCrackWidth, BuildCrackResultComment(), _
-                currentStatePhysicalFailure, CrackWidthMeta)
+                currentStateProblem, CrackWidthMeta)
         End If
     Else
-        If currentStatePhysicalFailure Is Nothing Then
+        If currentStateProblem Is Nothing Then
             Set CrackMeta = AggregateResultMeta(rkCrackWidth, BuildCrackResultComment(), _
                 formationMeta, CrackWidthMeta)
         Else
             Set CrackMeta = AggregateResultMeta(rkCrackWidth, BuildCrackResultComment(), _
-                formationMeta, currentStatePhysicalFailure, CrackWidthMeta)
+                formationMeta, currentStateProblem, CrackWidthMeta)
         End If
     End If
 End Property
@@ -529,17 +529,16 @@ Private Function CrackFormationNotReached(ByVal meta As CResultMeta) As Boolean
         (meta.ResultCode = rcCriterionNotReached Or meta.ResultCode = rcCrackNotFormed))
 End Function
 
-' Возвращает physical FAIL текущего CrackedState, если равновесие найдено только за пределами
-' физической диаграммы. Численная несходимость этого состояния остается в своем отдельном
-' столбце подробного вывода и не подменяет статус формульного расчета ширины трещины.
-Private Function CrackCurrentPhysicalFailureMeta() As CResultMeta
+' Возвращает проблемный meta текущего CrackedState, если обязательное НДС для
+' трещин не получено или найдено только за пределами физической диаграммы.
+' Формульная ширина при этом остается отдельным result-subtree, но общий crack-
+' статус не должен скрывать ошибку обязательного состояния.
+Private Function CrackCurrentProblemMeta() As CResultMeta
     Dim meta As CResultMeta
     Set meta = CrackCurrentStateMeta
     If meta Is Nothing Then Exit Function
 
-    If meta.InternalStatus = rsCheckFailed And meta.ResultCode = rcStateOutsidePhysicalRange Then
-        Set CrackCurrentPhysicalFailureMeta = meta.Clone
-    End If
+    Set CrackCurrentProblemMeta = FirstProblemMeta(meta)
 End Function
 
 ' Добавляет комментарий для проблемного результата или успешного результата с
