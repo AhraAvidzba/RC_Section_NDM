@@ -111,6 +111,44 @@ Public Sub InitializeCrackFormation(ByVal crackCalculator As CCrackWidthCalculat
     mResultKind = rkCrackFormation
 End Sub
 
+' Заполняет request уже готовой доменной задачей LimitSearch.
+' Этот вход нужен для контрактных тестов и будущих инженерных задач, где
+' callback-объект уже создан снаружи. Он не заменяет строгие доменные
+' фабрики Capacity/CrackFormation: те по-прежнему проверяют обязательные
+' материалы и расчетную модель.
+Public Sub InitializeWithProblem(ByVal problem As ILimitSearchProblem, _
+        ByVal resultKind As EResultKind, ByVal solutionStrategy As String, _
+        ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, _
+        ByVal myOffset As Double, ByVal myBase As Double, _
+        Optional ByVal crackFormationPath As String = vbNullString)
+    If problem Is Nothing Then Err.Raise vbObjectError + 4208, _
+        "CLimitSearchRequest", "Не передана доменная задача LimitSearch."
+
+    Set mProblem = problem
+    Set mSection = Nothing
+    Set mConcreteMaterial = Nothing
+    Set mSteelMaterial = Nothing
+    mSolutionStrategy = Trim$(solutionStrategy)
+    mNOffset = nOffset
+    mNBase = nBase
+    mMxOffset = mxOffset
+    mMxBase = mxBase
+    mMyOffset = myOffset
+    mMyBase = myBase
+    mForceOnly = False
+    mPureAxialForMethod = False
+    mResultKind = resultKind
+    mCrackFormationPath = Trim$(crackFormationPath)
+    mTargetN = 0#
+    mTargetMx = 0#
+    mTargetMy = 0#
+    mMomentMxAtReference = 0#
+    mMomentMyAtReference = 0#
+    mReferenceX = 0#
+    mReferenceY = 0#
+End Sub
+
 Public Property Get Problem() As ILimitSearchProblem
     Set Problem = mProblem
 End Property

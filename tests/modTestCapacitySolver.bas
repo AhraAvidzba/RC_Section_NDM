@@ -61,6 +61,10 @@ Public Function RunCapacitySolverTests() As String
     TestLoadMultiplierWithWorkbookTfDefaults stats
     AppendLine stats, "RUN: TestLoadMultiplierSearchMethods"
     TestLoadMultiplierSearchMethods stats
+    AppendLine stats, "RUN: TestLimitSearchSecantFinalizesCheckedRoot"
+    TestLimitSearchSecantFinalizesCheckedRoot stats
+    AppendLine stats, "RUN: TestLimitSearchBisectionIterationLimitFails"
+    TestLimitSearchBisectionIterationLimitFails stats
     AppendLine stats, "RUN: TestCapacityLoadPathMethodMatrix"
     TestCapacityLoadPathMethodMatrix stats
     AppendLine stats, "RUN: TestCapacityLoadPathZeroComponentMatrix"
@@ -813,6 +817,83 @@ Private Sub TestLoadMultiplierSearchMethods(ByRef stats As TCapacityTestStats)
     AssertClose stats, "search.secant.lambda", secant.LambdaUltimate, bisection.LambdaUltimate, 0.02
     AssertEquilibrium stats, "search.brent", brent.LastSolver, -300000#, brent.MxUltimate, 0#
     AssertEquilibrium stats, "search.secant", secant.LastSolver, -300000#, secant.MxUltimate, 0#
+End Sub
+
+' Проверяет дефект T01: Secant обязан финализировать именно проверенную точку,
+' где целевая функция стала нулевой, а не старую нижнюю границу скобки.
+Private Sub TestLimitSearchSecantFinalizesCheckedRoot(ByRef stats As TCapacityTestStats)
+    On Error GoTo Failed
+    Dim stage As String
+
+    stage = "configure"
+    Dim problem As CTestLimitSearchProblem
+    Set problem = New CTestLimitSearchProblem
+    problem.Configure "Secant", 0.75, 0.000000001, 8, 1#, 16#, rkCapacity
+
+    stage = "request"
+    Dim request As CLimitSearchRequest
+    Set request = New CLimitSearchRequest
+    Dim callback As ILimitSearchProblem
+    Set callback = problem
+    request.InitializeWithProblem callback, rkCapacity, "LoadMultiplier", _
+        0#, 1#, 0#, 0#, 0#, 0#
+
+    stage = "execute"
+    Dim search As CLoadMultiplierSearch
+    Set search = New CLoadMultiplierSearch
+    Dim result As CLimitSearchResult
+    Set result = search.ExecuteCapacity(request)
+
+    stage = "assert"
+    AssertTrue stats, "limitSearch.secant.resultObject", Not result Is Nothing
+    AssertTrue stats, "limitSearch.secant.converged", problem.Converged
+    AssertEquals stats, "limitSearch.secant.method", problem.FinalMethod, "Secant"
+    AssertClose stats, "limitSearch.secant.root", problem.FinalLambda, 0.75, 0.000000001
+    Exit Sub
+
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: limitSearch.secant.runtime; stage=" & stage & _
+        "; error=" & CStr(Err.Number) & "; description=" & Err.Description
+End Sub
+
+' Проверяет дефект T02: если bisection остановлен лимитом итераций до достижения
+' допуска, общий search не должен выдавать недоточненную границу как найденный предел.
+Private Sub TestLimitSearchBisectionIterationLimitFails(ByRef stats As TCapacityTestStats)
+    On Error GoTo Failed
+    Dim stage As String
+
+    stage = "configure"
+    Dim problem As CTestLimitSearchProblem
+    Set problem = New CTestLimitSearchProblem
+    problem.Configure "Bisection", 0.2, 0.001, 1, 1#, 16#, rkCrackFormation
+
+    stage = "request"
+    Dim request As CLimitSearchRequest
+    Set request = New CLimitSearchRequest
+    Dim callback As ILimitSearchProblem
+    Set callback = problem
+    request.InitializeWithProblem callback, rkCrackFormation, "LoadMultiplier", _
+        0#, 1#, 0#, 0#, 0#, 0#, "LambdaMxy"
+
+    stage = "execute"
+    Dim search As CLoadMultiplierSearch
+    Set search = New CLoadMultiplierSearch
+    Dim result As CLimitSearchResult
+    Set result = search.ExecuteCrackFormation(request)
+
+    stage = "assert"
+    AssertTrue stats, "limitSearch.bisection.resultObject", Not result Is Nothing
+    AssertTrue stats, "limitSearch.bisection.iterationLimitHit", problem.IterationLimitHit
+    AssertTrue stats, "limitSearch.bisection.notConverged", Not problem.Converged
+    AssertEquals stats, "limitSearch.bisection.limitState", problem.LimitState, "NumericalFailure"
+    AssertTrue stats, "limitSearch.bisection.noFakeLimit", Abs(problem.FinalLambda) <= 0.000000001
+    Exit Sub
+
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: limitSearch.bisection.runtime; stage=" & stage & _
+        "; error=" & CStr(Err.Number) & "; description=" & Err.Description
 End Sub
 
 ' Проверяет все пользовательские траектории CapacityLoadPath на всех
