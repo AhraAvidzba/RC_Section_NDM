@@ -312,3 +312,30 @@ regression-отчеты.
   `tools/build_workbook/Run-CapacityTests.ps1`: `passed=923`, `failed=0`.
 - 2026-09-29: этот же срез этапа 5 прошел
   `tools/build_workbook/Run-BatchTests.ps1`: `passed=631`, `failed=0`.
+
+## Финальное закрытие post-refactoring audit (2026-10-01)
+
+### Completed
+- Закрыт audit по `docs/NDM_PostRefactoring_Audit_2026-09-30.md`: пункты T01-T08 и A01-A06 проверены по финальному коду.
+- Исправлено regression-падение capacity-тестов после перехода на общий `CStateSolutionRunner`: runner снова принимает общий материал solver-а, а specialized active-set/extension подсказки применяет только для `CMaterialDiagram`.
+- Добавлен итоговый self-audit: `docs/NDM_PostRefactoring_Audit_Closure_2026-10-01.md`.
+
+### In progress
+- Нет незавершенной работы в рамках текущего audit.
+
+### Next
+- Новые архитектурные задачи начинать только отдельным этапом после отдельного пользовательского задания.
+
+### Known risks
+- Не выявлено известных противоречий с v6/migration plan по цепочкам `State solve -> Search -> Engineering result`, `InternalStatus/ResultCode -> CResultStatusPolicy -> ExternalStatus`, `StateRepository -> reusable final states`.
+- `git status` может показывать `src/Solver/CCapacitySolver.cls` как modified из-за невозможности обновить index stat внутри sandbox; `git hash-object` совпадает с `HEAD`, текстового diff нет.
+
+### Important decisions
+- Неуспешные solve не становятся reusable physical state.
+- Writer-ы не формируют инженерские статусы и комментарии заново, а читают `ResultMeta`.
+- `BaseFail` остается только внешним отображением для Capacity при `rsCheckFailed + INITIAL_STATE_BEYOND_LIMIT`.
+- Для тестовых линейных материалов runner не использует `CMaterialDiagram`-specific проверки физического диапазона.
+
+### Last verified
+- `tools/build_workbook/Build-Workbook.ps1`: OK.
+- `tools/build_workbook/Run-AllTests.ps1`: `TOTAL passed=496; failed=0`; `TOTAL_CAPACITY passed=934; failed=0`; `TOTAL_CRACK passed=328; failed=0`; `TOTAL_BATCH passed=659; failed=0`; `TOTAL_WORKBOOK_UI passed=308; failed=0`; `TOTAL_REGRESSION_BASELINE passed=39; failed=0`.

@@ -71,7 +71,7 @@ End Sub
 ' а разрешение на вторую серию стартов, если первая попытка CSectionSolver не
 ' нашла равновесие. Сами диаграммы при этом уже переданы снаружи.
 Public Sub Solve(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         Optional ByVal allowExtensionWarmStart As Boolean = False)
     SolveWithInitialSolver section, concreteMaterial, steelMaterial, _
@@ -84,7 +84,7 @@ End Sub
 ' диагностику и fallback-логику, что и обычные Strength/CrackedState, но могут
 ' стартовать от близкого физического состояния на том же уровне нагрузки.
 Public Sub SolveWithInitialSolver(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal initialSolver As CSectionSolver, _
         Optional ByVal allowExtensionWarmStart As Boolean = False)
@@ -135,7 +135,7 @@ End Sub
 ' новой target-точке. Warm-start остается solve-option и не попадает в
 ' repository/reuse-ключи.
 Public Sub SolveWithInitialLoadState(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
         ByVal initialN As Double, ByVal initialMx As Double, ByVal initialMy As Double, _
@@ -181,7 +181,7 @@ End Sub
 ' диаграммы около нуля, но все остальные настройки solver-а и диагностика
 ' остаются в общем CStateSolutionRunner.
 Public Sub SolveWithDirectTargetGuess(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         Optional ByVal diagnosticLine As String = vbNullString)
     If section Is Nothing Then Err.Raise vbObjectError + 3486, "CStateSolutionRunner", "Модель сечения не передана."
@@ -194,19 +194,23 @@ Public Sub SolveWithDirectTargetGuess(ByVal section As CSectionModel, _
     Set service = New CSectionSolver
     ConfigureSolver service
 
+    Dim concreteDiagram As CMaterialDiagram
+    Dim steelDiagram As CMaterialDiagram
     Dim guessBuilder As CStateGuessBuilder
     Dim eps0 As Double
     Dim kx As Double
     Dim ky As Double
-    Set guessBuilder = New CStateGuessBuilder
-    If guessBuilder.BuildForDirectState(section, concreteMaterial, steelMaterial, _
-            targetN, targetMx, targetMy, eps0, kx, ky) Then
-        service.SetInitialLoadState eps0, kx, ky, targetN, targetMx, targetMy
-        mInitialGuessApplied = True
-        If Len(diagnosticLine) > 0 Then
-            AppendDiagnostic diagnosticLine
-        Else
-            AppendDiagnostic "initialGuess=directTargetActiveSet"
+    If TryGetMaterialDiagrams(concreteMaterial, steelMaterial, concreteDiagram, steelDiagram) Then
+        Set guessBuilder = New CStateGuessBuilder
+        If guessBuilder.BuildForDirectState(section, concreteDiagram, steelDiagram, _
+                targetN, targetMx, targetMy, eps0, kx, ky) Then
+            service.SetInitialLoadState eps0, kx, ky, targetN, targetMx, targetMy
+            mInitialGuessApplied = True
+            If Len(diagnosticLine) > 0 Then
+                AppendDiagnostic diagnosticLine
+            Else
+                AppendDiagnostic "initialGuess=directTargetActiveSet"
+            End If
         End If
     End If
 
@@ -231,12 +235,16 @@ End Sub
 ' внецентренное растяжение/сжатие получает тот же устойчивый старт, который уже
 ' помогал чистому изгибу, без изменения результата успешно сходящихся LC.
 Private Function TrySolveWithDirectStateGuess(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByRef service As CSectionSolver) As Boolean
     If mInitialGuessApplied Then Exit Function
     If mMaxIterations <= 1 Then Exit Function
     If Sqr(targetMx * targetMx + targetMy * targetMy) <= NEAR_ZERO Then Exit Function
+
+    Dim concreteDiagram As CMaterialDiagram
+    Dim steelDiagram As CMaterialDiagram
+    If Not TryGetMaterialDiagrams(concreteMaterial, steelMaterial, concreteDiagram, steelDiagram) Then Exit Function
 
     Dim guessBuilder As CStateGuessBuilder
     Set guessBuilder = New CStateGuessBuilder
@@ -244,7 +252,7 @@ Private Function TrySolveWithDirectStateGuess(ByVal section As CSectionModel, _
     Dim eps0 As Double
     Dim kx As Double
     Dim ky As Double
-    If Not guessBuilder.BuildForDirectState(section, concreteMaterial, steelMaterial, _
+    If Not guessBuilder.BuildForDirectState(section, concreteDiagram, steelDiagram, _
             targetN, targetMx, targetMy, eps0, kx, ky) Then
         Exit Function
     End If
@@ -269,7 +277,7 @@ End Function
 ' состояние, используем его как warm start. Иначе включается обычный общий
 ' подбор стартовой плоскости через CStateGuessBuilder.
 Private Sub ApplyInitialSolverOrGuess(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal initialSolver As CSectionSolver, ByVal solver As CSectionSolver)
     If Not initialSolver Is Nothing Then
@@ -311,18 +319,22 @@ End Sub
 ' стартовой точкой. Чаще всего это чистый изгиб: при N=0 первая
 ' итерация попадает ровно в излом бетонной диаграммы около нуля.
 Private Sub ApplyInitialGuess(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal solver As CSectionSolver)
     If Abs(targetN) > NEAR_ZERO Then Exit Sub
     If Sqr(targetMx * targetMx + targetMy * targetMy) <= NEAR_ZERO Then Exit Sub
+
+    Dim concreteDiagram As CMaterialDiagram
+    Dim steelDiagram As CMaterialDiagram
+    If Not TryGetMaterialDiagrams(concreteMaterial, steelMaterial, concreteDiagram, steelDiagram) Then Exit Sub
 
     Dim guessBuilder As CStateGuessBuilder
     Dim eps0 As Double
     Dim kx As Double
     Dim ky As Double
     Set guessBuilder = New CStateGuessBuilder
-    If guessBuilder.BuildForDirectState(section, concreteMaterial, steelMaterial, _
+    If guessBuilder.BuildForDirectState(section, concreteDiagram, steelDiagram, _
             targetN, targetMx, targetMy, eps0, kx, ky) Then
         solver.SetInitialState eps0, kx, ky
         mInitialGuessApplied = True
@@ -334,9 +346,13 @@ End Sub
 ' technical extension. Здесь находится управление retry: builder только дает
 ' eps0/kx/ky, а runner запускает новый CSectionSolver и проверяет сходимость.
 Private Function TrySolveWithExtensionWarmStart(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByRef service As CSectionSolver) As Boolean
+    Dim concreteDiagram As CMaterialDiagram
+    Dim steelDiagram As CMaterialDiagram
+    If Not TryGetMaterialDiagrams(concreteMaterial, steelMaterial, concreteDiagram, steelDiagram) Then Exit Function
+
     Dim guessBuilder As CStateGuessBuilder
     Set guessBuilder = New CStateGuessBuilder
 
@@ -347,7 +363,7 @@ Private Function TrySolveWithExtensionWarmStart(ByVal section As CSectionModel, 
 
     For attemptIndex = 1 To guessBuilder.ExtensionAttemptCount
         If guessBuilder.BuildAttemptForExtensionState(attemptIndex, section, service, _
-                concreteMaterial, steelMaterial, targetN, targetMx, targetMy, eps0, kx, ky) Then
+                concreteDiagram, steelDiagram, targetN, targetMx, targetMy, eps0, kx, ky) Then
             If TrySolveFromExtensionGuess(section, concreteMaterial, steelMaterial, _
                     targetN, targetMx, targetMy, eps0, kx, ky, _
                     guessBuilder.ExtensionAttemptName(attemptIndex), service) Then
@@ -363,7 +379,7 @@ End Function
 ' line search, и только после этого идем ступенями от усилий, которые уже
 ' создает стартовая плоскость.
 Private Function TrySolveFromExtensionGuess(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
         ByVal attemptName As String, ByRef service As CSectionSolver) As Boolean
@@ -399,7 +415,7 @@ End Function
 ' прикладывать ступени до полного target. Это позволяет идти от близкого
 ' extension-состояния, а не от нулевой нагрузки с чужой деформированной формой.
 Private Function TryRunRetry(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
         ByVal initialN As Double, ByVal initialMx As Double, ByVal initialMy As Double, _
@@ -432,13 +448,17 @@ End Function
 ' provider-ом technical extension. Этот признак сохраняется в Results отдельно
 ' от пользовательского статуса и нужен схеме, AutoCAD и расчету трещин.
 Private Function StateUsesExtension(ByVal section As CSectionModel, ByVal solver As CSectionSolver, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram) As Boolean
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object) As Boolean
+    Dim concreteDiagram As CMaterialDiagram
+    Dim steelDiagram As CMaterialDiagram
+    If Not TryGetMaterialDiagrams(concreteMaterial, steelMaterial, concreteDiagram, steelDiagram) Then Exit Function
+
     Dim i As Long
     Dim strain As Double
 
     For i = 1 To section.ConcreteCount
         strain = ElementStrain(solver, section.ConcreteX(i), section.ConcreteY(i))
-        If concreteMaterial.IsInExtensionRange(strain) Then
+        If concreteDiagram.IsInExtensionRange(strain) Then
             StateUsesExtension = True
             Exit Function
         End If
@@ -446,7 +466,7 @@ Private Function StateUsesExtension(ByVal section As CSectionModel, ByVal solver
 
     For i = 1 To section.RebarCount
         strain = ElementStrain(solver, section.RebarX(i), section.RebarY(i))
-        If steelMaterial.IsInExtensionRange(strain) Then
+        If steelDiagram.IsInExtensionRange(strain) Then
             StateUsesExtension = True
             Exit Function
         End If
@@ -458,21 +478,43 @@ End Function
 ' предела, положительные деформации бетона считаются допустимыми для проверки
 ' range, но дают нулевое напряжение через саму диаграмму.
 Private Function StateWithinPhysicalRange(ByVal section As CSectionModel, ByVal solver As CSectionSolver, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram) As Boolean
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object) As Boolean
+    Dim concreteDiagram As CMaterialDiagram
+    Dim steelDiagram As CMaterialDiagram
+    If Not TryGetMaterialDiagrams(concreteMaterial, steelMaterial, concreteDiagram, steelDiagram) Then
+        StateWithinPhysicalRange = True
+        Exit Function
+    End If
+
     Dim i As Long
     Dim strain As Double
 
     For i = 1 To section.ConcreteCount
         strain = ElementStrain(solver, section.ConcreteX(i), section.ConcreteY(i))
-        If Not concreteMaterial.IsInPhysicalRange(strain) Then Exit Function
+        If Not concreteDiagram.IsInPhysicalRange(strain) Then Exit Function
     Next i
 
     For i = 1 To section.RebarCount
         strain = ElementStrain(solver, section.RebarX(i), section.RebarY(i))
-        If Not steelMaterial.IsInPhysicalRange(strain) Then Exit Function
+        If Not steelDiagram.IsInPhysicalRange(strain) Then Exit Function
     Next i
 
     StateWithinPhysicalRange = True
+End Function
+
+' Возвращает штатные диаграммы материалов, если они действительно переданы.
+' Тестовые линейные материалы решаются тем же CSectionSolver, но без
+' специализированных active-set и extension-подсказок, потому что у них нет
+' физических границ диаграммы.
+Private Function TryGetMaterialDiagrams(ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByRef concreteDiagram As CMaterialDiagram, ByRef steelDiagram As CMaterialDiagram) As Boolean
+    If concreteMaterial Is Nothing Or steelMaterial Is Nothing Then Exit Function
+    If TypeName(concreteMaterial) <> "CMaterialDiagram" Then Exit Function
+    If TypeName(steelMaterial) <> "CMaterialDiagram" Then Exit Function
+
+    Set concreteDiagram = concreteMaterial
+    Set steelDiagram = steelMaterial
+    TryGetMaterialDiagrams = True
 End Function
 
 ' Вычисляет деформацию произвольной точки по найденной solver-плоскости
