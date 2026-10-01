@@ -1,0 +1,5 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: FFBE20A180639A22F42467C1FEB0D53B4CBBE3F6ED53BDBA24C352032880ED11
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8da693289e544f0fbb6c5cc331b8cac8\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+SCRIPT ERROR: Exception calling "Run" with "1" argument(s): "Не удается выполнить макрос "'RC_Section_NDM.xlsm'!modTestBatchCalculation.RunAllBatchCalculationTestsReport". Возможно, этот макрос отсутствует в текущей книге либо все макросы отключены."

@@ -1,0 +1,5 @@
+C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\Run-Audit02ModeTests.ps1 : The RPC ser
+ver is unavailable. (Exception from HRESULT: 0x800706BA)
+    + CategoryInfo          : OperationStopped: (:) [Run-Audit02ModeTests.ps1], COMException
+    + FullyQualifiedErrorId : System.Runtime.InteropServices.COMException,Run-Audit02ModeTests.ps1
+ 

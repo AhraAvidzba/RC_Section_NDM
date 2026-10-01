@@ -25,6 +25,7 @@ Private mProblem As ILimitSearchProblem ' Общий callback инженерно
 Private mSection As CSectionModel ' Расчетная модель сечения, общая для всех lambda-проб.
 Private mConcreteMaterial As Object ' Диаграмма бетона для выбранной инженерной задачи.
 Private mSteelMaterial As Object ' Диаграмма арматуры для выбранной инженерной задачи.
+Private mMaterialSpec As CMaterialModelSpec ' Спецификация для снимка конечного named-state, не для выбора критерия.
 Private mSolutionStrategy As String ' Auto, UltimateStrain или LoadMultiplier.
 Private mNOffset As Double ' Постоянная часть N в траектории N = N0 + lambda*Nbase.
 Private mNBase As Double ' Масштабируемая часть N в lambda-траектории.
@@ -53,7 +54,8 @@ Public Sub InitializeCapacity(ByVal capacitySolver As CCapacitySolver, _
         ByVal nOffset As Double, ByVal nBase As Double, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
         ByVal myOffset As Double, ByVal myBase As Double, _
-        ByVal forceOnly As Boolean, ByVal pureAxialForMethod As Boolean)
+        ByVal forceOnly As Boolean, ByVal pureAxialForMethod As Boolean, _
+        Optional ByVal materialSpec As CMaterialModelSpec = Nothing)
     If capacitySolver Is Nothing Then Err.Raise vbObjectError + 4200, "CLimitSearchRequest", "Не передан solver поиска несущей способности."
     If section Is Nothing Then Err.Raise vbObjectError + 4201, "CLimitSearchRequest", "Не передана модель сечения для limit-search."
     If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 4202, "CLimitSearchRequest", "Не передана диаграмма бетона для limit-search."
@@ -66,6 +68,8 @@ Public Sub InitializeCapacity(ByVal capacitySolver As CCapacitySolver, _
     Set mSection = section
     Set mConcreteMaterial = concreteMaterial
     Set mSteelMaterial = steelMaterial
+    Set mMaterialSpec = Nothing
+    If Not materialSpec Is Nothing Then Set mMaterialSpec = materialSpec.Clone
     mSolutionStrategy = Trim$(solutionStrategy)
     mNOffset = nOffset
     mNBase = nBase
@@ -101,6 +105,7 @@ Public Sub InitializeCrackFormation(ByVal crackCalculator As CCrackFormationCalc
     Set mSteelMaterial = steelMaterial
     mSolutionStrategy = Trim$(solutionStrategy)
     mCrackFormationPath = Trim$(crackFormationPath)
+    Set mMaterialSpec = Nothing
     mTargetN = targetN
     mTargetMx = targetMx
     mTargetMy = targetMy
@@ -129,6 +134,7 @@ Public Sub InitializeWithProblem(ByVal problem As ILimitSearchProblem, _
     Set mSection = Nothing
     Set mConcreteMaterial = Nothing
     Set mSteelMaterial = Nothing
+    Set mMaterialSpec = Nothing
     mSolutionStrategy = Trim$(solutionStrategy)
     mNOffset = nOffset
     mNBase = nBase
@@ -155,6 +161,12 @@ End Property
 
 Public Property Get Section() As CSectionModel
     Set Section = mSection
+End Property
+
+' Возвращает небольшой снимок модели конечного состояния. Низкоуровневые
+' задачи с тестовым Object material API могут не иметь profile-spec.
+Public Property Get MaterialSpec() As CMaterialModelSpec
+    If Not mMaterialSpec Is Nothing Then Set MaterialSpec = mMaterialSpec.Clone
 End Property
 
 Public Property Get ConcreteMaterial() As Object

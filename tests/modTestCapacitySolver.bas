@@ -67,6 +67,8 @@ Public Function RunCapacitySolverTests() As String
     TestLimitSearchBisectionIterationLimitFails stats
     AppendLine stats, "RUN: TestAudit02GenericUltimateSearch"
     TestAudit02GenericUltimateSearch stats
+    AppendLine stats, "RUN: TestAudit02GenericLoadMultiplierMatrix"
+    TestAudit02GenericLoadMultiplierMatrix stats
     AppendLine stats, "RUN: TestCapacityLoadPathMethodMatrix"
     TestCapacityLoadPathMethodMatrix stats
     AppendLine stats, "RUN: TestCapacityLoadPathZeroComponentMatrix"
@@ -459,6 +461,8 @@ Private Sub TestLoadMultiplierPureBendingUsesStateGuess(ByRef stats As TCapacity
     cap.SolverMaxIterations = 1
     cap.MaxRetries = 1
     cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), 0#, -10000000#, 0#
+
+    If Not cap.Converged Then AppendLine stats, "DIAGNOSTIC pureBendingGuess: " & cap.StopReason & vbCrLf & cap.DiagnosticLog
 
     AssertTrue stats, "capacity.pureBendingGuess.converged", cap.Converged
     AssertTrue stats, "capacity.pureBendingGuess.physical", IsPhysicalLimitState(cap.LimitState)
@@ -853,7 +857,7 @@ Private Sub TestLimitSearchSecantFinalizesCheckedRoot(ByRef stats As TCapacityTe
     Dim search As CLoadMultiplierSearch
     Set search = New CLoadMultiplierSearch
     Dim result As CLimitSearchResult
-    Set result = search.ExecuteCapacity(request)
+    Set result = search.Execute(request)
 
     stage = "assert"
     AssertTrue stats, "limitSearch.secant.resultObject", Not result Is Nothing
@@ -891,7 +895,7 @@ Private Sub TestLimitSearchBisectionIterationLimitFails(ByRef stats As TCapacity
     Dim search As CLoadMultiplierSearch
     Set search = New CLoadMultiplierSearch
     Dim result As CLimitSearchResult
-    Set result = search.ExecuteCrackFormation(request)
+    Set result = search.Execute(request)
 
     stage = "assert"
     AssertTrue stats, "limitSearch.bisection.resultObject", Not result Is Nothing
@@ -1312,8 +1316,7 @@ Private Sub TestInitialLambdaFailureStatusMapping(ByRef stats As TCapacityTestSt
     numericalCap.LimitSearchHandleCapacityInitialFailure "NumericalFailure"
 
     Dim numericalResult As CLimitSearchResult
-    Set numericalResult = New CLimitSearchResult
-    numericalResult.InitializeFromCapacitySolver numericalCap, "LoadMultiplier"
+    Set numericalResult = Audit02CapacitySnapshot(numericalCap, "LoadMultiplier")
     AssertEquals stats, "capacity.initialLambda.numerical.external", _
         policy.ExternalStatus(numericalResult.Meta), "NumFail"
 
@@ -1322,8 +1325,7 @@ Private Sub TestInitialLambdaFailureStatusMapping(ByRef stats As TCapacityTestSt
     physicalCap.LimitSearchHandleCapacityInitialFailure "ConcreteStrainLimit"
 
     Dim physicalResult As CLimitSearchResult
-    Set physicalResult = New CLimitSearchResult
-    physicalResult.InitializeFromCapacitySolver physicalCap, "LoadMultiplier"
+    Set physicalResult = Audit02CapacitySnapshot(physicalCap, "LoadMultiplier")
     AssertEquals stats, "capacity.initialLambda.physical.external", _
         policy.ExternalStatus(physicalResult.Meta), "BaseFail"
 End Sub
@@ -1620,8 +1622,7 @@ Private Sub TestAudit02CapacitySearchBoundary(ByRef stats As TCapacityTestStats)
             AssertTrue stats, prefix & ".boundFlag", cap.SearchBoundReached
             AssertClose stats, prefix & ".notCapacity", cap.LambdaUltimate, 0#, 0#
             Dim searchResult As CLimitSearchResult
-            Set searchResult = New CLimitSearchResult
-            searchResult.InitializeFromCapacitySolver cap, "LoadMultiplier"
+            Set searchResult = Audit02CapacitySnapshot(cap, "LoadMultiplier")
             AssertTrue stats, prefix & ".code", searchResult.Meta.ResultCode = rcSearchBoundReached
         End If
     Next root
@@ -1697,8 +1698,7 @@ Private Sub TestAudit02UnconvergedProbeIsNumerical(ByRef stats As TCapacityTestS
     AssertTrue stats, "audit02.failedProbe.numerical", cap.LimitSearchCapacityStateIsNumericalFailure(probeState)
     cap.LimitSearchHandleCapacityInitialFailure probeState
     Dim result As CLimitSearchResult
-    Set result = New CLimitSearchResult
-    result.InitializeFromCapacitySolver cap, "LoadMultiplier"
+    Set result = Audit02CapacitySnapshot(cap, "LoadMultiplier")
     AssertTrue stats, "audit02.failedProbe.noBaseFail", result.Meta.InternalStatus = rsNumericalFailure
 End Sub
 
@@ -1739,9 +1739,12 @@ End Function
 Private Sub CheckAudit02SearchVsCapacity(ByRef stats As TCapacityTestStats, _
         ByVal cap As CCapacitySolver, ByVal section As CSectionModel, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double)
+    Dim spec As CMaterialModelSpec
+    Set spec = New CMaterialModelSpec
+    spec.Initialize "ULS(I)", "TwoLine", "Ignore", "TwoLine"
     Dim search As CLimitSearchResult
-    Set search = New CLimitSearchResult
-    search.InitializeFromCapacitySolver cap, "LoadMultiplier"
+    Set search = Audit02CapacitySnapshot(cap, "LoadMultiplier", section, _
+        ProvisionalConcrete(), ProvisionalSteel(), spec)
     AssertTrue stats, "audit02.searchEngineering.searchSuccess", search.Meta.InternalStatus = rsSuccess
     AssertTrue stats, "audit02.searchEngineering.searchCode", search.Meta.ResultCode = rcCheckPassed
     AssertTrue stats, "audit02.searchEngineering.searchSucceeded", search.Succeeded
@@ -1751,13 +1754,9 @@ Private Sub CheckAudit02SearchVsCapacity(ByRef stats As TCapacityTestStats, _
     Dim path As CCapacityLoadPath
     Set path = New CCapacityLoadPath
     path.InitializeFromLoadState "lambda*Mxy", loadState
-    Dim spec As CMaterialModelSpec
-    Set spec = New CMaterialModelSpec
-    spec.Initialize "ULS(I)", "TwoLine", "Ignore", "TwoLine"
     Dim result As CCapacityResult
     Set result = New CCapacityResult
-    result.InitializeFromSearch search, path, spec, Nothing, False, 0#, 0#, _
-        Nothing, 300#, 200#, section, ProvisionalConcrete(), ProvisionalSteel()
+    result.InitializeFromSearch search, path, Nothing, False, 0#, 0#, Nothing, 300#, 200#
     AssertTrue stats, "audit02.searchEngineering.capacityFailed", result.ResultMeta.InternalStatus = rsCheckFailed
     AssertEquals stats, "audit02.searchEngineering.capacityDisplay", result.Status, "FAIL"
     AssertClose stats, "audit02.searchEngineering.lambdaUnchanged", result.LambdaCapacity, cap.LambdaUltimate, 0#
@@ -1765,6 +1764,84 @@ Private Sub CheckAudit02SearchVsCapacity(ByRef stats As TCapacityTestStats, _
     Set detachedMeta = search.Meta
     detachedMeta.SetResult rsInternalError, rcInternalError, rkCapacity, "Изменение копии в тесте."
     AssertTrue stats, "audit02.searchEngineering.metaSnapshot", search.Meta.InternalStatus = rsSuccess
+    AssertTrue stats, "audit02.searchEngineering.pointState", Not search.PointState Is Nothing
+    If Not search.PointState Is Nothing Then
+        AssertTrue stats, "audit02.searchEngineering.sharedState", result.StateResult Is search.PointState
+        Dim savedN As Double, savedEps As Double
+        savedN = search.PointState.Nint
+        savedEps = search.PointState.Epsilon0
+        cap.LastSolver.EvaluateStrainPlane section, ProvisionalConcrete(), ProvisionalSteel(), 0#, 0#, 0#
+        AssertClose stats, "audit02.searchEngineering.solverMutation.N", search.NUltimate, savedN, 0#
+        AssertClose stats, "audit02.searchEngineering.solverMutation.plane", search.PointState.Epsilon0, savedEps, 0#
+    End If
+End Sub
+
+' ДЛЯ ТЕСТОВ: собирает capacity-снимок через тот же доменный адаптер, что
+' production Search. Сам общий result не принимает инженерные калькуляторы.
+Private Function Audit02CapacitySnapshot(ByVal cap As CCapacitySolver, ByVal strategy As String, _
+        Optional ByVal section As CSectionModel = Nothing, _
+        Optional ByVal concrete As Object = Nothing, Optional ByVal steel As Object = Nothing, _
+        Optional ByVal spec As CMaterialModelSpec = Nothing) As CLimitSearchResult
+    Dim problem As CCapacityLimitSearchProblem
+    Set problem = New CCapacityLimitSearchProblem
+    problem.Initialize cap
+    Set Audit02CapacitySnapshot = problem.BuildSnapshot(strategy, section, concrete, steel, spec)
+End Function
+
+' ДЛЯ ТЕСТОВ: один generic bracket/recovery работает с обоими видами задачи
+' без железобетонных калькуляторов. Проверяются все одномерные методы,
+' край MaxLambda, отсутствие точки за границей и повторное заполнение result.
+Private Sub TestAudit02GenericLoadMultiplierMatrix(ByRef stats As TCapacityTestStats)
+    Dim kind As Variant, methodName As Variant, root As Variant
+    For Each kind In Array(rkCapacity, rkCrackFormation)
+        For Each methodName In Array("Bisection", "Brent", "Secant")
+            For Each root In Array(0.75, 5.25, 6#, 8#)
+                Dim problem As CTestLimitSearchProblem
+                Set problem = New CTestLimitSearchProblem
+                problem.Configure CStr(methodName), CDbl(root), 0.000001, 80, 1#, 6#, CLng(kind)
+                Dim request As CLimitSearchRequest
+                Set request = New CLimitSearchRequest
+                request.InitializeWithProblem problem, CLng(kind), "LoadMultiplier", 0#, 1#, 0#, 0#, 0#, 0#
+                Dim search As CLoadMultiplierSearch
+                Set search = New CLoadMultiplierSearch
+                Dim result As CLimitSearchResult
+                Set result = search.Execute(request)
+                Dim prefix As String
+                prefix = "audit02.genericMultiplier." & CStr(kind) & "." & CStr(methodName) & "." & CStr(root)
+                If CDbl(root) <= 6# Then
+                    AssertTrue stats, prefix & ".success", result.Succeeded
+                    AssertTrue stats, prefix & ".point", result.HasLimitPoint
+                    AssertClose stats, prefix & ".lambda", result.LambdaUltimate, CDbl(root), 0.000001
+                    AssertClose stats, prefix & ".loads", result.NUltimate, result.LambdaUltimate, 0#
+                    AssertEquals stats, prefix & ".method", result.ActualMethod, CStr(methodName)
+                Else
+                    AssertTrue stats, prefix & ".boundCode", result.Meta.ResultCode = rcSearchBoundReached
+                    AssertTrue stats, prefix & ".noPoint", Not result.HasLimitPoint
+                    AssertClose stats, prefix & ".noCapacity", result.LambdaUltimate, 0#, 0#
+                    AssertClose stats, prefix & ".maxProbed", problem.ProbeMaxLambda, 6#, 0#
+                End If
+                result.InitializeInvalidConfiguration "Unknown", "Проверка очистки", CLng(kind)
+                AssertTrue stats, prefix & ".resetPoint", Not result.HasLimitPoint
+                AssertTrue stats, prefix & ".resetState", result.PointState Is Nothing
+                AssertTrue stats, prefix & ".resetExecution", Not result.SearchExecuted
+                AssertClose stats, prefix & ".resetLoads", result.NUltimate, 0#, 0#
+            Next root
+        Next methodName
+        Set problem = New CTestLimitSearchProblem
+        problem.Configure "Bisection", 1.1, 0.000001, 80, 1#, 6#, CLng(kind)
+        problem.FailureAbove = 1.2
+        Set request = New CLimitSearchRequest
+        request.InitializeWithProblem problem, CLng(kind), "LoadMultiplier", 0#, 1#, 0#, 0#, 0#, 0#
+        Set result = search.Execute(request)
+        AssertTrue stats, "audit02.genericMultiplier.recovery." & CStr(kind) & ".point", result.HasLimitPoint
+        AssertClose stats, "audit02.genericMultiplier.recovery." & CStr(kind) & ".lambda", result.LambdaUltimate, 1.1, 0.000001
+        AssertTrue stats, "audit02.genericMultiplier.recovery." & CStr(kind) & ".upperFailed", problem.ProbeMaxLambda > 1.2
+    Next kind
+
+    Set request = New CLimitSearchRequest
+    Set result = search.Execute(request)
+    AssertTrue stats, "audit02.genericMultiplier.missingProblem.internal", result.Meta.InternalStatus = rsInternalError
+    AssertTrue stats, "audit02.genericMultiplier.missingProblem.noPoint", Not result.HasLimitPoint
 End Sub
 
 

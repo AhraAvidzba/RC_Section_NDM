@@ -34,14 +34,7 @@ Private mUtilCapacity As Double ' Использование несущей сп
 Private mNUltimate As Double ' Предельная N в точке приложения нагрузки.
 Private mMxUltimate As Double ' Предельный Mx в точке приложения нагрузки.
 Private mMyUltimate As Double ' Предельный My в точке приложения нагрузки.
-Private mCapacityStateN As Double ' Полная N найденного CapacityState во внутреннем начале модели.
-Private mCapacityStateMx As Double ' Полный Mx найденного CapacityState во внутреннем начале модели.
-Private mCapacityStateMy As Double ' Полный My найденного CapacityState во внутреннем начале модели.
 Private mMomentUltimate As Double ' Модуль полного предельного момента в точке приложения нагрузки.
-Private mCapacityStateAvailable As Boolean ' True, если есть найденная плоскость деформаций CapacityState.
-Private mCapacityEpsilon0 As Double ' epsilon0 найденного CapacityState.
-Private mCapacityKappaX As Double ' kappaX найденного CapacityState.
-Private mCapacityKappaY As Double ' kappaY найденного CapacityState.
 Private mPureAxialForMethod As Boolean ' True, если capacity-calculator выбрал осевую численную ветку после переноса нагрузок к центру.
 Private mResultMeta As CResultMeta ' Типизированный статус CapacityResult для общего result/status слоя.
 
@@ -56,12 +49,12 @@ End Sub
 ' Даже при numerical/input failure объект остается заполненным: batch получает
 ' единый контейнер и не разбирает поля CCapacitySolver вручную.
 Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
-        ByVal loadPath As CCapacityLoadPath, ByVal strengthSpec As CMaterialModelSpec, _
+        ByVal loadPath As CCapacityLoadPath, _
         ByVal statusPolicy As CBatchStatusPolicy, ByVal pureAxialForMethod As Boolean, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
         ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepthForMx As Double, _
-        ByVal concreteDepthForMy As Double, ByVal section As CSectionModel, _
-        ByVal concreteMaterial As Object, ByVal steelMaterial As Object)
+        ByVal concreteDepthForMy As Double)
+    ResetNumericSnapshot
     Set mSearchResult = searchResult
     mPureAxialForMethod = pureAxialForMethod
     If loadPath Is Nothing Then
@@ -99,7 +92,7 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
     StoreUltimateVector loadPath, loadReferenceX, loadReferenceY, momentFilter, _
         concreteDepthForMx, concreteDepthForMy
     StoreUtilization
-    StoreCapacityStateIfAvailable strengthSpec, section, concreteMaterial, steelMaterial
+    StoreCapacityStateIfAvailable
 End Sub
 
 ' Заполняет результат ошибкой входных данных до запуска search.
@@ -145,28 +138,30 @@ End Function
 Private Sub InitializeEarlyResult(ByVal internalStatus As EResultInternalStatus, _
         ByVal resultCode As EResultCode, ByVal reason As String, _
         ByVal pathKey As String)
-    Set mSearchResult = Nothing
+    ResetNumericSnapshot
     mLimitState = reason
     mSolutionMethod = vbNullString
     mPathResolved = pathKey
-    mLambdaCapacity = 0#
-    mUtilCapacity = 0#
-    mNUltimate = 0#
-    mMxUltimate = 0#
-    mMyUltimate = 0#
-    mCapacityStateN = 0#
-    mCapacityStateMx = 0#
-    mCapacityStateMy = 0#
-    mMomentUltimate = 0#
-    mCapacityStateAvailable = False
-    mPureAxialForMethod = False
-    Set mStateResult = Nothing
     Set mResultMeta = New CResultMeta
     mResultMeta.SetResult internalStatus, resultCode, rkCapacity, reason
 
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
     mStatus = policy.ExternalStatus(mResultMeta)
+End Sub
+
+' Исключает утечку старой предельной точки при повторном заполнении объекта.
+' Отсутствующие числа не заменяются прошлым успешным состоянием.
+Private Sub ResetNumericSnapshot()
+    Set mSearchResult = Nothing
+    Set mStateResult = Nothing
+    mLambdaCapacity = 0#
+    mUtilCapacity = 0#
+    mNUltimate = 0#
+    mMxUltimate = 0#
+    mMyUltimate = 0#
+    mMomentUltimate = 0#
+    mPureAxialForMethod = False
 End Sub
 
 ' Переносит найденный полный предельный вектор в пользовательскую точку
@@ -176,25 +171,15 @@ Private Sub StoreUltimateVector(ByVal loadPath As CCapacityLoadPath, _
         ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepthForMx As Double, _
         ByVal concreteDepthForMy As Double)
     If mSearchResult Is Nothing Then Exit Sub
-    If mSearchResult.LambdaUltimate <= 0# Then Exit Sub
+    If Not mSearchResult.HasLimitPoint Then Exit Sub
 
     Dim nValue As Double
     Dim mxAboutOrigin As Double
     Dim myAboutOrigin As Double
 
-    If Not mSearchResult.LastSolver Is Nothing Then
-        nValue = mSearchResult.LastSolver.Nint
-        mxAboutOrigin = mSearchResult.LastSolver.Mxint
-        myAboutOrigin = mSearchResult.LastSolver.Myint
-        mCapacityStateN = nValue
-        mCapacityStateMx = mxAboutOrigin
-        mCapacityStateMy = myAboutOrigin
-    Else
-        loadPath.Target mSearchResult.LambdaUltimate, nValue, mxAboutOrigin, myAboutOrigin
-        mCapacityStateN = nValue
-        mCapacityStateMx = mxAboutOrigin
-        mCapacityStateMy = myAboutOrigin
-    End If
+    nValue = mSearchResult.NUltimate
+    mxAboutOrigin = mSearchResult.MxUltimate
+    myAboutOrigin = mSearchResult.MyUltimate
 
     Dim loadState As CSectionLoadState
     Set loadState = New CSectionLoadState
@@ -208,37 +193,22 @@ Private Sub StoreUltimateVector(ByVal loadPath As CCapacityLoadPath, _
     mMomentUltimate = Sqr(mMxUltimate * mMxUltimate + mMyUltimate * mMyUltimate)
 End Sub
 
-' Сохраняет utilization по тем же правилам, что раньше применялись в batch.
-' Если solver сам посчитал utilization, он является приоритетным источником.
+' Определяет использование только по действительно найденному пределу.
+' Последняя диагностическая проба и техническая граница не являются capacity.
 Private Sub StoreUtilization()
+    mUtilCapacity = 0#
     If mSearchResult Is Nothing Then Exit Sub
+    If Not mSearchResult.HasLimitPoint Then Exit Sub
     If mSearchResult.LambdaUltimate > 0# Then mUtilCapacity = 1# / mSearchResult.LambdaUltimate
-    If mSearchResult.Converged Then mUtilCapacity = mSearchResult.Utilization
 End Sub
 
 ' Готовит CapacityState только для физически найденной предельной точки.
 ' Неуспешные probes и numerical failure не становятся reusable named-state.
-Private Sub StoreCapacityStateIfAvailable(ByVal strengthSpec As CMaterialModelSpec, _
-        ByVal section As CSectionModel, ByVal concreteMaterial As Object, ByVal steelMaterial As Object)
+Private Sub StoreCapacityStateIfAvailable()
+    Set mStateResult = Nothing
     If mSearchResult Is Nothing Then Exit Sub
-    If Not mSearchResult.Converged Then Exit Sub
-    If mSearchResult.LambdaUltimate <= 0# Then Exit Sub
-    If mSearchResult.LastSolver Is Nothing Then Exit Sub
-    If Not mSearchResult.LastSolver.Converged Then Exit Sub
-
-    mCapacityStateAvailable = True
-    mCapacityEpsilon0 = mSearchResult.LastSolver.Epsilon0
-    mCapacityKappaX = mSearchResult.LastSolver.KappaX
-    mCapacityKappaY = mSearchResult.LastSolver.KappaY
-
-    Set mStateResult = New CSectionStateResult
-    Dim stateRunner As CStateSolutionRunner
-    Set stateRunner = New CStateSolutionRunner
-    mStateResult.InitializeFromSolver sstCapacityState, cpStrength, strengthSpec, _
-        mSearchResult.LastSolver, _
-        stateRunner.StateUsesExtension(section, mSearchResult.LastSolver, concreteMaterial, steelMaterial), _
-        stateRunner.StateWithinPhysicalRange(section, mSearchResult.LastSolver, concreteMaterial, steelMaterial), _
-        0, mSearchResult.DiagnosticLog
+    If Not mSearchResult.HasLimitPoint Then Exit Sub
+    Set mStateResult = mSearchResult.PointState
 End Sub
 
 Public Property Get SearchResult() As CLimitSearchResult
@@ -361,15 +331,15 @@ Public Property Get MyUltimate() As Double
 End Property
 
 Public Property Get CapacityStateN() As Double
-    CapacityStateN = mCapacityStateN
+    If Not mStateResult Is Nothing Then CapacityStateN = mStateResult.Nint
 End Property
 
 Public Property Get CapacityStateMx() As Double
-    CapacityStateMx = mCapacityStateMx
+    If Not mStateResult Is Nothing Then CapacityStateMx = mStateResult.Mxint
 End Property
 
 Public Property Get CapacityStateMy() As Double
-    CapacityStateMy = mCapacityStateMy
+    If Not mStateResult Is Nothing Then CapacityStateMy = mStateResult.Myint
 End Property
 
 Public Property Get MomentUltimate() As Double
@@ -377,19 +347,19 @@ Public Property Get MomentUltimate() As Double
 End Property
 
 Public Property Get CapacityStateAvailable() As Boolean
-    CapacityStateAvailable = mCapacityStateAvailable
+    CapacityStateAvailable = Not mStateResult Is Nothing
 End Property
 
 Public Property Get CapacityEpsilon0() As Double
-    CapacityEpsilon0 = mCapacityEpsilon0
+    If Not mStateResult Is Nothing Then CapacityEpsilon0 = mStateResult.Epsilon0
 End Property
 
 Public Property Get CapacityKappaX() As Double
-    CapacityKappaX = mCapacityKappaX
+    If Not mStateResult Is Nothing Then CapacityKappaX = mStateResult.KappaX
 End Property
 
 Public Property Get CapacityKappaY() As Double
-    CapacityKappaY = mCapacityKappaY
+    If Not mStateResult Is Nothing Then CapacityKappaY = mStateResult.KappaY
 End Property
 
 Public Property Get PureAxialForMethod() As Boolean

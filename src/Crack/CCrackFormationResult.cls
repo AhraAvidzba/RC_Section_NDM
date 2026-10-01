@@ -64,8 +64,7 @@ Public Sub InitializeFromCalculator(ByVal crack As CCrackFormationCalculator, By
     mFallbackPsi1 = crack.FallbackPsi1
     mCentralTensionBranch = crack.CentralTensionBranch
     mSolverCallCount = crack.SolverCallCount
-    Set mSearchResult = New CLimitSearchResult
-    mSearchResult.InitializeFromCrackFormation crack, crack.CrackFormationSolutionStrategy, crack.Converged
+    Set mSearchResult = crack.BuildSearchSnapshot(crack.CrackFormationSolutionStrategy)
     mCrackFormed = crack.CrackFormed
     mFormationMethod = crack.CrackFormationMethod
     mLambdaCrc = crack.LambdaCrc

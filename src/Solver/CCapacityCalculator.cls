@@ -162,16 +162,16 @@ Public Function Calculate(ByVal section As CSectionModel, _
     request.InitializeCapacity configuredSolver, section, concreteMaterial, steelMaterial, _
         SolutionStrategy, loadPath.NOffset, loadPath.NBase, loadPath.MxOffset, _
         loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, loadPath.ForceOnly, _
-        pureAxialForMethod
+        pureAxialForMethod, strengthSpec
 
     Dim coordinator As CLimitSearchCoordinator
     Set coordinator = New CLimitSearchCoordinator
 
     Dim searchResult As CLimitSearchResult
     Set searchResult = coordinator.ExecuteCapacity(request)
-    result.InitializeFromSearch searchResult, loadPath, strengthSpec, statusPolicy, _
+    result.InitializeFromSearch searchResult, loadPath, statusPolicy, _
         pureAxialForMethod, loadReferenceX, loadReferenceY, momentFilter, _
-        concreteDepthForMx, concreteDepthForMy, section, concreteMaterial, steelMaterial
+        concreteDepthForMx, concreteDepthForMy
 
     Set Calculate = result
 End Function

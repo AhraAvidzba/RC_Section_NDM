@@ -543,6 +543,35 @@ Public Function LimitSearchCrackFormationLoadPath(ByVal targetN As Double, _
     Set LimitSearchCrackFormationLoadPath = FormationLoadPath(targetN, targetMomentMx, targetMomentMy, referenceX, referenceY)
 End Function
 
+' Оценивает физический смысл начальной точки LoadMultiplier после решения НДС.
+' Постоянная трещина и отсутствие активной нагрузки являются исходами задачи,
+' а не правилами общего расширения lambda-скобки.
+Public Function LimitSearchAcceptFormationInitialPoint(ByVal targetN As Double, _
+        ByVal momentMxAtReference As Double, ByVal momentMyAtReference As Double, _
+        ByVal residual As Double) As Boolean
+    If StrComp(mCrackFormationPath, CRACK_PATH_N, vbTextCompare) = 0 And targetN <= 0.000001 Then
+        If residual >= 0# Then
+            MarkFormationPathFallback "Трещина уже образуется от постоянного момента выбранного пути " & _
+                CrackFormationPathDisplayName() & "; сжимающая или нулевая N не масштабируется для поиска Ncrc, psi_s остается равным 1."
+        Else
+            FinishNoCrack "Трещина не образована от постоянного момента, а выбранный путь " & _
+                CrackFormationPathDisplayName() & " не масштабирует растягивающую продольную силу."
+        End If
+        Exit Function
+    End If
+    If residual >= 0# Then
+        MarkFormationPathFallback "Трещина уже образуется в постоянной части выбранного пути " & _
+            CrackFormationPathDisplayName() & "; точка sigma_s,crc по lambda не определяется, psi_s остается равным 1."
+        Exit Function
+    End If
+    If Not LimitSearchCrackFormationHasScaledLoad(targetN, momentMxAtReference, momentMyAtReference) Then
+        FinishNoCrack "Трещина не образована в постоянной части, а выбранный путь " & _
+            CrackFormationPathDisplayName() & " не содержит ненулевой масштабируемой нагрузки."
+        Exit Function
+    End If
+    LimitSearchAcceptFormationInitialPoint = True
+End Function
+
 
 
 ' Проверяет, содержит ли выбранный crack-path ненулевую масштабируемую часть.
@@ -2026,6 +2055,27 @@ End Function
 ' --------------------------------------------------------------------------
 ' Свойства результатов
 ' --------------------------------------------------------------------------
+' Сохраняет машинный исход и подтвержденное НДС в общий численный результат.
+' Search-result не трактует отсутствие трещины при текущем LC и не читает
+' рабочий Formation-контекст после создания этого снимка.
+Public Function BuildSearchSnapshot(ByVal requestedStrategy As String) As CLimitSearchResult
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    If mFormationInternalStatus = rsUnset Then
+        meta.SetResult rsInternalError, rcInternalError, rkCrackFormation, _
+            "Поиск образования трещины завершен без машинного статуса результата."
+    Else
+        meta.SetResult mFormationInternalStatus, mFormationResultCode, rkCrackFormation, mStopReason
+    End If
+    Dim nValue As Double, mxValue As Double, myValue As Double
+    If HasLimitPoint Then PointLoads nValue, mxValue, myValue
+    Dim result As CLimitSearchResult
+    Set result = New CLimitSearchResult
+    result.Initialize meta, requestedStrategy, mFormationSolutionMethod, HasLimitPoint, _
+        mLambdaCrc, nValue, mxValue, myValue, mPreCrackState, vbNullString, mDiagnosticLog
+    Set BuildSearchSnapshot = result
+End Function
+
 ' Writer-ы и тесты читают эти значения после Calculate. Свойства ничего не
 ' пересчитывают и не обращаются к solver-у повторно.
 
@@ -2269,12 +2319,12 @@ Private Function ExecuteFormationSearch(ByVal request As CLimitSearchRequest) As
     If StrComp(NormalizeCrackPath(request.CrackFormationPath), CRACK_PATH_AUTO, vbTextCompare) = 0 Then
         Set ExecuteFormationSearch = ExecuteAutoCrackFormation(request)
     Else
-        request.Problem.BeginFormationAttempt NormalizeCrackPath(request.CrackFormationPath)
+        LimitSearchBeginCrackFormationAttempt NormalizeCrackPath(request.CrackFormationPath)
         Dim result As CLimitSearchResult
         Set result = coordinator.ExecuteCrackFormation(request)
         If result.Succeeded Then
-            request.Problem.SetResolvedFormationPath NormalizeCrackPath(request.CrackFormationPath)
-            Set result = request.Problem.BuildResult(request, result.Succeeded)
+            LimitSearchSetResolvedCrackFormationPath NormalizeCrackPath(request.CrackFormationPath)
+            Set result = BuildSearchSnapshot(request.SolutionStrategy)
         End If
         Set ExecuteFormationSearch = result
     End If
@@ -2293,49 +2343,52 @@ Private Function ExecuteAutoCrackFormation(ByVal request As CLimitSearchRequest)
     paths(2) = CRACK_PATH_N
     paths(3) = CRACK_PATH_NMXY
 
-    request.Problem.AppendDiagnostic "Auto-путь: начинаем поиск образования нормальной трещины. Порядок попыток: " & _
+    AppendDiagnostic "Auto-путь: начинаем поиск образования нормальной трещины. Порядок попыток: " & _
         ChrW$(&H3BB) & "*Mxy -> " & ChrW$(&H3BB) & "*N -> " & ChrW$(&H3BB) & "*NMxy."
 
     Dim lastResult As CLimitSearchResult
     Dim lastStopReason As String
     Dim i As Long
     For i = LBound(paths) To UBound(paths)
-        request.Problem.BeginFormationAttempt paths(i)
-        request.Problem.AppendDiagnostic "Auto-путь: попытка " & CStr(i) & " из " & _
+        LimitSearchBeginCrackFormationAttempt paths(i)
+        AppendDiagnostic "Auto-путь: попытка " & CStr(i) & " из " & _
             CStr(UBound(paths)) & " - пробуем " & _
-            request.Problem.FormationPathDisplayName() & "."
+            CrackFormationPathDisplayName() & "."
 
         Set lastResult = coordinator.ExecuteCrackFormation(request)
         If lastResult.Succeeded Then
-            If request.Problem.FormationFallbackOnly And i < UBound(paths) Then
-                lastStopReason = request.Problem.StopReason
-                warningHistory = warningHistory & request.Problem.FormationPathDisplayName() & ": " & lastStopReason & " "
-                request.Problem.AppendDiagnostic "Auto-путь: " & _
-                    request.Problem.FormationPathDisplayName() & _
-                    " дал только резервный результат psi_s=1 без найденной точки образования трещины. Для более информативного результата переходим к следующему пути."
+            ' Успех без точки может означать только неприменимость этого пути:
+            ' например, lambda*N не масштабирует сжимающую силу. В Auto это
+            ' не доказывает отсутствие точки на следующем разрешенном пути.
+            If Not lastResult.HasLimitPoint And i < UBound(paths) Then
+                lastStopReason = mStopReason
+                warningHistory = warningHistory & CrackFormationPathDisplayName() & ": " & lastStopReason & " "
+                AppendDiagnostic "Auto-путь: " & _
+                    CrackFormationPathDisplayName() & _
+                    " корректно завершен без найденной точки образования трещины. Проверяем следующий разрешенный путь."
             Else
-                request.Problem.SetResolvedFormationPath paths(i)
-                request.Problem.AppendDiagnostic "Auto-путь: выбран " & _
-                    request.Problem.FormationPathDisplayName() & "."
+                LimitSearchSetResolvedCrackFormationPath paths(i)
+                AppendDiagnostic "Auto-путь: выбран " & _
+                    CrackFormationPathDisplayName() & "."
                 If Len(warningHistory) > 0 Then
-                    mStopReason = Trim$(warningHistory) & " Принят путь " & request.Problem.FormationPathDisplayName() & ". " & mStopReason
+                    mStopReason = Trim$(warningHistory) & " Принят путь " & CrackFormationPathDisplayName() & ". " & mStopReason
                     If mFormationInternalStatus = rsSuccess Then mFormationInternalStatus = rsSuccessWithWarning
                 End If
-                Set lastResult = request.Problem.BuildResult(request, lastResult.Succeeded)
-                request.Problem.SetCurrentFormationPath savedPath
+                Set lastResult = BuildSearchSnapshot(request.SolutionStrategy)
+                LimitSearchSetCurrentFormationPath savedPath
                 Set ExecuteAutoCrackFormation = lastResult
                 Exit Function
             End If
         Else
-            lastStopReason = request.Problem.StopReason
-            warningHistory = warningHistory & request.Problem.FormationPathDisplayName() & ": " & lastStopReason & " "
-            request.Problem.AppendDiagnostic "Auto-путь: " & _
-                request.Problem.FormationPathDisplayName() & _
-                " не дал точку образования трещины: " & request.Problem.StopReason
+            lastStopReason = mStopReason
+            warningHistory = warningHistory & CrackFormationPathDisplayName() & ": " & lastStopReason & " "
+            AppendDiagnostic "Auto-путь: " & _
+                CrackFormationPathDisplayName() & _
+                " не дал точку образования трещины: " & mStopReason
         End If
     Next i
 
-    request.Problem.SetCurrentFormationPath savedPath
+    LimitSearchSetCurrentFormationPath savedPath
     If Not lastResult Is Nothing Then Set ExecuteAutoCrackFormation = lastResult
 End Function
 

@@ -55,7 +55,7 @@ End Function
 Private Function ExecuteCapacityLoadMultiplier(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     Dim multiplier As CLoadMultiplierSearch
     Set multiplier = New CLoadMultiplierSearch
-    Set ExecuteCapacityLoadMultiplier = multiplier.ExecuteCapacity(request)
+    Set ExecuteCapacityLoadMultiplier = multiplier.Execute(request)
 End Function
 
 ' Повторяет ту же capacity-траекторию через LoadMultiplier и возвращает новый

@@ -1,0 +1,100 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: CF05FD251D72559C626E924901D5A7DC3B17C35DBEA3575CD6F104B99DFCF3FC
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_7c53005f10814616ab2f116cda9210f2\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit02OffAxialDiagnostic =====
+STATUS: NumFail
+NumericalFailure: line search UltimateStrain не улучшил невязку.
+search=lambda=0: нулевая нагрузка принята как точное равновесие нулевой плоскости деформаций.
+probe=1; attempt=0; lambda=0.; Mx=0.; My=0.; converged=True; state=Acceptable; stop=Равновесие заданной плоскости подтверждено по N, Mx и My.; minConcreteStrain=0.; maxConcreteStrain=0.; maxAbsSteelStrain=0.
+search=initialGuess=warmStartLoadState
+
+probe=2; attempt=0; lambda=1.; Mx=620377206.521739; My=424244206.521739; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=0.000404784986; maxConcreteStrain=0.000461055888; maxAbsSteelStrain=0.000458984725
+search=initialGuess=warmStartLoadState
+
+probe=3; attempt=0; lambda=2.; Mx=1240754413.04348; My=848488413.043478; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=0.000809569973; maxConcreteStrain=0.000922111776; maxAbsSteelStrain=0.000917969451
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; residualN=-912889.134620601; residualMx=-574876497.763564; residualMy=-57247928.9808471
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; residualN=-912889.134620601; residualMx=-574876497.763564; residualMy=-57247928.9808471
+
+probe=4; attempt=0; lambda=4.; Mx=2481508826.08696; My=1696976826.08696; converged=False; state=NumericalFailure; stop=Line search не смог уменьшить невязку.; minConcreteStrain=0.001366424801; maxConcreteStrain=0.00337777574; maxAbsSteelStrain=0.003273606099
+search=численная несходимость; верхняя lambda уменьшена с 4. до 3.; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+
+probe=5; attempt=0; lambda=3.; Mx=1861131619.56522; My=1272732619.56522; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=0.001214354959; maxConcreteStrain=0.001383167664; maxAbsSteelStrain=0.001376954176
+search=численная несходимость; верхняя lambda уменьшена с 4. до 3.5; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+
+probe=6; attempt=0; lambda=3.5; Mx=2171320222.82609; My=1484854722.82609; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=0.001416747453; maxConcreteStrain=0.001613695608; maxAbsSteelStrain=0.001606446539
+search=численная несходимость; верхняя lambda уменьшена с 4. до 3.75; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+
+probe=7; attempt=0; lambda=3.75; Mx=2326414524.45652; My=1590915774.45652; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=0.001517943699; maxConcreteStrain=0.00172895958; maxAbsSteelStrain=0.00172119272
+search=численная несходимость; верхняя lambda уменьшена с 4. до 3.875; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+
+probe=8; attempt=0; lambda=3.875; Mx=2403961675.27174; My=1643946300.27174; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=0.001544443116; maxConcreteStrain=0.001876497374; maxAbsSteelStrain=0.001858862808
+search=численная несходимость; верхняя lambda уменьшена с 4. до 3.9375; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; residualN=53921.2447066847; residualMx=40890674.0256691; residualMy=1348031.1176672
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; residualN=53921.2447066847; residualMx=40890674.0256691; residualMy=1348031.1176672
+
+probe=9; attempt=0; lambda=3.9375; Mx=2442735250.67935; My=1670461563.17935; converged=False; state=NumericalFailure; stop=Line search не смог уменьшить невязку.; minConcreteStrain=0.00000049532; maxConcreteStrain=0.021356426149; maxAbsSteelStrain=0.020509777463
+search=численная несходимость; верхняя lambda уменьшена с 3.9375 до 3.90625; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+
+probe=10; attempt=0; lambda=3.90625; Mx=2423348462.97554; My=1657203931.72554; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=0.001468839007; maxConcreteStrain=0.002279096725; maxAbsSteelStrain=0.002242336664
+search=численная несходимость; верхняя lambda уменьшена с 3.9375 до 3.921875; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+
+probe=11; attempt=0; lambda=3.921875; Mx=2433041856.82745; My=1663832747.45245; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=0.001286069103; maxConcreteStrain=0.003550180567; maxAbsSteelStrain=0.003449969653
+search=ultimatePath iter=12; eps0=0.008452158475; kappaX=-0.000013487806; kappaY=0.000031476546; rPath1=-168267.938933802; rPath2=66800.1714081558; rLimit=0.; lambda=3.725660891209; critical=R18:Steel
+search=ultimatePath iter=13; eps0=0.00845215932; kappaX=-0.000013487806; kappaY=0.000031476546; rPath1=-168267.772247349; rPath2=66800.1006462769; rLimit=0.000000033809; lambda=3.725661106953; critical=R18:Steel
+search=ultimatePath iter=14; eps0=0.008452158475; kappaX=-0.000013487805; kappaY=0.000031476546; rPath1=-168267.749756191; rPath2=66800.0925592397; rLimit=0.000000004316; lambda=3.725661133104; critical=R18:Steel
+search=ultimatePath iter=15; eps0=0.008452158475; kappaX=-0.000013487806; kappaY=0.00003147655; rPath1=-168267.905318449; rPath2=66800.1582189737; rLimit=0.000000070507; lambda=3.725660933237; critical=R18:Steel
+search=ultimatePath iter=16; eps0=0.007952158475; kappaX=-0.00001249736; kappaY=0.000032227911; rPath1=-119931.331750786; rPath2=47611.1703789483; rLimit=0.000000000036; lambda=3.785696749621; critical=R18:Steel
+search=ultimatePath iter=17; eps0=0.007952158475; kappaX=-0.00001249736; kappaY=0.000032227911; rPath1=-119931.331750786; rPath2=47611.1703789483; rLimit=0.000000000036; lambda=3.785696749621; critical=R18:Steel
+search=ultimatePath iter=18; eps0=0.00795215927; kappaX=-0.00001249736; kappaY=0.000032227911; rPath1=-119931.174924919; rPath2=47611.1038030932; rLimit=0.000000031844; lambda=3.785696952603; critical=R18:Steel
+search=ultimatePath iter=19; eps0=0.007952158475; kappaX=-0.000012497359; kappaY=0.000032227911; rPath1=-119931.156465001; rPath2=47611.0973201221; rLimit=0.000000004035; lambda=3.785696973754; critical=R18:Steel
+search=ultimatePath iter=20; eps0=0.007952158475; kappaX=-0.00001249736; kappaY=0.000032227914; rPath1=-119931.297333014; rPath2=47611.1568749318; rLimit=0.000000072226; lambda=3.785696792653; critical=R18:Steel
+search=ultimatePath iter=21; eps0=0.007452158475; kappaX=-0.000011506914; kappaY=0.000032979276; rPath1=-64965.9790274664; rPath2=25319.3521233231; rLimit=0.000000000119; lambda=3.853842243354; critical=R18:Steel
+search=ultimatePath iter=22; eps0=0.007452158475; kappaX=-0.000011506914; kappaY=0.000032979276; rPath1=-64965.9790274664; rPath2=25319.3521233231; rLimit=0.000000000119; lambda=3.853842243354; critical=R18:Steel
+search=ultimatePath iter=23; eps0=0.00745215922; kappaX=-0.000011506914; kappaY=0.000032979276; rPath1=-64965.8096370624; rPath2=25319.2792366271; rLimit=0.000000029928; lambda=3.853842461009; critical=R18:Steel
+search=ultimatePath iter=24; eps0=0.007452158475; kappaX=-0.000011506912; kappaY=0.000032979276; rPath1=-64965.7925291236; rPath2=25319.2731035987; rLimit=0.000000003801; lambda=3.853842480437; critical=R18:Steel
+search=ultimatePath iter=25; eps0=0.007452158475; kappaX=-0.000011506914; kappaY=0.000032979279; rPath1=-64965.9413262345; rPath2=25319.3371431349; rLimit=0.000000073993; lambda=3.853842290424; critical=R18:Steel
+search=ultimatePath iter=26; eps0=0.006952158475; kappaX=-0.000010681966; kappaY=0.000033754284; rPath1=-37801.6987109459; rPath2=14869.4242635527; rLimit=0.000000000115; lambda=3.886699764475; critical=R18:Steel
+search=ultimatePath iter=27; eps0=0.006952158475; kappaX=-0.000010681966; kappaY=0.000033754284; rPath1=-37801.6987109459; rPath2=14869.4242635527; rLimit=0.000000000115; lambda=3.886699764475; critical=R18:Steel
+search=ultimatePath iter=28; eps0=0.00695215917; kappaX=-0.000010681966; kappaY=0.000033754284; rPath1=-37801.5642265948; rPath2=14869.3672862918; rLimit=0.000000027923; lambda=3.886699938725; critical=R18:Steel
+search=ultimatePath iter=29; eps0=0.006952158475; kappaX=-0.000010681965; kappaY=0.000033754284; rPath1=-37801.5518065147; rPath2=14869.363183732; rLimit=0.000000003533; lambda=3.886699952478; critical=R18:Steel
+search=ultimatePath iter=30; eps0=0.006952158475; kappaX=-0.000010681966; kappaY=0.000033754287; rPath1=-37801.6629811449; rPath2=14869.4102688405; rLimit=0.000000075724; lambda=3.886699809155; critical=R18:Steel
+search=ultimatePath iter=31; eps0=0.00650893806; kappaX=-0.000009835274; kappaY=0.000034424793; rPath1=-2323.10902651044; rPath2=771.55560901827; rLimit=-0.000000000073; lambda=3.930501896664; critical=R18:Steel
+search=ultimatePath iter=32; eps0=0.00650893806; kappaX=-0.000009835274; kappaY=0.000034424793; rPath1=-2323.10902651044; rPath2=771.55560901827; rLimit=-0.000000000073; lambda=3.930501896664; critical=R18:Steel
+search=ultimatePath iter=33; eps0=0.006508938711; kappaX=-0.000009835274; kappaY=0.000034424793; rPath1=-2323.04119143502; rPath2=771.526470108376; rLimit=0.000000025963; lambda=3.930501977008; critical=R18:Steel
+search=ultimatePath iter=34; eps0=0.00650893806; kappaX=-0.000009835273; kappaY=0.000034424793; rPath1=-2323.03189909142; rPath2=771.522504648219; rLimit=0.000000003127; lambda=3.930501987817; critical=R18:Steel
+search=ultimatePath iter=35; eps0=0.00650893806; kappaX=-0.000009835274; kappaY=0.000034424796; rPath1=-2323.09663814137; rPath2=771.550263012029; rLimit=0.000000077038; lambda=3.930501911522; critical=R18:Steel
+search=ultimatePath iter=36; eps0=0.00600893806; kappaX=-0.000009195582; kappaY=0.000035226265; rPath1=-5035.8153113346; rPath2=2361.00634761572; rLimit=-0.000000000081; lambda=3.925938525415; critical=R18:Steel
+search=ultimatePath iter=37; eps0=0.00625893806; kappaX=-0.000009515428; kappaY=0.000034825529; rPath1=-3341.17224471335; rPath2=1371.49707449466; rLimit=-0.000000000077; lambda=3.928772619151; critical=R18:Steel
+search=ultimatePath iter=38; eps0=0.00638393806; kappaX=-0.000009675351; kappaY=0.000034625161; rPath1=-2493.85071140176; rPath2=876.742437934128; rLimit=-0.000000000075; lambda=3.93018966602; critical=R18:Steel
+search=ultimatePath iter=39; eps0=0.00644643806; kappaX=-0.000009755313; kappaY=0.000034524977; rPath1=-2309.00064810949; rPath2=766.869898089611; rLimit=-0.000000000074; lambda=3.930508225224; critical=R18:Steel
+search=ultimatePath iter=40; eps0=0.00644643806; kappaX=-0.000009755313; kappaY=0.000034524977; rPath1=-2309.00064810949; rPath2=766.869898089611; rLimit=-0.000000000074; lambda=3.930508225224; critical=R18:Steel
+search=ultimatePath iter=41; eps0=0.006446438704; kappaX=-0.000009755313; kappaY=0.000034524977; rPath1=-2308.93346439928; rPath2=766.841038976956; rLimit=0.000000025712; lambda=3.930508304797; critical=R18:Steel
+search=ultimatePath iter=42; eps0=0.00644643806; kappaX=-0.000009755312; kappaY=0.000034524977; rPath1=-2308.92352069095; rPath2=766.836793720046; rLimit=0.000000003126; lambda=3.930508316377; critical=R18:Steel
+search=ultimatePath iter=43; eps0=0.00644643806; kappaX=-0.000009755313; kappaY=0.00003452498; rPath1=-2308.98822368777; rPath2=766.86453652568; rLimit=0.000000077262; lambda=3.930508240125; critical=R18:Steel
+search=ultimatePath iter=44; eps0=0.00594643806; kappaX=-0.00000911562; kappaY=0.000035326449; rPath1=-5459.47181759542; rPath2=2608.38165772116; rLimit=-0.00000000015; lambda=3.925230007568; critical=R18:Steel
+search=ultimatePath iter=45; eps0=0.00619643806; kappaX=-0.000009435467; kappaY=0.000034925713; rPath1=-3764.83088117081; rPath2=1618.87338868788; rLimit=-0.000000000112; lambda=3.928064098511; critical=R18:Steel
+search=ultimatePath iter=46; eps0=0.00632143806; kappaX=-0.00000959539; kappaY=0.000034725345; rPath1=-2917.51041295948; rPath2=1124.11925417063; rLimit=-0.000000000093; lambda=3.929481143982; critical=R18:Steel
+search=ultimatePath iter=47; eps0=0.00638393806; kappaX=-0.000009675351; kappaY=0.000034625161; rPath1=-2493.85017885333; rPath2=876.742186912001; rLimit=-0.000000000084; lambda=3.930189666718; critical=R18:Steel
+search=ultimatePath iter=48; eps0=0.00641518806; kappaX=-0.000009715332; kappaY=0.000034575069; rPath1=-2301.94626922369; rPath2=764.526961214234; rLimit=-0.000000000079; lambda=3.930511389728; critical=R18:Steel
+search=ultimatePath iter=49; eps0=0.00641518806; kappaX=-0.000009715332; kappaY=0.000034575069; rPath1=-2301.94626922369; rPath2=764.526961214234; rLimit=-0.000000000079; lambda=3.930511389728; critical=R18:Steel
+search=ultimatePath iter=50; eps0=0.006415188701; kappaX=-0.000009715332; kappaY=0.000034575069; rPath1=-2301.8794111956; rPath2=764.498241999956; rLimit=0.000000025582; lambda=3.930511468915; critical=R18:Steel
+search=ultimatePath iter=51; eps0=0.00641518806; kappaX=-0.000009715331; kappaY=0.000034575069; rPath1=-2301.86914180516; rPath2=764.493856844183; rLimit=0.000000003121; lambda=3.930511480881; critical=R18:Steel
+search=ultimatePath iter=52; eps0=0.00641518806; kappaX=-0.000009715332; kappaY=0.000034575072; rPath1=-2301.93382677566; rPath2=764.521591870729; rLimit=0.000000077369; lambda=3.930511404651; critical=R18:Steel
+search=ultimatePath iter=53; eps0=0.00591518806; kappaX=-0.00000907564; kappaY=0.000035376541; rPath1=-5671.30734740606; rPath2=2732.07274288755; rLimit=-0.000000000131; lambda=3.9248757391; critical=R18:Steel
+search=ultimatePath iter=54; eps0=0.00616518806; kappaX=-0.000009395486; kappaY=0.000034975805; rPath1=-3976.66370460328; rPath2=1742.5631980853; rLimit=-0.000000000105; lambda=3.927709833593; critical=R18:Steel
+search=ultimatePath iter=55; eps0=0.00629018806; kappaX=-0.000009555409; kappaY=0.000034775437; rPath1=-3129.34188320164; rPath2=1247.8084256843; rLimit=-0.000000000092; lambda=3.92912688084; critical=R18:Steel
+search=ultimatePath iter=56; eps0=0.00635268806; kappaX=-0.00000963537; kappaY=0.000034675253; rPath1=-2705.68097250131; rPath2=1000.43103948355; rLimit=-0.000000000085; lambda=3.929835404463; critical=R18:Steel
+search=ultimatePath iter=57; eps0=0.00638393806; kappaX=-0.000009675351; kappaY=0.000034625161; rPath1=-2493.85051715042; rPath2=876.742346383426; rLimit=-0.000000000082; lambda=3.930189666274; critical=R18:Steel
+search=ultimatePath iter=58; eps0=0.00639956306; kappaX=-0.000009695341; kappaY=0.000034600115; rPath1=-2387.9352894757; rPath2=814.897999833483; rLimit=-0.000000000081; lambda=3.93036679718; critical=R18:Steel
+
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

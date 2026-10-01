@@ -9,210 +9,99 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-' ==========================================================================
-' Результат общего поиска предельной точки
-' ==========================================================================
-' CLimitSearchResult хранит типизированный итог search-слоя и численный снимок
-' найденной limit-точки. Downstream-слои читают именно этот result, а не
-' доменный solver-фасад.
-'
-' Result является снимком результата search: он не держит ссылок на доменные
-' калькуляторы, чтобы последующие попытки Auto-пути не меняли уже сохраненную
-' диагностику.
+' ===========================================================================
+' Самодостаточный результат общего поиска предельной точки
+' ===========================================================================
+' Хранит численный исход, фактический метод, диагностику и подтвержденное НДС
+' найденной точки. Не обращается к рабочему solver-у или инженерному calculator-у.
+' Смысл физического критерия и проверка текущего LC остаются у доменной задачи.
+' Для низкоуровневых материалов без material spec сохраняется численный вектор;
+' production named-state передается готовым снимком.
 
-Private mMeta As CResultMeta ' Машинная оценка результата для будущего ResultStatusPolicy-пути.
-Private mRequestedStrategy As String ' Стратегия, заданная настройкой.
-Private mActualMethod As String ' Метод, который фактически дал результат поиска.
-Private mResultKind As EResultKind ' Инженерный контекст результата.
-Private mSucceeded As Boolean ' True, если search-слой получил корректный результат для своей задачи.
+Private mMeta As CResultMeta ' Машинный исход, подготовленный владельцем задачи.
+Private mRequestedStrategy As String ' Запрошенная численная стратегия.
+Private mActualMethod As String ' Фактически выполненный численный метод.
+Private mHasLimitPoint As Boolean ' Найдена точка, а не только завершена процедура.
+Private mPointState As CSectionStateResult ' Единственный снимок НДС найденной точки.
+Private mSearchExecuted As Boolean ' Численный поиск действительно запускался.
+Private mLambdaUltimate As Double ' Множитель нагрузки в найденной точке.
+Private mNUltimate As Double ' Вектор для материала без named-state спецификации.
+Private mMxUltimate As Double ' Mx низкоуровневой точки, Н*мм.
+Private mMyUltimate As Double ' My низкоуровневой точки, Н*мм.
+Private mLimitState As String ' Код управляющего критерия, без интерпретации.
+Private mDiagnosticLog As String ' Независимый текстовый снимок всего поиска.
+Private mLastSolverDiagnosticLog As String ' Журнал финального равновесия.
 
-Private mHasLimitPoint As Boolean ' Есть фактически найденная точка, не просто корректный исход без точки.
-Private mPointState As CSectionStateResult ' Подтвержденный неизменяемый State найденной точки, если определен.
-Private mSearchExecuted As Boolean ' True, если численный search действительно запускался.
-Private mConverged As Boolean ' Итоговый флаг сходимости физической limit-точки.
-Private mStopReason As String ' Техническая причина остановки search.
-Private mLimitState As String ' Инженерная причина предельного состояния или ошибки.
-Private mLambdaUltimate As Double ' Найденный множитель lambda.
-Private mNUltimate As Double ' Предельная N в собственном представлении search.
-Private mMxUltimate As Double ' Предельный Mx в собственном представлении search.
-Private mMyUltimate As Double ' Предельный My в собственном представлении search.
-Private mMomentUltimate As Double ' Модуль предельного момента, если он сформирован search.
-Private mUtilization As Double ' Использование несущей способности, сформированное search.
-Private mLastSolver As CSectionSolver ' Последний solver равновесия для физически найденной точки.
-Private mLastSolverDiagnosticLog As String ' Снимок диагностики последнего solver-а.
-Private mDiagnosticLog As String ' Снимок диагностического журнала search-слоя.
-
+' Создает безопасный исход до получения результата задачи.
 Private Sub Class_Initialize()
     Set mMeta = New CResultMeta
+    mMeta.SetResult rsInternalError, rcInternalError, rkGeneric, "Результат поиска еще не заполнен."
 End Sub
 
-' Сбрасывает численный снимок limit-search перед заполнением результата.
-Private Sub ResetSearchSnapshot()
+' Принимает готовый исход задачи и численный снимок без живых калькуляторов.
+' Отсутствие найденной точки очищает ее числа и State при повторном заполнении.
+Public Sub Initialize(ByVal meta As CResultMeta, ByVal requestedStrategy As String, _
+        ByVal actualMethod As String, ByVal hasLimitPoint As Boolean, _
+        ByVal lambdaValue As Double, ByVal nValue As Double, ByVal mxValue As Double, _
+        ByVal myValue As Double, ByVal pointState As CSectionStateResult, _
+        ByVal limitState As String, ByVal diagnosticLog As String, _
+        Optional ByVal finalSolverDiagnosticLog As String = vbNullString, _
+        Optional ByVal searchExecuted As Boolean = True)
+    ResetPoint
+    mRequestedStrategy = requestedStrategy
+    mActualMethod = actualMethod
+    mSearchExecuted = searchExecuted
+    mLimitState = limitState
+    mDiagnosticLog = diagnosticLog
+    mLastSolverDiagnosticLog = finalSolverDiagnosticLog
+    If meta Is Nothing Then
+        mMeta.SetResult rsInternalError, rcInternalError, rkGeneric, "Поиск завершен без машинного результата."
+        Exit Sub
+    End If
+    Set mMeta = meta.Clone
+    If Not hasLimitPoint Then Exit Sub
+    If Not pointState Is Nothing Then
+        If Not pointState.Converged Then
+            mMeta.SetResult rsInternalError, rcInternalError, meta.ResultKind, _
+                "Предельная точка передана без подтвержденного равновесия."
+            Exit Sub
+        End If
+        Set mPointState = pointState
+    Else
+        mNUltimate = nValue
+        mMxUltimate = mxValue
+        mMyUltimate = myValue
+    End If
+    mLambdaUltimate = lambdaValue
+    mHasLimitPoint = True
+End Sub
+
+' Очищает только данные точки; метаданные и журнал заполняет Initialize.
+Private Sub ResetPoint()
     mHasLimitPoint = False
     Set mPointState = Nothing
-    mSearchExecuted = False
-    mConverged = False
-    mStopReason = vbNullString
-    mLimitState = vbNullString
     mLambdaUltimate = 0#
     mNUltimate = 0#
     mMxUltimate = 0#
     mMyUltimate = 0#
-    mMomentUltimate = 0#
-    mUtilization = 0#
-    Set mLastSolver = Nothing
-    mLastSolverDiagnosticLog = vbNullString
-    mDiagnosticLog = vbNullString
 End Sub
 
-' Сохраняет capacity-числа сразу в общий result, чтобы downstream-слой не разбирал CCapacitySolver.
-Private Sub CaptureCapacitySnapshot(ByVal cap As CCapacitySolver)
-    ResetSearchSnapshot
-    If cap Is Nothing Then Exit Sub
-
-    mSearchExecuted = True
-    mConverged = cap.Converged
-    mHasLimitPoint = cap.Converged And cap.LambdaUltimate > 0#
-    mStopReason = cap.StopReason
-    mLimitState = cap.LimitState
-    mLambdaUltimate = cap.LambdaUltimate
-    mNUltimate = cap.NUltimate
-    mMxUltimate = cap.MxUltimate
-    mMyUltimate = cap.MyUltimate
-    mMomentUltimate = cap.MomentUltimate
-    mUtilization = cap.Utilization
-    mDiagnosticLog = cap.DiagnosticLog
-    If Not cap.LastSolver Is Nothing Then
-        Set mLastSolver = cap.LastSolver
-        mLastSolverDiagnosticLog = cap.LastSolver.DiagnosticLog
-    End If
-End Sub
-
-' Сохраняет найденную crack-точку и диагностику, независимо от того,
-' достигнута ли эта точка текущим сочетанием. Состояние до трещины, когда
-' оно доступно, является источником полного внутреннего вектора усилий.
-Private Sub CaptureCrackSnapshot(ByVal crack As CCrackFormationCalculator)
-    ResetSearchSnapshot
-    If crack Is Nothing Then Exit Sub
-
-    mSearchExecuted = True
-    mHasLimitPoint = crack.HasLimitPoint
-    mConverged = crack.Converged And mHasLimitPoint
-    mStopReason = crack.StopReason
-    mLimitState = crack.StopReason
-    mLambdaUltimate = crack.LambdaCrc
-    If mHasLimitPoint Then crack.PointLoads mNUltimate, mMxUltimate, mMyUltimate
-    mMomentUltimate = crack.Mcrc
-    If Not crack.PreCrackState Is Nothing Then
-        Set mPointState = crack.PreCrackState
-        mNUltimate = crack.PreCrackState.Nint
-        mMxUltimate = crack.PreCrackState.Mxint
-        mMyUltimate = crack.PreCrackState.Myint
-    End If
-    mDiagnosticLog = crack.DiagnosticLog
-End Sub
-
-' Фиксирует численный исход поиска точки. Найденная точка успешна независимо
-' от того, достигается ли она до lambda=1: безопасность заданного сочетания
-' оценивает инженерный CapacityResult, а не общий Search.
-Public Sub InitializeFromCapacitySolver(ByVal cap As CCapacitySolver, ByVal requestedStrategy As String)
-    mRequestedStrategy = requestedStrategy
-    mResultKind = rkCapacity
-    mSucceeded = False
-    CaptureCapacitySnapshot cap
-    If cap Is Nothing Then
-        mActualMethod = vbNullString
-        mMeta.SetResult rsInternalError, rcInternalError, rkCapacity, _
-            "Не передан результат выполненного поиска несущей способности."
-    Else
-        mActualMethod = cap.SolutionMethod
-        If cap.Converged Then
-            mSucceeded = True
-            mMeta.SetResult rsSuccess, rcCheckPassed, rkCapacity, cap.LimitState
-        ElseIf cap.SearchBoundReached Then
-            mMeta.SetResult rsNumericalFailure, rcSearchBoundReached, rkCapacity, cap.StopReason
-        ElseIf cap.LimitSearchInitialLambdaRejected And _
-                Not cap.LimitSearchCapacityStateIsInvalidInput(cap.LimitState) Then
-            mMeta.SetResult rsCheckFailed, rcInitialStateBeyondLimit, rkCapacity, _
-                CapacityInitialLambdaRejectedComment(cap.StopReason)
-        ElseIf cap.LimitSearchCapacityStateIsInvalidInput(cap.LimitState) Then
-            mMeta.SetResult rsInvalidInput, rcInvalidInput, rkCapacity, cap.StopReason
-        ElseIf cap.LimitSearchCapacityStateIsNumericalFailure(cap.LimitState) Then
-            mMeta.SetResult rsNumericalFailure, rcNumericalFailure, rkCapacity, cap.StopReason
-        Else
-            mMeta.SetResult rsInternalError, rcInternalError, rkCapacity, cap.StopReason
-        End If
-    End If
-End Sub
-
-' Возвращает пользовательский комментарий без служебных префиксов search.
-' Сам ResultCode хранит машинный смысл BaseFail.
-Private Function CapacityInitialLambdaRejectedComment(ByVal stopReason As String) As String
-    Dim commentText As String
-    commentText = Trim$(stopReason)
-    commentText = Replace$(commentText, "INITIAL_STATE_BEYOND_LIMIT:", vbNullString, 1, 1, vbTextCompare)
-    commentText = Replace$(commentText, _
-        "Начальное состояние при lambda = 0 не проходит физический критерий:", _
-        "Несущая способность не проходит уже для исходной части выбранного пути:", _
-        1, 1, vbTextCompare)
-    CapacityInitialLambdaRejectedComment = Trim$(commentText)
-    If Len(CapacityInitialLambdaRejectedComment) = 0 Then _
-        CapacityInitialLambdaRejectedComment = "Несущая способность не проходит уже для исходной части выбранного пути."
-End Function
-
-' Заполняет result по уже выполненному CCrackFormationCalculator в стадии
-' образования трещины. Формульная ширина здесь не оценивается: речь только о
-' search-результате Ncrc/Mcrc и связанных состояниях.
-Public Sub InitializeFromCrackFormation(ByVal crack As CCrackFormationCalculator, _
-        ByVal requestedStrategy As String, ByVal searchSucceeded As Boolean)
-    mRequestedStrategy = requestedStrategy
-    mResultKind = rkCrackFormation
-    mActualMethod = requestedStrategy
-    mSucceeded = searchSucceeded
-    CaptureCrackSnapshot crack
-
-    If crack Is Nothing Then
-        mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, _
-            "Не передан результат выполненного поиска образования трещины."
-    ElseIf crack.CrackFormationInternalStatus <> rsUnset Then
-        mActualMethod = crack.FormationSolutionMethod
-        mMeta.SetResult crack.CrackFormationInternalStatus, crack.CrackFormationResultCode, _
-            rkCrackFormation, crack.StopReason
-    ElseIf searchSucceeded Then
-        mMeta.SetResult rsSuccess, rcCheckPassed, rkCrackFormation, crack.StopReason
-    Else
-        mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, _
-            "Поиск образования трещины завершен без машинного статуса результата."
-    End If
-    mSucceeded = LimitSearchMetaSucceeded(mMeta)
-End Sub
-
-' Возвращает True для корректного search-результата, включая физическое
-' недостижение критерия. Численная ошибка и ошибка входных данных остаются
-' неуспешными результатами.
-Private Function LimitSearchMetaSucceeded(ByVal meta As CResultMeta) As Boolean
-    If meta Is Nothing Then Exit Function
-    LimitSearchMetaSucceeded = (meta.InternalStatus = rsSuccess Or _
-        meta.InternalStatus = rsSuccessWithWarning)
-End Function
-
-' Заполняет result как ошибку настройки, когда стратегия поиска неизвестна.
+' Формирует ошибку стратегии до выполнения численного поиска.
 Public Sub InitializeInvalidConfiguration(ByVal requestedStrategy As String, ByVal message As String, _
         Optional ByVal resultKind As EResultKind = rkCapacity)
-    mRequestedStrategy = requestedStrategy
-    mActualMethod = vbNullString
-    mResultKind = resultKind
-    mSucceeded = False
-    ResetSearchSnapshot
-    mStopReason = message
-    mLimitState = message
-    mMeta.SetResult rsInvalidConfiguration, rcInvalidConfiguration, resultKind, message
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    meta.SetResult rsInvalidConfiguration, rcInvalidConfiguration, resultKind, message
+    Initialize meta, requestedStrategy, vbNullString, False, 0#, 0#, 0#, 0#, _
+        Nothing, vbNullString, vbNullString, vbNullString, False
 End Sub
 
+' Метаданные выдаются отдельной небольшой копией, а не mutable полем результата.
 Public Property Get Meta() As CResultMeta
     Set Meta = mMeta.Clone
 End Property
 
+' Простые getters ниже читают только сохраненный снимок.
 Public Property Get RequestedStrategy() As String
     RequestedStrategy = mRequestedStrategy
 End Property
@@ -222,24 +111,23 @@ Public Property Get ActualMethod() As String
 End Property
 
 Public Property Get ResultKind() As EResultKind
-    ResultKind = mResultKind
+    ResultKind = mMeta.ResultKind
 End Property
 
 Public Property Get Succeeded() As Boolean
-    Succeeded = mSucceeded
+    Succeeded = (mMeta.InternalStatus = rsSuccess Or mMeta.InternalStatus = rsSuccessWithWarning)
 End Property
 
-' Простые свойства ниже отдают снимок search-result без обращения к вызывающему batch-слою.
 Public Property Get SearchExecuted() As Boolean
     SearchExecuted = mSearchExecuted
 End Property
 
 Public Property Get Converged() As Boolean
-    Converged = mConverged
+    Converged = mHasLimitPoint
 End Property
 
 Public Property Get StopReason() As String
-    StopReason = mStopReason
+    StopReason = mMeta.ResultComment
 End Property
 
 Public Property Get LimitState() As String
@@ -251,44 +139,41 @@ Public Property Get LambdaUltimate() As Double
 End Property
 
 Public Property Get NUltimate() As Double
-    NUltimate = mNUltimate
+    If mPointState Is Nothing Then
+        NUltimate = mNUltimate
+    Else
+        NUltimate = mPointState.Nint
+    End If
 End Property
 
 Public Property Get MxUltimate() As Double
-    MxUltimate = mMxUltimate
+    If mPointState Is Nothing Then
+        MxUltimate = mMxUltimate
+    Else
+        MxUltimate = mPointState.Mxint
+    End If
 End Property
 
 Public Property Get MyUltimate() As Double
-    MyUltimate = mMyUltimate
-End Property
-
-Public Property Get MomentUltimate() As Double
-    MomentUltimate = mMomentUltimate
-End Property
-
-Public Property Get Utilization() As Double
-    Utilization = mUtilization
-End Property
-
-Public Property Get LastSolver() As CSectionSolver
-    Set LastSolver = mLastSolver
+    If mPointState Is Nothing Then
+        MyUltimate = mMyUltimate
+    Else
+        MyUltimate = mPointState.Myint
+    End If
 End Property
 
 Public Property Get LastSolverDiagnosticLog() As String
     LastSolverDiagnosticLog = mLastSolverDiagnosticLog
 End Property
 
-' Возвращает подробную диагностику search как сохраненный снимок.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
-' Различает найденную точку и успешный исход без предельной точки.
 Public Property Get HasLimitPoint() As Boolean
     HasLimitPoint = mHasLimitPoint
 End Property
 
-' Возвращает готовое НДС точки без обращения к рабочему калькулятору.
 Public Property Get PointState() As CSectionStateResult
     Set PointState = mPointState
 End Property

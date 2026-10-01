@@ -636,7 +636,7 @@ Public Sub SolveByLoadPathMultiplier(ByVal section As CSectionModel, _
 
     Dim search As CLoadMultiplierSearch
     Set search = New CLoadMultiplierSearch
-    search.ExecuteCapacity request
+    search.Execute request
 End Sub
 
 ' Готовит solver к общей ветке LoadMultiplier. Метод оставляет в CCapacitySolver

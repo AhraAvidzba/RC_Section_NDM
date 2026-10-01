@@ -1670,6 +1670,10 @@ Private Sub TestPR2AxialCompressionBeyondPhysicalLimitUsesExtension(ByRef stats 
     Set formation = batch.CrackResult(1).Formation
     AssertTrue stats, "audit02.formation.physicalBlock.exists", Not formation Is Nothing
     If Not formation Is Nothing Then
+        If formation.ResultMeta.InternalStatus <> rsCheckFailed Then _
+            AppendLine stats, "DIAGNOSTIC physicalBlock: status=" & CStr(formation.ResultMeta.InternalStatus) & _
+                "; code=" & CStr(formation.ResultMeta.ResultCode) & "; reason=" & formation.ResultMeta.ResultComment & _
+                vbCrLf & formation.DiagnosticLog & vbCrLf & batch.DiagnosticLog
         AssertTrue stats, "audit02.formation.physicalBlock.status", formation.ResultMeta.InternalStatus = rsCheckFailed
         AssertTrue stats, "audit02.formation.physicalBlock.code", formation.ResultMeta.ResultCode = rcPhysicalLimitExceeded
         AssertTrue stats, "audit02.formation.physicalBlock.noPoint", Not formation.HasLimitPoint

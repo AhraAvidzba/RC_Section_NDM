@@ -487,8 +487,7 @@ Private Sub TestLimitSearchResultKeepsCrackDiagnosticSnapshot(ByRef stats As TCr
     crack.LimitSearchAppendDiagnostic "diagnostic-before"
 
     Dim result As CLimitSearchResult
-    Set result = New CLimitSearchResult
-    result.InitializeFromCrackFormation crack, "lambda*Mxy", False
+    Set result = crack.BuildSearchSnapshot("lambda*Mxy")
 
     crack.LimitSearchAppendDiagnostic "diagnostic-after"
 
@@ -1005,7 +1004,9 @@ Private Sub TestAudit02FormationOutcomeSemantics(ByRef stats As TCrackTestStats)
     Set search = crack.FormationResult.SearchResult
     AssertTrue stats, "audit02.formation.aboveCurrent.searchSuccess", search.Meta.InternalStatus = rsSuccess
     AssertClose stats, "audit02.formation.aboveCurrent.pointLambda", search.LambdaUltimate, crack.FormationResult.LambdaCrc, 0#
-    AssertClose stats, "audit02.formation.aboveCurrent.pointMoment", search.MomentUltimate, crack.FormationResult.Mcrc, 0#
+    AssertClose stats, "audit02.formation.aboveCurrent.pointMoment", _
+        Sqr(search.MxUltimate * search.MxUltimate + search.MyUltimate * search.MyUltimate), _
+        crack.FormationResult.Mcrc, 0#
     AssertTrue stats, "audit02.formation.aboveCurrent.noPost", crack.FormationResult.PostCrackState Is Nothing
 
     Set solver = SolveServiceStateWithRunner(section, 200000#, 0#, 0#)
@@ -1019,6 +1020,6 @@ Private Sub TestAudit02FormationOutcomeSemantics(ByRef stats As TCrackTestStats)
     AssertTrue stats, "audit02.formation.constant.noPost", crack.FormationResult.PostCrackState Is Nothing
     AssertClose stats, "audit02.formation.constant.noPoint", search.LambdaUltimate, 0#, 0#
     AssertClose stats, "audit02.formation.constant.psi1", crack.PsiS, 1#, 0#
-    search.InitializeFromCrackFormation Nothing, "Auto", False
+    search.Initialize Nothing, "Auto", vbNullString, False, 0#, 0#, 0#, 0#, Nothing, vbNullString, vbNullString
     AssertTrue stats, "audit02.formation.missing.internalError", search.Meta.InternalStatus = rsInternalError
 End Sub

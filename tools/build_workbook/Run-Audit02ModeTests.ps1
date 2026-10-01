@@ -6,7 +6,8 @@ param(
     [string]$SettingKey = "General.DiagramExtension",
     [ValidateSet("Yes", "No")][string]$Mode = "No",
     [Parameter(Mandatory=$true)][string]$ReportPath,
-    [string[]]$Macro = @()
+    [string[]]$Macro = @(),
+    [switch]$Visible
 )
 $ErrorActionPreference = "Stop"
 . (Join-Path $PSScriptRoot "SettingsCatalog.ps1")
@@ -46,7 +47,7 @@ try {
     $lines.Add("FIXTURE: $fixturePath")
     $lines.Add("GLOBAL_MODE: $SettingKey=$Mode; explicit-On tests retain their setup")
     $excel = New-Object -ComObject Excel.Application
-    $excel.Visible = $false
+    $excel.Visible = [bool]$Visible
     $excel.DisplayAlerts = $false
     $excel.AutomationSecurity = 1
     $workbook = $excel.Workbooks.Open($fixturePath)

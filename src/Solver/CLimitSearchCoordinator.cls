@@ -37,7 +37,7 @@ Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitS
         Case "LoadMultiplier"
             Dim multiplier As CLoadMultiplierSearch
             Set multiplier = New CLoadMultiplierSearch
-            Set ExecuteCapacity = multiplier.ExecuteCapacity(request)
+            Set ExecuteCapacity = multiplier.Execute(request)
         Case Else
             Dim invalidResult As CLimitSearchResult
             Set invalidResult = New CLimitSearchResult
@@ -63,7 +63,7 @@ Private Function ExecuteAutoCapacity(ByVal request As CLimitSearchRequest) As CL
     If request.PureAxialForMethod Then
         Dim axialMultiplier As CLoadMultiplierSearch
         Set axialMultiplier = New CLoadMultiplierSearch
-        Set ExecuteAutoCapacity = axialMultiplier.ExecuteCapacity(request)
+        Set ExecuteAutoCapacity = axialMultiplier.Execute(request)
         Exit Function
     End If
 
@@ -98,7 +98,7 @@ Private Function ExecuteAutoCapacityLoadMultiplierFallback(ByVal request As CLim
     Dim multiplier As CLoadMultiplierSearch
     Set multiplier = New CLoadMultiplierSearch
     Dim ignoredResult As CLimitSearchResult
-    Set ignoredResult = multiplier.ExecuteCapacity(request)
+    Set ignoredResult = multiplier.Execute(request)
 
     request.Problem.MergeFallback firstLimitState, firstStopReason, _
         firstDiagnostics, _
@@ -118,7 +118,7 @@ Private Function ExecuteCrackFormationCurrentPath(ByVal request As CLimitSearchR
         Case "LoadMultiplier"
             Dim multiplier As CLoadMultiplierSearch
             Set multiplier = New CLoadMultiplierSearch
-            Set ExecuteCrackFormationCurrentPath = multiplier.ExecuteCrackFormation(request)
+            Set ExecuteCrackFormationCurrentPath = multiplier.Execute(request)
         Case "UltimateStrain"
             Dim ultimate As CUltimateStrainSearch
             Set ultimate = New CUltimateStrainSearch
@@ -164,7 +164,7 @@ Private Function ExecuteAutoStrategyCrackFormation(ByVal request As CLimitSearch
     Dim multiplier As CLoadMultiplierSearch
     Set multiplier = New CLoadMultiplierSearch
     Dim secondResult As CLimitSearchResult
-    Set secondResult = multiplier.ExecuteCrackFormation(request)
+    Set secondResult = multiplier.Execute(request)
     If Not secondResult.Succeeded And Len(request.Problem.StopReason) = 0 Then _
         request.Problem.SetStopReasonIfEmpty firstStopReason
     Set ExecuteAutoStrategyCrackFormation = secondResult

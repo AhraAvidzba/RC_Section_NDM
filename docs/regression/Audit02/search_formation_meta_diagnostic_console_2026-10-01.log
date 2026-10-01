@@ -1,0 +1,9 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: FFBE20A180639A22F42467C1FEB0D53B4CBBE3F6ED53BDBA24C352032880ED11
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0252cd241030424eac54aff80a0fbf7d\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+FAIL: audit02.formation.physicalBlock.status
+FAIL: audit02.formation.physicalBlock.code
+TOTAL_BATCH: passed=672; failed=2; elapsedSec=20.7265625
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

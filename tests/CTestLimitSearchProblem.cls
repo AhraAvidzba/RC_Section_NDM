@@ -41,6 +41,9 @@ Private mFinalIterations As Long ' Число итераций, переданн
 Private mLimitState As String ' Последний машинный статус fake-задачи.
 Private mDiagnosticLog As String ' Накопленный диагностический текст.
 Private mIterationLimitHit As Boolean ' True, если search остановился по лимиту итераций.
+Private mProbeMaxLambda As Double ' Наибольшая реально проверенная точка.
+Private mProbeCalls As Long ' Счетчик проб общего алгоритма.
+Private mFailureAbove As Double ' Искусственная численная неудача выше этой lambda; 0 отключает ее.
 
 ' Настраивает линейную тестовую задачу перед запуском общего search.
 Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
@@ -61,7 +64,24 @@ Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
     mLimitState = vbNullString
     mDiagnosticLog = vbNullString
     mIterationLimitHit = False
+    mProbeMaxLambda = 0#
+    mProbeCalls = 0
+    mFailureAbove = 0#
 End Sub
+
+' ДЛЯ ТЕСТОВ: задает численную неудачу верхних проб, не физический предел.
+Public Property Let FailureAbove(ByVal value As Double)
+    mFailureAbove = value
+End Property
+
+' ДЛЯ ТЕСТОВ: диагностические счетчики расширения и восстановления скобки.
+Public Property Get ProbeMaxLambda() As Double
+    ProbeMaxLambda = mProbeMaxLambda
+End Property
+
+Public Property Get ProbeCalls() As Long
+    ProbeCalls = mProbeCalls
+End Property
 
 Public Property Get FinalLambda() As Double
     FinalLambda = mFinalLambda
@@ -111,12 +131,13 @@ Private Property Get ILimitSearchProblem_MaxIterations() As Long
     ILimitSearchProblem_MaxIterations = mMaxIterations
 End Property
 
-Private Property Get ILimitSearchProblem_SearchMethod() As String
-    ILimitSearchProblem_SearchMethod = mSearchMethod
+' ДЛЯ ТЕСТОВ: позволяет явно проверить исчерпание бюджета Bisection.
+Private Property Get ILimitSearchProblem_BisectionMaxIterations() As Long
+    ILimitSearchProblem_BisectionMaxIterations = mMaxIterations
 End Property
 
-Private Property Get ILimitSearchProblem_UsesRetainedForceCapacity() As Boolean
-    ILimitSearchProblem_UsesRetainedForceCapacity = False
+Private Property Get ILimitSearchProblem_SearchMethod() As String
+    ILimitSearchProblem_SearchMethod = mSearchMethod
 End Property
 
 Private Property Get ILimitSearchProblem_Converged() As Boolean
@@ -130,6 +151,18 @@ End Property
 Private Property Get ILimitSearchProblem_DiagnosticLog() As String
     ILimitSearchProblem_DiagnosticLog = mDiagnosticLog
 End Property
+
+' ДЛЯ ТЕСТОВ: начало линейной функции должно лежать до заданного корня.
+Private Function ILimitSearchProblem_AcceptInitialPoint(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal functionValue As Double, _
+        ByVal probeState As String, ByVal solver As CSectionSolver) As Boolean
+    If probeState <> PROBE_ACCEPTABLE Then
+        ILimitSearchProblem_HandleInitialFailure probeState
+        Exit Function
+    End If
+    ILimitSearchProblem_RecordAcceptable loadPath, 0#
+    ILimitSearchProblem_AcceptInitialPoint = True
+End Function
 
 ' Fake-задача не требует доменной подготовки перед поиском.
 Private Function ILimitSearchProblem_Prepare(ByVal request As CLimitSearchRequest) As Boolean
@@ -239,14 +272,21 @@ Private Function ILimitSearchProblem_BuildLoadPath(ByVal request As CLimitSearch
 End Function
 
 ' Оценивает одну lambda-точку линейной функции.
-' Точка с нулевой невязкой считается допустимой финальной probe: так Secant
-' обязан вернуть именно найденный корень, а не старую нижнюю границу.
+' Точка с нулевой невязкой достигла критерия; доменная финализация принимает
+' аналитический корень без требования создать вымышленное материальное State.
 Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByVal lambdaValue As Double, ByRef functionValue As Double, _
         ByRef probeState As String, ByRef solver As CSectionSolver) As Boolean
     functionValue = lambdaValue - mRootLambda
-    If functionValue <= 0# Then
+    mProbeCalls = mProbeCalls + 1
+    If lambdaValue > mProbeMaxLambda Then mProbeMaxLambda = lambdaValue
+    Set solver = Nothing
+    If mFailureAbove > 0# And lambdaValue > mFailureAbove Then
+        probeState = PROBE_NUMFAIL
+        Exit Function
+    End If
+    If functionValue < 0# Then
         probeState = PROBE_ACCEPTABLE
     Else
         probeState = PROBE_LIMIT
@@ -271,10 +311,10 @@ Private Function ILimitSearchProblem_IsInvalidInputState(ByVal probeState As Str
     ILimitSearchProblem_IsInvalidInputState = (probeState = PROBE_INPUTERR)
 End Function
 
-' Для fake-задачи численная ошибка не восстанавливается уменьшением lambda.
+' ДЛЯ ТЕСТОВ: recovery использует середину оставшегося интервала.
 Private Function ILimitSearchProblem_ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, _
         ByVal highLambda As Double, ByVal probeState As String) As Double
-    ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = lowLambda
+    ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = 0.5 * (lowLambda + highLambda)
 End Function
 
 ' Запоминает последнюю acceptable-точку только в диагностике.
@@ -344,9 +384,12 @@ Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchReq
     ILimitSearchProblem_FinalizeAt = True
 End Function
 
-Private Sub ILimitSearchProblem_FinalizeFromRetainedAcceptable(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
-        ByVal methodName As String)
+Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
+        ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
+        ByVal methodName As String, ByVal iterations As Long)
+    Dim lambdaValue As Double
+    If mKind = rkCrackFormation Then lambdaValue = highLambda Else lambdaValue = lowLambda
     mConverged = True
     mFinalLambda = lambdaValue
     mFinalMethod = methodName
@@ -355,33 +398,30 @@ Private Sub ILimitSearchProblem_FinalizeFromRetainedAcceptable(ByVal request As 
         "; method=" & methodName
 End Sub
 
-Private Sub ILimitSearchProblem_AcceptRetainedCapacity(ByVal request As CLimitSearchRequest)
+Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
     AppendDiagnosticLine "retainedCapacity"
 End Sub
 
-' Возвращает минимальный result-объект: сами проверки читают snapshot из fake-problem.
+' ДЛЯ ТЕСТОВ: фиксирует полноценный численный результат без solver/calculator.
 Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRequest, _
         ByVal searchSucceeded As Boolean) As CLimitSearchResult
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    If mConverged Then
+        meta.SetResult rsSuccess, rcCheckPassed, mKind, "Тестовый критерий найден."
+    ElseIf mLimitState = "SearchBoundReached" Then
+        meta.SetResult rsNumericalFailure, rcSearchBoundReached, mKind, mLimitState
+    ElseIf mLimitState = PROBE_INPUTERR Then
+        meta.SetResult rsInvalidInput, rcInvalidInput, mKind, mLimitState
+    Else
+        meta.SetResult rsNumericalFailure, rcNumericalFailure, mKind, mLimitState
+    End If
     Dim result As CLimitSearchResult
     Set result = New CLimitSearchResult
+    result.Initialize meta, request.SolutionStrategy, mFinalMethod, mConverged, mFinalLambda, _
+        mFinalLambda, 0#, 0#, Nothing, mLimitState, mDiagnosticLog
     Set ILimitSearchProblem_BuildResult = result
 End Function
-
-Private Sub ILimitSearchProblem_BeginFormationAttempt(ByVal pathName As String)
-    AppendDiagnosticLine "formationAttempt=" & pathName
-End Sub
-
-Private Sub ILimitSearchProblem_SetResolvedFormationPath(ByVal pathName As String)
-    AppendDiagnosticLine "resolvedFormationPath=" & pathName
-End Sub
-
-Private Sub ILimitSearchProblem_SetCurrentFormationPath(ByVal pathName As String)
-    AppendDiagnosticLine "currentFormationPath=" & pathName
-End Sub
-
-Private Property Get ILimitSearchProblem_FormationFallbackOnly() As Boolean
-    ILimitSearchProblem_FormationFallbackOnly = False
-End Property
 
 Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
     ILimitSearchProblem_StoppedTerminally = False
@@ -397,26 +437,6 @@ End Sub
 
 Private Sub ILimitSearchProblem_SetStopReasonIfEmpty(ByVal reason As String)
     If Len(mLimitState) = 0 Then mLimitState = reason
-End Sub
-
-Private Function ILimitSearchProblem_FormationPathDisplayName() As String
-    ILimitSearchProblem_FormationPathDisplayName = "test-path"
-End Function
-
-Private Function ILimitSearchProblem_HasScaledFormationLoad(ByVal request As CLimitSearchRequest) As Boolean
-    ILimitSearchProblem_HasScaledFormationLoad = True
-End Function
-
-Private Sub ILimitSearchProblem_MarkFormationPathFallback(ByVal reason As String)
-    mConverged = True
-    mLimitState = reason
-    AppendDiagnosticLine reason
-End Sub
-
-Private Sub ILimitSearchProblem_FinishNoCrack(ByVal reason As String)
-    mConverged = True
-    mLimitState = reason
-    AppendDiagnosticLine reason
 End Sub
 
 Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, _

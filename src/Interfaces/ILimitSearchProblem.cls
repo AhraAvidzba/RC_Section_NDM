@@ -37,13 +37,13 @@ End Property
 Public Property Get MaxIterations() As Long
 End Property
 
-' Возвращает имя одномерного метода: Bisection, Brent или Secant.
-Public Property Get SearchMethod() As String
+' Отдельный лимит уточнения скобки Bisection; 0 означает уточнение до допуска.
+' Он не обязан совпадать с лимитом Newton внутренней equilibrium-пробы.
+Public Property Get BisectionMaxIterations() As Long
 End Property
 
-' True, если после неудачи bracket-а можно принять удержанную чисто осевую
-' несущую способность. Для CrackFormation всегда False.
-Public Property Get UsesRetainedForceCapacity() As Boolean
+' Возвращает имя одномерного метода: Bisection, Brent или Secant.
+Public Property Get SearchMethod() As String
 End Property
 
 Public Property Get Converged() As Boolean
@@ -61,6 +61,13 @@ End Function
 
 ' Создает lambda-траекторию для выбранной инженерной задачи.
 Public Function BuildLoadPath(ByVal request As CLimitSearchRequest) As CLoadPathVector
+End Function
+
+' Решает, можно ли продолжить поиск от подтвержденной начальной точки.
+' Отказ или физический результат без точки оформляет владелец задачи.
+Public Function AcceptInitialPoint(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal functionValue As Double, _
+        ByVal probeState As String, ByVal solver As CSectionSolver) As Boolean
 End Function
 
 ' Оценивает одну lambda-точку и возвращает значение функции search, код probe
@@ -135,13 +142,17 @@ Public Function FinalizeAt(ByVal request As CLimitSearchRequest, _
         ByVal solver As CSectionSolver, ByVal iterations As Long) As Boolean
 End Function
 
-Public Sub FinalizeFromRetainedAcceptable(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
-        ByVal methodName As String)
+' Принимает уточненную скобку по физическому критерию конкретной задачи.
+' Выбор допустимой стороны и дополнительное подтверждение не принадлежат Search.
+Public Sub FinalizeBracket(ByVal request As CLimitSearchRequest, ByVal loadPath As CLoadPathVector, _
+        ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
+        ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
+        ByVal methodName As String, ByVal iterations As Long)
 End Sub
 
-' Принимает удержанную чисто осевую несущую способность, если это применимо.
-Public Sub AcceptRetainedCapacity(ByVal request As CLimitSearchRequest)
+' Пробует специальный подтвержденный метод после численной неудачи поиска.
+' Если такого метода у задачи нет, ее первичная причина сохраняется.
+Public Sub TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
 End Sub
 
 ' Собирает общий snapshot результата search.
@@ -220,20 +231,8 @@ End Property
 Public Property Get LimitSearchUltimateMaxDeltaKappa() As Double
 End Property
 
-' Ниже идут методы, нужные CrackFormation Auto. Для capacity-адаптера они
-' являются безопасными no-op, чтобы coordinator оставался независимым от класса.
-Public Sub BeginFormationAttempt(ByVal pathName As String)
-End Sub
-
-Public Sub SetResolvedFormationPath(ByVal pathName As String)
-End Sub
-
-Public Sub SetCurrentFormationPath(ByVal pathName As String)
-End Sub
-
-Public Property Get FormationFallbackOnly() As Boolean
-End Property
-
+' Сообщает численному слою об окончательном исходе задачи, который нельзя
+' подменять последующей попыткой или общей численной ошибкой.
 Public Property Get StoppedTerminally() As Boolean
 End Property
 
@@ -244,18 +243,6 @@ Public Sub ClearStopReason()
 End Sub
 
 Public Sub SetStopReasonIfEmpty(ByVal reason As String)
-End Sub
-
-Public Function FormationPathDisplayName() As String
-End Function
-
-Public Function HasScaledFormationLoad(ByVal request As CLimitSearchRequest) As Boolean
-End Function
-
-Public Sub MarkFormationPathFallback(ByVal reason As String)
-End Sub
-
-Public Sub FinishNoCrack(ByVal reason As String)
 End Sub
 
 Public Sub MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _

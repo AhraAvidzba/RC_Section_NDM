@@ -21,305 +21,130 @@ Option Explicit
 ' спрашивает у доменного объекта значение функции и классификацию точки, а сам
 ' управляет порядком пробных lambda.
 
-Private Const STATE_ACCEPTABLE As String = "Acceptable" ' Lambda-точка еще не достигла физического предела.
-Private Const STATE_CRACK_LIMIT As String = "CrackFormationLimit" ' Для CrackFormation eps_bt,ult уже достигнута.
-Private Const STATE_NUMERICAL_FAILURE As String = "NumericalFailure" ' Численная неудача пробной lambda-точки.
-Private Const STATE_INVALID_INPUT As String = "InvalidInput" ' Ошибка исходных данных или настройки search.
-
-' Выполняет LoadMultiplier для несущей способности через общий алгоритм lambda-search.
-Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitSearchResult
+' Выполняет общий LoadMultiplier независимо от инженерного вида задачи.
+' Подготовка, начальный физический исход и приемка точки принадлежат callback-у.
+Public Function Execute(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     If request Is Nothing Then Err.Raise vbObjectError + 4220, "CLoadMultiplierSearch", "Не передан запрос limit-search."
-
+    If request.Problem Is Nothing Then
+        Set Execute = ContractFailure(request, "Не передана задача общего поиска.")
+        Exit Function
+    End If
     If Not request.Problem.Prepare(request) Then
-        Set ExecuteCapacity = request.Problem.BuildResult(request, False)
+        Set Execute = request.Problem.BuildResult(request, False)
         Exit Function
     End If
 
     Dim loadPath As CLoadPathVector
     Set loadPath = request.Problem.BuildLoadPath(request)
-
-    RunCapacitySearch request, loadPath
-    Set ExecuteCapacity = request.Problem.BuildResult(request, False)
+    If loadPath Is Nothing Then
+        Set Execute = ContractFailure(request, "Задача поиска не передала траекторию нагрузки.")
+        Exit Function
+    End If
+    RunSearch request, loadPath
+    Set Execute = request.Problem.BuildResult(request, request.Problem.Converged)
 End Function
 
-' Выполняет LoadMultiplier для точки образования нормальной трещины. Crack-слой
-' задает критерий eps_bt,ult и load-path, а bracket/bisection остаются общими.
-Public Function ExecuteCrackFormation(ByVal request As CLimitSearchRequest) As CLimitSearchResult
-    If request Is Nothing Then Err.Raise vbObjectError + 4221, "CLoadMultiplierSearch", "Не передан запрос limit-search."
-
-    request.Problem.AppendDiagnostic "LoadMultiplier: начинаем подбор lambda_crc пробными расчетами НДС; путь " & _
-        request.Problem.FormationPathDisplayName() & "."
-
-    Dim loadPath As CLoadPathVector
-    Set loadPath = request.Problem.BuildLoadPath(request)
-
-    Dim searchSucceeded As Boolean
-    searchSucceeded = RunCrackFormationSearch(request, loadPath)
-    Set ExecuteCrackFormation = request.Problem.BuildResult(request, searchSucceeded)
+' Отсутствие обязательного внутреннего объекта является ошибкой контракта,
+' а не ошибкой ввода пользователя и не численной несходимостью.
+Private Function ContractFailure(ByVal request As CLimitSearchRequest, ByVal reason As String) As CLimitSearchResult
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    meta.SetResult rsInternalError, rcInternalError, request.ResultKind, reason
+    Dim result As CLimitSearchResult
+    Set result = New CLimitSearchResult
+    result.Initialize meta, request.SolutionStrategy, vbNullString, False, 0#, 0#, 0#, 0#, _
+        Nothing, vbNullString, vbNullString, vbNullString, False
+    Set ContractFailure = result
 End Function
 
-' Запускает общий поиск для capacity: нижняя lambda=0 должна быть acceptable,
-' верхняя граница расширяется до первого физического предела.
-Private Sub RunCapacitySearch(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector)
-    Dim lowLambda As Double
-    Dim highLambda As Double
-    Dim probeState As String
-    Dim functionValue As Double
+' Решает начальную точку, находит скобку и запускает выбранный численный метод.
+' Здесь нет проверки вида Capacity/Crack, нагрузки текущего LC или psi.
+Private Sub RunSearch(ByVal request As CLimitSearchRequest, ByVal loadPath As CLoadPathVector)
+    Dim lowLambda As Double, highLambda As Double
+    Dim lowSolver As CSectionSolver, highSolver As CSectionSolver
+    Dim functionValue As Double, probeState As String
     lowLambda = 0#
     highLambda = request.Problem.InitialLambdaStep
     If highLambda <= 0# Then highLambda = 1#
 
-    If Not EvaluateLimitFunction(request, loadPath, lowLambda, functionValue, probeState) Then Exit Sub
-    If Not IsAcceptableState(request, probeState) Then
+    If Not request.Problem.EvaluatePoint(request, loadPath, Nothing, lowLambda, _
+            functionValue, probeState, lowSolver) Then
         request.Problem.HandleInitialFailure probeState
         Exit Sub
     End If
-    request.Problem.RecordAcceptable loadPath, lowLambda
+    If Not request.Problem.AcceptInitialPoint(request, loadPath, functionValue, probeState, lowSolver) Then Exit Sub
 
-    If Not FindCapacityBracket(request, loadPath, lowLambda, highLambda) Then
-        If request.ForceOnly Or request.PureAxialForMethod Then request.Problem.AcceptRetainedCapacity request
+    If Not FindBracket(request, loadPath, lowLambda, lowSolver, highLambda, highSolver) Then
+        request.Problem.TryFinalizeAfterSearchFailure request
         Exit Sub
     End If
-
-    RunSearchInsideBracket request, loadPath, lowLambda, highLambda, _
+    RunSearchInsideBracket request, loadPath, lowLambda, highLambda, lowSolver, highSolver, _
         request.Problem.SearchMethod, request.Problem.LambdaTolerance, request.Problem.MaxIterations
-    If Not request.Problem.Converged Then
-        If request.ForceOnly Or request.PureAxialForMethod Then request.Problem.AcceptRetainedCapacity request
-    End If
+    If Not request.Problem.Converged Then request.Problem.TryFinalizeAfterSearchFailure request
 End Sub
 
-' Ищет верхнюю физическую границу capacity так же, как прежний
-' CCapacitySolver: acceptable-точки сдвигают low, NumericalFailure уменьшает
-' верхнюю lambda, а физический предел завершает скобку.
-Private Function FindCapacityBracket(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByRef lowLambda As Double, _
-        ByRef highLambda As Double) As Boolean
-    Dim probeState As String
-    Dim functionValue As Double
-    If highLambda > request.Problem.MaxLambda Then highLambda = request.Problem.MaxLambda
-    Do While highLambda <= request.Problem.MaxLambda
-        If Not EvaluateLimitFunction(request, loadPath, highLambda, functionValue, probeState) Then Exit Function
-
-        If IsAcceptableState(request, probeState) Then
+' Единое расширение скобки: допустимая проба сдвигает нижнюю границу,
+' достигнутый критерий задает верхнюю, а численная неудача требует recovery.
+' Последняя проба всегда выполняется на MaxLambda, без пропуска хвоста интервала.
+Private Function FindBracket(ByVal request As CLimitSearchRequest, ByVal loadPath As CLoadPathVector, _
+        ByRef lowLambda As Double, ByRef lowSolver As CSectionSolver, _
+        ByRef highLambda As Double, ByRef highSolver As CSectionSolver) As Boolean
+    Dim functionValue As Double, probeState As String
+    Dim evaluated As Boolean, reducedLambda As Double
+    highLambda = MinDouble(highLambda, request.Problem.MaxLambda)
+    Do
+        evaluated = request.Problem.EvaluatePoint(request, loadPath, lowSolver, highLambda, _
+            functionValue, probeState, highSolver)
+        If Not evaluated Or request.Problem.IsNumericalFailureState(probeState) Then
+            If request.Problem.StoppedTerminally Then Exit Function
+            reducedLambda = request.Problem.ReduceLambdaAfterNumericalFailure(lowLambda, highLambda, probeState)
+            If reducedLambda <= lowLambda Or reducedLambda - lowLambda <= request.Problem.LambdaTolerance Then
+                request.Problem.HandleBracketNumericalFailure lowLambda, highLambda, probeState
+                Exit Function
+            End If
+            highLambda = reducedLambda
+        ElseIf request.Problem.IsLimitState(probeState) Then
+            FindBracket = True
+            Exit Function
+        ElseIf request.Problem.IsAcceptableState(probeState) Then
             lowLambda = highLambda
-            request.Problem.RecordAcceptable loadPath, highLambda
+            Set lowSolver = highSolver
+            request.Problem.RecordAcceptable loadPath, lowLambda
             If highLambda >= request.Problem.MaxLambda Then Exit Do
-            highLambda = MinDouble(highLambda * 2#, request.Problem.MaxLambda)
-        ElseIf IsLimitState(request, probeState) Then
-            FindCapacityBracket = True
-            Exit Function
-        ElseIf IsNumericalFailureState(request, probeState) Then
-            highLambda = request.Problem.ReduceLambdaAfterNumericalFailure(lowLambda, highLambda, probeState)
-            If highLambda <= lowLambda Then Exit Function
+            ' Успешная проба дает более близкий warm-start. Несошедшаяся
+            ' нагрузка не является физической границей: повторяем расширение.
+            highLambda = MinDouble(2# * highLambda, request.Problem.MaxLambda)
         Else
-            request.Problem.SetNumericalFailure "Поиск несущей способности остановлен: " & probeState & "."
+            request.Problem.HandleUnexpectedState probeState
             Exit Function
         End If
     Loop
-
     request.Problem.HandleBracketNotFound lowLambda
-End Function
-
-' Запускает LoadMultiplier для CrackFormation. Начальная точка lambda=0 может
-' быть не обычным solve, а нулевой нагрузкой; это обрабатывает crack-критерий.
-Private Function RunCrackFormationSearch(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector) As Boolean
-    Dim lowLambda As Double
-    Dim highLambda As Double
-    Dim lowSolver As CSectionSolver
-    Dim highSolver As CSectionSolver
-    Dim lowResidual As Double
-    Dim highResidual As Double
-    Dim probeState As String
-    lowLambda = 0#
-    highLambda = 1#
-
-    If Not EvaluateCrackFunction(request, loadPath, Nothing, lowLambda, lowResidual, probeState, lowSolver) Then
-        request.Problem.HandleInitialFailure probeState
-        Exit Function
-    End If
-
-    If StrComp(request.CrackFormationPath, "LambdaN", vbTextCompare) = 0 And request.TargetN <= 0.000001 Then
-        If lowResidual >= 0# Then
-            request.Problem.MarkFormationPathFallback "Трещина уже образуется от постоянного момента выбранного пути " & _
-                request.Problem.FormationPathDisplayName() & "; сжимающая или нулевая N не масштабируется для поиска Ncrc, psi_s остается равным 1."
-        Else
-            request.Problem.FinishNoCrack "Трещина не образована от постоянного момента, а выбранный путь " & _
-                request.Problem.FormationPathDisplayName() & " не масштабирует растягивающую продольную силу."
-        End If
-        RunCrackFormationSearch = True
-        Exit Function
-    End If
-
-    If lowResidual >= 0# Then
-        request.Problem.MarkFormationPathFallback "Трещина уже образуется в постоянной части выбранного пути " & _
-            request.Problem.FormationPathDisplayName() & "; точка sigma_s,crc по lambda не определяется, psi_s остается равным 1."
-        RunCrackFormationSearch = True
-        Exit Function
-    End If
-
-    If Not request.Problem.HasScaledFormationLoad(request) Then
-        request.Problem.FinishNoCrack "Трещина не образована в постоянной части, а выбранный путь " & _
-            request.Problem.FormationPathDisplayName() & " не содержит ненулевой масштабируемой нагрузки."
-        RunCrackFormationSearch = True
-        Exit Function
-    End If
-
-    If Not FindCrackFormationBracket(request, loadPath, lowLambda, lowSolver, lowResidual, _
-            highLambda, highSolver, highResidual) Then Exit Function
-
-    If highResidual < 0# Then
-        request.Problem.HandleBracketNotFound highLambda
-        Exit Function
-    End If
-
-    Dim acceptedLambda As Double
-    Dim acceptedSolver As CSectionSolver
-    Dim iterations As Long
-    If SearchCrackByBisection(request, loadPath, lowLambda, lowSolver, highLambda, highSolver, _
-            acceptedLambda, acceptedSolver, iterations) Then
-        RunCrackFormationSearch = request.Problem.FinalizeAt(request, loadPath, acceptedLambda, vbNullString, _
-            "Bisection", acceptedSolver, iterations)
-    End If
-End Function
-
-' Ищет верхнюю точку crack-скобки. Если перегруженная точка не решается,
-' верхняя граница сдвигается вниз, чтобы подойти к eps_bt,ult с рабочей стороны.
-Private Function FindCrackFormationBracket(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByRef lowerLambda As Double, _
-        ByRef lowerSolver As CSectionSolver, ByRef lowerResidual As Double, _
-        ByRef upperLambda As Double, ByRef upperSolver As CSectionSolver, _
-        ByRef upperResidual As Double) As Boolean
-    Dim probeState As String
-    If EvaluateCrackFunction(request, loadPath, lowerSolver, upperLambda, upperResidual, probeState, upperSolver) Then
-        GoTo UpperSolved
-    End If
-
-    If TryRecoverCrackBracketBeforeFailedUpper(request, loadPath, lowerLambda, lowerSolver, lowerResidual, _
-            upperLambda, upperSolver, upperResidual) Then
-        FindCrackFormationBracket = True
-        Exit Function
-    End If
-
-    request.Problem.SetNumericalFailure _
-        "Не удалось подобрать сходящуюся точку образования трещины до перегруженной точки lambda = " & _
-        FormatNumberInvariant(upperLambda) & "."
-    Exit Function
-
-UpperSolved:
-    Do While upperResidual < 0# And upperLambda < request.Problem.MaxLambda
-        lowerLambda = upperLambda
-        Set lowerSolver = upperSolver
-        lowerResidual = upperResidual
-        upperLambda = MinDouble(upperLambda * 2#, request.Problem.MaxLambda)
-        If Not EvaluateCrackFunction(request, loadPath, lowerSolver, upperLambda, upperResidual, probeState, upperSolver) Then
-            If TryRecoverCrackBracketBeforeFailedUpper(request, loadPath, lowerLambda, lowerSolver, lowerResidual, _
-                    upperLambda, upperSolver, upperResidual) Then
-                FindCrackFormationBracket = True
-                Exit Function
-            End If
-            request.Problem.SetNumericalFailure _
-                "Не удалось найти равновесие при lambda = " & FormatNumberInvariant(upperLambda) & _
-                " в поиске трещинообразования."
-            Exit Function
-        End If
-    Loop
-    FindCrackFormationBracket = True
-End Function
-
-' Если верхняя crack-проба не сошлась, ищет рабочую точку с образованием
-' трещины между последней сходящейся нижней точкой и перегруженной lambda.
-' Это не меняет критерий трещинообразования, а только не дает перегруженной
-' пробе преждевременно превращать весь поиск в NumFail.
-Private Function TryRecoverCrackBracketBeforeFailedUpper(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByRef lowerLambda As Double, _
-        ByRef lowerSolver As CSectionSolver, ByRef lowerResidual As Double, _
-        ByRef upperLambda As Double, ByRef upperSolver As CSectionSolver, _
-        ByRef upperResidual As Double) As Boolean
-    Dim failedLambda As Double
-    failedLambda = upperLambda
-
-    Dim iter As Long
-    For iter = 1 To request.Problem.MaxIterations
-        If failedLambda - lowerLambda <= request.Problem.LambdaTolerance * MaxDouble(1#, failedLambda) Then Exit For
-
-        Dim midLambda As Double
-        Dim midSolver As CSectionSolver
-        Dim midResidual As Double
-        Dim probeState As String
-        midLambda = 0.5 * (lowerLambda + failedLambda)
-        If EvaluateCrackFunction(request, loadPath, lowerSolver, midLambda, midResidual, probeState, midSolver) Then
-            If midResidual >= 0# Then
-                upperLambda = midLambda
-                Set upperSolver = midSolver
-                upperResidual = midResidual
-                TryRecoverCrackBracketBeforeFailedUpper = True
-                Exit Function
-            End If
-            lowerLambda = midLambda
-            Set lowerSolver = midSolver
-            lowerResidual = midResidual
-        Else
-            failedLambda = midLambda
-        End If
-    Next iter
-
-    If Not lowerSolver Is Nothing Then
-        request.Problem.AppendDiagnostic _
-            "Поиск трещинообразования: последняя сходящаяся точка перед перегрузкой lambda=" & _
-            FormatNumberInvariant(lowerLambda) & "; невязка=" & FormatNumberInvariant(lowerResidual)
-    End If
-End Function
-
-' Для CrackFormation используется тот же bisection-цикл, что и для Capacity.
-' Отличается только критерий одной lambda-точки и финализация найденного состояния.
-Private Function SearchCrackByBisection(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByVal lowerLambda As Double, _
-        ByVal lowerSolver As CSectionSolver, ByVal upperLambda As Double, _
-        ByVal upperSolver As CSectionSolver, ByRef acceptedLambda As Double, _
-        ByRef acceptedSolver As CSectionSolver, ByRef iterations As Long) As Boolean
-    If Not SearchByBisectionCore(request, loadPath, lowerLambda, lowerSolver, _
-            upperLambda, upperSolver, request.Problem.LambdaTolerance, _
-            request.Problem.MaxIterations, iterations) Then Exit Function
-
-    acceptedLambda = upperLambda
-    Set acceptedSolver = upperSolver
-    SearchCrackByBisection = True
 End Function
 
 ' Запускает выбранный одномерный метод внутри уже найденной физической скобки.
 Private Sub RunSearchInsideBracket(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, _
-        ByVal highLambda As Double, ByVal methodName As String, _
+        ByVal highLambda As Double, ByVal lowSolver As CSectionSolver, _
+        ByVal highSolver As CSectionSolver, ByVal methodName As String, _
         ByVal tolerance As Double, ByVal maxIterations As Long)
     Select Case methodName
         Case "Bisection"
-            SearchByBisection request, loadPath, lowLambda, highLambda, tolerance
+            Dim iterations As Long
+            request.Problem.AppendDiagnostic "searchMethod=Bisection"
+            If SearchByBisectionCore(request, loadPath, lowLambda, lowSolver, highLambda, highSolver, _
+                    tolerance, request.Problem.BisectionMaxIterations, iterations) Then
+                request.Problem.FinalizeBracket request, loadPath, lowLambda, lowSolver, _
+                    highLambda, highSolver, "Bisection", iterations
+            End If
         Case "Brent"
             SearchByBrent request, loadPath, lowLambda, highLambda, tolerance, maxIterations
         Case "Secant"
             SearchBySecant request, loadPath, lowLambda, highLambda, tolerance, maxIterations
         Case Else
             request.Problem.SetInvalidInput _
-                "Capacity.SearchMethod должен быть Bisection, Brent или Secant."
+                "Метод одномерного поиска должен быть Bisection, Brent или Secant."
     End Select
-End Sub
-
-' Устойчивый базовый метод: делит физическую скобку пополам.
-Private Sub SearchByBisection(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, _
-        ByVal highLambda As Double, ByVal tolerance As Double)
-    request.Problem.AppendDiagnostic "searchMethod=Bisection"
-
-    Dim lowSolver As CSectionSolver
-    Dim highSolver As CSectionSolver
-    Dim iterations As Long
-    If Not SearchByBisectionCore(request, loadPath, lowLambda, lowSolver, _
-            highLambda, highSolver, tolerance, 0, iterations) Then Exit Sub
-
-    request.Problem.FinalizeFromRetainedAcceptable request, loadPath, _
-        lowLambda, "Bisection"
 End Sub
 
 ' Выполняет общий цикл bisection для уже найденной lambda-скобки.
@@ -388,6 +213,10 @@ Private Sub SearchByBrent(ByVal request As CLimitSearchRequest, _
     b = highLambda
     If Not EvaluateLimitFunction(request, loadPath, a, fa, stateA) Then Exit Sub
     If Not EvaluateLimitFunction(request, loadPath, b, fb, stateB) Then Exit Sub
+    If fb = 0# And IsLimitState(request, stateB) Then
+        FinalizeAfterProbe request, loadPath, b, "Brent"
+        Exit Sub
+    End If
     If fa >= 0# Or fb <= 0# Then
         request.Problem.SetInvalidInput _
             "Методу Brent нужна скобка: нижняя lambda с запасом и верхняя lambda за физическим пределом."
@@ -490,6 +319,10 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
     x1 = highLambda
     If Not EvaluateLimitPoint(request, loadPath, x0, f0, state0, solver0) Then Exit Sub
     If Not EvaluateLimitPoint(request, loadPath, x1, f1, state1, solver1) Then Exit Sub
+    If Abs(f1) <= tolerance And CanFinalizeSecantProbe(request, state1, solver1) Then
+        FinalizeKnownProbe request, loadPath, x1, state1, "Secant", solver1, 0
+        Exit Sub
+    End If
     If f0 >= 0# Or f1 <= 0# Then
         request.Problem.SetInvalidInput _
             "Методу Secant нужна скобка: нижняя lambda с запасом и верхняя lambda за физическим пределом."
@@ -600,8 +433,8 @@ Private Sub FinalizeKnownProbe(ByVal request As CLimitSearchRequest, _
 End Sub
 
 ' Выбирает стартовое НДС для следующей bisection-пробы.
-' Для CrackFormation выгодно стартовать от последней сходящейся нижней точки; если ее нет,
-' используется верхняя точка. Для Capacity solver здесь не нужен, поэтому возвращается Nothing.
+' Предпочтителен сошедшийся снимок с допустимой стороны; если его нет,
+' используется подтвержденная верхняя точка. Принятие warm-start решает callback.
 Private Function PreferredBisectionStartSolver(ByVal lowSolver As CSectionSolver, _
         ByVal highSolver As CSectionSolver) As CSectionSolver
     If lowSolver Is Nothing Then
@@ -612,8 +445,8 @@ Private Function PreferredBisectionStartSolver(ByVal lowSolver As CSectionSolver
 End Function
 
 ' Оценивает одну lambda-точку для общего bisection-цикла.
-' Capacity возвращает только значение функции и статус, а CrackFormation дополнительно
-' возвращает найденный solver, чтобы финализировать PreCrackState без повторного solve.
+' Callback возвращает значение критерия и связанный с ним solver для
+' warm-start и подтверждения конечной точки без повторного solve.
 Private Function EvaluateBisectionPoint(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByVal lambdaValue As Double, ByRef functionValue As Double, _
@@ -623,41 +456,29 @@ Private Function EvaluateBisectionPoint(ByVal request As CLimitSearchRequest, _
 End Function
 
 ' Возвращает доменному объекту понятную причину отказа пробной lambda-точки.
-' Для Capacity callback обычно уже записывает статус; для CrackFormation фиксируем stop-reason явно.
+' Первичная окончательная причина callback-а должна сохраняться; численная
+' ошибка относится только к пробе без подтвержденного равновесия.
 Private Sub HandleBisectionEvaluationFailure(ByVal request As CLimitSearchRequest, _
         ByVal lambdaValue As Double)
     request.Problem.SetNumericalFailure _
         "Не удалось найти равновесие при lambda = " & _
-        FormatNumberInvariant(lambdaValue) & " в поиске трещинообразования."
+        FormatNumberInvariant(lambdaValue) & " в поиске предельной точки."
 End Sub
 
 ' Обрабатывает статус NumericalFailure, если callback смог классифицировать точку без обычного False.
 Private Sub HandleBisectionNumericalFailure(ByVal request As CLimitSearchRequest, _
         ByVal lowLambda As Double, ByVal failedLambda As Double, ByVal probeState As String)
-    If request.ResultKind = rkCapacity Then
-        request.Problem.HandleBracketNumericalFailure lowLambda, failedLambda, probeState
-    Else
-        request.Problem.SetNumericalFailure _
-            "Не удалось найти равновесие при lambda = " & _
-            FormatNumberInvariant(failedLambda) & " в поиске трещинообразования."
-    End If
+    request.Problem.HandleBracketNumericalFailure lowLambda, failedLambda, probeState
 End Sub
 
 ' Защищает общий bisection от неизвестного статуса пробной точки.
 ' Такая ситуация означает не физический результат, а нарушение контракта callback-а.
 Private Sub HandleBisectionUnexpectedState(ByVal request As CLimitSearchRequest, _
         ByVal probeState As String)
-    If request.ResultKind = rkCapacity Then
-        request.Problem.SetNumericalFailure _
-            "Поиск Bisection остановлен: " & probeState & "."
-    Else
-        request.Problem.SetNumericalFailure _
-            "Поиск трещинообразования остановлен: " & probeState & "."
-    End If
+    request.Problem.HandleUnexpectedState probeState
 End Sub
 
-' Единая целевая функция для capacity. CrackFormation использует отдельный
-' wrapper, потому что ему нужно вернуть solver найденной верхней точки.
+' Оценивает целевую функцию для интерполяционного шага одномерного метода.
 Private Function EvaluateLimitFunction(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByRef functionValue As Double, ByRef probeState As String) As Boolean
@@ -675,16 +496,6 @@ Private Function EvaluateLimitPoint(ByVal request As CLimitSearchRequest, _
         ByRef solver As CSectionSolver) As Boolean
     EvaluateLimitPoint = request.Problem.EvaluatePoint(request, loadPath, Nothing, _
         lambdaValue, functionValue, probeState, solver)
-End Function
-
-' Оценивает crack lambda-точку и возвращает solver, пригодный для последующего
-' warm-start или сохранения PreCrackState.
-Private Function EvaluateCrackFunction(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
-        ByVal lambdaValue As Double, ByRef functionValue As Double, _
-        ByRef probeState As String, ByRef solver As CSectionSolver) As Boolean
-    EvaluateCrackFunction = request.Problem.EvaluatePoint(request, loadPath, _
-        startSolver, lambdaValue, functionValue, probeState, solver)
 End Function
 
 ' Проверяет, что lambda-точка находится ниже предела.
@@ -711,7 +522,13 @@ Private Function CanFinalizeSecantProbe(ByVal request As CLimitSearchRequest, _
     If IsAcceptableState(request, probeState) Then
         CanFinalizeSecantProbe = True
     ElseIf IsLimitState(request, probeState) Then
-        If Not solver Is Nothing Then CanFinalizeSecantProbe = solver.Converged
+        If solver Is Nothing Then
+            ' Чисто аналитическая задача может подтвердить критерий без State.
+            ' Реальное НДС и физическую допустимость проверяет ее FinalizeAt.
+            CanFinalizeSecantProbe = True
+        Else
+            CanFinalizeSecantProbe = solver.Converged
+        End If
     End If
 End Function
 

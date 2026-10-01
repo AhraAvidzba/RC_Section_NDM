@@ -51,12 +51,13 @@ Private Property Get ILimitSearchProblem_MaxIterations() As Long
     ILimitSearchProblem_MaxIterations = mCrack.LimitSearchCrackMaxIterations
 End Property
 
-Private Property Get ILimitSearchProblem_SearchMethod() As String
-    ILimitSearchProblem_SearchMethod = "Bisection"
+' Сохраняет заданный предел уточнения скобки трещинообразования.
+Private Property Get ILimitSearchProblem_BisectionMaxIterations() As Long
+    ILimitSearchProblem_BisectionMaxIterations = mCrack.LimitSearchCrackMaxIterations
 End Property
 
-Private Property Get ILimitSearchProblem_UsesRetainedForceCapacity() As Boolean
-    ILimitSearchProblem_UsesRetainedForceCapacity = False
+Private Property Get ILimitSearchProblem_SearchMethod() As String
+    ILimitSearchProblem_SearchMethod = "Bisection"
 End Property
 
 Private Property Get ILimitSearchProblem_Converged() As Boolean
@@ -74,6 +75,8 @@ End Property
 ' Для CrackFormation специальной подготовки перед LoadMultiplier нет:
 ' материалы и путь уже переданы вызывающим слоем.
 Private Function ILimitSearchProblem_Prepare(ByVal request As CLimitSearchRequest) As Boolean
+    mCrack.LimitSearchAppendDiagnostic "LoadMultiplier: начинаем подбор lambda_crc пробными расчетами НДС; путь " & _
+        mCrack.LimitSearchCrackFormationPathDisplayName() & "."
     ILimitSearchProblem_Prepare = True
 End Function
 
@@ -174,6 +177,15 @@ Private Function ILimitSearchProblem_BuildLoadPath(ByVal request As CLimitSearch
         request.ReferenceX, request.ReferenceY)
 End Function
 
+' Передает физическую трактовку начала пути владельцу Formation. Общий
+' одномерный поиск не знает правил постоянной трещины или fallback psi=1.
+Private Function ILimitSearchProblem_AcceptInitialPoint(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal functionValue As Double, _
+        ByVal probeState As String, ByVal solver As CSectionSolver) As Boolean
+    ILimitSearchProblem_AcceptInitialPoint = mCrack.LimitSearchAcceptFormationInitialPoint( _
+        request.TargetN, request.MomentMxAtReference, request.MomentMyAtReference, functionValue)
+End Function
+
 ' Оценивает одну lambda-точку crack-formation и возвращает solver, если
 ' равновесие найдено. Solver нужен для warm-start и сохранения PreCrackState.
 Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearchRequest, _
@@ -265,37 +277,20 @@ Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchReq
             concreteMaterial, steelMaterial, loadPath, lambdaValue, solver, iterations)
 End Function
 
-Private Sub ILimitSearchProblem_FinalizeFromRetainedAcceptable(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
-        ByVal methodName As String)
+Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
+        ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
+        ByVal methodName As String, ByVal iterations As Long)
+    ILimitSearchProblem_FinalizeAt request, loadPath, highLambda, STATE_CRACK_LIMIT, methodName, highSolver, iterations
 End Sub
 
-Private Sub ILimitSearchProblem_AcceptRetainedCapacity(ByVal request As CLimitSearchRequest)
+Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
 End Sub
 
 Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRequest, _
         ByVal searchSucceeded As Boolean) As CLimitSearchResult
-    Dim result As CLimitSearchResult
-    Set result = New CLimitSearchResult
-    result.InitializeFromCrackFormation mCrack, request.SolutionStrategy, searchSucceeded
-    Set ILimitSearchProblem_BuildResult = result
+    Set ILimitSearchProblem_BuildResult = mCrack.BuildSearchSnapshot(request.SolutionStrategy)
 End Function
-
-Private Sub ILimitSearchProblem_BeginFormationAttempt(ByVal pathName As String)
-    mCrack.LimitSearchBeginCrackFormationAttempt pathName
-End Sub
-
-Private Sub ILimitSearchProblem_SetResolvedFormationPath(ByVal pathName As String)
-    mCrack.LimitSearchSetResolvedCrackFormationPath pathName
-End Sub
-
-Private Sub ILimitSearchProblem_SetCurrentFormationPath(ByVal pathName As String)
-    mCrack.LimitSearchSetCurrentFormationPath pathName
-End Sub
-
-Private Property Get ILimitSearchProblem_FormationFallbackOnly() As Boolean
-    ILimitSearchProblem_FormationFallbackOnly = mCrack.LimitSearchFormationFallbackOnly
-End Property
 
 Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
     ILimitSearchProblem_StoppedTerminally = mCrack.LimitSearchStoppedTerminally()
@@ -313,25 +308,7 @@ Private Sub ILimitSearchProblem_SetStopReasonIfEmpty(ByVal reason As String)
     mCrack.LimitSearchSetStopReasonIfEmpty reason
 End Sub
 
-Private Function ILimitSearchProblem_FormationPathDisplayName() As String
-    ILimitSearchProblem_FormationPathDisplayName = mCrack.LimitSearchCrackFormationPathDisplayName()
-End Function
-
 ' Форматирует число для диагностического журнала с точкой как разделителем.
-Private Function ILimitSearchProblem_HasScaledFormationLoad(ByVal request As CLimitSearchRequest) As Boolean
-    ILimitSearchProblem_HasScaledFormationLoad = _
-        mCrack.LimitSearchCrackFormationHasScaledLoad(request.TargetN, _
-            request.MomentMxAtReference, request.MomentMyAtReference)
-End Function
-
-Private Sub ILimitSearchProblem_MarkFormationPathFallback(ByVal reason As String)
-    mCrack.LimitSearchMarkFormationPathFallback reason
-End Sub
-
-Private Sub ILimitSearchProblem_FinishNoCrack(ByVal reason As String)
-    mCrack.LimitSearchFinishNoCrack reason
-End Sub
-
 Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
         ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
         ByVal transitionMessage As String, ByVal successMessage As String)

@@ -1,0 +1,30 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: CF05FD251D72559C626E924901D5A7DC3B17C35DBEA3575CD6F104B99DFCF3FC
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_cbbb654810ff475a8cdb5f838c013c78\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL: passed=496; failed=0
+MODE_AFTER_SUITE: No
+TOTAL_MATERIAL: passed=1191; failed=0; elapsedSec=0.0625
+MODE_AFTER_SUITE: No
+TOTAL_SECTION_SOLVER: passed=444; failed=0; elapsedSec=0.6875
+MODE_AFTER_SUITE: No
+TOTAL_CAPACITY: passed=1194; failed=0; elapsedSec=34.75390625
+MODE_AFTER_SUITE: No
+TOTAL_CRACK: passed=360; failed=0; elapsedSec=4.84375
+MODE_AFTER_SUITE: No
+FAIL: batch.rectset.n200.Auto.notNumFail
+FAIL: batch.rectset.n200.Auto.capacityStatus
+FAIL: batch.rectset.n200.Auto.nult
+FAIL: batch.rectset.n200.UltimateStrain.notNumFail
+FAIL: batch.rectset.n200.UltimateStrain.capacityStatus
+FAIL: batch.rectset.n200.UltimateStrain.nult
+FAIL: batch.rectset.n200.LoadMultiplier.notNumFail
+FAIL: batch.rectset.n200.LoadMultiplier.capacityStatus
+FAIL: batch.rectset.n200.LoadMultiplier.nult
+TOTAL_BATCH: passed=665; failed=9; elapsedSec=17.03125
+MODE_AFTER_SUITE: No
+TOTAL_WORKBOOK_UI: passed=308; failed=0; elapsedSec=27.64453125
+MODE_AFTER_SUITE: Yes
+TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.46484375
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

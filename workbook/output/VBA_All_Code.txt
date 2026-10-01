@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-01 16:19:49
+Date: 2026-10-01 17:35:05
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -1566,7 +1566,7 @@ End Function
 ====================================================================================================
 COMPONENT: ILimitSearchProblem
 TYPE: 2
-LINES: 256
+LINES: 243
 ====================================================================================================
 Option Explicit
 
@@ -1598,13 +1598,13 @@ End Property
 Public Property Get maxIterations() As Long
 End Property
 
-' Возвращает имя одномерного метода: Bisection, Brent или Secant.
-Public Property Get searchMethod() As String
+' Отдельный лимит уточнения скобки Bisection; 0 означает уточнение до допуска.
+' Он не обязан совпадать с лимитом Newton внутренней equilibrium-пробы.
+Public Property Get BisectionMaxIterations() As Long
 End Property
 
-' True, если после неудачи bracket-а можно принять удержанную чисто осевую
-' несущую способность. Для CrackFormation всегда False.
-Public Property Get UsesRetainedForceCapacity() As Boolean
+' Возвращает имя одномерного метода: Bisection, Brent или Secant.
+Public Property Get searchMethod() As String
 End Property
 
 Public Property Get Converged() As Boolean
@@ -1622,6 +1622,13 @@ End Function
 
 ' Создает lambda-траекторию для выбранной инженерной задачи.
 Public Function BuildLoadPath(ByVal request As CLimitSearchRequest) As CLoadPathVector
+End Function
+
+' Решает, можно ли продолжить поиск от подтвержденной начальной точки.
+' Отказ или физический результат без точки оформляет владелец задачи.
+Public Function AcceptInitialPoint(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal functionValue As Double, _
+        ByVal probeState As String, ByVal solver As CSectionSolver) As Boolean
 End Function
 
 ' Оценивает одну lambda-точку и возвращает значение функции search, код probe
@@ -1696,13 +1703,17 @@ Public Function FinalizeAt(ByVal request As CLimitSearchRequest, _
         ByVal solver As CSectionSolver, ByVal iterations As Long) As Boolean
 End Function
 
-Public Sub FinalizeFromRetainedAcceptable(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
-        ByVal methodName As String)
+' Принимает уточненную скобку по физическому критерию конкретной задачи.
+' Выбор допустимой стороны и дополнительное подтверждение не принадлежат Search.
+Public Sub FinalizeBracket(ByVal request As CLimitSearchRequest, ByVal loadPath As CLoadPathVector, _
+        ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
+        ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
+        ByVal methodName As String, ByVal iterations As Long)
 End Sub
 
-' Принимает удержанную чисто осевую несущую способность, если это применимо.
-Public Sub AcceptRetainedCapacity(ByVal request As CLimitSearchRequest)
+' Пробует специальный подтвержденный метод после численной неудачи поиска.
+' Если такого метода у задачи нет, ее первичная причина сохраняется.
+Public Sub TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
 End Sub
 
 ' Собирает общий snapshot результата search.
@@ -1781,20 +1792,8 @@ End Property
 Public Property Get LimitSearchUltimateMaxDeltaKappa() As Double
 End Property
 
-' Ниже идут методы, нужные CrackFormation Auto. Для capacity-адаптера они
-' являются безопасными no-op, чтобы coordinator оставался независимым от класса.
-Public Sub BeginFormationAttempt(ByVal pathName As String)
-End Sub
-
-Public Sub SetResolvedFormationPath(ByVal pathName As String)
-End Sub
-
-Public Sub SetCurrentFormationPath(ByVal pathName As String)
-End Sub
-
-Public Property Get FormationFallbackOnly() As Boolean
-End Property
-
+' Сообщает численному слою об окончательном исходе задачи, который нельзя
+' подменять последующей попыткой или общей численной ошибкой.
 Public Property Get StoppedTerminally() As Boolean
 End Property
 
@@ -1805,18 +1804,6 @@ Public Sub ClearStopReason()
 End Sub
 
 Public Sub SetStopReasonIfEmpty(ByVal reason As String)
-End Sub
-
-Public Function FormationPathDisplayName() As String
-End Function
-
-Public Function HasScaledFormationLoad(ByVal request As CLimitSearchRequest) As Boolean
-End Function
-
-Public Sub MarkFormationPathFallback(ByVal reason As String)
-End Sub
-
-Public Sub FinishNoCrack(ByVal reason As String)
 End Sub
 
 Public Sub MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
@@ -10925,16 +10912,16 @@ Public Function Calculate(ByVal section As CSectionModel, _
     request.InitializeCapacity configuredSolver, section, concreteMaterial, steelMaterial, _
         SolutionStrategy, loadPath.nOffset, loadPath.nBase, loadPath.mxOffset, _
         loadPath.mxBase, loadPath.myOffset, loadPath.myBase, loadPath.ForceOnly, _
-        PureAxialForMethod
+        PureAxialForMethod, StrengthSpec
 
     Dim coordinator As CLimitSearchCoordinator
     Set coordinator = New CLimitSearchCoordinator
 
     Dim searchResult As CLimitSearchResult
     Set searchResult = coordinator.ExecuteCapacity(request)
-    result.InitializeFromSearch searchResult, loadPath, StrengthSpec, StatusPolicy, _
+    result.InitializeFromSearch searchResult, loadPath, StatusPolicy, _
         PureAxialForMethod, loadReferenceX, loadReferenceY, momentFilter, _
-        concreteDepthForMx, concreteDepthForMy, section, concreteMaterial, steelMaterial
+        concreteDepthForMx, concreteDepthForMy
 
     Set Calculate = result
 End Function
@@ -11085,7 +11072,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCapacityLimitSearchProblem
 TYPE: 2
-LINES: 331
+LINES: 381
 ====================================================================================================
 Option Explicit
 
@@ -11128,12 +11115,14 @@ Private Property Get ILimitSearchProblem_MaxIterations() As Long
     ILimitSearchProblem_MaxIterations = mCapacity.LimitSearchMaxIterations
 End Property
 
-Private Property Get ILimitSearchProblem_SearchMethod() As String
-    ILimitSearchProblem_SearchMethod = mCapacity.LimitSearchCapacitySearchMethod()
+' Несущая уточняет уже подтвержденную скобку до допуска lambda.
+' Малый лимит внутреннего solve не ограничивает количество делений скобки.
+Private Property Get ILimitSearchProblem_BisectionMaxIterations() As Long
+    ILimitSearchProblem_BisectionMaxIterations = 0
 End Property
 
-Private Property Get ILimitSearchProblem_UsesRetainedForceCapacity() As Boolean
-    ILimitSearchProblem_UsesRetainedForceCapacity = True
+Private Property Get ILimitSearchProblem_SearchMethod() As String
+    ILimitSearchProblem_SearchMethod = mCapacity.LimitSearchCapacitySearchMethod()
 End Property
 
 Private Property Get ILimitSearchProblem_Converged() As Boolean
@@ -11162,6 +11151,19 @@ Private Function ILimitSearchProblem_BuildLoadPath(ByVal request As CLimitSearch
     loadPath.Initialize request.nOffset, request.nBase, request.mxOffset, request.mxBase, _
         request.myOffset, request.myBase
     Set ILimitSearchProblem_BuildLoadPath = loadPath
+End Function
+
+' Начало capacity-пути должно удовлетворять исходному физическому критерию.
+' Эта доменная оценка не зависит от алгоритма расширения численной скобки.
+Private Function ILimitSearchProblem_AcceptInitialPoint(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal functionValue As Double, _
+        ByVal probeState As String, ByVal solver As CSectionSolver) As Boolean
+    If Not mCapacity.LimitSearchCapacityStateIsAcceptable(probeState) Then
+        mCapacity.LimitSearchHandleCapacityInitialFailure probeState
+        Exit Function
+    End If
+    ILimitSearchProblem_RecordAcceptable loadPath, 0#
+    ILimitSearchProblem_AcceptInitialPoint = True
 End Function
 
 ' Оценивает одну lambda-точку capacity через существующий CCapacitySolver.
@@ -11252,23 +11254,86 @@ Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchReq
     ILimitSearchProblem_FinalizeAt = mCapacity.Converged
 End Function
 
-Private Sub ILimitSearchProblem_FinalizeFromRetainedAcceptable(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
-        ByVal methodName As String)
-    mCapacity.LimitSearchFinalizeCapacityFromRetainedAcceptable lambdaValue, loadPath, methodName
+Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
+        ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
+        ByVal methodName As String, ByVal iterations As Long)
+    mCapacity.LimitSearchFinalizeCapacityFromRetainedAcceptable lowLambda, loadPath, methodName
 End Sub
 
-Private Sub ILimitSearchProblem_AcceptRetainedCapacity(ByVal request As CLimitSearchRequest)
+Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
+    If Not request.ForceOnly And Not request.PureAxialForMethod Then Exit Sub
     mCapacity.LimitSearchAcceptPureAxialRetainedCapacity request.section, _
         request.concreteMaterial, request.steelMaterial, ILimitSearchProblem_BuildLoadPath(request)
 End Sub
 
 Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRequest, _
         ByVal searchSucceeded As Boolean) As CLimitSearchResult
+    Set ILimitSearchProblem_BuildResult = BuildSnapshot(request.SolutionStrategy, request.section, _
+        request.concreteMaterial, request.steelMaterial, request.MaterialSpec)
+End Function
+
+' Интерпретирует машинный исход capacity-задачи и фиксирует конечное НДС.
+' Общий Search-result не знает ни правил BaseFail, ни полей CCapacitySolver.
+' Lambda ниже единицы остается успехом поиска; проверку текущего LC делает CapacityResult.
+Public Function BuildSnapshot(ByVal requestedStrategy As String, _
+        Optional ByVal section As CSectionModel = Nothing, _
+        Optional ByVal concreteMaterial As Object = Nothing, _
+        Optional ByVal steelMaterial As Object = Nothing, _
+        Optional ByVal MaterialSpec As CMaterialModelSpec = Nothing) As CLimitSearchResult
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    If mCapacity Is Nothing Then
+        meta.SetResult rsInternalError, rcInternalError, rkCapacity, "Не передана задача несущей способности."
+    ElseIf mCapacity.Converged Then
+        meta.SetResult rsSuccess, rcCheckPassed, rkCapacity, mCapacity.LimitState
+    ElseIf mCapacity.SearchBoundReached Then
+        meta.SetResult rsNumericalFailure, rcSearchBoundReached, rkCapacity, mCapacity.stopReason
+    ElseIf mCapacity.LimitSearchInitialLambdaRejected And _
+            Not mCapacity.LimitSearchCapacityStateIsInvalidInput(mCapacity.LimitState) Then
+        meta.SetResult rsCheckFailed, rcInitialStateBeyondLimit, rkCapacity, _
+            mCapacity.stopReason
+    ElseIf mCapacity.LimitSearchCapacityStateIsInvalidInput(mCapacity.LimitState) Then
+        meta.SetResult rsInvalidInput, rcInvalidInput, rkCapacity, mCapacity.stopReason
+    ElseIf mCapacity.LimitSearchCapacityStateIsNumericalFailure(mCapacity.LimitState) Then
+        meta.SetResult rsNumericalFailure, rcNumericalFailure, rkCapacity, mCapacity.stopReason
+    Else
+        meta.SetResult rsInternalError, rcInternalError, rkCapacity, mCapacity.stopReason
+    End If
+
+    Dim PointState As CSectionStateResult
+    Dim hasPoint As Boolean
+    Dim finalDiagnostic As String
+    Dim lambdaValue As Double
+    Dim nValue As Double, mxValue As Double, myValue As Double
+    Dim methodName As String, criterionName As String, diagnostics As String
+    If Not mCapacity Is Nothing Then
+        hasPoint = mCapacity.Converged And mCapacity.LambdaUltimate > 0#
+        lambdaValue = mCapacity.LambdaUltimate
+        nValue = mCapacity.nUltimate
+        mxValue = mCapacity.mxUltimate
+        myValue = mCapacity.myUltimate
+        methodName = mCapacity.solutionMethod
+        criterionName = mCapacity.LimitState
+        diagnostics = mCapacity.DiagnosticLog
+        If Not mCapacity.LastSolver Is Nothing Then
+            finalDiagnostic = mCapacity.LastSolver.DiagnosticLog
+            If hasPoint And Not MaterialSpec Is Nothing Then
+                Dim runner As CStateSolutionRunner
+                Set runner = New CStateSolutionRunner
+                Set PointState = New CSectionStateResult
+                PointState.InitializeFromSolver sstCapacityState, cpStrength, MaterialSpec, mCapacity.LastSolver, _
+                    runner.StateUsesExtension(section, mCapacity.LastSolver, concreteMaterial, steelMaterial), _
+                    runner.StateWithinPhysicalRange(section, mCapacity.LastSolver, concreteMaterial, steelMaterial), _
+                    0, diagnostics
+            End If
+        End If
+    End If
     Dim result As CLimitSearchResult
     Set result = New CLimitSearchResult
-    result.InitializeFromCapacitySolver mCapacity, request.SolutionStrategy
-    Set ILimitSearchProblem_BuildResult = result
+    result.Initialize meta, requestedStrategy, methodName, hasPoint, lambdaValue, _
+        nValue, mxValue, myValue, PointState, criterionName, diagnostics, finalDiagnostic
+    Set BuildSnapshot = result
 End Function
 
 ' Передает общему Newton уже проверенную Capacity-постановку.
@@ -11361,20 +11426,6 @@ Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa() As D
     ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa = mCapacity.LimitSearchUltimateMaxDeltaKappa
 End Property
 
-' Capacity не использует crack-операции Auto-пути; методы оставлены no-op по
-' контракту ILimitSearchProblem.
-Private Sub ILimitSearchProblem_BeginFormationAttempt(ByVal pathName As String)
-End Sub
-
-Private Sub ILimitSearchProblem_SetResolvedFormationPath(ByVal pathName As String)
-End Sub
-
-Private Sub ILimitSearchProblem_SetCurrentFormationPath(ByVal pathName As String)
-End Sub
-
-Private Property Get ILimitSearchProblem_FormationFallbackOnly() As Boolean
-End Property
-
 Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
 End Property
 
@@ -11388,21 +11439,7 @@ End Sub
 Private Sub ILimitSearchProblem_SetStopReasonIfEmpty(ByVal reason As String)
 End Sub
 
-Private Function ILimitSearchProblem_FormationPathDisplayName() As String
-    ILimitSearchProblem_FormationPathDisplayName = vbNullString
-End Function
-
 ' Форматирует число для диагностического журнала с точкой как разделителем.
-Private Function ILimitSearchProblem_HasScaledFormationLoad(ByVal request As CLimitSearchRequest) As Boolean
-    ILimitSearchProblem_HasScaledFormationLoad = True
-End Function
-
-Private Sub ILimitSearchProblem_MarkFormationPathFallback(ByVal reason As String)
-End Sub
-
-Private Sub ILimitSearchProblem_FinishNoCrack(ByVal reason As String)
-End Sub
-
 Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
         ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
         ByVal transitionMessage As String, ByVal successMessage As String)
@@ -11422,7 +11459,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCapacityResult
 TYPE: 2
-LINES: 389
+LINES: 359
 ====================================================================================================
 Option Explicit
 
@@ -11451,14 +11488,7 @@ Private mUtilCapacity As Double ' Использование несущей сп
 Private mNUltimate As Double ' Предельная N в точке приложения нагрузки.
 Private mMxUltimate As Double ' Предельный Mx в точке приложения нагрузки.
 Private mMyUltimate As Double ' Предельный My в точке приложения нагрузки.
-Private mCapacityStateN As Double ' Полная N найденного CapacityState во внутреннем начале модели.
-Private mCapacityStateMx As Double ' Полный Mx найденного CapacityState во внутреннем начале модели.
-Private mCapacityStateMy As Double ' Полный My найденного CapacityState во внутреннем начале модели.
 Private mMomentUltimate As Double ' Модуль полного предельного момента в точке приложения нагрузки.
-Private mCapacityStateAvailable As Boolean ' True, если есть найденная плоскость деформаций CapacityState.
-Private mCapacityEpsilon0 As Double ' epsilon0 найденного CapacityState.
-Private mCapacityKappaX As Double ' kappaX найденного CapacityState.
-Private mCapacityKappaY As Double ' kappaY найденного CapacityState.
 Private mPureAxialForMethod As Boolean ' True, если capacity-calculator выбрал осевую численную ветку после переноса нагрузок к центру.
 Private mResultMeta As CResultMeta ' Типизированный статус CapacityResult для общего result/status слоя.
 
@@ -11473,12 +11503,12 @@ End Sub
 ' Даже при numerical/input failure объект остается заполненным: batch получает
 ' единый контейнер и не разбирает поля CCapacitySolver вручную.
 Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
-        ByVal loadPath As CCapacityLoadPath, ByVal StrengthSpec As CMaterialModelSpec, _
+        ByVal loadPath As CCapacityLoadPath, _
         ByVal StatusPolicy As CBatchStatusPolicy, ByVal PureAxialForMethod As Boolean, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
         ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepthForMx As Double, _
-        ByVal concreteDepthForMy As Double, ByVal section As CSectionModel, _
-        ByVal concreteMaterial As Object, ByVal steelMaterial As Object)
+        ByVal concreteDepthForMy As Double)
+    ResetNumericSnapshot
     Set mSearchResult = searchResult
     mPureAxialForMethod = PureAxialForMethod
     If loadPath Is Nothing Then
@@ -11516,7 +11546,7 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
     StoreUltimateVector loadPath, loadReferenceX, loadReferenceY, momentFilter, _
         concreteDepthForMx, concreteDepthForMy
     StoreUtilization
-    StoreCapacityStateIfAvailable StrengthSpec, section, concreteMaterial, steelMaterial
+    StoreCapacityStateIfAvailable
 End Sub
 
 ' Заполняет результат ошибкой входных данных до запуска search.
@@ -11562,28 +11592,30 @@ End Function
 Private Sub InitializeEarlyResult(ByVal InternalStatus As EResultInternalStatus, _
         ByVal ResultCode As EResultCode, ByVal reason As String, _
         ByVal pathKey As String)
-    Set mSearchResult = Nothing
+    ResetNumericSnapshot
     mLimitState = reason
     mSolutionMethod = vbNullString
     mPathResolved = pathKey
-    mLambdaCapacity = 0#
-    mUtilCapacity = 0#
-    mNUltimate = 0#
-    mMxUltimate = 0#
-    mMyUltimate = 0#
-    mCapacityStateN = 0#
-    mCapacityStateMx = 0#
-    mCapacityStateMy = 0#
-    mMomentUltimate = 0#
-    mCapacityStateAvailable = False
-    mPureAxialForMethod = False
-    Set mStateResult = Nothing
     Set mResultMeta = New CResultMeta
     mResultMeta.SetResult InternalStatus, ResultCode, rkCapacity, reason
 
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
     mStatus = policy.ExternalStatus(mResultMeta)
+End Sub
+
+' Исключает утечку старой предельной точки при повторном заполнении объекта.
+' Отсутствующие числа не заменяются прошлым успешным состоянием.
+Private Sub ResetNumericSnapshot()
+    Set mSearchResult = Nothing
+    Set mStateResult = Nothing
+    mLambdaCapacity = 0#
+    mUtilCapacity = 0#
+    mNUltimate = 0#
+    mMxUltimate = 0#
+    mMyUltimate = 0#
+    mMomentUltimate = 0#
+    mPureAxialForMethod = False
 End Sub
 
 ' Переносит найденный полный предельный вектор в пользовательскую точку
@@ -11593,25 +11625,15 @@ Private Sub StoreUltimateVector(ByVal loadPath As CCapacityLoadPath, _
         ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepthForMx As Double, _
         ByVal concreteDepthForMy As Double)
     If mSearchResult Is Nothing Then Exit Sub
-    If mSearchResult.LambdaUltimate <= 0# Then Exit Sub
+    If Not mSearchResult.HasLimitPoint Then Exit Sub
 
     Dim nValue As Double
     Dim mxAboutOrigin As Double
     Dim myAboutOrigin As Double
 
-    If Not mSearchResult.LastSolver Is Nothing Then
-        nValue = mSearchResult.LastSolver.Nint
-        mxAboutOrigin = mSearchResult.LastSolver.Mxint
-        myAboutOrigin = mSearchResult.LastSolver.Myint
-        mCapacityStateN = nValue
-        mCapacityStateMx = mxAboutOrigin
-        mCapacityStateMy = myAboutOrigin
-    Else
-        loadPath.target mSearchResult.LambdaUltimate, nValue, mxAboutOrigin, myAboutOrigin
-        mCapacityStateN = nValue
-        mCapacityStateMx = mxAboutOrigin
-        mCapacityStateMy = myAboutOrigin
-    End If
+    nValue = mSearchResult.nUltimate
+    mxAboutOrigin = mSearchResult.mxUltimate
+    myAboutOrigin = mSearchResult.myUltimate
 
     Dim loadState As CSectionLoadState
     Set loadState = New CSectionLoadState
@@ -11625,37 +11647,22 @@ Private Sub StoreUltimateVector(ByVal loadPath As CCapacityLoadPath, _
     mMomentUltimate = Sqr(mMxUltimate * mMxUltimate + mMyUltimate * mMyUltimate)
 End Sub
 
-' Сохраняет utilization по тем же правилам, что раньше применялись в batch.
-' Если solver сам посчитал utilization, он является приоритетным источником.
+' Определяет использование только по действительно найденному пределу.
+' Последняя диагностическая проба и техническая граница не являются capacity.
 Private Sub StoreUtilization()
+    mUtilCapacity = 0#
     If mSearchResult Is Nothing Then Exit Sub
+    If Not mSearchResult.HasLimitPoint Then Exit Sub
     If mSearchResult.LambdaUltimate > 0# Then mUtilCapacity = 1# / mSearchResult.LambdaUltimate
-    If mSearchResult.Converged Then mUtilCapacity = mSearchResult.Utilization
 End Sub
 
 ' Готовит CapacityState только для физически найденной предельной точки.
 ' Неуспешные probes и numerical failure не становятся reusable named-state.
-Private Sub StoreCapacityStateIfAvailable(ByVal StrengthSpec As CMaterialModelSpec, _
-        ByVal section As CSectionModel, ByVal concreteMaterial As Object, ByVal steelMaterial As Object)
+Private Sub StoreCapacityStateIfAvailable()
+    Set mStateResult = Nothing
     If mSearchResult Is Nothing Then Exit Sub
-    If Not mSearchResult.Converged Then Exit Sub
-    If mSearchResult.LambdaUltimate <= 0# Then Exit Sub
-    If mSearchResult.LastSolver Is Nothing Then Exit Sub
-    If Not mSearchResult.LastSolver.Converged Then Exit Sub
-
-    mCapacityStateAvailable = True
-    mCapacityEpsilon0 = mSearchResult.LastSolver.epsilon0
-    mCapacityKappaX = mSearchResult.LastSolver.kappaX
-    mCapacityKappaY = mSearchResult.LastSolver.kappaY
-
-    Set mStateResult = New CSectionStateResult
-    Dim stateRunner As CStateSolutionRunner
-    Set stateRunner = New CStateSolutionRunner
-    mStateResult.InitializeFromSolver sstCapacityState, cpStrength, StrengthSpec, _
-        mSearchResult.LastSolver, _
-        stateRunner.StateUsesExtension(section, mSearchResult.LastSolver, concreteMaterial, steelMaterial), _
-        stateRunner.StateWithinPhysicalRange(section, mSearchResult.LastSolver, concreteMaterial, steelMaterial), _
-        0, mSearchResult.DiagnosticLog
+    If Not mSearchResult.HasLimitPoint Then Exit Sub
+    Set mStateResult = mSearchResult.PointState
 End Sub
 
 Public Property Get searchResult() As CLimitSearchResult
@@ -11778,15 +11785,15 @@ Public Property Get myUltimate() As Double
 End Property
 
 Public Property Get CapacityStateN() As Double
-    CapacityStateN = mCapacityStateN
+    If Not mStateResult Is Nothing Then CapacityStateN = mStateResult.Nint
 End Property
 
 Public Property Get CapacityStateMx() As Double
-    CapacityStateMx = mCapacityStateMx
+    If Not mStateResult Is Nothing Then CapacityStateMx = mStateResult.Mxint
 End Property
 
 Public Property Get CapacityStateMy() As Double
-    CapacityStateMy = mCapacityStateMy
+    If Not mStateResult Is Nothing Then CapacityStateMy = mStateResult.Myint
 End Property
 
 Public Property Get MomentUltimate() As Double
@@ -11794,19 +11801,19 @@ Public Property Get MomentUltimate() As Double
 End Property
 
 Public Property Get CapacityStateAvailable() As Boolean
-    CapacityStateAvailable = mCapacityStateAvailable
+    CapacityStateAvailable = Not mStateResult Is Nothing
 End Property
 
 Public Property Get CapacityEpsilon0() As Double
-    CapacityEpsilon0 = mCapacityEpsilon0
+    If Not mStateResult Is Nothing Then CapacityEpsilon0 = mStateResult.epsilon0
 End Property
 
 Public Property Get CapacityKappaX() As Double
-    CapacityKappaX = mCapacityKappaX
+    If Not mStateResult Is Nothing Then CapacityKappaX = mStateResult.kappaX
 End Property
 
 Public Property Get CapacityKappaY() As Double
-    CapacityKappaY = mCapacityKappaY
+    If Not mStateResult Is Nothing Then CapacityKappaY = mStateResult.kappaY
 End Property
 
 Public Property Get PureAxialForMethod() As Boolean
@@ -12448,7 +12455,7 @@ Public Sub SolveByLoadPathMultiplier(ByVal section As CSectionModel, _
 
     Dim search As CLoadMultiplierSearch
     Set search = New CLoadMultiplierSearch
-    search.ExecuteCapacity request
+    search.Execute request
 End Sub
 
 ' Готовит solver к общей ветке LoadMultiplier. Метод оставляет в CCapacitySolver
@@ -13724,7 +13731,7 @@ End Property
 ====================================================================================================
 COMPONENT: CCrackLimitSearchProblem
 TYPE: 2
-LINES: 334
+LINES: 311
 ====================================================================================================
 Option Explicit
 
@@ -13770,12 +13777,13 @@ Private Property Get ILimitSearchProblem_MaxIterations() As Long
     ILimitSearchProblem_MaxIterations = mCrack.LimitSearchCrackMaxIterations
 End Property
 
-Private Property Get ILimitSearchProblem_SearchMethod() As String
-    ILimitSearchProblem_SearchMethod = "Bisection"
+' Сохраняет заданный предел уточнения скобки трещинообразования.
+Private Property Get ILimitSearchProblem_BisectionMaxIterations() As Long
+    ILimitSearchProblem_BisectionMaxIterations = mCrack.LimitSearchCrackMaxIterations
 End Property
 
-Private Property Get ILimitSearchProblem_UsesRetainedForceCapacity() As Boolean
-    ILimitSearchProblem_UsesRetainedForceCapacity = False
+Private Property Get ILimitSearchProblem_SearchMethod() As String
+    ILimitSearchProblem_SearchMethod = "Bisection"
 End Property
 
 Private Property Get ILimitSearchProblem_Converged() As Boolean
@@ -13793,6 +13801,8 @@ End Property
 ' Для CrackFormation специальной подготовки перед LoadMultiplier нет:
 ' материалы и путь уже переданы вызывающим слоем.
 Private Function ILimitSearchProblem_Prepare(ByVal request As CLimitSearchRequest) As Boolean
+    mCrack.LimitSearchAppendDiagnostic "LoadMultiplier: начинаем подбор lambda_crc пробными расчетами НДС; путь " & _
+        mCrack.LimitSearchCrackFormationPathDisplayName() & "."
     ILimitSearchProblem_Prepare = True
 End Function
 
@@ -13893,6 +13903,15 @@ Private Function ILimitSearchProblem_BuildLoadPath(ByVal request As CLimitSearch
         request.referenceX, request.referenceY)
 End Function
 
+' Передает физическую трактовку начала пути владельцу Formation. Общий
+' одномерный поиск не знает правил постоянной трещины или fallback psi=1.
+Private Function ILimitSearchProblem_AcceptInitialPoint(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal functionValue As Double, _
+        ByVal probeState As String, ByVal solver As CSectionSolver) As Boolean
+    ILimitSearchProblem_AcceptInitialPoint = mCrack.LimitSearchAcceptFormationInitialPoint( _
+        request.targetN, request.momentMxAtReference, request.momentMyAtReference, functionValue)
+End Function
+
 ' Оценивает одну lambda-точку crack-formation и возвращает solver, если
 ' равновесие найдено. Solver нужен для warm-start и сохранения PreCrackState.
 Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearchRequest, _
@@ -13984,37 +14003,20 @@ Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchReq
             concreteMaterial, steelMaterial, loadPath, lambdaValue, solver, iterations)
 End Function
 
-Private Sub ILimitSearchProblem_FinalizeFromRetainedAcceptable(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
-        ByVal methodName As String)
+Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
+        ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
+        ByVal methodName As String, ByVal iterations As Long)
+    ILimitSearchProblem_FinalizeAt request, loadPath, highLambda, STATE_CRACK_LIMIT, methodName, highSolver, iterations
 End Sub
 
-Private Sub ILimitSearchProblem_AcceptRetainedCapacity(ByVal request As CLimitSearchRequest)
+Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
 End Sub
 
 Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRequest, _
         ByVal searchSucceeded As Boolean) As CLimitSearchResult
-    Dim result As CLimitSearchResult
-    Set result = New CLimitSearchResult
-    result.InitializeFromCrackFormation mCrack, request.SolutionStrategy, searchSucceeded
-    Set ILimitSearchProblem_BuildResult = result
+    Set ILimitSearchProblem_BuildResult = mCrack.BuildSearchSnapshot(request.SolutionStrategy)
 End Function
-
-Private Sub ILimitSearchProblem_BeginFormationAttempt(ByVal pathName As String)
-    mCrack.LimitSearchBeginCrackFormationAttempt pathName
-End Sub
-
-Private Sub ILimitSearchProblem_SetResolvedFormationPath(ByVal pathName As String)
-    mCrack.LimitSearchSetResolvedCrackFormationPath pathName
-End Sub
-
-Private Sub ILimitSearchProblem_SetCurrentFormationPath(ByVal pathName As String)
-    mCrack.LimitSearchSetCurrentFormationPath pathName
-End Sub
-
-Private Property Get ILimitSearchProblem_FormationFallbackOnly() As Boolean
-    ILimitSearchProblem_FormationFallbackOnly = mCrack.LimitSearchFormationFallbackOnly
-End Property
 
 Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
     ILimitSearchProblem_StoppedTerminally = mCrack.LimitSearchStoppedTerminally()
@@ -14032,25 +14034,7 @@ Private Sub ILimitSearchProblem_SetStopReasonIfEmpty(ByVal reason As String)
     mCrack.LimitSearchSetStopReasonIfEmpty reason
 End Sub
 
-Private Function ILimitSearchProblem_FormationPathDisplayName() As String
-    ILimitSearchProblem_FormationPathDisplayName = mCrack.LimitSearchCrackFormationPathDisplayName()
-End Function
-
 ' Форматирует число для диагностического журнала с точкой как разделителем.
-Private Function ILimitSearchProblem_HasScaledFormationLoad(ByVal request As CLimitSearchRequest) As Boolean
-    ILimitSearchProblem_HasScaledFormationLoad = _
-        mCrack.LimitSearchCrackFormationHasScaledLoad(request.targetN, _
-            request.momentMxAtReference, request.momentMyAtReference)
-End Function
-
-Private Sub ILimitSearchProblem_MarkFormationPathFallback(ByVal reason As String)
-    mCrack.LimitSearchMarkFormationPathFallback reason
-End Sub
-
-Private Sub ILimitSearchProblem_FinishNoCrack(ByVal reason As String)
-    mCrack.LimitSearchFinishNoCrack reason
-End Sub
-
 Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
         ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
         ByVal transitionMessage As String, ByVal successMessage As String)
@@ -14096,7 +14080,7 @@ Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitS
         Case "LoadMultiplier"
             Dim multiplier As CLoadMultiplierSearch
             Set multiplier = New CLoadMultiplierSearch
-            Set ExecuteCapacity = multiplier.ExecuteCapacity(request)
+            Set ExecuteCapacity = multiplier.Execute(request)
         Case Else
             Dim invalidResult As CLimitSearchResult
             Set invalidResult = New CLimitSearchResult
@@ -14122,7 +14106,7 @@ Private Function ExecuteAutoCapacity(ByVal request As CLimitSearchRequest) As CL
     If request.PureAxialForMethod Then
         Dim axialMultiplier As CLoadMultiplierSearch
         Set axialMultiplier = New CLoadMultiplierSearch
-        Set ExecuteAutoCapacity = axialMultiplier.ExecuteCapacity(request)
+        Set ExecuteAutoCapacity = axialMultiplier.Execute(request)
         Exit Function
     End If
 
@@ -14157,7 +14141,7 @@ Private Function ExecuteAutoCapacityLoadMultiplierFallback(ByVal request As CLim
     Dim multiplier As CLoadMultiplierSearch
     Set multiplier = New CLoadMultiplierSearch
     Dim ignoredResult As CLimitSearchResult
-    Set ignoredResult = multiplier.ExecuteCapacity(request)
+    Set ignoredResult = multiplier.Execute(request)
 
     request.problem.MergeFallback firstLimitState, firstStopReason, _
         firstDiagnostics, _
@@ -14177,7 +14161,7 @@ Private Function ExecuteCrackFormationCurrentPath(ByVal request As CLimitSearchR
         Case "LoadMultiplier"
             Dim multiplier As CLoadMultiplierSearch
             Set multiplier = New CLoadMultiplierSearch
-            Set ExecuteCrackFormationCurrentPath = multiplier.ExecuteCrackFormation(request)
+            Set ExecuteCrackFormationCurrentPath = multiplier.Execute(request)
         Case "UltimateStrain"
             Dim ultimate As CUltimateStrainSearch
             Set ultimate = New CUltimateStrainSearch
@@ -14223,7 +14207,7 @@ Private Function ExecuteAutoStrategyCrackFormation(ByVal request As CLimitSearch
     Dim multiplier As CLoadMultiplierSearch
     Set multiplier = New CLoadMultiplierSearch
     Dim secondResult As CLimitSearchResult
-    Set secondResult = multiplier.ExecuteCrackFormation(request)
+    Set secondResult = multiplier.Execute(request)
     If Not secondResult.Succeeded And Len(request.problem.stopReason) = 0 Then _
         request.problem.SetStopReasonIfEmpty firstStopReason
     Set ExecuteAutoStrategyCrackFormation = secondResult
@@ -14247,7 +14231,7 @@ End Function
 ====================================================================================================
 COMPONENT: CLimitSearchRequest
 TYPE: 2
-LINES: 230
+LINES: 242
 ====================================================================================================
 Option Explicit
 
@@ -14267,6 +14251,7 @@ Private mProblem As ILimitSearchProblem ' Общий callback инженерно
 Private mSection As CSectionModel ' Расчетная модель сечения, общая для всех lambda-проб.
 Private mConcreteMaterial As Object ' Диаграмма бетона для выбранной инженерной задачи.
 Private mSteelMaterial As Object ' Диаграмма арматуры для выбранной инженерной задачи.
+Private mMaterialSpec As CMaterialModelSpec ' Спецификация для снимка конечного named-state, не для выбора критерия.
 Private mSolutionStrategy As String ' Auto, UltimateStrain или LoadMultiplier.
 Private mNOffset As Double ' Постоянная часть N в траектории N = N0 + lambda*Nbase.
 Private mNBase As Double ' Масштабируемая часть N в lambda-траектории.
@@ -14295,7 +14280,8 @@ Public Sub InitializeCapacity(ByVal capacitySolver As CCapacitySolver, _
         ByVal nOffset As Double, ByVal nBase As Double, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
         ByVal myOffset As Double, ByVal myBase As Double, _
-        ByVal ForceOnly As Boolean, ByVal PureAxialForMethod As Boolean)
+        ByVal ForceOnly As Boolean, ByVal PureAxialForMethod As Boolean, _
+        Optional ByVal MaterialSpec As CMaterialModelSpec = Nothing)
     If capacitySolver Is Nothing Then Err.Raise vbObjectError + 4200, "CLimitSearchRequest", "Не передан solver поиска несущей способности."
     If section Is Nothing Then Err.Raise vbObjectError + 4201, "CLimitSearchRequest", "Не передана модель сечения для limit-search."
     If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 4202, "CLimitSearchRequest", "Не передана диаграмма бетона для limit-search."
@@ -14308,6 +14294,8 @@ Public Sub InitializeCapacity(ByVal capacitySolver As CCapacitySolver, _
     Set mSection = section
     Set mConcreteMaterial = concreteMaterial
     Set mSteelMaterial = steelMaterial
+    Set mMaterialSpec = Nothing
+    If Not MaterialSpec Is Nothing Then Set mMaterialSpec = MaterialSpec.clone
     mSolutionStrategy = Trim$(SolutionStrategy)
     mNOffset = nOffset
     mNBase = nBase
@@ -14343,6 +14331,7 @@ Public Sub InitializeCrackFormation(ByVal crackCalculator As CCrackFormationCalc
     Set mSteelMaterial = steelMaterial
     mSolutionStrategy = Trim$(SolutionStrategy)
     mCrackFormationPath = Trim$(CrackFormationPath)
+    Set mMaterialSpec = Nothing
     mTargetN = targetN
     mTargetMx = targetMx
     mTargetMy = targetMy
@@ -14371,6 +14360,7 @@ Public Sub InitializeWithProblem(ByVal problem As ILimitSearchProblem, _
     Set mSection = Nothing
     Set mConcreteMaterial = Nothing
     Set mSteelMaterial = Nothing
+    Set mMaterialSpec = Nothing
     mSolutionStrategy = Trim$(SolutionStrategy)
     mNOffset = nOffset
     mNBase = nBase
@@ -14397,6 +14387,12 @@ End Property
 
 Public Property Get section() As CSectionModel
     Set section = mSection
+End Property
+
+' Возвращает небольшой снимок модели конечного состояния. Низкоуровневые
+' задачи с тестовым Object material API могут не иметь profile-spec.
+Public Property Get MaterialSpec() As CMaterialModelSpec
+    If Not mMaterialSpec Is Nothing Then Set MaterialSpec = mMaterialSpec.clone
 End Property
 
 Public Property Get concreteMaterial() As Object
@@ -14483,216 +14479,105 @@ End Property
 ====================================================================================================
 COMPONENT: CLimitSearchResult
 TYPE: 2
-LINES: 286
+LINES: 171
 ====================================================================================================
 Option Explicit
 
-' ==========================================================================
-' Результат общего поиска предельной точки
-' ==========================================================================
-' CLimitSearchResult хранит типизированный итог search-слоя и численный снимок
-' найденной limit-точки. Downstream-слои читают именно этот result, а не
-' доменный solver-фасад.
-'
-' Result является снимком результата search: он не держит ссылок на доменные
-' калькуляторы, чтобы последующие попытки Auto-пути не меняли уже сохраненную
-' диагностику.
+' ===========================================================================
+' Самодостаточный результат общего поиска предельной точки
+' ===========================================================================
+' Хранит численный исход, фактический метод, диагностику и подтвержденное НДС
+' найденной точки. Не обращается к рабочему solver-у или инженерному calculator-у.
+' Смысл физического критерия и проверка текущего LC остаются у доменной задачи.
+' Для низкоуровневых материалов без material spec сохраняется численный вектор;
+' production named-state передается готовым снимком.
 
-Private mMeta As CResultMeta ' Машинная оценка результата для будущего ResultStatusPolicy-пути.
-Private mRequestedStrategy As String ' Стратегия, заданная настройкой.
-Private mActualMethod As String ' Метод, который фактически дал результат поиска.
-Private mResultKind As EResultKind ' Инженерный контекст результата.
-Private mSucceeded As Boolean ' True, если search-слой получил корректный результат для своей задачи.
+Private mMeta As CResultMeta ' Машинный исход, подготовленный владельцем задачи.
+Private mRequestedStrategy As String ' Запрошенная численная стратегия.
+Private mActualMethod As String ' Фактически выполненный численный метод.
+Private mHasLimitPoint As Boolean ' Найдена точка, а не только завершена процедура.
+Private mPointState As CSectionStateResult ' Единственный снимок НДС найденной точки.
+Private mSearchExecuted As Boolean ' Численный поиск действительно запускался.
+Private mLambdaUltimate As Double ' Множитель нагрузки в найденной точке.
+Private mNUltimate As Double ' Вектор для материала без named-state спецификации.
+Private mMxUltimate As Double ' Mx низкоуровневой точки, Н*мм.
+Private mMyUltimate As Double ' My низкоуровневой точки, Н*мм.
+Private mLimitState As String ' Код управляющего критерия, без интерпретации.
+Private mDiagnosticLog As String ' Независимый текстовый снимок всего поиска.
+Private mLastSolverDiagnosticLog As String ' Журнал финального равновесия.
 
-Private mHasLimitPoint As Boolean ' Есть фактически найденная точка, не просто корректный исход без точки.
-Private mPointState As CSectionStateResult ' Подтвержденный неизменяемый State найденной точки, если определен.
-Private mSearchExecuted As Boolean ' True, если численный search действительно запускался.
-Private mConverged As Boolean ' Итоговый флаг сходимости физической limit-точки.
-Private mStopReason As String ' Техническая причина остановки search.
-Private mLimitState As String ' Инженерная причина предельного состояния или ошибки.
-Private mLambdaUltimate As Double ' Найденный множитель lambda.
-Private mNUltimate As Double ' Предельная N в собственном представлении search.
-Private mMxUltimate As Double ' Предельный Mx в собственном представлении search.
-Private mMyUltimate As Double ' Предельный My в собственном представлении search.
-Private mMomentUltimate As Double ' Модуль предельного момента, если он сформирован search.
-Private mUtilization As Double ' Использование несущей способности, сформированное search.
-Private mLastSolver As CSectionSolver ' Последний solver равновесия для физически найденной точки.
-Private mLastSolverDiagnosticLog As String ' Снимок диагностики последнего solver-а.
-Private mDiagnosticLog As String ' Снимок диагностического журнала search-слоя.
-
+' Создает безопасный исход до получения результата задачи.
 Private Sub Class_Initialize()
     Set mMeta = New CResultMeta
+    mMeta.SetResult rsInternalError, rcInternalError, rkGeneric, "Результат поиска еще не заполнен."
 End Sub
 
-' Сбрасывает численный снимок limit-search перед заполнением результата.
-Private Sub ResetSearchSnapshot()
+' Принимает готовый исход задачи и численный снимок без живых калькуляторов.
+' Отсутствие найденной точки очищает ее числа и State при повторном заполнении.
+Public Sub Initialize(ByVal meta As CResultMeta, ByVal requestedStrategy As String, _
+        ByVal ActualMethod As String, ByVal HasLimitPoint As Boolean, _
+        ByVal lambdaValue As Double, ByVal nValue As Double, ByVal mxValue As Double, _
+        ByVal myValue As Double, ByVal PointState As CSectionStateResult, _
+        ByVal LimitState As String, ByVal DiagnosticLog As String, _
+        Optional ByVal finalSolverDiagnosticLog As String = vbNullString, _
+        Optional ByVal SearchExecuted As Boolean = True)
+    ResetPoint
+    mRequestedStrategy = requestedStrategy
+    mActualMethod = ActualMethod
+    mSearchExecuted = SearchExecuted
+    mLimitState = LimitState
+    mDiagnosticLog = DiagnosticLog
+    mLastSolverDiagnosticLog = finalSolverDiagnosticLog
+    If meta Is Nothing Then
+        mMeta.SetResult rsInternalError, rcInternalError, rkGeneric, "Поиск завершен без машинного результата."
+        Exit Sub
+    End If
+    Set mMeta = meta.clone
+    If Not HasLimitPoint Then Exit Sub
+    If Not PointState Is Nothing Then
+        If Not PointState.Converged Then
+            mMeta.SetResult rsInternalError, rcInternalError, meta.resultKind, _
+                "Предельная точка передана без подтвержденного равновесия."
+            Exit Sub
+        End If
+        Set mPointState = PointState
+    Else
+        mNUltimate = nValue
+        mMxUltimate = mxValue
+        mMyUltimate = myValue
+    End If
+    mLambdaUltimate = lambdaValue
+    mHasLimitPoint = True
+End Sub
+
+' Очищает только данные точки; метаданные и журнал заполняет Initialize.
+Private Sub ResetPoint()
     mHasLimitPoint = False
     Set mPointState = Nothing
-    mSearchExecuted = False
-    mConverged = False
-    mStopReason = vbNullString
-    mLimitState = vbNullString
     mLambdaUltimate = 0#
     mNUltimate = 0#
     mMxUltimate = 0#
     mMyUltimate = 0#
-    mMomentUltimate = 0#
-    mUtilization = 0#
-    Set mLastSolver = Nothing
-    mLastSolverDiagnosticLog = vbNullString
-    mDiagnosticLog = vbNullString
 End Sub
 
-' Сохраняет capacity-числа сразу в общий result, чтобы downstream-слой не разбирал CCapacitySolver.
-Private Sub CaptureCapacitySnapshot(ByVal cap As CCapacitySolver)
-    ResetSearchSnapshot
-    If cap Is Nothing Then Exit Sub
-
-    mSearchExecuted = True
-    mConverged = cap.Converged
-    mHasLimitPoint = cap.Converged And cap.LambdaUltimate > 0#
-    mStopReason = cap.stopReason
-    mLimitState = cap.LimitState
-    mLambdaUltimate = cap.LambdaUltimate
-    mNUltimate = cap.nUltimate
-    mMxUltimate = cap.mxUltimate
-    mMyUltimate = cap.myUltimate
-    mMomentUltimate = cap.MomentUltimate
-    mUtilization = cap.Utilization
-    mDiagnosticLog = cap.DiagnosticLog
-    If Not cap.LastSolver Is Nothing Then
-        Set mLastSolver = cap.LastSolver
-        mLastSolverDiagnosticLog = cap.LastSolver.DiagnosticLog
-    End If
-End Sub
-
-' Сохраняет найденную crack-точку и диагностику, независимо от того,
-' достигнута ли эта точка текущим сочетанием. Состояние до трещины, когда
-' оно доступно, является источником полного внутреннего вектора усилий.
-Private Sub CaptureCrackSnapshot(ByVal crack As CCrackFormationCalculator)
-    ResetSearchSnapshot
-    If crack Is Nothing Then Exit Sub
-
-    mSearchExecuted = True
-    mHasLimitPoint = crack.HasLimitPoint
-    mConverged = crack.Converged And mHasLimitPoint
-    mStopReason = crack.stopReason
-    mLimitState = crack.stopReason
-    mLambdaUltimate = crack.LambdaCrc
-    If mHasLimitPoint Then crack.PointLoads mNUltimate, mMxUltimate, mMyUltimate
-    mMomentUltimate = crack.mcrc
-    If Not crack.PreCrackState Is Nothing Then
-        Set mPointState = crack.PreCrackState
-        mNUltimate = crack.PreCrackState.Nint
-        mMxUltimate = crack.PreCrackState.Mxint
-        mMyUltimate = crack.PreCrackState.Myint
-    End If
-    mDiagnosticLog = crack.DiagnosticLog
-End Sub
-
-' Фиксирует численный исход поиска точки. Найденная точка успешна независимо
-' от того, достигается ли она до lambda=1: безопасность заданного сочетания
-' оценивает инженерный CapacityResult, а не общий Search.
-Public Sub InitializeFromCapacitySolver(ByVal cap As CCapacitySolver, ByVal RequestedStrategy As String)
-    mRequestedStrategy = RequestedStrategy
-    mResultKind = rkCapacity
-    mSucceeded = False
-    CaptureCapacitySnapshot cap
-    If cap Is Nothing Then
-        mActualMethod = vbNullString
-        mMeta.SetResult rsInternalError, rcInternalError, rkCapacity, _
-            "Не передан результат выполненного поиска несущей способности."
-    Else
-        mActualMethod = cap.solutionMethod
-        If cap.Converged Then
-            mSucceeded = True
-            mMeta.SetResult rsSuccess, rcCheckPassed, rkCapacity, cap.LimitState
-        ElseIf cap.SearchBoundReached Then
-            mMeta.SetResult rsNumericalFailure, rcSearchBoundReached, rkCapacity, cap.stopReason
-        ElseIf cap.LimitSearchInitialLambdaRejected And _
-                Not cap.LimitSearchCapacityStateIsInvalidInput(cap.LimitState) Then
-            mMeta.SetResult rsCheckFailed, rcInitialStateBeyondLimit, rkCapacity, _
-                CapacityInitialLambdaRejectedComment(cap.stopReason)
-        ElseIf cap.LimitSearchCapacityStateIsInvalidInput(cap.LimitState) Then
-            mMeta.SetResult rsInvalidInput, rcInvalidInput, rkCapacity, cap.stopReason
-        ElseIf cap.LimitSearchCapacityStateIsNumericalFailure(cap.LimitState) Then
-            mMeta.SetResult rsNumericalFailure, rcNumericalFailure, rkCapacity, cap.stopReason
-        Else
-            mMeta.SetResult rsInternalError, rcInternalError, rkCapacity, cap.stopReason
-        End If
-    End If
-End Sub
-
-' Возвращает пользовательский комментарий без служебных префиксов search.
-' Сам ResultCode хранит машинный смысл BaseFail.
-Private Function CapacityInitialLambdaRejectedComment(ByVal stopReason As String) As String
-    Dim commentText As String
-    commentText = Trim$(stopReason)
-    commentText = Replace$(commentText, "INITIAL_STATE_BEYOND_LIMIT:", vbNullString, 1, 1, vbTextCompare)
-    commentText = Replace$(commentText, _
-        "Начальное состояние при lambda = 0 не проходит физический критерий:", _
-        "Несущая способность не проходит уже для исходной части выбранного пути:", _
-        1, 1, vbTextCompare)
-    CapacityInitialLambdaRejectedComment = Trim$(commentText)
-    If Len(CapacityInitialLambdaRejectedComment) = 0 Then _
-        CapacityInitialLambdaRejectedComment = "Несущая способность не проходит уже для исходной части выбранного пути."
-End Function
-
-' Заполняет result по уже выполненному CCrackFormationCalculator в стадии
-' образования трещины. Формульная ширина здесь не оценивается: речь только о
-' search-результате Ncrc/Mcrc и связанных состояниях.
-Public Sub InitializeFromCrackFormation(ByVal crack As CCrackFormationCalculator, _
-        ByVal RequestedStrategy As String, ByVal searchSucceeded As Boolean)
-    mRequestedStrategy = RequestedStrategy
-    mResultKind = rkCrackFormation
-    mActualMethod = RequestedStrategy
-    mSucceeded = searchSucceeded
-    CaptureCrackSnapshot crack
-
-    If crack Is Nothing Then
-        mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, _
-            "Не передан результат выполненного поиска образования трещины."
-    ElseIf crack.CrackFormationInternalStatus <> rsUnset Then
-        mActualMethod = crack.FormationSolutionMethod
-        mMeta.SetResult crack.CrackFormationInternalStatus, crack.CrackFormationResultCode, _
-            rkCrackFormation, crack.stopReason
-    ElseIf searchSucceeded Then
-        mMeta.SetResult rsSuccess, rcCheckPassed, rkCrackFormation, crack.stopReason
-    Else
-        mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, _
-            "Поиск образования трещины завершен без машинного статуса результата."
-    End If
-    mSucceeded = LimitSearchMetaSucceeded(mMeta)
-End Sub
-
-' Возвращает True для корректного search-результата, включая физическое
-' недостижение критерия. Численная ошибка и ошибка входных данных остаются
-' неуспешными результатами.
-Private Function LimitSearchMetaSucceeded(ByVal meta As CResultMeta) As Boolean
-    If meta Is Nothing Then Exit Function
-    LimitSearchMetaSucceeded = (meta.InternalStatus = rsSuccess Or _
-        meta.InternalStatus = rsSuccessWithWarning)
-End Function
-
-' Заполняет result как ошибку настройки, когда стратегия поиска неизвестна.
-Public Sub InitializeInvalidConfiguration(ByVal RequestedStrategy As String, ByVal message As String, _
+' Формирует ошибку стратегии до выполнения численного поиска.
+Public Sub InitializeInvalidConfiguration(ByVal requestedStrategy As String, ByVal message As String, _
         Optional ByVal resultKind As EResultKind = rkCapacity)
-    mRequestedStrategy = RequestedStrategy
-    mActualMethod = vbNullString
-    mResultKind = resultKind
-    mSucceeded = False
-    ResetSearchSnapshot
-    mStopReason = message
-    mLimitState = message
-    mMeta.SetResult rsInvalidConfiguration, rcInvalidConfiguration, resultKind, message
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    meta.SetResult rsInvalidConfiguration, rcInvalidConfiguration, resultKind, message
+    Initialize meta, requestedStrategy, vbNullString, False, 0#, 0#, 0#, 0#, _
+        Nothing, vbNullString, vbNullString, vbNullString, False
 End Sub
 
+' Метаданные выдаются отдельной небольшой копией, а не mutable полем результата.
 Public Property Get meta() As CResultMeta
     Set meta = mMeta.clone
 End Property
 
-Public Property Get RequestedStrategy() As String
-    RequestedStrategy = mRequestedStrategy
+' Простые getters ниже читают только сохраненный снимок.
+Public Property Get requestedStrategy() As String
+    requestedStrategy = mRequestedStrategy
 End Property
 
 Public Property Get ActualMethod() As String
@@ -14700,24 +14585,23 @@ Public Property Get ActualMethod() As String
 End Property
 
 Public Property Get resultKind() As EResultKind
-    resultKind = mResultKind
+    resultKind = mMeta.resultKind
 End Property
 
 Public Property Get Succeeded() As Boolean
-    Succeeded = mSucceeded
+    Succeeded = (mMeta.InternalStatus = rsSuccess Or mMeta.InternalStatus = rsSuccessWithWarning)
 End Property
 
-' Простые свойства ниже отдают снимок search-result без обращения к вызывающему batch-слою.
 Public Property Get SearchExecuted() As Boolean
     SearchExecuted = mSearchExecuted
 End Property
 
 Public Property Get Converged() As Boolean
-    Converged = mConverged
+    Converged = mHasLimitPoint
 End Property
 
 Public Property Get stopReason() As String
-    stopReason = mStopReason
+    stopReason = mMeta.resultComment
 End Property
 
 Public Property Get LimitState() As String
@@ -14729,44 +14613,41 @@ Public Property Get LambdaUltimate() As Double
 End Property
 
 Public Property Get nUltimate() As Double
-    nUltimate = mNUltimate
+    If mPointState Is Nothing Then
+        nUltimate = mNUltimate
+    Else
+        nUltimate = mPointState.Nint
+    End If
 End Property
 
 Public Property Get mxUltimate() As Double
-    mxUltimate = mMxUltimate
+    If mPointState Is Nothing Then
+        mxUltimate = mMxUltimate
+    Else
+        mxUltimate = mPointState.Mxint
+    End If
 End Property
 
 Public Property Get myUltimate() As Double
-    myUltimate = mMyUltimate
-End Property
-
-Public Property Get MomentUltimate() As Double
-    MomentUltimate = mMomentUltimate
-End Property
-
-Public Property Get Utilization() As Double
-    Utilization = mUtilization
-End Property
-
-Public Property Get LastSolver() As CSectionSolver
-    Set LastSolver = mLastSolver
+    If mPointState Is Nothing Then
+        myUltimate = mMyUltimate
+    Else
+        myUltimate = mPointState.Myint
+    End If
 End Property
 
 Public Property Get LastSolverDiagnosticLog() As String
     LastSolverDiagnosticLog = mLastSolverDiagnosticLog
 End Property
 
-' Возвращает подробную диагностику search как сохраненный снимок.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
-' Различает найденную точку и успешный исход без предельной точки.
 Public Property Get HasLimitPoint() As Boolean
     HasLimitPoint = mHasLimitPoint
 End Property
 
-' Возвращает готовое НДС точки без обращения к рабочему калькулятору.
 Public Property Get PointState() As CSectionStateResult
     Set PointState = mPointState
 End Property
@@ -14939,7 +14820,7 @@ End Property
 ====================================================================================================
 COMPONENT: CLoadMultiplierSearch
 TYPE: 2
-LINES: 777
+LINES: 594
 ====================================================================================================
 Option Explicit
 
@@ -14955,305 +14836,130 @@ Option Explicit
 ' спрашивает у доменного объекта значение функции и классификацию точки, а сам
 ' управляет порядком пробных lambda.
 
-Private Const STATE_ACCEPTABLE As String = "Acceptable" ' Lambda-точка еще не достигла физического предела.
-Private Const STATE_CRACK_LIMIT As String = "CrackFormationLimit" ' Для CrackFormation eps_bt,ult уже достигнута.
-Private Const STATE_NUMERICAL_FAILURE As String = "NumericalFailure" ' Численная неудача пробной lambda-точки.
-Private Const STATE_INVALID_INPUT As String = "InvalidInput" ' Ошибка исходных данных или настройки search.
-
-' Выполняет LoadMultiplier для несущей способности через общий алгоритм lambda-search.
-Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitSearchResult
+' Выполняет общий LoadMultiplier независимо от инженерного вида задачи.
+' Подготовка, начальный физический исход и приемка точки принадлежат callback-у.
+Public Function Execute(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     If request Is Nothing Then Err.Raise vbObjectError + 4220, "CLoadMultiplierSearch", "Не передан запрос limit-search."
-
+    If request.problem Is Nothing Then
+        Set Execute = ContractFailure(request, "Не передана задача общего поиска.")
+        Exit Function
+    End If
     If Not request.problem.Prepare(request) Then
-        Set ExecuteCapacity = request.problem.BuildResult(request, False)
+        Set Execute = request.problem.BuildResult(request, False)
         Exit Function
     End If
 
     Dim loadPath As CLoadPathVector
     Set loadPath = request.problem.BuildLoadPath(request)
-
-    RunCapacitySearch request, loadPath
-    Set ExecuteCapacity = request.problem.BuildResult(request, False)
+    If loadPath Is Nothing Then
+        Set Execute = ContractFailure(request, "Задача поиска не передала траекторию нагрузки.")
+        Exit Function
+    End If
+    RunSearch request, loadPath
+    Set Execute = request.problem.BuildResult(request, request.problem.Converged)
 End Function
 
-' Выполняет LoadMultiplier для точки образования нормальной трещины. Crack-слой
-' задает критерий eps_bt,ult и load-path, а bracket/bisection остаются общими.
-Public Function ExecuteCrackFormation(ByVal request As CLimitSearchRequest) As CLimitSearchResult
-    If request Is Nothing Then Err.Raise vbObjectError + 4221, "CLoadMultiplierSearch", "Не передан запрос limit-search."
-
-    request.problem.AppendDiagnostic "LoadMultiplier: начинаем подбор lambda_crc пробными расчетами НДС; путь " & _
-        request.problem.FormationPathDisplayName() & "."
-
-    Dim loadPath As CLoadPathVector
-    Set loadPath = request.problem.BuildLoadPath(request)
-
-    Dim searchSucceeded As Boolean
-    searchSucceeded = RunCrackFormationSearch(request, loadPath)
-    Set ExecuteCrackFormation = request.problem.BuildResult(request, searchSucceeded)
+' Отсутствие обязательного внутреннего объекта является ошибкой контракта,
+' а не ошибкой ввода пользователя и не численной несходимостью.
+Private Function ContractFailure(ByVal request As CLimitSearchRequest, ByVal reason As String) As CLimitSearchResult
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    meta.SetResult rsInternalError, rcInternalError, request.resultKind, reason
+    Dim result As CLimitSearchResult
+    Set result = New CLimitSearchResult
+    result.Initialize meta, request.SolutionStrategy, vbNullString, False, 0#, 0#, 0#, 0#, _
+        Nothing, vbNullString, vbNullString, vbNullString, False
+    Set ContractFailure = result
 End Function
 
-' Запускает общий поиск для capacity: нижняя lambda=0 должна быть acceptable,
-' верхняя граница расширяется до первого физического предела.
-Private Sub RunCapacitySearch(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector)
-    Dim lowLambda As Double
-    Dim highLambda As Double
-    Dim probeState As String
-    Dim functionValue As Double
+' Решает начальную точку, находит скобку и запускает выбранный численный метод.
+' Здесь нет проверки вида Capacity/Crack, нагрузки текущего LC или psi.
+Private Sub RunSearch(ByVal request As CLimitSearchRequest, ByVal loadPath As CLoadPathVector)
+    Dim lowLambda As Double, highLambda As Double
+    Dim lowSolver As CSectionSolver, highSolver As CSectionSolver
+    Dim functionValue As Double, probeState As String
     lowLambda = 0#
     highLambda = request.problem.InitialLambdaStep
     If highLambda <= 0# Then highLambda = 1#
 
-    If Not EvaluateLimitFunction(request, loadPath, lowLambda, functionValue, probeState) Then Exit Sub
-    If Not IsAcceptableState(request, probeState) Then
+    If Not request.problem.EvaluatePoint(request, loadPath, Nothing, lowLambda, _
+            functionValue, probeState, lowSolver) Then
         request.problem.HandleInitialFailure probeState
         Exit Sub
     End If
-    request.problem.RecordAcceptable loadPath, lowLambda
+    If Not request.problem.AcceptInitialPoint(request, loadPath, functionValue, probeState, lowSolver) Then Exit Sub
 
-    If Not FindCapacityBracket(request, loadPath, lowLambda, highLambda) Then
-        If request.ForceOnly Or request.PureAxialForMethod Then request.problem.AcceptRetainedCapacity request
+    If Not FindBracket(request, loadPath, lowLambda, lowSolver, highLambda, highSolver) Then
+        request.problem.TryFinalizeAfterSearchFailure request
         Exit Sub
     End If
-
-    RunSearchInsideBracket request, loadPath, lowLambda, highLambda, _
+    RunSearchInsideBracket request, loadPath, lowLambda, highLambda, lowSolver, highSolver, _
         request.problem.searchMethod, request.problem.LambdaTolerance, request.problem.maxIterations
-    If Not request.problem.Converged Then
-        If request.ForceOnly Or request.PureAxialForMethod Then request.problem.AcceptRetainedCapacity request
-    End If
+    If Not request.problem.Converged Then request.problem.TryFinalizeAfterSearchFailure request
 End Sub
 
-' Ищет верхнюю физическую границу capacity так же, как прежний
-' CCapacitySolver: acceptable-точки сдвигают low, NumericalFailure уменьшает
-' верхнюю lambda, а физический предел завершает скобку.
-Private Function FindCapacityBracket(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByRef lowLambda As Double, _
-        ByRef highLambda As Double) As Boolean
-    Dim probeState As String
-    Dim functionValue As Double
-    If highLambda > request.problem.maxLambda Then highLambda = request.problem.maxLambda
-    Do While highLambda <= request.problem.maxLambda
-        If Not EvaluateLimitFunction(request, loadPath, highLambda, functionValue, probeState) Then Exit Function
-
-        If IsAcceptableState(request, probeState) Then
+' Единое расширение скобки: допустимая проба сдвигает нижнюю границу,
+' достигнутый критерий задает верхнюю, а численная неудача требует recovery.
+' Последняя проба всегда выполняется на MaxLambda, без пропуска хвоста интервала.
+Private Function FindBracket(ByVal request As CLimitSearchRequest, ByVal loadPath As CLoadPathVector, _
+        ByRef lowLambda As Double, ByRef lowSolver As CSectionSolver, _
+        ByRef highLambda As Double, ByRef highSolver As CSectionSolver) As Boolean
+    Dim functionValue As Double, probeState As String
+    Dim evaluated As Boolean, reducedLambda As Double
+    highLambda = MinDouble(highLambda, request.problem.maxLambda)
+    Do
+        evaluated = request.problem.EvaluatePoint(request, loadPath, lowSolver, highLambda, _
+            functionValue, probeState, highSolver)
+        If Not evaluated Or request.problem.IsNumericalFailureState(probeState) Then
+            If request.problem.StoppedTerminally Then Exit Function
+            reducedLambda = request.problem.ReduceLambdaAfterNumericalFailure(lowLambda, highLambda, probeState)
+            If reducedLambda <= lowLambda Or reducedLambda - lowLambda <= request.problem.LambdaTolerance Then
+                request.problem.HandleBracketNumericalFailure lowLambda, highLambda, probeState
+                Exit Function
+            End If
+            highLambda = reducedLambda
+        ElseIf request.problem.IsLimitState(probeState) Then
+            FindBracket = True
+            Exit Function
+        ElseIf request.problem.IsAcceptableState(probeState) Then
             lowLambda = highLambda
-            request.problem.RecordAcceptable loadPath, highLambda
+            Set lowSolver = highSolver
+            request.problem.RecordAcceptable loadPath, lowLambda
             If highLambda >= request.problem.maxLambda Then Exit Do
-            highLambda = MinDouble(highLambda * 2#, request.problem.maxLambda)
-        ElseIf IsLimitState(request, probeState) Then
-            FindCapacityBracket = True
-            Exit Function
-        ElseIf IsNumericalFailureState(request, probeState) Then
-            highLambda = request.problem.ReduceLambdaAfterNumericalFailure(lowLambda, highLambda, probeState)
-            If highLambda <= lowLambda Then Exit Function
+            ' Успешная проба дает более близкий warm-start. Несошедшаяся
+            ' нагрузка не является физической границей: повторяем расширение.
+            highLambda = MinDouble(2# * highLambda, request.problem.maxLambda)
         Else
-            request.problem.SetNumericalFailure "Поиск несущей способности остановлен: " & probeState & "."
+            request.problem.HandleUnexpectedState probeState
             Exit Function
         End If
     Loop
-
     request.problem.HandleBracketNotFound lowLambda
-End Function
-
-' Запускает LoadMultiplier для CrackFormation. Начальная точка lambda=0 может
-' быть не обычным solve, а нулевой нагрузкой; это обрабатывает crack-критерий.
-Private Function RunCrackFormationSearch(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector) As Boolean
-    Dim lowLambda As Double
-    Dim highLambda As Double
-    Dim lowSolver As CSectionSolver
-    Dim highSolver As CSectionSolver
-    Dim lowResidual As Double
-    Dim highResidual As Double
-    Dim probeState As String
-    lowLambda = 0#
-    highLambda = 1#
-
-    If Not EvaluateCrackFunction(request, loadPath, Nothing, lowLambda, lowResidual, probeState, lowSolver) Then
-        request.problem.HandleInitialFailure probeState
-        Exit Function
-    End If
-
-    If StrComp(request.CrackFormationPath, "LambdaN", vbTextCompare) = 0 And request.targetN <= 0.000001 Then
-        If lowResidual >= 0# Then
-            request.problem.MarkFormationPathFallback "Трещина уже образуется от постоянного момента выбранного пути " & _
-                request.problem.FormationPathDisplayName() & "; сжимающая или нулевая N не масштабируется для поиска Ncrc, psi_s остается равным 1."
-        Else
-            request.problem.FinishNoCrack "Трещина не образована от постоянного момента, а выбранный путь " & _
-                request.problem.FormationPathDisplayName() & " не масштабирует растягивающую продольную силу."
-        End If
-        RunCrackFormationSearch = True
-        Exit Function
-    End If
-
-    If lowResidual >= 0# Then
-        request.problem.MarkFormationPathFallback "Трещина уже образуется в постоянной части выбранного пути " & _
-            request.problem.FormationPathDisplayName() & "; точка sigma_s,crc по lambda не определяется, psi_s остается равным 1."
-        RunCrackFormationSearch = True
-        Exit Function
-    End If
-
-    If Not request.problem.HasScaledFormationLoad(request) Then
-        request.problem.FinishNoCrack "Трещина не образована в постоянной части, а выбранный путь " & _
-            request.problem.FormationPathDisplayName() & " не содержит ненулевой масштабируемой нагрузки."
-        RunCrackFormationSearch = True
-        Exit Function
-    End If
-
-    If Not FindCrackFormationBracket(request, loadPath, lowLambda, lowSolver, lowResidual, _
-            highLambda, highSolver, highResidual) Then Exit Function
-
-    If highResidual < 0# Then
-        request.problem.HandleBracketNotFound highLambda
-        Exit Function
-    End If
-
-    Dim acceptedLambda As Double
-    Dim acceptedSolver As CSectionSolver
-    Dim iterations As Long
-    If SearchCrackByBisection(request, loadPath, lowLambda, lowSolver, highLambda, highSolver, _
-            acceptedLambda, acceptedSolver, iterations) Then
-        RunCrackFormationSearch = request.problem.FinalizeAt(request, loadPath, acceptedLambda, vbNullString, _
-            "Bisection", acceptedSolver, iterations)
-    End If
-End Function
-
-' Ищет верхнюю точку crack-скобки. Если перегруженная точка не решается,
-' верхняя граница сдвигается вниз, чтобы подойти к eps_bt,ult с рабочей стороны.
-Private Function FindCrackFormationBracket(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByRef lowerLambda As Double, _
-        ByRef lowerSolver As CSectionSolver, ByRef lowerResidual As Double, _
-        ByRef upperLambda As Double, ByRef upperSolver As CSectionSolver, _
-        ByRef upperResidual As Double) As Boolean
-    Dim probeState As String
-    If EvaluateCrackFunction(request, loadPath, lowerSolver, upperLambda, upperResidual, probeState, upperSolver) Then
-        GoTo UpperSolved
-    End If
-
-    If TryRecoverCrackBracketBeforeFailedUpper(request, loadPath, lowerLambda, lowerSolver, lowerResidual, _
-            upperLambda, upperSolver, upperResidual) Then
-        FindCrackFormationBracket = True
-        Exit Function
-    End If
-
-    request.problem.SetNumericalFailure _
-        "Не удалось подобрать сходящуюся точку образования трещины до перегруженной точки lambda = " & _
-        FormatNumberInvariant(upperLambda) & "."
-    Exit Function
-
-UpperSolved:
-    Do While upperResidual < 0# And upperLambda < request.problem.maxLambda
-        lowerLambda = upperLambda
-        Set lowerSolver = upperSolver
-        lowerResidual = upperResidual
-        upperLambda = MinDouble(upperLambda * 2#, request.problem.maxLambda)
-        If Not EvaluateCrackFunction(request, loadPath, lowerSolver, upperLambda, upperResidual, probeState, upperSolver) Then
-            If TryRecoverCrackBracketBeforeFailedUpper(request, loadPath, lowerLambda, lowerSolver, lowerResidual, _
-                    upperLambda, upperSolver, upperResidual) Then
-                FindCrackFormationBracket = True
-                Exit Function
-            End If
-            request.problem.SetNumericalFailure _
-                "Не удалось найти равновесие при lambda = " & FormatNumberInvariant(upperLambda) & _
-                " в поиске трещинообразования."
-            Exit Function
-        End If
-    Loop
-    FindCrackFormationBracket = True
-End Function
-
-' Если верхняя crack-проба не сошлась, ищет рабочую точку с образованием
-' трещины между последней сходящейся нижней точкой и перегруженной lambda.
-' Это не меняет критерий трещинообразования, а только не дает перегруженной
-' пробе преждевременно превращать весь поиск в NumFail.
-Private Function TryRecoverCrackBracketBeforeFailedUpper(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByRef lowerLambda As Double, _
-        ByRef lowerSolver As CSectionSolver, ByRef lowerResidual As Double, _
-        ByRef upperLambda As Double, ByRef upperSolver As CSectionSolver, _
-        ByRef upperResidual As Double) As Boolean
-    Dim failedLambda As Double
-    failedLambda = upperLambda
-
-    Dim iter As Long
-    For iter = 1 To request.problem.maxIterations
-        If failedLambda - lowerLambda <= request.problem.LambdaTolerance * MaxDouble(1#, failedLambda) Then Exit For
-
-        Dim midLambda As Double
-        Dim midSolver As CSectionSolver
-        Dim midResidual As Double
-        Dim probeState As String
-        midLambda = 0.5 * (lowerLambda + failedLambda)
-        If EvaluateCrackFunction(request, loadPath, lowerSolver, midLambda, midResidual, probeState, midSolver) Then
-            If midResidual >= 0# Then
-                upperLambda = midLambda
-                Set upperSolver = midSolver
-                upperResidual = midResidual
-                TryRecoverCrackBracketBeforeFailedUpper = True
-                Exit Function
-            End If
-            lowerLambda = midLambda
-            Set lowerSolver = midSolver
-            lowerResidual = midResidual
-        Else
-            failedLambda = midLambda
-        End If
-    Next iter
-
-    If Not lowerSolver Is Nothing Then
-        request.problem.AppendDiagnostic _
-            "Поиск трещинообразования: последняя сходящаяся точка перед перегрузкой lambda=" & _
-            FormatNumberInvariant(lowerLambda) & "; невязка=" & FormatNumberInvariant(lowerResidual)
-    End If
-End Function
-
-' Для CrackFormation используется тот же bisection-цикл, что и для Capacity.
-' Отличается только критерий одной lambda-точки и финализация найденного состояния.
-Private Function SearchCrackByBisection(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByVal lowerLambda As Double, _
-        ByVal lowerSolver As CSectionSolver, ByVal upperLambda As Double, _
-        ByVal upperSolver As CSectionSolver, ByRef acceptedLambda As Double, _
-        ByRef acceptedSolver As CSectionSolver, ByRef iterations As Long) As Boolean
-    If Not SearchByBisectionCore(request, loadPath, lowerLambda, lowerSolver, _
-            upperLambda, upperSolver, request.problem.LambdaTolerance, _
-            request.problem.maxIterations, iterations) Then Exit Function
-
-    acceptedLambda = upperLambda
-    Set acceptedSolver = upperSolver
-    SearchCrackByBisection = True
 End Function
 
 ' Запускает выбранный одномерный метод внутри уже найденной физической скобки.
 Private Sub RunSearchInsideBracket(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, _
-        ByVal highLambda As Double, ByVal methodName As String, _
+        ByVal highLambda As Double, ByVal lowSolver As CSectionSolver, _
+        ByVal highSolver As CSectionSolver, ByVal methodName As String, _
         ByVal tolerance As Double, ByVal maxIterations As Long)
     Select Case methodName
         Case "Bisection"
-            SearchByBisection request, loadPath, lowLambda, highLambda, tolerance
+            Dim iterations As Long
+            request.problem.AppendDiagnostic "searchMethod=Bisection"
+            If SearchByBisectionCore(request, loadPath, lowLambda, lowSolver, highLambda, highSolver, _
+                    tolerance, request.problem.BisectionMaxIterations, iterations) Then
+                request.problem.FinalizeBracket request, loadPath, lowLambda, lowSolver, _
+                    highLambda, highSolver, "Bisection", iterations
+            End If
         Case "Brent"
             SearchByBrent request, loadPath, lowLambda, highLambda, tolerance, maxIterations
         Case "Secant"
             SearchBySecant request, loadPath, lowLambda, highLambda, tolerance, maxIterations
         Case Else
             request.problem.SetInvalidInput _
-                "Capacity.SearchMethod должен быть Bisection, Brent или Secant."
+                "Метод одномерного поиска должен быть Bisection, Brent или Secant."
     End Select
-End Sub
-
-' Устойчивый базовый метод: делит физическую скобку пополам.
-Private Sub SearchByBisection(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, _
-        ByVal highLambda As Double, ByVal tolerance As Double)
-    request.problem.AppendDiagnostic "searchMethod=Bisection"
-
-    Dim lowSolver As CSectionSolver
-    Dim highSolver As CSectionSolver
-    Dim iterations As Long
-    If Not SearchByBisectionCore(request, loadPath, lowLambda, lowSolver, _
-            highLambda, highSolver, tolerance, 0, iterations) Then Exit Sub
-
-    request.problem.FinalizeFromRetainedAcceptable request, loadPath, _
-        lowLambda, "Bisection"
 End Sub
 
 ' Выполняет общий цикл bisection для уже найденной lambda-скобки.
@@ -15322,6 +15028,10 @@ Private Sub SearchByBrent(ByVal request As CLimitSearchRequest, _
     b = highLambda
     If Not EvaluateLimitFunction(request, loadPath, a, fa, stateA) Then Exit Sub
     If Not EvaluateLimitFunction(request, loadPath, b, fb, stateB) Then Exit Sub
+    If fb = 0# And IsLimitState(request, stateB) Then
+        FinalizeAfterProbe request, loadPath, b, "Brent"
+        Exit Sub
+    End If
     If fa >= 0# Or fb <= 0# Then
         request.problem.SetInvalidInput _
             "Методу Brent нужна скобка: нижняя lambda с запасом и верхняя lambda за физическим пределом."
@@ -15424,6 +15134,10 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
     x1 = highLambda
     If Not EvaluateLimitPoint(request, loadPath, x0, f0, state0, solver0) Then Exit Sub
     If Not EvaluateLimitPoint(request, loadPath, x1, f1, state1, solver1) Then Exit Sub
+    If Abs(f1) <= tolerance And CanFinalizeSecantProbe(request, state1, solver1) Then
+        FinalizeKnownProbe request, loadPath, x1, state1, "Secant", solver1, 0
+        Exit Sub
+    End If
     If f0 >= 0# Or f1 <= 0# Then
         request.problem.SetInvalidInput _
             "Методу Secant нужна скобка: нижняя lambda с запасом и верхняя lambda за физическим пределом."
@@ -15534,8 +15248,8 @@ Private Sub FinalizeKnownProbe(ByVal request As CLimitSearchRequest, _
 End Sub
 
 ' Выбирает стартовое НДС для следующей bisection-пробы.
-' Для CrackFormation выгодно стартовать от последней сходящейся нижней точки; если ее нет,
-' используется верхняя точка. Для Capacity solver здесь не нужен, поэтому возвращается Nothing.
+' Предпочтителен сошедшийся снимок с допустимой стороны; если его нет,
+' используется подтвержденная верхняя точка. Принятие warm-start решает callback.
 Private Function PreferredBisectionStartSolver(ByVal lowSolver As CSectionSolver, _
         ByVal highSolver As CSectionSolver) As CSectionSolver
     If lowSolver Is Nothing Then
@@ -15546,8 +15260,8 @@ Private Function PreferredBisectionStartSolver(ByVal lowSolver As CSectionSolver
 End Function
 
 ' Оценивает одну lambda-точку для общего bisection-цикла.
-' Capacity возвращает только значение функции и статус, а CrackFormation дополнительно
-' возвращает найденный solver, чтобы финализировать PreCrackState без повторного solve.
+' Callback возвращает значение критерия и связанный с ним solver для
+' warm-start и подтверждения конечной точки без повторного solve.
 Private Function EvaluateBisectionPoint(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByVal lambdaValue As Double, ByRef functionValue As Double, _
@@ -15557,41 +15271,29 @@ Private Function EvaluateBisectionPoint(ByVal request As CLimitSearchRequest, _
 End Function
 
 ' Возвращает доменному объекту понятную причину отказа пробной lambda-точки.
-' Для Capacity callback обычно уже записывает статус; для CrackFormation фиксируем stop-reason явно.
+' Первичная окончательная причина callback-а должна сохраняться; численная
+' ошибка относится только к пробе без подтвержденного равновесия.
 Private Sub HandleBisectionEvaluationFailure(ByVal request As CLimitSearchRequest, _
         ByVal lambdaValue As Double)
     request.problem.SetNumericalFailure _
         "Не удалось найти равновесие при lambda = " & _
-        FormatNumberInvariant(lambdaValue) & " в поиске трещинообразования."
+        FormatNumberInvariant(lambdaValue) & " в поиске предельной точки."
 End Sub
 
 ' Обрабатывает статус NumericalFailure, если callback смог классифицировать точку без обычного False.
 Private Sub HandleBisectionNumericalFailure(ByVal request As CLimitSearchRequest, _
         ByVal lowLambda As Double, ByVal failedLambda As Double, ByVal probeState As String)
-    If request.resultKind = rkCapacity Then
-        request.problem.HandleBracketNumericalFailure lowLambda, failedLambda, probeState
-    Else
-        request.problem.SetNumericalFailure _
-            "Не удалось найти равновесие при lambda = " & _
-            FormatNumberInvariant(failedLambda) & " в поиске трещинообразования."
-    End If
+    request.problem.HandleBracketNumericalFailure lowLambda, failedLambda, probeState
 End Sub
 
 ' Защищает общий bisection от неизвестного статуса пробной точки.
 ' Такая ситуация означает не физический результат, а нарушение контракта callback-а.
 Private Sub HandleBisectionUnexpectedState(ByVal request As CLimitSearchRequest, _
         ByVal probeState As String)
-    If request.resultKind = rkCapacity Then
-        request.problem.SetNumericalFailure _
-            "Поиск Bisection остановлен: " & probeState & "."
-    Else
-        request.problem.SetNumericalFailure _
-            "Поиск трещинообразования остановлен: " & probeState & "."
-    End If
+    request.problem.HandleUnexpectedState probeState
 End Sub
 
-' Единая целевая функция для capacity. CrackFormation использует отдельный
-' wrapper, потому что ему нужно вернуть solver найденной верхней точки.
+' Оценивает целевую функцию для интерполяционного шага одномерного метода.
 Private Function EvaluateLimitFunction(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByRef functionValue As Double, ByRef probeState As String) As Boolean
@@ -15609,16 +15311,6 @@ Private Function EvaluateLimitPoint(ByVal request As CLimitSearchRequest, _
         ByRef solver As CSectionSolver) As Boolean
     EvaluateLimitPoint = request.problem.EvaluatePoint(request, loadPath, Nothing, _
         lambdaValue, functionValue, probeState, solver)
-End Function
-
-' Оценивает crack lambda-точку и возвращает solver, пригодный для последующего
-' warm-start или сохранения PreCrackState.
-Private Function EvaluateCrackFunction(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
-        ByVal lambdaValue As Double, ByRef functionValue As Double, _
-        ByRef probeState As String, ByRef solver As CSectionSolver) As Boolean
-    EvaluateCrackFunction = request.problem.EvaluatePoint(request, loadPath, _
-        startSolver, lambdaValue, functionValue, probeState, solver)
 End Function
 
 ' Проверяет, что lambda-точка находится ниже предела.
@@ -15645,7 +15337,13 @@ Private Function CanFinalizeSecantProbe(ByVal request As CLimitSearchRequest, _
     If IsAcceptableState(request, probeState) Then
         CanFinalizeSecantProbe = True
     ElseIf IsLimitState(request, probeState) Then
-        If Not solver Is Nothing Then CanFinalizeSecantProbe = solver.Converged
+        If solver Is Nothing Then
+            ' Чисто аналитическая задача может подтвердить критерий без State.
+            ' Реальное НДС и физическую допустимость проверяет ее FinalizeAt.
+            CanFinalizeSecantProbe = True
+        Else
+            CanFinalizeSecantProbe = solver.Converged
+        End If
     End If
 End Function
 
@@ -18442,7 +18140,7 @@ End Function
 Private Function ExecuteCapacityLoadMultiplier(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     Dim multiplier As CLoadMultiplierSearch
     Set multiplier = New CLoadMultiplierSearch
-    Set ExecuteCapacityLoadMultiplier = multiplier.ExecuteCapacity(request)
+    Set ExecuteCapacityLoadMultiplier = multiplier.Execute(request)
 End Function
 
 ' Повторяет ту же capacity-траекторию через LoadMultiplier и возвращает новый
@@ -18703,7 +18401,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCrackFormationCalculator
 TYPE: 2
-LINES: 2348
+LINES: 2401
 ====================================================================================================
 Option Explicit
 
@@ -19239,6 +18937,35 @@ Public Function LimitSearchCrackFormationLoadPath(ByVal targetN As Double, _
         ByVal targetMomentMx As Double, ByVal targetMomentMy As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double) As CLoadPathVector
     Set LimitSearchCrackFormationLoadPath = FormationLoadPath(targetN, targetMomentMx, targetMomentMy, referenceX, referenceY)
+End Function
+
+' Оценивает физический смысл начальной точки LoadMultiplier после решения НДС.
+' Постоянная трещина и отсутствие активной нагрузки являются исходами задачи,
+' а не правилами общего расширения lambda-скобки.
+Public Function LimitSearchAcceptFormationInitialPoint(ByVal targetN As Double, _
+        ByVal momentMxAtReference As Double, ByVal momentMyAtReference As Double, _
+        ByVal residual As Double) As Boolean
+    If StrComp(mCrackFormationPath, CRACK_PATH_N, vbTextCompare) = 0 And targetN <= 0.000001 Then
+        If residual >= 0# Then
+            MarkFormationPathFallback "Трещина уже образуется от постоянного момента выбранного пути " & _
+                CrackFormationPathDisplayName() & "; сжимающая или нулевая N не масштабируется для поиска Ncrc, psi_s остается равным 1."
+        Else
+            FinishNoCrack "Трещина не образована от постоянного момента, а выбранный путь " & _
+                CrackFormationPathDisplayName() & " не масштабирует растягивающую продольную силу."
+        End If
+        Exit Function
+    End If
+    If residual >= 0# Then
+        MarkFormationPathFallback "Трещина уже образуется в постоянной части выбранного пути " & _
+            CrackFormationPathDisplayName() & "; точка sigma_s,crc по lambda не определяется, psi_s остается равным 1."
+        Exit Function
+    End If
+    If Not LimitSearchCrackFormationHasScaledLoad(targetN, momentMxAtReference, momentMyAtReference) Then
+        FinishNoCrack "Трещина не образована в постоянной части, а выбранный путь " & _
+            CrackFormationPathDisplayName() & " не содержит ненулевой масштабируемой нагрузки."
+        Exit Function
+    End If
+    LimitSearchAcceptFormationInitialPoint = True
 End Function
 
 
@@ -20724,6 +20451,27 @@ End Function
 ' --------------------------------------------------------------------------
 ' Свойства результатов
 ' --------------------------------------------------------------------------
+' Сохраняет машинный исход и подтвержденное НДС в общий численный результат.
+' Search-result не трактует отсутствие трещины при текущем LC и не читает
+' рабочий Formation-контекст после создания этого снимка.
+Public Function BuildSearchSnapshot(ByVal requestedStrategy As String) As CLimitSearchResult
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    If mFormationInternalStatus = rsUnset Then
+        meta.SetResult rsInternalError, rcInternalError, rkCrackFormation, _
+            "Поиск образования трещины завершен без машинного статуса результата."
+    Else
+        meta.SetResult mFormationInternalStatus, mFormationResultCode, rkCrackFormation, mStopReason
+    End If
+    Dim nValue As Double, mxValue As Double, myValue As Double
+    If HasLimitPoint Then PointLoads nValue, mxValue, myValue
+    Dim result As CLimitSearchResult
+    Set result = New CLimitSearchResult
+    result.Initialize meta, requestedStrategy, mFormationSolutionMethod, HasLimitPoint, _
+        mLambdaCrc, nValue, mxValue, myValue, mPreCrackState, vbNullString, mDiagnosticLog
+    Set BuildSearchSnapshot = result
+End Function
+
 ' Writer-ы и тесты читают эти значения после Calculate. Свойства ничего не
 ' пересчитывают и не обращаются к solver-у повторно.
 
@@ -20967,12 +20715,12 @@ Private Function ExecuteFormationSearch(ByVal request As CLimitSearchRequest) As
     If StrComp(NormalizeCrackPath(request.CrackFormationPath), CRACK_PATH_AUTO, vbTextCompare) = 0 Then
         Set ExecuteFormationSearch = ExecuteAutoCrackFormation(request)
     Else
-        request.problem.BeginFormationAttempt NormalizeCrackPath(request.CrackFormationPath)
+        LimitSearchBeginCrackFormationAttempt NormalizeCrackPath(request.CrackFormationPath)
         Dim result As CLimitSearchResult
         Set result = coordinator.ExecuteCrackFormation(request)
         If result.Succeeded Then
-            request.problem.SetResolvedFormationPath NormalizeCrackPath(request.CrackFormationPath)
-            Set result = request.problem.BuildResult(request, result.Succeeded)
+            LimitSearchSetResolvedCrackFormationPath NormalizeCrackPath(request.CrackFormationPath)
+            Set result = BuildSearchSnapshot(request.SolutionStrategy)
         End If
         Set ExecuteFormationSearch = result
     End If
@@ -20991,49 +20739,52 @@ Private Function ExecuteAutoCrackFormation(ByVal request As CLimitSearchRequest)
     paths(2) = CRACK_PATH_N
     paths(3) = CRACK_PATH_NMXY
 
-    request.problem.AppendDiagnostic "Auto-путь: начинаем поиск образования нормальной трещины. Порядок попыток: " & _
+    AppendDiagnostic "Auto-путь: начинаем поиск образования нормальной трещины. Порядок попыток: " & _
         ChrW$(&H3BB) & "*Mxy -> " & ChrW$(&H3BB) & "*N -> " & ChrW$(&H3BB) & "*NMxy."
 
     Dim lastResult As CLimitSearchResult
     Dim lastStopReason As String
     Dim i As Long
     For i = LBound(paths) To UBound(paths)
-        request.problem.BeginFormationAttempt paths(i)
-        request.problem.AppendDiagnostic "Auto-путь: попытка " & CStr(i) & " из " & _
+        LimitSearchBeginCrackFormationAttempt paths(i)
+        AppendDiagnostic "Auto-путь: попытка " & CStr(i) & " из " & _
             CStr(UBound(paths)) & " - пробуем " & _
-            request.problem.FormationPathDisplayName() & "."
+            CrackFormationPathDisplayName() & "."
 
         Set lastResult = coordinator.ExecuteCrackFormation(request)
         If lastResult.Succeeded Then
-            If request.problem.FormationFallbackOnly And i < UBound(paths) Then
-                lastStopReason = request.problem.stopReason
-                warningHistory = warningHistory & request.problem.FormationPathDisplayName() & ": " & lastStopReason & " "
-                request.problem.AppendDiagnostic "Auto-путь: " & _
-                    request.problem.FormationPathDisplayName() & _
-                    " дал только резервный результат psi_s=1 без найденной точки образования трещины. Для более информативного результата переходим к следующему пути."
+            ' Успех без точки может означать только неприменимость этого пути:
+            ' например, lambda*N не масштабирует сжимающую силу. В Auto это
+            ' не доказывает отсутствие точки на следующем разрешенном пути.
+            If Not lastResult.HasLimitPoint And i < UBound(paths) Then
+                lastStopReason = mStopReason
+                warningHistory = warningHistory & CrackFormationPathDisplayName() & ": " & lastStopReason & " "
+                AppendDiagnostic "Auto-путь: " & _
+                    CrackFormationPathDisplayName() & _
+                    " корректно завершен без найденной точки образования трещины. Проверяем следующий разрешенный путь."
             Else
-                request.problem.SetResolvedFormationPath paths(i)
-                request.problem.AppendDiagnostic "Auto-путь: выбран " & _
-                    request.problem.FormationPathDisplayName() & "."
+                LimitSearchSetResolvedCrackFormationPath paths(i)
+                AppendDiagnostic "Auto-путь: выбран " & _
+                    CrackFormationPathDisplayName() & "."
                 If Len(warningHistory) > 0 Then
-                    mStopReason = Trim$(warningHistory) & " Принят путь " & request.problem.FormationPathDisplayName() & ". " & mStopReason
+                    mStopReason = Trim$(warningHistory) & " Принят путь " & CrackFormationPathDisplayName() & ". " & mStopReason
                     If mFormationInternalStatus = rsSuccess Then mFormationInternalStatus = rsSuccessWithWarning
                 End If
-                Set lastResult = request.problem.BuildResult(request, lastResult.Succeeded)
-                request.problem.SetCurrentFormationPath savedPath
+                Set lastResult = BuildSearchSnapshot(request.SolutionStrategy)
+                LimitSearchSetCurrentFormationPath savedPath
                 Set ExecuteAutoCrackFormation = lastResult
                 Exit Function
             End If
         Else
-            lastStopReason = request.problem.stopReason
-            warningHistory = warningHistory & request.problem.FormationPathDisplayName() & ": " & lastStopReason & " "
-            request.problem.AppendDiagnostic "Auto-путь: " & _
-                request.problem.FormationPathDisplayName() & _
-                " не дал точку образования трещины: " & request.problem.stopReason
+            lastStopReason = mStopReason
+            warningHistory = warningHistory & CrackFormationPathDisplayName() & ": " & lastStopReason & " "
+            AppendDiagnostic "Auto-путь: " & _
+                CrackFormationPathDisplayName() & _
+                " не дал точку образования трещины: " & mStopReason
         End If
     Next i
 
-    request.problem.SetCurrentFormationPath savedPath
+    LimitSearchSetCurrentFormationPath savedPath
     If Not lastResult Is Nothing Then Set ExecuteAutoCrackFormation = lastResult
 End Function
 
@@ -21057,7 +20808,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCrackFormationResult
 TYPE: 2
-LINES: 174
+LINES: 173
 ====================================================================================================
 Option Explicit
 
@@ -21116,8 +20867,7 @@ Public Sub InitializeFromCalculator(ByVal crack As CCrackFormationCalculator, By
     mFallbackPsi1 = crack.FallbackPsi1
     mCentralTensionBranch = crack.CentralTensionBranch
     mSolverCallCount = crack.SolverCallCount
-    Set mSearchResult = New CLimitSearchResult
-    mSearchResult.InitializeFromCrackFormation crack, crack.CrackFormationSolutionStrategy, crack.Converged
+    Set mSearchResult = crack.BuildSearchSnapshot(crack.CrackFormationSolutionStrategy)
     mCrackFormed = crack.CrackFormed
     mFormationMethod = crack.CrackFormationMethod
     mLambdaCrc = crack.LambdaCrc
@@ -45776,7 +45526,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CTestLimitSearchProblem
 TYPE: 2
-LINES: 432
+LINES: 452
 ====================================================================================================
 Option Explicit
 
@@ -45812,6 +45562,9 @@ Private mFinalIterations As Long ' Число итераций, переданн
 Private mLimitState As String ' Последний машинный статус fake-задачи.
 Private mDiagnosticLog As String ' Накопленный диагностический текст.
 Private mIterationLimitHit As Boolean ' True, если search остановился по лимиту итераций.
+Private mProbeMaxLambda As Double ' Наибольшая реально проверенная точка.
+Private mProbeCalls As Long ' Счетчик проб общего алгоритма.
+Private mFailureAbove As Double ' Искусственная численная неудача выше этой lambda; 0 отключает ее.
 
 ' Настраивает линейную тестовую задачу перед запуском общего search.
 Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
@@ -45832,7 +45585,24 @@ Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
     mLimitState = vbNullString
     mDiagnosticLog = vbNullString
     mIterationLimitHit = False
+    mProbeMaxLambda = 0#
+    mProbeCalls = 0
+    mFailureAbove = 0#
 End Sub
+
+' ДЛЯ ТЕСТОВ: задает численную неудачу верхних проб, не физический предел.
+Public Property Let FailureAbove(ByVal value As Double)
+    mFailureAbove = value
+End Property
+
+' ДЛЯ ТЕСТОВ: диагностические счетчики расширения и восстановления скобки.
+Public Property Get ProbeMaxLambda() As Double
+    ProbeMaxLambda = mProbeMaxLambda
+End Property
+
+Public Property Get ProbeCalls() As Long
+    ProbeCalls = mProbeCalls
+End Property
 
 Public Property Get FinalLambda() As Double
     FinalLambda = mFinalLambda
@@ -45882,12 +45652,13 @@ Private Property Get ILimitSearchProblem_MaxIterations() As Long
     ILimitSearchProblem_MaxIterations = mMaxIterations
 End Property
 
-Private Property Get ILimitSearchProblem_SearchMethod() As String
-    ILimitSearchProblem_SearchMethod = mSearchMethod
+' ДЛЯ ТЕСТОВ: позволяет явно проверить исчерпание бюджета Bisection.
+Private Property Get ILimitSearchProblem_BisectionMaxIterations() As Long
+    ILimitSearchProblem_BisectionMaxIterations = mMaxIterations
 End Property
 
-Private Property Get ILimitSearchProblem_UsesRetainedForceCapacity() As Boolean
-    ILimitSearchProblem_UsesRetainedForceCapacity = False
+Private Property Get ILimitSearchProblem_SearchMethod() As String
+    ILimitSearchProblem_SearchMethod = mSearchMethod
 End Property
 
 Private Property Get ILimitSearchProblem_Converged() As Boolean
@@ -45901,6 +45672,18 @@ End Property
 Private Property Get ILimitSearchProblem_DiagnosticLog() As String
     ILimitSearchProblem_DiagnosticLog = mDiagnosticLog
 End Property
+
+' ДЛЯ ТЕСТОВ: начало линейной функции должно лежать до заданного корня.
+Private Function ILimitSearchProblem_AcceptInitialPoint(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal functionValue As Double, _
+        ByVal probeState As String, ByVal solver As CSectionSolver) As Boolean
+    If probeState <> PROBE_ACCEPTABLE Then
+        ILimitSearchProblem_HandleInitialFailure probeState
+        Exit Function
+    End If
+    ILimitSearchProblem_RecordAcceptable loadPath, 0#
+    ILimitSearchProblem_AcceptInitialPoint = True
+End Function
 
 ' Fake-задача не требует доменной подготовки перед поиском.
 Private Function ILimitSearchProblem_Prepare(ByVal request As CLimitSearchRequest) As Boolean
@@ -46010,14 +45793,21 @@ Private Function ILimitSearchProblem_BuildLoadPath(ByVal request As CLimitSearch
 End Function
 
 ' Оценивает одну lambda-точку линейной функции.
-' Точка с нулевой невязкой считается допустимой финальной probe: так Secant
-' обязан вернуть именно найденный корень, а не старую нижнюю границу.
+' Точка с нулевой невязкой достигла критерия; доменная финализация принимает
+' аналитический корень без требования создать вымышленное материальное State.
 Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByVal lambdaValue As Double, ByRef functionValue As Double, _
         ByRef probeState As String, ByRef solver As CSectionSolver) As Boolean
     functionValue = lambdaValue - mRootLambda
-    If functionValue <= 0# Then
+    mProbeCalls = mProbeCalls + 1
+    If lambdaValue > mProbeMaxLambda Then mProbeMaxLambda = lambdaValue
+    Set solver = Nothing
+    If mFailureAbove > 0# And lambdaValue > mFailureAbove Then
+        probeState = PROBE_NUMFAIL
+        Exit Function
+    End If
+    If functionValue < 0# Then
         probeState = PROBE_ACCEPTABLE
     Else
         probeState = PROBE_LIMIT
@@ -46042,10 +45832,10 @@ Private Function ILimitSearchProblem_IsInvalidInputState(ByVal probeState As Str
     ILimitSearchProblem_IsInvalidInputState = (probeState = PROBE_INPUTERR)
 End Function
 
-' Для fake-задачи численная ошибка не восстанавливается уменьшением lambda.
+' ДЛЯ ТЕСТОВ: recovery использует середину оставшегося интервала.
 Private Function ILimitSearchProblem_ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, _
         ByVal highLambda As Double, ByVal probeState As String) As Double
-    ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = lowLambda
+    ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = 0.5 * (lowLambda + highLambda)
 End Function
 
 ' Запоминает последнюю acceptable-точку только в диагностике.
@@ -46115,9 +45905,12 @@ Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchReq
     ILimitSearchProblem_FinalizeAt = True
 End Function
 
-Private Sub ILimitSearchProblem_FinalizeFromRetainedAcceptable(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
-        ByVal methodName As String)
+Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
+        ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
+        ByVal methodName As String, ByVal iterations As Long)
+    Dim lambdaValue As Double
+    If mKind = rkCrackFormation Then lambdaValue = highLambda Else lambdaValue = lowLambda
     mConverged = True
     mFinalLambda = lambdaValue
     mFinalMethod = methodName
@@ -46126,33 +45919,30 @@ Private Sub ILimitSearchProblem_FinalizeFromRetainedAcceptable(ByVal request As 
         "; method=" & methodName
 End Sub
 
-Private Sub ILimitSearchProblem_AcceptRetainedCapacity(ByVal request As CLimitSearchRequest)
+Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
     AppendDiagnosticLine "retainedCapacity"
 End Sub
 
-' Возвращает минимальный result-объект: сами проверки читают snapshot из fake-problem.
+' ДЛЯ ТЕСТОВ: фиксирует полноценный численный результат без solver/calculator.
 Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRequest, _
         ByVal searchSucceeded As Boolean) As CLimitSearchResult
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    If mConverged Then
+        meta.SetResult rsSuccess, rcCheckPassed, mKind, "Тестовый критерий найден."
+    ElseIf mLimitState = "SearchBoundReached" Then
+        meta.SetResult rsNumericalFailure, rcSearchBoundReached, mKind, mLimitState
+    ElseIf mLimitState = PROBE_INPUTERR Then
+        meta.SetResult rsInvalidInput, rcInvalidInput, mKind, mLimitState
+    Else
+        meta.SetResult rsNumericalFailure, rcNumericalFailure, mKind, mLimitState
+    End If
     Dim result As CLimitSearchResult
     Set result = New CLimitSearchResult
+    result.Initialize meta, request.SolutionStrategy, mFinalMethod, mConverged, mFinalLambda, _
+        mFinalLambda, 0#, 0#, Nothing, mLimitState, mDiagnosticLog
     Set ILimitSearchProblem_BuildResult = result
 End Function
-
-Private Sub ILimitSearchProblem_BeginFormationAttempt(ByVal pathName As String)
-    AppendDiagnosticLine "formationAttempt=" & pathName
-End Sub
-
-Private Sub ILimitSearchProblem_SetResolvedFormationPath(ByVal pathName As String)
-    AppendDiagnosticLine "resolvedFormationPath=" & pathName
-End Sub
-
-Private Sub ILimitSearchProblem_SetCurrentFormationPath(ByVal pathName As String)
-    AppendDiagnosticLine "currentFormationPath=" & pathName
-End Sub
-
-Private Property Get ILimitSearchProblem_FormationFallbackOnly() As Boolean
-    ILimitSearchProblem_FormationFallbackOnly = False
-End Property
 
 Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
     ILimitSearchProblem_StoppedTerminally = False
@@ -46168,26 +45958,6 @@ End Sub
 
 Private Sub ILimitSearchProblem_SetStopReasonIfEmpty(ByVal reason As String)
     If Len(mLimitState) = 0 Then mLimitState = reason
-End Sub
-
-Private Function ILimitSearchProblem_FormationPathDisplayName() As String
-    ILimitSearchProblem_FormationPathDisplayName = "test-path"
-End Function
-
-Private Function ILimitSearchProblem_HasScaledFormationLoad(ByVal request As CLimitSearchRequest) As Boolean
-    ILimitSearchProblem_HasScaledFormationLoad = True
-End Function
-
-Private Sub ILimitSearchProblem_MarkFormationPathFallback(ByVal reason As String)
-    mConverged = True
-    mLimitState = reason
-    AppendDiagnosticLine reason
-End Sub
-
-Private Sub ILimitSearchProblem_FinishNoCrack(ByVal reason As String)
-    mConverged = True
-    mLimitState = reason
-    AppendDiagnosticLine reason
 End Sub
 
 Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, _
@@ -46214,7 +45984,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 5142
+LINES: 5146
 ====================================================================================================
 Option Explicit
 
@@ -47887,6 +47657,10 @@ Private Sub TestPR2AxialCompressionBeyondPhysicalLimitUsesExtension(ByRef stats 
     Set formation = batch.crackResult(1).formation
     AssertTrue stats, "audit02.formation.physicalBlock.exists", Not formation Is Nothing
     If Not formation Is Nothing Then
+        If formation.ResultMeta.InternalStatus <> rsCheckFailed Then _
+            AppendLine stats, "DIAGNOSTIC physicalBlock: status=" & CStr(formation.ResultMeta.InternalStatus) & _
+                "; code=" & CStr(formation.ResultMeta.ResultCode) & "; reason=" & formation.ResultMeta.resultComment & _
+                vbCrLf & formation.DiagnosticLog & vbCrLf & batch.DiagnosticLog
         AssertTrue stats, "audit02.formation.physicalBlock.status", formation.ResultMeta.InternalStatus = rsCheckFailed
         AssertTrue stats, "audit02.formation.physicalBlock.code", formation.ResultMeta.ResultCode = rcPhysicalLimitExceeded
         AssertTrue stats, "audit02.formation.physicalBlock.noPoint", Not formation.HasLimitPoint
@@ -51362,7 +51136,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestCapacitySolver
 TYPE: 1
-LINES: 1768
+LINES: 1845
 ====================================================================================================
 Option Explicit
 
@@ -51432,6 +51206,8 @@ Public Function RunCapacitySolverTests() As String
     TestLimitSearchBisectionIterationLimitFails stats
     AppendLine stats, "RUN: TestAudit02GenericUltimateSearch"
     TestAudit02GenericUltimateSearch stats
+    AppendLine stats, "RUN: TestAudit02GenericLoadMultiplierMatrix"
+    TestAudit02GenericLoadMultiplierMatrix stats
     AppendLine stats, "RUN: TestCapacityLoadPathMethodMatrix"
     TestCapacityLoadPathMethodMatrix stats
     AppendLine stats, "RUN: TestCapacityLoadPathZeroComponentMatrix"
@@ -51824,6 +51600,8 @@ Private Sub TestLoadMultiplierPureBendingUsesStateGuess(ByRef stats As TCapacity
     cap.SolverMaxIterations = 1
     cap.MaxRetries = 1
     cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), 0#, -10000000#, 0#
+
+    If Not cap.Converged Then AppendLine stats, "DIAGNOSTIC pureBendingGuess: " & cap.stopReason & vbCrLf & cap.DiagnosticLog
 
     AssertTrue stats, "capacity.pureBendingGuess.converged", cap.Converged
     AssertTrue stats, "capacity.pureBendingGuess.physical", IsPhysicalLimitState(cap.LimitState)
@@ -52218,7 +51996,7 @@ Private Sub TestLimitSearchSecantFinalizesCheckedRoot(ByRef stats As TCapacityTe
     Dim search As CLoadMultiplierSearch
     Set search = New CLoadMultiplierSearch
     Dim result As CLimitSearchResult
-    Set result = search.ExecuteCapacity(request)
+    Set result = search.Execute(request)
 
     stage = "assert"
     AssertTrue stats, "limitSearch.secant.resultObject", Not result Is Nothing
@@ -52256,7 +52034,7 @@ Private Sub TestLimitSearchBisectionIterationLimitFails(ByRef stats As TCapacity
     Dim search As CLoadMultiplierSearch
     Set search = New CLoadMultiplierSearch
     Dim result As CLimitSearchResult
-    Set result = search.ExecuteCrackFormation(request)
+    Set result = search.Execute(request)
 
     stage = "assert"
     AssertTrue stats, "limitSearch.bisection.resultObject", Not result Is Nothing
@@ -52677,8 +52455,7 @@ Private Sub TestInitialLambdaFailureStatusMapping(ByRef stats As TCapacityTestSt
     numericalCap.LimitSearchHandleCapacityInitialFailure "NumericalFailure"
 
     Dim numericalResult As CLimitSearchResult
-    Set numericalResult = New CLimitSearchResult
-    numericalResult.InitializeFromCapacitySolver numericalCap, "LoadMultiplier"
+    Set numericalResult = Audit02CapacitySnapshot(numericalCap, "LoadMultiplier")
     AssertEquals stats, "capacity.initialLambda.numerical.external", _
         policy.ExternalStatus(numericalResult.meta), "NumFail"
 
@@ -52687,8 +52464,7 @@ Private Sub TestInitialLambdaFailureStatusMapping(ByRef stats As TCapacityTestSt
     physicalCap.LimitSearchHandleCapacityInitialFailure "ConcreteStrainLimit"
 
     Dim physicalResult As CLimitSearchResult
-    Set physicalResult = New CLimitSearchResult
-    physicalResult.InitializeFromCapacitySolver physicalCap, "LoadMultiplier"
+    Set physicalResult = Audit02CapacitySnapshot(physicalCap, "LoadMultiplier")
     AssertEquals stats, "capacity.initialLambda.physical.external", _
         policy.ExternalStatus(physicalResult.meta), "BaseFail"
 End Sub
@@ -52985,8 +52761,7 @@ Private Sub TestAudit02CapacitySearchBoundary(ByRef stats As TCapacityTestStats)
             AssertTrue stats, prefix & ".boundFlag", cap.SearchBoundReached
             AssertClose stats, prefix & ".notCapacity", cap.LambdaUltimate, 0#, 0#
             Dim searchResult As CLimitSearchResult
-            Set searchResult = New CLimitSearchResult
-            searchResult.InitializeFromCapacitySolver cap, "LoadMultiplier"
+            Set searchResult = Audit02CapacitySnapshot(cap, "LoadMultiplier")
             AssertTrue stats, prefix & ".code", searchResult.meta.ResultCode = rcSearchBoundReached
         End If
     Next root
@@ -53062,8 +52837,7 @@ Private Sub TestAudit02UnconvergedProbeIsNumerical(ByRef stats As TCapacityTestS
     AssertTrue stats, "audit02.failedProbe.numerical", cap.LimitSearchCapacityStateIsNumericalFailure(probeState)
     cap.LimitSearchHandleCapacityInitialFailure probeState
     Dim result As CLimitSearchResult
-    Set result = New CLimitSearchResult
-    result.InitializeFromCapacitySolver cap, "LoadMultiplier"
+    Set result = Audit02CapacitySnapshot(cap, "LoadMultiplier")
     AssertTrue stats, "audit02.failedProbe.noBaseFail", result.meta.InternalStatus = rsNumericalFailure
 End Sub
 
@@ -53104,9 +52878,12 @@ End Function
 Private Sub CheckAudit02SearchVsCapacity(ByRef stats As TCapacityTestStats, _
         ByVal cap As CCapacitySolver, ByVal section As CSectionModel, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double)
+    Dim spec As CMaterialModelSpec
+    Set spec = New CMaterialModelSpec
+    spec.Initialize "ULS(I)", "TwoLine", "Ignore", "TwoLine"
     Dim search As CLimitSearchResult
-    Set search = New CLimitSearchResult
-    search.InitializeFromCapacitySolver cap, "LoadMultiplier"
+    Set search = Audit02CapacitySnapshot(cap, "LoadMultiplier", section, _
+        ProvisionalConcrete(), ProvisionalSteel(), spec)
     AssertTrue stats, "audit02.searchEngineering.searchSuccess", search.meta.InternalStatus = rsSuccess
     AssertTrue stats, "audit02.searchEngineering.searchCode", search.meta.ResultCode = rcCheckPassed
     AssertTrue stats, "audit02.searchEngineering.searchSucceeded", search.Succeeded
@@ -53116,13 +52893,9 @@ Private Sub CheckAudit02SearchVsCapacity(ByRef stats As TCapacityTestStats, _
     Dim path As CCapacityLoadPath
     Set path = New CCapacityLoadPath
     path.InitializeFromLoadState "lambda*Mxy", loadState
-    Dim spec As CMaterialModelSpec
-    Set spec = New CMaterialModelSpec
-    spec.Initialize "ULS(I)", "TwoLine", "Ignore", "TwoLine"
     Dim result As CCapacityResult
     Set result = New CCapacityResult
-    result.InitializeFromSearch search, path, spec, Nothing, False, 0#, 0#, _
-        Nothing, 300#, 200#, section, ProvisionalConcrete(), ProvisionalSteel()
+    result.InitializeFromSearch search, path, Nothing, False, 0#, 0#, Nothing, 300#, 200#
     AssertTrue stats, "audit02.searchEngineering.capacityFailed", result.ResultMeta.InternalStatus = rsCheckFailed
     AssertEquals stats, "audit02.searchEngineering.capacityDisplay", result.Status, "FAIL"
     AssertClose stats, "audit02.searchEngineering.lambdaUnchanged", result.LambdaCapacity, cap.LambdaUltimate, 0#
@@ -53130,13 +52903,91 @@ Private Sub CheckAudit02SearchVsCapacity(ByRef stats As TCapacityTestStats, _
     Set detachedMeta = search.meta
     detachedMeta.SetResult rsInternalError, rcInternalError, rkCapacity, "Изменение копии в тесте."
     AssertTrue stats, "audit02.searchEngineering.metaSnapshot", search.meta.InternalStatus = rsSuccess
+    AssertTrue stats, "audit02.searchEngineering.pointState", Not search.PointState Is Nothing
+    If Not search.PointState Is Nothing Then
+        AssertTrue stats, "audit02.searchEngineering.sharedState", result.stateResult Is search.PointState
+        Dim savedN As Double, savedEps As Double
+        savedN = search.PointState.Nint
+        savedEps = search.PointState.epsilon0
+        cap.LastSolver.EvaluateStrainPlane section, ProvisionalConcrete(), ProvisionalSteel(), 0#, 0#, 0#
+        AssertClose stats, "audit02.searchEngineering.solverMutation.N", search.nUltimate, savedN, 0#
+        AssertClose stats, "audit02.searchEngineering.solverMutation.plane", search.PointState.epsilon0, savedEps, 0#
+    End If
+End Sub
+
+' ДЛЯ ТЕСТОВ: собирает capacity-снимок через тот же доменный адаптер, что
+' production Search. Сам общий result не принимает инженерные калькуляторы.
+Private Function Audit02CapacitySnapshot(ByVal cap As CCapacitySolver, ByVal strategy As String, _
+        Optional ByVal section As CSectionModel = Nothing, _
+        Optional ByVal concrete As Object = Nothing, Optional ByVal steel As Object = Nothing, _
+        Optional ByVal spec As CMaterialModelSpec = Nothing) As CLimitSearchResult
+    Dim problem As CCapacityLimitSearchProblem
+    Set problem = New CCapacityLimitSearchProblem
+    problem.Initialize cap
+    Set Audit02CapacitySnapshot = problem.BuildSnapshot(strategy, section, concrete, steel, spec)
+End Function
+
+' ДЛЯ ТЕСТОВ: один generic bracket/recovery работает с обоими видами задачи
+' без железобетонных калькуляторов. Проверяются все одномерные методы,
+' край MaxLambda, отсутствие точки за границей и повторное заполнение result.
+Private Sub TestAudit02GenericLoadMultiplierMatrix(ByRef stats As TCapacityTestStats)
+    Dim kind As Variant, methodName As Variant, root As Variant
+    For Each kind In Array(rkCapacity, rkCrackFormation)
+        For Each methodName In Array("Bisection", "Brent", "Secant")
+            For Each root In Array(0.75, 5.25, 6#, 8#)
+                Dim problem As CTestLimitSearchProblem
+                Set problem = New CTestLimitSearchProblem
+                problem.Configure CStr(methodName), CDbl(root), 0.000001, 80, 1#, 6#, CLng(kind)
+                Dim request As CLimitSearchRequest
+                Set request = New CLimitSearchRequest
+                request.InitializeWithProblem problem, CLng(kind), "LoadMultiplier", 0#, 1#, 0#, 0#, 0#, 0#
+                Dim search As CLoadMultiplierSearch
+                Set search = New CLoadMultiplierSearch
+                Dim result As CLimitSearchResult
+                Set result = search.Execute(request)
+                Dim prefix As String
+                prefix = "audit02.genericMultiplier." & CStr(kind) & "." & CStr(methodName) & "." & CStr(root)
+                If CDbl(root) <= 6# Then
+                    AssertTrue stats, prefix & ".success", result.Succeeded
+                    AssertTrue stats, prefix & ".point", result.HasLimitPoint
+                    AssertClose stats, prefix & ".lambda", result.LambdaUltimate, CDbl(root), 0.000001
+                    AssertClose stats, prefix & ".loads", result.nUltimate, result.LambdaUltimate, 0#
+                    AssertEquals stats, prefix & ".method", result.ActualMethod, CStr(methodName)
+                Else
+                    AssertTrue stats, prefix & ".boundCode", result.meta.ResultCode = rcSearchBoundReached
+                    AssertTrue stats, prefix & ".noPoint", Not result.HasLimitPoint
+                    AssertClose stats, prefix & ".noCapacity", result.LambdaUltimate, 0#, 0#
+                    AssertClose stats, prefix & ".maxProbed", problem.ProbeMaxLambda, 6#, 0#
+                End If
+                result.InitializeInvalidConfiguration "Unknown", "Проверка очистки", CLng(kind)
+                AssertTrue stats, prefix & ".resetPoint", Not result.HasLimitPoint
+                AssertTrue stats, prefix & ".resetState", result.PointState Is Nothing
+                AssertTrue stats, prefix & ".resetExecution", Not result.SearchExecuted
+                AssertClose stats, prefix & ".resetLoads", result.nUltimate, 0#, 0#
+            Next root
+        Next methodName
+        Set problem = New CTestLimitSearchProblem
+        problem.Configure "Bisection", 1.1, 0.000001, 80, 1#, 6#, CLng(kind)
+        problem.FailureAbove = 1.2
+        Set request = New CLimitSearchRequest
+        request.InitializeWithProblem problem, CLng(kind), "LoadMultiplier", 0#, 1#, 0#, 0#, 0#, 0#
+        Set result = search.Execute(request)
+        AssertTrue stats, "audit02.genericMultiplier.recovery." & CStr(kind) & ".point", result.HasLimitPoint
+        AssertClose stats, "audit02.genericMultiplier.recovery." & CStr(kind) & ".lambda", result.LambdaUltimate, 1.1, 0.000001
+        AssertTrue stats, "audit02.genericMultiplier.recovery." & CStr(kind) & ".upperFailed", problem.ProbeMaxLambda > 1.2
+    Next kind
+
+    Set request = New CLimitSearchRequest
+    Set result = search.Execute(request)
+    AssertTrue stats, "audit02.genericMultiplier.missingProblem.internal", result.meta.InternalStatus = rsInternalError
+    AssertTrue stats, "audit02.genericMultiplier.missingProblem.noPoint", Not result.HasLimitPoint
 End Sub
 
 
 ====================================================================================================
 COMPONENT: modTestCrackWidth
 TYPE: 1
-LINES: 1024
+LINES: 1025
 ====================================================================================================
 Option Explicit
 
@@ -53626,8 +53477,7 @@ Private Sub TestLimitSearchResultKeepsCrackDiagnosticSnapshot(ByRef stats As TCr
     crack.LimitSearchAppendDiagnostic "diagnostic-before"
 
     Dim result As CLimitSearchResult
-    Set result = New CLimitSearchResult
-    result.InitializeFromCrackFormation crack, "lambda*Mxy", False
+    Set result = crack.BuildSearchSnapshot("lambda*Mxy")
 
     crack.LimitSearchAppendDiagnostic "diagnostic-after"
 
@@ -54144,7 +53994,9 @@ Private Sub TestAudit02FormationOutcomeSemantics(ByRef stats As TCrackTestStats)
     Set search = crack.formationResult.searchResult
     AssertTrue stats, "audit02.formation.aboveCurrent.searchSuccess", search.meta.InternalStatus = rsSuccess
     AssertClose stats, "audit02.formation.aboveCurrent.pointLambda", search.LambdaUltimate, crack.formationResult.LambdaCrc, 0#
-    AssertClose stats, "audit02.formation.aboveCurrent.pointMoment", search.MomentUltimate, crack.formationResult.mcrc, 0#
+    AssertClose stats, "audit02.formation.aboveCurrent.pointMoment", _
+        Sqr(search.mxUltimate * search.mxUltimate + search.myUltimate * search.myUltimate), _
+        crack.formationResult.mcrc, 0#
     AssertTrue stats, "audit02.formation.aboveCurrent.noPost", crack.formationResult.PostCrackState Is Nothing
 
     Set solver = SolveServiceStateWithRunner(section, 200000#, 0#, 0#)
@@ -54158,7 +54010,7 @@ Private Sub TestAudit02FormationOutcomeSemantics(ByRef stats As TCrackTestStats)
     AssertTrue stats, "audit02.formation.constant.noPost", crack.formationResult.PostCrackState Is Nothing
     AssertClose stats, "audit02.formation.constant.noPoint", search.LambdaUltimate, 0#, 0#
     AssertClose stats, "audit02.formation.constant.psi1", crack.PsiS, 1#, 0#
-    search.InitializeFromCrackFormation Nothing, "Auto", False
+    search.Initialize Nothing, "Auto", vbNullString, False, 0#, 0#, 0#, 0#, Nothing, vbNullString, vbNullString
     AssertTrue stats, "audit02.formation.missing.internalError", search.meta.InternalStatus = rsInternalError
 End Sub
 

@@ -48,12 +48,14 @@ Private Property Get ILimitSearchProblem_MaxIterations() As Long
     ILimitSearchProblem_MaxIterations = mCapacity.LimitSearchMaxIterations
 End Property
 
-Private Property Get ILimitSearchProblem_SearchMethod() As String
-    ILimitSearchProblem_SearchMethod = mCapacity.LimitSearchCapacitySearchMethod()
+' Несущая уточняет уже подтвержденную скобку до допуска lambda.
+' Малый лимит внутреннего solve не ограничивает количество делений скобки.
+Private Property Get ILimitSearchProblem_BisectionMaxIterations() As Long
+    ILimitSearchProblem_BisectionMaxIterations = 0
 End Property
 
-Private Property Get ILimitSearchProblem_UsesRetainedForceCapacity() As Boolean
-    ILimitSearchProblem_UsesRetainedForceCapacity = True
+Private Property Get ILimitSearchProblem_SearchMethod() As String
+    ILimitSearchProblem_SearchMethod = mCapacity.LimitSearchCapacitySearchMethod()
 End Property
 
 Private Property Get ILimitSearchProblem_Converged() As Boolean
@@ -82,6 +84,19 @@ Private Function ILimitSearchProblem_BuildLoadPath(ByVal request As CLimitSearch
     loadPath.Initialize request.NOffset, request.NBase, request.MxOffset, request.MxBase, _
         request.MyOffset, request.MyBase
     Set ILimitSearchProblem_BuildLoadPath = loadPath
+End Function
+
+' Начало capacity-пути должно удовлетворять исходному физическому критерию.
+' Эта доменная оценка не зависит от алгоритма расширения численной скобки.
+Private Function ILimitSearchProblem_AcceptInitialPoint(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal functionValue As Double, _
+        ByVal probeState As String, ByVal solver As CSectionSolver) As Boolean
+    If Not mCapacity.LimitSearchCapacityStateIsAcceptable(probeState) Then
+        mCapacity.LimitSearchHandleCapacityInitialFailure probeState
+        Exit Function
+    End If
+    ILimitSearchProblem_RecordAcceptable loadPath, 0#
+    ILimitSearchProblem_AcceptInitialPoint = True
 End Function
 
 ' Оценивает одну lambda-точку capacity через существующий CCapacitySolver.
@@ -172,23 +187,86 @@ Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchReq
     ILimitSearchProblem_FinalizeAt = mCapacity.Converged
 End Function
 
-Private Sub ILimitSearchProblem_FinalizeFromRetainedAcceptable(ByVal request As CLimitSearchRequest, _
-        ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
-        ByVal methodName As String)
-    mCapacity.LimitSearchFinalizeCapacityFromRetainedAcceptable lambdaValue, loadPath, methodName
+Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
+        ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
+        ByVal methodName As String, ByVal iterations As Long)
+    mCapacity.LimitSearchFinalizeCapacityFromRetainedAcceptable lowLambda, loadPath, methodName
 End Sub
 
-Private Sub ILimitSearchProblem_AcceptRetainedCapacity(ByVal request As CLimitSearchRequest)
+Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
+    If Not request.ForceOnly And Not request.PureAxialForMethod Then Exit Sub
     mCapacity.LimitSearchAcceptPureAxialRetainedCapacity request.Section, _
         request.ConcreteMaterial, request.SteelMaterial, ILimitSearchProblem_BuildLoadPath(request)
 End Sub
 
 Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRequest, _
         ByVal searchSucceeded As Boolean) As CLimitSearchResult
+    Set ILimitSearchProblem_BuildResult = BuildSnapshot(request.SolutionStrategy, request.Section, _
+        request.ConcreteMaterial, request.SteelMaterial, request.MaterialSpec)
+End Function
+
+' Интерпретирует машинный исход capacity-задачи и фиксирует конечное НДС.
+' Общий Search-result не знает ни правил BaseFail, ни полей CCapacitySolver.
+' Lambda ниже единицы остается успехом поиска; проверку текущего LC делает CapacityResult.
+Public Function BuildSnapshot(ByVal requestedStrategy As String, _
+        Optional ByVal section As CSectionModel = Nothing, _
+        Optional ByVal concreteMaterial As Object = Nothing, _
+        Optional ByVal steelMaterial As Object = Nothing, _
+        Optional ByVal materialSpec As CMaterialModelSpec = Nothing) As CLimitSearchResult
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    If mCapacity Is Nothing Then
+        meta.SetResult rsInternalError, rcInternalError, rkCapacity, "Не передана задача несущей способности."
+    ElseIf mCapacity.Converged Then
+        meta.SetResult rsSuccess, rcCheckPassed, rkCapacity, mCapacity.LimitState
+    ElseIf mCapacity.SearchBoundReached Then
+        meta.SetResult rsNumericalFailure, rcSearchBoundReached, rkCapacity, mCapacity.StopReason
+    ElseIf mCapacity.LimitSearchInitialLambdaRejected And _
+            Not mCapacity.LimitSearchCapacityStateIsInvalidInput(mCapacity.LimitState) Then
+        meta.SetResult rsCheckFailed, rcInitialStateBeyondLimit, rkCapacity, _
+            mCapacity.StopReason
+    ElseIf mCapacity.LimitSearchCapacityStateIsInvalidInput(mCapacity.LimitState) Then
+        meta.SetResult rsInvalidInput, rcInvalidInput, rkCapacity, mCapacity.StopReason
+    ElseIf mCapacity.LimitSearchCapacityStateIsNumericalFailure(mCapacity.LimitState) Then
+        meta.SetResult rsNumericalFailure, rcNumericalFailure, rkCapacity, mCapacity.StopReason
+    Else
+        meta.SetResult rsInternalError, rcInternalError, rkCapacity, mCapacity.StopReason
+    End If
+
+    Dim pointState As CSectionStateResult
+    Dim hasPoint As Boolean
+    Dim finalDiagnostic As String
+    Dim lambdaValue As Double
+    Dim nValue As Double, mxValue As Double, myValue As Double
+    Dim methodName As String, criterionName As String, diagnostics As String
+    If Not mCapacity Is Nothing Then
+        hasPoint = mCapacity.Converged And mCapacity.LambdaUltimate > 0#
+        lambdaValue = mCapacity.LambdaUltimate
+        nValue = mCapacity.NUltimate
+        mxValue = mCapacity.MxUltimate
+        myValue = mCapacity.MyUltimate
+        methodName = mCapacity.SolutionMethod
+        criterionName = mCapacity.LimitState
+        diagnostics = mCapacity.DiagnosticLog
+        If Not mCapacity.LastSolver Is Nothing Then
+            finalDiagnostic = mCapacity.LastSolver.DiagnosticLog
+            If hasPoint And Not materialSpec Is Nothing Then
+                Dim runner As CStateSolutionRunner
+                Set runner = New CStateSolutionRunner
+                Set pointState = New CSectionStateResult
+                pointState.InitializeFromSolver sstCapacityState, cpStrength, materialSpec, mCapacity.LastSolver, _
+                    runner.StateUsesExtension(section, mCapacity.LastSolver, concreteMaterial, steelMaterial), _
+                    runner.StateWithinPhysicalRange(section, mCapacity.LastSolver, concreteMaterial, steelMaterial), _
+                    0, diagnostics
+            End If
+        End If
+    End If
     Dim result As CLimitSearchResult
     Set result = New CLimitSearchResult
-    result.InitializeFromCapacitySolver mCapacity, request.SolutionStrategy
-    Set ILimitSearchProblem_BuildResult = result
+    result.Initialize meta, requestedStrategy, methodName, hasPoint, lambdaValue, _
+        nValue, mxValue, myValue, pointState, criterionName, diagnostics, finalDiagnostic
+    Set BuildSnapshot = result
 End Function
 
 ' Передает общему Newton уже проверенную Capacity-постановку.
@@ -281,20 +359,6 @@ Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa() As D
     ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa = mCapacity.LimitSearchUltimateMaxDeltaKappa
 End Property
 
-' Capacity не использует crack-операции Auto-пути; методы оставлены no-op по
-' контракту ILimitSearchProblem.
-Private Sub ILimitSearchProblem_BeginFormationAttempt(ByVal pathName As String)
-End Sub
-
-Private Sub ILimitSearchProblem_SetResolvedFormationPath(ByVal pathName As String)
-End Sub
-
-Private Sub ILimitSearchProblem_SetCurrentFormationPath(ByVal pathName As String)
-End Sub
-
-Private Property Get ILimitSearchProblem_FormationFallbackOnly() As Boolean
-End Property
-
 Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
 End Property
 
@@ -308,21 +372,7 @@ End Sub
 Private Sub ILimitSearchProblem_SetStopReasonIfEmpty(ByVal reason As String)
 End Sub
 
-Private Function ILimitSearchProblem_FormationPathDisplayName() As String
-    ILimitSearchProblem_FormationPathDisplayName = vbNullString
-End Function
-
 ' Форматирует число для диагностического журнала с точкой как разделителем.
-Private Function ILimitSearchProblem_HasScaledFormationLoad(ByVal request As CLimitSearchRequest) As Boolean
-    ILimitSearchProblem_HasScaledFormationLoad = True
-End Function
-
-Private Sub ILimitSearchProblem_MarkFormationPathFallback(ByVal reason As String)
-End Sub
-
-Private Sub ILimitSearchProblem_FinishNoCrack(ByVal reason As String)
-End Sub
-
 Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
         ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
         ByVal transitionMessage As String, ByVal successMessage As String)
