@@ -65,6 +65,9 @@
 
 ## Current
 
+- HEAD checkpoint R07: `8929d5d`, `Audit02: canonical typed results and block output formatting`.
+- C02/C03 реализованы через identity/revision сечения и material provider, effective Extension и допуски в scoped repository; warm-start/retry/диагностика не входят в reuse key. Provider владеет небольшими копиями параметров материалов. Последний named-state обновляется и при solve, и при cache-hit; failed state не блокирует повтор. Directed `audit02.cache.*`: 43/0. Full On/Off `scoped_repository_full_*_2026-10-01.txt`: все 8 suites, по 4774 assertions, 0 ошибок, source unchanged; структурная проверка прошла.
+- Следующий срез A02 реализуется отдельно: запасы отдельных проверок переходят к canonical typed results, Batch сохраняет только выбор определяющего LC. Эти исходники еще не включены в принятую C02/C03 книгу и требуют новой проверки.
 - R07 acceptance: `canonical_accepted_full_on_2026-10-01.txt` и `canonical_accepted_full_off_2026-10-01.txt`: все 8 suites, по 4731 assertions, 0 ошибок, исходная книга неизменна. Структура книги проверена (`canonical_accepted_validation_2026-10-01.log`). Этот срез фиксируется отдельно от еще непроверенных C02/C03 изменений scoped repository/material snapshots.
 - HEAD: `92d0a4ae Audit02: canonical search snapshots and unified load multiplier`; перед этим подтвержденные checkpoints `ff9e2d47`, `799bcd8e`. Baseline остается `855626e6`.
 - В работе R07/A02/A07: удалены 140 flat-полей CCombinationResult и 151 indexed-forward getter Batch. Writers, workbook и тесты переведены на `ResultAt(index)` и typed subtrees; named-state читаются напрямую через StateRepository. Численные поля DirectState теперь принадлежат одному CSectionStateResult; CrackedState больше не перезаписывает strength direct-result. Форматирование отчетов перенесено в существующий CExecutionReport. Новых production-классов нет.

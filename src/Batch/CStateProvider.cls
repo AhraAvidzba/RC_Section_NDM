@@ -77,10 +77,12 @@ Public Function GetOrSolve(ByVal request As CStateRequest, _
     mLastStateWasReused = False
 
     If Not mRepository Is Nothing Then
+        BindRepositoryContext
         Dim cached As CSectionStateResult
         Set cached = mRepository.FindEquivalent(request)
         If Not cached Is Nothing Then
             mLastStateWasReused = True
+            mRepository.StoreState cached
             Set GetOrSolve = cached
             Exit Function
         End If
@@ -117,6 +119,16 @@ Public Function GetOrSolve(ByVal request As CStateRequest, _
     If Not mRepository Is Nothing Then mRepository.StoreForRequest request, stateResult
     Set GetOrSolve = stateResult
 End Function
+
+' Привязывает cache к фактической геометрии, материалам и допускам. Retry,
+' warm-start, load steps и диагностика не меняют физическое состояние и
+' не дробят reuse. Глобальный On/Off учитывается даже при одинаковом request.
+Private Sub BindRepositoryContext()
+    Dim acceptanceKey As String
+    acceptanceKey = CStr(mMaterialProvider.DiagramExtensionEnabled) & "|" & _
+        CStr(mToleranceN) & "|" & CStr(mToleranceMx) & "|" & CStr(mToleranceMy)
+    mRepository.BindContext mSection, mMaterialProvider, acceptanceKey
+End Sub
 
 ' Возвращает вычисляемый снимок для потребителя cached named-state.
 ' Живой LastRunner не требуется; восстановление и проверка плоскости общие

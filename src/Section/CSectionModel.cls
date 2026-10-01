@@ -59,6 +59,7 @@ Private mRebarComment() As String ' Диагностическая заметк�
 Private mRebarCount As Long ' Фактическое число стержней в модели.
 
 Private mAnnotations As CSectionAnnotations ' Semantic-аннотации, сформированные генератором сечения.
+Private mRevision As Long ' Версия расчетной геометрии для scoped-инвалидации reusable НДС.
 
 Private Const LOCAL_INERTIA_SQUARE_REL_TOLERANCE As Double = 0.000001 ' Допуск, при котором главные локальные I считаются изотропными.
 Private Const LOCAL_INERTIA_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.01 ' Допуск проверки, что реальные A/I совместимы с прямоугольником.
@@ -67,6 +68,7 @@ Private Const LOCAL_INERTIA_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.01 ' До
 ' После Clear объект снова готов принимать бетонные элементы, арматуру и
 ' аннотации без следов предыдущего расчета.
 Public Sub Clear()
+    mRevision = mRevision + 1
     mSourceType = vbNullString
 
     Erase mConcreteID
@@ -174,7 +176,14 @@ Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, By
         End If
     End If
     mConcreteComment(mConcreteCount) = comment
+    mRevision = mRevision + 1
 End Sub
+
+' Возвращает версию геометрии без копирования волокон. Она меняется только
+' при изменении модели, а не при чтении границ или расчетных характеристик.
+Public Property Get Revision() As Long
+    Revision = mRevision
+End Property
 
 ' Назначает последним fallback-квадратам общий угол ориентации.
 ' Метод оставлен для совместимости со старыми snapshot-данными: новые AutoCAD
@@ -187,8 +196,11 @@ Public Sub ApplyAverageRotationToEquivalentAreaFallbacks()
     Dim i As Long
     For i = 1 To mConcreteCount
         If IsConcreteEquivalentAreaFallback(i) And Abs(mConcreteRotation(i)) <= GEOM_TOLERANCE Then
-            mConcreteRotation(i) = fallbackRotation
-            InvalidateBoundaryCache i
+            If Abs(mConcreteRotation(i) - fallbackRotation) > GEOM_TOLERANCE Then
+                mConcreteRotation(i) = fallbackRotation
+                InvalidateBoundaryCache i
+                mRevision = mRevision + 1
+            End If
         End If
     Next i
 End Sub
@@ -582,6 +594,7 @@ Public Sub AddRebarElement(ByVal xCoord As Double, ByVal yCoord As Double, _
     mRebarSteelClass(mRebarCount) = steelClass
     mRebarMaterialID(mRebarCount) = materialID
     mRebarComment(mRebarCount) = comment
+    mRevision = mRevision + 1
 End Sub
 
 Public Property Get ConcreteCount() As Long

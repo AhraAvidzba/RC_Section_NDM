@@ -136,12 +136,18 @@ Public Property Get Ebt2() As Double
 End Property
 
 ' ==========================================================================
-' ДЛЯ ТЕСТОВ
-' ==========================================================================
-' Тесты передают параметры напрямую, чтобы проверять построение диаграмм без
-' временного листа Config. Обычный расчет должен читать эти значения через
-' LoadFromSettings, иначе можно незаметно обойти пользовательские настройки.
+' Создает независимый небольшой снимок параметров материала. Provider владеет
+' своей копией; изменение исходного объекта не меняет уже построенные диаграммы.
+Public Function Clone() As CConcreteMaterialParameters
+    Dim result As CConcreteMaterialParameters
+    Set result = New CConcreteMaterialParameters
+    result.Initialize mRbULS, mRbtULS, mRbSLS, mRbtSLS, mEb, mEbt, _
+        mEb1Red, mEbt1Red, mEb0, mEbt0, mEb2, mEbt2, mRbMc2
+    Set Clone = result
+End Function
 
+' Заполняет параметры нормализованными числами для внутренних snapshots и
+' тестовых сценариев. Пользовательский ввод читается через LoadFromSettings.
 Public Sub Initialize(ByVal rbULS As Double, ByVal rbtULS As Double, _
         ByVal rbSLS As Double, ByVal rbtSLS As Double, ByVal eb As Double, _
         Optional ByVal ebt As Double = 0#, _

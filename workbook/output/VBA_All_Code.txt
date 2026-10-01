@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-01 19:21:19
+Date: 2026-10-01 19:40:07
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -7323,7 +7323,7 @@ End Function
 ====================================================================================================
 COMPONENT: CSectionModel
 TYPE: 2
-LINES: 810
+LINES: 823
 ====================================================================================================
 Option Explicit
 
@@ -7377,6 +7377,7 @@ Private mRebarComment() As String ' Диагностическая заметк�
 Private mRebarCount As Long ' Фактическое число стержней в модели.
 
 Private mAnnotations As CSectionAnnotations ' Semantic-аннотации, сформированные генератором сечения.
+Private mRevision As Long ' Версия расчетной геометрии для scoped-инвалидации reusable НДС.
 
 Private Const LOCAL_INERTIA_SQUARE_REL_TOLERANCE As Double = 0.000001 ' Допуск, при котором главные локальные I считаются изотропными.
 Private Const LOCAL_INERTIA_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.01 ' Допуск проверки, что реальные A/I совместимы с прямоугольником.
@@ -7385,6 +7386,7 @@ Private Const LOCAL_INERTIA_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.01 ' До
 ' После Clear объект снова готов принимать бетонные элементы, арматуру и
 ' аннотации без следов предыдущего расчета.
 Public Sub Clear()
+    mRevision = mRevision + 1
     mSourceType = vbNullString
 
     Erase mConcreteID
@@ -7492,7 +7494,14 @@ Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, By
         End If
     End If
     mConcreteComment(mConcreteCount) = comment
+    mRevision = mRevision + 1
 End Sub
+
+' Возвращает версию геометрии без копирования волокон. Она меняется только
+' при изменении модели, а не при чтении границ или расчетных характеристик.
+Public Property Get revision() As Long
+    revision = mRevision
+End Property
 
 ' Назначает последним fallback-квадратам общий угол ориентации.
 ' Метод оставлен для совместимости со старыми snapshot-данными: новые AutoCAD
@@ -7505,8 +7514,11 @@ Public Sub ApplyAverageRotationToEquivalentAreaFallbacks()
     Dim i As Long
     For i = 1 To mConcreteCount
         If IsConcreteEquivalentAreaFallback(i) And Abs(mConcreteRotation(i)) <= GEOM_TOLERANCE Then
-            mConcreteRotation(i) = fallbackRotation
-            InvalidateBoundaryCache i
+            If Abs(mConcreteRotation(i) - fallbackRotation) > GEOM_TOLERANCE Then
+                mConcreteRotation(i) = fallbackRotation
+                InvalidateBoundaryCache i
+                mRevision = mRevision + 1
+            End If
         End If
     Next i
 End Sub
@@ -7900,6 +7912,7 @@ Public Sub AddRebarElement(ByVal xCoord As Double, ByVal yCoord As Double, _
     mRebarSteelClass(mRebarCount) = steelClass
     mRebarMaterialID(mRebarCount) = materialID
     mRebarComment(mRebarCount) = comment
+    mRevision = mRevision + 1
 End Sub
 
 Public Property Get ConcreteCount() As Long
@@ -8984,7 +8997,7 @@ End Property
 ====================================================================================================
 COMPONENT: CConcreteMaterialParameters
 TYPE: 2
-LINES: 158
+LINES: 164
 ====================================================================================================
 Option Explicit
 
@@ -9115,12 +9128,18 @@ Public Property Get ebt2() As Double
 End Property
 
 ' ==========================================================================
-' ДЛЯ ТЕСТОВ
-' ==========================================================================
-' Тесты передают параметры напрямую, чтобы проверять построение диаграмм без
-' временного листа Config. Обычный расчет должен читать эти значения через
-' LoadFromSettings, иначе можно незаметно обойти пользовательские настройки.
+' Создает независимый небольшой снимок параметров материала. Provider владеет
+' своей копией; изменение исходного объекта не меняет уже построенные диаграммы.
+Public Function clone() As CConcreteMaterialParameters
+    Dim result As CConcreteMaterialParameters
+    Set result = New CConcreteMaterialParameters
+    result.Initialize mRbULS, mRbtULS, mRbSLS, mRbtSLS, mEb, mEbt, _
+        mEb1Red, mEbt1Red, mEb0, mEbt0, mEb2, mEbt2, mRbMc2
+    Set clone = result
+End Function
 
+' Заполняет параметры нормализованными числами для внутренних snapshots и
+' тестовых сценариев. Пользовательский ввод читается через LoadFromSettings.
 Public Sub Initialize(ByVal rbULS As Double, ByVal rbtULS As Double, _
         ByVal rbSLS As Double, ByVal rbtSLS As Double, ByVal eb As Double, _
         Optional ByVal ebt As Double = 0#, _
@@ -9645,7 +9664,7 @@ End Function
 ====================================================================================================
 COMPONENT: CMaterialModelProvider
 TYPE: 2
-LINES: 866
+LINES: 880
 ====================================================================================================
 Option Explicit
 
@@ -9693,10 +9712,13 @@ Private mSteelElasticModulus(1 To 3) As Double ' Es выбранной моде�
 Private mDiagramExtensionEnabled As Boolean ' Разрешает numerical extension для задач равновесия solver-а.
 Private mInitialized As Boolean ' Защита от использования provider-а до чтения параметров.
 Private mDiagramCache As Object ' Кэш CMaterialDiagram по MaterialModelSpec; диаграммы после Initialize неизменяемы.
+Private mRevision As Long ' Версия набора материалов и effective Extension после переинициализации.
 
 ' Читает Config, создает параметры материалов и строит физические диаграммы.
 Public Sub Initialize(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Err.Raise vbObjectError + 3240, "CMaterialModelProvider", "Настройки материалов не переданы."
+    mInitialized = False
+    mRevision = mRevision + 1
     Set mDiagramCache = CreateObject("Scripting.Dictionary")
 
     Set mConcreteParameters = New CConcreteMaterialParameters
@@ -10468,6 +10490,25 @@ Public Property Get diagramExtensionEnabled() As Boolean
     diagramExtensionEnabled = mDiagramExtensionEnabled
 End Property
 
+' Возвращает версию неизменяемого набора материалов текущего запуска.
+' Repository использует ее вместе с identity provider-а, а не с именем профиля.
+Public Property Get revision() As Long
+    EnsureInitialized
+    revision = mRevision
+End Property
+
+' Возвращает копии исходных параметров. Consumers не могут изменить внутренний
+' набор provider-а и оставить старые диаграммы в его material cache.
+Public Property Get concreteParameters() As CConcreteMaterialParameters
+    EnsureInitialized
+    Set concreteParameters = mConcreteParameters.clone
+End Property
+
+Public Property Get steelParameters() As CSteelMaterialParameters
+    EnsureInitialized
+    Set steelParameters = mSteelParameters.clone
+End Property
+
 ' Проверяет, что provider уже построил диаграммы.
 Private Sub EnsureInitialized()
     If Not mInitialized Then Err.Raise vbObjectError + 3242, "CMaterialModelProvider", "Поставщик материалов не инициализирован."
@@ -10493,8 +10534,10 @@ Public Sub InitializeFromParameters(ByVal concreteParameters As CConcreteMateria
     If concreteParameters Is Nothing Then Err.Raise vbObjectError + 3243, "CMaterialModelProvider", "Параметры бетона не переданы."
     If steelParameters Is Nothing Then Err.Raise vbObjectError + 3244, "CMaterialModelProvider", "Параметры арматуры не переданы."
 
-    Set mConcreteParameters = concreteParameters
-    Set mSteelParameters = steelParameters
+    mInitialized = False
+    mRevision = mRevision + 1
+    Set mConcreteParameters = concreteParameters.clone
+    Set mSteelParameters = steelParameters.clone
     Set mDiagramCache = CreateObject("Scripting.Dictionary")
     mDiagramExtensionEnabled = diagramExtensionEnabled
     BuildPurpose cpStrength, "I", strengthConcreteDiagram, strengthConcreteTension, strengthSteelDiagram
@@ -10502,16 +10545,6 @@ Public Sub InitializeFromParameters(ByVal concreteParameters As CConcreteMateria
     BuildPurpose cpCrackedNDS, "II", crackedConcreteDiagram, "Ignore", crackedSteelDiagram
     mInitialized = True
 End Sub
-
-Public Property Get concreteParameters() As CConcreteMaterialParameters
-    EnsureInitialized
-    Set concreteParameters = mConcreteParameters
-End Property
-
-Public Property Get steelParameters() As CSteelMaterialParameters
-    EnsureInitialized
-    Set steelParameters = mSteelParameters
-End Property
 
 
 ====================================================================================================
@@ -10614,7 +10647,7 @@ End Property
 ====================================================================================================
 COMPONENT: CSteelMaterialParameters
 TYPE: 2
-LINES: 135
+LINES: 141
 ====================================================================================================
 Option Explicit
 
@@ -10726,12 +10759,18 @@ Public Property Get threeLineEsc2() As Double
 End Property
 
 ' ==========================================================================
-' ДЛЯ ТЕСТОВ
-' ==========================================================================
-' Тесты передают параметры напрямую, чтобы проверять построение диаграмм без
-' временного листа Config. В пользовательском сценарии значения должны идти
-' через LoadFromSettings и единый CMaterialModelProvider.
+' Создает независимый небольшой снимок параметров арматуры. Provider хранит
+' свою копию и не зависит от последующей настройки исходного объекта.
+Public Function clone() As CSteelMaterialParameters
+    Dim result As CSteelMaterialParameters
+    Set result = New CSteelMaterialParameters
+    result.Initialize mRscULS, mRsULS, mRscSLS, mRsSLS, mEsc, mEs, _
+        mTwoLineEsc2, mTwoLineEs2, mThreeLineEsc2, mThreeLineEs2
+    Set clone = result
+End Function
 
+' Заполняет нормализованные параметры внутренних snapshots и тестов.
+' Пользовательский ввод остается обязанностью LoadFromSettings.
 Public Sub Initialize(ByVal rscULS As Double, ByVal rsULS As Double, _
         ByVal rscSLS As Double, ByVal rsSLS As Double, ByVal esc As Double, _
         ByVal es As Double, Optional ByVal twoLineEsc2 As Double = 0.025, _
@@ -28734,7 +28773,7 @@ End Function
 ====================================================================================================
 COMPONENT: CStateProvider
 TYPE: 2
-LINES: 229
+LINES: 241
 ====================================================================================================
 Option Explicit
 
@@ -28806,10 +28845,12 @@ Public Function GetOrSolve(ByVal request As CStateRequest, _
     mLastStateWasReused = False
 
     If Not mRepository Is Nothing Then
+        BindRepositoryContext
         Dim cached As CSectionStateResult
         Set cached = mRepository.FindEquivalent(request)
         If Not cached Is Nothing Then
             mLastStateWasReused = True
+            mRepository.StoreState cached
             Set GetOrSolve = cached
             Exit Function
         End If
@@ -28846,6 +28887,16 @@ Public Function GetOrSolve(ByVal request As CStateRequest, _
     If Not mRepository Is Nothing Then mRepository.StoreForRequest request, stateResult
     Set GetOrSolve = stateResult
 End Function
+
+' Привязывает cache к фактической геометрии, материалам и допускам. Retry,
+' warm-start, load steps и диагностика не меняют физическое состояние и
+' не дробят reuse. Глобальный On/Off учитывается даже при одинаковом request.
+Private Sub BindRepositoryContext()
+    Dim acceptanceKey As String
+    acceptanceKey = CStr(mMaterialProvider.diagramExtensionEnabled) & "|" & _
+        CStr(mToleranceN) & "|" & CStr(mToleranceMx) & "|" & CStr(mToleranceMy)
+    mRepository.BindContext mSection, mMaterialProvider, acceptanceKey
+End Sub
 
 ' Возвращает вычисляемый снимок для потребителя cached named-state.
 ' Живой LastRunner не требуется; восстановление и проверка плоскости общие
@@ -28969,7 +29020,7 @@ End Property
 ====================================================================================================
 COMPONENT: CStateRepository
 TYPE: 2
-LINES: 122
+LINES: 164
 ====================================================================================================
 Option Explicit
 
@@ -28984,6 +29035,12 @@ Option Explicit
 
 Private mStates As Collection ' Все конечные named-state для вывода Results.
 Private mReusableByKey As Object ' Dictionary: equivalence key -> успешно полученный физический state.
+Private mContextSection As CSectionModel ' Identity геометрии, которой принадлежит reusable cache.
+Private mContextMaterials As CMaterialModelProvider ' Identity эффективного набора материалов.
+Private mSectionRevision As Long ' Версия геометрии на момент привязки контекста.
+Private mMaterialRevision As Long ' Версия материалов на момент привязки контекста.
+Private mAcceptanceKey As String ' Effective Extension и допуски приемки равновесия.
+Private mContextBound As Boolean ' Контекст cache уже определен общим State pipeline.
 
 Private Sub Class_Initialize()
     Set mStates = New Collection
@@ -28994,6 +29051,36 @@ End Sub
 Public Sub Clear()
     Set mStates = New Collection
     Set mReusableByKey = CreateObject("Scripting.Dictionary")
+    Set mContextSection = Nothing
+    Set mContextMaterials = Nothing
+    mContextBound = False
+    mAcceptanceKey = vbNullString
+End Sub
+
+' Ограничивает reusable cache одним фактическим расчетным контекстом.
+' При его смене старые состояния инвалидируются. Первый bind не удаляет
+' unkeyed named states, уже принятые владельцем LC, например CapacityState.
+Public Sub BindContext(ByVal section As CSectionModel, ByVal materials As CMaterialModelProvider, _
+        ByVal acceptanceKey As String)
+    If section Is Nothing Or materials Is Nothing Then _
+        Err.Raise vbObjectError + 3986, "CStateRepository", "Не передан расчетный контекст repository."
+
+    Dim changed As Boolean
+    If mContextBound Then
+        changed = (Not section Is mContextSection) Or (Not materials Is mContextMaterials)
+        changed = changed Or (mSectionRevision <> section.revision) Or _
+            (mMaterialRevision <> materials.revision) Or (mAcceptanceKey <> acceptanceKey)
+        If changed Then Clear
+    Else
+        ' Без контекста вручную сохраненные states не являются доказанным reuse.
+        Set mReusableByKey = CreateObject("Scripting.Dictionary")
+    End If
+    Set mContextSection = section
+    Set mContextMaterials = materials
+    mSectionRevision = section.revision
+    mMaterialRevision = materials.revision
+    mAcceptanceKey = acceptanceKey
+    mContextBound = True
 End Sub
 
 ' Сохраняет state без ключа переиспользования. Такой путь нужен для уже
@@ -29003,8 +29090,7 @@ Public Sub StoreState(ByVal stateResult As CSectionStateResult)
     Dim existingIndex As Long
     existingIndex = stateIndex(stateResult.stateType)
     If existingIndex > 0 Then
-        If ShouldReplaceSnapshotState(mStates.item(existingIndex), stateResult) Then _
-            ReplaceStateAt existingIndex, stateResult
+        If Not mStates.item(existingIndex) Is stateResult Then ReplaceStateAt existingIndex, stateResult
         Exit Sub
     End If
     mStates.Add stateResult
@@ -29021,7 +29107,11 @@ Public Sub StoreForRequest(ByVal request As CStateRequest, ByVal stateResult As 
 
     Dim key As String
     key = request.EquivalenceKey
-    If Not mReusableByKey.Exists(key) Then mReusableByKey.Add key, stateResult
+    If mReusableByKey.Exists(key) Then
+        Set mReusableByKey.item(key) = stateResult
+    Else
+        mReusableByKey.Add key, stateResult
+    End If
 End Sub
 
 ' Ищет ранее полученное эквивалентное физическое состояние. Метод никогда не
@@ -29030,7 +29120,14 @@ Public Function FindEquivalent(ByVal request As CStateRequest) As CSectionStateR
     If request Is Nothing Then Exit Function
     Dim key As String
     key = request.EquivalenceKey
-    If mReusableByKey.Exists(key) Then Set FindEquivalent = mReusableByKey.item(key)
+    If Not mReusableByKey.Exists(key) Then Exit Function
+    Dim cached As CSectionStateResult
+    Set cached = mReusableByKey.item(key)
+    If Not IsReusablePhysicalState(cached) Then Exit Function
+    ' Строковое форматирование ключа не должно объединять разные Double-loads.
+    If cached.targetN <> request.targetN Or cached.targetMx <> request.targetMx Or _
+            cached.targetMy <> request.targetMy Then Exit Function
+    Set FindEquivalent = cached
 End Function
 
 ' Возвращает количество states, которые должны попасть в Results snapshot.
@@ -29057,8 +29154,8 @@ Public Function FindState(ByVal stateType As ESectionStateType) As CSectionState
     Next i
 End Function
 
-' Возвращает позицию named-state в snapshot. Нужна не для обычного чтения, а для
-' безопасной замены неуспешной попытки на последующий успешный retry.
+' Возвращает позицию named-state в snapshot. В этой позиции хранится последний
+' запрос данного типа, включая новое усилие, повтор solve или cache-hit.
 Private Function stateIndex(ByVal stateType As ESectionStateType) As Long
     Dim i As Long
     For i = 1 To mStates.count
@@ -29077,20 +29174,16 @@ Private Sub ReplaceStateAt(ByVal index As Long, ByVal stateResult As CSectionSta
     mStates.Remove index + 1
 End Sub
 
-' Определяет, когда более новое состояние должно заменить уже сохраненное.
-' Неуспешный solve полезен как диагностика, но если позднее тот же named-state
-' получен физически корректно, snapshot и FindState должны показывать именно его.
-Private Function ShouldReplaceSnapshotState(ByVal existingState As CSectionStateResult, _
-        ByVal candidateState As CSectionStateResult) As Boolean
-    If existingState Is Nothing Or candidateState Is Nothing Then Exit Function
-    ShouldReplaceSnapshotState = (Not existingState.Converged And candidateState.Converged)
-End Function
-
 ' Определяет, можно ли отдавать state через FindEquivalent. Физический FAIL из-за
 ' выхода за пределы диаграммы остается reusable, потому что равновесие найдено;
 ' численная неудача без найденного НДС reusable не является.
 Private Function IsReusablePhysicalState(ByVal stateResult As CSectionStateResult) As Boolean
-    IsReusablePhysicalState = stateResult.Converged
+    If stateResult Is Nothing Then Exit Function
+    If Not stateResult.Converged Then Exit Function
+    Select Case stateResult.InternalStatus
+        Case rsSuccess, rsSuccessWithWarning, rsCheckFailed
+            IsReusablePhysicalState = True
+    End Select
 End Function
 
 
@@ -38152,7 +38245,7 @@ End Function
 ====================================================================================================
 COMPONENT: CStabilitySummaryWriter
 TYPE: 2
-LINES: 891
+LINES: 890
 ====================================================================================================
 Option Explicit
 
@@ -38563,8 +38656,7 @@ Private Function OutputDataOffset(ByVal batch As CBatchSectionCalculator, ByVal 
     If OutputDataOffset > dataRows Then OutputDataOffset = dataRows
 End Function
 
-' Возвращает внешний статус устойчивости по ResultMeta. Текстовый fallback нужен
-' только для неполных тестовых результатов, где meta явно не создана.
+' Возвращает внешний статус канонической устойчивости через общую policy.
 Private Function StabilityStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal policy As CBatchStatusPolicy) As String
     Dim meta As CResultMeta
@@ -44763,7 +44855,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 5243
+LINES: 5402
 ====================================================================================================
 Option Explicit
 
@@ -44972,6 +45064,8 @@ Public Function RunBatchCalculationTests() As String
     TestAudit02CurrentCrackedStateCacheHitCalculatesWidth stats
     AppendLine stats, "RUN: TestAudit02CanonicalResultsAndReset"
     TestAudit02CanonicalResultsAndReset stats
+    AppendLine stats, "RUN: TestAudit02RepositoryContextAndRetry"
+    TestAudit02RepositoryContextAndRetry stats
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -50007,6 +50101,163 @@ Failed:
     RunAudit02FormationDiagnostic = "RUNTIME ERROR: " & Err.description
     Resume Restore
 End Function
+
+' ============================== ДЛЯ ТЕСТОВ AUDIT02 CACHE ==============================
+
+' Запускает направленную приемку scoped repository отдельно от Excel writer-ов.
+' Проверяет реальные solve/cache-hit, смену контекста и повтор после неудачи.
+Public Function RunAudit02RepositoryContextTests() As String
+    On Error GoTo Failed
+    Dim stats As TBatchTestStats
+    TestAudit02RepositoryContextAndRetry stats
+    AppendLine stats, "TOTAL_AUDIT02_CACHE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit02RepositoryContextTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit02RepositoryContextTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.description
+End Function
+
+' Подтверждает, что reuse зависит от физической модели и точности приемки,
+' а не от retry/warm-start. Уже выданный snapshot не меняется при новом solve.
+Private Sub TestAudit02RepositoryContextAndRetry(ByRef stats As TBatchTestStats)
+    Dim section As CSectionModel
+    Set section = BuildCircleStabilitySection(300#, 8, 16#)
+    Dim concrete As CConcreteMaterialParameters
+    Set concrete = New CConcreteMaterialParameters
+    concrete.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
+    Dim steel As CSteelMaterialParameters
+    Set steel = New CSteelMaterialParameters
+    steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#
+    Dim materials As CMaterialModelProvider
+    Set materials = New CMaterialModelProvider
+    materials.InitializeFromParameters concrete, steel
+    Dim repository As CStateRepository
+    Set repository = New CStateRepository
+    Dim provider As CStateProvider
+    Set provider = New CStateProvider
+    provider.Initialize section, materials, repository
+    Dim spec As CMaterialModelSpec
+    Set spec = New CMaterialModelSpec
+    spec.Initialize "ULS(I)", "ThreeLine", "Ignore", "TwoLine"
+    Dim request As CStateRequest
+    Set request = New CStateRequest
+    request.Initialize sstStrengthState, cpStrength, spec, -100000#, 4000000#, 3000000#, True, False
+    Dim first As CSectionStateResult
+    Set first = provider.GetOrSolve(request)
+    AssertTrue stats, "audit02.cache.initial.converged", first.Converged
+    AssertTrue stats, "audit02.cache.initial.runner", Not provider.LastRunner Is Nothing
+    Dim firstEps As Double
+    firstEps = first.epsilon0
+    Dim firstMetaCode As EResultCode
+    firstMetaCode = first.ResultCode
+    Dim firstLog As String
+    firstLog = first.DiagnosticLog
+
+    Dim retryRequest As CStateRequest
+    Set retryRequest = New CStateRequest
+    retryRequest.Initialize sstStrengthState, cpStrength, spec, -100000#, 4000000#, 3000000#, True, True
+    provider.LoadSteps = 3
+    provider.DiagnosticsEnabled = False
+    Dim state As CSectionStateResult
+    Set state = provider.GetOrSolve(retryRequest, provider.SolverSnapshot(first))
+    AssertTrue stats, "audit02.cache.options.sameState", state Is first
+    AssertTrue stats, "audit02.cache.options.reused", provider.LastStateWasReused
+    AssertTrue stats, "audit02.cache.options.noSolve", provider.LastRunner Is Nothing
+
+    materials.InitializeFromParameters concrete, steel, diagramExtensionEnabled:=False
+    Set state = provider.GetOrSolve(request)
+    AssertTrue stats, "audit02.cache.mode.invalidated", Not provider.LastStateWasReused
+    AssertTrue stats, "audit02.cache.mode.newState", Not state Is first
+    AssertTrue stats, "audit02.cache.mode.physical", state.Converged And state.withinPhysicalRange
+    AssertTrue stats, "audit02.cache.mode.noExtension", Not state.extensionUsed
+    AssertClose stats, "audit02.cache.mode.epsilon", state.epsilon0, firstEps, 0.00000000001
+
+    Dim materialState As CSectionStateResult
+    Set materialState = state
+    concrete.Initialize 15.5, 1.1, 22#, 1.8, 27000#, 27000#, rbMc2:=14.6
+    AssertClose stats, "audit02.cache.material.ownedInput", materials.concreteParameters.eb, 32500#, 0#
+    Dim detached As CConcreteMaterialParameters
+    Set detached = materials.concreteParameters
+    detached.Initialize 15.5, 1.1, 22#, 1.8, 25000#, 25000#, rbMc2:=14.6
+    AssertClose stats, "audit02.cache.material.detachedGetter", materials.concreteParameters.eb, 32500#, 0#
+    materials.InitializeFromParameters concrete, steel, diagramExtensionEnabled:=False
+    Set state = provider.GetOrSolve(request)
+    AssertTrue stats, "audit02.cache.material.invalidated", Not provider.LastStateWasReused
+    AssertTrue stats, "audit02.cache.material.changedPlane", Abs(state.epsilon0 - materialState.epsilon0) > 0.000000001
+    AssertClose stats, "audit02.cache.material.targetN", state.Nint, request.targetN, 5#
+    AssertClose stats, "audit02.cache.material.targetMx", state.Mxint, request.targetMx, 5000#
+    AssertClose stats, "audit02.cache.material.targetMy", state.Myint, request.targetMy, 5000#
+
+    Dim revision As Long
+    revision = section.revision
+    section.sourceType = "Changed presentation label"
+    AssertTrue stats, "audit02.cache.geometry.labelNotPhysical", section.revision = revision
+    section.AddRebarElement 0#, 0#, 20#, 0#, "A400"
+    AssertTrue stats, "audit02.cache.geometry.revision", section.revision > revision
+    Dim beforeGeometry As CSectionStateResult
+    Set beforeGeometry = state
+    Set state = provider.GetOrSolve(request)
+    AssertTrue stats, "audit02.cache.geometry.invalidated", Not provider.LastStateWasReused
+    AssertTrue stats, "audit02.cache.geometry.changedPlane", Abs(state.epsilon0 - beforeGeometry.epsilon0) > 0.0000000001
+
+    provider.ToleranceN = 0.01
+    provider.ToleranceMx = 1#
+    provider.ToleranceMy = 1#
+    Set state = provider.GetOrSolve(request)
+    AssertTrue stats, "audit02.cache.tolerance.invalidated", Not provider.LastStateWasReused
+    AssertClose stats, "audit02.cache.tolerance.N", state.Nint, request.targetN, 0.01
+    AssertClose stats, "audit02.cache.tolerance.Mx", state.Mxint, request.targetMx, 1#
+    AssertClose stats, "audit02.cache.tolerance.My", state.Myint, request.targetMy, 1#
+    Dim stricterState As CSectionStateResult
+    Set stricterState = state
+    Dim otherRequest As CStateRequest
+    Set otherRequest = New CStateRequest
+    otherRequest.Initialize sstStrengthState, cpStrength, spec, -150000#, 2000000#, 1000000#, True, True
+    Set state = provider.GetOrSolve(otherRequest)
+    AssertTrue stats, "audit02.cache.named.latestSolve", repository.FindState(sstStrengthState) Is state
+    Set state = provider.GetOrSolve(request)
+    AssertTrue stats, "audit02.cache.named.oldLoadReusable", state Is stricterState
+    AssertTrue stats, "audit02.cache.named.latestCacheHit", repository.FindState(sstStrengthState) Is state
+    AssertTrue stats, "audit02.cache.named.singleSlot", repository.stateCount = 1
+
+    Dim slsSpec As CMaterialModelSpec
+    Set slsSpec = New CMaterialModelSpec
+    slsSpec.Initialize "SLS(II)", "ThreeLine", "UseDiagram", "TwoLine"
+    otherRequest.Initialize sstPreCrackState, cpMcrc, slsSpec, -100000#, 4000000#, 3000000#, True, True
+    Set state = provider.GetOrSolve(otherRequest)
+    AssertTrue stats, "audit02.cache.role.notMixed", Not provider.LastStateWasReused
+    AssertEquals stats, "audit02.cache.role.spec", state.MaterialSpec.SpecKey, slsSpec.SpecKey
+    Set state = provider.GetOrSolve(otherRequest)
+    AssertTrue stats, "audit02.cache.pre.reused", provider.LastStateWasReused
+    AssertTrue stats, "audit02.cache.pre.noRunner", provider.LastRunner Is Nothing
+    AssertTrue stats, "audit02.cache.pre.restored", Not provider.SolverSnapshot(state) Is Nothing
+
+    repository.Clear
+    provider.LoadSteps = 1
+    provider.maxIterations = 1
+    provider.LineSearchEnabled = False
+    provider.DampingInitial = 0.1
+    provider.MaxDeltaEpsilon0 = 0.00000001
+    provider.MaxDeltaKappa = 0.000000000001
+    Set state = provider.GetOrSolve(request)
+    AssertTrue stats, "audit02.cache.retry.firstFailed", Not state.Converged
+    AssertTrue stats, "audit02.cache.retry.notReusable", repository.FindEquivalent(request) Is Nothing
+    provider.LoadSteps = 8
+    provider.maxIterations = 80
+    provider.LineSearchEnabled = True
+    provider.DampingInitial = 1#
+    provider.MaxDeltaEpsilon0 = 0.0005
+    provider.MaxDeltaKappa = 0.00001
+    Set state = provider.GetOrSolve(retryRequest)
+    AssertTrue stats, "audit02.cache.retry.newSolve", Not provider.LastStateWasReused
+    AssertTrue stats, "audit02.cache.retry.success", state.Converged
+    AssertTrue stats, "audit02.cache.retry.latestNamed", repository.FindState(sstStrengthState) Is state
+    Set state = provider.GetOrSolve(request)
+    AssertTrue stats, "audit02.cache.retry.reusedAfterSuccess", provider.LastStateWasReused
+    AssertClose stats, "audit02.cache.snapshot.epsilonUnchanged", first.epsilon0, firstEps, 0#
+    AssertTrue stats, "audit02.cache.snapshot.codeUnchanged", first.ResultCode = firstMetaCode
+    AssertEquals stats, "audit02.cache.snapshot.logUnchanged", first.DiagnosticLog, firstLog
+End Sub
 
 
 ====================================================================================================

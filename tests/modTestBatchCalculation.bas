@@ -206,6 +206,8 @@ Public Function RunBatchCalculationTests() As String
     TestAudit02CurrentCrackedStateCacheHitCalculatesWidth stats
     AppendLine stats, "RUN: TestAudit02CanonicalResultsAndReset"
     TestAudit02CanonicalResultsAndReset stats
+    AppendLine stats, "RUN: TestAudit02RepositoryContextAndRetry"
+    TestAudit02RepositoryContextAndRetry stats
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -5241,3 +5243,160 @@ Failed:
     RunAudit02FormationDiagnostic = "RUNTIME ERROR: " & Err.Description
     Resume Restore
 End Function
+
+' ============================== ДЛЯ ТЕСТОВ AUDIT02 CACHE ==============================
+
+' Запускает направленную приемку scoped repository отдельно от Excel writer-ов.
+' Проверяет реальные solve/cache-hit, смену контекста и повтор после неудачи.
+Public Function RunAudit02RepositoryContextTests() As String
+    On Error GoTo Failed
+    Dim stats As TBatchTestStats
+    TestAudit02RepositoryContextAndRetry stats
+    AppendLine stats, "TOTAL_AUDIT02_CACHE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit02RepositoryContextTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit02RepositoryContextTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' Подтверждает, что reuse зависит от физической модели и точности приемки,
+' а не от retry/warm-start. Уже выданный snapshot не меняется при новом solve.
+Private Sub TestAudit02RepositoryContextAndRetry(ByRef stats As TBatchTestStats)
+    Dim section As CSectionModel
+    Set section = BuildCircleStabilitySection(300#, 8, 16#)
+    Dim concrete As CConcreteMaterialParameters
+    Set concrete = New CConcreteMaterialParameters
+    concrete.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
+    Dim steel As CSteelMaterialParameters
+    Set steel = New CSteelMaterialParameters
+    steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#
+    Dim materials As CMaterialModelProvider
+    Set materials = New CMaterialModelProvider
+    materials.InitializeFromParameters concrete, steel
+    Dim repository As CStateRepository
+    Set repository = New CStateRepository
+    Dim provider As CStateProvider
+    Set provider = New CStateProvider
+    provider.Initialize section, materials, repository
+    Dim spec As CMaterialModelSpec
+    Set spec = New CMaterialModelSpec
+    spec.Initialize "ULS(I)", "ThreeLine", "Ignore", "TwoLine"
+    Dim request As CStateRequest
+    Set request = New CStateRequest
+    request.Initialize sstStrengthState, cpStrength, spec, -100000#, 4000000#, 3000000#, True, False
+    Dim first As CSectionStateResult
+    Set first = provider.GetOrSolve(request)
+    AssertTrue stats, "audit02.cache.initial.converged", first.Converged
+    AssertTrue stats, "audit02.cache.initial.runner", Not provider.LastRunner Is Nothing
+    Dim firstEps As Double
+    firstEps = first.Epsilon0
+    Dim firstMetaCode As EResultCode
+    firstMetaCode = first.ResultCode
+    Dim firstLog As String
+    firstLog = first.DiagnosticLog
+
+    Dim retryRequest As CStateRequest
+    Set retryRequest = New CStateRequest
+    retryRequest.Initialize sstStrengthState, cpStrength, spec, -100000#, 4000000#, 3000000#, True, True
+    provider.LoadSteps = 3
+    provider.DiagnosticsEnabled = False
+    Dim state As CSectionStateResult
+    Set state = provider.GetOrSolve(retryRequest, provider.SolverSnapshot(first))
+    AssertTrue stats, "audit02.cache.options.sameState", state Is first
+    AssertTrue stats, "audit02.cache.options.reused", provider.LastStateWasReused
+    AssertTrue stats, "audit02.cache.options.noSolve", provider.LastRunner Is Nothing
+
+    materials.InitializeFromParameters concrete, steel, diagramExtensionEnabled:=False
+    Set state = provider.GetOrSolve(request)
+    AssertTrue stats, "audit02.cache.mode.invalidated", Not provider.LastStateWasReused
+    AssertTrue stats, "audit02.cache.mode.newState", Not state Is first
+    AssertTrue stats, "audit02.cache.mode.physical", state.Converged And state.WithinPhysicalRange
+    AssertTrue stats, "audit02.cache.mode.noExtension", Not state.ExtensionUsed
+    AssertClose stats, "audit02.cache.mode.epsilon", state.Epsilon0, firstEps, 0.00000000001
+
+    Dim materialState As CSectionStateResult
+    Set materialState = state
+    concrete.Initialize 15.5, 1.1, 22#, 1.8, 27000#, 27000#, rbMc2:=14.6
+    AssertClose stats, "audit02.cache.material.ownedInput", materials.ConcreteParameters.Eb, 32500#, 0#
+    Dim detached As CConcreteMaterialParameters
+    Set detached = materials.ConcreteParameters
+    detached.Initialize 15.5, 1.1, 22#, 1.8, 25000#, 25000#, rbMc2:=14.6
+    AssertClose stats, "audit02.cache.material.detachedGetter", materials.ConcreteParameters.Eb, 32500#, 0#
+    materials.InitializeFromParameters concrete, steel, diagramExtensionEnabled:=False
+    Set state = provider.GetOrSolve(request)
+    AssertTrue stats, "audit02.cache.material.invalidated", Not provider.LastStateWasReused
+    AssertTrue stats, "audit02.cache.material.changedPlane", Abs(state.Epsilon0 - materialState.Epsilon0) > 0.000000001
+    AssertClose stats, "audit02.cache.material.targetN", state.Nint, request.TargetN, 5#
+    AssertClose stats, "audit02.cache.material.targetMx", state.Mxint, request.TargetMx, 5000#
+    AssertClose stats, "audit02.cache.material.targetMy", state.Myint, request.TargetMy, 5000#
+
+    Dim revision As Long
+    revision = section.Revision
+    section.SourceType = "Changed presentation label"
+    AssertTrue stats, "audit02.cache.geometry.labelNotPhysical", section.Revision = revision
+    section.AddRebarElement 0#, 0#, 20#, 0#, "A400"
+    AssertTrue stats, "audit02.cache.geometry.revision", section.Revision > revision
+    Dim beforeGeometry As CSectionStateResult
+    Set beforeGeometry = state
+    Set state = provider.GetOrSolve(request)
+    AssertTrue stats, "audit02.cache.geometry.invalidated", Not provider.LastStateWasReused
+    AssertTrue stats, "audit02.cache.geometry.changedPlane", Abs(state.Epsilon0 - beforeGeometry.Epsilon0) > 0.0000000001
+
+    provider.ToleranceN = 0.01
+    provider.ToleranceMx = 1#
+    provider.ToleranceMy = 1#
+    Set state = provider.GetOrSolve(request)
+    AssertTrue stats, "audit02.cache.tolerance.invalidated", Not provider.LastStateWasReused
+    AssertClose stats, "audit02.cache.tolerance.N", state.Nint, request.TargetN, 0.01
+    AssertClose stats, "audit02.cache.tolerance.Mx", state.Mxint, request.TargetMx, 1#
+    AssertClose stats, "audit02.cache.tolerance.My", state.Myint, request.TargetMy, 1#
+    Dim stricterState As CSectionStateResult
+    Set stricterState = state
+    Dim otherRequest As CStateRequest
+    Set otherRequest = New CStateRequest
+    otherRequest.Initialize sstStrengthState, cpStrength, spec, -150000#, 2000000#, 1000000#, True, True
+    Set state = provider.GetOrSolve(otherRequest)
+    AssertTrue stats, "audit02.cache.named.latestSolve", repository.FindState(sstStrengthState) Is state
+    Set state = provider.GetOrSolve(request)
+    AssertTrue stats, "audit02.cache.named.oldLoadReusable", state Is stricterState
+    AssertTrue stats, "audit02.cache.named.latestCacheHit", repository.FindState(sstStrengthState) Is state
+    AssertTrue stats, "audit02.cache.named.singleSlot", repository.StateCount = 1
+
+    Dim slsSpec As CMaterialModelSpec
+    Set slsSpec = New CMaterialModelSpec
+    slsSpec.Initialize "SLS(II)", "ThreeLine", "UseDiagram", "TwoLine"
+    otherRequest.Initialize sstPreCrackState, cpMcrc, slsSpec, -100000#, 4000000#, 3000000#, True, True
+    Set state = provider.GetOrSolve(otherRequest)
+    AssertTrue stats, "audit02.cache.role.notMixed", Not provider.LastStateWasReused
+    AssertEquals stats, "audit02.cache.role.spec", state.MaterialSpec.SpecKey, slsSpec.SpecKey
+    Set state = provider.GetOrSolve(otherRequest)
+    AssertTrue stats, "audit02.cache.pre.reused", provider.LastStateWasReused
+    AssertTrue stats, "audit02.cache.pre.noRunner", provider.LastRunner Is Nothing
+    AssertTrue stats, "audit02.cache.pre.restored", Not provider.SolverSnapshot(state) Is Nothing
+
+    repository.Clear
+    provider.LoadSteps = 1
+    provider.MaxIterations = 1
+    provider.LineSearchEnabled = False
+    provider.DampingInitial = 0.1
+    provider.MaxDeltaEpsilon0 = 0.00000001
+    provider.MaxDeltaKappa = 0.000000000001
+    Set state = provider.GetOrSolve(request)
+    AssertTrue stats, "audit02.cache.retry.firstFailed", Not state.Converged
+    AssertTrue stats, "audit02.cache.retry.notReusable", repository.FindEquivalent(request) Is Nothing
+    provider.LoadSteps = 8
+    provider.MaxIterations = 80
+    provider.LineSearchEnabled = True
+    provider.DampingInitial = 1#
+    provider.MaxDeltaEpsilon0 = 0.0005
+    provider.MaxDeltaKappa = 0.00001
+    Set state = provider.GetOrSolve(retryRequest)
+    AssertTrue stats, "audit02.cache.retry.newSolve", Not provider.LastStateWasReused
+    AssertTrue stats, "audit02.cache.retry.success", state.Converged
+    AssertTrue stats, "audit02.cache.retry.latestNamed", repository.FindState(sstStrengthState) Is state
+    Set state = provider.GetOrSolve(request)
+    AssertTrue stats, "audit02.cache.retry.reusedAfterSuccess", provider.LastStateWasReused
+    AssertClose stats, "audit02.cache.snapshot.epsilonUnchanged", first.Epsilon0, firstEps, 0#
+    AssertTrue stats, "audit02.cache.snapshot.codeUnchanged", first.ResultCode = firstMetaCode
+    AssertEquals stats, "audit02.cache.snapshot.logUnchanged", first.DiagnosticLog, firstLog
+End Sub

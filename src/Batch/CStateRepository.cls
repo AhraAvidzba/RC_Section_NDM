@@ -20,6 +20,12 @@ Option Explicit
 
 Private mStates As Collection ' Все конечные named-state для вывода Results.
 Private mReusableByKey As Object ' Dictionary: equivalence key -> успешно полученный физический state.
+Private mContextSection As CSectionModel ' Identity геометрии, которой принадлежит reusable cache.
+Private mContextMaterials As CMaterialModelProvider ' Identity эффективного набора материалов.
+Private mSectionRevision As Long ' Версия геометрии на момент привязки контекста.
+Private mMaterialRevision As Long ' Версия материалов на момент привязки контекста.
+Private mAcceptanceKey As String ' Effective Extension и допуски приемки равновесия.
+Private mContextBound As Boolean ' Контекст cache уже определен общим State pipeline.
 
 Private Sub Class_Initialize()
     Set mStates = New Collection
@@ -30,6 +36,36 @@ End Sub
 Public Sub Clear()
     Set mStates = New Collection
     Set mReusableByKey = CreateObject("Scripting.Dictionary")
+    Set mContextSection = Nothing
+    Set mContextMaterials = Nothing
+    mContextBound = False
+    mAcceptanceKey = vbNullString
+End Sub
+
+' Ограничивает reusable cache одним фактическим расчетным контекстом.
+' При его смене старые состояния инвалидируются. Первый bind не удаляет
+' unkeyed named states, уже принятые владельцем LC, например CapacityState.
+Public Sub BindContext(ByVal section As CSectionModel, ByVal materials As CMaterialModelProvider, _
+        ByVal acceptanceKey As String)
+    If section Is Nothing Or materials Is Nothing Then _
+        Err.Raise vbObjectError + 3986, "CStateRepository", "Не передан расчетный контекст repository."
+
+    Dim changed As Boolean
+    If mContextBound Then
+        changed = (Not section Is mContextSection) Or (Not materials Is mContextMaterials)
+        changed = changed Or (mSectionRevision <> section.Revision) Or _
+            (mMaterialRevision <> materials.Revision) Or (mAcceptanceKey <> acceptanceKey)
+        If changed Then Clear
+    Else
+        ' Без контекста вручную сохраненные states не являются доказанным reuse.
+        Set mReusableByKey = CreateObject("Scripting.Dictionary")
+    End If
+    Set mContextSection = section
+    Set mContextMaterials = materials
+    mSectionRevision = section.Revision
+    mMaterialRevision = materials.Revision
+    mAcceptanceKey = acceptanceKey
+    mContextBound = True
 End Sub
 
 ' Сохраняет state без ключа переиспользования. Такой путь нужен для уже
@@ -39,8 +75,7 @@ Public Sub StoreState(ByVal stateResult As CSectionStateResult)
     Dim existingIndex As Long
     existingIndex = StateIndex(stateResult.StateType)
     If existingIndex > 0 Then
-        If ShouldReplaceSnapshotState(mStates.Item(existingIndex), stateResult) Then _
-            ReplaceStateAt existingIndex, stateResult
+        If Not mStates.Item(existingIndex) Is stateResult Then ReplaceStateAt existingIndex, stateResult
         Exit Sub
     End If
     mStates.Add stateResult
@@ -57,7 +92,11 @@ Public Sub StoreForRequest(ByVal request As CStateRequest, ByVal stateResult As 
 
     Dim key As String
     key = request.EquivalenceKey
-    If Not mReusableByKey.Exists(key) Then mReusableByKey.Add key, stateResult
+    If mReusableByKey.Exists(key) Then
+        Set mReusableByKey.Item(key) = stateResult
+    Else
+        mReusableByKey.Add key, stateResult
+    End If
 End Sub
 
 ' Ищет ранее полученное эквивалентное физическое состояние. Метод никогда не
@@ -66,7 +105,14 @@ Public Function FindEquivalent(ByVal request As CStateRequest) As CSectionStateR
     If request Is Nothing Then Exit Function
     Dim key As String
     key = request.EquivalenceKey
-    If mReusableByKey.Exists(key) Then Set FindEquivalent = mReusableByKey.Item(key)
+    If Not mReusableByKey.Exists(key) Then Exit Function
+    Dim cached As CSectionStateResult
+    Set cached = mReusableByKey.Item(key)
+    If Not IsReusablePhysicalState(cached) Then Exit Function
+    ' Строковое форматирование ключа не должно объединять разные Double-loads.
+    If cached.TargetN <> request.TargetN Or cached.TargetMx <> request.TargetMx Or _
+            cached.TargetMy <> request.TargetMy Then Exit Function
+    Set FindEquivalent = cached
 End Function
 
 ' Возвращает количество states, которые должны попасть в Results snapshot.
@@ -93,8 +139,8 @@ Public Function FindState(ByVal stateType As ESectionStateType) As CSectionState
     Next i
 End Function
 
-' Возвращает позицию named-state в snapshot. Нужна не для обычного чтения, а для
-' безопасной замены неуспешной попытки на последующий успешный retry.
+' Возвращает позицию named-state в snapshot. В этой позиции хранится последний
+' запрос данного типа, включая новое усилие, повтор solve или cache-hit.
 Private Function StateIndex(ByVal stateType As ESectionStateType) As Long
     Dim i As Long
     For i = 1 To mStates.Count
@@ -113,18 +159,14 @@ Private Sub ReplaceStateAt(ByVal index As Long, ByVal stateResult As CSectionSta
     mStates.Remove index + 1
 End Sub
 
-' Определяет, когда более новое состояние должно заменить уже сохраненное.
-' Неуспешный solve полезен как диагностика, но если позднее тот же named-state
-' получен физически корректно, snapshot и FindState должны показывать именно его.
-Private Function ShouldReplaceSnapshotState(ByVal existingState As CSectionStateResult, _
-        ByVal candidateState As CSectionStateResult) As Boolean
-    If existingState Is Nothing Or candidateState Is Nothing Then Exit Function
-    ShouldReplaceSnapshotState = (Not existingState.Converged And candidateState.Converged)
-End Function
-
 ' Определяет, можно ли отдавать state через FindEquivalent. Физический FAIL из-за
 ' выхода за пределы диаграммы остается reusable, потому что равновесие найдено;
 ' численная неудача без найденного НДС reusable не является.
 Private Function IsReusablePhysicalState(ByVal stateResult As CSectionStateResult) As Boolean
-    IsReusablePhysicalState = stateResult.Converged
+    If stateResult Is Nothing Then Exit Function
+    If Not stateResult.Converged Then Exit Function
+    Select Case stateResult.InternalStatus
+        Case rsSuccess, rsSuccessWithWarning, rsCheckFailed
+            IsReusablePhysicalState = True
+    End Select
 End Function

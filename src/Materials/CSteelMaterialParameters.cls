@@ -117,12 +117,18 @@ Public Property Get ThreeLineEsc2() As Double
 End Property
 
 ' ==========================================================================
-' ДЛЯ ТЕСТОВ
-' ==========================================================================
-' Тесты передают параметры напрямую, чтобы проверять построение диаграмм без
-' временного листа Config. В пользовательском сценарии значения должны идти
-' через LoadFromSettings и единый CMaterialModelProvider.
+' Создает независимый небольшой снимок параметров арматуры. Provider хранит
+' свою копию и не зависит от последующей настройки исходного объекта.
+Public Function Clone() As CSteelMaterialParameters
+    Dim result As CSteelMaterialParameters
+    Set result = New CSteelMaterialParameters
+    result.Initialize mRscULS, mRsULS, mRscSLS, mRsSLS, mEsc, mEs, _
+        mTwoLineEsc2, mTwoLineEs2, mThreeLineEsc2, mThreeLineEs2
+    Set Clone = result
+End Function
 
+' Заполняет нормализованные параметры внутренних snapshots и тестов.
+' Пользовательский ввод остается обязанностью LoadFromSettings.
 Public Sub Initialize(ByVal rscULS As Double, ByVal rsULS As Double, _
         ByVal rscSLS As Double, ByVal rsSLS As Double, ByVal esc As Double, _
         ByVal es As Double, Optional ByVal twoLineEsc2 As Double = 0.025, _

@@ -1,0 +1,55 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: FF3E7B167B4387721BA177A71D4154F35D511E15E8E680E854519C337BD917F1
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_43516e237bc14f51a3e367c4c881ceea\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit02RepositoryContextTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit02RepositoryContextTests; 2026-10-01T19:40:24
+EXCEL_AFTER_SUITE: pid=20716; workingSet=131670016; privateBytes=91533312; cpu=2.75
+OK: audit02.cache.initial.converged
+OK: audit02.cache.initial.runner
+OK: audit02.cache.options.sameState
+OK: audit02.cache.options.reused
+OK: audit02.cache.options.noSolve
+OK: audit02.cache.mode.invalidated
+OK: audit02.cache.mode.newState
+OK: audit02.cache.mode.physical
+OK: audit02.cache.mode.noExtension
+OK: audit02.cache.mode.epsilon; actual=-0.000038487907; expected=-0.000038487907
+OK: audit02.cache.material.ownedInput; actual=32500.; expected=32500.
+OK: audit02.cache.material.detachedGetter; actual=32500.; expected=32500.
+OK: audit02.cache.material.invalidated
+OK: audit02.cache.material.changedPlane
+OK: audit02.cache.material.targetN; actual=-100000.; expected=-100000.
+OK: audit02.cache.material.targetMx; actual=4000000.; expected=4000000.
+OK: audit02.cache.material.targetMy; actual=3000000.; expected=3000000.
+OK: audit02.cache.geometry.labelNotPhysical
+OK: audit02.cache.geometry.revision
+OK: audit02.cache.geometry.invalidated
+OK: audit02.cache.geometry.changedPlane
+OK: audit02.cache.tolerance.invalidated
+OK: audit02.cache.tolerance.N; actual=-100000.; expected=-100000.
+OK: audit02.cache.tolerance.Mx; actual=4000000.; expected=4000000.
+OK: audit02.cache.tolerance.My; actual=3000000.; expected=3000000.
+OK: audit02.cache.named.latestSolve
+OK: audit02.cache.named.oldLoadReusable
+OK: audit02.cache.named.latestCacheHit
+OK: audit02.cache.named.singleSlot
+OK: audit02.cache.role.notMixed
+OK: audit02.cache.role.spec
+OK: audit02.cache.pre.reused
+OK: audit02.cache.pre.noRunner
+OK: audit02.cache.pre.restored
+OK: audit02.cache.retry.firstFailed
+OK: audit02.cache.retry.notReusable
+OK: audit02.cache.retry.newSolve
+OK: audit02.cache.retry.success
+OK: audit02.cache.retry.latestNamed
+OK: audit02.cache.retry.reusedAfterSuccess
+OK: audit02.cache.snapshot.epsilonUnchanged; actual=-0.000038487907; expected=-0.000038487907
+OK: audit02.cache.snapshot.codeUnchanged
+OK: audit02.cache.snapshot.logUnchanged
+TOTAL_AUDIT02_CACHE: passed=43; failed=0
+
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestBatchCalculation.RunAudit02RepositoryContextTests; 2026-10-01T19:40:24
+SOURCE_UNCHANGED: True

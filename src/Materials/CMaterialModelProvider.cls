@@ -53,10 +53,13 @@ Private mSteelElasticModulus(1 To 3) As Double ' Es выбранной моде�
 Private mDiagramExtensionEnabled As Boolean ' Разрешает numerical extension для задач равновесия solver-а.
 Private mInitialized As Boolean ' Защита от использования provider-а до чтения параметров.
 Private mDiagramCache As Object ' Кэш CMaterialDiagram по MaterialModelSpec; диаграммы после Initialize неизменяемы.
+Private mRevision As Long ' Версия набора материалов и effective Extension после переинициализации.
 
 ' Читает Config, создает параметры материалов и строит физические диаграммы.
 Public Sub Initialize(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Err.Raise vbObjectError + 3240, "CMaterialModelProvider", "Настройки материалов не переданы."
+    mInitialized = False
+    mRevision = mRevision + 1
     Set mDiagramCache = CreateObject("Scripting.Dictionary")
 
     Set mConcreteParameters = New CConcreteMaterialParameters
@@ -828,6 +831,25 @@ Public Property Get DiagramExtensionEnabled() As Boolean
     DiagramExtensionEnabled = mDiagramExtensionEnabled
 End Property
 
+' Возвращает версию неизменяемого набора материалов текущего запуска.
+' Repository использует ее вместе с identity provider-а, а не с именем профиля.
+Public Property Get Revision() As Long
+    EnsureInitialized
+    Revision = mRevision
+End Property
+
+' Возвращает копии исходных параметров. Consumers не могут изменить внутренний
+' набор provider-а и оставить старые диаграммы в его material cache.
+Public Property Get ConcreteParameters() As CConcreteMaterialParameters
+    EnsureInitialized
+    Set ConcreteParameters = mConcreteParameters.Clone
+End Property
+
+Public Property Get SteelParameters() As CSteelMaterialParameters
+    EnsureInitialized
+    Set SteelParameters = mSteelParameters.Clone
+End Property
+
 ' Проверяет, что provider уже построил диаграммы.
 Private Sub EnsureInitialized()
     If Not mInitialized Then Err.Raise vbObjectError + 3242, "CMaterialModelProvider", "Поставщик материалов не инициализирован."
@@ -853,8 +875,10 @@ Public Sub InitializeFromParameters(ByVal concreteParameters As CConcreteMateria
     If concreteParameters Is Nothing Then Err.Raise vbObjectError + 3243, "CMaterialModelProvider", "Параметры бетона не переданы."
     If steelParameters Is Nothing Then Err.Raise vbObjectError + 3244, "CMaterialModelProvider", "Параметры арматуры не переданы."
 
-    Set mConcreteParameters = concreteParameters
-    Set mSteelParameters = steelParameters
+    mInitialized = False
+    mRevision = mRevision + 1
+    Set mConcreteParameters = concreteParameters.Clone
+    Set mSteelParameters = steelParameters.Clone
     Set mDiagramCache = CreateObject("Scripting.Dictionary")
     mDiagramExtensionEnabled = diagramExtensionEnabled
     BuildPurpose cpStrength, "I", strengthConcreteDiagram, strengthConcreteTension, strengthSteelDiagram
@@ -862,13 +886,3 @@ Public Sub InitializeFromParameters(ByVal concreteParameters As CConcreteMateria
     BuildPurpose cpCrackedNDS, "II", crackedConcreteDiagram, "Ignore", crackedSteelDiagram
     mInitialized = True
 End Sub
-
-Public Property Get ConcreteParameters() As CConcreteMaterialParameters
-    EnsureInitialized
-    Set ConcreteParameters = mConcreteParameters
-End Property
-
-Public Property Get SteelParameters() As CSteelMaterialParameters
-    EnsureInitialized
-    Set SteelParameters = mSteelParameters
-End Property
