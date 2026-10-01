@@ -45,7 +45,7 @@ Private mExtensionUsed As Boolean ' True, если найденное состо
 Private mWithinPhysicalRange As Boolean ' True, если state принят в пределах физической диаграммы.
 Private mConverged As Boolean ' Сошелся ли solver, из которого взята плоскость.
 Private mStopReason As String ' Служебная причина остановки solver-а.
-Private mResultMeta As CResultMeta ' Типизированный статус named-state для будущего StateRepository/result graph.
+Private mResultMeta As CResultMeta ' Типизированная причина результата named-state, сохраненная в repository.
 Private mSolverCallCount As Long ' Число запусков CSectionSolver.Solve, связанных с получением state.
 Private mIterationCount As Long ' Число итераций последнего solver-а, давшего state.
 Private mDiagnosticLog As String ' Диагностика runner-а или solver-а для последующего result graph.
@@ -72,6 +72,7 @@ Public Sub InitializeFromSolver(ByVal stateType As ESectionStateType, _
     If materialSpec Is Nothing Then Err.Raise vbObjectError + 3970, "CSectionStateResult", "MaterialModelSpec не передан."
     If solver Is Nothing Then Err.Raise vbObjectError + 3971, "CSectionStateResult", "Решатель для именованного состояния не передан."
 
+    ClearSnapshot
     mStateType = stateType
     mMaterialModelRole = materialModelRole
     Set mMaterialSpec = materialSpec.Clone
@@ -99,6 +100,44 @@ Public Sub InitializeFromSolver(ByVal stateType As ESectionStateType, _
     mHasConcreteTension = solver.HasConcreteTension
     mHasSteelCompression = solver.HasSteelCompression
     mHasSteelTension = solver.HasSteelTension
+End Sub
+
+' Сохраняет диагностический результат запроса, для которого solve не мог
+' начаться из-за отсутствующего программного контекста. Это не reusable НДС.
+Public Sub InitializeFailure(ByVal request As CStateRequest, ByVal meta As CResultMeta)
+    If request Is Nothing Then Err.Raise vbObjectError + 3972, "CSectionStateResult", "Запрос диагностического состояния не передан."
+    If meta Is Nothing Then Err.Raise vbObjectError + 3973, "CSectionStateResult", "Причина отсутствия состояния не передана."
+    ClearSnapshot
+    mStateType = request.StateType
+    mMaterialModelRole = request.MaterialRole
+    Set mMaterialSpec = request.MaterialSpec
+    mTargetN = request.TargetN
+    mTargetMx = request.TargetMx
+    mTargetMy = request.TargetMy
+    Set mResultMeta = meta.Clone
+    mStopReason = meta.ResultComment
+End Sub
+
+' Очищает все физические и диагностические поля перед заполнением snapshot,
+' чтобы повторная инициализация отказом не сохраняла числа прошлого НДС.
+Private Sub ClearSnapshot()
+    Set mMaterialSpec = Nothing
+    Set mResultMeta = Nothing
+    mEpsilon0 = 0#: mKappaX = 0#: mKappaY = 0#
+    mTargetN = 0#: mTargetMx = 0#: mTargetMy = 0#
+    mNint = 0#: mMxint = 0#: mMyint = 0#
+    mResidualN = 0#: mResidualMx = 0#: mResidualMy = 0#
+    mRelativeResidualN = 0#: mRelativeResidualMx = 0#: mRelativeResidualMy = 0#
+    mLastResidualNorm = 0#
+    mExtensionUsed = False: mWithinPhysicalRange = False: mConverged = False
+    mStopReason = vbNullString: mDiagnosticLog = vbNullString
+    mSolverCallCount = 0: mIterationCount = 0
+    mMinConcreteStrain = 0#: mMaxConcreteStrain = 0#
+    mMinSteelStrain = 0#: mMaxSteelStrain = 0#
+    mMinConcreteStress = 0#: mMaxConcreteStress = 0#
+    mMinSteelStress = 0#: mMaxSteelStress = 0#
+    mHasConcreteCompression = False: mHasConcreteTension = False
+    mHasSteelCompression = False: mHasSteelTension = False
 End Sub
 
 ' Копирует из solver-а все данные равновесия, которые определяют качество
@@ -319,11 +358,15 @@ Private Function BuildMetaFromSolver(ByVal stateType As ESectionStateType, ByVal
         ByVal extensionUsed As Boolean, ByVal withinPhysicalRange As Boolean, _
         ByVal stopReason As String) As CResultMeta
     If solver Is Nothing Then
-        Set BuildMetaFromSolver = BuildNumericalFailureMeta(stateType, "Solver не вернул состояние.")
+        Dim missing As CResultMeta
+        Set missing = New CResultMeta
+        missing.SetResult rsInternalError, rcSolverDidNotReturnState, ResultKindFromStateType(stateType), _
+            "Решатель не вернул обязательное расчетное состояние.", vbNullString, True, False
+        Set BuildMetaFromSolver = missing
     ElseIf Not solver.Converged Then
-        Set BuildMetaFromSolver = BuildNumericalFailureMeta(stateType, stopReason)
+        Set BuildMetaFromSolver = BuildFailureMeta(stateType, solver, stopReason)
     ElseIf extensionUsed Or Not withinPhysicalRange Then
-        Set BuildMetaFromSolver = BuildPhysicalRangeMeta(stateType, stopReason)
+        Set BuildMetaFromSolver = BuildPhysicalRangeMeta(stateType, extensionUsed, stopReason)
     Else
         Set BuildMetaFromSolver = BuildSuccessMeta(stateType, stopReason)
     End If
@@ -338,22 +381,46 @@ Private Function BuildSuccessMeta(ByVal stateType As ESectionStateType, _
     Set BuildSuccessMeta = meta
 End Function
 
-' Создает meta для состояния, которое численно не сошлось.
-Private Function BuildNumericalFailureMeta(ByVal stateType As ESectionStateType, _
+' Сохраняет точный машинный отказ solver-а. Ошибка входа/настроек до итераций
+' не означает выполненный численный расчет; вырождение отличается от бюджета.
+Private Function BuildFailureMeta(ByVal stateType As ESectionStateType, ByVal solver As CSectionSolver, _
         ByVal resultComment As String) As CResultMeta
     Dim meta As CResultMeta
     Set meta = New CResultMeta
-    meta.SetResult rsNumericalFailure, rcNumericalFailure, ResultKindFromStateType(stateType), resultComment
-    Set BuildNumericalFailureMeta = meta
+    Dim internalStatus As EResultInternalStatus
+    Dim resultCode As EResultCode
+    Select Case solver.FailureCode
+        Case sfcInvalidInput
+            internalStatus = rsInvalidInput: resultCode = rcInvalidInput
+        Case sfcInvalidConfiguration
+            internalStatus = rsInvalidConfiguration: resultCode = rcInvalidConfiguration
+        Case sfcSingularTangent
+            internalStatus = rsNumericalFailure: resultCode = rcSingularTangent
+        Case sfcNumericalFailure
+            internalStatus = rsNumericalFailure: resultCode = rcNumericalFailure
+        Case Else
+            internalStatus = rsInternalError: resultCode = rcInternalError
+            If Len(Trim$(resultComment)) = 0 Then resultComment = "Решатель не сформировал результат равновесия."
+    End Select
+    meta.SetResult internalStatus, resultCode, ResultKindFromStateType(stateType), resultComment, _
+        vbNullString, True, (solver.Iterations > 0)
+    Set BuildFailureMeta = meta
 End Function
 
 ' Создает meta для сходящегося состояния, которое найдено только за пределами
 ' физической диаграммы. Это физический FAIL, а не численная несходимость.
 Private Function BuildPhysicalRangeMeta(ByVal stateType As ESectionStateType, _
-        ByVal resultComment As String) As CResultMeta
+        ByVal extensionUsed As Boolean, ByVal diagnosticDetails As String) As CResultMeta
     Dim meta As CResultMeta
     Set meta = New CResultMeta
-    meta.SetResult rsCheckFailed, rcStateOutsidePhysicalRange, ResultKindFromStateType(stateType), resultComment
+    Dim comment As String
+    If extensionUsed Then
+        comment = "Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы."
+    Else
+        comment = "Равновесие найдено, но деформации материала вышли за физические пределы диаграмм."
+    End If
+    comment = comment & " Проверка по физической диаграмме не проходит."
+    meta.SetResult rsCheckFailed, rcStateOutsidePhysicalRange, ResultKindFromStateType(stateType), comment, diagnosticDetails
     Set BuildPhysicalRangeMeta = meta
 End Function
 

@@ -1,0 +1,80 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_reader_fixed.xlsm
+SOURCE_SHA256: 0D915DD9D7403BBC95367AF8182486D38AAF62D9067E7B136641F0DFE281DA45
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f5e2fa77d8f049c7bc2edcadedd5571e\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit03ReaderTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03ReaderTests; 2026-10-01T23:42:22
+EXCEL_AFTER_SUITE: pid=19932; workingSet=146558976; privateBytes=106983424; cpu=3.21875
+OK: audit03.reader.width.5.count
+OK: audit03.reader.width.5.id; actual=WIDTH_5
+OK: audit03.reader.width.5.profile; actual=PR1
+OK: audit03.reader.width.5.comment; actual=
+OK: audit03.reader.width.5.sourceSlot
+OK: audit03.reader.width.5.n; actual=-10000.; expected=-10000.
+OK: audit03.reader.width.5.mx; actual=10000000.; expected=10000000.
+OK: audit03.reader.width.5.my; actual=20000000.; expected=20000000.
+OK: audit03.reader.width.5.shortRangeControlled
+OK: audit03.reader.width.6.count
+OK: audit03.reader.width.6.id; actual=WIDTH_6
+OK: audit03.reader.width.6.profile; actual=PR1
+OK: audit03.reader.width.6.comment; actual=Комментарий шести колонок
+OK: audit03.reader.width.6.sourceSlot
+OK: audit03.reader.width.6.n; actual=-10000.; expected=-10000.
+OK: audit03.reader.width.6.mx; actual=10000000.; expected=10000000.
+OK: audit03.reader.width.6.my; actual=20000000.; expected=20000000.
+OK: audit03.reader.width.6.shortRangeControlled
+OK: audit03.reader.width.7.count
+OK: audit03.reader.width.7.id; actual=WIDTH_7
+OK: audit03.reader.width.7.profile; actual=PR1
+OK: audit03.reader.width.7.comment; actual=Комментарий семи колонок
+OK: audit03.reader.width.7.sourceSlot
+OK: audit03.reader.width.7.n; actual=-10000.; expected=-10000.
+OK: audit03.reader.width.7.mx; actual=10000000.; expected=10000000.
+OK: audit03.reader.width.7.my; actual=20000000.; expected=20000000.
+OK: audit03.reader.width.7.capacityPath; actual=LambdaMx
+OK: audit03.reader.width.7.shortRangeControlled
+OK: audit03.reader.width.9.count
+OK: audit03.reader.width.9.id; actual=WIDTH_9
+OK: audit03.reader.width.9.profile; actual=PR1
+OK: audit03.reader.width.9.comment; actual=Комментарий семи колонок
+OK: audit03.reader.width.9.sourceSlot
+OK: audit03.reader.width.9.n; actual=-10000.; expected=-10000.
+OK: audit03.reader.width.9.mx; actual=10000000.; expected=10000000.
+OK: audit03.reader.width.9.my; actual=20000000.; expected=20000000.
+OK: audit03.reader.width.9.capacityPath; actual=LambdaMx
+OK: audit03.reader.width.9.shortRangeControlled
+OK: audit03.reader.rows.stringFixture
+OK: audit03.reader.rows.count
+OK: audit03.reader.rows.sourceGap
+OK: audit03.reader.rows.lastId; actual=VALID_LAST
+OK: audit03.reader.rows.lastSlot
+OK: audit03.reader.rows.numericString; actual=42.5; expected=42.5
+OK: audit03.reader.rows.numericFormula; actual=5.; expected=5.
+OK: audit03.reader.rows.invalid.1; actual=InputErr
+OK: audit03.reader.rows.comment.1
+OK: audit03.reader.rows.invalid.2; actual=InputErr
+OK: audit03.reader.rows.comment.2
+OK: audit03.reader.rows.invalid.3; actual=InputErr
+OK: audit03.reader.rows.comment.3
+OK: audit03.reader.rows.invalid.4; actual=InputErr
+OK: audit03.reader.rows.comment.4
+OK: audit03.reader.rows.invalid.7; actual=InputErr
+OK: audit03.reader.rows.invalid.8; actual=InputErr
+OK: audit03.reader.rows.invalid.9; actual=InputErr
+COMMENT: audit03.reader.rows.valid; Устойчивость: Для СП 35 нужна таблица 7.21 на Config.
+FAIL: audit03.reader.rows.validReachedResults
+OK: audit03.reader.tiny.0.count
+OK: audit03.reader.tiny.0.n; actual=0.00000000001; expected=0.00000000001
+OK: audit03.reader.tiny.0.m; actual=-0.00000000001; expected=-0.00000000001
+OK: audit03.reader.tiny.1.count
+OK: audit03.reader.tiny.1.n; actual=0.00000000001; expected=0.00000000001
+OK: audit03.reader.tiny.1.m; actual=-0.00000000001; expected=-0.00000000001
+OK: audit03.reader.overflow.count
+OK: audit03.reader.overflow.status; actual=InputErr
+OK: audit03.reader.overflow.comment
+OK: audit03.reader.overflow.next; actual=AFTER_OVERFLOW
+TOTAL_AUDIT03_READER: passed=66; failed=1
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03ReaderTests; 2026-10-01T23:42:23
+SOURCE_UNCHANGED: True

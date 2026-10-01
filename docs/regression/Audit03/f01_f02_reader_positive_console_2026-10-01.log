@@ -1,0 +1,8 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_reader_fixed.xlsm
+SOURCE_SHA256: B9DDF6B8693E941EE52C358B1AF86C808B9EB2E53635B906CFA1499315098FF2
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5bc1b585f94e4b908970c8a009454d89\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.reader.rows.validReachedResults
+TOTAL_AUDIT03_READER: passed=66; failed=1
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

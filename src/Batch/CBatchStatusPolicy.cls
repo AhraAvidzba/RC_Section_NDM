@@ -154,13 +154,9 @@ End Function
 ' предыдущего результата. Внешний N/A появится позже только через CResultStatusPolicy.
 Public Function BlockedByDependencyMeta(ByVal resultKind As EResultKind, _
         ByVal dependencyName As String, Optional ByVal reason As String = vbNullString) As CResultMeta
-    Dim comment As String
-    comment = "Расчет не выполнен: нет обязательного результата " & dependencyName & "."
-    If Len(Trim$(reason)) > 0 Then comment = comment & " " & reason
-
     Dim meta As CResultMeta
     Set meta = New CResultMeta
-    meta.SetResult rsBlockedByDependency, rcBlockedByDependency, resultKind, comment
+    meta.SetBlockedByDependency resultKind, dependencyName, reason
     Set BlockedByDependencyMeta = meta
 End Function
 
@@ -206,7 +202,7 @@ Public Function CrackMetaFromResult(ByVal widthResult As CCrackWidthResult) As C
         Dim meta As CResultMeta
         Set meta = New CResultMeta
         meta.SetResult rsBlockedByDependency, rcBlockedByDependency, rkCrackWidth, _
-            "Результат ширины нормальной трещины не сформирован."
+            "Результат ширины нормальной трещины не сформирован.", vbNullString, True, False
         Set CrackMetaFromResult = meta
     Else
         Set CrackMetaFromResult = widthResult.ResultMeta

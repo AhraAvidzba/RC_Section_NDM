@@ -1,0 +1,18 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_state_repro.xlsm
+SOURCE_SHA256: 6C90AD78D6D9B71455A8DF452D84DCCD2A059D68AE6CEB41C92A33CA4139241E
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_13708ec8dbdf47fd9ded7ae13a1f5cf1\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.state.failure.1.status
+FAIL: audit03.state.failure.1.code
+FAIL: audit03.state.failure.1.display
+FAIL: audit03.state.failure.1.oneAttempt
+FAIL: audit03.state.failure.1.notCalculated
+FAIL: audit03.state.failure.1.snapshotCode
+FAIL: audit03.state.failure.2.code
+FAIL: audit03.state.failure.2.snapshotCode
+FAIL: audit03.state.failure.4.runtime.91.Object variable or With block variable not set
+FAIL: audit03.state.failure.5.runtime.-2147218103.В модели сечения нет бетонных элементов.
+FAIL: audit03.state.failure.6.runtime.-2147218100.Solver.MaxIterations должен быть положительным.
+TOTAL_AUDIT03_STATE: passed=32; failed=11
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

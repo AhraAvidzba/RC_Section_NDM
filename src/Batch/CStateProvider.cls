@@ -76,6 +76,20 @@ Public Function GetOrSolve(ByVal request As CStateRequest, _
     Set mLastRunner = Nothing
     mLastStateWasReused = False
 
+    If mSection Is Nothing Or mMaterialProvider Is Nothing Then
+        Dim missingMeta As CResultMeta
+        Set missingMeta = New CResultMeta
+        missingMeta.SetResult rsInternalError, rcInternalError, ResultKindForRequest(request), _
+            "Расчетное состояние не получено: не подключена модель сечения или поставщик материалов.", _
+            vbNullString, True, False
+        Dim missingState As CSectionStateResult
+        Set missingState = New CSectionStateResult
+        missingState.InitializeFailure request, missingMeta
+        If Not mRepository Is Nothing Then mRepository.StoreState missingState
+        Set GetOrSolve = missingState
+        Exit Function
+    End If
+
     If Not mRepository Is Nothing Then
         BindRepositoryContext
         Dim cached As CSectionStateResult
@@ -118,6 +132,16 @@ Public Function GetOrSolve(ByVal request As CStateRequest, _
 
     If Not mRepository Is Nothing Then mRepository.StoreForRequest request, stateResult
     Set GetOrSolve = stateResult
+End Function
+
+' Задает контекст диагностической meta, не меняя причин solver-а и не
+' трактуя отсутствие программной зависимости как ошибку пользовательского LC.
+Private Function ResultKindForRequest(ByVal request As CStateRequest) As EResultKind
+    Select Case request.StateType
+        Case sstCapacityState: ResultKindForRequest = rkCapacity
+        Case sstPreCrackState, sstPostCrackState: ResultKindForRequest = rkCrackFormation
+        Case Else: ResultKindForRequest = rkDirectState
+    End Select
 End Function
 
 ' Привязывает cache к фактической геометрии, материалам и допускам. Retry,

@@ -60,17 +60,16 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     Dim profileId As String
     Dim capacityLoadPath As String
     Dim comment As String
-    combinationID = Trim$(CStr(data(rowIndex, 1)))
-    profileId = Trim$(CStr(data(rowIndex, 5)))
+    Dim errorText As String
+    combinationID = ReadCellText(data(rowIndex, 1), "CombinationID", errorText)
+    profileId = ReadCellText(data(rowIndex, 5), "ProfileId", errorText)
     If UBound(data, 2) >= 7 Then
-        capacityLoadPath = Trim$(CStr(data(rowIndex, 6)))
-        comment = Trim$(CStr(data(rowIndex, 7)))
-    Else
-        capacityLoadPath = vbNullString
-        comment = Trim$(CStr(data(rowIndex, 6)))
+        capacityLoadPath = ReadCellText(data(rowIndex, 6), "CapacityLoadPath", errorText)
+        comment = ReadCellText(data(rowIndex, 7), "Комментарий", errorText)
+    ElseIf UBound(data, 2) = 6 Then
+        comment = ReadCellText(data(rowIndex, 6), "Комментарий", errorText)
     End If
 
-    Dim errorText As String
     Dim nValue As Double
     Dim mxValue As Double
     Dim myValue As Double
@@ -78,7 +77,14 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     mxValue = ReadOptionalLoadDouble(data(rowIndex, 3), "Mx", errorText)
     myValue = ReadOptionalLoadDouble(data(rowIndex, 4), "My", errorText)
 
-    If Abs(nValue) + Abs(mxValue) + Abs(myValue) <= 0.000000001 Then Exit Sub
+    ' Пропускаем только достоверно нулевые нагрузки. Сила и момент имеют
+    ' разные размерности; reader не вводит инженерный порог их значимости.
+    If Len(errorText) = 0 Then
+        ConvertLoadsToInternal units, nValue, mxValue, myValue, errorText
+        If Len(errorText) = 0 Then
+            If nValue = 0# And mxValue = 0# And myValue = 0# Then Exit Sub
+        End If
+    End If
 
     If Len(Trim$(combinationID)) = 0 Then AppendError errorText, "CombinationID не заполнен"
     If Len(profileId) = 0 Then AppendError errorText, "ProfileId не заполнен"
@@ -86,11 +92,6 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     If Len(errorText) > 0 Then
         batch.AddInvalidCombination combinationID, profileId, comment, errorText, capacityLoadPath, rowIndex - 1
     Else
-        If Not units Is Nothing Then
-            nValue = units.InputForceToInternal(nValue)
-            mxValue = units.InputMomentMxToInternal(mxValue)
-            myValue = units.InputMomentMyToInternal(myValue)
-        End If
         batch.AddCombination combinationID, nValue, mxValue, myValue, profileId, comment, capacityLoadPath, rowIndex - 1
     End If
 End Sub
@@ -99,7 +100,7 @@ End Sub
 Private Function IsEmptyCombinationRow(ByRef data As Variant, ByVal rowIndex As Long) As Boolean
     Dim col As Long
     For col = 1 To UBound(data, 2)
-        If Len(Trim$(CStr(data(rowIndex, col)))) > 0 Then Exit Function
+        If Not IsBlankCell(data(rowIndex, col)) Then Exit Function
     Next col
     IsEmptyCombinationRow = True
 End Function
@@ -107,26 +108,59 @@ End Function
 ' Читает нагрузку, где пустая ячейка означает 0.
 ' Это позволяет задавать одноосный изгиб как N + Mx при пустом My.
 Private Function ReadOptionalLoadDouble(ByVal value As Variant, ByVal fieldName As String, ByRef errorText As String) As Double
-    If Len(Trim$(CStr(value))) = 0 Then
-        ReadOptionalLoadDouble = 0#
+    If IsError(value) Then
+        AppendError errorText, fieldName & " содержит ошибку формулы Excel"
+    ElseIf IsNull(value) Then
+        AppendError errorText, fieldName & " содержит недопустимое значение Null"
+    ElseIf IsBlankCell(value) Then
+        Exit Function
     ElseIf Not IsNumeric(value) Then
         AppendError errorText, fieldName & " должен быть числом"
     Else
+        On Error GoTo ConversionFailed
         ReadOptionalLoadDouble = CDbl(value)
+    End If
+    Exit Function
+ConversionFailed:
+    AppendError errorText, fieldName & " не помещается в допустимый числовой диапазон"
+End Function
+
+' Отличает пустую ячейку/пробелы от нуля, ошибки Excel и Null.
+' Ошибочная ячейка не делает строку свободной для следующего сочетания.
+Private Function IsBlankCell(ByVal value As Variant) As Boolean
+    If IsEmpty(value) Then
+        IsBlankCell = True
+    ElseIf VarType(value) = vbString Then
+        IsBlankCell = (Len(Trim$(value)) = 0)
     End If
 End Function
 
-' Читает обязательное число.
-' Сейчас оставлено для совместимости с тестами и будущими обязательными полями.
-Private Function ReadRequiredDouble(ByVal value As Variant, ByVal fieldName As String, ByRef errorText As String) As Double
-    If Len(Trim$(CStr(value))) = 0 Then
-        AppendError errorText, fieldName & " не заполнен"
-    ElseIf Not IsNumeric(value) Then
-        AppendError errorText, fieldName & " должен быть числом"
+' Читает текстовые поля строки, сохраняя ошибки формул как ошибки LC.
+' Null недопустим, тогда как пустой optional-комментарий разрешен.
+Private Function ReadCellText(ByVal value As Variant, ByVal fieldName As String, ByRef errorText As String) As String
+    If IsError(value) Then
+        AppendError errorText, fieldName & " содержит ошибку формулы Excel"
+    ElseIf IsNull(value) Then
+        AppendError errorText, fieldName & " содержит недопустимое значение Null"
     Else
-        ReadRequiredDouble = CDbl(value)
+        ReadCellText = Trim$(CStr(value))
     End If
 End Function
+
+' Переводит успешно прочитанные нагрузки через единый адаптер единиц.
+' Переполнение конкретной компоненты является ошибкой строки, не всего пакета.
+Private Sub ConvertLoadsToInternal(ByVal units As CUnitSystem, ByRef nValue As Double, _
+        ByRef mxValue As Double, ByRef myValue As Double, ByRef errorText As String)
+    If units Is Nothing Then Exit Sub
+    On Error GoTo ConversionFailed
+    Dim fieldName As String
+    fieldName = "N": nValue = units.InputForceToInternal(nValue)
+    fieldName = "Mx": mxValue = units.InputMomentMxToInternal(mxValue)
+    fieldName = "My": myValue = units.InputMomentMyToInternal(myValue)
+    Exit Sub
+ConversionFailed:
+    AppendError errorText, fieldName & " не может быть переведено во внутренние единицы: числовой диапазон превышен"
+End Sub
 
 ' Добавляет текст ошибки в одну строку через точку с запятой.
 Private Sub AppendError(ByRef errorText As String, ByVal item As String)

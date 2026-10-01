@@ -32,6 +32,8 @@ Public Function RunWorkbookInterfaceTests() As String
     AppendLine stats, "RUN: TestSingleCombinationSkipsBlankRows"
     TestSingleCombinationSkipsBlankRows stats
     TestLoadCombinationRangeMinimumRows stats
+    AppendLine stats, "RUN: TestAudit03ReaderContract"
+    TestAudit03ReaderContract stats
     AppendLine stats, "RUN: TestPartialCombinationIsInvalid"
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats
@@ -4200,6 +4202,202 @@ Private Function Audit02SnapshotTablesEqual(ByRef beforeTable As Variant, ByRef 
     Next r
     Audit02SnapshotTablesEqual = True
 End Function
+
+' ========================== ДЛЯ ТЕСТОВ ==========================
+' Проверяет контракт reader-а через реальные диапазоны независимой книги.
+' Временный лист удаляется даже при ошибке; исходные Config-ячейки не меняются.
+Public Function RunAudit03ReaderTests() As String
+    Dim stats As TUiTestStats
+    TestAudit03ReaderContract stats
+    AppendLine stats, "TOTAL_AUDIT03_READER: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03ReaderTests = stats.Report
+End Function
+
+' Выполняет reader-кейсы в общей статистике suite и восстанавливает временный лист.
+' Отдельный entrypoint и полный UI-набор используют те же assertions без дублей.
+Private Sub TestAudit03ReaderContract(ByRef stats As TUiTestStats)
+    Dim sheet As Object
+    Dim oldAlerts As Boolean
+    oldAlerts = Application.DisplayAlerts
+    On Error GoTo Failed
+    Set sheet = ThisWorkbook.Worksheets.Add
+    sheet.Name = "__Audit03Reader"
+    Dim columns As Variant
+    For Each columns In Array(5, 6, 7, 9)
+        TestAudit03ReaderWidth stats, sheet, CLng(columns)
+    Next columns
+    TestAudit03ReaderRows stats, sheet
+    TestAudit03ReaderTinyUnits stats, sheet
+    GoTo CleanUp
+Failed:
+    AssertTrue stats, "audit03.reader.entry.runtime." & CStr(Err.Number) & "." & Err.Description, False
+CleanUp:
+    On Error Resume Next
+    Application.DisplayAlerts = False
+    If Not sheet Is Nothing Then sheet.Delete
+    Application.DisplayAlerts = oldAlerts
+    On Error GoTo 0
+End Sub
+
+' Проверяет 5/6/7+ колонок: необязательный comment, path и исходный пропуск.
+' Ошибка структуры четырех колонок должна быть контролируемой, не ошибкой массива.
+Private Sub TestAudit03ReaderWidth(ByRef stats As TUiTestStats, ByVal sheet As Object, ByVal columns As Long)
+    On Error GoTo Failed
+    sheet.Cells.ClearContents
+    Dim data() As Variant
+    ReDim data(1 To 3, 1 To columns)
+    data(1, 1) = "CombinationID": data(1, 2) = "N": data(1, 3) = "Mx"
+    data(1, 4) = "My": data(1, 5) = "ProfileId"
+    data(3, 1) = "WIDTH_" & CStr(columns): data(3, 2) = -10000#
+    data(3, 3) = 10000000#: data(3, 4) = 20000000#: data(3, 5) = "PR1"
+    Dim expectedComment As String
+    If columns = 6 Then data(3, 6) = "Комментарий шести колонок"
+    If columns >= 7 Then
+        data(3, 6) = "LambdaMx"
+        data(3, 7) = "Комментарий семи колонок"
+    End If
+    If columns = 6 Then expectedComment = CStr(data(3, 6))
+    If columns >= 7 Then expectedComment = CStr(data(3, 7))
+    sheet.Range("A1").Resize(3, columns).Value2 = data
+    Dim reader As CLoadCombinationReader
+    Set reader = New CLoadCombinationReader
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUiBatch()
+    reader.LoadFromRange sheet.Range("A1").Resize(3, columns), batch
+    Dim prefix As String
+    prefix = "audit03.reader.width." & CStr(columns)
+    AssertTrue stats, prefix & ".count", batch.Count = 1
+    If batch.Count <> 1 Then Exit Sub
+    AssertTextEquals stats, prefix & ".id", batch.CombinationID(1), "WIDTH_" & CStr(columns)
+    AssertTextEquals stats, prefix & ".profile", batch.InputProfileId(1), "PR1"
+    AssertTextEquals stats, prefix & ".comment", batch.CombinationName(1), expectedComment
+    AssertTrue stats, prefix & ".sourceSlot", batch.SourceDataOffset(1) = 2
+    AssertClose stats, prefix & ".n", batch.N(1), -10000#, 0#
+    AssertClose stats, prefix & ".mx", batch.UserMx(1), 10000000#, 0#
+    AssertClose stats, prefix & ".my", batch.UserMy(1), 20000000#, 0#
+    If columns >= 7 Then
+        batch.Execute
+        AssertTextEquals stats, prefix & ".capacityPath", batch.ResultAt(1).StrengthResult.Capacity.PathResolved, "LambdaMx"
+    End If
+    Dim errorNumber As Long
+    On Error Resume Next
+    reader.LoadFromRange sheet.Range("A1:D3"), batch
+    errorNumber = Err.Number
+    Err.Clear
+    On Error GoTo Failed
+    AssertTrue stats, prefix & ".shortRangeControlled", errorNumber = vbObjectError + 3955
+    Exit Sub
+Failed:
+    AssertTrue stats, "audit03.reader.width." & CStr(columns) & ".runtime." & CStr(Err.Number) & "." & Err.Description, False
+End Sub
+
+' Нечисловые N/M, ошибки формул и metadata не теряются как нулевые LC.
+' Числовая строка/формула и последующий корректный LC остаются в результатах.
+Private Sub TestAudit03ReaderRows(ByRef stats As TUiTestStats, ByVal sheet As Object)
+    On Error GoTo Failed
+    sheet.Cells.ClearContents
+    Dim data(1 To 13, 1 To 7) As Variant
+    Dim r As Long
+    For r = 2 To 13
+        data(r, 1) = "ROW_" & CStr(r)
+        data(r, 2) = 0#: data(r, 3) = 0#: data(r, 4) = 0#
+        data(r, 5) = "PR1"
+    Next r
+    data(2, 2) = "abc": data(3, 3) = "abc": data(4, 4) = "abc"
+    data(5, 2) = CVErr(xlErrDiv0)
+    data(6, 2) = "   "
+    For r = 1 To 7
+        data(7, r) = Empty
+    Next r
+    data(8, 2) = CStr(42.5): data(8, 6) = "LambdaN"
+    data(9, 6) = "LambdaN"
+    data(10, 1) = " ": data(10, 2) = 1000#
+    data(11, 2) = 1000#: data(11, 5) = CVErr(xlErrNA)
+    data(12, 2) = 1000#: data(12, 6) = CVErr(xlErrRef)
+    data(13, 1) = "VALID_LAST": data(13, 2) = -1000#: data(13, 3) = 10000000#
+    data(13, 6) = "LambdaMxy"
+    sheet.Range("A1:G13").Value2 = data
+    sheet.Range("B5").Formula = "=1/0"
+    sheet.Range("B5").Calculate
+    sheet.Range("B8").NumberFormat = "@"
+    sheet.Range("B8").Value2 = CStr(42.5)
+    AssertTrue stats, "audit03.reader.rows.stringFixture", VarType(sheet.Range("B8").Value2) = vbString
+    sheet.Range("B9").Formula = "=2+3"
+    sheet.Range("B9").Calculate
+    Dim reader As CLoadCombinationReader
+    Set reader = New CLoadCombinationReader
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUiBatch()
+    reader.LoadFromRange sheet.Range("A1:G13"), batch
+    batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    AssertTrue stats, "audit03.reader.rows.count", batch.Count = 10
+    If batch.Count <> 10 Then Exit Sub
+    AssertTrue stats, "audit03.reader.rows.sourceGap", batch.SourceDataOffset(5) = 7
+    AssertTextEquals stats, "audit03.reader.rows.lastId", batch.CombinationID(10), "VALID_LAST"
+    AssertTrue stats, "audit03.reader.rows.lastSlot", batch.SourceDataOffset(10) = 12
+    AssertClose stats, "audit03.reader.rows.numericString", batch.N(5), 42.5, 0#
+    AssertClose stats, "audit03.reader.rows.numericFormula", batch.N(6), 5#, 0#
+    batch.Execute
+    For r = 1 To 4
+        AssertTextEquals stats, "audit03.reader.rows.invalid." & CStr(r), batch.ResultAt(r).Status, "InputErr"
+        AssertTrue stats, "audit03.reader.rows.comment." & CStr(r), Len(batch.ResultAt(r).OverallMeta.ResultComment) > 0
+    Next r
+    For r = 7 To 9
+        AssertTextEquals stats, "audit03.reader.rows.invalid." & CStr(r), batch.ResultAt(r).Status, "InputErr"
+    Next r
+    AppendLine stats, "COMMENT: audit03.reader.rows.valid; " & batch.ResultAt(10).OverallMeta.ResultComment
+    AssertTrue stats, "audit03.reader.rows.validReachedResults", batch.ResultAt(10).Status <> "InputErr"
+    Exit Sub
+Failed:
+    AssertTrue stats, "audit03.reader.rows.runtime." & CStr(Err.Number) & "." & Err.Description, False
+End Sub
+
+' Один tiny физический вектор не исчезает при смене N/N*mm на kN/kN*m.
+' Переполнение единичного пересчета остается ошибочной строкой, следующая читается.
+Private Sub TestAudit03ReaderTinyUnits(ByRef stats As TUiTestStats, ByVal sheet As Object)
+    On Error GoTo Failed
+    sheet.Cells.ClearContents
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    Dim units As CUnitSystem
+    Dim reader As CLoadCombinationReader
+    Set reader = New CLoadCombinationReader
+    Dim batch As CBatchSectionCalculator
+    Dim mode As Long
+    For mode = 0 To 1
+        sheet.Range("K1").Value2 = "Key": sheet.Range("L1").Value2 = "Value"
+        sheet.Range("K2").Value2 = "Units.Force.Input": sheet.Range("L2").Value2 = IIf(mode = 0, "N", "kN")
+        sheet.Range("K3").Value2 = "Units.Moment.Input": sheet.Range("L3").Value2 = IIf(mode = 0, "N*mm", "kN*m")
+        settings.LoadFromRange sheet.Range("K1:M3")
+        Set units = New CUnitSystem
+        units.LoadFromSettings settings
+        sheet.Range("A2").Value2 = "TINY_N": sheet.Range("E2").Value2 = "PR1"
+        sheet.Range("A3").Value2 = "TINY_M": sheet.Range("E3").Value2 = "PR1"
+        sheet.Range("B2").Value2 = 0.00000000001 / (1000# ^ mode)
+        sheet.Range("C3").Value2 = -0.00000000001 / (1000000# ^ mode)
+        Set batch = New CBatchSectionCalculator
+        reader.LoadFromRange sheet.Range("A1:G3"), batch, units
+        AssertTrue stats, "audit03.reader.tiny." & CStr(mode) & ".count", batch.Count = 2
+        If batch.Count = 2 Then
+            AssertClose stats, "audit03.reader.tiny." & CStr(mode) & ".n", batch.N(1), 0.00000000001, 0.00000000000000000000000001
+            AssertClose stats, "audit03.reader.tiny." & CStr(mode) & ".m", batch.UserMx(2), -0.00000000001, 0.00000000000000000000000001
+        End If
+    Next mode
+    sheet.Range("B2").Value2 = 1E+308
+    sheet.Range("A3").Value2 = "AFTER_OVERFLOW": sheet.Range("B3").Value2 = 1#
+    Set batch = BuildUiBatch()
+    reader.LoadFromRange sheet.Range("A1:G3"), batch, units
+    AssertTrue stats, "audit03.reader.overflow.count", batch.Count = 2
+    If batch.Count = 2 Then
+        batch.Execute
+        AssertTextEquals stats, "audit03.reader.overflow.status", batch.ResultAt(1).Status, "InputErr"
+        AssertTrue stats, "audit03.reader.overflow.comment", Len(batch.ResultAt(1).OverallMeta.ResultComment) > 0
+        AssertTextEquals stats, "audit03.reader.overflow.next", batch.CombinationID(2), "AFTER_OVERFLOW"
+    End If
+    Exit Sub
+Failed:
+    AssertTrue stats, "audit03.reader.tiny.runtime." & CStr(Err.Number) & "." & Err.Description, False
+End Sub
 
 
 

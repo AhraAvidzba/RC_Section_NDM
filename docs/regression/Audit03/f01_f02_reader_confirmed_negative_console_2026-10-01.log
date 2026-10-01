@@ -1,0 +1,12 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_f_repro.xlsm
+SOURCE_SHA256: 777B8944F2DFC1785BF0C21B921C584774FB85051D7CCF5BE6D015B7BEB61EC1
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_99ae4a4e6a2043aa9ff780b010f663cd\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.reader.width.5.runtime.9.Subscript out of range
+FAIL: audit03.reader.rows.count
+FAIL: audit03.reader.tiny.0.count
+FAIL: audit03.reader.tiny.1.count
+FAIL: audit03.reader.tiny.runtime.6.Overflow
+TOTAL_AUDIT03_READER: passed=29; failed=5
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

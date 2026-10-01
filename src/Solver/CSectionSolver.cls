@@ -152,8 +152,9 @@ Public Sub Solve(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double)
 
+    On Error GoTo Failed
     ClearResult
-    ValidateInputs section, concreteMaterial, steelMaterial
+    If Not ValidateInputs(section, concreteMaterial, steelMaterial) Then Exit Sub
     If Not ValidateSolverMethod() Then Exit Sub
     RecordSectionEquilibriumSolve
     If mUseInitialState Then
@@ -201,6 +202,11 @@ Public Sub Solve(ByVal section As CSectionModel, _
         mStopReason = "Финальная проверка невязок равновесия не пройдена."
         mFailureCode = sfcNumericalFailure
     End If
+    Exit Sub
+Failed:
+    mConverged = False
+    mFailureCode = sfcInternalError
+    mStopReason = "Ошибка при вычислении равновесия: " & Err.Description
 End Sub
 
 ' ------------------------------
@@ -214,7 +220,7 @@ Public Sub EvaluateStrainPlane(ByVal section As CSectionModel, _
         ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double)
 
     ClearResult
-    ValidateInputs section, concreteMaterial, steelMaterial
+    If Not ValidateInputs(section, concreteMaterial, steelMaterial) Then Exit Sub
     mEpsilon0 = epsilon0
     mKappaX = kappaX
     mKappaY = kappaY
@@ -255,7 +261,7 @@ Private Function SolveSelectedLoadStep(ByVal section As CSectionModel, _
         SolveSelectedLoadStep = SolveSecantLoadStep(section, concreteMaterial, steelMaterial, stepIndex, targetN, targetMx, targetMy)
     Else
         mConverged = False
-        mFailureCode = sfcInvalidInput
+        mFailureCode = sfcInvalidConfiguration
         mStopReason = "InputError: Solver.Method должен быть Newton или Secant."
         SolveSelectedLoadStep = False
     End If
@@ -925,16 +931,38 @@ Private Sub AppendDiagnostics(ByVal stepIndex As Long, ByVal iter As Long, ByVal
         "; deltaScale=" & FormatNumberInvariant(deltaScale) & vbCrLf
 End Sub
 
-' Проверяет входные данные solver-а перед запуском численного равновесия.
-Private Sub ValidateInputs(ByVal section As CSectionModel, ByVal concreteMaterial As Object, ByVal steelMaterial As Object)
-    If section Is Nothing Then Err.Raise vbObjectError + 3400, "CSectionSolver", "Модель сечения не передана."
-    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 3401, "CSectionSolver", "В модели сечения нет бетонных элементов."
-    If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 3402, "CSectionSolver", "Материал бетона не передан."
-    If steelMaterial Is Nothing Then Err.Raise vbObjectError + 3403, "CSectionSolver", "Материал арматуры не передан."
-    If mMaxIterations <= 0 Then Err.Raise vbObjectError + 3404, "CSectionSolver", "Solver.MaxIterations должен быть положительным."
-    If mLoadSteps <= 0 Then Err.Raise vbObjectError + 3405, "CSectionSolver", "Solver.LoadSteps должен быть положительным."
-    If mSecantMaxRestarts < 0 Then Err.Raise vbObjectError + 3406, "CSectionSolver", "Solver.SecantMaxRestarts не может быть отрицательным."
-    If mSecantMinStepNorm <= 0# Then Err.Raise vbObjectError + 3407, "CSectionSolver", "Solver.SecantMinStepNorm должен быть положительным."
+' Проверяет модель и настройки до численных итераций. Программная зависимость,
+' входная геометрия и ошибочная конфигурация имеют разные машинные причины.
+Private Function ValidateInputs(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
+        ByVal steelMaterial As Object) As Boolean
+    If section Is Nothing Then
+        SetValidationFailure sfcInternalError, "Модель сечения не передана."
+    ElseIf concreteMaterial Is Nothing Then
+        SetValidationFailure sfcInternalError, "Материал бетона не передан."
+    ElseIf steelMaterial Is Nothing Then
+        SetValidationFailure sfcInternalError, "Материал арматуры не передан."
+    ElseIf section.ConcreteCount <= 0 Then
+        SetValidationFailure sfcInvalidInput, "В модели сечения нет бетонных элементов."
+    ElseIf mMaxIterations <= 0 Then
+        SetValidationFailure sfcInvalidConfiguration, "Solver.MaxIterations должен быть положительным."
+    ElseIf mLoadSteps <= 0 Then
+        SetValidationFailure sfcInvalidConfiguration, "Solver.LoadSteps должен быть положительным."
+    ElseIf mSecantMaxRestarts < 0 Then
+        SetValidationFailure sfcInvalidConfiguration, "Solver.SecantMaxRestarts не может быть отрицательным."
+    ElseIf mSecantMinStepNorm <= 0# Then
+        SetValidationFailure sfcInvalidConfiguration, "Solver.SecantMinStepNorm должен быть положительным."
+    ElseIf mToleranceN <= 0# Or mToleranceMx <= 0# Or mToleranceMy <= 0# Then
+        SetValidationFailure sfcInvalidConfiguration, "Допуски Solver.ToleranceN/Mx/My должны быть положительными."
+    Else
+        ValidateInputs = True
+    End If
+End Function
+
+' Сохраняет терминальную причину проверки контракта без фиктивного solve.
+Private Sub SetValidationFailure(ByVal failureCode As ESolverFailureCode, ByVal reason As String)
+    mConverged = False
+    mFailureCode = failureCode
+    mStopReason = reason
 End Sub
 
 ' Нормализует выбранный численный метод и формирует InputError при неизвестном
@@ -948,7 +976,7 @@ Private Function ValidateSolverMethod() As Boolean
         ValidateSolverMethod = True
     Else
         mConverged = False
-        mFailureCode = sfcInvalidInput
+        mFailureCode = sfcInvalidConfiguration
         mStopReason = "InputError: Solver.Method должен быть Newton или Secant."
     End If
 End Function

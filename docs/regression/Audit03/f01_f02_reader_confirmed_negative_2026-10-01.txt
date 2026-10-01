@@ -1,0 +1,46 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_f_repro.xlsm
+SOURCE_SHA256: 777B8944F2DFC1785BF0C21B921C584774FB85051D7CCF5BE6D015B7BEB61EC1
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_99ae4a4e6a2043aa9ff780b010f663cd\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit03ReaderTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03ReaderTests; 2026-10-01T23:32:22
+EXCEL_AFTER_SUITE: pid=23004; workingSet=145969152; privateBytes=107524096; cpu=2.71875
+FAIL: audit03.reader.width.5.runtime.9.Subscript out of range
+OK: audit03.reader.width.6.count
+OK: audit03.reader.width.6.id; actual=WIDTH_6
+OK: audit03.reader.width.6.profile; actual=PR1
+OK: audit03.reader.width.6.comment; actual=Комментарий шести колонок
+OK: audit03.reader.width.6.sourceSlot
+OK: audit03.reader.width.6.n; actual=-10000.; expected=-10000.
+OK: audit03.reader.width.6.mx; actual=10000000.; expected=10000000.
+OK: audit03.reader.width.6.my; actual=20000000.; expected=20000000.
+OK: audit03.reader.width.6.shortRangeControlled
+OK: audit03.reader.width.7.count
+OK: audit03.reader.width.7.id; actual=WIDTH_7
+OK: audit03.reader.width.7.profile; actual=PR1
+OK: audit03.reader.width.7.comment; actual=Комментарий семи колонок
+OK: audit03.reader.width.7.sourceSlot
+OK: audit03.reader.width.7.n; actual=-10000.; expected=-10000.
+OK: audit03.reader.width.7.mx; actual=10000000.; expected=10000000.
+OK: audit03.reader.width.7.my; actual=20000000.; expected=20000000.
+OK: audit03.reader.width.7.capacityPath; actual=LambdaMx
+OK: audit03.reader.width.7.shortRangeControlled
+OK: audit03.reader.width.9.count
+OK: audit03.reader.width.9.id; actual=WIDTH_9
+OK: audit03.reader.width.9.profile; actual=PR1
+OK: audit03.reader.width.9.comment; actual=Комментарий семи колонок
+OK: audit03.reader.width.9.sourceSlot
+OK: audit03.reader.width.9.n; actual=-10000.; expected=-10000.
+OK: audit03.reader.width.9.mx; actual=10000000.; expected=10000000.
+OK: audit03.reader.width.9.my; actual=20000000.; expected=20000000.
+OK: audit03.reader.width.9.capacityPath; actual=LambdaMx
+OK: audit03.reader.width.9.shortRangeControlled
+FAIL: audit03.reader.rows.count
+FAIL: audit03.reader.tiny.0.count
+FAIL: audit03.reader.tiny.1.count
+FAIL: audit03.reader.tiny.runtime.6.Overflow
+TOTAL_AUDIT03_READER: passed=29; failed=5
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03ReaderTests; 2026-10-01T23:32:23
+SOURCE_UNCHANGED: True

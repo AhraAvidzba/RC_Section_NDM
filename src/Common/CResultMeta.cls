@@ -26,8 +26,8 @@ Private mResultCode As EResultCode ' Машинный код точной при
 Private mResultKind As EResultKind ' Контекст результата: direct state, capacity, cracks, stability.
 Private mResultComment As String ' Короткое русское пояснение для пользователя и report.
 Private mDiagnosticDetails As String ' Технические подробности solver/search, если они нужны.
-Private mApplies As Boolean ' False, если ветка физически или профильно не относится к LC.
-Private mCalculated As Boolean ' True, если расчетный этап действительно запускался.
+Private mApplies As Boolean ' Ветка относится к LC; blocked сохраняет True, хотя нужных данных нет.
+Private mCalculated As Boolean ' Выполнялся собственный solve/search/формульный расчет, не только проверка применимости.
 
 ' Инициализирует объект нейтральным "не сформировано" состоянием.
 Private Sub Class_Initialize()
@@ -45,7 +45,10 @@ Public Sub Clear()
     mCalculated = False
 End Sub
 
-' Заполняет все основные поля результата одной операцией.
+' Заполняет поля результата. Не запрошенная, неприменимая, заблокированная
+' ветка и ошибка валидации не объявляют собственный расчет выполненным.
+' Для внутренней ошибки после запуска вызывающий слой передает фактический
+' calculated; для отсутствующего результата он обязан передать False.
 Public Sub SetResult(ByVal internalStatus As EResultInternalStatus, _
         ByVal resultCode As EResultCode, ByVal resultKind As EResultKind, _
         Optional ByVal resultComment As String = vbNullString, _
@@ -58,6 +61,13 @@ Public Sub SetResult(ByVal internalStatus As EResultInternalStatus, _
     mDiagnosticDetails = diagnosticDetails
     mApplies = applies
     mCalculated = calculated
+    Select Case internalStatus
+        Case rsNotRequested, rsNotApplicable
+            mApplies = False
+            mCalculated = False
+        Case rsBlockedByDependency, rsInvalidInput, rsInvalidConfiguration
+            mCalculated = False
+    End Select
 End Sub
 
 ' Заполняет meta как отключенный профилем расчет.
@@ -68,6 +78,16 @@ End Sub
 ' Заполняет meta как неприменимую расчетную ветку.
 Public Sub SetNotApplicable(ByVal resultKind As EResultKind, Optional ByVal resultComment As String = vbNullString)
     SetResult rsNotApplicable, rcNotApplicable, resultKind, resultComment, vbNullString, False, False
+End Sub
+
+' Отмечает применимый этап, который не запускался из-за отсутствующего
+' обязательного результата. Причина зависимости дополняет сообщение этапа.
+Public Sub SetBlockedByDependency(ByVal resultKind As EResultKind, _
+        ByVal dependencyName As String, Optional ByVal reason As String = vbNullString)
+    Dim comment As String
+    comment = "Расчет не выполнен: нет обязательного результата " & dependencyName & "."
+    If Len(Trim$(reason)) > 0 Then comment = comment & " " & Trim$(reason)
+    SetResult rsBlockedByDependency, rcBlockedByDependency, resultKind, comment, vbNullString, True, False
 End Sub
 
 ' Создает независимую копию meta для хранения внутри result-объекта.

@@ -1,0 +1,91 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_f01_f05_fixed.xlsm
+SOURCE_SHA256: E7D95BE1B290944EEDB319216ABF072C0C36F0DB3807BE7B8456686BDE6A2378
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d599451db1d946b794f977b0773e7d0f\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestSectionSolver.RunAudit03StateTests =====
+SUITE_STARTED: modTestSectionSolver.RunAudit03StateTests; 2026-10-01T23:51:59
+EXCEL_AFTER_SUITE: pid=10200; workingSet=126894080; privateBytes=97579008; cpu=2.328125
+OK: audit03.state.failure.1.exists
+OK: audit03.state.failure.1.status
+OK: audit03.state.failure.1.code
+OK: audit03.state.failure.1.display
+OK: audit03.state.failure.1.comment
+COMMENT: audit03.state.failure.1; InputError: Solver.Method должен быть Newton или Secant.
+OK: audit03.state.failure.1.notConverged
+OK: audit03.state.failure.1.notReusable
+OK: audit03.state.failure.1.oneAttempt
+OK: audit03.state.failure.1.notCalculated
+OK: audit03.state.failure.1.stored
+OK: audit03.state.failure.1.snapshotCode
+OK: audit03.state.failure.1.snapshotComment
+OK: audit03.state.failure.1.newAttemptSuccess
+OK: audit03.state.failure.1.notReused
+OK: audit03.state.failure.1.successReusable
+OK: audit03.state.failure.1.successSnapshot
+OK: audit03.state.failure.2.exists
+OK: audit03.state.failure.2.status
+OK: audit03.state.failure.2.code
+OK: audit03.state.failure.2.display
+OK: audit03.state.failure.2.comment
+COMMENT: audit03.state.failure.2; Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.state.failure.2.notConverged
+OK: audit03.state.failure.2.notReusable
+OK: audit03.state.failure.2.attempted
+OK: audit03.state.failure.2.calculated
+OK: audit03.state.failure.2.stored
+OK: audit03.state.failure.2.snapshotCode
+OK: audit03.state.failure.2.snapshotComment
+OK: audit03.state.failure.3.exists
+OK: audit03.state.failure.3.status
+OK: audit03.state.failure.3.code
+OK: audit03.state.failure.3.display
+OK: audit03.state.failure.3.comment
+COMMENT: audit03.state.failure.3; Достигнут лимит итераций на ступени нагрузки 1.
+OK: audit03.state.failure.3.notConverged
+OK: audit03.state.failure.3.notReusable
+OK: audit03.state.failure.3.attempted
+OK: audit03.state.failure.3.calculated
+OK: audit03.state.failure.3.stored
+OK: audit03.state.failure.3.snapshotCode
+OK: audit03.state.failure.3.snapshotComment
+OK: audit03.state.failure.4.exists
+OK: audit03.state.failure.4.status
+OK: audit03.state.failure.4.code
+OK: audit03.state.failure.4.display
+OK: audit03.state.failure.4.comment
+COMMENT: audit03.state.failure.4; Расчетное состояние не получено: не подключена модель сечения или поставщик материалов.
+OK: audit03.state.failure.4.notConverged
+OK: audit03.state.failure.4.notReusable
+OK: audit03.state.failure.4.noAttempt
+OK: audit03.state.failure.4.notCalculated
+OK: audit03.state.failure.5.exists
+OK: audit03.state.failure.5.status
+OK: audit03.state.failure.5.code
+OK: audit03.state.failure.5.display
+OK: audit03.state.failure.5.comment
+COMMENT: audit03.state.failure.5; В модели сечения нет бетонных элементов.
+OK: audit03.state.failure.5.notConverged
+OK: audit03.state.failure.5.notReusable
+OK: audit03.state.failure.5.oneAttempt
+OK: audit03.state.failure.5.notCalculated
+OK: audit03.state.failure.5.stored
+OK: audit03.state.failure.5.snapshotCode
+OK: audit03.state.failure.5.snapshotComment
+OK: audit03.state.failure.6.exists
+OK: audit03.state.failure.6.status
+OK: audit03.state.failure.6.code
+OK: audit03.state.failure.6.display
+OK: audit03.state.failure.6.comment
+COMMENT: audit03.state.failure.6; Solver.MaxIterations должен быть положительным.
+OK: audit03.state.failure.6.notConverged
+OK: audit03.state.failure.6.notReusable
+OK: audit03.state.failure.6.oneAttempt
+OK: audit03.state.failure.6.notCalculated
+OK: audit03.state.failure.6.stored
+OK: audit03.state.failure.6.snapshotCode
+OK: audit03.state.failure.6.snapshotComment
+TOTAL_AUDIT03_STATE: passed=73; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionSolver.RunAudit03StateTests; 2026-10-01T23:51:59
+SOURCE_UNCHANGED: True

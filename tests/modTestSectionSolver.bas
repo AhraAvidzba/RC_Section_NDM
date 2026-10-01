@@ -40,6 +40,7 @@ Public Function RunSectionSolverTests() As String
     TestAudit02AbsentStressSign stats
     TestAudit02LoadPathResidualScaling stats
     TestAudit02ExtendedInitialGuessPhysicalFinal stats
+    TestAudit03TypedStateFailures stats
 
     AppendLine stats, "TOTAL_SECTION_SOLVER: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -664,6 +665,117 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
+' ДЛЯ ТЕСТОВ
+' Запускает направленные проверки typed failure через настоящий provider,
+' runner и solver, отдельно от полного набора задач равновесия.
+Public Function RunAudit03StateTests() As String
+    Dim stats As TSectionSolverTestStats
+    TestAudit03TypedStateFailures stats
+    AppendLine stats, "TOTAL_AUDIT03_STATE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03StateTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Ошибка метода, вырожденная геометрия, бюджет итераций и отсутствующий
+' контекст не должны терять свою причину при формировании named-state.
+Private Sub TestAudit03TypedStateFailures(ByRef stats As TSectionSolverTestStats)
+    Dim scenario As Long
+    For scenario = 1 To 6
+        TestAudit03TypedStateFailureCase stats, scenario
+    Next scenario
+End Sub
+
+' ДЛЯ ТЕСТОВ
+' Создает изолированный реальный маршрут одного отказа. Неуспешный snapshot
+' сохраняется для диагностики, но не становится reusable и допускает retry.
+Private Sub TestAudit03TypedStateFailureCase(ByRef stats As TSectionSolverTestStats, ByVal scenario As Long)
+    On Error GoTo Failed
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    Dim materials As CMaterialModelProvider
+    Set materials = New CMaterialModelProvider
+    materials.Initialize settings
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 20#), Nothing)
+    If scenario = 2 Then
+        Set section = New CSectionModel
+        section.AddConcreteElement 0#, 0#, 10000#
+    ElseIf scenario = 5 Then
+        Set section = New CSectionModel
+    End If
+    Dim repository As CStateRepository
+    Set repository = New CStateRepository
+    Dim provider As CStateProvider
+    Set provider = New CStateProvider
+    If scenario <> 4 Then provider.Initialize section, materials, repository
+    If scenario = 1 Then provider.SolverMethod = "UnknownMethod"
+    If scenario = 3 Then provider.MaxIterations = 1
+    If scenario = 6 Then provider.MaxIterations = 0
+    Dim spec As CMaterialModelSpec
+    Set spec = New CMaterialModelSpec
+    spec.Initialize "ULS(I)", "ThreeLine", "Ignore", "TwoLine"
+    Dim request As CStateRequest
+    Set request = New CStateRequest
+    request.Initialize sstStrengthState, cpStrength, spec, -100000#, 10000000#, 2000000#, False, True
+    Dim state As CSectionStateResult
+    Set state = provider.GetOrSolve(request)
+    Dim prefix As String
+    prefix = "audit03.state.failure." & CStr(scenario)
+    AssertTrue stats, prefix & ".exists", Not state Is Nothing
+    If state Is Nothing Then Exit Sub
+    Dim expectedStatus As EResultInternalStatus
+    Dim expectedCode As EResultCode
+    Select Case scenario
+        Case 1, 6: expectedStatus = rsInvalidConfiguration: expectedCode = rcInvalidConfiguration
+        Case 2: expectedStatus = rsNumericalFailure: expectedCode = rcSingularTangent
+        Case 3: expectedStatus = rsNumericalFailure: expectedCode = rcNumericalFailure
+        Case 4: expectedStatus = rsInternalError: expectedCode = rcInternalError
+        Case 5: expectedStatus = rsInvalidInput: expectedCode = rcInvalidInput
+    End Select
+    AssertTrue stats, prefix & ".status", state.InternalStatus = expectedStatus
+    AssertTrue stats, prefix & ".code", state.ResultCode = expectedCode
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    Dim expectedExternal As String
+    expectedExternal = "InputErr"
+    If scenario = 2 Or scenario = 3 Then expectedExternal = "NumFail"
+    If scenario = 4 Then expectedExternal = "CalcErr"
+    AssertTrue stats, prefix & ".display", policy.ExternalStatus(state.ResultMeta) = expectedExternal
+    AssertTrue stats, prefix & ".comment", Len(Trim$(state.ResultComment)) > 0
+    AppendLine stats, "COMMENT: " & prefix & "; " & state.ResultComment
+    AssertTrue stats, prefix & ".notConverged", Not state.Converged
+    AssertTrue stats, prefix & ".notReusable", repository.FindEquivalent(request) Is Nothing
+    If scenario = 1 Or scenario = 5 Or scenario = 6 Then
+        AssertTrue stats, prefix & ".oneAttempt", state.SolverCallCount = 1
+        AssertTrue stats, prefix & ".notCalculated", Not state.ResultMeta.Calculated
+    ElseIf scenario = 4 Then
+        AssertTrue stats, prefix & ".noAttempt", state.SolverCallCount = 0
+        AssertTrue stats, prefix & ".notCalculated", Not state.ResultMeta.Calculated
+    Else
+        AssertTrue stats, prefix & ".attempted", state.SolverCallCount >= 1
+        AssertTrue stats, prefix & ".calculated", state.ResultMeta.Calculated
+    End If
+    If scenario <> 4 Then
+        AssertTrue stats, prefix & ".stored", repository.StateCount = 1
+        AssertTrue stats, prefix & ".snapshotCode", repository.StateAt(1).ResultCode = expectedCode
+        AssertTrue stats, prefix & ".snapshotComment", repository.StateAt(1).ResultComment = state.ResultComment
+    End If
+    If scenario = 1 Then
+        provider.SolverMethod = "Newton"
+        request.Initialize sstStrengthState, cpStrength, spec, -50000#, 0#, 0#, False, True
+        Set state = provider.GetOrSolve(request)
+        AssertTrue stats, prefix & ".newAttemptSuccess", state.Converged
+        AssertTrue stats, prefix & ".notReused", Not provider.LastStateWasReused
+        Set state = provider.GetOrSolve(request)
+        AssertTrue stats, prefix & ".successReusable", provider.LastStateWasReused
+        AssertTrue stats, prefix & ".successSnapshot", Not provider.SolverSnapshot(state) Is Nothing
+    End If
+    Exit Sub
+Failed:
+    AssertTrue stats, "audit03.state.failure." & CStr(scenario) & ".runtime." & CStr(Err.Number) & "." & Err.Description, False
+End Sub
 
 ' ============================== ДЛЯ ТЕСТОВ ==============================
 

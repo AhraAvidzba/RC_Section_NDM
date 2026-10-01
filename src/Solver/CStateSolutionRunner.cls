@@ -124,14 +124,14 @@ Public Sub SolveWithInitialSolver(ByVal section As CSectionModel, _
     service.Solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
     Set mSolver = service
 
-    If Not service.Converged Then
+    If CanRetrySolver(service) Then
         If TrySolveWithDirectStateGuess(section, concreteMaterial, steelMaterial, _
                 targetN, targetMx, targetMy, service) Then
             Set mSolver = service
         End If
     End If
 
-    If Not service.Converged And allowExtensionWarmStart Then
+    If CanRetrySolver(service) And allowExtensionWarmStart Then
         If TrySolveWithExtensionWarmStart(section, concreteMaterial, steelMaterial, _
                 targetN, targetMx, targetMy, service) Then
             Set mSolver = service
@@ -177,14 +177,14 @@ Public Sub SolveWithInitialLoadState(ByVal section As CSectionModel, _
     service.Solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
     Set mSolver = service
 
-    If Not service.Converged Then
+    If CanRetrySolver(service) Then
         If TrySolveWithDirectStateGuess(section, concreteMaterial, steelMaterial, _
                 targetN, targetMx, targetMy, service) Then
             Set mSolver = service
         End If
     End If
 
-    If Not service.Converged And allowExtensionWarmStart Then
+    If CanRetrySolver(service) And allowExtensionWarmStart Then
         If TrySolveWithExtensionWarmStart(section, concreteMaterial, steelMaterial, _
                 targetN, targetMx, targetMy, service) Then
             Set mSolver = service
@@ -246,7 +246,7 @@ Public Sub SolveWithDirectTargetGuess(ByVal section As CSectionModel, _
     service.Solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
     Set mSolver = service
 
-    If Not service.Converged And allowExtensionWarmStart Then
+    If CanRetrySolver(service) And allowExtensionWarmStart Then
         If TrySolveWithExtensionWarmStart(section, concreteMaterial, steelMaterial, _
                 targetN, targetMx, targetMy, service) Then
             Set mSolver = service
@@ -263,6 +263,17 @@ Public Sub SolveWithDirectTargetGuess(ByVal section As CSectionModel, _
         End If
     End If
 End Sub
+
+' Ошибки модели, настроек и программного контракта не исправляются сменой
+' начальной плоскости; повтор допустим только после численной неудачи.
+Private Function CanRetrySolver(ByVal solver As CSectionSolver) As Boolean
+    If solver Is Nothing Then Exit Function
+    If solver.Converged Then Exit Function
+    Select Case solver.FailureCode
+        Case sfcNumericalFailure, sfcSingularTangent
+            CanRetrySolver = True
+    End Select
+End Function
 
 ' Повторяет прямой solve от active-set плоскости для общего случая N+M.
 ' Первый штатный старт сохраняется прежним; этот retry включается только после

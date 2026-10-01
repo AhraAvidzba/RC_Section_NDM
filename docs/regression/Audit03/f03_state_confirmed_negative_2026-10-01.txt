@@ -1,0 +1,58 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_state_repro.xlsm
+SOURCE_SHA256: 6C90AD78D6D9B71455A8DF452D84DCCD2A059D68AE6CEB41C92A33CA4139241E
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_13708ec8dbdf47fd9ded7ae13a1f5cf1\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestSectionSolver.RunAudit03StateTests =====
+SUITE_STARTED: modTestSectionSolver.RunAudit03StateTests; 2026-10-01T23:46:44
+EXCEL_AFTER_SUITE: pid=23776; workingSet=126877696; privateBytes=107302912; cpu=2.4375
+OK: audit03.state.failure.1.exists
+FAIL: audit03.state.failure.1.status
+FAIL: audit03.state.failure.1.code
+FAIL: audit03.state.failure.1.display
+OK: audit03.state.failure.1.comment
+COMMENT: audit03.state.failure.1; InputError: Solver.Method должен быть Newton или Secant.
+OK: audit03.state.failure.1.notConverged
+OK: audit03.state.failure.1.notReusable
+FAIL: audit03.state.failure.1.oneAttempt
+FAIL: audit03.state.failure.1.notCalculated
+OK: audit03.state.failure.1.stored
+FAIL: audit03.state.failure.1.snapshotCode
+OK: audit03.state.failure.1.snapshotComment
+OK: audit03.state.failure.1.newAttemptSuccess
+OK: audit03.state.failure.1.notReused
+OK: audit03.state.failure.1.successReusable
+OK: audit03.state.failure.1.successSnapshot
+OK: audit03.state.failure.2.exists
+OK: audit03.state.failure.2.status
+FAIL: audit03.state.failure.2.code
+OK: audit03.state.failure.2.display
+OK: audit03.state.failure.2.comment
+COMMENT: audit03.state.failure.2; Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.state.failure.2.notConverged
+OK: audit03.state.failure.2.notReusable
+OK: audit03.state.failure.2.attempted
+OK: audit03.state.failure.2.calculated
+OK: audit03.state.failure.2.stored
+FAIL: audit03.state.failure.2.snapshotCode
+OK: audit03.state.failure.2.snapshotComment
+OK: audit03.state.failure.3.exists
+OK: audit03.state.failure.3.status
+OK: audit03.state.failure.3.code
+OK: audit03.state.failure.3.display
+OK: audit03.state.failure.3.comment
+COMMENT: audit03.state.failure.3; Достигнут лимит итераций на ступени нагрузки 1.
+OK: audit03.state.failure.3.notConverged
+OK: audit03.state.failure.3.notReusable
+OK: audit03.state.failure.3.attempted
+OK: audit03.state.failure.3.calculated
+OK: audit03.state.failure.3.stored
+OK: audit03.state.failure.3.snapshotCode
+OK: audit03.state.failure.3.snapshotComment
+FAIL: audit03.state.failure.4.runtime.91.Object variable or With block variable not set
+FAIL: audit03.state.failure.5.runtime.-2147218103.В модели сечения нет бетонных элементов.
+FAIL: audit03.state.failure.6.runtime.-2147218100.Solver.MaxIterations должен быть положительным.
+TOTAL_AUDIT03_STATE: passed=32; failed=11
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionSolver.RunAudit03StateTests; 2026-10-01T23:46:44
+SOURCE_UNCHANGED: True

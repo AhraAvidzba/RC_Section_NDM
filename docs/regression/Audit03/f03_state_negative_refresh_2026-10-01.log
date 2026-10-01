@@ -1,0 +1,11 @@
+Workbook not found: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_Audit03_Baseline_df10412f\C:\Users\avidzba\Desktop\прогр
+аммы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_state_repro.xlsm
+At C:\Users\avidzba\AppData\Local\Temp\RC_NDM_Audit03_Baseline_df10412f\tools\build_workbook\Refresh-VbaModules.ps1:145
+ char:5
++     throw "Workbook not found: $fullWorkbookPath"
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Workbook not fo...tate_repro.xlsm:String) [], RuntimeException
+    + FullyQualifiedErrorId : Workbook not found: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_Audit03_Baseline_df10412f 
+   \C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_state_repro.xl  
+  sm
+ 
