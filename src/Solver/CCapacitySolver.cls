@@ -1124,6 +1124,11 @@ Private Function ProbeOnce(ByVal section As CSectionModel, _
     On Error GoTo Failed
     mIterations = mIterations + 1
 
+    If IsZeroLoadProbe(nSpecified, mx, my) Then
+        ProbeOnce = EvaluateZeroLoadProbe(section, concreteMaterial, steelMaterial, lambdaValue, attempt)
+        Exit Function
+    End If
+
     Dim runner As CStateSolutionRunner
     Set runner = New CStateSolutionRunner
     ConfigureCapacityProbeRunner runner, attempt
@@ -1209,6 +1214,36 @@ End Function
 ' Brent/Secant после нахождения скобки могут повторно спросить те же lambda,
 ' особенно нижнюю и верхнюю границы. Cache убирает этот повторный solve и
 ' восстанавливает все поля, от которых зависит целевая функция и warm-start.
+Private Function IsZeroLoadProbe(ByVal nSpecified As Double, _
+        ByVal mx As Double, ByVal my As Double) As Boolean
+    IsZeroLoadProbe = (Abs(nSpecified) <= 0.000000001 And _
+        Abs(mx) <= 0.000000001 And Abs(my) <= 0.000000001)
+End Function
+
+Private Function EvaluateZeroLoadProbe(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal lambdaValue As Double, ByVal attempt As Long) As String
+    On Error GoTo Failed
+
+    Dim solver As CSectionSolver
+    Set solver = New CSectionSolver
+    solver.DiagnosticsEnabled = mDiagnosticsEnabled
+    solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, 0#, 0#, 0#
+
+    Set mLastSolver = solver
+    UpdateCriticalState section, concreteMaterial, solver
+    EvaluateZeroLoadProbe = STATE_ACCEPTABLE
+    If mDiagnosticsEnabled Then _
+        AppendSearchDiagnostic "lambda=0: нулевая нагрузка принята как точное равновесие нулевой плоскости деформаций."
+    AppendDiagnostic solver, 0#, 0#, lambdaValue, attempt, EvaluateZeroLoadProbe
+    Exit Function
+
+Failed:
+    EvaluateZeroLoadProbe = STATE_INVALID_INPUT
+    mLimitState = STATE_INVALID_INPUT
+    mStopReason = "Нулевую lambda-точку несущей способности проверить нельзя: " & Err.Description
+End Function
+
 Private Function TryRestoreProbeCache(ByVal nSpecified As Double, ByVal mx As Double, ByVal my As Double, _
         ByVal lambdaValue As Double, ByRef probeState As String) As Boolean
     Dim slot As Long

@@ -274,7 +274,11 @@ Private Sub ApplyInitialGuess(ByVal section As CSectionModel, _
     Set guessBuilder = New CStateGuessBuilder
     If guessBuilder.BuildForDirectState(section, concreteMaterial, steelMaterial, _
             targetN, targetMx, targetMy, eps0, kx, ky) Then
-        solver.SetInitialState eps0, kx, ky
+        ' Active-set плоскость строится сразу под текущую целевую нагрузку.
+        ' Поэтому стартовую нагрузку задаем той же target-точкой: CSectionSolver
+        ' начинает итерации около нужного уровня усилий, а не ведет эту
+        ' приближенную плоскость ступенями от нулевой нагрузки.
+        solver.SetInitialLoadState eps0, kx, ky, targetN, targetMx, targetMy
         mInitialGuessApplied = True
         AppendDiagnostic "initialGuess=directStateActiveSet"
     End If
