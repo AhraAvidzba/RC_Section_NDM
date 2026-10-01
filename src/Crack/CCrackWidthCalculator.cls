@@ -705,7 +705,7 @@ End Sub
 Public Sub LimitSearchSetCrackFormationSearchBoundReached(ByVal reason As String)
     mConverged = False
     mCrackFormed = False
-    SetFormationResult rsNumericalFailure, rcSearchBoundReached, reason
+    SetFormationResult rsCheckFailed, rcSearchBoundReached, reason
     AppendDiagnostic reason
 End Sub
 

@@ -36,7 +36,7 @@ Public Function RunCrackWidthTests() As String
     TestAutoMcrcPureBendingConverges stats
     TestAutoMcrcFixedNIndependentOfMomentMagnitude stats
     TestCrackInitiationLoadPaths stats
-    TestCrackFormationSearchBoundIsNumericalFailure stats
+    TestCrackFormationSearchBoundKeepsTechnicalCode stats
     TestCrackFormationNoCrackDoesNotBuildPostState stats
     TestCrackFormationCacheHitWithoutLastRunner stats
     TestLimitSearchResultKeepsCrackDiagnosticSnapshot stats
@@ -404,7 +404,7 @@ Private Sub TestCrackInitiationLoadPaths(ByRef stats As TCrackTestStats)
     AssertCrackCalculatorNotNumFail stats, "crack.path.mxyAxialFallback.status", crackFallback
 End Sub
 
-Private Sub TestCrackFormationSearchBoundIsNumericalFailure(ByRef stats As TCrackTestStats)
+Private Sub TestCrackFormationSearchBoundKeepsTechnicalCode(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
     Set solver = SolveServiceStateWithRunner(section, -20000#, -6000#, 0#)
@@ -417,10 +417,11 @@ Private Sub TestCrackFormationSearchBoundIsNumericalFailure(ByRef stats As TCrac
     AssertTrue stats, "crack.searchBound.notConverged", Not crack.Converged
     AssertTrue stats, "crack.searchBound.notFormed", Not crack.CrackFormed
     AssertTrue stats, "crack.searchBound.internalStatus", _
-        crack.CrackFormationInternalStatus = rsNumericalFailure
+        crack.CrackFormationInternalStatus = rsCheckFailed
     AssertTrue stats, "crack.searchBound.resultCode", _
         crack.CrackFormationResultCode = rcSearchBoundReached
     AssertTrue stats, "crack.searchBound.noPostState", crack.PostCrackState Is Nothing
+    AssertCrackCalculatorNotNumFail stats, "crack.searchBound.widthNotNumFail", crack
 End Sub
 
 Private Sub TestCrackFormationNoCrackDoesNotBuildPostState(ByRef stats As TCrackTestStats)

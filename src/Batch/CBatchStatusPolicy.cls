@@ -214,7 +214,8 @@ Public Function CrackMetaFromCalculator(ByVal crack As CCrackWidthCalculator) As
         Else
             meta.SetResult rsSuccess, rcCheckPassed, rkCrackWidth, crack.StopReason
         End If
-    ElseIf crack.CrackFormationInternalStatus = rsNumericalFailure Or _
+    ElseIf crack.CrackFormationInternalStatus = rsCheckFailed Or _
+            crack.CrackFormationInternalStatus = rsNumericalFailure Or _
             crack.CrackFormationInternalStatus = rsInvalidInput Or _
             crack.CrackFormationInternalStatus = rsInvalidConfiguration Or _
             crack.CrackFormationInternalStatus = rsInternalError Then
