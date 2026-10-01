@@ -578,11 +578,7 @@ Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
     End If
 
     If Not policy.IsFinished(CrackWidthStatusText(batch, index, policy)) Then
-        If CrackWidthStatusText(batch, index, policy) = policy.NumFail Then
-            data(rowIndex, COL_ACRC_STATUS) = policy.NotApplicable
-        Else
-            data(rowIndex, COL_ACRC_STATUS) = CrackWidthStatusText(batch, index, policy)
-        End If
+        data(rowIndex, COL_ACRC_STATUS) = CrackWidthStatusText(batch, index, policy)
         Exit Sub
     End If
 
