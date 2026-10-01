@@ -544,11 +544,8 @@ Private Function CrackedStateAllowsCrackChecks(ByVal batch As CBatchSectionCalcu
     If Not stateResult.Converged Then Exit Function
     If stateResult.ExtensionUsed Then Exit Function
 
-    If Len(stateResult.Status) > 0 Then
-        CrackedStateAllowsCrackChecks = (policy.DisplayStatus(stateResult.Status) = policy.OK)
-    Else
-        CrackedStateAllowsCrackChecks = True
-    End If
+    CrackedStateAllowsCrackChecks = _
+        (policy.StatusFromMeta(stateResult.ResultMeta) = policy.OK)
 End Function
 
 ' Записывает ширину раскрытия нормальных трещин и величины ее формулы.

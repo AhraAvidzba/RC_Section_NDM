@@ -464,7 +464,7 @@ Private Sub PutStrengthState(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, COL_STATE_DIAGEXT) = ExtensionUsedText(batch, index, stateResult)
     If batch.StrengthStrainReserve(index) > SMALL_VALUE Then _
         data(rowIndex, COL_STATE_RESERVE) = batch.StrengthStrainReserve(index)
-    data(rowIndex, COL_STATE_STATUS) = policy.DisplayStatus(stateResult.Status)
+    data(rowIndex, COL_STATE_STATUS) = policy.StatusFromMeta(stateResult.ResultMeta)
 End Sub
 
 ' Пишет CapacityState и предельные компоненты найденной точки.

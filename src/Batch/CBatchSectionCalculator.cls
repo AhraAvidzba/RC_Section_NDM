@@ -2150,7 +2150,7 @@ Public Function StrengthStrainReserve(ByVal index As Long) As Double
     Dim stateResult As CSectionStateResult
     Set stateResult = mResults(index).FindState(sstStrengthState)
     If stateResult Is Nothing Then Exit Function
-    If Not mStatusPolicy.IsFinished(stateResult.Status) Then Exit Function
+    If Not mStatusPolicy.IsFinished(mStatusPolicy.StatusFromMeta(stateResult.ResultMeta)) Then Exit Function
 
     Dim reserve As Double
     reserve = 1E+100
