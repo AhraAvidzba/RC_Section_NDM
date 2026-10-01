@@ -179,9 +179,8 @@ Private Function RunCrackFormationSearch(ByVal request As CLimitSearchRequest, _
     Dim iterations As Long
     If SearchCrackByBisection(request, loadPath, lowLambda, lowSolver, highLambda, highSolver, _
             acceptedLambda, acceptedSolver, iterations) Then
-        request.Problem.FinalizeAt request, loadPath, acceptedLambda, vbNullString, _
-            "Bisection", acceptedSolver, iterations
-        RunCrackFormationSearch = True
+        RunCrackFormationSearch = request.Problem.FinalizeAt(request, loadPath, acceptedLambda, vbNullString, _
+            "Bisection", acceptedSolver, iterations)
     End If
 End Function
 

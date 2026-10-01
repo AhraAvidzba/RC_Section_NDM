@@ -33,6 +33,11 @@ Private mPreCrackState As CSectionStateResult ' Состояние до выкл
 Private mPostCrackState As CSectionStateResult ' Состояние после выключения растянутого бетона.
 Private mStopReason As String ' Короткая причина остановки formation-этапа.
 Private mDiagnosticLog As String ' Подробная диагностика search-этапа.
+Private mHasLimitPoint As Boolean ' Точка реально найдена, а не заменена warning-fallback.
+Private mFallbackPsi1 As Boolean ' Фиксированный путь допускает ширину с psi=1 без PostState.
+Private mCentralTensionBranch As Boolean ' Для ширины применима ветка полного растяжения.
+Private mSolverCallCount As Long ' Число solve-вызовов formation-сценария.
+Private mSearchResult As CLimitSearchResult ' Независимый численный снимок найденной точки.
 
 ' Создает нейтральный not-applicable результат до фактического заполнения.
 Private Sub Class_Initialize()
@@ -42,7 +47,8 @@ End Sub
 
 ' Заполняет результат по calculator-у образования трещины. Calculator отвечает
 ' за физику поиска, а этот объект фиксирует итоговые величины и typed status для batch.
-Public Sub InitializeFromCalculator(ByVal crack As CCrackWidthCalculator, ByVal meta As CResultMeta)
+Public Sub InitializeFromCalculator(ByVal crack As CCrackFormationCalculator, ByVal meta As CResultMeta)
+    ResetResult
     If meta Is Nothing Then
         mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, _
             "Meta результата образования трещины не сформирована."
@@ -50,7 +56,16 @@ Public Sub InitializeFromCalculator(ByVal crack As CCrackWidthCalculator, ByVal 
         Set mMeta = meta.Clone
     End If
 
-    If crack Is Nothing Then Exit Sub
+    If crack Is Nothing Then
+        mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, "Не передан расчет образования трещины."
+        Exit Sub
+    End If
+    mHasLimitPoint = crack.HasLimitPoint
+    mFallbackPsi1 = crack.FallbackPsi1
+    mCentralTensionBranch = crack.CentralTensionBranch
+    mSolverCallCount = crack.SolverCallCount
+    Set mSearchResult = New CLimitSearchResult
+    mSearchResult.InitializeFromCrackFormation crack, crack.CrackFormationSolutionStrategy, crack.Converged
     mCrackFormed = crack.CrackFormed
     mFormationMethod = crack.CrackFormationMethod
     mLambdaCrc = crack.LambdaCrc
@@ -63,6 +78,29 @@ Public Sub InitializeFromCalculator(ByVal crack As CCrackWidthCalculator, ByVal 
     Set mPostCrackState = crack.PostCrackState
     mStopReason = crack.StopReason
     mDiagnosticLog = crack.DiagnosticLog
+End Sub
+
+' Удаляет все данные предыдущего заполнения; неуспешный повтор не оставляет
+' старую точку, состояния или диагностический журнал доступными потребителям.
+Private Sub ResetResult()
+    mMeta.Clear
+    mCrackFormed = False
+    mFormationMethod = vbNullString
+    mLambdaCrc = 0#
+    mNcrc = 0#
+    mFormationNcrc = 0#
+    mMcrc = 0#
+    mAred = 0#
+    mRbtSer = 0#
+    Set mPreCrackState = Nothing
+    Set mPostCrackState = Nothing
+    mStopReason = vbNullString
+    mDiagnosticLog = vbNullString
+    mHasLimitPoint = False
+    mFallbackPsi1 = False
+    mCentralTensionBranch = False
+    mSolverCallCount = 0
+    Set mSearchResult = Nothing
 End Sub
 
 Public Property Get ResultMeta() As CResultMeta
@@ -115,4 +153,30 @@ End Property
 
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
+End Property
+
+' Доступность точки и fallback хранятся отдельно от статуса процедуры.
+Public Property Get HasLimitPoint() As Boolean
+    HasLimitPoint = mHasLimitPoint
+End Property
+
+Public Property Get FallbackPsi1() As Boolean
+    FallbackPsi1 = mFallbackPsi1
+End Property
+
+Public Property Get CentralTensionBranch() As Boolean
+    CentralTensionBranch = mCentralTensionBranch
+End Property
+
+Public Property Get SolverCallCount() As Long
+    SolverCallCount = mSolverCallCount
+End Property
+
+Public Property Get SearchResult() As CLimitSearchResult
+    Set SearchResult = mSearchResult
+End Property
+
+' Успех formation включает корректный warning-fallback без фиктивной точки.
+Public Property Get Converged() As Boolean
+    Converged = (mMeta.InternalStatus = rsSuccess Or mMeta.InternalStatus = rsSuccessWithWarning)
 End Property

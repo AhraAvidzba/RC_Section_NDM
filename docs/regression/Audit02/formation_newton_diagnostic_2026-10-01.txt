@@ -1,0 +1,338 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: DF4DCFE1FF1653508D8F021B5BCB11E3B3130AE9A0354C4DD050F0F8D18B4418
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_926bd4b1dbff4f4c911c14a039143fca\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestCrackWidth.RunCrackWidthTests =====
+OK: crack.concrete.ignoreStress; actual=0.; expected=0.; absDiff=0.
+OK: crack.concrete.ignoreTangent; actual=0.; expected=0.; absDiff=0.
+OK: crack.concrete.useStress; actual=0.65; expected=0.65; absDiff=0.
+OK: crack.concrete.useLimit; actual=1.8; expected=1.8; absDiff=0.
+OK: crack.concrete.useTangent; actual=32500.; expected=32500.; absDiff=0.000000000004
+OK: crack.formula.width; actual=0.1792; expected=0.1792; absDiff=0.
+OK: crack.formula.utilization; actual=0.448; expected=0.448; absDiff=0.
+OK: crack.formula.noSteelEs; actual=0.; expected=0.; absDiff=0.
+DIAGNOSTIC: crack.user.mx; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+UltimateStrain: начинаем прямой поиск точки образования трещины по eps_bt,ult; путь λ*Mxy.
+lambda_crc_path_iter=1.; rPath1=0.000000000017; rPath2=0.; rLimit=2.360980578465; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.999695023095; rPath1=21.703066346911; rPath2=0.; rLimit=2.361647245131; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.999728854978; rPath1=9.149307136954; rPath2=0.; rLimit=2.360380578465; eps_bt_ult=0.00015
+lambda_crc_path_iter=1.; rPath1=0.00000000001; rPath2=1.649717982395; rLimit=2.361913911798; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.608483549266; rPath1=-3521.93785552024; rPath2=-0.000000000178; rLimit=-0.000000000001; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.80905348448; rPath1=-313.574173506403; rPath2=-0.000000000075; rLimit=1.180490289232; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.90451924275; rPath1=11.014334133523; rPath2=-0.000000000032; rLimit=1.770735433848; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.952255266451; rPath1=4.200689817678; rPath2=-0.000000000016; rLimit=2.065858006157; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.976123278301; rPath1=0.793867659777; rPath2=-0.000000000008; rLimit=2.213419292311; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.976123278301; rPath1=0.793867659777; rPath2=-0.000000000008; rLimit=2.213419292311; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.975818171397; rPath1=22.457934006692; rPath2=-0.000000000008; rLimit=2.214085958977; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.975852146279; rPath1=9.947074796702; rPath2=-0.000000000008; rLimit=2.212819292311; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.976123278301; rPath1=0.79386765977; rPath2=1.646805982387; rLimit=2.214352625644; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.609440431147; rPath1=-3586.46704729015; rPath2=-0.000000000261; rLimit=-0.000000000001; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.797687770408; rPath1=-465.433606212139; rPath2=-0.000000000114; rLimit=1.106709646155; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.886865357464; rPath1=0.595400759274; rPath2=-0.000000000053; rLimit=1.660064469233; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.886865357464; rPath1=0.595400759274; rPath2=-0.000000000053; rLimit=1.660064469233; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.88656025056; rPath1=22.259467106195; rPath2=-0.000000000053; rLimit=1.660731135899; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.886594225442; rPath1=9.748607896242; rPath2=-0.000000000052; rLimit=1.659464469233; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.886865357464; rPath1=0.595400759277; rPath2=1.646805982343; rLimit=1.660997802566; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.609440431148; rPath1=-3586.46704739697; rPath2=-0.000000000678; rLimit=0.000000000001; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.753319138634; rPath1=-932.620327278701; rPath2=-0.000000000314; rLimit=0.830032234617; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.819880355647; rPath1=-231.013310633205; rPath2=-0.000000000188; rLimit=1.245048351925; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.853393637151; rPath1=0.520975660176; rPath2=-0.000000000106; rLimit=1.452556410579; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.853393637151; rPath1=0.520975660176; rPath2=-0.000000000106; rLimit=1.452556410579; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.853088530246; rPath1=22.185042007094; rPath2=-0.000000000106; rLimit=1.453223077245; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.853122505129; rPath1=9.674182797125; rPath2=-0.000000000106; rLimit=1.451956410579; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.853393637151; rPath1=0.520975660183; rPath2=1.646805982289; rLimit=1.453489743912; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.609440431148; rPath1=-3586.46704735831; rPath2=-0.000000000078; rLimit=0.; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.736680901718; rPath1=-1107.81534764764; rPath2=-0.000000000095; rLimit=0.726278205289; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.794914730922; rPath1=-494.632776301101; rPath2=-0.00000000011; rLimit=1.089417307934; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.824048204765; rPath1=-186.385566568127; rPath2=-0.000000000117; rLimit=1.270986859256; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.838641589968; rPath1=-31.96244886914; rPath2=-0.000000000109; rLimit=1.361771634918; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.846071698332; rPath1=0.504695170788; rPath2=-0.000000000104; rLimit=1.407164022748; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.846071698332; rPath1=0.504695170788; rPath2=-0.000000000104; rLimit=1.407164022748; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.845766591428; rPath1=22.168761517704; rPath2=-0.000000000104; rLimit=1.407830689415; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.84580056631; rPath1=9.657902307749; rPath2=-0.000000000104; rLimit=1.406564022748; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.846071698332; rPath1=0.504695170783; rPath2=1.646805982291; rLimit=1.408097356081; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.609440431148; rPath1=-3586.46704738159; rPath2=-0.00000000003; rLimit=0.; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.733041287393; rPath1=-1146.13925836764; rPath2=-0.000000000074; rLimit=0.703582011374; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.789455309435; rPath1=-552.118642370276; rPath2=-0.000000000098; rLimit=1.055373017061; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.817666185803; rPath1=-254.721799662455; rPath2=-0.000000000111; rLimit=1.231268519905; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.83179779922; rPath1=-103.40585495823; rPath2=-0.000000000117; rLimit=1.319216271326; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.838874026672; rPath1=-30.874105522416; rPath2=-0.000000000108; rLimit=1.363190147037; eps_bt_ult=0.00015
+UltimateStrain: быстрый старт не дал устойчивую точку образования трещины: line search UltimateStrain не улучшил невязку.
+UltimateStrain: пробуем дополнительный старт от полного НДС CrackInitiation.
+lambda_crc_path_iter=1.; rPath1=0.000000000017; rPath2=0.; rLimit=2.360980578465; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.999695023095; rPath1=21.703066346911; rPath2=0.; rLimit=2.361647245131; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.999728854978; rPath1=9.149307136954; rPath2=0.; rLimit=2.360380578465; eps_bt_ult=0.00015
+lambda_crc_path_iter=1.; rPath1=0.00000000001; rPath2=1.649717982395; rLimit=2.361913911798; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.608483549266; rPath1=-3521.93785552024; rPath2=-0.000000000178; rLimit=-0.000000000001; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.80905348448; rPath1=-313.574173506403; rPath2=-0.000000000075; rLimit=1.180490289232; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.90451924275; rPath1=11.014334133523; rPath2=-0.000000000032; rLimit=1.770735433848; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.952255266451; rPath1=4.200689817678; rPath2=-0.000000000016; rLimit=2.065858006157; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.976123278301; rPath1=0.793867659777; rPath2=-0.000000000008; rLimit=2.213419292311; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.976123278301; rPath1=0.793867659777; rPath2=-0.000000000008; rLimit=2.213419292311; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.975818171397; rPath1=22.457934006692; rPath2=-0.000000000008; rLimit=2.214085958977; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.975852146279; rPath1=9.947074796702; rPath2=-0.000000000008; rLimit=2.212819292311; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.976123278301; rPath1=0.79386765977; rPath2=1.646805982387; rLimit=2.214352625644; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.609440431147; rPath1=-3586.46704729015; rPath2=-0.000000000261; rLimit=-0.000000000001; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.797687770408; rPath1=-465.433606212139; rPath2=-0.000000000114; rLimit=1.106709646155; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.886865357464; rPath1=0.595400759274; rPath2=-0.000000000053; rLimit=1.660064469233; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.886865357464; rPath1=0.595400759274; rPath2=-0.000000000053; rLimit=1.660064469233; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.88656025056; rPath1=22.259467106195; rPath2=-0.000000000053; rLimit=1.660731135899; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.886594225442; rPath1=9.748607896242; rPath2=-0.000000000052; rLimit=1.659464469233; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.886865357464; rPath1=0.595400759277; rPath2=1.646805982343; rLimit=1.660997802566; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.609440431148; rPath1=-3586.46704739697; rPath2=-0.000000000678; rLimit=0.000000000001; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.753319138634; rPath1=-932.620327278701; rPath2=-0.000000000314; rLimit=0.830032234617; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.819880355647; rPath1=-231.013310633205; rPath2=-0.000000000188; rLimit=1.245048351925; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.853393637151; rPath1=0.520975660176; rPath2=-0.000000000106; rLimit=1.452556410579; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.853393637151; rPath1=0.520975660176; rPath2=-0.000000000106; rLimit=1.452556410579; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.853088530246; rPath1=22.185042007094; rPath2=-0.000000000106; rLimit=1.453223077245; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.853122505129; rPath1=9.674182797125; rPath2=-0.000000000106; rLimit=1.451956410579; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.853393637151; rPath1=0.520975660183; rPath2=1.646805982289; rLimit=1.453489743912; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.609440431148; rPath1=-3586.46704735831; rPath2=-0.000000000078; rLimit=0.; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.736680901718; rPath1=-1107.81534764764; rPath2=-0.000000000095; rLimit=0.726278205289; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.794914730922; rPath1=-494.632776301101; rPath2=-0.00000000011; rLimit=1.089417307934; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.824048204765; rPath1=-186.385566568127; rPath2=-0.000000000117; rLimit=1.270986859256; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.838641589968; rPath1=-31.96244886914; rPath2=-0.000000000109; rLimit=1.361771634918; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.846071698332; rPath1=0.504695170788; rPath2=-0.000000000104; rLimit=1.407164022748; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.846071698332; rPath1=0.504695170788; rPath2=-0.000000000104; rLimit=1.407164022748; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.845766591428; rPath1=22.168761517704; rPath2=-0.000000000104; rLimit=1.407830689415; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.84580056631; rPath1=9.657902307749; rPath2=-0.000000000104; rLimit=1.406564022748; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.846071698332; rPath1=0.504695170783; rPath2=1.646805982291; rLimit=1.408097356081; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.609440431148; rPath1=-3586.46704738159; rPath2=-0.00000000003; rLimit=0.; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.733041287393; rPath1=-1146.13925836764; rPath2=-0.000000000074; rLimit=0.703582011374; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.789455309435; rPath1=-552.118642370276; rPath2=-0.000000000098; rLimit=1.055373017061; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.817666185803; rPath1=-254.721799662455; rPath2=-0.000000000111; rLimit=1.231268519905; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.83179779922; rPath1=-103.40585495823; rPath2=-0.000000000117; rLimit=1.319216271326; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.838874026672; rPath1=-30.874105522416; rPath2=-0.000000000108; rLimit=1.363190147037; eps_bt_ult=0.00015
+UltimateStrain не дал точку образования трещины: line search UltimateStrain не улучшил невязку.
+Пробуем LoadMultiplier по тому же пути образования трещины.
+LoadMultiplier: начинаем подбор lambda_crc пробными расчетами НДС; путь λ*Mxy.
+lambda_crc_load_probe=0.; residual=-1.061714489079; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.; residual=2.360980578465; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.5; residual=-0.196361728424; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.75; residual=0.896686966545; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.625; residual=0.276739356668; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.5625; residual=0.022340435621; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.53125; residual=-0.091568332507; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.546875; residual=-0.034022906251; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.5546875; residual=-0.005673733197; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.55859375; residual=0.008359977582; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.556640625; residual=0.001382726611; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.5556640625; residual=-0.003027560769; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.55615234375; residual=-0.000381388341; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.556396484375; residual=-0.000381388341; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.556518554688; residual=0.000941697873; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.556457519531; residual=-0.000381388341; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.556488037109; residual=0.000831440689; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.55647277832; residual=-0.000381388341; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.556480407715; residual=-0.000381388341; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.556484222412; residual=-0.000381388341; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.556486129761; residual=0.000824549615; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.556485176086; residual=-0.000381388341; result=converged
+lambda_crc_path_iter=1.; rPath1=0.000000000017; rPath2=0.; rLimit=2.360980578465; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.999695023095; rPath1=21.703066346911; rPath2=0.; rLimit=2.361647245131; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.999728854978; rPath1=9.149307136954; rPath2=0.; rLimit=2.360380578465; eps_bt_ult=0.00015
+lambda_crc_path_iter=1.; rPath1=0.00000000001; rPath2=1.649717982395; rLimit=2.361913911798; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.608483549266; rPath1=-3521.93785552024; rPath2=-0.000000000178; rLimit=-0.000000000001; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.80905348448; rPath1=-313.574173506403; rPath2=-0.000000000075; rLimit=1.180490289232; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.90451924275; rPath1=11.014334133523; rPath2=-0.000000000032; rLimit=1.770735433848; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.952255266451; rPath1=4.200689817678; rPath2=-0.000000000016; rLimit=2.065858006157; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.976123278301; rPath1=0.793867659777; rPath2=-0.000000000008; rLimit=2.213419292311; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.976123278301; rPath1=0.793867659777; rPath2=-0.000000000008; rLimit=2.213419292311; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.975818171397; rPath1=22.457934006692; rPath2=-0.000000000008; rLimit=2.214085958977; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.975852146279; rPath1=9.947074796702; rPath2=-0.000000000008; rLimit=2.212819292311; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.976123278301; rPath1=0.79386765977; rPath2=1.646805982387; rLimit=2.214352625644; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.609440431147; rPath1=-3586.46704729015; rPath2=-0.000000000261; rLimit=-0.000000000001; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.797687770408; rPath1=-465.433606212139; rPath2=-0.000000000114; rLimit=1.106709646155; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.886865357464; rPath1=0.595400759274; rPath2=-0.000000000053; rLimit=1.660064469233; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.886865357464; rPath1=0.595400759274; rPath2=-0.000000000053; rLimit=1.660064469233; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.88656025056; rPath1=22.259467106195; rPath2=-0.000000000053; rLimit=1.660731135899; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.886594225442; rPath1=9.748607896242; rPath2=-0.000000000052; rLimit=1.659464469233; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.886865357464; rPath1=0.595400759277; rPath2=1.646805982343; rLimit=1.660997802566; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.609440431148; rPath1=-3586.46704739697; rPath2=-0.000000000678; rLimit=0.000000000001; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.753319138634; rPath1=-932.620327278701; rPath2=-0.000000000314; rLimit=0.830032234617; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.819880355647; rPath1=-231.013310633205; rPath2=-0.000000000188; rLimit=1.245048351925; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.853393637151; rPath1=0.520975660176; rPath2=-0.000000000106; rLimit=1.452556410579; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.853393637151; rPath1=0.520975660176; rPath2=-0.000000000106; rLimit=1.452556410579; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.853088530246; rPath1=22.185042007094; rPath2=-0.000000000106; rLimit=1.453223077245; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.853122505129; rPath1=9.674182797125; rPath2=-0.000000000106; rLimit=1.451956410579; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.853393637151; rPath1=0.520975660183; rPath2=1.646805982289; rLimit=1.453489743912; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.609440431148; rPath1=-3586.46704735831; rPath2=-0.000000000078; rLimit=0.; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.736680901718; rPath1=-1107.81534764764; rPath2=-0.000000000095; rLimit=0.726278205289; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.794914730922; rPath1=-494.632776301101; rPath2=-0.00000000011; rLimit=1.089417307934; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.824048204765; rPath1=-186.385566568127; rPath2=-0.000000000117; rLimit=1.270986859256; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.838641589968; rPath1=-31.96244886914; rPath2=-0.000000000109; rLimit=1.361771634918; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.846071698332; rPath1=0.504695170788; rPath2=-0.000000000104; rLimit=1.407164022748; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.846071698332; rPath1=0.504695170788; rPath2=-0.000000000104; rLimit=1.407164022748; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.845766591428; rPath1=22.168761517704; rPath2=-0.000000000104; rLimit=1.407830689415; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.84580056631; rPath1=9.657902307749; rPath2=-0.000000000104; rLimit=1.406564022748; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.846071698332; rPath1=0.504695170783; rPath2=1.646805982291; rLimit=1.408097356081; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.609440431148; rPath1=-3586.46704738159; rPath2=-0.00000000003; rLimit=0.; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.733041287393; rPath1=-1146.13925836764; rPath2=-0.000000000074; rLimit=0.703582011374; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.789455309435; rPath1=-552.118642370276; rPath2=-0.000000000098; rLimit=1.055373017061; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.817666185803; rPath1=-254.721799662455; rPath2=-0.000000000111; rLimit=1.231268519905; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.83179779922; rPath1=-103.40585495823; rPath2=-0.000000000117; rLimit=1.319216271326; eps_bt_ult=0.00015
+lambda_crc_path_iter=0.838874026672; rPath1=-30.874105522416; rPath2=-0.000000000108; rLimit=1.363190147037; eps_bt_ult=0.00015
+
+FAIL: crack.user.mx.converged
+FAIL: crack.user.mx.formed
+FAIL: crack.user.mx.tensionBars
+FAIL: crack.user.mx.sigmaPositive
+FAIL: crack.user.mx.spacingPositive
+OK: crack.user.mx.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.user.mx.utilization; actual=0.; expected=0.; absDiff=0.
+OK: crack.user.psi; actual=1.; expected=1.; absDiff=0.
+FAIL: crack.user.sigmaCrcAvailable
+DIAGNOSTIC: crack.user.circleMxy; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.user.circleMxy.converged
+FAIL: crack.user.circleMxy.formed
+FAIL: crack.user.circleMxy.tensionBars
+FAIL: crack.user.circleMxy.sigmaPositive
+FAIL: crack.user.circleMxy.spacingPositive
+OK: crack.user.circleMxy.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.user.circleMxy.utilization; actual=0.; expected=0.; absDiff=0.
+DIAGNOSTIC: crack.user.coeffs; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.user.coeffs.converged
+FAIL: crack.user.coeffs.formed
+FAIL: crack.user.coeffs.tensionBars
+FAIL: crack.user.coeffs.sigmaPositive
+FAIL: crack.user.coeffs.spacingPositive
+OK: crack.user.coeffs.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.user.coeffs.utilization; actual=0.; expected=0.; absDiff=0.
+OK: crack.user.coeffs.phi1; actual=1.6; expected=1.6; absDiff=0.
+OK: crack.user.coeffs.phi2; actual=0.7; expected=0.7; absDiff=0.
+FAIL: crack.user.coeffs.phi3; actual=0.; expected=1.1; absDiff=1.1
+OK: crack.user.coeffs.psi; actual=0.8; expected=0.8; absDiff=0.
+FAIL: crack.user.coeffs.lambda
+FAIL: crack.user.coeffs.preCrackState
+FAIL: crack.user.coeffs.postCrackState
+FAIL: crack.user.coeffs.sigmaCrcAvailable
+DIAGNOSTIC: crack.cover.local; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.cover.local.converged
+FAIL: crack.cover.local.formed
+FAIL: crack.cover.local.tensionBars
+FAIL: crack.cover.local.sigmaPositive
+FAIL: crack.cover.local.spacingPositive
+OK: crack.cover.local.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.cover.local.utilization; actual=0.; expected=0.; absDiff=0.
+FAIL: crack.cover.local.mode
+DIAGNOSTIC: crack.cover.global; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.cover.global.converged
+FAIL: crack.cover.global.formed
+FAIL: crack.cover.global.tensionBars
+FAIL: crack.cover.global.sigmaPositive
+FAIL: crack.cover.global.spacingPositive
+OK: crack.cover.global.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.cover.global.utilization; actual=0.; expected=0.; absDiff=0.
+FAIL: crack.cover.global.mode
+DIAGNOSTIC: crack.zone.effective; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.zone.effective.converged
+FAIL: crack.zone.effective.formed
+FAIL: crack.zone.effective.tensionBars
+FAIL: crack.zone.effective.sigmaPositive
+FAIL: crack.zone.effective.spacingPositive
+OK: crack.zone.effective.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.zone.effective.utilization; actual=0.; expected=0.; absDiff=0.
+DIAGNOSTIC: crack.zone.full; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.zone.full.converged
+FAIL: crack.zone.full.formed
+FAIL: crack.zone.full.tensionBars
+FAIL: crack.zone.full.sigmaPositive
+FAIL: crack.zone.full.spacingPositive
+OK: crack.zone.full.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.zone.full.utilization; actual=0.; expected=0.; absDiff=0.
+FAIL: crack.zone.fullAbtPositive
+FAIL: crack.zone.effectiveAbtPositive
+OK: crack.zone.effectiveDepthFormula; actual=0.; expected=0.; absDiff=0.
+DIAGNOSTIC: crack.auto.pass; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.auto.pass.converged
+FAIL: crack.auto.pass.formed
+FAIL: crack.auto.pass.tensionBars
+FAIL: crack.auto.pass.sigmaPositive
+FAIL: crack.auto.pass.spacingPositive
+OK: crack.auto.pass.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.auto.pass.utilization; actual=0.; expected=0.; absDiff=0.
+OK: crack.auto.pass.psi; actual=1.; expected=1.; absDiff=0.
+FAIL: crack.auto.pass.lambda
+FAIL: crack.auto.pass.sigmaCrcAvailable
+FAIL: crack.auto.pass.preCrackState
+FAIL: crack.auto.pass.postCrackState
+DIAGNOSTIC: crack.alwaysCalc.pass; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.alwaysCalc.pass.converged
+FAIL: crack.alwaysCalc.pass.formed
+FAIL: crack.alwaysCalc.pass.tensionBars
+FAIL: crack.alwaysCalc.pass.sigmaPositive
+FAIL: crack.alwaysCalc.pass.spacingPositive
+OK: crack.alwaysCalc.pass.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.alwaysCalc.pass.utilization; actual=0.; expected=0.; absDiff=0.
+FAIL: crack.alwaysCalc.sigmaCrc
+FAIL: crack.alwaysCalc.psiReduced
+FAIL: crack.alwaysCalc.widthLessThanAuto
+DIAGNOSTIC: crack.sigmaCrcMode.allSelected; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.sigmaCrcMode.allSelected.converged
+FAIL: crack.sigmaCrcMode.allSelected.formed
+FAIL: crack.sigmaCrcMode.allSelected.tensionBars
+FAIL: crack.sigmaCrcMode.allSelected.sigmaPositive
+FAIL: crack.sigmaCrcMode.allSelected.spacingPositive
+OK: crack.sigmaCrcMode.allSelected.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.sigmaCrcMode.allSelected.utilization; actual=0.; expected=0.; absDiff=0.
+OK: crack.sigmaCrcMode.allSelected.normalized
+FAIL: crack.sigmaCrcMode.allSelected.sigmaCrcAvailable
+DIAGNOSTIC: crack.auto.fail; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.auto.fail.converged
+FAIL: crack.auto.fail.formed
+FAIL: crack.auto.fail.tensionBars
+FAIL: crack.auto.fail.sigmaPositive
+FAIL: crack.auto.fail.spacingPositive
+OK: crack.auto.fail.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.auto.fail.utilization; actual=0.; expected=0.; absDiff=0.
+FAIL: crack.auto.fail.lambda
+OK: crack.auto.fail.psiRange
+OK: crack.auto.fail.sigmaCrc
+FAIL: crack.auto.fail.psiReduced
+FAIL: crack.auto.fail.preCrackState
+FAIL: crack.auto.fail.postCrackState
+RUNTIME ERROR: 91; source=VBAProject; description=Object variable or With block variable not set
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

@@ -1666,6 +1666,15 @@ Private Sub TestPR2AxialCompressionBeyondPhysicalLimitUsesExtension(ByRef stats 
     AssertTrue stats, "batch.group2.extension.compression.directPhysical", batch.DirectStateStatus(1) <> "FAIL"
     AssertTrue stats, "batch.group2.extension.compression.used", batch.ExtensionUsed(1)
     AssertTrue stats, "batch.group2.extension.compression.crackFail", batch.CrackStatus(1) = "FAIL"
+    Dim formation As CCrackFormationResult
+    Set formation = batch.CrackResult(1).Formation
+    AssertTrue stats, "audit02.formation.physicalBlock.exists", Not formation Is Nothing
+    If Not formation Is Nothing Then
+        AssertTrue stats, "audit02.formation.physicalBlock.status", formation.ResultMeta.InternalStatus = rsCheckFailed
+        AssertTrue stats, "audit02.formation.physicalBlock.code", formation.ResultMeta.ResultCode = rcPhysicalLimitExceeded
+        AssertTrue stats, "audit02.formation.physicalBlock.noPoint", Not formation.HasLimitPoint
+        AssertTrue stats, "audit02.formation.physicalBlock.noPreState", formation.PreCrackState Is Nothing
+    End If
 
 Restore:
     SetSystemSetting "Solver.MaxIterations", oldMaxIterations
@@ -5042,4 +5051,92 @@ End Sub
 
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
+End Function
+
+' ============================== ДЛЯ ТЕСТОВ ==============================
+
+' Воспроизводит осевой RectSet-маршрут Off с полным численным журналом.
+' Возвращает диагностику без изменения ожидаемых значений штатных тестов;
+' все временные настройки восстанавливаются до выхода, в том числе при ошибке.
+Public Function RunAudit02OffAxialDiagnostic() As String
+    On Error GoTo Failed
+    Dim keys As Variant
+    keys = Array("General.DiagramExtension", "General.ExecutionReportEnabled", _
+        "Capacity.SolutionStrategy", "Capacity.BaseLoadSteps", "Capacity.MaxRetries")
+    Dim previous(0 To 4) As String
+    Dim i As Long
+    For i = 0 To 4
+        previous(i) = GetSystemSetting(CStr(keys(i)))
+    Next i
+    SetSystemSetting "General.DiagramExtension", "No"
+    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    SetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
+    SetSystemSetting "Capacity.BaseLoadSteps", "1"
+    SetSystemSetting "Capacity.MaxRetries", "0"
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+    Dim provider As CMaterialModelProvider
+    Set provider = New CMaterialModelProvider
+    provider.Initialize settings, units
+    Dim referenceX As Double
+    Dim referenceY As Double
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY, provider)
+    batch.ApplySettings settings, units
+    Dim report As CExecutionReport
+    Set report = New CExecutionReport
+    report.Initialize ThisWorkbook, settings
+    Set batch.ExecutionReport = report
+    batch.AddCombination "AUDIT02_OFF_N200", 200# * 9806.65, 0#, 0#, _
+        "PR1", "Off axial diagnostic", ChrW$(&H3BB) & "*N"
+    batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
+    batch.Execute
+    RunAudit02OffAxialDiagnostic = "STATUS: " & batch.CapacityStatus(1) & vbCrLf & _
+        batch.StrengthResult(1).Capacity.ResultMeta.ResultComment & vbCrLf & _
+        batch.StrengthResult(1).Capacity.DiagnosticLog
+Restore:
+    For i = 0 To 4
+        SetSystemSetting CStr(keys(i)), previous(i)
+    Next i
+    Exit Function
+Failed:
+    RunAudit02OffAxialDiagnostic = "RUNTIME ERROR: " & Err.Description
+    Resume Restore
+End Function
+
+' Воспроизводит formation-маршрут пакетного Г-сечения с полным журналом
+' общего Search. Использует тот же материал и ту же нагрузку, что regression;
+' временно включается только отчет, физические настройки не подменяются.
+Public Function RunAudit02FormationDiagnostic() As String
+    On Error GoTo Failed
+    Dim oldReport As String
+    oldReport = GetSystemSetting("General.ExecutionReportEnabled")
+    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    Dim referenceX As Double
+    Dim referenceY As Double
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY)
+    batch.ApplySettings settings
+    Dim report As CExecutionReport
+    Set report = New CExecutionReport
+    report.Initialize ThisWorkbook, settings
+    Set batch.ExecutionReport = report
+    batch.AddCombination "AUDIT02_FORMATION", 20# * 9806.65, 0#, 0#, "PR2", "Formation diagnostic"
+    batch.Execute
+    RunAudit02FormationDiagnostic = "STATUS: " & batch.CrackStatus(1) & vbCrLf & _
+        MetaDebugText(batch.CrackFormationMeta(1)) & vbCrLf & _
+        batch.CrackResult(1).Formation.DiagnosticLog
+Restore:
+    SetSystemSetting "General.ExecutionReportEnabled", oldReport
+    Exit Function
+Failed:
+    RunAudit02FormationDiagnostic = "RUNTIME ERROR: " & Err.Description
+    Resume Restore
 End Function

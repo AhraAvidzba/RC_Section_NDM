@@ -1,0 +1,6 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 27E14A75C438F9C4F1C08A623AA01769F29C0B8FB8AA8155688DF339E6A1728F
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_97d4d4a3162c4e2e80072674431b5701\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestCrackWidth.RunCrackWidthTests =====
+SCRIPT ERROR: Exception calling "Run" with "1" argument(s): "Application-defined or object-defined error"

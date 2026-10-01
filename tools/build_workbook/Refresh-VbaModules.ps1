@@ -114,6 +114,30 @@ function Remove-ImportedVbaComponents {
     }
 }
 
+# Создает читаемый снимок фактического VBA-проекта рядом с обновленной книгой.
+# Это экспорт сборочного артефакта, а не дополнительный источник исходников.
+function Export-VbaSnapshot {
+    param([object]$Workbook, [string]$Path)
+
+    $text = New-Object System.Text.StringBuilder
+    [void]$text.AppendLine("VBA PROJECT EXPORT")
+    [void]$text.AppendLine("Workbook: " + $Workbook.Name)
+    [void]$text.AppendLine("Date: " + (Get-Date -Format "yyyy-MM-dd HH:mm:ss"))
+    foreach ($component in $Workbook.VBProject.VBComponents) {
+        [void]$text.AppendLine("=" * 100)
+        [void]$text.AppendLine("COMPONENT: " + $component.Name)
+        [void]$text.AppendLine("TYPE: " + $component.Type)
+        $lineCount = $component.CodeModule.CountOfLines
+        [void]$text.AppendLine("LINES: " + $lineCount)
+        [void]$text.AppendLine("=" * 100)
+        if ($lineCount -gt 0) {
+            [void]$text.AppendLine($component.CodeModule.Lines(1, $lineCount))
+        }
+        [void]$text.AppendLine()
+    }
+    [System.IO.File]::WriteAllText($Path, $text.ToString(), (New-Object System.Text.UTF8Encoding($true)))
+}
+
 $root = Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "../..")
 $fullWorkbookPath = Join-Path $root $WorkbookPath
 
@@ -136,6 +160,7 @@ try {
     Remove-ImportedVbaComponents $workbook
     Import-VbaSourceTree $workbook $root
     $workbook.Save()
+    Export-VbaSnapshot $workbook (Join-Path (Split-Path $fullWorkbookPath) "VBA_All_Code.txt")
     Write-Output "VBA modules refreshed without changing worksheet data: $fullWorkbookPath"
 }
 finally {

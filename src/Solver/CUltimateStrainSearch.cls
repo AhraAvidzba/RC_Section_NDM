@@ -150,6 +150,7 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
                 RunNewton = True
                 Exit Function
             End If
+            If context.StoppedTerminally Then Exit Function
             ' Достижение внутренних residual-допусков не отменяет финальную
             ' проверку усилий: продолжаем уточнение той же физической точки.
         End If
@@ -175,6 +176,14 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
     hEps = MaxDouble(0.0000001, Abs(eps0) * 0.0001)
     hKx = MaxDouble(0.000000001, Abs(kx) * 0.0001)
     hKy = MaxDouble(0.000000001, Abs(ky) * 0.0001)
+    ' У самого предела крупная разностная проба пересекает переломы диаграмм
+    ' и дает производную другой активной ветви. Уменьшаем численный шаг
+    ' по близости к критерию, сохраняя нижнюю границу от round-off.
+    Dim differenceScale As Double
+    differenceScale = MinDouble(1#, MaxDouble(0.001, Abs(rLimit)))
+    hEps = hEps * differenceScale
+    hKx = hKx * differenceScale
+    hKy = hKy * differenceScale
 
     Dim j11 As Double, j21 As Double, j31 As Double
     Dim j12 As Double, j22 As Double, j32 As Double
@@ -188,8 +197,20 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
 
     Dim system As CLinearSystem3x3
     Set system = New CLinearSystem3x3
-    If Not system.Solve(j11, j12, j13, j21, j22, j23, j31, j32, j33, _
-            -rPath1, -rPath2, -rLimit) Then
+    ' Поправки epsilon0 и кривизн имеют разные масштабы. Решаем ту же
+    ' линейную систему в единицах шагов Якобиана и нормируем ее строки;
+    ' допуски нелинейного равновесия и физического критерия не меняются.
+    Dim rowScale1 As Double, rowScale2 As Double, rowScale3 As Double
+    rowScale1 = MaxDouble(Abs(j11 * hEps), MaxDouble(Abs(j12 * hKx), Abs(j13 * hKy)))
+    rowScale2 = MaxDouble(Abs(j21 * hEps), MaxDouble(Abs(j22 * hKx), Abs(j23 * hKy)))
+    rowScale3 = MaxDouble(Abs(j31 * hEps), MaxDouble(Abs(j32 * hKx), Abs(j33 * hKy)))
+    If rowScale1 <= 0# Then rowScale1 = 1#
+    If rowScale2 <= 0# Then rowScale2 = 1#
+    If rowScale3 <= 0# Then rowScale3 = 1#
+    If Not system.Solve(j11 * hEps / rowScale1, j12 * hKx / rowScale1, j13 * hKy / rowScale1, _
+            j21 * hEps / rowScale2, j22 * hKx / rowScale2, j23 * hKy / rowScale2, _
+            j31 * hEps / rowScale3, j32 * hKx / rowScale3, j33 * hKy / rowScale3, _
+            -rPath1 / rowScale1, -rPath2 / rowScale2, -rLimit / rowScale3) Then
         context.LimitSearchSetUltimateNumericalFailure _
             "NumericalFailure: матрица UltimateStrain вырождена: " & system.StopReason
         Exit Function
@@ -198,9 +219,9 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
     Dim dEps As Double
     Dim dKx As Double
     Dim dKy As Double
-    dEps = system.X1
-    dKx = system.X2
-    dKy = system.X3
+    dEps = system.X1 * hEps
+    dKx = system.X2 * hKx
+    dKy = system.X3 * hKy
     LimitUltimateIncrement context, dEps, dKx, dKy
 
     Dim baseNorm As Double
@@ -217,7 +238,11 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
         If context.LimitSearchEvaluateUltimateResidual(section, concreteMaterial, steelMaterial, _
                 loadPath, eps0 + alpha * dEps, kx + alpha * dKx, ky + alpha * dKy, _
                 trialSolver, trialR1, trialR2, trialRLimit, trialLambda, trialState) Then
-            If (Not context.LimitSearchUltimateLineSearchEnabled) Or _
+            ' Уже достигнутые допуски важнее колебания нормы на уровне
+            ' round-off. Итоговая приемка следующей итерации дополнительно
+            ' подтверждает все усилия и физическую допустимость точки.
+            If context.LimitSearchUltimateResidualReached(trialR1, trialR2, trialRLimit) Or _
+                    (Not context.LimitSearchUltimateLineSearchEnabled) Or _
                     context.LimitSearchUltimateResidualNorm(trialR1, trialR2, trialRLimit) < baseNorm Then
                 eps0 = eps0 + alpha * dEps
                 kx = kx + alpha * dKx

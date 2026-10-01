@@ -138,8 +138,10 @@ Public Property Get MaterialModelRoleText() As String
     MaterialModelRoleText = MaterialModelRoleToText(mMaterialModelRole)
 End Property
 
+' Выдает независимую небольшую спецификацию, не копируя расчетную сетку.
+' Внешний потребитель не может изменить модель уже сохраненного состояния.
 Public Property Get MaterialSpec() As CMaterialModelSpec
-    Set MaterialSpec = mMaterialSpec
+    If Not mMaterialSpec Is Nothing Then Set MaterialSpec = mMaterialSpec.Clone
 End Property
 
 Public Property Get Epsilon0() As Double
@@ -174,9 +176,18 @@ Public Property Get Status() As String
     Status = mStatus
 End Property
 
+' Возвращает снимок метаданных. Неинициализированный State не является
+' успешным равновесием; его отсутствие означает внутреннюю ошибку контракта.
 Public Property Get ResultMeta() As CResultMeta
-    If mResultMeta Is Nothing Then Set mResultMeta = BuildSuccessMeta(mStateType, mStopReason)
-    Set ResultMeta = mResultMeta
+    If mResultMeta Is Nothing Then
+        Dim missing As CResultMeta
+        Set missing = New CResultMeta
+        missing.SetResult rsInternalError, rcInternalError, ResultKindFromStateType(mStateType), _
+            "Расчетное состояние не заполнено."
+        Set ResultMeta = missing
+    Else
+        Set ResultMeta = mResultMeta.Clone
+    End If
 End Property
 
 Public Property Get InternalStatus() As EResultInternalStatus

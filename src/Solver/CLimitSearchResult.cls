@@ -26,6 +26,8 @@ Private mActualMethod As String ' Метод, который фактическ�
 Private mResultKind As EResultKind ' Инженерный контекст результата.
 Private mSucceeded As Boolean ' True, если search-слой получил корректный результат для своей задачи.
 
+Private mHasLimitPoint As Boolean ' Есть фактически найденная точка, не просто корректный исход без точки.
+Private mPointState As CSectionStateResult ' Подтвержденный неизменяемый State найденной точки, если определен.
 Private mSearchExecuted As Boolean ' True, если численный search действительно запускался.
 Private mConverged As Boolean ' Итоговый флаг сходимости физической limit-точки.
 Private mStopReason As String ' Техническая причина остановки search.
@@ -46,6 +48,8 @@ End Sub
 
 ' Сбрасывает численный снимок limit-search перед заполнением результата.
 Private Sub ResetSearchSnapshot()
+    mHasLimitPoint = False
+    Set mPointState = Nothing
     mSearchExecuted = False
     mConverged = False
     mStopReason = vbNullString
@@ -68,6 +72,7 @@ Private Sub CaptureCapacitySnapshot(ByVal cap As CCapacitySolver)
 
     mSearchExecuted = True
     mConverged = cap.Converged
+    mHasLimitPoint = cap.Converged And cap.LambdaUltimate > 0#
     mStopReason = cap.StopReason
     mLimitState = cap.LimitState
     mLambdaUltimate = cap.LambdaUltimate
@@ -86,18 +91,20 @@ End Sub
 ' Сохраняет найденную crack-точку и диагностику, независимо от того,
 ' достигнута ли эта точка текущим сочетанием. Состояние до трещины, когда
 ' оно доступно, является источником полного внутреннего вектора усилий.
-Private Sub CaptureCrackSnapshot(ByVal crack As CCrackWidthCalculator)
+Private Sub CaptureCrackSnapshot(ByVal crack As CCrackFormationCalculator)
     ResetSearchSnapshot
     If crack Is Nothing Then Exit Sub
 
     mSearchExecuted = True
-    mConverged = crack.Converged
+    mHasLimitPoint = crack.HasLimitPoint
+    mConverged = crack.Converged And mHasLimitPoint
     mStopReason = crack.StopReason
     mLimitState = crack.StopReason
     mLambdaUltimate = crack.LambdaCrc
-    mNUltimate = crack.FormationNcrc
+    If mHasLimitPoint Then crack.PointLoads mNUltimate, mMxUltimate, mMyUltimate
     mMomentUltimate = crack.Mcrc
     If Not crack.PreCrackState Is Nothing Then
+        Set mPointState = crack.PreCrackState
         mNUltimate = crack.PreCrackState.Nint
         mMxUltimate = crack.PreCrackState.Mxint
         mMyUltimate = crack.PreCrackState.Myint
@@ -153,10 +160,10 @@ Private Function CapacityInitialLambdaRejectedComment(ByVal stopReason As String
         CapacityInitialLambdaRejectedComment = "Несущая способность не проходит уже для исходной части выбранного пути."
 End Function
 
-' Заполняет result по уже выполненному CCrackWidthCalculator в стадии
+' Заполняет result по уже выполненному CCrackFormationCalculator в стадии
 ' образования трещины. Формульная ширина здесь не оценивается: речь только о
 ' search-результате Ncrc/Mcrc и связанных состояниях.
-Public Sub InitializeFromCrackFormation(ByVal crack As CCrackWidthCalculator, _
+Public Sub InitializeFromCrackFormation(ByVal crack As CCrackFormationCalculator, _
         ByVal requestedStrategy As String, ByVal searchSucceeded As Boolean)
     mRequestedStrategy = requestedStrategy
     mResultKind = rkCrackFormation
@@ -168,6 +175,7 @@ Public Sub InitializeFromCrackFormation(ByVal crack As CCrackWidthCalculator, _
         mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, _
             "Не передан результат выполненного поиска образования трещины."
     ElseIf crack.CrackFormationInternalStatus <> rsUnset Then
+        mActualMethod = crack.FormationSolutionMethod
         mMeta.SetResult crack.CrackFormationInternalStatus, crack.CrackFormationResultCode, _
             rkCrackFormation, crack.StopReason
     ElseIf searchSucceeded Then
@@ -273,4 +281,14 @@ End Property
 ' Возвращает подробную диагностику search как сохраненный снимок.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
+End Property
+
+' Различает найденную точку и успешный исход без предельной точки.
+Public Property Get HasLimitPoint() As Boolean
+    HasLimitPoint = mHasLimitPoint
+End Property
+
+' Возвращает готовое НДС точки без обращения к рабочему калькулятору.
+Public Property Get PointState() As CSectionStateResult
+    Set PointState = mPointState
 End Property

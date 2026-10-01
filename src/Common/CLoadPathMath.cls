@@ -113,25 +113,29 @@ Public Sub BuildResiduals(ByVal nValue As Double, ByVal mxValue As Double, _
     anchor = AnchorComponent(loadPath)
     loadPath.Target lambdaValue, targetNValue, targetMxValue, targetMyValue
 
+    ' Масштаб определяется заданной нагрузкой, не пробной невязкой.
+    ' Иначе при нулевом target отношение M / (|M|*relativeTolerance)
+    ' становится константой и численный Якобиан теряет уравнение момента.
+
     If Abs(loadPath.NBase) <= mBaseTolerance Then _
         AddResidual residualCount, rPath1, rPath2, _
-            (nValue - loadPath.NOffset) / ComponentTolerance(1, loadPath.NOffset, nValue)
+            (nValue - loadPath.NOffset) / ComponentTolerance(1, loadPath.NOffset, loadPath.NOffset)
     If Abs(loadPath.MxBase) <= mBaseTolerance Then _
         AddResidual residualCount, rPath1, rPath2, _
-            (mxValue - loadPath.MxOffset) / ComponentTolerance(2, loadPath.MxOffset, mxValue)
+            (mxValue - loadPath.MxOffset) / ComponentTolerance(2, loadPath.MxOffset, loadPath.MxOffset)
     If Abs(loadPath.MyBase) <= mBaseTolerance Then _
         AddResidual residualCount, rPath1, rPath2, _
-            (myValue - loadPath.MyOffset) / ComponentTolerance(3, loadPath.MyOffset, myValue)
+            (myValue - loadPath.MyOffset) / ComponentTolerance(3, loadPath.MyOffset, loadPath.MyOffset)
 
     If residualCount < 2 And Abs(loadPath.NBase) > mBaseTolerance And anchor <> 1 Then _
         AddResidual residualCount, rPath1, rPath2, _
-            (nValue - targetNValue) / ComponentTolerance(1, targetNValue, nValue)
+            (nValue - targetNValue) / ComponentTolerance(1, targetNValue, targetNValue)
     If residualCount < 2 And Abs(loadPath.MxBase) > mBaseTolerance And anchor <> 2 Then _
         AddResidual residualCount, rPath1, rPath2, _
-            (mxValue - targetMxValue) / ComponentTolerance(2, targetMxValue, mxValue)
+            (mxValue - targetMxValue) / ComponentTolerance(2, targetMxValue, targetMxValue)
     If residualCount < 2 And Abs(loadPath.MyBase) > mBaseTolerance And anchor <> 3 Then _
         AddResidual residualCount, rPath1, rPath2, _
-            (myValue - targetMyValue) / ComponentTolerance(3, targetMyValue, myValue)
+            (myValue - targetMyValue) / ComponentTolerance(3, targetMyValue, targetMyValue)
 End Sub
 
 ' Возвращает норму системы load-path + limit. Последний множитель сохраняет

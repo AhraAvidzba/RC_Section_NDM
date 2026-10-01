@@ -966,41 +966,6 @@ Public Sub StoreSectionStateResult(ByVal stateResult As CSectionStateResult)
     StateIterations = stateResult.IterationCount
 End Sub
 
-' Копирует инженерные величины расчета трещин из специализированного
-' calculator-а в результат LC. Пользовательский CrackStatus выставляет
-' CBatchStatusPolicy, поэтому здесь он не определяется.
-Public Sub StoreCrackResult(ByVal crack As CCrackWidthCalculator)
-    CrackWidth = crack.CrackWidth
-    CrackAllowableValue = crack.AllowableCrackWidth
-    CrackUtil = crack.Utilization
-    CrackFormed = crack.CrackFormed
-    CrackPhi1 = crack.Phi1
-    CrackPhi2 = crack.Phi2
-    CrackPhi3 = crack.Phi3
-    CrackPsiS = crack.PsiS
-    CrackSigmaS = crack.SigmaS
-    CrackSigmaSCrc = crack.SigmaSCrc
-    CrackAs = crack.AsTension
-    CrackAbt = crack.Abt
-    CrackDsEquivalent = crack.DsEquivalent
-    CrackLsRaw = crack.CrackSpacingRaw
-    CrackLs = crack.CrackSpacing
-    CrackLambdaCrc = crack.LambdaCrc
-    CrackFormationMethod = crack.CrackFormationMethod
-    CrackNcrc = crack.Ncrc
-    CrackFormationNcrc = crack.FormationNcrc
-    CrackMcrc = crack.Mcrc
-    CrackAred = crack.Ared
-    CrackRbtSer = crack.RbtSer
-    CrackTensionRebarCount = crack.TensionRebarCount
-    CrackTensionRebarIds = crack.TensionRebarIds
-    CrackSectionDepthH = crack.SectionDepthH
-    CrackCoverA = crack.CoverA
-    CrackTensionDepth = crack.TensionDepth
-    CrackEffectiveZoneDepth = crack.EffectiveZoneDepth
-    CrackCentralBranch = crack.CentralTensionBranch
-End Sub
-
 ' Сохраняет новый структурированный результат трещин и одновременно обновляет
 ' существующие плоские поля, которые пока читают writer-ы Results.
 Public Sub StoreCrackAggregateResult(ByVal crackResult As CCrackResult)

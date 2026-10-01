@@ -81,7 +81,7 @@ End Sub
 ' Заполняет request для поиска стадии образования нормальной трещины.
 ' На вход уже приходят материалы модели CrackInitiation; общий LimitSearch
 ' не выбирает профили и не знает о листе Config.
-Public Sub InitializeCrackFormation(ByVal crackCalculator As CCrackWidthCalculator, _
+Public Sub InitializeCrackFormation(ByVal crackCalculator As CCrackFormationCalculator, _
         ByVal section As CSectionModel, ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal solutionStrategy As String, ByVal crackFormationPath As String, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _

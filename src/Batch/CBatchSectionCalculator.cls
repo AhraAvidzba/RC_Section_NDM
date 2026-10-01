@@ -1117,7 +1117,6 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     Dim crack As CCrackWidthCalculator
     Set crack = New CCrackWidthCalculator
     ConfigureCrackCalculator crack
-    Set crack.StateProvider = CreateStateProvider(index)
     ReportStep "Запускается проверка образования нормальной трещины."
     ReportValue "Путь образования трещины", mCrackFormationPath
     ReportValue "Стратегия поиска образования трещины", mCrackFormationSolutionStrategy
@@ -1136,11 +1135,14 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     ' CSectionLoadState, поэтому здесь нет ручной формулы N*dx/dy.
     Dim formationCalculator As CCrackFormationCalculator
     Set formationCalculator = New CCrackFormationCalculator
+    ConfigureCrackFormationCalculator formationCalculator
+    Set formationCalculator.StateProvider = CreateStateProvider(index)
     Dim formationResult As CCrackFormationResult
-    Set formationResult = formationCalculator.CheckFormation(crack, mStatusPolicy, mSection, _
+    Set formationResult = formationCalculator.CheckFormation(mSection, _
         mMaterialProvider, profile.CrackedStateSpec, profile.CrackInitiationSpec, _
         mInputs(index).N, mInputs(index).Mx, mInputs(index).My, loadState, _
         crackReferenceX, crackReferenceY)
+    crack.InitializeForFormation formationResult
     mResults(index).CrackStatus = mStatusPolicy.StatusFromMeta(mStatusPolicy.CrackMetaFromCalculator(crack))
     StoreCrackAggregateSnapshot index, crack, formationResult
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
@@ -1151,7 +1153,8 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     ReportValue "Ncrc", ReportForceText(mResults(index).CrackFormationNcrc)
     ReportValue "Mxy,crc", ReportMomentMagnitudeText(mResults(index).CrackMcrc)
     ReportValue "Причина остановки поиска трещины", crack.StopReason
-    ReportCrackFormationChoice crack
+    ReportCrackFormationChoice formationResult
+    ReportBlock "Диагностика образования трещины", formationResult.DiagnosticLog
 
     ReportStep "Запускается текущее CrackedState полного сочетания по профилю трещин."
     Dim runner As CStateSolutionRunner
@@ -1192,22 +1195,9 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
         GoTo ReportCrackResult
     End If
 
-    Dim widthSolver As CSectionSolver
-    Set widthSolver = SolverForCurrentCrackedState(index, currentCrackedState, runner)
-    If widthSolver Is Nothing Then
-        blockReason = "CurrentCrackedState найден, но не удалось подготовить данные для формул трещин."
-        Set crackWidthMetaOverride = mStatusPolicy.BlockedByDependencyMeta(rkCrackWidth, _
-            "CurrentCrackedState", blockReason)
-        StoreCrackAggregateSnapshot index, crack, formationResult, currentStateMeta, _
-            crackWidthMetaOverride, longitudinalResult
-        ReportStep "Расчет ширины трещин не продолжается: " & blockReason
-        GoTo ReportCrackResult
-    End If
-
     ReportStep "Запускается расчет ширины раскрытия нормальных трещин."
-    crack.CalculateAfterFormationCheck widthSolver, mSection, mMaterialProvider, profile.CrackedStateSpec, _
-        profile.CrackInitiationSpec, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
-        loadState, crackReferenceX, crackReferenceY
+    crack.Calculate currentCrackedState, mSection, mMaterialProvider, profile.CrackedStateSpec, _
+        formationResult, loadState
     mResults(index).CrackStatus = mStatusPolicy.StatusFromMeta(mStatusPolicy.CrackMetaFromCalculator(crack))
     StoreCrackAggregateSnapshot index, crack, formationResult, currentStateMeta, _
         longitudinalResult:=longitudinalResult
@@ -1286,22 +1276,6 @@ Private Function CurrentCrackedStateReady(ByVal stateResult As CSectionStateResu
     CurrentCrackedStateReady = True
 End Function
 
-' Возвращает solver с данными CurrentCrackedState для формул трещин. При обычном
-' solve используется свежий runner, а при cache-hit state восстанавливается по
-' сохраненной плоскости деформаций без повторного поиска равновесия.
-Private Function SolverForCurrentCrackedState(ByVal index As Long, ByVal stateResult As CSectionStateResult, _
-        ByVal runner As CStateSolutionRunner) As CSectionSolver
-    If Not runner Is Nothing Then
-        If Not runner.ResultSolver Is Nothing Then
-            Set SolverForCurrentCrackedState = runner.ResultSolver
-            Exit Function
-        End If
-    End If
-    Dim provider As CStateProvider
-    Set provider = CreateStateProvider(index)
-    Set SolverForCurrentCrackedState = provider.SolverSnapshot(stateResult)
-End Function
-
 ' Возвращает meta состояния CrackedState даже тогда, когда CStateProvider не смог
 ' создать готовый CSectionStateResult. Это позволяет сохранить причину отказа
 ' в result-tree и не подменять ее статусом формульного расчета ширины трещины.
@@ -1369,12 +1343,12 @@ End Sub
 ' Поясняет итог выбора пути образования трещины для текущего LC. Это не заменяет
 ' DiagnosticLog solver-а, а переводит ключевой результат Auto/резервного
 ' нормальный инженерный язык прямо в отчете.
-Private Sub ReportCrackFormationChoice(ByVal crack As CCrackWidthCalculator)
+Private Sub ReportCrackFormationChoice(ByVal crack As CCrackFormationResult)
     If crack Is Nothing Then Exit Sub
 
-    If Len(crack.CrackFormationMethod) > 0 Then
+    If Len(crack.FormationMethod) > 0 Then
         ReportStep "Трещинообразование: принята точка по пути " & _
-            crack.CrackFormationMethod & ". По этой точке записаны Ncrc/Mxy,crc и состояния PreCrackState/PostCrackState, если они применимы."
+            crack.FormationMethod & ". По этой точке записаны Ncrc/Mxy,crc и состояния PreCrackState/PostCrackState, если они применимы."
     ElseIf crack.CrackFormed And crack.Converged Then
         ReportStep "Трещинообразование: нормальная трещина считается образованной, но выбранный путь не дал отдельную расчетную точку образования трещины. Для этой проверки принят резервный вариант " & _
             ChrW$(&H3C8) & "s = 1; причина указана в CrackFormationStopReason и диагностике ниже."
@@ -1578,22 +1552,28 @@ Private Sub ConfigureCrackCalculator(ByVal crack As CCrackWidthCalculator)
     crack.PsiS = mCrackPsiS
     crack.TensionZoneMode = mCrackTensionZoneMode
     crack.CoverMode = mCrackCoverDistanceMode
-    crack.CrackFormationPath = mCrackFormationPath
-    crack.CrackFormationSolutionStrategy = mCrackFormationSolutionStrategy
-    crack.SolverLoadSteps = mSolverLoadSteps
-    crack.SolverMethod = mSolverMethod
-    crack.SolverMaxIterations = mSolverMaxIterations
-    crack.SolverToleranceN = mSolverToleranceN
-    crack.SolverToleranceMx = mSolverToleranceMx
-    crack.SolverToleranceMy = mSolverToleranceMy
-    crack.SolverLineSearchEnabled = mSolverLineSearchEnabled
-    crack.SolverDampingInitial = mSolverDampingInitial
-    crack.SolverMinLineSearchAlpha = mSolverMinLineSearchAlpha
-    crack.SolverMaxDeltaEpsilon0 = mSolverMaxDeltaEpsilon0
-    crack.SolverMaxDeltaKappa = mSolverMaxDeltaKappa
-    crack.SolverSecantMaxRestarts = mSolverSecantMaxRestarts
-    crack.SolverSecantMinStepNorm = mSolverSecantMinStepNorm
     crack.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
+End Sub
+
+' Передает formation-настройки его владельцу. Width не хранит solver-options
+' и не участвует в поиске Pre/PostCrackState или выборе физического пути.
+Private Sub ConfigureCrackFormationCalculator(ByVal formation As CCrackFormationCalculator)
+    formation.CrackFormationPath = mCrackFormationPath
+    formation.CrackFormationSolutionStrategy = mCrackFormationSolutionStrategy
+    formation.SolverLoadSteps = mSolverLoadSteps
+    formation.SolverMethod = mSolverMethod
+    formation.SolverMaxIterations = mSolverMaxIterations
+    formation.SolverToleranceN = mSolverToleranceN
+    formation.SolverToleranceMx = mSolverToleranceMx
+    formation.SolverToleranceMy = mSolverToleranceMy
+    formation.SolverLineSearchEnabled = mSolverLineSearchEnabled
+    formation.SolverDampingInitial = mSolverDampingInitial
+    formation.SolverMinLineSearchAlpha = mSolverMinLineSearchAlpha
+    formation.SolverMaxDeltaEpsilon0 = mSolverMaxDeltaEpsilon0
+    formation.SolverMaxDeltaKappa = mSolverMaxDeltaKappa
+    formation.SolverSecantMaxRestarts = mSolverSecantMaxRestarts
+    formation.SolverSecantMinStepNorm = mSolverSecantMinStepNorm
+    formation.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
 End Sub
 
 ' Проверяет, нужен ли подробный журнал внутренних итераций.

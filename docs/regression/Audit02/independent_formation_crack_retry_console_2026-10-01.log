@@ -1,0 +1,5 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 575E52F26105BEFE58B0F65175D5F75A83410C303E4644F6C4BC1E543B8641DB
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d6e61d0e287d46eabb85f53cba2747a9\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+SCRIPT ERROR: Exception calling "Run" with "1" argument(s): "Application-defined or object-defined error"

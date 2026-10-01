@@ -22,11 +22,11 @@
 | ID | Статус | Комментарий |
 | --- | --- | --- |
 | R01-R09 | в работе | R01 подтвержден интеграционным cache-hit тестом без нового solve. R06: EvaluateStrainPlane отделен от проверки равновесия. Полная приемка R02/R03/R08 не пройдена; R04/R05/R07 остаются открытыми. |
-| A01-A08 | в работе | DomainContext/downcasts удалены; успешный Search отделен от инженерного FAIL. Formation остается в Width, контракты Search и flat-дубли еще требуют завершения. |
+| A01-A08 | в работе | DomainContext/downcasts удалены; успешный Search отделен от инженерного FAIL. Formation перенесен к существующему владельцу, отдельный crack suite 360/0; полная интеграционная приемка в работе. Контракты Search и flat-дубли открыты. |
 | E01-E10 | в работе | General.DiagramExtension действует на расширенные материалы текущих маршрутов. E02 проверен на временных и рабочей книгах; полная матрица и API cleanup не завершены. |
 | S01-S07 | в работе | S03/S04: warning-код постоянной части и успех порога выше текущего LC сохранены; направленные тесты прошли. Полная статусная приемка открыта. |
 | C01-C06 | в работе | Cache-hit и shared runner проверены частично; snapshots, scoped invalidation и transient probe-cache требуют завершения. |
-| Q01-Q08 | в работе | Baseline и последний current full suite прошли. Явный baseline Off, полная On/Off матрица, output и performance acceptance остаются открытыми. |
+| Q01-Q08 | в работе | Baseline On и explicit Off прошли. После Formation переноса повторяется current full suite; полная численная On/Off матрица, output и performance acceptance остаются открытыми. |
 | D01-D02 | в работе | Источник Config и справка глобального Extension обновлены; архитектурные документы и все текущие API-комментарии еще не завершены. |
 | W01-W06 | в работе | Baseline и входные изменения сохранены; тестовые логи и точка продолжения записаны, готовится первый проверенный Audit02 checkpoint. |
 
@@ -66,6 +66,21 @@
 ## Current
 
 - Работа возобновлена. Новое указание пользователя: больше не приостанавливать цель для перезагрузки без нового явного запроса.
+- Проверенный checkpoint: `799bcd8`, `Audit02 checkpoint: state fixes and global extension migration`; push не выполнялся.
+- Baseline Off на независимой копии завершился с exit 0: `baseline_off_all_tests_2026-10-01.txt`, все 8 suites без ошибок. Каждый suite начинается со свежего открытия Off-копии; исторический UI explicit-On сохраняет свой setup, изменения отбрасываются при закрытии.
+- Current Off выявил 7 Capacity-регрессий в batch для осевого RectSet. Ожидания и tolerance сохранены. Простое масштабирование retained-плоскости вывело все стержни на плато и не подтвердило путь. Старт общего Newton с нулевой деформацией на противоположном краю сохранил активную жесткость и подтвердил физический предел: `off_axial_zero_anchor_2026-10-01.txt`, lambda=3.932502306007, N/Mx/My подтверждены. Последующий полный Off прошел, все 7 регрессий устранены.
+- Добавлена изоляция небольших spec/meta-снимков State и StateRequest; 11 новых проверок `audit02.stateSnapshot.*` прошли в последнем Off suite. Волокна не копируются при getters.
+- R05/A03 реализован в исходниках: Formation владеет search/context/settings, Pre/Post states и Auto-путями; Width принимает FormationResult и CSectionStateResult, не решает НДС. Adapter/request/result переведены на Formation. Новых production-классов нет. Неиспользуемый StoreCrackResult удален. Width уменьшился примерно с 2865 до 1250 строк по ответственности, а не удалением комментариев. Профильный crack suite `formation_warm_start_tests_2026-10-01.txt`: 360/0, включая Formation-only, reuse и actual-method assertions.
+- Первые два crack-прогона выявили ошибки переноса End Function/End Sub и отсутствующий IsZeroLoadProbe; исправлены, константа CRACK_DIRECTION_TOLERANCE сохранена равной исходному 0.001. Последующие прогоны компилируются, но численная приемка не проходит.
+- Фактический дефект финализации: верхняя точка LoadMultiplier имеет epsBmax=0.000150123682 при физическом пределе 0.00015. Ранее такая точка могла использоваться шириной. После проверки диапазона она правильно отклоняется; нельзя убрать проверку ради старого green suite.
+- Добавлено уточнение точки общим UltimateStrain Newton по тому же пути/критерию и более строгая внутренняя точность критерия 1e-9. Физические пределы и test expected/tolerance НЕ менялись. Последний прогон `formation_boundary_refinement_tests_2026-10-01.txt` завершился exit 1: Newton line search не улучшил невязку, Pre/Post не созданы, далее старый тест доступа к отсутствующему Post получает runtime 91. Это открытый численный дефект, не внешняя проблема Excel.
+- Уточняющий Newton игнорировал переданный startSolver. Исправлен приоритет уже найденной плоскости; после этого crack suite прошел. Первый full On после переноса выявил batch 635/34 и UI 297/11 (`formation_full_on_2026-10-01.txt`), поэтому перенос еще не принят по полной интеграции.
+- Подробный batch-журнал выявил насыщение нормированной невязки нулевого момента: M/(|M|*relativeTolerance) теряло производную. BuildResiduals теперь нормируется по target, не actual. Общий Newton масштабирует строки/столбцы той же линейной системы, уменьшает разностный шаг около предела и принимает достигнутые допуски перед сравнением round-off нормы. Финальные абсолютные допуски, физические пределы и старые test expected/tolerance не менялись. Добавлены `audit02.pathResidual.*`.
+- Исправлена утечка sentinel +/-1e100 у отсутствующего знака напряжений из CSectionSolver в physical snapshot; добавлены `audit02.stressSign.*`. Это устраняет ложную огромную проверку продольных трещин при отсутствии сжатого бетона.
+- `formation_accepted_diagnostic_2026-10-01.txt`: пакетный RectSet-порог найден, rsSuccess/CHECK_PASSED, текущий LC еще не достиг его, статус OK. Full On/Off `formation_finalization_full_*` выявили последний физический отказ Formation, который последующая численная проба неверно заменяла NumFail.
+- Подтвержденный сошедшимся НДС предел другого материала до порога трещины теперь сохраняется как rsCheckFailed/rcPhysicalLimitExceeded. Неподтвержденная плоскость не используется для такого вывода; Auto может попробовать следующий путь. Все retry-ветви проверяют один и тот же физический критерий.
+- Полные On и Off `formation_independent_full_*_2026-10-01.txt` завершились с exit 0: geometry 496/0, materials 1191/0, section 444/0, capacity 972/0, crack 360/0, batch 669/0, UI 308/0, regression 39/0. On: capacity 44.496 s, batch 17.949 s; Off: capacity 45.391 s, batch 18.723 s. Performance Capacity против baseline остается открытым.
+- Перед checkpoint добавлены 5 assertions физического отказа Formation и отсутствия фиктивной точки/PreState; `formation_checkpoint_batch_2026-10-01.txt`: 674/0, exit 0. Structural validation также прошла (`formation_checkpoint_validation_2026-10-01.log`). Refresh автоматически формирует читаемый UTF-8 экспорт фактического VBA-проекта; исходный входной экспорт сохранен в HEAD 799bcd8.
 - Последний refresh: `docs/regression/Audit02/refresh_search_semantics_2026-10-01.log`, exit 0. Полный suite: `docs/regression/Audit02/current_search_semantics_all_tests_2026-10-01.txt`, exit 0; structural validation также прошла, область печати присутствует.
 - Totals: geometry 496/0, materials 1191/0, section 423/0, capacity 972/0, crack 344/0, batch 669/0, workbook UI 308/0, regression 39/0. Capacity 43.996 s, crack 4.227 s, batch 18.582 s, UI 24.695 s.
 - Миграция E02 проверена 179 assertions: old/new/both/missing/invalid, сохранение No, warning, соседние настройки/таблицы, validation/help, вставка/перенос строки, идемпотентность и save/reopen. Лог: `docs/regression/Audit02/diagram_extension_migration_2026-10-01.txt`.
@@ -151,6 +166,7 @@
 ## Important Decisions
 
 - Не начинать новые архитектурные задачи за пределами `docs/NDM_Audit02_Implementation_Spec_2026-10-01.md`.
+- Пользователь разрешил самостоятельно закрывать ошибки и принудительно завершать Excel при зависании тестов; на момент разрешения активных пользовательских книг нет. Перед завершением процесса проверить, что это восстановление тестового прогона, а не обычное закрытие с потерей новых пользовательских данных.
 - Не откатывать входные изменения в `workbook/output/*` и новый spec-файл.
 - Любое изменение статуса должно проходить через `InternalStatus/ResultCode -> CResultStatusPolicy -> ExternalStatus`, без маппинга по тексту комментария.
 - `NumFail` допустим только для state/search routes, где реально решалось равновесие или предельная точка.
@@ -167,7 +183,7 @@
 - AutoCAD smoke-проверки могут остаться ручными, если AutoCAD недоступен.
 - Full Excel tests могут требовать закрытого workbook; при зависшем Excel действовать по правилам `AGENTS.md`.
 
-## Last Verified
+## Historical Last Verified Before Checkpoint 799bcd8
 
 - `git rev-parse HEAD`: `855626e69b07f21dc636771416c501097d077ec9`.
 - Dirty-tree включает исходники, тесты, SettingsCatalog, документацию и generated workbook/export/report; ничего не откатывалось.
@@ -180,12 +196,12 @@
 
 ## How To Continue
 
-1. После перезагрузки прочитать `git status`, `git diff`, `git log`, этот progress и Audit02 spec; восстановить принятые решения, не начинать работу заново.
-2. Сначала проверить компиляцию и capacity/crack/batch suite после typed Ultimate-правок, включая новый `TestAudit02GenericUltimateSearch`. Предыдущий capacity suite уже прошел 962/0; 10 batch FAIL остаются открытыми.
-3. Разобрать batch FAIL: подтверждение осевого предела RectSet N=200 без принятия несошедшейся плоскости, CurrentCrackedState для Auto/N и group1 extension. Проверить все вызовы EvaluateStrainPlane/ConfirmEquilibrium и state flags. Сопоставить локальный probe-cache с baseline, сохранив повторный solve с другим warm-start/policy.
-4. Продолжить реализацию по Audit02: реальные formation owner и generic Search без DomainContext/downcasts, canonical typed result tree без flat/proxy дублей, проверяемые признаки состояния и общий state pipeline.
-5. Выполнить полный контракт General.DiagramExtension, миграцию настройки, матрицу On/Off, статусы, документацию, output/smoke и performance checks по всем ID spec.
-6. После полной проверки выполнить self-audit, создать final report с доказательствами по всем требованиям и сделать итоговый коммит. До этого цель не считать завершенной.
+1. Восстановить контекст по Current, spec и Git; HEAD=799bcd8. Не останавливаться для перезагрузки без явного нового запроса.
+2. Дождаться `formation_finalization_full_on` и закрыть оставшиеся интеграционные ошибки, если появятся. Не снимать physical guards и не ослаблять expected/tolerance. Профильный Formation suite 360/0 уже подтвержден.
+3. Выполнить полный current Off: осевой диагностический seed с нулем на противоположном краю подтвердил физический предел, но семь regression-ветвей еще должны пройти. Baseline Off подтвержден exit 0.
+4. После согласованного зеленого блока - full suite, scoped checkpoint, затем единый generic bracket/контракт и переход всех flat/proxy consumers на typed tree.
+5. Завершить оставшиеся C/S/E/Q/D требования, On/Off численные сравнения, snapshots, output/performance и полную финальную сборку.
+6. Финальный self-audit каждого ID и final report только после приемки; непроверенную реализацию не объявлять завершенной.
 
 ### Следующие диагностические чтения
 

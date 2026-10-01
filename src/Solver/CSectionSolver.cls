@@ -825,6 +825,14 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
             End If
         Next i
     End If
+    If buildTangent Then
+        ' У отсутствующего знака напряжения нет экстремума. Служебные
+        ' границы поиска не должны попадать в физический snapshot.
+        If Not mHasConcreteCompression Then mMinConcreteStress = 0#
+        If Not mHasConcreteTension Then mMaxConcreteStress = 0#
+        If Not mHasSteelCompression Then mMinSteelStress = 0#
+        If Not mHasSteelTension Then mMaxSteelStress = 0#
+    End If
 End Sub
 
 ' Очищает касательную матрицу перед новой сборкой производных равновесия.

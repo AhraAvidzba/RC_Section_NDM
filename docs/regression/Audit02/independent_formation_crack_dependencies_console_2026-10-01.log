@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 86043933C84E8A5026CB0B01FF4D46B17CD66E59B3E44EBF654E4D0E3F44E0A3
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_ea2f4e14a8d54e79920fc18cbb32ae86\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+RUNTIME ERROR: 91; source=VBAProject; description=Object variable or With block variable not set
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

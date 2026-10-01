@@ -1,0 +1,345 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: D0ECEDB29A22AE8A3745EA9700B093645F71873FB0B41845668F2F99EB568013
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_ddb0745d0c864bb5b2df49ae28a26628\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit02FormationDiagnostic =====
+STATUS: NumFail
+rsNumericalFailure/NUMERICAL_FAILURE/line search UltimateStrain не улучшил невязку.
+Auto-путь: начинаем поиск образования нормальной трещины. Порядок попыток: λ*Mxy -> λ*N -> λ*NMxy.
+Auto-путь: попытка 1 из 3 - пробуем λ*Mxy.
+UltimateStrain: начинаем прямой поиск точки образования трещины по eps_bt,ult; путь λ*Mxy.
+lambda_crc_path_iter=1.; rPath1=0.000004006482; rPath2=-0.002508207899; rLimit=-0.128475502506; eps_bt_ult=0.00015; Nint=196133.000000001; Mxint=-0.000000005268; Myint=-0.000000250821; eps0=0.000142485307; kx=-0.000000193747; ky=-0.000000276518
+lambda_crc_path_iter=0.994014614853; rPath1=5422507.66854283; rPath2=-6104444.89252702; rLimit=-0.127808835839; eps_bt_ult=0.00015; Nint=197202.331152931; Mxint=374255.388216165; Myint=251099.87264951; eps0=0.000142585307; kx=-0.000000193747; ky=-0.000000276518
+lambda_crc_path_iter=0.969049588461; rPath1=18724420.3178991; rPath2=-518992339.830265; rLimit=-0.128308835839; eps_bt_ult=0.00015; Nint=199875.553882162; Mxint=1935273.67119288; Myint=628394.048668678; eps0=0.000142485307; kx=-0.000000192747; ky=-0.000000276518
+lambda_crc_path_iter=0.989950230448; rPath1=12640697.6430014; rPath2=525090794.895554; rLimit=-0.128308835839; eps_bt_ult=0.00015; Nint=198643.998726498; Mxint=628394.048668936; Myint=893221.479703818; eps0=0.000142485307; kx=-0.000000193747; ky=-0.000000275518
+lambda_crc_path_iter=1.253002496495; rPath1=-17267136.6097579; rPath2=826829954.922129; rLimit=0.; eps_bt_ult=0.00015; Nint=192746.344695318; Mxint=-15819791.9143544; Myint=-1849316.39175934; eps0=0.000163564777; kx=-0.000000231353; ky=-0.000000311238
+lambda_crc_path_iter=1.125984289265; rPath1=-7332598.43039615; rPath2=832355792.634092; rLimit=-0.064237751253; eps_bt_ult=0.00015; Nint=194694.835472051; Mxint=-7877571.44004395; Myint=-891494.328439024; eps0=0.000153025042; kx=-0.00000021255; ky=-0.000000293878
+lambda_crc_path_iter=1.062885016478; rPath1=-3409849.48187847; rPath2=835085431.645093; rLimit=-0.096356626879; eps_bt_ult=0.00015; Nint=195464.215991571; Mxint=-3932087.18886062; Myint=-437743.639071463; eps0=0.000147755175; kx=-0.000000203149; ky=-0.000000285198
+lambda_crc_path_iter=1.031392831266; rPath1=-1596300.49110812; rPath2=838432014.577566; rLimit=-0.112416064692; eps_bt_ult=0.00015; Nint=195819.912795777; Mxint=-1962937.38246402; Myint=-214091.506470335; eps0=0.000145120241; kx=-0.000000198448; ky=-0.000000280858
+lambda_crc_path_iter=1.01569818167; rPath1=-801462.137375417; rPath2=838410978.452931; rLimit=-0.120445783599; eps_bt_ult=0.00015; Nint=195975.80682661; Mxint=-981579.118349432; Myint=-107071.736086433; eps0=0.000143802774; kx=-0.000000196097; ky=-0.000000278688
+lambda_crc_path_iter=1.007849090835; rPath1=-400731.068685409; rPath2=838410978.45253; rLimit=-0.124460643052; eps_bt_ult=0.00015; Nint=196054.403413306; Mxint=-490789.559174748; Myint=-53535.8680433524; eps0=0.000143144041; kx=-0.000000194922; ky=-0.000000277603
+UltimateStrain: быстрый старт не дал устойчивую точку образования трещины: line search UltimateStrain не улучшил невязку.
+UltimateStrain: пробуем дополнительный старт от полного НДС CrackInitiation.
+directStateRetry=directStateActiveSet / direct target; result=converged
+
+lambda_crc_path_iter=1.; rPath1=0.000004006482; rPath2=-0.002508207899; rLimit=-0.128475502506; eps_bt_ult=0.00015; Nint=196133.000000001; Mxint=-0.000000005268; Myint=-0.000000250821; eps0=0.000142485307; kx=-0.000000193747; ky=-0.000000276518
+lambda_crc_path_iter=0.994014614853; rPath1=5422507.66854283; rPath2=-6104444.89252702; rLimit=-0.127808835839; eps_bt_ult=0.00015; Nint=197202.331152931; Mxint=374255.388216165; Myint=251099.87264951; eps0=0.000142585307; kx=-0.000000193747; ky=-0.000000276518
+lambda_crc_path_iter=0.969049588461; rPath1=18724420.3178991; rPath2=-518992339.830265; rLimit=-0.128308835839; eps_bt_ult=0.00015; Nint=199875.553882162; Mxint=1935273.67119288; Myint=628394.048668678; eps0=0.000142485307; kx=-0.000000192747; ky=-0.000000276518
+lambda_crc_path_iter=0.989950230448; rPath1=12640697.6430014; rPath2=525090794.895554; rLimit=-0.128308835839; eps_bt_ult=0.00015; Nint=198643.998726498; Mxint=628394.048668936; Myint=893221.479703818; eps0=0.000142485307; kx=-0.000000193747; ky=-0.000000275518
+lambda_crc_path_iter=1.253002496495; rPath1=-17267136.6097579; rPath2=826829954.922129; rLimit=0.; eps_bt_ult=0.00015; Nint=192746.344695318; Mxint=-15819791.9143544; Myint=-1849316.39175934; eps0=0.000163564777; kx=-0.000000231353; ky=-0.000000311238
+lambda_crc_path_iter=1.125984289265; rPath1=-7332598.43039615; rPath2=832355792.634092; rLimit=-0.064237751253; eps_bt_ult=0.00015; Nint=194694.835472051; Mxint=-7877571.44004395; Myint=-891494.328439024; eps0=0.000153025042; kx=-0.00000021255; ky=-0.000000293878
+lambda_crc_path_iter=1.062885016478; rPath1=-3409849.48187847; rPath2=835085431.645093; rLimit=-0.096356626879; eps_bt_ult=0.00015; Nint=195464.215991571; Mxint=-3932087.18886062; Myint=-437743.639071463; eps0=0.000147755175; kx=-0.000000203149; ky=-0.000000285198
+lambda_crc_path_iter=1.031392831266; rPath1=-1596300.49110812; rPath2=838432014.577566; rLimit=-0.112416064692; eps_bt_ult=0.00015; Nint=195819.912795777; Mxint=-1962937.38246402; Myint=-214091.506470335; eps0=0.000145120241; kx=-0.000000198448; ky=-0.000000280858
+lambda_crc_path_iter=1.01569818167; rPath1=-801462.137375417; rPath2=838410978.452931; rLimit=-0.120445783599; eps_bt_ult=0.00015; Nint=195975.80682661; Mxint=-981579.118349432; Myint=-107071.736086433; eps0=0.000143802774; kx=-0.000000196097; ky=-0.000000278688
+lambda_crc_path_iter=1.007849090835; rPath1=-400731.068685409; rPath2=838410978.45253; rLimit=-0.124460643052; eps_bt_ult=0.00015; Nint=196054.403413306; Mxint=-490789.559174748; Myint=-53535.8680433524; eps0=0.000143144041; kx=-0.000000194922; ky=-0.000000277603
+UltimateStrain не дал точку образования трещины: line search UltimateStrain не улучшил невязку.
+Пробуем LoadMultiplier по тому же пути образования трещины.
+LoadMultiplier: начинаем подбор lambda_crc пробными расчетами НДС; путь λ*Mxy.
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.; residual=-0.850459051632; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.; residual=-0.128475502506; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=2.; residual=0.970345357455; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.5; residual=0.395300936309; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.25; residual=0.123951748092; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.125; residual=-0.00525193655; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.1875; residual=0.058793774914; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.15625; residual=0.026700105417; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.140625; residual=0.010703247879; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.1328125; residual=0.002716211767; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.12890625; residual=-0.001278223898; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.130859375; residual=0.000719452739; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.1298828125; residual=-0.000279127154; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.13037109375; residual=0.000220262982; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.130126953125; residual=-0.000029352968; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.130249023438; residual=0.000095465543; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.130187988281; residual=0.000033066823; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.130157470703; residual=0.000001867463; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.130142211914; residual=-0.000013742082; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.130149841309; residual=-0.000005936638; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.130153656006; residual=-0.000002033917; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.130155563354; residual=-0.000000082556; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.130156517029; residual=0.000000892483; result=converged
+lambda_crc_path_iter=1.130156517029; rPath1=-0.000000593553; rPath2=0.00000033904; rLimit=0.000000892483; eps_bt_ult=0.00015; Nint=196133.; Mxint=-8138453.35211704; Myint=-5493884.95696655; eps0=0.000163621114; kx=-0.000000224552; ky=-0.000000320287
+lambda_crc_path_iter=1.124239101485; rPath1=5304532.4591736; rPath2=-449860.235941705; rLimit=0.00066755915; eps_bt_ult=0.00015; Nint=197178.942098628; Mxint=-7768447.98115651; Myint=-5246472.0092481; eps0=0.000163721114; kx=-0.000000224552; ky=-0.000000320287
+lambda_crc_path_iter=1.099408373537; rPath1=18485651.5768706; rPath2=-138900221.038264; rLimit=0.00016755915; eps_bt_ult=0.00015; Nint=199826.931022558; Mxint=-6215827.13880708; Myint=-4872851.01193372; eps0=0.000163621114; kx=-0.000000223552; ky=-0.000000320287
+lambda_crc_path_iter=1.12021501881; rPath1=12457405.1480286; rPath2=91889617.9054322; rLimit=0.00016755915; eps_bt_ult=0.00015; Nint=198607.129477184; Mxint=-7516829.31549869; Myint=-4607984.52686489; eps0=0.000163621114; kx=-0.000000224552; ky=-0.000000319287
+lambda_crc_path_iter=1.130155602883; rPath1=87.655016705082; rPath2=1048.7619329938; rLimit=0.; eps_bt_ult=0.00015; Nint=196133.017192043; Mxint=-8138396.19224221; Myint=-5493840.60930144; eps0=0.000163620967; kx=-0.000000224552; ky=-0.000000320287
+lambda_crc_path_iter=1.130156059956; rPath1=43.827510125004; rPath2=524.379129166624; rLimit=0.000000446242; eps_bt_ult=0.00015; Nint=196133.008596021; Mxint=-8138424.77217956; Myint=-5493862.78313393; eps0=0.000163621041; kx=-0.000000224552; ky=-0.000000320287
+lambda_crc_path_iter=1.130156288492; rPath1=21.913755616909; rPath2=262.189099976845; rLimit=0.000000669362; eps_bt_ult=0.00015; Nint=196133.004298011; Mxint=-8138439.06214829; Myint=-5493873.87005026; eps0=0.000163621077; kx=-0.000000224552; ky=-0.000000320287
+lambda_crc_path_iter=1.130156402761; rPath1=10.956877780119; rPath2=131.094434218532; rLimit=0.000000780923; eps_bt_ult=0.00015; Nint=196133.002149005; Mxint=-8138446.20713265; Myint=-5493879.41350841; eps0=0.000163621096; kx=-0.000000224552; ky=-0.000000320287
+lambda_crc_path_iter=1.130156459895; rPath1=5.478438845879; rPath2=65.547194015269; rLimit=0.000000836703; eps_bt_ult=0.00015; Nint=196133.001074503; Mxint=-8138449.77962485; Myint=-5493882.18523745; eps0=0.000163621105; kx=-0.000000224552; ky=-0.000000320287
+lambda_crc_path_iter=1.130156488462; rPath1=2.739219727219; rPath2=32.773588882051; rLimit=0.000000864593; eps_bt_ult=0.00015; Nint=196133.000537251; Mxint=-8138451.56587093; Myint=-5493883.571102; eps0=0.000163621109; kx=-0.000000224552; ky=-0.000000320287
+Auto-путь: λ*Mxy не дал точку образования трещины: line search UltimateStrain не улучшил невязку.
+Auto-путь: попытка 2 из 3 - пробуем λ*N.
+UltimateStrain: начинаем прямой поиск точки образования трещины по eps_bt,ult; путь λ*N.
+initialGuess=directStateActiveSet
+
+lambda_crc_path_iter=1.; rPath1=0.000004154871; rPath2=-0.002461350732; rLimit=-0.128475502506; eps_bt_ult=0.00015; Nint=196133.000000001; Mxint=-0.000000005268; Myint=-0.000000250821; eps0=0.000142485307; kx=-0.000000193747; ky=-0.000000276518
+lambda_crc_path_iter=1.005985385147; rPath1=-530140.483123672; rPath2=-6104444.89252702; rLimit=-0.127808835839; eps_bt_ult=0.00015; Nint=197202.331152931; Mxint=374255.388216165; Myint=251099.87264951; eps0=0.000142585307; kx=-0.000000193747; ky=-0.000000276518
+lambda_crc_path_iter=1.030950411539; rPath1=-11512384.1538473; rPath2=-518992339.830265; rLimit=-0.128308835839; eps_bt_ult=0.00015; Nint=199875.553882162; Mxint=1935273.67119288; Myint=628394.048668678; eps0=0.000142485307; kx=-0.000000192747; ky=-0.000000276518
+lambda_crc_path_iter=1.010049769552; rPath1=2717964.18954454; rPath2=525090794.895549; rLimit=-0.128308835839; eps_bt_ult=0.00015; Nint=198643.998726498; Mxint=628394.048668936; Myint=893221.479703818; eps0=0.000142485307; kx=-0.000000193747; ky=-0.000000275518
+lambda_crc_path_iter=1.729558926299; rPath1=-2559183.28525197; rPath2=86965924.5459099; rLimit=0.; eps_bt_ult=0.00015; Nint=338355.445573565; Mxint=45618009.9532667; Myint=33727723.7327333; eps0=0.000162254267; kx=-0.000000204914; ky=-0.000000285257
+lambda_crc_path_iter=1.370569608403; rPath1=-171404.825680782; rPath2=88423067.9886879; rLimit=-0.064237751253; eps_bt_ult=0.00015; Nint=268767.853000279; Mxint=23171052.3648477; Myint=17158926.5234037; eps0=0.000152369787; kx=-0.00000019933; ky=-0.000000280888
+lambda_crc_path_iter=1.186498513503; rPath1=228654.048966855; rPath2=88822247.6599284; rLimit=-0.096356626879; eps_bt_ult=0.00015; Nint=232764.735548037; Mxint=11661417.2461591; Myint=8639446.30574557; eps0=0.000147427547; kx=-0.000000196539; ky=-0.000000278703
+lambda_crc_path_iter=1.093555393337; rPath1=220333.38785828; rPath2=88837154.9548062; rLimit=-0.112416064692; eps_bt_ult=0.00015; Nint=214529.567987888; Mxint=5849850.79421017; Myint=4333975.67631078; eps0=0.000144956427; kx=-0.000000195143; ky=-0.000000277611
+lambda_crc_path_iter=1.046822412283; rPath1=149780.036646803; rPath2=90091347.448995; rLimit=-0.120445783599; eps_bt_ult=0.00015; Nint=205347.177095939; Mxint=2927721.384181; Myint=2172049.06986242; eps0=0.000143720867; kx=-0.000000194445; ky=-0.000000277065
+lambda_crc_path_iter=1.023431680543; rPath1=93043.9636286678; rPath2=90979480.0838564; rLimit=-0.124460643052; eps_bt_ult=0.00015; Nint=200747.404134058; Mxint=1465140.91965588; Myint=1088036.32110524; eps0=0.000143103087; kx=-0.000000194096; ky=-0.000000276792
+UltimateStrain: быстрый старт не дал устойчивую точку образования трещины: line search UltimateStrain не улучшил невязку.
+UltimateStrain: пробуем дополнительный старт от полного НДС CrackInitiation.
+directStateRetry=directStateActiveSet / direct target; result=converged
+
+lambda_crc_path_iter=1.; rPath1=0.000004154871; rPath2=-0.002461350732; rLimit=-0.128475502506; eps_bt_ult=0.00015; Nint=196133.000000001; Mxint=-0.000000005268; Myint=-0.000000250821; eps0=0.000142485307; kx=-0.000000193747; ky=-0.000000276518
+lambda_crc_path_iter=1.005985385147; rPath1=-530140.483123672; rPath2=-6104444.89252702; rLimit=-0.127808835839; eps_bt_ult=0.00015; Nint=197202.331152931; Mxint=374255.388216165; Myint=251099.87264951; eps0=0.000142585307; kx=-0.000000193747; ky=-0.000000276518
+lambda_crc_path_iter=1.030950411539; rPath1=-11512384.1538473; rPath2=-518992339.830265; rLimit=-0.128308835839; eps_bt_ult=0.00015; Nint=199875.553882162; Mxint=1935273.67119288; Myint=628394.048668678; eps0=0.000142485307; kx=-0.000000192747; ky=-0.000000276518
+lambda_crc_path_iter=1.010049769552; rPath1=2717964.18954454; rPath2=525090794.895549; rLimit=-0.128308835839; eps_bt_ult=0.00015; Nint=198643.998726498; Mxint=628394.048668936; Myint=893221.479703818; eps0=0.000142485307; kx=-0.000000193747; ky=-0.000000275518
+lambda_crc_path_iter=1.729558926299; rPath1=-2559183.28525197; rPath2=86965924.5459099; rLimit=0.; eps_bt_ult=0.00015; Nint=338355.445573565; Mxint=45618009.9532667; Myint=33727723.7327333; eps0=0.000162254267; kx=-0.000000204914; ky=-0.000000285257
+lambda_crc_path_iter=1.370569608403; rPath1=-171404.825680782; rPath2=88423067.9886879; rLimit=-0.064237751253; eps_bt_ult=0.00015; Nint=268767.853000279; Mxint=23171052.3648477; Myint=17158926.5234037; eps0=0.000152369787; kx=-0.00000019933; ky=-0.000000280888
+lambda_crc_path_iter=1.186498513503; rPath1=228654.048966855; rPath2=88822247.6599284; rLimit=-0.096356626879; eps_bt_ult=0.00015; Nint=232764.735548037; Mxint=11661417.2461591; Myint=8639446.30574557; eps0=0.000147427547; kx=-0.000000196539; ky=-0.000000278703
+lambda_crc_path_iter=1.093555393337; rPath1=220333.38785828; rPath2=88837154.9548062; rLimit=-0.112416064692; eps_bt_ult=0.00015; Nint=214529.567987888; Mxint=5849850.79421017; Myint=4333975.67631078; eps0=0.000144956427; kx=-0.000000195143; ky=-0.000000277611
+lambda_crc_path_iter=1.046822412283; rPath1=149780.036646803; rPath2=90091347.448995; rLimit=-0.120445783599; eps_bt_ult=0.00015; Nint=205347.177095939; Mxint=2927721.384181; Myint=2172049.06986242; eps0=0.000143720867; kx=-0.000000194445; ky=-0.000000277065
+lambda_crc_path_iter=1.023431680543; rPath1=93043.9636286678; rPath2=90979480.0838564; rLimit=-0.124460643052; eps_bt_ult=0.00015; Nint=200747.404134058; Mxint=1465140.91965588; Myint=1088036.32110524; eps0=0.000143103087; kx=-0.000000194096; ky=-0.000000276792
+UltimateStrain не дал точку образования трещины: line search UltimateStrain не улучшил невязку.
+Пробуем LoadMultiplier по тому же пути образования трещины.
+LoadMultiplier: начинаем подбор lambda_crc пробными расчетами НДС; путь λ*N.
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=0.; residual=-0.315428952354; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.; residual=-0.128475502506; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=2.; residual=0.112231580945; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.5; residual=-0.015538148404; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.75; residual=0.046516236926; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.625; residual=0.015027359997; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.5625; residual=-0.000355348064; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.59375; residual=0.007307080586; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.578125; residual=0.003446867047; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.5703125; residual=0.001542214107; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.56640625; residual=0.000593562922; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.564453125; residual=0.00011923733; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.5634765625; residual=-0.000118011747; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.56396484375; residual=0.000000655932; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.563720703125; residual=-0.000058677668; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.563842773438; residual=-0.000029010628; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.563903808594; residual=-0.000014177108; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.563934326172; residual=-0.000006760348; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.563949584961; residual=-0.000003051968; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.563957214355; residual=-0.000001197778; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.563961029053; residual=-0.000000270683; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.563962936401; residual=0.000000192723; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.563961982727; residual=-0.00000003891; result=converged
+lambda_crc_path_iter=1.563962936401; rPath1=0.000000189759; rPath2=0.000000312987; rLimit=0.000000192723; eps_bt_ult=0.00015; Nint=306744.742605209; Mxint=35263589.983816; Myint=23804781.8373656; eps0=0.000162586729; kx=-0.000000207685; ky=-0.000000295783
+lambda_crc_path_iter=1.569706167254; rPath1=-379225.098951542; rPath2=-111220.642329699; rLimit=0.00066685939; eps_bt_ult=0.00015; Nint=307754.427223366; Mxint=35622703.8987272; Myint=24044528.1120173; eps0=0.000162686729; kx=-0.000000207685; ky=-0.000000295783
+lambda_crc_path_iter=1.594035355234; rPath1=-7394322.53505627; rPath2=-26490978.3164467; rLimit=0.00016685939; eps_bt_ult=0.00015; Nint=310331.153618687; Mxint=37143964.3472793; Myint=24409895.3089284; eps0=0.000162586729; kx=-0.000000206685; ky=-0.000000295783
+lambda_crc_path_iter=1.573655712156; rPath1=1616274.19988075; rPath2=18513064.8258413; rLimit=0.00016685939; eps_bt_ult=0.00015; Nint=309145.47965514; Mxint=35869661.8512514; Myint=24670641.4763786; eps0=0.000162586729; kx=-0.000000207685; ky=-0.000000294783
+lambda_crc_path_iter=1.563962149977; rPath1=-2.663111511673; rPath2=-12.640225451186; rLimit=0.; eps_bt_ult=0.00015; Nint=306744.58754456; Mxint=35263540.8101171; Myint=23804748.3416297; eps0=0.000162586699; kx=-0.000000207685; ky=-0.000000295783
+lambda_crc_path_iter=1.563962543189; rPath1=-1.331555041537; rPath2=-6.320108944988; rLimit=0.000000096362; eps_bt_ult=0.00015; Nint=306744.665074884; Mxint=35263565.3969665; Myint=23804765.0894976; eps0=0.000162586714; kx=-0.000000207685; ky=-0.000000295783
+lambda_crc_path_iter=1.563962739795; rPath1=-0.665776772916; rPath2=-3.160053527344; rLimit=0.000000144542; eps_bt_ult=0.00015; Nint=306744.703840047; Mxint=35263577.6903912; Myint=23804773.4634316; eps0=0.000162586722; kx=-0.000000207685; ky=-0.000000295783
+lambda_crc_path_iter=1.563962838098; rPath1=-0.332888460414; rPath2=-1.580026253521; rLimit=0.000000168633; eps_bt_ult=0.00015; Nint=306744.723222628; Mxint=35263583.8371037; Myint=23804777.6503987; eps0=0.000162586725; kx=-0.000000207685; ky=-0.000000295783
+lambda_crc_path_iter=1.56396288725; rPath1=-0.166444509615; rPath2=-0.790014075115; rLimit=0.000000180678; eps_bt_ult=0.00015; Nint=306744.732913919; Mxint=35263586.9104597; Myint=23804779.7438821; eps0=0.000162586727; kx=-0.000000207685; ky=-0.000000295783
+lambda_crc_path_iter=1.563962911826; rPath1=-0.083221779102; rPath2=-0.395005690151; rLimit=0.000000186701; eps_bt_ult=0.00015; Nint=306744.737759564; Mxint=35263588.4471379; Myint=23804780.7906239; eps0=0.000162586728; kx=-0.000000207685; ky=-0.000000295783
+Auto-путь: λ*N не дал точку образования трещины: line search UltimateStrain не улучшил невязку.
+Auto-путь: попытка 3 из 3 - пробуем λ*NMxy.
+UltimateStrain: начинаем прямой поиск точки образования трещины по eps_bt,ult; путь λ*NMxy.
+lambda_crc_path_iter=1.; rPath1=0.000451691449; rPath2=-0.00202566639; rLimit=-0.128475502506; eps_bt_ult=0.00015; Nint=196133.000000001; Mxint=0.000000045169; Myint=-0.000000202567; eps0=0.000142485307; kx=-0.000000193747; ky=-0.000000276518
+lambda_crc_path_iter=1.005452071568; rPath1=1000000000.; rPath2=1000000000.; rLimit=-0.127808835839; eps_bt_ult=0.00015; Nint=197202.331152931; Mxint=374255.388216232; Myint=251099.872649568; eps0=0.000142585307; kx=-0.000000193747; ky=-0.000000276518
+lambda_crc_path_iter=1.019081714358; rPath1=1000000000.; rPath2=1000000000.; rLimit=-0.128308835839; eps_bt_ult=0.00015; Nint=199875.553882163; Mxint=1935273.67119293; Myint=628394.048668728; eps0=0.000142485307; kx=-0.000000192747; ky=-0.000000276518
+lambda_crc_path_iter=1.012802530561; rPath1=1000000000.; rPath2=1000000000.; rLimit=-0.128308835839; eps_bt_ult=0.00015; Nint=198643.998726499; Mxint=628394.048668986; Myint=893221.479703876; eps0=0.000142485307; kx=-0.000000193747; ky=-0.000000275518
+lambda_crc_path_iter=2.22415467435; rPath1=1000000000.; rPath2=-1000000000.; rLimit=47.878219500995; eps_bt_ult=0.00015; Nint=436230.128744371; Mxint=2018953458.58068; Myint=-1337657294.81618; eps0=0.000165253544; kx=0.000009578571; ky=-0.000010276518
+lambda_crc_path_iter=1.985350266157; rPath1=1000000000.; rPath2=-1000000000.; rLimit=23.390504814046; eps_bt_ult=0.00015; Nint=389392.703752136; Mxint=1816682538.46347; Myint=-1177688423.99901; eps0=0.000153869425; kx=0.000004692412; ky=-0.000005276518
+lambda_crc_path_iter=1.631970909863; rPath1=1000000000.; rPath2=-1000000000.; rLimit=11.146647470572; eps_bt_ult=0.00015; Nint=320083.350464123; Mxint=1227479462.99991; Myint=-765189150.967746; eps0=0.000148177366; kx=0.000002249333; ky=-0.000002776518
+lambda_crc_path_iter=0.517074758796; rPath1=1000000000.; rPath2=-1000000000.; rLimit=5.024718798835; eps_bt_ult=0.00015; Nint=101415.42366699; Mxint=649148464.666455; Myint=-494445399.76591; eps0=0.000145331337; kx=0.000001027793; ky=-0.000001526518
+lambda_crc_path_iter=1.034886023253; rPath1=1000000000.; rPath2=-1000000000.; rLimit=1.963754462966; eps_bt_ult=0.00015; Nint=202975.30039876; Mxint=383262471.423036; Myint=-262364284.261503; eps0=0.000143908322; kx=0.000000417023; ky=-0.000000901518
+lambda_crc_path_iter=1.543976463058; rPath1=1000000000.; rPath2=-1000000000.; rLimit=0.433272295032; eps_bt_ult=0.00015; Nint=302824.735629014; Mxint=251985853.941649; Myint=-116117475.014302; eps0=0.000143196815; kx=0.000000111638; ky=-0.000000589018
+UltimateStrain: быстрый старт не дал устойчивую точку образования трещины: line search UltimateStrain не улучшил невязку.
+UltimateStrain: пробуем дополнительный старт от полного НДС CrackInitiation.
+directStateRetry=directStateActiveSet / direct target; result=converged
+
+lambda_crc_path_iter=1.; rPath1=-0.000052677933; rPath2=-0.002508207899; rLimit=-0.128475502506; eps_bt_ult=0.00015; Nint=196133.000000001; Mxint=-0.000000005268; Myint=-0.000000250821; eps0=0.000142485307; kx=-0.000000193747; ky=-0.000000276518
+lambda_crc_path_iter=1.005452071568; rPath1=1000000000.; rPath2=1000000000.; rLimit=-0.127808835839; eps_bt_ult=0.00015; Nint=197202.331152931; Mxint=374255.388216165; Myint=251099.87264951; eps0=0.000142585307; kx=-0.000000193747; ky=-0.000000276518
+lambda_crc_path_iter=1.019081714358; rPath1=1000000000.; rPath2=1000000000.; rLimit=-0.128308835839; eps_bt_ult=0.00015; Nint=199875.553882162; Mxint=1935273.67119288; Myint=628394.048668678; eps0=0.000142485307; kx=-0.000000192747; ky=-0.000000276518
+lambda_crc_path_iter=1.012802530561; rPath1=1000000000.; rPath2=1000000000.; rLimit=-0.128308835839; eps_bt_ult=0.00015; Nint=198643.998726498; Mxint=628394.048668936; Myint=893221.479703818; eps0=0.000142485307; kx=-0.000000193747; ky=-0.000000275518
+lambda_crc_path_iter=2.305017955483; rPath1=1000000000.; rPath2=-1000000000.; rLimit=48.391870743857; eps_bt_ult=0.00015; Nint=452090.086662772; Mxint=2024379171.0643; Myint=-1334558207.73141; eps0=0.000153839071; kx=0.000009692715; ky=-0.000010276518
+lambda_crc_path_iter=2.091129187686; rPath1=1000000000.; rPath2=-1000000000.; rLimit=23.647330435477; eps_bt_ult=0.00015; Nint=410139.44096844; Mxint=1824670770.70122; Myint=-1173524204.51142; eps0=0.000148162189; kx=0.000004749484; ky=-0.000005276518
+lambda_crc_path_iter=1.788652534124; rPath1=1000000000.; rPath2=-1000000000.; rLimit=11.275060281287; eps_bt_ult=0.00015; Nint=350813.787475431; Mxint=1244967259.82699; Myint=-760736801.531794; eps0=0.000145323748; kx=0.000002277869; ky=-0.000002776518
+lambda_crc_path_iter=0.596270862241; rPath1=1000000000.; rPath2=-1000000000.; rLimit=5.088925204192; eps_bt_ult=0.00015; Nint=116948.393023817; Mxint=657971999.108145; Myint=-492113382.282635; eps0=0.000143904528; kx=0.000001042061; ky=-0.000001526518
+lambda_crc_path_iter=1.075255651229; rPath1=1000000000.; rPath2=-1000000000.; rLimit=1.995857665645; eps_bt_ult=0.00015; Nint=210893.116642572; Mxint=387737200.138566; Myint=-261150883.285855; eps0=0.000143194918; kx=0.000000424157; ky=-0.000000901518
+lambda_crc_path_iter=1.566779569828; rPath1=1000000000.; rPath2=-1000000000.; rLimit=0.449323896371; eps_bt_ult=0.00015; Nint=307297.177368995; Mxint=254496760.92336; Myint=-115404266.330834; eps0=0.000142840113; kx=0.000000115205; ky=-0.000000589018
+UltimateStrain не дал точку образования трещины: line search UltimateStrain не улучшил невязку.
+Пробуем LoadMultiplier по тому же пути образования трещины.
+LoadMultiplier: начинаем подбор lambda_crc пробными расчетами НДС; путь λ*NMxy.
+directStateRetry=directStateActiveSet / direct target; result=converged
+
+lambda_crc_load_probe=1.; residual=-0.128475502506; result=converged
+initialGuess=warmStartSolver
+directStateRetry=directStateActiveSet / direct target; result=converged
+
+lambda_crc_load_probe=2.; residual=1.284993343389; result=converged
+initialGuess=warmStartSolver
+directStateRetry=directStateActiveSet / direct target; result=converged
+
+lambda_crc_load_probe=1.5; residual=0.53547679979; result=converged
+initialGuess=warmStartSolver
+directStateRetry=directStateActiveSet / direct target; result=converged
+
+lambda_crc_load_probe=1.25; residual=0.186413766661; result=converged
+initialGuess=warmStartSolver
+directStateRetry=directStateActiveSet / direct target; result=converged
+
+lambda_crc_load_probe=1.125; residual=0.023906406028; result=converged
+initialGuess=warmStartSolver
+directStateRetry=directStateActiveSet / direct target; result=converged
+
+lambda_crc_load_probe=1.0625; residual=-0.053883970508; result=converged
+initialGuess=warmStartSolver
+directStateRetry=directStateActiveSet / direct target; result=converged
+
+lambda_crc_load_probe=1.09375; residual=-0.015386046934; result=converged
+initialGuess=warmStartSolver
+directStateRetry=directStateActiveSet / direct target; result=converged
+
+lambda_crc_load_probe=1.109375; residual=0.004206220908; result=converged
+initialGuess=warmStartSolver
+directStateRetry=directStateActiveSet / direct target; result=converged
+
+lambda_crc_load_probe=1.1015625; residual=-0.00562243919; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.10546875; residual=-0.000709091633; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.107421875; residual=0.001746324842; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.1064453125; residual=0.000518871683; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.10595703125; residual=-0.000094923189; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.106201171875; residual=0.000212008394; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.106079101563; residual=0.000058576749; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.106018066406; residual=-0.000018152133; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.106048583984; residual=0.000020218838; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.106033325195; residual=0.000001039882; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.106025695801; residual=-0.000008555751; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.106029510498; residual=-0.00000375756; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.106031417847; residual=-0.000001358465; result=converged
+initialGuess=warmStartSolver
+
+lambda_crc_load_probe=1.106032371521; residual=-0.000000158917; result=converged
+lambda_crc_path_iter=1.106033325195; rPath1=0.000335858203; rPath2=0.000217274874; rLimit=0.000001039882; eps_bt_ult=0.00015; Nint=216929.634170532; Mxint=0.000000033586; Myint=0.000000021727; eps0=0.000163429129; kx=-0.000000221409; ky=-0.00000031575
+lambda_crc_path_iter=1.111346385681; rPath1=1000000000.; rPath2=1000000000.; rLimit=0.000667706549; eps_bt_ult=0.00015; Nint=217971.700662829; Mxint=368319.339271004; Myint=247012.895268078; eps0=0.000163529129; kx=-0.000000221409; ky=-0.00000031575
+lambda_crc_path_iter=1.124805711069; rPath1=1000000000.; rPath2=1000000000.; rLimit=0.000167706549; eps_bt_ult=0.00015; Nint=220611.518529038; Mxint=1917718.13606507; Myint=619552.832015511; eps0=0.000163429129; kx=-0.000000220409; ky=-0.00000031575
+lambda_crc_path_iter=1.118567409948; rPath1=1000000000.; rPath2=1000000000.; rLimit=0.000167706549; eps_bt_ult=0.00015; Nint=219387.981815383; Mxint=618505.60465288; Myint=881590.19283929; eps0=0.000163429129; kx=-0.000000221409; ky=-0.00000031475
+lambda_crc_path_iter=-10.357761726139; rPath1=-1000000000.; rPath2=1000000000.; rLimit=4.064107700805; eps_bt_ult=0.00015; Nint=-2031498.88063274; Mxint=-1600724402.07253; Myint=26357962.9144061; eps0=0.000163428921; kx=-0.00000164555; ky=0.000001108393
+lambda_crc_path_iter=-5.667841296837; rPath1=-1000000000.; rPath2=1000000000.; rLimit=1.45317992773; eps_bt_ult=0.00015; Nint=-1111650.71707249; Mxint=-979776699.060466; Myint=15816127.5172716; eps0=0.000163429025; kx=-0.00000093348; ky=0.000000396322
+lambda_crc_path_iter=-2.02617919193; rPath1=-1000000000.; rPath2=1000000000.; rLimit=0.147716041192; eps_bt_ult=0.00015; Nint=-397400.603450804; Mxint=-497995004.619251; Myint=36038832.8020517; eps0=0.000163429077; kx=-0.000000577444; ky=0.000000040286
+lambda_crc_path_iter=-0.254112938817; rPath1=-1000000000.; rPath2=1000000000.; rLimit=0.000000909897; eps_bt_ult=0.00015; Nint=-49839.9330289697; Mxint=-242822467.856809; Myint=33788108.2831926; eps0=0.000163429103; kx=-0.000000399427; ky=-0.000000137732
+lambda_crc_path_iter=0.489591577551; rPath1=-1000000000.; rPath2=1000000000.; rLimit=0.00000097489; eps_bt_ult=0.00015; Nint=96025.0648797637; Mxint=-119238872.947513; Myint=21043714.2749899; eps0=0.000163429116; kx=-0.000000310418; ky=-0.000000226741
+lambda_crc_path_iter=0.812787149058; rPath1=-1000000000.; rPath2=1000000000.; rLimit=0.000001007386; eps_bt_ult=0.00015; Nint=159414.381906151; Mxint=-58877585.0145044; Myint=11201715.3454049; eps0=0.000163429123; kx=-0.000000265914; ky=-0.000000271245
+Auto-путь: λ*NMxy не дал точку образования трещины: line search UltimateStrain не улучшил невязку.
+
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

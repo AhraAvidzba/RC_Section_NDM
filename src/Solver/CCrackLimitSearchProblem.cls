@@ -14,7 +14,7 @@ Implements ILimitSearchProblem
 ' ==========================================================================
 ' Адаптер CrackFormation для общего LimitSearch
 ' ==========================================================================
-' Класс прячет CCrackWidthCalculator за общим ILimitSearchProblem. Доменный
+' Класс прячет CCrackFormationCalculator за общим ILimitSearchProblem. Доменный
 ' калькулятор по-прежнему хранит критерий образования трещины, Pre/Post-state и
 ' crack-диагностику, но общий search обращается к нему только через контракт.
 
@@ -22,10 +22,10 @@ Private Const STATE_ACCEPTABLE As String = "Acceptable" ' Трещина еще 
 Private Const STATE_CRACK_LIMIT As String = "CrackFormationLimit" ' Достигнут критерий eps_bt,ult.
 Private Const STATE_NUMERICAL_FAILURE As String = "NumericalFailure" ' НДС для пробной lambda не найдено.
 
-Private mCrack As CCrackWidthCalculator ' Доменный расчетчик трещинообразования и владелец crack-диагностики.
+Private mCrack As CCrackFormationCalculator ' Доменный расчетчик трещинообразования и владелец crack-диагностики.
 
 ' Подключает существующий расчетчик трещин без изменения его настроек.
-Public Sub Initialize(ByVal crackCalculator As CCrackWidthCalculator)
+Public Sub Initialize(ByVal crackCalculator As CCrackFormationCalculator)
     If crackCalculator Is Nothing Then Err.Raise vbObjectError + 4250, "CCrackLimitSearchProblem", _
         "Не передан расчетчик трещинообразования."
     Set mCrack = crackCalculator

@@ -169,29 +169,6 @@ Public Function IsInvalid(ByVal statusText As String) As Boolean
     IsInvalid = Policy.IsInvalid(statusText)
 End Function
 
-' Формирует типизированный результат этапа образования нормальной трещины.
-' CRITERION_NOT_REACHED считается корректным физическим исходом search: трещина
-' не образовалась, но численной ошибки при этом нет.
-Public Function CrackFormationMetaFromCalculator(ByVal crack As CCrackWidthCalculator) As CResultMeta
-    Dim meta As CResultMeta
-    Set meta = New CResultMeta
-
-    If crack Is Nothing Then
-        meta.SetResult rsInvalidInput, rcInvalidInput, rkCrackFormation, "Crack calculator не создан."
-    ElseIf crack.CrackFormationInternalStatus <> rsUnset Then
-        meta.SetResult crack.CrackFormationInternalStatus, crack.CrackFormationResultCode, _
-            rkCrackFormation, crack.StopReason
-    ElseIf crack.Converged And crack.CrackFormed Then
-        meta.SetResult rsSuccess, rcCheckPassed, rkCrackFormation, crack.StopReason
-    ElseIf crack.Converged Then
-        meta.SetResult rsSuccess, rcCriterionNotReached, rkCrackFormation, crack.StopReason
-    Else
-        meta.SetResult rsInternalError, rcInternalError, rkCrackFormation, crack.StopReason
-    End If
-
-    Set CrackFormationMetaFromCalculator = meta
-End Function
-
 ' Формирует типизированный результат расчета нормальных трещин.
 ' Численная несходимость допускается только как отражение уже выполненного
 ' state/search-поиска внутри калькулятора; чистые формулы ширины сами NumFail не создают.
@@ -214,13 +191,6 @@ Public Function CrackMetaFromCalculator(ByVal crack As CCrackWidthCalculator) As
         Else
             meta.SetResult rsSuccess, rcCheckPassed, rkCrackWidth, crack.StopReason
         End If
-    ElseIf crack.CrackFormationInternalStatus = rsCheckFailed Or _
-            crack.CrackFormationInternalStatus = rsNumericalFailure Or _
-            crack.CrackFormationInternalStatus = rsInvalidInput Or _
-            crack.CrackFormationInternalStatus = rsInvalidConfiguration Or _
-            crack.CrackFormationInternalStatus = rsInternalError Then
-        meta.SetResult rsBlockedByDependency, rcBlockedByDependency, rkCrackWidth, _
-            "Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины."
     Else
         meta.SetResult rsInternalError, rcInternalError, rkCrackWidth, crack.StopReason
     End If

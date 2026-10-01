@@ -20,10 +20,6 @@ Option Explicit
 ' выбора UltimateStrain / LoadMultiplier. Различия остаются в criterion,
 ' load path и material spec, а не в параллельной реализации search-диспетчера.
 
-Private Const CRACK_PATH_AUTO As String = "Auto" ' Auto-перебор путей образования трещины.
-Private Const CRACK_PATH_MXY As String = "LambdaMxy" ' Масштабируется только моментный вектор.
-Private Const CRACK_PATH_N As String = "LambdaN" ' Масштабируется только продольная сила.
-Private Const CRACK_PATH_NMXY As String = "LambdaNMxy" ' Масштабируется весь вектор N/Mx/My.
 
 ' Выполняет поиск несущей способности по стратегии из request.
 ' Возвращает объект результата даже при неизвестной стратегии, чтобы вызывающий
@@ -53,20 +49,10 @@ End Function
 
 ' Выполняет поиск образования нормальной трещины через тот же coordinator,
 ' который выбирает метод для capacity. Отличия CrackFormation остаются в
-' CCrackWidthCalculator: критерий eps_bt,ult, путь нагрузки и material spec.
+' CCrackFormationCalculator: критерий eps_bt,ult, путь нагрузки и material spec.
 Public Function ExecuteCrackFormation(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     If request Is Nothing Then Err.Raise vbObjectError + 4231, "CLimitSearchCoordinator", "Не передан запрос limit-search."
-
-    If StrComp(NormalizeCrackPath(request.CrackFormationPath), CRACK_PATH_AUTO, vbTextCompare) = 0 Then
-        Set ExecuteCrackFormation = ExecuteAutoCrackFormation(request)
-    Else
-        request.Problem.BeginFormationAttempt NormalizeCrackPath(request.CrackFormationPath)
-        Dim result As CLimitSearchResult
-        Set result = ExecuteCrackFormationCurrentPath(request)
-        If result.Succeeded Then _
-            request.Problem.SetResolvedFormationPath NormalizeCrackPath(request.CrackFormationPath)
-        Set ExecuteCrackFormation = result
-    End If
+    Set ExecuteCrackFormation = ExecuteCrackFormationCurrentPath(request)
 End Function
 
 ' Сохраняет принятую Auto-логику: чисто осевая траектория сразу идет в
@@ -123,56 +109,6 @@ Private Function ExecuteAutoCapacityLoadMultiplierFallback(ByVal request As CLim
     Set ExecuteAutoCapacityLoadMultiplierFallback = request.Problem.BuildResult(request, False)
 End Function
 
-' В Auto-режиме образования трещины по очереди пробует lambda*Mxy, lambda*N и
-' lambda*NMxy. Если путь дал только резервный psi_s=1 без точки Ncrc/Mcrc, это
-' не ошибка, но Auto продолжает искать более информативную траекторию.
-Private Function ExecuteAutoCrackFormation(ByVal request As CLimitSearchRequest) As CLimitSearchResult
-    Dim savedPath As String
-    savedPath = NormalizeCrackPath(request.CrackFormationPath)
-
-    Dim paths(1 To 3) As String
-    paths(1) = CRACK_PATH_MXY
-    paths(2) = CRACK_PATH_N
-    paths(3) = CRACK_PATH_NMXY
-
-    request.Problem.AppendDiagnostic "Auto-путь: начинаем поиск образования нормальной трещины. Порядок попыток: " & _
-        ChrW$(&H3BB) & "*Mxy -> " & ChrW$(&H3BB) & "*N -> " & ChrW$(&H3BB) & "*NMxy."
-
-    Dim lastResult As CLimitSearchResult
-    Dim lastStopReason As String
-    Dim i As Long
-    For i = LBound(paths) To UBound(paths)
-        request.Problem.BeginFormationAttempt paths(i)
-        request.Problem.AppendDiagnostic "Auto-путь: попытка " & CStr(i) & " из " & _
-            CStr(UBound(paths)) & " - пробуем " & _
-            request.Problem.FormationPathDisplayName() & "."
-
-        Set lastResult = ExecuteCrackFormationCurrentPath(request)
-        If lastResult.Succeeded Then
-            If request.Problem.FormationFallbackOnly And i < UBound(paths) Then
-                lastStopReason = request.Problem.StopReason
-                request.Problem.AppendDiagnostic "Auto-путь: " & _
-                    request.Problem.FormationPathDisplayName() & _
-                    " дал только резервный результат psi_s=1 без найденной точки образования трещины. Для более информативного результата переходим к следующему пути."
-            Else
-                request.Problem.SetResolvedFormationPath paths(i)
-                request.Problem.AppendDiagnostic "Auto-путь: выбран " & _
-                    request.Problem.FormationPathDisplayName() & "."
-                request.Problem.SetCurrentFormationPath savedPath
-                Set ExecuteAutoCrackFormation = lastResult
-                Exit Function
-            End If
-        Else
-            lastStopReason = request.Problem.StopReason
-            request.Problem.AppendDiagnostic "Auto-путь: " & _
-                request.Problem.FormationPathDisplayName() & _
-                " не дал точку образования трещины: " & request.Problem.StopReason
-        End If
-    Next i
-
-    request.Problem.SetCurrentFormationPath savedPath
-    If Not lastResult Is Nothing Then Set ExecuteAutoCrackFormation = lastResult
-End Function
 
 ' Запускает выбранный метод поиска на уже выбранном пути образования трещины.
 ' Для Auto-стратегии сначала используется UltimateStrain, а при численной
@@ -245,21 +181,5 @@ Private Function NormalizeStrategy(ByVal value As String) As String
             NormalizeStrategy = "LoadMultiplier"
         Case Else
             NormalizeStrategy = Trim$(value)
-    End Select
-End Function
-
-' Нормализует ключ пути образования трещины без обращения к Config-reader.
-Private Function NormalizeCrackPath(ByVal value As String) As String
-    Select Case UCase$(Trim$(value))
-        Case "AUTO"
-            NormalizeCrackPath = CRACK_PATH_AUTO
-        Case "LAMBDAN", "LAMBDA*N", "N"
-            NormalizeCrackPath = CRACK_PATH_N
-        Case "LAMBDANMXY", "LAMBDA*NMXY", "NMXY", "ALL"
-            NormalizeCrackPath = CRACK_PATH_NMXY
-        Case "LAMBDAMXY", "LAMBDA*MXY", "MXY", vbNullString
-            NormalizeCrackPath = CRACK_PATH_MXY
-        Case Else
-            NormalizeCrackPath = Trim$(value)
     End Select
 End Function

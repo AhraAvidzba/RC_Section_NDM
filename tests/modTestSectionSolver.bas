@@ -36,6 +36,9 @@ Public Function RunSectionSolverTests() As String
     TestSolverMethodFromSystem stats
     TestAudit02EvaluatedPlaneRequiresEquilibrium stats
     TestAudit02DiagramExtensionReaderMigration stats
+    TestAudit02StateSnapshotIsolation stats
+    TestAudit02AbsentStressSign stats
+    TestAudit02LoadPathResidualScaling stats
 
     AppendLine stats, "TOTAL_SECTION_SOLVER: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -760,6 +763,105 @@ Private Function Audit02LoadMigrationRange(ByVal testRange As Object, ByRef erro
 Failed:
     errorNumber = Err.Number
 End Function
+
+' Проверяет независимость чисел, метаданных и ключа запроса от дальнейшего
+' использования рабочего solver-а и изменения выдаваемых spec/meta-копий.
+Private Sub TestAudit02StateSnapshotIsolation(ByRef stats As TSectionSolverTestStats)
+    Dim concrete As CLinearConcreteMaterial
+    Set concrete = New CLinearConcreteMaterial
+    concrete.Initialize 32500#
+    Dim steel As CLinearSteelMaterial
+    Set steel = New CLinearSteelMaterial
+    steel.Initialize 200000#
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 20#), Nothing)
+    Dim solver As CSectionSolver
+    Set solver = New CSectionSolver
+    solver.EvaluateStrainPlane section, concrete, steel, -0.0001, 0#, 0#
+    AssertTrue stats, "audit02.stateSnapshot.equilibrium", _
+        solver.ConfirmEquilibrium(solver.Nint, solver.Mxint, solver.Myint)
+
+    Dim spec As CMaterialModelSpec
+    Set spec = New CMaterialModelSpec
+    spec.Initialize "ULS(I)", "TwoLine", "Ignore", "TwoLine"
+    Dim state As CSectionStateResult
+    Set state = New CSectionStateResult
+    state.InitializeFromSolver sstStrengthState, cpStrength, spec, solver, False, True
+    Dim request As CStateRequest
+    Set request = New CStateRequest
+    request.Initialize sstStrengthState, cpStrength, spec, solver.Nint, solver.Mxint, solver.Myint, False
+    Dim originalKey As String
+    originalKey = request.EquivalenceKey
+    Dim originalN As Double
+    originalN = state.Nint
+
+    spec.Initialize "SLS(II)", "ThreeLine", "UseDiagram", "ThreeLine"
+    AssertTrue stats, "audit02.stateSnapshot.inputSpec", state.MaterialSpec.SpecKey = "ULS(I)|TwoLine|Ignore|TwoLine"
+    Dim copy As CMaterialModelSpec
+    Set copy = state.MaterialSpec
+    copy.Clear
+    AssertTrue stats, "audit02.stateSnapshot.returnedSpec", state.MaterialSpec.IsComplete
+    Set copy = request.MaterialSpec
+    copy.Clear
+    AssertTrue stats, "audit02.stateSnapshot.requestKey", request.EquivalenceKey = originalKey
+
+    Dim meta As CResultMeta
+    Set meta = state.ResultMeta
+    meta.SetResult rsNumericalFailure, rcNumericalFailure, rkDirectState, "Изменение внешней копии."
+    AssertTrue stats, "audit02.stateSnapshot.returnedMeta", state.InternalStatus = rsSuccess
+    Dim solveCount As Long
+    solveCount = SectionEquilibriumSolveCount()
+    solver.EvaluateStrainPlane section, concrete, steel, -0.001, 0#, 0#
+    AssertClose stats, "audit02.stateSnapshot.strain", state.Epsilon0, -0.0001, 0#
+    AssertClose stats, "audit02.stateSnapshot.force", state.Nint, originalN, 0#
+    AssertClose stats, "audit02.stateSnapshot.extremum", state.MinConcreteStrain, -0.0001, 0#
+    AssertTrue stats, "audit02.stateSnapshot.noSolve", SectionEquilibriumSolveCount() = solveCount
+    Set state = New CSectionStateResult
+    AssertTrue stats, "audit02.stateSnapshot.emptyStatus", state.InternalStatus = rsInternalError
+    AssertTrue stats, "audit02.stateSnapshot.emptyCode", state.ResultCode = rcInternalError
+End Sub
+
+' Проверяет отсутствие фиктивных экстремумов отсутствующего знака напряжений:
+' полностью растянутое или сжатое сечение не возвращает sentinel в snapshot.
+Private Sub TestAudit02AbsentStressSign(ByRef stats As TSectionSolverTestStats)
+    Dim concrete As CLinearConcreteMaterial
+    Set concrete = New CLinearConcreteMaterial
+    concrete.Initialize 32500#
+    Dim steel As CLinearSteelMaterial
+    Set steel = New CLinearSteelMaterial
+    steel.Initialize 200000#
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 20#), Nothing)
+    Dim solver As CSectionSolver
+    Set solver = New CSectionSolver
+    solver.EvaluateStrainPlane section, concrete, steel, 0.0001, 0#, 0#
+    AssertClose stats, "audit02.stressSign.noCompression", solver.MinConcreteStress, 0#, 0#
+    AssertClose stats, "audit02.stressSign.tension", solver.MaxConcreteStress, 3.25, 0.000000001
+    AssertClose stats, "audit02.stressSign.noSteelCompression", solver.MinSteelStress, 0#, 0#
+    AssertClose stats, "audit02.stressSign.noSteelTension", solver.MaxSteelStress, 0#, 0#
+    solver.EvaluateStrainPlane section, concrete, steel, -0.0001, 0#, 0#
+    AssertClose stats, "audit02.stressSign.noTension", solver.MaxConcreteStress, 0#, 0#
+    AssertClose stats, "audit02.stressSign.compression", solver.MinConcreteStress, -3.25, 0.000000001
+End Sub
+
+' Проверяет линейность невязки постоянной нулевой компоненты траектории.
+' Рост пробного момента не должен менять допуск и обнулять его производную.
+Private Sub TestAudit02LoadPathResidualScaling(ByRef stats As TSectionSolverTestStats)
+    Dim math As CLoadPathMath
+    Set math = New CLoadPathMath
+    math.Configure 0.0001, 0.0001, 0.0001
+    Dim path As CLoadPathVector
+    Set path = New CLoadPathVector
+    path.Initialize 0#, 100000#, 0#, 0#, 0#, 0#
+    Dim firstMx As Double, firstMy As Double
+    Dim secondMx As Double, secondMy As Double
+    math.BuildResiduals 100000#, 1000000#, -1000000#, path, 1#, firstMx, firstMy
+    math.BuildResiduals 100000#, 2000000#, -2000000#, path, 1#, secondMx, secondMy
+    AssertClose stats, "audit02.pathResidual.zeroMx", firstMx, 10000000000#, 0.001
+    AssertClose stats, "audit02.pathResidual.zeroMy", firstMy, -10000000000#, 0.001
+    AssertClose stats, "audit02.pathResidual.mxLinear", secondMx, firstMx * 2#, 0.001
+    AssertClose stats, "audit02.pathResidual.myLinear", secondMy, firstMy * 2#, 0.001
+End Sub
 
 
 

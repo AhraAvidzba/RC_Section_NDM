@@ -330,7 +330,48 @@ Private Sub AcceptPureAxialRetainedCapacity(ByVal section As CSectionModel, _
     boundaryLambda = math.Lambda(boundarySolver.Nint, boundarySolver.Mxint, boundarySolver.Myint, loadPath)
     If boundaryLambda <= 0# Or boundaryLambda > mMaxLambda Then Exit Sub
     If Not boundarySolver.ConfirmEquilibrium(loadPath.TargetN(boundaryLambda), _
-            loadPath.TargetMx(boundaryLambda), loadPath.TargetMy(boundaryLambda)) Then Exit Sub
+            loadPath.TargetMx(boundaryLambda), loadPath.TargetMy(boundaryLambda)) Then
+        ' При несимметричном армировании масштабирование от нуля может
+        ' вывести все стержни на плато и потерять моментную жесткость.
+        ' Ставим нулевую деформацию на противоположном крае арматуры,
+        ' сохраняя направление плоскости. Это только старт Newton,
+        ' а не доказательство равновесия или несущей.
+        Dim startSolver As CSectionSolver
+        Set startSolver = mLastAcceptableSolver
+        Dim anchorStrain As Double
+        Dim edgeStrain As Double
+        Dim edgeLimit As Double
+        If mCriticalStrain > 0# Then
+            anchorStrain = mLastAcceptableSolver.MinSteelStrain
+            edgeStrain = mLastAcceptableSolver.MaxSteelStrain
+            edgeLimit = mSteelTensionLimit
+        Else
+            anchorStrain = mLastAcceptableSolver.MaxSteelStrain
+            edgeStrain = mLastAcceptableSolver.MinSteelStrain
+            edgeLimit = -mSteelCompressionLimit
+        End If
+        If section.RebarCount > 0 And Abs(edgeStrain - anchorStrain) > 0.000000000001 Then
+            strainScale = edgeLimit / (edgeStrain - anchorStrain)
+            If strainScale > 1# Then
+                Set startSolver = New CSectionSolver
+                startSolver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, _
+                    (mLastAcceptableSolver.Epsilon0 - anchorStrain) * strainScale, _
+                    mLastAcceptableSolver.KappaX * strainScale, _
+                    mLastAcceptableSolver.KappaY * strainScale
+            End If
+        End If
+        Dim problem As CCapacityLimitSearchProblem
+        Set problem = New CCapacityLimitSearchProblem
+        problem.Initialize Me
+        Dim search As CUltimateStrainSearch
+        Set search = New CUltimateStrainSearch
+        mUltimateMomentOnlyPath = False
+        If Not search.RunNewton(problem, section, concreteMaterial, steelMaterial, _
+                loadPath, startSolver, _
+                "Не удалось подтвердить равновесие осевого предела по выбранному пути.") Then Exit Sub
+        Set boundarySolver = mLastSolver
+        boundaryLambda = mLambdaUltimate
+    End If
     UpdateCriticalState section, concreteMaterial, boundarySolver
     If Abs(mCriticalStrainUtilization - 1#) > UltimateStrainRatioTolerance() Then Exit Sub
 
@@ -795,6 +836,12 @@ Public Sub LimitSearchInitializeUltimateGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
+    If Not startSolver Is Nothing Then
+        eps0 = startSolver.Epsilon0
+        kx = startSolver.KappaX
+        ky = startSolver.KappaY
+        Exit Sub
+    End If
     If mUltimateMomentOnlyPath Then
         InitializeUltimateMomentGuess section, loadPath.NOffset, loadPath.MxBase, _
             loadPath.MyBase, eps0, kx, ky
@@ -1860,5 +1907,3 @@ End Property
 Public Property Get CriticalStrainUtilization() As Double
     CriticalStrainUtilization = mCriticalStrainUtilization
 End Property
-
-

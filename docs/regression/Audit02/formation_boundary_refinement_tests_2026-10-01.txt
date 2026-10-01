@@ -1,0 +1,135 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: CA70AE651E09ED15B5C140DBAC825E256E00311AA351E3C0F9446788C8B4B657
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e2ecb0659ad84fdc8306f7473384fe3b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestCrackWidth.RunCrackWidthTests =====
+OK: crack.concrete.ignoreStress; actual=0.; expected=0.; absDiff=0.
+OK: crack.concrete.ignoreTangent; actual=0.; expected=0.; absDiff=0.
+OK: crack.concrete.useStress; actual=0.65; expected=0.65; absDiff=0.
+OK: crack.concrete.useLimit; actual=1.8; expected=1.8; absDiff=0.
+OK: crack.concrete.useTangent; actual=32500.; expected=32500.; absDiff=0.000000000004
+OK: crack.formula.width; actual=0.1792; expected=0.1792; absDiff=0.
+OK: crack.formula.utilization; actual=0.448; expected=0.448; absDiff=0.
+OK: crack.formula.noSteelEs; actual=0.; expected=0.; absDiff=0.
+DIAGNOSTIC: crack.user.mx; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.user.mx.converged
+FAIL: crack.user.mx.formed
+FAIL: crack.user.mx.tensionBars
+FAIL: crack.user.mx.sigmaPositive
+FAIL: crack.user.mx.spacingPositive
+OK: crack.user.mx.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.user.mx.utilization; actual=0.; expected=0.; absDiff=0.
+OK: crack.user.psi; actual=1.; expected=1.; absDiff=0.
+FAIL: crack.user.sigmaCrcAvailable
+DIAGNOSTIC: crack.user.circleMxy; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.user.circleMxy.converged
+FAIL: crack.user.circleMxy.formed
+FAIL: crack.user.circleMxy.tensionBars
+FAIL: crack.user.circleMxy.sigmaPositive
+FAIL: crack.user.circleMxy.spacingPositive
+OK: crack.user.circleMxy.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.user.circleMxy.utilization; actual=0.; expected=0.; absDiff=0.
+DIAGNOSTIC: crack.user.coeffs; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.user.coeffs.converged
+FAIL: crack.user.coeffs.formed
+FAIL: crack.user.coeffs.tensionBars
+FAIL: crack.user.coeffs.sigmaPositive
+FAIL: crack.user.coeffs.spacingPositive
+OK: crack.user.coeffs.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.user.coeffs.utilization; actual=0.; expected=0.; absDiff=0.
+OK: crack.user.coeffs.phi1; actual=1.6; expected=1.6; absDiff=0.
+OK: crack.user.coeffs.phi2; actual=0.7; expected=0.7; absDiff=0.
+FAIL: crack.user.coeffs.phi3; actual=0.; expected=1.1; absDiff=1.1
+OK: crack.user.coeffs.psi; actual=0.8; expected=0.8; absDiff=0.
+FAIL: crack.user.coeffs.lambda
+FAIL: crack.user.coeffs.preCrackState
+FAIL: crack.user.coeffs.postCrackState
+FAIL: crack.user.coeffs.sigmaCrcAvailable
+DIAGNOSTIC: crack.cover.local; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.cover.local.converged
+FAIL: crack.cover.local.formed
+FAIL: crack.cover.local.tensionBars
+FAIL: crack.cover.local.sigmaPositive
+FAIL: crack.cover.local.spacingPositive
+OK: crack.cover.local.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.cover.local.utilization; actual=0.; expected=0.; absDiff=0.
+FAIL: crack.cover.local.mode
+DIAGNOSTIC: crack.cover.global; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.cover.global.converged
+FAIL: crack.cover.global.formed
+FAIL: crack.cover.global.tensionBars
+FAIL: crack.cover.global.sigmaPositive
+FAIL: crack.cover.global.spacingPositive
+OK: crack.cover.global.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.cover.global.utilization; actual=0.; expected=0.; absDiff=0.
+FAIL: crack.cover.global.mode
+DIAGNOSTIC: crack.zone.effective; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.zone.effective.converged
+FAIL: crack.zone.effective.formed
+FAIL: crack.zone.effective.tensionBars
+FAIL: crack.zone.effective.sigmaPositive
+FAIL: crack.zone.effective.spacingPositive
+OK: crack.zone.effective.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.zone.effective.utilization; actual=0.; expected=0.; absDiff=0.
+DIAGNOSTIC: crack.zone.full; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.zone.full.converged
+FAIL: crack.zone.full.formed
+FAIL: crack.zone.full.tensionBars
+FAIL: crack.zone.full.sigmaPositive
+FAIL: crack.zone.full.spacingPositive
+OK: crack.zone.full.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.zone.full.utilization; actual=0.; expected=0.; absDiff=0.
+FAIL: crack.zone.fullAbtPositive
+FAIL: crack.zone.effectiveAbtPositive
+OK: crack.zone.effectiveDepthFormula; actual=0.; expected=0.; absDiff=0.
+DIAGNOSTIC: crack.auto.pass; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.auto.pass.converged
+FAIL: crack.auto.pass.formed
+FAIL: crack.auto.pass.tensionBars
+FAIL: crack.auto.pass.sigmaPositive
+FAIL: crack.auto.pass.spacingPositive
+OK: crack.auto.pass.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.auto.pass.utilization; actual=0.; expected=0.; absDiff=0.
+OK: crack.auto.pass.psi; actual=1.; expected=1.; absDiff=0.
+FAIL: crack.auto.pass.lambda
+FAIL: crack.auto.pass.sigmaCrcAvailable
+FAIL: crack.auto.pass.preCrackState
+FAIL: crack.auto.pass.postCrackState
+DIAGNOSTIC: crack.alwaysCalc.pass; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.alwaysCalc.pass.converged
+FAIL: crack.alwaysCalc.pass.formed
+FAIL: crack.alwaysCalc.pass.tensionBars
+FAIL: crack.alwaysCalc.pass.sigmaPositive
+FAIL: crack.alwaysCalc.pass.spacingPositive
+OK: crack.alwaysCalc.pass.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.alwaysCalc.pass.utilization; actual=0.; expected=0.; absDiff=0.
+FAIL: crack.alwaysCalc.sigmaCrc
+FAIL: crack.alwaysCalc.psiReduced
+FAIL: crack.alwaysCalc.widthLessThanAuto
+DIAGNOSTIC: crack.sigmaCrcMode.allSelected; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.sigmaCrcMode.allSelected.converged
+FAIL: crack.sigmaCrcMode.allSelected.formed
+FAIL: crack.sigmaCrcMode.allSelected.tensionBars
+FAIL: crack.sigmaCrcMode.allSelected.sigmaPositive
+FAIL: crack.sigmaCrcMode.allSelected.spacingPositive
+OK: crack.sigmaCrcMode.allSelected.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.sigmaCrcMode.allSelected.utilization; actual=0.; expected=0.; absDiff=0.
+OK: crack.sigmaCrcMode.allSelected.normalized
+FAIL: crack.sigmaCrcMode.allSelected.sigmaCrcAvailable
+DIAGNOSTIC: crack.auto.fail; width=Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины.; formation=line search UltimateStrain не улучшил невязку.
+FAIL: crack.auto.fail.converged
+FAIL: crack.auto.fail.formed
+FAIL: crack.auto.fail.tensionBars
+FAIL: crack.auto.fail.sigmaPositive
+FAIL: crack.auto.fail.spacingPositive
+OK: crack.auto.fail.widthFormula; actual=0.; expected=0.; absDiff=0.
+OK: crack.auto.fail.utilization; actual=0.; expected=0.; absDiff=0.
+FAIL: crack.auto.fail.lambda
+OK: crack.auto.fail.psiRange
+OK: crack.auto.fail.sigmaCrc
+FAIL: crack.auto.fail.psiReduced
+FAIL: crack.auto.fail.preCrackState
+FAIL: crack.auto.fail.postCrackState
+RUNTIME ERROR: 91; source=VBAProject; description=Object variable or With block variable not set
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

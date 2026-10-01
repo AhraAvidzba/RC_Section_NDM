@@ -78,8 +78,10 @@ Public Property Get MaterialRole() As ECalculationPurpose
     MaterialRole = mMaterialRole
 End Property
 
+' Возвращает копию спецификации: изменение полученного объекта не должно
+' менять физический ключ запроса, уже переданного repository.
 Public Property Get MaterialSpec() As CMaterialModelSpec
-    Set MaterialSpec = mMaterialSpec
+    If Not mMaterialSpec Is Nothing Then Set MaterialSpec = mMaterialSpec.Clone
 End Property
 
 Public Property Get TargetN() As Double

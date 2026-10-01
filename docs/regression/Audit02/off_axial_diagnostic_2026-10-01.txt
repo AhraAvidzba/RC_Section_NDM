@@ -1,0 +1,171 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 440CAEE515C6EFE38C0EBA9BE13953451D3AF87903D63D626585A6DADFA92E64
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_7ee35cfd0a95475d8b4a48bfab288a95\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit02OffAxialDiagnostic =====
+STATUS: NumFail
+NumericalFailure: матрица UltimateStrain вырождена: Матрица вырождена.
+search=lambda=0: нулевая нагрузка принята как точное равновесие нулевой плоскости деформаций.
+probe=1; attempt=0; lambda=0.; Mx=0.; My=0.; converged=True; state=Acceptable; stop=Равновесие заданной плоскости подтверждено по N, Mx и My.; minConcreteStrain=0.; maxConcreteStrain=0.; maxAbsSteelStrain=0.
+search=initialGuess=warmStartLoadState
+
+probe=2; attempt=0; lambda=1.; Mx=620377206.521739; My=424244206.521739; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=0.000404784986; maxConcreteStrain=0.000461055888; maxAbsSteelStrain=0.000458984725
+search=initialGuess=warmStartLoadState
+
+probe=3; attempt=0; lambda=2.; Mx=1240754413.04348; My=848488413.043478; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=0.000809569973; maxConcreteStrain=0.000922111776; maxAbsSteelStrain=0.000917969451
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; residualN=-912889.134620601; residualMx=-574876497.763564; residualMy=-57247928.9808471
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; residualN=-912889.134620601; residualMx=-574876497.763564; residualMy=-57247928.9808471
+
+probe=4; attempt=0; lambda=4.; Mx=2481508826.08696; My=1696976826.08696; converged=False; state=NumericalFailure; stop=Line search не смог уменьшить невязку.; minConcreteStrain=0.001366424801; maxConcreteStrain=0.00337777574; maxAbsSteelStrain=0.003273606099
+search=численная несходимость; верхняя lambda уменьшена с 4. до 3.; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+
+probe=5; attempt=0; lambda=3.; Mx=1861131619.56522; My=1272732619.56522; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=0.001214354959; maxConcreteStrain=0.001383167664; maxAbsSteelStrain=0.001376954176
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-3886352.35067393; residualMx=-1160734253.09946; residualMy=-870619363.648645
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-3886352.35067393; residualMx=-1160734253.09946; residualMy=-870619363.648645
+
+probe=6; attempt=0; lambda=6.; Mx=3722263239.13044; My=2545465239.13044; converged=False; state=SingularTangent; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; minConcreteStrain=0.001123468747; maxConcreteStrain=0.010683371061; maxAbsSteelStrain=0.010362750027
+search=численная несходимость; верхняя lambda уменьшена с 6. до 4.5; состояние=SingularTangent
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-944357.350673931; residualMx=-230168443.316852; residualMy=-234253053.866036
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-944357.350673931; residualMx=-230168443.316852; residualMy=-234253053.866036
+
+probe=7; attempt=0; lambda=4.5; Mx=2791697429.34783; My=1909098929.34783; converged=False; state=NumericalFailure; stop=Line search не смог уменьшить невязку.; minConcreteStrain=0.001111360661; maxConcreteStrain=0.010860844808; maxAbsSteelStrain=0.010533230904
+search=численная несходимость; верхняя lambda уменьшена с 4.5 до 3.75; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+
+probe=8; attempt=0; lambda=3.75; Mx=2326414524.45652; My=1590915774.45652; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=0.001517943699; maxConcreteStrain=0.00172895958; maxAbsSteelStrain=0.00172119272
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-6828347.35067393; residualMx=-2091300062.88207; residualMy=-1506985673.43125
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-6828347.35067393; residualMx=-2091300062.88207; residualMy=-1506985673.43125
+
+probe=9; attempt=0; lambda=7.5; Mx=4652829048.91304; My=3181831548.91304; converged=False; state=SingularTangent; stop=Не удалось решить касательную систему: Матрица вырождена.; minConcreteStrain=0.001967526599; maxConcreteStrain=0.002241040932; maxAbsSteelStrain=0.002230973692
+search=численная несходимость; верхняя lambda уменьшена с 7.5 до 5.625; состояние=SingularTangent
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-3150853.60067393; residualMx=-928092800.653808; residualMy=-711527786.202992
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-3150853.60067393; residualMx=-928092800.653808; residualMy=-711527786.202992
+
+probe=10; attempt=0; lambda=5.625; Mx=3489621786.68478; My=2386373661.68478; converged=False; state=SingularTangent; stop=Не удалось решить касательную систему: Матрица вырождена.; minConcreteStrain=0.001967526599; maxConcreteStrain=0.002241040932; maxAbsSteelStrain=0.002230973692
+search=численная несходимость; верхняя lambda уменьшена с 5.625 до 4.6875; состояние=SingularTangent
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-1312106.72567393; residualMx=-346489169.539678; residualMy=-313798842.588862
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-1312106.72567393; residualMx=-346489169.539678; residualMy=-313798842.588862
+
+probe=11; attempt=0; lambda=4.6875; Mx=2908018155.57065; My=1988644718.07065; converged=False; state=SingularTangent; stop=Не удалось решить касательную систему: Матрица вырождена.; minConcreteStrain=0.001897429624; maxConcreteStrain=0.002161199475; maxAbsSteelStrain=0.0021514909
+search=численная несходимость; верхняя lambda уменьшена с 4.6875 до 4.21875; состояние=SingularTangent
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; residualN=-2027463.87870131; residualMx=-1275873102.20846; residualMy=-252115155.35062
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; residualN=-2027463.87870131; residualMx=-1275873102.20846; residualMy=-252115155.35062
+
+probe=12; attempt=0; lambda=4.21875; Mx=2617216340.01359; My=1789780246.26359; converged=False; state=NumericalFailure; stop=Line search не смог уменьшить невязку.; minConcreteStrain=0.001687827377; maxConcreteStrain=0.002294972218; maxAbsSteelStrain=0.002277469942
+search=численная несходимость; верхняя lambda уменьшена с 4.21875 до 3.984375; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; residualN=-841558.662576571; residualMx=-540135950.219446; residualMy=-49079851.8307312
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; residualN=-841558.662576571; residualMx=-540135950.219446; residualMy=-49079851.8307312
+
+probe=13; attempt=0; lambda=3.984375; Mx=2471815432.23505; My=1690348010.36005; converged=False; state=NumericalFailure; stop=Line search не смог уменьшить невязку.; minConcreteStrain=0.001359248369; maxConcreteStrain=0.00330072573; maxAbsSteelStrain=0.003201797763
+search=численная несходимость; верхняя lambda уменьшена с 3.984375 до 3.8671875; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+
+probe=14; attempt=0; lambda=3.8671875; Mx=2399114978.34579; My=1640631892.40829; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=0.001551974991; maxConcreteStrain=0.001829517975; maxAbsSteelStrain=0.00181654729
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-7288034.06942393; residualMx=-2236700970.6606; residualMy=-1606417909.33479
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-7288034.06942393; residualMx=-2236700970.6606; residualMy=-1606417909.33479
+
+probe=15; attempt=0; lambda=7.734375; Mx=4798229956.69158; My=3281263784.81658; converged=False; state=SingularTangent; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; minConcreteStrain=0.000539302643; maxConcreteStrain=0.014032391605; maxAbsSteelStrain=0.013585503768
+search=численная несходимость; верхняя lambda уменьшена с 7.734375 до 5.80078125; состояние=SingularTangent
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-3495618.63973643; residualMx=-1037143481.48771; residualMy=-786101963.130642
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-3495618.63973643; residualMx=-1037143481.48771; residualMy=-786101963.130642
+
+probe=16; attempt=0; lambda=5.80078125; Mx=3598672467.51868; My=2460947838.61243; converged=False; state=SingularTangent; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; minConcreteStrain=0.000539344424; maxConcreteStrain=0.014033083382; maxAbsSteelStrain=0.013586147879
+search=численная несходимость; верхняя lambda уменьшена с 5.80078125 до 4.833984375; состояние=SingularTangent
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-1599410.92489268; residualMx=-437364736.901261; residualMy=-375943990.02857
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-1599410.92489268; residualMx=-437364736.901261; residualMy=-375943990.02857
+
+probe=17; attempt=0; lambda=4.833984375; Mx=2998893722.93224; My=2050789865.51036; converged=False; state=SingularTangent; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; minConcreteStrain=0.000655589366; maxConcreteStrain=0.012838563363; maxAbsSteelStrain=0.012435845642
+search=численная несходимость; верхняя lambda уменьшена с 4.833984375 до 4.3505859375; состояние=SingularTangent
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-651307.067470806; residualMx=-137475364.608037; residualMy=-170865003.477534
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-651307.067470806; residualMx=-137475364.608037; residualMy=-170865003.477534
+
+probe=18; attempt=0; lambda=4.3505859375; Mx=2699004350.63901; My=1845710878.95932; converged=False; state=SingularTangent; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; minConcreteStrain=0.000655498651; maxConcreteStrain=0.01284148227; maxAbsSteelStrain=0.012438543843
+search=численная несходимость; верхняя lambda уменьшена с 4.3505859375 до 4.10888671875; состояние=SingularTangent
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; residualN=-1202166.08975705; residualMx=-750743070.992543; residualMy=-130335956.055051
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; residualN=-1202166.08975705; residualMx=-750743070.992543; residualMy=-130335956.055051
+
+probe=19; attempt=0; lambda=4.10888671875; Mx=2549059664.4924; My=1743171385.68381; converged=False; state=SingularTangent; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; minConcreteStrain=0.000876364965; maxConcreteStrain=0.010613918814; maxAbsSteelStrain=0.010291414984
+search=численная несходимость; верхняя lambda уменьшена с 4.10888671875 до 3.988037109375; состояние=SingularTangent
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; residualN=-858276.741961891; residualMx=-548278266.050099; residualMy=-50994244.9127896
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; residualN=-858276.741961891; residualMx=-548278266.050099; residualMy=-50994244.9127896
+
+probe=20; attempt=0; lambda=3.988037109375; Mx=2474087321.41909; My=1691901639.04605; converged=False; state=NumericalFailure; stop=Line search не смог уменьшить невязку.; minConcreteStrain=0.00140352633; maxConcreteStrain=0.002766168936; maxAbsSteelStrain=0.002709410867
+search=численная несходимость; верхняя lambda уменьшена с 3.988037109375 до 3.927612304688; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+
+probe=21; attempt=0; lambda=3.927612304688; Mx=2436601149.88244; My=1666266765.72717; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=0.000830991683; maxConcreteStrain=0.009530689694; maxAbsSteelStrain=0.009192104063
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-7525060.0337794; residualMx=-2311673313.73391; residualMy=-1657687655.97254
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-7525060.0337794; residualMx=-2311673313.73391; residualMy=-1657687655.97254
+
+probe=22; attempt=0; lambda=7.855224609375; Mx=4873202299.76488; My=3332533531.45434; converged=False; state=NumericalFailure; stop=Line search не смог уменьшить невязку.; minConcreteStrain=0.000806495296; maxConcreteStrain=0.009888397464; maxAbsSteelStrain=0.009536266136
+search=численная несходимость; верхняя lambda уменьшена с 7.855224609375 до 5.891418457031; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-3673388.11300303; residualMx=-1093372738.79269; residualMy=-824554273.108961
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-3673388.11300303; residualMx=-1093372738.79269; residualMy=-824554273.108961
+
+probe=23; attempt=0; lambda=5.891418457031; Mx=3654901724.82366; My=2499400148.59075; converged=False; state=NumericalFailure; stop=Line search не смог уменьшить невязку.; minConcreteStrain=0.000806495296; maxConcreteStrain=0.009888397464; maxAbsSteelStrain=0.009536266136
+search=численная несходимость; верхняя lambda уменьшена с 5.891418457031 до 4.909515380859; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-1747552.15261485; residualMx=-484222451.322077; residualMy=-407987581.677169
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-1747552.15261485; residualMx=-484222451.322077; residualMy=-407987581.677169
+
+probe=24; attempt=0; lambda=4.909515380859; Mx=3045751437.35305; My=2082833457.15896; converged=False; state=NumericalFailure; stop=Line search не смог уменьшить невязку.; minConcreteStrain=0.000806495296; maxConcreteStrain=0.009888397464; maxAbsSteelStrain=0.009536266136
+search=численная несходимость; верхняя lambda уменьшена с 4.909515380859 до 4.418563842773; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-784634.172420757; residualMx=-179647307.586771; residualMy=-199704235.961273
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-784634.172420757; residualMx=-179647307.586771; residualMy=-199704235.961273
+
+probe=25; attempt=0; lambda=4.418563842773; Mx=2741176293.61775; My=1874550111.44306; converged=False; state=NumericalFailure; stop=Line search не смог уменьшить невязку.; minConcreteStrain=0.000806495296; maxConcreteStrain=0.009888397464; maxAbsSteelStrain=0.009536266136
+search=численная несходимость; верхняя lambda уменьшена с 4.418563842773 до 4.17308807373; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-1047432.74619756; residualMx=-593964234.263244; residualMy=-156071918.213233
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-1047432.74619756; residualMx=-593964234.263244; residualMy=-156071918.213233
+
+probe=26; attempt=0; lambda=4.17308807373; Mx=2588888721.75009; My=1770408438.58512; converged=False; state=NumericalFailure; stop=Line search не смог уменьшить невязку.; minConcreteStrain=0.000806495296; maxConcreteStrain=0.009888397464; maxAbsSteelStrain=0.009536266136
+search=численная несходимость; верхняя lambda уменьшена с 4.17308807373 до 4.050350189209; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; residualN=-756298.137464896; residualMx=-448796949.721877; residualMy=-69095651.3872013
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; residualN=-756298.137464896; residualMx=-448796949.721877; residualMy=-69095651.3872013
+
+probe=27; attempt=0; lambda=4.050350189209; Mx=2512744935.81627; My=1718337602.15614; converged=False; state=NumericalFailure; stop=Line search не смог уменьшить невязку.; minConcreteStrain=0.000806495296; maxConcreteStrain=0.009888397464; maxAbsSteelStrain=0.009536266136
+search=численная несходимость; верхняя lambda уменьшена с 4.050350189209 до 3.988981246948; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; residualN=-862586.871803418; residualMx=-550377456.850189; residualMy=-51487799.3792577
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; residualN=-862586.871803418; residualMx=-550377456.850189; residualMy=-51487799.3792577
+
+probe=28; attempt=0; lambda=3.988981246948; Mx=2474673042.84935; My=1692302183.94165; converged=False; state=NumericalFailure; stop=Line search не смог уменьшить невязку.; minConcreteStrain=0.000806495296; maxConcreteStrain=0.009888397464; maxAbsSteelStrain=0.009536266136
+search=численная несходимость; верхняя lambda уменьшена с 3.988981246948 до 3.958296775818; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-548656.129862642; residualMx=-374754806.324094; residualMy=-29365151.9075742
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-548656.129862642; residualMx=-374754806.324094; residualMy=-29365151.9075742
+
+probe=29; attempt=0; lambda=3.958296775818; Mx=2455637096.3659; My=1679284474.83441; converged=False; state=NumericalFailure; stop=Line search не смог уменьшить невязку.; minConcreteStrain=0.000806495296; maxConcreteStrain=0.009888397464; maxAbsSteelStrain=0.009536266136
+search=численная несходимость; верхняя lambda уменьшена с 3.958296775818 до 3.942954540253; состояние=NumericalFailure
+search=initialGuess=warmStartLoadState
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-471807.37910773; residualMx=-132590137.093195; residualMy=-13429744.7989988
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=-471807.37910773; residualMx=-132590137.093195; residualMy=-13429744.7989988
+
+probe=30; attempt=0; lambda=3.942954540253; Mx=2446119123.12417; My=1672775620.28079; converged=False; state=NumericalFailure; stop=Line search не смог уменьшить невязку.; minConcreteStrain=0.000806495296; maxConcreteStrain=0.009888397464; maxAbsSteelStrain=0.009536266136
+search=ultimatePath iter=31; eps0=0.0076386173; kappaX=-0.000007976902; kappaY=0.000032142026; rPath1=69887.160858027; rPath2=-30575.6328753856; rLimit=0.; lambda=4.018511749336; critical=R18:Steel
+search=ultimatePath iter=32; eps0=0.007639381162; kappaX=-0.000007976902; kappaY=0.000032142026; rPath1=69887.160858027; rPath2=-30575.6328753856; rLimit=0.000030554469; lambda=4.018511749336; critical=R18:Steel
+search=ultimatePath iter=33; eps0=0.0076386173; kappaX=-0.000007975902; kappaY=0.000032142026; rPath1=69887.160858027; rPath2=-30575.6328753856; rLimit=0.0000032; lambda=4.018511749336; critical=R18:Steel
+search=ultimatePath iter=34; eps0=0.0076386173; kappaX=-0.000007976902; kappaY=0.000032145241; rPath1=69887.160858027; rPath2=-30575.6328753856; rLimit=0.000071998139; lambda=4.018511749336; critical=R18:Steel
+
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True
