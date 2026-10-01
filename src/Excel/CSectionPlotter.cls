@@ -593,6 +593,8 @@ Private Sub AddBucketSeriesByIndexes(ByVal data As CSectionPlotDataReader, ByVal
 
     Dim parts As Variant
     parts = Split(bucketKey, "|")
+    If UBound(parts) < 4 Then _
+        Err.Raise vbObjectError + 4735, "CSectionPlotter", "Группа элементов схемы не содержит всех параметров оформления."
     Dim markerStyle As Long: markerStyle = CLng(parts(0))
     Dim markerSize As Long: markerSize = CLng(parts(1))
     Dim colorValue As Long: colorValue = CLng(parts(2))
@@ -617,7 +619,7 @@ Private Sub AddBucketSeriesByIndexes(ByVal data As CSectionPlotDataReader, ByVal
     series.MarkerStyle = markerStyle
     series.MarkerSize = markerSize
     series.Format.Line.Visible = False
-    If UBound(parts) >= 3 And StrComp(CStr(parts(3)), "Rebar", vbTextCompare) = 0 Then
+    If StrComp(CStr(parts(3)), "Rebar", vbTextCompare) = 0 Then
         series.MarkerForegroundColor = RGB(0, 0, 0)
     Else
         series.MarkerForegroundColor = colorValue

@@ -48,7 +48,7 @@ Public Sub SetMeta(ByVal meta As CResultMeta)
     If meta Is Nothing Then
         Set mMeta = New CResultMeta
         mMeta.SetResult rsInternalError, rcInternalError, rkDirectState, _
-            "Не сформирован результат проверки прямого НДС."
+            "Не сформирован результат проверки прямого НДС.", vbNullString, True, False
     Else
         Set mMeta = meta.Clone
     End If

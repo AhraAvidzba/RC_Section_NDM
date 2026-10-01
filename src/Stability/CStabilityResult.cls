@@ -163,7 +163,7 @@ Public Sub SetMeta(ByVal meta As CResultMeta, Optional ByVal resultComment As St
     If meta Is Nothing Then
         Set mMeta = New CResultMeta
         mMeta.SetResult rsInternalError, rcInternalError, rkStability, _
-            "Результат устойчивости не сформирован."
+            "Результат устойчивости не сформирован.", vbNullString, True, False
     Else
         Set mMeta = meta.Clone
         If Len(Trim$(resultComment)) > 0 Then mMeta.ResultComment = StabilityBranchDisplayName(resultComment)
@@ -183,7 +183,7 @@ Public Sub InitializeFromCalculator(ByVal meta As CResultMeta, ByVal stability A
     If meta Is Nothing Then
         Set mMeta = New CResultMeta
         mMeta.SetResult rsInternalError, rcInternalError, rkStability, _
-            "Результат устойчивости не сформирован."
+            "Результат устойчивости не сформирован.", vbNullString, True, False
     Else
         Set mMeta = meta.Clone
     End If
@@ -293,7 +293,7 @@ Public Property Get Meta() As CResultMeta
     If mMeta Is Nothing Then
         Set mMeta = New CResultMeta
         mMeta.SetResult rsInternalError, rcInternalError, rkStability, _
-            "Результат устойчивости не сформирован."
+            "Результат устойчивости не сформирован.", vbNullString, True, False
     End If
     Set Meta = mMeta.Clone
 End Property

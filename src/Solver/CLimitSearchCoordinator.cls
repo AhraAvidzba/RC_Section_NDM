@@ -76,7 +76,7 @@ Private Function ExecuteAutoCapacity(ByVal request As CLimitSearchRequest) As CL
         Set ExecuteAutoCapacity = firstResult
         Exit Function
     End If
-    If request.Problem.IsInvalidInputState(request.Problem.LimitState) Then
+    If request.Problem.StoppedTerminally Then
         Set ExecuteAutoCapacity = firstResult
         Exit Function
     End If

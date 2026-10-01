@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
-Workbook: RC_Section_NDM_f01_f05_fixed.xlsm
-Date: 2026-10-01 23:50:43
+Workbook: RC_Section_NDM_f06_fixed.xlsm
+Date: 2026-10-02 00:48:12
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -526,7 +526,7 @@ End Property
 ====================================================================================================
 COMPONENT: CResultMeta
 TYPE: 2
-LINES: 155
+LINES: 178
 ====================================================================================================
 Option Explicit
 
@@ -570,19 +570,19 @@ End Sub
 ' ветка и ошибка валидации не объявляют собственный расчет выполненным.
 ' Для внутренней ошибки после запуска вызывающий слой передает фактический
 ' calculated; для отсутствующего результата он обязан передать False.
-Public Sub SetResult(ByVal internalStatus As EResultInternalStatus, _
-        ByVal resultCode As EResultCode, ByVal resultKind As EResultKind, _
+Public Sub SetResult(ByVal InternalStatus As EResultInternalStatus, _
+        ByVal ResultCode As EResultCode, ByVal resultKind As EResultKind, _
         Optional ByVal resultComment As String = vbNullString, _
         Optional ByVal diagnosticDetails As String = vbNullString, _
         Optional ByVal Applies As Boolean = True, Optional ByVal calculated As Boolean = True)
-    mInternalStatus = internalStatus
-    mResultCode = resultCode
+    mInternalStatus = InternalStatus
+    mResultCode = ResultCode
     mResultKind = resultKind
     mResultComment = resultComment
     mDiagnosticDetails = diagnosticDetails
     mApplies = Applies
     mCalculated = calculated
-    Select Case internalStatus
+    Select Case InternalStatus
         Case rsNotRequested, rsNotApplicable
             mApplies = False
             mCalculated = False
@@ -611,6 +611,29 @@ Public Sub SetBlockedByDependency(ByVal resultKind As EResultKind, _
     SetResult rsBlockedByDependency, rcBlockedByDependency, resultKind, comment, vbNullString, True, False
 End Sub
 
+' Сохраняет машинную причину неуспешного solve без разбора текста сообщения.
+' Вызывающий слой передает факт численной попытки отдельно от причины отказа;
+' отсутствие обязательного solver-а является внутренней ошибкой контракта.
+Public Sub SetSolverFailure(ByVal FailureCode As ESolverFailureCode, _
+        ByVal resultKind As EResultKind, ByVal reason As String, ByVal attempted As Boolean)
+    Dim InternalStatus As EResultInternalStatus
+    Dim ResultCode As EResultCode
+    Select Case FailureCode
+        Case sfcInvalidInput
+            InternalStatus = rsInvalidInput: ResultCode = rcInvalidInput
+        Case sfcInvalidConfiguration
+            InternalStatus = rsInvalidConfiguration: ResultCode = rcInvalidConfiguration
+        Case sfcSingularTangent
+            InternalStatus = rsNumericalFailure: ResultCode = rcSingularTangent
+        Case sfcNumericalFailure
+            InternalStatus = rsNumericalFailure: ResultCode = rcNumericalFailure
+        Case Else
+            InternalStatus = rsInternalError: ResultCode = rcInternalError
+            If Len(Trim$(reason)) = 0 Then reason = "Решатель не сформировал результат равновесия."
+    End Select
+    SetResult InternalStatus, ResultCode, resultKind, reason, vbNullString, True, attempted
+End Sub
+
 ' Создает независимую копию meta для хранения внутри result-объекта.
 Public Function clone() As CResultMeta
     Dim result As CResultMeta
@@ -620,19 +643,19 @@ Public Function clone() As CResultMeta
     Set clone = result
 End Function
 
-Public Property Get internalStatus() As EResultInternalStatus
-    internalStatus = mInternalStatus
+Public Property Get InternalStatus() As EResultInternalStatus
+    InternalStatus = mInternalStatus
 End Property
 
-Public Property Let internalStatus(ByVal value As EResultInternalStatus)
+Public Property Let InternalStatus(ByVal value As EResultInternalStatus)
     mInternalStatus = value
 End Property
 
-Public Property Get resultCode() As EResultCode
-    resultCode = mResultCode
+Public Property Get ResultCode() As EResultCode
+    ResultCode = mResultCode
 End Property
 
-Public Property Let resultCode(ByVal value As EResultCode)
+Public Property Let ResultCode(ByVal value As EResultCode)
     mResultCode = value
 End Property
 
@@ -742,13 +765,13 @@ Public Function ExternalStatus(ByVal meta As CResultMeta) As String
         Exit Function
     End If
 
-    If meta.resultKind = rkCapacity And meta.internalStatus = rsCheckFailed And _
-            meta.resultCode = rcInitialStateBeyondLimit Then
+    If meta.resultKind = rkCapacity And meta.InternalStatus = rsCheckFailed And _
+            meta.ResultCode = rcInitialStateBeyondLimit Then
         ExternalStatus = STATUS_BASEFAIL
         Exit Function
     End If
 
-    Select Case meta.internalStatus
+    Select Case meta.InternalStatus
         Case rsUnset
             ExternalStatus = STATUS_CALCERR
         Case rsNotRequested, rsNotApplicable, rsBlockedByDependency
@@ -11133,7 +11156,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCapacityLimitSearchProblem
 TYPE: 2
-LINES: 402
+LINES: 411
 ====================================================================================================
 Option Explicit
 
@@ -11365,9 +11388,14 @@ Public Function BuildSnapshot(ByVal requestedStrategy As String, _
     Dim meta As CResultMeta
     Set meta = New CResultMeta
     If mCapacity Is Nothing Then
-        meta.SetResult rsInternalError, rcInternalError, rkCapacity, "Не передана задача несущей способности."
+        meta.SetResult rsInternalError, rcInternalError, rkCapacity, "Не передана задача несущей способности.", vbNullString, True, False
     ElseIf mCapacity.Converged Then
         meta.SetResult rsSuccess, rcCheckPassed, rkCapacity, mCapacity.LimitState
+    ElseIf mCapacity.FailureCode = sfcInvalidConfiguration Then
+        meta.SetResult rsInvalidConfiguration, rcInvalidConfiguration, rkCapacity, mCapacity.stopReason
+    ElseIf mCapacity.FailureCode = sfcInternalError Then
+        meta.SetResult rsInternalError, rcInternalError, rkCapacity, mCapacity.stopReason, _
+            vbNullString, True, (mCapacity.iterations > 0)
     ElseIf mCapacity.SearchBoundReached Then
         meta.SetResult rsNumericalFailure, rcSearchBoundReached, rkCapacity, mCapacity.stopReason
     ElseIf mCapacity.LimitSearchInitialLambdaRejected And _
@@ -11377,7 +11405,10 @@ Public Function BuildSnapshot(ByVal requestedStrategy As String, _
     ElseIf mCapacity.LimitSearchCapacityStateIsInvalidInput(mCapacity.LimitState) Then
         meta.SetResult rsInvalidInput, rcInvalidInput, rkCapacity, mCapacity.stopReason
     ElseIf mCapacity.LimitSearchCapacityStateIsNumericalFailure(mCapacity.LimitState) Then
-        meta.SetResult rsNumericalFailure, rcNumericalFailure, rkCapacity, mCapacity.stopReason
+        Dim failureResultCode As EResultCode
+        failureResultCode = rcNumericalFailure
+        If mCapacity.FailureCode = sfcSingularTangent Then failureResultCode = rcSingularTangent
+        meta.SetResult rsNumericalFailure, failureResultCode, rkCapacity, mCapacity.stopReason
     Else
         meta.SetResult rsInternalError, rcInternalError, rkCapacity, mCapacity.stopReason
     End If
@@ -11508,7 +11539,8 @@ Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa() As D
 End Property
 
 Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
-    If Not mCapacity Is Nothing Then ILimitSearchProblem_StoppedTerminally = mCapacity.Converged
+    If Not mCapacity Is Nothing Then _
+        ILimitSearchProblem_StoppedTerminally = mCapacity.Converged Or mCapacity.LimitSearchHasTerminalFailure
 End Property
 
 Private Property Get ILimitSearchProblem_StopReason() As String
@@ -11655,7 +11687,7 @@ End Sub
 ' несущей способности. Для Capacity такая связка отображается как BaseFail.
 Public Sub InitializeBaseFail(ByVal reason As String, _
         Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
-    InitializeEarlyResult rsCheckFailed, rcInitialStateBeyondLimit, NormalizeBaseFailReason(reason), pathKey
+    InitializeEarlyResult rsCheckFailed, rcInitialStateBeyondLimit, NormalizeBaseFailReason(reason), pathKey, True
 End Sub
 
 ' Убирает старые технические формулировки из пользовательского BaseFail.
@@ -11671,15 +11703,15 @@ Private Function NormalizeBaseFailReason(ByVal reason As String) As String
 End Function
 
 ' Общая запись раннего capacity-result без обратного маппинга из display-строки.
-Private Sub InitializeEarlyResult(ByVal internalStatus As EResultInternalStatus, _
-        ByVal resultCode As EResultCode, ByVal reason As String, _
-        ByVal pathKey As String)
+Private Sub InitializeEarlyResult(ByVal InternalStatus As EResultInternalStatus, _
+        ByVal ResultCode As EResultCode, ByVal reason As String, _
+        ByVal pathKey As String, Optional ByVal calculated As Boolean = False)
     ResetNumericSnapshot
     mLimitState = reason
     mSolutionMethod = vbNullString
     mPathResolved = pathKey
     Set mResultMeta = New CResultMeta
-    mResultMeta.SetResult internalStatus, resultCode, rkCapacity, reason
+    mResultMeta.SetResult InternalStatus, ResultCode, rkCapacity, reason, vbNullString, True, calculated
 
 End Sub
 
@@ -11914,7 +11946,7 @@ End Property
 ====================================================================================================
 COMPONENT: CCapacitySolver
 TYPE: 2
-LINES: 1901
+LINES: 1985
 ====================================================================================================
 Option Explicit
 
@@ -11939,12 +11971,14 @@ Private Const STATE_STEEL_LIMIT As String = "SteelStrainLimit"
 Private Const STATE_NUMERICAL_FAILURE As String = "NumericalFailure"
 Private Const STATE_SINGULAR_TANGENT As String = "SingularTangent"
 Private Const STATE_INVALID_INPUT As String = "InvalidInput"
+Private Const STATE_INTERNAL_ERROR As String = "InternalError" ' Нарушен программный контракт; повтор численного solve не помогает.
 Private Const MOMENT_DIRECTION_TOLERANCE As Double = 0.001 ' Допустимое относительное отклонение от выбранной моментной траектории.
 Private Const PROBE_CACHE_SIZE As Long = 12 ' Небольшое кольцо последних lambda-точек LoadMultiplier.
 
 Private mConverged As Boolean ' True, если выбранный метод capacity нашел предельное состояние.
 Private mStopReason As String ' Причина остановки capacity solver для вывода в результаты и тесты.
 Private mLimitState As String ' Физический или численный статус найденного предела.
+Private mFailureCode As ESolverFailureCode ' Точная техническая причина, независимая от текста комментария и LimitState.
 Private mUpperLimitState As String ' Статус верхней границы при LoadMultiplier.
 Private mInitialLambdaRejected As Boolean ' True, если lambda=0 уже не является acceptable-точкой capacity path.
 Private mSearchBoundReached As Boolean ' MaxLambda проверена, но физический предел не установлен.
@@ -12106,6 +12140,7 @@ Public Sub SolveByUltimateLoadPath(ByVal section As CSectionModel, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
         ByVal myOffset As Double, ByVal myBase As Double, _
         Optional ByVal allowPureAxialRedirect As Boolean = True)
+    If Not EnsureSearchDependencies(section, concreteMaterial, steelMaterial) Then Exit Sub
     If allowPureAxialRedirect And IsPureAxialLoadPath(nOffset, nBase, mxOffset, mxBase, myOffset, myBase) Then
         SolvePureAxialUltimateByLoadMultiplier section, concreteMaterial, steelMaterial, _
             nOffset, nBase, mxOffset, mxBase, myOffset, myBase
@@ -12161,7 +12196,7 @@ Public Sub SolveByAutoLoadPath(ByVal section As CSectionModel, _
         Optional ByVal allowForcePathRetainedLimit As Boolean = False)
     SolveByUltimateLoadPath section, concreteMaterial, steelMaterial, _
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowPureAxialRedirect
-    If mConverged Or mLimitState = STATE_INVALID_INPUT Then Exit Sub
+    If mConverged Or LimitSearchHasTerminalFailure Then Exit Sub
 
     Dim firstStopReason As String
     Dim firstLimitState As String
@@ -12536,6 +12571,7 @@ Public Sub SolveByLoadPathMultiplier(ByVal section As CSectionModel, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
         ByVal myOffset As Double, ByVal myBase As Double, _
         Optional ByVal allowForcePathRetainedLimit As Boolean = False)
+    If Not EnsureSearchDependencies(section, concreteMaterial, steelMaterial) Then Exit Sub
     Dim request As CLimitSearchRequest
     Set request = New CLimitSearchRequest
     request.InitializeCapacity Me, section, concreteMaterial, steelMaterial, _
@@ -12589,13 +12625,13 @@ Public Function LimitSearchEvaluateCapacityLoadMultiplier(ByVal section As CSect
     ElseIf IsNumericalFailure(probeState) Then
         functionValue = 0#
         mLimitState = probeState
-        mStopReason = "Во время поиска " & NormalizedSearchMethod() & " возникла численная несходимость."
+        If Len(mStopReason) = 0 Then mStopReason = "Во время поиска " & NormalizedSearchMethod() & " возникла численная несходимость."
         LimitSearchEvaluateCapacityLoadMultiplier = True
     Else
         functionValue = 0#
         mLimitState = probeState
-        mStopReason = "Поиск несущей способности остановлен: " & probeState & "."
-        LimitSearchEvaluateCapacityLoadMultiplier = True
+        If Len(mStopReason) = 0 Then mStopReason = "Поиск несущей способности остановлен: " & CapacityStateDisplayName(probeState) & "."
+        LimitSearchEvaluateCapacityLoadMultiplier = Not LimitSearchHasTerminalFailure
     End If
 End Function
 
@@ -12604,8 +12640,8 @@ End Function
 ' внешний BaseFail позже формируется через ResultCode, а не через текст.
 Public Sub LimitSearchHandleCapacityInitialFailure(ByVal probeState As String)
     mLimitState = probeState
-    If LimitSearchCapacityStateIsInvalidInput(probeState) Then
-        SetInvalidInput "Исходную точку пути несущей проверить нельзя: " & CapacityStateDisplayName(probeState) & "."
+    If LimitSearchHasTerminalFailure Then
+        If Len(mStopReason) = 0 Then mStopReason = "Исходную точку пути несущей проверить нельзя: " & CapacityStateDisplayName(probeState) & "."
     ElseIf LimitSearchCapacityStateIsNumericalFailure(probeState) Then
         mStopReason = "Равновесие для исходной точки пути несущей не найдено численно: " & _
             CapacityStateDisplayName(probeState) & "."
@@ -12636,6 +12672,8 @@ Private Function CapacityStateDisplayName(ByVal probeState As String) As String
             CapacityStateDisplayName = "касательная матрица вырождена"
         Case STATE_INVALID_INPUT
             CapacityStateDisplayName = "ошибка исходных данных или настроек"
+        Case STATE_INTERNAL_ERROR
+            CapacityStateDisplayName = "нарушен внутренний контракт расчета"
         Case Else
             CapacityStateDisplayName = probeState
     End Select
@@ -12709,6 +12747,7 @@ End Sub
 ' Переводит capacity-result в численную ошибку общего поиска.
 Public Sub LimitSearchSetCapacityNumericalFailure(ByVal reason As String)
     mLimitState = STATE_NUMERICAL_FAILURE
+    mFailureCode = sfcNumericalFailure
     mStopReason = reason
 End Sub
 
@@ -12855,6 +12894,7 @@ End Sub
 ' Переводит результат UltimateStrain в численную остановку.
 Public Sub LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
     mLimitState = STATE_NUMERICAL_FAILURE
+    mFailureCode = sfcNumericalFailure
     mStopReason = reason
 End Sub
 
@@ -12993,23 +13033,46 @@ Private Function CapacityScalesAxial(ByVal nBase As Double) As Boolean
     CapacityScalesAxial = (Abs(nBase) > 0.000000001)
 End Function
 
+' Проверяет программные зависимости до создания обязательного Search-request.
+' При нарушении контракта очищает старый результат и сохраняет typed internal
+' failure, чтобы публичный расчет не оставлял необработанную ошибку VBA.
+Private Function EnsureSearchDependencies(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object) As Boolean
+    If Not section Is Nothing Then
+        If Not concreteMaterial Is Nothing Then
+            If Not steelMaterial Is Nothing Then
+                EnsureSearchDependencies = True
+                Exit Function
+            End If
+        End If
+    End If
+    ClearResult
+    If section Is Nothing Then
+        SetInternalError "Модель сечения не передана расчетчику несущей способности."
+    ElseIf concreteMaterial Is Nothing Then
+        SetInternalError "Материал бетона не передан расчетчику несущей способности."
+    Else
+        SetInternalError "Материал арматуры не передан расчетчику несущей способности."
+    End If
+End Function
+
 ' Проверяет общую lambda-траекторию. Нулевой Base означает, что ни одна
 ' компонента нагрузки не масштабируется, поэтому предельный множитель не имеет
 ' инженерного смысла.
 Private Function ValidateLoadPathCapacityInputs(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
         ByVal steelMaterial As Object, ByVal nBase As Double, ByVal mxBase As Double, ByVal myBase As Double) As Boolean
     If section Is Nothing Then
-        SetInvalidInput "Модель сечения не передана."
+        SetInternalError "Модель сечения не передана расчетчику несущей способности."
     ElseIf section.ConcreteCount <= 0 Then
         SetInvalidInput "В модели сечения нет бетонных элементов."
     ElseIf concreteMaterial Is Nothing Then
-        SetInvalidInput "Материал бетона не передан."
+        SetInternalError "Материал бетона не передан расчетчику несущей способности."
     ElseIf steelMaterial Is Nothing Then
-        SetInvalidInput "Материал арматуры не передан."
+        SetInternalError "Материал арматуры не передан расчетчику несущей способности."
     ElseIf Abs(nBase) <= 0.000000001 And Abs(mxBase) <= 0.000000001 And Abs(myBase) <= 0.000000001 Then
         SetInvalidInput "В траектории несущей способности нет масштабируемой нагрузки."
     ElseIf mSolverMaxIterations <= 0 Then
-        SetInvalidInput "Настройки поиска несущей способности некорректны."
+        SetInvalidConfiguration "Число итераций решателя несущей способности должно быть положительным."
     Else
         ValidateLoadPathCapacityInputs = True
     End If
@@ -13019,17 +13082,17 @@ End Function
 Private Function ValidateCapacityInputs(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
         ByVal steelMaterial As Object, ByVal mxBase As Double, ByVal myBase As Double) As Boolean
     If section Is Nothing Then
-        SetInvalidInput "Модель сечения не передана."
+        SetInternalError "Модель сечения не передана расчетчику несущей способности."
     ElseIf section.ConcreteCount <= 0 Then
         SetInvalidInput "В модели сечения нет бетонных элементов."
     ElseIf concreteMaterial Is Nothing Then
-        SetInvalidInput "Материал бетона не передан."
+        SetInternalError "Материал бетона не передан расчетчику несущей способности."
     ElseIf steelMaterial Is Nothing Then
-        SetInvalidInput "Материал арматуры не передан."
+        SetInternalError "Материал арматуры не передан расчетчику несущей способности."
     ElseIf Sqr(mxBase * mxBase + myBase * myBase) <= 0.000000001 Then
         SetInvalidInput "Базовый вектор момента должен быть ненулевым."
     ElseIf mSolverMaxIterations <= 0 Then
-        SetInvalidInput "Настройки поиска несущей способности некорректны."
+        SetInvalidConfiguration "Число итераций решателя несущей способности должно быть положительным."
     Else
         ValidateCapacityInputs = True
     End If
@@ -13040,10 +13103,13 @@ End Function
 ' или материалы, которые проверяются выше по цепочке.
 Private Function ValidateLoadMultiplierSettings() As Boolean
     If Len(NormalizedSearchMethod()) = 0 Then
-        SetInvalidInput "Capacity.SearchMethod должен быть Bisection, Brent или Secant."
+        SetInvalidConfiguration "Capacity.SearchMethod должен быть Bisection, Brent или Secant."
+    ElseIf StrComp(Trim$(mSolverMethod), "Newton", vbTextCompare) <> 0 And _
+            StrComp(Trim$(mSolverMethod), "Secant", vbTextCompare) <> 0 Then
+        SetInvalidConfiguration "Solver.Method должен быть Newton или Secant."
     ElseIf mInitialLambdaStep <= 0# Or mLambdaTolerance <= 0# Or mMaxLambda <= 0# Or _
             mMaxRetries < 0 Or mSolverBaseLoadSteps <= 0 Then
-        SetInvalidInput "Настройки LoadMultiplier для несущей способности некорректны."
+        SetInvalidConfiguration "Настройки LoadMultiplier для несущей способности некорректны."
     Else
         ValidateLoadMultiplierSettings = True
     End If
@@ -13054,7 +13120,7 @@ End Function
 ' плоскости достаточно проверить численную корректность lambda.
 Private Function ValidateUltimateStrainSettings() As Boolean
     If mStrainTolerance <= 0# Then
-        SetInvalidInput "Настройки UltimateStrain для несущей способности некорректны."
+        SetInvalidConfiguration "Настройки UltimateStrain для несущей способности некорректны."
     Else
         ValidateUltimateStrainSettings = True
     End If
@@ -13064,6 +13130,23 @@ End Function
 ' возвращает статус пользователю через batch summary и подробный writer.
 Private Sub SetInvalidInput(ByVal reason As String)
     mLimitState = STATE_INVALID_INPUT
+    mFailureCode = sfcInvalidInput
+    mStopReason = reason
+End Sub
+
+' Ошибка численных настроек сохраняется отдельным typed-кодом и не запускает
+' retries/fallback. Короткий код LimitState не является внешним display-статусом.
+Private Sub SetInvalidConfiguration(ByVal reason As String)
+    mLimitState = STATE_INVALID_INPUT
+    mFailureCode = sfcInvalidConfiguration
+    mStopReason = reason
+End Sub
+
+' Отсутствующая программная зависимость или неожиданная ошибка относятся
+' к внутреннему контракту, а не к исходным данным пользователя.
+Private Sub SetInternalError(ByVal reason As String)
+    mLimitState = STATE_INTERNAL_ERROR
+    mFailureCode = sfcInternalError
     mStopReason = reason
 End Sub
 
@@ -13155,16 +13238,18 @@ Private Function ProbeOnce(ByVal section As CSectionModel, _
     Set solver = runner.ResultSolver
     Set mLastSolver = solver
     If solver Is Nothing Then
-        ProbeOnce = STATE_NUMERICAL_FAILURE
-        mLimitState = STATE_NUMERICAL_FAILURE
-        mStopReason = "Пробная точка несущей способности не вернула solver."
+        ProbeOnce = STATE_INTERNAL_ERROR
+        SetInternalError "Пробная точка несущей способности не вернула результат решателя."
         Exit Function
     End If
     If Len(runner.DiagnosticLog) > 0 Then AppendSearchDiagnostic Trim$(runner.DiagnosticLog)
 
     If Not solver.Converged Then
         ProbeOnce = ClassifyNumericalFailure(solver.FailureCode)
+        mFailureCode = solver.FailureCode
+        mStopReason = solver.stopReason
     Else
+        mFailureCode = sfcNone
         UpdateCriticalState section, concreteMaterial, solver
         If mCriticalStrainUtilization >= 1# Then
             ProbeOnce = CriticalLimitState()
@@ -13177,9 +13262,8 @@ Private Function ProbeOnce(ByVal section As CSectionModel, _
     Exit Function
 
 Failed:
-    ProbeOnce = STATE_INVALID_INPUT
-    mLimitState = STATE_INVALID_INPUT
-    mStopReason = "Пробная точка несущей способности не рассчиталась: " & Err.description
+    ProbeOnce = STATE_INTERNAL_ERROR
+    SetInternalError "Пробная точка несущей способности не рассчиталась: " & Err.description
 End Function
 
 ' Передает настройки внутреннего CSectionSolver в общий runner для одной
@@ -13228,12 +13312,24 @@ Private Function EvaluateZeroLoadProbe(ByVal section As CSectionModel, _
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
-    solver.DiagnosticsEnabled = mDiagnosticsEnabled
-    solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, 0#, 0#, 0#
+    solver.SolverMethod = mSolverMethod
+    solver.maxIterations = mSolverMaxIterations
+    solver.LoadSteps = mSolverBaseLoadSteps
     solver.ToleranceN = mSolverToleranceN
     solver.ToleranceMx = mSolverToleranceMx
     solver.ToleranceMy = mSolverToleranceMy
+    solver.DiagnosticsEnabled = mDiagnosticsEnabled
+    solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, 0#, 0#, 0#
+    Set mLastSolver = solver
+    If solver.FailureCode <> sfcNone Then
+        mFailureCode = solver.FailureCode
+        mStopReason = solver.stopReason
+        EvaluateZeroLoadProbe = ClassifyNumericalFailure(mFailureCode)
+        Exit Function
+    End If
     If Not solver.ConfirmEquilibrium(0#, 0#, 0#) Then
+        mFailureCode = solver.FailureCode
+        mStopReason = solver.stopReason
         EvaluateZeroLoadProbe = STATE_NUMERICAL_FAILURE
         Exit Function
     End If
@@ -13247,9 +13343,8 @@ Private Function EvaluateZeroLoadProbe(ByVal section As CSectionModel, _
     Exit Function
 
 Failed:
-    EvaluateZeroLoadProbe = STATE_INVALID_INPUT
-    mLimitState = STATE_INVALID_INPUT
-    mStopReason = "Нулевую lambda-точку несущей способности проверить нельзя: " & Err.description
+    EvaluateZeroLoadProbe = STATE_INTERNAL_ERROR
+    SetInternalError "Нулевую lambda-точку несущей способности проверить нельзя: " & Err.description
 End Function
 
 Private Function TryRestoreProbeCache(ByVal nSpecified As Double, ByVal mx As Double, ByVal my As Double, _
@@ -13259,6 +13354,7 @@ Private Function TryRestoreProbeCache(ByVal nSpecified As Double, ByVal mx As Do
         If ProbeCacheMatches(slot, nSpecified, mx, my, lambdaValue) Then
             probeState = mProbeCacheState(slot)
             Set mLastSolver = mProbeCacheSolver(slot)
+            mFailureCode = sfcNone
             mCriticalStrain = mProbeCacheCriticalStrain(slot)
             mCriticalElement = mProbeCacheCriticalElement(slot)
             mCriticalStrainUtilization = mProbeCacheCriticalUtil(slot)
@@ -13270,14 +13366,15 @@ Private Function TryRestoreProbeCache(ByVal nSpecified As Double, ByVal mx As Do
 End Function
 
 ' Сравнивает lambda-точку по lambda и целевым усилиям.
-' Усилия проверяются отдельно от lambda, чтобы cache оставался безопасным даже
-' после будущих расширений траектории нагрузки внутри одного solver-а.
+' Разные представимые lambda нельзя объединять произвольным допуском: поиск
+' может уточнять физический критерий точнее этого допуска. Повтор той же точки
+' сохраняет точное совпадение lambda и всех трех целевых усилий.
 Private Function ProbeCacheMatches(ByVal slot As Long, ByVal nSpecified As Double, ByVal mx As Double, ByVal my As Double, _
         ByVal lambdaValue As Double) As Boolean
-    If Abs(mProbeCacheLambda(slot) - lambdaValue) > 0.000000000001 * MaxDouble(1#, Abs(lambdaValue)) Then Exit Function
-    If Abs(mProbeCacheN(slot) - nSpecified) > MaxDouble(mSolverToleranceN * 0.000000001, 0.000001) Then Exit Function
-    If Abs(mProbeCacheMx(slot) - mx) > MaxDouble(mSolverToleranceMx * 0.000000001, 0.001) Then Exit Function
-    If Abs(mProbeCacheMy(slot) - my) > MaxDouble(mSolverToleranceMy * 0.000000001, 0.001) Then Exit Function
+    If mProbeCacheLambda(slot) <> lambdaValue Then Exit Function
+    If mProbeCacheN(slot) <> nSpecified Then Exit Function
+    If mProbeCacheMx(slot) <> mx Then Exit Function
+    If mProbeCacheMy(slot) <> my Then Exit Function
     ProbeCacheMatches = True
 End Function
 
@@ -13285,8 +13382,9 @@ End Function
 ' Неудачная попытка не закрывает возможность повторного solve с лучшим стартом.
 Private Sub StoreProbeCache(ByVal nSpecified As Double, ByVal mx As Double, ByVal my As Double, _
         ByVal lambdaValue As Double, ByVal probeState As String)
-    If IsNumericalFailure(probeState) Then Exit Sub
-    If probeState = STATE_INVALID_INPUT Then Exit Sub
+    If probeState <> STATE_ACCEPTABLE Then
+        If Not IsPhysicalLimit(probeState) Then Exit Sub
+    End If
     If mLastSolver Is Nothing Then Exit Sub
     If Not mLastSolver.Converged Then Exit Sub
     If mProbeCacheNextSlot < 1 Or mProbeCacheNextSlot > PROBE_CACHE_SIZE Then mProbeCacheNextSlot = 1
@@ -13401,8 +13499,12 @@ Private Function ClassifyNumericalFailure(ByVal FailureCode As ESolverFailureCod
             ClassifyNumericalFailure = STATE_SINGULAR_TANGENT
         Case sfcInvalidInput
             ClassifyNumericalFailure = STATE_INVALID_INPUT
-        Case Else
+        Case sfcInvalidConfiguration
+            ClassifyNumericalFailure = STATE_INVALID_INPUT
+        Case sfcNumericalFailure
             ClassifyNumericalFailure = STATE_NUMERICAL_FAILURE
+        Case Else
+            ClassifyNumericalFailure = STATE_INTERNAL_ERROR
     End Select
 End Function
 
@@ -13500,6 +13602,7 @@ Private Sub ClearResult()
     mLimitState = vbNullString
     mUpperLimitState = vbNullString
     mInitialLambdaRejected = False
+    mFailureCode = sfcNone
     mSearchBoundReached = False
     mLambdaUltimate = 0#
     mNUltimate = 0#
@@ -13560,6 +13663,19 @@ End Function
 Public Function LimitSearchCapacityStateIsInvalidInput(ByVal state As String) As Boolean
     LimitSearchCapacityStateIsInvalidInput = (state = STATE_INVALID_INPUT)
 End Function
+
+' Терминальная ошибка данных, настройки или программной зависимости запрещает
+' повтор solve и переход к другому численному методу той же постановки.
+Public Property Get LimitSearchHasTerminalFailure() As Boolean
+    LimitSearchHasTerminalFailure = (mFailureCode = sfcInvalidInput Or _
+        mFailureCode = sfcInvalidConfiguration Or mFailureCode = sfcInternalError)
+End Property
+
+' Передает адаптеру точную typed-причину для InternalStatus/ResultCode.
+' Значение не определяется по словам StopReason или пользовательскому display.
+Public Property Get FailureCode() As ESolverFailureCode
+    FailureCode = mFailureCode
+End Property
 
 ' Возвращает True, если capacity-path был остановлен уже на lambda=0.
 ' Низкоуровневый search только сообщает о rejected lower point; смысл
@@ -14031,7 +14147,7 @@ End Function
 
 Private Function ILimitSearchProblem_ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, _
         ByVal highLambda As Double, ByVal probeState As String) As Double
-    ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = 0.5 * (lowLambda + highLambda)
+    ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = lowLambda + (highLambda - lowLambda) / 2#
 End Function
 
 Private Sub ILimitSearchProblem_RecordAcceptable(ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double)
@@ -14209,7 +14325,7 @@ Private Function ExecuteAutoCapacity(ByVal request As CLimitSearchRequest) As CL
         Set ExecuteAutoCapacity = firstResult
         Exit Function
     End If
-    If request.problem.IsInvalidInputState(request.problem.LimitState) Then
+    If request.problem.StoppedTerminally Then
         Set ExecuteAutoCapacity = firstResult
         Exit Function
     End If
@@ -14569,7 +14685,7 @@ End Property
 ====================================================================================================
 COMPONENT: CLimitSearchResult
 TYPE: 2
-LINES: 171
+LINES: 173
 ====================================================================================================
 Option Explicit
 
@@ -14599,7 +14715,8 @@ Private mLastSolverDiagnosticLog As String ' Журнал финального �
 ' Создает безопасный исход до получения результата задачи.
 Private Sub Class_Initialize()
     Set mMeta = New CResultMeta
-    mMeta.SetResult rsInternalError, rcInternalError, rkGeneric, "Результат поиска еще не заполнен."
+    mMeta.SetResult rsInternalError, rcInternalError, rkGeneric, "Результат поиска еще не заполнен.", _
+        vbNullString, True, False
 End Sub
 
 ' Принимает готовый исход задачи и численный снимок без живых калькуляторов.
@@ -14619,7 +14736,8 @@ Public Sub Initialize(ByVal meta As CResultMeta, ByVal requestedStrategy As Stri
     mDiagnosticLog = DiagnosticLog
     mLastSolverDiagnosticLog = finalSolverDiagnosticLog
     If meta Is Nothing Then
-        mMeta.SetResult rsInternalError, rcInternalError, rkGeneric, "Поиск завершен без машинного результата."
+        mMeta.SetResult rsInternalError, rcInternalError, rkGeneric, "Поиск завершен без машинного результата.", _
+            vbNullString, True, SearchExecuted
         Exit Sub
     End If
     Set mMeta = meta.clone
@@ -14627,7 +14745,7 @@ Public Sub Initialize(ByVal meta As CResultMeta, ByVal requestedStrategy As Stri
     If Not PointState Is Nothing Then
         If Not PointState.Converged Then
             mMeta.SetResult rsInternalError, rcInternalError, meta.resultKind, _
-                "Предельная точка передана без подтвержденного равновесия."
+                "Предельная точка передана без подтвержденного равновесия.", vbNullString, True, SearchExecuted
             Exit Sub
         End If
         Set mPointState = PointState
@@ -14679,7 +14797,7 @@ Public Property Get resultKind() As EResultKind
 End Property
 
 Public Property Get Succeeded() As Boolean
-    Succeeded = (mMeta.internalStatus = rsSuccess Or mMeta.internalStatus = rsSuccessWithWarning)
+    Succeeded = (mMeta.InternalStatus = rsSuccess Or mMeta.InternalStatus = rsSuccessWithWarning)
 End Property
 
 Public Property Get SearchExecuted() As Boolean
@@ -14910,7 +15028,7 @@ End Property
 ====================================================================================================
 COMPONENT: CLoadMultiplierSearch
 TYPE: 2
-LINES: 594
+LINES: 677
 ====================================================================================================
 Option Explicit
 
@@ -14954,7 +15072,7 @@ End Function
 Private Function ContractFailure(ByVal request As CLimitSearchRequest, ByVal reason As String) As CLimitSearchResult
     Dim meta As CResultMeta
     Set meta = New CResultMeta
-    meta.SetResult rsInternalError, rcInternalError, request.resultKind, reason
+    meta.SetResult rsInternalError, rcInternalError, request.resultKind, reason, vbNullString, True, False
     Dim result As CLimitSearchResult
     Set result = New CLimitSearchResult
     result.Initialize meta, request.SolutionStrategy, vbNullString, False, 0#, 0#, 0#, 0#, _
@@ -14965,12 +15083,12 @@ End Function
 ' Решает начальную точку, находит скобку и запускает выбранный численный метод.
 ' Здесь нет проверки вида Capacity/Crack, нагрузки текущего LC или psi.
 Private Sub RunSearch(ByVal request As CLimitSearchRequest, ByVal loadPath As CLoadPathVector)
+    If Not ValidateSearchSettings(request) Then Exit Sub
     Dim lowLambda As Double, highLambda As Double
     Dim lowSolver As CSectionSolver, highSolver As CSectionSolver
     Dim functionValue As Double, probeState As String
     lowLambda = 0#
     highLambda = request.problem.InitialLambdaStep
-    If highLambda <= 0# Then highLambda = 1#
 
     If Not request.problem.EvaluatePoint(request, loadPath, Nothing, lowLambda, _
             functionValue, probeState, lowSolver) Then
@@ -14988,12 +15106,28 @@ Private Sub RunSearch(ByVal request As CLimitSearchRequest, ByVal loadPath As CL
     If Not request.problem.Converged Then request.problem.TryFinalizeAfterSearchFailure request
 End Sub
 
+' Проверяет численный диапазон до проб и арифметики. Нулевой bisection-budget
+' означает уточнение до заданной точности с обязательным контролем прогресса.
+Private Function ValidateSearchSettings(ByVal request As CLimitSearchRequest) As Boolean
+    If Not IsFiniteNumber(request.problem.InitialLambdaStep) Or _
+            Not IsFiniteNumber(request.problem.maxLambda) Or _
+            Not IsFiniteNumber(request.problem.LambdaTolerance) Then
+        request.problem.SetInvalidInput "Границы и допуск поиска lambda должны быть конечными числами."
+    ElseIf request.problem.InitialLambdaStep <= 0# Or request.problem.maxLambda <= 0# Or _
+            request.problem.LambdaTolerance <= 0# Then
+        request.problem.SetInvalidInput "Начальный шаг, MaxLambda и допуск lambda должны быть положительными."
+    Else
+        ValidateSearchSettings = True
+    End If
+End Function
+
 ' Единое расширение скобки: допустимая проба сдвигает нижнюю границу,
 ' достигнутый критерий задает верхнюю, а численная неудача требует recovery.
 ' Последняя проба всегда выполняется на MaxLambda, без пропуска хвоста интервала.
 Private Function FindBracket(ByVal request As CLimitSearchRequest, ByVal loadPath As CLoadPathVector, _
         ByRef lowLambda As Double, ByRef lowSolver As CSectionSolver, _
         ByRef highLambda As Double, ByRef highSolver As CSectionSolver) As Boolean
+    On Error GoTo ArithmeticFailed
     Dim functionValue As Double, probeState As String
     Dim evaluated As Boolean, reducedLambda As Double
     highLambda = MinDouble(highLambda, request.problem.maxLambda)
@@ -15003,7 +15137,12 @@ Private Function FindBracket(ByVal request As CLimitSearchRequest, ByVal loadPat
         If Not evaluated Or request.problem.IsNumericalFailureState(probeState) Then
             If request.problem.StoppedTerminally Then Exit Function
             reducedLambda = request.problem.ReduceLambdaAfterNumericalFailure(lowLambda, highLambda, probeState)
-            If reducedLambda <= lowLambda Or reducedLambda - lowLambda <= request.problem.LambdaTolerance Then
+            If Not IsFiniteNumber(reducedLambda) Or reducedLambda <= lowLambda Or reducedLambda >= highLambda Then
+                request.problem.SetNumericalFailure _
+                    "Восстановление поиска lambda не уменьшило интервал; следующую пробу невозможно выбрать."
+                Exit Function
+            End If
+            If reducedLambda - lowLambda <= request.problem.LambdaTolerance Then
                 request.problem.HandleBracketNumericalFailure lowLambda, highLambda, probeState
                 Exit Function
             End If
@@ -15018,13 +15157,24 @@ Private Function FindBracket(ByVal request As CLimitSearchRequest, ByVal loadPat
             If highLambda >= request.problem.maxLambda Then Exit Do
             ' Успешная проба дает более близкий warm-start. Несошедшаяся
             ' нагрузка не является физической границей: повторяем расширение.
-            highLambda = MinDouble(2# * highLambda, request.problem.maxLambda)
+            If highLambda >= request.problem.maxLambda / 2# Then
+                highLambda = request.problem.maxLambda
+            Else
+                highLambda = 2# * highLambda
+            End If
+            If highLambda <= lowLambda Then
+                request.problem.SetNumericalFailure "Расширение интервала lambda остановилось из-за машинной точности."
+                Exit Function
+            End If
         Else
             request.problem.HandleUnexpectedState probeState
             Exit Function
         End If
     Loop
     request.problem.HandleBracketNotFound lowLambda
+    Exit Function
+ArithmeticFailed:
+    request.problem.SetNumericalFailure "Не удалось продолжить численный поиск lambda: " & Err.description
 End Function
 
 ' Запускает выбранный одномерный метод внутри уже найденной физической скобки.
@@ -15070,7 +15220,12 @@ Private Function SearchByBisectionCore(ByVal request As CLimitSearchRequest, _
         Dim probeState As String
         Dim startSolver As CSectionSolver
 
-        midLambda = (lowLambda + highLambda) / 2#
+        midLambda = SafeMidpoint(lowLambda, highLambda)
+        If midLambda <= lowLambda Or midLambda >= highLambda Then
+            request.problem.SetNumericalFailure _
+                "Поиск Bisection остановлен: между границами lambda нет представимого числа, а заданная точность еще не достигнута."
+            Exit Function
+        End If
         Set startSolver = PreferredBisectionStartSolver(lowSolver, highSolver)
         If Not EvaluateBisectionPoint(request, loadPath, startSolver, midLambda, _
                 midResidual, probeState, midSolver) Then
@@ -15135,7 +15290,7 @@ Private Sub SearchByBrent(ByVal request As CLimitSearchRequest, _
     e = d
 
     For iter = 1 To maxIterations
-        If fb * fc > 0# Then
+        If Sgn(fb) = Sgn(fc) Then
             c = a
             fc = fa
             stateC = stateA
@@ -15150,31 +15305,18 @@ Private Sub SearchByBrent(ByVal request As CLimitSearchRequest, _
 
         Dim tol As Double
         Dim xm As Double
-        tol = MaxDouble(tolerance / 2#, 0.000000000001 * Abs(b))
+        tol = tolerance / 2#
         xm = (c - b) / 2#
-        If Abs(xm) <= tol Then
+        If fb = 0# Or Abs(c - b) <= tolerance Then
             FinalizeAfterProbe request, loadPath, b, "Brent"
             Exit Sub
         End If
 
         If Abs(e) >= tol And Abs(fa) > Abs(fb) Then
-            Dim s As Double, p As Double, q As Double
-            Dim r As Double
-            s = fb / fa
-            If a = c Then
-                p = 2# * xm * s
-                q = 1# - s
-            Else
-                q = fa / fc
-                r = fb / fc
-                p = s * (2# * xm * q * (q - r) - (b - a) * (r - 1#))
-                q = (q - 1#) * (r - 1#) * (s - 1#)
-            End If
-            If p > 0# Then q = -q
-            p = Abs(p)
-            If 2# * p < MinDouble(3# * xm * q - Abs(tol * q), Abs(e * q)) Then
+            Dim interpolatedStep As Double
+            If TryBrentStep(a, b, c, fa, fb, fc, xm, tol, e, interpolatedStep) Then
                 e = d
-                d = p / q
+                d = interpolatedStep
             Else
                 d = xm
                 e = d
@@ -15187,21 +15329,68 @@ Private Sub SearchByBrent(ByVal request As CLimitSearchRequest, _
         a = b
         fa = fb
         stateA = stateB
-        If Abs(d) > tol Then
-            b = b + d
-        Else
-            b = b + Sgn(xm) * tol
-        End If
-        If b <= lowLambda Or b >= highLambda Or Not IsFiniteNumber(b) Then
+        Dim candidate As Double
+        If Not TryBrentCandidate(b, c, d, tol, xm, candidate) Then
             request.problem.SetNumericalFailure _
-                "Пробная точка Brent вышла за физическую скобку."
+                "Поиск Brent остановлен: между границами lambda нет представимого шага заданной точности."
             Exit Sub
         End If
+        b = candidate
         If Not EvaluateLimitFunction(request, loadPath, b, fb, stateB) Then Exit Sub
     Next iter
 
     request.problem.SetNumericalFailure "Поиск Brent достиг лимита итераций."
 End Sub
+
+' Вычисляет штатную интерполяцию Brent только при безопасной арифметике.
+' Переполнение или вырождение отношения отвергает интерполяцию, а не скобку:
+' вызывающий алгоритм продолжает обычным бисекционным шагом.
+Private Function TryBrentStep(ByVal a As Double, ByVal b As Double, ByVal c As Double, _
+        ByVal fa As Double, ByVal fb As Double, ByVal fc As Double, ByVal xm As Double, _
+        ByVal tol As Double, ByVal previousStep As Double, ByRef result As Double) As Boolean
+    On Error GoTo UnsafeInterpolation
+    Dim s As Double, p As Double, q As Double, r As Double
+    If fa = 0# Or fc = 0# Then Exit Function
+    s = fb / fa
+    If a = c Then
+        p = 2# * xm * s
+        q = 1# - s
+    Else
+        q = fa / fc
+        r = fb / fc
+        p = s * (2# * xm * q * (q - r) - (b - a) * (r - 1#))
+        q = (q - 1#) * (r - 1#) * (s - 1#)
+    End If
+    If q = 0# Then Exit Function
+    If p > 0# Then q = -q
+    p = Abs(p)
+    If 2# * p >= MinDouble(3# * xm * q - Abs(tol * q), Abs(previousStep * q)) Then Exit Function
+    result = p / q
+    TryBrentStep = IsFiniteNumber(result)
+UnsafeInterpolation:
+End Function
+
+' Удерживает следующий шаг Brent внутри текущей, а не исходной скобки.
+' Если сложение или минимальный шаг не представимы, пробует безопасную середину.
+Private Function TryBrentCandidate(ByVal current As Double, ByVal opposite As Double, _
+        ByVal delta As Double, ByVal tol As Double, ByVal direction As Double, _
+        ByRef candidate As Double) As Boolean
+    On Error GoTo UseMidpoint
+    If Abs(delta) > tol Then
+        candidate = current + delta
+    Else
+        candidate = current + Sgn(direction) * tol
+    End If
+    If IsFiniteNumber(candidate) Then
+        If candidate > MinDouble(current, opposite) And candidate < MaxDouble(current, opposite) Then
+            TryBrentCandidate = True
+            Exit Function
+        End If
+    End If
+UseMidpoint:
+    candidate = SafeMidpoint(current, opposite)
+    TryBrentCandidate = candidate > MinDouble(current, opposite) And candidate < MaxDouble(current, opposite)
+End Function
 
 ' Метод секущих: строит следующую lambda по двум предыдущим значениям функции,
 ' но дополнительно удерживает точку внутри физической скобки.
@@ -15247,27 +15436,12 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
             FinalizeKnownProbe request, loadPath, bracketLow, vbNullString, "Secant", bracketLowSolver, iter
             Exit Sub
         End If
-        If Abs(f1 - f0) <= 0.000000000001 Then
-            request.problem.SetNumericalFailure _
-                "Поиск Secant остановлен: значения целевой функции слишком близки."
-            Exit Sub
-        End If
-
-        x2 = x1 - f1 * (x1 - x0) / (f1 - f0)
-        If Not IsFiniteNumber(x2) Then
-            request.problem.SetNumericalFailure _
-                "Поиск Secant получил NaN или переполнение."
-            Exit Sub
-        End If
+        If Not TrySecantCandidate(x0, x1, f0, f1, x2) Then x2 = SafeMidpoint(bracketLow, bracketHigh)
         x2 = GuardSecantCandidate(request, x2, x1, bracketLow, bracketHigh)
+        If x2 = x1 Then x2 = SafeMidpoint(bracketLow, bracketHigh)
         If x2 <= bracketLow Or x2 >= bracketHigh Or Not IsFiniteNumber(x2) Then
             request.problem.SetNumericalFailure _
-                "Пробная точка Secant вышла за физическую скобку."
-            Exit Sub
-        End If
-        If Abs(x2 - x1) <= 0.000000000001 Then
-            request.problem.SetNumericalFailure _
-                "Поиск Secant застрял: новая lambda почти не отличается от предыдущей."
+                "Поиск Secant остановлен: между границами lambda нет представимого шага заданной точности."
             Exit Sub
         End If
 
@@ -15295,6 +15469,22 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
 
     request.problem.SetNumericalFailure "Поиск Secant достиг лимита итераций."
 End Sub
+
+' Нормирует значения функции перед разностью, чтобы сумма больших величин
+' противоположных знаков не переполнилась. Не меняет критерий точности;
+' небезопасная интерполяция заменяется шагом внутри подтвержденной скобки.
+Private Function TrySecantCandidate(ByVal x0 As Double, ByVal x1 As Double, _
+        ByVal f0 As Double, ByVal f1 As Double, ByRef candidate As Double) As Boolean
+    On Error GoTo UnsafeInterpolation
+    Dim functionScale As Double, denominator As Double
+    functionScale = MaxDouble(Abs(f0), Abs(f1))
+    If functionScale = 0# Then Exit Function
+    denominator = f1 / functionScale - f0 / functionScale
+    If denominator = 0# Then Exit Function
+    candidate = x1 - (f1 / functionScale) * (x1 - x0) / denominator
+    TrySecantCandidate = IsFiniteNumber(candidate)
+UnsafeInterpolation:
+End Function
 
 ' Фиксирует исчерпание итераций bisection как численную неудачу, если скобка
 ' все еще шире заданного допуска. Иначе search мог бы выдать недоточненную
@@ -15365,6 +15555,7 @@ End Function
 ' ошибка относится только к пробе без подтвержденного равновесия.
 Private Sub HandleBisectionEvaluationFailure(ByVal request As CLimitSearchRequest, _
         ByVal lambdaValue As Double)
+    If request.problem.StoppedTerminally Then Exit Sub
     request.problem.SetNumericalFailure _
         "Не удалось найти равновесие при lambda = " & _
         FormatNumberInvariant(lambdaValue) & " в поиске предельной точки."
@@ -15446,13 +15637,13 @@ Private Function GuardSecantCandidate(ByVal request As CLimitSearchRequest, _
 
     If rawCandidate <= bracketLow Then
         If currentLambda > bracketLow And currentLambda < bracketHigh Then
-            GuardSecantCandidate = (currentLambda + bracketLow) / 2#
+            GuardSecantCandidate = SafeMidpoint(bracketLow, currentLambda)
         Else
             GuardSecantCandidate = bracketLow + 0.25 * (bracketHigh - bracketLow)
         End If
     ElseIf rawCandidate >= bracketHigh Then
         If currentLambda > bracketLow And currentLambda < bracketHigh Then
-            GuardSecantCandidate = (currentLambda + bracketHigh) / 2#
+            GuardSecantCandidate = SafeMidpoint(currentLambda, bracketHigh)
         Else
             GuardSecantCandidate = bracketLow + 0.75 * (bracketHigh - bracketLow)
         End If
@@ -15487,13 +15678,23 @@ End Sub
 ' Проверяет, что число конечно и пригодно для дальнейшей арифметики.
 Private Function IsFiniteNumber(ByVal value As Double) As Boolean
     If value <> value Then Exit Function
-    If Abs(value) > 1E+100 Then Exit Function
+    If Abs(value) > 1.79769313486231E+308 Then Exit Function
     IsFiniteNumber = True
+End Function
+
+' Середина неотрицательных lambda-границ без переполнения их суммы.
+' Порядок аргументов может быть обратным в локальной скобке Brent.
+Private Function SafeMidpoint(ByVal first As Double, ByVal second As Double) As Double
+    SafeMidpoint = first + (second - first) / 2#
 End Function
 
 ' Форматирует число для диагностического журнала с точкой как разделителем.
 Private Function FormatNumberInvariant(ByVal value As Double) As String
-    FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
+    If value <> 0# And (Abs(value) < 0.000000001 Or Abs(value) > 1000000000000#) Then
+        FormatNumberInvariant = Replace$(Format$(value, "0.############E+00"), ",", ".")
+    Else
+        FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
+    End If
 End Function
 
 ' Утилитарный минимум без WorksheetFunction в расчетном ядре.
@@ -18252,7 +18453,7 @@ Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitS
     If request.ForceOnly And _
             StrComp(request.SolutionStrategy, "UltimateStrain", vbTextCompare) = 0 And _
             Not request.problem.Converged And _
-            Not request.problem.IsInvalidInputState(request.problem.LimitState) Then
+            Not request.problem.StoppedTerminally Then
         Set ExecuteCapacity = ExecuteCapacityFallbackToLoadMultiplier(request, _
             "UltimateStrain не дал принятую предельную точку для силовой траектории", _
             "Переходим к LoadMultiplier по той же lambda-траектории.", _
@@ -18530,7 +18731,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCrackFormationCalculator
 TYPE: 2
-LINES: 2401
+LINES: 2440
 ====================================================================================================
 Option Explicit
 
@@ -18724,9 +18925,12 @@ Public Property Get ResultMeta() As CResultMeta
     Dim meta As CResultMeta
     Set meta = New CResultMeta
     If mFormationInternalStatus = rsUnset Then
-        meta.SetResult rsInternalError, rcInternalError, rkCrackFormation, "Результат образования трещины не заполнен."
+        meta.SetResult rsInternalError, rcInternalError, rkCrackFormation, "Результат образования трещины не заполнен.", _
+            vbNullString, True, False
     Else
-        meta.SetResult mFormationInternalStatus, mFormationResultCode, rkCrackFormation, mStopReason
+        meta.SetResult mFormationInternalStatus, mFormationResultCode, rkCrackFormation, mStopReason, _
+            vbNullString, True, (mSolverCallCount > 0 Or mFormationInternalStatus = rsSuccess Or _
+                mFormationInternalStatus = rsSuccessWithWarning)
     End If
     Set ResultMeta = meta
 End Property
@@ -18946,7 +19150,7 @@ Private Function FindGeneralFormationLambda(ByVal section As CSectionModel, _
     Set searchResult = ExecuteFormationSearch(request)
     If searchResult Is Nothing Then Exit Function
 
-    Select Case searchResult.meta.resultCode
+    Select Case searchResult.meta.ResultCode
         Case rcCriterionNotReached
             FindGeneralFormationLambda = mFormationLoadDefined
         Case rcCrackNotFormed
@@ -19508,7 +19712,8 @@ Private Function FormationSearchStoppedTerminally() As Boolean
         mFormationPathFallbackPsi1 Or _
         (mFormationInternalStatus = rsCheckFailed) Or _
         (mFormationInternalStatus = rsInvalidInput) Or _
-        (mFormationInternalStatus = rsInvalidConfiguration)
+        (mFormationInternalStatus = rsInvalidConfiguration) Or _
+        (mFormationInternalStatus = rsInternalError)
 End Function
 
 
@@ -19754,7 +19959,7 @@ Private Function AcceptFormationState(ByVal state As CSectionStateResult, ByVal 
         Set meta = state.ResultMeta
         mConverged = False
         mCrackFormed = False
-        SetFormationResult meta.internalStatus, meta.resultCode, stageName & ": " & meta.resultComment
+        SetFormationResult meta.InternalStatus, meta.ResultCode, stageName & ": " & meta.resultComment
         Exit Function
     End If
     AcceptFormationState = True
@@ -19949,6 +20154,7 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
     End If
     Set solver = SolveState(section, concreteMaterial, steelMaterial, effectiveStart, _
         probeN, probeMx, probeMy, True)
+    If FormationSearchStoppedTerminally() Then Exit Function
     If SolverFormationResidual(section, solver, residual) Then
         If FormationProbeBlockedByPhysicalLimit(section, solver, concreteMaterial, steelMaterial, residual) Then Exit Function
         AppendLoadScalingProbeDiagnostic lambdaValue, residual, True
@@ -19963,6 +20169,7 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
     If Not effectiveStart Is Nothing Then
         Set solver = SolveState(section, concreteMaterial, steelMaterial, Nothing, _
             probeN, probeMx, probeMy, True)
+        If FormationSearchStoppedTerminally() Then Exit Function
         If SolverFormationResidual(section, solver, residual) Then
             If FormationProbeBlockedByPhysicalLimit(section, solver, concreteMaterial, steelMaterial, residual) Then Exit Function
             AppendLoadScalingProbeDiagnostic lambdaValue, residual, True
@@ -19982,6 +20189,7 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
         If Not probeGuess Is Nothing Then
             Set solver = SolveState(section, concreteMaterial, steelMaterial, probeGuess, _
                 probeN, probeMx, probeMy, True)
+            If FormationSearchStoppedTerminally() Then Exit Function
             ProbeLoadScalingFormation = SolverFormationResidual(section, solver, residual)
             If ProbeLoadScalingFormation Then
                 If FormationProbeBlockedByPhysicalLimit(section, solver, concreteMaterial, steelMaterial, residual) Then
@@ -19992,8 +20200,10 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
             End If
         End If
     End If
-    If Not ProbeLoadScalingFormation Then _
+    If Not ProbeLoadScalingFormation Then
+        CaptureFormationSolverFailure solver
         AppendLoadScalingProbeDiagnostic lambdaValue, 0#, False
+    End If
 End Function
 
 
@@ -20129,10 +20339,10 @@ End Sub
 
 ' Записывает машинный результат этапа образования трещины. StopReason остается
 ' только пользовательским комментарием и больше не используется для классификации.
-Private Sub SetFormationResult(ByVal internalStatus As EResultInternalStatus, _
-        ByVal resultCode As EResultCode, ByVal reason As String)
-    mFormationInternalStatus = internalStatus
-    mFormationResultCode = resultCode
+Private Sub SetFormationResult(ByVal InternalStatus As EResultInternalStatus, _
+        ByVal ResultCode As EResultCode, ByVal reason As String)
+    mFormationInternalStatus = InternalStatus
+    mFormationResultCode = ResultCode
     mStopReason = UserStopReason(reason)
 End Sub
 
@@ -20162,7 +20372,12 @@ End Sub
 Private Sub SetFormationNumericalFailure(ByVal reason As String)
     ' Последующая неудачная проба не отменяет уже подтвержденный физический
     ' отказ на этом пути. Новая Auto-попытка очищает статус самостоятельно.
-    If mFormationInternalStatus = rsCheckFailed Then Exit Sub
+    If mFormationInternalStatus = rsCheckFailed Or mFormationInternalStatus = rsInvalidInput Or _
+            mFormationInternalStatus = rsInvalidConfiguration Or mFormationInternalStatus = rsInternalError Then Exit Sub
+    If mFormationInternalStatus = rsNumericalFailure And mFormationResultCode = rcSingularTangent Then
+        AppendDiagnostic reason
+        Exit Sub
+    End If
     mConverged = False
     mCrackFormed = False
     SetFormationResult rsNumericalFailure, rcNumericalFailure, reason
@@ -20276,7 +20491,31 @@ Private Function SolveState(ByVal section As CSectionModel, ByVal concreteMateri
     End If
     If Len(runner.DiagnosticLog) > 0 Then AppendDiagnostic runner.DiagnosticLog
     Set SolveState = runner.ResultSolver
+    If runner.ResultSolver Is Nothing Then
+        CaptureFormationSolverFailure Nothing
+    Else
+        Select Case runner.ResultSolver.FailureCode
+            Case sfcInvalidInput, sfcInvalidConfiguration, sfcInternalError
+                CaptureFormationSolverFailure runner.ResultSolver
+        End Select
+    End If
 End Function
+
+' Сохраняет машинную причину неуспешной state-пробы. Вызов после исчерпания
+' численных стартов сохраняет singular tangent отдельно; terminal ошибки
+' фиксируются сразу и не заменяются последующими generic сообщениями Search.
+Private Sub CaptureFormationSolverFailure(ByVal solver As CSectionSolver)
+    mConverged = False
+    mCrackFormed = False
+    If solver Is Nothing Then
+        SetFormationResult rsInternalError, rcSolverDidNotReturnState, "Поиск трещинообразования не получил результат решателя НДС."
+        Exit Sub
+    End If
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    meta.SetSolverFailure solver.FailureCode, rkCrackFormation, solver.stopReason, (solver.iterations > 0)
+    SetFormationResult meta.InternalStatus, meta.ResultCode, meta.resultComment
+End Sub
 
 
 
@@ -20585,13 +20824,7 @@ End Function
 ' рабочий Formation-контекст после создания этого снимка.
 Public Function BuildSearchSnapshot(ByVal requestedStrategy As String) As CLimitSearchResult
     Dim meta As CResultMeta
-    Set meta = New CResultMeta
-    If mFormationInternalStatus = rsUnset Then
-        meta.SetResult rsInternalError, rcInternalError, rkCrackFormation, _
-            "Поиск образования трещины завершен без машинного статуса результата."
-    Else
-        meta.SetResult mFormationInternalStatus, mFormationResultCode, rkCrackFormation, mStopReason
-    End If
+    Set meta = ResultMeta
     Dim nValue As Double, mxValue As Double, myValue As Double
     If HasLimitPoint Then PointLoads nValue, mxValue, myValue
     Dim result As CLimitSearchResult
@@ -20905,6 +21138,13 @@ Private Function ExecuteAutoCrackFormation(ByVal request As CLimitSearchRequest)
                 Exit Function
             End If
         Else
+            If lastResult.meta.InternalStatus = rsInvalidInput Or _
+                    lastResult.meta.InternalStatus = rsInvalidConfiguration Or _
+                    lastResult.meta.InternalStatus = rsInternalError Then
+                LimitSearchSetCurrentFormationPath savedPath
+                Set ExecuteAutoCrackFormation = lastResult
+                Exit Function
+            End If
             lastStopReason = mStopReason
             warningHistory = warningHistory & CrackFormationPathDisplayName() & ": " & lastStopReason & " "
             AppendDiagnostic "Auto-путь: " & _
@@ -20937,7 +21177,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCrackFormationResult
 TYPE: 2
-LINES: 173
+LINES: 174
 ====================================================================================================
 Option Explicit
 
@@ -20983,13 +21223,14 @@ Public Sub InitializeFromCalculator(ByVal crack As CCrackFormationCalculator, By
     ResetResult
     If meta Is Nothing Then
         mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, _
-            "Meta результата образования трещины не сформирована."
+            "Meta результата образования трещины не сформирована.", vbNullString, True, False
     Else
         Set mMeta = meta.clone
     End If
 
     If crack Is Nothing Then
-        mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, "Не передан расчет образования трещины."
+        mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, "Не передан расчет образования трещины.", _
+            vbNullString, True, False
         Exit Sub
     End If
     mHasLimitPoint = crack.HasLimitPoint
@@ -21109,7 +21350,7 @@ End Property
 
 ' Успех formation включает корректный warning-fallback без фиктивной точки.
 Public Property Get Converged() As Boolean
-    Converged = (mMeta.internalStatus = rsSuccess Or mMeta.internalStatus = rsSuccessWithWarning)
+    Converged = (mMeta.InternalStatus = rsSuccess Or mMeta.InternalStatus = rsSuccessWithWarning)
 End Property
 
 
@@ -21142,7 +21383,7 @@ End Sub
 ' если расчет еще не дошел до нее или она не нужна для выбранного профиля.
 Public Sub Initialize(ByVal formation As CCrackFormationResult, _
         ByVal currentStateMeta As CResultMeta, ByVal width As CCrackWidthResult, _
-        ByVal Longitudinal As CLongitudinalCrackResult)
+        ByVal longitudinal As CLongitudinalCrackResult)
     Set mFormation = formation
     If mFormation Is Nothing Then Set mFormation = New CCrackFormationResult
     If currentStateMeta Is Nothing Then
@@ -21153,7 +21394,7 @@ Public Sub Initialize(ByVal formation As CCrackFormationResult, _
     End If
     Set mWidth = width
     If mWidth Is Nothing Then Set mWidth = New CCrackWidthResult
-    Set mLongitudinal = Longitudinal
+    Set mLongitudinal = longitudinal
     If mLongitudinal Is Nothing Then Set mLongitudinal = New CLongitudinalCrackResult
 End Sub
 
@@ -21169,8 +21410,8 @@ Public Property Get currentStateMeta() As CResultMeta
     If Not mCurrentStateMeta Is Nothing Then Set currentStateMeta = mCurrentStateMeta.clone
 End Property
 
-Public Property Get Longitudinal() As CLongitudinalCrackResult
-    Set Longitudinal = mLongitudinal
+Public Property Get longitudinal() As CLongitudinalCrackResult
+    Set longitudinal = mLongitudinal
 End Property
 
 
@@ -21314,8 +21555,8 @@ Public Sub InitializeForFormation(ByVal formation As CCrackFormationResult)
         SetWidthResult rsInternalError, rcInternalError, "Не передан результат образования трещины."
         Exit Sub
     End If
-    mConverged = (formation.ResultMeta.internalStatus = rsSuccess Or _
-        formation.ResultMeta.internalStatus = rsSuccessWithWarning)
+    mConverged = (formation.ResultMeta.InternalStatus = rsSuccess Or _
+        formation.ResultMeta.InternalStatus = rsSuccessWithWarning)
     mCrackFormed = formation.CrackFormed
     mCentralTensionBranch = formation.CentralTensionBranch
     If Not mConverged Then
@@ -21680,10 +21921,10 @@ End Sub
 
 
 ' Записывает машинный результат формульной части ширины раскрытия.
-Private Sub SetWidthResult(ByVal internalStatus As EResultInternalStatus, _
-        ByVal resultCode As EResultCode, ByVal reason As String)
-    mWidthInternalStatus = internalStatus
-    mWidthResultCode = resultCode
+Private Sub SetWidthResult(ByVal InternalStatus As EResultInternalStatus, _
+        ByVal ResultCode As EResultCode, ByVal reason As String)
+    mWidthInternalStatus = InternalStatus
+    mWidthResultCode = ResultCode
     mStopReason = UserStopReason(reason)
 End Sub
 
@@ -22534,7 +22775,7 @@ Public Sub InitializeFromCalculator(ByVal crack As CCrackWidthCalculator, ByVal 
     ResetData
     If meta Is Nothing Then
         mMeta.SetResult rsInternalError, rcInternalError, rkCrackWidth, _
-            "Meta результата ширины трещины не сформирована."
+            "Meta результата ширины трещины не сформирована.", vbNullString, True, False
     Else
         Set mMeta = meta.clone
     End If
@@ -22818,7 +23059,7 @@ Public Sub Initialize(ByVal meta As CResultMeta, ByVal maxCompressionStress As D
         ByVal rbMc2 As Double, ByVal Utilization As Double)
     If meta Is Nothing Then
         mMeta.SetResult rsInternalError, rcInternalError, rkLongitudinalCrack, _
-            "Meta результата продольных трещин не сформирована."
+            "Meta результата продольных трещин не сформирована.", vbNullString, True, False
     Else
         Set mMeta = meta.clone
     End If
@@ -22865,7 +23106,7 @@ End Property
 ====================================================================================================
 COMPONENT: CStabilityCalculator
 TYPE: 2
-LINES: 1375
+LINES: 1379
 ====================================================================================================
 Option Explicit
 
@@ -23261,7 +23502,11 @@ End Sub
 ' эксцентриситета. При отсутствии арматуры используется край бетонного контура,
 ' чтобы расчет не падал, но такая модель требует отдельной инженерной проверки.
 Private Function RebarProjectionForMoment(ByVal section As CSectionModel, ByRef plane As TPlaneResult) As Double
-    If section Is Nothing Or section.rebarCount <= 0 Then
+    If section Is Nothing Then
+        RebarProjectionForMoment = ConcreteFaceProjectionForMoment(plane)
+        Exit Function
+    End If
+    If section.rebarCount <= 0 Then
         RebarProjectionForMoment = ConcreteFaceProjectionForMoment(plane)
         Exit Function
     End If
@@ -24404,7 +24649,7 @@ Public Sub SetMeta(ByVal meta As CResultMeta, Optional ByVal resultComment As St
     If meta Is Nothing Then
         Set mMeta = New CResultMeta
         mMeta.SetResult rsInternalError, rcInternalError, rkStability, _
-            "Результат устойчивости не сформирован."
+            "Результат устойчивости не сформирован.", vbNullString, True, False
     Else
         Set mMeta = meta.clone
         If Len(Trim$(resultComment)) > 0 Then mMeta.resultComment = StabilityBranchDisplayName(resultComment)
@@ -24424,7 +24669,7 @@ Public Sub InitializeFromCalculator(ByVal meta As CResultMeta, ByVal stability A
     If meta Is Nothing Then
         Set mMeta = New CResultMeta
         mMeta.SetResult rsInternalError, rcInternalError, rkStability, _
-            "Результат устойчивости не сформирован."
+            "Результат устойчивости не сформирован.", vbNullString, True, False
     Else
         Set mMeta = meta.clone
     End If
@@ -24534,7 +24779,7 @@ Public Property Get meta() As CResultMeta
     If mMeta Is Nothing Then
         Set mMeta = New CResultMeta
         mMeta.SetResult rsInternalError, rcInternalError, rkStability, _
-            "Результат устойчивости не сформирован."
+            "Результат устойчивости не сформирован.", vbNullString, True, False
     End If
     Set meta = mMeta.clone
 End Property
@@ -24563,7 +24808,7 @@ End Property
 ====================================================================================================
 COMPONENT: CBatchSectionCalculator
 TYPE: 2
-LINES: 2035
+LINES: 2037
 ====================================================================================================
 Option Explicit
 
@@ -25737,9 +25982,9 @@ Private Sub StoreCrackAggregateSnapshot(ByVal index As Long, ByVal crack As CCra
     If longitudinalResult Is Nothing Then
         Set effectiveLongitudinalResult = New CLongitudinalCrackResult
         effectiveLongitudinalResult.Initialize mResults(index).LongitudinalCrackMeta, _
-            mResults(index).crackResult.Longitudinal.maxCompressionStress, _
-            mResults(index).crackResult.Longitudinal.rbMc2, _
-            mResults(index).crackResult.Longitudinal.Utilization
+            mResults(index).crackResult.longitudinal.maxCompressionStress, _
+            mResults(index).crackResult.longitudinal.rbMc2, _
+            mResults(index).crackResult.longitudinal.Utilization
     Else
         Set effectiveLongitudinalResult = longitudinalResult
     End If
@@ -25809,14 +26054,16 @@ Private Function MissingCurrentCrackedStateMeta(ByVal runner As CStateSolutionRu
     If Not runner Is Nothing Then
         If Not runner.ResultSolver Is Nothing Then
             If Not runner.ResultSolver.Converged Then
-                meta.SetResult rsNumericalFailure, rcNumericalFailure, rkDirectState, blockReason
+                meta.SetSolverFailure runner.ResultSolver.FailureCode, rkDirectState, blockReason, _
+                    (runner.ResultSolver.iterations > 0)
                 Set MissingCurrentCrackedStateMeta = meta
                 Exit Function
             End If
         End If
     End If
 
-    meta.SetResult rsInternalError, rcSolverDidNotReturnState, rkDirectState, blockReason
+    meta.SetResult rsInternalError, rcSolverDidNotReturnState, rkDirectState, blockReason, _
+        vbNullString, True, False
     Set MissingCurrentCrackedStateMeta = meta
 End Function
 
@@ -26043,8 +26290,8 @@ Private Sub AppendDiagnostic(ByVal index As Long)
         "; ExtensionUsed=" & CStr(mResults(index).extensionUsed) & _
         "; CapacityStatus=" & mResults(index).StrengthResult.capacity.Status & _
         "; CrackStatus=" & mResults(index).NormalCrackStatus & _
-        "; LongitudinalCrackStatus=" & mResults(index).crackResult.Longitudinal.Status & _
-        "; LongitudinalCrackUtil=" & FormatNumberInvariant(mResults(index).crackResult.Longitudinal.Utilization) & _
+        "; LongitudinalCrackStatus=" & mResults(index).crackResult.longitudinal.Status & _
+        "; LongitudinalCrackUtil=" & FormatNumberInvariant(mResults(index).crackResult.longitudinal.Utilization) & _
         "; StabilityStatus=" & mResults(index).StabilityResult.Status & _
         "; StabilityUtil=" & FormatNumberInvariant(mResults(index).StabilityResult.Utilization) & _
         "; governingUtil=" & FormatNumberInvariant(mResults(index).GoverningUtil) & vbCrLf
@@ -26059,8 +26306,8 @@ Private Sub ReportCombinationSummary(ByVal index As Long)
     ReportValue "Использовано продолжение диаграммы", mReport.YesNoRu(mResults(index).extensionUsed)
     ReportValue "Статус несущей способности", mResults(index).StrengthResult.capacity.Status
     ReportValue "Статус нормальных трещин", mResults(index).NormalCrackStatus
-    ReportValue "Статус продольных трещин", mResults(index).crackResult.Longitudinal.Status
-    ReportValue "Использование по продольным трещинам", FormatNumberInvariant(mResults(index).crackResult.Longitudinal.Utilization)
+    ReportValue "Статус продольных трещин", mResults(index).crackResult.longitudinal.Status
+    ReportValue "Использование по продольным трещинам", FormatNumberInvariant(mResults(index).crackResult.longitudinal.Utilization)
     ReportValue "Статус устойчивости", mResults(index).StabilityResult.Status
     ReportValue "Использование устойчивости", FormatNumberInvariant(mResults(index).StabilityResult.Utilization)
     ReportValue "Определяющее использование", FormatNumberInvariant(mResults(index).GoverningUtil)
@@ -27721,7 +27968,7 @@ End Property
 Public Property Get GoverningUtil() As Double
     GoverningUtil = mStrengthResult.capacity.UtilCapacity
     If mCrackResult.width.Utilization > GoverningUtil Then GoverningUtil = mCrackResult.width.Utilization
-    If mCrackResult.Longitudinal.Utilization > GoverningUtil Then GoverningUtil = mCrackResult.Longitudinal.Utilization
+    If mCrackResult.longitudinal.Utilization > GoverningUtil Then GoverningUtil = mCrackResult.longitudinal.Utilization
     If mStabilityResult.Utilization > GoverningUtil Then GoverningUtil = mStabilityResult.Utilization
 End Property
 
@@ -27771,7 +28018,7 @@ Public Function ReserveForCriterion(ByVal criterion As String) As Double
         Case "StrengthCapacity"
             ReserveForCriterion = mStrengthResult.capacity.ReserveFactor
         Case "Cracks"
-            ReserveForCriterion = PositiveMin(mCrackResult.width.ReserveFactor, mCrackResult.Longitudinal.ReserveFactor)
+            ReserveForCriterion = PositiveMin(mCrackResult.width.ReserveFactor, mCrackResult.longitudinal.ReserveFactor)
         Case "Stability"
             ReserveForCriterion = mStabilityResult.SummaryReserve
     End Select
@@ -27850,7 +28097,7 @@ End Property
 
 ' Возвращает meta соответствующего узла без параллельного кэша статусов.
 Public Property Get LongitudinalCrackMeta() As CResultMeta
-    Set LongitudinalCrackMeta = mCrackResult.Longitudinal.ResultMeta
+    Set LongitudinalCrackMeta = mCrackResult.longitudinal.ResultMeta
 End Property
 
 ' Возвращает meta соответствующего узла без параллельного кэша статусов.
@@ -28000,8 +28247,8 @@ End Function
 ' что при текущем сочетании критерий трещинообразования еще не достигнут.
 Private Function CrackFormationNotReached(ByVal meta As CResultMeta) As Boolean
     If meta Is Nothing Then Exit Function
-    CrackFormationNotReached = (meta.internalStatus = rsSuccess And _
-        (meta.resultCode = rcCriterionNotReached Or meta.resultCode = rcCrackNotFormed))
+    CrackFormationNotReached = (meta.InternalStatus = rsSuccess And _
+        (meta.ResultCode = rcCriterionNotReached Or meta.ResultCode = rcCrackNotFormed))
 End Function
 
 ' Возвращает проблемный meta текущего CrackedState, если обязательное НДС для
@@ -28039,7 +28286,7 @@ Private Function ShouldIncludeMetaComment(ByVal meta As CResultMeta) As Boolean
     If meta Is Nothing Then Exit Function
     If IsProblemStatus(policy.ExternalStatus(meta)) Then
         ShouldIncludeMetaComment = True
-    ElseIf meta.internalStatus = rsSuccessWithWarning Then
+    ElseIf meta.InternalStatus = rsSuccessWithWarning Then
         ShouldIncludeMetaComment = True
     End If
 End Function
@@ -28240,7 +28487,7 @@ Public Sub SetMeta(ByVal meta As CResultMeta)
     If meta Is Nothing Then
         Set mMeta = New CResultMeta
         mMeta.SetResult rsInternalError, rcInternalError, rkDirectState, _
-            "Не сформирован результат проверки прямого НДС."
+            "Не сформирован результат проверки прямого НДС.", vbNullString, True, False
     Else
         Set mMeta = meta.clone
     End If
@@ -28338,7 +28585,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CSectionStateResult
 TYPE: 2
-LINES: 438
+LINES: 423
 ====================================================================================================
 Option Explicit
 
@@ -28553,19 +28800,19 @@ Public Property Get ResultMeta() As CResultMeta
         Dim Missing As CResultMeta
         Set Missing = New CResultMeta
         Missing.SetResult rsInternalError, rcInternalError, ResultKindFromStateType(mStateType), _
-            "Расчетное состояние не заполнено."
+            "Расчетное состояние не заполнено.", vbNullString, True, False
         Set ResultMeta = Missing
     Else
         Set ResultMeta = mResultMeta.clone
     End If
 End Property
 
-Public Property Get internalStatus() As EResultInternalStatus
-    internalStatus = ResultMeta.internalStatus
+Public Property Get InternalStatus() As EResultInternalStatus
+    InternalStatus = ResultMeta.InternalStatus
 End Property
 
-Public Property Get resultCode() As EResultCode
-    resultCode = ResultMeta.resultCode
+Public Property Get ResultCode() As EResultCode
+    ResultCode = ResultMeta.ResultCode
 End Property
 
 Public Property Get resultComment() As String
@@ -28720,23 +28967,8 @@ Private Function BuildFailureMeta(ByVal stateType As ESectionStateType, ByVal so
         ByVal resultComment As String) As CResultMeta
     Dim meta As CResultMeta
     Set meta = New CResultMeta
-    Dim internalStatus As EResultInternalStatus
-    Dim resultCode As EResultCode
-    Select Case solver.FailureCode
-        Case sfcInvalidInput
-            internalStatus = rsInvalidInput: resultCode = rcInvalidInput
-        Case sfcInvalidConfiguration
-            internalStatus = rsInvalidConfiguration: resultCode = rcInvalidConfiguration
-        Case sfcSingularTangent
-            internalStatus = rsNumericalFailure: resultCode = rcSingularTangent
-        Case sfcNumericalFailure
-            internalStatus = rsNumericalFailure: resultCode = rcNumericalFailure
-        Case Else
-            internalStatus = rsInternalError: resultCode = rcInternalError
-            If Len(Trim$(resultComment)) = 0 Then resultComment = "Решатель не сформировал результат равновесия."
-    End Select
-    meta.SetResult internalStatus, resultCode, ResultKindFromStateType(stateType), resultComment, _
-        vbNullString, True, (solver.iterations > 0)
+    meta.SetSolverFailure solver.FailureCode, ResultKindFromStateType(stateType), _
+        resultComment, (solver.iterations > 0)
     Set BuildFailureMeta = meta
 End Function
 
@@ -29213,7 +29445,7 @@ End Sub
 Private Function IsReusablePhysicalState(ByVal stateResult As CSectionStateResult) As Boolean
     If stateResult Is Nothing Then Exit Function
     If Not stateResult.Converged Then Exit Function
-    Select Case stateResult.internalStatus
+    Select Case stateResult.InternalStatus
         Case rsSuccess, rsSuccessWithWarning, rsCheckFailed
             IsReusablePhysicalState = True
     End Select
@@ -30453,7 +30685,7 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
     PutReserveCell data, rowIndex, SUM_COL_RESERVE_STRAIN, batch.ResultAt(index).StrengthResult.DirectState.StrainReserve
     PutReserveCell data, rowIndex, SUM_COL_RESERVE_CAPACITY, batch.ResultAt(index).StrengthResult.capacity.ReserveFactor
     PutReserveCell data, rowIndex, SUM_COL_RESERVE_CRACK, batch.ResultAt(index).crackResult.width.ReserveFactor
-    PutReserveCell data, rowIndex, SUM_COL_RESERVE_LONG_CRACK, batch.ResultAt(index).crackResult.Longitudinal.ReserveFactor
+    PutReserveCell data, rowIndex, SUM_COL_RESERVE_LONG_CRACK, batch.ResultAt(index).crackResult.longitudinal.ReserveFactor
     PutReserveCell data, rowIndex, SUM_COL_RESERVE_SP35_P1_ETA, SummaryReserveByKey(batch, index, "SP35P1Eta")
     PutReserveCell data, rowIndex, SUM_COL_RESERVE_SP35_P1_TABLE, SummaryReserveByKey(batch, index, "SP35P1Table")
     PutReserveCell data, rowIndex, SUM_COL_RESERVE_SP35_P2_ETA, SummaryReserveByKey(batch, index, "SP35P2Eta")
@@ -30483,7 +30715,7 @@ Private Function SummaryReserveByKey(ByVal batch As CBatchSectionCalculator, _
         Case "Crack"
             SummaryReserveByKey = batch.ResultAt(index).crackResult.width.ReserveFactor
         Case "LongCrack"
-            SummaryReserveByKey = batch.ResultAt(index).crackResult.Longitudinal.ReserveFactor
+            SummaryReserveByKey = batch.ResultAt(index).crackResult.longitudinal.ReserveFactor
         Case "SP35P1Eta"
             SummaryReserveByKey = StabilityBranchReserve(batch, index, 1, "SP35-eta")
         Case "SP35P1Table"
@@ -31437,10 +31669,10 @@ Private Sub PutLongitudinalData(ByRef data() As Variant, ByVal rowIndex As Long,
         Exit Sub
     End If
 
-    data(rowIndex, COL_SIGMA_B_MAX) = OutputStress(batch.ResultAt(index).crackResult.Longitudinal.maxCompressionStress, units)
-    data(rowIndex, COL_RB_MC2) = OutputStress(batch.ResultAt(index).crackResult.Longitudinal.rbMc2, units)
-    If batch.ResultAt(index).crackResult.Longitudinal.ReserveFactor > SMALL_VALUE Then _
-        data(rowIndex, COL_LONG_RATIO) = batch.ResultAt(index).crackResult.Longitudinal.ReserveFactor
+    data(rowIndex, COL_SIGMA_B_MAX) = OutputStress(batch.ResultAt(index).crackResult.longitudinal.maxCompressionStress, units)
+    data(rowIndex, COL_RB_MC2) = OutputStress(batch.ResultAt(index).crackResult.longitudinal.rbMc2, units)
+    If batch.ResultAt(index).crackResult.longitudinal.ReserveFactor > SMALL_VALUE Then _
+        data(rowIndex, COL_LONG_RATIO) = batch.ResultAt(index).crackResult.longitudinal.ReserveFactor
     data(rowIndex, COL_LONG_STATUS) = LongitudinalStatusText(batch, index, policy)
 End Sub
 
@@ -33021,10 +33253,10 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
             PutProperty data, rowIndex, runID, batch.combinationID(i), "MyUltimate", vbNullString, OutputMomentUnit(units), "Заполняется после успешного поиска несущей способности."
         End If
         PutProperty data, rowIndex, runID, batch.combinationID(i), "CrackStatus", batch.ResultAt(i).NormalCrackStatus, "-", "Статус расчета ширины раскрытия трещин."
-        PutProperty data, rowIndex, runID, batch.combinationID(i), "LongitudinalCrackStatus", batch.ResultAt(i).crackResult.Longitudinal.Status, "-", "Статус SLS(II)-проверки продольных трещин по сжатому бетону; выполняется как часть Calculation.Crack.Width."
-        PutProperty data, rowIndex, runID, batch.combinationID(i), "LongitudinalCrack.MaxConcreteCompressionStress", OutputStress(batch.ResultAt(i).crackResult.Longitudinal.maxCompressionStress, units), OutputStressUnit(units), "Максимальное по модулю сжимающее напряжение бетона в прямом НДС."
-        PutProperty data, rowIndex, runID, batch.combinationID(i), "LongitudinalCrack.RbMc2", OutputStress(batch.ResultAt(i).crackResult.Longitudinal.rbMc2, units), OutputStressUnit(units), "Пользовательское допустимое Rb,mc2 для проверки продольных трещин."
-        PutProperty data, rowIndex, runID, batch.combinationID(i), "LongitudinalCrack.Utilization", batch.ResultAt(i).crackResult.Longitudinal.Utilization, "-", "Использование по продольным трещинам: sigma_c,max / Rb,mc2."
+        PutProperty data, rowIndex, runID, batch.combinationID(i), "LongitudinalCrackStatus", batch.ResultAt(i).crackResult.longitudinal.Status, "-", "Статус SLS(II)-проверки продольных трещин по сжатому бетону; выполняется как часть Calculation.Crack.Width."
+        PutProperty data, rowIndex, runID, batch.combinationID(i), "LongitudinalCrack.MaxConcreteCompressionStress", OutputStress(batch.ResultAt(i).crackResult.longitudinal.maxCompressionStress, units), OutputStressUnit(units), "Максимальное по модулю сжимающее напряжение бетона в прямом НДС."
+        PutProperty data, rowIndex, runID, batch.combinationID(i), "LongitudinalCrack.RbMc2", OutputStress(batch.ResultAt(i).crackResult.longitudinal.rbMc2, units), OutputStressUnit(units), "Пользовательское допустимое Rb,mc2 для проверки продольных трещин."
+        PutProperty data, rowIndex, runID, batch.combinationID(i), "LongitudinalCrack.Utilization", batch.ResultAt(i).crackResult.longitudinal.Utilization, "-", "Использование по продольным трещинам: sigma_c,max / Rb,mc2."
         PutProperty data, rowIndex, runID, batch.combinationID(i), "ExtensionUsed", BooleanText(batch.ResultAt(i).extensionUsed), "-", "True, если расчетное состояние вышло за физические пределы диаграммы в numerical extension."
         PutProperty data, rowIndex, runID, batch.combinationID(i), "General.DiagramExtension", BooleanText(batch.ResultAt(i).diagramExtensionEnabled), "-", "Сохраненное значение настройки General.DiagramExtension на момент расчета."
         PutNamedStateProperties data, rowIndex, runID, batch, i, units
@@ -35802,7 +36034,7 @@ Public Property Get AnnotationText(ByVal index As Long) As String: AnnotationTex
 ====================================================================================================
 COMPONENT: CSectionPlotter
 TYPE: 2
-LINES: 2420
+LINES: 2422
 ====================================================================================================
 Option Explicit
 
@@ -36390,6 +36622,8 @@ Private Sub AddBucketSeriesByIndexes(ByVal data As CSectionPlotDataReader, ByVal
 
     Dim parts As Variant
     parts = Split(bucketKey, "|")
+    If UBound(parts) < 4 Then _
+        Err.Raise vbObjectError + 4735, "CSectionPlotter", "Группа элементов схемы не содержит всех параметров оформления."
     Dim markerStyle As Long: markerStyle = CLng(parts(0))
     Dim markerSize As Long: markerSize = CLng(parts(1))
     Dim colorValue As Long: colorValue = CLng(parts(2))
@@ -36414,7 +36648,7 @@ Private Sub AddBucketSeriesByIndexes(ByVal data As CSectionPlotDataReader, ByVal
     series.markerStyle = markerStyle
     series.markerSize = markerSize
     series.Format.line.Visible = False
-    If UBound(parts) >= 3 And StrComp(CStr(parts(3)), "Rebar", vbTextCompare) = 0 Then
+    If StrComp(CStr(parts(3)), "Rebar", vbTextCompare) = 0 Then
         series.MarkerForegroundColor = RGB(0, 0, 0)
     Else
         series.MarkerForegroundColor = colorValue
@@ -44625,7 +44859,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CTestLimitSearchProblem
 TYPE: 2
-LINES: 452
+LINES: 473
 ====================================================================================================
 Option Explicit
 
@@ -44664,6 +44898,8 @@ Private mIterationLimitHit As Boolean ' True, если search остановил
 Private mProbeMaxLambda As Double ' Наибольшая реально проверенная точка.
 Private mProbeCalls As Long ' Счетчик проб общего алгоритма.
 Private mFailureAbove As Double ' Искусственная численная неудача выше этой lambda; 0 отключает ее.
+Private mStepCriterion As Boolean ' Разрывный критерий не имеет нулевой невязки на соседних Double.
+Private mRecoveryWithoutProgress As Boolean ' Намеренно неисправный callback recovery возвращает прежнюю границу.
 
 ' Настраивает линейную тестовую задачу перед запуском общего search.
 Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
@@ -44687,11 +44923,23 @@ Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
     mProbeMaxLambda = 0#
     mProbeCalls = 0
     mFailureAbove = 0#
+    mStepCriterion = False
+    mRecoveryWithoutProgress = False
 End Sub
 
 ' ДЛЯ ТЕСТОВ: задает численную неудачу верхних проб, не физический предел.
 Public Property Let FailureAbove(ByVal value As Double)
     mFailureAbove = value
+End Property
+
+' ДЛЯ ТЕСТОВ: не позволяет признать соседнюю граничную lambda точным корнем.
+Public Property Let StepCriterion(ByVal value As Boolean)
+    mStepCriterion = value
+End Property
+
+' ДЛЯ ТЕСТОВ: общий Search обязан остановить recovery, не сужающий скобку.
+Public Property Let RecoveryWithoutProgress(ByVal value As Boolean)
+    mRecoveryWithoutProgress = value
 End Property
 
 ' ДЛЯ ТЕСТОВ: диагностические счетчики расширения и восстановления скобки.
@@ -44899,6 +45147,9 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
         ByVal lambdaValue As Double, ByRef functionValue As Double, _
         ByRef probeState As String, ByRef solver As CSectionSolver) As Boolean
     functionValue = lambdaValue - mRootLambda
+    If mStepCriterion Then
+        If lambdaValue < mRootLambda Then functionValue = -1# Else functionValue = 1#
+    End If
     mProbeCalls = mProbeCalls + 1
     If lambdaValue > mProbeMaxLambda Then mProbeMaxLambda = lambdaValue
     Set solver = Nothing
@@ -44934,7 +45185,11 @@ End Function
 ' ДЛЯ ТЕСТОВ: recovery использует середину оставшегося интервала.
 Private Function ILimitSearchProblem_ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, _
         ByVal highLambda As Double, ByVal probeState As String) As Double
-    ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = 0.5 * (lowLambda + highLambda)
+    If mRecoveryWithoutProgress Then
+        ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = highLambda
+    Else
+        ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = lowLambda + 0.5 * (highLambda - lowLambda)
+    End If
 End Function
 
 ' Запоминает последнюю acceptable-точку только в диагностике.
@@ -45083,7 +45338,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 5725
+LINES: 5831
 ====================================================================================================
 Option Explicit
 
@@ -45297,6 +45552,7 @@ Public Function RunBatchCalculationTests() As String
     AppendLine stats, "RUN: TestAudit02OnOffPhysicalResults"
     TestAudit02OnOffPhysicalResults stats
     TestAudit02InitialOffsetOnOffStatuses stats
+    TestAudit03ResultLifecycle stats
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -45933,11 +46189,16 @@ Private Sub TestPR2PhysicalStateRunsCrackWithExtensionEnabled(ByRef stats As TBa
     Set crackedState = batch.ResultAt(1).StateRepository.FindState(sstCrackedState)
 
     AssertTrue stats, "batch.group2.physical.noExtension", Not batch.ResultAt(1).extensionUsed
-    AssertTrue stats, "batch.group2.physical.crackedStateOK", crackedState.Status = "OK"
+    Dim stateOK As Boolean, statePhysical As Boolean
+    If Not crackedState Is Nothing Then
+        stateOK = (crackedState.Status = "OK")
+        statePhysical = Not crackedState.extensionUsed
+    End If
+    AssertTrue stats, "batch.group2.physical.crackedStateOK", stateOK
     AssertTrue stats, "batch.group2.physical.crackBranchRuns", _
-        batch.ResultAt(1).crackResult.Longitudinal.Status <> "N/A" Or Not crackedState Is Nothing
+        batch.ResultAt(1).crackResult.longitudinal.Status <> "N/A" Or Not crackedState Is Nothing
     AssertTrue stats, "batch.group2.physical.crackedStatePhysical", _
-        Not crackedState Is Nothing And Not crackedState.extensionUsed
+        statePhysical
 
 Restore:
     SetSystemSetting "General.DiagramExtension", oldExtension
@@ -46056,8 +46317,10 @@ Private Sub TestPR2AutoCrackPureBendingStoresMcrcStates(ByRef stats As TBatchTes
 
     Dim crackedState As CSectionStateResult
     Set crackedState = batch.ResultAt(1).StateRepository.FindState(sstCrackedState)
+    Dim stateOK As Boolean
+    If Not crackedState Is Nothing Then stateOK = (crackedState.Status = "OK")
     AssertTrue stats, "batch.group2.autoMcrcPure.crackedStateOK", _
-        Not crackedState Is Nothing And crackedState.Status = "OK"
+        stateOK
     AssertTrue stats, "batch.group2.autoMcrcPure.crackCalculated", _
         batch.ResultAt(1).NormalCrackStatus = "OK" Or batch.ResultAt(1).NormalCrackStatus = "FAIL"
     AssertTrue stats, "batch.group2.autoMcrcPure.beforeState", _
@@ -46341,8 +46604,8 @@ Private Function MetaDebugText(ByVal meta As CResultMeta) As String
     If meta Is Nothing Then
         MetaDebugText = "<nothing>"
     Else
-        MetaDebugText = ResultInternalStatusToText(meta.internalStatus) & "/" & _
-            ResultCodeToText(meta.resultCode) & "/" & meta.resultComment
+        MetaDebugText = ResultInternalStatusToText(meta.InternalStatus) & "/" & _
+            ResultCodeToText(meta.ResultCode) & "/" & meta.resultComment
     End If
 End Function
 
@@ -46763,12 +47026,12 @@ Private Sub TestPR2AxialCompressionBeyondPhysicalLimitUsesExtension(ByRef stats 
     Set formation = batch.ResultAt(1).crackResult.formation
     AssertTrue stats, "audit02.formation.physicalBlock.exists", Not formation Is Nothing
     If Not formation Is Nothing Then
-        If formation.ResultMeta.internalStatus <> rsCheckFailed Then _
-            AppendLine stats, "DIAGNOSTIC physicalBlock: status=" & CStr(formation.ResultMeta.internalStatus) & _
-                "; code=" & CStr(formation.ResultMeta.resultCode) & "; reason=" & formation.ResultMeta.resultComment & _
+        If formation.ResultMeta.InternalStatus <> rsCheckFailed Then _
+            AppendLine stats, "DIAGNOSTIC physicalBlock: status=" & CStr(formation.ResultMeta.InternalStatus) & _
+                "; code=" & CStr(formation.ResultMeta.ResultCode) & "; reason=" & formation.ResultMeta.resultComment & _
                 vbCrLf & formation.DiagnosticLog & vbCrLf & batch.DiagnosticLog
-        AssertTrue stats, "audit02.formation.physicalBlock.status", formation.ResultMeta.internalStatus = rsCheckFailed
-        AssertTrue stats, "audit02.formation.physicalBlock.code", formation.ResultMeta.resultCode = rcPhysicalLimitExceeded
+        AssertTrue stats, "audit02.formation.physicalBlock.status", formation.ResultMeta.InternalStatus = rsCheckFailed
+        AssertTrue stats, "audit02.formation.physicalBlock.code", formation.ResultMeta.ResultCode = rcPhysicalLimitExceeded
         AssertTrue stats, "audit02.formation.physicalBlock.noPoint", Not formation.HasLimitPoint
         AssertTrue stats, "audit02.formation.physicalBlock.noPreState", formation.PreCrackState Is Nothing
     End If
@@ -47252,11 +47515,11 @@ Private Sub TestLongitudinalCrackCheckUsesDirectStateStress(ByRef stats As TBatc
     batch.Execute
 
     AssertTrue stats, "batch.longCrack.status.finished", _
-        batch.ResultAt(1).crackResult.Longitudinal.Status = "OK" Or batch.ResultAt(1).crackResult.Longitudinal.Status = "FAIL"
-    AssertTrue stats, "batch.longCrack.sigma", batch.ResultAt(1).crackResult.Longitudinal.maxCompressionStress > 0#
-    AssertClose stats, "batch.longCrack.rbMc2", batch.ResultAt(1).crackResult.Longitudinal.rbMc2, 14.6, 0.000000001
-    AssertClose stats, "batch.longCrack.util", batch.ResultAt(1).crackResult.Longitudinal.Utilization, _
-        batch.ResultAt(1).crackResult.Longitudinal.maxCompressionStress / batch.ResultAt(1).crackResult.Longitudinal.rbMc2, 0.000000001
+        batch.ResultAt(1).crackResult.longitudinal.Status = "OK" Or batch.ResultAt(1).crackResult.longitudinal.Status = "FAIL"
+    AssertTrue stats, "batch.longCrack.sigma", batch.ResultAt(1).crackResult.longitudinal.maxCompressionStress > 0#
+    AssertClose stats, "batch.longCrack.rbMc2", batch.ResultAt(1).crackResult.longitudinal.rbMc2, 14.6, 0.000000001
+    AssertClose stats, "batch.longCrack.util", batch.ResultAt(1).crackResult.longitudinal.Utilization, _
+        batch.ResultAt(1).crackResult.longitudinal.maxCompressionStress / batch.ResultAt(1).crackResult.longitudinal.rbMc2, 0.000000001
 End Sub
 
 ' Проверяет нормативную область применения: продольные трещины являются
@@ -47268,9 +47531,9 @@ Private Sub TestLongitudinalCrackSkippedForPR1(ByRef stats As TBatchTestStats)
     batch.AddCombination "LONG_G1", -90000#, 0#, 0#, "PR1", "longitudinal group1"
     batch.Execute
 
-    AssertTrue stats, "batch.longCrack.group1.na", batch.ResultAt(1).crackResult.Longitudinal.Status = "N/A"
-    AssertClose stats, "batch.longCrack.group1.noRbMc2", batch.ResultAt(1).crackResult.Longitudinal.rbMc2, 0#, 0.000000001
-    AssertClose stats, "batch.longCrack.group1.noUtil", batch.ResultAt(1).crackResult.Longitudinal.Utilization, 0#, 0.000000001
+    AssertTrue stats, "batch.longCrack.group1.na", batch.ResultAt(1).crackResult.longitudinal.Status = "N/A"
+    AssertClose stats, "batch.longCrack.group1.noRbMc2", batch.ResultAt(1).crackResult.longitudinal.rbMc2, 0#, 0.000000001
+    AssertClose stats, "batch.longCrack.group1.noUtil", batch.ResultAt(1).crackResult.longitudinal.Utilization, 0#, 0.000000001
 End Sub
 
 ' Проверяет, что профильный флаг включает расчет устойчивости как отдельный
@@ -47802,7 +48065,7 @@ Private Sub TestStabilityFailContinuesDownstream(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.stability.continue.overallFail", batch.ResultAt(1).Status = "FAIL"
     AssertTrue stats, "batch.stability.continue.directCalculated", batch.ResultAt(1).StrengthResult.DirectState.Status <> "N/A"
     AssertTrue stats, "batch.stability.continue.capacityCalculated", batch.ResultAt(1).StrengthResult.capacity.Status <> "N/A"
-    AssertTrue stats, "batch.stability.continue.longitudinalCalculated", batch.ResultAt(1).crackResult.Longitudinal.Status <> "N/A"
+    AssertTrue stats, "batch.stability.continue.longitudinalCalculated", batch.ResultAt(1).crackResult.longitudinal.Status <> "N/A"
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -49986,7 +50249,7 @@ Private Sub TestAudit02CurrentCrackedStateCacheHitCalculatesWidth(ByRef stats As
     AssertClose stats, "audit02.currentCache.sigma", second.width.SigmaS, first.width.SigmaS, 0.000000001
     AssertClose stats, "audit02.currentCache.sigmaCrc", second.width.SigmaSCrc, first.width.SigmaSCrc, 0.000000001
     AssertClose stats, "audit02.currentCache.psi", second.width.PsiS, first.width.PsiS, 0.000000001
-    AssertTrue stats, "audit02.currentCache.stateOK", second.currentStateMeta.internalStatus = rsSuccess
+    AssertTrue stats, "audit02.currentCache.stateOK", second.currentStateMeta.InternalStatus = rsSuccess
 End Sub
 
 ' Проверяет канонический результат реального расчета и повторное использование
@@ -50032,7 +50295,7 @@ Private Sub TestAudit02CanonicalResultsAndReset(ByRef stats As TBatchTestStats)
     AssertClose stats, "audit02.canonical.sigmaReset", width.SigmaS, 0#, 0#
     AssertClose stats, "audit02.canonical.spacingReset", width.CrackSpacing, 0#, 0#
     AssertEquals stats, "audit02.canonical.rebarsReset", width.TensionRebarIds, vbNullString
-    AssertTrue stats, "audit02.canonical.widthMetaReset", width.ResultMeta.internalStatus = rsNotApplicable
+    AssertTrue stats, "audit02.canonical.widthMetaReset", width.ResultMeta.InternalStatus = rsNotApplicable
 
     Dim stability As CStabilityResult
     Set stability = New CStabilityResult
@@ -50380,7 +50643,7 @@ Private Sub TestAudit02RepositoryContextAndRetry(ByRef stats As TBatchTestStats)
     Dim firstEps As Double
     firstEps = first.epsilon0
     Dim firstMetaCode As EResultCode
-    firstMetaCode = first.resultCode
+    firstMetaCode = first.ResultCode
     Dim firstLog As String
     firstLog = first.DiagnosticLog
 
@@ -50500,7 +50763,7 @@ Private Sub TestAudit02RepositoryContextAndRetry(ByRef stats As TBatchTestStats)
     Set state = provider.GetOrSolve(request)
     AssertTrue stats, "audit02.cache.retry.reusedAfterSuccess", provider.LastStateWasReused
     AssertClose stats, "audit02.cache.snapshot.epsilonUnchanged", first.epsilon0, firstEps, 0#
-    AssertTrue stats, "audit02.cache.snapshot.codeUnchanged", first.resultCode = firstMetaCode
+    AssertTrue stats, "audit02.cache.snapshot.codeUnchanged", first.ResultCode = firstMetaCode
     AssertEquals stats, "audit02.cache.snapshot.logUnchanged", first.DiagnosticLog, firstLog
 End Sub
 
@@ -50578,7 +50841,7 @@ Private Sub TestAudit02OnOffPhysicalResults(ByRef stats As TBatchTestStats)
             AssertEquals stats, prefix & ".capacity", onResult.StrengthResult.capacity.Status, offResult.StrengthResult.capacity.Status
             AssertEquals stats, prefix & ".criterion", onResult.StrengthResult.capacity.LimitState, offResult.StrengthResult.capacity.LimitState
             AssertEquals stats, prefix & ".normal", onResult.NormalCrackStatus, offResult.NormalCrackStatus
-            AssertEquals stats, prefix & ".longitudinal", onResult.crackResult.Longitudinal.Status, offResult.crackResult.Longitudinal.Status
+            AssertEquals stats, prefix & ".longitudinal", onResult.crackResult.longitudinal.Status, offResult.crackResult.longitudinal.Status
             AssertEquals stats, prefix & ".stability", onResult.StabilityResult.Status, offResult.StabilityResult.Status
             AssertTrue stats, prefix & ".crackAvailability", onResult.crackResult.formation.CrackFormed = offResult.crackResult.formation.CrackFormed
             AssertTrue stats, prefix & ".pointAvailability", onResult.crackResult.formation.HasLimitPoint = offResult.crackResult.formation.HasLimitPoint
@@ -50681,13 +50944,15 @@ Private Sub TestAudit02InitialOffsetOnOffStatuses(ByRef stats As TBatchTestStats
         Dim prefix As String
         prefix = "audit02.offsetPair." & offBatch.combinationID(i)
         AppendLine stats, "OFFSET_PAIR|" & offBatch.combinationID(i) & "|Off=" & offResult.Status & _
-            "|OffCode=" & CStr(offResult.ResultMeta.resultCode) & "|On=" & onResult.Status & _
-            "|OnCode=" & CStr(onResult.ResultMeta.resultCode) & "|OffComment=" & offResult.ResultMeta.resultComment & _
+            "|OffCode=" & CStr(offResult.ResultMeta.ResultCode) & "|On=" & onResult.Status & _
+            "|OnCode=" & CStr(onResult.ResultMeta.ResultCode) & "|OffComment=" & offResult.ResultMeta.resultComment & _
             "|OnComment=" & onResult.ResultMeta.resultComment
         AssertEquals stats, prefix & ".offStatus", offResult.Status, "NumFail"
         AssertEquals stats, prefix & ".onStatus", onResult.Status, "BaseFail"
-        AssertTrue stats, prefix & ".offCode", offResult.ResultMeta.resultCode = rcNumericalFailure
-        AssertTrue stats, prefix & ".onCode", onResult.ResultMeta.resultCode = rcInitialStateBeyondLimit
+        ' Audit03 F03: сохраняется точная причина касательной системы; внешний
+        ' NumFail, физические усилия и expected/tolerance парного теста прежние.
+        AssertTrue stats, prefix & ".offCode", offResult.ResultMeta.ResultCode = rcSingularTangent
+        AssertTrue stats, prefix & ".onCode", onResult.ResultMeta.ResultCode = rcInitialStateBeyondLimit
         AssertTrue stats, prefix & ".offNoPoint", Not offResult.searchResult.HasLimitPoint
         AssertTrue stats, prefix & ".onNoPoint", Not onResult.searchResult.HasLimitPoint
         AssertTrue stats, prefix & ".onAuxiliary", onBatch.ResultAt(i).StrengthResult.DirectState.stateResult.Converged
@@ -50791,8 +51056,8 @@ Private Function Audit02PairResultNumbers(ByVal result As CCombinationResult) As
         Array("Width.Abt", width.Abt, 0.001), Array("Width.As", width.AsTension, 0.001), Array("Width.ds", width.DsEquivalent, 0.001), _
         Array("Width.xt", width.TensionDepth, 0.001), Array("Width.hbt", width.EffectiveZoneDepth, 0.001), _
         Array("Width.a", width.CoverA, 0.001), Array("Width.h", width.SectionDepthH, 0.001), Array("Width.Es", width.SteelEs, 0.001), _
-        Array("Width.util", width.Utilization, 0.000000001), Array("Longitudinal.sigma", result.crackResult.Longitudinal.maxCompressionStress, 0.001), _
-        Array("Longitudinal.util", result.crackResult.Longitudinal.Utilization, 0.000000001), _
+        Array("Width.util", width.Utilization, 0.000000001), Array("Longitudinal.sigma", result.crackResult.longitudinal.maxCompressionStress, 0.001), _
+        Array("Longitudinal.util", result.crackResult.longitudinal.Utilization, 0.000000001), _
         Array("Stability.N", stability.designN, 0.001), Array("Stability.Mx", stability.designMx, 0.001), _
         Array("Stability.My", stability.designMy, 0.001), Array("Stability.Ncr1", stability.Ncr1, 0.001), _
         Array("Stability.Ncr2", stability.Ncr2, 0.001), Array("Stability.reserve", stability.SummaryReserve, 0.000000001))
@@ -50810,11 +51075,107 @@ Private Sub Audit02AssertPair(ByRef stats As TBatchTestStats, ByVal maxima As Ob
     If difference > CDbl(maxima(metric)) Then maxima(metric) = difference
 End Sub
 
+' ===========================================================================
+' ДЛЯ ТЕСТОВ: AUDIT03 - ЖИЗНЕННЫЙ ЦИКЛ МЕТАДАННЫХ
+' ===========================================================================
+
+' Выполняет направленную проверку flags/clone/reset и ранних result-фабрик.
+' Это отдельный вход для воспроизводимого F04 без полного batch-прогона.
+Public Function RunAudit03LifecycleTests() As String
+    On Error GoTo Failed
+    Dim stats As TBatchTestStats
+    TestAudit03ResultLifecycle stats
+    AppendLine stats, "TOTAL_AUDIT03_LIFECYCLE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03LifecycleTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03LifecycleTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.description
+End Function
+
+' Проверяет каждый внутренний исход: зависимая/выключенная ветка не объявляет
+' собственный расчет выполненным, а реальная численная попытка сохраняется.
+' Повторное заполнение и независимый clone не переносят флаги прошлого LC.
+Private Sub TestAudit03ResultLifecycle(ByRef stats As TBatchTestStats)
+    Dim statuses As Variant
+    statuses = Array(rsSuccess, rsCheckFailed, rsNumericalFailure, rsInvalidInput, _
+        rsInvalidConfiguration, rsBlockedByDependency, rsNotApplicable, rsNotRequested, _
+        rsSuccessWithWarning, rsInternalError)
+    Dim value As Variant, attempted As Variant
+    Dim meta As CResultMeta, snapshot As CResultMeta
+    Set meta = New CResultMeta
+    For Each value In statuses
+        For Each attempted In Array(False, True)
+            Dim expectedApplies As Boolean, expectedCalculated As Boolean
+            expectedApplies = (value <> rsNotApplicable And value <> rsNotRequested)
+            expectedCalculated = CBool(attempted)
+            Select Case value
+                Case rsInvalidInput, rsInvalidConfiguration, rsBlockedByDependency, rsNotApplicable, rsNotRequested
+                    expectedCalculated = False
+            End Select
+            Dim prefix As String
+            prefix = "audit03.lifecycle." & CStr(value) & "." & CStr(attempted)
+            meta.SetResult CLng(value), rcCheckPassed, rkCrackWidth, "Текущий результат.", _
+                "Текущая диагностика.", True, CBool(attempted)
+            AssertTrue stats, prefix & ".applies", meta.Applies = expectedApplies
+            AssertTrue stats, prefix & ".calculated", meta.calculated = expectedCalculated
+            Set snapshot = meta.clone
+            meta.Clear
+            AssertTrue stats, prefix & ".cloneStatus", snapshot.InternalStatus = value
+            AssertTrue stats, prefix & ".cloneApplies", snapshot.Applies = expectedApplies
+            AssertTrue stats, prefix & ".cloneCalculated", snapshot.calculated = expectedCalculated
+            AssertTrue stats, prefix & ".clearCalculated", Not meta.calculated
+            AssertTrue stats, prefix & ".clearCode", meta.ResultCode = rcNone
+            AssertEquals stats, prefix & ".clearComment", meta.resultComment, vbNullString
+        Next attempted
+    Next value
+
+    Dim capacity As CCapacityResult
+    Set capacity = New CCapacityResult
+    capacity.InitializeBaseFail "Исходная часть нагрузки уже не проходит проверку."
+    AssertTrue stats, "audit03.lifecycle.capacity.baseCalculated", capacity.ResultMeta.calculated
+    capacity.InitializeCalcError "Не получен результат поиска."
+    AssertTrue stats, "audit03.lifecycle.capacity.earlyInternal", Not capacity.ResultMeta.calculated
+    AssertTrue stats, "audit03.lifecycle.capacity.earlyApplies", capacity.ResultMeta.Applies
+
+    Dim state As CSectionStateResult, direct As CDirectStateResult
+    Set state = New CSectionStateResult
+    AssertTrue stats, "audit03.lifecycle.state.empty", Not state.ResultMeta.calculated
+    Set direct = New CDirectStateResult
+    direct.SetMeta Nothing
+    AssertTrue stats, "audit03.lifecycle.direct.missing", Not direct.meta.calculated
+
+    Dim formation As CCrackFormationResult, width As CCrackWidthResult
+    Set formation = New CCrackFormationResult
+    formation.InitializeFromCalculator Nothing, Nothing
+    AssertTrue stats, "audit03.lifecycle.formation.missing", Not formation.ResultMeta.calculated
+    Set width = New CCrackWidthResult
+    width.InitializeFromCalculator Nothing, Nothing
+    AssertTrue stats, "audit03.lifecycle.width.missing", Not width.ResultMeta.calculated
+
+    Dim longitudinal As CLongitudinalCrackResult, stability As CStabilityResult
+    Set longitudinal = New CLongitudinalCrackResult
+    longitudinal.Initialize Nothing, 0#, 0#, 0#
+    AssertTrue stats, "audit03.lifecycle.longitudinal.missing", Not longitudinal.ResultMeta.calculated
+    Set stability = New CStabilityResult
+    stability.SetMeta Nothing
+    AssertTrue stats, "audit03.lifecycle.stability.missing", Not stability.meta.calculated
+
+    Dim search As CLimitSearchResult
+    Set search = New CLimitSearchResult
+    AssertTrue stats, "audit03.lifecycle.search.empty", Not search.meta.calculated
+    search.Initialize Nothing, "Auto", vbNullString, False, 0#, 0#, 0#, 0#, Nothing, _
+        vbNullString, vbNullString, vbNullString, False
+    AssertTrue stats, "audit03.lifecycle.search.notStarted", Not search.meta.calculated
+    search.Initialize Nothing, "Auto", "LoadMultiplier", False, 0#, 0#, 0#, 0#, Nothing, _
+        vbNullString, vbNullString, vbNullString, True
+    AssertTrue stats, "audit03.lifecycle.search.actualAttempt", search.meta.calculated
+End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestCapacitySolver
 TYPE: 1
-LINES: 1930
+LINES: 2146
 ====================================================================================================
 Option Explicit
 
@@ -50886,6 +51247,9 @@ Public Function RunCapacitySolverTests() As String
     TestAudit02GenericUltimateSearch stats
     AppendLine stats, "RUN: TestAudit02GenericLoadMultiplierMatrix"
     TestAudit02GenericLoadMultiplierMatrix stats
+    TestAudit03SearchArithmetic stats
+    TestAudit03RealCapacityPrecision stats
+    TestAudit03CapacityTypedFailures stats
     AppendLine stats, "RUN: TestCapacityLoadPathMethodMatrix"
     TestCapacityLoadPathMethodMatrix stats
     AppendLine stats, "RUN: TestCapacityLoadPathZeroComponentMatrix"
@@ -52442,7 +52806,7 @@ Private Sub TestAudit02CapacitySearchBoundary(ByRef stats As TCapacityTestStats)
             AssertClose stats, prefix & ".notCapacity", cap.LambdaUltimate, 0#, 0#
             Dim searchResult As CLimitSearchResult
             Set searchResult = Audit02CapacitySnapshot(cap, "LoadMultiplier")
-            AssertTrue stats, prefix & ".code", searchResult.meta.resultCode = rcSearchBoundReached
+            AssertTrue stats, prefix & ".code", searchResult.meta.ResultCode = rcSearchBoundReached
         End If
     Next root
 End Sub
@@ -52518,7 +52882,7 @@ Private Sub TestAudit02UnconvergedProbeIsNumerical(ByRef stats As TCapacityTestS
     cap.LimitSearchHandleCapacityInitialFailure probeState
     Dim result As CLimitSearchResult
     Set result = Audit02CapacitySnapshot(cap, "LoadMultiplier")
-    AssertTrue stats, "audit02.failedProbe.noBaseFail", result.meta.internalStatus = rsNumericalFailure
+    AssertTrue stats, "audit02.failedProbe.noBaseFail", result.meta.InternalStatus = rsNumericalFailure
 End Sub
 
 ' ДЛЯ ТЕСТОВ
@@ -52596,7 +52960,7 @@ Private Sub TestAudit02InitialOffsetBoundary(ByRef stats As TCapacityTestStats)
             cap.LimitSearchHandleCapacityInitialFailure state
             Dim result As CLimitSearchResult
             Set result = Audit02CapacitySnapshot(cap, "LoadMultiplier")
-            AssertTrue stats, prefix & ".code", result.meta.resultCode = rcInitialStateBeyondLimit
+            AssertTrue stats, prefix & ".code", result.meta.ResultCode = rcInitialStateBeyondLimit
             Dim policy As CResultStatusPolicy
             Set policy = New CResultStatusPolicy
             AssertEquals stats, prefix & ".display", policy.ExternalStatus(result.meta), "BaseFail"
@@ -52647,8 +53011,8 @@ Private Sub CheckAudit02SearchVsCapacity(ByRef stats As TCapacityTestStats, _
     Dim search As CLimitSearchResult
     Set search = Audit02CapacitySnapshot(cap, "LoadMultiplier", section, _
         ProvisionalConcrete(), ProvisionalSteel(), spec)
-    AssertTrue stats, "audit02.searchEngineering.searchSuccess", search.meta.internalStatus = rsSuccess
-    AssertTrue stats, "audit02.searchEngineering.searchCode", search.meta.resultCode = rcCheckPassed
+    AssertTrue stats, "audit02.searchEngineering.searchSuccess", search.meta.InternalStatus = rsSuccess
+    AssertTrue stats, "audit02.searchEngineering.searchCode", search.meta.ResultCode = rcCheckPassed
     AssertTrue stats, "audit02.searchEngineering.searchSucceeded", search.Succeeded
     Dim loadState As CSectionLoadState
     Set loadState = New CSectionLoadState
@@ -52659,13 +53023,13 @@ Private Sub CheckAudit02SearchVsCapacity(ByRef stats As TCapacityTestStats, _
     Dim result As CCapacityResult
     Set result = New CCapacityResult
     result.InitializeFromSearch search, path, False, 0#, 0#, Nothing, 300#, 200#
-    AssertTrue stats, "audit02.searchEngineering.capacityFailed", result.ResultMeta.internalStatus = rsCheckFailed
+    AssertTrue stats, "audit02.searchEngineering.capacityFailed", result.ResultMeta.InternalStatus = rsCheckFailed
     AssertEquals stats, "audit02.searchEngineering.capacityDisplay", result.Status, "FAIL"
     AssertClose stats, "audit02.searchEngineering.lambdaUnchanged", result.LambdaCapacity, cap.LambdaUltimate, 0#
     Dim detachedMeta As CResultMeta
     Set detachedMeta = search.meta
     detachedMeta.SetResult rsInternalError, rcInternalError, rkCapacity, "Изменение копии в тесте."
-    AssertTrue stats, "audit02.searchEngineering.metaSnapshot", search.meta.internalStatus = rsSuccess
+    AssertTrue stats, "audit02.searchEngineering.metaSnapshot", search.meta.InternalStatus = rsSuccess
     AssertTrue stats, "audit02.searchEngineering.pointState", Not search.PointState Is Nothing
     If Not search.PointState Is Nothing Then
         AssertTrue stats, "audit02.searchEngineering.sharedState", result.stateResult Is search.PointState
@@ -52717,7 +53081,7 @@ Private Sub TestAudit02GenericLoadMultiplierMatrix(ByRef stats As TCapacityTestS
                     AssertClose stats, prefix & ".loads", result.nUltimate, result.LambdaUltimate, 0#
                     AssertEquals stats, prefix & ".method", result.ActualMethod, CStr(methodName)
                 Else
-                    AssertTrue stats, prefix & ".boundCode", result.meta.resultCode = rcSearchBoundReached
+                    AssertTrue stats, prefix & ".boundCode", result.meta.ResultCode = rcSearchBoundReached
                     AssertTrue stats, prefix & ".noPoint", Not result.HasLimitPoint
                     AssertClose stats, prefix & ".noCapacity", result.LambdaUltimate, 0#, 0#
                     AssertClose stats, prefix & ".maxProbed", problem.ProbeMaxLambda, 6#, 0#
@@ -52742,15 +53106,228 @@ Private Sub TestAudit02GenericLoadMultiplierMatrix(ByRef stats As TCapacityTestS
 
     Set request = New CLimitSearchRequest
     Set result = search.Execute(request)
-    AssertTrue stats, "audit02.genericMultiplier.missingProblem.internal", result.meta.internalStatus = rsInternalError
+    AssertTrue stats, "audit02.genericMultiplier.missingProblem.internal", result.meta.InternalStatus = rsInternalError
     AssertTrue stats, "audit02.genericMultiplier.missingProblem.noPoint", Not result.HasLimitPoint
+End Sub
+
+' ============================== ДЛЯ ТЕСТОВ ==============================
+' Отдельный entrypoint для watchdog: соседние Double и нулевой bisection-budget
+' на неисправном алгоритме зависают, а не возвращают правдоподобный предел.
+Public Function RunAudit03SearchStagnation() As String
+    Dim stats As TCapacityTestStats
+    TestAudit03SearchArithmeticCase stats, "Bisection", rkCapacity, 1
+    AppendLine stats, "TOTAL_AUDIT03_STAGNATION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03SearchStagnation = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: отдельный полный прогон арифметических краев generic Search.
+Public Function RunAudit03SearchTests() As String
+    Dim stats As TCapacityTestStats
+    TestAudit03SearchArithmetic stats
+    AppendLine stats, "TOTAL_AUDIT03_SEARCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03SearchTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: проверяет настоящий Capacity с неограниченным числом делений
+' скобки и terminal typed-errors через production адаптер, не ручную meta.
+Public Function RunAudit03CapacityContracts() As String
+    Dim stats As TCapacityTestStats
+    TestAudit03RealCapacityPrecision stats
+    TestAudit03CapacityTypedFailures stats
+    AppendLine stats, "TOTAL_AUDIT03_CAPACITY_CONTRACTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03CapacityContracts = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: линейные материалы исключают неудачу внутреннего равновесия.
+' При допуске меньше шага Double поиск обязан закончиться с честной причиной,
+' а локальный cache не должен объединять разные lambda и создавать ложный предел.
+Private Sub TestAudit03RealCapacityPrecision(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder, rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, rebars)
+    Dim cap As CCapacitySolver
+    Set cap = New CCapacitySolver
+    ConfigureCapacity cap
+    cap.searchMethod = "Bisection"
+    cap.LambdaTolerance = 1E-18
+    cap.MaxRetries = 0
+    cap.DiagnosticsEnabled = True
+    SaveAudit03SearchProgress stats, "START: audit03.capacity.realPrecision"
+    cap.SolveByLoadPathMultiplier section, LinearConcrete(), LinearSteel(), 0#, 0#, 0#, 10000000#, 0#, 0#
+    Dim result As CLimitSearchResult
+    Set result = Audit02CapacitySnapshot(cap, "LoadMultiplier")
+    AssertTrue stats, "audit03.capacity.realPrecision.numerical", result.meta.InternalStatus = rsNumericalFailure
+    AssertTrue stats, "audit03.capacity.realPrecision.code", result.meta.ResultCode = rcNumericalFailure
+    AssertTrue stats, "audit03.capacity.realPrecision.noPoint", Not result.HasLimitPoint
+    AssertTrue stats, "audit03.capacity.realPrecision.notBound", Not cap.SearchBoundReached
+    AssertTrue stats, "audit03.capacity.realPrecision.finiteWork", cap.iterations > 40 And cap.iterations < 100
+    AssertTrue stats, "audit03.capacity.realPrecision.calculated", result.meta.calculated
+    AssertTrue stats, "audit03.capacity.realPrecision.reason", Len(result.meta.resultComment) > 0
+    AppendLine stats, "COMMENT: audit03.capacity.realPrecision; " & result.meta.resultComment
+    AppendLine stats, "DIAGNOSTIC: " & cap.DiagnosticLog
+    SaveAudit03SearchProgress stats, "DONE: audit03.capacity.realPrecision"
+End Sub
+
+' ДЛЯ ТЕСТОВ: configuration/input/internal/singular причины проходят от
+' реального Capacity solve в Search-result без retries и назначения BaseFail
+' программной ошибке. Повторный запуск не наследует meta предыдущей задачи.
+Private Sub TestAudit03CapacityTypedFailures(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder, rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+    Dim validSection As CSectionModel
+    Set validSection = BuildGeneratedSectionModel(mesh, rebars)
+    Dim scenario As Long
+    For scenario = 1 To 6
+        Dim cap As CCapacitySolver
+        Set cap = New CCapacitySolver
+        ConfigureCapacity cap
+        cap.searchMethod = "Bisection"
+        cap.DiagnosticsEnabled = True
+        Dim section As CSectionModel
+        Set section = validSection
+        Dim concrete As Object, steel As Object
+        Set concrete = LinearConcrete()
+        Set steel = LinearSteel()
+        Dim expectedStatus As EResultInternalStatus, expectedCode As EResultCode
+        Dim expectedFailure As ESolverFailureCode, nOffset As Double
+        nOffset = 0#
+        Select Case scenario
+            Case 1
+                cap.SolverMethod = "Invalid"
+                expectedStatus = rsInvalidConfiguration: expectedCode = rcInvalidConfiguration
+                expectedFailure = sfcInvalidConfiguration
+            Case 2
+                cap.SolverMaxIterations = 0
+                expectedStatus = rsInvalidConfiguration: expectedCode = rcInvalidConfiguration
+                expectedFailure = sfcInvalidConfiguration
+            Case 3
+                Set section = Nothing
+                expectedStatus = rsInternalError: expectedCode = rcInternalError
+                expectedFailure = sfcInternalError
+            Case 4
+                Set concrete = Nothing
+                expectedStatus = rsInternalError: expectedCode = rcInternalError
+                expectedFailure = sfcInternalError
+            Case 5
+                Set section = New CSectionModel
+                expectedStatus = rsInvalidInput: expectedCode = rcInvalidInput
+                expectedFailure = sfcInvalidInput
+            Case 6
+                Set section = New CSectionModel
+                section.AddConcreteElement 0#, 0#, 10000#, sourceName:="Singular"
+                nOffset = -100000#
+                cap.MaxRetries = 0
+                expectedStatus = rsNumericalFailure: expectedCode = rcSingularTangent
+                expectedFailure = sfcSingularTangent
+        End Select
+        Dim prefix As String
+        prefix = "audit03.capacity.typed." & CStr(scenario)
+        SaveAudit03SearchProgress stats, "START: " & prefix
+        cap.SolveByLoadPathMultiplier section, concrete, steel, nOffset, 0#, 0#, 10000000#, 0#, 0#
+        Dim result As CLimitSearchResult
+        Set result = Audit02CapacitySnapshot(cap, "LoadMultiplier")
+        AssertTrue stats, prefix & ".status", result.meta.InternalStatus = expectedStatus
+        AssertTrue stats, prefix & ".code", result.meta.ResultCode = expectedCode
+        AssertTrue stats, prefix & ".failure", cap.FailureCode = expectedFailure
+        AssertTrue stats, prefix & ".noRetry", cap.RetryCount = 0
+        AssertTrue stats, prefix & ".noPoint", Not result.HasLimitPoint
+        AssertTrue stats, prefix & ".notBaseFail", result.meta.ResultCode <> rcInitialStateBeyondLimit
+        AssertTrue stats, prefix & ".reason", Len(result.meta.resultComment) > 0
+        If scenario <> 6 Then AssertTrue stats, prefix & ".notCalculated", Not result.meta.calculated
+        AppendLine stats, "COMMENT: " & prefix & "; " & result.meta.resultComment
+        SaveAudit03SearchProgress stats, "DONE: " & prefix
+    Next scenario
+End Sub
+
+' Проверяет соседние Double, большие положительные границы и отсутствие
+' прогресса recovery для обоих инженерных потребителей каждого 1D-метода.
+Private Sub TestAudit03SearchArithmetic(ByRef stats As TCapacityTestStats)
+    Dim kind As Variant, methodName As Variant, scenario As Long
+    For Each kind In Array(rkCapacity, rkCrackFormation)
+        For Each methodName In Array("Bisection", "Brent", "Secant")
+            For scenario = 1 To 4
+                TestAudit03SearchArithmeticCase stats, CStr(methodName), CLng(kind), scenario
+            Next scenario
+        Next methodName
+    Next kind
+End Sub
+
+' Реальная generic-задача различает невозможную точность, техническую границу,
+' точный предел на MaxLambda и ошибочный recovery без фальшивого State.
+Private Sub TestAudit03SearchArithmeticCase(ByRef stats As TCapacityTestStats, _
+        ByVal methodName As String, ByVal kind As EResultKind, ByVal scenario As Long)
+    On Error GoTo Failed
+    Dim problem As CTestLimitSearchProblem
+    Set problem = New CTestLimitSearchProblem
+    Dim prefix As String
+    prefix = "audit03.search." & CStr(kind) & "." & methodName & "." & CStr(scenario)
+    SaveAudit03SearchProgress stats, "START: " & prefix
+    Dim adjacent As Double
+    adjacent = 1# + 2# ^ (-52)
+    Select Case scenario
+        Case 1
+            AssertTrue stats, prefix & ".adjacentDistinct", adjacent > 1# And adjacent - 1# < 0.000000000000001
+            problem.Configure methodName, adjacent, 1E-18, 80, 1#, adjacent, kind
+            If methodName = "Bisection" Then problem.Configure methodName, adjacent, 1E-18, 0, 1#, adjacent, kind
+            problem.StepCriterion = True
+        Case 2
+            problem.Configure methodName, 1.2E+308, 1E+294, 120, 1E+308, 1.4E+308, kind
+        Case 3
+            problem.Configure methodName, 3#, 0.000001, 80, 1#, 6#, kind
+            problem.FailureAbove = 0.5
+            problem.RecoveryWithoutProgress = True
+        Case 4
+            problem.Configure methodName, 6#, 0.000001, 80, 1#, 6#, kind
+    End Select
+    Dim request As CLimitSearchRequest
+    Set request = New CLimitSearchRequest
+    request.InitializeWithProblem problem, kind, "LoadMultiplier", 0#, 1#, 0#, 0#, 0#, 0#
+    Dim search As CLoadMultiplierSearch
+    Set search = New CLoadMultiplierSearch
+    Dim result As CLimitSearchResult
+    Set result = search.Execute(request)
+    If scenario = 1 Or scenario = 3 Then
+        AssertTrue stats, prefix & ".numerical", result.meta.InternalStatus = rsNumericalFailure
+        AssertTrue stats, prefix & ".notBound", result.meta.ResultCode <> rcSearchBoundReached
+        AssertTrue stats, prefix & ".noPoint", Not result.HasLimitPoint
+        AssertTrue stats, prefix & ".noFakeLimit", result.LambdaUltimate = 0#
+        AssertTrue stats, prefix & ".finiteWork", problem.ProbeCalls <= 120
+        AssertTrue stats, prefix & ".reason", Len(result.DiagnosticLog) > 0
+    Else
+        AssertTrue stats, prefix & ".success", result.Succeeded And result.HasLimitPoint
+        If scenario = 2 Then
+            AssertTrue stats, prefix & ".accuracy", Abs(result.LambdaUltimate / 1.2E+308 - 1#) <= 0.00000000000002
+            AssertTrue stats, prefix & ".bounded", problem.ProbeMaxLambda <= 1.4E+308
+        Else
+            AssertClose stats, prefix & ".maxLambda", result.LambdaUltimate, 6#, 0.000001
+            AssertClose stats, prefix & ".lastProbe", problem.ProbeMaxLambda, 6#, 0#
+        End If
+    End If
+    AppendLine stats, "COMMENT: " & prefix & "; " & result.meta.resultComment & "; " & result.DiagnosticLog
+    SaveAudit03SearchProgress stats, "DONE: " & prefix
+    Exit Sub
+Failed:
+    AssertTrue stats, prefix & ".runtime." & CStr(Err.Number) & "." & Err.description, False
+    SaveAudit03SearchProgress stats, "FAILED: " & prefix
+End Sub
+
+' ДЛЯ ТЕСТОВ: сохраняет уже выполненные assertions до следующего COM-шага.
+' При модальной ошибке или watchdog виден конкретный случай, а не только suite.
+Private Sub SaveAudit03SearchProgress(ByRef stats As TCapacityTestStats, ByVal stage As String)
+    Dim fileNumber As Integer
+    fileNumber = FreeFile
+    Open ThisWorkbook.path & "\Audit03_Search_Progress.txt" For Output As #fileNumber
+    Print #fileNumber, stats.Report
+    Print #fileNumber, stage
+    Close #fileNumber
 End Sub
 
 
 ====================================================================================================
 COMPONENT: modTestCrackWidth
 TYPE: 1
-LINES: 1061
+LINES: 1118
 ====================================================================================================
 Option Explicit
 
@@ -52800,6 +53377,7 @@ Public Function RunCrackWidthTests() As String
     TestAudit02FormationOutcomeSemantics stats
     TestAudit02IndependentFormation stats
     TestAudit02PsiSignedInputsAndFallbackModes stats
+    TestAudit03FormationTypedFailures stats
     AppendLine stats, "TOTAL_CRACK: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
     RunCrackWidthTests = stats.Report
@@ -52809,6 +53387,7 @@ Failed:
     RunCrackWidthTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & _
         "; source=" & Err.source & "; description=" & Err.description
 End Function
+
 
 ' ------------------------------
 ' Материал бетона
@@ -53173,9 +53752,9 @@ Private Sub TestCrackFormationSearchBoundKeepsTechnicalCode(ByRef stats As TCrac
     AssertTrue stats, "crack.searchBound.notConverged", Not crack.Converged
     AssertTrue stats, "crack.searchBound.notFormed", Not crack.CrackFormed
     AssertTrue stats, "crack.searchBound.internalStatus", _
-        crack.formationResult.ResultMeta.internalStatus = rsCheckFailed
+        crack.formationResult.ResultMeta.InternalStatus = rsCheckFailed
     AssertTrue stats, "crack.searchBound.resultCode", _
-        crack.formationResult.ResultMeta.resultCode = rcSearchBoundReached
+        crack.formationResult.ResultMeta.ResultCode = rcSearchBoundReached
     AssertTrue stats, "crack.searchBound.noPostState", crack.formationResult.PostCrackState Is Nothing
     AssertCrackCalculatorNotNumFail stats, "crack.searchBound.widthNotNumFail", crack
 End Sub
@@ -53192,7 +53771,7 @@ Private Sub TestCrackFormationNoCrackDoesNotBuildPostState(ByRef stats As TCrack
     AssertTrue stats, "crack.noCrack.converged", crack.Converged
     AssertTrue stats, "crack.noCrack.notFormed", Not crack.CrackFormed
     AssertTrue stats, "crack.noCrack.criterion", _
-        crack.formationResult.ResultMeta.resultCode = rcCriterionNotReached
+        crack.formationResult.ResultMeta.ResultCode = rcCriterionNotReached
     AssertTrue stats, "crack.noCrack.widthNotApplicable", _
         crack.CrackWidthResultCode = rcCrackNotFormed
     AssertTrue stats, "crack.noCrack.noBeforeState", crack.formationResult.PreCrackState Is Nothing
@@ -53736,7 +54315,7 @@ Private Sub TestAudit02IndependentFormation(ByRef stats As TCrackTestStats)
     AssertTrue stats, "audit02.formationOnly.resetPoint", Not result.HasLimitPoint
     AssertTrue stats, "audit02.formationOnly.resetPre", result.PreCrackState Is Nothing
     AssertTrue stats, "audit02.formationOnly.resetSearch", result.searchResult Is Nothing
-    AssertTrue stats, "audit02.formationOnly.resetMeta", result.ResultMeta.internalStatus = rsInternalError
+    AssertTrue stats, "audit02.formationOnly.resetMeta", result.ResultMeta.InternalStatus = rsInternalError
 End Sub
 
 ' Различает найденный порог за текущим LC и трещину от постоянной части пути.
@@ -53752,11 +54331,11 @@ Private Sub TestAudit02FormationOutcomeSemantics(ByRef stats As TCrackTestStats)
     AssertTrue stats, "audit02.formation.aboveCurrent.converged", crack.Converged
     AssertTrue stats, "audit02.formation.aboveCurrent.notCracked", Not crack.CrackFormed
     AssertTrue stats, "audit02.formation.aboveCurrent.lambda", crack.formationResult.LambdaCrc > 1#
-    AssertTrue stats, "audit02.formation.aboveCurrent.foundCode", crack.formationResult.ResultMeta.resultCode = rcCheckPassed
+    AssertTrue stats, "audit02.formation.aboveCurrent.foundCode", crack.formationResult.ResultMeta.ResultCode = rcCheckPassed
     Dim search As CLimitSearchResult
     Set search = New CLimitSearchResult
     Set search = crack.formationResult.searchResult
-    AssertTrue stats, "audit02.formation.aboveCurrent.searchSuccess", search.meta.internalStatus = rsSuccess
+    AssertTrue stats, "audit02.formation.aboveCurrent.searchSuccess", search.meta.InternalStatus = rsSuccess
     AssertClose stats, "audit02.formation.aboveCurrent.pointLambda", search.LambdaUltimate, crack.formationResult.LambdaCrc, 0#
     AssertClose stats, "audit02.formation.aboveCurrent.pointMoment", _
         Sqr(search.mxUltimate * search.mxUltimate + search.myUltimate * search.myUltimate), _
@@ -53767,15 +54346,15 @@ Private Sub TestAudit02FormationOutcomeSemantics(ByRef stats As TCrackTestStats)
     Set crack = CalculateCrack(solver, section, 200000#, 0#, 0#, _
         "AlwaysCalc", "Effective", formationPath:="lambda*Mxy")
     Set search = crack.formationResult.searchResult
-    AssertTrue stats, "audit02.formation.constant.warning", search.meta.internalStatus = rsSuccessWithWarning
-    AssertTrue stats, "audit02.formation.constant.code", search.meta.resultCode = rcInitialStateBeyondLimit
+    AssertTrue stats, "audit02.formation.constant.warning", search.meta.InternalStatus = rsSuccessWithWarning
+    AssertTrue stats, "audit02.formation.constant.code", search.meta.ResultCode = rcInitialStateBeyondLimit
     AssertTrue stats, "audit02.formation.constant.comment", Len(search.meta.resultComment) > 0
     AssertTrue stats, "audit02.formation.constant.noPre", crack.formationResult.PreCrackState Is Nothing
     AssertTrue stats, "audit02.formation.constant.noPost", crack.formationResult.PostCrackState Is Nothing
     AssertClose stats, "audit02.formation.constant.noPoint", search.LambdaUltimate, 0#, 0#
     AssertClose stats, "audit02.formation.constant.psi1", crack.PsiS, 1#, 0#
     search.Initialize Nothing, "Auto", vbNullString, False, 0#, 0#, 0#, 0#, Nothing, vbNullString, vbNullString
-    AssertTrue stats, "audit02.formation.missing.internalError", search.meta.internalStatus = rsInternalError
+    AssertTrue stats, "audit02.formation.missing.internalError", search.meta.InternalStatus = rsInternalError
 End Sub
 
 ' ДЛЯ ТЕСТОВ
@@ -53801,7 +54380,7 @@ Private Sub TestAudit02PsiSignedInputsAndFallbackModes(ByRef stats As TCrackTest
         Dim prefix As String
         prefix = "audit02.psi.fallback." & CStr(mode)
         AssertTrue stats, prefix & ".converged", crack.Converged
-        AssertTrue stats, prefix & ".warningCode", crack.formationResult.ResultMeta.resultCode = rcInitialStateBeyondLimit
+        AssertTrue stats, prefix & ".warningCode", crack.formationResult.ResultMeta.ResultCode = rcInitialStateBeyondLimit
         AssertTrue stats, prefix & ".noPost", crack.formationResult.PostCrackState Is Nothing
         If CStr(mode) = "User" Then
             AssertClose stats, prefix & ".value", crack.PsiS, 0.65, 0#
@@ -53811,6 +54390,61 @@ Private Sub TestAudit02PsiSignedInputsAndFallbackModes(ByRef stats As TCrackTest
         AssertTrue stats, prefix & ".upperBound", crack.PsiS <= 1#
         AssertCrackCalculatorNotNumFail stats, prefix & ".notNumerical", crack
     Next mode
+End Sub
+
+' ============================== ДЛЯ ТЕСТОВ AUDIT03 ==============================
+' Отдельный entrypoint проверяет terminal ошибки state-solve для всех физических
+' путей трещинообразования, включая отсутствие незаявленных Auto-переходов.
+Public Function RunAudit03FormationContracts() As String
+    Dim stats As TCrackTestStats
+    TestAudit03FormationTypedFailures stats
+    AppendLine stats, "TOTAL_AUDIT03_FORMATION_CONTRACTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03FormationContracts = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: ошибочный метод/бюджет SectionSolver проходят через настоящие
+' lambda-пробы; config failure не становится NumFail и не запускает новые пути.
+Private Sub TestAudit03FormationTypedFailures(ByRef stats As TCrackTestStats)
+    Dim section As CSectionModel, serviceSolver As CSectionSolver
+    Set serviceSolver = SolveServiceState(section, -20000#, -15000000#, 0#)
+    Dim provider As CMaterialModelProvider
+    Set provider = TestMaterialProvider()
+    Dim load As CSectionLoadState
+    Set load = New CSectionLoadState
+    load.Initialize -20000#, -15000000#, 0#, 0#, 0#
+    Dim path As Variant, scenario As Long
+    For Each path In Array("lambda*Mxy", "lambda*N", "lambda*NMxy", "Auto")
+        For scenario = 1 To 2
+            Dim calculator As CCrackFormationCalculator
+            Set calculator = New CCrackFormationCalculator
+            calculator.CrackFormationPath = CStr(path)
+            calculator.CrackFormationSolutionStrategy = "LoadMultiplier"
+            calculator.SolverLoadSteps = 8
+            calculator.SolverMaxIterations = 100
+            calculator.SolverToleranceN = 5#
+            calculator.SolverToleranceMx = 5000#
+            calculator.SolverToleranceMy = 5000#
+            If scenario = 1 Then
+                calculator.SolverMethod = "Invalid"
+            Else
+                calculator.SolverMaxIterations = 0
+            End If
+            Dim result As CCrackFormationResult
+            Set result = calculator.CheckFormation(section, provider, TestCrackedStateSpec(), _
+                TestCrackInitiationSpec(), load.n, load.InternalMx, load.InternalMy, load, 0#, 0#)
+            Dim prefix As String
+            prefix = "audit03.formation.typed." & CStr(path) & "." & CStr(scenario)
+            AssertTrue stats, prefix & ".status", result.ResultMeta.InternalStatus = rsInvalidConfiguration
+            AssertTrue stats, prefix & ".code", result.ResultMeta.ResultCode = rcInvalidConfiguration
+            AssertTrue stats, prefix & ".notCalculated", Not result.ResultMeta.calculated
+            AssertTrue stats, prefix & ".oneAttempt", result.SolverCallCount = 1
+            AssertTrue stats, prefix & ".noPoint", Not result.HasLimitPoint
+            AssertTrue stats, prefix & ".noPre", result.PreCrackState Is Nothing
+            AssertTrue stats, prefix & ".noPost", result.PostCrackState Is Nothing
+            AssertTrue stats, prefix & ".reason", Len(result.ResultMeta.resultComment) > 0
+            AppendLine stats, "COMMENT: " & prefix & "; " & result.ResultMeta.resultComment
+        Next scenario
+    Next path
 End Sub
 
 
@@ -57761,8 +58395,8 @@ Private Sub TestAudit03TypedStateFailureCase(ByRef stats As TSectionSolverTestSt
         Case 4: expectedStatus = rsInternalError: expectedCode = rcInternalError
         Case 5: expectedStatus = rsInvalidInput: expectedCode = rcInvalidInput
     End Select
-    AssertTrue stats, prefix & ".status", state.internalStatus = expectedStatus
-    AssertTrue stats, prefix & ".code", state.resultCode = expectedCode
+    AssertTrue stats, prefix & ".status", state.InternalStatus = expectedStatus
+    AssertTrue stats, prefix & ".code", state.ResultCode = expectedCode
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
     Dim expectedExternal As String
@@ -57786,7 +58420,7 @@ Private Sub TestAudit03TypedStateFailureCase(ByRef stats As TSectionSolverTestSt
     End If
     If scenario <> 4 Then
         AssertTrue stats, prefix & ".stored", repository.stateCount = 1
-        AssertTrue stats, prefix & ".snapshotCode", repository.StateAt(1).resultCode = expectedCode
+        AssertTrue stats, prefix & ".snapshotCode", repository.StateAt(1).ResultCode = expectedCode
         AssertTrue stats, prefix & ".snapshotComment", repository.StateAt(1).resultComment = state.resultComment
     End If
     If scenario = 1 Then
@@ -57948,7 +58582,7 @@ Private Sub TestAudit02StateSnapshotIsolation(ByRef stats As TSectionSolverTestS
     Dim meta As CResultMeta
     Set meta = state.ResultMeta
     meta.SetResult rsNumericalFailure, rcNumericalFailure, rkDirectState, "Изменение внешней копии."
-    AssertTrue stats, "audit02.stateSnapshot.returnedMeta", state.internalStatus = rsSuccess
+    AssertTrue stats, "audit02.stateSnapshot.returnedMeta", state.InternalStatus = rsSuccess
     Dim solveCount As Long
     solveCount = SectionEquilibriumSolveCount()
     solver.EvaluateStrainPlane section, concrete, steel, -0.001, 0#, 0#
@@ -57957,8 +58591,8 @@ Private Sub TestAudit02StateSnapshotIsolation(ByRef stats As TSectionSolverTestS
     AssertClose stats, "audit02.stateSnapshot.extremum", state.minConcreteStrain, -0.0001, 0#
     AssertTrue stats, "audit02.stateSnapshot.noSolve", SectionEquilibriumSolveCount() = solveCount
     Set state = New CSectionStateResult
-    AssertTrue stats, "audit02.stateSnapshot.emptyStatus", state.internalStatus = rsInternalError
-    AssertTrue stats, "audit02.stateSnapshot.emptyCode", state.resultCode = rcInternalError
+    AssertTrue stats, "audit02.stateSnapshot.emptyStatus", state.InternalStatus = rsInternalError
+    AssertTrue stats, "audit02.stateSnapshot.emptyCode", state.ResultCode = rcInternalError
 End Sub
 
 ' Проверяет отсутствие фиктивных экстремумов отсутствующего знака напряжений:

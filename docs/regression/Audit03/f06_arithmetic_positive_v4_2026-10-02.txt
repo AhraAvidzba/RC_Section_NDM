@@ -1,0 +1,237 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_f06_fixed.xlsm
+SOURCE_SHA256: 240BDCE490E154264344A74D252FB5A14847241091893F9099B88BF53236E3E6
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8553ed2fc43d4986bc3fdc9c067cceb3\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestCapacitySolver.RunAudit03SearchTests =====
+SUITE_STARTED: modTestCapacitySolver.RunAudit03SearchTests; 2026-10-02T00:19:44
+EXCEL_AFTER_SUITE: pid=14784; workingSet=127610880; privateBytes=89202688; cpu=2.34375
+OK: audit03.search.2.Bisection.1.adjacentDistinct
+OK: audit03.search.2.Bisection.1.numerical
+OK: audit03.search.2.Bisection.1.notBound
+OK: audit03.search.2.Bisection.1.noPoint
+OK: audit03.search.2.Bisection.1.noFakeLimit
+OK: audit03.search.2.Bisection.1.finiteWork
+OK: audit03.search.2.Bisection.1.reason
+COMMENT: audit03.search.2.Bisection.1; NumericalFailure; acceptable lambda=0.
+acceptable lambda=1.
+searchMethod=Bisection
+Поиск Bisection остановлен: между границами lambda нет представимого числа, а заданная точность еще не достигнута.
+retainedCapacity
+OK: audit03.search.2.Bisection.2.success
+OK: audit03.search.2.Bisection.2.accuracy
+OK: audit03.search.2.Bisection.2.bounded
+COMMENT: audit03.search.2.Bisection.2; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.
+searchMethod=Bisection
+retained lambda=119999999999999000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.; method=Bisection
+OK: audit03.search.2.Bisection.3.numerical
+OK: audit03.search.2.Bisection.3.notBound
+OK: audit03.search.2.Bisection.3.noPoint
+OK: audit03.search.2.Bisection.3.noFakeLimit
+OK: audit03.search.2.Bisection.3.finiteWork
+OK: audit03.search.2.Bisection.3.reason
+COMMENT: audit03.search.2.Bisection.3; NumericalFailure; acceptable lambda=0.
+Восстановление поиска lambda не уменьшило интервал; следующую пробу невозможно выбрать.
+retainedCapacity
+OK: audit03.search.2.Bisection.4.success
+OK: audit03.search.2.Bisection.4.maxLambda; actual=5.999999046326; expected=6.; absDiff=0.000000953674
+OK: audit03.search.2.Bisection.4.lastProbe; actual=6.; expected=6.; absDiff=0.
+COMMENT: audit03.search.2.Bisection.4; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=1.
+acceptable lambda=2.
+acceptable lambda=4.
+searchMethod=Bisection
+retained lambda=5.999999046326; method=Bisection
+OK: audit03.search.2.Brent.1.adjacentDistinct
+OK: audit03.search.2.Brent.1.numerical
+OK: audit03.search.2.Brent.1.notBound
+OK: audit03.search.2.Brent.1.noPoint
+OK: audit03.search.2.Brent.1.noFakeLimit
+OK: audit03.search.2.Brent.1.finiteWork
+OK: audit03.search.2.Brent.1.reason
+COMMENT: audit03.search.2.Brent.1; NumericalFailure; acceptable lambda=0.
+acceptable lambda=1.
+searchMethod=Brent
+Поиск Brent остановлен: между границами lambda нет представимого шага заданной точности.
+retainedCapacity
+OK: audit03.search.2.Brent.2.success
+OK: audit03.search.2.Brent.2.accuracy
+OK: audit03.search.2.Brent.2.bounded
+COMMENT: audit03.search.2.Brent.2; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.
+searchMethod=Brent
+final lambda=120000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.; method=Brent
+OK: audit03.search.2.Brent.3.numerical
+OK: audit03.search.2.Brent.3.notBound
+OK: audit03.search.2.Brent.3.noPoint
+OK: audit03.search.2.Brent.3.noFakeLimit
+OK: audit03.search.2.Brent.3.finiteWork
+OK: audit03.search.2.Brent.3.reason
+COMMENT: audit03.search.2.Brent.3; NumericalFailure; acceptable lambda=0.
+Восстановление поиска lambda не уменьшило интервал; следующую пробу невозможно выбрать.
+retainedCapacity
+OK: audit03.search.2.Brent.4.success
+OK: audit03.search.2.Brent.4.maxLambda; actual=6.; expected=6.; absDiff=0.
+OK: audit03.search.2.Brent.4.lastProbe; actual=6.; expected=6.; absDiff=0.
+COMMENT: audit03.search.2.Brent.4; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=1.
+acceptable lambda=2.
+acceptable lambda=4.
+searchMethod=Brent
+final lambda=6.; method=Brent
+OK: audit03.search.2.Secant.1.adjacentDistinct
+OK: audit03.search.2.Secant.1.numerical
+OK: audit03.search.2.Secant.1.notBound
+OK: audit03.search.2.Secant.1.noPoint
+OK: audit03.search.2.Secant.1.noFakeLimit
+OK: audit03.search.2.Secant.1.finiteWork
+OK: audit03.search.2.Secant.1.reason
+COMMENT: audit03.search.2.Secant.1; NumericalFailure; acceptable lambda=0.
+acceptable lambda=1.
+searchMethod=Secant
+secantGuard=insideBracket; rawLambda=1.; guardedLambda=1.; bracketLow=1.; bracketHigh=1.
+Поиск Secant остановлен: между границами lambda нет представимого шага заданной точности.
+retainedCapacity
+OK: audit03.search.2.Secant.2.success
+OK: audit03.search.2.Secant.2.accuracy
+OK: audit03.search.2.Secant.2.bounded
+COMMENT: audit03.search.2.Secant.2; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.
+searchMethod=Secant
+final lambda=120000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.; method=Secant
+OK: audit03.search.2.Secant.3.numerical
+OK: audit03.search.2.Secant.3.notBound
+OK: audit03.search.2.Secant.3.noPoint
+OK: audit03.search.2.Secant.3.noFakeLimit
+OK: audit03.search.2.Secant.3.finiteWork
+OK: audit03.search.2.Secant.3.reason
+COMMENT: audit03.search.2.Secant.3; NumericalFailure; acceptable lambda=0.
+Восстановление поиска lambda не уменьшило интервал; следующую пробу невозможно выбрать.
+retainedCapacity
+OK: audit03.search.2.Secant.4.success
+OK: audit03.search.2.Secant.4.maxLambda; actual=6.; expected=6.; absDiff=0.
+OK: audit03.search.2.Secant.4.lastProbe; actual=6.; expected=6.; absDiff=0.
+COMMENT: audit03.search.2.Secant.4; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=1.
+acceptable lambda=2.
+acceptable lambda=4.
+searchMethod=Secant
+final lambda=6.; method=Secant
+OK: audit03.search.3.Bisection.1.adjacentDistinct
+OK: audit03.search.3.Bisection.1.numerical
+OK: audit03.search.3.Bisection.1.notBound
+OK: audit03.search.3.Bisection.1.noPoint
+OK: audit03.search.3.Bisection.1.noFakeLimit
+OK: audit03.search.3.Bisection.1.finiteWork
+OK: audit03.search.3.Bisection.1.reason
+COMMENT: audit03.search.3.Bisection.1; NumericalFailure; acceptable lambda=0.
+acceptable lambda=1.
+searchMethod=Bisection
+Поиск Bisection остановлен: между границами lambda нет представимого числа, а заданная точность еще не достигнута.
+retainedCapacity
+OK: audit03.search.3.Bisection.2.success
+OK: audit03.search.3.Bisection.2.accuracy
+OK: audit03.search.3.Bisection.2.bounded
+COMMENT: audit03.search.3.Bisection.2; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.
+searchMethod=Bisection
+retained lambda=120000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.; method=Bisection
+OK: audit03.search.3.Bisection.3.numerical
+OK: audit03.search.3.Bisection.3.notBound
+OK: audit03.search.3.Bisection.3.noPoint
+OK: audit03.search.3.Bisection.3.noFakeLimit
+OK: audit03.search.3.Bisection.3.finiteWork
+OK: audit03.search.3.Bisection.3.reason
+COMMENT: audit03.search.3.Bisection.3; NumericalFailure; acceptable lambda=0.
+Восстановление поиска lambda не уменьшило интервал; следующую пробу невозможно выбрать.
+retainedCapacity
+OK: audit03.search.3.Bisection.4.success
+OK: audit03.search.3.Bisection.4.maxLambda; actual=6.; expected=6.; absDiff=0.
+OK: audit03.search.3.Bisection.4.lastProbe; actual=6.; expected=6.; absDiff=0.
+COMMENT: audit03.search.3.Bisection.4; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=1.
+acceptable lambda=2.
+acceptable lambda=4.
+searchMethod=Bisection
+retained lambda=6.; method=Bisection
+OK: audit03.search.3.Brent.1.adjacentDistinct
+OK: audit03.search.3.Brent.1.numerical
+OK: audit03.search.3.Brent.1.notBound
+OK: audit03.search.3.Brent.1.noPoint
+OK: audit03.search.3.Brent.1.noFakeLimit
+OK: audit03.search.3.Brent.1.finiteWork
+OK: audit03.search.3.Brent.1.reason
+COMMENT: audit03.search.3.Brent.1; NumericalFailure; acceptable lambda=0.
+acceptable lambda=1.
+searchMethod=Brent
+Поиск Brent остановлен: между границами lambda нет представимого шага заданной точности.
+retainedCapacity
+OK: audit03.search.3.Brent.2.success
+OK: audit03.search.3.Brent.2.accuracy
+OK: audit03.search.3.Brent.2.bounded
+COMMENT: audit03.search.3.Brent.2; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.
+searchMethod=Brent
+final lambda=120000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.; method=Brent
+OK: audit03.search.3.Brent.3.numerical
+OK: audit03.search.3.Brent.3.notBound
+OK: audit03.search.3.Brent.3.noPoint
+OK: audit03.search.3.Brent.3.noFakeLimit
+OK: audit03.search.3.Brent.3.finiteWork
+OK: audit03.search.3.Brent.3.reason
+COMMENT: audit03.search.3.Brent.3; NumericalFailure; acceptable lambda=0.
+Восстановление поиска lambda не уменьшило интервал; следующую пробу невозможно выбрать.
+retainedCapacity
+OK: audit03.search.3.Brent.4.success
+OK: audit03.search.3.Brent.4.maxLambda; actual=6.; expected=6.; absDiff=0.
+OK: audit03.search.3.Brent.4.lastProbe; actual=6.; expected=6.; absDiff=0.
+COMMENT: audit03.search.3.Brent.4; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=1.
+acceptable lambda=2.
+acceptable lambda=4.
+searchMethod=Brent
+final lambda=6.; method=Brent
+OK: audit03.search.3.Secant.1.adjacentDistinct
+OK: audit03.search.3.Secant.1.numerical
+OK: audit03.search.3.Secant.1.notBound
+OK: audit03.search.3.Secant.1.noPoint
+OK: audit03.search.3.Secant.1.noFakeLimit
+OK: audit03.search.3.Secant.1.finiteWork
+OK: audit03.search.3.Secant.1.reason
+COMMENT: audit03.search.3.Secant.1; NumericalFailure; acceptable lambda=0.
+acceptable lambda=1.
+searchMethod=Secant
+secantGuard=insideBracket; rawLambda=1.; guardedLambda=1.; bracketLow=1.; bracketHigh=1.
+Поиск Secant остановлен: между границами lambda нет представимого шага заданной точности.
+retainedCapacity
+OK: audit03.search.3.Secant.2.success
+OK: audit03.search.3.Secant.2.accuracy
+OK: audit03.search.3.Secant.2.bounded
+COMMENT: audit03.search.3.Secant.2; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.
+searchMethod=Secant
+final lambda=120000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.; method=Secant
+OK: audit03.search.3.Secant.3.numerical
+OK: audit03.search.3.Secant.3.notBound
+OK: audit03.search.3.Secant.3.noPoint
+OK: audit03.search.3.Secant.3.noFakeLimit
+OK: audit03.search.3.Secant.3.finiteWork
+OK: audit03.search.3.Secant.3.reason
+COMMENT: audit03.search.3.Secant.3; NumericalFailure; acceptable lambda=0.
+Восстановление поиска lambda не уменьшило интервал; следующую пробу невозможно выбрать.
+retainedCapacity
+OK: audit03.search.3.Secant.4.success
+OK: audit03.search.3.Secant.4.maxLambda; actual=6.; expected=6.; absDiff=0.
+OK: audit03.search.3.Secant.4.lastProbe; actual=6.; expected=6.; absDiff=0.
+COMMENT: audit03.search.3.Secant.4; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=1.
+acceptable lambda=2.
+acceptable lambda=4.
+searchMethod=Secant
+final lambda=6.; method=Secant
+TOTAL_AUDIT03_SEARCH: passed=114; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestCapacitySolver.RunAudit03SearchTests; 2026-10-02T00:19:45
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

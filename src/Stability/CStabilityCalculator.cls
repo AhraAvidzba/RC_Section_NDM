@@ -401,7 +401,11 @@ End Sub
 ' эксцентриситета. При отсутствии арматуры используется край бетонного контура,
 ' чтобы расчет не падал, но такая модель требует отдельной инженерной проверки.
 Private Function RebarProjectionForMoment(ByVal section As CSectionModel, ByRef plane As TPlaneResult) As Double
-    If section Is Nothing Or section.RebarCount <= 0 Then
+    If section Is Nothing Then
+        RebarProjectionForMoment = ConcreteFaceProjectionForMoment(plane)
+        Exit Function
+    End If
+    If section.RebarCount <= 0 Then
         RebarProjectionForMoment = ConcreteFaceProjectionForMoment(plane)
         Exit Function
     End If

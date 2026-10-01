@@ -69,6 +69,9 @@ Public Function RunCapacitySolverTests() As String
     TestAudit02GenericUltimateSearch stats
     AppendLine stats, "RUN: TestAudit02GenericLoadMultiplierMatrix"
     TestAudit02GenericLoadMultiplierMatrix stats
+    TestAudit03SearchArithmetic stats
+    TestAudit03RealCapacityPrecision stats
+    TestAudit03CapacityTypedFailures stats
     AppendLine stats, "RUN: TestCapacityLoadPathMethodMatrix"
     TestCapacityLoadPathMethodMatrix stats
     AppendLine stats, "RUN: TestCapacityLoadPathZeroComponentMatrix"
@@ -1927,6 +1930,219 @@ Private Sub TestAudit02GenericLoadMultiplierMatrix(ByRef stats As TCapacityTestS
     Set result = search.Execute(request)
     AssertTrue stats, "audit02.genericMultiplier.missingProblem.internal", result.Meta.InternalStatus = rsInternalError
     AssertTrue stats, "audit02.genericMultiplier.missingProblem.noPoint", Not result.HasLimitPoint
+End Sub
+
+' ============================== ДЛЯ ТЕСТОВ ==============================
+' Отдельный entrypoint для watchdog: соседние Double и нулевой bisection-budget
+' на неисправном алгоритме зависают, а не возвращают правдоподобный предел.
+Public Function RunAudit03SearchStagnation() As String
+    Dim stats As TCapacityTestStats
+    TestAudit03SearchArithmeticCase stats, "Bisection", rkCapacity, 1
+    AppendLine stats, "TOTAL_AUDIT03_STAGNATION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03SearchStagnation = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: отдельный полный прогон арифметических краев generic Search.
+Public Function RunAudit03SearchTests() As String
+    Dim stats As TCapacityTestStats
+    TestAudit03SearchArithmetic stats
+    AppendLine stats, "TOTAL_AUDIT03_SEARCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03SearchTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: проверяет настоящий Capacity с неограниченным числом делений
+' скобки и terminal typed-errors через production адаптер, не ручную meta.
+Public Function RunAudit03CapacityContracts() As String
+    Dim stats As TCapacityTestStats
+    TestAudit03RealCapacityPrecision stats
+    TestAudit03CapacityTypedFailures stats
+    AppendLine stats, "TOTAL_AUDIT03_CAPACITY_CONTRACTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03CapacityContracts = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: линейные материалы исключают неудачу внутреннего равновесия.
+' При допуске меньше шага Double поиск обязан закончиться с честной причиной,
+' а локальный cache не должен объединять разные lambda и создавать ложный предел.
+Private Sub TestAudit03RealCapacityPrecision(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder, rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, rebars)
+    Dim cap As CCapacitySolver
+    Set cap = New CCapacitySolver
+    ConfigureCapacity cap
+    cap.SearchMethod = "Bisection"
+    cap.LambdaTolerance = 0.000000000000000001
+    cap.MaxRetries = 0
+    cap.DiagnosticsEnabled = True
+    SaveAudit03SearchProgress stats, "START: audit03.capacity.realPrecision"
+    cap.SolveByLoadPathMultiplier section, LinearConcrete(), LinearSteel(), 0#, 0#, 0#, 10000000#, 0#, 0#
+    Dim result As CLimitSearchResult
+    Set result = Audit02CapacitySnapshot(cap, "LoadMultiplier")
+    AssertTrue stats, "audit03.capacity.realPrecision.numerical", result.Meta.InternalStatus = rsNumericalFailure
+    AssertTrue stats, "audit03.capacity.realPrecision.code", result.Meta.ResultCode = rcNumericalFailure
+    AssertTrue stats, "audit03.capacity.realPrecision.noPoint", Not result.HasLimitPoint
+    AssertTrue stats, "audit03.capacity.realPrecision.notBound", Not cap.SearchBoundReached
+    AssertTrue stats, "audit03.capacity.realPrecision.finiteWork", cap.Iterations > 40 And cap.Iterations < 100
+    AssertTrue stats, "audit03.capacity.realPrecision.calculated", result.Meta.Calculated
+    AssertTrue stats, "audit03.capacity.realPrecision.reason", Len(result.Meta.ResultComment) > 0
+    AppendLine stats, "COMMENT: audit03.capacity.realPrecision; " & result.Meta.ResultComment
+    AppendLine stats, "DIAGNOSTIC: " & cap.DiagnosticLog
+    SaveAudit03SearchProgress stats, "DONE: audit03.capacity.realPrecision"
+End Sub
+
+' ДЛЯ ТЕСТОВ: configuration/input/internal/singular причины проходят от
+' реального Capacity solve в Search-result без retries и назначения BaseFail
+' программной ошибке. Повторный запуск не наследует meta предыдущей задачи.
+Private Sub TestAudit03CapacityTypedFailures(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder, rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+    Dim validSection As CSectionModel
+    Set validSection = BuildGeneratedSectionModel(mesh, rebars)
+    Dim scenario As Long
+    For scenario = 1 To 6
+        Dim cap As CCapacitySolver
+        Set cap = New CCapacitySolver
+        ConfigureCapacity cap
+        cap.SearchMethod = "Bisection"
+        cap.DiagnosticsEnabled = True
+        Dim section As CSectionModel
+        Set section = validSection
+        Dim concrete As Object, steel As Object
+        Set concrete = LinearConcrete()
+        Set steel = LinearSteel()
+        Dim expectedStatus As EResultInternalStatus, expectedCode As EResultCode
+        Dim expectedFailure As ESolverFailureCode, nOffset As Double
+        nOffset = 0#
+        Select Case scenario
+            Case 1
+                cap.SolverMethod = "Invalid"
+                expectedStatus = rsInvalidConfiguration: expectedCode = rcInvalidConfiguration
+                expectedFailure = sfcInvalidConfiguration
+            Case 2
+                cap.SolverMaxIterations = 0
+                expectedStatus = rsInvalidConfiguration: expectedCode = rcInvalidConfiguration
+                expectedFailure = sfcInvalidConfiguration
+            Case 3
+                Set section = Nothing
+                expectedStatus = rsInternalError: expectedCode = rcInternalError
+                expectedFailure = sfcInternalError
+            Case 4
+                Set concrete = Nothing
+                expectedStatus = rsInternalError: expectedCode = rcInternalError
+                expectedFailure = sfcInternalError
+            Case 5
+                Set section = New CSectionModel
+                expectedStatus = rsInvalidInput: expectedCode = rcInvalidInput
+                expectedFailure = sfcInvalidInput
+            Case 6
+                Set section = New CSectionModel
+                section.AddConcreteElement 0#, 0#, 10000#, sourceName:="Singular"
+                nOffset = -100000#
+                cap.MaxRetries = 0
+                expectedStatus = rsNumericalFailure: expectedCode = rcSingularTangent
+                expectedFailure = sfcSingularTangent
+        End Select
+        Dim prefix As String
+        prefix = "audit03.capacity.typed." & CStr(scenario)
+        SaveAudit03SearchProgress stats, "START: " & prefix
+        cap.SolveByLoadPathMultiplier section, concrete, steel, nOffset, 0#, 0#, 10000000#, 0#, 0#
+        Dim result As CLimitSearchResult
+        Set result = Audit02CapacitySnapshot(cap, "LoadMultiplier")
+        AssertTrue stats, prefix & ".status", result.Meta.InternalStatus = expectedStatus
+        AssertTrue stats, prefix & ".code", result.Meta.ResultCode = expectedCode
+        AssertTrue stats, prefix & ".failure", cap.FailureCode = expectedFailure
+        AssertTrue stats, prefix & ".noRetry", cap.RetryCount = 0
+        AssertTrue stats, prefix & ".noPoint", Not result.HasLimitPoint
+        AssertTrue stats, prefix & ".notBaseFail", result.Meta.ResultCode <> rcInitialStateBeyondLimit
+        AssertTrue stats, prefix & ".reason", Len(result.Meta.ResultComment) > 0
+        If scenario <> 6 Then AssertTrue stats, prefix & ".notCalculated", Not result.Meta.Calculated
+        AppendLine stats, "COMMENT: " & prefix & "; " & result.Meta.ResultComment
+        SaveAudit03SearchProgress stats, "DONE: " & prefix
+    Next scenario
+End Sub
+
+' Проверяет соседние Double, большие положительные границы и отсутствие
+' прогресса recovery для обоих инженерных потребителей каждого 1D-метода.
+Private Sub TestAudit03SearchArithmetic(ByRef stats As TCapacityTestStats)
+    Dim kind As Variant, methodName As Variant, scenario As Long
+    For Each kind In Array(rkCapacity, rkCrackFormation)
+        For Each methodName In Array("Bisection", "Brent", "Secant")
+            For scenario = 1 To 4
+                TestAudit03SearchArithmeticCase stats, CStr(methodName), CLng(kind), scenario
+            Next scenario
+        Next methodName
+    Next kind
+End Sub
+
+' Реальная generic-задача различает невозможную точность, техническую границу,
+' точный предел на MaxLambda и ошибочный recovery без фальшивого State.
+Private Sub TestAudit03SearchArithmeticCase(ByRef stats As TCapacityTestStats, _
+        ByVal methodName As String, ByVal kind As EResultKind, ByVal scenario As Long)
+    On Error GoTo Failed
+    Dim problem As CTestLimitSearchProblem
+    Set problem = New CTestLimitSearchProblem
+    Dim prefix As String
+    prefix = "audit03.search." & CStr(kind) & "." & methodName & "." & CStr(scenario)
+    SaveAudit03SearchProgress stats, "START: " & prefix
+    Dim adjacent As Double
+    adjacent = 1# + 2# ^ (-52)
+    Select Case scenario
+        Case 1
+            AssertTrue stats, prefix & ".adjacentDistinct", adjacent > 1# And adjacent - 1# < 0.000000000000001
+            problem.Configure methodName, adjacent, 0.000000000000000001, 80, 1#, adjacent, kind
+            If methodName = "Bisection" Then problem.Configure methodName, adjacent, 0.000000000000000001, 0, 1#, adjacent, kind
+            problem.StepCriterion = True
+        Case 2
+            problem.Configure methodName, 1.2E+308, 1E+294, 120, 1E+308, 1.4E+308, kind
+        Case 3
+            problem.Configure methodName, 3#, 0.000001, 80, 1#, 6#, kind
+            problem.FailureAbove = 0.5
+            problem.RecoveryWithoutProgress = True
+        Case 4
+            problem.Configure methodName, 6#, 0.000001, 80, 1#, 6#, kind
+    End Select
+    Dim request As CLimitSearchRequest
+    Set request = New CLimitSearchRequest
+    request.InitializeWithProblem problem, kind, "LoadMultiplier", 0#, 1#, 0#, 0#, 0#, 0#
+    Dim search As CLoadMultiplierSearch
+    Set search = New CLoadMultiplierSearch
+    Dim result As CLimitSearchResult
+    Set result = search.Execute(request)
+    If scenario = 1 Or scenario = 3 Then
+        AssertTrue stats, prefix & ".numerical", result.Meta.InternalStatus = rsNumericalFailure
+        AssertTrue stats, prefix & ".notBound", result.Meta.ResultCode <> rcSearchBoundReached
+        AssertTrue stats, prefix & ".noPoint", Not result.HasLimitPoint
+        AssertTrue stats, prefix & ".noFakeLimit", result.LambdaUltimate = 0#
+        AssertTrue stats, prefix & ".finiteWork", problem.ProbeCalls <= 120
+        AssertTrue stats, prefix & ".reason", Len(result.DiagnosticLog) > 0
+    Else
+        AssertTrue stats, prefix & ".success", result.Succeeded And result.HasLimitPoint
+        If scenario = 2 Then
+            AssertTrue stats, prefix & ".accuracy", Abs(result.LambdaUltimate / 1.2E+308 - 1#) <= 0.00000000000002
+            AssertTrue stats, prefix & ".bounded", problem.ProbeMaxLambda <= 1.4E+308
+        Else
+            AssertClose stats, prefix & ".maxLambda", result.LambdaUltimate, 6#, 0.000001
+            AssertClose stats, prefix & ".lastProbe", problem.ProbeMaxLambda, 6#, 0#
+        End If
+    End If
+    AppendLine stats, "COMMENT: " & prefix & "; " & result.Meta.ResultComment & "; " & result.DiagnosticLog
+    SaveAudit03SearchProgress stats, "DONE: " & prefix
+    Exit Sub
+Failed:
+    AssertTrue stats, prefix & ".runtime." & CStr(Err.Number) & "." & Err.Description, False
+    SaveAudit03SearchProgress stats, "FAILED: " & prefix
+End Sub
+
+' ДЛЯ ТЕСТОВ: сохраняет уже выполненные assertions до следующего COM-шага.
+' При модальной ошибке или watchdog виден конкретный случай, а не только suite.
+Private Sub SaveAudit03SearchProgress(ByRef stats As TCapacityTestStats, ByVal stage As String)
+    Dim fileNumber As Integer
+    fileNumber = FreeFile
+    Open ThisWorkbook.Path & "\Audit03_Search_Progress.txt" For Output As #fileNumber
+    Print #fileNumber, stats.Report
+    Print #fileNumber, stage
+    Close #fileNumber
 End Sub
 
 

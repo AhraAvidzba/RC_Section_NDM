@@ -1,0 +1,25 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_f06_fixed.xlsm
+SOURCE_SHA256: 343D422B44623170945013C90A5D654815AD72899582F6BA9AB6C69EFE8FAE71
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f26b3a7e70d34b4d807692197d4fa878\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestCapacitySolver.RunAudit03SearchStagnation =====
+SUITE_STARTED: modTestCapacitySolver.RunAudit03SearchStagnation; 2026-10-02T00:05:05
+EXCEL_AFTER_SUITE: pid=12536; workingSet=127135744; privateBytes=87023616; cpu=2.421875
+OK: audit03.search.2.Bisection.1.adjacentDistinct
+OK: audit03.search.2.Bisection.1.numerical
+OK: audit03.search.2.Bisection.1.notBound
+OK: audit03.search.2.Bisection.1.noPoint
+OK: audit03.search.2.Bisection.1.noFakeLimit
+OK: audit03.search.2.Bisection.1.finiteWork
+OK: audit03.search.2.Bisection.1.reason
+COMMENT: audit03.search.2.Bisection.1; NumericalFailure; acceptable lambda=0.
+acceptable lambda=1.
+searchMethod=Bisection
+Поиск Bisection остановлен: между границами lambda нет представимого числа, а заданная точность еще не достигнута.
+retainedCapacity
+TOTAL_AUDIT03_STAGNATION: passed=7; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestCapacitySolver.RunAudit03SearchStagnation; 2026-10-02T00:05:05
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=; source unchanged=True

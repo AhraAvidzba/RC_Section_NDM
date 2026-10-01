@@ -1,0 +1,7 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_f06_fixed.xlsm
+SOURCE_SHA256: 343D422B44623170945013C90A5D654815AD72899582F6BA9AB6C69EFE8FAE71
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_aa810420affc414f9c477d373ea369d0\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestCapacitySolver.RunAudit03SearchTests =====
+SUITE_STARTED: modTestCapacitySolver.RunAudit03SearchTests; 2026-10-02T00:05:29
+WATCHDOG_FAILURE: timeout=120 sec; macro=modTestCapacitySolver.RunAudit03SearchTests; test Excel terminated

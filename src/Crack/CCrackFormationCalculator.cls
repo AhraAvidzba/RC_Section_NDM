@@ -199,9 +199,12 @@ Public Property Get ResultMeta() As CResultMeta
     Dim meta As CResultMeta
     Set meta = New CResultMeta
     If mFormationInternalStatus = rsUnset Then
-        meta.SetResult rsInternalError, rcInternalError, rkCrackFormation, "Результат образования трещины не заполнен."
+        meta.SetResult rsInternalError, rcInternalError, rkCrackFormation, "Результат образования трещины не заполнен.", _
+            vbNullString, True, False
     Else
-        meta.SetResult mFormationInternalStatus, mFormationResultCode, rkCrackFormation, mStopReason
+        meta.SetResult mFormationInternalStatus, mFormationResultCode, rkCrackFormation, mStopReason, _
+            vbNullString, True, (mSolverCallCount > 0 Or mFormationInternalStatus = rsSuccess Or _
+                mFormationInternalStatus = rsSuccessWithWarning)
     End If
     Set ResultMeta = meta
 End Property
@@ -983,7 +986,8 @@ Private Function FormationSearchStoppedTerminally() As Boolean
         mFormationPathFallbackPsi1 Or _
         (mFormationInternalStatus = rsCheckFailed) Or _
         (mFormationInternalStatus = rsInvalidInput) Or _
-        (mFormationInternalStatus = rsInvalidConfiguration)
+        (mFormationInternalStatus = rsInvalidConfiguration) Or _
+        (mFormationInternalStatus = rsInternalError)
 End Function
 
 
@@ -1424,6 +1428,7 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
     End If
     Set solver = SolveState(section, concreteMaterial, steelMaterial, effectiveStart, _
         probeN, probeMx, probeMy, True)
+    If FormationSearchStoppedTerminally() Then Exit Function
     If SolverFormationResidual(section, solver, residual) Then
         If FormationProbeBlockedByPhysicalLimit(section, solver, concreteMaterial, steelMaterial, residual) Then Exit Function
         AppendLoadScalingProbeDiagnostic lambdaValue, residual, True
@@ -1438,6 +1443,7 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
     If Not effectiveStart Is Nothing Then
         Set solver = SolveState(section, concreteMaterial, steelMaterial, Nothing, _
             probeN, probeMx, probeMy, True)
+        If FormationSearchStoppedTerminally() Then Exit Function
         If SolverFormationResidual(section, solver, residual) Then
             If FormationProbeBlockedByPhysicalLimit(section, solver, concreteMaterial, steelMaterial, residual) Then Exit Function
             AppendLoadScalingProbeDiagnostic lambdaValue, residual, True
@@ -1457,6 +1463,7 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
         If Not probeGuess Is Nothing Then
             Set solver = SolveState(section, concreteMaterial, steelMaterial, probeGuess, _
                 probeN, probeMx, probeMy, True)
+            If FormationSearchStoppedTerminally() Then Exit Function
             ProbeLoadScalingFormation = SolverFormationResidual(section, solver, residual)
             If ProbeLoadScalingFormation Then
                 If FormationProbeBlockedByPhysicalLimit(section, solver, concreteMaterial, steelMaterial, residual) Then
@@ -1467,8 +1474,10 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
             End If
         End If
     End If
-    If Not ProbeLoadScalingFormation Then _
+    If Not ProbeLoadScalingFormation Then
+        CaptureFormationSolverFailure solver
         AppendLoadScalingProbeDiagnostic lambdaValue, 0#, False
+    End If
 End Function
 
 
@@ -1637,7 +1646,12 @@ End Sub
 Private Sub SetFormationNumericalFailure(ByVal reason As String)
     ' Последующая неудачная проба не отменяет уже подтвержденный физический
     ' отказ на этом пути. Новая Auto-попытка очищает статус самостоятельно.
-    If mFormationInternalStatus = rsCheckFailed Then Exit Sub
+    If mFormationInternalStatus = rsCheckFailed Or mFormationInternalStatus = rsInvalidInput Or _
+            mFormationInternalStatus = rsInvalidConfiguration Or mFormationInternalStatus = rsInternalError Then Exit Sub
+    If mFormationInternalStatus = rsNumericalFailure And mFormationResultCode = rcSingularTangent Then
+        AppendDiagnostic reason
+        Exit Sub
+    End If
     mConverged = False
     mCrackFormed = False
     SetFormationResult rsNumericalFailure, rcNumericalFailure, reason
@@ -1751,7 +1765,31 @@ Private Function SolveState(ByVal section As CSectionModel, ByVal concreteMateri
     End If
     If Len(runner.DiagnosticLog) > 0 Then AppendDiagnostic runner.DiagnosticLog
     Set SolveState = runner.ResultSolver
+    If runner.ResultSolver Is Nothing Then
+        CaptureFormationSolverFailure Nothing
+    Else
+        Select Case runner.ResultSolver.FailureCode
+            Case sfcInvalidInput, sfcInvalidConfiguration, sfcInternalError
+                CaptureFormationSolverFailure runner.ResultSolver
+        End Select
+    End If
 End Function
+
+' Сохраняет машинную причину неуспешной state-пробы. Вызов после исчерпания
+' численных стартов сохраняет singular tangent отдельно; terminal ошибки
+' фиксируются сразу и не заменяются последующими generic сообщениями Search.
+Private Sub CaptureFormationSolverFailure(ByVal solver As CSectionSolver)
+    mConverged = False
+    mCrackFormed = False
+    If solver Is Nothing Then
+        SetFormationResult rsInternalError, rcSolverDidNotReturnState, "Поиск трещинообразования не получил результат решателя НДС."
+        Exit Sub
+    End If
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    meta.SetSolverFailure solver.FailureCode, rkCrackFormation, solver.StopReason, (solver.Iterations > 0)
+    SetFormationResult meta.InternalStatus, meta.ResultCode, meta.ResultComment
+End Sub
 
 
 
@@ -2060,13 +2098,7 @@ End Function
 ' рабочий Formation-контекст после создания этого снимка.
 Public Function BuildSearchSnapshot(ByVal requestedStrategy As String) As CLimitSearchResult
     Dim meta As CResultMeta
-    Set meta = New CResultMeta
-    If mFormationInternalStatus = rsUnset Then
-        meta.SetResult rsInternalError, rcInternalError, rkCrackFormation, _
-            "Поиск образования трещины завершен без машинного статуса результата."
-    Else
-        meta.SetResult mFormationInternalStatus, mFormationResultCode, rkCrackFormation, mStopReason
-    End If
+    Set meta = ResultMeta
     Dim nValue As Double, mxValue As Double, myValue As Double
     If HasLimitPoint Then PointLoads nValue, mxValue, myValue
     Dim result As CLimitSearchResult
@@ -2380,6 +2412,13 @@ Private Function ExecuteAutoCrackFormation(ByVal request As CLimitSearchRequest)
                 Exit Function
             End If
         Else
+            If lastResult.Meta.InternalStatus = rsInvalidInput Or _
+                    lastResult.Meta.InternalStatus = rsInvalidConfiguration Or _
+                    lastResult.Meta.InternalStatus = rsInternalError Then
+                LimitSearchSetCurrentFormationPath savedPath
+                Set ExecuteAutoCrackFormation = lastResult
+                Exit Function
+            End If
             lastStopReason = mStopReason
             warningHistory = warningHistory & CrackFormationPathDisplayName() & ": " & lastStopReason & " "
             AppendDiagnostic "Auto-путь: " & _

@@ -49,7 +49,7 @@ End Function
 Private Function ContractFailure(ByVal request As CLimitSearchRequest, ByVal reason As String) As CLimitSearchResult
     Dim meta As CResultMeta
     Set meta = New CResultMeta
-    meta.SetResult rsInternalError, rcInternalError, request.ResultKind, reason
+    meta.SetResult rsInternalError, rcInternalError, request.ResultKind, reason, vbNullString, True, False
     Dim result As CLimitSearchResult
     Set result = New CLimitSearchResult
     result.Initialize meta, request.SolutionStrategy, vbNullString, False, 0#, 0#, 0#, 0#, _
@@ -60,12 +60,12 @@ End Function
 ' Решает начальную точку, находит скобку и запускает выбранный численный метод.
 ' Здесь нет проверки вида Capacity/Crack, нагрузки текущего LC или psi.
 Private Sub RunSearch(ByVal request As CLimitSearchRequest, ByVal loadPath As CLoadPathVector)
+    If Not ValidateSearchSettings(request) Then Exit Sub
     Dim lowLambda As Double, highLambda As Double
     Dim lowSolver As CSectionSolver, highSolver As CSectionSolver
     Dim functionValue As Double, probeState As String
     lowLambda = 0#
     highLambda = request.Problem.InitialLambdaStep
-    If highLambda <= 0# Then highLambda = 1#
 
     If Not request.Problem.EvaluatePoint(request, loadPath, Nothing, lowLambda, _
             functionValue, probeState, lowSolver) Then
@@ -83,12 +83,28 @@ Private Sub RunSearch(ByVal request As CLimitSearchRequest, ByVal loadPath As CL
     If Not request.Problem.Converged Then request.Problem.TryFinalizeAfterSearchFailure request
 End Sub
 
+' Проверяет численный диапазон до проб и арифметики. Нулевой bisection-budget
+' означает уточнение до заданной точности с обязательным контролем прогресса.
+Private Function ValidateSearchSettings(ByVal request As CLimitSearchRequest) As Boolean
+    If Not IsFiniteNumber(request.Problem.InitialLambdaStep) Or _
+            Not IsFiniteNumber(request.Problem.MaxLambda) Or _
+            Not IsFiniteNumber(request.Problem.LambdaTolerance) Then
+        request.Problem.SetInvalidInput "Границы и допуск поиска lambda должны быть конечными числами."
+    ElseIf request.Problem.InitialLambdaStep <= 0# Or request.Problem.MaxLambda <= 0# Or _
+            request.Problem.LambdaTolerance <= 0# Then
+        request.Problem.SetInvalidInput "Начальный шаг, MaxLambda и допуск lambda должны быть положительными."
+    Else
+        ValidateSearchSettings = True
+    End If
+End Function
+
 ' Единое расширение скобки: допустимая проба сдвигает нижнюю границу,
 ' достигнутый критерий задает верхнюю, а численная неудача требует recovery.
 ' Последняя проба всегда выполняется на MaxLambda, без пропуска хвоста интервала.
 Private Function FindBracket(ByVal request As CLimitSearchRequest, ByVal loadPath As CLoadPathVector, _
         ByRef lowLambda As Double, ByRef lowSolver As CSectionSolver, _
         ByRef highLambda As Double, ByRef highSolver As CSectionSolver) As Boolean
+    On Error GoTo ArithmeticFailed
     Dim functionValue As Double, probeState As String
     Dim evaluated As Boolean, reducedLambda As Double
     highLambda = MinDouble(highLambda, request.Problem.MaxLambda)
@@ -98,7 +114,12 @@ Private Function FindBracket(ByVal request As CLimitSearchRequest, ByVal loadPat
         If Not evaluated Or request.Problem.IsNumericalFailureState(probeState) Then
             If request.Problem.StoppedTerminally Then Exit Function
             reducedLambda = request.Problem.ReduceLambdaAfterNumericalFailure(lowLambda, highLambda, probeState)
-            If reducedLambda <= lowLambda Or reducedLambda - lowLambda <= request.Problem.LambdaTolerance Then
+            If Not IsFiniteNumber(reducedLambda) Or reducedLambda <= lowLambda Or reducedLambda >= highLambda Then
+                request.Problem.SetNumericalFailure _
+                    "Восстановление поиска lambda не уменьшило интервал; следующую пробу невозможно выбрать."
+                Exit Function
+            End If
+            If reducedLambda - lowLambda <= request.Problem.LambdaTolerance Then
                 request.Problem.HandleBracketNumericalFailure lowLambda, highLambda, probeState
                 Exit Function
             End If
@@ -113,13 +134,24 @@ Private Function FindBracket(ByVal request As CLimitSearchRequest, ByVal loadPat
             If highLambda >= request.Problem.MaxLambda Then Exit Do
             ' Успешная проба дает более близкий warm-start. Несошедшаяся
             ' нагрузка не является физической границей: повторяем расширение.
-            highLambda = MinDouble(2# * highLambda, request.Problem.MaxLambda)
+            If highLambda >= request.Problem.MaxLambda / 2# Then
+                highLambda = request.Problem.MaxLambda
+            Else
+                highLambda = 2# * highLambda
+            End If
+            If highLambda <= lowLambda Then
+                request.Problem.SetNumericalFailure "Расширение интервала lambda остановилось из-за машинной точности."
+                Exit Function
+            End If
         Else
             request.Problem.HandleUnexpectedState probeState
             Exit Function
         End If
     Loop
     request.Problem.HandleBracketNotFound lowLambda
+    Exit Function
+ArithmeticFailed:
+    request.Problem.SetNumericalFailure "Не удалось продолжить численный поиск lambda: " & Err.Description
 End Function
 
 ' Запускает выбранный одномерный метод внутри уже найденной физической скобки.
@@ -165,7 +197,12 @@ Private Function SearchByBisectionCore(ByVal request As CLimitSearchRequest, _
         Dim probeState As String
         Dim startSolver As CSectionSolver
 
-        midLambda = (lowLambda + highLambda) / 2#
+        midLambda = SafeMidpoint(lowLambda, highLambda)
+        If midLambda <= lowLambda Or midLambda >= highLambda Then
+            request.Problem.SetNumericalFailure _
+                "Поиск Bisection остановлен: между границами lambda нет представимого числа, а заданная точность еще не достигнута."
+            Exit Function
+        End If
         Set startSolver = PreferredBisectionStartSolver(lowSolver, highSolver)
         If Not EvaluateBisectionPoint(request, loadPath, startSolver, midLambda, _
                 midResidual, probeState, midSolver) Then
@@ -230,7 +267,7 @@ Private Sub SearchByBrent(ByVal request As CLimitSearchRequest, _
     e = d
 
     For iter = 1 To maxIterations
-        If fb * fc > 0# Then
+        If Sgn(fb) = Sgn(fc) Then
             c = a
             fc = fa
             stateC = stateA
@@ -245,31 +282,18 @@ Private Sub SearchByBrent(ByVal request As CLimitSearchRequest, _
 
         Dim tol As Double
         Dim xm As Double
-        tol = MaxDouble(tolerance / 2#, 0.000000000001 * Abs(b))
+        tol = tolerance / 2#
         xm = (c - b) / 2#
-        If Abs(xm) <= tol Then
+        If fb = 0# Or Abs(c - b) <= tolerance Then
             FinalizeAfterProbe request, loadPath, b, "Brent"
             Exit Sub
         End If
 
         If Abs(e) >= tol And Abs(fa) > Abs(fb) Then
-            Dim s As Double, p As Double, q As Double
-            Dim r As Double
-            s = fb / fa
-            If a = c Then
-                p = 2# * xm * s
-                q = 1# - s
-            Else
-                q = fa / fc
-                r = fb / fc
-                p = s * (2# * xm * q * (q - r) - (b - a) * (r - 1#))
-                q = (q - 1#) * (r - 1#) * (s - 1#)
-            End If
-            If p > 0# Then q = -q
-            p = Abs(p)
-            If 2# * p < MinDouble(3# * xm * q - Abs(tol * q), Abs(e * q)) Then
+            Dim interpolatedStep As Double
+            If TryBrentStep(a, b, c, fa, fb, fc, xm, tol, e, interpolatedStep) Then
                 e = d
-                d = p / q
+                d = interpolatedStep
             Else
                 d = xm
                 e = d
@@ -282,21 +306,68 @@ Private Sub SearchByBrent(ByVal request As CLimitSearchRequest, _
         a = b
         fa = fb
         stateA = stateB
-        If Abs(d) > tol Then
-            b = b + d
-        Else
-            b = b + Sgn(xm) * tol
-        End If
-        If b <= lowLambda Or b >= highLambda Or Not IsFiniteNumber(b) Then
+        Dim candidate As Double
+        If Not TryBrentCandidate(b, c, d, tol, xm, candidate) Then
             request.Problem.SetNumericalFailure _
-                "Пробная точка Brent вышла за физическую скобку."
+                "Поиск Brent остановлен: между границами lambda нет представимого шага заданной точности."
             Exit Sub
         End If
+        b = candidate
         If Not EvaluateLimitFunction(request, loadPath, b, fb, stateB) Then Exit Sub
     Next iter
 
     request.Problem.SetNumericalFailure "Поиск Brent достиг лимита итераций."
 End Sub
+
+' Вычисляет штатную интерполяцию Brent только при безопасной арифметике.
+' Переполнение или вырождение отношения отвергает интерполяцию, а не скобку:
+' вызывающий алгоритм продолжает обычным бисекционным шагом.
+Private Function TryBrentStep(ByVal a As Double, ByVal b As Double, ByVal c As Double, _
+        ByVal fa As Double, ByVal fb As Double, ByVal fc As Double, ByVal xm As Double, _
+        ByVal tol As Double, ByVal previousStep As Double, ByRef result As Double) As Boolean
+    On Error GoTo UnsafeInterpolation
+    Dim s As Double, p As Double, q As Double, r As Double
+    If fa = 0# Or fc = 0# Then Exit Function
+    s = fb / fa
+    If a = c Then
+        p = 2# * xm * s
+        q = 1# - s
+    Else
+        q = fa / fc
+        r = fb / fc
+        p = s * (2# * xm * q * (q - r) - (b - a) * (r - 1#))
+        q = (q - 1#) * (r - 1#) * (s - 1#)
+    End If
+    If q = 0# Then Exit Function
+    If p > 0# Then q = -q
+    p = Abs(p)
+    If 2# * p >= MinDouble(3# * xm * q - Abs(tol * q), Abs(previousStep * q)) Then Exit Function
+    result = p / q
+    TryBrentStep = IsFiniteNumber(result)
+UnsafeInterpolation:
+End Function
+
+' Удерживает следующий шаг Brent внутри текущей, а не исходной скобки.
+' Если сложение или минимальный шаг не представимы, пробует безопасную середину.
+Private Function TryBrentCandidate(ByVal current As Double, ByVal opposite As Double, _
+        ByVal delta As Double, ByVal tol As Double, ByVal direction As Double, _
+        ByRef candidate As Double) As Boolean
+    On Error GoTo UseMidpoint
+    If Abs(delta) > tol Then
+        candidate = current + delta
+    Else
+        candidate = current + Sgn(direction) * tol
+    End If
+    If IsFiniteNumber(candidate) Then
+        If candidate > MinDouble(current, opposite) And candidate < MaxDouble(current, opposite) Then
+            TryBrentCandidate = True
+            Exit Function
+        End If
+    End If
+UseMidpoint:
+    candidate = SafeMidpoint(current, opposite)
+    TryBrentCandidate = candidate > MinDouble(current, opposite) And candidate < MaxDouble(current, opposite)
+End Function
 
 ' Метод секущих: строит следующую lambda по двум предыдущим значениям функции,
 ' но дополнительно удерживает точку внутри физической скобки.
@@ -342,27 +413,12 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
             FinalizeKnownProbe request, loadPath, bracketLow, vbNullString, "Secant", bracketLowSolver, iter
             Exit Sub
         End If
-        If Abs(f1 - f0) <= 0.000000000001 Then
-            request.Problem.SetNumericalFailure _
-                "Поиск Secant остановлен: значения целевой функции слишком близки."
-            Exit Sub
-        End If
-
-        x2 = x1 - f1 * (x1 - x0) / (f1 - f0)
-        If Not IsFiniteNumber(x2) Then
-            request.Problem.SetNumericalFailure _
-                "Поиск Secant получил NaN или переполнение."
-            Exit Sub
-        End If
+        If Not TrySecantCandidate(x0, x1, f0, f1, x2) Then x2 = SafeMidpoint(bracketLow, bracketHigh)
         x2 = GuardSecantCandidate(request, x2, x1, bracketLow, bracketHigh)
+        If x2 = x1 Then x2 = SafeMidpoint(bracketLow, bracketHigh)
         If x2 <= bracketLow Or x2 >= bracketHigh Or Not IsFiniteNumber(x2) Then
             request.Problem.SetNumericalFailure _
-                "Пробная точка Secant вышла за физическую скобку."
-            Exit Sub
-        End If
-        If Abs(x2 - x1) <= 0.000000000001 Then
-            request.Problem.SetNumericalFailure _
-                "Поиск Secant застрял: новая lambda почти не отличается от предыдущей."
+                "Поиск Secant остановлен: между границами lambda нет представимого шага заданной точности."
             Exit Sub
         End If
 
@@ -390,6 +446,22 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
 
     request.Problem.SetNumericalFailure "Поиск Secant достиг лимита итераций."
 End Sub
+
+' Нормирует значения функции перед разностью, чтобы сумма больших величин
+' противоположных знаков не переполнилась. Не меняет критерий точности;
+' небезопасная интерполяция заменяется шагом внутри подтвержденной скобки.
+Private Function TrySecantCandidate(ByVal x0 As Double, ByVal x1 As Double, _
+        ByVal f0 As Double, ByVal f1 As Double, ByRef candidate As Double) As Boolean
+    On Error GoTo UnsafeInterpolation
+    Dim functionScale As Double, denominator As Double
+    functionScale = MaxDouble(Abs(f0), Abs(f1))
+    If functionScale = 0# Then Exit Function
+    denominator = f1 / functionScale - f0 / functionScale
+    If denominator = 0# Then Exit Function
+    candidate = x1 - (f1 / functionScale) * (x1 - x0) / denominator
+    TrySecantCandidate = IsFiniteNumber(candidate)
+UnsafeInterpolation:
+End Function
 
 ' Фиксирует исчерпание итераций bisection как численную неудачу, если скобка
 ' все еще шире заданного допуска. Иначе search мог бы выдать недоточненную
@@ -460,6 +532,7 @@ End Function
 ' ошибка относится только к пробе без подтвержденного равновесия.
 Private Sub HandleBisectionEvaluationFailure(ByVal request As CLimitSearchRequest, _
         ByVal lambdaValue As Double)
+    If request.Problem.StoppedTerminally Then Exit Sub
     request.Problem.SetNumericalFailure _
         "Не удалось найти равновесие при lambda = " & _
         FormatNumberInvariant(lambdaValue) & " в поиске предельной точки."
@@ -541,13 +614,13 @@ Private Function GuardSecantCandidate(ByVal request As CLimitSearchRequest, _
 
     If rawCandidate <= bracketLow Then
         If currentLambda > bracketLow And currentLambda < bracketHigh Then
-            GuardSecantCandidate = (currentLambda + bracketLow) / 2#
+            GuardSecantCandidate = SafeMidpoint(bracketLow, currentLambda)
         Else
             GuardSecantCandidate = bracketLow + 0.25 * (bracketHigh - bracketLow)
         End If
     ElseIf rawCandidate >= bracketHigh Then
         If currentLambda > bracketLow And currentLambda < bracketHigh Then
-            GuardSecantCandidate = (currentLambda + bracketHigh) / 2#
+            GuardSecantCandidate = SafeMidpoint(currentLambda, bracketHigh)
         Else
             GuardSecantCandidate = bracketLow + 0.75 * (bracketHigh - bracketLow)
         End If
@@ -582,13 +655,23 @@ End Sub
 ' Проверяет, что число конечно и пригодно для дальнейшей арифметики.
 Private Function IsFiniteNumber(ByVal value As Double) As Boolean
     If value <> value Then Exit Function
-    If Abs(value) > 1E+100 Then Exit Function
+    If Abs(value) > 1.797693134862315E+308 Then Exit Function
     IsFiniteNumber = True
+End Function
+
+' Середина неотрицательных lambda-границ без переполнения их суммы.
+' Порядок аргументов может быть обратным в локальной скобке Brent.
+Private Function SafeMidpoint(ByVal first As Double, ByVal second As Double) As Double
+    SafeMidpoint = first + (second - first) / 2#
 End Function
 
 ' Форматирует число для диагностического журнала с точкой как разделителем.
 Private Function FormatNumberInvariant(ByVal value As Double) As String
-    FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
+    If value <> 0# And (Abs(value) < 0.000000001 Or Abs(value) > 1000000000000#) Then
+        FormatNumberInvariant = Replace$(Format$(value, "0.############E+00"), ",", ".")
+    Else
+        FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
+    End If
 End Function
 
 ' Утилитарный минимум без WorksheetFunction в расчетном ядре.

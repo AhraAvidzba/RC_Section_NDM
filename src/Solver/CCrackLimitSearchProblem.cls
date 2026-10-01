@@ -215,7 +215,7 @@ End Function
 
 Private Function ILimitSearchProblem_ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, _
         ByVal highLambda As Double, ByVal probeState As String) As Double
-    ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = 0.5 * (lowLambda + highLambda)
+    ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = lowLambda + (highLambda - lowLambda) / 2#
 End Function
 
 Private Sub ILimitSearchProblem_RecordAcceptable(ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double)

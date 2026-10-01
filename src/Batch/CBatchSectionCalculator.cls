@@ -1251,14 +1251,16 @@ Private Function MissingCurrentCrackedStateMeta(ByVal runner As CStateSolutionRu
     If Not runner Is Nothing Then
         If Not runner.ResultSolver Is Nothing Then
             If Not runner.ResultSolver.Converged Then
-                meta.SetResult rsNumericalFailure, rcNumericalFailure, rkDirectState, blockReason
+                meta.SetSolverFailure runner.ResultSolver.FailureCode, rkDirectState, blockReason, _
+                    (runner.ResultSolver.Iterations > 0)
                 Set MissingCurrentCrackedStateMeta = meta
                 Exit Function
             End If
         End If
     End If
 
-    meta.SetResult rsInternalError, rcSolverDidNotReturnState, rkDirectState, blockReason
+    meta.SetResult rsInternalError, rcSolverDidNotReturnState, rkDirectState, blockReason, _
+        vbNullString, True, False
     Set MissingCurrentCrackedStateMeta = meta
 End Function
 

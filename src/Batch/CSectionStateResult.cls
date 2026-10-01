@@ -220,7 +220,7 @@ Public Property Get ResultMeta() As CResultMeta
         Dim missing As CResultMeta
         Set missing = New CResultMeta
         missing.SetResult rsInternalError, rcInternalError, ResultKindFromStateType(mStateType), _
-            "Расчетное состояние не заполнено."
+            "Расчетное состояние не заполнено.", vbNullString, True, False
         Set ResultMeta = missing
     Else
         Set ResultMeta = mResultMeta.Clone
@@ -387,23 +387,8 @@ Private Function BuildFailureMeta(ByVal stateType As ESectionStateType, ByVal so
         ByVal resultComment As String) As CResultMeta
     Dim meta As CResultMeta
     Set meta = New CResultMeta
-    Dim internalStatus As EResultInternalStatus
-    Dim resultCode As EResultCode
-    Select Case solver.FailureCode
-        Case sfcInvalidInput
-            internalStatus = rsInvalidInput: resultCode = rcInvalidInput
-        Case sfcInvalidConfiguration
-            internalStatus = rsInvalidConfiguration: resultCode = rcInvalidConfiguration
-        Case sfcSingularTangent
-            internalStatus = rsNumericalFailure: resultCode = rcSingularTangent
-        Case sfcNumericalFailure
-            internalStatus = rsNumericalFailure: resultCode = rcNumericalFailure
-        Case Else
-            internalStatus = rsInternalError: resultCode = rcInternalError
-            If Len(Trim$(resultComment)) = 0 Then resultComment = "Решатель не сформировал результат равновесия."
-    End Select
-    meta.SetResult internalStatus, resultCode, ResultKindFromStateType(stateType), resultComment, _
-        vbNullString, True, (solver.Iterations > 0)
+    meta.SetSolverFailure solver.FailureCode, ResultKindFromStateType(stateType), _
+        resultComment, (solver.Iterations > 0)
     Set BuildFailureMeta = meta
 End Function
 

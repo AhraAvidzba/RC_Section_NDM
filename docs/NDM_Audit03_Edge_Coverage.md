@@ -1,6 +1,6 @@
 # NDM Audit03: Матрица Краевых Случаев
 
-Статус: первичный план, runtime-покрытие Audit03 еще не подтверждено.
+Статус: directed runtime evidence частично получен; полная нагрузочная матрица еще не выполнена.
 Baseline: `df10412f0e0baf918f5e97cbc87b6bf16c3d4cae`.
 
 ## Уровни
@@ -58,10 +58,18 @@ leaf/subtree meta и фактические ResultComment. Проверять ч
 | L11 | Offset lambda=0 acceptable/boundary/beyond, fixed-N и другие paths | не начато |
 | L12 | Formation fixed/Auto, crack in constant part, warnings/fallback | не начато |
 | L13 | CriterionNotReached vs SearchBoundReached, последний интервал/MaxLambda | не начато |
-| L14 | Adjacent Double/huge bounds/tiny tolerance/overflow/stagnation/watchdog | не начато |
+| L14 | Adjacent Double/huge bounds/tiny tolerance/overflow/stagnation/watchdog | generic 114/0 и real Capacity 58 probes; весь high-risk набор еще не завершен |
 | L15 | Sigma_s,crc sign/zero/averaging, Psi modes/upper bound | не начато |
 | L16 | Reorder/repeat/overload-normal-switch, lifecycle/meta/comment isolation | не начато |
-| L17 | Invalid input/config/missing dependencies, no accidental OK/NumFail | не начато |
+| L17 | Invalid input/config/missing dependencies, no accidental OK/NumFail | provider/state 73/0, Capacity contracts 54/0, Formation four-path config 64/0; полная output/shape матрица впереди |
+
+## Полученные Directed Evidence
+
+- `f06_arithmetic_positive_v4_2026-10-02.txt`: 2 generic result kinds x 3 methods x 4 arithmetic scenarios, 114 assertions; baseline stagnation подтверждена watchdog timeout.
+- `f03_f06_capacity_positive_v6_2026-10-02.txt`: real precision case и 6 typed failure scenarios, 54 assertions; precision case заканчивается честным NumFail без fictitious limit point.
+- `f03_formation_positive_v7_2026-10-02.txt`: все четыре пути x 2 terminal configuration errors, 64 assertions. Это проверка ошибок настройки, не замена полного нагрузочного перебора этих путей.
+- `f04_lifecycle_positive_v8_2026-10-02.txt`: 172 assertions флагов/снимков/фабрик; не заменяет reorder/repeat расчетов с реальными нагрузками.
+- `f01_f07_full_off_v8_2026-10-02.txt`: 7289/0 по всем восьми suites. Счетчик assertions не равен числу независимых инженерных случаев.
 
 Конкретные параметры, test-ID, число независимых кейсов/вариантов/assertions,
 логи и обоснованные неприменимые комбинации будут добавляться по мере реализации.

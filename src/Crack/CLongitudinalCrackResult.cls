@@ -33,7 +33,7 @@ Public Sub Initialize(ByVal meta As CResultMeta, ByVal maxCompressionStress As D
         ByVal rbMc2 As Double, ByVal utilization As Double)
     If meta Is Nothing Then
         mMeta.SetResult rsInternalError, rcInternalError, rkLongitudinalCrack, _
-            "Meta результата продольных трещин не сформирована."
+            "Meta результата продольных трещин не сформирована.", vbNullString, True, False
     Else
         Set mMeta = meta.Clone
     End If

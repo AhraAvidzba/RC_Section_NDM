@@ -119,7 +119,7 @@ End Sub
 ' несущей способности. Для Capacity такая связка отображается как BaseFail.
 Public Sub InitializeBaseFail(ByVal reason As String, _
         Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
-    InitializeEarlyResult rsCheckFailed, rcInitialStateBeyondLimit, NormalizeBaseFailReason(reason), pathKey
+    InitializeEarlyResult rsCheckFailed, rcInitialStateBeyondLimit, NormalizeBaseFailReason(reason), pathKey, True
 End Sub
 
 ' Убирает старые технические формулировки из пользовательского BaseFail.
@@ -137,13 +137,13 @@ End Function
 ' Общая запись раннего capacity-result без обратного маппинга из display-строки.
 Private Sub InitializeEarlyResult(ByVal internalStatus As EResultInternalStatus, _
         ByVal resultCode As EResultCode, ByVal reason As String, _
-        ByVal pathKey As String)
+        ByVal pathKey As String, Optional ByVal calculated As Boolean = False)
     ResetNumericSnapshot
     mLimitState = reason
     mSolutionMethod = vbNullString
     mPathResolved = pathKey
     Set mResultMeta = New CResultMeta
-    mResultMeta.SetResult internalStatus, resultCode, rkCapacity, reason
+    mResultMeta.SetResult internalStatus, resultCode, rkCapacity, reason, vbNullString, True, calculated
 
 End Sub
 

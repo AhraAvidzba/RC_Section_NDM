@@ -237,9 +237,14 @@ Public Function BuildSnapshot(ByVal requestedStrategy As String, _
     Dim meta As CResultMeta
     Set meta = New CResultMeta
     If mCapacity Is Nothing Then
-        meta.SetResult rsInternalError, rcInternalError, rkCapacity, "Не передана задача несущей способности."
+        meta.SetResult rsInternalError, rcInternalError, rkCapacity, "Не передана задача несущей способности.", vbNullString, True, False
     ElseIf mCapacity.Converged Then
         meta.SetResult rsSuccess, rcCheckPassed, rkCapacity, mCapacity.LimitState
+    ElseIf mCapacity.FailureCode = sfcInvalidConfiguration Then
+        meta.SetResult rsInvalidConfiguration, rcInvalidConfiguration, rkCapacity, mCapacity.StopReason
+    ElseIf mCapacity.FailureCode = sfcInternalError Then
+        meta.SetResult rsInternalError, rcInternalError, rkCapacity, mCapacity.StopReason, _
+            vbNullString, True, (mCapacity.Iterations > 0)
     ElseIf mCapacity.SearchBoundReached Then
         meta.SetResult rsNumericalFailure, rcSearchBoundReached, rkCapacity, mCapacity.StopReason
     ElseIf mCapacity.LimitSearchInitialLambdaRejected And _
@@ -249,7 +254,10 @@ Public Function BuildSnapshot(ByVal requestedStrategy As String, _
     ElseIf mCapacity.LimitSearchCapacityStateIsInvalidInput(mCapacity.LimitState) Then
         meta.SetResult rsInvalidInput, rcInvalidInput, rkCapacity, mCapacity.StopReason
     ElseIf mCapacity.LimitSearchCapacityStateIsNumericalFailure(mCapacity.LimitState) Then
-        meta.SetResult rsNumericalFailure, rcNumericalFailure, rkCapacity, mCapacity.StopReason
+        Dim failureResultCode As EResultCode
+        failureResultCode = rcNumericalFailure
+        If mCapacity.FailureCode = sfcSingularTangent Then failureResultCode = rcSingularTangent
+        meta.SetResult rsNumericalFailure, failureResultCode, rkCapacity, mCapacity.StopReason
     Else
         meta.SetResult rsInternalError, rcInternalError, rkCapacity, mCapacity.StopReason
     End If
@@ -380,7 +388,8 @@ Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa() As D
 End Property
 
 Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
-    If Not mCapacity Is Nothing Then ILimitSearchProblem_StoppedTerminally = mCapacity.Converged
+    If Not mCapacity Is Nothing Then _
+        ILimitSearchProblem_StoppedTerminally = mCapacity.Converged Or mCapacity.LimitSearchHasTerminalFailure
 End Property
 
 Private Property Get ILimitSearchProblem_StopReason() As String

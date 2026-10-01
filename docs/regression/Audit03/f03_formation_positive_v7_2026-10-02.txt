@@ -1,0 +1,85 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_f06_fixed.xlsm
+SOURCE_SHA256: A2EDB51E345B535B3C1E59BDA1A551BC4A8FBB7794C6B3A398BBB5BBE9B3F6B8
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_02f183ae57e64eac987b0262eb2d79f3\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestCrackWidth.RunAudit03FormationContracts =====
+SUITE_STARTED: modTestCrackWidth.RunAudit03FormationContracts; 2026-10-02T00:37:48
+EXCEL_AFTER_SUITE: pid=15332; workingSet=128704512; privateBytes=89944064; cpu=2.296875
+OK: audit03.formation.typed.lambda*Mxy.1.status
+OK: audit03.formation.typed.lambda*Mxy.1.code
+OK: audit03.formation.typed.lambda*Mxy.1.notCalculated
+OK: audit03.formation.typed.lambda*Mxy.1.oneAttempt
+OK: audit03.formation.typed.lambda*Mxy.1.noPoint
+OK: audit03.formation.typed.lambda*Mxy.1.noPre
+OK: audit03.formation.typed.lambda*Mxy.1.noPost
+OK: audit03.formation.typed.lambda*Mxy.1.reason
+COMMENT: audit03.formation.typed.lambda*Mxy.1; Solver.Method должен быть Newton или Secant.
+OK: audit03.formation.typed.lambda*Mxy.2.status
+OK: audit03.formation.typed.lambda*Mxy.2.code
+OK: audit03.formation.typed.lambda*Mxy.2.notCalculated
+OK: audit03.formation.typed.lambda*Mxy.2.oneAttempt
+OK: audit03.formation.typed.lambda*Mxy.2.noPoint
+OK: audit03.formation.typed.lambda*Mxy.2.noPre
+OK: audit03.formation.typed.lambda*Mxy.2.noPost
+OK: audit03.formation.typed.lambda*Mxy.2.reason
+COMMENT: audit03.formation.typed.lambda*Mxy.2; Solver.MaxIterations должен быть положительным.
+OK: audit03.formation.typed.lambda*N.1.status
+OK: audit03.formation.typed.lambda*N.1.code
+OK: audit03.formation.typed.lambda*N.1.notCalculated
+OK: audit03.formation.typed.lambda*N.1.oneAttempt
+OK: audit03.formation.typed.lambda*N.1.noPoint
+OK: audit03.formation.typed.lambda*N.1.noPre
+OK: audit03.formation.typed.lambda*N.1.noPost
+OK: audit03.formation.typed.lambda*N.1.reason
+COMMENT: audit03.formation.typed.lambda*N.1; Solver.Method должен быть Newton или Secant.
+OK: audit03.formation.typed.lambda*N.2.status
+OK: audit03.formation.typed.lambda*N.2.code
+OK: audit03.formation.typed.lambda*N.2.notCalculated
+OK: audit03.formation.typed.lambda*N.2.oneAttempt
+OK: audit03.formation.typed.lambda*N.2.noPoint
+OK: audit03.formation.typed.lambda*N.2.noPre
+OK: audit03.formation.typed.lambda*N.2.noPost
+OK: audit03.formation.typed.lambda*N.2.reason
+COMMENT: audit03.formation.typed.lambda*N.2; Solver.MaxIterations должен быть положительным.
+OK: audit03.formation.typed.lambda*NMxy.1.status
+OK: audit03.formation.typed.lambda*NMxy.1.code
+OK: audit03.formation.typed.lambda*NMxy.1.notCalculated
+OK: audit03.formation.typed.lambda*NMxy.1.oneAttempt
+OK: audit03.formation.typed.lambda*NMxy.1.noPoint
+OK: audit03.formation.typed.lambda*NMxy.1.noPre
+OK: audit03.formation.typed.lambda*NMxy.1.noPost
+OK: audit03.formation.typed.lambda*NMxy.1.reason
+COMMENT: audit03.formation.typed.lambda*NMxy.1; Solver.Method должен быть Newton или Secant.
+OK: audit03.formation.typed.lambda*NMxy.2.status
+OK: audit03.formation.typed.lambda*NMxy.2.code
+OK: audit03.formation.typed.lambda*NMxy.2.notCalculated
+OK: audit03.formation.typed.lambda*NMxy.2.oneAttempt
+OK: audit03.formation.typed.lambda*NMxy.2.noPoint
+OK: audit03.formation.typed.lambda*NMxy.2.noPre
+OK: audit03.formation.typed.lambda*NMxy.2.noPost
+OK: audit03.formation.typed.lambda*NMxy.2.reason
+COMMENT: audit03.formation.typed.lambda*NMxy.2; Solver.MaxIterations должен быть положительным.
+OK: audit03.formation.typed.Auto.1.status
+OK: audit03.formation.typed.Auto.1.code
+OK: audit03.formation.typed.Auto.1.notCalculated
+OK: audit03.formation.typed.Auto.1.oneAttempt
+OK: audit03.formation.typed.Auto.1.noPoint
+OK: audit03.formation.typed.Auto.1.noPre
+OK: audit03.formation.typed.Auto.1.noPost
+OK: audit03.formation.typed.Auto.1.reason
+COMMENT: audit03.formation.typed.Auto.1; Solver.Method должен быть Newton или Secant.
+OK: audit03.formation.typed.Auto.2.status
+OK: audit03.formation.typed.Auto.2.code
+OK: audit03.formation.typed.Auto.2.notCalculated
+OK: audit03.formation.typed.Auto.2.oneAttempt
+OK: audit03.formation.typed.Auto.2.noPoint
+OK: audit03.formation.typed.Auto.2.noPre
+OK: audit03.formation.typed.Auto.2.noPost
+OK: audit03.formation.typed.Auto.2.reason
+COMMENT: audit03.formation.typed.Auto.2; Solver.MaxIterations должен быть положительным.
+TOTAL_AUDIT03_FORMATION_CONTRACTS: passed=64; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestCrackWidth.RunAudit03FormationContracts; 2026-10-02T00:37:48
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

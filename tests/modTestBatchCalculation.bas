@@ -211,6 +211,7 @@ Public Function RunBatchCalculationTests() As String
     AppendLine stats, "RUN: TestAudit02OnOffPhysicalResults"
     TestAudit02OnOffPhysicalResults stats
     TestAudit02InitialOffsetOnOffStatuses stats
+    TestAudit03ResultLifecycle stats
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -847,11 +848,16 @@ Private Sub TestPR2PhysicalStateRunsCrackWithExtensionEnabled(ByRef stats As TBa
     Set crackedState = batch.ResultAt(1).StateRepository.FindState(sstCrackedState)
 
     AssertTrue stats, "batch.group2.physical.noExtension", Not batch.ResultAt(1).ExtensionUsed
-    AssertTrue stats, "batch.group2.physical.crackedStateOK", crackedState.Status = "OK"
+    Dim stateOK As Boolean, statePhysical As Boolean
+    If Not crackedState Is Nothing Then
+        stateOK = (crackedState.Status = "OK")
+        statePhysical = Not crackedState.ExtensionUsed
+    End If
+    AssertTrue stats, "batch.group2.physical.crackedStateOK", stateOK
     AssertTrue stats, "batch.group2.physical.crackBranchRuns", _
         batch.ResultAt(1).CrackResult.Longitudinal.Status <> "N/A" Or Not crackedState Is Nothing
     AssertTrue stats, "batch.group2.physical.crackedStatePhysical", _
-        Not crackedState Is Nothing And Not crackedState.ExtensionUsed
+        statePhysical
 
 Restore:
     SetSystemSetting "General.DiagramExtension", oldExtension
@@ -970,8 +976,10 @@ Private Sub TestPR2AutoCrackPureBendingStoresMcrcStates(ByRef stats As TBatchTes
 
     Dim crackedState As CSectionStateResult
     Set crackedState = batch.ResultAt(1).StateRepository.FindState(sstCrackedState)
+    Dim stateOK As Boolean
+    If Not crackedState Is Nothing Then stateOK = (crackedState.Status = "OK")
     AssertTrue stats, "batch.group2.autoMcrcPure.crackedStateOK", _
-        Not crackedState Is Nothing And crackedState.Status = "OK"
+        stateOK
     AssertTrue stats, "batch.group2.autoMcrcPure.crackCalculated", _
         batch.ResultAt(1).NormalCrackStatus = "OK" Or batch.ResultAt(1).NormalCrackStatus = "FAIL"
     AssertTrue stats, "batch.group2.autoMcrcPure.beforeState", _
@@ -5600,7 +5608,9 @@ Private Sub TestAudit02InitialOffsetOnOffStatuses(ByRef stats As TBatchTestStats
             "|OnComment=" & onResult.ResultMeta.ResultComment
         AssertEquals stats, prefix & ".offStatus", offResult.Status, "NumFail"
         AssertEquals stats, prefix & ".onStatus", onResult.Status, "BaseFail"
-        AssertTrue stats, prefix & ".offCode", offResult.ResultMeta.ResultCode = rcNumericalFailure
+        ' Audit03 F03: сохраняется точная причина касательной системы; внешний
+        ' NumFail, физические усилия и expected/tolerance парного теста прежние.
+        AssertTrue stats, prefix & ".offCode", offResult.ResultMeta.ResultCode = rcSingularTangent
         AssertTrue stats, prefix & ".onCode", onResult.ResultMeta.ResultCode = rcInitialStateBeyondLimit
         AssertTrue stats, prefix & ".offNoPoint", Not offResult.SearchResult.HasLimitPoint
         AssertTrue stats, prefix & ".onNoPoint", Not onResult.SearchResult.HasLimitPoint
@@ -5722,4 +5732,100 @@ Private Sub Audit02AssertPair(ByRef stats As TBatchTestStats, ByVal maxima As Ob
     difference = Abs(actual - expected)
     If Not maxima.Exists(metric) Then maxima.Add metric, 0#
     If difference > CDbl(maxima(metric)) Then maxima(metric) = difference
+End Sub
+
+' ===========================================================================
+' ДЛЯ ТЕСТОВ: AUDIT03 - ЖИЗНЕННЫЙ ЦИКЛ МЕТАДАННЫХ
+' ===========================================================================
+
+' Выполняет направленную проверку flags/clone/reset и ранних result-фабрик.
+' Это отдельный вход для воспроизводимого F04 без полного batch-прогона.
+Public Function RunAudit03LifecycleTests() As String
+    On Error GoTo Failed
+    Dim stats As TBatchTestStats
+    TestAudit03ResultLifecycle stats
+    AppendLine stats, "TOTAL_AUDIT03_LIFECYCLE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03LifecycleTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03LifecycleTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' Проверяет каждый внутренний исход: зависимая/выключенная ветка не объявляет
+' собственный расчет выполненным, а реальная численная попытка сохраняется.
+' Повторное заполнение и независимый clone не переносят флаги прошлого LC.
+Private Sub TestAudit03ResultLifecycle(ByRef stats As TBatchTestStats)
+    Dim statuses As Variant
+    statuses = Array(rsSuccess, rsCheckFailed, rsNumericalFailure, rsInvalidInput, _
+        rsInvalidConfiguration, rsBlockedByDependency, rsNotApplicable, rsNotRequested, _
+        rsSuccessWithWarning, rsInternalError)
+    Dim value As Variant, attempted As Variant
+    Dim meta As CResultMeta, snapshot As CResultMeta
+    Set meta = New CResultMeta
+    For Each value In statuses
+        For Each attempted In Array(False, True)
+            Dim expectedApplies As Boolean, expectedCalculated As Boolean
+            expectedApplies = (value <> rsNotApplicable And value <> rsNotRequested)
+            expectedCalculated = CBool(attempted)
+            Select Case value
+                Case rsInvalidInput, rsInvalidConfiguration, rsBlockedByDependency, rsNotApplicable, rsNotRequested
+                    expectedCalculated = False
+            End Select
+            Dim prefix As String
+            prefix = "audit03.lifecycle." & CStr(value) & "." & CStr(attempted)
+            meta.SetResult CLng(value), rcCheckPassed, rkCrackWidth, "Текущий результат.", _
+                "Текущая диагностика.", True, CBool(attempted)
+            AssertTrue stats, prefix & ".applies", meta.Applies = expectedApplies
+            AssertTrue stats, prefix & ".calculated", meta.Calculated = expectedCalculated
+            Set snapshot = meta.Clone
+            meta.Clear
+            AssertTrue stats, prefix & ".cloneStatus", snapshot.InternalStatus = value
+            AssertTrue stats, prefix & ".cloneApplies", snapshot.Applies = expectedApplies
+            AssertTrue stats, prefix & ".cloneCalculated", snapshot.Calculated = expectedCalculated
+            AssertTrue stats, prefix & ".clearCalculated", Not meta.Calculated
+            AssertTrue stats, prefix & ".clearCode", meta.ResultCode = rcNone
+            AssertEquals stats, prefix & ".clearComment", meta.ResultComment, vbNullString
+        Next attempted
+    Next value
+
+    Dim capacity As CCapacityResult
+    Set capacity = New CCapacityResult
+    capacity.InitializeBaseFail "Исходная часть нагрузки уже не проходит проверку."
+    AssertTrue stats, "audit03.lifecycle.capacity.baseCalculated", capacity.ResultMeta.Calculated
+    capacity.InitializeCalcError "Не получен результат поиска."
+    AssertTrue stats, "audit03.lifecycle.capacity.earlyInternal", Not capacity.ResultMeta.Calculated
+    AssertTrue stats, "audit03.lifecycle.capacity.earlyApplies", capacity.ResultMeta.Applies
+
+    Dim state As CSectionStateResult, direct As CDirectStateResult
+    Set state = New CSectionStateResult
+    AssertTrue stats, "audit03.lifecycle.state.empty", Not state.ResultMeta.Calculated
+    Set direct = New CDirectStateResult
+    direct.SetMeta Nothing
+    AssertTrue stats, "audit03.lifecycle.direct.missing", Not direct.Meta.Calculated
+
+    Dim formation As CCrackFormationResult, width As CCrackWidthResult
+    Set formation = New CCrackFormationResult
+    formation.InitializeFromCalculator Nothing, Nothing
+    AssertTrue stats, "audit03.lifecycle.formation.missing", Not formation.ResultMeta.Calculated
+    Set width = New CCrackWidthResult
+    width.InitializeFromCalculator Nothing, Nothing
+    AssertTrue stats, "audit03.lifecycle.width.missing", Not width.ResultMeta.Calculated
+
+    Dim longitudinal As CLongitudinalCrackResult, stability As CStabilityResult
+    Set longitudinal = New CLongitudinalCrackResult
+    longitudinal.Initialize Nothing, 0#, 0#, 0#
+    AssertTrue stats, "audit03.lifecycle.longitudinal.missing", Not longitudinal.ResultMeta.Calculated
+    Set stability = New CStabilityResult
+    stability.SetMeta Nothing
+    AssertTrue stats, "audit03.lifecycle.stability.missing", Not stability.Meta.Calculated
+
+    Dim search As CLimitSearchResult
+    Set search = New CLimitSearchResult
+    AssertTrue stats, "audit03.lifecycle.search.empty", Not search.Meta.Calculated
+    search.Initialize Nothing, "Auto", vbNullString, False, 0#, 0#, 0#, 0#, Nothing, _
+        vbNullString, vbNullString, vbNullString, False
+    AssertTrue stats, "audit03.lifecycle.search.notStarted", Not search.Meta.Calculated
+    search.Initialize Nothing, "Auto", "LoadMultiplier", False, 0#, 0#, 0#, 0#, Nothing, _
+        vbNullString, vbNullString, vbNullString, True
+    AssertTrue stats, "audit03.lifecycle.search.actualAttempt", search.Meta.Calculated
 End Sub

@@ -90,6 +90,29 @@ Public Sub SetBlockedByDependency(ByVal resultKind As EResultKind, _
     SetResult rsBlockedByDependency, rcBlockedByDependency, resultKind, comment, vbNullString, True, False
 End Sub
 
+' Сохраняет машинную причину неуспешного solve без разбора текста сообщения.
+' Вызывающий слой передает факт численной попытки отдельно от причины отказа;
+' отсутствие обязательного solver-а является внутренней ошибкой контракта.
+Public Sub SetSolverFailure(ByVal failureCode As ESolverFailureCode, _
+        ByVal resultKind As EResultKind, ByVal reason As String, ByVal attempted As Boolean)
+    Dim internalStatus As EResultInternalStatus
+    Dim resultCode As EResultCode
+    Select Case failureCode
+        Case sfcInvalidInput
+            internalStatus = rsInvalidInput: resultCode = rcInvalidInput
+        Case sfcInvalidConfiguration
+            internalStatus = rsInvalidConfiguration: resultCode = rcInvalidConfiguration
+        Case sfcSingularTangent
+            internalStatus = rsNumericalFailure: resultCode = rcSingularTangent
+        Case sfcNumericalFailure
+            internalStatus = rsNumericalFailure: resultCode = rcNumericalFailure
+        Case Else
+            internalStatus = rsInternalError: resultCode = rcInternalError
+            If Len(Trim$(reason)) = 0 Then reason = "Решатель не сформировал результат равновесия."
+    End Select
+    SetResult internalStatus, resultCode, resultKind, reason, vbNullString, True, attempted
+End Sub
+
 ' Создает независимую копию meta для хранения внутри result-объекта.
 Public Function Clone() As CResultMeta
     Dim result As CResultMeta

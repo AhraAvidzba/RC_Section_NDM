@@ -47,6 +47,7 @@ Public Function RunCrackWidthTests() As String
     TestAudit02FormationOutcomeSemantics stats
     TestAudit02IndependentFormation stats
     TestAudit02PsiSignedInputsAndFallbackModes stats
+    TestAudit03FormationTypedFailures stats
     AppendLine stats, "TOTAL_CRACK: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
     RunCrackWidthTests = stats.Report
@@ -56,6 +57,7 @@ Failed:
     RunCrackWidthTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & _
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
+
 
 ' ------------------------------
 ' Материал бетона
@@ -1058,4 +1060,59 @@ Private Sub TestAudit02PsiSignedInputsAndFallbackModes(ByRef stats As TCrackTest
         AssertTrue stats, prefix & ".upperBound", crack.PsiS <= 1#
         AssertCrackCalculatorNotNumFail stats, prefix & ".notNumerical", crack
     Next mode
+End Sub
+
+' ============================== ДЛЯ ТЕСТОВ AUDIT03 ==============================
+' Отдельный entrypoint проверяет terminal ошибки state-solve для всех физических
+' путей трещинообразования, включая отсутствие незаявленных Auto-переходов.
+Public Function RunAudit03FormationContracts() As String
+    Dim stats As TCrackTestStats
+    TestAudit03FormationTypedFailures stats
+    AppendLine stats, "TOTAL_AUDIT03_FORMATION_CONTRACTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03FormationContracts = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: ошибочный метод/бюджет SectionSolver проходят через настоящие
+' lambda-пробы; config failure не становится NumFail и не запускает новые пути.
+Private Sub TestAudit03FormationTypedFailures(ByRef stats As TCrackTestStats)
+    Dim section As CSectionModel, serviceSolver As CSectionSolver
+    Set serviceSolver = SolveServiceState(section, -20000#, -15000000#, 0#)
+    Dim provider As CMaterialModelProvider
+    Set provider = TestMaterialProvider()
+    Dim load As CSectionLoadState
+    Set load = New CSectionLoadState
+    load.Initialize -20000#, -15000000#, 0#, 0#, 0#
+    Dim path As Variant, scenario As Long
+    For Each path In Array("lambda*Mxy", "lambda*N", "lambda*NMxy", "Auto")
+        For scenario = 1 To 2
+            Dim calculator As CCrackFormationCalculator
+            Set calculator = New CCrackFormationCalculator
+            calculator.CrackFormationPath = CStr(path)
+            calculator.CrackFormationSolutionStrategy = "LoadMultiplier"
+            calculator.SolverLoadSteps = 8
+            calculator.SolverMaxIterations = 100
+            calculator.SolverToleranceN = 5#
+            calculator.SolverToleranceMx = 5000#
+            calculator.SolverToleranceMy = 5000#
+            If scenario = 1 Then
+                calculator.SolverMethod = "Invalid"
+            Else
+                calculator.SolverMaxIterations = 0
+            End If
+            Dim result As CCrackFormationResult
+            Set result = calculator.CheckFormation(section, provider, TestCrackedStateSpec(), _
+                TestCrackInitiationSpec(), load.N, load.InternalMx, load.InternalMy, load, 0#, 0#)
+            Dim prefix As String
+            prefix = "audit03.formation.typed." & CStr(path) & "." & CStr(scenario)
+            AssertTrue stats, prefix & ".status", result.ResultMeta.InternalStatus = rsInvalidConfiguration
+            AssertTrue stats, prefix & ".code", result.ResultMeta.ResultCode = rcInvalidConfiguration
+            AssertTrue stats, prefix & ".notCalculated", Not result.ResultMeta.Calculated
+            AssertTrue stats, prefix & ".oneAttempt", result.SolverCallCount = 1
+            AssertTrue stats, prefix & ".noPoint", Not result.HasLimitPoint
+            AssertTrue stats, prefix & ".noPre", result.PreCrackState Is Nothing
+            AssertTrue stats, prefix & ".noPost", result.PostCrackState Is Nothing
+            AssertTrue stats, prefix & ".reason", Len(result.ResultMeta.ResultComment) > 0
+            AppendLine stats, "COMMENT: " & prefix & "; " & result.ResultMeta.ResultComment
+        Next scenario
+    Next path
 End Sub

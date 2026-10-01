@@ -38,7 +38,7 @@ Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitS
     If request.ForceOnly And _
             StrComp(request.SolutionStrategy, "UltimateStrain", vbTextCompare) = 0 And _
             Not request.Problem.Converged And _
-            Not request.Problem.IsInvalidInputState(request.Problem.LimitState) Then
+            Not request.Problem.StoppedTerminally Then
         Set ExecuteCapacity = ExecuteCapacityFallbackToLoadMultiplier(request, _
             "UltimateStrain не дал принятую предельную точку для силовой траектории", _
             "Переходим к LoadMultiplier по той же lambda-траектории.", _

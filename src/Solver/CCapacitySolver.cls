@@ -30,12 +30,14 @@ Private Const STATE_STEEL_LIMIT As String = "SteelStrainLimit"
 Private Const STATE_NUMERICAL_FAILURE As String = "NumericalFailure"
 Private Const STATE_SINGULAR_TANGENT As String = "SingularTangent"
 Private Const STATE_INVALID_INPUT As String = "InvalidInput"
+Private Const STATE_INTERNAL_ERROR As String = "InternalError" ' Нарушен программный контракт; повтор численного solve не помогает.
 Private Const MOMENT_DIRECTION_TOLERANCE As Double = 0.001 ' Допустимое относительное отклонение от выбранной моментной траектории.
 Private Const PROBE_CACHE_SIZE As Long = 12 ' Небольшое кольцо последних lambda-точек LoadMultiplier.
 
 Private mConverged As Boolean ' True, если выбранный метод capacity нашел предельное состояние.
 Private mStopReason As String ' Причина остановки capacity solver для вывода в результаты и тесты.
 Private mLimitState As String ' Физический или численный статус найденного предела.
+Private mFailureCode As ESolverFailureCode ' Точная техническая причина, независимая от текста комментария и LimitState.
 Private mUpperLimitState As String ' Статус верхней границы при LoadMultiplier.
 Private mInitialLambdaRejected As Boolean ' True, если lambda=0 уже не является acceptable-точкой capacity path.
 Private mSearchBoundReached As Boolean ' MaxLambda проверена, но физический предел не установлен.
@@ -197,6 +199,7 @@ Public Sub SolveByUltimateLoadPath(ByVal section As CSectionModel, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
         ByVal myOffset As Double, ByVal myBase As Double, _
         Optional ByVal allowPureAxialRedirect As Boolean = True)
+    If Not EnsureSearchDependencies(section, concreteMaterial, steelMaterial) Then Exit Sub
     If allowPureAxialRedirect And IsPureAxialLoadPath(nOffset, nBase, mxOffset, mxBase, myOffset, myBase) Then
         SolvePureAxialUltimateByLoadMultiplier section, concreteMaterial, steelMaterial, _
             nOffset, nBase, mxOffset, mxBase, myOffset, myBase
@@ -252,7 +255,7 @@ Public Sub SolveByAutoLoadPath(ByVal section As CSectionModel, _
         Optional ByVal allowForcePathRetainedLimit As Boolean = False)
     SolveByUltimateLoadPath section, concreteMaterial, steelMaterial, _
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowPureAxialRedirect
-    If mConverged Or mLimitState = STATE_INVALID_INPUT Then Exit Sub
+    If mConverged Or LimitSearchHasTerminalFailure Then Exit Sub
 
     Dim firstStopReason As String
     Dim firstLimitState As String
@@ -627,6 +630,7 @@ Public Sub SolveByLoadPathMultiplier(ByVal section As CSectionModel, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
         ByVal myOffset As Double, ByVal myBase As Double, _
         Optional ByVal allowForcePathRetainedLimit As Boolean = False)
+    If Not EnsureSearchDependencies(section, concreteMaterial, steelMaterial) Then Exit Sub
     Dim request As CLimitSearchRequest
     Set request = New CLimitSearchRequest
     request.InitializeCapacity Me, section, concreteMaterial, steelMaterial, _
@@ -680,13 +684,13 @@ Public Function LimitSearchEvaluateCapacityLoadMultiplier(ByVal section As CSect
     ElseIf IsNumericalFailure(probeState) Then
         functionValue = 0#
         mLimitState = probeState
-        mStopReason = "Во время поиска " & NormalizedSearchMethod() & " возникла численная несходимость."
+        If Len(mStopReason) = 0 Then mStopReason = "Во время поиска " & NormalizedSearchMethod() & " возникла численная несходимость."
         LimitSearchEvaluateCapacityLoadMultiplier = True
     Else
         functionValue = 0#
         mLimitState = probeState
-        mStopReason = "Поиск несущей способности остановлен: " & probeState & "."
-        LimitSearchEvaluateCapacityLoadMultiplier = True
+        If Len(mStopReason) = 0 Then mStopReason = "Поиск несущей способности остановлен: " & CapacityStateDisplayName(probeState) & "."
+        LimitSearchEvaluateCapacityLoadMultiplier = Not LimitSearchHasTerminalFailure
     End If
 End Function
 
@@ -695,8 +699,8 @@ End Function
 ' внешний BaseFail позже формируется через ResultCode, а не через текст.
 Public Sub LimitSearchHandleCapacityInitialFailure(ByVal probeState As String)
     mLimitState = probeState
-    If LimitSearchCapacityStateIsInvalidInput(probeState) Then
-        SetInvalidInput "Исходную точку пути несущей проверить нельзя: " & CapacityStateDisplayName(probeState) & "."
+    If LimitSearchHasTerminalFailure Then
+        If Len(mStopReason) = 0 Then mStopReason = "Исходную точку пути несущей проверить нельзя: " & CapacityStateDisplayName(probeState) & "."
     ElseIf LimitSearchCapacityStateIsNumericalFailure(probeState) Then
         mStopReason = "Равновесие для исходной точки пути несущей не найдено численно: " & _
             CapacityStateDisplayName(probeState) & "."
@@ -727,6 +731,8 @@ Private Function CapacityStateDisplayName(ByVal probeState As String) As String
             CapacityStateDisplayName = "касательная матрица вырождена"
         Case STATE_INVALID_INPUT
             CapacityStateDisplayName = "ошибка исходных данных или настроек"
+        Case STATE_INTERNAL_ERROR
+            CapacityStateDisplayName = "нарушен внутренний контракт расчета"
         Case Else
             CapacityStateDisplayName = probeState
     End Select
@@ -800,6 +806,7 @@ End Sub
 ' Переводит capacity-result в численную ошибку общего поиска.
 Public Sub LimitSearchSetCapacityNumericalFailure(ByVal reason As String)
     mLimitState = STATE_NUMERICAL_FAILURE
+    mFailureCode = sfcNumericalFailure
     mStopReason = reason
 End Sub
 
@@ -946,6 +953,7 @@ End Sub
 ' Переводит результат UltimateStrain в численную остановку.
 Public Sub LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
     mLimitState = STATE_NUMERICAL_FAILURE
+    mFailureCode = sfcNumericalFailure
     mStopReason = reason
 End Sub
 
@@ -1084,23 +1092,46 @@ Private Function CapacityScalesAxial(ByVal nBase As Double) As Boolean
     CapacityScalesAxial = (Abs(nBase) > 0.000000001)
 End Function
 
+' Проверяет программные зависимости до создания обязательного Search-request.
+' При нарушении контракта очищает старый результат и сохраняет typed internal
+' failure, чтобы публичный расчет не оставлял необработанную ошибку VBA.
+Private Function EnsureSearchDependencies(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object) As Boolean
+    If Not section Is Nothing Then
+        If Not concreteMaterial Is Nothing Then
+            If Not steelMaterial Is Nothing Then
+                EnsureSearchDependencies = True
+                Exit Function
+            End If
+        End If
+    End If
+    ClearResult
+    If section Is Nothing Then
+        SetInternalError "Модель сечения не передана расчетчику несущей способности."
+    ElseIf concreteMaterial Is Nothing Then
+        SetInternalError "Материал бетона не передан расчетчику несущей способности."
+    Else
+        SetInternalError "Материал арматуры не передан расчетчику несущей способности."
+    End If
+End Function
+
 ' Проверяет общую lambda-траекторию. Нулевой Base означает, что ни одна
 ' компонента нагрузки не масштабируется, поэтому предельный множитель не имеет
 ' инженерного смысла.
 Private Function ValidateLoadPathCapacityInputs(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
         ByVal steelMaterial As Object, ByVal nBase As Double, ByVal mxBase As Double, ByVal myBase As Double) As Boolean
     If section Is Nothing Then
-        SetInvalidInput "Модель сечения не передана."
+        SetInternalError "Модель сечения не передана расчетчику несущей способности."
     ElseIf section.ConcreteCount <= 0 Then
         SetInvalidInput "В модели сечения нет бетонных элементов."
     ElseIf concreteMaterial Is Nothing Then
-        SetInvalidInput "Материал бетона не передан."
+        SetInternalError "Материал бетона не передан расчетчику несущей способности."
     ElseIf steelMaterial Is Nothing Then
-        SetInvalidInput "Материал арматуры не передан."
+        SetInternalError "Материал арматуры не передан расчетчику несущей способности."
     ElseIf Abs(nBase) <= 0.000000001 And Abs(mxBase) <= 0.000000001 And Abs(myBase) <= 0.000000001 Then
         SetInvalidInput "В траектории несущей способности нет масштабируемой нагрузки."
     ElseIf mSolverMaxIterations <= 0 Then
-        SetInvalidInput "Настройки поиска несущей способности некорректны."
+        SetInvalidConfiguration "Число итераций решателя несущей способности должно быть положительным."
     Else
         ValidateLoadPathCapacityInputs = True
     End If
@@ -1110,17 +1141,17 @@ End Function
 Private Function ValidateCapacityInputs(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
         ByVal steelMaterial As Object, ByVal mxBase As Double, ByVal myBase As Double) As Boolean
     If section Is Nothing Then
-        SetInvalidInput "Модель сечения не передана."
+        SetInternalError "Модель сечения не передана расчетчику несущей способности."
     ElseIf section.ConcreteCount <= 0 Then
         SetInvalidInput "В модели сечения нет бетонных элементов."
     ElseIf concreteMaterial Is Nothing Then
-        SetInvalidInput "Материал бетона не передан."
+        SetInternalError "Материал бетона не передан расчетчику несущей способности."
     ElseIf steelMaterial Is Nothing Then
-        SetInvalidInput "Материал арматуры не передан."
+        SetInternalError "Материал арматуры не передан расчетчику несущей способности."
     ElseIf Sqr(mxBase * mxBase + myBase * myBase) <= 0.000000001 Then
         SetInvalidInput "Базовый вектор момента должен быть ненулевым."
     ElseIf mSolverMaxIterations <= 0 Then
-        SetInvalidInput "Настройки поиска несущей способности некорректны."
+        SetInvalidConfiguration "Число итераций решателя несущей способности должно быть положительным."
     Else
         ValidateCapacityInputs = True
     End If
@@ -1131,10 +1162,13 @@ End Function
 ' или материалы, которые проверяются выше по цепочке.
 Private Function ValidateLoadMultiplierSettings() As Boolean
     If Len(NormalizedSearchMethod()) = 0 Then
-        SetInvalidInput "Capacity.SearchMethod должен быть Bisection, Brent или Secant."
+        SetInvalidConfiguration "Capacity.SearchMethod должен быть Bisection, Brent или Secant."
+    ElseIf StrComp(Trim$(mSolverMethod), "Newton", vbTextCompare) <> 0 And _
+            StrComp(Trim$(mSolverMethod), "Secant", vbTextCompare) <> 0 Then
+        SetInvalidConfiguration "Solver.Method должен быть Newton или Secant."
     ElseIf mInitialLambdaStep <= 0# Or mLambdaTolerance <= 0# Or mMaxLambda <= 0# Or _
             mMaxRetries < 0 Or mSolverBaseLoadSteps <= 0 Then
-        SetInvalidInput "Настройки LoadMultiplier для несущей способности некорректны."
+        SetInvalidConfiguration "Настройки LoadMultiplier для несущей способности некорректны."
     Else
         ValidateLoadMultiplierSettings = True
     End If
@@ -1145,7 +1179,7 @@ End Function
 ' плоскости достаточно проверить численную корректность lambda.
 Private Function ValidateUltimateStrainSettings() As Boolean
     If mStrainTolerance <= 0# Then
-        SetInvalidInput "Настройки UltimateStrain для несущей способности некорректны."
+        SetInvalidConfiguration "Настройки UltimateStrain для несущей способности некорректны."
     Else
         ValidateUltimateStrainSettings = True
     End If
@@ -1155,6 +1189,23 @@ End Function
 ' возвращает статус пользователю через batch summary и подробный writer.
 Private Sub SetInvalidInput(ByVal reason As String)
     mLimitState = STATE_INVALID_INPUT
+    mFailureCode = sfcInvalidInput
+    mStopReason = reason
+End Sub
+
+' Ошибка численных настроек сохраняется отдельным typed-кодом и не запускает
+' retries/fallback. Короткий код LimitState не является внешним display-статусом.
+Private Sub SetInvalidConfiguration(ByVal reason As String)
+    mLimitState = STATE_INVALID_INPUT
+    mFailureCode = sfcInvalidConfiguration
+    mStopReason = reason
+End Sub
+
+' Отсутствующая программная зависимость или неожиданная ошибка относятся
+' к внутреннему контракту, а не к исходным данным пользователя.
+Private Sub SetInternalError(ByVal reason As String)
+    mLimitState = STATE_INTERNAL_ERROR
+    mFailureCode = sfcInternalError
     mStopReason = reason
 End Sub
 
@@ -1246,16 +1297,18 @@ Private Function ProbeOnce(ByVal section As CSectionModel, _
     Set solver = runner.ResultSolver
     Set mLastSolver = solver
     If solver Is Nothing Then
-        ProbeOnce = STATE_NUMERICAL_FAILURE
-        mLimitState = STATE_NUMERICAL_FAILURE
-        mStopReason = "Пробная точка несущей способности не вернула solver."
+        ProbeOnce = STATE_INTERNAL_ERROR
+        SetInternalError "Пробная точка несущей способности не вернула результат решателя."
         Exit Function
     End If
     If Len(runner.DiagnosticLog) > 0 Then AppendSearchDiagnostic Trim$(runner.DiagnosticLog)
 
     If Not solver.Converged Then
         ProbeOnce = ClassifyNumericalFailure(solver.FailureCode)
+        mFailureCode = solver.FailureCode
+        mStopReason = solver.StopReason
     Else
+        mFailureCode = sfcNone
         UpdateCriticalState section, concreteMaterial, solver
         If mCriticalStrainUtilization >= 1# Then
             ProbeOnce = CriticalLimitState()
@@ -1268,9 +1321,8 @@ Private Function ProbeOnce(ByVal section As CSectionModel, _
     Exit Function
 
 Failed:
-    ProbeOnce = STATE_INVALID_INPUT
-    mLimitState = STATE_INVALID_INPUT
-    mStopReason = "Пробная точка несущей способности не рассчиталась: " & Err.Description
+    ProbeOnce = STATE_INTERNAL_ERROR
+    SetInternalError "Пробная точка несущей способности не рассчиталась: " & Err.Description
 End Function
 
 ' Передает настройки внутреннего CSectionSolver в общий runner для одной
@@ -1319,12 +1371,24 @@ Private Function EvaluateZeroLoadProbe(ByVal section As CSectionModel, _
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
-    solver.DiagnosticsEnabled = mDiagnosticsEnabled
-    solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, 0#, 0#, 0#
+    solver.SolverMethod = mSolverMethod
+    solver.MaxIterations = mSolverMaxIterations
+    solver.LoadSteps = mSolverBaseLoadSteps
     solver.ToleranceN = mSolverToleranceN
     solver.ToleranceMx = mSolverToleranceMx
     solver.ToleranceMy = mSolverToleranceMy
+    solver.DiagnosticsEnabled = mDiagnosticsEnabled
+    solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, 0#, 0#, 0#
+    Set mLastSolver = solver
+    If solver.FailureCode <> sfcNone Then
+        mFailureCode = solver.FailureCode
+        mStopReason = solver.StopReason
+        EvaluateZeroLoadProbe = ClassifyNumericalFailure(mFailureCode)
+        Exit Function
+    End If
     If Not solver.ConfirmEquilibrium(0#, 0#, 0#) Then
+        mFailureCode = solver.FailureCode
+        mStopReason = solver.StopReason
         EvaluateZeroLoadProbe = STATE_NUMERICAL_FAILURE
         Exit Function
     End If
@@ -1338,9 +1402,8 @@ Private Function EvaluateZeroLoadProbe(ByVal section As CSectionModel, _
     Exit Function
 
 Failed:
-    EvaluateZeroLoadProbe = STATE_INVALID_INPUT
-    mLimitState = STATE_INVALID_INPUT
-    mStopReason = "Нулевую lambda-точку несущей способности проверить нельзя: " & Err.Description
+    EvaluateZeroLoadProbe = STATE_INTERNAL_ERROR
+    SetInternalError "Нулевую lambda-точку несущей способности проверить нельзя: " & Err.Description
 End Function
 
 Private Function TryRestoreProbeCache(ByVal nSpecified As Double, ByVal mx As Double, ByVal my As Double, _
@@ -1350,6 +1413,7 @@ Private Function TryRestoreProbeCache(ByVal nSpecified As Double, ByVal mx As Do
         If ProbeCacheMatches(slot, nSpecified, mx, my, lambdaValue) Then
             probeState = mProbeCacheState(slot)
             Set mLastSolver = mProbeCacheSolver(slot)
+            mFailureCode = sfcNone
             mCriticalStrain = mProbeCacheCriticalStrain(slot)
             mCriticalElement = mProbeCacheCriticalElement(slot)
             mCriticalStrainUtilization = mProbeCacheCriticalUtil(slot)
@@ -1361,14 +1425,15 @@ Private Function TryRestoreProbeCache(ByVal nSpecified As Double, ByVal mx As Do
 End Function
 
 ' Сравнивает lambda-точку по lambda и целевым усилиям.
-' Усилия проверяются отдельно от lambda, чтобы cache оставался безопасным даже
-' после будущих расширений траектории нагрузки внутри одного solver-а.
+' Разные представимые lambda нельзя объединять произвольным допуском: поиск
+' может уточнять физический критерий точнее этого допуска. Повтор той же точки
+' сохраняет точное совпадение lambda и всех трех целевых усилий.
 Private Function ProbeCacheMatches(ByVal slot As Long, ByVal nSpecified As Double, ByVal mx As Double, ByVal my As Double, _
         ByVal lambdaValue As Double) As Boolean
-    If Abs(mProbeCacheLambda(slot) - lambdaValue) > 0.000000000001 * MaxDouble(1#, Abs(lambdaValue)) Then Exit Function
-    If Abs(mProbeCacheN(slot) - nSpecified) > MaxDouble(mSolverToleranceN * 0.000000001, 0.000001) Then Exit Function
-    If Abs(mProbeCacheMx(slot) - mx) > MaxDouble(mSolverToleranceMx * 0.000000001, 0.001) Then Exit Function
-    If Abs(mProbeCacheMy(slot) - my) > MaxDouble(mSolverToleranceMy * 0.000000001, 0.001) Then Exit Function
+    If mProbeCacheLambda(slot) <> lambdaValue Then Exit Function
+    If mProbeCacheN(slot) <> nSpecified Then Exit Function
+    If mProbeCacheMx(slot) <> mx Then Exit Function
+    If mProbeCacheMy(slot) <> my Then Exit Function
     ProbeCacheMatches = True
 End Function
 
@@ -1376,8 +1441,9 @@ End Function
 ' Неудачная попытка не закрывает возможность повторного solve с лучшим стартом.
 Private Sub StoreProbeCache(ByVal nSpecified As Double, ByVal mx As Double, ByVal my As Double, _
         ByVal lambdaValue As Double, ByVal probeState As String)
-    If IsNumericalFailure(probeState) Then Exit Sub
-    If probeState = STATE_INVALID_INPUT Then Exit Sub
+    If probeState <> STATE_ACCEPTABLE Then
+        If Not IsPhysicalLimit(probeState) Then Exit Sub
+    End If
     If mLastSolver Is Nothing Then Exit Sub
     If Not mLastSolver.Converged Then Exit Sub
     If mProbeCacheNextSlot < 1 Or mProbeCacheNextSlot > PROBE_CACHE_SIZE Then mProbeCacheNextSlot = 1
@@ -1492,8 +1558,12 @@ Private Function ClassifyNumericalFailure(ByVal failureCode As ESolverFailureCod
             ClassifyNumericalFailure = STATE_SINGULAR_TANGENT
         Case sfcInvalidInput
             ClassifyNumericalFailure = STATE_INVALID_INPUT
-        Case Else
+        Case sfcInvalidConfiguration
+            ClassifyNumericalFailure = STATE_INVALID_INPUT
+        Case sfcNumericalFailure
             ClassifyNumericalFailure = STATE_NUMERICAL_FAILURE
+        Case Else
+            ClassifyNumericalFailure = STATE_INTERNAL_ERROR
     End Select
 End Function
 
@@ -1591,6 +1661,7 @@ Private Sub ClearResult()
     mLimitState = vbNullString
     mUpperLimitState = vbNullString
     mInitialLambdaRejected = False
+    mFailureCode = sfcNone
     mSearchBoundReached = False
     mLambdaUltimate = 0#
     mNUltimate = 0#
@@ -1651,6 +1722,19 @@ End Function
 Public Function LimitSearchCapacityStateIsInvalidInput(ByVal state As String) As Boolean
     LimitSearchCapacityStateIsInvalidInput = (state = STATE_INVALID_INPUT)
 End Function
+
+' Терминальная ошибка данных, настройки или программной зависимости запрещает
+' повтор solve и переход к другому численному методу той же постановки.
+Public Property Get LimitSearchHasTerminalFailure() As Boolean
+    LimitSearchHasTerminalFailure = (mFailureCode = sfcInvalidInput Or _
+        mFailureCode = sfcInvalidConfiguration Or mFailureCode = sfcInternalError)
+End Property
+
+' Передает адаптеру точную typed-причину для InternalStatus/ResultCode.
+' Значение не определяется по словам StopReason или пользовательскому display.
+Public Property Get FailureCode() As ESolverFailureCode
+    FailureCode = mFailureCode
+End Property
 
 ' Возвращает True, если capacity-path был остановлен уже на lambda=0.
 ' Низкоуровневый search только сообщает о rejected lower point; смысл

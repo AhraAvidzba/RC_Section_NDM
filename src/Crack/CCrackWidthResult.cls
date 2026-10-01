@@ -57,7 +57,7 @@ Public Sub InitializeFromCalculator(ByVal crack As CCrackWidthCalculator, ByVal 
     ResetData
     If meta Is Nothing Then
         mMeta.SetResult rsInternalError, rcInternalError, rkCrackWidth, _
-            "Meta результата ширины трещины не сформирована."
+            "Meta результата ширины трещины не сформирована.", vbNullString, True, False
     Else
         Set mMeta = meta.Clone
     End If

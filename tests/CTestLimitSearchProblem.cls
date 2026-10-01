@@ -44,6 +44,8 @@ Private mIterationLimitHit As Boolean ' True, если search остановил
 Private mProbeMaxLambda As Double ' Наибольшая реально проверенная точка.
 Private mProbeCalls As Long ' Счетчик проб общего алгоритма.
 Private mFailureAbove As Double ' Искусственная численная неудача выше этой lambda; 0 отключает ее.
+Private mStepCriterion As Boolean ' Разрывный критерий не имеет нулевой невязки на соседних Double.
+Private mRecoveryWithoutProgress As Boolean ' Намеренно неисправный callback recovery возвращает прежнюю границу.
 
 ' Настраивает линейную тестовую задачу перед запуском общего search.
 Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
@@ -67,11 +69,23 @@ Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
     mProbeMaxLambda = 0#
     mProbeCalls = 0
     mFailureAbove = 0#
+    mStepCriterion = False
+    mRecoveryWithoutProgress = False
 End Sub
 
 ' ДЛЯ ТЕСТОВ: задает численную неудачу верхних проб, не физический предел.
 Public Property Let FailureAbove(ByVal value As Double)
     mFailureAbove = value
+End Property
+
+' ДЛЯ ТЕСТОВ: не позволяет признать соседнюю граничную lambda точным корнем.
+Public Property Let StepCriterion(ByVal value As Boolean)
+    mStepCriterion = value
+End Property
+
+' ДЛЯ ТЕСТОВ: общий Search обязан остановить recovery, не сужающий скобку.
+Public Property Let RecoveryWithoutProgress(ByVal value As Boolean)
+    mRecoveryWithoutProgress = value
 End Property
 
 ' ДЛЯ ТЕСТОВ: диагностические счетчики расширения и восстановления скобки.
@@ -279,6 +293,9 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
         ByVal lambdaValue As Double, ByRef functionValue As Double, _
         ByRef probeState As String, ByRef solver As CSectionSolver) As Boolean
     functionValue = lambdaValue - mRootLambda
+    If mStepCriterion Then
+        If lambdaValue < mRootLambda Then functionValue = -1# Else functionValue = 1#
+    End If
     mProbeCalls = mProbeCalls + 1
     If lambdaValue > mProbeMaxLambda Then mProbeMaxLambda = lambdaValue
     Set solver = Nothing
@@ -314,7 +331,11 @@ End Function
 ' ДЛЯ ТЕСТОВ: recovery использует середину оставшегося интервала.
 Private Function ILimitSearchProblem_ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, _
         ByVal highLambda As Double, ByVal probeState As String) As Double
-    ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = 0.5 * (lowLambda + highLambda)
+    If mRecoveryWithoutProgress Then
+        ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = highLambda
+    Else
+        ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = lowLambda + 0.5 * (highLambda - lowLambda)
+    End If
 End Function
 
 ' Запоминает последнюю acceptable-точку только в диагностике.

@@ -1,0 +1,34 @@
+SOURCE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_Audit03_Baseline_df10412f\workbook\output\RC_Section_NDM_f04_repro.xlsm
+SOURCE_SHA256: 04E0C51575B5201F8C35829DFCAEDF1F7AEBC062B6090A60D1F7BA95D6266C32
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_9e32ebb93c254f58af8042dee7fa02eb\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.lifecycle.7.True.calculated
+FAIL: audit03.lifecycle.7.True.cloneCalculated
+FAIL: audit03.lifecycle.8.True.calculated
+FAIL: audit03.lifecycle.8.True.cloneCalculated
+FAIL: audit03.lifecycle.3.True.calculated
+FAIL: audit03.lifecycle.3.True.cloneCalculated
+FAIL: audit03.lifecycle.2.False.applies
+FAIL: audit03.lifecycle.2.False.cloneApplies
+FAIL: audit03.lifecycle.2.True.applies
+FAIL: audit03.lifecycle.2.True.calculated
+FAIL: audit03.lifecycle.2.True.cloneApplies
+FAIL: audit03.lifecycle.2.True.cloneCalculated
+FAIL: audit03.lifecycle.1.False.applies
+FAIL: audit03.lifecycle.1.False.cloneApplies
+FAIL: audit03.lifecycle.1.True.applies
+FAIL: audit03.lifecycle.1.True.calculated
+FAIL: audit03.lifecycle.1.True.cloneApplies
+FAIL: audit03.lifecycle.1.True.cloneCalculated
+FAIL: audit03.lifecycle.capacity.earlyInternal
+FAIL: audit03.lifecycle.state.empty
+FAIL: audit03.lifecycle.direct.missing
+FAIL: audit03.lifecycle.formation.missing
+FAIL: audit03.lifecycle.width.missing
+FAIL: audit03.lifecycle.longitudinal.missing
+FAIL: audit03.lifecycle.stability.missing
+FAIL: audit03.lifecycle.search.empty
+FAIL: audit03.lifecycle.search.notStarted
+TOTAL_AUDIT03_LIFECYCLE: passed=145; failed=27
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

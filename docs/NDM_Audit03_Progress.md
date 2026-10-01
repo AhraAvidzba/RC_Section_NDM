@@ -18,7 +18,7 @@
 | Этап | Статус | Выход И Gate |
 | --- | --- | --- |
 | 1. Контрольная точка и карта проверок | в работе | Baseline build/Off/On, фактические Config/help/class inventories, F-reproducers; источники и user Config неизменны. |
-| 2. Корректность входа, поиска и метаданных | в работе | F01/F02 и directed F03 подтверждены negative/positive runtime; F04/F05 частично исправлены, F06/F07 и полная приемка еще впереди. |
+| 2. Корректность входа, поиска и метаданных | в работе | F01/F02/F03 и основные F06 контрпримеры имеют runtime evidence; F04/F05/F07 и окончательная приемка еще не завершены. |
 | 3. Упрощение архитектуры | не начато | Удалить CBatchStatusPolicy и CCrackWidthFormulaCalculator после переноса обязанностей; canonical aggregates, consumers/build/tests; без новых классов. |
 | 4. Измеряемая оптимизация | не начато | Profile корректного baseline, минимум пять повторов, asymmetric/retries/geometry/allocation; каждая оптимизация подтверждена числами/status/cache. |
 | 5. Config/краевые нагрузки/документация/UI | не начато | Все editable-поля, каждый enum и активный эффект; широкая L01-L17/shape/setting матрица; обязательный ResultComment-контроль каждого нагрузочного кейса, русские комментарии, actual help/validation/colors/CF/save-reopen. |
@@ -48,11 +48,11 @@
 | --- | --- | --- |
 | F01 | directed runtime PASS | Реальные Range 5/6/7/9 и 4-column rejection; negative/positive_v3 logs. |
 | F02 | directed runtime PASS, расширение покрытия впереди | abc N/M, формулы/CVErr, numeric string, Empty/zero/space, tiny в двух системах единиц, overflow и последующий LC; требуется полный output/comment matrix и отдельный Null путь. |
-| F03 | directed runtime PASS, Search consumers еще проверяются | Provider -> runner -> state: invalid method/config, empty geometry, missing context, singular tangent, iteration budget, flags/counts/snapshot/non-reuse. Negative 11 failures, positive 73/0. |
-| F04 | в работе | SetResult обеспечивает lifecycle для not-requested/not-applicable/blocked/validation; оставшиеся internal-error factories, reset/clone/reorder и отдельная матрица флагов еще проверяются. |
+| F03 | directed runtime PASS, расширение проверки продолжается | Provider -> runner -> state: 73/0; real Capacity typed failures/precision: 54/0; Formation все четыре пути и terminal config: 64/0. Два старых expected general numerical code уточнены до rcSingularTangent, внешний NumFail и физика не менялись. |
+| F04 | directed runtime PASS, workflow приемка продолжается | SetResult обеспечивает lifecycle для not-requested/not-applicable/blocked/validation; ранние missing/internal factories передают False. Matrix 172/0: десять исходов x attempted, clone/reset и result factories; повторные реальные LC еще входят в расширенную приемку. |
 | F05 | в работе | PhysicalRangeMeta явно объясняет выход за физические деформации/extension; продольные причины, subtree и фактический output еще не приняты. |
-| F06 | не начато | Все 1D/refinement/recovery/expansion, соседние Double/large bounds, watchdog и реальный Capacity budget=0. |
-| F07 | не начато | Production/test And/Or/IIf/array guards; проверить реальные допустимые/ошибочные call paths. |
+| F06 | основные directed runtime PASS, полный аудит продолжается | Baseline adjacent-Double Bisection budget=0 завис до watchdog; исправленный generic matrix 114/0, real Capacity tol=1e-18/budget=0 завершен за 58 probes без ложной точки. Остальные Ultimate/recovery call paths еще проверяются. |
+| F07 | в работе | Исправлены Nothing guard в stability, Split bounds в plotter и два unsafe test guards. Статическая проверка IIf/array call paths выполнена частично; окончательная приемка не заявлена. |
 | F08 | не начато | Каждый Audit01/Audit02 ID -> owner/method/test/log/result/environment, не только общая фраза. |
 | A01-A05 | не начато | Два слияния, владельцы meta/aggregation, canonical data, output и все consumers. |
 | P01-P04 | не начато | Правильный baseline, профиль и >=5 повторов; geometry/retries/cache не подменяют физику. |
@@ -73,6 +73,9 @@
 - Изначальное замедление asymmetric от исправленной физической классификации не откатывать. Оптимизации сравнивать с df10412f.
 - Для output использовать Refresh-VbaModules, не исторический Refresh-Workbook; help обновлять отдельно с доказанной сохранностью Config.
 - Excel COM только последовательно, build ждать не менее 300 секунд. Прежнее разрешение пользователя закрывать тестовый Excel сохраняется; не выдавать недоступные DWG/screenshots за PASS.
+- Excel COM в текущем окружении запускается с escalation: default sandbox дал 0x80080005, escalated запуск работает. Это ограничение среды, не дефект НДМ. Watchdog закрывает только новые test Excel процессы и считает timeout ошибкой; незавершенные exploratory логи не являются PASS.
+- При крайне малом lambda tolerance локальный probe-cache использует точное равенство lambda и вектора нагрузки. Близкие, но различные representable points не склеиваются; повтор идентичной точки остается cache hit. Нет скрытого увеличения пользовательского допуска для объявления сходимости.
+- CResultMeta.SetSolverFailure централизует только typed failure mapping и lifecycle; инженерные критерии и внешний display остаются у своих владельцев.
 - Дополнение пользователя: при всех нагрузочных тестах проверять заполнение, инженерный смысл и читаемость каждого ResultComment. Проверять все применимые leaf/meta и subtree-итоги, подробные strength/crack/stability blocks, batch summary, txt-report и повторно прочитанный Results. Обязательная причина каждого отказа/blocked/warning, правильные units/символы, отсутствие противоречия статусу, дублей/двойных точек/чужого раздела; логический порядок сборки. Автоматические проверки дополнять содержательным чтением уникальных шаблонов и фактических контрпримеров, не сводить качество к наличию строки.
 
 ## Текущие Проверки
@@ -84,10 +87,19 @@
 - Positive reader: `f01_f02_reader_positive_v3_2026-10-01.txt`, 67/0. В v1/v2 новый fixture не передавал обязательный путь и затем SP35 table; это исправлено без ослабления expected.
 - F03 negative: `f03_state_confirmed_negative_2026-10-01.txt`, 32/11; positive: `f03_state_positive_2026-10-01.txt`, 73/0.
 - Первый полный Off после reader/state/lifecycle изменений: `f01_f05_full_off_2026-10-01.txt`, 6885/0. Это промежуточный gate, не завершение F01-F07 либо всего Audit03.
+- F06 baseline: `f06_stagnation_negative_2026-10-01.txt`, timeout=60 секунд на соседних Double при budget=0; подтвержденное зависание, test Excel завершен watchdog.
+- Generic positive: `f06_arithmetic_positive_v4_2026-10-02.txt`, 114/0: Capacity/Formation adapters, Bisection/Brent/Secant, соседние Double, large finite bounds, unchanged recovery, final MaxLambda. Ранние v1-v3 timeout сохранены как диагностика, не приняты как доказательства прохождения.
+- Real Capacity/F03 positive: `f03_f06_capacity_positive_v6_2026-10-02.txt`, 54/0. Для precision case выполнено 58 реальных probes; invalid method/budget, missing section/material, empty section и singular tangent сохраняют свои typed причины, terminal ошибки не повторяются и не превращаются в BaseFail. v5 выявил необработанную missing-section ошибку request factory; исправление подтверждено v6.
+- Formation/F03 positive: `f03_formation_positive_v7_2026-10-02.txt`, 64/0: Auto/LambdaMxy/LambdaN/LambdaNMxy x invalid method/iteration budget; один terminal solve, rsInvalidConfiguration/rcInvalidConfiguration, no point/Pre/Post и Calculated=False.
+- Полный Off v6: `f01_f07_full_off_v6_2026-10-02.txt` завершен, но не green: только два failure в Audit02 offset-pair ожидали общий rcNumericalFailure вместо теперь сохраненного rcSingularTangent. Все остальные suites без ошибок. Expected исправлен именно по F03, нагрузки/числа/tolerances не изменены; повторные Off/On после lifecycle изменений еще предстоят.
+- Lifecycle positive: `f04_lifecycle_positive_v8_2026-10-02.txt`, 172/0: все десять internal outcomes x attempted True/False, clone/reset и missing/early factories. Search, который действительно запускался, сохраняет Calculated=True при internal failure; отсутствующий/ранний результат не выдумывает попытку.
+- Lifecycle negative: `f04_lifecycle_negative_2026-10-02.txt`, 145/27 на unchanged production baseline. Подтверждены неверные flags и missing-result factories; текущий positive применяет тот же тест без изменения expected. В baseline temp source дополнительно заменен только test Batch module, production файлы прежние.
+- Полный Off v8: `f01_f07_full_off_v8_2026-10-02.txt`, 7289/0; watchdog exit=0, source unchanged=True. Это промежуточный общий regression gate, не закрытие всех требований Audit03.
+- Полный On v8: `f01_f07_full_on_v8_2026-10-02.txt`, 7289/0; watchdog exit=0, source unchanged=True. Исторические explicit-On setups внутри suites сохранены.
 - Все тесты выполнялись на отдельных книгах; пользовательская output-книга и Config не изменены. В temporary baseline-source copy добавлен только новый test module для F03 reproducer; production baseline остался прежним.
 
 ## Как Продолжить
 
-1. Продолжить F06/F07 reproducers и исправления; directed negative/positive и watchdog сохранять в docs/regression/Audit03.
-2. Проверить F03 во всех Search consumers, завершить lifecycle/comment acceptance и фактический Config census.
+1. Обновить isolated test book текущими исходниками; выполнить lifecycle directed и полные Off/On через watchdog. При новом failure сохранять лог, исправлять причину, не ослаблять физические expected.
+2. Завершить F03/F04/F05/F06/F07 call-site acceptance, затем A01/A02 целым согласованным объемом и фактический Config census.
 3. До завершения всех шести gates цель остается активной; новые ограничения/изменения после green suite записывать сюда.

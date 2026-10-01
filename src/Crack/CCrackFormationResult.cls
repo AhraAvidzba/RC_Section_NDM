@@ -51,13 +51,14 @@ Public Sub InitializeFromCalculator(ByVal crack As CCrackFormationCalculator, By
     ResetResult
     If meta Is Nothing Then
         mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, _
-            "Meta результата образования трещины не сформирована."
+            "Meta результата образования трещины не сформирована.", vbNullString, True, False
     Else
         Set mMeta = meta.Clone
     End If
 
     If crack Is Nothing Then
-        mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, "Не передан расчет образования трещины."
+        mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, "Не передан расчет образования трещины.", _
+            vbNullString, True, False
         Exit Sub
     End If
     mHasLimitPoint = crack.HasLimitPoint

@@ -35,7 +35,8 @@ Private mLastSolverDiagnosticLog As String ' Журнал финального �
 ' Создает безопасный исход до получения результата задачи.
 Private Sub Class_Initialize()
     Set mMeta = New CResultMeta
-    mMeta.SetResult rsInternalError, rcInternalError, rkGeneric, "Результат поиска еще не заполнен."
+    mMeta.SetResult rsInternalError, rcInternalError, rkGeneric, "Результат поиска еще не заполнен.", _
+        vbNullString, True, False
 End Sub
 
 ' Принимает готовый исход задачи и численный снимок без живых калькуляторов.
@@ -55,7 +56,8 @@ Public Sub Initialize(ByVal meta As CResultMeta, ByVal requestedStrategy As Stri
     mDiagnosticLog = diagnosticLog
     mLastSolverDiagnosticLog = finalSolverDiagnosticLog
     If meta Is Nothing Then
-        mMeta.SetResult rsInternalError, rcInternalError, rkGeneric, "Поиск завершен без машинного результата."
+        mMeta.SetResult rsInternalError, rcInternalError, rkGeneric, "Поиск завершен без машинного результата.", _
+            vbNullString, True, searchExecuted
         Exit Sub
     End If
     Set mMeta = meta.Clone
@@ -63,7 +65,7 @@ Public Sub Initialize(ByVal meta As CResultMeta, ByVal requestedStrategy As Stri
     If Not pointState Is Nothing Then
         If Not pointState.Converged Then
             mMeta.SetResult rsInternalError, rcInternalError, meta.ResultKind, _
-                "Предельная точка передана без подтвержденного равновесия."
+                "Предельная точка передана без подтвержденного равновесия.", vbNullString, True, searchExecuted
             Exit Sub
         End If
         Set mPointState = pointState
