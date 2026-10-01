@@ -56,7 +56,7 @@
 | F08 | не начато | Каждый Audit01/Audit02 ID -> owner/method/test/log/result/environment, не только общая фраза. |
 | A01-A05 | в работе | 83 + 3 classes; A01/A02 и текущий A03/A04 срез с actual writers прошли full Off v13. Crack/Strength сами собирают свои итоги; общий приоритет без дублей; shared named-state сохранен. Полная acceptance всех остальных классов и A05 еще впереди. |
 | P01-P04 | не начато | Правильный baseline, профиль и >=5 повторов; geometry/retries/cache не подменяют физику. |
-| K01-K04 | не начато | Полный фактический Config census/behavior/active-inactive/mutation sensitivity/isolation. |
+| K01-K04 | структурный реестр в работе; поведенческая приемка впереди | Read-only census фактической книги: 35617 ячеек, 14 диапазонов, 72 validation. Поадресный реестр 1065 полей, 241 default из каталога; pending metadata не получает PASS. Полный behavior/active-inactive/mutation sensitivity/isolation еще не завершен. |
 | T01-T05 | не начато | L01-L17, все формы/selector variants/pairwise/high-risk tuples, независимые инварианты. |
 | D01-D02 | не начато | Все classes/modules/nontrivial methods; фактический help/Config/validation/links в clean и update. |
 | UI01 | не начато | Все семь внешних статусов, actual DisplayFormat/CF/legend/reset/save-reopen. |
@@ -111,9 +111,16 @@
 - Full Off v14: `a01_a04_full_off_v14_2026-10-02.txt`, 7800/0; Full On v14: `a01_a04_full_on_v14_2026-10-02.txt`, 7801/0. Оба watchdog exit=0 и source unchanged=True. Проверено сохранение rsSuccessWithWarning независимо от порядка агрегации и при успешной формуле ширины. Разница числа проверок обусловлена активным Extension, не пропуском suite.
 - Source contracts v14: `source_contracts_v14_2026-10-02.txt`, 101/101 модулей совпали с VBE, 0 ошибок; production 83 + test 3, удаленные классы отсутствуют в consumers/export.
 - Все тесты выполнялись на отдельных книгах; пользовательская output-книга и Config не изменены. В temporary baseline-source copy добавлен только новый test module для F03 reproducer; production baseline остался прежним.
+- Checkpoint `1a65796`: согласованный A01-A04 срез, полный Off/On v14 и all-path comments. Это не завершение Audit03.
+- F06 Ultimate negative: `f06_ultimate_stagnation_negative_2026-10-02.txt`, watchdog timeout=60 секунд. В изолированной книге заменен только CUltimateStrainSearch на неизмененный модуль commit `1a65796`; остальные зависимости и новый reproducer текущие. Нулевая граница alpha и неизменная норма действительно зависают; тестовый Excel завершен watchdog.
+- F03/F06 Ultimate positive v15: `f03_f06_ultimate_positive_v15_2026-10-02.txt`, 316/0: конфигурация, непредставимое приращение, точные причины отказа Якобиана, контролируемый Nothing и реальные Capacity Ultimate-маршруты. В v16 дополнительно фиксируется ResultKind каждого fake-domain; численные expected не меняются.
+- Full Off/On v15: `f03_f06_full_off_v15_2026-10-02.txt` 8261/0 и `f03_f06_full_on_v15_2026-10-02.txt` 8262/0, source unchanged=True. Provider/state matrix расширен с 6 до 11 typed сценариев, Formation четыре пути проверены также с min alpha=0. Для v16 с уточнением test-kind идут свежие прогоны.
+- Уточненная приемка v16: directed Ultimate 340/0, полный Off 8285/0 и On 8286/0; все три watchdog exit=0, source unchanged=True. В обоих generic доменах проверен точный ResultKind. `source_contracts_v16_2026-10-02.txt`: 101/101 модулей, 0 ошибок. Физические expected и допуски не изменены.
+- Checkpoint Config census/registry: `210a5a20`; это структурная инвентаризация, не завершение поведенческой приемки настроек.
+- Config census и registry: `docs/NDM_Audit03_Config_Coverage.md`, JSON/CSV в `docs/regression/Audit03`; пользовательская книга прочитана без Excel, исходный SHA сохранен. Структурное наличие поля не объявлено поведенческим покрытием. Первый медленный census остановлен; индексированный v2 успешно завершен.
 
 ## Как Продолжить
 
-1. Full Off/On и source/export gate v14 завершены; сохранить checkpoint данного согласованного среза. При новом failure сохранять лог, исправлять причину, не ослаблять физические expected.
+1. Full Off/On и source/export gate v16 завершены; сохранить checkpoint finite Ultimate/typed failure. Следующая A03 проверка: внешняя мутация nested result и сохранность выданного LC при повторном Execute. При новом failure сохранять лог, исправлять причину, не ослаблять физические expected.
 2. Завершить F03/F04/F05/F06/F07 call-site acceptance (включая конечность Ultimate line-search), A03-A05 all-class/consumer/snapshot аудит и фактический Config census. Нагрузочный 27-LC matrix не заменяет полную L01-L17/shape/setting приемку, report и save/reopen.
 3. До завершения всех шести gates цель остается активной; новые ограничения/изменения после green suite записывать сюда.

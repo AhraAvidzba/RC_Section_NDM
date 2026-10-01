@@ -325,7 +325,7 @@ Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
         If mLastAlpha <= 0# Then
             mConverged = False
             mFailureCode = sfcNumericalFailure
-            mStopReason = "Line search не смог уменьшить невязку."
+            If Len(mStopReason) = 0 Then mStopReason = "Line search не смог уменьшить невязку."
             SolveNewtonLoadStep = False
             Exit Function
         End If
@@ -640,7 +640,6 @@ Private Function AcceptStep(ByVal section As CSectionModel, _
 
     Dim alpha As Double
     alpha = mDampingInitial
-    If alpha <= 0# Or alpha > 1# Then alpha = 1#
     mLineSearchIterations = 0
     mLineSearchUsed = False
 
@@ -652,6 +651,10 @@ Private Function AcceptStep(ByVal section As CSectionModel, _
         trialEps = mEpsilon0 + alpha * deltaEps
         trialKx = mKappaX + alpha * deltaKx
         trialKy = mKappaY + alpha * deltaKy
+        If trialEps = mEpsilon0 And trialKx = mKappaX And trialKy = mKappaY Then
+            mStopReason = "Невязка не достигла допуска, но приращение плоскости деформаций меньше представимого шага Double."
+            Exit Function
+        End If
 
         Dim trialN As Double
         Dim trialMx As Double
@@ -669,7 +672,13 @@ Private Function AcceptStep(ByVal section As CSectionModel, _
             Exit Function
         End If
 
-        alpha = alpha / 2#
+        Dim nextAlpha As Double
+        nextAlpha = alpha / 2#
+        If nextAlpha <= 0# Or nextAlpha >= alpha Then
+            mStopReason = "Невязка не достигла допуска; дальнейшее уменьшение шага line search не представимо."
+            Exit Function
+        End If
+        alpha = nextAlpha
     Loop
 
     AcceptStep = 0#
@@ -953,6 +962,14 @@ Private Function ValidateInputs(ByVal section As CSectionModel, ByVal concreteMa
         SetValidationFailure sfcInvalidConfiguration, "Solver.SecantMinStepNorm должен быть положительным."
     ElseIf mToleranceN <= 0# Or mToleranceMx <= 0# Or mToleranceMy <= 0# Then
         SetValidationFailure sfcInvalidConfiguration, "Допуски Solver.ToleranceN/Mx/My должны быть положительными."
+    ElseIf Not IsFiniteNumber(mDampingInitial) Or mDampingInitial <= 0# Or mDampingInitial > 1# Then
+        SetValidationFailure sfcInvalidConfiguration, "Solver.DampingInitial должен быть больше 0 и не больше 1."
+    ElseIf Not IsFiniteNumber(mMinLineSearchAlpha) Or mMinLineSearchAlpha <= 0# Or _
+            mMinLineSearchAlpha > mDampingInitial Then
+        SetValidationFailure sfcInvalidConfiguration, "Solver.MinLineSearchAlpha должен быть больше 0 и не больше Solver.DampingInitial."
+    ElseIf Not IsFiniteNumber(mMaxDeltaEpsilon0) Or Not IsFiniteNumber(mMaxDeltaKappa) Or _
+            mMaxDeltaEpsilon0 < 0# Or mMaxDeltaKappa < 0# Then
+        SetValidationFailure sfcInvalidConfiguration, "Ограничения приращений Solver.MaxDeltaEpsilon0/Kappa должны быть конечными неотрицательными числами."
     Else
         ValidateInputs = True
     End If

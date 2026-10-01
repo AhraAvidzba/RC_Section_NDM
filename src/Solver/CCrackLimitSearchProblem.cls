@@ -145,6 +145,11 @@ Private Sub ILimitSearchProblem_LimitSearchSetUltimateNumericalFailure(ByVal rea
     mCrack.LimitSearchSetUltimateNumericalFailure reason
 End Sub
 
+' Передает машинную причину общего алгоритма владельцу Formation-результата.
+Private Sub ILimitSearchProblem_SetFailure(ByVal failureCode As ESolverFailureCode, ByVal reason As String)
+    mCrack.LimitSearchSetFailure failureCode, reason
+End Sub
+
 ' Однотипные настройки общего Newton из численной конфигурации Formation.
 Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxIterations() As Long
     ILimitSearchProblem_LimitSearchUltimateMaxIterations = mCrack.LimitSearchUltimateMaxIterations

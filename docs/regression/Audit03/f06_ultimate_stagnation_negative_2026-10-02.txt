@@ -1,0 +1,7 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_ultimate_negative.xlsm
+SOURCE_SHA256: 1B73F39D18C5EC719CA7E24ADD2C6DDE860D074CC9414D6B244047496DB858DD
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d9c3c89038684dd3869364956332899e\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestCapacitySolver.RunAudit03UltimateStagnation =====
+SUITE_STARTED: modTestCapacitySolver.RunAudit03UltimateStagnation; 2026-10-02T02:00:42
+WATCHDOG_FAILURE: timeout=60 sec; macro=modTestCapacitySolver.RunAudit03UltimateStagnation; test Excel terminated

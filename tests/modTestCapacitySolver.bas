@@ -72,6 +72,7 @@ Public Function RunCapacitySolverTests() As String
     TestAudit03SearchArithmetic stats
     TestAudit03RealCapacityPrecision stats
     TestAudit03CapacityTypedFailures stats
+    TestAudit03UltimateGuards stats
     AppendLine stats, "RUN: TestCapacityLoadPathMethodMatrix"
     TestCapacityLoadPathMethodMatrix stats
     AppendLine stats, "RUN: TestCapacityLoadPathZeroComponentMatrix"
@@ -2010,7 +2011,7 @@ Private Sub TestAudit03CapacityTypedFailures(ByRef stats As TCapacityTestStats)
     Dim validSection As CSectionModel
     Set validSection = BuildGeneratedSectionModel(mesh, rebars)
     Dim scenario As Long
-    For scenario = 1 To 6
+    For scenario = 1 To 9
         Dim cap As CCapacitySolver
         Set cap = New CCapacitySolver
         ConfigureCapacity cap
@@ -2052,11 +2053,21 @@ Private Sub TestAudit03CapacityTypedFailures(ByRef stats As TCapacityTestStats)
                 cap.MaxRetries = 0
                 expectedStatus = rsNumericalFailure: expectedCode = rcSingularTangent
                 expectedFailure = sfcSingularTangent
+            Case 7, 8, 9
+                If scenario = 7 Then cap.SolverMinLineSearchAlpha = 0#
+                If scenario = 8 Then cap.SolverDampingInitial = 0#
+                If scenario = 9 Then cap.SolverMinLineSearchAlpha = 2#
+                expectedStatus = rsInvalidConfiguration: expectedCode = rcInvalidConfiguration
+                expectedFailure = sfcInvalidConfiguration
         End Select
         Dim prefix As String
         prefix = "audit03.capacity.typed." & CStr(scenario)
         SaveAudit03SearchProgress stats, "START: " & prefix
-        cap.SolveByLoadPathMultiplier section, concrete, steel, nOffset, 0#, 0#, 10000000#, 0#, 0#
+        If scenario <= 6 Then
+            cap.SolveByLoadPathMultiplier section, concrete, steel, nOffset, 0#, 0#, 10000000#, 0#, 0#
+        Else
+            cap.SolveByUltimateLoadPath section, concrete, steel, nOffset, 0#, 0#, 10000000#, 0#, 0#
+        End If
         Dim result As CLimitSearchResult
         Set result = Audit02CapacitySnapshot(cap, "LoadMultiplier")
         AssertTrue stats, prefix & ".status", result.Meta.InternalStatus = expectedStatus
@@ -2070,6 +2081,103 @@ Private Sub TestAudit03CapacityTypedFailures(ByRef stats As TCapacityTestStats)
         AppendLine stats, "COMMENT: " & prefix & "; " & result.Meta.ResultComment
         SaveAudit03SearchProgress stats, "DONE: " & prefix
     Next scenario
+End Sub
+
+' ДЛЯ ТЕСТОВ: отдельный watchdog воспроизводит бесконечный line search
+' прежнего общего Newton при нулевом минимальном alpha и неизменной норме.
+Public Function RunAudit03UltimateStagnation() As String
+    Dim stats As TCapacityTestStats
+    TestAudit03UltimateGuardCase stats, rkCapacity, 1
+    AppendLine stats, "TOTAL_AUDIT03_ULTIMATE_STAGNATION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03UltimateStagnation = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: конечность, typed failures и реальные Capacity-маршруты.
+Public Function RunAudit03UltimateContracts() As String
+    Dim stats As TCapacityTestStats
+    TestAudit03UltimateGuards stats
+    TestAudit03CapacityTypedFailures stats
+    AppendLine stats, "TOTAL_AUDIT03_ULTIMATE_CONTRACTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03UltimateContracts = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: оба domain-kind используют один общий Newton, без выдуманных
+' материалов. Критерий и исходная точность линейной задачи не ослабляются.
+Private Sub TestAudit03UltimateGuards(ByRef stats As TCapacityTestStats)
+    Dim kind As Variant, scenario As Long
+    For Each kind In Array(rkCapacity, rkCrackFormation)
+        For scenario = 1 To 13
+            TestAudit03UltimateGuardCase stats, CLng(kind), scenario
+        Next scenario
+    Next kind
+    TestAudit02GenericUltimateSearch stats
+End Sub
+
+' ДЛЯ ТЕСТОВ: проверяет реальный callback call path, отсутствие фиктивной
+' точки, точную причину и конечное число проб. Nothing context - нарушение API.
+Private Sub TestAudit03UltimateGuardCase(ByRef stats As TCapacityTestStats, _
+        ByVal kind As EResultKind, ByVal scenario As Long)
+    On Error GoTo Failed
+    Dim prefix As String
+    prefix = "audit03.ultimate." & CStr(kind) & "." & CStr(scenario)
+    SaveAudit03SearchProgress stats, "START: " & prefix
+    Dim problem As CTestLimitSearchProblem
+    Set problem = New CTestLimitSearchProblem
+    problem.ConfigureUltimateGuardCase scenario, kind
+    Dim search As CUltimateStrainSearch
+    Set search = New CUltimateStrainSearch
+    Dim path As CLoadPathVector
+    Set path = New CLoadPathVector
+    path.Initialize 0#, 1#, 0#, 0#, 0#, 0#
+    If scenario = 12 Then
+        On Error Resume Next
+        Dim ignored As Boolean
+        ignored = search.RunNewton(Nothing, Nothing, Nothing, Nothing, path, Nothing, "Тестовый поиск не сошелся.")
+        Dim errorNumber As Long
+        errorNumber = Err.Number
+        On Error GoTo Failed
+        AssertTrue stats, prefix & ".controlledContractError", errorNumber = vbObjectError + 4212
+        SaveAudit03SearchProgress stats, "DONE: " & prefix
+        Exit Sub
+    End If
+    If scenario = 13 Then Set path = Nothing
+    AssertTrue stats, prefix & ".notAccepted", _
+        Not search.RunNewton(problem, Nothing, Nothing, Nothing, path, Nothing, "Тестовый поиск не сошелся.")
+    Dim expectedFailure As ESolverFailureCode
+    expectedFailure = sfcInvalidConfiguration
+    Select Case scenario
+        Case 6, 11: expectedFailure = sfcNumericalFailure
+        Case 8, 10, 13: expectedFailure = sfcInternalError
+        Case 9: expectedFailure = sfcSingularTangent
+    End Select
+    AssertTrue stats, prefix & ".typedCause", problem.FailureCode = expectedFailure
+    AssertTrue stats, prefix & ".noPoint", Not problem.Converged
+    AssertTrue stats, prefix & ".finiteProbes", problem.UltimateCalls <= 4
+    If scenario <= 5 Or scenario = 13 Then AssertTrue stats, prefix & ".noNumericalAttempt", problem.UltimateCalls = 0
+    If scenario = 6 Then AssertTrue stats, prefix & ".stagnationReason", InStr(problem.DiagnosticLog, "представимого шага Double") > 0
+    If scenario >= 7 And scenario <= 11 Then AssertTrue stats, prefix & ".failedProbeNotOverwritten", problem.UltimateCalls = 2
+    Dim callback As ILimitSearchProblem
+    Set callback = problem
+    Dim request As CLimitSearchRequest
+    Set request = New CLimitSearchRequest
+    request.InitializeWithProblem problem, kind, "UltimateStrain", 0#, 1#, 0#, 0#, 0#, 0#
+    Dim result As CLimitSearchResult
+    Set result = callback.BuildResult(request, False)
+    Dim expectedMeta As CResultMeta
+    Set expectedMeta = New CResultMeta
+    expectedMeta.SetSolverFailure expectedFailure, kind, "Контроль typed-причины.", (problem.UltimateCalls > 0)
+    AssertTrue stats, prefix & ".status", result.Meta.InternalStatus = expectedMeta.InternalStatus
+    AssertTrue stats, prefix & ".code", result.Meta.ResultCode = expectedMeta.ResultCode
+    AssertTrue stats, prefix & ".resultKind", result.Meta.ResultKind = kind
+    AssertTrue stats, prefix & ".noPhysicalPoint", Not result.HasLimitPoint
+    AssertTrue stats, prefix & ".lifecycle", result.Meta.Calculated = expectedMeta.Calculated
+    AssertTrue stats, prefix & ".reason", Len(result.Meta.ResultComment) > 0
+    AppendLine stats, "COMMENT: " & prefix & "; calls=" & CStr(problem.UltimateCalls) & "; " & result.Meta.ResultComment
+    SaveAudit03SearchProgress stats, "DONE: " & prefix
+    Exit Sub
+Failed:
+    AssertTrue stats, prefix & ".runtime." & CStr(Err.Number) & "." & Err.Description, False
+    SaveAudit03SearchProgress stats, "FAILED: " & prefix
 End Sub
 
 ' Проверяет соседние Double, большие положительные границы и отсутствие

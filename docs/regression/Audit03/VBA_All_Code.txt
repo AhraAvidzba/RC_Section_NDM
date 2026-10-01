@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM_f06_fixed.xlsm
-Date: 2026-10-02 01:36:31
+Date: 2026-10-02 02:11:12
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -1659,7 +1659,7 @@ End Function
 ====================================================================================================
 COMPONENT: ILimitSearchProblem
 TYPE: 2
-LINES: 243
+LINES: 248
 ====================================================================================================
 Option Explicit
 
@@ -1783,6 +1783,11 @@ End Sub
 
 ' Фиксирует численную неудачу search.
 Public Sub SetNumericalFailure(ByVal message As String)
+End Sub
+
+' Сохраняет точную техническую причину общего solve/search без разбора текста.
+' Ошибка настройки или внутреннего контракта не становится численной неудачей.
+Public Sub SetFailure(ByVal FailureCode As ESolverFailureCode, ByVal reason As String)
 End Sub
 
 ' Добавляет строку диагностики в доменный журнал.
@@ -11202,7 +11207,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCapacityLimitSearchProblem
 TYPE: 2
-LINES: 411
+LINES: 416
 ====================================================================================================
 Option Explicit
 
@@ -11557,6 +11562,11 @@ End Function
 
 Private Sub ILimitSearchProblem_LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
     mCapacity.LimitSearchSetUltimateNumericalFailure reason
+End Sub
+
+' Передает машинную причину общего алгоритма владельцу Capacity-результата.
+Private Sub ILimitSearchProblem_SetFailure(ByVal FailureCode As ESolverFailureCode, ByVal reason As String)
+    mCapacity.LimitSearchSetFailure FailureCode, reason
 End Sub
 
 ' Однотипные настройки общего Newton из численной конфигурации Capacity.
@@ -11994,7 +12004,7 @@ End Property
 ====================================================================================================
 COMPONENT: CCapacitySolver
 TYPE: 2
-LINES: 1985
+LINES: 2006
 ====================================================================================================
 Option Explicit
 
@@ -12941,9 +12951,30 @@ End Sub
 
 ' Переводит результат UltimateStrain в численную остановку.
 Public Sub LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
-    mLimitState = STATE_NUMERICAL_FAILURE
-    mFailureCode = sfcNumericalFailure
-    mStopReason = reason
+    If LimitSearchHasTerminalFailure Then Exit Sub
+    If mFailureCode = sfcSingularTangent Then
+        AppendSearchDiagnostic reason
+        Exit Sub
+    End If
+    LimitSearchSetFailure sfcNumericalFailure, reason
+End Sub
+
+' Сохраняет typed-причину из общего Search. Терминальная конфигурационная
+' ошибка не повторяется и не переинтерпретируется как физический отказ пути.
+Public Sub LimitSearchSetFailure(ByVal FailureCode As ESolverFailureCode, ByVal reason As String)
+    mConverged = False
+    Select Case FailureCode
+        Case sfcInvalidInput
+            SetInvalidInput reason
+        Case sfcInvalidConfiguration
+            SetInvalidConfiguration reason
+        Case sfcNumericalFailure, sfcSingularTangent
+            mFailureCode = FailureCode
+            mLimitState = ClassifyNumericalFailure(FailureCode)
+            mStopReason = reason
+        Case Else
+            SetInternalError reason
+    End Select
 End Sub
 
 ' Настройки общего UltimateStrain-цикла.
@@ -13985,7 +14016,7 @@ End Property
 ====================================================================================================
 COMPONENT: CCrackLimitSearchProblem
 TYPE: 2
-LINES: 311
+LINES: 316
 ====================================================================================================
 Option Explicit
 
@@ -14123,6 +14154,11 @@ End Function
 
 Private Sub ILimitSearchProblem_LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
     mCrack.LimitSearchSetUltimateNumericalFailure reason
+End Sub
+
+' Передает машинную причину общего алгоритма владельцу Formation-результата.
+Private Sub ILimitSearchProblem_SetFailure(ByVal FailureCode As ESolverFailureCode, ByVal reason As String)
+    mCrack.LimitSearchSetFailure FailureCode, reason
 End Sub
 
 ' Однотипные настройки общего Newton из численной конфигурации Formation.
@@ -15771,7 +15807,7 @@ End Function
 ====================================================================================================
 COMPONENT: CSectionSolver
 TYPE: 2
-LINES: 1283
+LINES: 1300
 ====================================================================================================
 Option Explicit
 
@@ -16091,7 +16127,7 @@ Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
         If mLastAlpha <= 0# Then
             mConverged = False
             mFailureCode = sfcNumericalFailure
-            mStopReason = "Line search не смог уменьшить невязку."
+            If Len(mStopReason) = 0 Then mStopReason = "Line search не смог уменьшить невязку."
             SolveNewtonLoadStep = False
             Exit Function
         End If
@@ -16406,7 +16442,6 @@ Private Function AcceptStep(ByVal section As CSectionModel, _
 
     Dim alpha As Double
     alpha = mDampingInitial
-    If alpha <= 0# Or alpha > 1# Then alpha = 1#
     mLineSearchIterations = 0
     mLineSearchUsed = False
 
@@ -16418,6 +16453,10 @@ Private Function AcceptStep(ByVal section As CSectionModel, _
         trialEps = mEpsilon0 + alpha * deltaEps
         trialKx = mKappaX + alpha * deltaKx
         trialKy = mKappaY + alpha * deltaKy
+        If trialEps = mEpsilon0 And trialKx = mKappaX And trialKy = mKappaY Then
+            mStopReason = "Невязка не достигла допуска, но приращение плоскости деформаций меньше представимого шага Double."
+            Exit Function
+        End If
 
         Dim trialN As Double
         Dim trialMx As Double
@@ -16435,7 +16474,13 @@ Private Function AcceptStep(ByVal section As CSectionModel, _
             Exit Function
         End If
 
-        alpha = alpha / 2#
+        Dim nextAlpha As Double
+        nextAlpha = alpha / 2#
+        If nextAlpha <= 0# Or nextAlpha >= alpha Then
+            mStopReason = "Невязка не достигла допуска; дальнейшее уменьшение шага line search не представимо."
+            Exit Function
+        End If
+        alpha = nextAlpha
     Loop
 
     AcceptStep = 0#
@@ -16719,6 +16764,14 @@ Private Function ValidateInputs(ByVal section As CSectionModel, ByVal concreteMa
         SetValidationFailure sfcInvalidConfiguration, "Solver.SecantMinStepNorm должен быть положительным."
     ElseIf mToleranceN <= 0# Or mToleranceMx <= 0# Or mToleranceMy <= 0# Then
         SetValidationFailure sfcInvalidConfiguration, "Допуски Solver.ToleranceN/Mx/My должны быть положительными."
+    ElseIf Not IsFiniteNumber(mDampingInitial) Or mDampingInitial <= 0# Or mDampingInitial > 1# Then
+        SetValidationFailure sfcInvalidConfiguration, "Solver.DampingInitial должен быть больше 0 и не больше 1."
+    ElseIf Not IsFiniteNumber(mMinLineSearchAlpha) Or mMinLineSearchAlpha <= 0# Or _
+            mMinLineSearchAlpha > mDampingInitial Then
+        SetValidationFailure sfcInvalidConfiguration, "Solver.MinLineSearchAlpha должен быть больше 0 и не больше Solver.DampingInitial."
+    ElseIf Not IsFiniteNumber(mMaxDeltaEpsilon0) Or Not IsFiniteNumber(mMaxDeltaKappa) Or _
+            mMaxDeltaEpsilon0 < 0# Or mMaxDeltaKappa < 0# Then
+        SetValidationFailure sfcInvalidConfiguration, "Ограничения приращений Solver.MaxDeltaEpsilon0/Kappa должны быть конечными неотрицательными числами."
     Else
         ValidateInputs = True
     End If
@@ -18480,7 +18533,7 @@ End Property
 ====================================================================================================
 COMPONENT: CUltimateStrainSearch
 TYPE: 2
-LINES: 305
+LINES: 374
 ====================================================================================================
 Option Explicit
 
@@ -18594,16 +18647,24 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByVal notConvergedReason As String) As Boolean
+    If context Is Nothing Then Err.Raise vbObjectError + 4212, "CUltimateStrainSearch", _
+        "Не передана задача общего поиска UltimateStrain."
+    On Error GoTo Failed
     If loadPath Is Nothing Then
-        context.LimitSearchSetUltimateNumericalFailure "InputError: не задана lambda-траектория UltimateStrain."
+        context.SetFailure sfcInternalError, "Общий поиск UltimateStrain не получил траекторию нагрузки."
         Exit Function
     End If
+    If Not ValidateNewtonSettings(context) Then Exit Function
 
     Dim eps0 As Double
     Dim kx As Double
     Dim ky As Double
     context.LimitSearchInitializeUltimateGuess section, concreteMaterial, steelMaterial, _
         loadPath, startSolver, eps0, kx, ky
+    If Not IsFiniteNumber(eps0) Or Not IsFiniteNumber(kx) Or Not IsFiniteNumber(ky) Then
+        context.SetFailure sfcNumericalFailure, "Стартовая плоскость UltimateStrain содержит нечисловое или бесконечное значение."
+        Exit Function
+    End If
 
     Dim iter As Long
     Dim rPath1 As Double
@@ -18635,6 +18696,31 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
     Next iter
 
     context.LimitSearchSetUltimateNumericalFailure notConvergedReason
+    Exit Function
+Failed:
+    ReportArithmeticOrContractFailure context, "Общий поиск UltimateStrain", Err.Number, Err.description
+End Function
+
+' Проверяет настройки до первой пробы. Нулевой min alpha запрещен: после
+' underflow alpha=0 цикл деления уже не способен сделать следующий шаг.
+Private Function ValidateNewtonSettings(ByVal context As ILimitSearchProblem) As Boolean
+    Dim damping As Double, minAlpha As Double, maxDeltaEps As Double, MaxDeltaKappa As Double
+    damping = context.LimitSearchUltimateDampingInitial
+    minAlpha = context.LimitSearchUltimateMinLineSearchAlpha
+    maxDeltaEps = context.LimitSearchUltimateMaxDeltaEpsilon0
+    MaxDeltaKappa = context.LimitSearchUltimateMaxDeltaKappa
+    If context.LimitSearchUltimateMaxIterations <= 0 Then
+        context.SetFailure sfcInvalidConfiguration, "Число итераций UltimateStrain должно быть положительным."
+    ElseIf Not IsFiniteNumber(damping) Or damping <= 0# Or damping > 1# Then
+        context.SetFailure sfcInvalidConfiguration, "Начальный коэффициент демпфирования UltimateStrain должен быть больше 0 и не больше 1."
+    ElseIf Not IsFiniteNumber(minAlpha) Or minAlpha <= 0# Or minAlpha > damping Then
+        context.SetFailure sfcInvalidConfiguration, "Минимальный шаг line search UltimateStrain должен быть больше 0 и не больше начального демпфирования."
+    ElseIf Not IsFiniteNumber(maxDeltaEps) Or Not IsFiniteNumber(MaxDeltaKappa) Or _
+            maxDeltaEps < 0# Or MaxDeltaKappa < 0# Then
+        context.SetFailure sfcInvalidConfiguration, "Ограничения приращений UltimateStrain должны быть конечными неотрицательными числами."
+    Else
+        ValidateNewtonSettings = True
+    End If
 End Function
 
 ' Делает один общий Newton-шаг для UltimateStrain.
@@ -18663,12 +18749,16 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
     Dim j11 As Double, j21 As Double, j31 As Double
     Dim j12 As Double, j22 As Double, j32 As Double
     Dim j13 As Double, j23 As Double, j33 As Double
-    BuildUltimateJacobianColumn context, section, concreteMaterial, steelMaterial, loadPath, _
-        eps0 + hEps, kx, ky, hEps, rPath1, rPath2, rLimit, j11, j21, j31
-    BuildUltimateJacobianColumn context, section, concreteMaterial, steelMaterial, loadPath, _
-        eps0, kx + hKx, ky, hKx, rPath1, rPath2, rLimit, j12, j22, j32
-    BuildUltimateJacobianColumn context, section, concreteMaterial, steelMaterial, loadPath, _
-        eps0, kx, ky + hKy, hKy, rPath1, rPath2, rLimit, j13, j23, j33
+    If eps0 + hEps = eps0 Or kx + hKx = kx Or ky + hKy = ky Then
+        context.SetFailure sfcNumericalFailure, "Шаг численного Якобиана UltimateStrain не представим при текущем масштабе плоскости деформаций."
+        Exit Function
+    End If
+    If Not BuildUltimateJacobianColumn(context, section, concreteMaterial, steelMaterial, loadPath, _
+        eps0 + hEps, kx, ky, hEps, rPath1, rPath2, rLimit, j11, j21, j31) Then Exit Function
+    If Not BuildUltimateJacobianColumn(context, section, concreteMaterial, steelMaterial, loadPath, _
+        eps0, kx + hKx, ky, hKx, rPath1, rPath2, rLimit, j12, j22, j32) Then Exit Function
+    If Not BuildUltimateJacobianColumn(context, section, concreteMaterial, steelMaterial, loadPath, _
+        eps0, kx, ky + hKy, hKy, rPath1, rPath2, rLimit, j13, j23, j33) Then Exit Function
 
     Dim system As CLinearSystem3x3
     Set system = New CLinearSystem3x3
@@ -18686,8 +18776,8 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
             j21 * hEps / rowScale2, j22 * hKx / rowScale2, j23 * hKy / rowScale2, _
             j31 * hEps / rowScale3, j32 * hKx / rowScale3, j33 * hKy / rowScale3, _
             -rPath1 / rowScale1, -rPath2 / rowScale2, -rLimit / rowScale3) Then
-        context.LimitSearchSetUltimateNumericalFailure _
-            "NumericalFailure: матрица UltimateStrain вырождена: " & system.stopReason
+        context.SetFailure sfcSingularTangent, _
+            "Матрица системы UltimateStrain вырождена: " & system.stopReason
         Exit Function
     End If
 
@@ -18704,14 +18794,22 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
 
     Dim alpha As Double
     alpha = context.LimitSearchUltimateDampingInitial
-    If alpha <= 0# Or alpha > 1# Then alpha = 1#
 
     Do While alpha >= context.LimitSearchUltimateMinLineSearchAlpha
+        Dim trialEps As Double, trialKx As Double, trialKy As Double
+        trialEps = eps0 + alpha * dEps
+        trialKx = kx + alpha * dKx
+        trialKy = ky + alpha * dKy
+        If trialEps = eps0 And trialKx = kx And trialKy = ky Then
+            context.SetFailure sfcNumericalFailure, _
+                "UltimateStrain остановлен: приращение плоскости деформаций меньше представимого шага Double, требуемые допуски не достигнуты."
+            Exit Function
+        End If
         Dim trialSolver As CSectionSolver
         Dim trialR1 As Double, trialR2 As Double, trialRLimit As Double
         Dim trialLambda As Double, trialState As String
         If context.LimitSearchEvaluateUltimateResidual(section, concreteMaterial, steelMaterial, _
-                loadPath, eps0 + alpha * dEps, kx + alpha * dKx, ky + alpha * dKy, _
+                loadPath, trialEps, trialKx, trialKy, _
                 trialSolver, trialR1, trialR2, trialRLimit, trialLambda, trialState) Then
             ' Уже достигнутые допуски важнее колебания нормы на уровне
             ' round-off. Итоговая приемка следующей итерации дополнительно
@@ -18719,14 +18817,21 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
             If context.LimitSearchUltimateResidualReached(trialR1, trialR2, trialRLimit) Or _
                     (Not context.LimitSearchUltimateLineSearchEnabled) Or _
                     context.LimitSearchUltimateResidualNorm(trialR1, trialR2, trialRLimit) < baseNorm Then
-                eps0 = eps0 + alpha * dEps
-                kx = kx + alpha * dKx
-                ky = ky + alpha * dKy
+                eps0 = trialEps
+                kx = trialKx
+                ky = trialKy
                 ApplyUltimateNewtonStep = True
                 Exit Function
             End If
         End If
-        alpha = alpha / 2#
+        If context.StoppedTerminally Then Exit Function
+        Dim nextAlpha As Double
+        nextAlpha = alpha / 2#
+        If nextAlpha <= 0# Or nextAlpha >= alpha Then
+            context.SetFailure sfcNumericalFailure, "UltimateStrain остановлен: дальнейшее уменьшение шага line search не представимо."
+            Exit Function
+        End If
+        alpha = nextAlpha
     Loop
 
     context.LimitSearchSetUltimateNumericalFailure _
@@ -18734,26 +18839,26 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
     Exit Function
 
 Failed:
-    context.LimitSearchSetUltimateNumericalFailure _
-        "NumericalFailure: шаг Newton UltimateStrain не выполнен: " & Err.description
+    ReportArithmeticOrContractFailure context, "Шаг Newton UltimateStrain", Err.Number, Err.description
 End Function
 
 ' Строит один столбец численного Якобиана для общего UltimateStrain.
-Private Sub BuildUltimateJacobianColumn(ByVal context As ILimitSearchProblem, ByVal section As CSectionModel, _
+Private Function BuildUltimateJacobianColumn(ByVal context As ILimitSearchProblem, ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
         ByVal kx As Double, ByVal ky As Double, ByVal stepValue As Double, _
         ByVal rPath1 As Double, ByVal rPath2 As Double, ByVal rLimit As Double, _
-        ByRef j1 As Double, ByRef j2 As Double, ByRef j3 As Double)
+        ByRef j1 As Double, ByRef j2 As Double, ByRef j3 As Double) As Boolean
     Dim solver As CSectionSolver
     Dim pR1 As Double, pR2 As Double, pLimit As Double
     Dim pLambda As Double, pState As String
     If Not context.LimitSearchEvaluateUltimateResidual(section, concreteMaterial, steelMaterial, _
-            loadPath, eps0, kx, ky, solver, pR1, pR2, pLimit, pLambda, pState) Then Exit Sub
+            loadPath, eps0, kx, ky, solver, pR1, pR2, pLimit, pLambda, pState) Then Exit Function
     j1 = (pR1 - rPath1) / stepValue
     j2 = (pR2 - rPath2) / stepValue
     j3 = (pLimit - rLimit) / stepValue
-End Sub
+    BuildUltimateJacobianColumn = True
+End Function
 
 ' Ограничивает приращения плоскости деформаций по настройкам вызывающего расчета.
 Private Sub LimitUltimateIncrement(ByVal context As ILimitSearchProblem, ByRef dEps As Double, _
@@ -18777,6 +18882,23 @@ Private Sub LimitUltimateIncrement(ByVal context As ILimitSearchProblem, ByRef d
     dKy = dKy * scaleFactor
 End Sub
 
+' Переполнение численной арифметики не означает физический предел. Другие
+' неожиданные VBA-ошибки относятся к программному контракту и дают CalcErr.
+Private Sub ReportArithmeticOrContractFailure(ByVal context As ILimitSearchProblem, _
+        ByVal stage As String, ByVal errorNumber As Long, ByVal description As String)
+    If context.StoppedTerminally Then Exit Sub
+    Dim FailureCode As ESolverFailureCode
+    If errorNumber = 6 Then FailureCode = sfcNumericalFailure Else FailureCode = sfcInternalError
+    context.SetFailure FailureCode, stage & " не выполнен: " & description
+End Sub
+
+' Проверяет конечное число перед численным шагом; расчёт не зависит от Excel.
+Private Function IsFiniteNumber(ByVal value As Double) As Boolean
+    If value <> value Then Exit Function
+    If Abs(value) > 1.79769313486231E+308 Then Exit Function
+    IsFiniteNumber = True
+End Function
+
 ' Утилитарный минимум без обращения к Excel.
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
@@ -18791,7 +18913,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCrackFormationCalculator
 TYPE: 2
-LINES: 2440
+LINES: 2451
 ====================================================================================================
 Option Explicit
 
@@ -19642,6 +19764,17 @@ End Function
 ' Переводит UltimateStrain-поиск трещины в численную остановку.
 Public Sub LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
     SetFormationNumericalFailure reason
+End Sub
+
+' Переводит typed-причину общего Search в Formation meta единым механизмом.
+' Отсутствие объекта и ошибка настройки остаются терминальными, не NumFail.
+Public Sub LimitSearchSetFailure(ByVal FailureCode As ESolverFailureCode, ByVal reason As String)
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    meta.SetSolverFailure FailureCode, rkCrackFormation, reason, True
+    mConverged = False
+    mCrackFormed = False
+    SetFormationResult meta.InternalStatus, meta.ResultCode, meta.resultComment
 End Sub
 
 
@@ -44489,7 +44622,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CTestLimitSearchProblem
 TYPE: 2
-LINES: 473
+LINES: 553
 ====================================================================================================
 Option Explicit
 
@@ -44530,6 +44663,14 @@ Private mProbeCalls As Long ' Счетчик проб общего алгори�
 Private mFailureAbove As Double ' Искусственная численная неудача выше этой lambda; 0 отключает ее.
 Private mStepCriterion As Boolean ' Разрывный критерий не имеет нулевой невязки на соседних Double.
 Private mRecoveryWithoutProgress As Boolean ' Намеренно неисправный callback recovery возвращает прежнюю границу.
+Private mUltimateDamping As Double ' ДЛЯ ТЕСТОВ: начальное демпфирование Newton.
+Private mUltimateMinAlpha As Double ' ДЛЯ ТЕСТОВ: нижняя граница line search.
+Private mUltimateMaxDeltaEps As Double ' ДЛЯ ТЕСТОВ: проверка непредставимого приращения.
+Private mUltimateInitialEps As Double ' ДЛЯ ТЕСТОВ: ненулевой старт для машинной стагнации.
+Private mUltimateConstantNorm As Boolean ' ДЛЯ ТЕСТОВ: line search не может уменьшить норму.
+Private mUltimateScenario As Long ' ДЛЯ ТЕСТОВ: направленный отказ callback-а.
+Private mUltimateCalls As Long ' ДЛЯ ТЕСТОВ: число оценок невязки Newton.
+Private mFailureCode As ESolverFailureCode ' ДЛЯ ТЕСТОВ: точная причина остановки.
 
 ' Настраивает линейную тестовую задачу перед запуском общего search.
 Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
@@ -44555,6 +44696,14 @@ Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
     mFailureAbove = 0#
     mStepCriterion = False
     mRecoveryWithoutProgress = False
+    mUltimateDamping = 1#
+    mUltimateMinAlpha = 0.03125
+    mUltimateMaxDeltaEps = 0.01
+    mUltimateInitialEps = 0#
+    mUltimateConstantNorm = False
+    mUltimateScenario = 0
+    mUltimateCalls = 0
+    mFailureCode = sfcNone
 End Sub
 
 ' ДЛЯ ТЕСТОВ: задает численную неудачу верхних проб, не физический предел.
@@ -44688,7 +44837,7 @@ Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
-    eps0 = 0#: kx = 0#: ky = 0#
+    eps0 = mUltimateInitialEps: kx = 0#: ky = 0#
 End Sub
 
 Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal section As CSectionModel, _
@@ -44698,6 +44847,24 @@ Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal s
         ByRef rPath1 As Double, ByRef rPath2 As Double, ByRef rLimit As Double, _
         ByRef lambdaValue As Double, ByRef state As String) As Boolean
     Set solver = Nothing
+    mUltimateCalls = mUltimateCalls + 1
+    If mUltimateCalls = 2 Then
+        Select Case mUltimateScenario
+            Case 7
+                ILimitSearchProblem_SetFailure sfcInvalidConfiguration, "Ошибочная настройка тестового callback-а Якобиана."
+                Exit Function
+            Case 8
+                ILimitSearchProblem_SetFailure sfcInternalError, "Тестовый callback не получил обязательную зависимость."
+                Exit Function
+            Case 9
+                ILimitSearchProblem_SetFailure sfcSingularTangent, "Вырождение тестовой касательной."
+                Exit Function
+            Case 10
+                Err.Raise 9, "CTestLimitSearchProblem", "Тестовое нарушение программного контракта."
+            Case 11
+                Err.Raise 6, "CTestLimitSearchProblem", "Тестовое переполнение численной операции."
+        End Select
+    End If
     rPath1 = kx
     rPath2 = ky
     lambdaValue = eps0 / 0.001
@@ -44710,11 +44877,13 @@ Private Function ILimitSearchProblem_LimitSearchUltimateResidualReached(ByVal rP
         ByVal rPath2 As Double, ByVal rLimit As Double) As Boolean
     ILimitSearchProblem_LimitSearchUltimateResidualReached = _
         Abs(rPath1) <= mTolerance And Abs(rPath2) <= mTolerance And Abs(rLimit) <= mTolerance
+    If mUltimateConstantNorm Then ILimitSearchProblem_LimitSearchUltimateResidualReached = False
 End Function
 
 Private Function ILimitSearchProblem_LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Double
     ILimitSearchProblem_LimitSearchUltimateResidualNorm = Abs(rPath1) + Abs(rPath2) + Abs(rLimit)
+    If mUltimateConstantNorm Then ILimitSearchProblem_LimitSearchUltimateResidualNorm = 1#
 End Function
 
 Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
@@ -44732,6 +44901,7 @@ End Function
 Private Sub ILimitSearchProblem_LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
     mConverged = False
     mLimitState = PROBE_NUMFAIL
+    mFailureCode = sfcNumericalFailure
     AppendDiagnosticLine reason
 End Sub
 
@@ -44741,11 +44911,11 @@ Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxIterations() As L
 End Property
 
 Private Property Get ILimitSearchProblem_LimitSearchUltimateDampingInitial() As Double
-    ILimitSearchProblem_LimitSearchUltimateDampingInitial = 1#
+    ILimitSearchProblem_LimitSearchUltimateDampingInitial = mUltimateDamping
 End Property
 
 Private Property Get ILimitSearchProblem_LimitSearchUltimateMinLineSearchAlpha() As Double
-    ILimitSearchProblem_LimitSearchUltimateMinLineSearchAlpha = 0.03125
+    ILimitSearchProblem_LimitSearchUltimateMinLineSearchAlpha = mUltimateMinAlpha
 End Property
 
 Private Property Get ILimitSearchProblem_LimitSearchUltimateLineSearchEnabled() As Boolean
@@ -44753,7 +44923,7 @@ Private Property Get ILimitSearchProblem_LimitSearchUltimateLineSearchEnabled() 
 End Property
 
 Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaEpsilon0() As Double
-    ILimitSearchProblem_LimitSearchUltimateMaxDeltaEpsilon0 = 0.01
+    ILimitSearchProblem_LimitSearchUltimateMaxDeltaEpsilon0 = mUltimateMaxDeltaEps
 End Property
 
 Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa() As Double
@@ -44914,6 +45084,8 @@ Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRe
     Set meta = New CResultMeta
     If mConverged Then
         meta.SetResult rsSuccess, rcCheckPassed, mKind, "Тестовый критерий найден."
+    ElseIf mFailureCode <> sfcNone Then
+        meta.SetSolverFailure mFailureCode, mKind, mDiagnosticLog, (mUltimateCalls > 0)
     ElseIf mLimitState = "SearchBoundReached" Then
         meta.SetResult rsNumericalFailure, rcSearchBoundReached, mKind, mLimitState
     ElseIf mLimitState = PROBE_INPUTERR Then
@@ -44929,7 +45101,8 @@ Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRe
 End Function
 
 Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
-    ILimitSearchProblem_StoppedTerminally = False
+    ILimitSearchProblem_StoppedTerminally = (mFailureCode = sfcInvalidConfiguration Or _
+        mFailureCode = sfcInvalidInput Or mFailureCode = sfcInternalError)
 End Property
 
 Private Property Get ILimitSearchProblem_StopReason() As String
@@ -44963,6 +45136,46 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
+' ============================== ДЛЯ ТЕСТОВ ==============================
+' Сохраняет typed failure общего Newton независимо от display-строк и текста.
+Private Sub ILimitSearchProblem_SetFailure(ByVal FailureCode As ESolverFailureCode, ByVal reason As String)
+    mFailureCode = FailureCode
+    mConverged = False
+    mLimitState = PROBE_NUMFAIL
+    If FailureCode = sfcInvalidConfiguration Or FailureCode = sfcInvalidInput Then mLimitState = PROBE_INPUTERR
+    AppendDiagnosticLine reason
+End Sub
+
+' ДЛЯ ТЕСТОВ: меняет ровно один guard/численный сценарий линейной системы.
+' Первый сценарий воспроизводит бесконечное деление alpha при min alpha=0.
+Public Sub ConfigureUltimateGuardCase(ByVal scenario As Long, Optional ByVal kind As EResultKind = rkCapacity)
+    Configure "Bisection", 1.25, 0.000000001, 20, resultKind:=kind
+    mUltimateScenario = scenario
+    Select Case scenario
+        Case 1
+            mUltimateMinAlpha = 0#: mUltimateConstantNorm = True
+        Case 2
+            mUltimateDamping = 0#
+        Case 3
+            mUltimateDamping = 0.01: mUltimateMinAlpha = 0.1
+        Case 4
+            mMaxIterations = 0
+        Case 5
+            mUltimateMaxDeltaEps = -1#
+        Case 6
+            mUltimateInitialEps = 1#: mRootLambda = 1001#: mUltimateMaxDeltaEps = 1E-30
+    End Select
+End Sub
+
+' ДЛЯ ТЕСТОВ: счетчик и typed-причина для независимых assertions.
+Public Property Get UltimateCalls() As Long
+    UltimateCalls = mUltimateCalls
+End Property
+
+Public Property Get FailureCode() As ESolverFailureCode
+    FailureCode = mFailureCode
+End Property
 
 
 ====================================================================================================
@@ -51070,7 +51283,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestCapacitySolver
 TYPE: 1
-LINES: 2156
+LINES: 2264
 ====================================================================================================
 Option Explicit
 
@@ -51145,6 +51358,7 @@ Public Function RunCapacitySolverTests() As String
     TestAudit03SearchArithmetic stats
     TestAudit03RealCapacityPrecision stats
     TestAudit03CapacityTypedFailures stats
+    TestAudit03UltimateGuards stats
     AppendLine stats, "RUN: TestCapacityLoadPathMethodMatrix"
     TestCapacityLoadPathMethodMatrix stats
     AppendLine stats, "RUN: TestCapacityLoadPathZeroComponentMatrix"
@@ -53083,7 +53297,7 @@ Private Sub TestAudit03CapacityTypedFailures(ByRef stats As TCapacityTestStats)
     Dim validSection As CSectionModel
     Set validSection = BuildGeneratedSectionModel(mesh, rebars)
     Dim scenario As Long
-    For scenario = 1 To 6
+    For scenario = 1 To 9
         Dim cap As CCapacitySolver
         Set cap = New CCapacitySolver
         ConfigureCapacity cap
@@ -53125,11 +53339,21 @@ Private Sub TestAudit03CapacityTypedFailures(ByRef stats As TCapacityTestStats)
                 cap.MaxRetries = 0
                 expectedStatus = rsNumericalFailure: expectedCode = rcSingularTangent
                 expectedFailure = sfcSingularTangent
+            Case 7, 8, 9
+                If scenario = 7 Then cap.SolverMinLineSearchAlpha = 0#
+                If scenario = 8 Then cap.SolverDampingInitial = 0#
+                If scenario = 9 Then cap.SolverMinLineSearchAlpha = 2#
+                expectedStatus = rsInvalidConfiguration: expectedCode = rcInvalidConfiguration
+                expectedFailure = sfcInvalidConfiguration
         End Select
         Dim prefix As String
         prefix = "audit03.capacity.typed." & CStr(scenario)
         SaveAudit03SearchProgress stats, "START: " & prefix
-        cap.SolveByLoadPathMultiplier section, concrete, steel, nOffset, 0#, 0#, 10000000#, 0#, 0#
+        If scenario <= 6 Then
+            cap.SolveByLoadPathMultiplier section, concrete, steel, nOffset, 0#, 0#, 10000000#, 0#, 0#
+        Else
+            cap.SolveByUltimateLoadPath section, concrete, steel, nOffset, 0#, 0#, 10000000#, 0#, 0#
+        End If
         Dim result As CLimitSearchResult
         Set result = Audit02CapacitySnapshot(cap, "LoadMultiplier")
         AssertTrue stats, prefix & ".status", result.meta.InternalStatus = expectedStatus
@@ -53143,6 +53367,103 @@ Private Sub TestAudit03CapacityTypedFailures(ByRef stats As TCapacityTestStats)
         AppendLine stats, "COMMENT: " & prefix & "; " & result.meta.resultComment
         SaveAudit03SearchProgress stats, "DONE: " & prefix
     Next scenario
+End Sub
+
+' ДЛЯ ТЕСТОВ: отдельный watchdog воспроизводит бесконечный line search
+' прежнего общего Newton при нулевом минимальном alpha и неизменной норме.
+Public Function RunAudit03UltimateStagnation() As String
+    Dim stats As TCapacityTestStats
+    TestAudit03UltimateGuardCase stats, rkCapacity, 1
+    AppendLine stats, "TOTAL_AUDIT03_ULTIMATE_STAGNATION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03UltimateStagnation = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: конечность, typed failures и реальные Capacity-маршруты.
+Public Function RunAudit03UltimateContracts() As String
+    Dim stats As TCapacityTestStats
+    TestAudit03UltimateGuards stats
+    TestAudit03CapacityTypedFailures stats
+    AppendLine stats, "TOTAL_AUDIT03_ULTIMATE_CONTRACTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03UltimateContracts = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: оба domain-kind используют один общий Newton, без выдуманных
+' материалов. Критерий и исходная точность линейной задачи не ослабляются.
+Private Sub TestAudit03UltimateGuards(ByRef stats As TCapacityTestStats)
+    Dim kind As Variant, scenario As Long
+    For Each kind In Array(rkCapacity, rkCrackFormation)
+        For scenario = 1 To 13
+            TestAudit03UltimateGuardCase stats, CLng(kind), scenario
+        Next scenario
+    Next kind
+    TestAudit02GenericUltimateSearch stats
+End Sub
+
+' ДЛЯ ТЕСТОВ: проверяет реальный callback call path, отсутствие фиктивной
+' точки, точную причину и конечное число проб. Nothing context - нарушение API.
+Private Sub TestAudit03UltimateGuardCase(ByRef stats As TCapacityTestStats, _
+        ByVal kind As EResultKind, ByVal scenario As Long)
+    On Error GoTo Failed
+    Dim prefix As String
+    prefix = "audit03.ultimate." & CStr(kind) & "." & CStr(scenario)
+    SaveAudit03SearchProgress stats, "START: " & prefix
+    Dim problem As CTestLimitSearchProblem
+    Set problem = New CTestLimitSearchProblem
+    problem.ConfigureUltimateGuardCase scenario, kind
+    Dim search As CUltimateStrainSearch
+    Set search = New CUltimateStrainSearch
+    Dim path As CLoadPathVector
+    Set path = New CLoadPathVector
+    path.Initialize 0#, 1#, 0#, 0#, 0#, 0#
+    If scenario = 12 Then
+        On Error Resume Next
+        Dim ignored As Boolean
+        ignored = search.RunNewton(Nothing, Nothing, Nothing, Nothing, path, Nothing, "Тестовый поиск не сошелся.")
+        Dim errorNumber As Long
+        errorNumber = Err.Number
+        On Error GoTo Failed
+        AssertTrue stats, prefix & ".controlledContractError", errorNumber = vbObjectError + 4212
+        SaveAudit03SearchProgress stats, "DONE: " & prefix
+        Exit Sub
+    End If
+    If scenario = 13 Then Set path = Nothing
+    AssertTrue stats, prefix & ".notAccepted", _
+        Not search.RunNewton(problem, Nothing, Nothing, Nothing, path, Nothing, "Тестовый поиск не сошелся.")
+    Dim expectedFailure As ESolverFailureCode
+    expectedFailure = sfcInvalidConfiguration
+    Select Case scenario
+        Case 6, 11: expectedFailure = sfcNumericalFailure
+        Case 8, 10, 13: expectedFailure = sfcInternalError
+        Case 9: expectedFailure = sfcSingularTangent
+    End Select
+    AssertTrue stats, prefix & ".typedCause", problem.FailureCode = expectedFailure
+    AssertTrue stats, prefix & ".noPoint", Not problem.Converged
+    AssertTrue stats, prefix & ".finiteProbes", problem.UltimateCalls <= 4
+    If scenario <= 5 Or scenario = 13 Then AssertTrue stats, prefix & ".noNumericalAttempt", problem.UltimateCalls = 0
+    If scenario = 6 Then AssertTrue stats, prefix & ".stagnationReason", InStr(problem.DiagnosticLog, "представимого шага Double") > 0
+    If scenario >= 7 And scenario <= 11 Then AssertTrue stats, prefix & ".failedProbeNotOverwritten", problem.UltimateCalls = 2
+    Dim callback As ILimitSearchProblem
+    Set callback = problem
+    Dim request As CLimitSearchRequest
+    Set request = New CLimitSearchRequest
+    request.InitializeWithProblem problem, kind, "UltimateStrain", 0#, 1#, 0#, 0#, 0#, 0#
+    Dim result As CLimitSearchResult
+    Set result = callback.BuildResult(request, False)
+    Dim expectedMeta As CResultMeta
+    Set expectedMeta = New CResultMeta
+    expectedMeta.SetSolverFailure expectedFailure, kind, "Контроль typed-причины.", (problem.UltimateCalls > 0)
+    AssertTrue stats, prefix & ".status", result.meta.InternalStatus = expectedMeta.InternalStatus
+    AssertTrue stats, prefix & ".code", result.meta.ResultCode = expectedMeta.ResultCode
+    AssertTrue stats, prefix & ".resultKind", result.meta.resultKind = kind
+    AssertTrue stats, prefix & ".noPhysicalPoint", Not result.HasLimitPoint
+    AssertTrue stats, prefix & ".lifecycle", result.meta.calculated = expectedMeta.calculated
+    AssertTrue stats, prefix & ".reason", Len(result.meta.resultComment) > 0
+    AppendLine stats, "COMMENT: " & prefix & "; calls=" & CStr(problem.UltimateCalls) & "; " & result.meta.resultComment
+    SaveAudit03SearchProgress stats, "DONE: " & prefix
+    Exit Sub
+Failed:
+    AssertTrue stats, prefix & ".runtime." & CStr(Err.Number) & "." & Err.description, False
+    SaveAudit03SearchProgress stats, "FAILED: " & prefix
 End Sub
 
 ' Проверяет соседние Double, большие положительные границы и отсутствие
@@ -53232,7 +53553,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestCrackWidth
 TYPE: 1
-LINES: 1118
+LINES: 1120
 ====================================================================================================
 Option Explicit
 
@@ -54319,7 +54640,7 @@ Private Sub TestAudit03FormationTypedFailures(ByRef stats As TCrackTestStats)
     load.Initialize -20000#, -15000000#, 0#, 0#, 0#
     Dim path As Variant, scenario As Long
     For Each path In Array("lambda*Mxy", "lambda*N", "lambda*NMxy", "Auto")
-        For scenario = 1 To 2
+        For scenario = 1 To 3
             Dim calculator As CCrackFormationCalculator
             Set calculator = New CCrackFormationCalculator
             calculator.CrackFormationPath = CStr(path)
@@ -54331,8 +54652,10 @@ Private Sub TestAudit03FormationTypedFailures(ByRef stats As TCrackTestStats)
             calculator.SolverToleranceMy = 5000#
             If scenario = 1 Then
                 calculator.SolverMethod = "Invalid"
-            Else
+            ElseIf scenario = 2 Then
                 calculator.SolverMaxIterations = 0
+            Else
+                calculator.SolverMinLineSearchAlpha = 0#
             End If
             Dim result As CCrackFormationResult
             Set result = calculator.CheckFormation(section, provider, TestCrackedStateSpec(), _
@@ -57563,7 +57886,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestSectionSolver
 TYPE: 1
-LINES: 1015
+LINES: 1020
 ====================================================================================================
 Option Explicit
 
@@ -58247,7 +58570,7 @@ End Function
 ' контекст не должны терять свою причину при формировании named-state.
 Private Sub TestAudit03TypedStateFailures(ByRef stats As TSectionSolverTestStats)
     Dim scenario As Long
-    For scenario = 1 To 6
+    For scenario = 1 To 11
         TestAudit03TypedStateFailureCase stats, scenario
     Next scenario
 End Sub
@@ -58279,6 +58602,11 @@ Private Sub TestAudit03TypedStateFailureCase(ByRef stats As TSectionSolverTestSt
     If scenario = 1 Then provider.SolverMethod = "UnknownMethod"
     If scenario = 3 Then provider.maxIterations = 1
     If scenario = 6 Then provider.maxIterations = 0
+    If scenario = 7 Then provider.MinLineSearchAlpha = 0#
+    If scenario = 8 Then provider.DampingInitial = 0#
+    If scenario = 9 Then provider.MinLineSearchAlpha = 2#
+    If scenario = 10 Then provider.MaxDeltaEpsilon0 = -1#
+    If scenario = 11 Then provider.MaxDeltaKappa = -1#
     Dim spec As CMaterialModelSpec
     Set spec = New CMaterialModelSpec
     spec.Initialize "ULS(I)", "ThreeLine", "Ignore", "TwoLine"
@@ -58294,7 +58622,7 @@ Private Sub TestAudit03TypedStateFailureCase(ByRef stats As TSectionSolverTestSt
     Dim expectedStatus As EResultInternalStatus
     Dim expectedCode As EResultCode
     Select Case scenario
-        Case 1, 6: expectedStatus = rsInvalidConfiguration: expectedCode = rcInvalidConfiguration
+        Case 1, 6 To 11: expectedStatus = rsInvalidConfiguration: expectedCode = rcInvalidConfiguration
         Case 2: expectedStatus = rsNumericalFailure: expectedCode = rcSingularTangent
         Case 3: expectedStatus = rsNumericalFailure: expectedCode = rcNumericalFailure
         Case 4: expectedStatus = rsInternalError: expectedCode = rcInternalError
@@ -58313,7 +58641,7 @@ Private Sub TestAudit03TypedStateFailureCase(ByRef stats As TSectionSolverTestSt
     AppendLine stats, "COMMENT: " & prefix & "; " & state.resultComment
     AssertTrue stats, prefix & ".notConverged", Not state.Converged
     AssertTrue stats, prefix & ".notReusable", repository.FindEquivalent(request) Is Nothing
-    If scenario = 1 Or scenario = 5 Or scenario = 6 Then
+    If scenario = 1 Or scenario = 5 Or scenario >= 6 Then
         AssertTrue stats, prefix & ".oneAttempt", state.SolverCallCount = 1
         AssertTrue stats, prefix & ".notCalculated", Not state.ResultMeta.calculated
     ElseIf scenario = 4 Then

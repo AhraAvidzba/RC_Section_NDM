@@ -46,6 +46,14 @@ Private mProbeCalls As Long ' Счетчик проб общего алгори�
 Private mFailureAbove As Double ' Искусственная численная неудача выше этой lambda; 0 отключает ее.
 Private mStepCriterion As Boolean ' Разрывный критерий не имеет нулевой невязки на соседних Double.
 Private mRecoveryWithoutProgress As Boolean ' Намеренно неисправный callback recovery возвращает прежнюю границу.
+Private mUltimateDamping As Double ' ДЛЯ ТЕСТОВ: начальное демпфирование Newton.
+Private mUltimateMinAlpha As Double ' ДЛЯ ТЕСТОВ: нижняя граница line search.
+Private mUltimateMaxDeltaEps As Double ' ДЛЯ ТЕСТОВ: проверка непредставимого приращения.
+Private mUltimateInitialEps As Double ' ДЛЯ ТЕСТОВ: ненулевой старт для машинной стагнации.
+Private mUltimateConstantNorm As Boolean ' ДЛЯ ТЕСТОВ: line search не может уменьшить норму.
+Private mUltimateScenario As Long ' ДЛЯ ТЕСТОВ: направленный отказ callback-а.
+Private mUltimateCalls As Long ' ДЛЯ ТЕСТОВ: число оценок невязки Newton.
+Private mFailureCode As ESolverFailureCode ' ДЛЯ ТЕСТОВ: точная причина остановки.
 
 ' Настраивает линейную тестовую задачу перед запуском общего search.
 Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
@@ -71,6 +79,14 @@ Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
     mFailureAbove = 0#
     mStepCriterion = False
     mRecoveryWithoutProgress = False
+    mUltimateDamping = 1#
+    mUltimateMinAlpha = 0.03125
+    mUltimateMaxDeltaEps = 0.01
+    mUltimateInitialEps = 0#
+    mUltimateConstantNorm = False
+    mUltimateScenario = 0
+    mUltimateCalls = 0
+    mFailureCode = sfcNone
 End Sub
 
 ' ДЛЯ ТЕСТОВ: задает численную неудачу верхних проб, не физический предел.
@@ -204,7 +220,7 @@ Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
-    eps0 = 0#: kx = 0#: ky = 0#
+    eps0 = mUltimateInitialEps: kx = 0#: ky = 0#
 End Sub
 
 Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal section As CSectionModel, _
@@ -214,6 +230,24 @@ Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal s
         ByRef rPath1 As Double, ByRef rPath2 As Double, ByRef rLimit As Double, _
         ByRef lambdaValue As Double, ByRef state As String) As Boolean
     Set solver = Nothing
+    mUltimateCalls = mUltimateCalls + 1
+    If mUltimateCalls = 2 Then
+        Select Case mUltimateScenario
+            Case 7
+                ILimitSearchProblem_SetFailure sfcInvalidConfiguration, "Ошибочная настройка тестового callback-а Якобиана."
+                Exit Function
+            Case 8
+                ILimitSearchProblem_SetFailure sfcInternalError, "Тестовый callback не получил обязательную зависимость."
+                Exit Function
+            Case 9
+                ILimitSearchProblem_SetFailure sfcSingularTangent, "Вырождение тестовой касательной."
+                Exit Function
+            Case 10
+                Err.Raise 9, "CTestLimitSearchProblem", "Тестовое нарушение программного контракта."
+            Case 11
+                Err.Raise 6, "CTestLimitSearchProblem", "Тестовое переполнение численной операции."
+        End Select
+    End If
     rPath1 = kx
     rPath2 = ky
     lambdaValue = eps0 / 0.001
@@ -226,11 +260,13 @@ Private Function ILimitSearchProblem_LimitSearchUltimateResidualReached(ByVal rP
         ByVal rPath2 As Double, ByVal rLimit As Double) As Boolean
     ILimitSearchProblem_LimitSearchUltimateResidualReached = _
         Abs(rPath1) <= mTolerance And Abs(rPath2) <= mTolerance And Abs(rLimit) <= mTolerance
+    If mUltimateConstantNorm Then ILimitSearchProblem_LimitSearchUltimateResidualReached = False
 End Function
 
 Private Function ILimitSearchProblem_LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Double
     ILimitSearchProblem_LimitSearchUltimateResidualNorm = Abs(rPath1) + Abs(rPath2) + Abs(rLimit)
+    If mUltimateConstantNorm Then ILimitSearchProblem_LimitSearchUltimateResidualNorm = 1#
 End Function
 
 Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
@@ -248,6 +284,7 @@ End Function
 Private Sub ILimitSearchProblem_LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
     mConverged = False
     mLimitState = PROBE_NUMFAIL
+    mFailureCode = sfcNumericalFailure
     AppendDiagnosticLine reason
 End Sub
 
@@ -257,11 +294,11 @@ Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxIterations() As L
 End Property
 
 Private Property Get ILimitSearchProblem_LimitSearchUltimateDampingInitial() As Double
-    ILimitSearchProblem_LimitSearchUltimateDampingInitial = 1#
+    ILimitSearchProblem_LimitSearchUltimateDampingInitial = mUltimateDamping
 End Property
 
 Private Property Get ILimitSearchProblem_LimitSearchUltimateMinLineSearchAlpha() As Double
-    ILimitSearchProblem_LimitSearchUltimateMinLineSearchAlpha = 0.03125
+    ILimitSearchProblem_LimitSearchUltimateMinLineSearchAlpha = mUltimateMinAlpha
 End Property
 
 Private Property Get ILimitSearchProblem_LimitSearchUltimateLineSearchEnabled() As Boolean
@@ -269,7 +306,7 @@ Private Property Get ILimitSearchProblem_LimitSearchUltimateLineSearchEnabled() 
 End Property
 
 Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaEpsilon0() As Double
-    ILimitSearchProblem_LimitSearchUltimateMaxDeltaEpsilon0 = 0.01
+    ILimitSearchProblem_LimitSearchUltimateMaxDeltaEpsilon0 = mUltimateMaxDeltaEps
 End Property
 
 Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa() As Double
@@ -430,6 +467,8 @@ Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRe
     Set meta = New CResultMeta
     If mConverged Then
         meta.SetResult rsSuccess, rcCheckPassed, mKind, "Тестовый критерий найден."
+    ElseIf mFailureCode <> sfcNone Then
+        meta.SetSolverFailure mFailureCode, mKind, mDiagnosticLog, (mUltimateCalls > 0)
     ElseIf mLimitState = "SearchBoundReached" Then
         meta.SetResult rsNumericalFailure, rcSearchBoundReached, mKind, mLimitState
     ElseIf mLimitState = PROBE_INPUTERR Then
@@ -445,7 +484,8 @@ Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRe
 End Function
 
 Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
-    ILimitSearchProblem_StoppedTerminally = False
+    ILimitSearchProblem_StoppedTerminally = (mFailureCode = sfcInvalidConfiguration Or _
+        mFailureCode = sfcInvalidInput Or mFailureCode = sfcInternalError)
 End Property
 
 Private Property Get ILimitSearchProblem_StopReason() As String
@@ -479,3 +519,43 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
+' ============================== ДЛЯ ТЕСТОВ ==============================
+' Сохраняет typed failure общего Newton независимо от display-строк и текста.
+Private Sub ILimitSearchProblem_SetFailure(ByVal failureCode As ESolverFailureCode, ByVal reason As String)
+    mFailureCode = failureCode
+    mConverged = False
+    mLimitState = PROBE_NUMFAIL
+    If failureCode = sfcInvalidConfiguration Or failureCode = sfcInvalidInput Then mLimitState = PROBE_INPUTERR
+    AppendDiagnosticLine reason
+End Sub
+
+' ДЛЯ ТЕСТОВ: меняет ровно один guard/численный сценарий линейной системы.
+' Первый сценарий воспроизводит бесконечное деление alpha при min alpha=0.
+Public Sub ConfigureUltimateGuardCase(ByVal scenario As Long, Optional ByVal kind As EResultKind = rkCapacity)
+    Configure "Bisection", 1.25, 0.000000001, 20, resultKind:=kind
+    mUltimateScenario = scenario
+    Select Case scenario
+        Case 1
+            mUltimateMinAlpha = 0#: mUltimateConstantNorm = True
+        Case 2
+            mUltimateDamping = 0#
+        Case 3
+            mUltimateDamping = 0.01: mUltimateMinAlpha = 0.1
+        Case 4
+            mMaxIterations = 0
+        Case 5
+            mUltimateMaxDeltaEps = -1#
+        Case 6
+            mUltimateInitialEps = 1#: mRootLambda = 1001#: mUltimateMaxDeltaEps = 1E-30
+    End Select
+End Sub
+
+' ДЛЯ ТЕСТОВ: счетчик и typed-причина для независимых assertions.
+Public Property Get UltimateCalls() As Long
+    UltimateCalls = mUltimateCalls
+End Property
+
+Public Property Get FailureCode() As ESolverFailureCode
+    FailureCode = mFailureCode
+End Property

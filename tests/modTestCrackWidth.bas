@@ -1084,7 +1084,7 @@ Private Sub TestAudit03FormationTypedFailures(ByRef stats As TCrackTestStats)
     load.Initialize -20000#, -15000000#, 0#, 0#, 0#
     Dim path As Variant, scenario As Long
     For Each path In Array("lambda*Mxy", "lambda*N", "lambda*NMxy", "Auto")
-        For scenario = 1 To 2
+        For scenario = 1 To 3
             Dim calculator As CCrackFormationCalculator
             Set calculator = New CCrackFormationCalculator
             calculator.CrackFormationPath = CStr(path)
@@ -1096,8 +1096,10 @@ Private Sub TestAudit03FormationTypedFailures(ByRef stats As TCrackTestStats)
             calculator.SolverToleranceMy = 5000#
             If scenario = 1 Then
                 calculator.SolverMethod = "Invalid"
-            Else
+            ElseIf scenario = 2 Then
                 calculator.SolverMaxIterations = 0
+            Else
+                calculator.SolverMinLineSearchAlpha = 0#
             End If
             Dim result As CCrackFormationResult
             Set result = calculator.CheckFormation(section, provider, TestCrackedStateSpec(), _

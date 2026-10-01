@@ -362,6 +362,11 @@ Private Sub ILimitSearchProblem_LimitSearchSetUltimateNumericalFailure(ByVal rea
     mCapacity.LimitSearchSetUltimateNumericalFailure reason
 End Sub
 
+' Передает машинную причину общего алгоритма владельцу Capacity-результата.
+Private Sub ILimitSearchProblem_SetFailure(ByVal failureCode As ESolverFailureCode, ByVal reason As String)
+    mCapacity.LimitSearchSetFailure failureCode, reason
+End Sub
+
 ' Однотипные настройки общего Newton из численной конфигурации Capacity.
 Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxIterations() As Long
     ILimitSearchProblem_LimitSearchUltimateMaxIterations = mCapacity.LimitSearchUltimateMaxIterations

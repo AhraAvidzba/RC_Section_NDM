@@ -131,6 +131,11 @@ End Sub
 Public Sub SetNumericalFailure(ByVal message As String)
 End Sub
 
+' Сохраняет точную техническую причину общего solve/search без разбора текста.
+' Ошибка настройки или внутреннего контракта не становится численной неудачей.
+Public Sub SetFailure(ByVal failureCode As ESolverFailureCode, ByVal reason As String)
+End Sub
+
 ' Добавляет строку диагностики в доменный журнал.
 Public Sub AppendDiagnostic(ByVal message As String)
 End Sub

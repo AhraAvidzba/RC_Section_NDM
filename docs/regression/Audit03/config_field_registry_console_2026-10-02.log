@@ -1,0 +1,21 @@
+
+Name                          Count
+----                          -----
+rngSystemSettings               102
+rngCircleGeometry                 8
+rngSteelMaterialParameters       10
+rngConcreteMaterialParameters    14
+rngUnitSettings                  12
+rngSignConventionSettings         3
+rngCalculationProfiles           92
+rngPlotAnnotationSettings        26
+rngRoundedRectangleGeometry      46
+rngHollowRectangleGeometry       80
+rngRectSetGeometry               94
+rngLoadCombinations             210
+rngStabilityDurationLoads       120
+rngSP35Table721                 144
+UnnamedMaterialDiagramControl   104
+
+
+CONFIG_FIELD_REGISTRY: fields=1065; unique addresses=1065; behavioral acceptance=NotComplete

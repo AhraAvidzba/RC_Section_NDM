@@ -681,7 +681,7 @@ End Function
 ' контекст не должны терять свою причину при формировании named-state.
 Private Sub TestAudit03TypedStateFailures(ByRef stats As TSectionSolverTestStats)
     Dim scenario As Long
-    For scenario = 1 To 6
+    For scenario = 1 To 11
         TestAudit03TypedStateFailureCase stats, scenario
     Next scenario
 End Sub
@@ -713,6 +713,11 @@ Private Sub TestAudit03TypedStateFailureCase(ByRef stats As TSectionSolverTestSt
     If scenario = 1 Then provider.SolverMethod = "UnknownMethod"
     If scenario = 3 Then provider.MaxIterations = 1
     If scenario = 6 Then provider.MaxIterations = 0
+    If scenario = 7 Then provider.MinLineSearchAlpha = 0#
+    If scenario = 8 Then provider.DampingInitial = 0#
+    If scenario = 9 Then provider.MinLineSearchAlpha = 2#
+    If scenario = 10 Then provider.MaxDeltaEpsilon0 = -1#
+    If scenario = 11 Then provider.MaxDeltaKappa = -1#
     Dim spec As CMaterialModelSpec
     Set spec = New CMaterialModelSpec
     spec.Initialize "ULS(I)", "ThreeLine", "Ignore", "TwoLine"
@@ -728,7 +733,7 @@ Private Sub TestAudit03TypedStateFailureCase(ByRef stats As TSectionSolverTestSt
     Dim expectedStatus As EResultInternalStatus
     Dim expectedCode As EResultCode
     Select Case scenario
-        Case 1, 6: expectedStatus = rsInvalidConfiguration: expectedCode = rcInvalidConfiguration
+        Case 1, 6 To 11: expectedStatus = rsInvalidConfiguration: expectedCode = rcInvalidConfiguration
         Case 2: expectedStatus = rsNumericalFailure: expectedCode = rcSingularTangent
         Case 3: expectedStatus = rsNumericalFailure: expectedCode = rcNumericalFailure
         Case 4: expectedStatus = rsInternalError: expectedCode = rcInternalError
@@ -747,7 +752,7 @@ Private Sub TestAudit03TypedStateFailureCase(ByRef stats As TSectionSolverTestSt
     AppendLine stats, "COMMENT: " & prefix & "; " & state.ResultComment
     AssertTrue stats, prefix & ".notConverged", Not state.Converged
     AssertTrue stats, prefix & ".notReusable", repository.FindEquivalent(request) Is Nothing
-    If scenario = 1 Or scenario = 5 Or scenario = 6 Then
+    If scenario = 1 Or scenario = 5 Or scenario >= 6 Then
         AssertTrue stats, prefix & ".oneAttempt", state.SolverCallCount = 1
         AssertTrue stats, prefix & ".notCalculated", Not state.ResultMeta.Calculated
     ElseIf scenario = 4 Then

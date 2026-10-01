@@ -952,9 +952,30 @@ End Sub
 
 ' Переводит результат UltimateStrain в численную остановку.
 Public Sub LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
-    mLimitState = STATE_NUMERICAL_FAILURE
-    mFailureCode = sfcNumericalFailure
-    mStopReason = reason
+    If LimitSearchHasTerminalFailure Then Exit Sub
+    If mFailureCode = sfcSingularTangent Then
+        AppendSearchDiagnostic reason
+        Exit Sub
+    End If
+    LimitSearchSetFailure sfcNumericalFailure, reason
+End Sub
+
+' Сохраняет typed-причину из общего Search. Терминальная конфигурационная
+' ошибка не повторяется и не переинтерпретируется как физический отказ пути.
+Public Sub LimitSearchSetFailure(ByVal failureCode As ESolverFailureCode, ByVal reason As String)
+    mConverged = False
+    Select Case failureCode
+        Case sfcInvalidInput
+            SetInvalidInput reason
+        Case sfcInvalidConfiguration
+            SetInvalidConfiguration reason
+        Case sfcNumericalFailure, sfcSingularTangent
+            mFailureCode = failureCode
+            mLimitState = ClassifyNumericalFailure(failureCode)
+            mStopReason = reason
+        Case Else
+            SetInternalError reason
+    End Select
 End Sub
 
 ' Настройки общего UltimateStrain-цикла.

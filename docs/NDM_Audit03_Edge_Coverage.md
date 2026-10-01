@@ -74,6 +74,9 @@ leaf/subtree meta и фактические ResultComment. Проверять ч
 - `a03_paths_comments_on_v13_2026-10-02.txt`: те же 27 LC, effective Extension=True, 504/0. Все leaf comments, subtree assembly и фактические подробные/batch ячейки совпали. Для каждой найденной Capacity-точки независимо проверены масштабируемые компоненты и момент N*offset; для formation сохранены выбранный путь и Pre/Post physical flags.
 - `a03_paths_comments_off_v10_2026-10-02.txt`: exploratory 492/4, не PASS. Expected не учитывал моментный zero-filter после переноса N; fixture теперь явно изолирует проверку траектории от фильтра. Сам фильтр и его границы не менялись.
 - `a01_a04_full_off_v13_2026-10-02.txt`: 7798/0 по восьми suites; это промежуточная приемка текущего среза, не завершение широкой матрицы.
+- `f06_ultimate_stagnation_negative_2026-10-02.txt`: реальный VBA UltimateStrain с прежним модулем `1a65796` завис при min alpha=0 и постоянной норме; watchdog остановил test Excel через 60 секунд. Это узкий контрпример, остальные зависимости и тесты текущие.
+- `f03_f06_ultimate_positive_v16_2026-10-02.txt`: 340/0. Два result-kind, 13 guard-сценариев, точные InvalidConfiguration/InternalError/SingularTangent, непредставимый шаг, переполнение и реальные Capacity Ultimate-маршруты. Ни одна ошибочная проба не принята как найденный предел.
+- `f03_f06_full_off_v16_2026-10-02.txt` и `f03_f06_full_on_v16_2026-10-02.txt`: 8285/0 и 8286/0; все восемь suites, source unchanged=True. `source_contracts_v16_2026-10-02.txt`: 101/101, 0 ошибок. Это приемка текущего среза, не закрытие всех L01-L17.
 
 В 27-LC matrix присутствуют физические FAIL/BaseFail, numerical failure и
 blocked формулы. Честный NumFail найденной пробы не объявляется ошибкой самого

@@ -858,6 +858,17 @@ Public Sub LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
     SetFormationNumericalFailure reason
 End Sub
 
+' Переводит typed-причину общего Search в Formation meta единым механизмом.
+' Отсутствие объекта и ошибка настройки остаются терминальными, не NumFail.
+Public Sub LimitSearchSetFailure(ByVal failureCode As ESolverFailureCode, ByVal reason As String)
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    meta.SetSolverFailure failureCode, rkCrackFormation, reason, True
+    mConverged = False
+    mCrackFormed = False
+    SetFormationResult meta.InternalStatus, meta.ResultCode, meta.ResultComment
+End Sub
+
 
 
 ' Настройки общего UltimateStrain-цикла для трещинообразования.
