@@ -1135,9 +1135,14 @@ Private Function ProbeOnce(ByVal section As CSectionModel, _
 
     ' Для обычной probe-точки используем общий state-solve pipeline. Если есть
     ' предыдущая acceptable lambda, передаем ее как warm-start с явной стартовой
-    ' нагрузкой; чистый изгиб оставляем runner-у, чтобы он применил общий
-    ' active-set старт так же, как прямые НДС.
-    If Not mLastAcceptableSolver Is Nothing And Not IsPureBendingProbe(nSpecified, mx, my) Then
+    ' нагрузкой. Для чистого изгиба без N используем отдельный вход runner-а:
+    ' active-set плоскость сразу привязана к целевой lambda-точке и не проходит
+    ' лишние ступени от нулевой нагрузки через излом диаграммы.
+    If IsPureBendingProbe(nSpecified, mx, my) Then
+        runner.SolveWithDirectTargetGuess section, concreteMaterial, steelMaterial, _
+            nSpecified, mx, my, _
+            "для lambda-точки чистого изгиба применена стартовая плоскость; масштабируемые моменты ненулевые"
+    ElseIf Not mLastAcceptableSolver Is Nothing Then
         runner.SolveWithInitialLoadState section, concreteMaterial, steelMaterial, _
             nSpecified, mx, my, mLastAcceptableSolver.Epsilon0, _
             mLastAcceptableSolver.KappaX, mLastAcceptableSolver.KappaY, _

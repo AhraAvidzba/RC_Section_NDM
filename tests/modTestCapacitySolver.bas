@@ -367,8 +367,6 @@ Private Sub TestConcreteLimitState(ByRef stats As TCapacityTestStats)
     cap.SteelStrainLimit = 1#
     cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), LinearConcrete(), LinearSteel(), 0#, -10000000#, 0#
 
-    AppendLine stats, "INFO: capacity.concreteLimit status=" & cap.LimitState & _
-        "; stop=" & cap.StopReason & "; log=" & Replace(cap.DiagnosticLog, vbCrLf, " | ")
     AssertTrue stats, "capacity.concreteLimit.converged", cap.Converged
     AssertEquals stats, "capacity.concreteLimit.state", cap.LimitState, "ConcreteStrainLimit"
 End Sub
@@ -432,8 +430,6 @@ Private Sub TestSteelLimitState(ByRef stats As TCapacityTestStats)
     cap.SteelStrainLimit = 0.0005
     cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), LinearConcrete(), LinearSteel(), 0#, -10000000#, 0#
 
-    AppendLine stats, "INFO: capacity.steelLimit status=" & cap.LimitState & _
-        "; stop=" & cap.StopReason & "; log=" & Replace(cap.DiagnosticLog, vbCrLf, " | ")
     AssertTrue stats, "capacity.steelLimit.converged", cap.Converged
     AssertEquals stats, "capacity.steelLimit.state", cap.LimitState, "SteelStrainLimit"
 End Sub
@@ -453,8 +449,6 @@ Private Sub TestLoadMultiplierPureBendingUsesStateGuess(ByRef stats As TCapacity
     cap.MaxRetries = 1
     cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), 0#, -10000000#, 0#
 
-    AppendLine stats, "INFO: capacity.pureBendingGuess status=" & cap.LimitState & _
-        "; stop=" & cap.StopReason & "; log=" & Replace(cap.DiagnosticLog, vbCrLf, " | ")
     AssertTrue stats, "capacity.pureBendingGuess.converged", cap.Converged
     AssertTrue stats, "capacity.pureBendingGuess.physical", IsPhysicalLimitState(cap.LimitState)
     AssertTrue stats, "capacity.pureBendingGuess.usedGuess", InStr(1, cap.DiagnosticLog, "для lambda-точки чистого изгиба применена стартовая плоскость", vbTextCompare) > 0

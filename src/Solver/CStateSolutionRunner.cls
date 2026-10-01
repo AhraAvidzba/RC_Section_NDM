@@ -175,6 +175,56 @@ Public Sub SolveWithInitialLoadState(ByVal section As CSectionModel, _
     End If
 End Sub
 
+' Решает direct-state из active-set плоскости, сразу привязанной к текущей
+' целевой нагрузке. Этот вход нужен capacity probe-ам чистого изгиба: такая
+' lambda-точка не должна идти ступенями от нулевой нагрузки через излом
+' диаграммы около нуля, но все остальные настройки solver-а и диагностика
+' остаются в общем CStateSolutionRunner.
+Public Sub SolveWithDirectTargetGuess(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        Optional ByVal diagnosticLine As String = vbNullString)
+    If section Is Nothing Then Err.Raise vbObjectError + 3486, "CStateSolutionRunner", "Модель сечения не передана."
+    If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 3487, "CStateSolutionRunner", "Диаграмма бетона не передана."
+    If steelMaterial Is Nothing Then Err.Raise vbObjectError + 3488, "CStateSolutionRunner", "Диаграмма арматуры не передана."
+
+    ClearResult
+
+    Dim service As CSectionSolver
+    Set service = New CSectionSolver
+    ConfigureSolver service
+
+    Dim guessBuilder As CStateGuessBuilder
+    Dim eps0 As Double
+    Dim kx As Double
+    Dim ky As Double
+    Set guessBuilder = New CStateGuessBuilder
+    If guessBuilder.BuildForDirectState(section, concreteMaterial, steelMaterial, _
+            targetN, targetMx, targetMy, eps0, kx, ky) Then
+        service.SetInitialLoadState eps0, kx, ky, targetN, targetMx, targetMy
+        mInitialGuessApplied = True
+        If Len(diagnosticLine) > 0 Then
+            AppendDiagnostic diagnosticLine
+        Else
+            AppendDiagnostic "initialGuess=directTargetActiveSet"
+        End If
+    End If
+
+    mSolverCallCount = mSolverCallCount + 1
+    service.Solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
+    Set mSolver = service
+
+    If Not mSolver Is Nothing Then
+        If mSolver.Converged Then
+            mWithinPhysicalRange = StateWithinPhysicalRange(section, mSolver, concreteMaterial, steelMaterial)
+            mExtensionUsed = StateUsesExtension(section, mSolver, concreteMaterial, steelMaterial)
+        Else
+            mWithinPhysicalRange = False
+            mExtensionUsed = False
+        End If
+    End If
+End Sub
+
 ' Повторяет прямой solve от active-set плоскости для общего случая N+M.
 ' Первый штатный старт сохраняется прежним; этот retry включается только после
 ' несходимости и только если начальная подсказка еще не применялась. Так
@@ -274,11 +324,7 @@ Private Sub ApplyInitialGuess(ByVal section As CSectionModel, _
     Set guessBuilder = New CStateGuessBuilder
     If guessBuilder.BuildForDirectState(section, concreteMaterial, steelMaterial, _
             targetN, targetMx, targetMy, eps0, kx, ky) Then
-        ' Active-set плоскость строится сразу под текущую целевую нагрузку.
-        ' Поэтому стартовую нагрузку задаем той же target-точкой: CSectionSolver
-        ' начинает итерации около нужного уровня усилий, а не ведет эту
-        ' приближенную плоскость ступенями от нулевой нагрузки.
-        solver.SetInitialLoadState eps0, kx, ky, targetN, targetMx, targetMy
+        solver.SetInitialState eps0, kx, ky
         mInitialGuessApplied = True
         AppendDiagnostic "initialGuess=directStateActiveSet"
     End If
