@@ -208,6 +208,8 @@ Public Function RunBatchCalculationTests() As String
     TestAudit02CanonicalResultsAndReset stats
     AppendLine stats, "RUN: TestAudit02RepositoryContextAndRetry"
     TestAudit02RepositoryContextAndRetry stats
+    AppendLine stats, "RUN: TestAudit02OnOffPhysicalResults"
+    TestAudit02OnOffPhysicalResults stats
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -312,7 +314,7 @@ Private Sub TestBatchCapacityUsesSystemSettings(ByRef stats As TBatchTestStats)
 
     AssertTrue stats, "batch.settings.capacity.maxLambda", batch.ResultAt(1).StrengthResult.Capacity.Status = "NumFail"
     AssertClose stats, "batch.settings.capacity.maxLambda.noReserve", _
-        batch.StrengthCapacityReserve(1), 0#, 0#
+        batch.ResultAt(1).StrengthResult.Capacity.ReserveFactor, 0#, 0#
 
 Restore:
     SetSystemSetting "Capacity.SolutionStrategy", oldStrategy
@@ -345,7 +347,7 @@ Private Sub TestInvalidModeSettingsAreNotFallbacks(ByRef stats As TBatchTestStat
     AssertTrue stats, "batch.invalid.CapacitySolutionStrategy.status", batch.ResultAt(1).Status = "InputErr"
     AssertTrue stats, "batch.invalid.CapacitySolutionStrategy.noLambda", batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity = 0#
     AssertClose stats, "batch.invalid.CapacitySolutionStrategy.noReserve", _
-        batch.StrengthCapacityReserve(1), 0#, 0#
+        batch.ResultAt(1).StrengthResult.Capacity.ReserveFactor, 0#, 0#
 
 Restore:
     SetSystemSetting "Capacity.SolutionStrategy", oldCapacitySolutionStrategy
@@ -5399,4 +5401,234 @@ Private Sub TestAudit02RepositoryContextAndRetry(ByRef stats As TBatchTestStats)
     AssertClose stats, "audit02.cache.snapshot.epsilonUnchanged", first.Epsilon0, firstEps, 0#
     AssertTrue stats, "audit02.cache.snapshot.codeUnchanged", first.ResultCode = firstMetaCode
     AssertEquals stats, "audit02.cache.snapshot.logUnchanged", first.DiagnosticLog, firstLog
+End Sub
+
+' ============================== ДЛЯ ТЕСТОВ AUDIT02 ON/OFF ==============================
+
+' Возвращает полный численный отчет парного сравнения физических сценариев.
+' Переключатель меняет только provider диаграмм, а не усилия, профили или допуски.
+Public Function RunAudit02OnOffComparisonTests() As String
+    On Error GoTo Failed
+    Dim stats As TBatchTestStats
+    TestAudit02OnOffPhysicalResults stats
+    AppendLine stats, "TOTAL_AUDIT02_PAIR: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit02OnOffComparisonTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit02OnOffComparisonTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' Сравнивает одноосные, двухосные и осевые LC двух material roles. Второй
+' проход включает устойчивость; ее формулы не получают численного Extension.
+' Все изменения тестового Config восстанавливаются и при runtime-ошибке.
+Private Sub TestAudit02OnOffPhysicalResults(ByRef stats As TBatchTestStats)
+    On Error GoTo Failed
+    Dim oldStability As String
+    oldStability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    Dim oldLength As String
+    oldLength = GetSystemSetting("Stability.ElementLength")
+    ' Небольшое сечение с L=8000 может не иметь допустимого текущего LC после
+    ' учета устойчивости. Эта матрица сравнивает именно физические решения.
+    SetSystemSetting "Stability.ElementLength", 1000#
+    Dim maxima As Object
+    Set maxima = CreateObject("Scripting.Dictionary")
+    Dim phase As Long
+    For phase = 0 To 1
+        If phase = 0 Then
+            SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+        Else
+            SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+        End If
+        Dim offBatch As CBatchSectionCalculator
+        Dim onBatch As CBatchSectionCalculator
+        Set offBatch = BuildAudit02PairBatch(False)
+        Set onBatch = BuildAudit02PairBatch(True)
+        Dim scenario As Variant
+        For Each scenario In Array( _
+                Array("ULS_BIAX", -100000#, 8000000#, 3000000#, "PR1"), _
+                Array("ULS_X", -100000#, 4000000#, 0#, "PR1"), _
+                Array("ULS_Y", -100000#, 0#, 4000000#, "PR1"), _
+                Array("ULS_AXIAL", 50000#, 0#, 0#, "PR1"), _
+                Array("SLS_BEND", -20000#, -15000000#, 0#, "PR2"), _
+                Array("SLS_AXIAL", 200000#, 0#, 0#, "PR2"), _
+                Array("SLS_NOCRACK", -100000#, 0#, 0#, "PR2"))
+            offBatch.AddCombination CStr(scenario(0)), CDbl(scenario(1)), CDbl(scenario(2)), _
+                CDbl(scenario(3)), CStr(scenario(4)), "Audit02 paired physical result"
+            onBatch.AddCombination CStr(scenario(0)), CDbl(scenario(1)), CDbl(scenario(2)), _
+                CDbl(scenario(3)), CStr(scenario(4)), "Audit02 paired physical result"
+        Next scenario
+        offBatch.Execute
+        onBatch.Execute
+        Dim i As Long
+        For i = 1 To offBatch.Count
+            Dim prefix As String
+            prefix = "audit02.pair." & CStr(phase) & "." & offBatch.CombinationID(i)
+            Dim offResult As CCombinationResult
+            Dim onResult As CCombinationResult
+            Set offResult = offBatch.ResultAt(i)
+            Set onResult = onBatch.ResultAt(i)
+            AppendLine stats, "PAIR_STATUS|" & prefix & "|Off=" & offResult.Status & "|On=" & onResult.Status & _
+                "|OffComment=" & offResult.OverallMeta.ResultComment & "|OnComment=" & onResult.OverallMeta.ResultComment
+            AssertEquals stats, prefix & ".overall", onResult.Status, offResult.Status
+            AssertTrue stats, prefix & ".offNoNumericalFailure", _
+                offResult.Status <> "NumFail" And offResult.Status <> "CalcErr" And offResult.Status <> "InputErr"
+            AssertEquals stats, prefix & ".direct", onResult.StrengthResult.DirectState.Status, offResult.StrengthResult.DirectState.Status
+            AssertEquals stats, prefix & ".capacity", onResult.StrengthResult.Capacity.Status, offResult.StrengthResult.Capacity.Status
+            AssertEquals stats, prefix & ".criterion", onResult.StrengthResult.Capacity.LimitState, offResult.StrengthResult.Capacity.LimitState
+            AssertEquals stats, prefix & ".normal", onResult.NormalCrackStatus, offResult.NormalCrackStatus
+            AssertEquals stats, prefix & ".longitudinal", onResult.CrackResult.Longitudinal.Status, offResult.CrackResult.Longitudinal.Status
+            AssertEquals stats, prefix & ".stability", onResult.StabilityResult.Status, offResult.StabilityResult.Status
+            AssertTrue stats, prefix & ".crackAvailability", onResult.CrackResult.Formation.CrackFormed = offResult.CrackResult.Formation.CrackFormed
+            AssertTrue stats, prefix & ".pointAvailability", onResult.CrackResult.Formation.HasLimitPoint = offResult.CrackResult.Formation.HasLimitPoint
+            AssertTrue stats, prefix & ".stateCount", onResult.StateRepository.StateCount = offResult.StateRepository.StateCount
+
+            Dim stateType As Variant
+            For Each stateType In Array(sstStrengthState, sstCapacityState, sstPreCrackState, sstPostCrackState, sstCrackedState)
+                Audit02ComparePairState stats, maxima, prefix, _
+                    offResult.StateRepository.FindState(CLng(stateType)), onResult.StateRepository.FindState(CLng(stateType))
+            Next stateType
+            Dim offNumbers As Variant
+            Dim onNumbers As Variant
+            offNumbers = Audit02PairResultNumbers(offResult)
+            onNumbers = Audit02PairResultNumbers(onResult)
+            Dim metric As Long
+            For metric = LBound(offNumbers) To UBound(offNumbers)
+                Audit02AssertPair stats, maxima, prefix, CStr(offNumbers(metric)(0)), _
+                    CDbl(onNumbers(metric)(1)), CDbl(offNumbers(metric)(1)), CDbl(offNumbers(metric)(2))
+            Next metric
+            Audit02AssertPair stats, maxima, prefix, "Reference.N", onBatch.StrengthReferenceN(i), offBatch.StrengthReferenceN(i), 0.001
+            Audit02AssertPair stats, maxima, prefix, "Reference.Mx", onBatch.StrengthReferenceMx(i), offBatch.StrengthReferenceMx(i), 0.001
+            Audit02AssertPair stats, maxima, prefix, "Reference.My", onBatch.StrengthReferenceMy(i), offBatch.StrengthReferenceMy(i), 0.001
+        Next i
+    Next phase
+    Dim key As Variant
+    For Each key In maxima.Keys
+        AppendLine stats, "MAXDIFF|" & CStr(key) & "|abs=" & FormatNumberInvariant(CDbl(maxima(key)))
+    Next key
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
+    SetSystemSetting "Stability.ElementLength", oldLength
+    Exit Sub
+Failed:
+    Dim reason As String
+    reason = Err.Description
+    AssertTrue stats, "audit02.pair.runtime: " & reason, False
+    Resume Restore
+End Sub
+
+' Строит одинаковую геометрию и физические параметры, явно выбирая On/Off.
+' Настройки прочих алгоритмов и профили читаются одинаково для обеих половин пары.
+Private Function BuildAudit02PairBatch(ByVal extensionEnabled As Boolean) As CBatchSectionCalculator
+    Dim geom As CGeometryRoundedRectangle
+    Set geom = New CGeometryRoundedRectangle
+    geom.Initialize 300#, 200#, 0#, 0#, 0#, 0#
+    Dim mesh As CFiberMeshBuilder
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geom, 30#, 20#, 1
+    Dim rebars As CRebarLayout
+    Set rebars = New CRebarLayout
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", geom
+    Dim materials As CMaterialModelProvider
+    Set materials = New CMaterialModelProvider
+    Dim parameters As CMaterialModelProvider
+    Set parameters = TestMaterialProvider()
+    materials.InitializeFromParameters parameters.ConcreteParameters, parameters.SteelParameters, _
+        diagramExtensionEnabled:=extensionEnabled
+    Dim batch As CBatchSectionCalculator
+    Set batch = New CBatchSectionCalculator
+    batch.Initialize BuildGeneratedSectionModel(mesh, rebars, "Audit02PairedRectangle"), materials
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    batch.ApplySettings settings
+    batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    Set batch.ProfileCatalog = TestProfileCatalog()
+    batch.ApplyLoadReference 0#, 0#
+    Set BuildAudit02PairBatch = batch
+End Function
+
+' Сравнивает доступность и весь численный снимок named-state, исключая
+' итерации/время/журнал: эти показатели не являются условием одинаковой физики.
+Private Sub Audit02ComparePairState(ByRef stats As TBatchTestStats, ByVal maxima As Object, _
+        ByVal prefix As String, ByVal offState As CSectionStateResult, ByVal onState As CSectionStateResult)
+    If offState Is Nothing Then
+        AssertTrue stats, prefix & ".missingStateMatched", onState Is Nothing
+        Exit Sub
+    End If
+    Dim key As String
+    key = offState.StateTypeText
+    AssertTrue stats, prefix & "." & key & ".exists", Not onState Is Nothing
+    If onState Is Nothing Then Exit Sub
+    AssertEquals stats, prefix & "." & key & ".status", onState.Status, offState.Status
+    AssertTrue stats, prefix & "." & key & ".converged", onState.Converged And offState.Converged
+    AssertTrue stats, prefix & "." & key & ".physical", onState.WithinPhysicalRange And offState.WithinPhysicalRange
+    AssertTrue stats, prefix & "." & key & ".noFinalExtension", Not onState.ExtensionUsed And Not offState.ExtensionUsed
+    Dim first As Variant
+    Dim second As Variant
+    first = Audit02PairStateNumbers(offState)
+    second = Audit02PairStateNumbers(onState)
+    Dim i As Long
+    For i = LBound(first) To UBound(first)
+        Audit02AssertPair stats, maxima, prefix, key & "." & CStr(first(i)(0)), _
+            CDbl(second(i)(1)), CDbl(first(i)(1)), CDbl(first(i)(2))
+    Next i
+End Sub
+
+' Подготавливает численные поля State с прежними допусками solver/strain-
+' тестов; технические отличия поисковой стратегии сюда не включаются.
+Private Function Audit02PairStateNumbers(ByVal state As CSectionStateResult) As Variant
+    Audit02PairStateNumbers = Array( _
+        Array("TargetN", state.TargetN, 5#), Array("TargetMx", state.TargetMx, 5000#), Array("TargetMy", state.TargetMy, 5000#), _
+        Array("Nint", state.Nint, 5#), Array("Mxint", state.Mxint, 5000#), Array("Myint", state.Myint, 5000#), _
+        Array("epsilon0", state.Epsilon0, 0.000001), Array("kappaX", state.KappaX, 0.00000000001), Array("kappaY", state.KappaY, 0.00000000001), _
+        Array("epsBmin", state.MinConcreteStrain, 0.000001), Array("epsBmax", state.MaxConcreteStrain, 0.000001), _
+        Array("epsSmin", state.MinSteelStrain, 0.000001), Array("epsSmax", state.MaxSteelStrain, 0.000001), _
+        Array("sigmaBmin", state.MinConcreteStress, 0.001), Array("sigmaBmax", state.MaxConcreteStress, 0.001), _
+        Array("sigmaSmin", state.MinSteelStress, 0.001), Array("sigmaSmax", state.MaxSteelStress, 0.001), _
+        Array("ResidualN", state.ResidualN, 5#), Array("ResidualMx", state.ResidualMx, 5000#), Array("ResidualMy", state.ResidualMy, 5000#))
+End Function
+
+' Подготавливает метрики всех инженерных ветвей для парного сравнения.
+' Неприменимые ветви сравниваются также по доступности и typed status выше.
+Private Function Audit02PairResultNumbers(ByVal result As CCombinationResult) As Variant
+    Dim capacity As CCapacityResult
+    Set capacity = result.StrengthResult.Capacity
+    Dim formation As CCrackFormationResult
+    Set formation = result.CrackResult.Formation
+    Dim width As CCrackWidthResult
+    Set width = result.CrackResult.Width
+    Dim stability As CStabilityResult
+    Set stability = result.StabilityResult
+    Audit02PairResultNumbers = Array( _
+        Array("Capacity.lambda", capacity.LambdaCapacity, 0.01), Array("Capacity.N", capacity.NUltimate, 5#), _
+        Array("Capacity.Mx", capacity.MxUltimate, 5000#), Array("Capacity.My", capacity.MyUltimate, 5000#), _
+        Array("Capacity.util", capacity.UtilCapacity, 0.000001), Array("Formation.lambda", formation.LambdaCrc, 0.001), _
+        Array("Formation.Ncrc", formation.Ncrc, 0.001), Array("Formation.N", formation.FormationNcrc, 0.001), _
+        Array("Formation.Mcrc", formation.Mcrc, 50000#), Array("Formation.Ared", formation.Ared, 0.001), _
+        Array("Width.acrc", width.CrackWidth, 0.000000001), Array("Width.sigmaS", width.SigmaS, 0.001), _
+        Array("Width.sigmaSCrc", width.SigmaSCrc, 0.001), Array("Width.psi", width.PsiS, 0.000000001), _
+        Array("Width.ls", width.CrackSpacing, 0.001), Array("Width.lsRaw", width.CrackSpacingRaw, 0.001), _
+        Array("Width.Abt", width.Abt, 0.001), Array("Width.As", width.AsTension, 0.001), Array("Width.ds", width.DsEquivalent, 0.001), _
+        Array("Width.xt", width.TensionDepth, 0.001), Array("Width.hbt", width.EffectiveZoneDepth, 0.001), _
+        Array("Width.a", width.CoverA, 0.001), Array("Width.h", width.SectionDepthH, 0.001), Array("Width.Es", width.SteelEs, 0.001), _
+        Array("Width.util", width.Utilization, 0.000000001), Array("Longitudinal.sigma", result.CrackResult.Longitudinal.MaxCompressionStress, 0.001), _
+        Array("Longitudinal.util", result.CrackResult.Longitudinal.Utilization, 0.000000001), _
+        Array("Stability.N", stability.DesignN, 0.001), Array("Stability.Mx", stability.DesignMx, 0.001), _
+        Array("Stability.My", stability.DesignMy, 0.001), Array("Stability.Ncr1", stability.Ncr1, 0.001), _
+        Array("Stability.Ncr2", stability.Ncr2, 0.001), Array("Stability.reserve", stability.SummaryReserve, 0.000000001))
+End Function
+
+' Фиксирует отклонение каждой применимой величины и максимальное абсолютное
+' отклонение по метрике во всех сценариях; существующие expected не меняются.
+Private Sub Audit02AssertPair(ByRef stats As TBatchTestStats, ByVal maxima As Object, _
+        ByVal prefix As String, ByVal metric As String, ByVal actual As Double, _
+        ByVal expected As Double, ByVal tolerance As Double)
+    AssertClose stats, prefix & "." & metric, actual, expected, tolerance
+    Dim difference As Double
+    difference = Abs(actual - expected)
+    If Not maxima.Exists(metric) Then maxima.Add metric, 0#
+    If difference > CDbl(maxima(metric)) Then maxima(metric) = difference
 End Sub

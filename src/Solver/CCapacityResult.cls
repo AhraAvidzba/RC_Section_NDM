@@ -363,3 +363,13 @@ End Property
 Public Property Get PureAxialForMethod() As Boolean
     PureAxialForMethod = mPureAxialForMethod
 End Property
+
+' Выдает найденный физический множитель как запас. Диагностическая lambda
+' незавершенного поиска, BaseFail и отсутствующий предел запасом не являются.
+Public Property Get ReserveFactor() As Double
+    If mLambdaCapacity <= 0# Then Exit Property
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    If Not policy.IsFinished(Status) Then Exit Property
+    ReserveFactor = mLambdaCapacity
+End Property

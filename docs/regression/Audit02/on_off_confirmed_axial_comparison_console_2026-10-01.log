@@ -1,0 +1,10 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 6C2FD20217882B370B81D48FD58ACA796C190570CED3488A6FE15BA5C9A0A1E0
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0070e6178944418fa7afb3ce95704239\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+FAIL: audit02.pair.1.ULS_BIAX.offNoNumericalFailure
+FAIL: audit02.pair.1.ULS_X.offNoNumericalFailure
+FAIL: audit02.pair.1.ULS_Y.offNoNumericalFailure
+TOTAL_AUDIT02_PAIR: passed=1445; failed=3
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

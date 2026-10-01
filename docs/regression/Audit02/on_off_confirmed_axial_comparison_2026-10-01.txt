@@ -1,0 +1,1596 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 6C2FD20217882B370B81D48FD58ACA796C190570CED3488A6FE15BA5C9A0A1E0
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0070e6178944418fa7afb3ce95704239\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit02OnOffComparisonTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit02OnOffComparisonTests; 2026-10-01T19:59:18
+EXCEL_AFTER_SUITE: pid=3556; workingSet=135663616; privateBytes=96849920; cpu=3.625
+OK: audit02.pair.0.ULS_BIAX.overall
+OK: audit02.pair.0.ULS_BIAX.offNoNumericalFailure
+OK: audit02.pair.0.ULS_BIAX.direct
+OK: audit02.pair.0.ULS_BIAX.capacity
+OK: audit02.pair.0.ULS_BIAX.criterion
+OK: audit02.pair.0.ULS_BIAX.normal
+OK: audit02.pair.0.ULS_BIAX.longitudinal
+OK: audit02.pair.0.ULS_BIAX.stability
+OK: audit02.pair.0.ULS_BIAX.crackAvailability
+OK: audit02.pair.0.ULS_BIAX.pointAvailability
+OK: audit02.pair.0.ULS_BIAX.stateCount
+OK: audit02.pair.0.ULS_BIAX.StrengthState.exists
+OK: audit02.pair.0.ULS_BIAX.StrengthState.status
+OK: audit02.pair.0.ULS_BIAX.StrengthState.converged
+OK: audit02.pair.0.ULS_BIAX.StrengthState.physical
+OK: audit02.pair.0.ULS_BIAX.StrengthState.noFinalExtension
+OK: audit02.pair.0.ULS_BIAX.StrengthState.TargetN; actual=-100000.; expected=-100000.
+OK: audit02.pair.0.ULS_BIAX.StrengthState.TargetMx; actual=8000000.; expected=8000000.
+OK: audit02.pair.0.ULS_BIAX.StrengthState.TargetMy; actual=3000000.; expected=3000000.
+OK: audit02.pair.0.ULS_BIAX.StrengthState.Nint; actual=-100000.; expected=-100000.
+OK: audit02.pair.0.ULS_BIAX.StrengthState.Mxint; actual=8000000.; expected=8000000.
+OK: audit02.pair.0.ULS_BIAX.StrengthState.Myint; actual=3000000.; expected=3000000.
+OK: audit02.pair.0.ULS_BIAX.StrengthState.epsilon0; actual=-0.000006518326; expected=-0.000006518326
+OK: audit02.pair.0.ULS_BIAX.StrengthState.kappaX; actual=0.000001901303; expected=0.000001901303
+OK: audit02.pair.0.ULS_BIAX.StrengthState.kappaY; actual=0.000000320581; expected=0.000000320581
+OK: audit02.pair.0.ULS_BIAX.StrengthState.epsBmin; actual=-0.00022091405; expected=-0.00022091405
+OK: audit02.pair.0.ULS_BIAX.StrengthState.epsBmax; actual=0.000207877398; expected=0.000207877398
+OK: audit02.pair.0.ULS_BIAX.StrengthState.epsSmin; actual=-0.000149448808; expected=-0.000149448808
+OK: audit02.pair.0.ULS_BIAX.StrengthState.epsSmax; actual=0.000136412157; expected=0.000136412157
+OK: audit02.pair.0.ULS_BIAX.StrengthState.sigmaBmin; actual=-7.179706610597; expected=-7.179706610597
+OK: audit02.pair.0.ULS_BIAX.StrengthState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.StrengthState.sigmaSmin; actual=-29.889761660883; expected=-29.889761660883
+OK: audit02.pair.0.ULS_BIAX.StrengthState.sigmaSmax; actual=27.282431341047; expected=27.282431341047
+OK: audit02.pair.0.ULS_BIAX.StrengthState.ResidualN; actual=-0.000000000044; expected=-0.000000000044
+OK: audit02.pair.0.ULS_BIAX.StrengthState.ResidualMx; actual=-0.000000002794; expected=-0.000000002794
+OK: audit02.pair.0.ULS_BIAX.StrengthState.ResidualMy; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.CapacityState.exists
+OK: audit02.pair.0.ULS_BIAX.CapacityState.status
+OK: audit02.pair.0.ULS_BIAX.CapacityState.converged
+OK: audit02.pair.0.ULS_BIAX.CapacityState.physical
+OK: audit02.pair.0.ULS_BIAX.CapacityState.noFinalExtension
+OK: audit02.pair.0.ULS_BIAX.CapacityState.TargetN; actual=-100000.; expected=-100000.
+OK: audit02.pair.0.ULS_BIAX.CapacityState.TargetMx; actual=35209351.4850858; expected=35209351.485128
+OK: audit02.pair.0.ULS_BIAX.CapacityState.TargetMy; actual=13203506.8069072; expected=13203506.806923
+OK: audit02.pair.0.ULS_BIAX.CapacityState.Nint; actual=-99999.9999994422; expected=-100000.
+OK: audit02.pair.0.ULS_BIAX.CapacityState.Mxint; actual=35209351.4851043; expected=35209351.485128
+OK: audit02.pair.0.ULS_BIAX.CapacityState.Myint; actual=13203506.8068577; expected=13203506.806923
+OK: audit02.pair.0.ULS_BIAX.CapacityState.epsilon0; actual=0.002229375957; expected=0.002229375957
+OK: audit02.pair.0.ULS_BIAX.CapacityState.kappaX; actual=0.000051593296; expected=0.000051593296
+OK: audit02.pair.0.ULS_BIAX.CapacityState.kappaY; actual=0.000008044291; expected=0.000008044291
+OK: audit02.pair.0.ULS_BIAX.CapacityState.epsBmin; actual=-0.0035; expected=-0.0035
+OK: audit02.pair.0.ULS_BIAX.CapacityState.epsBmax; actual=0.007958751915; expected=0.007958751915
+OK: audit02.pair.0.ULS_BIAX.CapacityState.epsSmin; actual=-0.001590208014; expected=-0.001590208014
+OK: audit02.pair.0.ULS_BIAX.CapacityState.epsSmax; actual=0.006048959929; expected=0.006048959929
+OK: audit02.pair.0.ULS_BIAX.CapacityState.sigmaBmin; actual=-15.5; expected=-15.5
+OK: audit02.pair.0.ULS_BIAX.CapacityState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.CapacityState.sigmaSmin; actual=-318.041602845993; expected=-318.041602846898
+OK: audit02.pair.0.ULS_BIAX.CapacityState.sigmaSmax; actual=350.; expected=350.
+OK: audit02.pair.0.ULS_BIAX.CapacityState.ResidualN; actual=0.000000557848; expected=0.000000000044
+OK: audit02.pair.0.ULS_BIAX.CapacityState.ResidualMx; actual=0.000018566847; expected=0.
+OK: audit02.pair.0.ULS_BIAX.CapacityState.ResidualMy; actual=-0.000049512833; expected=0.000000001863
+OK: audit02.pair.0.ULS_BIAX.missingStateMatched
+OK: audit02.pair.0.ULS_BIAX.missingStateMatched
+OK: audit02.pair.0.ULS_BIAX.missingStateMatched
+OK: audit02.pair.0.ULS_BIAX.Capacity.lambda; actual=4.401168935636; expected=4.401168935641
+OK: audit02.pair.0.ULS_BIAX.Capacity.N; actual=-99999.9999994422; expected=-100000.
+OK: audit02.pair.0.ULS_BIAX.Capacity.Mx; actual=35209351.4851043; expected=35209351.485128
+OK: audit02.pair.0.ULS_BIAX.Capacity.My; actual=13203506.8068577; expected=13203506.806923
+OK: audit02.pair.0.ULS_BIAX.Capacity.util; actual=0.227212364402; expected=0.227212364402
+OK: audit02.pair.0.ULS_BIAX.Formation.lambda; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Formation.Ncrc; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Formation.N; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Formation.Mcrc; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Formation.Ared; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Width.acrc; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Width.sigmaS; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Width.sigmaSCrc; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Width.psi; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Width.ls; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Width.lsRaw; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Width.Abt; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Width.As; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Width.ds; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Width.xt; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Width.hbt; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Width.a; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Width.h; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Width.Es; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Width.util; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Longitudinal.sigma; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Longitudinal.util; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Stability.N; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Stability.Mx; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Stability.My; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Stability.Ncr1; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Stability.Ncr2; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Stability.reserve; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_BIAX.Reference.N; actual=-100000.; expected=-100000.
+OK: audit02.pair.0.ULS_BIAX.Reference.Mx; actual=8000000.; expected=8000000.
+OK: audit02.pair.0.ULS_BIAX.Reference.My; actual=3000000.; expected=3000000.
+OK: audit02.pair.0.ULS_X.overall
+OK: audit02.pair.0.ULS_X.offNoNumericalFailure
+OK: audit02.pair.0.ULS_X.direct
+OK: audit02.pair.0.ULS_X.capacity
+OK: audit02.pair.0.ULS_X.criterion
+OK: audit02.pair.0.ULS_X.normal
+OK: audit02.pair.0.ULS_X.longitudinal
+OK: audit02.pair.0.ULS_X.stability
+OK: audit02.pair.0.ULS_X.crackAvailability
+OK: audit02.pair.0.ULS_X.pointAvailability
+OK: audit02.pair.0.ULS_X.stateCount
+OK: audit02.pair.0.ULS_X.StrengthState.exists
+OK: audit02.pair.0.ULS_X.StrengthState.status
+OK: audit02.pair.0.ULS_X.StrengthState.converged
+OK: audit02.pair.0.ULS_X.StrengthState.physical
+OK: audit02.pair.0.ULS_X.StrengthState.noFinalExtension
+OK: audit02.pair.0.ULS_X.StrengthState.TargetN; actual=-100000.; expected=-100000.
+OK: audit02.pair.0.ULS_X.StrengthState.TargetMx; actual=4000000.; expected=4000000.
+OK: audit02.pair.0.ULS_X.StrengthState.TargetMy; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.StrengthState.Nint; actual=-100000.; expected=-100000.
+OK: audit02.pair.0.ULS_X.StrengthState.Mxint; actual=4000000.; expected=4000000.
+OK: audit02.pair.0.ULS_X.StrengthState.Myint; actual=0.00000000004; expected=0.00000000004
+OK: audit02.pair.0.ULS_X.StrengthState.epsilon0; actual=-0.000045793543; expected=-0.000045793543
+OK: audit02.pair.0.ULS_X.StrengthState.kappaX; actual=0.000000569425; expected=0.000000569425
+OK: audit02.pair.0.ULS_X.StrengthState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.StrengthState.epsBmin; actual=-0.000097041748; expected=-0.000097041748
+OK: audit02.pair.0.ULS_X.StrengthState.epsBmax; actual=0.000005454662; expected=0.000005454662
+OK: audit02.pair.0.ULS_X.StrengthState.epsSmin; actual=-0.000079959013; expected=-0.000079959013
+OK: audit02.pair.0.ULS_X.StrengthState.epsSmax; actual=-0.000011628073; expected=-0.000011628073
+OK: audit02.pair.0.ULS_X.StrengthState.sigmaBmin; actual=-3.153856820361; expected=-3.153856820361
+OK: audit02.pair.0.ULS_X.StrengthState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.StrengthState.sigmaSmin; actual=-15.991802638505; expected=-15.991802638505
+OK: audit02.pair.0.ULS_X.StrengthState.sigmaSmax; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.StrengthState.ResidualN; actual=-0.000000000276; expected=-0.000000000276
+OK: audit02.pair.0.ULS_X.StrengthState.ResidualMx; actual=0.000000003725; expected=0.000000003725
+OK: audit02.pair.0.ULS_X.StrengthState.ResidualMy; actual=0.00000000004; expected=0.00000000004
+OK: audit02.pair.0.ULS_X.CapacityState.exists
+OK: audit02.pair.0.ULS_X.CapacityState.status
+OK: audit02.pair.0.ULS_X.CapacityState.converged
+OK: audit02.pair.0.ULS_X.CapacityState.physical
+OK: audit02.pair.0.ULS_X.CapacityState.noFinalExtension
+OK: audit02.pair.0.ULS_X.CapacityState.TargetN; actual=-100000.; expected=-100000.
+OK: audit02.pair.0.ULS_X.CapacityState.TargetMx; actual=35829469.4969227; expected=35829469.4962726
+OK: audit02.pair.0.ULS_X.CapacityState.TargetMy; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.CapacityState.Nint; actual=-99999.999999883; expected=-99999.9999872885
+OK: audit02.pair.0.ULS_X.CapacityState.Mxint; actual=35829469.4969227; expected=35829469.4962726
+OK: audit02.pair.0.ULS_X.CapacityState.Myint; actual=-0.000000386994; expected=0.000021387328
+OK: audit02.pair.0.ULS_X.CapacityState.epsilon0; actual=0.004099296144; expected=0.004099296144
+OK: audit02.pair.0.ULS_X.CapacityState.kappaX; actual=0.000084436624; expected=0.000084436624
+OK: audit02.pair.0.ULS_X.CapacityState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.CapacityState.epsBmin; actual=-0.0035; expected=-0.0035
+OK: audit02.pair.0.ULS_X.CapacityState.epsBmax; actual=0.011698592288; expected=0.011698592288
+OK: audit02.pair.0.ULS_X.CapacityState.epsSmin; actual=-0.000966901285; expected=-0.000966901285
+OK: audit02.pair.0.ULS_X.CapacityState.epsSmax; actual=0.009165493573; expected=0.009165493574
+OK: audit02.pair.0.ULS_X.CapacityState.sigmaBmin; actual=-15.5; expected=-15.5
+OK: audit02.pair.0.ULS_X.CapacityState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.CapacityState.sigmaSmin; actual=-193.38025706643; expected=-193.380257062449
+OK: audit02.pair.0.ULS_X.CapacityState.sigmaSmax; actual=350.; expected=350.
+OK: audit02.pair.0.ULS_X.CapacityState.ResidualN; actual=0.000000116983; expected=0.000012711491
+OK: audit02.pair.0.ULS_X.CapacityState.ResidualMx; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.CapacityState.ResidualMy; actual=-0.000000386994; expected=0.000021387328
+OK: audit02.pair.0.ULS_X.missingStateMatched
+OK: audit02.pair.0.ULS_X.missingStateMatched
+OK: audit02.pair.0.ULS_X.missingStateMatched
+OK: audit02.pair.0.ULS_X.Capacity.lambda; actual=8.957367374231; expected=8.957367374068
+OK: audit02.pair.0.ULS_X.Capacity.N; actual=-99999.999999883; expected=-99999.9999872885
+OK: audit02.pair.0.ULS_X.Capacity.Mx; actual=35829469.4969227; expected=35829469.4962726
+OK: audit02.pair.0.ULS_X.Capacity.My; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Capacity.util; actual=0.111639944888; expected=0.11163994489
+OK: audit02.pair.0.ULS_X.Formation.lambda; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Formation.Ncrc; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Formation.N; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Formation.Mcrc; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Formation.Ared; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Width.acrc; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Width.sigmaS; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Width.sigmaSCrc; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Width.psi; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Width.ls; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Width.lsRaw; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Width.Abt; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Width.As; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Width.ds; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Width.xt; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Width.hbt; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Width.a; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Width.h; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Width.Es; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Width.util; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Longitudinal.sigma; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Longitudinal.util; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Stability.N; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Stability.Mx; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Stability.My; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Stability.Ncr1; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Stability.Ncr2; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Stability.reserve; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_X.Reference.N; actual=-100000.; expected=-100000.
+OK: audit02.pair.0.ULS_X.Reference.Mx; actual=4000000.; expected=4000000.
+OK: audit02.pair.0.ULS_X.Reference.My; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.overall
+OK: audit02.pair.0.ULS_Y.offNoNumericalFailure
+OK: audit02.pair.0.ULS_Y.direct
+OK: audit02.pair.0.ULS_Y.capacity
+OK: audit02.pair.0.ULS_Y.criterion
+OK: audit02.pair.0.ULS_Y.normal
+OK: audit02.pair.0.ULS_Y.longitudinal
+OK: audit02.pair.0.ULS_Y.stability
+OK: audit02.pair.0.ULS_Y.crackAvailability
+OK: audit02.pair.0.ULS_Y.pointAvailability
+OK: audit02.pair.0.ULS_Y.stateCount
+OK: audit02.pair.0.ULS_Y.StrengthState.exists
+OK: audit02.pair.0.ULS_Y.StrengthState.status
+OK: audit02.pair.0.ULS_Y.StrengthState.converged
+OK: audit02.pair.0.ULS_Y.StrengthState.physical
+OK: audit02.pair.0.ULS_Y.StrengthState.noFinalExtension
+OK: audit02.pair.0.ULS_Y.StrengthState.TargetN; actual=-100000.; expected=-100000.
+OK: audit02.pair.0.ULS_Y.StrengthState.TargetMx; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.StrengthState.TargetMy; actual=4000000.; expected=4000000.
+OK: audit02.pair.0.ULS_Y.StrengthState.Nint; actual=-100000.; expected=-100000.
+OK: audit02.pair.0.ULS_Y.StrengthState.Mxint; actual=0.00000000072; expected=0.00000000072
+OK: audit02.pair.0.ULS_Y.StrengthState.Myint; actual=4000000.; expected=4000000.
+OK: audit02.pair.0.ULS_Y.StrengthState.epsilon0; actual=-0.000046285867; expected=-0.000046285867
+OK: audit02.pair.0.ULS_Y.StrengthState.kappaX; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.StrengthState.kappaY; actual=0.000000247162; expected=0.000000247162
+OK: audit02.pair.0.ULS_Y.StrengthState.epsBmin; actual=-0.000079652789; expected=-0.000079652789
+OK: audit02.pair.0.ULS_Y.StrengthState.epsBmax; actual=-0.000012918945; expected=-0.000012918945
+OK: audit02.pair.0.ULS_Y.StrengthState.epsSmin; actual=-0.000068530481; expected=-0.000068530481
+OK: audit02.pair.0.ULS_Y.StrengthState.epsSmax; actual=-0.000024041252; expected=-0.000024041252
+OK: audit02.pair.0.ULS_Y.StrengthState.sigmaBmin; actual=-2.588715636802; expected=-2.588715636802
+OK: audit02.pair.0.ULS_Y.StrengthState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.StrengthState.sigmaSmin; actual=-13.706096297243; expected=-13.706096297243
+OK: audit02.pair.0.ULS_Y.StrengthState.sigmaSmax; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.StrengthState.ResidualN; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.StrengthState.ResidualMx; actual=0.00000000072; expected=0.00000000072
+OK: audit02.pair.0.ULS_Y.StrengthState.ResidualMy; actual=0.000000002794; expected=0.000000002794
+OK: audit02.pair.0.ULS_Y.CapacityState.exists
+OK: audit02.pair.0.ULS_Y.CapacityState.status
+OK: audit02.pair.0.ULS_Y.CapacityState.converged
+OK: audit02.pair.0.ULS_Y.CapacityState.physical
+OK: audit02.pair.0.ULS_Y.CapacityState.noFinalExtension
+OK: audit02.pair.0.ULS_Y.CapacityState.TargetN; actual=-100000.; expected=-100000.
+OK: audit02.pair.0.ULS_Y.CapacityState.TargetMx; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.CapacityState.TargetMy; actual=53744204.2453653; expected=53744204.2454015
+OK: audit02.pair.0.ULS_Y.CapacityState.Nint; actual=-100000.000000073; expected=-99999.9999999998
+OK: audit02.pair.0.ULS_Y.CapacityState.Mxint; actual=-0.000001368753; expected=-0.00000000064
+OK: audit02.pair.0.ULS_Y.CapacityState.Myint; actual=53744204.2453653; expected=53744204.2454015
+OK: audit02.pair.0.ULS_Y.CapacityState.epsilon0; actual=0.004099296144; expected=0.004099296144
+OK: audit02.pair.0.ULS_Y.CapacityState.kappaX; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.CapacityState.kappaY; actual=0.000056291083; expected=0.000056291083
+OK: audit02.pair.0.ULS_Y.CapacityState.epsBmin; actual=-0.0035; expected=-0.0035
+OK: audit02.pair.0.ULS_Y.CapacityState.epsBmax; actual=0.011698592288; expected=0.011698592288
+OK: audit02.pair.0.ULS_Y.CapacityState.epsSmin; actual=-0.000966901285; expected=-0.000966901285
+OK: audit02.pair.0.ULS_Y.CapacityState.epsSmax; actual=0.009165493573; expected=0.009165493573
+OK: audit02.pair.0.ULS_Y.CapacityState.sigmaBmin; actual=-15.5; expected=-15.5
+OK: audit02.pair.0.ULS_Y.CapacityState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.CapacityState.sigmaSmin; actual=-193.380257064732; expected=-193.380257066907
+OK: audit02.pair.0.ULS_Y.CapacityState.sigmaSmax; actual=350.; expected=350.
+OK: audit02.pair.0.ULS_Y.CapacityState.ResidualN; actual=-0.000000073473; expected=0.00000000016
+OK: audit02.pair.0.ULS_Y.CapacityState.ResidualMx; actual=-0.000001368753; expected=-0.00000000064
+OK: audit02.pair.0.ULS_Y.CapacityState.ResidualMy; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.missingStateMatched
+OK: audit02.pair.0.ULS_Y.missingStateMatched
+OK: audit02.pair.0.ULS_Y.missingStateMatched
+OK: audit02.pair.0.ULS_Y.Capacity.lambda; actual=13.436051061341; expected=13.43605106135
+OK: audit02.pair.0.ULS_Y.Capacity.N; actual=-100000.000000073; expected=-99999.9999999998
+OK: audit02.pair.0.ULS_Y.Capacity.Mx; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Capacity.My; actual=53744204.2453653; expected=53744204.2454015
+OK: audit02.pair.0.ULS_Y.Capacity.util; actual=0.074426629925; expected=0.074426629925
+OK: audit02.pair.0.ULS_Y.Formation.lambda; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Formation.Ncrc; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Formation.N; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Formation.Mcrc; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Formation.Ared; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Width.acrc; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Width.sigmaS; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Width.sigmaSCrc; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Width.psi; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Width.ls; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Width.lsRaw; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Width.Abt; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Width.As; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Width.ds; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Width.xt; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Width.hbt; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Width.a; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Width.h; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Width.Es; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Width.util; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Longitudinal.sigma; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Longitudinal.util; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Stability.N; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Stability.Mx; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Stability.My; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Stability.Ncr1; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Stability.Ncr2; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Stability.reserve; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Reference.N; actual=-100000.; expected=-100000.
+OK: audit02.pair.0.ULS_Y.Reference.Mx; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_Y.Reference.My; actual=4000000.; expected=4000000.
+OK: audit02.pair.0.ULS_AXIAL.overall
+OK: audit02.pair.0.ULS_AXIAL.offNoNumericalFailure
+OK: audit02.pair.0.ULS_AXIAL.direct
+OK: audit02.pair.0.ULS_AXIAL.capacity
+OK: audit02.pair.0.ULS_AXIAL.criterion
+OK: audit02.pair.0.ULS_AXIAL.normal
+OK: audit02.pair.0.ULS_AXIAL.longitudinal
+OK: audit02.pair.0.ULS_AXIAL.stability
+OK: audit02.pair.0.ULS_AXIAL.crackAvailability
+OK: audit02.pair.0.ULS_AXIAL.pointAvailability
+OK: audit02.pair.0.ULS_AXIAL.stateCount
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.exists
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.status
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.converged
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.physical
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.noFinalExtension
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.TargetN; actual=50000.; expected=50000.
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.TargetMx; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.TargetMy; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.Nint; actual=50000.; expected=50000.
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.Mxint; actual=-0.000000000007; expected=-0.000000000007
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.Myint; actual=-0.000000000069; expected=-0.000000000069
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.epsilon0; actual=0.000198943679; expected=0.000198943679
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.kappaX; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.epsBmin; actual=0.000198943679; expected=0.000198943679
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.epsBmax; actual=0.000198943679; expected=0.000198943679
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.epsSmin; actual=0.000198943679; expected=0.000198943679
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.epsSmax; actual=0.000198943679; expected=0.000198943679
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.sigmaBmin; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.sigmaSmin; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.sigmaSmax; actual=39.788735772974; expected=39.788735772974
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.ResidualN; actual=0.000000000007; expected=0.000000000007
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.ResidualMx; actual=-0.000000000007; expected=-0.000000000007
+OK: audit02.pair.0.ULS_AXIAL.StrengthState.ResidualMy; actual=-0.000000000069; expected=-0.000000000069
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.exists
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.status
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.converged
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.physical
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.noFinalExtension
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.TargetN; actual=439822.971502571; expected=439822.971502571
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.TargetMx; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.TargetMy; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.Nint; actual=439822.971502571; expected=439822.971502571
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.Mxint; actual=0.000000000291; expected=0.000000000291
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.Myint; actual=0.000000000437; expected=0.000000000437
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.epsilon0; actual=0.025; expected=0.025
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.kappaX; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.epsBmin; actual=0.025; expected=0.025
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.epsBmax; actual=0.025; expected=0.025
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.epsSmin; actual=0.025; expected=0.025
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.epsSmax; actual=0.025; expected=0.025
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.sigmaBmin; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.sigmaSmin; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.sigmaSmax; actual=350.; expected=350.
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.ResidualN; actual=0.000000000058; expected=0.000000000058
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.ResidualMx; actual=0.000000000291; expected=0.000000000291
+OK: audit02.pair.0.ULS_AXIAL.CapacityState.ResidualMy; actual=0.000000000437; expected=0.000000000437
+OK: audit02.pair.0.ULS_AXIAL.missingStateMatched
+OK: audit02.pair.0.ULS_AXIAL.missingStateMatched
+OK: audit02.pair.0.ULS_AXIAL.missingStateMatched
+OK: audit02.pair.0.ULS_AXIAL.Capacity.lambda; actual=8.796459430051; expected=8.796459430051
+OK: audit02.pair.0.ULS_AXIAL.Capacity.N; actual=439822.971502571; expected=439822.971502571
+OK: audit02.pair.0.ULS_AXIAL.Capacity.Mx; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Capacity.My; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Capacity.util; actual=0.113682102208; expected=0.113682102208
+OK: audit02.pair.0.ULS_AXIAL.Formation.lambda; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Formation.Ncrc; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Formation.N; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Formation.Mcrc; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Formation.Ared; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Width.acrc; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Width.sigmaS; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Width.sigmaSCrc; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Width.psi; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Width.ls; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Width.lsRaw; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Width.Abt; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Width.As; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Width.ds; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Width.xt; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Width.hbt; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Width.a; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Width.h; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Width.Es; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Width.util; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Longitudinal.sigma; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Longitudinal.util; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Stability.N; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Stability.Mx; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Stability.My; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Stability.Ncr1; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Stability.Ncr2; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Stability.reserve; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Reference.N; actual=50000.; expected=50000.
+OK: audit02.pair.0.ULS_AXIAL.Reference.Mx; actual=0.; expected=0.
+OK: audit02.pair.0.ULS_AXIAL.Reference.My; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.overall
+OK: audit02.pair.0.SLS_BEND.offNoNumericalFailure
+OK: audit02.pair.0.SLS_BEND.direct
+OK: audit02.pair.0.SLS_BEND.capacity
+OK: audit02.pair.0.SLS_BEND.criterion
+OK: audit02.pair.0.SLS_BEND.normal
+OK: audit02.pair.0.SLS_BEND.longitudinal
+OK: audit02.pair.0.SLS_BEND.stability
+OK: audit02.pair.0.SLS_BEND.crackAvailability
+OK: audit02.pair.0.SLS_BEND.pointAvailability
+OK: audit02.pair.0.SLS_BEND.stateCount
+OK: audit02.pair.0.SLS_BEND.missingStateMatched
+OK: audit02.pair.0.SLS_BEND.missingStateMatched
+OK: audit02.pair.0.SLS_BEND.PreCrackState.exists
+OK: audit02.pair.0.SLS_BEND.PreCrackState.status
+OK: audit02.pair.0.SLS_BEND.PreCrackState.converged
+OK: audit02.pair.0.SLS_BEND.PreCrackState.physical
+OK: audit02.pair.0.SLS_BEND.PreCrackState.noFinalExtension
+OK: audit02.pair.0.SLS_BEND.PreCrackState.TargetN; actual=-20000.; expected=-20000.
+OK: audit02.pair.0.SLS_BEND.PreCrackState.TargetMx; actual=-8343868.5970754; expected=-8343868.5970754
+OK: audit02.pair.0.SLS_BEND.PreCrackState.TargetMy; actual=0.000000000003; expected=0.000000000003
+OK: audit02.pair.0.SLS_BEND.PreCrackState.Nint; actual=-20000.0000000001; expected=-19999.9999999999
+OK: audit02.pair.0.SLS_BEND.PreCrackState.Mxint; actual=-8343868.5970754; expected=-8343868.5970754
+OK: audit02.pair.0.SLS_BEND.PreCrackState.Myint; actual=0.000000000149; expected=0.000000000013
+OK: audit02.pair.0.SLS_BEND.PreCrackState.epsilon0; actual=0.000009196877; expected=0.000009196877
+OK: audit02.pair.0.SLS_BEND.PreCrackState.kappaX; actual=-0.000001564479; expected=-0.000001564479
+OK: audit02.pair.0.SLS_BEND.PreCrackState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.PreCrackState.epsBmin; actual=-0.000131606245; expected=-0.000131606245
+OK: audit02.pair.0.SLS_BEND.PreCrackState.epsBmax; actual=0.00015; expected=0.00015
+OK: audit02.pair.0.SLS_BEND.PreCrackState.epsSmin; actual=-0.000084671871; expected=-0.000084671871
+OK: audit02.pair.0.SLS_BEND.PreCrackState.epsSmax; actual=0.000103065626; expected=0.000103065626
+OK: audit02.pair.0.SLS_BEND.PreCrackState.sigmaBmin; actual=-4.277202976601; expected=-4.277202976601
+OK: audit02.pair.0.SLS_BEND.PreCrackState.sigmaBmax; actual=1.8; expected=1.8
+OK: audit02.pair.0.SLS_BEND.PreCrackState.sigmaSmin; actual=-16.934374238981; expected=-16.934374238981
+OK: audit02.pair.0.SLS_BEND.PreCrackState.sigmaSmax; actual=20.613125152204; expected=20.613125152204
+OK: audit02.pair.0.SLS_BEND.PreCrackState.ResidualN; actual=-0.000000000106; expected=0.000000000087
+OK: audit02.pair.0.SLS_BEND.PreCrackState.ResidualMx; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.PreCrackState.ResidualMy; actual=0.000000000146; expected=0.000000000009
+OK: audit02.pair.0.SLS_BEND.PostCrackState.exists
+OK: audit02.pair.0.SLS_BEND.PostCrackState.status
+OK: audit02.pair.0.SLS_BEND.PostCrackState.converged
+OK: audit02.pair.0.SLS_BEND.PostCrackState.physical
+OK: audit02.pair.0.SLS_BEND.PostCrackState.noFinalExtension
+OK: audit02.pair.0.SLS_BEND.PostCrackState.TargetN; actual=-20000.; expected=-20000.
+OK: audit02.pair.0.SLS_BEND.PostCrackState.TargetMx; actual=-8343868.5970754; expected=-8343868.5970754
+OK: audit02.pair.0.SLS_BEND.PostCrackState.TargetMy; actual=0.000000000003; expected=0.000000000003
+OK: audit02.pair.0.SLS_BEND.PostCrackState.Nint; actual=-20000.; expected=-20000.
+OK: audit02.pair.0.SLS_BEND.PostCrackState.Mxint; actual=-8343868.5970754; expected=-8343868.5970754
+OK: audit02.pair.0.SLS_BEND.PostCrackState.Myint; actual=0.000000000135; expected=0.000000000138
+OK: audit02.pair.0.SLS_BEND.PostCrackState.epsilon0; actual=0.00013159697; expected=0.00013159697
+OK: audit02.pair.0.SLS_BEND.PostCrackState.kappaX; actual=-0.000004773811; expected=-0.000004773811
+OK: audit02.pair.0.SLS_BEND.PostCrackState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.PostCrackState.epsBmin; actual=-0.000298046009; expected=-0.000298046009
+OK: audit02.pair.0.SLS_BEND.PostCrackState.epsBmax; actual=0.000561239949; expected=0.000561239949
+OK: audit02.pair.0.SLS_BEND.PostCrackState.epsSmin; actual=-0.000154831683; expected=-0.000154831683
+OK: audit02.pair.0.SLS_BEND.PostCrackState.epsSmax; actual=0.000418025623; expected=0.000418025623
+OK: audit02.pair.0.SLS_BEND.PostCrackState.sigmaBmin; actual=-4.37134146601; expected=-4.37134146601
+OK: audit02.pair.0.SLS_BEND.PostCrackState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.PostCrackState.sigmaSmin; actual=-30.966336536636; expected=-30.966336536636
+OK: audit02.pair.0.SLS_BEND.PostCrackState.sigmaSmax; actual=83.605124553751; expected=83.605124553751
+OK: audit02.pair.0.SLS_BEND.PostCrackState.ResidualN; actual=0.000000000011; expected=0.000000000007
+OK: audit02.pair.0.SLS_BEND.PostCrackState.ResidualMx; actual=-0.000000000931; expected=0.
+OK: audit02.pair.0.SLS_BEND.PostCrackState.ResidualMy; actual=0.000000000131; expected=0.000000000135
+OK: audit02.pair.0.SLS_BEND.CrackedState.exists
+OK: audit02.pair.0.SLS_BEND.CrackedState.status
+OK: audit02.pair.0.SLS_BEND.CrackedState.converged
+OK: audit02.pair.0.SLS_BEND.CrackedState.physical
+OK: audit02.pair.0.SLS_BEND.CrackedState.noFinalExtension
+OK: audit02.pair.0.SLS_BEND.CrackedState.TargetN; actual=-20000.; expected=-20000.
+OK: audit02.pair.0.SLS_BEND.CrackedState.TargetMx; actual=-15000000.; expected=-15000000.
+OK: audit02.pair.0.SLS_BEND.CrackedState.TargetMy; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.CrackedState.Nint; actual=-20000.0000000001; expected=-20000.0000000001
+OK: audit02.pair.0.SLS_BEND.CrackedState.Mxint; actual=-15000000.; expected=-15000000.
+OK: audit02.pair.0.SLS_BEND.CrackedState.Myint; actual=-0.000000000189; expected=-0.000000000189
+OK: audit02.pair.0.SLS_BEND.CrackedState.epsilon0; actual=0.000276753584; expected=0.000276753584
+OK: audit02.pair.0.SLS_BEND.CrackedState.kappaX; actual=-0.000008928857; expected=-0.000008928857
+OK: audit02.pair.0.SLS_BEND.CrackedState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.CrackedState.epsBmin; actual=-0.000526843542; expected=-0.000526843542
+OK: audit02.pair.0.SLS_BEND.CrackedState.epsBmax; actual=0.001080350709; expected=0.001080350709
+OK: audit02.pair.0.SLS_BEND.CrackedState.epsSmin; actual=-0.000258977834; expected=-0.000258977834
+OK: audit02.pair.0.SLS_BEND.CrackedState.epsSmax; actual=0.000812485001; expected=0.000812485001
+OK: audit02.pair.0.SLS_BEND.CrackedState.sigmaBmin; actual=-7.727038617523; expected=-7.727038617523
+OK: audit02.pair.0.SLS_BEND.CrackedState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.CrackedState.sigmaSmin; actual=-51.795566704389; expected=-51.795566704389
+OK: audit02.pair.0.SLS_BEND.CrackedState.sigmaSmax; actual=162.497000161127; expected=162.497000161127
+OK: audit02.pair.0.SLS_BEND.CrackedState.ResidualN; actual=-0.000000000058; expected=-0.000000000058
+OK: audit02.pair.0.SLS_BEND.CrackedState.ResidualMx; actual=0.000000001863; expected=0.000000001863
+OK: audit02.pair.0.SLS_BEND.CrackedState.ResidualMy; actual=-0.000000000189; expected=-0.000000000189
+OK: audit02.pair.0.SLS_BEND.Capacity.lambda; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.Capacity.N; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.Capacity.Mx; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.Capacity.My; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.Capacity.util; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.Formation.lambda; actual=0.556257906472; expected=0.556257906472
+OK: audit02.pair.0.SLS_BEND.Formation.Ncrc; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.Formation.N; actual=-20000.; expected=-20000.
+OK: audit02.pair.0.SLS_BEND.Formation.Mcrc; actual=8343868.5970754; expected=8343868.5970754
+OK: audit02.pair.0.SLS_BEND.Formation.Ared; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.Width.acrc; actual=0.133858060725; expected=0.133858060725
+OK: audit02.pair.0.SLS_BEND.Width.sigmaS; actual=162.497000161127; expected=162.497000161127
+OK: audit02.pair.0.SLS_BEND.Width.sigmaSCrc; actual=83.605124553751; expected=83.605124553751
+OK: audit02.pair.0.SLS_BEND.Width.psi; actual=0.588397942259; expected=0.588397942259
+OK: audit02.pair.0.SLS_BEND.Width.ls; actual=400.; expected=400.
+OK: audit02.pair.0.SLS_BEND.Width.lsRaw; actual=477.464829275686; expected=477.464829275686
+OK: audit02.pair.0.SLS_BEND.Width.Abt; actual=30000.; expected=30000.
+OK: audit02.pair.0.SLS_BEND.Width.As; actual=628.318530717959; expected=628.318530717959
+OK: audit02.pair.0.SLS_BEND.Width.ds; actual=20.; expected=20.
+OK: audit02.pair.0.SLS_BEND.Width.xt; actual=130.995410174786; expected=130.995410174786
+OK: audit02.pair.0.SLS_BEND.Width.hbt; actual=100.; expected=100.
+OK: audit02.pair.0.SLS_BEND.Width.a; actual=40.; expected=40.
+OK: audit02.pair.0.SLS_BEND.Width.h; actual=200.; expected=200.
+OK: audit02.pair.0.SLS_BEND.Width.Es; actual=200000.; expected=200000.
+OK: audit02.pair.0.SLS_BEND.Width.util; actual=0.446193535751; expected=0.446193535751
+OK: audit02.pair.0.SLS_BEND.Longitudinal.sigma; actual=7.727038617523; expected=7.727038617523
+OK: audit02.pair.0.SLS_BEND.Longitudinal.util; actual=0.529249220378; expected=0.529249220378
+OK: audit02.pair.0.SLS_BEND.Stability.N; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.Stability.Mx; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.Stability.My; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.Stability.Ncr1; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.Stability.Ncr2; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.Stability.reserve; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_BEND.Reference.N; actual=-20000.; expected=-20000.
+OK: audit02.pair.0.SLS_BEND.Reference.Mx; actual=-15000000.; expected=-15000000.
+OK: audit02.pair.0.SLS_BEND.Reference.My; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.overall
+OK: audit02.pair.0.SLS_AXIAL.offNoNumericalFailure
+OK: audit02.pair.0.SLS_AXIAL.direct
+OK: audit02.pair.0.SLS_AXIAL.capacity
+OK: audit02.pair.0.SLS_AXIAL.criterion
+OK: audit02.pair.0.SLS_AXIAL.normal
+OK: audit02.pair.0.SLS_AXIAL.longitudinal
+OK: audit02.pair.0.SLS_AXIAL.stability
+OK: audit02.pair.0.SLS_AXIAL.crackAvailability
+OK: audit02.pair.0.SLS_AXIAL.pointAvailability
+OK: audit02.pair.0.SLS_AXIAL.stateCount
+OK: audit02.pair.0.SLS_AXIAL.missingStateMatched
+OK: audit02.pair.0.SLS_AXIAL.missingStateMatched
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.exists
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.status
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.converged
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.physical
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.noFinalExtension
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.TargetN; actual=119657.725354552; expected=119657.725354552
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.TargetMx; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.TargetMy; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.Nint; actual=119657.725354551; expected=119657.725354551
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.Mxint; actual=-0.000000000095; expected=-0.000000000095
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.Myint; actual=-0.000000000025; expected=-0.000000000025
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.epsilon0; actual=0.000087326732; expected=0.000087326732
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.kappaX; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.epsBmin; actual=0.000087326732; expected=0.000087326732
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.epsBmax; actual=0.000087326732; expected=0.000087326732
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.epsSmin; actual=0.000087326732; expected=0.000087326732
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.epsSmax; actual=0.000087326732; expected=0.000087326732
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.sigmaBmin; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.sigmaBmax; actual=1.663338952757; expected=1.663338952757
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.sigmaSmin; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.sigmaSmax; actual=17.465346388738; expected=17.465346388738
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.ResidualN; actual=-0.000000000204; expected=-0.000000000204
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.ResidualMx; actual=-0.000000000095; expected=-0.000000000095
+OK: audit02.pair.0.SLS_AXIAL.PreCrackState.ResidualMy; actual=-0.000000000025; expected=-0.000000000025
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.exists
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.status
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.converged
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.physical
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.noFinalExtension
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.TargetN; actual=119657.725354552; expected=119657.725354552
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.TargetMx; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.TargetMy; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.Nint; actual=119657.725354552; expected=119657.725354552
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.Mxint; actual=-0.000000000087; expected=-0.000000000087
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.Myint; actual=0.000000000218; expected=0.000000000218
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.epsilon0; actual=0.000476102962; expected=0.000476102962
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.kappaX; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.epsBmin; actual=0.000476102962; expected=0.000476102962
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.epsBmax; actual=0.000476102962; expected=0.000476102962
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.epsSmin; actual=0.000476102962; expected=0.000476102962
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.epsSmax; actual=0.000476102962; expected=0.000476102962
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.sigmaBmin; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.sigmaSmin; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.sigmaSmax; actual=95.220592346547; expected=95.220592346547
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.ResidualN; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.ResidualMx; actual=-0.000000000087; expected=-0.000000000087
+OK: audit02.pair.0.SLS_AXIAL.PostCrackState.ResidualMy; actual=0.000000000218; expected=0.000000000218
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.exists
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.status
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.converged
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.physical
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.noFinalExtension
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.TargetN; actual=200000.; expected=200000.
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.TargetMx; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.TargetMy; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.Nint; actual=200000.; expected=200000.
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.Mxint; actual=-0.000000000029; expected=-0.000000000029
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.Myint; actual=-0.000000000276; expected=-0.000000000276
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.epsilon0; actual=0.000795774715; expected=0.000795774715
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.kappaX; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.epsBmin; actual=0.000795774715; expected=0.000795774715
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.epsBmax; actual=0.000795774715; expected=0.000795774715
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.epsSmin; actual=0.000795774715; expected=0.000795774715
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.epsSmax; actual=0.000795774715; expected=0.000795774715
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.sigmaBmin; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.sigmaSmin; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.sigmaSmax; actual=159.154943091895; expected=159.154943091895
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.ResidualN; actual=0.000000000029; expected=0.000000000029
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.ResidualMx; actual=-0.000000000029; expected=-0.000000000029
+OK: audit02.pair.0.SLS_AXIAL.CrackedState.ResidualMy; actual=-0.000000000276; expected=-0.000000000276
+OK: audit02.pair.0.SLS_AXIAL.Capacity.lambda; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Capacity.N; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Capacity.Mx; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Capacity.My; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Capacity.util; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Formation.lambda; actual=0.598288626773; expected=0.598288626773
+OK: audit02.pair.0.SLS_AXIAL.Formation.Ncrc; actual=119657.725354552; expected=119657.725354552
+OK: audit02.pair.0.SLS_AXIAL.Formation.N; actual=119657.725354552; expected=119657.725354552
+OK: audit02.pair.0.SLS_AXIAL.Formation.Mcrc; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Formation.Ared; actual=66476.514085862; expected=66476.514085862
+OK: audit02.pair.0.SLS_AXIAL.Width.acrc; actual=0.139403828281; expected=0.139403828281
+OK: audit02.pair.0.SLS_AXIAL.Width.sigmaS; actual=159.154943091895; expected=159.154943091895
+OK: audit02.pair.0.SLS_AXIAL.Width.sigmaSCrc; actual=95.220592346547; expected=95.220592346547
+OK: audit02.pair.0.SLS_AXIAL.Width.psi; actual=0.521369098582; expected=0.521369098582
+OK: audit02.pair.0.SLS_AXIAL.Width.ls; actual=400.; expected=400.
+OK: audit02.pair.0.SLS_AXIAL.Width.lsRaw; actual=477.464829275686; expected=477.464829275686
+OK: audit02.pair.0.SLS_AXIAL.Width.Abt; actual=60000.; expected=60000.
+OK: audit02.pair.0.SLS_AXIAL.Width.As; actual=1256.63706143592; expected=1256.63706143592
+OK: audit02.pair.0.SLS_AXIAL.Width.ds; actual=20.; expected=20.
+OK: audit02.pair.0.SLS_AXIAL.Width.xt; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Width.hbt; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Width.a; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Width.h; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Width.Es; actual=200000.; expected=200000.
+OK: audit02.pair.0.SLS_AXIAL.Width.util; actual=0.464679427602; expected=0.464679427602
+OK: audit02.pair.0.SLS_AXIAL.Longitudinal.sigma; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Longitudinal.util; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Stability.N; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Stability.Mx; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Stability.My; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Stability.Ncr1; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Stability.Ncr2; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Stability.reserve; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Reference.N; actual=200000.; expected=200000.
+OK: audit02.pair.0.SLS_AXIAL.Reference.Mx; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_AXIAL.Reference.My; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.overall
+OK: audit02.pair.0.SLS_NOCRACK.offNoNumericalFailure
+OK: audit02.pair.0.SLS_NOCRACK.direct
+OK: audit02.pair.0.SLS_NOCRACK.capacity
+OK: audit02.pair.0.SLS_NOCRACK.criterion
+OK: audit02.pair.0.SLS_NOCRACK.normal
+OK: audit02.pair.0.SLS_NOCRACK.longitudinal
+OK: audit02.pair.0.SLS_NOCRACK.stability
+OK: audit02.pair.0.SLS_NOCRACK.crackAvailability
+OK: audit02.pair.0.SLS_NOCRACK.pointAvailability
+OK: audit02.pair.0.SLS_NOCRACK.stateCount
+OK: audit02.pair.0.SLS_NOCRACK.missingStateMatched
+OK: audit02.pair.0.SLS_NOCRACK.missingStateMatched
+OK: audit02.pair.0.SLS_NOCRACK.missingStateMatched
+OK: audit02.pair.0.SLS_NOCRACK.missingStateMatched
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.exists
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.status
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.converged
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.physical
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.noFinalExtension
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.TargetN; actual=-100000.; expected=-100000.
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.TargetMx; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.TargetMy; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.Nint; actual=-100000.; expected=-100000.
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.Mxint; actual=-0.000000000142; expected=-0.000000000142
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.Myint; actual=-0.000000000038; expected=-0.000000000038
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.epsilon0; actual=-0.000089855596; expected=-0.000089855596
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.kappaX; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.epsBmin; actual=-0.000089855596; expected=-0.000089855596
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.epsBmax; actual=-0.000089855596; expected=-0.000089855596
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.epsSmin; actual=-0.000089855596; expected=-0.000089855596
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.epsSmax; actual=-0.000089855596; expected=-0.000089855596
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.sigmaBmin; actual=-1.317882081987; expected=-1.317882081987
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.sigmaSmin; actual=-17.971119299816; expected=-17.971119299816
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.sigmaSmax; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.ResidualN; actual=-0.000000000044; expected=-0.000000000044
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.ResidualMx; actual=-0.000000000142; expected=-0.000000000142
+OK: audit02.pair.0.SLS_NOCRACK.CrackedState.ResidualMy; actual=-0.000000000038; expected=-0.000000000038
+OK: audit02.pair.0.SLS_NOCRACK.Capacity.lambda; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Capacity.N; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Capacity.Mx; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Capacity.My; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Capacity.util; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Formation.lambda; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Formation.Ncrc; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Formation.N; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Formation.Mcrc; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Formation.Ared; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Width.acrc; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Width.sigmaS; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Width.sigmaSCrc; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Width.psi; actual=1.; expected=1.
+OK: audit02.pair.0.SLS_NOCRACK.Width.ls; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Width.lsRaw; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Width.Abt; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Width.As; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Width.ds; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Width.xt; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Width.hbt; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Width.a; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Width.h; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Width.Es; actual=200000.; expected=200000.
+OK: audit02.pair.0.SLS_NOCRACK.Width.util; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Longitudinal.sigma; actual=1.317882081987; expected=1.317882081987
+OK: audit02.pair.0.SLS_NOCRACK.Longitudinal.util; actual=0.090265896026; expected=0.090265896026
+OK: audit02.pair.0.SLS_NOCRACK.Stability.N; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Stability.Mx; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Stability.My; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Stability.Ncr1; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Stability.Ncr2; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Stability.reserve; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Reference.N; actual=-100000.; expected=-100000.
+OK: audit02.pair.0.SLS_NOCRACK.Reference.Mx; actual=0.; expected=0.
+OK: audit02.pair.0.SLS_NOCRACK.Reference.My; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.overall
+FAIL: audit02.pair.1.ULS_BIAX.offNoNumericalFailure
+OK: audit02.pair.1.ULS_BIAX.direct
+OK: audit02.pair.1.ULS_BIAX.capacity
+OK: audit02.pair.1.ULS_BIAX.criterion
+OK: audit02.pair.1.ULS_BIAX.normal
+OK: audit02.pair.1.ULS_BIAX.longitudinal
+OK: audit02.pair.1.ULS_BIAX.stability
+OK: audit02.pair.1.ULS_BIAX.crackAvailability
+OK: audit02.pair.1.ULS_BIAX.pointAvailability
+OK: audit02.pair.1.ULS_BIAX.stateCount
+OK: audit02.pair.1.ULS_BIAX.StrengthState.exists
+OK: audit02.pair.1.ULS_BIAX.StrengthState.status
+OK: audit02.pair.1.ULS_BIAX.StrengthState.converged
+OK: audit02.pair.1.ULS_BIAX.StrengthState.physical
+OK: audit02.pair.1.ULS_BIAX.StrengthState.noFinalExtension
+OK: audit02.pair.1.ULS_BIAX.StrengthState.TargetN; actual=-100000.; expected=-100000.
+OK: audit02.pair.1.ULS_BIAX.StrengthState.TargetMx; actual=8000000.; expected=8000000.
+OK: audit02.pair.1.ULS_BIAX.StrengthState.TargetMy; actual=3000000.; expected=3000000.
+OK: audit02.pair.1.ULS_BIAX.StrengthState.Nint; actual=-100000.; expected=-100000.
+OK: audit02.pair.1.ULS_BIAX.StrengthState.Mxint; actual=8000000.; expected=8000000.
+OK: audit02.pair.1.ULS_BIAX.StrengthState.Myint; actual=3000000.; expected=3000000.
+OK: audit02.pair.1.ULS_BIAX.StrengthState.epsilon0; actual=-0.000006518326; expected=-0.000006518326
+OK: audit02.pair.1.ULS_BIAX.StrengthState.kappaX; actual=0.000001901303; expected=0.000001901303
+OK: audit02.pair.1.ULS_BIAX.StrengthState.kappaY; actual=0.000000320581; expected=0.000000320581
+OK: audit02.pair.1.ULS_BIAX.StrengthState.epsBmin; actual=-0.00022091405; expected=-0.00022091405
+OK: audit02.pair.1.ULS_BIAX.StrengthState.epsBmax; actual=0.000207877398; expected=0.000207877398
+OK: audit02.pair.1.ULS_BIAX.StrengthState.epsSmin; actual=-0.000149448808; expected=-0.000149448808
+OK: audit02.pair.1.ULS_BIAX.StrengthState.epsSmax; actual=0.000136412157; expected=0.000136412157
+OK: audit02.pair.1.ULS_BIAX.StrengthState.sigmaBmin; actual=-7.179706610597; expected=-7.179706610597
+OK: audit02.pair.1.ULS_BIAX.StrengthState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.StrengthState.sigmaSmin; actual=-29.889761660883; expected=-29.889761660883
+OK: audit02.pair.1.ULS_BIAX.StrengthState.sigmaSmax; actual=27.282431341047; expected=27.282431341047
+OK: audit02.pair.1.ULS_BIAX.StrengthState.ResidualN; actual=-0.000000000044; expected=-0.000000000044
+OK: audit02.pair.1.ULS_BIAX.StrengthState.ResidualMx; actual=-0.000000002794; expected=-0.000000002794
+OK: audit02.pair.1.ULS_BIAX.StrengthState.ResidualMy; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.CapacityState.exists
+OK: audit02.pair.1.ULS_BIAX.CapacityState.status
+OK: audit02.pair.1.ULS_BIAX.CapacityState.converged
+OK: audit02.pair.1.ULS_BIAX.CapacityState.physical
+OK: audit02.pair.1.ULS_BIAX.CapacityState.noFinalExtension
+OK: audit02.pair.1.ULS_BIAX.CapacityState.TargetN; actual=-100000.; expected=-100000.
+OK: audit02.pair.1.ULS_BIAX.CapacityState.TargetMx; actual=35209351.4850858; expected=35209351.485128
+OK: audit02.pair.1.ULS_BIAX.CapacityState.TargetMy; actual=13203506.8069072; expected=13203506.806923
+OK: audit02.pair.1.ULS_BIAX.CapacityState.Nint; actual=-99999.9999994422; expected=-100000.
+OK: audit02.pair.1.ULS_BIAX.CapacityState.Mxint; actual=35209351.4851043; expected=35209351.485128
+OK: audit02.pair.1.ULS_BIAX.CapacityState.Myint; actual=13203506.8068577; expected=13203506.806923
+OK: audit02.pair.1.ULS_BIAX.CapacityState.epsilon0; actual=0.002229375957; expected=0.002229375957
+OK: audit02.pair.1.ULS_BIAX.CapacityState.kappaX; actual=0.000051593296; expected=0.000051593296
+OK: audit02.pair.1.ULS_BIAX.CapacityState.kappaY; actual=0.000008044291; expected=0.000008044291
+OK: audit02.pair.1.ULS_BIAX.CapacityState.epsBmin; actual=-0.0035; expected=-0.0035
+OK: audit02.pair.1.ULS_BIAX.CapacityState.epsBmax; actual=0.007958751915; expected=0.007958751915
+OK: audit02.pair.1.ULS_BIAX.CapacityState.epsSmin; actual=-0.001590208014; expected=-0.001590208014
+OK: audit02.pair.1.ULS_BIAX.CapacityState.epsSmax; actual=0.006048959929; expected=0.006048959929
+OK: audit02.pair.1.ULS_BIAX.CapacityState.sigmaBmin; actual=-15.5; expected=-15.5
+OK: audit02.pair.1.ULS_BIAX.CapacityState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.CapacityState.sigmaSmin; actual=-318.041602845993; expected=-318.041602846898
+OK: audit02.pair.1.ULS_BIAX.CapacityState.sigmaSmax; actual=350.; expected=350.
+OK: audit02.pair.1.ULS_BIAX.CapacityState.ResidualN; actual=0.000000557848; expected=0.000000000044
+OK: audit02.pair.1.ULS_BIAX.CapacityState.ResidualMx; actual=0.000018566847; expected=0.
+OK: audit02.pair.1.ULS_BIAX.CapacityState.ResidualMy; actual=-0.000049512833; expected=0.000000001863
+OK: audit02.pair.1.ULS_BIAX.missingStateMatched
+OK: audit02.pair.1.ULS_BIAX.missingStateMatched
+OK: audit02.pair.1.ULS_BIAX.missingStateMatched
+OK: audit02.pair.1.ULS_BIAX.Capacity.lambda; actual=4.401168935636; expected=4.401168935641
+OK: audit02.pair.1.ULS_BIAX.Capacity.N; actual=-99999.9999994422; expected=-100000.
+OK: audit02.pair.1.ULS_BIAX.Capacity.Mx; actual=35209351.4851043; expected=35209351.485128
+OK: audit02.pair.1.ULS_BIAX.Capacity.My; actual=13203506.8068577; expected=13203506.806923
+OK: audit02.pair.1.ULS_BIAX.Capacity.util; actual=0.227212364402; expected=0.227212364402
+OK: audit02.pair.1.ULS_BIAX.Formation.lambda; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Formation.Ncrc; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Formation.N; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Formation.Mcrc; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Formation.Ared; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Width.acrc; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Width.sigmaS; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Width.sigmaSCrc; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Width.psi; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Width.ls; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Width.lsRaw; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Width.Abt; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Width.As; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Width.ds; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Width.xt; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Width.hbt; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Width.a; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Width.h; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Width.Es; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Width.util; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Longitudinal.sigma; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Longitudinal.util; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Stability.N; actual=-100000.; expected=-100000.
+OK: audit02.pair.1.ULS_BIAX.Stability.Mx; actual=8000000.; expected=8000000.
+OK: audit02.pair.1.ULS_BIAX.Stability.My; actual=3000000.; expected=3000000.
+OK: audit02.pair.1.ULS_BIAX.Stability.Ncr1; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Stability.Ncr2; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Stability.reserve; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_BIAX.Reference.N; actual=-100000.; expected=-100000.
+OK: audit02.pair.1.ULS_BIAX.Reference.Mx; actual=8000000.; expected=8000000.
+OK: audit02.pair.1.ULS_BIAX.Reference.My; actual=3000000.; expected=3000000.
+OK: audit02.pair.1.ULS_X.overall
+FAIL: audit02.pair.1.ULS_X.offNoNumericalFailure
+OK: audit02.pair.1.ULS_X.direct
+OK: audit02.pair.1.ULS_X.capacity
+OK: audit02.pair.1.ULS_X.criterion
+OK: audit02.pair.1.ULS_X.normal
+OK: audit02.pair.1.ULS_X.longitudinal
+OK: audit02.pair.1.ULS_X.stability
+OK: audit02.pair.1.ULS_X.crackAvailability
+OK: audit02.pair.1.ULS_X.pointAvailability
+OK: audit02.pair.1.ULS_X.stateCount
+OK: audit02.pair.1.ULS_X.StrengthState.exists
+OK: audit02.pair.1.ULS_X.StrengthState.status
+OK: audit02.pair.1.ULS_X.StrengthState.converged
+OK: audit02.pair.1.ULS_X.StrengthState.physical
+OK: audit02.pair.1.ULS_X.StrengthState.noFinalExtension
+OK: audit02.pair.1.ULS_X.StrengthState.TargetN; actual=-100000.; expected=-100000.
+OK: audit02.pair.1.ULS_X.StrengthState.TargetMx; actual=4000000.; expected=4000000.
+OK: audit02.pair.1.ULS_X.StrengthState.TargetMy; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.StrengthState.Nint; actual=-100000.; expected=-100000.
+OK: audit02.pair.1.ULS_X.StrengthState.Mxint; actual=4000000.; expected=4000000.
+OK: audit02.pair.1.ULS_X.StrengthState.Myint; actual=0.00000000004; expected=0.00000000004
+OK: audit02.pair.1.ULS_X.StrengthState.epsilon0; actual=-0.000045793543; expected=-0.000045793543
+OK: audit02.pair.1.ULS_X.StrengthState.kappaX; actual=0.000000569425; expected=0.000000569425
+OK: audit02.pair.1.ULS_X.StrengthState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.StrengthState.epsBmin; actual=-0.000097041748; expected=-0.000097041748
+OK: audit02.pair.1.ULS_X.StrengthState.epsBmax; actual=0.000005454662; expected=0.000005454662
+OK: audit02.pair.1.ULS_X.StrengthState.epsSmin; actual=-0.000079959013; expected=-0.000079959013
+OK: audit02.pair.1.ULS_X.StrengthState.epsSmax; actual=-0.000011628073; expected=-0.000011628073
+OK: audit02.pair.1.ULS_X.StrengthState.sigmaBmin; actual=-3.153856820361; expected=-3.153856820361
+OK: audit02.pair.1.ULS_X.StrengthState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.StrengthState.sigmaSmin; actual=-15.991802638505; expected=-15.991802638505
+OK: audit02.pair.1.ULS_X.StrengthState.sigmaSmax; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.StrengthState.ResidualN; actual=-0.000000000276; expected=-0.000000000276
+OK: audit02.pair.1.ULS_X.StrengthState.ResidualMx; actual=0.000000003725; expected=0.000000003725
+OK: audit02.pair.1.ULS_X.StrengthState.ResidualMy; actual=0.00000000004; expected=0.00000000004
+OK: audit02.pair.1.ULS_X.CapacityState.exists
+OK: audit02.pair.1.ULS_X.CapacityState.status
+OK: audit02.pair.1.ULS_X.CapacityState.converged
+OK: audit02.pair.1.ULS_X.CapacityState.physical
+OK: audit02.pair.1.ULS_X.CapacityState.noFinalExtension
+OK: audit02.pair.1.ULS_X.CapacityState.TargetN; actual=-100000.; expected=-100000.
+OK: audit02.pair.1.ULS_X.CapacityState.TargetMx; actual=35829469.4969227; expected=35829469.4962726
+OK: audit02.pair.1.ULS_X.CapacityState.TargetMy; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.CapacityState.Nint; actual=-99999.999999883; expected=-99999.9999872885
+OK: audit02.pair.1.ULS_X.CapacityState.Mxint; actual=35829469.4969227; expected=35829469.4962726
+OK: audit02.pair.1.ULS_X.CapacityState.Myint; actual=-0.000000386994; expected=0.000021387328
+OK: audit02.pair.1.ULS_X.CapacityState.epsilon0; actual=0.004099296144; expected=0.004099296144
+OK: audit02.pair.1.ULS_X.CapacityState.kappaX; actual=0.000084436624; expected=0.000084436624
+OK: audit02.pair.1.ULS_X.CapacityState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.CapacityState.epsBmin; actual=-0.0035; expected=-0.0035
+OK: audit02.pair.1.ULS_X.CapacityState.epsBmax; actual=0.011698592288; expected=0.011698592288
+OK: audit02.pair.1.ULS_X.CapacityState.epsSmin; actual=-0.000966901285; expected=-0.000966901285
+OK: audit02.pair.1.ULS_X.CapacityState.epsSmax; actual=0.009165493573; expected=0.009165493574
+OK: audit02.pair.1.ULS_X.CapacityState.sigmaBmin; actual=-15.5; expected=-15.5
+OK: audit02.pair.1.ULS_X.CapacityState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.CapacityState.sigmaSmin; actual=-193.38025706643; expected=-193.380257062449
+OK: audit02.pair.1.ULS_X.CapacityState.sigmaSmax; actual=350.; expected=350.
+OK: audit02.pair.1.ULS_X.CapacityState.ResidualN; actual=0.000000116983; expected=0.000012711491
+OK: audit02.pair.1.ULS_X.CapacityState.ResidualMx; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.CapacityState.ResidualMy; actual=-0.000000386994; expected=0.000021387328
+OK: audit02.pair.1.ULS_X.missingStateMatched
+OK: audit02.pair.1.ULS_X.missingStateMatched
+OK: audit02.pair.1.ULS_X.missingStateMatched
+OK: audit02.pair.1.ULS_X.Capacity.lambda; actual=8.957367374231; expected=8.957367374068
+OK: audit02.pair.1.ULS_X.Capacity.N; actual=-99999.999999883; expected=-99999.9999872885
+OK: audit02.pair.1.ULS_X.Capacity.Mx; actual=35829469.4969227; expected=35829469.4962726
+OK: audit02.pair.1.ULS_X.Capacity.My; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Capacity.util; actual=0.111639944888; expected=0.11163994489
+OK: audit02.pair.1.ULS_X.Formation.lambda; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Formation.Ncrc; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Formation.N; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Formation.Mcrc; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Formation.Ared; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Width.acrc; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Width.sigmaS; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Width.sigmaSCrc; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Width.psi; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Width.ls; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Width.lsRaw; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Width.Abt; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Width.As; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Width.ds; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Width.xt; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Width.hbt; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Width.a; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Width.h; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Width.Es; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Width.util; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Longitudinal.sigma; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Longitudinal.util; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Stability.N; actual=-100000.; expected=-100000.
+OK: audit02.pair.1.ULS_X.Stability.Mx; actual=4000000.; expected=4000000.
+OK: audit02.pair.1.ULS_X.Stability.My; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Stability.Ncr1; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Stability.Ncr2; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Stability.reserve; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_X.Reference.N; actual=-100000.; expected=-100000.
+OK: audit02.pair.1.ULS_X.Reference.Mx; actual=4000000.; expected=4000000.
+OK: audit02.pair.1.ULS_X.Reference.My; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.overall
+FAIL: audit02.pair.1.ULS_Y.offNoNumericalFailure
+OK: audit02.pair.1.ULS_Y.direct
+OK: audit02.pair.1.ULS_Y.capacity
+OK: audit02.pair.1.ULS_Y.criterion
+OK: audit02.pair.1.ULS_Y.normal
+OK: audit02.pair.1.ULS_Y.longitudinal
+OK: audit02.pair.1.ULS_Y.stability
+OK: audit02.pair.1.ULS_Y.crackAvailability
+OK: audit02.pair.1.ULS_Y.pointAvailability
+OK: audit02.pair.1.ULS_Y.stateCount
+OK: audit02.pair.1.ULS_Y.StrengthState.exists
+OK: audit02.pair.1.ULS_Y.StrengthState.status
+OK: audit02.pair.1.ULS_Y.StrengthState.converged
+OK: audit02.pair.1.ULS_Y.StrengthState.physical
+OK: audit02.pair.1.ULS_Y.StrengthState.noFinalExtension
+OK: audit02.pair.1.ULS_Y.StrengthState.TargetN; actual=-100000.; expected=-100000.
+OK: audit02.pair.1.ULS_Y.StrengthState.TargetMx; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.StrengthState.TargetMy; actual=4000000.; expected=4000000.
+OK: audit02.pair.1.ULS_Y.StrengthState.Nint; actual=-100000.; expected=-100000.
+OK: audit02.pair.1.ULS_Y.StrengthState.Mxint; actual=0.00000000072; expected=0.00000000072
+OK: audit02.pair.1.ULS_Y.StrengthState.Myint; actual=4000000.; expected=4000000.
+OK: audit02.pair.1.ULS_Y.StrengthState.epsilon0; actual=-0.000046285867; expected=-0.000046285867
+OK: audit02.pair.1.ULS_Y.StrengthState.kappaX; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.StrengthState.kappaY; actual=0.000000247162; expected=0.000000247162
+OK: audit02.pair.1.ULS_Y.StrengthState.epsBmin; actual=-0.000079652789; expected=-0.000079652789
+OK: audit02.pair.1.ULS_Y.StrengthState.epsBmax; actual=-0.000012918945; expected=-0.000012918945
+OK: audit02.pair.1.ULS_Y.StrengthState.epsSmin; actual=-0.000068530481; expected=-0.000068530481
+OK: audit02.pair.1.ULS_Y.StrengthState.epsSmax; actual=-0.000024041252; expected=-0.000024041252
+OK: audit02.pair.1.ULS_Y.StrengthState.sigmaBmin; actual=-2.588715636802; expected=-2.588715636802
+OK: audit02.pair.1.ULS_Y.StrengthState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.StrengthState.sigmaSmin; actual=-13.706096297243; expected=-13.706096297243
+OK: audit02.pair.1.ULS_Y.StrengthState.sigmaSmax; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.StrengthState.ResidualN; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.StrengthState.ResidualMx; actual=0.00000000072; expected=0.00000000072
+OK: audit02.pair.1.ULS_Y.StrengthState.ResidualMy; actual=0.000000002794; expected=0.000000002794
+OK: audit02.pair.1.ULS_Y.CapacityState.exists
+OK: audit02.pair.1.ULS_Y.CapacityState.status
+OK: audit02.pair.1.ULS_Y.CapacityState.converged
+OK: audit02.pair.1.ULS_Y.CapacityState.physical
+OK: audit02.pair.1.ULS_Y.CapacityState.noFinalExtension
+OK: audit02.pair.1.ULS_Y.CapacityState.TargetN; actual=-100000.; expected=-100000.
+OK: audit02.pair.1.ULS_Y.CapacityState.TargetMx; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.CapacityState.TargetMy; actual=53744204.2453653; expected=53744204.2454015
+OK: audit02.pair.1.ULS_Y.CapacityState.Nint; actual=-100000.000000073; expected=-99999.9999999998
+OK: audit02.pair.1.ULS_Y.CapacityState.Mxint; actual=-0.000001368753; expected=-0.00000000064
+OK: audit02.pair.1.ULS_Y.CapacityState.Myint; actual=53744204.2453653; expected=53744204.2454015
+OK: audit02.pair.1.ULS_Y.CapacityState.epsilon0; actual=0.004099296144; expected=0.004099296144
+OK: audit02.pair.1.ULS_Y.CapacityState.kappaX; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.CapacityState.kappaY; actual=0.000056291083; expected=0.000056291083
+OK: audit02.pair.1.ULS_Y.CapacityState.epsBmin; actual=-0.0035; expected=-0.0035
+OK: audit02.pair.1.ULS_Y.CapacityState.epsBmax; actual=0.011698592288; expected=0.011698592288
+OK: audit02.pair.1.ULS_Y.CapacityState.epsSmin; actual=-0.000966901285; expected=-0.000966901285
+OK: audit02.pair.1.ULS_Y.CapacityState.epsSmax; actual=0.009165493573; expected=0.009165493573
+OK: audit02.pair.1.ULS_Y.CapacityState.sigmaBmin; actual=-15.5; expected=-15.5
+OK: audit02.pair.1.ULS_Y.CapacityState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.CapacityState.sigmaSmin; actual=-193.380257064732; expected=-193.380257066907
+OK: audit02.pair.1.ULS_Y.CapacityState.sigmaSmax; actual=350.; expected=350.
+OK: audit02.pair.1.ULS_Y.CapacityState.ResidualN; actual=-0.000000073473; expected=0.00000000016
+OK: audit02.pair.1.ULS_Y.CapacityState.ResidualMx; actual=-0.000001368753; expected=-0.00000000064
+OK: audit02.pair.1.ULS_Y.CapacityState.ResidualMy; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.missingStateMatched
+OK: audit02.pair.1.ULS_Y.missingStateMatched
+OK: audit02.pair.1.ULS_Y.missingStateMatched
+OK: audit02.pair.1.ULS_Y.Capacity.lambda; actual=13.436051061341; expected=13.43605106135
+OK: audit02.pair.1.ULS_Y.Capacity.N; actual=-100000.000000073; expected=-99999.9999999998
+OK: audit02.pair.1.ULS_Y.Capacity.Mx; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Capacity.My; actual=53744204.2453653; expected=53744204.2454015
+OK: audit02.pair.1.ULS_Y.Capacity.util; actual=0.074426629925; expected=0.074426629925
+OK: audit02.pair.1.ULS_Y.Formation.lambda; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Formation.Ncrc; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Formation.N; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Formation.Mcrc; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Formation.Ared; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Width.acrc; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Width.sigmaS; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Width.sigmaSCrc; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Width.psi; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Width.ls; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Width.lsRaw; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Width.Abt; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Width.As; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Width.ds; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Width.xt; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Width.hbt; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Width.a; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Width.h; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Width.Es; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Width.util; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Longitudinal.sigma; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Longitudinal.util; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Stability.N; actual=-100000.; expected=-100000.
+OK: audit02.pair.1.ULS_Y.Stability.Mx; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Stability.My; actual=4000000.; expected=4000000.
+OK: audit02.pair.1.ULS_Y.Stability.Ncr1; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Stability.Ncr2; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Stability.reserve; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Reference.N; actual=-100000.; expected=-100000.
+OK: audit02.pair.1.ULS_Y.Reference.Mx; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_Y.Reference.My; actual=4000000.; expected=4000000.
+OK: audit02.pair.1.ULS_AXIAL.overall
+OK: audit02.pair.1.ULS_AXIAL.offNoNumericalFailure
+OK: audit02.pair.1.ULS_AXIAL.direct
+OK: audit02.pair.1.ULS_AXIAL.capacity
+OK: audit02.pair.1.ULS_AXIAL.criterion
+OK: audit02.pair.1.ULS_AXIAL.normal
+OK: audit02.pair.1.ULS_AXIAL.longitudinal
+OK: audit02.pair.1.ULS_AXIAL.stability
+OK: audit02.pair.1.ULS_AXIAL.crackAvailability
+OK: audit02.pair.1.ULS_AXIAL.pointAvailability
+OK: audit02.pair.1.ULS_AXIAL.stateCount
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.exists
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.status
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.converged
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.physical
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.noFinalExtension
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.TargetN; actual=50000.; expected=50000.
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.TargetMx; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.TargetMy; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.Nint; actual=50000.; expected=50000.
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.Mxint; actual=-0.000000000007; expected=-0.000000000007
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.Myint; actual=-0.000000000069; expected=-0.000000000069
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.epsilon0; actual=0.000198943679; expected=0.000198943679
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.kappaX; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.epsBmin; actual=0.000198943679; expected=0.000198943679
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.epsBmax; actual=0.000198943679; expected=0.000198943679
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.epsSmin; actual=0.000198943679; expected=0.000198943679
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.epsSmax; actual=0.000198943679; expected=0.000198943679
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.sigmaBmin; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.sigmaSmin; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.sigmaSmax; actual=39.788735772974; expected=39.788735772974
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.ResidualN; actual=0.000000000007; expected=0.000000000007
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.ResidualMx; actual=-0.000000000007; expected=-0.000000000007
+OK: audit02.pair.1.ULS_AXIAL.StrengthState.ResidualMy; actual=-0.000000000069; expected=-0.000000000069
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.exists
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.status
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.converged
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.physical
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.noFinalExtension
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.TargetN; actual=439822.971502571; expected=439822.971502571
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.TargetMx; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.TargetMy; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.Nint; actual=439822.971502571; expected=439822.971502571
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.Mxint; actual=0.000000000291; expected=0.000000000291
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.Myint; actual=0.000000000437; expected=0.000000000437
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.epsilon0; actual=0.025; expected=0.025
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.kappaX; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.epsBmin; actual=0.025; expected=0.025
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.epsBmax; actual=0.025; expected=0.025
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.epsSmin; actual=0.025; expected=0.025
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.epsSmax; actual=0.025; expected=0.025
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.sigmaBmin; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.sigmaSmin; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.sigmaSmax; actual=350.; expected=350.
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.ResidualN; actual=0.000000000058; expected=0.000000000058
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.ResidualMx; actual=0.000000000291; expected=0.000000000291
+OK: audit02.pair.1.ULS_AXIAL.CapacityState.ResidualMy; actual=0.000000000437; expected=0.000000000437
+OK: audit02.pair.1.ULS_AXIAL.missingStateMatched
+OK: audit02.pair.1.ULS_AXIAL.missingStateMatched
+OK: audit02.pair.1.ULS_AXIAL.missingStateMatched
+OK: audit02.pair.1.ULS_AXIAL.Capacity.lambda; actual=8.796459430051; expected=8.796459430051
+OK: audit02.pair.1.ULS_AXIAL.Capacity.N; actual=439822.971502571; expected=439822.971502571
+OK: audit02.pair.1.ULS_AXIAL.Capacity.Mx; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Capacity.My; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Capacity.util; actual=0.113682102208; expected=0.113682102208
+OK: audit02.pair.1.ULS_AXIAL.Formation.lambda; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Formation.Ncrc; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Formation.N; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Formation.Mcrc; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Formation.Ared; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Width.acrc; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Width.sigmaS; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Width.sigmaSCrc; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Width.psi; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Width.ls; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Width.lsRaw; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Width.Abt; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Width.As; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Width.ds; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Width.xt; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Width.hbt; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Width.a; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Width.h; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Width.Es; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Width.util; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Longitudinal.sigma; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Longitudinal.util; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Stability.N; actual=50000.; expected=50000.
+OK: audit02.pair.1.ULS_AXIAL.Stability.Mx; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Stability.My; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Stability.Ncr1; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Stability.Ncr2; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Stability.reserve; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Reference.N; actual=50000.; expected=50000.
+OK: audit02.pair.1.ULS_AXIAL.Reference.Mx; actual=0.; expected=0.
+OK: audit02.pair.1.ULS_AXIAL.Reference.My; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.overall
+OK: audit02.pair.1.SLS_BEND.offNoNumericalFailure
+OK: audit02.pair.1.SLS_BEND.direct
+OK: audit02.pair.1.SLS_BEND.capacity
+OK: audit02.pair.1.SLS_BEND.criterion
+OK: audit02.pair.1.SLS_BEND.normal
+OK: audit02.pair.1.SLS_BEND.longitudinal
+OK: audit02.pair.1.SLS_BEND.stability
+OK: audit02.pair.1.SLS_BEND.crackAvailability
+OK: audit02.pair.1.SLS_BEND.pointAvailability
+OK: audit02.pair.1.SLS_BEND.stateCount
+OK: audit02.pair.1.SLS_BEND.missingStateMatched
+OK: audit02.pair.1.SLS_BEND.missingStateMatched
+OK: audit02.pair.1.SLS_BEND.PreCrackState.exists
+OK: audit02.pair.1.SLS_BEND.PreCrackState.status
+OK: audit02.pair.1.SLS_BEND.PreCrackState.converged
+OK: audit02.pair.1.SLS_BEND.PreCrackState.physical
+OK: audit02.pair.1.SLS_BEND.PreCrackState.noFinalExtension
+OK: audit02.pair.1.SLS_BEND.PreCrackState.TargetN; actual=-20000.; expected=-20000.
+OK: audit02.pair.1.SLS_BEND.PreCrackState.TargetMx; actual=-8343868.5970754; expected=-8343868.5970754
+OK: audit02.pair.1.SLS_BEND.PreCrackState.TargetMy; actual=0.000000000003; expected=0.000000000003
+OK: audit02.pair.1.SLS_BEND.PreCrackState.Nint; actual=-20000.0000000001; expected=-19999.9999999999
+OK: audit02.pair.1.SLS_BEND.PreCrackState.Mxint; actual=-8343868.5970754; expected=-8343868.5970754
+OK: audit02.pair.1.SLS_BEND.PreCrackState.Myint; actual=0.000000000149; expected=0.000000000013
+OK: audit02.pair.1.SLS_BEND.PreCrackState.epsilon0; actual=0.000009196877; expected=0.000009196877
+OK: audit02.pair.1.SLS_BEND.PreCrackState.kappaX; actual=-0.000001564479; expected=-0.000001564479
+OK: audit02.pair.1.SLS_BEND.PreCrackState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.PreCrackState.epsBmin; actual=-0.000131606245; expected=-0.000131606245
+OK: audit02.pair.1.SLS_BEND.PreCrackState.epsBmax; actual=0.00015; expected=0.00015
+OK: audit02.pair.1.SLS_BEND.PreCrackState.epsSmin; actual=-0.000084671871; expected=-0.000084671871
+OK: audit02.pair.1.SLS_BEND.PreCrackState.epsSmax; actual=0.000103065626; expected=0.000103065626
+OK: audit02.pair.1.SLS_BEND.PreCrackState.sigmaBmin; actual=-4.277202976601; expected=-4.277202976601
+OK: audit02.pair.1.SLS_BEND.PreCrackState.sigmaBmax; actual=1.8; expected=1.8
+OK: audit02.pair.1.SLS_BEND.PreCrackState.sigmaSmin; actual=-16.934374238981; expected=-16.934374238981
+OK: audit02.pair.1.SLS_BEND.PreCrackState.sigmaSmax; actual=20.613125152204; expected=20.613125152204
+OK: audit02.pair.1.SLS_BEND.PreCrackState.ResidualN; actual=-0.000000000106; expected=0.000000000087
+OK: audit02.pair.1.SLS_BEND.PreCrackState.ResidualMx; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.PreCrackState.ResidualMy; actual=0.000000000146; expected=0.000000000009
+OK: audit02.pair.1.SLS_BEND.PostCrackState.exists
+OK: audit02.pair.1.SLS_BEND.PostCrackState.status
+OK: audit02.pair.1.SLS_BEND.PostCrackState.converged
+OK: audit02.pair.1.SLS_BEND.PostCrackState.physical
+OK: audit02.pair.1.SLS_BEND.PostCrackState.noFinalExtension
+OK: audit02.pair.1.SLS_BEND.PostCrackState.TargetN; actual=-20000.; expected=-20000.
+OK: audit02.pair.1.SLS_BEND.PostCrackState.TargetMx; actual=-8343868.5970754; expected=-8343868.5970754
+OK: audit02.pair.1.SLS_BEND.PostCrackState.TargetMy; actual=0.000000000003; expected=0.000000000003
+OK: audit02.pair.1.SLS_BEND.PostCrackState.Nint; actual=-20000.; expected=-20000.
+OK: audit02.pair.1.SLS_BEND.PostCrackState.Mxint; actual=-8343868.5970754; expected=-8343868.5970754
+OK: audit02.pair.1.SLS_BEND.PostCrackState.Myint; actual=0.000000000135; expected=0.000000000138
+OK: audit02.pair.1.SLS_BEND.PostCrackState.epsilon0; actual=0.00013159697; expected=0.00013159697
+OK: audit02.pair.1.SLS_BEND.PostCrackState.kappaX; actual=-0.000004773811; expected=-0.000004773811
+OK: audit02.pair.1.SLS_BEND.PostCrackState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.PostCrackState.epsBmin; actual=-0.000298046009; expected=-0.000298046009
+OK: audit02.pair.1.SLS_BEND.PostCrackState.epsBmax; actual=0.000561239949; expected=0.000561239949
+OK: audit02.pair.1.SLS_BEND.PostCrackState.epsSmin; actual=-0.000154831683; expected=-0.000154831683
+OK: audit02.pair.1.SLS_BEND.PostCrackState.epsSmax; actual=0.000418025623; expected=0.000418025623
+OK: audit02.pair.1.SLS_BEND.PostCrackState.sigmaBmin; actual=-4.37134146601; expected=-4.37134146601
+OK: audit02.pair.1.SLS_BEND.PostCrackState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.PostCrackState.sigmaSmin; actual=-30.966336536636; expected=-30.966336536636
+OK: audit02.pair.1.SLS_BEND.PostCrackState.sigmaSmax; actual=83.605124553751; expected=83.605124553751
+OK: audit02.pair.1.SLS_BEND.PostCrackState.ResidualN; actual=0.000000000011; expected=0.000000000007
+OK: audit02.pair.1.SLS_BEND.PostCrackState.ResidualMx; actual=-0.000000000931; expected=0.
+OK: audit02.pair.1.SLS_BEND.PostCrackState.ResidualMy; actual=0.000000000131; expected=0.000000000135
+OK: audit02.pair.1.SLS_BEND.CrackedState.exists
+OK: audit02.pair.1.SLS_BEND.CrackedState.status
+OK: audit02.pair.1.SLS_BEND.CrackedState.converged
+OK: audit02.pair.1.SLS_BEND.CrackedState.physical
+OK: audit02.pair.1.SLS_BEND.CrackedState.noFinalExtension
+OK: audit02.pair.1.SLS_BEND.CrackedState.TargetN; actual=-20000.; expected=-20000.
+OK: audit02.pair.1.SLS_BEND.CrackedState.TargetMx; actual=-15000000.; expected=-15000000.
+OK: audit02.pair.1.SLS_BEND.CrackedState.TargetMy; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.CrackedState.Nint; actual=-20000.0000000001; expected=-20000.0000000001
+OK: audit02.pair.1.SLS_BEND.CrackedState.Mxint; actual=-15000000.; expected=-15000000.
+OK: audit02.pair.1.SLS_BEND.CrackedState.Myint; actual=-0.000000000189; expected=-0.000000000189
+OK: audit02.pair.1.SLS_BEND.CrackedState.epsilon0; actual=0.000276753584; expected=0.000276753584
+OK: audit02.pair.1.SLS_BEND.CrackedState.kappaX; actual=-0.000008928857; expected=-0.000008928857
+OK: audit02.pair.1.SLS_BEND.CrackedState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.CrackedState.epsBmin; actual=-0.000526843542; expected=-0.000526843542
+OK: audit02.pair.1.SLS_BEND.CrackedState.epsBmax; actual=0.001080350709; expected=0.001080350709
+OK: audit02.pair.1.SLS_BEND.CrackedState.epsSmin; actual=-0.000258977834; expected=-0.000258977834
+OK: audit02.pair.1.SLS_BEND.CrackedState.epsSmax; actual=0.000812485001; expected=0.000812485001
+OK: audit02.pair.1.SLS_BEND.CrackedState.sigmaBmin; actual=-7.727038617523; expected=-7.727038617523
+OK: audit02.pair.1.SLS_BEND.CrackedState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.CrackedState.sigmaSmin; actual=-51.795566704389; expected=-51.795566704389
+OK: audit02.pair.1.SLS_BEND.CrackedState.sigmaSmax; actual=162.497000161127; expected=162.497000161127
+OK: audit02.pair.1.SLS_BEND.CrackedState.ResidualN; actual=-0.000000000058; expected=-0.000000000058
+OK: audit02.pair.1.SLS_BEND.CrackedState.ResidualMx; actual=0.000000001863; expected=0.000000001863
+OK: audit02.pair.1.SLS_BEND.CrackedState.ResidualMy; actual=-0.000000000189; expected=-0.000000000189
+OK: audit02.pair.1.SLS_BEND.Capacity.lambda; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.Capacity.N; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.Capacity.Mx; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.Capacity.My; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.Capacity.util; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.Formation.lambda; actual=0.556257906472; expected=0.556257906472
+OK: audit02.pair.1.SLS_BEND.Formation.Ncrc; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.Formation.N; actual=-20000.; expected=-20000.
+OK: audit02.pair.1.SLS_BEND.Formation.Mcrc; actual=8343868.5970754; expected=8343868.5970754
+OK: audit02.pair.1.SLS_BEND.Formation.Ared; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.Width.acrc; actual=0.133858060725; expected=0.133858060725
+OK: audit02.pair.1.SLS_BEND.Width.sigmaS; actual=162.497000161127; expected=162.497000161127
+OK: audit02.pair.1.SLS_BEND.Width.sigmaSCrc; actual=83.605124553751; expected=83.605124553751
+OK: audit02.pair.1.SLS_BEND.Width.psi; actual=0.588397942259; expected=0.588397942259
+OK: audit02.pair.1.SLS_BEND.Width.ls; actual=400.; expected=400.
+OK: audit02.pair.1.SLS_BEND.Width.lsRaw; actual=477.464829275686; expected=477.464829275686
+OK: audit02.pair.1.SLS_BEND.Width.Abt; actual=30000.; expected=30000.
+OK: audit02.pair.1.SLS_BEND.Width.As; actual=628.318530717959; expected=628.318530717959
+OK: audit02.pair.1.SLS_BEND.Width.ds; actual=20.; expected=20.
+OK: audit02.pair.1.SLS_BEND.Width.xt; actual=130.995410174786; expected=130.995410174786
+OK: audit02.pair.1.SLS_BEND.Width.hbt; actual=100.; expected=100.
+OK: audit02.pair.1.SLS_BEND.Width.a; actual=40.; expected=40.
+OK: audit02.pair.1.SLS_BEND.Width.h; actual=200.; expected=200.
+OK: audit02.pair.1.SLS_BEND.Width.Es; actual=200000.; expected=200000.
+OK: audit02.pair.1.SLS_BEND.Width.util; actual=0.446193535751; expected=0.446193535751
+OK: audit02.pair.1.SLS_BEND.Longitudinal.sigma; actual=7.727038617523; expected=7.727038617523
+OK: audit02.pair.1.SLS_BEND.Longitudinal.util; actual=0.529249220378; expected=0.529249220378
+OK: audit02.pair.1.SLS_BEND.Stability.N; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.Stability.Mx; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.Stability.My; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.Stability.Ncr1; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.Stability.Ncr2; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.Stability.reserve; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_BEND.Reference.N; actual=-20000.; expected=-20000.
+OK: audit02.pair.1.SLS_BEND.Reference.Mx; actual=-15000000.; expected=-15000000.
+OK: audit02.pair.1.SLS_BEND.Reference.My; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.overall
+OK: audit02.pair.1.SLS_AXIAL.offNoNumericalFailure
+OK: audit02.pair.1.SLS_AXIAL.direct
+OK: audit02.pair.1.SLS_AXIAL.capacity
+OK: audit02.pair.1.SLS_AXIAL.criterion
+OK: audit02.pair.1.SLS_AXIAL.normal
+OK: audit02.pair.1.SLS_AXIAL.longitudinal
+OK: audit02.pair.1.SLS_AXIAL.stability
+OK: audit02.pair.1.SLS_AXIAL.crackAvailability
+OK: audit02.pair.1.SLS_AXIAL.pointAvailability
+OK: audit02.pair.1.SLS_AXIAL.stateCount
+OK: audit02.pair.1.SLS_AXIAL.missingStateMatched
+OK: audit02.pair.1.SLS_AXIAL.missingStateMatched
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.exists
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.status
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.converged
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.physical
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.noFinalExtension
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.TargetN; actual=119657.725354552; expected=119657.725354552
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.TargetMx; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.TargetMy; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.Nint; actual=119657.725354551; expected=119657.725354551
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.Mxint; actual=-0.000000000095; expected=-0.000000000095
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.Myint; actual=-0.000000000025; expected=-0.000000000025
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.epsilon0; actual=0.000087326732; expected=0.000087326732
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.kappaX; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.epsBmin; actual=0.000087326732; expected=0.000087326732
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.epsBmax; actual=0.000087326732; expected=0.000087326732
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.epsSmin; actual=0.000087326732; expected=0.000087326732
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.epsSmax; actual=0.000087326732; expected=0.000087326732
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.sigmaBmin; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.sigmaBmax; actual=1.663338952757; expected=1.663338952757
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.sigmaSmin; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.sigmaSmax; actual=17.465346388738; expected=17.465346388738
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.ResidualN; actual=-0.000000000204; expected=-0.000000000204
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.ResidualMx; actual=-0.000000000095; expected=-0.000000000095
+OK: audit02.pair.1.SLS_AXIAL.PreCrackState.ResidualMy; actual=-0.000000000025; expected=-0.000000000025
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.exists
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.status
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.converged
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.physical
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.noFinalExtension
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.TargetN; actual=119657.725354552; expected=119657.725354552
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.TargetMx; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.TargetMy; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.Nint; actual=119657.725354552; expected=119657.725354552
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.Mxint; actual=-0.000000000087; expected=-0.000000000087
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.Myint; actual=0.000000000218; expected=0.000000000218
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.epsilon0; actual=0.000476102962; expected=0.000476102962
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.kappaX; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.epsBmin; actual=0.000476102962; expected=0.000476102962
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.epsBmax; actual=0.000476102962; expected=0.000476102962
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.epsSmin; actual=0.000476102962; expected=0.000476102962
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.epsSmax; actual=0.000476102962; expected=0.000476102962
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.sigmaBmin; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.sigmaSmin; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.sigmaSmax; actual=95.220592346547; expected=95.220592346547
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.ResidualN; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.ResidualMx; actual=-0.000000000087; expected=-0.000000000087
+OK: audit02.pair.1.SLS_AXIAL.PostCrackState.ResidualMy; actual=0.000000000218; expected=0.000000000218
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.exists
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.status
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.converged
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.physical
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.noFinalExtension
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.TargetN; actual=200000.; expected=200000.
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.TargetMx; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.TargetMy; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.Nint; actual=200000.; expected=200000.
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.Mxint; actual=-0.000000000029; expected=-0.000000000029
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.Myint; actual=-0.000000000276; expected=-0.000000000276
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.epsilon0; actual=0.000795774715; expected=0.000795774715
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.kappaX; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.epsBmin; actual=0.000795774715; expected=0.000795774715
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.epsBmax; actual=0.000795774715; expected=0.000795774715
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.epsSmin; actual=0.000795774715; expected=0.000795774715
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.epsSmax; actual=0.000795774715; expected=0.000795774715
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.sigmaBmin; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.sigmaSmin; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.sigmaSmax; actual=159.154943091895; expected=159.154943091895
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.ResidualN; actual=0.000000000029; expected=0.000000000029
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.ResidualMx; actual=-0.000000000029; expected=-0.000000000029
+OK: audit02.pair.1.SLS_AXIAL.CrackedState.ResidualMy; actual=-0.000000000276; expected=-0.000000000276
+OK: audit02.pair.1.SLS_AXIAL.Capacity.lambda; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Capacity.N; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Capacity.Mx; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Capacity.My; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Capacity.util; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Formation.lambda; actual=0.598288626773; expected=0.598288626773
+OK: audit02.pair.1.SLS_AXIAL.Formation.Ncrc; actual=119657.725354552; expected=119657.725354552
+OK: audit02.pair.1.SLS_AXIAL.Formation.N; actual=119657.725354552; expected=119657.725354552
+OK: audit02.pair.1.SLS_AXIAL.Formation.Mcrc; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Formation.Ared; actual=66476.514085862; expected=66476.514085862
+OK: audit02.pair.1.SLS_AXIAL.Width.acrc; actual=0.139403828281; expected=0.139403828281
+OK: audit02.pair.1.SLS_AXIAL.Width.sigmaS; actual=159.154943091895; expected=159.154943091895
+OK: audit02.pair.1.SLS_AXIAL.Width.sigmaSCrc; actual=95.220592346547; expected=95.220592346547
+OK: audit02.pair.1.SLS_AXIAL.Width.psi; actual=0.521369098582; expected=0.521369098582
+OK: audit02.pair.1.SLS_AXIAL.Width.ls; actual=400.; expected=400.
+OK: audit02.pair.1.SLS_AXIAL.Width.lsRaw; actual=477.464829275686; expected=477.464829275686
+OK: audit02.pair.1.SLS_AXIAL.Width.Abt; actual=60000.; expected=60000.
+OK: audit02.pair.1.SLS_AXIAL.Width.As; actual=1256.63706143592; expected=1256.63706143592
+OK: audit02.pair.1.SLS_AXIAL.Width.ds; actual=20.; expected=20.
+OK: audit02.pair.1.SLS_AXIAL.Width.xt; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Width.hbt; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Width.a; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Width.h; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Width.Es; actual=200000.; expected=200000.
+OK: audit02.pair.1.SLS_AXIAL.Width.util; actual=0.464679427602; expected=0.464679427602
+OK: audit02.pair.1.SLS_AXIAL.Longitudinal.sigma; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Longitudinal.util; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Stability.N; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Stability.Mx; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Stability.My; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Stability.Ncr1; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Stability.Ncr2; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Stability.reserve; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Reference.N; actual=200000.; expected=200000.
+OK: audit02.pair.1.SLS_AXIAL.Reference.Mx; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_AXIAL.Reference.My; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.overall
+OK: audit02.pair.1.SLS_NOCRACK.offNoNumericalFailure
+OK: audit02.pair.1.SLS_NOCRACK.direct
+OK: audit02.pair.1.SLS_NOCRACK.capacity
+OK: audit02.pair.1.SLS_NOCRACK.criterion
+OK: audit02.pair.1.SLS_NOCRACK.normal
+OK: audit02.pair.1.SLS_NOCRACK.longitudinal
+OK: audit02.pair.1.SLS_NOCRACK.stability
+OK: audit02.pair.1.SLS_NOCRACK.crackAvailability
+OK: audit02.pair.1.SLS_NOCRACK.pointAvailability
+OK: audit02.pair.1.SLS_NOCRACK.stateCount
+OK: audit02.pair.1.SLS_NOCRACK.missingStateMatched
+OK: audit02.pair.1.SLS_NOCRACK.missingStateMatched
+OK: audit02.pair.1.SLS_NOCRACK.missingStateMatched
+OK: audit02.pair.1.SLS_NOCRACK.missingStateMatched
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.exists
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.status
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.converged
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.physical
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.noFinalExtension
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.TargetN; actual=-100000.; expected=-100000.
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.TargetMx; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.TargetMy; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.Nint; actual=-100000.; expected=-100000.
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.Mxint; actual=-0.000000000142; expected=-0.000000000142
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.Myint; actual=-0.000000000038; expected=-0.000000000038
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.epsilon0; actual=-0.000089855596; expected=-0.000089855596
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.kappaX; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.kappaY; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.epsBmin; actual=-0.000089855596; expected=-0.000089855596
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.epsBmax; actual=-0.000089855596; expected=-0.000089855596
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.epsSmin; actual=-0.000089855596; expected=-0.000089855596
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.epsSmax; actual=-0.000089855596; expected=-0.000089855596
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.sigmaBmin; actual=-1.317882081987; expected=-1.317882081987
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.sigmaBmax; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.sigmaSmin; actual=-17.971119299816; expected=-17.971119299816
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.sigmaSmax; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.ResidualN; actual=-0.000000000044; expected=-0.000000000044
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.ResidualMx; actual=-0.000000000142; expected=-0.000000000142
+OK: audit02.pair.1.SLS_NOCRACK.CrackedState.ResidualMy; actual=-0.000000000038; expected=-0.000000000038
+OK: audit02.pair.1.SLS_NOCRACK.Capacity.lambda; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Capacity.N; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Capacity.Mx; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Capacity.My; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Capacity.util; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Formation.lambda; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Formation.Ncrc; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Formation.N; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Formation.Mcrc; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Formation.Ared; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Width.acrc; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Width.sigmaS; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Width.sigmaSCrc; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Width.psi; actual=1.; expected=1.
+OK: audit02.pair.1.SLS_NOCRACK.Width.ls; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Width.lsRaw; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Width.Abt; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Width.As; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Width.ds; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Width.xt; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Width.hbt; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Width.a; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Width.h; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Width.Es; actual=200000.; expected=200000.
+OK: audit02.pair.1.SLS_NOCRACK.Width.util; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Longitudinal.sigma; actual=1.317882081987; expected=1.317882081987
+OK: audit02.pair.1.SLS_NOCRACK.Longitudinal.util; actual=0.090265896026; expected=0.090265896026
+OK: audit02.pair.1.SLS_NOCRACK.Stability.N; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Stability.Mx; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Stability.My; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Stability.Ncr1; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Stability.Ncr2; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Stability.reserve; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Reference.N; actual=-100000.; expected=-100000.
+OK: audit02.pair.1.SLS_NOCRACK.Reference.Mx; actual=0.; expected=0.
+OK: audit02.pair.1.SLS_NOCRACK.Reference.My; actual=0.; expected=0.
+MAXDIFF|StrengthState.TargetN|abs=0.
+MAXDIFF|StrengthState.TargetMx|abs=0.
+MAXDIFF|StrengthState.TargetMy|abs=0.
+MAXDIFF|StrengthState.Nint|abs=0.
+MAXDIFF|StrengthState.Mxint|abs=0.
+MAXDIFF|StrengthState.Myint|abs=0.
+MAXDIFF|StrengthState.epsilon0|abs=0.
+MAXDIFF|StrengthState.kappaX|abs=0.
+MAXDIFF|StrengthState.kappaY|abs=0.
+MAXDIFF|StrengthState.epsBmin|abs=0.
+MAXDIFF|StrengthState.epsBmax|abs=0.
+MAXDIFF|StrengthState.epsSmin|abs=0.
+MAXDIFF|StrengthState.epsSmax|abs=0.
+MAXDIFF|StrengthState.sigmaBmin|abs=0.
+MAXDIFF|StrengthState.sigmaBmax|abs=0.
+MAXDIFF|StrengthState.sigmaSmin|abs=0.
+MAXDIFF|StrengthState.sigmaSmax|abs=0.
+MAXDIFF|StrengthState.ResidualN|abs=0.
+MAXDIFF|StrengthState.ResidualMx|abs=0.
+MAXDIFF|StrengthState.ResidualMy|abs=0.
+MAXDIFF|CapacityState.TargetN|abs=0.
+MAXDIFF|CapacityState.TargetMx|abs=0.000650160015
+MAXDIFF|CapacityState.TargetMy|abs=0.000036142766
+MAXDIFF|CapacityState.Nint|abs=0.000012594508
+MAXDIFF|CapacityState.Mxint|abs=0.000650160015
+MAXDIFF|CapacityState.Myint|abs=0.000065332279
+MAXDIFF|CapacityState.epsilon0|abs=0.
+MAXDIFF|CapacityState.kappaX|abs=0.
+MAXDIFF|CapacityState.kappaY|abs=0.
+MAXDIFF|CapacityState.epsBmin|abs=0.
+MAXDIFF|CapacityState.epsBmax|abs=0.000000000001
+MAXDIFF|CapacityState.epsSmin|abs=0.
+MAXDIFF|CapacityState.epsSmax|abs=0.
+MAXDIFF|CapacityState.sigmaBmin|abs=0.
+MAXDIFF|CapacityState.sigmaBmax|abs=0.
+MAXDIFF|CapacityState.sigmaSmin|abs=0.000000003981
+MAXDIFF|CapacityState.sigmaSmax|abs=0.
+MAXDIFF|CapacityState.ResidualN|abs=0.000012594508
+MAXDIFF|CapacityState.ResidualMx|abs=0.000018566847
+MAXDIFF|CapacityState.ResidualMy|abs=0.000049514696
+MAXDIFF|Capacity.lambda|abs=0.000000000163
+MAXDIFF|Capacity.N|abs=0.000012594508
+MAXDIFF|Capacity.Mx|abs=0.000650160015
+MAXDIFF|Capacity.My|abs=0.000065332279
+MAXDIFF|Capacity.util|abs=0.000000000002
+MAXDIFF|Formation.lambda|abs=0.
+MAXDIFF|Formation.Ncrc|abs=0.
+MAXDIFF|Formation.N|abs=0.
+MAXDIFF|Formation.Mcrc|abs=0.000000003725
+MAXDIFF|Formation.Ared|abs=0.
+MAXDIFF|Width.acrc|abs=0.
+MAXDIFF|Width.sigmaS|abs=0.
+MAXDIFF|Width.sigmaSCrc|abs=0.
+MAXDIFF|Width.psi|abs=0.
+MAXDIFF|Width.ls|abs=0.
+MAXDIFF|Width.lsRaw|abs=0.
+MAXDIFF|Width.Abt|abs=0.
+MAXDIFF|Width.As|abs=0.
+MAXDIFF|Width.ds|abs=0.
+MAXDIFF|Width.xt|abs=0.
+MAXDIFF|Width.hbt|abs=0.
+MAXDIFF|Width.a|abs=0.
+MAXDIFF|Width.h|abs=0.
+MAXDIFF|Width.Es|abs=0.
+MAXDIFF|Width.util|abs=0.
+MAXDIFF|Longitudinal.sigma|abs=0.
+MAXDIFF|Longitudinal.util|abs=0.
+MAXDIFF|Stability.N|abs=0.
+MAXDIFF|Stability.Mx|abs=0.
+MAXDIFF|Stability.My|abs=0.
+MAXDIFF|Stability.Ncr1|abs=0.
+MAXDIFF|Stability.Ncr2|abs=0.
+MAXDIFF|Stability.reserve|abs=0.
+MAXDIFF|Reference.N|abs=0.
+MAXDIFF|Reference.Mx|abs=0.
+MAXDIFF|Reference.My|abs=0.
+MAXDIFF|PreCrackState.TargetN|abs=0.
+MAXDIFF|PreCrackState.TargetMx|abs=0.000000003725
+MAXDIFF|PreCrackState.TargetMy|abs=0.
+MAXDIFF|PreCrackState.Nint|abs=0.000000000193
+MAXDIFF|PreCrackState.Mxint|abs=0.000000003725
+MAXDIFF|PreCrackState.Myint|abs=0.000000000136
+MAXDIFF|PreCrackState.epsilon0|abs=0.
+MAXDIFF|PreCrackState.kappaX|abs=0.
+MAXDIFF|PreCrackState.kappaY|abs=0.
+MAXDIFF|PreCrackState.epsBmin|abs=0.
+MAXDIFF|PreCrackState.epsBmax|abs=0.
+MAXDIFF|PreCrackState.epsSmin|abs=0.
+MAXDIFF|PreCrackState.epsSmax|abs=0.
+MAXDIFF|PreCrackState.sigmaBmin|abs=0.
+MAXDIFF|PreCrackState.sigmaBmax|abs=0.
+MAXDIFF|PreCrackState.sigmaSmin|abs=0.
+MAXDIFF|PreCrackState.sigmaSmax|abs=0.
+MAXDIFF|PreCrackState.ResidualN|abs=0.000000000193
+MAXDIFF|PreCrackState.ResidualMx|abs=0.
+MAXDIFF|PreCrackState.ResidualMy|abs=0.000000000136
+MAXDIFF|PostCrackState.TargetN|abs=0.
+MAXDIFF|PostCrackState.TargetMx|abs=0.000000003725
+MAXDIFF|PostCrackState.TargetMy|abs=0.
+MAXDIFF|PostCrackState.Nint|abs=0.000000000004
+MAXDIFF|PostCrackState.Mxint|abs=0.000000004657
+MAXDIFF|PostCrackState.Myint|abs=0.000000000004
+MAXDIFF|PostCrackState.epsilon0|abs=0.
+MAXDIFF|PostCrackState.kappaX|abs=0.
+MAXDIFF|PostCrackState.kappaY|abs=0.
+MAXDIFF|PostCrackState.epsBmin|abs=0.
+MAXDIFF|PostCrackState.epsBmax|abs=0.
+MAXDIFF|PostCrackState.epsSmin|abs=0.
+MAXDIFF|PostCrackState.epsSmax|abs=0.
+MAXDIFF|PostCrackState.sigmaBmin|abs=0.
+MAXDIFF|PostCrackState.sigmaBmax|abs=0.
+MAXDIFF|PostCrackState.sigmaSmin|abs=0.
+MAXDIFF|PostCrackState.sigmaSmax|abs=0.
+MAXDIFF|PostCrackState.ResidualN|abs=0.000000000004
+MAXDIFF|PostCrackState.ResidualMx|abs=0.000000000931
+MAXDIFF|PostCrackState.ResidualMy|abs=0.000000000004
+MAXDIFF|CrackedState.TargetN|abs=0.
+MAXDIFF|CrackedState.TargetMx|abs=0.
+MAXDIFF|CrackedState.TargetMy|abs=0.
+MAXDIFF|CrackedState.Nint|abs=0.
+MAXDIFF|CrackedState.Mxint|abs=0.
+MAXDIFF|CrackedState.Myint|abs=0.
+MAXDIFF|CrackedState.epsilon0|abs=0.
+MAXDIFF|CrackedState.kappaX|abs=0.
+MAXDIFF|CrackedState.kappaY|abs=0.
+MAXDIFF|CrackedState.epsBmin|abs=0.
+MAXDIFF|CrackedState.epsBmax|abs=0.
+MAXDIFF|CrackedState.epsSmin|abs=0.
+MAXDIFF|CrackedState.epsSmax|abs=0.
+MAXDIFF|CrackedState.sigmaBmin|abs=0.
+MAXDIFF|CrackedState.sigmaBmax|abs=0.
+MAXDIFF|CrackedState.sigmaSmin|abs=0.
+MAXDIFF|CrackedState.sigmaSmax|abs=0.
+MAXDIFF|CrackedState.ResidualN|abs=0.
+MAXDIFF|CrackedState.ResidualMx|abs=0.
+MAXDIFF|CrackedState.ResidualMy|abs=0.
+TOTAL_AUDIT02_PAIR: passed=1445; failed=3
+
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestBatchCalculation.RunAudit02OnOffComparisonTests; 2026-10-01T19:59:20
+SOURCE_UNCHANGED: True

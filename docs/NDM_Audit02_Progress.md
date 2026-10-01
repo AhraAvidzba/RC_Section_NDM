@@ -65,6 +65,13 @@
 
 ## Current
 
+- Последний принятый HEAD: `651e4d9` (scoped state repository); baseline неизменен.
+- Новый срез A02/Q04: запасы перенесены к typed results, из Batch удалены формулы запасов и scalar API; consumers переведены на canonical branches. Capacity pure-axial finalization подтверждает исходный физический предел и равновесие, а не принимает нижнюю пробу у начала плато.
+- Полные `typed_reserves_pair_full_on/off_2026-10-01.txt`: по 6222 assertions, 8 suites, 0 ошибок; исходная книга не менялась. Парный directed log `on_off_physical_accepted_2026-10-01.txt`: 1448/0, максимальные отклонения по каждой величине выведены в `MAXDIFF`.
+- C05/Q05-24: добавлена, но еще не импортирована и не проверена новая UI-регрессия сохраненного snapshot после изменения Config. Performance, финальная чистая сборка, полный self-audit и final report остаются открытыми. Зелёные suites не означают завершения цели.
+
+### История Принятых Срезов И Предыдущих Точек Продолжения
+
 - HEAD checkpoint R07: `8929d5d`, `Audit02: canonical typed results and block output formatting`.
 - C02/C03 реализованы через identity/revision сечения и material provider, effective Extension и допуски в scoped repository; warm-start/retry/диагностика не входят в reuse key. Provider владеет небольшими копиями параметров материалов. Последний named-state обновляется и при solve, и при cache-hit; failed state не блокирует повтор. Directed `audit02.cache.*`: 43/0. Full On/Off `scoped_repository_full_*_2026-10-01.txt`: все 8 suites, по 4774 assertions, 0 ошибок, source unchanged; структурная проверка прошла.
 - Следующий срез A02 реализуется отдельно: запасы отдельных проверок переходят к canonical typed results, Batch сохраняет только выбор определяющего LC. Эти исходники еще не включены в принятую C02/C03 книгу и требуют новой проверки.

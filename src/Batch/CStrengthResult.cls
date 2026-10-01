@@ -41,10 +41,12 @@ Public Sub SetDirectMeta(ByVal meta As CResultMeta)
     mDirectState.SetMeta meta
 End Sub
 
-' Копирует прямое НДС из reusable named-state в структурированный direct-state result.
-Public Sub StoreDirectFromStateResult(ByVal stateResult As CSectionStateResult, ByVal extensionEnabled As Boolean)
+' Привязывает прямое НДС и исходные физические пределы к strength-результату.
+Public Sub StoreDirectFromStateResult(ByVal stateResult As CSectionStateResult, ByVal extensionEnabled As Boolean, _
+        Optional ByVal physicalConcrete As CMaterialDiagram = Nothing, _
+        Optional ByVal physicalSteel As CMaterialDiagram = Nothing)
     If mDirectState Is Nothing Then Set mDirectState = New CDirectStateResult
-    mDirectState.StoreStateResult stateResult, extensionEnabled
+    mDirectState.StoreStateResult stateResult, extensionEnabled, physicalConcrete, physicalSteel
 End Sub
 
 ' Сохраняет полный capacity-result как вторую ветвь strength-subtree.

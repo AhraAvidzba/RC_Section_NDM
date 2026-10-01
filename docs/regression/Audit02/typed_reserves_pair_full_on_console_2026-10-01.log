@@ -1,0 +1,21 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 98D7703B84892F04F44A15DB3D078FD2BF86D6BAF767B0DBBE31FB6A4ED712B2
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0479f701e2d24fe881d5cc29f0856478\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TOTAL: passed=496; failed=0
+MODE_AFTER_SUITE: Yes
+TOTAL_MATERIAL: passed=1191; failed=0; elapsedSec=0.078125
+MODE_AFTER_SUITE: Yes
+TOTAL_SECTION_SOLVER: passed=444; failed=0; elapsedSec=0.359375
+MODE_AFTER_SUITE: Yes
+TOTAL_CAPACITY: passed=1194; failed=0; elapsedSec=44.3046875
+MODE_AFTER_SUITE: Yes
+TOTAL_CRACK: passed=360; failed=0; elapsedSec=4.65625
+MODE_AFTER_SUITE: Yes
+TOTAL_BATCH: passed=2190; failed=0; elapsedSec=34.2734375
+MODE_AFTER_SUITE: Yes
+TOTAL_WORKBOOK_UI: passed=308; failed=0; elapsedSec=49.515625
+MODE_AFTER_SUITE: Yes
+TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.46875
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

@@ -19,6 +19,11 @@ Option Explicit
 Private mMeta As CResultMeta ' Инженерный итог проверки прямого НДС.
 Private mState As CSectionStateResult ' Единственный численный снимок named state.
 Private mExtensionEnabled As Boolean ' Настройка глобального Extension при запуске.
+Private mConcreteCompressionLimit As Double ' Физический предел сжатия использованной модели.
+Private mConcreteTensionLimit As Double ' Физический предел активной растянутой ветви.
+Private mConcreteTensionEnabled As Boolean ' Ignore не участвует в деформационном запасе.
+Private mSteelCompressionLimit As Double ' Предел арматуры для отрицательного знака.
+Private mSteelTensionLimit As Double ' Предел арматуры для положительного знака.
 
 ' Создает нейтральный result без фиктивного физического состояния.
 Private Sub Class_Initialize()
@@ -31,6 +36,11 @@ Public Sub Clear()
     Set mMeta = New CResultMeta
     mMeta.SetNotApplicable rkDirectState
     mExtensionEnabled = False
+    mConcreteCompressionLimit = 0#
+    mConcreteTensionLimit = 0#
+    mConcreteTensionEnabled = False
+    mSteelCompressionLimit = 0#
+    mSteelTensionLimit = 0#
 End Sub
 
 ' Устанавливает итоговую meta; пустая meta является нарушением контракта.
@@ -46,9 +56,21 @@ End Sub
 
 ' Привязывает result к сохраненному State без копии численных полей.
 ' Ошибка получения State сохраняется в его meta, а не превращается в успех.
-Public Sub StoreStateResult(ByVal stateResult As CSectionStateResult, ByVal extensionEnabledValue As Boolean)
+Public Sub StoreStateResult(ByVal stateResult As CSectionStateResult, ByVal extensionEnabledValue As Boolean, _
+        Optional ByVal physicalConcrete As CMaterialDiagram = Nothing, _
+        Optional ByVal physicalSteel As CMaterialDiagram = Nothing)
+    Clear
     Set mState = stateResult
     mExtensionEnabled = extensionEnabledValue
+    If Not physicalConcrete Is Nothing Then
+        mConcreteCompressionLimit = physicalConcrete.UltimateCompressionStrain
+        mConcreteTensionLimit = physicalConcrete.UltimateTensionStrain
+        mConcreteTensionEnabled = physicalConcrete.HasPhysicalTensionLimit
+    End If
+    If Not physicalSteel Is Nothing Then
+        mSteelCompressionLimit = physicalSteel.UltimateCompressionStrain
+        mSteelTensionLimit = physicalSteel.UltimateTensionStrain
+    End If
     If stateResult Is Nothing Then
         SetMeta Nothing
     Else
@@ -88,3 +110,34 @@ End Property
 Public Property Get ExtensionEnabled() As Boolean
     ExtensionEnabled = mExtensionEnabled
 End Property
+
+' Вычисляет запас по реально присутствующим знакам деформаций и исходным
+' физическим пределам. Численное продолжение не увеличивает этот запас.
+' При отсутствии проверенного состояния возвращает 0 как признак недоступности.
+Public Property Get StrainReserve() As Double
+    If mState Is Nothing Then Exit Property
+    If Not mState.Converged Then Exit Property
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    If Not policy.IsFinished(Status) Then Exit Property
+    Dim reserve As Double
+    reserve = 1E+100
+    AddStrainReserve reserve, mState.HasConcreteCompression, mConcreteCompressionLimit, mState.MinConcreteStrain
+    If mConcreteTensionEnabled Then _
+        AddStrainReserve reserve, mState.HasConcreteTension, mConcreteTensionLimit, mState.MaxConcreteStrain
+    AddStrainReserve reserve, mState.HasSteelCompression, mSteelCompressionLimit, mState.MinSteelStrain
+    AddStrainReserve reserve, mState.HasSteelTension, mSteelTensionLimit, mState.MaxSteelStrain
+    If reserve < 1E+90 Then StrainReserve = reserve
+End Property
+
+' Добавляет применимый знак материала в минимум; нулевая деформация не дает
+' искусственного бесконечного запаса и отсутствующая зона не участвует.
+Private Sub AddStrainReserve(ByRef reserve As Double, ByVal hasValue As Boolean, _
+        ByVal limitValue As Double, ByVal actualValue As Double)
+    If Not hasValue Then Exit Sub
+    If Abs(limitValue) <= 0.000000000000001 Then Exit Sub
+    If Abs(actualValue) <= 0.000000000000001 Then Exit Sub
+    Dim candidate As Double
+    candidate = Abs(limitValue) / Abs(actualValue)
+    If candidate < reserve Then reserve = candidate
+End Sub

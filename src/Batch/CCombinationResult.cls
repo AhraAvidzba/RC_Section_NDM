@@ -112,14 +112,31 @@ Public Property Get CapacityPathDisplayName() As String
     CapacityPathDisplayName = loadPath.DisplayNameForKey(mStrengthResult.Capacity.PathResolved)
 End Property
 
-' Возвращает расчетный запас по несущей способности, если capacity-результат
-' действительно физически интерпретируем. Lambda остается доступной отдельно,
-' но NumFail/InputErr/N/A не должны попадать в summary как запас.
-Public Property Get CapacityReserveFactor() As Double
-    If mStrengthResult.Capacity.LambdaCapacity <= 0# Then Exit Property
-    If Not Policy.IsFinished(Policy.ExternalStatus(CapacityMeta)) Then Exit Property
-    CapacityReserveFactor = mStrengthResult.Capacity.LambdaCapacity
-End Property
+' Собирает показатель для выбора определяющего LC из готовых результатов.
+' Сам выбор строки остается у Batch; физические расчеты и поиск здесь не выполняются.
+Public Function ReserveForCriterion(ByVal criterion As String) As Double
+    Select Case criterion
+        Case "StrengthStrain"
+            ReserveForCriterion = mStrengthResult.DirectState.StrainReserve
+        Case "StrengthCapacity"
+            ReserveForCriterion = mStrengthResult.Capacity.ReserveFactor
+        Case "Cracks"
+            ReserveForCriterion = PositiveMin(mCrackResult.Width.ReserveFactor, mCrackResult.Longitudinal.ReserveFactor)
+        Case "Stability"
+            ReserveForCriterion = mStabilityResult.SummaryReserve
+    End Select
+End Function
+
+' Объединяет только доступные положительные запасы, не выдавая отсутствие за ноль проверки.
+Private Function PositiveMin(ByVal firstValue As Double, ByVal secondValue As Double) As Double
+    If firstValue > 0# And secondValue > 0# Then
+        If firstValue < secondValue Then PositiveMin = firstValue Else PositiveMin = secondValue
+    ElseIf firstValue > 0# Then
+        PositiveMin = firstValue
+    ElseIf secondValue > 0# Then
+        PositiveMin = secondValue
+    End If
+End Function
 
 ' Возвращает ResultMeta расчета нормальных трещин.
 Public Property Get CrackMeta() As CResultMeta
@@ -509,8 +526,10 @@ Public Sub StoreCapacityResult(ByVal capacity As CCapacityResult)
 End Sub
 
 ' Привязывает прямой result к уже сохраненному каноническому named state.
-Public Sub StoreSectionStateResult(ByVal stateResult As CSectionStateResult)
-    mStrengthResult.StoreDirectFromStateResult stateResult, DiagramExtensionEnabled
+Public Sub StoreSectionStateResult(ByVal stateResult As CSectionStateResult, _
+        Optional ByVal physicalConcrete As CMaterialDiagram = Nothing, _
+        Optional ByVal physicalSteel As CMaterialDiagram = Nothing)
+    mStrengthResult.StoreDirectFromStateResult stateResult, DiagramExtensionEnabled, physicalConcrete, physicalSteel
 End Sub
 
 ' Сохраняет самостоятельное дерево трещин без копирования численных полей.

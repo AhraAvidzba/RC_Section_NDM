@@ -304,3 +304,16 @@ Public Property Get Status() As String
     Set policy = New CResultStatusPolicy
     Status = policy.ExternalStatus(mMeta)
 End Property
+
+' Выдает минимальный доступный запас главных плоскостей для сводки и Worst.
+' Числа уже учитывают примененный критерий устойчивости; здесь не пересчитываются СП.
+Public Property Get SummaryReserve() As Double
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    If Not policy.IsFinished(Status) Then Exit Property
+    If PlaneApplicable1 And Reserve1 > 0# Then SummaryReserve = Reserve1
+    If PlaneApplicable2 And Reserve2 > 0# Then
+        If SummaryReserve <= 0# Or Reserve2 < SummaryReserve Then SummaryReserve = Reserve2
+    End If
+    If SummaryReserve <= 0# And ReserveFactor > 0# Then SummaryReserve = ReserveFactor
+End Property

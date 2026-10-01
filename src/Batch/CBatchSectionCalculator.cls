@@ -1064,7 +1064,8 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
 
     Dim service As CSectionSolver
     If Not runner Is Nothing Then Set service = runner.ResultSolver
-    If stateType = sstStrengthState Then mResults(index).StoreSectionStateResult stateResult
+    If stateType = sstStrengthState Then mResults(index).StoreSectionStateResult stateResult, _
+        mMaterialProvider.ConcreteMaterialFromSpec(spec), mMaterialProvider.SteelMaterialFromSpec(spec)
 
     ReportValue "НДС " & SectionStateTypeToText(stateType) & " сошлось", IIf(stateResult.Converged, "да", "нет")
     If provider.LastStateWasReused Then
@@ -1698,7 +1699,7 @@ End Function
 ' lambda*My, lambda*Mxy, lambda*N и lambda*NMxy; отдельные отношения Nult/N или Mult/Mxy больше
 ' не нужны для выбора Worst.
 Private Function StrengthSafetyFactorForGoverning(ByVal index As Long) As Double
-    StrengthSafetyFactorForGoverning = mResults(index).CapacityReserveFactor
+    StrengthSafetyFactorForGoverning = mResults(index).StrengthResult.Capacity.ReserveFactor
 End Function
 
 ' Сравнивает только запасы по раскрытию трещин. Нулевой запас означает, что
@@ -1719,7 +1720,7 @@ End Function
 
 ' Возвращает запас по трещинам как величину, обратную использованию.
 Private Function CrackSafetyFactorForGoverning(ByVal index As Long) As Double
-    If mResults(index).CrackResult.Width.Utilization > 0# Then CrackSafetyFactorForGoverning = 1# / mResults(index).CrackResult.Width.Utilization
+    CrackSafetyFactorForGoverning = mResults(index).CrackResult.Width.ReserveFactor
 End Function
 
 ' Выбирает Worst-сочетание по пользовательскому критерию верхней сводки.
@@ -1752,31 +1753,15 @@ End Sub
 Private Function IsBetterWorstCandidate(ByVal candidateIndex As Long, ByVal currentIndex As Long) As Boolean
     Dim candidateSafety As Double
     Dim currentSafety As Double
-    candidateSafety = WorstSafetyFactor(candidateIndex)
+    candidateSafety = mResults(candidateIndex).ReserveForCriterion(NormalizedWorstCombinationCriterion())
     If candidateSafety <= 0# Then Exit Function
 
     If currentIndex <= 0 Then
         IsBetterWorstCandidate = True
     Else
-        currentSafety = WorstSafetyFactor(currentIndex)
+        currentSafety = mResults(currentIndex).ReserveForCriterion(NormalizedWorstCombinationCriterion())
         IsBetterWorstCandidate = (currentSafety <= 0# Or candidateSafety < currentSafety)
     End If
-End Function
-
-' Возвращает запас LC по критерию General.WorstCombinationCriterion.
-' StrengthCapacity оставлен значением по умолчанию, чтобы сохранить старое
-' поведение Worst до явного выбора пользователем другого критерия.
-Public Function WorstSafetyFactor(ByVal index As Long) As Double
-    Select Case NormalizedWorstCombinationCriterion()
-        Case "StrengthStrain"
-            WorstSafetyFactor = StrengthStrainReserve(index)
-        Case "StrengthCapacity"
-            WorstSafetyFactor = StrengthCapacityReserve(index)
-        Case "Cracks"
-            WorstSafetyFactor = PositiveMin(CrackReserveFactor(index), LongitudinalCrackReserveFactor(index))
-        Case "Stability"
-            WorstSafetyFactor = StabilityReserveForSummary(index)
-    End Select
 End Function
 
 ' Нормализует пользовательский критерий выбора Worst. Некорректная строка не
@@ -1792,101 +1777,6 @@ Private Function NormalizedWorstCombinationCriterion() As String
         Case Else
             NormalizedWorstCombinationCriterion = "StrengthCapacity"
     End Select
-End Function
-
-' Минимальный запас по предельным деформациям модели прочности.
-' Берутся только реально существующие зоны: если растянутого бетона или
-' сжатой арматуры в состоянии нет, эта составляющая не участвует в минимуме.
-Public Function StrengthStrainReserve(ByVal index As Long) As Double
-    Dim stateResult As CSectionStateResult
-    Set stateResult = mResults(index).StateRepository.FindState(sstStrengthState)
-    If stateResult Is Nothing Then Exit Function
-    If Not mStatusPolicy.IsFinished(mStatusPolicy.StatusFromMeta(stateResult.ResultMeta)) Then Exit Function
-
-    Dim reserve As Double
-    reserve = 1E+100
-    AddStrainReserve reserve, stateResult.HasConcreteCompression, _
-        StrengthConcreteCompressionLimitForCombination(index), stateResult.MinConcreteStrain
-    If StrengthConcreteTensionLimitEnabledForCombination(index) Then _
-        AddStrainReserve reserve, stateResult.HasConcreteTension, _
-            StrengthConcreteTensionLimitForCombination(index), stateResult.MaxConcreteStrain
-    AddStrainReserve reserve, stateResult.HasSteelCompression, _
-        StrengthSteelCompressionLimitForCombination(index), stateResult.MinSteelStrain
-    AddStrainReserve reserve, stateResult.HasSteelTension, _
-        StrengthSteelTensionLimitForCombination(index), stateResult.MaxSteelStrain
-    If reserve < 1E+90 Then StrengthStrainReserve = reserve
-End Function
-
-' Добавляет одну деформационную составляющую в общий минимум запаса.
-Private Sub AddStrainReserve(ByRef reserve As Double, ByVal hasValue As Boolean, _
-        ByVal limitValue As Double, ByVal actualValue As Double)
-    If Not hasValue Then Exit Sub
-    If Abs(limitValue) <= 0.000000000000001 Then Exit Sub
-    If Abs(actualValue) <= 0.000000000000001 Then Exit Sub
-    reserve = MinDouble(reserve, Abs(limitValue) / Abs(actualValue))
-End Sub
-
-' Запас по несущей способности: фактически найденный lambda выбранной
-' траектории. Это ровно прежний критерий strength-Worst.
-Public Function StrengthCapacityReserve(ByVal index As Long) As Double
-    StrengthCapacityReserve = mResults(index).CapacityReserveFactor
-End Function
-
-' Запас по нормальным трещинам как обратная величина к использованию a_crc.
-Public Function CrackReserveFactor(ByVal index As Long) As Double
-    If mStatusPolicy.IsFinished(mResults(index).NormalCrackStatus) And mResults(index).CrackResult.Width.Utilization > 0# Then _
-        CrackReserveFactor = 1# / mResults(index).CrackResult.Width.Utilization
-End Function
-
-' Запас по продольным трещинам как обратная величина к sigma_b/Rb,mc2.
-Public Function LongitudinalCrackReserveFactor(ByVal index As Long) As Double
-    If mStatusPolicy.IsFinished(mResults(index).CrackResult.Longitudinal.Status) And _
-            mResults(index).CrackResult.Longitudinal.Utilization > 0# Then _
-        LongitudinalCrackReserveFactor = 1# / mResults(index).CrackResult.Longitudinal.Utilization
-End Function
-
-' Минимальный запас по устойчивости с учетом пользовательского лимита СП 35
-' для ветви N/Ncr <= Stability.SP35.NOverNcrLimit.
-Public Function StabilityReserveForSummary(ByVal index As Long) As Double
-    If Not mStatusPolicy.IsFinished(mResults(index).StabilityResult.Status) Then Exit Function
-    StabilityReserveForSummary = PositiveMin( _
-        StabilityPlaneReserveForSummary(index, 1), _
-        StabilityPlaneReserveForSummary(index, 2))
-    If StabilityReserveForSummary <= 0# And mResults(index).StabilityResult.ReserveFactor > 0# Then _
-        StabilityReserveForSummary = mResults(index).StabilityResult.ReserveFactor
-End Function
-
-' Возвращает запас одной главной плоскости устойчивости. Для СП 35 eta-ветви
-' в расчетный запас входит не просто Ncr/N, а проверяемое условие N/Ncr <= limit.
-Private Function StabilityPlaneReserveForSummary(ByVal index As Long, ByVal planeIndex As Long) As Double
-    Dim applicable As Boolean
-    Dim rawReserve As Double
-    Dim branchText As String
-    If planeIndex = 1 Then
-        applicable = mResults(index).StabilityResult.PlaneApplicable1
-        rawReserve = mResults(index).StabilityResult.Reserve1
-        branchText = mResults(index).StabilityResult.PlaneBranch1
-    Else
-        applicable = mResults(index).StabilityResult.PlaneApplicable2
-        rawReserve = mResults(index).StabilityResult.Reserve2
-        branchText = mResults(index).StabilityResult.PlaneBranch2
-    End If
-    If Not applicable Then Exit Function
-    If rawReserve <= 0# Then Exit Function
-
-    StabilityPlaneReserveForSummary = rawReserve
-End Function
-
-' Берет минимальное положительное значение из двух запасов.
-' Нулевые значения означают, что соответствующая проверка не рассчитана.
-Private Function PositiveMin(ByVal firstValue As Double, ByVal secondValue As Double) As Double
-    If firstValue > 0# And secondValue > 0# Then
-        PositiveMin = MinDouble(firstValue, secondValue)
-    ElseIf firstValue > 0# Then
-        PositiveMin = firstValue
-    ElseIf secondValue > 0# Then
-        PositiveMin = secondValue
-    End If
 End Function
 
 ' Форматирует число с точкой как десятичным разделителем для диагностической строки.

@@ -1,0 +1,29 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: A5A924CE0EA310DAA7DDAB01D4EB8B2FB9064A96EBCDF8135010E465411F6402
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_6700ee5ec1fb4f22a288dc95018820e8\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+FAIL: audit02.pair.0.ULS_AXIAL.CapacityState.TargetN; actual=439453.125; expected=439822.971502571
+FAIL: audit02.pair.0.ULS_AXIAL.CapacityState.Nint; actual=439453.125; expected=439822.971502571
+FAIL: audit02.pair.0.ULS_AXIAL.CapacityState.epsilon0; actual=0.001748528428; expected=0.025
+FAIL: audit02.pair.0.ULS_AXIAL.CapacityState.epsBmin; actual=0.001748528428; expected=0.025
+FAIL: audit02.pair.0.ULS_AXIAL.CapacityState.epsBmax; actual=0.001748528428; expected=0.025
+FAIL: audit02.pair.0.ULS_AXIAL.CapacityState.epsSmin; actual=0.001748528428; expected=0.025
+FAIL: audit02.pair.0.ULS_AXIAL.CapacityState.epsSmax; actual=0.001748528428; expected=0.025
+FAIL: audit02.pair.0.ULS_AXIAL.CapacityState.sigmaSmax; actual=349.705685504653; expected=350.
+FAIL: audit02.pair.0.ULS_AXIAL.Capacity.N; actual=439453.125; expected=439822.971502571
+FAIL: audit02.pair.0.ULS_AXIAL.Capacity.util; actual=0.113777777778; expected=0.113682102208
+FAIL: audit02.pair.1.ULS_X.offNoNumericalFailure
+FAIL: audit02.pair.1.ULS_Y.offNoNumericalFailure
+FAIL: audit02.pair.1.ULS_AXIAL.CapacityState.TargetN; actual=439453.125; expected=439822.971502571
+FAIL: audit02.pair.1.ULS_AXIAL.CapacityState.Nint; actual=439453.125; expected=439822.971502571
+FAIL: audit02.pair.1.ULS_AXIAL.CapacityState.epsilon0; actual=0.001748528428; expected=0.025
+FAIL: audit02.pair.1.ULS_AXIAL.CapacityState.epsBmin; actual=0.001748528428; expected=0.025
+FAIL: audit02.pair.1.ULS_AXIAL.CapacityState.epsBmax; actual=0.001748528428; expected=0.025
+FAIL: audit02.pair.1.ULS_AXIAL.CapacityState.epsSmin; actual=0.001748528428; expected=0.025
+FAIL: audit02.pair.1.ULS_AXIAL.CapacityState.epsSmax; actual=0.001748528428; expected=0.025
+FAIL: audit02.pair.1.ULS_AXIAL.CapacityState.sigmaSmax; actual=349.705685504653; expected=350.
+FAIL: audit02.pair.1.ULS_AXIAL.Capacity.N; actual=439453.125; expected=439822.971502571
+FAIL: audit02.pair.1.ULS_AXIAL.Capacity.util; actual=0.113777777778; expected=0.113682102208
+TOTAL_AUDIT02_PAIR: passed=1426; failed=22
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

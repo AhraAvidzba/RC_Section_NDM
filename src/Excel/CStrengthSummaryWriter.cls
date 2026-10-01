@@ -462,8 +462,8 @@ Private Sub PutStrengthState(ByRef data() As Variant, ByVal rowIndex As Long, _
         COL_STATE_SBC, COL_STATE_SBT, COL_STATE_SSC, COL_STATE_SST
     PutStateGeometry data, rowIndex, stateResult, units, section, COL_STATE_H, COL_STATE_X
     data(rowIndex, COL_STATE_DIAGEXT) = ExtensionUsedText(batch, index, stateResult)
-    If batch.StrengthStrainReserve(index) > SMALL_VALUE Then _
-        data(rowIndex, COL_STATE_RESERVE) = batch.StrengthStrainReserve(index)
+    If batch.ResultAt(index).StrengthResult.DirectState.StrainReserve > SMALL_VALUE Then _
+        data(rowIndex, COL_STATE_RESERVE) = batch.ResultAt(index).StrengthResult.DirectState.StrainReserve
     data(rowIndex, COL_STATE_STATUS) = policy.StatusFromMeta(stateResult.ResultMeta)
 End Sub
 
@@ -506,8 +506,8 @@ Private Sub PutCapacityState(ByRef data() As Variant, ByVal rowIndex As Long, _
             0, 0, 0, 0
         PutStateGeometry data, rowIndex, stateResult, units, section, COL_CAP_H, COL_CAP_X
     End If
-    If batch.StrengthCapacityReserve(index) > SMALL_VALUE Then _
-        data(rowIndex, COL_CAP_RESERVE) = batch.StrengthCapacityReserve(index)
+    If batch.ResultAt(index).StrengthResult.Capacity.ReserveFactor > SMALL_VALUE Then _
+        data(rowIndex, COL_CAP_RESERVE) = batch.ResultAt(index).StrengthResult.Capacity.ReserveFactor
     data(rowIndex, COL_CAP_STATUS) = CapacityStatusText(batch, index, policy)
 End Sub
 

@@ -65,3 +65,13 @@ End Property
 Public Property Get Utilization() As Double
     Utilization = mUtilization
 End Property
+
+' Возвращает запас завершенной проверки сжатого бетона; отсутствие результата
+' или нулевая проверяемая величина не превращаются в бесконечный запас.
+Public Property Get ReserveFactor() As Double
+    If mUtilization <= 0# Then Exit Property
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    If Not policy.IsFinished(Status) Then Exit Property
+    ReserveFactor = 1# / mUtilization
+End Property

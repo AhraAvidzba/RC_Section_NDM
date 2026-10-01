@@ -412,7 +412,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacityLoadPath", batch.ResultAt(i).CapacityPathDisplayName, "-", "Какие компоненты нагрузки масштабировались при поиске несущей способности."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacitySolutionMethod", batch.ResultAt(i).StrengthResult.Capacity.SolutionMethod, "-", "Фактический численный метод, которым найдена предельная несущая способность."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "LambdaCapacity", batch.ResultAt(i).StrengthResult.Capacity.LambdaCapacity, "-", "Предельный множитель для выбранной lambda-траектории."
-        If batch.StrengthCapacityReserve(i) > 0# Then
+        If batch.ResultAt(i).StrengthResult.Capacity.ReserveFactor > 0# Then
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nultimate", OutputForce(batch.ResultAt(i).StrengthResult.Capacity.NUltimate, units), OutputForceUnit(units), "Полная N при lambdaUltimate в точке приложения нагрузки."
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxUltimate", OutputMx(batch.ResultAt(i).StrengthResult.Capacity.MxUltimate, units), OutputMomentUnit(units), "Полный Mx при lambdaUltimate в точке приложения нагрузки."
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUltimate", OutputMy(batch.ResultAt(i).StrengthResult.Capacity.MyUltimate, units), OutputMomentUnit(units), "Полный My при lambdaUltimate в точке приложения нагрузки."

@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-01 19:40:07
+Date: 2026-10-01 20:03:46
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -11111,7 +11111,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCapacityLimitSearchProblem
 TYPE: 2
-LINES: 381
+LINES: 388
 ====================================================================================================
 Option Explicit
 
@@ -11290,6 +11290,11 @@ Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchReq
         ByVal probeState As String, ByVal methodName As String, _
         ByVal solver As CSectionSolver, ByVal iterations As Long) As Boolean
     mCapacity.LimitSearchFinalizeCapacityLoadMultiplier lambdaValue, loadPath, probeState, methodName, solver
+    ' На осевом плато одна и та же сила соответствует разным деформациям.
+    ' Нижняя проба силовой скобки не определяет предельную плоскость: доводим
+    ' ее до исходного физического предела и отдельно подтверждаем N/Mx/My.
+    If request.PureAxialForMethod Then mCapacity.LimitSearchAcceptPureAxialRetainedCapacity _
+        request.section, request.concreteMaterial, request.steelMaterial, loadPath
     ILimitSearchProblem_FinalizeAt = mCapacity.Converged
 End Function
 
@@ -11298,6 +11303,8 @@ Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchReq
         ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
         ByVal methodName As String, ByVal iterations As Long)
     mCapacity.LimitSearchFinalizeCapacityFromRetainedAcceptable lowLambda, loadPath, methodName
+    If request.PureAxialForMethod Then mCapacity.LimitSearchAcceptPureAxialRetainedCapacity _
+        request.section, request.concreteMaterial, request.steelMaterial, loadPath
 End Sub
 
 Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
@@ -11498,7 +11505,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCapacityResult
 TYPE: 2
-LINES: 357
+LINES: 367
 ====================================================================================================
 Option Explicit
 
@@ -11855,6 +11862,16 @@ End Property
 
 Public Property Get PureAxialForMethod() As Boolean
     PureAxialForMethod = mPureAxialForMethod
+End Property
+
+' Выдает найденный физический множитель как запас. Диагностическая lambda
+' незавершенного поиска, BaseFail и отсутствующий предел запасом не являются.
+Public Property Get ReserveFactor() As Double
+    If mLambdaCapacity <= 0# Then Exit Property
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    If Not policy.IsFinished(Status) Then Exit Property
+    ReserveFactor = mLambdaCapacity
 End Property
 
 
@@ -22382,7 +22399,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCrackWidthResult
 TYPE: 2
-LINES: 211
+LINES: 221
 ====================================================================================================
 Option Explicit
 
@@ -22566,6 +22583,16 @@ Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
+' Возвращает запас только завершенной проверки с ненулевой шириной.
+' Неприменимый или заблокированный расчет не получает вымышленный запас.
+Public Property Get ReserveFactor() As Double
+    If mUtilization <= 0# Then Exit Property
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    If Not policy.IsFinished(policy.ExternalStatus(mMeta)) Then Exit Property
+    ReserveFactor = 1# / mUtilization
+End Property
+
 ' Сбрасывает численный снимок, чтобы повторная инициализация без calculator-а
 ' не оставляла ширину, коэффициенты и выбранные стержни прошлого сочетания.
 Private Sub ResetData()
@@ -22680,7 +22707,7 @@ End Function
 ====================================================================================================
 COMPONENT: CLongitudinalCrackResult
 TYPE: 2
-LINES: 59
+LINES: 69
 ====================================================================================================
 Option Explicit
 
@@ -22739,6 +22766,16 @@ End Property
 
 Public Property Get Utilization() As Double
     Utilization = mUtilization
+End Property
+
+' Возвращает запас завершенной проверки сжатого бетона; отсутствие результата
+' или нулевая проверяемая величина не превращаются в бесконечный запас.
+Public Property Get ReserveFactor() As Double
+    If mUtilization <= 0# Then Exit Property
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    If Not policy.IsFinished(Status) Then Exit Property
+    ReserveFactor = 1# / mUtilization
 End Property
 
 
@@ -24126,7 +24163,7 @@ End Property
 ====================================================================================================
 COMPONENT: CStabilityResult
 TYPE: 2
-LINES: 298
+LINES: 311
 ====================================================================================================
 Option Explicit
 
@@ -24426,11 +24463,24 @@ Public Property Get Status() As String
     Status = policy.ExternalStatus(mMeta)
 End Property
 
+' Выдает минимальный доступный запас главных плоскостей для сводки и Worst.
+' Числа уже учитывают примененный критерий устойчивости; здесь не пересчитываются СП.
+Public Property Get SummaryReserve() As Double
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    If Not policy.IsFinished(Status) Then Exit Property
+    If PlaneApplicable1 And Reserve1 > 0# Then SummaryReserve = Reserve1
+    If PlaneApplicable2 And Reserve2 > 0# Then
+        If SummaryReserve <= 0# Or Reserve2 < SummaryReserve Then SummaryReserve = Reserve2
+    End If
+    If SummaryReserve <= 0# And ReserveFactor > 0# Then SummaryReserve = ReserveFactor
+End Property
+
 
 ====================================================================================================
 COMPONENT: CBatchSectionCalculator
 TYPE: 2
-LINES: 2294
+LINES: 2184
 ====================================================================================================
 Option Explicit
 
@@ -25489,7 +25539,8 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
 
     Dim service As CSectionSolver
     If Not runner Is Nothing Then Set service = runner.ResultSolver
-    If stateType = sstStrengthState Then mResults(index).StoreSectionStateResult stateResult
+    If stateType = sstStrengthState Then mResults(index).StoreSectionStateResult stateResult, _
+        mMaterialProvider.ConcreteMaterialFromSpec(spec), mMaterialProvider.SteelMaterialFromSpec(spec)
 
     ReportValue "НДС " & SectionStateTypeToText(stateType) & " сошлось", IIf(stateResult.Converged, "да", "нет")
     If provider.LastStateWasReused Then
@@ -26123,7 +26174,7 @@ End Function
 ' lambda*My, lambda*Mxy, lambda*N и lambda*NMxy; отдельные отношения Nult/N или Mult/Mxy больше
 ' не нужны для выбора Worst.
 Private Function StrengthSafetyFactorForGoverning(ByVal index As Long) As Double
-    StrengthSafetyFactorForGoverning = mResults(index).CapacityReserveFactor
+    StrengthSafetyFactorForGoverning = mResults(index).StrengthResult.capacity.ReserveFactor
 End Function
 
 ' Сравнивает только запасы по раскрытию трещин. Нулевой запас означает, что
@@ -26144,7 +26195,7 @@ End Function
 
 ' Возвращает запас по трещинам как величину, обратную использованию.
 Private Function CrackSafetyFactorForGoverning(ByVal index As Long) As Double
-    If mResults(index).crackResult.width.Utilization > 0# Then CrackSafetyFactorForGoverning = 1# / mResults(index).crackResult.width.Utilization
+    CrackSafetyFactorForGoverning = mResults(index).crackResult.width.ReserveFactor
 End Function
 
 ' Выбирает Worst-сочетание по пользовательскому критерию верхней сводки.
@@ -26177,31 +26228,15 @@ End Sub
 Private Function IsBetterWorstCandidate(ByVal candidateIndex As Long, ByVal currentIndex As Long) As Boolean
     Dim candidateSafety As Double
     Dim currentSafety As Double
-    candidateSafety = WorstSafetyFactor(candidateIndex)
+    candidateSafety = mResults(candidateIndex).ReserveForCriterion(NormalizedWorstCombinationCriterion())
     If candidateSafety <= 0# Then Exit Function
 
     If currentIndex <= 0 Then
         IsBetterWorstCandidate = True
     Else
-        currentSafety = WorstSafetyFactor(currentIndex)
+        currentSafety = mResults(currentIndex).ReserveForCriterion(NormalizedWorstCombinationCriterion())
         IsBetterWorstCandidate = (currentSafety <= 0# Or candidateSafety < currentSafety)
     End If
-End Function
-
-' Возвращает запас LC по критерию General.WorstCombinationCriterion.
-' StrengthCapacity оставлен значением по умолчанию, чтобы сохранить старое
-' поведение Worst до явного выбора пользователем другого критерия.
-Public Function WorstSafetyFactor(ByVal index As Long) As Double
-    Select Case NormalizedWorstCombinationCriterion()
-        Case "StrengthStrain"
-            WorstSafetyFactor = StrengthStrainReserve(index)
-        Case "StrengthCapacity"
-            WorstSafetyFactor = StrengthCapacityReserve(index)
-        Case "Cracks"
-            WorstSafetyFactor = PositiveMin(CrackReserveFactor(index), LongitudinalCrackReserveFactor(index))
-        Case "Stability"
-            WorstSafetyFactor = StabilityReserveForSummary(index)
-    End Select
 End Function
 
 ' Нормализует пользовательский критерий выбора Worst. Некорректная строка не
@@ -26217,101 +26252,6 @@ Private Function NormalizedWorstCombinationCriterion() As String
         Case Else
             NormalizedWorstCombinationCriterion = "StrengthCapacity"
     End Select
-End Function
-
-' Минимальный запас по предельным деформациям модели прочности.
-' Берутся только реально существующие зоны: если растянутого бетона или
-' сжатой арматуры в состоянии нет, эта составляющая не участвует в минимуме.
-Public Function StrengthStrainReserve(ByVal index As Long) As Double
-    Dim stateResult As CSectionStateResult
-    Set stateResult = mResults(index).StateRepository.FindState(sstStrengthState)
-    If stateResult Is Nothing Then Exit Function
-    If Not mStatusPolicy.IsFinished(mStatusPolicy.StatusFromMeta(stateResult.ResultMeta)) Then Exit Function
-
-    Dim reserve As Double
-    reserve = 1E+100
-    AddStrainReserve reserve, stateResult.HasConcreteCompression, _
-        StrengthConcreteCompressionLimitForCombination(index), stateResult.minConcreteStrain
-    If StrengthConcreteTensionLimitEnabledForCombination(index) Then _
-        AddStrainReserve reserve, stateResult.HasConcreteTension, _
-            StrengthConcreteTensionLimitForCombination(index), stateResult.maxConcreteStrain
-    AddStrainReserve reserve, stateResult.HasSteelCompression, _
-        StrengthSteelCompressionLimitForCombination(index), stateResult.MinSteelStrain
-    AddStrainReserve reserve, stateResult.HasSteelTension, _
-        StrengthSteelTensionLimitForCombination(index), stateResult.MaxSteelStrain
-    If reserve < 1E+90 Then StrengthStrainReserve = reserve
-End Function
-
-' Добавляет одну деформационную составляющую в общий минимум запаса.
-Private Sub AddStrainReserve(ByRef reserve As Double, ByVal hasValue As Boolean, _
-        ByVal limitValue As Double, ByVal actualValue As Double)
-    If Not hasValue Then Exit Sub
-    If Abs(limitValue) <= 0.000000000000001 Then Exit Sub
-    If Abs(actualValue) <= 0.000000000000001 Then Exit Sub
-    reserve = MinDouble(reserve, Abs(limitValue) / Abs(actualValue))
-End Sub
-
-' Запас по несущей способности: фактически найденный lambda выбранной
-' траектории. Это ровно прежний критерий strength-Worst.
-Public Function StrengthCapacityReserve(ByVal index As Long) As Double
-    StrengthCapacityReserve = mResults(index).CapacityReserveFactor
-End Function
-
-' Запас по нормальным трещинам как обратная величина к использованию a_crc.
-Public Function CrackReserveFactor(ByVal index As Long) As Double
-    If mStatusPolicy.IsFinished(mResults(index).NormalCrackStatus) And mResults(index).crackResult.width.Utilization > 0# Then _
-        CrackReserveFactor = 1# / mResults(index).crackResult.width.Utilization
-End Function
-
-' Запас по продольным трещинам как обратная величина к sigma_b/Rb,mc2.
-Public Function LongitudinalCrackReserveFactor(ByVal index As Long) As Double
-    If mStatusPolicy.IsFinished(mResults(index).crackResult.Longitudinal.Status) And _
-            mResults(index).crackResult.Longitudinal.Utilization > 0# Then _
-        LongitudinalCrackReserveFactor = 1# / mResults(index).crackResult.Longitudinal.Utilization
-End Function
-
-' Минимальный запас по устойчивости с учетом пользовательского лимита СП 35
-' для ветви N/Ncr <= Stability.SP35.NOverNcrLimit.
-Public Function StabilityReserveForSummary(ByVal index As Long) As Double
-    If Not mStatusPolicy.IsFinished(mResults(index).StabilityResult.Status) Then Exit Function
-    StabilityReserveForSummary = PositiveMin( _
-        StabilityPlaneReserveForSummary(index, 1), _
-        StabilityPlaneReserveForSummary(index, 2))
-    If StabilityReserveForSummary <= 0# And mResults(index).StabilityResult.ReserveFactor > 0# Then _
-        StabilityReserveForSummary = mResults(index).StabilityResult.ReserveFactor
-End Function
-
-' Возвращает запас одной главной плоскости устойчивости. Для СП 35 eta-ветви
-' в расчетный запас входит не просто Ncr/N, а проверяемое условие N/Ncr <= limit.
-Private Function StabilityPlaneReserveForSummary(ByVal index As Long, ByVal planeIndex As Long) As Double
-    Dim applicable As Boolean
-    Dim rawReserve As Double
-    Dim branchText As String
-    If planeIndex = 1 Then
-        applicable = mResults(index).StabilityResult.PlaneApplicable1
-        rawReserve = mResults(index).StabilityResult.Reserve1
-        branchText = mResults(index).StabilityResult.PlaneBranch1
-    Else
-        applicable = mResults(index).StabilityResult.PlaneApplicable2
-        rawReserve = mResults(index).StabilityResult.Reserve2
-        branchText = mResults(index).StabilityResult.PlaneBranch2
-    End If
-    If Not applicable Then Exit Function
-    If rawReserve <= 0# Then Exit Function
-
-    StabilityPlaneReserveForSummary = rawReserve
-End Function
-
-' Берет минимальное положительное значение из двух запасов.
-' Нулевые значения означают, что соответствующая проверка не рассчитана.
-Private Function PositiveMin(ByVal firstValue As Double, ByVal secondValue As Double) As Double
-    If firstValue > 0# And secondValue > 0# Then
-        PositiveMin = MinDouble(firstValue, secondValue)
-    ElseIf firstValue > 0# Then
-        PositiveMin = firstValue
-    ElseIf secondValue > 0# Then
-        PositiveMin = secondValue
-    End If
 End Function
 
 ' Форматирует число с точкой как десятичным разделителем для диагностической строки.
@@ -27785,7 +27725,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CCombinationResult
 TYPE: 2
-LINES: 517
+LINES: 536
 ====================================================================================================
 Option Explicit
 
@@ -27892,14 +27832,31 @@ Public Property Get CapacityPathDisplayName() As String
     CapacityPathDisplayName = loadPath.DisplayNameForKey(mStrengthResult.capacity.PathResolved)
 End Property
 
-' Возвращает расчетный запас по несущей способности, если capacity-результат
-' действительно физически интерпретируем. Lambda остается доступной отдельно,
-' но NumFail/InputErr/N/A не должны попадать в summary как запас.
-Public Property Get CapacityReserveFactor() As Double
-    If mStrengthResult.capacity.LambdaCapacity <= 0# Then Exit Property
-    If Not policy.IsFinished(policy.ExternalStatus(CapacityMeta)) Then Exit Property
-    CapacityReserveFactor = mStrengthResult.capacity.LambdaCapacity
-End Property
+' Собирает показатель для выбора определяющего LC из готовых результатов.
+' Сам выбор строки остается у Batch; физические расчеты и поиск здесь не выполняются.
+Public Function ReserveForCriterion(ByVal criterion As String) As Double
+    Select Case criterion
+        Case "StrengthStrain"
+            ReserveForCriterion = mStrengthResult.DirectState.StrainReserve
+        Case "StrengthCapacity"
+            ReserveForCriterion = mStrengthResult.capacity.ReserveFactor
+        Case "Cracks"
+            ReserveForCriterion = PositiveMin(mCrackResult.width.ReserveFactor, mCrackResult.Longitudinal.ReserveFactor)
+        Case "Stability"
+            ReserveForCriterion = mStabilityResult.SummaryReserve
+    End Select
+End Function
+
+' Объединяет только доступные положительные запасы, не выдавая отсутствие за ноль проверки.
+Private Function PositiveMin(ByVal firstValue As Double, ByVal secondValue As Double) As Double
+    If firstValue > 0# And secondValue > 0# Then
+        If firstValue < secondValue Then PositiveMin = firstValue Else PositiveMin = secondValue
+    ElseIf firstValue > 0# Then
+        PositiveMin = firstValue
+    ElseIf secondValue > 0# Then
+        PositiveMin = secondValue
+    End If
+End Function
 
 ' Возвращает ResultMeta расчета нормальных трещин.
 Public Property Get CrackMeta() As CResultMeta
@@ -28289,8 +28246,10 @@ Public Sub StoreCapacityResult(ByVal capacity As CCapacityResult)
 End Sub
 
 ' Привязывает прямой result к уже сохраненному каноническому named state.
-Public Sub StoreSectionStateResult(ByVal stateResult As CSectionStateResult)
-    mStrengthResult.StoreDirectFromStateResult stateResult, diagramExtensionEnabled
+Public Sub StoreSectionStateResult(ByVal stateResult As CSectionStateResult, _
+        Optional ByVal physicalConcrete As CMaterialDiagram = Nothing, _
+        Optional ByVal physicalSteel As CMaterialDiagram = Nothing)
+    mStrengthResult.StoreDirectFromStateResult stateResult, diagramExtensionEnabled, physicalConcrete, physicalSteel
 End Sub
 
 ' Сохраняет самостоятельное дерево трещин без копирования численных полей.
@@ -28308,7 +28267,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CDirectStateResult
 TYPE: 2
-LINES: 82
+LINES: 135
 ====================================================================================================
 Option Explicit
 
@@ -28322,6 +28281,11 @@ Option Explicit
 Private mMeta As CResultMeta ' Инженерный итог проверки прямого НДС.
 Private mState As CSectionStateResult ' Единственный численный снимок named state.
 Private mExtensionEnabled As Boolean ' Настройка глобального Extension при запуске.
+Private mConcreteCompressionLimit As Double ' Физический предел сжатия использованной модели.
+Private mConcreteTensionLimit As Double ' Физический предел активной растянутой ветви.
+Private mConcreteTensionEnabled As Boolean ' Ignore не участвует в деформационном запасе.
+Private mSteelCompressionLimit As Double ' Предел арматуры для отрицательного знака.
+Private mSteelTensionLimit As Double ' Предел арматуры для положительного знака.
 
 ' Создает нейтральный result без фиктивного физического состояния.
 Private Sub Class_Initialize()
@@ -28334,6 +28298,11 @@ Public Sub Clear()
     Set mMeta = New CResultMeta
     mMeta.SetNotApplicable rkDirectState
     mExtensionEnabled = False
+    mConcreteCompressionLimit = 0#
+    mConcreteTensionLimit = 0#
+    mConcreteTensionEnabled = False
+    mSteelCompressionLimit = 0#
+    mSteelTensionLimit = 0#
 End Sub
 
 ' Устанавливает итоговую meta; пустая meta является нарушением контракта.
@@ -28349,9 +28318,21 @@ End Sub
 
 ' Привязывает result к сохраненному State без копии численных полей.
 ' Ошибка получения State сохраняется в его meta, а не превращается в успех.
-Public Sub StoreStateResult(ByVal stateResult As CSectionStateResult, ByVal extensionEnabledValue As Boolean)
+Public Sub StoreStateResult(ByVal stateResult As CSectionStateResult, ByVal extensionEnabledValue As Boolean, _
+        Optional ByVal physicalConcrete As CMaterialDiagram = Nothing, _
+        Optional ByVal physicalSteel As CMaterialDiagram = Nothing)
+    Clear
     Set mState = stateResult
     mExtensionEnabled = extensionEnabledValue
+    If Not physicalConcrete Is Nothing Then
+        mConcreteCompressionLimit = physicalConcrete.UltimateCompressionStrain
+        mConcreteTensionLimit = physicalConcrete.UltimateTensionStrain
+        mConcreteTensionEnabled = physicalConcrete.HasPhysicalTensionLimit
+    End If
+    If Not physicalSteel Is Nothing Then
+        mSteelCompressionLimit = physicalSteel.UltimateCompressionStrain
+        mSteelTensionLimit = physicalSteel.UltimateTensionStrain
+    End If
     If stateResult Is Nothing Then
         SetMeta Nothing
     Else
@@ -28391,6 +28372,37 @@ End Property
 Public Property Get extensionEnabled() As Boolean
     extensionEnabled = mExtensionEnabled
 End Property
+
+' Вычисляет запас по реально присутствующим знакам деформаций и исходным
+' физическим пределам. Численное продолжение не увеличивает этот запас.
+' При отсутствии проверенного состояния возвращает 0 как признак недоступности.
+Public Property Get StrainReserve() As Double
+    If mState Is Nothing Then Exit Property
+    If Not mState.Converged Then Exit Property
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    If Not policy.IsFinished(Status) Then Exit Property
+    Dim reserve As Double
+    reserve = 1E+100
+    AddStrainReserve reserve, mState.HasConcreteCompression, mConcreteCompressionLimit, mState.minConcreteStrain
+    If mConcreteTensionEnabled Then _
+        AddStrainReserve reserve, mState.HasConcreteTension, mConcreteTensionLimit, mState.maxConcreteStrain
+    AddStrainReserve reserve, mState.HasSteelCompression, mSteelCompressionLimit, mState.MinSteelStrain
+    AddStrainReserve reserve, mState.HasSteelTension, mSteelTensionLimit, mState.MaxSteelStrain
+    If reserve < 1E+90 Then StrainReserve = reserve
+End Property
+
+' Добавляет применимый знак материала в минимум; нулевая деформация не дает
+' искусственного бесконечного запаса и отсутствующая зона не участвует.
+Private Sub AddStrainReserve(ByRef reserve As Double, ByVal hasValue As Boolean, _
+        ByVal limitValue As Double, ByVal actualValue As Double)
+    If Not hasValue Then Exit Sub
+    If Abs(limitValue) <= 0.000000000000001 Then Exit Sub
+    If Abs(actualValue) <= 0.000000000000001 Then Exit Sub
+    Dim candidate As Double
+    candidate = Abs(limitValue) / Abs(actualValue)
+    If candidate < reserve Then reserve = candidate
+End Sub
 
 
 ====================================================================================================
@@ -29293,7 +29305,7 @@ End Property
 ====================================================================================================
 COMPONENT: CStrengthResult
 TYPE: 2
-LINES: 78
+LINES: 81
 ====================================================================================================
 Option Explicit
 
@@ -29329,10 +29341,12 @@ Public Sub SetDirectMeta(ByVal meta As CResultMeta)
     mDirectState.SetMeta meta
 End Sub
 
-' Копирует прямое НДС из reusable named-state в структурированный direct-state result.
-Public Sub StoreDirectFromStateResult(ByVal stateResult As CSectionStateResult, ByVal extensionEnabled As Boolean)
+' Привязывает прямое НДС и исходные физические пределы к strength-результату.
+Public Sub StoreDirectFromStateResult(ByVal stateResult As CSectionStateResult, ByVal extensionEnabled As Boolean, _
+        Optional ByVal physicalConcrete As CMaterialDiagram = Nothing, _
+        Optional ByVal physicalSteel As CMaterialDiagram = Nothing)
     If mDirectState Is Nothing Then Set mDirectState = New CDirectStateResult
-    mDirectState.StoreStateResult stateResult, extensionEnabled
+    mDirectState.StoreStateResult stateResult, extensionEnabled, physicalConcrete, physicalSteel
 End Sub
 
 ' Сохраняет полный capacity-result как вторую ветвь strength-subtree.
@@ -29373,6 +29387,7 @@ Public Property Get CapacityMeta() As CResultMeta
         Set CapacityMeta = mCapacity.ResultMeta
     End If
 End Property
+
 
 ====================================================================================================
 COMPONENT: CAutoCADSectionModelImporter
@@ -30414,10 +30429,10 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
     PutStabilityBranchStatus data, rowIndex, SUM_COL_STATUS_SP63_P1, policy, batch, index, 1, "SP63"
     PutStabilityBranchStatus data, rowIndex, SUM_COL_STATUS_SP63_P2, policy, batch, index, 2, "SP63"
 
-    PutReserveCell data, rowIndex, SUM_COL_RESERVE_STRAIN, batch.StrengthStrainReserve(index)
-    PutReserveCell data, rowIndex, SUM_COL_RESERVE_CAPACITY, batch.StrengthCapacityReserve(index)
-    PutReserveCell data, rowIndex, SUM_COL_RESERVE_CRACK, batch.CrackReserveFactor(index)
-    PutReserveCell data, rowIndex, SUM_COL_RESERVE_LONG_CRACK, batch.LongitudinalCrackReserveFactor(index)
+    PutReserveCell data, rowIndex, SUM_COL_RESERVE_STRAIN, batch.ResultAt(index).StrengthResult.DirectState.StrainReserve
+    PutReserveCell data, rowIndex, SUM_COL_RESERVE_CAPACITY, batch.ResultAt(index).StrengthResult.capacity.ReserveFactor
+    PutReserveCell data, rowIndex, SUM_COL_RESERVE_CRACK, batch.ResultAt(index).crackResult.width.ReserveFactor
+    PutReserveCell data, rowIndex, SUM_COL_RESERVE_LONG_CRACK, batch.ResultAt(index).crackResult.Longitudinal.ReserveFactor
     PutReserveCell data, rowIndex, SUM_COL_RESERVE_SP35_P1_ETA, SummaryReserveByKey(batch, index, "SP35P1Eta")
     PutReserveCell data, rowIndex, SUM_COL_RESERVE_SP35_P1_TABLE, SummaryReserveByKey(batch, index, "SP35P1Table")
     PutReserveCell data, rowIndex, SUM_COL_RESERVE_SP35_P2_ETA, SummaryReserveByKey(batch, index, "SP35P2Eta")
@@ -30441,13 +30456,13 @@ Private Function SummaryReserveByKey(ByVal batch As CBatchSectionCalculator, _
         ByVal index As Long, ByVal checkKey As String) As Double
     Select Case checkKey
         Case "StrengthStrain"
-            SummaryReserveByKey = batch.StrengthStrainReserve(index)
+            SummaryReserveByKey = batch.ResultAt(index).StrengthResult.DirectState.StrainReserve
         Case "StrengthCapacity"
-            SummaryReserveByKey = batch.StrengthCapacityReserve(index)
+            SummaryReserveByKey = batch.ResultAt(index).StrengthResult.capacity.ReserveFactor
         Case "Crack"
-            SummaryReserveByKey = batch.CrackReserveFactor(index)
+            SummaryReserveByKey = batch.ResultAt(index).crackResult.width.ReserveFactor
         Case "LongCrack"
-            SummaryReserveByKey = batch.LongitudinalCrackReserveFactor(index)
+            SummaryReserveByKey = batch.ResultAt(index).crackResult.Longitudinal.ReserveFactor
         Case "SP35P1Eta"
             SummaryReserveByKey = StabilityBranchReserve(batch, index, 1, "SP35-eta")
         Case "SP35P1Table"
@@ -31382,8 +31397,8 @@ Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, COL_ES) = OutputStress(batch.CrackSteelElasticModulus, units)
     data(rowIndex, COL_ACRC) = OutputLength(batch.ResultAt(index).crackResult.width.crackWidth, units)
     data(rowIndex, COL_ACRC_ULT) = OutputLength(batch.ResultAt(index).crackResult.width.AllowableCrackWidth, units)
-    If batch.CrackReserveFactor(index) > SMALL_VALUE Then _
-        data(rowIndex, COL_ACRC_RATIO) = batch.CrackReserveFactor(index)
+    If batch.ResultAt(index).crackResult.width.ReserveFactor > SMALL_VALUE Then _
+        data(rowIndex, COL_ACRC_RATIO) = batch.ResultAt(index).crackResult.width.ReserveFactor
     data(rowIndex, COL_ACRC_STATUS) = CrackWidthStatusText(batch, index, policy)
 End Sub
 
@@ -31403,8 +31418,8 @@ Private Sub PutLongitudinalData(ByRef data() As Variant, ByVal rowIndex As Long,
 
     data(rowIndex, COL_SIGMA_B_MAX) = OutputStress(batch.ResultAt(index).crackResult.Longitudinal.maxCompressionStress, units)
     data(rowIndex, COL_RB_MC2) = OutputStress(batch.ResultAt(index).crackResult.Longitudinal.rbMc2, units)
-    If batch.LongitudinalCrackReserveFactor(index) > SMALL_VALUE Then _
-        data(rowIndex, COL_LONG_RATIO) = batch.LongitudinalCrackReserveFactor(index)
+    If batch.ResultAt(index).crackResult.Longitudinal.ReserveFactor > SMALL_VALUE Then _
+        data(rowIndex, COL_LONG_RATIO) = batch.ResultAt(index).crackResult.Longitudinal.ReserveFactor
     data(rowIndex, COL_LONG_STATUS) = LongitudinalStatusText(batch, index, policy)
 End Sub
 
@@ -32822,7 +32837,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
         PutProperty data, rowIndex, runID, batch.combinationID(i), "CapacityLoadPath", batch.ResultAt(i).CapacityPathDisplayName, "-", "Какие компоненты нагрузки масштабировались при поиске несущей способности."
         PutProperty data, rowIndex, runID, batch.combinationID(i), "CapacitySolutionMethod", batch.ResultAt(i).StrengthResult.capacity.solutionMethod, "-", "Фактический численный метод, которым найдена предельная несущая способность."
         PutProperty data, rowIndex, runID, batch.combinationID(i), "LambdaCapacity", batch.ResultAt(i).StrengthResult.capacity.LambdaCapacity, "-", "Предельный множитель для выбранной lambda-траектории."
-        If batch.StrengthCapacityReserve(i) > 0# Then
+        If batch.ResultAt(i).StrengthResult.capacity.ReserveFactor > 0# Then
             PutProperty data, rowIndex, runID, batch.combinationID(i), "Nultimate", OutputForce(batch.ResultAt(i).StrengthResult.capacity.nUltimate, units), OutputForceUnit(units), "Полная N при lambdaUltimate в точке приложения нагрузки."
             PutProperty data, rowIndex, runID, batch.combinationID(i), "MxUltimate", OutputMx(batch.ResultAt(i).StrengthResult.capacity.mxUltimate, units), OutputMomentUnit(units), "Полный Mx при lambdaUltimate в точке приложения нагрузки."
             PutProperty data, rowIndex, runID, batch.combinationID(i), "MyUltimate", OutputMy(batch.ResultAt(i).StrengthResult.capacity.myUltimate, units), OutputMomentUnit(units), "Полный My при lambdaUltimate в точке приложения нагрузки."
@@ -39598,8 +39613,8 @@ Private Sub PutStrengthState(ByRef data() As Variant, ByVal rowIndex As Long, _
         COL_STATE_SBC, COL_STATE_SBT, COL_STATE_SSC, COL_STATE_SST
     PutStateGeometry data, rowIndex, stateResult, units, section, COL_STATE_H, COL_STATE_X
     data(rowIndex, COL_STATE_DIAGEXT) = ExtensionUsedText(batch, index, stateResult)
-    If batch.StrengthStrainReserve(index) > SMALL_VALUE Then _
-        data(rowIndex, COL_STATE_RESERVE) = batch.StrengthStrainReserve(index)
+    If batch.ResultAt(index).StrengthResult.DirectState.StrainReserve > SMALL_VALUE Then _
+        data(rowIndex, COL_STATE_RESERVE) = batch.ResultAt(index).StrengthResult.DirectState.StrainReserve
     data(rowIndex, COL_STATE_STATUS) = policy.StatusFromMeta(stateResult.ResultMeta)
 End Sub
 
@@ -39642,8 +39657,8 @@ Private Sub PutCapacityState(ByRef data() As Variant, ByVal rowIndex As Long, _
             0, 0, 0, 0
         PutStateGeometry data, rowIndex, stateResult, units, section, COL_CAP_H, COL_CAP_X
     End If
-    If batch.StrengthCapacityReserve(index) > SMALL_VALUE Then _
-        data(rowIndex, COL_CAP_RESERVE) = batch.StrengthCapacityReserve(index)
+    If batch.ResultAt(index).StrengthResult.capacity.ReserveFactor > SMALL_VALUE Then _
+        data(rowIndex, COL_CAP_RESERVE) = batch.ResultAt(index).StrengthResult.capacity.ReserveFactor
     data(rowIndex, COL_CAP_STATUS) = CapacityStatusText(batch, index, policy)
 End Sub
 
@@ -44855,7 +44870,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 5402
+LINES: 5634
 ====================================================================================================
 Option Explicit
 
@@ -45066,6 +45081,8 @@ Public Function RunBatchCalculationTests() As String
     TestAudit02CanonicalResultsAndReset stats
     AppendLine stats, "RUN: TestAudit02RepositoryContextAndRetry"
     TestAudit02RepositoryContextAndRetry stats
+    AppendLine stats, "RUN: TestAudit02OnOffPhysicalResults"
+    TestAudit02OnOffPhysicalResults stats
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -45170,7 +45187,7 @@ Private Sub TestBatchCapacityUsesSystemSettings(ByRef stats As TBatchTestStats)
 
     AssertTrue stats, "batch.settings.capacity.maxLambda", batch.ResultAt(1).StrengthResult.capacity.Status = "NumFail"
     AssertClose stats, "batch.settings.capacity.maxLambda.noReserve", _
-        batch.StrengthCapacityReserve(1), 0#, 0#
+        batch.ResultAt(1).StrengthResult.capacity.ReserveFactor, 0#, 0#
 
 Restore:
     SetSystemSetting "Capacity.SolutionStrategy", oldStrategy
@@ -45203,7 +45220,7 @@ Private Sub TestInvalidModeSettingsAreNotFallbacks(ByRef stats As TBatchTestStat
     AssertTrue stats, "batch.invalid.CapacitySolutionStrategy.status", batch.ResultAt(1).Status = "InputErr"
     AssertTrue stats, "batch.invalid.CapacitySolutionStrategy.noLambda", batch.ResultAt(1).StrengthResult.capacity.LambdaCapacity = 0#
     AssertClose stats, "batch.invalid.CapacitySolutionStrategy.noReserve", _
-        batch.StrengthCapacityReserve(1), 0#, 0#
+        batch.ResultAt(1).StrengthResult.capacity.ReserveFactor, 0#, 0#
 
 Restore:
     SetSystemSetting "Capacity.SolutionStrategy", oldCapacitySolutionStrategy
@@ -50257,6 +50274,236 @@ Private Sub TestAudit02RepositoryContextAndRetry(ByRef stats As TBatchTestStats)
     AssertClose stats, "audit02.cache.snapshot.epsilonUnchanged", first.epsilon0, firstEps, 0#
     AssertTrue stats, "audit02.cache.snapshot.codeUnchanged", first.ResultCode = firstMetaCode
     AssertEquals stats, "audit02.cache.snapshot.logUnchanged", first.DiagnosticLog, firstLog
+End Sub
+
+' ============================== ДЛЯ ТЕСТОВ AUDIT02 ON/OFF ==============================
+
+' Возвращает полный численный отчет парного сравнения физических сценариев.
+' Переключатель меняет только provider диаграмм, а не усилия, профили или допуски.
+Public Function RunAudit02OnOffComparisonTests() As String
+    On Error GoTo Failed
+    Dim stats As TBatchTestStats
+    TestAudit02OnOffPhysicalResults stats
+    AppendLine stats, "TOTAL_AUDIT02_PAIR: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit02OnOffComparisonTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit02OnOffComparisonTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.description
+End Function
+
+' Сравнивает одноосные, двухосные и осевые LC двух material roles. Второй
+' проход включает устойчивость; ее формулы не получают численного Extension.
+' Все изменения тестового Config восстанавливаются и при runtime-ошибке.
+Private Sub TestAudit02OnOffPhysicalResults(ByRef stats As TBatchTestStats)
+    On Error GoTo Failed
+    Dim oldStability As String
+    oldStability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    Dim oldLength As String
+    oldLength = GetSystemSetting("Stability.ElementLength")
+    ' Небольшое сечение с L=8000 может не иметь допустимого текущего LC после
+    ' учета устойчивости. Эта матрица сравнивает именно физические решения.
+    SetSystemSetting "Stability.ElementLength", 1000#
+    Dim maxima As Object
+    Set maxima = CreateObject("Scripting.Dictionary")
+    Dim phase As Long
+    For phase = 0 To 1
+        If phase = 0 Then
+            SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+        Else
+            SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+        End If
+        Dim offBatch As CBatchSectionCalculator
+        Dim onBatch As CBatchSectionCalculator
+        Set offBatch = BuildAudit02PairBatch(False)
+        Set onBatch = BuildAudit02PairBatch(True)
+        Dim scenario As Variant
+        For Each scenario In Array( _
+                Array("ULS_BIAX", -100000#, 8000000#, 3000000#, "PR1"), _
+                Array("ULS_X", -100000#, 4000000#, 0#, "PR1"), _
+                Array("ULS_Y", -100000#, 0#, 4000000#, "PR1"), _
+                Array("ULS_AXIAL", 50000#, 0#, 0#, "PR1"), _
+                Array("SLS_BEND", -20000#, -15000000#, 0#, "PR2"), _
+                Array("SLS_AXIAL", 200000#, 0#, 0#, "PR2"), _
+                Array("SLS_NOCRACK", -100000#, 0#, 0#, "PR2"))
+            offBatch.AddCombination CStr(scenario(0)), CDbl(scenario(1)), CDbl(scenario(2)), _
+                CDbl(scenario(3)), CStr(scenario(4)), "Audit02 paired physical result"
+            onBatch.AddCombination CStr(scenario(0)), CDbl(scenario(1)), CDbl(scenario(2)), _
+                CDbl(scenario(3)), CStr(scenario(4)), "Audit02 paired physical result"
+        Next scenario
+        offBatch.Execute
+        onBatch.Execute
+        Dim i As Long
+        For i = 1 To offBatch.count
+            Dim prefix As String
+            prefix = "audit02.pair." & CStr(phase) & "." & offBatch.combinationID(i)
+            Dim offResult As CCombinationResult
+            Dim onResult As CCombinationResult
+            Set offResult = offBatch.ResultAt(i)
+            Set onResult = onBatch.ResultAt(i)
+            AppendLine stats, "PAIR_STATUS|" & prefix & "|Off=" & offResult.Status & "|On=" & onResult.Status & _
+                "|OffComment=" & offResult.OverallMeta.resultComment & "|OnComment=" & onResult.OverallMeta.resultComment
+            AssertEquals stats, prefix & ".overall", onResult.Status, offResult.Status
+            AssertTrue stats, prefix & ".offNoNumericalFailure", _
+                offResult.Status <> "NumFail" And offResult.Status <> "CalcErr" And offResult.Status <> "InputErr"
+            AssertEquals stats, prefix & ".direct", onResult.StrengthResult.DirectState.Status, offResult.StrengthResult.DirectState.Status
+            AssertEquals stats, prefix & ".capacity", onResult.StrengthResult.capacity.Status, offResult.StrengthResult.capacity.Status
+            AssertEquals stats, prefix & ".criterion", onResult.StrengthResult.capacity.LimitState, offResult.StrengthResult.capacity.LimitState
+            AssertEquals stats, prefix & ".normal", onResult.NormalCrackStatus, offResult.NormalCrackStatus
+            AssertEquals stats, prefix & ".longitudinal", onResult.crackResult.Longitudinal.Status, offResult.crackResult.Longitudinal.Status
+            AssertEquals stats, prefix & ".stability", onResult.StabilityResult.Status, offResult.StabilityResult.Status
+            AssertTrue stats, prefix & ".crackAvailability", onResult.crackResult.formation.CrackFormed = offResult.crackResult.formation.CrackFormed
+            AssertTrue stats, prefix & ".pointAvailability", onResult.crackResult.formation.HasLimitPoint = offResult.crackResult.formation.HasLimitPoint
+            AssertTrue stats, prefix & ".stateCount", onResult.StateRepository.stateCount = offResult.StateRepository.stateCount
+
+            Dim stateType As Variant
+            For Each stateType In Array(sstStrengthState, sstCapacityState, sstPreCrackState, sstPostCrackState, sstCrackedState)
+                Audit02ComparePairState stats, maxima, prefix, _
+                    offResult.StateRepository.FindState(CLng(stateType)), onResult.StateRepository.FindState(CLng(stateType))
+            Next stateType
+            Dim offNumbers As Variant
+            Dim onNumbers As Variant
+            offNumbers = Audit02PairResultNumbers(offResult)
+            onNumbers = Audit02PairResultNumbers(onResult)
+            Dim metric As Long
+            For metric = LBound(offNumbers) To UBound(offNumbers)
+                Audit02AssertPair stats, maxima, prefix, CStr(offNumbers(metric)(0)), _
+                    CDbl(onNumbers(metric)(1)), CDbl(offNumbers(metric)(1)), CDbl(offNumbers(metric)(2))
+            Next metric
+            Audit02AssertPair stats, maxima, prefix, "Reference.N", onBatch.StrengthReferenceN(i), offBatch.StrengthReferenceN(i), 0.001
+            Audit02AssertPair stats, maxima, prefix, "Reference.Mx", onBatch.StrengthReferenceMx(i), offBatch.StrengthReferenceMx(i), 0.001
+            Audit02AssertPair stats, maxima, prefix, "Reference.My", onBatch.StrengthReferenceMy(i), offBatch.StrengthReferenceMy(i), 0.001
+        Next i
+    Next phase
+    Dim key As Variant
+    For Each key In maxima.keys
+        AppendLine stats, "MAXDIFF|" & CStr(key) & "|abs=" & FormatNumberInvariant(CDbl(maxima(key)))
+    Next key
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
+    SetSystemSetting "Stability.ElementLength", oldLength
+    Exit Sub
+Failed:
+    Dim reason As String
+    reason = Err.description
+    AssertTrue stats, "audit02.pair.runtime: " & reason, False
+    Resume Restore
+End Sub
+
+' Строит одинаковую геометрию и физические параметры, явно выбирая On/Off.
+' Настройки прочих алгоритмов и профили читаются одинаково для обеих половин пары.
+Private Function BuildAudit02PairBatch(ByVal extensionEnabled As Boolean) As CBatchSectionCalculator
+    Dim geom As CGeometryRoundedRectangle
+    Set geom = New CGeometryRoundedRectangle
+    geom.Initialize 300#, 200#, 0#, 0#, 0#, 0#
+    Dim mesh As CFiberMeshBuilder
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geom, 30#, 20#, 1
+    Dim rebars As CRebarLayout
+    Set rebars = New CRebarLayout
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", geom
+    Dim materials As CMaterialModelProvider
+    Set materials = New CMaterialModelProvider
+    Dim parameters As CMaterialModelProvider
+    Set parameters = TestMaterialProvider()
+    materials.InitializeFromParameters parameters.concreteParameters, parameters.steelParameters, _
+        diagramExtensionEnabled:=extensionEnabled
+    Dim batch As CBatchSectionCalculator
+    Set batch = New CBatchSectionCalculator
+    batch.Initialize BuildGeneratedSectionModel(mesh, rebars, "Audit02PairedRectangle"), materials
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    batch.ApplySettings settings
+    batch.SetSP35Table721 ThisWorkbook.names.item("rngSP35Table721").RefersToRange.Value2
+    Set batch.ProfileCatalog = TestProfileCatalog()
+    batch.ApplyLoadReference 0#, 0#
+    Set BuildAudit02PairBatch = batch
+End Function
+
+' Сравнивает доступность и весь численный снимок named-state, исключая
+' итерации/время/журнал: эти показатели не являются условием одинаковой физики.
+Private Sub Audit02ComparePairState(ByRef stats As TBatchTestStats, ByVal maxima As Object, _
+        ByVal prefix As String, ByVal offState As CSectionStateResult, ByVal onState As CSectionStateResult)
+    If offState Is Nothing Then
+        AssertTrue stats, prefix & ".missingStateMatched", onState Is Nothing
+        Exit Sub
+    End If
+    Dim key As String
+    key = offState.stateTypeText
+    AssertTrue stats, prefix & "." & key & ".exists", Not onState Is Nothing
+    If onState Is Nothing Then Exit Sub
+    AssertEquals stats, prefix & "." & key & ".status", onState.Status, offState.Status
+    AssertTrue stats, prefix & "." & key & ".converged", onState.Converged And offState.Converged
+    AssertTrue stats, prefix & "." & key & ".physical", onState.withinPhysicalRange And offState.withinPhysicalRange
+    AssertTrue stats, prefix & "." & key & ".noFinalExtension", Not onState.extensionUsed And Not offState.extensionUsed
+    Dim first As Variant
+    Dim second As Variant
+    first = Audit02PairStateNumbers(offState)
+    second = Audit02PairStateNumbers(onState)
+    Dim i As Long
+    For i = LBound(first) To UBound(first)
+        Audit02AssertPair stats, maxima, prefix, key & "." & CStr(first(i)(0)), _
+            CDbl(second(i)(1)), CDbl(first(i)(1)), CDbl(first(i)(2))
+    Next i
+End Sub
+
+' Подготавливает численные поля State с прежними допусками solver/strain-
+' тестов; технические отличия поисковой стратегии сюда не включаются.
+Private Function Audit02PairStateNumbers(ByVal state As CSectionStateResult) As Variant
+    Audit02PairStateNumbers = Array( _
+        Array("TargetN", state.targetN, 5#), Array("TargetMx", state.targetMx, 5000#), Array("TargetMy", state.targetMy, 5000#), _
+        Array("Nint", state.Nint, 5#), Array("Mxint", state.Mxint, 5000#), Array("Myint", state.Myint, 5000#), _
+        Array("epsilon0", state.epsilon0, 0.000001), Array("kappaX", state.kappaX, 0.00000000001), Array("kappaY", state.kappaY, 0.00000000001), _
+        Array("epsBmin", state.minConcreteStrain, 0.000001), Array("epsBmax", state.maxConcreteStrain, 0.000001), _
+        Array("epsSmin", state.MinSteelStrain, 0.000001), Array("epsSmax", state.MaxSteelStrain, 0.000001), _
+        Array("sigmaBmin", state.MinConcreteStress, 0.001), Array("sigmaBmax", state.MaxConcreteStress, 0.001), _
+        Array("sigmaSmin", state.MinSteelStress, 0.001), Array("sigmaSmax", state.MaxSteelStress, 0.001), _
+        Array("ResidualN", state.ResidualN, 5#), Array("ResidualMx", state.ResidualMx, 5000#), Array("ResidualMy", state.ResidualMy, 5000#))
+End Function
+
+' Подготавливает метрики всех инженерных ветвей для парного сравнения.
+' Неприменимые ветви сравниваются также по доступности и typed status выше.
+Private Function Audit02PairResultNumbers(ByVal result As CCombinationResult) As Variant
+    Dim capacity As CCapacityResult
+    Set capacity = result.StrengthResult.capacity
+    Dim formation As CCrackFormationResult
+    Set formation = result.crackResult.formation
+    Dim width As CCrackWidthResult
+    Set width = result.crackResult.width
+    Dim stability As CStabilityResult
+    Set stability = result.StabilityResult
+    Audit02PairResultNumbers = Array( _
+        Array("Capacity.lambda", capacity.LambdaCapacity, 0.01), Array("Capacity.N", capacity.nUltimate, 5#), _
+        Array("Capacity.Mx", capacity.mxUltimate, 5000#), Array("Capacity.My", capacity.myUltimate, 5000#), _
+        Array("Capacity.util", capacity.UtilCapacity, 0.000001), Array("Formation.lambda", formation.LambdaCrc, 0.001), _
+        Array("Formation.Ncrc", formation.Ncrc, 0.001), Array("Formation.N", formation.FormationNcrc, 0.001), _
+        Array("Formation.Mcrc", formation.mcrc, 50000#), Array("Formation.Ared", formation.Ared, 0.001), _
+        Array("Width.acrc", width.crackWidth, 0.000000001), Array("Width.sigmaS", width.SigmaS, 0.001), _
+        Array("Width.sigmaSCrc", width.SigmaSCrc, 0.001), Array("Width.psi", width.PsiS, 0.000000001), _
+        Array("Width.ls", width.CrackSpacing, 0.001), Array("Width.lsRaw", width.CrackSpacingRaw, 0.001), _
+        Array("Width.Abt", width.Abt, 0.001), Array("Width.As", width.AsTension, 0.001), Array("Width.ds", width.DsEquivalent, 0.001), _
+        Array("Width.xt", width.TensionDepth, 0.001), Array("Width.hbt", width.EffectiveZoneDepth, 0.001), _
+        Array("Width.a", width.CoverA, 0.001), Array("Width.h", width.SectionDepthH, 0.001), Array("Width.Es", width.SteelEs, 0.001), _
+        Array("Width.util", width.Utilization, 0.000000001), Array("Longitudinal.sigma", result.crackResult.Longitudinal.maxCompressionStress, 0.001), _
+        Array("Longitudinal.util", result.crackResult.Longitudinal.Utilization, 0.000000001), _
+        Array("Stability.N", stability.designN, 0.001), Array("Stability.Mx", stability.designMx, 0.001), _
+        Array("Stability.My", stability.designMy, 0.001), Array("Stability.Ncr1", stability.Ncr1, 0.001), _
+        Array("Stability.Ncr2", stability.Ncr2, 0.001), Array("Stability.reserve", stability.SummaryReserve, 0.000000001))
+End Function
+
+' Фиксирует отклонение каждой применимой величины и максимальное абсолютное
+' отклонение по метрике во всех сценариях; существующие expected не меняются.
+Private Sub Audit02AssertPair(ByRef stats As TBatchTestStats, ByVal maxima As Object, _
+        ByVal prefix As String, ByVal metric As String, ByVal actual As Double, _
+        ByVal expected As Double, ByVal tolerance As Double)
+    AssertClose stats, prefix & "." & metric, actual, expected, tolerance
+    Dim difference As Double
+    difference = Abs(actual - expected)
+    If Not maxima.Exists(metric) Then maxima.Add metric, 0#
+    If difference > CDbl(maxima(metric)) Then maxima(metric) = difference
 End Sub
 
 

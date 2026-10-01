@@ -468,10 +468,10 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
     PutStabilityBranchStatus data, rowIndex, SUM_COL_STATUS_SP63_P1, policy, batch, index, 1, "SP63"
     PutStabilityBranchStatus data, rowIndex, SUM_COL_STATUS_SP63_P2, policy, batch, index, 2, "SP63"
 
-    PutReserveCell data, rowIndex, SUM_COL_RESERVE_STRAIN, batch.StrengthStrainReserve(index)
-    PutReserveCell data, rowIndex, SUM_COL_RESERVE_CAPACITY, batch.StrengthCapacityReserve(index)
-    PutReserveCell data, rowIndex, SUM_COL_RESERVE_CRACK, batch.CrackReserveFactor(index)
-    PutReserveCell data, rowIndex, SUM_COL_RESERVE_LONG_CRACK, batch.LongitudinalCrackReserveFactor(index)
+    PutReserveCell data, rowIndex, SUM_COL_RESERVE_STRAIN, batch.ResultAt(index).StrengthResult.DirectState.StrainReserve
+    PutReserveCell data, rowIndex, SUM_COL_RESERVE_CAPACITY, batch.ResultAt(index).StrengthResult.Capacity.ReserveFactor
+    PutReserveCell data, rowIndex, SUM_COL_RESERVE_CRACK, batch.ResultAt(index).CrackResult.Width.ReserveFactor
+    PutReserveCell data, rowIndex, SUM_COL_RESERVE_LONG_CRACK, batch.ResultAt(index).CrackResult.Longitudinal.ReserveFactor
     PutReserveCell data, rowIndex, SUM_COL_RESERVE_SP35_P1_ETA, SummaryReserveByKey(batch, index, "SP35P1Eta")
     PutReserveCell data, rowIndex, SUM_COL_RESERVE_SP35_P1_TABLE, SummaryReserveByKey(batch, index, "SP35P1Table")
     PutReserveCell data, rowIndex, SUM_COL_RESERVE_SP35_P2_ETA, SummaryReserveByKey(batch, index, "SP35P2Eta")
@@ -495,13 +495,13 @@ Private Function SummaryReserveByKey(ByVal batch As CBatchSectionCalculator, _
         ByVal index As Long, ByVal checkKey As String) As Double
     Select Case checkKey
         Case "StrengthStrain"
-            SummaryReserveByKey = batch.StrengthStrainReserve(index)
+            SummaryReserveByKey = batch.ResultAt(index).StrengthResult.DirectState.StrainReserve
         Case "StrengthCapacity"
-            SummaryReserveByKey = batch.StrengthCapacityReserve(index)
+            SummaryReserveByKey = batch.ResultAt(index).StrengthResult.Capacity.ReserveFactor
         Case "Crack"
-            SummaryReserveByKey = batch.CrackReserveFactor(index)
+            SummaryReserveByKey = batch.ResultAt(index).CrackResult.Width.ReserveFactor
         Case "LongCrack"
-            SummaryReserveByKey = batch.LongitudinalCrackReserveFactor(index)
+            SummaryReserveByKey = batch.ResultAt(index).CrackResult.Longitudinal.ReserveFactor
         Case "SP35P1Eta"
             SummaryReserveByKey = StabilityBranchReserve(batch, index, 1, "SP35-eta")
         Case "SP35P1Table"

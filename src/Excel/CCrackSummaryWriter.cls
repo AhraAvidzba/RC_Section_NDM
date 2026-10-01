@@ -589,8 +589,8 @@ Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, COL_ES) = OutputStress(batch.CrackSteelElasticModulus, units)
     data(rowIndex, COL_ACRC) = OutputLength(batch.ResultAt(index).CrackResult.Width.CrackWidth, units)
     data(rowIndex, COL_ACRC_ULT) = OutputLength(batch.ResultAt(index).CrackResult.Width.AllowableCrackWidth, units)
-    If batch.CrackReserveFactor(index) > SMALL_VALUE Then _
-        data(rowIndex, COL_ACRC_RATIO) = batch.CrackReserveFactor(index)
+    If batch.ResultAt(index).CrackResult.Width.ReserveFactor > SMALL_VALUE Then _
+        data(rowIndex, COL_ACRC_RATIO) = batch.ResultAt(index).CrackResult.Width.ReserveFactor
     data(rowIndex, COL_ACRC_STATUS) = CrackWidthStatusText(batch, index, policy)
 End Sub
 
@@ -610,8 +610,8 @@ Private Sub PutLongitudinalData(ByRef data() As Variant, ByVal rowIndex As Long,
 
     data(rowIndex, COL_SIGMA_B_MAX) = OutputStress(batch.ResultAt(index).CrackResult.Longitudinal.MaxCompressionStress, units)
     data(rowIndex, COL_RB_MC2) = OutputStress(batch.ResultAt(index).CrackResult.Longitudinal.RbMc2, units)
-    If batch.LongitudinalCrackReserveFactor(index) > SMALL_VALUE Then _
-        data(rowIndex, COL_LONG_RATIO) = batch.LongitudinalCrackReserveFactor(index)
+    If batch.ResultAt(index).CrackResult.Longitudinal.ReserveFactor > SMALL_VALUE Then _
+        data(rowIndex, COL_LONG_RATIO) = batch.ResultAt(index).CrackResult.Longitudinal.ReserveFactor
     data(rowIndex, COL_LONG_STATUS) = LongitudinalStatusText(batch, index, policy)
 End Sub
 

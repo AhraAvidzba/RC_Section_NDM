@@ -184,6 +184,11 @@ Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchReq
         ByVal probeState As String, ByVal methodName As String, _
         ByVal solver As CSectionSolver, ByVal iterations As Long) As Boolean
     mCapacity.LimitSearchFinalizeCapacityLoadMultiplier lambdaValue, loadPath, probeState, methodName, solver
+    ' На осевом плато одна и та же сила соответствует разным деформациям.
+    ' Нижняя проба силовой скобки не определяет предельную плоскость: доводим
+    ' ее до исходного физического предела и отдельно подтверждаем N/Mx/My.
+    If request.PureAxialForMethod Then mCapacity.LimitSearchAcceptPureAxialRetainedCapacity _
+        request.Section, request.ConcreteMaterial, request.SteelMaterial, loadPath
     ILimitSearchProblem_FinalizeAt = mCapacity.Converged
 End Function
 
@@ -192,6 +197,8 @@ Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchReq
         ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
         ByVal methodName As String, ByVal iterations As Long)
     mCapacity.LimitSearchFinalizeCapacityFromRetainedAcceptable lowLambda, loadPath, methodName
+    If request.PureAxialForMethod Then mCapacity.LimitSearchAcceptPureAxialRetainedCapacity _
+        request.Section, request.ConcreteMaterial, request.SteelMaterial, loadPath
 End Sub
 
 Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
