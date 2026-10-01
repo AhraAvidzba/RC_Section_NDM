@@ -1,5 +1,9 @@
 # NDM Architecture Refactoring Progress
 
+> История исходной миграции. Последующие исправления и глобализация Extension
+> ведутся в [NDM_Audit02_Progress.md](NDM_Audit02_Progress.md); актуальная
+> архитектура приведена в [Architecture.md](Architecture.md).
+
 ## Baseline
 
 `6b9a6bea62e0436d206e698845332b6ad17fa231`

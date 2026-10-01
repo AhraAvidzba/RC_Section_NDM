@@ -520,6 +520,125 @@ Private Function TranslateDiagnosticLine(ByVal lineText As String) As String
     TranslateDiagnosticLine = translated
 End Function
 
+' Пишет в txt-отчет подробные данные фильтра устойчивости по двум главным
+' плоскостям. Таблица Results остается основным машинным выводом, а этот блок
+' нужен для быстрой трассировки того, какая ветвь СП сработала в сценарии LC.
+Public Sub ReportStabilityDetails(ByVal stability As CStabilityResult)
+    If Not mEnabled Then Exit Sub
+    If stability Is Nothing Then Exit Sub
+
+    If Len(stability.Meta.ResultComment) > 0 Then _
+        AddValue "Причина остановки устойчивости", stability.Meta.ResultComment
+    AddValue "Продольная сила для проверки", FormatForce(stability.DesignN)
+    AddValue "Моменты после учета eta по главным плоскостям 1/2", _
+        "M1=" & FormatMomentMagnitude(stability.DesignMoment1) & "; " & _
+        "M2=" & FormatMomentMagnitude(stability.DesignMoment2)
+    AddValue "Длительная часть продольной силы", FormatSignedCompressionForce(stability.SustainedN)
+    AddValue "Длительные моменты по главным плоскостям 1/2", _
+        "M1l=" & FormatMomentMagnitude(stability.SustainedMoment1) & "; " & _
+        "M2l=" & FormatMomentMagnitude(stability.SustainedMoment2)
+
+    AddValue "Плоскость 1: ветвь и итог", _
+        StabilityBranchDisplayName(stability.PlaneBranch1) & "; " & StabilityPassDisplayName(stability.PlanePassed1)
+    AddValue "Плоскость 1: eta и запас", _
+        FormatNumberInvariant(stability.Eta1) & "; " & FormatNumberInvariant(stability.Reserve1)
+    AddValue "Плоскость 1: Ncr/Nult", _
+        "Ncr=" & FormatCompressionForce(stability.Ncr1) & "; Nult=" & FormatCompressionForce(stability.Nultimate1)
+    AddValue "Плоскость 1: h, i, r и гибкость l0/i", _
+        "h=" & FormatLength(stability.Depth1) & "; " & _
+        "i=" & FormatLength(stability.Radius1) & "; " & _
+        "r=" & FormatLength(stability.CoreDistance1) & "; " & _
+        "l0/i=" & FormatNumberInvariant(stability.Slenderness1)
+    AddValue "Плоскость 1: e, ea, phi_l и D", _
+        "e=" & FormatLength(stability.Eccentricity1) & "; " & _
+        "ea=" & FormatLength(stability.AccidentalEcc1) & "; " & _
+        "phi_l=" & FormatNumberInvariant(stability.PhiL1) & "; " & _
+        "D=" & FormatStiffness(stability.StiffnessD1)
+
+    AddValue "Плоскость 2: ветвь и итог", _
+        StabilityBranchDisplayName(stability.PlaneBranch2) & "; " & StabilityPassDisplayName(stability.PlanePassed2)
+    AddValue "Плоскость 2: eta и запас", _
+        FormatNumberInvariant(stability.Eta2) & "; " & FormatNumberInvariant(stability.Reserve2)
+    AddValue "Плоскость 2: Ncr/Nult", _
+        "Ncr=" & FormatCompressionForce(stability.Ncr2) & "; Nult=" & FormatCompressionForce(stability.Nultimate2)
+    AddValue "Плоскость 2: h, i, r и гибкость l0/i", _
+        "h=" & FormatLength(stability.Depth2) & "; " & _
+        "i=" & FormatLength(stability.Radius2) & "; " & _
+        "r=" & FormatLength(stability.CoreDistance2) & "; " & _
+        "l0/i=" & FormatNumberInvariant(stability.Slenderness2)
+    AddValue "Плоскость 2: e, ea, phi_l и D", _
+        "e=" & FormatLength(stability.Eccentricity2) & "; " & _
+        "ea=" & FormatLength(stability.AccidentalEcc2) & "; " & _
+        "phi_l=" & FormatNumberInvariant(stability.PhiL2) & "; " & _
+        "D=" & FormatStiffness(stability.StiffnessD2)
+End Sub
+
+' Поясняет в txt-отчете стартовую логику поиска образования нормальной трещины.
+' Низкоуровневый DiagnosticLog ниже сохраняет точные попытки, а эта строка
+' нужна пользователю как быстрый ответ, что именно программа собирается делать.
+Public Sub ReportCrackFormationSearchStart(ByVal formationPath As String)
+    If Not mEnabled Then Exit Sub
+    If StrComp(formationPath, "Auto", vbTextCompare) = 0 Then
+        AddStep "Трещинообразование: режим Auto. Программа пробует пути по порядку: " & _
+            ChrW$(&H3BB) & "*Mxy, затем " & ChrW$(&H3BB) & "*N, затем " & _
+            ChrW$(&H3BB) & "*NMxy. Если путь дает только резервный результат с " & _
+            ChrW$(&H3C8) & "s = 1 без найденной точки образования трещины, программа переходит к следующему пути."
+    Else
+        AddStep "Трещинообразование: используется фиксированный путь " & formationPath & _
+            "; Auto-перебор других путей не выполняется."
+    End If
+End Sub
+
+' Поясняет итог выбора пути образования трещины для текущего LC. Это не заменяет
+' DiagnosticLog solver-а, а переводит ключевой результат Auto/резервного
+' нормальный инженерный язык прямо в отчете.
+Public Sub ReportCrackFormationChoice(ByVal crack As CCrackFormationResult)
+    If Not mEnabled Then Exit Sub
+    If crack Is Nothing Then Exit Sub
+
+    If Len(crack.FormationMethod) > 0 Then
+        AddStep "Трещинообразование: принята точка по пути " & _
+            crack.FormationMethod & ". По этой точке записаны Ncrc/Mxy,crc и состояния PreCrackState/PostCrackState, если они применимы."
+    ElseIf crack.CrackFormed And crack.Converged Then
+        AddStep "Трещинообразование: нормальная трещина считается образованной, но выбранный путь не дал отдельную расчетную точку образования трещины. Для этой проверки принят резервный вариант " & _
+            ChrW$(&H3C8) & "s = 1; причина указана в CrackFormationStopReason и диагностике ниже."
+    ElseIf crack.Converged Then
+        AddStep "Трещинообразование: проверка завершена, нормальная трещина при текущем сочетании не образуется."
+    Else
+        AddStep "Трещинообразование: точку образования трещины найти не удалось; дальнейшая причина приведена в диагностике ниже."
+    End If
+End Sub
+
+' Записывает в txt-отчет результат проверки продольных трещин, уже полученный
+' отдельным CLongitudinalCrackCalculator. Здесь не запускается solver и не
+' пересчитываются напряжения: отчет только поясняет готовый result-объект.
+Public Sub ReportLongitudinalCrackResult(ByVal longitudinalResult As CLongitudinalCrackResult)
+    If Not mEnabled Then Exit Sub
+    If longitudinalResult Is Nothing Then
+        AddStep "Проверка продольных трещин не сформировала результат."
+        Exit Sub
+    End If
+
+    Dim meta As CResultMeta
+    Set meta = longitudinalResult.ResultMeta
+    Dim policy As CBatchStatusPolicy
+    Set policy = New CBatchStatusPolicy
+    Dim statusText As String
+    statusText = policy.StatusFromMeta(meta)
+
+    AddValue "Статус продольных трещин", statusText
+    If statusText <> policy.NotApplicable Then
+        AddValue "sigma_c,max", FormatStress(longitudinalResult.MaxCompressionStress)
+        AddValue "Rb,mc2", FormatStress(longitudinalResult.RbMc2)
+        AddValue "Использование по продольным трещинам", _
+            FormatNumberInvariant(longitudinalResult.Utilization)
+    ElseIf Len(Trim$(meta.ResultComment)) > 0 Then
+        AddStep meta.ResultComment
+    Else
+        AddStep "Проверка продольных трещин неприменима: в прямом НДС нет сжатого бетона."
+    End If
+End Sub
+
 ' Аккуратно добавляет строку в собираемый многострочный блок отчета.
 Private Sub AppendReportLine(ByRef target As String, ByVal lineText As String)
     If Len(lineText) = 0 Then Exit Sub

@@ -1,0 +1,649 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 044C25FCEE6CB4665890F528B8E3E3F167361B50FF40068CEDCC68A5B0549DA6
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0fb3f9deffbf4c00b19261b5d9781d26\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunWorkbookInterfaceTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunWorkbookInterfaceTests; 2026-10-01T20:48:56
+EXCEL_AFTER_SUITE: pid=15316; workingSet=1023660032; privateBytes=1008939008; cpu=57.46875
+RUN: TestButtons
+OK: ui.buttons.run.exists
+OK: ui.buttons.import.exists
+OK: ui.buttons.clear.exists
+OK: ui.buttons.autocad.exists
+OK: ui.buttons.plot.exists
+OK: ui.buttons.run.macro
+OK: ui.buttons.import.macro
+OK: ui.buttons.clear.macro
+OK: ui.buttons.autocad.macro
+OK: ui.buttons.plot.macro
+OK: ui.buttons.outsidePrint
+OK: ui.buttons.textCentered
+OK: ui.loads.layout.sheet
+OK: ui.loads.layout.position
+OK: ui.loads.layout.defaultRows30
+OK: ui.loads.layout.title
+OK: ui.loads.layout.capacityPathValidation
+RUN: TestSingleCombinationSkipsBlankRows
+OK: ui.loads.single.count
+OK: ui.loads.single.id
+OK: ui.loads.single.elapsed
+OK: ui.loads.single.noBlankInvalid
+OK: ui.loads.minRows.oneDataRow
+OK: ui.loads.minRows.headerOnlyRejected
+RUN: TestPartialCombinationIsInvalid
+OK: ui.loads.partial.count
+OK: ui.loads.partial.invalid
+OK: ui.loads.partial.message
+OK: ui.loads.invalidProfileId.message
+OK: ui.loads.invalidProfileId.noElementRows
+OK: ui.autocad.manualImport.required
+OK: ui.autocad.import.generatedRejected
+OK: ui.autocad.importUnits.concreteX; actual=1000.; expected=1000.
+OK: ui.autocad.importUnits.concreteY; actual=2000.; expected=2000.
+OK: ui.autocad.importUnits.concreteArea; actual=2500.; expected=2500.
+OK: ui.autocad.importUnits.localIx; actual=520833.333333969; expected=520833.333333333
+OK: ui.autocad.importUnits.rebarX; actual=1100.; expected=1100.
+OK: ui.autocad.importUnits.rebarDiameter; actual=25.; expected=25.
+RUN: TestAutoCADPreviewWritesAndDrawsBoundsDimensions
+OK: ui.autocad.preview.boundsAnnotations
+OK: ui.autocad.preview.rebarAnnotation
+OK: ui.autocad.preview.rebarText; actual=ALL: 1∅32+2∅20
+OK: ui.autocad.preview.approxText
+OK: ui.autocad.preview.roundedWidthText; actual=≈ 517 mm
+OK: ui.autocad.preview.roundedHeightText; actual=≈ 112 mm
+OK: ui.autocad.preview.russianComment
+OK: ui.autocad.preview.boundsWidthUsesRotation; actual=516.961524227066; expected=516.961524227066
+OK: ui.autocad.preview.boundsHeightUsesRotation; actual=111.961524227066; expected=111.961524227066
+OK: ui.autocad.preview.readerAnnotations
+OK: ui.autocad.preview.dimensionShapes
+OK: ui.autocad.preview.rebarTextShape
+OK: ui.autocad.preview.rotatedElementShape
+OK: ui.autocad.preview.squareFallbackRotation
+OK: ui.autocad.preview.roundedWidthTextMeters; actual=≈ 0.517 m
+OK: ui.autocad.preview.roundedHeightTextMeters; actual=≈ 0.112 m
+OK: ui.plot.legacyWorksheetShape.created
+OK: ui.plot.legacyWorksheetShape.removed
+OK: ui.plot.legacyWorksheetShape.chartStillDraws
+OK: ui.plot.overlay.run
+OK: ui.plot.overlay.shapes
+OK: ui.plot.overlay.chartLayer
+OK: ui.plot.axisLabels.exists
+OK: ui.plot.axisLabels.text
+OK: ui.plot.axisLabels.italic
+OK: ui.plot.axisLabels.fontSize; actual=9.; expected=9.
+OK: ui.plot.axisLabels.insideFrame
+OK: ui.plot.overlay.loadCenter
+OK: ui.plot.overlay.clippedAxes
+OK: ui.plot.overlay.principal1ThroughCentroid
+OK: ui.plot.overlay.principal2ThroughCentroid
+OK: ui.plot.overlay.loadX; actual=1387.40267944336; expected=1387.40263670358
+OK: ui.plot.overlay.loadY; actual=304.831115722656; expected=304.831108594642
+OK: ui.plot.overlay.loadDx; actual=0.473443320148; expected=0.473400580373
+OK: ui.plot.overlay.loadDy; actual=1.082065597438; expected=1.082058469424
+OK: ui.plot.overlay.move.before
+OK: ui.plot.overlay.move.after
+OK: ui.plot.overlay.move.dx; actual=17.; expected=17.
+OK: ui.plot.overlay.move.dy; actual=11.; expected=11.
+RUN: TestGeneratedSourceDoesNotReuseAutoCADPreview
+OK: ui.plot.preview.title
+OK: ui.plot.generated.noPreviewFallback.error
+OK: ui.plot.generated.noPreviewFallback.title
+RUN: TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC
+OK: ui.plot.generatedWorst.message
+OK: ui.plot.generatedWorst.drawsCalculatedLc
+OK: ui.plot.generatedWorst.noImportTitle
+RUN: TestProfileDrivenPlotUsesSnapshotState
+OK: ui.profilePlot.message
+OK: ui.profilePlot.hasElementStateRows
+OK: ui.profilePlot.drawsLoadCase
+OK: ui.profilePlot.noImportTitle
+OK: ui.profilePlot.commonLoadReference
+OK: audit02.saved.run
+OK: audit02.saved.stress.nonempty
+OK: audit02.saved.stress.count
+OK: audit02.saved.stress.state; actual=CrackedState
+OK: audit02.saved.stress.status; actual=OK
+OK: audit02.saved.stress.extension
+OK: audit02.saved.stress.epsilon0; actual=-0.000060569517; expected=-0.000060569517
+OK: audit02.saved.stress.kappaX; actual=-0.000000401565; expected=-0.000000401565
+OK: audit02.saved.stress.kappaY; actual=-0.000000302159; expected=-0.000000302159
+OK: audit02.saved.stress.id.1; actual=C1
+OK: audit02.saved.stress.physical.1; actual=InactiveTensionConcrete
+OK: audit02.saved.stress.value.1; actual=0.; expected=0.
+OK: audit02.saved.stress.id.2; actual=C2
+OK: audit02.saved.stress.physical.2; actual=Compression
+OK: audit02.saved.stress.value.2; actual=-0.041358110138; expected=-0.041358110138
+OK: audit02.saved.stress.id.3; actual=C3
+OK: audit02.saved.stress.physical.3; actual=Compression
+OK: audit02.saved.stress.value.3; actual=-0.262941374099; expected=-0.262941374099
+OK: audit02.saved.stress.id.4; actual=C4
+OK: audit02.saved.stress.physical.4; actual=Compression
+OK: audit02.saved.stress.value.4; actual=-0.48452463806; expected=-0.48452463806
+OK: audit02.saved.stress.id.5; actual=C5
+OK: audit02.saved.stress.physical.5; actual=InactiveTensionConcrete
+OK: audit02.saved.stress.value.5; actual=0.; expected=0.
+OK: audit02.saved.stress.id.6; actual=C6
+OK: audit02.saved.stress.physical.6; actual=Compression
+OK: audit02.saved.stress.value.6; actual=-0.11425611724; expected=-0.11425611724
+OK: audit02.saved.stress.id.7; actual=C7
+OK: audit02.saved.stress.physical.7; actual=Compression
+OK: audit02.saved.stress.value.7; actual=-0.335839381202; expected=-0.335839381202
+OK: audit02.saved.stress.id.8; actual=C8
+OK: audit02.saved.stress.physical.8; actual=Compression
+OK: audit02.saved.stress.value.8; actual=-0.557422645163; expected=-0.557422645163
+OK: audit02.saved.stress.id.9; actual=C9
+OK: audit02.saved.stress.physical.9; actual=Compression
+OK: audit02.saved.stress.value.9; actual=-0.779005909124; expected=-0.779005909124
+OK: audit02.saved.stress.id.10; actual=C10
+OK: audit02.saved.stress.physical.10; actual=Compression
+OK: audit02.saved.stress.value.10; actual=-1.000589173085; expected=-1.000589173085
+OK: audit02.saved.stress.id.11; actual=C11
+OK: audit02.saved.stress.physical.11; actual=Compression
+OK: audit02.saved.stress.value.11; actual=-0.187154124343; expected=-0.187154124343
+OK: audit02.saved.stress.id.12; actual=C12
+OK: audit02.saved.stress.physical.12; actual=Compression
+OK: audit02.saved.stress.value.12; actual=-0.408737388304; expected=-0.408737388304
+OK: audit02.saved.stress.id.13; actual=C13
+OK: audit02.saved.stress.physical.13; actual=Compression
+OK: audit02.saved.stress.value.13; actual=-0.630320652265; expected=-0.630320652265
+OK: audit02.saved.stress.id.14; actual=C14
+OK: audit02.saved.stress.physical.14; actual=Compression
+OK: audit02.saved.stress.value.14; actual=-0.851903916227; expected=-0.851903916227
+OK: audit02.saved.stress.id.15; actual=C15
+OK: audit02.saved.stress.physical.15; actual=Compression
+OK: audit02.saved.stress.value.15; actual=-1.073487180188; expected=-1.073487180188
+OK: audit02.saved.stress.id.16; actual=C16
+OK: audit02.saved.stress.physical.16; actual=Compression
+OK: audit02.saved.stress.value.16; actual=-1.295070444149; expected=-1.295070444149
+OK: audit02.saved.stress.id.17; actual=C17
+OK: audit02.saved.stress.physical.17; actual=Compression
+OK: audit02.saved.stress.value.17; actual=-0.481635395407; expected=-0.481635395407
+OK: audit02.saved.stress.id.18; actual=C18
+OK: audit02.saved.stress.physical.18; actual=Compression
+OK: audit02.saved.stress.value.18; actual=-0.703218659368; expected=-0.703218659368
+OK: audit02.saved.stress.id.19; actual=C19
+OK: audit02.saved.stress.physical.19; actual=Compression
+OK: audit02.saved.stress.value.19; actual=-0.924801923329; expected=-0.924801923329
+OK: audit02.saved.stress.id.20; actual=C20
+OK: audit02.saved.stress.physical.20; actual=Compression
+OK: audit02.saved.stress.value.20; actual=-1.14638518729; expected=-1.14638518729
+OK: audit02.saved.stress.id.21; actual=C21
+OK: audit02.saved.stress.physical.21; actual=Compression
+OK: audit02.saved.stress.value.21; actual=-1.367968451252; expected=-1.367968451252
+OK: audit02.saved.stress.id.22; actual=C22
+OK: audit02.saved.stress.physical.22; actual=Compression
+OK: audit02.saved.stress.value.22; actual=-1.589551715213; expected=-1.589551715213
+OK: audit02.saved.stress.id.23; actual=C23
+OK: audit02.saved.stress.physical.23; actual=Compression
+OK: audit02.saved.stress.value.23; actual=-0.776116666471; expected=-0.776116666471
+OK: audit02.saved.stress.id.24; actual=C24
+OK: audit02.saved.stress.physical.24; actual=Compression
+OK: audit02.saved.stress.value.24; actual=-0.997699930432; expected=-0.997699930432
+OK: audit02.saved.stress.id.25; actual=C25
+OK: audit02.saved.stress.physical.25; actual=Compression
+OK: audit02.saved.stress.value.25; actual=-1.219283194393; expected=-1.219283194393
+OK: audit02.saved.stress.id.26; actual=C26
+OK: audit02.saved.stress.physical.26; actual=Compression
+OK: audit02.saved.stress.value.26; actual=-1.440866458354; expected=-1.440866458354
+OK: audit02.saved.stress.id.27; actual=C27
+OK: audit02.saved.stress.physical.27; actual=Compression
+OK: audit02.saved.stress.value.27; actual=-1.662449722315; expected=-1.662449722315
+OK: audit02.saved.stress.id.28; actual=C28
+OK: audit02.saved.stress.physical.28; actual=Compression
+OK: audit02.saved.stress.value.28; actual=-1.884032986277; expected=-1.884032986277
+OK: audit02.saved.stress.id.29; actual=C29
+OK: audit02.saved.stress.physical.29; actual=Compression
+OK: audit02.saved.stress.value.29; actual=-1.292181201496; expected=-1.292181201496
+OK: audit02.saved.stress.id.30; actual=C30
+OK: audit02.saved.stress.physical.30; actual=Compression
+OK: audit02.saved.stress.value.30; actual=-1.513764465457; expected=-1.513764465457
+OK: audit02.saved.stress.id.31; actual=C31
+OK: audit02.saved.stress.physical.31; actual=Compression
+OK: audit02.saved.stress.value.31; actual=-1.735347729418; expected=-1.735347729418
+OK: audit02.saved.stress.id.32; actual=C32
+OK: audit02.saved.stress.physical.32; actual=Compression
+OK: audit02.saved.stress.value.32; actual=-1.956930993379; expected=-1.956930993379
+OK: audit02.saved.stress.id.33; actual=R1
+OK: audit02.saved.stress.physical.33; actual=Compression
+OK: audit02.saved.stress.value.33; actual=-18.761401370352; expected=-18.761401370352
+OK: audit02.saved.stress.id.34; actual=R2
+OK: audit02.saved.stress.physical.34; actual=Compression
+OK: audit02.saved.stress.value.34; actual=-23.061285418899; expected=-23.061285418899
+OK: audit02.saved.stress.id.35; actual=R3
+OK: audit02.saved.stress.physical.35; actual=Compression
+OK: audit02.saved.stress.value.35; actual=-20.948341583432; expected=-20.948341583432
+OK: audit02.saved.stress.id.36; actual=R4
+OK: audit02.saved.stress.physical.36; actual=Compression
+OK: audit02.saved.stress.value.36; actual=-13.660303706235; expected=-13.660303706235
+OK: audit02.saved.stress.id.37; actual=R5
+OK: audit02.saved.stress.physical.37; actual=Compression
+OK: audit02.saved.stress.value.37; actual=-5.466405532682; expected=-5.466405532682
+OK: audit02.saved.stress.id.38; actual=R6
+OK: audit02.saved.stress.physical.38; actual=Compression
+OK: audit02.saved.stress.value.38; actual=-1.166521484135; expected=-1.166521484135
+OK: audit02.saved.stress.id.39; actual=R7
+OK: audit02.saved.stress.physical.39; actual=Compression
+OK: audit02.saved.stress.value.39; actual=-3.279465319601; expected=-3.279465319601
+OK: audit02.saved.stress.id.40; actual=R8
+OK: audit02.saved.stress.physical.40; actual=Compression
+OK: audit02.saved.stress.value.40; actual=-10.567503196798; expected=-10.567503196798
+OK: audit02.saved.exportSnapshot; actual=LC1|PR2|CrackedState|Stress|False||-6.05695172575826E-05|-4.01565369632512E-07|-3.02158996310681E-07|0|0
+C1|0|InactiveTensionConcrete
+C2|-4.13581101376903E-02|Compression
+C3|-0.262941374098856|Compression
+C4|-0.484524638060022|Compression
+C5|0|InactiveTensionConcrete
+C6|-0.114256117240367|Compression
+C7|-0.335839381201533|Compression
+C8|-0.557422645162698|Compression
+C9|-0.779005909123864|Compression
+C10|-1.00058917308503|Compression
+C11|-0.187154124343044|Compression
+C12|-0.408737388304209|Compression
+C13|-0.630320652265375|Compression
+C14|-0.851903916226541|Compression
+C15|-1.07348718018771|Compression
+C16|-1.29507044414887|Compression
+C17|-0.481635395406886|Compression
+C18|-0.703218659368052|Compression
+C19|-0.924801923329218|Compression
+C20|-1.14638518729038|Compression
+C21|-1.36796845125155|Compression
+C22|-1.58955171521271|Compression
+C23|-0.776116666470728|Compression
+C24|-0.997699930431894|Compression
+C25|-1.21928319439306|Compression
+C26|-1.44086645835423|Compression
+C27|-1.66244972231539|Compression
+C28|-1.88403298627656|Compression
+C29|-1.29218120149574|Compression
+C30|-1.5137644654569|Compression
+C31|-1.73534772941807|Compression
+C32|-1.95693099337923|Compression
+R1|-18.7614013703515|Compression
+R2|-23.0612854188985|Compression
+R3|-20.9483415834318|Compression
+R4|-13.6603037062352|Compression
+R5|-5.46640553268157|Compression
+R6|-1.16652148413457|Compression
+R7|-3.27946531960127|Compression
+R8|-10.5675031967979|Compression
+OK: audit02.saved.strain.nonempty
+OK: audit02.saved.strain.count
+OK: audit02.saved.strain.state; actual=CrackedState
+OK: audit02.saved.strain.status; actual=OK
+OK: audit02.saved.strain.extension
+OK: audit02.saved.strain.epsilon0; actual=-0.000060569517; expected=-0.000060569517
+OK: audit02.saved.strain.kappaX; actual=-0.000000401565; expected=-0.000000401565
+OK: audit02.saved.strain.kappaY; actual=-0.000000302159; expected=-0.000000302159
+OK: audit02.saved.strain.id.1; actual=C1
+OK: audit02.saved.strain.physical.1; actual=InactiveTensionConcrete
+OK: audit02.saved.strain.value.1; actual=0.000012288079; expected=0.000012288079
+OK: audit02.saved.strain.id.2; actual=C2
+OK: audit02.saved.strain.physical.2; actual=Compression
+OK: audit02.saved.strain.value.2; actual=-0.000002819871; expected=-0.000002819871
+OK: audit02.saved.strain.id.3; actual=C3
+OK: audit02.saved.strain.physical.3; actual=Compression
+OK: audit02.saved.strain.value.3; actual=-0.000017927821; expected=-0.000017927821
+OK: audit02.saved.strain.id.4; actual=C4
+OK: audit02.saved.strain.physical.4; actual=Compression
+OK: audit02.saved.strain.value.4; actual=-0.000033035771; expected=-0.000033035771
+OK: audit02.saved.strain.id.5; actual=C5
+OK: audit02.saved.strain.physical.5; actual=InactiveTensionConcrete
+OK: audit02.saved.strain.value.5; actual=0.00000731776; expected=0.00000731776
+OK: audit02.saved.strain.id.6; actual=C6
+OK: audit02.saved.strain.physical.6; actual=Compression
+OK: audit02.saved.strain.value.6; actual=-0.00000779019; expected=-0.00000779019
+OK: audit02.saved.strain.id.7; actual=C7
+OK: audit02.saved.strain.physical.7; actual=Compression
+OK: audit02.saved.strain.value.7; actual=-0.00002289814; expected=-0.00002289814
+OK: audit02.saved.strain.id.8; actual=C8
+OK: audit02.saved.strain.physical.8; actual=Compression
+OK: audit02.saved.strain.value.8; actual=-0.000038006089; expected=-0.000038006089
+OK: audit02.saved.strain.id.9; actual=C9
+OK: audit02.saved.strain.physical.9; actual=Compression
+OK: audit02.saved.strain.value.9; actual=-0.000053114039; expected=-0.000053114039
+OK: audit02.saved.strain.id.10; actual=C10
+OK: audit02.saved.strain.physical.10; actual=Compression
+OK: audit02.saved.strain.value.10; actual=-0.000068221989; expected=-0.000068221989
+OK: audit02.saved.strain.id.11; actual=C11
+OK: audit02.saved.strain.physical.11; actual=Compression
+OK: audit02.saved.strain.value.11; actual=-0.000012760508; expected=-0.000012760508
+OK: audit02.saved.strain.id.12; actual=C12
+OK: audit02.saved.strain.physical.12; actual=Compression
+OK: audit02.saved.strain.value.12; actual=-0.000027868458; expected=-0.000027868458
+OK: audit02.saved.strain.id.13; actual=C13
+OK: audit02.saved.strain.physical.13; actual=Compression
+OK: audit02.saved.strain.value.13; actual=-0.000042976408; expected=-0.000042976408
+OK: audit02.saved.strain.id.14; actual=C14
+OK: audit02.saved.strain.physical.14; actual=Compression
+OK: audit02.saved.strain.value.14; actual=-0.000058084358; expected=-0.000058084358
+OK: audit02.saved.strain.id.15; actual=C15
+OK: audit02.saved.strain.physical.15; actual=Compression
+OK: audit02.saved.strain.value.15; actual=-0.000073192308; expected=-0.000073192308
+OK: audit02.saved.strain.id.16; actual=C16
+OK: audit02.saved.strain.physical.16; actual=Compression
+OK: audit02.saved.strain.value.16; actual=-0.000088300258; expected=-0.000088300258
+OK: audit02.saved.strain.id.17; actual=C17
+OK: audit02.saved.strain.physical.17; actual=Compression
+OK: audit02.saved.strain.value.17; actual=-0.000032838777; expected=-0.000032838777
+OK: audit02.saved.strain.id.18; actual=C18
+OK: audit02.saved.strain.physical.18; actual=Compression
+OK: audit02.saved.strain.value.18; actual=-0.000047946727; expected=-0.000047946727
+OK: audit02.saved.strain.id.19; actual=C19
+OK: audit02.saved.strain.physical.19; actual=Compression
+OK: audit02.saved.strain.value.19; actual=-0.000063054677; expected=-0.000063054677
+OK: audit02.saved.strain.id.20; actual=C20
+OK: audit02.saved.strain.physical.20; actual=Compression
+OK: audit02.saved.strain.value.20; actual=-0.000078162626; expected=-0.000078162626
+OK: audit02.saved.strain.id.21; actual=C21
+OK: audit02.saved.strain.physical.21; actual=Compression
+OK: audit02.saved.strain.value.21; actual=-0.000093270576; expected=-0.000093270576
+OK: audit02.saved.strain.id.22; actual=C22
+OK: audit02.saved.strain.physical.22; actual=Compression
+OK: audit02.saved.strain.value.22; actual=-0.000108378526; expected=-0.000108378526
+OK: audit02.saved.strain.id.23; actual=C23
+OK: audit02.saved.strain.physical.23; actual=Compression
+OK: audit02.saved.strain.value.23; actual=-0.000052917045; expected=-0.000052917045
+OK: audit02.saved.strain.id.24; actual=C24
+OK: audit02.saved.strain.physical.24; actual=Compression
+OK: audit02.saved.strain.value.24; actual=-0.000068024995; expected=-0.000068024995
+OK: audit02.saved.strain.id.25; actual=C25
+OK: audit02.saved.strain.physical.25; actual=Compression
+OK: audit02.saved.strain.value.25; actual=-0.000083132945; expected=-0.000083132945
+OK: audit02.saved.strain.id.26; actual=C26
+OK: audit02.saved.strain.physical.26; actual=Compression
+OK: audit02.saved.strain.value.26; actual=-0.000098240895; expected=-0.000098240895
+OK: audit02.saved.strain.id.27; actual=C27
+OK: audit02.saved.strain.physical.27; actual=Compression
+OK: audit02.saved.strain.value.27; actual=-0.000113348845; expected=-0.000113348845
+OK: audit02.saved.strain.id.28; actual=C28
+OK: audit02.saved.strain.physical.28; actual=Compression
+OK: audit02.saved.strain.value.28; actual=-0.000128456795; expected=-0.000128456795
+OK: audit02.saved.strain.id.29; actual=C29
+OK: audit02.saved.strain.physical.29; actual=Compression
+OK: audit02.saved.strain.value.29; actual=-0.000088103264; expected=-0.000088103264
+OK: audit02.saved.strain.id.30; actual=C30
+OK: audit02.saved.strain.physical.30; actual=Compression
+OK: audit02.saved.strain.value.30; actual=-0.000103211214; expected=-0.000103211214
+OK: audit02.saved.strain.id.31; actual=C31
+OK: audit02.saved.strain.physical.31; actual=Compression
+OK: audit02.saved.strain.value.31; actual=-0.000118319163; expected=-0.000118319163
+OK: audit02.saved.strain.id.32; actual=C32
+OK: audit02.saved.strain.physical.32; actual=Compression
+OK: audit02.saved.strain.value.32; actual=-0.000133427113; expected=-0.000133427113
+OK: audit02.saved.strain.id.33; actual=R1
+OK: audit02.saved.strain.physical.33; actual=Compression
+OK: audit02.saved.strain.value.33; actual=-0.000093807007; expected=-0.000093807007
+OK: audit02.saved.strain.id.34; actual=R2
+OK: audit02.saved.strain.physical.34; actual=Compression
+OK: audit02.saved.strain.value.34; actual=-0.000115306427; expected=-0.000115306427
+OK: audit02.saved.strain.id.35; actual=R3
+OK: audit02.saved.strain.physical.35; actual=Compression
+OK: audit02.saved.strain.value.35; actual=-0.000104741708; expected=-0.000104741708
+OK: audit02.saved.strain.id.36; actual=R4
+OK: audit02.saved.strain.physical.36; actual=Compression
+OK: audit02.saved.strain.value.36; actual=-0.000068301519; expected=-0.000068301519
+OK: audit02.saved.strain.id.37; actual=R5
+OK: audit02.saved.strain.physical.37; actual=Compression
+OK: audit02.saved.strain.value.37; actual=-0.000027332028; expected=-0.000027332028
+OK: audit02.saved.strain.id.38; actual=R6
+OK: audit02.saved.strain.physical.38; actual=Compression
+OK: audit02.saved.strain.value.38; actual=-0.000005832607; expected=-0.000005832607
+OK: audit02.saved.strain.id.39; actual=R7
+OK: audit02.saved.strain.physical.39; actual=Compression
+OK: audit02.saved.strain.value.39; actual=-0.000016397327; expected=-0.000016397327
+OK: audit02.saved.strain.id.40; actual=R8
+OK: audit02.saved.strain.physical.40; actual=Compression
+OK: audit02.saved.strain.value.40; actual=-0.000052837516; expected=-0.000052837516
+OK: audit02.saved.exportGeometry
+OK: audit02.saved.noSolve
+OK: audit02.saved.table.rngNDMSectionGeometry
+OK: audit02.saved.table.rngNDMElementResults
+OK: audit02.saved.table.rngNDMSectionProperties
+OK: audit02.saved.table.rngNDMSectionAnnotations
+OK: audit02.saved.table.rngNDMMaterialDiagrams
+OK: audit02.saved.table.rngBatchSummary
+RUN: TestMissingProfileStateDrawsGeometryOnly
+OK: ui.plot.missingState.run
+OK: ui.plot.missingState.noError
+OK: ui.plot.missingState.geometryTitle
+OK: ui.plot.missingState.note
+OK: ui.autocad.run.savedGeometry.message
+OK: ui.autocad.run.savedGeometry.noImportText
+OK: ui.autocad.run.savedGeometry.concreteX; actual=0.95; expected=0.95
+OK: ui.autocad.run.savedGeometry.concreteY; actual=-0.75; expected=-0.75
+OK: ui.autocad.run.savedGeometry.rebarX; actual=0.93; expected=0.93
+OK: ui.autocad.run.savedGeometry.rebarY; actual=-0.77; expected=-0.77
+OK: ui.autocad.run.savedGeometry.rebarText; actual=ALL: 4∅20
+OK: ui.loads.blankMoment.count
+OK: ui.loads.blankMoment.myZero; actual=0.; expected=0.
+OK: ui.loads.blankMoment.valid
+RUN: TestCircleWorkbookRunWritesResults
+OK: ui.run.message
+OK: ui.run.capacity.na
+OK: ui.run.direct.status
+OK: ui.run.strainPlane
+OK: ui.run.crack
+OK: ui.run.system.noLegacyMainInput
+OK: ui.run.system.materialDiagramControls
+OK: ui.strengthSummary.currentDepths
+OK: ui.strengthSummary.direct.noCapacityDepths
+OK: ui.results.elements.header
+OK: ui.results.elements.rows
+OK: ui.results.elements.noCombinationIndex
+OK: ui.results.elements.materialType
+OK: ui.results.elements.units
+OK: ui.results.elements.noGeometryDup
+OK: ui.results.elements.noPlaneDup
+OK: ui.results.elements.physicalStateAlign
+OK: ui.results.geometry.header
+OK: ui.results.geometry.rows
+OK: ui.results.strength.anchor
+OK: ui.results.crack.anchor
+OK: ui.results.stability.anchor
+OK: ui.results.geometry.position
+OK: ui.results.properties.position
+OK: ui.results.materialDiagrams.position
+OK: ui.results.annotations.position
+OK: ui.results.geometry.noSource
+OK: ui.results.geometry.noMaterialClass
+OK: ui.results.properties.header
+OK: ui.results.properties.hasStateEpsilon0
+OK: ui.results.properties.hasStateNeutralLine
+OK: ui.results.properties.noLegacyPlane
+OK: ui.results.properties.hasBounds
+OK: ui.results.properties.commonLoadReference
+OK: ui.results.properties.hasTransformedAxes
+OK: ui.results.properties.noLegacyTransformedAliases
+OK: ui.results.properties.noLcLoadReference
+OK: ui.results.properties.transformedArea.moduli; actual=0.092953028172; expected=0.092953028172
+OK: ui.results.properties.transformedCoreDistance.positive
+OK: ui.results.properties.transformedCoreDistance.axis1Sym; actual=0.042699438237; expected=0.042699438237
+OK: ui.results.properties.transformedCoreDistance.axis2Sym; actual=0.042699438237; expected=0.042699438237
+OK: ui.results.properties.transformedCoreDistanceXY.positive
+OK: ui.results.properties.concreteCoreDistanceXY.exists
+OK: ui.results.annotations.header
+OK: ui.results.annotations.rows
+OK: ui.results.materialDiagrams.header
+OK: ui.results.materialDiagrams.rows
+OK: ui.results.materialDiagrams.stateType
+OK: ui.results.materialDiagrams.role
+OK: ui.results.materialDiagrams.diagramId
+OK: ui.results.materialDiagrams.spec
+OK: ui.results.materialDiagrams.mode
+OK: ui.results.materialDiagrams.noPurpose
+OK: ui.results.materialDiagrams.noLoadCase
+OK: ui.results.materialDiagrams.usedStates
+OK: ui.plot.chart.created
+OK: ui.plot.title.comment
+OK: ui.plot.title.overlay
+OK: ui.profiles.topHeader.noDuplicateParameter
+OK: ui.profiles.lowerHeader.parameter
+OK: ui.profiles.pr3.default
+OK: ui.profiles.pr4.default
+OK: ui.profiles.visualizationStressPrecision.default
+RUN: TestThirtyCombinationsWithFiveStatesWriteSnapshot
+OK: ui.results.fullSnapshot.message
+OK: ui.results.fullSnapshot.geometry143
+OK: ui.results.fullSnapshot.elementRows
+OK: ui.results.fullSnapshot.LC_FULL_01.StrengthState
+OK: ui.results.fullSnapshot.LC_FULL_01.CapacityState
+OK: ui.results.fullSnapshot.LC_FULL_01.CrackedState
+OK: ui.results.fullSnapshot.LC_FULL_01.PreCrackState
+OK: ui.results.fullSnapshot.LC_FULL_01.PostCrackState
+OK: ui.results.fullSnapshot.LC_FULL_30.StrengthState
+OK: ui.results.fullSnapshot.LC_FULL_30.CapacityState
+OK: ui.results.fullSnapshot.LC_FULL_30.CrackedState
+OK: ui.results.fullSnapshot.LC_FULL_30.PreCrackState
+OK: ui.results.fullSnapshot.LC_FULL_30.PostCrackState
+OK: ui.results.fullSnapshot.propertiesRows
+OK: ui.results.fullSnapshot.materialRows
+OK: ui.loads.dynamicRange.count45
+OK: ui.results.layoutGuard.blocksCalculation
+OK: ui.results.layoutGuard.message
+RUN: TestExecutionReportFile
+OK: ui.executionReport.message
+OK: ui.executionReport.fileExists
+OK: ui.executionReport.content
+OK: ui.excelGuard.run
+OK: ui.excelGuard.calculation
+OK: ui.excelGuard.events
+OK: ui.excelGuard.screen
+OK: ui.excelGuard.alerts
+RUN: TestRectSetWorkbookRunWritesResults
+OK: ui.rectset.message
+OK: ui.rectset.result.status
+OK: ui.rectset.system.noLegacyRebarInput
+OK: ui.rectset.system.materialDiagramControls
+RUN: TestRectSetMomentUltimateStrainWorkbookPath
+INFO: ui.rectset.momentUltimate capacityStatus=OK; solutionMethod=UltimateStrain; lambda=2.14527150661377
+OK: ui.rectset.momentUltimate.message
+OK: ui.rectset.momentUltimate.capacityOk; actual=OK
+OK: ui.rectset.momentUltimate.method; actual=UltimateStrain
+OK: ui.rectset.momentUltimate.lambda
+OK: ui.rectset.momentUltimate.mxult
+OK: ui.strength.curvatureOutput.message
+OK: ui.strength.curvatureOutput.snapshotUnit; actual=1/m
+OK: ui.strength.curvatureOutput.stateHeaderKx
+OK: ui.strength.curvatureOutput.stateHeaderKy
+OK: ui.strength.curvatureOutput.capacityHeaderKx
+OK: ui.strength.curvatureOutput.capacityHeaderKy
+OK: ui.strength.curvatureOutput.stateKxValue; actual=0.002064151928; expected=0.002064151928
+OK: ui.strength.curvatureOutput.capacityKxValue; actual=0.009889470095; expected=0.009889470095
+RUN: TestRectSetPureBendingUltimateStrainWorkbookPath
+INFO: ui.rectset.pureBending direct=OK; capacity=OK; solutionMethod=UltimateStrain; lambda=3.04110064598931
+OK: ui.rectset.pureBending.message
+OK: ui.rectset.pureBending.directOk; actual=OK
+OK: ui.rectset.pureBending.capacityOk; actual=OK
+OK: ui.rectset.pureBending.method; actual=UltimateStrain
+OK: ui.rectset.pureBending.lambda
+RUN: TestRectSetPureBendingDirectStateWorkbookPath
+INFO: ui.rectset.pureBendingDirect direct=OK; capacity=OK
+OK: ui.rectset.pureBendingDirect.message
+OK: ui.rectset.pureBendingDirect.directOk; actual=OK
+OK: ui.rectset.pureBendingDirect.capacityOk; actual=OK
+RUN: TestRectSetAxialTensionExtensionFromWorkbookSettings
+INFO: ui.rectset.axial795 overall=FAIL; crack=FAIL
+INFO: ui.rectset.axial900 overall=FAIL; crack=N/A; extensionUsed=True
+OK: ui.rectset.axial795.overallCalculated
+OK: ui.rectset.axial795.crackCalculated
+OK: ui.rectset.axial900.finishedWithoutExtension
+OK: ui.rectset.axial900.crackNoNumFail
+OK: ui.rectset.axial900.crackedStateExtUsed; actual=yes
+OK: ui.rectset.axial900.crackedStateEquilibrium; actual=FAIL
+OK: ui.rectset.axial900.crackWidthSkipped; actual=N/A
+OK: ui.rectset.axial900.longitudinalSkipped; actual=N/A
+OK: ui.rectset.axial900.message
+OK: ui.rectset.axial900.extensionSnapshot; actual=True
+OK: ui.rectset.axial900.crackedStateExtensionDiagram
+OK: ui.rectset.axial900.reportCreated
+OK: ui.autocad.reference.converged
+OK: ui.autocad.reference.point
+OK: ui.autocad.reference.concreteCenterX; actual=132.941176470588; expected=132.941176470588
+OK: ui.autocad.reference.concreteCenterY; actual=168.823529411765; expected=168.823529411765
+OK: ui.autocad.reference.mxTransfer; actual=-168823529.411765; expected=-168823529.411765
+OK: ui.autocad.reference.myTransfer; actual=-132941176.470588; expected=-132941176.470588
+RUN: TestGoverningCombinationWritesDetailedResults
+INFO: ui.governing actual=LC_GOV; expected=LC_GOV
+OK: ui.governing.id
+OK: ui.governing.message
+OK: ui.validation.CapacitySolutionStrategy
+OK: ui.validation.nonCriticalMessages
+OK: ui.validation.capacitySearchMethod
+OK: ui.validation.crackCoverDistanceMode
+OK: ui.validation.crackInitiationLoadPath
+OK: ui.validation.autocadLabelMode
+OK: ui.validation.autocadNeutralLine
+OK: ui.validation.autocadPrincipalAxes
+OK: ui.validation.autocadLoadPoint
+OK: ui.validation.autocadContour
+OK: ui.validation.autocadCombination
+OK: ui.validation.plotLoadCase
+OK: ui.validation.loadProfileId
+OK: ui.validation.loadProfileId.noFormula
+OK: ui.validation.plotLabels
+OK: ui.validation.plotPrincipalAxes
+OK: ui.validation.plotAxisLabels
+OK: ui.validation.plotAxisLabelsFontSize.default; actual=7.5; expected=7.5
+OK: ui.validation.plotContour
+OK: ui.validation.plotRebarAnnotationEnabled
+OK: ui.validation.plotDimensionEnabled
+OK: ui.validation.plotRebarPlacement
+OK: ui.validation.plotDimensionPlacement
+OK: ui.validation.plotRebarTextUnits
+OK: ui.validation.plotDimensionTextUnits
+OK: ui.validation.plotTextHeightUnitDynamic
+OK: ui.validation.plotTextGapUnitDynamic
+OK: ui.validation.plotTextHeight.defaultRebar; actual=13.; expected=13.
+OK: ui.validation.plotTextHeight.defaultDimension; actual=13.; expected=13.
+OK: ui.validation.plotTextGap.defaultRebar; actual=9.; expected=9.
+OK: ui.validation.plotTextGap.defaultDimension; actual=9.; expected=9.
+OK: ui.validation.plotRebarLineEnabled
+OK: ui.validation.plotDimensionArrowType
+OK: ui.validation.plotDimensionArrowSize
+OK: ui.validation.geometrySource
+OK: ui.validation.units.forceInput
+OK: ui.validation.units.momentOutput
+OK: ui.validation.sign.n
+OK: ui.validation.circleLoc2row
+OK: ui.validation.circleLoc3row
+OK: ui.validation.rectSetSectionType
+OK: ui.validation.rectsetLoc2row
+OK: ui.validation.rectsetBind2row
+OK: ui.circle.key.rebarDiameter2
+OK: ui.circle.key.rebarDiameter3
+OK: ui.circle.key.rebarLoc2row
+OK: ui.circle.key.rebarLoc3row
+OK: ui.units.solverToleranceN.dynamic
+OK: ui.units.solverToleranceMx.dynamic
+OK: ui.units.solverToleranceMy.dynamic
+OK: ui.units.Capacity.SolutionStrategy; actual=-
+OK: ui.units.capacity.searchMethod; actual=-
+OK: ui.units.capacity.initialLambda; actual=-
+OK: ui.units.capacity.toleranceLambda; actual=-
+OK: ui.units.capacity.maxRetries; actual=шт
+OK: ui.units.capacity.baseLoadSteps; actual=шт
+OK: ui.units.capacity.toleranceStrain; actual=-
+OK: ui.units.capacity.maxLambda; actual=-
+OK: ui.units.capacity.solverIterations; actual=шт
+OK: ui.units.meshStepX.dynamic
+OK: ui.units.meshStepY.dynamic
+OK: ui.units.zeroMomentPerDepth.dynamic
+OK: ui.circle.blankDiameter.noHiddenDefaults
+OK: ui.rectset.blankDiameterWithCount.skipsLine
+OK: ui.rectset.blankDiameterWithCount.dimensionsRemain
+OK: ui.rectset.zeroCountBlankDiameter.skipsLine
+OK: ui.rectset.zeroCountBlankDiameter.dimensionsRemain
+OK: ui.rounded.blankCounts.noHiddenDefaults
+OK: ui.clear.results.elements
+OK: ui.clear.results.geometry
+OK: ui.clear.results.properties
+OK: ui.clear.results.annotations
+OK: ui.clear.results.materialDiagrams
+OK: ui.clear.input
+TOTAL_WORKBOOK_UI: passed=574; failed=0; elapsedSec=51.578125
+
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.RunWorkbookInterfaceTests; 2026-10-01T20:49:49
+SOURCE_UNCHANGED: True

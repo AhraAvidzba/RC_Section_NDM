@@ -113,6 +113,18 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
         ' использовал для оценки этой lambda-точки. Без этого финальный result
         ' может получить устаревшее LastSolver-состояние из предыдущей probe.
         Set solver = mCapacity.LastSolver
+        ' На осевом плато повторные силовые пробы за максимумом не дают
+        ' физической верхней точки. Уже найденная допустимая проба позволяет
+        ' проверить отдельную предельную плоскость без длительного дробления.
+        ' Успех здесь означает проверенные N/Mx/My и физический критерий,
+        ' а не признание несошедшейся пробной плоскости предельной.
+        If request.PureAxialForMethod And lambdaValue > 0# Then
+            If mCapacity.LimitSearchCapacityStateIsNumericalFailure(probeState) Then
+                mCapacity.LimitSearchAcceptPureAxialRetainedCapacity request.Section, _
+                    request.ConcreteMaterial, request.SteelMaterial, loadPath
+                If mCapacity.Converged Then ILimitSearchProblem_EvaluatePoint = False
+            End If
+        End If
     End If
 End Function
 
@@ -202,6 +214,7 @@ Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchReq
 End Sub
 
 Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
+    If mCapacity.Converged Then Exit Sub
     If Not request.ForceOnly And Not request.PureAxialForMethod Then Exit Sub
     mCapacity.LimitSearchAcceptPureAxialRetainedCapacity request.Section, _
         request.ConcreteMaterial, request.SteelMaterial, ILimitSearchProblem_BuildLoadPath(request)
@@ -367,6 +380,7 @@ Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa() As D
 End Property
 
 Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
+    If Not mCapacity Is Nothing Then ILimitSearchProblem_StoppedTerminally = mCapacity.Converged
 End Property
 
 Private Property Get ILimitSearchProblem_StopReason() As String

@@ -1760,4 +1760,39 @@ Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
 
+' ============================== ДЛЯ ТЕСТОВ ==============================
+
+' Читает ровно тот snapshot, который используется при экспорте в AutoCAD,
+' не создавая AutoCAD application и не запуская solver. Текст нужен только
+' для точного сравнения сохраненных значений после изменения Config.
+Public Function Audit02ReadExportSnapshotForTests(ByVal workbook As Object) As String
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook workbook
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+    Dim section As CSectionModel
+    Dim values As Object, physicalStates As Object
+    Dim combinationID As String, profileID As String, stateType As String, quantity As String
+    Dim precision As Long
+    Dim eps0 As Double, kx As Double, ky As Double
+    Dim referenceX As Double, referenceY As Double
+    Dim centroidX As Double, centroidY As Double, angle As Double
+    Dim extensionUsed As Boolean, warningText As String
+    ReadResultsExportState workbook, settings, units, "Concrete", section, values, physicalStates, _
+        combinationID, profileID, stateType, quantity, precision, eps0, kx, ky, _
+        referenceX, referenceY, centroidX, centroidY, angle, extensionUsed, warningText
+    Dim result As String
+    result = combinationID & "|" & profileID & "|" & stateType & "|" & quantity & "|" & _
+        CStr(extensionUsed) & "|" & warningText & "|" & CStr(eps0) & "|" & _
+        CStr(kx) & "|" & CStr(ky) & "|" & _
+        CStr(referenceX) & "|" & CStr(referenceY)
+    Dim key As Variant
+    For Each key In values.Keys
+        result = result & vbCrLf & CStr(key) & "|" & CStr(CDbl(values(key))) & "|" & CStr(physicalStates(key))
+    Next key
+    Audit02ReadExportSnapshotForTests = result
+End Function
+
 

@@ -1,0 +1,4 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm; SHA256=044C25FCEE6CB4665890F528B8E3E3F167361B50FF40068CEDCC68A5B0549DA6
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_SnapshotReopen_1f2abda9f1304ff9ad0854984f4d20f3\RC_Section_NDM.xlsm
+CHANGED: General.DiagramExtension -> No
+SCRIPT ERROR: Не все материальные настройки найдены.

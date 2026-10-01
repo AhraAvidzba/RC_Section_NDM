@@ -1,0 +1,99 @@
+SOURCE|baseline|C:\Users\avidzba\AppData\Local\Temp\RC_NDM_Audit02_Baseline_855626e6\workbook\output\RC_Section_NDM.xlsm|sha256=48D3481A52150B9315B78B3E2EA03FB1AD02B91C906BA8A46900FC8F2CFDCD88
+START|baseline|run=1|case=bending
+PERF|baseline|run=1|case=bending; passed=11; failed=0; elapsedSec=0.2734375; solves=30; probes=24; probeReuse=0; stateReuse=0
+START|baseline|run=1|case=biaxial
+PERF|baseline|run=1|case=biaxial; passed=32; failed=0; elapsedSec=0.3125; solves=48; probes=48; probeReuse=0; stateReuse=0
+START|baseline|run=1|case=asymmetric
+PERF|baseline|run=1|case=asymmetric; passed=6; failed=0; elapsedSec=2.515625; solves=20; probes=20; probeReuse=0; stateReuse=0
+START|baseline|run=1|case=axial
+PERF|baseline|run=1|case=axial; passed=12; failed=0; elapsedSec=0.1328125; solves=30; probes=32; probeReuse=0; stateReuse=0
+START|baseline|run=1|case=methods
+PERF|baseline|run=1|case=methods; passed=16; failed=0; elapsedSec=0.2109375; solves=31; probes=32; probeReuse=5; stateReuse=0
+START|baseline|run=1|case=crack_bending
+PERF|baseline|run=1|case=crack_bending; passed=39; failed=0; elapsedSec=0.5390625; solves=73; probes=0; probeReuse=0; stateReuse=0
+START|baseline|run=1|case=crack_paths
+PERF|baseline|run=1|case=crack_paths; passed=52; failed=0; elapsedSec=0.359375; solves=56; probes=0; probeReuse=0; stateReuse=0
+START|baseline|run=1|case=crack_cache
+PERF|baseline|run=1|case=crack_cache; passed=22; failed=0; elapsedSec=0.3046875; solves=50; probes=0; probeReuse=0; stateReuse=1
+START|baseline|run=2|case=bending
+PERF|baseline|run=2|case=bending; passed=11; failed=0; elapsedSec=0.2265625; solves=30; probes=24; probeReuse=0; stateReuse=0
+START|baseline|run=2|case=biaxial
+PERF|baseline|run=2|case=biaxial; passed=32; failed=0; elapsedSec=0.3359375; solves=48; probes=48; probeReuse=0; stateReuse=0
+START|baseline|run=2|case=asymmetric
+PERF|baseline|run=2|case=asymmetric; passed=6; failed=0; elapsedSec=2.75; solves=20; probes=20; probeReuse=0; stateReuse=0
+START|baseline|run=2|case=axial
+PERF|baseline|run=2|case=axial; passed=12; failed=0; elapsedSec=0.125; solves=30; probes=32; probeReuse=0; stateReuse=0
+START|baseline|run=2|case=methods
+PERF|baseline|run=2|case=methods; passed=16; failed=0; elapsedSec=0.203125; solves=31; probes=32; probeReuse=5; stateReuse=0
+START|baseline|run=2|case=crack_bending
+PERF|baseline|run=2|case=crack_bending; passed=39; failed=0; elapsedSec=0.4296875; solves=73; probes=0; probeReuse=0; stateReuse=0
+START|baseline|run=2|case=crack_paths
+PERF|baseline|run=2|case=crack_paths; passed=52; failed=0; elapsedSec=0.3359375; solves=56; probes=0; probeReuse=0; stateReuse=0
+START|baseline|run=2|case=crack_cache
+PERF|baseline|run=2|case=crack_cache; passed=22; failed=0; elapsedSec=0.2734375; solves=50; probes=0; probeReuse=0; stateReuse=1
+START|baseline|run=3|case=bending
+PERF|baseline|run=3|case=bending; passed=11; failed=0; elapsedSec=0.203125; solves=30; probes=24; probeReuse=0; stateReuse=0
+START|baseline|run=3|case=biaxial
+PERF|baseline|run=3|case=biaxial; passed=32; failed=0; elapsedSec=0.3203125; solves=48; probes=48; probeReuse=0; stateReuse=0
+START|baseline|run=3|case=asymmetric
+PERF|baseline|run=3|case=asymmetric; passed=6; failed=0; elapsedSec=2.6015625; solves=20; probes=20; probeReuse=0; stateReuse=0
+START|baseline|run=3|case=axial
+PERF|baseline|run=3|case=axial; passed=12; failed=0; elapsedSec=0.125; solves=30; probes=32; probeReuse=0; stateReuse=0
+START|baseline|run=3|case=methods
+PERF|baseline|run=3|case=methods; passed=16; failed=0; elapsedSec=0.2109375; solves=31; probes=32; probeReuse=5; stateReuse=0
+START|baseline|run=3|case=crack_bending
+PERF|baseline|run=3|case=crack_bending; passed=39; failed=0; elapsedSec=0.4375; solves=73; probes=0; probeReuse=0; stateReuse=0
+START|baseline|run=3|case=crack_paths
+PERF|baseline|run=3|case=crack_paths; passed=52; failed=0; elapsedSec=0.34375; solves=56; probes=0; probeReuse=0; stateReuse=0
+START|baseline|run=3|case=crack_cache
+PERF|baseline|run=3|case=crack_cache; passed=22; failed=0; elapsedSec=0.2734375; solves=50; probes=0; probeReuse=0; stateReuse=1
+SOURCE|current|C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm|sha256=105AB0380A79030D410112BA99C17B797D3CA94B89BA66BA6BBC4BA3BC309F05
+START|current|run=1|case=bending
+PERF|current|run=1|case=bending; passed=11; failed=0; elapsedSec=0.2109375; solves=28; probes=24; probeReuse=0; stateReuse=0
+START|current|run=1|case=biaxial
+PERF|current|run=1|case=biaxial; passed=32; failed=0; elapsedSec=0.3046875; solves=48; probes=48; probeReuse=0; stateReuse=0
+START|current|run=1|case=asymmetric
+PERF|current|run=1|case=asymmetric; passed=6; failed=0; elapsedSec=15.671875; solves=94; probes=23; probeReuse=0; stateReuse=0
+START|current|run=1|case=axial
+PERF|current|run=1|case=axial; passed=12; failed=0; elapsedSec=1.3515625; solves=501; probes=55; probeReuse=0; stateReuse=0
+START|current|run=1|case=methods
+PERF|current|run=1|case=methods; passed=16; failed=0; elapsedSec=0.15625; solves=30; probes=32; probeReuse=5; stateReuse=0
+START|current|run=1|case=crack_bending
+PERF|current|run=1|case=crack_bending; passed=39; failed=0; elapsedSec=0.46875; solves=72; probes=0; probeReuse=0; stateReuse=0
+START|current|run=1|case=crack_paths
+PERF|current|run=1|case=crack_paths; passed=52; failed=0; elapsedSec=0.3515625; solves=56; probes=0; probeReuse=0; stateReuse=0
+START|current|run=1|case=crack_cache
+PERF|current|run=1|case=crack_cache; passed=22; failed=0; elapsedSec=0.3046875; solves=50; probes=0; probeReuse=0; stateReuse=1
+START|current|run=2|case=bending
+PERF|current|run=2|case=bending; passed=11; failed=0; elapsedSec=0.1484375; solves=28; probes=24; probeReuse=0; stateReuse=0
+START|current|run=2|case=biaxial
+PERF|current|run=2|case=biaxial; passed=32; failed=0; elapsedSec=0.3203125; solves=48; probes=48; probeReuse=0; stateReuse=0
+START|current|run=2|case=asymmetric
+PERF|current|run=2|case=asymmetric; passed=6; failed=0; elapsedSec=15.0390625; solves=94; probes=23; probeReuse=0; stateReuse=0
+START|current|run=2|case=axial
+PERF|current|run=2|case=axial; passed=12; failed=0; elapsedSec=1.375; solves=501; probes=55; probeReuse=0; stateReuse=0
+START|current|run=2|case=methods
+PERF|current|run=2|case=methods; passed=16; failed=0; elapsedSec=0.1484375; solves=30; probes=32; probeReuse=5; stateReuse=0
+START|current|run=2|case=crack_bending
+PERF|current|run=2|case=crack_bending; passed=39; failed=0; elapsedSec=0.375; solves=72; probes=0; probeReuse=0; stateReuse=0
+START|current|run=2|case=crack_paths
+PERF|current|run=2|case=crack_paths; passed=52; failed=0; elapsedSec=0.34375; solves=56; probes=0; probeReuse=0; stateReuse=0
+START|current|run=2|case=crack_cache
+PERF|current|run=2|case=crack_cache; passed=22; failed=0; elapsedSec=0.296875; solves=50; probes=0; probeReuse=0; stateReuse=1
+START|current|run=3|case=bending
+PERF|current|run=3|case=bending; passed=11; failed=0; elapsedSec=0.140625; solves=28; probes=24; probeReuse=0; stateReuse=0
+START|current|run=3|case=biaxial
+PERF|current|run=3|case=biaxial; passed=32; failed=0; elapsedSec=0.3203125; solves=48; probes=48; probeReuse=0; stateReuse=0
+START|current|run=3|case=asymmetric
+PERF|current|run=3|case=asymmetric; passed=6; failed=0; elapsedSec=15.234375; solves=94; probes=23; probeReuse=0; stateReuse=0
+START|current|run=3|case=axial
+PERF|current|run=3|case=axial; passed=12; failed=0; elapsedSec=1.4765625; solves=501; probes=55; probeReuse=0; stateReuse=0
+START|current|run=3|case=methods
+PERF|current|run=3|case=methods; passed=16; failed=0; elapsedSec=0.140625; solves=30; probes=32; probeReuse=5; stateReuse=0
+START|current|run=3|case=crack_bending
+PERF|current|run=3|case=crack_bending; passed=39; failed=0; elapsedSec=0.3671875; solves=72; probes=0; probeReuse=0; stateReuse=0
+START|current|run=3|case=crack_paths
+PERF|current|run=3|case=crack_paths; passed=52; failed=0; elapsedSec=0.3359375; solves=56; probes=0; probeReuse=0; stateReuse=0
+START|current|run=3|case=crack_cache
+PERF|current|run=3|case=crack_cache; passed=22; failed=0; elapsedSec=0.2890625; solves=50; probes=0; probeReuse=0; stateReuse=1
+SOURCES_UNCHANGED: True

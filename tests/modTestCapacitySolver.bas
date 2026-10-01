@@ -90,6 +90,8 @@ Public Function RunCapacitySolverTests() As String
     TestAudit02AsymmetricSteelLimits stats
     AppendLine stats, "RUN: TestAudit02UnconvergedProbeIsNumerical"
     TestAudit02UnconvergedProbeIsNumerical stats
+    TestAudit02PositiveUnconvergedProbe stats
+    TestAudit02InitialOffsetBoundary stats
 
     AppendLine stats, "TOTAL_CAPACITY: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -1700,6 +1702,89 @@ Private Sub TestAudit02UnconvergedProbeIsNumerical(ByRef stats As TCapacityTestS
     Dim result As CLimitSearchResult
     Set result = Audit02CapacitySnapshot(cap, "LoadMultiplier")
     AssertTrue stats, "audit02.failedProbe.noBaseFail", result.Meta.InternalStatus = rsNumericalFailure
+End Sub
+
+' ДЛЯ ТЕСТОВ
+' Несошедшаяся положительная lambda не подтверждает физическую верхнюю
+' границу, даже когда последняя итерационная плоскость превысила предел.
+Private Sub TestAudit02PositiveUnconvergedProbe(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, rebars)
+    Dim cap As CCapacitySolver
+    Set cap = New CCapacitySolver
+    ConfigureCapacity cap
+    cap.MaxRetries = 0
+    cap.SolverBaseLoadSteps = 1
+    cap.SolverMaxIterations = 3
+    cap.ConcreteCompressionLimit = -0.000000001
+    Dim path As CLoadPathVector
+    Set path = New CLoadPathVector
+    path.Initialize 0#, -1000000000#, 0#, 1000000#, 0#, 0#
+    Dim residual As Double
+    Dim state As String
+    cap.LimitSearchEvaluateCapacityLoadMultiplier section, ProvisionalConcrete(), _
+        ProvisionalSteel(), path, 1#, residual, state
+    AssertTrue stats, "audit02.failedPositive.noEquilibrium", Not cap.LastSolver.Converged
+    AssertTrue stats, "audit02.failedPositive.multiple", cap.LastSolver.Iterations > 1
+    AssertTrue stats, "audit02.failedPositive.exceeded", cap.LastSolver.MinConcreteStrain < -0.000000001
+    AssertTrue stats, "audit02.failedPositive.numerical", cap.LimitSearchCapacityStateIsNumericalFailure(state)
+    AssertTrue stats, "audit02.failedPositive.notLimit", Not cap.LimitSearchCapacityStateIsPhysicalLimit(state)
+End Sub
+
+' ДЛЯ ТЕСТОВ
+' Проверяет Offset ниже, точно на и выше физического критерия на линейном
+' материале. Точная начальная предельная точка уже исчерпала Capacity-путь,
+' но сама оценка плоскости остается физической, без технического продолжения.
+Private Sub TestAudit02InitialOffsetBoundary(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, rebars)
+    Dim ratio As Variant
+    For Each ratio In Array(0.5, 1#, 1.1)
+        Dim cap As CCapacitySolver
+        Set cap = New CCapacitySolver
+        ConfigureCapacity cap
+        cap.ConcreteCompressionLimit = -1#
+        cap.SteelStrainLimit = 0.001
+        cap.SolverToleranceN = 0.01
+        Dim path As CLoadPathVector
+        Set path = New CLoadPathVector
+        path.Initialize CDbl(ratio) * Audit02AxialStiffness(section) * 0.001, _
+            Audit02AxialStiffness(section) * 0.0001, 0#, 0#, 0#, 0#
+        Dim residual As Double
+        Dim state As String
+        cap.LimitSearchEvaluateCapacityLoadMultiplier section, LinearConcrete(), LinearSteel(), _
+            path, 0#, residual, state
+        Dim prefix As String
+        prefix = "audit02.offset." & CStr(ratio)
+        AssertTrue stats, prefix & ".equilibrium", cap.LastSolver.Converged
+        If CDbl(ratio) < 1# Then
+            AssertTrue stats, prefix & ".acceptable", cap.LimitSearchCapacityStateIsAcceptable(state)
+        ElseIf CDbl(ratio) = 1# Then
+            ' Равновесие решается с прежним абсолютным допуском усилий.
+            ' Уточненная плоскость может оказаться по любую сторону точной
+            ' аналитической границы; классификация должна отражать именно ее,
+            ' а не объявлять превышение по одному значению входной нагрузки.
+            AssertClose stats, prefix & ".exactUtilization", cap.CriticalStrainUtilization, 1#, 0.000000000001
+            AssertTrue stats, prefix & ".classification", _
+                cap.LimitSearchCapacityStateIsPhysicalLimit(state) = (cap.CriticalStrainUtilization >= 1#)
+            AssertTrue stats, prefix & ".notNumerical", Not cap.LimitSearchCapacityStateIsNumericalFailure(state)
+        Else
+            AssertTrue stats, prefix & ".limit", cap.LimitSearchCapacityStateIsPhysicalLimit(state)
+            cap.LimitSearchHandleCapacityInitialFailure state
+            Dim result As CLimitSearchResult
+            Set result = Audit02CapacitySnapshot(cap, "LoadMultiplier")
+            AssertTrue stats, prefix & ".code", result.Meta.ResultCode = rcInitialStateBeyondLimit
+            Dim policy As CResultStatusPolicy
+            Set policy = New CResultStatusPolicy
+            AssertEquals stats, prefix & ".display", policy.ExternalStatus(result.Meta), "BaseFail"
+        End If
+    Next ratio
 End Sub
 
 ' ДЛЯ ТЕСТОВ: общий Newton принимает только ILimitSearchProblem и не требует

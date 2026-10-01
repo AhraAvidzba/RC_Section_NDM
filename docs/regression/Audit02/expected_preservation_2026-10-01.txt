@@ -1,0 +1,25 @@
+﻿CHANGED|modTestBatchCalculation.bas|TestLongitudinalCrackCheckUsesDirectStateStress|"batch.longCrack.util"|1|oldExpected=batch.MaxConcreteCompressionStress(1) / batch.LongitudinalCrackRbMc2(1)|newExpected=batch.ResultAt(1).CrackResult.Longitudinal.MaxCompressionStress / batch.ResultAt(1).CrackResult.Longitudinal.RbMc2|oldTolerance=0.000000001|newTolerance=0.000000001
+CHANGED|modTestBatchCalculation.bas|TestSectionStateResultStoresEquilibriumData|"stateMeta.epsilon0"|1|oldExpected=batch.Epsilon0(1)|newExpected=batch.ResultAt(1).StrengthResult.DirectState.StateResult.Epsilon0|oldTolerance=0.000000000001|newTolerance=0.000000000001
+CHANGED|modTestBatchCalculation.bas|TestSectionStateResultStoresEquilibriumData|"stateMeta.kappaX"|1|oldExpected=batch.KappaX(1)|newExpected=batch.ResultAt(1).StrengthResult.DirectState.StateResult.KappaX|oldTolerance=0.000000000001|newTolerance=0.000000000001
+CHANGED|modTestBatchCalculation.bas|TestSectionStateResultStoresEquilibriumData|"stateMeta.kappaY"|1|oldExpected=batch.KappaY(1)|newExpected=batch.ResultAt(1).StrengthResult.DirectState.StateResult.KappaY|oldTolerance=0.000000000001|newTolerance=0.000000000001
+CHANGED|modTestBatchCalculation.bas|TestSectionStateResultStoresEquilibriumData|"stateMeta.mxint"|1|oldExpected=batch.Mxint(1)|newExpected=batch.ResultAt(1).StrengthResult.DirectState.StateResult.Mxint|oldTolerance=0.001|newTolerance=0.001
+CHANGED|modTestBatchCalculation.bas|TestSectionStateResultStoresEquilibriumData|"stateMeta.myint"|1|oldExpected=batch.Myint(1)|newExpected=batch.ResultAt(1).StrengthResult.DirectState.StateResult.Myint|oldTolerance=0.001|newTolerance=0.001
+CHANGED|modTestBatchCalculation.bas|TestSectionStateResultStoresEquilibriumData|"stateMeta.nint"|1|oldExpected=batch.Nint(1)|newExpected=batch.ResultAt(1).StrengthResult.DirectState.StateResult.Nint|oldTolerance=0.001|newTolerance=0.001
+CHANGED|modTestBatchCalculation.bas|TestStabilitySP35TableIgnoresPhiL2|"batch.stability.sp35.tablePhi.phiL1"|1|oldExpected=batch.StabilityPhiLTable1(1)|newExpected=batch.ResultAt(1).StabilityResult.PhiLTable1|oldTolerance=0.000000001|newTolerance=0.000000001
+FILE|modTestBatchCalculation.bas|baseline=79|current=102
+FILE|modTestCapacitySolver.bas|baseline=17|current=31
+CHANGED|modTestCrackWidth.bas|TestAutoMcrcFixedNIndependentOfMomentMagnitude|"crack.auto.mcrcFixedN.lambdaHighMoment"|1|oldExpected=Abs(crackHigh.Mcrc)|newExpected=Abs(crackHigh.FormationResult.Mcrc)|oldTolerance=25000#|newTolerance=25000#
+CHANGED|modTestCrackWidth.bas|TestAutoMcrcFixedNIndependentOfMomentMagnitude|"crack.auto.mcrcFixedN.lambdaLowMoment"|1|oldExpected=Abs(crackLow.Mcrc)|newExpected=Abs(crackLow.FormationResult.Mcrc)|oldTolerance=25000#|newTolerance=25000#
+CHANGED|modTestCrackWidth.bas|TestAutoMcrcFixedNIndependentOfMomentMagnitude|"crack.auto.mcrcFixedN.mcrcInvariant"|1|oldExpected=Abs(crackHigh.Mcrc)|newExpected=Abs(crackHigh.FormationResult.Mcrc)|oldTolerance=25000#|newTolerance=25000#
+CHANGED|modTestCrackWidth.bas|TestCentralTensionBranch|"crack.central.lambdaFromNcrc"|1|oldExpected=crack.Ncrc|newExpected=crack.FormationResult.Ncrc|oldTolerance=0.001|newTolerance=0.001
+CHANGED|modTestCrackWidth.bas|TestCrackInitiationLoadPaths|"crack.path.autoN.formationN"|1|oldExpected=crackAutoN.Ncrc|newExpected=crackAutoN.FormationResult.Ncrc|oldTolerance=0.001|newTolerance=0.001
+CHANGED|modTestCrackWidth.bas|TestCrackInitiationLoadPaths|"crack.path.n.formationN"|1|oldExpected=crackN.Ncrc|newExpected=crackN.FormationResult.Ncrc|oldTolerance=0.001|newTolerance=0.001
+CHANGED|modTestCrackWidth.bas|TestCrackInitiationLoadPaths|"crack.path.nmxy.mScaled"|1|oldExpected=Abs(crackNMxy.LambdaCrc * -15000000#)|newExpected=Abs(crackNMxy.FormationResult.LambdaCrc * -15000000#)|oldTolerance=50000#|newTolerance=50000#
+CHANGED|modTestCrackWidth.bas|TestCrackInitiationLoadPaths|"crack.path.nmxy.nScaled"|1|oldExpected=crackNMxy.LambdaCrc * -20000#|newExpected=crackNMxy.FormationResult.LambdaCrc * -20000#|oldTolerance=0.001|newTolerance=0.001
+FILE|modTestCrackWidth.bas|baseline=39|current=51
+FILE|modTestGeometry.bas|baseline=212|current=212
+FILE|modTestMaterialDiagrams.bas|baseline=44|current=64
+FILE|modTestRegressionBaseline.bas|baseline=10|current=10
+FILE|modTestSectionSolver.bas|baseline=17|current=32
+FILE|modTestWorkbookInterface.bas|baseline=34|current=38
+TOTAL_EXPECTED_PRESERVATION: unchanged=436; changedOrMissing=16

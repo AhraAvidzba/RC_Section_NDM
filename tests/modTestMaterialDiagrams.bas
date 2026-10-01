@@ -391,6 +391,32 @@ Private Sub AssertPhysicalDiagramPair(ByRef stats As TMaterialTestStats, ByVal t
         AssertTrue stats, testKey & ".physical." & CStr(i), extended.IsInPhysicalRange(strain)
         AssertTrue stats, testKey & ".notUsed." & CStr(i), Not extended.IsInExtensionRange(strain)
     Next i
+
+    ' Внутренняя окрестность предела остается физической; малое округление
+    ' за границей учитывается тем же допуском, а не включает extension-флаг.
+    Dim boundary As Double, sign As Double
+    Dim side As Variant
+    For Each side In Array("compression", "tension")
+        If CStr(side) = "compression" Then
+            boundary = physical.PhysicalCompressionStrain
+            sign = -1#
+        Else
+            If Not physical.HasPhysicalTensionLimit Then Exit For
+            boundary = physical.PhysicalTensionStrain
+            sign = 1#
+        End If
+        strain = boundary - sign * 0.000000001
+        AssertClose stats, testKey & ".near." & CStr(side) & ".stress", _
+            extended.GetStress(strain), physical.GetStress(strain), 0.000000000001
+        AssertClose stats, testKey & ".near." & CStr(side) & ".tangent", _
+            extended.GetTangentModulus(strain), physical.GetTangentModulus(strain), 0.000000000001
+        strain = boundary + sign * 0.0000000000005
+        AssertTrue stats, testKey & ".near." & CStr(side) & ".roundingPhysical", extended.IsInPhysicalRange(strain)
+        AssertTrue stats, testKey & ".near." & CStr(side) & ".roundingNotUsed", Not extended.IsInExtensionRange(strain)
+        strain = boundary + sign * 0.000000000002
+        AssertTrue stats, testKey & ".near." & CStr(side) & ".outside", Not extended.IsInPhysicalRange(strain)
+        AssertTrue stats, testKey & ".near." & CStr(side) & ".extensionUsed", extended.IsInExtensionRange(strain)
+    Next side
 End Sub
 
 ' Пользовательский физический предел за +/-10 не обрезается: технические

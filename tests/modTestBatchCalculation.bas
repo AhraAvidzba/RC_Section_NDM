@@ -210,6 +210,7 @@ Public Function RunBatchCalculationTests() As String
     TestAudit02RepositoryContextAndRetry stats
     AppendLine stats, "RUN: TestAudit02OnOffPhysicalResults"
     TestAudit02OnOffPhysicalResults stats
+    TestAudit02InitialOffsetOnOffStatuses stats
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -5376,6 +5377,20 @@ Private Sub TestAudit02RepositoryContextAndRetry(ByRef stats As TBatchTestStats)
     AssertTrue stats, "audit02.cache.pre.noRunner", provider.LastRunner Is Nothing
     AssertTrue stats, "audit02.cache.pre.restored", Not provider.SolverSnapshot(state) Is Nothing
 
+    Dim postSpec As CMaterialModelSpec
+    Set postSpec = New CMaterialModelSpec
+    postSpec.Initialize "SLS(II)", "TwoLine", "Ignore", "TwoLine"
+    otherRequest.Initialize sstPostCrackState, cpCrackedNDS, postSpec, -100000#, 4000000#, 3000000#, True, True
+    Set state = provider.GetOrSolve(otherRequest)
+    AssertTrue stats, "audit02.cache.post.physical", state.Converged And state.WithinPhysicalRange
+    Dim solvesBeforePostReuse As Long
+    solvesBeforePostReuse = SectionEquilibriumSolveCount()
+    Set state = provider.GetOrSolve(otherRequest)
+    AssertTrue stats, "audit02.cache.post.reused", provider.LastStateWasReused
+    AssertTrue stats, "audit02.cache.post.noRunner", provider.LastRunner Is Nothing
+    AssertTrue stats, "audit02.cache.post.restored", Not provider.SolverSnapshot(state) Is Nothing
+    AssertTrue stats, "audit02.cache.post.noSolve", SectionEquilibriumSolveCount() = solvesBeforePostReuse
+
     repository.Clear
     provider.LoadSteps = 1
     provider.MaxIterations = 1
@@ -5411,6 +5426,7 @@ Public Function RunAudit02OnOffComparisonTests() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats
     TestAudit02OnOffPhysicalResults stats
+    TestAudit02InitialOffsetOnOffStatuses stats
     AppendLine stats, "TOTAL_AUDIT02_PAIR: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit02OnOffComparisonTests = stats.Report
     Exit Function
@@ -5549,6 +5565,81 @@ Private Function BuildAudit02PairBatch(ByVal extensionEnabled As Boolean) As CBa
     batch.ApplyLoadReference 0#, 0#
     Set BuildAudit02PairBatch = batch
 End Function
+
+' ДЛЯ ТЕСТОВ
+' При постоянной сжимающей N за физической несущей обычные диаграммы не
+' дают равновесия, а продолжение позволяет подтвердить недопустимый старт.
+' Проверяем разницу NumFail/BaseFail по машинным кодам, не по тексту причины,
+' и согласованность capacity-статуса в typed result, detailed и batch summary.
+Private Sub TestAudit02InitialOffsetOnOffStatuses(ByRef stats As TBatchTestStats)
+    On Error GoTo Failed
+    Dim oldStability As String
+    oldStability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    Dim offBatch As CBatchSectionCalculator
+    Dim onBatch As CBatchSectionCalculator
+    Set offBatch = BuildAudit02PairBatch(False)
+    Set onBatch = BuildAudit02PairBatch(True)
+    offBatch.AddCombination "OFFSET_2MN", -2000000#, 8000000#, 0#, "PR1", "Постоянная N выше физического предела", "lambda*Mxy"
+    offBatch.AddCombination "OFFSET_3MN", -3000000#, 8000000#, 0#, "PR1", "Постоянная N выше физического предела", "lambda*Mxy"
+    onBatch.AddCombination "OFFSET_2MN", -2000000#, 8000000#, 0#, "PR1", "Постоянная N выше физического предела", "lambda*Mxy"
+    onBatch.AddCombination "OFFSET_3MN", -3000000#, 8000000#, 0#, "PR1", "Постоянная N выше физического предела", "lambda*Mxy"
+    offBatch.Execute
+    onBatch.Execute
+    Dim i As Long
+    For i = 1 To 2
+        Dim offResult As CCapacityResult
+        Dim onResult As CCapacityResult
+        Set offResult = offBatch.ResultAt(i).StrengthResult.Capacity
+        Set onResult = onBatch.ResultAt(i).StrengthResult.Capacity
+        Dim prefix As String
+        prefix = "audit02.offsetPair." & offBatch.CombinationID(i)
+        AppendLine stats, "OFFSET_PAIR|" & offBatch.CombinationID(i) & "|Off=" & offResult.Status & _
+            "|OffCode=" & CStr(offResult.ResultMeta.ResultCode) & "|On=" & onResult.Status & _
+            "|OnCode=" & CStr(onResult.ResultMeta.ResultCode) & "|OffComment=" & offResult.ResultMeta.ResultComment & _
+            "|OnComment=" & onResult.ResultMeta.ResultComment
+        AssertEquals stats, prefix & ".offStatus", offResult.Status, "NumFail"
+        AssertEquals stats, prefix & ".onStatus", onResult.Status, "BaseFail"
+        AssertTrue stats, prefix & ".offCode", offResult.ResultMeta.ResultCode = rcNumericalFailure
+        AssertTrue stats, prefix & ".onCode", onResult.ResultMeta.ResultCode = rcInitialStateBeyondLimit
+        AssertTrue stats, prefix & ".offNoPoint", Not offResult.SearchResult.HasLimitPoint
+        AssertTrue stats, prefix & ".onNoPoint", Not onResult.SearchResult.HasLimitPoint
+        AssertTrue stats, prefix & ".onAuxiliary", onBatch.ResultAt(i).StrengthResult.DirectState.StateResult.Converged
+        AssertTrue stats, prefix & ".onExtended", onBatch.ResultAt(i).StrengthResult.DirectState.StateResult.ExtensionUsed
+        AssertTrue stats, prefix & ".onNotPhysical", Not onBatch.ResultAt(i).StrengthResult.DirectState.StateResult.WithinPhysicalRange
+        AssertTrue stats, prefix & ".comments", Len(offResult.ResultMeta.ResultComment) > 0 And Len(onResult.ResultMeta.ResultComment) > 0
+    Next i
+    Dim mode As Long
+    For mode = 0 To 1
+        Dim batch As CBatchSectionCalculator
+        If mode = 0 Then Set batch = offBatch Else Set batch = onBatch
+        Dim writer As CBatchResultWriter
+        Set writer = New CBatchResultWriter
+        writer.WriteSummary ThisWorkbook, batch
+        Dim sheet As Object
+        Set sheet = ThisWorkbook.Worksheets.Item("Results")
+        For i = 1 To 2
+            Dim summaryRow As Long, detailedRow As Long
+            summaryRow = SummaryRowByCombination(sheet, batch.CombinationID(i))
+            detailedRow = DetailedRowByCombination(sheet, "rngStrengthSummaryAnchor", batch.CombinationID(i))
+            prefix = "audit02.offsetPair.sheet." & CStr(mode) & "." & CStr(i)
+            AssertEquals stats, prefix & ".summary", CStr(sheet.Cells.Item(summaryRow, 7).Value2), _
+                batch.ResultAt(i).StrengthResult.Capacity.Status
+            AssertEquals stats, prefix & ".detailed", CStr(sheet.Cells.Item(detailedRow, 49).Value2), _
+                batch.ResultAt(i).StrengthResult.Capacity.Status
+            AssertEquals stats, prefix & ".overall", CStr(sheet.Cells.Item(summaryRow, 4).Value2), batch.ResultAt(i).Status
+            AssertTrue stats, prefix & ".colorSummary", StatusCellHasExpectedFill(sheet, summaryRow, 7)
+            AssertTrue stats, prefix & ".colorDetailed", StatusCellHasExpectedFill(sheet, detailedRow, 49)
+        Next i
+    Next mode
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
+    Exit Sub
+Failed:
+    Dim reason As String
+    reason = CStr(Err.Number) & "; " & Err.Description
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
+    AssertTrue stats, "audit02.offsetPair.runtime." & reason, False
+End Sub
 
 ' Сравнивает доступность и весь численный снимок named-state, исключая
 ' итерации/время/журнал: эти показатели не являются условием одинаковой физики.

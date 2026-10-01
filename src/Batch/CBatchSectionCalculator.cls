@@ -776,7 +776,7 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
         "N=" & mReport.FormatForce(mInputs(index).N) & "; " & _
         "Mx=" & mReport.FormatMx(mInputs(index).Mx) & "; " & _
         "My=" & mReport.FormatMy(mInputs(index).My)
-    ReportStabilityDetails stability
+    If Not mReport Is Nothing Then mReport.ReportStabilityDetails mResults(index).StabilityResult
     Exit Sub
 
 Failed:
@@ -784,57 +784,6 @@ Failed:
     ReportStep "Устойчивость не рассчитана: " & Err.Description
 End Sub
 
-' Пишет в txt-отчет подробные данные фильтра устойчивости по двум главным
-' плоскостям. Таблица Results остается основным машинным выводом, а этот блок
-' нужен для быстрой трассировки того, какая ветвь СП сработала в сценарии LC.
-Private Sub ReportStabilityDetails(ByVal stability As CStabilityCalculator)
-    If stability Is Nothing Then Exit Sub
-
-    If Len(stability.StopReason) > 0 Then _
-        ReportValue "Причина остановки устойчивости", stability.StopReason
-    ReportValue "Продольная сила для проверки", mReport.FormatForce(stability.DesignN)
-    ReportValue "Моменты после учета eta по главным плоскостям 1/2", _
-        "M1=" & mReport.FormatMomentMagnitude(stability.DesignMoment1) & "; " & _
-        "M2=" & mReport.FormatMomentMagnitude(stability.DesignMoment2)
-    ReportValue "Длительная часть продольной силы", mReport.FormatSignedCompressionForce(stability.SustainedN)
-    ReportValue "Длительные моменты по главным плоскостям 1/2", _
-        "M1l=" & mReport.FormatMomentMagnitude(stability.SustainedMoment1) & "; " & _
-        "M2l=" & mReport.FormatMomentMagnitude(stability.SustainedMoment2)
-
-    ReportValue "Плоскость 1: ветвь и итог", _
-        mReport.StabilityBranchDisplayName(stability.PlaneBranch1) & "; " & mReport.StabilityPassDisplayName(stability.PlanePassed1)
-    ReportValue "Плоскость 1: eta и запас", _
-        FormatNumberInvariant(stability.Eta1) & "; " & FormatNumberInvariant(stability.Reserve1)
-    ReportValue "Плоскость 1: Ncr/Nult", _
-        "Ncr=" & mReport.FormatCompressionForce(stability.Ncr1) & "; Nult=" & mReport.FormatCompressionForce(stability.Nultimate1)
-    ReportValue "Плоскость 1: h, i, r и гибкость l0/i", _
-        "h=" & mReport.FormatLength(stability.Depth1) & "; " & _
-        "i=" & mReport.FormatLength(stability.Radius1) & "; " & _
-        "r=" & mReport.FormatLength(stability.CoreDistance1) & "; " & _
-        "l0/i=" & FormatNumberInvariant(stability.Slenderness1)
-    ReportValue "Плоскость 1: e, ea, phi_l и D", _
-        "e=" & mReport.FormatLength(stability.Eccentricity1) & "; " & _
-        "ea=" & mReport.FormatLength(stability.AccidentalEccentricity1) & "; " & _
-        "phi_l=" & FormatNumberInvariant(stability.PhiL1) & "; " & _
-        "D=" & mReport.FormatStiffness(stability.StiffnessD1)
-
-    ReportValue "Плоскость 2: ветвь и итог", _
-        mReport.StabilityBranchDisplayName(stability.PlaneBranch2) & "; " & mReport.StabilityPassDisplayName(stability.PlanePassed2)
-    ReportValue "Плоскость 2: eta и запас", _
-        FormatNumberInvariant(stability.Eta2) & "; " & FormatNumberInvariant(stability.Reserve2)
-    ReportValue "Плоскость 2: Ncr/Nult", _
-        "Ncr=" & mReport.FormatCompressionForce(stability.Ncr2) & "; Nult=" & mReport.FormatCompressionForce(stability.Nultimate2)
-    ReportValue "Плоскость 2: h, i, r и гибкость l0/i", _
-        "h=" & mReport.FormatLength(stability.Depth2) & "; " & _
-        "i=" & mReport.FormatLength(stability.Radius2) & "; " & _
-        "r=" & mReport.FormatLength(stability.CoreDistance2) & "; " & _
-        "l0/i=" & FormatNumberInvariant(stability.Slenderness2)
-    ReportValue "Плоскость 2: e, ea, phi_l и D", _
-        "e=" & mReport.FormatLength(stability.Eccentricity2) & "; " & _
-        "ea=" & mReport.FormatLength(stability.AccidentalEccentricity2) & "; " & _
-        "phi_l=" & FormatNumberInvariant(stability.PhiL2) & "; " & _
-        "D=" & mReport.FormatStiffness(stability.StiffnessD2)
-End Sub
 
 ' Берет длительную часть нагрузки для LC. Если пользователь не заполнил строку,
 ' принимаются нули: это допустимый ввод и не блокирует основной расчет.
@@ -1110,7 +1059,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     ReportStep "Запускается проверка образования нормальной трещины."
     ReportValue "Путь образования трещины", mCrackFormationPath
     ReportValue "Стратегия поиска образования трещины", mCrackFormationSolutionStrategy
-    ReportCrackFormationSearchStart
+    If Not mReport Is Nothing Then mReport.ReportCrackFormationSearchStart mCrackFormationPath
 
     Dim crackReferenceX As Double
     Dim crackReferenceY As Double
@@ -1142,7 +1091,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     ReportValue "Ncrc", mReport.FormatForce(mResults(index).CrackResult.Formation.FormationNcrc)
     ReportValue "Mxy,crc", mReport.FormatMomentMagnitude(mResults(index).CrackResult.Formation.Mcrc)
     ReportValue "Причина остановки поиска трещины", crack.StopReason
-    ReportCrackFormationChoice formationResult
+    If Not mReport Is Nothing Then mReport.ReportCrackFormationChoice formationResult
     ReportBlock "Диагностика образования трещины", formationResult.DiagnosticLog
 
     ReportStep "Запускается текущее CrackedState полного сочетания по профилю трещин."
@@ -1173,7 +1122,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
         mMaterialProvider.ConcreteParameters.RbMc2, mStatusPolicy)
     StoreCrackAggregateSnapshot index, crack, formationResult, currentStateMeta, _
         longitudinalResult:=longitudinalResult
-    ReportLongitudinalCrackResult longitudinalResult
+    If Not mReport Is Nothing Then mReport.ReportLongitudinalCrackResult longitudinalResult
 
     If Not crack.Converged Then
         ReportStep "Проверка образования трещины не завершилась корректно: " & crack.StopReason
@@ -1313,39 +1262,7 @@ Private Function MissingCurrentCrackedStateMeta(ByVal runner As CStateSolutionRu
     Set MissingCurrentCrackedStateMeta = meta
 End Function
 
-' Поясняет в txt-отчете стартовую логику поиска образования нормальной трещины.
-' Низкоуровневый DiagnosticLog ниже сохраняет точные попытки, а эта строка
-' нужна пользователю как быстрый ответ, что именно программа собирается делать.
-Private Sub ReportCrackFormationSearchStart()
-    If StrComp(mCrackFormationPath, "Auto", vbTextCompare) = 0 Then
-        ReportStep "Трещинообразование: режим Auto. Программа пробует пути по порядку: " & _
-            ChrW$(&H3BB) & "*Mxy, затем " & ChrW$(&H3BB) & "*N, затем " & _
-            ChrW$(&H3BB) & "*NMxy. Если путь дает только резервный результат с " & _
-            ChrW$(&H3C8) & "s = 1 без найденной точки образования трещины, программа переходит к следующему пути."
-    Else
-        ReportStep "Трещинообразование: используется фиксированный путь " & mCrackFormationPath & _
-            "; Auto-перебор других путей не выполняется."
-    End If
-End Sub
 
-' Поясняет итог выбора пути образования трещины для текущего LC. Это не заменяет
-' DiagnosticLog solver-а, а переводит ключевой результат Auto/резервного
-' нормальный инженерный язык прямо в отчете.
-Private Sub ReportCrackFormationChoice(ByVal crack As CCrackFormationResult)
-    If crack Is Nothing Then Exit Sub
-
-    If Len(crack.FormationMethod) > 0 Then
-        ReportStep "Трещинообразование: принята точка по пути " & _
-            crack.FormationMethod & ". По этой точке записаны Ncrc/Mxy,crc и состояния PreCrackState/PostCrackState, если они применимы."
-    ElseIf crack.CrackFormed And crack.Converged Then
-        ReportStep "Трещинообразование: нормальная трещина считается образованной, но выбранный путь не дал отдельную расчетную точку образования трещины. Для этой проверки принят резервный вариант " & _
-            ChrW$(&H3C8) & "s = 1; причина указана в CrackFormationStopReason и диагностике ниже."
-    ElseIf crack.Converged Then
-        ReportStep "Трещинообразование: проверка завершена, нормальная трещина при текущем сочетании не образуется."
-    Else
-        ReportStep "Трещинообразование: точку образования трещины найти не удалось; дальнейшая причина приведена в диагностике ниже."
-    End If
-End Sub
 
 ' Добавляет в компактный batch-журнал причину несходимости трещин.
 ' Подробный txt-отчет пишет тот же DiagnosticLog отдельно, а здесь строка
@@ -1427,32 +1344,6 @@ Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     AppendDiagnostic index
 End Sub
 
-' Записывает в txt-отчет результат проверки продольных трещин, уже полученный
-' отдельным CLongitudinalCrackCalculator. Здесь не запускается solver и не
-' пересчитываются напряжения: отчет только поясняет готовый result-объект.
-Private Sub ReportLongitudinalCrackResult(ByVal longitudinalResult As CLongitudinalCrackResult)
-    If longitudinalResult Is Nothing Then
-        ReportStep "Проверка продольных трещин не сформировала результат."
-        Exit Sub
-    End If
-
-    Dim meta As CResultMeta
-    Set meta = longitudinalResult.ResultMeta
-    Dim statusText As String
-    statusText = mStatusPolicy.StatusFromMeta(meta)
-
-    ReportValue "Статус продольных трещин", statusText
-    If statusText <> mStatusPolicy.NotApplicable Then
-        ReportValue "sigma_c,max", mReport.FormatStress(longitudinalResult.MaxCompressionStress)
-        ReportValue "Rb,mc2", mReport.FormatStress(longitudinalResult.RbMc2)
-        ReportValue "Использование по продольным трещинам", _
-            FormatNumberInvariant(longitudinalResult.Utilization)
-    ElseIf Len(Trim$(meta.ResultComment)) > 0 Then
-        ReportStep meta.ResultComment
-    Else
-        ReportStep "Проверка продольных трещин неприменима: в прямом НДС нет сжатого бетона."
-    End If
-End Sub
 
 ' Передает в CCapacityCalculator настройки поиска несущей и внутреннего
 ' равновесия. Материальные пределы calculator берет из построенных диаграмм
@@ -1918,51 +1809,11 @@ Public Property Get CrackSteelElasticModulus() As Double
     CrackSteelElasticModulus = mMaterialProvider.SteelElasticModulus(cpCrackedNDS)
 End Property
 
-' Предельная сжатая деформация бетона для фактического НДС выбранного LC.
-Public Function ConcreteCompressionLimitForCombination(ByVal index As Long) As Double
-    Dim spec As CMaterialModelSpec
-    Set spec = SummaryMaterialSpecForCombination(index)
-    If Not spec Is Nothing Then ConcreteCompressionLimitForCombination = mMaterialProvider.ConcreteCompressionLimitFromSpec(spec)
-End Function
 
-' Предельная растянутая деформация бетона для фактического НДС выбранного LC.
-Public Function ConcreteTensionLimitForCombination(ByVal index As Long) As Double
-    Dim spec As CMaterialModelSpec
-    Set spec = SummaryMaterialSpecForCombination(index)
-    If Not spec Is Nothing Then ConcreteTensionLimitForCombination = mMaterialProvider.ConcreteTensionLimitFromSpec(spec)
-End Function
 
-' True, если текущая диаграмма LC учитывает растянутый бетон и его предел нужно выводить.
-Public Function ConcreteTensionLimitEnabledForCombination(ByVal index As Long) As Boolean
-    Dim spec As CMaterialModelSpec
-    Set spec = SummaryMaterialSpecForCombination(index)
-    If Not spec Is Nothing Then ConcreteTensionLimitEnabledForCombination = mMaterialProvider.ConcreteTensionLimitEnabledFromSpec(spec)
-End Function
 
-' Предельная сжатая деформация арматуры для фактического НДС выбранного LC.
-Public Function SteelCompressionLimitForCombination(ByVal index As Long) As Double
-    Dim spec As CMaterialModelSpec
-    Set spec = SummaryMaterialSpecForCombination(index)
-    If Not spec Is Nothing Then SteelCompressionLimitForCombination = mMaterialProvider.SteelCompressionLimitFromSpec(spec)
-End Function
 
-' Предельная растянутая деформация арматуры для фактического НДС выбранного LC.
-Public Function SteelTensionLimitForCombination(ByVal index As Long) As Double
-    Dim spec As CMaterialModelSpec
-    Set spec = SummaryMaterialSpecForCombination(index)
-    If Not spec Is Nothing Then SteelTensionLimitForCombination = mMaterialProvider.SteelTensionLimitFromSpec(spec)
-End Function
 
-' Выбирает спецификацию того StateSolution, который представлен в старых
-' summary-полях деформаций. Предпочтение отдано прямому StrengthState, затем
-' CrackedState; CapacityState используется только если других states нет.
-Private Function SummaryMaterialSpecForCombination(ByVal index As Long) As CMaterialModelSpec
-    Dim stateResult As CSectionStateResult
-    Set stateResult = mResults(index).StateRepository.FindState(sstStrengthState)
-    If stateResult Is Nothing Then Set stateResult = mResults(index).StateRepository.FindState(sstCrackedState)
-    If stateResult Is Nothing Then Set stateResult = mResults(index).StateRepository.FindState(sstCapacityState)
-    If Not stateResult Is Nothing Then Set SummaryMaterialSpecForCombination = stateResult.MaterialSpec
-End Function
 
 ' Предельная сжатая деформация бетона именно для модели прочности.
 Public Function StrengthConcreteCompressionLimitForCombination(ByVal index As Long) As Double

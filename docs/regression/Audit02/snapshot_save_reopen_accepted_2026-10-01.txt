@@ -1,0 +1,13 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm; SHA256=56D9719B4EFBC00FFB47B176FFBCED7525E0485AE74D7CE4AEE0D1E30673021E
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_SnapshotReopen_e889b3a2314a4e04b8cea497fe98b7b7\RC_Section_NDM.xlsm
+CHANGED: General.DiagramExtension=No
+Concrete.E=16250
+Concrete.R.ULS(I)=7.75
+Concrete.R.SLS(II)=11
+Steel.E=100000
+Steel.R.ULS(I)=175
+Steel.R.SLS(II)=195
+
+SNAPSHOT_EXACT_MATCH: True; characters=38950
+REOPEN_READ_EXPORT_PLOT_SOLVES: 0
+SOURCE_UNCHANGED: True

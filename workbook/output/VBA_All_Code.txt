@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-01 20:03:46
+Date: 2026-10-01 21:20:11
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -11111,7 +11111,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCapacityLimitSearchProblem
 TYPE: 2
-LINES: 388
+LINES: 402
 ====================================================================================================
 Option Explicit
 
@@ -11219,6 +11219,18 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
         ' использовал для оценки этой lambda-точки. Без этого финальный result
         ' может получить устаревшее LastSolver-состояние из предыдущей probe.
         Set solver = mCapacity.LastSolver
+        ' На осевом плато повторные силовые пробы за максимумом не дают
+        ' физической верхней точки. Уже найденная допустимая проба позволяет
+        ' проверить отдельную предельную плоскость без длительного дробления.
+        ' Успех здесь означает проверенные N/Mx/My и физический критерий,
+        ' а не признание несошедшейся пробной плоскости предельной.
+        If request.PureAxialForMethod And lambdaValue > 0# Then
+            If mCapacity.LimitSearchCapacityStateIsNumericalFailure(probeState) Then
+                mCapacity.LimitSearchAcceptPureAxialRetainedCapacity request.section, _
+                    request.concreteMaterial, request.steelMaterial, loadPath
+                If mCapacity.Converged Then ILimitSearchProblem_EvaluatePoint = False
+            End If
+        End If
     End If
 End Function
 
@@ -11308,6 +11320,7 @@ Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchReq
 End Sub
 
 Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
+    If mCapacity.Converged Then Exit Sub
     If Not request.ForceOnly And Not request.PureAxialForMethod Then Exit Sub
     mCapacity.LimitSearchAcceptPureAxialRetainedCapacity request.section, _
         request.concreteMaterial, request.steelMaterial, ILimitSearchProblem_BuildLoadPath(request)
@@ -11473,6 +11486,7 @@ Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa() As D
 End Property
 
 Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
+    If Not mCapacity Is Nothing Then ILimitSearchProblem_StoppedTerminally = mCapacity.Converged
 End Property
 
 Private Property Get ILimitSearchProblem_StopReason() As String
@@ -21102,7 +21116,7 @@ End Property
 ====================================================================================================
 COMPONENT: CCrackWidthCalculator
 TYPE: 2
-LINES: 1253
+LINES: 1261
 ====================================================================================================
 Option Explicit
 
@@ -22356,6 +22370,14 @@ End Property
 Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
     mDiagnosticsEnabled = value
 End Property
+
+' ============================== ДЛЯ ТЕСТОВ ==============================
+
+' Проверяет подписанные входы действующей формулы psi без подмены найденных
+' НДС и напряжений. Пользовательский режим User этот расчет не использует.
+Public Function Audit02AutoPsiForTests(ByVal SigmaS As Double, ByVal SigmaSCrc As Double) As Double
+    Audit02AutoPsiForTests = AutoPsi(SigmaS, SigmaSCrc)
+End Function
 
 
 ====================================================================================================
@@ -24480,7 +24502,7 @@ End Property
 ====================================================================================================
 COMPONENT: CBatchSectionCalculator
 TYPE: 2
-LINES: 2184
+LINES: 2035
 ====================================================================================================
 Option Explicit
 
@@ -25251,7 +25273,7 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
         "N=" & mReport.FormatForce(mInputs(index).n) & "; " & _
         "Mx=" & mReport.FormatMx(mInputs(index).mx) & "; " & _
         "My=" & mReport.FormatMy(mInputs(index).my)
-    ReportStabilityDetails stability
+    If Not mReport Is Nothing Then mReport.ReportStabilityDetails mResults(index).StabilityResult
     Exit Sub
 
 Failed:
@@ -25259,57 +25281,6 @@ Failed:
     ReportStep "Устойчивость не рассчитана: " & Err.description
 End Sub
 
-' Пишет в txt-отчет подробные данные фильтра устойчивости по двум главным
-' плоскостям. Таблица Results остается основным машинным выводом, а этот блок
-' нужен для быстрой трассировки того, какая ветвь СП сработала в сценарии LC.
-Private Sub ReportStabilityDetails(ByVal stability As CStabilityCalculator)
-    If stability Is Nothing Then Exit Sub
-
-    If Len(stability.stopReason) > 0 Then _
-        ReportValue "Причина остановки устойчивости", stability.stopReason
-    ReportValue "Продольная сила для проверки", mReport.FormatForce(stability.designN)
-    ReportValue "Моменты после учета eta по главным плоскостям 1/2", _
-        "M1=" & mReport.FormatMomentMagnitude(stability.DesignMoment1) & "; " & _
-        "M2=" & mReport.FormatMomentMagnitude(stability.DesignMoment2)
-    ReportValue "Длительная часть продольной силы", mReport.FormatSignedCompressionForce(stability.sustainedN)
-    ReportValue "Длительные моменты по главным плоскостям 1/2", _
-        "M1l=" & mReport.FormatMomentMagnitude(stability.SustainedMoment1) & "; " & _
-        "M2l=" & mReport.FormatMomentMagnitude(stability.SustainedMoment2)
-
-    ReportValue "Плоскость 1: ветвь и итог", _
-        mReport.StabilityBranchDisplayName(stability.PlaneBranch1) & "; " & mReport.StabilityPassDisplayName(stability.PlanePassed1)
-    ReportValue "Плоскость 1: eta и запас", _
-        FormatNumberInvariant(stability.Eta1) & "; " & FormatNumberInvariant(stability.Reserve1)
-    ReportValue "Плоскость 1: Ncr/Nult", _
-        "Ncr=" & mReport.FormatCompressionForce(stability.Ncr1) & "; Nult=" & mReport.FormatCompressionForce(stability.Nultimate1)
-    ReportValue "Плоскость 1: h, i, r и гибкость l0/i", _
-        "h=" & mReport.FormatLength(stability.Depth1) & "; " & _
-        "i=" & mReport.FormatLength(stability.Radius1) & "; " & _
-        "r=" & mReport.FormatLength(stability.CoreDistance1) & "; " & _
-        "l0/i=" & FormatNumberInvariant(stability.Slenderness1)
-    ReportValue "Плоскость 1: e, ea, phi_l и D", _
-        "e=" & mReport.FormatLength(stability.Eccentricity1) & "; " & _
-        "ea=" & mReport.FormatLength(stability.AccidentalEccentricity1) & "; " & _
-        "phi_l=" & FormatNumberInvariant(stability.PhiL1) & "; " & _
-        "D=" & mReport.FormatStiffness(stability.StiffnessD1)
-
-    ReportValue "Плоскость 2: ветвь и итог", _
-        mReport.StabilityBranchDisplayName(stability.PlaneBranch2) & "; " & mReport.StabilityPassDisplayName(stability.PlanePassed2)
-    ReportValue "Плоскость 2: eta и запас", _
-        FormatNumberInvariant(stability.Eta2) & "; " & FormatNumberInvariant(stability.Reserve2)
-    ReportValue "Плоскость 2: Ncr/Nult", _
-        "Ncr=" & mReport.FormatCompressionForce(stability.Ncr2) & "; Nult=" & mReport.FormatCompressionForce(stability.Nultimate2)
-    ReportValue "Плоскость 2: h, i, r и гибкость l0/i", _
-        "h=" & mReport.FormatLength(stability.Depth2) & "; " & _
-        "i=" & mReport.FormatLength(stability.Radius2) & "; " & _
-        "r=" & mReport.FormatLength(stability.CoreDistance2) & "; " & _
-        "l0/i=" & FormatNumberInvariant(stability.Slenderness2)
-    ReportValue "Плоскость 2: e, ea, phi_l и D", _
-        "e=" & mReport.FormatLength(stability.Eccentricity2) & "; " & _
-        "ea=" & mReport.FormatLength(stability.AccidentalEccentricity2) & "; " & _
-        "phi_l=" & FormatNumberInvariant(stability.PhiL2) & "; " & _
-        "D=" & mReport.FormatStiffness(stability.StiffnessD2)
-End Sub
 
 ' Берет длительную часть нагрузки для LC. Если пользователь не заполнил строку,
 ' принимаются нули: это допустимый ввод и не блокирует основной расчет.
@@ -25585,7 +25556,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     ReportStep "Запускается проверка образования нормальной трещины."
     ReportValue "Путь образования трещины", mCrackFormationPath
     ReportValue "Стратегия поиска образования трещины", mCrackFormationSolutionStrategy
-    ReportCrackFormationSearchStart
+    If Not mReport Is Nothing Then mReport.ReportCrackFormationSearchStart mCrackFormationPath
 
     Dim crackReferenceX As Double
     Dim crackReferenceY As Double
@@ -25617,7 +25588,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     ReportValue "Ncrc", mReport.FormatForce(mResults(index).crackResult.formation.FormationNcrc)
     ReportValue "Mxy,crc", mReport.FormatMomentMagnitude(mResults(index).crackResult.formation.mcrc)
     ReportValue "Причина остановки поиска трещины", crack.stopReason
-    ReportCrackFormationChoice formationResult
+    If Not mReport Is Nothing Then mReport.ReportCrackFormationChoice formationResult
     ReportBlock "Диагностика образования трещины", formationResult.DiagnosticLog
 
     ReportStep "Запускается текущее CrackedState полного сочетания по профилю трещин."
@@ -25648,7 +25619,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
         mMaterialProvider.concreteParameters.rbMc2, mStatusPolicy)
     StoreCrackAggregateSnapshot index, crack, formationResult, currentStateMeta, _
         longitudinalResult:=longitudinalResult
-    ReportLongitudinalCrackResult longitudinalResult
+    If Not mReport Is Nothing Then mReport.ReportLongitudinalCrackResult longitudinalResult
 
     If Not crack.Converged Then
         ReportStep "Проверка образования трещины не завершилась корректно: " & crack.stopReason
@@ -25788,39 +25759,7 @@ Private Function MissingCurrentCrackedStateMeta(ByVal runner As CStateSolutionRu
     Set MissingCurrentCrackedStateMeta = meta
 End Function
 
-' Поясняет в txt-отчете стартовую логику поиска образования нормальной трещины.
-' Низкоуровневый DiagnosticLog ниже сохраняет точные попытки, а эта строка
-' нужна пользователю как быстрый ответ, что именно программа собирается делать.
-Private Sub ReportCrackFormationSearchStart()
-    If StrComp(mCrackFormationPath, "Auto", vbTextCompare) = 0 Then
-        ReportStep "Трещинообразование: режим Auto. Программа пробует пути по порядку: " & _
-            ChrW$(&H3BB) & "*Mxy, затем " & ChrW$(&H3BB) & "*N, затем " & _
-            ChrW$(&H3BB) & "*NMxy. Если путь дает только резервный результат с " & _
-            ChrW$(&H3C8) & "s = 1 без найденной точки образования трещины, программа переходит к следующему пути."
-    Else
-        ReportStep "Трещинообразование: используется фиксированный путь " & mCrackFormationPath & _
-            "; Auto-перебор других путей не выполняется."
-    End If
-End Sub
 
-' Поясняет итог выбора пути образования трещины для текущего LC. Это не заменяет
-' DiagnosticLog solver-а, а переводит ключевой результат Auto/резервного
-' нормальный инженерный язык прямо в отчете.
-Private Sub ReportCrackFormationChoice(ByVal crack As CCrackFormationResult)
-    If crack Is Nothing Then Exit Sub
-
-    If Len(crack.FormationMethod) > 0 Then
-        ReportStep "Трещинообразование: принята точка по пути " & _
-            crack.FormationMethod & ". По этой точке записаны Ncrc/Mxy,crc и состояния PreCrackState/PostCrackState, если они применимы."
-    ElseIf crack.CrackFormed And crack.Converged Then
-        ReportStep "Трещинообразование: нормальная трещина считается образованной, но выбранный путь не дал отдельную расчетную точку образования трещины. Для этой проверки принят резервный вариант " & _
-            ChrW$(&H3C8) & "s = 1; причина указана в CrackFormationStopReason и диагностике ниже."
-    ElseIf crack.Converged Then
-        ReportStep "Трещинообразование: проверка завершена, нормальная трещина при текущем сочетании не образуется."
-    Else
-        ReportStep "Трещинообразование: точку образования трещины найти не удалось; дальнейшая причина приведена в диагностике ниже."
-    End If
-End Sub
 
 ' Добавляет в компактный batch-журнал причину несходимости трещин.
 ' Подробный txt-отчет пишет тот же DiagnosticLog отдельно, а здесь строка
@@ -25902,32 +25841,6 @@ Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     AppendDiagnostic index
 End Sub
 
-' Записывает в txt-отчет результат проверки продольных трещин, уже полученный
-' отдельным CLongitudinalCrackCalculator. Здесь не запускается solver и не
-' пересчитываются напряжения: отчет только поясняет готовый result-объект.
-Private Sub ReportLongitudinalCrackResult(ByVal longitudinalResult As CLongitudinalCrackResult)
-    If longitudinalResult Is Nothing Then
-        ReportStep "Проверка продольных трещин не сформировала результат."
-        Exit Sub
-    End If
-
-    Dim meta As CResultMeta
-    Set meta = longitudinalResult.ResultMeta
-    Dim statusText As String
-    statusText = mStatusPolicy.StatusFromMeta(meta)
-
-    ReportValue "Статус продольных трещин", statusText
-    If statusText <> mStatusPolicy.NotApplicable Then
-        ReportValue "sigma_c,max", mReport.FormatStress(longitudinalResult.maxCompressionStress)
-        ReportValue "Rb,mc2", mReport.FormatStress(longitudinalResult.rbMc2)
-        ReportValue "Использование по продольным трещинам", _
-            FormatNumberInvariant(longitudinalResult.Utilization)
-    ElseIf Len(Trim$(meta.resultComment)) > 0 Then
-        ReportStep meta.resultComment
-    Else
-        ReportStep "Проверка продольных трещин неприменима: в прямом НДС нет сжатого бетона."
-    End If
-End Sub
 
 ' Передает в CCapacityCalculator настройки поиска несущей и внутреннего
 ' равновесия. Материальные пределы calculator берет из построенных диаграмм
@@ -26393,51 +26306,11 @@ Public Property Get CrackSteelElasticModulus() As Double
     CrackSteelElasticModulus = mMaterialProvider.SteelElasticModulus(cpCrackedNDS)
 End Property
 
-' Предельная сжатая деформация бетона для фактического НДС выбранного LC.
-Public Function ConcreteCompressionLimitForCombination(ByVal index As Long) As Double
-    Dim spec As CMaterialModelSpec
-    Set spec = SummaryMaterialSpecForCombination(index)
-    If Not spec Is Nothing Then ConcreteCompressionLimitForCombination = mMaterialProvider.ConcreteCompressionLimitFromSpec(spec)
-End Function
 
-' Предельная растянутая деформация бетона для фактического НДС выбранного LC.
-Public Function ConcreteTensionLimitForCombination(ByVal index As Long) As Double
-    Dim spec As CMaterialModelSpec
-    Set spec = SummaryMaterialSpecForCombination(index)
-    If Not spec Is Nothing Then ConcreteTensionLimitForCombination = mMaterialProvider.ConcreteTensionLimitFromSpec(spec)
-End Function
 
-' True, если текущая диаграмма LC учитывает растянутый бетон и его предел нужно выводить.
-Public Function ConcreteTensionLimitEnabledForCombination(ByVal index As Long) As Boolean
-    Dim spec As CMaterialModelSpec
-    Set spec = SummaryMaterialSpecForCombination(index)
-    If Not spec Is Nothing Then ConcreteTensionLimitEnabledForCombination = mMaterialProvider.ConcreteTensionLimitEnabledFromSpec(spec)
-End Function
 
-' Предельная сжатая деформация арматуры для фактического НДС выбранного LC.
-Public Function SteelCompressionLimitForCombination(ByVal index As Long) As Double
-    Dim spec As CMaterialModelSpec
-    Set spec = SummaryMaterialSpecForCombination(index)
-    If Not spec Is Nothing Then SteelCompressionLimitForCombination = mMaterialProvider.SteelCompressionLimitFromSpec(spec)
-End Function
 
-' Предельная растянутая деформация арматуры для фактического НДС выбранного LC.
-Public Function SteelTensionLimitForCombination(ByVal index As Long) As Double
-    Dim spec As CMaterialModelSpec
-    Set spec = SummaryMaterialSpecForCombination(index)
-    If Not spec Is Nothing Then SteelTensionLimitForCombination = mMaterialProvider.SteelTensionLimitFromSpec(spec)
-End Function
 
-' Выбирает спецификацию того StateSolution, который представлен в старых
-' summary-полях деформаций. Предпочтение отдано прямому StrengthState, затем
-' CrackedState; CapacityState используется только если других states нет.
-Private Function SummaryMaterialSpecForCombination(ByVal index As Long) As CMaterialModelSpec
-    Dim stateResult As CSectionStateResult
-    Set stateResult = mResults(index).StateRepository.FindState(sstStrengthState)
-    If stateResult Is Nothing Then Set stateResult = mResults(index).StateRepository.FindState(sstCrackedState)
-    If stateResult Is Nothing Then Set stateResult = mResults(index).StateRepository.FindState(sstCapacityState)
-    If Not stateResult Is Nothing Then Set SummaryMaterialSpecForCombination = stateResult.MaterialSpec
-End Function
 
 ' Предельная сжатая деформация бетона именно для модели прочности.
 Public Function StrengthConcreteCompressionLimitForCombination(ByVal index As Long) As Double
@@ -31771,7 +31644,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CExecutionReport
 TYPE: 2
-LINES: 520
+LINES: 639
 ====================================================================================================
 Option Explicit
 
@@ -32285,6 +32158,125 @@ Private Function TranslateDiagnosticLine(ByVal lineText As String) As String
     translated = Replace$(translated, "maxAbsSteelStrain=", "макс. модуль деформации арматуры=")
     TranslateDiagnosticLine = translated
 End Function
+
+' Пишет в txt-отчет подробные данные фильтра устойчивости по двум главным
+' плоскостям. Таблица Results остается основным машинным выводом, а этот блок
+' нужен для быстрой трассировки того, какая ветвь СП сработала в сценарии LC.
+Public Sub ReportStabilityDetails(ByVal stability As CStabilityResult)
+    If Not mEnabled Then Exit Sub
+    If stability Is Nothing Then Exit Sub
+
+    If Len(stability.meta.resultComment) > 0 Then _
+        AddValue "Причина остановки устойчивости", stability.meta.resultComment
+    AddValue "Продольная сила для проверки", FormatForce(stability.designN)
+    AddValue "Моменты после учета eta по главным плоскостям 1/2", _
+        "M1=" & FormatMomentMagnitude(stability.DesignMoment1) & "; " & _
+        "M2=" & FormatMomentMagnitude(stability.DesignMoment2)
+    AddValue "Длительная часть продольной силы", FormatSignedCompressionForce(stability.sustainedN)
+    AddValue "Длительные моменты по главным плоскостям 1/2", _
+        "M1l=" & FormatMomentMagnitude(stability.SustainedMoment1) & "; " & _
+        "M2l=" & FormatMomentMagnitude(stability.SustainedMoment2)
+
+    AddValue "Плоскость 1: ветвь и итог", _
+        StabilityBranchDisplayName(stability.PlaneBranch1) & "; " & StabilityPassDisplayName(stability.PlanePassed1)
+    AddValue "Плоскость 1: eta и запас", _
+        FormatNumberInvariant(stability.Eta1) & "; " & FormatNumberInvariant(stability.Reserve1)
+    AddValue "Плоскость 1: Ncr/Nult", _
+        "Ncr=" & FormatCompressionForce(stability.Ncr1) & "; Nult=" & FormatCompressionForce(stability.Nultimate1)
+    AddValue "Плоскость 1: h, i, r и гибкость l0/i", _
+        "h=" & FormatLength(stability.Depth1) & "; " & _
+        "i=" & FormatLength(stability.Radius1) & "; " & _
+        "r=" & FormatLength(stability.CoreDistance1) & "; " & _
+        "l0/i=" & FormatNumberInvariant(stability.Slenderness1)
+    AddValue "Плоскость 1: e, ea, phi_l и D", _
+        "e=" & FormatLength(stability.Eccentricity1) & "; " & _
+        "ea=" & FormatLength(stability.AccidentalEcc1) & "; " & _
+        "phi_l=" & FormatNumberInvariant(stability.PhiL1) & "; " & _
+        "D=" & FormatStiffness(stability.StiffnessD1)
+
+    AddValue "Плоскость 2: ветвь и итог", _
+        StabilityBranchDisplayName(stability.PlaneBranch2) & "; " & StabilityPassDisplayName(stability.PlanePassed2)
+    AddValue "Плоскость 2: eta и запас", _
+        FormatNumberInvariant(stability.Eta2) & "; " & FormatNumberInvariant(stability.Reserve2)
+    AddValue "Плоскость 2: Ncr/Nult", _
+        "Ncr=" & FormatCompressionForce(stability.Ncr2) & "; Nult=" & FormatCompressionForce(stability.Nultimate2)
+    AddValue "Плоскость 2: h, i, r и гибкость l0/i", _
+        "h=" & FormatLength(stability.Depth2) & "; " & _
+        "i=" & FormatLength(stability.Radius2) & "; " & _
+        "r=" & FormatLength(stability.CoreDistance2) & "; " & _
+        "l0/i=" & FormatNumberInvariant(stability.Slenderness2)
+    AddValue "Плоскость 2: e, ea, phi_l и D", _
+        "e=" & FormatLength(stability.Eccentricity2) & "; " & _
+        "ea=" & FormatLength(stability.AccidentalEcc2) & "; " & _
+        "phi_l=" & FormatNumberInvariant(stability.PhiL2) & "; " & _
+        "D=" & FormatStiffness(stability.StiffnessD2)
+End Sub
+
+' Поясняет в txt-отчете стартовую логику поиска образования нормальной трещины.
+' Низкоуровневый DiagnosticLog ниже сохраняет точные попытки, а эта строка
+' нужна пользователю как быстрый ответ, что именно программа собирается делать.
+Public Sub ReportCrackFormationSearchStart(ByVal formationPath As String)
+    If Not mEnabled Then Exit Sub
+    If StrComp(formationPath, "Auto", vbTextCompare) = 0 Then
+        AddStep "Трещинообразование: режим Auto. Программа пробует пути по порядку: " & _
+            ChrW$(&H3BB) & "*Mxy, затем " & ChrW$(&H3BB) & "*N, затем " & _
+            ChrW$(&H3BB) & "*NMxy. Если путь дает только резервный результат с " & _
+            ChrW$(&H3C8) & "s = 1 без найденной точки образования трещины, программа переходит к следующему пути."
+    Else
+        AddStep "Трещинообразование: используется фиксированный путь " & formationPath & _
+            "; Auto-перебор других путей не выполняется."
+    End If
+End Sub
+
+' Поясняет итог выбора пути образования трещины для текущего LC. Это не заменяет
+' DiagnosticLog solver-а, а переводит ключевой результат Auto/резервного
+' нормальный инженерный язык прямо в отчете.
+Public Sub ReportCrackFormationChoice(ByVal crack As CCrackFormationResult)
+    If Not mEnabled Then Exit Sub
+    If crack Is Nothing Then Exit Sub
+
+    If Len(crack.FormationMethod) > 0 Then
+        AddStep "Трещинообразование: принята точка по пути " & _
+            crack.FormationMethod & ". По этой точке записаны Ncrc/Mxy,crc и состояния PreCrackState/PostCrackState, если они применимы."
+    ElseIf crack.CrackFormed And crack.Converged Then
+        AddStep "Трещинообразование: нормальная трещина считается образованной, но выбранный путь не дал отдельную расчетную точку образования трещины. Для этой проверки принят резервный вариант " & _
+            ChrW$(&H3C8) & "s = 1; причина указана в CrackFormationStopReason и диагностике ниже."
+    ElseIf crack.Converged Then
+        AddStep "Трещинообразование: проверка завершена, нормальная трещина при текущем сочетании не образуется."
+    Else
+        AddStep "Трещинообразование: точку образования трещины найти не удалось; дальнейшая причина приведена в диагностике ниже."
+    End If
+End Sub
+
+' Записывает в txt-отчет результат проверки продольных трещин, уже полученный
+' отдельным CLongitudinalCrackCalculator. Здесь не запускается solver и не
+' пересчитываются напряжения: отчет только поясняет готовый result-объект.
+Public Sub ReportLongitudinalCrackResult(ByVal longitudinalResult As CLongitudinalCrackResult)
+    If Not mEnabled Then Exit Sub
+    If longitudinalResult Is Nothing Then
+        AddStep "Проверка продольных трещин не сформировала результат."
+        Exit Sub
+    End If
+
+    Dim meta As CResultMeta
+    Set meta = longitudinalResult.ResultMeta
+    Dim policy As CBatchStatusPolicy
+    Set policy = New CBatchStatusPolicy
+    Dim statusText As String
+    statusText = policy.StatusFromMeta(meta)
+
+    AddValue "Статус продольных трещин", statusText
+    If statusText <> policy.NotApplicable Then
+        AddValue "sigma_c,max", FormatStress(longitudinalResult.maxCompressionStress)
+        AddValue "Rb,mc2", FormatStress(longitudinalResult.rbMc2)
+        AddValue "Использование по продольным трещинам", _
+            FormatNumberInvariant(longitudinalResult.Utilization)
+    ElseIf Len(Trim$(meta.resultComment)) > 0 Then
+        AddStep meta.resultComment
+    Else
+        AddStep "Проверка продольных трещин неприменима: в прямом НДС нет сжатого бетона."
+    End If
+End Sub
 
 ' Аккуратно добавляет строку в собираемый многострочный блок отчета.
 Private Sub AppendReportLine(ByRef target As String, ByVal lineText As String)
@@ -38054,7 +38046,7 @@ End Function
 ====================================================================================================
 COMPONENT: CSectionTypeRegistry
 TYPE: 2
-LINES: 200
+LINES: 204
 ====================================================================================================
 Option Explicit
 
@@ -38234,7 +38226,11 @@ Public Function BuildGeneratedModel(ByVal settings As CSystemSettingsReader, ByV
 
     Dim rebars As CRebarLayout
     Set rebars = CreateRebars(geometry, settings, units)
-    If rebars Is Nothing Or rebars.count = 0 Then
+    If rebars Is Nothing Then
+        Err.Raise vbObjectError + 4138, "CSectionTypeRegistry", _
+            "Для выбранного параметрического сечения не создана раскладка арматуры."
+    End If
+    If rebars.count = 0 Then
         Err.Raise vbObjectError + 4138, "CSectionTypeRegistry", _
             "Для выбранного параметрического сечения не задан ни один стержень арматуры. " & _
             "Допустимо оставить отдельные грани без арматуры, но в сечении должен быть хотя бы один стержень."
@@ -41365,7 +41361,7 @@ End Function
 ====================================================================================================
 COMPONENT: modAutoCADStressExport
 TYPE: 1
-LINES: 1761
+LINES: 1796
 ====================================================================================================
 Option Explicit
 
@@ -43128,6 +43124,41 @@ Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
 
+' ============================== ДЛЯ ТЕСТОВ ==============================
+
+' Читает ровно тот snapshot, который используется при экспорте в AutoCAD,
+' не создавая AutoCAD application и не запуская solver. Текст нужен только
+' для точного сравнения сохраненных значений после изменения Config.
+Public Function Audit02ReadExportSnapshotForTests(ByVal workbook As Object) As String
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook workbook
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+    Dim section As CSectionModel
+    Dim values As Object, physicalStates As Object
+    Dim combinationID As String, profileId As String, stateType As String, quantity As String
+    Dim precision As Long
+    Dim eps0 As Double, kx As Double, ky As Double
+    Dim referenceX As Double, referenceY As Double
+    Dim centroidX As Double, centroidY As Double, angle As Double
+    Dim extensionUsed As Boolean, warningText As String
+    ReadResultsExportState workbook, settings, units, "Concrete", section, values, physicalStates, _
+        combinationID, profileId, stateType, quantity, precision, eps0, kx, ky, _
+        referenceX, referenceY, centroidX, centroidY, angle, extensionUsed, warningText
+    Dim result As String
+    result = combinationID & "|" & profileId & "|" & stateType & "|" & quantity & "|" & _
+        CStr(extensionUsed) & "|" & warningText & "|" & CStr(eps0) & "|" & _
+        CStr(kx) & "|" & CStr(ky) & "|" & _
+        CStr(referenceX) & "|" & CStr(referenceY)
+    Dim key As Variant
+    For Each key In values.keys
+        result = result & vbCrLf & CStr(key) & "|" & CStr(CDbl(values(key))) & "|" & CStr(physicalStates(key))
+    Next key
+    Audit02ReadExportSnapshotForTests = result
+End Function
+
 
 ====================================================================================================
 COMPONENT: modStatusFormatting
@@ -44870,7 +44901,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 5634
+LINES: 5725
 ====================================================================================================
 Option Explicit
 
@@ -45083,6 +45114,7 @@ Public Function RunBatchCalculationTests() As String
     TestAudit02RepositoryContextAndRetry stats
     AppendLine stats, "RUN: TestAudit02OnOffPhysicalResults"
     TestAudit02OnOffPhysicalResults stats
+    TestAudit02InitialOffsetOnOffStatuses stats
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -50249,6 +50281,20 @@ Private Sub TestAudit02RepositoryContextAndRetry(ByRef stats As TBatchTestStats)
     AssertTrue stats, "audit02.cache.pre.noRunner", provider.LastRunner Is Nothing
     AssertTrue stats, "audit02.cache.pre.restored", Not provider.SolverSnapshot(state) Is Nothing
 
+    Dim postSpec As CMaterialModelSpec
+    Set postSpec = New CMaterialModelSpec
+    postSpec.Initialize "SLS(II)", "TwoLine", "Ignore", "TwoLine"
+    otherRequest.Initialize sstPostCrackState, cpCrackedNDS, postSpec, -100000#, 4000000#, 3000000#, True, True
+    Set state = provider.GetOrSolve(otherRequest)
+    AssertTrue stats, "audit02.cache.post.physical", state.Converged And state.withinPhysicalRange
+    Dim solvesBeforePostReuse As Long
+    solvesBeforePostReuse = SectionEquilibriumSolveCount()
+    Set state = provider.GetOrSolve(otherRequest)
+    AssertTrue stats, "audit02.cache.post.reused", provider.LastStateWasReused
+    AssertTrue stats, "audit02.cache.post.noRunner", provider.LastRunner Is Nothing
+    AssertTrue stats, "audit02.cache.post.restored", Not provider.SolverSnapshot(state) Is Nothing
+    AssertTrue stats, "audit02.cache.post.noSolve", SectionEquilibriumSolveCount() = solvesBeforePostReuse
+
     repository.Clear
     provider.LoadSteps = 1
     provider.maxIterations = 1
@@ -50284,6 +50330,7 @@ Public Function RunAudit02OnOffComparisonTests() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats
     TestAudit02OnOffPhysicalResults stats
+    TestAudit02InitialOffsetOnOffStatuses stats
     AppendLine stats, "TOTAL_AUDIT02_PAIR: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit02OnOffComparisonTests = stats.Report
     Exit Function
@@ -50423,6 +50470,81 @@ Private Function BuildAudit02PairBatch(ByVal extensionEnabled As Boolean) As CBa
     Set BuildAudit02PairBatch = batch
 End Function
 
+' ДЛЯ ТЕСТОВ
+' При постоянной сжимающей N за физической несущей обычные диаграммы не
+' дают равновесия, а продолжение позволяет подтвердить недопустимый старт.
+' Проверяем разницу NumFail/BaseFail по машинным кодам, не по тексту причины,
+' и согласованность capacity-статуса в typed result, detailed и batch summary.
+Private Sub TestAudit02InitialOffsetOnOffStatuses(ByRef stats As TBatchTestStats)
+    On Error GoTo Failed
+    Dim oldStability As String
+    oldStability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    Dim offBatch As CBatchSectionCalculator
+    Dim onBatch As CBatchSectionCalculator
+    Set offBatch = BuildAudit02PairBatch(False)
+    Set onBatch = BuildAudit02PairBatch(True)
+    offBatch.AddCombination "OFFSET_2MN", -2000000#, 8000000#, 0#, "PR1", "Постоянная N выше физического предела", "lambda*Mxy"
+    offBatch.AddCombination "OFFSET_3MN", -3000000#, 8000000#, 0#, "PR1", "Постоянная N выше физического предела", "lambda*Mxy"
+    onBatch.AddCombination "OFFSET_2MN", -2000000#, 8000000#, 0#, "PR1", "Постоянная N выше физического предела", "lambda*Mxy"
+    onBatch.AddCombination "OFFSET_3MN", -3000000#, 8000000#, 0#, "PR1", "Постоянная N выше физического предела", "lambda*Mxy"
+    offBatch.Execute
+    onBatch.Execute
+    Dim i As Long
+    For i = 1 To 2
+        Dim offResult As CCapacityResult
+        Dim onResult As CCapacityResult
+        Set offResult = offBatch.ResultAt(i).StrengthResult.capacity
+        Set onResult = onBatch.ResultAt(i).StrengthResult.capacity
+        Dim prefix As String
+        prefix = "audit02.offsetPair." & offBatch.combinationID(i)
+        AppendLine stats, "OFFSET_PAIR|" & offBatch.combinationID(i) & "|Off=" & offResult.Status & _
+            "|OffCode=" & CStr(offResult.ResultMeta.ResultCode) & "|On=" & onResult.Status & _
+            "|OnCode=" & CStr(onResult.ResultMeta.ResultCode) & "|OffComment=" & offResult.ResultMeta.resultComment & _
+            "|OnComment=" & onResult.ResultMeta.resultComment
+        AssertEquals stats, prefix & ".offStatus", offResult.Status, "NumFail"
+        AssertEquals stats, prefix & ".onStatus", onResult.Status, "BaseFail"
+        AssertTrue stats, prefix & ".offCode", offResult.ResultMeta.ResultCode = rcNumericalFailure
+        AssertTrue stats, prefix & ".onCode", onResult.ResultMeta.ResultCode = rcInitialStateBeyondLimit
+        AssertTrue stats, prefix & ".offNoPoint", Not offResult.searchResult.HasLimitPoint
+        AssertTrue stats, prefix & ".onNoPoint", Not onResult.searchResult.HasLimitPoint
+        AssertTrue stats, prefix & ".onAuxiliary", onBatch.ResultAt(i).StrengthResult.DirectState.stateResult.Converged
+        AssertTrue stats, prefix & ".onExtended", onBatch.ResultAt(i).StrengthResult.DirectState.stateResult.extensionUsed
+        AssertTrue stats, prefix & ".onNotPhysical", Not onBatch.ResultAt(i).StrengthResult.DirectState.stateResult.withinPhysicalRange
+        AssertTrue stats, prefix & ".comments", Len(offResult.ResultMeta.resultComment) > 0 And Len(onResult.ResultMeta.resultComment) > 0
+    Next i
+    Dim mode As Long
+    For mode = 0 To 1
+        Dim batch As CBatchSectionCalculator
+        If mode = 0 Then Set batch = offBatch Else Set batch = onBatch
+        Dim writer As CBatchResultWriter
+        Set writer = New CBatchResultWriter
+        writer.WriteSummary ThisWorkbook, batch
+        Dim sheet As Object
+        Set sheet = ThisWorkbook.Worksheets.item("Results")
+        For i = 1 To 2
+            Dim summaryRow As Long, detailedRow As Long
+            summaryRow = SummaryRowByCombination(sheet, batch.combinationID(i))
+            detailedRow = DetailedRowByCombination(sheet, "rngStrengthSummaryAnchor", batch.combinationID(i))
+            prefix = "audit02.offsetPair.sheet." & CStr(mode) & "." & CStr(i)
+            AssertEquals stats, prefix & ".summary", CStr(sheet.Cells.item(summaryRow, 7).Value2), _
+                batch.ResultAt(i).StrengthResult.capacity.Status
+            AssertEquals stats, prefix & ".detailed", CStr(sheet.Cells.item(detailedRow, 49).Value2), _
+                batch.ResultAt(i).StrengthResult.capacity.Status
+            AssertEquals stats, prefix & ".overall", CStr(sheet.Cells.item(summaryRow, 4).Value2), batch.ResultAt(i).Status
+            AssertTrue stats, prefix & ".colorSummary", StatusCellHasExpectedFill(sheet, summaryRow, 7)
+            AssertTrue stats, prefix & ".colorDetailed", StatusCellHasExpectedFill(sheet, detailedRow, 49)
+        Next i
+    Next mode
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
+    Exit Sub
+Failed:
+    Dim reason As String
+    reason = CStr(Err.Number) & "; " & Err.description
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
+    AssertTrue stats, "audit02.offsetPair.runtime." & reason, False
+End Sub
+
 ' Сравнивает доступность и весь численный снимок named-state, исключая
 ' итерации/время/журнал: эти показатели не являются условием одинаковой физики.
 Private Sub Audit02ComparePairState(ByRef stats As TBatchTestStats, ByVal maxima As Object, _
@@ -50510,7 +50632,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestCapacitySolver
 TYPE: 1
-LINES: 1845
+LINES: 1930
 ====================================================================================================
 Option Explicit
 
@@ -50603,6 +50725,8 @@ Public Function RunCapacitySolverTests() As String
     TestAudit02AsymmetricSteelLimits stats
     AppendLine stats, "RUN: TestAudit02UnconvergedProbeIsNumerical"
     TestAudit02UnconvergedProbeIsNumerical stats
+    TestAudit02PositiveUnconvergedProbe stats
+    TestAudit02InitialOffsetBoundary stats
 
     AppendLine stats, "TOTAL_CAPACITY: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -52215,6 +52339,89 @@ Private Sub TestAudit02UnconvergedProbeIsNumerical(ByRef stats As TCapacityTestS
     AssertTrue stats, "audit02.failedProbe.noBaseFail", result.meta.InternalStatus = rsNumericalFailure
 End Sub
 
+' ДЛЯ ТЕСТОВ
+' Несошедшаяся положительная lambda не подтверждает физическую верхнюю
+' границу, даже когда последняя итерационная плоскость превысила предел.
+Private Sub TestAudit02PositiveUnconvergedProbe(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, rebars)
+    Dim cap As CCapacitySolver
+    Set cap = New CCapacitySolver
+    ConfigureCapacity cap
+    cap.MaxRetries = 0
+    cap.SolverBaseLoadSteps = 1
+    cap.SolverMaxIterations = 3
+    cap.ConcreteCompressionLimit = -0.000000001
+    Dim path As CLoadPathVector
+    Set path = New CLoadPathVector
+    path.Initialize 0#, -1000000000#, 0#, 1000000#, 0#, 0#
+    Dim residual As Double
+    Dim state As String
+    cap.LimitSearchEvaluateCapacityLoadMultiplier section, ProvisionalConcrete(), _
+        ProvisionalSteel(), path, 1#, residual, state
+    AssertTrue stats, "audit02.failedPositive.noEquilibrium", Not cap.LastSolver.Converged
+    AssertTrue stats, "audit02.failedPositive.multiple", cap.LastSolver.iterations > 1
+    AssertTrue stats, "audit02.failedPositive.exceeded", cap.LastSolver.minConcreteStrain < -0.000000001
+    AssertTrue stats, "audit02.failedPositive.numerical", cap.LimitSearchCapacityStateIsNumericalFailure(state)
+    AssertTrue stats, "audit02.failedPositive.notLimit", Not cap.LimitSearchCapacityStateIsPhysicalLimit(state)
+End Sub
+
+' ДЛЯ ТЕСТОВ
+' Проверяет Offset ниже, точно на и выше физического критерия на линейном
+' материале. Точная начальная предельная точка уже исчерпала Capacity-путь,
+' но сама оценка плоскости остается физической, без технического продолжения.
+Private Sub TestAudit02InitialOffsetBoundary(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, rebars)
+    Dim ratio As Variant
+    For Each ratio In Array(0.5, 1#, 1.1)
+        Dim cap As CCapacitySolver
+        Set cap = New CCapacitySolver
+        ConfigureCapacity cap
+        cap.ConcreteCompressionLimit = -1#
+        cap.SteelStrainLimit = 0.001
+        cap.SolverToleranceN = 0.01
+        Dim path As CLoadPathVector
+        Set path = New CLoadPathVector
+        path.Initialize CDbl(ratio) * Audit02AxialStiffness(section) * 0.001, _
+            Audit02AxialStiffness(section) * 0.0001, 0#, 0#, 0#, 0#
+        Dim residual As Double
+        Dim state As String
+        cap.LimitSearchEvaluateCapacityLoadMultiplier section, LinearConcrete(), LinearSteel(), _
+            path, 0#, residual, state
+        Dim prefix As String
+        prefix = "audit02.offset." & CStr(ratio)
+        AssertTrue stats, prefix & ".equilibrium", cap.LastSolver.Converged
+        If CDbl(ratio) < 1# Then
+            AssertTrue stats, prefix & ".acceptable", cap.LimitSearchCapacityStateIsAcceptable(state)
+        ElseIf CDbl(ratio) = 1# Then
+            ' Равновесие решается с прежним абсолютным допуском усилий.
+            ' Уточненная плоскость может оказаться по любую сторону точной
+            ' аналитической границы; классификация должна отражать именно ее,
+            ' а не объявлять превышение по одному значению входной нагрузки.
+            AssertClose stats, prefix & ".exactUtilization", cap.CriticalStrainUtilization, 1#, 0.000000000001
+            AssertTrue stats, prefix & ".classification", _
+                cap.LimitSearchCapacityStateIsPhysicalLimit(state) = (cap.CriticalStrainUtilization >= 1#)
+            AssertTrue stats, prefix & ".notNumerical", Not cap.LimitSearchCapacityStateIsNumericalFailure(state)
+        Else
+            AssertTrue stats, prefix & ".limit", cap.LimitSearchCapacityStateIsPhysicalLimit(state)
+            cap.LimitSearchHandleCapacityInitialFailure state
+            Dim result As CLimitSearchResult
+            Set result = Audit02CapacitySnapshot(cap, "LoadMultiplier")
+            AssertTrue stats, prefix & ".code", result.meta.ResultCode = rcInitialStateBeyondLimit
+            Dim policy As CResultStatusPolicy
+            Set policy = New CResultStatusPolicy
+            AssertEquals stats, prefix & ".display", policy.ExternalStatus(result.meta), "BaseFail"
+        End If
+    Next ratio
+End Sub
+
 ' ДЛЯ ТЕСТОВ: общий Newton принимает только ILimitSearchProblem и не требует
 ' живых Capacity/Crack-калькуляторов. Аналитический корень проверяется отдельно
 ' от физических regression-моделей, их expected values не меняются.
@@ -52361,7 +52568,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestCrackWidth
 TYPE: 1
-LINES: 1025
+LINES: 1061
 ====================================================================================================
 Option Explicit
 
@@ -52410,6 +52617,7 @@ Public Function RunCrackWidthTests() As String
     TestNoTensionRebar stats
     TestAudit02FormationOutcomeSemantics stats
     TestAudit02IndependentFormation stats
+    TestAudit02PsiSignedInputsAndFallbackModes stats
     AppendLine stats, "TOTAL_CRACK: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
     RunCrackWidthTests = stats.Report
@@ -53386,6 +53594,41 @@ Private Sub TestAudit02FormationOutcomeSemantics(ByRef stats As TCrackTestStats)
     AssertClose stats, "audit02.formation.constant.psi1", crack.PsiS, 1#, 0#
     search.Initialize Nothing, "Auto", vbNullString, False, 0#, 0#, 0#, 0#, Nothing, vbNullString, vbNullString
     AssertTrue stats, "audit02.formation.missing.internalError", search.meta.InternalStatus = rsInternalError
+End Sub
+
+' ДЛЯ ТЕСТОВ
+' Проверяет реальные правила psi для сжатого/нулевого sigma_s,crc и нулевого
+' текущего напряжения. Затем три режима проходят полный расчет по разрешенной
+' ветви трещины от постоянной части без фиктивного PostCrackState.
+Private Sub TestAudit02PsiSignedInputsAndFallbackModes(ByRef stats As TCrackTestStats)
+    Dim formulaOwner As CCrackWidthCalculator
+    Set formulaOwner = New CCrackWidthCalculator
+    AssertClose stats, "audit02.psi.negativeCrc", formulaOwner.Audit02AutoPsiForTests(100#, -25#), 1#, 0#
+    AssertClose stats, "audit02.psi.zeroCrc", formulaOwner.Audit02AutoPsiForTests(100#, 0#), 1#, 0#
+    AssertClose stats, "audit02.psi.zeroCurrent", formulaOwner.Audit02AutoPsiForTests(0#, 25#), 1#, 0#
+    AssertClose stats, "audit02.psi.positiveCrc", formulaOwner.Audit02AutoPsiForTests(100#, 25#), 0.8, 0.000000000001
+    AssertClose stats, "audit02.psi.lowerBound", formulaOwner.Audit02AutoPsiForTests(100#, 200#), 0#, 0#
+    Dim section As CSectionModel
+    Dim solver As CSectionSolver
+    Set solver = SolveServiceStateWithRunner(section, 200000#, 0#, 0#)
+    Dim mode As Variant
+    For Each mode In Array("User", "Auto", "AlwaysCalc")
+        Dim crack As CCrackWidthCalculator
+        Set crack = CalculateCrack(solver, section, 200000#, 0#, 0#, _
+            CStr(mode), "Effective", allowable:=0.0001, psiSValue:=0.65, formationPath:="lambda*Mxy")
+        Dim prefix As String
+        prefix = "audit02.psi.fallback." & CStr(mode)
+        AssertTrue stats, prefix & ".converged", crack.Converged
+        AssertTrue stats, prefix & ".warningCode", crack.formationResult.ResultMeta.ResultCode = rcInitialStateBeyondLimit
+        AssertTrue stats, prefix & ".noPost", crack.formationResult.PostCrackState Is Nothing
+        If CStr(mode) = "User" Then
+            AssertClose stats, prefix & ".value", crack.PsiS, 0.65, 0#
+        Else
+            AssertClose stats, prefix & ".value", crack.PsiS, 1#, 0#
+        End If
+        AssertTrue stats, prefix & ".upperBound", crack.PsiS <= 1#
+        AssertCrackCalculatorNotNumFail stats, prefix & ".notNumerical", crack
+    Next mode
 End Sub
 
 
@@ -55776,7 +56019,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestMaterialDiagrams
 TYPE: 1
-LINES: 433
+LINES: 459
 ====================================================================================================
 Option Explicit
 
@@ -56170,6 +56413,32 @@ Private Sub AssertPhysicalDiagramPair(ByRef stats As TMaterialTestStats, ByVal t
         AssertTrue stats, testKey & ".physical." & CStr(i), extended.IsInPhysicalRange(strain)
         AssertTrue stats, testKey & ".notUsed." & CStr(i), Not extended.IsInExtensionRange(strain)
     Next i
+
+    ' Внутренняя окрестность предела остается физической; малое округление
+    ' за границей учитывается тем же допуском, а не включает extension-флаг.
+    Dim boundary As Double, sign As Double
+    Dim side As Variant
+    For Each side In Array("compression", "tension")
+        If CStr(side) = "compression" Then
+            boundary = physical.PhysicalCompressionStrain
+            sign = -1#
+        Else
+            If Not physical.HasPhysicalTensionLimit Then Exit For
+            boundary = physical.PhysicalTensionStrain
+            sign = 1#
+        End If
+        strain = boundary - sign * 0.000000001
+        AssertClose stats, testKey & ".near." & CStr(side) & ".stress", _
+            extended.GetStress(strain), physical.GetStress(strain), 0.000000000001
+        AssertClose stats, testKey & ".near." & CStr(side) & ".tangent", _
+            extended.GetTangentModulus(strain), physical.GetTangentModulus(strain), 0.000000000001
+        strain = boundary + sign * 0.0000000000005
+        AssertTrue stats, testKey & ".near." & CStr(side) & ".roundingPhysical", extended.IsInPhysicalRange(strain)
+        AssertTrue stats, testKey & ".near." & CStr(side) & ".roundingNotUsed", Not extended.IsInExtensionRange(strain)
+        strain = boundary + sign * 0.000000000002
+        AssertTrue stats, testKey & ".near." & CStr(side) & ".outside", Not extended.IsInPhysicalRange(strain)
+        AssertTrue stats, testKey & ".near." & CStr(side) & ".extensionUsed", extended.IsInExtensionRange(strain)
+    Next side
 End Sub
 
 ' Пользовательский физический предел за +/-10 не обрезается: технические
@@ -56573,7 +56842,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestSectionSolver
 TYPE: 1
-LINES: 864
+LINES: 903
 ====================================================================================================
 Option Explicit
 
@@ -56615,6 +56884,7 @@ Public Function RunSectionSolverTests() As String
     TestAudit02StateSnapshotIsolation stats
     TestAudit02AbsentStressSign stats
     TestAudit02LoadPathResidualScaling stats
+    TestAudit02ExtendedInitialGuessPhysicalFinal stats
 
     AppendLine stats, "TOTAL_SECTION_SOLVER: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -57439,11 +57709,49 @@ Private Sub TestAudit02LoadPathResidualScaling(ByRef stats As TSectionSolverTest
     AssertClose stats, "audit02.pathResidual.myLinear", secondMy, firstMy * 2#, 0.001
 End Sub
 
+' ДЛЯ ТЕСТОВ
+' Начальная плоскость намеренно лежит в численном продолжении, но конечная
+' нагрузка мала. Финальные признаки должны описывать найденный физический
+' State, а не исходное приближение и не промежуточные Newton-итерации.
+Private Sub TestAudit02ExtendedInitialGuessPhysicalFinal(ByRef stats As TSectionSolverTestStats)
+    Dim concreteParameters As CConcreteMaterialParameters
+    Set concreteParameters = New CConcreteMaterialParameters
+    concreteParameters.Initialize 15.5, 1.08, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
+    Dim steelParameters As CSteelMaterialParameters
+    Set steelParameters = New CSteelMaterialParameters
+    steelParameters.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#
+    Dim provider As CMaterialModelProvider
+    Set provider = New CMaterialModelProvider
+    provider.InitializeFromParameters concreteParameters, steelParameters, diagramExtensionEnabled:=True
+    Dim spec As CMaterialModelSpec
+    Set spec = New CMaterialModelSpec
+    spec.Initialize "ULS(I)", "ThreeLine", "Ignore", "TwoLine"
+    Dim concrete As CMaterialDiagram
+    Set concrete = provider.ConcreteMaterialForEquilibriumFromSpec(spec)
+    Dim steel As CMaterialDiagram
+    Set steel = provider.SteelMaterialForEquilibriumFromSpec(spec)
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 20#), Nothing)
+    Dim initial As CSectionSolver
+    Set initial = New CSectionSolver
+    initial.EvaluateStrainPlane section, concrete, steel, -0.01, 0#, 0#
+    AssertTrue stats, "audit02.finalFlags.initialEquilibrium", _
+        initial.ConfirmEquilibrium(initial.Nint, initial.Mxint, initial.Myint)
+    Dim runner As CStateSolutionRunner
+    Set runner = New CStateSolutionRunner
+    AssertTrue stats, "audit02.finalFlags.initialExtended", runner.StateUsesExtension(section, initial, concrete, steel)
+    runner.SolveWithInitialSolver section, concrete, steel, -50000#, 0#, 0#, initial, True
+    AssertTrue stats, "audit02.finalFlags.converged", runner.Converged
+    AssertTrue stats, "audit02.finalFlags.physical", runner.withinPhysicalRange
+    AssertTrue stats, "audit02.finalFlags.notExtended", Not runner.extensionUsed
+    AssertClose stats, "audit02.finalFlags.force", runner.ResultSolver.Nint, -50000#, 5#
+End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 4062
+LINES: 4202
 ====================================================================================================
 Option Explicit
 
@@ -57495,6 +57803,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC stats
     AppendLine stats, "RUN: TestProfileDrivenPlotUsesSnapshotState"
     TestProfileDrivenPlotUsesSnapshotState stats
+    TestAudit02SavedResultsIgnoreMaterialChanges stats
     AppendLine stats, "RUN: TestMissingProfileStateDrawsGeometryOnly"
     TestMissingProfileStateDrawsGeometryOnly stats
     TestAutoCADCalculationMessageUsesSavedGeometry stats
@@ -61505,6 +61814,145 @@ Public Function RunAudit02NoPlotDiagnostic() As String
     Exit Function
 Failed:
     RunAudit02NoPlotDiagnostic = "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.description
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Проверяет сохраненные Results после смены материальных настроек без пересчета.
+' Отдельный entrypoint позволяет повторить проверку на независимой книге.
+Public Function RunAudit02SavedSnapshotTests() As String
+    On Error GoTo Failed
+    Dim stats As TUiTestStats
+    TestAudit02SavedResultsIgnoreMaterialChanges stats
+    RunAudit02SavedSnapshotTests = stats.Report & _
+        "TOTAL_AUDIT02_SNAPSHOT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    Exit Function
+Failed:
+    RunAudit02SavedSnapshotTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.description
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Меняет Config после завершенного расчета, но не его сериализованный снимок.
+' Reader и повторная схема обязаны сохранить напряжения, деформации, признаки
+' State и таблицы диаграмм; чтение геометрии для AutoCAD также не решает НДС.
+Private Sub TestAudit02SavedResultsIgnoreMaterialChanges(ByRef stats As TUiTestStats)
+    PrepareCircleInput
+    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
+    Dim materialKeys As Variant
+    materialKeys = Array("General.DiagramExtension", "Concrete.E", "Concrete.R.ULS(I)", _
+        "Concrete.R.SLS(II)", "Steel.E", "Steel.R.ULS(I)", "Steel.R.SLS(II)")
+    Dim oldValues(0 To 6) As String
+    Dim i As Long
+    For i = 0 To UBound(materialKeys)
+        oldValues(i) = CStr(GetSystemSetting(CStr(materialKeys(i))))
+    Next i
+    Dim oldQuantity As String
+    oldQuantity = ProfileSettingValue("PR2", "Visualization.Quantity")
+    On Error GoTo RestoreFailed
+
+    Dim message As String
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    AssertTrue stats, "audit02.saved.run", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    Dim tables As Variant
+    tables = Array("rngNDMSectionGeometry", "rngNDMElementResults", "rngNDMSectionProperties", _
+        "rngNDMSectionAnnotations", "rngNDMMaterialDiagrams", "rngBatchSummary")
+    Dim beforeTables(0 To 5) As Variant
+    For i = 0 To UBound(tables)
+        beforeTables(i) = ResultTable(CStr(tables(i)))
+    Next i
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    Dim beforeStress As CSectionPlotDataReader
+    Set beforeStress = New CSectionPlotDataReader
+    SetProfileSetting "PR2", "Visualization.Quantity", "Stress"
+    beforeStress.LoadFromWorkbook ThisWorkbook, settings
+    SetSystemSetting "AutoCAD.Export.CombinationID", "LC1"
+    Dim beforeExport As String
+    beforeExport = Audit02ReadExportSnapshotForTests(ThisWorkbook)
+    Dim beforeStrain As CSectionPlotDataReader
+    Set beforeStrain = New CSectionPlotDataReader
+    SetProfileSetting "PR2", "Visualization.Quantity", "Strain"
+    beforeStrain.LoadFromWorkbook ThisWorkbook, settings
+    Dim solves As Long
+    solves = SectionEquilibriumSolveCount()
+
+    If StrComp(oldValues(0), "Yes", vbTextCompare) = 0 Then
+        SetSystemSetting "General.DiagramExtension", "No"
+    Else
+        SetSystemSetting "General.DiagramExtension", "Yes"
+    End If
+    For i = 1 To UBound(materialKeys)
+        SetSystemSetting CStr(materialKeys(i)), FormatNumberInvariant(CDbl(oldValues(i)) * 0.5)
+    Next i
+    settings.LoadFromWorkbook ThisWorkbook
+    Dim afterData As CSectionPlotDataReader
+    Set afterData = New CSectionPlotDataReader
+    SetProfileSetting "PR2", "Visualization.Quantity", "Stress"
+    afterData.LoadFromWorkbook ThisWorkbook, settings
+    AssertAudit02PlotSnapshot stats, "stress", beforeStress, afterData
+    AssertTextEquals stats, "audit02.saved.exportSnapshot", _
+        Audit02ReadExportSnapshotForTests(ThisWorkbook), beforeExport
+    SetProfileSetting "PR2", "Visualization.Quantity", "Strain"
+    afterData.LoadFromWorkbook ThisWorkbook, settings
+    AssertAudit02PlotSnapshot stats, "strain", beforeStrain, afterData
+    UpdateSectionPlotForWorkbook ThisWorkbook
+    Dim exportedSection As CSectionModel
+    Set exportedSection = ReadSectionGeometryFromResults(ThisWorkbook)
+    AssertTrue stats, "audit02.saved.exportGeometry", exportedSection.ConcreteCount > 0
+    AssertTrue stats, "audit02.saved.noSolve", SectionEquilibriumSolveCount() = solves
+    Dim afterTable As Variant
+    For i = 0 To UBound(tables)
+        afterTable = ResultTable(CStr(tables(i)))
+        AssertTrue stats, "audit02.saved.table." & CStr(tables(i)), _
+            Audit02SnapshotTablesEqual(beforeTables(i), afterTable)
+    Next i
+    GoTo RestoreSettings
+RestoreFailed:
+    Dim failureText As String
+    failureText = CStr(Err.Number) & "; " & Err.description
+    AssertTrue stats, "audit02.saved.runtime." & failureText, False
+RestoreSettings:
+    For i = 0 To UBound(materialKeys)
+        SetSystemSetting CStr(materialKeys(i)), oldValues(i)
+    Next i
+    SetProfileSetting "PR2", "Visualization.Quantity", oldQuantity
+End Sub
+
+' ДЛЯ ТЕСТОВ
+' Сравнивает сериализованную раскраску и плоскость без повторной оценки материала.
+Private Sub AssertAudit02PlotSnapshot(ByRef stats As TUiTestStats, ByVal quantity As String, _
+        ByVal beforeData As CSectionPlotDataReader, ByVal afterData As CSectionPlotDataReader)
+    Dim prefix As String
+    prefix = "audit02.saved." & quantity
+    AssertTrue stats, prefix & ".nonempty", beforeData.count > 0
+    AssertTrue stats, prefix & ".count", beforeData.count = afterData.count
+    AssertTextEquals stats, prefix & ".state", afterData.stateType, beforeData.stateType
+    AssertTextEquals stats, prefix & ".status", afterData.DirectStateStatus, beforeData.DirectStateStatus
+    AssertTrue stats, prefix & ".extension", afterData.extensionUsed = beforeData.extensionUsed
+    AssertClose stats, prefix & ".epsilon0", afterData.epsilon0, beforeData.epsilon0, 0#
+    AssertClose stats, prefix & ".kappaX", afterData.kappaX, beforeData.kappaX, 0#
+    AssertClose stats, prefix & ".kappaY", afterData.kappaY, beforeData.kappaY, 0#
+    Dim i As Long
+    For i = 1 To beforeData.count
+        AssertTextEquals stats, prefix & ".id." & CStr(i), afterData.elementID(i), beforeData.elementID(i)
+        AssertTextEquals stats, prefix & ".physical." & CStr(i), afterData.physicalState(i), beforeData.physicalState(i)
+        AssertClose stats, prefix & ".value." & CStr(i), afterData.resultValue(i), beforeData.resultValue(i), 0#
+    Next i
+End Sub
+
+' ДЛЯ ТЕСТОВ
+' Сравнивает все ячейки двух снимков, включая model spec и effective Extension.
+Private Function Audit02SnapshotTablesEqual(ByRef beforeTable As Variant, ByRef afterTable As Variant) As Boolean
+    If UBound(beforeTable, 1) <> UBound(afterTable, 1) Then Exit Function
+    If UBound(beforeTable, 2) <> UBound(afterTable, 2) Then Exit Function
+    Dim r As Long
+    Dim c As Long
+    For r = 1 To UBound(beforeTable, 1)
+        For c = 1 To UBound(beforeTable, 2)
+            If CStr(beforeTable(r, c)) <> CStr(afterTable(r, c)) Then Exit Function
+        Next c
+    Next r
+    Audit02SnapshotTablesEqual = True
 End Function
 
 

@@ -39,6 +39,7 @@ Public Function RunSectionSolverTests() As String
     TestAudit02StateSnapshotIsolation stats
     TestAudit02AbsentStressSign stats
     TestAudit02LoadPathResidualScaling stats
+    TestAudit02ExtendedInitialGuessPhysicalFinal stats
 
     AppendLine stats, "TOTAL_SECTION_SOLVER: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -861,6 +862,44 @@ Private Sub TestAudit02LoadPathResidualScaling(ByRef stats As TSectionSolverTest
     AssertClose stats, "audit02.pathResidual.zeroMy", firstMy, -10000000000#, 0.001
     AssertClose stats, "audit02.pathResidual.mxLinear", secondMx, firstMx * 2#, 0.001
     AssertClose stats, "audit02.pathResidual.myLinear", secondMy, firstMy * 2#, 0.001
+End Sub
+
+' ДЛЯ ТЕСТОВ
+' Начальная плоскость намеренно лежит в численном продолжении, но конечная
+' нагрузка мала. Финальные признаки должны описывать найденный физический
+' State, а не исходное приближение и не промежуточные Newton-итерации.
+Private Sub TestAudit02ExtendedInitialGuessPhysicalFinal(ByRef stats As TSectionSolverTestStats)
+    Dim concreteParameters As CConcreteMaterialParameters
+    Set concreteParameters = New CConcreteMaterialParameters
+    concreteParameters.Initialize 15.5, 1.08, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
+    Dim steelParameters As CSteelMaterialParameters
+    Set steelParameters = New CSteelMaterialParameters
+    steelParameters.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#
+    Dim provider As CMaterialModelProvider
+    Set provider = New CMaterialModelProvider
+    provider.InitializeFromParameters concreteParameters, steelParameters, diagramExtensionEnabled:=True
+    Dim spec As CMaterialModelSpec
+    Set spec = New CMaterialModelSpec
+    spec.Initialize "ULS(I)", "ThreeLine", "Ignore", "TwoLine"
+    Dim concrete As CMaterialDiagram
+    Set concrete = provider.ConcreteMaterialForEquilibriumFromSpec(spec)
+    Dim steel As CMaterialDiagram
+    Set steel = provider.SteelMaterialForEquilibriumFromSpec(spec)
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 20#), Nothing)
+    Dim initial As CSectionSolver
+    Set initial = New CSectionSolver
+    initial.EvaluateStrainPlane section, concrete, steel, -0.01, 0#, 0#
+    AssertTrue stats, "audit02.finalFlags.initialEquilibrium", _
+        initial.ConfirmEquilibrium(initial.Nint, initial.Mxint, initial.Myint)
+    Dim runner As CStateSolutionRunner
+    Set runner = New CStateSolutionRunner
+    AssertTrue stats, "audit02.finalFlags.initialExtended", runner.StateUsesExtension(section, initial, concrete, steel)
+    runner.SolveWithInitialSolver section, concrete, steel, -50000#, 0#, 0#, initial, True
+    AssertTrue stats, "audit02.finalFlags.converged", runner.Converged
+    AssertTrue stats, "audit02.finalFlags.physical", runner.WithinPhysicalRange
+    AssertTrue stats, "audit02.finalFlags.notExtended", Not runner.ExtensionUsed
+    AssertClose stats, "audit02.finalFlags.force", runner.ResultSolver.Nint, -50000#, 5#
 End Sub
 
 

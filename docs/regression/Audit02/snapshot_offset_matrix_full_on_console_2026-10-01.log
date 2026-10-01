@@ -1,0 +1,20 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 20046FE7086023387BCC82B0876C28265E9041ABE5CF670D1FF2C342F1702A79
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_7b64d023aa2e4227a6426dcac45ca7a7\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TOTAL: passed=496; failed=0
+MODE_AFTER_SUITE: Yes
+TOTAL_MATERIAL: passed=1191; failed=0; elapsedSec=0.078125
+MODE_AFTER_SUITE: Yes
+RUNTIME ERROR: -2147218301; source=CConcreteMaterialParameters; description=Concrete.Rb.mc2 должен быть положительным.
+MODE_AFTER_SUITE: Yes
+FAIL: audit02.offset.1.limit
+FAIL: audit02.offset.1.code
+FAIL: audit02.offset.1.display; actual=NumFail; expected=BaseFail
+TOTAL_CAPACITY: passed=1206; failed=3; elapsedSec=39.7578125
+MODE_AFTER_SUITE: Yes
+TOTAL_CRACK: passed=383; failed=0; elapsedSec=5.1171875
+MODE_AFTER_SUITE: Yes
+TOTAL_BATCH: passed=2230; failed=0; elapsedSec=44.7109375
+MODE_AFTER_SUITE: Yes
+SCRIPT ERROR: Exception calling "Run" with "1" argument(s): "The remote procedure call failed. (Exception from HRESULT: 0x800706BE)"

@@ -21,14 +21,14 @@
 
 | ID | Статус | Комментарий |
 | --- | --- | --- |
-| R01-R09 | в работе | R01 подтвержден интеграционным cache-hit тестом без нового solve. R06: EvaluateStrainPlane отделен от проверки равновесия. Полная приемка R02/R03/R08 не пройдена; R04/R05/R07 остаются открытыми. |
-| A01-A08 | в работе | DomainContext/downcasts удалены; успешный Search отделен от инженерного FAIL. Formation перенесен к существующему владельцу, отдельный crack suite 360/0; полная интеграционная приемка в работе. Контракты Search и flat-дубли открыты. |
-| E01-E10 | в работе | General.DiagramExtension действует на расширенные материалы текущих маршрутов. E02 проверен на временных и рабочей книгах; полная матрица и API cleanup не завершены. |
-| S01-S07 | в работе | S03/S04: warning-код постоянной части и успех порога выше текущего LC сохранены; направленные тесты прошли. Полная статусная приемка открыта. |
-| C01-C06 | в работе | Cache-hit и shared runner проверены частично; snapshots, scoped invalidation и transient probe-cache требуют завершения. |
-| Q01-Q08 | в работе | Baseline On и explicit Off прошли. После Formation переноса повторяется current full suite; полная численная On/Off матрица, output и performance acceptance остаются открытыми. |
-| D01-D02 | в работе | Источник Config и справка глобального Extension обновлены; архитектурные документы и все текущие API-комментарии еще не завершены. |
-| W01-W06 | в работе | Baseline и входные изменения сохранены; тестовые логи и точка продолжения записаны, готовится первый проверенный Audit02 checkpoint. |
+| R01-R09 | реализовано; финальная приемка в работе | Cache-hit, точная MaxLambda, подтверждение равновесия, общий Search, независимая Formation, snapshots, canonical results и sign-specific limits прошли принятые срезы. Последний R09 guard и новые граничные тесты проверяются чистой сборкой. |
+| A01-A08 | реализовано; финальная приемка в работе | Нет новых production-классов; DomainContext и flat-дубли удалены. Запасы принадлежат typed results. Остаточное форматирование передано CExecutionReport; мертвый API пределов Batch удален. |
+| E01-E10 | проверено в принятых срезах | Один General.DiagramExtension, active branches, неизменные узлы/пределы, effective context и Off. Добавленная малая окрестность eps_ult прошла material suite 1359/0. |
+| S01-S07 | проверено в принятых срезах | Typed причины, warning/fallback, SearchBound, blocked formulas, psi. Парный overload-тест подтверждает Off NumFail / On BaseFail и одинаковый вывод в summary/detail. |
+| C01-C06 | проверено; итоговая регрессия в работе | Scoped reuse, failed retry и mutation isolation приняты. Config change/read/export/plot: UI 574/0. Save/reopen: exact match, 0 solve. Добавлен явный PostState cache-hit. |
+| Q01-Q08 | в работе | Baseline/Off сохранены, current On/Off 6222/0 и 1448 парных assertions приняты. Performance: 3 повтора, источники неизменны. Повторяются все suites на чистой итоговой сборке. |
+| D01-D02 | реализовано; self-audit в работе | Config/help/runtime и Architecture согласованы с global Extension; исторические v6/migration/progress помечены. |
+| W01-W06 | в работе | Baseline и checkpoints сохранены; метрики сняты. До завершения необходимы final accepted suites, итоговый отчет, self-audit и финальный checkpoint. |
 
 ## Responsibility Transfer Map
 
@@ -65,10 +65,18 @@
 
 ## Current
 
-- Последний принятый HEAD: `651e4d9` (scoped state repository); baseline неизменен.
-- Новый срез A02/Q04: запасы перенесены к typed results, из Batch удалены формулы запасов и scalar API; consumers переведены на canonical branches. Capacity pure-axial finalization подтверждает исходный физический предел и равновесие, а не принимает нижнюю пробу у начала плато.
-- Полные `typed_reserves_pair_full_on/off_2026-10-01.txt`: по 6222 assertions, 8 suites, 0 ошибок; исходная книга не менялась. Парный directed log `on_off_physical_accepted_2026-10-01.txt`: 1448/0, максимальные отклонения по каждой величине выведены в `MAXDIFF`.
-- C05/Q05-24: добавлена, но еще не импортирована и не проверена новая UI-регрессия сохраненного snapshot после изменения Config. Performance, финальная чистая сборка, полный self-audit и final report остаются открытыми. Зелёные suites не означают завершения цели.
+- Последний принятый HEAD: `020ff8f9` (typed reserves + paired physical acceptance); baseline неизменен.
+- `typed_reserves_pair_full_on/off_2026-10-01.txt`: по 6222 assertions, 8 suites, 0 ошибок. `on_off_physical_accepted_2026-10-01.txt`: 1448/0; MAXDIFF по каждой величине.
+- Последний срез: ранняя подтвержденная pure-axial finalization, дополнительные Q05-06/08/09/17/19/24, фактический AutoCAD export-reader, перенос оставшегося форматирования к CExecutionReport, удаление шести неиспользуемых методов Batch, R09 guard в SectionTypeRegistry.
+- `snapshot_export_ui_accepted_on_2026-10-01.txt`: 574/0. `snapshot_save_reopen_accepted_2026-10-01.txt`: смена семи материальных настроек, закрытие/открытие, exact match 38950 символов, read/export/plot 0 solve, source unchanged.
+- `performance_confirmed_2026-10-01.txt`: baseline/current, 8 сценариев по 3 повтора, все assertions прошли, source unchanged. Pure axial: 30 -> 38 solve (против 501 до ранней finalization), probes 32 -> 12. Асимметрия: 20 -> 94 solve; baseline трижды принимал несошедшиеся пробы за физический предел, current делает подтвержденные retry (unconfirmedPhysical 3 -> 0). Это измеренное исправление R03, не потеря кэша; cache/reuse в methods и crack_cache сохранены.
+- `final_clean_build_2026-10-01.log`: полная отдельная сборка. Первый полный Off НЕ принят: новый section-test не задавал rbMc2/Ebt; новый exact-offset тест игнорировал фактическую сторону границы из-за округления. Исправлен только setup/смысл новых тестов, production-критерий и исторические expected/tolerance не менялись. Негативный лог сохранен.
+- Второй Off также выявил ошибку setup нового теста: `EvaluateStrainPlane` не означает подтвержденное равновесие. Тест явно вызвал `ConfirmEquilibrium`; production не менялся. Негативный лог `final_clean_accepted_off_2026-10-01.txt` сохранен.
+- Итоговая независимая полная сборка: `final_build_accepted_2026-10-01.log`, exit 0. Полные `final_verified_off/on_2026-10-01.txt`: каждый 6745 assertions / 0 ошибок, 8 suites, source unchanged. Физические On/Off пары содержат полный MAXDIFF; максимальная разница Capacity Mx = 0.000650160015 Н*мм, намного меньше прежнего допуска 5000 Н*мм.
+- Пользовательская output-книга обновлена только через `Refresh-VbaModules`: `final_output_refresh_2026-10-01.log`, exit 0. Штатный `Run-AllTests`: `final_output_all_tests_2026-10-01.txt`, exit 0, те же 6745/0; структура, включая Print area, прошла. Отдельная clean validation также exit 0.
+- `saved_combinations_on_off_accepted_2026-10-01.txt`: в доступной output-книге одно сохраненное LC=1; Capacity OK в обоих режимах, summary/detail совпадают, исходник неизменен. Это не набор перегруженных LC со старых скриншотов. Для двух overload-сценариев OFFSET_2MN/OFFSET_3MN подтверждено Off=NumFail / On=BaseFail, typed codes и вывод совпадают.
+- `expected_preservation_accepted_2026-10-01.txt`: сохранены 247 исходных test-процедур; 436 AssertClose expected/tolerance идентичны, 16 меняют только явно проверенный typed accessor, все tolerance сохранены. Финальные self-audit/report/checkpoint завершаются; до их сохранения цель не объявлять выполненной.
+- `final_source_contracts_accepted_2026-10-01.txt`: 103 импортированных src/tests modules соответствуют исходникам с учетом штатного VBE представления ANSI/Double; нет новых/удаленных production-классов (85 -> 85), DomainContext/downcasts и State/status/solve в чистой формуле отсутствуют. SHA-256 артефактов записаны в лог.
 
 ### История Принятых Срезов И Предыдущих Точек Продолжения
 
@@ -122,34 +130,37 @@
 
 | ID | Статус | Проверки / оставшийся объем |
 | --- | --- | --- |
-| Q05-01 | проверено для material API | `audit02.material.*` TwoLine/ThreeLine, ULS/SLS, бетон/сталь; требуются парные solve-сценарии. |
-| Q05-02 | проверено для material API | `audit02.material.*.ignored*` и suite материалов. |
-| Q05-03 | в работе | Эффективные роли provider; нужен отдельный multi-role integration test. |
-| Q05-04 | проверено для material API | `audit02.material.*` active compression/tension. |
-| Q05-05 | в работе | Все узлы/середины сегментов проверены; малая окрестность физической границы еще не покрыта полностью. |
-| Q05-06 | не начато | Нужна проверка промежуточного выхода и физического финала. |
-| Q05-07 | в работе | Исторические explicit-On state-тесты сохранены; требуется полная directed приемка. |
-| Q05-08 | проверено частично | `audit02.failedProbe.*`; добавить положительную lambda. |
-| Q05-09 | в работе | Старый `TestInitialLambdaFailureStatusMapping`; точная начальная граница еще требует проверки. |
-| Q05-10 | в работе | `audit02.formation.constant.*`, старые fixed-N/fixed-M fallback; Auto warning history еще требует проверки. |
-| Q05-11 | в работе | Старые crack search-bound/no-crack и `audit02.boundary.8.*`; generic result contract еще не завершен. |
-| Q05-12 | проверено | `audit02.boundary.*`: пределы 3, 5.25, 6 при MaxLambda=6; отсутствие предела 8. |
-| Q05-13 | проверено | `audit02.formation.aboveCurrent.*`: успешный найденный порог, no current crack, no PostState. |
-| Q05-14 | не начато | Ограничение другого материала раньше crack-критерия. |
-| Q05-15 | в работе | Существующие strategy/path matrices прошли; нужны новые On/Off сравнения. |
-| Q05-16 | проверено частично | `audit02.steelSign.*` обоих знаков и методов; сверить загрузку sign-specific limits из spec. |
-| Q05-17 | в работе | Старые User/Auto/AlwaysCalc сохранены; directed zero/negative sigma_crc еще не завершены. |
-| Q05-18 | проверено | `audit02.currentCache.*`, 10 assertions, фактическая ширина и zero new solve. |
-| Q05-19 | в работе | Старый `TestCrackFormationCacheHitWithoutLastRunner`; retry/cache acceptance еще требует проверки. |
-| Q05-20 | не начато | Scoped context/geometry/material/tolerance invalidation. |
-| Q05-21 | не начато | Повторное использование всех объектов после удаления дублей. |
-| Q05-22 | проверено частично | Существующие linear-material runner tests и `audit02.steelSign.*`; общий контракт сохранить. |
-| Q05-23 | в работе | Current meta включена в aggregate; добавить directed state failures. |
-| Q05-24 | не начато | Смена Config после сохранения snapshot. |
-| Q05-25 | проверено | `migration.*` 179 assertions и `audit02.migration.reader.*` 28 assertions; actual output и validation подтверждены. |
-| Q05-26 | проверено для material API | `audit02.technical.*`: физические пределы 12/14, technical 24/28, overflow InputErr. |
-| Q05-27 | в работе | Несколько guards исправлены; оставшиеся Nothing contracts еще проверяются. |
-| Q05-28 | в работе | `audit02.searchEngineering.metaSnapshot`, crack diagnostic snapshot; live solver snapshot еще необходимо устранить. |
+| Q05-01 | проверено | `TestAudit02PhysicalDiagramPairs`, `audit02.material.*`: TwoLine/ThreeLine, ULS/SLS, concrete/steel; Q04 solve-пары. |
+| Q05-02 | проверено | `audit02.material.*.ignored*`: большие tensile strains, sigma=Et=0, нет tensile extension. |
+| Q05-03 | проверено | `TestAudit02OnOffPhysicalResults`: один batch с PR1 Strength Ignore и PR2 Formation UseDiagram; `audit02.pair.*`, provider role tests. |
+| Q05-04 | проверено | `audit02.material.*`: активное растяжение бетона и оба знака стали; физический диапазон и extension раздельно. |
+| Q05-05 | проверено | `AssertPhysicalDiagramPair`: все узлы/середины, eps_ult, inner 1e-9, outer 0.5e-12/2e-12 с исходным range tolerance 1e-12. |
+| Q05-06 | проверено | `TestAudit02ExtendedInitialGuessPhysicalFinal`: подтвержденный extended start -> physical final; final ExtensionUsed=False. |
+| Q05-07 | проверено | `audit02.offsetPair.*.onAuxiliary/onExtended/onNotPhysical`, исторические explicit-On progression tests. |
+| Q05-08 | проверено | `TestAudit02UnconvergedProbeIsNumerical` и `TestAudit02PositiveUnconvergedProbe`: lambda=0 и 1, несколько итераций, превышение без физического исхода. |
+| Q05-09 | проверено | `TestInitialLambdaFailureStatusMapping`, `audit02.offset.*` (0.5/1/1.1) и `audit02.offsetPair.*` (2/3 МН). Точная граница классифицируется по реально подтвержденной плоскости. |
+| Q05-10 | проверено | `TestAudit02FormationOutcomeSemantics`, `audit02.formation.constant.*`, fixed-N/fixed-M и Auto path tests; code/warning/no fictitious Post. |
+| Q05-11 | проверено | `TestCrackFormationSearchBoundKeepsTechnicalCode`, no-crack/no-Post tests, `audit02.genericLoad.*` обоих доменов и `audit02.boundary.8.*`. |
+| Q05-12 | проверено | `audit02.boundary.*`: физические пределы 3, 5.25, 6 при MaxLambda=6; отсутствие предела 8; generic matrix трех методов. |
+| Q05-13 | проверено | `audit02.formation.aboveCurrent.*`: найденный порог выше текущего LC, Search success, no current crack/no PostState. |
+| Q05-14 | проверено | `audit02.formation.physicalBlock.*`: другой физический предел до tensile-критерия, нет фиктивного PreState/точки. |
+| Q05-15 | проверено | `TestCapacityLoadPathMethodMatrix`, zero-component matrix, crack strategy/path tests, generic Ultimate/LoadMultiplier, Q04 On/Off. |
+| Q05-16 | проверено | `audit02.steelSign.*` сжатие/растяжение, LoadMultiplier/Ultimate; CreateConfiguredSolver передает оба предела spec, не общий максимум. |
+| Q05-17 | проверено | `TestAudit02PsiSignedInputsAndFallbackModes`: отрицательный/нулевой crc, положительный случай, User/Auto/AlwaysCalc и psi1-fallback. |
+| Q05-18 | проверено | `audit02.currentCache.*`: фактическая width/sigma/psi идентична без LastRunner, zero new solve. |
+| Q05-19 | проверено | `TestCrackFormationCacheHitWithoutLastRunner`, `TestAudit02RepositoryContextAndRetry`: Pre/Post cache-hit, failed -> success, LastRunner отсутствует при reuse. |
+| Q05-20 | проверено | `audit02.cache.*`: Extension, spec/role, geometry/material identity/revision, tolerance; warm-start/retry/diagnostics не дробят key. |
+| Q05-21 | проверено | `TestAudit02CanonicalResultsAndReset`, generic result reinitialize, independent Formation repeat, `TestRepeatedRun`. |
+| Q05-22 | проверено | `TestLinearMaterialEquilibrium`, replacement/runner tests, `audit02.steelSign.*`: Object API без CMaterialDiagram. |
+| Q05-23 | проверено | `TestCrackAggregateIncludesCurrentStateFailure`, `TestFormulaChecksDoNotCreateNumFail` и explicit-On beyond-physical tests: Width/Long blocked, первичный Current status в aggregate. |
+| Q05-24 | проверено | `TestAudit02SavedResultsIgnoreMaterialChanges` + `snapshot_save_reopen_accepted_2026-10-01.txt`: семь Config values, actual export-reader/plot, raw tables exact, 0 solve. |
+| Q05-25 | проверено | `migration.*` 179 assertions и `audit02.migration.reader.*` 28 assertions; save/reopen, validation/help, No/default/conflict/invalid. |
+| Q05-26 | проверено | `audit02.technical.*`: физические пределы 12/14, technical 24/28, сохраненная физика и явный overflow InputErr. |
+| Q05-27 | проверено | generic invalid/Nothing contracts, State snapshot empty, Formation input/reset, Registry zero-rebar UI; остаточные And/Or содержат безопасные проверки без dereference. |
+| Q05-28 | проверено | `audit02.searchEngineering.metaSnapshot`, canonical State identity, `audit02.stateSnapshot.*`, repository returned meta/spec/log isolation, independent Formation snapshot. |
+
+Все строки Q05 подтверждены в итоговых `final_verified_off/on_2026-10-01.txt`,
+кроме физической миграции и save/reopen, имеющих отдельные указанные логи.
 
 ## Historical Checkpoints
 
@@ -203,6 +214,7 @@
 - Несошедшаяся probe-плоскость не подтверждает физический предел. Failed probe-cache не должен препятствовать повтору с лучшим warm-start.
 - `EvaluateStrainPlane` является только оценкой плоскости; физический State требует отдельного подтверждения равновесия с конкретной нагрузкой. Кандидатный UltimateStrain-предел нельзя принимать только по относительному направлению момента.
 - Snapshot восстанавливается через общий State-слой без нового solve и без зависимости от LastRunner. Прошедший cache-hit тест подтверждает не только статус, но и фактический расчет ширины.
+- Точная аналитическая Offset-нагрузка решается с исходными допусками усилий. Классифицируется фактическая подтвержденная плоскость: utilization >= 1 исчерпывает начальную Capacity-точку; небольшое округление ниже 1 не объявляется превышением по одному входному N. Физические eps_ult/range tolerance не менялись.
 
 ## Known Risks / Open Questions
 
@@ -223,14 +235,13 @@
 
 ## How To Continue
 
-1. Восстановить контекст по Current, spec и Git; HEAD=92d0a4ae. Не останавливаться для перезагрузки без явного нового запроса. Excel можно закрывать принудительно: пользователь подтвердил отсутствие активных книг.
-2. Дождаться чистой диагностической сборки R07 и проверить UI suite; сопоставить рост памяти с файлом трассировки. Не считать COM-ошибку или прерванный прогон приемкой.
-3. Закрыть R07 identity/reset/status/full On/Off и structural validation, сохранить логи и сделать checkpoint. R04/R05 уже имеют подтвержденные полные On/Off прогоны; старые записи ниже являются историей, не текущим открытым дефектом.
-4. Далее C02/C03: scoped repository geometry/material/effective Extension/tolerances, возможность failed-to-success retry, local probe-cache. Не создавать fingerprint/helper классы; сохранить warm-start и оптимизации.
-5. Завершить оставшиеся C/S/E/Q/D требования, On/Off численные сравнения, snapshots, output/performance и полную финальную сборку.
-6. Финальный self-audit каждого ID и final report только после приемки; непроверенную реализацию не объявлять завершенной.
+1. Восстановить контекст по Current/spec/Architecture и git status/diff/log; HEAD=020ff8f9. Не останавливаться для перезагрузки без явного запроса. Excel COM только последовательно.
+2. Итоговые clean On/Off, output refresh/Run-AllTests и structural validation прошли; не запускать заново без изменения соответствующего кода. Негативные логи сохранены отдельно.
+3. Завершить статический self-audit/source-book consistency, записать final report с таблицей всех ID и Old-T/Old-A, метриками и количественными MAXDIFF/performance.
+4. AutoCAD COM ProgID отсутствует: реальный DWG smoke не засчитывать. Actual export-reader/save-reopen/plot проверены в Excel, 0 дополнительного solve.
+5. Зафиксировать принятый итоговый срез, указать SHA и только после сохранения всех доказательств завершить goal.
 
-### Следующие диагностические чтения
+### Исторические Диагностические Чтения До Реализации
 
 - `CBatchSectionCalculator`: ApplyLoadReference / NormalizeCombinationMoments и LoadStateForCombination; `CSectionSolver.ClearResult`; `CExecutionReport` API для attachment диагностики Capacity.
 - `CStateGuessBuilder.AccumulateLinearElement` пропускает неположительные tangent contributions, тогда как solver учитывает их. Проверить причину неудачного active-set старта без изменения физической модели.

@@ -1,0 +1,24 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit02\RC_Section_NDM_clean_acceptance.xlsm
+SOURCE_SHA256: 8E4AEEDE4DB7774145760F282183B5AECD2C9B3C2EC0C25EEDECBB8D2D6FE5B7
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_54da50ffd0b6442c90ac2ba8d7f882ae\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL: passed=496; failed=0
+MODE_AFTER_SUITE: No
+TOTAL_MATERIAL: passed=1359; failed=0; elapsedSec=0.0859375
+MODE_AFTER_SUITE: No
+RUNTIME ERROR: -2147218301; source=CConcreteMaterialParameters; description=Concrete.Rb.mc2 должен быть положительным.
+MODE_AFTER_SUITE: No
+FAIL: audit02.offset.1.limit
+FAIL: audit02.offset.1.code
+FAIL: audit02.offset.1.display; actual=NumFail; expected=BaseFail
+TOTAL_CAPACITY: passed=1206; failed=3; elapsedSec=43.015625
+MODE_AFTER_SUITE: No
+TOTAL_CRACK: passed=383; failed=0; elapsedSec=5.0234375
+MODE_AFTER_SUITE: No
+TOTAL_BATCH: passed=2235; failed=0; elapsedSec=26.6953125
+MODE_AFTER_SUITE: No
+TOTAL_WORKBOOK_UI: passed=574; failed=0; elapsedSec=38.828125
+MODE_AFTER_SUITE: Yes
+TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.5078125
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

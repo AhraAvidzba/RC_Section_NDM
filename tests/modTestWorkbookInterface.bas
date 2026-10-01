@@ -49,6 +49,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC stats
     AppendLine stats, "RUN: TestProfileDrivenPlotUsesSnapshotState"
     TestProfileDrivenPlotUsesSnapshotState stats
+    TestAudit02SavedResultsIgnoreMaterialChanges stats
     AppendLine stats, "RUN: TestMissingProfileStateDrawsGeometryOnly"
     TestMissingProfileStateDrawsGeometryOnly stats
     TestAutoCADCalculationMessageUsesSavedGeometry stats
@@ -4059,6 +4060,145 @@ Public Function RunAudit02NoPlotDiagnostic() As String
     Exit Function
 Failed:
     RunAudit02NoPlotDiagnostic = "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Проверяет сохраненные Results после смены материальных настроек без пересчета.
+' Отдельный entrypoint позволяет повторить проверку на независимой книге.
+Public Function RunAudit02SavedSnapshotTests() As String
+    On Error GoTo Failed
+    Dim stats As TUiTestStats
+    TestAudit02SavedResultsIgnoreMaterialChanges stats
+    RunAudit02SavedSnapshotTests = stats.Report & _
+        "TOTAL_AUDIT02_SNAPSHOT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    Exit Function
+Failed:
+    RunAudit02SavedSnapshotTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Меняет Config после завершенного расчета, но не его сериализованный снимок.
+' Reader и повторная схема обязаны сохранить напряжения, деформации, признаки
+' State и таблицы диаграмм; чтение геометрии для AutoCAD также не решает НДС.
+Private Sub TestAudit02SavedResultsIgnoreMaterialChanges(ByRef stats As TUiTestStats)
+    PrepareCircleInput
+    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
+    Dim materialKeys As Variant
+    materialKeys = Array("General.DiagramExtension", "Concrete.E", "Concrete.R.ULS(I)", _
+        "Concrete.R.SLS(II)", "Steel.E", "Steel.R.ULS(I)", "Steel.R.SLS(II)")
+    Dim oldValues(0 To 6) As String
+    Dim i As Long
+    For i = 0 To UBound(materialKeys)
+        oldValues(i) = CStr(GetSystemSetting(CStr(materialKeys(i))))
+    Next i
+    Dim oldQuantity As String
+    oldQuantity = ProfileSettingValue("PR2", "Visualization.Quantity")
+    On Error GoTo RestoreFailed
+
+    Dim message As String
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    AssertTrue stats, "audit02.saved.run", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    Dim tables As Variant
+    tables = Array("rngNDMSectionGeometry", "rngNDMElementResults", "rngNDMSectionProperties", _
+        "rngNDMSectionAnnotations", "rngNDMMaterialDiagrams", "rngBatchSummary")
+    Dim beforeTables(0 To 5) As Variant
+    For i = 0 To UBound(tables)
+        beforeTables(i) = ResultTable(CStr(tables(i)))
+    Next i
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    Dim beforeStress As CSectionPlotDataReader
+    Set beforeStress = New CSectionPlotDataReader
+    SetProfileSetting "PR2", "Visualization.Quantity", "Stress"
+    beforeStress.LoadFromWorkbook ThisWorkbook, settings
+    SetSystemSetting "AutoCAD.Export.CombinationID", "LC1"
+    Dim beforeExport As String
+    beforeExport = Audit02ReadExportSnapshotForTests(ThisWorkbook)
+    Dim beforeStrain As CSectionPlotDataReader
+    Set beforeStrain = New CSectionPlotDataReader
+    SetProfileSetting "PR2", "Visualization.Quantity", "Strain"
+    beforeStrain.LoadFromWorkbook ThisWorkbook, settings
+    Dim solves As Long
+    solves = SectionEquilibriumSolveCount()
+
+    If StrComp(oldValues(0), "Yes", vbTextCompare) = 0 Then
+        SetSystemSetting "General.DiagramExtension", "No"
+    Else
+        SetSystemSetting "General.DiagramExtension", "Yes"
+    End If
+    For i = 1 To UBound(materialKeys)
+        SetSystemSetting CStr(materialKeys(i)), FormatNumberInvariant(CDbl(oldValues(i)) * 0.5)
+    Next i
+    settings.LoadFromWorkbook ThisWorkbook
+    Dim afterData As CSectionPlotDataReader
+    Set afterData = New CSectionPlotDataReader
+    SetProfileSetting "PR2", "Visualization.Quantity", "Stress"
+    afterData.LoadFromWorkbook ThisWorkbook, settings
+    AssertAudit02PlotSnapshot stats, "stress", beforeStress, afterData
+    AssertTextEquals stats, "audit02.saved.exportSnapshot", _
+        Audit02ReadExportSnapshotForTests(ThisWorkbook), beforeExport
+    SetProfileSetting "PR2", "Visualization.Quantity", "Strain"
+    afterData.LoadFromWorkbook ThisWorkbook, settings
+    AssertAudit02PlotSnapshot stats, "strain", beforeStrain, afterData
+    UpdateSectionPlotForWorkbook ThisWorkbook
+    Dim exportedSection As CSectionModel
+    Set exportedSection = ReadSectionGeometryFromResults(ThisWorkbook)
+    AssertTrue stats, "audit02.saved.exportGeometry", exportedSection.ConcreteCount > 0
+    AssertTrue stats, "audit02.saved.noSolve", SectionEquilibriumSolveCount() = solves
+    Dim afterTable As Variant
+    For i = 0 To UBound(tables)
+        afterTable = ResultTable(CStr(tables(i)))
+        AssertTrue stats, "audit02.saved.table." & CStr(tables(i)), _
+            Audit02SnapshotTablesEqual(beforeTables(i), afterTable)
+    Next i
+    GoTo RestoreSettings
+RestoreFailed:
+    Dim failureText As String
+    failureText = CStr(Err.Number) & "; " & Err.Description
+    AssertTrue stats, "audit02.saved.runtime." & failureText, False
+RestoreSettings:
+    For i = 0 To UBound(materialKeys)
+        SetSystemSetting CStr(materialKeys(i)), oldValues(i)
+    Next i
+    SetProfileSetting "PR2", "Visualization.Quantity", oldQuantity
+End Sub
+
+' ДЛЯ ТЕСТОВ
+' Сравнивает сериализованную раскраску и плоскость без повторной оценки материала.
+Private Sub AssertAudit02PlotSnapshot(ByRef stats As TUiTestStats, ByVal quantity As String, _
+        ByVal beforeData As CSectionPlotDataReader, ByVal afterData As CSectionPlotDataReader)
+    Dim prefix As String
+    prefix = "audit02.saved." & quantity
+    AssertTrue stats, prefix & ".nonempty", beforeData.Count > 0
+    AssertTrue stats, prefix & ".count", beforeData.Count = afterData.Count
+    AssertTextEquals stats, prefix & ".state", afterData.StateType, beforeData.StateType
+    AssertTextEquals stats, prefix & ".status", afterData.DirectStateStatus, beforeData.DirectStateStatus
+    AssertTrue stats, prefix & ".extension", afterData.ExtensionUsed = beforeData.ExtensionUsed
+    AssertClose stats, prefix & ".epsilon0", afterData.Epsilon0, beforeData.Epsilon0, 0#
+    AssertClose stats, prefix & ".kappaX", afterData.KappaX, beforeData.KappaX, 0#
+    AssertClose stats, prefix & ".kappaY", afterData.KappaY, beforeData.KappaY, 0#
+    Dim i As Long
+    For i = 1 To beforeData.Count
+        AssertTextEquals stats, prefix & ".id." & CStr(i), afterData.ElementID(i), beforeData.ElementID(i)
+        AssertTextEquals stats, prefix & ".physical." & CStr(i), afterData.PhysicalState(i), beforeData.PhysicalState(i)
+        AssertClose stats, prefix & ".value." & CStr(i), afterData.ResultValue(i), beforeData.ResultValue(i), 0#
+    Next i
+End Sub
+
+' ДЛЯ ТЕСТОВ
+' Сравнивает все ячейки двух снимков, включая model spec и effective Extension.
+Private Function Audit02SnapshotTablesEqual(ByRef beforeTable As Variant, ByRef afterTable As Variant) As Boolean
+    If UBound(beforeTable, 1) <> UBound(afterTable, 1) Then Exit Function
+    If UBound(beforeTable, 2) <> UBound(afterTable, 2) Then Exit Function
+    Dim r As Long
+    Dim c As Long
+    For r = 1 To UBound(beforeTable, 1)
+        For c = 1 To UBound(beforeTable, 2)
+            If CStr(beforeTable(r, c)) <> CStr(afterTable(r, c)) Then Exit Function
+        Next c
+    Next r
+    Audit02SnapshotTablesEqual = True
 End Function
 
 

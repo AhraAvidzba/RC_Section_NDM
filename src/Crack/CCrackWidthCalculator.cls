@@ -1259,3 +1259,11 @@ End Property
 Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
     mDiagnosticsEnabled = value
 End Property
+
+' ============================== ДЛЯ ТЕСТОВ ==============================
+
+' Проверяет подписанные входы действующей формулы psi без подмены найденных
+' НДС и напряжений. Пользовательский режим User этот расчет не использует.
+Public Function Audit02AutoPsiForTests(ByVal sigmaS As Double, ByVal sigmaSCrc As Double) As Double
+    Audit02AutoPsiForTests = AutoPsi(sigmaS, sigmaSCrc)
+End Function

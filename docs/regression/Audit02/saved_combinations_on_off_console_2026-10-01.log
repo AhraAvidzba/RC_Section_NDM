@@ -1,0 +1,4 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm; SHA256=632F80A1C838D04F90BD1396C27EE898860D3BA5052EC7DC7CF7A4DA7D237A42
+STARTED: No; 2026-10-01T21:21:09; C:\Users\avidzba\AppData\Local\Temp\RC_NDM_SavedPair_24e27ca8039c4887b0aaace46bae1bc5\RC_Section_NDM_No.xlsm
+MESSAGE: No; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: 1
+SCRIPT ERROR: Method invocation failed because [System.Double] does not contain a method named 'GetLength'.

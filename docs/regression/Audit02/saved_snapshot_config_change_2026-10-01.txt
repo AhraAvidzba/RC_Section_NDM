@@ -1,0 +1,276 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 105AB0380A79030D410112BA99C17B797D3CA94B89BA66BA6BBC4BA3BC309F05
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_af49d61c61134a67972c23e072783971\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit02SavedSnapshotTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit02SavedSnapshotTests; 2026-10-01T20:15:57
+EXCEL_AFTER_SUITE: pid=14524; workingSet=200540160; privateBytes=157777920; cpu=7.125
+OK: audit02.saved.run
+OK: audit02.saved.stress.nonempty
+OK: audit02.saved.stress.count
+OK: audit02.saved.stress.state; actual=CrackedState
+OK: audit02.saved.stress.status; actual=OK
+OK: audit02.saved.stress.extension
+OK: audit02.saved.stress.epsilon0; actual=-0.000060569517; expected=-0.000060569517
+OK: audit02.saved.stress.kappaX; actual=-0.000000401565; expected=-0.000000401565
+OK: audit02.saved.stress.kappaY; actual=-0.000000302159; expected=-0.000000302159
+OK: audit02.saved.stress.id.1; actual=C1
+OK: audit02.saved.stress.physical.1; actual=InactiveTensionConcrete
+OK: audit02.saved.stress.value.1; actual=0.; expected=0.
+OK: audit02.saved.stress.id.2; actual=C2
+OK: audit02.saved.stress.physical.2; actual=Compression
+OK: audit02.saved.stress.value.2; actual=-0.041358110138; expected=-0.041358110138
+OK: audit02.saved.stress.id.3; actual=C3
+OK: audit02.saved.stress.physical.3; actual=Compression
+OK: audit02.saved.stress.value.3; actual=-0.262941374099; expected=-0.262941374099
+OK: audit02.saved.stress.id.4; actual=C4
+OK: audit02.saved.stress.physical.4; actual=Compression
+OK: audit02.saved.stress.value.4; actual=-0.48452463806; expected=-0.48452463806
+OK: audit02.saved.stress.id.5; actual=C5
+OK: audit02.saved.stress.physical.5; actual=InactiveTensionConcrete
+OK: audit02.saved.stress.value.5; actual=0.; expected=0.
+OK: audit02.saved.stress.id.6; actual=C6
+OK: audit02.saved.stress.physical.6; actual=Compression
+OK: audit02.saved.stress.value.6; actual=-0.11425611724; expected=-0.11425611724
+OK: audit02.saved.stress.id.7; actual=C7
+OK: audit02.saved.stress.physical.7; actual=Compression
+OK: audit02.saved.stress.value.7; actual=-0.335839381202; expected=-0.335839381202
+OK: audit02.saved.stress.id.8; actual=C8
+OK: audit02.saved.stress.physical.8; actual=Compression
+OK: audit02.saved.stress.value.8; actual=-0.557422645163; expected=-0.557422645163
+OK: audit02.saved.stress.id.9; actual=C9
+OK: audit02.saved.stress.physical.9; actual=Compression
+OK: audit02.saved.stress.value.9; actual=-0.779005909124; expected=-0.779005909124
+OK: audit02.saved.stress.id.10; actual=C10
+OK: audit02.saved.stress.physical.10; actual=Compression
+OK: audit02.saved.stress.value.10; actual=-1.000589173085; expected=-1.000589173085
+OK: audit02.saved.stress.id.11; actual=C11
+OK: audit02.saved.stress.physical.11; actual=Compression
+OK: audit02.saved.stress.value.11; actual=-0.187154124343; expected=-0.187154124343
+OK: audit02.saved.stress.id.12; actual=C12
+OK: audit02.saved.stress.physical.12; actual=Compression
+OK: audit02.saved.stress.value.12; actual=-0.408737388304; expected=-0.408737388304
+OK: audit02.saved.stress.id.13; actual=C13
+OK: audit02.saved.stress.physical.13; actual=Compression
+OK: audit02.saved.stress.value.13; actual=-0.630320652265; expected=-0.630320652265
+OK: audit02.saved.stress.id.14; actual=C14
+OK: audit02.saved.stress.physical.14; actual=Compression
+OK: audit02.saved.stress.value.14; actual=-0.851903916227; expected=-0.851903916227
+OK: audit02.saved.stress.id.15; actual=C15
+OK: audit02.saved.stress.physical.15; actual=Compression
+OK: audit02.saved.stress.value.15; actual=-1.073487180188; expected=-1.073487180188
+OK: audit02.saved.stress.id.16; actual=C16
+OK: audit02.saved.stress.physical.16; actual=Compression
+OK: audit02.saved.stress.value.16; actual=-1.295070444149; expected=-1.295070444149
+OK: audit02.saved.stress.id.17; actual=C17
+OK: audit02.saved.stress.physical.17; actual=Compression
+OK: audit02.saved.stress.value.17; actual=-0.481635395407; expected=-0.481635395407
+OK: audit02.saved.stress.id.18; actual=C18
+OK: audit02.saved.stress.physical.18; actual=Compression
+OK: audit02.saved.stress.value.18; actual=-0.703218659368; expected=-0.703218659368
+OK: audit02.saved.stress.id.19; actual=C19
+OK: audit02.saved.stress.physical.19; actual=Compression
+OK: audit02.saved.stress.value.19; actual=-0.924801923329; expected=-0.924801923329
+OK: audit02.saved.stress.id.20; actual=C20
+OK: audit02.saved.stress.physical.20; actual=Compression
+OK: audit02.saved.stress.value.20; actual=-1.14638518729; expected=-1.14638518729
+OK: audit02.saved.stress.id.21; actual=C21
+OK: audit02.saved.stress.physical.21; actual=Compression
+OK: audit02.saved.stress.value.21; actual=-1.367968451252; expected=-1.367968451252
+OK: audit02.saved.stress.id.22; actual=C22
+OK: audit02.saved.stress.physical.22; actual=Compression
+OK: audit02.saved.stress.value.22; actual=-1.589551715213; expected=-1.589551715213
+OK: audit02.saved.stress.id.23; actual=C23
+OK: audit02.saved.stress.physical.23; actual=Compression
+OK: audit02.saved.stress.value.23; actual=-0.776116666471; expected=-0.776116666471
+OK: audit02.saved.stress.id.24; actual=C24
+OK: audit02.saved.stress.physical.24; actual=Compression
+OK: audit02.saved.stress.value.24; actual=-0.997699930432; expected=-0.997699930432
+OK: audit02.saved.stress.id.25; actual=C25
+OK: audit02.saved.stress.physical.25; actual=Compression
+OK: audit02.saved.stress.value.25; actual=-1.219283194393; expected=-1.219283194393
+OK: audit02.saved.stress.id.26; actual=C26
+OK: audit02.saved.stress.physical.26; actual=Compression
+OK: audit02.saved.stress.value.26; actual=-1.440866458354; expected=-1.440866458354
+OK: audit02.saved.stress.id.27; actual=C27
+OK: audit02.saved.stress.physical.27; actual=Compression
+OK: audit02.saved.stress.value.27; actual=-1.662449722315; expected=-1.662449722315
+OK: audit02.saved.stress.id.28; actual=C28
+OK: audit02.saved.stress.physical.28; actual=Compression
+OK: audit02.saved.stress.value.28; actual=-1.884032986277; expected=-1.884032986277
+OK: audit02.saved.stress.id.29; actual=C29
+OK: audit02.saved.stress.physical.29; actual=Compression
+OK: audit02.saved.stress.value.29; actual=-1.292181201496; expected=-1.292181201496
+OK: audit02.saved.stress.id.30; actual=C30
+OK: audit02.saved.stress.physical.30; actual=Compression
+OK: audit02.saved.stress.value.30; actual=-1.513764465457; expected=-1.513764465457
+OK: audit02.saved.stress.id.31; actual=C31
+OK: audit02.saved.stress.physical.31; actual=Compression
+OK: audit02.saved.stress.value.31; actual=-1.735347729418; expected=-1.735347729418
+OK: audit02.saved.stress.id.32; actual=C32
+OK: audit02.saved.stress.physical.32; actual=Compression
+OK: audit02.saved.stress.value.32; actual=-1.956930993379; expected=-1.956930993379
+OK: audit02.saved.stress.id.33; actual=R1
+OK: audit02.saved.stress.physical.33; actual=Compression
+OK: audit02.saved.stress.value.33; actual=-18.761401370352; expected=-18.761401370352
+OK: audit02.saved.stress.id.34; actual=R2
+OK: audit02.saved.stress.physical.34; actual=Compression
+OK: audit02.saved.stress.value.34; actual=-23.061285418899; expected=-23.061285418899
+OK: audit02.saved.stress.id.35; actual=R3
+OK: audit02.saved.stress.physical.35; actual=Compression
+OK: audit02.saved.stress.value.35; actual=-20.948341583432; expected=-20.948341583432
+OK: audit02.saved.stress.id.36; actual=R4
+OK: audit02.saved.stress.physical.36; actual=Compression
+OK: audit02.saved.stress.value.36; actual=-13.660303706235; expected=-13.660303706235
+OK: audit02.saved.stress.id.37; actual=R5
+OK: audit02.saved.stress.physical.37; actual=Compression
+OK: audit02.saved.stress.value.37; actual=-5.466405532682; expected=-5.466405532682
+OK: audit02.saved.stress.id.38; actual=R6
+OK: audit02.saved.stress.physical.38; actual=Compression
+OK: audit02.saved.stress.value.38; actual=-1.166521484135; expected=-1.166521484135
+OK: audit02.saved.stress.id.39; actual=R7
+OK: audit02.saved.stress.physical.39; actual=Compression
+OK: audit02.saved.stress.value.39; actual=-3.279465319601; expected=-3.279465319601
+OK: audit02.saved.stress.id.40; actual=R8
+OK: audit02.saved.stress.physical.40; actual=Compression
+OK: audit02.saved.stress.value.40; actual=-10.567503196798; expected=-10.567503196798
+OK: audit02.saved.strain.nonempty
+OK: audit02.saved.strain.count
+OK: audit02.saved.strain.state; actual=CrackedState
+OK: audit02.saved.strain.status; actual=OK
+OK: audit02.saved.strain.extension
+OK: audit02.saved.strain.epsilon0; actual=-0.000060569517; expected=-0.000060569517
+OK: audit02.saved.strain.kappaX; actual=-0.000000401565; expected=-0.000000401565
+OK: audit02.saved.strain.kappaY; actual=-0.000000302159; expected=-0.000000302159
+OK: audit02.saved.strain.id.1; actual=C1
+OK: audit02.saved.strain.physical.1; actual=InactiveTensionConcrete
+OK: audit02.saved.strain.value.1; actual=0.000012288079; expected=0.000012288079
+OK: audit02.saved.strain.id.2; actual=C2
+OK: audit02.saved.strain.physical.2; actual=Compression
+OK: audit02.saved.strain.value.2; actual=-0.000002819871; expected=-0.000002819871
+OK: audit02.saved.strain.id.3; actual=C3
+OK: audit02.saved.strain.physical.3; actual=Compression
+OK: audit02.saved.strain.value.3; actual=-0.000017927821; expected=-0.000017927821
+OK: audit02.saved.strain.id.4; actual=C4
+OK: audit02.saved.strain.physical.4; actual=Compression
+OK: audit02.saved.strain.value.4; actual=-0.000033035771; expected=-0.000033035771
+OK: audit02.saved.strain.id.5; actual=C5
+OK: audit02.saved.strain.physical.5; actual=InactiveTensionConcrete
+OK: audit02.saved.strain.value.5; actual=0.00000731776; expected=0.00000731776
+OK: audit02.saved.strain.id.6; actual=C6
+OK: audit02.saved.strain.physical.6; actual=Compression
+OK: audit02.saved.strain.value.6; actual=-0.00000779019; expected=-0.00000779019
+OK: audit02.saved.strain.id.7; actual=C7
+OK: audit02.saved.strain.physical.7; actual=Compression
+OK: audit02.saved.strain.value.7; actual=-0.00002289814; expected=-0.00002289814
+OK: audit02.saved.strain.id.8; actual=C8
+OK: audit02.saved.strain.physical.8; actual=Compression
+OK: audit02.saved.strain.value.8; actual=-0.000038006089; expected=-0.000038006089
+OK: audit02.saved.strain.id.9; actual=C9
+OK: audit02.saved.strain.physical.9; actual=Compression
+OK: audit02.saved.strain.value.9; actual=-0.000053114039; expected=-0.000053114039
+OK: audit02.saved.strain.id.10; actual=C10
+OK: audit02.saved.strain.physical.10; actual=Compression
+OK: audit02.saved.strain.value.10; actual=-0.000068221989; expected=-0.000068221989
+OK: audit02.saved.strain.id.11; actual=C11
+OK: audit02.saved.strain.physical.11; actual=Compression
+OK: audit02.saved.strain.value.11; actual=-0.000012760508; expected=-0.000012760508
+OK: audit02.saved.strain.id.12; actual=C12
+OK: audit02.saved.strain.physical.12; actual=Compression
+OK: audit02.saved.strain.value.12; actual=-0.000027868458; expected=-0.000027868458
+OK: audit02.saved.strain.id.13; actual=C13
+OK: audit02.saved.strain.physical.13; actual=Compression
+OK: audit02.saved.strain.value.13; actual=-0.000042976408; expected=-0.000042976408
+OK: audit02.saved.strain.id.14; actual=C14
+OK: audit02.saved.strain.physical.14; actual=Compression
+OK: audit02.saved.strain.value.14; actual=-0.000058084358; expected=-0.000058084358
+OK: audit02.saved.strain.id.15; actual=C15
+OK: audit02.saved.strain.physical.15; actual=Compression
+OK: audit02.saved.strain.value.15; actual=-0.000073192308; expected=-0.000073192308
+OK: audit02.saved.strain.id.16; actual=C16
+OK: audit02.saved.strain.physical.16; actual=Compression
+OK: audit02.saved.strain.value.16; actual=-0.000088300258; expected=-0.000088300258
+OK: audit02.saved.strain.id.17; actual=C17
+OK: audit02.saved.strain.physical.17; actual=Compression
+OK: audit02.saved.strain.value.17; actual=-0.000032838777; expected=-0.000032838777
+OK: audit02.saved.strain.id.18; actual=C18
+OK: audit02.saved.strain.physical.18; actual=Compression
+OK: audit02.saved.strain.value.18; actual=-0.000047946727; expected=-0.000047946727
+OK: audit02.saved.strain.id.19; actual=C19
+OK: audit02.saved.strain.physical.19; actual=Compression
+OK: audit02.saved.strain.value.19; actual=-0.000063054677; expected=-0.000063054677
+OK: audit02.saved.strain.id.20; actual=C20
+OK: audit02.saved.strain.physical.20; actual=Compression
+OK: audit02.saved.strain.value.20; actual=-0.000078162626; expected=-0.000078162626
+OK: audit02.saved.strain.id.21; actual=C21
+OK: audit02.saved.strain.physical.21; actual=Compression
+OK: audit02.saved.strain.value.21; actual=-0.000093270576; expected=-0.000093270576
+OK: audit02.saved.strain.id.22; actual=C22
+OK: audit02.saved.strain.physical.22; actual=Compression
+OK: audit02.saved.strain.value.22; actual=-0.000108378526; expected=-0.000108378526
+OK: audit02.saved.strain.id.23; actual=C23
+OK: audit02.saved.strain.physical.23; actual=Compression
+OK: audit02.saved.strain.value.23; actual=-0.000052917045; expected=-0.000052917045
+OK: audit02.saved.strain.id.24; actual=C24
+OK: audit02.saved.strain.physical.24; actual=Compression
+OK: audit02.saved.strain.value.24; actual=-0.000068024995; expected=-0.000068024995
+OK: audit02.saved.strain.id.25; actual=C25
+OK: audit02.saved.strain.physical.25; actual=Compression
+OK: audit02.saved.strain.value.25; actual=-0.000083132945; expected=-0.000083132945
+OK: audit02.saved.strain.id.26; actual=C26
+OK: audit02.saved.strain.physical.26; actual=Compression
+OK: audit02.saved.strain.value.26; actual=-0.000098240895; expected=-0.000098240895
+OK: audit02.saved.strain.id.27; actual=C27
+OK: audit02.saved.strain.physical.27; actual=Compression
+OK: audit02.saved.strain.value.27; actual=-0.000113348845; expected=-0.000113348845
+OK: audit02.saved.strain.id.28; actual=C28
+OK: audit02.saved.strain.physical.28; actual=Compression
+OK: audit02.saved.strain.value.28; actual=-0.000128456795; expected=-0.000128456795
+OK: audit02.saved.strain.id.29; actual=C29
+OK: audit02.saved.strain.physical.29; actual=Compression
+OK: audit02.saved.strain.value.29; actual=-0.000088103264; expected=-0.000088103264
+OK: audit02.saved.strain.id.30; actual=C30
+OK: audit02.saved.strain.physical.30; actual=Compression
+OK: audit02.saved.strain.value.30; actual=-0.000103211214; expected=-0.000103211214
+OK: audit02.saved.strain.id.31; actual=C31
+OK: audit02.saved.strain.physical.31; actual=Compression
+OK: audit02.saved.strain.value.31; actual=-0.000118319163; expected=-0.000118319163
+OK: audit02.saved.strain.id.32; actual=C32
+OK: audit02.saved.strain.physical.32; actual=Compression
+OK: audit02.saved.strain.value.32; actual=-0.000133427113; expected=-0.000133427113
+OK: audit02.saved.strain.id.33; actual=R1
+OK: audit02.saved.strain.physical.33; actual=Compression
+OK: audit02.saved.strain.value.33; actual=-0.000093807007; expected=-0.000093807007
+OK: audit02.saved.strain.id.34; actual=R2
+OK: audit02.saved.strain.physical.34; actual=Compression
+OK: audit02.saved.strain.value.34; actual=-0.000115306427; expected=-0.000115306427
+OK: audit02.saved.strain.id.35; actual=R3
+OK: audit02.saved.strain.physical.35; actual=Compression
+OK: audit02.saved.strain.value.35; actual=-0.000104741708; expected=-0.000104741708
+OK: audit02.saved.strain.id.36; actual=R4
+OK: audit02.saved.strain.physical.36; actual=Compression
+OK: audit02.saved.strain.value.36; actual=-0.000068301519; expected=-0.000068301519
+OK: audit02.saved.strain.id.37; actual=R5
+OK: audit02.saved.strain.physical.37; actual=Compression
+OK: audit02.saved.strain.value.37; actual=-0.000027332028; expected=-0.000027332028
+OK: audit02.saved.strain.id.38; actual=R6
+OK: audit02.saved.strain.physical.38; actual=Compression
+OK: audit02.saved.strain.value.38; actual=-0.000005832607; expected=-0.000005832607
+OK: audit02.saved.strain.id.39; actual=R7
+OK: audit02.saved.strain.physical.39; actual=Compression
+OK: audit02.saved.strain.value.39; actual=-0.000016397327; expected=-0.000016397327
+OK: audit02.saved.strain.id.40; actual=R8
+OK: audit02.saved.strain.physical.40; actual=Compression
+OK: audit02.saved.strain.value.40; actual=-0.000052837516; expected=-0.000052837516
+OK: audit02.saved.exportGeometry
+OK: audit02.saved.noSolve
+OK: audit02.saved.table.rngNDMSectionGeometry
+OK: audit02.saved.table.rngNDMElementResults
+OK: audit02.saved.table.rngNDMSectionProperties
+OK: audit02.saved.table.rngNDMSectionAnnotations
+OK: audit02.saved.table.rngNDMMaterialDiagrams
+OK: audit02.saved.table.rngBatchSummary
+TOTAL_AUDIT02_SNAPSHOT: passed=265; failed=0
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit02SavedSnapshotTests; 2026-10-01T20:16:01
+SOURCE_UNCHANGED: True

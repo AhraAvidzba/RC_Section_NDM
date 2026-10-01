@@ -46,6 +46,7 @@ Public Function RunCrackWidthTests() As String
     TestNoTensionRebar stats
     TestAudit02FormationOutcomeSemantics stats
     TestAudit02IndependentFormation stats
+    TestAudit02PsiSignedInputsAndFallbackModes stats
     AppendLine stats, "TOTAL_CRACK: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
     RunCrackWidthTests = stats.Report
@@ -1022,4 +1023,39 @@ Private Sub TestAudit02FormationOutcomeSemantics(ByRef stats As TCrackTestStats)
     AssertClose stats, "audit02.formation.constant.psi1", crack.PsiS, 1#, 0#
     search.Initialize Nothing, "Auto", vbNullString, False, 0#, 0#, 0#, 0#, Nothing, vbNullString, vbNullString
     AssertTrue stats, "audit02.formation.missing.internalError", search.Meta.InternalStatus = rsInternalError
+End Sub
+
+' ДЛЯ ТЕСТОВ
+' Проверяет реальные правила psi для сжатого/нулевого sigma_s,crc и нулевого
+' текущего напряжения. Затем три режима проходят полный расчет по разрешенной
+' ветви трещины от постоянной части без фиктивного PostCrackState.
+Private Sub TestAudit02PsiSignedInputsAndFallbackModes(ByRef stats As TCrackTestStats)
+    Dim formulaOwner As CCrackWidthCalculator
+    Set formulaOwner = New CCrackWidthCalculator
+    AssertClose stats, "audit02.psi.negativeCrc", formulaOwner.Audit02AutoPsiForTests(100#, -25#), 1#, 0#
+    AssertClose stats, "audit02.psi.zeroCrc", formulaOwner.Audit02AutoPsiForTests(100#, 0#), 1#, 0#
+    AssertClose stats, "audit02.psi.zeroCurrent", formulaOwner.Audit02AutoPsiForTests(0#, 25#), 1#, 0#
+    AssertClose stats, "audit02.psi.positiveCrc", formulaOwner.Audit02AutoPsiForTests(100#, 25#), 0.8, 0.000000000001
+    AssertClose stats, "audit02.psi.lowerBound", formulaOwner.Audit02AutoPsiForTests(100#, 200#), 0#, 0#
+    Dim section As CSectionModel
+    Dim solver As CSectionSolver
+    Set solver = SolveServiceStateWithRunner(section, 200000#, 0#, 0#)
+    Dim mode As Variant
+    For Each mode In Array("User", "Auto", "AlwaysCalc")
+        Dim crack As CCrackWidthCalculator
+        Set crack = CalculateCrack(solver, section, 200000#, 0#, 0#, _
+            CStr(mode), "Effective", allowable:=0.0001, psiSValue:=0.65, formationPath:="lambda*Mxy")
+        Dim prefix As String
+        prefix = "audit02.psi.fallback." & CStr(mode)
+        AssertTrue stats, prefix & ".converged", crack.Converged
+        AssertTrue stats, prefix & ".warningCode", crack.FormationResult.ResultMeta.ResultCode = rcInitialStateBeyondLimit
+        AssertTrue stats, prefix & ".noPost", crack.FormationResult.PostCrackState Is Nothing
+        If CStr(mode) = "User" Then
+            AssertClose stats, prefix & ".value", crack.PsiS, 0.65, 0#
+        Else
+            AssertClose stats, prefix & ".value", crack.PsiS, 1#, 0#
+        End If
+        AssertTrue stats, prefix & ".upperBound", crack.PsiS <= 1#
+        AssertCrackCalculatorNotNumFail stats, prefix & ".notNumerical", crack
+    Next mode
 End Sub

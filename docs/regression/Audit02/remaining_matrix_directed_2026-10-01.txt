@@ -1,0 +1,7 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 44DD5466EEA0F4B96BD221999AD1D25FDCE5EB756423B6ED8C46ADEB2CABECB0
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_13554205435d4fd199c8f73fdd78b260\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestSectionSolver.RunSectionSolverTests,modTestCapacitySolver.RunCapacitySolverTests,modTestCrackWidth.RunCrackWidthTests =====
+SUITE_STARTED: modTestSectionSolver.RunSectionSolverTests,modTestCapacitySolver.RunCapacitySolverTests,modTestCrackWidth.RunCrackWidthTests; 2026-10-01T20:32:44
+SCRIPT ERROR: Exception calling "Run" with "1" argument(s): "Не удается выполнить макрос "'RC_Section_NDM.xlsm'!modTestSectionSolver.RunSectionSolverTests,modTestCapacitySolver.RunCapacitySolverTests,modTestCrackWidth.RunCrackWidthTests". Возможно, этот макрос отсутствует в текущей книге либо все макросы отключены."

@@ -2,6 +2,10 @@
 
 Дата подготовки: 2026-09-28.
 
+> Исторический план миграции. Audit02 от 2026-10-01 заменяет ограничение
+> Extension только для direct-state и уточняет canonical results, Search и
+> scoped repository. Текущий контракт: [Architecture.md](Architecture.md).
+
 Исходный укрупненный документ: `docs/NDM_Architecture_Refactoring_Plan_Codex_v6.md`.
 
 Назначение этого файла: развернуть укрупненный план применительно к текущему коду проекта `RC_Section_NDM`, существующим VBA-классам, листам Excel, writer-ам и уже согласованным расчетным правилам. Это план миграции, а не реализация.
