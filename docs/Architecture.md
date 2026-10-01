@@ -1,10 +1,11 @@
 # Architecture
 
-Дата актуализации: 2026-10-01, Audit02 (приемка завершена в доступной среде).
+Дата актуализации: 2026-10-02. Отражает текущие исходники; общая приемка Audit03 еще выполняется.
 
 Доказательства и ограничения: [итоговый отчет Audit02](NDM_Audit02_Final_Report.md).
 
-Актуальные уточнения: [ТЗ Audit02](NDM_Audit02_Implementation_Spec_2026-10-01.md).
+Актуальные уточнения: [ТЗ Audit03](NDM_Audit03_Implementation_Spec_2026-10-01.md)
+и [текущий progress с доказательствами](NDM_Audit03_Progress.md).
 История решений хранится в v6/migration/progress; ограничения старых документов
 «Extension только для DirectState» заменены единым `General.DiagramExtension`.
 
@@ -24,7 +25,7 @@ Config + rngLoadCombinations
        -> CStateProvider -> CStateRepository / CStateSolutionRunner -> CSectionSolver
        -> CCapacityCalculator -> CLimitSearchCoordinator
        -> CCrackFormationCalculator -> CLimitSearchCoordinator
-       -> CCrackWidthCalculator -> CCrackWidthFormulaCalculator
+       -> CCrackWidthCalculator (подготовка данных + отдельные чистые численные методы)
        -> CLongitudinalCrackCalculator
        -> CStabilityCalculator
   -> CCombinationResult (канонические typed results)
@@ -228,9 +229,10 @@ bracket/bisection/Newton. `CLoadPathVector` является общим путе
 `CCrackFormationCalculator` реально владеет formation-критерием, Auto-путями,
 поиском и Pre/Post states. `CCrackWidthCalculator` подготавливает данные по
 физически допустимому текущему State и FormationResult: зону, стержни, `Abt/As`,
-`ds/ls`, напряжения и коэффициенты. Чистая `CCrackWidthFormulaCalculator`
-получает только готовые численные данные и вычисляет `a_crc`; State, выбор зоны,
-статусы и новые solves ей не передаются. `CLongitudinalCrackCalculator`
+`ds/ls`, напряжения и коэффициенты. Его чистые численные методы
+`CrackWidthFromData` и `UtilizationFromData` получают только готовые числа и
+вычисляют `a_crc`/отношение к допуску; State, выбор зоны, статусы и новые solves
+им не передаются. `CLongitudinalCrackCalculator`
 независимо проверяет сжатый бетон, в том числе при отсутствии нормальной трещины.
 
 Текущее CrackedState рассчитывается только при наличии активного потребителя:
@@ -254,7 +256,18 @@ CCombinationResult
 и meta, а не параллельную плоскость/усилия. Запасы принадлежат результатам своих
 проверок; Combination агрегирует критерий сводки, Batch выбирает LC. Плоские
 таблицы Results являются сериализацией, а не дублированной доменной моделью.
-Малые spec/meta/parameter snapshots изолированы; волокна на каждом getter не клонируются.
+Малые spec/meta/parameter snapshots и контейнеры опубликованного Search изолированы;
+волокна на каждом getter не клонируются. Named-state не меняется при дальнейшей
+работе solver-а или повторном заполнении контейнера Search.
+
+`CStrengthResult` собирает итог и комментарии DirectState/Capacity,
+`CCrackResult` - Formation/CurrentState/Width/Longitudinal. Combination объединяет
+готовые итоги этих разделов и устойчивость. Единственный алгоритм приоритета
+typed/display результатов принадлежит `CResultStatusPolicy`. Общая meta хранит
+typed outcome и lifecycle атомарно; независимых setter-ов для status/code/flags нет.
+Комментарии блоков готовятся из своих subtrees в расчетном порядке; writers
+получают готовый текст. Окончательное поддерево трещин упаковывается один раз,
+промежуточные диагностические факты сохраняются непосредственно по стадиям.
 
 ### Статусы И Комментарии
 

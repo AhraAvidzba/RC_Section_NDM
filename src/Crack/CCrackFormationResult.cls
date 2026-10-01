@@ -173,7 +173,7 @@ Public Property Get SolverCallCount() As Long
 End Property
 
 Public Property Get SearchResult() As CLimitSearchResult
-    Set SearchResult = mSearchResult
+    If Not mSearchResult Is Nothing Then Set SearchResult = mSearchResult.Clone
 End Property
 
 ' Успех formation включает корректный warning-fallback без фиктивной точки.

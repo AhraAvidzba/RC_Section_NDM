@@ -127,6 +127,38 @@ Public Function AggregateMeta(ByVal directMeta As CResultMeta, ByVal capacityMet
     AggregateMeta = resultStatus
 End Function
 
+' Выбирает худший готовый typed результат тем же единственным приоритетом,
+' что и display-агрегация. Сохраняет точный код/диагностику выбранной причины
+' и независимый snapshot; комментарий уже подготовлен владельцем поддерева.
+Public Function WorstResultMeta(ByVal fallbackKind As EResultKind, _
+        ParamArray metas() As Variant) As CResultMeta
+    Dim selected As CResultMeta, candidate As CResultMeta
+    Dim i As Long
+    For i = LBound(metas) To UBound(metas)
+        Set candidate = Nothing
+        If IsObject(metas(i)) Then Set candidate = metas(i)
+        If Not candidate Is Nothing Then
+            If selected Is Nothing Then
+                Set selected = candidate
+            ElseIf StatusPriority(ExternalStatus(candidate)) > StatusPriority(ExternalStatus(selected)) Then
+                Set selected = candidate
+            ElseIf candidate.InternalStatus = rsSuccessWithWarning And selected.InternalStatus = rsSuccess Then
+                ' Оба исхода отображаются OK, но значимое предупреждение и его
+                ' машинный код не должны теряться из-за порядка дочерних ветвей.
+                Set selected = candidate
+            End If
+        End If
+    Next i
+    Dim result As CResultMeta
+    If selected Is Nothing Then
+        Set result = New CResultMeta
+        result.SetNotApplicable fallbackKind
+    Else
+        Set result = selected.Clone
+    End If
+    Set WorstResultMeta = result
+End Function
+
 ' Агрегирует уже внешние display-статусы там, где формат Results хранит их
 ' плоскими строковыми полями. Этот метод не выводит внутренний смысл из текста,
 ' а только выбирает худший из утвержденных внешних статусов.

@@ -85,7 +85,7 @@ End Sub
 Public Sub SetBlockedByDependency(ByVal resultKind As EResultKind, _
         ByVal dependencyName As String, Optional ByVal reason As String = vbNullString)
     Dim comment As String
-    comment = "Расчет не выполнен: нет обязательного результата " & dependencyName & "."
+    comment = "Расчет не выполнен: нет допустимого обязательного результата " & dependencyName & "."
     If Len(Trim$(reason)) > 0 Then comment = comment & " " & Trim$(reason)
     SetResult rsBlockedByDependency, rcBlockedByDependency, resultKind, comment, vbNullString, True, False
 End Sub
@@ -122,28 +122,52 @@ Public Function Clone() As CResultMeta
     Set Clone = result
 End Function
 
+' Добавляет собственную причину в комментарий родительского result без дублей.
+' Обычные успешные и неприменимые ветви не загромождают сводку; blocked и
+' warning сохраняются. Для уже собранного subtree передается prepared=True:
+' его текст не размечается повторно и не теряется при итоговом внешнем OK.
+Public Sub AppendCommentTo(ByRef targetText As String, Optional ByVal prepared As Boolean = False)
+    If Not prepared Then
+        Select Case mInternalStatus
+            Case rsCheckFailed, rsNumericalFailure, rsInvalidInput, rsInvalidConfiguration, _
+                    rsInternalError, rsBlockedByDependency, rsSuccessWithWarning
+            Case Else
+                Exit Sub
+        End Select
+    End If
+    Dim commentText As String
+    commentText = Trim$(mResultComment)
+    If Len(commentText) = 0 Then Exit Sub
+    If Not prepared Then commentText = ResultKindLabel() & ": " & commentText
+    If InStr(1, "; " & targetText & "; ", "; " & commentText & "; ", vbTextCompare) > 0 Then Exit Sub
+    If Len(targetText) > 0 Then targetText = targetText & "; "
+    targetText = targetText & commentText
+End Sub
+
+' Дает короткую инженерную метку владельца причины при сборке result-subtree.
+' Это подпись готовых данных, а не правило выбора расчетной ветви или статуса.
+Private Function ResultKindLabel() As String
+    Select Case mResultKind
+        Case rkDirectState: ResultKindLabel = "НДС"
+        Case rkCapacity: ResultKindLabel = "Несущая"
+        Case rkCrackFormation: ResultKindLabel = "Трещинообразование"
+        Case rkCrackWidth: ResultKindLabel = "Ширина трещин"
+        Case rkLongitudinalCrack: ResultKindLabel = "Продольные трещины"
+        Case rkStability: ResultKindLabel = "Устойчивость"
+        Case Else: ResultKindLabel = "Расчет"
+    End Select
+End Function
+
 Public Property Get InternalStatus() As EResultInternalStatus
     InternalStatus = mInternalStatus
-End Property
-
-Public Property Let InternalStatus(ByVal value As EResultInternalStatus)
-    mInternalStatus = value
 End Property
 
 Public Property Get ResultCode() As EResultCode
     ResultCode = mResultCode
 End Property
 
-Public Property Let ResultCode(ByVal value As EResultCode)
-    mResultCode = value
-End Property
-
 Public Property Get ResultKind() As EResultKind
     ResultKind = mResultKind
-End Property
-
-Public Property Let ResultKind(ByVal value As EResultKind)
-    mResultKind = value
 End Property
 
 Public Property Get ResultComment() As String
@@ -166,16 +190,8 @@ Public Property Get Applies() As Boolean
     Applies = mApplies
 End Property
 
-Public Property Let Applies(ByVal value As Boolean)
-    mApplies = value
-End Property
-
 Public Property Get Calculated() As Boolean
     Calculated = mCalculated
-End Property
-
-Public Property Let Calculated(ByVal value As Boolean)
-    mCalculated = value
 End Property
 
 ' Возвращает компактную строку для diagnostics без влияния на пользовательский статус.

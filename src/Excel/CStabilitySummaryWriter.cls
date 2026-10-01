@@ -418,10 +418,10 @@ End Function
 
 ' Возвращает внешний статус канонической устойчивости через общую policy.
 Private Function StabilityStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal policy As CBatchStatusPolicy) As String
+        ByVal policy As CResultStatusPolicy) As String
     Dim meta As CResultMeta
     Set meta = batch.ResultAt(index).StabilityMeta
-    StabilityStatusText = policy.StatusFromMeta(meta)
+    StabilityStatusText = policy.ExternalStatus(meta)
 End Function
 
 ' Возвращает готовое пользовательское пояснение из ResultMeta блока.
@@ -433,7 +433,7 @@ End Function
 
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
-    Dim policy As CBatchStatusPolicy
+    Dim policy As CResultStatusPolicy
     Set policy = StatusPolicy()
 
     Dim statusText As String
@@ -683,7 +683,7 @@ End Sub
 
 ' Возвращает статус одной расчетной плоскости по общему пользовательскому словарю.
 Private Function PlaneStatus(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As String
-    Dim policy As CBatchStatusPolicy
+    Dim policy As CResultStatusPolicy
     Set policy = StatusPolicy()
     If Not PlaneApplicable(batch, index, planeIndex) Then
         PlaneStatus = policy.NotApplicable
@@ -891,8 +891,8 @@ Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
 End Function
 
 ' Возвращает общую политику отображения статусов PASS/FAIL/N/A.
-Private Function StatusPolicy() As CBatchStatusPolicy
-    Static policy As CBatchStatusPolicy
-    If policy Is Nothing Then Set policy = New CBatchStatusPolicy
+Private Function StatusPolicy() As CResultStatusPolicy
+    Static policy As CResultStatusPolicy
+    If policy Is Nothing Then Set policy = New CResultStatusPolicy
     Set StatusPolicy = policy
 End Function

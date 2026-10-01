@@ -212,6 +212,7 @@ Public Function RunBatchCalculationTests() As String
     TestAudit02OnOffPhysicalResults stats
     TestAudit02InitialOffsetOnOffStatuses stats
     TestAudit03ResultLifecycle stats
+    TestAudit03LoadPathComments stats
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -4170,7 +4171,7 @@ Private Function MaxDouble(ByVal firstValue As Double, ByVal secondValue As Doub
 End Function
 
 ' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
-Private Function BuildBatchCalculator() As CBatchSectionCalculator
+Private Function BuildBatchCalculator(Optional ByVal diagramExtensionEnabled As Boolean = True) As CBatchSectionCalculator
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
     geom.Initialize 300#, 200#, 0#, 0#, 0#, 0#
@@ -4191,7 +4192,7 @@ Private Function BuildBatchCalculator() As CBatchSectionCalculator
 
     Dim batch As CBatchSectionCalculator
     Set batch = New CBatchSectionCalculator
-    batch.Initialize section, TestMaterialProvider()
+    batch.Initialize section, TestMaterialProvider(diagramExtensionEnabled)
     Set batch.ProfileCatalog = TestProfileCatalog()
     Set BuildBatchCalculator = batch
 End Function
@@ -4619,6 +4620,9 @@ Private Sub TestCombinationResultTreeDrivesDisplayFields(ByRef stats As TBatchTe
         policy.ExternalStatus(warningOverall), "OK"
     AssertTrue stats, "combinationTree.warning.commentKept", _
         InStr(1, warningOverall.ResultComment, "Равновесие найдено через резервный старт", vbTextCompare) > 0
+    Dim warningAfterSuccess As CResultMeta
+    Set warningAfterSuccess = policy.WorstResultMeta(rkGeneric, okMeta, warningMeta)
+    AssertTrue stats, "audit03.aggregate.warningAfterSuccess", warningAfterSuccess.InternalStatus = rsSuccessWithWarning
 
     Dim failMeta As CResultMeta
     Set failMeta = New CResultMeta
@@ -4727,20 +4731,22 @@ End Sub
 ' Продольные трещины и устойчивость являются инженерскими проверками готовых
 ' величин; их отрицательный результат должен быть FAIL/InputErr/N/A, но не NumFail.
 Private Sub TestFormulaChecksDoNotCreateNumFail(ByRef stats As TBatchTestStats)
-    Dim policy As CBatchStatusPolicy
-    Set policy = New CBatchStatusPolicy
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
 
+    Dim longitudinal As CLongitudinalCrackCalculator
+    Set longitudinal = New CLongitudinalCrackCalculator
     AssertEquals stats, "status.longitudinal.pass", _
-        policy.StatusFromMeta(policy.LongitudinalCrackMeta(10#, 14.6)), "OK"
+        policy.ExternalStatus(longitudinal.CalculateFromStress(10#, 14.6).ResultMeta), "OK"
     AssertEquals stats, "status.longitudinal.fail", _
-        policy.StatusFromMeta(policy.LongitudinalCrackMeta(20#, 14.6)), "FAIL"
+        policy.ExternalStatus(longitudinal.CalculateFromStress(20#, 14.6).ResultMeta), "FAIL"
     AssertEquals stats, "status.longitudinal.na", _
-        policy.StatusFromMeta(policy.LongitudinalCrackMeta(0#, 14.6)), "N/A"
+        policy.ExternalStatus(longitudinal.CalculateFromStress(0#, 14.6).ResultMeta), "N/A"
     AssertEquals stats, "status.longitudinal.input", _
-        policy.StatusFromMeta(policy.LongitudinalCrackMeta(10#, 0#)), "InputErr"
+        policy.ExternalStatus(longitudinal.CalculateFromStress(10#, 0#).ResultMeta), "InputErr"
 
     AssertTrue stats, "status.longitudinal.noNumFail", _
-        policy.StatusFromMeta(policy.LongitudinalCrackMeta(20#, 14.6)) <> "NumFail"
+        policy.ExternalStatus(longitudinal.CalculateFromStress(20#, 14.6).ResultMeta) <> "NumFail"
 End Sub
 
 ' Проверяет Stage 2: named-state хранит не только плоскость деформаций, но и
@@ -4911,6 +4917,7 @@ Private Sub TestAudit02CurrentCrackedStateCacheHitCalculatesWidth(ByRef stats As
     AssertTrue stats, "audit02.currentCache.stateOK", second.CurrentStateMeta.InternalStatus = rsSuccess
 End Sub
 
+
 ' Проверяет канонический результат реального расчета и повторное использование
 ' контейнеров: State не копируется в direct-result, meta не меняется снаружи,
 ' а нейтральная повторная инициализация не оставляет чисел прошлого сочетания.
@@ -4999,7 +5006,7 @@ Private Function ProvisionalConcrete() As CMaterialDiagram
     Set ProvisionalConcrete = concrete
 End Function
 
-Private Function TestMaterialProvider() As CMaterialModelProvider
+Private Function TestMaterialProvider(Optional ByVal diagramExtensionEnabled As Boolean = True) As CMaterialModelProvider
     Dim concreteParameters As CConcreteMaterialParameters
     Set concreteParameters = New CConcreteMaterialParameters
     concreteParameters.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
@@ -5010,7 +5017,7 @@ Private Function TestMaterialProvider() As CMaterialModelProvider
 
     Dim provider As CMaterialModelProvider
     Set provider = New CMaterialModelProvider
-    provider.InitializeFromParameters concreteParameters, steelParameters
+    provider.InitializeFromParameters concreteParameters, steelParameters, diagramExtensionEnabled:=diagramExtensionEnabled
     Set TestMaterialProvider = provider
 End Function
 
@@ -5829,3 +5836,261 @@ Private Sub TestAudit03ResultLifecycle(ByRef stats As TBatchTestStats)
         vbNullString, vbNullString, vbNullString, True
     AssertTrue stats, "audit03.lifecycle.search.actualAttempt", search.Meta.Calculated
 End Sub
+
+' ===========================================================================
+' ДЛЯ ТЕСТОВ: AUDIT03 - ВСЕ ПУТИ НАГРУЗКИ И КОММЕНТАРИИ RESULTS
+' ===========================================================================
+
+' Выполняет реальные Capacity/Formation расчеты всех пользовательских путей.
+' Отдельный вход сохраняет параметры, typed причины и комментарии каждого
+' результата; подробные таблицы сверяются с опубликованными subtrees.
+Public Function RunAudit03LoadPathCommentTests() As String
+    On Error GoTo Failed
+    Dim stats As TBatchTestStats
+    TestAudit03LoadPathComments stats
+    AppendLine stats, "TOTAL_AUDIT03_PATH_COMMENTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03LoadPathCommentTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03LoadPathCommentTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' Сохраняет настройки книги и последовательно проверяет 15 capacity и 12
+' formation случаев. Устойчивость выключена только в этом направленном наборе,
+' чтобы момент от ее усиления не менял проверяемую lambda-траекторию.
+' Фильтр малых моментов проверяется отдельно; здесь он равен нулю, чтобы
+' независимое сравнение компонент проверяло именно выбранный load path.
+Private Sub TestAudit03LoadPathComments(ByRef stats As TBatchTestStats)
+    Dim oldPath As String, oldPr1Stability As String, oldPr2Stability As String, oldZeroMoment As String
+    oldPath = GetSystemSetting("SLS.Crack.InitiationLoadPath")
+    oldPr1Stability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldPr2Stability = GetProfileValue("Calculation.Stability.Enabled", "PR2")
+    oldZeroMoment = GetSystemSetting("Calculation.ZeroMomentPerDepth")
+    On Error GoTo Failed
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    AppendLine stats, "SETUP: ZeroMomentPerDepth=0; stability=No; offsetX=10 mm; offsetY=-7 mm"
+
+    Dim loads As Variant, capacityPaths As Variant, formationPaths As Variant
+    loads = Array(Array(-150000#, -6000000#, -3000000#), _
+        Array(-1500000#, -60000000#, 20000000#), Array(200000#, 9000000#, -3000000#))
+    capacityPaths = Array("Mx", "My", "Mxy", "N", "NMxy")
+    formationPaths = Array("Auto", "Mxy", "N", "NMxy")
+    Dim settings As CSystemSettingsReader, units As CUnitSystem
+    Dim batch As CBatchSectionCalculator, writer As CBatchResultWriter
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+    Set writer = New CBatchResultWriter
+    Dim extensionEnabled As Boolean
+    extensionEnabled = settings.GetBoolean("General.DiagramExtension")
+    AppendLine stats, "SETUP: effective DiagramExtension=" & CStr(extensionEnabled)
+    Set batch = BuildBatchCalculator(extensionEnabled)
+    batch.ApplySettings settings, units
+    Dim pathIndex As Long, loadIndex As Long, index As Long, path As String
+    For pathIndex = 0 To 4
+        For loadIndex = 0 To 2
+            path = ChrW$(&H3BB) & "*" & CStr(capacityPaths(pathIndex))
+            batch.AddCombination "A03_C_" & CStr(pathIndex) & "_" & CStr(loadIndex), _
+                CDbl(loads(loadIndex)(0)), CDbl(loads(loadIndex)(1)), CDbl(loads(loadIndex)(2)), _
+                "PR1", "Audit03: capacity path", path
+        Next loadIndex
+    Next pathIndex
+    batch.ApplyLoadReference 10#, -7#, 0#, 0#
+    batch.Execute
+    writer.WriteSummary ThisWorkbook, batch, units
+    For index = 1 To batch.Count
+        pathIndex = (index - 1) \ 3
+        loadIndex = (index - 1) Mod 3
+        Audit03CheckCapacityPath stats, batch.ResultAt(index).StrengthResult.Capacity, _
+            "audit03.paths." & batch.CombinationID(index), CStr(capacityPaths(pathIndex)), loads(loadIndex)
+        Audit03CheckResultComments stats, batch, index
+    Next index
+
+    For pathIndex = 0 To 3
+        path = CStr(formationPaths(pathIndex))
+        If path <> "Auto" Then path = ChrW$(&H3BB) & "*" & path
+        SetSystemSetting "SLS.Crack.InitiationLoadPath", path
+        settings.LoadFromWorkbook ThisWorkbook
+        units.LoadFromSettings settings
+        Set batch = BuildBatchCalculator(extensionEnabled)
+        batch.ApplySettings settings, units
+        For loadIndex = 0 To 2
+            batch.AddCombination "A03_F_" & CStr(pathIndex) & "_" & CStr(loadIndex), _
+                CDbl(loads(loadIndex)(0)), CDbl(loads(loadIndex)(1)), CDbl(loads(loadIndex)(2)), _
+                "PR2", "Audit03: formation path"
+        Next loadIndex
+        batch.ApplyLoadReference 10#, -7#, 0#, 0#
+        batch.Execute
+        writer.WriteSummary ThisWorkbook, batch, units
+        For index = 1 To batch.Count
+            Audit03CheckFormationPath stats, batch.ResultAt(index).CrackResult.Formation, _
+                "audit03.paths." & batch.CombinationID(index), path
+            Audit03CheckResultComments stats, batch, index
+        Next index
+    Next pathIndex
+Restore:
+    SetSystemSetting "SLS.Crack.InitiationLoadPath", oldPath
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", oldZeroMoment
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldPr1Stability
+    SetProfileValue "Calculation.Stability.Enabled", "PR2", oldPr2Stability
+    Exit Sub
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.paths.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    Resume Restore
+End Sub
+
+' Независимо проверяет компоненты конечной lambda-нагрузки. NU/пользовательские
+' моменты относятся к точке нагрузки; State-моменты включают N*offset.
+' Отсутствие предельной точки не маскируется фиктивным численным сравнением.
+Private Sub Audit03CheckCapacityPath(ByRef stats As TBatchTestStats, ByVal capacity As CCapacityResult, _
+        ByVal prefix As String, ByVal component As String, ByVal load As Variant)
+    AssertEquals stats, prefix & ".path", capacity.PathResolved, "Lambda" & component
+    AppendLine stats, "CASE: " & prefix & "|N=" & CStr(load(0)) & "|Mx=" & CStr(load(1)) & _
+        "|My=" & CStr(load(2)) & "|offsetX=10|offsetY=-7|path=" & component & _
+        "|lambda=" & FormatNumberInvariant(capacity.LambdaCapacity) & "|method=" & capacity.SolutionMethod & _
+        "|limit=" & capacity.LimitState & "|status=" & capacity.Status
+    AssertTrue stats, prefix & ".validInput", capacity.Status <> "InputErr" And capacity.Status <> "CalcErr"
+    If capacity.SearchResult Is Nothing Then Exit Sub
+    If Not capacity.SearchResult.HasLimitPoint Then Exit Sub
+    Dim n As Double, mx As Double, my As Double, lambda As Double
+    n = CDbl(load(0)): mx = CDbl(load(1)): my = CDbl(load(2))
+    lambda = capacity.LambdaCapacity
+    If component = "N" Or component = "NMxy" Then n = lambda * n
+    If component = "Mx" Or component = "Mxy" Or component = "NMxy" Then mx = lambda * mx
+    If component = "My" Or component = "Mxy" Or component = "NMxy" Then my = lambda * my
+    AssertClose stats, prefix & ".NU", capacity.NUltimate, n, 5#
+    AssertClose stats, prefix & ".MxU", capacity.MxUltimate, mx, 5000#
+    AssertClose stats, prefix & ".MyU", capacity.MyUltimate, my, 5000#
+    AssertClose stats, prefix & ".stateMx", capacity.CapacityStateMx, mx - 7# * n, 5000#
+    AssertClose stats, prefix & ".stateMy", capacity.CapacityStateMy, my + 10# * n, 5000#
+    AssertTrue stats, prefix & ".physicalCriterion", Len(capacity.LimitState) > 0
+    AssertTrue stats, prefix & ".finalPhysical", capacity.StateResult.WithinPhysicalRange
+End Sub
+
+' Проверяет фактический путь, конечность и отсутствие extended-физической
+' точки у formation. Auto допускает выбор одного из трех путей; fixed path
+' не должен незаметно стать другим. В журнал попадают и честные неуспехи.
+Private Sub Audit03CheckFormationPath(ByRef stats As TBatchTestStats, ByVal formation As CCrackFormationResult, _
+        ByVal prefix As String, ByVal requestedPath As String)
+    AppendLine stats, "CASE: " & prefix & "|requested=" & requestedPath & "|resolved=" & formation.FormationMethod & _
+        "|lambda=" & FormatNumberInvariant(formation.LambdaCrc) & "|Ncrc=" & FormatNumberInvariant(formation.FormationNcrc) & _
+        "|Mcrc=" & FormatNumberInvariant(formation.Mcrc) & "|point=" & CStr(formation.HasLimitPoint) & _
+        "|formed=" & CStr(formation.CrackFormed)
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    AssertTrue stats, prefix & ".validInput", policy.ExternalStatus(formation.ResultMeta) <> "InputErr" And _
+        policy.ExternalStatus(formation.ResultMeta) <> "CalcErr"
+    If Len(formation.FormationMethod) > 0 Then
+        If requestedPath = "Auto" Then
+            AssertTrue stats, prefix & ".autoPath", formation.FormationMethod = ChrW$(&H3BB) & "*Mxy" Or _
+                formation.FormationMethod = ChrW$(&H3BB) & "*N" Or formation.FormationMethod = ChrW$(&H3BB) & "*NMxy"
+        Else
+            AssertEquals stats, prefix & ".fixedPath", formation.FormationMethod, requestedPath
+        End If
+    End If
+    If Not formation.PreCrackState Is Nothing Then
+        AssertTrue stats, prefix & ".preConverged", formation.PreCrackState.Converged
+        AssertTrue stats, prefix & ".prePhysical", formation.PreCrackState.WithinPhysicalRange
+        AssertTrue stats, prefix & ".preNotExtended", Not formation.PreCrackState.ExtensionUsed
+    End If
+    If Not formation.PostCrackState Is Nothing Then
+        AssertTrue stats, prefix & ".postConverged", formation.PostCrackState.Converged
+        AssertTrue stats, prefix & ".postPhysical", formation.PostCrackState.WithinPhysicalRange
+        AssertTrue stats, prefix & ".postNotExtended", Not formation.PostCrackState.ExtensionUsed
+    End If
+End Sub
+
+' Сверяет все leaf причины с итогами владельцев и четырьмя реальными output
+' блоками. Проверка не назначает статусы по тексту: текст лишь проверяется
+' на полноту/читаемость, а статус и code записываются отдельно.
+Private Sub Audit03CheckResultComments(ByRef stats As TBatchTestStats, ByVal batch As CBatchSectionCalculator, _
+        ByVal index As Long)
+    Dim result As CCombinationResult, prefix As String
+    Set result = batch.ResultAt(index)
+    prefix = "audit03.comments." & batch.CombinationID(index)
+    Audit03CheckMetaComment stats, prefix & ".direct", result.DirectStateMeta, result.StrengthMeta
+    Audit03CheckMetaComment stats, prefix & ".capacity", result.CapacityMeta, result.StrengthMeta
+    Audit03CheckMetaComment stats, prefix & ".formation", result.CrackFormationMeta, result.CrackSummaryMeta
+    Audit03CheckMetaComment stats, prefix & ".current", result.CrackCurrentStateMeta, result.CrackSummaryMeta
+    Audit03CheckMetaComment stats, prefix & ".width", result.CrackWidthMeta, result.CrackSummaryMeta
+    Audit03CheckMetaComment stats, prefix & ".longitudinal", result.LongitudinalCrackMeta, result.CrackSummaryMeta
+    Audit03CheckMetaComment stats, prefix & ".stability", result.StabilityMeta, result.OverallMeta
+    If result.CrackWidthMeta.InternalStatus = rsBlockedByDependency Then
+        AssertTrue stats, prefix & ".widthBlockActualReason", _
+            InStr(1, result.CrackWidthMeta.ResultComment, result.CrackCurrentStateMeta.ResultComment, vbBinaryCompare) > 0
+    End If
+    If result.LongitudinalCrackMeta.InternalStatus = rsBlockedByDependency Then
+        AssertTrue stats, prefix & ".longitudinalBlockActualReason", _
+            InStr(1, result.LongitudinalCrackMeta.ResultComment, result.CrackCurrentStateMeta.ResultComment, vbBinaryCompare) > 0
+    End If
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    AssertTrue stats, prefix & ".formulaNoNumFail", result.CrackWidthMeta.InternalStatus <> rsNumericalFailure And _
+        result.LongitudinalCrackMeta.InternalStatus <> rsNumericalFailure And result.StabilityMeta.InternalStatus <> rsNumericalFailure
+    If result.CrackFormationMeta.InternalStatus = rsSuccessWithWarning And policy.ExternalStatus(result.CrackMeta) = "OK" Then
+        AssertTrue stats, prefix & ".formationWarningPreserved", result.CrackMeta.InternalStatus = rsSuccessWithWarning
+    End If
+    AssertTrue stats, prefix & ".strengthNoCrack", InStr(1, result.StrengthMeta.ResultComment, "Трещинообразование:") = 0 And _
+        InStr(1, result.StrengthMeta.ResultComment, "Продольные трещины:") = 0
+    AssertTrue stats, prefix & ".crackNoCapacity", InStr(1, result.CrackSummaryMeta.ResultComment, "Несущая:") = 0 And _
+        InStr(1, result.CrackSummaryMeta.ResultComment, "Устойчивость:") = 0
+    Dim expectedOverall As String, part As Variant
+    For Each part In Array(result.StrengthMeta.ResultComment, result.CrackSummaryMeta.ResultComment)
+        If Len(CStr(part)) > 0 Then
+            If Len(expectedOverall) > 0 Then expectedOverall = expectedOverall & "; "
+            expectedOverall = expectedOverall & CStr(part)
+        End If
+    Next part
+    If Audit03RequiresComment(result.StabilityMeta) Then
+        If Len(expectedOverall) > 0 Then expectedOverall = expectedOverall & "; "
+        expectedOverall = expectedOverall & "Устойчивость: " & result.StabilityMeta.ResultComment
+    End If
+    AssertEquals stats, prefix & ".overallComposition", result.OverallMeta.ResultComment, expectedOverall
+    Dim anchor As Object
+    Set anchor = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
+    AssertEquals stats, prefix & ".batchOutput", CStr(anchor.Offset(11 + index, 2).Value2), result.OverallMeta.ResultComment
+    Set anchor = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
+    AssertEquals stats, prefix & ".strengthOutput", CStr(anchor.Offset(index - 1, 1).Value2), result.StrengthMeta.ResultComment
+    Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
+    AssertEquals stats, prefix & ".crackOutput", CStr(anchor.Offset(index - 1, 1).Value2), result.CrackSummaryMeta.ResultComment
+    Set anchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
+    AssertEquals stats, prefix & ".stabilityOutput", CStr(anchor.Offset(index - 1, 1).Value2), result.StabilityMeta.ResultComment
+    AppendLine stats, "OUTPUT: " & prefix & "|strength=" & result.StrengthMeta.ResultComment & _
+        "|crack=" & result.CrackSummaryMeta.ResultComment & "|stability=" & result.StabilityMeta.ResultComment & _
+        "|batch=" & result.OverallMeta.ResultComment
+End Sub
+
+' Проверяет наличие осмысленной русской причины каждого problem/warning,
+' отсутствие поврежденных символов и сохранность причины в своем subtree.
+' Успех/неприменимость также записываются в лог для содержательной ревизии.
+Private Sub Audit03CheckMetaComment(ByRef stats As TBatchTestStats, ByVal prefix As String, _
+        ByVal meta As CResultMeta, ByVal aggregate As CResultMeta)
+    AppendLine stats, "META: " & prefix & "|status=" & ResultInternalStatusToText(meta.InternalStatus) & _
+        "|code=" & ResultCodeToText(meta.ResultCode) & "|applies=" & CStr(meta.Applies) & _
+        "|calculated=" & CStr(meta.Calculated) & "|comment=" & meta.ResultComment
+    If Not Audit03RequiresComment(meta) Then Exit Sub
+    AssertTrue stats, prefix & ".reasonPresent", Len(Trim$(meta.ResultComment)) > 0
+    Dim i As Long, hasRussian As Boolean, charCode As Long
+    For i = 1 To Len(meta.ResultComment)
+        charCode = AscW(Mid$(meta.ResultComment, i, 1))
+        If charCode >= &H410 And charCode <= &H44F Then hasRussian = True
+    Next i
+    AssertTrue stats, prefix & ".russianReason", hasRussian
+    AssertTrue stats, prefix & ".readable", InStr(1, meta.ResultComment, "..") = 0 And _
+        InStr(1, meta.ResultComment, "?") = 0 And InStr(1, meta.ResultComment, "SP35-mixed") = 0
+    AssertTrue stats, prefix & ".ownSubtree", InStr(1, aggregate.ResultComment, meta.ResultComment, vbBinaryCompare) > 0
+End Sub
+
+' Задает только ожидание обязательной причины; не подменяет production-policy
+' и не вычисляет инженерный или внешний статус из строки комментария.
+Private Function Audit03RequiresComment(ByVal meta As CResultMeta) As Boolean
+    Select Case meta.InternalStatus
+        Case rsCheckFailed, rsNumericalFailure, rsInvalidInput, rsInvalidConfiguration, _
+                rsInternalError, rsBlockedByDependency, rsSuccessWithWarning
+            Audit03RequiresComment = True
+    End Select
+End Function

@@ -79,16 +79,16 @@ End Sub
 ' Проверяет границу новой архитектуры: формульный калькулятор получает только
 ' готовые числа и не зависит от State-объектов, статусов и выбора арматуры.
 Private Sub TestCrackWidthFormulaCalculatorPure(ByRef stats As TCrackTestStats)
-    Dim formula As CCrackWidthFormulaCalculator
-    Set formula = New CCrackWidthFormulaCalculator
+    Dim formula As CCrackWidthCalculator
+    Set formula = New CCrackWidthCalculator
 
     AssertClose stats, "crack.formula.width", _
-        formula.CrackWidth(1.4, 0.5, 1#, 0.8, 200#, 200000#, 320#), _
+        formula.CrackWidthFromData(1.4, 0.5, 1#, 0.8, 200#, 200000#, 320#), _
         0.1792, 0.000000000001
     AssertClose stats, "crack.formula.utilization", _
-        formula.Utilization(0.1792, 0.4), 0.448, 0.000000000001
+        formula.UtilizationFromData(0.1792, 0.4), 0.448, 0.000000000001
     AssertClose stats, "crack.formula.noSteelEs", _
-        formula.CrackWidth(1#, 1#, 1#, 1#, 100#, 0#, 100#), _
+        formula.CrackWidthFromData(1#, 1#, 1#, 1#, 100#, 0#, 100#), _
         0#, 0.000000000001
 End Sub
 
@@ -873,9 +873,9 @@ End Sub
 ' несходимости state/search, а не при штатном резервном psi_s = 1.
 Private Sub AssertCrackCalculatorNotNumFail(ByRef stats As TCrackTestStats, _
         ByVal name As String, ByVal crack As CCrackWidthCalculator)
-    Dim policy As CBatchStatusPolicy
-    Set policy = New CBatchStatusPolicy
-    AssertTrue stats, name, policy.StatusFromMeta(policy.CrackMetaFromCalculator(crack)) <> policy.NumFail
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    AssertTrue stats, name, policy.ExternalStatus(crack.ResultMeta) <> policy.NumFail
 End Sub
 
 Private Sub AssertTrue(ByRef stats As TCrackTestStats, ByVal name As String, ByVal condition As Boolean)

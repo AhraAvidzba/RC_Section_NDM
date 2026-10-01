@@ -117,14 +117,12 @@ Public Function Calculate(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal strengthSpec As CMaterialModelSpec, ByVal loadPath As CCapacityLoadPath, _
         ByVal loadState As CSectionLoadState, ByVal strengthReferenceX As Double, _
-        ByVal strengthReferenceY As Double, ByVal statusPolicy As CBatchStatusPolicy, _
+        ByVal strengthReferenceY As Double, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
         ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepthForMx As Double, _
         ByVal concreteDepthForMy As Double) As CCapacityResult
     Dim result As CCapacityResult
     Set result = New CCapacityResult
-    If statusPolicy Is Nothing Then Set statusPolicy = New CBatchStatusPolicy
-
     If loadPath Is Nothing Then
         result.InitializeInvalidInput "CapacityLoadPath не подготовлен."
         Set Calculate = result

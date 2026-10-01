@@ -16,7 +16,7 @@ Option Explicit
 ' арматуру, Abt/As/ds/ls, sigma_s/sigma_s,crc и коэффициенты. Численное
 ' трещинообразование принадлежит CCrackFormationCalculator; здесь нет Search,
 ' solver retries, Pre/Post solves или собственного рабочего formation-контекста.
-' Формула a_crc вызывается через чистый CCrackWidthFormulaCalculator.
+' Чистые численные методы формулы a_crc отделены от подготовки зоны и статусов.
 
 Private Const PHI1_LONG_TERM As Double = 1.4 ' Коэффициент длительного действия нагрузки для a_crc1 по СП 63.
 Private Const PHI2_DEFAULT As Double = 0.5 ' Типовой default для обычной арматуры периодического профиля.
@@ -39,6 +39,7 @@ Private mDiagnosticLog As String ' Текстовая диагностика в�
 Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал, когда txt-отчет выполнения не нужен.
 Private mWidthInternalStatus As EResultInternalStatus ' Машинный статус формульного расчета ширины нормальной трещины.
 Private mWidthResultCode As EResultCode ' Машинный код причины результата формульной ширины трещины.
+Private mFormulaCalculated As Boolean ' Собственная формула уже выполнялась; готовая Formation сама по себе этого не означает.
 Private mAllowableCrackWidth As Double ' Пользовательский предел a_crc,ult во внутренних единицах длины, мм.
 Private mCrackWidth As Double ' Расчетная ширина раскрытия a_crc, мм.
 Private mUtilization As Double ' Коэффициент использования по трещине: a_crc / a_crc,ult.
@@ -105,6 +106,7 @@ Private Sub ClearResult()
     mDiagnosticLog = vbNullString
     mWidthInternalStatus = rsUnset
     mWidthResultCode = rcNone
+    mFormulaCalculated = False
     mCrackWidth = 0#
     mUtilization = 0#
     mCrackFormed = False
@@ -485,14 +487,15 @@ Private Sub FinalizeWidth(ByVal reason As String)
         Exit Sub
     End If
 
-    Dim formula As CCrackWidthFormulaCalculator
-    Set formula = New CCrackWidthFormulaCalculator
-    mCrackWidth = formula.CrackWidth(mPhi1, mPhi2, mPhi3, mPsiS, mSigmaS, mSteelEs, mLs)
-    mUtilization = formula.Utilization(mCrackWidth, mAllowableCrackWidth)
+    mFormulaCalculated = True
+    mCrackWidth = CrackWidthFromData(mPhi1, mPhi2, mPhi3, mPsiS, mSigmaS, mSteelEs, mLs)
+    mUtilization = UtilizationFromData(mCrackWidth, mAllowableCrackWidth)
     mCrackFormed = True
     mConverged = True
     If mAllowableCrackWidth > 0# And mCrackWidth > mAllowableCrackWidth Then
-        SetWidthResult rsCheckFailed, rcCrackWidthExceeded, reason
+        SetWidthResult rsCheckFailed, rcCrackWidthExceeded, _
+            "Раскрытие нормальной трещины " & FormatNumberInvariant(mCrackWidth) & _
+            " мм превышает допускаемое " & FormatNumberInvariant(mAllowableCrackWidth) & " мм. " & reason
     Else
         SetWidthResult rsSuccess, rcCheckPassed, reason
     End If
@@ -504,6 +507,40 @@ Private Sub FinalizeWidth(ByVal reason As String)
         "; sigma_s=" & FormatNumberInvariant(mSigmaS) & _
         "; ls=" & FormatNumberInvariant(mLs)
 End Sub
+
+' Выполняет только численную формулу a_crc по готовым коэффициентам,
+' напряжению, модулю и расстоянию между трещинами. Не получает State,
+' не выбирает арматуру и не меняет статус либо рабочий результат calculator-а.
+Public Function CrackWidthFromData(ByVal phi1 As Double, ByVal phi2 As Double, _
+        ByVal phi3 As Double, ByVal psiS As Double, ByVal sigmaS As Double, _
+        ByVal steelEs As Double, ByVal crackSpacing As Double) As Double
+    If steelEs <= 0# Then Exit Function
+    CrackWidthFromData = phi1 * phi2 * phi3 * psiS * (sigmaS / steelEs) * crackSpacing
+End Function
+
+' Возвращает численное отношение готового раскрытия к допускаемому.
+' При нулевом пределе отношение не определено; решение о применимости
+' проверки принимается до вызова этой чистой операции.
+Public Function UtilizationFromData(ByVal crackWidthValue As Double, ByVal allowableCrackWidth As Double) As Double
+    If allowableCrackWidth <= 0# Then Exit Function
+    UtilizationFromData = crackWidthValue / allowableCrackWidth
+End Function
+
+' Публикует машинный итог только формульного этапа. Получение Formation/State
+' не объявляет формулу выполненной; отсутствующий итог является внутренней
+' ошибкой, а не повторной численной несходимостью или успешным fallback.
+Public Property Get ResultMeta() As CResultMeta
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    If mWidthInternalStatus = rsUnset Then
+        meta.SetResult rsInternalError, rcInternalError, rkCrackWidth, "Результат расчета ширины трещины не заполнен.", _
+            vbNullString, True, False
+    Else
+        meta.SetResult mWidthInternalStatus, mWidthResultCode, rkCrackWidth, mStopReason, _
+            vbNullString, True, mFormulaCalculated
+    End If
+    Set ResultMeta = meta
+End Property
 
 
 

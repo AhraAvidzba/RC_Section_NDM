@@ -19,7 +19,7 @@
 | --- | --- | --- |
 | 1. Контрольная точка и карта проверок | в работе | Baseline build/Off/On, фактические Config/help/class inventories, F-reproducers; источники и user Config неизменны. |
 | 2. Корректность входа, поиска и метаданных | в работе | F01/F02/F03 и основные F06 контрпримеры имеют runtime evidence; F04/F05/F07 и окончательная приемка еще не завершены. |
-| 3. Упрощение архитектуры | не начато | Удалить CBatchStatusPolicy и CCrackWidthFormulaCalculator после переноса обязанностей; canonical aggregates, consumers/build/tests; без новых классов. |
+| 3. Упрощение архитектуры | в работе | A01/A02 и перенос агрегации A03 имеют runtime evidence. Один итог crack workflow, изоляция Search и комментарии всех путей проверены; окончательная проверка всех классов/consumers A03-A05 продолжается. |
 | 4. Измеряемая оптимизация | не начато | Profile корректного baseline, минимум пять повторов, asymmetric/retries/geometry/allocation; каждая оптимизация подтверждена числами/status/cache. |
 | 5. Config/краевые нагрузки/документация/UI | не начато | Все editable-поля, каждый enum и активный эффект; широкая L01-L17/shape/setting матрица; обязательный ResultComment-контроль каждого нагрузочного кейса, русские комментарии, actual help/validation/colors/CF/save-reopen. |
 | 6. Независимая приемка и выпуск | не начато | Полная отдельная сборка, все suites Off/On, config/edge/benchmarks/snapshots, все три audits, final report, source/book/export equality. |
@@ -50,11 +50,11 @@
 | F02 | directed runtime PASS, расширение покрытия впереди | abc N/M, формулы/CVErr, numeric string, Empty/zero/space, tiny в двух системах единиц, overflow и последующий LC; требуется полный output/comment matrix и отдельный Null путь. |
 | F03 | directed runtime PASS, расширение проверки продолжается | Provider -> runner -> state: 73/0; real Capacity typed failures/precision: 54/0; Formation все четыре пути и terminal config: 64/0. Два старых expected general numerical code уточнены до rcSingularTangent, внешний NumFail и физика не менялись. |
 | F04 | directed runtime PASS, workflow приемка продолжается | SetResult обеспечивает lifecycle для not-requested/not-applicable/blocked/validation; ранние missing/internal factories передают False. Matrix 172/0: десять исходов x attempted, clone/reset и result factories; повторные реальные LC еще входят в расширенную приемку. |
-| F05 | в работе | PhysicalRangeMeta явно объясняет выход за физические деформации/extension; продольные причины, subtree и фактический output еще не приняты. |
+| F05 | directed runtime PASS, расширенная приемка впереди | Физический отказ, BaseFail, numerical failure, blocked Width/Longitudinal, отсутствие трещины: actual writers всех путей. Исправлена передача успешного StopReason в blocked reason. Save/reopen/report/остальные формы еще впереди. |
 | F06 | основные directed runtime PASS, полный аудит продолжается | Baseline adjacent-Double Bisection budget=0 завис до watchdog; исправленный generic matrix 114/0, real Capacity tol=1e-18/budget=0 завершен за 58 probes без ложной точки. Остальные Ultimate/recovery call paths еще проверяются. |
 | F07 | в работе | Исправлены Nothing guard в stability, Split bounds в plotter и два unsafe test guards. Статическая проверка IIf/array call paths выполнена частично; окончательная приемка не заявлена. |
 | F08 | не начато | Каждый Audit01/Audit02 ID -> owner/method/test/log/result/environment, не только общая фраза. |
-| A01-A05 | не начато | Два слияния, владельцы meta/aggregation, canonical data, output и все consumers. |
+| A01-A05 | в работе | 83 + 3 classes; A01/A02 и текущий A03/A04 срез с actual writers прошли full Off v13. Crack/Strength сами собирают свои итоги; общий приоритет без дублей; shared named-state сохранен. Полная acceptance всех остальных классов и A05 еще впереди. |
 | P01-P04 | не начато | Правильный baseline, профиль и >=5 повторов; geometry/retries/cache не подменяют физику. |
 | K01-K04 | не начато | Полный фактический Config census/behavior/active-inactive/mutation sensitivity/isolation. |
 | T01-T05 | не начато | L01-L17, все формы/selector variants/pairwise/high-risk tuples, независимые инварианты. |
@@ -76,6 +76,13 @@
 - Excel COM в текущем окружении запускается с escalation: default sandbox дал 0x80080005, escalated запуск работает. Это ограничение среды, не дефект НДМ. Watchdog закрывает только новые test Excel процессы и считает timeout ошибкой; незавершенные exploratory логи не являются PASS.
 - При крайне малом lambda tolerance локальный probe-cache использует точное равенство lambda и вектора нагрузки. Близкие, но различные representable points не склеиваются; повтор идентичной точки остается cache hit. Нет скрытого увеличения пользовательского допуска для объявления сходимости.
 - CResultMeta.SetSolverFailure централизует только typed failure mapping и lifecycle; инженерные критерии и внешний display остаются у своих владельцев.
+- Checkpoint перед A01/A02: `6373d57` (finite search/lifecycle; Off/On 7289/0).
+- A01: CLongitudinalCrackCalculator.CalculateFromStress выполняет содержательную проверку подготовленного напряжения и готовит причину; Width/Stability публикуют свою ResultMeta. Capacity больше не принимает неиспользуемую status-policy. Невостребованные alias/DisplayStatus удаляемого Batch policy не перенесены в common policy; физические LimitState поля writers по-прежнему получают напрямую.
+- A02: численная формула перенесена без изменения порядка операций/единиц/zero guards в Width.CrackWidthFromData/UtilizationFromData. Эти методы не принимают State и не меняют статус; отдельный Formula class удален. Новых классов нет.
+- A03: strength/crack-specific итоги и комментарии находятся в CStrengthResult/CCrackResult; CCombinationResult объединяет готовые разделы. WorstResultMeta использует один общий приоритет, при равном внешнем OK сохраняет rsSuccessWithWarning. Логические status/code/lifecycle setter-ы CResultMeta удалены; SetResult остается атомарным входом.
+- A03 snapshots: опубликованный Search-контейнер не разделяет повторно заполняемый исходный CLimitSearchResult. Getter возвращает независимый небольшой контейнер; конечный CSectionStateResult сохраняет идентичность и не копируется по волокнам. Проверены мутация исходного Search, выданной копии и рабочего solver-а.
+- A04: StoreCrackAggregateSnapshot вызывается один раз в окончательной точке workflow. Промежуточные named-states и диагностика сохраняются до упаковки, ранние выходы получают свои настоящие current/blocked meta.
+- Нагрузочный matrix fixture явно ставит ZeroMomentPerDepth=0 и stability=No, затем восстанавливает настройки. Это проверка самой траектории, а не отмена общего фильтра: v10 показал, что малый внутренний My после переноса обнуляется существующим фильтром. Expected численных компонент не ослаблены; фильтр отдельно покрывается прежними boundary-тестами. Реальный effective Extension берется из настроек provider-а, а не из подписи mode-runner.
 - Дополнение пользователя: при всех нагрузочных тестах проверять заполнение, инженерный смысл и читаемость каждого ResultComment. Проверять все применимые leaf/meta и subtree-итоги, подробные strength/crack/stability blocks, batch summary, txt-report и повторно прочитанный Results. Обязательная причина каждого отказа/blocked/warning, правильные units/символы, отсутствие противоречия статусу, дублей/двойных точек/чужого раздела; логический порядок сборки. Автоматические проверки дополнять содержательным чтением уникальных шаблонов и фактических контрпримеров, не сводить качество к наличию строки.
 
 ## Текущие Проверки
@@ -96,10 +103,17 @@
 - Lifecycle negative: `f04_lifecycle_negative_2026-10-02.txt`, 145/27 на unchanged production baseline. Подтверждены неверные flags и missing-result factories; текущий positive применяет тот же тест без изменения expected. В baseline temp source дополнительно заменен только test Batch module, production файлы прежние.
 - Полный Off v8: `f01_f07_full_off_v8_2026-10-02.txt`, 7289/0; watchdog exit=0, source unchanged=True. Это промежуточный общий regression gate, не закрытие всех требований Audit03.
 - Полный On v8: `f01_f07_full_on_v8_2026-10-02.txt`, 7289/0; watchdog exit=0, source unchanged=True. Исторические explicit-On setups внутри suites сохранены.
+- A01/A02 full Off v9: `a01_a02_full_off_v9_2026-10-02.txt`, 7289/0; две удаленные class modules, численные expected/tolerances прежние.
+- Paths/comments v10: `a03_paths_comments_off_v10_2026-10-02.txt`, 492/4. Четыре сравнения компонент не учитывали разрешенное обнуление внутреннего My фильтром; этот лог не считается PASS. Кроме того, чтение реальных blocked comments выявило неверную передачу успешного solver.StopReason вместо typed физической причины; исправлено по F05.
+- Directed Off v11: `a03_paths_comments_off_v11_2026-10-02.txt`, 495/0, effective Extension=False. Пятнадцать Capacity и двенадцать Formation LC, ненулевой offset N, все leaf/meta и четыре actual output-блока. Честные NumFail проб записаны отдельно от физических отказов.
+- Directed On v13: `a03_paths_comments_on_v13_2026-10-02.txt`, 504/0, effective Extension=True; дополнительно проверено, что blocked Width/Longitudinal содержат именно текущую typed-причину, а не сообщение об успешном Newton.
+- Full Off v13: `a01_a04_full_off_v13_2026-10-02.txt`, 7798/0: Geometry 496, Material 1359, Section 523, Capacity 1383, Crack 447, Batch 2910, Workbook UI 641, Regression 39. Source unchanged=True. Позднейшая защита typed warnings требует повторного прогона v14.
+- Full Off v14: `a01_a04_full_off_v14_2026-10-02.txt`, 7800/0; Full On v14: `a01_a04_full_on_v14_2026-10-02.txt`, 7801/0. Оба watchdog exit=0 и source unchanged=True. Проверено сохранение rsSuccessWithWarning независимо от порядка агрегации и при успешной формуле ширины. Разница числа проверок обусловлена активным Extension, не пропуском suite.
+- Source contracts v14: `source_contracts_v14_2026-10-02.txt`, 101/101 модулей совпали с VBE, 0 ошибок; production 83 + test 3, удаленные классы отсутствуют в consumers/export.
 - Все тесты выполнялись на отдельных книгах; пользовательская output-книга и Config не изменены. В temporary baseline-source copy добавлен только новый test module для F03 reproducer; production baseline остался прежним.
 
 ## Как Продолжить
 
-1. Обновить isolated test book текущими исходниками; выполнить lifecycle directed и полные Off/On через watchdog. При новом failure сохранять лог, исправлять причину, не ослаблять физические expected.
-2. Завершить F03/F04/F05/F06/F07 call-site acceptance, затем A01/A02 целым согласованным объемом и фактический Config census.
+1. Full Off/On и source/export gate v14 завершены; сохранить checkpoint данного согласованного среза. При новом failure сохранять лог, исправлять причину, не ослаблять физические expected.
+2. Завершить F03/F04/F05/F06/F07 call-site acceptance (включая конечность Ultimate line-search), A03-A05 all-class/consumer/snapshot аудит и фактический Config census. Нагрузочный 27-LC matrix не заменяет полную L01-L17/shape/setting приемку, report и save/reopen.
 3. До завершения всех шести gates цель остается активной; новые ограничения/изменения после green suite записывать сюда.

@@ -439,11 +439,11 @@ Private Sub PutWorstCheck(ByRef data() As Variant, ByVal batch As CBatchSectionC
 End Sub
 
 ' Записывает одну строку сочетания в compact summary. Все статусы идут через
-' CBatchStatusPolicy, а коэффициенты берутся из подробных расчетных результатов
+' CResultStatusPolicy, а коэффициенты берутся из подробных расчетных результатов
 ' batch, чтобы summary совпадала с детальными таблицами ниже.
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVal batch As CBatchSectionCalculator, _
         ByVal index As Long, ByVal units As CUnitSystem, ByVal section As CSectionModel)
-    Dim policy As CBatchStatusPolicy
+    Dim policy As CResultStatusPolicy
     Set policy = StatusPolicy()
 
     If rowIndex > UBound(data, 1) Then Exit Sub
@@ -520,7 +520,7 @@ End Function
 ' Записывает статус одной плоскости/ветви устойчивости или N/A, если эта
 ' ветвь для текущего LC не применялась.
 Private Sub PutStabilityBranchStatus(ByRef data() As Variant, ByVal rowIndex As Long, _
-        ByVal columnIndex As Long, ByVal policy As CBatchStatusPolicy, _
+        ByVal columnIndex As Long, ByVal policy As CResultStatusPolicy, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal planeIndex As Long, ByVal branchKey As String)
     If Not StabilityBranchApplies(batch, index, planeIndex, branchKey) Then
@@ -582,7 +582,7 @@ End Function
 
 ' Записывает статус проверки или N/A, если расчетная ветка не была включена профилем.
 Private Sub PutStatusCell(ByRef data() As Variant, ByVal rowIndex As Long, ByVal columnIndex As Long, _
-        ByVal policy As CBatchStatusPolicy, ByVal requested As Boolean, ByVal meta As CResultMeta)
+        ByVal policy As CResultStatusPolicy, ByVal requested As Boolean, ByVal meta As CResultMeta)
     If requested Then
         data(rowIndex, columnIndex) = MetaStatus(policy, meta)
     Else
@@ -592,8 +592,8 @@ End Sub
 
 ' Возвращает display только через общую policy. Отсутствие обязательной meta
 ' является CalcErr, а не поводом угадывать статус по другому результату.
-Private Function MetaStatus(ByVal policy As CBatchStatusPolicy, ByVal meta As CResultMeta) As String
-    MetaStatus = policy.StatusFromMeta(meta)
+Private Function MetaStatus(ByVal policy As CResultStatusPolicy, ByVal meta As CResultMeta) As String
+    MetaStatus = policy.ExternalStatus(meta)
 End Function
 
 ' Возвращает пользовательское пояснение из typed-meta без анализа StopReason в writer-е.
@@ -822,9 +822,9 @@ Private Sub ApplyStatusCell(ByVal target As Object, ByVal rowNumber As Long, ByV
 End Sub
 
 ' Возвращает общий объект политики статусов для writer-а.
-Private Function StatusPolicy() As CBatchStatusPolicy
-    Static policy As CBatchStatusPolicy
-    If policy Is Nothing Then Set policy = New CBatchStatusPolicy
+Private Function StatusPolicy() As CResultStatusPolicy
+    Static policy As CResultStatusPolicy
+    If policy Is Nothing Then Set policy = New CResultStatusPolicy
     Set StatusPolicy = policy
 End Function
 

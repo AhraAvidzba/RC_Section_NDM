@@ -98,6 +98,18 @@ Public Sub InitializeInvalidConfiguration(ByVal requestedStrategy As String, ByV
         Nothing, vbNullString, vbNullString, vbNullString, False
 End Sub
 
+' Создает независимый контейнер Search: его повторная Initialize не меняет
+' опубликованный engineering result. Конечный named-state остается одним
+' неизменяемым снимком, не копируется по волокнам и не превращается в probe.
+Public Function Clone() As CLimitSearchResult
+    Dim result As CLimitSearchResult
+    Set result = New CLimitSearchResult
+    result.Initialize mMeta, mRequestedStrategy, mActualMethod, mHasLimitPoint, _
+        mLambdaUltimate, mNUltimate, mMxUltimate, mMyUltimate, mPointState, _
+        mLimitState, mDiagnosticLog, mLastSolverDiagnosticLog, mSearchExecuted
+    Set Clone = result
+End Function
+
 ' Метаданные выдаются отдельной небольшой копией, а не mutable полем результата.
 Public Property Get Meta() As CResultMeta
     Set Meta = mMeta.Clone

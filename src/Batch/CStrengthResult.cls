@@ -21,6 +21,7 @@ Option Explicit
 
 Private mDirectState As CDirectStateResult ' Прямое НДС от заданного сочетания.
 Private mCapacity As CCapacityResult ' Предельная несущая способность по выбранной lambda-траектории.
+Private mPolicy As CResultStatusPolicy ' Общий typed/display приоритет, без собственной копии словаря.
 
 ' Создает пустой direct-state, чтобы StrengthResult всегда имел нейтральную meta.
 Private Sub Class_Initialize()
@@ -87,3 +88,24 @@ Public Property Get CapacityMeta() As CResultMeta
         Set CapacityMeta = mCapacity.ResultMeta
     End If
 End Property
+
+' Собирает итог только собственного поддерева DirectState/Capacity. Writer
+' получает готовую причину, а Combination не повторяет strength-агрегацию.
+Public Property Get ResultMeta() As CResultMeta
+    If mPolicy Is Nothing Then Set mPolicy = New CResultStatusPolicy
+    Dim direct As CResultMeta, capacity As CResultMeta, comment As String
+    Set direct = DirectMeta
+    Set capacity = CapacityMeta
+    direct.AppendCommentTo comment
+    capacity.AppendCommentTo comment
+    Set ResultMeta = mPolicy.WorstResultMeta(rkGeneric, direct, capacity)
+    ResultMeta.ResultComment = comment
+End Property
+
+' Объединяет причины последовательных прямых State одного workflow, сохраняя
+' комментарий выбранной причины и не стирая его пустым аргументом агрегации.
+Public Sub MergeDirectMeta(ByVal meta As CResultMeta)
+    If meta Is Nothing Then Exit Sub
+    If mPolicy Is Nothing Then Set mPolicy = New CResultStatusPolicy
+    SetDirectMeta mPolicy.WorstResultMeta(rkDirectState, DirectMeta, meta)
+End Sub

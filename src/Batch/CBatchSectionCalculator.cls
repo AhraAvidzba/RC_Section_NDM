@@ -45,7 +45,7 @@ End Type
 Private mSection As CSectionModel ' Расчетная модель сечения, общая для всех LC.
 Private mMaterialProvider As CMaterialModelProvider ' Единая точка выдачи диаграмм для Strength/CrackInitiation/CrackedNDS.
 Private mProfiles As CCalculationProfileCatalog ' Каталог расчетных профилей PR1/PR2/... из Config.
-Private mStatusPolicy As CBatchStatusPolicy ' Единый словарь пользовательских статусов и правил их агрегирования.
+Private mStatusPolicy As CResultStatusPolicy ' Единый словарь пользовательских статусов и правил их агрегирования.
 Private mCount As Long ' Сколько сочетаний реально добавлено в пакет.
 
 Private mInputs() As TCombinationInput ' Исходные данные LC, прочитанные из фактических строк rngLoadCombinations.
@@ -134,7 +134,7 @@ Private mStabilityLoadUserMy() As Double ' Пользовательский My �
 
 ' Инициализирует внутреннее состояние объекта значениями по умолчанию, безопасными для последующей настройки.
 Private Sub Class_Initialize()
-    Set mStatusPolicy = New CBatchStatusPolicy
+    Set mStatusPolicy = New CResultStatusPolicy
     Set mReport = New CExecutionReport
     Set mMomentZeroFilter = New CMomentZeroFilter
     mSettingsValid = True
@@ -760,7 +760,7 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
         mStabilitySP35NOverNcrLimit, mStabilitySP35Table721, mMomentZeroFilter
 
     Dim stabilityMeta As CResultMeta
-    Set stabilityMeta = mStatusPolicy.StabilityMetaFromCalculator(stability)
+    Set stabilityMeta = stability.ResultMeta
     mResults(index).StoreStabilityResult stabilityMeta, stability, referenceX, referenceY
     If stability.InputValid And stability.Applicable And stability.CheckPassed Then _
         ApplyStabilityDesignLoads index, stability, referenceX, referenceY
@@ -954,7 +954,7 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
         mMaterialProvider.ConcreteMaterialForEquilibriumFromSpec(strengthSpec), _
         mMaterialProvider.SteelMaterialForEquilibriumFromSpec(strengthSpec), strengthSpec, _
         loadPath, loadState, _
-        strengthReferenceX, strengthReferenceY, mStatusPolicy, mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, _
+        strengthReferenceX, strengthReferenceY, mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, _
         mConcreteDepthForMx, mConcreteDepthForMy)
 
     mResults(index).StoreCapacityResult capacityResult
@@ -1033,7 +1033,7 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
     End If
 
     Dim stateStatus As String
-    stateStatus = mStatusPolicy.StatusFromMeta(stateResult.ResultMeta)
+    stateStatus = mStatusPolicy.ExternalStatus(stateResult.ResultMeta)
     If stateResult.ExtensionUsed Or Not stateResult.WithinPhysicalRange Then
         If mergeIntoDirectStateStatus Then MergeDirectStateMeta index, stateResult.ResultMeta
         ReportStep "Прямое НДС " & SectionStateTypeToText(stateType) & " найдено, но вышло за физический диапазон диаграммы материала."
@@ -1082,14 +1082,13 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
         mInputs(index).N, mInputs(index).Mx, mInputs(index).My, loadState, _
         crackReferenceX, crackReferenceY)
     crack.InitializeForFormation formationResult
-    StoreCrackAggregateSnapshot index, crack, formationResult
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
     If Not formationResult.PreCrackState Is Nothing Then mResults(index).AddState formationResult.PreCrackState
     If Not formationResult.PostCrackState Is Nothing Then mResults(index).AddState formationResult.PostCrackState
-    ReportValue "Фактический путь образования трещины", mResults(index).CrackResult.Formation.FormationMethod
-    ReportValue "lambda образования трещины", FormatNumberInvariant(mResults(index).CrackResult.Formation.LambdaCrc)
-    ReportValue "Ncrc", mReport.FormatForce(mResults(index).CrackResult.Formation.FormationNcrc)
-    ReportValue "Mxy,crc", mReport.FormatMomentMagnitude(mResults(index).CrackResult.Formation.Mcrc)
+    ReportValue "Фактический путь образования трещины", formationResult.FormationMethod
+    ReportValue "lambda образования трещины", FormatNumberInvariant(formationResult.LambdaCrc)
+    ReportValue "Ncrc", mReport.FormatForce(formationResult.FormationNcrc)
+    ReportValue "Mxy,crc", mReport.FormatMomentMagnitude(formationResult.Mcrc)
     ReportValue "Причина остановки поиска трещины", crack.StopReason
     If Not mReport Is Nothing Then mReport.ReportCrackFormationChoice formationResult
     ReportBlock "Диагностика образования трещины", formationResult.DiagnosticLog
@@ -1108,20 +1107,16 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     Set longitudinalCalculator = New CLongitudinalCrackCalculator
 
     If Not CurrentCrackedStateReady(currentCrackedState, runner, currentStateMeta, blockReason) Then
-        Set crackWidthMetaOverride = mStatusPolicy.BlockedByDependencyMeta(rkCrackWidth, _
-            "CurrentCrackedState", blockReason)
-        Set longitudinalResult = longitudinalCalculator.BlockedByDependency(mStatusPolicy, _
+        Set crackWidthMetaOverride = New CResultMeta
+        crackWidthMetaOverride.SetBlockedByDependency rkCrackWidth, "CurrentCrackedState", blockReason
+        Set longitudinalResult = longitudinalCalculator.BlockedByDependency( _
             "CurrentCrackedState", blockReason, mMaterialProvider.ConcreteParameters.RbMc2)
-        StoreCrackAggregateSnapshot index, crack, formationResult, currentStateMeta, _
-            crackWidthMetaOverride, longitudinalResult
         ReportStep "Расчет ширины и продольных трещин не продолжается: " & blockReason
         GoTo ReportCrackResult
     End If
 
     Set longitudinalResult = longitudinalCalculator.Calculate(currentCrackedState, _
-        mMaterialProvider.ConcreteParameters.RbMc2, mStatusPolicy)
-    StoreCrackAggregateSnapshot index, crack, formationResult, currentStateMeta, _
-        longitudinalResult:=longitudinalResult
+        mMaterialProvider.ConcreteParameters.RbMc2)
     If Not mReport Is Nothing Then mReport.ReportLongitudinalCrackResult longitudinalResult
 
     If Not crack.Converged Then
@@ -1136,8 +1131,6 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     ReportStep "Запускается расчет ширины раскрытия нормальных трещин."
     crack.Calculate currentCrackedState, mSection, mMaterialProvider, profile.CrackedStateSpec, _
         formationResult, loadState
-    StoreCrackAggregateSnapshot index, crack, formationResult, currentStateMeta, _
-        longitudinalResult:=longitudinalResult
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
 
 ReportCrackResult:
@@ -1160,45 +1153,26 @@ ReportCrackResult:
     ReportBlock "Диагностика расчета трещин", crack.DiagnosticLog
 End Sub
 
-' Собирает result-tree трещин и синхронизирует его с плоскими полями
-' CCombinationResult, которые являются форматом вывода Results.
+' Упаковывает окончательный result-tree один раз после всех доступных стадий.
+' Промежуточная диагностика записывается непосредственно из результатов этапа;
+' ни числа, ни meta прошлой упаковки не используются как резервные данные.
 Private Sub StoreCrackAggregateSnapshot(ByVal index As Long, ByVal crack As CCrackWidthCalculator, _
         ByVal formationResult As CCrackFormationResult, _
-        Optional ByVal currentStateMeta As CResultMeta = Nothing, _
-        Optional ByVal widthMeta As CResultMeta = Nothing, _
-        Optional ByVal longitudinalResult As CLongitudinalCrackResult = Nothing)
+        ByVal currentStateMeta As CResultMeta, ByVal widthMeta As CResultMeta, _
+        ByVal longitudinalResult As CLongitudinalCrackResult)
     Dim widthResult As CCrackWidthResult
     Set widthResult = New CCrackWidthResult
     If widthMeta Is Nothing Then
-        widthResult.InitializeFromCalculator crack, CrackWidthMetaForCurrentStatus(index, crack)
+        widthResult.InitializeFromCalculator crack, crack.ResultMeta
     Else
         widthResult.InitializeFromCalculator crack, widthMeta
     End If
 
-    Dim effectiveLongitudinalResult As CLongitudinalCrackResult
-    If longitudinalResult Is Nothing Then
-        Set effectiveLongitudinalResult = New CLongitudinalCrackResult
-        effectiveLongitudinalResult.Initialize mResults(index).LongitudinalCrackMeta, _
-            mResults(index).CrackResult.Longitudinal.MaxCompressionStress, _
-            mResults(index).CrackResult.Longitudinal.RbMc2, _
-            mResults(index).CrackResult.Longitudinal.Utilization
-    Else
-        Set effectiveLongitudinalResult = longitudinalResult
-    End If
-
     Dim crackResult As CCrackResult
     Set crackResult = New CCrackResult
-    crackResult.Initialize formationResult, currentStateMeta, widthResult, effectiveLongitudinalResult
+    crackResult.Initialize formationResult, currentStateMeta, widthResult, longitudinalResult
     mResults(index).StoreCrackAggregateResult crackResult
 End Sub
-
-' Возвращает meta формульного этапа раскрытия, согласованную с уже выбранным
-' внешним статусом. Статус берется из typed-result калькулятора или из
-' заранее подготовленной block-meta, а не из текста диагностического комментария.
-Private Function CrackWidthMetaForCurrentStatus(ByVal index As Long, _
-        ByVal crack As CCrackWidthCalculator) As CResultMeta
-    Set CrackWidthMetaForCurrentStatus = mStatusPolicy.CrackMetaFromCalculator(crack)
-End Function
 
 ' Проверяет, можно ли использовать CurrentCrackedState как исходные данные для
 ' ширины нормальных трещин и продольных трещин. Если нельзя, возвращает meta
@@ -1220,7 +1194,7 @@ Private Function CurrentCrackedStateMeta(ByVal stateResult As CSectionStateResul
         ByVal runner As CStateSolutionRunner, ByRef blockReason As String) As CResultMeta
     If Not stateResult Is Nothing Then
         Set CurrentCrackedStateMeta = stateResult.ResultMeta
-        blockReason = stateResult.StopReason
+        blockReason = CurrentCrackedStateMeta.ResultComment
         If Len(Trim$(blockReason)) = 0 Then
             If Not stateResult.Converged Then blockReason = "CurrentCrackedState не сошелся."
             If stateResult.ExtensionUsed Or Not stateResult.WithinPhysicalRange Then _

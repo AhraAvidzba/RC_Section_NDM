@@ -399,7 +399,7 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
 
     Dim foundState As Boolean
     Dim stateStatus As String
-    Dim policy As CBatchStatusPolicy
+    Dim policy As CResultStatusPolicy
     Dim rowIndex As Long
     Dim concreteCentroidX As Double
     Dim concreteCentroidY As Double
@@ -407,7 +407,7 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
     Dim transformedCentroidX As Double
     Dim transformedCentroidY As Double
     Dim transformedPrincipalAngle As Double
-    Set policy = New CBatchStatusPolicy
+    Set policy = New CResultStatusPolicy
     For rowIndex = 2 To UBound(data, 1)
         If StrComp(CStr(data(rowIndex, colLoadCase)), "ALL", vbTextCompare) = 0 Then
             Select Case LCase$(Trim$(CStr(data(rowIndex, colParameter))))

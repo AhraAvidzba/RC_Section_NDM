@@ -10,7 +10,7 @@ Option Explicit
 
 ' Возвращает утвержденный цвет фона для пользовательского статуса.
 Public Function StatusFillColor(ByVal statusText As String) As Long
-    Dim policy As CBatchStatusPolicy
+    Dim policy As CResultStatusPolicy
     Set policy = StatusPolicy()
 
     Select Case policy.ToUserStatus(statusText)
@@ -43,8 +43,8 @@ Public Sub ApplyStatusFill(ByVal rangeObject As Object, ByVal statusText As Stri
 End Sub
 
 ' Возвращает общий словарь статусов для модуля цветового оформления.
-Private Function StatusPolicy() As CBatchStatusPolicy
-    Static policy As CBatchStatusPolicy
-    If policy Is Nothing Then Set policy = New CBatchStatusPolicy
+Private Function StatusPolicy() As CResultStatusPolicy
+    Static policy As CResultStatusPolicy
+    If policy Is Nothing Then Set policy = New CResultStatusPolicy
     Set StatusPolicy = policy
 End Function

@@ -54,7 +54,7 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
         ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepthForMx As Double, _
         ByVal concreteDepthForMy As Double)
     ResetNumericSnapshot
-    Set mSearchResult = searchResult
+    If Not searchResult Is Nothing Then Set mSearchResult = searchResult.Clone
     mPureAxialForMethod = pureAxialForMethod
     If loadPath Is Nothing Then
         InitializeInvalidInput "CapacityLoadPath не подготовлен.", CAPACITY_PATH_NONE
@@ -78,7 +78,9 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
     If searchResult.Succeeded And searchResult.Converged Then
         If searchResult.LambdaUltimate > 0# And searchResult.LambdaUltimate < 1# Then
             mResultMeta.SetResult rsCheckFailed, rcPhysicalLimitExceeded, rkCapacity, _
-                searchResult.Meta.ResultComment
+                "Несущая способность не проходит: предел по выбранному пути достигается при lambda = " & _
+                Replace$(Format$(searchResult.LambdaUltimate, "0.000000"), ",", ".") & _
+                ", раньше заданной нагрузки (lambda = 1).", searchResult.Meta.ResultComment
         End If
     End If
     mLimitState = searchResult.LimitState
@@ -209,7 +211,7 @@ Private Sub StoreCapacityStateIfAvailable()
 End Sub
 
 Public Property Get SearchResult() As CLimitSearchResult
-    Set SearchResult = mSearchResult
+    If Not mSearchResult Is Nothing Then Set SearchResult = mSearchResult.Clone
 End Property
 
 ' Возвращает независимый снимок meta канонического capacity-результата.

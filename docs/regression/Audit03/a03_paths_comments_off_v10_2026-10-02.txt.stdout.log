@@ -1,0 +1,11 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_f06_fixed.xlsm
+SOURCE_SHA256: E2458BEE6AC3178F7B66D2F64F8D5299A85CABCED1A02DB4C22DA5F8FC2903A7
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f0c9a24652384a4bb0bdb6ac23f02c3a\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.paths.A03_C_0_2.MyU; actual=-2000000.00001339; expected=-3000000.
+FAIL: audit03.paths.A03_C_0_2.stateMy; actual=0.000005132024; expected=-1000000.
+FAIL: audit03.paths.A03_C_4_2.MyU; actual=-3001694.13462679; expected=-4502541.20181622
+FAIL: audit03.paths.A03_C_4_2.stateMy; actual=-0.000082646991; expected=-1500847.06727207
+TOTAL_AUDIT03_PATH_COMMENTS: passed=492; failed=4
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

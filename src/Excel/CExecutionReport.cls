@@ -621,10 +621,10 @@ Public Sub ReportLongitudinalCrackResult(ByVal longitudinalResult As CLongitudin
 
     Dim meta As CResultMeta
     Set meta = longitudinalResult.ResultMeta
-    Dim policy As CBatchStatusPolicy
-    Set policy = New CBatchStatusPolicy
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
     Dim statusText As String
-    statusText = policy.StatusFromMeta(meta)
+    statusText = policy.ExternalStatus(meta)
 
     AddValue "Статус продольных трещин", statusText
     If statusText <> policy.NotApplicable Then

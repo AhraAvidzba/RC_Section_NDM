@@ -84,6 +84,9 @@ Private mCode As String ' Нормативная ветвь, выбранная 
 Private mBranch As String ' Внутренняя трассировка расчетной ветви для execution report и диагностики.
 Private mApplicable As Boolean ' False, если сжатия нет и устойчивость не требуется.
 Private mInputValid As Boolean ' False при нехватке обязательных исходных данных.
+Private mResultInitialized As Boolean ' Был вызван расчет; новый объект не является готовым результатом.
+Private mCalculationStarted As Boolean ' Выполнялась собственная инженерная проверка после валидации.
+Private mInternalError As Boolean ' Нарушение программного контракта или неожиданный runtime-отказ, не ошибка пользователя.
 Private mCheckPassed As Boolean ' Итог проверки по выбранной ветви.
 Private mStopReason As String ' Подробная внутренняя причина, если расчет не выполнен.
 Private mDesignN As Double ' Продольная сила после фильтра; знак сохраняется как во внутреннем ядре.
@@ -179,8 +182,16 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
     mDesignMy = totalLoad.InternalMy
     mSustainedN = sustainedLoad.SignedCompression
 
-    If section Is Nothing Then RaiseInput "Модель сечения не передана."
-    If materialProvider Is Nothing Then RaiseInput "Поставщик материалов не передан."
+    If section Is Nothing Then
+        mInternalError = True
+        mStopReason = "Для проверки устойчивости не передана модель сечения."
+        GoTo Failed
+    End If
+    If materialProvider Is Nothing Then
+        mInternalError = True
+        mStopReason = "Для проверки устойчивости не передан поставщик материалов."
+        GoTo Failed
+    End If
     If elementLength <= 0# Then RaiseInput "Stability.ElementLength должен быть положительным."
     If mu1 <= 0# Or mu2 <= 0# Then RaiseInput "Stability.Mu1 и Stability.Mu2 должны быть положительными при включенном расчете устойчивости."
     If mCode <> CODE_SP63 And mCode <> CODE_SP35 Then RaiseInput "Stability.Code должен быть SP63 или SP35."
@@ -201,6 +212,7 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
     If ebForGeometry <= 0# Or esForGeometry <= 0# Then RaiseInput "Для расчета устойчивости нужны положительные Eb и Es."
 
     Dim props As CSectionPropertiesCalculator
+    mCalculationStarted = True
     Set props = New CSectionPropertiesCalculator
     props.CalculateTransformedByModuli section, ebForGeometry, esForGeometry
     mPrincipalAngleRad = props.PrincipalAngleRad
@@ -230,6 +242,7 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
     Exit Sub
 
 Failed:
+    If Err.Number <> 0 And Err.Number <> vbObjectError + 7600 Then mInternalError = True
     mInputValid = False
     mApplicable = False
     mCheckPassed = False
@@ -238,6 +251,9 @@ End Sub
 
 ' Сбрасывает результаты перед новым расчетом.
 Private Sub Clear()
+    mResultInitialized = True
+    mCalculationStarted = False
+    mInternalError = False
     mCode = vbNullString
     mBranch = vbNullString
     mApplicable = True
@@ -1145,6 +1161,30 @@ End Property
 
 Public Property Get StopReason() As String
     StopReason = mStopReason
+End Property
+
+' Формирует инженерную meta собственной проверки устойчивости. Ни writer,
+' ни display-policy не повторяют эти условия и не придумывают причину по
+' Branch. Отсутствующие программные зависимости отличаются от ошибочного Config.
+Public Property Get ResultMeta() As CResultMeta
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    If Not mResultInitialized Then
+        meta.SetResult rsInternalError, rcInternalError, rkStability, "Результат проверки устойчивости не заполнен.", _
+            vbNullString, True, False
+    ElseIf mInternalError Then
+        meta.SetResult rsInternalError, rcInternalError, rkStability, mStopReason, _
+            vbNullString, True, mCalculationStarted
+    ElseIf Not mInputValid Then
+        meta.SetResult rsInvalidInput, rcInvalidInput, rkStability, mStopReason
+    ElseIf Not mApplicable Then
+        meta.SetNotApplicable rkStability, "Устойчивость не проверяется: в сочетании нет сжатия."
+    ElseIf mCheckPassed Then
+        meta.SetResult rsSuccess, rcCheckPassed, rkStability, mStopReason
+    Else
+        meta.SetResult rsCheckFailed, rcCheckFailed, rkStability, mStopReason
+    End If
+    Set ResultMeta = meta
 End Property
 
 Public Property Get DesignN() As Double

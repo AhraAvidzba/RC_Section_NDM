@@ -968,8 +968,8 @@ Public Property Get LoadReferenceY() As Double: LoadReferenceY = mLoadReferenceY
 Public Property Get ExtensionUsed() As Boolean: ExtensionUsed = mExtensionUsed: End Property
 Public Property Get DirectStateStatus() As String: DirectStateStatus = mStateStatus: End Property
 Public Property Get PhysicalDiagramWarningRequired() As Boolean
-    Dim policy As CBatchStatusPolicy
-    Set policy = New CBatchStatusPolicy
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
     PhysicalDiagramWarningRequired = (mExtensionUsed Or policy.ToUserStatus(mStateStatus) = policy.Fail)
 End Property
 Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCount: End Property

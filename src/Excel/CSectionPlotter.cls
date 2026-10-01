@@ -855,8 +855,8 @@ End Sub
 ' может быть последняя итерация, а не корректное равновесное состояние.
 Private Sub DrawStateWarning(ByVal data As CSectionPlotDataReader)
     Dim warningText As String
-    Dim policy As CBatchStatusPolicy
-    Set policy = New CBatchStatusPolicy
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
 
     If data.PhysicalDiagramWarningRequired Then
         warningText = EXTENSION_WARNING_TEXT

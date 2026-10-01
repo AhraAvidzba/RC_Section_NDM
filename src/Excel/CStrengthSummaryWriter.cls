@@ -398,12 +398,12 @@ End Sub
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal section As CSectionModel)
-    Dim policy As CBatchStatusPolicy
+    Dim policy As CResultStatusPolicy
     Set policy = StatusPolicy()
 
     data(rowIndex, COL_ID) = batch.CombinationID(index)
     data(rowIndex, COL_RESULT_COMMENT) = MetaComment(batch.ResultAt(index).StrengthMeta)
-    data(rowIndex, COL_STATUS) = policy.StatusFromMeta(batch.ResultAt(index).StrengthMeta)
+    data(rowIndex, COL_STATUS) = policy.ExternalStatus(batch.ResultAt(index).StrengthMeta)
     data(rowIndex, COL_STATE_STATUS) = policy.NotApplicable
     data(rowIndex, COL_CAP_STATUS) = policy.NotApplicable
 
@@ -443,7 +443,7 @@ End Sub
 ' Пишет фактический StrengthState, если он действительно был рассчитан.
 Private Sub PutStrengthState(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal units As CUnitSystem, ByVal section As CSectionModel, ByVal policy As CBatchStatusPolicy)
+        ByVal units As CUnitSystem, ByVal section As CSectionModel, ByVal policy As CResultStatusPolicy)
     If Not batch.StrengthDirectStateRequested(index) Then
         data(rowIndex, COL_STATE_STATUS) = policy.NotApplicable
         Exit Sub
@@ -464,7 +464,7 @@ Private Sub PutStrengthState(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, COL_STATE_DIAGEXT) = ExtensionUsedText(batch, index, stateResult)
     If batch.ResultAt(index).StrengthResult.DirectState.StrainReserve > SMALL_VALUE Then _
         data(rowIndex, COL_STATE_RESERVE) = batch.ResultAt(index).StrengthResult.DirectState.StrainReserve
-    data(rowIndex, COL_STATE_STATUS) = policy.StatusFromMeta(stateResult.ResultMeta)
+    data(rowIndex, COL_STATE_STATUS) = policy.ExternalStatus(stateResult.ResultMeta)
 End Sub
 
 ' Пишет CapacityState и предельные компоненты найденной точки.
@@ -485,7 +485,7 @@ End Function
 
 Private Sub PutCapacityState(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal units As CUnitSystem, ByVal section As CSectionModel, ByVal policy As CBatchStatusPolicy)
+        ByVal units As CUnitSystem, ByVal section As CSectionModel, ByVal policy As CResultStatusPolicy)
     If Not batch.StrengthCapacityRequested(index) Then
         data(rowIndex, COL_CAP_STATUS) = policy.NotApplicable
         Exit Sub
@@ -693,18 +693,18 @@ End Sub
 
 ' Возвращает внешний статус канонического прямого НДС через общую policy.
 Private Function DirectStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal policy As CBatchStatusPolicy) As String
+        ByVal policy As CResultStatusPolicy) As String
     Dim meta As CResultMeta
     Set meta = batch.ResultAt(index).DirectStateMeta
-    DirectStatusText = policy.StatusFromMeta(meta)
+    DirectStatusText = policy.ExternalStatus(meta)
 End Function
 
 ' Возвращает внешний статус несущей способности по ResultMeta.
 Private Function CapacityStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal policy As CBatchStatusPolicy) As String
+        ByVal policy As CResultStatusPolicy) As String
     Dim meta As CResultMeta
     Set meta = batch.ResultAt(index).CapacityMeta
-    CapacityStatusText = policy.StatusFromMeta(meta)
+    CapacityStatusText = policy.ExternalStatus(meta)
 End Function
 
 ' Возвращает готовое пользовательское пояснение из ResultMeta блока.
@@ -807,9 +807,9 @@ Private Function OutputMomentUnit(ByVal units As CUnitSystem) As String
 End Function
 
 ' Возвращает единый словарь пользовательских статусов для подробного блока прочности.
-Private Function StatusPolicy() As CBatchStatusPolicy
-    Static policy As CBatchStatusPolicy
-    If policy Is Nothing Then Set policy = New CBatchStatusPolicy
+Private Function StatusPolicy() As CResultStatusPolicy
+    Static policy As CResultStatusPolicy
+    If policy Is Nothing Then Set policy = New CResultStatusPolicy
     Set StatusPolicy = policy
 End Function
 

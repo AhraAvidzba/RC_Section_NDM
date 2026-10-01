@@ -389,7 +389,7 @@ End Sub
 ' Заполняет одну строку сочетания фактически рассчитанными величинами трещин.
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
-    Dim policy As CBatchStatusPolicy
+    Dim policy As CResultStatusPolicy
     Set policy = StatusPolicy()
 
     data(rowIndex, COL_ID) = batch.CombinationID(index)
@@ -427,7 +427,7 @@ End Function
 
 Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal units As CUnitSystem, ByVal policy As CBatchStatusPolicy)
+        ByVal units As CUnitSystem, ByVal policy As CResultStatusPolicy)
     Dim hasFormationData As Boolean
     hasFormationData = HasCrackFormationData(batch, index)
 
@@ -476,13 +476,13 @@ End Sub
 ' Возвращает статус сохраненного named-state. Если состояние штатно не создавалось,
 ' detailed-таблица показывает N/A, а не общий статус всей проверки трещин.
 Private Function NamedStateStatus(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal stateType As ESectionStateType, ByVal policy As CBatchStatusPolicy) As String
+        ByVal stateType As ESectionStateType, ByVal policy As CResultStatusPolicy) As String
     Dim stateResult As CSectionStateResult
     Set stateResult = batch.ResultAt(index).StateRepository.FindState(stateType)
     If stateResult Is Nothing Then
         NamedStateStatus = policy.NotApplicable
     Else
-        NamedStateStatus = policy.StatusFromMeta(stateResult.ResultMeta)
+        NamedStateStatus = policy.ExternalStatus(stateResult.ResultMeta)
     End If
 End Function
 
@@ -502,7 +502,7 @@ End Function
 ' продольных трещин не рассчитываются, потому что опираться на такое НДС
 ' как на физическое состояние сечения нельзя.
 Private Sub PutCrackedStateData(ByRef data() As Variant, ByVal rowIndex As Long, _
-        ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal policy As CBatchStatusPolicy)
+        ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal policy As CResultStatusPolicy)
     Dim stateResult As CSectionStateResult
     Set stateResult = batch.ResultAt(index).StateRepository.FindState(sstCrackedState)
 
@@ -537,7 +537,7 @@ Private Function ExtensionUsedText(ByVal batch As CBatchSectionCalculator, _
 End Function
 
 Private Function CrackedStateAllowsCrackChecks(ByVal batch As CBatchSectionCalculator, _
-        ByVal index As Long, ByVal policy As CBatchStatusPolicy) As Boolean
+        ByVal index As Long, ByVal policy As CResultStatusPolicy) As Boolean
     Dim stateResult As CSectionStateResult
     Set stateResult = batch.ResultAt(index).StateRepository.FindState(sstCrackedState)
     If stateResult Is Nothing Then Exit Function
@@ -545,13 +545,13 @@ Private Function CrackedStateAllowsCrackChecks(ByVal batch As CBatchSectionCalcu
     If stateResult.ExtensionUsed Then Exit Function
 
     CrackedStateAllowsCrackChecks = _
-        (policy.StatusFromMeta(stateResult.ResultMeta) = policy.OK)
+        (policy.ExternalStatus(stateResult.ResultMeta) = policy.OK)
 End Function
 
 ' Записывает ширину раскрытия нормальных трещин и величины ее формулы.
 Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal units As CUnitSystem, ByVal policy As CBatchStatusPolicy)
+        ByVal units As CUnitSystem, ByVal policy As CResultStatusPolicy)
     If Not CrackedStateAllowsCrackChecks(batch, index, policy) Then
         data(rowIndex, COL_ACRC_STATUS) = policy.NotApplicable
         Exit Sub
@@ -597,7 +597,7 @@ End Sub
 ' Записывает проверку продольных трещин по сжатому бетону.
 Private Sub PutLongitudinalData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal units As CUnitSystem, ByVal policy As CBatchStatusPolicy)
+        ByVal units As CUnitSystem, ByVal policy As CResultStatusPolicy)
     If Not CrackedStateAllowsCrackChecks(batch, index, policy) Then
         data(rowIndex, COL_LONG_STATUS) = policy.NotApplicable
         Exit Sub
@@ -756,34 +756,34 @@ End Sub
 
 ' Возвращает внешний статус поиска образования нормальной трещины.
 Private Function CrackFormationStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal policy As CBatchStatusPolicy) As String
+        ByVal policy As CResultStatusPolicy) As String
     Dim meta As CResultMeta
     Set meta = batch.ResultAt(index).CrackFormationMeta
-    CrackFormationStatusText = policy.StatusFromMeta(meta)
+    CrackFormationStatusText = policy.ExternalStatus(meta)
 End Function
 
 ' Возвращает внешний статус прямого CrackedState от заданного сочетания.
 Private Function CrackCurrentStateStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal policy As CBatchStatusPolicy) As String
+        ByVal policy As CResultStatusPolicy) As String
     Dim meta As CResultMeta
     Set meta = batch.ResultAt(index).CrackCurrentStateMeta
-    CrackCurrentStateStatusText = policy.StatusFromMeta(meta)
+    CrackCurrentStateStatusText = policy.ExternalStatus(meta)
 End Function
 
 ' Возвращает внешний статус формульной проверки ширины нормальной трещины.
 Private Function CrackWidthStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal policy As CBatchStatusPolicy) As String
+        ByVal policy As CResultStatusPolicy) As String
     Dim meta As CResultMeta
     Set meta = batch.ResultAt(index).CrackWidthMeta
-    CrackWidthStatusText = policy.StatusFromMeta(meta)
+    CrackWidthStatusText = policy.ExternalStatus(meta)
 End Function
 
 ' Возвращает внешний статус проверки продольных трещин.
 Private Function LongitudinalStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal policy As CBatchStatusPolicy) As String
+        ByVal policy As CResultStatusPolicy) As String
     Dim meta As CResultMeta
     Set meta = batch.ResultAt(index).LongitudinalCrackMeta
-    LongitudinalStatusText = policy.StatusFromMeta(meta)
+    LongitudinalStatusText = policy.ExternalStatus(meta)
 End Function
 
 ' Возвращает готовое пользовательское пояснение из ResultMeta блока.
@@ -794,7 +794,7 @@ Private Function MetaComment(ByVal meta As CResultMeta) As String
 End Function
 
 ' Возвращает напряжение или N/A для величин, которые расчетно могут отсутствовать.
-Private Function OptionalStress(ByVal value As Double, ByVal units As CUnitSystem, ByVal policy As CBatchStatusPolicy) As Variant
+Private Function OptionalStress(ByVal value As Double, ByVal units As CUnitSystem, ByVal policy As CResultStatusPolicy) As Variant
     If Abs(value) > SMALL_VALUE Then
         OptionalStress = OutputStress(value, units)
     Else
@@ -871,8 +871,8 @@ Private Function OutputStressUnit(ByVal units As CUnitSystem) As String
 End Function
 
 ' Возвращает единый словарь статусов для подробного crack-блока.
-Private Function StatusPolicy() As CBatchStatusPolicy
-    Static policy As CBatchStatusPolicy
-    If policy Is Nothing Then Set policy = New CBatchStatusPolicy
+Private Function StatusPolicy() As CResultStatusPolicy
+    Static policy As CResultStatusPolicy
+    If policy Is Nothing Then Set policy = New CResultStatusPolicy
     Set StatusPolicy = policy
 End Function

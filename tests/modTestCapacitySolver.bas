@@ -1862,6 +1862,16 @@ Private Sub CheckAudit02SearchVsCapacity(ByRef stats As TCapacityTestStats, _
         AssertClose stats, "audit02.searchEngineering.solverMutation.N", search.NUltimate, savedN, 0#
         AssertClose stats, "audit02.searchEngineering.solverMutation.plane", search.PointState.Epsilon0, savedEps, 0#
     End If
+    Dim detachedSearch As CLimitSearchResult
+    Set detachedSearch = result.SearchResult
+    detachedSearch.InitializeInvalidConfiguration "Unknown", "Изменение выданной копии Search."
+    AssertTrue stats, "audit03.searchEngineering.outputSnapshot", result.SearchResult.HasLimitPoint
+    AssertClose stats, "audit03.searchEngineering.outputLambda", result.SearchResult.LambdaUltimate, cap.LambdaUltimate, 0#
+    search.InitializeInvalidConfiguration "Unknown", "Повторное заполнение исходного Search."
+    AssertTrue stats, "audit03.searchEngineering.inputSnapshot", result.SearchResult.HasLimitPoint
+    AssertTrue stats, "audit03.searchEngineering.inputMeta", result.SearchResult.Meta.InternalStatus = rsSuccess
+    AssertClose stats, "audit03.searchEngineering.inputLambda", result.SearchResult.LambdaUltimate, cap.LambdaUltimate, 0#
+    AssertEquals stats, "audit03.searchEngineering.capacityStatusPreserved", result.Status, "FAIL"
 End Sub
 
 ' ДЛЯ ТЕСТОВ: собирает capacity-снимок через тот же доменный адаптер, что
