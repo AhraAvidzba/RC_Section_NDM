@@ -34,6 +34,8 @@ Public Function RunSectionSolverTests() As String
     TestSecantComparativeTasks stats
     TestSolverMethodInputErrors stats
     TestSolverMethodFromSystem stats
+    TestAudit02EvaluatedPlaneRequiresEquilibrium stats
+    TestAudit02DiagramExtensionReaderMigration stats
 
     AppendLine stats, "TOTAL_SECTION_SOLVER: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -179,7 +181,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "Steel.Esc", "Steel.Es", "Steel.TwoLine.Esc2", "Steel.TwoLine.Es2", _
         "Steel.ThreeLine.Esc2", "Steel.ThreeLine.Es2", _
         "Solver.Method", "Solver.MaxIterations", "Solver.LoadSteps", _
-        "Solver.DirectState.DiagramExtension", _
+        "General.DiagramExtension", _
         "Solver.ToleranceN", "Solver.ToleranceMx", "Solver.ToleranceMy", _
         "Solver.LineSearchEnabled", "Solver.DampingInitial", "Solver.MinLineSearchAlpha", _
         "Solver.MaxDeltaEpsilon0", "Solver.MaxDeltaKappa", _
@@ -657,6 +659,106 @@ End Sub
 
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
+End Function
+
+' ============================== ДЛЯ ТЕСТОВ ==============================
+
+' Проверяет различие оценки плоскости и решения равновесия. Подтверждение
+' по целевым усилиям не должно менять плоскость или запускать новый solve.
+Private Sub TestAudit02EvaluatedPlaneRequiresEquilibrium(ByRef stats As TSectionSolverTestStats)
+    Dim concrete As CLinearConcreteMaterial
+    Set concrete = New CLinearConcreteMaterial
+    concrete.Initialize 32500#
+    Dim steel As CLinearSteelMaterial
+    Set steel = New CLinearSteelMaterial
+    steel.Initialize 200000#
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 20#), Nothing)
+    Dim solver As CSectionSolver
+    Set solver = New CSectionSolver
+    solver.ToleranceN = 1#
+    solver.ToleranceMx = 1#
+    solver.ToleranceMy = 1#
+    Dim solveCount As Long
+    solveCount = SectionEquilibriumSolveCount()
+    solver.EvaluateStrainPlane section, concrete, steel, -0.0001, 0#, 0#
+    AssertTrue stats, "audit02.plane.evaluationNotSolve", Not solver.Converged
+    AssertTrue stats, "audit02.plane.wrongTargetRejected", _
+        Not solver.ConfirmEquilibrium(solver.Nint + 100#, solver.Mxint, solver.Myint)
+    AssertTrue stats, "audit02.plane.actualTargetConfirmed", _
+        solver.ConfirmEquilibrium(solver.Nint, solver.Mxint, solver.Myint)
+    AssertClose stats, "audit02.plane.sameStrain", solver.Epsilon0, -0.0001, 0#
+    AssertTrue stats, "audit02.plane.noHeavySolve", SectionEquilibriumSolveCount() = solveCount
+End Sub
+
+' Проверяет миграцию на входной границе reader-а: старое No не перекрывается
+' default, новый ключ имеет приоритет, конфликт виден, ошибочный ввод отклонен.
+' Runtime-контекст после чтения содержит только канонический ключ.
+Private Sub TestAudit02DiagramExtensionReaderMigration(ByRef stats As TSectionSolverTestStats)
+    On Error GoTo Failed
+    Dim testBook As Object
+    Set testBook = ThisWorkbook.Application.Workbooks.Add(-4167)
+    Dim testRange As Object
+    Set testRange = testBook.Worksheets.Item(1).Range("A1:C5")
+    Dim scenario As Variant
+    Dim data(1 To 5, 1 To 3) As Variant
+    Dim reader As CSystemSettingsReader
+    Dim errorNumber As Long
+    Dim testKey As String
+    For Each scenario In Array( _
+            Array("legacyNo", True, "No", False, "", "No", False, False), _
+            Array("canonicalNo", False, "", True, "No", "No", False, False), _
+            Array("bothConflict", True, "No", True, "Yes", "Yes", True, False), _
+            Array("bothEquivalent", True, "1", True, "Yes", "Yes", False, False), _
+            Array("missing", False, "", False, "", "Yes", False, False), _
+            Array("invalidCanonical", True, "Yes", True, "invalid", "", False, True), _
+            Array("emptyCanonical", True, "Yes", True, "", "", False, True), _
+            Array("invalidLegacy", True, "invalid", False, "", "", False, True))
+        Erase data
+        data(1, 1) = "Параметр": data(1, 2) = "Значение": data(1, 3) = "Default"
+        If CBool(scenario(1)) Then
+            data(2, 1) = "Solver.DirectState.DiagramExtension": data(2, 2) = scenario(2)
+        End If
+        If CBool(scenario(3)) Then
+            data(3, 1) = "General.DiagramExtension": data(3, 2) = scenario(4)
+        End If
+        data(4, 1) = "Solver.MaxIterations": data(4, 2) = "37"
+        testRange.Value2 = data
+        testKey = "audit02.migration.reader." & CStr(scenario(0))
+        errorNumber = 0
+        Set reader = Audit02LoadMigrationRange(testRange, errorNumber)
+        If CBool(scenario(7)) Then
+            AssertTrue stats, testKey & ".inputError", errorNumber = vbObjectError + 4310
+        Else
+            AssertTrue stats, testKey & ".loaded", errorNumber = 0
+            If errorNumber = 0 Then
+                AssertTrue stats, testKey & ".value", reader.GetRawString("General.DiagramExtension") = CStr(scenario(5))
+                AssertTrue stats, testKey & ".legacyRemoved", Not reader.HasKey("Solver.DirectState.DiagramExtension")
+                AssertTrue stats, testKey & ".warning", (Len(reader.MigrationWarning) > 0) = CBool(scenario(6))
+                AssertTrue stats, testKey & ".neighbor", reader.GetRequiredDouble("Solver.MaxIterations") = 37#
+            End If
+        End If
+    Next scenario
+    testBook.Close False
+    Exit Sub
+Failed:
+    Dim reason As String
+    reason = Err.Description
+    If Not testBook Is Nothing Then testBook.Close False
+    AssertTrue stats, "audit02.migration.reader.runtime: " & reason, False
+End Sub
+
+' Перехватывает только ожидаемую ошибку ввода отдельного migration-сценария.
+' Ошибка возвращается числом, без обратного определения статуса по ее тексту.
+Private Function Audit02LoadMigrationRange(ByVal testRange As Object, ByRef errorNumber As Long) As CSystemSettingsReader
+    On Error GoTo Failed
+    Dim reader As CSystemSettingsReader
+    Set reader = New CSystemSettingsReader
+    reader.LoadFromRange testRange
+    Set Audit02LoadMigrationRange = reader
+    Exit Function
+Failed:
+    errorNumber = Err.Number
 End Function
 
 

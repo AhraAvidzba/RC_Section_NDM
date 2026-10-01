@@ -12,14 +12,15 @@ Option Explicit
 ' ==========================================================================
 ' Запуск прямого состояния НДС
 ' ==========================================================================
-' CStateSolutionRunner управляет только пользовательским состоянием от заданного
-' сочетания N + Mx + My. Он создает CSectionSolver, задает ему настройки,
+' CStateSolutionRunner управляет обычным равновесием для заданных N + Mx + My,
+' включая named-state и промежуточные пробы общего поиска. Он создает
+' CSectionSolver, задает ему настройки,
 ' подбирает стартовую плоскость через CStateGuessBuilder и, если первая попытка
 ' не сошлась, пробует согласованные повторные старты в technical extension.
 '
 ' В классе нет выбора расчетного профиля, диаграмм Strength/CrackedNDS и нет записи
 ' Results. Материалы уже должны быть подготовлены CMaterialModelProvider, а
-' CBatchSectionCalculator после этого только читает готовый результат: сошелся
+' инженерный orchestration-слой после этого только читает готовый результат: сошелся
 ' ли solver, вышло ли состояние в extension и находится ли оно в физических
 ' пределах диаграммы.
 
@@ -65,6 +66,25 @@ Private Sub Class_Initialize()
     mDiagnosticsEnabled = True
     mWithinPhysicalRange = True
 End Sub
+
+' Восстанавливает вычисляемый снимок найденного named-state без поиска
+' равновесия. Материалы и сечение должны принадлежать тому же контексту;
+' сохраненные целевые усилия проверяются повторно, число solve не увеличивается.
+Public Function RestoreSnapshot(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal stateResult As CSectionStateResult) As CSectionSolver
+    If stateResult Is Nothing Then Exit Function
+    If Not stateResult.Converged Then Exit Function
+
+    Dim snapshot As CSectionSolver
+    Set snapshot = New CSectionSolver
+    ConfigureSolver snapshot
+    snapshot.EvaluateStrainPlane section, concreteMaterial, steelMaterial, _
+        stateResult.Epsilon0, stateResult.KappaX, stateResult.KappaY
+    If snapshot.ConfirmEquilibrium(stateResult.TargetN, stateResult.TargetMx, stateResult.TargetMy) Then
+        Set RestoreSnapshot = snapshot
+    End If
+End Function
 
 ' Решает прямое равновесие от заданного LC.
 ' allowExtensionWarmStart означает не сам факт включения extension в материалах,
@@ -157,6 +177,13 @@ Public Sub SolveWithInitialLoadState(ByVal section As CSectionModel, _
     service.Solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
     Set mSolver = service
 
+    If Not service.Converged Then
+        If TrySolveWithDirectStateGuess(section, concreteMaterial, steelMaterial, _
+                targetN, targetMx, targetMy, service) Then
+            Set mSolver = service
+        End If
+    End If
+
     If Not service.Converged And allowExtensionWarmStart Then
         If TrySolveWithExtensionWarmStart(section, concreteMaterial, steelMaterial, _
                 targetN, targetMx, targetMy, service) Then
@@ -183,7 +210,8 @@ End Sub
 Public Sub SolveWithDirectTargetGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
-        Optional ByVal diagnosticLine As String = vbNullString)
+        Optional ByVal diagnosticLine As String = vbNullString, _
+        Optional ByVal allowExtensionWarmStart As Boolean = False)
     If section Is Nothing Then Err.Raise vbObjectError + 3486, "CStateSolutionRunner", "Модель сечения не передана."
     If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 3487, "CStateSolutionRunner", "Диаграмма бетона не передана."
     If steelMaterial Is Nothing Then Err.Raise vbObjectError + 3488, "CStateSolutionRunner", "Диаграмма арматуры не передана."
@@ -218,6 +246,13 @@ Public Sub SolveWithDirectTargetGuess(ByVal section As CSectionModel, _
     service.Solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
     Set mSolver = service
 
+    If Not service.Converged And allowExtensionWarmStart Then
+        If TrySolveWithExtensionWarmStart(section, concreteMaterial, steelMaterial, _
+                targetN, targetMx, targetMy, service) Then
+            Set mSolver = service
+        End If
+    End If
+
     If Not mSolver Is Nothing Then
         If mSolver.Converged Then
             mWithinPhysicalRange = StateWithinPhysicalRange(section, mSolver, concreteMaterial, steelMaterial)
@@ -231,16 +266,16 @@ End Sub
 
 ' Повторяет прямой solve от active-set плоскости для общего случая N+M.
 ' Первый штатный старт сохраняется прежним; этот retry включается только после
-' несходимости и только если начальная подсказка еще не применялась. Так
+' несходимости. Старт на полной нагрузке отличается от применения такой же
+' плоскости при ступенчатом нагружении и не должен блокироваться его флагом. Так
 ' внецентренное растяжение/сжатие получает тот же устойчивый старт, который уже
 ' помогал чистому изгибу, без изменения результата успешно сходящихся LC.
 Private Function TrySolveWithDirectStateGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByRef service As CSectionSolver) As Boolean
-    If mInitialGuessApplied Then Exit Function
     If mMaxIterations <= 1 Then Exit Function
-    If Sqr(targetMx * targetMx + targetMy * targetMy) <= NEAR_ZERO Then Exit Function
+    If Abs(targetN) + Abs(targetMx) + Abs(targetMy) <= NEAR_ZERO Then Exit Function
 
     Dim concreteDiagram As CMaterialDiagram
     Dim steelDiagram As CMaterialDiagram
@@ -447,59 +482,91 @@ End Function
 ' Проверяет, попала ли деформация хотя бы одного элемента в добавленную
 ' provider-ом technical extension. Этот признак сохраняется в Results отдельно
 ' от пользовательского статуса и нужен схеме, AutoCAD и расчету трещин.
-Private Function StateUsesExtension(ByVal section As CSectionModel, ByVal solver As CSectionSolver, _
+Public Function StateUsesExtension(ByVal section As CSectionModel, ByVal solver As CSectionSolver, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object) As Boolean
+    If section Is Nothing Then Exit Function
+    If solver Is Nothing Then Exit Function
+    If Not solver.Converged Then Exit Function
     Dim concreteDiagram As CMaterialDiagram
     Dim steelDiagram As CMaterialDiagram
-    If Not TryGetMaterialDiagrams(concreteMaterial, steelMaterial, concreteDiagram, steelDiagram) Then Exit Function
+    If TypeName(concreteMaterial) = "CMaterialDiagram" Then Set concreteDiagram = concreteMaterial
+    If TypeName(steelMaterial) = "CMaterialDiagram" Then Set steelDiagram = steelMaterial
 
     Dim i As Long
     Dim strain As Double
 
-    For i = 1 To section.ConcreteCount
-        strain = ElementStrain(solver, section.ConcreteX(i), section.ConcreteY(i))
-        If concreteDiagram.IsInExtensionRange(strain) Then
-            StateUsesExtension = True
-            Exit Function
-        End If
-    Next i
+    If Not concreteDiagram Is Nothing Then
+        For i = 1 To section.ConcreteCount
+            strain = ElementStrain(solver, section.ConcreteX(i), section.ConcreteY(i))
+            If concreteDiagram.IsInExtensionRange(strain) Then
+                StateUsesExtension = True
+                Exit Function
+            End If
+        Next i
+    End If
 
-    For i = 1 To section.RebarCount
-        strain = ElementStrain(solver, section.RebarX(i), section.RebarY(i))
-        If steelDiagram.IsInExtensionRange(strain) Then
-            StateUsesExtension = True
-            Exit Function
-        End If
-    Next i
+    If Not steelDiagram Is Nothing Then
+        For i = 1 To section.RebarCount
+            strain = ElementStrain(solver, section.RebarX(i), section.RebarY(i))
+            If steelDiagram.IsInExtensionRange(strain) Then
+                StateUsesExtension = True
+                Exit Function
+            End If
+        Next i
+    End If
 End Function
 
 ' Проверяет физические eps-пределы всех бетонных волокон и стержней.
 ' Если растянутая ветвь бетона отключена и у диаграммы нет растянутого
 ' предела, положительные деформации бетона считаются допустимыми для проверки
 ' range, но дают нулевое напряжение через саму диаграмму.
-Private Function StateWithinPhysicalRange(ByVal section As CSectionModel, ByVal solver As CSectionSolver, _
+Public Function StateWithinPhysicalRange(ByVal section As CSectionModel, ByVal solver As CSectionSolver, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object) As Boolean
+    If section Is Nothing Then Exit Function
+    If solver Is Nothing Then Exit Function
+    If Not solver.Converged Then Exit Function
+    If concreteMaterial Is Nothing Then Exit Function
+    If steelMaterial Is Nothing Then Exit Function
     Dim concreteDiagram As CMaterialDiagram
     Dim steelDiagram As CMaterialDiagram
-    If Not TryGetMaterialDiagrams(concreteMaterial, steelMaterial, concreteDiagram, steelDiagram) Then
-        StateWithinPhysicalRange = True
-        Exit Function
-    End If
+    If TypeName(concreteMaterial) = "CMaterialDiagram" Then Set concreteDiagram = concreteMaterial
+    If TypeName(steelMaterial) = "CMaterialDiagram" Then Set steelDiagram = steelMaterial
 
     Dim i As Long
     Dim strain As Double
 
-    For i = 1 To section.ConcreteCount
-        strain = ElementStrain(solver, section.ConcreteX(i), section.ConcreteY(i))
-        If Not concreteDiagram.IsInPhysicalRange(strain) Then Exit Function
-    Next i
+    If Not concreteDiagram Is Nothing Then
+        For i = 1 To section.ConcreteCount
+            strain = ElementStrain(solver, section.ConcreteX(i), section.ConcreteY(i))
+            If Not concreteDiagram.IsInPhysicalRange(strain) Then Exit Function
+        Next i
+    End If
 
-    For i = 1 To section.RebarCount
-        strain = ElementStrain(solver, section.RebarX(i), section.RebarY(i))
-        If Not steelDiagram.IsInPhysicalRange(strain) Then Exit Function
-    Next i
+    If Not steelDiagram Is Nothing Then
+        For i = 1 To section.RebarCount
+            strain = ElementStrain(solver, section.RebarX(i), section.RebarY(i))
+            If Not steelDiagram.IsInPhysicalRange(strain) Then Exit Function
+        Next i
+    End If
 
     StateWithinPhysicalRange = True
+End Function
+
+' Проверяет наличие технических ветвей в фактически переданных материалах.
+' Численные повторные старты не разрешают продолжение сами по себе: при Off
+' и для линейного Object material API этот метод всегда возвращает False.
+Public Function MaterialsHaveExtension(ByVal concreteMaterial As Object, ByVal steelMaterial As Object) As Boolean
+    Dim concreteDiagram As CMaterialDiagram
+    Dim steelDiagram As CMaterialDiagram
+    If TypeName(concreteMaterial) = "CMaterialDiagram" Then
+        Set concreteDiagram = concreteMaterial
+        MaterialsHaveExtension = concreteDiagram.HasCompressionExtension Or concreteDiagram.HasTensionExtension
+    End If
+    If TypeName(steelMaterial) = "CMaterialDiagram" Then
+        Set steelDiagram = steelMaterial
+        MaterialsHaveExtension = MaterialsHaveExtension Or _
+            steelDiagram.HasCompressionExtension Or steelDiagram.HasTensionExtension
+    End If
 End Function
 
 ' Возвращает штатные диаграммы материалов, если они действительно переданы.

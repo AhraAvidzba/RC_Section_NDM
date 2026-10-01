@@ -469,12 +469,12 @@ End Sub
 
 ' Пишет CapacityState и предельные компоненты найденной точки.
 ' Показывает использование продолжения диаграммы только тогда, когда само
-' продолжение разрешено настройкой Solver.DirectState.DiagramExtension.
+' продолжение разрешено настройкой General.DiagramExtension.
 ' При выключенной настройке выводится "-", потому что extension не мог
 ' применяться и обычная пара yes/no здесь не несет полезного смысла.
 Private Function ExtensionUsedText(ByVal batch As CBatchSectionCalculator, _
         ByVal index As Long, ByVal stateResult As CSectionStateResult) As String
-    If Not batch.DirectStateDiagramExtensionEnabled(index) Then
+    If Not batch.DiagramExtensionEnabled(index) Then
         ExtensionUsedText = "-"
     ElseIf stateResult.ExtensionUsed Then
         ExtensionUsedText = "yes"

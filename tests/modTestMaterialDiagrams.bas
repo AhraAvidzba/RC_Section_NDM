@@ -33,6 +33,9 @@ Public Function RunMaterialDiagramTests() As String
     TestProviderStateSolutionExtension stats
     TestUserStrainParametersAffectDiagrams stats
     TestInvalidParameters stats
+    TestAudit02PhysicalDiagramPairs stats
+    TestAudit02ExtensionBeyondTechnicalDefault stats
+    TestAudit02ExtensionOverflowIsExplicit stats
 
     AppendLine stats, "TOTAL_MATERIAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -155,9 +158,9 @@ Private Sub TestProviderSteelDiagrams(ByRef stats As TMaterialTestStats)
     AssertClose stats, "steel.provider.sls.resistance", provider.SteelMaterial(cpCrackedNDS).GetStress(0.01), 390#, 0.000000000001
 End Sub
 
-' Проверяет, что numerical extension появляется только у StateSolution-диаграмм.
-' Физические Strength/Mcrc/CrackedNDS-диаграммы остаются без технических точек,
-' поэтому capacity и crack не получают искусственного продолжения материала.
+' Проверяет, что numerical extension появляется только у equilibrium-диаграмм.
+' Физические Strength/Mcrc/CrackedNDS-диаграммы остаются без технических
+' точек, поэтому физические пределы capacity и crack не расширяются.
 Private Sub TestProviderStateSolutionExtension(ByRef stats As TMaterialTestStats)
     Dim provider As CMaterialModelProvider
     Set provider = TestProvider()
@@ -165,7 +168,7 @@ Private Sub TestProviderStateSolutionExtension(ByRef stats As TMaterialTestStats
     Dim physicalConcrete As CMaterialDiagram
     Set physicalConcrete = provider.ConcreteMaterial(cpStrength)
     Dim stateConcrete As CMaterialDiagram
-    Set stateConcrete = provider.ConcreteStateMaterial(cpStrength)
+    Set stateConcrete = provider.ConcreteMaterialForEquilibrium(cpStrength)
     AssertTrue stats, "state.extension.concrete.physicalClean", Not physicalConcrete.HasCompressionExtension
     AssertTrue stats, "state.extension.concrete.compression", stateConcrete.HasCompressionExtension
     AssertTrue stats, "state.extension.concrete.noTension", Not stateConcrete.HasTensionExtension
@@ -175,7 +178,7 @@ Private Sub TestProviderStateSolutionExtension(ByRef stats As TMaterialTestStats
     Dim physicalSteel As CMaterialDiagram
     Set physicalSteel = provider.SteelMaterial(cpStrength)
     Dim stateSteel As CMaterialDiagram
-    Set stateSteel = provider.SteelStateMaterial(cpStrength)
+    Set stateSteel = provider.SteelMaterialForEquilibrium(cpStrength)
     AssertTrue stats, "state.extension.steel.compression", stateSteel.HasCompressionExtension
     AssertTrue stats, "state.extension.steel.tension", stateSteel.HasTensionExtension
     AssertClose stats, "state.extension.steel.physicalLimit", stateSteel.PhysicalTensionStrain, _
@@ -185,7 +188,7 @@ Private Sub TestProviderStateSolutionExtension(ByRef stats As TMaterialTestStats
 
     Dim disabledProvider As CMaterialModelProvider
     Set disabledProvider = TestProvider("TwoLine", "Ignore", "TwoLine", "TwoLine", "TwoLine", False)
-    AssertTrue stats, "state.extension.disabled", Not disabledProvider.SteelStateMaterial(cpStrength).HasTensionExtension
+    AssertTrue stats, "state.extension.disabled", Not disabledProvider.SteelMaterialForEquilibrium(cpStrength).HasTensionExtension
 End Sub
 
 ' Проверяет требование ТЗ: пользовательские предельные деформации берутся из
@@ -244,12 +247,12 @@ Private Function TestProvider(Optional ByVal strengthConcreteDiagram As String =
         Optional ByVal strengthSteelDiagram As String = "TwoLine", _
         Optional ByVal mcrcSteelDiagram As String = "TwoLine", _
         Optional ByVal crackedSteelDiagram As String = "TwoLine", _
-        Optional ByVal directStateDiagramExtension As Boolean = True) As CMaterialModelProvider
+        Optional ByVal diagramExtensionEnabled As Boolean = True) As CMaterialModelProvider
     Dim provider As CMaterialModelProvider
     Set provider = New CMaterialModelProvider
     provider.InitializeFromParameters TestConcreteParameters(), TestSteelParameters(), _
         strengthConcreteDiagram, strengthConcreteTension, strengthSteelDiagram, _
-        "ThreeLine", mcrcSteelDiagram, "TwoLine", crackedSteelDiagram, directStateDiagramExtension
+        "ThreeLine", mcrcSteelDiagram, "TwoLine", crackedSteelDiagram, diagramExtensionEnabled
     Set TestProvider = provider
 End Function
 
@@ -301,3 +304,130 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ: физическая модель и активные ветви общего Extension
+' ==========================================================================
+
+' Сравнивает узлы и внутренние точки всех сочетаний TwoLine/ThreeLine,
+' ULS/SLS и Ignore/UseDiagram. Проверяет stress, tangent и совместный evaluator,
+' а также фактическое продолжение только работающих ветвей конкретного spec.
+Private Sub TestAudit02PhysicalDiagramPairs(ByRef stats As TMaterialTestStats)
+    Dim diagramKind As Variant
+    Dim valueSet As Variant
+    Dim tensionKind As Variant
+    Dim spec As CMaterialModelSpec
+    Dim providerOn As CMaterialModelProvider
+    Dim providerOff As CMaterialModelProvider
+    Dim physical As CMaterialDiagram
+    Dim extended As CMaterialDiagram
+    Dim testKey As String
+    For Each diagramKind In Array("TwoLine", "ThreeLine")
+        For Each valueSet In Array("ULS(I)", "SLS(II)")
+            For Each tensionKind In Array("Ignore", "UseDiagram")
+                Set spec = New CMaterialModelSpec
+                spec.Initialize CStr(valueSet), CStr(diagramKind), CStr(tensionKind), CStr(diagramKind)
+                Set providerOn = TestProvider(diagramExtensionEnabled:=True)
+                Set providerOff = TestProvider(diagramExtensionEnabled:=False)
+                testKey = "audit02.material." & spec.SpecKey
+
+                Set physical = providerOff.ConcreteMaterialForEquilibriumFromSpec(spec)
+                Set extended = providerOn.ConcreteMaterialForEquilibriumFromSpec(spec)
+                AssertPhysicalDiagramPair stats, testKey & ".concrete", physical, extended
+                AssertTrue stats, testKey & ".concrete.compressionExtension", extended.HasCompressionExtension
+                AssertClose stats, testKey & ".concrete.compressionSlope", _
+                    extended.GetTangentModulus(physical.PhysicalCompressionStrain - 0.0001), 325#, 0.000000000001
+                If CStr(tensionKind) = "Ignore" Then
+                    AssertTrue stats, testKey & ".ignore.noExtension", Not extended.HasTensionExtension
+                    AssertClose stats, testKey & ".ignore.stress", extended.GetStress(100#), 0#, 0.000000000001
+                    AssertClose stats, testKey & ".ignore.tangent", extended.GetTangentModulus(100#), 0#, 0.000000000001
+                    AssertTrue stats, testKey & ".ignore.range", extended.IsInPhysicalRange(100#)
+                    AssertTrue stats, testKey & ".ignore.notUsed", Not extended.IsInExtensionRange(100#)
+                Else
+                    AssertTrue stats, testKey & ".tension.extension", extended.HasTensionExtension
+                    AssertClose stats, testKey & ".tension.slope", _
+                        extended.GetTangentModulus(physical.PhysicalTensionStrain + 0.0001), 325#, 0.000000000001
+                    AssertTrue stats, testKey & ".tension.used", _
+                        extended.IsInExtensionRange(physical.PhysicalTensionStrain + 0.0001)
+                End If
+
+                Set physical = providerOff.SteelMaterialForEquilibriumFromSpec(spec)
+                Set extended = providerOn.SteelMaterialForEquilibriumFromSpec(spec)
+                AssertPhysicalDiagramPair stats, testKey & ".steel", physical, extended
+                AssertClose stats, testKey & ".steel.compressionSlope", _
+                    extended.GetTangentModulus(physical.PhysicalCompressionStrain - 0.0001), 2000#, 0.000000000001
+                AssertClose stats, testKey & ".steel.tensionSlope", _
+                    extended.GetTangentModulus(physical.PhysicalTensionStrain + 0.0001), 2000#, 0.000000000001
+            Next tensionKind
+        Next valueSet
+    Next diagramKind
+End Sub
+
+' Проверяет неизменность физического диапазона, узлов и середины каждого
+' отрезка. Общий evaluator должен возвращать те же stress/tangent, что API.
+Private Sub AssertPhysicalDiagramPair(ByRef stats As TMaterialTestStats, ByVal testKey As String, _
+        ByVal physical As CMaterialDiagram, ByVal extended As CMaterialDiagram)
+    AssertClose stats, testKey & ".compressionLimit", extended.PhysicalCompressionStrain, _
+        physical.PhysicalCompressionStrain, 0.000000000001
+    AssertClose stats, testKey & ".tensionLimit", extended.PhysicalTensionStrain, _
+        physical.PhysicalTensionStrain, 0.000000000001
+    Dim i As Long
+    Dim strain As Double
+    Dim stress As Double
+    Dim tangent As Double
+    For i = 1 To 2 * physical.PointCount - 1
+        If i Mod 2 = 1 Then
+            strain = physical.PointStrain((i + 1) \ 2)
+        Else
+            strain = 0.5 * (physical.PointStrain(i \ 2) + physical.PointStrain(i \ 2 + 1))
+        End If
+        AssertClose stats, testKey & ".stress." & CStr(i), extended.GetStress(strain), _
+            physical.GetStress(strain), 0.000000000001
+        AssertClose stats, testKey & ".tangent." & CStr(i), extended.GetTangentModulus(strain), _
+            physical.GetTangentModulus(strain), 0.000000000001
+        extended.EvaluateAtStrain strain, stress, tangent
+        AssertClose stats, testKey & ".evaluateStress." & CStr(i), stress, physical.GetStress(strain), 0.000000000001
+        AssertClose stats, testKey & ".evaluateTangent." & CStr(i), tangent, physical.GetTangentModulus(strain), 0.000000000001
+        AssertTrue stats, testKey & ".physical." & CStr(i), extended.IsInPhysicalRange(strain)
+        AssertTrue stats, testKey & ".notUsed." & CStr(i), Not extended.IsInExtensionRange(strain)
+    Next i
+End Sub
+
+' Пользовательский физический предел за +/-10 не обрезается: технические
+' узлы лежат дальше него, физическое плато и пределы остаются исходными.
+Private Sub TestAudit02ExtensionBeyondTechnicalDefault(ByRef stats As TMaterialTestStats)
+    Dim steel As CSteelMaterialParameters
+    Set steel = New CSteelMaterialParameters
+    steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#, 12#, 14#, 12#, 14#
+    Dim provider As CMaterialModelProvider
+    Set provider = New CMaterialModelProvider
+    provider.InitializeFromParameters TestConcreteParameters(), steel
+    Dim extended As CMaterialDiagram
+    Set extended = provider.SteelMaterialForEquilibrium(cpStrength)
+    AssertTrue stats, "audit02.technical.compressionExtended", extended.HasCompressionExtension
+    AssertTrue stats, "audit02.technical.tensionExtended", extended.HasTensionExtension
+    AssertClose stats, "audit02.technical.left", extended.PointStrain(1), -24#, 0.000000000001
+    AssertClose stats, "audit02.technical.right", extended.PointStrain(extended.PointCount), 28#, 0.000000000001
+    AssertClose stats, "audit02.technical.physicalCompression", extended.PhysicalCompressionStrain, -12#, 0.000000000001
+    AssertClose stats, "audit02.technical.physicalTension", extended.PhysicalTensionStrain, 14#, 0.000000000001
+    AssertClose stats, "audit02.technical.physicalStress", extended.GetStress(13#), 350#, 0.000000000001
+    AssertClose stats, "audit02.technical.extendedStress", extended.GetStress(15#), 2350#, 0.000000000001
+End Sub
+
+' Переполнение при построении технической ветви возвращается как явная
+' ошибка построения, а не как урезанная диаграмма с ложным пределом.
+Private Sub TestAudit02ExtensionOverflowIsExplicit(ByRef stats As TMaterialTestStats)
+    On Error GoTo ExpectedError
+    Dim steel As CSteelMaterialParameters
+    Set steel = New CSteelMaterialParameters
+    steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#, 1E+308, 1E+308, 1E+308, 1E+308
+    Dim provider As CMaterialModelProvider
+    Set provider = New CMaterialModelProvider
+    provider.InitializeFromParameters TestConcreteParameters(), steel
+    Dim extended As CMaterialDiagram
+    Set extended = provider.SteelMaterialForEquilibrium(cpStrength)
+    AssertTrue stats, "audit02.technical.overflowRejected", False
+    Exit Sub
+ExpectedError:
+    AssertTrue stats, "audit02.technical.overflowRejected", Err.Number = vbObjectError + 3245
+End Sub

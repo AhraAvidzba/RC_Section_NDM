@@ -93,7 +93,7 @@ Target(lambda) = Offset + lambda * Base
    - смысл: каждая probe-точка чистого изгиба получает разумный старт от собственных целевых усилий.
 
 3. `CStateSolutionRunner.TrySolveWithExtensionWarmStart`
-   - случай: прямой `StateSolution` не сошелся на первой попытке, а `Solver.DirectState.DiagramExtension = Yes`;
+   - случай: прямой `StateSolution` не сошелся на первой попытке, а `General.DiagramExtension = Yes`;
    - метод builder-а: `BuildForExtensionState`;
    - смысл: дать повторному solve старт уже в области технического продолжения диаграммы.
 

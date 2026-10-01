@@ -28,10 +28,6 @@ Public Sub Initialize(ByVal capacitySolver As CCapacitySolver)
     Set mCapacity = capacitySolver
 End Sub
 
-Private Property Get ILimitSearchProblem_DomainContext() As Object
-    Set ILimitSearchProblem_DomainContext = mCapacity
-End Property
-
 Private Property Get ILimitSearchProblem_ResultKind() As EResultKind
     ILimitSearchProblem_ResultKind = rkCapacity
 End Property
@@ -183,7 +179,8 @@ Private Sub ILimitSearchProblem_FinalizeFromRetainedAcceptable(ByVal request As 
 End Sub
 
 Private Sub ILimitSearchProblem_AcceptRetainedCapacity(ByVal request As CLimitSearchRequest)
-    mCapacity.LimitSearchAcceptPureAxialRetainedCapacity request.Section, request.ConcreteMaterial
+    mCapacity.LimitSearchAcceptPureAxialRetainedCapacity request.Section, _
+        request.ConcreteMaterial, request.SteelMaterial, ILimitSearchProblem_BuildLoadPath(request)
 End Sub
 
 Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRequest, _
@@ -193,6 +190,96 @@ Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRe
     result.InitializeFromCapacitySolver mCapacity, request.SolutionStrategy
     Set ILimitSearchProblem_BuildResult = result
 End Function
+
+' Передает общему Newton уже проверенную Capacity-постановку.
+Private Function ILimitSearchProblem_PrepareUltimate(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector) As Boolean
+    ILimitSearchProblem_PrepareUltimate = mCapacity.LimitSearchPrepareCapacityUltimate( _
+        request.Section, request.ConcreteMaterial, request.SteelMaterial, loadPath)
+End Function
+
+' Выполняет один общий поиск; дополнительные старты выбираются владельцем
+' Capacity, а не отдельной реализацией численного цикла в адаптере.
+Private Function ILimitSearchProblem_RunUltimateAttempts(ByVal request As CLimitSearchRequest) As Boolean
+    Dim search As CUltimateStrainSearch
+    Set search = New CUltimateStrainSearch
+    ILimitSearchProblem_RunUltimateAttempts = search.RunCapacityUltimateNewton( _
+        request, ILimitSearchProblem_BuildLoadPath(request))
+End Function
+
+Private Sub ILimitSearchProblem_CompleteUltimate(ByVal loadPath As CLoadPathVector)
+    mCapacity.LimitSearchCompleteCapacityUltimate loadPath
+End Sub
+
+' Реализует численный callback-контракт критериями и настройками Capacity.
+' Адаптер не решает систему и не выбирает Newton/line-search шаг.
+Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
+    mCapacity.LimitSearchInitializeUltimateGuess section, concreteMaterial, steelMaterial, _
+        loadPath, startSolver, eps0, kx, ky
+End Sub
+
+Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
+        ByVal kx As Double, ByVal ky As Double, ByRef solver As CSectionSolver, _
+        ByRef rPath1 As Double, ByRef rPath2 As Double, ByRef rLimit As Double, _
+        ByRef lambdaValue As Double, ByRef state As String) As Boolean
+    ILimitSearchProblem_LimitSearchEvaluateUltimateResidual = mCapacity.LimitSearchEvaluateUltimateResidual( _
+        section, concreteMaterial, steelMaterial, loadPath, eps0, kx, ky, solver, _
+        rPath1, rPath2, rLimit, lambdaValue, state)
+End Function
+
+Private Function ILimitSearchProblem_LimitSearchUltimateResidualReached(ByVal rPath1 As Double, _
+        ByVal rPath2 As Double, ByVal rLimit As Double) As Boolean
+    ILimitSearchProblem_LimitSearchUltimateResidualReached = _
+        mCapacity.LimitSearchUltimateResidualReached(rPath1, rPath2, rLimit)
+End Function
+
+Private Function ILimitSearchProblem_LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
+        ByVal rPath2 As Double, ByVal rLimit As Double) As Double
+    ILimitSearchProblem_LimitSearchUltimateResidualNorm = _
+        mCapacity.LimitSearchUltimateResidualNorm(rPath1, rPath2, rLimit)
+End Function
+
+Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
+        ByVal solver As CSectionSolver, ByVal state As String, ByVal iterations As Long) As Boolean
+    ILimitSearchProblem_LimitSearchFinalizeUltimateResult = mCapacity.LimitSearchFinalizeUltimateResult( _
+        section, concreteMaterial, steelMaterial, loadPath, lambdaValue, solver, state, iterations)
+End Function
+
+Private Sub ILimitSearchProblem_LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
+    mCapacity.LimitSearchSetUltimateNumericalFailure reason
+End Sub
+
+' Однотипные настройки общего Newton из численной конфигурации Capacity.
+Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxIterations() As Long
+    ILimitSearchProblem_LimitSearchUltimateMaxIterations = mCapacity.LimitSearchUltimateMaxIterations
+End Property
+
+Private Property Get ILimitSearchProblem_LimitSearchUltimateDampingInitial() As Double
+    ILimitSearchProblem_LimitSearchUltimateDampingInitial = mCapacity.LimitSearchUltimateDampingInitial
+End Property
+
+Private Property Get ILimitSearchProblem_LimitSearchUltimateMinLineSearchAlpha() As Double
+    ILimitSearchProblem_LimitSearchUltimateMinLineSearchAlpha = mCapacity.LimitSearchUltimateMinLineSearchAlpha
+End Property
+
+Private Property Get ILimitSearchProblem_LimitSearchUltimateLineSearchEnabled() As Boolean
+    ILimitSearchProblem_LimitSearchUltimateLineSearchEnabled = mCapacity.LimitSearchUltimateLineSearchEnabled
+End Property
+
+Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaEpsilon0() As Double
+    ILimitSearchProblem_LimitSearchUltimateMaxDeltaEpsilon0 = mCapacity.LimitSearchUltimateMaxDeltaEpsilon0
+End Property
+
+Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa() As Double
+    ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa = mCapacity.LimitSearchUltimateMaxDeltaKappa
+End Property
 
 ' Capacity не использует crack-операции Auto-пути; методы оставлены no-op по
 ' контракту ILimitSearchProblem.

@@ -60,7 +60,8 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
         ByVal statusPolicy As CBatchStatusPolicy, ByVal pureAxialForMethod As Boolean, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
         ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepthForMx As Double, _
-        ByVal concreteDepthForMy As Double)
+        ByVal concreteDepthForMy As Double, ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object)
     Set mSearchResult = searchResult
     mPureAxialForMethod = pureAxialForMethod
     If loadPath Is Nothing Then
@@ -70,20 +71,25 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
 
     mPathResolved = loadPath.Key
     If searchResult Is Nothing Then
-        Dim reason As String
-        If Not searchResult Is Nothing Then reason = searchResult.Meta.ResultComment
-        If Len(Trim$(reason)) = 0 Then reason = "Поиск несущей способности не вернул solver."
-        InitializeInvalidInput reason, loadPath.Key
+        InitializeCalcError "Поиск несущей способности не вернул результат.", loadPath.Key
         Exit Sub
     End If
 
     If searchResult.ResultKind <> rkCapacity Then
-        InitializeCalcError "LimitSearch returned non-capacity result.", loadPath.Key
+        InitializeCalcError "Поиск вернул результат, не относящийся к несущей способности.", loadPath.Key
         Exit Sub
     End If
 
     If statusPolicy Is Nothing Then Set statusPolicy = New CBatchStatusPolicy
     Set mResultMeta = searchResult.Meta.Clone
+    ' Численный поиск мог успешно найти предел ниже заданной нагрузки.
+    ' Только инженерный слой трактует это как непрохождение текущего LC.
+    If searchResult.Succeeded And searchResult.Converged Then
+        If searchResult.LambdaUltimate > 0# And searchResult.LambdaUltimate < 1# Then
+            mResultMeta.SetResult rsCheckFailed, rcPhysicalLimitExceeded, rkCapacity, _
+                searchResult.Meta.ResultComment
+        End If
+    End If
     mStatus = statusPolicy.StatusFromMeta(mResultMeta)
     mLimitState = searchResult.LimitState
     If Len(Trim$(mLimitState)) = 0 Then mLimitState = mResultMeta.ResultComment
@@ -93,7 +99,7 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
     StoreUltimateVector loadPath, loadReferenceX, loadReferenceY, momentFilter, _
         concreteDepthForMx, concreteDepthForMy
     StoreUtilization
-    StoreCapacityStateIfAvailable strengthSpec
+    StoreCapacityStateIfAvailable strengthSpec, section, concreteMaterial, steelMaterial
 End Sub
 
 ' Заполняет результат ошибкой входных данных до запуска search.
@@ -212,11 +218,13 @@ End Sub
 
 ' Готовит CapacityState только для физически найденной предельной точки.
 ' Неуспешные probes и numerical failure не становятся reusable named-state.
-Private Sub StoreCapacityStateIfAvailable(ByVal strengthSpec As CMaterialModelSpec)
+Private Sub StoreCapacityStateIfAvailable(ByVal strengthSpec As CMaterialModelSpec, _
+        ByVal section As CSectionModel, ByVal concreteMaterial As Object, ByVal steelMaterial As Object)
     If mSearchResult Is Nothing Then Exit Sub
     If Not mSearchResult.Converged Then Exit Sub
     If mSearchResult.LambdaUltimate <= 0# Then Exit Sub
     If mSearchResult.LastSolver Is Nothing Then Exit Sub
+    If Not mSearchResult.LastSolver.Converged Then Exit Sub
 
     mCapacityStateAvailable = True
     mCapacityEpsilon0 = mSearchResult.LastSolver.Epsilon0
@@ -224,8 +232,13 @@ Private Sub StoreCapacityStateIfAvailable(ByVal strengthSpec As CMaterialModelSp
     mCapacityKappaY = mSearchResult.LastSolver.KappaY
 
     Set mStateResult = New CSectionStateResult
+    Dim stateRunner As CStateSolutionRunner
+    Set stateRunner = New CStateSolutionRunner
     mStateResult.InitializeFromSolver sstCapacityState, cpStrength, strengthSpec, _
-        mSearchResult.LastSolver, False, True, 0, mSearchResult.DiagnosticLog
+        mSearchResult.LastSolver, _
+        stateRunner.StateUsesExtension(section, mSearchResult.LastSolver, concreteMaterial, steelMaterial), _
+        stateRunner.StateWithinPhysicalRange(section, mSearchResult.LastSolver, concreteMaterial, steelMaterial), _
+        0, mSearchResult.DiagnosticLog
 End Sub
 
 Public Property Get SearchResult() As CLimitSearchResult
@@ -297,10 +310,12 @@ Public Function MethodChoiceReport(ByVal solutionStrategy As String, _
             StrComp(mSolutionMethod, "LoadMultiplier", vbTextCompare) = 0 Then
         If mPureAxialForMethod Then
             MethodChoiceReport = "Итог поиска несущей: фактически использован LoadMultiplier, так как траектория чисто осевая относительно центра приведенного сечения и не решается устойчиво прямым UltimateStrain."
-        ElseIf Not loadPath Is Nothing And loadPath.ForceOnly Then
-            MethodChoiceReport = "Итог поиска несущей: UltimateStrain не дал устойчивую предельную точку для силовой траектории с эксцентриситетом; фактически использован LoadMultiplier."
         Else
             MethodChoiceReport = "Итог поиска несущей: фактически использован LoadMultiplier."
+            If Not loadPath Is Nothing Then
+                If loadPath.ForceOnly Then _
+                    MethodChoiceReport = "Итог поиска несущей: UltimateStrain не дал устойчивую предельную точку для силовой траектории с эксцентриситетом; фактически использован LoadMultiplier."
+            End If
         End If
     End If
 End Function

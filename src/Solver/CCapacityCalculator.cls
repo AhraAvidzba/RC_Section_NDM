@@ -171,7 +171,7 @@ Public Function Calculate(ByVal section As CSectionModel, _
     Set searchResult = coordinator.ExecuteCapacity(request)
     result.InitializeFromSearch searchResult, loadPath, strengthSpec, statusPolicy, _
         pureAxialForMethod, loadReferenceX, loadReferenceY, momentFilter, _
-        concreteDepthForMx, concreteDepthForMy
+        concreteDepthForMx, concreteDepthForMy, section, concreteMaterial, steelMaterial
 
     Set Calculate = result
 End Function
@@ -291,11 +291,8 @@ Private Function CreateConfiguredSolver(ByVal concreteMaterial As Object, _
     Dim steelTensionLimit As Double
     steelCompressionLimit = Abs(steelMaterial.UltimateCompressionStrain)
     steelTensionLimit = Abs(steelMaterial.UltimateTensionStrain)
-    If steelCompressionLimit >= steelTensionLimit Then
-        cap.SteelStrainLimit = steelCompressionLimit
-    Else
-        cap.SteelStrainLimit = steelTensionLimit
-    End If
+    cap.SteelCompressionLimit = steelCompressionLimit
+    cap.SteelTensionLimit = steelTensionLimit
 
     cap.LambdaTolerance = mLambdaTolerance
     cap.StrainTolerance = mStrainTolerance

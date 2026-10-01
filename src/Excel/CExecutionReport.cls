@@ -48,6 +48,7 @@ Public Sub Initialize(ByVal workbook As Object, ByVal settings As CSystemSetting
     AddRawLine "Папка книги: " & WorkbookFolder(workbook)
     AddRawLine "Начало: " & Format$(mStartedAt, "yyyy-mm-dd hh:nn:ss")
     AddRawLine String$(72, "-")
+    If Len(settings.MigrationWarning) > 0 Then AddStep settings.MigrationWarning
 End Sub
 
 ' Добавляет визуальный раздел, чтобы txt-файл читался как небольшой протокол,

@@ -17,11 +17,6 @@ Option Explicit
 ' оценить одну lambda-точку, классифицировать пробу и принять итог. Сам search
 ' после этого не знает, какой доменный калькулятор стоит за callback-ом.
 
-' Возвращает исходный доменный объект только для тех общих алгоритмов, где
-' исторически уже используется callback-набор UltimateStrain.
-Public Property Get DomainContext() As Object
-End Property
-
 ' Возвращает тип результата, для которого выполняется search.
 Public Property Get ResultKind() As EResultKind
 End Property
@@ -153,6 +148,77 @@ End Sub
 Public Function BuildResult(ByVal request As CLimitSearchRequest, _
         ByVal searchSucceeded As Boolean) As CLimitSearchResult
 End Function
+
+' Проверяет постановку перед общим Newton-поиском; численный цикл здесь
+' не реализуется, а material/criterion-настройки остаются у владельца задачи.
+Public Function PrepareUltimate(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector) As Boolean
+End Function
+
+' Подбирает последовательность численных стартов одного инженерного поиска.
+' Каждая попытка должна использовать общий UltimateStrain Newton-цикл.
+Public Function RunUltimateAttempts(ByVal request As CLimitSearchRequest) As Boolean
+End Function
+
+' Завершает принятую попытку без повторного решения найденной точки.
+Public Sub CompleteUltimate(ByVal loadPath As CLoadPathVector)
+End Sub
+
+' Строит стартовую плоскость для общей системы путь + физический критерий.
+Public Sub LimitSearchInitializeUltimateGuess(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
+End Sub
+
+' Оценивает две невязки выбранного пути и невязку физического критерия.
+' Здесь допустима оценка плоскости, но не фиктивное подтверждение равновесия.
+Public Function LimitSearchEvaluateUltimateResidual(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
+        ByVal kx As Double, ByVal ky As Double, ByRef solver As CSectionSolver, _
+        ByRef rPath1 As Double, ByRef rPath2 As Double, ByRef rLimit As Double, _
+        ByRef lambdaValue As Double, ByRef state As String) As Boolean
+End Function
+
+' Проверяет допуски критерия и задает согласованную норму для line search.
+Public Function LimitSearchUltimateResidualReached(ByVal rPath1 As Double, _
+        ByVal rPath2 As Double, ByVal rLimit As Double) As Boolean
+End Function
+
+Public Function LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
+        ByVal rPath2 As Double, ByVal rLimit As Double) As Double
+End Function
+
+' Принимает точку только после проверки ее усилий, load path и критерия.
+Public Function LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
+        ByVal solver As CSectionSolver, ByVal state As String, ByVal iterations As Long) As Boolean
+End Function
+
+' Сохраняет реальную численную неудачу общего Newton-цикла.
+Public Sub LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
+End Sub
+
+' Настройки одного Newton-цикла: лимит, демпфирование и ограничения шага.
+Public Property Get LimitSearchUltimateMaxIterations() As Long
+End Property
+
+Public Property Get LimitSearchUltimateDampingInitial() As Double
+End Property
+
+Public Property Get LimitSearchUltimateMinLineSearchAlpha() As Double
+End Property
+
+Public Property Get LimitSearchUltimateLineSearchEnabled() As Boolean
+End Property
+
+Public Property Get LimitSearchUltimateMaxDeltaEpsilon0() As Double
+End Property
+
+Public Property Get LimitSearchUltimateMaxDeltaKappa() As Double
+End Property
 
 ' Ниже идут методы, нужные CrackFormation Auto. Для capacity-адаптера они
 ' являются безопасными no-op, чтобы coordinator оставался независимым от класса.

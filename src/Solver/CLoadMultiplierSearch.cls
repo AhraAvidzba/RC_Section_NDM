@@ -78,13 +78,15 @@ Private Sub RunCapacitySearch(ByVal request As CLimitSearchRequest, _
     request.Problem.RecordAcceptable loadPath, lowLambda
 
     If Not FindCapacityBracket(request, loadPath, lowLambda, highLambda) Then
-        If request.ForceOnly Then request.Problem.AcceptRetainedCapacity request
+        If request.ForceOnly Or request.PureAxialForMethod Then request.Problem.AcceptRetainedCapacity request
         Exit Sub
     End If
 
     RunSearchInsideBracket request, loadPath, lowLambda, highLambda, _
         request.Problem.SearchMethod, request.Problem.LambdaTolerance, request.Problem.MaxIterations
-    If request.ForceOnly And Not request.Problem.Converged Then request.Problem.AcceptRetainedCapacity request
+    If Not request.Problem.Converged Then
+        If request.ForceOnly Or request.PureAxialForMethod Then request.Problem.AcceptRetainedCapacity request
+    End If
 End Sub
 
 ' Ищет верхнюю физическую границу capacity так же, как прежний
@@ -95,13 +97,15 @@ Private Function FindCapacityBracket(ByVal request As CLimitSearchRequest, _
         ByRef highLambda As Double) As Boolean
     Dim probeState As String
     Dim functionValue As Double
+    If highLambda > request.Problem.MaxLambda Then highLambda = request.Problem.MaxLambda
     Do While highLambda <= request.Problem.MaxLambda
         If Not EvaluateLimitFunction(request, loadPath, highLambda, functionValue, probeState) Then Exit Function
 
         If IsAcceptableState(request, probeState) Then
             lowLambda = highLambda
             request.Problem.RecordAcceptable loadPath, highLambda
-            highLambda = highLambda * 2#
+            If highLambda >= request.Problem.MaxLambda Then Exit Do
+            highLambda = MinDouble(highLambda * 2#, request.Problem.MaxLambda)
         ElseIf IsLimitState(request, probeState) Then
             FindCapacityBracket = True
             Exit Function

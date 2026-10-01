@@ -29,8 +29,8 @@ Public CapacitySolutionMethod As String ' Фактический метод, к�
 Public CrackStatus As String ' Статус расчета раскрытия нормальных трещин.
 Public LongitudinalCrackStatus As String ' Статус проверки продольных трещин по сжатому бетону.
 Public StabilityStatus As String ' Статус учета продольного изгиба/устойчивости перед НДМ.
-Public ExtensionUsed As Boolean ' True, если прямое НДС использовало technical extension диаграммы.
-Public DirectStateDiagramExtensionEnabled As Boolean ' Снимок настройки extension на момент расчета LC.
+Public ExtensionUsed As Boolean ' True, если хотя бы одно расчетное состояние LC использовало technical extension.
+Public DiagramExtensionEnabled As Boolean ' Снимок настройки extension на момент расчета LC.
 Public LambdaCapacity As Double ' Предельный множитель выбранной lambda-траектории.
 Public UtilCapacity As Double ' Использование несущей способности, обычно 1/lambda.
 Public CapacityPathResolved As String ' Нормализованный ключ выбранной lambda-траектории.
@@ -192,7 +192,7 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     LongitudinalCrackStatus = vbNullString
     StabilityStatus = vbNullString
     ExtensionUsed = False
-    DirectStateDiagramExtensionEnabled = False
+    DiagramExtensionEnabled = False
     LambdaCapacity = 0#
     UtilCapacity = 0#
     CapacityPathResolved = defaultCapacityPath
@@ -307,11 +307,14 @@ Public Property Get CrackMeta() As CResultMeta
     If IsProblemStatus(Policy.ExternalStatus(formationMeta)) Then
         Set CrackMeta = AggregateResultMeta(rkCrackFormation, BuildCrackResultComment(), formationMeta)
     ElseIf CrackFormationNotReached(formationMeta) Then
-        ' Если нормальная трещина при текущем сочетании не образована, формула
-        ' ширины не вызывается. Ошибка отдельного CurrentCrackedState может быть
-        ' видна в своей колонке/продольной проверке, но не должна превращать
-        ' физический результат NotCracked в NumFail нормальных трещин.
-        Set CrackMeta = AggregateResultMeta(rkCrackFormation, BuildCrackFormationResultComment(), formationMeta)
+        ' Отсутствие нормальной трещины не скрывает отказ обязательного НДС.
+        ' Формула ширины неприменима, но сводный результат сохраняет причину State.
+        If currentStateProblem Is Nothing Then
+            Set CrackMeta = AggregateResultMeta(rkCrackFormation, BuildCrackFormationResultComment(), formationMeta)
+        Else
+            Set CrackMeta = AggregateResultMeta(rkCrackFormation, BuildCrackResultComment(), _
+                formationMeta, currentStateProblem)
+        End If
     ElseIf CrackFormed Then
         If currentStateProblem Is Nothing Then
             Set CrackMeta = AggregateResultMeta(rkCrackWidth, BuildCrackResultComment(), CrackWidthMeta)
@@ -916,7 +919,7 @@ End Sub
 ' Эти данные используются Results snapshot, Excel-схемой и AutoCAD export.
 Public Sub StoreSectionState(ByVal solver As CSectionSolver)
     If mStrengthResult Is Nothing Then Set mStrengthResult = New CStrengthResult
-    mStrengthResult.StoreDirectFromSolver solver, DirectStateDiagramExtensionEnabled
+    mStrengthResult.StoreDirectFromSolver solver, DiagramExtensionEnabled
     StateAvailable = True
     StateConverged = solver.Converged
     Epsilon0 = solver.Epsilon0
@@ -943,7 +946,7 @@ End Sub
 Public Sub StoreSectionStateResult(ByVal stateResult As CSectionStateResult)
     If stateResult Is Nothing Then Exit Sub
     If mStrengthResult Is Nothing Then Set mStrengthResult = New CStrengthResult
-    mStrengthResult.StoreDirectFromStateResult stateResult, DirectStateDiagramExtensionEnabled
+    mStrengthResult.StoreDirectFromStateResult stateResult, DiagramExtensionEnabled
     StateAvailable = True
     StateConverged = stateResult.Converged
     Epsilon0 = stateResult.Epsilon0

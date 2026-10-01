@@ -1008,8 +1008,8 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
 
     Dim capacityResult As CCapacityResult
     Set capacityResult = capacityCalculator.Calculate(mSection, _
-        mMaterialProvider.ConcreteMaterialFromSpec(strengthSpec), _
-        mMaterialProvider.SteelMaterialFromSpec(strengthSpec), strengthSpec, _
+        mMaterialProvider.ConcreteMaterialForEquilibriumFromSpec(strengthSpec), _
+        mMaterialProvider.SteelMaterialForEquilibriumFromSpec(strengthSpec), strengthSpec, _
         loadPath, loadState, _
         strengthReferenceX, strengthReferenceY, mStatusPolicy, mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, _
         mConcreteDepthForMx, mConcreteDepthForMy)
@@ -1040,14 +1040,16 @@ End Sub
 ' extension остается внутри CStateSolutionRunner.
 Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectionStateType, _
         ByVal materialRole As ECalculationPurpose, ByVal spec As CMaterialModelSpec, _
-        Optional ByVal useDirectStateExtension As Boolean = True, _
+        Optional ByVal useDiagramExtension As Boolean = True, _
         Optional ByVal mergeIntoDirectStateStatus As Boolean = True) As CStateSolutionRunner
-    mResults(index).DirectStateDiagramExtensionEnabled = mMaterialProvider.DirectStateDiagramExtensionEnabled
+    mResults(index).DiagramExtensionEnabled = mMaterialProvider.DiagramExtensionEnabled
+    Dim effectiveDiagramExtension As Boolean
+    effectiveDiagramExtension = (useDiagramExtension And mResults(index).DiagramExtensionEnabled)
 
     Dim request As CStateRequest
     Set request = New CStateRequest
     request.Initialize stateType, materialRole, spec, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
-        useDirectStateExtension, (useDirectStateExtension And mResults(index).DirectStateDiagramExtensionEnabled)
+        effectiveDiagramExtension, effectiveDiagramExtension
 
     Dim provider As CStateProvider
     Set provider = CreateStateProvider(index)
@@ -1190,8 +1192,20 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
         GoTo ReportCrackResult
     End If
 
+    Dim widthSolver As CSectionSolver
+    Set widthSolver = SolverForCurrentCrackedState(index, currentCrackedState, runner)
+    If widthSolver Is Nothing Then
+        blockReason = "CurrentCrackedState найден, но не удалось подготовить данные для формул трещин."
+        Set crackWidthMetaOverride = mStatusPolicy.BlockedByDependencyMeta(rkCrackWidth, _
+            "CurrentCrackedState", blockReason)
+        StoreCrackAggregateSnapshot index, crack, formationResult, currentStateMeta, _
+            crackWidthMetaOverride, longitudinalResult
+        ReportStep "Расчет ширины трещин не продолжается: " & blockReason
+        GoTo ReportCrackResult
+    End If
+
     ReportStep "Запускается расчет ширины раскрытия нормальных трещин."
-    crack.CalculateAfterFormationCheck runner.ResultSolver, mSection, mMaterialProvider, profile.CrackedStateSpec, _
+    crack.CalculateAfterFormationCheck widthSolver, mSection, mMaterialProvider, profile.CrackedStateSpec, _
         profile.CrackInitiationSpec, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
         loadState, crackReferenceX, crackReferenceY
     mResults(index).CrackStatus = mStatusPolicy.StatusFromMeta(mStatusPolicy.CrackMetaFromCalculator(crack))
@@ -1270,6 +1284,22 @@ Private Function CurrentCrackedStateReady(ByVal stateResult As CSectionStateResu
     If Not stateResult.Converged Then Exit Function
     If stateResult.ExtensionUsed Or Not stateResult.WithinPhysicalRange Then Exit Function
     CurrentCrackedStateReady = True
+End Function
+
+' Возвращает solver с данными CurrentCrackedState для формул трещин. При обычном
+' solve используется свежий runner, а при cache-hit state восстанавливается по
+' сохраненной плоскости деформаций без повторного поиска равновесия.
+Private Function SolverForCurrentCrackedState(ByVal index As Long, ByVal stateResult As CSectionStateResult, _
+        ByVal runner As CStateSolutionRunner) As CSectionSolver
+    If Not runner Is Nothing Then
+        If Not runner.ResultSolver Is Nothing Then
+            Set SolverForCurrentCrackedState = runner.ResultSolver
+            Exit Function
+        End If
+    End If
+    Dim provider As CStateProvider
+    Set provider = CreateStateProvider(index)
+    Set SolverForCurrentCrackedState = provider.SolverSnapshot(stateResult)
 End Function
 
 ' Возвращает meta состояния CrackedState даже тогда, когда CStateProvider не смог
@@ -1433,7 +1463,7 @@ Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     mResults(index).CrackStatus = mStatusPolicy.NotApplicable
     mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
     If Not mMaterialProvider Is Nothing Then
-        mResults(index).DirectStateDiagramExtensionEnabled = mMaterialProvider.DirectStateDiagramExtensionEnabled
+        mResults(index).DiagramExtensionEnabled = mMaterialProvider.DiagramExtensionEnabled
     End If
     mResults(index).GoverningUtil = 0#
     mResults(index).ResultComment = reason
@@ -2436,8 +2466,8 @@ Public Property Get ExtensionUsed(ByVal index As Long) As Boolean
     ExtensionUsed = mResults(index).ExtensionUsed
 End Property
 
-Public Property Get DirectStateDiagramExtensionEnabled(ByVal index As Long) As Boolean
-    DirectStateDiagramExtensionEnabled = mResults(index).DirectStateDiagramExtensionEnabled
+Public Property Get DiagramExtensionEnabled(ByVal index As Long) As Boolean
+    DiagramExtensionEnabled = mResults(index).DiagramExtensionEnabled
 End Property
 
 Public Property Get UtilizationCapacity(ByVal index As Long) As Double
@@ -3272,6 +3302,17 @@ End Function
 ' Эти свойства раскрывают промежуточные численные данные batch-расчета,
 ' которые удобны regression-тестам: отдельно проверяются lambda capacity
 ' и факт сходимости прямого НДС.
+
+' Повторяет production-маршрут трещин для уже рассчитанного LC, сохраняя
+' repository. Нужен интеграционной проверке cache-hit CurrentCrackedState:
+' новые formation/width-калькуляторы получают найденные состояния без solve.
+Public Sub TestRepeatCrackCalculation(ByVal index As Long)
+    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 4270, _
+        "CBatchSectionCalculator", "Индекс тестового сочетания вне диапазона."
+    Dim profile As CCalculationProfile
+    Set profile = mProfiles.ProfileById(mInputs(index).ProfileId)
+    RunCrackWidth index, profile
+End Sub
 
 Public Property Get LambdaCapacity(ByVal index As Long) As Double
     LambdaCapacity = mResults(index).LambdaCapacity

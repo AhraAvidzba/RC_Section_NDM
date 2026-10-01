@@ -24,9 +24,6 @@ Option Explicit
 Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     If request Is Nothing Then Err.Raise vbObjectError + 4210, "CUltimateStrainSearch", "Не передан запрос limit-search."
 
-    Dim cap As CCapacitySolver
-    Set cap = request.Problem.DomainContext
-
     If request.PureAxialForMethod Then
         Set ExecuteCapacity = ExecuteCapacityLoadMultiplier(request)
         Exit Function
@@ -40,8 +37,8 @@ Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitS
 
     If request.ForceOnly And _
             StrComp(request.SolutionStrategy, "UltimateStrain", vbTextCompare) = 0 And _
-            Not cap.Converged And _
-            Not cap.LimitSearchCapacityStateIsInvalidInput(cap.LimitState) Then
+            Not request.Problem.Converged And _
+            Not request.Problem.IsInvalidInputState(request.Problem.LimitState) Then
         Set ExecuteCapacity = ExecuteCapacityFallbackToLoadMultiplier(request, _
             "UltimateStrain не дал принятую предельную точку для силовой траектории", _
             "Переходим к LoadMultiplier по той же lambda-траектории.", _
@@ -49,10 +46,7 @@ Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitS
         Exit Function
     End If
 
-    Dim result As CLimitSearchResult
-    Set result = New CLimitSearchResult
-    result.InitializeFromCapacitySolver cap, request.SolutionStrategy
-    Set ExecuteCapacity = result
+    Set ExecuteCapacity = request.Problem.BuildResult(request, request.Problem.Converged)
 End Function
 
 ' Запускает ветку LoadMultiplier для capacity через общий search-класс.
@@ -69,25 +63,19 @@ End Function
 Private Function ExecuteCapacityFallbackToLoadMultiplier(ByVal request As CLimitSearchRequest, _
         ByVal firstAttemptMessage As String, ByVal transitionMessage As String, _
         ByVal successMessage As String) As CLimitSearchResult
-    Dim cap As CCapacitySolver
-    Set cap = request.Problem.DomainContext
-
     Dim firstStopReason As String
     Dim firstLimitState As String
     Dim firstDiagnostics As String
-    firstStopReason = cap.StopReason
-    firstLimitState = cap.LimitState
-    firstDiagnostics = cap.DiagnosticLog
+    firstStopReason = request.Problem.StopReason
+    firstLimitState = request.Problem.LimitState
+    firstDiagnostics = request.Problem.DiagnosticLog
 
     Dim ignoredResult As CLimitSearchResult
     Set ignoredResult = ExecuteCapacityLoadMultiplier(request)
-    cap.LimitSearchMergeCapacityFallback firstLimitState, firstStopReason, _
+    request.Problem.MergeFallback firstLimitState, firstStopReason, _
         firstDiagnostics, firstAttemptMessage, transitionMessage, successMessage
 
-    Dim result As CLimitSearchResult
-    Set result = New CLimitSearchResult
-    result.InitializeFromCapacitySolver cap, request.SolutionStrategy
-    Set ExecuteCapacityFallbackToLoadMultiplier = result
+    Set ExecuteCapacityFallbackToLoadMultiplier = request.Problem.BuildResult(request, request.Problem.Converged)
 End Function
 
 ' Выполняет ветку UltimateStrain для поиска образования нормальной трещины.
@@ -96,54 +84,38 @@ End Function
 Public Function ExecuteCrackFormation(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     If request Is Nothing Then Err.Raise vbObjectError + 4211, "CUltimateStrainSearch", "Не передан запрос limit-search."
 
-    Dim crack As CCrackWidthCalculator
-    Set crack = request.Problem.DomainContext
-    Dim concreteMaterial As CMaterialDiagram
-    Dim steelMaterial As CMaterialDiagram
-    Set concreteMaterial = request.ConcreteMaterial
-    Set steelMaterial = request.SteelMaterial
-
     Dim searchSucceeded As Boolean
-    searchSucceeded = crack.LimitSearchRunCrackFormationUltimate(request.Section, _
-        concreteMaterial, steelMaterial, request.TargetN, _
-        request.TargetMx, request.TargetMy, request.MomentMxAtReference, _
-        request.MomentMyAtReference, request.ReferenceX, request.ReferenceY)
-
-    Dim result As CLimitSearchResult
-    Set result = New CLimitSearchResult
-    result.InitializeFromCrackFormation crack, request.SolutionStrategy, searchSucceeded
-    Set ExecuteCrackFormation = result
+    searchSucceeded = request.Problem.RunUltimateAttempts(request)
+    Set ExecuteCrackFormation = request.Problem.BuildResult(request, searchSucceeded)
 End Function
 
 ' Выполняет общий Newton-поиск UltimateStrain для несущей способности.
 ' CCapacitySolver остается владельцем критерия, настроек и записи результата.
 Public Function RunCapacityUltimateNewton(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector) As Boolean
-    Dim cap As CCapacitySolver
-    Set cap = request.Problem.DomainContext
-    If Not cap.LimitSearchPrepareCapacityUltimate(request.Section, request.ConcreteMaterial, _
-            request.SteelMaterial, loadPath) Then Exit Function
+    If Not request.Problem.PrepareUltimate(request, loadPath) Then Exit Function
 
-    RunCapacityUltimateNewton = RunUltimateNewtonCore(cap, request.Section, _
+    RunCapacityUltimateNewton = RunNewton(request.Problem, request.Section, _
         request.ConcreteMaterial, request.SteelMaterial, loadPath, Nothing, _
         "UltimateStrain: итерации Newton не сошлись.")
-    cap.LimitSearchCompleteCapacityUltimate loadPath
+    request.Problem.CompleteUltimate loadPath
 End Function
 
 ' Выполняет тот же общий Newton-поиск UltimateStrain для образования трещины.
 ' Crack-калькулятор передает выбранную lambda-траекторию и сохраняет результат.
-Public Function RunCrackFormationNewton(ByVal crack As CCrackWidthCalculator, _
+Public Function RunCrackFormationNewton(ByVal problem As ILimitSearchProblem, _
         ByVal section As CSectionModel, ByVal concreteMaterial As CMaterialDiagram, _
         ByVal steelMaterial As CMaterialDiagram, ByVal loadPath As CLoadPathVector, _
         ByVal startSolver As CSectionSolver) As Boolean
-    RunCrackFormationNewton = RunUltimateNewtonCore(crack, section, concreteMaterial, _
+    RunCrackFormationNewton = RunNewton(problem, section, concreteMaterial, _
         steelMaterial, loadPath, startSolver, _
         "NumericalFailure: прямой поиск lambda_crc по UltimateStrain не сошелся за заданное число итераций.")
 End Function
 
 ' Общий цикл UltimateStrain: оценка невязок, численный Якобиан, Newton-шаг и
-' line-search. Разные инженерные задачи отличаются только callback-ами context.
-Private Function RunUltimateNewtonCore(ByVal context As Object, ByVal section As CSectionModel, _
+' line-search. Разные инженерные задачи отличаются только типизированными
+' callback-ами; ни конкретный калькулятор, ни late-bound объект не требуются.
+Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByVal notConvergedReason As String) As Boolean
@@ -173,9 +145,13 @@ Private Function RunUltimateNewtonCore(ByVal context As Object, ByVal section As
         End If
 
         If context.LimitSearchUltimateResidualReached(rPath1, rPath2, rLimit) Then
-            RunUltimateNewtonCore = context.LimitSearchFinalizeUltimateResult(section, _
-                concreteMaterial, steelMaterial, loadPath, lambdaValue, solver, state, iter)
-            Exit Function
+            If context.LimitSearchFinalizeUltimateResult(section, _
+                    concreteMaterial, steelMaterial, loadPath, lambdaValue, solver, state, iter) Then
+                RunNewton = True
+                Exit Function
+            End If
+            ' Достижение внутренних residual-допусков не отменяет финальную
+            ' проверку усилий: продолжаем уточнение той же физической точки.
         End If
 
         If Not ApplyUltimateNewtonStep(context, section, concreteMaterial, steelMaterial, _
@@ -186,7 +162,7 @@ Private Function RunUltimateNewtonCore(ByVal context As Object, ByVal section As
 End Function
 
 ' Делает один общий Newton-шаг для UltimateStrain.
-Private Function ApplyUltimateNewtonStep(ByVal context As Object, ByVal section As CSectionModel, _
+Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByRef eps0 As Double, _
         ByRef kx As Double, ByRef ky As Double, ByVal rPath1 As Double, _
@@ -263,7 +239,7 @@ Failed:
 End Function
 
 ' Строит один столбец численного Якобиана для общего UltimateStrain.
-Private Sub BuildUltimateJacobianColumn(ByVal context As Object, ByVal section As CSectionModel, _
+Private Sub BuildUltimateJacobianColumn(ByVal context As ILimitSearchProblem, ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
         ByVal kx As Double, ByVal ky As Double, ByVal stepValue As Double, _
@@ -280,7 +256,7 @@ Private Sub BuildUltimateJacobianColumn(ByVal context As Object, ByVal section A
 End Sub
 
 ' Ограничивает приращения плоскости деформаций по настройкам вызывающего расчета.
-Private Sub LimitUltimateIncrement(ByVal context As Object, ByRef dEps As Double, _
+Private Sub LimitUltimateIncrement(ByVal context As ILimitSearchProblem, ByRef dEps As Double, _
         ByRef dKx As Double, ByRef dKy As Double)
     Dim scaleFactor As Double
     scaleFactor = 1#

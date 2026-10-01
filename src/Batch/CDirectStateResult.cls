@@ -24,7 +24,7 @@ Option Explicit
 Public Status As String ' Пользовательский статус direct-state блока: OK/FAIL/NumFail/InputErr/N/A.
 Public ResultMeta As CResultMeta ' Типизированная причина результата direct-state.
 Public ExtensionUsed As Boolean ' True, если фактический solve дошел до numerical extension диаграммы.
-Public ExtensionEnabled As Boolean ' Снимок настройки Solver.DirectState.DiagramExtension для этого LC.
+Public ExtensionEnabled As Boolean ' Снимок настройки General.DiagramExtension для этого LC.
 Public StateAvailable As Boolean ' True, если есть плоскость деформаций для вывода.
 Public StateConverged As Boolean ' True, если solver сошелся численно.
 Public Epsilon0 As Double ' epsilon0 в начале внутренней системы координат модели.

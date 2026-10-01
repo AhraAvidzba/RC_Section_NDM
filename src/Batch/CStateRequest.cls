@@ -25,7 +25,7 @@ Private mMaterialSpec As CMaterialModelSpec ' Фактическая специ�
 Private mTargetN As Double ' Целевая продольная сила, Н.
 Private mTargetMx As Double ' Целевой момент Mx, Н*мм.
 Private mTargetMy As Double ' Целевой момент My, Н*мм.
-Private mUseDirectStateExtension As Boolean ' True, если физическая диаграмма state включает technical extension.
+Private mUseDiagramExtension As Boolean ' True, если для равновесия state разрешена диаграмма с technical extension.
 Private mAllowRetryStarts As Boolean ' Solve-option: можно ли пробовать дополнительные стартовые плоскости.
 
 ' Заполняет запрос всеми физическими параметрами state и отдельным флагом
@@ -34,7 +34,7 @@ Private mAllowRetryStarts As Boolean ' Solve-option: можно ли пробо�
 Public Sub Initialize(ByVal stateType As ESectionStateType, _
         ByVal materialRole As ECalculationPurpose, ByVal materialSpec As CMaterialModelSpec, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
-        ByVal useDirectStateExtension As Boolean, _
+        ByVal useDiagramExtension As Boolean, _
         Optional ByVal allowRetryStarts As Boolean = False)
     If materialSpec Is Nothing Then Err.Raise vbObjectError + 3980, "CStateRequest", "MaterialModelSpec не передан."
     mStateType = stateType
@@ -43,7 +43,7 @@ Public Sub Initialize(ByVal stateType As ESectionStateType, _
     mTargetN = targetN
     mTargetMx = targetMx
     mTargetMy = targetMy
-    mUseDirectStateExtension = useDirectStateExtension
+    mUseDiagramExtension = useDiagramExtension
     mAllowRetryStarts = allowRetryStarts
 End Sub
 
@@ -53,7 +53,7 @@ Public Function EquivalenceKey() As String
     EquivalenceKey = CStr(CLng(mStateType)) & "|" & _
         CStr(CLng(mMaterialRole)) & "|" & _
         mMaterialSpec.SpecKey & "|" & _
-        BoolKey(mUseDirectStateExtension) & "|" & _
+        BoolKey(mUseDiagramExtension) & "|" & _
         NumberKey(mTargetN) & "|" & _
         NumberKey(mTargetMx) & "|" & _
         NumberKey(mTargetMy)
@@ -94,8 +94,8 @@ Public Property Get TargetMy() As Double
     TargetMy = mTargetMy
 End Property
 
-Public Property Get UseDirectStateExtension() As Boolean
-    UseDirectStateExtension = mUseDirectStateExtension
+Public Property Get UseDiagramExtension() As Boolean
+    UseDiagramExtension = mUseDiagramExtension
 End Property
 
 Public Property Get AllowRetryStarts() As Boolean

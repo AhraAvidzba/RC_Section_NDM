@@ -15,6 +15,7 @@ function Get-SystemSettingsCatalog {
             @("General.ExecutionReportEnabled", "Yes", "-", "Записывать пошаговый txt-отчет выполнения расчета в папку с книгой. Файл перезаписывается при каждом новом запуске."),
             @("General.NonCriticalMessagesEnabled", "Yes", "-", "Показывать информационные окна об успешном расчете, обновлении схемы, импорте и экспорте. Ошибки и предупреждения выводятся всегда."),
             @("General.WorstCombinationCriterion", "StrengthCapacity", "-", "Критерий выбора сочетания Worst в верхней сводке Results: прочность по деформациям, прочность по несущей, трещины или устойчивость."),
+            @("General.DiagramExtension", "Yes", "-", "Численное продолжение диаграмм: продолжает активные ветви за физическими пределами. Рекомендуется для сходимости и диагностики. Не увеличивает физические пределы и не делает состояние в продолжении допустимым. При No работают обычные диаграммы."),
             @("Calculation.ZeroMomentPerDepth", "0.0005", "Н*мм/мм", "Порог обнуления малых моментов: M_tol = значение·h. Убирает численный остаток после переносов и поворотов; слишком большое значение может обнулить значимый малый момент.")
         )},
         @{ Name = "GeometrySettings"; Title = "[Геометрия и сетка]"; Rows = @(
@@ -31,7 +32,6 @@ function Get-SystemSettingsCatalog {
             @("Solver.Method", "Newton", "-", "Метод поиска равновесия НДС. Допустимо только Newton или Secant; пустое или неизвестное значение считается ошибкой исходных данных."),
             @("Solver.MaxIterations", "80", "шт", "Применяется к Newton и Secant. Максимальное число итераций на ступень нагрузки; увеличение повышает шанс сходимости, но увеличивает время."),
             @("Solver.LoadSteps", "1", "шт", "Применяется к Newton и Secant. Число ступеней приложения нагрузки в прямом НДМ; больше ступеней обычно устойчивее, но медленнее."),
-            @("Solver.DirectState.DiagramExtension", "Yes", "-", "Помогает найти прямое равновесие для перегруженного сочетания по модели прочности или трещин. Несущую способность и Mcrc/Ncrc не увеличивает."),
             @("Solver.ToleranceN", "0.0001", "Н", "Применяется к Newton и Secant. Абсолютный допуск равновесия по продольной силе в выбранной INPUT-единице силы; значение переводится во внутренние Н."),
             @("Solver.ToleranceMx", "0.0001", "Н*мм", "Применяется к Newton и Secant. Абсолютный допуск равновесия по моменту Mx в выбранной INPUT-единице момента; значение переводится во внутренние Н*мм."),
             @("Solver.ToleranceMy", "0.0001", "Н*мм", "Применяется к Newton и Secant. Абсолютный допуск равновесия по моменту My в выбранной INPUT-единице момента; значение переводится во внутренние Н*мм."),
@@ -756,12 +756,15 @@ function Get-SettingInstructionLines {
             "При нескольких ступенях программа сначала ищет равновесие для части нагрузки, затем постепенно доходит до полной N + Mx + My.",
             "Больше ступеней обычно устойчивее для нелинейных диаграмм, но каждая ступень требует своих итераций."
         ) }
-        "Solver.DirectState.DiagramExtension" { return @($lead) + @(
-            "Эта настройка нужна для прямого расчета состояния сечения от заданного сочетания N + Mx + My.",
-            "Если нагрузка немного больше того, что описывает физическая диаграмма материала, обычная диаграмма выходит на последнюю точку и расчет может не найти равновесие. При Yes программа добавляет слабое техническое продолжение за последней физической деформацией, чтобы равновесие можно было найти и явно показать пользователю перегрузку.",
-            "Такой результат не считается нормальным расчетным состоянием. Если техническое продолжение действительно понадобилось, в Summary будет FAIL, а на схеме и в AutoCAD появится предупреждение: ВНЕ ФИЗИЧЕСКОЙ ДИАГРАММЫ МАТЕРИАЛА.",
-            "Extension не увеличивает несущую способность сечения и не применяется к поиску момента образования трещины Mcrc/Ncrc. Capacity и CrackInitiation выполняются только по обычным физическим диаграммам без этого продолжения.",
-            "Для расчета трещин эта же настройка применяется только к текущему CrackedState от заданного сочетания. Формулы раскрытия считаются только тогда, когда это состояние найдено внутри физической диаграммы: статус равновесия OK и ExtUsed = no. Само включение настройки расчет трещин не запрещает."
+        "General.DiagramExtension" { return @($lead) + @(
+            "Численное продолжение диаграмм (Extension) является общим инструментом решения равновесия. Оно действует в прямом НДС, пробах и итоговых состояниях Capacity, поиске образования трещин и состояниях PreCrackState/PostCrackState/CurrentCrackedState.",
+            "При Yes продолжаются только активные ветви за их физическими пределами. Продолжение помогает получать устойчивые приближения и уточнять причину отказа, но не гарантирует сходимость любой задачи. Рекомендуемое значение для новой книги: Yes.",
+            "Исходные физические точки, сопротивления, касательные, плато и предельные деформации не меняются. Для одной и той же корректно найденной физической точки результаты Yes/No должны совпадать в пределах расчетной точности.",
+            "Равновесие только в техническом продолжении является вспомогательным численным результатом. Оно не увеличивает несущую способность, не дает больший допустимый M_crc/N_crc и не принимается как физически допустимое НДС. Оно может помочь подтвердить BaseFail для исходной части выбранного Capacity-пути вместо NumFail, если физический отказ действительно установлен.",
+            "Выключенный растянутый бетон Ignore остается выключенным: sigma = 0 и Et = 0 при растяжении. Для отдельной роли CrackInitiation с UseDiagram растянутая ветвь активна и может продолжаться. Модели разных ролей не смешиваются.",
+            "Разрешение Yes, фактическое ExtUsed и физическая допустимость являются разными фактами. ExtUsed = Yes относится к конечному найденному состоянию; промежуточный выход итерации за предел с возвратом в физический диапазон не означает отказ результата.",
+            "При No используются обычные диаграммы. Скрытого включения продолжения в retry нет; при нормальных условиях расчет должен работать и без него. Формулы устойчивости, нормативные модули и сопротивления не меняются.",
+            "При обновлении старой книги значение Solver.DirectState.DiagramExtension переносится в General.DiagramExtension до добавления defaults. Явное No сохраняется. Если заданы оба ключа, приоритет у уже существующего General.DiagramExtension; конфликт сопровождается предупреждением. Пустое или недопустимое явное значение является ошибкой настройки."
         ) }
         "Solver.ToleranceN" { return @($lead) + @(
             "Это абсолютный допуск невязки по продольной силе N. Число в Config вводится в текущей INPUT-единице силы, указанной в блоке Units.",
@@ -2402,7 +2405,7 @@ function Add-DirectStateMethodologyGuide {
     $row = Add-GuideParagraph $Sheet $row "Общие настройки решателя: Solver.Method выбирает численный метод: Newton или Secant. Solver.MaxIterations ограничивает число итераций на одной ступени нагрузки, Solver.LoadSteps задает число ступеней приложения нагрузки, а Solver.ToleranceN, Solver.ToleranceMx и Solver.ToleranceMy задают допустимые остаточные невязки по силе и моментам."
     $row = Add-GuideParagraph $Sheet $row "Контроль шага: Solver.LineSearchEnabled, Solver.DampingInitial, Solver.MinLineSearchAlpha, Solver.MaxDeltaEpsilon0 и Solver.MaxDeltaKappa ограничивают слишком резкие изменения плоскости деформаций. Эти настройки применяются и к Newton, и к Secant."
     $row = Add-GuideParagraph $Sheet $row "Secant: Solver.SecantMaxRestarts и Solver.SecantMinStepNorm нужны только для Solver.Method = Secant. Для Newton отдельных специальных настроек сейчас нет: Newton использует общие допуски, ограничения шага и line search."
-    $row = Add-GuideParagraph $Sheet $row "DiagramExtension: Solver.DirectState.DiagramExtension относится к прямому НДС от заданного сочетания: по модели прочности и по модели трещин. Если заданное сочетание уже лежит вне физической диаграммы, программа может временно продолжить диаграммы материалов, найти равновесие для диагностики и показать FAIL вместо NumFail. Несущая способность и CrackInitiation используют физические диаграммы без такого продолжения."
+    $row = Add-GuideParagraph $Sheet $row "DiagramExtension: General.DiagramExtension разрешает численное продолжение активных диаграмм материалов при поиске равновесия. Это может применяться не только к прямому НДС по модели прочности, но и к текущему НДС трещиноватого сечения и к равновесным пробным точкам поисковых алгоритмов. Физические пределы материалов и критерии проверок при этом остаются исходными."
     $row = Add-GuideParagraph $Sheet $row "Отчет и малые моменты: General.ExecutionReportEnabled только включает txt-отчет и не меняет математику. Calculation.ZeroMomentPerDepth применяется до расчета: моменты меньше M_tol = значение·h обнуляются как инженерно ничтожные."
     $row++
 
@@ -2505,7 +2508,7 @@ function Add-DirectStateMethodologyGuide {
 
     $row = Add-GuideTitle $Sheet $row "9. Стартовые приближения и fallback" 13
     $row = Add-GuideParagraph $Sheet $row "CStateSolutionRunner выбирает стартовую плоскость через CStateGuessBuilder. Для простых случаев используется прямое инженерное приближение. Для опасных или плохо обусловленных случаев программа может попробовать специальный directState-guess по активной плоскости нагрузки."
-    $row = Add-GuideParagraph $Sheet $row "Если первое решение не сошлось, runner пробует альтернативное стартовое приближение. Если Solver.DirectState.DiagramExtension = Yes, последняя fallback-ветка может решить равновесие на временно продолженной диаграмме материалов. Такой результат показывает, что равновесие математически найдено, но фактическая физическая диаграмма материала уже превышена."
+    $row = Add-GuideParagraph $Sheet $row "Если первое решение не сошлось, runner пробует альтернативное стартовое приближение. Если General.DiagramExtension = Yes, fallback-ветка может решить равновесие на временно продолженной диаграмме материалов. Такой результат показывает, что равновесие математически найдено, но фактическая физическая диаграмма материала уже превышена."
     $row = Add-GuideParagraph $Sheet $row "Для Results это означает FAIL по DirectState, а не OK: состояние найдено только для диагностики и визуализации перегруженного сочетания. Если равновесие не находится даже после fallback-ов, статус становится NumFail."
     $row++
 
@@ -2534,6 +2537,7 @@ function Add-CapacityMethodologyGuide {
     $row = Add-GuideParagraph $Sheet $row "Общие настройки Capacity: Capacity.SolutionStrategy выбирает предпочтительный способ поиска, Capacity.SolverMaxIterations ограничивает число итераций в предельном решателе, а Capacity.ToleranceStrain задает точность попадания в предельную деформацию для UltimateStrain."
     $row = Add-GuideParagraph $Sheet $row "Настройки LoadMultiplier: Capacity.MaxLambda, Capacity.SearchMethod, Capacity.InitialLambda и Capacity.ToleranceLambda относятся к одномерному поиску λ. Capacity.BaseLoadSteps и Capacity.MaxRetries задают, как повторять трудную λ-точку, если равновесие в ней не сошлось с первого раза."
     $row = Add-GuideParagraph $Sheet $row "Связь с Solver: в ветке LoadMultiplier для каждой пробной λ-точки программа снова решает обычное равновесие сечения через CSectionSolver. Поэтому на эту ветку также влияют Solver.Method, допуски Solver.ToleranceN/Mx/My и общие настройки контроля шага Solver."
+    $row = Add-GuideParagraph $Sheet $row "DiagramExtension: если General.DiagramExtension = Yes, равновесие отдельной пробной λ-точки может быть найдено на технически продолженной диаграмме. Это нужно только для устойчивости численного поиска. Физический критерий несущей способности все равно проверяется по исходным предельным деформациям материалов."
     $row++
 
     $row = Add-GuideTitle $Sheet $row "2. Общая λ-траектория" 13
@@ -2679,6 +2683,7 @@ function Add-CrackWidthMethodologyGuide {
     $row = Add-GuideParagraph $Sheet $row "Во всех нецентральных случаях программа ищет уровень нагрузки, при котором растянутый бетон достигает предельной деформации. Какая часть текущего сочетания масштабируется, задается SLS.Crack.InitiationLoadPath: Auto сначала пробует λ*Mxy, затем λ*N и затем λ*NMxy; λ*Mxy сохраняет текущую N и масштабирует только моментный вектор; λ*N сохраняет текущие моменты и масштабирует только N; λ*NMxy масштабирует весь вектор N/Mx/My."
     $row = Add-GuideParagraph $Sheet $row "Как именно искать этот уровень, задает SLS.Crack.InitiationSolutionStrategy. В режиме UltimateStrain программа напрямую ищет плоскость деформаций по условию ε_bt = ε_bt,ult. В режиме LoadMultiplier программа перебирает λ и для каждой λ-точки решает обычное НДС. В режиме Auto сначала пробуется UltimateStrain, а при численной неудаче тот же путь повторяется через LoadMultiplier."
     $row = Add-GuideParagraph $Sheet $row "В Results для этой общей ветки выводятся N_crc и M_xy,crc в найденной точке образования трещины. Это не отдельный пользовательский расчет, а служебный, но выводимый этап проверки факта образования нормальной трещины."
+    $row = Add-GuideParagraph $Sheet $row "Если General.DiagramExtension = Yes, равновесие пробной точки образования трещины может считаться на технически продолженной диаграмме, но само условие образования трещины всегда проверяется по физическому ε_bt,ult. Продолжение диаграммы не увеличивает M_crc/N_crc и не заменяет физический критерий."
     $row = Add-GuideParagraph $Sheet $row "Если эпюра двузначная, то есть в сечении есть и сжатие, и растяжение, СП 63 принимает предельную растягивающую деформацию равной εbt2."
     $row = Add-GuideFormula $Sheet $row "ε_{bt,ult} = ε_{bt2}      СП 63, п. 8.2.14 и 8.1.30"
     $row = Add-GuideParagraph $Sheet $row "Если эпюра однозначно растянутая и кривизна не равна нулю, предельная деформация определяется по формуле (8.54). В ней ε1 и ε2 - растягивающие деформации противоположных граней расчетной эпюры."
@@ -4050,6 +4055,185 @@ function Add-MaterialDiagramChartSeries {
     } catch {}
 }
 
+# Сохраняет служебные области печати до Excel COM save. На локализованном
+# Excel имя Print_Area может быть потеряно при повторном сохранении книги.
+# Остальные имена/ячейки не входят в этот точечный снимок.
+function Get-WorkbookPrintAreas {
+    param([string]$Path)
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $zip = [IO.Compression.ZipFile]::OpenRead($Path)
+    try {
+        $reader = New-Object IO.StreamReader($zip.GetEntry("xl/workbook.xml").Open())
+        try { [xml]$document = $reader.ReadToEnd() } finally { $reader.Dispose() }
+        $areas = New-Object System.Collections.Generic.List[object]
+        foreach ($node in $document.SelectNodes("//*[local-name()='definedName']")) {
+            if ($node.GetAttribute("name") -in @("_xlnm.Print_Area", "Print_Area")) {
+                $areas.Add(@{ Sheet = $node.GetAttribute("localSheetId"); Xml = $node.OuterXml })
+            }
+        }
+        return $areas.ToArray()
+    } finally { $zip.Dispose() }
+}
+
+# Восстанавливает только ранее существовавшие print names после закрытия Excel.
+# Использует XML DOM, не строковые замены; не меняет пользовательские настройки.
+function Restore-WorkbookPrintAreas {
+    param([string]$Path, [object[]]$Areas)
+    if (-not $Areas.Count) { return }
+    Add-Type -AssemblyName System.IO.Compression
+    $zip = [IO.Compression.ZipFile]::Open($Path, [IO.Compression.ZipArchiveMode]::Update)
+    try {
+        $entry = $zip.GetEntry("xl/workbook.xml")
+        $reader = New-Object IO.StreamReader($entry.Open())
+        try { [xml]$document = $reader.ReadToEnd() } finally { $reader.Dispose() }
+        $definedNames = $document.SelectSingleNode("//*[local-name()='definedNames']")
+        if ($null -eq $definedNames) {
+            $definedNames = $document.CreateElement("definedNames", $document.DocumentElement.NamespaceURI)
+            $next = $document.SelectSingleNode("//*[local-name()='calcPr']")
+            if ($next) { $document.DocumentElement.InsertBefore($definedNames, $next) | Out-Null }
+            else { $document.DocumentElement.AppendChild($definedNames) | Out-Null }
+        }
+        $seen = @{}
+        foreach ($area in $Areas) {
+            if ($seen.ContainsKey($area.Sheet)) { continue }
+            $seen[$area.Sheet] = $true
+            foreach ($existing in @($definedNames.ChildNodes)) {
+                if ($existing.GetAttribute("name") -in @("_xlnm.Print_Area", "Print_Area") -and
+                    $existing.GetAttribute("localSheetId") -eq $area.Sheet) {
+                    $definedNames.RemoveChild($existing) | Out-Null
+                }
+            }
+            [xml]$source = $area.Xml
+            $copy = $document.ImportNode($source.DocumentElement, $true)
+            $copy.SetAttribute("name", "_xlnm.Print_Area")
+            $definedNames.AppendChild($copy) | Out-Null
+        }
+        $stream = $entry.Open()
+        $stream.SetLength(0)
+        $writer = New-Object IO.StreamWriter($stream, (New-Object Text.UTF8Encoding($false)))
+        try { $document.Save($writer) } finally { $writer.Dispose() }
+    } finally { $zip.Dispose() }
+}
+
+# Проверяет логическое значение мигрируемой настройки без подстановки default.
+function ConvertTo-DiagramExtensionValue {
+    param([object]$Value, [string]$Key)
+    switch (([string]$Value).Trim().ToUpperInvariant()) {
+        { $_ -in @("YES", "TRUE", "1", "ДА") } { return "Yes" }
+        { $_ -in @("NO", "FALSE", "0", "НЕТ") } { return "No" }
+        default { throw "На листе Config настройка $Key должна быть Yes или No." }
+    }
+}
+
+# Переносит только настройку Extension в существующей книге. Не пересобирает
+# Config и не заменяет пользовательские соседние настройки каталогом defaults.
+# Значение выбирается до создания новой строки; повтор не меняет порядок строк.
+function Invoke-DiagramExtensionMigration {
+    param([object]$Workbook)
+    $canonicalKey = "General.DiagramExtension"
+    $legacyKey = "Solver.DirectState.DiagramExtension"
+    $range = $Workbook.Names.Item("rngSystemSettings").RefersToRange
+    $data = $range.Value2
+    $canonicalRow = 0
+    $legacyRow = 0
+    $generalRow = 0
+    for ($r = 2; $r -le $range.Rows.Count; $r++) {
+        $key = ([string]$data[$r, 1]).Trim()
+        if ($key -eq $canonicalKey) {
+            if ($canonicalRow) { throw "В Config несколько строк $canonicalKey." }
+            $canonicalRow = $r
+        }
+        if ($key -eq $legacyKey) {
+            if ($legacyRow) { throw "В Config несколько строк $legacyKey." }
+            $legacyRow = $r
+        }
+        if ($key -eq "[Общие]") { $generalRow = $r }
+    }
+    $warning = ""
+    $value = "Yes"
+    if ($canonicalRow) {
+        $value = ConvertTo-DiagramExtensionValue $data[$canonicalRow, 2] $canonicalKey
+        if ($legacyRow) {
+            try { $legacyValue = ConvertTo-DiagramExtensionValue $data[$legacyRow, 2] $legacyKey }
+            catch { $legacyValue = [string]$data[$legacyRow, 2] }
+            if ($value -ne $legacyValue) {
+                $warning = "В Config заданы два значения численного продолжения диаграмм. Сохранено $value из $canonicalKey; старый ключ удален."
+            }
+        }
+    } elseif ($legacyRow) {
+        $value = ConvertTo-DiagramExtensionValue $data[$legacyRow, 2] $legacyKey
+    }
+    if (-not $generalRow) { throw "В Config не найден блок [Общие] для миграции $canonicalKey." }
+    $generalEnd = $range.Rows.Count + 1
+    for ($r = $generalRow + 1; $r -le $range.Rows.Count; $r++) {
+        if (([string]$data[$r, 1]).Trim().StartsWith("[")) { $generalEnd = $r; break }
+    }
+    $targetRow = $canonicalRow
+    if (-not $targetRow -or $targetRow -le $generalRow -or $targetRow -ge $generalEnd) {
+        $targetRow = 0
+        for ($r = $generalRow + 1; $r -lt $generalEnd; $r++) {
+            if ([string]::IsNullOrWhiteSpace([string]($data[$r, 1]))) { $targetRow = $r; break }
+        }
+        if (-not $targetRow) {
+            # Сдвигаются только ячейки реестра настроек, не целые строки Config.
+            $range.Rows.Item($generalEnd).Insert(-4121) | Out-Null
+            $targetRow = $generalEnd
+            if ($canonicalRow -ge $targetRow) { $canonicalRow++ }
+            if ($legacyRow -ge $targetRow) { $legacyRow++ }
+            $range = $Workbook.Names.Item("rngSystemSettings").RefersToRange
+        }
+        $sourceRow = $canonicalRow
+        if (-not $sourceRow) { $sourceRow = $legacyRow }
+        if ($sourceRow) { $range.Rows.Item($sourceRow).Copy($range.Rows.Item($targetRow)) | Out-Null }
+    }
+    foreach ($obsoleteRow in @($legacyRow, $canonicalRow)) {
+        if ($obsoleteRow -gt 0 -and $obsoleteRow -ne $targetRow) {
+            $range.Rows.Item($obsoleteRow).ClearContents()
+            $range.Rows.Item($obsoleteRow).Hyperlinks.Delete()
+            $range.Rows.Item($obsoleteRow).Validation.Delete()
+        }
+    }
+    $setting = @(Get-SystemSettingsCatalog)[0].Rows | Where-Object { $_[0] -eq $canonicalKey }
+    $range.Cells.Item($targetRow, 1).Value2 = $canonicalKey
+    $range.Cells.Item($targetRow, 2).Value2 = $value
+    $range.Cells.Item($targetRow, 3).Value2 = "-"
+    $range.Cells.Item($targetRow, 4).Value2 = [string]$setting[3]
+    $inputCell = $range.Cells.Item($targetRow, 2)
+    $inputCell.HorizontalAlignment = -4108
+    $inputCell.VerticalAlignment = -4108
+    $inputCell.Validation.Delete()
+    $separator = [string]$Workbook.Application.International(5)
+    $inputCell.Validation.Add(3, 1, 1, "Yes${separator}No")
+    $inputCell.Validation.IgnoreBlank = $false
+    $inputCell.Validation.InCellDropdown = $true
+
+    # Для старой книги добавляется актуальный самостоятельный блок справки.
+    # Остальные блоки и их ссылки не перестраиваются при точечной миграции.
+    $guide = $Workbook.Worksheets.Item("Справка")
+    $marker = "Численное продолжение диаграмм (General.DiagramExtension)"
+    $anchor = 0
+    $used = $guide.UsedRange
+    for ($r = 1; $r -le $used.Row + $used.Rows.Count; $r++) {
+        if ([string]$guide.Cells.Item($r, 1).Value2 -eq $marker) { $anchor = $r; break }
+    }
+    if (-not $anchor) { $anchor = $used.Row + $used.Rows.Count + 2 }
+    $guide.Cells.Item($anchor, 1).Value2 = $marker
+    $guide.Cells.Item($anchor, 1).Font.Bold = $true
+    $helpLines = @(Get-SettingInstructionLines $canonicalKey ([string]$setting[3]))
+    for ($i = 0; $i -lt $helpLines.Count; $i++) {
+        $helpRow = $guide.Range($guide.Cells.Item($anchor + $i + 1, 1), $guide.Cells.Item($anchor + $i + 1, 6))
+        $helpRow.Merge()
+        $helpRow.Cells.Item(1, 1).Value2 = [string]$helpLines[$i]
+        $helpRow.WrapText = $true
+        $helpRow.VerticalAlignment = -4160
+        $helpRow.RowHeight = 55
+    }
+    Add-InstructionHyperlink $range.Cells.Item($targetRow, 5) $guide.Name $anchor
+    $Workbook.Application.CutCopyMode = $false
+    if ($warning) { Write-Warning $warning }
+    return @{ Value = $value; Warning = $warning; Row = $range.Row + $targetRow - 1 }
+}
+
 # Выполняет служебный шаг сборочного или проверочного сценария.
 function Apply-SystemSettingsLayout {
     param([object]$Workbook, [object]$Sheet)
@@ -4175,7 +4359,7 @@ function Apply-SystemSettingsLayout {
         "Stability.PhiLMode" = @("Auto", "PhiL2")
         "Geometry.Type" = @("RoundedRectangle", "HollowRectangle", "Circle", "RectSet")
         "Solver.Method" = @("Newton", "Secant")
-        "Solver.DirectState.DiagramExtension" = @("Yes", "No")
+        "General.DiagramExtension" = @("Yes", "No")
         "Capacity.SolutionStrategy" = @("Auto", "UltimateStrain", "LoadMultiplier")
         "Capacity.SearchMethod" = @("Bisection", "Brent", "Secant")
         "Solver.LineSearchEnabled" = @("Yes", "No")

@@ -31,10 +31,6 @@ Public Sub Initialize(ByVal crackCalculator As CCrackWidthCalculator)
     Set mCrack = crackCalculator
 End Sub
 
-Private Property Get ILimitSearchProblem_DomainContext() As Object
-    Set ILimitSearchProblem_DomainContext = mCrack
-End Property
-
 Private Property Get ILimitSearchProblem_ResultKind() As EResultKind
     ILimitSearchProblem_ResultKind = rkCrackFormation
 End Property
@@ -80,6 +76,96 @@ End Property
 Private Function ILimitSearchProblem_Prepare(ByVal request As CLimitSearchRequest) As Boolean
     ILimitSearchProblem_Prepare = True
 End Function
+
+' Материалы и инженерный критерий уже подготовлены владельцем Formation.
+Private Function ILimitSearchProblem_PrepareUltimate(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector) As Boolean
+    ILimitSearchProblem_PrepareUltimate = Not loadPath Is Nothing
+End Function
+
+' Сохраняет выбор стартов CrackFormation, но все попытки решаются общим
+' Newton-циклом через типизированный ILimitSearchProblem.
+Private Function ILimitSearchProblem_RunUltimateAttempts(ByVal request As CLimitSearchRequest) As Boolean
+    ILimitSearchProblem_RunUltimateAttempts = mCrack.LimitSearchRunCrackFormationUltimate( _
+        request.Section, request.ConcreteMaterial, request.SteelMaterial, request.TargetN, _
+        request.TargetMx, request.TargetMy, request.MomentMxAtReference, _
+        request.MomentMyAtReference, request.ReferenceX, request.ReferenceY)
+End Function
+
+' Formation сохраняет точку непосредственно при принятии; отдельная
+' финализация инженерных чисел после общего цикла ему не требуется.
+Private Sub ILimitSearchProblem_CompleteUltimate(ByVal loadPath As CLoadPathVector)
+End Sub
+
+' Передает критерии и численные настройки Formation общему Newton-циклу.
+' Ни шаг Newton, ни Якобиан, ни line search здесь не реализуются.
+Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
+    mCrack.LimitSearchInitializeUltimateGuess section, concreteMaterial, steelMaterial, _
+        loadPath, startSolver, eps0, kx, ky
+End Sub
+
+Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
+        ByVal kx As Double, ByVal ky As Double, ByRef solver As CSectionSolver, _
+        ByRef rPath1 As Double, ByRef rPath2 As Double, ByRef rLimit As Double, _
+        ByRef lambdaValue As Double, ByRef state As String) As Boolean
+    ILimitSearchProblem_LimitSearchEvaluateUltimateResidual = mCrack.LimitSearchEvaluateUltimateResidual( _
+        section, concreteMaterial, steelMaterial, loadPath, eps0, kx, ky, solver, _
+        rPath1, rPath2, rLimit, lambdaValue, state)
+End Function
+
+Private Function ILimitSearchProblem_LimitSearchUltimateResidualReached(ByVal rPath1 As Double, _
+        ByVal rPath2 As Double, ByVal rLimit As Double) As Boolean
+    ILimitSearchProblem_LimitSearchUltimateResidualReached = _
+        mCrack.LimitSearchUltimateResidualReached(rPath1, rPath2, rLimit)
+End Function
+
+Private Function ILimitSearchProblem_LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
+        ByVal rPath2 As Double, ByVal rLimit As Double) As Double
+    ILimitSearchProblem_LimitSearchUltimateResidualNorm = _
+        mCrack.LimitSearchUltimateResidualNorm(rPath1, rPath2, rLimit)
+End Function
+
+Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
+        ByVal solver As CSectionSolver, ByVal state As String, ByVal iterations As Long) As Boolean
+    ILimitSearchProblem_LimitSearchFinalizeUltimateResult = mCrack.LimitSearchFinalizeUltimateResult( _
+        section, concreteMaterial, steelMaterial, loadPath, lambdaValue, solver, state, iterations)
+End Function
+
+Private Sub ILimitSearchProblem_LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
+    mCrack.LimitSearchSetUltimateNumericalFailure reason
+End Sub
+
+' Однотипные настройки общего Newton из численной конфигурации Formation.
+Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxIterations() As Long
+    ILimitSearchProblem_LimitSearchUltimateMaxIterations = mCrack.LimitSearchUltimateMaxIterations
+End Property
+
+Private Property Get ILimitSearchProblem_LimitSearchUltimateDampingInitial() As Double
+    ILimitSearchProblem_LimitSearchUltimateDampingInitial = mCrack.LimitSearchUltimateDampingInitial
+End Property
+
+Private Property Get ILimitSearchProblem_LimitSearchUltimateMinLineSearchAlpha() As Double
+    ILimitSearchProblem_LimitSearchUltimateMinLineSearchAlpha = mCrack.LimitSearchUltimateMinLineSearchAlpha
+End Property
+
+Private Property Get ILimitSearchProblem_LimitSearchUltimateLineSearchEnabled() As Boolean
+    ILimitSearchProblem_LimitSearchUltimateLineSearchEnabled = mCrack.LimitSearchUltimateLineSearchEnabled
+End Property
+
+Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaEpsilon0() As Double
+    ILimitSearchProblem_LimitSearchUltimateMaxDeltaEpsilon0 = mCrack.LimitSearchUltimateMaxDeltaEpsilon0
+End Property
+
+Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa() As Double
+    ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa = mCrack.LimitSearchUltimateMaxDeltaKappa
+End Property
 
 ' Создает crack-траекторию с учетом выбранного LambdaMxy/LambdaN/LambdaNMxy.
 Private Function ILimitSearchProblem_BuildLoadPath(ByVal request As CLimitSearchRequest) As CLoadPathVector
@@ -170,8 +256,13 @@ Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchReq
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByVal probeState As String, ByVal methodName As String, _
         ByVal solver As CSectionSolver, ByVal iterations As Long) As Boolean
+    Dim concreteMaterial As CMaterialDiagram
+    Dim steelMaterial As CMaterialDiagram
+    Set concreteMaterial = request.ConcreteMaterial
+    Set steelMaterial = request.SteelMaterial
     ILimitSearchProblem_FinalizeAt = _
-        mCrack.LimitSearchFinalizeCrackFormationLoadMultiplier(loadPath, lambdaValue, solver, iterations)
+        mCrack.LimitSearchFinalizeCrackFormationLoadMultiplier(request.Section, _
+            concreteMaterial, steelMaterial, loadPath, lambdaValue, solver, iterations)
 End Function
 
 Private Sub ILimitSearchProblem_FinalizeFromRetainedAcceptable(ByVal request As CLimitSearchRequest, _

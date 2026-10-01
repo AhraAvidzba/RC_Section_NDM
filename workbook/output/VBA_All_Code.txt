@@ -1,6 +1,6 @@
 VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-01 07:17:51
+Date: 2026-10-01 09:01:31
 ====================================================================================================
 
 ====================================================================================================
@@ -11702,7 +11702,7 @@ End Property
 ====================================================================================================
 COMPONENT: CCapacitySolver
 TYPE: Class Module
-LINES: 1795
+LINES: 1800
 ====================================================================================================
 
 Option Explicit
@@ -12833,9 +12833,14 @@ Private Function ProbeOnce(ByVal section As CSectionModel, _
 
     ' Для обычной probe-точки используем общий state-solve pipeline. Если есть
     ' предыдущая acceptable lambda, передаем ее как warm-start с явной стартовой
-    ' нагрузкой; чистый изгиб оставляем runner-у, чтобы он применил общий
-    ' active-set старт так же, как прямые НДС.
-    If Not mLastAcceptableSolver Is Nothing And Not IsPureBendingProbe(nSpecified, mx, my) Then
+    ' нагрузкой. Для чистого изгиба без N используем отдельный вход runner-а:
+    ' active-set плоскость сразу привязана к целевой lambda-точке и не проходит
+    ' лишние ступени от нулевой нагрузки через излом диаграммы.
+    If IsPureBendingProbe(nSpecified, mx, my) Then
+        runner.SolveWithDirectTargetGuess section, concreteMaterial, steelMaterial, _
+            nSpecified, mx, my, _
+            "для lambda-точки чистого изгиба применена стартовая плоскость; масштабируемые моменты ненулевые"
+    ElseIf Not mLastAcceptableSolver Is Nothing Then
         runner.SolveWithInitialLoadState section, concreteMaterial, steelMaterial, _
             nSpecified, mx, my, mLastAcceptableSolver.epsilon0, _
             mLastAcceptableSolver.kappaX, mLastAcceptableSolver.kappaY, _
@@ -17413,7 +17418,7 @@ End Function
 ====================================================================================================
 COMPONENT: CStateSolutionRunner
 TYPE: Class Module
-LINES: 545
+LINES: 633
 ====================================================================================================
 
 Option Explicit
@@ -17480,7 +17485,7 @@ End Sub
 ' а разрешение на вторую серию стартов, если первая попытка CSectionSolver не
 ' нашла равновесие. Сами диаграммы при этом уже переданы снаружи.
 Public Sub Solve(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal TargetN As Double, ByVal TargetMx As Double, ByVal TargetMy As Double, _
         Optional ByVal allowExtensionWarmStart As Boolean = False)
     SolveWithInitialSolver section, concreteMaterial, steelMaterial, _
@@ -17493,7 +17498,7 @@ End Sub
 ' диагностику и fallback-логику, что и обычные Strength/CrackedState, но могут
 ' стартовать от близкого физического состояния на том же уровне нагрузки.
 Public Sub SolveWithInitialSolver(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal TargetN As Double, ByVal TargetMx As Double, ByVal TargetMy As Double, _
         ByVal initialSolver As CSectionSolver, _
         Optional ByVal allowExtensionWarmStart As Boolean = False)
@@ -17544,7 +17549,7 @@ End Sub
 ' новой target-точке. Warm-start остается solve-option и не попадает в
 ' repository/reuse-ключи.
 Public Sub SolveWithInitialLoadState(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal TargetN As Double, ByVal TargetMx As Double, ByVal TargetMy As Double, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
         ByVal initialN As Double, ByVal initialMx As Double, ByVal initialMy As Double, _
@@ -17584,18 +17589,76 @@ Public Sub SolveWithInitialLoadState(ByVal section As CSectionModel, _
     End If
 End Sub
 
+' Решает direct-state из active-set плоскости, сразу привязанной к текущей
+' целевой нагрузке. Этот вход нужен capacity probe-ам чистого изгиба: такая
+' lambda-точка не должна идти ступенями от нулевой нагрузки через излом
+' диаграммы около нуля, но все остальные настройки solver-а и диагностика
+' остаются в общем CStateSolutionRunner.
+Public Sub SolveWithDirectTargetGuess(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal TargetN As Double, ByVal TargetMx As Double, ByVal TargetMy As Double, _
+        Optional ByVal diagnosticLine As String = vbNullString)
+    If section Is Nothing Then Err.Raise vbObjectError + 3486, "CStateSolutionRunner", "Модель сечения не передана."
+    If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 3487, "CStateSolutionRunner", "Диаграмма бетона не передана."
+    If steelMaterial Is Nothing Then Err.Raise vbObjectError + 3488, "CStateSolutionRunner", "Диаграмма арматуры не передана."
+
+    ClearResult
+
+    Dim service As CSectionSolver
+    Set service = New CSectionSolver
+    ConfigureSolver service
+
+    Dim concreteDiagram As CMaterialDiagram
+    Dim steelDiagram As CMaterialDiagram
+    Dim guessBuilder As CStateGuessBuilder
+    Dim eps0 As Double
+    Dim kx As Double
+    Dim ky As Double
+    If TryGetMaterialDiagrams(concreteMaterial, steelMaterial, concreteDiagram, steelDiagram) Then
+        Set guessBuilder = New CStateGuessBuilder
+        If guessBuilder.BuildForDirectState(section, concreteDiagram, steelDiagram, _
+                TargetN, TargetMx, TargetMy, eps0, kx, ky) Then
+            service.SetInitialLoadState eps0, kx, ky, TargetN, TargetMx, TargetMy
+            mInitialGuessApplied = True
+            If Len(diagnosticLine) > 0 Then
+                AppendDiagnostic diagnosticLine
+            Else
+                AppendDiagnostic "initialGuess=directTargetActiveSet"
+            End If
+        End If
+    End If
+
+    mSolverCallCount = mSolverCallCount + 1
+    service.Solve section, concreteMaterial, steelMaterial, TargetN, TargetMx, TargetMy
+    Set mSolver = service
+
+    If Not mSolver Is Nothing Then
+        If mSolver.Converged Then
+            mWithinPhysicalRange = StateWithinPhysicalRange(section, mSolver, concreteMaterial, steelMaterial)
+            mExtensionUsed = StateUsesExtension(section, mSolver, concreteMaterial, steelMaterial)
+        Else
+            mWithinPhysicalRange = False
+            mExtensionUsed = False
+        End If
+    End If
+End Sub
+
 ' Повторяет прямой solve от active-set плоскости для общего случая N+M.
 ' Первый штатный старт сохраняется прежним; этот retry включается только после
 ' несходимости и только если начальная подсказка еще не применялась. Так
 ' внецентренное растяжение/сжатие получает тот же устойчивый старт, который уже
 ' помогал чистому изгибу, без изменения результата успешно сходящихся LC.
 Private Function TrySolveWithDirectStateGuess(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal TargetN As Double, ByVal TargetMx As Double, ByVal TargetMy As Double, _
         ByRef service As CSectionSolver) As Boolean
     If mInitialGuessApplied Then Exit Function
     If mMaxIterations <= 1 Then Exit Function
     If Sqr(TargetMx * TargetMx + TargetMy * TargetMy) <= NEAR_ZERO Then Exit Function
+
+    Dim concreteDiagram As CMaterialDiagram
+    Dim steelDiagram As CMaterialDiagram
+    If Not TryGetMaterialDiagrams(concreteMaterial, steelMaterial, concreteDiagram, steelDiagram) Then Exit Function
 
     Dim guessBuilder As CStateGuessBuilder
     Set guessBuilder = New CStateGuessBuilder
@@ -17603,7 +17666,7 @@ Private Function TrySolveWithDirectStateGuess(ByVal section As CSectionModel, _
     Dim eps0 As Double
     Dim kx As Double
     Dim ky As Double
-    If Not guessBuilder.BuildForDirectState(section, concreteMaterial, steelMaterial, _
+    If Not guessBuilder.BuildForDirectState(section, concreteDiagram, steelDiagram, _
             TargetN, TargetMx, TargetMy, eps0, kx, ky) Then
         Exit Function
     End If
@@ -17628,7 +17691,7 @@ End Function
 ' состояние, используем его как warm start. Иначе включается обычный общий
 ' подбор стартовой плоскости через CStateGuessBuilder.
 Private Sub ApplyInitialSolverOrGuess(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal TargetN As Double, ByVal TargetMx As Double, ByVal TargetMy As Double, _
         ByVal initialSolver As CSectionSolver, ByVal solver As CSectionSolver)
     If Not initialSolver Is Nothing Then
@@ -17670,24 +17733,24 @@ End Sub
 ' стартовой точкой. Чаще всего это чистый изгиб: при N=0 первая
 ' итерация попадает ровно в излом бетонной диаграммы около нуля.
 Private Sub ApplyInitialGuess(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal TargetN As Double, ByVal TargetMx As Double, ByVal TargetMy As Double, _
         ByVal solver As CSectionSolver)
     If Abs(TargetN) > NEAR_ZERO Then Exit Sub
     If Sqr(TargetMx * TargetMx + TargetMy * TargetMy) <= NEAR_ZERO Then Exit Sub
+
+    Dim concreteDiagram As CMaterialDiagram
+    Dim steelDiagram As CMaterialDiagram
+    If Not TryGetMaterialDiagrams(concreteMaterial, steelMaterial, concreteDiagram, steelDiagram) Then Exit Sub
 
     Dim guessBuilder As CStateGuessBuilder
     Dim eps0 As Double
     Dim kx As Double
     Dim ky As Double
     Set guessBuilder = New CStateGuessBuilder
-    If guessBuilder.BuildForDirectState(section, concreteMaterial, steelMaterial, _
+    If guessBuilder.BuildForDirectState(section, concreteDiagram, steelDiagram, _
             TargetN, TargetMx, TargetMy, eps0, kx, ky) Then
-        ' Active-set плоскость строится сразу под текущую целевую нагрузку.
-        ' Поэтому стартовую нагрузку задаем той же target-точкой: CSectionSolver
-        ' начинает итерации около нужного уровня усилий, а не ведет эту
-        ' приближенную плоскость ступенями от нулевой нагрузки.
-        solver.SetInitialLoadState eps0, kx, ky, TargetN, TargetMx, TargetMy
+        solver.SetInitialState eps0, kx, ky
         mInitialGuessApplied = True
         AppendDiagnostic "initialGuess=directStateActiveSet"
     End If
@@ -17697,9 +17760,13 @@ End Sub
 ' technical extension. Здесь находится управление retry: builder только дает
 ' eps0/kx/ky, а runner запускает новый CSectionSolver и проверяет сходимость.
 Private Function TrySolveWithExtensionWarmStart(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal TargetN As Double, ByVal TargetMx As Double, ByVal TargetMy As Double, _
         ByRef service As CSectionSolver) As Boolean
+    Dim concreteDiagram As CMaterialDiagram
+    Dim steelDiagram As CMaterialDiagram
+    If Not TryGetMaterialDiagrams(concreteMaterial, steelMaterial, concreteDiagram, steelDiagram) Then Exit Function
+
     Dim guessBuilder As CStateGuessBuilder
     Set guessBuilder = New CStateGuessBuilder
 
@@ -17710,7 +17777,7 @@ Private Function TrySolveWithExtensionWarmStart(ByVal section As CSectionModel, 
 
     For attemptIndex = 1 To guessBuilder.ExtensionAttemptCount
         If guessBuilder.BuildAttemptForExtensionState(attemptIndex, section, service, _
-                concreteMaterial, steelMaterial, TargetN, TargetMx, TargetMy, eps0, kx, ky) Then
+                concreteDiagram, steelDiagram, TargetN, TargetMx, TargetMy, eps0, kx, ky) Then
             If TrySolveFromExtensionGuess(section, concreteMaterial, steelMaterial, _
                     TargetN, TargetMx, TargetMy, eps0, kx, ky, _
                     guessBuilder.ExtensionAttemptName(attemptIndex), service) Then
@@ -17726,7 +17793,7 @@ End Function
 ' line search, и только после этого идем ступенями от усилий, которые уже
 ' создает стартовая плоскость.
 Private Function TrySolveFromExtensionGuess(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal TargetN As Double, ByVal TargetMx As Double, ByVal TargetMy As Double, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
         ByVal attemptName As String, ByRef service As CSectionSolver) As Boolean
@@ -17762,7 +17829,7 @@ End Function
 ' прикладывать ступени до полного target. Это позволяет идти от близкого
 ' extension-состояния, а не от нулевой нагрузки с чужой деформированной формой.
 Private Function TryRunRetry(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal TargetN As Double, ByVal TargetMx As Double, ByVal TargetMy As Double, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
         ByVal initialN As Double, ByVal initialMx As Double, ByVal initialMy As Double, _
@@ -17795,13 +17862,17 @@ End Function
 ' provider-ом technical extension. Этот признак сохраняется в Results отдельно
 ' от пользовательского статуса и нужен схеме, AutoCAD и расчету трещин.
 Private Function StateUsesExtension(ByVal section As CSectionModel, ByVal solver As CSectionSolver, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram) As Boolean
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object) As Boolean
+    Dim concreteDiagram As CMaterialDiagram
+    Dim steelDiagram As CMaterialDiagram
+    If Not TryGetMaterialDiagrams(concreteMaterial, steelMaterial, concreteDiagram, steelDiagram) Then Exit Function
+
     Dim i As Long
     Dim strain As Double
 
     For i = 1 To section.ConcreteCount
         strain = ElementStrain(solver, section.concreteX(i), section.concreteY(i))
-        If concreteMaterial.IsInExtensionRange(strain) Then
+        If concreteDiagram.IsInExtensionRange(strain) Then
             StateUsesExtension = True
             Exit Function
         End If
@@ -17809,7 +17880,7 @@ Private Function StateUsesExtension(ByVal section As CSectionModel, ByVal solver
 
     For i = 1 To section.rebarCount
         strain = ElementStrain(solver, section.RebarX(i), section.RebarY(i))
-        If steelMaterial.IsInExtensionRange(strain) Then
+        If steelDiagram.IsInExtensionRange(strain) Then
             StateUsesExtension = True
             Exit Function
         End If
@@ -17821,21 +17892,43 @@ End Function
 ' предела, положительные деформации бетона считаются допустимыми для проверки
 ' range, но дают нулевое напряжение через саму диаграмму.
 Private Function StateWithinPhysicalRange(ByVal section As CSectionModel, ByVal solver As CSectionSolver, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram) As Boolean
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object) As Boolean
+    Dim concreteDiagram As CMaterialDiagram
+    Dim steelDiagram As CMaterialDiagram
+    If Not TryGetMaterialDiagrams(concreteMaterial, steelMaterial, concreteDiagram, steelDiagram) Then
+        StateWithinPhysicalRange = True
+        Exit Function
+    End If
+
     Dim i As Long
     Dim strain As Double
 
     For i = 1 To section.ConcreteCount
         strain = ElementStrain(solver, section.concreteX(i), section.concreteY(i))
-        If Not concreteMaterial.IsInPhysicalRange(strain) Then Exit Function
+        If Not concreteDiagram.IsInPhysicalRange(strain) Then Exit Function
     Next i
 
     For i = 1 To section.rebarCount
         strain = ElementStrain(solver, section.RebarX(i), section.RebarY(i))
-        If Not steelMaterial.IsInPhysicalRange(strain) Then Exit Function
+        If Not steelDiagram.IsInPhysicalRange(strain) Then Exit Function
     Next i
 
     StateWithinPhysicalRange = True
+End Function
+
+' Возвращает штатные диаграммы материалов, если они действительно переданы.
+' Тестовые линейные материалы решаются тем же CSectionSolver, но без
+' специализированных active-set и extension-подсказок, потому что у них нет
+' физических границ диаграммы.
+Private Function TryGetMaterialDiagrams(ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByRef concreteDiagram As CMaterialDiagram, ByRef steelDiagram As CMaterialDiagram) As Boolean
+    If concreteMaterial Is Nothing Or steelMaterial Is Nothing Then Exit Function
+    If TypeName(concreteMaterial) <> "CMaterialDiagram" Then Exit Function
+    If TypeName(steelMaterial) <> "CMaterialDiagram" Then Exit Function
+
+    Set concreteDiagram = concreteMaterial
+    Set steelDiagram = steelMaterial
+    TryGetMaterialDiagrams = True
 End Function
 
 ' Вычисляет деформацию произвольной точки по найденной solver-плоскости
@@ -19192,7 +19285,7 @@ End Sub
 Public Sub LimitSearchSetCrackFormationSearchBoundReached(ByVal reason As String)
     mConverged = False
     mCrackFormed = False
-    SetFormationResult rsNumericalFailure, rcSearchBoundReached, reason
+    SetFormationResult rsCheckFailed, rcSearchBoundReached, reason
     AppendDiagnostic reason
 End Sub
 
@@ -25488,7 +25581,7 @@ Public Function StrengthStrainReserve(ByVal index As Long) As Double
     Dim stateResult As CSectionStateResult
     Set stateResult = mResults(index).FindState(sstStrengthState)
     If stateResult Is Nothing Then Exit Function
-    If Not mStatusPolicy.IsFinished(stateResult.Status) Then Exit Function
+    If Not mStatusPolicy.IsFinished(mStatusPolicy.StatusFromMeta(stateResult.ResultMeta)) Then Exit Function
 
     Dim reserve As Double
     reserve = 1E+100
@@ -26624,7 +26717,7 @@ End Property
 ====================================================================================================
 COMPONENT: CBatchStatusPolicy
 TYPE: Class Module
-LINES: 283
+LINES: 284
 ====================================================================================================
 
 Option Explicit
@@ -26834,7 +26927,8 @@ Public Function CrackMetaFromCalculator(ByVal crack As CCrackWidthCalculator) As
         Else
             meta.SetResult rsSuccess, rcCheckPassed, rkCrackWidth, crack.stopReason
         End If
-    ElseIf crack.CrackFormationInternalStatus = rsNumericalFailure Or _
+    ElseIf crack.CrackFormationInternalStatus = rsCheckFailed Or _
+            crack.CrackFormationInternalStatus = rsNumericalFailure Or _
             crack.CrackFormationInternalStatus = rsInvalidInput Or _
             crack.CrackFormationInternalStatus = rsInvalidConfiguration Or _
             crack.CrackFormationInternalStatus = rsInternalError Then
@@ -31350,7 +31444,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCrackSummaryWriter
 TYPE: Class Module
-LINES: 908
+LINES: 889
 ====================================================================================================
 
 Option Explicit
@@ -31827,12 +31921,8 @@ Private Function NamedStateStatus(ByVal batch As CBatchSectionCalculator, ByVal 
     Set stateResult = batch.FindNamedState(index, stateType)
     If stateResult Is Nothing Then
         NamedStateStatus = policy.NotApplicable
-    ElseIf Len(stateResult.Status) > 0 Then
-        NamedStateStatus = policy.DisplayStatus(stateResult.Status)
-    ElseIf Not stateResult.Converged Then
-        NamedStateStatus = policy.NumFail
     Else
-        NamedStateStatus = policy.OK
+        NamedStateStatus = policy.StatusFromMeta(stateResult.ResultMeta)
     End If
 End Function
 
@@ -31863,15 +31953,7 @@ Private Sub PutCrackedStateData(ByRef data() As Variant, ByVal rowIndex As Long,
     End If
 
     data(rowIndex, COL_CRACK_STATE_DIAGEXT) = ExtensionUsedText(batch, index, stateResult)
-    If Len(stateResult.Status) > 0 Then
-        data(rowIndex, COL_CRACK_STATE_STATUS) = policy.DisplayStatus(stateResult.Status)
-    ElseIf Not stateResult.Converged Then
-        data(rowIndex, COL_CRACK_STATE_STATUS) = policy.NumFail
-    ElseIf stateResult.extensionUsed Then
-        data(rowIndex, COL_CRACK_STATE_STATUS) = policy.Fail
-    Else
-        data(rowIndex, COL_CRACK_STATE_STATUS) = policy.OK
-    End If
+    data(rowIndex, COL_CRACK_STATE_STATUS) = CrackCurrentStateStatusText(batch, index, policy)
 End Sub
 
 ' Возвращает True только для такого CrackedState, на котором действительно
@@ -31902,11 +31984,8 @@ Private Function CrackedStateAllowsCrackChecks(ByVal batch As CBatchSectionCalcu
     If Not stateResult.Converged Then Exit Function
     If stateResult.extensionUsed Then Exit Function
 
-    If Len(stateResult.Status) > 0 Then
-        CrackedStateAllowsCrackChecks = (policy.DisplayStatus(stateResult.Status) = policy.OK)
-    Else
-        CrackedStateAllowsCrackChecks = True
-    End If
+    CrackedStateAllowsCrackChecks = _
+        (policy.StatusFromMeta(stateResult.ResultMeta) = policy.OK)
 End Function
 
 ' Записывает ширину раскрытия нормальных трещин и величины ее формулы.
@@ -31924,11 +32003,7 @@ Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
     End If
 
     If Not policy.IsFinished(CrackWidthStatusText(batch, index, policy)) Then
-        If CrackWidthStatusText(batch, index, policy) = policy.NumFail Then
-            data(rowIndex, COL_ACRC_STATUS) = policy.NotApplicable
-        Else
-            data(rowIndex, COL_ACRC_STATUS) = CrackWidthStatusText(batch, index, policy)
-        End If
+        data(rowIndex, COL_ACRC_STATUS) = CrackWidthStatusText(batch, index, policy)
         Exit Sub
     End If
 
@@ -39874,7 +39949,7 @@ Private Sub PutStrengthState(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, COL_STATE_DIAGEXT) = ExtensionUsedText(batch, index, stateResult)
     If batch.StrengthStrainReserve(index) > SMALL_VALUE Then _
         data(rowIndex, COL_STATE_RESERVE) = batch.StrengthStrainReserve(index)
-    data(rowIndex, COL_STATE_STATUS) = policy.DisplayStatus(stateResult.Status)
+    data(rowIndex, COL_STATE_STATUS) = policy.StatusFromMeta(stateResult.ResultMeta)
 End Sub
 
 ' Пишет CapacityState и предельные компоненты найденной точки.
@@ -49981,7 +50056,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestCapacitySolver
 TYPE: Standard Module
-LINES: 1578
+LINES: 1572
 ====================================================================================================
 
 Option Explicit
@@ -50352,8 +50427,6 @@ Private Sub TestConcreteLimitState(ByRef stats As TCapacityTestStats)
     cap.SteelStrainLimit = 1#
     cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), LinearConcrete(), LinearSteel(), 0#, -10000000#, 0#
 
-    AppendLine stats, "INFO: capacity.concreteLimit status=" & cap.LimitState & _
-        "; stop=" & cap.stopReason & "; log=" & Replace(cap.DiagnosticLog, vbCrLf, " | ")
     AssertTrue stats, "capacity.concreteLimit.converged", cap.Converged
     AssertEquals stats, "capacity.concreteLimit.state", cap.LimitState, "ConcreteStrainLimit"
 End Sub
@@ -50417,8 +50490,6 @@ Private Sub TestSteelLimitState(ByRef stats As TCapacityTestStats)
     cap.SteelStrainLimit = 0.0005
     cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), LinearConcrete(), LinearSteel(), 0#, -10000000#, 0#
 
-    AppendLine stats, "INFO: capacity.steelLimit status=" & cap.LimitState & _
-        "; stop=" & cap.stopReason & "; log=" & Replace(cap.DiagnosticLog, vbCrLf, " | ")
     AssertTrue stats, "capacity.steelLimit.converged", cap.Converged
     AssertEquals stats, "capacity.steelLimit.state", cap.LimitState, "SteelStrainLimit"
 End Sub
@@ -50438,8 +50509,6 @@ Private Sub TestLoadMultiplierPureBendingUsesStateGuess(ByRef stats As TCapacity
     cap.MaxRetries = 1
     cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), 0#, -10000000#, 0#
 
-    AppendLine stats, "INFO: capacity.pureBendingGuess status=" & cap.LimitState & _
-        "; stop=" & cap.stopReason & "; log=" & Replace(cap.DiagnosticLog, vbCrLf, " | ")
     AssertTrue stats, "capacity.pureBendingGuess.converged", cap.Converged
     AssertTrue stats, "capacity.pureBendingGuess.physical", IsPhysicalLimitState(cap.LimitState)
     AssertTrue stats, "capacity.pureBendingGuess.usedGuess", InStr(1, cap.DiagnosticLog, "для lambda-точки чистого изгиба применена стартовая плоскость", vbTextCompare) > 0
@@ -51567,7 +51636,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestCrackWidth
 TYPE: Standard Module
-LINES: 904
+LINES: 905
 ====================================================================================================
 
 Option Explicit
@@ -51607,7 +51676,7 @@ Public Function RunCrackWidthTests() As String
     TestAutoMcrcPureBendingConverges stats
     TestAutoMcrcFixedNIndependentOfMomentMagnitude stats
     TestCrackInitiationLoadPaths stats
-    TestCrackFormationSearchBoundIsNumericalFailure stats
+    TestCrackFormationSearchBoundKeepsTechnicalCode stats
     TestCrackFormationNoCrackDoesNotBuildPostState stats
     TestCrackFormationCacheHitWithoutLastRunner stats
     TestLimitSearchResultKeepsCrackDiagnosticSnapshot stats
@@ -51975,7 +52044,7 @@ Private Sub TestCrackInitiationLoadPaths(ByRef stats As TCrackTestStats)
     AssertCrackCalculatorNotNumFail stats, "crack.path.mxyAxialFallback.status", crackFallback
 End Sub
 
-Private Sub TestCrackFormationSearchBoundIsNumericalFailure(ByRef stats As TCrackTestStats)
+Private Sub TestCrackFormationSearchBoundKeepsTechnicalCode(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
     Set solver = SolveServiceStateWithRunner(section, -20000#, -6000#, 0#)
@@ -51988,10 +52057,11 @@ Private Sub TestCrackFormationSearchBoundIsNumericalFailure(ByRef stats As TCrac
     AssertTrue stats, "crack.searchBound.notConverged", Not crack.Converged
     AssertTrue stats, "crack.searchBound.notFormed", Not crack.CrackFormed
     AssertTrue stats, "crack.searchBound.internalStatus", _
-        crack.CrackFormationInternalStatus = rsNumericalFailure
+        crack.CrackFormationInternalStatus = rsCheckFailed
     AssertTrue stats, "crack.searchBound.resultCode", _
         crack.CrackFormationResultCode = rcSearchBoundReached
     AssertTrue stats, "crack.searchBound.noPostState", crack.PostCrackState Is Nothing
+    AssertCrackCalculatorNotNumFail stats, "crack.searchBound.widthNotNumFail", crack
 End Sub
 
 Private Sub TestCrackFormationNoCrackDoesNotBuildPostState(ByRef stats As TCrackTestStats)

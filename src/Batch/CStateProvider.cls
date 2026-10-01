@@ -118,6 +118,24 @@ Public Function GetOrSolve(ByVal request As CStateRequest, _
     Set GetOrSolve = stateResult
 End Function
 
+' Возвращает вычисляемый снимок для потребителя cached named-state.
+' Живой LastRunner не требуется; восстановление и проверка плоскости общие
+' для всех потребителей, без нового решения равновесия и записи в repository.
+Public Function SolverSnapshot(ByVal stateResult As CSectionStateResult) As CSectionSolver
+    If stateResult Is Nothing Then Exit Function
+    If Not stateResult.Converged Then Exit Function
+
+    Dim request As CStateRequest
+    Set request = New CStateRequest
+    request.Initialize stateResult.StateType, stateResult.MaterialModelRole, stateResult.MaterialSpec, _
+        stateResult.TargetN, stateResult.TargetMx, stateResult.TargetMy, stateResult.ExtensionUsed, False
+    Dim runner As CStateSolutionRunner
+    Set runner = New CStateSolutionRunner
+    ConfigureRunner runner
+    Set SolverSnapshot = runner.RestoreSnapshot(mSection, ConcreteMaterialForRequest(request), _
+        SteelMaterialForRequest(request), stateResult)
+End Function
+
 ' Передает сохраненные настройки в новый runner.
 Private Sub ConfigureRunner(ByVal runner As CStateSolutionRunner)
     runner.LoadSteps = mLoadSteps
@@ -138,8 +156,8 @@ End Sub
 
 ' Выбирает бетонную диаграмму по физическому режиму request.
 Private Function ConcreteMaterialForRequest(ByVal request As CStateRequest) As CMaterialDiagram
-    If request.UseDirectStateExtension Then
-        Set ConcreteMaterialForRequest = mMaterialProvider.ConcreteStateMaterialFromSpec(request.MaterialSpec)
+    If request.UseDiagramExtension Then
+        Set ConcreteMaterialForRequest = mMaterialProvider.ConcreteMaterialForEquilibriumFromSpec(request.MaterialSpec)
     Else
         Set ConcreteMaterialForRequest = mMaterialProvider.ConcreteMaterialFromSpec(request.MaterialSpec)
     End If
@@ -147,8 +165,8 @@ End Function
 
 ' Выбирает диаграмму арматуры по физическому режиму request.
 Private Function SteelMaterialForRequest(ByVal request As CStateRequest) As CMaterialDiagram
-    If request.UseDirectStateExtension Then
-        Set SteelMaterialForRequest = mMaterialProvider.SteelStateMaterialFromSpec(request.MaterialSpec)
+    If request.UseDiagramExtension Then
+        Set SteelMaterialForRequest = mMaterialProvider.SteelMaterialForEquilibriumFromSpec(request.MaterialSpec)
     Else
         Set SteelMaterialForRequest = mMaterialProvider.SteelMaterialFromSpec(request.MaterialSpec)
     End If

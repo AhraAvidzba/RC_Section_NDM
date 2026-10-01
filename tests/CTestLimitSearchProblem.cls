@@ -91,11 +91,6 @@ Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
-' Возвращает пустой доменный контекст: fake-задаче не нужен реальный calculator.
-Private Property Get ILimitSearchProblem_DomainContext() As Object
-    Set ILimitSearchProblem_DomainContext = Nothing
-End Property
-
 Private Property Get ILimitSearchProblem_ResultKind() As EResultKind
     ILimitSearchProblem_ResultKind = mKind
 End Property
@@ -140,6 +135,99 @@ End Property
 Private Function ILimitSearchProblem_Prepare(ByVal request As CLimitSearchRequest) As Boolean
     ILimitSearchProblem_Prepare = True
 End Function
+
+' ДЛЯ ТЕСТОВ: аналитическая система из трех независимых невязок позволяет
+' проверить общий Newton без Capacity/Crack-калькуляторов и material API.
+Private Function ILimitSearchProblem_PrepareUltimate(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector) As Boolean
+    ILimitSearchProblem_PrepareUltimate = Not loadPath Is Nothing
+End Function
+
+Private Function ILimitSearchProblem_RunUltimateAttempts(ByVal request As CLimitSearchRequest) As Boolean
+    Dim search As CUltimateStrainSearch
+    Set search = New CUltimateStrainSearch
+    ILimitSearchProblem_RunUltimateAttempts = search.RunNewton(Me, Nothing, Nothing, Nothing, _
+        ILimitSearchProblem_BuildLoadPath(request), Nothing, "Тестовый поиск не сошелся.")
+End Function
+
+Private Sub ILimitSearchProblem_CompleteUltimate(ByVal loadPath As CLoadPathVector)
+End Sub
+
+Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
+    eps0 = 0#: kx = 0#: ky = 0#
+End Sub
+
+Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
+        ByVal kx As Double, ByVal ky As Double, ByRef solver As CSectionSolver, _
+        ByRef rPath1 As Double, ByRef rPath2 As Double, ByRef rLimit As Double, _
+        ByRef lambdaValue As Double, ByRef state As String) As Boolean
+    Set solver = Nothing
+    rPath1 = kx
+    rPath2 = ky
+    lambdaValue = eps0 / 0.001
+    rLimit = lambdaValue - mRootLambda
+    state = PROBE_LIMIT
+    ILimitSearchProblem_LimitSearchEvaluateUltimateResidual = True
+End Function
+
+Private Function ILimitSearchProblem_LimitSearchUltimateResidualReached(ByVal rPath1 As Double, _
+        ByVal rPath2 As Double, ByVal rLimit As Double) As Boolean
+    ILimitSearchProblem_LimitSearchUltimateResidualReached = _
+        Abs(rPath1) <= mTolerance And Abs(rPath2) <= mTolerance And Abs(rLimit) <= mTolerance
+End Function
+
+Private Function ILimitSearchProblem_LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
+        ByVal rPath2 As Double, ByVal rLimit As Double) As Double
+    ILimitSearchProblem_LimitSearchUltimateResidualNorm = Abs(rPath1) + Abs(rPath2) + Abs(rLimit)
+End Function
+
+Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
+        ByVal solver As CSectionSolver, ByVal state As String, ByVal iterations As Long) As Boolean
+    mConverged = True
+    mFinalLambda = lambdaValue
+    mFinalMethod = "UltimateStrain"
+    mFinalIterations = iterations
+    mLimitState = state
+    ILimitSearchProblem_LimitSearchFinalizeUltimateResult = True
+End Function
+
+Private Sub ILimitSearchProblem_LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
+    mConverged = False
+    mLimitState = PROBE_NUMFAIL
+    AppendDiagnosticLine reason
+End Sub
+
+' ДЛЯ ТЕСТОВ: одинаковые численные ограничения простой линейной системы.
+Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxIterations() As Long
+    ILimitSearchProblem_LimitSearchUltimateMaxIterations = mMaxIterations
+End Property
+
+Private Property Get ILimitSearchProblem_LimitSearchUltimateDampingInitial() As Double
+    ILimitSearchProblem_LimitSearchUltimateDampingInitial = 1#
+End Property
+
+Private Property Get ILimitSearchProblem_LimitSearchUltimateMinLineSearchAlpha() As Double
+    ILimitSearchProblem_LimitSearchUltimateMinLineSearchAlpha = 0.03125
+End Property
+
+Private Property Get ILimitSearchProblem_LimitSearchUltimateLineSearchEnabled() As Boolean
+    ILimitSearchProblem_LimitSearchUltimateLineSearchEnabled = True
+End Property
+
+Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaEpsilon0() As Double
+    ILimitSearchProblem_LimitSearchUltimateMaxDeltaEpsilon0 = 0.01
+End Property
+
+Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa() As Double
+    ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa = 0.01
+End Property
 
 ' Создает универсальную траекторию Offset + lambda*Base из request.
 Private Function ILimitSearchProblem_BuildLoadPath(ByVal request As CLimitSearchRequest) As CLoadPathVector

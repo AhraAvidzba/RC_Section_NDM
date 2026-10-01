@@ -41,7 +41,7 @@ Private mRelativeResidualN As Double ' Относительная невязка
 Private mRelativeResidualMx As Double ' Относительная невязка по Mx для диагностики качества состояния.
 Private mRelativeResidualMy As Double ' Относительная невязка по My для диагностики качества состояния.
 Private mLastResidualNorm As Double ' Норма невязки последней оценки solver-а.
-Private mExtensionUsed As Boolean ' True только для StateSolution с numerical extension.
+Private mExtensionUsed As Boolean ' True, если найденное состояние дошло до numerical extension.
 Private mWithinPhysicalRange As Boolean ' True, если state принят в пределах физической диаграммы.
 Private mConverged As Boolean ' Сошелся ли solver, из которого взята плоскость.
 Private mStopReason As String ' Служебная причина остановки solver-а.
@@ -101,30 +101,6 @@ Public Sub InitializeFromSolver(ByVal stateType As ESectionStateType, _
     mHasConcreteTension = solver.HasConcreteTension
     mHasSteelCompression = solver.HasSteelCompression
     mHasSteelTension = solver.HasSteelTension
-End Sub
-
-' Создает named-state по уже известной плоскости деформаций.
-' Используется для capacity-точки, когда CCapacitySolver отдает итоговую
-' плоскость через LastSolver.
-Public Sub InitializeFromPlane(ByVal stateType As ESectionStateType, _
-        ByVal materialModelRole As ECalculationPurpose, ByVal materialSpec As CMaterialModelSpec, _
-        ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
-        Optional ByVal extensionUsed As Boolean = False, _
-        Optional ByVal stopReason As String = vbNullString)
-    If materialSpec Is Nothing Then Err.Raise vbObjectError + 3972, "CSectionStateResult", "MaterialModelSpec не передан."
-
-    mStateType = stateType
-    mMaterialModelRole = materialModelRole
-    Set mMaterialSpec = materialSpec.Clone
-    mEpsilon0 = eps0
-    mKappaX = kx
-    mKappaY = ky
-    mExtensionUsed = extensionUsed
-    mWithinPhysicalRange = True
-    mConverged = True
-    mStopReason = stopReason
-    Set mResultMeta = BuildSuccessMeta(stateType, stopReason)
-    mStatus = ExternalStatus(mResultMeta)
 End Sub
 
 ' Копирует из solver-а все данные равновесия, которые определяют качество

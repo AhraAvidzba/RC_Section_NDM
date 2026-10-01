@@ -83,7 +83,9 @@ Private Sub CaptureCapacitySnapshot(ByVal cap As CCapacitySolver)
     End If
 End Sub
 
-' Сохраняет краткую диагностику CrackFormation в той же result-структуре.
+' Сохраняет найденную crack-точку и диагностику, независимо от того,
+' достигнута ли эта точка текущим сочетанием. Состояние до трещины, когда
+' оно доступно, является источником полного внутреннего вектора усилий.
 Private Sub CaptureCrackSnapshot(ByVal crack As CCrackWidthCalculator)
     ResetSearchSnapshot
     If crack Is Nothing Then Exit Sub
@@ -92,12 +94,20 @@ Private Sub CaptureCrackSnapshot(ByVal crack As CCrackWidthCalculator)
     mConverged = crack.Converged
     mStopReason = crack.StopReason
     mLimitState = crack.StopReason
+    mLambdaUltimate = crack.LambdaCrc
+    mNUltimate = crack.FormationNcrc
+    mMomentUltimate = crack.Mcrc
+    If Not crack.PreCrackState Is Nothing Then
+        mNUltimate = crack.PreCrackState.Nint
+        mMxUltimate = crack.PreCrackState.Mxint
+        mMyUltimate = crack.PreCrackState.Myint
+    End If
     mDiagnosticLog = crack.DiagnosticLog
 End Sub
 
-' Заполняет result по уже выполненному CCapacitySolver.
-' Маппинг здесь намеренно простой: внешний статус по-прежнему формируется
-' существующим CBatchStatusPolicy, а meta нужна как задел общей result-схемы.
+' Фиксирует численный исход поиска точки. Найденная точка успешна независимо
+' от того, достигается ли она до lambda=1: безопасность заданного сочетания
+' оценивает инженерный CapacityResult, а не общий Search.
 Public Sub InitializeFromCapacitySolver(ByVal cap As CCapacitySolver, ByVal requestedStrategy As String)
     mRequestedStrategy = requestedStrategy
     mResultKind = rkCapacity
@@ -105,17 +115,15 @@ Public Sub InitializeFromCapacitySolver(ByVal cap As CCapacitySolver, ByVal requ
     CaptureCapacitySnapshot cap
     If cap Is Nothing Then
         mActualMethod = vbNullString
-        mMeta.SetResult rsNumericalFailure, rcSolverDidNotReturnState, rkCapacity, _
-            "Поиск несущей способности не вернул объект solver."
+        mMeta.SetResult rsInternalError, rcInternalError, rkCapacity, _
+            "Не передан результат выполненного поиска несущей способности."
     Else
         mActualMethod = cap.SolutionMethod
         If cap.Converged Then
             mSucceeded = True
-            If cap.LambdaUltimate > 0# And cap.LambdaUltimate < 1# Then
-                mMeta.SetResult rsCheckFailed, rcPhysicalLimitExceeded, rkCapacity, cap.LimitState
-            Else
-                mMeta.SetResult rsSuccess, rcCheckPassed, rkCapacity, cap.LimitState
-            End If
+            mMeta.SetResult rsSuccess, rcCheckPassed, rkCapacity, cap.LimitState
+        ElseIf cap.SearchBoundReached Then
+            mMeta.SetResult rsNumericalFailure, rcSearchBoundReached, rkCapacity, cap.StopReason
         ElseIf cap.LimitSearchInitialLambdaRejected And _
                 Not cap.LimitSearchCapacityStateIsInvalidInput(cap.LimitState) Then
             mMeta.SetResult rsCheckFailed, rcInitialStateBeyondLimit, rkCapacity, _
@@ -157,22 +165,16 @@ Public Sub InitializeFromCrackFormation(ByVal crack As CCrackWidthCalculator, _
     CaptureCrackSnapshot crack
 
     If crack Is Nothing Then
-        mMeta.SetResult rsNumericalFailure, rcSolverDidNotReturnState, rkCrackFormation, _
-            "Поиск образования трещины не вернул расчетчик."
-    ElseIf searchSucceeded Then
-        If crack.CrackFormationResultCode = rcCheckPassed Then
-            mMeta.SetResult rsSuccess, rcCheckPassed, rkCrackFormation, crack.StopReason
-        Else
-            mMeta.SetResult crack.CrackFormationInternalStatus, crack.CrackFormationResultCode, _
-                rkCrackFormation, crack.StopReason
-        End If
-    ElseIf crack.Converged And Not crack.CrackFormed Then
-        mMeta.SetResult rsSuccess, rcCriterionNotReached, rkCrackFormation, crack.StopReason
+        mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, _
+            "Не передан результат выполненного поиска образования трещины."
     ElseIf crack.CrackFormationInternalStatus <> rsUnset Then
         mMeta.SetResult crack.CrackFormationInternalStatus, crack.CrackFormationResultCode, _
             rkCrackFormation, crack.StopReason
+    ElseIf searchSucceeded Then
+        mMeta.SetResult rsSuccess, rcCheckPassed, rkCrackFormation, crack.StopReason
     Else
-        mMeta.SetResult rsNumericalFailure, rcNumericalFailure, rkCrackFormation, crack.StopReason
+        mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, _
+            "Поиск образования трещины завершен без машинного статуса результата."
     End If
     mSucceeded = LimitSearchMetaSucceeded(mMeta)
 End Sub
@@ -200,7 +202,7 @@ Public Sub InitializeInvalidConfiguration(ByVal requestedStrategy As String, ByV
 End Sub
 
 Public Property Get Meta() As CResultMeta
-    Set Meta = mMeta
+    Set Meta = mMeta.Clone
 End Property
 
 Public Property Get RequestedStrategy() As String

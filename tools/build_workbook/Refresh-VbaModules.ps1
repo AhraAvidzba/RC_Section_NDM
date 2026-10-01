@@ -5,6 +5,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot "SettingsCatalog.ps1")
 
 # Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
 function Add-VbaSourceFile {
@@ -122,6 +123,7 @@ if (-not (Test-Path -LiteralPath $fullWorkbookPath)) {
 
 $excel = $null
 $workbook = $null
+$printAreas = @(Get-WorkbookPrintAreas $fullWorkbookPath)
 
 try {
     $excel = New-Object -ComObject Excel.Application
@@ -148,3 +150,4 @@ finally {
     [GC]::Collect()
     [GC]::WaitForPendingFinalizers()
 }
+Restore-WorkbookPrintAreas $fullWorkbookPath $printAreas

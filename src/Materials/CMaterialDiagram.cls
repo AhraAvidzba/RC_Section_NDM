@@ -148,7 +148,7 @@ Public Function IsInPhysicalRange(ByVal strain As Double) As Boolean
 End Function
 
 ' True означает, что деформация вышла за физический eps_ult именно в ту
-' техническую область, которую provider добавил для прямого StateSolution.
+' техническую область, которую provider добавил для равновесного solve.
 ' Горизонтальное физическое плато до eps_ult не считается extension: оно
 ' остается допустимой частью диаграммы материала и не должно давать FAIL.
 Public Function IsInExtensionRange(ByVal strain As Double) As Boolean
@@ -248,6 +248,14 @@ Private Function FindSegmentIndex(ByVal strain As Double) As Long
     Dim i As Long
     For i = 1 To mPointCount - 1
         If strain >= mStrains(i) And strain <= mStrains(i + 1) Then
+            ' В исходном первом физическом узле действовал правый участок.
+            ' Новая техническая точка слева не меняет этот выбор касательной.
+            If mHasCompressionExtension And strain = mCompressionExtensionStartStrain Then
+                If strain = mStrains(i + 1) And i + 1 < mPointCount Then
+                    FindSegmentIndex = i + 1
+                    Exit Function
+                End If
+            End If
             FindSegmentIndex = i
             Exit Function
         End If

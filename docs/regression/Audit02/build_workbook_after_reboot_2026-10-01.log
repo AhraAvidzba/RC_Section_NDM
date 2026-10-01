@@ -1,0 +1,9 @@
+New-Object : Retrieving the COM class factory for component with CLSID {00024500-0000-0000-C000-000000000046} failed du
+e to the following error: 80080005 Server execution failed (Exception from HRESULT: 0x80080005 (CO_E_SERVER_EXEC_FAILUR
+E)).
+At C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\Build-Workbook.ps1:551 char:14
++     $excel = New-Object -ComObject Excel.Application
++              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ResourceUnavailable: (:) [New-Object], COMException
+    + FullyQualifiedErrorId : NoCOMClassIdentified,Microsoft.PowerShell.Commands.NewObjectCommand
+ 

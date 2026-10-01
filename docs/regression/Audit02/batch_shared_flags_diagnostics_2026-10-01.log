@@ -1,0 +1,858 @@
+RUN: TestBatchOneCombination
+OK: batch.one.count
+OK: batch.one.governing
+OK: batch.one.capacity.status
+OK: batch.one.crack.status
+OK: batch.one.elapsed
+RUN: TestProfileIdControlsLimitStateGroup
+OK: batch.profileId.group1.capacity
+OK: batch.profileId.group1.noCrack
+OK: batch.profileId.group2.noCapacity
+OK: batch.profileId.group2.crackedState
+RUN: TestBatchFiveCombinations
+OK: batch.five.count
+OK: batch.five.governing.index
+OK: batch.five.diagnostics
+RUN: TestBatchGoverningUsesLowestSafetyFactor
+OK: batch.governing.lambda.order
+OK: batch.governing.lowestSafety
+OK: batch.governing.limitState
+OK: batch.governing.strength.status
+RUN: TestBatchGoverningUsesStrengthProfilesOnly
+OK: batch.governing.profiles.capacity.order
+OK: batch.governing.profiles.pr2Skipped
+OK: batch.governing.profiles.id
+RUN: TestBatchPureAxialCapacityUsesNult
+OK: batch.nult.path
+OK: batch.nult.solutionMethod
+INFO: batch.nult.status=OK; limitState=SteelStrainLimit; solutionMethod=LoadMultiplier; lambda=8.796459430051; Nult=439822.971502571
+OK: batch.nult.status
+OK: batch.nult.axialUltimate
+OK: batch.nult.noMomentUltimate
+OK: batch.nult.governing
+RUN: TestBatchEccentricAxialCapacityTriesUltimateStrain
+OK: batch.nEcc.path
+OK: batch.nEcc.status
+OK: batch.nEcc.method
+OK: batch.nEcc.loadPointMomentsRemainZero
+RUN: TestBatchRectSetN200CapacityPathNDoesNotNumFail
+INFO: batch.rectset.n200.Auto; capacityStatus=NumFail; limitState=NumericalFailure; solutionMethod=LoadMultiplier; lambda=3.927612304688; Nult=7703343.84155274
+CAPACITY_DIAG: Auto
+
+FAIL: batch.rectset.n200.Auto.notNumFail
+FAIL: batch.rectset.n200.Auto.capacityStatus
+OK: batch.rectset.n200.Auto.nult
+OK: batch.rectset.n200.Auto.solutionMethod
+INFO: batch.rectset.n200.UltimateStrain; capacityStatus=NumFail; limitState=NumericalFailure; solutionMethod=LoadMultiplier; lambda=3.927612304688; Nult=7703343.84155274
+CAPACITY_DIAG: UltimateStrain
+
+FAIL: batch.rectset.n200.UltimateStrain.notNumFail
+FAIL: batch.rectset.n200.UltimateStrain.capacityStatus
+OK: batch.rectset.n200.UltimateStrain.nult
+OK: batch.rectset.n200.UltimateStrain.solutionMethod
+INFO: batch.rectset.n200.LoadMultiplier; capacityStatus=NumFail; limitState=NumericalFailure; solutionMethod=LoadMultiplier; lambda=3.927612304688; Nult=7703343.84155274
+CAPACITY_DIAG: LoadMultiplier
+
+FAIL: batch.rectset.n200.LoadMultiplier.notNumFail
+FAIL: batch.rectset.n200.LoadMultiplier.capacityStatus
+OK: batch.rectset.n200.LoadMultiplier.nult
+OK: batch.rectset.n200.LoadMultiplier.solutionMethod
+RUN: TestBatchExplicitCapacityLoadPathScalesMxy
+OK: batch.capacityPath.mxy.value
+OK: batch.capacityPath.mxy.key
+OK: batch.capacityPath.mxy.mx
+OK: batch.capacityPath.mxy.my
+RUN: TestBatchExplicitCapacityLoadPathScalesNWithMoments
+OK: batch.capacityPath.n.value
+OK: batch.capacityPath.n.key
+OK: batch.capacityPath.n.nult
+OK: batch.capacityPath.n.status
+RUN: TestCapacityLoadPathNReportsUltimateAtLoadPoint
+OK: batch.capacityPath.n.ref.status
+OK: batch.capacityPath.n.ref.mxAtLoadPoint; actual=2999862.27732331; expected=3000000.
+OK: batch.capacityPath.n.ref.myAtLoadPoint; actual=0.; expected=0.
+OK: batch.capacityPath.n.ref.internalDiffers
+RUN: TestBatchCapacityLoadPathVariants
+OK: batch.capacityPath.mx.key
+OK: batch.capacityPath.my.key
+OK: batch.capacityPath.mxy.key
+OK: batch.capacityPath.n.key
+OK: batch.capacityPath.all.key
+OK: batch.capacityPath.noInputErr
+RUN: TestBatchCapacityLoadPathAllowsZeroInactiveComponents
+OK: batch.capacityPath.zero.mx.noInputErr
+OK: batch.capacityPath.zero.my.noInputErr
+OK: batch.capacityPath.zero.mxyMx.noInputErr
+OK: batch.capacityPath.zero.mxyMy.noInputErr
+OK: batch.capacityPath.zero.nmxyN.noInputErr
+OK: batch.capacityPath.zero.nmxyMx.noInputErr
+OK: batch.capacityPath.zero.nmxyMy.noInputErr
+OK: batch.capacityPath.zero.nmxyEmpty.inputErr
+OK: batch.capacityPath.zero.nmxyN.pathKept
+OK: batch.capacityPath.zero.nmxyMx.pathKept
+OK: batch.capacityPath.zero.nmxyMy.pathKept
+RUN: TestBatchNMxyWithoutMomentsUsesStableForcePath
+OK: batch.capacityPath.nmxyZeroM.path
+OK: batch.capacityPath.nmxyZeroM.solutionMethod
+FAIL: batch.capacityPath.nmxyZeroM.notNumFail
+OK: batch.capacityPath.nmxyZeroM.nult
+RUN: TestMomentZeroFilterDefaultThresholds
+OK: batch.zeroMoment.tinyResidual; actual=0.; expected=0.
+OK: batch.zeroMoment.h1m.threshold; actual=0.; expected=0.
+OK: batch.zeroMoment.h1m.above
+OK: batch.zeroMoment.h02m.threshold; actual=0.; expected=0.
+OK: batch.zeroMoment.h3m.threshold; actual=0.; expected=0.
+RUN: TestCapacityLoadPathFiltersEngineeringSmallMoments
+OK: batch.zeroMoment.pathMxy.noScaledMoment
+OK: batch.zeroMoment.pathMxy.myBase; actual=0.; expected=0.
+OK: batch.zeroMoment.pathNMxy.forceOnly
+OK: batch.zeroMoment.pathNMxy.myBase; actual=0.; expected=0.
+RUN: TestBatchZeroMomentFilterNormalizesCapacityPath
+OK: batch.zeroMoment.capacityPath.axialDefault
+OK: batch.zeroMoment.capacityPath.notInputErr
+OK: batch.zeroMoment.capacityPath.mx; actual=0.; expected=0.
+RUN: TestStabilityZeroMomentFilterUsesZeroMomentSigns
+OK: batch.zeroMoment.stability.status
+OK: batch.zeroMoment.stability.sign1
+OK: batch.zeroMoment.stability.sign2
+OK: batch.zeroMoment.stability.finalUserMx; actual=0.; expected=0.
+OK: batch.zeroMoment.stability.finalUserMy; actual=0.; expected=0.
+OK: batch.zeroMoment.stability.finalSummaryMxIncludesAccidental
+OK: batch.zeroMoment.stability.finalSummaryMyIncludesAccidental
+OK: batch.zeroMoment.stability.capacityPath
+OK: batch.zeroMoment.stability.capacityNotNumFail
+RUN: TestBatchInvalidCapacityLoadPathReportsInputErr
+OK: batch.capacityPath.invalid.status
+OK: batch.capacityPath.invalid.overall
+OK: batch.capacityPath.invalid.noPath
+RUN: TestPR2SkipsCapacityByProfile
+OK: batch.profile.capacity.pr1.runs
+OK: batch.profile.capacity.pr2.skipped
+RUN: TestLoadReferenceTransformsUserMoments
+OK: batch.reference.userMx; actual=3000000.; expected=3000000.
+OK: batch.reference.userMy; actual=-3000000.; expected=-3000000.
+OK: batch.reference.internalMx; actual=3025000.; expected=3025000.
+OK: batch.reference.internalMy; actual=-3040000.; expected=-3040000.
+OK: batch.reference.x; actual=40.; expected=40.
+OK: batch.reference.y; actual=-25.; expected=-25.
+OK: batch.reference.offsetX.defaultBase; actual=40.; expected=40.
+OK: batch.reference.offsetY.defaultBase; actual=-25.; expected=-25.
+OK: batch.reference.offsetX.centroidBase; actual=40.; expected=40.
+OK: batch.reference.offsetY.centroidBase; actual=-25.; expected=-25.
+RUN: TestSectionLoadStateTransfersMoments
+OK: batch.loadState.loadMx; actual=3000000.; expected=3000000.
+OK: batch.loadState.loadMy; actual=-3000000.; expected=-3000000.
+OK: batch.loadState.internalMx; actual=3025000.; expected=3025000.
+OK: batch.loadState.internalMy; actual=-3040000.; expected=-3040000.
+OK: batch.loadState.mxAboutShifted; actual=3100000.; expected=3100000.
+OK: batch.loadState.myAboutShifted; actual=-3030000.; expected=-3030000.
+OK: batch.loadState.axialMx; actual=25000.; expected=25000.
+OK: batch.loadState.axialMy; actual=-40000.; expected=-40000.
+OK: batch.loadState.compression
+OK: batch.loadState.compressionMagnitude; actual=1000.; expected=1000.
+OK: batch.loadState.signedCompression; actual=1000.; expected=1000.
+OK: batch.loadState.restoreMx; actual=-12000.; expected=-12000.
+OK: batch.loadState.restoreMy; actual=5000.; expected=5000.
+OK: batch.loadState.tension
+OK: batch.loadState.tensionSignedCompression; actual=-200000.; expected=-200000.
+OK: batch.loadState.centralAtLoadPoint
+OK: batch.loadState.eccentricAtShiftedPoint
+RUN: TestAxialReferenceRemovesPureCompressionEccentricity
+OK: batch.reference.circle.converged
+OK: batch.reference.circle.kappaX; actual=0.; expected=0.
+OK: batch.reference.circle.kappaY; actual=0.; expected=0.
+OK: batch.reference.rounded.converged
+OK: batch.reference.rounded.kappaX; actual=0.; expected=0.
+OK: batch.reference.rounded.kappaY; actual=0.; expected=0.
+OK: batch.reference.rectset.concreteCenter.exists
+OK: batch.reference.rectset.centerDifference
+RUN: TestAxialTensionReferenceAndEccentricity
+OK: batch.tension.circle.central.converged
+OK: batch.tension.circle.central.kappaX; actual=0.; expected=0.
+OK: batch.tension.circle.central.kappaY; actual=0.; expected=0.
+OK: batch.tension.circle.eccentric.converged
+OK: batch.tension.circle.eccentric.kappa
+OK: batch.tension.rounded.central.converged
+OK: batch.tension.rounded.central.kappaX; actual=0.; expected=0.
+OK: batch.tension.rounded.central.kappaY; actual=0.; expected=0.
+OK: batch.tension.rounded.eccentric.converged
+OK: batch.tension.rounded.eccentric.kappa
+RUN: TestDirectStateReportsSectionStatus
+OK: batch.direct.lambda.positive
+OK: batch.direct.capacity.ok
+OK: batch.direct.crack.na
+OK: batch.direct.state.status
+OK: batch.direct.governing.present
+RUN: TestPR1RectSetSmallTensionMomentDirectStateDoesNotNumFail
+INFO: batch.group1.tensionMoment.direct=OK; capacity=OK; epsCmin=-0.000498459978; epsSmax=0.000819794959
+OK: batch.group1.tensionMoment.directNotNumFail
+OK: batch.group1.tensionMoment.capacityNotNumFail
+RUN: TestLongitudinalCrackCheckUsesDirectStateStress
+OK: batch.longCrack.status.finished
+OK: batch.longCrack.sigma
+OK: batch.longCrack.rbMc2; actual=14.6; expected=14.6
+OK: batch.longCrack.util; actual=0.081239306424; expected=0.081239306424
+RUN: TestLongitudinalCrackSkippedForPR1
+OK: batch.longCrack.group1.na
+OK: batch.longCrack.group1.noRbMc2; actual=0.; expected=0.
+OK: batch.longCrack.group1.noUtil; actual=0.; expected=0.
+RUN: TestStabilityProfileEnablesSP63ForCompression
+OK: batch.stability.sp63.status
+OK: batch.stability.sp63.ncr
+OK: batch.stability.sp63.eta
+RUN: TestStabilitySkippedForTension
+OK: batch.stability.tension.na
+OK: batch.stability.tension.noNcr; actual=0.; expected=0.
+OK: batch.stability.tension.overall
+RUN: TestStabilitySP35UsesConfigTableAndProfileValueSet
+OK: batch.stability.sp35.uls.ncr
+OK: batch.stability.sp35.sls.ncr
+OK: batch.stability.sp35.valueSet.affectsResult
+RUN: TestStabilitySP35TableSeparatesNcrAndNult
+OK: batch.stability.sp35.table.status
+OK: batch.stability.sp35.table.ncr1.na; actual=0.; expected=0.
+OK: batch.stability.sp35.table.ncr2.na; actual=0.; expected=0.
+OK: batch.stability.sp35.table.nult1
+OK: batch.stability.sp35.table.nult2
+RUN: TestStabilitySP35TableIgnoresPhiL2
+OK: batch.stability.sp35.tablePhi.branch
+OK: batch.stability.sp35.tablePhi.phiL1; actual=1.; expected=1.
+OK: batch.stability.sp35.tablePhi.notTwo
+RUN: TestStabilitySP35TableRebarAreaCorrection
+OK: batch.stability.sp35.rebarRatio.low
+OK: batch.stability.sp35.rebarRatio.lowNult; actual=3139233.51715674; expected=3139233.51715674
+OK: batch.stability.sp35.rebarRatio.high
+OK: batch.stability.sp35.rebarRatio.highNult; actual=5898352.68407888; expected=5898352.68407888
+RUN: TestStabilitySP35TableInterpolationIntermediate
+OK: batch.stability.sp35.interp.q0125; actual=6.5; expected=6.5
+OK: batch.stability.sp35.interp.q0375; actual=7.5; expected=7.5
+OK: batch.stability.sp35.interp.q0750; actual=9.; expected=9.
+RUN: TestStabilitySP35TableBoundaryReservePasses
+OK: batch.stability.sp35.boundary.reserve; actual=1.; expected=1.
+OK: batch.stability.sp35.boundary.status
+OK: batch.writer.reserve.SP35_BOUNDARY.summaryRow
+OK: batch.writer.reserve.SP35_BOUNDARY.stabilityRow
+OK: batch.writer.reserve.SP35_BOUNDARY.sp35p1eta.bothNumeric
+OK: batch.writer.reserve.SP35_BOUNDARY.sp35p1eta; actual=0.; expected=0.
+OK: batch.writer.reserve.SP35_BOUNDARY.sp35p1table.bothNumeric
+OK: batch.writer.reserve.SP35_BOUNDARY.sp35p1table; actual=1.; expected=1.
+OK: batch.writer.reserve.SP35_BOUNDARY.sp35p2eta.bothNumeric
+OK: batch.writer.reserve.SP35_BOUNDARY.sp35p2eta; actual=0.; expected=0.
+OK: batch.writer.reserve.SP35_BOUNDARY.sp35p2table.bothNumeric
+OK: batch.writer.reserve.SP35_BOUNDARY.sp35p2table; actual=1.; expected=1.
+OK: batch.writer.reserve.SP35_BOUNDARY.sp63p1.bothNumeric
+OK: batch.writer.reserve.SP35_BOUNDARY.sp63p1; actual=0.; expected=0.
+OK: batch.writer.reserve.SP35_BOUNDARY.sp63p2.bothNumeric
+OK: batch.writer.reserve.SP35_BOUNDARY.sp63p2; actual=0.; expected=0.
+RUN: TestStabilityFailContinuesDownstream
+OK: batch.stability.continue.stabilityFail
+OK: batch.stability.continue.overallFail
+OK: batch.stability.continue.directCalculated
+OK: batch.stability.continue.capacityCalculated
+OK: batch.stability.continue.longitudinalCalculated
+RUN: TestStabilitySP63ShortSlendernessEtaIsOne
+OK: batch.stability.sp63.short.status
+OK: batch.stability.sp63.short.slenderness1
+OK: batch.stability.sp63.short.slenderness2
+OK: batch.stability.sp63.short.eta1; actual=1.; expected=1.
+OK: batch.stability.sp63.short.eta2; actual=1.; expected=1.
+OK: batch.stability.sp63.short.ncr
+RUN: TestStabilityInvalidMuReportsInputErr
+OK: batch.stability.mu.inputErr
+RUN: TestStabilityInvalidSettingsReportInputErr
+OK: batch.stability.invalidSettings.ks
+OK: batch.stability.invalidSettings.ksMessage
+OK: batch.stability.invalidSettings.phiMode
+OK: batch.stability.invalidSettings.accMode
+OK: batch.stability.invalidSettings.accPlanes
+OK: batch.stability.invalidSettings.phiP
+OK: batch.stability.invalidSettings.nOverNcr
+RUN: TestStabilitySP35MixedBranchReportsMixed
+OK: batch.stability.sp35Mixed.status
+OK: batch.stability.sp35Mixed.planeBranches
+OK: batch.stability.sp35Mixed.branch
+RUN: TestStabilityCircleMxDoesNotCreateMy
+OK: batch.stability.circleMx.status
+OK: batch.stability.circleMx.designMx
+OK: batch.stability.circleMx.noDesignMy; actual=0.; expected=0.
+RUN: TestStabilityAccidentalBothPlanes
+OK: batch.stability.accidentalPlanes.onlyPositive
+OK: batch.stability.accidentalPlanes.bothLarger
+RUN: TestStabilityUsesTransformedCentroidForEccentricity
+OK: batch.stability.centroid.transformedShift
+OK: batch.stability.centroid.status
+OK: batch.stability.centroid.eFromTransformedCenter
+OK: batch.stability.centroid.loadPointMxIsUserMx; actual=435656.652226694; expected=435656.652226694
+OK: batch.stability.centroid.loadPointMyIsUserMy; actual=4528515.61113388; expected=4528515.61113388
+RUN: TestStabilityAccidentalUsesGeometricLength
+OK: batch.stability.accidental.L; actual=20.; expected=20.
+OK: batch.stability.accidental.muL; actual=40.; expected=40.
+RUN: TestStabilityAccidentalUserMode
+OK: batch.stability.accidental.user; actual=40.; expected=40.
+OK: batch.stability.accidental.userBoth; actual=65.; expected=65.
+RUN: TestStabilitySP35UsesCoreDistanceNotRadius
+OK: batch.stability.sp35.core.positive
+OK: batch.stability.sp35.core.notRadius
+RUN: TestStabilityDepthUsesConcreteContourOnly
+OK: batch.stability.depth.concreteOnly1
+OK: batch.stability.depth.concreteOnly2
+RUN: TestStabilityPhiLUsesSignedSustainedMoment
+OK: batch.stability.phil.sameSign
+OK: batch.stability.phil.oppositeSign; actual=1.; expected=1.
+RUN: TestStabilitySustainedNNotClamped
+OK: batch.stability.sustainedN.notClamped; actual=240000.; expected=240000.
+RUN: TestStabilitySP35OppositeMomentSigns
+OK: batch.stability.sp35.opposite.phi
+RUN: TestBatchSummaryWritesOnlySelectedStabilityCode
+OK: batch.writer.stability.anchor
+OK: batch.writer.stability.sp35.empty
+OK: batch.writer.stability.sp35.naStatus
+OK: batch.writer.stability.sp63.filled
+OK: batch.writer.stability.sp63.statusColor
+RUN: TestPR1RunsStrengthWithoutCrackWidth
+OK: batch.pr1.capacityRuns
+OK: batch.pr1.directRuns
+OK: batch.pr1.crackNA
+OK: batch.pr1.hasState
+RUN: TestDirectStateReportsNumericalFailure
+OK: batch.direct.failure.status
+OK: batch.direct.failure.directStatus
+OK: batch.direct.failure.crack
+RUN: TestPR2PhysicalStateRunsCrackWithExtensionEnabled
+OK: batch.group2.physical.noExtension
+OK: batch.group2.physical.crackedStateOK
+OK: batch.group2.physical.crackBranchRuns
+OK: batch.group2.physical.crackedStatePhysical
+RUN: TestBatchCrackCoverDistanceModeChangesAs
+INFO: batch.crack.coverDistanceMode localStatus=N/A; globalStatus=N/A
+OK: batch.crack.coverMode.localAccepted
+OK: batch.crack.coverMode.globalAccepted
+RUN: TestPR2AutoCrackStoresPreAndPostCrackStates
+OK: batch.group2.autoMcrc.crackCalculated
+OK: batch.group2.autoMcrc.beforeState
+OK: batch.group2.autoMcrc.afterState
+OK: batch.group2.autoMcrc.afterRole
+RUN: TestPR2AutoCrackPureBendingStoresMcrcStates
+OK: batch.group2.autoMcrcPure.crackedStateOK
+OK: batch.group2.autoMcrcPure.crackCalculated
+OK: batch.group2.autoMcrcPure.beforeState
+OK: batch.group2.autoMcrcPure.afterState
+RUN: TestPR2RectSetCompressionSmallMomentCrackDoesNotNumFail
+INFO: batch.group2.rectsetSmallMoment crack=OK; formed=True; lambda=0.344696998596
+OK: batch.group2.rectsetSmallMoment.notNumFail
+OK: batch.group2.rectsetSmallMoment.finished
+OK: batch.group2.rectsetSmallMoment.solverCallsIncludeCrack
+RUN: TestCrackInitiationLoadPathsWriteFormationSummary
+OK: batch.crack.pathAuto.summary.pathSetting
+INFO: batch.crack.pathAuto.summary; status=NumFail; lambda=1.130156517029; method=λ*Mxy; central=False; NcrcCentral=0.; Ncrc=196133.; MxyCrc=85260901.7115266
+DIAG: batch.crack.pathAuto.summary
+combination=AUTO; OverallStatus=NumFail; DirectStateStatus=N/A; ExtensionUsed=False; CapacityStatus=N/A; CrackStatus=NumFail; LongitudinalCrackStatus=N/A; LongitudinalCrackUtil=0.; StabilityStatus=N/A; StabilityUtil=0.; governingUtil=0.
+
+DIAG_META: batch.crack.pathAuto.summary; formation=rsSuccess/CRITERION_NOT_REACHED/Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.; current=rsNumericalFailure/NUMERICAL_FAILURE/Line search не смог уменьшить невязку.; width=rsBlockedByDependency/BLOCKED_BY_DEPENDENCY/Расчет не выполнен: нет обязательного результата CurrentCrackedState. Line search не смог уменьшить невязку.; longitudinal=rsBlockedByDependency/BLOCKED_BY_DEPENDENCY/Расчет не выполнен: нет обязательного результата CurrentCrackedState. Line search не смог уменьшить невязку.
+CURRENT_STATE_DIAG: batch.crack.pathAuto.summary; extensionSetting=Yes; eps0=0.; residualN=-196133.000000001; residualMx=-0.000000168736; residualMy=-0.000000111558
+extensionRetry=равновесие по продолженной диаграмме / direct target; result=failed; stop=Достигнут лимит итераций на ступени нагрузки 1.; residualN=10131155.733472; residualMx=3335699242.81711; residualMy=2169914236.8681
+extensionRetry=равновесие по продолженной диаграмме / direct target without line search; result=failed; stop=Достигнут лимит итераций на ступени нагрузки 1.; residualN=10131155.733472; residualMx=3335699242.81711; residualMy=2169914236.8681
+extensionRetry=равновесие по продолженной диаграмме / stepped; result=failed; stop=Достигнут лимит итераций на ступени нагрузки 1.; residualN=1090164.39678683; residualMx=358938372.736059; residualMy=233493917.90504
+extensionRetry=равномерный сдвиг в продолжение диаграммы / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=8586252.09496334; residualMx=2854275155.86308; residualMy=1866256832.67971
+extensionRetry=равномерный сдвиг в продолжение диаграммы / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=8586252.09496334; residualMx=2854275155.86308; residualMy=1866256832.67971
+extensionRetry=равномерный сдвиг в продолжение диаграммы / stepped; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=2129673.82163514; residualMx=708079798.281418; residualMy=462975252.722467
+extensionRetry=нулевое осевое приближение / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=8586252.09496334; residualMx=2854275155.86308; residualMy=1866256832.67971
+extensionRetry=нулевое осевое приближение / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=8586252.09496334; residualMx=2854275155.86308; residualMy=1866256832.67971
+extensionRetry=нулевое осевое приближение / stepped; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=2129673.82163514; residualMx=708079798.281418; residualMy=462975252.722467
+
+FAIL: batch.crack.pathAuto.summary.notNumFail
+OK: batch.crack.pathAuto.summary.sheetRow
+OK: batch.crack.pathAuto.summary.sheetMethod
+OK: batch.crack.pathAuto.summary.sheetNcrc
+OK: batch.crack.pathN.summary.pathSetting
+INFO: batch.crack.pathN.summary; status=NumFail; lambda=1.563962936401; method=λ*N; central=False; NcrcCentral=0.; Ncrc=306744.742605209; MxyCrc=75441675.93324
+DIAG: batch.crack.pathN.summary
+combination=N; OverallStatus=NumFail; DirectStateStatus=N/A; ExtensionUsed=False; CapacityStatus=N/A; CrackStatus=NumFail; LongitudinalCrackStatus=N/A; LongitudinalCrackUtil=0.; StabilityStatus=N/A; StabilityUtil=0.; governingUtil=0.
+
+DIAG_META: batch.crack.pathN.summary; formation=rsSuccess/CRITERION_NOT_REACHED/Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.; current=rsNumericalFailure/NUMERICAL_FAILURE/Line search не смог уменьшить невязку.; width=rsBlockedByDependency/BLOCKED_BY_DEPENDENCY/Расчет не выполнен: нет обязательного результата CurrentCrackedState. Line search не смог уменьшить невязку.; longitudinal=rsBlockedByDependency/BLOCKED_BY_DEPENDENCY/Расчет не выполнен: нет обязательного результата CurrentCrackedState. Line search не смог уменьшить невязку.
+CURRENT_STATE_DIAG: batch.crack.pathN.summary; extensionSetting=Yes; eps0=0.; residualN=-196133.000000001; residualMx=-0.000000168736; residualMy=-0.000000111558
+extensionRetry=равновесие по продолженной диаграмме / direct target; result=failed; stop=Достигнут лимит итераций на ступени нагрузки 1.; residualN=10131155.733472; residualMx=3335699242.81711; residualMy=2169914236.8681
+extensionRetry=равновесие по продолженной диаграмме / direct target without line search; result=failed; stop=Достигнут лимит итераций на ступени нагрузки 1.; residualN=10131155.733472; residualMx=3335699242.81711; residualMy=2169914236.8681
+extensionRetry=равновесие по продолженной диаграмме / stepped; result=failed; stop=Достигнут лимит итераций на ступени нагрузки 1.; residualN=1090164.39678683; residualMx=358938372.736059; residualMy=233493917.90504
+extensionRetry=равномерный сдвиг в продолжение диаграммы / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=8586252.09496334; residualMx=2854275155.86308; residualMy=1866256832.67971
+extensionRetry=равномерный сдвиг в продолжение диаграммы / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=8586252.09496334; residualMx=2854275155.86308; residualMy=1866256832.67971
+extensionRetry=равномерный сдвиг в продолжение диаграммы / stepped; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=2129673.82163514; residualMx=708079798.281418; residualMy=462975252.722467
+extensionRetry=нулевое осевое приближение / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=8586252.09496334; residualMx=2854275155.86308; residualMy=1866256832.67971
+extensionRetry=нулевое осевое приближение / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=8586252.09496334; residualMx=2854275155.86308; residualMy=1866256832.67971
+extensionRetry=нулевое осевое приближение / stepped; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=2129673.82163514; residualMx=708079798.281418; residualMy=462975252.722467
+
+FAIL: batch.crack.pathN.summary.notNumFail
+OK: batch.crack.pathN.summary.sheetRow
+OK: batch.crack.pathN.summary.sheetMethod
+OK: batch.crack.pathN.summary.sheetNcrc
+OK: batch.crack.pathNMxy.summary.pathSetting
+INFO: batch.crack.pathNMxy.summary; status=FAIL; lambda=0.493968963623; method=λ*NMxy; central=False; NcrcCentral=0.; Ncrc=484418.073711395; MxyCrc=136281742.270257
+OK: batch.crack.pathNMxy.summary.notNumFail
+OK: batch.crack.pathNMxy.summary.sheetRow
+OK: batch.crack.pathNMxy.summary.sheetMethod
+OK: batch.crack.pathNMxy.summary.sheetNcrc
+OK: batch.crack.pathNMxy.summary.sheetMcrc
+RUN: TestCrackAutoFormationPathSwitchesForRectSet
+INFO: batch.crack.auto.rectset.nOnly; status=FAIL; method=λ*N; lambda=0.943056106567; Ncrc=924822.116746902; MxyCrc=2676855.40270833
+OK: batch.crack.auto.rectset.nOnly.notNumFail
+OK: batch.crack.auto.rectset.nOnly.method
+OK: batch.crack.auto.rectset.nOnly.lambda
+OK: batch.crack.auto.rectset.nOnly.ncrc
+INFO: batch.crack.auto.rectset.mOnly; status=FAIL; method=λ*Mxy; lambda=0.297604560852; Ncrc=0.; MxyCrc=145925188.333988
+OK: batch.crack.auto.rectset.mOnly.notNumFail
+OK: batch.crack.auto.rectset.mOnly.method
+OK: batch.crack.auto.rectset.mOnly.lambda
+OK: batch.crack.auto.rectset.mOnly.mcrc
+INFO: batch.crack.auto.rectset.nAndM; status=FAIL; method=λ*NMxy; lambda=0.240244865417; Ncrc=235599.730944633; MxyCrc=117210967.425516
+OK: batch.crack.auto.rectset.nAndM.notNumFail
+OK: batch.crack.auto.rectset.nAndM.method
+OK: batch.crack.auto.rectset.nAndM.lambda
+OK: batch.crack.auto.rectset.nAndM.ncrc
+OK: batch.crack.auto.rectset.nAndM.mcrc
+RUN: TestPR1AxialTensionBeyondPhysicalLimitUsesExtension
+OK: batch.group1.extension.directFail
+OK: batch.group1.extension.used
+OK: batch.group1.extension.noCrack
+FAIL: batch.group1.extension.overall
+RUN: TestPR1AxialTensionNearLimitDoesNotJumpToNumFail
+INFO: batch.group1.nearLimit.G1_T796 direct=FAIL; extensionUsed=True; epsSmax=0.032259962368
+OK: batch.group1.nearLimit.noNumFail.G1_T796
+OK: batch.group1.nearLimit.failUsesExtension.G1_T796
+INFO: batch.group1.nearLimit.G1_T797 direct=FAIL; extensionUsed=True; epsSmax=0.032659330808
+OK: batch.group1.nearLimit.noNumFail.G1_T797
+OK: batch.group1.nearLimit.failUsesExtension.G1_T797
+INFO: batch.group1.nearLimit.G1_T800 direct=FAIL; extensionUsed=True; epsSmax=0.03375787864
+OK: batch.group1.nearLimit.noNumFail.G1_T800
+OK: batch.group1.nearLimit.failUsesExtension.G1_T800
+INFO: batch.group1.nearLimit.G1_T801 direct=FAIL; extensionUsed=True; epsSmax=0.034122062477
+OK: batch.group1.nearLimit.noNumFail.G1_T801
+OK: batch.group1.nearLimit.failUsesExtension.G1_T801
+INFO: batch.group1.nearLimit.G1_T809 direct=FAIL; extensionUsed=True; epsSmax=0.036681789711
+OK: batch.group1.nearLimit.noNumFail.G1_T809
+OK: batch.group1.nearLimit.failUsesExtension.G1_T809
+INFO: batch.group1.nearLimit.G1_T810 direct=FAIL; extensionUsed=True; epsSmax=0.036984828197
+OK: batch.group1.nearLimit.noNumFail.G1_T810
+OK: batch.group1.nearLimit.failUsesExtension.G1_T810
+INFO: batch.group1.nearLimit.G1_T811 direct=FAIL; extensionUsed=True; epsSmax=0.037287866682
+OK: batch.group1.nearLimit.noNumFail.G1_T811
+OK: batch.group1.nearLimit.failUsesExtension.G1_T811
+INFO: batch.group1.nearLimit.G1_T812 direct=FAIL; extensionUsed=True; epsSmax=0.037590905168
+OK: batch.group1.nearLimit.noNumFail.G1_T812
+OK: batch.group1.nearLimit.failUsesExtension.G1_T812
+RUN: TestPR1AxialCompressionNearLimitDoesNotJumpToNumFail
+INFO: batch.group1.compressionNearLimit.G1_C1222 direct=FAIL; extensionUsed=True; epsCmin=-0.007154444534
+OK: batch.group1.compressionNearLimit.noNumFail.G1_C1222
+OK: batch.group1.compressionNearLimit.failUsesExtension.G1_C1222
+INFO: batch.group1.compressionNearLimit.G1_C1223 direct=FAIL; extensionUsed=True; epsCmin=-0.007312134086
+OK: batch.group1.compressionNearLimit.noNumFail.G1_C1223
+OK: batch.group1.compressionNearLimit.failUsesExtension.G1_C1223
+INFO: batch.group1.compressionNearLimit.G1_C1224 direct=FAIL; extensionUsed=True; epsCmin=-0.007469384644
+OK: batch.group1.compressionNearLimit.noNumFail.G1_C1224
+OK: batch.group1.compressionNearLimit.failUsesExtension.G1_C1224
+INFO: batch.group1.compressionNearLimit.G1_C1225 direct=FAIL; extensionUsed=True; epsCmin=-0.007626751025
+OK: batch.group1.compressionNearLimit.noNumFail.G1_C1225
+OK: batch.group1.compressionNearLimit.failUsesExtension.G1_C1225
+RUN: TestPR1AxialTensionProgressionAfterLimitIsStableFail
+INFO: batch.group1.tensionProgression.G1_TP750 direct=OK; extensionUsed=False; epsCmin=0.001517943699; epsSmax=0.00172119272
+OK: batch.group1.tensionProgression.lastPhysicalOK.G1_TP750
+INFO: batch.group1.tensionProgression.G1_TP796 direct=FAIL; extensionUsed=True; epsCmin=-0.000240791195; epsSmax=0.032259962368
+OK: batch.group1.tensionProgression.stableFail.G1_TP796
+OK: batch.group1.tensionProgression.usesExtension.G1_TP796
+INFO: batch.group1.tensionProgression.G1_TP797 direct=FAIL; extensionUsed=True; epsCmin=-0.000201841999; epsSmax=0.032659330808
+OK: batch.group1.tensionProgression.stableFail.G1_TP797
+OK: batch.group1.tensionProgression.usesExtension.G1_TP797
+INFO: batch.group1.tensionProgression.G1_TP798 direct=FAIL; extensionUsed=True; epsCmin=-0.000169790107; epsSmax=0.033029510966
+OK: batch.group1.tensionProgression.stableFail.G1_TP798
+OK: batch.group1.tensionProgression.usesExtension.G1_TP798
+INFO: batch.group1.tensionProgression.G1_TP799 direct=FAIL; extensionUsed=True; epsCmin=-0.000145798353; epsSmax=0.033393694803
+OK: batch.group1.tensionProgression.stableFail.G1_TP799
+OK: batch.group1.tensionProgression.usesExtension.G1_TP799
+INFO: batch.group1.tensionProgression.G1_TP800 direct=FAIL; extensionUsed=True; epsCmin=-0.0001218066; epsSmax=0.03375787864
+OK: batch.group1.tensionProgression.stableFail.G1_TP800
+OK: batch.group1.tensionProgression.usesExtension.G1_TP800
+INFO: batch.group1.tensionProgression.G1_TP801 direct=FAIL; extensionUsed=True; epsCmin=-0.000097814847; epsSmax=0.034122062477
+OK: batch.group1.tensionProgression.stableFail.G1_TP801
+OK: batch.group1.tensionProgression.usesExtension.G1_TP801
+INFO: batch.group1.tensionProgression.G1_TP805 direct=FAIL; extensionUsed=True; epsCmin=-0.000008624928; epsSmax=0.035461004175
+OK: batch.group1.tensionProgression.stableFail.G1_TP805
+OK: batch.group1.tensionProgression.usesExtension.G1_TP805
+INFO: batch.group1.tensionProgression.G1_TP810 direct=FAIL; extensionUsed=True; epsCmin=0.000108745126; epsSmax=0.036984828197
+OK: batch.group1.tensionProgression.stableFail.G1_TP810
+OK: batch.group1.tensionProgression.usesExtension.G1_TP810
+INFO: batch.group1.tensionProgression.G1_TP811 direct=FAIL; extensionUsed=True; epsCmin=0.000130075944; epsSmax=0.037287866682
+OK: batch.group1.tensionProgression.stableFail.G1_TP811
+OK: batch.group1.tensionProgression.usesExtension.G1_TP811
+INFO: batch.group1.tensionProgression.G1_TP812 direct=FAIL; extensionUsed=True; epsCmin=0.000151406761; epsSmax=0.037590905168
+OK: batch.group1.tensionProgression.stableFail.G1_TP812
+OK: batch.group1.tensionProgression.usesExtension.G1_TP812
+INFO: batch.group1.tensionProgression.G1_TP820 direct=FAIL; extensionUsed=True; epsCmin=0.000319943426; epsSmax=0.040006991848
+OK: batch.group1.tensionProgression.stableFail.G1_TP820
+OK: batch.group1.tensionProgression.usesExtension.G1_TP820
+INFO: batch.group1.tensionProgression.G1_TP830 direct=FAIL; extensionUsed=True; epsCmin=0.000481398766; epsSmax=0.042945184419
+OK: batch.group1.tensionProgression.stableFail.G1_TP830
+OK: batch.group1.tensionProgression.usesExtension.G1_TP830
+INFO: batch.group1.tensionProgression.G1_TP850 direct=FAIL; extensionUsed=True; epsCmin=0.020273585639; epsSmax=0.04542100893
+OK: batch.group1.tensionProgression.stableFail.G1_TP850
+OK: batch.group1.tensionProgression.usesExtension.G1_TP850
+INFO: batch.group1.tensionProgression.G1_TP900 direct=FAIL; extensionUsed=True; epsCmin=0.032153243925; epsSmax=0.056543126439
+OK: batch.group1.tensionProgression.stableFail.G1_TP900
+OK: batch.group1.tensionProgression.usesExtension.G1_TP900
+INFO: batch.group1.tensionProgression.G1_TP925 direct=FAIL; extensionUsed=True; epsCmin=0.037213056256; epsSmax=0.062280435506
+OK: batch.group1.tensionProgression.stableFail.G1_TP925
+OK: batch.group1.tensionProgression.usesExtension.G1_TP925
+INFO: batch.group1.tensionProgression.G1_TP930 direct=FAIL; extensionUsed=True; epsCmin=0.038225018722; epsSmax=0.06342789732
+OK: batch.group1.tensionProgression.stableFail.G1_TP930
+OK: batch.group1.tensionProgression.usesExtension.G1_TP930
+INFO: batch.group1.tensionProgression.G1_TP950 direct=FAIL; extensionUsed=True; epsCmin=0.042272868587; epsSmax=0.068017744574
+OK: batch.group1.tensionProgression.stableFail.G1_TP950
+OK: batch.group1.tensionProgression.usesExtension.G1_TP950
+INFO: batch.group1.tensionProgression.G1_TP1000 direct=FAIL; extensionUsed=True; epsCmin=0.05239249325; epsSmax=0.07949236271
+OK: batch.group1.tensionProgression.stableFail.G1_TP1000
+OK: batch.group1.tensionProgression.usesExtension.G1_TP1000
+INFO: batch.group1.tensionProgression.G1_TP1200 direct=FAIL; extensionUsed=True; epsCmin=0.0928709919; epsSmax=0.125390835251
+OK: batch.group1.tensionProgression.stableFail.G1_TP1200
+OK: batch.group1.tensionProgression.usesExtension.G1_TP1200
+RUN: TestPR1AxialCompressionProgressionAfterLimitIsStableFail
+INFO: batch.group1.compressionProgression.G1_CP1200 direct=OK; extensionUsed=False; epsCmin=-0.002463145164; epsSmax=-0.001573171235
+OK: batch.group1.compressionProgression.lastPhysicalOK.G1_CP1200
+INFO: batch.group1.compressionProgression.G1_CP1221 direct=FAIL; extensionUsed=True; epsCmin=-0.006996059499; epsSmax=-0.001471982261
+OK: batch.group1.compressionProgression.stableFail.G1_CP1221
+OK: batch.group1.compressionProgression.usesExtension.G1_CP1221
+INFO: batch.group1.compressionProgression.G1_CP1222 direct=FAIL; extensionUsed=True; epsCmin=-0.007154444534; epsSmax=-0.001474852573
+OK: batch.group1.compressionProgression.stableFail.G1_CP1222
+OK: batch.group1.compressionProgression.usesExtension.G1_CP1222
+INFO: batch.group1.compressionProgression.G1_CP1223 direct=FAIL; extensionUsed=True; epsCmin=-0.007312134086; epsSmax=-0.001478288313
+OK: batch.group1.compressionProgression.stableFail.G1_CP1223
+OK: batch.group1.compressionProgression.usesExtension.G1_CP1223
+INFO: batch.group1.compressionProgression.G1_CP1224 direct=FAIL; extensionUsed=True; epsCmin=-0.007469384644; epsSmax=-0.001481743671
+OK: batch.group1.compressionProgression.stableFail.G1_CP1224
+OK: batch.group1.compressionProgression.usesExtension.G1_CP1224
+INFO: batch.group1.compressionProgression.G1_CP1225 direct=FAIL; extensionUsed=True; epsCmin=-0.007626751025; epsSmax=-0.001485214215
+OK: batch.group1.compressionProgression.stableFail.G1_CP1225
+OK: batch.group1.compressionProgression.usesExtension.G1_CP1225
+INFO: batch.group1.compressionProgression.G1_CP1226 direct=FAIL; extensionUsed=True; epsCmin=-0.007783789742; epsSmax=-0.001488647773
+OK: batch.group1.compressionProgression.stableFail.G1_CP1226
+OK: batch.group1.compressionProgression.usesExtension.G1_CP1226
+INFO: batch.group1.compressionProgression.G1_CP1230 direct=FAIL; extensionUsed=True; epsCmin=-0.008409988453; epsSmax=-0.001503285495
+OK: batch.group1.compressionProgression.stableFail.G1_CP1230
+OK: batch.group1.compressionProgression.usesExtension.G1_CP1230
+INFO: batch.group1.compressionProgression.G1_CP1231 direct=FAIL; extensionUsed=True; epsCmin=-0.008566353186; epsSmax=-0.001506960792
+OK: batch.group1.compressionProgression.stableFail.G1_CP1231
+OK: batch.group1.compressionProgression.usesExtension.G1_CP1231
+INFO: batch.group1.compressionProgression.G1_CP1240 direct=FAIL; extensionUsed=True; epsCmin=-0.009969850652; epsSmax=-0.001540760719
+OK: batch.group1.compressionProgression.stableFail.G1_CP1240
+OK: batch.group1.compressionProgression.usesExtension.G1_CP1240
+INFO: batch.group1.compressionProgression.G1_CP1250 direct=FAIL; extensionUsed=True; epsCmin=-0.011446788058; epsSmax=-0.001628722508
+OK: batch.group1.compressionProgression.stableFail.G1_CP1250
+OK: batch.group1.compressionProgression.usesExtension.G1_CP1250
+INFO: batch.group1.compressionProgression.G1_CP1275 direct=FAIL; extensionUsed=True; epsCmin=-0.014724387606; epsSmax=-0.003243994096
+OK: batch.group1.compressionProgression.stableFail.G1_CP1275
+OK: batch.group1.compressionProgression.usesExtension.G1_CP1275
+INFO: batch.group1.compressionProgression.G1_CP1300 direct=FAIL; extensionUsed=True; epsCmin=-0.017535529387; epsSmax=-0.006170863545
+OK: batch.group1.compressionProgression.stableFail.G1_CP1300
+OK: batch.group1.compressionProgression.usesExtension.G1_CP1300
+INFO: batch.group1.compressionProgression.G1_CP1350 direct=FAIL; extensionUsed=True; epsCmin=-0.023200115953; epsSmax=-0.011898862674
+OK: batch.group1.compressionProgression.stableFail.G1_CP1350
+OK: batch.group1.compressionProgression.usesExtension.G1_CP1350
+INFO: batch.group1.compressionProgression.G1_CP1400 direct=FAIL; extensionUsed=True; epsCmin=-0.027910906883; epsSmax=-0.017891264275
+OK: batch.group1.compressionProgression.stableFail.G1_CP1400
+OK: batch.group1.compressionProgression.usesExtension.G1_CP1400
+INFO: batch.group1.compressionProgression.G1_CP1500 direct=FAIL; extensionUsed=True; epsCmin=-0.035095422331; epsSmax=-0.02761479452
+OK: batch.group1.compressionProgression.stableFail.G1_CP1500
+OK: batch.group1.compressionProgression.usesExtension.G1_CP1500
+INFO: batch.group1.compressionProgression.G1_CP1600 direct=FAIL; extensionUsed=True; epsCmin=-0.042700636456; epsSmax=-0.034943331682
+OK: batch.group1.compressionProgression.stableFail.G1_CP1600
+OK: batch.group1.compressionProgression.usesExtension.G1_CP1600
+INFO: batch.group1.compressionProgression.G1_CP1700 direct=FAIL; extensionUsed=True; epsCmin=-0.050305850582; epsSmax=-0.042271868843
+OK: batch.group1.compressionProgression.stableFail.G1_CP1700
+OK: batch.group1.compressionProgression.usesExtension.G1_CP1700
+INFO: batch.group1.compressionProgression.G1_CP1800 direct=FAIL; extensionUsed=True; epsCmin=-0.057911064708; epsSmax=-0.049600406005
+OK: batch.group1.compressionProgression.stableFail.G1_CP1800
+OK: batch.group1.compressionProgression.usesExtension.G1_CP1800
+INFO: batch.group1.compressionProgression.G1_CP2000 direct=FAIL; extensionUsed=True; epsCmin=-0.073121492959; epsSmax=-0.064257480328
+OK: batch.group1.compressionProgression.stableFail.G1_CP2000
+OK: batch.group1.compressionProgression.usesExtension.G1_CP2000
+RUN: TestPR2AxialTensionBeyondPhysicalLimitUsesExtension
+OK: batch.group2.extension.directPhysical
+OK: batch.group2.extension.used
+OK: batch.group2.extension.crackFail
+RUN: TestPR2AxialCompressionBeyondPhysicalLimitUsesExtension
+OK: batch.group2.extension.compression.directPhysical
+OK: batch.group2.extension.compression.used
+OK: batch.group2.extension.compression.crackFail
+RUN: TestPR2BendingBeyondPhysicalLimitUsesExtension
+OK: batch.group2.extension.bending.directPhysical
+OK: batch.group2.extension.bending.used
+OK: batch.group2.extension.bending.crackFail
+RUN: TestBatchMoreThanTwentyCombinations
+OK: batch.dynamic.count
+OK: batch.dynamic.governing.index
+OK: batch.dynamic.last.status
+RUN: TestInvalidCombinationFromNamedRange
+OK: batch.invalid.reader.count
+OK: batch.invalid.reader.status
+RUN: TestBatchSummaryWriter
+OK: batch.writer.fixedRow
+OK: batch.writer.noResultOverlap
+OK: batch.writer.rangeSize
+OK: batch.writer.strengthBlockPosition
+OK: batch.writer.crackBlockPosition
+OK: batch.writer.stabilityBlockPosition
+OK: batch.writer.meta.worstLabel
+OK: batch.writer.meta.worstValue
+OK: batch.writer.meta.solverCalls
+OK: batch.writer.meta.valuesCentered
+OK: batch.writer.header.statusGroup
+OK: batch.writer.header.reserveGroup
+OK: batch.writer.header.statusStrength
+OK: batch.writer.header.reserveStrength
+OK: batch.writer.header.centered
+OK: batch.writer.header.commentLeft
+OK: batch.writer.header.epsilon
+OK: batch.writer.header.sp63StatusPlaneMerge
+OK: batch.writer.header.sp63ReservePlaneMerge
+OK: batch.writer.header.id
+OK: batch.writer.header.idMergeRows
+OK: batch.writer.header.commentRow
+OK: batch.writer.worst.label
+OK: batch.writer.worst.commentDash
+OK: batch.writer.worst.resultCommentDash
+OK: batch.writer.worst.overallDash
+OK: batch.writer.worst.noNa
+OK: batch.writer.worst.bold
+OK: batch.writer.statusLegend.title
+OK: batch.writer.statusLegend.header
+OK: batch.writer.statusLegend.values
+OK: batch.writer.statusLegend.mergeOnlyTitle
+OK: batch.writer.statusLegend.noWrap
+OK: batch.writer.statusLegend.italicValues
+OK: batch.writer.statusLegend.colors
+OK: batch.writer.reserve.dataNotHeaderFill
+OK: batch.writer.worst.strain.combinationFound
+OK: batch.writer.worst.strain.reserve.bothNumeric
+OK: batch.writer.worst.strain.reserve; actual=23.654566819636; expected=23.654566819636
+OK: batch.writer.worst.capacity.combinationFound
+OK: batch.writer.worst.capacity.reserve.bothNumeric
+OK: batch.writer.worst.capacity.reserve; actual=9.761081548815; expected=9.761081548815
+OK: batch.writer.worst.crack.notApplicable
+OK: batch.writer.worst.longCrack.combinationFound
+OK: batch.writer.worst.longCrack.reserve.bothNumeric
+OK: batch.writer.worst.longCrack.reserve; actual=12.30931237624; expected=12.30931237624
+OK: batch.writer.worst.sp35p1eta.notApplicable
+OK: batch.writer.worst.sp35p1table.notApplicable
+OK: batch.writer.worst.sp35p2eta.notApplicable
+OK: batch.writer.worst.sp35p2table.notApplicable
+OK: batch.writer.worst.sp63p1.notApplicable
+OK: batch.writer.worst.sp63p2.notApplicable
+OK: batch.writer.data.firstId
+OK: batch.writer.data.capacityStatus
+OK: batch.writer.data.capacityReserve
+OK: batch.writer.data.statusColors
+OK: batch.writer.strength.statusColors
+OK: batch.writer.strength.absentZonesBlank
+OK: batch.writer.strength.presentTensionKept
+OK: batch.writer.crack.statusColors
+OK: batch.writer.crack.header.formationTitle
+OK: batch.writer.crack.header.crackedStateTitle
+OK: batch.writer.crack.header.title
+OK: batch.writer.crack.header.mcrcNote
+OK: batch.writer.crack.header.formationStatus
+OK: batch.writer.crack.header.state
+OK: batch.writer.crack.header.crackedStateStatus
+OK: batch.writer.crack.header.es
+OK: batch.writer.crack.header.normalStatusRu
+OK: batch.writer.crack.header.longStatusRu
+OK: batch.writer.crack.header.notesPlain
+OK: batch.writer.crack.header.notesFill
+OK: batch.writer.crack.availableRowsBorder
+OK: batch.writer.stability.statusColor
+OK: batch.writer.stability.header.summary
+OK: batch.writer.stability.header.statusWidth
+OK: batch.writer.stability.header.mainAxes
+OK: batch.writer.stability.header.noExtraTier
+OK: batch.writer.stability.header.sp35
+OK: batch.writer.stability.header.sp63
+OK: batch.writer.stability.header.notes
+OK: batch.writer.stability.header.notesPlain
+OK: batch.writer.stability.header.notesFill
+OK: batch.writer.stability.header.sp35NcrBranch
+OK: batch.writer.stability.header.sp63PlaneHeight
+OK: batch.writer.stability.header.sp35Ratio
+OK: batch.writer.stability.columnWidthA; actual=10.; expected=10.
+OK: batch.writer.stability.columnWidthN; actual=10.; expected=10.
+OK: batch.writer.stability.columnWidthAF; actual=10.; expected=10.
+OK: batch.writer.stability.columnWidthCC; actual=10.; expected=10.
+OK: batch.writer.stability.availableRowsBorder
+OK: batch.writer.stability.lowerRanges
+OK: batch.writer.reserve.W1.summaryRow
+OK: batch.writer.reserve.W1.strengthRow
+OK: batch.writer.reserve.W1.crackRow
+OK: batch.writer.reserve.W1.stabilityRow
+OK: batch.writer.reserve.W1.strain.bothNumeric
+OK: batch.writer.reserve.W1.strain; actual=23.654566819636; expected=23.654566819636
+OK: batch.writer.reserve.W1.capacity.bothNumeric
+OK: batch.writer.reserve.W1.capacity; actual=9.761081548815; expected=9.761081548815
+OK: batch.writer.reserve.W1.crack.bothNumeric
+OK: batch.writer.reserve.W1.crack; actual=0.; expected=0.
+OK: batch.writer.reserve.W1.longCrack.bothNumeric
+OK: batch.writer.reserve.W1.longCrack; actual=0.; expected=0.
+OK: batch.writer.reserve.W1.sp35p1eta.bothNumeric
+OK: batch.writer.reserve.W1.sp35p1eta; actual=0.; expected=0.
+OK: batch.writer.reserve.W1.sp35p1table.bothNumeric
+OK: batch.writer.reserve.W1.sp35p1table; actual=0.; expected=0.
+OK: batch.writer.reserve.W1.sp35p2eta.bothNumeric
+OK: batch.writer.reserve.W1.sp35p2eta; actual=0.; expected=0.
+OK: batch.writer.reserve.W1.sp35p2table.bothNumeric
+OK: batch.writer.reserve.W1.sp35p2table; actual=0.; expected=0.
+OK: batch.writer.reserve.W1.sp63p1.bothNumeric
+OK: batch.writer.reserve.W1.sp63p1; actual=0.; expected=0.
+OK: batch.writer.reserve.W1.sp63p2.bothNumeric
+OK: batch.writer.reserve.W1.sp63p2; actual=0.; expected=0.
+OK: batch.writer.reserve.W2.summaryRow
+OK: batch.writer.reserve.W2.strengthRow
+OK: batch.writer.reserve.W2.crackRow
+OK: batch.writer.reserve.W2.stabilityRow
+OK: batch.writer.reserve.W2.strain.bothNumeric
+OK: batch.writer.reserve.W2.strain; actual=0.; expected=0.
+OK: batch.writer.reserve.W2.capacity.bothNumeric
+OK: batch.writer.reserve.W2.capacity; actual=0.; expected=0.
+OK: batch.writer.reserve.W2.crack.bothNumeric
+OK: batch.writer.reserve.W2.crack; actual=0.; expected=0.
+OK: batch.writer.reserve.W2.longCrack.bothNumeric
+OK: batch.writer.reserve.W2.longCrack; actual=12.30931237624; expected=12.30931237624
+OK: batch.writer.reserve.W2.sp35p1eta.bothNumeric
+OK: batch.writer.reserve.W2.sp35p1eta; actual=0.; expected=0.
+OK: batch.writer.reserve.W2.sp35p1table.bothNumeric
+OK: batch.writer.reserve.W2.sp35p1table; actual=0.; expected=0.
+OK: batch.writer.reserve.W2.sp35p2eta.bothNumeric
+OK: batch.writer.reserve.W2.sp35p2eta; actual=0.; expected=0.
+OK: batch.writer.reserve.W2.sp35p2table.bothNumeric
+OK: batch.writer.reserve.W2.sp35p2table; actual=0.; expected=0.
+OK: batch.writer.reserve.W2.sp63p1.bothNumeric
+OK: batch.writer.reserve.W2.sp63p1; actual=0.; expected=0.
+OK: batch.writer.reserve.W2.sp63p2.bothNumeric
+OK: batch.writer.reserve.W2.sp63p2; actual=0.; expected=0.
+OK: batch.writer.reserve.WT.summaryRow
+OK: batch.writer.reserve.WT.strengthRow
+OK: batch.writer.reserve.WT.crackRow
+OK: batch.writer.reserve.WT.stabilityRow
+OK: batch.writer.reserve.WT.strain.bothNumeric
+OK: batch.writer.reserve.WT.strain; actual=628.318530717959; expected=628.318530717959
+OK: batch.writer.reserve.WT.capacity.bothNumeric
+OK: batch.writer.reserve.WT.capacity; actual=0.; expected=0.
+OK: batch.writer.reserve.WT.crack.bothNumeric
+OK: batch.writer.reserve.WT.crack; actual=0.; expected=0.
+OK: batch.writer.reserve.WT.longCrack.bothNumeric
+OK: batch.writer.reserve.WT.longCrack; actual=0.; expected=0.
+OK: batch.writer.reserve.WT.sp35p1eta.bothNumeric
+OK: batch.writer.reserve.WT.sp35p1eta; actual=0.; expected=0.
+OK: batch.writer.reserve.WT.sp35p1table.bothNumeric
+OK: batch.writer.reserve.WT.sp35p1table; actual=0.; expected=0.
+OK: batch.writer.reserve.WT.sp35p2eta.bothNumeric
+OK: batch.writer.reserve.WT.sp35p2eta; actual=0.; expected=0.
+OK: batch.writer.reserve.WT.sp35p2table.bothNumeric
+OK: batch.writer.reserve.WT.sp35p2table; actual=0.; expected=0.
+OK: batch.writer.reserve.WT.sp63p1.bothNumeric
+OK: batch.writer.reserve.WT.sp63p1; actual=0.; expected=0.
+OK: batch.writer.reserve.WT.sp63p2.bothNumeric
+OK: batch.writer.reserve.WT.sp63p2; actual=0.; expected=0.
+RUN: TestBatchSummaryPreservesSourceRowGaps
+OK: batch.writer.gaps.summary.first
+OK: batch.writer.gaps.summary.blank2
+OK: batch.writer.gaps.summary.blank3
+OK: batch.writer.gaps.summary.fourth
+OK: batch.writer.gaps.strength
+OK: batch.writer.gaps.crack
+OK: batch.writer.gaps.stability
+RUN: TestBatchSummaryRowsUseAvailableLoadRange
+OK: batch.writer.availableRows.dataRows31
+OK: batch.writer.availableRows.summaryRows43
+RUN: TestBatchCapacityUsesSystemSettings
+OK: batch.settings.capacity.maxLambda
+OK: batch.settings.capacity.maxLambda.noReserve; actual=0.; expected=0.
+RUN: TestInvalidModeSettingsAreNotFallbacks
+OK: batch.invalid.CapacitySolutionStrategy.status
+OK: batch.invalid.CapacitySolutionStrategy.noLambda
+OK: batch.invalid.CapacitySolutionStrategy.noReserve; actual=0.; expected=0.
+RUN: TestResultMetaStatusDictionary
+OK: resultMeta.ok
+OK: resultMeta.fail
+OK: resultMeta.numFail
+OK: resultMeta.inputErr
+OK: resultMeta.calcErr
+OK: resultMeta.baseFail
+RUN: TestResultMetaAggregateSkipsNotApplicable
+OK: resultMeta.aggregate.okWithNA
+OK: resultMeta.aggregate.failWithNA
+OK: resultMeta.aggregate.onlyNA
+RUN: TestCombinationResultTreeDrivesDisplayFields
+OK: combinationTree.direct.flat
+OK: combinationTree.direct.meta
+OK: combinationTree.warning.externalOk
+OK: combinationTree.warning.commentKept
+OK: combinationTree.direct.merge.flat
+OK: combinationTree.direct.merge.meta
+OK: combinationTree.capacity.exists
+OK: combinationTree.capacity.meta
+OK: combinationTree.stability.flat
+OK: combinationTree.stability.meta
+OK: combinationTree.overallComment.direct
+OK: combinationTree.overallComment.stability
+OK: combinationTree.strength.baseFail.meta
+OK: combinationTree.strength.baseFail.comment
+RUN: TestCrackAggregateIncludesCurrentStateFailure
+OK: combinationTree.crack.currentState.meta
+OK: combinationTree.crack.aggregate.currentStateFailure
+OK: combinationTree.crack.flat.currentStateFailure
+OK: combinationTree.crack.comment.currentStateFailure
+OK: combinationTree.crack.normalOnly.na
+OK: combinationTree.crack.summary.longitudinalFail
+OK: combinationTree.crack.summary.comment
+RUN: TestFormulaChecksDoNotCreateNumFail
+OK: status.longitudinal.pass
+OK: status.longitudinal.fail
+OK: status.longitudinal.na
+OK: status.longitudinal.input
+OK: status.longitudinal.noNumFail
+RUN: TestSectionStateResultStoresEquilibriumData
+OK: stateMeta.exists
+OK: stateMeta.epsilon0; actual=0.000073560455; expected=0.000073560455
+OK: stateMeta.kappaX; actual=0.000003842366; expected=0.000003842366
+OK: stateMeta.kappaY; actual=0.000000410474; expected=0.000000410474
+OK: stateMeta.targetN; actual=-100000.; expected=-100000.
+OK: stateMeta.targetMx; actual=12000000.; expected=12000000.
+OK: stateMeta.targetMy; actual=3000000.; expected=3000000.
+OK: stateMeta.nint; actual=-100000.; expected=-100000.
+OK: stateMeta.mxint; actual=12000000.; expected=12000000.
+OK: stateMeta.myint; actual=3000000.; expected=3000000.
+OK: stateMeta.solverCalls
+OK: stateMeta.iterations
+OK: stateMeta.resultMeta
+RUN: TestStateRequestEquivalenceIgnoresSolveOptions
+OK: stateRequest.key.solveOptionsIgnored
+OK: stateRequest.key.loadsMatter
+RUN: TestStateRepositoryReusesOnlyConvergedStates
+OK: stateRepository.successSource
+OK: stateRepository.successReusable
+OK: stateRepository.failedNotReusable
+OK: stateRepository.failedStillInSnapshot
+OK: stateRepository.retrySuccessReusable
+OK: stateRepository.retrySuccessSnapshot
+RUN: TestPrePostCrackStateNames
+OK: stateName.preCanonical
+OK: stateName.postCanonical
+OK: stateName.preText
+OK: stateName.postText
+RUN: TestAudit02CurrentCrackedStateCacheHitCalculatesWidth
+OK: audit02.currentCache.firstExists
+OK: audit02.currentCache.crackFormed
+OK: audit02.currentCache.firstWidth
+OK: audit02.currentCache.secondExists
+OK: audit02.currentCache.noHeavySolve
+OK: audit02.currentCache.width; actual=0.139403828281; expected=0.139403828281
+OK: audit02.currentCache.sigma; actual=159.154943091895; expected=159.154943091895
+OK: audit02.currentCache.sigmaCrc; actual=95.220592346546; expected=95.220592346546
+OK: audit02.currentCache.psi; actual=0.521369098582; expected=0.521369098582
+OK: audit02.currentCache.stateOK
+TOTAL_BATCH: passed=659; failed=10; elapsedSec=17.80859375
+

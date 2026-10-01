@@ -202,6 +202,8 @@ Public Function RunBatchCalculationTests() As String
     TestStateRepositoryReusesOnlyConvergedStates stats
     AppendLine stats, "RUN: TestPrePostCrackStateNames"
     TestPrePostCrackStateNames stats
+    AppendLine stats, "RUN: TestAudit02CurrentCrackedStateCacheHitCalculatesWidth"
+    TestAudit02CurrentCrackedStateCacheHitCalculatesWidth stats
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -488,6 +490,10 @@ Private Sub CheckBatchRectSetN200CapacitySolutionStrategy(ByRef stats As TBatchT
         "; solutionMethod=" & batch.CapacitySolutionMethod(1) & _
         "; lambda=" & FormatNumberInvariant(batch.LambdaCapacity(1)) & _
         "; Nult=" & FormatNumberInvariant(batch.NUltimate(1))
+    If batch.CapacityStatus(1) = "NumFail" Then
+        AppendLine stats, "CAPACITY_DIAG: " & methodName & vbCrLf & _
+            Right$(batch.StrengthResult(1).Capacity.DiagnosticLog, 12000)
+    End If
     AssertTrue stats, "batch.rectset.n200." & methodName & ".notNumFail", batch.CapacityStatus(1) <> "NumFail"
     AssertTrue stats, "batch.rectset.n200." & methodName & ".capacityStatus", _
         batch.CapacityStatus(1) = "OK" Or batch.CapacityStatus(1) = "FAIL"
@@ -815,10 +821,10 @@ Private Sub TestPR2PhysicalStateRunsCrackWithExtensionEnabled(ByRef stats As TBa
     Dim oldMode As String
     Dim oldCrackEnabled As String
     Dim oldExtension As String
-    oldExtension = GetSystemSetting("Solver.DirectState.DiagramExtension")
+    oldExtension = GetSystemSetting("General.DiagramExtension")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
+    SetSystemSetting "General.DiagramExtension", "Yes"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -841,7 +847,7 @@ Private Sub TestPR2PhysicalStateRunsCrackWithExtensionEnabled(ByRef stats As TBa
         Not crackedState Is Nothing And Not crackedState.ExtensionUsed
 
 Restore:
-    SetSystemSetting "Solver.DirectState.DiagramExtension", oldExtension
+    SetSystemSetting "General.DiagramExtension", oldExtension
     Exit Sub
 
 RestoreAndFail:
@@ -1157,6 +1163,10 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
     batch.ApplySettings settings
     batch.AddCombination UCase$(Replace$(Replace$(pathText, "lambda*", vbNullString), "*", vbNullString)), _
         nValue, mxValue, myValue, "PR2", "crack formation path"
+    Dim executionReport As CExecutionReport
+    Set executionReport = New CExecutionReport
+    executionReport.Initialize ThisWorkbook, settings
+    Set batch.ExecutionReport = executionReport
     batch.Execute
 
     AppendLine stats, "INFO: " & prefix & "; status=" & batch.CrackStatus(1) & _
@@ -1175,6 +1185,16 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
             MetaDebugText(batch.CrackCurrentStateMeta(1)) & "; width=" & _
             MetaDebugText(batch.CrackWidthMeta(1)) & "; longitudinal=" & _
             MetaDebugText(batch.LongitudinalCrackMeta(1))
+        Dim currentState As CSectionStateResult
+        Set currentState = batch.FindNamedState(1, sstCrackedState)
+        If Not currentState Is Nothing Then
+            AppendLine stats, "CURRENT_STATE_DIAG: " & prefix & _
+                "; extensionSetting=" & GetSystemSetting("General.DiagramExtension") & _
+                "; eps0=" & FormatNumberInvariant(currentState.Epsilon0) & _
+                "; residualN=" & FormatNumberInvariant(currentState.ResidualN) & _
+                "; residualMx=" & FormatNumberInvariant(currentState.ResidualMx) & _
+                "; residualMy=" & FormatNumberInvariant(currentState.ResidualMy) & vbCrLf & currentState.DiagnosticLog
+        End If
     End If
     AssertTrue stats, prefix & ".notNumFail", batch.CrackStatus(1) <> "NumFail"
 
@@ -1243,10 +1263,10 @@ Private Sub TestPR2AxialTensionBeyondPhysicalLimitUsesExtension(ByRef stats As T
     Dim oldExtension As String
     oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
     oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
-    oldExtension = GetSystemSetting("Solver.DirectState.DiagramExtension")
+    oldExtension = GetSystemSetting("General.DiagramExtension")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
+    SetSystemSetting "General.DiagramExtension", "Yes"
     SetSystemSetting "Solver.MaxIterations", "80"
     SetSystemSetting "Solver.LoadSteps", "1"
 
@@ -1278,7 +1298,7 @@ Private Sub TestPR2AxialTensionBeyondPhysicalLimitUsesExtension(ByRef stats As T
 Restore:
     SetSystemSetting "Solver.MaxIterations", oldMaxIterations
     SetSystemSetting "Solver.LoadSteps", oldLoadSteps
-    SetSystemSetting "Solver.DirectState.DiagramExtension", oldExtension
+    SetSystemSetting "General.DiagramExtension", oldExtension
     Exit Sub
 
 RestoreAndFail:
@@ -1298,10 +1318,10 @@ Private Sub TestPR1AxialTensionBeyondPhysicalLimitUsesExtension(ByRef stats As T
     Dim oldExtension As String
     oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
     oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
-    oldExtension = GetSystemSetting("Solver.DirectState.DiagramExtension")
+    oldExtension = GetSystemSetting("General.DiagramExtension")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
+    SetSystemSetting "General.DiagramExtension", "Yes"
     SetSystemSetting "Solver.MaxIterations", "100"
     SetSystemSetting "Solver.LoadSteps", "1"
 
@@ -1334,7 +1354,7 @@ Private Sub TestPR1AxialTensionBeyondPhysicalLimitUsesExtension(ByRef stats As T
 Restore:
     SetSystemSetting "Solver.MaxIterations", oldMaxIterations
     SetSystemSetting "Solver.LoadSteps", oldLoadSteps
-    SetSystemSetting "Solver.DirectState.DiagramExtension", oldExtension
+    SetSystemSetting "General.DiagramExtension", oldExtension
     Exit Sub
 
 RestoreAndFail:
@@ -1355,10 +1375,10 @@ Private Sub TestPR1AxialTensionNearLimitDoesNotJumpToNumFail(ByRef stats As TBat
     Dim oldExtension As String
     oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
     oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
-    oldExtension = GetSystemSetting("Solver.DirectState.DiagramExtension")
+    oldExtension = GetSystemSetting("General.DiagramExtension")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
+    SetSystemSetting "General.DiagramExtension", "Yes"
     SetSystemSetting "Solver.MaxIterations", "100"
     SetSystemSetting "Solver.LoadSteps", "1"
 
@@ -1409,7 +1429,7 @@ Private Sub TestPR1AxialTensionNearLimitDoesNotJumpToNumFail(ByRef stats As TBat
 Restore:
     SetSystemSetting "Solver.MaxIterations", oldMaxIterations
     SetSystemSetting "Solver.LoadSteps", oldLoadSteps
-    SetSystemSetting "Solver.DirectState.DiagramExtension", oldExtension
+    SetSystemSetting "General.DiagramExtension", oldExtension
     Exit Sub
 
 RestoreAndFail:
@@ -1430,10 +1450,10 @@ Private Sub TestPR1AxialCompressionNearLimitDoesNotJumpToNumFail(ByRef stats As 
     Dim oldExtension As String
     oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
     oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
-    oldExtension = GetSystemSetting("Solver.DirectState.DiagramExtension")
+    oldExtension = GetSystemSetting("General.DiagramExtension")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
+    SetSystemSetting "General.DiagramExtension", "Yes"
     SetSystemSetting "Solver.MaxIterations", "100"
     SetSystemSetting "Solver.LoadSteps", "1"
 
@@ -1484,7 +1504,7 @@ Private Sub TestPR1AxialCompressionNearLimitDoesNotJumpToNumFail(ByRef stats As 
 Restore:
     SetSystemSetting "Solver.MaxIterations", oldMaxIterations
     SetSystemSetting "Solver.LoadSteps", oldLoadSteps
-    SetSystemSetting "Solver.DirectState.DiagramExtension", oldExtension
+    SetSystemSetting "General.DiagramExtension", oldExtension
     Exit Sub
 
 RestoreAndFail:
@@ -1526,10 +1546,10 @@ Private Sub RunAxialProgressionAfterLimit(ByRef stats As TBatchTestStats, ByVal 
     Dim oldExtension As String
     oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
     oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
-    oldExtension = GetSystemSetting("Solver.DirectState.DiagramExtension")
+    oldExtension = GetSystemSetting("General.DiagramExtension")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
+    SetSystemSetting "General.DiagramExtension", "Yes"
     SetSystemSetting "Solver.MaxIterations", "100"
     SetSystemSetting "Solver.LoadSteps", "1"
 
@@ -1587,7 +1607,7 @@ Private Sub RunAxialProgressionAfterLimit(ByRef stats As TBatchTestStats, ByVal 
 Restore:
     SetSystemSetting "Solver.MaxIterations", oldMaxIterations
     SetSystemSetting "Solver.LoadSteps", oldLoadSteps
-    SetSystemSetting "Solver.DirectState.DiagramExtension", oldExtension
+    SetSystemSetting "General.DiagramExtension", oldExtension
     Exit Sub
 
 RestoreAndFail:
@@ -1615,10 +1635,10 @@ Private Sub TestPR2AxialCompressionBeyondPhysicalLimitUsesExtension(ByRef stats 
     Dim oldExtension As String
     oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
     oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
-    oldExtension = GetSystemSetting("Solver.DirectState.DiagramExtension")
+    oldExtension = GetSystemSetting("General.DiagramExtension")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
+    SetSystemSetting "General.DiagramExtension", "Yes"
     SetSystemSetting "Solver.MaxIterations", "80"
     SetSystemSetting "Solver.LoadSteps", "1"
 
@@ -1650,7 +1670,7 @@ Private Sub TestPR2AxialCompressionBeyondPhysicalLimitUsesExtension(ByRef stats 
 Restore:
     SetSystemSetting "Solver.MaxIterations", oldMaxIterations
     SetSystemSetting "Solver.LoadSteps", oldLoadSteps
-    SetSystemSetting "Solver.DirectState.DiagramExtension", oldExtension
+    SetSystemSetting "General.DiagramExtension", oldExtension
     Exit Sub
 
 RestoreAndFail:
@@ -1670,10 +1690,10 @@ Private Sub TestPR2BendingBeyondPhysicalLimitUsesExtension(ByRef stats As TBatch
     Dim oldExtension As String
     oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
     oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
-    oldExtension = GetSystemSetting("Solver.DirectState.DiagramExtension")
+    oldExtension = GetSystemSetting("General.DiagramExtension")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "Solver.DirectState.DiagramExtension", "Yes"
+    SetSystemSetting "General.DiagramExtension", "Yes"
     SetSystemSetting "Solver.MaxIterations", "100"
     SetSystemSetting "Solver.LoadSteps", "1"
 
@@ -1706,7 +1726,7 @@ Private Sub TestPR2BendingBeyondPhysicalLimitUsesExtension(ByRef stats As TBatch
 Restore:
     SetSystemSetting "Solver.MaxIterations", oldMaxIterations
     SetSystemSetting "Solver.LoadSteps", oldLoadSteps
-    SetSystemSetting "Solver.DirectState.DiagramExtension", oldExtension
+    SetSystemSetting "General.DiagramExtension", oldExtension
     Exit Sub
 
 RestoreAndFail:
@@ -4806,6 +4826,37 @@ Private Sub TestPrePostCrackStateNames(ByRef stats As TBatchTestStats)
         SectionStateTypeFromText("PostCrackState") = sstPostCrackState
     AssertEquals stats, "stateName.preText", SectionStateTypeToText(sstPreCrackState), "PreCrackState"
     AssertEquals stats, "stateName.postText", SectionStateTypeToText(sstPostCrackState), "PostCrackState"
+End Sub
+
+' ============================== ДЛЯ ТЕСТОВ AUDIT02 ==============================
+
+' Повторяет реальный batch-маршрут после сохранения Pre/Post/current states.
+' Центральное растяжение не требует поисковых проб, поэтому при cache-hit
+' можно точно доказать отсутствие любого нового equilibrium solve.
+Private Sub TestAudit02CurrentCrackedStateCacheHitCalculatesWidth(ByRef stats As TBatchTestStats)
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.AddCombination "AUDIT02_CURRENT_CACHE", 200000#, 0#, 0#, "PR2", "current state cache"
+    batch.Execute
+    Dim first As CCrackResult
+    Set first = batch.CrackResult(1)
+    AssertTrue stats, "audit02.currentCache.firstExists", Not first Is Nothing
+    If first Is Nothing Then Exit Sub
+    AssertTrue stats, "audit02.currentCache.crackFormed", first.Formation.CrackFormed
+    AssertTrue stats, "audit02.currentCache.firstWidth", first.Width.CrackWidth > 0#
+    Dim countBefore As Long
+    countBefore = SectionEquilibriumSolveCount()
+    batch.TestRepeatCrackCalculation 1
+    Dim second As CCrackResult
+    Set second = batch.CrackResult(1)
+    AssertTrue stats, "audit02.currentCache.secondExists", Not second Is Nothing
+    If second Is Nothing Then Exit Sub
+    AssertTrue stats, "audit02.currentCache.noHeavySolve", SectionEquilibriumSolveCount() = countBefore
+    AssertClose stats, "audit02.currentCache.width", second.Width.CrackWidth, first.Width.CrackWidth, 0.000000001
+    AssertClose stats, "audit02.currentCache.sigma", second.Width.SigmaS, first.Width.SigmaS, 0.000000001
+    AssertClose stats, "audit02.currentCache.sigmaCrc", second.Width.SigmaSCrc, first.Width.SigmaSCrc, 0.000000001
+    AssertClose stats, "audit02.currentCache.psi", second.Width.PsiS, first.Width.PsiS, 0.000000001
+    AssertTrue stats, "audit02.currentCache.stateOK", second.CurrentStateMeta.InternalStatus = rsSuccess
 End Sub
 
 Private Function RectangleRebars(ByVal geom As ISectionGeometry) As CRebarLayout

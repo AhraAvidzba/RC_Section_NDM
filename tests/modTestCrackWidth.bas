@@ -44,6 +44,7 @@ Public Function RunCrackWidthTests() As String
     TestAutoMcrcOneSignTensionUsesFormula854 stats
     TestCentralTensionBranch stats
     TestNoTensionRebar stats
+    TestAudit02FormationOutcomeSemantics stats
     AppendLine stats, "TOTAL_CRACK: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
     RunCrackWidthTests = stats.Report
@@ -690,8 +691,8 @@ Private Function SolveServiceStateWithRunner(ByRef section As CSectionModel, ByV
     Dim runner As CStateSolutionRunner
     Set runner = New CStateSolutionRunner
     ConfigureTestStateRunner runner
-    runner.Solve section, provider.ConcreteStateMaterialFromSpec(crackedSpec), _
-        provider.SteelStateMaterialFromSpec(crackedSpec), nValue, mxValue, myValue, False
+    runner.Solve section, provider.ConcreteMaterialForEquilibriumFromSpec(crackedSpec), _
+        provider.SteelMaterialForEquilibriumFromSpec(crackedSpec), nValue, mxValue, myValue, False
 
     If runner.ResultSolver Is Nothing Or Not runner.Converged Then
         Err.Raise vbObjectError + 3802, "modTestCrackWidth", _
@@ -902,4 +903,43 @@ Private Sub ConcreteStateStrainBounds(ByVal state As CSectionStateResult, ByVal 
             If strain > maxStrain Then maxStrain = strain
         End If
     Next i
+End Sub
+
+' ============================== ДЛЯ ТЕСТОВ ==============================
+
+' Различает найденный порог за текущим LC и трещину от постоянной части пути.
+' Проверяет сохранение машинного кода/предупреждения и отсутствие фиктивных
+' состояний в разрешенном psi=1 fallback, без изменения численных expected.
+Private Sub TestAudit02FormationOutcomeSemantics(ByRef stats As TCrackTestStats)
+    Dim section As CSectionModel
+    Dim solver As CSectionSolver
+    Set solver = SolveServiceStateWithRunner(section, -20000#, -1000000#, 0#)
+    Dim crack As CCrackWidthCalculator
+    Set crack = CalculateCrack(solver, section, -20000#, -1000000#, 0#, _
+        "AlwaysCalc", "Effective", formationPath:="lambda*Mxy")
+    AssertTrue stats, "audit02.formation.aboveCurrent.converged", crack.Converged
+    AssertTrue stats, "audit02.formation.aboveCurrent.notCracked", Not crack.CrackFormed
+    AssertTrue stats, "audit02.formation.aboveCurrent.lambda", crack.LambdaCrc > 1#
+    AssertTrue stats, "audit02.formation.aboveCurrent.foundCode", crack.CrackFormationResultCode = rcCheckPassed
+    Dim search As CLimitSearchResult
+    Set search = New CLimitSearchResult
+    search.InitializeFromCrackFormation crack, "Auto", True
+    AssertTrue stats, "audit02.formation.aboveCurrent.searchSuccess", search.Meta.InternalStatus = rsSuccess
+    AssertClose stats, "audit02.formation.aboveCurrent.pointLambda", search.LambdaUltimate, crack.LambdaCrc, 0#
+    AssertClose stats, "audit02.formation.aboveCurrent.pointMoment", search.MomentUltimate, crack.Mcrc, 0#
+    AssertTrue stats, "audit02.formation.aboveCurrent.noPost", crack.PostCrackState Is Nothing
+
+    Set solver = SolveServiceStateWithRunner(section, 200000#, 0#, 0#)
+    Set crack = CalculateCrack(solver, section, 200000#, 0#, 0#, _
+        "AlwaysCalc", "Effective", formationPath:="lambda*Mxy")
+    search.InitializeFromCrackFormation crack, "Auto", True
+    AssertTrue stats, "audit02.formation.constant.warning", search.Meta.InternalStatus = rsSuccessWithWarning
+    AssertTrue stats, "audit02.formation.constant.code", search.Meta.ResultCode = rcInitialStateBeyondLimit
+    AssertTrue stats, "audit02.formation.constant.comment", Len(search.Meta.ResultComment) > 0
+    AssertTrue stats, "audit02.formation.constant.noPre", crack.PreCrackState Is Nothing
+    AssertTrue stats, "audit02.formation.constant.noPost", crack.PostCrackState Is Nothing
+    AssertClose stats, "audit02.formation.constant.noPoint", search.LambdaUltimate, 0#, 0#
+    AssertClose stats, "audit02.formation.constant.psi1", crack.PsiS, 1#, 0#
+    search.InitializeFromCrackFormation Nothing, "Auto", False
+    AssertTrue stats, "audit02.formation.missing.internalError", search.Meta.InternalStatus = rsInternalError
 End Sub

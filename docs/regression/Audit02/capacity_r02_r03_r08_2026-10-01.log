@@ -1,0 +1,1027 @@
+RUN: TestMxPositiveAndNegative
+OK: capacity.mx.negative.converged
+OK: capacity.mx.positive.converged
+OK: capacity.mx.negative.sign
+OK: capacity.mx.positive.sign
+OK: capacity.mx.limit.physical
+OK: capacity.mx.negative.N; actual=-300000.; expected=-300000.; relDiff=0.
+OK: capacity.mx.negative.Mx; actual=-30937500.; expected=-30937500.; relDiff=0.
+OK: capacity.mx.negative.My; actual=-0.000000000509; expected=0.; absDiff=0.000000000509
+OK: capacity.mx.positive.N; actual=-300000.; expected=-300000.; relDiff=0.
+OK: capacity.mx.positive.Mx; actual=30937500.; expected=30937500.; relDiff=0.
+OK: capacity.mx.positive.My; actual=0.000000000757; expected=0.; absDiff=0.000000000757
+RUN: TestMyPositiveAndNegative
+OK: capacity.my.negative.converged
+OK: capacity.my.positive.converged
+OK: capacity.my.negative.sign
+OK: capacity.my.positive.sign
+OK: capacity.my.limit.physical
+OK: capacity.my.negative.N; actual=-300000.; expected=-300000.; relDiff=0.
+OK: capacity.my.negative.Mx; actual=0.00000000099; expected=0.; absDiff=0.00000000099
+OK: capacity.my.negative.My; actual=-44843750.; expected=-44843750.; relDiff=0.
+OK: capacity.my.positive.N; actual=-300000.; expected=-300000.; relDiff=0.
+OK: capacity.my.positive.Mx; actual=-0.000000000582; expected=0.; absDiff=0.000000000582
+OK: capacity.my.positive.My; actual=44843750.; expected=44843750.; relDiff=0.
+RUN: TestMxySignedCombinations
+OK: capacity.mxy.pp.converged
+OK: capacity.mxy.pp.lambda.positive
+OK: capacity.mxy.pp.mx.sign
+OK: capacity.mxy.pp.my.sign
+OK: capacity.mxy.pp.direction; actual=0.; expected=0.; absDiff=0.
+OK: capacity.mxy.pp.N; actual=-250000.; expected=-250000.; relDiff=0.
+OK: capacity.mxy.pp.Mx; actual=21468750.; expected=21468750.; relDiff=0.
+OK: capacity.mxy.pp.My; actual=14312500.; expected=14312500.; relDiff=0.
+OK: capacity.mxy.np.converged
+OK: capacity.mxy.np.lambda.positive
+OK: capacity.mxy.np.mx.sign
+OK: capacity.mxy.np.my.sign
+OK: capacity.mxy.np.direction; actual=0.; expected=0.; absDiff=0.
+OK: capacity.mxy.np.N; actual=-250000.; expected=-250000.; relDiff=0.
+OK: capacity.mxy.np.Mx; actual=-21468750.; expected=-21468750.; relDiff=0.
+OK: capacity.mxy.np.My; actual=14312500.; expected=14312500.; relDiff=0.
+OK: capacity.mxy.pn.converged
+OK: capacity.mxy.pn.lambda.positive
+OK: capacity.mxy.pn.mx.sign
+OK: capacity.mxy.pn.my.sign
+OK: capacity.mxy.pn.direction; actual=0.; expected=0.; absDiff=0.
+OK: capacity.mxy.pn.N; actual=-250000.; expected=-250000.; relDiff=0.
+OK: capacity.mxy.pn.Mx; actual=21468750.; expected=21468750.; relDiff=0.
+OK: capacity.mxy.pn.My; actual=-14312500.; expected=-14312500.; relDiff=0.
+OK: capacity.mxy.nn.converged
+OK: capacity.mxy.nn.lambda.positive
+OK: capacity.mxy.nn.mx.sign
+OK: capacity.mxy.nn.my.sign
+OK: capacity.mxy.nn.direction; actual=0.; expected=0.; absDiff=0.
+OK: capacity.mxy.nn.N; actual=-250000.; expected=-250000.; relDiff=0.
+OK: capacity.mxy.nn.Mx; actual=-21468750.; expected=-21468750.; relDiff=0.
+OK: capacity.mxy.nn.My; actual=-14312500.; expected=-14312500.; relDiff=0.
+RUN: TestConcreteTensionBehaviorAffectsSolverAndCapacity
+OK: tensionMode.solver.ignore.converged
+OK: tensionMode.solver.use.converged
+OK: tensionMode.solver.affectsState
+OK: tensionBehavior.strength.mx.ignore.converged
+OK: tensionBehavior.strength.mx.use.converged
+OK: tensionBehavior.strength.mx.stateDiffers
+OK: tensionBehavior.strength.my.ignore.converged
+OK: tensionBehavior.strength.my.use.converged
+OK: tensionBehavior.strength.my.stateDiffers
+OK: tensionBehavior.strength.mxy.ignore.converged
+OK: tensionBehavior.strength.mxy.use.converged
+OK: tensionBehavior.strength.mxy.stateDiffers
+RUN: TestCircleCapacitySymmetry
+OK: circle.capacity.mx.converged
+OK: circle.capacity.my.converged
+OK: circle.capacity.mxy.converged
+OK: circle.capacity.mx.my.symmetry; actual=31921875.; expected=31921875.; relDiff=0.
+OK: circle.capacity.mxy.lambda.positive
+OK: circle.capacity.mxy.direction; actual=0.; expected=0.; absDiff=0.
+RUN: TestLambdaLessThanOne
+OK: capacity.lambda.lessThanOne.converged
+OK: capacity.lambda.lessThanOne.value
+RUN: TestLambdaNearOne
+OK: capacity.lambda.nearOne.converged
+OK: capacity.lambda.nearOne.value; actual=1.; expected=1.; absDiff=0.
+RUN: TestZeroAxialForce
+OK: capacity.zeroN.converged
+OK: capacity.zeroN.N; actual=0.; expected=0.; absDiff=0.
+OK: capacity.zeroN.Mx; actual=-47929687.4999999; expected=-47929687.5; relDiff=0.
+OK: capacity.zeroN.My; actual=0.000000000757; expected=0.; absDiff=0.000000000757
+RUN: TestAxialLoadMultiplierFindsNult
+OK: capacity.nult.compression.converged
+OK: capacity.nult.compression.sign
+OK: capacity.nult.compression.safety
+OK: capacity.nult.compression.N; actual=-1287304.6875; expected=-1287304.6875; relDiff=0.
+OK: capacity.nult.compression.Mx; actual=-0.000000000349; expected=0.; absDiff=0.000000000349
+OK: capacity.nult.compression.My; actual=0.000000000407; expected=0.; absDiff=0.000000000407
+FAIL: capacity.nult.tension.converged
+FAIL: capacity.nult.tension.sign
+FAIL: capacity.nult.tension.safety
+FAIL: capacity.nult.tension.N; actual=439137.268066406; expected=0.; absDiff=439137.268066406
+OK: capacity.nult.tension.Mx; actual=-0.000000000058; expected=0.; absDiff=0.000000000058
+OK: capacity.nult.tension.My; actual=-0.000000000553; expected=0.; absDiff=0.000000000553
+RUN: TestConcreteLimitState
+OK: capacity.concreteLimit.converged
+OK: capacity.concreteLimit.state
+RUN: TestConcreteTensionLimitState
+OK: capacity.concreteTensionLimit.converged
+OK: capacity.concreteTensionLimit.state
+RUN: TestConcreteTensionLimitIgnored
+OK: capacity.concreteTensionLimit.ignore.notTension
+OK: capacity.concreteTensionLimit.ignore.state
+RUN: TestSteelLimitState
+OK: capacity.steelLimit.converged
+OK: capacity.steelLimit.state
+RUN: TestLoadMultiplierPureBendingUsesStateGuess
+OK: capacity.pureBendingGuess.converged
+OK: capacity.pureBendingGuess.physical
+OK: capacity.pureBendingGuess.usedGuess
+RUN: TestAsymmetricCoupledCurvatures
+OK: capacity.asym.Ixy.nonzero
+OK: capacity.asym.converged
+OK: capacity.asym.coupledKappaY
+OK: capacity.asym.N; actual=-260000.; expected=-260000.; relDiff=0.
+OK: capacity.asym.Mx; actual=-320000000.; expected=-320000000.; relDiff=0.
+OK: capacity.asym.My; actual=-0.000000063446; expected=0.; absDiff=0.000000063446
+RUN: TestAsymmetricMxy
+OK: capacity.mxy.asym.Ixy.nonzero
+OK: capacity.mxy.asym.converged
+OK: capacity.mxy.asym.kappaX.nonzero
+OK: capacity.mxy.asym.kappaY.nonzero
+OK: capacity.mxy.asym.direction; actual=0.; expected=0.; absDiff=0.
+OK: capacity.mxy.asym.N; actual=-260000.; expected=-260000.; relDiff=0.
+OK: capacity.mxy.asym.Mx; actual=-173484375.; expected=-173484375.; relDiff=0.
+OK: capacity.mxy.asym.My; actual=-115656250.; expected=-115656250.; relDiff=0.
+RUN: TestInvalidBaseMoment
+OK: capacity.invalidBaseMoment.notConverged
+OK: capacity.invalidBaseMoment.state
+RUN: TestCapacitySolutionStrategyComparisons
+OK: method.pure_compression.load.invalid
+OK: method.pure_compression.strain.invalid
+COMPARE|method.pure_compression.load|converged=False|lambda=0.|limitState=InvalidInput|criticalStrain=0.|criticalElement=|solverCalls=0|elapsedSec=0.
+COMPARE|method.pure_compression.strain|converged=False|lambda=0.|limitState=InvalidInput|criticalStrain=0.|criticalElement=|solverCalls=0|elapsedSec=0.
+OK: method.n_plus_mx.load.converged
+OK: method.n_plus_mx.strain.converged
+OK: method.n_plus_mx.lambda; actual=3.098714243907; expected=3.09375; absDiff=0.004964243907
+OK: method.n_plus_mx.limitState
+OK: method.n_plus_mx.criticalElement
+OK: method.n_plus_mx.solverCalls
+COMPARE|method.n_plus_mx.load|converged=True|lambda=3.09375|limitState=ConcreteStrainLimit|criticalStrain=-0.001501652538|criticalElement=C136:Compression|solverCalls=15|elapsedSec=0.1171875
+COMPARE|method.n_plus_mx.strain|converged=True|lambda=3.098714243907|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.03125
+OK: method.n_plus_my.load.converged
+OK: method.n_plus_my.strain.converged
+OK: method.n_plus_my.lambda; actual=4.490409406947; expected=4.484375; absDiff=0.006034406947
+OK: method.n_plus_my.limitState
+OK: method.n_plus_my.criticalElement
+OK: method.n_plus_my.solverCalls
+COMPARE|method.n_plus_my.load|converged=True|lambda=4.484375|limitState=ConcreteStrainLimit|criticalStrain=-0.001500652149|criticalElement=C15:Compression|solverCalls=18|elapsedSec=0.25
+COMPARE|method.n_plus_my.strain|converged=True|lambda=4.490409406947|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.0078125
+OK: method.biaxial.load.converged
+OK: method.biaxial.strain.converged
+OK: method.biaxial.lambda; actual=3.583378108174; expected=3.578125; absDiff=0.005253108174
+OK: method.biaxial.limitState
+OK: method.biaxial.criticalElement
+OK: method.biaxial.solverCalls
+COMPARE|method.biaxial.load|converged=True|lambda=3.578125|limitState=ConcreteStrainLimit|criticalStrain=-0.001501063653|criticalElement=C150:Compression|solverCalls=12|elapsedSec=0.07421875
+COMPARE|method.biaxial.strain|converged=True|lambda=3.583378108174|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=16|elapsedSec=0.01171875
+OK: method.circle.load.converged
+OK: method.circle.strain.converged
+OK: method.circle.symmetry; actual=31453125.; expected=31489108.1595385; relDiff=0.001142717646
+OK: method.circle.criticalElement
+COMPARE|method.circle.load|converged=True|lambda=5.2421875|limitState=ConcreteStrainLimit|criticalStrain=-0.001498237699|criticalElement=C483:Compression|solverCalls=17|elapsedSec=0.
+COMPARE|method.circle.strain|converged=True|lambda=5.248184693256|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C182:Compression|solverCalls=11|elapsedSec=0.
+OK: method.strain_limit.load.converged
+OK: method.strain_limit.strain.converged
+OK: method.strain_limit.lambda; actual=4.795168098697; expected=4.7890625; absDiff=0.006105598697
+OK: method.strain_limit.limitState
+OK: method.strain_limit.criticalElement
+OK: method.strain_limit.criticalUtilization
+COMPARE|method.strain_limit.load|converged=True|lambda=4.7890625|limitState=ConcreteStrainLimit|criticalStrain=-0.000599236031|criticalElement=C136:Compression|solverCalls=14|elapsedSec=0.
+COMPARE|method.strain_limit.strain|converged=True|lambda=4.795168098697|limitState=ConcreteStrainLimit|criticalStrain=-0.0006|criticalElement=C136:Compression|solverCalls=1|elapsedSec=0.
+OK: method.numericalFailure.notConverged
+OK: method.numericalFailure.state
+OK: method.numericalFailure.noPhysicalUpper
+COMPARE|method.numericalFailure.strain|converged=False|lambda=0.|limitState=NumericalFailure|criticalStrain=-0.0015|criticalElement=C136:Compression|solverCalls=5|elapsedSec=0.
+OK: method.maxLambdaIgnored.converged
+OK: method.maxLambdaIgnored.lambdaAboveLimit
+OK: method.maxLambdaIgnored.momentStored
+RUN: TestLoadMultiplierWithWorkbookTfDefaults
+OK: capacity.tfDefaults.geometry
+OK: capacity.tfDefaults.forceUnit
+OK: capacity.tfDefaults.momentUnit
+OK: capacity.tfDefaults.ultimate.converged
+OK: capacity.tfDefaults.ultimate.lambda
+OK: capacity.tfDefaults.Bisection.converged
+OK: capacity.tfDefaults.Bisection.physical
+OK: capacity.tfDefaults.Bisection.lambda; actual=3.099609375; expected=3.101514706454; absDiff=0.001905331454
+OK: capacity.tfDefaults.Bisection.notOvershot
+OK: capacity.tfDefaults.Brent.converged
+OK: capacity.tfDefaults.Brent.physical
+OK: capacity.tfDefaults.Brent.lambda; actual=3.10075110116; expected=3.101514706454; absDiff=0.000763605294
+OK: capacity.tfDefaults.Brent.notOvershot
+OK: capacity.tfDefaults.Secant.converged
+OK: capacity.tfDefaults.Secant.physical
+OK: capacity.tfDefaults.Secant.lambda; actual=3.106208325658; expected=3.101514706454; absDiff=0.004693619204
+OK: capacity.tfDefaults.Secant.notOvershot
+RUN: TestLoadMultiplierSearchMethods
+OK: search.bisection.converged
+OK: search.brent.converged
+OK: search.secant.converged
+OK: search.bisection.branch
+OK: search.brent.branch
+OK: search.secant.branch
+OK: search.brent.independent
+OK: search.secant.independent
+OK: search.brent.lambda; actual=3.09776378716; expected=3.09375; absDiff=0.00401378716
+OK: search.secant.lambda; actual=3.098514991183; expected=3.09375; absDiff=0.004764991183
+OK: search.brent.N; actual=-300000.; expected=-300000.; relDiff=0.
+OK: search.brent.Mx; actual=-30977637.8716035; expected=-30977637.8716035; relDiff=0.
+OK: search.brent.My; actual=0.000000000975; expected=0.; absDiff=0.000000000975
+OK: search.secant.N; actual=-300000.; expected=-300000.; relDiff=0.
+OK: search.secant.Mx; actual=-30985149.9118327; expected=-30985149.9118327; relDiff=0.
+OK: search.secant.My; actual=-0.000000002125; expected=0.; absDiff=0.000000002125
+RUN: TestLimitSearchSecantFinalizesCheckedRoot
+OK: limitSearch.secant.resultObject
+OK: limitSearch.secant.converged
+OK: limitSearch.secant.method
+OK: limitSearch.secant.root; actual=0.75; expected=0.75; absDiff=0.
+RUN: TestLimitSearchBisectionIterationLimitFails
+OK: limitSearch.bisection.resultObject
+OK: limitSearch.bisection.iterationLimitHit
+OK: limitSearch.bisection.notConverged
+OK: limitSearch.bisection.limitState
+OK: limitSearch.bisection.noFakeLimit
+RUN: TestCapacityLoadPathMethodMatrix
+OK: capacity.pathMatrix.mx.auto.converged
+OK: capacity.pathMatrix.mx.auto.lambda
+OK: capacity.pathMatrix.mx.auto.physical
+OK: capacity.pathMatrix.mx.auto.solutionMethod
+OK: capacity.pathMatrix.mx.auto.equilibrium.N; actual=-119999.999999981; expected=-120000.; relDiff=0.
+OK: capacity.pathMatrix.mx.auto.equilibrium.Mx; actual=-34053766.5302015; expected=-34053766.5302015; relDiff=0.
+OK: capacity.pathMatrix.mx.auto.equilibrium.My; actual=0.000001894892; expected=0.; absDiff=0.000001894892
+OK: capacity.pathMatrix.mx.auto.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.mx.auto.mxUltimate; actual=-34053766.5302015; expected=-34053766.5302015; absDiff=0.
+OK: capacity.pathMatrix.mx.auto.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.mx.ultimate.converged
+OK: capacity.pathMatrix.mx.ultimate.lambda
+OK: capacity.pathMatrix.mx.ultimate.physical
+OK: capacity.pathMatrix.mx.ultimate.solutionMethod
+OK: capacity.pathMatrix.mx.ultimate.equilibrium.N; actual=-119999.999999981; expected=-120000.; relDiff=0.
+OK: capacity.pathMatrix.mx.ultimate.equilibrium.Mx; actual=-34053766.5302015; expected=-34053766.5302015; relDiff=0.
+OK: capacity.pathMatrix.mx.ultimate.equilibrium.My; actual=0.000001894892; expected=0.; absDiff=0.000001894892
+OK: capacity.pathMatrix.mx.ultimate.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.mx.ultimate.mxUltimate; actual=-34053766.5302015; expected=-34053766.5302015; absDiff=0.
+OK: capacity.pathMatrix.mx.ultimate.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.mx.bisection.converged
+OK: capacity.pathMatrix.mx.bisection.lambda
+OK: capacity.pathMatrix.mx.bisection.physical
+OK: capacity.pathMatrix.mx.bisection.solutionMethod
+OK: capacity.pathMatrix.mx.bisection.equilibrium.N; actual=-120000.; expected=-120000.; relDiff=0.
+OK: capacity.pathMatrix.mx.bisection.equilibrium.Mx; actual=-34042968.75; expected=-34046875.; relDiff=0.000114731528
+OK: capacity.pathMatrix.mx.bisection.equilibrium.My; actual=-0.000000001237; expected=0.; absDiff=0.000000001237
+OK: capacity.pathMatrix.mx.bisection.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.mx.bisection.mxUltimate; actual=-34046875.; expected=-34046875.; absDiff=0.
+OK: capacity.pathMatrix.mx.bisection.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.mx.brent.converged
+OK: capacity.pathMatrix.mx.brent.lambda
+OK: capacity.pathMatrix.mx.brent.physical
+OK: capacity.pathMatrix.mx.brent.solutionMethod
+OK: capacity.pathMatrix.mx.brent.equilibrium.N; actual=-120000.; expected=-120000.; relDiff=0.
+OK: capacity.pathMatrix.mx.brent.equilibrium.Mx; actual=-34052709.9078269; expected=-34052709.9078269; relDiff=0.
+OK: capacity.pathMatrix.mx.brent.equilibrium.My; actual=0.000000001804; expected=0.; absDiff=0.000000001804
+OK: capacity.pathMatrix.mx.brent.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.mx.brent.mxUltimate; actual=-34052709.9078269; expected=-34052709.9078269; absDiff=0.
+OK: capacity.pathMatrix.mx.brent.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.mx.secant.converged
+OK: capacity.pathMatrix.mx.secant.lambda
+OK: capacity.pathMatrix.mx.secant.physical
+OK: capacity.pathMatrix.mx.secant.solutionMethod
+OK: capacity.pathMatrix.mx.secant.equilibrium.N; actual=-120000.; expected=-120000.; relDiff=0.
+OK: capacity.pathMatrix.mx.secant.equilibrium.Mx; actual=-33726372.1189909; expected=-33726372.1189909; relDiff=0.
+OK: capacity.pathMatrix.mx.secant.equilibrium.My; actual=0.000000000859; expected=0.; absDiff=0.000000000859
+OK: capacity.pathMatrix.mx.secant.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.mx.secant.mxUltimate; actual=-33726372.1189909; expected=-33726372.1189909; absDiff=0.
+OK: capacity.pathMatrix.mx.secant.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.my.auto.converged
+OK: capacity.pathMatrix.my.auto.lambda
+OK: capacity.pathMatrix.my.auto.physical
+OK: capacity.pathMatrix.my.auto.solutionMethod
+OK: capacity.pathMatrix.my.auto.equilibrium.N; actual=-119999.999999921; expected=-120000.; relDiff=0.000000000001
+OK: capacity.pathMatrix.my.auto.equilibrium.Mx; actual=-0.00000397439; expected=0.; absDiff=0.00000397439
+OK: capacity.pathMatrix.my.auto.equilibrium.My; actual=-48828670.2884146; expected=-48828670.2884146; relDiff=0.
+OK: capacity.pathMatrix.my.auto.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.my.auto.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.my.auto.myUltimate; actual=-48828670.2884146; expected=-48828670.2884146; absDiff=0.
+OK: capacity.pathMatrix.my.ultimate.converged
+OK: capacity.pathMatrix.my.ultimate.lambda
+OK: capacity.pathMatrix.my.ultimate.physical
+OK: capacity.pathMatrix.my.ultimate.solutionMethod
+OK: capacity.pathMatrix.my.ultimate.equilibrium.N; actual=-119999.999999921; expected=-120000.; relDiff=0.000000000001
+OK: capacity.pathMatrix.my.ultimate.equilibrium.Mx; actual=-0.00000397439; expected=0.; absDiff=0.00000397439
+OK: capacity.pathMatrix.my.ultimate.equilibrium.My; actual=-48828670.2884146; expected=-48828670.2884146; relDiff=0.
+OK: capacity.pathMatrix.my.ultimate.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.my.ultimate.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.my.ultimate.myUltimate; actual=-48828670.2884146; expected=-48828670.2884146; absDiff=0.
+OK: capacity.pathMatrix.my.bisection.converged
+OK: capacity.pathMatrix.my.bisection.lambda
+OK: capacity.pathMatrix.my.bisection.physical
+OK: capacity.pathMatrix.my.bisection.solutionMethod
+OK: capacity.pathMatrix.my.bisection.equilibrium.N; actual=-120000.; expected=-120000.; relDiff=0.
+OK: capacity.pathMatrix.my.bisection.equilibrium.Mx; actual=0.00000000064; expected=0.; absDiff=0.00000000064
+OK: capacity.pathMatrix.my.bisection.equilibrium.My; actual=-48820312.5; expected=-48820312.5; relDiff=0.
+OK: capacity.pathMatrix.my.bisection.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.my.bisection.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.my.bisection.myUltimate; actual=-48820312.5; expected=-48820312.5; absDiff=0.
+OK: capacity.pathMatrix.my.brent.converged
+OK: capacity.pathMatrix.my.brent.lambda
+OK: capacity.pathMatrix.my.brent.physical
+OK: capacity.pathMatrix.my.brent.solutionMethod
+OK: capacity.pathMatrix.my.brent.equilibrium.N; actual=-119996.377987669; expected=-120000.; relDiff=0.000030183436
+OK: capacity.pathMatrix.my.brent.equilibrium.Mx; actual=0.00000000064; expected=0.; absDiff=0.00000000064
+OK: capacity.pathMatrix.my.brent.equilibrium.My; actual=-48831199.435572; expected=-48835456.5172983; relDiff=0.000087171945
+OK: capacity.pathMatrix.my.brent.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.my.brent.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.my.brent.myUltimate; actual=-48835456.5172983; expected=-48835456.5172983; absDiff=0.
+OK: capacity.pathMatrix.my.secant.converged
+OK: capacity.pathMatrix.my.secant.lambda
+OK: capacity.pathMatrix.my.secant.physical
+OK: capacity.pathMatrix.my.secant.solutionMethod
+OK: capacity.pathMatrix.my.secant.equilibrium.N; actual=-120000.; expected=-120000.; relDiff=0.
+OK: capacity.pathMatrix.my.secant.equilibrium.Mx; actual=0.000000000873; expected=0.; absDiff=0.000000000873
+OK: capacity.pathMatrix.my.secant.equilibrium.My; actual=-48683077.2733847; expected=-48683077.2733847; relDiff=0.
+OK: capacity.pathMatrix.my.secant.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.my.secant.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.my.secant.myUltimate; actual=-48683077.2733847; expected=-48683077.2733847; absDiff=0.
+OK: capacity.pathMatrix.mxy.auto.converged
+OK: capacity.pathMatrix.mxy.auto.lambda
+OK: capacity.pathMatrix.mxy.auto.physical
+OK: capacity.pathMatrix.mxy.auto.solutionMethod
+OK: capacity.pathMatrix.mxy.auto.equilibrium.N; actual=-119999.999999994; expected=-120000.; relDiff=0.
+OK: capacity.pathMatrix.mxy.auto.equilibrium.Mx; actual=-22789349.515449; expected=-22790944.8204845; relDiff=0.000069997319
+OK: capacity.pathMatrix.mxy.auto.equilibrium.My; actual=-13677225.7340165; expected=-13674566.8922907; relDiff=0.000194436997
+OK: capacity.pathMatrix.mxy.auto.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.mxy.auto.mxUltimate; actual=-22790944.8204845; expected=-22790944.8204845; absDiff=0.
+OK: capacity.pathMatrix.mxy.auto.myUltimate; actual=-13674566.8922907; expected=-13674566.8922907; absDiff=0.
+OK: capacity.pathMatrix.mxy.ultimate.converged
+OK: capacity.pathMatrix.mxy.ultimate.lambda
+OK: capacity.pathMatrix.mxy.ultimate.physical
+OK: capacity.pathMatrix.mxy.ultimate.solutionMethod
+OK: capacity.pathMatrix.mxy.ultimate.equilibrium.N; actual=-119999.999999994; expected=-120000.; relDiff=0.
+OK: capacity.pathMatrix.mxy.ultimate.equilibrium.Mx; actual=-22789349.515449; expected=-22790944.8204845; relDiff=0.000069997319
+OK: capacity.pathMatrix.mxy.ultimate.equilibrium.My; actual=-13677225.7340165; expected=-13674566.8922907; relDiff=0.000194436997
+OK: capacity.pathMatrix.mxy.ultimate.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.mxy.ultimate.mxUltimate; actual=-22790944.8204845; expected=-22790944.8204845; absDiff=0.
+OK: capacity.pathMatrix.mxy.ultimate.myUltimate; actual=-13674566.8922907; expected=-13674566.8922907; absDiff=0.
+OK: capacity.pathMatrix.mxy.bisection.converged
+OK: capacity.pathMatrix.mxy.bisection.lambda
+OK: capacity.pathMatrix.mxy.bisection.physical
+OK: capacity.pathMatrix.mxy.bisection.solutionMethod
+OK: capacity.pathMatrix.mxy.bisection.equilibrium.N; actual=-120000.; expected=-120000.; relDiff=0.
+OK: capacity.pathMatrix.mxy.bisection.equilibrium.Mx; actual=-22781250.; expected=-22781250.; relDiff=0.
+OK: capacity.pathMatrix.mxy.bisection.equilibrium.My; actual=-13668750.; expected=-13668750.; relDiff=0.
+OK: capacity.pathMatrix.mxy.bisection.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.mxy.bisection.mxUltimate; actual=-22781250.; expected=-22781250.; absDiff=0.
+OK: capacity.pathMatrix.mxy.bisection.myUltimate; actual=-13668750.; expected=-13668750.; absDiff=0.
+OK: capacity.pathMatrix.mxy.brent.converged
+OK: capacity.pathMatrix.mxy.brent.lambda
+OK: capacity.pathMatrix.mxy.brent.physical
+OK: capacity.pathMatrix.mxy.brent.solutionMethod
+OK: capacity.pathMatrix.mxy.brent.equilibrium.N; actual=-120000.; expected=-120000.; relDiff=0.
+OK: capacity.pathMatrix.mxy.brent.equilibrium.Mx; actual=-22787761.841915; expected=-22791149.2742413; relDiff=0.00014862929
+OK: capacity.pathMatrix.mxy.brent.equilibrium.My; actual=-13672657.105149; expected=-13674689.5645448; relDiff=0.00014862929
+OK: capacity.pathMatrix.mxy.brent.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.mxy.brent.mxUltimate; actual=-22791149.2742413; expected=-22791149.2742413; absDiff=0.
+OK: capacity.pathMatrix.mxy.brent.myUltimate; actual=-13674689.5645448; expected=-13674689.5645448; absDiff=0.
+OK: capacity.pathMatrix.mxy.secant.converged
+OK: capacity.pathMatrix.mxy.secant.lambda
+OK: capacity.pathMatrix.mxy.secant.physical
+OK: capacity.pathMatrix.mxy.secant.solutionMethod
+OK: capacity.pathMatrix.mxy.secant.equilibrium.N; actual=-120000.; expected=-120000.; relDiff=0.
+OK: capacity.pathMatrix.mxy.secant.equilibrium.Mx; actual=-22790730.0248137; expected=-22790730.0248137; relDiff=0.
+OK: capacity.pathMatrix.mxy.secant.equilibrium.My; actual=-13674438.0148882; expected=-13674438.0148882; relDiff=0.
+OK: capacity.pathMatrix.mxy.secant.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.mxy.secant.mxUltimate; actual=-22790730.0248137; expected=-22790730.0248137; absDiff=0.
+OK: capacity.pathMatrix.mxy.secant.myUltimate; actual=-13674438.0148882; expected=-13674438.0148882; absDiff=0.
+OK: capacity.pathMatrix.n.auto.converged
+OK: capacity.pathMatrix.n.auto.lambda
+OK: capacity.pathMatrix.n.auto.physical
+OK: capacity.pathMatrix.n.auto.solutionMethod
+OK: capacity.pathMatrix.n.auto.equilibrium.N; actual=-1287304.6875; expected=-1287304.6875; relDiff=0.
+OK: capacity.pathMatrix.n.auto.equilibrium.Mx; actual=-0.000000000349; expected=0.; absDiff=0.000000000349
+OK: capacity.pathMatrix.n.auto.equilibrium.My; actual=0.000000000407; expected=0.; absDiff=0.000000000407
+OK: capacity.pathMatrix.n.auto.nUltimate; actual=-1287304.6875; expected=-1287304.6875; absDiff=0.
+OK: capacity.pathMatrix.n.auto.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.n.auto.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.n.ultimate.converged
+OK: capacity.pathMatrix.n.ultimate.lambda
+OK: capacity.pathMatrix.n.ultimate.physical
+OK: capacity.pathMatrix.n.ultimate.solutionMethod
+OK: capacity.pathMatrix.n.ultimate.equilibrium.N; actual=-1287304.6875; expected=-1287304.6875; relDiff=0.
+OK: capacity.pathMatrix.n.ultimate.equilibrium.Mx; actual=-0.000000000349; expected=0.; absDiff=0.000000000349
+OK: capacity.pathMatrix.n.ultimate.equilibrium.My; actual=0.000000000407; expected=0.; absDiff=0.000000000407
+OK: capacity.pathMatrix.n.ultimate.nUltimate; actual=-1287304.6875; expected=-1287304.6875; absDiff=0.
+OK: capacity.pathMatrix.n.ultimate.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.n.ultimate.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.n.bisection.converged
+OK: capacity.pathMatrix.n.bisection.lambda
+OK: capacity.pathMatrix.n.bisection.physical
+OK: capacity.pathMatrix.n.bisection.solutionMethod
+OK: capacity.pathMatrix.n.bisection.equilibrium.N; actual=-1287304.6875; expected=-1287304.6875; relDiff=0.
+OK: capacity.pathMatrix.n.bisection.equilibrium.Mx; actual=-0.000000000349; expected=0.; absDiff=0.000000000349
+OK: capacity.pathMatrix.n.bisection.equilibrium.My; actual=0.000000000407; expected=0.; absDiff=0.000000000407
+OK: capacity.pathMatrix.n.bisection.nUltimate; actual=-1287304.6875; expected=-1287304.6875; absDiff=0.
+OK: capacity.pathMatrix.n.bisection.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.n.bisection.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.n.brent.converged
+OK: capacity.pathMatrix.n.brent.lambda
+OK: capacity.pathMatrix.n.brent.physical
+OK: capacity.pathMatrix.n.brent.solutionMethod
+OK: capacity.pathMatrix.n.brent.equilibrium.N; actual=-1287492.41396335; expected=-1287492.41396335; relDiff=0.
+OK: capacity.pathMatrix.n.brent.equilibrium.Mx; actual=0.000000005239; expected=0.; absDiff=0.000000005239
+OK: capacity.pathMatrix.n.brent.equilibrium.My; actual=-0.000000000524; expected=0.; absDiff=0.000000000524
+OK: capacity.pathMatrix.n.brent.nUltimate; actual=-1287492.41396335; expected=-1287492.41396335; absDiff=0.
+OK: capacity.pathMatrix.n.brent.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.n.brent.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.n.secant.converged
+OK: capacity.pathMatrix.n.secant.lambda
+OK: capacity.pathMatrix.n.secant.physical
+OK: capacity.pathMatrix.n.secant.solutionMethod
+OK: capacity.pathMatrix.n.secant.equilibrium.N; actual=-1287513.24397852; expected=-1287513.24397852; relDiff=0.
+OK: capacity.pathMatrix.n.secant.equilibrium.Mx; actual=-0.000000000407; expected=0.; absDiff=0.000000000407
+OK: capacity.pathMatrix.n.secant.equilibrium.My; actual=0.00000000032; expected=0.; absDiff=0.00000000032
+OK: capacity.pathMatrix.n.secant.nUltimate; actual=-1287513.24397852; expected=-1287513.24397852; absDiff=0.
+OK: capacity.pathMatrix.n.secant.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.n.secant.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.nmxy.auto.converged
+OK: capacity.pathMatrix.nmxy.auto.lambda
+OK: capacity.pathMatrix.nmxy.auto.physical
+OK: capacity.pathMatrix.nmxy.auto.solutionMethod
+OK: capacity.pathMatrix.nmxy.auto.equilibrium.N; actual=-666578.252132039; expected=-666578.252132039; relDiff=0.
+OK: capacity.pathMatrix.nmxy.auto.equilibrium.Mx; actual=-15997878.0511632; expected=-15997878.0511689; relDiff=0.
+OK: capacity.pathMatrix.nmxy.auto.equilibrium.My; actual=-10665252.0341093; expected=-10665252.0341126; relDiff=0.
+OK: capacity.pathMatrix.nmxy.auto.nUltimate; actual=-666578.252132039; expected=-666578.252132039; absDiff=0.
+OK: capacity.pathMatrix.nmxy.auto.mxUltimate; actual=-15997878.0511689; expected=-15997878.0511689; absDiff=0.
+OK: capacity.pathMatrix.nmxy.auto.myUltimate; actual=-10665252.0341126; expected=-10665252.0341126; absDiff=0.
+OK: capacity.pathMatrix.nmxy.ultimate.converged
+OK: capacity.pathMatrix.nmxy.ultimate.lambda
+OK: capacity.pathMatrix.nmxy.ultimate.physical
+OK: capacity.pathMatrix.nmxy.ultimate.solutionMethod
+OK: capacity.pathMatrix.nmxy.ultimate.equilibrium.N; actual=-666578.252132039; expected=-666578.252132039; relDiff=0.
+OK: capacity.pathMatrix.nmxy.ultimate.equilibrium.Mx; actual=-15997878.0511632; expected=-15997878.0511689; relDiff=0.
+OK: capacity.pathMatrix.nmxy.ultimate.equilibrium.My; actual=-10665252.0341093; expected=-10665252.0341126; relDiff=0.
+OK: capacity.pathMatrix.nmxy.ultimate.nUltimate; actual=-666578.252132039; expected=-666578.252132039; absDiff=0.
+OK: capacity.pathMatrix.nmxy.ultimate.mxUltimate; actual=-15997878.0511689; expected=-15997878.0511689; absDiff=0.
+OK: capacity.pathMatrix.nmxy.ultimate.myUltimate; actual=-10665252.0341126; expected=-10665252.0341126; absDiff=0.
+OK: capacity.pathMatrix.nmxy.bisection.converged
+OK: capacity.pathMatrix.nmxy.bisection.lambda
+OK: capacity.pathMatrix.nmxy.bisection.physical
+OK: capacity.pathMatrix.nmxy.bisection.solutionMethod
+OK: capacity.pathMatrix.nmxy.bisection.equilibrium.N; actual=-666406.25; expected=-666406.25; relDiff=0.
+OK: capacity.pathMatrix.nmxy.bisection.equilibrium.Mx; actual=-15993750.; expected=-15993750.; relDiff=0.
+OK: capacity.pathMatrix.nmxy.bisection.equilibrium.My; actual=-10662500.; expected=-10662500.; relDiff=0.
+OK: capacity.pathMatrix.nmxy.bisection.nUltimate; actual=-666406.25; expected=-666406.25; absDiff=0.
+OK: capacity.pathMatrix.nmxy.bisection.mxUltimate; actual=-15993750.; expected=-15993750.; absDiff=0.
+OK: capacity.pathMatrix.nmxy.bisection.myUltimate; actual=-10662500.; expected=-10662500.; absDiff=0.
+OK: capacity.pathMatrix.nmxy.brent.converged
+OK: capacity.pathMatrix.nmxy.brent.lambda
+OK: capacity.pathMatrix.nmxy.brent.physical
+OK: capacity.pathMatrix.nmxy.brent.solutionMethod
+OK: capacity.pathMatrix.nmxy.brent.equilibrium.N; actual=-666538.00035153; expected=-666538.00035153; relDiff=0.
+OK: capacity.pathMatrix.nmxy.brent.equilibrium.Mx; actual=-15996912.0084367; expected=-15996912.0084367; relDiff=0.
+OK: capacity.pathMatrix.nmxy.brent.equilibrium.My; actual=-10664608.0056245; expected=-10664608.0056245; relDiff=0.
+OK: capacity.pathMatrix.nmxy.brent.nUltimate; actual=-666538.00035153; expected=-666538.00035153; absDiff=0.
+OK: capacity.pathMatrix.nmxy.brent.mxUltimate; actual=-15996912.0084367; expected=-15996912.0084367; absDiff=0.
+OK: capacity.pathMatrix.nmxy.brent.myUltimate; actual=-10664608.0056245; expected=-10664608.0056245; absDiff=0.
+OK: capacity.pathMatrix.nmxy.secant.converged
+OK: capacity.pathMatrix.nmxy.secant.lambda
+OK: capacity.pathMatrix.nmxy.secant.physical
+OK: capacity.pathMatrix.nmxy.secant.solutionMethod
+OK: capacity.pathMatrix.nmxy.secant.equilibrium.N; actual=-664017.239401118; expected=-664017.239401118; relDiff=0.
+OK: capacity.pathMatrix.nmxy.secant.equilibrium.Mx; actual=-15936413.7456268; expected=-15936413.7456268; relDiff=0.
+OK: capacity.pathMatrix.nmxy.secant.equilibrium.My; actual=-10624275.8304179; expected=-10624275.8304179; relDiff=0.
+OK: capacity.pathMatrix.nmxy.secant.nUltimate; actual=-664017.239401118; expected=-664017.239401118; absDiff=0.
+OK: capacity.pathMatrix.nmxy.secant.mxUltimate; actual=-15936413.7456268; expected=-15936413.7456268; absDiff=0.
+OK: capacity.pathMatrix.nmxy.secant.myUltimate; actual=-10624275.8304179; expected=-10624275.8304179; absDiff=0.
+RUN: TestCapacityLoadPathZeroComponentMatrix
+OK: capacity.pathMatrix.zero.mxNoN.auto.converged
+OK: capacity.pathMatrix.zero.mxNoN.auto.lambda
+OK: capacity.pathMatrix.zero.mxNoN.auto.physical
+OK: capacity.pathMatrix.zero.mxNoN.auto.solutionMethod
+OK: capacity.pathMatrix.zero.mxNoN.auto.equilibrium.N; actual=0.000016160237; expected=0.; absDiff=0.000016160237
+OK: capacity.pathMatrix.zero.mxNoN.auto.equilibrium.Mx; actual=-28816610.7682025; expected=-28816610.7682025; relDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.auto.equilibrium.My; actual=0.000264883434; expected=0.; absDiff=0.000264883434
+OK: capacity.pathMatrix.zero.mxNoN.auto.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.auto.mxUltimate; actual=-28816610.7682025; expected=-28816610.7682025; absDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.auto.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.ultimate.converged
+OK: capacity.pathMatrix.zero.mxNoN.ultimate.lambda
+OK: capacity.pathMatrix.zero.mxNoN.ultimate.physical
+OK: capacity.pathMatrix.zero.mxNoN.ultimate.solutionMethod
+OK: capacity.pathMatrix.zero.mxNoN.ultimate.equilibrium.N; actual=0.000016160237; expected=0.; absDiff=0.000016160237
+OK: capacity.pathMatrix.zero.mxNoN.ultimate.equilibrium.Mx; actual=-28816610.7682025; expected=-28816610.7682025; relDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.ultimate.equilibrium.My; actual=0.000264883434; expected=0.; absDiff=0.000264883434
+OK: capacity.pathMatrix.zero.mxNoN.ultimate.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.ultimate.mxUltimate; actual=-28816610.7682025; expected=-28816610.7682025; absDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.ultimate.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.bisection.converged
+OK: capacity.pathMatrix.zero.mxNoN.bisection.lambda
+OK: capacity.pathMatrix.zero.mxNoN.bisection.physical
+OK: capacity.pathMatrix.zero.mxNoN.bisection.solutionMethod
+OK: capacity.pathMatrix.zero.mxNoN.bisection.equilibrium.N; actual=-0.000000000233; expected=0.; absDiff=0.000000000233
+OK: capacity.pathMatrix.zero.mxNoN.bisection.equilibrium.Mx; actual=-28816406.25; expected=-28816406.25; relDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.bisection.equilibrium.My; actual=0.000000000757; expected=0.; absDiff=0.000000000757
+OK: capacity.pathMatrix.zero.mxNoN.bisection.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.bisection.mxUltimate; actual=-28816406.25; expected=-28816406.25; absDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.bisection.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.brent.converged
+OK: capacity.pathMatrix.zero.mxNoN.brent.lambda
+OK: capacity.pathMatrix.zero.mxNoN.brent.physical
+OK: capacity.pathMatrix.zero.mxNoN.brent.solutionMethod
+OK: capacity.pathMatrix.zero.mxNoN.brent.equilibrium.N; actual=-0.000000000065; expected=0.; absDiff=0.000000000065
+OK: capacity.pathMatrix.zero.mxNoN.brent.equilibrium.Mx; actual=-28813607.2935909; expected=-28813607.2935909; relDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.brent.equilibrium.My; actual=-0.000000000684; expected=0.; absDiff=0.000000000684
+OK: capacity.pathMatrix.zero.mxNoN.brent.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.brent.mxUltimate; actual=-28813607.2935909; expected=-28813607.2935909; absDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.brent.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.secant.converged
+OK: capacity.pathMatrix.zero.mxNoN.secant.lambda
+OK: capacity.pathMatrix.zero.mxNoN.secant.physical
+OK: capacity.pathMatrix.zero.mxNoN.secant.solutionMethod
+OK: capacity.pathMatrix.zero.mxNoN.secant.equilibrium.N; actual=-0.000000000211; expected=0.; absDiff=0.000000000211
+OK: capacity.pathMatrix.zero.mxNoN.secant.equilibrium.Mx; actual=-28816610.7693272; expected=-28816610.7693272; relDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.secant.equilibrium.My; actual=-0.000000000073; expected=0.; absDiff=0.000000000073
+OK: capacity.pathMatrix.zero.mxNoN.secant.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.secant.mxUltimate; actual=-28816610.7693272; expected=-28816610.7693272; absDiff=0.
+OK: capacity.pathMatrix.zero.mxNoN.secant.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.auto.converged
+OK: capacity.pathMatrix.zero.myNoN.auto.lambda
+OK: capacity.pathMatrix.zero.myNoN.auto.physical
+OK: capacity.pathMatrix.zero.myNoN.auto.solutionMethod
+OK: capacity.pathMatrix.zero.myNoN.auto.equilibrium.N; actual=-0.000003918547; expected=0.; absDiff=0.000003918547
+OK: capacity.pathMatrix.zero.myNoN.auto.equilibrium.Mx; actual=0.000266469986; expected=0.; absDiff=0.000266469986
+OK: capacity.pathMatrix.zero.myNoN.auto.equilibrium.My; actual=-43228757.8887923; expected=-43228757.8887923; relDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.auto.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.auto.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.auto.myUltimate; actual=-43228757.8887923; expected=-43228757.8887923; absDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.ultimate.converged
+OK: capacity.pathMatrix.zero.myNoN.ultimate.lambda
+OK: capacity.pathMatrix.zero.myNoN.ultimate.physical
+OK: capacity.pathMatrix.zero.myNoN.ultimate.solutionMethod
+OK: capacity.pathMatrix.zero.myNoN.ultimate.equilibrium.N; actual=-0.000003918547; expected=0.; absDiff=0.000003918547
+OK: capacity.pathMatrix.zero.myNoN.ultimate.equilibrium.Mx; actual=0.000266469986; expected=0.; absDiff=0.000266469986
+OK: capacity.pathMatrix.zero.myNoN.ultimate.equilibrium.My; actual=-43228757.8887923; expected=-43228757.8887923; relDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.ultimate.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.ultimate.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.ultimate.myUltimate; actual=-43228757.8887923; expected=-43228757.8887923; absDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.bisection.converged
+OK: capacity.pathMatrix.zero.myNoN.bisection.lambda
+OK: capacity.pathMatrix.zero.myNoN.bisection.physical
+OK: capacity.pathMatrix.zero.myNoN.bisection.solutionMethod
+OK: capacity.pathMatrix.zero.myNoN.bisection.equilibrium.N; actual=-0.000000000175; expected=0.; absDiff=0.000000000175
+OK: capacity.pathMatrix.zero.myNoN.bisection.equilibrium.Mx; actual=0.000000000407; expected=0.; absDiff=0.000000000407
+OK: capacity.pathMatrix.zero.myNoN.bisection.equilibrium.My; actual=-43222656.25; expected=-43222656.25; relDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.bisection.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.bisection.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.bisection.myUltimate; actual=-43222656.25; expected=-43222656.25; absDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.brent.converged
+OK: capacity.pathMatrix.zero.myNoN.brent.lambda
+OK: capacity.pathMatrix.zero.myNoN.brent.physical
+OK: capacity.pathMatrix.zero.myNoN.brent.solutionMethod
+OK: capacity.pathMatrix.zero.myNoN.brent.equilibrium.N; actual=-0.000000000029; expected=0.; absDiff=0.000000000029
+OK: capacity.pathMatrix.zero.myNoN.brent.equilibrium.Mx; actual=0.000000000466; expected=0.; absDiff=0.000000000466
+OK: capacity.pathMatrix.zero.myNoN.brent.equilibrium.My; actual=-43220101.8082116; expected=-43220101.8082116; relDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.brent.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.brent.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.brent.myUltimate; actual=-43220101.8082116; expected=-43220101.8082116; absDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.secant.converged
+OK: capacity.pathMatrix.zero.myNoN.secant.lambda
+OK: capacity.pathMatrix.zero.myNoN.secant.physical
+OK: capacity.pathMatrix.zero.myNoN.secant.solutionMethod
+OK: capacity.pathMatrix.zero.myNoN.secant.equilibrium.N; actual=0.000000000007; expected=0.; absDiff=0.000000000007
+OK: capacity.pathMatrix.zero.myNoN.secant.equilibrium.Mx; actual=0.000000000146; expected=0.; absDiff=0.000000000146
+OK: capacity.pathMatrix.zero.myNoN.secant.equilibrium.My; actual=-43228757.8886652; expected=-43228757.8886652; relDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.secant.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.secant.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.myNoN.secant.myUltimate; actual=-43228757.8886652; expected=-43228757.8886652; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.auto.converged
+OK: capacity.pathMatrix.zero.mxyOnlyMx.auto.lambda
+OK: capacity.pathMatrix.zero.mxyOnlyMx.auto.physical
+OK: capacity.pathMatrix.zero.mxyOnlyMx.auto.solutionMethod
+OK: capacity.pathMatrix.zero.mxyOnlyMx.auto.equilibrium.N; actual=0.000016160237; expected=0.; absDiff=0.000016160237
+OK: capacity.pathMatrix.zero.mxyOnlyMx.auto.equilibrium.Mx; actual=-28816610.7682025; expected=-28816610.7682025; relDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.auto.equilibrium.My; actual=0.000264883434; expected=0.; absDiff=0.000264883434
+OK: capacity.pathMatrix.zero.mxyOnlyMx.auto.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.auto.mxUltimate; actual=-28816610.7682025; expected=-28816610.7682025; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.auto.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.ultimate.converged
+OK: capacity.pathMatrix.zero.mxyOnlyMx.ultimate.lambda
+OK: capacity.pathMatrix.zero.mxyOnlyMx.ultimate.physical
+OK: capacity.pathMatrix.zero.mxyOnlyMx.ultimate.solutionMethod
+OK: capacity.pathMatrix.zero.mxyOnlyMx.ultimate.equilibrium.N; actual=0.000016160237; expected=0.; absDiff=0.000016160237
+OK: capacity.pathMatrix.zero.mxyOnlyMx.ultimate.equilibrium.Mx; actual=-28816610.7682025; expected=-28816610.7682025; relDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.ultimate.equilibrium.My; actual=0.000264883434; expected=0.; absDiff=0.000264883434
+OK: capacity.pathMatrix.zero.mxyOnlyMx.ultimate.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.ultimate.mxUltimate; actual=-28816610.7682025; expected=-28816610.7682025; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.ultimate.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.bisection.converged
+OK: capacity.pathMatrix.zero.mxyOnlyMx.bisection.lambda
+OK: capacity.pathMatrix.zero.mxyOnlyMx.bisection.physical
+OK: capacity.pathMatrix.zero.mxyOnlyMx.bisection.solutionMethod
+OK: capacity.pathMatrix.zero.mxyOnlyMx.bisection.equilibrium.N; actual=-0.000000000233; expected=0.; absDiff=0.000000000233
+OK: capacity.pathMatrix.zero.mxyOnlyMx.bisection.equilibrium.Mx; actual=-28816406.25; expected=-28816406.25; relDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.bisection.equilibrium.My; actual=0.000000000757; expected=0.; absDiff=0.000000000757
+OK: capacity.pathMatrix.zero.mxyOnlyMx.bisection.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.bisection.mxUltimate; actual=-28816406.25; expected=-28816406.25; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.bisection.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.brent.converged
+OK: capacity.pathMatrix.zero.mxyOnlyMx.brent.lambda
+OK: capacity.pathMatrix.zero.mxyOnlyMx.brent.physical
+OK: capacity.pathMatrix.zero.mxyOnlyMx.brent.solutionMethod
+OK: capacity.pathMatrix.zero.mxyOnlyMx.brent.equilibrium.N; actual=-0.000000000065; expected=0.; absDiff=0.000000000065
+OK: capacity.pathMatrix.zero.mxyOnlyMx.brent.equilibrium.Mx; actual=-28813607.2935909; expected=-28813607.2935909; relDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.brent.equilibrium.My; actual=-0.000000000684; expected=0.; absDiff=0.000000000684
+OK: capacity.pathMatrix.zero.mxyOnlyMx.brent.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.brent.mxUltimate; actual=-28813607.2935909; expected=-28813607.2935909; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.brent.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.secant.converged
+OK: capacity.pathMatrix.zero.mxyOnlyMx.secant.lambda
+OK: capacity.pathMatrix.zero.mxyOnlyMx.secant.physical
+OK: capacity.pathMatrix.zero.mxyOnlyMx.secant.solutionMethod
+OK: capacity.pathMatrix.zero.mxyOnlyMx.secant.equilibrium.N; actual=-0.000000000211; expected=0.; absDiff=0.000000000211
+OK: capacity.pathMatrix.zero.mxyOnlyMx.secant.equilibrium.Mx; actual=-28816610.7693272; expected=-28816610.7693272; relDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.secant.equilibrium.My; actual=-0.000000000073; expected=0.; absDiff=0.000000000073
+OK: capacity.pathMatrix.zero.mxyOnlyMx.secant.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.secant.mxUltimate; actual=-28816610.7693272; expected=-28816610.7693272; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMx.secant.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.auto.converged
+OK: capacity.pathMatrix.zero.mxyOnlyMy.auto.lambda
+OK: capacity.pathMatrix.zero.mxyOnlyMy.auto.physical
+OK: capacity.pathMatrix.zero.mxyOnlyMy.auto.solutionMethod
+OK: capacity.pathMatrix.zero.mxyOnlyMy.auto.equilibrium.N; actual=-0.000003918547; expected=0.; absDiff=0.000003918547
+OK: capacity.pathMatrix.zero.mxyOnlyMy.auto.equilibrium.Mx; actual=0.000266469986; expected=0.; absDiff=0.000266469986
+OK: capacity.pathMatrix.zero.mxyOnlyMy.auto.equilibrium.My; actual=-43228757.8887923; expected=-43228757.8887923; relDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.auto.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.auto.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.auto.myUltimate; actual=-43228757.8887923; expected=-43228757.8887923; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.ultimate.converged
+OK: capacity.pathMatrix.zero.mxyOnlyMy.ultimate.lambda
+OK: capacity.pathMatrix.zero.mxyOnlyMy.ultimate.physical
+OK: capacity.pathMatrix.zero.mxyOnlyMy.ultimate.solutionMethod
+OK: capacity.pathMatrix.zero.mxyOnlyMy.ultimate.equilibrium.N; actual=-0.000003918547; expected=0.; absDiff=0.000003918547
+OK: capacity.pathMatrix.zero.mxyOnlyMy.ultimate.equilibrium.Mx; actual=0.000266469986; expected=0.; absDiff=0.000266469986
+OK: capacity.pathMatrix.zero.mxyOnlyMy.ultimate.equilibrium.My; actual=-43228757.8887923; expected=-43228757.8887923; relDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.ultimate.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.ultimate.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.ultimate.myUltimate; actual=-43228757.8887923; expected=-43228757.8887923; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.bisection.converged
+OK: capacity.pathMatrix.zero.mxyOnlyMy.bisection.lambda
+OK: capacity.pathMatrix.zero.mxyOnlyMy.bisection.physical
+OK: capacity.pathMatrix.zero.mxyOnlyMy.bisection.solutionMethod
+OK: capacity.pathMatrix.zero.mxyOnlyMy.bisection.equilibrium.N; actual=-0.000000000175; expected=0.; absDiff=0.000000000175
+OK: capacity.pathMatrix.zero.mxyOnlyMy.bisection.equilibrium.Mx; actual=0.000000000407; expected=0.; absDiff=0.000000000407
+OK: capacity.pathMatrix.zero.mxyOnlyMy.bisection.equilibrium.My; actual=-43222656.25; expected=-43222656.25; relDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.bisection.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.bisection.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.bisection.myUltimate; actual=-43222656.25; expected=-43222656.25; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.brent.converged
+OK: capacity.pathMatrix.zero.mxyOnlyMy.brent.lambda
+OK: capacity.pathMatrix.zero.mxyOnlyMy.brent.physical
+OK: capacity.pathMatrix.zero.mxyOnlyMy.brent.solutionMethod
+OK: capacity.pathMatrix.zero.mxyOnlyMy.brent.equilibrium.N; actual=-0.000000000029; expected=0.; absDiff=0.000000000029
+OK: capacity.pathMatrix.zero.mxyOnlyMy.brent.equilibrium.Mx; actual=0.000000000466; expected=0.; absDiff=0.000000000466
+OK: capacity.pathMatrix.zero.mxyOnlyMy.brent.equilibrium.My; actual=-43220101.8082116; expected=-43220101.8082116; relDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.brent.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.brent.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.brent.myUltimate; actual=-43220101.8082116; expected=-43220101.8082116; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.secant.converged
+OK: capacity.pathMatrix.zero.mxyOnlyMy.secant.lambda
+OK: capacity.pathMatrix.zero.mxyOnlyMy.secant.physical
+OK: capacity.pathMatrix.zero.mxyOnlyMy.secant.solutionMethod
+OK: capacity.pathMatrix.zero.mxyOnlyMy.secant.equilibrium.N; actual=0.000000000007; expected=0.; absDiff=0.000000000007
+OK: capacity.pathMatrix.zero.mxyOnlyMy.secant.equilibrium.Mx; actual=0.000000000146; expected=0.; absDiff=0.000000000146
+OK: capacity.pathMatrix.zero.mxyOnlyMy.secant.equilibrium.My; actual=-43228757.8886652; expected=-43228757.8886652; relDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.secant.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.secant.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.mxyOnlyMy.secant.myUltimate; actual=-43228757.8886652; expected=-43228757.8886652; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.auto.converged
+OK: capacity.pathMatrix.zero.nmxyOnlyN.auto.lambda
+OK: capacity.pathMatrix.zero.nmxyOnlyN.auto.physical
+OK: capacity.pathMatrix.zero.nmxyOnlyN.auto.solutionMethod
+OK: capacity.pathMatrix.zero.nmxyOnlyN.auto.equilibrium.N; actual=-1287304.6875; expected=-1287304.6875; relDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.auto.equilibrium.Mx; actual=-0.000000000349; expected=0.; absDiff=0.000000000349
+OK: capacity.pathMatrix.zero.nmxyOnlyN.auto.equilibrium.My; actual=0.000000000407; expected=0.; absDiff=0.000000000407
+OK: capacity.pathMatrix.zero.nmxyOnlyN.auto.nUltimate; actual=-1287304.6875; expected=-1287304.6875; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.auto.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.auto.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.ultimate.converged
+OK: capacity.pathMatrix.zero.nmxyOnlyN.ultimate.lambda
+OK: capacity.pathMatrix.zero.nmxyOnlyN.ultimate.physical
+OK: capacity.pathMatrix.zero.nmxyOnlyN.ultimate.solutionMethod
+OK: capacity.pathMatrix.zero.nmxyOnlyN.ultimate.equilibrium.N; actual=-1287304.6875; expected=-1287304.6875; relDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.ultimate.equilibrium.Mx; actual=-0.000000000349; expected=0.; absDiff=0.000000000349
+OK: capacity.pathMatrix.zero.nmxyOnlyN.ultimate.equilibrium.My; actual=0.000000000407; expected=0.; absDiff=0.000000000407
+OK: capacity.pathMatrix.zero.nmxyOnlyN.ultimate.nUltimate; actual=-1287304.6875; expected=-1287304.6875; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.ultimate.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.ultimate.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.bisection.converged
+OK: capacity.pathMatrix.zero.nmxyOnlyN.bisection.lambda
+OK: capacity.pathMatrix.zero.nmxyOnlyN.bisection.physical
+OK: capacity.pathMatrix.zero.nmxyOnlyN.bisection.solutionMethod
+OK: capacity.pathMatrix.zero.nmxyOnlyN.bisection.equilibrium.N; actual=-1287304.6875; expected=-1287304.6875; relDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.bisection.equilibrium.Mx; actual=-0.000000000349; expected=0.; absDiff=0.000000000349
+OK: capacity.pathMatrix.zero.nmxyOnlyN.bisection.equilibrium.My; actual=0.000000000407; expected=0.; absDiff=0.000000000407
+OK: capacity.pathMatrix.zero.nmxyOnlyN.bisection.nUltimate; actual=-1287304.6875; expected=-1287304.6875; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.bisection.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.bisection.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.brent.converged
+OK: capacity.pathMatrix.zero.nmxyOnlyN.brent.lambda
+OK: capacity.pathMatrix.zero.nmxyOnlyN.brent.physical
+OK: capacity.pathMatrix.zero.nmxyOnlyN.brent.solutionMethod
+OK: capacity.pathMatrix.zero.nmxyOnlyN.brent.equilibrium.N; actual=-1287492.41396335; expected=-1287492.41396335; relDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.brent.equilibrium.Mx; actual=0.000000005239; expected=0.; absDiff=0.000000005239
+OK: capacity.pathMatrix.zero.nmxyOnlyN.brent.equilibrium.My; actual=-0.000000000524; expected=0.; absDiff=0.000000000524
+OK: capacity.pathMatrix.zero.nmxyOnlyN.brent.nUltimate; actual=-1287492.41396335; expected=-1287492.41396335; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.brent.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.brent.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.secant.converged
+OK: capacity.pathMatrix.zero.nmxyOnlyN.secant.lambda
+OK: capacity.pathMatrix.zero.nmxyOnlyN.secant.physical
+OK: capacity.pathMatrix.zero.nmxyOnlyN.secant.solutionMethod
+OK: capacity.pathMatrix.zero.nmxyOnlyN.secant.equilibrium.N; actual=-1287513.24397852; expected=-1287513.24397852; relDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.secant.equilibrium.Mx; actual=-0.000000000407; expected=0.; absDiff=0.000000000407
+OK: capacity.pathMatrix.zero.nmxyOnlyN.secant.equilibrium.My; actual=0.00000000032; expected=0.; absDiff=0.00000000032
+OK: capacity.pathMatrix.zero.nmxyOnlyN.secant.nUltimate; actual=-1287513.24397852; expected=-1287513.24397852; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.secant.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyN.secant.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.auto.converged
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.auto.lambda
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.auto.physical
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.auto.solutionMethod
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.auto.equilibrium.N; actual=0.000016160237; expected=0.; absDiff=0.000016160237
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.auto.equilibrium.Mx; actual=-28816610.7682025; expected=-28816610.7682025; relDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.auto.equilibrium.My; actual=0.000264883434; expected=0.; absDiff=0.000264883434
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.auto.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.auto.mxUltimate; actual=-28816610.7682025; expected=-28816610.7682025; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.auto.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.ultimate.converged
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.ultimate.lambda
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.ultimate.physical
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.ultimate.solutionMethod
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.ultimate.equilibrium.N; actual=0.000016160237; expected=0.; absDiff=0.000016160237
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.ultimate.equilibrium.Mx; actual=-28816610.7682025; expected=-28816610.7682025; relDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.ultimate.equilibrium.My; actual=0.000264883434; expected=0.; absDiff=0.000264883434
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.ultimate.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.ultimate.mxUltimate; actual=-28816610.7682025; expected=-28816610.7682025; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.ultimate.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.bisection.converged
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.bisection.lambda
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.bisection.physical
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.bisection.solutionMethod
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.bisection.equilibrium.N; actual=-0.000000000233; expected=0.; absDiff=0.000000000233
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.bisection.equilibrium.Mx; actual=-28816406.25; expected=-28816406.25; relDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.bisection.equilibrium.My; actual=0.000000000757; expected=0.; absDiff=0.000000000757
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.bisection.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.bisection.mxUltimate; actual=-28816406.25; expected=-28816406.25; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.bisection.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.brent.converged
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.brent.lambda
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.brent.physical
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.brent.solutionMethod
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.brent.equilibrium.N; actual=-0.000000000065; expected=0.; absDiff=0.000000000065
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.brent.equilibrium.Mx; actual=-28813607.2935909; expected=-28813607.2935909; relDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.brent.equilibrium.My; actual=-0.000000000684; expected=0.; absDiff=0.000000000684
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.brent.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.brent.mxUltimate; actual=-28813607.2935909; expected=-28813607.2935909; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.brent.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.secant.converged
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.secant.lambda
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.secant.physical
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.secant.solutionMethod
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.secant.equilibrium.N; actual=-0.000000000211; expected=0.; absDiff=0.000000000211
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.secant.equilibrium.Mx; actual=-28816610.7693272; expected=-28816610.7693272; relDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.secant.equilibrium.My; actual=-0.000000000073; expected=0.; absDiff=0.000000000073
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.secant.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.secant.mxUltimate; actual=-28816610.7693272; expected=-28816610.7693272; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMx.secant.myUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.auto.converged
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.auto.lambda
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.auto.physical
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.auto.solutionMethod
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.auto.equilibrium.N; actual=-0.000003918547; expected=0.; absDiff=0.000003918547
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.auto.equilibrium.Mx; actual=0.000266469986; expected=0.; absDiff=0.000266469986
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.auto.equilibrium.My; actual=-43228757.8887923; expected=-43228757.8887923; relDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.auto.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.auto.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.auto.myUltimate; actual=-43228757.8887923; expected=-43228757.8887923; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.ultimate.converged
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.ultimate.lambda
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.ultimate.physical
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.ultimate.solutionMethod
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.ultimate.equilibrium.N; actual=-0.000003918547; expected=0.; absDiff=0.000003918547
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.ultimate.equilibrium.Mx; actual=0.000266469986; expected=0.; absDiff=0.000266469986
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.ultimate.equilibrium.My; actual=-43228757.8887923; expected=-43228757.8887923; relDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.ultimate.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.ultimate.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.ultimate.myUltimate; actual=-43228757.8887923; expected=-43228757.8887923; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.bisection.converged
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.bisection.lambda
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.bisection.physical
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.bisection.solutionMethod
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.bisection.equilibrium.N; actual=-0.000000000175; expected=0.; absDiff=0.000000000175
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.bisection.equilibrium.Mx; actual=0.000000000407; expected=0.; absDiff=0.000000000407
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.bisection.equilibrium.My; actual=-43222656.25; expected=-43222656.25; relDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.bisection.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.bisection.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.bisection.myUltimate; actual=-43222656.25; expected=-43222656.25; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.brent.converged
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.brent.lambda
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.brent.physical
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.brent.solutionMethod
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.brent.equilibrium.N; actual=-0.000000000029; expected=0.; absDiff=0.000000000029
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.brent.equilibrium.Mx; actual=0.000000000466; expected=0.; absDiff=0.000000000466
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.brent.equilibrium.My; actual=-43220101.8082116; expected=-43220101.8082116; relDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.brent.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.brent.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.brent.myUltimate; actual=-43220101.8082116; expected=-43220101.8082116; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.secant.converged
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.secant.lambda
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.secant.physical
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.secant.solutionMethod
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.secant.equilibrium.N; actual=0.000000000007; expected=0.; absDiff=0.000000000007
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.secant.equilibrium.Mx; actual=0.000000000146; expected=0.; absDiff=0.000000000146
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.secant.equilibrium.My; actual=-43228757.8886652; expected=-43228757.8886652; relDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.secant.nUltimateBlank; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.secant.mxUltimate; actual=0.; expected=0.; absDiff=0.
+OK: capacity.pathMatrix.zero.nmxyOnlyMy.secant.myUltimate; actual=-43228757.8886652; expected=-43228757.8886652; absDiff=0.
+RUN: TestRectSetCapacityLoadPathSmoke
+INFO: rectset.n.tension.auto; status=SteelStrainLimit; converged=True; solutionMethod=LoadMultiplier; lambda=3.80859375
+OK: rectset.n.tension.auto.converged
+OK: rectset.n.tension.auto.lambda
+OK: rectset.n.tension.auto.physical
+OK: rectset.n.tension.auto.equilibrium.N; actual=7469909.1796875; expected=7469909.1796875; relDiff=0.
+OK: rectset.n.tension.auto.equilibrium.Mx; actual=2362764751.40115; expected=2362764751.40116; relDiff=0.
+OK: rectset.n.tension.auto.equilibrium.My; actual=1615773833.4324; expected=1615773833.4324; relDiff=0.
+OK: rectset.n.tension.auto.nUltimate; actual=7469909.1796875; expected=7469909.1796875; absDiff=0.
+OK: rectset.n.tension.auto.mxUltimate; actual=2362764751.40116; expected=2362764751.40116; absDiff=0.
+OK: rectset.n.tension.auto.myUltimate; actual=1615773833.4324; expected=1615773833.4324; absDiff=0.
+INFO: rectset.n.tension.ultimate; status=SteelStrainLimit; converged=True; solutionMethod=LoadMultiplier; lambda=3.80859375
+OK: rectset.n.tension.ultimate.converged
+OK: rectset.n.tension.ultimate.lambda
+OK: rectset.n.tension.ultimate.physical
+OK: rectset.n.tension.ultimate.equilibrium.N; actual=7469909.1796875; expected=7469909.1796875; relDiff=0.
+OK: rectset.n.tension.ultimate.equilibrium.Mx; actual=2362764751.40115; expected=2362764751.40116; relDiff=0.
+OK: rectset.n.tension.ultimate.equilibrium.My; actual=1615773833.4324; expected=1615773833.4324; relDiff=0.
+OK: rectset.n.tension.ultimate.nUltimate; actual=7469909.1796875; expected=7469909.1796875; absDiff=0.
+OK: rectset.n.tension.ultimate.mxUltimate; actual=2362764751.40116; expected=2362764751.40116; absDiff=0.
+OK: rectset.n.tension.ultimate.myUltimate; actual=1615773833.4324; expected=1615773833.4324; absDiff=0.
+INFO: rectset.n.tension.bisection; status=SteelStrainLimit; converged=True; solutionMethod=LoadMultiplier; lambda=3.80859375
+OK: rectset.n.tension.bisection.converged
+OK: rectset.n.tension.bisection.lambda
+OK: rectset.n.tension.bisection.physical
+OK: rectset.n.tension.bisection.equilibrium.N; actual=7469909.1796875; expected=7469909.1796875; relDiff=0.
+OK: rectset.n.tension.bisection.equilibrium.Mx; actual=2362764751.40115; expected=2362764751.40116; relDiff=0.
+OK: rectset.n.tension.bisection.equilibrium.My; actual=1615773833.4324; expected=1615773833.4324; relDiff=0.
+OK: rectset.n.tension.bisection.nUltimate; actual=7469909.1796875; expected=7469909.1796875; absDiff=0.
+OK: rectset.n.tension.bisection.mxUltimate; actual=2362764751.40116; expected=2362764751.40116; absDiff=0.
+OK: rectset.n.tension.bisection.myUltimate; actual=1615773833.4324; expected=1615773833.4324; absDiff=0.
+INFO: rectset.n.tension.brent; status=SteelStrainLimit; converged=True; solutionMethod=LoadMultiplier; lambda=3.813419719308
+OK: rectset.n.tension.brent.converged
+OK: rectset.n.tension.brent.lambda
+OK: rectset.n.tension.brent.physical
+OK: rectset.n.tension.brent.equilibrium.N; actual=7479374.49807119; expected=7479374.49807119; relDiff=0.
+OK: rectset.n.tension.brent.equilibrium.Mx; actual=2365758672.75947; expected=2365758672.75947; relDiff=0.
+OK: rectset.n.tension.brent.equilibrium.My; actual=1617821222.95236; expected=1617821222.95235; relDiff=0.
+OK: rectset.n.tension.brent.nUltimate; actual=7479374.49807119; expected=7479374.49807119; absDiff=0.
+OK: rectset.n.tension.brent.mxUltimate; actual=2365758672.75947; expected=2365758672.75947; absDiff=0.
+OK: rectset.n.tension.brent.myUltimate; actual=1617821222.95235; expected=1617821222.95235; absDiff=0.
+INFO: rectset.n.tension.secant; status=SteelStrainLimit; converged=True; solutionMethod=LoadMultiplier; lambda=3.785403160166
+OK: rectset.n.tension.secant.converged
+OK: rectset.n.tension.secant.lambda
+OK: rectset.n.tension.secant.physical
+OK: rectset.n.tension.secant.equilibrium.N; actual=7424424.78012804; expected=7424424.78012804; relDiff=0.
+OK: rectset.n.tension.secant.equilibrium.Mx; actual=2348377838.06224; expected=2348377838.06224; relDiff=0.
+OK: rectset.n.tension.secant.equilibrium.My; actual=1605935360.04943; expected=1605935360.04943; relDiff=0.
+OK: rectset.n.tension.secant.nUltimate; actual=7424424.78012804; expected=7424424.78012804; absDiff=0.
+OK: rectset.n.tension.secant.mxUltimate; actual=2348377838.06224; expected=2348377838.06224; absDiff=0.
+OK: rectset.n.tension.secant.myUltimate; actual=1605935360.04943; expected=1605935360.04943; absDiff=0.
+INFO: rectset.n.compression.auto; status=ConcreteStrainLimit; converged=True; solutionMethod=LoadMultiplier; lambda=5.3515625
+OK: rectset.n.compression.auto.converged
+OK: rectset.n.compression.auto.lambda
+OK: rectset.n.compression.auto.physical
+OK: rectset.n.compression.auto.equilibrium.N; actual=-10496180.078125; expected=-10496180.078125; relDiff=0.
+OK: rectset.n.compression.auto.equilibrium.Mx; actual=-3319987394.27649; expected=-3319987394.27649; relDiff=0.
+OK: rectset.n.compression.auto.equilibrium.My; actual=-2270369386.464; expected=-2270369386.46399; relDiff=0.
+OK: rectset.n.compression.auto.nUltimate; actual=-10496180.078125; expected=-10496180.078125; absDiff=0.
+OK: rectset.n.compression.auto.mxUltimate; actual=-3319987394.27649; expected=-3319987394.27649; absDiff=0.
+OK: rectset.n.compression.auto.myUltimate; actual=-2270369386.46399; expected=-2270369386.46399; absDiff=0.
+INFO: rectset.n.compression.ultimate; status=ConcreteStrainLimit; converged=True; solutionMethod=LoadMultiplier; lambda=5.3515625
+OK: rectset.n.compression.ultimate.converged
+OK: rectset.n.compression.ultimate.lambda
+OK: rectset.n.compression.ultimate.physical
+OK: rectset.n.compression.ultimate.equilibrium.N; actual=-10496180.078125; expected=-10496180.078125; relDiff=0.
+OK: rectset.n.compression.ultimate.equilibrium.Mx; actual=-3319987394.27649; expected=-3319987394.27649; relDiff=0.
+OK: rectset.n.compression.ultimate.equilibrium.My; actual=-2270369386.464; expected=-2270369386.46399; relDiff=0.
+OK: rectset.n.compression.ultimate.nUltimate; actual=-10496180.078125; expected=-10496180.078125; absDiff=0.
+OK: rectset.n.compression.ultimate.mxUltimate; actual=-3319987394.27649; expected=-3319987394.27649; absDiff=0.
+OK: rectset.n.compression.ultimate.myUltimate; actual=-2270369386.46399; expected=-2270369386.46399; absDiff=0.
+INFO: rectset.n.compression.bisection; status=ConcreteStrainLimit; converged=True; solutionMethod=LoadMultiplier; lambda=5.3515625
+OK: rectset.n.compression.bisection.converged
+OK: rectset.n.compression.bisection.lambda
+OK: rectset.n.compression.bisection.physical
+OK: rectset.n.compression.bisection.equilibrium.N; actual=-10496180.078125; expected=-10496180.078125; relDiff=0.
+OK: rectset.n.compression.bisection.equilibrium.Mx; actual=-3319987394.27649; expected=-3319987394.27649; relDiff=0.
+OK: rectset.n.compression.bisection.equilibrium.My; actual=-2270369386.464; expected=-2270369386.46399; relDiff=0.
+OK: rectset.n.compression.bisection.nUltimate; actual=-10496180.078125; expected=-10496180.078125; absDiff=0.
+OK: rectset.n.compression.bisection.mxUltimate; actual=-3319987394.27649; expected=-3319987394.27649; absDiff=0.
+OK: rectset.n.compression.bisection.myUltimate; actual=-2270369386.46399; expected=-2270369386.46399; absDiff=0.
+INFO: rectset.n.compression.brent; status=ConcreteStrainLimit; converged=True; solutionMethod=LoadMultiplier; lambda=5.350950849039
+OK: rectset.n.compression.brent.converged
+OK: rectset.n.compression.brent.lambda
+OK: rectset.n.compression.brent.physical
+OK: rectset.n.compression.brent.equilibrium.N; actual=-10494980.4287457; expected=-10494980.4287457; relDiff=0.
+OK: rectset.n.compression.brent.equilibrium.Mx; actual=-3319607939.96196; expected=-3319607939.96196; relDiff=0.
+OK: rectset.n.compression.brent.equilibrium.My; actual=-2270109897.08739; expected=-2270109897.08739; relDiff=0.
+OK: rectset.n.compression.brent.nUltimate; actual=-10494980.4287457; expected=-10494980.4287457; absDiff=0.
+OK: rectset.n.compression.brent.mxUltimate; actual=-3319607939.96196; expected=-3319607939.96196; absDiff=0.
+OK: rectset.n.compression.brent.myUltimate; actual=-2270109897.08739; expected=-2270109897.08739; absDiff=0.
+INFO: rectset.n.compression.secant; status=ConcreteStrainLimit; converged=True; solutionMethod=LoadMultiplier; lambda=5.351634672293
+OK: rectset.n.compression.secant.converged
+OK: rectset.n.compression.secant.lambda
+OK: rectset.n.compression.secant.physical
+OK: rectset.n.compression.secant.equilibrium.N; actual=-10496321.6318084; expected=-10496321.6318084; relDiff=0.
+OK: rectset.n.compression.secant.equilibrium.Mx; actual=-3320032168.322; expected=-3320032168.322; relDiff=0.
+OK: rectset.n.compression.secant.equilibrium.My; actual=-2270400005.14116; expected=-2270400005.14116; relDiff=0.
+OK: rectset.n.compression.secant.nUltimate; actual=-10496321.6318084; expected=-10496321.6318084; absDiff=0.
+OK: rectset.n.compression.secant.mxUltimate; actual=-3320032168.322; expected=-3320032168.322; absDiff=0.
+OK: rectset.n.compression.secant.myUltimate; actual=-2270400005.14116; expected=-2270400005.14116; absDiff=0.
+INFO: rectset.moment.mx.userCase; status=ConcreteStrainLimit; converged=True; solutionMethod=UltimateStrain; lambda=1.809449755892
+OK: rectset.moment.mx.userCase.converged
+OK: rectset.moment.mx.userCase.solutionMethod
+OK: rectset.moment.mx.userCase.lambda
+OK: rectset.moment.mx.userCase.physical
+OK: rectset.moment.mx.userCase.equilibrium.N; actual=-1961330.; expected=-1961330.; relDiff=0.
+OK: rectset.moment.mx.userCase.equilibrium.Mx; actual=266854815.909295; expected=266854815.909295; relDiff=0.
+OK: rectset.moment.mx.userCase.equilibrium.My; actual=-424240804.142886; expected=-424244206.521739; relDiff=0.000008019859
+OK: rectset.moment.mx.userCase.mxUltimate.user; actual=887232022.431035; expected=887232022.431035; absDiff=0.
+OK: rectset.moment.mx.userCase.myUltimate.user; actual=0.; expected=0.; absDiff=0.
+INFO: rectset.moment.my.userCase; status=ConcreteStrainLimit; converged=True; solutionMethod=UltimateStrain; lambda=1.327592738766
+OK: rectset.moment.my.userCase.converged
+OK: rectset.moment.my.userCase.solutionMethod
+OK: rectset.moment.my.userCase.lambda
+OK: rectset.moment.my.userCase.physical
+OK: rectset.moment.my.userCase.equilibrium.N; actual=-1961330.; expected=-1961330.; relDiff=0.
+OK: rectset.moment.my.userCase.equilibrium.Mx; actual=-620376707.024476; expected=-620377206.521739; relDiff=0.000000805151
+OK: rectset.moment.my.userCase.equilibrium.My; actual=226717660.059326; expected=226717660.059326; relDiff=0.
+OK: rectset.moment.my.userCase.mxUltimate.user; actual=0.; expected=0.; absDiff=0.
+OK: rectset.moment.my.userCase.myUltimate.user; actual=650961866.581065; expected=650961866.581065; absDiff=0.
+INFO: rectset.moment.mxy.userCase; status=ConcreteStrainLimit; converged=True; solutionMethod=UltimateStrain; lambda=1.084567272094
+OK: rectset.moment.mxy.userCase.converged
+OK: rectset.moment.mxy.userCase.solutionMethod
+OK: rectset.moment.mxy.userCase.lambda
+OK: rectset.moment.mxy.userCase.physical
+OK: rectset.moment.mxy.userCase.equilibrium.N; actual=-1961330.; expected=-1961330.; relDiff=0.
+OK: rectset.moment.mxy.userCase.equilibrium.Mx; actual=-88578640.0191786; expected=-88578624.5776867; relDiff=0.000000174325
+OK: rectset.moment.mxy.userCase.equilibrium.My; actual=-158344884.666729; expected=-158344915.549713; relDiff=0.000000195036
+OK: rectset.moment.mxy.userCase.mxUltimate.user; actual=531798581.944052; expected=531798581.944052; absDiff=0.
+OK: rectset.moment.mxy.userCase.myUltimate.user; actual=265899290.972026; expected=265899290.972026; absDiff=0.
+RUN: TestNultBaseLoadStepsSensitivity
+INFO: capacity.nult.baseLoadSteps.tension.1; converged=True; state=SteelStrainLimit; lambda=3.80859375; iterations=50; retries=32
+INFO: capacity.nult.baseLoadSteps.tension.2; converged=True; state=SteelStrainLimit; lambda=3.80859375; iterations=50; retries=32
+OK: capacity.nult.baseLoadSteps.tension.2.converged
+OK: capacity.nult.baseLoadSteps.tension.2.lambda
+INFO: capacity.nult.baseLoadSteps.tension.4; converged=True; state=SteelStrainLimit; lambda=3.80859375; iterations=50; retries=32
+OK: capacity.nult.baseLoadSteps.tension.4.converged
+OK: capacity.nult.baseLoadSteps.tension.4.lambda
+INFO: capacity.nult.baseLoadSteps.tension.8; converged=True; state=SteelStrainLimit; lambda=3.80859375; iterations=50; retries=32
+OK: capacity.nult.baseLoadSteps.tension.8.converged
+OK: capacity.nult.baseLoadSteps.tension.8.lambda
+INFO: capacity.nult.baseLoadSteps.compression.1; converged=True; state=ConcreteStrainLimit; lambda=5.3515625; iterations=18; retries=4
+INFO: capacity.nult.baseLoadSteps.compression.2; converged=True; state=ConcreteStrainLimit; lambda=5.3515625; iterations=18; retries=4
+OK: capacity.nult.baseLoadSteps.compression.2.converged
+OK: capacity.nult.baseLoadSteps.compression.2.lambda
+INFO: capacity.nult.baseLoadSteps.compression.4; converged=True; state=ConcreteStrainLimit; lambda=5.3515625; iterations=18; retries=4
+OK: capacity.nult.baseLoadSteps.compression.4.converged
+OK: capacity.nult.baseLoadSteps.compression.4.lambda
+INFO: capacity.nult.baseLoadSteps.compression.8; converged=True; state=ConcreteStrainLimit; lambda=5.3515625; iterations=18; retries=4
+OK: capacity.nult.baseLoadSteps.compression.8.converged
+OK: capacity.nult.baseLoadSteps.compression.8.lambda
+RUN: TestSearchMethodInputErrors
+OK: search.empty.inputError
+OK: search.invalid.inputError
+OK: search.secant.controlledFailure
+RUN: TestInitialLambdaFailureStatusMapping
+OK: capacity.initialLambda.numerical.external
+OK: capacity.initialLambda.physical.external
+RUN: TestSearchMethodPerformanceComparison
+OK: search.perf.Bisection.converged
+PERF_CAPACITY_SEARCH|Bisection|lambda=3.09375|iterations=15|functionEvaluations=15|avgSec=0.153645833333|residual=0.000000018633|converged=True|status=ConcreteStrainLimit
+OK: search.perf.Brent.converged
+PERF_CAPACITY_SEARCH|Brent|lambda=3.09776378716|iterations=9|functionEvaluations=9|avgSec=0.076822916667|residual=0.000000000975|converged=True|status=ConcreteStrainLimit
+OK: search.perf.Secant.converged
+PERF_CAPACITY_SEARCH|Secant|lambda=3.098514991183|iterations=7|functionEvaluations=7|avgSec=0.06640625|residual=0.000000011376|converged=True|status=ConcreteStrainLimit
+RUN: TestAudit02CapacitySearchBoundary
+OK: audit02.boundary.3.converged
+FAIL: audit02.boundary.3.lambda; actual=2.94434261322; expected=3.; absDiff=0.05565738678
+OK: audit02.boundary.5.25.converged
+FAIL: audit02.boundary.5.25.lambda; actual=5.152599334717; expected=5.25; absDiff=0.097400665283
+OK: audit02.boundary.6.converged
+FAIL: audit02.boundary.6.lambda; actual=5.88868522644; expected=6.; absDiff=0.11131477356
+OK: audit02.boundary.8.noLimit
+OK: audit02.boundary.8.boundFlag
+OK: audit02.boundary.8.notCapacity; actual=0.; expected=0.; absDiff=0.
+OK: audit02.boundary.8.code
+RUN: TestAudit02AsymmetricSteelLimits
+OK: audit02.steelSign.-1.converged
+FAIL: audit02.steelSign.-1.lambda; actual=2.944357872009; expected=3.; absDiff=0.055642127991
+OK: audit02.steelSign.-1.criterion
+OK: audit02.steelSign.1.converged
+FAIL: audit02.steelSign.1.lambda; actual=17.666060447693; expected=18.; absDiff=0.333939552307
+OK: audit02.steelSign.1.criterion
+RUN: TestAudit02UnconvergedProbeIsNumerical
+OK: audit02.failedProbe.solverExists
+OK: audit02.failedProbe.unconverged
+OK: audit02.failedProbe.multipleIterations
+OK: audit02.failedProbe.strainBeyondLimit
+OK: audit02.failedProbe.numerical
+OK: audit02.failedProbe.noBaseFail
+TOTAL_CAPACITY: passed=947; failed=9; elapsedSec=62.1953125
+

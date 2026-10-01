@@ -220,10 +220,28 @@ Public Sub EvaluateStrainPlane(ByVal section As CSectionModel, _
     mKappaY = kappaY
     EvaluateState section, concreteMaterial, steelMaterial, mEpsilon0, mKappaX, mKappaY, True
     SetResiduals mNint, mMxint, mMyint
-    mConverged = True
+    mConverged = False
     mFailureCode = sfcNone
-    mStopReason = "Состояние вычислено по заданной плоскости деформаций."
+    mStopReason = "Плоскость деформаций оценена; равновесие с заданной нагрузкой еще не проверено."
 End Sub
+
+' Проверяет уже оцененную плоскость по заданным усилиям без нового solve.
+' Только эта проверка превращает EvaluateStrainPlane в подтвержденное
+' равновесие; напряжения и деформации при этом не меняются.
+Public Function ConfirmEquilibrium(ByVal targetN As Double, ByVal targetMx As Double, _
+        ByVal targetMy As Double) As Boolean
+    SetResiduals targetN, targetMx, targetMy
+    mLastResidualNorm = ResidualNorm(mResidualN, mResidualMx, mResidualMy, targetN, targetMx, targetMy)
+    mConverged = IsConverged(targetN, targetMx, targetMy)
+    If mConverged Then
+        mFailureCode = sfcNone
+        mStopReason = "Равновесие заданной плоскости подтверждено по N, Mx и My."
+    Else
+        mFailureCode = sfcNumericalFailure
+        mStopReason = "Заданная плоскость не удовлетворяет равновесию по N, Mx и My."
+    End If
+    ConfirmEquilibrium = mConverged
+End Function
 
 ' Выбирает Newton или Secant для одной ступени нагрузки. Неверное имя метода
 ' не подменяется запасным алгоритмом, а сразу дает InputError.

@@ -18,12 +18,10 @@ Option Explicit
 ' I/II ГПС, сопротивлений R/Rser, типа TwoLine/ThreeLine и режима
 ' растянутого бетона.
 '
-' Прямой расчет НДС использует отдельную цель StateSolution. Для нее provider
-' берет одну из физических баз, Strength или CrackedNDS, и при включенной
-' настройке Solver.DirectState.DiagramExtension возвращает временную диаграмму
-' с малой технической ветвью за физическим пределом. CSectionSolver об этом не
-' знает: он по-прежнему получает готовые диаграммы и вызывает общий контракт
-' GetStress/GetTangentModulus/GetSecantModulus.
+' Для задач равновесия provider может вернуть диаграмму с numerical extension:
+' малой технической ветвью за физическим пределом активной диаграммы. Это
+' вспомогательный численный режим для solver-а. Физические диаграммы, пределы
+' деформаций и инженерные критерии остаются исходными и не расширяются.
 
 Private Const SLOT_STRENGTH As Long = 1 ' Массивный слот физической диаграммы I ГПС.
 Private Const SLOT_MCRC As Long = 2 ' Массивный слот физической диаграммы образования трещины.
@@ -52,7 +50,7 @@ Private mSteelCompressionResistance(1 To 3) As Double ' Rsc/Rsc,ser выбран
 Private mSteelTensionResistance(1 To 3) As Double ' Rs/Rs,ser выбранной ГПС, МПа.
 Private mConcreteElasticModulus(1 To 3) As Double ' Eb выбранной бетонной модели, МПа.
 Private mSteelElasticModulus(1 To 3) As Double ' Es выбранной модели арматуры, МПа.
-Private mDirectStateDiagramExtension As Boolean ' Разрешает numerical extension только для StateSolution.
+Private mDiagramExtensionEnabled As Boolean ' Разрешает numerical extension для задач равновесия solver-а.
 Private mInitialized As Boolean ' Защита от использования provider-а до чтения параметров.
 Private mDiagramCache As Object ' Кэш CMaterialDiagram по MaterialModelSpec; диаграммы после Initialize неизменяемы.
 
@@ -67,7 +65,7 @@ Public Sub Initialize(ByVal settings As CSystemSettingsReader, Optional ByVal un
     Set mSteelParameters = New CSteelMaterialParameters
     mSteelParameters.LoadFromSettings settings, units
 
-    mDirectStateDiagramExtension = settings.GetBoolean("Solver.DirectState.DiagramExtension", True)
+    mDiagramExtensionEnabled = ReadDiagramExtensionSetting(settings)
 
     BuildPurpose cpStrength, "I", _
         settings.GetString("Diagram.Strength.Concrete", "TwoLine"), _
@@ -86,6 +84,31 @@ Public Sub Initialize(ByVal settings As CSystemSettingsReader, Optional ByVal un
 
     mInitialized = True
 End Sub
+
+' Читает единственную эффективную настройку. Миграция старого формата
+' выполняется Excel-reader-ом до передачи настроек материальному слою.
+Private Function ReadDiagramExtensionSetting(ByVal settings As CSystemSettingsReader) As Boolean
+    Dim key As String
+    Dim rawValue As String
+
+    key = "General.DiagramExtension"
+    If settings.HasKey(key) Then
+        rawValue = Trim$(settings.GetRawString(key, vbNullString))
+    Else
+        Err.Raise vbObjectError + 3245, "CMaterialModelProvider", _
+            "Каноническая настройка General.DiagramExtension не прочитана."
+    End If
+
+    Select Case UCase$(rawValue)
+        Case "YES", "TRUE", "1", "ДА"
+            ReadDiagramExtensionSetting = True
+        Case "NO", "FALSE", "0", "НЕТ"
+            ReadDiagramExtensionSetting = False
+        Case Else
+            Err.Raise vbObjectError + 3245, "CMaterialModelProvider", _
+                "Настройка " & key & " должна быть Yes или No."
+    End Select
+End Function
 
 ' Строит полный физический материальный набор одной расчетной цели.
 Private Sub BuildPurpose(ByVal purpose As ECalculationPurpose, ByVal limitStateGroup As String, _
@@ -260,11 +283,12 @@ Private Function DiagramFromArrays(ByRef strains() As Double, ByRef stresses() A
 End Function
 
 ' Создает копию физической диаграммы с дополнительными техническими точками
-' для прямого StateSolution. Физические eps_ult передаются в CMaterialDiagram
+' для равновесного solve. Физические eps_ult передаются в CMaterialDiagram
 ' отдельно и поэтому не меняются.
 Private Function DiagramWithExtension(ByVal baseDiagram As CMaterialDiagram, _
         ByVal compressionE As Double, ByVal tensionE As Double, _
         ByVal extendCompression As Boolean, ByVal extendTension As Boolean) As CMaterialDiagram
+    On Error GoTo InvalidExtension
     Dim compressionStart As Double
     Dim tensionStart As Double
     compressionStart = baseDiagram.PhysicalCompressionStrain
@@ -272,10 +296,8 @@ Private Function DiagramWithExtension(ByVal baseDiagram As CMaterialDiagram, _
 
     Dim extraCompression As Boolean
     Dim extraTension As Boolean
-    extraCompression = extendCompression And _
-        (-STATE_EXTENSION_STRAIN_LIMIT < baseDiagram.PhysicalCompressionStrain - EXTENSION_TOLERANCE)
-    extraTension = extendTension And baseDiagram.HasPhysicalTensionLimit And _
-        (STATE_EXTENSION_STRAIN_LIMIT > baseDiagram.PhysicalTensionStrain + EXTENSION_TOLERANCE)
+    extraCompression = extendCompression
+    extraTension = extendTension And baseDiagram.HasPhysicalTensionLimit
 
     Dim eps() As Double
     Dim sig() As Double
@@ -286,7 +308,7 @@ Private Function DiagramWithExtension(ByVal baseDiagram As CMaterialDiagram, _
     Dim targetIndex As Long
     targetIndex = 1
     If extraCompression Then
-        eps(targetIndex) = -STATE_EXTENSION_STRAIN_LIMIT
+        eps(targetIndex) = -ExtensionEndStrain(compressionStart)
         sig(targetIndex) = baseDiagram.GetStress(compressionStart) + _
             (eps(targetIndex) - compressionStart) * STATE_EXTENSION_E_FACTOR * compressionE
         targetIndex = targetIndex + 1
@@ -299,7 +321,7 @@ Private Function DiagramWithExtension(ByVal baseDiagram As CMaterialDiagram, _
     Next i
 
     If extraTension Then
-        eps(targetIndex) = STATE_EXTENSION_STRAIN_LIMIT
+        eps(targetIndex) = ExtensionEndStrain(tensionStart)
         sig(targetIndex) = baseDiagram.GetStress(tensionStart) + _
             (eps(targetIndex) - tensionStart) * STATE_EXTENSION_E_FACTOR * tensionE
         targetIndex = targetIndex + 1
@@ -314,6 +336,21 @@ Private Function DiagramWithExtension(ByVal baseDiagram As CMaterialDiagram, _
         baseDiagram.PhysicalCompressionStrain, baseDiagram.PhysicalTensionStrain, _
         extraCompression, extraTension, compressionStart, tensionStart
     Set DiagramWithExtension = diagram
+    Exit Function
+
+InvalidExtension:
+    Err.Raise vbObjectError + 3245, "CMaterialModelProvider", _
+        "Численное продолжение диаграммы невозможно для заданных деформаций и модулей: " & Err.Description
+End Function
+
+' Сохраняет техническую границу +/-10 для обычных материалов. Если физический
+' предел уже дальше, продолжение заканчивается вдвое дальше него, а не обрезает
+' физическую диаграмму. Переполнение явно отклоняется вызывающим построителем.
+Private Function ExtensionEndStrain(ByVal physicalLimit As Double) As Double
+    ExtensionEndStrain = STATE_EXTENSION_STRAIN_LIMIT
+    If Abs(physicalLimit) >= STATE_EXTENSION_STRAIN_LIMIT Then
+        ExtensionEndStrain = 2# * Abs(physicalLimit)
+    End If
 End Function
 
 ' Возвращает бетонные сопротивления нужной ГПС.
@@ -405,27 +442,27 @@ Public Function SteelMaterial(ByVal purpose As ECalculationPurpose) As CMaterial
     Set SteelMaterial = mSteelDiagram(PhysicalPurposeSlot(purpose))
 End Function
 
-' Возвращает бетонную диаграмму для прямого StateSolution.
-Public Function ConcreteStateMaterial(ByVal basePurpose As ECalculationPurpose) As CMaterialDiagram
+' Возвращает бетонную диаграмму для решения равновесия на базе заданной физической цели.
+Public Function ConcreteMaterialForEquilibrium(ByVal basePurpose As ECalculationPurpose) As CMaterialDiagram
     EnsureInitialized
     ValidateStateBasePurpose basePurpose
-    If mDirectStateDiagramExtension Then
-        Set ConcreteStateMaterial = DiagramWithExtension(mConcreteDiagram(PhysicalPurposeSlot(basePurpose)), _
-            mConcreteParameters.Eb, mConcreteParameters.Ebt, True, False)
+    If mDiagramExtensionEnabled Then
+        Set ConcreteMaterialForEquilibrium = DiagramWithExtension(mConcreteDiagram(PhysicalPurposeSlot(basePurpose)), _
+            mConcreteParameters.Eb, mConcreteParameters.Ebt, True, True)
     Else
-        Set ConcreteStateMaterial = mConcreteDiagram(PhysicalPurposeSlot(basePurpose))
+        Set ConcreteMaterialForEquilibrium = mConcreteDiagram(PhysicalPurposeSlot(basePurpose))
     End If
 End Function
 
-' Возвращает диаграмму арматуры для прямого StateSolution.
-Public Function SteelStateMaterial(ByVal basePurpose As ECalculationPurpose) As CMaterialDiagram
+' Возвращает диаграмму арматуры для решения равновесия на базе заданной физической цели.
+Public Function SteelMaterialForEquilibrium(ByVal basePurpose As ECalculationPurpose) As CMaterialDiagram
     EnsureInitialized
     ValidateStateBasePurpose basePurpose
-    If mDirectStateDiagramExtension Then
-        Set SteelStateMaterial = DiagramWithExtension(mSteelDiagram(PhysicalPurposeSlot(basePurpose)), _
+    If mDiagramExtensionEnabled Then
+        Set SteelMaterialForEquilibrium = DiagramWithExtension(mSteelDiagram(PhysicalPurposeSlot(basePurpose)), _
             mSteelParameters.Esc, mSteelParameters.Es, True, True)
     Else
-        Set SteelStateMaterial = mSteelDiagram(PhysicalPurposeSlot(basePurpose))
+        Set SteelMaterialForEquilibrium = mSteelDiagram(PhysicalPurposeSlot(basePurpose))
     End If
 End Function
 
@@ -473,61 +510,60 @@ Public Function SteelMaterialFromSpec(ByVal spec As CMaterialModelSpec) As CMate
     Set SteelMaterialFromSpec = diagram
 End Function
 
-' Возвращает бетонную диаграмму прямого StateSolution по спецификации профиля.
-' Numerical extension добавляется только здесь и только если соответствующая
-' настройка включена. Capacity, CrackInitiation и crack-состояния вызывают
-' физический ConcreteMaterialFromSpec без extension.
-Public Function ConcreteStateMaterialFromSpec(ByVal spec As CMaterialModelSpec) As CMaterialDiagram
+' Возвращает бетонную диаграмму по спецификации профиля для задач равновесия.
+' Если General.DiagramExtension включен, добавляется только техническое
+' продолжение активных ветвей; physical limits самого материала не меняются.
+Public Function ConcreteMaterialForEquilibriumFromSpec(ByVal spec As CMaterialModelSpec) As CMaterialDiagram
     EnsureInitialized
     ValidateSpec spec
 
     Dim cacheKey As String
-    cacheKey = MaterialDiagramCacheKey("ConcreteState|" & CStr(mDirectStateDiagramExtension), spec)
+    cacheKey = MaterialDiagramCacheKey("ConcreteState|" & CStr(mDiagramExtensionEnabled), spec)
     Dim cached As CMaterialDiagram
     Set cached = CachedDiagram(cacheKey)
     If Not cached Is Nothing Then
-        Set ConcreteStateMaterialFromSpec = cached
+        Set ConcreteMaterialForEquilibriumFromSpec = cached
         Exit Function
     End If
 
     Dim physical As CMaterialDiagram
     Set physical = ConcreteMaterialFromSpec(spec)
     Dim diagram As CMaterialDiagram
-    If mDirectStateDiagramExtension Then
+    If mDiagramExtensionEnabled Then
         Set diagram = DiagramWithExtension(physical, _
-            mConcreteParameters.Eb, mConcreteParameters.Ebt, True, False)
+            mConcreteParameters.Eb, mConcreteParameters.Ebt, True, True)
     Else
         Set diagram = physical
     End If
     StoreCachedDiagram cacheKey, diagram
-    Set ConcreteStateMaterialFromSpec = diagram
+    Set ConcreteMaterialForEquilibriumFromSpec = diagram
 End Function
 
-' Возвращает диаграмму арматуры прямого StateSolution по спецификации профиля.
-Public Function SteelStateMaterialFromSpec(ByVal spec As CMaterialModelSpec) As CMaterialDiagram
+' Возвращает диаграмму арматуры по спецификации профиля для задач равновесия.
+Public Function SteelMaterialForEquilibriumFromSpec(ByVal spec As CMaterialModelSpec) As CMaterialDiagram
     EnsureInitialized
     ValidateSpec spec
 
     Dim cacheKey As String
-    cacheKey = MaterialDiagramCacheKey("SteelState|" & CStr(mDirectStateDiagramExtension), spec)
+    cacheKey = MaterialDiagramCacheKey("SteelState|" & CStr(mDiagramExtensionEnabled), spec)
     Dim cached As CMaterialDiagram
     Set cached = CachedDiagram(cacheKey)
     If Not cached Is Nothing Then
-        Set SteelStateMaterialFromSpec = cached
+        Set SteelMaterialForEquilibriumFromSpec = cached
         Exit Function
     End If
 
     Dim physical As CMaterialDiagram
     Set physical = SteelMaterialFromSpec(spec)
     Dim diagram As CMaterialDiagram
-    If mDirectStateDiagramExtension Then
+    If mDiagramExtensionEnabled Then
         Set diagram = DiagramWithExtension(physical, _
             mSteelParameters.Esc, mSteelParameters.Es, True, True)
     Else
         Set diagram = physical
     End If
     StoreCachedDiagram cacheKey, diagram
-    Set SteelStateMaterialFromSpec = diagram
+    Set SteelMaterialForEquilibriumFromSpec = diagram
 End Function
 
 ' Возвращает предельную сжатую деформацию бетона для заданной профильной спецификации.
@@ -787,9 +823,9 @@ Public Function SteelElasticModulus(ByVal purpose As ECalculationPurpose) As Dou
     SteelElasticModulus = mSteelElasticModulus(PhysicalPurposeSlot(purpose))
 End Function
 
-Public Property Get DirectStateDiagramExtensionEnabled() As Boolean
+Public Property Get DiagramExtensionEnabled() As Boolean
     EnsureInitialized
-    DirectStateDiagramExtensionEnabled = mDirectStateDiagramExtension
+    DiagramExtensionEnabled = mDiagramExtensionEnabled
 End Property
 
 ' Проверяет, что provider уже построил диаграммы.
@@ -813,14 +849,14 @@ Public Sub InitializeFromParameters(ByVal concreteParameters As CConcreteMateria
         Optional ByVal mcrcSteelDiagram As String = "TwoLine", _
         Optional ByVal crackedConcreteDiagram As String = "TwoLine", _
         Optional ByVal crackedSteelDiagram As String = "TwoLine", _
-        Optional ByVal directStateDiagramExtension As Boolean = True)
+        Optional ByVal diagramExtensionEnabled As Boolean = True)
     If concreteParameters Is Nothing Then Err.Raise vbObjectError + 3243, "CMaterialModelProvider", "Параметры бетона не переданы."
     If steelParameters Is Nothing Then Err.Raise vbObjectError + 3244, "CMaterialModelProvider", "Параметры арматуры не переданы."
 
     Set mConcreteParameters = concreteParameters
     Set mSteelParameters = steelParameters
     Set mDiagramCache = CreateObject("Scripting.Dictionary")
-    mDirectStateDiagramExtension = directStateDiagramExtension
+    mDiagramExtensionEnabled = diagramExtensionEnabled
     BuildPurpose cpStrength, "I", strengthConcreteDiagram, strengthConcreteTension, strengthSteelDiagram
     BuildPurpose cpMcrc, "II", mcrcConcreteDiagram, "UseDiagram", mcrcSteelDiagram
     BuildPurpose cpCrackedNDS, "II", crackedConcreteDiagram, "Ignore", crackedSteelDiagram

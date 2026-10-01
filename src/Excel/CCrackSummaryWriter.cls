@@ -523,11 +523,11 @@ End Sub
 ' a_crc и продольных трещин в подробной таблице должны оставаться N/A:
 ' это не результаты этих проверок, а остановка на более раннем шаге.
 ' Показывает, использовало ли текущее CrackedState продолжение диаграммы.
-' Значение "-" означает, что Solver.DirectState.DiagramExtension был выключен
+' Значение "-" означает, что General.DiagramExtension был выключен
 ' для этого LC, поэтому extension в принципе не мог применяться.
 Private Function ExtensionUsedText(ByVal batch As CBatchSectionCalculator, _
         ByVal index As Long, ByVal stateResult As CSectionStateResult) As String
-    If Not batch.DirectStateDiagramExtensionEnabled(index) Then
+    If Not batch.DiagramExtensionEnabled(index) Then
         ExtensionUsedText = "-"
     ElseIf stateResult.ExtensionUsed Then
         ExtensionUsedText = "yes"

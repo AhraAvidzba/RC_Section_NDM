@@ -68,6 +68,14 @@ Public Function BuildForDirectState(ByVal section As CSectionModel, _
 
     BuildForDirectState = TryBuildFromTrialPlane(section, concreteMaterial, steelMaterial, _
         targetN, targetMx, targetMy, trialEps0, trialKx, trialKy, eps0, kx, ky, False)
+    If Not BuildForDirectState Then
+        ' Вырождение active-set не отменяет уже полученную упругую оценку.
+        ' Она остается только стартом: равновесие проверит основной solver.
+        eps0 = trialEps0
+        kx = trialKx
+        ky = trialKy
+        BuildForDirectState = True
+    End If
 End Function
 
 ' Строит стартовую плоскость для повторной попытки прямого StateSolution.
@@ -497,7 +505,9 @@ Private Sub AccumulateLinearElement(ByVal tangent As Double, ByVal stress As Dou
     ea = tangent * area
     force0 = intercept * area
 
-    If tangent > 0# Then
+    ' Замещение бетона арматурой может дать отрицательный вклад касательной.
+    ' Он должен остаться в матрице, как при интегрировании CSectionSolver.
+    If tangent <> 0# Then
         k11 = k11 + ea
         k12 = k12 + ea * y
         k13 = k13 + ea * x

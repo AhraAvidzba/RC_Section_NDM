@@ -26,6 +26,7 @@ Private mValues() As String ' Значения, которые ввел поль
 Private mDefaults() As String ' Значения по умолчанию из таблицы Config.
 Private mSources() As String ' Комментарий/источник строки для диагностики.
 Private mCount As Long ' Количество загруженных ключей.
+Private mMigrationWarning As String ' Предупреждение о конфликте старого и канонического ключа Extension.
 
 ' Загружает все настройки книги, нужные расчету и выводу.
 ' Метод объединяет разные именованные диапазоны Config в один внутренний
@@ -40,6 +41,7 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object)
     AppendNamedSettingsRangeIfExists workbook, "rngSteelMaterialParameters"
     AppendSettingsRange workbook.Names.Item("rngPlotAnnotationSettings").RefersToRange
     AppendGeometrySettingsRanges workbook
+    NormalizeDiagramExtensionSetting
 End Sub
 
 ' Подключает дополнительный именованный диапазон, если он уже есть в книге.
@@ -100,7 +102,75 @@ End Function
 Public Sub LoadFromRange(ByVal settingsRange As Object)
     Clear
     AppendSettingsRange settingsRange
+    NormalizeDiagramExtensionSetting
 End Sub
+
+' Читает старый формат только на границе Excel. До любых defaults сохраняет
+' явно введенное значение, затем удаляет старый ключ из runtime-настроек.
+' Конфликт не скрывается: новый ключ имеет приоритет, причина доступна отчету.
+Private Sub NormalizeDiagramExtensionSetting()
+    Const canonicalKey As String = "General.DiagramExtension"
+    Const legacyKey As String = "Solver.DirectState.DiagramExtension"
+    Dim canonicalIndex As Long
+    Dim legacyIndex As Long
+    Dim valueText As String
+    Dim legacyValue As String
+    canonicalIndex = FindKey(canonicalKey)
+    legacyIndex = FindKey(legacyKey)
+    If canonicalIndex > 0 Then
+        valueText = DiagramExtensionValue(mValues(canonicalIndex), canonicalKey)
+        If legacyIndex > 0 Then
+            legacyValue = UCase$(Trim$(mValues(legacyIndex)))
+            Select Case legacyValue
+                Case "YES", "TRUE", "1", "ДА": legacyValue = "Yes"
+                Case "NO", "FALSE", "0", "НЕТ": legacyValue = "No"
+            End Select
+            If StrComp(valueText, legacyValue, vbTextCompare) <> 0 Then
+                mMigrationWarning = "Настройки численного продолжения диаграмм заданы дважды. " & _
+                    "Использовано значение " & valueText & " из General.DiagramExtension; " & _
+                    "старый Solver.DirectState.DiagramExtension больше не управляет расчетом."
+            End If
+        End If
+        mValues(canonicalIndex) = valueText
+    ElseIf legacyIndex > 0 Then
+        valueText = DiagramExtensionValue(mValues(legacyIndex), legacyKey)
+        mKeys(legacyIndex) = canonicalKey
+        mValues(legacyIndex) = valueText
+        legacyIndex = 0
+    Else
+        AppendSetting canonicalKey, "Yes", "Yes", "Численное продолжение активных диаграмм."
+    End If
+    If legacyIndex > 0 Then RemoveSettingAt legacyIndex
+End Sub
+
+' Возвращает каноническое Yes/No, сохраняя поддержанные логические формы.
+' Пустое или неизвестное явно введенное значение является ошибкой Config.
+Private Function DiagramExtensionValue(ByVal rawValue As String, ByVal settingKey As String) As String
+    Select Case UCase$(Trim$(rawValue))
+        Case "YES", "TRUE", "1", "ДА": DiagramExtensionValue = "Yes"
+        Case "NO", "FALSE", "0", "НЕТ": DiagramExtensionValue = "No"
+        Case Else
+            Err.Raise vbObjectError + 4310, "CSystemSettingsReader", _
+                "На листе Config настройка " & settingKey & " должна быть Yes или No."
+    End Select
+End Function
+
+' Убирает мигрированный старый ключ из уже прочитанных массивов. Остальные
+' настройки сохраняют порядок и значения; runtime не видит двух переключателей.
+Private Sub RemoveSettingAt(ByVal index As Long)
+    Dim i As Long
+    For i = index To mCount - 1
+        mKeys(i) = mKeys(i + 1)
+        mValues(i) = mValues(i + 1)
+        mDefaults(i) = mDefaults(i + 1)
+        mSources(i) = mSources(i + 1)
+    Next i
+    mCount = mCount - 1
+End Sub
+
+Public Property Get MigrationWarning() As String
+    MigrationWarning = mMigrationWarning
+End Property
 
 ' Добавляет один диапазон настроек; специальные геометрические таблицы сначала распознаются по шапке.
 Private Sub AppendSettingsRange(ByVal settingsRange As Object)
@@ -769,6 +839,7 @@ Public Sub Clear()
     Erase mDefaults
     Erase mSources
     mCount = 0
+    mMigrationWarning = vbNullString
 End Sub
 
 ' Возвращает строковое значение настройки.

@@ -65,6 +65,8 @@ Public Function RunCapacitySolverTests() As String
     TestLimitSearchSecantFinalizesCheckedRoot stats
     AppendLine stats, "RUN: TestLimitSearchBisectionIterationLimitFails"
     TestLimitSearchBisectionIterationLimitFails stats
+    AppendLine stats, "RUN: TestAudit02GenericUltimateSearch"
+    TestAudit02GenericUltimateSearch stats
     AppendLine stats, "RUN: TestCapacityLoadPathMethodMatrix"
     TestCapacityLoadPathMethodMatrix stats
     AppendLine stats, "RUN: TestCapacityLoadPathZeroComponentMatrix"
@@ -79,6 +81,13 @@ Public Function RunCapacitySolverTests() As String
     TestInitialLambdaFailureStatusMapping stats
     AppendLine stats, "RUN: TestSearchMethodPerformanceComparison"
     TestSearchMethodPerformanceComparison stats
+
+    AppendLine stats, "RUN: TestAudit02CapacitySearchBoundary"
+    TestAudit02CapacitySearchBoundary stats
+    AppendLine stats, "RUN: TestAudit02AsymmetricSteelLimits"
+    TestAudit02AsymmetricSteelLimits stats
+    AppendLine stats, "RUN: TestAudit02UnconvergedProbeIsNumerical"
+    TestAudit02UnconvergedProbeIsNumerical stats
 
     AppendLine stats, "TOTAL_CAPACITY: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -281,6 +290,8 @@ Private Sub TestLambdaLessThanOne(ByRef stats As TCapacityTestStats)
 
     AssertTrue stats, "capacity.lambda.lessThanOne.converged", cap.Converged
     AssertTrue stats, "capacity.lambda.lessThanOne.value", cap.LambdaUltimate < 1#
+    CheckAudit02SearchVsCapacity stats, cap, BuildGeneratedSectionModel(mesh, rebars), _
+        -300000#, reference.MxUltimate * 2#, 0#
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -1570,6 +1581,191 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
+' ============================== ДЛЯ ТЕСТОВ ==============================
+
+' Проверяет предел в последнем интервале удвоения, точно на MaxLambda и
+' за MaxLambda. Последняя ситуация не должна выдавать диагностическую нижнюю
+' точку как найденную несущую способность.
+Private Sub TestAudit02CapacitySearchBoundary(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, rebars)
+    Dim stiffness As Double
+    stiffness = Audit02AxialStiffness(section)
+
+    Dim roots As Variant
+    roots = Array(3#, 5.25, 6#, 8#)
+    Dim root As Variant
+    For Each root In roots
+        Dim cap As CCapacitySolver
+        Set cap = New CCapacitySolver
+        ConfigureCapacity cap
+        cap.ConcreteCompressionLimit = -1#
+        cap.SteelStrainLimit = 0.001#
+        cap.MaxLambda = 6#
+        cap.LambdaTolerance = 0.000001
+        cap.SolverToleranceN = 0.01
+        cap.SolveByLoadPathMultiplier section, LinearConcrete(), LinearSteel(), _
+            0#, stiffness * 0.001# / CDbl(root), 0#, 0#, 0#, 0#
+        Dim prefix As String
+        prefix = "audit02.boundary." & CStr(root)
+        If CDbl(root) <= 6# Then
+            AssertTrue stats, prefix & ".converged", cap.Converged
+            AssertClose stats, prefix & ".lambda", cap.LambdaUltimate, CDbl(root), 0.00001
+        Else
+            AssertTrue stats, prefix & ".noLimit", Not cap.Converged
+            AssertTrue stats, prefix & ".boundFlag", cap.SearchBoundReached
+            AssertClose stats, prefix & ".notCapacity", cap.LambdaUltimate, 0#, 0#
+            Dim searchResult As CLimitSearchResult
+            Set searchResult = New CLimitSearchResult
+            searchResult.InitializeFromCapacitySolver cap, "LoadMultiplier"
+            AssertTrue stats, prefix & ".code", searchResult.Meta.ResultCode = rcSearchBoundReached
+        End If
+    Next root
+End Sub
+
+' Проверяет независимые пределы стали двух знаков на линейном материале.
+' Числа заданы аналитически из общей осевой жесткости и физических деформаций.
+Private Sub TestAudit02AsymmetricSteelLimits(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, rebars)
+    Dim methodIndex As Long
+    For methodIndex = 1 To 2
+    Dim direction As Long
+    For direction = -1 To 1 Step 2
+        Dim cap As CCapacitySolver
+        Set cap = New CCapacitySolver
+        ConfigureCapacity cap
+        cap.ConcreteCompressionLimit = -1#
+        cap.SteelCompressionLimit = 0.0003
+        cap.SteelTensionLimit = 0.0018
+        cap.LambdaTolerance = 0.000001
+        cap.StrainTolerance = 0.000000001
+        cap.SolverToleranceN = 0.01
+        If methodIndex = 1 Then
+            cap.SolveByLoadPathMultiplier section, LinearConcrete(), LinearSteel(), _
+                0#, direction * Audit02AxialStiffness(section) * 0.0001, 0#, 0#, 0#, 0#
+        Else
+            cap.SolveByUltimateLoadPath section, LinearConcrete(), LinearSteel(), _
+                0#, direction * Audit02AxialStiffness(section) * 0.0001, 0#, 0#, 0#, 0#, False
+        End If
+        Dim expectedLambda As Double
+        If direction < 0 Then expectedLambda = 3# Else expectedLambda = 18#
+        Dim prefix As String
+        prefix = "audit02.steelSign." & CStr(methodIndex) & "." & CStr(direction)
+        AssertTrue stats, prefix & ".converged", cap.Converged
+        AssertClose stats, prefix & ".lambda", cap.LambdaUltimate, expectedLambda, 0.00001
+        AssertEquals stats, prefix & ".criterion", cap.LimitState, "SteelStrainLimit"
+    Next direction
+    Next methodIndex
+End Sub
+
+' Проверяет реальную неудачу равновесия после нескольких итераций.
+' Большие деформации пробной плоскости не должны создавать физический предел
+' и BaseFail; основанием остаются машинные коды численной неудачи solver-а.
+Private Sub TestAudit02UnconvergedProbeIsNumerical(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(mesh, rebars)
+    Dim cap As CCapacitySolver
+    Set cap = New CCapacitySolver
+    ConfigureCapacity cap
+    cap.MaxRetries = 0
+    cap.SolverBaseLoadSteps = 1
+    cap.SolverMaxIterations = 3
+    cap.ConcreteCompressionLimit = -0.000000001
+    Dim path As CLoadPathVector
+    Set path = New CLoadPathVector
+    path.Initialize -1000000000#, 0#, 0#, 1000000#, 0#, 0#
+    Dim functionValue As Double
+    Dim probeState As String
+    cap.LimitSearchEvaluateCapacityLoadMultiplier section, ProvisionalConcrete(), _
+        ProvisionalSteel(), path, 0#, functionValue, probeState
+    AssertTrue stats, "audit02.failedProbe.solverExists", Not cap.LastSolver Is Nothing
+    If cap.LastSolver Is Nothing Then Exit Sub
+    AssertTrue stats, "audit02.failedProbe.unconverged", Not cap.LastSolver.Converged
+    AssertTrue stats, "audit02.failedProbe.multipleIterations", cap.LastSolver.Iterations > 1
+    AssertTrue stats, "audit02.failedProbe.strainBeyondLimit", cap.LastSolver.MinConcreteStrain < -0.000000001
+    AssertTrue stats, "audit02.failedProbe.numerical", cap.LimitSearchCapacityStateIsNumericalFailure(probeState)
+    cap.LimitSearchHandleCapacityInitialFailure probeState
+    Dim result As CLimitSearchResult
+    Set result = New CLimitSearchResult
+    result.InitializeFromCapacitySolver cap, "LoadMultiplier"
+    AssertTrue stats, "audit02.failedProbe.noBaseFail", result.Meta.InternalStatus = rsNumericalFailure
+End Sub
+
+' ДЛЯ ТЕСТОВ: общий Newton принимает только ILimitSearchProblem и не требует
+' живых Capacity/Crack-калькуляторов. Аналитический корень проверяется отдельно
+' от физических regression-моделей, их expected values не меняются.
+Private Sub TestAudit02GenericUltimateSearch(ByRef stats As TCapacityTestStats)
+    Dim problem As CTestLimitSearchProblem
+    Set problem = New CTestLimitSearchProblem
+    problem.Configure "Bisection", 1.25, 0.000000001, 20
+    Dim loadPath As CLoadPathVector
+    Set loadPath = New CLoadPathVector
+    loadPath.Initialize 0#, 1#, 0#, 0#, 0#, 0#
+    Dim search As CUltimateStrainSearch
+    Set search = New CUltimateStrainSearch
+    AssertTrue stats, "audit02.genericUltimate.succeeded", _
+        search.RunNewton(problem, Nothing, Nothing, Nothing, loadPath, Nothing, "Тестовый поиск не сошелся.")
+    AssertClose stats, "audit02.genericUltimate.lambda", problem.FinalLambda, 1.25, 0.000000001
+    AssertEquals stats, "audit02.genericUltimate.method", problem.FinalMethod, "UltimateStrain"
+End Sub
+
+' Возвращает точную осевую жесткость тестового линейного сечения, Н.
+' Бетонная сетка включает площадь стержней, поэтому арматура добавляет
+' разность Es-Eb, как и интегрирование напряжений в CSectionSolver.
+Private Function Audit02AxialStiffness(ByVal section As CSectionModel) As Double
+    Dim i As Long
+    For i = 1 To section.ConcreteCount
+        Audit02AxialStiffness = Audit02AxialStiffness + 32500# * section.ConcreteArea(i)
+    Next i
+    For i = 1 To section.RebarCount
+        Audit02AxialStiffness = Audit02AxialStiffness + (200000# - 32500#) * section.RebarArea(i)
+    Next i
+End Function
+
+' Проверяет, что найденный предел является успехом Search, а непрохождение
+' текущего сочетания определяет только Capacity. Числа старого сценария и
+' его допуски не изменяются; отдельно проверяется изоляция выданной meta.
+Private Sub CheckAudit02SearchVsCapacity(ByRef stats As TCapacityTestStats, _
+        ByVal cap As CCapacitySolver, ByVal section As CSectionModel, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double)
+    Dim search As CLimitSearchResult
+    Set search = New CLimitSearchResult
+    search.InitializeFromCapacitySolver cap, "LoadMultiplier"
+    AssertTrue stats, "audit02.searchEngineering.searchSuccess", search.Meta.InternalStatus = rsSuccess
+    AssertTrue stats, "audit02.searchEngineering.searchCode", search.Meta.ResultCode = rcCheckPassed
+    AssertTrue stats, "audit02.searchEngineering.searchSucceeded", search.Succeeded
+    Dim loadState As CSectionLoadState
+    Set loadState = New CSectionLoadState
+    loadState.Initialize targetN, targetMx, targetMy, 0#, 0#
+    Dim path As CCapacityLoadPath
+    Set path = New CCapacityLoadPath
+    path.InitializeFromLoadState "lambda*Mxy", loadState
+    Dim spec As CMaterialModelSpec
+    Set spec = New CMaterialModelSpec
+    spec.Initialize "ULS(I)", "TwoLine", "Ignore", "TwoLine"
+    Dim result As CCapacityResult
+    Set result = New CCapacityResult
+    result.InitializeFromSearch search, path, spec, Nothing, False, 0#, 0#, _
+        Nothing, 300#, 200#, section, ProvisionalConcrete(), ProvisionalSteel()
+    AssertTrue stats, "audit02.searchEngineering.capacityFailed", result.ResultMeta.InternalStatus = rsCheckFailed
+    AssertEquals stats, "audit02.searchEngineering.capacityDisplay", result.Status, "FAIL"
+    AssertClose stats, "audit02.searchEngineering.lambdaUnchanged", result.LambdaCapacity, cap.LambdaUltimate, 0#
+    Dim detachedMeta As CResultMeta
+    Set detachedMeta = search.Meta
+    detachedMeta.SetResult rsInternalError, rcInternalError, rkCapacity, "Изменение копии в тесте."
+    AssertTrue stats, "audit02.searchEngineering.metaSnapshot", search.Meta.InternalStatus = rsSuccess
+End Sub
 
 
 
