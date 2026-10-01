@@ -21,14 +21,14 @@
 
 | ID | Статус | Комментарий |
 | --- | --- | --- |
-| R01-R09 | реализовано; финальная приемка в работе | Cache-hit, точная MaxLambda, подтверждение равновесия, общий Search, независимая Formation, snapshots, canonical results и sign-specific limits прошли принятые срезы. Последний R09 guard и новые граничные тесты проверяются чистой сборкой. |
-| A01-A08 | реализовано; финальная приемка в работе | Нет новых production-классов; DomainContext и flat-дубли удалены. Запасы принадлежат typed results. Остаточное форматирование передано CExecutionReport; мертвый API пределов Batch удален. |
-| E01-E10 | проверено в принятых срезах | Один General.DiagramExtension, active branches, неизменные узлы/пределы, effective context и Off. Добавленная малая окрестность eps_ult прошла material suite 1359/0. |
-| S01-S07 | проверено в принятых срезах | Typed причины, warning/fallback, SearchBound, blocked formulas, psi. Парный overload-тест подтверждает Off NumFail / On BaseFail и одинаковый вывод в summary/detail. |
-| C01-C06 | проверено; итоговая регрессия в работе | Scoped reuse, failed retry и mutation isolation приняты. Config change/read/export/plot: UI 574/0. Save/reopen: exact match, 0 solve. Добавлен явный PostState cache-hit. |
-| Q01-Q08 | в работе | Baseline/Off сохранены, current On/Off 6222/0 и 1448 парных assertions приняты. Performance: 3 повтора, источники неизменны. Повторяются все suites на чистой итоговой сборке. |
-| D01-D02 | реализовано; self-audit в работе | Config/help/runtime и Architecture согласованы с global Extension; исторические v6/migration/progress помечены. |
-| W01-W06 | в работе | Baseline и checkpoints сохранены; метрики сняты. До завершения необходимы final accepted suites, итоговый отчет, self-audit и финальный checkpoint. |
+| R01-R09 | проверено | F Off/On и output: каждый 6745/0; cache-hit, MaxLambda, confirmed equilibrium, generic Search, Formation, snapshots, canonical results, sign-specific limits и Nothing guards. |
+| A01-A08 | проверено | Нет новых production-классов; DomainContext и flat-дубли удалены. Запасы typed results, форматирование CExecutionReport, Batch result API компактный. Метрики/границы описаны в final report. |
+| E01-E10 | проверено | General switch, active branches, узлы/плато/пределы/окрестность, все эффективные маршруты и Off; materials 1359/0, Q04 MAXDIFF. |
+| S01-S07 | проверено | Typed reasons/warnings/SearchBound/blocked/Psi; Off NumFail / On BaseFail подтверждены двумя overload-парами в result/summary/detail. |
+| C01-C06 | проверено | Scoped reuse, failed retry, Pre/Post/current cache и mutation isolation; Config/save/reopen/read/export/plot exact match, 0 solve. |
+| Q01-Q08 | проверено в доступной среде | B/F/O/матрица28/EP/P/SN прошли. Реальный DWG и pixel screenshot не засчитаны: среда недоступна, ограничение записано. |
+| D01-D02 | проверено | Config/help/runtime/Architecture актуальны, исторические планы помечены. Final report содержит exact routes/status semantics. |
+| W01-W06 | проверено | Baseline, checkpoints, progress, итоговый отчет, логи, метрики и финальные артефакты сохранены; destructive Git/push не выполнялись. |
 
 ## Responsibility Transfer Map
 
@@ -51,7 +51,9 @@
 5. Интерпретация и UI/output: S01-S07, D01-D02, comments/status/output checks.
 6. Финальная приемка: full build/tests, regression logs, self-audit, final report.
 
-## Completed
+## Начальные Шаги (История)
+
+Следующие записи описывают первые срезы. Итоговая приемка указана в Current и final report.
 
 - Прочитан Audit02 implementation spec.
 - Прочитаны `AGENTS.md`, architecture progress и closure report первого audit.
@@ -65,7 +67,7 @@
 
 ## Current
 
-- Последний принятый HEAD: `020ff8f9` (typed reserves + paired physical acceptance); baseline неизменен.
+- Итоговый проверенный implementation SHA: `a0e44989d59c7e68511e4078e60b70bba3a20162`; baseline неизменен. Закрывающий docs/artifacts commit не меняет проверенную production-математику.
 - `typed_reserves_pair_full_on/off_2026-10-01.txt`: по 6222 assertions, 8 suites, 0 ошибок. `on_off_physical_accepted_2026-10-01.txt`: 1448/0; MAXDIFF по каждой величине.
 - Последний срез: ранняя подтвержденная pure-axial finalization, дополнительные Q05-06/08/09/17/19/24, фактический AutoCAD export-reader, перенос оставшегося форматирования к CExecutionReport, удаление шести неиспользуемых методов Batch, R09 guard в SectionTypeRegistry.
 - `snapshot_export_ui_accepted_on_2026-10-01.txt`: 574/0. `snapshot_save_reopen_accepted_2026-10-01.txt`: смена семи материальных настроек, закрытие/открытие, exact match 38950 символов, read/export/plot 0 solve, source unchanged.
@@ -75,8 +77,10 @@
 - Итоговая независимая полная сборка: `final_build_accepted_2026-10-01.log`, exit 0. Полные `final_verified_off/on_2026-10-01.txt`: каждый 6745 assertions / 0 ошибок, 8 suites, source unchanged. Физические On/Off пары содержат полный MAXDIFF; максимальная разница Capacity Mx = 0.000650160015 Н*мм, намного меньше прежнего допуска 5000 Н*мм.
 - Пользовательская output-книга обновлена только через `Refresh-VbaModules`: `final_output_refresh_2026-10-01.log`, exit 0. Штатный `Run-AllTests`: `final_output_all_tests_2026-10-01.txt`, exit 0, те же 6745/0; структура, включая Print area, прошла. Отдельная clean validation также exit 0.
 - `saved_combinations_on_off_accepted_2026-10-01.txt`: в доступной output-книге одно сохраненное LC=1; Capacity OK в обоих режимах, summary/detail совпадают, исходник неизменен. Это не набор перегруженных LC со старых скриншотов. Для двух overload-сценариев OFFSET_2MN/OFFSET_3MN подтверждено Off=NumFail / On=BaseFail, typed codes и вывод совпадают.
-- `expected_preservation_accepted_2026-10-01.txt`: сохранены 247 исходных test-процедур; 436 AssertClose expected/tolerance идентичны, 16 меняют только явно проверенный typed accessor, все tolerance сохранены. Финальные self-audit/report/checkpoint завершаются; до их сохранения цель не объявлять выполненной.
+- `expected_preservation_accepted_2026-10-01.txt`: сохранены 247 исходных test-процедур; 436 AssertClose expected/tolerance идентичны, 16 меняют только явно проверенный typed accessor, все tolerance сохранены. Финальный self-audit завершен; доказательства собраны в final report.
 - `final_source_contracts_accepted_2026-10-01.txt`: 103 импортированных src/tests modules соответствуют исходникам с учетом штатного VBE представления ANSI/Double; нет новых/удаленных production-классов (85 -> 85), DomainContext/downcasts и State/status/solve в чистой формуле отсутствуют. SHA-256 артефактов записаны в лог.
+- Финальная обычная калькуляция сохраненного LC=1 записана в output-книгу и txt-report. Все значения/формулы Config неизменны. `final_saved_calculation_2026-10-01.txt`, `final_saved_output_validation_2026-10-01.log`, `final_saved_source_contracts_2026-10-01.txt`: exit 0. SHA-256 книги после Results save: AAF5D4FAF06197F01966463DE85BA813EB4216B455AA8504B2DE4F0BA717C012.
+- Self-audit всех ID и Old-T/Old-A завершен. `docs/NDM_Audit02_Final_Report.md` содержит карту ответственности, метрики, команды/exit codes, численные MAXDIFF, измеренные замедления и честные ограничения. Применимый DoD Audit02 выполнен; дополнительные архитектурные задачи не начинались.
 
 ### История Принятых Срезов И Предыдущих Точек Продолжения
 
@@ -140,7 +144,7 @@
 | Q05-08 | проверено | `TestAudit02UnconvergedProbeIsNumerical` и `TestAudit02PositiveUnconvergedProbe`: lambda=0 и 1, несколько итераций, превышение без физического исхода. |
 | Q05-09 | проверено | `TestInitialLambdaFailureStatusMapping`, `audit02.offset.*` (0.5/1/1.1) и `audit02.offsetPair.*` (2/3 МН). Точная граница классифицируется по реально подтвержденной плоскости. |
 | Q05-10 | проверено | `TestAudit02FormationOutcomeSemantics`, `audit02.formation.constant.*`, fixed-N/fixed-M и Auto path tests; code/warning/no fictitious Post. |
-| Q05-11 | проверено | `TestCrackFormationSearchBoundKeepsTechnicalCode`, no-crack/no-Post tests, `audit02.genericLoad.*` обоих доменов и `audit02.boundary.8.*`. |
+| Q05-11 | проверено | `TestCrackFormationSearchBoundKeepsTechnicalCode`, no-crack/no-Post tests, `audit02.genericMultiplier.*` обоих доменов и `audit02.boundary.8.*`. |
 | Q05-12 | проверено | `audit02.boundary.*`: физические пределы 3, 5.25, 6 при MaxLambda=6; отсутствие предела 8; generic matrix трех методов. |
 | Q05-13 | проверено | `audit02.formation.aboveCurrent.*`: найденный порог выше текущего LC, Search success, no current crack/no PostState. |
 | Q05-14 | проверено | `audit02.formation.physicalBlock.*`: другой физический предел до tensile-критерия, нет фиктивного PreState/точки. |
@@ -235,11 +239,10 @@
 
 ## How To Continue
 
-1. Восстановить контекст по Current/spec/Architecture и git status/diff/log; HEAD=020ff8f9. Не останавливаться для перезагрузки без явного запроса. Excel COM только последовательно.
-2. Итоговые clean On/Off, output refresh/Run-AllTests и structural validation прошли; не запускать заново без изменения соответствующего кода. Негативные логи сохранены отдельно.
-3. Завершить статический self-audit/source-book consistency, записать final report с таблицей всех ID и Old-T/Old-A, метриками и количественными MAXDIFF/performance.
-4. AutoCAD COM ProgID отсутствует: реальный DWG smoke не засчитывать. Actual export-reader/save-reopen/plot проверены в Excel, 0 дополнительного solve.
-5. Зафиксировать принятый итоговый срез, указать SHA и только после сохранения всех доказательств завершить goal.
+1. Audit02 завершен в доступной среде. Начинать новые задачи только по отдельному ТЗ пользователя.
+2. Для проверки результата читать final report, Current и final_* логи; исторические незавершенные записи ниже/выше не являются актуальными блокерами.
+3. Implementation SHA=a0e44989; окончательный docs/artifacts HEAD смотреть через git log -1. Исходники/Config не откатывать к baseline.
+4. При изменении production повторять соответствующие suites и пары; Excel COM последовательно. Реальный DWG/pixel smoke остается не выполненным, не объявлять его проверенным.
 
 ### Исторические Диагностические Чтения До Реализации
 

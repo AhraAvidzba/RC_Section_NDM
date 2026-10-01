@@ -1,0 +1,5 @@
+AUTOCAD_COM_PROGID_AVAILABLE: False
+REAL_DWG_EXPORT: Not run; AutoCAD COM ProgID unavailable
+ACTUAL_EXPORT_READER: Passed in snapshot_export_ui_accepted_on and snapshot_save_reopen_accepted
+VISUAL_SCREEN_CAPTURE: Not accepted; native capture timed out twice
+EXCEL_PLOT_DATA_CHART_AND_REOPEN: Passed by VBA/COM tests, not a pixel screenshot test
