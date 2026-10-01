@@ -1756,7 +1756,7 @@ Private Sub CheckAudit02SearchVsCapacity(ByRef stats As TCapacityTestStats, _
     path.InitializeFromLoadState "lambda*Mxy", loadState
     Dim result As CCapacityResult
     Set result = New CCapacityResult
-    result.InitializeFromSearch search, path, Nothing, False, 0#, 0#, Nothing, 300#, 200#
+    result.InitializeFromSearch search, path, False, 0#, 0#, Nothing, 300#, 200#
     AssertTrue stats, "audit02.searchEngineering.capacityFailed", result.ResultMeta.InternalStatus = rsCheckFailed
     AssertEquals stats, "audit02.searchEngineering.capacityDisplay", result.Status, "FAIL"
     AssertClose stats, "audit02.searchEngineering.lambdaUnchanged", result.LambdaCapacity, cap.LambdaUltimate, 0#

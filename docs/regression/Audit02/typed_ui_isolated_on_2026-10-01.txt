@@ -1,0 +1,9 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 21364A7925972CE7A5D6347F0504D24EB99BB4ED6DC246D3BFA12A2119F0E596
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d2630f4453734e25aa629b2e51b31c82\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunWorkbookInterfaceTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunWorkbookInterfaceTests; 2026-10-01T18:26:41
+SCRIPT ERROR: Exception calling "Run" with "1" argument(s): "The remote procedure call failed. (Exception from HRESULT: 0x800706BE)"
+CLEANUP ERROR: workbook; The RPC server is unavailable. (Exception from HRESULT: 0x800706BA)
+CLEANUP ERROR: Excel; Exception calling "Quit" with "0" argument(s): "The RPC server is unavailable. (Exception from HRESULT: 0x800706BA)"

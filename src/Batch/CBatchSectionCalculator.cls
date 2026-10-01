@@ -135,6 +135,7 @@ Private mStabilityLoadUserMy() As Double ' Пользовательский My �
 ' Инициализирует внутреннее состояние объекта значениями по умолчанию, безопасными для последующей настройки.
 Private Sub Class_Initialize()
     Set mStatusPolicy = New CBatchStatusPolicy
+    Set mReport = New CExecutionReport
     Set mMomentZeroFilter = New CMomentZeroFilter
     mSettingsValid = True
     mSettingsError = vbNullString
@@ -220,6 +221,8 @@ End Property
 ' открывает и не сохраняет файл: жизненным циклом отчета управляет Excel-макрос.
 Public Property Set ExecutionReport(ByVal report As CExecutionReport)
     Set mReport = report
+    If mReport Is Nothing Then Set mReport = New CExecutionReport
+    Set mReport.UnitSystem = mReportUnits
 End Property
 
 ' Считывает численные настройки solver-ов и трещин из уже загруженного reader-а.
@@ -231,6 +234,7 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mSettingsValid = True
     mSettingsError = vbNullString
     Set mReportUnits = units
+    Set mReport.UnitSystem = units
     Dim zeroMomentSettingRead As Boolean
     zeroMomentSettingRead = settings.HasKey("Calculation.ZeroMomentPerDepth")
     mCrackAllowable = settings.GetDouble("SLS.Crack.Allowable", mCrackAllowable)
@@ -662,9 +666,9 @@ Private Sub RunCombination(ByVal index As Long)
     Set profile = mProfiles.ProfileById(mInputs(index).ProfileId)
     mResults(index).ProfileId = profile.ProfileId
     ReportValue "Профиль", profile.ProfileId & " / " & profile.DisplayName
-    ReportValue "N", ReportForceText(mInputs(index).N)
-    ReportValue "Mx расчетный", ReportMxText(mInputs(index).Mx)
-    ReportValue "My расчетный", ReportMyText(mInputs(index).My)
+    ReportValue "N", mReport.FormatForce(mInputs(index).N)
+    ReportValue "Mx расчетный", mReport.FormatMx(mInputs(index).Mx)
+    ReportValue "My расчетный", mReport.FormatMy(mInputs(index).My)
 
     Dim profileError As String
     If Not profile.ValidateForCalculation(profileError) Then
@@ -673,11 +677,7 @@ Private Sub RunCombination(ByVal index As Long)
         Exit Sub
     End If
 
-    mResults(index).Status = mStatusPolicy.NotApplicable
     mResults(index).SetDirectStateMeta NotApplicableMeta(rkDirectState)
-    mResults(index).CapacityStatus = mStatusPolicy.NotApplicable
-    mResults(index).CrackStatus = mStatusPolicy.NotApplicable
-    mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
     mResults(index).SetStabilityMeta NotApplicableMeta(rkStability)
 
     ReportSection "Продольный изгиб и устойчивость"
@@ -712,12 +712,6 @@ Private Sub RunCombination(ByVal index As Long)
     End If
 
 FinalizeCombination:
-    mResults(index).GoverningUtil = MaxDouble(MaxDouble(MaxDouble(mResults(index).UtilCapacity, mResults(index).CrackUtil), _
-        mResults(index).LongitudinalCrackUtil), mResults(index).StabilityUtil)
-    mResults(index).Status = mStatusPolicy.AggregateMeta(mResults(index).DirectStateMeta, _
-        mResults(index).CapacityMeta, mResults(index).CrackMeta, _
-        mResults(index).LongitudinalCrackMeta, mResults(index).StabilityMeta)
-    mResults(index).StoreOverallMeta mResults(index).OverallMeta
     AppendDiagnostic index
     ReportCombinationSummary index
     Exit Sub
@@ -771,17 +765,17 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
     If stability.InputValid And stability.Applicable And stability.CheckPassed Then _
         ApplyStabilityDesignLoads index, stability, referenceX, referenceY
 
-    ReportValue "Статус устойчивости", mResults(index).StabilityStatus
+    ReportValue "Статус устойчивости", mResults(index).StabilityResult.Status
     ReportMetaComment "Комментарий результата устойчивости", mResults(index).StabilityMeta
-    ReportValue "Нормативный блок", StabilityCodeDisplayName(stability.Code)
+    ReportValue "Нормативный блок", mReport.StabilityCodeDisplayName(stability.Code)
     ReportValue "Материалы для устойчивости", MaterialValueSetToText(valueSet)
-    ReportValue "Расчетная ветвь", StabilityBranchDisplayName(stability.Branch)
-    ReportValue "Контрольная сила устойчивости", ReportCompressionForceText(stability.CriticalForce)
+    ReportValue "Расчетная ветвь", mReport.StabilityBranchDisplayName(stability.Branch)
+    ReportValue "Контрольная сила устойчивости", mReport.FormatCompressionForce(stability.CriticalForce)
     ReportValue "Минимальный запас устойчивости", FormatNumberInvariant(stability.ReserveFactor)
     ReportValue "Итоговые N/Mx/My после фильтра", _
-        "N=" & ReportForceText(mInputs(index).N) & "; " & _
-        "Mx=" & ReportMxText(mInputs(index).Mx) & "; " & _
-        "My=" & ReportMyText(mInputs(index).My)
+        "N=" & mReport.FormatForce(mInputs(index).N) & "; " & _
+        "Mx=" & mReport.FormatMx(mInputs(index).Mx) & "; " & _
+        "My=" & mReport.FormatMy(mInputs(index).My)
     ReportStabilityDetails stability
     Exit Sub
 
@@ -798,48 +792,48 @@ Private Sub ReportStabilityDetails(ByVal stability As CStabilityCalculator)
 
     If Len(stability.StopReason) > 0 Then _
         ReportValue "Причина остановки устойчивости", stability.StopReason
-    ReportValue "Продольная сила для проверки", ReportForceText(stability.DesignN)
+    ReportValue "Продольная сила для проверки", mReport.FormatForce(stability.DesignN)
     ReportValue "Моменты после учета eta по главным плоскостям 1/2", _
-        "M1=" & ReportMomentMagnitudeText(stability.DesignMoment1) & "; " & _
-        "M2=" & ReportMomentMagnitudeText(stability.DesignMoment2)
-    ReportValue "Длительная часть продольной силы", ReportSignedCompressionForceText(stability.SustainedN)
+        "M1=" & mReport.FormatMomentMagnitude(stability.DesignMoment1) & "; " & _
+        "M2=" & mReport.FormatMomentMagnitude(stability.DesignMoment2)
+    ReportValue "Длительная часть продольной силы", mReport.FormatSignedCompressionForce(stability.SustainedN)
     ReportValue "Длительные моменты по главным плоскостям 1/2", _
-        "M1l=" & ReportMomentMagnitudeText(stability.SustainedMoment1) & "; " & _
-        "M2l=" & ReportMomentMagnitudeText(stability.SustainedMoment2)
+        "M1l=" & mReport.FormatMomentMagnitude(stability.SustainedMoment1) & "; " & _
+        "M2l=" & mReport.FormatMomentMagnitude(stability.SustainedMoment2)
 
     ReportValue "Плоскость 1: ветвь и итог", _
-        StabilityBranchDisplayName(stability.PlaneBranch1) & "; " & StabilityPassDisplayName(stability.PlanePassed1)
+        mReport.StabilityBranchDisplayName(stability.PlaneBranch1) & "; " & mReport.StabilityPassDisplayName(stability.PlanePassed1)
     ReportValue "Плоскость 1: eta и запас", _
         FormatNumberInvariant(stability.Eta1) & "; " & FormatNumberInvariant(stability.Reserve1)
     ReportValue "Плоскость 1: Ncr/Nult", _
-        "Ncr=" & ReportCompressionForceText(stability.Ncr1) & "; Nult=" & ReportCompressionForceText(stability.Nultimate1)
+        "Ncr=" & mReport.FormatCompressionForce(stability.Ncr1) & "; Nult=" & mReport.FormatCompressionForce(stability.Nultimate1)
     ReportValue "Плоскость 1: h, i, r и гибкость l0/i", _
-        "h=" & ReportLengthText(stability.Depth1) & "; " & _
-        "i=" & ReportLengthText(stability.Radius1) & "; " & _
-        "r=" & ReportLengthText(stability.CoreDistance1) & "; " & _
+        "h=" & mReport.FormatLength(stability.Depth1) & "; " & _
+        "i=" & mReport.FormatLength(stability.Radius1) & "; " & _
+        "r=" & mReport.FormatLength(stability.CoreDistance1) & "; " & _
         "l0/i=" & FormatNumberInvariant(stability.Slenderness1)
     ReportValue "Плоскость 1: e, ea, phi_l и D", _
-        "e=" & ReportLengthText(stability.Eccentricity1) & "; " & _
-        "ea=" & ReportLengthText(stability.AccidentalEccentricity1) & "; " & _
+        "e=" & mReport.FormatLength(stability.Eccentricity1) & "; " & _
+        "ea=" & mReport.FormatLength(stability.AccidentalEccentricity1) & "; " & _
         "phi_l=" & FormatNumberInvariant(stability.PhiL1) & "; " & _
-        "D=" & ReportStiffnessText(stability.StiffnessD1)
+        "D=" & mReport.FormatStiffness(stability.StiffnessD1)
 
     ReportValue "Плоскость 2: ветвь и итог", _
-        StabilityBranchDisplayName(stability.PlaneBranch2) & "; " & StabilityPassDisplayName(stability.PlanePassed2)
+        mReport.StabilityBranchDisplayName(stability.PlaneBranch2) & "; " & mReport.StabilityPassDisplayName(stability.PlanePassed2)
     ReportValue "Плоскость 2: eta и запас", _
         FormatNumberInvariant(stability.Eta2) & "; " & FormatNumberInvariant(stability.Reserve2)
     ReportValue "Плоскость 2: Ncr/Nult", _
-        "Ncr=" & ReportCompressionForceText(stability.Ncr2) & "; Nult=" & ReportCompressionForceText(stability.Nultimate2)
+        "Ncr=" & mReport.FormatCompressionForce(stability.Ncr2) & "; Nult=" & mReport.FormatCompressionForce(stability.Nultimate2)
     ReportValue "Плоскость 2: h, i, r и гибкость l0/i", _
-        "h=" & ReportLengthText(stability.Depth2) & "; " & _
-        "i=" & ReportLengthText(stability.Radius2) & "; " & _
-        "r=" & ReportLengthText(stability.CoreDistance2) & "; " & _
+        "h=" & mReport.FormatLength(stability.Depth2) & "; " & _
+        "i=" & mReport.FormatLength(stability.Radius2) & "; " & _
+        "r=" & mReport.FormatLength(stability.CoreDistance2) & "; " & _
         "l0/i=" & FormatNumberInvariant(stability.Slenderness2)
     ReportValue "Плоскость 2: e, ea, phi_l и D", _
-        "e=" & ReportLengthText(stability.Eccentricity2) & "; " & _
-        "ea=" & ReportLengthText(stability.AccidentalEccentricity2) & "; " & _
+        "e=" & mReport.FormatLength(stability.Eccentricity2) & "; " & _
+        "ea=" & mReport.FormatLength(stability.AccidentalEccentricity2) & "; " & _
         "phi_l=" & FormatNumberInvariant(stability.PhiL2) & "; " & _
-        "D=" & ReportStiffnessText(stability.StiffnessD2)
+        "D=" & mReport.FormatStiffness(stability.StiffnessD2)
 End Sub
 
 ' Берет длительную часть нагрузки для LC. Если пользователь не заполнил строку,
@@ -1024,10 +1018,10 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     reportText = capacityResult.MethodChoiceReport(capacityCalculator.SolutionStrategy, loadPath)
     If Len(reportText) > 0 Then ReportStep reportText
 
-    ReportValue "Статус несущей способности", mResults(index).CapacityStatus
+    ReportValue "Статус несущей способности", mResults(index).StrengthResult.Capacity.Status
     ReportMetaComment "Комментарий результата несущей", mResults(index).CapacityMeta
-    ReportValue "Фактический метод несущей", mResults(index).CapacitySolutionMethod
-    ReportValue "lambda несущей", FormatNumberInvariant(mResults(index).LambdaCapacity)
+    ReportValue "Фактический метод несущей", mResults(index).StrengthResult.Capacity.SolutionMethod
+    ReportValue "lambda несущей", FormatNumberInvariant(mResults(index).StrengthResult.Capacity.LambdaCapacity)
     ReportValue "Фактический путь несущей", mResults(index).CapacityPathDisplayName
     ReportBlock "Диагностика поиска несущей способности", capacityResult.DiagnosticLog
     reportText = capacityResult.LastSolverDiagnosticLog
@@ -1070,11 +1064,7 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
 
     Dim service As CSectionSolver
     If Not runner Is Nothing Then Set service = runner.ResultSolver
-    If Not service Is Nothing Then
-        StoreSectionState index, service
-    Else
-        mResults(index).StoreSectionStateResult stateResult
-    End If
+    If stateType = sstStrengthState Then mResults(index).StoreSectionStateResult stateResult
 
     ReportValue "НДС " & SectionStateTypeToText(stateType) & " сошлось", IIf(stateResult.Converged, "да", "нет")
     If provider.LastStateWasReused Then
@@ -1092,7 +1082,6 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
         Exit Function
     End If
 
-    mResults(index).ExtensionUsed = (mResults(index).ExtensionUsed Or stateResult.ExtensionUsed)
     Dim stateStatus As String
     stateStatus = mStatusPolicy.StatusFromMeta(stateResult.ResultMeta)
     If stateResult.ExtensionUsed Or Not stateResult.WithinPhysicalRange Then
@@ -1143,15 +1132,14 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
         mInputs(index).N, mInputs(index).Mx, mInputs(index).My, loadState, _
         crackReferenceX, crackReferenceY)
     crack.InitializeForFormation formationResult
-    mResults(index).CrackStatus = mStatusPolicy.StatusFromMeta(mStatusPolicy.CrackMetaFromCalculator(crack))
     StoreCrackAggregateSnapshot index, crack, formationResult
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
     If Not formationResult.PreCrackState Is Nothing Then mResults(index).AddState formationResult.PreCrackState
     If Not formationResult.PostCrackState Is Nothing Then mResults(index).AddState formationResult.PostCrackState
-    ReportValue "Фактический путь образования трещины", mResults(index).CrackFormationMethod
-    ReportValue "lambda образования трещины", FormatNumberInvariant(mResults(index).CrackLambdaCrc)
-    ReportValue "Ncrc", ReportForceText(mResults(index).CrackFormationNcrc)
-    ReportValue "Mxy,crc", ReportMomentMagnitudeText(mResults(index).CrackMcrc)
+    ReportValue "Фактический путь образования трещины", mResults(index).CrackResult.Formation.FormationMethod
+    ReportValue "lambda образования трещины", FormatNumberInvariant(mResults(index).CrackResult.Formation.LambdaCrc)
+    ReportValue "Ncrc", mReport.FormatForce(mResults(index).CrackResult.Formation.FormationNcrc)
+    ReportValue "Mxy,crc", mReport.FormatMomentMagnitude(mResults(index).CrackResult.Formation.Mcrc)
     ReportValue "Причина остановки поиска трещины", crack.StopReason
     ReportCrackFormationChoice formationResult
     ReportBlock "Диагностика образования трещины", formationResult.DiagnosticLog
@@ -1160,7 +1148,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     Dim runner As CStateSolutionRunner
     Set runner = RunProfileState(index, sstCrackedState, cpCrackedNDS, profile.CrackedStateSpec, True, False)
     Dim currentCrackedState As CSectionStateResult
-    Set currentCrackedState = mResults(index).FindState(sstCrackedState)
+    Set currentCrackedState = mResults(index).StateRepository.FindState(sstCrackedState)
 
     Dim currentStateMeta As CResultMeta
     Dim crackWidthMetaOverride As CResultMeta
@@ -1198,7 +1186,6 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     ReportStep "Запускается расчет ширины раскрытия нормальных трещин."
     crack.Calculate currentCrackedState, mSection, mMaterialProvider, profile.CrackedStateSpec, _
         formationResult, loadState
-    mResults(index).CrackStatus = mStatusPolicy.StatusFromMeta(mStatusPolicy.CrackMetaFromCalculator(crack))
     StoreCrackAggregateSnapshot index, crack, formationResult, currentStateMeta, _
         longitudinalResult:=longitudinalResult
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
@@ -1206,20 +1193,20 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
 ReportCrackResult:
     StoreCrackAggregateSnapshot index, crack, formationResult, currentStateMeta, _
         crackWidthMetaOverride, longitudinalResult
-    ReportValue "Статус нормальных трещин", mResults(index).CrackStatus
+    ReportValue "Статус нормальных трещин", mResults(index).NormalCrackStatus
     ReportMetaComment "Комментарий образования трещины", mResults(index).CrackFormationMeta
     ReportMetaComment "Комментарий равновесия CrackedState", mResults(index).CrackCurrentStateMeta
     ReportMetaComment "Комментарий ширины нормальных трещин", mResults(index).CrackWidthMeta
     ReportMetaComment "Комментарий продольных трещин", mResults(index).LongitudinalCrackMeta
-    ReportValue "Фактический путь образования трещины", mResults(index).CrackFormationMethod
-    ReportValue "lambda образования трещины", FormatNumberInvariant(mResults(index).CrackLambdaCrc)
-    ReportValue "Трещина образована", IIf(mResults(index).CrackFormed, "да", "нет")
-    ReportValue "a_crc", ReportLengthText(mResults(index).CrackWidth)
-    ReportValue "psi_s", FormatNumberInvariant(mResults(index).CrackPsiS)
-    ReportValue "As", ReportAreaText(mResults(index).CrackAs)
-    ReportValue "Abt", ReportAreaText(mResults(index).CrackAbt)
-    ReportValue "ds_eq", ReportLengthText(mResults(index).CrackDsEquivalent)
-    ReportValue "ls", ReportLengthText(mResults(index).CrackLs)
+    ReportValue "Фактический путь образования трещины", mResults(index).CrackResult.Formation.FormationMethod
+    ReportValue "lambda образования трещины", FormatNumberInvariant(mResults(index).CrackResult.Formation.LambdaCrc)
+    ReportValue "Трещина образована", IIf(mResults(index).CrackResult.Formation.CrackFormed, "да", "нет")
+    ReportValue "a_crc", mReport.FormatLength(mResults(index).CrackResult.Width.CrackWidth)
+    ReportValue "psi_s", FormatNumberInvariant(mResults(index).CrackResult.Width.PsiS)
+    ReportValue "As", mReport.FormatArea(mResults(index).CrackResult.Width.AsTension)
+    ReportValue "Abt", mReport.FormatArea(mResults(index).CrackResult.Width.Abt)
+    ReportValue "ds_eq", mReport.FormatLength(mResults(index).CrackResult.Width.DsEquivalent)
+    ReportValue "ls", mReport.FormatLength(mResults(index).CrackResult.Width.CrackSpacing)
     ReportBlock "Диагностика расчета трещин", crack.DiagnosticLog
 End Sub
 
@@ -1242,9 +1229,9 @@ Private Sub StoreCrackAggregateSnapshot(ByVal index As Long, ByVal crack As CCra
     If longitudinalResult Is Nothing Then
         Set effectiveLongitudinalResult = New CLongitudinalCrackResult
         effectiveLongitudinalResult.Initialize mResults(index).LongitudinalCrackMeta, _
-            mResults(index).MaxConcreteCompressionStress, _
-            mResults(index).LongitudinalCrackRbMc2, _
-            mResults(index).LongitudinalCrackUtil
+            mResults(index).CrackResult.Longitudinal.MaxCompressionStress, _
+            mResults(index).CrackResult.Longitudinal.RbMc2, _
+            mResults(index).CrackResult.Longitudinal.Utilization
     Else
         Set effectiveLongitudinalResult = longitudinalResult
     End If
@@ -1430,18 +1417,12 @@ Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     If Len(Trim$(reason)) = 0 Then reason = "Некорректное сочетание нагрузок."
     mInputs(index).InputError = reason
     mResults(index).ProfileId = mInputs(index).ProfileId
-    mResults(index).Status = mStatusPolicy.InputErr
     mResults(index).SetDirectStateMeta InvalidInputMeta(rkDirectState, reason)
     mResults(index).SetStabilityMeta InvalidInputMeta(rkStability, reason), reason
     StoreInvalidCapacity index, reason
-    mResults(index).CrackStatus = mStatusPolicy.NotApplicable
-    mResults(index).LongitudinalCrackStatus = mStatusPolicy.NotApplicable
     If Not mMaterialProvider Is Nothing Then
         mResults(index).DiagramExtensionEnabled = mMaterialProvider.DiagramExtensionEnabled
     End If
-    mResults(index).GoverningUtil = 0#
-    mResults(index).ResultComment = reason
-    mResults(index).StoreOverallMeta mResults(index).OverallMeta
     AppendDiagnostic index
 End Sub
 
@@ -1461,8 +1442,8 @@ Private Sub ReportLongitudinalCrackResult(ByVal longitudinalResult As CLongitudi
 
     ReportValue "Статус продольных трещин", statusText
     If statusText <> mStatusPolicy.NotApplicable Then
-        ReportValue "sigma_c,max", ReportStressText(longitudinalResult.MaxCompressionStress)
-        ReportValue "Rb,mc2", ReportStressText(longitudinalResult.RbMc2)
+        ReportValue "sigma_c,max", mReport.FormatStress(longitudinalResult.MaxCompressionStress)
+        ReportValue "Rb,mc2", mReport.FormatStress(longitudinalResult.RbMc2)
         ReportValue "Использование по продольным трещинам", _
             FormatNumberInvariant(longitudinalResult.Utilization)
     ElseIf Len(Trim$(meta.ResultComment)) > 0 Then
@@ -1603,25 +1584,19 @@ Private Sub ClearResultRow(ByVal index As Long)
     mResults(index).ProfileId = mInputs(index).ProfileId
 End Sub
 
-' Сохраняет найденную плоскость деформаций и внутренние усилия прямого solve.
-' Эти данные затем уходят в Results и используются для схемы/AutoCAD export.
-Private Sub StoreSectionState(ByVal index As Long, ByVal solver As CSectionSolver)
-    mResults(index).StoreSectionState solver
-End Sub
-
 ' Добавляет одну строку в текстовую диагностику batch-расчета.
 ' Это компактная диагностическая сводка, а не подробный журнал итераций solver-а.
 Private Sub AppendDiagnostic(ByVal index As Long)
     mDiagnosticLog = mDiagnosticLog & "combination=" & mInputs(index).CombinationID & _
         "; OverallStatus=" & mResults(index).Status & _
-        "; DirectStateStatus=" & mResults(index).DirectStateStatus & _
+        "; DirectStateStatus=" & mResults(index).StrengthResult.DirectState.Status & _
         "; ExtensionUsed=" & CStr(mResults(index).ExtensionUsed) & _
-        "; CapacityStatus=" & mResults(index).CapacityStatus & _
-        "; CrackStatus=" & mResults(index).CrackStatus & _
-        "; LongitudinalCrackStatus=" & mResults(index).LongitudinalCrackStatus & _
-        "; LongitudinalCrackUtil=" & FormatNumberInvariant(mResults(index).LongitudinalCrackUtil) & _
-        "; StabilityStatus=" & mResults(index).StabilityStatus & _
-        "; StabilityUtil=" & FormatNumberInvariant(mResults(index).StabilityUtil) & _
+        "; CapacityStatus=" & mResults(index).StrengthResult.Capacity.Status & _
+        "; CrackStatus=" & mResults(index).NormalCrackStatus & _
+        "; LongitudinalCrackStatus=" & mResults(index).CrackResult.Longitudinal.Status & _
+        "; LongitudinalCrackUtil=" & FormatNumberInvariant(mResults(index).CrackResult.Longitudinal.Utilization) & _
+        "; StabilityStatus=" & mResults(index).StabilityResult.Status & _
+        "; StabilityUtil=" & FormatNumberInvariant(mResults(index).StabilityResult.Utilization) & _
         "; governingUtil=" & FormatNumberInvariant(mResults(index).GoverningUtil) & vbCrLf
 End Sub
 
@@ -1630,14 +1605,14 @@ End Sub
 ' видит ход выполнения без открытия Results и без чтения внутренних массивов.
 Private Sub ReportCombinationSummary(ByVal index As Long)
     ReportValue "Итоговый статус", mResults(index).Status
-    ReportValue "Статус прямого НДС", mResults(index).DirectStateStatus
-    ReportValue "Использовано продолжение диаграммы", YesNoRu(mResults(index).ExtensionUsed)
-    ReportValue "Статус несущей способности", mResults(index).CapacityStatus
-    ReportValue "Статус нормальных трещин", mResults(index).CrackStatus
-    ReportValue "Статус продольных трещин", mResults(index).LongitudinalCrackStatus
-    ReportValue "Использование по продольным трещинам", FormatNumberInvariant(mResults(index).LongitudinalCrackUtil)
-    ReportValue "Статус устойчивости", mResults(index).StabilityStatus
-    ReportValue "Использование устойчивости", FormatNumberInvariant(mResults(index).StabilityUtil)
+    ReportValue "Статус прямого НДС", mResults(index).StrengthResult.DirectState.Status
+    ReportValue "Использовано продолжение диаграммы", mReport.YesNoRu(mResults(index).ExtensionUsed)
+    ReportValue "Статус несущей способности", mResults(index).StrengthResult.Capacity.Status
+    ReportValue "Статус нормальных трещин", mResults(index).NormalCrackStatus
+    ReportValue "Статус продольных трещин", mResults(index).CrackResult.Longitudinal.Status
+    ReportValue "Использование по продольным трещинам", FormatNumberInvariant(mResults(index).CrackResult.Longitudinal.Utilization)
+    ReportValue "Статус устойчивости", mResults(index).StabilityResult.Status
+    ReportValue "Использование устойчивости", FormatNumberInvariant(mResults(index).StabilityResult.Utilization)
     ReportValue "Определяющее использование", FormatNumberInvariant(mResults(index).GoverningUtil)
     ReportMetaComment "Итоговый комментарий", mResults(index).OverallMeta
 End Sub
@@ -1675,347 +1650,13 @@ Private Sub ReportMetaComment(ByVal label As String, ByVal meta As CResultMeta)
     ReportValue label, meta.ResultComment
 End Sub
 
-' Форматирует длину для execution_report в той же выходной единице, что и
-' табличный Results. Внутри batch все еще хранит миллиметры.
-Private Function ReportLengthText(ByVal value As Double) As String
-    If mReportUnits Is Nothing Then
-        ReportLengthText = FormatNumberInvariant(value) & " мм"
-    Else
-        ReportLengthText = FormatNumberInvariant(mReportUnits.InternalLengthToOutput(value)) & " " & mReportUnits.OutputLengthUnit
-    End If
-End Function
-
-' Форматирует площадь в пользовательской выходной единице площади.
-Private Function ReportAreaText(ByVal value As Double) As String
-    If mReportUnits Is Nothing Then
-        ReportAreaText = FormatNumberInvariant(value) & " мм2"
-    Else
-        ReportAreaText = FormatNumberInvariant(mReportUnits.InternalAreaToOutput(value)) & " " & mReportUnits.OutputAreaUnit
-    End If
-End Function
-
-' Форматирует обычную знаковую продольную силу N с учетом Output.SignConvention.N.
-Private Function ReportForceText(ByVal value As Double) As String
-    If mReportUnits Is Nothing Then
-        ReportForceText = FormatNumberInvariant(value) & " Н"
-    Else
-        ReportForceText = FormatNumberInvariant(mReportUnits.InternalForceToOutput(value)) & " " & mReportUnits.OutputForceUnit
-    End If
-End Function
-
-' Форматирует положительную величину сжимающей силы, например Ncr или Nult.
-' Внутренний знак восстанавливается как сжатие, чтобы пользователь видел
-' тот же знак, что в таблице устойчивости.
-Private Function ReportCompressionForceText(ByVal compressionMagnitude As Double) As String
-    If mReportUnits Is Nothing Then
-        ReportCompressionForceText = FormatNumberInvariant(-Abs(compressionMagnitude)) & " Н"
-    Else
-        ReportCompressionForceText = FormatNumberInvariant(mReportUnits.InternalForceToOutput(-Abs(compressionMagnitude))) & _
-            " " & mReportUnits.OutputForceUnit
-    End If
-End Function
-
-' Форматирует уже подписанную сжимающую силу, где положительное значение
-' означает сжатие в локальной нормативной формуле устойчивости.
-Private Function ReportSignedCompressionForceText(ByVal signedCompression As Double) As String
-    If mReportUnits Is Nothing Then
-        ReportSignedCompressionForceText = FormatNumberInvariant(-signedCompression) & " Н"
-    Else
-        ReportSignedCompressionForceText = FormatNumberInvariant(mReportUnits.InternalForceToOutput(-signedCompression)) & _
-            " " & mReportUnits.OutputForceUnit
-    End If
-End Function
-
-' Форматирует Mx с пользовательским знаком Output.SignConvention.Mx.
-Private Function ReportMxText(ByVal value As Double) As String
-    If mReportUnits Is Nothing Then
-        ReportMxText = FormatNumberInvariant(value) & " Н*мм"
-    Else
-        ReportMxText = FormatNumberInvariant(mReportUnits.InternalMomentMxToOutput(value)) & " " & mReportUnits.OutputMomentUnit
-    End If
-End Function
-
-' Форматирует My с пользовательским знаком Output.SignConvention.My.
-Private Function ReportMyText(ByVal value As Double) As String
-    If mReportUnits Is Nothing Then
-        ReportMyText = FormatNumberInvariant(value) & " Н*мм"
-    Else
-        ReportMyText = FormatNumberInvariant(mReportUnits.InternalMomentMyToOutput(value)) & " " & mReportUnits.OutputMomentUnit
-    End If
-End Function
-
-' Форматирует скалярный момент без смены знака: используется для M1/M2,
-' Mxy,crc и других величин, где в отчете нужен модуль, а не глобальный Mx/My.
-Private Function ReportMomentMagnitudeText(ByVal value As Double) As String
-    If mReportUnits Is Nothing Then
-        ReportMomentMagnitudeText = FormatNumberInvariant(value) & " Н*мм"
-    Else
-        ReportMomentMagnitudeText = FormatNumberInvariant(mReportUnits.InternalMomentMagnitudeToOutput(value)) & _
-            " " & mReportUnits.OutputMomentUnit
-    End If
-End Function
-
-' Форматирует напряжение/модуль в пользовательской выходной единице напряжений.
-Private Function ReportStressText(ByVal value As Double) As String
-    If mReportUnits Is Nothing Then
-        ReportStressText = FormatNumberInvariant(value) & " МПа"
-    Else
-        ReportStressText = FormatNumberInvariant(mReportUnits.InternalStressToOutput(value)) & " " & mReportUnits.OutputStressUnit
-    End If
-End Function
-
-' Форматирует жесткость D устойчивости. Размерность задается как сила*длина2
-' и использует ту же пару output-единиц силы и длины, что Results.
-Private Function ReportStiffnessText(ByVal value As Double) As String
-    If mReportUnits Is Nothing Then
-        ReportStiffnessText = FormatNumberInvariant(value) & " Н*мм2"
-    Else
-        ReportStiffnessText = FormatNumberInvariant(mReportUnits.InternalForceLengthSquaredToOutput(value)) & _
-            " " & mReportUnits.OutputForceLengthSquaredUnit
-    End If
-End Function
-
 ' Добавляет многострочный диагностический блок в txt-отчет и перед записью
 ' переводит низкоуровневую диагностику solver-а в более читаемый вид.
 Private Sub ReportBlock(ByVal title As String, ByVal body As String)
     If mReport Is Nothing Then Exit Sub
     If Not mReport.Enabled Then Exit Sub
-    mReport.AddBlock title, HumanReadableReportBlock(title, body)
+    mReport.AddDiagnosticBlock title, body
 End Sub
-
-' Преобразует низкоуровневую диагностику solver-ов в форму, пригодную для
-' пользовательского txt-отчета. Внутренние DiagnosticLog остаются подробными
-' и машинно-проверяемыми, но отчет не должен забиваться сотнями строк
-' initialGuess/lambda_crc_iter без пояснений.
-Private Function HumanReadableReportBlock(ByVal title As String, ByVal body As String) As String
-    Dim text As String
-    text = body
-    If Len(text) = 0 Then Exit Function
-
-    If InStr(1, title, "Диагностика расчета трещин", vbTextCompare) > 0 Then
-        text = CompactCrackDiagnosticText(text)
-    End If
-    If InStr(1, title, "Сценарий прямого StateSolution", vbTextCompare) > 0 Or _
-            InStr(1, title, "Итерации прямого CSectionSolver", vbTextCompare) > 0 Or _
-            InStr(1, title, "Итерации внутреннего CSectionSolver", vbTextCompare) > 0 Then
-        text = CompactStateSolutionDiagnosticText(text)
-    End If
-    If InStr(1, title, "Диагностика поиска несущей способности", vbTextCompare) > 0 Then
-        text = CompactCapacityDiagnosticText(text)
-    End If
-
-    HumanReadableReportBlock = text
-End Function
-
-' Приводит подробный журнал трещин к читаемому виду: смысловые строки и
-' итерации lambda_crc оставляет по порядку, а повторяющиеся warm-start
-' сообщения заменяет короткой сводкой.
-Private Function CompactCrackDiagnosticText(ByVal body As String) As String
-    Dim lines() As String
-    lines = Split(body, vbCrLf)
-
-    Dim result As String
-    Dim warmStartCount As Long
-    Dim i As Long
-    For i = LBound(lines) To UBound(lines)
-        Dim lineText As String
-        lineText = Trim$(lines(i))
-        If Len(lineText) = 0 Then
-            ' Пустые строки внутри diagnostic-блока не несут смысла.
-        ElseIf Left$(lineText, Len("lambda_crc_iter=")) = "lambda_crc_iter=" Then
-            AppendReportLine result, TranslateDiagnosticLine(lineText)
-        ElseIf Left$(lineText, Len("lambda_crc_path_iter=")) = "lambda_crc_path_iter=" Then
-            AppendReportLine result, TranslateDiagnosticLine(lineText)
-        ElseIf lineText = "initialGuess=warmStartSolver" Then
-            warmStartCount = warmStartCount + 1
-        Else
-            AppendReportLine result, TranslateDiagnosticLine(lineText)
-        End If
-    Next i
-
-    If warmStartCount > 0 Then _
-        AppendReportLine result, "Для повторных НДС использовалась стартовая плоскость из предыдущего близкого решения; повторов: " & CStr(warmStartCount) & "."
-
-    CompactCrackDiagnosticText = result
-End Function
-
-' Сжимает diagnostic CStateSolutionRunner. Особенно важно убрать десятки
-' одинаковых warm-start строк: они полезны разработчику, но не пользователю.
-Private Function CompactStateSolutionDiagnosticText(ByVal body As String) As String
-    Dim lines() As String
-    lines = Split(body, vbCrLf)
-
-    Dim result As String
-    Dim warmStartCount As Long
-    Dim activeGuessCount As Long
-    Dim i As Long
-    For i = LBound(lines) To UBound(lines)
-        Dim lineText As String
-        lineText = Trim$(lines(i))
-        If Len(lineText) = 0 Then
-            ' Пропускаем.
-        ElseIf Left$(lineText, Len("step=")) = "step=" Then
-            AppendReportLine result, TranslateDiagnosticLine(lineText)
-        ElseIf lineText = "initialGuess=warmStartSolver" Then
-            warmStartCount = warmStartCount + 1
-        ElseIf lineText = "initialGuess=directStateActiveSet" Then
-            activeGuessCount = activeGuessCount + 1
-        Else
-            AppendReportLine result, TranslateDiagnosticLine(lineText)
-        End If
-    Next i
-
-    If warmStartCount > 0 Then _
-        AppendReportLine result, "Стартовая плоскость: использовано предыдущее близкое решение; повторов: " & CStr(warmStartCount) & "."
-    If activeGuessCount > 0 Then _
-        AppendReportLine result, "Стартовая плоскость: подобрана по активной зоне сечения; повторов: " & CStr(activeGuessCount) & "."
-
-    CompactStateSolutionDiagnosticText = result
-End Function
-
-' Сжимает диагностический блок поиска несущей способности. Полный список
-' lambda-точек может быть большим, но для инженерной диагностики полезно
-' видеть каждую проверенную точку и возможный retry НДС.
-Private Function CompactCapacityDiagnosticText(ByVal body As String) As String
-    Dim lines() As String
-    lines = Split(body, vbCrLf)
-
-    Dim result As String
-    Dim i As Long
-    For i = LBound(lines) To UBound(lines)
-        Dim lineText As String
-        lineText = Trim$(lines(i))
-        If Len(lineText) = 0 Then
-            ' Пропускаем.
-        ElseIf Left$(lineText, Len("probe=")) = "probe=" Then
-            AppendReportLine result, TranslateDiagnosticLine(lineText)
-        Else
-            AppendReportLine result, TranslateDiagnosticLine(lineText)
-        End If
-    Next i
-
-    CompactCapacityDiagnosticText = result
-End Function
-
-' Переводит короткие машинные diagnostic-строки в более понятные фразы.
-Private Function TranslateDiagnosticLine(ByVal lineText As String) As String
-    Dim translated As String
-    translated = lineText
-    If translated = "ultimatePath pureAxial redirected=LoadMultiplier" Or _
-            translated = "Силовая траектория UltimateStrain перенаправлена на LoadMultiplier." Then
-        TranslateDiagnosticLine = "Силовая траектория lambda*N перенаправлена на LoadMultiplier, потому что UltimateStrain для нее вырождается."
-        Exit Function
-    End If
-    translated = Replace$(translated, "ultimatePath iter=", "итерация UltimateStrain по общей lambda-траектории=")
-    translated = Replace$(translated, "ultimate iter=", "итерация UltimateStrain по моментной траектории=")
-    translated = Replace$(translated, "lambda_crc=", "Найден lambda_crc=")
-    translated = Replace$(translated, "lambda_crc_iter=", "итерация прямого поиска lambda_crc=")
-    translated = Replace$(translated, "lambda_crc_path_iter=", "итерация UltimateStrain по lambda-траектории lambda_crc=")
-    translated = Replace$(translated, "lambda_crc_load_probe=", "точка LoadMultiplier lambda_crc=")
-    translated = Replace$(translated, "iterations=", "итераций=")
-    translated = Replace$(translated, "method=", "метод=")
-    translated = Replace$(translated, "formation=Ncrc", "Образование трещины найдено по центральному растяжению Ncrc")
-    translated = Replace$(translated, "search=", "Поиск: ")
-    translated = Replace$(translated, "searchMethod=", "метод поиска=")
-    translated = Replace$(translated, "secantGuard=insideBracket", "защита Secant=точка возвращена внутрь скобки")
-    translated = Replace$(translated, "rawLambda=", "исходная lambda=")
-    translated = Replace$(translated, "guardedLambda=", "защищенная lambda=")
-    translated = Replace$(translated, "bracketLow=", "нижняя граница=")
-    translated = Replace$(translated, "bracketHigh=", "верхняя граница=")
-    translated = Replace$(translated, "probe=", "точка lambda=")
-    translated = Replace$(translated, "step=", "шаг=")
-    translated = Replace$(translated, "iter=", "итерация=")
-    translated = Replace$(translated, "directStateRetry=", "повтор прямого НДС=")
-    translated = Replace$(translated, "extensionRetry=", "повтор после выхода за диаграмму=")
-    translated = Replace$(translated, "directStateActiveSet", "активная зона прямого НДС")
-    translated = Replace$(translated, "warmStartSolver", "предыдущее близкое решение")
-    translated = Replace$(translated, "direct target without line search", "целевая нагрузка без line search")
-    translated = Replace$(translated, "direct target", "целевая нагрузка")
-    translated = Replace$(translated, "stepped", "ступенчатая нагрузка")
-    translated = Replace$(translated, "attempt=", "повтор НДС=")
-    translated = Replace$(translated, "converged=True", "сошлось=да")
-    translated = Replace$(translated, "converged=False", "сошлось=нет")
-    translated = Replace$(translated, "state=", "состояние=")
-    translated = Replace$(translated, "stop=", "причина=")
-    translated = Replace$(translated, "lineSearchUsed=", "line search использован=")
-    translated = Replace$(translated, "lineSearchIterations=", "итераций line search=")
-    translated = Replace$(translated, "internalForceEvaluationCount=", "оценок внутренних усилий=")
-    translated = Replace$(translated, "internalNewtonCallCount=", "вызовов Newton=")
-    translated = Replace$(translated, "result=converged", "результат=сошлось")
-    translated = Replace$(translated, "result=failed", "результат=не сошлось")
-    translated = Replace$(translated, "rPath1=", "невязка пути 1=")
-    translated = Replace$(translated, "rPath2=", "невязка пути 2=")
-    translated = Replace$(translated, "rLimit=", "невязка предельной деформации=")
-    translated = Replace$(translated, "rDir=", "невязка направления=")
-    translated = Replace$(translated, "residual=", "невязка образования трещины=")
-    translated = Replace$(translated, "rN=", "невязка N=")
-    translated = Replace$(translated, "rMomentDir=", "невязка направления момента=")
-    translated = Replace$(translated, "eps_bt_ult=", "eps_bt,ult=")
-    translated = Replace$(translated, "residualN=", "невязка N=")
-    translated = Replace$(translated, "residualMx=", "невязка Mx=")
-    translated = Replace$(translated, "residualMy=", "невязка My=")
-    translated = Replace$(translated, "critical=", "критический элемент=")
-    translated = Replace$(translated, "minConcreteStrain=", "мин. деформация бетона=")
-    translated = Replace$(translated, "maxConcreteStrain=", "макс. деформация бетона=")
-    translated = Replace$(translated, "maxAbsSteelStrain=", "макс. модуль деформации арматуры=")
-    TranslateDiagnosticLine = translated
-End Function
-
-' Единая короткая русская запись булевых значений для отчета.
-Private Function YesNoRu(ByVal value As Boolean) As String
-    If value Then
-        YesNoRu = "да"
-    Else
-        YesNoRu = "нет"
-    End If
-End Function
-
-' Аккуратно добавляет строку в собираемый многострочный блок отчета.
-Private Sub AppendReportLine(ByRef target As String, ByVal lineText As String)
-    If Len(lineText) = 0 Then Exit Sub
-    If Len(target) > 0 Then target = target & vbCrLf
-    target = target & lineText
-End Sub
-
-' Русское название нормативного блока устойчивости для txt-отчета.
-Private Function StabilityCodeDisplayName(ByVal codeText As String) As String
-    Select Case UCase$(Trim$(codeText))
-        Case "SP63"
-            StabilityCodeDisplayName = "СП 63"
-        Case "SP35"
-            StabilityCodeDisplayName = "СП 35"
-        Case Else
-            StabilityCodeDisplayName = codeText
-    End Select
-End Function
-
-' Русское описание внутренней ветви устойчивости. Расчетные идентификаторы
-' остаются в коде, но отчет должен читаться без знания этих имен.
-Private Function StabilityBranchDisplayName(ByVal branchText As String) As String
-    Select Case LCase$(Trim$(branchText))
-        Case "nocompression"
-            StabilityBranchDisplayName = "устойчивость не требуется: нет сжатия"
-        Case "sp63"
-            StabilityBranchDisplayName = "СП 63: расчет eta и Ncr"
-        Case "sp35-eta"
-            StabilityBranchDisplayName = "СП 35: ветвь ec > r через eta и Ncr"
-        Case "sp35-table"
-            StabilityBranchDisplayName = "СП 35: табличная ветвь ec <= r через Nult,stab"
-        Case "sp35-mixed"
-            StabilityBranchDisplayName = "СП 35: плоскости попали в разные ветви"
-        Case Else
-            StabilityBranchDisplayName = branchText
-    End Select
-End Function
-
-' Делает PASS/FAIL в отчете понятным русским текстом.
-Private Function StabilityPassDisplayName(ByVal passed As Boolean) As String
-    If passed Then
-        StabilityPassDisplayName = "проверка пройдена"
-    Else
-        StabilityPassDisplayName = "проверка не пройдена"
-    End If
-End Function
 
 ' Утилитарный максимум без WorksheetFunction, чтобы не тащить Excel в hot path.
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
@@ -2078,7 +1719,7 @@ End Function
 
 ' Возвращает запас по трещинам как величину, обратную использованию.
 Private Function CrackSafetyFactorForGoverning(ByVal index As Long) As Double
-    If mResults(index).CrackUtil > 0# Then CrackSafetyFactorForGoverning = 1# / mResults(index).CrackUtil
+    If mResults(index).CrackResult.Width.Utilization > 0# Then CrackSafetyFactorForGoverning = 1# / mResults(index).CrackResult.Width.Utilization
 End Function
 
 ' Выбирает Worst-сочетание по пользовательскому критерию верхней сводки.
@@ -2158,7 +1799,7 @@ End Function
 ' сжатой арматуры в состоянии нет, эта составляющая не участвует в минимуме.
 Public Function StrengthStrainReserve(ByVal index As Long) As Double
     Dim stateResult As CSectionStateResult
-    Set stateResult = mResults(index).FindState(sstStrengthState)
+    Set stateResult = mResults(index).StateRepository.FindState(sstStrengthState)
     If stateResult Is Nothing Then Exit Function
     If Not mStatusPolicy.IsFinished(mStatusPolicy.StatusFromMeta(stateResult.ResultMeta)) Then Exit Function
 
@@ -2193,26 +1834,26 @@ End Function
 
 ' Запас по нормальным трещинам как обратная величина к использованию a_crc.
 Public Function CrackReserveFactor(ByVal index As Long) As Double
-    If mStatusPolicy.IsFinished(mResults(index).CrackStatus) And mResults(index).CrackUtil > 0# Then _
-        CrackReserveFactor = 1# / mResults(index).CrackUtil
+    If mStatusPolicy.IsFinished(mResults(index).NormalCrackStatus) And mResults(index).CrackResult.Width.Utilization > 0# Then _
+        CrackReserveFactor = 1# / mResults(index).CrackResult.Width.Utilization
 End Function
 
 ' Запас по продольным трещинам как обратная величина к sigma_b/Rb,mc2.
 Public Function LongitudinalCrackReserveFactor(ByVal index As Long) As Double
-    If mStatusPolicy.IsFinished(mResults(index).LongitudinalCrackStatus) And _
-            mResults(index).LongitudinalCrackUtil > 0# Then _
-        LongitudinalCrackReserveFactor = 1# / mResults(index).LongitudinalCrackUtil
+    If mStatusPolicy.IsFinished(mResults(index).CrackResult.Longitudinal.Status) And _
+            mResults(index).CrackResult.Longitudinal.Utilization > 0# Then _
+        LongitudinalCrackReserveFactor = 1# / mResults(index).CrackResult.Longitudinal.Utilization
 End Function
 
 ' Минимальный запас по устойчивости с учетом пользовательского лимита СП 35
 ' для ветви N/Ncr <= Stability.SP35.NOverNcrLimit.
 Public Function StabilityReserveForSummary(ByVal index As Long) As Double
-    If Not mStatusPolicy.IsFinished(mResults(index).StabilityStatus) Then Exit Function
+    If Not mStatusPolicy.IsFinished(mResults(index).StabilityResult.Status) Then Exit Function
     StabilityReserveForSummary = PositiveMin( _
         StabilityPlaneReserveForSummary(index, 1), _
         StabilityPlaneReserveForSummary(index, 2))
-    If StabilityReserveForSummary <= 0# And mResults(index).StabilityReserveFactor > 0# Then _
-        StabilityReserveForSummary = mResults(index).StabilityReserveFactor
+    If StabilityReserveForSummary <= 0# And mResults(index).StabilityResult.ReserveFactor > 0# Then _
+        StabilityReserveForSummary = mResults(index).StabilityResult.ReserveFactor
 End Function
 
 ' Возвращает запас одной главной плоскости устойчивости. Для СП 35 eta-ветви
@@ -2222,13 +1863,13 @@ Private Function StabilityPlaneReserveForSummary(ByVal index As Long, ByVal plan
     Dim rawReserve As Double
     Dim branchText As String
     If planeIndex = 1 Then
-        applicable = mResults(index).StabilityPlaneApplicable1
-        rawReserve = mResults(index).StabilityReserve1
-        branchText = mResults(index).StabilityPlaneBranch1
+        applicable = mResults(index).StabilityResult.PlaneApplicable1
+        rawReserve = mResults(index).StabilityResult.Reserve1
+        branchText = mResults(index).StabilityResult.PlaneBranch1
     Else
-        applicable = mResults(index).StabilityPlaneApplicable2
-        rawReserve = mResults(index).StabilityReserve2
-        branchText = mResults(index).StabilityPlaneBranch2
+        applicable = mResults(index).StabilityResult.PlaneApplicable2
+        rawReserve = mResults(index).StabilityResult.Reserve2
+        branchText = mResults(index).StabilityResult.PlaneBranch2
     End If
     If Not applicable Then Exit Function
     If rawReserve <= 0# Then Exit Function
@@ -2271,29 +1912,14 @@ Public Property Get CombinationName(ByVal index As Long) As String
     CombinationName = mInputs(index).Comment
 End Property
 
-Public Property Get ProfileId(ByVal index As Long) As String
-    If Len(mResults(index).ProfileId) > 0 Then
-        ProfileId = mResults(index).ProfileId
-    Else
-        ProfileId = mInputs(index).ProfileId
-    End If
+' Возвращает профиль исходного сочетания до выполнения расчета. Preflight
+' компоновки Results использует input, а не еще пустой расчетный result-tree.
+Public Property Get InputProfileId(ByVal index As Long) As String
+    InputProfileId = mInputs(index).ProfileId
 End Property
 
-Public Property Get CapacityLoadPath(ByVal index As Long) As String
-    Dim loadPath As CCapacityLoadPath
-    Set loadPath = New CCapacityLoadPath
-    CapacityLoadPath = loadPath.DisplayNameForKey(CapacityLoadPathKey(index))
-End Property
 
-Public Property Get CapacityLoadPathKey(ByVal index As Long) As String
-    If Len(mResults(index).CapacityPathResolved) > 0 And mResults(index).CapacityPathResolved <> CAPACITY_PATH_NONE Then
-        CapacityLoadPathKey = mResults(index).CapacityPathResolved
-    Else
-        Dim calculator As CCapacityCalculator
-        Set calculator = New CCapacityCalculator
-        CapacityLoadPathKey = calculator.BuildLoadPath(mInputs(index).CapacityLoadPath, LoadStateForCombination(index)).Key
-    End If
-End Property
+
 
 Public Property Get N(ByVal index As Long) As Double
     N = mInputs(index).N
@@ -2343,266 +1969,14 @@ Public Property Get StabilityMu2() As Double
     StabilityMu2 = mStabilityMu2
 End Property
 
-Public Property Get Status(ByVal index As Long) As String
-    Status = ExternalStatusFromMeta(mResults(index).OverallMeta, mResults(index).Status)
+' Возвращает каноническое дерево результата LC. Потребители читают его
+' непосредственно, без скалярных forwarding-копий в batch-калькуляторе.
+Public Property Get ResultAt(ByVal index As Long) As CCombinationResult
+    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3943, _
+        "CBatchSectionCalculator", "Номер результата сочетания вне диапазона пакета."
+    Set ResultAt = mResults(index)
 End Property
 
-Public Property Get OverallStatus(ByVal index As Long) As String
-    OverallStatus = ExternalStatusFromMeta(mResults(index).OverallMeta, mResults(index).Status)
-End Property
-
-' Возвращает meta общего статуса LC. Writer-ы используют его как основной источник
-' внешнего статуса; строковые свойства нужны только как готовый display-слой.
-Public Property Get OverallMeta(ByVal index As Long) As CResultMeta
-    Set OverallMeta = mResults(index).OverallMeta
-End Property
-
-Public Property Get DirectStateStatus(ByVal index As Long) As String
-    DirectStateStatus = ExternalStatusFromMeta(mResults(index).DirectStateMeta, mResults(index).DirectStateStatus)
-End Property
-
-' Возвращает result-subtree расчетов по модели прочности для пассивных writer-ов.
-Public Property Get StrengthResult(ByVal index As Long) As CStrengthResult
-    Set StrengthResult = mResults(index).StrengthResult
-End Property
-
-' Возвращает сводную meta-запись блока прочности для detailed-writer-ов.
-Public Property Get StrengthMeta(ByVal index As Long) As CResultMeta
-    Set StrengthMeta = mResults(index).StrengthMeta
-End Property
-
-' Возвращает meta прямого НДС по модели прочности.
-Public Property Get DirectStateMeta(ByVal index As Long) As CResultMeta
-    Set DirectStateMeta = mResults(index).DirectStateMeta
-End Property
-
-Public Property Get CapacityStatus(ByVal index As Long) As String
-    CapacityStatus = ExternalStatusFromMeta(mResults(index).CapacityMeta, mResults(index).CapacityStatus)
-End Property
-
-' Возвращает meta поиска несущей способности.
-Public Property Get CapacityMeta(ByVal index As Long) As CResultMeta
-    Set CapacityMeta = mResults(index).CapacityMeta
-End Property
-
-Public Property Get CapacityLimitState(ByVal index As Long) As String
-    CapacityLimitState = mResults(index).CapacityLimitState
-End Property
-
-Public Property Get CapacitySolutionMethod(ByVal index As Long) As String
-    CapacitySolutionMethod = mResults(index).CapacitySolutionMethod
-End Property
-
-Public Property Get CrackStatus(ByVal index As Long) As String
-    CrackStatus = ExternalStatusFromMeta(mResults(index).CrackMeta, mResults(index).CrackStatus)
-End Property
-
-' Возвращает result-subtree расчета трещин.
-Public Property Get CrackResult(ByVal index As Long) As CCrackResult
-    Set CrackResult = mResults(index).CrackResult
-End Property
-
-' Возвращает сводную meta нормальных трещин: formation/current-state/width.
-Public Property Get CrackMeta(ByVal index As Long) As CResultMeta
-    Set CrackMeta = mResults(index).CrackMeta
-End Property
-
-' Возвращает сводную meta всего detailed-блока трещин: нормальные трещины
-' плюс продольные трещины. Это готовый источник для writer-а Results.
-Public Property Get CrackSummaryMeta(ByVal index As Long) As CResultMeta
-    Set CrackSummaryMeta = mResults(index).CrackSummaryMeta
-End Property
-
-' Возвращает внешний статус detailed-блока трещин из единой status-policy.
-Public Property Get CrackSummaryStatus(ByVal index As Long) As String
-    CrackSummaryStatus = ExternalStatusFromMeta(mResults(index).CrackSummaryMeta, mResults(index).CrackStatus)
-End Property
-
-' Возвращает meta поиска момента образования нормальной трещины.
-Public Property Get CrackFormationMeta(ByVal index As Long) As CResultMeta
-    Set CrackFormationMeta = mResults(index).CrackFormationMeta
-End Property
-
-' Возвращает meta прямого CrackedState при заданных нагрузках.
-Public Property Get CrackCurrentStateMeta(ByVal index As Long) As CResultMeta
-    Set CrackCurrentStateMeta = mResults(index).CrackCurrentStateMeta
-End Property
-
-' Возвращает meta формульной проверки ширины нормальной трещины.
-Public Property Get CrackWidthMeta(ByVal index As Long) As CResultMeta
-    Set CrackWidthMeta = mResults(index).CrackWidthMeta
-End Property
-
-Public Property Get LongitudinalCrackStatus(ByVal index As Long) As String
-    LongitudinalCrackStatus = ExternalStatusFromMeta(mResults(index).LongitudinalCrackMeta, mResults(index).LongitudinalCrackStatus)
-End Property
-
-' Возвращает meta проверки продольных трещин.
-Public Property Get LongitudinalCrackMeta(ByVal index As Long) As CResultMeta
-    Set LongitudinalCrackMeta = mResults(index).LongitudinalCrackMeta
-End Property
-
-Public Property Get ExtensionUsed(ByVal index As Long) As Boolean
-    ExtensionUsed = mResults(index).ExtensionUsed
-End Property
-
-Public Property Get DiagramExtensionEnabled(ByVal index As Long) As Boolean
-    DiagramExtensionEnabled = mResults(index).DiagramExtensionEnabled
-End Property
-
-Public Property Get UtilizationCapacity(ByVal index As Long) As Double
-    UtilizationCapacity = mResults(index).UtilCapacity
-End Property
-
-Public Property Get NUltimate(ByVal index As Long) As Double
-    NUltimate = mResults(index).NUltimate
-End Property
-
-Public Property Get MxUltimate(ByVal index As Long) As Double
-    MxUltimate = mResults(index).MxUltimate
-End Property
-
-Public Property Get MyUltimate(ByVal index As Long) As Double
-    MyUltimate = mResults(index).MyUltimate
-End Property
-
-Public Property Get MomentUltimate(ByVal index As Long) As Double
-    MomentUltimate = mResults(index).MomentUltimate
-End Property
-
-Public Property Get CapacityStateN(ByVal index As Long) As Double
-    CapacityStateN = mResults(index).CapacityStateN
-End Property
-
-Public Property Get CapacityStateMx(ByVal index As Long) As Double
-    CapacityStateMx = mResults(index).CapacityStateMx
-End Property
-
-Public Property Get CapacityStateMy(ByVal index As Long) As Double
-    CapacityStateMy = mResults(index).CapacityStateMy
-End Property
-
-Public Property Get CapacityStateAvailable(ByVal index As Long) As Boolean
-    CapacityStateAvailable = mResults(index).CapacityStateAvailable
-End Property
-
-Public Property Get CapacityEpsilon0(ByVal index As Long) As Double
-    CapacityEpsilon0 = mResults(index).CapacityEpsilon0
-End Property
-
-Public Property Get CapacityKappaX(ByVal index As Long) As Double
-    CapacityKappaX = mResults(index).CapacityKappaX
-End Property
-
-Public Property Get CapacityKappaY(ByVal index As Long) As Double
-    CapacityKappaY = mResults(index).CapacityKappaY
-End Property
-
-Public Property Get MinConcreteStrain(ByVal index As Long) As Double
-    MinConcreteStrain = mResults(index).MinConcreteStrain
-End Property
-
-Public Property Get MaxConcreteStrain(ByVal index As Long) As Double
-    MaxConcreteStrain = mResults(index).MaxConcreteStrain
-End Property
-
-Public Property Get MinSteelStrain(ByVal index As Long) As Double
-    MinSteelStrain = mResults(index).MinSteelStrain
-End Property
-
-Public Property Get MaxSteelStrain(ByVal index As Long) As Double
-    MaxSteelStrain = mResults(index).MaxSteelStrain
-End Property
-
-Public Property Get CrackWidth(ByVal index As Long) As Double
-    CrackWidth = mResults(index).CrackWidth
-End Property
-
-Public Property Get CrackAllowable(ByVal index As Long) As Double
-    CrackAllowable = mResults(index).CrackAllowableValue
-End Property
-
-Public Property Get CrackUtilization(ByVal index As Long) As Double
-    CrackUtilization = mResults(index).CrackUtil
-End Property
-
-Public Property Get MaxConcreteCompressionStress(ByVal index As Long) As Double
-    MaxConcreteCompressionStress = mResults(index).MaxConcreteCompressionStress
-End Property
-
-Public Property Get LongitudinalCrackRbMc2(ByVal index As Long) As Double
-    LongitudinalCrackRbMc2 = mResults(index).LongitudinalCrackRbMc2
-End Property
-
-Public Property Get LongitudinalCrackUtilization(ByVal index As Long) As Double
-    LongitudinalCrackUtilization = mResults(index).LongitudinalCrackUtil
-End Property
-
-Public Property Get StabilityStatus(ByVal index As Long) As String
-    StabilityStatus = ExternalStatusFromMeta(mResults(index).StabilityMeta, mResults(index).StabilityStatus)
-End Property
-
-' Возвращает result-subtree проверки устойчивости.
-Public Property Get StabilityResult(ByVal index As Long) As CStabilityResult
-    Set StabilityResult = mResults(index).StabilityResult
-End Property
-
-' Возвращает meta проверки устойчивости.
-Public Property Get StabilityMeta(ByVal index As Long) As CResultMeta
-    Set StabilityMeta = mResults(index).StabilityMeta
-End Property
-
-Public Property Get StabilityCode(ByVal index As Long) As String
-    StabilityCode = mResults(index).StabilityCode
-End Property
-
-Public Property Get StabilityBranch(ByVal index As Long) As String
-    StabilityBranch = mResults(index).StabilityBranch
-End Property
-
-Public Property Get StabilityDesignN(ByVal index As Long) As Double
-    StabilityDesignN = mResults(index).StabilityDesignN
-End Property
-
-Public Property Get StabilityDesignMx(ByVal index As Long) As Double
-    StabilityDesignMx = mResults(index).StabilityDesignMx
-End Property
-
-Public Property Get StabilityDesignMy(ByVal index As Long) As Double
-    StabilityDesignMy = mResults(index).StabilityDesignMy
-End Property
-
-Public Property Get StabilitySustainedN(ByVal index As Long) As Double
-    StabilitySustainedN = mResults(index).StabilitySustainedN
-End Property
-
-Public Property Get StabilityMoment1(ByVal index As Long) As Double
-    StabilityMoment1 = mResults(index).StabilityMoment1
-End Property
-
-Public Property Get StabilityMoment2(ByVal index As Long) As Double
-    StabilityMoment2 = mResults(index).StabilityMoment2
-End Property
-
-Public Property Get StabilitySustainedMoment1(ByVal index As Long) As Double
-    StabilitySustainedMoment1 = mResults(index).StabilitySustainedMoment1
-End Property
-
-Public Property Get StabilitySustainedMoment2(ByVal index As Long) As Double
-    StabilitySustainedMoment2 = mResults(index).StabilitySustainedMoment2
-End Property
-
-Public Property Get StabilityDesignMoment1(ByVal index As Long) As Double
-    StabilityDesignMoment1 = mResults(index).StabilityDesignMoment1
-End Property
-
-Public Property Get StabilityDesignMoment2(ByVal index As Long) As Double
-    StabilityDesignMoment2 = mResults(index).StabilityDesignMoment2
-End Property
-
-' Возвращает Mx после устойчивости в той же пользовательской точке задания
-' нагрузки. Берем нормализованное UserMx из текущего LC: это ровно тот момент,
-' который затем участвует в DirectState/Capacity/Crack через общий load-path.
 Public Property Get StabilityLoadPointMx(ByVal index As Long) As Double
     StabilityLoadPointMx = NormalizeMomentMx(mInputs(index).UserMx)
 End Property
@@ -2612,307 +1986,11 @@ Public Property Get StabilityLoadPointMy(ByVal index As Long) As Double
     StabilityLoadPointMy = NormalizeMomentMy(mInputs(index).UserMy)
 End Property
 
-Public Property Get StabilityCriticalForce(ByVal index As Long) As Double
-    StabilityCriticalForce = mResults(index).StabilityCriticalForce
-End Property
-
-Public Property Get StabilityReserveFactor(ByVal index As Long) As Double
-    StabilityReserveFactor = mResults(index).StabilityReserveFactor
-End Property
-
 ' Возвращает пользовательский лимит N/Ncr для eta-ветви СП 35.
 ' Writer-ы используют это значение в заголовках, чтобы формула запаса
 ' в Results совпадала с фактически выбранной настройкой Config.
 Public Property Get StabilitySP35NOverNcrLimit() As Double
     StabilitySP35NOverNcrLimit = mStabilitySP35NOverNcrLimit
-End Property
-
-Public Property Get StabilityNcr1(ByVal index As Long) As Double
-    StabilityNcr1 = mResults(index).StabilityNcr1
-End Property
-
-Public Property Get StabilityNcr2(ByVal index As Long) As Double
-    StabilityNcr2 = mResults(index).StabilityNcr2
-End Property
-
-Public Property Get StabilityNultimate1(ByVal index As Long) As Double
-    StabilityNultimate1 = mResults(index).StabilityNultimate1
-End Property
-
-Public Property Get StabilityNultimate2(ByVal index As Long) As Double
-    StabilityNultimate2 = mResults(index).StabilityNultimate2
-End Property
-
-Public Property Get StabilityReserve1(ByVal index As Long) As Double
-    StabilityReserve1 = mResults(index).StabilityReserve1
-End Property
-
-Public Property Get StabilityReserve2(ByVal index As Long) As Double
-    StabilityReserve2 = mResults(index).StabilityReserve2
-End Property
-
-Public Property Get StabilityEta1(ByVal index As Long) As Double
-    StabilityEta1 = mResults(index).StabilityEta1
-End Property
-
-Public Property Get StabilityEta2(ByVal index As Long) As Double
-    StabilityEta2 = mResults(index).StabilityEta2
-End Property
-
-Public Property Get StabilityPhiL1(ByVal index As Long) As Double
-    StabilityPhiL1 = mResults(index).StabilityPhiL1
-End Property
-
-Public Property Get StabilityPhiL2(ByVal index As Long) As Double
-    StabilityPhiL2 = mResults(index).StabilityPhiL2
-End Property
-
-Public Property Get StabilityPhiLTable1(ByVal index As Long) As Double
-    StabilityPhiLTable1 = mResults(index).StabilityPhiLTable1
-End Property
-
-Public Property Get StabilityPhiLTable2(ByVal index As Long) As Double
-    StabilityPhiLTable2 = mResults(index).StabilityPhiLTable2
-End Property
-
-Public Property Get StabilityPhiM1(ByVal index As Long) As Double
-    StabilityPhiM1 = mResults(index).StabilityPhiM1
-End Property
-
-Public Property Get StabilityPhiM2(ByVal index As Long) As Double
-    StabilityPhiM2 = mResults(index).StabilityPhiM2
-End Property
-
-Public Property Get StabilityPhiValue1(ByVal index As Long) As Double
-    StabilityPhiValue1 = mResults(index).StabilityPhiValue1
-End Property
-
-Public Property Get StabilityPhiValue2(ByVal index As Long) As Double
-    StabilityPhiValue2 = mResults(index).StabilityPhiValue2
-End Property
-
-Public Property Get StabilityPhiP1(ByVal index As Long) As Double
-    StabilityPhiP1 = mResults(index).StabilityPhiP1
-End Property
-
-Public Property Get StabilityPhiP2(ByVal index As Long) As Double
-    StabilityPhiP2 = mResults(index).StabilityPhiP2
-End Property
-
-Public Property Get StabilityEccentricity1(ByVal index As Long) As Double
-    StabilityEccentricity1 = mResults(index).StabilityEccentricity1
-End Property
-
-Public Property Get StabilityEccentricity2(ByVal index As Long) As Double
-    StabilityEccentricity2 = mResults(index).StabilityEccentricity2
-End Property
-
-Public Property Get StabilityAccidentalEcc1(ByVal index As Long) As Double
-    StabilityAccidentalEcc1 = mResults(index).StabilityAccidentalEcc1
-End Property
-
-Public Property Get StabilityAccidentalEcc2(ByVal index As Long) As Double
-    StabilityAccidentalEcc2 = mResults(index).StabilityAccidentalEcc2
-End Property
-
-Public Property Get StabilityEffectiveLength1(ByVal index As Long) As Double
-    StabilityEffectiveLength1 = mResults(index).StabilityEffectiveLength1
-End Property
-
-Public Property Get StabilityEffectiveLength2(ByVal index As Long) As Double
-    StabilityEffectiveLength2 = mResults(index).StabilityEffectiveLength2
-End Property
-
-Public Property Get StabilitySlenderness1(ByVal index As Long) As Double
-    StabilitySlenderness1 = mResults(index).StabilitySlenderness1
-End Property
-
-Public Property Get StabilitySlenderness2(ByVal index As Long) As Double
-    StabilitySlenderness2 = mResults(index).StabilitySlenderness2
-End Property
-
-Public Property Get StabilityDepth1(ByVal index As Long) As Double
-    StabilityDepth1 = mResults(index).StabilityDepth1
-End Property
-
-Public Property Get StabilityDepth2(ByVal index As Long) As Double
-    StabilityDepth2 = mResults(index).StabilityDepth2
-End Property
-
-Public Property Get StabilityRadius1(ByVal index As Long) As Double
-    StabilityRadius1 = mResults(index).StabilityRadius1
-End Property
-
-Public Property Get StabilityRadius2(ByVal index As Long) As Double
-    StabilityRadius2 = mResults(index).StabilityRadius2
-End Property
-
-Public Property Get StabilityCoreDistance1(ByVal index As Long) As Double
-    StabilityCoreDistance1 = mResults(index).StabilityCoreDistance1
-End Property
-
-Public Property Get StabilityCoreDistance2(ByVal index As Long) As Double
-    StabilityCoreDistance2 = mResults(index).StabilityCoreDistance2
-End Property
-
-Public Property Get StabilityDelta1(ByVal index As Long) As Double
-    StabilityDelta1 = mResults(index).StabilityDelta1
-End Property
-
-Public Property Get StabilityDelta2(ByVal index As Long) As Double
-    StabilityDelta2 = mResults(index).StabilityDelta2
-End Property
-
-Public Property Get StabilityKb1(ByVal index As Long) As Double
-    StabilityKb1 = mResults(index).StabilityKb1
-End Property
-
-Public Property Get StabilityKb2(ByVal index As Long) As Double
-    StabilityKb2 = mResults(index).StabilityKb2
-End Property
-
-Public Property Get StabilityKs1(ByVal index As Long) As Double
-    StabilityKs1 = mResults(index).StabilityKs1
-End Property
-
-Public Property Get StabilityKs2(ByVal index As Long) As Double
-    StabilityKs2 = mResults(index).StabilityKs2
-End Property
-
-Public Property Get StabilityStiffnessD1(ByVal index As Long) As Double
-    StabilityStiffnessD1 = mResults(index).StabilityStiffnessD1
-End Property
-
-Public Property Get StabilityStiffnessD2(ByVal index As Long) As Double
-    StabilityStiffnessD2 = mResults(index).StabilityStiffnessD2
-End Property
-
-Public Property Get StabilityPlaneBranch1(ByVal index As Long) As String
-    StabilityPlaneBranch1 = mResults(index).StabilityPlaneBranch1
-End Property
-
-Public Property Get StabilityPlaneBranch2(ByVal index As Long) As String
-    StabilityPlaneBranch2 = mResults(index).StabilityPlaneBranch2
-End Property
-
-Public Property Get StabilityPlaneApplicable1(ByVal index As Long) As Boolean
-    StabilityPlaneApplicable1 = mResults(index).StabilityPlaneApplicable1
-End Property
-
-Public Property Get StabilityPlaneApplicable2(ByVal index As Long) As Boolean
-    StabilityPlaneApplicable2 = mResults(index).StabilityPlaneApplicable2
-End Property
-
-Public Property Get StabilityPlanePassed1(ByVal index As Long) As Boolean
-    StabilityPlanePassed1 = mResults(index).StabilityPlanePassed1
-End Property
-
-Public Property Get StabilityPlanePassed2(ByVal index As Long) As Boolean
-    StabilityPlanePassed2 = mResults(index).StabilityPlanePassed2
-End Property
-
-Public Property Get CrackFormed(ByVal index As Long) As Boolean
-    CrackFormed = mResults(index).CrackFormed
-End Property
-
-Public Property Get CrackPhi1(ByVal index As Long) As Double
-    CrackPhi1 = mResults(index).CrackPhi1
-End Property
-
-Public Property Get CrackPhi2(ByVal index As Long) As Double
-    CrackPhi2 = mResults(index).CrackPhi2
-End Property
-
-Public Property Get CrackPhi3(ByVal index As Long) As Double
-    CrackPhi3 = mResults(index).CrackPhi3
-End Property
-
-Public Property Get CrackPsiS(ByVal index As Long) As Double
-    CrackPsiS = mResults(index).CrackPsiS
-End Property
-
-Public Property Get CrackSigmaS(ByVal index As Long) As Double
-    CrackSigmaS = mResults(index).CrackSigmaS
-End Property
-
-Public Property Get CrackSigmaSCrc(ByVal index As Long) As Double
-    CrackSigmaSCrc = mResults(index).CrackSigmaSCrc
-End Property
-
-Public Property Get CrackAs(ByVal index As Long) As Double
-    CrackAs = mResults(index).CrackAs
-End Property
-
-Public Property Get CrackAbt(ByVal index As Long) As Double
-    CrackAbt = mResults(index).CrackAbt
-End Property
-
-Public Property Get CrackDsEquivalent(ByVal index As Long) As Double
-    CrackDsEquivalent = mResults(index).CrackDsEquivalent
-End Property
-
-Public Property Get CrackSpacingRaw(ByVal index As Long) As Double
-    CrackSpacingRaw = mResults(index).CrackLsRaw
-End Property
-
-Public Property Get CrackSpacing(ByVal index As Long) As Double
-    CrackSpacing = mResults(index).CrackLs
-End Property
-
-Public Property Get CrackLambdaCrc(ByVal index As Long) As Double
-    CrackLambdaCrc = mResults(index).CrackLambdaCrc
-End Property
-
-Public Property Get CrackFormationMethod(ByVal index As Long) As String
-    CrackFormationMethod = mResults(index).CrackFormationMethod
-End Property
-
-Public Property Get CrackNcrc(ByVal index As Long) As Double
-    CrackNcrc = mResults(index).CrackNcrc
-End Property
-
-Public Property Get CrackFormationNcrc(ByVal index As Long) As Double
-    CrackFormationNcrc = mResults(index).CrackFormationNcrc
-End Property
-
-Public Property Get CrackMcrc(ByVal index As Long) As Double
-    CrackMcrc = mResults(index).CrackMcrc
-End Property
-
-Public Property Get CrackAred(ByVal index As Long) As Double
-    CrackAred = mResults(index).CrackAred
-End Property
-
-Public Property Get CrackRbtSer(ByVal index As Long) As Double
-    CrackRbtSer = mResults(index).CrackRbtSer
-End Property
-
-Public Property Get CrackTensionRebarCount(ByVal index As Long) As Long
-    CrackTensionRebarCount = mResults(index).CrackTensionRebarCount
-End Property
-
-Public Property Get CrackTensionRebarIds(ByVal index As Long) As String
-    CrackTensionRebarIds = mResults(index).CrackTensionRebarIds
-End Property
-
-Public Property Get CrackSectionDepthH(ByVal index As Long) As Double
-    CrackSectionDepthH = mResults(index).CrackSectionDepthH
-End Property
-
-Public Property Get CrackCoverA(ByVal index As Long) As Double
-    CrackCoverA = mResults(index).CrackCoverA
-End Property
-
-Public Property Get CrackTensionDepth(ByVal index As Long) As Double
-    CrackTensionDepth = mResults(index).CrackTensionDepth
-End Property
-
-Public Property Get CrackEffectiveZoneDepth(ByVal index As Long) As Double
-    CrackEffectiveZoneDepth = mResults(index).CrackEffectiveZoneDepth
-End Property
-
-Public Property Get CrackCentralBranch(ByVal index As Long) As Boolean
-    CrackCentralBranch = mResults(index).CrackCentralBranch
 End Property
 
 Public Property Get CrackReferenceN(ByVal index As Long) As Double
@@ -2945,9 +2023,6 @@ Public Property Get CrackLoadPointMy(ByVal index As Long) As Double
     CrackLoadPointMy = LoadStateForCombination(index).LoadPointMy
 End Property
 
-Public Property Get GoverningUtilization(ByVal index As Long) As Double
-    GoverningUtilization = mResults(index).GoverningUtil
-End Property
 
 Public Property Get CrackSteelElasticModulus() As Double
     CrackSteelElasticModulus = mMaterialProvider.SteelElasticModulus(cpCrackedNDS)
@@ -2993,9 +2068,9 @@ End Function
 ' CrackedState; CapacityState используется только если других states нет.
 Private Function SummaryMaterialSpecForCombination(ByVal index As Long) As CMaterialModelSpec
     Dim stateResult As CSectionStateResult
-    Set stateResult = mResults(index).FindState(sstStrengthState)
-    If stateResult Is Nothing Then Set stateResult = mResults(index).FindState(sstCrackedState)
-    If stateResult Is Nothing Then Set stateResult = mResults(index).FindState(sstCapacityState)
+    Set stateResult = mResults(index).StateRepository.FindState(sstStrengthState)
+    If stateResult Is Nothing Then Set stateResult = mResults(index).StateRepository.FindState(sstCrackedState)
+    If stateResult Is Nothing Then Set stateResult = mResults(index).StateRepository.FindState(sstCapacityState)
     If Not stateResult Is Nothing Then Set SummaryMaterialSpecForCombination = stateResult.MaterialSpec
 End Function
 
@@ -3040,8 +2115,8 @@ End Function
 ' для лимитов в строках, где расчет не запускался или завершился ошибкой.
 Private Function StrengthMaterialSpecForCombination(ByVal index As Long) As CMaterialModelSpec
     Dim stateResult As CSectionStateResult
-    Set stateResult = mResults(index).FindState(sstStrengthState)
-    If stateResult Is Nothing Then Set stateResult = mResults(index).FindState(sstCapacityState)
+    Set stateResult = mResults(index).StateRepository.FindState(sstStrengthState)
+    If stateResult Is Nothing Then Set stateResult = mResults(index).StateRepository.FindState(sstCapacityState)
     If Not stateResult Is Nothing Then
         Set StrengthMaterialSpecForCombination = stateResult.MaterialSpec
         Exit Function
@@ -3129,11 +2204,11 @@ End Property
 Private Function DetailedInvalidInputMessage(ByVal index As Long) As String
     Dim detail As String
     detail = Trim$(mInputs(index).InputError)
-    If Len(detail) = 0 And mStatusPolicy.IsInvalid(mResults(index).StabilityStatus) Then _
-        detail = Trim$(mResults(index).StabilityBranch)
-    If Len(detail) = 0 And mStatusPolicy.IsInvalid(mResults(index).CapacityStatus) Then _
-        detail = Trim$(mResults(index).CapacityLimitState)
-    If Len(detail) = 0 And mStatusPolicy.IsInvalid(mResults(index).DirectStateStatus) Then _
+    If Len(detail) = 0 And mStatusPolicy.IsInvalid(mResults(index).StabilityResult.Status) Then _
+        detail = Trim$(mResults(index).StabilityMeta.ResultComment)
+    If Len(detail) = 0 And mStatusPolicy.IsInvalid(mResults(index).StrengthResult.Capacity.Status) Then _
+        detail = Trim$(mResults(index).StrengthResult.Capacity.LimitState)
+    If Len(detail) = 0 And mStatusPolicy.IsInvalid(mResults(index).StrengthResult.DirectState.Status) Then _
         detail = Trim$(mResults(index).Status)
     If Len(detail) = 0 Then detail = Trim$(mResults(index).Status)
     If Len(detail) = 0 Then detail = mStatusPolicy.InputErr
@@ -3149,23 +2224,7 @@ Private Function DisplayCombinationID(ByVal index As Long) As String
     If Len(DisplayCombinationID) = 0 Then DisplayCombinationID = "#" & CStr(index)
 End Function
 
-Public Property Get StateAvailable(ByVal index As Long) As Boolean
-    StateAvailable = mResults(index).StateAvailable
-End Property
 
-Public Property Get NamedStateCount(ByVal index As Long) As Long
-    NamedStateCount = mResults(index).StateCount
-End Property
-
-Public Property Get NamedState(ByVal index As Long, ByVal stateIndex As Long) As CSectionStateResult
-    Set NamedState = mResults(index).StateAt(stateIndex)
-End Property
-
-' Ищет сохраненное named-state по типу состояния. Этим пользуются схема,
-' AutoCAD export и подробные writer-ы, чтобы не пересчитывать НДС повторно.
-Public Function FindNamedState(ByVal index As Long, ByVal stateType As ESectionStateType) As CSectionStateResult
-    Set FindNamedState = mResults(index).FindState(stateType)
-End Function
 
 Public Property Get StrengthReferenceN(ByVal index As Long) As Double
     StrengthReferenceN = LoadStateForCombination(index).N
@@ -3220,61 +2279,9 @@ End Property
 Public Property Get StateAvailableCount() As Long
     Dim i As Long
     For i = 1 To mCount
-        If mResults(i).StateCount > 0 Then StateAvailableCount = StateAvailableCount + 1
+        If mResults(i).StateRepository.StateCount > 0 Then StateAvailableCount = StateAvailableCount + 1
     Next i
 End Property
-
-Public Property Get Epsilon0(ByVal index As Long) As Double
-    Epsilon0 = mResults(index).Epsilon0
-End Property
-
-Public Property Get KappaX(ByVal index As Long) As Double
-    KappaX = mResults(index).KappaX
-End Property
-
-Public Property Get KappaY(ByVal index As Long) As Double
-    KappaY = mResults(index).KappaY
-End Property
-
-Public Property Get Nint(ByVal index As Long) As Double
-    Nint = mResults(index).Nint
-End Property
-
-Public Property Get Mxint(ByVal index As Long) As Double
-    Mxint = mResults(index).Mxint
-End Property
-
-Public Property Get Myint(ByVal index As Long) As Double
-    Myint = mResults(index).Myint
-End Property
-
-Public Property Get ResidualN(ByVal index As Long) As Double
-    ResidualN = mResults(index).ResidualN
-End Property
-
-Public Property Get ResidualMx(ByVal index As Long) As Double
-    ResidualMx = mResults(index).ResidualMx
-End Property
-
-Public Property Get ResidualMy(ByVal index As Long) As Double
-    ResidualMy = mResults(index).ResidualMy
-End Property
-
-Public Property Get StateIterations(ByVal index As Long) As Long
-    StateIterations = mResults(index).StateIterations
-End Property
-
-' Возвращает внешний статус через ResultMeta. Fallback используется только для
-' неполных тестовых объектов, где meta явно не была сформирована.
-Private Function ExternalStatusFromMeta(ByVal meta As CResultMeta, ByVal fallbackStatus As String) As String
-    Dim policy As CBatchStatusPolicy
-    Set policy = New CBatchStatusPolicy
-    If Not meta Is Nothing Then
-        ExternalStatusFromMeta = policy.StatusFromMeta(meta)
-    Else
-        ExternalStatusFromMeta = policy.DisplayStatus(fallbackStatus)
-    End If
-End Function
 
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ
@@ -3293,11 +2300,3 @@ Public Sub TestRepeatCrackCalculation(ByVal index As Long)
     Set profile = mProfiles.ProfileById(mInputs(index).ProfileId)
     RunCrackWidth index, profile
 End Sub
-
-Public Property Get LambdaCapacity(ByVal index As Long) As Double
-    LambdaCapacity = mResults(index).LambdaCapacity
-End Property
-
-Public Property Get StateConverged(ByVal index As Long) As Boolean
-    StateConverged = mResults(index).StateConverged
-End Property

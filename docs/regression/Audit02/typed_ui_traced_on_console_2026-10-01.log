@@ -1,0 +1,5 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 6A4929B5262C17D1BDFA18247201D26AE3E5FA8056CDD0E018132C5D5AD6D24E
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a319b353c6f7442dbb99d0e72fa1bffb\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+SCRIPT ERROR: Exception calling "Run" with "1" argument(s): "The remote procedure call failed. (Exception from HRESULT: 0x800706BE)"

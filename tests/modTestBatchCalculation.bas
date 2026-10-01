@@ -204,6 +204,8 @@ Public Function RunBatchCalculationTests() As String
     TestPrePostCrackStateNames stats
     AppendLine stats, "RUN: TestAudit02CurrentCrackedStateCacheHitCalculatesWidth"
     TestAudit02CurrentCrackedStateCacheHitCalculatesWidth stats
+    AppendLine stats, "RUN: TestAudit02CanonicalResultsAndReset"
+    TestAudit02CanonicalResultsAndReset stats
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -260,8 +262,8 @@ Private Sub TestBatchOneCombination(ByRef stats As TBatchTestStats)
 
     AssertTrue stats, "batch.one.count", batch.Count = 1
     AssertTrue stats, "batch.one.governing", batch.GoverningCombinationID = "C1"
-    AssertTrue stats, "batch.one.capacity.status", Len(batch.CapacityStatus(1)) > 0
-    AssertTrue stats, "batch.one.crack.status", Len(batch.CrackStatus(1)) > 0
+    AssertTrue stats, "batch.one.capacity.status", Len(batch.ResultAt(1).StrengthResult.Capacity.Status) > 0
+    AssertTrue stats, "batch.one.crack.status", Len(batch.ResultAt(1).NormalCrackStatus) > 0
     AssertTrue stats, "batch.one.elapsed", batch.ElapsedSeconds >= 0#
 End Sub
 
@@ -272,17 +274,17 @@ Private Sub TestProfileIdControlsLimitStateGroup(ByRef stats As TBatchTestStats)
     group1.AddCombination "G1", -220000#, -7000000#, -5000000#, "PR1", "strength"
     group1.Execute
 
-    AssertTrue stats, "batch.profileId.group1.capacity", group1.LambdaCapacity(1) > 0#
-    AssertTrue stats, "batch.profileId.group1.noCrack", group1.CrackStatus(1) = "N/A"
+    AssertTrue stats, "batch.profileId.group1.capacity", group1.ResultAt(1).StrengthResult.Capacity.LambdaCapacity > 0#
+    AssertTrue stats, "batch.profileId.group1.noCrack", group1.ResultAt(1).NormalCrackStatus = "N/A"
 
     Dim group2 As CBatchSectionCalculator
     Set group2 = BuildBatchCalculator()
     group2.AddCombination "G2", -220000#, -7000000#, -5000000#, "PR2", "crack"
     group2.Execute
 
-    AssertTrue stats, "batch.profileId.group2.noCapacity", group2.CapacityStatus(1) = "N/A"
+    AssertTrue stats, "batch.profileId.group2.noCapacity", group2.ResultAt(1).StrengthResult.Capacity.Status = "N/A"
     AssertTrue stats, "batch.profileId.group2.crackedState", _
-        Not group2.FindNamedState(1, sstCrackedState) Is Nothing
+        Not group2.ResultAt(1).StateRepository.FindState(sstCrackedState) Is Nothing
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -306,7 +308,7 @@ Private Sub TestBatchCapacityUsesSystemSettings(ByRef stats As TBatchTestStats)
     batch.AddCombination "LIMITED", -220000#, -7000000#, -5000000#, "PR1", "max-lambda"
     batch.Execute
 
-    AssertTrue stats, "batch.settings.capacity.maxLambda", batch.CapacityStatus(1) = "NumFail"
+    AssertTrue stats, "batch.settings.capacity.maxLambda", batch.ResultAt(1).StrengthResult.Capacity.Status = "NumFail"
     AssertClose stats, "batch.settings.capacity.maxLambda.noReserve", _
         batch.StrengthCapacityReserve(1), 0#, 0#
 
@@ -338,8 +340,8 @@ Private Sub TestInvalidModeSettingsAreNotFallbacks(ByRef stats As TBatchTestStat
     batch.ApplySettings settings
     batch.AddCombination "BAD_CAP", -220000#, -7000000#, -5000000#, "PR1", "wrong capacity"
     batch.Execute
-    AssertTrue stats, "batch.invalid.CapacitySolutionStrategy.status", batch.Status(1) = "InputErr"
-    AssertTrue stats, "batch.invalid.CapacitySolutionStrategy.noLambda", batch.LambdaCapacity(1) = 0#
+    AssertTrue stats, "batch.invalid.CapacitySolutionStrategy.status", batch.ResultAt(1).Status = "InputErr"
+    AssertTrue stats, "batch.invalid.CapacitySolutionStrategy.noLambda", batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity = 0#
     AssertClose stats, "batch.invalid.CapacitySolutionStrategy.noReserve", _
         batch.StrengthCapacityReserve(1), 0#, 0#
 
@@ -378,11 +380,11 @@ Private Sub TestBatchGoverningUsesLowestSafetyFactor(ByRef stats As TBatchTestSt
     batch.AddCombination "GOV", -150000#, -7000000#, -3500000#, "PR1", "smaller safety"
     batch.Execute
 
-    AssertTrue stats, "batch.governing.lambda.order", batch.LambdaCapacity(2) > 0# And batch.LambdaCapacity(2) < batch.LambdaCapacity(1)
+    AssertTrue stats, "batch.governing.lambda.order", batch.ResultAt(2).StrengthResult.Capacity.LambdaCapacity > 0# And batch.ResultAt(2).StrengthResult.Capacity.LambdaCapacity < batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity
     AssertTrue stats, "batch.governing.lowestSafety", batch.GoverningCombinationID = "GOV"
-    AssertTrue stats, "batch.governing.limitState", Len(batch.CapacityLimitState(2)) > 0
+    AssertTrue stats, "batch.governing.limitState", Len(batch.ResultAt(2).StrengthResult.Capacity.LimitState) > 0
     AssertTrue stats, "batch.governing.strength.status", _
-        batch.CapacityStatus(2) = "OK" Or batch.CapacityStatus(2) = "FAIL" Or batch.CapacityStatus(2) = "NumFail"
+        batch.ResultAt(2).StrengthResult.Capacity.Status = "OK" Or batch.ResultAt(2).StrengthResult.Capacity.Status = "FAIL" Or batch.ResultAt(2).StrengthResult.Capacity.Status = "NumFail"
 End Sub
 
 ' Проверяет, что batch для чистой продольной силы автоматически выбирает
@@ -394,16 +396,16 @@ Private Sub TestBatchPureAxialCapacityUsesNult(ByRef stats As TBatchTestStats)
     batch.AddCombination "N_ONLY", 50000#, 0#, 0#, "PR1", "pure axial"
     batch.Execute
 
-    AssertTrue stats, "batch.nult.path", batch.CapacityLoadPathKey(1) = "LambdaN"
-    AssertTrue stats, "batch.nult.solutionMethod", batch.CapacitySolutionMethod(1) = "LoadMultiplier"
-    AppendLine stats, "INFO: batch.nult.status=" & batch.CapacityStatus(1) & _
-        "; limitState=" & batch.CapacityLimitState(1) & _
-        "; solutionMethod=" & batch.CapacitySolutionMethod(1) & _
-        "; lambda=" & FormatNumberInvariant(batch.LambdaCapacity(1)) & _
-        "; Nult=" & FormatNumberInvariant(batch.NUltimate(1))
-    AssertTrue stats, "batch.nult.status", batch.CapacityStatus(1) = "OK" Or batch.CapacityStatus(1) = "FAIL"
-    AssertTrue stats, "batch.nult.axialUltimate", Abs(batch.NUltimate(1)) > Abs(batch.N(1))
-    AssertTrue stats, "batch.nult.noMomentUltimate", Abs(batch.MomentUltimate(1)) < 0.000001
+    AssertTrue stats, "batch.nult.path", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaN"
+    AssertTrue stats, "batch.nult.solutionMethod", batch.ResultAt(1).StrengthResult.Capacity.SolutionMethod = "LoadMultiplier"
+    AppendLine stats, "INFO: batch.nult.status=" & batch.ResultAt(1).StrengthResult.Capacity.Status & _
+        "; limitState=" & batch.ResultAt(1).StrengthResult.Capacity.LimitState & _
+        "; solutionMethod=" & batch.ResultAt(1).StrengthResult.Capacity.SolutionMethod & _
+        "; lambda=" & FormatNumberInvariant(batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity) & _
+        "; Nult=" & FormatNumberInvariant(batch.ResultAt(1).StrengthResult.Capacity.NUltimate)
+    AssertTrue stats, "batch.nult.status", batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "FAIL"
+    AssertTrue stats, "batch.nult.axialUltimate", Abs(batch.ResultAt(1).StrengthResult.Capacity.NUltimate) > Abs(batch.N(1))
+    AssertTrue stats, "batch.nult.noMomentUltimate", Abs(batch.ResultAt(1).StrengthResult.Capacity.MomentUltimate) < 0.000001
     AssertTrue stats, "batch.nult.governing", batch.GoverningCombinationID = "N_ONLY"
 End Sub
 
@@ -417,11 +419,11 @@ Private Sub TestBatchEccentricAxialCapacityTriesUltimateStrain(ByRef stats As TB
     batch.AddCombination "N_ECC", -150000#, 0#, 0#, "PR1", "eccentric axial", ChrW$(&H3BB) & "*N"
     batch.Execute
 
-    AssertTrue stats, "batch.nEcc.path", batch.CapacityLoadPathKey(1) = "LambdaN"
-    AssertTrue stats, "batch.nEcc.status", batch.CapacityStatus(1) = "OK" Or batch.CapacityStatus(1) = "FAIL"
-    AssertTrue stats, "batch.nEcc.method", batch.CapacitySolutionMethod(1) = "UltimateStrain"
+    AssertTrue stats, "batch.nEcc.path", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaN"
+    AssertTrue stats, "batch.nEcc.status", batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "FAIL"
+    AssertTrue stats, "batch.nEcc.method", batch.ResultAt(1).StrengthResult.Capacity.SolutionMethod = "UltimateStrain"
     AssertTrue stats, "batch.nEcc.loadPointMomentsRemainZero", _
-        Abs(batch.MxUltimate(1)) < 100000# And Abs(batch.MyUltimate(1)) < 100000#
+        Abs(batch.ResultAt(1).StrengthResult.Capacity.MxUltimate) < 100000# And Abs(batch.ResultAt(1).StrengthResult.Capacity.MyUltimate) < 100000#
 End Sub
 
 ' Проверяет пользовательский сценарий из книги: Г-сечение, нагрузка
@@ -485,21 +487,21 @@ Private Sub CheckBatchRectSetN200CapacitySolutionStrategy(ByRef stats As TBatchT
     batch.Execute
 
     AppendLine stats, "INFO: batch.rectset.n200." & methodName & _
-        "; capacityStatus=" & batch.CapacityStatus(1) & _
-        "; limitState=" & batch.CapacityLimitState(1) & _
-        "; solutionMethod=" & batch.CapacitySolutionMethod(1) & _
-        "; lambda=" & FormatNumberInvariant(batch.LambdaCapacity(1)) & _
-        "; Nult=" & FormatNumberInvariant(batch.NUltimate(1))
-    If batch.CapacityStatus(1) = "NumFail" Then
+        "; capacityStatus=" & batch.ResultAt(1).StrengthResult.Capacity.Status & _
+        "; limitState=" & batch.ResultAt(1).StrengthResult.Capacity.LimitState & _
+        "; solutionMethod=" & batch.ResultAt(1).StrengthResult.Capacity.SolutionMethod & _
+        "; lambda=" & FormatNumberInvariant(batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity) & _
+        "; Nult=" & FormatNumberInvariant(batch.ResultAt(1).StrengthResult.Capacity.NUltimate)
+    If batch.ResultAt(1).StrengthResult.Capacity.Status = "NumFail" Then
         AppendLine stats, "CAPACITY_DIAG: " & methodName & vbCrLf & _
-            Right$(batch.StrengthResult(1).Capacity.DiagnosticLog, 12000)
+            Right$(batch.ResultAt(1).StrengthResult.Capacity.DiagnosticLog, 12000)
     End If
-    AssertTrue stats, "batch.rectset.n200." & methodName & ".notNumFail", batch.CapacityStatus(1) <> "NumFail"
+    AssertTrue stats, "batch.rectset.n200." & methodName & ".notNumFail", batch.ResultAt(1).StrengthResult.Capacity.Status <> "NumFail"
     AssertTrue stats, "batch.rectset.n200." & methodName & ".capacityStatus", _
-        batch.CapacityStatus(1) = "OK" Or batch.CapacityStatus(1) = "FAIL"
-    AssertTrue stats, "batch.rectset.n200." & methodName & ".nult", Abs(batch.NUltimate(1)) > Abs(batch.N(1))
+        batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "FAIL"
+    AssertTrue stats, "batch.rectset.n200." & methodName & ".nult", Abs(batch.ResultAt(1).StrengthResult.Capacity.NUltimate) > Abs(batch.N(1))
     AssertTrue stats, "batch.rectset.n200." & methodName & ".solutionMethod", _
-        batch.CapacitySolutionMethod(1) = "LoadMultiplier"
+        batch.ResultAt(1).StrengthResult.Capacity.SolutionMethod = "LoadMultiplier"
 End Sub
 
 ' Проверяет, что явный выбор lambda*Mxy масштабирует оба пользовательских
@@ -511,10 +513,10 @@ Private Sub TestBatchExplicitCapacityLoadPathScalesMxy(ByRef stats As TBatchTest
     batch.AddCombination "M_BRANCH", -150000#, -3000000#, -3000000#, "PR1", "moment branch", ChrW$(&H3BB) & "*Mxy"
     batch.Execute
 
-    AssertTrue stats, "batch.capacityPath.mxy.value", batch.CapacityLoadPath(1) = ChrW$(&H3BB) & "*Mxy"
-    AssertTrue stats, "batch.capacityPath.mxy.key", batch.CapacityLoadPathKey(1) = "LambdaMxy"
-    AssertTrue stats, "batch.capacityPath.mxy.mx", Abs(batch.MxUltimate(1)) > 0#
-    AssertTrue stats, "batch.capacityPath.mxy.my", Abs(batch.MyUltimate(1)) > 0#
+    AssertTrue stats, "batch.capacityPath.mxy.value", batch.ResultAt(1).CapacityPathDisplayName = ChrW$(&H3BB) & "*Mxy"
+    AssertTrue stats, "batch.capacityPath.mxy.key", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaMxy"
+    AssertTrue stats, "batch.capacityPath.mxy.mx", Abs(batch.ResultAt(1).StrengthResult.Capacity.MxUltimate) > 0#
+    AssertTrue stats, "batch.capacityPath.mxy.my", Abs(batch.ResultAt(1).StrengthResult.Capacity.MyUltimate) > 0#
 End Sub
 
 ' Проверяет, что явный выбор lambda*N масштабирует продольную силу даже при
@@ -526,10 +528,10 @@ Private Sub TestBatchExplicitCapacityLoadPathScalesNWithMoments(ByRef stats As T
     batch.AddCombination "N_BRANCH", -150000#, -3000000#, -1000000#, "PR1", "axial branch", ChrW$(&H3BB) & "*N"
     batch.Execute
 
-    AssertTrue stats, "batch.capacityPath.n.value", batch.CapacityLoadPath(1) = ChrW$(&H3BB) & "*N"
-    AssertTrue stats, "batch.capacityPath.n.key", batch.CapacityLoadPathKey(1) = "LambdaN"
-    AssertTrue stats, "batch.capacityPath.n.nult", Abs(batch.NUltimate(1)) > 0#
-    AssertTrue stats, "batch.capacityPath.n.status", batch.CapacityStatus(1) = "OK" Or batch.CapacityStatus(1) = "FAIL" Or batch.CapacityStatus(1) = "NumFail"
+    AssertTrue stats, "batch.capacityPath.n.value", batch.ResultAt(1).CapacityPathDisplayName = ChrW$(&H3BB) & "*N"
+    AssertTrue stats, "batch.capacityPath.n.key", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaN"
+    AssertTrue stats, "batch.capacityPath.n.nult", Abs(batch.ResultAt(1).StrengthResult.Capacity.NUltimate) > 0#
+    AssertTrue stats, "batch.capacityPath.n.status", batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "FAIL" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "NumFail"
 End Sub
 
 ' Проверяет пользовательский вывод для lambda*N: solver внутри масштабирует
@@ -544,13 +546,13 @@ Private Sub TestCapacityLoadPathNReportsUltimateAtLoadPoint(ByRef stats As TBatc
     batch.Execute
 
     AssertTrue stats, "batch.capacityPath.n.ref.status", _
-        batch.CapacityStatus(1) = "OK" Or batch.CapacityStatus(1) = "FAIL"
+        batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "FAIL"
     AssertClose stats, "batch.capacityPath.n.ref.mxAtLoadPoint", _
-        batch.MxUltimate(1), batch.UserMx(1), 100000#
+        batch.ResultAt(1).StrengthResult.Capacity.MxUltimate, batch.UserMx(1), 100000#
     AssertClose stats, "batch.capacityPath.n.ref.myAtLoadPoint", _
-        batch.MyUltimate(1), batch.UserMy(1), 100000#
+        batch.ResultAt(1).StrengthResult.Capacity.MyUltimate, batch.UserMy(1), 100000#
     AssertTrue stats, "batch.capacityPath.n.ref.internalDiffers", _
-        Abs(batch.CapacityStateMy(1) - batch.MyUltimate(1)) > 100000#
+        Abs(batch.ResultAt(1).StrengthResult.Capacity.CapacityStateMy - batch.ResultAt(1).StrengthResult.Capacity.MyUltimate) > 100000#
 End Sub
 
 ' Проверяет все пользовательские варианты CapacityLoadPath. Тест не
@@ -566,15 +568,15 @@ Private Sub TestBatchCapacityLoadPathVariants(ByRef stats As TBatchTestStats)
     batch.AddCombination "PATH_ALL", -150000#, -3000000#, -1000000#, "PR1", "lambda all", ChrW$(&H3BB) & "*NMxy"
     batch.Execute
 
-    AssertTrue stats, "batch.capacityPath.mx.key", batch.CapacityLoadPathKey(1) = "LambdaMx"
-    AssertTrue stats, "batch.capacityPath.my.key", batch.CapacityLoadPathKey(2) = "LambdaMy"
-    AssertTrue stats, "batch.capacityPath.mxy.key", batch.CapacityLoadPathKey(3) = "LambdaMxy"
-    AssertTrue stats, "batch.capacityPath.n.key", batch.CapacityLoadPathKey(4) = "LambdaN"
-    AssertTrue stats, "batch.capacityPath.all.key", batch.CapacityLoadPathKey(5) = "LambdaNMxy"
+    AssertTrue stats, "batch.capacityPath.mx.key", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaMx"
+    AssertTrue stats, "batch.capacityPath.my.key", batch.ResultAt(2).StrengthResult.Capacity.PathResolved = "LambdaMy"
+    AssertTrue stats, "batch.capacityPath.mxy.key", batch.ResultAt(3).StrengthResult.Capacity.PathResolved = "LambdaMxy"
+    AssertTrue stats, "batch.capacityPath.n.key", batch.ResultAt(4).StrengthResult.Capacity.PathResolved = "LambdaN"
+    AssertTrue stats, "batch.capacityPath.all.key", batch.ResultAt(5).StrengthResult.Capacity.PathResolved = "LambdaNMxy"
     AssertTrue stats, "batch.capacityPath.noInputErr", _
-        batch.CapacityStatus(1) <> "InputErr" And batch.CapacityStatus(2) <> "InputErr" And _
-        batch.CapacityStatus(3) <> "InputErr" And batch.CapacityStatus(4) <> "InputErr" And _
-        batch.CapacityStatus(5) <> "InputErr"
+        batch.ResultAt(1).StrengthResult.Capacity.Status <> "InputErr" And batch.ResultAt(2).StrengthResult.Capacity.Status <> "InputErr" And _
+        batch.ResultAt(3).StrengthResult.Capacity.Status <> "InputErr" And batch.ResultAt(4).StrengthResult.Capacity.Status <> "InputErr" And _
+        batch.ResultAt(5).StrengthResult.Capacity.Status <> "InputErr"
 End Sub
 
 ' Проверяет пользовательский контракт таблицы сочетаний: неучаствующие
@@ -594,17 +596,17 @@ Private Sub TestBatchCapacityLoadPathAllowsZeroInactiveComponents(ByRef stats As
     batch.AddCombination "NMXY_EMPTY", 0#, 0#, 0#, "PR1", "lambda nmxy empty", ChrW$(&H3BB) & "*NMxy"
     batch.Execute
 
-    AssertTrue stats, "batch.capacityPath.zero.mx.noInputErr", batch.CapacityStatus(1) <> "InputErr"
-    AssertTrue stats, "batch.capacityPath.zero.my.noInputErr", batch.CapacityStatus(2) <> "InputErr"
-    AssertTrue stats, "batch.capacityPath.zero.mxyMx.noInputErr", batch.CapacityStatus(3) <> "InputErr"
-    AssertTrue stats, "batch.capacityPath.zero.mxyMy.noInputErr", batch.CapacityStatus(4) <> "InputErr"
-    AssertTrue stats, "batch.capacityPath.zero.nmxyN.noInputErr", batch.CapacityStatus(5) <> "InputErr"
-    AssertTrue stats, "batch.capacityPath.zero.nmxyMx.noInputErr", batch.CapacityStatus(6) <> "InputErr"
-    AssertTrue stats, "batch.capacityPath.zero.nmxyMy.noInputErr", batch.CapacityStatus(7) <> "InputErr"
-    AssertTrue stats, "batch.capacityPath.zero.nmxyEmpty.inputErr", batch.CapacityStatus(8) = "InputErr"
-    AssertTrue stats, "batch.capacityPath.zero.nmxyN.pathKept", batch.CapacityLoadPathKey(5) = "LambdaNMxy"
-    AssertTrue stats, "batch.capacityPath.zero.nmxyMx.pathKept", batch.CapacityLoadPathKey(6) = "LambdaNMxy"
-    AssertTrue stats, "batch.capacityPath.zero.nmxyMy.pathKept", batch.CapacityLoadPathKey(7) = "LambdaNMxy"
+    AssertTrue stats, "batch.capacityPath.zero.mx.noInputErr", batch.ResultAt(1).StrengthResult.Capacity.Status <> "InputErr"
+    AssertTrue stats, "batch.capacityPath.zero.my.noInputErr", batch.ResultAt(2).StrengthResult.Capacity.Status <> "InputErr"
+    AssertTrue stats, "batch.capacityPath.zero.mxyMx.noInputErr", batch.ResultAt(3).StrengthResult.Capacity.Status <> "InputErr"
+    AssertTrue stats, "batch.capacityPath.zero.mxyMy.noInputErr", batch.ResultAt(4).StrengthResult.Capacity.Status <> "InputErr"
+    AssertTrue stats, "batch.capacityPath.zero.nmxyN.noInputErr", batch.ResultAt(5).StrengthResult.Capacity.Status <> "InputErr"
+    AssertTrue stats, "batch.capacityPath.zero.nmxyMx.noInputErr", batch.ResultAt(6).StrengthResult.Capacity.Status <> "InputErr"
+    AssertTrue stats, "batch.capacityPath.zero.nmxyMy.noInputErr", batch.ResultAt(7).StrengthResult.Capacity.Status <> "InputErr"
+    AssertTrue stats, "batch.capacityPath.zero.nmxyEmpty.inputErr", batch.ResultAt(8).StrengthResult.Capacity.Status = "InputErr"
+    AssertTrue stats, "batch.capacityPath.zero.nmxyN.pathKept", batch.ResultAt(5).StrengthResult.Capacity.PathResolved = "LambdaNMxy"
+    AssertTrue stats, "batch.capacityPath.zero.nmxyMx.pathKept", batch.ResultAt(6).StrengthResult.Capacity.PathResolved = "LambdaNMxy"
+    AssertTrue stats, "batch.capacityPath.zero.nmxyMy.pathKept", batch.ResultAt(7).StrengthResult.Capacity.PathResolved = "LambdaNMxy"
 End Sub
 
 ' Проверяет вырожденный пользовательский случай: выбран lambda*NMxy, но в строке
@@ -641,10 +643,10 @@ Private Sub TestBatchNMxyWithoutMomentsUsesStableForcePath(ByRef stats As TBatch
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.Execute
 
-    AssertTrue stats, "batch.capacityPath.nmxyZeroM.path", batch.CapacityLoadPathKey(1) = "LambdaNMxy"
-    AssertTrue stats, "batch.capacityPath.nmxyZeroM.solutionMethod", batch.CapacitySolutionMethod(1) = "LoadMultiplier"
-    AssertTrue stats, "batch.capacityPath.nmxyZeroM.notNumFail", batch.CapacityStatus(1) <> "NumFail"
-    AssertTrue stats, "batch.capacityPath.nmxyZeroM.nult", Abs(batch.NUltimate(1)) > Abs(batch.N(1))
+    AssertTrue stats, "batch.capacityPath.nmxyZeroM.path", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaNMxy"
+    AssertTrue stats, "batch.capacityPath.nmxyZeroM.solutionMethod", batch.ResultAt(1).StrengthResult.Capacity.SolutionMethod = "LoadMultiplier"
+    AssertTrue stats, "batch.capacityPath.nmxyZeroM.notNumFail", batch.ResultAt(1).StrengthResult.Capacity.Status <> "NumFail"
+    AssertTrue stats, "batch.capacityPath.nmxyZeroM.nult", Abs(batch.ResultAt(1).StrengthResult.Capacity.NUltimate) > Abs(batch.N(1))
 
 Restore:
     SetSystemSetting "Capacity.SolutionStrategy", oldMethod
@@ -718,8 +720,8 @@ Private Sub TestBatchZeroMomentFilterNormalizesCapacityPath(ByRef stats As TBatc
     batch.AddCombination "M_TINY", -200000#, 0.000000000000000242, 0#, "PR1", "tiny residual moment"
     batch.Execute
 
-    AssertTrue stats, "batch.zeroMoment.capacityPath.axialDefault", batch.CapacityLoadPathKey(1) = "LambdaN"
-    AssertTrue stats, "batch.zeroMoment.capacityPath.notInputErr", batch.CapacityStatus(1) <> "InputErr"
+    AssertTrue stats, "batch.zeroMoment.capacityPath.axialDefault", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaN"
+    AssertTrue stats, "batch.zeroMoment.capacityPath.notInputErr", batch.ResultAt(1).StrengthResult.Capacity.Status <> "InputErr"
     AssertClose stats, "batch.zeroMoment.capacityPath.mx", batch.UserMx(1), 0#, 0#
 End Sub
 
@@ -771,17 +773,17 @@ Private Sub TestStabilityZeroMomentFilterUsesZeroMomentSigns(ByRef stats As TBat
     batch.AddCombination "STAB_TINY_M", -120000#, 0.000000000000000242, 0#, "PR1", "tiny stability moment"
     batch.Execute
 
-    AssertTrue stats, "batch.zeroMoment.stability.status", batch.StabilityStatus(1) = "OK" Or batch.StabilityStatus(1) = "FAIL"
-    AssertTrue stats, "batch.zeroMoment.stability.sign1", batch.StabilityAccidentalEcc1(1) < 0#
-    AssertTrue stats, "batch.zeroMoment.stability.sign2", batch.StabilityAccidentalEcc2(1) < 0#
+    AssertTrue stats, "batch.zeroMoment.stability.status", batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
+    AssertTrue stats, "batch.zeroMoment.stability.sign1", batch.ResultAt(1).StabilityResult.AccidentalEcc1 < 0#
+    AssertTrue stats, "batch.zeroMoment.stability.sign2", batch.ResultAt(1).StabilityResult.AccidentalEcc2 < 0#
     AssertClose stats, "batch.zeroMoment.stability.finalUserMx", batch.UserMx(1), 0#, 0#
     AssertClose stats, "batch.zeroMoment.stability.finalUserMy", batch.UserMy(1), 0#, 0#
     AssertTrue stats, "batch.zeroMoment.stability.finalSummaryMxIncludesAccidental", _
-        Abs(batch.StabilityDesignMx(1)) > 0#
+        Abs(batch.ResultAt(1).StabilityResult.DesignMx) > 0#
     AssertTrue stats, "batch.zeroMoment.stability.finalSummaryMyIncludesAccidental", _
-        Abs(batch.StabilityDesignMy(1)) > 0#
-    AssertTrue stats, "batch.zeroMoment.stability.capacityPath", batch.CapacityLoadPathKey(1) = "LambdaN"
-    AssertTrue stats, "batch.zeroMoment.stability.capacityNotNumFail", batch.CapacityStatus(1) <> "NumFail"
+        Abs(batch.ResultAt(1).StabilityResult.DesignMy) > 0#
+    AssertTrue stats, "batch.zeroMoment.stability.capacityPath", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaN"
+    AssertTrue stats, "batch.zeroMoment.stability.capacityNotNumFail", batch.ResultAt(1).StrengthResult.Capacity.Status <> "NumFail"
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -809,9 +811,9 @@ Private Sub TestBatchInvalidCapacityLoadPathReportsInputErr(ByRef stats As TBatc
     batch.AddCombination "BAD_CONST", -150000#, -3000000#, 0#, "PR1", "bad branch", "WrongPath"
     batch.Execute
 
-    AssertTrue stats, "batch.capacityPath.invalid.status", batch.CapacityStatus(1) = "InputErr"
-    AssertTrue stats, "batch.capacityPath.invalid.overall", batch.OverallStatus(1) = "InputErr"
-    AssertTrue stats, "batch.capacityPath.invalid.noPath", Len(batch.CapacityLoadPathKey(1)) = 0
+    AssertTrue stats, "batch.capacityPath.invalid.status", batch.ResultAt(1).StrengthResult.Capacity.Status = "InputErr"
+    AssertTrue stats, "batch.capacityPath.invalid.overall", batch.ResultAt(1).Status = "InputErr"
+    AssertTrue stats, "batch.capacityPath.invalid.noPath", Len(batch.ResultAt(1).StrengthResult.Capacity.PathResolved) = 0
 End Sub
 
 ' Проверяет, что физическое плато нормативной диаграммы не считается
@@ -837,12 +839,12 @@ Private Sub TestPR2PhysicalStateRunsCrackWithExtensionEnabled(ByRef stats As TBa
     batch.Execute
 
     Dim crackedState As CSectionStateResult
-    Set crackedState = batch.FindNamedState(1, sstCrackedState)
+    Set crackedState = batch.ResultAt(1).StateRepository.FindState(sstCrackedState)
 
-    AssertTrue stats, "batch.group2.physical.noExtension", Not batch.ExtensionUsed(1)
+    AssertTrue stats, "batch.group2.physical.noExtension", Not batch.ResultAt(1).ExtensionUsed
     AssertTrue stats, "batch.group2.physical.crackedStateOK", crackedState.Status = "OK"
     AssertTrue stats, "batch.group2.physical.crackBranchRuns", _
-        batch.LongitudinalCrackStatus(1) <> "N/A" Or Not crackedState Is Nothing
+        batch.ResultAt(1).CrackResult.Longitudinal.Status <> "N/A" Or Not crackedState Is Nothing
     AssertTrue stats, "batch.group2.physical.crackedStatePhysical", _
         Not crackedState Is Nothing And Not crackedState.ExtensionUsed
 
@@ -919,13 +921,13 @@ Private Sub TestPR2AutoCrackStoresPreAndPostCrackStates(ByRef stats As TBatchTes
     batch.Execute
 
     AssertTrue stats, "batch.group2.autoMcrc.crackCalculated", _
-        batch.CrackStatus(1) = "OK" Or batch.CrackStatus(1) = "FAIL"
+        batch.ResultAt(1).NormalCrackStatus = "OK" Or batch.ResultAt(1).NormalCrackStatus = "FAIL"
     AssertTrue stats, "batch.group2.autoMcrc.beforeState", _
-        Not batch.FindNamedState(1, sstPreCrackState) Is Nothing
+        Not batch.ResultAt(1).StateRepository.FindState(sstPreCrackState) Is Nothing
     AssertTrue stats, "batch.group2.autoMcrc.afterState", _
-        Not batch.FindNamedState(1, sstPostCrackState) Is Nothing
+        Not batch.ResultAt(1).StateRepository.FindState(sstPostCrackState) Is Nothing
     AssertTrue stats, "batch.group2.autoMcrc.afterRole", _
-        batch.FindNamedState(1, sstPostCrackState).MaterialModelRoleText = "CrackedState"
+        batch.ResultAt(1).StateRepository.FindState(sstPostCrackState).MaterialModelRoleText = "CrackedState"
 
 Restore:
     SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
@@ -962,15 +964,15 @@ Private Sub TestPR2AutoCrackPureBendingStoresMcrcStates(ByRef stats As TBatchTes
     batch.Execute
 
     Dim crackedState As CSectionStateResult
-    Set crackedState = batch.FindNamedState(1, sstCrackedState)
+    Set crackedState = batch.ResultAt(1).StateRepository.FindState(sstCrackedState)
     AssertTrue stats, "batch.group2.autoMcrcPure.crackedStateOK", _
         Not crackedState Is Nothing And crackedState.Status = "OK"
     AssertTrue stats, "batch.group2.autoMcrcPure.crackCalculated", _
-        batch.CrackStatus(1) = "OK" Or batch.CrackStatus(1) = "FAIL"
+        batch.ResultAt(1).NormalCrackStatus = "OK" Or batch.ResultAt(1).NormalCrackStatus = "FAIL"
     AssertTrue stats, "batch.group2.autoMcrcPure.beforeState", _
-        Not batch.FindNamedState(1, sstPreCrackState) Is Nothing
+        Not batch.ResultAt(1).StateRepository.FindState(sstPreCrackState) Is Nothing
     AssertTrue stats, "batch.group2.autoMcrcPure.afterState", _
-        Not batch.FindNamedState(1, sstPostCrackState) Is Nothing
+        Not batch.ResultAt(1).StateRepository.FindState(sstPostCrackState) Is Nothing
 
 Restore:
     SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
@@ -1006,11 +1008,11 @@ Private Sub TestPR2RectSetCompressionSmallMomentCrackDoesNotNumFail(ByRef stats 
         "PR2", "rectset compression small moment crack"
     batch.Execute
 
-    AppendLine stats, "INFO: batch.group2.rectsetSmallMoment crack=" & batch.CrackStatus(1) & _
-        "; formed=" & CStr(batch.CrackFormed(1)) & "; lambda=" & FormatNumberInvariant(batch.CrackLambdaCrc(1))
-    AssertTrue stats, "batch.group2.rectsetSmallMoment.notNumFail", batch.CrackStatus(1) <> "NumFail"
+    AppendLine stats, "INFO: batch.group2.rectsetSmallMoment crack=" & batch.ResultAt(1).NormalCrackStatus & _
+        "; formed=" & CStr(batch.ResultAt(1).CrackResult.Formation.CrackFormed) & "; lambda=" & FormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.LambdaCrc)
+    AssertTrue stats, "batch.group2.rectsetSmallMoment.notNumFail", batch.ResultAt(1).NormalCrackStatus <> "NumFail"
     AssertTrue stats, "batch.group2.rectsetSmallMoment.finished", _
-        batch.CrackStatus(1) = "OK" Or batch.CrackStatus(1) = "FAIL"
+        batch.ResultAt(1).NormalCrackStatus = "OK" Or batch.ResultAt(1).NormalCrackStatus = "FAIL"
     AssertTrue stats, "batch.group2.rectsetSmallMoment.solverCallsIncludeCrack", batch.SolverCallCount > 1
 
 Restore:
@@ -1125,21 +1127,21 @@ Private Sub CheckCrackAutoFormationCase(ByRef stats As TBatchTestStats, _
         nValue, mxValue, myValue, "PR2", "auto crack formation"
     batch.Execute
 
-    AppendLine stats, "INFO: " & prefix & "; status=" & batch.CrackStatus(1) & _
-        "; method=" & batch.CrackFormationMethod(1) & _
-        "; lambda=" & FormatNumberInvariant(batch.CrackLambdaCrc(1)) & _
-        "; Ncrc=" & FormatNumberInvariant(batch.CrackFormationNcrc(1)) & _
-        "; MxyCrc=" & FormatNumberInvariant(batch.CrackMcrc(1))
-    If batch.CrackFormationMethod(1) <> expectedMethod Or batch.CrackStatus(1) = "NumFail" Then _
+    AppendLine stats, "INFO: " & prefix & "; status=" & batch.ResultAt(1).NormalCrackStatus & _
+        "; method=" & batch.ResultAt(1).CrackResult.Formation.FormationMethod & _
+        "; lambda=" & FormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.LambdaCrc) & _
+        "; Ncrc=" & FormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.FormationNcrc) & _
+        "; MxyCrc=" & FormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.Mcrc)
+    If batch.ResultAt(1).CrackResult.Formation.FormationMethod <> expectedMethod Or batch.ResultAt(1).NormalCrackStatus = "NumFail" Then _
         AppendLine stats, "DIAG: " & prefix & vbCrLf & batch.DiagnosticLog
 
-    AssertTrue stats, prefix & ".notNumFail", batch.CrackStatus(1) <> "NumFail"
-    AssertTrue stats, prefix & ".method", batch.CrackFormationMethod(1) = expectedMethod
-    AssertTrue stats, prefix & ".lambda", batch.CrackLambdaCrc(1) > 0# And batch.CrackLambdaCrc(1) <= 1#
+    AssertTrue stats, prefix & ".notNumFail", batch.ResultAt(1).NormalCrackStatus <> "NumFail"
+    AssertTrue stats, prefix & ".method", batch.ResultAt(1).CrackResult.Formation.FormationMethod = expectedMethod
+    AssertTrue stats, prefix & ".lambda", batch.ResultAt(1).CrackResult.Formation.LambdaCrc > 0# And batch.ResultAt(1).CrackResult.Formation.LambdaCrc <= 1#
     If expectNcrc Then _
-        AssertTrue stats, prefix & ".ncrc", Abs(batch.CrackFormationNcrc(1)) > 0#
+        AssertTrue stats, prefix & ".ncrc", Abs(batch.ResultAt(1).CrackResult.Formation.FormationNcrc) > 0#
     If expectMcrc Then _
-        AssertTrue stats, prefix & ".mcrc", batch.CrackMcrc(1) > 0#
+        AssertTrue stats, prefix & ".mcrc", batch.ResultAt(1).CrackResult.Formation.Mcrc > 0#
 End Sub
 
 ' Выполняет один сценарий трещинообразования и проверяет, что найденная точка
@@ -1169,24 +1171,24 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
     Set batch.ExecutionReport = executionReport
     batch.Execute
 
-    AppendLine stats, "INFO: " & prefix & "; status=" & batch.CrackStatus(1) & _
-        "; lambda=" & FormatNumberInvariant(batch.CrackLambdaCrc(1)) & _
-        "; method=" & batch.CrackFormationMethod(1) & _
-        "; central=" & CStr(batch.CrackCentralBranch(1)) & _
-        "; NcrcCentral=" & FormatNumberInvariant(batch.CrackNcrc(1)) & _
-        "; Ncrc=" & FormatNumberInvariant(batch.CrackFormationNcrc(1)) & _
-        "; MxyCrc=" & FormatNumberInvariant(batch.CrackMcrc(1))
-    If batch.CrackStatus(1) = "NumFail" Or _
-            (expectNcrc And batch.CrackFormationNcrc(1) = 0#) Or _
-            (expectMcrc And batch.CrackMcrc(1) = 0#) Then
+    AppendLine stats, "INFO: " & prefix & "; status=" & batch.ResultAt(1).NormalCrackStatus & _
+        "; lambda=" & FormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.LambdaCrc) & _
+        "; method=" & batch.ResultAt(1).CrackResult.Formation.FormationMethod & _
+        "; central=" & CStr(batch.ResultAt(1).CrackResult.Width.CentralTensionBranch) & _
+        "; NcrcCentral=" & FormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.Ncrc) & _
+        "; Ncrc=" & FormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.FormationNcrc) & _
+        "; MxyCrc=" & FormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.Mcrc)
+    If batch.ResultAt(1).NormalCrackStatus = "NumFail" Or _
+            (expectNcrc And batch.ResultAt(1).CrackResult.Formation.FormationNcrc = 0#) Or _
+            (expectMcrc And batch.ResultAt(1).CrackResult.Formation.Mcrc = 0#) Then
         AppendLine stats, "DIAG: " & prefix & vbCrLf & batch.DiagnosticLog
         AppendLine stats, "DIAG_META: " & prefix & "; formation=" & _
-            MetaDebugText(batch.CrackFormationMeta(1)) & "; current=" & _
-            MetaDebugText(batch.CrackCurrentStateMeta(1)) & "; width=" & _
-            MetaDebugText(batch.CrackWidthMeta(1)) & "; longitudinal=" & _
-            MetaDebugText(batch.LongitudinalCrackMeta(1))
+            MetaDebugText(batch.ResultAt(1).CrackFormationMeta) & "; current=" & _
+            MetaDebugText(batch.ResultAt(1).CrackCurrentStateMeta) & "; width=" & _
+            MetaDebugText(batch.ResultAt(1).CrackWidthMeta) & "; longitudinal=" & _
+            MetaDebugText(batch.ResultAt(1).LongitudinalCrackMeta)
         Dim currentState As CSectionStateResult
-        Set currentState = batch.FindNamedState(1, sstCrackedState)
+        Set currentState = batch.ResultAt(1).StateRepository.FindState(sstCrackedState)
         If Not currentState Is Nothing Then
             AppendLine stats, "CURRENT_STATE_DIAG: " & prefix & _
                 "; extensionSetting=" & GetSystemSetting("General.DiagramExtension") & _
@@ -1196,7 +1198,7 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
                 "; residualMy=" & FormatNumberInvariant(currentState.ResidualMy) & vbCrLf & currentState.DiagnosticLog
         End If
     End If
-    AssertTrue stats, prefix & ".notNumFail", batch.CrackStatus(1) <> "NumFail"
+    AssertTrue stats, prefix & ".notNumFail", batch.ResultAt(1).NormalCrackStatus <> "NumFail"
 
     Dim writer As CCrackSummaryWriter
     Set writer = New CCrackSummaryWriter
@@ -1214,7 +1216,7 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
     Dim baseColumn As Long
     baseColumn = anchor.Column
     Dim isCentralAxial As Boolean
-    isCentralAxial = batch.CrackCentralBranch(1)
+    isCentralAxial = batch.ResultAt(1).CrackResult.Width.CentralTensionBranch
     If Not isCentralAxial Then _
         AssertTrue stats, prefix & ".sheetMethod", _
             CellHasDisplayedResult(resultsSheet.Cells.Item(detailRow, baseColumn + 15 - 1).Value2)
@@ -1291,9 +1293,9 @@ Private Sub TestPR2AxialTensionBeyondPhysicalLimitUsesExtension(ByRef stats As T
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.Execute
 
-    AssertTrue stats, "batch.group2.extension.directPhysical", batch.DirectStateStatus(1) <> "FAIL"
-    AssertTrue stats, "batch.group2.extension.used", batch.ExtensionUsed(1)
-    AssertTrue stats, "batch.group2.extension.crackFail", batch.CrackStatus(1) = "FAIL"
+    AssertTrue stats, "batch.group2.extension.directPhysical", batch.ResultAt(1).StrengthResult.DirectState.Status <> "FAIL"
+    AssertTrue stats, "batch.group2.extension.used", batch.ResultAt(1).ExtensionUsed
+    AssertTrue stats, "batch.group2.extension.crackFail", batch.ResultAt(1).NormalCrackStatus = "FAIL"
 
 Restore:
     SetSystemSetting "Solver.MaxIterations", oldMaxIterations
@@ -1346,10 +1348,10 @@ Private Sub TestPR1AxialTensionBeyondPhysicalLimitUsesExtension(ByRef stats As T
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.Execute
 
-    AssertTrue stats, "batch.group1.extension.directFail", batch.DirectStateStatus(1) = "FAIL"
-    AssertTrue stats, "batch.group1.extension.used", batch.ExtensionUsed(1)
-    AssertTrue stats, "batch.group1.extension.noCrack", batch.CrackStatus(1) = "N/A"
-    AssertTrue stats, "batch.group1.extension.overall", batch.OverallStatus(1) = "FAIL"
+    AssertTrue stats, "batch.group1.extension.directFail", batch.ResultAt(1).StrengthResult.DirectState.Status = "FAIL"
+    AssertTrue stats, "batch.group1.extension.used", batch.ResultAt(1).ExtensionUsed
+    AssertTrue stats, "batch.group1.extension.noCrack", batch.ResultAt(1).NormalCrackStatus = "N/A"
+    AssertTrue stats, "batch.group1.extension.overall", batch.ResultAt(1).Status = "FAIL"
 
 Restore:
     SetSystemSetting "Solver.MaxIterations", oldMaxIterations
@@ -1413,16 +1415,16 @@ Private Sub TestPR1AxialTensionNearLimitDoesNotJumpToNumFail(ByRef stats As TBat
 
     For i = 1 To UBound(loads) - LBound(loads) + 1
         AppendLine stats, "INFO: batch.group1.nearLimit." & batch.CombinationID(i) & _
-            " direct=" & batch.DirectStateStatus(i) & _
-            "; extensionUsed=" & CStr(batch.ExtensionUsed(i)) & _
-            "; epsSmax=" & FormatNumberInvariant(batch.MaxSteelStrain(i))
-        If batch.DirectStateStatus(i) = "NumFail" Then
+            " direct=" & batch.ResultAt(i).StrengthResult.DirectState.Status & _
+            "; extensionUsed=" & CStr(batch.ResultAt(i).ExtensionUsed) & _
+            "; epsSmax=" & FormatNumberInvariant(batch.ResultAt(i).StrengthResult.DirectState.StateResult.MaxSteelStrain)
+        If batch.ResultAt(i).StrengthResult.DirectState.Status = "NumFail" Then
             AppendLine stats, "DIAG: batch.group1.nearLimit." & batch.CombinationID(i) & vbCrLf & batch.DiagnosticLog
         End If
         AssertTrue stats, "batch.group1.nearLimit.noNumFail." & batch.CombinationID(i), _
-            batch.DirectStateStatus(i) = "OK" Or batch.DirectStateStatus(i) = "FAIL"
-        If batch.DirectStateStatus(i) = "FAIL" Then
-            AssertTrue stats, "batch.group1.nearLimit.failUsesExtension." & batch.CombinationID(i), batch.ExtensionUsed(i)
+            batch.ResultAt(i).StrengthResult.DirectState.Status = "OK" Or batch.ResultAt(i).StrengthResult.DirectState.Status = "FAIL"
+        If batch.ResultAt(i).StrengthResult.DirectState.Status = "FAIL" Then
+            AssertTrue stats, "batch.group1.nearLimit.failUsesExtension." & batch.CombinationID(i), batch.ResultAt(i).ExtensionUsed
         End If
     Next i
 
@@ -1488,16 +1490,16 @@ Private Sub TestPR1AxialCompressionNearLimitDoesNotJumpToNumFail(ByRef stats As 
 
     For i = 1 To UBound(loads) - LBound(loads) + 1
         AppendLine stats, "INFO: batch.group1.compressionNearLimit." & batch.CombinationID(i) & _
-            " direct=" & batch.DirectStateStatus(i) & _
-            "; extensionUsed=" & CStr(batch.ExtensionUsed(i)) & _
-            "; epsCmin=" & FormatNumberInvariant(batch.MinConcreteStrain(i))
-        If batch.DirectStateStatus(i) = "NumFail" Then
+            " direct=" & batch.ResultAt(i).StrengthResult.DirectState.Status & _
+            "; extensionUsed=" & CStr(batch.ResultAt(i).ExtensionUsed) & _
+            "; epsCmin=" & FormatNumberInvariant(batch.ResultAt(i).StrengthResult.DirectState.StateResult.MinConcreteStrain)
+        If batch.ResultAt(i).StrengthResult.DirectState.Status = "NumFail" Then
             AppendLine stats, "DIAG: batch.group1.compressionNearLimit." & batch.CombinationID(i) & vbCrLf & batch.DiagnosticLog
         End If
         AssertTrue stats, "batch.group1.compressionNearLimit.noNumFail." & batch.CombinationID(i), _
-            batch.DirectStateStatus(i) = "OK" Or batch.DirectStateStatus(i) = "FAIL"
-        If batch.DirectStateStatus(i) = "FAIL" Then
-            AssertTrue stats, "batch.group1.compressionNearLimit.failUsesExtension." & batch.CombinationID(i), batch.ExtensionUsed(i)
+            batch.ResultAt(i).StrengthResult.DirectState.Status = "OK" Or batch.ResultAt(i).StrengthResult.DirectState.Status = "FAIL"
+        If batch.ResultAt(i).StrengthResult.DirectState.Status = "FAIL" Then
+            AssertTrue stats, "batch.group1.compressionNearLimit.failUsesExtension." & batch.CombinationID(i), batch.ResultAt(i).ExtensionUsed
         End If
     Next i
 
@@ -1587,20 +1589,20 @@ Private Sub RunAxialProgressionAfterLimit(ByRef stats As TBatchTestStats, ByVal 
 
     For i = 1 To UBound(loads) - LBound(loads) + 1
         AppendLine stats, "INFO: " & testPrefix & "." & batch.CombinationID(i) & _
-            " direct=" & batch.DirectStateStatus(i) & _
-            "; extensionUsed=" & CStr(batch.ExtensionUsed(i)) & _
-            "; epsCmin=" & FormatNumberInvariant(batch.MinConcreteStrain(i)) & _
-            "; epsSmax=" & FormatNumberInvariant(batch.MaxSteelStrain(i))
+            " direct=" & batch.ResultAt(i).StrengthResult.DirectState.Status & _
+            "; extensionUsed=" & CStr(batch.ResultAt(i).ExtensionUsed) & _
+            "; epsCmin=" & FormatNumberInvariant(batch.ResultAt(i).StrengthResult.DirectState.StateResult.MinConcreteStrain) & _
+            "; epsSmax=" & FormatNumberInvariant(batch.ResultAt(i).StrengthResult.DirectState.StateResult.MaxSteelStrain)
         If i = firstOkIndex Then
             AssertTrue stats, testPrefix & ".lastPhysicalOK." & batch.CombinationID(i), _
-                batch.DirectStateStatus(i) = "OK" And Not batch.ExtensionUsed(i)
+                batch.ResultAt(i).StrengthResult.DirectState.Status = "OK" And Not batch.ResultAt(i).ExtensionUsed
         Else
-            If batch.DirectStateStatus(i) = "NumFail" Then
+            If batch.ResultAt(i).StrengthResult.DirectState.Status = "NumFail" Then
                 AppendLine stats, "DIAG: " & testPrefix & "." & batch.CombinationID(i) & vbCrLf & batch.DiagnosticLog
             End If
             AssertTrue stats, testPrefix & ".stableFail." & batch.CombinationID(i), _
-                batch.DirectStateStatus(i) = "FAIL"
-            AssertTrue stats, testPrefix & ".usesExtension." & batch.CombinationID(i), batch.ExtensionUsed(i)
+                batch.ResultAt(i).StrengthResult.DirectState.Status = "FAIL"
+            AssertTrue stats, testPrefix & ".usesExtension." & batch.CombinationID(i), batch.ResultAt(i).ExtensionUsed
         End If
     Next i
 
@@ -1663,11 +1665,11 @@ Private Sub TestPR2AxialCompressionBeyondPhysicalLimitUsesExtension(ByRef stats 
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.Execute
 
-    AssertTrue stats, "batch.group2.extension.compression.directPhysical", batch.DirectStateStatus(1) <> "FAIL"
-    AssertTrue stats, "batch.group2.extension.compression.used", batch.ExtensionUsed(1)
-    AssertTrue stats, "batch.group2.extension.compression.crackFail", batch.CrackStatus(1) = "FAIL"
+    AssertTrue stats, "batch.group2.extension.compression.directPhysical", batch.ResultAt(1).StrengthResult.DirectState.Status <> "FAIL"
+    AssertTrue stats, "batch.group2.extension.compression.used", batch.ResultAt(1).ExtensionUsed
+    AssertTrue stats, "batch.group2.extension.compression.crackFail", batch.ResultAt(1).NormalCrackStatus = "FAIL"
     Dim formation As CCrackFormationResult
-    Set formation = batch.CrackResult(1).Formation
+    Set formation = batch.ResultAt(1).CrackResult.Formation
     AssertTrue stats, "audit02.formation.physicalBlock.exists", Not formation Is Nothing
     If Not formation Is Nothing Then
         If formation.ResultMeta.InternalStatus <> rsCheckFailed Then _
@@ -1732,9 +1734,9 @@ Private Sub TestPR2BendingBeyondPhysicalLimitUsesExtension(ByRef stats As TBatch
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.Execute
 
-    AssertTrue stats, "batch.group2.extension.bending.directPhysical", batch.DirectStateStatus(1) <> "FAIL"
-    AssertTrue stats, "batch.group2.extension.bending.used", batch.ExtensionUsed(1)
-    AssertTrue stats, "batch.group2.extension.bending.crackFail", batch.CrackStatus(1) = "FAIL"
+    AssertTrue stats, "batch.group2.extension.bending.directPhysical", batch.ResultAt(1).StrengthResult.DirectState.Status <> "FAIL"
+    AssertTrue stats, "batch.group2.extension.bending.used", batch.ResultAt(1).ExtensionUsed
+    AssertTrue stats, "batch.group2.extension.bending.crackFail", batch.ResultAt(1).NormalCrackStatus = "FAIL"
 
 Restore:
     SetSystemSetting "Solver.MaxIterations", oldMaxIterations
@@ -1760,8 +1762,8 @@ Private Sub TestBatchGoverningUsesStrengthProfilesOnly(ByRef stats As TBatchTest
     batch.Execute
 
     AssertTrue stats, "batch.governing.profiles.capacity.order", _
-        batch.LambdaCapacity(2) > 0# And batch.LambdaCapacity(2) < batch.LambdaCapacity(1)
-    AssertTrue stats, "batch.governing.profiles.pr2Skipped", batch.CapacityStatus(3) = "N/A"
+        batch.ResultAt(2).StrengthResult.Capacity.LambdaCapacity > 0# And batch.ResultAt(2).StrengthResult.Capacity.LambdaCapacity < batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity
+    AssertTrue stats, "batch.governing.profiles.pr2Skipped", batch.ResultAt(3).StrengthResult.Capacity.Status = "N/A"
     AssertTrue stats, "batch.governing.profiles.id", batch.GoverningCombinationID = "GOV"
 End Sub
 
@@ -1781,8 +1783,8 @@ Private Sub TestPR2SkipsCapacityByProfile(ByRef stats As TBatchTestStats)
     batch.AddCombination "CRACK", -120000#, -5200000#, -2600000#, "PR2", "crack profile"
     batch.Execute
 
-    AssertTrue stats, "batch.profile.capacity.pr1.runs", batch.CapacityStatus(1) <> "N/A"
-    AssertTrue stats, "batch.profile.capacity.pr2.skipped", batch.CapacityStatus(2) = "N/A"
+    AssertTrue stats, "batch.profile.capacity.pr1.runs", batch.ResultAt(1).StrengthResult.Capacity.Status <> "N/A"
+    AssertTrue stats, "batch.profile.capacity.pr2.skipped", batch.ResultAt(2).StrengthResult.Capacity.Status = "N/A"
 
 Restore:
     Exit Sub
@@ -2003,10 +2005,10 @@ Private Sub TestDirectStateReportsSectionStatus(ByRef stats As TBatchTestStats)
     batch.AddCombination "DS_GOV", -120000#, -4500000#, -2400000#, "PR1", "larger strain"
     batch.Execute
 
-    AssertTrue stats, "batch.direct.lambda.positive", batch.LambdaCapacity(1) > 0# And batch.LambdaCapacity(2) > 0#
-    AssertTrue stats, "batch.direct.capacity.ok", batch.CapacityStatus(1) = "OK" And batch.CapacityStatus(2) = "OK"
-    AssertTrue stats, "batch.direct.crack.na", StrComp(batch.CrackStatus(1), "N/A", vbTextCompare) = 0
-    AssertTrue stats, "batch.direct.state.status", Len(batch.DirectStateStatus(1)) > 0 And Len(batch.DirectStateStatus(2)) > 0
+    AssertTrue stats, "batch.direct.lambda.positive", batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity > 0# And batch.ResultAt(2).StrengthResult.Capacity.LambdaCapacity > 0#
+    AssertTrue stats, "batch.direct.capacity.ok", batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" And batch.ResultAt(2).StrengthResult.Capacity.Status = "OK"
+    AssertTrue stats, "batch.direct.crack.na", StrComp(batch.ResultAt(1).NormalCrackStatus, "N/A", vbTextCompare) = 0
+    AssertTrue stats, "batch.direct.state.status", Len(batch.ResultAt(1).StrengthResult.DirectState.Status) > 0 And Len(batch.ResultAt(2).StrengthResult.DirectState.Status) > 0
     AssertTrue stats, "batch.direct.governing.present", Len(batch.GoverningCombinationID) > 0
 
 Restore:
@@ -2060,17 +2062,17 @@ Private Sub TestPR1RectSetSmallTensionMomentDirectStateDoesNotNumFail(ByRef stat
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.Execute
 
-    AppendLine stats, "INFO: batch.group1.tensionMoment.direct=" & batch.DirectStateStatus(1) & _
-        "; capacity=" & batch.CapacityStatus(1) & _
-        "; epsCmin=" & FormatNumberInvariant(batch.MinConcreteStrain(1)) & _
-        "; epsSmax=" & FormatNumberInvariant(batch.MaxSteelStrain(1))
-    If batch.DirectStateStatus(1) = "NumFail" Then
+    AppendLine stats, "INFO: batch.group1.tensionMoment.direct=" & batch.ResultAt(1).StrengthResult.DirectState.Status & _
+        "; capacity=" & batch.ResultAt(1).StrengthResult.Capacity.Status & _
+        "; epsCmin=" & FormatNumberInvariant(batch.ResultAt(1).StrengthResult.DirectState.StateResult.MinConcreteStrain) & _
+        "; epsSmax=" & FormatNumberInvariant(batch.ResultAt(1).StrengthResult.DirectState.StateResult.MaxSteelStrain)
+    If batch.ResultAt(1).StrengthResult.DirectState.Status = "NumFail" Then
         AppendLine stats, "DIAG: batch.group1.tensionMoment" & vbCrLf & batch.DiagnosticLog
     End If
     AssertTrue stats, "batch.group1.tensionMoment.directNotNumFail", _
-        batch.DirectStateStatus(1) = "OK" Or batch.DirectStateStatus(1) = "FAIL"
+        batch.ResultAt(1).StrengthResult.DirectState.Status = "OK" Or batch.ResultAt(1).StrengthResult.DirectState.Status = "FAIL"
     AssertTrue stats, "batch.group1.tensionMoment.capacityNotNumFail", _
-        batch.CapacityStatus(1) = "OK" Or batch.CapacityStatus(1) = "FAIL"
+        batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "FAIL"
 
 Restore:
     SetProfileValue "Calculation.Strength.DirectState", "PR1", oldDirect
@@ -2100,10 +2102,10 @@ Private Sub TestPR1RunsStrengthWithoutCrackWidth(ByRef stats As TBatchTestStats)
     batch.AddCombination "PR1_STRENGTH", -150000#, -3000000#, 0#, "PR1", "strength profile"
     batch.Execute
 
-    AssertTrue stats, "batch.pr1.capacityRuns", batch.CapacityStatus(1) <> "N/A"
-    AssertTrue stats, "batch.pr1.directRuns", batch.DirectStateStatus(1) <> "N/A"
-    AssertTrue stats, "batch.pr1.crackNA", batch.CrackStatus(1) = "N/A"
-    AssertTrue stats, "batch.pr1.hasState", batch.StateAvailable(1) And batch.StateAvailableCount > 0
+    AssertTrue stats, "batch.pr1.capacityRuns", batch.ResultAt(1).StrengthResult.Capacity.Status <> "N/A"
+    AssertTrue stats, "batch.pr1.directRuns", batch.ResultAt(1).StrengthResult.DirectState.Status <> "N/A"
+    AssertTrue stats, "batch.pr1.crackNA", batch.ResultAt(1).NormalCrackStatus = "N/A"
+    AssertTrue stats, "batch.pr1.hasState", batch.ResultAt(1).StrengthResult.DirectState.StateAvailable And batch.StateAvailableCount > 0
 
 Restore:
     Exit Sub
@@ -2135,9 +2137,9 @@ Private Sub TestDirectStateReportsNumericalFailure(ByRef stats As TBatchTestStat
     batch.AddCombination "DS_FAIL", -120000#, -12000000#, -7000000#, "PR1", "forced non-convergence"
     batch.Execute
 
-    AssertTrue stats, "batch.direct.failure.status", batch.Status(1) = "NumFail" Or batch.Status(1) = "FAIL"
-    AssertTrue stats, "batch.direct.failure.directStatus", batch.DirectStateStatus(1) = "NumFail" Or batch.DirectStateStatus(1) = "FAIL"
-    AssertTrue stats, "batch.direct.failure.crack", batch.CrackStatus(1) = "N/A"
+    AssertTrue stats, "batch.direct.failure.status", batch.ResultAt(1).Status = "NumFail" Or batch.ResultAt(1).Status = "FAIL"
+    AssertTrue stats, "batch.direct.failure.directStatus", batch.ResultAt(1).StrengthResult.DirectState.Status = "NumFail" Or batch.ResultAt(1).StrengthResult.DirectState.Status = "FAIL"
+    AssertTrue stats, "batch.direct.failure.crack", batch.ResultAt(1).NormalCrackStatus = "N/A"
 
 Restore:
     SetSystemSetting "Solver.MaxIterations", oldMaxIterations
@@ -2159,11 +2161,11 @@ Private Sub TestLongitudinalCrackCheckUsesDirectStateStress(ByRef stats As TBatc
     batch.Execute
 
     AssertTrue stats, "batch.longCrack.status.finished", _
-        batch.LongitudinalCrackStatus(1) = "OK" Or batch.LongitudinalCrackStatus(1) = "FAIL"
-    AssertTrue stats, "batch.longCrack.sigma", batch.MaxConcreteCompressionStress(1) > 0#
-    AssertClose stats, "batch.longCrack.rbMc2", batch.LongitudinalCrackRbMc2(1), 14.6, 0.000000001
-    AssertClose stats, "batch.longCrack.util", batch.LongitudinalCrackUtilization(1), _
-        batch.MaxConcreteCompressionStress(1) / batch.LongitudinalCrackRbMc2(1), 0.000000001
+        batch.ResultAt(1).CrackResult.Longitudinal.Status = "OK" Or batch.ResultAt(1).CrackResult.Longitudinal.Status = "FAIL"
+    AssertTrue stats, "batch.longCrack.sigma", batch.ResultAt(1).CrackResult.Longitudinal.MaxCompressionStress > 0#
+    AssertClose stats, "batch.longCrack.rbMc2", batch.ResultAt(1).CrackResult.Longitudinal.RbMc2, 14.6, 0.000000001
+    AssertClose stats, "batch.longCrack.util", batch.ResultAt(1).CrackResult.Longitudinal.Utilization, _
+        batch.ResultAt(1).CrackResult.Longitudinal.MaxCompressionStress / batch.ResultAt(1).CrackResult.Longitudinal.RbMc2, 0.000000001
 End Sub
 
 ' Проверяет нормативную область применения: продольные трещины являются
@@ -2175,9 +2177,9 @@ Private Sub TestLongitudinalCrackSkippedForPR1(ByRef stats As TBatchTestStats)
     batch.AddCombination "LONG_G1", -90000#, 0#, 0#, "PR1", "longitudinal group1"
     batch.Execute
 
-    AssertTrue stats, "batch.longCrack.group1.na", batch.LongitudinalCrackStatus(1) = "N/A"
-    AssertClose stats, "batch.longCrack.group1.noRbMc2", batch.LongitudinalCrackRbMc2(1), 0#, 0.000000001
-    AssertClose stats, "batch.longCrack.group1.noUtil", batch.LongitudinalCrackUtilization(1), 0#, 0.000000001
+    AssertTrue stats, "batch.longCrack.group1.na", batch.ResultAt(1).CrackResult.Longitudinal.Status = "N/A"
+    AssertClose stats, "batch.longCrack.group1.noRbMc2", batch.ResultAt(1).CrackResult.Longitudinal.RbMc2, 0#, 0.000000001
+    AssertClose stats, "batch.longCrack.group1.noUtil", batch.ResultAt(1).CrackResult.Longitudinal.Utilization, 0#, 0.000000001
 End Sub
 
 ' Проверяет, что профильный флаг включает расчет устойчивости как отдельный
@@ -2209,9 +2211,9 @@ Private Sub TestStabilityProfileEnablesSP63ForCompression(ByRef stats As TBatchT
     batch.AddCombination "STAB_SP63", -120000#, 1000000#, 0#, "PR1", "stability sp63"
     batch.Execute
 
-    AssertTrue stats, "batch.stability.sp63.status", batch.StabilityStatus(1) = "OK" Or batch.StabilityStatus(1) = "FAIL"
-    AssertTrue stats, "batch.stability.sp63.ncr", batch.StabilityCriticalForce(1) > 0#
-    AssertTrue stats, "batch.stability.sp63.eta", batch.StabilityEta1(1) > 0# Or batch.StabilityEta2(1) > 0#
+    AssertTrue stats, "batch.stability.sp63.status", batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
+    AssertTrue stats, "batch.stability.sp63.ncr", batch.ResultAt(1).StabilityResult.CriticalForce > 0#
+    AssertTrue stats, "batch.stability.sp63.eta", batch.ResultAt(1).StabilityResult.Eta1 > 0# Or batch.ResultAt(1).StabilityResult.Eta2 > 0#
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -2251,9 +2253,9 @@ Private Sub TestStabilitySkippedForTension(ByRef stats As TBatchTestStats)
     batch.AddCombination "STAB_TENSION", 50000#, 0#, 0#, "PR1", "stability tension"
     batch.Execute
 
-    AssertTrue stats, "batch.stability.tension.na", batch.StabilityStatus(1) = "N/A"
-    AssertClose stats, "batch.stability.tension.noNcr", batch.StabilityCriticalForce(1), 0#, 0.000000001
-    AssertTrue stats, "batch.stability.tension.overall", batch.Status(1) <> "InputErr"
+    AssertTrue stats, "batch.stability.tension.na", batch.ResultAt(1).StabilityResult.Status = "N/A"
+    AssertClose stats, "batch.stability.tension.noNcr", batch.ResultAt(1).StabilityResult.CriticalForce, 0#, 0.000000001
+    AssertTrue stats, "batch.stability.tension.overall", batch.ResultAt(1).Status <> "InputErr"
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -2353,11 +2355,11 @@ Private Sub TestStabilitySP35TableSeparatesNcrAndNult(ByRef stats As TBatchTestS
     batch.Execute
 
     AssertTrue stats, "batch.stability.sp35.table.status", _
-        batch.StabilityStatus(1) = "OK" Or batch.StabilityStatus(1) = "FAIL"
-    AssertClose stats, "batch.stability.sp35.table.ncr1.na", batch.StabilityNcr1(1), 0#, 0.000000001
-    AssertClose stats, "batch.stability.sp35.table.ncr2.na", batch.StabilityNcr2(1), 0#, 0.000000001
-    AssertTrue stats, "batch.stability.sp35.table.nult1", batch.StabilityNultimate1(1) > 0#
-    AssertTrue stats, "batch.stability.sp35.table.nult2", batch.StabilityNultimate2(1) > 0#
+        batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
+    AssertClose stats, "batch.stability.sp35.table.ncr1.na", batch.ResultAt(1).StabilityResult.Ncr1, 0#, 0.000000001
+    AssertClose stats, "batch.stability.sp35.table.ncr2.na", batch.ResultAt(1).StabilityResult.Ncr2, 0#, 0.000000001
+    AssertTrue stats, "batch.stability.sp35.table.nult1", batch.ResultAt(1).StabilityResult.Nultimate1 > 0#
+    AssertTrue stats, "batch.stability.sp35.table.nult2", batch.ResultAt(1).StabilityResult.Nultimate2 > 0#
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -2417,10 +2419,10 @@ Private Sub TestStabilitySP35TableIgnoresPhiL2(ByRef stats As TBatchTestStats)
     batch.Execute
 
     AssertTrue stats, "batch.stability.sp35.tablePhi.branch", _
-        batch.StabilityPlaneBranch1(1) = "SP35-table" Or batch.StabilityPlaneBranch2(1) = "SP35-table"
+        batch.ResultAt(1).StabilityResult.PlaneBranch1 = "SP35-table" Or batch.ResultAt(1).StabilityResult.PlaneBranch2 = "SP35-table"
     AssertClose stats, "batch.stability.sp35.tablePhi.phiL1", _
-        batch.StabilityPhiL1(1), batch.StabilityPhiLTable1(1), 0.000000001
-    AssertTrue stats, "batch.stability.sp35.tablePhi.notTwo", batch.StabilityPhiL1(1) < 1.99
+        batch.ResultAt(1).StabilityResult.PhiL1, batch.ResultAt(1).StabilityResult.PhiLTable1, 0.000000001
+    AssertTrue stats, "batch.stability.sp35.tablePhi.notTwo", batch.ResultAt(1).StabilityResult.PhiL1 < 1.99
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -2635,8 +2637,8 @@ Private Sub TestStabilitySP35TableBoundaryReservePasses(ByRef stats As TBatchTes
     batch.AddCombination "SP35_BOUNDARY", -nUltimate, 0#, 0#, "PR1", "sp35 boundary"
     batch.Execute
 
-    AssertClose stats, "batch.stability.sp35.boundary.reserve", batch.StabilityReserveFactor(1), 1#, 0.0000001
-    AssertTrue stats, "batch.stability.sp35.boundary.status", batch.StabilityStatus(1) = "OK"
+    AssertClose stats, "batch.stability.sp35.boundary.reserve", batch.ResultAt(1).StabilityResult.ReserveFactor, 1#, 0.0000001
+    AssertTrue stats, "batch.stability.sp35.boundary.status", batch.ResultAt(1).StabilityResult.Status = "OK"
     Dim writer As CBatchResultWriter
     Set writer = New CBatchResultWriter
     writer.WriteSummary ThisWorkbook, batch
@@ -2705,11 +2707,11 @@ Private Sub TestStabilityFailContinuesDownstream(ByRef stats As TBatchTestStats)
     batch.AddCombination "SP35_CONTINUE", -1000000#, 0#, 0#, "PR1", "stability fail but continue"
     batch.Execute
 
-    AssertTrue stats, "batch.stability.continue.stabilityFail", batch.StabilityStatus(1) = "FAIL"
-    AssertTrue stats, "batch.stability.continue.overallFail", batch.Status(1) = "FAIL"
-    AssertTrue stats, "batch.stability.continue.directCalculated", batch.DirectStateStatus(1) <> "N/A"
-    AssertTrue stats, "batch.stability.continue.capacityCalculated", batch.CapacityStatus(1) <> "N/A"
-    AssertTrue stats, "batch.stability.continue.longitudinalCalculated", batch.LongitudinalCrackStatus(1) <> "N/A"
+    AssertTrue stats, "batch.stability.continue.stabilityFail", batch.ResultAt(1).StabilityResult.Status = "FAIL"
+    AssertTrue stats, "batch.stability.continue.overallFail", batch.ResultAt(1).Status = "FAIL"
+    AssertTrue stats, "batch.stability.continue.directCalculated", batch.ResultAt(1).StrengthResult.DirectState.Status <> "N/A"
+    AssertTrue stats, "batch.stability.continue.capacityCalculated", batch.ResultAt(1).StrengthResult.Capacity.Status <> "N/A"
+    AssertTrue stats, "batch.stability.continue.longitudinalCalculated", batch.ResultAt(1).CrackResult.Longitudinal.Status <> "N/A"
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -2763,12 +2765,12 @@ Private Sub TestStabilitySP63ShortSlendernessEtaIsOne(ByRef stats As TBatchTestS
     batch.AddCombination "SP63_SHORT", -120000#, 1000000#, 0#, "PR1", "short slenderness"
     batch.Execute
 
-    AssertTrue stats, "batch.stability.sp63.short.status", batch.StabilityStatus(1) = "OK" Or batch.StabilityStatus(1) = "FAIL"
-    AssertTrue stats, "batch.stability.sp63.short.slenderness1", batch.StabilitySlenderness1(1) > 0# And batch.StabilitySlenderness1(1) <= 14#
-    AssertTrue stats, "batch.stability.sp63.short.slenderness2", batch.StabilitySlenderness2(1) > 0# And batch.StabilitySlenderness2(1) <= 14#
-    AssertClose stats, "batch.stability.sp63.short.eta1", batch.StabilityEta1(1), 1#, 0.000000001
-    AssertClose stats, "batch.stability.sp63.short.eta2", batch.StabilityEta2(1), 1#, 0.000000001
-    AssertTrue stats, "batch.stability.sp63.short.ncr", batch.StabilityNcr1(1) > 0# And batch.StabilityNcr2(1) > 0#
+    AssertTrue stats, "batch.stability.sp63.short.status", batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
+    AssertTrue stats, "batch.stability.sp63.short.slenderness1", batch.ResultAt(1).StabilityResult.Slenderness1 > 0# And batch.ResultAt(1).StabilityResult.Slenderness1 <= 14#
+    AssertTrue stats, "batch.stability.sp63.short.slenderness2", batch.ResultAt(1).StabilityResult.Slenderness2 > 0# And batch.ResultAt(1).StabilityResult.Slenderness2 <= 14#
+    AssertClose stats, "batch.stability.sp63.short.eta1", batch.ResultAt(1).StabilityResult.Eta1, 1#, 0.000000001
+    AssertClose stats, "batch.stability.sp63.short.eta2", batch.ResultAt(1).StabilityResult.Eta2, 1#, 0.000000001
+    AssertTrue stats, "batch.stability.sp63.short.ncr", batch.ResultAt(1).StabilityResult.Ncr1 > 0# And batch.ResultAt(1).StabilityResult.Ncr2 > 0#
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -2817,7 +2819,7 @@ Private Sub TestStabilityInvalidMuReportsInputErr(ByRef stats As TBatchTestStats
     batch.AddCombination "BAD_MU", -120000#, 1000000#, 0#, "PR1", "bad mu"
     batch.Execute
 
-    AssertTrue stats, "batch.stability.mu.inputErr", batch.StabilityStatus(1) = "InputErr"
+    AssertTrue stats, "batch.stability.mu.inputErr", batch.ResultAt(1).StabilityResult.Status = "InputErr"
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -2960,10 +2962,10 @@ Private Sub TestStabilitySP35MixedBranchReportsMixed(ByRef stats As TBatchTestSt
     batch.Execute
 
     AssertTrue stats, "batch.stability.sp35Mixed.status", _
-        batch.StabilityStatus(1) = "OK" Or batch.StabilityStatus(1) = "FAIL"
+        batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
     AssertTrue stats, "batch.stability.sp35Mixed.planeBranches", _
-        StrComp(batch.StabilityPlaneBranch1(1), batch.StabilityPlaneBranch2(1), vbTextCompare) <> 0
-    AssertTrue stats, "batch.stability.sp35Mixed.branch", batch.StabilityBranch(1) = "SP35-mixed"
+        StrComp(batch.ResultAt(1).StabilityResult.PlaneBranch1, batch.ResultAt(1).StabilityResult.PlaneBranch2, vbTextCompare) <> 0
+    AssertTrue stats, "batch.stability.sp35Mixed.branch", batch.ResultAt(1).StabilityResult.Branch = "SP35-mixed"
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -3025,9 +3027,9 @@ Private Sub TestStabilityCircleMxDoesNotCreateMy(ByRef stats As TBatchTestStats)
     batch.AddCombination "CIRCLE_MX", -120000#, 1000000#, 0#, "PR1", "stability circle mx"
     batch.Execute
 
-    AssertTrue stats, "batch.stability.circleMx.status", batch.StabilityStatus(1) = "OK" Or batch.StabilityStatus(1) = "FAIL"
-    AssertTrue stats, "batch.stability.circleMx.designMx", Abs(batch.StabilityDesignMx(1)) > 0#
-    AssertClose stats, "batch.stability.circleMx.noDesignMy", batch.StabilityDesignMy(1), 0#, 1#
+    AssertTrue stats, "batch.stability.circleMx.status", batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
+    AssertTrue stats, "batch.stability.circleMx.designMx", Abs(batch.ResultAt(1).StabilityResult.DesignMx) > 0#
+    AssertClose stats, "batch.stability.circleMx.noDesignMy", batch.ResultAt(1).StabilityResult.DesignMy, 0#, 1#
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -3158,9 +3160,9 @@ Private Sub TestStabilityUsesTransformedCentroidForEccentricity(ByRef stats As T
     batch.ApplyLoadReference concreteProps.CentroidX, concreteProps.CentroidY, concreteProps.CentroidX, concreteProps.CentroidY
     batch.Execute
 
-    AssertTrue stats, "batch.stability.centroid.status", batch.StabilityStatus(1) = "OK" Or batch.StabilityStatus(1) = "FAIL"
+    AssertTrue stats, "batch.stability.centroid.status", batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
     AssertTrue stats, "batch.stability.centroid.eFromTransformedCenter", _
-        Sqr(batch.StabilityEccentricity1(1) ^ 2 + batch.StabilityEccentricity2(1) ^ 2) > centroidGap * 0.8
+        Sqr(batch.ResultAt(1).StabilityResult.Eccentricity1 ^ 2 + batch.ResultAt(1).StabilityResult.Eccentricity2 ^ 2) > centroidGap * 0.8
     AssertClose stats, "batch.stability.centroid.loadPointMxIsUserMx", _
         batch.StabilityLoadPointMx(1), batch.UserMx(1), 0.000001
     AssertClose stats, "batch.stability.centroid.loadPointMyIsUserMy", _
@@ -3335,8 +3337,8 @@ Private Sub TestStabilitySP35UsesCoreDistanceNotRadius(ByRef stats As TBatchTest
 
     Dim coreDistance As Double
     Dim radiusValue As Double
-    coreDistance = ActiveStabilityValue(batch.StabilityCoreDistance1(1), batch.StabilityCoreDistance2(1))
-    radiusValue = ActiveStabilityValue(batch.StabilityRadius1(1), batch.StabilityRadius2(1))
+    coreDistance = ActiveStabilityValue(batch.ResultAt(1).StabilityResult.CoreDistance1, batch.ResultAt(1).StabilityResult.CoreDistance2)
+    radiusValue = ActiveStabilityValue(batch.ResultAt(1).StabilityResult.Radius1, batch.ResultAt(1).StabilityResult.Radius2)
     AssertTrue stats, "batch.stability.sp35.core.positive", coreDistance > 0# And radiusValue > 0#
     AssertTrue stats, "batch.stability.sp35.core.notRadius", coreDistance < radiusValue * 0.75
 
@@ -3398,9 +3400,9 @@ Private Sub TestStabilityDepthUsesConcreteContourOnly(ByRef stats As TBatchTestS
     batch.Execute
 
     AssertTrue stats, "batch.stability.depth.concreteOnly1", _
-        batch.StabilityDepth1(1) > 190# And batch.StabilityDepth1(1) < 310#
+        batch.ResultAt(1).StabilityResult.Depth1 > 190# And batch.ResultAt(1).StabilityResult.Depth1 < 310#
     AssertTrue stats, "batch.stability.depth.concreteOnly2", _
-        batch.StabilityDepth2(1) > 190# And batch.StabilityDepth2(1) < 310#
+        batch.ResultAt(1).StabilityResult.Depth2 > 190# And batch.ResultAt(1).StabilityResult.Depth2 < 310#
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -3482,7 +3484,7 @@ Private Sub TestStabilitySustainedNNotClamped(ByRef stats As TBatchTestStats)
     batch.AddCombination "SUSTAINED_FREE", -120000#, 1000000#, 0#, "PR1", "sustained not clamped"
     batch.Execute
 
-    AssertClose stats, "batch.stability.sustainedN.notClamped", batch.StabilitySustainedN(1), 240000#, 0.000001
+    AssertClose stats, "batch.stability.sustainedN.notClamped", batch.ResultAt(1).StabilityResult.SustainedN, 240000#, 0.000001
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -3609,7 +3611,7 @@ Private Sub TestBatchMoreThanTwentyCombinations(ByRef stats As TBatchTestStats)
 
     AssertTrue stats, "batch.dynamic.count", batch.Count = 24
     AssertTrue stats, "batch.dynamic.governing.index", batch.GoverningCombinationIndex >= 1 And batch.GoverningCombinationIndex <= 24
-    AssertTrue stats, "batch.dynamic.last.status", Len(batch.Status(24)) > 0
+    AssertTrue stats, "batch.dynamic.last.status", Len(batch.ResultAt(24).Status) > 0
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -3639,7 +3641,7 @@ Private Sub TestInvalidCombinationFromNamedRange(ByRef stats As TBatchTestStats)
     batch.Execute
 
     AssertTrue stats, "batch.invalid.reader.count", batch.Count = 1
-    AssertTrue stats, "batch.invalid.reader.status", batch.Status(1) = "InputErr"
+    AssertTrue stats, "batch.invalid.reader.status", batch.ResultAt(1).Status = "InputErr"
 End Sub
 
 ' Проверяет, что высота верхней сводки берется не только по заполненным LC,
@@ -4231,7 +4233,7 @@ Private Function BatchSteppedCrackCoverStatus(ByVal coverMode As String) As Stri
     batch.AddCombination "COVER_" & coverMode, -20000#, -32000000#, 0#, "PR2", "cover distance mode"
     batch.Execute
 
-    BatchSteppedCrackCoverStatus = batch.CrackStatus(1)
+    BatchSteppedCrackCoverStatus = batch.ResultAt(1).NormalCrackStatus
 End Function
 
 ' Собирает Г-сечение из пользовательского примера: H1/B1/H2/B2 = 550/250/250/600,
@@ -4372,11 +4374,11 @@ Private Function StabilitySP35CriticalForceForValueSet(ByVal valueSetText As Str
     batch.AddCombination "STAB_SP35_" & Replace$(valueSetText, "(", ""), -120000#, 0#, 0#, "PR1", "stability sp35"
     batch.Execute
 
-    If batch.StabilityStatus(1) <> "OK" And batch.StabilityStatus(1) <> "FAIL" Then
+    If batch.ResultAt(1).StabilityResult.Status <> "OK" And batch.ResultAt(1).StabilityResult.Status <> "FAIL" Then
         Err.Raise vbObjectError + 3934, "modTestBatchCalculation", _
-            "SP35 stability status is not applicable: " & batch.StabilityStatus(1)
+            "SP35 stability status is not applicable: " & batch.ResultAt(1).StabilityResult.Status
     End If
-    StabilitySP35CriticalForceForValueSet = batch.StabilityCriticalForce(1)
+    StabilitySP35CriticalForceForValueSet = batch.ResultAt(1).StabilityResult.CriticalForce
 End Function
 
 ' Выполняет короткий расчет устойчивости с одним изгибающим моментом и
@@ -4393,8 +4395,8 @@ Private Function StabilityAccidentalForSingleMoment() As Double
     batch.AddCombination "ACC_E", -120000#, 1000000#, 0#, "PR1", "accidental eccentricity"
     batch.Execute
 
-    StabilityAccidentalForSingleMoment = Abs(batch.StabilityAccidentalEcc1(1)) + _
-        Abs(batch.StabilityAccidentalEcc2(1))
+    StabilityAccidentalForSingleMoment = Abs(batch.ResultAt(1).StabilityResult.AccidentalEcc1) + _
+        Abs(batch.ResultAt(1).StabilityResult.AccidentalEcc2)
 End Function
 
 ' Запускает минимальный LC устойчивости с текущими настройками Config.
@@ -4412,7 +4414,7 @@ Private Function StabilityStatusForCurrentSettings() As String
     batch.AddCombination "STAB_BAD_SETTING", -120000#, 1000000#, 0#, "PR1", "bad stability setting"
     batch.Execute
 
-    StabilityStatusForCurrentSettings = batch.StabilityStatus(1)
+    StabilityStatusForCurrentSettings = batch.ResultAt(1).StabilityResult.Status
 End Function
 
 ' Возвращает детальную причину первой ошибки при текущих настройках Config.
@@ -4450,7 +4452,7 @@ Private Function StabilityPhiLForDurationLoad(ByVal combinationID As String, _
     batch.AddCombination combinationID, nValue, mxValue, myValue, "PR1", "phi_l"
     batch.Execute
 
-    StabilityPhiLForDurationLoad = ActiveMomentPlaneValue(batch, batch.StabilityPhiL1(1), batch.StabilityPhiL2(1))
+    StabilityPhiLForDurationLoad = ActiveMomentPlaneValue(batch, batch.ResultAt(1).StabilityResult.PhiL1, batch.ResultAt(1).StabilityResult.PhiL2)
 End Function
 
 ' Возвращает значение из той плоскости, где фактически есть больший главный
@@ -4459,7 +4461,7 @@ End Function
 ' выбирать просто первое ненулевое значение нельзя.
 Private Function ActiveMomentPlaneValue(ByVal batch As CBatchSectionCalculator, _
         ByVal firstValue As Double, ByVal secondValue As Double) As Double
-    If Abs(batch.StabilityMoment1(1)) >= Abs(batch.StabilityMoment2(1)) Then
+    If Abs(batch.ResultAt(1).StabilityResult.Moment1) >= Abs(batch.ResultAt(1).StabilityResult.Moment2) Then
         ActiveMomentPlaneValue = firstValue
     Else
         ActiveMomentPlaneValue = secondValue
@@ -4572,8 +4574,8 @@ Private Sub TestResultMetaAggregateSkipsNotApplicable(ByRef stats As TBatchTestS
         policy.AggregateMeta(skippedMeta, Nothing, Nothing), "N/A"
 End Sub
 
-' Проверяет финальный result-tree: плоские display-поля CCombinationResult
-' получают статус только из structured ResultMeta.
+' Проверяет финальный result-tree: display вычисляется из канонической meta,
+' а сводные комментарии собираются только из соответствующих typed ветвей.
 Private Sub TestCombinationResultTreeDrivesDisplayFields(ByRef stats As TBatchTestStats)
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
@@ -4586,7 +4588,7 @@ Private Sub TestCombinationResultTreeDrivesDisplayFields(ByRef stats As TBatchTe
     Set okMeta = New CResultMeta
     okMeta.SetResult rsSuccess, rcCheckPassed, rkDirectState, vbNullString
     result.SetDirectStateMeta okMeta
-    AssertEquals stats, "combinationTree.direct.flat", result.DirectStateStatus, "OK"
+    AssertEquals stats, "combinationTree.direct.flat", result.StrengthResult.DirectState.Status, "OK"
     AssertEquals stats, "combinationTree.direct.meta", _
         policy.ExternalStatus(result.DirectStateMeta), "OK"
 
@@ -4609,7 +4611,7 @@ Private Sub TestCombinationResultTreeDrivesDisplayFields(ByRef stats As TBatchTe
     Set failMeta = New CResultMeta
     failMeta.SetResult rsCheckFailed, rcCheckFailed, rkDirectState, "Проверка не проходит."
     result.MergeDirectStateMeta failMeta
-    AssertEquals stats, "combinationTree.direct.merge.flat", result.DirectStateStatus, "FAIL"
+    AssertEquals stats, "combinationTree.direct.merge.flat", result.StrengthResult.DirectState.Status, "FAIL"
     AssertEquals stats, "combinationTree.direct.merge.meta", _
         policy.ExternalStatus(result.StrengthResult.DirectMeta), "FAIL"
 
@@ -4625,11 +4627,10 @@ Private Sub TestCombinationResultTreeDrivesDisplayFields(ByRef stats As TBatchTe
     Set stabilityMeta = New CResultMeta
     stabilityMeta.SetResult rsInvalidInput, rcInvalidInput, rkStability, "ошибка настройки устойчивости"
     result.SetStabilityMeta stabilityMeta, "ошибка настройки устойчивости"
-    AssertEquals stats, "combinationTree.stability.flat", result.StabilityStatus, "InputErr"
+    AssertEquals stats, "combinationTree.stability.flat", result.StabilityResult.Status, "InputErr"
     AssertEquals stats, "combinationTree.stability.meta", _
         policy.ExternalStatus(result.StabilityMeta), "InputErr"
 
-    result.Status = "InputErr"
     Dim overall As CResultMeta
     Set overall = result.OverallMeta
     AssertTrue stats, "combinationTree.overallComment.direct", _
@@ -4679,7 +4680,7 @@ Private Sub TestCrackAggregateIncludesCurrentStateFailure(ByRef stats As TBatchT
     AssertEquals stats, "combinationTree.crack.aggregate.currentStateFailure", _
         policy.ExternalStatus(result.CrackMeta), "NumFail"
     AssertEquals stats, "combinationTree.crack.flat.currentStateFailure", _
-        result.CrackStatus, "NumFail"
+        result.NormalCrackStatus, "NumFail"
     AssertTrue stats, "combinationTree.crack.comment.currentStateFailure", _
         InStr(1, result.CrackMeta.ResultComment, "CrackedState от заданного сочетания", vbTextCompare) > 0
 
@@ -4738,20 +4739,20 @@ Private Sub TestSectionStateResultStoresEquilibriumData(ByRef stats As TBatchTes
     batch.Execute
 
     Dim stateResult As CSectionStateResult
-    Set stateResult = batch.FindNamedState(1, sstStrengthState)
+    Set stateResult = batch.ResultAt(1).StateRepository.FindState(sstStrengthState)
 
     AssertTrue stats, "stateMeta.exists", Not stateResult Is Nothing
     If stateResult Is Nothing Then Exit Sub
 
-    AssertClose stats, "stateMeta.epsilon0", stateResult.Epsilon0, batch.Epsilon0(1), 0.000000000001
-    AssertClose stats, "stateMeta.kappaX", stateResult.KappaX, batch.KappaX(1), 0.000000000001
-    AssertClose stats, "stateMeta.kappaY", stateResult.KappaY, batch.KappaY(1), 0.000000000001
+    AssertClose stats, "stateMeta.epsilon0", stateResult.Epsilon0, batch.ResultAt(1).StrengthResult.DirectState.StateResult.Epsilon0, 0.000000000001
+    AssertClose stats, "stateMeta.kappaX", stateResult.KappaX, batch.ResultAt(1).StrengthResult.DirectState.StateResult.KappaX, 0.000000000001
+    AssertClose stats, "stateMeta.kappaY", stateResult.KappaY, batch.ResultAt(1).StrengthResult.DirectState.StateResult.KappaY, 0.000000000001
     AssertClose stats, "stateMeta.targetN", stateResult.TargetN, batch.N(1), 0.001
     AssertClose stats, "stateMeta.targetMx", stateResult.TargetMx, batch.Mx(1), 0.001
     AssertClose stats, "stateMeta.targetMy", stateResult.TargetMy, batch.My(1), 0.001
-    AssertClose stats, "stateMeta.nint", stateResult.Nint, batch.Nint(1), 0.001
-    AssertClose stats, "stateMeta.mxint", stateResult.Mxint, batch.Mxint(1), 0.001
-    AssertClose stats, "stateMeta.myint", stateResult.Myint, batch.Myint(1), 0.001
+    AssertClose stats, "stateMeta.nint", stateResult.Nint, batch.ResultAt(1).StrengthResult.DirectState.StateResult.Nint, 0.001
+    AssertClose stats, "stateMeta.mxint", stateResult.Mxint, batch.ResultAt(1).StrengthResult.DirectState.StateResult.Mxint, 0.001
+    AssertClose stats, "stateMeta.myint", stateResult.Myint, batch.ResultAt(1).StrengthResult.DirectState.StateResult.Myint, 0.001
     AssertTrue stats, "stateMeta.solverCalls", stateResult.SolverCallCount >= 1
     AssertTrue stats, "stateMeta.iterations", stateResult.IterationCount >= 0
     AssertTrue stats, "stateMeta.resultMeta", Not stateResult.ResultMeta Is Nothing
@@ -4792,7 +4793,7 @@ Private Sub TestStateRepositoryReusesOnlyConvergedStates(ByRef stats As TBatchTe
     batch.Execute
 
     Dim successfulState As CSectionStateResult
-    Set successfulState = batch.FindNamedState(1, sstStrengthState)
+    Set successfulState = batch.ResultAt(1).StateRepository.FindState(sstStrengthState)
     AssertTrue stats, "stateRepository.successSource", Not successfulState Is Nothing
     If successfulState Is Nothing Then Exit Sub
 
@@ -4843,6 +4844,31 @@ End Sub
 
 ' ============================== ДЛЯ ТЕСТОВ AUDIT02 ==============================
 
+' Изолирует повторное чтение сводной meta от solver-а и Excel writer-ов.
+' Возвращает время и последний комментарий для диагностики расхода строк;
+' физические числа и штатный regression-набор здесь не изменяются.
+Public Function RunAudit02ResultMetaStress() As String
+    Dim result As CCombinationResult
+    Set result = New CCombinationResult
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta
+    meta.SetResult rsInvalidInput, rcInvalidInput, rkDirectState, "Тестовая ошибка исходных данных."
+    result.SetDirectStateMeta meta
+    meta.SetResult rsInvalidInput, rcInvalidInput, rkStability, "Тестовая ошибка настройки устойчивости."
+    result.SetStabilityMeta meta
+    Dim started As Double
+    started = Timer
+    Dim i As Long
+    Dim statusText As String
+    Dim commentText As String
+    For i = 1 To 5000
+        statusText = result.Status
+        commentText = result.OverallMeta.ResultComment
+    Next i
+    RunAudit02ResultMetaStress = "INFO: metaStress; reads=5000; elapsedSec=" & _
+        FormatNumberInvariant(Timer - started) & "; status=" & statusText & "; comment=" & commentText
+End Function
+
 ' Повторяет реальный batch-маршрут после сохранения Pre/Post/current states.
 ' Центральное растяжение не требует поисковых проб, поэтому при cache-hit
 ' можно точно доказать отсутствие любого нового equilibrium solve.
@@ -4852,7 +4878,7 @@ Private Sub TestAudit02CurrentCrackedStateCacheHitCalculatesWidth(ByRef stats As
     batch.AddCombination "AUDIT02_CURRENT_CACHE", 200000#, 0#, 0#, "PR2", "current state cache"
     batch.Execute
     Dim first As CCrackResult
-    Set first = batch.CrackResult(1)
+    Set first = batch.ResultAt(1).CrackResult
     AssertTrue stats, "audit02.currentCache.firstExists", Not first Is Nothing
     If first Is Nothing Then Exit Sub
     AssertTrue stats, "audit02.currentCache.crackFormed", first.Formation.CrackFormed
@@ -4861,7 +4887,7 @@ Private Sub TestAudit02CurrentCrackedStateCacheHitCalculatesWidth(ByRef stats As
     countBefore = SectionEquilibriumSolveCount()
     batch.TestRepeatCrackCalculation 1
     Dim second As CCrackResult
-    Set second = batch.CrackResult(1)
+    Set second = batch.ResultAt(1).CrackResult
     AssertTrue stats, "audit02.currentCache.secondExists", Not second Is Nothing
     If second Is Nothing Then Exit Sub
     AssertTrue stats, "audit02.currentCache.noHeavySolve", SectionEquilibriumSolveCount() = countBefore
@@ -4870,6 +4896,77 @@ Private Sub TestAudit02CurrentCrackedStateCacheHitCalculatesWidth(ByRef stats As
     AssertClose stats, "audit02.currentCache.sigmaCrc", second.Width.SigmaSCrc, first.Width.SigmaSCrc, 0.000000001
     AssertClose stats, "audit02.currentCache.psi", second.Width.PsiS, first.Width.PsiS, 0.000000001
     AssertTrue stats, "audit02.currentCache.stateOK", second.CurrentStateMeta.InternalStatus = rsSuccess
+End Sub
+
+' Проверяет канонический результат реального расчета и повторное использование
+' контейнеров: State не копируется в direct-result, meta не меняется снаружи,
+' а нейтральная повторная инициализация не оставляет чисел прошлого сочетания.
+Private Sub TestAudit02CanonicalResultsAndReset(ByRef stats As TBatchTestStats)
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator()
+    batch.AddCombination "AUDIT02_CANONICAL", 200000#, 0#, 0#, "PR2", "canonical result"
+    batch.Execute
+    Dim calculated As CCombinationResult
+    Set calculated = batch.ResultAt(1)
+    Dim current As CSectionStateResult
+    Set current = calculated.StateRepository.FindState(sstCrackedState)
+    AssertTrue stats, "audit02.canonical.currentExists", Not current Is Nothing
+    If current Is Nothing Then Exit Sub
+
+    Dim result As CCombinationResult
+    Set result = New CCombinationResult
+    result.StoreSectionStateResult current
+    result.AddState current
+    AssertTrue stats, "audit02.canonical.directIdentity", result.StrengthResult.DirectState.StateResult Is current
+    AssertTrue stats, "audit02.canonical.repositoryIdentity", result.StateRepository.FindState(sstCrackedState) Is current
+    AssertClose stats, "audit02.canonical.directN", result.StrengthResult.DirectState.StateResult.Nint, current.Nint, 0#
+    Dim detached As CResultMeta
+    Set detached = result.DirectStateMeta
+    detached.SetResult rsInternalError, rcInternalError, rkDirectState, "Изменение внешней копии."
+    AssertEquals stats, "audit02.canonical.directMetaIsolated", result.StrengthResult.DirectState.Status, "OK"
+
+    result.StoreCrackAggregateResult calculated.CrackResult
+    AssertTrue stats, "audit02.canonical.crackIdentity", result.CrackResult Is calculated.CrackResult
+    AssertTrue stats, "audit02.canonical.widthIdentity", result.CrackResult.Width Is calculated.CrackResult.Width
+    AssertTrue stats, "audit02.canonical.noDirectOverwrite", result.StrengthResult.DirectState.StateResult Is current
+
+    Dim width As CCrackWidthResult
+    Set width = result.CrackResult.Width
+    AssertTrue stats, "audit02.canonical.widthPopulated", width.CrackWidth > 0#
+    Dim neutral As CResultMeta
+    Set neutral = New CResultMeta
+    neutral.SetNotApplicable rkCrackWidth
+    width.InitializeFromCalculator Nothing, neutral
+    AssertClose stats, "audit02.canonical.widthReset", width.CrackWidth, 0#, 0#
+    AssertClose stats, "audit02.canonical.sigmaReset", width.SigmaS, 0#, 0#
+    AssertClose stats, "audit02.canonical.spacingReset", width.CrackSpacing, 0#, 0#
+    AssertEquals stats, "audit02.canonical.rebarsReset", width.TensionRebarIds, vbNullString
+    AssertTrue stats, "audit02.canonical.widthMetaReset", width.ResultMeta.InternalStatus = rsNotApplicable
+
+    Dim stability As CStabilityResult
+    Set stability = New CStabilityResult
+    stability.Ncr2 = 123#
+    stability.PhiValue1 = 0.8
+    stability.StiffnessD2 = 456#
+    stability.PlaneBranch2 = "branch"
+    stability.PlaneApplicable2 = True
+    stability.PlanePassed2 = True
+    stability.Clear
+    AssertClose stats, "audit02.canonical.stabilityNcrReset", stability.Ncr2, 0#, 0#
+    AssertClose stats, "audit02.canonical.stabilityPhiReset", stability.PhiValue1, 0#, 0#
+    AssertClose stats, "audit02.canonical.stabilityDReset", stability.StiffnessD2, 0#, 0#
+    AssertEquals stats, "audit02.canonical.stabilityBranchReset", stability.PlaneBranch2, vbNullString
+    AssertTrue stats, "audit02.canonical.stabilityFlagsReset", Not stability.PlaneApplicable2 And Not stability.PlanePassed2
+    AssertEquals stats, "audit02.canonical.stabilityStatusReset", stability.Status, "N/A"
+    Set detached = stability.Meta
+    detached.SetResult rsInternalError, rcInternalError, rkStability, "Изменение внешней копии."
+    AssertEquals stats, "audit02.canonical.stabilityMetaIsolated", stability.Status, "N/A"
+
+    result.Clear "LambdaN"
+    AssertTrue stats, "audit02.canonical.clearNoState", result.StrengthResult.DirectState.StateResult Is Nothing
+    AssertTrue stats, "audit02.canonical.clearRepository", result.StateRepository.StateCount = 0
+    AssertClose stats, "audit02.canonical.clearWidth", result.CrackResult.Width.CrackWidth, 0#, 0#
+    AssertEquals stats, "audit02.canonical.clearStatus", result.Status, "N/A"
 End Sub
 
 Private Function RectangleRebars(ByVal geom As ISectionGeometry) As CRebarLayout
@@ -4958,8 +5055,8 @@ Private Function SP35TableNultForCircle(ByVal diameter As Double, ByVal barCount
     batch.AddCombination "SP35_NULT_AREA", -100000#, 0#, 0#, "PR1", "sp35 nult area"
     batch.Execute
 
-    phiValue = ActiveStabilityValue(batch.StabilityPhiValue1(1), batch.StabilityPhiValue2(1))
-    SP35TableNultForCircle = ActiveStabilityValue(batch.StabilityNultimate1(1), batch.StabilityNultimate2(1))
+    phiValue = ActiveStabilityValue(batch.ResultAt(1).StabilityResult.PhiValue1, batch.ResultAt(1).StabilityResult.PhiValue2)
+    SP35TableNultForCircle = ActiveStabilityValue(batch.ResultAt(1).StabilityResult.Nultimate1, batch.ResultAt(1).StabilityResult.Nultimate2)
 End Function
 
 ' Запускает расчет по искусственной таблице 7.21 и возвращает phi_m.
@@ -4991,7 +5088,7 @@ Private Function SP35InterpolatedPhiM(ByVal q As Double) As Double
     batch.AddCombination "SP35_INTERP", -100000#, 0#, 0#, "PR1", "sp35 interpolation"
     batch.Execute
 
-    SP35InterpolatedPhiM = ActiveStabilityValue(batch.StabilityPhiM1(1), batch.StabilityPhiM2(1))
+    SP35InterpolatedPhiM = ActiveStabilityValue(batch.ResultAt(1).StabilityResult.PhiM1, batch.ResultAt(1).StabilityResult.PhiM2)
 End Function
 
 ' Искусственная таблица 7.21 с двумя строками по l0/i = 10 и 20.
@@ -5099,9 +5196,9 @@ Public Function RunAudit02OffAxialDiagnostic() As String
         "PR1", "Off axial diagnostic", ChrW$(&H3BB) & "*N"
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.Execute
-    RunAudit02OffAxialDiagnostic = "STATUS: " & batch.CapacityStatus(1) & vbCrLf & _
-        batch.StrengthResult(1).Capacity.ResultMeta.ResultComment & vbCrLf & _
-        batch.StrengthResult(1).Capacity.DiagnosticLog
+    RunAudit02OffAxialDiagnostic = "STATUS: " & batch.ResultAt(1).StrengthResult.Capacity.Status & vbCrLf & _
+        batch.ResultAt(1).StrengthResult.Capacity.ResultMeta.ResultComment & vbCrLf & _
+        batch.ResultAt(1).StrengthResult.Capacity.DiagnosticLog
 Restore:
     For i = 0 To 4
         SetSystemSetting CStr(keys(i)), previous(i)
@@ -5134,9 +5231,9 @@ Public Function RunAudit02FormationDiagnostic() As String
     Set batch.ExecutionReport = report
     batch.AddCombination "AUDIT02_FORMATION", 20# * 9806.65, 0#, 0#, "PR2", "Formation diagnostic"
     batch.Execute
-    RunAudit02FormationDiagnostic = "STATUS: " & batch.CrackStatus(1) & vbCrLf & _
-        MetaDebugText(batch.CrackFormationMeta(1)) & vbCrLf & _
-        batch.CrackResult(1).Formation.DiagnosticLog
+    RunAudit02FormationDiagnostic = "STATUS: " & batch.ResultAt(1).NormalCrackStatus & vbCrLf & _
+        MetaDebugText(batch.ResultAt(1).CrackFormationMeta) & vbCrLf & _
+        batch.ResultAt(1).CrackResult.Formation.DiagnosticLog
 Restore:
     SetSystemSetting "General.ExecutionReportEnabled", oldReport
     Exit Function

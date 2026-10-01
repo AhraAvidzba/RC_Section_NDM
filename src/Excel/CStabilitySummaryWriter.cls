@@ -416,17 +416,12 @@ Private Function OutputDataOffset(ByVal batch As CBatchSectionCalculator, ByVal 
     If OutputDataOffset > dataRows Then OutputDataOffset = dataRows
 End Function
 
-' Возвращает внешний статус устойчивости по ResultMeta. Текстовый fallback нужен
-' только для неполных тестовых результатов, где meta явно не создана.
+' Возвращает внешний статус канонической устойчивости через общую policy.
 Private Function StabilityStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal policy As CBatchStatusPolicy) As String
     Dim meta As CResultMeta
-    Set meta = batch.StabilityMeta(index)
-    If Not meta Is Nothing Then
-        StabilityStatusText = policy.StatusFromMeta(meta)
-    Else
-        StabilityStatusText = policy.DisplayStatus(batch.StabilityStatus(index))
-    End If
+    Set meta = batch.ResultAt(index).StabilityMeta
+    StabilityStatusText = policy.StatusFromMeta(meta)
 End Function
 
 ' Возвращает готовое пользовательское пояснение из ResultMeta блока.
@@ -444,42 +439,42 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
     Dim statusText As String
     statusText = StabilityStatusText(batch, index, policy)
     data(rowIndex, 1) = batch.CombinationID(index)
-    data(rowIndex, 2) = MetaComment(batch.StabilityMeta(index))
+    data(rowIndex, 2) = MetaComment(batch.ResultAt(index).StabilityMeta)
     data(rowIndex, 3) = statusText
     PutDefaultStatusCells data, rowIndex, policy.NotApplicable
     If statusText = policy.NotApplicable Then Exit Sub
     If Not policy.IsFinished(statusText) Then Exit Sub
 
-    data(rowIndex, 4) = OptionalValue(batch.StabilityEta1(index))
-    data(rowIndex, 5) = OptionalValue(batch.StabilityEta2(index))
-    data(rowIndex, 6) = OutputForce(batch.StabilityDesignN(index), units)
-    data(rowIndex, 7) = OutputMomentMagnitude(batch.StabilityDesignMoment1(index), units)
-    data(rowIndex, 8) = OutputMomentMagnitude(batch.StabilityDesignMoment2(index), units)
-    data(rowIndex, 9) = OutputForce(batch.StabilityDesignN(index), units)
-    data(rowIndex, 10) = OutputMx(batch.StabilityDesignMx(index), units)
-    data(rowIndex, 11) = OutputMy(batch.StabilityDesignMy(index), units)
-    data(rowIndex, 12) = OutputForce(batch.StabilityDesignN(index), units)
+    data(rowIndex, 4) = OptionalValue(batch.ResultAt(index).StabilityResult.Eta1)
+    data(rowIndex, 5) = OptionalValue(batch.ResultAt(index).StabilityResult.Eta2)
+    data(rowIndex, 6) = OutputForce(batch.ResultAt(index).StabilityResult.DesignN, units)
+    data(rowIndex, 7) = OutputMomentMagnitude(batch.ResultAt(index).StabilityResult.DesignMoment1, units)
+    data(rowIndex, 8) = OutputMomentMagnitude(batch.ResultAt(index).StabilityResult.DesignMoment2, units)
+    data(rowIndex, 9) = OutputForce(batch.ResultAt(index).StabilityResult.DesignN, units)
+    data(rowIndex, 10) = OutputMx(batch.ResultAt(index).StabilityResult.DesignMx, units)
+    data(rowIndex, 11) = OutputMy(batch.ResultAt(index).StabilityResult.DesignMy, units)
+    data(rowIndex, 12) = OutputForce(batch.ResultAt(index).StabilityResult.DesignN, units)
     data(rowIndex, 13) = OutputMx(batch.StabilityLoadPointMx(index), units)
     data(rowIndex, 14) = OutputMy(batch.StabilityLoadPointMy(index), units)
 
-    data(rowIndex, 16) = OutputForce(batch.StabilityDesignN(index), units)
-    data(rowIndex, 17) = OutputMomentMagnitude(batch.StabilityMoment1(index), units)
-    data(rowIndex, 18) = OutputMomentMagnitude(batch.StabilityMoment2(index), units)
-    data(rowIndex, 19) = OutputSignedCompressionForce(batch.StabilitySustainedN(index), units)
-    data(rowIndex, 20) = OutputMomentMagnitude(batch.StabilitySustainedMoment1(index), units)
-    data(rowIndex, 21) = OutputMomentMagnitude(batch.StabilitySustainedMoment2(index), units)
-    data(rowIndex, 22) = OutputLength(batch.StabilityDepth1(index), units)
-    data(rowIndex, 23) = OutputLength(batch.StabilityDepth2(index), units)
-    data(rowIndex, 24) = OutputLength(batch.StabilityRadius1(index), units)
-    data(rowIndex, 25) = OutputLength(batch.StabilityRadius2(index), units)
-    data(rowIndex, 26) = OutputLength(batch.StabilityEffectiveLength1(index), units)
-    data(rowIndex, 27) = OutputLength(batch.StabilityEffectiveLength2(index), units)
+    data(rowIndex, 16) = OutputForce(batch.ResultAt(index).StabilityResult.DesignN, units)
+    data(rowIndex, 17) = OutputMomentMagnitude(batch.ResultAt(index).StabilityResult.Moment1, units)
+    data(rowIndex, 18) = OutputMomentMagnitude(batch.ResultAt(index).StabilityResult.Moment2, units)
+    data(rowIndex, 19) = OutputSignedCompressionForce(batch.ResultAt(index).StabilityResult.SustainedN, units)
+    data(rowIndex, 20) = OutputMomentMagnitude(batch.ResultAt(index).StabilityResult.SustainedMoment1, units)
+    data(rowIndex, 21) = OutputMomentMagnitude(batch.ResultAt(index).StabilityResult.SustainedMoment2, units)
+    data(rowIndex, 22) = OutputLength(batch.ResultAt(index).StabilityResult.Depth1, units)
+    data(rowIndex, 23) = OutputLength(batch.ResultAt(index).StabilityResult.Depth2, units)
+    data(rowIndex, 24) = OutputLength(batch.ResultAt(index).StabilityResult.Radius1, units)
+    data(rowIndex, 25) = OutputLength(batch.ResultAt(index).StabilityResult.Radius2, units)
+    data(rowIndex, 26) = OutputLength(batch.ResultAt(index).StabilityResult.EffectiveLength1, units)
+    data(rowIndex, 27) = OutputLength(batch.ResultAt(index).StabilityResult.EffectiveLength2, units)
 
-    If StrComp(batch.StabilityCode(index), "SP35", vbTextCompare) = 0 Then
-        data(rowIndex, 29) = OptionalValue(MaxDouble(batch.StabilityPhiP1(index), batch.StabilityPhiP2(index)))
+    If StrComp(batch.ResultAt(index).StabilityResult.Code, "SP35", vbTextCompare) = 0 Then
+        data(rowIndex, 29) = OptionalValue(MaxDouble(batch.ResultAt(index).StabilityResult.PhiP1, batch.ResultAt(index).StabilityResult.PhiP2))
         PutSP35PlaneValues data, rowIndex, SP35_PLANE1_FIRST, batch, index, 1, units
         PutSP35PlaneValues data, rowIndex, SP35_PLANE2_FIRST, batch, index, 2, units
-    ElseIf StrComp(batch.StabilityCode(index), "SP63", vbTextCompare) = 0 Then
+    ElseIf StrComp(batch.ResultAt(index).StabilityResult.Code, "SP63", vbTextCompare) = 0 Then
         PutSP63PlaneValues data, rowIndex, SP63_PLANE1_FIRST, batch, index, 1, units
         PutSP63PlaneValues data, rowIndex, SP63_PLANE2_FIRST, batch, index, 2, units
     End If
@@ -510,7 +505,7 @@ Private Sub PutSP35PlaneValues(ByRef data() As Variant, ByVal rowIndex As Long, 
         data(rowIndex, firstColumn + 10) = OptionalValue(PlanePhiM(batch, index, planeIndex))
         data(rowIndex, firstColumn + 11) = OptionalValue(PlanePhiValue(batch, index, planeIndex))
         data(rowIndex, firstColumn + 12) = OptionalCompressionForce(PlaneNultimate(batch, index, planeIndex), units)
-        data(rowIndex, firstColumn + 13) = RatioLimitToCompression(PlaneNultimate(batch, index, planeIndex), batch.StabilityDesignN(index))
+        data(rowIndex, firstColumn + 13) = RatioLimitToCompression(PlaneNultimate(batch, index, planeIndex), batch.ResultAt(index).StabilityResult.DesignN)
         data(rowIndex, firstColumn + 14) = PlaneStatus(batch, index, planeIndex)
     End If
 End Sub
@@ -529,7 +524,7 @@ Private Sub PutSP63PlaneValues(ByRef data() As Variant, ByVal rowIndex As Long, 
     data(rowIndex, firstColumn + 7) = OutputStiffness(PlaneStiffnessD(batch, index, planeIndex), units)
     data(rowIndex, firstColumn + 8) = OptionalCompressionForce(PlaneNcr(batch, index, planeIndex), units)
     data(rowIndex, firstColumn + 9) = OptionalValue(PlaneEta(batch, index, planeIndex))
-    data(rowIndex, firstColumn + 10) = RatioLimitToCompression(PlaneNcr(batch, index, planeIndex), batch.StabilityDesignN(index))
+    data(rowIndex, firstColumn + 10) = RatioLimitToCompression(PlaneNcr(batch, index, planeIndex), batch.ResultAt(index).StabilityResult.DesignN)
     data(rowIndex, firstColumn + 11) = PlaneStatus(batch, index, planeIndex)
 End Sub
 
@@ -578,10 +573,7 @@ End Sub
 
 ' Задает рабочие ширины столбцов Results для детального блока устойчивости.
 Private Sub SetColumnWidths(ByVal target As Object)
-    Dim columnIndex As Long
-    For columnIndex = 1 To TOTAL_COLUMNS
-        target.Worksheet.Columns(target.Column + columnIndex - 1).ColumnWidth = RESULTS_COLUMN_WIDTH
-    Next columnIndex
+    target.Columns.ColumnWidth = RESULTS_COLUMN_WIDTH
 End Sub
 
 ' Оформляет один смысловой блок и не трогает пустой столбец-разделитель рядом.
@@ -706,97 +698,97 @@ End Function
 ' плоскости из batch-результата. Они держат разметку таблицы независимой от
 ' конкретных имен свойств Stability...1/Stability...2.
 Private Function PlaneApplicable(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Boolean
-    If planeIndex = 1 Then PlaneApplicable = batch.StabilityPlaneApplicable1(index) Else PlaneApplicable = batch.StabilityPlaneApplicable2(index)
+    If planeIndex = 1 Then PlaneApplicable = batch.ResultAt(index).StabilityResult.PlaneApplicable1 Else PlaneApplicable = batch.ResultAt(index).StabilityResult.PlaneApplicable2
 End Function
 
 ' Возвращает итог PASS/FAIL одной плоскости устойчивости.
 Private Function PlanePassed(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Boolean
-    If planeIndex = 1 Then PlanePassed = batch.StabilityPlanePassed1(index) Else PlanePassed = batch.StabilityPlanePassed2(index)
+    If planeIndex = 1 Then PlanePassed = batch.ResultAt(index).StabilityResult.PlanePassed1 Else PlanePassed = batch.ResultAt(index).StabilityResult.PlanePassed2
 End Function
 
 ' Возвращает расчетную ветвь одной плоскости: SP35-table, SP35-eta или SP63.
 Private Function PlaneBranch(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As String
-    If planeIndex = 1 Then PlaneBranch = batch.StabilityPlaneBranch1(index) Else PlaneBranch = batch.StabilityPlaneBranch2(index)
+    If planeIndex = 1 Then PlaneBranch = batch.ResultAt(index).StabilityResult.PlaneBranch1 Else PlaneBranch = batch.ResultAt(index).StabilityResult.PlaneBranch2
 End Function
 
 ' Возвращает критическую силу Ncr одной плоскости.
 Private Function PlaneNcr(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
-    If planeIndex = 1 Then PlaneNcr = batch.StabilityNcr1(index) Else PlaneNcr = batch.StabilityNcr2(index)
+    If planeIndex = 1 Then PlaneNcr = batch.ResultAt(index).StabilityResult.Ncr1 Else PlaneNcr = batch.ResultAt(index).StabilityResult.Ncr2
 End Function
 
 ' Возвращает табличную несущую силу Nult для ветви СП 35 ec <= r.
 Private Function PlaneNultimate(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
-    If planeIndex = 1 Then PlaneNultimate = batch.StabilityNultimate1(index) Else PlaneNultimate = batch.StabilityNultimate2(index)
+    If planeIndex = 1 Then PlaneNultimate = batch.ResultAt(index).StabilityResult.Nultimate1 Else PlaneNultimate = batch.ResultAt(index).StabilityResult.Nultimate2
 End Function
 
 ' Возвращает коэффициент eta одной плоскости.
 Private Function PlaneEta(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
-    If planeIndex = 1 Then PlaneEta = batch.StabilityEta1(index) Else PlaneEta = batch.StabilityEta2(index)
+    If planeIndex = 1 Then PlaneEta = batch.ResultAt(index).StabilityResult.Eta1 Else PlaneEta = batch.ResultAt(index).StabilityResult.Eta2
 End Function
 
 ' Возвращает коэффициент длительности phi_l одной плоскости.
 Private Function PlanePhiL(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
-    If planeIndex = 1 Then PlanePhiL = batch.StabilityPhiL1(index) Else PlanePhiL = batch.StabilityPhiL2(index)
+    If planeIndex = 1 Then PlanePhiL = batch.ResultAt(index).StabilityResult.PhiL1 Else PlanePhiL = batch.ResultAt(index).StabilityResult.PhiL2
 End Function
 
 ' Возвращает табличный phi_l для ветви СП 35 ec <= r.
 Private Function PlanePhiLTable(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
-    If planeIndex = 1 Then PlanePhiLTable = batch.StabilityPhiLTable1(index) Else PlanePhiLTable = batch.StabilityPhiLTable2(index)
+    If planeIndex = 1 Then PlanePhiLTable = batch.ResultAt(index).StabilityResult.PhiLTable1 Else PlanePhiLTable = batch.ResultAt(index).StabilityResult.PhiLTable2
 End Function
 
 ' Возвращает табличный phi_m для ветви СП 35 ec <= r.
 Private Function PlanePhiM(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
-    If planeIndex = 1 Then PlanePhiM = batch.StabilityPhiM1(index) Else PlanePhiM = batch.StabilityPhiM2(index)
+    If planeIndex = 1 Then PlanePhiM = batch.ResultAt(index).StabilityResult.PhiM1 Else PlanePhiM = batch.ResultAt(index).StabilityResult.PhiM2
 End Function
 
 ' Возвращает итоговый phi для табличной ветви СП 35.
 Private Function PlanePhiValue(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
-    If planeIndex = 1 Then PlanePhiValue = batch.StabilityPhiValue1(index) Else PlanePhiValue = batch.StabilityPhiValue2(index)
+    If planeIndex = 1 Then PlanePhiValue = batch.ResultAt(index).StabilityResult.PhiValue1 Else PlanePhiValue = batch.ResultAt(index).StabilityResult.PhiValue2
 End Function
 
 ' Возвращает полный эксцентриситет ec/e0 одной плоскости.
 Private Function PlaneEccentricity(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
-    If planeIndex = 1 Then PlaneEccentricity = batch.StabilityEccentricity1(index) Else PlaneEccentricity = batch.StabilityEccentricity2(index)
+    If planeIndex = 1 Then PlaneEccentricity = batch.ResultAt(index).StabilityResult.Eccentricity1 Else PlaneEccentricity = batch.ResultAt(index).StabilityResult.Eccentricity2
 End Function
 
 ' Возвращает случайный эксцентриситет ec,sl/ea одной плоскости.
 Private Function PlaneAccidentalEccentricity(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
-    If planeIndex = 1 Then PlaneAccidentalEccentricity = batch.StabilityAccidentalEcc1(index) Else PlaneAccidentalEccentricity = batch.StabilityAccidentalEcc2(index)
+    If planeIndex = 1 Then PlaneAccidentalEccentricity = batch.ResultAt(index).StabilityResult.AccidentalEcc1 Else PlaneAccidentalEccentricity = batch.ResultAt(index).StabilityResult.AccidentalEcc2
 End Function
 
 ' Возвращает гибкость l0/i одной плоскости.
 Private Function PlaneSlenderness(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
-    If planeIndex = 1 Then PlaneSlenderness = batch.StabilitySlenderness1(index) Else PlaneSlenderness = batch.StabilitySlenderness2(index)
+    If planeIndex = 1 Then PlaneSlenderness = batch.ResultAt(index).StabilityResult.Slenderness1 Else PlaneSlenderness = batch.ResultAt(index).StabilityResult.Slenderness2
 End Function
 
 ' Возвращает ядровое расстояние r в направлении эксцентриситета.
 Private Function PlaneCoreDistance(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
-    If planeIndex = 1 Then PlaneCoreDistance = batch.StabilityCoreDistance1(index) Else PlaneCoreDistance = batch.StabilityCoreDistance2(index)
+    If planeIndex = 1 Then PlaneCoreDistance = batch.ResultAt(index).StabilityResult.CoreDistance1 Else PlaneCoreDistance = batch.ResultAt(index).StabilityResult.CoreDistance2
 End Function
 
 ' Возвращает расчетную delta одной плоскости.
 Private Function PlaneDelta(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
-    If planeIndex = 1 Then PlaneDelta = batch.StabilityDelta1(index) Else PlaneDelta = batch.StabilityDelta2(index)
+    If planeIndex = 1 Then PlaneDelta = batch.ResultAt(index).StabilityResult.Delta1 Else PlaneDelta = batch.ResultAt(index).StabilityResult.Delta2
 End Function
 
 ' Возвращает коэффициент kb для ветви СП 63.
 Private Function PlaneKb(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
-    If planeIndex = 1 Then PlaneKb = batch.StabilityKb1(index) Else PlaneKb = batch.StabilityKb2(index)
+    If planeIndex = 1 Then PlaneKb = batch.ResultAt(index).StabilityResult.Kb1 Else PlaneKb = batch.ResultAt(index).StabilityResult.Kb2
 End Function
 
 ' Возвращает коэффициент ks для ветви СП 63.
 Private Function PlaneKs(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
-    If planeIndex = 1 Then PlaneKs = batch.StabilityKs1(index) Else PlaneKs = batch.StabilityKs2(index)
+    If planeIndex = 1 Then PlaneKs = batch.ResultAt(index).StabilityResult.Ks1 Else PlaneKs = batch.ResultAt(index).StabilityResult.Ks2
 End Function
 
 ' Возвращает жесткость D одной плоскости.
 Private Function PlaneStiffnessD(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
-    If planeIndex = 1 Then PlaneStiffnessD = batch.StabilityStiffnessD1(index) Else PlaneStiffnessD = batch.StabilityStiffnessD2(index)
+    If planeIndex = 1 Then PlaneStiffnessD = batch.ResultAt(index).StabilityResult.StiffnessD1 Else PlaneStiffnessD = batch.ResultAt(index).StabilityResult.StiffnessD2
 End Function
 
 ' Возвращает проверочный запас одной плоскости.
 Private Function PlaneReserve(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
-    If planeIndex = 1 Then PlaneReserve = batch.StabilityReserve1(index) Else PlaneReserve = batch.StabilityReserve2(index)
+    If planeIndex = 1 Then PlaneReserve = batch.ResultAt(index).StabilityResult.Reserve1 Else PlaneReserve = batch.ResultAt(index).StabilityResult.Reserve2
 End Function
 
 ' Возвращает пустую ячейку для численного нуля, чтобы summary не шумела

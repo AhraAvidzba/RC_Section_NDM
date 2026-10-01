@@ -1,0 +1,11 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 162F9548027FF776610945BA6EA79C0FCAA836432EAAB0948100172D8AF1D44C
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d70f4abc89fe435facc65c9b6a989829\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunBatchCalculationTests =====
+RUN: TestBatchOneCombination
+OK: batch.one.count
+OK: batch.one.governing
+RUNTIME ERROR: 0; source=; description=
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

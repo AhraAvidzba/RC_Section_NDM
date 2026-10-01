@@ -1,0 +1,30 @@
+True
+RESTORED: Capacity.InitialLambda; $B$47:$G$47
+True
+RESTORED: Capacity.MaxLambda; $B$45:$G$45
+True
+RESTORED: Capacity.ToleranceLambda; $B$48:$G$48
+True
+RESTORED: Capacity.MaxRetries; $B$49:$G$49
+True
+RESTORED: Capacity.BaseLoadSteps; $B$50:$G$50
+True
+RESTORED: Capacity.SolverMaxIterations; $B$41:$G$41
+True
+RESTORED: SLS.Crack.Allowable; $B$75:$G$75
+True
+RESTORED: SLS.Crack.TensionZoneMode; $B$78:$G$78
+True
+RESTORED: SLS.Crack.CoverDistanceMode; $B$79:$G$79
+True
+RESTORED: SLS.Crack.Phi1; $B$80:$G$80
+True
+RESTORED: SLS.Crack.Phi2; $B$81:$G$81
+True
+RESTORED: SLS.Crack.Phi3Mode; $B$82:$G$82
+True
+RESTORED: SLS.Crack.Phi3; $B$83:$G$83
+True
+RESTORED: SLS.Crack.PsiMode; $B$84:$G$84
+True
+RESTORED: SLS.Crack.PsiS; $B$86:$G$86

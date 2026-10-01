@@ -1,0 +1,6 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: E6DBCA3E23F02EDCECA52DC858C71946A80F58130285015B888F2943DBCC4AE1
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_519a9a71978945cb89d3043eff537602\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

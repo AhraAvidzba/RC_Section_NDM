@@ -1,0 +1,14 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 2022B8435210CA142ACA897233BC0A738AB2E646BC8381E221613FD4303D581B
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e1e709b908dc4bad9badcfb994a79b6d\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+FAIL: ui.autocad.reference.converged
+FAIL: ui.units.capacity.initialLambda; actual=1; expected=-
+FAIL: ui.units.capacity.toleranceLambda; actual=0.01; expected=-
+FAIL: ui.units.capacity.maxRetries; actual=0; expected=шт
+FAIL: ui.units.capacity.baseLoadSteps; actual=1; expected=шт
+FAIL: ui.units.capacity.maxLambda; actual=1024; expected=-
+FAIL: ui.units.capacity.solverIterations; actual=60; expected=шт
+TOTAL_WORKBOOK_UI: passed=301; failed=7; elapsedSec=49.421875
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

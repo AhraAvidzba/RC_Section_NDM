@@ -26,37 +26,54 @@ Public Function RunWorkbookInterfaceTests() As String
     Dim t0 As Double
     t0 = Timer
 
+    AppendLine stats, "RUN: TestButtons"
     TestButtons stats
     TestLoadCombinationsOnConfig stats
+    AppendLine stats, "RUN: TestSingleCombinationSkipsBlankRows"
     TestSingleCombinationSkipsBlankRows stats
     TestLoadCombinationRangeMinimumRows stats
+    AppendLine stats, "RUN: TestPartialCombinationIsInvalid"
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats
     TestAutoCADSourceRequiresManualImport stats
     TestAutoCADImportButtonRejectsGeneratedSource stats
     TestAutoCADImporterTreatsDrawingUnitsAsMillimeters stats
+    AppendLine stats, "RUN: TestAutoCADPreviewWritesAndDrawsBoundsDimensions"
     TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
     TestAnnotationDimensionTextRoundsInMillimeters stats
     TestPlotClearsLegacyWorksheetShapes stats
     TestPlotOverlayCoordinatesMatchResults stats
+    AppendLine stats, "RUN: TestGeneratedSourceDoesNotReuseAutoCADPreview"
     TestGeneratedSourceDoesNotReuseAutoCADPreview stats
+    AppendLine stats, "RUN: TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC"
     TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC stats
+    AppendLine stats, "RUN: TestProfileDrivenPlotUsesSnapshotState"
     TestProfileDrivenPlotUsesSnapshotState stats
+    AppendLine stats, "RUN: TestMissingProfileStateDrawsGeometryOnly"
     TestMissingProfileStateDrawsGeometryOnly stats
     TestAutoCADCalculationMessageUsesSavedGeometry stats
     TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped stats
+    AppendLine stats, "RUN: TestCircleWorkbookRunWritesResults"
     TestCircleWorkbookRunWritesResults stats
+    AppendLine stats, "RUN: TestThirtyCombinationsWithFiveStatesWriteSnapshot"
     TestThirtyCombinationsWithFiveStatesWriteSnapshot stats
     TestDynamicLoadCombinationRangeAndLayoutGuard stats
+    AppendLine stats, "RUN: TestExecutionReportFile"
     TestExecutionReportFile stats
     TestExcelApplicationStateGuardRestoresSettings stats
+    AppendLine stats, "RUN: TestRectSetWorkbookRunWritesResults"
     TestRectSetWorkbookRunWritesResults stats
+    AppendLine stats, "RUN: TestRectSetMomentUltimateStrainWorkbookPath"
     TestRectSetMomentUltimateStrainWorkbookPath stats
     TestStrengthSummaryUsesOutputCurvatureUnit stats
+    AppendLine stats, "RUN: TestRectSetPureBendingUltimateStrainWorkbookPath"
     TestRectSetPureBendingUltimateStrainWorkbookPath stats
+    AppendLine stats, "RUN: TestRectSetPureBendingDirectStateWorkbookPath"
     TestRectSetPureBendingDirectStateWorkbookPath stats
+    AppendLine stats, "RUN: TestRectSetAxialTensionExtensionFromWorkbookSettings"
     TestRectSetAxialTensionExtensionFromWorkbookSettings stats
     TestAutoCADExportUsesSharedLoadReference stats
+    AppendLine stats, "RUN: TestGoverningCombinationWritesDetailedResults"
     TestGoverningCombinationWritesDetailedResults stats
     TestCapacitySearchMethodValidation stats
     TestSolverToleranceUnitLabels stats
@@ -320,7 +337,8 @@ Private Sub TestAutoCADExportUsesSharedLoadReference(ByRef stats As TUiTestStats
     batch.ApplyLoadReference props.CentroidX, props.CentroidY, props.CentroidX, props.CentroidY
     batch.Execute
 
-    AssertTrue stats, "ui.autocad.reference.converged", batch.StateConverged(1)
+    AssertTrue stats, "ui.autocad.reference.converged", _
+        batch.ResultAt(1).StateRepository.FindState(sstCrackedState).Converged
     AssertTrue stats, "ui.autocad.reference.point", Abs(batch.LoadReferenceX) > 0.000001 Or Abs(batch.LoadReferenceY) > 0.000001
     AssertClose stats, "ui.autocad.reference.concreteCenterX", props.CentroidX, batch.LoadReferenceX, 0.000001
     AssertClose stats, "ui.autocad.reference.concreteCenterY", props.CentroidY, batch.LoadReferenceY, 0.000001
@@ -420,7 +438,7 @@ Private Sub TestPartialCombinationIsInvalid(ByRef stats As TUiTestStats)
     batch.Execute
 
     AssertTrue stats, "ui.loads.partial.count", batch.Count = 1
-    AssertTrue stats, "ui.loads.partial.invalid", batch.Status(1) = "InputErr"
+    AssertTrue stats, "ui.loads.partial.invalid", batch.ResultAt(1).Status = "InputErr"
 
     Dim message As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
@@ -993,7 +1011,7 @@ Private Sub TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped(ByRef stats As T
 
     AssertTrue stats, "ui.loads.blankMoment.count", batch.Count = 1
     AssertClose stats, "ui.loads.blankMoment.myZero", batch.UserMy(1), 0#, 0.0000001
-    AssertTrue stats, "ui.loads.blankMoment.valid", InStr(1, batch.Status(1), "InputErr", vbTextCompare) = 0
+    AssertTrue stats, "ui.loads.blankMoment.valid", InStr(1, batch.ResultAt(1).Status, "InputErr", vbTextCompare) = 0
 End Sub
 
 ' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
@@ -3894,10 +3912,153 @@ End Sub
 
 Private Sub AppendLine(ByRef stats As TUiTestStats, ByVal text As String)
     stats.Report = stats.Report & text & vbCrLf
+    ' ДЛЯ ТЕСТОВ: сохраняем текущий этап вне COM-вызова. При зависании или
+    ' ошибке Excel runner сможет определить тест, не обращаясь к busy Excel.
+    If Left$(text, 5) = "RUN: " Then
+        Dim stream As Object
+        Set stream = CreateObject("Scripting.FileSystemObject").OpenTextFile( _
+            ThisWorkbook.Path & "\RC_NDM_ui_test_progress.txt", 8, True, -1)
+        stream.WriteLine Format$(Now, "yyyy-mm-dd hh:nn:ss") & " " & text
+        stream.Close
+    End If
 End Sub
 
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Изолирует один полный расчет книги от остальных UI-сценариев. Диагностика
+' используется для поиска роста памяти; основной regression-набор не заменяет.
+Public Function RunAudit02SingleCalculationDiagnostic() As String
+    On Error GoTo Failed
+    Dim stats As TUiTestStats
+    SetSystemSetting "General.ExecutionReportEnabled", "No"
+    TestCircleWorkbookRunWritesResults stats
+    RunAudit02SingleCalculationDiagnostic = stats.Report & _
+        "TOTAL_UI_DIAGNOSTIC: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    Exit Function
+Failed:
+    RunAudit02SingleCalculationDiagnostic = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Изолирует запись execution_report на свежей книге, чтобы отличить расходы
+' отчета от накопления данных между последовательными UI-расчетами.
+Public Function RunAudit02ReportDiagnostic() As String
+    On Error GoTo Failed
+    Dim stats As TUiTestStats
+    TestExecutionReportFile stats
+    RunAudit02ReportDiagnostic = stats.Report & _
+        "TOTAL_UI_DIAGNOSTIC: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    Exit Function
+Failed:
+    RunAudit02ReportDiagnostic = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Повторяет расчетную часть workbook-сценария без writer-ов и схемы.
+' Возвращает счетчик solve и время; физических ожиданий не изменяет.
+Public Function RunAudit02BatchOnlyDiagnostic() As String
+    RunAudit02BatchOnlyDiagnostic = RunAudit02WorkbookPhases(False)
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Измеряет последовательные writer-ы на одинаковом каноническом результате.
+' Каждая отметка содержит время и память единственного тестового Excel.
+Public Function RunAudit02WriterPhasesDiagnostic() As String
+    RunAudit02WriterPhasesDiagnostic = RunAudit02WorkbookPhases(True)
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Общая подготовка независимого диагностического сценария без основного UI.
+Private Function RunAudit02WorkbookPhases(ByVal writeResults As Boolean) As String
+    On Error GoTo Failed
+    PrepareCircleInput
+    SetSystemSetting "General.ExecutionReportEnabled", "No"
+    Dim started As Double
+    started = Timer
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+    Dim materials As CMaterialModelProvider
+    Set materials = New CMaterialModelProvider
+    materials.Initialize settings, units
+    Dim section As CSectionModel
+    Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateConcrete section
+    Dim batch As CBatchSectionCalculator
+    Set batch = New CBatchSectionCalculator
+    batch.Initialize section, materials
+    batch.ApplySettings settings, units
+    Dim profiles As CCalculationProfileCatalog
+    Set profiles = New CCalculationProfileCatalog
+    profiles.LoadFromWorkbook ThisWorkbook
+    Set batch.ProfileCatalog = profiles
+    Dim reader As CLoadCombinationReader
+    Set reader = New CLoadCombinationReader
+    reader.LoadFromWorkbook ThisWorkbook, batch, units
+    batch.ApplyLoadReference props.CentroidX, props.CentroidY, props.CentroidX, props.CentroidY
+    batch.Execute
+    RunAudit02WorkbookPhases = "INFO: batchOnly; status=" & batch.ResultAt(1).Status & _
+        "; elapsedSec=" & FormatNumberInvariant(Timer - started) & "; solves=" & CStr(batch.SolverCallCount)
+    If writeResults Then
+        Dim stats As TUiTestStats
+        AppendLine stats, "RUN: batch " & Audit02ExcelMemory()
+        Dim strengthWriter As CStrengthSummaryWriter
+        Set strengthWriter = New CStrengthSummaryWriter
+        strengthWriter.WriteSummary ThisWorkbook, batch, units
+        AppendLine stats, "RUN: strength " & Audit02ExcelMemory()
+        Dim crackWriter As CCrackSummaryWriter
+        Set crackWriter = New CCrackSummaryWriter
+        crackWriter.WriteSummary ThisWorkbook, batch, units
+        AppendLine stats, "RUN: crack " & Audit02ExcelMemory()
+        Dim stabilityWriter As CStabilitySummaryWriter
+        Set stabilityWriter = New CStabilitySummaryWriter
+        stabilityWriter.WriteSummary ThisWorkbook, batch, units
+        AppendLine stats, "RUN: stability " & Audit02ExcelMemory()
+        Dim summaryWriter As CBatchResultWriter
+        Set summaryWriter = New CBatchResultWriter
+        summaryWriter.WriteSummary ThisWorkbook, batch, units, section
+        AppendLine stats, "RUN: summary " & Audit02ExcelMemory()
+        Dim ndmWriter As CNDMResultsWriter
+        Set ndmWriter = New CNDMResultsWriter
+        ndmWriter.WriteResults ThisWorkbook, section, materials, batch, units
+        AppendLine stats, "RUN: NDM " & Audit02ExcelMemory()
+        RunAudit02WorkbookPhases = RunAudit02WorkbookPhases & vbCrLf & stats.Report
+    End If
+    Exit Function
+Failed:
+    RunAudit02WorkbookPhases = "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Читает память процесса через WMI, не меняя настройки или состояние Excel.
+Private Function Audit02ExcelMemory() As String
+    Dim process As Object
+    For Each process In GetObject("winmgmts:").ExecQuery( _
+            "SELECT WorkingSetSize, PrivatePageCount FROM Win32_Process WHERE Name='EXCEL.EXE'")
+        Audit02ExcelMemory = "workingSet=" & CStr(process.WorkingSetSize) & "; privateBytes=" & CStr(process.PrivatePageCount)
+    Next process
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Записывает численные Results без обновления схемы; нужна для локализации
+' роста памяти между расчетом, табличным выводом и построением Chart.
+Public Function RunAudit02NoPlotDiagnostic() As String
+    On Error GoTo Failed
+    PrepareCircleInput
+    SetSystemSetting "General.ExecutionReportEnabled", "No"
+    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
+    RunAudit02NoPlotDiagnostic = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    Exit Function
+Failed:
+    RunAudit02NoPlotDiagnostic = "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 
 

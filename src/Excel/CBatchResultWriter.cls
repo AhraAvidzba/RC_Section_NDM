@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -450,17 +450,17 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
 
     data(rowIndex, SUM_COL_ID) = batch.CombinationID(index)
     data(rowIndex, SUM_COL_COMMENT) = batch.CombinationName(index)
-    data(rowIndex, SUM_COL_RESULT_COMMENT) = MetaComment(batch.OverallMeta(index))
-    data(rowIndex, SUM_COL_OVERALL_STATUS) = MetaStatus(policy, batch.OverallMeta(index), batch.OverallStatus(index))
+    data(rowIndex, SUM_COL_RESULT_COMMENT) = MetaComment(batch.ResultAt(index).OverallMeta)
+    data(rowIndex, SUM_COL_OVERALL_STATUS) = MetaStatus(policy, batch.ResultAt(index).OverallMeta)
 
     PutStatusCell data, rowIndex, SUM_COL_STATUS_STRAIN, policy, _
-        batch.StrengthDirectStateRequested(index), batch.DirectStateMeta(index), batch.DirectStateStatus(index)
+        batch.StrengthDirectStateRequested(index), batch.ResultAt(index).DirectStateMeta
     PutStatusCell data, rowIndex, SUM_COL_STATUS_CAPACITY, policy, _
-        batch.StrengthCapacityRequested(index), batch.CapacityMeta(index), batch.CapacityStatus(index)
+        batch.StrengthCapacityRequested(index), batch.ResultAt(index).CapacityMeta
     PutStatusCell data, rowIndex, SUM_COL_STATUS_CRACK, policy, _
-        batch.CrackWidthRequested(index), batch.CrackWidthMeta(index), batch.CrackStatus(index)
+        batch.CrackWidthRequested(index), batch.ResultAt(index).CrackMeta
     PutStatusCell data, rowIndex, SUM_COL_STATUS_LONG_CRACK, policy, _
-        batch.CrackWidthRequested(index), batch.LongitudinalCrackMeta(index), batch.LongitudinalCrackStatus(index)
+        batch.CrackWidthRequested(index), batch.ResultAt(index).LongitudinalCrackMeta
     PutStabilityBranchStatus data, rowIndex, SUM_COL_STATUS_SP35_P1_ETA, policy, batch, index, 1, "SP35-eta"
     PutStabilityBranchStatus data, rowIndex, SUM_COL_STATUS_SP35_P1_TABLE, policy, batch, index, 1, "SP35-table"
     PutStabilityBranchStatus data, rowIndex, SUM_COL_STATUS_SP35_P2_ETA, policy, batch, index, 2, "SP35-eta"
@@ -525,8 +525,8 @@ Private Sub PutStabilityBranchStatus(ByRef data() As Variant, ByVal rowIndex As 
         ByVal planeIndex As Long, ByVal branchKey As String)
     If Not StabilityBranchApplies(batch, index, planeIndex, branchKey) Then
         data(rowIndex, columnIndex) = policy.NotApplicable
-    ElseIf Not policy.IsFinished(MetaStatus(policy, batch.StabilityMeta(index), batch.StabilityStatus(index))) Then
-        data(rowIndex, columnIndex) = MetaStatus(policy, batch.StabilityMeta(index), batch.StabilityStatus(index))
+    ElseIf Not policy.IsFinished(MetaStatus(policy, batch.ResultAt(index).StabilityMeta)) Then
+        data(rowIndex, columnIndex) = MetaStatus(policy, batch.ResultAt(index).StabilityMeta)
     ElseIf StabilityPlanePassed(batch, index, planeIndex) Then
         data(rowIndex, columnIndex) = policy.OK
     Else
@@ -539,9 +539,9 @@ Private Function StabilityBranchReserve(ByVal batch As CBatchSectionCalculator, 
         ByVal index As Long, ByVal planeIndex As Long, ByVal branchKey As String) As Double
     If Not StabilityBranchApplies(batch, index, planeIndex, branchKey) Then Exit Function
     If planeIndex = 1 Then
-        If batch.StabilityReserve1(index) > 0# Then StabilityBranchReserve = batch.StabilityReserve1(index)
+        If batch.ResultAt(index).StabilityResult.Reserve1 > 0# Then StabilityBranchReserve = batch.ResultAt(index).StabilityResult.Reserve1
     Else
-        If batch.StabilityReserve2(index) > 0# Then StabilityBranchReserve = batch.StabilityReserve2(index)
+        If batch.ResultAt(index).StabilityResult.Reserve2 > 0# Then StabilityBranchReserve = batch.ResultAt(index).StabilityResult.Reserve2
     End If
 End Function
 
@@ -554,18 +554,18 @@ Private Function StabilityBranchApplies(ByVal batch As CBatchSectionCalculator, 
     Dim applicable As Boolean
     Dim actualBranch As String
     If planeIndex = 1 Then
-        applicable = batch.StabilityPlaneApplicable1(index)
-        actualBranch = batch.StabilityPlaneBranch1(index)
+        applicable = batch.ResultAt(index).StabilityResult.PlaneApplicable1
+        actualBranch = batch.ResultAt(index).StabilityResult.PlaneBranch1
     Else
-        applicable = batch.StabilityPlaneApplicable2(index)
-        actualBranch = batch.StabilityPlaneBranch2(index)
+        applicable = batch.ResultAt(index).StabilityResult.PlaneApplicable2
+        actualBranch = batch.ResultAt(index).StabilityResult.PlaneBranch2
     End If
     If Not applicable Then Exit Function
 
     If StrComp(branchKey, "SP63", vbTextCompare) = 0 Then
-        StabilityBranchApplies = (StrComp(batch.StabilityCode(index), "SP63", vbTextCompare) = 0)
+        StabilityBranchApplies = (StrComp(batch.ResultAt(index).StabilityResult.Code, "SP63", vbTextCompare) = 0)
     Else
-        StabilityBranchApplies = (StrComp(batch.StabilityCode(index), "SP35", vbTextCompare) = 0 And _
+        StabilityBranchApplies = (StrComp(batch.ResultAt(index).StabilityResult.Code, "SP35", vbTextCompare) = 0 And _
             StrComp(actualBranch, branchKey, vbTextCompare) = 0)
     End If
 End Function
@@ -574,32 +574,26 @@ End Function
 Private Function StabilityPlanePassed(ByVal batch As CBatchSectionCalculator, _
         ByVal index As Long, ByVal planeIndex As Long) As Boolean
     If planeIndex = 1 Then
-        StabilityPlanePassed = batch.StabilityPlanePassed1(index)
+        StabilityPlanePassed = batch.ResultAt(index).StabilityResult.PlanePassed1
     Else
-        StabilityPlanePassed = batch.StabilityPlanePassed2(index)
+        StabilityPlanePassed = batch.ResultAt(index).StabilityResult.PlanePassed2
     End If
 End Function
 
 ' Записывает статус проверки или N/A, если расчетная ветка не была включена профилем.
 Private Sub PutStatusCell(ByRef data() As Variant, ByVal rowIndex As Long, ByVal columnIndex As Long, _
-        ByVal policy As CBatchStatusPolicy, ByVal requested As Boolean, ByVal meta As CResultMeta, _
-        ByVal fallbackStatus As String)
+        ByVal policy As CBatchStatusPolicy, ByVal requested As Boolean, ByVal meta As CResultMeta)
     If requested Then
-        data(rowIndex, columnIndex) = MetaStatus(policy, meta, fallbackStatus)
+        data(rowIndex, columnIndex) = MetaStatus(policy, meta)
     Else
         data(rowIndex, columnIndex) = policy.NotApplicable
     End If
 End Sub
 
-' Возвращает внешний статус из ResultMeta. Текстовый fallback нужен только для
-' неполных тестовых результатов, где meta явно не создана.
-Private Function MetaStatus(ByVal policy As CBatchStatusPolicy, ByVal meta As CResultMeta, _
-        ByVal fallbackStatus As String) As String
-    If Not meta Is Nothing Then
-        MetaStatus = policy.StatusFromMeta(meta)
-    Else
-        MetaStatus = policy.DisplayStatus(fallbackStatus)
-    End If
+' Возвращает display только через общую policy. Отсутствие обязательной meta
+' является CalcErr, а не поводом угадывать статус по другому результату.
+Private Function MetaStatus(ByVal policy As CBatchStatusPolicy, ByVal meta As CResultMeta) As String
+    MetaStatus = policy.StatusFromMeta(meta)
 End Function
 
 ' Возвращает пользовательское пояснение из typed-meta без анализа StopReason в writer-е.
@@ -632,7 +626,8 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     target.Font.Name = "Arial"
     target.Font.Size = 9
     target.Rows.RowHeight = 15
-    target.Worksheet.Columns.ColumnWidth = RESULTS_COLUMN_WIDTH
+    target.Worksheet.StandardWidth = RESULTS_COLUMN_WIDTH
+    target.Columns.ColumnWidth = RESULTS_COLUMN_WIDTH
 
     stage = "HeaderStyle"
     target.Offset(0, 0).Resize(META_ROWS, 5).Interior.Color = HEADER_COLOR

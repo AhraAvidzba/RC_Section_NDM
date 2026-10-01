@@ -22,19 +22,28 @@ Private mCurrentStateMeta As CResultMeta ' Meta обязательного Curre
 Private mWidth As CCrackWidthResult ' Результат формульного расчета a_crc.
 Private mLongitudinal As CLongitudinalCrackResult ' Результат проверки продольных трещин.
 
+' Создает нейтральные ветви, не создавая физические State при отсутствии расчета.
+Private Sub Class_Initialize()
+    Initialize Nothing, Nothing, Nothing, Nothing
+End Sub
+
 ' Заполняет все доступные ветви расчета трещин. Любая ветвь может быть Nothing,
 ' если расчет еще не дошел до нее или она не нужна для выбранного профиля.
 Public Sub Initialize(ByVal formation As CCrackFormationResult, _
         ByVal currentStateMeta As CResultMeta, ByVal width As CCrackWidthResult, _
         ByVal longitudinal As CLongitudinalCrackResult)
     Set mFormation = formation
+    If mFormation Is Nothing Then Set mFormation = New CCrackFormationResult
     If currentStateMeta Is Nothing Then
-        Set mCurrentStateMeta = Nothing
+        Set mCurrentStateMeta = New CResultMeta
+        mCurrentStateMeta.SetNotApplicable rkDirectState
     Else
         Set mCurrentStateMeta = currentStateMeta.Clone
     End If
     Set mWidth = width
+    If mWidth Is Nothing Then Set mWidth = New CCrackWidthResult
     Set mLongitudinal = longitudinal
+    If mLongitudinal Is Nothing Then Set mLongitudinal = New CLongitudinalCrackResult
 End Sub
 
 Public Property Get Formation() As CCrackFormationResult

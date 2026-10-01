@@ -27,22 +27,18 @@ Private Sub Class_Initialize()
     Clear vbNullString
 End Sub
 
-' Очищает оба подрезультата; capacity остается Nothing, если расчет не запускался.
+' Очищает оба подрезультата. Незапрошенная capacity имеет нейтральную typed meta,
+' но не содержит фиктивной найденной точки или физического состояния.
 Public Sub Clear(ByVal defaultCapacityPath As String)
     Set mDirectState = New CDirectStateResult
-    Set mCapacity = Nothing
+    Set mCapacity = New CCapacityResult
+    mCapacity.InitializeSkipped "Несущая способность не запрошена.", defaultCapacityPath
 End Sub
 
 ' Сохраняет typed meta прямого НДС без изменения его численных данных.
 Public Sub SetDirectMeta(ByVal meta As CResultMeta)
     If mDirectState Is Nothing Then Set mDirectState = New CDirectStateResult
     mDirectState.SetMeta meta
-End Sub
-
-' Копирует прямое НДС из solver-а в структурированный direct-state result.
-Public Sub StoreDirectFromSolver(ByVal solver As CSectionSolver, ByVal extensionEnabled As Boolean)
-    If mDirectState Is Nothing Then Set mDirectState = New CDirectStateResult
-    mDirectState.StoreSolver solver, extensionEnabled
 End Sub
 
 ' Копирует прямое НДС из reusable named-state в структурированный direct-state result.

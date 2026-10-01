@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 4E97CD3451DC0B161755F51F5112489D4F94607C32F42D12B404CBD530B7DB5C
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_18c9a2aa65d347e185be202a4e9dac12\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TOTAL_META_STRESS: passed=5000; failed=0; elapsedSec=6.; status=InputErr; comment=НДС: Тестовая ошибка исходных данных.; Устойчивость: Тестовая ошибка настройки устойчивости.
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

@@ -45,7 +45,6 @@ Private mExtensionUsed As Boolean ' True, если найденное состо
 Private mWithinPhysicalRange As Boolean ' True, если state принят в пределах физической диаграммы.
 Private mConverged As Boolean ' Сошелся ли solver, из которого взята плоскость.
 Private mStopReason As String ' Служебная причина остановки solver-а.
-Private mStatus As String ' Короткий внутренний статус, если он нужен writer-у/тестам.
 Private mResultMeta As CResultMeta ' Типизированный статус named-state для будущего StateRepository/result graph.
 Private mSolverCallCount As Long ' Число запусков CSectionSolver.Solve, связанных с получением state.
 Private mIterationCount As Long ' Число итераций последнего solver-а, давшего state.
@@ -85,7 +84,6 @@ Public Sub InitializeFromSolver(ByVal stateType As ESectionStateType, _
     mConverged = solver.Converged
     mStopReason = solver.StopReason
     Set mResultMeta = BuildMetaFromSolver(stateType, solver, extensionUsed, withinPhysicalRange, mStopReason)
-    mStatus = ExternalStatus(mResultMeta)
     mSolverCallCount = solverCallCount
     mIterationCount = solver.Iterations
     mDiagnosticLog = diagnosticLog
@@ -173,7 +171,7 @@ Public Property Get StopReason() As String
 End Property
 
 Public Property Get Status() As String
-    Status = mStatus
+    Status = ExternalStatus(ResultMeta)
 End Property
 
 ' Возвращает снимок метаданных. Неинициализированный State не является

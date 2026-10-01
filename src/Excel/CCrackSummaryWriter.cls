@@ -393,8 +393,8 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
     Set policy = StatusPolicy()
 
     data(rowIndex, COL_ID) = batch.CombinationID(index)
-    data(rowIndex, COL_RESULT_COMMENT) = MetaComment(batch.CrackSummaryMeta(index))
-    data(rowIndex, COL_STATUS) = batch.CrackSummaryStatus(index)
+    data(rowIndex, COL_RESULT_COMMENT) = MetaComment(batch.ResultAt(index).CrackSummaryMeta)
+    data(rowIndex, COL_STATUS) = batch.ResultAt(index).CrackSummaryStatus
 
     If CrackWidthStatusText(batch, index, policy) = policy.NotApplicable And _
             LongitudinalStatusText(batch, index, policy) = policy.NotApplicable And _
@@ -436,27 +436,27 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
         Exit Sub
     End If
 
-    If Len(batch.CrackFormationMethod(index)) > 0 Then _
-        data(rowIndex, COL_FORMATION_METHOD) = batch.CrackFormationMethod(index)
+    If Len(batch.ResultAt(index).CrackResult.Formation.FormationMethod) > 0 Then _
+        data(rowIndex, COL_FORMATION_METHOD) = batch.ResultAt(index).CrackResult.Formation.FormationMethod
 
-    If batch.CrackNcrc(index) > SMALL_VALUE Then
-        data(rowIndex, COL_ARED) = OutputArea(batch.CrackAred(index), units)
-        data(rowIndex, COL_RBT_SER) = OutputStress(batch.CrackRbtSer(index), units)
-        data(rowIndex, COL_NCRC) = OutputForce(batch.CrackNcrc(index), units)
-        data(rowIndex, COL_LAMBDA_NCRC) = batch.CrackLambdaCrc(index)
+    If batch.ResultAt(index).CrackResult.Formation.Ncrc > SMALL_VALUE Then
+        data(rowIndex, COL_ARED) = OutputArea(batch.ResultAt(index).CrackResult.Formation.Ared, units)
+        data(rowIndex, COL_RBT_SER) = OutputStress(batch.ResultAt(index).CrackResult.Formation.RbtSer, units)
+        data(rowIndex, COL_NCRC) = OutputForce(batch.ResultAt(index).CrackResult.Formation.Ncrc, units)
+        data(rowIndex, COL_LAMBDA_NCRC) = batch.ResultAt(index).CrackResult.Formation.LambdaCrc
     Else
         data(rowIndex, COL_NCRC) = policy.NotApplicable
     End If
 
-    If (Not batch.CrackCentralBranch(index)) And hasFormationData Then
-        data(rowIndex, COL_FORMATION_NCRC) = OutputForce(batch.CrackFormationNcrc(index), units)
-    ElseIf Not batch.CrackCentralBranch(index) And batch.CrackMcrc(index) > SMALL_VALUE Then
+    If (Not batch.ResultAt(index).CrackResult.Width.CentralTensionBranch) And hasFormationData Then
+        data(rowIndex, COL_FORMATION_NCRC) = OutputForce(batch.ResultAt(index).CrackResult.Formation.FormationNcrc, units)
+    ElseIf Not batch.ResultAt(index).CrackResult.Width.CentralTensionBranch And batch.ResultAt(index).CrackResult.Formation.Mcrc > SMALL_VALUE Then
         data(rowIndex, COL_FORMATION_NCRC) = policy.NotApplicable
     End If
 
-    If batch.CrackMcrc(index) > SMALL_VALUE Then
-        data(rowIndex, COL_MCRC) = OutputMomentMagnitude(batch.CrackMcrc(index), units)
-        data(rowIndex, COL_LAMBDA_MCRC) = batch.CrackLambdaCrc(index)
+    If batch.ResultAt(index).CrackResult.Formation.Mcrc > SMALL_VALUE Then
+        data(rowIndex, COL_MCRC) = OutputMomentMagnitude(batch.ResultAt(index).CrackResult.Formation.Mcrc, units)
+        data(rowIndex, COL_LAMBDA_MCRC) = batch.ResultAt(index).CrackResult.Formation.LambdaCrc
     Else
         data(rowIndex, COL_MCRC) = policy.NotApplicable
     End If
@@ -465,7 +465,7 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, COL_POST_CRACK_STATUS) = NamedStateStatus(batch, index, sstPostCrackState, policy)
 
     If hasFormationData Then
-        data(rowIndex, COL_FORMATION_STATE) = IIf(batch.CrackFormed(index), "Cracked", "NotCracked")
+        data(rowIndex, COL_FORMATION_STATE) = IIf(batch.ResultAt(index).CrackResult.Formation.CrackFormed, "Cracked", "NotCracked")
     Else
         data(rowIndex, COL_FORMATION_STATE) = CrackFormationStatusText(batch, index, policy)
     End If
@@ -478,7 +478,7 @@ End Sub
 Private Function NamedStateStatus(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal stateType As ESectionStateType, ByVal policy As CBatchStatusPolicy) As String
     Dim stateResult As CSectionStateResult
-    Set stateResult = batch.FindNamedState(index, stateType)
+    Set stateResult = batch.ResultAt(index).StateRepository.FindState(stateType)
     If stateResult Is Nothing Then
         NamedStateStatus = policy.NotApplicable
     Else
@@ -487,9 +487,9 @@ Private Function NamedStateStatus(ByVal batch As CBatchSectionCalculator, ByVal 
 End Function
 
 Private Function HasCrackFormationData(ByVal batch As CBatchSectionCalculator, ByVal index As Long) As Boolean
-    HasCrackFormationData = batch.CrackNcrc(index) > SMALL_VALUE Or _
-        Abs(batch.CrackFormationNcrc(index)) > SMALL_VALUE Or _
-        batch.CrackMcrc(index) > SMALL_VALUE
+    HasCrackFormationData = batch.ResultAt(index).CrackResult.Formation.Ncrc > SMALL_VALUE Or _
+        Abs(batch.ResultAt(index).CrackResult.Formation.FormationNcrc) > SMALL_VALUE Or _
+        batch.ResultAt(index).CrackResult.Formation.Mcrc > SMALL_VALUE
 End Function
 
 ' Записывает контроль пригодности текущего CrackedState для дальнейшего
@@ -504,7 +504,7 @@ End Function
 Private Sub PutCrackedStateData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal policy As CBatchStatusPolicy)
     Dim stateResult As CSectionStateResult
-    Set stateResult = batch.FindNamedState(index, sstCrackedState)
+    Set stateResult = batch.ResultAt(index).StateRepository.FindState(sstCrackedState)
 
     If stateResult Is Nothing Then
         If CrackCurrentStateStatusText(batch, index, policy) <> policy.NotApplicable Then _
@@ -527,7 +527,7 @@ End Sub
 ' для этого LC, поэтому extension в принципе не мог применяться.
 Private Function ExtensionUsedText(ByVal batch As CBatchSectionCalculator, _
         ByVal index As Long, ByVal stateResult As CSectionStateResult) As String
-    If Not batch.DiagramExtensionEnabled(index) Then
+    If Not batch.ResultAt(index).DiagramExtensionEnabled Then
         ExtensionUsedText = "-"
     ElseIf stateResult.ExtensionUsed Then
         ExtensionUsedText = "yes"
@@ -539,7 +539,7 @@ End Function
 Private Function CrackedStateAllowsCrackChecks(ByVal batch As CBatchSectionCalculator, _
         ByVal index As Long, ByVal policy As CBatchStatusPolicy) As Boolean
     Dim stateResult As CSectionStateResult
-    Set stateResult = batch.FindNamedState(index, sstCrackedState)
+    Set stateResult = batch.ResultAt(index).StateRepository.FindState(sstCrackedState)
     If stateResult Is Nothing Then Exit Function
     If Not stateResult.Converged Then Exit Function
     If stateResult.ExtensionUsed Then Exit Function
@@ -557,7 +557,7 @@ Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
         Exit Sub
     End If
 
-    If Not batch.CrackFormed(index) Then
+    If Not batch.ResultAt(index).CrackResult.Formation.CrackFormed Then
         data(rowIndex, COL_ACRC_STATUS) = policy.NotApplicable
         Exit Sub
     End If
@@ -567,28 +567,28 @@ Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
         Exit Sub
     End If
 
-    If Not batch.CrackCentralBranch(index) Then
-        data(rowIndex, COL_XT) = OutputLength(batch.CrackTensionDepth(index), units)
-        data(rowIndex, COL_H) = OutputLength(batch.CrackSectionDepthH(index), units)
-        data(rowIndex, COL_AS_COVER) = OutputLength(batch.CrackCoverA(index), units)
-        data(rowIndex, COL_HBT) = OutputLength(batch.CrackEffectiveZoneDepth(index), units)
+    If Not batch.ResultAt(index).CrackResult.Width.CentralTensionBranch Then
+        data(rowIndex, COL_XT) = OutputLength(batch.ResultAt(index).CrackResult.Width.TensionDepth, units)
+        data(rowIndex, COL_H) = OutputLength(batch.ResultAt(index).CrackResult.Width.SectionDepthH, units)
+        data(rowIndex, COL_AS_COVER) = OutputLength(batch.ResultAt(index).CrackResult.Width.CoverA, units)
+        data(rowIndex, COL_HBT) = OutputLength(batch.ResultAt(index).CrackResult.Width.EffectiveZoneDepth, units)
     End If
-    data(rowIndex, COL_ABT) = OutputArea(batch.CrackAbt(index), units)
-    data(rowIndex, COL_AS) = OutputArea(batch.CrackAs(index), units)
-    data(rowIndex, COL_DS_EQ) = OutputLength(batch.CrackDsEquivalent(index), units)
-    data(rowIndex, COL_LS0) = OutputLength(batch.CrackSpacingRaw(index), units)
-    data(rowIndex, COL_LS) = OutputLength(batch.CrackSpacing(index), units)
-    data(rowIndex, COL_PHI1) = batch.CrackPhi1(index)
-    data(rowIndex, COL_PHI2) = batch.CrackPhi2(index)
-    data(rowIndex, COL_PHI3) = batch.CrackPhi3(index)
-    data(rowIndex, COL_PSI_S) = batch.CrackPsiS(index)
-    data(rowIndex, COL_REBARS) = batch.CrackTensionRebarIds(index)
-    data(rowIndex, COL_NREBARS) = batch.CrackTensionRebarCount(index)
-    data(rowIndex, COL_SIGMA_S_CRC) = OptionalStress(batch.CrackSigmaSCrc(index), units, policy)
-    data(rowIndex, COL_SIGMA_S) = OutputStress(batch.CrackSigmaS(index), units)
+    data(rowIndex, COL_ABT) = OutputArea(batch.ResultAt(index).CrackResult.Width.Abt, units)
+    data(rowIndex, COL_AS) = OutputArea(batch.ResultAt(index).CrackResult.Width.AsTension, units)
+    data(rowIndex, COL_DS_EQ) = OutputLength(batch.ResultAt(index).CrackResult.Width.DsEquivalent, units)
+    data(rowIndex, COL_LS0) = OutputLength(batch.ResultAt(index).CrackResult.Width.CrackSpacingRaw, units)
+    data(rowIndex, COL_LS) = OutputLength(batch.ResultAt(index).CrackResult.Width.CrackSpacing, units)
+    data(rowIndex, COL_PHI1) = batch.ResultAt(index).CrackResult.Width.Phi1
+    data(rowIndex, COL_PHI2) = batch.ResultAt(index).CrackResult.Width.Phi2
+    data(rowIndex, COL_PHI3) = batch.ResultAt(index).CrackResult.Width.Phi3
+    data(rowIndex, COL_PSI_S) = batch.ResultAt(index).CrackResult.Width.PsiS
+    data(rowIndex, COL_REBARS) = batch.ResultAt(index).CrackResult.Width.TensionRebarIds
+    data(rowIndex, COL_NREBARS) = batch.ResultAt(index).CrackResult.Width.TensionRebarCount
+    data(rowIndex, COL_SIGMA_S_CRC) = OptionalStress(batch.ResultAt(index).CrackResult.Width.SigmaSCrc, units, policy)
+    data(rowIndex, COL_SIGMA_S) = OutputStress(batch.ResultAt(index).CrackResult.Width.SigmaS, units)
     data(rowIndex, COL_ES) = OutputStress(batch.CrackSteelElasticModulus, units)
-    data(rowIndex, COL_ACRC) = OutputLength(batch.CrackWidth(index), units)
-    data(rowIndex, COL_ACRC_ULT) = OutputLength(batch.CrackAllowable(index), units)
+    data(rowIndex, COL_ACRC) = OutputLength(batch.ResultAt(index).CrackResult.Width.CrackWidth, units)
+    data(rowIndex, COL_ACRC_ULT) = OutputLength(batch.ResultAt(index).CrackResult.Width.AllowableCrackWidth, units)
     If batch.CrackReserveFactor(index) > SMALL_VALUE Then _
         data(rowIndex, COL_ACRC_RATIO) = batch.CrackReserveFactor(index)
     data(rowIndex, COL_ACRC_STATUS) = CrackWidthStatusText(batch, index, policy)
@@ -608,8 +608,8 @@ Private Sub PutLongitudinalData(ByRef data() As Variant, ByVal rowIndex As Long,
         Exit Sub
     End If
 
-    data(rowIndex, COL_SIGMA_B_MAX) = OutputStress(batch.MaxConcreteCompressionStress(index), units)
-    data(rowIndex, COL_RB_MC2) = OutputStress(batch.LongitudinalCrackRbMc2(index), units)
+    data(rowIndex, COL_SIGMA_B_MAX) = OutputStress(batch.ResultAt(index).CrackResult.Longitudinal.MaxCompressionStress, units)
+    data(rowIndex, COL_RB_MC2) = OutputStress(batch.ResultAt(index).CrackResult.Longitudinal.RbMc2, units)
     If batch.LongitudinalCrackReserveFactor(index) > SMALL_VALUE Then _
         data(rowIndex, COL_LONG_RATIO) = batch.LongitudinalCrackReserveFactor(index)
     data(rowIndex, COL_LONG_STATUS) = LongitudinalStatusText(batch, index, policy)
@@ -658,10 +658,7 @@ End Sub
 
 ' Задает одинаковую стандартную ширину всем столбцам блока Results.
 Private Sub SetColumnWidths(ByVal target As Object)
-    Dim columnIndex As Long
-    For columnIndex = 1 To TOTAL_COLUMNS
-        target.Worksheet.Columns(target.Column + columnIndex - 1).ColumnWidth = RESULTS_COLUMN_WIDTH
-    Next columnIndex
+    target.Columns.ColumnWidth = RESULTS_COLUMN_WIDTH
 End Sub
 
 ' Оформляет один непрерывный блок таблицы, не затрагивая пустые разделители.
@@ -761,48 +758,32 @@ End Sub
 Private Function CrackFormationStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal policy As CBatchStatusPolicy) As String
     Dim meta As CResultMeta
-    Set meta = batch.CrackFormationMeta(index)
-    If Not meta Is Nothing Then
-        CrackFormationStatusText = policy.StatusFromMeta(meta)
-    Else
-        CrackFormationStatusText = policy.DisplayStatus(batch.CrackStatus(index))
-    End If
+    Set meta = batch.ResultAt(index).CrackFormationMeta
+    CrackFormationStatusText = policy.StatusFromMeta(meta)
 End Function
 
 ' Возвращает внешний статус прямого CrackedState от заданного сочетания.
 Private Function CrackCurrentStateStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal policy As CBatchStatusPolicy) As String
     Dim meta As CResultMeta
-    Set meta = batch.CrackCurrentStateMeta(index)
-    If Not meta Is Nothing Then
-        CrackCurrentStateStatusText = policy.StatusFromMeta(meta)
-    Else
-        CrackCurrentStateStatusText = policy.DisplayStatus(batch.CrackStatus(index))
-    End If
+    Set meta = batch.ResultAt(index).CrackCurrentStateMeta
+    CrackCurrentStateStatusText = policy.StatusFromMeta(meta)
 End Function
 
 ' Возвращает внешний статус формульной проверки ширины нормальной трещины.
 Private Function CrackWidthStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal policy As CBatchStatusPolicy) As String
     Dim meta As CResultMeta
-    Set meta = batch.CrackWidthMeta(index)
-    If Not meta Is Nothing Then
-        CrackWidthStatusText = policy.StatusFromMeta(meta)
-    Else
-        CrackWidthStatusText = policy.DisplayStatus(batch.CrackStatus(index))
-    End If
+    Set meta = batch.ResultAt(index).CrackWidthMeta
+    CrackWidthStatusText = policy.StatusFromMeta(meta)
 End Function
 
 ' Возвращает внешний статус проверки продольных трещин.
 Private Function LongitudinalStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal policy As CBatchStatusPolicy) As String
     Dim meta As CResultMeta
-    Set meta = batch.LongitudinalCrackMeta(index)
-    If Not meta Is Nothing Then
-        LongitudinalStatusText = policy.StatusFromMeta(meta)
-    Else
-        LongitudinalStatusText = policy.DisplayStatus(batch.LongitudinalCrackStatus(index))
-    End If
+    Set meta = batch.ResultAt(index).LongitudinalCrackMeta
+    LongitudinalStatusText = policy.StatusFromMeta(meta)
 End Function
 
 ' Возвращает готовое пользовательское пояснение из ResultMeta блока.

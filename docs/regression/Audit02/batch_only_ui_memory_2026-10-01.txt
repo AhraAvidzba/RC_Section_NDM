@@ -1,0 +1,11 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: E6DBCA3E23F02EDCECA52DC858C71946A80F58130285015B888F2943DBCC4AE1
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_fcd1fe2c3e354e66a91021c9662cf17d\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit02BatchOnlyDiagnostic =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit02BatchOnlyDiagnostic; 2026-10-01T19:02:55
+EXCEL_AFTER_SUITE: pid=10436; workingSet=132591616; privateBytes=93765632; cpu=2.875
+INFO: batchOnly; status=OK; elapsedSec=0.2265625; solves=28
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit02BatchOnlyDiagnostic; 2026-10-01T19:02:56
+SOURCE_UNCHANGED: True

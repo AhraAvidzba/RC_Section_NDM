@@ -230,7 +230,7 @@ Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSect
     ' Считаем только конечные named states. Один LC может дать несколько
     ' состояний: StrengthState, CapacityState, CrackedState, PreCrackState и PostCrackState.
     For i = 1 To batch.Count
-        stateCount = stateCount + batch.NamedStateCount(i)
+        stateCount = stateCount + batch.ResultAt(i).StateRepository.StateCount
     Next i
 
     Dim rowCount As Long
@@ -247,9 +247,9 @@ Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSect
     ' на лист. Это принципиально быстрее и устойчивее построчной записи Cells.
     For i = 1 To batch.Count
         Dim stateIndex As Long
-        For stateIndex = 1 To batch.NamedStateCount(i)
+        For stateIndex = 1 To batch.ResultAt(i).StateRepository.StateCount
             PutCombinationElementResults data, rowIndex, section, materialProvider, batch, i, _
-                batch.NamedState(i, stateIndex), runID, units
+                batch.ResultAt(i).StateRepository.StateAt(stateIndex), runID, units
         Next stateIndex
     Next i
 
@@ -395,8 +395,8 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     ' чтобы схема и AutoCAD всегда выбирали конкретное named-state без
     ' неоднозначных legacy-полей.
     For i = 1 To batch.Count
-        If batch.StateAvailable(i) Then
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nint", OutputForce(batch.Nint(i), units), OutputForceUnit(units), "Равнодействующая продольная сила внутреннего НДС для выбранного сочетания."
+        If batch.ResultAt(i).StrengthResult.DirectState.StateAvailable Then
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nint", OutputForce(batch.ResultAt(i).StrengthResult.DirectState.StateResult.Nint, units), OutputForceUnit(units), "Равнодействующая продольная сила внутреннего НДС для выбранного сочетания."
         Else
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nint", vbNullString, OutputForceUnit(units), "Равнодействующая продольная сила внутреннего НДС для выбранного сочетания."
         End If
@@ -405,29 +405,29 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUser", OutputMy(batch.UserMy(i), units), OutputMomentUnit(units), "Пользовательский My в точке приложения нагрузки."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxInternal", OutputMx(batch.Mx(i), units), OutputMomentUnit(units), "Mx того же сочетания после переноса к началу внутренней системы координат модели."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyInternal", OutputMy(batch.My(i), units), OutputMomentUnit(units), "My того же сочетания после переноса к началу внутренней системы координат модели."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "OverallStatus", batch.OverallStatus(i), "-", "Итоговый пользовательский статус сочетания."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "ProfileId", batch.ProfileId(i), "-", "Расчетный профиль, назначенный сочетанию в rngLoadCombinations."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "DirectStateStatus", batch.DirectStateStatus(i), "-", "Статус прямого решения НДС фактического сочетания."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacityStatus", batch.CapacityStatus(i), "-", "Статус расчета несущей способности."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacityLoadPath", batch.CapacityLoadPath(i), "-", "Какие компоненты нагрузки масштабировались при поиске несущей способности."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacitySolutionMethod", batch.CapacitySolutionMethod(i), "-", "Фактический численный метод, которым найдена предельная несущая способность."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LambdaCapacity", batch.LambdaCapacity(i), "-", "Предельный множитель для выбранной lambda-траектории."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "OverallStatus", batch.ResultAt(i).Status, "-", "Итоговый пользовательский статус сочетания."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "ProfileId", batch.ResultAt(i).ProfileId, "-", "Расчетный профиль, назначенный сочетанию в rngLoadCombinations."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "DirectStateStatus", batch.ResultAt(i).StrengthResult.DirectState.Status, "-", "Статус прямого решения НДС фактического сочетания."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacityStatus", batch.ResultAt(i).StrengthResult.Capacity.Status, "-", "Статус расчета несущей способности."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacityLoadPath", batch.ResultAt(i).CapacityPathDisplayName, "-", "Какие компоненты нагрузки масштабировались при поиске несущей способности."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacitySolutionMethod", batch.ResultAt(i).StrengthResult.Capacity.SolutionMethod, "-", "Фактический численный метод, которым найдена предельная несущая способность."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LambdaCapacity", batch.ResultAt(i).StrengthResult.Capacity.LambdaCapacity, "-", "Предельный множитель для выбранной lambda-траектории."
         If batch.StrengthCapacityReserve(i) > 0# Then
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nultimate", OutputForce(batch.NUltimate(i), units), OutputForceUnit(units), "Полная N при lambdaUltimate в точке приложения нагрузки."
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxUltimate", OutputMx(batch.MxUltimate(i), units), OutputMomentUnit(units), "Полный Mx при lambdaUltimate в точке приложения нагрузки."
-            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUltimate", OutputMy(batch.MyUltimate(i), units), OutputMomentUnit(units), "Полный My при lambdaUltimate в точке приложения нагрузки."
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nultimate", OutputForce(batch.ResultAt(i).StrengthResult.Capacity.NUltimate, units), OutputForceUnit(units), "Полная N при lambdaUltimate в точке приложения нагрузки."
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxUltimate", OutputMx(batch.ResultAt(i).StrengthResult.Capacity.MxUltimate, units), OutputMomentUnit(units), "Полный Mx при lambdaUltimate в точке приложения нагрузки."
+            PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUltimate", OutputMy(batch.ResultAt(i).StrengthResult.Capacity.MyUltimate, units), OutputMomentUnit(units), "Полный My при lambdaUltimate в точке приложения нагрузки."
         Else
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nultimate", vbNullString, OutputForceUnit(units), "Заполняется после успешного поиска несущей способности."
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "MxUltimate", vbNullString, OutputMomentUnit(units), "Заполняется после успешного поиска несущей способности."
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "MyUltimate", vbNullString, OutputMomentUnit(units), "Заполняется после успешного поиска несущей способности."
         End If
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "CrackStatus", batch.CrackStatus(i), "-", "Статус расчета ширины раскрытия трещин."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrackStatus", batch.LongitudinalCrackStatus(i), "-", "Статус SLS(II)-проверки продольных трещин по сжатому бетону; выполняется как часть Calculation.Crack.Width."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrack.MaxConcreteCompressionStress", OutputStress(batch.MaxConcreteCompressionStress(i), units), OutputStressUnit(units), "Максимальное по модулю сжимающее напряжение бетона в прямом НДС."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrack.RbMc2", OutputStress(batch.LongitudinalCrackRbMc2(i), units), OutputStressUnit(units), "Пользовательское допустимое Rb,mc2 для проверки продольных трещин."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrack.Utilization", batch.LongitudinalCrackUtilization(i), "-", "Использование по продольным трещинам: sigma_c,max / Rb,mc2."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "ExtensionUsed", BooleanText(batch.ExtensionUsed(i)), "-", "True, если расчетное состояние вышло за физические пределы диаграммы в numerical extension."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "General.DiagramExtension", BooleanText(batch.DiagramExtensionEnabled(i)), "-", "Сохраненное значение настройки General.DiagramExtension на момент расчета."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "CrackStatus", batch.ResultAt(i).NormalCrackStatus, "-", "Статус расчета ширины раскрытия трещин."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrackStatus", batch.ResultAt(i).CrackResult.Longitudinal.Status, "-", "Статус SLS(II)-проверки продольных трещин по сжатому бетону; выполняется как часть Calculation.Crack.Width."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrack.MaxConcreteCompressionStress", OutputStress(batch.ResultAt(i).CrackResult.Longitudinal.MaxCompressionStress, units), OutputStressUnit(units), "Максимальное по модулю сжимающее напряжение бетона в прямом НДС."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrack.RbMc2", OutputStress(batch.ResultAt(i).CrackResult.Longitudinal.RbMc2, units), OutputStressUnit(units), "Пользовательское допустимое Rb,mc2 для проверки продольных трещин."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LongitudinalCrack.Utilization", batch.ResultAt(i).CrackResult.Longitudinal.Utilization, "-", "Использование по продольным трещинам: sigma_c,max / Rb,mc2."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "ExtensionUsed", BooleanText(batch.ResultAt(i).ExtensionUsed), "-", "True, если расчетное состояние вышло за физические пределы диаграммы в numerical extension."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "General.DiagramExtension", BooleanText(batch.ResultAt(i).DiagramExtensionEnabled), "-", "Сохраненное значение настройки General.DiagramExtension на момент расчета."
         PutNamedStateProperties data, rowIndex, runID, batch, i, units
     Next i
 
@@ -491,18 +491,18 @@ Private Sub PutCombinationMaterialDiagrams(ByRef data() As Variant, ByRef rowInd
         ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, ByVal units As CUnitSystem, _
         ByVal written As Object)
     Dim stateIndex As Long
-    For stateIndex = 1 To batch.NamedStateCount(combinationIndex)
+    For stateIndex = 1 To batch.ResultAt(combinationIndex).StateRepository.StateCount
         Dim stateResult As CSectionStateResult
-        Set stateResult = batch.NamedState(combinationIndex, stateIndex)
+        Set stateResult = batch.ResultAt(combinationIndex).StateRepository.StateAt(stateIndex)
         If Not stateResult Is Nothing Then
-            AppendMaterialDiagramPoints data, rowIndex, runID, batch.ProfileId(combinationIndex), _
+            AppendMaterialDiagramPoints data, rowIndex, runID, batch.ResultAt(combinationIndex).ProfileId, _
                 stateResult, "Concrete", _
-                ConcreteDiagramForState(materialProvider, stateResult, batch.DiagramExtensionEnabled(combinationIndex)), _
-                batch.DiagramExtensionEnabled(combinationIndex), units, written
-            AppendMaterialDiagramPoints data, rowIndex, runID, batch.ProfileId(combinationIndex), _
+                ConcreteDiagramForState(materialProvider, stateResult, batch.ResultAt(combinationIndex).DiagramExtensionEnabled), _
+                batch.ResultAt(combinationIndex).DiagramExtensionEnabled, units, written
+            AppendMaterialDiagramPoints data, rowIndex, runID, batch.ResultAt(combinationIndex).ProfileId, _
                 stateResult, "Rebar", _
-                SteelDiagramForState(materialProvider, stateResult, batch.DiagramExtensionEnabled(combinationIndex)), _
-                batch.DiagramExtensionEnabled(combinationIndex), units, written
+                SteelDiagramForState(materialProvider, stateResult, batch.ResultAt(combinationIndex).DiagramExtensionEnabled), _
+                batch.ResultAt(combinationIndex).DiagramExtensionEnabled, units, written
         End If
     Next stateIndex
 End Sub
@@ -750,9 +750,9 @@ Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As L
         ByVal runID As Variant, ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, _
         ByVal units As CUnitSystem)
     Dim stateIndex As Long
-    For stateIndex = 1 To batch.NamedStateCount(combinationIndex)
+    For stateIndex = 1 To batch.ResultAt(combinationIndex).StateRepository.StateCount
         Dim stateResult As CSectionStateResult
-        Set stateResult = batch.NamedState(combinationIndex, stateIndex)
+        Set stateResult = batch.ResultAt(combinationIndex).StateRepository.StateAt(stateIndex)
         If Not stateResult Is Nothing Then
             Dim prefix As String
             prefix = "State." & stateResult.StateTypeText & "."
@@ -761,10 +761,10 @@ Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As L
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "MaterialModelSpec", _
                 stateResult.MaterialSpec.SpecKey, "-", "Фактическая спецификация ValueSet/ConcreteDiagram/ConcreteTension/SteelDiagram."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "ConcreteDiagramId", _
-                MaterialDiagramId(batch.ProfileId(combinationIndex), stateResult, "Concrete", batch.DiagramExtensionEnabled(combinationIndex)), _
+                MaterialDiagramId(batch.ResultAt(combinationIndex).ProfileId, stateResult, "Concrete", batch.ResultAt(combinationIndex).DiagramExtensionEnabled), _
                 "-", "Ссылка на бетонную диаграмму в rngNDMMaterialDiagrams."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "RebarDiagramId", _
-                MaterialDiagramId(batch.ProfileId(combinationIndex), stateResult, "Rebar", batch.DiagramExtensionEnabled(combinationIndex)), _
+                MaterialDiagramId(batch.ResultAt(combinationIndex).ProfileId, stateResult, "Rebar", batch.ResultAt(combinationIndex).DiagramExtensionEnabled), _
                 "-", "Ссылка на диаграмму арматуры в rngNDMMaterialDiagrams."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "Epsilon0", _
                 stateResult.Epsilon0, "-", "Деформация в точке (0;0) внутренней системы координат модели для именованного расчетного состояния."
@@ -859,7 +859,7 @@ Private Function SectionPropertyRowCount(ByVal batch As CBatchSectionCalculator)
 
     Dim combinationIndex As Long
     For combinationIndex = 1 To batch.Count
-        rowCount = rowCount + batch.NamedStateCount(combinationIndex) * STATE_SECTION_PROPERTY_ROWS
+        rowCount = rowCount + batch.ResultAt(combinationIndex).StateRepository.StateCount * STATE_SECTION_PROPERTY_ROWS
     Next combinationIndex
 
     SectionPropertyRowCount = rowCount
@@ -876,14 +876,14 @@ Private Function MaterialDiagramRowCount(ByVal materialProvider As CMaterialMode
     Dim combinationIndex As Long
     For combinationIndex = 1 To batch.Count
         Dim stateIndex As Long
-        For stateIndex = 1 To batch.NamedStateCount(combinationIndex)
+        For stateIndex = 1 To batch.ResultAt(combinationIndex).StateRepository.StateCount
             Dim stateResult As CSectionStateResult
-            Set stateResult = batch.NamedState(combinationIndex, stateIndex)
+            Set stateResult = batch.ResultAt(combinationIndex).StateRepository.StateAt(stateIndex)
             If Not stateResult Is Nothing Then
                 rowCount = rowCount + ConcreteDiagramForState(materialProvider, stateResult, _
-                    batch.DiagramExtensionEnabled(combinationIndex)).PointCount
+                    batch.ResultAt(combinationIndex).DiagramExtensionEnabled).PointCount
                 rowCount = rowCount + SteelDiagramForState(materialProvider, stateResult, _
-                    batch.DiagramExtensionEnabled(combinationIndex)).PointCount
+                    batch.ResultAt(combinationIndex).DiagramExtensionEnabled).PointCount
             End If
         Next stateIndex
     Next combinationIndex
@@ -1010,10 +1010,7 @@ Private Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, B
     tableRange.Rows.Item(1).HorizontalAlignment = -4131
     tableRange.Columns.Item(1).NumberFormat = "dd.mm.yy"
 
-    Dim widthColumn As Long
-    For widthColumn = 1 To columnCount
-        target.Worksheet.Columns.Item(target.Column + widthColumn - 1).ColumnWidth = RESULTS_COLUMN_WIDTH
-    Next widthColumn
+    tableRange.Columns.ColumnWidth = RESULTS_COLUMN_WIDTH
 
     AlignCommentColumns tableRange
     ApplyResultNumberFormats tableRange
@@ -1105,16 +1102,16 @@ Private Sub PutCombinationElementResults(ByRef data() As Variant, ByRef rowIndex
     If Not stateResult.Converged Then Exit Sub
 
     Set concrete = ConcreteDiagramForState(materialProvider, stateResult, _
-        batch.DiagramExtensionEnabled(combinationIndex))
+        batch.ResultAt(combinationIndex).DiagramExtensionEnabled)
     Set steel = SteelDiagramForState(materialProvider, stateResult, _
-        batch.DiagramExtensionEnabled(combinationIndex))
+        batch.ResultAt(combinationIndex).DiagramExtensionEnabled)
 
     For i = 1 To section.ConcreteCount
         strain = stateResult.Epsilon0 + stateResult.KappaX * section.ConcreteY(i) + _
             stateResult.KappaY * section.ConcreteX(i)
         stress = concrete.GetStress(strain)
         PutElementRow data, rowIndex, runID, batch.CombinationID(combinationIndex), _
-            batch.ProfileId(combinationIndex), stateResult.StateTypeText, section.ConcreteID(i), "Concrete", _
+            batch.ResultAt(combinationIndex).ProfileId, stateResult.StateTypeText, section.ConcreteID(i), "Concrete", _
             strain, stress, PhysicalState("Concrete", strain, stress), units
         rowIndex = rowIndex + 1
     Next i
@@ -1124,7 +1121,7 @@ Private Sub PutCombinationElementResults(ByRef data() As Variant, ByRef rowIndex
             stateResult.KappaY * section.RebarX(i)
         stress = steel.GetStress(strain)
         PutElementRow data, rowIndex, runID, batch.CombinationID(combinationIndex), _
-            batch.ProfileId(combinationIndex), stateResult.StateTypeText, section.RebarID(i), "Rebar", _
+            batch.ResultAt(combinationIndex).ProfileId, stateResult.StateTypeText, section.RebarID(i), "Rebar", _
             strain, stress, PhysicalState("Rebar", strain, stress), units
         rowIndex = rowIndex + 1
     Next i

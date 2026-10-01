@@ -25,7 +25,6 @@ Private Const CAPACITY_PATH_NONE As String = "None" ' Единый маркер:
 
 Private mSearchResult As CLimitSearchResult ' Типизированный результат общего LimitSearch.
 Private mStateResult As CSectionStateResult ' Итоговый reusable named-state CapacityState, если он найден.
-Private mStatus As String ' Пользовательский статус capacity для существующего вывода.
 Private mLimitState As String ' Физическая причина предела или текст ошибки.
 Private mSolutionMethod As String ' Фактически принятая ветка: UltimateStrain или LoadMultiplier.
 Private mPathResolved As String ' Нормализованный ключ capacity load path.
@@ -50,7 +49,7 @@ End Sub
 ' единый контейнер и не разбирает поля CCapacitySolver вручную.
 Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
         ByVal loadPath As CCapacityLoadPath, _
-        ByVal statusPolicy As CBatchStatusPolicy, ByVal pureAxialForMethod As Boolean, _
+        ByVal pureAxialForMethod As Boolean, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
         ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepthForMx As Double, _
         ByVal concreteDepthForMy As Double)
@@ -73,7 +72,6 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
         Exit Sub
     End If
 
-    If statusPolicy Is Nothing Then Set statusPolicy = New CBatchStatusPolicy
     Set mResultMeta = searchResult.Meta.Clone
     ' Численный поиск мог успешно найти предел ниже заданной нагрузки.
     ' Только инженерный слой трактует это как непрохождение текущего LC.
@@ -83,7 +81,6 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
                 searchResult.Meta.ResultComment
         End If
     End If
-    mStatus = statusPolicy.StatusFromMeta(mResultMeta)
     mLimitState = searchResult.LimitState
     If Len(Trim$(mLimitState)) = 0 Then mLimitState = mResultMeta.ResultComment
     mSolutionMethod = searchResult.ActualMethod
@@ -98,6 +95,9 @@ End Sub
 ' Заполняет результат ошибкой входных данных до запуска search.
 Public Sub InitializeInvalidInput(ByVal reason As String, _
         Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
+    ' При ошибке разбора пути он не выбран; служебный None не является
+    ' фактически выполненной траекторией и не должен подменять пустое поле.
+    If StrComp(pathKey, CAPACITY_PATH_NONE, vbTextCompare) = 0 Then pathKey = vbNullString
     InitializeEarlyResult rsInvalidInput, rcInvalidInput, reason, pathKey
 End Sub
 
@@ -145,9 +145,6 @@ Private Sub InitializeEarlyResult(ByVal internalStatus As EResultInternalStatus,
     Set mResultMeta = New CResultMeta
     mResultMeta.SetResult internalStatus, resultCode, rkCapacity, reason
 
-    Dim policy As CResultStatusPolicy
-    Set policy = New CResultStatusPolicy
-    mStatus = policy.ExternalStatus(mResultMeta)
 End Sub
 
 ' Исключает утечку старой предельной точки при повторном заполнении объекта.
@@ -215,9 +212,8 @@ Public Property Get SearchResult() As CLimitSearchResult
     Set SearchResult = mSearchResult
 End Property
 
-' Возвращает типизированный статус capacity-результата. CombinationResult
-' хранит эту meta рядом со строковым статусом, чтобы итоговый OverallStatus
-' собирался из InternalStatus/ResultCode, а не из повторного парсинга текста.
+' Возвращает независимый снимок meta канонического capacity-результата.
+' Display-статус вычисляется из нее общей policy, отдельной строковой копии нет.
 Public Property Get ResultMeta() As CResultMeta
     If mResultMeta Is Nothing Then InitializeCalcError "CapacityResult ResultMeta не сформирован.", mPathResolved
     Set ResultMeta = mResultMeta.Clone
@@ -295,7 +291,9 @@ Public Property Get StateResult() As CSectionStateResult
 End Property
 
 Public Property Get Status() As String
-    Status = mStatus
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    Status = policy.ExternalStatus(ResultMeta)
 End Property
 
 Public Property Get LimitState() As String

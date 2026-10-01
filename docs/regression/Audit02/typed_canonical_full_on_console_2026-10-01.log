@@ -1,0 +1,21 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 9AE7BE3164EEC8922E6A8D52F162779F633BB6A7AC82AC3ABCBAB5E2AE98A293
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_cfd6da1a76e944a5afb10faf88240424\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TOTAL: passed=496; failed=0
+MODE_AFTER_SUITE: Yes
+TOTAL_MATERIAL: passed=1191; failed=0; elapsedSec=0.0625
+MODE_AFTER_SUITE: Yes
+TOTAL_SECTION_SOLVER: passed=444; failed=0; elapsedSec=0.5859375
+MODE_AFTER_SUITE: Yes
+TOTAL_CAPACITY: passed=1194; failed=0; elapsedSec=42.9296875
+MODE_AFTER_SUITE: Yes
+TOTAL_CRACK: passed=360; failed=0; elapsedSec=4.6171875
+MODE_AFTER_SUITE: Yes
+FAIL: batch.capacityPath.invalid.noPath
+FAIL: batch.stability.sp35Mixed.branch
+TOTAL_BATCH: passed=672; failed=2; elapsedSec=79.1015625
+MODE_AFTER_SUITE: Yes
+RUNTIME ERROR: -2147417848; source=CBatchResultWriter.WriteSummary; description=WriteCrackSummary: Method 'ColumnWidth' of object 'Range' failed
+MODE_AFTER_SUITE: Yes
+SCRIPT ERROR: You cannot call a method on a null-valued expression.

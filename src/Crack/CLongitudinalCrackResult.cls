@@ -47,6 +47,13 @@ Public Property Get ResultMeta() As CResultMeta
     Set ResultMeta = mMeta.Clone
 End Property
 
+' Преобразует typed итог проверки в display, не храня вторую строку статуса.
+Public Property Get Status() As String
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    Status = policy.ExternalStatus(mMeta)
+End Property
+
 Public Property Get MaxCompressionStress() As Double
     MaxCompressionStress = mMaxCompressionStress
 End Property

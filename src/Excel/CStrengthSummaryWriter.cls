@@ -402,8 +402,8 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
     Set policy = StatusPolicy()
 
     data(rowIndex, COL_ID) = batch.CombinationID(index)
-    data(rowIndex, COL_RESULT_COMMENT) = MetaComment(batch.StrengthMeta(index))
-    data(rowIndex, COL_STATUS) = policy.StatusFromMeta(batch.StrengthMeta(index))
+    data(rowIndex, COL_RESULT_COMMENT) = MetaComment(batch.ResultAt(index).StrengthMeta)
+    data(rowIndex, COL_STATUS) = policy.StatusFromMeta(batch.ResultAt(index).StrengthMeta)
     data(rowIndex, COL_STATE_STATUS) = policy.NotApplicable
     data(rowIndex, COL_CAP_STATUS) = policy.NotApplicable
 
@@ -450,7 +450,7 @@ Private Sub PutStrengthState(ByRef data() As Variant, ByVal rowIndex As Long, _
     End If
 
     Dim stateResult As CSectionStateResult
-    Set stateResult = batch.FindNamedState(index, sstStrengthState)
+    Set stateResult = batch.ResultAt(index).StateRepository.FindState(sstStrengthState)
     If stateResult Is Nothing Then
         data(rowIndex, COL_STATE_STATUS) = DirectStatusText(batch, index, policy)
         Exit Sub
@@ -474,7 +474,7 @@ End Sub
 ' применяться и обычная пара yes/no здесь не несет полезного смысла.
 Private Function ExtensionUsedText(ByVal batch As CBatchSectionCalculator, _
         ByVal index As Long, ByVal stateResult As CSectionStateResult) As String
-    If Not batch.DiagramExtensionEnabled(index) Then
+    If Not batch.ResultAt(index).DiagramExtensionEnabled Then
         ExtensionUsedText = "-"
     ElseIf stateResult.ExtensionUsed Then
         ExtensionUsedText = "yes"
@@ -491,13 +491,13 @@ Private Sub PutCapacityState(ByRef data() As Variant, ByVal rowIndex As Long, _
         Exit Sub
     End If
 
-    data(rowIndex, COL_CAP_LIMIT_STATE) = batch.CapacityLimitState(index)
-    data(rowIndex, COL_CAP_LOAD_PATH) = batch.CapacityLoadPath(index)
-    data(rowIndex, COL_CAP_METHOD) = batch.CapacitySolutionMethod(index)
-    If batch.LambdaCapacity(index) > SMALL_VALUE Then data(rowIndex, COL_CAP_LAMBDA) = batch.LambdaCapacity(index)
+    data(rowIndex, COL_CAP_LIMIT_STATE) = batch.ResultAt(index).StrengthResult.Capacity.LimitState
+    data(rowIndex, COL_CAP_LOAD_PATH) = batch.ResultAt(index).CapacityPathDisplayName
+    data(rowIndex, COL_CAP_METHOD) = batch.ResultAt(index).StrengthResult.Capacity.SolutionMethod
+    If batch.ResultAt(index).StrengthResult.Capacity.LambdaCapacity > SMALL_VALUE Then data(rowIndex, COL_CAP_LAMBDA) = batch.ResultAt(index).StrengthResult.Capacity.LambdaCapacity
 
     Dim stateResult As CSectionStateResult
-    Set stateResult = batch.FindNamedState(index, sstCapacityState)
+    Set stateResult = batch.ResultAt(index).StateRepository.FindState(sstCapacityState)
     If Not stateResult Is Nothing Then
         PutStatePlane data, rowIndex, stateResult, units, COL_CAP_EPS0, COL_CAP_KX, COL_CAP_KY
         PutCapacityLoadPointComponents data, rowIndex, batch, index, units
@@ -514,9 +514,9 @@ End Sub
 ' Выводит полный предельный вектор CapacityState в точке приложения нагрузки.
 Private Sub PutCapacityLoadPointComponents(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
-    data(rowIndex, COL_CAP_N) = OutputForce(batch.NUltimate(index), units)
-    data(rowIndex, COL_CAP_MX) = OutputMx(batch.MxUltimate(index), units)
-    data(rowIndex, COL_CAP_MY) = OutputMy(batch.MyUltimate(index), units)
+    data(rowIndex, COL_CAP_N) = OutputForce(batch.ResultAt(index).StrengthResult.Capacity.NUltimate, units)
+    data(rowIndex, COL_CAP_MX) = OutputMx(batch.ResultAt(index).StrengthResult.Capacity.MxUltimate, units)
+    data(rowIndex, COL_CAP_MY) = OutputMy(batch.ResultAt(index).StrengthResult.Capacity.MyUltimate, units)
 End Sub
 
 ' Пишет параметры плоскости деформаций saved-state: epsilon0 в начале
@@ -614,10 +614,7 @@ End Sub
 
 ' Задает одинаковую стандартную ширину всем столбцам Results, затронутым блоком.
 Private Sub SetColumnWidths(ByVal target As Object)
-    Dim columnIndex As Long
-    For columnIndex = 1 To TOTAL_COLUMNS
-        target.Worksheet.Columns(target.Column + columnIndex - 1).ColumnWidth = RESULTS_COLUMN_WIDTH
-    Next columnIndex
+    target.Columns.ColumnWidth = RESULTS_COLUMN_WIDTH
 End Sub
 
 ' Оформляет непрерывный блок таблицы, не затрагивая пустые разделители.
@@ -694,29 +691,20 @@ Private Sub ApplySubscriptToken(ByVal cell As Object, ByVal token As String)
     Loop
 End Sub
 
-' Возвращает внешний статус прямого НДС по ResultMeta. Текстовый fallback нужен
-' только для неполных тестовых объектов, где meta явно не создана.
+' Возвращает внешний статус канонического прямого НДС через общую policy.
 Private Function DirectStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal policy As CBatchStatusPolicy) As String
     Dim meta As CResultMeta
-    Set meta = batch.DirectStateMeta(index)
-    If Not meta Is Nothing Then
-        DirectStatusText = policy.StatusFromMeta(meta)
-    Else
-        DirectStatusText = policy.DisplayStatus(batch.DirectStateStatus(index))
-    End If
+    Set meta = batch.ResultAt(index).DirectStateMeta
+    DirectStatusText = policy.StatusFromMeta(meta)
 End Function
 
 ' Возвращает внешний статус несущей способности по ResultMeta.
 Private Function CapacityStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal policy As CBatchStatusPolicy) As String
     Dim meta As CResultMeta
-    Set meta = batch.CapacityMeta(index)
-    If Not meta Is Nothing Then
-        CapacityStatusText = policy.StatusFromMeta(meta)
-    Else
-        CapacityStatusText = policy.DisplayStatus(batch.CapacityStatus(index))
-    End If
+    Set meta = batch.ResultAt(index).CapacityMeta
+    CapacityStatusText = policy.StatusFromMeta(meta)
 End Function
 
 ' Возвращает готовое пользовательское пояснение из ResultMeta блока.

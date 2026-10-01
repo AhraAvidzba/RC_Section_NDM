@@ -1,0 +1,343 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 2022B8435210CA142ACA897233BC0A738AB2E646BC8381E221613FD4303D581B
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e1e709b908dc4bad9badcfb994a79b6d\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunWorkbookInterfaceTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunWorkbookInterfaceTests; 2026-10-01T19:10:01
+EXCEL_AFTER_SUITE: pid=22656; workingSet=988860416; privateBytes=962662400; cpu=53.4375
+RUN: TestButtons
+OK: ui.buttons.run.exists
+OK: ui.buttons.import.exists
+OK: ui.buttons.clear.exists
+OK: ui.buttons.autocad.exists
+OK: ui.buttons.plot.exists
+OK: ui.buttons.run.macro
+OK: ui.buttons.import.macro
+OK: ui.buttons.clear.macro
+OK: ui.buttons.autocad.macro
+OK: ui.buttons.plot.macro
+OK: ui.buttons.outsidePrint
+OK: ui.buttons.textCentered
+OK: ui.loads.layout.sheet
+OK: ui.loads.layout.position
+OK: ui.loads.layout.defaultRows30
+OK: ui.loads.layout.title
+OK: ui.loads.layout.capacityPathValidation
+RUN: TestSingleCombinationSkipsBlankRows
+OK: ui.loads.single.count
+OK: ui.loads.single.id
+OK: ui.loads.single.elapsed
+OK: ui.loads.single.noBlankInvalid
+OK: ui.loads.minRows.oneDataRow
+OK: ui.loads.minRows.headerOnlyRejected
+RUN: TestPartialCombinationIsInvalid
+OK: ui.loads.partial.count
+OK: ui.loads.partial.invalid
+OK: ui.loads.partial.message
+OK: ui.loads.invalidProfileId.message
+OK: ui.loads.invalidProfileId.noElementRows
+OK: ui.autocad.manualImport.required
+OK: ui.autocad.import.generatedRejected
+OK: ui.autocad.importUnits.concreteX; actual=1000.; expected=1000.
+OK: ui.autocad.importUnits.concreteY; actual=2000.; expected=2000.
+OK: ui.autocad.importUnits.concreteArea; actual=2500.; expected=2500.
+OK: ui.autocad.importUnits.localIx; actual=520833.333333969; expected=520833.333333333
+OK: ui.autocad.importUnits.rebarX; actual=1100.; expected=1100.
+OK: ui.autocad.importUnits.rebarDiameter; actual=25.; expected=25.
+RUN: TestAutoCADPreviewWritesAndDrawsBoundsDimensions
+OK: ui.autocad.preview.boundsAnnotations
+OK: ui.autocad.preview.rebarAnnotation
+OK: ui.autocad.preview.rebarText; actual=ALL: 1∅32+2∅20
+OK: ui.autocad.preview.approxText
+OK: ui.autocad.preview.roundedWidthText; actual=≈ 517 mm
+OK: ui.autocad.preview.roundedHeightText; actual=≈ 112 mm
+OK: ui.autocad.preview.russianComment
+OK: ui.autocad.preview.boundsWidthUsesRotation; actual=516.961524227066; expected=516.961524227066
+OK: ui.autocad.preview.boundsHeightUsesRotation; actual=111.961524227066; expected=111.961524227066
+OK: ui.autocad.preview.readerAnnotations
+OK: ui.autocad.preview.dimensionShapes
+OK: ui.autocad.preview.rebarTextShape
+OK: ui.autocad.preview.rotatedElementShape
+OK: ui.autocad.preview.squareFallbackRotation
+OK: ui.autocad.preview.roundedWidthTextMeters; actual=≈ 0.517 m
+OK: ui.autocad.preview.roundedHeightTextMeters; actual=≈ 0.112 m
+OK: ui.plot.legacyWorksheetShape.created
+OK: ui.plot.legacyWorksheetShape.removed
+OK: ui.plot.legacyWorksheetShape.chartStillDraws
+OK: ui.plot.overlay.run
+OK: ui.plot.overlay.shapes
+OK: ui.plot.overlay.chartLayer
+OK: ui.plot.axisLabels.exists
+OK: ui.plot.axisLabels.text
+OK: ui.plot.axisLabels.italic
+OK: ui.plot.axisLabels.fontSize; actual=9.; expected=9.
+OK: ui.plot.axisLabels.insideFrame
+OK: ui.plot.overlay.loadCenter
+OK: ui.plot.overlay.clippedAxes
+OK: ui.plot.overlay.principal1ThroughCentroid
+OK: ui.plot.overlay.principal2ThroughCentroid
+OK: ui.plot.overlay.loadX; actual=1387.40267944336; expected=1387.40263670358
+OK: ui.plot.overlay.loadY; actual=304.831115722656; expected=304.831108594642
+OK: ui.plot.overlay.loadDx; actual=0.473443320148; expected=0.473400580373
+OK: ui.plot.overlay.loadDy; actual=1.082065597438; expected=1.082058469424
+OK: ui.plot.overlay.move.before
+OK: ui.plot.overlay.move.after
+OK: ui.plot.overlay.move.dx; actual=17.; expected=17.
+OK: ui.plot.overlay.move.dy; actual=11.; expected=11.
+RUN: TestGeneratedSourceDoesNotReuseAutoCADPreview
+OK: ui.plot.preview.title
+OK: ui.plot.generated.noPreviewFallback.error
+OK: ui.plot.generated.noPreviewFallback.title
+RUN: TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC
+OK: ui.plot.generatedWorst.message
+OK: ui.plot.generatedWorst.drawsCalculatedLc
+OK: ui.plot.generatedWorst.noImportTitle
+RUN: TestProfileDrivenPlotUsesSnapshotState
+OK: ui.profilePlot.message
+OK: ui.profilePlot.hasElementStateRows
+OK: ui.profilePlot.drawsLoadCase
+OK: ui.profilePlot.noImportTitle
+OK: ui.profilePlot.commonLoadReference
+RUN: TestMissingProfileStateDrawsGeometryOnly
+OK: ui.plot.missingState.run
+OK: ui.plot.missingState.noError
+OK: ui.plot.missingState.geometryTitle
+OK: ui.plot.missingState.note
+OK: ui.autocad.run.savedGeometry.message
+OK: ui.autocad.run.savedGeometry.noImportText
+OK: ui.autocad.run.savedGeometry.concreteX; actual=0.95; expected=0.95
+OK: ui.autocad.run.savedGeometry.concreteY; actual=-0.75; expected=-0.75
+OK: ui.autocad.run.savedGeometry.rebarX; actual=0.93; expected=0.93
+OK: ui.autocad.run.savedGeometry.rebarY; actual=-0.77; expected=-0.77
+OK: ui.autocad.run.savedGeometry.rebarText; actual=ALL: 4∅20
+OK: ui.loads.blankMoment.count
+OK: ui.loads.blankMoment.myZero; actual=0.; expected=0.
+OK: ui.loads.blankMoment.valid
+RUN: TestCircleWorkbookRunWritesResults
+OK: ui.run.message
+OK: ui.run.capacity.na
+OK: ui.run.direct.status
+OK: ui.run.strainPlane
+OK: ui.run.crack
+OK: ui.run.system.noLegacyMainInput
+OK: ui.run.system.materialDiagramControls
+OK: ui.strengthSummary.currentDepths
+OK: ui.strengthSummary.direct.noCapacityDepths
+OK: ui.results.elements.header
+OK: ui.results.elements.rows
+OK: ui.results.elements.noCombinationIndex
+OK: ui.results.elements.materialType
+OK: ui.results.elements.units
+OK: ui.results.elements.noGeometryDup
+OK: ui.results.elements.noPlaneDup
+OK: ui.results.elements.physicalStateAlign
+OK: ui.results.geometry.header
+OK: ui.results.geometry.rows
+OK: ui.results.strength.anchor
+OK: ui.results.crack.anchor
+OK: ui.results.stability.anchor
+OK: ui.results.geometry.position
+OK: ui.results.properties.position
+OK: ui.results.materialDiagrams.position
+OK: ui.results.annotations.position
+OK: ui.results.geometry.noSource
+OK: ui.results.geometry.noMaterialClass
+OK: ui.results.properties.header
+OK: ui.results.properties.hasStateEpsilon0
+OK: ui.results.properties.hasStateNeutralLine
+OK: ui.results.properties.noLegacyPlane
+OK: ui.results.properties.hasBounds
+OK: ui.results.properties.commonLoadReference
+OK: ui.results.properties.hasTransformedAxes
+OK: ui.results.properties.noLegacyTransformedAliases
+OK: ui.results.properties.noLcLoadReference
+OK: ui.results.properties.transformedArea.moduli; actual=0.092953028172; expected=0.092953028172
+OK: ui.results.properties.transformedCoreDistance.positive
+OK: ui.results.properties.transformedCoreDistance.axis1Sym; actual=0.042699438237; expected=0.042699438237
+OK: ui.results.properties.transformedCoreDistance.axis2Sym; actual=0.042699438237; expected=0.042699438237
+OK: ui.results.properties.transformedCoreDistanceXY.positive
+OK: ui.results.properties.concreteCoreDistanceXY.exists
+OK: ui.results.annotations.header
+OK: ui.results.annotations.rows
+OK: ui.results.materialDiagrams.header
+OK: ui.results.materialDiagrams.rows
+OK: ui.results.materialDiagrams.stateType
+OK: ui.results.materialDiagrams.role
+OK: ui.results.materialDiagrams.diagramId
+OK: ui.results.materialDiagrams.spec
+OK: ui.results.materialDiagrams.mode
+OK: ui.results.materialDiagrams.noPurpose
+OK: ui.results.materialDiagrams.noLoadCase
+OK: ui.results.materialDiagrams.usedStates
+OK: ui.plot.chart.created
+OK: ui.plot.title.comment
+OK: ui.plot.title.overlay
+OK: ui.profiles.topHeader.noDuplicateParameter
+OK: ui.profiles.lowerHeader.parameter
+OK: ui.profiles.pr3.default
+OK: ui.profiles.pr4.default
+OK: ui.profiles.visualizationStressPrecision.default
+RUN: TestThirtyCombinationsWithFiveStatesWriteSnapshot
+OK: ui.results.fullSnapshot.message
+OK: ui.results.fullSnapshot.geometry143
+OK: ui.results.fullSnapshot.elementRows
+OK: ui.results.fullSnapshot.LC_FULL_01.StrengthState
+OK: ui.results.fullSnapshot.LC_FULL_01.CapacityState
+OK: ui.results.fullSnapshot.LC_FULL_01.CrackedState
+OK: ui.results.fullSnapshot.LC_FULL_01.PreCrackState
+OK: ui.results.fullSnapshot.LC_FULL_01.PostCrackState
+OK: ui.results.fullSnapshot.LC_FULL_30.StrengthState
+OK: ui.results.fullSnapshot.LC_FULL_30.CapacityState
+OK: ui.results.fullSnapshot.LC_FULL_30.CrackedState
+OK: ui.results.fullSnapshot.LC_FULL_30.PreCrackState
+OK: ui.results.fullSnapshot.LC_FULL_30.PostCrackState
+OK: ui.results.fullSnapshot.propertiesRows
+OK: ui.results.fullSnapshot.materialRows
+OK: ui.loads.dynamicRange.count45
+OK: ui.results.layoutGuard.blocksCalculation
+OK: ui.results.layoutGuard.message
+RUN: TestExecutionReportFile
+OK: ui.executionReport.message
+OK: ui.executionReport.fileExists
+OK: ui.executionReport.content
+OK: ui.excelGuard.run
+OK: ui.excelGuard.calculation
+OK: ui.excelGuard.events
+OK: ui.excelGuard.screen
+OK: ui.excelGuard.alerts
+RUN: TestRectSetWorkbookRunWritesResults
+OK: ui.rectset.message
+OK: ui.rectset.result.status
+OK: ui.rectset.system.noLegacyRebarInput
+OK: ui.rectset.system.materialDiagramControls
+RUN: TestRectSetMomentUltimateStrainWorkbookPath
+INFO: ui.rectset.momentUltimate capacityStatus=OK; solutionMethod=UltimateStrain; lambda=2.14527150661377
+OK: ui.rectset.momentUltimate.message
+OK: ui.rectset.momentUltimate.capacityOk; actual=OK
+OK: ui.rectset.momentUltimate.method; actual=UltimateStrain
+OK: ui.rectset.momentUltimate.lambda
+OK: ui.rectset.momentUltimate.mxult
+OK: ui.strength.curvatureOutput.message
+OK: ui.strength.curvatureOutput.snapshotUnit; actual=1/m
+OK: ui.strength.curvatureOutput.stateHeaderKx
+OK: ui.strength.curvatureOutput.stateHeaderKy
+OK: ui.strength.curvatureOutput.capacityHeaderKx
+OK: ui.strength.curvatureOutput.capacityHeaderKy
+OK: ui.strength.curvatureOutput.stateKxValue; actual=0.002064151928; expected=0.002064151928
+OK: ui.strength.curvatureOutput.capacityKxValue; actual=0.009889470095; expected=0.009889470095
+RUN: TestRectSetPureBendingUltimateStrainWorkbookPath
+INFO: ui.rectset.pureBending direct=OK; capacity=OK; solutionMethod=UltimateStrain; lambda=3.04110064598931
+OK: ui.rectset.pureBending.message
+OK: ui.rectset.pureBending.directOk; actual=OK
+OK: ui.rectset.pureBending.capacityOk; actual=OK
+OK: ui.rectset.pureBending.method; actual=UltimateStrain
+OK: ui.rectset.pureBending.lambda
+RUN: TestRectSetPureBendingDirectStateWorkbookPath
+INFO: ui.rectset.pureBendingDirect direct=OK; capacity=OK
+OK: ui.rectset.pureBendingDirect.message
+OK: ui.rectset.pureBendingDirect.directOk; actual=OK
+OK: ui.rectset.pureBendingDirect.capacityOk; actual=OK
+RUN: TestRectSetAxialTensionExtensionFromWorkbookSettings
+INFO: ui.rectset.axial795 overall=FAIL; crack=FAIL
+INFO: ui.rectset.axial900 overall=FAIL; crack=N/A; extensionUsed=True
+OK: ui.rectset.axial795.overallCalculated
+OK: ui.rectset.axial795.crackCalculated
+OK: ui.rectset.axial900.finishedWithoutExtension
+OK: ui.rectset.axial900.crackNoNumFail
+OK: ui.rectset.axial900.crackedStateExtUsed; actual=yes
+OK: ui.rectset.axial900.crackedStateEquilibrium; actual=FAIL
+OK: ui.rectset.axial900.crackWidthSkipped; actual=N/A
+OK: ui.rectset.axial900.longitudinalSkipped; actual=N/A
+OK: ui.rectset.axial900.message
+OK: ui.rectset.axial900.extensionSnapshot; actual=True
+OK: ui.rectset.axial900.crackedStateExtensionDiagram
+OK: ui.rectset.axial900.reportCreated
+FAIL: ui.autocad.reference.converged
+OK: ui.autocad.reference.point
+OK: ui.autocad.reference.concreteCenterX; actual=132.941176470588; expected=132.941176470588
+OK: ui.autocad.reference.concreteCenterY; actual=168.823529411765; expected=168.823529411765
+OK: ui.autocad.reference.mxTransfer; actual=-168823529.411765; expected=-168823529.411765
+OK: ui.autocad.reference.myTransfer; actual=-132941176.470588; expected=-132941176.470588
+RUN: TestGoverningCombinationWritesDetailedResults
+INFO: ui.governing actual=LC_GOV; expected=LC_GOV
+OK: ui.governing.id
+OK: ui.governing.message
+OK: ui.validation.CapacitySolutionStrategy
+OK: ui.validation.nonCriticalMessages
+OK: ui.validation.capacitySearchMethod
+OK: ui.validation.crackCoverDistanceMode
+OK: ui.validation.crackInitiationLoadPath
+OK: ui.validation.autocadLabelMode
+OK: ui.validation.autocadNeutralLine
+OK: ui.validation.autocadPrincipalAxes
+OK: ui.validation.autocadLoadPoint
+OK: ui.validation.autocadContour
+OK: ui.validation.autocadCombination
+OK: ui.validation.plotLoadCase
+OK: ui.validation.loadProfileId
+OK: ui.validation.loadProfileId.noFormula
+OK: ui.validation.plotLabels
+OK: ui.validation.plotPrincipalAxes
+OK: ui.validation.plotAxisLabels
+OK: ui.validation.plotAxisLabelsFontSize.default; actual=7.5; expected=7.5
+OK: ui.validation.plotContour
+OK: ui.validation.plotRebarAnnotationEnabled
+OK: ui.validation.plotDimensionEnabled
+OK: ui.validation.plotRebarPlacement
+OK: ui.validation.plotDimensionPlacement
+OK: ui.validation.plotRebarTextUnits
+OK: ui.validation.plotDimensionTextUnits
+OK: ui.validation.plotTextHeightUnitDynamic
+OK: ui.validation.plotTextGapUnitDynamic
+OK: ui.validation.plotTextHeight.defaultRebar; actual=13.; expected=13.
+OK: ui.validation.plotTextHeight.defaultDimension; actual=13.; expected=13.
+OK: ui.validation.plotTextGap.defaultRebar; actual=9.; expected=9.
+OK: ui.validation.plotTextGap.defaultDimension; actual=9.; expected=9.
+OK: ui.validation.plotRebarLineEnabled
+OK: ui.validation.plotDimensionArrowType
+OK: ui.validation.plotDimensionArrowSize
+OK: ui.validation.geometrySource
+OK: ui.validation.units.forceInput
+OK: ui.validation.units.momentOutput
+OK: ui.validation.sign.n
+OK: ui.validation.circleLoc2row
+OK: ui.validation.circleLoc3row
+OK: ui.validation.rectSetSectionType
+OK: ui.validation.rectsetLoc2row
+OK: ui.validation.rectsetBind2row
+OK: ui.circle.key.rebarDiameter2
+OK: ui.circle.key.rebarDiameter3
+OK: ui.circle.key.rebarLoc2row
+OK: ui.circle.key.rebarLoc3row
+OK: ui.units.solverToleranceN.dynamic
+OK: ui.units.solverToleranceMx.dynamic
+OK: ui.units.solverToleranceMy.dynamic
+OK: ui.units.Capacity.SolutionStrategy; actual=-
+OK: ui.units.capacity.searchMethod; actual=-
+FAIL: ui.units.capacity.initialLambda; actual=1; expected=-
+FAIL: ui.units.capacity.toleranceLambda; actual=0.01; expected=-
+FAIL: ui.units.capacity.maxRetries; actual=0; expected=шт
+FAIL: ui.units.capacity.baseLoadSteps; actual=1; expected=шт
+OK: ui.units.capacity.toleranceStrain; actual=-
+FAIL: ui.units.capacity.maxLambda; actual=1024; expected=-
+FAIL: ui.units.capacity.solverIterations; actual=60; expected=шт
+OK: ui.units.meshStepX.dynamic
+OK: ui.units.meshStepY.dynamic
+OK: ui.units.zeroMomentPerDepth.dynamic
+OK: ui.circle.blankDiameter.noHiddenDefaults
+OK: ui.rectset.blankDiameterWithCount.skipsLine
+OK: ui.rectset.blankDiameterWithCount.dimensionsRemain
+OK: ui.rectset.zeroCountBlankDiameter.skipsLine
+OK: ui.rectset.zeroCountBlankDiameter.dimensionsRemain
+OK: ui.rounded.blankCounts.noHiddenDefaults
+OK: ui.clear.results.elements
+OK: ui.clear.results.geometry
+OK: ui.clear.results.properties
+OK: ui.clear.results.annotations
+OK: ui.clear.results.materialDiagrams
+OK: ui.clear.input
+TOTAL_WORKBOOK_UI: passed=301; failed=7; elapsedSec=49.421875
+
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.RunWorkbookInterfaceTests; 2026-10-01T19:10:52
+SOURCE_UNCHANGED: True

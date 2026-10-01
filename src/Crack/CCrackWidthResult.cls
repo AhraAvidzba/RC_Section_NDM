@@ -54,6 +54,7 @@ End Sub
 ' Downstream-слой работает с отдельным result-объектом и ResultMeta, не
 ' обращаясь к внутренним временным полям calculator-а.
 Public Sub InitializeFromCalculator(ByVal crack As CCrackWidthCalculator, ByVal meta As CResultMeta)
+    ResetData
     If meta Is Nothing Then
         mMeta.SetResult rsInternalError, rcInternalError, rkCrackWidth, _
             "Meta результата ширины трещины не сформирована."
@@ -187,3 +188,32 @@ End Property
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
+
+' Сбрасывает численный снимок, чтобы повторная инициализация без calculator-а
+' не оставляла ширину, коэффициенты и выбранные стержни прошлого сочетания.
+Private Sub ResetData()
+    mCrackWidth = 0#
+    mAllowableCrackWidth = 0#
+    mUtilization = 0#
+    mPhi1 = 0#
+    mPhi2 = 0#
+    mPhi3 = 0#
+    mPsiS = 0#
+    mSigmaS = 0#
+    mSigmaSCrc = 0#
+    mSteelEs = 0#
+    mAsTension = 0#
+    mAbt = 0#
+    mDsEquivalent = 0#
+    mCrackSpacingRaw = 0#
+    mCrackSpacing = 0#
+    mTensionRebarCount = 0
+    mTensionRebarIds = vbNullString
+    mSectionDepthH = 0#
+    mCoverA = 0#
+    mTensionDepth = 0#
+    mEffectiveZoneDepth = 0#
+    mCentralTensionBranch = False
+    mStopReason = vbNullString
+    mDiagnosticLog = vbNullString
+End Sub

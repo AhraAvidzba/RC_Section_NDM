@@ -1,0 +1,11 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: E6DBCA3E23F02EDCECA52DC858C71946A80F58130285015B888F2943DBCC4AE1
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_519a9a71978945cb89d3043eff537602\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit02NoPlotDiagnostic =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit02NoPlotDiagnostic; 2026-10-01T19:03:18
+EXCEL_AFTER_SUITE: pid=16672; workingSet=917819392; privateBytes=900558848; cpu=22.53125
+Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: LC1
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit02NoPlotDiagnostic; 2026-10-01T19:03:39
+SOURCE_UNCHANGED: True

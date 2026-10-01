@@ -16,8 +16,7 @@ Option Explicit
 ' уже посчитал для LC. Класс не запускает расчет устойчивости; его задача - быть
 ' stability-subtree внутри CCombinationResult и единым источником данных для Results.
 
-Public Status As String ' Пользовательский статус ветки устойчивости.
-Public ResultMeta As CResultMeta ' Типизированный статус устойчивости.
+Private mMeta As CResultMeta ' Единственная typed meta ветви устойчивости.
 Public Code As String ' Нормативная ветка SP35/SP63.
 Public Branch As String ' Диагностическое имя расчетной ветви.
 Public ReferenceX As Double ' X точки, относительно которой выполнен перенос нагрузок.
@@ -87,11 +86,10 @@ Private Sub Class_Initialize()
     Clear
 End Sub
 
-' Очищает stability branch и возвращает его в N/A.
+' Полностью сбрасывает meta и численные поля перед повторным заполнением.
 Public Sub Clear()
-    Status = "N/A"
-    Set ResultMeta = New CResultMeta
-    ResultMeta.SetNotApplicable rkStability
+    Set mMeta = New CResultMeta
+    mMeta.SetNotApplicable rkStability
     Code = vbNullString
     Branch = vbNullString
     ReferenceX = 0#
@@ -109,49 +107,95 @@ Public Sub Clear()
     CriticalForce = 0#
     ReserveFactor = 0#
     Utilization = 0#
+    Ncr1 = 0#
+    Ncr2 = 0#
+    Nultimate1 = 0#
+    Nultimate2 = 0#
+    Reserve1 = 0#
+    Reserve2 = 0#
+    Eta1 = 0#
+    Eta2 = 0#
+    PhiL1 = 0#
+    PhiL2 = 0#
+    PhiLTable1 = vbNullString
+    PhiLTable2 = vbNullString
+    PhiM1 = 0#
+    PhiM2 = 0#
+    PhiValue1 = 0#
+    PhiValue2 = 0#
+    PhiP1 = 0#
+    PhiP2 = 0#
+    Eccentricity1 = 0#
+    Eccentricity2 = 0#
+    AccidentalEcc1 = 0#
+    AccidentalEcc2 = 0#
+    EffectiveLength1 = 0#
+    EffectiveLength2 = 0#
+    Slenderness1 = 0#
+    Slenderness2 = 0#
+    Depth1 = 0#
+    Depth2 = 0#
+    Radius1 = 0#
+    Radius2 = 0#
+    CoreDistance1 = 0#
+    CoreDistance2 = 0#
+    Delta1 = 0#
+    Delta2 = 0#
+    Kb1 = 0#
+    Kb2 = 0#
+    Ks1 = 0#
+    Ks2 = 0#
+    StiffnessD1 = 0#
+    StiffnessD2 = 0#
+    PlaneBranch1 = vbNullString
+    PlaneBranch2 = vbNullString
+    PlaneApplicable1 = False
+    PlaneApplicable2 = False
+    PlanePassed1 = False
+    PlanePassed2 = False
 End Sub
 
-' Синхронизирует typed meta со строкой display-статуса для Results.
+' Сохраняет инженерную meta без отдельного изменяемого display-статуса.
 Public Sub SetMeta(ByVal meta As CResultMeta, Optional ByVal resultComment As String = vbNullString)
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
 
     If meta Is Nothing Then
-        Set ResultMeta = New CResultMeta
-        ResultMeta.SetResult rsInternalError, rcInternalError, rkStability, _
+        Set mMeta = New CResultMeta
+        mMeta.SetResult rsInternalError, rcInternalError, rkStability, _
             "Результат устойчивости не сформирован."
     Else
-        Set ResultMeta = meta.Clone
-        If Len(Trim$(resultComment)) > 0 Then ResultMeta.ResultComment = StabilityBranchDisplayName(resultComment)
+        Set mMeta = meta.Clone
+        If Len(Trim$(resultComment)) > 0 Then mMeta.ResultComment = StabilityBranchDisplayName(resultComment)
     End If
-    Status = policy.ExternalStatus(ResultMeta)
     Branch = StabilityBranchDisplayName(resultComment)
 End Sub
 
 ' Копирует результат CStabilityCalculator и формирует typed meta для summary.
 Public Sub InitializeFromCalculator(ByVal meta As CResultMeta, ByVal stability As CStabilityCalculator, _
         ByVal referenceXValue As Double, ByVal referenceYValue As Double)
+    Clear
     ReferenceX = referenceXValue
     ReferenceY = referenceYValue
 
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
     If meta Is Nothing Then
-        Set ResultMeta = New CResultMeta
-        ResultMeta.SetResult rsInternalError, rcInternalError, rkStability, _
+        Set mMeta = New CResultMeta
+        mMeta.SetResult rsInternalError, rcInternalError, rkStability, _
             "Результат устойчивости не сформирован."
     Else
-        Set ResultMeta = meta.Clone
+        Set mMeta = meta.Clone
     End If
-    Status = policy.ExternalStatus(ResultMeta)
 
     If stability Is Nothing Then
         Exit Sub
     End If
 
     Code = stability.Code
-    Branch = StabilityBranchDisplayName(stability.Branch)
-    If Len(Trim$(stability.StopReason)) > 0 Then Branch = stability.StopReason
+    ' Branch остается машинным ключом расчетной ветви. Причина отказа
+    ' принадлежит ResultComment, а не заменяет ключ для typed-потребителей.
+    Branch = stability.Branch
     DesignN = stability.DesignN
     DesignMx = stability.DesignMx
     DesignMy = stability.DesignMy
@@ -211,8 +255,8 @@ Public Sub InitializeFromCalculator(ByVal meta As CResultMeta, ByVal stability A
     PlaneApplicable2 = stability.PlaneApplicable2
     PlanePassed1 = stability.PlanePassed1
     PlanePassed2 = stability.PlanePassed2
-    If Len(Trim$(Branch)) > 0 And Len(Trim$(ResultMeta.ResultComment)) = 0 Then _
-        ResultMeta.ResultComment = Branch
+    If Len(Trim$(Branch)) > 0 And Len(Trim$(mMeta.ResultComment)) = 0 Then _
+        mMeta.ResultComment = Branch
 End Sub
 
 ' Переводит внутренние коды ветвей устойчивости в русский текст для Results.
@@ -246,10 +290,17 @@ End Sub
 
 ' Возвращает копию meta, чтобы вызывающий код не менял status-subtree напрямую.
 Public Property Get Meta() As CResultMeta
-    If ResultMeta Is Nothing Then
-        Set ResultMeta = New CResultMeta
-        ResultMeta.SetResult rsInternalError, rcInternalError, rkStability, _
+    If mMeta Is Nothing Then
+        Set mMeta = New CResultMeta
+        mMeta.SetResult rsInternalError, rcInternalError, rkStability, _
             "Результат устойчивости не сформирован."
     End If
-    Set Meta = ResultMeta.Clone
+    Set Meta = mMeta.Clone
+End Property
+
+' Display-статус всегда получается из meta, без независимого mutable поля.
+Public Property Get Status() As String
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    Status = policy.ExternalStatus(mMeta)
 End Property

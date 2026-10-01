@@ -169,7 +169,7 @@ Public Function Calculate(ByVal section As CSectionModel, _
 
     Dim searchResult As CLimitSearchResult
     Set searchResult = coordinator.ExecuteCapacity(request)
-    result.InitializeFromSearch searchResult, loadPath, statusPolicy, _
+    result.InitializeFromSearch searchResult, loadPath, _
         pureAxialForMethod, loadReferenceX, loadReferenceY, momentFilter, _
         concreteDepthForMx, concreteDepthForMy
 

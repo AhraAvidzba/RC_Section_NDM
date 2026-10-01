@@ -20,9 +20,17 @@ $fixturePath = Join-Path $fixtureRoot "RC_Section_NDM.xlsm"
 Copy-Item -LiteralPath $sourcePath -Destination $fixturePath
 $printAreas = @(Get-WorkbookPrintAreas $fixturePath)
 $lines = New-Object System.Collections.Generic.List[string]
+$fullReport = Join-Path $root $ReportPath
+New-Item -ItemType Directory -Force -Path (Split-Path -Parent $fullReport) | Out-Null
 $excel = $null
 $workbook = $null
 $failed = $false
+
+# Сохраняет ход прогона до COM-вызова: при зависании видно последнюю suite,
+# а уже завершенные проверки не теряются вместе с тестовым процессом Excel.
+function Save-Progress {
+    $lines | Set-Content -LiteralPath $fullReport -Encoding UTF8
+}
 
 # Находит единственную строку настройки: неизвестный формат не заменяет
 # настройку другим default и не позволяет получить ложный Off-прогон.
@@ -46,6 +54,7 @@ try {
     $lines.Add("SOURCE_SHA256: $sourceHash")
     $lines.Add("FIXTURE: $fixturePath")
     $lines.Add("GLOBAL_MODE: $SettingKey=$Mode; explicit-On tests retain their setup")
+    Save-Progress
     $excel = New-Object -ComObject Excel.Application
     $excel.Visible = [bool]$Visible
     $excel.DisplayAlerts = $false
@@ -70,16 +79,23 @@ try {
     foreach ($macro in $macros) {
         $workbook = $excel.Workbooks.Open($fixturePath, $null, $true)
         $lines.Add("===== $macro =====")
+        $lines.Add("SUITE_STARTED: $macro; $([DateTime]::Now.ToString('s'))")
+        Save-Progress
         if ([string](Get-ModeSettingCell $workbook $SettingKey).Value2 -ne $Mode) {
             throw "Перед suite $macro не сохранено требуемое значение $Mode."
         }
         $result = [string]$excel.Run("'RC_Section_NDM.xlsm'!$macro")
+        foreach ($process in @(Get-Process EXCEL -ErrorAction SilentlyContinue)) {
+            $lines.Add("EXCEL_AFTER_SUITE: pid=$($process.Id); workingSet=$($process.WorkingSet64); privateBytes=$($process.PrivateMemorySize64); cpu=$($process.CPU)")
+        }
         foreach ($line in ($result -split "`r?`n")) {
             $lines.Add($line)
             if ($line -match "failed=([1-9][0-9]*)|^FAIL:|RUNTIME ERROR") { $failed = $true }
         }
         $modeAfter = [string](Get-ModeSettingCell $workbook $SettingKey).Value2
         $lines.Add("MODE_AFTER_SUITE: $modeAfter")
+        $lines.Add("SUITE_FINISHED: $macro; $([DateTime]::Now.ToString('s'))")
+        Save-Progress
         if ($modeAfter -ne $Mode) {
             $lines.Add("SUITE_MODE_OVERRIDE: explicit test setup left $modeAfter; changes discarded on close")
         }
@@ -94,13 +110,17 @@ try {
     $failed = $true
     $lines.Add("SCRIPT ERROR: $($_.Exception.Message)")
 } finally {
-    if ($workbook) { $workbook.Close($false); [Runtime.InteropServices.Marshal]::ReleaseComObject($workbook) | Out-Null }
-    if ($excel) { $excel.Quit(); [Runtime.InteropServices.Marshal]::ReleaseComObject($excel) | Out-Null }
+    if ($workbook) {
+        try { $workbook.Close($false) } catch { $lines.Add("CLEANUP ERROR: workbook; $($_.Exception.Message)") }
+        [Runtime.InteropServices.Marshal]::ReleaseComObject($workbook) | Out-Null
+    }
+    if ($excel) {
+        try { $excel.Quit() } catch { $lines.Add("CLEANUP ERROR: Excel; $($_.Exception.Message)") }
+        [Runtime.InteropServices.Marshal]::ReleaseComObject($excel) | Out-Null
+    }
     [GC]::Collect()
     [GC]::WaitForPendingFinalizers()
-    $fullReport = Join-Path $root $ReportPath
-    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $fullReport) | Out-Null
-    $lines | Set-Content -LiteralPath $fullReport -Encoding UTF8
+    Save-Progress
     $lines | Where-Object { $_ -match "^SOURCE|^FIXTURE|^GLOBAL_MODE|^TOTAL|^FAIL:|^SCRIPT ERROR|^RUNTIME ERROR|^MODE_AFTER" }
 }
 if ($failed) { exit 1 }

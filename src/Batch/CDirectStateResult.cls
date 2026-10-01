@@ -10,144 +10,81 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Результат прямого решения НДС одного сочетания
+' Инженерный результат прямого НДС одного сочетания
 ' ==========================================================================
-' CDirectStateResult хранит все данные прямого StateSolution, которые раньше
-' жили только в плоских полях CCombinationResult: внешний статус, typed ResultMeta,
-' признак использования extension диаграммы, найденную плоскость деформаций,
-' внутренние усилия, невязки и экстремальные деформации/напряжения.
-'
-' Класс не запускает solver и не принимает расчетных решений. Он является узлом
-' result-tree для прямого НДС, а внешний статус получается из ResultMeta через
-' единую CResultStatusPolicy.
+' Хранит ссылку на канонический CSectionStateResult и итоговую meta проверки
+' модели прочности. Плоскость, усилия, невязки и экстремумы принадлежат State
+' и не дублируются здесь. Класс не запускает solver; display формирует policy.
 
-Public Status As String ' Пользовательский статус direct-state блока: OK/FAIL/NumFail/InputErr/N/A.
-Public ResultMeta As CResultMeta ' Типизированная причина результата direct-state.
-Public ExtensionUsed As Boolean ' True, если фактический solve дошел до numerical extension диаграммы.
-Public ExtensionEnabled As Boolean ' Снимок настройки General.DiagramExtension для этого LC.
-Public StateAvailable As Boolean ' True, если есть плоскость деформаций для вывода.
-Public StateConverged As Boolean ' True, если solver сошелся численно.
-Public Epsilon0 As Double ' epsilon0 в начале внутренней системы координат модели.
-Public KappaX As Double ' kappaX, 1/мм.
-Public KappaY As Double ' kappaY, 1/мм.
-Public Nint As Double ' Внутреннее N найденного состояния, Н.
-Public Mxint As Double ' Внутренний Mx найденного состояния, Н*мм.
-Public Myint As Double ' Внутренний My найденного состояния, Н*мм.
-Public ResidualN As Double ' Невязка равновесия по N.
-Public ResidualMx As Double ' Невязка равновесия по Mx.
-Public ResidualMy As Double ' Невязка равновесия по My.
-Public Iterations As Long ' Число итераций solver-а для последней попытки.
-Public MinConcreteStrain As Double ' Минимальная деформация бетонных волокон.
-Public MaxConcreteStrain As Double ' Максимальная деформация бетонных волокон.
-Public MaxConcreteCompressionStress As Double ' Максимальное по модулю сжатие бетона для summary.
-Public MinSteelStrain As Double ' Минимальная деформация арматуры.
-Public MaxSteelStrain As Double ' Максимальная деформация арматуры.
+Private mMeta As CResultMeta ' Инженерный итог проверки прямого НДС.
+Private mState As CSectionStateResult ' Единственный численный снимок named state.
+Private mExtensionEnabled As Boolean ' Настройка глобального Extension при запуске.
 
-' Создает безопасный N/A-result, чтобы пустой direct-state не превращался в CalcErr.
+' Создает нейтральный result без фиктивного физического состояния.
 Private Sub Class_Initialize()
     Clear
 End Sub
 
-' Сбрасывает объект к нейтральному состоянию, когда direct-state еще не запрошен.
+' Сбрасывает состояние и meta для безопасного повторного использования.
 Public Sub Clear()
-    Status = "N/A"
-    Set ResultMeta = New CResultMeta
-    ResultMeta.SetNotApplicable rkDirectState
-    ExtensionUsed = False
-    ExtensionEnabled = False
-    StateAvailable = False
-    StateConverged = False
-    Epsilon0 = 0#
-    KappaX = 0#
-    KappaY = 0#
-    Nint = 0#
-    Mxint = 0#
-    Myint = 0#
-    ResidualN = 0#
-    ResidualMx = 0#
-    ResidualMy = 0#
-    Iterations = 0
-    MinConcreteStrain = 0#
-    MaxConcreteStrain = 0#
-    MaxConcreteCompressionStress = 0#
-    MinSteelStrain = 0#
-    MaxSteelStrain = 0#
+    Set mState = Nothing
+    Set mMeta = New CResultMeta
+    mMeta.SetNotApplicable rkDirectState
+    mExtensionEnabled = False
 End Sub
 
-' Устанавливает typed meta без изменения численных данных state.
+' Устанавливает итоговую meta; пустая meta является нарушением контракта.
 Public Sub SetMeta(ByVal meta As CResultMeta)
-    Dim policy As CResultStatusPolicy
-    Set policy = New CResultStatusPolicy
-
     If meta Is Nothing Then
-        Set ResultMeta = New CResultMeta
-        ResultMeta.SetResult rsInternalError, rcInternalError, rkDirectState, _
-            "DirectState получил пустой ResultMeta."
+        Set mMeta = New CResultMeta
+        mMeta.SetResult rsInternalError, rcInternalError, rkDirectState, _
+            "Не сформирован результат проверки прямого НДС."
     Else
-        Set ResultMeta = meta.Clone
+        Set mMeta = meta.Clone
     End If
-    Status = policy.ExternalStatus(ResultMeta)
 End Sub
 
-' Запоминает данные direct-state, полученные напрямую из CSectionSolver.
-Public Sub StoreSolver(ByVal solver As CSectionSolver, ByVal extensionEnabledValue As Boolean)
-    If solver Is Nothing Then Exit Sub
-
-    ExtensionEnabled = extensionEnabledValue
-    StateAvailable = True
-    StateConverged = solver.Converged
-    Epsilon0 = solver.Epsilon0
-    KappaX = solver.KappaX
-    KappaY = solver.KappaY
-    Nint = solver.Nint
-    Mxint = solver.Mxint
-    Myint = solver.Myint
-    ResidualN = solver.ResidualN
-    ResidualMx = solver.ResidualMx
-    ResidualMy = solver.ResidualMy
-    Iterations = solver.Iterations
-    MinConcreteStrain = solver.MinConcreteStrain
-    MaxConcreteStrain = solver.MaxConcreteStrain
-    MaxConcreteCompressionStress = solver.MaxConcreteCompressionStress
-    MinSteelStrain = solver.MinSteelStrain
-    MaxSteelStrain = solver.MaxSteelStrain
-End Sub
-
-' Запоминает данные direct-state, если они пришли из reusable CSectionStateResult.
+' Привязывает result к сохраненному State без копии численных полей.
+' Ошибка получения State сохраняется в его meta, а не превращается в успех.
 Public Sub StoreStateResult(ByVal stateResult As CSectionStateResult, ByVal extensionEnabledValue As Boolean)
-    If stateResult Is Nothing Then Exit Sub
+    Set mState = stateResult
+    mExtensionEnabled = extensionEnabledValue
+    If stateResult Is Nothing Then
+        SetMeta Nothing
+    Else
+        SetMeta stateResult.ResultMeta
+    End If
+End Sub
 
-    ExtensionEnabled = extensionEnabledValue
-    ExtensionUsed = stateResult.ExtensionUsed
-    StateAvailable = True
-    StateConverged = stateResult.Converged
-    Epsilon0 = stateResult.Epsilon0
-    KappaX = stateResult.KappaX
-    KappaY = stateResult.KappaY
-    Nint = stateResult.Nint
-    Mxint = stateResult.Mxint
-    Myint = stateResult.Myint
-    ResidualN = stateResult.ResidualN
-    ResidualMx = stateResult.ResidualMx
-    ResidualMy = stateResult.ResidualMy
-    Iterations = stateResult.IterationCount
-    MinConcreteStrain = stateResult.MinConcreteStrain
-    MaxConcreteStrain = stateResult.MaxConcreteStrain
-    MaxConcreteCompressionStress = Abs(stateResult.MinConcreteStress)
-    MinSteelStrain = stateResult.MinSteelStrain
-    MaxSteelStrain = stateResult.MaxSteelStrain
-    Set ResultMeta = stateResult.ResultMeta.Clone
+' Возвращает сохраненное State. При незапрошенном расчете возвращает Nothing.
+Public Property Get StateResult() As CSectionStateResult
+    Set StateResult = mState
+End Property
+
+' Meta возвращается копией: потребитель не может изменить итог проверки.
+Public Property Get Meta() As CResultMeta
+    Set Meta = mMeta.Clone
+End Property
+
+' Display и признаки доступности вычисляются из канонических объектов.
+Public Property Get Status() As String
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
-    Status = policy.ExternalStatus(ResultMeta)
-End Sub
+    Status = policy.ExternalStatus(mMeta)
+End Property
 
-' Возвращает копию typed meta, чтобы внешний код не менял состояние result-tree.
-Public Property Get Meta() As CResultMeta
-    If ResultMeta Is Nothing Then
-        Set ResultMeta = New CResultMeta
-        ResultMeta.SetResult rsInternalError, rcInternalError, rkDirectState, _
-            "DirectState ResultMeta не сформирован."
-    End If
-    Set Meta = ResultMeta.Clone
+Public Property Get StateAvailable() As Boolean
+    StateAvailable = Not mState Is Nothing
+End Property
+
+Public Property Get StateConverged() As Boolean
+    If Not mState Is Nothing Then StateConverged = mState.Converged
+End Property
+
+Public Property Get ExtensionUsed() As Boolean
+    If Not mState Is Nothing Then ExtensionUsed = mState.ExtensionUsed
+End Property
+
+Public Property Get ExtensionEnabled() As Boolean
+    ExtensionEnabled = mExtensionEnabled
 End Property

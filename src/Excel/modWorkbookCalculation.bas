@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modWorkbookCalculation"
+Attribute VB_Name = "modWorkbookCalculation"
 Option Explicit
 
 ' ==========================================================================
@@ -670,7 +670,7 @@ Private Function EstimatedNamedStateCountForOutput(ByVal batch As CBatchSectionC
     Dim i As Long
     For i = 1 To batch.Count
         EstimatedNamedStateCountForOutput = EstimatedNamedStateCountForOutput + _
-            EstimatedNamedStateCountForProfile(batch.ProfileId(i), profiles)
+            EstimatedNamedStateCountForProfile(batch.InputProfileId(i), profiles)
     Next i
 End Function
 
@@ -807,7 +807,7 @@ Private Function CombinationListForReport(ByVal batch As CBatchSectionCalculator
     Dim i As Long
     For i = 1 To batch.Count
         lines.Add CStr(i) & ". " & batch.CombinationID(i) & _
-            "; profile=" & batch.ProfileId(i) & _
+            "; profile=" & batch.InputProfileId(i) & _
             "; N=" & ReportForceText(batch.N(i), units) & _
             "; Mx=" & ReportMxText(batch.Mx(i), units) & _
             "; My=" & ReportMyText(batch.My(i), units) & _
