@@ -481,12 +481,8 @@ Private Function NamedStateStatus(ByVal batch As CBatchSectionCalculator, ByVal 
     Set stateResult = batch.FindNamedState(index, stateType)
     If stateResult Is Nothing Then
         NamedStateStatus = policy.NotApplicable
-    ElseIf Len(stateResult.Status) > 0 Then
-        NamedStateStatus = policy.DisplayStatus(stateResult.Status)
-    ElseIf Not stateResult.Converged Then
-        NamedStateStatus = policy.NumFail
     Else
-        NamedStateStatus = policy.OK
+        NamedStateStatus = policy.StatusFromMeta(stateResult.ResultMeta)
     End If
 End Function
 
@@ -517,15 +513,7 @@ Private Sub PutCrackedStateData(ByRef data() As Variant, ByVal rowIndex As Long,
     End If
 
     data(rowIndex, COL_CRACK_STATE_DIAGEXT) = ExtensionUsedText(batch, index, stateResult)
-    If Len(stateResult.Status) > 0 Then
-        data(rowIndex, COL_CRACK_STATE_STATUS) = policy.DisplayStatus(stateResult.Status)
-    ElseIf Not stateResult.Converged Then
-        data(rowIndex, COL_CRACK_STATE_STATUS) = policy.NumFail
-    ElseIf stateResult.ExtensionUsed Then
-        data(rowIndex, COL_CRACK_STATE_STATUS) = policy.Fail
-    Else
-        data(rowIndex, COL_CRACK_STATE_STATUS) = policy.OK
-    End If
+    data(rowIndex, COL_CRACK_STATE_STATUS) = CrackCurrentStateStatusText(batch, index, policy)
 End Sub
 
 ' Возвращает True только для такого CrackedState, на котором действительно
