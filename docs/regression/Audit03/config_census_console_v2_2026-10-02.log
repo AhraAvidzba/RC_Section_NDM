@@ -1,0 +1,1 @@
+CONFIG_CENSUS: cells=35617; ranges=14; validations=72; source unchanged=True; output=docs/regression/Audit03/config_census_2026-10-02.json
