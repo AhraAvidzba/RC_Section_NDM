@@ -207,6 +207,14 @@ End Function
 ' Настройка общая для всех встроенных форм и не относится к конкретной
 ' geometry/rebar/annotation реализации.
 Public Function MeshBoundarySubdivisions(ByVal settings As CSystemSettingsReader) As Long
+    If settings Is Nothing Then Err.Raise vbObjectError + 4139, "CSectionTypeRegistry", "Настройки разбиения бетонной сетки не переданы."
+    If settings.HasKey("Mesh.BoundarySubdivisions") Then
+        Dim rawValue As String
+        rawValue = Trim$(settings.GetRawString("Mesh.BoundarySubdivisions"))
+        If Len(rawValue) = 0 Or UCase$(rawValue) = "TODO" Then Err.Raise vbObjectError + 4139, "CSectionTypeRegistry", _
+            "Mesh.BoundarySubdivisions не задан: введите целое число не меньше 1 на листе Config."
+    End If
     MeshBoundarySubdivisions = settings.GetLong("Mesh.BoundarySubdivisions", 1)
-    If MeshBoundarySubdivisions < 1 Then MeshBoundarySubdivisions = 1
+    If MeshBoundarySubdivisions < 1 Then Err.Raise vbObjectError + 4139, "CSectionTypeRegistry", _
+        "Mesh.BoundarySubdivisions должен быть целым числом не меньше 1. Проверьте значение на листе Config."
 End Function

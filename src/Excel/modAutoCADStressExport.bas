@@ -36,6 +36,9 @@ Private Const DEFAULT_CONTOUR_LAYER As String = "RC_NDM_Contour"
 Private Const CONTOUR_LAYER_COLOR_INDEX As Long = 4 ' AutoCAD ColorIndex 4 - голубой/cyan для нового слоя параметрического контура.
 Private Const CONTOUR_POINT_TOLERANCE As Double = 0.000001
 
+' Экспортирует выбранное сохраненное НДС и его оформление в активный чертеж.
+' Читает Results, профиль отображения и единицы; решатель не вызывается,
+' ошибки доступа или отсутствующего snapshot показываются пользователю.
 Public Sub ExportSectionStressToAutoCAD()
     On Error GoTo Failed
 
@@ -173,6 +176,9 @@ Private Function DeleteAutoCADEntitiesOnLayers(ByVal doc As Object, ByVal layers
     Next i
 End Function
 
+' Собирает контекст экспорта из последнего snapshot: геометрию, значения
+' элементов, плоскость деформаций и предупреждение о физической допустимости.
+' Профиль выбирает state/величину; текущий ввод геометрии не заменяет Results.
 Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
         ByVal units As CUnitSystem, ByVal principalAxesMode As String, _
         ByRef section As CSectionModel, ByRef resultByID As Object, ByRef physicalStateByID As Object, ByRef combinationID As String, _
@@ -207,6 +213,9 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
         loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, extensionUsed, stateWarningText
 End Sub
 
+' Восстанавливает CSectionModel из таблицы Results в внутренних единицах.
+' Сохраняет реальные A/I импортированных элементов, отдельно от оболочки
+' отображения; пустой snapshot отклоняется до чтения строк.
 Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optional ByVal sourceType As String = "Results") As CSectionModel
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
@@ -297,6 +306,8 @@ Private Function ReadProfileIdForLoadCase(ByVal workbook As Object, ByVal combin
     End If
 End Function
 
+' Ищет профиль LC в сохраненной поэлементной таблице. Пустой ответ означает,
+' что профиль надо искать в свойствах LC; модель и расчет не создаются.
 Private Function ReadProfileIdFromElementResults(ByVal workbook As Object, ByVal combinationID As String) As String
     On Error GoTo Failed
     Dim data As Variant
@@ -316,6 +327,8 @@ Private Function ReadProfileIdFromElementResults(ByVal workbook As Object, ByVal
 Failed:
 End Function
 
+' Находит текстовое свойство выбранного LC в длинной таблице параметров.
+' Не подставляет значение из текущего ввода при отсутствии свойства snapshot.
 Private Function ReadLoadCasePropertyText(ByVal workbook As Object, ByVal combinationID As String, ByVal propertyName As String) As String
     On Error GoTo Failed
     Dim data As Variant
@@ -337,6 +350,9 @@ Private Function ReadLoadCasePropertyText(ByVal workbook As Object, ByVal combin
 Failed:
 End Function
 
+' Отбирает Stress/Strain и PhysicalState элементов только для выбранных LC
+' и named-state. Отсутствие рассчитанного состояния дает адресную ошибку,
+' а не незаметную замену результатом другого сочетания.
 Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal resultType As String, _
         ByRef combinationID As String, ByVal stateType As String, _
         ByVal resultByID As Object, ByVal physicalStateByID As Object)
@@ -381,6 +397,9 @@ Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal res
         MissingExportStateMessage(combinationID, stateType)
 End Sub
 
+' Читает сохраненную плоскость, точку нагрузки и выбранные главные оси.
+' Переводит длины/кривизны из единиц snapshot и готовит предупреждение о
+' несошедшемся либо вспомогательном НДС; равновесие повторно не ищется.
 Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal units As CUnitSystem, _
         ByVal combinationID As String, ByVal stateType As String, ByVal principalAxesMode As String, _
         ByRef epsilon0 As Double, ByRef kappaX As Double, _
@@ -472,6 +491,8 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
     End Select
 End Sub
 
+' Объясняет отсутствие выбранного state, различая выключенный расчет трещин
+' и отсутствие пороговой точки. Это подсказка экспорта, не назначение статуса.
 Private Function MissingExportStateMessage(ByVal combinationID As String, ByVal stateType As String) As String
     MissingExportStateMessage = "Запрашиваемое состояние """ & stateType & _
         """ не найдено в Results для AutoCAD export, сочетание " & combinationID & "."
@@ -489,6 +510,8 @@ Private Function MissingExportStateMessage(ByVal combinationID As String, ByVal 
     End If
 End Function
 
+' Определяет принадлежность named-state к трещинам для сообщения экспорта.
+' Неизвестное имя не получает ложный crack-specific совет.
 Private Function IsCrackExportState(ByVal stateType As String) As Boolean
     On Error GoTo NotCrackState
     Select Case SectionStateTypeFromText(stateType)
@@ -498,6 +521,8 @@ Private Function IsCrackExportState(ByVal stateType As String) As Boolean
 NotCrackState:
 End Function
 
+' Проверяет, запрошены ли трещины профилем LC, указанным в snapshot.
+' Используется только для объяснения отсутствующей визуализации.
 Private Function ExportCombinationHasCrackWidth(ByVal combinationID As String) As Boolean
     On Error GoTo Failed
     Dim workbook As Object
@@ -513,6 +538,8 @@ Private Function ExportCombinationHasCrackWidth(ByVal combinationID As String) A
 Failed:
 End Function
 
+' Читает выбранное определяющее сочетание из готовой batch-сводки.
+' При отсутствии метаданных вызывающий слой сам выбирает сохраненный fallback LC.
 Private Function ReadGoverningCombinationID(ByVal workbook As Object) As String
     On Error GoTo Failed
     Dim anchor As Object
@@ -527,6 +554,8 @@ Private Function SafeText(ByVal value As Variant) As String
     SafeText = CStr(value)
 End Function
 
+' Распознает сохраненный логический признак snapshot, включая текст Excel.
+' Ошибка ячейки не трактуется как доказанное использование расширения.
 Private Function SafeBoolean(ByVal value As Variant) As Boolean
     If IsError(value) Then Exit Function
     If VarType(value) = vbBoolean Then
@@ -539,6 +568,8 @@ Private Function SafeBoolean(ByVal value As Variant) As Boolean
     End Select
 End Function
 
+' Переводит три вида сохраненных геометрических величин через CUnitSystem.
+' Без адаптера вход считается уже внутренним; это контракт вспомогательного API.
 Private Function OutputLengthToInternal(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputLengthToInternal = value Else OutputLengthToInternal = units.OutputLengthToInternal(value)
 End Function
@@ -551,6 +582,8 @@ Private Function OutputFourthPowerLengthToInternal(ByVal value As Double, ByVal 
     If units Is Nothing Then OutputFourthPowerLengthToInternal = value Else OutputFourthPowerLengthToInternal = units.OutputFourthPowerLengthToInternal(value)
 End Function
 
+' Разрешает Worst через сохраненную сводку/таблицы либо принимает точный LC ID.
+' Пустой выбор и отсутствие рассчитанных сочетаний отклоняются явно.
 Private Function ResolveExportCombinationID(ByVal workbook As Object, ByVal settingValue As String) As String
     Dim valueText As String
     valueText = Trim$(settingValue)
@@ -609,6 +642,8 @@ Private Function FirstCalculatedLoadCaseFromResults(ByVal workbook As Object) As
 Failed:
 End Function
 
+' Проверяет, есть ли в Variant-таблице заголовок и строка данных. Локальный
+' перехват относится только к отсутствующему/непрямоугольному массиву.
 Private Function HasResultTableRows(ByVal data As Variant) As Boolean
     On Error GoTo Failed
     HasResultTableRows = (UBound(data, 1) >= 2 And UBound(data, 2) >= 1)
@@ -617,6 +652,8 @@ Failed:
     HasResultTableRows = False
 End Function
 
+' Находит обязательную колонку по смысловому имени без суффикса единиц.
+' Отсутствующая колонка дает ошибку структуры Results до индексации данных.
 Private Function ResultColumn(ByRef data As Variant, ByVal headerName As String) As Long
     Dim colIndex As Long
     For colIndex = 1 To UBound(data, 2)
@@ -629,7 +666,7 @@ Private Function ResultColumn(ByRef data As Variant, ByVal headerName As String)
 End Function
 
 ' Геометрический snapshot теперь явно пишет статус интерпретации оболочки.
-' Старый ShapeType поддерживается только для чтения уже существующих Results.
+' Допускает ShapeType в сохраненной таблице без GeometryInterpretationStatus.
 Private Function GeometryStatusColumn(ByRef data As Variant) As Long
     On Error Resume Next
     GeometryStatusColumn = ResultColumn(data, "GeometryInterpretationStatus")
@@ -642,6 +679,8 @@ Private Function GeometryStatusColumn(ByRef data As Variant) As Long
     On Error GoTo 0
 End Function
 
+' Отделяет имя колонки от единиц после запятой, чтобы смена output-единиц
+' не меняла поиск обязательного поля в сохраненной таблице.
 Private Function ResultHeaderBase(ByVal headerText As String) As String
     Dim commaPos As Long
     commaPos = InStr(1, headerText, ",", vbTextCompare)
@@ -729,6 +768,8 @@ Private Function OutputFourthPowerLengthToInternalByUnit(ByVal value As Double, 
     OutputFourthPowerLengthToInternalByUnit = value * LengthFactorToMmByUnit(baseUnit) ^ 4
 End Function
 
+' Возвращает масштаб сохраненной длины к миллиметрам. Неизвестная подпись
+' единицы прерывает экспорт, чтобы не построить чертеж с неверным размером.
 Private Function LengthFactorToMmByUnit(ByVal unitText As String) As Double
     Select Case LCase$(Trim$(unitText))
         Case "mm": LengthFactorToMmByUnit = 1#
@@ -738,6 +779,8 @@ Private Function LengthFactorToMmByUnit(ByVal unitText As String) As Double
     End Select
 End Function
 
+' Возвращает масштаб площади snapshot к мм2; принимает только известные
+' единицы площади и не угадывает масштаб по численному значению.
 Private Function AreaFactorToMm2ByUnit(ByVal unitText As String) As Double
     Select Case LCase$(Trim$(unitText))
         Case "mm2": AreaFactorToMm2ByUnit = 1#
@@ -756,6 +799,9 @@ Private Function OutputCurvatureToInternalByUnit(ByVal value As Double, ByVal un
     End Select
 End Function
 
+' Строит геометрию, подписи, оси и нулевую линию по готовому Results snapshot
+' в активном документе AutoCAD. Использует сохраненные размеры элементов;
+' экспорт не читает заново исходное сечение и не запускает решатель НДС.
 Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
         ByVal resultByID As Object, ByVal physicalStateByID As Object, _
         ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double, _
@@ -1127,6 +1173,8 @@ Private Sub DrawStateWarning(ByVal ms As Object, ByVal section As CSectionModel,
         MaxDouble(8#, 0.035 * sectionSize), EXTENSION_WARNING_LAYER, 1
 End Sub
 
+' Возвращает результат конкретного расчетного элемента из выбранного state.
+' Отсутствующее значение является неполным snapshot, а не нулевым напряжением.
 Private Function LookupResultValue(ByVal resultByID As Object, ByVal elementID As String) As Double
     If resultByID.Exists(elementID) Then
         LookupResultValue = CDbl(resultByID.Item(elementID))
@@ -1174,6 +1222,9 @@ Private Function FormatResultValue(ByVal value As Double, ByVal precision As Lon
     FormatResultValue = Replace$(Format$(value, pattern), ",", ".")
 End Function
 
+' Рисует выбранные главные оси через сохраненный центр и маркер точки нагрузки.
+' Длина линий зависит от габарита только для оформления; координаты/угол
+' берутся из Results и не пересчитывают геометрические характеристики.
 Private Sub DrawCentroidAxesAndLoadPoint(ByVal ms As Object, ByVal section As CSectionModel, _
         ByVal centroidX As Double, ByVal centroidY As Double, ByVal principalAngle As Double, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
@@ -1232,6 +1283,9 @@ Private Function ActiveAutoCADDocument(ByVal acad As Object) As Object
     End If
 End Function
 
+' Собирает настройки слоев, цветов, подписей и главных осей для одного экспорта.
+' Общий settings-reader проверяет типы, профиль Results выбирает величину/state;
+' этот набор управляет только построением и не меняет расчетные материалы.
 Private Function ReadAutoCADExportSettings(ByVal settings As CSystemSettingsReader) As TAutoCADExportSettings
     With ReadAutoCADExportSettings
         .ConcreteLayer = settings.GetString("AutoCAD.Layer.Concrete", "Concrete")
@@ -1290,6 +1344,8 @@ Private Function PrincipalAxesModeDraws(ByVal axesMode As String) As Boolean
     PrincipalAxesModeDraws = (StrComp(axesMode, "None", vbTextCompare) <> 0)
 End Function
 
+' Определяет, нужны ли расчетные имена элементов в выбранном режиме подписей.
+' Режим только значений не добавляет имена, выключенные подписи не рисуются.
 Private Function AutoCADLabelModeIncludesNames(ByVal labelMode As String) As Boolean
     Select Case LCase$(Trim$(labelMode))
         Case "namesandvalues"
@@ -1302,6 +1358,8 @@ Private Function AutoCADLabelModeIncludesNames(ByVal labelMode As String) As Boo
     End Select
 End Function
 
+' Определяет рамку чертежа по бетонным элементам, учитывая их поворот и размер.
+' Пустая модель отклоняется явно; арматура не заменяет отсутствующий бетон.
 Private Sub GetSectionBounds(ByVal section As CSectionModel, ByRef minX As Double, ByRef maxX As Double, _
         ByRef minY As Double, ByRef maxY As Double)
     If section Is Nothing Then Err.Raise vbObjectError + 4340, "GetSectionBounds", "Модель сечения не передана."
@@ -1317,6 +1375,9 @@ Private Sub GetSectionBounds(ByVal section As CSectionModel, ByRef minX As Doubl
     Next i
 End Sub
 
+' Размеры неизвестной формы нужны только для условного изображения элемента.
+' Если реальные ширина/высота сохранены, используются они; иначе рисуется
+' квадрат равной площади без замены расчетных A/I импортированного элемента.
 Private Function ConcreteDrawWidth(ByVal section As CSectionModel, ByVal index As Long) As Double
     ConcreteDrawWidth = section.ConcreteWidth(index)
     If ConcreteDrawWidth <= 0# Then ConcreteDrawWidth = Sqr(section.ConcreteArea(index))
@@ -1411,12 +1472,17 @@ Private Sub IncludeRotatedRectangleCorner(ByVal x As Double, ByVal y As Double, 
     End If
 End Sub
 
+' Ставит крест и окружность в сохраненной точке приложения усилий.
+' Размер маркера служит читаемости чертежа и не задает эксцентриситет нагрузки.
 Private Sub DrawLoadPointMarker(ByVal ms As Object, ByVal x As Double, ByVal y As Double, ByVal size As Double)
     AddAcadLine ms, x - size, y, x + size, y, "RC_NDM_LoadPoint", 2
     AddAcadLine ms, x, y - size, x, y + size, "RC_NDM_LoadPoint", 2
     AddAcadCircle ms, x, y, size * 0.65, "RC_NDM_LoadPoint", 2
 End Sub
 
+' Строит прямую нулевой деформации сохраненного state по пересечениям с рамкой.
+' Для постоянной деформации без кривизн линии нет; при далекой нулевой линии
+' рамка расширяется ограниченно, чтобы сохранить понятный масштаб чертежа.
 Private Sub DrawNeutralLineByState(ByVal ms As Object, ByVal section As CSectionModel, _
         ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double, ByVal colorIndex As Long)
     If Abs(kappaX) + Abs(kappaY) <= 0.000000000000001 Then Exit Sub
@@ -1475,6 +1541,9 @@ Private Sub DrawNeutralLineByState(ByVal ms As Object, ByVal section As CSection
     End If
 End Sub
 
+' Увеличивает только рамку изображения, если нулевая линия лежит вне сечения.
+' Расстояние берется из плоскости деформаций; ограничение двадцатью габаритами
+' предотвращает несоразмерный чертеж и не меняет вычисленное НДС.
 Private Sub ExpandNeutralBoundsByState(ByVal epsilon0 As Double, ByVal kappaX As Double, _
         ByVal kappaY As Double, ByRef minX As Double, ByRef maxX As Double, _
         ByRef minY As Double, ByRef maxY As Double)
@@ -1509,6 +1578,9 @@ Private Sub ExpandNeutralBoundsByState(ByVal epsilon0 As Double, ByVal kappaX As
     maxY = centerY + expandedHalfSize
 End Sub
 
+' Координаты нулевой линии при заданной X/Y. Почти нулевой делитель означает
+' отсутствие пересечения с соответствующей стороной рамки; большой служебный
+' результат затем отклоняется проверкой границ, а не используется как точка.
 Private Function NeutralYAtXState(ByVal epsilon0 As Double, ByVal kappaX As Double, _
         ByVal kappaY As Double, ByVal x As Double) As Double
     If Abs(kappaX) <= 0.000000000000001 Then
@@ -1527,6 +1599,8 @@ Private Function NeutralXAtYState(ByVal epsilon0 As Double, ByVal kappaX As Doub
     End If
 End Function
 
+' Добавляет допустимое пересечение нулевой линии с рамкой без повторов углов.
+' Проверяет вместимость массива до записи; из этих точек выбирается отрезок.
 Private Sub AppendNeutralIntersection(ByRef pointX() As Double, ByRef pointY() As Double, _
         ByRef pointCount As Long, ByVal x As Double, ByVal y As Double, _
         ByVal minX As Double, ByVal maxX As Double, ByVal minY As Double, ByVal maxY As Double)
@@ -1544,6 +1618,9 @@ Private Sub AppendNeutralIntersection(ByRef pointX() As Double, ByRef pointY() A
     pointY(pointCount) = y
 End Sub
 
+' Строит повернутый прямоугольник четырьмя WCS-отрезками и преобразует в Region.
+' Это сохраняет расположение элемента независимо от UCS/OCS активного чертежа;
+' временные исходные линии удаляются после создания области.
 Private Sub AddAcadRectangleRegion(ByVal ms As Object, ByVal x As Double, ByVal y As Double, _
         ByVal width As Double, ByVal height As Double, ByVal rotationRad As Double, _
         ByVal layerName As String, ByVal colorIndex As Long)
@@ -1583,6 +1660,8 @@ Private Function AddAcadSourceLine(ByVal ms As Object, ByVal x1 As Double, ByVal
     Set AddAcadSourceLine = ms.AddLine(p1, p2)
 End Function
 
+' Добавляет постоянный WCS-отрезок в ModelSpace с назначенным слоем и цветом.
+' В отличие от source-line для Region этот объект остается на чертеже.
 Private Sub AddAcadLine(ByVal ms As Object, ByVal x1 As Double, ByVal y1 As Double, _
         ByVal x2 As Double, ByVal y2 As Double, ByVal layerName As String, ByVal colorIndex As Long)
     Dim p1(0 To 2) As Double
@@ -1595,6 +1674,8 @@ Private Sub AddAcadLine(ByVal ms As Object, ByVal x1 As Double, ByVal y1 As Doub
     entity.Color = colorIndex
 End Sub
 
+' Создает круглую Region арматуры через временную окружность; диаметр берется
+' из сохраненной модели, а не восстанавливается из площади бетонного элемента.
 Private Sub AddAcadCircleRegion(ByVal ms As Object, ByVal x As Double, ByVal y As Double, _
         ByVal radius As Double, ByVal layerName As String, ByVal colorIndex As Long)
     Dim p(0 To 2) As Double
@@ -1604,6 +1685,8 @@ Private Sub AddAcadCircleRegion(ByVal ms As Object, ByVal x As Double, ByVal y A
     AddAcadRegionFromCurve ms, source, layerName, colorIndex
 End Sub
 
+' Передает одну замкнутую исходную кривую общему созданию Region.
+' Владелец преобразования назначает оформление и удаляет временную кривую.
 Private Sub AddAcadRegionFromCurve(ByVal ms As Object, ByVal source As Object, _
         ByVal layerName As String, ByVal colorIndex As Long)
     Dim sourceObjects(0 To 0) As Object
@@ -1658,6 +1741,8 @@ Private Sub EnsureAcadLayer(ByVal doc As Object, ByVal layerName As String, ByVa
     On Error GoTo 0
 End Sub
 
+' Добавляет WCS-окружность маркера с заданным слоем и цветом.
+' Она служит оформлению, не преобразуется в расчетную область сечения.
 Private Sub AddAcadCircle(ByVal ms As Object, ByVal x As Double, ByVal y As Double, _
         ByVal radius As Double, ByVal layerName As String, ByVal colorIndex As Long)
     Dim p(0 To 2) As Double
@@ -1668,6 +1753,8 @@ Private Sub AddAcadCircle(ByVal ms As Object, ByVal x As Double, ByVal y As Doub
     entity.Color = colorIndex
 End Sub
 
+' Добавляет готовую подпись в WCS-точке с выбранными высотой, слоем и цветом.
+' Текст уже сформирован из snapshot; здесь нет назначения расчетного статуса.
 Private Sub AddAcadText(ByVal ms As Object, ByVal value As String, ByVal x As Double, ByVal y As Double, _
         ByVal height As Double, ByVal layerName As String, ByVal colorIndex As Long)
     Dim p(0 To 2) As Double
@@ -1720,6 +1807,9 @@ Private Function ResultAnnotationLayerByPhysicalState(ByVal materialType As Stri
     End If
 End Function
 
+' Читает обязательные численные N/Mx/My первой непустой строки таблицы.
+' Возвращает исходные пользовательские числа без пересчета единиц; этот
+' служебный вход не является повторным расчетом сохраненного Results state.
 Private Sub ReadFirstExportLoad(ByVal workbook As Object, ByRef nValue As Double, ByRef mxValue As Double, ByRef myValue As Double)
     Dim source As Object
     Set source = workbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -1738,6 +1828,8 @@ Private Sub ReadFirstExportLoad(ByVal workbook As Object, ByRef nValue As Double
     Err.Raise vbObjectError + 4320, "ReadFirstExportLoad", "Не задано ни одного сочетания нагрузок."
 End Sub
 
+' Различает полностью пустую строку и строку с любым заданным значением.
+' Численный ноль не пропускается как отсутствие исходной нагрузки.
 Private Function IsExportEmptyRow(ByRef data As Variant, ByVal rowIndex As Long, ByVal columnCount As Long) As Boolean
     Dim col As Long
     For col = 1 To columnCount
@@ -1746,6 +1838,8 @@ Private Function IsExportEmptyRow(ByRef data As Variant, ByVal rowIndex As Long,
     IsExportEmptyRow = True
 End Function
 
+' Возвращает обязательное число с отдельным сообщением для пустого поля
+' и нечислового значения; не подставляет ноль при ошибке ввода.
 Private Function ReadExportRequiredDouble(ByVal value As Variant, ByVal fieldName As String) As Double
     If Len(Trim$(CStr(value))) = 0 Then Err.Raise vbObjectError + 4330, "ReadExportRequiredDouble", fieldName & " не заполнен."
     If Not IsNumeric(value) Then Err.Raise vbObjectError + 4331, "ReadExportRequiredDouble", fieldName & " должен быть числом."

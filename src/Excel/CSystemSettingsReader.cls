@@ -174,8 +174,14 @@ End Property
 
 ' Добавляет один диапазон настроек; специальные геометрические таблицы сначала распознаются по шапке.
 Private Sub AppendSettingsRange(ByVal settingsRange As Object)
+    If settingsRange Is Nothing Then Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
+        "Таблица настроек Config не передана."
     Dim data As Variant
     data = settingsRange.Value2
+    If Not IsArray(data) Then Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
+        "Таблица настроек Config должна содержать заголовок, строки данных и минимум три столбца."
+    If UBound(data, 1) < 2 Or UBound(data, 2) < 3 Then Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
+        "Таблица настроек Config должна содержать заголовок, строки данных и минимум три столбца."
     Dim columnCount As Long
     columnCount = UBound(data, 2)
 
@@ -920,16 +926,34 @@ Public Function GetRequiredString(ByVal key As String) As String
     GetRequiredString = textValue
 End Function
 
-' Возвращает настройку как Long через тот же числовой путь, что и GetDouble.
+' Читает целочисленную настройку без округления дроби и без переполнения Long.
+' Допустимость знака и диапазона конкретного параметра проверяет его consumer.
 Public Function GetLong(ByVal key As String, Optional ByVal defaultValue As Long = 0) As Long
-    GetLong = CLng(GetDouble(key, CDbl(defaultValue)))
+    Dim value As Double
+    value = GetDouble(key, CDbl(defaultValue))
+    If value < -2147483648# Or value > 2147483647# Then Err.Raise vbObjectError + 4315, "CSystemSettingsReader.GetLong", _
+        "Настройка " & key & " должна быть целым числом в диапазоне Long; прочитанное значение выходит за этот диапазон."
+    If value <> Fix(value) Then Err.Raise vbObjectError + 4315, "CSystemSettingsReader.GetLong", _
+        "Настройка " & key & " должна быть целым числом. Дробное значение на листе Config не округляется автоматически."
+    GetLong = CLng(value)
 End Function
 
-' Читает булеву настройку из привычных вариантов Yes/No, True/False, 1/0, Да/Нет.
+' Читает Yes/No и утвержденные aliases. Default допустим только для отсутствующего
+' optional key; явное пустое/невалидное значение не превращается в False/default.
 Public Function GetBoolean(ByVal key As String, Optional ByVal defaultValue As Boolean = False) As Boolean
+    If Not HasKey(key) Then
+        GetBoolean = defaultValue
+        Exit Function
+    End If
     Dim textValue As String
-    textValue = UCase$(GetString(key, IIf(defaultValue, "YES", "NO")))
-    GetBoolean = (textValue = "YES" Or textValue = "TRUE" Or textValue = "1" Or textValue = "ДА")
+    textValue = UCase$(Trim$(GetRawString(key)))
+    Select Case textValue
+        Case "YES", "TRUE", "1", "ДА": GetBoolean = True
+        Case "NO", "FALSE", "0", "НЕТ": GetBoolean = False
+        Case Else
+            Err.Raise vbObjectError + 4314, "CSystemSettingsReader.GetBoolean", _
+                "Настройка " & key & " должна иметь значение Yes или No. Проверьте значение или формулу на листе Config."
+    End Select
 End Function
 
 ' Возвращает комментарий/источник настройки для диагностических сообщений.

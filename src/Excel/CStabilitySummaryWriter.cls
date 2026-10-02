@@ -431,6 +431,9 @@ Private Function MetaComment(ByVal meta As CResultMeta) As String
     MetaComment = meta.ResultComment
 End Function
 
+' Заполняет одну строку устойчивости готовыми результатами и своим комментарием.
+' Подробные числовые поля доступны только завершенной проверке; активная ветвь
+' СП 35/СП 63 выбирается по сохраненному результату, без повторения формул.
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
     Dim policy As CResultStatusPolicy

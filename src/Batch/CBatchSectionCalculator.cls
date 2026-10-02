@@ -1512,7 +1512,7 @@ Private Sub ReportValue(ByVal label As String, ByVal valueText As String)
 End Sub
 
 ' Добавляет в txt-отчет комментарий из ResultMeta конкретного result-subtree.
-' Это общий путь Stage 9: writer/report не склеивает причины сам, а только
+' Writer/report не склеивает причины сам, а только
 ' показывает уже сформированный ResultComment ответственного расчетного слоя.
 Private Sub ReportMetaComment(ByVal label As String, ByVal meta As CResultMeta)
     If meta Is Nothing Then Exit Sub

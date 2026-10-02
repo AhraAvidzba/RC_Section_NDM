@@ -1,0 +1,69 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_input_negative.xlsm
+SOURCE_SHA256: 33E74A4902676508A75D43918274EC25AD88E2C53F6152B51B9CDB3AFFEFD8EA
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a947e0b0a23943908ebbc18caeb8325b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit03InputContractTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03InputContractTests; 2026-10-02T04:27:39
+EXCEL_AFTER_SUITE: pid=20536; workingSet=137818112; privateBytes=126156800; cpu=2.546875
+OK: audit03.input.boolean.valid.Yes
+OK: audit03.input.boolean.valid.True
+OK: audit03.input.boolean.valid.1
+OK: audit03.input.boolean.valid.Да
+OK: audit03.input.boolean.valid.No
+OK: audit03.input.boolean.valid.False
+OK: audit03.input.boolean.valid.0
+OK: audit03.input.boolean.valid.Нет
+OK: audit03.input.boolean.missingTrue
+OK: audit03.input.boolean.missingFalse
+FAIL: audit03.input.boolean.invalid.Maybe.typedError
+INPUT: audit03.input.boolean.invalid.Maybe; error=0; expected=-2147217190; reason=
+FAIL: audit03.input.boolean.invalid.TODO.typedError
+INPUT: audit03.input.boolean.invalid.TODO; error=0; expected=-2147217190; reason=
+FAIL: audit03.input.boolean.invalid..typedError
+INPUT: audit03.input.boolean.invalid.; error=0; expected=-2147217190; reason=
+OK: audit03.input.long.valid.-2147483648; actual=-2147483648.; expected=-2147483648.
+OK: audit03.input.long.valid.0; actual=0.; expected=0.
+OK: audit03.input.long.valid.17; actual=17.; expected=17.
+OK: audit03.input.long.valid.2147483647; actual=2147483647.; expected=2147483647.
+FAIL: audit03.input.long.invalid.1.25.typedError
+INPUT: audit03.input.long.invalid.1.25; error=0; expected=-2147217189; reason=
+FAIL: audit03.input.long.invalid.-1.25.typedError
+INPUT: audit03.input.long.invalid.-1.25; error=0; expected=-2147217189; reason=
+FAIL: audit03.input.long.invalid.1E+20.typedError
+OK: audit03.input.long.invalid.1E+20.reason
+INPUT: audit03.input.long.invalid.1E+20; error=6; expected=-2147217189; reason=Overflow
+FAIL: audit03.input.consumer.boolean.typedError
+INPUT: audit03.input.consumer.boolean; error=0; expected=-2147217190; reason=
+FAIL: audit03.input.consumer.integer.typedError
+INPUT: audit03.input.consumer.integer; error=0; expected=-2147217189; reason=
+FAIL: audit03.input.consumer.boundary.typedError
+INPUT: audit03.input.consumer.boundary; error=0; expected=-2147217365; reason=
+FAIL: audit03.input.settings.scalar.typedError
+OK: audit03.input.settings.scalar.reason
+INPUT: audit03.input.settings.scalar; error=13; expected=-2147217188; reason=Type mismatch
+FAIL: audit03.input.settings.narrow.typedError
+OK: audit03.input.settings.narrow.reason
+INPUT: audit03.input.settings.narrow; error=9; expected=-2147217188; reason=Subscript out of range
+FAIL: audit03.input.settings.nothing.typedError
+OK: audit03.input.settings.nothing.reason
+INPUT: audit03.input.settings.nothing; error=91; expected=-2147217188; reason=Object variable or With block variable not set
+FAIL: audit03.input.profiles.scalar.typedError
+OK: audit03.input.profiles.scalar.reason
+INPUT: audit03.input.profiles.scalar; error=13; expected=-2147217517; reason=Type mismatch
+FAIL: audit03.input.mesh.nothing.typedError
+OK: audit03.input.mesh.nothing.reason
+INPUT: audit03.input.mesh.nothing; error=91; expected=-2147219397; reason=Object variable or With block variable not set
+FAIL: audit03.input.mesh.axis.typedError
+OK: audit03.input.mesh.axis.reason
+INPUT: audit03.input.mesh.axis; error=6; expected=-2147219396; reason=Overflow
+FAIL: audit03.input.mesh.product.typedError
+OK: audit03.input.mesh.product.reason
+INPUT: audit03.input.mesh.product; error=6; expected=-2147219396; reason=Overflow
+FAIL: audit03.input.mesh.boundary.typedError
+INPUT: audit03.input.mesh.boundary; error=0; expected=-2147219395; reason=
+TOTAL_AUDIT03_INPUT_CONTRACTS: passed=22; failed=17
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03InputContractTests; 2026-10-02T04:27:40
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

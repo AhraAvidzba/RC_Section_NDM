@@ -1,0 +1,87 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_f06_fixed.xlsm
+SOURCE_SHA256: 190CEA5586224B18F8830EE94A6CDD87531E03EF87B6CBA39CB4A9CBDCA22938
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_78d5765f153c4caab8c7387bae3f2830\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit03InputContractTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03InputContractTests; 2026-10-02T04:41:24
+EXCEL_AFTER_SUITE: pid=23940; workingSet=137465856; privateBytes=106262528; cpu=2.375
+OK: audit03.input.boolean.valid.Yes
+OK: audit03.input.boolean.valid.True
+OK: audit03.input.boolean.valid.1
+OK: audit03.input.boolean.valid.Да
+OK: audit03.input.boolean.valid.No
+OK: audit03.input.boolean.valid.False
+OK: audit03.input.boolean.valid.0
+OK: audit03.input.boolean.valid.Нет
+OK: audit03.input.boolean.missingTrue
+OK: audit03.input.boolean.missingFalse
+OK: audit03.input.boolean.invalid.Maybe.typedError
+OK: audit03.input.boolean.invalid.Maybe.reason
+INPUT: audit03.input.boolean.invalid.Maybe; error=-2147217190; expected=-2147217190; reason=Настройка Audit03.Test должна иметь значение Yes или No. Проверьте значение или формулу на листе Config.
+OK: audit03.input.boolean.invalid.TODO.typedError
+OK: audit03.input.boolean.invalid.TODO.reason
+INPUT: audit03.input.boolean.invalid.TODO; error=-2147217190; expected=-2147217190; reason=Настройка Audit03.Test должна иметь значение Yes или No. Проверьте значение или формулу на листе Config.
+OK: audit03.input.boolean.invalid..typedError
+OK: audit03.input.boolean.invalid..reason
+INPUT: audit03.input.boolean.invalid.; error=-2147217190; expected=-2147217190; reason=Настройка Audit03.Test должна иметь значение Yes или No. Проверьте значение или формулу на листе Config.
+OK: audit03.input.long.valid.-2147483648; actual=-2147483648.; expected=-2147483648.
+OK: audit03.input.long.valid.0; actual=0.; expected=0.
+OK: audit03.input.long.valid.17; actual=17.; expected=17.
+OK: audit03.input.long.valid.2147483647; actual=2147483647.; expected=2147483647.
+OK: audit03.input.long.invalid.1.25.typedError
+OK: audit03.input.long.invalid.1.25.reason
+INPUT: audit03.input.long.invalid.1.25; error=-2147217189; expected=-2147217189; reason=Настройка Audit03.Test должна быть целым числом. Дробное значение на листе Config не округляется автоматически.
+OK: audit03.input.long.invalid.-1.25.typedError
+OK: audit03.input.long.invalid.-1.25.reason
+INPUT: audit03.input.long.invalid.-1.25; error=-2147217189; expected=-2147217189; reason=Настройка Audit03.Test должна быть целым числом. Дробное значение на листе Config не округляется автоматически.
+OK: audit03.input.long.invalid.1E+20.typedError
+OK: audit03.input.long.invalid.1E+20.reason
+INPUT: audit03.input.long.invalid.1E+20; error=-2147217189; expected=-2147217189; reason=Настройка Audit03.Test должна быть целым числом в диапазоне Long; прочитанное значение выходит за этот диапазон.
+OK: audit03.input.consumer.boolean.typedError
+OK: audit03.input.consumer.boolean.reason
+INPUT: audit03.input.consumer.boolean; error=-2147217190; expected=-2147217190; reason=Настройка Solver.LineSearchEnabled должна иметь значение Yes или No. Проверьте значение или формулу на листе Config.
+OK: audit03.input.consumer.integer.typedError
+OK: audit03.input.consumer.integer.reason
+INPUT: audit03.input.consumer.integer; error=-2147217189; expected=-2147217189; reason=Настройка Solver.MaxIterations должна быть целым числом. Дробное значение на листе Config не округляется автоматически.
+OK: audit03.input.consumer.boundary.typedError
+OK: audit03.input.consumer.boundary.reason
+INPUT: audit03.input.consumer.boundary; error=-2147217365; expected=-2147217365; reason=Mesh.BoundarySubdivisions должен быть целым числом не меньше 1. Проверьте значение на листе Config.
+OK: audit03.input.consumer.boundaryMissing..typedError
+OK: audit03.input.consumer.boundaryMissing..reason
+INPUT: audit03.input.consumer.boundaryMissing.; error=-2147217365; expected=-2147217365; reason=Mesh.BoundarySubdivisions не задан: введите целое число не меньше 1 на листе Config.
+OK: audit03.input.consumer.boundaryMissing.TODO.typedError
+OK: audit03.input.consumer.boundaryMissing.TODO.reason
+INPUT: audit03.input.consumer.boundaryMissing.TODO; error=-2147217365; expected=-2147217365; reason=Mesh.BoundarySubdivisions не задан: введите целое число не меньше 1 на листе Config.
+OK: audit03.input.settings.scalar.typedError
+OK: audit03.input.settings.scalar.reason
+INPUT: audit03.input.settings.scalar; error=-2147217188; expected=-2147217188; reason=Таблица настроек Config должна содержать заголовок, строки данных и минимум три столбца.
+OK: audit03.input.settings.narrow.typedError
+OK: audit03.input.settings.narrow.reason
+INPUT: audit03.input.settings.narrow; error=-2147217188; expected=-2147217188; reason=Таблица настроек Config должна содержать заголовок, строки данных и минимум три столбца.
+OK: audit03.input.settings.nothing.typedError
+OK: audit03.input.settings.nothing.reason
+INPUT: audit03.input.settings.nothing; error=-2147217188; expected=-2147217188; reason=Таблица настроек Config не передана.
+OK: audit03.input.profiles.scalar.typedError
+OK: audit03.input.profiles.scalar.reason
+INPUT: audit03.input.profiles.scalar; error=-2147217517; expected=-2147217517; reason=Таблица расчетных профилей должна содержать заголовок, строки параметров и минимум один столбец профиля.
+OK: audit03.input.mesh.nothing.typedError
+OK: audit03.input.mesh.nothing.reason
+INPUT: audit03.input.mesh.nothing; error=-2147219397; expected=-2147219397; reason=Геометрия бетонного сечения не передана.
+OK: audit03.input.mesh.axis.typedError
+OK: audit03.input.mesh.axis.reason
+INPUT: audit03.input.mesh.axis; error=-2147219396; expected=-2147219396; reason=Шаг бетонной сетки слишком мал: число ячеек по одной оси не помещается в Long. Увеличьте Mesh.StepX или Mesh.StepY.
+OK: audit03.input.mesh.product.typedError
+OK: audit03.input.mesh.product.reason
+INPUT: audit03.input.mesh.product; error=-2147219396; expected=-2147219396; reason=Верхняя оценка числа бетонных элементов с учетом Mesh.BoundarySubdivisions не помещается в Long. Увеличьте шаг сетки или уменьшите число подъячеек границы.
+OK: audit03.input.mesh.boundary.typedError
+OK: audit03.input.mesh.boundary.reason
+INPUT: audit03.input.mesh.boundary; error=-2147219395; expected=-2147219395; reason=Mesh.BoundarySubdivisions должен быть целым числом не меньше 1.
+OK: audit03.input.mesh.subcellProduct.typedError
+OK: audit03.input.mesh.subcellProduct.reason
+INPUT: audit03.input.mesh.subcellProduct; error=-2147219396; expected=-2147219396; reason=Верхняя оценка числа бетонных элементов с учетом Mesh.BoundarySubdivisions не помещается в Long. Увеличьте шаг сетки или уменьшите число подъячеек границы.
+TOTAL_AUDIT03_INPUT_CONTRACTS: passed=54; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03InputContractTests; 2026-10-02T04:41:25
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

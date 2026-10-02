@@ -7,6 +7,9 @@ param(
     [ValidateSet("Yes", "No")][string]$Mode = "No",
     [Parameter(Mandatory=$true)][string]$ReportPath,
     [string[]]$Macro = @(),
+    [string]$MacroArgument1 = "",
+    [string]$MacroArgument2 = "",
+    [switch]$VerifyResultsReopen,
     [switch]$Visible
 )
 $ErrorActionPreference = "Stop"
@@ -49,6 +52,19 @@ function Get-ModeSettingCell {
     return $range.Cells.Item($row, 2)
 }
 
+# Сравнивает только сохраненные значения Results, включая все комментарии.
+# Это gate сохранности данных, а не проверка цветов или внешнего вида.
+function Get-ResultsValueHash([object]$Book) {
+    $range = $Book.Worksheets.Item("Results").UsedRange
+    $data = $range.Value2
+    $payload = ConvertTo-Json -InputObject @{
+        rows = $range.Rows.Count; columns = $range.Columns.Count; values = @($data)
+    } -Depth 8 -Compress
+    $sha = [Security.Cryptography.SHA256]::Create()
+    try { return [BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($payload))).Replace('-', '') }
+    finally { $sha.Dispose() }
+}
+
 try {
     $lines.Add("SOURCE: $sourcePath")
     $lines.Add("SOURCE_SHA256: $sourceHash")
@@ -76,6 +92,9 @@ try {
         "modTestRegressionBaseline.RunRegressionBaselineTests"
     )
     if ($Macro.Count -gt 0) { $macros = $Macro }
+    if (($MacroArgument1 -or $MacroArgument2 -or $VerifyResultsReopen) -and $macros.Count -ne 1) {
+        throw "Аргументы macro/save-reopen допускаются только для одной явно выбранной проверки."
+    }
     foreach ($macro in $macros) {
         $workbook = $excel.Workbooks.Open($fixturePath, $null, $true)
         $lines.Add("===== $macro =====")
@@ -84,7 +103,10 @@ try {
         if ([string](Get-ModeSettingCell $workbook $SettingKey).Value2 -ne $Mode) {
             throw "Перед suite $macro не сохранено требуемое значение $Mode."
         }
-        $result = [string]$excel.Run("'RC_Section_NDM.xlsm'!$macro")
+        $macroName = "'RC_Section_NDM.xlsm'!$macro"
+        if ($MacroArgument2) { $result = [string]$excel.Run($macroName, $MacroArgument1, $MacroArgument2) }
+        elseif ($MacroArgument1) { $result = [string]$excel.Run($macroName, $MacroArgument1) }
+        else { $result = [string]$excel.Run($macroName) }
         foreach ($process in @(Get-Process EXCEL -ErrorAction SilentlyContinue)) {
             $lines.Add("EXCEL_AFTER_SUITE: pid=$($process.Id); workingSet=$($process.WorkingSet64); privateBytes=$($process.PrivateMemorySize64); cpu=$($process.CPU)")
         }
@@ -98,6 +120,16 @@ try {
         Save-Progress
         if ($modeAfter -ne $Mode) {
             $lines.Add("SUITE_MODE_OVERRIDE: explicit test setup left $modeAfter; changes discarded on close")
+        }
+        if ($VerifyResultsReopen) {
+            $beforeHash = Get-ResultsValueHash $workbook
+            $savedPath = Join-Path $fixtureRoot 'RC_Section_NDM_saved.xlsm'
+            $workbook.SaveAs($savedPath, 52)
+            $workbook.Close($false)
+            $workbook = $excel.Workbooks.Open($savedPath, $null, $true)
+            $afterHash = Get-ResultsValueHash $workbook
+            $lines.Add("RESULTS_SAVE_REOPEN: before=$beforeHash; after=$afterHash; equal=$($beforeHash -eq $afterHash); file=$savedPath")
+            if ($beforeHash -ne $afterHash) { throw "Значения или комментарии Results изменились после save/reopen." }
         }
         $workbook.Close($false)
         $workbook = $null

@@ -5,6 +5,9 @@ param(
     [Parameter(Mandatory=$true)][string]$SourceWorkbook,
     [Parameter(Mandatory=$true)][string]$ReportPath,
     [string]$Macro = "",
+    [string]$MacroArgument1 = "",
+    [string]$MacroArgument2 = "",
+    [switch]$VerifyResultsReopen,
     [ValidateSet("Yes", "No")][string]$Mode = "No",
     [ValidateRange(10, 3600)][int]$TimeoutSeconds = 120
 )
@@ -45,6 +48,9 @@ $arguments = @(
 if (-not [string]::IsNullOrWhiteSpace($Macro)) {
     $arguments += @("-Macro", (Quote-ProcessArgument $Macro))
 }
+if ($MacroArgument1) { $arguments += @("-MacroArgument1", (Quote-ProcessArgument $MacroArgument1)) }
+if ($MacroArgument2) { $arguments += @("-MacroArgument2", (Quote-ProcessArgument $MacroArgument2)) }
+if ($VerifyResultsReopen) { $arguments += "-VerifyResultsReopen" }
 $arguments = $arguments -join " "
 $process = Start-Process -FilePath (Join-Path $PSHOME "powershell.exe") `
     -ArgumentList $arguments -WorkingDirectory $root -WindowStyle Hidden -PassThru `

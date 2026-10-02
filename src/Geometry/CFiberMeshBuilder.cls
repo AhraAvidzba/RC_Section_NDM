@@ -30,10 +30,12 @@ Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, 
         Optional ByVal materialID As Long = 1, Optional ByVal boundarySubdivisions As Long = 1)
 
     Dim message As String
+    If geometry Is Nothing Then Err.Raise vbObjectError + 2107, "CFiberMeshBuilder", "Геометрия бетонного сечения не передана."
     If Not geometry.IsValid(message) Then Err.Raise vbObjectError + 2100, "CFiberMeshBuilder", message
     If stepX <= 0# Then Err.Raise vbObjectError + 2101, "CFiberMeshBuilder", "Mesh.StepX должен быть положительным."
     If stepY <= 0# Then Err.Raise vbObjectError + 2102, "CFiberMeshBuilder", "Mesh.StepY должен быть положительным."
-    If boundarySubdivisions < 1 Then boundarySubdivisions = 1
+    If boundarySubdivisions < 1 Then Err.Raise vbObjectError + 2109, "CFiberMeshBuilder", _
+        "Mesh.BoundarySubdivisions должен быть целым числом не меньше 1."
 
     Dim t0 As Double
     t0 = Timer
@@ -55,9 +57,20 @@ Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, 
 
     Dim nx As Long
     Dim ny As Long
+    ' Проверяем размер до деления на сверхмалый шаг и преобразования в Long.
+    ' Это ограничение представимости массива, а не изменение точности сетки.
+    If stepX <= (maxX - minX) / 2147483646# Or stepY <= (maxY - minY) / 2147483646# Then
+        Err.Raise vbObjectError + 2108, "CFiberMeshBuilder", _
+            "Шаг бетонной сетки слишком мал: число ячеек по одной оси не помещается в Long. Увеличьте Mesh.StepX или Mesh.StepY."
+    End If
     nx = CLng(Fix((maxX - minX) / stepX)) + 1
     ny = CLng(Fix((maxY - minY) / stepY)) + 1
     If nx < 1 Or ny < 1 Then Err.Raise vbObjectError + 2104, "CFiberMeshBuilder", "Габаритный прямоугольник сетки пуст."
+    If CDbl(nx) * CDbl(ny) * CDbl(boundarySubdivisions) * CDbl(boundarySubdivisions) > 2147483646# Then
+        Err.Raise vbObjectError + 2108, "CFiberMeshBuilder", _
+            "Верхняя оценка числа бетонных элементов с учетом Mesh.BoundarySubdivisions не помещается в Long. " & _
+            "Увеличьте шаг сетки или уменьшите число подъячеек границы."
+    End If
 
     ReDim mFibers(1 To nx * ny)
     mFiberCount = 0
@@ -146,8 +159,18 @@ End Sub
 ' Width/Height сохраняются как реальная прямоугольная оболочка generated-сетки
 ' и потом используются для границ, h, a_s и визуализации.
 Private Sub AddFiber(ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double, ByVal materialID As Long)
+    If mFiberCount >= 2147483646 Then Err.Raise vbObjectError + 2108, "CFiberMeshBuilder", _
+        "Число бетонных элементов достигло предела представимости массива. Увеличьте шаг сетки."
     mFiberCount = mFiberCount + 1
-    If mFiberCount > UBound(mFibers) Then ReDim Preserve mFibers(1 To UBound(mFibers) * 2)
+    If mFiberCount > UBound(mFibers) Then
+        Dim newCapacity As Long
+        If UBound(mFibers) > 1073741823 Then
+            newCapacity = 2147483646
+        Else
+            newCapacity = UBound(mFibers) * 2
+        End If
+        ReDim Preserve mFibers(1 To newCapacity)
+    End If
     mFibers(mFiberCount).X = x
     mFibers(mFiberCount).Y = y
     mFibers(mFiberCount).Width = width

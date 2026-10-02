@@ -5981,12 +5981,35 @@ End Sub
 ' моменты относятся к точке нагрузки; State-моменты включают N*offset.
 ' Отсутствие предельной точки не маскируется фиктивным численным сравнением.
 Private Sub Audit03CheckCapacityPath(ByRef stats As TBatchTestStats, ByVal capacity As CCapacityResult, _
-        ByVal prefix As String, ByVal component As String, ByVal load As Variant)
-    AssertEquals stats, prefix & ".path", capacity.PathResolved, "Lambda" & component
+        ByVal prefix As String, ByVal component As String, ByVal load As Variant, _
+        Optional ByVal referenceX As Double = 0#, Optional ByVal referenceY As Double = 0#, _
+        Optional ByVal includeUnscaledPath As Boolean = False)
     AppendLine stats, "CASE: " & prefix & "|N=" & CStr(load(0)) & "|Mx=" & CStr(load(1)) & _
         "|My=" & CStr(load(2)) & "|offsetX=10|offsetY=-7|path=" & component & _
         "|lambda=" & FormatNumberInvariant(capacity.LambdaCapacity) & "|method=" & capacity.SolutionMethod & _
         "|limit=" & capacity.LimitState & "|status=" & capacity.Status
+    If includeUnscaledPath Then
+        ' Явный путь с нулевой масштабируемой компонентой не определяет поиск
+        ' lambda. Проверяем существующий InputErr-контракт, а не фиктивный предел.
+        Dim hasScaledLoad As Boolean, nInput As Double, mxInput As Double, myInput As Double
+        nInput = CDbl(load(0)): mxInput = CDbl(load(1)): myInput = CDbl(load(2))
+        Select Case component
+            Case "Mx": hasScaledLoad = Abs(mxInput) > 0.000000001
+            Case "My": hasScaledLoad = Abs(myInput) > 0.000000001
+            Case "Mxy": hasScaledLoad = Sqr(mxInput * mxInput + myInput * myInput) > 0.000000001
+            Case "N": hasScaledLoad = Abs(nInput) > 0.000000001
+            Case "NMxy": hasScaledLoad = Abs(nInput) + Abs(mxInput) + Abs(myInput) > 0.000000001
+        End Select
+        If Not hasScaledLoad Then
+            AssertTrue stats, prefix & ".unscaledInput", capacity.ResultMeta.InternalStatus = rsInvalidInput And _
+                capacity.ResultMeta.ResultCode = rcInvalidInput And Not capacity.ResultMeta.Calculated
+            AssertEquals stats, prefix & ".unscaledNotExecuted", capacity.PathResolved, vbNullString
+            AssertTrue stats, prefix & ".unscaledNoSearch", capacity.SearchResult Is Nothing
+            AssertTrue stats, prefix & ".unscaledNoPoint", capacity.StateResult Is Nothing
+            Exit Sub
+        End If
+    End If
+    AssertEquals stats, prefix & ".path", capacity.PathResolved, "Lambda" & component
     AssertTrue stats, prefix & ".validInput", capacity.Status <> "InputErr" And capacity.Status <> "CalcErr"
     If capacity.SearchResult Is Nothing Then Exit Sub
     If Not capacity.SearchResult.HasLimitPoint Then Exit Sub
@@ -5999,8 +6022,8 @@ Private Sub Audit03CheckCapacityPath(ByRef stats As TBatchTestStats, ByVal capac
     AssertClose stats, prefix & ".NU", capacity.NUltimate, n, 5#
     AssertClose stats, prefix & ".MxU", capacity.MxUltimate, mx, 5000#
     AssertClose stats, prefix & ".MyU", capacity.MyUltimate, my, 5000#
-    AssertClose stats, prefix & ".stateMx", capacity.CapacityStateMx, mx - 7# * n, 5000#
-    AssertClose stats, prefix & ".stateMy", capacity.CapacityStateMy, my + 10# * n, 5000#
+    AssertClose stats, prefix & ".stateMx", capacity.CapacityStateMx, mx + (referenceY - 7#) * n, 5000#
+    AssertClose stats, prefix & ".stateMy", capacity.CapacityStateMy, my + (referenceX + 10#) * n, 5000#
     AssertTrue stats, prefix & ".physicalCriterion", Len(capacity.LimitState) > 0
     AssertTrue stats, prefix & ".finalPhysical", capacity.StateResult.WithinPhysicalRange
 End Sub
@@ -6054,8 +6077,18 @@ Private Sub Audit03CheckResultComments(ByRef stats As TBatchTestStats, ByVal bat
     Audit03CheckMetaComment stats, prefix & ".longitudinal", result.LongitudinalCrackMeta, result.CrackSummaryMeta
     Audit03CheckMetaComment stats, prefix & ".stability", result.StabilityMeta, result.OverallMeta
     If result.CrackWidthMeta.InternalStatus = rsBlockedByDependency Then
-        AssertTrue stats, prefix & ".widthBlockActualReason", _
-            InStr(1, result.CrackWidthMeta.ResultComment, result.CrackCurrentStateMeta.ResultComment, vbBinaryCompare) > 0
+        If Audit03RequiresComment(result.CrackCurrentStateMeta) Then
+            AssertTrue stats, prefix & ".widthBlockActualReason", _
+                InStr(1, result.CrackWidthMeta.ResultComment, result.CrackCurrentStateMeta.ResultComment, vbBinaryCompare) > 0
+        Else
+            ' Успешное текущее НДС не исключает отказ Formation. Его причина
+            ' находится в собственном leaf и общем crack-поддереве, без дубля
+            ' в Width; Width объясняет, какая обязательная зависимость отсутствует.
+            AssertTrue stats, prefix & ".widthBlockFormation", Audit03RequiresComment(result.CrackFormationMeta)
+            AssertTrue stats, prefix & ".widthBlockDependency", InStr(1, result.CrackWidthMeta.ResultComment, "результата образования трещины", vbBinaryCompare) > 0
+            AssertTrue stats, prefix & ".widthBlockFormationReason", _
+                InStr(1, result.CrackSummaryMeta.ResultComment, result.CrackFormationMeta.ResultComment, vbBinaryCompare) > 0
+        End If
     End If
     If result.LongitudinalCrackMeta.InternalStatus = rsBlockedByDependency Then
         AssertTrue stats, prefix & ".longitudinalBlockActualReason", _
@@ -6267,4 +6300,326 @@ Private Function Audit03AttemptPublishedMutation(ByVal result As CCombinationRes
 Rejected:
     Audit03AttemptPublishedMutation = Err.Number
     Err.Clear
+End Function
+
+' ========================== ДЛЯ ТЕСТОВ: AUDIT03 LOAD MATRIX ==========================
+
+' Проверяет одну воспроизводимую форму и семейство во всех путях. Входы
+' передает внешний watchdog; полный набор не входит в быстрый suite. Config
+' восстанавливается, результаты остаются в копии для save/reopen проверки.
+Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal family As String) As String
+    Dim stats As TBatchTestStats, settings As CSystemSettingsReader, units As CUnitSystem
+    Dim oldSystem As Variant, oldProfiles As Variant, systemRange As Object, profileRange As Object
+    Dim section As CSectionModel, provider As CMaterialModelProvider, loads As Collection
+    Dim paths As Variant, pathIndex As Long, first As Long, index As Long, localIndex As Long
+    Dim batch As CBatchSectionCalculator, writer As CBatchResultWriter, report As CExecutionReport
+    Dim item As Variant, path As String, profileId As String, referenceX As Double, referenceY As Double
+    Dim extensionEnabled As Boolean, independentCases As Long, reportText As String
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    oldSystem = systemRange.Formula: oldProfiles = profileRange.Formula
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+    extensionEnabled = settings.GetBoolean("General.DiagramExtension")
+    Set provider = TestMaterialProvider(extensionEnabled)
+    Set section = Audit03LoadMatrixSection(shapeName)
+    CalculateConcreteSectionCentroid section, referenceX, referenceY
+    Set loads = Audit03NormalizedLoads(section, family)
+    AppendLine stats, "MATRIX_SETUP: shape=" & shapeName & "|family=" & family & "|loads=" & CStr(loads.Count) & _
+        "|extension=" & CStr(extensionEnabled) & "|fibers=" & CStr(section.ConcreteCount) & _
+        "|rebars=" & CStr(section.RebarCount) & "|referenceX=" & FormatNumberInvariant(referenceX) & _
+        "|referenceY=" & FormatNumberInvariant(referenceY) & "|offsetX=10|offsetY=-7|zeroMoment=0|stability=No"
+    Set writer = New CBatchResultWriter
+    paths = Array("Mx", "My", "Mxy", "N", "NMxy", "Auto", "Mxy", "N", "NMxy")
+    For pathIndex = 0 To 8
+        If pathIndex < 5 Then profileId = "PR1" Else profileId = "PR2"
+        path = CStr(paths(pathIndex))
+        If path <> "Auto" Then path = ChrW$(&H3BB) & "*" & path
+        If pathIndex >= 5 Then SetSystemSetting "SLS.Crack.InitiationLoadPath", path
+        settings.LoadFromWorkbook ThisWorkbook
+        units.LoadFromSettings settings
+        ' Двадцать LC сохраняют штатную сетку Results без изменения Config.
+        For first = 1 To loads.Count Step 20
+            Set batch = New CBatchSectionCalculator
+            batch.Initialize section, provider
+            Set batch.ProfileCatalog = TestProfileCatalog()
+            Set report = New CExecutionReport
+            report.Initialize ThisWorkbook, settings
+            Set batch.ExecutionReport = report
+            batch.ApplySettings settings, units
+            For index = first To Audit03MinLong(first + 19, loads.Count)
+                item = loads(index)
+                batch.AddCombination "M_" & CStr(pathIndex) & "_" & CStr(index), _
+                    CDbl(item(1)), CDbl(item(2)), CDbl(item(3)), profileId, _
+                    shapeName & ": " & CStr(item(0)), path
+            Next index
+            batch.ApplyLoadReference 10#, -7#, referenceX, referenceY
+            batch.Execute
+            writer.WriteSummary ThisWorkbook, batch, units, section
+            report.Save "Нагрузочная проверка Audit03: " & shapeName & ", " & family & ", " & path
+            reportText = Audit03ReadUnicodeFile(report.FilePath)
+            For localIndex = 1 To batch.Count
+                index = first + localIndex - 1
+                item = loads(index)
+                AppendLine stats, "MATRIX_CASE: shape=" & shapeName & "|family=" & family & _
+                    "|id=" & batch.CombinationID(localIndex) & "|load=" & CStr(item(0)) & _
+                    "|N=" & FormatNumberInvariant(CDbl(item(1))) & "|Mx=" & FormatNumberInvariant(CDbl(item(2))) & _
+                    "|My=" & FormatNumberInvariant(CDbl(item(3))) & "|profile=" & profileId & "|path=" & path
+                If pathIndex < 5 Then
+                    Audit03CheckCapacityPath stats, batch.ResultAt(localIndex).StrengthResult.Capacity, _
+                        "audit03.matrix." & shapeName & "." & batch.CombinationID(localIndex), _
+                        CStr(paths(pathIndex)), Array(item(1), item(2), item(3)), referenceX, referenceY, True
+                Else
+                    Audit03CheckFormationPath stats, batch.ResultAt(localIndex).CrackResult.Formation, _
+                        "audit03.matrix." & shapeName & "." & batch.CombinationID(localIndex), path
+                End If
+                Audit03CheckResultComments stats, batch, localIndex
+                Audit03CheckMatrixStates stats, batch.ResultAt(localIndex), settings, units, extensionEnabled, _
+                    "audit03.matrix." & shapeName & "." & batch.CombinationID(localIndex), reportText
+                independentCases = independentCases + 1
+            Next localIndex
+            Audit03SaveMatrixProgress stats.Report
+        Next first
+    Next pathIndex
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.matrix.runtime; shape=" & shapeName & "; family=" & family & _
+        "; pathIndex=" & CStr(pathIndex) & "; first=" & CStr(first) & "; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error GoTo RestoreFailed
+    If IsArray(oldSystem) Then systemRange.Formula = oldSystem
+    If IsArray(oldProfiles) Then profileRange.Formula = oldProfiles
+Finish:
+    AppendLine stats, "TOTAL_AUDIT03_LOAD_MATRIX: shape=" & shapeName & "; family=" & family & _
+        "; independentCases=" & CStr(independentCases) & "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03BroadLoadMatrixTests = stats.Report
+    Exit Function
+RestoreFailed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.matrix.restore; " & CStr(Err.Number) & "; " & Err.Description
+    Resume Finish
+End Function
+
+' Создает поддерживаемые формы с разным армированием. ImportedFixture -
+' фиксированная модель Region с реальными A/I, а не проверка живого AutoCAD.
+' Сетка строится один раз и переиспользуется во всех LC этой формы.
+Private Function Audit03LoadMatrixSection(ByVal shapeName As String) As CSectionModel
+    Dim geometry As ISectionGeometry, circleGeometry As CGeometryCircle, rounded As CGeometryRoundedRectangle
+    Dim hollow As CGeometryHollowRectangle, rectset As CGeometryRectSet, mesh As CFiberMeshBuilder
+    Dim rebars As CRebarLayout, section As CSectionModel, x As Double, y As Double, i As Long
+    Set rebars = New CRebarLayout
+    Select Case shapeName
+        Case "CircleSym", "CircleUneven"
+            Set circleGeometry = New CGeometryCircle
+            circleGeometry.InitializeByDiameter 300#, 0#, 0#
+            Set geometry = circleGeometry
+            For i = 0 To 11
+                If shapeName = "CircleSym" Or (i <> 1 And i <> 2) Then
+                    x = 120# * Cos(i * 2# * GEOM_PI / 12#): y = 120# * Sin(i * 2# * GEOM_PI / 12#)
+                    rebars.AddBar "M" & CStr(i), x, y, 16# + 4# * (i Mod 2), 0#, "A400", "", geometry
+                End If
+            Next i
+        Case "RectRectangle", "RectL", "RectTwoLeft", "RectTwoRight"
+            Set rectset = New CGeometryRectSet
+            Select Case shapeName
+                Case "RectRectangle": rectset.Initialize 300#, 200#, 0#, 0#, 0#, 0#, 0#, "Rectangle"
+                Case "RectL": rectset.Initialize 250#, 300#, 450#, 150#, 0#, 0#, 0#, "LSection"
+                Case "RectTwoLeft": rectset.Initialize 250#, 300#, 450#, 150#, 0#, 0#, -60#, "TwoRectangles"
+                Case "RectTwoRight": rectset.Initialize 250#, 300#, 450#, 150#, 0#, 0#, 60#, "TwoRectangles"
+            End Select
+            Set geometry = rectset
+        Case "RoundedSimple", "RoundedTapered", "RoundedMixed"
+            Set rounded = New CGeometryRoundedRectangle
+            Select Case shapeName
+                Case "RoundedSimple": rounded.Initialize 300#, 200#, 20#, 20#, 20#, 20#
+                Case "RoundedTapered": rounded.InitializeSides 300#, 180#, "Tapered", "Tapered", 80#, 100#, 20#, 30#, 35#, 45#
+                Case "RoundedMixed": rounded.InitializeSides 300#, 180#, "Simple", "Tapered", 0#, 80#, 20#, 30#, 0#, 45#
+            End Select
+            Set geometry = rounded
+        Case "HollowCentered", "HollowOffset", "HollowThin"
+            Set hollow = New CGeometryHollowRectangle
+            Select Case shapeName
+                Case "HollowCentered": hollow.Initialize 500#, 800#, 30#, 200#, 300#, 20#
+                Case "HollowOffset": hollow.Initialize 500#, 800#, 30#, 200#, 300#, 20#, 40#, -30#
+                Case "HollowThin": hollow.Initialize 300#, 500#, 0#, 240#, 440#, 0#
+            End Select
+            Set geometry = hollow
+        Case "ImportedFixture"
+            Set section = New CSectionModel
+            section.SourceType = "AutoCADImportFixture"
+            For i = 0 To 23
+                x = -125# + 50# * (i Mod 6): y = -75# + 50# * (i \ 6)
+                section.AddConcreteElement x, y, 2500#, 1, "Region", "F" & CStr(i), "Region", _
+                    0#, 0#, 0#, "Фиксированная импортированная область", 520833.333333333, 520833.333333333, 0#
+            Next i
+            For i = 0 To 3
+                x = -100# + 200# * (i Mod 2): y = -60# + 120# * (i \ 2)
+                section.AddRebarElement x, y, 20#, GEOM_PI * 20# * 20# / 4#, "A400"
+            Next i
+            Set Audit03LoadMatrixSection = section
+            Exit Function
+        Case Else
+            Err.Raise vbObjectError + 4498, "Audit03LoadMatrixSection", "Неизвестная тестовая форма: " & shapeName
+    End Select
+    Dim message As String
+    If Not geometry.IsValid(message) Then Err.Raise vbObjectError + 4498, "Audit03LoadMatrixSection", message
+    If rebars.Count = 0 Then
+        For i = 0 To 7
+            If i < 4 Then
+                x = geometry.MinX + 15# + (geometry.MaxX - geometry.MinX - 30#) * (i Mod 2)
+                y = geometry.MinY + (geometry.MaxY - geometry.MinY) * (0.3 + 0.4 * (i \ 2))
+            Else
+                x = geometry.MinX + (geometry.MaxX - geometry.MinX) * (0.3 + 0.4 * (i Mod 2))
+                y = geometry.MinY + 15# + (geometry.MaxY - geometry.MinY - 30#) * ((i - 4) \ 2)
+            End If
+            If geometry.ContainsPoint(x, y) Then rebars.AddBar "M" & CStr(i), x, y, 12# + 4# * (i Mod 2), 0#, "A400", "", geometry
+        Next i
+    End If
+    If rebars.Count = 0 Then Err.Raise vbObjectError + 4498, "Audit03LoadMatrixSection", "Тестовая форма осталась без арматуры."
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geometry, (geometry.MaxX - geometry.MinX) / 12#, (geometry.MaxY - geometry.MinY) / 12#, 1, 2
+    Set Audit03LoadMatrixSection = BuildGeneratedSectionModel(mesh, rebars, shapeName)
+End Function
+
+' Силы нормируются по независимой сумме сопротивлений и площадей, моменты -
+' отдельно по своей глубине. Это верхняя силовая оценка, не capacity от Search;
+' при эксцентриситете она не объявляется точным физическим пределом.
+Private Function Audit03NormalizedLoads(ByVal section As CSectionModel, ByVal family As String) As Collection
+    Dim result As New Collection, ac As Double, steelArea As Double, i As Long
+    Dim minX As Double, maxX As Double, minY As Double, maxY As Double, halfX As Double, halfY As Double
+    For i = 1 To section.ConcreteCount
+        ac = ac + section.ConcreteArea(i)
+        halfX = section.ConcreteBoundaryHalfProjection(i, 1#, 0#)
+        halfY = section.ConcreteBoundaryHalfProjection(i, 0#, 1#)
+        If i = 1 Or section.ConcreteX(i) - halfX < minX Then minX = section.ConcreteX(i) - halfX
+        If i = 1 Or section.ConcreteX(i) + halfX > maxX Then maxX = section.ConcreteX(i) + halfX
+        If i = 1 Or section.ConcreteY(i) - halfY < minY Then minY = section.ConcreteY(i) - halfY
+        If i = 1 Or section.ConcreteY(i) + halfY > maxY Then maxY = section.ConcreteY(i) + halfY
+    Next i
+    For i = 1 To section.RebarCount: steelArea = steelArea + section.RebarArea(i): Next i
+    Dim nc As Double, nt As Double, mxRef As Double, myRef As Double, signX As Long, signY As Long, ratio As Variant, factor As Variant
+    nc = 15.5 * ac + 350# * steelArea: nt = 350# * steelArea
+    mxRef = nc * (maxY - minY) / 6#: myRef = nc * (maxX - minX) / 6#
+    If family = "Smoke" Then
+        result.Add Array("fixtureMixed", -0.05 * nc, 0.03 * mxRef, -0.02 * myRef)
+    ElseIf family = "PhysicalBoundary" Then
+        result.Add Array("physicalMy-", 0#, -0.003 * mxRef, -0.03 * myRef)
+        result.Add Array("physicalMy+", 0#, 0.003 * mxRef, -0.03 * myRef)
+    ElseIf family = "Light" Then
+        result.Add Array("zero", 0#, 0#, 0#)
+        For signX = -1 To 1 Step 2
+            result.Add Array("tinyN" & CStr(signX), signX * 0.000000001, 0#, 0#)
+            result.Add Array("tinyMx" & CStr(signX), 0#, signX * 0.000001, 0#)
+            result.Add Array("tinyMy" & CStr(signX), 0#, 0#, signX * 0.000001)
+            result.Add Array("axialSmall" & CStr(signX), signX * 0.05 * nt, 0#, 0#)
+            result.Add Array("Mx" & CStr(signX), 0#, signX * 0.03 * mxRef, 0#)
+            result.Add Array("My" & CStr(signX), 0#, 0#, signX * 0.03 * myRef)
+            For signY = -1 To 1 Step 2
+                For Each ratio In Array(1#, 10#, 1000#, 1000000#, 0.1, 0.001, 0.000001)
+                    If CDbl(ratio) >= 1# Then
+                        result.Add Array("biaxial" & CStr(signX) & "_" & CStr(signY) & "_" & CStr(ratio), _
+                            0#, signX * 0.03 * mxRef, signY * 0.03 * myRef / CDbl(ratio))
+                    Else
+                        result.Add Array("biaxial" & CStr(signX) & "_" & CStr(signY) & "_" & CStr(ratio), _
+                            0#, signX * 0.03 * mxRef * CDbl(ratio), signY * 0.03 * myRef)
+                    End If
+                Next ratio
+                result.Add Array("mixedC" & CStr(signX) & "_" & CStr(signY), -0.05 * nc, signX * 0.05 * mxRef, signY * 0.03 * myRef)
+                result.Add Array("mixedT" & CStr(signX) & "_" & CStr(signY), 0.05 * nt, signX * 0.05 * mxRef, signY * 0.03 * myRef)
+            Next signY
+        Next signX
+    ElseIf family = "Stress" Then
+        For Each factor In Array(0.95, 1#, 1.05, 2#, 10#, 100#, 1000#, 1000000#)
+            result.Add Array("axialC" & CStr(factor), -CDbl(factor) * nc, 0#, 0#)
+            result.Add Array("axialT" & CStr(factor), CDbl(factor) * nt, 0#, 0#)
+            result.Add Array("overloadMixed" & CStr(factor), -CDbl(factor) * nc, CDbl(factor) * mxRef, -CDbl(factor) * myRef)
+        Next factor
+    Else
+        Err.Raise vbObjectError + 4498, "Audit03NormalizedLoads", "Неизвестное нагрузочное семейство: " & family
+    End If
+    Set Audit03NormalizedLoads = result
+End Function
+
+' Проверяет saved states и downstream-контракты независимо от display-строки.
+' Невязки сравниваются с компонентными допусками, обязательные причины -
+' также с настоящим execution report, подготовленным владельцами результатов.
+Private Sub Audit03CheckMatrixStates(ByRef stats As TBatchTestStats, ByVal result As CCombinationResult, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByVal extensionEnabled As Boolean, _
+        ByVal prefix As String, ByVal reportText As String)
+    Dim state As CSectionStateResult, i As Long, meta As CResultMeta, comment As Variant
+    Dim toleranceN As Double, toleranceMx As Double, toleranceMy As Double
+    toleranceN = Abs(units.InputForceToInternal(settings.GetDouble("Solver.ToleranceN")))
+    toleranceMx = Abs(units.InputMomentMxToInternal(settings.GetDouble("Solver.ToleranceMx")))
+    toleranceMy = Abs(units.InputMomentMyToInternal(settings.GetDouble("Solver.ToleranceMy")))
+    For i = 1 To result.StateRepository.StateCount
+        Set state = result.StateRepository.StateAt(i)
+        AppendLine stats, "MATRIX_STATE: " & prefix & "|type=" & SectionStateTypeToText(state.StateType) & _
+            "|spec=" & state.MaterialSpec.SpecKey & "|N=" & FormatNumberInvariant(state.TargetN) & _
+            "|Mx=" & FormatNumberInvariant(state.TargetMx) & "|My=" & FormatNumberInvariant(state.TargetMy) & _
+            "|rN=" & FormatNumberInvariant(state.ResidualN) & "|rMx=" & FormatNumberInvariant(state.ResidualMx) & _
+            "|rMy=" & FormatNumberInvariant(state.ResidualMy) & "|converged=" & CStr(state.Converged) & _
+            "|physical=" & CStr(state.WithinPhysicalRange) & "|extension=" & CStr(state.ExtensionUsed)
+        AppendLine stats, "MATRIX_STRAINS: " & prefix & "|type=" & SectionStateTypeToText(state.StateType) & _
+            "|concreteMin=" & FormatNumberInvariant(state.MinConcreteStrain) & "|concreteMax=" & FormatNumberInvariant(state.MaxConcreteStrain) & _
+            "|steelMin=" & FormatNumberInvariant(state.MinSteelStrain) & "|steelMax=" & FormatNumberInvariant(state.MaxSteelStrain)
+        If state.Converged Then
+            AssertClose stats, prefix & ".state.rN." & CStr(i), state.ResidualN, 0#, toleranceN
+            AssertClose stats, prefix & ".state.rMx." & CStr(i), state.ResidualMx, 0#, toleranceMx
+            AssertClose stats, prefix & ".state.rMy." & CStr(i), state.ResidualMy, 0#, toleranceMy
+        Else
+            ' Repository может хранить диагностическую попытку без reusable key.
+            ' Она не считается найденным физическим State и не получает OK.
+            AssertTrue stats, prefix & ".state.failureTyped." & CStr(i), _
+                state.ResultMeta.InternalStatus = rsNumericalFailure Or state.ResultMeta.InternalStatus = rsInvalidInput Or _
+                state.ResultMeta.InternalStatus = rsInvalidConfiguration Or state.ResultMeta.InternalStatus = rsInternalError
+            AssertTrue stats, prefix & ".state.failureNotPhysical." & CStr(i), Not state.WithinPhysicalRange
+        End If
+        If Not extensionEnabled Then AssertTrue stats, prefix & ".state.noHiddenExtension." & CStr(i), Not state.ExtensionUsed
+        If state.StateType = sstCapacityState Or state.StateType = sstPreCrackState Or state.StateType = sstPostCrackState Then
+            AssertTrue stats, prefix & ".state.finalPhysical." & CStr(i), state.Converged And state.WithinPhysicalRange And Not state.ExtensionUsed
+        End If
+    Next i
+    For Each comment In Array(result.DirectStateMeta, result.CapacityMeta, result.CrackFormationMeta, _
+            result.CrackCurrentStateMeta, result.CrackWidthMeta, result.LongitudinalCrackMeta, result.OverallMeta)
+        Set meta = comment
+        AssertTrue stats, prefix & ".noInternalFailure." & CStr(meta.ResultKind), meta.InternalStatus <> rsInternalError
+        If Audit03RequiresComment(meta) Then AssertTrue stats, prefix & ".reportComment." & CStr(meta.ResultKind), _
+            InStr(1, reportText, meta.ResultComment, vbBinaryCompare) > 0
+    Next comment
+    If result.CrackResult.Width.ResultMeta.Calculated Then
+        AssertTrue stats, prefix & ".psiUpperBound", result.CrackResult.Width.PsiS <= 1#
+        AssertTrue stats, prefix & ".widthNonnegative", result.CrackResult.Width.CrackWidth >= 0#
+    End If
+End Sub
+
+' Читает UTF-16 отчет настоящего report-owner, не подменяя его текст тестовым.
+Private Function Audit03ReadUnicodeFile(ByVal path As String) As String
+    Dim fso As Object, stream As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set stream = fso.OpenTextFile(path, 1, False, -1)
+    Audit03ReadUnicodeFile = stream.ReadAll
+    stream.Close
+End Function
+
+' Сохраняет завершенный chunk перед следующими расчетами. После watchdog
+' timeout этот файл остается диагностикой, а не доказательством PASS.
+Private Sub Audit03SaveMatrixProgress(ByVal text As String)
+    Dim fso As Object, stream As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set stream = fso.CreateTextFile(ThisWorkbook.Path & "\Audit03_Search_Progress.txt", True, True)
+    stream.Write text
+    stream.Close
+End Sub
+
+' Ограничивает последний chunk фактическим числом независимых нагрузок.
+Private Function Audit03MinLong(ByVal a As Long, ByVal b As Long) As Long
+    If a < b Then Audit03MinLong = a Else Audit03MinLong = b
 End Function

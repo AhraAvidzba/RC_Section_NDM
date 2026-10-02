@@ -37,6 +37,10 @@ Public Sub LoadFromRange(ByVal source As Object)
 
     Dim data As Variant
     data = source.Value2
+    If Not IsArray(data) Then Err.Raise vbObjectError + 3987, "CCalculationProfileCatalog", _
+        "Таблица расчетных профилей должна содержать заголовок, строки параметров и минимум один столбец профиля."
+    If UBound(data, 1) < 2 Or UBound(data, 2) < 3 Then Err.Raise vbObjectError + 3987, "CCalculationProfileCatalog", _
+        "Таблица расчетных профилей должна содержать заголовок, строки параметров и минимум один столбец профиля."
 
     Dim headerRow As Long
     headerRow = FindProfileHeaderRow(data)

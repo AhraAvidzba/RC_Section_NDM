@@ -1,0 +1,24 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_input_negative.xlsm
+SOURCE_SHA256: 33E74A4902676508A75D43918274EC25AD88E2C53F6152B51B9CDB3AFFEFD8EA
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a947e0b0a23943908ebbc18caeb8325b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.input.boolean.invalid.Maybe.typedError
+FAIL: audit03.input.boolean.invalid.TODO.typedError
+FAIL: audit03.input.boolean.invalid..typedError
+FAIL: audit03.input.long.invalid.1.25.typedError
+FAIL: audit03.input.long.invalid.-1.25.typedError
+FAIL: audit03.input.long.invalid.1E+20.typedError
+FAIL: audit03.input.consumer.boolean.typedError
+FAIL: audit03.input.consumer.integer.typedError
+FAIL: audit03.input.consumer.boundary.typedError
+FAIL: audit03.input.settings.scalar.typedError
+FAIL: audit03.input.settings.narrow.typedError
+FAIL: audit03.input.settings.nothing.typedError
+FAIL: audit03.input.profiles.scalar.typedError
+FAIL: audit03.input.mesh.nothing.typedError
+FAIL: audit03.input.mesh.axis.typedError
+FAIL: audit03.input.mesh.product.typedError
+FAIL: audit03.input.mesh.boundary.typedError
+TOTAL_AUDIT03_INPUT_CONTRACTS: passed=22; failed=17
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

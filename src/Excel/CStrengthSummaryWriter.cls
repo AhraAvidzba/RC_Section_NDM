@@ -431,6 +431,8 @@ Private Function OutputDataOffset(ByVal batch As CBatchSectionCalculator, ByVal 
     If OutputDataOffset > dataRows Then OutputDataOffset = dataRows
 End Function
 
+' Записывает физические предельные деформации effective strength-модели LC.
+' Растянутый предел бетона выводится только при включенной растянутой ветви.
 Private Sub PutStrengthLimits(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
     data(rowIndex, COL_LIM_EBC) = batch.StrengthConcreteCompressionLimitForCombination(index)
@@ -467,7 +469,6 @@ Private Sub PutStrengthState(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, COL_STATE_STATUS) = policy.ExternalStatus(stateResult.ResultMeta)
 End Sub
 
-' Пишет CapacityState и предельные компоненты найденной точки.
 ' Показывает использование продолжения диаграммы только тогда, когда само
 ' продолжение разрешено настройкой General.DiagramExtension.
 ' При выключенной настройке выводится "-", потому что extension не мог
@@ -483,6 +484,9 @@ Private Function ExtensionUsedText(ByVal batch As CBatchSectionCalculator, _
     End If
 End Function
 
+' Выводит путь, метод, статус несущей и найденное физическое CapacityState.
+' Если конечного НДС нет, writer не создает плоскость или усилия из последней
+' диагностической пробы; числовые поля заполняются только сохраненной точкой.
 Private Sub PutCapacityState(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal section As CSectionModel, ByVal policy As CResultStatusPolicy)

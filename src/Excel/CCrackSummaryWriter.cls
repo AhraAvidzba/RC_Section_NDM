@@ -425,6 +425,9 @@ Private Function OutputDataOffset(ByVal batch As CBatchSectionCalculator, ByVal 
     If OutputDataOffset > dataRows Then OutputDataOffset = dataRows
 End Function
 
+' Выводит доступные результаты образования трещины и статусы Pre/Post НДС.
+' При отсутствии точки не создает нулевые Ncrc/Mcrc; общий исход берется из
+' Formation result, а не восстанавливается из чисел writer-ом.
 Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal policy As CResultStatusPolicy)
@@ -471,8 +474,6 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
     End If
 End Sub
 
-' Записывает ширину раскрытия нормальных трещин и все величины ее формулы.
-' Проверяет, есть ли сохраненные величины стадии образования нормальной трещины.
 ' Возвращает статус сохраненного named-state. Если состояние штатно не создавалось,
 ' detailed-таблица показывает N/A, а не общий статус всей проверки трещин.
 Private Function NamedStateStatus(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
@@ -486,6 +487,8 @@ Private Function NamedStateStatus(ByVal batch As CBatchSectionCalculator, ByVal 
     End If
 End Function
 
+' Определяет наличие ненулевых сохраненных усилий пороговой точки для вывода.
+' Это доступность числовых полей, не отдельная проверка сходимости или физики.
 Private Function HasCrackFormationData(ByVal batch As CBatchSectionCalculator, ByVal index As Long) As Boolean
     HasCrackFormationData = batch.ResultAt(index).CrackResult.Formation.Ncrc > SMALL_VALUE Or _
         Abs(batch.ResultAt(index).CrackResult.Formation.FormationNcrc) > SMALL_VALUE Or _
@@ -516,12 +519,6 @@ Private Sub PutCrackedStateData(ByRef data() As Variant, ByVal rowIndex As Long,
     data(rowIndex, COL_CRACK_STATE_STATUS) = CrackCurrentStateStatusText(batch, index, policy)
 End Sub
 
-' Возвращает True только для такого CrackedState, на котором действительно
-' можно продолжать расчет ширины нормальных трещин и проверку продольных
-' трещин. Если текущее равновесие не найдено, найдено только через
-' продолжение диаграммы или помечено как FAIL/NumFail, формульные блоки
-' a_crc и продольных трещин в подробной таблице должны оставаться N/A:
-' это не результаты этих проверок, а остановка на более раннем шаге.
 ' Показывает, использовало ли текущее CrackedState продолжение диаграммы.
 ' Значение "-" означает, что General.DiagramExtension был выключен
 ' для этого LC, поэтому extension в принципе не мог применяться.
@@ -536,6 +533,9 @@ Private Function ExtensionUsedText(ByVal batch As CBatchSectionCalculator, _
     End If
 End Function
 
+' Разрешает вывод подготовленных формульных данных только при физическом
+' сошедшемся CrackedState. При отказе зависимости downstream-ячейки остаются
+' N/A; собственный расчет ширины/продольных трещин здесь не выполняется.
 Private Function CrackedStateAllowsCrackChecks(ByVal batch As CBatchSectionCalculator, _
         ByVal index As Long, ByVal policy As CResultStatusPolicy) As Boolean
     Dim stateResult As CSectionStateResult

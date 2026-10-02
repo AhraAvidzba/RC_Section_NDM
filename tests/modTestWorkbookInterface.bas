@@ -34,6 +34,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestLoadCombinationRangeMinimumRows stats
     AppendLine stats, "RUN: TestAudit03ReaderContract"
     TestAudit03ReaderContract stats
+    TestAudit03InputContracts stats
     AppendLine stats, "RUN: TestPartialCombinationIsInvalid"
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats
@@ -4398,6 +4399,138 @@ Private Sub TestAudit03ReaderTinyUnits(ByRef stats As TUiTestStats, ByVal sheet 
 Failed:
     AssertTrue stats, "audit03.reader.tiny.runtime." & CStr(Err.Number) & "." & Err.Description, False
 End Sub
+
+' ========================== ДЛЯ ТЕСТОВ ==========================
+' Проверяет неверный ввод через реальные Range и публичные reader/build API.
+' Метод не изменяет пользовательские Config-ячейки и возвращает отдельный отчет.
+Public Function RunAudit03InputContractTests() As String
+    Dim stats As TUiTestStats
+    TestAudit03InputContracts stats
+    AppendLine stats, "TOTAL_AUDIT03_INPUT_CONTRACTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03InputContractTests = stats.Report
+End Function
+
+' Различает недопустимую структуру, значение и размер сетки. Все ветви должны
+' давать адресную ошибку ввода, а не runtime 6/9/13/91 или скрытый default.
+Private Sub TestAudit03InputContracts(ByRef stats As TUiTestStats)
+    Dim sheet As Object, oldAlerts As Boolean
+    oldAlerts = Application.DisplayAlerts
+    On Error GoTo Failed
+    Set sheet = ThisWorkbook.Worksheets.Add
+    sheet.Name = "__Audit03Input"
+    sheet.Range("A1").Value2 = "Key": sheet.Range("B1").Value2 = "Value": sheet.Range("C1").Value2 = "Unit"
+    sheet.Range("A2").Value2 = "Audit03.Test"
+    Dim settings As CSystemSettingsReader, value As Variant
+    Set settings = New CSystemSettingsReader
+    For Each value In Array("Yes", "True", "1", "Да", "No", "False", "0", "Нет")
+        sheet.Range("B2").Value2 = CStr(value)
+        settings.LoadFromRange sheet.Range("A1:C2")
+        AssertTrue stats, "audit03.input.boolean.valid." & CStr(value), _
+            settings.GetBoolean("Audit03.Test") = (value = "Yes" Or value = "True" Or value = "1" Or value = "Да")
+    Next value
+    AssertTrue stats, "audit03.input.boolean.missingTrue", settings.GetBoolean("Audit03.Absent", True)
+    AssertTrue stats, "audit03.input.boolean.missingFalse", Not settings.GetBoolean("Audit03.Absent", False)
+    For Each value In Array("Maybe", "TODO", "")
+        sheet.Range("B2").Value2 = CStr(value)
+        Audit03AssertInputError stats, sheet.Range("A1:C2"), "Boolean", _
+            "audit03.input.boolean.invalid." & CStr(value), vbObjectError + 4314
+    Next value
+    For Each value In Array(-2147483648#, 0#, 17#, 2147483647#)
+        sheet.Range("B2").Value2 = CDbl(value)
+        settings.LoadFromRange sheet.Range("A1:C2")
+        AssertClose stats, "audit03.input.long.valid." & CStr(value), CDbl(settings.GetLong("Audit03.Test")), CDbl(value), 0#
+    Next value
+    For Each value In Array(1.25, -1.25, 1E+20)
+        sheet.Range("B2").Value2 = CDbl(value)
+        Audit03AssertInputError stats, sheet.Range("A1:C2"), "Long", _
+            "audit03.input.long.invalid." & CStr(value), vbObjectError + 4315
+    Next value
+    sheet.Range("A2").Value2 = "Solver.LineSearchEnabled": sheet.Range("B2").Value2 = "Maybe"
+    Audit03AssertInputError stats, sheet.Range("A1:C2"), "Solver", "audit03.input.consumer.boolean", vbObjectError + 4314
+    sheet.Range("A2").Value2 = "Solver.MaxIterations": sheet.Range("B2").Value2 = 1.25
+    Audit03AssertInputError stats, sheet.Range("A1:C2"), "Solver", "audit03.input.consumer.integer", vbObjectError + 4315
+    sheet.Range("A2").Value2 = "Mesh.BoundarySubdivisions": sheet.Range("B2").Value2 = 0
+    Audit03AssertInputError stats, sheet.Range("A1:C2"), "MeshRegistry", "audit03.input.consumer.boundary", vbObjectError + 4139
+    For Each value In Array("", "TODO")
+        sheet.Range("B2").Value2 = CStr(value)
+        Audit03AssertInputError stats, sheet.Range("A1:C2"), "MeshRegistry", _
+            "audit03.input.consumer.boundaryMissing." & CStr(value), vbObjectError + 4139
+    Next value
+    Audit03AssertInputError stats, sheet.Range("A1"), "Settings", "audit03.input.settings.scalar", vbObjectError + 4316
+    Audit03AssertInputError stats, sheet.Range("A1:B2"), "Settings", "audit03.input.settings.narrow", vbObjectError + 4316
+    Audit03AssertInputError stats, Nothing, "Settings", "audit03.input.settings.nothing", vbObjectError + 4316
+    Audit03AssertInputError stats, sheet.Range("A1"), "Profiles", "audit03.input.profiles.scalar", vbObjectError + 3987
+    Audit03AssertInputError stats, Nothing, "MeshNothing", "audit03.input.mesh.nothing", vbObjectError + 2107
+    Audit03AssertInputError stats, Nothing, "MeshAxis", "audit03.input.mesh.axis", vbObjectError + 2108
+    Audit03AssertInputError stats, Nothing, "MeshProduct", "audit03.input.mesh.product", vbObjectError + 2108
+    Audit03AssertInputError stats, Nothing, "MeshBoundary", "audit03.input.mesh.boundary", vbObjectError + 2109
+    Audit03AssertInputError stats, Nothing, "MeshSubcellProduct", "audit03.input.mesh.subcellProduct", vbObjectError + 2108
+    GoTo CleanUp
+Failed:
+    AssertTrue stats, "audit03.input.runtime." & CStr(Err.Number) & "." & Err.Description, False
+CleanUp:
+    On Error Resume Next
+    Application.DisplayAlerts = False
+    If Not sheet Is Nothing Then sheet.Delete
+    Application.DisplayAlerts = oldAlerts
+    On Error GoTo 0
+End Sub
+
+' Проверяет точный контракт публичного API; описание ошибки сохраняется в логе
+' для содержательной ревизии. Перехват относится только к ожидаемому test input.
+Private Sub Audit03AssertInputError(ByRef stats As TUiTestStats, ByVal source As Object, _
+        ByVal operation As String, ByVal prefix As String, ByVal expectedCode As Long)
+    Dim description As String, actualCode As Long
+    actualCode = Audit03CaptureInputError(source, operation, description)
+    AssertTrue stats, prefix & ".typedError", actualCode = expectedCode
+    If actualCode <> 0 Then AssertTrue stats, prefix & ".reason", Len(description) > 0
+    AppendLine stats, "INPUT: " & prefix & "; error=" & CStr(actualCode) & "; expected=" & CStr(expectedCode) & "; reason=" & description
+End Sub
+
+' Запускает отдельную неверную операцию без маскировки ошибок следующего теста.
+' Сетка с непредставимым числом ячеек должна отказать до выделения массива/цикла.
+Private Function Audit03CaptureInputError(ByVal source As Object, ByVal operation As String, _
+        ByRef description As String) As Long
+    On Error GoTo ExpectedError
+    Dim settings As CSystemSettingsReader, profiles As CCalculationProfileCatalog
+    Dim mesh As CFiberMeshBuilder, geometry As CGeometryRoundedRectangle
+    Dim solver As CSectionSolver, registry As CSectionTypeRegistry
+    Dim flag As Boolean, integerValue As Long
+    Select Case operation
+        Case "Settings", "Boolean", "Long", "Solver", "MeshRegistry"
+            Set settings = New CSystemSettingsReader
+            settings.LoadFromRange source
+            If operation = "Boolean" Then flag = settings.GetBoolean("Audit03.Test", True)
+            If operation = "Long" Then integerValue = settings.GetLong("Audit03.Test")
+            If operation = "Solver" Then
+                Set solver = New CSectionSolver
+                solver.ApplySettings settings
+            End If
+            If operation = "MeshRegistry" Then
+                Set registry = New CSectionTypeRegistry
+                integerValue = registry.MeshBoundarySubdivisions(settings)
+            End If
+        Case "Profiles"
+            Set profiles = New CCalculationProfileCatalog
+            profiles.LoadFromRange source
+        Case Else
+            Set mesh = New CFiberMeshBuilder
+            Set geometry = New CGeometryRoundedRectangle
+            geometry.Initialize 100#, 100#, 0#, 0#, 0#, 0#
+            Select Case operation
+                Case "MeshNothing": mesh.BuildMesh Nothing, 25#, 25#
+                Case "MeshAxis": mesh.BuildMesh geometry, 1E-308, 25#
+                Case "MeshProduct": mesh.BuildMesh geometry, 0.001, 0.001
+                Case "MeshBoundary": mesh.BuildMesh geometry, 25#, 25#, 1, 0
+                Case "MeshSubcellProduct": mesh.BuildMesh geometry, 25#, 25#, 1, 2147483647
+                Case Else: Err.Raise vbObjectError + 4499, "Audit03CaptureInputError", "Неизвестный тестовый сценарий ввода."
+            End Select
+    End Select
+    Exit Function
+ExpectedError:
+    Audit03CaptureInputError = Err.Number
+    description = Err.Description
+End Function
 
 
 

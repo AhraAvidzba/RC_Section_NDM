@@ -1,0 +1,395 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_f06_fixed.xlsm
+SOURCE_SHA256: AE1F7E3F5FBCEBC41236BC3FE1DA7A515BFF41FA1C74600433C4DD8B6F5862F8
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d51395479e364d2fba4cb12079b33969\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03BroadLoadMatrixTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03BroadLoadMatrixTests; 2026-10-02T04:59:41
+EXCEL_AFTER_SUITE: pid=10544; workingSet=144056320; privateBytes=104169472; cpu=6.71875
+MATRIX_SETUP: shape=RoundedSimple|family=Smoke|loads=1|extension=False|fibers=218|rebars=8|referenceX=0.|referenceY=0.|offsetX=10|offsetY=-7|zeroMoment=0|stability=No
+MATRIX_CASE: shape=RoundedSimple|family=Smoke|id=M_0_1|load=fixtureMixed|N=-68168.2319084617|Mx=1363364.63816923|My=-1363364.63816923|profile=PR1|path=λ*Mx
+OK: audit03.matrix.RoundedSimple.M_0_1.path
+CASE: audit03.matrix.RoundedSimple.M_0_1|N=-68168.2319084617|Mx=1363364.63816923|My=-1363364.63816923|offsetX=10|offsetY=-7|path=Mx|lambda=26.950552947251|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: audit03.matrix.RoundedSimple.M_0_1.validInput
+OK: audit03.matrix.RoundedSimple.M_0_1.NU; actual=-68167.3174471885; expected=-68168.2319084617
+OK: audit03.matrix.RoundedSimple.M_0_1.MxU; actual=36743437.268619; expected=36743430.8673901
+OK: audit03.matrix.RoundedSimple.M_0_1.MyU; actual=-1363105.60694246; expected=-1363364.63816923
+OK: audit03.matrix.RoundedSimple.M_0_1.stateMx; actual=37220608.4907493; expected=37220608.4907493
+OK: audit03.matrix.RoundedSimple.M_0_1.stateMy; actual=-2044778.78141435; expected=-2045046.95725385
+OK: audit03.matrix.RoundedSimple.M_0_1.physicalCriterion
+OK: audit03.matrix.RoundedSimple.M_0_1.finalPhysical
+META: audit03.comments.M_0_1.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+META: audit03.comments.M_0_1.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=ConcreteStrainLimit
+META: audit03.comments.M_0_1.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_0_1.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_0_1.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_0_1.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_0_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.M_0_1.formulaNoNumFail
+OK: audit03.comments.M_0_1.strengthNoCrack
+OK: audit03.comments.M_0_1.crackNoCapacity
+OK: audit03.comments.M_0_1.overallComposition
+OK: audit03.comments.M_0_1.batchOutput
+OK: audit03.comments.M_0_1.strengthOutput
+OK: audit03.comments.M_0_1.crackOutput
+OK: audit03.comments.M_0_1.stabilityOutput
+OUTPUT: audit03.comments.M_0_1|strength=|crack=|stability=|batch=
+MATRIX_STATE: audit03.matrix.RoundedSimple.M_0_1|type=CapacityState|spec=ULS(I)|ThreeLine|Ignore|TwoLine|N=-68168.2319084617|Mx=37220608.4907493|My=-2045046.95725385|rN=0.914461273205|rMx=0.|rMy=268.175839505158|converged=True|physical=True|extension=False
+OK: audit03.matrix.RoundedSimple.M_0_1.state.rN.1; actual=0.914461273205; expected=0.
+OK: audit03.matrix.RoundedSimple.M_0_1.state.rMx.1; actual=0.; expected=0.
+OK: audit03.matrix.RoundedSimple.M_0_1.state.rMy.1; actual=268.175839505158; expected=0.
+OK: audit03.matrix.RoundedSimple.M_0_1.state.noHiddenExtension.1
+OK: audit03.matrix.RoundedSimple.M_0_1.state.finalPhysical.1
+MATRIX_STATE: audit03.matrix.RoundedSimple.M_0_1|type=StrengthState|spec=ULS(I)|ThreeLine|Ignore|TwoLine|N=-68168.2319084617|Mx=1840542.26152847|My=-2045046.95725385|rN=-0.000000000073|rMx=-0.000000000466|rMy=-0.000000000698|converged=True|physical=True|extension=False
+OK: audit03.matrix.RoundedSimple.M_0_1.state.rN.2; actual=-0.000000000073; expected=0.
+OK: audit03.matrix.RoundedSimple.M_0_1.state.rMx.2; actual=-0.000000000466; expected=0.
+OK: audit03.matrix.RoundedSimple.M_0_1.state.rMy.2; actual=-0.000000000698; expected=0.
+OK: audit03.matrix.RoundedSimple.M_0_1.state.noHiddenExtension.2
+OK: audit03.matrix.RoundedSimple.M_0_1.noInternalFailure.1
+OK: audit03.matrix.RoundedSimple.M_0_1.noInternalFailure.2
+OK: audit03.matrix.RoundedSimple.M_0_1.noInternalFailure.3
+OK: audit03.matrix.RoundedSimple.M_0_1.noInternalFailure.1
+OK: audit03.matrix.RoundedSimple.M_0_1.noInternalFailure.4
+OK: audit03.matrix.RoundedSimple.M_0_1.noInternalFailure.5
+OK: audit03.matrix.RoundedSimple.M_0_1.noInternalFailure.1
+MATRIX_CASE: shape=RoundedSimple|family=Smoke|id=M_1_1|load=fixtureMixed|N=-68168.2319084617|Mx=1363364.63816923|My=-1363364.63816923|profile=PR1|path=λ*My
+OK: audit03.matrix.RoundedSimple.M_1_1.path
+CASE: audit03.matrix.RoundedSimple.M_1_1|N=-68168.2319084617|Mx=1363364.63816923|My=-1363364.63816923|offsetX=10|offsetY=-7|path=My|lambda=35.972381988606|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: audit03.matrix.RoundedSimple.M_1_1.validInput
+OK: audit03.matrix.RoundedSimple.M_1_1.NU; actual=-68168.2319090173; expected=-68168.2319084617
+OK: audit03.matrix.RoundedSimple.M_1_1.MxU; actual=1363364.69476329; expected=1363364.63816923
+OK: audit03.matrix.RoundedSimple.M_1_1.MyU; actual=-49043473.553976; expected=-49043473.5539816
+OK: audit03.matrix.RoundedSimple.M_1_1.stateMx; actual=1840542.31812641; expected=1840542.26152847
+OK: audit03.matrix.RoundedSimple.M_1_1.stateMy; actual=-49725155.8730662; expected=-49725155.8730662
+OK: audit03.matrix.RoundedSimple.M_1_1.physicalCriterion
+OK: audit03.matrix.RoundedSimple.M_1_1.finalPhysical
+META: audit03.comments.M_1_1.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+META: audit03.comments.M_1_1.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=ConcreteStrainLimit
+META: audit03.comments.M_1_1.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_1_1.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_1_1.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_1_1.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_1_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.M_1_1.formulaNoNumFail
+OK: audit03.comments.M_1_1.strengthNoCrack
+OK: audit03.comments.M_1_1.crackNoCapacity
+OK: audit03.comments.M_1_1.overallComposition
+OK: audit03.comments.M_1_1.batchOutput
+OK: audit03.comments.M_1_1.strengthOutput
+OK: audit03.comments.M_1_1.crackOutput
+OK: audit03.comments.M_1_1.stabilityOutput
+OUTPUT: audit03.comments.M_1_1|strength=|crack=|stability=|batch=
+MATRIX_STATE: audit03.matrix.RoundedSimple.M_1_1|type=CapacityState|spec=ULS(I)|ThreeLine|Ignore|TwoLine|N=-68168.2319084617|Mx=1840542.26152847|My=-49725155.8730662|rN=-0.000000555607|rMx=0.056597946677|rMy=0.|converged=True|physical=True|extension=False
+OK: audit03.matrix.RoundedSimple.M_1_1.state.rN.1; actual=-0.000000555607; expected=0.
+OK: audit03.matrix.RoundedSimple.M_1_1.state.rMx.1; actual=0.056597946677; expected=0.
+OK: audit03.matrix.RoundedSimple.M_1_1.state.rMy.1; actual=0.; expected=0.
+OK: audit03.matrix.RoundedSimple.M_1_1.state.noHiddenExtension.1
+OK: audit03.matrix.RoundedSimple.M_1_1.state.finalPhysical.1
+MATRIX_STATE: audit03.matrix.RoundedSimple.M_1_1|type=StrengthState|spec=ULS(I)|ThreeLine|Ignore|TwoLine|N=-68168.2319084617|Mx=1840542.26152847|My=-2045046.95725385|rN=-0.000000000073|rMx=-0.000000000466|rMy=-0.000000000698|converged=True|physical=True|extension=False
+OK: audit03.matrix.RoundedSimple.M_1_1.state.rN.2; actual=-0.000000000073; expected=0.
+OK: audit03.matrix.RoundedSimple.M_1_1.state.rMx.2; actual=-0.000000000466; expected=0.
+OK: audit03.matrix.RoundedSimple.M_1_1.state.rMy.2; actual=-0.000000000698; expected=0.
+OK: audit03.matrix.RoundedSimple.M_1_1.state.noHiddenExtension.2
+OK: audit03.matrix.RoundedSimple.M_1_1.noInternalFailure.1
+OK: audit03.matrix.RoundedSimple.M_1_1.noInternalFailure.2
+OK: audit03.matrix.RoundedSimple.M_1_1.noInternalFailure.3
+OK: audit03.matrix.RoundedSimple.M_1_1.noInternalFailure.1
+OK: audit03.matrix.RoundedSimple.M_1_1.noInternalFailure.4
+OK: audit03.matrix.RoundedSimple.M_1_1.noInternalFailure.5
+OK: audit03.matrix.RoundedSimple.M_1_1.noInternalFailure.1
+MATRIX_CASE: shape=RoundedSimple|family=Smoke|id=M_2_1|load=fixtureMixed|N=-68168.2319084617|Mx=1363364.63816923|My=-1363364.63816923|profile=PR1|path=λ*Mxy
+OK: audit03.matrix.RoundedSimple.M_2_1.path
+CASE: audit03.matrix.RoundedSimple.M_2_1|N=-68168.2319084617|Mx=1363364.63816923|My=-1363364.63816923|offsetX=10|offsetY=-7|path=Mxy|lambda=21.24008704961|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: audit03.matrix.RoundedSimple.M_2_1.validInput
+OK: audit03.matrix.RoundedSimple.M_2_1.NU; actual=-68168.2319073889; expected=-68168.2319084617
+OK: audit03.matrix.RoundedSimple.M_2_1.MxU; actual=28957982.6640792; expected=28957983.5950748
+OK: audit03.matrix.RoundedSimple.M_2_1.MyU; actual=-28957984.5260886; expected=-28957983.5950748
+OK: audit03.matrix.RoundedSimple.M_2_1.stateMx; actual=29435160.2874309; expected=29435161.218434
+OK: audit03.matrix.RoundedSimple.M_2_1.stateMy; actual=-29639666.8451625; expected=-29639665.9141594
+OK: audit03.matrix.RoundedSimple.M_2_1.physicalCriterion
+OK: audit03.matrix.RoundedSimple.M_2_1.finalPhysical
+META: audit03.comments.M_2_1.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+META: audit03.comments.M_2_1.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=ConcreteStrainLimit
+META: audit03.comments.M_2_1.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_2_1.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_2_1.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_2_1.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_2_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.M_2_1.formulaNoNumFail
+OK: audit03.comments.M_2_1.strengthNoCrack
+OK: audit03.comments.M_2_1.crackNoCapacity
+OK: audit03.comments.M_2_1.overallComposition
+OK: audit03.comments.M_2_1.batchOutput
+OK: audit03.comments.M_2_1.strengthOutput
+OK: audit03.comments.M_2_1.crackOutput
+OK: audit03.comments.M_2_1.stabilityOutput
+OUTPUT: audit03.comments.M_2_1|strength=|crack=|stability=|batch=
+MATRIX_STATE: audit03.matrix.RoundedSimple.M_2_1|type=CapacityState|spec=ULS(I)|ThreeLine|Ignore|TwoLine|N=-68168.2319084617|Mx=29435161.218434|My=-29639665.9141594|rN=0.000001072855|rMx=-0.931003082544|rMy=-0.931003086269|converged=True|physical=True|extension=False
+OK: audit03.matrix.RoundedSimple.M_2_1.state.rN.1; actual=0.000001072855; expected=0.
+OK: audit03.matrix.RoundedSimple.M_2_1.state.rMx.1; actual=-0.931003082544; expected=0.
+OK: audit03.matrix.RoundedSimple.M_2_1.state.rMy.1; actual=-0.931003086269; expected=0.
+OK: audit03.matrix.RoundedSimple.M_2_1.state.noHiddenExtension.1
+OK: audit03.matrix.RoundedSimple.M_2_1.state.finalPhysical.1
+MATRIX_STATE: audit03.matrix.RoundedSimple.M_2_1|type=StrengthState|spec=ULS(I)|ThreeLine|Ignore|TwoLine|N=-68168.2319084617|Mx=1840542.26152847|My=-2045046.95725385|rN=-0.000000000073|rMx=-0.000000000466|rMy=-0.000000000698|converged=True|physical=True|extension=False
+OK: audit03.matrix.RoundedSimple.M_2_1.state.rN.2; actual=-0.000000000073; expected=0.
+OK: audit03.matrix.RoundedSimple.M_2_1.state.rMx.2; actual=-0.000000000466; expected=0.
+OK: audit03.matrix.RoundedSimple.M_2_1.state.rMy.2; actual=-0.000000000698; expected=0.
+OK: audit03.matrix.RoundedSimple.M_2_1.state.noHiddenExtension.2
+OK: audit03.matrix.RoundedSimple.M_2_1.noInternalFailure.1
+OK: audit03.matrix.RoundedSimple.M_2_1.noInternalFailure.2
+OK: audit03.matrix.RoundedSimple.M_2_1.noInternalFailure.3
+OK: audit03.matrix.RoundedSimple.M_2_1.noInternalFailure.1
+OK: audit03.matrix.RoundedSimple.M_2_1.noInternalFailure.4
+OK: audit03.matrix.RoundedSimple.M_2_1.noInternalFailure.5
+OK: audit03.matrix.RoundedSimple.M_2_1.noInternalFailure.1
+MATRIX_CASE: shape=RoundedSimple|family=Smoke|id=M_3_1|load=fixtureMixed|N=-68168.2319084617|Mx=1363364.63816923|My=-1363364.63816923|profile=PR1|path=λ*N
+OK: audit03.matrix.RoundedSimple.M_3_1.path
+CASE: audit03.matrix.RoundedSimple.M_3_1|N=-68168.2319084617|Mx=1363364.63816923|My=-1363364.63816923|offsetX=10|offsetY=-7|path=N|lambda=17.670328066387|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: audit03.matrix.RoundedSimple.M_3_1.validInput
+OK: audit03.matrix.RoundedSimple.M_3_1.NU; actual=-1204555.02152804; expected=-1204555.02152804
+OK: audit03.matrix.RoundedSimple.M_3_1.MxU; actual=1363364.63641162; expected=1363364.63816923
+OK: audit03.matrix.RoundedSimple.M_3_1.MyU; actual=-1363364.63717288; expected=-1363364.63816923
+OK: audit03.matrix.RoundedSimple.M_3_1.stateMx; actual=9795249.78710789; expected=9795249.78886549
+OK: audit03.matrix.RoundedSimple.M_3_1.stateMy; actual=-13408914.8524533; expected=-13408914.8534496
+OK: audit03.matrix.RoundedSimple.M_3_1.physicalCriterion
+OK: audit03.matrix.RoundedSimple.M_3_1.finalPhysical
+META: audit03.comments.M_3_1.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+META: audit03.comments.M_3_1.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=ConcreteStrainLimit
+META: audit03.comments.M_3_1.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_3_1.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_3_1.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_3_1.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_3_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.M_3_1.formulaNoNumFail
+OK: audit03.comments.M_3_1.strengthNoCrack
+OK: audit03.comments.M_3_1.crackNoCapacity
+OK: audit03.comments.M_3_1.overallComposition
+OK: audit03.comments.M_3_1.batchOutput
+OK: audit03.comments.M_3_1.strengthOutput
+OK: audit03.comments.M_3_1.crackOutput
+OK: audit03.comments.M_3_1.stabilityOutput
+OUTPUT: audit03.comments.M_3_1|strength=|crack=|stability=|batch=
+MATRIX_STATE: audit03.matrix.RoundedSimple.M_3_1|type=CapacityState|spec=ULS(I)|ThreeLine|Ignore|TwoLine|N=-1204555.02152804|Mx=9795249.78886551|My=-13408914.8534496|rN=0.|rMx=-0.001757616177|rMy=0.000996358693|converged=True|physical=True|extension=False
+OK: audit03.matrix.RoundedSimple.M_3_1.state.rN.1; actual=0.; expected=0.
+OK: audit03.matrix.RoundedSimple.M_3_1.state.rMx.1; actual=-0.001757616177; expected=0.
+OK: audit03.matrix.RoundedSimple.M_3_1.state.rMy.1; actual=0.000996358693; expected=0.
+OK: audit03.matrix.RoundedSimple.M_3_1.state.noHiddenExtension.1
+OK: audit03.matrix.RoundedSimple.M_3_1.state.finalPhysical.1
+MATRIX_STATE: audit03.matrix.RoundedSimple.M_3_1|type=StrengthState|spec=ULS(I)|ThreeLine|Ignore|TwoLine|N=-68168.2319084617|Mx=1840542.26152847|My=-2045046.95725385|rN=-0.000000000073|rMx=-0.000000000466|rMy=-0.000000000698|converged=True|physical=True|extension=False
+OK: audit03.matrix.RoundedSimple.M_3_1.state.rN.2; actual=-0.000000000073; expected=0.
+OK: audit03.matrix.RoundedSimple.M_3_1.state.rMx.2; actual=-0.000000000466; expected=0.
+OK: audit03.matrix.RoundedSimple.M_3_1.state.rMy.2; actual=-0.000000000698; expected=0.
+OK: audit03.matrix.RoundedSimple.M_3_1.state.noHiddenExtension.2
+OK: audit03.matrix.RoundedSimple.M_3_1.noInternalFailure.1
+OK: audit03.matrix.RoundedSimple.M_3_1.noInternalFailure.2
+OK: audit03.matrix.RoundedSimple.M_3_1.noInternalFailure.3
+OK: audit03.matrix.RoundedSimple.M_3_1.noInternalFailure.1
+OK: audit03.matrix.RoundedSimple.M_3_1.noInternalFailure.4
+OK: audit03.matrix.RoundedSimple.M_3_1.noInternalFailure.5
+OK: audit03.matrix.RoundedSimple.M_3_1.noInternalFailure.1
+MATRIX_CASE: shape=RoundedSimple|family=Smoke|id=M_4_1|load=fixtureMixed|N=-68168.2319084617|Mx=1363364.63816923|My=-1363364.63816923|profile=PR1|path=λ*NMxy
+OK: audit03.matrix.RoundedSimple.M_4_1.path
+CASE: audit03.matrix.RoundedSimple.M_4_1|N=-68168.2319084617|Mx=1363364.63816923|My=-1363364.63816923|offsetX=10|offsetY=-7|path=NMxy|lambda=13.312572771542|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: audit03.matrix.RoundedSimple.M_4_1.validInput
+OK: audit03.matrix.RoundedSimple.M_4_1.NU; actual=-907494.54798877; expected=-907494.54798877
+OK: audit03.matrix.RoundedSimple.M_4_1.MxU; actual=18149890.9599031; expected=18149890.9597754
+OK: audit03.matrix.RoundedSimple.M_4_1.MyU; actual=-18149890.9598831; expected=-18149890.9597754
+OK: audit03.matrix.RoundedSimple.M_4_1.stateMx; actual=24502352.7958245; expected=24502352.7956968
+OK: audit03.matrix.RoundedSimple.M_4_1.stateMy; actual=-27224836.4397708; expected=-27224836.4396631
+OK: audit03.matrix.RoundedSimple.M_4_1.physicalCriterion
+OK: audit03.matrix.RoundedSimple.M_4_1.finalPhysical
+META: audit03.comments.M_4_1.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+META: audit03.comments.M_4_1.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=ConcreteStrainLimit
+META: audit03.comments.M_4_1.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_4_1.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_4_1.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_4_1.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_4_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.M_4_1.formulaNoNumFail
+OK: audit03.comments.M_4_1.strengthNoCrack
+OK: audit03.comments.M_4_1.crackNoCapacity
+OK: audit03.comments.M_4_1.overallComposition
+OK: audit03.comments.M_4_1.batchOutput
+OK: audit03.comments.M_4_1.strengthOutput
+OK: audit03.comments.M_4_1.crackOutput
+OK: audit03.comments.M_4_1.stabilityOutput
+OUTPUT: audit03.comments.M_4_1|strength=|crack=|stability=|batch=
+MATRIX_STATE: audit03.matrix.RoundedSimple.M_4_1|type=CapacityState|spec=ULS(I)|ThreeLine|Ignore|TwoLine|N=-907494.54798877|Mx=24502352.7956968|My=-27224836.4396631|rN=0.|rMx=0.000127710402|rMy=-0.000107698143|converged=True|physical=True|extension=False
+OK: audit03.matrix.RoundedSimple.M_4_1.state.rN.1; actual=0.; expected=0.
+OK: audit03.matrix.RoundedSimple.M_4_1.state.rMx.1; actual=0.000127710402; expected=0.
+OK: audit03.matrix.RoundedSimple.M_4_1.state.rMy.1; actual=-0.000107698143; expected=0.
+OK: audit03.matrix.RoundedSimple.M_4_1.state.noHiddenExtension.1
+OK: audit03.matrix.RoundedSimple.M_4_1.state.finalPhysical.1
+MATRIX_STATE: audit03.matrix.RoundedSimple.M_4_1|type=StrengthState|spec=ULS(I)|ThreeLine|Ignore|TwoLine|N=-68168.2319084617|Mx=1840542.26152847|My=-2045046.95725385|rN=-0.000000000073|rMx=-0.000000000466|rMy=-0.000000000698|converged=True|physical=True|extension=False
+OK: audit03.matrix.RoundedSimple.M_4_1.state.rN.2; actual=-0.000000000073; expected=0.
+OK: audit03.matrix.RoundedSimple.M_4_1.state.rMx.2; actual=-0.000000000466; expected=0.
+OK: audit03.matrix.RoundedSimple.M_4_1.state.rMy.2; actual=-0.000000000698; expected=0.
+OK: audit03.matrix.RoundedSimple.M_4_1.state.noHiddenExtension.2
+OK: audit03.matrix.RoundedSimple.M_4_1.noInternalFailure.1
+OK: audit03.matrix.RoundedSimple.M_4_1.noInternalFailure.2
+OK: audit03.matrix.RoundedSimple.M_4_1.noInternalFailure.3
+OK: audit03.matrix.RoundedSimple.M_4_1.noInternalFailure.1
+OK: audit03.matrix.RoundedSimple.M_4_1.noInternalFailure.4
+OK: audit03.matrix.RoundedSimple.M_4_1.noInternalFailure.5
+OK: audit03.matrix.RoundedSimple.M_4_1.noInternalFailure.1
+MATRIX_CASE: shape=RoundedSimple|family=Smoke|id=M_5_1|load=fixtureMixed|N=-68168.2319084617|Mx=1363364.63816923|My=-1363364.63816923|profile=PR2|path=Auto
+CASE: audit03.matrix.RoundedSimple.M_5_1|requested=Auto|resolved=λ*Mxy|lambda=3.843710591132|Ncrc=-68168.2319084617|Mcrc=10064986.5383382|point=True|formed=False
+OK: audit03.matrix.RoundedSimple.M_5_1.validInput
+OK: audit03.matrix.RoundedSimple.M_5_1.autoPath
+OK: audit03.matrix.RoundedSimple.M_5_1.preConverged
+OK: audit03.matrix.RoundedSimple.M_5_1.prePhysical
+OK: audit03.matrix.RoundedSimple.M_5_1.preNotExtended
+META: audit03.comments.M_5_1.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_5_1.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+META: audit03.comments.M_5_1.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+META: audit03.comments.M_5_1.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+META: audit03.comments.M_5_1.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+META: audit03.comments.M_5_1.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 1.913 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+META: audit03.comments.M_5_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.M_5_1.formulaNoNumFail
+OK: audit03.comments.M_5_1.strengthNoCrack
+OK: audit03.comments.M_5_1.crackNoCapacity
+OK: audit03.comments.M_5_1.overallComposition
+OK: audit03.comments.M_5_1.batchOutput
+OK: audit03.comments.M_5_1.strengthOutput
+OK: audit03.comments.M_5_1.crackOutput
+OK: audit03.comments.M_5_1.stabilityOutput
+OUTPUT: audit03.comments.M_5_1|strength=|crack=|stability=|batch=
+MATRIX_STATE: audit03.matrix.RoundedSimple.M_5_1|type=PreCrackState|spec=SLS(II)|ThreeLine|UseDiagram|TwoLine|N=-68168.2319084617|Mx=7074511.78406242|My=-7341728.20717371|rN=0.000000000378|rMx=-0.000000015832|rMy=0.|converged=True|physical=True|extension=False
+OK: audit03.matrix.RoundedSimple.M_5_1.state.rN.1; actual=0.000000000378; expected=0.
+OK: audit03.matrix.RoundedSimple.M_5_1.state.rMx.1; actual=-0.000000015832; expected=0.
+OK: audit03.matrix.RoundedSimple.M_5_1.state.rMy.1; actual=0.; expected=0.
+OK: audit03.matrix.RoundedSimple.M_5_1.state.noHiddenExtension.1
+OK: audit03.matrix.RoundedSimple.M_5_1.state.finalPhysical.1
+MATRIX_STATE: audit03.matrix.RoundedSimple.M_5_1|type=CrackedState|spec=SLS(II)|TwoLine|Ignore|TwoLine|N=-68168.2319084617|Mx=1840542.26152847|My=-2045046.95725385|rN=-0.295509936128|rMx=-28.319702204317|rMy=24.010182305938|converged=True|physical=True|extension=False
+OK: audit03.matrix.RoundedSimple.M_5_1.state.rN.2; actual=-0.295509936128; expected=0.
+OK: audit03.matrix.RoundedSimple.M_5_1.state.rMx.2; actual=-28.319702204317; expected=0.
+OK: audit03.matrix.RoundedSimple.M_5_1.state.rMy.2; actual=24.010182305938; expected=0.
+OK: audit03.matrix.RoundedSimple.M_5_1.state.noHiddenExtension.2
+OK: audit03.matrix.RoundedSimple.M_5_1.noInternalFailure.1
+OK: audit03.matrix.RoundedSimple.M_5_1.noInternalFailure.2
+OK: audit03.matrix.RoundedSimple.M_5_1.noInternalFailure.3
+OK: audit03.matrix.RoundedSimple.M_5_1.noInternalFailure.1
+OK: audit03.matrix.RoundedSimple.M_5_1.noInternalFailure.4
+OK: audit03.matrix.RoundedSimple.M_5_1.noInternalFailure.5
+OK: audit03.matrix.RoundedSimple.M_5_1.noInternalFailure.3
+MATRIX_CASE: shape=RoundedSimple|family=Smoke|id=M_6_1|load=fixtureMixed|N=-68168.2319084617|Mx=1363364.63816923|My=-1363364.63816923|profile=PR2|path=λ*Mxy
+CASE: audit03.matrix.RoundedSimple.M_6_1|requested=λ*Mxy|resolved=λ*Mxy|lambda=3.843710591132|Ncrc=-68168.2319084617|Mcrc=10064986.5383382|point=True|formed=False
+OK: audit03.matrix.RoundedSimple.M_6_1.validInput
+OK: audit03.matrix.RoundedSimple.M_6_1.fixedPath
+OK: audit03.matrix.RoundedSimple.M_6_1.preConverged
+OK: audit03.matrix.RoundedSimple.M_6_1.prePhysical
+OK: audit03.matrix.RoundedSimple.M_6_1.preNotExtended
+META: audit03.comments.M_6_1.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_6_1.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+META: audit03.comments.M_6_1.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+META: audit03.comments.M_6_1.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+META: audit03.comments.M_6_1.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+META: audit03.comments.M_6_1.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 1.913 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+META: audit03.comments.M_6_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.M_6_1.formulaNoNumFail
+OK: audit03.comments.M_6_1.strengthNoCrack
+OK: audit03.comments.M_6_1.crackNoCapacity
+OK: audit03.comments.M_6_1.overallComposition
+OK: audit03.comments.M_6_1.batchOutput
+OK: audit03.comments.M_6_1.strengthOutput
+OK: audit03.comments.M_6_1.crackOutput
+OK: audit03.comments.M_6_1.stabilityOutput
+OUTPUT: audit03.comments.M_6_1|strength=|crack=|stability=|batch=
+MATRIX_STATE: audit03.matrix.RoundedSimple.M_6_1|type=PreCrackState|spec=SLS(II)|ThreeLine|UseDiagram|TwoLine|N=-68168.2319084617|Mx=7074511.78406242|My=-7341728.20717371|rN=0.000000000378|rMx=-0.000000015832|rMy=0.|converged=True|physical=True|extension=False
+OK: audit03.matrix.RoundedSimple.M_6_1.state.rN.1; actual=0.000000000378; expected=0.
+OK: audit03.matrix.RoundedSimple.M_6_1.state.rMx.1; actual=-0.000000015832; expected=0.
+OK: audit03.matrix.RoundedSimple.M_6_1.state.rMy.1; actual=0.; expected=0.
+OK: audit03.matrix.RoundedSimple.M_6_1.state.noHiddenExtension.1
+OK: audit03.matrix.RoundedSimple.M_6_1.state.finalPhysical.1
+MATRIX_STATE: audit03.matrix.RoundedSimple.M_6_1|type=CrackedState|spec=SLS(II)|TwoLine|Ignore|TwoLine|N=-68168.2319084617|Mx=1840542.26152847|My=-2045046.95725385|rN=-0.295509936128|rMx=-28.319702204317|rMy=24.010182305938|converged=True|physical=True|extension=False
+OK: audit03.matrix.RoundedSimple.M_6_1.state.rN.2; actual=-0.295509936128; expected=0.
+OK: audit03.matrix.RoundedSimple.M_6_1.state.rMx.2; actual=-28.319702204317; expected=0.
+OK: audit03.matrix.RoundedSimple.M_6_1.state.rMy.2; actual=24.010182305938; expected=0.
+OK: audit03.matrix.RoundedSimple.M_6_1.state.noHiddenExtension.2
+OK: audit03.matrix.RoundedSimple.M_6_1.noInternalFailure.1
+OK: audit03.matrix.RoundedSimple.M_6_1.noInternalFailure.2
+OK: audit03.matrix.RoundedSimple.M_6_1.noInternalFailure.3
+OK: audit03.matrix.RoundedSimple.M_6_1.noInternalFailure.1
+OK: audit03.matrix.RoundedSimple.M_6_1.noInternalFailure.4
+OK: audit03.matrix.RoundedSimple.M_6_1.noInternalFailure.5
+OK: audit03.matrix.RoundedSimple.M_6_1.noInternalFailure.3
+MATRIX_CASE: shape=RoundedSimple|family=Smoke|id=M_7_1|load=fixtureMixed|N=-68168.2319084617|Mx=1363364.63816923|My=-1363364.63816923|profile=PR2|path=λ*N
+CASE: audit03.matrix.RoundedSimple.M_7_1|requested=λ*N|resolved=λ*N|lambda=0.|Ncrc=0.|Mcrc=0.|point=False|formed=False
+OK: audit03.matrix.RoundedSimple.M_7_1.validInput
+OK: audit03.matrix.RoundedSimple.M_7_1.fixedPath
+META: audit03.comments.M_7_1.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_7_1.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+META: audit03.comments.M_7_1.formation|status=rsSuccess|code=CRITERION_NOT_REACHED|applies=True|calculated=True|comment=Трещина не образована от постоянного момента, а выбранный путь λ*N не масштабирует растягивающую продольную силу.
+META: audit03.comments.M_7_1.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+META: audit03.comments.M_7_1.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована от постоянного момента, а выбранный путь λ*N не масштабирует растягивающую продольную силу.
+META: audit03.comments.M_7_1.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 1.913 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+META: audit03.comments.M_7_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.M_7_1.formulaNoNumFail
+OK: audit03.comments.M_7_1.strengthNoCrack
+OK: audit03.comments.M_7_1.crackNoCapacity
+OK: audit03.comments.M_7_1.overallComposition
+OK: audit03.comments.M_7_1.batchOutput
+OK: audit03.comments.M_7_1.strengthOutput
+OK: audit03.comments.M_7_1.crackOutput
+OK: audit03.comments.M_7_1.stabilityOutput
+OUTPUT: audit03.comments.M_7_1|strength=|crack=|stability=|batch=
+MATRIX_STATE: audit03.matrix.RoundedSimple.M_7_1|type=CrackedState|spec=SLS(II)|TwoLine|Ignore|TwoLine|N=-68168.2319084617|Mx=1840542.26152847|My=-2045046.95725385|rN=-0.295509936128|rMx=-28.319702204317|rMy=24.010182305938|converged=True|physical=True|extension=False
+OK: audit03.matrix.RoundedSimple.M_7_1.state.rN.1; actual=-0.295509936128; expected=0.
+OK: audit03.matrix.RoundedSimple.M_7_1.state.rMx.1; actual=-28.319702204317; expected=0.
+OK: audit03.matrix.RoundedSimple.M_7_1.state.rMy.1; actual=24.010182305938; expected=0.
+OK: audit03.matrix.RoundedSimple.M_7_1.state.noHiddenExtension.1
+OK: audit03.matrix.RoundedSimple.M_7_1.noInternalFailure.1
+OK: audit03.matrix.RoundedSimple.M_7_1.noInternalFailure.2
+OK: audit03.matrix.RoundedSimple.M_7_1.noInternalFailure.3
+OK: audit03.matrix.RoundedSimple.M_7_1.noInternalFailure.1
+OK: audit03.matrix.RoundedSimple.M_7_1.noInternalFailure.4
+OK: audit03.matrix.RoundedSimple.M_7_1.noInternalFailure.5
+OK: audit03.matrix.RoundedSimple.M_7_1.noInternalFailure.3
+MATRIX_CASE: shape=RoundedSimple|family=Smoke|id=M_8_1|load=fixtureMixed|N=-68168.2319084617|Mx=1363364.63816923|My=-1363364.63816923|profile=PR2|path=λ*NMxy
+CASE: audit03.matrix.RoundedSimple.M_8_1|requested=λ*NMxy|resolved=λ*NMxy|lambda=9.108432119669|Ncrc=-620905.713056101|Mcrc=23850975.3781561|point=True|formed=False
+OK: audit03.matrix.RoundedSimple.M_8_1.validInput
+OK: audit03.matrix.RoundedSimple.M_8_1.fixedPath
+OK: audit03.matrix.RoundedSimple.M_8_1.preConverged
+OK: audit03.matrix.RoundedSimple.M_8_1.prePhysical
+OK: audit03.matrix.RoundedSimple.M_8_1.preNotExtended
+META: audit03.comments.M_8_1.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_8_1.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+META: audit03.comments.M_8_1.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+META: audit03.comments.M_8_1.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+META: audit03.comments.M_8_1.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+META: audit03.comments.M_8_1.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 1.913 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+META: audit03.comments.M_8_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.M_8_1.formulaNoNumFail
+OK: audit03.comments.M_8_1.strengthNoCrack
+OK: audit03.comments.M_8_1.crackNoCapacity
+OK: audit03.comments.M_8_1.overallComposition
+OK: audit03.comments.M_8_1.batchOutput
+OK: audit03.comments.M_8_1.strengthOutput
+OK: audit03.comments.M_8_1.crackOutput
+OK: audit03.comments.M_8_1.stabilityOutput
+OUTPUT: audit03.comments.M_8_1|strength=|crack=|stability=|batch=
+MATRIX_STATE: audit03.matrix.RoundedSimple.M_8_1|type=PreCrackState|spec=SLS(II)|ThreeLine|UseDiagram|TwoLine|N=-620905.713056101|Mx=16764454.2525147|My=-18627171.391683|rN=0.|rMx=0.000000106171|rMy=0.000000014901|converged=True|physical=True|extension=False
+OK: audit03.matrix.RoundedSimple.M_8_1.state.rN.1; actual=0.; expected=0.
+OK: audit03.matrix.RoundedSimple.M_8_1.state.rMx.1; actual=0.000000106171; expected=0.
+OK: audit03.matrix.RoundedSimple.M_8_1.state.rMy.1; actual=0.000000014901; expected=0.
+OK: audit03.matrix.RoundedSimple.M_8_1.state.noHiddenExtension.1
+OK: audit03.matrix.RoundedSimple.M_8_1.state.finalPhysical.1
+MATRIX_STATE: audit03.matrix.RoundedSimple.M_8_1|type=CrackedState|spec=SLS(II)|TwoLine|Ignore|TwoLine|N=-68168.2319084617|Mx=1840542.26152847|My=-2045046.95725385|rN=-0.295509936128|rMx=-28.319702204317|rMy=24.010182305938|converged=True|physical=True|extension=False
+OK: audit03.matrix.RoundedSimple.M_8_1.state.rN.2; actual=-0.295509936128; expected=0.
+OK: audit03.matrix.RoundedSimple.M_8_1.state.rMx.2; actual=-28.319702204317; expected=0.
+OK: audit03.matrix.RoundedSimple.M_8_1.state.rMy.2; actual=24.010182305938; expected=0.
+OK: audit03.matrix.RoundedSimple.M_8_1.state.noHiddenExtension.2
+OK: audit03.matrix.RoundedSimple.M_8_1.noInternalFailure.1
+OK: audit03.matrix.RoundedSimple.M_8_1.noInternalFailure.2
+OK: audit03.matrix.RoundedSimple.M_8_1.noInternalFailure.3
+OK: audit03.matrix.RoundedSimple.M_8_1.noInternalFailure.1
+OK: audit03.matrix.RoundedSimple.M_8_1.noInternalFailure.4
+OK: audit03.matrix.RoundedSimple.M_8_1.noInternalFailure.5
+OK: audit03.matrix.RoundedSimple.M_8_1.noInternalFailure.3
+TOTAL_AUDIT03_LOAD_MATRIX: shape=RoundedSimple; family=Smoke; independentCases=9; passed=273; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03BroadLoadMatrixTests; 2026-10-02T04:59:47
+RESULTS_SAVE_REOPEN: before=5C69D00C19A6ECD9FCB67D38A1452449E719C7C358A49085EE287E1358FEF2C2; after=5C69D00C19A6ECD9FCB67D38A1452449E719C7C358A49085EE287E1358FEF2C2; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d51395479e364d2fba4cb12079b33969\RC_Section_NDM_saved.xlsm
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

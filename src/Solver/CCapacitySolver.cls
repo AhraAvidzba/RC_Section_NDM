@@ -773,6 +773,8 @@ Public Sub LimitSearchRecordCapacityAcceptable(ByVal nValue As Double, _
     RecordAcceptableState mLastSolver, nValue, mxValue, myValue
 End Sub
 
+' Сохраняет численный отказ внутри физической скобки и последнюю допустимую
+' lambda для диагностики. Такая точка сама по себе не становится capacity.
 Public Sub LimitSearchHandleCapacityBracketNumericalFailure(ByVal lowLambda As Double, _
         ByVal probeState As String)
     mLimitState = probeState
@@ -907,7 +909,9 @@ Public Function LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
     End If
 End Function
 
-' Сохраняет успешную точку UltimateStrain, найденную общим циклом.
+' Сохраняет точку UltimateStrain только после проверки усилий и физических
+' деформаций. Допуск поиска критерия не разрешает выход за диаграмму:
+' непринятая близкая плоскость уточняется следующим общим Newton-шагом.
 Public Function LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, _
@@ -919,6 +923,12 @@ Public Function LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel
     solver.ToleranceMy = mSolverToleranceMy
     If Not solver.ConfirmEquilibrium(loadPath.TargetN(lambdaValue), _
             loadPath.TargetMx(lambdaValue), loadPath.TargetMy(lambdaValue)) Then Exit Function
+    Dim stateRunner As CStateSolutionRunner
+    Set stateRunner = New CStateSolutionRunner
+    If Not stateRunner.StateWithinPhysicalRange(section, solver, concreteMaterial, steelMaterial) Then
+        AppendSearchDiagnostic "UltimateStrain: равновесие подтверждено, но деформации еще выходят за физические пределы; продолжаем уточнение предельной точки."
+        Exit Function
+    End If
     Set mLastSolver = solver
     If Not IsValidUltimateLambda(lambdaValue, loadPath.NOffset, loadPath.NBase, _
             loadPath.MxBase, loadPath.MyBase, loadPath.MxOffset, loadPath.MyOffset) Then
@@ -1380,16 +1390,17 @@ Private Function IsPureBendingProbe(ByVal nSpecified As Double, _
         Sqr(mx * mx + my * my) > 0.000000001)
 End Function
 
-' Возвращает уже посчитанную lambda-точку LoadMultiplier.
-' Brent/Secant после нахождения скобки могут повторно спросить те же lambda,
-' особенно нижнюю и верхнюю границы. Cache убирает этот повторный solve и
-' восстанавливает все поля, от которых зависит целевая функция и warm-start.
+' Проверяет численно нулевой вектор пробной нагрузки. Только такой случай
+' допускает проверку нулевой плоскости вместо итерационного подбора НДС.
 Private Function IsZeroLoadProbe(ByVal nSpecified As Double, _
         ByVal mx As Double, ByVal my As Double) As Boolean
     IsZeroLoadProbe = (Abs(nSpecified) <= 0.000000001 And _
         Abs(mx) <= 0.000000001 And Abs(my) <= 0.000000001)
 End Function
 
+' Проверяет точное равновесие нулевой плоскости и сохраняет физические поля
+' lambda=0. Ошибки модели/настроек сохраняют typed-причину, а не становятся
+' автоматически допустимым начальным состоянием.
 Private Function EvaluateZeroLoadProbe(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal lambdaValue As Double, ByVal attempt As Long) As String
@@ -1432,6 +1443,9 @@ Failed:
     SetInternalError "Нулевую lambda-точку несущей способности проверить нельзя: " & Err.Description
 End Function
 
+' Возвращает рассчитанную probe-точку этой search-session по точному ключу
+' lambda и усилий. Восстанавливает критерий и warm-start без повторного solve;
+' локальный probe-cache не публикуется в shared StateRepository.
 Private Function TryRestoreProbeCache(ByVal nSpecified As Double, ByVal mx As Double, ByVal my As Double, _
         ByVal lambdaValue As Double, ByRef probeState As String) As Boolean
     Dim slot As Long

@@ -11,6 +11,9 @@ Option Explicit
 
 Private Const RESULTS_TABLE_GAP_ROWS As Long = 2 ' Минимум пустых строк между крупными таблицами Results.
 
+' Запускает полный сценарий кнопки расчета для текущей книги и показывает итог.
+' Чтение, расчет и запись делегируются workbook-entrypoint; ошибка выводится
+' независимо от настройки необязательных информационных сообщений.
 Public Sub RunSectionCalculation()
     On Error GoTo Failed
     Dim message As String
@@ -39,6 +42,8 @@ Failed:
     MsgBox "Не удалось очистить результаты: " & Err.Description, vbExclamation, "RC Section NDM"
 End Sub
 
+' Обновляет схему по сохраненному Results и сообщает об ошибке пользователю.
+' Не запускает НДС и не заменяет snapshot текущими исходными параметрами.
 Public Sub UpdateSectionPlot()
     On Error GoTo Failed
     UpdateSectionPlotForWorkbook ThisWorkbook
@@ -51,6 +56,8 @@ Failed:
     MsgBox "Схема не обновлена: " & Err.Description, vbExclamation, "RC Section NDM"
 End Sub
 
+' Запускает импорт Region из активного AutoCAD в сохраненную модель Results.
+' Показывает причину отказа; кнопка не выполняет расчет прочности или трещин.
 Public Sub ImportGeometryFromAutoCAD()
     On Error GoTo Failed
     Dim message As String
@@ -62,6 +69,9 @@ Failed:
     MsgBox "Импорт геометрии из AutoCAD не выполнен: " & Err.Description, vbExclamation, "RC Section NDM"
 End Sub
 
+' Читает выбранное состояние Results и перерисовывает схему указанной книги.
+' При отсутствии state допускает только предусмотренный geometry-only preview;
+' решатель не вызывается, сохраненные таблицы не изменяются.
 Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal raiseIfNoData As Boolean = True)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4140, "UpdateSectionPlotForWorkbook", "Книга Excel не передана."
 
@@ -152,6 +162,8 @@ Private Sub ClearSectionPlotForNoData(ByVal workbook As Object, ByVal titleText 
 Done:
 End Sub
 
+' Рисует geometry-only preview сохраненной импортированной модели без НДС.
+' Настройки оформления читаются из Config, координаты и характеристики - из Results.
 Public Sub UpdateSectionGeometryPreviewForWorkbook(ByVal workbook As Object)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4141, "UpdateSectionGeometryPreviewForWorkbook", "Книга Excel не передана."
 
@@ -694,6 +706,8 @@ Private Function EstimatedNamedStateCountForProfile(ByVal profileId As String, _
 UnknownProfile:
 End Function
 
+' Добавляет конкретную проблему размещения Results в общий список исправлений.
+' Отсутствующий список допускается у служебного вызова и не создает новую коллекцию.
 Private Sub AddLayoutIssue(ByVal issues As Collection, ByVal text As String)
     If issues Is Nothing Then Exit Sub
     issues.Add text
@@ -733,6 +747,8 @@ Private Function RowsWord(ByVal count As Long) As String
     End Select
 End Function
 
+' Объясняет отказ до расчета, когда блокам Results не хватает строк.
+' Включает уже подготовленные адресные рекомендации, не теряя число сочетаний.
 Private Function ResultsOutputLayoutMessage(ByVal combinationCount As Long, ByVal issues As Collection) As String
     ResultsOutputLayoutMessage = "Все сочетания (" & CStr(combinationCount) & _
         ") не помещаются между нужными диапазонами Results. Расчет не запущен." & _

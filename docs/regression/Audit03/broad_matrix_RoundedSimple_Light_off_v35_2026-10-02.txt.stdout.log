@@ -1,0 +1,142 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_f06_fixed.xlsm
+SOURCE_SHA256: AE1F7E3F5FBCEBC41236BC3FE1DA7A515BFF41FA1C74600433C4DD8B6F5862F8
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e5c16ed5345245289e28d9ec1661f468\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.matrix.RoundedSimple.M_0_1.path; actual=; expected=LambdaMx
+FAIL: audit03.matrix.RoundedSimple.M_0_1.validInput
+FAIL: audit03.matrix.RoundedSimple.M_0_2.path; actual=; expected=LambdaMx
+FAIL: audit03.matrix.RoundedSimple.M_0_2.validInput
+FAIL: audit03.matrix.RoundedSimple.M_0_4.path; actual=; expected=LambdaMx
+FAIL: audit03.matrix.RoundedSimple.M_0_4.validInput
+FAIL: audit03.matrix.RoundedSimple.M_0_5.path; actual=; expected=LambdaMx
+FAIL: audit03.matrix.RoundedSimple.M_0_5.validInput
+FAIL: audit03.matrix.RoundedSimple.M_0_7.path; actual=; expected=LambdaMx
+FAIL: audit03.matrix.RoundedSimple.M_0_7.validInput
+FAIL: audit03.matrix.RoundedSimple.M_0_26.path; actual=; expected=LambdaMx
+FAIL: audit03.matrix.RoundedSimple.M_0_26.validInput
+FAIL: audit03.matrix.RoundedSimple.M_0_28.path; actual=; expected=LambdaMx
+FAIL: audit03.matrix.RoundedSimple.M_0_28.validInput
+FAIL: audit03.matrix.RoundedSimple.M_0_29.path; actual=; expected=LambdaMx
+FAIL: audit03.matrix.RoundedSimple.M_0_29.validInput
+FAIL: audit03.matrix.RoundedSimple.M_0_31.path; actual=; expected=LambdaMx
+FAIL: audit03.matrix.RoundedSimple.M_0_31.validInput
+FAIL: audit03.matrix.RoundedSimple.M_1_1.path; actual=; expected=LambdaMy
+FAIL: audit03.matrix.RoundedSimple.M_1_1.validInput
+FAIL: audit03.matrix.RoundedSimple.M_1_2.path; actual=; expected=LambdaMy
+FAIL: audit03.matrix.RoundedSimple.M_1_2.validInput
+FAIL: audit03.matrix.RoundedSimple.M_1_3.path; actual=; expected=LambdaMy
+FAIL: audit03.matrix.RoundedSimple.M_1_3.validInput
+FAIL: audit03.matrix.RoundedSimple.M_1_5.path; actual=; expected=LambdaMy
+FAIL: audit03.matrix.RoundedSimple.M_1_5.validInput
+FAIL: audit03.matrix.RoundedSimple.M_1_6.path; actual=; expected=LambdaMy
+FAIL: audit03.matrix.RoundedSimple.M_1_6.validInput
+FAIL: audit03.matrix.RoundedSimple.M_1_12.finalPhysical
+FAIL: audit03.matrix.RoundedSimple.M_1_12.state.finalPhysical.1
+FAIL: audit03.matrix.RoundedSimple.M_1_21.finalPhysical
+FAIL: audit03.matrix.RoundedSimple.M_1_21.state.finalPhysical.1
+FAIL: audit03.matrix.RoundedSimple.M_1_26.path; actual=; expected=LambdaMy
+FAIL: audit03.matrix.RoundedSimple.M_1_26.validInput
+FAIL: audit03.matrix.RoundedSimple.M_1_27.path; actual=; expected=LambdaMy
+FAIL: audit03.matrix.RoundedSimple.M_1_27.validInput
+FAIL: audit03.matrix.RoundedSimple.M_1_29.path; actual=; expected=LambdaMy
+FAIL: audit03.matrix.RoundedSimple.M_1_29.validInput
+FAIL: audit03.matrix.RoundedSimple.M_1_30.path; actual=; expected=LambdaMy
+FAIL: audit03.matrix.RoundedSimple.M_1_30.validInput
+FAIL: audit03.matrix.RoundedSimple.M_2_1.path; actual=; expected=LambdaMxy
+FAIL: audit03.matrix.RoundedSimple.M_2_1.validInput
+FAIL: audit03.matrix.RoundedSimple.M_2_2.path; actual=; expected=LambdaMxy
+FAIL: audit03.matrix.RoundedSimple.M_2_2.validInput
+FAIL: audit03.matrix.RoundedSimple.M_2_5.path; actual=; expected=LambdaMxy
+FAIL: audit03.matrix.RoundedSimple.M_2_5.validInput
+FAIL: audit03.matrix.RoundedSimple.M_2_26.path; actual=; expected=LambdaMxy
+FAIL: audit03.matrix.RoundedSimple.M_2_26.validInput
+FAIL: audit03.matrix.RoundedSimple.M_2_29.path; actual=; expected=LambdaMxy
+FAIL: audit03.matrix.RoundedSimple.M_2_29.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_1.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_1.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_2.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_2.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_3.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_3.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_4.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_4.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_6.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_6.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_7.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_7.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_8.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_8.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_9.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_9.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_10.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_10.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_11.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_11.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_12.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_12.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_13.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_13.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_14.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_14.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_17.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_17.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_18.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_18.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_19.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_19.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_20.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_20.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_21.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_21.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_22.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_22.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_23.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_23.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_26.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_26.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_27.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_27.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_28.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_28.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_30.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_30.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_31.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_31.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_32.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_32.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_33.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_33.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_34.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_34.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_35.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_35.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_36.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_36.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_37.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_37.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_38.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_38.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_41.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_41.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_42.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_42.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_43.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_43.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_44.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_44.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_45.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_45.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_46.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_46.validInput
+FAIL: audit03.matrix.RoundedSimple.M_3_47.path; actual=; expected=LambdaN
+FAIL: audit03.matrix.RoundedSimple.M_3_47.validInput
+FAIL: audit03.matrix.RoundedSimple.M_4_1.path; actual=; expected=LambdaNMxy
+FAIL: audit03.matrix.RoundedSimple.M_4_1.validInput
+FAIL: audit03.matrix.RoundedSimple.M_4_2.path; actual=; expected=LambdaNMxy
+FAIL: audit03.matrix.RoundedSimple.M_4_2.validInput
+FAIL: audit03.matrix.RoundedSimple.M_4_26.path; actual=; expected=LambdaNMxy
+FAIL: audit03.matrix.RoundedSimple.M_4_26.validInput
+FAIL: audit03.comments.M_8_5.widthBlockActualReason
+TOTAL_AUDIT03_LOAD_MATRIX: shape=RoundedSimple; family=Light; independentCases=441; passed=12687; failed=135
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True
