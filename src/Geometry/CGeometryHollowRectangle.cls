@@ -332,7 +332,7 @@ End Sub
 
 ' ----------
 ' Реализация интерфейса ISectionGeometry.
-' Эти методы являются тонкими переходниками к публичной API класса, чтобы
+' Эти методы реализуют общий интерфейс через публичный API класса, чтобы
 ' HollowRectangle мог использоваться тем же pipeline сетки и расчета, что и
 ' остальные параметрические типы сечений.
 ' ----------
@@ -357,7 +357,8 @@ Private Function ISectionGeometry_ContainsPoint(ByVal X As Double, ByVal Y As Do
     ISectionGeometry_ContainsPoint = ContainsPoint(X, Y)
 End Function
 
-' Сохраняет совместимость со старым именем проверки точки внутри геометрии.
+' Проверяет попадание точки в бетон через альтернативный метод ISectionGeometry;
+' внутренний проем, как и во внешнем ContainsPoint, исключается из области.
 Private Function ISectionGeometry_IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
     ISectionGeometry_IsPointInside = IsPointInside(X, Y)
 End Function

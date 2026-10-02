@@ -193,6 +193,9 @@ Public Property Get StabilityEnabled() As Boolean
     StabilityEnabled = mStabilityEnabled
 End Property
 
+' Возвращает заданный набор характеристик устойчивости. Для профиля, созданного
+' программно без этого поля, используется ULS; чтение обязательного поля Config
+' отдельно проверяется reader-ом и не подменяет невалидный ввод этим значением.
 Public Property Get StabilityValueSet() As EMaterialValueSet
     If mHasStabilityValueSet Then
         StabilityValueSet = mStabilityValueSet
@@ -217,6 +220,8 @@ Public Property Get CrackedStateSpec() As CMaterialModelSpec
     Set CrackedStateSpec = mCrackedStateSpec
 End Property
 
+' Выбирает сохраненное состояние для визуализации, не запуская его расчет.
+' Если поле не задано через программный API, стандартный выбор - StrengthState.
 Public Property Get VisualizationState() As ESectionStateType
     If mHasVisualizationState Then
         VisualizationState = mVisualizationState
@@ -229,6 +234,8 @@ Public Property Get VisualizationStateText() As String
     VisualizationStateText = SectionStateTypeToText(VisualizationState)
 End Property
 
+' Возвращает визуализируемую величину. Для программно созданного профиля
+' без явного выбора используется напряжение; проверка Config выполняется отдельно.
 Public Property Get VisualizationQuantity() As EVisualizationQuantity
     If mHasVisualizationQuantity Then
         VisualizationQuantity = mVisualizationQuantity
@@ -241,6 +248,8 @@ Public Property Get VisualizationQuantityText() As String
     VisualizationQuantityText = VisualizationQuantityToText(VisualizationQuantity)
 End Property
 
+' Возвращают точность подписей напряжений и деформаций, не меняя численные
+' результаты. Для незаданных полей программного API используются именованные defaults.
 Public Property Get VisualizationStressPrecision() As Long
     If mHasVisualizationStressPrecision Then
         VisualizationStressPrecision = mVisualizationStressPrecision

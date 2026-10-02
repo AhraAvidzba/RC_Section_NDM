@@ -1,6 +1,8 @@
 # NDM Audit03: Матрица Краевых Случаев
 
-Статус: directed runtime evidence частично получен; полная нагрузочная матрица еще не выполнена.
+Статус: 13-формная Light/Stress матрица v45 завершена; приемка всех семейств,
+селекторов и их взаимодействий еще не завершена. Новые v46 правки проходят
+отдельные directed/full gates и не приписываются неизменной v45-книге.
 Baseline: `df10412f0e0baf918f5e97cbc87b6bf16c3d4cae`.
 
 ## Уровни
@@ -48,7 +50,11 @@ leaf/subtree meta и фактические ResultComment. Проверять ч
 Содержательное чтение всех уникальных шаблонов и фактически полученных редких
 сообщений дополняет тесты. До выполнения нельзя обозначать эту проверку PASS.
 
-## Семейства
+## Первоначальный Реестр Семейств
+
+Статусы таблицы ниже отражают первоначальную постановку. Свежие выполненные
+gates перечислены в следующих разделах; таблица не используется как итоговый
+PASS всей L01-L17 приемки.
 
 | ID | Планируемая Граница / Инвариант | Статус |
 | --- | --- | --- |
@@ -98,7 +104,7 @@ save/reopen, txt-report, другие формы и все L01-L17 остают�
 ## Расширенный All-Path Runner
 
 `modTestBatchCalculation.RunAudit03BroadLoadMatrixTests(shape, family)` выполняет
-каждую независимую нагрузку по пяти Capacity и четырем Formation путям. Light:
+каждую независимую нагрузку по шести Capacity (пять fixed + Auto) и четырем Formation путям. Light:
 49 нагрузок, включая ноль, оба знака tiny/осевой/одноосной, четыре квадранта
 косого изгиба с нормированными отношениями 1/10/1000/1000000 и обратными,
 смешанные N+Mx+My. Stress: 24 нагрузки с масштабами 0.95/1/1.05/2/10/100/1000/1000000
@@ -131,8 +137,8 @@ extension и Psi; все leaf/subtree comments, четыре реальных б
   extension=False. Save/reopen равенство True; источники неизменны. Лог:
   `broad_matrix_RoundedSimple_PhysicalBoundary_off_v36_2026-10-02.txt`.
 
-Полный Light/Stress перебор 13 форм и двух режимов еще выполняется. Он также
-не заменяет per-selector/pairwise, near-limit, reorder и actual UI gates.
+Полный Light/Stress перебор 13 форм и двух режимов v45 завершен, см. ниже.
+Он не заменяет per-selector/pairwise, near-limit, reorder и actual UI gates.
 
 Повторный v36 Light RoundedSimple Off: 441 случай, 12954/0; Stress: 216 случаев,
 8491/0. Оба complete/save-reopen/source-unchanged. Full v37 Off/On: 8444/0 и
@@ -140,3 +146,52 @@ extension и Psi; все leaf/subtree comments, четыре реальных б
 создан CSV cases и runs manifest через `Export-Audit03LoadMatrixSummary.ps1`.
 В таблице неуспешные/незавершенные прогоны не получают PASS, фактические typed
 статусы и комментарии сохраняются без нового display-маппинга в скрипте.
+
+## Завершенная Матрица v45
+
+`broad_matrix_runner_v45_2026-10-02.log`: 52/52 прогонов, 18 980
+параметризованных путевых случаев = 13 форм x (49 Light + 24 Stress нагрузки)
+x 10 путевых вариантов x 2 effective Extension режима. Это не 18 980 разных
+нагрузочных векторов и не количество assertions.
+
+Каждый отчет подтвердил complete, failed=0, Results save/reopen equal=True
+и неизменность source. SHA-256 source:
+`592C1268CA38964CBBB432AEEDB3961CEAC95B2EC83B50D25A7DB81DF918674C`.
+Все 52 строки v45 в `load_matrix_summary_v45_2026-10-02_runs.csv` имеют PASS.
+CSV cases сохраняет фактические нагрузки, пути, meta и output comments;
+старые отрицательные/неполные версии остаются NotPassed в общем manifest.
+
+Содержательная дополнительная ревизия комментариев обнаружила нарушения,
+которые прежний автоматический тест не проверял для success leaf. Поэтому
+PASS v45 не объявляется приемкой исправлений v46 или полной читаемости текста.
+
+## Directed Gates v46
+
+| Контракт | Negative v45 Production + Новые Тесты | Positive v46 | Граница Доказательства |
+| --- | --- | --- | --- |
+| API массивов диаграммы, valid-invalid-valid | `f07_diagram_array_negative_v46_2026-10-02.txt`: 30/25 | `f07_diagram_array_positive_v46_2026-10-02.txt`: 55/0 | Девять invalid входов и допустимый дополнительный индекс 0; не подмена Config-ошибки низкоуровневым массивом. |
+| Экстремальные представимые нагрузки | `f07_extreme_state_negative_v46_2026-10-02.txt`: 28/28 | `f07_extreme_state_positive_v46_2026-10-02.txt`: 56/0 | Восемь Newton/Secant x center/shift x Off/On, фактический State/status и восстановление обычного solve. |
+| Общая причина CurrentState в Crack aggregate | `comment_composition_negative_v46_2026-10-02.txt`: 28/4 | `comment_composition_positive_v46_2026-10-02.txt`: 32/0 | Четыре typed причины, leaf unchanged и отдельная другая dependency reason. |
+| Читаемость и состав actual comments всех путей | `path_comments_negative_v46_2026-10-02.txt`: 703/17 | Off 720/0, On 721/0 | Реальные четыре writer-а, execution report, save/reopen; full v46 Off 9572/0, On 9573/0. |
+
+Новые `MATRIX_CRACK_DATA` строки записывают подготовленные sigma_s/sigma_s,crc,
+psi_s, Abt/As/ds/ls/a_crc и выбранные стержни во внутренних единицах. Их нет
+в исторических v45 логах; CSV явно отмечает CrackDataLogged=False, а не
+подставляет нули вместо непроверенных величин. Live L15 coverage еще требуется.
+
+## Расширенное Равновесие v48
+
+Дополнение пользователя проверено независимыми заданными плоскостями, из
+которых интегрированием получены нагрузки. Все 192 равновесия On на четырех
+формах найдены общим provider-ом с холодного старта, Newton/Secant и двумя
+material roles. Проверены деформации вплоть до 9,5, 32 парных Off отказа и
+8 нагрузок выше осевой технической возможности при +/-10. По 502/0 assertions
+на форму. Реальный дефект потери лучшего failed retry-start исправлен;
+подробности и границы доказательства в `NDM_Audit03_Extended_Equilibrium_Review.md`.
+
+v46 широкая матрица остановлена после трех успешных runs и четвертого с четырьмя
+ошибками comment-oracle. Две независимые стадии имели одинаковый текст причины,
+а oracle ошибочно требовал одно вхождение вообще. После исправления только
+тестового подсчета CircleSym/Stress/On v47: 240 случаев, 10414/0,
+Results save/reopen equal=True и source unchanged=True. Полный v48 повтор
+нужен отдельно; отрицательный v46 отчет сохранен и не считается PASS.

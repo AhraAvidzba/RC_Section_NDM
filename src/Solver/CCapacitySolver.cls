@@ -17,7 +17,7 @@ Option Explicit
 ' решается внешняя задача: какой предельный множитель или какая предельная
 ' плоскость деформаций соответствует заданному N + Mx + My.
 '
-' На вход класса теперь передается универсальная траектория нагрузки:
+' На вход класса передается универсальная траектория нагрузки:
 ' N = N0 + lambda*Nbase, Mx = Mx0 + lambda*Mxbase, My = My0 + lambda*Mybase.
 ' Это позволяет одним алгоритмом считать lambda*Mx, lambda*My, lambda*Mxy,
 ' lambda*N и lambda*NMxy,
@@ -1032,7 +1032,8 @@ Private Sub FinalizeLoadMultiplierSearch(ByVal lambdaValue As Double, _
     mLimitState = limitState
     If Not IsPhysicalLimit(mLimitState) Then mLimitState = mUpperLimitState
     mConverged = True
-    mStopReason = "Поиск несущей способности методом " & methodName & " сошелся; верхнее физическое состояние: " & mUpperLimitState & "."
+    mStopReason = "Поиск несущей способности методом " & methodName & _
+        " сошелся; верхняя граница подтверждена: " & CapacityStateDisplayName(mUpperLimitState) & "."
 End Sub
 
 ' Выбирает lambda по самой устойчивой масштабируемой компоненте нагрузки.

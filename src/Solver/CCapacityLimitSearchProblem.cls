@@ -128,6 +128,9 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
     End If
 End Function
 
+' Однотипные предикаты передают классификацию probe владельцу Capacity.
+' Общий Search отличает допустимую пробу, предел и техническую неудачу,
+' но не назначает инженерный BaseFail по строкам внешних статусов.
 Private Function ILimitSearchProblem_IsAcceptableState(ByVal probeState As String) As Boolean
     ILimitSearchProblem_IsAcceptableState = mCapacity.LimitSearchCapacityStateIsAcceptable(probeState)
 End Function
@@ -144,30 +147,42 @@ Private Function ILimitSearchProblem_IsInvalidInputState(ByVal probeState As Str
     ILimitSearchProblem_IsInvalidInputState = mCapacity.LimitSearchCapacityStateIsInvalidInput(probeState)
 End Function
 
+' Запрашивает восстановительную lambda у Capacity после неуспешной пробы.
+' Численная неудача не становится физической верхней границей автоматически.
 Private Function ILimitSearchProblem_ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, _
         ByVal highLambda As Double, ByVal probeState As String) As Double
     ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = _
         mCapacity.LimitSearchReduceCapacityLambdaAfterNumericalFailure(lowLambda, highLambda, probeState)
 End Function
 
+' Сохраняет усилия подтвержденной допустимой точки для последующей финализации.
+' Все компоненты вычисляются на той же общей траектории нагрузки.
 Private Sub ILimitSearchProblem_RecordAcceptable(ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double)
     mCapacity.LimitSearchRecordCapacityAcceptable loadPath.TargetN(lambdaValue), _
         loadPath.TargetMx(lambdaValue), loadPath.TargetMy(lambdaValue)
 End Sub
 
+' Передает исход начальной пробы владельцу инженерной интерпретации Capacity.
+' Несходимость и подтвержденное превышение критерия имеют разные причины.
 Private Sub ILimitSearchProblem_HandleInitialFailure(ByVal probeState As String)
     mCapacity.LimitSearchHandleCapacityInitialFailure probeState
 End Sub
 
+' Завершает поиск без верхней физической точки, сохраняя последнюю допустимую
+' lambda. Достижение технической границы не объявляется найденной capacity.
 Private Sub ILimitSearchProblem_HandleBracketNotFound(ByVal lowLambda As Double)
     mCapacity.LimitSearchHandleCapacityBracketNotFound lowLambda
 End Sub
 
+' Сохраняет численную причину невозможности построить скобку после recovery.
+' Последняя допустимая точка остается диагностикой, а не доказанным пределом.
 Private Sub ILimitSearchProblem_HandleBracketNumericalFailure(ByVal lowLambda As Double, _
         ByVal failedLambda As Double, ByVal probeState As String)
     mCapacity.LimitSearchHandleCapacityBracketNumericalFailure lowLambda, probeState
 End Sub
 
+' Объясняет исчерпание бюджета до требуемой точности скобки. Допуск пользователя
+' не увеличивается для превращения незавершенного поиска в успешный.
 Private Sub ILimitSearchProblem_HandleIterationLimit(ByVal maxIterations As Long, _
         ByVal remainingWidth As Double, ByVal tolerance As Double)
     mCapacity.LimitSearchSetCapacityNumericalFailure _
@@ -175,22 +190,29 @@ Private Sub ILimitSearchProblem_HandleIterationLimit(ByVal maxIterations As Long
         FormatNumberInvariant(remainingWidth) & ", допуск " & FormatNumberInvariant(tolerance) & "."
 End Sub
 
+' Останавливает поиск при неподдержанном исходе probe и сохраняет его имя
+' для диагностики; такой исход не подтверждает физическое разрушение.
 Private Sub ILimitSearchProblem_HandleUnexpectedState(ByVal probeState As String)
     mCapacity.LimitSearchSetCapacityNumericalFailure "Поиск Bisection остановлен: " & probeState & "."
 End Sub
 
+' Передает ошибку параметров поиска без попытки представить ее как несходимость.
 Private Sub ILimitSearchProblem_SetInvalidInput(ByVal message As String)
     mCapacity.LimitSearchSetCapacityInvalidInput message
 End Sub
 
+' Передает численную причину общего поиска в результат Capacity.
 Private Sub ILimitSearchProblem_SetNumericalFailure(ByVal message As String)
     mCapacity.LimitSearchSetCapacityNumericalFailure message
 End Sub
 
+' Дополняет журнал текущей search-session, не меняя инженерный статус результата.
 Private Sub ILimitSearchProblem_AppendDiagnostic(ByVal message As String)
     mCapacity.LimitSearchAppendCapacityDiagnostic message
 End Sub
 
+' Подтверждает конкретную lambda как конечный физический предел. Для осевого
+' плато дополнительно проверяется предельная плоскость и равновесие N/Mx/My.
 Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByVal probeState As String, ByVal methodName As String, _
@@ -204,6 +226,8 @@ Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchReq
     ILimitSearchProblem_FinalizeAt = mCapacity.Converged
 End Function
 
+' Финализирует сохраненную допустимую сторону уточненной скобки; проверка
+' физического критерия остается у Capacity, включая неоднозначное осевое плато.
 Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
         ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
@@ -213,6 +237,8 @@ Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchReq
         request.Section, request.ConcreteMaterial, request.SteelMaterial, loadPath
 End Sub
 
+' Для силового осевого пути пробует физически подтвердить сохраненную точку
+' после неудачи общего поиска. Другие траектории этим приемом не подменяются.
 Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
     If mCapacity.Converged Then Exit Sub
     If Not request.ForceOnly And Not request.PureAxialForMethod Then Exit Sub
@@ -220,6 +246,8 @@ Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As C
         request.ConcreteMaterial, request.SteelMaterial, ILimitSearchProblem_BuildLoadPath(request)
 End Sub
 
+' Собирает итог из фактических данных Capacity, а не только Boolean общего
+' алгоритма. Это сохраняет точную причину остановки и конечное named-state.
 Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRequest, _
         ByVal searchSucceeded As Boolean) As CLimitSearchResult
     Set ILimitSearchProblem_BuildResult = BuildSnapshot(request.SolutionStrategy, request.Section, _
@@ -239,7 +267,7 @@ Public Function BuildSnapshot(ByVal requestedStrategy As String, _
     If mCapacity Is Nothing Then
         meta.SetResult rsInternalError, rcInternalError, rkCapacity, "Не передана задача несущей способности.", vbNullString, True, False
     ElseIf mCapacity.Converged Then
-        meta.SetResult rsSuccess, rcCheckPassed, rkCapacity, mCapacity.LimitState
+        meta.SetResult rsSuccess, rcCheckPassed, rkCapacity, mCapacity.StopReason
     ElseIf mCapacity.FailureCode = sfcInvalidConfiguration Then
         meta.SetResult rsInvalidConfiguration, rcInvalidConfiguration, rkCapacity, mCapacity.StopReason
     ElseIf mCapacity.FailureCode = sfcInternalError Then
@@ -313,6 +341,8 @@ Private Function ILimitSearchProblem_RunUltimateAttempts(ByVal request As CLimit
         request, ILimitSearchProblem_BuildLoadPath(request))
 End Function
 
+' Завершает инженерные величины Capacity после принятого UltimateStrain-решения
+' на исходной траектории; численный цикл здесь не повторяется.
 Private Sub ILimitSearchProblem_CompleteUltimate(ByVal loadPath As CLoadPathVector)
     mCapacity.LimitSearchCompleteCapacityUltimate loadPath
 End Sub
@@ -327,6 +357,8 @@ Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section
         loadPath, startSolver, eps0, kx, ky
 End Sub
 
+' Вычисляет две невязки принадлежности траектории и невязку предельной
+' деформации через Capacity. Общий Newton получает тот же solver этой плоскости.
 Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
@@ -338,18 +370,23 @@ Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal s
         rPath1, rPath2, rLimit, lambdaValue, state)
 End Function
 
+' Передает проверку трех невязок с исходными допусками Capacity.
 Private Function ILimitSearchProblem_LimitSearchUltimateResidualReached(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Boolean
     ILimitSearchProblem_LimitSearchUltimateResidualReached = _
         mCapacity.LimitSearchUltimateResidualReached(rPath1, rPath2, rLimit)
 End Function
 
+' Возвращает норму невязок для выбора шага общего Newton, не заменяя ею
+' отдельную проверку достижения критерия и компонентных допусков.
 Private Function ILimitSearchProblem_LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Double
     ILimitSearchProblem_LimitSearchUltimateResidualNorm = _
         mCapacity.LimitSearchUltimateResidualNorm(rPath1, rPath2, rLimit)
 End Function
 
+' Передает найденную плоскость на окончательное подтверждение Capacity.
+' Вспомогательное равновесие на extension не считается физическим пределом.
 Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
@@ -358,6 +395,7 @@ Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal sec
         section, concreteMaterial, steelMaterial, loadPath, lambdaValue, solver, state, iterations)
 End Function
 
+' Сохраняет численную остановку UltimateStrain у владельца Capacity-результата.
 Private Sub ILimitSearchProblem_LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
     mCapacity.LimitSearchSetUltimateNumericalFailure reason
 End Sub
@@ -392,22 +430,30 @@ Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa() As D
     ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa = mCapacity.LimitSearchUltimateMaxDeltaKappa
 End Property
 
+' Сообщает общему coordinator, что получен окончательный успех или терминальная
+' ошибка Capacity. Отсутствующая задача не выдает ложный признак завершения.
 Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
     If Not mCapacity Is Nothing Then _
         ILimitSearchProblem_StoppedTerminally = mCapacity.Converged Or mCapacity.LimitSearchHasTerminalFailure
 End Property
 
+' Возвращает причину текущей задачи; без Capacity причина остается пустой.
 Private Property Get ILimitSearchProblem_StopReason() As String
     If Not mCapacity Is Nothing Then ILimitSearchProblem_StopReason = mCapacity.StopReason
 End Property
 
+' Capacity очищает рабочий итог при подготовке своей попытки; отдельный сброс
+' coordinator не должен стирать сохраненную typed-причину.
 Private Sub ILimitSearchProblem_ClearStopReason()
 End Sub
 
+' Общий fallback не подменяет причину Capacity общим текстом: результат
+' формируется из машинного исхода и инженерной интерпретации самой задачи.
 Private Sub ILimitSearchProblem_SetStopReasonIfEmpty(ByVal reason As String)
 End Sub
 
-' Форматирует число для диагностического журнала с точкой как разделителем.
+' Объединяет диагностику первой попытки и перехода к fallback у Capacity.
+' Комментарий конечного результата формируется владельцем, не writer-ом.
 Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
         ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
         ByVal transitionMessage As String, ByVal successMessage As String)
@@ -419,6 +465,7 @@ Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
 
+' Форматирует число для диагностического журнала с точкой как разделителем.
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function

@@ -43,6 +43,8 @@ Public Function RunSectionSolverTests() As String
     TestAudit02ExtendedInitialGuessPhysicalFinal stats
     TestAudit03TypedStateFailures stats
     TestAudit03RetryAttemptSession stats
+    TestAudit03ExtremeStateInputs stats
+    TestAudit03SolverSettingEffects stats
 
     AppendLine stats, "TOTAL_SECTION_SOLVER: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -488,14 +490,16 @@ Private Sub TestSolverMethodInputErrors(ByRef stats As TSectionSolverTestStats)
     solver.SolverMethod = "Bogus"
     solver.Solve BuildGeneratedSectionModel(mesh, Nothing), ProvisionalConcrete(), ProvisionalSteel(), -100000#, 0#, 0#
     AssertTrue stats, "section.method.invalidInput", Not solver.Converged
-    AssertTrue stats, "section.method.invalidMessage", InStr(1, solver.StopReason, "InputError", vbTextCompare) > 0
+    AssertTrue stats, "section.method.invalidMessage", InStr(1, solver.StopReason, "Ошибка настройки Solver.Method:", vbTextCompare) > 0
+    AssertTrue stats, "section.method.invalidCode", solver.FailureCode = sfcInvalidConfiguration
 
     Set solver = New CSectionSolver
     ConfigureProvisionalSolver solver
     solver.SolverMethod = vbNullString
     solver.Solve BuildGeneratedSectionModel(mesh, Nothing), ProvisionalConcrete(), ProvisionalSteel(), -100000#, 0#, 0#
     AssertTrue stats, "section.method.emptyInput", Not solver.Converged
-    AssertTrue stats, "section.method.emptyMessage", InStr(1, solver.StopReason, "InputError", vbTextCompare) > 0
+    AssertTrue stats, "section.method.emptyMessage", InStr(1, solver.StopReason, "Ошибка настройки Solver.Method:", vbTextCompare) > 0
+    AssertTrue stats, "section.method.emptyCode", solver.FailureCode = sfcInvalidConfiguration
 End Sub
 
 ' Применяет настройки из Config к реальному solver-у и проверяет, что
@@ -554,6 +558,8 @@ Private Sub AssertNewtonSecantCase(ByRef stats As TSectionSolverTestStats, ByVal
         "|SecantRestarts=" & CStr(secant.MatrixRestartCount)
 End Sub
 
+' Задает жесткий допуск и короткий бюджет для воспроизведения отказов сходимости.
+' Ограничения приращений отключены явно, чтобы тест проверял сам решатель.
 Private Sub ConfigureStrictSolver(ByVal solver As CSectionSolver)
     solver.LoadSteps = 1
     solver.MaxIterations = 12
@@ -565,6 +571,8 @@ Private Sub ConfigureStrictSolver(ByVal solver As CSectionSolver)
     solver.MaxDeltaKappa = 0#
 End Sub
 
+' Настраивает контрольные задачи равновесия независимо от текущего Config.
+' Допуски заданы во внутренних единицах, шаг нагрузки и ограничения фиксированы.
 Private Sub ConfigureProvisionalSolver(ByVal solver As CSectionSolver)
     solver.LoadSteps = 5
     solver.MaxIterations = 40
@@ -576,6 +584,8 @@ Private Sub ConfigureProvisionalSolver(ByVal solver As CSectionSolver)
     solver.MaxDeltaKappa = 0.00001
 End Sub
 
+' Создает фиксированную диаграмму бетона для численных контрольных задач.
+' Она не использует материал из книги и не включает расширение диаграммы.
 Private Function ProvisionalConcrete() As CMaterialDiagram
     Dim concrete As CMaterialDiagram
     Set concrete = New CMaterialDiagram
@@ -583,6 +593,8 @@ Private Function ProvisionalConcrete() As CMaterialDiagram
     Set ProvisionalConcrete = concrete
 End Function
 
+' Создает фиксированную симметричную диаграмму арматуры для тех же задач.
+' Пределы и модуль не зависят от пользовательских настроек материала.
 Private Function ProvisionalSteel() As CMaterialDiagram
     Dim steel As CMaterialDiagram
     Set steel = New CMaterialDiagram
@@ -590,6 +602,8 @@ Private Function ProvisionalSteel() As CMaterialDiagram
     Set ProvisionalSteel = steel
 End Function
 
+' Возвращает прямоугольник без скруглений и смещения для контрольного сечения.
+' Сетка и арматура затем создаются отдельно, как в обычном расчетном маршруте.
 Private Function RectangleGeometry(ByVal width As Double, ByVal height As Double) As CGeometryRoundedRectangle
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -606,6 +620,8 @@ Private Function BuildMesh(ByVal geom As CGeometryRoundedRectangle, ByVal stepSi
     Set BuildMesh = mesh
 End Function
 
+' Проверяет все три компоненты равновесия, а не только признак Converged.
+' Для нулевой компоненты действует абсолютный допуск, для ненулевой относительный.
 Private Sub AssertEquilibrium(ByRef stats As TSectionSolverTestStats, ByVal prefix As String, _
         ByVal solver As CSectionSolver, ByVal n As Double, ByVal mx As Double, ByVal my As Double)
     AssertLoadComponent stats, prefix & ".N", solver.Nint, n, 1#, 0.000001
@@ -613,6 +629,8 @@ Private Sub AssertEquilibrium(ByRef stats As TSectionSolverTestStats, ByVal pref
     AssertLoadComponent stats, prefix & ".My", solver.Myint, my, 1000#, 0.000001
 End Sub
 
+' Проверяет наличие диапазона перед тестом, которому требуется схема книги.
+' Отсутствие имени означает недоступность fixture, а не отказ численного решателя.
 Private Function NamedRangeExists(ByVal rangeName As String) As Boolean
     On Error GoTo Missing
     Dim target As Object
@@ -623,6 +641,8 @@ Missing:
     NamedRangeExists = False
 End Function
 
+' Выбирает допустимую меру ошибки для одной компоненты нагрузки.
+' Около нуля не делит на ожидаемое значение и использует его абсолютный допуск.
 Private Sub AssertLoadComponent(ByRef stats As TSectionSolverTestStats, ByVal name As String, _
         ByVal actual As Double, ByVal expected As Double, ByVal zeroTolerance As Double, _
         ByVal relTolerance As Double)
@@ -633,6 +653,8 @@ Private Sub AssertLoadComponent(ByRef stats As TSectionSolverTestStats, ByVal na
     End If
 End Sub
 
+' Группа проверок ведет общий счет и записывает фактические отклонения в отчет.
+' Численные сравнения ниже сохраняют отдельные абсолютные и относительные допуски.
 Private Sub AssertTrue(ByRef stats As TSectionSolverTestStats, ByVal name As String, ByVal condition As Boolean)
     If condition Then
         stats.Passed = stats.Passed + 1
@@ -643,6 +665,7 @@ Private Sub AssertTrue(ByRef stats As TSectionSolverTestStats, ByVal name As Str
     End If
 End Sub
 
+' Сравнивает значения по абсолютному допуску и сохраняет обе величины и разность.
 Private Sub AssertClose(ByRef stats As TSectionSolverTestStats, ByVal name As String, ByVal actual As Double, _
         ByVal expected As Double, ByVal tolerance As Double)
     Dim diff As Double
@@ -658,6 +681,8 @@ Private Sub AssertClose(ByRef stats As TSectionSolverTestStats, ByVal name As St
     End If
 End Sub
 
+' Сравнивает относительную ошибку; для почти нулевого эталона избегает деления.
+' Используемый допуск передается тестом и не подменяется настройками Config.
 Private Sub AssertRelative(ByRef stats As TSectionSolverTestStats, ByVal name As String, ByVal actual As Double, _
         ByVal expected As Double, ByVal relTolerance As Double)
     Dim relDiff As Double
@@ -678,6 +703,7 @@ Private Sub AssertRelative(ByRef stats As TSectionSolverTestStats, ByVal name As
     End If
 End Sub
 
+' Добавляет строку в протокол; формат чисел ниже одинаков при любой локали Excel.
 Private Sub AppendLine(ByRef stats As TSectionSolverTestStats, ByVal text As String)
     stats.Report = stats.Report & text & vbCrLf
 End Sub
@@ -705,6 +731,8 @@ Private Sub TestAudit03TypedStateFailures(ByRef stats As TSectionSolverTestStats
         TestAudit03TypedStateFailureCase stats, scenario
     Next scenario
 End Sub
+
+
 
 ' ДЛЯ ТЕСТОВ
 ' Создает изолированный реальный маршрут одного отказа. Неуспешный snapshot
@@ -1139,4 +1167,310 @@ Private Sub TestAudit03RetryAttemptSession(ByRef stats As TSectionSolverTestStat
     AssertTrue stats, "audit03.retry.lastAttemptRetained", runner.SolverCallCount = calls
     runner.TestRunRetryAttempt section, concrete, steel, -100001#
     AssertTrue stats, "audit03.retry.evictedAttemptCanRun", runner.SolverCallCount = calls + 1
+End Sub
+
+' ============================== ДЛЯ ТЕСТОВ: AUDIT03 EXTREME INPUTS ==============================
+
+' Проверяет конечность и typed-исход прямого НДС при представимых нагрузках
+' около верхней границы Double. Это отдельный gate, а не обычный overload 1e6.
+Public Function RunAudit03ExtremeStateInputTests() As String
+    Dim stats As TSectionSolverTestStats
+    TestAudit03ExtremeStateInputs stats
+    AppendLine stats, "TOTAL_AUDIT03_EXTREME_STATE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03ExtremeStateInputTests = stats.Report
+End Function
+
+' Для Newton/Secant и Extension Off/On проверяет центрированную и смещенную
+' модель. Смещение усиливает риск переполнения при исключении связанных
+' компонент N/Mx/My, не меняя допустимость самого представимого входного вектора.
+Private Sub TestAudit03ExtremeStateInputs(ByRef stats As TSectionSolverTestStats)
+    Dim method As Variant, shifted As Variant, extended As Variant
+    For Each method In Array("Newton", "Secant")
+        For Each shifted In Array(False, True)
+            For Each extended In Array(False, True)
+                Audit03ExtremeStateCase stats, CStr(method), CBool(shifted), CBool(extended)
+            Next extended
+        Next shifted
+    Next method
+End Sub
+
+' Выполняет реальный solver и строит named-state из его результата. Сверхбольшой
+' корректный вектор не обязан сходиться, но численный предел не должен стать
+' программным CalcErr или физически допустимым state. Следующий обычный solve
+' на том же объекте должен восстанавливаться без утечки предыдущего отказа.
+Private Sub Audit03ExtremeStateCase(ByRef stats As TSectionSolverTestStats, _
+        ByVal method As String, ByVal shifted As Boolean, ByVal extended As Boolean)
+    On Error GoTo Failed
+    Dim prefix As String
+    prefix = "audit03.extreme." & method & ".shift=" & CStr(shifted) & ".extension=" & CStr(extended)
+    Dim geometry As CGeometryRoundedRectangle
+    Set geometry = New CGeometryRoundedRectangle
+    If shifted Then
+        geometry.Initialize 200#, 100#, 0#, 0#, 0#, 0#, 125#, 80#
+    Else
+        geometry.Initialize 200#, 100#, 0#, 0#, 0#, 0#
+    End If
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(BuildMesh(geometry, 20#), Nothing)
+    Dim concreteParameters As CConcreteMaterialParameters, steelParameters As CSteelMaterialParameters
+    Set concreteParameters = New CConcreteMaterialParameters
+    concreteParameters.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
+    Set steelParameters = New CSteelMaterialParameters
+    steelParameters.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#
+    Dim materials As CMaterialModelProvider
+    Set materials = New CMaterialModelProvider
+    materials.InitializeFromParameters concreteParameters, steelParameters, diagramExtensionEnabled:=extended
+    Dim spec As CMaterialModelSpec
+    Set spec = New CMaterialModelSpec
+    spec.Initialize "ULS(I)", "ThreeLine", "Ignore", "TwoLine"
+    Dim concrete As CMaterialDiagram, steel As CMaterialDiagram
+    Set concrete = materials.ConcreteMaterialForEquilibriumFromSpec(spec)
+    Set steel = materials.SteelMaterialForEquilibriumFromSpec(spec)
+    Dim solver As CSectionSolver
+    Set solver = New CSectionSolver
+    solver.SolverMethod = method
+    solver.LoadSteps = 1
+    solver.MaxIterations = 3
+    solver.DiagnosticsEnabled = False
+    solver.ToleranceN = 1#: solver.ToleranceMx = 1000#: solver.ToleranceMy = 1000#
+    solver.Solve section, concrete, steel, -1E+308, 1E+308, -1E+308
+    AssertTrue stats, prefix & ".notConverged", Not solver.Converged
+    AssertTrue stats, prefix & ".numericCause", solver.FailureCode = sfcNumericalFailure Or solver.FailureCode = sfcSingularTangent
+    AssertTrue stats, prefix & ".reason", Len(Trim$(solver.StopReason)) > 0
+    AppendLine stats, "EXTREME_CASE: " & prefix & "|N=-1e308|Mx=1e308|My=-1e308|failureCode=" & _
+        CStr(solver.FailureCode) & "|comment=" & solver.StopReason
+    Dim state As CSectionStateResult
+    Set state = New CSectionStateResult
+    state.InitializeFromSolver sstStrengthState, cpStrength, spec, solver, False, False, 1
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    AssertTrue stats, prefix & ".stateNumeric", state.InternalStatus = rsNumericalFailure
+    AssertTrue stats, prefix & ".displayNumFail", policy.ExternalStatus(state.ResultMeta) = policy.NumFail
+    AssertTrue stats, prefix & ".notPhysical", Not state.WithinPhysicalRange
+    solver.MaxIterations = 80
+    If shifted Then
+        solver.Solve section, concrete, steel, -50000#, -4000000#, -6250000#
+    Else
+        solver.Solve section, concrete, steel, -50000#, 0#, 0#
+    End If
+    AssertTrue stats, prefix & ".normalRecovers", solver.Converged And solver.FailureCode = sfcNone
+    Exit Sub
+Failed:
+    AssertTrue stats, prefix & ".runtime." & CStr(Err.Number) & "." & Err.Description, False
+End Sub
+
+' ============================== ДЛЯ ТЕСТОВ: AUDIT03 SOLVER SETTINGS ==============================
+
+' Проверяет активное действие численных настроек через настоящий reader и Solve.
+' Изменение входа должно менять ограничения/ветвь, а не только прочитанное поле.
+Public Function RunAudit03SolverSettingEffectTests() As String
+    On Error GoTo Failed
+    Dim stats As TSectionSolverTestStats
+    TestAudit03SolverSettingEffects stats
+    AppendLine stats, "TOTAL_AUDIT03_SOLVER_EFFECTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03SolverSettingEffectTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03SolverSettingEffectTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' Изолирует каждый ключ на временном листе, затем восстанавливает окружение
+' даже после ошибки. Линейная задача дает независимый oracle ограничений;
+' кусочно-линейный материал отдельно активирует дробление шага Newton.
+Private Sub TestAudit03SolverSettingEffects(ByRef stats As TSectionSolverTestStats)
+    On Error GoTo Failed
+    Dim oldAlerts As Boolean
+    oldAlerts = Application.DisplayAlerts
+    Dim sheet As Worksheet
+    Set sheet = ThisWorkbook.Worksheets.Add
+    sheet.Name = "__Audit03SolverEffects"
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 10#), Nothing)
+    Dim concrete As CLinearConcreteMaterial, steel As CLinearSteelMaterial
+    Set concrete = New CLinearConcreteMaterial
+    concrete.Initialize 30000#
+    Set steel = New CLinearSteelMaterial
+    steel.Initialize 200000#
+    Dim first As CSectionSolver, second As CSectionSolver
+    Dim key As Variant, n As Double, mx As Double, my As Double
+
+    Set first = Audit03ConfiguredSolver(sheet, "Solver.LoadSteps", 1)
+    Set second = Audit03ConfiguredSolver(sheet, "Solver.LoadSteps", 4)
+    first.Solve section, concrete, steel, -100000#, 0#, 0#
+    second.Solve section, concrete, steel, -100000#, 0#, 0#
+    AssertTrue stats, "audit03.effect.Solver.LoadSteps.one", first.Converged And first.LoadStepsCompleted = 1
+    AssertTrue stats, "audit03.effect.Solver.LoadSteps.four", second.Converged And second.LoadStepsCompleted = 4
+    AssertTrue stats, "audit03.effect.Solver.LoadSteps.work", second.InternalNewtonCallCount = 4 And first.InternalNewtonCallCount = 1
+
+    Set first = Audit03ConfiguredSolver(sheet, "Solver.MaxIterations", 1)
+    Set second = Audit03ConfiguredSolver(sheet, "Solver.MaxIterations", 4)
+    first.Solve section, concrete, steel, -100000#, 0#, 0#
+    second.Solve section, concrete, steel, -100000#, 0#, 0#
+    AssertTrue stats, "audit03.effect.Solver.MaxIterations.one", Not first.Converged And first.Iterations = 1
+    AssertTrue stats, "audit03.effect.Solver.MaxIterations.four", second.Converged And second.Iterations <= 4
+
+    For Each key In Array("Solver.ToleranceN", "Solver.ToleranceMx", "Solver.ToleranceMy")
+        n = 0#: mx = 0#: my = 0#
+        Select Case CStr(key)
+            Case "Solver.ToleranceN": n = -100000#
+            Case "Solver.ToleranceMx": mx = 1000000#
+            Case "Solver.ToleranceMy": my = -1000000#
+        End Select
+        Set first = Audit03ConfiguredSolver(sheet, CStr(key), 2000000#)
+        Set second = Audit03ConfiguredSolver(sheet, CStr(key), 0.001)
+        first.Solve section, concrete, steel, n, mx, my
+        second.Solve section, concrete, steel, n, mx, my
+        AssertTrue stats, "audit03.effect." & CStr(key) & ".loose", first.Converged And first.Iterations = 1
+        AssertTrue stats, "audit03.effect." & CStr(key) & ".strict", second.Converged And second.Iterations > first.Iterations
+        AssertClose stats, "audit03.effect." & CStr(key) & ".looseZero", first.Epsilon0 + first.KappaX + first.KappaY, 0#, 0#
+        AssertClose stats, "audit03.effect." & CStr(key) & ".strictN", second.Nint, n, 0.001
+        AssertClose stats, "audit03.effect." & CStr(key) & ".strictMx", second.Mxint, mx, 0.001
+        AssertClose stats, "audit03.effect." & CStr(key) & ".strictMy", second.Myint, my, 0.001
+    Next key
+
+    For Each key In Array("Solver.MaxDeltaEpsilon0", "Solver.MaxDeltaKappa", "Solver.DampingInitial")
+        n = -100000#: mx = 0#: my = 0#
+        Dim restricted As Double
+        Select Case CStr(key)
+            Case "Solver.MaxDeltaEpsilon0": restricted = 0.00001
+            Case "Solver.MaxDeltaKappa": restricted = 0.0000001: n = 0#: mx = 1000000#
+            Case "Solver.DampingInitial": restricted = 0.5
+        End Select
+        If CStr(key) = "Solver.DampingInitial" Then
+            Set first = Audit03ConfiguredSolver(sheet, CStr(key), 1#)
+        Else
+            Set first = Audit03ConfiguredSolver(sheet, CStr(key), 0#)
+        End If
+        Set second = Audit03ConfiguredSolver(sheet, CStr(key), restricted)
+        first.Solve section, concrete, steel, n, mx, my
+        second.Solve section, concrete, steel, n, mx, my
+        AssertTrue stats, "audit03.effect." & CStr(key) & ".converged", first.Converged And second.Converged
+        AssertTrue stats, "audit03.effect." & CStr(key) & ".moreWork", second.Iterations > first.Iterations
+        AssertClose stats, "audit03.effect." & CStr(key) & ".N", second.Nint, n, 0.001
+        AssertClose stats, "audit03.effect." & CStr(key) & ".Mx", second.Mxint, mx, 0.001
+    Next key
+
+    Set first = Audit03ConfiguredSolver(sheet, "Solver.Method", "Newton")
+    Set second = Audit03ConfiguredSolver(sheet, "Solver.Method", "Secant")
+    first.Solve section, concrete, steel, -100000#, 0#, 0#
+    second.Solve section, concrete, steel, -100000#, 0#, 0#
+    AssertTrue stats, "audit03.effect.Solver.Method.Newton", first.Converged And first.InternalNewtonCallCount = 1
+    AssertTrue stats, "audit03.effect.Solver.Method.Secant", second.Converged And second.InternalNewtonCallCount = 0
+
+    Set first = Audit03ConfiguredSolver(sheet, "Solver.SecantMinStepNorm", 0.000000000001, "Secant")
+    Set second = Audit03ConfiguredSolver(sheet, "Solver.SecantMinStepNorm", 1#, "Secant")
+    first.Solve section, concrete, steel, -100000#, 0#, 0#
+    second.Solve section, concrete, steel, -100000#, 0#, 0#
+    AssertTrue stats, "audit03.effect.Solver.SecantMinStepNorm.small", first.Converged
+    AssertTrue stats, "audit03.effect.Solver.SecantMinStepNorm.large", Not second.Converged And second.MatrixRestartCount = 2
+
+    Set first = Audit03ConfiguredSolver(sheet, "Solver.SecantMaxRestarts", 0, "Secant", True)
+    Set second = Audit03ConfiguredSolver(sheet, "Solver.SecantMaxRestarts", 3, "Secant", True)
+    first.Solve section, concrete, steel, -100000#, 0#, 0#
+    second.Solve section, concrete, steel, -100000#, 0#, 0#
+    AssertTrue stats, "audit03.effect.Solver.SecantMaxRestarts.zero", Not first.Converged And first.MatrixRestartCount = 0
+    AssertTrue stats, "audit03.effect.Solver.SecantMaxRestarts.three", Not second.Converged And second.MatrixRestartCount = 3
+
+    Set first = Audit03ConfiguredSolver(sheet, "Solver.SecantMinStepNorm", 1#, "Newton", True)
+    first.Solve section, concrete, steel, -100000#, 0#, 0#
+    AssertTrue stats, "audit03.effect.SecantOptions.inactiveInNewton", first.Converged And first.MatrixRestartCount = 0
+    Audit03InvalidSolverSettingEffects stats, sheet, section, concrete, steel
+    Audit03LineSearchSettingEffects stats, sheet, section, steel
+    GoTo Cleanup
+Failed:
+    AssertTrue stats, "audit03.effect.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
+    Application.DisplayAlerts = False
+    If Not sheet Is Nothing Then sheet.Delete
+    Application.DisplayAlerts = oldAlerts
+    On Error GoTo 0
+End Sub
+
+' Формирует полный численный fixture и заменяет ровно один key до чтения Range.
+' Значения внутренних допусков фиксированы; пользовательская книга не меняется.
+Private Function Audit03ConfiguredSolver(ByVal sheet As Worksheet, ByVal key As String, _
+        ByVal value As Variant, Optional ByVal method As String = "Newton", _
+        Optional ByVal forceSmallSecantStep As Boolean = False) As CSectionSolver
+    Dim data(1 To 15, 1 To 3) As Variant
+    Dim keys As Variant, values As Variant, i As Long
+    keys = Array("Solver.Method", "Solver.MaxIterations", "Solver.LoadSteps", _
+        "Solver.ToleranceN", "Solver.ToleranceMx", "Solver.ToleranceMy", _
+        "Solver.LineSearchEnabled", "Solver.DampingInitial", "Solver.MinLineSearchAlpha", _
+        "Solver.MaxDeltaEpsilon0", "Solver.MaxDeltaKappa", "Solver.SecantMaxRestarts", _
+        "Solver.SecantMinStepNorm", "General.DiagramExtension")
+    values = Array(method, 80, 1, 0.001, 0.001, 0.001, "Yes", 1#, 0.03125, 0#, 0#, 2, 0.000000000001, "No")
+    data(1, 1) = "Параметр": data(1, 2) = "Значение": data(1, 3) = "Ед."
+    For i = 0 To UBound(keys)
+        data(i + 2, 1) = keys(i): data(i + 2, 2) = values(i): data(i + 2, 3) = "-"
+        If forceSmallSecantStep And CStr(keys(i)) = "Solver.SecantMinStepNorm" Then data(i + 2, 2) = 1#
+        If CStr(keys(i)) = key Then data(i + 2, 2) = value
+    Next i
+    sheet.Range("A1:C15").Value2 = data
+    Dim reader As CSystemSettingsReader
+    Set reader = New CSystemSettingsReader
+    reader.LoadFromRange sheet.Range("A1:C15")
+    Dim solver As CSectionSolver
+    Set solver = New CSectionSolver
+    solver.ApplySettings reader
+    Set Audit03ConfiguredSolver = solver
+End Function
+
+' Проверяет диапазоны на публичном ApplySettings -> Solve маршруте. Ошибочная
+' конфигурация не должна начинать итерации или превращаться в NumFail.
+Private Sub Audit03InvalidSolverSettingEffects(ByRef stats As TSectionSolverTestStats, _
+        ByVal sheet As Worksheet, ByVal section As CSectionModel, _
+        ByVal concrete As CLinearConcreteMaterial, ByVal steel As CLinearSteelMaterial)
+    Dim keys As Variant, values As Variant, i As Long
+    keys = Array("Solver.Method", "Solver.MaxIterations", "Solver.LoadSteps", _
+        "Solver.ToleranceN", "Solver.ToleranceMx", "Solver.ToleranceMy", _
+        "Solver.DampingInitial", "Solver.MinLineSearchAlpha", "Solver.MaxDeltaEpsilon0", _
+        "Solver.MaxDeltaKappa", "Solver.SecantMaxRestarts", "Solver.SecantMinStepNorm")
+    values = Array("Unknown", 0, 0, 0#, 0#, 0#, 1.1, 1.1, -0.00001, -0.00001, -1, 0#)
+    For i = 0 To UBound(keys)
+        Dim solver As CSectionSolver
+        Set solver = Audit03ConfiguredSolver(sheet, CStr(keys(i)), values(i))
+        solver.Solve section, concrete, steel, -100000#, 0#, 0#
+        AssertTrue stats, "audit03.effect.invalid." & CStr(keys(i)), _
+            Not solver.Converged And solver.FailureCode = sfcInvalidConfiguration
+        AssertTrue stats, "audit03.effect.invalid.noIterations." & CStr(keys(i)), solver.Iterations = 0
+        AssertTrue stats, "audit03.effect.invalid.reason." & CStr(keys(i)), Len(solver.StopReason) > 0
+    Next i
+End Sub
+
+' Старт на пологом участке требует дробления Newton: полный шаг ухудшает
+' невязку. Проверяется реальная разница On/Off и нижней границы alpha, а не getter.
+Private Sub Audit03LineSearchSettingEffects(ByRef stats As TSectionSolverTestStats, _
+        ByVal sheet As Worksheet, ByVal section As CSectionModel, ByVal steel As CLinearSteelMaterial)
+    Dim strains(1 To 6) As Double, stresses(1 To 6) As Double
+    strains(1) = -0.01: stresses(1) = -100#
+    strains(2) = -0.001: stresses(2) = -10#
+    strains(3) = 0#: stresses(3) = 0#
+    strains(4) = 0.001: stresses(4) = 10#
+    strains(5) = 0.002: stresses(5) = 11#
+    strains(6) = 0.01: stresses(6) = 19#
+    Dim concrete As CMaterialDiagram
+    Set concrete = New CMaterialDiagram
+    concrete.InitializeFromArrays strains, stresses, 6
+    Dim first As CSectionSolver, second As CSectionSolver
+    Set first = Audit03ConfiguredSolver(sheet, "Solver.LineSearchEnabled", "No")
+    Set second = Audit03ConfiguredSolver(sheet, "Solver.LineSearchEnabled", "Yes")
+    first.SetInitialState 0.002, 0#, 0#
+    second.SetInitialState 0.002, 0#, 0#
+    first.Solve section, concrete, steel, 100000#, 0#, 0#
+    second.Solve section, concrete, steel, 100000#, 0#, 0#
+    AssertTrue stats, "audit03.effect.Solver.LineSearchEnabled.off", first.Converged
+    AssertTrue stats, "audit03.effect.Solver.LineSearchEnabled.on", second.Converged
+    AssertTrue stats, "audit03.effect.Solver.LineSearchEnabled.offNoReduction", _
+        InStr(1, first.DiagnosticLog, "lineSearchUsed=True", vbBinaryCompare) = 0
+    AssertTrue stats, "audit03.effect.Solver.LineSearchEnabled.onReduction", _
+        InStr(1, second.DiagnosticLog, "lineSearchUsed=True", vbBinaryCompare) > 0
+    AppendLine stats, "SETTING_EFFECT: Solver.LineSearchEnabled|offIterations=" & CStr(first.Iterations) & _
+        "|onIterations=" & CStr(second.Iterations) & "|offEvaluations=" & CStr(first.InternalForceEvaluationCount) & _
+        "|onEvaluations=" & CStr(second.InternalForceEvaluationCount)
+    Set first = Audit03ConfiguredSolver(sheet, "Solver.MinLineSearchAlpha", 1#)
+    first.SetInitialState 0.002, 0#, 0#
+    first.Solve section, concrete, steel, 100000#, 0#, 0#
+    AssertTrue stats, "audit03.effect.Solver.MinLineSearchAlpha.one", Not first.Converged And first.FailureCode = sfcNumericalFailure
+    AssertTrue stats, "audit03.effect.Solver.MinLineSearchAlpha.small", second.Converged
 End Sub

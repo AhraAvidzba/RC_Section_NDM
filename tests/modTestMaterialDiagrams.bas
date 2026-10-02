@@ -8,7 +8,7 @@ Option Explicit
 ' - CMaterialDiagram хранит готовые точки и выполняет только интерполяцию;
 ' - CMaterialModelProvider выбирает расчетный режим, I/II ГПС, TwoLine/ThreeLine
 '   и строит точки диаграмм из параметров бетона и арматуры.
-' Старые builder-классы здесь намеренно не используются.
+' Интерполяция проверяется отдельно от нормативного построения точек provider-ом.
 
 Private Type TMaterialTestStats
     Passed As Long
@@ -36,6 +36,7 @@ Public Function RunMaterialDiagramTests() As String
     TestAudit02PhysicalDiagramPairs stats
     TestAudit02ExtensionBeyondTechnicalDefault stats
     TestAudit02ExtensionOverflowIsExplicit stats
+    TestAudit03DiagramArrayInputs stats
 
     AppendLine stats, "TOTAL_MATERIAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -242,6 +243,8 @@ SteelError:
     AssertTrue stats, "material.invalidSteel", True
 End Sub
 
+' Создает материалный provider с явно выбранными диаграммами ролей и Extension.
+' Это позволяет проверить передачу селекторов независимо от Config книги.
 Private Function TestProvider(Optional ByVal strengthConcreteDiagram As String = "TwoLine", _
         Optional ByVal strengthConcreteTension As String = "Ignore", _
         Optional ByVal strengthSteelDiagram As String = "TwoLine", _
@@ -256,6 +259,8 @@ Private Function TestProvider(Optional ByVal strengthConcreteDiagram As String =
     Set TestProvider = provider
 End Function
 
+' Возвращает фиксированные ULS/SLS сопротивления, модули и деформации бетона,
+' используемые численными эталонами этого набора, а не нормативную марку.
 Private Function TestConcreteParameters() As CConcreteMaterialParameters
     Dim parameters As CConcreteMaterialParameters
     Set parameters = New CConcreteMaterialParameters
@@ -264,6 +269,8 @@ Private Function TestConcreteParameters() As CConcreteMaterialParameters
     Set TestConcreteParameters = parameters
 End Function
 
+' Возвращает фиксированные характеристики арматуры с разными предельными
+' деформациями TwoLine/ThreeLine для проверки фактического выбора диаграммы.
 Private Function TestSteelParameters() As CSteelMaterialParameters
     Dim parameters As CSteelMaterialParameters
     Set parameters = New CSteelMaterialParameters
@@ -272,6 +279,8 @@ Private Function TestSteelParameters() As CSteelMaterialParameters
     Set TestSteelParameters = parameters
 End Function
 
+' Однотипные assertions сохраняют конкретный test-ID и счетчики результатов.
+' Численные проверки используют переданный абсолютный допуск без его ослабления.
 Private Sub AssertTrue(ByRef stats As TMaterialTestStats, ByVal name As String, ByVal condition As Boolean)
     If condition Then
         stats.Passed = stats.Passed + 1
@@ -297,6 +306,7 @@ Private Sub AssertClose(ByRef stats As TMaterialTestStats, ByVal name As String,
     End If
 End Sub
 
+' Добавляет диагностическую строку в итоговый отчет материалных тестов.
 Private Sub AppendLine(ByRef stats As TMaterialTestStats, ByVal text As String)
     stats.Report = stats.Report & text & vbCrLf
 End Sub
@@ -457,3 +467,98 @@ Private Sub TestAudit02ExtensionOverflowIsExplicit(ByRef stats As TMaterialTestS
 ExpectedError:
     AssertTrue stats, "audit02.technical.overflowRejected", Err.Number = vbObjectError + 3245
 End Sub
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ: контракты входных массивов готовой диаграммы
+' ==========================================================================
+' Выполняет тот же направленный контрпример отдельно от полной material suite.
+' Ошибка инициализации не должна оставлять доступной частично замененную диаграмму.
+Public Function RunAudit03DiagramArrayInputTests() As String
+    Dim stats As TMaterialTestStats
+    TestAudit03DiagramArrayInputs stats
+    AppendLine stats, "TOTAL_AUDIT03_DIAGRAM_ARRAY_INPUT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03DiagramArrayInputTests = stats.Report
+End Function
+
+' Проверяет выделенность, наличие индексов 1..pointCount, повторные strain
+' и цикл valid-invalid-valid. Это контракт API, не новая диаграмма/нормативный предел.
+Private Sub TestAudit03DiagramArrayInputs(ByRef stats As TMaterialTestStats)
+    Dim scenario As Variant, strains() As Double, stresses() As Double, diagram As CMaterialDiagram
+    Dim pointCount As Long, expectedCode As Long, actualCode As Long, description As String
+    Dim prefix As String
+    On Error GoTo Failed
+    For Each scenario In Array("CountTooSmall", "MissingStrain", "MissingStress", _
+            "ShortStrain", "ShortStress", "BoundsStrain", "BoundsStress", "CountBeyondArrays", "Duplicate")
+        Audit03FillDiagramArrays strains, stresses
+        Set diagram = New CMaterialDiagram
+        diagram.InitializeFromArrays strains, stresses, 3
+        pointCount = 3
+        expectedCode = vbObjectError + 3113
+        Select Case CStr(scenario)
+            Case "CountTooSmall": pointCount = 1: expectedCode = vbObjectError + 3100
+            Case "MissingStrain": Erase strains
+            Case "MissingStress": Erase stresses
+            Case "ShortStrain": ReDim strains(1 To 2)
+            Case "ShortStress": ReDim stresses(1 To 2)
+            Case "BoundsStrain": ReDim strains(2 To 4)
+            Case "BoundsStress": ReDim stresses(2 To 4)
+            Case "CountBeyondArrays": pointCount = 4
+            Case "Duplicate": strains(1) = strains(2): expectedCode = vbObjectError + 3111
+        End Select
+        prefix = "audit03.diagramArray." & CStr(scenario)
+        actualCode = Audit03CaptureDiagramInitialize(diagram, strains, stresses, pointCount, description)
+        AssertTrue stats, prefix & ".inputError", actualCode = expectedCode
+        AssertTrue stats, prefix & ".reason", Len(description) > 0
+        AssertTrue stats, prefix & ".noPoints", diagram.PointCount = 0
+        AssertTrue stats, prefix & ".notUsable", Audit03CaptureDiagramStress(diagram) = vbObjectError + 3112
+        AppendLine stats, "DIAGRAM_ARRAY_INPUT: case=" & CStr(scenario) & "|error=" & CStr(actualCode) & "|reason=" & description
+        Audit03FillDiagramArrays strains, stresses
+        diagram.InitializeFromArrays strains, stresses, 3
+        AssertClose stats, prefix & ".restoredStress", diagram.GetStress(-0.00075), -7.75, 0.000000000001
+        AssertTrue stats, prefix & ".restoredPoints", diagram.PointCount = 3
+    Next scenario
+    ' Дополнительный индекс 0 допустим, если нужные индексы 1..pointCount есть.
+    ' Он не участвует в диаграмме; не меняем существующий контракт этого входа.
+    Audit03FillDiagramArrays strains, stresses, 0
+    strains(0) = -1#: stresses(0) = -999#
+    diagram.InitializeFromArrays strains, stresses, 3
+    AssertClose stats, "audit03.diagramArray.extraZeroIndex", diagram.GetStress(-0.00075), -7.75, 0.000000000001
+    Exit Sub
+Failed:
+    AssertTrue stats, "audit03.diagramArray.runtime." & CStr(Err.Number) & "." & Err.Description, False
+End Sub
+
+' Создает точки с нужными индексами для одинакового сравнения до/после guards.
+' Порядок точек и численные эталоны не зависят от проверяемого actual-кода.
+Private Sub Audit03FillDiagramArrays(ByRef strains() As Double, ByRef stresses() As Double, _
+        Optional ByVal lowerIndex As Long = 1)
+    ReDim strains(lowerIndex To 3)
+    ReDim stresses(lowerIndex To 3)
+    strains(1) = -0.0035: strains(2) = -0.0015: strains(3) = 0#
+    stresses(1) = -15.5: stresses(2) = -15.5: stresses(3) = 0#
+End Sub
+
+' Перехватывает только ошибку InitializeFromArrays, чтобы не прятать отказ
+' последующей проверки и не переносить Err от предыдущего сценария.
+Private Function Audit03CaptureDiagramInitialize(ByVal diagram As CMaterialDiagram, _
+        ByRef strains() As Double, ByRef stresses() As Double, ByVal pointCount As Long, _
+        ByRef description As String) As Long
+    On Error GoTo ExpectedError
+    description = vbNullString
+    diagram.InitializeFromArrays strains, stresses, pointCount
+    Exit Function
+ExpectedError:
+    Audit03CaptureDiagramInitialize = Err.Number
+    description = Err.Description
+End Function
+
+' Проверяет закрытие расчетного API после неуспешной инициализации.
+' Успех или случайная ошибка индекса вместо EnsureInitialized не принимаются.
+Private Function Audit03CaptureDiagramStress(ByVal diagram As CMaterialDiagram) As Long
+    Dim stress As Double
+    On Error GoTo ExpectedError
+    stress = diagram.GetStress(-0.00075)
+    Exit Function
+ExpectedError:
+    Audit03CaptureDiagramStress = Err.Number
+End Function

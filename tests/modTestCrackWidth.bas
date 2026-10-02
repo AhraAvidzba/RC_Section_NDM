@@ -4,7 +4,7 @@ Option Explicit
 ' ==========================================================================
 ' Регрессионные тесты расчета нормальных трещин
 ' ==========================================================================
-' Тесты проверяют новую SLS-методику CCrackWidthCalculator: выбор расчетной
+' Тесты проверяют SLS-расчет CCrackWidthCalculator: выбор расчетной
 ' растянутой зоны, формулу СП 63 для a_crc, режимы psi_s, центральное
 ' растяжение и writer основного результата. Проверки не меняют CSectionSolver:
 ' расчет трещин использует его как готовый общий решатель равновесия.
@@ -15,6 +15,8 @@ Private Type TCrackTestStats
     Report As String
 End Type
 
+' Выполняет проверки материалов, Formation, подготовки crack data и формулы
+' Width. Возвращает отчет assertions; ошибка setup явно остается runtime error.
 Public Function RunCrackWidthTests() As String
     On Error GoTo Failed
 
@@ -76,7 +78,7 @@ Private Sub TestConcreteTensionBranches(ByRef stats As TCrackTestStats)
     AssertClose stats, "crack.concrete.useTangent", concrete.GetTangentModulus(0.00002), 32500#, 0.000000001
 End Sub
 
-' Проверяет границу новой архитектуры: формульный калькулятор получает только
+' Проверяет формульный API Width: он получает только
 ' готовые числа и не зависит от State-объектов, статусов и выбора арматуры.
 Private Sub TestCrackWidthFormulaCalculatorPure(ByRef stats As TCrackTestStats)
     Dim formula As CCrackWidthCalculator
@@ -109,6 +111,8 @@ Private Sub TestCrackUserPsiMx(ByRef stats As TCrackTestStats)
     AssertTrue stats, "crack.user.sigmaCrcAvailable", crack.SigmaSCrc > 0#
 End Sub
 
+' Для косого изгиба круга проверяет положительные sigma_s и ls и согласованную
+' сборку ширины с заданным пользователем psi_s.
 Private Sub TestCrackUserPsiMxy(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
@@ -119,6 +123,8 @@ Private Sub TestCrackUserPsiMxy(ByRef stats As TCrackTestStats)
     AssertCrackCommon stats, "crack.user.circleMxy", crack
 End Sub
 
+' Передает нестандартные пользовательские phi и psi. Они должны попасть
+' в итоговую формулу, а найденные Pre/Post и sigma_s,crc остаться доступными.
 Private Sub TestCrackUserCoefficients(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
@@ -141,8 +147,8 @@ End Sub
 ' ------------------------------
 ' Зона Abt
 ' ------------------------------
-' FullTension не должен давать меньшую площадь бетона, чем Effective, потому
-' что Effective является ограниченной полосой у растянутой поверхности.
+' Проверяет допустимые короткие aliases режимов расстояния до контура:
+' nearest и global должны нормализоваться в разные канонические режимы.
 Private Sub TestCoverModeNormalization(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
@@ -161,6 +167,8 @@ Private Sub TestCoverModeNormalization(ByRef stats As TCrackTestStats)
     AssertTrue stats, "crack.cover.global.mode", globalCrack.CoverMode = "GlobalExtreme"
 End Sub
 
+' Для одного косого НДС сравнивает ограниченную полосу Effective и всю
+' растянутую зону FullTension; глубина Effective проверяется независимой формулой.
 Private Sub TestEffectiveAndFullTensionZones(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
@@ -182,8 +190,8 @@ End Sub
 ' ------------------------------
 ' Auto-режим psi_s
 ' ------------------------------
-' Режим Auto после непрохождения первой проверки должен найти lambda_crc в пределах текущей нагрузки, решить
-' состояние после образования трещины и получить psi_s по sigma_s,crc.
+' Если первая проверка Width проходит, Auto сохраняет psi_s = 1.
+' Самостоятельный Formation при этом предоставляет свои Pre/Post и sigma_s,crc.
 Private Sub TestAutoPsiSkipsLambdaWhenFirstCheckPasses(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
@@ -199,6 +207,8 @@ Private Sub TestAutoPsiSkipsLambdaWhenFirstCheckPasses(ByRef stats As TCrackTest
     AssertTrue stats, "crack.auto.pass.postCrackState", Not crack.FormationResult.PostCrackState Is Nothing
 End Sub
 
+' Сравнивает Auto и AlwaysCalc при прошедшей первой проверке: только AlwaysCalc
+' должен уточнить psi_s по sigma_s,crc и уменьшить ширину на том же НДС.
 Private Sub TestAlwaysCalcPsiAppliesSigmaCrcWhenAutoPasses(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
@@ -216,7 +226,7 @@ Private Sub TestAlwaysCalcPsiAppliesSigmaCrcWhenAutoPasses(ByRef stats As TCrack
     AssertTrue stats, "crack.alwaysCalc.widthLessThanAuto", alwaysCrack.CrackWidth < autoCrack.CrackWidth
 End Sub
 
-' Новый режим усреднения относится только к sigma_s,crc. Проверяем, что
+' Режим усреднения относится только к sigma_s,crc. Проверяем, что
 ' AllSelected проходит нормализацию и расчет как самостоятельная настройка.
 Private Sub TestSigmaSCrcAveragingModeAllSelected(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
@@ -233,6 +243,8 @@ Private Sub TestSigmaSCrcAveragingModeAllSelected(ByRef stats As TCrackTestStats
     AssertTrue stats, "crack.sigmaCrcMode.allSelected.sigmaCrcAvailable", crack.SigmaSCrc > 0#
 End Sub
 
+' При не прошедшей первой проверке Auto использует найденный PostCrackState
+' для psi_s. Проверяются предел psi_s, роли Pre/Post и растягивающий критерий бетона.
 Private Sub TestAutoPsiAndLambdaAfterFailedFirstCheck(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
@@ -270,13 +282,15 @@ End Sub
 ' Проверяет production-сценарий, где исходное CrackedState при N=0 сначала
 ' находится через CStateSolutionRunner с удобной стартовой плоскостью, а затем
 ' CCrackFormationCalculator ищет PreCrackState/PostCrackState без отдельного
-' пользовательского N. Такой случай раньше был численно чувствителен в capacity.
+' пользовательского N и повторной отдельной реализации равновесия.
 Private Sub TestAutoMcrcPureBendingConverges(ByRef stats As TCrackTestStats)
     CheckAutoMcrcPureBending stats, "crack.auto.pureMx", 0#, -15000000#, 0#
     CheckAutoMcrcPureBending stats, "crack.auto.pureMy", 0#, 0#, -15000000#
     CheckAutoMcrcPureBending stats, "crack.auto.pureMxy", 0#, -12000000#, -9000000#
 End Sub
 
+' Решает заданный чисто изгибный вариант через production-runner и проверяет
+' точку Formation, обе стороны трещинообразования и уменьшение psi_s.
 Private Sub CheckAutoMcrcPureBending(ByRef stats As TCrackTestStats, ByVal prefix As String, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double)
     Dim solver As CSectionSolver
@@ -299,11 +313,6 @@ Private Sub CheckAutoMcrcPureBending(ByRef stats As TCrackTestStats, ByVal prefi
     AssertClose stats, prefix & ".preCrack.epsBtUlt", maxConcreteStrain, 0.00015, 0.000001
 End Sub
 
-' Проверяет опасные для сходимости сочетания, где нулевая стартовая плоскость
-' раньше могла приводить к NumFail: чистый изгиб по каждой оси, косой чистый
-' изгиб, центральное растяжение и чистое сжатие без момента. Тест не проверяет
-' конкретную ширину, а фиксирует главный контракт: служебные НДС трещин идут
-' через общий CStateSolutionRunner и не падают на выборе стартовой плоскости.
 ' Проверяет смысл Mcrc для общей N+M ветки: при одной и той же продольной
 ' силе и направлении изгиба lambda масштабирует только моментный вектор.
 ' Поэтому Mcrc не должен зависеть от того, насколько далеко текущий LC
@@ -341,7 +350,7 @@ Private Sub TestAutoMcrcFixedNIndependentOfMomentMagnitude(ByRef stats As TCrack
 End Sub
 
 ' Проверяет три пользовательских пути поиска образования нормальной трещины.
-' λ*Mxy оставляет старую изгибную схему, λ*N нужен для центрального
+' λ*Mxy сохраняет N постоянной, λ*N нужен для центрального
 ' растяжения, а λ*NMxy масштабирует весь вектор N/Mx/My как единую траекторию.
 Private Sub TestCrackInitiationLoadPaths(ByRef stats As TCrackTestStats)
     Dim sectionMxy As CSectionModel
@@ -409,6 +418,8 @@ Private Sub TestCrackInitiationLoadPaths(ByRef stats As TCrackTestStats)
     AssertCrackCalculatorNotNumFail stats, "crack.path.mxyAxialFallback.status", crackFallback
 End Sub
 
+' Малый момент не достигает критерия до технического MaxLambda. Результат
+' обязан сохранить SEARCH_BOUND_REACHED без фиктивного Post и NumFail у Width.
 Private Sub TestCrackFormationSearchBoundKeepsTechnicalCode(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
@@ -429,6 +440,8 @@ Private Sub TestCrackFormationSearchBoundKeepsTechnicalCode(ByRef stats As TCrac
     AssertCrackCalculatorNotNumFail stats, "crack.searchBound.widthNotNumFail", crack
 End Sub
 
+' Фиксированный малый момент и масштабирование сжимающей N не образуют трещину.
+' Проверяются доказанное недостижение критерия, неприменимость Width и отсутствие Pre/Post.
 Private Sub TestCrackFormationNoCrackDoesNotBuildPostState(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
@@ -449,6 +462,8 @@ Private Sub TestCrackFormationNoCrackDoesNotBuildPostState(ByRef stats As TCrack
     AssertCrackCalculatorNotNumFail stats, "crack.noCrack.notNumFail", crack
 End Sub
 
+' Повторный Formation использует repository без нового LastRunner. Width
+' все равно получает sigma_s,crc и Pre/Post из сохраненных результатов.
 Private Sub TestCrackFormationCacheHitWithoutLastRunner(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
@@ -482,7 +497,7 @@ Private Sub TestCrackFormationCacheHitWithoutLastRunner(ByRef stats As TCrackTes
 End Sub
 
 ' Проверяет, что общий LimitSearch-result хранит собственный снимок diagnostics.
-' Если result будет читать живой CCrackWidthCalculator, последующие Auto-попытки
+' Если result будет читать живой Formation-калькулятор, последующие Auto-попытки
 ' смогут задним числом менять уже сохраненный отчет.
 Private Sub TestLimitSearchResultKeepsCrackDiagnosticSnapshot(ByRef stats As TCrackTestStats)
     Dim crack As CCrackFormationCalculator
@@ -500,6 +515,8 @@ Private Sub TestLimitSearchResultKeepsCrackDiagnosticSnapshot(ByRef stats As TCr
         InStr(1, result.DiagnosticLog, "diagnostic-after", vbTextCompare) = 0
 End Sub
 
+' Проверяет стартовую плоскость чистого и косого изгиба и обоих осевых знаков.
+' Эти конечные нагрузки должны дать Formation либо обоснованное отсутствие трещины.
 Private Sub TestDangerousLoadsDoNotNumFail(ByRef stats As TCrackTestStats)
     CheckDangerousCrackLoad stats, "crack.danger.pureMx", 0#, -15000000#, 0#, True
     CheckDangerousCrackLoad stats, "crack.danger.pureMy", 0#, 0#, -15000000#, True
@@ -508,6 +525,8 @@ Private Sub TestDangerousLoadsDoNotNumFail(ByRef stats As TCrackTestStats)
     CheckDangerousCrackLoad stats, "crack.danger.pureCompression", -100000#, 0#, 0#, False
 End Sub
 
+' Выполняет один вариант через общий runner и проверяет typed Formation-исход.
+' Текст комментария не используется как признак отсутствия численной ошибки.
 Private Sub CheckDangerousCrackLoad(ByRef stats As TCrackTestStats, ByVal prefix As String, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
         ByVal shouldForm As Boolean, Optional ByVal formationPath As String = "lambda*Mxy")
@@ -519,7 +538,9 @@ Private Sub CheckDangerousCrackLoad(ByRef stats As TCrackTestStats, ByVal prefix
     Set crack = CalculateCrack(solver, section, nValue, mxValue, myValue, _
         "Auto", "Effective", allowable:=0.0001, formationPath:=formationPath)
     AssertTrue stats, prefix & ".converged", crack.Converged
-    AssertTrue stats, prefix & ".notNumFail", InStr(1, crack.StopReason, "NumericalFailure", vbTextCompare) = 0
+    AssertTrue stats, prefix & ".formationNotNumFail", _
+        crack.FormationResult.ResultMeta.InternalStatus <> rsNumericalFailure
+    AssertCrackCalculatorNotNumFail stats, prefix & ".notNumFail", crack
     If shouldForm Then
         AssertTrue stats, prefix & ".formed", crack.CrackFormed
         AssertTrue stats, prefix & ".lambda", crack.FormationResult.LambdaCrc > 0# And crack.FormationResult.LambdaCrc <= 1#
@@ -531,6 +552,8 @@ Private Sub CheckDangerousCrackLoad(ByRef stats As TCrackTestStats, ByVal prefix
     End If
 End Sub
 
+' Для целиком растянутого бетона проверяет зависимость предельной деформации
+' Formation от отношения минимальной и максимальной деформаций по формуле 8.54.
 Private Sub TestAutoMcrcOneSignTensionUsesFormula854(ByRef stats As TCrackTestStats)
     Dim solver As CSectionSolver
     Dim section As CSectionModel
@@ -610,6 +633,8 @@ Private Sub TestNoTensionRebar(ByRef stats As TCrackTestStats)
     AssertClose stats, "crack.noTension.width", crack.CrackWidth, 0#, 0.000000000001
 End Sub
 
+' Создает прямоугольную SLS-fixture и решает текущее НДС с отключенным растянутым
+' бетоном. Неподтвержденное равновесие останавливает setup теста, не формулу Width.
 Private Function SolveServiceState(ByRef section As CSectionModel, ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double) As CSectionSolver
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -637,6 +662,8 @@ Private Function SolveServiceState(ByRef section As CSectionModel, ByVal nValue 
     Set SolveServiceState = solver
 End Function
 
+' Создает круг с четырьмя стержнями и решает его текущее SLS-НДС.
+' Возвращает согласованные section и solver; ошибка сходимости явна в setup.
 Private Function SolveCircleServiceState(ByRef section As CSectionModel, ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double) As CSectionSolver
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -704,6 +731,8 @@ Private Function SolveServiceStateWithRunner(ByRef section As CSectionModel, ByV
     Set SolveServiceStateWithRunner = runner.ResultSolver
 End Function
 
+' Однотипный setup равновесия для fixtures: восемь шагов, 80 итераций,
+' компонентные допуски 5 Н и 5000 Н*мм. Units и знаки уже внутренние.
 Private Sub ConfigureTestSolver(ByVal solver As CSectionSolver)
     solver.LoadSteps = 8
     solver.MaxIterations = 80
@@ -712,6 +741,8 @@ Private Sub ConfigureTestSolver(ByVal solver As CSectionSolver)
     solver.ToleranceMy = 5000#
 End Sub
 
+' Передает общему runner тот же фиксированный бюджет и компонентные допуски fixture.
+' Это позволяет сравнивать prepared-State маршрут без изменения расчетной постановки.
 Private Sub ConfigureTestStateRunner(ByVal runner As CStateSolutionRunner)
     runner.LoadSteps = 8
     runner.MaxIterations = 80
@@ -720,6 +751,8 @@ Private Sub ConfigureTestStateRunner(ByVal runner As CStateSolutionRunner)
     runner.ToleranceMy = 5000#
 End Sub
 
+' Настраивает provider для обычного решения и reuse состояний в crack-тестах.
+' Фиксированные допуски во внутренних единицах не зависят от Config.
 Private Sub ConfigureTestStateProvider(ByVal provider As CStateProvider)
     provider.LoadSteps = 8
     provider.MaxIterations = 80
@@ -728,6 +761,9 @@ Private Sub ConfigureTestStateProvider(ByVal provider As CStateProvider)
     provider.ToleranceMy = 5000#
 End Sub
 
+' Выполняет Formation отдельно от Width и передает последнему готовые состояния.
+' Optional provider позволяет проверить reuse; параметры режимов задаются явно,
+' чтобы тест не зависел от текущих пользовательских defaults книги.
 Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As CSectionModel, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
         ByVal psiMode As String, ByVal zoneMode As String, _
@@ -793,6 +829,7 @@ Private Function CalculateCrack(ByVal solver As CSectionSolver, ByVal section As
     Set CalculateCrack = crack
 End Function
 
+' Возвращает SLS spec текущего трещиноватого состояния: растянутый бетон Ignore.
 Private Function TestCrackedStateSpec() As CMaterialModelSpec
     Dim spec As CMaterialModelSpec
     Set spec = New CMaterialModelSpec
@@ -800,6 +837,7 @@ Private Function TestCrackedStateSpec() As CMaterialModelSpec
     Set TestCrackedStateSpec = spec
 End Function
 
+' Возвращает SLS spec Formation с активной трехлинейной растянутой ветвью бетона.
 Private Function TestCrackInitiationSpec() As CMaterialModelSpec
     Dim spec As CMaterialModelSpec
     Set spec = New CMaterialModelSpec
@@ -807,6 +845,8 @@ Private Function TestCrackInitiationSpec() As CMaterialModelSpec
     Set TestCrackInitiationSpec = spec
 End Function
 
+' Однотипные материалные fixtures получают готовые физические диаграммы
+' соответствующей роли от provider, не конструируя отдельную расчетную методику.
 Private Function ProvisionalConcrete() As CMaterialDiagram
     Dim provider As CMaterialModelProvider
     Set provider = TestMaterialProvider()
@@ -825,6 +865,8 @@ Private Function ProvisionalSteel() As CMaterialDiagram
     Set ProvisionalSteel = provider.SteelMaterial(cpCrackedNDS)
 End Function
 
+' Создает воспроизводимые ULS/SLS характеристики бетона и ненапрягаемой арматуры
+' во внутренних единицах; пользовательский Config эти unit-fixtures не меняет.
 Private Function TestMaterialProvider() As CMaterialModelProvider
     Dim steelParameters As CSteelMaterialParameters
     Set steelParameters = New CSteelMaterialParameters
@@ -836,6 +878,8 @@ Private Function TestMaterialProvider() As CMaterialModelProvider
     Set TestMaterialProvider = provider
 End Function
 
+' Задает фиксированные сопротивления и модуль бетонной fixture для независимых
+' численных ожиданий; значения не выдаются за нормативную таблицу марки бетона.
 Private Function TestConcreteParameters() As CConcreteMaterialParameters
     Dim parameters As CConcreteMaterialParameters
     Set parameters = New CConcreteMaterialParameters
@@ -843,6 +887,8 @@ Private Function TestConcreteParameters() As CConcreteMaterialParameters
     Set TestConcreteParameters = parameters
 End Function
 
+' Проверяет общие инварианты сформированной нормальной трещины и вручную
+' собирает ширину из полученных данных. При отказе печатает Formation и Pre-state.
 Private Sub AssertCrackCommon(ByRef stats As TCrackTestStats, ByVal prefix As String, ByVal crack As CCrackWidthCalculator)
     If Not crack.Converged Then
         AppendLine stats, "DIAGNOSTIC: " & prefix & "; width=" & crack.StopReason & _
@@ -878,6 +924,8 @@ Private Sub AssertCrackCalculatorNotNumFail(ByRef stats As TCrackTestStats, _
     AssertTrue stats, name, policy.ExternalStatus(crack.ResultMeta) <> policy.NumFail
 End Sub
 
+' Однотипные assertions увеличивают счетчики и сохраняют конкретный test-ID.
+' Численное сравнение использует переданный абсолютный допуск без его изменения.
 Private Sub AssertTrue(ByRef stats As TCrackTestStats, ByVal name As String, ByVal condition As Boolean)
     If condition Then
         stats.Passed = stats.Passed + 1
@@ -903,6 +951,7 @@ Private Sub AssertClose(ByRef stats As TCrackTestStats, ByVal name As String, By
     End If
 End Sub
 
+' Добавляет одну диагностическую строку в возвращаемый отчет теста.
 Private Sub AppendLine(ByRef stats As TCrackTestStats, ByVal text As String)
     stats.Report = stats.Report & text & vbCrLf
 End Sub
@@ -919,6 +968,8 @@ Private Function MinTest(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinTest = a Else MinTest = b
 End Function
 
+' Независимо вычисляет extrema деформаций бетонных центров по сохраненной
+' плоскости epsilon0 + kappaX*y + kappaY*x, не вызывая solver или Formation.
 Private Sub ConcreteStateStrainBounds(ByVal state As CSectionStateResult, ByVal section As CSectionModel, _
         ByRef minStrain As Double, ByRef maxStrain As Double)
     Dim i As Long

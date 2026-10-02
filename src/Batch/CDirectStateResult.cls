@@ -103,10 +103,14 @@ Public Property Get StateAvailable() As Boolean
     StateAvailable = Not mState Is Nothing
 End Property
 
+' Подтверждает равновесие только при наличии сохраненного State.
+' False при Nothing не означает численную попытку или физический отказ.
 Public Property Get StateConverged() As Boolean
     If Not mState Is Nothing Then StateConverged = mState.Converged
 End Property
 
+' Возвращает использование extension именно конечным State, не промежуточной
+' итерацией. При отсутствии State признак не выставляется.
 Public Property Get ExtensionUsed() As Boolean
     If Not mState Is Nothing Then ExtensionUsed = mState.ExtensionUsed
 End Property

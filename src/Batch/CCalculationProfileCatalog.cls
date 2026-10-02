@@ -14,7 +14,7 @@ Option Explicit
 ' ==========================================================================
 ' Каталог читает вертикальную таблицу rngCalculationProfiles: параметры идут
 ' по строкам, а профили PR1/PR2/... - по столбцам. Код не привязан к четырем
-' профилям: добавление PR5 в будущем не должно менять расчетное ядро.
+' профилям: число профилей определяется таблицей и не зашито в расчетное ядро.
 '
 ' Класс не решает, какие проверки запускать и в каком порядке. Он только
 ' возвращает CCalculationProfile по ProfileId, назначенному сочетанию нагрузок.
@@ -229,11 +229,15 @@ Public Property Get Count() As Long
     Count = mCount
 End Property
 
+' Возвращает стабильный ID профиля по позиции каталога. Неверный индекс
+' является нарушением контракта доступа, а не поводом выбрать другой профиль.
 Public Property Get ProfileId(ByVal index As Long) As String
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3985, "CCalculationProfileCatalog", "Индекс профиля вне диапазона."
     ProfileId = mProfileIds(index)
 End Property
 
+' Возвращает профиль по проверенному индексу, сохраняя его идентичность.
+' Здесь не создается запасной профиль и не меняются настройки материала.
 Public Property Get ProfileAt(ByVal index As Long) As CCalculationProfile
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3986, "CCalculationProfileCatalog", "Индекс профиля вне диапазона."
     Set ProfileAt = mProfiles(index)

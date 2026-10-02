@@ -91,6 +91,8 @@ Public Sub InitializeFromCalculator(ByVal crack As CCrackWidthCalculator, ByVal 
     mDiagnosticLog = crack.DiagnosticLog
 End Sub
 
+' Возвращает копию meta формульного расчета ширины или его блокировки.
+' Чтение результата не пересчитывает ширину и не запускает поиск НДС.
 Public Property Get ResultMeta() As CResultMeta
     Set ResultMeta = mMeta.Clone
 End Property

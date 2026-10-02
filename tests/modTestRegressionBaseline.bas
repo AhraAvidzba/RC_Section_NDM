@@ -211,6 +211,8 @@ Private Function SolveCircleDirect(ByVal diameter As Double, ByVal centerX As Do
     Set SolveCircleDirect = solver
 End Function
 
+' Выполняет отдельный поиск предельного множителя при ненулевом базовом моменте.
+' Возвращает число либо технический маркер baseline; это не display-статус книги.
 Private Function CalculateLambdaText(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
         ByVal nValue As Double, ByVal mxBase As Double, ByVal myBase As Double) As String
     If Sqr(mxBase * mxBase + myBase * myBase) <= 0.000000001 Then
@@ -229,6 +231,7 @@ Private Function CalculateLambdaText(ByVal mesh As CFiberMeshBuilder, ByVal reba
     End If
 End Function
 
+' Фиксирует численные ограничения baseline независимо от сохраненного Config.
 Private Sub ConfigureBaselineSolver(ByVal solver As CSectionSolver)
     solver.LoadSteps = 1
     solver.MaxIterations = 60
@@ -240,6 +243,7 @@ Private Sub ConfigureBaselineSolver(ByVal solver As CSectionSolver)
     solver.MaxDeltaKappa = 0.00001
 End Sub
 
+' Применяет неизменные bounds/tolerances и физические пределы контрольной Capacity-задачи.
 Private Sub ConfigureBaselineCapacity(ByVal cap As CCapacitySolver)
     cap.InitialLambdaStep = 1#
     cap.MaxLambda = 64#
@@ -251,6 +255,7 @@ Private Sub ConfigureBaselineCapacity(ByVal cap As CCapacitySolver)
     cap.SteelStrainLimit = 0.025
 End Sub
 
+' Материалы этого baseline построены по фиксированным физическим точкам, без extension.
 Private Function ProvisionalConcrete() As CMaterialDiagram
     Dim concrete As CMaterialDiagram
     Set concrete = New CMaterialDiagram
@@ -265,6 +270,7 @@ Private Function ProvisionalSteel() As CMaterialDiagram
     Set ProvisionalSteel = steel
 End Function
 
+' Проверяет три компоненты усилий с раздельными силовым/моментными допусками.
 Private Sub AssertEquilibrium(ByRef stats As TRegressionStats, ByVal prefix As String, _
         ByVal solver As CSectionSolver, ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double)
     AssertLoadComponent stats, prefix & ".N", solver.Nint, nValue, 2#, 0.00001
@@ -272,6 +278,7 @@ Private Sub AssertEquilibrium(ByRef stats As TRegressionStats, ByVal prefix As S
     AssertLoadComponent stats, prefix & ".My", solver.Myint, myValue, 2000#, 0.00001
 End Sub
 
+' Около нуля использует абсолютный допуск компоненты, иначе - относительный.
 Private Sub AssertLoadComponent(ByRef stats As TRegressionStats, ByVal name As String, _
         ByVal actual As Double, ByVal expected As Double, ByVal zeroTolerance As Double, _
         ByVal relTolerance As Double)
@@ -282,6 +289,7 @@ Private Sub AssertLoadComponent(ByRef stats As TRegressionStats, ByVal name As S
     End If
 End Sub
 
+' Assertions ниже сохраняют результат каждой проверки, не прерывая остальные кейсы.
 Private Sub AssertTrue(ByRef stats As TRegressionStats, ByVal name As String, ByVal condition As Boolean)
     If condition Then
         stats.Passed = stats.Passed + 1
@@ -292,6 +300,7 @@ Private Sub AssertTrue(ByRef stats As TRegressionStats, ByVal name As String, By
     End If
 End Sub
 
+' Записывает абсолютную разницу и исходные числа, чтобы отказ можно было перепроверить.
 Private Sub AssertClose(ByRef stats As TRegressionStats, ByVal name As String, ByVal actual As Double, _
         ByVal expected As Double, ByVal tolerance As Double)
     Dim diff As Double
@@ -307,6 +316,7 @@ Private Sub AssertClose(ByRef stats As TRegressionStats, ByVal name As String, B
     End If
 End Sub
 
+' Сравнивает относительную разницу; при практически нулевом эталоне не делит на него.
 Private Sub AssertRelative(ByRef stats As TRegressionStats, ByVal name As String, ByVal actual As Double, _
         ByVal expected As Double, ByVal relTolerance As Double)
     Dim relDiff As Double
@@ -327,6 +337,8 @@ Private Sub AssertRelative(ByRef stats As TRegressionStats, ByVal name As String
     End If
 End Sub
 
+' Сохраняет плоскость, усилия, невязки, счетчики и время одним именованным протоколом.
+' Текст lambda передан отдельно: отсутствующая/неуспешная точка не заменяется нулем.
 Private Sub AppendBaseline(ByRef stats As TRegressionStats, ByVal caseName As String, _
         ByVal solver As CSectionSolver, ByVal lambdaText As String, ByVal elapsedSeconds As Double, _
         ByVal fiberCount As Long, ByVal rebarCount As Long)
@@ -348,6 +360,7 @@ Private Sub AppendBaseline(ByRef stats As TRegressionStats, ByVal caseName As St
         "|rebars=" & CStr(rebarCount)
 End Sub
 
+' Однотипные helpers протокола задают устойчивые Boolean/числовые подписи и перевод строки.
 Private Function BoolText(ByVal value As Boolean) As String
     If value Then
         BoolText = "True"

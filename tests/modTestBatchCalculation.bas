@@ -214,6 +214,7 @@ Public Function RunBatchCalculationTests() As String
     TestAudit02InitialOffsetOnOffStatuses stats
     TestAudit03ResultLifecycle stats
     TestAudit03LoadPathComments stats
+    TestAudit03CommentComposition stats
     AppendLine stats, "RUN: TestAudit03PublishedResults"
     TestAudit03PublishedResults stats
 
@@ -482,6 +483,8 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
+' Проверяет одну стратегию осевой несущей при N=-200 tf пользователя (+N=Compression).
+' Batch получает внутреннее растяжение и бетонный центр; силовой путь должен выбрать LoadMultiplier.
 Private Sub CheckBatchRectSetN200CapacitySolutionStrategy(ByRef stats As TBatchTestStats, ByVal methodName As String)
     SetSystemSetting "Capacity.SolutionStrategy", methodName
 
@@ -1909,6 +1912,8 @@ Private Sub TestAxialTensionReferenceAndEccentricity(ByRef stats As TBatchTestSt
         RectangleRebars(RoundedRectangleGeometry(360#, 240#)), 30#, 0.00000001
 End Sub
 
+' Прикладывает сжатие через бетонный центр симметричного fixture и проверяет нулевые кривизны.
+' Перенос усилий делает обычный CSectionLoadState, поэтому проверяется и точка нагрузки.
 Private Sub CheckPureCompressionReference(ByRef stats As TBatchTestStats, ByVal caseName As String, _
         ByVal geom As ISectionGeometry, ByVal rebars As CRebarLayout, ByVal meshStep As Double, ByVal tolerance As Double)
     Dim mesh As CFiberMeshBuilder
@@ -1942,7 +1947,7 @@ Private Sub CheckPureCompressionReference(ByRef stats As TBatchTestStats, ByVal 
     AssertClose stats, "batch.reference." & caseName & ".kappaY", solver.KappaY, 0#, tolerance
 End Sub
 
-' Проверяет, что для несимметричного Г-сечения новый reference point берется
+' Проверяет, что для несимметричного Г-сечения reference point берется
 ' от бетонной части. Это важнее, чем требовать нулевую кривизну: при
 ' несимметричной арматуре бетонный и приведенный центры могут не совпадать.
 Private Sub CheckRectSetReferenceUsesConcreteCentroid(ByRef stats As TBatchTestStats)
@@ -1967,6 +1972,8 @@ Private Sub CheckRectSetReferenceUsesConcreteCentroid(ByRef stats As TBatchTestS
         Abs(concreteX - transformedX) > 0.000001 Or Abs(concreteY - transformedY) > 0.000001
 End Sub
 
+' Сравнивает центральное и эксцентричное растяжение одной симметричной модели.
+' Ожидает нулевые кривизны в центре и ненулевой изгиб после заданного смещения силы.
 Private Sub CheckPureTensionReference(ByRef stats As TBatchTestStats, ByVal caseName As String, _
         ByVal geom As ISectionGeometry, ByVal rebars As CRebarLayout, ByVal meshStep As Double, ByVal tolerance As Double, _
         Optional ByVal eccentricOffsetX As Double = -25#, Optional ByVal eccentricOffsetY As Double = 40#)
@@ -4063,6 +4070,8 @@ Private Sub AssertBatchSummaryReservesMatchDetailed(ByRef stats As TBatchTestSta
     End If
 End Sub
 
+' Ищет LC по его ID в компактной сводке, сохраняя пропуски исходных строк.
+' Возвращает ноль, если writer не вывел нужное сочетание в проверяемой области.
 Private Function SummaryRowByCombination(ByVal resultsSheet As Object, ByVal combinationID As String) As Long
     Dim anchorRow As Long
     anchorRow = BatchSummaryStartRow()
@@ -4075,6 +4084,8 @@ Private Function SummaryRowByCombination(ByVal resultsSheet As Object, ByVal com
     Next rowIndex
 End Function
 
+' Ищет ID в выбранном подробном output-блоке независимо от номера строки LC.
+' Соседние блоки не используются как источник нужного результата.
 Private Function DetailedRowByCombination(ByVal resultsSheet As Object, ByVal anchorName As String, _
         ByVal combinationID As String) As Long
     Dim anchor As Object
@@ -4171,6 +4182,8 @@ Private Sub AssertWorstSummaryColumnMatchesData(ByRef stats As TBatchTestStats, 
     End If
 End Sub
 
+' Сверяет запас compact/detail: обе пустые ячейки допустимы для неприменимой проверки.
+' Численный результат только в одном блоке считается несогласованным выводом.
 Private Sub AssertOptionalReserve(ByRef stats As TBatchTestStats, ByVal name As String, _
         ByVal summaryValue As Variant, ByVal detailedValue As Variant)
     Dim hasSummary As Boolean
@@ -4308,6 +4321,8 @@ Private Function BuildUserRectSetTensionBatch(ByRef referenceX As Double, ByRef 
     Set BuildUserRectSetTensionBatch = batch
 End Function
 
+' Создает арматуру воспроизводимого RectSet из принятого пользовательского примера.
+' Все четыре грани используют обычный builder, дополнительные ряды отключены.
 Private Function UserRectSetTensionRebars() As CRebarLayout
     Dim builder As CRectSetRebarLayoutBuilder
     Set builder = New CRectSetRebarLayoutBuilder
@@ -4319,11 +4334,15 @@ Private Function UserRectSetTensionRebars() As CRebarLayout
         "A400")
 End Function
 
+' Формирует полный набор параметров грани: два первых ряда и пустые дополнительные.
+' Количество меняется входами, а отступы и диаметр 32 мм фиксированы для fixture.
 Private Function RectSetFaceSettingsForTest(ByVal count1 As Long, ByVal count2 As Long) As Variant
     RectSetFaceSettingsForTest = Array(40#, 40#, 32#, 32#, count1, count2, 80#, 80#, 80#, 80#, _
         0#, 0#, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
 End Function
 
+' Читает значение fixture по ключу, чтобы восстановить его после теста.
+' Отсутствующий ключ является ошибкой постановки, а не пустым default.
 Private Function GetSystemSetting(ByVal key As String) As String
     Dim settings As Object
     Set settings = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
@@ -4337,6 +4356,8 @@ Private Function GetSystemSetting(ByVal key As String) As String
     Err.Raise vbObjectError + 3930, "modTestBatchCalculation", "System setting not found: " & key
 End Function
 
+' Меняет существующую настройку fixture; новый ключ не добавляется в таблицу.
+' Рабочие пользовательские данные защищены запуском suites на отдельной книге.
 Private Sub SetSystemSetting(ByVal key As String, ByVal value As String)
     Dim settings As Object
     Set settings = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
@@ -5176,6 +5197,7 @@ Private Function SP35InterpolationTable() As Variant
     SP35InterpolationTable = tableData
 End Function
 
+' Возвращает фиксированную физическую диаграмму арматуры без расширения.
 Private Function ProvisionalSteel() As CMaterialDiagram
     Dim steel As CMaterialDiagram
     Set steel = New CMaterialDiagram
@@ -5183,6 +5205,8 @@ Private Function ProvisionalSteel() As CMaterialDiagram
     Set ProvisionalSteel = steel
 End Function
 
+' Группа assertions сохраняет счет и фактическое условие каждого контрольного случая.
+' Численные допуски ниже передаются тестом, а не подбираются под текущий результат.
 Private Sub AssertTrue(ByRef stats As TBatchTestStats, ByVal name As String, ByVal condition As Boolean)
     If condition Then
         stats.Passed = stats.Passed + 1
@@ -5204,6 +5228,7 @@ Private Sub AssertEquals(ByRef stats As TBatchTestStats, ByVal name As String, _
     End If
 End Sub
 
+' Проверяет абсолютное отклонение и записывает обе сравниваемые величины.
 Private Sub AssertClose(ByRef stats As TBatchTestStats, ByVal name As String, ByVal actual As Double, _
         ByVal expected As Double, ByVal tolerance As Double)
     If Abs(actual - expected) <= tolerance Then
@@ -5217,6 +5242,7 @@ Private Sub AssertClose(ByRef stats As TBatchTestStats, ByVal name As String, By
     End If
 End Sub
 
+' Дополняет протокол; числовые поля ниже форматируются одинаково при любой локали.
 Private Sub AppendLine(ByRef stats As TBatchTestStats, ByVal text As String)
     stats.Report = stats.Report & text & vbCrLf
 End Sub
@@ -6129,8 +6155,13 @@ Private Sub Audit03CheckResultComments(ByRef stats As TBatchTestStats, ByVal bat
     Audit03CheckMetaComment stats, prefix & ".capacity", result.CapacityMeta, result.StrengthMeta
     Audit03CheckMetaComment stats, prefix & ".formation", result.CrackFormationMeta, result.CrackSummaryMeta
     Audit03CheckMetaComment stats, prefix & ".current", result.CrackCurrentStateMeta, result.CrackSummaryMeta
-    Audit03CheckMetaComment stats, prefix & ".width", result.CrackWidthMeta, result.CrackSummaryMeta
-    Audit03CheckMetaComment stats, prefix & ".longitudinal", result.LongitudinalCrackMeta, result.CrackSummaryMeta
+    Dim independentOccurrences As Long
+    independentOccurrences = 1 + Audit03TextOccurrences(result.CrackFormationMeta.ResultComment, _
+        result.CrackCurrentStateMeta.ResultComment)
+    Audit03CheckMetaComment stats, prefix & ".width", result.CrackWidthMeta, result.CrackSummaryMeta, _
+        result.CrackCurrentStateMeta.ResultComment, independentOccurrences
+    Audit03CheckMetaComment stats, prefix & ".longitudinal", result.LongitudinalCrackMeta, result.CrackSummaryMeta, _
+        result.CrackCurrentStateMeta.ResultComment, independentOccurrences
     Audit03CheckMetaComment stats, prefix & ".stability", result.StabilityMeta, result.OverallMeta
     If result.CrackWidthMeta.InternalStatus = rsBlockedByDependency Then
         If Audit03RequiresComment(result.CrackCurrentStateMeta) Then
@@ -6187,16 +6218,20 @@ Private Sub Audit03CheckResultComments(ByRef stats As TBatchTestStats, ByVal bat
         "|batch=" & result.OverallMeta.ResultComment
 End Sub
 
-' Проверяет наличие осмысленной русской причины каждого problem/warning,
-' отсутствие поврежденных символов и сохранность причины в своем subtree.
-' Успех/неприменимость также записываются в лог для содержательной ревизии.
+' Проверяет читаемость каждого непустого комментария, в том числе успешного.
+' Для отказа/warning дополнительно требует причину и ее сохранность в своем
+' subtree. Машинные коды не должны подменять пользовательское объяснение.
 Private Sub Audit03CheckMetaComment(ByRef stats As TBatchTestStats, ByVal prefix As String, _
-        ByVal meta As CResultMeta, ByVal aggregate As CResultMeta)
+        ByVal meta As CResultMeta, ByVal aggregate As CResultMeta, _
+        Optional ByVal sharedDependencyReason As String = vbNullString, _
+        Optional ByVal independentReasonOccurrences As Long = 1)
     AppendLine stats, "META: " & prefix & "|status=" & ResultInternalStatusToText(meta.InternalStatus) & _
         "|code=" & ResultCodeToText(meta.ResultCode) & "|applies=" & CStr(meta.Applies) & _
         "|calculated=" & CStr(meta.Calculated) & "|comment=" & meta.ResultComment
-    If Not Audit03RequiresComment(meta) Then Exit Sub
-    AssertTrue stats, prefix & ".reasonPresent", Len(Trim$(meta.ResultComment)) > 0
+    Dim requiresComment As Boolean
+    requiresComment = Audit03RequiresComment(meta)
+    If requiresComment Then AssertTrue stats, prefix & ".reasonPresent", Len(Trim$(meta.ResultComment)) > 0
+    If Len(Trim$(meta.ResultComment)) = 0 Then Exit Sub
     Dim i As Long, hasRussian As Boolean, charCode As Long
     For i = 1 To Len(meta.ResultComment)
         charCode = AscW(Mid$(meta.ResultComment, i, 1))
@@ -6205,7 +6240,26 @@ Private Sub Audit03CheckMetaComment(ByRef stats As TBatchTestStats, ByVal prefix
     AssertTrue stats, prefix & ".russianReason", hasRussian
     AssertTrue stats, prefix & ".readable", InStr(1, meta.ResultComment, "..") = 0 And _
         InStr(1, meta.ResultComment, "?") = 0 And InStr(1, meta.ResultComment, "SP35-mixed") = 0
-    AssertTrue stats, prefix & ".ownSubtree", InStr(1, aggregate.ResultComment, meta.ResultComment, vbBinaryCompare) > 0
+    Dim machinePrefix As Variant, hasMachinePrefix As Boolean
+    For Each machinePrefix In Array("NumericalFailure:", "InvalidInput:", "InvalidConfiguration:", "InternalError:", "InputError:")
+        If StrComp(Left$(Trim$(meta.ResultComment), Len(CStr(machinePrefix))), CStr(machinePrefix), vbTextCompare) = 0 Then _
+            hasMachinePrefix = True
+    Next machinePrefix
+    AssertTrue stats, prefix & ".noMachinePrefix", Not hasMachinePrefix
+    If Not requiresComment Then Exit Sub
+    Dim dependencyAt As Long, ownExplanation As String
+    If meta.InternalStatus = rsBlockedByDependency And Len(sharedDependencyReason) > 0 Then _
+        dependencyAt = InStr(1, meta.ResultComment, sharedDependencyReason, vbBinaryCompare)
+    If dependencyAt > 0 Then
+        ownExplanation = Trim$(Left$(meta.ResultComment, dependencyAt - 1))
+        AssertTrue stats, prefix & ".ownSubtree", InStr(1, aggregate.ResultComment, ownExplanation, vbBinaryCompare) > 0
+        ' Formation и Current могут независимо иметь одинаковое пояснение.
+        ' Сохраняем оба этапа, но не добавляем повтор через blocked-потребителей.
+        AssertTrue stats, prefix & ".dependencyOncePerIndependentStage", _
+            Audit03TextOccurrences(aggregate.ResultComment, sharedDependencyReason) = independentReasonOccurrences
+    Else
+        AssertTrue stats, prefix & ".ownSubtree", InStr(1, aggregate.ResultComment, meta.ResultComment, vbBinaryCompare) > 0
+    End If
 End Sub
 
 ' Задает только ожидание обязательной причины; не подменяет production-policy
@@ -6671,7 +6725,15 @@ Private Sub Audit03CheckMatrixStates(ByRef stats As TBatchTestStats, ByVal resul
         If Audit03RequiresComment(meta) Then AssertTrue stats, prefix & ".reportComment." & CStr(meta.ResultKind), _
             InStr(1, reportText, meta.ResultComment, vbBinaryCompare) > 0
     Next comment
-    If result.CrackResult.Width.ResultMeta.Calculated Then
+    Dim width As CCrackWidthResult
+    Set width = result.CrackResult.Width
+    AppendLine stats, "MATRIX_CRACK_DATA: " & prefix & "|calculated=" & CStr(width.ResultMeta.Calculated) & _
+        "|sigmaS=" & FormatNumberInvariant(width.SigmaS) & "|sigmaSCrc=" & FormatNumberInvariant(width.SigmaSCrc) & _
+        "|psi=" & FormatNumberInvariant(width.PsiS) & "|Abt=" & FormatNumberInvariant(width.Abt) & _
+        "|As=" & FormatNumberInvariant(width.AsTension) & "|ds=" & FormatNumberInvariant(width.DsEquivalent) & _
+        "|ls=" & FormatNumberInvariant(width.CrackSpacing) & "|acrc=" & FormatNumberInvariant(width.CrackWidth) & _
+        "|bars=" & width.TensionRebarIds
+    If width.ResultMeta.Calculated Then
         AssertTrue stats, prefix & ".psiUpperBound", result.CrackResult.Width.PsiS <= 1#
         AssertTrue stats, prefix & ".widthNonnegative", result.CrackResult.Width.CrackWidth >= 0#
     End If
@@ -6813,4 +6875,237 @@ Private Sub Audit03CheckWriterPalette(ByRef stats As TBatchTestStats, ByVal rows
                 StatusCellHasExpectedFill(anchor.Worksheet, anchor.Row + rowIndex, anchor.Column + 27)
         Next rowIndex
     End If
+End Sub
+
+' ======================================================================
+' ДЛЯ ТЕСТОВ: AUDIT03 RESULT COMMENT COMPOSITION
+' ======================================================================
+' Проверяет сборку готовых typed leaf без запуска НДС и без изменения статусов.
+' Тот же тест на baseline должен обнаружить повтор причины зависимости.
+Public Function RunAudit03CommentCompositionTests() As String
+    On Error GoTo Failed
+    Dim stats As TBatchTestStats
+    TestAudit03CommentComposition stats
+    AppendLine stats, "TOTAL_AUDIT03_COMMENT_COMPOSITION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03CommentCompositionTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03CommentCompositionTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' Причина текущего НДС представлена один раз в aggregate, но полностью
+' сохранена в Width/Longitudinal leaf. Отдельная причина не должна удаляться.
+Private Sub TestAudit03CommentComposition(ByRef stats As TBatchTestStats)
+    Dim current As CResultMeta, widthMeta As CResultMeta, longitudinalMeta As CResultMeta
+    Dim width As CCrackWidthResult, longitudinal As CLongitudinalCrackResult, result As CCrackResult
+    Dim status As EResultInternalStatus, code As EResultCode, i As Long, prefix As String
+    Dim reason As String, comment As String
+    reason = "Равновесие текущего НДС не найдено: причина направленного теста."
+    For i = 1 To 4
+        Select Case i
+            Case 1: status = rsNumericalFailure: code = rcNumericalFailure
+            Case 2: status = rsInvalidInput: code = rcInvalidInput
+            Case 3: status = rsInvalidConfiguration: code = rcInvalidConfiguration
+            Case 4: status = rsInternalError: code = rcInternalError
+        End Select
+        prefix = "audit03.commentComposition." & CStr(i)
+        Set current = New CResultMeta
+        current.SetResult status, code, rkDirectState, reason
+        Set widthMeta = New CResultMeta
+        widthMeta.SetBlockedByDependency rkCrackWidth, "CurrentCrackedState", reason
+        Set longitudinalMeta = New CResultMeta
+        longitudinalMeta.SetBlockedByDependency rkLongitudinalCrack, "CurrentCrackedState", reason
+        Set width = New CCrackWidthResult
+        width.InitializeFromCalculator Nothing, widthMeta
+        Set longitudinal = New CLongitudinalCrackResult
+        longitudinal.Initialize longitudinalMeta, 0#, 0#, 0#
+        Set result = New CCrackResult
+        result.Initialize Nothing, current, width, longitudinal
+        comment = result.ResultMeta.ResultComment
+        AppendLine stats, "COMMENT_COMPOSITION: " & prefix & "|comment=" & comment
+        AssertTrue stats, prefix & ".reasonOnce", Audit03TextOccurrences(comment, reason) = 1
+        AssertTrue stats, prefix & ".widthMentioned", InStr(1, comment, "Ширина трещин: Расчет не выполнен:", vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".longitudinalMentioned", InStr(1, comment, "Продольные трещины: Расчет не выполнен:", vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".currentStatus", result.ResultMeta.InternalStatus = status
+        AssertTrue stats, prefix & ".currentCode", result.ResultMeta.ResultCode = code
+        AssertEquals stats, prefix & ".widthLeafUnchanged", width.ResultMeta.ResultComment, widthMeta.ResultComment
+        AssertEquals stats, prefix & ".longitudinalLeafUnchanged", longitudinal.ResultMeta.ResultComment, longitudinalMeta.ResultComment
+
+        longitudinalMeta.SetBlockedByDependency rkLongitudinalCrack, "CurrentCrackedState", "Отдельная причина другой зависимости."
+        longitudinal.Initialize longitudinalMeta, 0#, 0#, 0#
+        result.Initialize Nothing, current, width, longitudinal
+        AssertTrue stats, prefix & ".differentReasonKept", _
+            InStr(1, result.ResultMeta.ResultComment, "Отдельная причина другой зависимости.", vbBinaryCompare) > 0
+    Next i
+End Sub
+
+' Считает точные вхождения известной причины только для assertions читаемости.
+' Ни internal status, ни machine code не определяются по тексту.
+Private Function Audit03TextOccurrences(ByVal text As String, ByVal fragment As String) As Long
+    If Len(fragment) = 0 Then Exit Function
+    Audit03TextOccurrences = (Len(text) - Len(Replace$(text, fragment, vbNullString, 1, -1, vbBinaryCompare))) / Len(fragment)
+End Function
+
+' ====================== ДЛЯ ТЕСТОВ: AUDIT03 EXTENDED OVERLOAD EQUILIBRIUM ======================
+
+' Проверяет перегрузки одной формы с известным равновесием внутри технических
+' ветвей. Нагрузки получаются интегрированием заданной плоскости, но solve
+' начинает с собственного cold-start без передачи этой плоскости/solver-а.
+Public Function RunAudit03ExtendedOverloadEquilibriumTests(ByVal shapeName As String) As String
+    On Error GoTo Failed
+    Dim stats As TBatchTestStats, section As CSectionModel
+    Set section = Audit03LoadMatrixSection(shapeName)
+    Dim method As Variant, role As Variant, magnitude As Variant, mode As Long, cases As Long
+    For Each method In Array("Newton", "Secant")
+        For Each role In Array(cpStrength, cpCrackedNDS)
+            For Each magnitude In Array(0.05, 0.5, 5#, 9.5)
+                For mode = 1 To 3
+                    Audit03KnownExtendedStateCase stats, section, shapeName, CStr(method), _
+                        CLng(role), CDbl(magnitude), mode
+                    cases = cases + 1
+                Next mode
+            Next magnitude
+        Next role
+    Next method
+    Audit03BeyondExtensionEndpointCases stats, section, shapeName
+    AppendLine stats, "TOTAL_AUDIT03_EXTENDED_OVERLOAD: shape=" & shapeName & "; knownStates=" & CStr(cases) & _
+        "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03ExtendedOverloadEquilibriumTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03ExtendedOverloadEquilibriumTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' Создает спецификацию текущего strength/cracked state, не Formation/Capacity.
+' Physical и equilibrium diagrams проверяются отдельно, без изменения eps_ult.
+Private Function Audit03OverloadSpec(ByVal role As ECalculationPurpose) As CMaterialModelSpec
+    Dim spec As CMaterialModelSpec
+    Set spec = New CMaterialModelSpec
+    If role = cpStrength Then
+        spec.Initialize "ULS(I)", "ThreeLine", "Ignore", "TwoLine"
+    Else
+        spec.Initialize "SLS(II)", "TwoLine", "Ignore", "TwoLine"
+    End If
+    Set Audit03OverloadSpec = spec
+End Function
+
+' Настраивает общий provider обычным бюджетом 80 итераций и разрешенными
+' retries. Допуски фиксированы во внутренних единицах, а не увеличены по нагрузке.
+Private Function Audit03OverloadStateProvider(ByVal section As CSectionModel, _
+        ByVal materials As CMaterialModelProvider, ByVal method As String) As CStateProvider
+    Dim provider As CStateProvider
+    Set provider = New CStateProvider
+    provider.Initialize section, materials
+    provider.SolverMethod = method
+    provider.LoadSteps = 1
+    provider.MaxIterations = 80
+    provider.ToleranceN = 1#
+    provider.ToleranceMx = 1000#
+    provider.ToleranceMy = 1000#
+    Set Audit03OverloadStateProvider = provider
+End Function
+
+' Нормирует наклон по фактическим координатам волокон и стержней. Известная
+' косая плоскость не выходит за |epsilon| <= magnitude даже у смещенной формы.
+Private Sub Audit03OverloadPlane(ByVal section As CSectionModel, ByVal magnitude As Double, _
+        ByVal mode As Long, ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
+    eps0 = 0#: kx = 0#: ky = 0#
+    If mode = 1 Then eps0 = -magnitude: Exit Sub
+    If mode = 2 Then eps0 = magnitude: Exit Sub
+    Dim cx As Double, cy As Double, spanX As Double, spanY As Double, i As Long
+    CalculateConcreteSectionCentroid section, cx, cy
+    For i = 1 To section.ConcreteCount
+        If Abs(section.ConcreteX(i) - cx) > spanX Then spanX = Abs(section.ConcreteX(i) - cx)
+        If Abs(section.ConcreteY(i) - cy) > spanY Then spanY = Abs(section.ConcreteY(i) - cy)
+    Next i
+    For i = 1 To section.RebarCount
+        If Abs(section.RebarX(i) - cx) > spanX Then spanX = Abs(section.RebarX(i) - cx)
+        If Abs(section.RebarY(i) - cy) > spanY Then spanY = Abs(section.RebarY(i) - cy)
+    Next i
+    kx = 0.6 * magnitude / spanY
+    ky = 0.4 * magnitude / spanX
+    eps0 = -kx * cy - ky * cx
+End Sub
+
+' Проверяет известный feasible overload и typed physical FAIL после найденного
+' равновесия. Повтор с Off на осевом overload должен остаться численным отказом,
+' а не получить фиктивную physical solution. Ни одна стартовая плоскость не передается.
+Private Sub Audit03KnownExtendedStateCase(ByRef stats As TBatchTestStats, ByVal section As CSectionModel, _
+        ByVal shapeName As String, ByVal method As String, ByVal role As ECalculationPurpose, _
+        ByVal magnitude As Double, ByVal mode As Long)
+    Dim prefix As String
+    prefix = "audit03.extended." & shapeName & "." & method & "." & CStr(role) & "." & CStr(magnitude) & "." & CStr(mode)
+    Dim materials As CMaterialModelProvider, spec As CMaterialModelSpec
+    Set materials = TestMaterialProvider(True)
+    Set spec = Audit03OverloadSpec(role)
+    Dim concrete As CMaterialDiagram, steel As CMaterialDiagram
+    Set concrete = materials.ConcreteMaterialForEquilibriumFromSpec(spec)
+    Set steel = materials.SteelMaterialForEquilibriumFromSpec(spec)
+    AssertClose stats, prefix & ".technicalCompressionEndpoint", concrete.PointStrain(1), -10#, 0#
+    AssertClose stats, prefix & ".technicalSteelEndpoint", steel.PointStrain(steel.PointCount), 10#, 0#
+    Dim eps0 As Double, kx As Double, ky As Double
+    Audit03OverloadPlane section, magnitude, mode, eps0, kx, ky
+    Dim oracle As CSectionSolver
+    Set oracle = New CSectionSolver
+    oracle.EvaluateStrainPlane section, concrete, steel, eps0, kx, ky
+    Dim request As CStateRequest, stateType As ESectionStateType
+    If role = cpStrength Then stateType = sstStrengthState Else stateType = sstCrackedState
+    Set request = New CStateRequest
+    request.Initialize stateType, role, spec, oracle.Nint, oracle.Mxint, oracle.Myint, True, True
+    Dim provider As CStateProvider, state As CSectionStateResult, policy As CResultStatusPolicy
+    Set provider = Audit03OverloadStateProvider(section, materials, method)
+    Set state = provider.GetOrSolve(request)
+    Set policy = New CResultStatusPolicy
+    AppendLine stats, "EXTENDED_OVERLOAD: " & prefix & "|N=" & FormatNumberInvariant(oracle.Nint) & _
+        "|Mx=" & FormatNumberInvariant(oracle.Mxint) & "|My=" & FormatNumberInvariant(oracle.Myint) & _
+        "|converged=" & CStr(state.Converged) & "|status=" & ResultInternalStatusToText(state.InternalStatus) & _
+        "|code=" & ResultCodeToText(state.ResultCode) & "|extension=" & CStr(state.ExtensionUsed) & _
+        "|physical=" & CStr(state.WithinPhysicalRange) & "|solves=" & CStr(state.SolverCallCount) & _
+        "|concreteMin=" & FormatNumberInvariant(state.MinConcreteStrain) & "|concreteMax=" & FormatNumberInvariant(state.MaxConcreteStrain) & _
+        "|steelMin=" & FormatNumberInvariant(state.MinSteelStrain) & "|steelMax=" & FormatNumberInvariant(state.MaxSteelStrain) & _
+        "|comment=" & state.ResultComment
+    AssertTrue stats, prefix & ".equilibrium", state.Converged
+    If Not state.Converged Then AppendLine stats, "EXTENDED_FAILURE_DIAGNOSTIC: " & prefix & vbCrLf & state.DiagnosticLog
+    If state.Converged Then
+        AssertClose stats, prefix & ".rN", state.ResidualN, 0#, 1#
+        AssertClose stats, prefix & ".rMx", state.ResidualMx, 0#, 1000#
+        AssertClose stats, prefix & ".rMy", state.ResidualMy, 0#, 1000#
+        AssertTrue stats, prefix & ".extensionUsed", state.ExtensionUsed
+        AssertTrue stats, prefix & ".insideTechnicalEndpoints", state.MinConcreteStrain >= -10# And _
+            state.MaxConcreteStrain <= 10# And state.MinSteelStrain >= -10# And state.MaxSteelStrain <= 10#
+        AssertTrue stats, prefix & ".physicalFail", Not state.WithinPhysicalRange And state.InternalStatus = rsCheckFailed
+        AssertTrue stats, prefix & ".displayFail", policy.ExternalStatus(state.ResultMeta) = policy.Fail
+    End If
+    If mode <= 2 And magnitude = 0.5 Then
+        Set materials = TestMaterialProvider(False)
+        Set provider = Audit03OverloadStateProvider(section, materials, method)
+        request.Initialize stateType, role, spec, oracle.Nint, oracle.Mxint, oracle.Myint, False, True
+        Set state = provider.GetOrSolve(request)
+        AssertTrue stats, prefix & ".offNoEquilibrium", Not state.Converged
+        AssertTrue stats, prefix & ".offNumericalCause", state.InternalStatus = rsNumericalFailure
+    End If
+End Sub
+
+' Нагрузка выше интегрального максимума технических диаграмм не имеет
+' равновесия даже при On. Это отдельная граница от физических eps_ult.
+Private Sub Audit03BeyondExtensionEndpointCases(ByRef stats As TBatchTestStats, _
+        ByVal section As CSectionModel, ByVal shapeName As String)
+    Dim sign As Variant, materials As CMaterialModelProvider, spec As CMaterialModelSpec
+    Set materials = TestMaterialProvider(True)
+    Set spec = Audit03OverloadSpec(cpStrength)
+    For Each sign In Array(-1#, 1#)
+        Dim oracle As CSectionSolver
+        Set oracle = New CSectionSolver
+        oracle.EvaluateStrainPlane section, materials.ConcreteMaterialForEquilibriumFromSpec(spec), _
+            materials.SteelMaterialForEquilibriumFromSpec(spec), CDbl(sign) * 10#, 0#, 0#
+        Dim request As CStateRequest, provider As CStateProvider, state As CSectionStateResult
+        Set request = New CStateRequest
+        request.Initialize sstStrengthState, cpStrength, spec, 1.05 * oracle.Nint, _
+            1.05 * oracle.Mxint, 1.05 * oracle.Myint, True, True
+        Set provider = Audit03OverloadStateProvider(section, materials, "Newton")
+        Set state = provider.GetOrSolve(request)
+        AssertTrue stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".noEquilibrium", Not state.Converged
+        AssertTrue stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".numeric", state.InternalStatus = rsNumericalFailure
+        AssertTrue stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".reason", Len(state.ResultComment) > 0
+    Next sign
 End Sub

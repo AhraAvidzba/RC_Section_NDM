@@ -212,6 +212,8 @@ Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
 
+' Преобразует сохраненную typed meta в единственный внешний словарь статусов.
+' Отдельной изменяемой строки статуса у физического State нет.
 Public Property Get Status() As String
     Status = ExternalStatus(ResultMeta)
 End Property

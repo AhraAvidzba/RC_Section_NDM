@@ -1,0 +1,77 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_negative_v46.xlsm
+SOURCE_SHA256: CC960421E50F664EC64500BC6B670ED3C9426817D8B4C115302119B95BF7676E
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_320cb8364b844545aefa2e33fea06604\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestMaterialDiagrams.RunAudit03DiagramArrayInputTests =====
+SUITE_STARTED: modTestMaterialDiagrams.RunAudit03DiagramArrayInputTests; 2026-10-02T08:46:43
+EXCEL_AFTER_SUITE: pid=22232; workingSet=126726144; privateBytes=90198016; cpu=2.234375
+OK: audit03.diagramArray.CountTooSmall.inputError
+OK: audit03.diagramArray.CountTooSmall.reason
+FAIL: audit03.diagramArray.CountTooSmall.noPoints
+FAIL: audit03.diagramArray.CountTooSmall.notUsable
+DIAGRAM_ARRAY_INPUT: case=CountTooSmall|error=-2147218404|reason=Диаграмма материала должна содержать не менее двух точек.
+OK: audit03.diagramArray.CountTooSmall.restoredStress; actual=-7.75; expected=-7.75; absDiff=0.
+OK: audit03.diagramArray.CountTooSmall.restoredPoints
+FAIL: audit03.diagramArray.MissingStrain.inputError
+OK: audit03.diagramArray.MissingStrain.reason
+FAIL: audit03.diagramArray.MissingStrain.noPoints
+FAIL: audit03.diagramArray.MissingStrain.notUsable
+DIAGRAM_ARRAY_INPUT: case=MissingStrain|error=9|reason=Subscript out of range
+OK: audit03.diagramArray.MissingStrain.restoredStress; actual=-7.75; expected=-7.75; absDiff=0.
+OK: audit03.diagramArray.MissingStrain.restoredPoints
+FAIL: audit03.diagramArray.MissingStress.inputError
+OK: audit03.diagramArray.MissingStress.reason
+FAIL: audit03.diagramArray.MissingStress.noPoints
+FAIL: audit03.diagramArray.MissingStress.notUsable
+DIAGRAM_ARRAY_INPUT: case=MissingStress|error=9|reason=Subscript out of range
+OK: audit03.diagramArray.MissingStress.restoredStress; actual=-7.75; expected=-7.75; absDiff=0.
+OK: audit03.diagramArray.MissingStress.restoredPoints
+FAIL: audit03.diagramArray.ShortStrain.inputError
+OK: audit03.diagramArray.ShortStrain.reason
+FAIL: audit03.diagramArray.ShortStrain.noPoints
+FAIL: audit03.diagramArray.ShortStrain.notUsable
+DIAGRAM_ARRAY_INPUT: case=ShortStrain|error=9|reason=Subscript out of range
+OK: audit03.diagramArray.ShortStrain.restoredStress; actual=-7.75; expected=-7.75; absDiff=0.
+OK: audit03.diagramArray.ShortStrain.restoredPoints
+FAIL: audit03.diagramArray.ShortStress.inputError
+OK: audit03.diagramArray.ShortStress.reason
+FAIL: audit03.diagramArray.ShortStress.noPoints
+FAIL: audit03.diagramArray.ShortStress.notUsable
+DIAGRAM_ARRAY_INPUT: case=ShortStress|error=9|reason=Subscript out of range
+OK: audit03.diagramArray.ShortStress.restoredStress; actual=-7.75; expected=-7.75; absDiff=0.
+OK: audit03.diagramArray.ShortStress.restoredPoints
+FAIL: audit03.diagramArray.BoundsStrain.inputError
+OK: audit03.diagramArray.BoundsStrain.reason
+FAIL: audit03.diagramArray.BoundsStrain.noPoints
+FAIL: audit03.diagramArray.BoundsStrain.notUsable
+DIAGRAM_ARRAY_INPUT: case=BoundsStrain|error=9|reason=Subscript out of range
+OK: audit03.diagramArray.BoundsStrain.restoredStress; actual=-7.75; expected=-7.75; absDiff=0.
+OK: audit03.diagramArray.BoundsStrain.restoredPoints
+FAIL: audit03.diagramArray.BoundsStress.inputError
+OK: audit03.diagramArray.BoundsStress.reason
+FAIL: audit03.diagramArray.BoundsStress.noPoints
+FAIL: audit03.diagramArray.BoundsStress.notUsable
+DIAGRAM_ARRAY_INPUT: case=BoundsStress|error=9|reason=Subscript out of range
+OK: audit03.diagramArray.BoundsStress.restoredStress; actual=-7.75; expected=-7.75; absDiff=0.
+OK: audit03.diagramArray.BoundsStress.restoredPoints
+FAIL: audit03.diagramArray.CountBeyondArrays.inputError
+OK: audit03.diagramArray.CountBeyondArrays.reason
+FAIL: audit03.diagramArray.CountBeyondArrays.noPoints
+FAIL: audit03.diagramArray.CountBeyondArrays.notUsable
+DIAGRAM_ARRAY_INPUT: case=CountBeyondArrays|error=9|reason=Subscript out of range
+OK: audit03.diagramArray.CountBeyondArrays.restoredStress; actual=-7.75; expected=-7.75; absDiff=0.
+OK: audit03.diagramArray.CountBeyondArrays.restoredPoints
+OK: audit03.diagramArray.Duplicate.inputError
+OK: audit03.diagramArray.Duplicate.reason
+FAIL: audit03.diagramArray.Duplicate.noPoints
+FAIL: audit03.diagramArray.Duplicate.notUsable
+DIAGRAM_ARRAY_INPUT: case=Duplicate|error=-2147218393|reason=Деформации в диаграмме материала не должны повторяться.
+OK: audit03.diagramArray.Duplicate.restoredStress; actual=-7.75; expected=-7.75; absDiff=0.
+OK: audit03.diagramArray.Duplicate.restoredPoints
+OK: audit03.diagramArray.extraZeroIndex; actual=-7.75; expected=-7.75; absDiff=0.
+TOTAL_AUDIT03_DIAGRAM_ARRAY_INPUT: passed=30; failed=25
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestMaterialDiagrams.RunAudit03DiagramArrayInputTests; 2026-10-02T08:46:43
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

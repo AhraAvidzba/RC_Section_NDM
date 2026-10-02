@@ -1370,8 +1370,8 @@ Private Function CreateStateProvider(ByVal index As Long) As CStateProvider
     Set CreateStateProvider = provider
 End Function
 
-' Передает в StateProvider ровно те же настройки прямого НДС, которые раньше
-' получал CStateSolutionRunner напрямую из batch-калькулятора.
+' Передает StateProvider прочитанные численные настройки прямого НДС.
+' Provider применяет их к общему runner во всех запрашиваемых named-states.
 Private Sub ConfigureStateProvider(ByVal provider As CStateProvider)
     provider.LoadSteps = mSolverLoadSteps
     provider.SolverMethod = mSolverMethod
@@ -1756,10 +1756,13 @@ Public Property Get StabilitySP35NOverNcrLimit() As Double
     StabilitySP35NOverNcrLimit = mStabilitySP35NOverNcrLimit
 End Property
 
+' Усилия трещин относятся к сохраненной нагрузке LC после устойчивости.
+' Продольная сила не зависит от точки приведения.
 Public Property Get CrackReferenceN(ByVal index As Long) As Double
     CrackReferenceN = LoadStateForCombination(index).N
 End Property
 
+' Переносит Mx в принятую для трещин точку; добавка определяется N и ее Y.
 Public Property Get CrackReferenceMx(ByVal index As Long) As Double
     Dim referenceX As Double
     Dim referenceY As Double
@@ -1767,6 +1770,7 @@ Public Property Get CrackReferenceMx(ByVal index As Long) As Double
     CrackReferenceMx = LoadStateForCombination(index).MxAboutPoint(referenceY)
 End Property
 
+' Переносит My в принятую для трещин точку; добавка определяется N и ее X.
 Public Property Get CrackReferenceMy(ByVal index As Long) As Double
     Dim referenceX As Double
     Dim referenceY As Double
@@ -1852,6 +1856,8 @@ Private Function StrengthMaterialSpecForCombination(ByVal index As Long) As CMat
     End If
 End Function
 
+' Возвращает индекс, ID и подпись сочетания, определяющего итог прочностного
+' расчета. До выбора такого сочетания индекс равен нулю, строки остаются пустыми.
 Public Property Get GoverningCombinationIndex() As Long
     GoverningCombinationIndex = mGoverningCombinationIndex
 End Property
@@ -1864,6 +1870,8 @@ Public Property Get GoverningCombinationName() As String
     If mGoverningCombinationIndex > 0 Then GoverningCombinationName = mInputs(mGoverningCombinationIndex).Comment
 End Property
 
+' Возвращает данные сочетания с определяющим результатом проверки трещин.
+' Отсутствие выбранного сочетания обозначается нулевым индексом и пустыми строками.
 Public Property Get CrackGoverningCombinationIndex() As Long
     CrackGoverningCombinationIndex = mCrackGoverningCombinationIndex
 End Property
@@ -1876,6 +1884,8 @@ Public Property Get CrackGoverningCombinationName() As String
     If mCrackGoverningCombinationIndex > 0 Then CrackGoverningCombinationName = mInputs(mCrackGoverningCombinationIndex).Comment
 End Property
 
+' Возвращает данные худшего сочетания по настроенному итоговому критерию.
+' Этот выбор может отличаться от определяющего сочетания отдельного раздела.
 Public Property Get WorstCombinationIndex() As Long
     WorstCombinationIndex = mWorstCombinationIndex
 End Property
@@ -1904,6 +1914,8 @@ Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
+' Считает сочетания с итоговой ошибкой входных данных по общей status-policy.
+' Физические отказы и численная несходимость не входят в этот счетчик.
 Public Property Get InvalidInputCount() As Long
     Dim i As Long
     For i = 1 To mCount
@@ -1911,6 +1923,8 @@ Public Property Get InvalidInputCount() As Long
     Next i
 End Property
 
+' Находит первую ошибку входа в порядке строк сочетаний и возвращает сообщение
+' с идентификатором строки. При отсутствии InputErr возвращает пустую строку.
 Public Property Get FirstInvalidInputMessage() As String
     Dim i As Long
     For i = 1 To mCount
@@ -1949,10 +1963,12 @@ End Function
 
 
 
+' Читает сохраненную N прочностного LC; перенос точки не меняет силу.
 Public Property Get StrengthReferenceN(ByVal index As Long) As Double
     StrengthReferenceN = LoadStateForCombination(index).N
 End Property
 
+' Переносит Mx в принятую для прочности точку, сохраняя нагрузку после устойчивости.
 Public Property Get StrengthReferenceMx(ByVal index As Long) As Double
     Dim referenceX As Double
     Dim referenceY As Double
@@ -1960,6 +1976,7 @@ Public Property Get StrengthReferenceMx(ByVal index As Long) As Double
     StrengthReferenceMx = LoadStateForCombination(index).MxAboutPoint(referenceY)
 End Property
 
+' Переносит My в принятую для прочности точку, сохраняя нагрузку после устойчивости.
 Public Property Get StrengthReferenceMy(ByVal index As Long) As Double
     Dim referenceX As Double
     Dim referenceY As Double
@@ -1979,6 +1996,8 @@ Public Property Get StrengthLoadPointMy(ByVal index As Long) As Double
     StrengthLoadPointMy = LoadStateForCombination(index).LoadPointMy
 End Property
 
+' Возвращают запросы разделов из профиля конкретного сочетания, а не факт их
+' выполнения. Не найденный профиль не включает расчет и обрабатывается workflow.
 Public Property Get StrengthDirectStateRequested(ByVal index As Long) As Boolean
     If mProfiles.HasProfile(mInputs(index).ProfileId) Then _
         StrengthDirectStateRequested = mProfiles.ProfileById(mInputs(index).ProfileId).StrengthDirectStateEnabled
@@ -1999,6 +2018,8 @@ Public Property Get StabilityRequested(ByVal index As Long) As Boolean
         StabilityRequested = mProfiles.ProfileById(mInputs(index).ProfileId).StabilityEnabled
 End Property
 
+' Считает сочетания, для которых repository содержит хотя бы одно named-state.
+' Наличие сохраненного state само по себе не означает успешную инженерную проверку.
 Public Property Get StateAvailableCount() As Long
     Dim i As Long
     For i = 1 To mCount

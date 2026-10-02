@@ -34,7 +34,7 @@ Private mThreeLineEsc2 As Double ' Предельная сжатая дефор�
 Private mThreeLineEs2 As Double ' Предельная растянутая деформация eps_s2 для трехлинейной диаграммы.
 
 ' Читает параметры из Config и переводит прочности/модули в МПа.
-' Коэффициенты раскрытия трещин здесь не читаются: phi2 теперь задается
+' Коэффициенты раскрытия трещин здесь не читаются: phi2 задается
 ' отдельной настройкой SLS.Crack.Phi2 и не является свойством материала.
 Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Err.Raise vbObjectError + 3200, "CSteelMaterialParameters", "Настройки арматуры не переданы."

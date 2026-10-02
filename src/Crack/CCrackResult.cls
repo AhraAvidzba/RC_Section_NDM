@@ -57,6 +57,8 @@ Public Property Get Width() As CCrackWidthResult
     Set Width = mWidth
 End Property
 
+' Возвращает копию причины/статуса текущего НДС, независимо от Formation
+' и формульной Width. Потребитель не получает права изменить итог этого этапа.
 Public Property Get CurrentStateMeta() As CResultMeta
     If Not mCurrentStateMeta Is Nothing Then Set CurrentStateMeta = mCurrentStateMeta.Clone
 End Property
@@ -79,7 +81,7 @@ Public Property Get NormalMeta() As CResultMeta
     Dim comment As String
     formation.AppendCommentTo comment
     mCurrentStateMeta.AppendCommentTo comment
-    width.AppendCommentTo comment
+    AppendDependentComment width, comment
     If mPolicy.IsFailedOverall(mPolicy.ExternalStatus(formation)) Then
         Set NormalMeta = mPolicy.WorstResultMeta(rkCrackFormation, formation, currentProblem)
     ElseIf formation.InternalStatus = rsSuccess And _
@@ -102,10 +104,30 @@ Public Property Get ResultMeta() As CResultMeta
     Set normal = NormalMeta
     Set longitudinal = mLongitudinal.ResultMeta
     normal.AppendCommentTo comment, True
-    longitudinal.AppendCommentTo comment
+    AppendDependentComment longitudinal, comment
     Set ResultMeta = mPolicy.WorstResultMeta(rkGeneric, normal, longitudinal)
     ResultMeta.ResultComment = comment
 End Property
+
+' Сохраняет отдельное пояснение blocked-проверки, но не повторяет в aggregate
+' уже записанную полную причину CurrentCrackedState. Leaf/meta не изменяются.
+' Сравнение текста служит только представлению; статус задан typed-результатом.
+Private Sub AppendDependentComment(ByVal meta As CResultMeta, ByRef comment As String)
+    Dim prepared As CResultMeta
+    Set prepared = meta.Clone
+    If meta.InternalStatus = rsBlockedByDependency Then
+        Dim sharedReason As String, ownText As String
+        sharedReason = Trim$(mCurrentStateMeta.ResultComment)
+        ownText = Trim$(meta.ResultComment)
+        If Len(sharedReason) > 0 And Len(ownText) > Len(sharedReason) Then
+            If InStr(1, comment, sharedReason, vbBinaryCompare) > 0 Then
+                If StrComp(Right$(ownText, Len(sharedReason)), sharedReason, vbBinaryCompare) = 0 Then _
+                    prepared.ResultComment = Trim$(Left$(ownText, Len(ownText) - Len(sharedReason)))
+            End If
+        End If
+    End If
+    prepared.AppendCommentTo comment
+End Sub
 
 ' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
 ' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,

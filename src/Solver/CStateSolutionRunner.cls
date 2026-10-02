@@ -158,6 +158,7 @@ Public Sub SolveWithInitialSolver(ByVal section As CSectionModel, _
         End If
     End If
 
+    Set mSolver = service
     If Not mSolver Is Nothing Then
         If mSolver.Converged Then
             mWithinPhysicalRange = StateWithinPhysicalRange(section, mSolver, concreteMaterial, steelMaterial)
@@ -211,6 +212,7 @@ Public Sub SolveWithInitialLoadState(ByVal section As CSectionModel, _
         End If
     End If
 
+    Set mSolver = service
     If Not mSolver Is Nothing Then
         If mSolver.Converged Then
             mWithinPhysicalRange = StateWithinPhysicalRange(section, mSolver, concreteMaterial, steelMaterial)
@@ -273,6 +275,7 @@ Public Sub SolveWithDirectTargetGuess(ByVal section As CSectionModel, _
         End If
     End If
 
+    Set mSolver = service
     If Not mSolver Is Nothing Then
         If mSolver.Converged Then
             mWithinPhysicalRange = StateWithinPhysicalRange(section, mSolver, concreteMaterial, steelMaterial)
@@ -524,7 +527,38 @@ Private Function TryRunRetry(ByVal section As CSectionModel, _
                 "; residualMx=" & FormatNumberInvariant(retry.ResidualMx) & _
                 "; residualMy=" & FormatNumberInvariant(retry.ResidualMy)
         End If
+        If FailedRetryImprovesAllResiduals(retry, service) Then
+            ' Это только более близкая стартовая плоскость для следующих retries.
+            ' Converged остается False; repository не получает reusable state.
+            Set service = retry
+            AppendDiagnostic retryKind & "=" & attemptName & "; сохранена более близкая несошедшаяся плоскость."
+        End If
     End If
+End Function
+
+' Сравнивает только фактические невязки численно неуспешных попыток. Новый
+' старт принимается, если не ухудшил ни одной компоненты и улучшил хотя бы одну.
+' Деления/суммы норм здесь нет: сравнение не создает переполнения и не ослабляет
+' критерий равновесия. Terminal причины и непригодные числа не заменяются.
+Private Function FailedRetryImprovesAllResiduals(ByVal candidate As CSectionSolver, _
+        ByVal previous As CSectionSolver) As Boolean
+    If Not CanRetrySolver(candidate) Then Exit Function
+    If Not CanRetrySolver(previous) Then Exit Function
+    If Not RetryResidualIsComparable(candidate.ResidualN) Or Not RetryResidualIsComparable(candidate.ResidualMx) Or _
+            Not RetryResidualIsComparable(candidate.ResidualMy) Then Exit Function
+    If Not RetryResidualIsComparable(previous.ResidualN) Or Not RetryResidualIsComparable(previous.ResidualMx) Or _
+            Not RetryResidualIsComparable(previous.ResidualMy) Then Exit Function
+    If Abs(candidate.ResidualN) > Abs(previous.ResidualN) Then Exit Function
+    If Abs(candidate.ResidualMx) > Abs(previous.ResidualMx) Then Exit Function
+    If Abs(candidate.ResidualMy) > Abs(previous.ResidualMy) Then Exit Function
+    FailedRetryImprovesAllResiduals = Abs(candidate.ResidualN) < Abs(previous.ResidualN) Or _
+        Abs(candidate.ResidualMx) < Abs(previous.ResidualMx) Or Abs(candidate.ResidualMy) < Abs(previous.ResidualMy)
+End Function
+
+' Не допускает непредставимую или чрезмерную невязку в выборе retry-старта.
+' Этот технический guard не определяет физический статус или сходимость.
+Private Function RetryResidualIsComparable(ByVal value As Double) As Boolean
+    RetryResidualIsComparable = (value = value And Abs(value) < 1E+100)
 End Function
 
 ' Проверяет identity и версию модели перед чтением локальных retry-записей.
@@ -714,6 +748,8 @@ Public Property Get ResultSolver() As CSectionSolver
     Set ResultSolver = mSolver
 End Property
 
+' Возвращают сходимость, причину остановки и число итераций последнего solver-а.
+' Если попытки еще не было, значения остаются False, пустой строкой и нулем.
 Public Property Get Converged() As Boolean
     If Not mSolver Is Nothing Then Converged = mSolver.Converged
 End Property

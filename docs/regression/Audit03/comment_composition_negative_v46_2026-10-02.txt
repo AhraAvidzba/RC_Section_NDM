@@ -1,0 +1,49 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_negative_v46.xlsm
+SOURCE_SHA256: CC960421E50F664EC64500BC6B670ED3C9426817D8B4C115302119B95BF7676E
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_81a7f3dcd1c94e5b9aa063cdc9764f68\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03CommentCompositionTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03CommentCompositionTests; 2026-10-02T08:47:30
+EXCEL_AFTER_SUITE: pid=16104; workingSet=127266816; privateBytes=88834048; cpu=2.390625
+COMMENT_COMPOSITION: audit03.commentComposition.1|comment=НДС: Равновесие текущего НДС не найдено: причина направленного теста.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие текущего НДС не найдено: причина направленного теста.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие текущего НДС не найдено: причина направленного теста.
+FAIL: audit03.commentComposition.1.reasonOnce
+OK: audit03.commentComposition.1.widthMentioned
+OK: audit03.commentComposition.1.longitudinalMentioned
+OK: audit03.commentComposition.1.currentStatus
+OK: audit03.commentComposition.1.currentCode
+OK: audit03.commentComposition.1.widthLeafUnchanged
+OK: audit03.commentComposition.1.longitudinalLeafUnchanged
+OK: audit03.commentComposition.1.differentReasonKept
+COMMENT_COMPOSITION: audit03.commentComposition.2|comment=НДС: Равновесие текущего НДС не найдено: причина направленного теста.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие текущего НДС не найдено: причина направленного теста.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие текущего НДС не найдено: причина направленного теста.
+FAIL: audit03.commentComposition.2.reasonOnce
+OK: audit03.commentComposition.2.widthMentioned
+OK: audit03.commentComposition.2.longitudinalMentioned
+OK: audit03.commentComposition.2.currentStatus
+OK: audit03.commentComposition.2.currentCode
+OK: audit03.commentComposition.2.widthLeafUnchanged
+OK: audit03.commentComposition.2.longitudinalLeafUnchanged
+OK: audit03.commentComposition.2.differentReasonKept
+COMMENT_COMPOSITION: audit03.commentComposition.3|comment=НДС: Равновесие текущего НДС не найдено: причина направленного теста.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие текущего НДС не найдено: причина направленного теста.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие текущего НДС не найдено: причина направленного теста.
+FAIL: audit03.commentComposition.3.reasonOnce
+OK: audit03.commentComposition.3.widthMentioned
+OK: audit03.commentComposition.3.longitudinalMentioned
+OK: audit03.commentComposition.3.currentStatus
+OK: audit03.commentComposition.3.currentCode
+OK: audit03.commentComposition.3.widthLeafUnchanged
+OK: audit03.commentComposition.3.longitudinalLeafUnchanged
+OK: audit03.commentComposition.3.differentReasonKept
+COMMENT_COMPOSITION: audit03.commentComposition.4|comment=НДС: Равновесие текущего НДС не найдено: причина направленного теста.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие текущего НДС не найдено: причина направленного теста.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие текущего НДС не найдено: причина направленного теста.
+FAIL: audit03.commentComposition.4.reasonOnce
+OK: audit03.commentComposition.4.widthMentioned
+OK: audit03.commentComposition.4.longitudinalMentioned
+OK: audit03.commentComposition.4.currentStatus
+OK: audit03.commentComposition.4.currentCode
+OK: audit03.commentComposition.4.widthLeafUnchanged
+OK: audit03.commentComposition.4.longitudinalLeafUnchanged
+OK: audit03.commentComposition.4.differentReasonKept
+TOTAL_AUDIT03_COMMENT_COMPOSITION: passed=28; failed=4
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03CommentCompositionTests; 2026-10-02T08:47:31
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

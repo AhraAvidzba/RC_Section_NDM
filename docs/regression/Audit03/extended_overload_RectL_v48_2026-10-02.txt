@@ -1,0 +1,563 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_source_v48.xlsm
+SOURCE_SHA256: 650C8C68236B12A850320A560120932F90425D7B948A7E7D2A49ECCDA4713DBC
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_243ae2d3a1014499b013f707046ca144\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03ExtendedOverloadEquilibriumTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03ExtendedOverloadEquilibriumTests; 2026-10-02T09:31:36
+EXCEL_AFTER_SUITE: pid=24476; workingSet=130453504; privateBytes=91267072; cpu=3.5
+OK: audit03.extended.RectL.Newton.1.0.05.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.1.0.05.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.1.0.05.1|N=-4620529.30782122|Mx=-875277032.365776|My=-805984637.304271|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.05|concreteMax=-0.05|steelMin=-0.05|steelMax=-0.05|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.1.0.05.1.equilibrium
+OK: audit03.extended.RectL.Newton.1.0.05.1.rN; actual=-0.000000002794; expected=0.
+OK: audit03.extended.RectL.Newton.1.0.05.1.rMx; actual=-0.000000238419; expected=0.
+OK: audit03.extended.RectL.Newton.1.0.05.1.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.1.0.05.1.extensionUsed
+OK: audit03.extended.RectL.Newton.1.0.05.1.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.1.0.05.1.physicalFail
+OK: audit03.extended.RectL.Newton.1.0.05.1.displayFail
+OK: audit03.extended.RectL.Newton.1.0.05.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.1.0.05.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.1.0.05.2|N=341805.280710569|Mx=52778756.5803085|My=73890259.2124319|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=0.05|concreteMax=0.05|steelMin=0.05|steelMax=0.05|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.1.0.05.2.equilibrium
+OK: audit03.extended.RectL.Newton.1.0.05.2.rN; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.1.0.05.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.1.0.05.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.1.0.05.2.extensionUsed
+OK: audit03.extended.RectL.Newton.1.0.05.2.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.1.0.05.2.physicalFail
+OK: audit03.extended.RectL.Newton.1.0.05.2.displayFail
+OK: audit03.extended.RectL.Newton.1.0.05.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.1.0.05.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.1.0.05.3|N=-1272198.3874215|Mx=-88025456.4611157|My=-180549203.631854|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=1|concreteMin=-0.032483924744|concreteMax=0.034779516358|steelMin=-0.02411706777|steelMax=0.026561665261|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.1.0.05.3.equilibrium
+OK: audit03.extended.RectL.Newton.1.0.05.3.rN; actual=-0.000000000233; expected=0.
+OK: audit03.extended.RectL.Newton.1.0.05.3.rMx; actual=-0.000000074506; expected=0.
+OK: audit03.extended.RectL.Newton.1.0.05.3.rMy; actual=-0.000000029802; expected=0.
+OK: audit03.extended.RectL.Newton.1.0.05.3.extensionUsed
+OK: audit03.extended.RectL.Newton.1.0.05.3.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.1.0.05.3.physicalFail
+OK: audit03.extended.RectL.Newton.1.0.05.3.displayFail
+OK: audit03.extended.RectL.Newton.1.0.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.1.0.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.1.0.5.1|N=-25831024.8836602|Mx=-4923482001.79679|My=-4469789465.60145|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.5|concreteMax=-0.5|steelMin=-0.5|steelMax=-0.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.1.0.5.1.equilibrium
+OK: audit03.extended.RectL.Newton.1.0.5.1.rN; actual=0.000000003725; expected=0.
+OK: audit03.extended.RectL.Newton.1.0.5.1.rMx; actual=0.000000953674; expected=0.
+OK: audit03.extended.RectL.Newton.1.0.5.1.rMy; actual=0.000000953674; expected=0.
+OK: audit03.extended.RectL.Newton.1.0.5.1.extensionUsed
+OK: audit03.extended.RectL.Newton.1.0.5.1.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.1.0.5.1.physicalFail
+OK: audit03.extended.RectL.Newton.1.0.5.1.displayFail
+OK: audit03.extended.RectL.Newton.1.0.5.1.offNoEquilibrium
+OK: audit03.extended.RectL.Newton.1.0.5.1.offNumericalCause
+OK: audit03.extended.RectL.Newton.1.0.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.1.0.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.1.0.5.2|N=1110867.16230935|Mx=171530958.886003|My=240143342.440404|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=0.5|concreteMax=0.5|steelMin=0.5|steelMax=0.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.1.0.5.2.equilibrium
+OK: audit03.extended.RectL.Newton.1.0.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.1.0.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.1.0.5.2.rMy; actual=0.000000029802; expected=0.
+OK: audit03.extended.RectL.Newton.1.0.5.2.extensionUsed
+OK: audit03.extended.RectL.Newton.1.0.5.2.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.1.0.5.2.physicalFail
+OK: audit03.extended.RectL.Newton.1.0.5.2.displayFail
+OK: audit03.extended.RectL.Newton.1.0.5.2.offNoEquilibrium
+OK: audit03.extended.RectL.Newton.1.0.5.2.offNumericalCause
+OK: audit03.extended.RectL.Newton.1.0.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.1.0.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.1.0.5.3|N=-3804507.11598406|Mx=-257502747.497606|My=-473533081.737595|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.32483924744|concreteMax=0.347795163585|steelMin=-0.241170677703|steelMax=0.265616652614|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.1.0.5.3.equilibrium
+OK: audit03.extended.RectL.Newton.1.0.5.3.rN; actual=-0.000000003725; expected=0.
+OK: audit03.extended.RectL.Newton.1.0.5.3.rMx; actual=0.000000119209; expected=0.
+OK: audit03.extended.RectL.Newton.1.0.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.1.0.5.3.extensionUsed
+OK: audit03.extended.RectL.Newton.1.0.5.3.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.1.0.5.3.physicalFail
+OK: audit03.extended.RectL.Newton.1.0.5.3.displayFail
+OK: audit03.extended.RectL.Newton.1.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.1.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.1.5.1|N=-237935980.64205|Mx=-45405531696.107|My=-41107837748.5732|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-5.|concreteMax=-5.|steelMin=-5.|steelMax=-5.|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.1.5.1.equilibrium
+OK: audit03.extended.RectL.Newton.1.5.1.rN; actual=0.000000029802; expected=0.
+OK: audit03.extended.RectL.Newton.1.5.1.rMx; actual=0.000007629395; expected=0.
+OK: audit03.extended.RectL.Newton.1.5.1.rMy; actual=0.000007629395; expected=0.
+OK: audit03.extended.RectL.Newton.1.5.1.extensionUsed
+OK: audit03.extended.RectL.Newton.1.5.1.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.1.5.1.physicalFail
+OK: audit03.extended.RectL.Newton.1.5.1.displayFail
+OK: audit03.extended.RectL.Newton.1.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.1.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.1.5.2|N=8801485.97829716|Mx=1359052981.94294|My=1902674174.72012|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=5.|concreteMax=5.|steelMin=5.|steelMax=5.|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.1.5.2.equilibrium
+OK: audit03.extended.RectL.Newton.1.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.1.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.1.5.2.rMy; actual=0.000000238419; expected=0.
+OK: audit03.extended.RectL.Newton.1.5.2.extensionUsed
+OK: audit03.extended.RectL.Newton.1.5.2.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.1.5.2.physicalFail
+OK: audit03.extended.RectL.Newton.1.5.2.displayFail
+OK: audit03.extended.RectL.Newton.1.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.1.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.1.5.3|N=-28841592.9613736|Mx=-1890690340.36603|My=-3344323854.45566|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-3.248392474399|concreteMax=3.477951635846|steelMin=-2.411706777032|steelMax=2.656166526136|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.1.5.3.equilibrium
+OK: audit03.extended.RectL.Newton.1.5.3.rN; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.1.5.3.rMx; actual=0.000001430511; expected=0.
+OK: audit03.extended.RectL.Newton.1.5.3.rMy; actual=-0.000004291534; expected=0.
+OK: audit03.extended.RectL.Newton.1.5.3.extensionUsed
+OK: audit03.extended.RectL.Newton.1.5.3.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.1.5.3.physicalFail
+OK: audit03.extended.RectL.Newton.1.5.3.displayFail
+OK: audit03.extended.RectL.Newton.1.9.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.1.9.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.1.9.5.1|N=-450040936.40044|Mx=-85887581390.4171|My=-77745886031.545|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-9.5|concreteMax=-9.5|steelMin=-9.5|steelMax=-9.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.1.9.5.1.equilibrium
+OK: audit03.extended.RectL.Newton.1.9.5.1.rN; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.1.9.5.1.rMx; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.1.9.5.1.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.1.9.5.1.extensionUsed
+OK: audit03.extended.RectL.Newton.1.9.5.1.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.1.9.5.1.physicalFail
+OK: audit03.extended.RectL.Newton.1.9.5.1.displayFail
+OK: audit03.extended.RectL.Newton.1.9.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.1.9.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.1.9.5.2|N=16492104.794285|Mx=2546575004.99989|My=3565205006.99984|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=9.5|concreteMax=9.5|steelMin=9.5|steelMax=9.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.1.9.5.2.equilibrium
+OK: audit03.extended.RectL.Newton.1.9.5.2.rN; actual=0.000000003725; expected=0.
+OK: audit03.extended.RectL.Newton.1.9.5.2.rMx; actual=0.000000476837; expected=0.
+OK: audit03.extended.RectL.Newton.1.9.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.1.9.5.2.extensionUsed
+OK: audit03.extended.RectL.Newton.1.9.5.2.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.1.9.5.2.physicalFail
+OK: audit03.extended.RectL.Newton.1.9.5.2.displayFail
+OK: audit03.extended.RectL.Newton.1.9.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.1.9.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.1.9.5.3|N=-53877494.9600596|Mx=-3523678159.10322|My=-6214870458.79112|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-6.171945701357|concreteMax=6.608108108108|steelMin=-4.582242876361|steelMax=5.046716399658|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.1.9.5.3.equilibrium
+OK: audit03.extended.RectL.Newton.1.9.5.3.rN; actual=0.000000022352; expected=0.
+OK: audit03.extended.RectL.Newton.1.9.5.3.rMx; actual=0.000002384186; expected=0.
+OK: audit03.extended.RectL.Newton.1.9.5.3.rMy; actual=-0.000004768372; expected=0.
+OK: audit03.extended.RectL.Newton.1.9.5.3.extensionUsed
+OK: audit03.extended.RectL.Newton.1.9.5.3.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.1.9.5.3.physicalFail
+OK: audit03.extended.RectL.Newton.1.9.5.3.displayFail
+OK: audit03.extended.RectL.Newton.3.0.05.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.3.0.05.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.3.0.05.1|N=-5563218.00008073|Mx=-1055197253.22938|My=-968820407.450812|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=-0.05|concreteMax=-0.05|steelMin=-0.05|steelMax=-0.05|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.3.0.05.1.equilibrium
+OK: audit03.extended.RectL.Newton.3.0.05.1.rN; actual=0.000000006519; expected=0.
+OK: audit03.extended.RectL.Newton.3.0.05.1.rMx; actual=-0.000000357628; expected=0.
+OK: audit03.extended.RectL.Newton.3.0.05.1.rMy; actual=0.000001072884; expected=0.
+OK: audit03.extended.RectL.Newton.3.0.05.1.extensionUsed
+OK: audit03.extended.RectL.Newton.3.0.05.1.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.3.0.05.1.physicalFail
+OK: audit03.extended.RectL.Newton.3.0.05.1.displayFail
+OK: audit03.extended.RectL.Newton.3.0.05.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.3.0.05.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.3.0.05.2|N=375985.808781626|Mx=58056632.2383394|My=81279285.1336751|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=0.05|concreteMax=0.05|steelMin=0.05|steelMax=0.05|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.3.0.05.2.equilibrium
+OK: audit03.extended.RectL.Newton.3.0.05.2.rN; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.3.0.05.2.rMx; actual=0.000000007451; expected=0.
+OK: audit03.extended.RectL.Newton.3.0.05.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.3.0.05.2.extensionUsed
+OK: audit03.extended.RectL.Newton.3.0.05.2.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.3.0.05.2.physicalFail
+OK: audit03.extended.RectL.Newton.3.0.05.2.displayFail
+OK: audit03.extended.RectL.Newton.3.0.05.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.3.0.05.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.3.0.05.3|N=-1702339.29259059|Mx=-125891408.978976|My=-245979506.589659|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=1|concreteMin=-0.032483924744|concreteMax=0.034779516358|steelMin=-0.02411706777|steelMax=0.026561665261|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.3.0.05.3.equilibrium
+OK: audit03.extended.RectL.Newton.3.0.05.3.rN; actual=-0.000000000466; expected=0.
+OK: audit03.extended.RectL.Newton.3.0.05.3.rMx; actual=0.000000029802; expected=0.
+OK: audit03.extended.RectL.Newton.3.0.05.3.rMy; actual=-0.000000059605; expected=0.
+OK: audit03.extended.RectL.Newton.3.0.05.3.extensionUsed
+OK: audit03.extended.RectL.Newton.3.0.05.3.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.3.0.05.3.physicalFail
+OK: audit03.extended.RectL.Newton.3.0.05.3.displayFail
+OK: audit03.extended.RectL.Newton.3.0.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.3.0.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.3.0.5.1|N=-26773713.5759197|Mx=-5103402222.66039|My=-4632625235.74799|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.5|concreteMax=-0.5|steelMin=-0.5|steelMax=-0.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.3.0.5.1.equilibrium
+OK: audit03.extended.RectL.Newton.3.0.5.1.rN; actual=0.000000014901; expected=0.
+OK: audit03.extended.RectL.Newton.3.0.5.1.rMx; actual=0.000001907349; expected=0.
+OK: audit03.extended.RectL.Newton.3.0.5.1.rMy; actual=0.000000953674; expected=0.
+OK: audit03.extended.RectL.Newton.3.0.5.1.extensionUsed
+OK: audit03.extended.RectL.Newton.3.0.5.1.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.3.0.5.1.physicalFail
+OK: audit03.extended.RectL.Newton.3.0.5.1.displayFail
+OK: audit03.extended.RectL.Newton.3.0.5.1.offNoEquilibrium
+OK: audit03.extended.RectL.Newton.3.0.5.1.offNumericalCause
+OK: audit03.extended.RectL.Newton.3.0.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.3.0.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.3.0.5.2|N=1145047.69038041|Mx=176808834.544034|My=247532368.361647|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=0.5|concreteMax=0.5|steelMin=0.5|steelMax=0.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.3.0.5.2.equilibrium
+OK: audit03.extended.RectL.Newton.3.0.5.2.rN; actual=0.000000000233; expected=0.
+OK: audit03.extended.RectL.Newton.3.0.5.2.rMx; actual=-0.000000029802; expected=0.
+OK: audit03.extended.RectL.Newton.3.0.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.3.0.5.2.extensionUsed
+OK: audit03.extended.RectL.Newton.3.0.5.2.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.3.0.5.2.physicalFail
+OK: audit03.extended.RectL.Newton.3.0.5.2.displayFail
+OK: audit03.extended.RectL.Newton.3.0.5.2.offNoEquilibrium
+OK: audit03.extended.RectL.Newton.3.0.5.2.offNumericalCause
+OK: audit03.extended.RectL.Newton.3.0.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.3.0.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.3.0.5.3|N=-4269955.7376959|Mx=-301171386.489395|My=-546337335.942079|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.32483924744|concreteMax=0.347795163585|steelMin=-0.241170677703|steelMax=0.265616652614|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.3.0.5.3.equilibrium
+OK: audit03.extended.RectL.Newton.3.0.5.3.rN; actual=-0.000000002794; expected=0.
+OK: audit03.extended.RectL.Newton.3.0.5.3.rMx; actual=0.000000119209; expected=0.
+OK: audit03.extended.RectL.Newton.3.0.5.3.rMy; actual=-0.000000238419; expected=0.
+OK: audit03.extended.RectL.Newton.3.0.5.3.extensionUsed
+OK: audit03.extended.RectL.Newton.3.0.5.3.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.3.0.5.3.physicalFail
+OK: audit03.extended.RectL.Newton.3.0.5.3.displayFail
+OK: audit03.extended.RectL.Newton.3.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.3.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.3.5.1|N=-238878669.334309|Mx=-45585451916.9706|My=-41270673518.7198|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-5.|concreteMax=-5.|steelMin=-5.|steelMax=-5.|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.3.5.1.equilibrium
+OK: audit03.extended.RectL.Newton.3.5.1.rN; actual=0.000000149012; expected=0.
+OK: audit03.extended.RectL.Newton.3.5.1.rMx; actual=0.000022888184; expected=0.
+OK: audit03.extended.RectL.Newton.3.5.1.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.3.5.1.extensionUsed
+OK: audit03.extended.RectL.Newton.3.5.1.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.3.5.1.physicalFail
+OK: audit03.extended.RectL.Newton.3.5.1.displayFail
+OK: audit03.extended.RectL.Newton.3.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.3.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.3.5.2|N=8835666.50636822|Mx=1364330857.60098|My=1910063200.64137|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=5.|concreteMax=5.|steelMin=5.|steelMax=5.|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.3.5.2.equilibrium
+OK: audit03.extended.RectL.Newton.3.5.2.rN; actual=0.000000001863; expected=0.
+OK: audit03.extended.RectL.Newton.3.5.2.rMx; actual=0.000000238419; expected=0.
+OK: audit03.extended.RectL.Newton.3.5.2.rMy; actual=0.000000238419; expected=0.
+OK: audit03.extended.RectL.Newton.3.5.2.extensionUsed
+OK: audit03.extended.RectL.Newton.3.5.2.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.3.5.2.physicalFail
+OK: audit03.extended.RectL.Newton.3.5.2.displayFail
+OK: audit03.extended.RectL.Newton.3.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.3.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.3.5.3|N=-29304987.6684678|Mx=-1934012381.2661|My=-3416704488.77026|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-3.248392474399|concreteMax=3.477951635846|steelMin=-2.411706777032|steelMax=2.656166526136|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.3.5.3.equilibrium
+OK: audit03.extended.RectL.Newton.3.5.3.rN; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.3.5.3.rMx; actual=0.000002384186; expected=0.
+OK: audit03.extended.RectL.Newton.3.5.3.rMy; actual=-0.000002861023; expected=0.
+OK: audit03.extended.RectL.Newton.3.5.3.extensionUsed
+OK: audit03.extended.RectL.Newton.3.5.3.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.3.5.3.physicalFail
+OK: audit03.extended.RectL.Newton.3.5.3.displayFail
+OK: audit03.extended.RectL.Newton.3.9.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.3.9.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.3.9.5.1|N=-450983625.092699|Mx=-86067501611.2808|My=-77908721801.6915|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-9.5|concreteMax=-9.5|steelMin=-9.5|steelMax=-9.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.3.9.5.1.equilibrium
+OK: audit03.extended.RectL.Newton.3.9.5.1.rN; actual=0.000000059605; expected=0.
+OK: audit03.extended.RectL.Newton.3.9.5.1.rMx; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.3.9.5.1.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.3.9.5.1.extensionUsed
+OK: audit03.extended.RectL.Newton.3.9.5.1.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.3.9.5.1.physicalFail
+OK: audit03.extended.RectL.Newton.3.9.5.1.displayFail
+OK: audit03.extended.RectL.Newton.3.9.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.3.9.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.3.9.5.2|N=16526285.322356|Mx=2551852880.65792|My=3572594032.92108|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=9.5|concreteMax=9.5|steelMin=9.5|steelMax=9.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.3.9.5.2.equilibrium
+OK: audit03.extended.RectL.Newton.3.9.5.2.rN; actual=0.000000003725; expected=0.
+OK: audit03.extended.RectL.Newton.3.9.5.2.rMx; actual=0.000000476837; expected=0.
+OK: audit03.extended.RectL.Newton.3.9.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Newton.3.9.5.2.extensionUsed
+OK: audit03.extended.RectL.Newton.3.9.5.2.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.3.9.5.2.physicalFail
+OK: audit03.extended.RectL.Newton.3.9.5.2.displayFail
+OK: audit03.extended.RectL.Newton.3.9.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Newton.3.9.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Newton.3.9.5.3|N=-54340889.6671538|Mx=-3567000200.00329|My=-6287251093.10572|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-6.171945701357|concreteMax=6.608108108108|steelMin=-4.582242876361|steelMax=5.046716399658|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Newton.3.9.5.3.equilibrium
+OK: audit03.extended.RectL.Newton.3.9.5.3.rN; actual=0.000000022352; expected=0.
+OK: audit03.extended.RectL.Newton.3.9.5.3.rMx; actual=0.000002384186; expected=0.
+OK: audit03.extended.RectL.Newton.3.9.5.3.rMy; actual=-0.000004768372; expected=0.
+OK: audit03.extended.RectL.Newton.3.9.5.3.extensionUsed
+OK: audit03.extended.RectL.Newton.3.9.5.3.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Newton.3.9.5.3.physicalFail
+OK: audit03.extended.RectL.Newton.3.9.5.3.displayFail
+OK: audit03.extended.RectL.Secant.1.0.05.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.1.0.05.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.1.0.05.1|N=-4620529.30782122|Mx=-875277032.365776|My=-805984637.304271|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.05|concreteMax=-0.05|steelMin=-0.05|steelMax=-0.05|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.1.0.05.1.equilibrium
+OK: audit03.extended.RectL.Secant.1.0.05.1.rN; actual=-0.000000002794; expected=0.
+OK: audit03.extended.RectL.Secant.1.0.05.1.rMx; actual=-0.000000238419; expected=0.
+OK: audit03.extended.RectL.Secant.1.0.05.1.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.1.0.05.1.extensionUsed
+OK: audit03.extended.RectL.Secant.1.0.05.1.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.1.0.05.1.physicalFail
+OK: audit03.extended.RectL.Secant.1.0.05.1.displayFail
+OK: audit03.extended.RectL.Secant.1.0.05.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.1.0.05.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.1.0.05.2|N=341805.280710569|Mx=52778756.5803085|My=73890259.2124319|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=0.05|concreteMax=0.05|steelMin=0.05|steelMax=0.05|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.1.0.05.2.equilibrium
+OK: audit03.extended.RectL.Secant.1.0.05.2.rN; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.1.0.05.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.1.0.05.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.1.0.05.2.extensionUsed
+OK: audit03.extended.RectL.Secant.1.0.05.2.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.1.0.05.2.physicalFail
+OK: audit03.extended.RectL.Secant.1.0.05.2.displayFail
+OK: audit03.extended.RectL.Secant.1.0.05.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.1.0.05.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.1.0.05.3|N=-1272198.3874215|Mx=-88025456.4611157|My=-180549203.631854|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.032483924744|concreteMax=0.034779516358|steelMin=-0.02411706777|steelMax=0.026561665261|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.1.0.05.3.equilibrium
+OK: audit03.extended.RectL.Secant.1.0.05.3.rN; actual=-0.000000001397; expected=0.
+OK: audit03.extended.RectL.Secant.1.0.05.3.rMx; actual=-0.00000013411; expected=0.
+OK: audit03.extended.RectL.Secant.1.0.05.3.rMy; actual=0.000000119209; expected=0.
+OK: audit03.extended.RectL.Secant.1.0.05.3.extensionUsed
+OK: audit03.extended.RectL.Secant.1.0.05.3.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.1.0.05.3.physicalFail
+OK: audit03.extended.RectL.Secant.1.0.05.3.displayFail
+OK: audit03.extended.RectL.Secant.1.0.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.1.0.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.1.0.5.1|N=-25831024.8836602|Mx=-4923482001.79679|My=-4469789465.60145|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.5|concreteMax=-0.5|steelMin=-0.5|steelMax=-0.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.1.0.5.1.equilibrium
+OK: audit03.extended.RectL.Secant.1.0.5.1.rN; actual=0.000000003725; expected=0.
+OK: audit03.extended.RectL.Secant.1.0.5.1.rMx; actual=0.000000953674; expected=0.
+OK: audit03.extended.RectL.Secant.1.0.5.1.rMy; actual=0.000000953674; expected=0.
+OK: audit03.extended.RectL.Secant.1.0.5.1.extensionUsed
+OK: audit03.extended.RectL.Secant.1.0.5.1.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.1.0.5.1.physicalFail
+OK: audit03.extended.RectL.Secant.1.0.5.1.displayFail
+OK: audit03.extended.RectL.Secant.1.0.5.1.offNoEquilibrium
+OK: audit03.extended.RectL.Secant.1.0.5.1.offNumericalCause
+OK: audit03.extended.RectL.Secant.1.0.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.1.0.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.1.0.5.2|N=1110867.16230935|Mx=171530958.886003|My=240143342.440404|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=0.5|concreteMax=0.5|steelMin=0.5|steelMax=0.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.1.0.5.2.equilibrium
+OK: audit03.extended.RectL.Secant.1.0.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.1.0.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.1.0.5.2.rMy; actual=0.000000029802; expected=0.
+OK: audit03.extended.RectL.Secant.1.0.5.2.extensionUsed
+OK: audit03.extended.RectL.Secant.1.0.5.2.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.1.0.5.2.physicalFail
+OK: audit03.extended.RectL.Secant.1.0.5.2.displayFail
+OK: audit03.extended.RectL.Secant.1.0.5.2.offNoEquilibrium
+OK: audit03.extended.RectL.Secant.1.0.5.2.offNumericalCause
+OK: audit03.extended.RectL.Secant.1.0.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.1.0.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.1.0.5.3|N=-3804507.11598406|Mx=-257502747.497606|My=-473533081.737595|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.32483924744|concreteMax=0.347795163585|steelMin=-0.241170677703|steelMax=0.265616652614|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.1.0.5.3.equilibrium
+OK: audit03.extended.RectL.Secant.1.0.5.3.rN; actual=-0.000000003725; expected=0.
+OK: audit03.extended.RectL.Secant.1.0.5.3.rMx; actual=0.000000119209; expected=0.
+OK: audit03.extended.RectL.Secant.1.0.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.1.0.5.3.extensionUsed
+OK: audit03.extended.RectL.Secant.1.0.5.3.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.1.0.5.3.physicalFail
+OK: audit03.extended.RectL.Secant.1.0.5.3.displayFail
+OK: audit03.extended.RectL.Secant.1.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.1.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.1.5.1|N=-237935980.64205|Mx=-45405531696.107|My=-41107837748.5732|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-5.|concreteMax=-5.|steelMin=-5.|steelMax=-5.|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.1.5.1.equilibrium
+OK: audit03.extended.RectL.Secant.1.5.1.rN; actual=0.000000029802; expected=0.
+OK: audit03.extended.RectL.Secant.1.5.1.rMx; actual=0.000007629395; expected=0.
+OK: audit03.extended.RectL.Secant.1.5.1.rMy; actual=0.000007629395; expected=0.
+OK: audit03.extended.RectL.Secant.1.5.1.extensionUsed
+OK: audit03.extended.RectL.Secant.1.5.1.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.1.5.1.physicalFail
+OK: audit03.extended.RectL.Secant.1.5.1.displayFail
+OK: audit03.extended.RectL.Secant.1.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.1.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.1.5.2|N=8801485.97829716|Mx=1359052981.94294|My=1902674174.72012|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=5.|concreteMax=5.|steelMin=5.|steelMax=5.|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.1.5.2.equilibrium
+OK: audit03.extended.RectL.Secant.1.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.1.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.1.5.2.rMy; actual=0.000000238419; expected=0.
+OK: audit03.extended.RectL.Secant.1.5.2.extensionUsed
+OK: audit03.extended.RectL.Secant.1.5.2.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.1.5.2.physicalFail
+OK: audit03.extended.RectL.Secant.1.5.2.displayFail
+OK: audit03.extended.RectL.Secant.1.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.1.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.1.5.3|N=-28841592.9613736|Mx=-1890690340.36603|My=-3344323854.45566|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-3.248392474399|concreteMax=3.477951635846|steelMin=-2.411706777032|steelMax=2.656166526136|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.1.5.3.equilibrium
+OK: audit03.extended.RectL.Secant.1.5.3.rN; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.1.5.3.rMx; actual=0.000001430511; expected=0.
+OK: audit03.extended.RectL.Secant.1.5.3.rMy; actual=-0.000004291534; expected=0.
+OK: audit03.extended.RectL.Secant.1.5.3.extensionUsed
+OK: audit03.extended.RectL.Secant.1.5.3.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.1.5.3.physicalFail
+OK: audit03.extended.RectL.Secant.1.5.3.displayFail
+OK: audit03.extended.RectL.Secant.1.9.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.1.9.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.1.9.5.1|N=-450040936.40044|Mx=-85887581390.4171|My=-77745886031.545|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-9.5|concreteMax=-9.5|steelMin=-9.5|steelMax=-9.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.1.9.5.1.equilibrium
+OK: audit03.extended.RectL.Secant.1.9.5.1.rN; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.1.9.5.1.rMx; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.1.9.5.1.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.1.9.5.1.extensionUsed
+OK: audit03.extended.RectL.Secant.1.9.5.1.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.1.9.5.1.physicalFail
+OK: audit03.extended.RectL.Secant.1.9.5.1.displayFail
+OK: audit03.extended.RectL.Secant.1.9.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.1.9.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.1.9.5.2|N=16492104.794285|Mx=2546575004.99989|My=3565205006.99984|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=9.5|concreteMax=9.5|steelMin=9.5|steelMax=9.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.1.9.5.2.equilibrium
+OK: audit03.extended.RectL.Secant.1.9.5.2.rN; actual=0.000000003725; expected=0.
+OK: audit03.extended.RectL.Secant.1.9.5.2.rMx; actual=0.000000476837; expected=0.
+OK: audit03.extended.RectL.Secant.1.9.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.1.9.5.2.extensionUsed
+OK: audit03.extended.RectL.Secant.1.9.5.2.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.1.9.5.2.physicalFail
+OK: audit03.extended.RectL.Secant.1.9.5.2.displayFail
+OK: audit03.extended.RectL.Secant.1.9.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.1.9.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.1.9.5.3|N=-53877494.9600596|Mx=-3523678159.10322|My=-6214870458.79112|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-6.171945701357|concreteMax=6.608108108108|steelMin=-4.582242876361|steelMax=5.046716399658|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.1.9.5.3.equilibrium
+OK: audit03.extended.RectL.Secant.1.9.5.3.rN; actual=0.000000022352; expected=0.
+OK: audit03.extended.RectL.Secant.1.9.5.3.rMx; actual=0.000002384186; expected=0.
+OK: audit03.extended.RectL.Secant.1.9.5.3.rMy; actual=-0.000004768372; expected=0.
+OK: audit03.extended.RectL.Secant.1.9.5.3.extensionUsed
+OK: audit03.extended.RectL.Secant.1.9.5.3.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.1.9.5.3.physicalFail
+OK: audit03.extended.RectL.Secant.1.9.5.3.displayFail
+OK: audit03.extended.RectL.Secant.3.0.05.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.3.0.05.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.3.0.05.1|N=-5563218.00008073|Mx=-1055197253.22938|My=-968820407.450812|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=-0.05|concreteMax=-0.05|steelMin=-0.05|steelMax=-0.05|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.3.0.05.1.equilibrium
+OK: audit03.extended.RectL.Secant.3.0.05.1.rN; actual=0.000000006519; expected=0.
+OK: audit03.extended.RectL.Secant.3.0.05.1.rMx; actual=-0.000000357628; expected=0.
+OK: audit03.extended.RectL.Secant.3.0.05.1.rMy; actual=0.000001072884; expected=0.
+OK: audit03.extended.RectL.Secant.3.0.05.1.extensionUsed
+OK: audit03.extended.RectL.Secant.3.0.05.1.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.3.0.05.1.physicalFail
+OK: audit03.extended.RectL.Secant.3.0.05.1.displayFail
+OK: audit03.extended.RectL.Secant.3.0.05.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.3.0.05.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.3.0.05.2|N=375985.808781626|Mx=58056632.2383394|My=81279285.1336751|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=0.05|concreteMax=0.05|steelMin=0.05|steelMax=0.05|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.3.0.05.2.equilibrium
+OK: audit03.extended.RectL.Secant.3.0.05.2.rN; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.3.0.05.2.rMx; actual=0.000000007451; expected=0.
+OK: audit03.extended.RectL.Secant.3.0.05.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.3.0.05.2.extensionUsed
+OK: audit03.extended.RectL.Secant.3.0.05.2.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.3.0.05.2.physicalFail
+OK: audit03.extended.RectL.Secant.3.0.05.2.displayFail
+OK: audit03.extended.RectL.Secant.3.0.05.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.3.0.05.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.3.0.05.3|N=-1702339.29259059|Mx=-125891408.978976|My=-245979506.589659|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=1|concreteMin=-0.03248392662|concreteMax=0.034779516941|steelMin=-0.024117069806|steelMax=0.026561665924|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.3.0.05.3.equilibrium
+OK: audit03.extended.RectL.Secant.3.0.05.3.rN; actual=-0.157991944579; expected=0.
+OK: audit03.extended.RectL.Secant.3.0.05.3.rMx; actual=-14.811744749546; expected=0.
+OK: audit03.extended.RectL.Secant.3.0.05.3.rMy; actual=-44.435234427452; expected=0.
+OK: audit03.extended.RectL.Secant.3.0.05.3.extensionUsed
+OK: audit03.extended.RectL.Secant.3.0.05.3.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.3.0.05.3.physicalFail
+OK: audit03.extended.RectL.Secant.3.0.05.3.displayFail
+OK: audit03.extended.RectL.Secant.3.0.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.3.0.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.3.0.5.1|N=-26773713.5759197|Mx=-5103402222.66039|My=-4632625235.74799|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.5|concreteMax=-0.5|steelMin=-0.5|steelMax=-0.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.3.0.5.1.equilibrium
+OK: audit03.extended.RectL.Secant.3.0.5.1.rN; actual=0.000000014901; expected=0.
+OK: audit03.extended.RectL.Secant.3.0.5.1.rMx; actual=0.000001907349; expected=0.
+OK: audit03.extended.RectL.Secant.3.0.5.1.rMy; actual=0.000000953674; expected=0.
+OK: audit03.extended.RectL.Secant.3.0.5.1.extensionUsed
+OK: audit03.extended.RectL.Secant.3.0.5.1.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.3.0.5.1.physicalFail
+OK: audit03.extended.RectL.Secant.3.0.5.1.displayFail
+OK: audit03.extended.RectL.Secant.3.0.5.1.offNoEquilibrium
+OK: audit03.extended.RectL.Secant.3.0.5.1.offNumericalCause
+OK: audit03.extended.RectL.Secant.3.0.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.3.0.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.3.0.5.2|N=1145047.69038041|Mx=176808834.544034|My=247532368.361647|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=0.5|concreteMax=0.5|steelMin=0.5|steelMax=0.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.3.0.5.2.equilibrium
+OK: audit03.extended.RectL.Secant.3.0.5.2.rN; actual=0.000000000233; expected=0.
+OK: audit03.extended.RectL.Secant.3.0.5.2.rMx; actual=-0.000000029802; expected=0.
+OK: audit03.extended.RectL.Secant.3.0.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.3.0.5.2.extensionUsed
+OK: audit03.extended.RectL.Secant.3.0.5.2.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.3.0.5.2.physicalFail
+OK: audit03.extended.RectL.Secant.3.0.5.2.displayFail
+OK: audit03.extended.RectL.Secant.3.0.5.2.offNoEquilibrium
+OK: audit03.extended.RectL.Secant.3.0.5.2.offNumericalCause
+OK: audit03.extended.RectL.Secant.3.0.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.3.0.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.3.0.5.3|N=-4269955.7376959|Mx=-301171386.489395|My=-546337335.942079|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.324839247431|concreteMax=0.347795163525|steelMin=-0.241170677696|steelMax=0.265616652557|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.3.0.5.3.equilibrium
+OK: audit03.extended.RectL.Secant.3.0.5.3.rN; actual=-0.000158392824; expected=0.
+OK: audit03.extended.RectL.Secant.3.0.5.3.rMx; actual=-0.038327515125; expected=0.
+OK: audit03.extended.RectL.Secant.3.0.5.3.rMy; actual=-0.01519215107; expected=0.
+OK: audit03.extended.RectL.Secant.3.0.5.3.extensionUsed
+OK: audit03.extended.RectL.Secant.3.0.5.3.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.3.0.5.3.physicalFail
+OK: audit03.extended.RectL.Secant.3.0.5.3.displayFail
+OK: audit03.extended.RectL.Secant.3.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.3.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.3.5.1|N=-238878669.334309|Mx=-45585451916.9706|My=-41270673518.7198|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-5.|concreteMax=-5.|steelMin=-5.|steelMax=-5.|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.3.5.1.equilibrium
+OK: audit03.extended.RectL.Secant.3.5.1.rN; actual=0.000000149012; expected=0.
+OK: audit03.extended.RectL.Secant.3.5.1.rMx; actual=0.000022888184; expected=0.
+OK: audit03.extended.RectL.Secant.3.5.1.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.3.5.1.extensionUsed
+OK: audit03.extended.RectL.Secant.3.5.1.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.3.5.1.physicalFail
+OK: audit03.extended.RectL.Secant.3.5.1.displayFail
+OK: audit03.extended.RectL.Secant.3.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.3.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.3.5.2|N=8835666.50636822|Mx=1364330857.60098|My=1910063200.64137|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=5.|concreteMax=5.|steelMin=5.|steelMax=5.|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.3.5.2.equilibrium
+OK: audit03.extended.RectL.Secant.3.5.2.rN; actual=0.000000001863; expected=0.
+OK: audit03.extended.RectL.Secant.3.5.2.rMx; actual=0.000000238419; expected=0.
+OK: audit03.extended.RectL.Secant.3.5.2.rMy; actual=0.000000238419; expected=0.
+OK: audit03.extended.RectL.Secant.3.5.2.extensionUsed
+OK: audit03.extended.RectL.Secant.3.5.2.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.3.5.2.physicalFail
+OK: audit03.extended.RectL.Secant.3.5.2.displayFail
+OK: audit03.extended.RectL.Secant.3.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.3.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.3.5.3|N=-29304987.6684678|Mx=-1934012381.2661|My=-3416704488.77026|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-3.248392474399|concreteMax=3.477951635846|steelMin=-2.411706777032|steelMax=2.656166526136|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.3.5.3.equilibrium
+OK: audit03.extended.RectL.Secant.3.5.3.rN; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.3.5.3.rMx; actual=0.000002384186; expected=0.
+OK: audit03.extended.RectL.Secant.3.5.3.rMy; actual=-0.000002861023; expected=0.
+OK: audit03.extended.RectL.Secant.3.5.3.extensionUsed
+OK: audit03.extended.RectL.Secant.3.5.3.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.3.5.3.physicalFail
+OK: audit03.extended.RectL.Secant.3.5.3.displayFail
+OK: audit03.extended.RectL.Secant.3.9.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.3.9.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.3.9.5.1|N=-450983625.092699|Mx=-86067501611.2808|My=-77908721801.6915|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-9.5|concreteMax=-9.5|steelMin=-9.5|steelMax=-9.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.3.9.5.1.equilibrium
+OK: audit03.extended.RectL.Secant.3.9.5.1.rN; actual=0.000000059605; expected=0.
+OK: audit03.extended.RectL.Secant.3.9.5.1.rMx; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.3.9.5.1.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.3.9.5.1.extensionUsed
+OK: audit03.extended.RectL.Secant.3.9.5.1.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.3.9.5.1.physicalFail
+OK: audit03.extended.RectL.Secant.3.9.5.1.displayFail
+OK: audit03.extended.RectL.Secant.3.9.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.3.9.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.3.9.5.2|N=16526285.322356|Mx=2551852880.65792|My=3572594032.92108|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=9.5|concreteMax=9.5|steelMin=9.5|steelMax=9.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.3.9.5.2.equilibrium
+OK: audit03.extended.RectL.Secant.3.9.5.2.rN; actual=0.000000003725; expected=0.
+OK: audit03.extended.RectL.Secant.3.9.5.2.rMx; actual=0.000000476837; expected=0.
+OK: audit03.extended.RectL.Secant.3.9.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.RectL.Secant.3.9.5.2.extensionUsed
+OK: audit03.extended.RectL.Secant.3.9.5.2.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.3.9.5.2.physicalFail
+OK: audit03.extended.RectL.Secant.3.9.5.2.displayFail
+OK: audit03.extended.RectL.Secant.3.9.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.RectL.Secant.3.9.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.RectL.Secant.3.9.5.3|N=-54340889.6671538|Mx=-3567000200.00329|My=-6287251093.10572|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-6.171945701357|concreteMax=6.608108108108|steelMin=-4.582242876361|steelMax=5.046716399658|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.RectL.Secant.3.9.5.3.equilibrium
+OK: audit03.extended.RectL.Secant.3.9.5.3.rN; actual=0.000000022352; expected=0.
+OK: audit03.extended.RectL.Secant.3.9.5.3.rMx; actual=0.000002384186; expected=0.
+OK: audit03.extended.RectL.Secant.3.9.5.3.rMy; actual=-0.000004768372; expected=0.
+OK: audit03.extended.RectL.Secant.3.9.5.3.extensionUsed
+OK: audit03.extended.RectL.Secant.3.9.5.3.insideTechnicalEndpoints
+OK: audit03.extended.RectL.Secant.3.9.5.3.physicalFail
+OK: audit03.extended.RectL.Secant.3.9.5.3.displayFail
+OK: audit03.extendedBeyond.RectL.-1.noEquilibrium
+OK: audit03.extendedBeyond.RectL.-1.numeric
+OK: audit03.extendedBeyond.RectL.-1.reason
+OK: audit03.extendedBeyond.RectL.1.noEquilibrium
+OK: audit03.extendedBeyond.RectL.1.numeric
+OK: audit03.extendedBeyond.RectL.1.reason
+TOTAL_AUDIT03_EXTENDED_OVERLOAD: shape=RectL; knownStates=48; passed=502; failed=0
+
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03ExtendedOverloadEquilibriumTests; 2026-10-02T09:31:38
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

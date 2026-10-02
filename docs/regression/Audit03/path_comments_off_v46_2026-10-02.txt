@@ -1,0 +1,979 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_source_v46.xlsm
+SOURCE_SHA256: BB94807A0C5788FB2E07B1D37AB3E9EE42D802B6A111BBAFCBE8E756D9D1EAB4
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_583ed616df0e44fea35130ee47247f17\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03LoadPathCommentTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03LoadPathCommentTests; 2026-10-02T08:50:56
+EXCEL_AFTER_SUITE: pid=24216; workingSet=145686528; privateBytes=100716544; cpu=5.96875
+SETUP: ZeroMomentPerDepth=0; stability=No; offsetX=10 mm; offsetY=-7 mm
+SETUP: effective DiagramExtension=False
+CASE: audit03.paths.A03_C_0_0|N=-150000|Mx=-6000000|My=-3000000|offsetX=10|offsetY=-7|path=Mx|selection=Mx|lambda=6.594489015076|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: audit03.paths.A03_C_0_0.path
+OK: audit03.paths.A03_C_0_0.validInput
+OK: audit03.paths.A03_C_0_0.NU; actual=-149999.999998629; expected=-150000.
+OK: audit03.paths.A03_C_0_0.MxU; actual=-39566934.090446; expected=-39566934.0904556
+OK: audit03.paths.A03_C_0_0.MyU; actual=-3000019.19599547; expected=-3000000.
+OK: audit03.paths.A03_C_0_0.stateMx; actual=-38516934.0904556; expected=-38516934.0904556
+OK: audit03.paths.A03_C_0_0.stateMy; actual=-4500019.19598176; expected=-4500000.
+OK: audit03.paths.A03_C_0_0.physicalCriterion
+OK: audit03.paths.A03_C_0_0.finalPhysical
+META: audit03.comments.A03_C_0_0.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.A03_C_0_0.direct.russianReason
+OK: audit03.comments.A03_C_0_0.direct.readable
+OK: audit03.comments.A03_C_0_0.direct.noMachinePrefix
+META: audit03.comments.A03_C_0_0.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.A03_C_0_0.capacity.russianReason
+OK: audit03.comments.A03_C_0_0.capacity.readable
+OK: audit03.comments.A03_C_0_0.capacity.noMachinePrefix
+META: audit03.comments.A03_C_0_0.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_0_0.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_0_0.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_0_0.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_0_0.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_C_0_0.formulaNoNumFail
+OK: audit03.comments.A03_C_0_0.strengthNoCrack
+OK: audit03.comments.A03_C_0_0.crackNoCapacity
+OK: audit03.comments.A03_C_0_0.overallComposition
+OK: audit03.comments.A03_C_0_0.batchOutput
+OK: audit03.comments.A03_C_0_0.strengthOutput
+OK: audit03.comments.A03_C_0_0.crackOutput
+OK: audit03.comments.A03_C_0_0.stabilityOutput
+OUTPUT: audit03.comments.A03_C_0_0|strength=|crack=|stability=|batch=
+CASE: audit03.paths.A03_C_0_1|N=-1500000|Mx=-60000000|My=20000000|offsetX=10|offsetY=-7|path=Mx|selection=Mx|lambda=0.|method=LoadMultiplier|limit=NumericalFailure|status=NumFail
+OK: audit03.paths.A03_C_0_1.path
+OK: audit03.paths.A03_C_0_1.validInput
+META: audit03.comments.A03_C_0_1.direct|status=rsNumericalFailure|code=NUMERICAL_FAILURE|applies=True|calculated=True|comment=Подбор шага решения не смог уменьшить невязку равновесия.
+OK: audit03.comments.A03_C_0_1.direct.reasonPresent
+OK: audit03.comments.A03_C_0_1.direct.russianReason
+OK: audit03.comments.A03_C_0_1.direct.readable
+OK: audit03.comments.A03_C_0_1.direct.noMachinePrefix
+OK: audit03.comments.A03_C_0_1.direct.ownSubtree
+META: audit03.comments.A03_C_0_1.capacity|status=rsNumericalFailure|code=NUMERICAL_FAILURE|applies=True|calculated=True|comment=Равновесие для исходной точки пути несущей не найдено численно: равновесие не сошлось численно.
+OK: audit03.comments.A03_C_0_1.capacity.reasonPresent
+OK: audit03.comments.A03_C_0_1.capacity.russianReason
+OK: audit03.comments.A03_C_0_1.capacity.readable
+OK: audit03.comments.A03_C_0_1.capacity.noMachinePrefix
+OK: audit03.comments.A03_C_0_1.capacity.ownSubtree
+META: audit03.comments.A03_C_0_1.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_0_1.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_0_1.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_0_1.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_0_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_C_0_1.formulaNoNumFail
+OK: audit03.comments.A03_C_0_1.strengthNoCrack
+OK: audit03.comments.A03_C_0_1.crackNoCapacity
+OK: audit03.comments.A03_C_0_1.overallComposition
+OK: audit03.comments.A03_C_0_1.batchOutput
+OK: audit03.comments.A03_C_0_1.strengthOutput
+OK: audit03.comments.A03_C_0_1.crackOutput
+OK: audit03.comments.A03_C_0_1.stabilityOutput
+OUTPUT: audit03.comments.A03_C_0_1|strength=НДС: Подбор шага решения не смог уменьшить невязку равновесия.; Несущая: Равновесие для исходной точки пути несущей не найдено численно: равновесие не сошлось численно.|crack=|stability=|batch=НДС: Подбор шага решения не смог уменьшить невязку равновесия.; Несущая: Равновесие для исходной точки пути несущей не найдено численно: равновесие не сошлось численно.
+CASE: audit03.paths.A03_C_0_2|N=200000|Mx=9000000|My=-3000000|offsetX=10|offsetY=-7|path=Mx|selection=Mx|lambda=2.129804167736|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: audit03.paths.A03_C_0_2.path
+OK: audit03.paths.A03_C_0_2.validInput
+OK: audit03.paths.A03_C_0_2.NU; actual=199999.999947117; expected=200000.
+OK: audit03.paths.A03_C_0_2.MxU; actual=19168237.5092525; expected=19168237.5096227
+OK: audit03.paths.A03_C_0_2.MyU; actual=-3000737.23475946; expected=-3000000.
+OK: audit03.paths.A03_C_0_2.stateMx; actual=17768237.5096227; expected=17768237.5096227
+OK: audit03.paths.A03_C_0_2.stateMy; actual=-1000737.23528829; expected=-1000000.
+OK: audit03.paths.A03_C_0_2.physicalCriterion
+OK: audit03.paths.A03_C_0_2.finalPhysical
+META: audit03.comments.A03_C_0_2.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.A03_C_0_2.direct.russianReason
+OK: audit03.comments.A03_C_0_2.direct.readable
+OK: audit03.comments.A03_C_0_2.direct.noMachinePrefix
+META: audit03.comments.A03_C_0_2.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.A03_C_0_2.capacity.russianReason
+OK: audit03.comments.A03_C_0_2.capacity.readable
+OK: audit03.comments.A03_C_0_2.capacity.noMachinePrefix
+META: audit03.comments.A03_C_0_2.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_0_2.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_0_2.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_0_2.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_0_2.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_C_0_2.formulaNoNumFail
+OK: audit03.comments.A03_C_0_2.strengthNoCrack
+OK: audit03.comments.A03_C_0_2.crackNoCapacity
+OK: audit03.comments.A03_C_0_2.overallComposition
+OK: audit03.comments.A03_C_0_2.batchOutput
+OK: audit03.comments.A03_C_0_2.strengthOutput
+OK: audit03.comments.A03_C_0_2.crackOutput
+OK: audit03.comments.A03_C_0_2.stabilityOutput
+OUTPUT: audit03.comments.A03_C_0_2|strength=|crack=|stability=|batch=
+CASE: audit03.paths.A03_C_1_0|N=-150000|Mx=-6000000|My=-3000000|offsetX=10|offsetY=-7|path=My|selection=My|lambda=18.725646972656|method=LoadMultiplier|limit=ConcreteStrainLimit|status=OK
+OK: audit03.paths.A03_C_1_0.path
+OK: audit03.paths.A03_C_1_0.validInput
+OK: audit03.paths.A03_C_1_0.NU; actual=-150000.; expected=-150000.
+OK: audit03.paths.A03_C_1_0.MxU; actual=-6000000.; expected=-6000000.
+OK: audit03.paths.A03_C_1_0.MyU; actual=-56176940.9179688; expected=-56176940.9179688
+OK: audit03.paths.A03_C_1_0.stateMx; actual=-4950000.; expected=-4950000.
+OK: audit03.paths.A03_C_1_0.stateMy; actual=-57676940.9179688; expected=-57676940.9179688
+OK: audit03.paths.A03_C_1_0.physicalCriterion
+OK: audit03.paths.A03_C_1_0.finalPhysical
+META: audit03.comments.A03_C_1_0.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.A03_C_1_0.direct.russianReason
+OK: audit03.comments.A03_C_1_0.direct.readable
+OK: audit03.comments.A03_C_1_0.direct.noMachinePrefix
+META: audit03.comments.A03_C_1_0.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Auto: UltimateStrain не сошелся, предельная точка найдена через LoadMultiplier. Поиск несущей способности методом Bisection сошелся; верхняя граница подтверждена: предельная деформация бетона уже превышена.
+OK: audit03.comments.A03_C_1_0.capacity.russianReason
+OK: audit03.comments.A03_C_1_0.capacity.readable
+OK: audit03.comments.A03_C_1_0.capacity.noMachinePrefix
+META: audit03.comments.A03_C_1_0.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_1_0.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_1_0.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_1_0.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_1_0.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_C_1_0.formulaNoNumFail
+OK: audit03.comments.A03_C_1_0.strengthNoCrack
+OK: audit03.comments.A03_C_1_0.crackNoCapacity
+OK: audit03.comments.A03_C_1_0.overallComposition
+OK: audit03.comments.A03_C_1_0.batchOutput
+OK: audit03.comments.A03_C_1_0.strengthOutput
+OK: audit03.comments.A03_C_1_0.crackOutput
+OK: audit03.comments.A03_C_1_0.stabilityOutput
+OUTPUT: audit03.comments.A03_C_1_0|strength=|crack=|stability=|batch=
+CASE: audit03.paths.A03_C_1_1|N=-1500000|Mx=-60000000|My=20000000|offsetX=10|offsetY=-7|path=My|selection=My|lambda=0.|method=LoadMultiplier|limit=NumericalFailure|status=NumFail
+OK: audit03.paths.A03_C_1_1.path
+OK: audit03.paths.A03_C_1_1.validInput
+META: audit03.comments.A03_C_1_1.direct|status=rsNumericalFailure|code=NUMERICAL_FAILURE|applies=True|calculated=True|comment=Подбор шага решения не смог уменьшить невязку равновесия.
+OK: audit03.comments.A03_C_1_1.direct.reasonPresent
+OK: audit03.comments.A03_C_1_1.direct.russianReason
+OK: audit03.comments.A03_C_1_1.direct.readable
+OK: audit03.comments.A03_C_1_1.direct.noMachinePrefix
+OK: audit03.comments.A03_C_1_1.direct.ownSubtree
+META: audit03.comments.A03_C_1_1.capacity|status=rsNumericalFailure|code=NUMERICAL_FAILURE|applies=True|calculated=True|comment=Равновесие для исходной точки пути несущей не найдено численно: равновесие не сошлось численно.
+OK: audit03.comments.A03_C_1_1.capacity.reasonPresent
+OK: audit03.comments.A03_C_1_1.capacity.russianReason
+OK: audit03.comments.A03_C_1_1.capacity.readable
+OK: audit03.comments.A03_C_1_1.capacity.noMachinePrefix
+OK: audit03.comments.A03_C_1_1.capacity.ownSubtree
+META: audit03.comments.A03_C_1_1.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_1_1.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_1_1.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_1_1.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_1_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_C_1_1.formulaNoNumFail
+OK: audit03.comments.A03_C_1_1.strengthNoCrack
+OK: audit03.comments.A03_C_1_1.crackNoCapacity
+OK: audit03.comments.A03_C_1_1.overallComposition
+OK: audit03.comments.A03_C_1_1.batchOutput
+OK: audit03.comments.A03_C_1_1.strengthOutput
+OK: audit03.comments.A03_C_1_1.crackOutput
+OK: audit03.comments.A03_C_1_1.stabilityOutput
+OUTPUT: audit03.comments.A03_C_1_1|strength=НДС: Подбор шага решения не смог уменьшить невязку равновесия.; Несущая: Равновесие для исходной точки пути несущей не найдено численно: равновесие не сошлось численно.|crack=|stability=|batch=НДС: Подбор шага решения не смог уменьшить невязку равновесия.; Несущая: Равновесие для исходной точки пути несущей не найдено численно: равновесие не сошлось численно.
+CASE: audit03.paths.A03_C_1_2|N=200000|Mx=9000000|My=-3000000|offsetX=10|offsetY=-7|path=My|selection=My|lambda=9.391056377465|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: audit03.paths.A03_C_1_2.path
+OK: audit03.paths.A03_C_1_2.validInput
+OK: audit03.paths.A03_C_1_2.NU; actual=199999.999999943; expected=200000.
+OK: audit03.paths.A03_C_1_2.MxU; actual=9000000.01502912; expected=9000000.
+OK: audit03.paths.A03_C_1_2.MyU; actual=-28173169.1323936; expected=-28173169.1323942
+OK: audit03.paths.A03_C_1_2.stateMx; actual=7600000.01502953; expected=7600000.
+OK: audit03.paths.A03_C_1_2.stateMy; actual=-26173169.1323942; expected=-26173169.1323942
+OK: audit03.paths.A03_C_1_2.physicalCriterion
+OK: audit03.paths.A03_C_1_2.finalPhysical
+META: audit03.comments.A03_C_1_2.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.A03_C_1_2.direct.russianReason
+OK: audit03.comments.A03_C_1_2.direct.readable
+OK: audit03.comments.A03_C_1_2.direct.noMachinePrefix
+META: audit03.comments.A03_C_1_2.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.A03_C_1_2.capacity.russianReason
+OK: audit03.comments.A03_C_1_2.capacity.readable
+OK: audit03.comments.A03_C_1_2.capacity.noMachinePrefix
+META: audit03.comments.A03_C_1_2.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_1_2.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_1_2.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_1_2.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_1_2.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_C_1_2.formulaNoNumFail
+OK: audit03.comments.A03_C_1_2.strengthNoCrack
+OK: audit03.comments.A03_C_1_2.crackNoCapacity
+OK: audit03.comments.A03_C_1_2.overallComposition
+OK: audit03.comments.A03_C_1_2.batchOutput
+OK: audit03.comments.A03_C_1_2.strengthOutput
+OK: audit03.comments.A03_C_1_2.crackOutput
+OK: audit03.comments.A03_C_1_2.stabilityOutput
+OUTPUT: audit03.comments.A03_C_1_2|strength=|crack=|stability=|batch=
+CASE: audit03.paths.A03_C_2_0|N=-150000|Mx=-6000000|My=-3000000|offsetX=10|offsetY=-7|path=Mxy|selection=Mxy|lambda=6.180809629012|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: audit03.paths.A03_C_2_0.path
+OK: audit03.paths.A03_C_2_0.validInput
+OK: audit03.paths.A03_C_2_0.NU; actual=-149999.999999869; expected=-150000.
+OK: audit03.paths.A03_C_2_0.MxU; actual=-37084857.7872636; expected=-37084857.7740724
+OK: audit03.paths.A03_C_2_0.MyU; actual=-18542428.8606533; expected=-18542428.8870362
+OK: audit03.paths.A03_C_2_0.stateMx; actual=-36034857.7872645; expected=-36034857.7740724
+OK: audit03.paths.A03_C_2_0.stateMy; actual=-20042428.860652; expected=-20042428.8870362
+OK: audit03.paths.A03_C_2_0.physicalCriterion
+OK: audit03.paths.A03_C_2_0.finalPhysical
+META: audit03.comments.A03_C_2_0.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.A03_C_2_0.direct.russianReason
+OK: audit03.comments.A03_C_2_0.direct.readable
+OK: audit03.comments.A03_C_2_0.direct.noMachinePrefix
+META: audit03.comments.A03_C_2_0.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.A03_C_2_0.capacity.russianReason
+OK: audit03.comments.A03_C_2_0.capacity.readable
+OK: audit03.comments.A03_C_2_0.capacity.noMachinePrefix
+META: audit03.comments.A03_C_2_0.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_2_0.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_2_0.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_2_0.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_2_0.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_C_2_0.formulaNoNumFail
+OK: audit03.comments.A03_C_2_0.strengthNoCrack
+OK: audit03.comments.A03_C_2_0.crackNoCapacity
+OK: audit03.comments.A03_C_2_0.overallComposition
+OK: audit03.comments.A03_C_2_0.batchOutput
+OK: audit03.comments.A03_C_2_0.strengthOutput
+OK: audit03.comments.A03_C_2_0.crackOutput
+OK: audit03.comments.A03_C_2_0.stabilityOutput
+OUTPUT: audit03.comments.A03_C_2_0|strength=|crack=|stability=|batch=
+CASE: audit03.paths.A03_C_2_1|N=-1500000|Mx=-60000000|My=20000000|offsetX=10|offsetY=-7|path=Mxy|selection=Mxy|lambda=0.|method=LoadMultiplier|limit=NumericalFailure|status=NumFail
+OK: audit03.paths.A03_C_2_1.path
+OK: audit03.paths.A03_C_2_1.validInput
+META: audit03.comments.A03_C_2_1.direct|status=rsNumericalFailure|code=NUMERICAL_FAILURE|applies=True|calculated=True|comment=Подбор шага решения не смог уменьшить невязку равновесия.
+OK: audit03.comments.A03_C_2_1.direct.reasonPresent
+OK: audit03.comments.A03_C_2_1.direct.russianReason
+OK: audit03.comments.A03_C_2_1.direct.readable
+OK: audit03.comments.A03_C_2_1.direct.noMachinePrefix
+OK: audit03.comments.A03_C_2_1.direct.ownSubtree
+META: audit03.comments.A03_C_2_1.capacity|status=rsNumericalFailure|code=NUMERICAL_FAILURE|applies=True|calculated=True|comment=Равновесие для исходной точки пути несущей не найдено численно: равновесие не сошлось численно.
+OK: audit03.comments.A03_C_2_1.capacity.reasonPresent
+OK: audit03.comments.A03_C_2_1.capacity.russianReason
+OK: audit03.comments.A03_C_2_1.capacity.readable
+OK: audit03.comments.A03_C_2_1.capacity.noMachinePrefix
+OK: audit03.comments.A03_C_2_1.capacity.ownSubtree
+META: audit03.comments.A03_C_2_1.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_2_1.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_2_1.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_2_1.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_2_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_C_2_1.formulaNoNumFail
+OK: audit03.comments.A03_C_2_1.strengthNoCrack
+OK: audit03.comments.A03_C_2_1.crackNoCapacity
+OK: audit03.comments.A03_C_2_1.overallComposition
+OK: audit03.comments.A03_C_2_1.batchOutput
+OK: audit03.comments.A03_C_2_1.strengthOutput
+OK: audit03.comments.A03_C_2_1.crackOutput
+OK: audit03.comments.A03_C_2_1.stabilityOutput
+OUTPUT: audit03.comments.A03_C_2_1|strength=НДС: Подбор шага решения не смог уменьшить невязку равновесия.; Несущая: Равновесие для исходной точки пути несущей не найдено численно: равновесие не сошлось численно.|crack=|stability=|batch=НДС: Подбор шага решения не смог уменьшить невязку равновесия.; Несущая: Равновесие для исходной точки пути несущей не найдено численно: равновесие не сошлось численно.
+CASE: audit03.paths.A03_C_2_2|N=200000|Mx=9000000|My=-3000000|offsetX=10|offsetY=-7|path=Mxy|selection=Mxy|lambda=2.118313324119|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: audit03.paths.A03_C_2_2.path
+OK: audit03.paths.A03_C_2_2.validInput
+OK: audit03.paths.A03_C_2_2.NU; actual=199999.999990533; expected=200000.
+OK: audit03.paths.A03_C_2_2.MxU; actual=19064846.3446616; expected=19064819.9170697
+OK: audit03.paths.A03_C_2_2.MyU; actual=-6354860.68928713; expected=-6354939.97235655
+OK: audit03.paths.A03_C_2_2.stateMx; actual=17664846.3447279; expected=17664819.9170697
+OK: audit03.paths.A03_C_2_2.stateMy; actual=-4354860.6893818; expected=-4354939.97235655
+OK: audit03.paths.A03_C_2_2.physicalCriterion
+OK: audit03.paths.A03_C_2_2.finalPhysical
+META: audit03.comments.A03_C_2_2.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.A03_C_2_2.direct.russianReason
+OK: audit03.comments.A03_C_2_2.direct.readable
+OK: audit03.comments.A03_C_2_2.direct.noMachinePrefix
+META: audit03.comments.A03_C_2_2.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.A03_C_2_2.capacity.russianReason
+OK: audit03.comments.A03_C_2_2.capacity.readable
+OK: audit03.comments.A03_C_2_2.capacity.noMachinePrefix
+META: audit03.comments.A03_C_2_2.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_2_2.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_2_2.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_2_2.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_2_2.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_C_2_2.formulaNoNumFail
+OK: audit03.comments.A03_C_2_2.strengthNoCrack
+OK: audit03.comments.A03_C_2_2.crackNoCapacity
+OK: audit03.comments.A03_C_2_2.overallComposition
+OK: audit03.comments.A03_C_2_2.batchOutput
+OK: audit03.comments.A03_C_2_2.strengthOutput
+OK: audit03.comments.A03_C_2_2.crackOutput
+OK: audit03.comments.A03_C_2_2.stabilityOutput
+OUTPUT: audit03.comments.A03_C_2_2|strength=|crack=|stability=|batch=
+CASE: audit03.paths.A03_C_3_0|N=-150000|Mx=-6000000|My=-3000000|offsetX=10|offsetY=-7|path=N|selection=N|lambda=7.938966400312|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: audit03.paths.A03_C_3_0.path
+OK: audit03.paths.A03_C_3_0.validInput
+OK: audit03.paths.A03_C_3_0.NU; actual=-1190844.96004684; expected=-1190844.96004684
+OK: audit03.paths.A03_C_3_0.MxU; actual=-5999999.9996496; expected=-6000000.
+OK: audit03.paths.A03_C_3_0.MyU; actual=-3000000.00020647; expected=-3000000.
+OK: audit03.paths.A03_C_3_0.stateMx; actual=2335914.72067827; expected=2335914.72032787
+OK: audit03.paths.A03_C_3_0.stateMy; actual=-14908449.6006749; expected=-14908449.6004684
+OK: audit03.paths.A03_C_3_0.physicalCriterion
+OK: audit03.paths.A03_C_3_0.finalPhysical
+META: audit03.comments.A03_C_3_0.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.A03_C_3_0.direct.russianReason
+OK: audit03.comments.A03_C_3_0.direct.readable
+OK: audit03.comments.A03_C_3_0.direct.noMachinePrefix
+META: audit03.comments.A03_C_3_0.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.A03_C_3_0.capacity.russianReason
+OK: audit03.comments.A03_C_3_0.capacity.readable
+OK: audit03.comments.A03_C_3_0.capacity.noMachinePrefix
+META: audit03.comments.A03_C_3_0.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_3_0.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_3_0.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_3_0.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_3_0.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_C_3_0.formulaNoNumFail
+OK: audit03.comments.A03_C_3_0.strengthNoCrack
+OK: audit03.comments.A03_C_3_0.crackNoCapacity
+OK: audit03.comments.A03_C_3_0.overallComposition
+OK: audit03.comments.A03_C_3_0.batchOutput
+OK: audit03.comments.A03_C_3_0.strengthOutput
+OK: audit03.comments.A03_C_3_0.crackOutput
+OK: audit03.comments.A03_C_3_0.stabilityOutput
+OUTPUT: audit03.comments.A03_C_3_0|strength=|crack=|stability=|batch=
+CASE: audit03.paths.A03_C_3_1|N=-1500000|Mx=-60000000|My=20000000|offsetX=10|offsetY=-7|path=N|selection=N|lambda=0.|method=LoadMultiplier|limit=SingularTangent|status=NumFail
+OK: audit03.paths.A03_C_3_1.path
+OK: audit03.paths.A03_C_3_1.validInput
+META: audit03.comments.A03_C_3_1.direct|status=rsNumericalFailure|code=NUMERICAL_FAILURE|applies=True|calculated=True|comment=Подбор шага решения не смог уменьшить невязку равновесия.
+OK: audit03.comments.A03_C_3_1.direct.reasonPresent
+OK: audit03.comments.A03_C_3_1.direct.russianReason
+OK: audit03.comments.A03_C_3_1.direct.readable
+OK: audit03.comments.A03_C_3_1.direct.noMachinePrefix
+OK: audit03.comments.A03_C_3_1.direct.ownSubtree
+META: audit03.comments.A03_C_3_1.capacity|status=rsNumericalFailure|code=SINGULAR_TANGENT|applies=True|calculated=True|comment=Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена.
+OK: audit03.comments.A03_C_3_1.capacity.reasonPresent
+OK: audit03.comments.A03_C_3_1.capacity.russianReason
+OK: audit03.comments.A03_C_3_1.capacity.readable
+OK: audit03.comments.A03_C_3_1.capacity.noMachinePrefix
+OK: audit03.comments.A03_C_3_1.capacity.ownSubtree
+META: audit03.comments.A03_C_3_1.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_3_1.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_3_1.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_3_1.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_3_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_C_3_1.formulaNoNumFail
+OK: audit03.comments.A03_C_3_1.strengthNoCrack
+OK: audit03.comments.A03_C_3_1.crackNoCapacity
+OK: audit03.comments.A03_C_3_1.overallComposition
+OK: audit03.comments.A03_C_3_1.batchOutput
+OK: audit03.comments.A03_C_3_1.strengthOutput
+OK: audit03.comments.A03_C_3_1.crackOutput
+OK: audit03.comments.A03_C_3_1.stabilityOutput
+OUTPUT: audit03.comments.A03_C_3_1|strength=НДС: Подбор шага решения не смог уменьшить невязку равновесия.; Несущая: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена.|crack=|stability=|batch=НДС: Подбор шага решения не смог уменьшить невязку равновесия.; Несущая: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена.
+CASE: audit03.paths.A03_C_3_2|N=200000|Mx=9000000|My=-3000000|offsetX=10|offsetY=-7|path=N|selection=N|lambda=0.|method=LoadMultiplier|limit=NumericalFailure|status=NumFail
+OK: audit03.paths.A03_C_3_2.path
+OK: audit03.paths.A03_C_3_2.validInput
+META: audit03.comments.A03_C_3_2.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.A03_C_3_2.direct.russianReason
+OK: audit03.comments.A03_C_3_2.direct.readable
+OK: audit03.comments.A03_C_3_2.direct.noMachinePrefix
+META: audit03.comments.A03_C_3_2.capacity|status=rsNumericalFailure|code=NUMERICAL_FAILURE|applies=True|calculated=True|comment=Восстановление поиска lambda не уменьшило интервал; следующую пробу невозможно выбрать.
+OK: audit03.comments.A03_C_3_2.capacity.reasonPresent
+OK: audit03.comments.A03_C_3_2.capacity.russianReason
+OK: audit03.comments.A03_C_3_2.capacity.readable
+OK: audit03.comments.A03_C_3_2.capacity.noMachinePrefix
+OK: audit03.comments.A03_C_3_2.capacity.ownSubtree
+META: audit03.comments.A03_C_3_2.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_3_2.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_3_2.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_3_2.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_3_2.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_C_3_2.formulaNoNumFail
+OK: audit03.comments.A03_C_3_2.strengthNoCrack
+OK: audit03.comments.A03_C_3_2.crackNoCapacity
+OK: audit03.comments.A03_C_3_2.overallComposition
+OK: audit03.comments.A03_C_3_2.batchOutput
+OK: audit03.comments.A03_C_3_2.strengthOutput
+OK: audit03.comments.A03_C_3_2.crackOutput
+OK: audit03.comments.A03_C_3_2.stabilityOutput
+OUTPUT: audit03.comments.A03_C_3_2|strength=Несущая: Восстановление поиска lambda не уменьшило интервал; следующую пробу невозможно выбрать.|crack=|stability=|batch=Несущая: Восстановление поиска lambda не уменьшило интервал; следующую пробу невозможно выбрать.
+CASE: audit03.paths.A03_C_4_0|N=-150000|Mx=-6000000|My=-3000000|offsetX=10|offsetY=-7|path=NMxy|selection=NMxy|lambda=5.290996599447|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: audit03.paths.A03_C_4_0.path
+OK: audit03.paths.A03_C_4_0.validInput
+OK: audit03.paths.A03_C_4_0.NU; actual=-793649.489917066; expected=-793649.489917066
+OK: audit03.paths.A03_C_4_0.MxU; actual=-31745979.5967315; expected=-31745979.5966826
+OK: audit03.paths.A03_C_4_0.MyU; actual=-15872989.7981804; expected=-15872989.7983413
+OK: audit03.paths.A03_C_4_0.stateMx; actual=-26190433.167312; expected=-26190433.1672632
+OK: audit03.paths.A03_C_4_0.stateMy; actual=-23809484.6973511; expected=-23809484.697512
+OK: audit03.paths.A03_C_4_0.physicalCriterion
+OK: audit03.paths.A03_C_4_0.finalPhysical
+META: audit03.comments.A03_C_4_0.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.A03_C_4_0.direct.russianReason
+OK: audit03.comments.A03_C_4_0.direct.readable
+OK: audit03.comments.A03_C_4_0.direct.noMachinePrefix
+META: audit03.comments.A03_C_4_0.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.A03_C_4_0.capacity.russianReason
+OK: audit03.comments.A03_C_4_0.capacity.readable
+OK: audit03.comments.A03_C_4_0.capacity.noMachinePrefix
+META: audit03.comments.A03_C_4_0.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_4_0.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_4_0.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_4_0.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_4_0.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_C_4_0.formulaNoNumFail
+OK: audit03.comments.A03_C_4_0.strengthNoCrack
+OK: audit03.comments.A03_C_4_0.crackNoCapacity
+OK: audit03.comments.A03_C_4_0.overallComposition
+OK: audit03.comments.A03_C_4_0.batchOutput
+OK: audit03.comments.A03_C_4_0.strengthOutput
+OK: audit03.comments.A03_C_4_0.crackOutput
+OK: audit03.comments.A03_C_4_0.stabilityOutput
+OUTPUT: audit03.comments.A03_C_4_0|strength=|crack=|stability=|batch=
+CASE: audit03.paths.A03_C_4_1|N=-1500000|Mx=-60000000|My=20000000|offsetX=10|offsetY=-7|path=NMxy|selection=NMxy|lambda=0.588030083883|method=UltimateStrain|limit=ConcreteStrainLimit|status=FAIL
+OK: audit03.paths.A03_C_4_1.path
+OK: audit03.paths.A03_C_4_1.validInput
+OK: audit03.paths.A03_C_4_1.NU; actual=-882045.125824277; expected=-882045.125824277
+OK: audit03.paths.A03_C_4_1.MxU; actual=-35281805.0328304; expected=-35281805.0329711
+OK: audit03.paths.A03_C_4_1.MyU; actual=11760601.6776403; expected=11760601.677657
+OK: audit03.paths.A03_C_4_1.stateMx; actual=-29107489.1520605; expected=-29107489.1522011
+OK: audit03.paths.A03_C_4_1.stateMy; actual=2940150.41939751; expected=2940150.41941426
+OK: audit03.paths.A03_C_4_1.physicalCriterion
+OK: audit03.paths.A03_C_4_1.finalPhysical
+META: audit03.comments.A03_C_4_1.direct|status=rsNumericalFailure|code=NUMERICAL_FAILURE|applies=True|calculated=True|comment=Подбор шага решения не смог уменьшить невязку равновесия.
+OK: audit03.comments.A03_C_4_1.direct.reasonPresent
+OK: audit03.comments.A03_C_4_1.direct.russianReason
+OK: audit03.comments.A03_C_4_1.direct.readable
+OK: audit03.comments.A03_C_4_1.direct.noMachinePrefix
+OK: audit03.comments.A03_C_4_1.direct.ownSubtree
+META: audit03.comments.A03_C_4_1.capacity|status=rsCheckFailed|code=PHYSICAL_LIMIT_EXCEEDED|applies=True|calculated=True|comment=Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.588030, раньше заданной нагрузки (lambda = 1).
+OK: audit03.comments.A03_C_4_1.capacity.reasonPresent
+OK: audit03.comments.A03_C_4_1.capacity.russianReason
+OK: audit03.comments.A03_C_4_1.capacity.readable
+OK: audit03.comments.A03_C_4_1.capacity.noMachinePrefix
+OK: audit03.comments.A03_C_4_1.capacity.ownSubtree
+META: audit03.comments.A03_C_4_1.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_4_1.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_4_1.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_4_1.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_4_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_C_4_1.formulaNoNumFail
+OK: audit03.comments.A03_C_4_1.strengthNoCrack
+OK: audit03.comments.A03_C_4_1.crackNoCapacity
+OK: audit03.comments.A03_C_4_1.overallComposition
+OK: audit03.comments.A03_C_4_1.batchOutput
+OK: audit03.comments.A03_C_4_1.strengthOutput
+OK: audit03.comments.A03_C_4_1.crackOutput
+OK: audit03.comments.A03_C_4_1.stabilityOutput
+OUTPUT: audit03.comments.A03_C_4_1|strength=НДС: Подбор шага решения не смог уменьшить невязку равновесия.; Несущая: Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.588030, раньше заданной нагрузки (lambda = 1).|crack=|stability=|batch=НДС: Подбор шага решения не смог уменьшить невязку равновесия.; Несущая: Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.588030, раньше заданной нагрузки (lambda = 1).
+CASE: audit03.paths.A03_C_4_2|N=200000|Mx=9000000|My=-3000000|offsetX=10|offsetY=-7|path=NMxy|selection=NMxy|lambda=1.499574788841|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: audit03.paths.A03_C_4_2.path
+OK: audit03.paths.A03_C_4_2.validInput
+OK: audit03.paths.A03_C_4_2.NU; actual=299914.95776819; expected=299914.95776819
+OK: audit03.paths.A03_C_4_2.MxU; actual=13496173.0994421; expected=13496173.0995685
+OK: audit03.paths.A03_C_4_2.MyU; actual=-4498724.3665661; expected=-4498724.36652284
+OK: audit03.paths.A03_C_4_2.stateMx; actual=11396768.3950648; expected=11396768.3951912
+OK: audit03.paths.A03_C_4_2.stateMy; actual=-1499574.78888421; expected=-1499574.78884095
+OK: audit03.paths.A03_C_4_2.physicalCriterion
+OK: audit03.paths.A03_C_4_2.finalPhysical
+META: audit03.comments.A03_C_4_2.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.A03_C_4_2.direct.russianReason
+OK: audit03.comments.A03_C_4_2.direct.readable
+OK: audit03.comments.A03_C_4_2.direct.noMachinePrefix
+META: audit03.comments.A03_C_4_2.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.A03_C_4_2.capacity.russianReason
+OK: audit03.comments.A03_C_4_2.capacity.readable
+OK: audit03.comments.A03_C_4_2.capacity.noMachinePrefix
+META: audit03.comments.A03_C_4_2.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_4_2.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_4_2.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_4_2.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_C_4_2.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_C_4_2.formulaNoNumFail
+OK: audit03.comments.A03_C_4_2.strengthNoCrack
+OK: audit03.comments.A03_C_4_2.crackNoCapacity
+OK: audit03.comments.A03_C_4_2.overallComposition
+OK: audit03.comments.A03_C_4_2.batchOutput
+OK: audit03.comments.A03_C_4_2.strengthOutput
+OK: audit03.comments.A03_C_4_2.crackOutput
+OK: audit03.comments.A03_C_4_2.stabilityOutput
+OUTPUT: audit03.comments.A03_C_4_2|strength=|crack=|stability=|batch=
+CASE: audit03.paths.A03_F_0_0|requested=Auto|resolved=λ*Mxy|lambda=1.950180892241|Ncrc=-150000.|Mcrc=13046185.4461935|point=True|formed=False
+OK: audit03.paths.A03_F_0_0.validInput
+OK: audit03.paths.A03_F_0_0.autoPath
+OK: audit03.paths.A03_F_0_0.preConverged
+OK: audit03.paths.A03_F_0_0.prePhysical
+OK: audit03.paths.A03_F_0_0.preNotExtended
+META: audit03.comments.A03_F_0_0.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_F_0_0.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.A03_F_0_0.capacity.russianReason
+OK: audit03.comments.A03_F_0_0.capacity.readable
+OK: audit03.comments.A03_F_0_0.capacity.noMachinePrefix
+META: audit03.comments.A03_F_0_0.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.A03_F_0_0.formation.russianReason
+OK: audit03.comments.A03_F_0_0.formation.readable
+OK: audit03.comments.A03_F_0_0.formation.noMachinePrefix
+META: audit03.comments.A03_F_0_0.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.A03_F_0_0.current.russianReason
+OK: audit03.comments.A03_F_0_0.current.readable
+OK: audit03.comments.A03_F_0_0.current.noMachinePrefix
+META: audit03.comments.A03_F_0_0.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.A03_F_0_0.width.russianReason
+OK: audit03.comments.A03_F_0_0.width.readable
+OK: audit03.comments.A03_F_0_0.width.noMachinePrefix
+META: audit03.comments.A03_F_0_0.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 4.870 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.A03_F_0_0.longitudinal.russianReason
+OK: audit03.comments.A03_F_0_0.longitudinal.readable
+OK: audit03.comments.A03_F_0_0.longitudinal.noMachinePrefix
+META: audit03.comments.A03_F_0_0.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_F_0_0.formulaNoNumFail
+OK: audit03.comments.A03_F_0_0.strengthNoCrack
+OK: audit03.comments.A03_F_0_0.crackNoCapacity
+OK: audit03.comments.A03_F_0_0.overallComposition
+OK: audit03.comments.A03_F_0_0.batchOutput
+OK: audit03.comments.A03_F_0_0.strengthOutput
+OK: audit03.comments.A03_F_0_0.crackOutput
+OK: audit03.comments.A03_F_0_0.stabilityOutput
+OUTPUT: audit03.comments.A03_F_0_0|strength=|crack=|stability=|batch=
+CASE: audit03.paths.A03_F_0_1|requested=Auto|resolved=λ*NMxy|lambda=0.556268462362|Ncrc=-834402.693543501|Mcrc=27675404.2272641|point=True|formed=True
+OK: audit03.paths.A03_F_0_1.validInput
+OK: audit03.paths.A03_F_0_1.autoPath
+OK: audit03.paths.A03_F_0_1.preConverged
+OK: audit03.paths.A03_F_0_1.prePhysical
+OK: audit03.paths.A03_F_0_1.preNotExtended
+OK: audit03.paths.A03_F_0_1.postConverged
+OK: audit03.paths.A03_F_0_1.postPhysical
+OK: audit03.paths.A03_F_0_1.postNotExtended
+META: audit03.comments.A03_F_0_1.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_F_0_1.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.A03_F_0_1.capacity.russianReason
+OK: audit03.comments.A03_F_0_1.capacity.readable
+OK: audit03.comments.A03_F_0_1.capacity.noMachinePrefix
+META: audit03.comments.A03_F_0_1.formation|status=rsSuccessWithWarning|code=CHECK_PASSED|applies=True|calculated=True|comment=λ*Mxy: При поиске образования трещины физический предел бетона или арматуры достигнут раньше порога трещинообразования. λ*N: Не удалось решить касательную систему: Матрица вырождена. Принят путь λ*NMxy. Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.
+OK: audit03.comments.A03_F_0_1.formation.reasonPresent
+OK: audit03.comments.A03_F_0_1.formation.russianReason
+OK: audit03.comments.A03_F_0_1.formation.readable
+OK: audit03.comments.A03_F_0_1.formation.noMachinePrefix
+OK: audit03.comments.A03_F_0_1.formation.ownSubtree
+META: audit03.comments.A03_F_0_1.current|status=rsNumericalFailure|code=NUMERICAL_FAILURE|applies=True|calculated=True|comment=Подбор шага решения не смог уменьшить невязку равновесия.
+OK: audit03.comments.A03_F_0_1.current.reasonPresent
+OK: audit03.comments.A03_F_0_1.current.russianReason
+OK: audit03.comments.A03_F_0_1.current.readable
+OK: audit03.comments.A03_F_0_1.current.noMachinePrefix
+OK: audit03.comments.A03_F_0_1.current.ownSubtree
+META: audit03.comments.A03_F_0_1.width|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Подбор шага решения не смог уменьшить невязку равновесия.
+OK: audit03.comments.A03_F_0_1.width.reasonPresent
+OK: audit03.comments.A03_F_0_1.width.russianReason
+OK: audit03.comments.A03_F_0_1.width.readable
+OK: audit03.comments.A03_F_0_1.width.noMachinePrefix
+OK: audit03.comments.A03_F_0_1.width.ownSubtree
+OK: audit03.comments.A03_F_0_1.width.dependencyOnce
+META: audit03.comments.A03_F_0_1.longitudinal|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Подбор шага решения не смог уменьшить невязку равновесия.
+OK: audit03.comments.A03_F_0_1.longitudinal.reasonPresent
+OK: audit03.comments.A03_F_0_1.longitudinal.russianReason
+OK: audit03.comments.A03_F_0_1.longitudinal.readable
+OK: audit03.comments.A03_F_0_1.longitudinal.noMachinePrefix
+OK: audit03.comments.A03_F_0_1.longitudinal.ownSubtree
+OK: audit03.comments.A03_F_0_1.longitudinal.dependencyOnce
+META: audit03.comments.A03_F_0_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_F_0_1.widthBlockActualReason
+OK: audit03.comments.A03_F_0_1.longitudinalBlockActualReason
+OK: audit03.comments.A03_F_0_1.formulaNoNumFail
+OK: audit03.comments.A03_F_0_1.strengthNoCrack
+OK: audit03.comments.A03_F_0_1.crackNoCapacity
+OK: audit03.comments.A03_F_0_1.overallComposition
+OK: audit03.comments.A03_F_0_1.batchOutput
+OK: audit03.comments.A03_F_0_1.strengthOutput
+OK: audit03.comments.A03_F_0_1.crackOutput
+OK: audit03.comments.A03_F_0_1.stabilityOutput
+OUTPUT: audit03.comments.A03_F_0_1|strength=|crack=Трещинообразование: λ*Mxy: При поиске образования трещины физический предел бетона или арматуры достигнут раньше порога трещинообразования. λ*N: Не удалось решить касательную систему: Матрица вырождена. Принят путь λ*NMxy. Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Подбор шага решения не смог уменьшить невязку равновесия.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.|stability=|batch=Трещинообразование: λ*Mxy: При поиске образования трещины физический предел бетона или арматуры достигнут раньше порога трещинообразования. λ*N: Не удалось решить касательную систему: Матрица вырождена. Принят путь λ*NMxy. Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Подбор шага решения не смог уменьшить невязку равновесия.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.
+CASE: audit03.paths.A03_F_0_2|requested=Auto|resolved=λ*NMxy|lambda=0.413699004452|Ncrc=82739.8008904723|Mcrc=3171212.68017446|point=True|formed=True
+OK: audit03.paths.A03_F_0_2.validInput
+OK: audit03.paths.A03_F_0_2.autoPath
+OK: audit03.paths.A03_F_0_2.preConverged
+OK: audit03.paths.A03_F_0_2.prePhysical
+OK: audit03.paths.A03_F_0_2.preNotExtended
+OK: audit03.paths.A03_F_0_2.postConverged
+OK: audit03.paths.A03_F_0_2.postPhysical
+OK: audit03.paths.A03_F_0_2.postNotExtended
+META: audit03.comments.A03_F_0_2.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_F_0_2.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.A03_F_0_2.capacity.russianReason
+OK: audit03.comments.A03_F_0_2.capacity.readable
+OK: audit03.comments.A03_F_0_2.capacity.noMachinePrefix
+META: audit03.comments.A03_F_0_2.formation|status=rsSuccessWithWarning|code=CHECK_PASSED|applies=True|calculated=True|comment=λ*Mxy: Трещина уже образуется в постоянной части выбранного пути λ*Mxy; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1. λ*N: Трещина уже образуется в постоянной части выбранного пути λ*N; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1. Принят путь λ*NMxy. Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.
+OK: audit03.comments.A03_F_0_2.formation.reasonPresent
+OK: audit03.comments.A03_F_0_2.formation.russianReason
+OK: audit03.comments.A03_F_0_2.formation.readable
+OK: audit03.comments.A03_F_0_2.formation.noMachinePrefix
+OK: audit03.comments.A03_F_0_2.formation.ownSubtree
+META: audit03.comments.A03_F_0_2.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.A03_F_0_2.current.russianReason
+OK: audit03.comments.A03_F_0_2.current.readable
+OK: audit03.comments.A03_F_0_2.current.noMachinePrefix
+META: audit03.comments.A03_F_0_2.width|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s рассчитан по состоянию сразу после образования трещины.
+OK: audit03.comments.A03_F_0_2.width.russianReason
+OK: audit03.comments.A03_F_0_2.width.readable
+OK: audit03.comments.A03_F_0_2.width.noMachinePrefix
+META: audit03.comments.A03_F_0_2.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 0.311 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.A03_F_0_2.longitudinal.russianReason
+OK: audit03.comments.A03_F_0_2.longitudinal.readable
+OK: audit03.comments.A03_F_0_2.longitudinal.noMachinePrefix
+META: audit03.comments.A03_F_0_2.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_F_0_2.formulaNoNumFail
+OK: audit03.comments.A03_F_0_2.formationWarningPreserved
+OK: audit03.comments.A03_F_0_2.strengthNoCrack
+OK: audit03.comments.A03_F_0_2.crackNoCapacity
+OK: audit03.comments.A03_F_0_2.overallComposition
+OK: audit03.comments.A03_F_0_2.batchOutput
+OK: audit03.comments.A03_F_0_2.strengthOutput
+OK: audit03.comments.A03_F_0_2.crackOutput
+OK: audit03.comments.A03_F_0_2.stabilityOutput
+OUTPUT: audit03.comments.A03_F_0_2|strength=|crack=Трещинообразование: λ*Mxy: Трещина уже образуется в постоянной части выбранного пути λ*Mxy; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1. λ*N: Трещина уже образуется в постоянной части выбранного пути λ*N; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1. Принят путь λ*NMxy. Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.|stability=|batch=Трещинообразование: λ*Mxy: Трещина уже образуется в постоянной части выбранного пути λ*Mxy; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1. λ*N: Трещина уже образуется в постоянной части выбранного пути λ*N; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1. Принят путь λ*NMxy. Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.
+CASE: audit03.paths.A03_F_1_0|requested=λ*Mxy|resolved=λ*Mxy|lambda=1.950180892241|Ncrc=-150000.|Mcrc=13046185.4461935|point=True|formed=False
+OK: audit03.paths.A03_F_1_0.validInput
+OK: audit03.paths.A03_F_1_0.fixedPath
+OK: audit03.paths.A03_F_1_0.preConverged
+OK: audit03.paths.A03_F_1_0.prePhysical
+OK: audit03.paths.A03_F_1_0.preNotExtended
+META: audit03.comments.A03_F_1_0.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_F_1_0.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.A03_F_1_0.capacity.russianReason
+OK: audit03.comments.A03_F_1_0.capacity.readable
+OK: audit03.comments.A03_F_1_0.capacity.noMachinePrefix
+META: audit03.comments.A03_F_1_0.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.A03_F_1_0.formation.russianReason
+OK: audit03.comments.A03_F_1_0.formation.readable
+OK: audit03.comments.A03_F_1_0.formation.noMachinePrefix
+META: audit03.comments.A03_F_1_0.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.A03_F_1_0.current.russianReason
+OK: audit03.comments.A03_F_1_0.current.readable
+OK: audit03.comments.A03_F_1_0.current.noMachinePrefix
+META: audit03.comments.A03_F_1_0.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.A03_F_1_0.width.russianReason
+OK: audit03.comments.A03_F_1_0.width.readable
+OK: audit03.comments.A03_F_1_0.width.noMachinePrefix
+META: audit03.comments.A03_F_1_0.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 4.870 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.A03_F_1_0.longitudinal.russianReason
+OK: audit03.comments.A03_F_1_0.longitudinal.readable
+OK: audit03.comments.A03_F_1_0.longitudinal.noMachinePrefix
+META: audit03.comments.A03_F_1_0.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_F_1_0.formulaNoNumFail
+OK: audit03.comments.A03_F_1_0.strengthNoCrack
+OK: audit03.comments.A03_F_1_0.crackNoCapacity
+OK: audit03.comments.A03_F_1_0.overallComposition
+OK: audit03.comments.A03_F_1_0.batchOutput
+OK: audit03.comments.A03_F_1_0.strengthOutput
+OK: audit03.comments.A03_F_1_0.crackOutput
+OK: audit03.comments.A03_F_1_0.stabilityOutput
+OUTPUT: audit03.comments.A03_F_1_0|strength=|crack=|stability=|batch=
+CASE: audit03.paths.A03_F_1_1|requested=λ*Mxy|resolved=|lambda=0.|Ncrc=0.|Mcrc=0.|point=False|formed=False
+OK: audit03.paths.A03_F_1_1.validInput
+META: audit03.comments.A03_F_1_1.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_F_1_1.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.A03_F_1_1.capacity.russianReason
+OK: audit03.comments.A03_F_1_1.capacity.readable
+OK: audit03.comments.A03_F_1_1.capacity.noMachinePrefix
+META: audit03.comments.A03_F_1_1.formation|status=rsCheckFailed|code=PHYSICAL_LIMIT_EXCEEDED|applies=True|calculated=True|comment=При поиске образования трещины физический предел бетона или арматуры достигнут раньше порога трещинообразования.
+OK: audit03.comments.A03_F_1_1.formation.reasonPresent
+OK: audit03.comments.A03_F_1_1.formation.russianReason
+OK: audit03.comments.A03_F_1_1.formation.readable
+OK: audit03.comments.A03_F_1_1.formation.noMachinePrefix
+OK: audit03.comments.A03_F_1_1.formation.ownSubtree
+META: audit03.comments.A03_F_1_1.current|status=rsNumericalFailure|code=NUMERICAL_FAILURE|applies=True|calculated=True|comment=Подбор шага решения не смог уменьшить невязку равновесия.
+OK: audit03.comments.A03_F_1_1.current.reasonPresent
+OK: audit03.comments.A03_F_1_1.current.russianReason
+OK: audit03.comments.A03_F_1_1.current.readable
+OK: audit03.comments.A03_F_1_1.current.noMachinePrefix
+OK: audit03.comments.A03_F_1_1.current.ownSubtree
+META: audit03.comments.A03_F_1_1.width|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Подбор шага решения не смог уменьшить невязку равновесия.
+OK: audit03.comments.A03_F_1_1.width.reasonPresent
+OK: audit03.comments.A03_F_1_1.width.russianReason
+OK: audit03.comments.A03_F_1_1.width.readable
+OK: audit03.comments.A03_F_1_1.width.noMachinePrefix
+OK: audit03.comments.A03_F_1_1.width.ownSubtree
+OK: audit03.comments.A03_F_1_1.width.dependencyOnce
+META: audit03.comments.A03_F_1_1.longitudinal|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Подбор шага решения не смог уменьшить невязку равновесия.
+OK: audit03.comments.A03_F_1_1.longitudinal.reasonPresent
+OK: audit03.comments.A03_F_1_1.longitudinal.russianReason
+OK: audit03.comments.A03_F_1_1.longitudinal.readable
+OK: audit03.comments.A03_F_1_1.longitudinal.noMachinePrefix
+OK: audit03.comments.A03_F_1_1.longitudinal.ownSubtree
+OK: audit03.comments.A03_F_1_1.longitudinal.dependencyOnce
+META: audit03.comments.A03_F_1_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_F_1_1.widthBlockActualReason
+OK: audit03.comments.A03_F_1_1.longitudinalBlockActualReason
+OK: audit03.comments.A03_F_1_1.formulaNoNumFail
+OK: audit03.comments.A03_F_1_1.strengthNoCrack
+OK: audit03.comments.A03_F_1_1.crackNoCapacity
+OK: audit03.comments.A03_F_1_1.overallComposition
+OK: audit03.comments.A03_F_1_1.batchOutput
+OK: audit03.comments.A03_F_1_1.strengthOutput
+OK: audit03.comments.A03_F_1_1.crackOutput
+OK: audit03.comments.A03_F_1_1.stabilityOutput
+OUTPUT: audit03.comments.A03_F_1_1|strength=|crack=Трещинообразование: При поиске образования трещины физический предел бетона или арматуры достигнут раньше порога трещинообразования.; НДС: Подбор шага решения не смог уменьшить невязку равновесия.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.|stability=|batch=Трещинообразование: При поиске образования трещины физический предел бетона или арматуры достигнут раньше порога трещинообразования.; НДС: Подбор шага решения не смог уменьшить невязку равновесия.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.
+CASE: audit03.paths.A03_F_1_2|requested=λ*Mxy|resolved=λ*Mxy|lambda=0.|Ncrc=0.|Mcrc=0.|point=False|formed=True
+OK: audit03.paths.A03_F_1_2.validInput
+OK: audit03.paths.A03_F_1_2.fixedPath
+META: audit03.comments.A03_F_1_2.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_F_1_2.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.A03_F_1_2.capacity.russianReason
+OK: audit03.comments.A03_F_1_2.capacity.readable
+OK: audit03.comments.A03_F_1_2.capacity.noMachinePrefix
+META: audit03.comments.A03_F_1_2.formation|status=rsSuccessWithWarning|code=INITIAL_STATE_BEYOND_LIMIT|applies=True|calculated=True|comment=Трещина уже образуется в постоянной части выбранного пути λ*Mxy; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1.
+OK: audit03.comments.A03_F_1_2.formation.reasonPresent
+OK: audit03.comments.A03_F_1_2.formation.russianReason
+OK: audit03.comments.A03_F_1_2.formation.readable
+OK: audit03.comments.A03_F_1_2.formation.noMachinePrefix
+OK: audit03.comments.A03_F_1_2.formation.ownSubtree
+META: audit03.comments.A03_F_1_2.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.A03_F_1_2.current.russianReason
+OK: audit03.comments.A03_F_1_2.current.readable
+OK: audit03.comments.A03_F_1_2.current.noMachinePrefix
+META: audit03.comments.A03_F_1_2.width|status=rsCheckFailed|code=CRACK_WIDTH_EXCEEDED|applies=True|calculated=True|comment=Раскрытие нормальной трещины 0.436555436951 мм превышает допускаемое 0.3 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s оставлен равным 1, потому что выбранный путь не дает отдельной точки sigma_s,crc.
+OK: audit03.comments.A03_F_1_2.width.reasonPresent
+OK: audit03.comments.A03_F_1_2.width.russianReason
+OK: audit03.comments.A03_F_1_2.width.readable
+OK: audit03.comments.A03_F_1_2.width.noMachinePrefix
+OK: audit03.comments.A03_F_1_2.width.ownSubtree
+META: audit03.comments.A03_F_1_2.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 0.311 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.A03_F_1_2.longitudinal.russianReason
+OK: audit03.comments.A03_F_1_2.longitudinal.readable
+OK: audit03.comments.A03_F_1_2.longitudinal.noMachinePrefix
+META: audit03.comments.A03_F_1_2.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_F_1_2.formulaNoNumFail
+OK: audit03.comments.A03_F_1_2.strengthNoCrack
+OK: audit03.comments.A03_F_1_2.crackNoCapacity
+OK: audit03.comments.A03_F_1_2.overallComposition
+OK: audit03.comments.A03_F_1_2.batchOutput
+OK: audit03.comments.A03_F_1_2.strengthOutput
+OK: audit03.comments.A03_F_1_2.crackOutput
+OK: audit03.comments.A03_F_1_2.stabilityOutput
+OUTPUT: audit03.comments.A03_F_1_2|strength=|crack=Трещинообразование: Трещина уже образуется в постоянной части выбранного пути λ*Mxy; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1.; Ширина трещин: Раскрытие нормальной трещины 0.436555436951 мм превышает допускаемое 0.3 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s оставлен равным 1, потому что выбранный путь не дает отдельной точки sigma_s,crc.|stability=|batch=Трещинообразование: Трещина уже образуется в постоянной части выбранного пути λ*Mxy; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1.; Ширина трещин: Раскрытие нормальной трещины 0.436555436951 мм превышает допускаемое 0.3 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s оставлен равным 1, потому что выбранный путь не дает отдельной точки sigma_s,crc.
+CASE: audit03.paths.A03_F_2_0|requested=λ*N|resolved=λ*N|lambda=0.|Ncrc=0.|Mcrc=0.|point=False|formed=False
+OK: audit03.paths.A03_F_2_0.validInput
+OK: audit03.paths.A03_F_2_0.fixedPath
+META: audit03.comments.A03_F_2_0.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_F_2_0.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.A03_F_2_0.capacity.russianReason
+OK: audit03.comments.A03_F_2_0.capacity.readable
+OK: audit03.comments.A03_F_2_0.capacity.noMachinePrefix
+META: audit03.comments.A03_F_2_0.formation|status=rsSuccess|code=CRITERION_NOT_REACHED|applies=True|calculated=True|comment=Трещина не образована от постоянного момента, а выбранный путь λ*N не масштабирует растягивающую продольную силу.
+OK: audit03.comments.A03_F_2_0.formation.russianReason
+OK: audit03.comments.A03_F_2_0.formation.readable
+OK: audit03.comments.A03_F_2_0.formation.noMachinePrefix
+META: audit03.comments.A03_F_2_0.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.A03_F_2_0.current.russianReason
+OK: audit03.comments.A03_F_2_0.current.readable
+OK: audit03.comments.A03_F_2_0.current.noMachinePrefix
+META: audit03.comments.A03_F_2_0.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована от постоянного момента, а выбранный путь λ*N не масштабирует растягивающую продольную силу.
+OK: audit03.comments.A03_F_2_0.width.russianReason
+OK: audit03.comments.A03_F_2_0.width.readable
+OK: audit03.comments.A03_F_2_0.width.noMachinePrefix
+META: audit03.comments.A03_F_2_0.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 4.870 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.A03_F_2_0.longitudinal.russianReason
+OK: audit03.comments.A03_F_2_0.longitudinal.readable
+OK: audit03.comments.A03_F_2_0.longitudinal.noMachinePrefix
+META: audit03.comments.A03_F_2_0.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_F_2_0.formulaNoNumFail
+OK: audit03.comments.A03_F_2_0.strengthNoCrack
+OK: audit03.comments.A03_F_2_0.crackNoCapacity
+OK: audit03.comments.A03_F_2_0.overallComposition
+OK: audit03.comments.A03_F_2_0.batchOutput
+OK: audit03.comments.A03_F_2_0.strengthOutput
+OK: audit03.comments.A03_F_2_0.crackOutput
+OK: audit03.comments.A03_F_2_0.stabilityOutput
+OUTPUT: audit03.comments.A03_F_2_0|strength=|crack=|stability=|batch=
+CASE: audit03.paths.A03_F_2_1|requested=λ*N|resolved=|lambda=0.|Ncrc=0.|Mcrc=0.|point=False|formed=False
+OK: audit03.paths.A03_F_2_1.validInput
+META: audit03.comments.A03_F_2_1.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_F_2_1.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.A03_F_2_1.capacity.russianReason
+OK: audit03.comments.A03_F_2_1.capacity.readable
+OK: audit03.comments.A03_F_2_1.capacity.noMachinePrefix
+META: audit03.comments.A03_F_2_1.formation|status=rsNumericalFailure|code=SINGULAR_TANGENT|applies=True|calculated=True|comment=Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.comments.A03_F_2_1.formation.reasonPresent
+OK: audit03.comments.A03_F_2_1.formation.russianReason
+OK: audit03.comments.A03_F_2_1.formation.readable
+OK: audit03.comments.A03_F_2_1.formation.noMachinePrefix
+OK: audit03.comments.A03_F_2_1.formation.ownSubtree
+META: audit03.comments.A03_F_2_1.current|status=rsNumericalFailure|code=NUMERICAL_FAILURE|applies=True|calculated=True|comment=Подбор шага решения не смог уменьшить невязку равновесия.
+OK: audit03.comments.A03_F_2_1.current.reasonPresent
+OK: audit03.comments.A03_F_2_1.current.russianReason
+OK: audit03.comments.A03_F_2_1.current.readable
+OK: audit03.comments.A03_F_2_1.current.noMachinePrefix
+OK: audit03.comments.A03_F_2_1.current.ownSubtree
+META: audit03.comments.A03_F_2_1.width|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Подбор шага решения не смог уменьшить невязку равновесия.
+OK: audit03.comments.A03_F_2_1.width.reasonPresent
+OK: audit03.comments.A03_F_2_1.width.russianReason
+OK: audit03.comments.A03_F_2_1.width.readable
+OK: audit03.comments.A03_F_2_1.width.noMachinePrefix
+OK: audit03.comments.A03_F_2_1.width.ownSubtree
+OK: audit03.comments.A03_F_2_1.width.dependencyOnce
+META: audit03.comments.A03_F_2_1.longitudinal|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Подбор шага решения не смог уменьшить невязку равновесия.
+OK: audit03.comments.A03_F_2_1.longitudinal.reasonPresent
+OK: audit03.comments.A03_F_2_1.longitudinal.russianReason
+OK: audit03.comments.A03_F_2_1.longitudinal.readable
+OK: audit03.comments.A03_F_2_1.longitudinal.noMachinePrefix
+OK: audit03.comments.A03_F_2_1.longitudinal.ownSubtree
+OK: audit03.comments.A03_F_2_1.longitudinal.dependencyOnce
+META: audit03.comments.A03_F_2_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_F_2_1.widthBlockActualReason
+OK: audit03.comments.A03_F_2_1.longitudinalBlockActualReason
+OK: audit03.comments.A03_F_2_1.formulaNoNumFail
+OK: audit03.comments.A03_F_2_1.strengthNoCrack
+OK: audit03.comments.A03_F_2_1.crackNoCapacity
+OK: audit03.comments.A03_F_2_1.overallComposition
+OK: audit03.comments.A03_F_2_1.batchOutput
+OK: audit03.comments.A03_F_2_1.strengthOutput
+OK: audit03.comments.A03_F_2_1.crackOutput
+OK: audit03.comments.A03_F_2_1.stabilityOutput
+OUTPUT: audit03.comments.A03_F_2_1|strength=|crack=Трещинообразование: Не удалось решить касательную систему: Матрица вырождена.; НДС: Подбор шага решения не смог уменьшить невязку равновесия.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.|stability=|batch=Трещинообразование: Не удалось решить касательную систему: Матрица вырождена.; НДС: Подбор шага решения не смог уменьшить невязку равновесия.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.
+CASE: audit03.paths.A03_F_2_2|requested=λ*N|resolved=λ*N|lambda=0.|Ncrc=0.|Mcrc=0.|point=False|formed=True
+OK: audit03.paths.A03_F_2_2.validInput
+OK: audit03.paths.A03_F_2_2.fixedPath
+META: audit03.comments.A03_F_2_2.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_F_2_2.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.A03_F_2_2.capacity.russianReason
+OK: audit03.comments.A03_F_2_2.capacity.readable
+OK: audit03.comments.A03_F_2_2.capacity.noMachinePrefix
+META: audit03.comments.A03_F_2_2.formation|status=rsSuccessWithWarning|code=INITIAL_STATE_BEYOND_LIMIT|applies=True|calculated=True|comment=Трещина уже образуется в постоянной части выбранного пути λ*N; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1.
+OK: audit03.comments.A03_F_2_2.formation.reasonPresent
+OK: audit03.comments.A03_F_2_2.formation.russianReason
+OK: audit03.comments.A03_F_2_2.formation.readable
+OK: audit03.comments.A03_F_2_2.formation.noMachinePrefix
+OK: audit03.comments.A03_F_2_2.formation.ownSubtree
+META: audit03.comments.A03_F_2_2.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.A03_F_2_2.current.russianReason
+OK: audit03.comments.A03_F_2_2.current.readable
+OK: audit03.comments.A03_F_2_2.current.noMachinePrefix
+META: audit03.comments.A03_F_2_2.width|status=rsCheckFailed|code=CRACK_WIDTH_EXCEEDED|applies=True|calculated=True|comment=Раскрытие нормальной трещины 0.436555436951 мм превышает допускаемое 0.3 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s оставлен равным 1, потому что выбранный путь не дает отдельной точки sigma_s,crc.
+OK: audit03.comments.A03_F_2_2.width.reasonPresent
+OK: audit03.comments.A03_F_2_2.width.russianReason
+OK: audit03.comments.A03_F_2_2.width.readable
+OK: audit03.comments.A03_F_2_2.width.noMachinePrefix
+OK: audit03.comments.A03_F_2_2.width.ownSubtree
+META: audit03.comments.A03_F_2_2.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 0.311 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.A03_F_2_2.longitudinal.russianReason
+OK: audit03.comments.A03_F_2_2.longitudinal.readable
+OK: audit03.comments.A03_F_2_2.longitudinal.noMachinePrefix
+META: audit03.comments.A03_F_2_2.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_F_2_2.formulaNoNumFail
+OK: audit03.comments.A03_F_2_2.strengthNoCrack
+OK: audit03.comments.A03_F_2_2.crackNoCapacity
+OK: audit03.comments.A03_F_2_2.overallComposition
+OK: audit03.comments.A03_F_2_2.batchOutput
+OK: audit03.comments.A03_F_2_2.strengthOutput
+OK: audit03.comments.A03_F_2_2.crackOutput
+OK: audit03.comments.A03_F_2_2.stabilityOutput
+OUTPUT: audit03.comments.A03_F_2_2|strength=|crack=Трещинообразование: Трещина уже образуется в постоянной части выбранного пути λ*N; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1.; Ширина трещин: Раскрытие нормальной трещины 0.436555436951 мм превышает допускаемое 0.3 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s оставлен равным 1, потому что выбранный путь не дает отдельной точки sigma_s,crc.|stability=|batch=Трещинообразование: Трещина уже образуется в постоянной части выбранного пути λ*N; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1.; Ширина трещин: Раскрытие нормальной трещины 0.436555436951 мм превышает допускаемое 0.3 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s оставлен равным 1, потому что выбранный путь не дает отдельной точки sigma_s,crc.
+CASE: audit03.paths.A03_F_3_0|requested=λ*NMxy|resolved=λ*NMxy|lambda=3.357825225015|Ncrc=-503673.783752283|Mcrc=22462947.2864504|point=True|formed=False
+OK: audit03.paths.A03_F_3_0.validInput
+OK: audit03.paths.A03_F_3_0.fixedPath
+OK: audit03.paths.A03_F_3_0.preConverged
+OK: audit03.paths.A03_F_3_0.prePhysical
+OK: audit03.paths.A03_F_3_0.preNotExtended
+META: audit03.comments.A03_F_3_0.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_F_3_0.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.A03_F_3_0.capacity.russianReason
+OK: audit03.comments.A03_F_3_0.capacity.readable
+OK: audit03.comments.A03_F_3_0.capacity.noMachinePrefix
+META: audit03.comments.A03_F_3_0.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.A03_F_3_0.formation.russianReason
+OK: audit03.comments.A03_F_3_0.formation.readable
+OK: audit03.comments.A03_F_3_0.formation.noMachinePrefix
+META: audit03.comments.A03_F_3_0.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.A03_F_3_0.current.russianReason
+OK: audit03.comments.A03_F_3_0.current.readable
+OK: audit03.comments.A03_F_3_0.current.noMachinePrefix
+META: audit03.comments.A03_F_3_0.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.A03_F_3_0.width.russianReason
+OK: audit03.comments.A03_F_3_0.width.readable
+OK: audit03.comments.A03_F_3_0.width.noMachinePrefix
+META: audit03.comments.A03_F_3_0.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 4.870 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.A03_F_3_0.longitudinal.russianReason
+OK: audit03.comments.A03_F_3_0.longitudinal.readable
+OK: audit03.comments.A03_F_3_0.longitudinal.noMachinePrefix
+META: audit03.comments.A03_F_3_0.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_F_3_0.formulaNoNumFail
+OK: audit03.comments.A03_F_3_0.strengthNoCrack
+OK: audit03.comments.A03_F_3_0.crackNoCapacity
+OK: audit03.comments.A03_F_3_0.overallComposition
+OK: audit03.comments.A03_F_3_0.batchOutput
+OK: audit03.comments.A03_F_3_0.strengthOutput
+OK: audit03.comments.A03_F_3_0.crackOutput
+OK: audit03.comments.A03_F_3_0.stabilityOutput
+OUTPUT: audit03.comments.A03_F_3_0|strength=|crack=|stability=|batch=
+CASE: audit03.paths.A03_F_3_1|requested=λ*NMxy|resolved=λ*NMxy|lambda=0.556268462362|Ncrc=-834402.693543501|Mcrc=27675404.2272641|point=True|formed=True
+OK: audit03.paths.A03_F_3_1.validInput
+OK: audit03.paths.A03_F_3_1.fixedPath
+OK: audit03.paths.A03_F_3_1.preConverged
+OK: audit03.paths.A03_F_3_1.prePhysical
+OK: audit03.paths.A03_F_3_1.preNotExtended
+OK: audit03.paths.A03_F_3_1.postConverged
+OK: audit03.paths.A03_F_3_1.postPhysical
+OK: audit03.paths.A03_F_3_1.postNotExtended
+META: audit03.comments.A03_F_3_1.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_F_3_1.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.A03_F_3_1.capacity.russianReason
+OK: audit03.comments.A03_F_3_1.capacity.readable
+OK: audit03.comments.A03_F_3_1.capacity.noMachinePrefix
+META: audit03.comments.A03_F_3_1.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.
+OK: audit03.comments.A03_F_3_1.formation.russianReason
+OK: audit03.comments.A03_F_3_1.formation.readable
+OK: audit03.comments.A03_F_3_1.formation.noMachinePrefix
+META: audit03.comments.A03_F_3_1.current|status=rsNumericalFailure|code=NUMERICAL_FAILURE|applies=True|calculated=True|comment=Подбор шага решения не смог уменьшить невязку равновесия.
+OK: audit03.comments.A03_F_3_1.current.reasonPresent
+OK: audit03.comments.A03_F_3_1.current.russianReason
+OK: audit03.comments.A03_F_3_1.current.readable
+OK: audit03.comments.A03_F_3_1.current.noMachinePrefix
+OK: audit03.comments.A03_F_3_1.current.ownSubtree
+META: audit03.comments.A03_F_3_1.width|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Подбор шага решения не смог уменьшить невязку равновесия.
+OK: audit03.comments.A03_F_3_1.width.reasonPresent
+OK: audit03.comments.A03_F_3_1.width.russianReason
+OK: audit03.comments.A03_F_3_1.width.readable
+OK: audit03.comments.A03_F_3_1.width.noMachinePrefix
+OK: audit03.comments.A03_F_3_1.width.ownSubtree
+OK: audit03.comments.A03_F_3_1.width.dependencyOnce
+META: audit03.comments.A03_F_3_1.longitudinal|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Подбор шага решения не смог уменьшить невязку равновесия.
+OK: audit03.comments.A03_F_3_1.longitudinal.reasonPresent
+OK: audit03.comments.A03_F_3_1.longitudinal.russianReason
+OK: audit03.comments.A03_F_3_1.longitudinal.readable
+OK: audit03.comments.A03_F_3_1.longitudinal.noMachinePrefix
+OK: audit03.comments.A03_F_3_1.longitudinal.ownSubtree
+OK: audit03.comments.A03_F_3_1.longitudinal.dependencyOnce
+META: audit03.comments.A03_F_3_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_F_3_1.widthBlockActualReason
+OK: audit03.comments.A03_F_3_1.longitudinalBlockActualReason
+OK: audit03.comments.A03_F_3_1.formulaNoNumFail
+OK: audit03.comments.A03_F_3_1.strengthNoCrack
+OK: audit03.comments.A03_F_3_1.crackNoCapacity
+OK: audit03.comments.A03_F_3_1.overallComposition
+OK: audit03.comments.A03_F_3_1.batchOutput
+OK: audit03.comments.A03_F_3_1.strengthOutput
+OK: audit03.comments.A03_F_3_1.crackOutput
+OK: audit03.comments.A03_F_3_1.stabilityOutput
+OUTPUT: audit03.comments.A03_F_3_1|strength=|crack=НДС: Подбор шага решения не смог уменьшить невязку равновесия.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.|stability=|batch=НДС: Подбор шага решения не смог уменьшить невязку равновесия.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.
+CASE: audit03.paths.A03_F_3_2|requested=λ*NMxy|resolved=λ*NMxy|lambda=0.413699004452|Ncrc=82739.8008904723|Mcrc=3171212.68017446|point=True|formed=True
+OK: audit03.paths.A03_F_3_2.validInput
+OK: audit03.paths.A03_F_3_2.fixedPath
+OK: audit03.paths.A03_F_3_2.preConverged
+OK: audit03.paths.A03_F_3_2.prePhysical
+OK: audit03.paths.A03_F_3_2.preNotExtended
+OK: audit03.paths.A03_F_3_2.postConverged
+OK: audit03.paths.A03_F_3_2.postPhysical
+OK: audit03.paths.A03_F_3_2.postNotExtended
+META: audit03.comments.A03_F_3_2.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.A03_F_3_2.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.A03_F_3_2.capacity.russianReason
+OK: audit03.comments.A03_F_3_2.capacity.readable
+OK: audit03.comments.A03_F_3_2.capacity.noMachinePrefix
+META: audit03.comments.A03_F_3_2.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.
+OK: audit03.comments.A03_F_3_2.formation.russianReason
+OK: audit03.comments.A03_F_3_2.formation.readable
+OK: audit03.comments.A03_F_3_2.formation.noMachinePrefix
+META: audit03.comments.A03_F_3_2.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.A03_F_3_2.current.russianReason
+OK: audit03.comments.A03_F_3_2.current.readable
+OK: audit03.comments.A03_F_3_2.current.noMachinePrefix
+META: audit03.comments.A03_F_3_2.width|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s рассчитан по состоянию сразу после образования трещины.
+OK: audit03.comments.A03_F_3_2.width.russianReason
+OK: audit03.comments.A03_F_3_2.width.readable
+OK: audit03.comments.A03_F_3_2.width.noMachinePrefix
+META: audit03.comments.A03_F_3_2.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 0.311 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.A03_F_3_2.longitudinal.russianReason
+OK: audit03.comments.A03_F_3_2.longitudinal.readable
+OK: audit03.comments.A03_F_3_2.longitudinal.noMachinePrefix
+META: audit03.comments.A03_F_3_2.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.A03_F_3_2.formulaNoNumFail
+OK: audit03.comments.A03_F_3_2.strengthNoCrack
+OK: audit03.comments.A03_F_3_2.crackNoCapacity
+OK: audit03.comments.A03_F_3_2.overallComposition
+OK: audit03.comments.A03_F_3_2.batchOutput
+OK: audit03.comments.A03_F_3_2.strengthOutput
+OK: audit03.comments.A03_F_3_2.crackOutput
+OK: audit03.comments.A03_F_3_2.stabilityOutput
+OUTPUT: audit03.comments.A03_F_3_2|strength=|crack=|stability=|batch=
+TOTAL_AUDIT03_PATH_COMMENTS: passed=720; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03LoadPathCommentTests; 2026-10-02T08:51:01
+RESULTS_SAVE_REOPEN: before=5728BE9DF4969770556776F5F6244B77A105187FBEBE8B62595FC91A03BC42E4; after=5728BE9DF4969770556776F5F6244B77A105187FBEBE8B62595FC91A03BC42E4; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_583ed616df0e44fea35130ee47247f17\RC_Section_NDM_saved.xlsm
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

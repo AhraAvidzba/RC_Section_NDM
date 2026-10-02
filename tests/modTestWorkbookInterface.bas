@@ -171,6 +171,7 @@ Private Sub TestButtons(ByRef stats As TUiTestStats)
         ButtonTextIsCentered(clearButton) And ButtonTextIsCentered(acadButton) And ButtonTextIsCentered(plotButton)
 End Sub
 
+' Проверяет оба выравнивания надписи кнопки; размер/положение фигуры этим не оцениваются.
 Private Function ButtonTextIsCentered(ByVal buttonShape As Object) As Boolean
     ButtonTextIsCentered = (buttonShape.TextFrame.HorizontalAlignment = -4108 And _
         buttonShape.TextFrame.VerticalAlignment = -4108)
@@ -1676,6 +1677,8 @@ Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTest
     AssertTrue stats, "ui.governing.message", InStr(1, message, governingID, vbTextCompare) > 0
 End Sub
 
+' Независимо выбирает LC по минимальному положительному запасу в записанном summary.
+' Пустые строки пропускаются; производственный выбор governing здесь не вызывается.
 Private Function ExpectedGoverningByLowestStrengthSafety(ByVal resultsSheet As Object, ByVal summaryRow As Long) As String
     Dim rowIndex As Long
     Dim bestSafety As Double
@@ -1691,11 +1694,14 @@ Private Function ExpectedGoverningByLowestStrengthSafety(ByVal resultsSheet As O
     Next rowIndex
 End Function
 
+' Читает численный запас подробной строки; пустое/текстовое поле не участвует в минимуме.
 Private Function StrengthSafetyForSummaryRow(ByVal resultsSheet As Object, ByVal rowIndex As Long) As Double
     If IsNumeric(resultsSheet.Cells.Item(rowIndex, 17).Value2) Then _
         StrengthSafetyForSummaryRow = CDbl(resultsSheet.Cells.Item(rowIndex, 17).Value2)
 End Function
 
+' Сопоставляет LC с подробным выводом и собирает модуль из записанных Mx/My.
+' Отсутствующий LC возвращает ноль, который направленный тест отличает от нужной точки.
 Private Function MomentUltimateForCombination(ByVal resultsSheet As Object, ByVal summaryRow As Long, ByVal combinationID As String) As Double
     Dim rowIndex As Long
     For rowIndex = summaryRow + 12 To summaryRow + 30
@@ -1714,10 +1720,13 @@ Private Function MomentUltimateForCombination(ByVal resultsSheet As Object, ByVa
     Next rowIndex
 End Function
 
+' Координаты трех summary берутся из именованных anchors, не из фиксированной верстки.
 Private Function BatchSummaryStartRow() As Long
     BatchSummaryStartRow = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Row
 End Function
 
+' Находит фактическую строку LC в batch summary с учетом промежутков исходной таблицы.
+' Ноль обозначает отсутствие ID, а не первую строку результатов.
 Private Function BatchSummaryRowByCombination(ByVal resultsSheet As Object, ByVal combinationID As String) As Long
     Dim anchorRow As Long
     anchorRow = BatchSummaryStartRow()
@@ -1730,14 +1739,17 @@ Private Function BatchSummaryRowByCombination(ByVal resultsSheet As Object, ByVa
     Next rowIndex
 End Function
 
+' Возвращает строку strength anchor для остальных readback-проверок.
 Private Function StrengthSummaryStartRow() As Long
     StrengthSummaryStartRow = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row
 End Function
 
+' Возвращает строку crack anchor для остальных readback-проверок.
 Private Function CrackSummaryStartRow() As Long
     CrackSummaryStartRow = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row
 End Function
 
+' Ищет ID в подробной таблице прочности; пропуски между сочетаниями не уплотняются.
 Private Function StrengthSummaryRowByCombination(ByVal resultsSheet As Object, ByVal combinationID As String) As Long
     Dim anchorRow As Long
     anchorRow = StrengthSummaryStartRow()
@@ -1750,6 +1762,7 @@ Private Function StrengthSummaryRowByCombination(ByVal resultsSheet As Object, B
     Next rowIndex
 End Function
 
+' Ищет ID в подробной таблице трещин независимо от позиции в batch summary.
 Private Function CrackSummaryRowByCombination(ByVal resultsSheet As Object, ByVal combinationID As String) As Long
     Dim anchorRow As Long
     anchorRow = CrackSummaryStartRow()
@@ -1762,6 +1775,7 @@ Private Function CrackSummaryRowByCombination(ByVal resultsSheet As Object, ByVa
     Next rowIndex
 End Function
 
+' Определяет колонку по точному тексту первой строки массива; отсутствующий заголовок дает ноль.
 Private Function ResultHeaderColumn(ByRef data As Variant, ByVal headerText As String) As Long
     Dim colIndex As Long
     For colIndex = 1 To UBound(data, 2)
@@ -2000,6 +2014,8 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.circle.key.rebarLoc3row", reader.HasKey("Rebar.Loc3row")
 End Sub
 
+' Подготавливает круговой fixture и проверяет реальную validation выбора LC для AutoCAD.
+' Список должен содержать Worst/LC1 и ссылаться на формулы, а не быть статической строкой.
 Private Function AutoCADCombinationValidationIsDynamic() As Boolean
     On Error GoTo Failed
     PrepareCircleInput
@@ -2023,10 +2039,13 @@ Private Function AutoCADCombinationValidationIsDynamic() As Boolean
 Failed:
 End Function
 
+' Применяет ту же проверку динамического списка к селектору LC Excel-схемы.
 Private Function PlotLoadCaseValidationIsDynamic() As Boolean
     PlotLoadCaseValidationIsDynamic = LoadCaseValidationIsDynamicForSetting("Plot.LoadCase")
 End Function
 
+' После подготовки fixture читает validation указанного Config-поля и зависимый диапазон.
+' Ошибка/отсутствие диапазона означает непрохождение теста, а не создание новой validation.
 Private Function LoadCaseValidationIsDynamicForSetting(ByVal settingKey As String) As Boolean
     On Error GoTo Failed
     PrepareCircleInput
@@ -2050,6 +2069,8 @@ Private Function LoadCaseValidationIsDynamicForSetting(ByVal settingKey As Strin
 Failed:
 End Function
 
+' Проверяет пару LC/Parameter в сохраненной таблице свойств Results по именам колонок.
+' Расчет не запускается; отсутствующий снимок или колонка дает False.
 Private Function ResultsPropertyExists(ByVal loadCase As String, ByVal parameter As String) As Boolean
     On Error GoTo Failed
     Dim data As Variant
@@ -2204,6 +2225,7 @@ Private Sub AssertTransformedAreaUsesElasticModuli(ByRef stats As TUiTestStats)
         Len(ResultsPropertyValue("ALL", "Concrete.CoreDistanceYMinus")) > 0
 End Sub
 
+' Проверяет наличие штатного ChartObject схемы на листе Расчет без его создания.
 Private Function PlotChartExists() As Boolean
     On Error GoTo Failed
     Dim chartObject As Object
@@ -2229,6 +2251,7 @@ Private Function PlotVisibleTitleContains(ByVal expectedText As String) As Boole
 Failed:
 End Function
 
+' Считает подходящие фигуры внутри chart; при отсутствии схемы возвращает ноль.
 Private Function CountPlotShapes(ByVal nameFragment As String) As Long
     On Error GoTo Failed
     Dim chartObject As Object
@@ -2243,6 +2266,7 @@ Private Function CountPlotShapes(ByVal nameFragment As String) As Long
 Failed:
 End Function
 
+' Ищет тестируемую фигуру сначала в chart, затем на листе; отсутствие возвращает Nothing.
 Private Function FirstGeneratedPlotShape(ByVal nameFragment As String) As Object
     On Error GoTo Failed
     Dim chartObject As Object
@@ -2267,6 +2291,7 @@ Private Function FirstGeneratedPlotShape(ByVal nameFragment As String) As Object
 Failed:
 End Function
 
+' Центры фигур в единицах Excel points; для chart абсолютное смещение добавляется вызывающим кодом.
 Private Function ShapeCenterX(ByVal shapeObject As Object) As Double
     ShapeCenterX = CDbl(shapeObject.Left) + CDbl(shapeObject.Width) / 2#
 End Function
@@ -2275,10 +2300,13 @@ Private Function ShapeCenterY(ByVal shapeObject As Object) As Double
     ShapeCenterY = CDbl(shapeObject.Top) + CDbl(shapeObject.Height) / 2#
 End Function
 
+' Учитывает оба контейнера generated-фигур: chart и лист.
 Private Function CountGeneratedPlotShapes(ByVal nameFragment As String) As Long
     CountGeneratedPlotShapes = CountPlotShapes(nameFragment) + CountWorksheetPlotShapes(nameFragment)
 End Function
 
+' Собирает средний абсолютный центр фигур двух контейнеров с учетом смещения chart.
+' Вызывающий тест передает нулевые накопители; False означает отсутствие подходящих фигур.
 Private Function GeneratedPlotShapeCenterAverage(ByVal nameFragment As String, ByRef centerX As Double, ByRef centerY As Double) As Boolean
     On Error GoTo Failed
     Dim chartObject As Object
@@ -2311,6 +2339,8 @@ Private Function GeneratedPlotShapeCenterAverage(ByVal nameFragment As String, B
 Failed:
 End Function
 
+' Проверяет границы каждой подходящей chart-фигуры относительно устойчивой рамки.
+' Для PASS нужна хотя бы одна фигура; допуск задан тестом в Excel points.
 Private Function PlotShapesInsideStableFrame(ByVal nameFragment As String, ByVal tolerance As Double) As Boolean
     On Error GoTo Failed
     Dim chartObject As Object
@@ -2342,6 +2372,8 @@ Private Function PlotShapesInsideStableFrame(ByVal nameFragment As String, ByVal
 Failed:
 End Function
 
+' Проверяет попадание абсолютной точки листа в границы хотя бы одной chart-фигуры.
+' Смещение ChartObject учитывается отдельно от локальных координат фигуры.
 Private Function PlotShapeBoundsContainAbsolutePoint(ByVal nameFragment As String, _
         ByVal pointX As Double, ByVal pointY As Double, ByVal tolerance As Double) As Boolean
     On Error GoTo Failed
@@ -2564,6 +2596,8 @@ Private Sub TestClearResultsKeepsInputs(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.clear.input", CStr(GetSystemSetting("Geometry.Type")) = "Circle"
 End Sub
 
+' Изменяет ячейку fixture по каноническому ключу с учетом специализированных таблиц.
+' Неизвестный ключ вызывает ошибку теста, а не создает новую настройку.
 Private Sub SetSystemSetting(ByVal key As String, ByVal value As String)
     If TrySetUnitOrSignSetting(key, value) Then Exit Sub
 
@@ -2650,6 +2684,8 @@ Private Function ProfileSettingValue(ByVal profileId As String, ByVal key As Str
     Next rowIndex
 End Function
 
+' Направляет тестовый ввод единиц и знаков в их отдельные именованные таблицы.
+' Возвращает False для другого типа ключа, чтобы продолжить поиск в Config.
 Private Function TrySetUnitOrSignSetting(ByVal key As String, ByVal value As String) As Boolean
     Dim target As Object
     Dim rowIndex As Long
@@ -2669,6 +2705,8 @@ Private Function TrySetUnitOrSignSetting(ByVal key As String, ByVal value As Str
     End If
 End Function
 
+' Разбирает ключ Units.Quantity.Side в строку физической величины и колонку стороны.
+' Неизвестная величина или сторона не трактуется как допустимая настройка.
 Private Function UnitSettingAddress(ByVal key As String, ByRef rowIndex As Long, ByRef columnIndex As Long) As Boolean
     If InStr(1, key, "Units.", vbTextCompare) <> 1 Then Exit Function
 
@@ -2701,6 +2739,8 @@ Private Function UnitSettingAddress(ByVal key As String, ByRef rowIndex As Long,
     UnitSettingAddress = True
 End Function
 
+' Сопоставляет ключ Sign.N/Mx/My.User/Internal с отдельной таблицей знаков.
+' Индексы возвращаются только для поддержанного формата ключа.
 Private Function SignSettingAddress(ByVal key As String, ByRef rowIndex As Long, ByRef columnIndex As Long) As Boolean
     If InStr(1, key, "Sign.", vbTextCompare) <> 1 Then Exit Function
 
@@ -2729,6 +2769,8 @@ Private Function SignSettingAddress(ByVal key As String, ByRef rowIndex As Long,
     SignSettingAddress = True
 End Function
 
+' Записывает распознанное поле RectSet в видимую таблицу геометрии и армирования.
+' Отказ распознавания не меняет книгу и позволяет проверить другие формы.
 Private Function TrySetRectSetFaceSetting(ByVal key As String, ByVal value As String) As Boolean
     Dim target As Object
     Set target = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
@@ -2740,6 +2782,8 @@ Private Function TrySetRectSetFaceSetting(ByVal key As String, ByVal value As St
     TrySetRectSetFaceSetting = True
 End Function
 
+' Сопоставляет размеры, форму, смещение и параметры рядов с ячейками RectSet.
+' Положение граней определяется helpers ниже; это адреса fixture, не расчет координат.
 Private Function RectSetSettingAddress(ByVal key As String, ByRef rowIndex As Long, ByRef columnIndex As Long) As Boolean
     If StrComp(key, "RectSet.SectionType", vbTextCompare) = 0 Then
         rowIndex = 3
@@ -2811,6 +2855,8 @@ Private Function RectSetSettingAddress(ByVal key As String, ByRef rowIndex As Lo
     RectSetSettingAddress = True
 End Function
 
+' Группа адресных helpers сохраняет порядок граней H1/B1/H2/B2 и двух сторон.
+' Основные ряды и дополнительные ряды находятся в разных блоках таблицы.
 Private Function RectSetGeometryColumn(ByVal faceName As String) As Long
     Select Case UCase$(faceName)
         Case "H1": RectSetGeometryColumn = 1
@@ -2837,9 +2883,8 @@ Private Function RectSetFaceOrdinal(ByVal faceName As String, ByVal sideIndex As
     End Select
 End Function
 
-' Меняет одну ячейку новой таблицы RoundedRectangle в тестовой книге.
-' Таблица больше не является простым списком Key/Value, поэтому тесты
-' обращаются к тем же видимым блокам, которые заполняет пользователь.
+' Меняет одну ячейку табличного блока RoundedRectangle в тестовой книге.
+' Адресация учитывает видимые блоки размеров, граней и дополнительных рядов.
 Private Function TrySetRoundedRectangleSetting(ByVal key As String, ByVal value As String) As Boolean
     Dim target As Object
     Set target = ThisWorkbook.Names.Item("rngRoundedRectangleGeometry").RefersToRange
@@ -2951,6 +2996,8 @@ Private Function TrySetHollowRectangleSetting(ByVal key As String, ByVal value A
     TrySetHollowRectangleSetting = True
 End Function
 
+' Определяет ячейку размеров/смещения отверстия или передает ключ адресатору грани.
+' Распознавание не меняет значение, позволяя отдельно проверять чтение и запись.
 Private Function HollowRectangleSettingAddress(ByVal key As String, _
         ByRef rowIndex As Long, ByRef columnIndex As Long) As Boolean
     Select Case LCase$(key)
@@ -2976,6 +3023,8 @@ Private Function HollowRectangleSettingAddress(ByVal key As String, _
     HollowRectangleSettingAddress = True
 End Function
 
+' Сопоставляет арматурный параметр с наружной или внутренней гранью HollowRectangle.
+' Основные и дополнительные ряды адресуются отдельно; неверный параметр отклоняется.
 Private Function HollowRectangleFaceSettingAddress(ByVal key As String, _
         ByRef rowIndex As Long, ByRef columnIndex As Long) As Boolean
     Dim prefix As String
@@ -3010,6 +3059,8 @@ Private Function HollowRectangleFaceSettingAddress(ByVal key As String, _
     HollowRectangleFaceSettingAddress = True
 End Function
 
+' Возвращает канонический префикс и номер одной из восьми граней сечения.
+' Четыре грани отверстия не смешиваются с наружными сторонами.
 Private Function HollowRectangleFacePrefix(ByVal key As String, ByRef faceOrdinal As Long) As String
     If InStr(1, key, "HollowRectangle.H.Left.", vbTextCompare) = 1 Then
         HollowRectangleFacePrefix = "HollowRectangle.H.Left": faceOrdinal = 1
@@ -3030,6 +3081,8 @@ Private Function HollowRectangleFacePrefix(ByVal key As String, ByRef faceOrdina
     End If
 End Function
 
+' Читает значение fixture из специальных таблиц или упорядоченных диапазонов Config.
+' Отсутствие ключа вызывает ошибку теста, вместо подмены прочитанного значения default.
 Private Function GetSystemSetting(ByVal key As String) As String
     Dim directValue As String
     If TryGetUnitOrSignSetting(key, directValue) Then
@@ -3091,6 +3144,8 @@ Private Function TryGetUnitOrSignSetting(ByVal key As String, ByRef value As Str
     End If
 End Function
 
+' Ставит выбранную геометрию раньше неактивных таблиц с одинаковыми именами параметров.
+' Остальные системные, материальные и презентационные блоки остаются доступны.
 Private Function SettingsRangeSearchOrder() As Variant
     Dim geometryType As String
     geometryType = SystemGeometryType()
@@ -3105,6 +3160,8 @@ Private Function SettingsRangeSearchOrder() As Variant
     End If
 End Function
 
+' Читает тип геометрии для адресации тестовых ячеек, не строя модель сечения.
+' Circle используется только как fallback инфраструктуры при отсутствии fixture.
 Private Function SystemGeometryType() As String
     On Error GoTo Failed
     Dim settings As Object
@@ -3121,6 +3178,8 @@ Failed:
     SystemGeometryType = "Circle"
 End Function
 
+' Группа wrappers проверяет validation в выбранном блоке, а не только текст ячейки.
+' Реальные списки допустимых вариантов сверяются адресными helpers ниже.
 Private Function SystemSettingValidationHasOptions(ByVal key As String, ByVal expectedOptions As Variant) As Boolean
     SystemSettingValidationHasOptions = SettingValidationHasOptionsInRange(ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange, key, expectedOptions)
 End Function
@@ -3152,6 +3211,8 @@ Private Function SystemSettingUnitCellReferencesQuantity(ByVal key As String, By
 Failed:
 End Function
 
+' Читает сохраненный output-блок от именованного anchor до конца его данных.
+' Не вызывает solver и не использует текущие геометрические исходные данные.
 Private Function ResultTable(ByVal rangeName As String) As Variant
     Dim anchor As Object
     Set anchor = ThisWorkbook.Names.Item(rangeName).RefersToRange
@@ -3167,6 +3228,8 @@ Private Function ResultTable(ByVal rangeName As String) As Variant
     ResultTable = anchor.Resize(rowCount, columnCount).Value2
 End Function
 
+' Определяет высоту непрерывного сохраненного блока по первой ключевой колонке.
+' Пустая строка завершает именно табличный snapshot, не таблицу входных LC.
 Private Function ResultTableRowCount(ByVal rangeName As String) As Long
     Dim anchor As Object
     Set anchor = ThisWorkbook.Names.Item(rangeName).RefersToRange
@@ -3178,6 +3241,8 @@ Private Function ResultTableRowCount(ByVal rangeName As String) As Long
     Next rowOffset
 End Function
 
+' Находит число колонок output-блока с учетом следующего соседнего anchor.
+' Helpers ниже ограничивают чтение своим блоком Results без захвата чужих данных.
 Private Function ResultTableColumnCount(ByVal anchor As Object) As Long
     Dim maxColumns As Long
     maxColumns = ColumnsUntilNextResultAnchor(anchor)
@@ -3250,6 +3315,8 @@ Private Function ColumnsUntilNextResultAnchor(ByVal anchor As Object) As Long
     ColumnsUntilNextResultAnchor = bestDelta
 End Function
 
+' Ищет validation ключа в реально существующих таблицах выбранной конфигурации.
+' Успех требует совпадения полного списка вариантов, а не только наличия dropdown.
 Private Function AnySettingValidationHasOptions(ByVal key As String, ByVal expectedOptions As Variant) As Boolean
     Dim ranges As Variant
     ranges = SettingsRangeSearchOrder()
@@ -3263,6 +3330,8 @@ Private Function AnySettingValidationHasOptions(ByVal key As String, ByVal expec
     Next rangeIndex
 End Function
 
+' Сверяет formula-linked validation с ожидаемым списком, включая его порядок и длину.
+' Ошибка чтения списка означает неуспешную проверку интерфейса.
 Private Function SettingValidationHasOptionsInRange(ByVal settings As Object, ByVal key As String, ByVal expectedOptions As Variant) As Boolean
     On Error GoTo Failed
 
@@ -3287,6 +3356,8 @@ Private Function SettingValidationHasOptionsInRange(ByVal settings As Object, By
 Failed:
 End Function
 
+' Проверяет список вариантов выбранной группы аннотаций в ее собственной колонке.
+' Это исключает случайный успех за счет настройки соседней группы.
 Private Function PlotAnnotationValidationHasOptions(ByVal rowName As String, ByVal valueColumn As Long, ByVal expectedOptions As Variant) As Boolean
     On Error GoTo Failed
 
@@ -3314,6 +3385,7 @@ Private Function PlotAnnotationValidationHasOptions(ByVal rowName As String, ByV
 Failed:
 End Function
 
+' Находит строку параметра RectSet и проверяет validation ее ячейки значения.
 Private Function RectSetParameterValidationHasOptions(ByVal parameterName As String, ByVal expectedOptions As Variant) As Boolean
     On Error GoTo Failed
 
@@ -3332,9 +3404,8 @@ Failed:
 End Function
 
 ' Проверяет выпадающие списки в табличной части дополнительных рядов RectSet.
-' В отличие от старой проверки по фиксированному номеру строки, helper ищет
-' строку грани и нужный заголовок, поэтому не ломается от вставки новых строк
-' выше блока геометрии.
+' Helper ищет строку грани и нужный заголовок, поэтому вставка строк выше
+' блока геометрии не меняет предмет проверки.
 Private Function RectSetExtraValidationHasOptions(ByVal faceCaption As String, ByVal headerCaption As String, _
         ByVal occurrenceIndex As Long, ByVal expectedOptions As Variant) As Boolean
     On Error GoTo Failed
@@ -3377,6 +3448,8 @@ Private Function RectSetExtraValidationHasOptions(ByVal faceCaption As String, B
 Failed:
 End Function
 
+' Сверяет dropdown первой строки LC с полным допустимым набором вариантов.
+' Проверяется actual validation ячейки, а не текст каталога сборки.
 Private Function LoadCombinationValidationHasOptions(ByVal valueColumn As Long, ByVal expectedOptions As Variant) As Boolean
     On Error GoTo Failed
 
@@ -3387,6 +3460,8 @@ Private Function LoadCombinationValidationHasOptions(ByVal valueColumn As Long, 
 Failed:
 End Function
 
+' Проверяет, что dropdown LC содержит формульные display names всех профилей.
+' Измененное имя профиля должно попадать в список без пересборки исходного VBA.
 Private Function LoadProfileValidationUsesDisplayNames() As Boolean
     On Error GoTo Failed
 
@@ -3418,6 +3493,7 @@ Private Function LoadProfileValidationUsesDisplayNames() As Boolean
 Failed:
 End Function
 
+' Проверяет, что профиль в строке LC остается пользовательским вводом, не формулой.
 Private Function LoadProfileFirstValueHasNoFormula() As Boolean
     On Error GoTo Failed
 
@@ -3428,6 +3504,8 @@ Private Function LoadProfileFirstValueHasNoFormula() As Boolean
 Failed:
 End Function
 
+' Проверяет точный состав и порядок actual validation-list одной ячейки fixture.
+' Нечитаемый или неформульный список возвращает False, не пропускает assertion.
 Private Function ValidationCellHasOptions(ByVal target As Object, ByVal expectedOptions As Variant) As Boolean
     On Error GoTo Failed
 
@@ -3492,6 +3570,8 @@ Private Function BuildUiBatch() As CBatchSectionCalculator
     Set BuildUiBatch = batch
 End Function
 
+' Готовит круговой SLS fixture через реальные ячейки Config и одну строку LC.
+' Единицы/знаки приведены к внутренним; вызывающий тест работает на отдельной книге.
 Private Sub PrepareCircleInput()
     SetSystemSetting "Units.Force.Input", "N"
     SetSystemSetting "Units.Moment.Input", "N*mm"
@@ -3524,6 +3604,8 @@ Private Sub PrepareCircleInput()
     loads.Cells.Item(2, 7).Value2 = "ui test"
 End Sub
 
+' Готовит RectSet fixture, активные грани и нагрузку через обычные таблицы Config.
+' Неактивные грани отключаются явно, чтобы не зависеть от прежних пользовательских данных.
 Private Sub PrepareRectSetInput()
     SetSystemSetting "Units.Force.Input", "N"
     SetSystemSetting "Units.Moment.Input", "N*mm"
@@ -3711,6 +3793,8 @@ Private Sub PrepareUserRectSetAxialTensionInput()
     loads.Cells.Item(3, 7).Value2 = "uses extension"
 End Sub
 
+' Включает сохранение прочностных и трещинных состояний выбранного тестового профиля.
+' Каждая роль материала задается явно; Visualization выбирает уже сохраненный State.
 Private Sub PrepareFullStateProfile(ByVal profileId As String)
     SetProfileSetting profileId, "Profile.DisplayName", "Полный snapshot"
     SetProfileSetting profileId, "Profile.Description", "Тестовая запись всех состояний"
@@ -3733,6 +3817,8 @@ Private Sub PrepareFullStateProfile(ByVal profileId As String)
     SetProfileSetting profileId, "Visualization.Quantity", "Stress"
 End Sub
 
+' Заполняет обе стороны грани RectSet фиксированными диаметрами и отступами.
+' Количество первых рядов задается входами; дополнительные ряды очищаются отдельно.
 Private Sub SetUserRectSetMainRow(ByVal faceName As String, ByVal count1 As Long, ByVal count2 As Long)
     SetSystemSetting "RectSet." & faceName & ".as_1", "40"
     SetSystemSetting "RectSet." & faceName & ".as_2", "40"
@@ -3746,6 +3832,8 @@ Private Sub SetUserRectSetMainRow(ByVal faceName As String, ByVal count1 As Long
     SetSystemSetting "RectSet." & faceName & ".EndOffset2", "80"
 End Sub
 
+' Отключает дополнительные ряды всех граней пустыми диаметрами по контракту Config.
+' Режимы размещения/привязки задаются явно для воспроизводимости последующих тестов.
 Private Sub ClearUserRectSetExtraRows()
     Dim faces As Variant
     faces = Array("H1", "B1", "H2", "B2")
@@ -3762,7 +3850,7 @@ Private Sub ClearUserRectSetExtraRows()
     Next i
 End Sub
 
-' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
+' Очищает только строки данных тестового диапазона, сохраняя его строку заголовков.
 Private Sub ClearDataRows(ByVal target As Object)
     Dim rowIndex As Long
     Dim colIndex As Long
@@ -3809,6 +3897,8 @@ Private Sub TestCapacitySettingsUnitLabels(ByRef stats As TUiTestStats)
         SystemSettingUnitCellReferencesQuantities("Calculation.ZeroMomentPerDepth", "Moment", "Length")
 End Sub
 
+' Возвращает фактическую подпись единиц настройки для проверки собранной книги.
+' Формульную зависимость от выбранных единиц проверяет отдельный helper.
 Private Function SystemSettingUnitText(ByVal key As String) As String
     On Error GoTo Failed
 
@@ -3826,6 +3916,8 @@ Private Function SystemSettingUnitText(ByVal key As String) As String
 Failed:
 End Function
 
+' Меняет единицы текста обеих групп и проверяет пересчет формульной подписи.
+' Исходные значения восстанавливаются и после неуспешного чтения fixture.
 Private Function PlotAnnotationTextUnitCellIsDynamic(ByVal rowName As String) As Boolean
     On Error GoTo Failed
 
@@ -3861,6 +3953,8 @@ Failed:
     If valuesSaved Then Resume CleanUp
 End Function
 
+' Читает численную настройку заданной группы аннотаций для независимой UI-проверки.
+' Метод не строит схему и не запускает расчет модели.
 Private Function PlotAnnotationSettingValue(ByVal rowName As String, ByVal valueColumn As Long) As Double
     On Error GoTo Failed
 
@@ -3878,6 +3972,7 @@ Private Function PlotAnnotationSettingValue(ByVal rowName As String, ByVal value
 Failed:
 End Function
 
+' Сравнивает пользовательскую подпись без учета регистра, сохраняя оба текста при отказе.
 Private Sub AssertTextEquals(ByRef stats As TUiTestStats, ByVal name As String, _
         ByVal actual As String, ByVal expected As String)
     If StrComp(actual, expected, vbTextCompare) = 0 Then
@@ -3889,6 +3984,8 @@ Private Sub AssertTextEquals(ByRef stats As TUiTestStats, ByVal name As String, 
     End If
 End Sub
 
+' Группа файловых helpers работает с отчетами, созданными текущим UI-тестом.
+' Удаление ниже допускается только для известного пути тестового артефакта.
 Private Function FileExists(ByVal path As String) As Boolean
     FileExists = CreateObject("Scripting.FileSystemObject").FileExists(path)
 End Function
@@ -3899,6 +3996,7 @@ Private Sub DeleteFileIfExists(ByVal path As String)
     If fso.FileExists(path) Then fso.DeleteFile path, True
 End Sub
 
+' Читает настоящий Unicode-отчет для сравнения с выводимыми комментариями результата.
 Private Function ReadTextFile(ByVal path As String) As String
     Dim stream As Object
     Set stream = CreateObject("Scripting.FileSystemObject").OpenTextFile(path, 1, False, -1)
@@ -3906,6 +4004,8 @@ Private Function ReadTextFile(ByVal path As String) As String
     stream.Close
 End Function
 
+' Группа assertions ведет счет проверок actual интерфейса и протоколирует отказ.
+' Проверки чисел ниже используют фиксированный допуск вызывающего сценария.
 Private Sub AssertTrue(ByRef stats As TUiTestStats, ByVal name As String, ByVal condition As Boolean)
     If condition Then
         stats.Passed = stats.Passed + 1
@@ -3916,6 +4016,7 @@ Private Sub AssertTrue(ByRef stats As TUiTestStats, ByVal name As String, ByVal 
     End If
 End Sub
 
+' Сверяет абсолютное отклонение UI-величины, сохраняя actual/expected в отчете.
 Private Sub AssertClose(ByRef stats As TUiTestStats, ByVal name As String, ByVal actual As Double, _
         ByVal expected As Double, ByVal tolerance As Double)
     If Abs(actual - expected) <= tolerance Then
@@ -3929,6 +4030,7 @@ Private Sub AssertClose(ByRef stats As TUiTestStats, ByVal name As String, ByVal
     End If
 End Sub
 
+' Добавляет диагностическую строку к протоколу интерфейсного набора.
 Private Sub AppendLine(ByRef stats As TUiTestStats, ByVal text As String)
     stats.Report = stats.Report & text & vbCrLf
     ' ДЛЯ ТЕСТОВ: сохраняем текущий этап вне COM-вызова. При зависании или

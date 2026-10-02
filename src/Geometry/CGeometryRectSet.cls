@@ -74,6 +74,7 @@ Public Property Get OriginY() As Double
     OriginY = mOriginY
 End Property
 
+' Преобразует проверенный внутренний код формы в ключ общего geometry-контракта.
 Public Property Get SectionType() As String
     Select Case mSectionType
         Case SECTION_RECTANGLE: SectionType = "Rectangle"
@@ -126,6 +127,7 @@ Public Property Get HasLowerRectangle() As Boolean
     HasLowerRectangle = LowerRectangleActive()
 End Property
 
+' Левая граница охватывает только активные прямоугольники и учитывает смещение верхнего.
 Public Property Get MinX() As Double
     If LowerRectangleActive() Then
         MinX = GeomMin(mOriginX, ActiveUpperMinX())
@@ -134,6 +136,7 @@ Public Property Get MinX() As Double
     End If
 End Property
 
+' Правая граница охватывает только активные прямоугольники и учитывает смещение верхнего.
 Public Property Get MaxX() As Double
     If LowerRectangleActive() Then
         MaxX = GeomMax(mOriginX + mB2, ActiveUpperMaxX())
@@ -252,7 +255,8 @@ Public Sub GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
     ReDim Preserve pointY(1 To count)
 End Sub
 
-' Нормализует пользовательский тип сечения и сохраняет обратную совместимость старого RectSet.
+' Приводит тип сечения и поддерживаемые aliases к расчетному ключу.
+' Пустое значение/RectSet выбирает LSection; неизвестное имя возвращает пустой ключ для валидации.
 Private Function NormalizeSectionType(ByVal rawValue As String) As String
     Dim value As String
     value = LCase$(Trim$(rawValue))

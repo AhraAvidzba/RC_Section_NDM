@@ -1,0 +1,14 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_source_v47.xlsm
+SOURCE_SHA256: DEEA54BF789F6F6C3ADC68030EC626035251E7CC73D812165AFB93ED8AA86360
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d71730d6010a484dab4e397cf45bab8e\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestSectionSolver.RunAudit03SolverSettingEffectTests =====
+SUITE_STARTED: modTestSectionSolver.RunAudit03SolverSettingEffectTests; 2026-10-02T09:12:07
+EXCEL_AFTER_SUITE: pid=17772; workingSet=136097792; privateBytes=115519488; cpu=2.390625
+FAIL: audit03.effect.runtime.-2147217188.Таблица настроек Config должна содержать заголовок, строки данных и минимум три столбца.
+TOTAL_AUDIT03_SOLVER_EFFECTS: passed=0; failed=1
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionSolver.RunAudit03SolverSettingEffectTests; 2026-10-02T09:12:07
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

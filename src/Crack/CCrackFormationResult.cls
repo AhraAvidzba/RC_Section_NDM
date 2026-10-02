@@ -105,6 +105,8 @@ Private Sub ResetResult()
     Set mSearchResult = Nothing
 End Sub
 
+' Отдает независимую meta результата поиска образования трещины.
+' Изменение полученной копии не изменяет опубликованный Formation result.
 Public Property Get ResultMeta() As CResultMeta
     Set ResultMeta = mMeta.Clone
 End Property
@@ -174,6 +176,8 @@ Public Property Get SolverCallCount() As Long
     SolverCallCount = mSolverCallCount
 End Property
 
+' Возвращает отдельный небольшой контейнер Search либо Nothing, если поиск
+' не выполнялся. Ссылки на конечные named-states не копируются по волокнам.
 Public Property Get SearchResult() As CLimitSearchResult
     If Not mSearchResult Is Nothing Then Set SearchResult = mSearchResult.Clone
 End Property

@@ -328,7 +328,7 @@ Private Function NormalizePlacement(ByVal value As String) As String
 End Function
 
 ' Приводит настройку единиц текста к двум понятным режимам.
-' mm сохраняет старое поведение: TextHeight/TextGap задаются в реальных
+' В режиме mm TextHeight/TextGap задаются в реальных
 ' миллиметрах сечения и зависят от масштаба модели. pt задает обычные
 ' Excel points и удобен, когда нужен одинаковый визуальный размер текста
 ' для сечений разных габаритов.

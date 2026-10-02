@@ -136,7 +136,7 @@ Public Function Calculate(ByVal section As CSectionModel, _
     End If
 
     If Not loadPath.HasPath Then
-        result.InitializeSkipped "ZeroBaseLoad"
+        result.InitializeSkipped "Поиск несущей способности не выполнялся: масштабируемая нагрузка отсутствует."
         Set Calculate = result
         Exit Function
     End If

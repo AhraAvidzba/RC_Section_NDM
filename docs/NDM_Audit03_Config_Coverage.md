@@ -70,3 +70,28 @@ Solver/Capacity настроек в CSectionSolver, CCapacitySolver, Formation �
 9206/0 и 9207/0. Batch проверяется через Execute на полном Config, с InputErr,
 отсутствием solve и восстановлением следующего запуска. Это не подменяет
 проверку активного численного эффекта/диапазона каждого параметра.
+
+## Направленные Эффекты Solver v47
+
+`solver_effects_v47c_2026-10-02.txt`: 84/0 через реальный трехколоночный
+Range -> CSystemSettingsReader -> ApplySettings -> Solve. Четырнадцать ключей
+Solver проверены отдельно: Method, MaxIterations, LoadSteps, три Tolerance,
+LineSearchEnabled, DampingInitial, MinLineSearchAlpha, два MaxDelta,
+SecantMaxRestarts и SecantMinStepNorm. Изменяются настоящие ступени, итерации,
+принятые шаги, рестарты и компонентные невязки; getter-ов настроек нет.
+Двенадцать неверных значений дают typed InvalidConfiguration без итераций.
+Secant options отдельно не влияют на Newton. Временный лист удаляется,
+исходная книга не меняется. Отрицательная подмена передачи Method выполнена
+только в отдельной mutation-книге: `solver_method_mutation_v48b_2026-10-02.txt`,
+78/6. Тест обнаруживает отключенную передачу Secant, неверные рестарты и
+потерянную валидацию Method. Это ожидаемый отрицательный результат, не PASS
+production. Mutation не входит в исходники или выпускную книгу.
+
+Два подготовительных failure-лога не являются дефектами production: первый
+fixture ошибочно имел два столбца, второй ожидал роста общего числа evaluations
+при line search. Фактические Off/On имели по шесть evaluations, но разные
+iterations и реальное дробление шага; oracle теперь проверяет нужную ветвь.
+
+Эта направленная приемка еще не переносится автоматически на все 1065 адресов:
+остальные consumers, material/geometry/presentation поля и interactions
+по-прежнему требуют своей трассировки и доказательств.

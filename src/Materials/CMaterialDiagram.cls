@@ -47,7 +47,13 @@ Public Sub InitializeFromArrays(ByRef strains() As Double, ByRef stresses() As D
         Optional ByVal physicalCompressionStrain As Variant, Optional ByVal physicalTensionStrain As Variant, _
         Optional ByVal hasCompressionExtension As Boolean = False, Optional ByVal hasTensionExtension As Boolean = False, _
         Optional ByVal compressionExtensionStartStrain As Variant, Optional ByVal tensionExtensionStartStrain As Variant)
+    On Error GoTo Failed
+    ' Ошибочная повторная загрузка не оставляет доступным прежний материал.
+    mInitialized = False
+    mPointCount = 0
     If pointCount < 2 Then Err.Raise vbObjectError + 3100, "CMaterialDiagram", "Диаграмма материала должна содержать не менее двух точек."
+    ValidateInputArray strains, pointCount, "деформаций"
+    ValidateInputArray stresses, pointCount, "напряжений"
 
     ReDim mStrains(1 To pointCount)
     ReDim mStresses(1 To pointCount)
@@ -86,6 +92,32 @@ Public Sub InitializeFromArrays(ByRef strains() As Double, ByRef stresses() As D
         mTensionExtensionStartStrain = CDbl(tensionExtensionStartStrain)
     End If
     mInitialized = True
+    Exit Sub
+Failed:
+    Dim errorNumber As Long, errorSource As String, errorDescription As String
+    errorNumber = Err.Number
+    errorSource = Err.Source
+    errorDescription = Err.Description
+    mInitialized = False
+    mPointCount = 0
+    Erase mStrains
+    Erase mStresses
+    Erase mSegmentTangent
+    Erase mSegmentIntercept
+    Err.Raise errorNumber, errorSource, errorDescription
+End Sub
+
+' Проверяет наличие всех используемых индексов до копирования точек.
+' Дополнительные индексы за пределами 1..pointCount допустимы и не читаются.
+Private Sub ValidateInputArray(ByRef values() As Double, ByVal pointCount As Long, ByVal valueName As String)
+    On Error GoTo InvalidArray
+    If LBound(values) > 1 Then GoTo InvalidArray
+    If UBound(values) < pointCount Then GoTo InvalidArray
+    Exit Sub
+InvalidArray:
+    On Error GoTo 0
+    Err.Raise vbObjectError + 3113, "CMaterialDiagram", _
+        "Массив " & valueName & " диаграммы не содержит все точки с индексами от 1 до " & CStr(pointCount) & "."
 End Sub
 
 ' ------------------------------
@@ -374,7 +406,8 @@ Public Sub InitializeFromThreeTensionPoints(ByVal eps1 As Double, ByVal stress1 
     InitializeFromArrays strains, stresses, 7
 End Sub
 
-' ДЛЯ ТЕСТОВ: совместимый короткий initializer для старых unit-тестов диаграммы.
+' ДЛЯ ТЕСТОВ: короткий initializer сжатой или симметричной растянутой диаграммы.
+' Наличие stress2 выбирает сжатую ветвь; без него заданное stress1 образует плато растяжения.
 Public Sub Initialize(ByVal eps1 As Double, ByVal stress1 As Double, ByVal eps2 As Double, _
         Optional ByVal stress2 As Variant)
     If IsMissing(stress2) Then

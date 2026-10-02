@@ -109,7 +109,7 @@ Public Function RunCrackFormationNewton(ByVal problem As ILimitSearchProblem, _
         ByVal startSolver As CSectionSolver) As Boolean
     RunCrackFormationNewton = RunNewton(problem, section, concreteMaterial, _
         steelMaterial, loadPath, startSolver, _
-        "NumericalFailure: прямой поиск lambda_crc по UltimateStrain не сошелся за заданное число итераций.")
+        "Поиск точки образования трещины по предельной деформации не сошелся за заданное число итераций.")
 End Function
 
 ' Общий цикл UltimateStrain: оценка невязок, численный Якобиан, Newton-шаг и
@@ -186,7 +186,7 @@ Private Function ValidateNewtonSettings(ByVal context As ILimitSearchProblem) As
     ElseIf Not IsFiniteNumber(damping) Or damping <= 0# Or damping > 1# Then
         context.SetFailure sfcInvalidConfiguration, "Начальный коэффициент демпфирования UltimateStrain должен быть больше 0 и не больше 1."
     ElseIf Not IsFiniteNumber(minAlpha) Or minAlpha <= 0# Or minAlpha > damping Then
-        context.SetFailure sfcInvalidConfiguration, "Минимальный шаг line search UltimateStrain должен быть больше 0 и не больше начального демпфирования."
+        context.SetFailure sfcInvalidConfiguration, "Минимальный шаг подбора демпфирования в UltimateStrain должен быть больше 0 и не больше начального демпфирования."
     ElseIf Not IsFiniteNumber(maxDeltaEps) Or Not IsFiniteNumber(maxDeltaKappa) Or _
             maxDeltaEps < 0# Or maxDeltaKappa < 0# Then
         context.SetFailure sfcInvalidConfiguration, "Ограничения приращений UltimateStrain должны быть конечными неотрицательными числами."
@@ -300,14 +300,14 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
         Dim nextAlpha As Double
         nextAlpha = alpha / 2#
         If nextAlpha <= 0# Or nextAlpha >= alpha Then
-            context.SetFailure sfcNumericalFailure, "UltimateStrain остановлен: дальнейшее уменьшение шага line search не представимо."
+            context.SetFailure sfcNumericalFailure, "UltimateStrain остановлен: дальнейшее уменьшение шага демпфирования невозможно в машинной арифметике."
             Exit Function
         End If
         alpha = nextAlpha
     Loop
 
     context.LimitSearchSetUltimateNumericalFailure _
-        "NumericalFailure: line search UltimateStrain не улучшил невязку."
+        "Поиск по предельной деформации не сошелся: подбор шага не уменьшил невязку."
     Exit Function
 
 Failed:

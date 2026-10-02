@@ -1,0 +1,77 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_source_v46.xlsm
+SOURCE_SHA256: BB94807A0C5788FB2E07B1D37AB3E9EE42D802B6A111BBAFCBE8E756D9D1EAB4
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_611476368a1b402e9c32ddafc4653d08\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestMaterialDiagrams.RunAudit03DiagramArrayInputTests =====
+SUITE_STARTED: modTestMaterialDiagrams.RunAudit03DiagramArrayInputTests; 2026-10-02T08:50:10
+EXCEL_AFTER_SUITE: pid=24160; workingSet=127344640; privateBytes=87441408; cpu=2.359375
+OK: audit03.diagramArray.CountTooSmall.inputError
+OK: audit03.diagramArray.CountTooSmall.reason
+OK: audit03.diagramArray.CountTooSmall.noPoints
+OK: audit03.diagramArray.CountTooSmall.notUsable
+DIAGRAM_ARRAY_INPUT: case=CountTooSmall|error=-2147218404|reason=Диаграмма материала должна содержать не менее двух точек.
+OK: audit03.diagramArray.CountTooSmall.restoredStress; actual=-7.75; expected=-7.75; absDiff=0.
+OK: audit03.diagramArray.CountTooSmall.restoredPoints
+OK: audit03.diagramArray.MissingStrain.inputError
+OK: audit03.diagramArray.MissingStrain.reason
+OK: audit03.diagramArray.MissingStrain.noPoints
+OK: audit03.diagramArray.MissingStrain.notUsable
+DIAGRAM_ARRAY_INPUT: case=MissingStrain|error=-2147218391|reason=Массив деформаций диаграммы не содержит все точки с индексами от 1 до 3.
+OK: audit03.diagramArray.MissingStrain.restoredStress; actual=-7.75; expected=-7.75; absDiff=0.
+OK: audit03.diagramArray.MissingStrain.restoredPoints
+OK: audit03.diagramArray.MissingStress.inputError
+OK: audit03.diagramArray.MissingStress.reason
+OK: audit03.diagramArray.MissingStress.noPoints
+OK: audit03.diagramArray.MissingStress.notUsable
+DIAGRAM_ARRAY_INPUT: case=MissingStress|error=-2147218391|reason=Массив напряжений диаграммы не содержит все точки с индексами от 1 до 3.
+OK: audit03.diagramArray.MissingStress.restoredStress; actual=-7.75; expected=-7.75; absDiff=0.
+OK: audit03.diagramArray.MissingStress.restoredPoints
+OK: audit03.diagramArray.ShortStrain.inputError
+OK: audit03.diagramArray.ShortStrain.reason
+OK: audit03.diagramArray.ShortStrain.noPoints
+OK: audit03.diagramArray.ShortStrain.notUsable
+DIAGRAM_ARRAY_INPUT: case=ShortStrain|error=-2147218391|reason=Массив деформаций диаграммы не содержит все точки с индексами от 1 до 3.
+OK: audit03.diagramArray.ShortStrain.restoredStress; actual=-7.75; expected=-7.75; absDiff=0.
+OK: audit03.diagramArray.ShortStrain.restoredPoints
+OK: audit03.diagramArray.ShortStress.inputError
+OK: audit03.diagramArray.ShortStress.reason
+OK: audit03.diagramArray.ShortStress.noPoints
+OK: audit03.diagramArray.ShortStress.notUsable
+DIAGRAM_ARRAY_INPUT: case=ShortStress|error=-2147218391|reason=Массив напряжений диаграммы не содержит все точки с индексами от 1 до 3.
+OK: audit03.diagramArray.ShortStress.restoredStress; actual=-7.75; expected=-7.75; absDiff=0.
+OK: audit03.diagramArray.ShortStress.restoredPoints
+OK: audit03.diagramArray.BoundsStrain.inputError
+OK: audit03.diagramArray.BoundsStrain.reason
+OK: audit03.diagramArray.BoundsStrain.noPoints
+OK: audit03.diagramArray.BoundsStrain.notUsable
+DIAGRAM_ARRAY_INPUT: case=BoundsStrain|error=-2147218391|reason=Массив деформаций диаграммы не содержит все точки с индексами от 1 до 3.
+OK: audit03.diagramArray.BoundsStrain.restoredStress; actual=-7.75; expected=-7.75; absDiff=0.
+OK: audit03.diagramArray.BoundsStrain.restoredPoints
+OK: audit03.diagramArray.BoundsStress.inputError
+OK: audit03.diagramArray.BoundsStress.reason
+OK: audit03.diagramArray.BoundsStress.noPoints
+OK: audit03.diagramArray.BoundsStress.notUsable
+DIAGRAM_ARRAY_INPUT: case=BoundsStress|error=-2147218391|reason=Массив напряжений диаграммы не содержит все точки с индексами от 1 до 3.
+OK: audit03.diagramArray.BoundsStress.restoredStress; actual=-7.75; expected=-7.75; absDiff=0.
+OK: audit03.diagramArray.BoundsStress.restoredPoints
+OK: audit03.diagramArray.CountBeyondArrays.inputError
+OK: audit03.diagramArray.CountBeyondArrays.reason
+OK: audit03.diagramArray.CountBeyondArrays.noPoints
+OK: audit03.diagramArray.CountBeyondArrays.notUsable
+DIAGRAM_ARRAY_INPUT: case=CountBeyondArrays|error=-2147218391|reason=Массив деформаций диаграммы не содержит все точки с индексами от 1 до 4.
+OK: audit03.diagramArray.CountBeyondArrays.restoredStress; actual=-7.75; expected=-7.75; absDiff=0.
+OK: audit03.diagramArray.CountBeyondArrays.restoredPoints
+OK: audit03.diagramArray.Duplicate.inputError
+OK: audit03.diagramArray.Duplicate.reason
+OK: audit03.diagramArray.Duplicate.noPoints
+OK: audit03.diagramArray.Duplicate.notUsable
+DIAGRAM_ARRAY_INPUT: case=Duplicate|error=-2147218393|reason=Деформации в диаграмме материала не должны повторяться.
+OK: audit03.diagramArray.Duplicate.restoredStress; actual=-7.75; expected=-7.75; absDiff=0.
+OK: audit03.diagramArray.Duplicate.restoredPoints
+OK: audit03.diagramArray.extraZeroIndex; actual=-7.75; expected=-7.75; absDiff=0.
+TOTAL_AUDIT03_DIAGRAM_ARRAY_INPUT: passed=55; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestMaterialDiagrams.RunAudit03DiagramArrayInputTests; 2026-10-02T08:50:10
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

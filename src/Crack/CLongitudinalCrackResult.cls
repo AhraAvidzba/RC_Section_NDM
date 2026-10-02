@@ -45,6 +45,8 @@ Public Sub Initialize(ByVal meta As CResultMeta, ByVal maxCompressionStress As D
     mUtilization = utilization
 End Sub
 
+' Отдает независимую meta проверки продольных трещин с ее собственной
+' причиной. Полученная копия не меняет status/comment опубликованного результата.
 Public Property Get ResultMeta() As CResultMeta
     Set ResultMeta = mMeta.Clone
 End Property

@@ -29,7 +29,7 @@ Private mConcreteSourceHandle() As String ' Необязательный AutoCAD
 Private mConcreteX() As Double ' X центра тяжести бетонного элемента во внутренней системе координат, мм.
 Private mConcreteY() As Double ' Y центра тяжести бетонного элемента во внутренней системе координат, мм.
 Private mConcreteArea() As Double ' Площадь бетонного элемента, мм2.
-Private mConcreteMaterialID() As Long ' Номер/тип материала бетона для будущего расширения на разные материалы.
+Private mConcreteMaterialID() As Long ' Идентификатор материала элемента; текущий solver получает единую диаграмму бетона.
 Private mConcreteShapeType() As String ' Исходная геометрическая подсказка источника: Rectangle для известных ячеек, Region для AutoCAD.
 Private mConcreteWidth() As Double ' Реальная ширина элемента, только если источник достоверно знает прямоугольную оболочку; иначе 0.
 Private mConcreteHeight() As Double ' Реальная высота элемента, только если источник достоверно знает прямоугольную оболочку; иначе 0.
@@ -54,7 +54,7 @@ Private mRebarY() As Double ' Y центра стержня, мм.
 Private mRebarArea() As Double ' Площадь стержня, мм2.
 Private mRebarDiameter() As Double ' Диаметр стержня, мм.
 Private mRebarSteelClass() As String ' Расчетная подпись арматуры; сейчас хранит профиль стержней для трассировки.
-Private mRebarMaterialID() As Long ' Номер/тип материала арматуры для будущего расширения.
+Private mRebarMaterialID() As Long ' Идентификатор материала стержня; текущий solver получает единую диаграмму арматуры.
 Private mRebarComment() As String ' Диагностическая заметка о грани, ряде или источнике стержня.
 Private mRebarCount As Long ' Фактическое число стержней в модели.
 
@@ -185,10 +185,9 @@ Public Property Get Revision() As Long
     Revision = mRevision
 End Property
 
-' Назначает последним fallback-квадратам общий угол ориентации.
-' Метод оставлен для совместимости со старыми snapshot-данными: новые AutoCAD
-' Region получают угол простой грани сразу при импорте, а интерпретацию формы
-' выполняет ConcreteBoundaryRectangle.
+' Назначает эквивалентным площадным оболочкам с незаданным углом среднюю
+' ориентацию известных элементов. Инвалидирует затронутый boundary-cache;
+' реальные A/I элементов не меняются. Форму интерпретирует ConcreteBoundaryRectangle.
 Public Sub ApplyAverageRotationToEquivalentAreaFallbacks()
     Dim fallbackRotation As Double
     fallbackRotation = AverageKnownConcreteElementRotation()
@@ -656,6 +655,8 @@ Public Property Get ConcreteShapeType(ByVal index As Long) As String
     ConcreteShapeType = ConcreteBoundaryShapeType(index)
 End Property
 
+' Читает ширину представления границы элемента. Для импортированного волокна
+' оно может быть эквивалентным; реальная площадь и инерции не заменяются.
 Public Property Get ConcreteWidth(ByVal index As Long) As Double
     CheckConcreteIndex index
     Dim widthValue As Double
@@ -665,6 +666,7 @@ Public Property Get ConcreteWidth(ByVal index As Long) As Double
     ConcreteWidth = widthValue
 End Property
 
+' Читает высоту той же границы/эквивалентного отображения, не меняя расчетные A/I.
 Public Property Get ConcreteHeight(ByVal index As Long) As Double
     CheckConcreteIndex index
     Dim widthValue As Double
@@ -674,6 +676,7 @@ Public Property Get ConcreteHeight(ByVal index As Long) As Double
     ConcreteHeight = heightValue
 End Property
 
+' Возвращает поворот отображаемого прямоугольника относительно расчетных осей.
 Public Property Get ConcreteRotation(ByVal index As Long) As Double
     CheckConcreteIndex index
     Dim widthValue As Double
@@ -683,6 +686,7 @@ Public Property Get ConcreteRotation(ByVal index As Long) As Double
     ConcreteRotation = rotationValue
 End Property
 
+' Читает собственную Ix элемента из единого блока реальных геометрических характеристик.
 Public Property Get ConcreteLocalIx(ByVal index As Long) As Double
     CheckConcreteIndex index
     Dim localIx As Double
@@ -692,6 +696,7 @@ Public Property Get ConcreteLocalIx(ByVal index As Long) As Double
     ConcreteLocalIx = localIx
 End Property
 
+' Читает собственную Iy элемента, а не инерцию его эквивалентного изображения.
 Public Property Get ConcreteLocalIy(ByVal index As Long) As Double
     CheckConcreteIndex index
     Dim localIx As Double
@@ -701,6 +706,7 @@ Public Property Get ConcreteLocalIy(ByVal index As Long) As Double
     ConcreteLocalIy = localIy
 End Property
 
+' Читает собственную центробежную инерцию элемента в расчетных координатах.
 Public Property Get ConcreteLocalIxy(ByVal index As Long) As Double
     CheckConcreteIndex index
     Dim localIx As Double
@@ -766,11 +772,15 @@ Public Property Get RebarComment(ByVal index As Long) As String
     RebarComment = mRebarComment(index)
 End Property
 
+' Возвращает рабочую коллекцию semantic-аннотаций модели, создавая пустую
+' коллекцию при первом обращении. Получатель добавляет подписи в ту же модель.
 Public Property Get Annotations() As CSectionAnnotations
     If mAnnotations Is Nothing Then Set mAnnotations = New CSectionAnnotations
     Set Annotations = mAnnotations
 End Property
 
+' Возвращает число сохраненных аннотаций без создания коллекции.
+' У модели без аннотаций результат равен нулю, расчетная геометрия не меняется.
 Public Property Get AnnotationCount() As Long
     If mAnnotations Is Nothing Then
         AnnotationCount = 0

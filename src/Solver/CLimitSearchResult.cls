@@ -153,6 +153,8 @@ Public Property Get LambdaUltimate() As Double
     LambdaUltimate = mLambdaUltimate
 End Property
 
+' Возвращают усилия конечного named-state, если оно сохранено, иначе - числа
+' итогового Search. Сам доступ не подтверждает успех поиска физического предела.
 Public Property Get NUltimate() As Double
     If mPointState Is Nothing Then
         NUltimate = mNUltimate

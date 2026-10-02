@@ -2191,6 +2191,8 @@ End Property
 
 
 
+' Возвращает обозначение фактически выбранного load path для таблицы трещин.
+' Пустая строка означает, что путь еще не принят; это не имя численного метода.
 Public Property Get CrackFormationMethod() As String
     If Len(mResolvedCrackFormationPath) > 0 Then
         CrackFormationMethod = CrackFormationPathDisplayNameForKey(mResolvedCrackFormationPath)

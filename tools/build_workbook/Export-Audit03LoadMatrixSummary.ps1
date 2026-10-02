@@ -39,6 +39,8 @@ foreach ($file in Get-ChildItem -LiteralPath $directory -File -Filter 'broad_mat
                 Profile = $f['profile']; RequestedPath = $f['path']
                 CapacityScaledComponent = ''; LambdaCapacity = ''; CapacityMethod = ''; CapacityLimit = ''; CapacityExternalStatus = ''
                 FormationPath = ''; LambdaCrc = ''; Ncrc_Internal = ''; Mcrc_Internal = ''; HasFormationPoint = ''; CrackFormed = ''
+                CrackDataLogged = $false; WidthCalculated = ''; SigmaS_MPa = ''; SigmaSCrc_MPa = ''; PsiS = ''
+                Abt_mm2 = ''; As_mm2 = ''; Ds_mm = ''; Ls_mm = ''; Acrc_mm = ''; SelectedRebars = ''
             }
             foreach ($kind in @('direct', 'capacity', 'formation', 'current', 'width', 'longitudinal', 'stability')) {
                 foreach ($field in @('InternalStatus', 'ResultCode', 'Applies', 'Calculated', 'ResultComment')) { $current[$kind + '_' + $field] = '' }
@@ -70,6 +72,16 @@ foreach ($file in Get-ChildItem -LiteralPath $directory -File -Filter 'broad_mat
         if ($null -ne $current -and $line.StartsWith('OUTPUT: audit03.comments.')) {
             $f = Read-ProtocolFields $line
             foreach ($kind in @('Strength', 'Crack', 'Stability', 'Batch')) { $current[$kind + '_OutputComment'] = $f[$kind.ToLowerInvariant()] }
+        }
+        if ($null -ne $current -and $line.StartsWith('MATRIX_CRACK_DATA: ')) {
+            $f = Read-ProtocolFields $line
+            $current.CrackDataLogged = $true
+            foreach ($pair in @(@('WidthCalculated','calculated'), @('SigmaS_MPa','sigmaS'),
+                    @('SigmaSCrc_MPa','sigmaSCrc'), @('PsiS','psi'), @('Abt_mm2','Abt'),
+                    @('As_mm2','As'), @('Ds_mm','ds'), @('Ls_mm','ls'), @('Acrc_mm','acrc'),
+                    @('SelectedRebars','bars'))) {
+                $current[$pair[0]] = $f[$pair[1]]
+            }
         }
         if ($line.StartsWith('TOTAL_AUDIT03_LOAD_MATRIX: ')) {
             $total = $line

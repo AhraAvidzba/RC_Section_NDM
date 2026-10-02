@@ -1,0 +1,77 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_negative_v46.xlsm
+SOURCE_SHA256: CC960421E50F664EC64500BC6B670ED3C9426817D8B4C115302119B95BF7676E
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_1b2297c7f56c41b795830cc3d0e22743\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestSectionSolver.RunAudit03ExtremeStateInputTests =====
+SUITE_STARTED: modTestSectionSolver.RunAudit03ExtremeStateInputTests; 2026-10-02T08:47:05
+EXCEL_AFTER_SUITE: pid=19452; workingSet=128086016; privateBytes=88330240; cpu=2.375
+OK: audit03.extreme.Newton.shift=False.extension=False.notConverged
+FAIL: audit03.extreme.Newton.shift=False.extension=False.numericCause
+OK: audit03.extreme.Newton.shift=False.extension=False.reason
+EXTREME_CASE: audit03.extreme.Newton.shift=False.extension=False|N=-1e308|Mx=1e308|My=-1e308|failureCode=5|comment=Ошибка при вычислении равновесия: Overflow
+FAIL: audit03.extreme.Newton.shift=False.extension=False.stateNumeric
+FAIL: audit03.extreme.Newton.shift=False.extension=False.displayNumFail
+OK: audit03.extreme.Newton.shift=False.extension=False.notPhysical
+OK: audit03.extreme.Newton.shift=False.extension=False.normalRecovers
+OK: audit03.extreme.Newton.shift=False.extension=True.notConverged
+FAIL: audit03.extreme.Newton.shift=False.extension=True.numericCause
+OK: audit03.extreme.Newton.shift=False.extension=True.reason
+EXTREME_CASE: audit03.extreme.Newton.shift=False.extension=True|N=-1e308|Mx=1e308|My=-1e308|failureCode=5|comment=Ошибка при вычислении равновесия: Overflow
+FAIL: audit03.extreme.Newton.shift=False.extension=True.stateNumeric
+FAIL: audit03.extreme.Newton.shift=False.extension=True.displayNumFail
+OK: audit03.extreme.Newton.shift=False.extension=True.notPhysical
+OK: audit03.extreme.Newton.shift=False.extension=True.normalRecovers
+OK: audit03.extreme.Newton.shift=True.extension=False.notConverged
+FAIL: audit03.extreme.Newton.shift=True.extension=False.numericCause
+OK: audit03.extreme.Newton.shift=True.extension=False.reason
+EXTREME_CASE: audit03.extreme.Newton.shift=True.extension=False|N=-1e308|Mx=1e308|My=-1e308|failureCode=5|comment=Ошибка при вычислении равновесия: Overflow
+FAIL: audit03.extreme.Newton.shift=True.extension=False.stateNumeric
+FAIL: audit03.extreme.Newton.shift=True.extension=False.displayNumFail
+OK: audit03.extreme.Newton.shift=True.extension=False.notPhysical
+OK: audit03.extreme.Newton.shift=True.extension=False.normalRecovers
+OK: audit03.extreme.Newton.shift=True.extension=True.notConverged
+FAIL: audit03.extreme.Newton.shift=True.extension=True.numericCause
+OK: audit03.extreme.Newton.shift=True.extension=True.reason
+EXTREME_CASE: audit03.extreme.Newton.shift=True.extension=True|N=-1e308|Mx=1e308|My=-1e308|failureCode=5|comment=Ошибка при вычислении равновесия: Overflow
+FAIL: audit03.extreme.Newton.shift=True.extension=True.stateNumeric
+FAIL: audit03.extreme.Newton.shift=True.extension=True.displayNumFail
+OK: audit03.extreme.Newton.shift=True.extension=True.notPhysical
+OK: audit03.extreme.Newton.shift=True.extension=True.normalRecovers
+OK: audit03.extreme.Secant.shift=False.extension=False.notConverged
+FAIL: audit03.extreme.Secant.shift=False.extension=False.numericCause
+FAIL: audit03.extreme.Secant.shift=False.extension=False.reason
+EXTREME_CASE: audit03.extreme.Secant.shift=False.extension=False|N=-1e308|Mx=1e308|My=-1e308|failureCode=0|comment=
+FAIL: audit03.extreme.Secant.shift=False.extension=False.stateNumeric
+FAIL: audit03.extreme.Secant.shift=False.extension=False.displayNumFail
+OK: audit03.extreme.Secant.shift=False.extension=False.notPhysical
+OK: audit03.extreme.Secant.shift=False.extension=False.normalRecovers
+OK: audit03.extreme.Secant.shift=False.extension=True.notConverged
+FAIL: audit03.extreme.Secant.shift=False.extension=True.numericCause
+FAIL: audit03.extreme.Secant.shift=False.extension=True.reason
+EXTREME_CASE: audit03.extreme.Secant.shift=False.extension=True|N=-1e308|Mx=1e308|My=-1e308|failureCode=0|comment=
+FAIL: audit03.extreme.Secant.shift=False.extension=True.stateNumeric
+FAIL: audit03.extreme.Secant.shift=False.extension=True.displayNumFail
+OK: audit03.extreme.Secant.shift=False.extension=True.notPhysical
+OK: audit03.extreme.Secant.shift=False.extension=True.normalRecovers
+OK: audit03.extreme.Secant.shift=True.extension=False.notConverged
+FAIL: audit03.extreme.Secant.shift=True.extension=False.numericCause
+FAIL: audit03.extreme.Secant.shift=True.extension=False.reason
+EXTREME_CASE: audit03.extreme.Secant.shift=True.extension=False|N=-1e308|Mx=1e308|My=-1e308|failureCode=0|comment=
+FAIL: audit03.extreme.Secant.shift=True.extension=False.stateNumeric
+FAIL: audit03.extreme.Secant.shift=True.extension=False.displayNumFail
+OK: audit03.extreme.Secant.shift=True.extension=False.notPhysical
+OK: audit03.extreme.Secant.shift=True.extension=False.normalRecovers
+OK: audit03.extreme.Secant.shift=True.extension=True.notConverged
+FAIL: audit03.extreme.Secant.shift=True.extension=True.numericCause
+FAIL: audit03.extreme.Secant.shift=True.extension=True.reason
+EXTREME_CASE: audit03.extreme.Secant.shift=True.extension=True|N=-1e308|Mx=1e308|My=-1e308|failureCode=0|comment=
+FAIL: audit03.extreme.Secant.shift=True.extension=True.stateNumeric
+FAIL: audit03.extreme.Secant.shift=True.extension=True.displayNumFail
+OK: audit03.extreme.Secant.shift=True.extension=True.notPhysical
+OK: audit03.extreme.Secant.shift=True.extension=True.normalRecovers
+TOTAL_AUDIT03_EXTREME_STATE: passed=28; failed=28
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionSolver.RunAudit03ExtremeStateInputTests; 2026-10-02T08:47:05
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

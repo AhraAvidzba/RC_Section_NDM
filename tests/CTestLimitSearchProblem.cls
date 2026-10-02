@@ -206,6 +206,8 @@ Private Function ILimitSearchProblem_PrepareUltimate(ByVal request As CLimitSear
     ILimitSearchProblem_PrepareUltimate = Not loadPath Is Nothing
 End Function
 
+' ДЛЯ ТЕСТОВ: запускает настоящий общий Newton на аналитических callbacks.
+' Section и материалы не нужны простой тестовой системе трех невязок.
 Private Function ILimitSearchProblem_RunUltimateAttempts(ByVal request As CLimitSearchRequest) As Boolean
     Dim search As CUltimateStrainSearch
     Set search = New CUltimateStrainSearch
@@ -213,9 +215,13 @@ Private Function ILimitSearchProblem_RunUltimateAttempts(ByVal request As CLimit
         ILimitSearchProblem_BuildLoadPath(request), Nothing, "Тестовый поиск не сошелся.")
 End Function
 
+' ДЛЯ ТЕСТОВ: финальная lambda уже сохранена callback-ом; дополнительной
+' инженерной обработки результата аналитической fixture нет.
 Private Sub ILimitSearchProblem_CompleteUltimate(ByVal loadPath As CLoadPathVector)
 End Sub
 
+' ДЛЯ ТЕСТОВ: задает управляемый старт по epsilon0 и нулевые кривизны,
+' чтобы воспроизводимо проверять нормальную сходимость и стагнацию общего Newton.
 Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
@@ -223,6 +229,9 @@ Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section
     eps0 = mUltimateInitialEps: kx = 0#: ky = 0#
 End Sub
 
+' ДЛЯ ТЕСТОВ: вычисляет линейные невязки и считает реальные вызовы callback.
+' Некоторые сценарии намеренно дают typed failure либо VBA error на второй
+' пробе, чтобы проверить причину остановки на шаге построения Якобиана.
 Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
@@ -256,6 +265,8 @@ Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal s
     ILimitSearchProblem_LimitSearchEvaluateUltimateResidual = True
 End Function
 
+' ДЛЯ ТЕСТОВ: проверяет три допуска аналитической системы. Режим constant norm
+' намеренно запрещает успех, создавая воспроизводимую стагнацию line search.
 Private Function ILimitSearchProblem_LimitSearchUltimateResidualReached(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Boolean
     ILimitSearchProblem_LimitSearchUltimateResidualReached = _
@@ -263,12 +274,16 @@ Private Function ILimitSearchProblem_LimitSearchUltimateResidualReached(ByVal rP
     If mUltimateConstantNorm Then ILimitSearchProblem_LimitSearchUltimateResidualReached = False
 End Function
 
+' ДЛЯ ТЕСТОВ: возвращает сумму модулей невязок либо постоянную норму,
+' когда нужно проверить отсутствие улучшающего представимого шага.
 Private Function ILimitSearchProblem_LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Double
     ILimitSearchProblem_LimitSearchUltimateResidualNorm = Abs(rPath1) + Abs(rPath2) + Abs(rLimit)
     If mUltimateConstantNorm Then ILimitSearchProblem_LimitSearchUltimateResidualNorm = 1#
 End Function
 
+' ДЛЯ ТЕСТОВ: сохраняет найденную аналитическую lambda, метод и число итераций.
+' Физического state нет: приемка production-предела проверяется отдельными tests.
 Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
@@ -281,6 +296,7 @@ Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal sec
     ILimitSearchProblem_LimitSearchFinalizeUltimateResult = True
 End Function
 
+' ДЛЯ ТЕСТОВ: фиксирует численную остановку и ее причину без найденной точки.
 Private Sub ILimitSearchProblem_LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
     mConverged = False
     mLimitState = PROBE_NUMFAIL
@@ -349,6 +365,8 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
     ILimitSearchProblem_EvaluatePoint = True
 End Function
 
+' ДЛЯ ТЕСТОВ: однотипные предикаты аналитического probe-протокола различают
+' допустимую точку, предел, намеренную несходимость и ошибку входа.
 Private Function ILimitSearchProblem_IsAcceptableState(ByVal probeState As String) As Boolean
     ILimitSearchProblem_IsAcceptableState = (probeState = PROBE_ACCEPTABLE)
 End Function
@@ -381,23 +399,26 @@ Private Sub ILimitSearchProblem_RecordAcceptable(ByVal loadPath As CLoadPathVect
     AppendDiagnosticLine "acceptable lambda=" & FormatNumberInvariant(lambdaValue)
 End Sub
 
+' ДЛЯ ТЕСТОВ: фиксирует остановку начальной пробы, не создавая предельную точку.
 Private Sub ILimitSearchProblem_HandleInitialFailure(ByVal probeState As String)
     mLimitState = PROBE_NUMFAIL
     AppendDiagnosticLine "initialFailure=" & probeState
 End Sub
 
+' ДЛЯ ТЕСТОВ: отличает техническую границу поиска от найденного корня fixture.
 Private Sub ILimitSearchProblem_HandleBracketNotFound(ByVal lowLambda As Double)
     mLimitState = "SearchBoundReached"
     AppendDiagnosticLine "bracketNotFound lowLambda=" & FormatNumberInvariant(lowLambda)
 End Sub
 
+' ДЛЯ ТЕСТОВ: сохраняет lambda неуспешной верхней пробы для проверки recovery.
 Private Sub ILimitSearchProblem_HandleBracketNumericalFailure(ByVal lowLambda As Double, _
         ByVal failedLambda As Double, ByVal probeState As String)
     mLimitState = PROBE_NUMFAIL
     AppendDiagnosticLine "bracketNumericalFailure failedLambda=" & FormatNumberInvariant(failedLambda)
 End Sub
 
-' Фиксирует T02: лимит итераций bisection не должен превращаться в найденный предел.
+' ДЛЯ ТЕСТОВ: лимит итераций bisection не должен превращаться в найденный предел.
 Private Sub ILimitSearchProblem_HandleIterationLimit(ByVal maxIterations As Long, _
         ByVal remainingWidth As Double, ByVal tolerance As Double)
     mConverged = False
@@ -408,21 +429,25 @@ Private Sub ILimitSearchProblem_HandleIterationLimit(ByVal maxIterations As Long
         "; tolerance=" & FormatNumberInvariant(tolerance)
 End Sub
 
+' ДЛЯ ТЕСТОВ: неизвестный probe-исход оставляет поиск неуспешным и диагностируемым.
 Private Sub ILimitSearchProblem_HandleUnexpectedState(ByVal probeState As String)
     mLimitState = PROBE_NUMFAIL
     AppendDiagnosticLine "unexpectedState=" & probeState
 End Sub
 
+' ДЛЯ ТЕСТОВ: принимает ошибку параметров общего поиска без фиктивной сходимости.
 Private Sub ILimitSearchProblem_SetInvalidInput(ByVal message As String)
     mLimitState = PROBE_INPUTERR
     AppendDiagnosticLine message
 End Sub
 
+' ДЛЯ ТЕСТОВ: принимает численную причину общего поиска и сохраняет ее в журнале.
 Private Sub ILimitSearchProblem_SetNumericalFailure(ByVal message As String)
     mLimitState = PROBE_NUMFAIL
     AppendDiagnosticLine message
 End Sub
 
+' ДЛЯ ТЕСТОВ: callback журнала позволяет проверить реальный путь общего поиска.
 Private Sub ILimitSearchProblem_AppendDiagnostic(ByVal message As String)
     AppendDiagnosticLine message
 End Sub
@@ -442,6 +467,8 @@ Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchReq
     ILimitSearchProblem_FinalizeAt = True
 End Function
 
+' ДЛЯ ТЕСТОВ: сохраняет выбранную сторону скобки по kind задачи, чтобы проверить
+' generic финализацию Capacity/Formation без отдельного численного алгоритма.
 Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
         ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
@@ -456,6 +483,7 @@ Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchReq
         "; method=" & methodName
 End Sub
 
+' ДЛЯ ТЕСТОВ: отмечает вызов последней попытки финализации, не объявляя успех.
 Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
     AppendDiagnosticLine "retainedCapacity"
 End Sub
@@ -483,6 +511,8 @@ Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRe
     Set ILimitSearchProblem_BuildResult = result
 End Function
 
+' ДЛЯ ТЕСТОВ: конфигурационная, входная и внутренняя ошибки запрещают повтор
+' попытки; реальная численная неудача допускает предусмотренный fallback.
 Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
     ILimitSearchProblem_StoppedTerminally = (mFailureCode = sfcInvalidConfiguration Or _
         mFailureCode = sfcInvalidInput Or mFailureCode = sfcInternalError)
@@ -492,14 +522,17 @@ Private Property Get ILimitSearchProblem_StopReason() As String
     ILimitSearchProblem_StopReason = mLimitState
 End Property
 
+' ДЛЯ ТЕСТОВ: сбрасывает рабочую причину между попытками той же fixture.
 Private Sub ILimitSearchProblem_ClearStopReason()
     mLimitState = vbNullString
 End Sub
 
+' ДЛЯ ТЕСТОВ: общий текст заполняет только отсутствующую конкретную причину.
 Private Sub ILimitSearchProblem_SetStopReasonIfEmpty(ByVal reason As String)
     If Len(mLimitState) = 0 Then mLimitState = reason
 End Sub
 
+' ДЛЯ ТЕСТОВ: сохраняет сообщения перехода fallback в наблюдаемом порядке.
 Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, _
         ByVal firstStopReason As String, ByVal firstDiagnostics As String, _
         ByVal firstAttemptMessage As String, ByVal transitionMessage As String, _

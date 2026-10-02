@@ -824,6 +824,8 @@ Private Sub TestLoadMultiplierWithWorkbookTfDefaults(ByRef stats As TCapacityTes
         nValue, mxValue, myValue, mxOffset, myOffset, reference.LambdaUltimate
 End Sub
 
+' Проверяет один метод LoadMultiplier на настройках, прочитанных в tf/tf*m.
+' Сравнение с независимой веткой UltimateStrain сохраняет заданный допуск lambda.
 Private Sub AssertLoadMultiplierTfDefault(ByRef stats As TCapacityTestStats, ByVal methodName As String, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
         ByVal section As CSectionModel, ByVal concrete As Object, ByVal steel As Object, _
@@ -1058,6 +1060,8 @@ Private Sub CheckRectSetMomentUltimatePath(ByRef stats As TCapacityTestStats, By
     AssertClose stats, prefix & ".myUltimate.user", cap.MyUltimate, cap.LambdaUltimate * userMyBase, 20000#
 End Sub
 
+' Запускает одинаковый RectSet load path всеми разрешенными стратегиями поиска.
+' Для силовой траектории явно передает принятый переход к LoadMultiplier.
 Private Sub CheckRectSetCapacityPathMethods(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal section As CSectionModel, ByVal nOffset As Double, ByVal nBase As Double, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
@@ -1075,6 +1079,8 @@ Private Sub CheckRectSetCapacityPathMethods(ByRef stats As TCapacityTestStats, B
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathFallback
 End Sub
 
+' Выполняет один выбранный поиск на готовом RectSet и проверяет физический предел.
+' Усилия конечного State дополнительно проверяются на исходной lambda-траектории.
 Private Sub CheckRectSetCapacityPathMethod(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal methodName As String, ByVal searchMethod As String, ByVal section As CSectionModel, _
         ByVal nOffset As Double, ByVal nBase As Double, _
@@ -1143,6 +1149,8 @@ Private Sub TestNultBaseLoadStepsSensitivity(ByRef stats As TCapacityTestStats)
         compressionLoad.AxialMxAboutPoint(0#), compressionLoad.AxialMyAboutPoint(0#)
 End Sub
 
+' Повторяет осевой путь с 1/2/4/8 ступенями внутренних решений равновесия.
+' Один шаг диагностируется отдельно; успешность обязательна для остальных вариантов.
 Private Sub CheckNultBaseLoadSteps(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal section As CSectionModel, ByVal nBase As Double, _
         ByVal mxBase As Double, ByVal myBase As Double)
@@ -1171,6 +1179,8 @@ Private Sub CheckNultBaseLoadSteps(ByRef stats As TCapacityTestStats, ByVal pref
     Next i
 End Sub
 
+' Сравнивает стратегии поиска на одной сетке, арматуре и Offset/Base-траектории.
+' Численные методы LoadMultiplier проверяются каждый отдельным запуском.
 Private Sub CheckCapacityLoadPathMethods(ByRef stats As TCapacityTestStats, ByVal pathName As String, _
         ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
         ByVal nOffset As Double, ByVal nBase As Double, _
@@ -1188,6 +1198,8 @@ Private Sub CheckCapacityLoadPathMethods(ByRef stats As TCapacityTestStats, ByVa
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase
 End Sub
 
+' Собирает CSectionModel и запускает только запрошенный метод поиска предела.
+' При отказе сохраняет диагностику; при успехе проверяет равновесие и путь нагрузки.
 Private Sub CheckCapacityLoadPathMethod(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal methodName As String, ByVal searchMethod As String, _
         ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
@@ -1228,6 +1240,8 @@ Private Sub CheckCapacityLoadPathMethod(ByRef stats As TCapacityTestStats, ByVal
     End If
 End Sub
 
+' Строит фиксированное двухпрямоугольное сечение с арматурой по четырем граням.
+' Геометрия, шаг сетки и диаметры независимы от пользовательского Config.
 Private Function RectSetCapacitySection() As CSectionModel
     Dim geom As CGeometryRectSet
     Set geom = New CGeometryRectSet
@@ -1251,6 +1265,8 @@ Private Function RectSetCapacitySection() As CSectionModel
     Set RectSetCapacitySection = BuildGeneratedSectionModel(mesh, rebars, "RectSetCapacityTest")
 End Function
 
+' Возвращает полный контракт грани с заданным количеством стержней первого ряда.
+' Дополнительные ряды отключены нулевыми диаметрами, отступы и режимы фиксированы.
 Private Function RectSetCapacityFaceSettings(ByVal count1 As Long, ByVal count2 As Long) As Variant
     RectSetCapacityFaceSettings = Array(40#, 40#, 32#, 32#, count1, count2, 80#, 80#, 80#, 80#, _
         0#, 0#, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
@@ -1284,6 +1300,8 @@ Private Sub AssertCapacitySolutionMethod(ByRef stats As TCapacityTestStats, ByVa
     End If
 End Sub
 
+' Независимо восстанавливает N/Mx/My по Offset + lambda*Base и сверяет State.
+' Выводимый Nult пуст по контракту, если продольная сила пути не масштабируется.
 Private Sub AssertLoadPathResult(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal cap As CCapacitySolver, _
         ByVal nOffset As Double, ByVal nBase As Double, _
@@ -1417,6 +1435,8 @@ Private Sub AppendSearchPerformance(ByRef stats As TCapacityTestStats, ByVal met
         "|status=" & cap.LimitState
 End Sub
 
+' Сохраняет результаты и стоимость поиска для сравнения стратегий без пересчета.
+' Указывает найденную lambda, управляющий элемент и число обращений к решателю.
 Private Sub AppendComparison(ByRef stats As TCapacityTestStats, ByVal name As String, _
         ByVal cap As CCapacitySolver, ByVal elapsedSec As Double)
     AppendLine stats, "COMPARE|" & name & _
@@ -1429,6 +1449,8 @@ Private Sub AppendComparison(ByRef stats As TCapacityTestStats, ByVal name As St
         "|elapsedSec=" & FormatNumberInvariant(elapsedSec)
 End Sub
 
+' Задает фиксированные пределы и поисковый бюджет контрольных задач Capacity.
+' Это fixture, а не нормативный default или скрытая настройка рабочего расчета.
 Private Sub ConfigureCapacity(ByVal cap As CCapacitySolver)
     cap.ConcreteCompressionLimit = -0.0015
     cap.SteelStrainLimit = 0.00175
@@ -1440,6 +1462,8 @@ Private Sub ConfigureCapacity(ByVal cap As CCapacitySolver)
     cap.SolverMaxIterations = 60
 End Sub
 
+' Настраивает независимую проверку равновесия во внутренних единицах N и N*mm.
+' Значения не читаются из Config и не меняют допуски проверяемого поискового метода.
 Private Sub ConfigureSectionSolver(ByVal solver As CSectionSolver)
     solver.LoadSteps = 8
     solver.MaxIterations = 80
@@ -1448,6 +1472,7 @@ Private Sub ConfigureSectionSolver(ByVal solver As CSectionSolver)
     solver.ToleranceMy = 5000#
 End Sub
 
+' Создает фиксированный сжатый бетон без растянутой ветви и расширения.
 Private Function ProvisionalConcrete() As CMaterialDiagram
     Dim concrete As CMaterialDiagram
     Set concrete = New CMaterialDiagram
@@ -1455,6 +1480,8 @@ Private Function ProvisionalConcrete() As CMaterialDiagram
     Set ProvisionalConcrete = concrete
 End Function
 
+' Создает физическую TwoLine-диаграмму с растяжением через обычный material provider.
+' Параметры берутся из fixtures ниже, а не из листа Config.
 Private Function ProvisionalConcreteWithTension() As CMaterialDiagram
     Dim provider As CMaterialModelProvider
     Set provider = New CMaterialModelProvider
@@ -1462,6 +1489,8 @@ Private Function ProvisionalConcreteWithTension() As CMaterialDiagram
     Set ProvisionalConcreteWithTension = provider.ConcreteMaterial(cpStrength)
 End Function
 
+' Задает оба расчетных набора бетона и сопротивление продольным трещинам.
+' Значения служат воспроизводимому fixture, не нормативной трассировке.
 Private Function TestConcreteParameters() As CConcreteMaterialParameters
     Dim parameters As CConcreteMaterialParameters
     Set parameters = New CConcreteMaterialParameters
@@ -1469,6 +1498,7 @@ Private Function TestConcreteParameters() As CConcreteMaterialParameters
     Set TestConcreteParameters = parameters
 End Function
 
+' Задает фиксированные модули и сопротивления арматуры обоих расчетных наборов.
 Private Function TestSteelParameters() As CSteelMaterialParameters
     Dim parameters As CSteelMaterialParameters
     Set parameters = New CSteelMaterialParameters
@@ -1476,6 +1506,7 @@ Private Function TestSteelParameters() As CSteelMaterialParameters
     Set TestSteelParameters = parameters
 End Function
 
+' Возвращает симметричную физическую диаграмму арматуры с постоянным плато.
 Private Function ProvisionalSteel() As CMaterialDiagram
     Dim steel As CMaterialDiagram
     Set steel = New CMaterialDiagram
@@ -1483,6 +1514,7 @@ Private Function ProvisionalSteel() As CMaterialDiagram
     Set ProvisionalSteel = steel
 End Function
 
+' Возвращает линейный бетон для аналитически проверяемых задач равновесия.
 Private Function LinearConcrete() As CLinearConcreteMaterial
     Dim concrete As CLinearConcreteMaterial
     Set concrete = New CLinearConcreteMaterial
@@ -1490,6 +1522,7 @@ Private Function LinearConcrete() As CLinearConcreteMaterial
     Set LinearConcrete = concrete
 End Function
 
+' Возвращает линейную арматуру; предел для поиска задается отдельно в Capacity.
 Private Function LinearSteel() As CLinearSteelMaterial
     Dim steel As CLinearSteelMaterial
     Set steel = New CLinearSteelMaterial
@@ -1497,6 +1530,8 @@ Private Function LinearSteel() As CLinearSteelMaterial
     Set LinearSteel = steel
 End Function
 
+' Готовит симметричный прямоугольный fixture и возвращает его сетку и арматуру.
+' Центр находится в начале координат, четыре одинаковых стержня зеркальны по осям.
 Private Sub PrepareSymmetricSection(ByVal width As Double, ByVal height As Double, ByVal stepSize As Double, _
         ByVal xAbs As Double, ByVal yAbs As Double, ByRef mesh As CFiberMeshBuilder, ByRef rebars As CRebarLayout)
     Dim geom As CGeometryRoundedRectangle
@@ -1505,6 +1540,8 @@ Private Sub PrepareSymmetricSection(ByVal width As Double, ByVal height As Doubl
     Set rebars = SymmetricRebars(geom, xAbs, yAbs)
 End Sub
 
+' Расставляет четыре стержня диаметром 20 мм в зеркальных точках (+/-x, +/-y).
+' Каждый стержень проходит обычную проверку принадлежности геометрии.
 Private Function SymmetricRebars(ByVal geom As CGeometryRoundedRectangle, ByVal xAbs As Double, ByVal yAbs As Double) As CRebarLayout
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
@@ -1515,6 +1552,7 @@ Private Function SymmetricRebars(ByVal geom As CGeometryRoundedRectangle, ByVal 
     Set SymmetricRebars = rebars
 End Function
 
+' Возвращает прямоугольник без скруглений, поворота и смещения для fixtures.
 Private Function RectangleGeometry(ByVal width As Double, ByVal height As Double) As CGeometryRoundedRectangle
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -1540,11 +1578,15 @@ Private Function BuildMesh(ByVal geom As ISectionGeometry, ByVal stepSize As Dou
     Set BuildMesh = mesh
 End Function
 
+' Отличает физические деформационные критерии от технического исхода поиска.
+' Это проверка диагностического поля теста, не назначение пользовательского статуса.
 Private Function IsPhysicalLimitState(ByVal state As String) As Boolean
     IsPhysicalLimitState = (state = "ConcreteStrainLimit" Or state = "ConcreteTensionStrainLimit" Or _
         state = "SteelStrainLimit")
 End Function
 
+' Сверяет все компоненты внутренних усилий с независимо заданной нагрузкой.
+' Нулевая сила и нулевой момент проверяются по своим абсолютным допускам.
 Private Sub AssertEquilibrium(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal solver As CSectionSolver, ByVal n As Double, ByVal mx As Double, ByVal my As Double)
     AssertLoadComponent stats, prefix & ".N", solver.Nint, n, 10#, 0.0001
@@ -1552,6 +1594,7 @@ Private Sub AssertEquilibrium(ByRef stats As TCapacityTestStats, ByVal prefix As
     AssertLoadComponent stats, prefix & ".My", solver.Myint, my, 10000#, 0.0001
 End Sub
 
+' Не делит на почти нулевой эталон: выбирает абсолютную или относительную ошибку.
 Private Sub AssertLoadComponent(ByRef stats As TCapacityTestStats, ByVal name As String, _
         ByVal actual As Double, ByVal expected As Double, ByVal zeroTolerance As Double, _
         ByVal relTolerance As Double)
@@ -1562,6 +1605,8 @@ Private Sub AssertLoadComponent(ByRef stats As TCapacityTestStats, ByVal name As
     End If
 End Sub
 
+' Группа assertions ведет счет и протоколирует условия и фактические отклонения.
+' Допуски численных сравнений задаются самим контрольным случаем.
 Private Sub AssertTrue(ByRef stats As TCapacityTestStats, ByVal name As String, ByVal condition As Boolean)
     If condition Then
         stats.Passed = stats.Passed + 1
@@ -1582,6 +1627,7 @@ Private Sub AssertEquals(ByRef stats As TCapacityTestStats, ByVal name As String
     End If
 End Sub
 
+' Сравнивает по абсолютному допуску с записью actual/expected и величины ошибки.
 Private Sub AssertClose(ByRef stats As TCapacityTestStats, ByVal name As String, ByVal actual As Double, _
         ByVal expected As Double, ByVal tolerance As Double)
     Dim diff As Double
@@ -1597,6 +1643,7 @@ Private Sub AssertClose(ByRef stats As TCapacityTestStats, ByVal name As String,
     End If
 End Sub
 
+' Проверяет относительное отклонение; для почти нулевого эталона избегает деления.
 Private Sub AssertRelative(ByRef stats As TCapacityTestStats, ByVal name As String, ByVal actual As Double, _
         ByVal expected As Double, ByVal relTolerance As Double)
     Dim relDiff As Double
@@ -1617,6 +1664,7 @@ Private Sub AssertRelative(ByRef stats As TCapacityTestStats, ByVal name As Stri
     End If
 End Sub
 
+' Дополняет тестовый протокол; числовые поля ниже используют точку в любой локали.
 Private Sub AppendLine(ByRef stats As TCapacityTestStats, ByVal text As String)
     stats.Report = stats.Report & text & vbCrLf
 End Sub

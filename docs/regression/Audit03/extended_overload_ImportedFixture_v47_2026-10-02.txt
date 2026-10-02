@@ -1,0 +1,515 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_source_v47.xlsm
+SOURCE_SHA256: A3804AC1872DACED5EC0BBF2E7C8DC43FD8925C5293148E324F86B1CB95BB234
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0c01f00c95694466984175a95dcf5b9b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03ExtendedOverloadEquilibriumTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03ExtendedOverloadEquilibriumTests; 2026-10-02T09:24:19
+EXCEL_AFTER_SUITE: pid=19312; workingSet=130506752; privateBytes=91594752; cpu=3.25
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.1.0.05.1|N=-2300936.02253117|Mx=-0.000000001397|My=-0.000000000466|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.1.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.1.rN; actual=0.000000000466; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.1.rMx; actual=-0.000000013097; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.1.rMy; actual=-0.00000000227; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.1.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.1.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.1.displayFail
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.1.0.05.2|N=502654.824574367|Mx=0.000000000233|My=0.000000000698|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.2.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.2.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.2.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.2.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.2.displayFail
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.1.0.05.3|N=-632668.640562968|Mx=56795001.3292246|My=27387136.2061807|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=1|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.3.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.3.rN; actual=0.000000000116; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.3.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.3.rMy; actual=0.000000003725; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.3.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.3.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.1.0.05.3.displayFail
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.1.0.5.1|N=-12023126.2075885|Mx=0.000000014668|My=-0.000000005355|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.1.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.1.rN; actual=0.000000003725; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.1.rMx; actual=-0.000000008382; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.1.rMy; actual=0.000000015832; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.1.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.1.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.1.displayFail
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.1.offNoEquilibrium
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.1.offNumericalCause
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.1.0.5.2|N=1633628.17986669|Mx=0.000000001397|My=0.000000002328|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.2.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.2.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.2.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.2.displayFail
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.2.offNoEquilibrium
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.2.offNumericalCause
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.1.0.5.3|N=-2517841.92970657|Mx=195156755.257595|My=165057629.606216|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.3.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.3.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.3.rMx; actual=-0.000000029802; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.3.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.3.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.1.0.5.3.displayFail
+OK: audit03.extended.ImportedFixture.Newton.1.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.1.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.1.5.1|N=-109245028.058162|Mx=0.000000361353|My=-0.000000003725|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.1.5.1.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.1.5.1.rN; actual=-0.000000014901; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.5.1.rMx; actual=0.000000003725; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.5.1.rMy; actual=0.000000026077; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.5.1.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.1.5.1.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.1.5.1.displayFail
+OK: audit03.extended.ImportedFixture.Newton.1.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.1.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.1.5.2|N=12943361.7327899|Mx=-0.000000014901|My=0.000000014901|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.1.5.2.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.1.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.5.2.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.1.5.2.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.1.5.2.displayFail
+OK: audit03.extended.ImportedFixture.Newton.1.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.1.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.1.5.3|N=-21381762.3211426|Mx=1591287305.06794|My=1521313796.06216|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.1.5.3.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.1.5.3.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.5.3.rMx; actual=0.000000476837; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.5.3.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.1.5.3.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.1.5.3.displayFail
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.1.9.5.1|N=-206466929.908735|Mx=0.000000018626|My=0.000000011176|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.1.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.1.rN; actual=0.000000029802; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.1.rMx; actual=-0.00000012666; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.1.rMy; actual=0.00000012666; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.1.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.1.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.1.displayFail
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.1.9.5.2|N=24253095.2857132|Mx=-0.000000007451|My=-0.000000052154|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.2.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.2.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.2.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.2.displayFail
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.1.9.5.3|N=-40245682.7125785|Mx=2987417854.87829|My=2877569962.5181|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.3.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.3.rN; actual=-0.000000007451; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.3.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.3.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.3.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.1.9.5.3.displayFail
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.3.0.05.1|N=-2733033.36408927|Mx=0.000000002095|My=-0.000000001164|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.1.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.1.rN; actual=-0.000000000931; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.1.rMx; actual=0.000000011234; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.1.rMy; actual=-0.000000007043; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.1.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.1.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.1.displayFail
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.3.0.05.2|N=552920.307031804|Mx=0.000000000116|My=-0.000000000116|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.2.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.2.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.2.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.2.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.2.displayFail
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.3.0.05.3|N=-823584.570113301|Mx=67690886.0496908|My=33887136.2061807|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=1|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.3.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.3.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.3.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.3.rMy; actual=0.000000007451; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.3.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.3.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.3.0.05.3.displayFail
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.3.0.5.1|N=-12455223.5491466|Mx=0.000000045169|My=-0.000000004191|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.1.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.1.rN; actual=0.000000003725; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.1.rMx; actual=0.000000021653; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.1.rMy; actual=-0.000000019791; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.1.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.1.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.1.displayFail
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.1.offNoEquilibrium
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.1.offNumericalCause
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.3.0.5.2|N=1683893.66232413|Mx=0.000000001397|My=0.000000002328|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.2.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.2.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.2.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.2.displayFail
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.2.offNoEquilibrium
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.2.offNumericalCause
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.3.0.5.3|N=-2708757.8592569|Mx=206052639.978061|My=171557629.606216|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.3.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.3.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.3.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.3.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.3.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.3.0.5.3.displayFail
+OK: audit03.extended.ImportedFixture.Newton.3.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.3.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.3.5.1|N=-109677125.39972|Mx=0.000000366941|My=-0.000000024214|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.3.5.1.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.3.5.1.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.5.1.rMx; actual=-0.000000298023; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.5.1.rMy; actual=0.000000059605; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.5.1.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.3.5.1.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.3.5.1.displayFail
+OK: audit03.extended.ImportedFixture.Newton.3.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.3.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.3.5.2|N=12993627.2152474|Mx=0.000000007451|My=-0.000000007451|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.3.5.2.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.3.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.5.2.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.3.5.2.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.3.5.2.displayFail
+OK: audit03.extended.ImportedFixture.Newton.3.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.3.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.3.5.3|N=-21572678.2506929|Mx=1602183189.78841|My=1527813796.06216|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.3.5.3.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.3.5.3.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.5.3.rMx; actual=0.000000238419; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.5.3.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.3.5.3.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.3.5.3.displayFail
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.3.9.5.1|N=-206899027.250293|Mx=0.000000022352|My=-0.000000022352|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.1.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.1.rN; actual=0.000000029802; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.1.rMx; actual=-0.00000012666; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.1.rMy; actual=0.00000012666; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.1.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.1.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.1.displayFail
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.3.9.5.2|N=24303360.7681706|Mx=0.000000014901|My=0.000000044703|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.2.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.2.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.2.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.2.displayFail
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Newton.3.9.5.3|N=-40436598.6421289|Mx=2998313739.59876|My=2884069962.5181|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.3.equilibrium
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.3.rN; actual=-0.000000007451; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.3.rMx; actual=0.000000476837; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.3.rMy; actual=0.000000476837; expected=0.
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.3.extensionUsed
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.3.physicalFail
+OK: audit03.extended.ImportedFixture.Newton.3.9.5.3.displayFail
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.1.0.05.1|N=-2300936.02253117|Mx=-0.000000001397|My=-0.000000000466|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.1.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.1.rN; actual=0.000000000466; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.1.rMx; actual=-0.000000013097; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.1.rMy; actual=-0.00000000227; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.1.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.1.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.1.displayFail
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.1.0.05.2|N=502654.824574367|Mx=0.000000000233|My=0.000000000698|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.2.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.2.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.2.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.2.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.2.displayFail
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.1.0.05.3|N=-632668.640562968|Mx=56795001.3292246|My=27387136.2061807|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.3.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.3.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.3.rMx; actual=-0.000000007451; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.3.rMy; actual=0.000000007451; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.3.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.3.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.1.0.05.3.displayFail
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.1.0.5.1|N=-12023126.2075885|Mx=0.000000014668|My=-0.000000005355|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.1.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.1.rN; actual=0.000000003725; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.1.rMx; actual=-0.000000008382; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.1.rMy; actual=0.000000015832; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.1.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.1.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.1.displayFail
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.1.offNoEquilibrium
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.1.offNumericalCause
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.1.0.5.2|N=1633628.17986669|Mx=0.000000001397|My=0.000000002328|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.2.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.2.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.2.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.2.displayFail
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.2.offNoEquilibrium
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.2.offNumericalCause
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.1.0.5.3|N=-2517841.92970657|Mx=195156755.257595|My=165057629.606216|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.3.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.3.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.3.rMx; actual=-0.000000029802; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.3.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.3.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.1.0.5.3.displayFail
+OK: audit03.extended.ImportedFixture.Secant.1.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.1.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.1.5.1|N=-109245028.058162|Mx=0.000000361353|My=-0.000000003725|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.1.5.1.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.1.5.1.rN; actual=-0.000000014901; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.5.1.rMx; actual=0.000000003725; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.5.1.rMy; actual=0.000000026077; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.5.1.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.1.5.1.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.1.5.1.displayFail
+OK: audit03.extended.ImportedFixture.Secant.1.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.1.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.1.5.2|N=12943361.7327899|Mx=-0.000000014901|My=0.000000014901|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.1.5.2.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.1.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.5.2.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.1.5.2.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.1.5.2.displayFail
+OK: audit03.extended.ImportedFixture.Secant.1.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.1.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.1.5.3|N=-21381762.3211426|Mx=1591287305.06794|My=1521313796.06216|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.1.5.3.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.1.5.3.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.5.3.rMx; actual=0.000000476837; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.5.3.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.1.5.3.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.1.5.3.displayFail
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.1.9.5.1|N=-206466929.908735|Mx=0.000000018626|My=0.000000011176|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.1.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.1.rN; actual=0.000000029802; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.1.rMx; actual=-0.00000012666; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.1.rMy; actual=0.00000012666; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.1.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.1.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.1.displayFail
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.1.9.5.2|N=24253095.2857132|Mx=-0.000000007451|My=-0.000000052154|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.2.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.2.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.2.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.2.displayFail
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.1.9.5.3|N=-40245682.7125785|Mx=2987417854.87829|My=2877569962.5181|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.3.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.3.rN; actual=-0.000000007451; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.3.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.3.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.3.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.1.9.5.3.displayFail
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.3.0.05.1|N=-2733033.36408927|Mx=0.000000002095|My=-0.000000001164|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.1.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.1.rN; actual=-0.000000000931; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.1.rMx; actual=0.000000011234; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.1.rMy; actual=-0.000000007043; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.1.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.1.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.1.displayFail
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.3.0.05.2|N=552920.307031804|Mx=0.000000000116|My=-0.000000000116|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.2.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.2.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.2.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.2.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.2.displayFail
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.3.0.05.3|N=-823584.570113301|Mx=67690886.0496908|My=33887136.2061807|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=7|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.3.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.3.rN; actual=0.000000425731; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.3.rMx; actual=0.000001475215; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.3.rMy; actual=0.000016637146; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.3.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.3.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.3.0.05.3.displayFail
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.3.0.5.1|N=-12455223.5491466|Mx=0.000000045169|My=-0.000000004191|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.1.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.1.rN; actual=0.000000003725; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.1.rMx; actual=0.000000021653; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.1.rMy; actual=-0.000000019791; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.1.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.1.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.1.displayFail
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.1.offNoEquilibrium
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.1.offNumericalCause
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.3.0.5.2|N=1683893.66232413|Mx=0.000000001397|My=0.000000002328|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.2.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.2.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.2.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.2.displayFail
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.2.offNoEquilibrium
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.2.offNumericalCause
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.3.0.5.3|N=-2708757.8592569|Mx=206052639.978061|My=171557629.606216|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.3.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.3.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.3.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.3.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.3.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.3.0.5.3.displayFail
+OK: audit03.extended.ImportedFixture.Secant.3.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.3.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.3.5.1|N=-109677125.39972|Mx=0.000000366941|My=-0.000000024214|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.3.5.1.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.3.5.1.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.5.1.rMx; actual=-0.000000298023; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.5.1.rMy; actual=0.000000059605; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.5.1.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.3.5.1.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.3.5.1.displayFail
+OK: audit03.extended.ImportedFixture.Secant.3.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.3.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.3.5.2|N=12993627.2152474|Mx=0.000000007451|My=-0.000000007451|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.3.5.2.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.3.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.5.2.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.3.5.2.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.3.5.2.displayFail
+OK: audit03.extended.ImportedFixture.Secant.3.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.3.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.3.5.3|N=-21572678.2506929|Mx=1602183189.78841|My=1527813796.06216|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.3.5.3.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.3.5.3.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.5.3.rMx; actual=0.000000238419; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.5.3.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.3.5.3.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.3.5.3.displayFail
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.3.9.5.1|N=-206899027.250293|Mx=0.000000022352|My=-0.000000022352|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.1.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.1.rN; actual=0.000000029802; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.1.rMx; actual=-0.00000012666; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.1.rMy; actual=0.00000012666; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.1.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.1.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.1.displayFail
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.3.9.5.2|N=24303360.7681706|Mx=0.000000014901|My=0.000000044703|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.2.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.2.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.2.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.2.displayFail
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.ImportedFixture.Secant.3.9.5.3|N=-40436598.6421289|Mx=2998313739.59876|My=2884069962.5181|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.3.equilibrium
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.3.rN; actual=-0.000000007451; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.3.rMx; actual=0.000000476837; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.3.rMy; actual=0.000000476837; expected=0.
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.3.extensionUsed
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.3.physicalFail
+OK: audit03.extended.ImportedFixture.Secant.3.9.5.3.displayFail
+OK: audit03.extendedBeyond.ImportedFixture.-1.noEquilibrium
+OK: audit03.extendedBeyond.ImportedFixture.-1.numeric
+OK: audit03.extendedBeyond.ImportedFixture.-1.reason
+OK: audit03.extendedBeyond.ImportedFixture.1.noEquilibrium
+OK: audit03.extendedBeyond.ImportedFixture.1.numeric
+OK: audit03.extendedBeyond.ImportedFixture.1.reason
+TOTAL_AUDIT03_EXTENDED_OVERLOAD: shape=ImportedFixture; knownStates=48; passed=454; failed=0
+
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03ExtendedOverloadEquilibriumTests; 2026-10-02T09:24:20
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

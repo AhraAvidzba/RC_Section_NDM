@@ -68,6 +68,8 @@ Private Property Get ILimitSearchProblem_LimitState() As String
     ILimitSearchProblem_LimitState = mCrack.StopReason
 End Property
 
+' Возвращает журнал текущей Formation-задачи; отсутствие задачи оставляет
+' строку пустой и не создает новый расчет для получения диагностики.
 Private Property Get ILimitSearchProblem_DiagnosticLog() As String
     If Not mCrack Is Nothing Then ILimitSearchProblem_DiagnosticLog = mCrack.DiagnosticLog
 End Property
@@ -110,6 +112,8 @@ Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section
         loadPath, startSolver, eps0, kx, ky
 End Sub
 
+' Передает Formation вычисление невязок траектории и растягивающего критерия.
+' Solver этой плоскости возвращается общему Newton без отдельной search-реализации.
 Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
@@ -121,18 +125,23 @@ Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal s
         rPath1, rPath2, rLimit, lambdaValue, state)
 End Function
 
+' Проверяет достижение трех невязок с действующими допусками Formation.
 Private Function ILimitSearchProblem_LimitSearchUltimateResidualReached(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Boolean
     ILimitSearchProblem_LimitSearchUltimateResidualReached = _
         mCrack.LimitSearchUltimateResidualReached(rPath1, rPath2, rLimit)
 End Function
 
+' Возвращает норму для выбора численного шага; она не заменяет независимое
+' подтверждение конечного физического состояния и растягивающего критерия.
 Private Function ILimitSearchProblem_LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Double
     ILimitSearchProblem_LimitSearchUltimateResidualNorm = _
         mCrack.LimitSearchUltimateResidualNorm(rPath1, rPath2, rLimit)
 End Function
 
+' Передает кандидата Formation на окончательное подтверждение и сохранение
+' точки. Extended-кандидат не становится физическим PreCrackState автоматически.
 Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
@@ -141,6 +150,7 @@ Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal sec
         section, concreteMaterial, steelMaterial, loadPath, lambdaValue, solver, state, iterations)
 End Function
 
+' Сохраняет причину численной остановки UltimateStrain в Formation-задаче.
 Private Sub ILimitSearchProblem_LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
     mCrack.LimitSearchSetUltimateNumericalFailure reason
 End Sub
@@ -202,6 +212,9 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
         loadPath, startSolver, lambdaValue, functionValue, probeState, solver)
 End Function
 
+' Однотипные предикаты различают допустимую пробу, критерий образования
+' трещины и численную неудачу. Ошибки входа передаются typed failure-контрактом,
+' поэтому отдельная строка invalid input в этом probe-протоколе не используется.
 Private Function ILimitSearchProblem_IsAcceptableState(ByVal probeState As String) As Boolean
     ILimitSearchProblem_IsAcceptableState = (probeState = STATE_ACCEPTABLE)
 End Function
@@ -218,19 +231,26 @@ Private Function ILimitSearchProblem_IsInvalidInputState(ByVal probeState As Str
     ILimitSearchProblem_IsInvalidInputState = False
 End Function
 
+' Предлагает середину неотрицательной рабочей скобки для recovery. Общий Search
+' отдельно контролирует представимость и строгий прогресс следующей пробы.
 Private Function ILimitSearchProblem_ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, _
         ByVal highLambda As Double, ByVal probeState As String) As Double
     ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = lowLambda + (highLambda - lowLambda) / 2#
 End Function
 
+' Formation хранит допустимые probe-точки в локальной search-session; отдельный
+' инженерный снимок для каждой нижней точки здесь не создается.
 Private Sub ILimitSearchProblem_RecordAcceptable(ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double)
 End Sub
 
+' Записывает причину неудачи начальной пробы, не объявляя ее отсутствием трещин.
 Private Sub ILimitSearchProblem_HandleInitialFailure(ByVal probeState As String)
     mCrack.LimitSearchSetCrackFormationStopReason _
         "Не удалось найти равновесие в начальной точке пути трещинообразования."
 End Sub
 
+' Сохраняет достижение технической верхней границы поиска. Это SEARCH_BOUND_REACHED,
+' а не доказанная недостижимость критерия образования трещины.
 Private Sub ILimitSearchProblem_HandleBracketNotFound(ByVal lowLambda As Double)
     mCrack.LimitSearchSetCrackFormationSearchBoundReached _
         "Поиск трещинообразования достиг технической границы lambda = " & _
@@ -238,6 +258,8 @@ Private Sub ILimitSearchProblem_HandleBracketNotFound(ByVal lowLambda As Double)
         ", но критерий eps_bt,ult не был достигнут. Это не доказывает отсутствие трещины."
 End Sub
 
+' Объясняет, на какой lambda равновесие не подтверждено при построении скобки.
+' Такой отказ не должен создавать фиктивные Pre/Post или численную ширину.
 Private Sub ILimitSearchProblem_HandleBracketNumericalFailure(ByVal lowLambda As Double, _
         ByVal failedLambda As Double, ByVal probeState As String)
     mCrack.LimitSearchSetCrackFormationStopReason _
@@ -245,6 +267,8 @@ Private Sub ILimitSearchProblem_HandleBracketNumericalFailure(ByVal lowLambda As
         FormatNumberInvariant(failedLambda) & " в поиске трещинообразования."
 End Sub
 
+' Записывает незавершенное уточнение скобки с фактической шириной и допуском.
+' Исчерпание бюджета не признается достижением требуемой точности.
 Private Sub ILimitSearchProblem_HandleIterationLimit(ByVal maxIterations As Long, _
         ByVal remainingWidth As Double, ByVal tolerance As Double)
     mCrack.LimitSearchSetCrackFormationStopReason _
@@ -252,23 +276,31 @@ Private Sub ILimitSearchProblem_HandleIterationLimit(ByVal maxIterations As Long
         FormatNumberInvariant(remainingWidth) & ", допуск " & FormatNumberInvariant(tolerance) & "."
 End Sub
 
+' Останавливает Formation при неизвестном probe-исходе, сохраняя его имя
+' для диагностики вместо догадки о физическом результате.
 Private Sub ILimitSearchProblem_HandleUnexpectedState(ByVal probeState As String)
     mCrack.LimitSearchSetCrackFormationStopReason _
         "Поиск трещинообразования остановлен: " & probeState & "."
 End Sub
 
+' Сохраняет текст входной ошибки, обнаруженной общим поиском. Машинная причина
+' проходит отдельным SetFailure и не извлекается из этого сообщения.
 Private Sub ILimitSearchProblem_SetInvalidInput(ByVal message As String)
     mCrack.LimitSearchSetCrackFormationStopReason message
 End Sub
 
+' Передает причину численной остановки Formation без назначения display-статуса.
 Private Sub ILimitSearchProblem_SetNumericalFailure(ByVal message As String)
     mCrack.LimitSearchSetCrackFormationStopReason message
 End Sub
 
+' Добавляет техническую строку текущей попытки, не меняя ее инженерный исход.
 Private Sub ILimitSearchProblem_AppendDiagnostic(ByVal message As String)
     mCrack.LimitSearchAppendDiagnostic message
 End Sub
 
+' Подтверждает конкретную lambda-точку Formation с ее solver и материалами.
+' Сохранение конечного физического состояния выполняет владелец Formation.
 Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByVal probeState As String, ByVal methodName As String, _
@@ -282,6 +314,8 @@ Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchReq
             concreteMaterial, steelMaterial, loadPath, lambdaValue, solver, iterations)
 End Function
 
+' Передает верхнюю сторону скобки как кандидата достижения растягивающего
+' критерия; финализация повторно проверяет физическую пригодность этой точки.
 Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
         ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
@@ -289,14 +323,19 @@ Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchReq
     ILimitSearchProblem_FinalizeAt request, loadPath, highLambda, STATE_CRACK_LIMIT, methodName, highSolver, iterations
 End Sub
 
+' Для Formation неуспешная скобка не дает отдельного аналитического предела.
+' Новая траектория или fallback выбирается orchestration-слоем вне этого callback.
 Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
 End Sub
 
+' Строит снимок из фактического Formation-исхода, сохраняя typed-причину
+' и доступность точки, а не только Boolean завершения общего алгоритма.
 Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRequest, _
         ByVal searchSucceeded As Boolean) As CLimitSearchResult
     Set ILimitSearchProblem_BuildResult = mCrack.BuildSearchSnapshot(request.SolutionStrategy)
 End Function
 
+' Сообщает coordinator о терминальном исходе текущей Formation-попытки.
 Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
     ILimitSearchProblem_StoppedTerminally = mCrack.LimitSearchStoppedTerminally()
 End Property
@@ -305,20 +344,25 @@ Private Property Get ILimitSearchProblem_StopReason() As String
     ILimitSearchProblem_StopReason = mCrack.StopReason
 End Property
 
+' Очищает рабочую причину перед следующей попыткой той же Formation-задачи.
 Private Sub ILimitSearchProblem_ClearStopReason()
     mCrack.LimitSearchClearStopReason
 End Sub
 
+' Дополняет отсутствующую причину общим fallback-текстом, не затирая уже
+' записанное конкретное объяснение остановки.
 Private Sub ILimitSearchProblem_SetStopReasonIfEmpty(ByVal reason As String)
     mCrack.LimitSearchSetStopReasonIfEmpty reason
 End Sub
 
-' Форматирует число для диагностического журнала с точкой как разделителем.
+' Formation объединяет fallback-диагностику при выборе своих стартов и путей.
+' Этот callback общего coordinator не дублирует уже сохраненные сообщения.
 Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
         ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
         ByVal transitionMessage As String, ByVal successMessage As String)
 End Sub
 
+' Форматирует lambda для диагностического журнала с точкой как разделителем.
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function

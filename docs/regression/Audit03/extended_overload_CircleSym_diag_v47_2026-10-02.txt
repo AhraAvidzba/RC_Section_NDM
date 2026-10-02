@@ -1,0 +1,522 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_source_v47.xlsm
+SOURCE_SHA256: 2B2DA62AF9062D59DAA806EB0C8B7CD3AC51613D4068B86C55AE4ACEA4A18E11
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0cf89655af2945a7ad73c5b127940f50\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03ExtendedOverloadEquilibriumTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03ExtendedOverloadEquilibriumTests; 2026-10-02T09:24:41
+EXCEL_AFTER_SUITE: pid=23852; workingSet=129527808; privateBytes=90107904; cpu=4.359375
+OK: audit03.extended.CircleSym.Newton.1.0.05.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.1.0.05.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.1.0.05.1|N=-3284772.61542666|Mx=-0.000000005976|My=0.000000009594|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.1.0.05.1.equilibrium
+OK: audit03.extended.CircleSym.Newton.1.0.05.1.rN; actual=0.000000001397; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.0.05.1.rMx; actual=0.000000006985; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.0.05.1.rMy; actual=-0.000000006528; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.0.05.1.extensionUsed
+OK: audit03.extended.CircleSym.Newton.1.0.05.1.physicalFail
+OK: audit03.extended.CircleSym.Newton.1.0.05.1.displayFail
+OK: audit03.extended.CircleSym.Newton.1.0.05.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.1.0.05.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.1.0.05.2|N=1236530.86845294|Mx=-0.000000002719|My=-0.000000007181|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.1.0.05.2.equilibrium
+OK: audit03.extended.CircleSym.Newton.1.0.05.2.rN; actual=0.000000000233; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.0.05.2.rMx; actual=0.000000000058; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.0.05.2.rMy; actual=-0.000000004076; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.0.05.2.extensionUsed
+OK: audit03.extended.CircleSym.Newton.1.0.05.2.physicalFail
+OK: audit03.extended.CircleSym.Newton.1.0.05.2.displayFail
+OK: audit03.extended.CircleSym.Newton.1.0.05.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.1.0.05.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.1.0.05.3|N=-645341.889726508|Mx=93848419.1338233|My=87831229.1765108|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=3|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.1.0.05.3.equilibrium
+OK: audit03.extended.CircleSym.Newton.1.0.05.3.rN; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.0.05.3.rMx; actual=-0.000000014901; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.0.05.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.0.05.3.extensionUsed
+OK: audit03.extended.CircleSym.Newton.1.0.05.3.physicalFail
+OK: audit03.extended.CircleSym.Newton.1.0.05.3.displayFail
+OK: audit03.extended.CircleSym.Newton.1.0.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.1.0.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.1.0.5.1|N=-15852360.4706677|Mx=0.000000005388|My=0.000000017233|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.1.0.5.1.equilibrium
+OK: audit03.extended.CircleSym.Newton.1.0.5.1.rN; actual=0.000000003725; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.0.5.1.rMx; actual=-0.000000058208; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.0.5.1.rMy; actual=0.000000006494; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.0.5.1.extensionUsed
+OK: audit03.extended.CircleSym.Newton.1.0.5.1.physicalFail
+OK: audit03.extended.CircleSym.Newton.1.0.5.1.displayFail
+OK: audit03.extended.CircleSym.Newton.1.0.5.1.offNoEquilibrium
+OK: audit03.extended.CircleSym.Newton.1.0.5.1.offNumericalCause
+OK: audit03.extended.CircleSym.Newton.1.0.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.1.0.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.1.0.5.2|N=4018725.32247206|Mx=-0.000000013437|My=-0.000000019965|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.1.0.5.2.equilibrium
+OK: audit03.extended.CircleSym.Newton.1.0.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.0.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.0.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.0.5.2.extensionUsed
+OK: audit03.extended.CircleSym.Newton.1.0.5.2.physicalFail
+OK: audit03.extended.CircleSym.Newton.1.0.5.2.displayFail
+OK: audit03.extended.CircleSym.Newton.1.0.5.2.offNoEquilibrium
+OK: audit03.extended.CircleSym.Newton.1.0.5.2.offNumericalCause
+OK: audit03.extended.CircleSym.Newton.1.0.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.1.0.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.1.0.5.3|N=-2191742.92032451|Mx=289468444.638681|My=215248485.539571|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.1.0.5.3.equilibrium
+OK: audit03.extended.CircleSym.Newton.1.0.5.3.rN; actual=0.000000000466; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.0.5.3.rMx; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.0.5.3.rMy; actual=-0.000000029802; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.0.5.3.extensionUsed
+OK: audit03.extended.CircleSym.Newton.1.0.5.3.physicalFail
+OK: audit03.extended.CircleSym.Newton.1.0.5.3.displayFail
+OK: audit03.extended.CircleSym.Newton.1.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.1.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.1.5.1|N=-141528239.023078|Mx=0.000000448956|My=0.000000207714|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.1.5.1.equilibrium
+OK: audit03.extended.CircleSym.Newton.1.5.1.rN; actual=0.000000059605; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.5.1.rMx; actual=-0.000000860542; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.5.1.rMy; actual=-0.00000002241; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.5.1.extensionUsed
+OK: audit03.extended.CircleSym.Newton.1.5.1.physicalFail
+OK: audit03.extended.CircleSym.Newton.1.5.1.displayFail
+OK: audit03.extended.CircleSym.Newton.1.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.1.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.1.5.2|N=31840669.8626633|Mx=-0.000000020023|My=-0.00000017017|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.1.5.2.equilibrium
+OK: audit03.extended.CircleSym.Newton.1.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.5.2.rMx; actual=0.000000298023; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.5.2.rMy; actual=0.000000059605; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.5.2.extensionUsed
+OK: audit03.extended.CircleSym.Newton.1.5.2.physicalFail
+OK: audit03.extended.CircleSym.Newton.1.5.2.displayFail
+OK: audit03.extended.CircleSym.Newton.1.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.1.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.1.5.3|N=-17593038.0424743|Mx=2241382350.59637|My=1515506403.11004|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.1.5.3.equilibrium
+OK: audit03.extended.CircleSym.Newton.1.5.3.rN; actual=0.000000007451; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.5.3.rMx; actual=-0.000000476837; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.5.3.rMy; actual=-0.000000238419; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.5.3.extensionUsed
+OK: audit03.extended.CircleSym.Newton.1.5.3.physicalFail
+OK: audit03.extended.CircleSym.Newton.1.5.3.displayFail
+OK: audit03.extended.CircleSym.Newton.1.9.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.1.9.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.1.9.5.1|N=-267204117.575488|Mx=0.000000091823|My=0.000000352098|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.1.9.5.1.equilibrium
+OK: audit03.extended.CircleSym.Newton.1.9.5.1.rN; actual=0.000000029802; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.9.5.1.rMx; actual=-0.000000461936; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.9.5.1.rMy; actual=-0.000000208907; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.9.5.1.extensionUsed
+OK: audit03.extended.CircleSym.Newton.1.9.5.1.physicalFail
+OK: audit03.extended.CircleSym.Newton.1.9.5.1.displayFail
+OK: audit03.extended.CircleSym.Newton.1.9.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.1.9.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.1.9.5.2|N=59662614.4028545|Mx=-0.000000277592|My=-0.000000453496|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.1.9.5.2.equilibrium
+OK: audit03.extended.CircleSym.Newton.1.9.5.2.rN; actual=-0.000000007451; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.9.5.2.rMx; actual=-0.000000003725; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.9.5.2.rMy; actual=0.00000002241; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.9.5.2.extensionUsed
+OK: audit03.extended.CircleSym.Newton.1.9.5.2.physicalFail
+OK: audit03.extended.CircleSym.Newton.1.9.5.2.displayFail
+OK: audit03.extended.CircleSym.Newton.1.9.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.1.9.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.1.9.5.3|N=-32994333.1646242|Mx=4192871854.87042|My=2816499405.9594|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.1.9.5.3.equilibrium
+OK: audit03.extended.CircleSym.Newton.1.9.5.3.rN; actual=0.000000018626; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.9.5.3.rMx; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.9.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Newton.1.9.5.3.extensionUsed
+OK: audit03.extended.CircleSym.Newton.1.9.5.3.physicalFail
+OK: audit03.extended.CircleSym.Newton.1.9.5.3.displayFail
+OK: audit03.extended.CircleSym.Newton.3.0.05.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.3.0.05.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.3.0.05.1|N=-3843332.07565959|Mx=-0.000000011665|My=0.000000008019|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.3.0.05.1.equilibrium
+OK: audit03.extended.CircleSym.Newton.3.0.05.1.rN; actual=0.000000001397; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.0.05.1.rMx; actual=0.000000006636; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.0.05.1.rMy; actual=-0.000000013739; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.0.05.1.extensionUsed
+OK: audit03.extended.CircleSym.Newton.3.0.05.1.physicalFail
+OK: audit03.extended.CircleSym.Newton.3.0.05.1.displayFail
+OK: audit03.extended.CircleSym.Newton.3.0.05.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.3.0.05.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.3.0.05.2|N=1360183.95529824|Mx=0.000000001339|My=-0.000000011533|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.3.0.05.2.equilibrium
+OK: audit03.extended.CircleSym.Newton.3.0.05.2.rN; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.0.05.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.0.05.2.rMy; actual=-0.000000003725; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.0.05.2.extensionUsed
+OK: audit03.extended.CircleSym.Newton.3.0.05.2.physicalFail
+OK: audit03.extended.CircleSym.Newton.3.0.05.2.displayFail
+OK: audit03.extended.CircleSym.Newton.3.0.05.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.3.0.05.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.3.0.05.3|N=-851497.99797716|Mx=111542015.212145|My=102493921.59399|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=1|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.3.0.05.3.equilibrium
+OK: audit03.extended.CircleSym.Newton.3.0.05.3.rN; actual=-0.000000000116; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.0.05.3.rMx; actual=-0.000000029802; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.0.05.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.0.05.3.extensionUsed
+OK: audit03.extended.CircleSym.Newton.3.0.05.3.physicalFail
+OK: audit03.extended.CircleSym.Newton.3.0.05.3.displayFail
+OK: audit03.extended.CircleSym.Newton.3.0.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.3.0.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.3.0.5.1|N=-16410919.9309006|Mx=0.000000016464|My=0.000000004482|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.3.0.5.1.equilibrium
+OK: audit03.extended.CircleSym.Newton.3.0.5.1.rN; actual=0.000000003725; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.0.5.1.rMx; actual=-0.000000073342; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.0.5.1.rMy; actual=0.000000007894; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.0.5.1.extensionUsed
+OK: audit03.extended.CircleSym.Newton.3.0.5.1.physicalFail
+OK: audit03.extended.CircleSym.Newton.3.0.5.1.displayFail
+OK: audit03.extended.CircleSym.Newton.3.0.5.1.offNoEquilibrium
+OK: audit03.extended.CircleSym.Newton.3.0.5.1.offNumericalCause
+OK: audit03.extended.CircleSym.Newton.3.0.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.3.0.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.3.0.5.2|N=4142378.40931736|Mx=0.000000008202|My=-0.000000044107|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.3.0.5.2.equilibrium
+OK: audit03.extended.CircleSym.Newton.3.0.5.2.rN; actual=-0.000000000466; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.0.5.2.rMx; actual=0.00000001071; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.0.5.2.rMy; actual=-0.000000004646; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.0.5.2.extensionUsed
+OK: audit03.extended.CircleSym.Newton.3.0.5.2.physicalFail
+OK: audit03.extended.CircleSym.Newton.3.0.5.2.displayFail
+OK: audit03.extended.CircleSym.Newton.3.0.5.2.offNoEquilibrium
+OK: audit03.extended.CircleSym.Newton.3.0.5.2.offNumericalCause
+OK: audit03.extended.CircleSym.Newton.3.0.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.3.0.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.3.0.5.3|N=-2409196.10701833|Mx=307307960.067016|My=229781125.815933|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.3.0.5.3.equilibrium
+OK: audit03.extended.CircleSym.Newton.3.0.5.3.rN; actual=0.000000000466; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.0.5.3.rMx; actual=-0.000000119209; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.0.5.3.rMy; actual=-0.000000029802; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.0.5.3.extensionUsed
+OK: audit03.extended.CircleSym.Newton.3.0.5.3.physicalFail
+OK: audit03.extended.CircleSym.Newton.3.0.5.3.displayFail
+OK: audit03.extended.CircleSym.Newton.3.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.3.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.3.5.1|N=-142086798.483311|Mx=0.000000652581|My=0.000000157277|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.3.5.1.equilibrium
+OK: audit03.extended.CircleSym.Newton.3.5.1.rN; actual=0.000000029802; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.5.1.rMx; actual=-0.000000713393; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.5.1.rMy; actual=0.000000048371; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.5.1.extensionUsed
+OK: audit03.extended.CircleSym.Newton.3.5.1.physicalFail
+OK: audit03.extended.CircleSym.Newton.3.5.1.displayFail
+OK: audit03.extended.CircleSym.Newton.3.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.3.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.3.5.2|N=31964322.9495086|Mx=0.000000076121|My=-0.000000142143|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.3.5.2.equilibrium
+OK: audit03.extended.CircleSym.Newton.3.5.2.rN; actual=-0.000000003725; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.5.2.rMx; actual=0.00000041537; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.5.2.rMy; actual=0.000000190019; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.5.2.extensionUsed
+OK: audit03.extended.CircleSym.Newton.3.5.2.physicalFail
+OK: audit03.extended.CircleSym.Newton.3.5.2.displayFail
+OK: audit03.extended.CircleSym.Newton.3.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.3.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.3.5.3|N=-17810491.2291682|Mx=2259221866.02471|My=1530039043.3864|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.3.5.3.equilibrium
+OK: audit03.extended.CircleSym.Newton.3.5.3.rN; actual=0.000000007451; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.5.3.rMx; actual=-0.000000953674; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.5.3.extensionUsed
+OK: audit03.extended.CircleSym.Newton.3.5.3.physicalFail
+OK: audit03.extended.CircleSym.Newton.3.5.3.displayFail
+OK: audit03.extended.CircleSym.Newton.3.9.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.3.9.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.3.9.5.1|N=-267762677.035721|Mx=0.000000267522|My=0.00000058845|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.3.9.5.1.equilibrium
+OK: audit03.extended.CircleSym.Newton.3.9.5.1.rN; actual=0.000000029802; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.9.5.1.rMx; actual=-0.000001005828; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.9.5.1.rMy; actual=-0.000000283268; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.9.5.1.extensionUsed
+OK: audit03.extended.CircleSym.Newton.3.9.5.1.physicalFail
+OK: audit03.extended.CircleSym.Newton.3.9.5.1.displayFail
+OK: audit03.extended.CircleSym.Newton.3.9.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.3.9.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.3.9.5.2|N=59786267.4896998|Mx=-0.000000062253|My=-0.000000425498|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.3.9.5.2.equilibrium
+OK: audit03.extended.CircleSym.Newton.3.9.5.2.rN; actual=-0.000000014901; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.9.5.2.rMx; actual=0.000000119209; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.9.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.9.5.2.extensionUsed
+OK: audit03.extended.CircleSym.Newton.3.9.5.2.physicalFail
+OK: audit03.extended.CircleSym.Newton.3.9.5.2.displayFail
+OK: audit03.extended.CircleSym.Newton.3.9.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Newton.3.9.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Newton.3.9.5.3|N=-33211786.351318|Mx=4210711370.29875|My=2831032046.23576|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Newton.3.9.5.3.equilibrium
+OK: audit03.extended.CircleSym.Newton.3.9.5.3.rN; actual=0.000000022352; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.9.5.3.rMx; actual=-0.000000476837; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.9.5.3.rMy; actual=0.000000476837; expected=0.
+OK: audit03.extended.CircleSym.Newton.3.9.5.3.extensionUsed
+OK: audit03.extended.CircleSym.Newton.3.9.5.3.physicalFail
+OK: audit03.extended.CircleSym.Newton.3.9.5.3.displayFail
+OK: audit03.extended.CircleSym.Secant.1.0.05.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.1.0.05.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.1.0.05.1|N=-3284772.61542666|Mx=-0.000000005976|My=0.000000009594|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.1.0.05.1.equilibrium
+OK: audit03.extended.CircleSym.Secant.1.0.05.1.rN; actual=0.000000001397; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.0.05.1.rMx; actual=0.000000006985; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.0.05.1.rMy; actual=-0.000000006528; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.0.05.1.extensionUsed
+OK: audit03.extended.CircleSym.Secant.1.0.05.1.physicalFail
+OK: audit03.extended.CircleSym.Secant.1.0.05.1.displayFail
+OK: audit03.extended.CircleSym.Secant.1.0.05.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.1.0.05.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.1.0.05.2|N=1236530.86845294|Mx=-0.000000002719|My=-0.000000007181|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.1.0.05.2.equilibrium
+OK: audit03.extended.CircleSym.Secant.1.0.05.2.rN; actual=0.000000000233; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.0.05.2.rMx; actual=0.000000000058; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.0.05.2.rMy; actual=-0.000000004076; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.0.05.2.extensionUsed
+OK: audit03.extended.CircleSym.Secant.1.0.05.2.physicalFail
+OK: audit03.extended.CircleSym.Secant.1.0.05.2.displayFail
+OK: audit03.extended.CircleSym.Secant.1.0.05.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.1.0.05.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.1.0.05.3|N=-645341.889726508|Mx=93848419.1338233|My=87831229.1765108|converged=False|status=rsNumericalFailure|code=NUMERICAL_FAILURE|extension=False|physical=False|solves=12|comment=Равновесие не найдено: превышен лимит перезапусков матрицы Secant; причина: подбор шага не уменьшил невязку
+FAIL: audit03.extended.CircleSym.Secant.1.0.05.3.equilibrium
+EXTENDED_FAILURE_DIAGNOSTIC: audit03.extended.CircleSym.Secant.1.0.05.3
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Равновесие не найдено: превышен лимит перезапусков матрицы Secant; причина: подбор шага не уменьшил невязку; residualN=45354.5722840577; residualMx=39822887.5920409; residualMy=-51016761.9801739
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Равновесие не найдено: метод Secant достиг лимита итераций на ступени нагрузки 1.; residualN=-670.396742518758; residualMx=43166.5104271024; residualMy=-82273.0789414346
+extensionRetry=равновесие по продолженной диаграмме / direct target; result=failed; stop=Равновесие не найдено: превышен лимит перезапусков матрицы Secant; причина: подбор шага не уменьшил невязку; residualN=477211.85914091; residualMx=10050602.7712031; residualMy=1658887.39544159
+extensionRetry=равновесие по продолженной диаграмме / direct target without line search; result=failed; stop=Равновесие не найдено: метод Secant достиг лимита итераций на ступени нагрузки 1.; residualN=730947.920530997; residualMx=-8020154.86660819; residualMy=-3040826.44038185
+extensionRetry=равновесие по продолженной диаграмме / stepped; result=failed; stop=Равновесие не найдено: превышен лимит перезапусков матрицы Secant; причина: подбор шага не уменьшил невязку; residualN=173370.469609336; residualMx=3003754.20360161; residualMy=782672.403566957
+extensionRetry=равномерный сдвиг в продолжение диаграммы / direct target; result=failed; stop=Равновесие не найдено: превышен лимит перезапусков матрицы Secant; причина: подбор шага не уменьшил невязку; residualN=-15609.5416694033; residualMx=-9209259.82512672; residualMy=1434572.24320984
+extensionRetry=равномерный сдвиг в продолжение диаграммы / direct target without line search; result=failed; stop=Равновесие не найдено: метод Secant достиг лимита итераций на ступени нагрузки 1.; residualN=-69765.7635318139; residualMx=-5921641.07234603; residualMy=-3566417.07030524
+extensionRetry=равномерный сдвиг в продолжение диаграммы / stepped; result=failed; stop=Равновесие не найдено: превышен лимит перезапусков матрицы Secant; причина: подбор шага не уменьшил невязку; residualN=-26207.0809585785; residualMx=-1936042.8469473; residualMy=-1867130.92352107
+extensionRetry=нулевое осевое приближение / direct target; result=failed; stop=Равновесие не найдено: превышен лимит перезапусков матрицы Secant; причина: подбор шага не уменьшил невязку; residualN=-10545.3485455273; residualMx=-1573301.11497931; residualMy=-733917.436712191
+extensionRetry=нулевое осевое приближение / direct target without line search; result=failed; stop=Равновесие не найдено: метод Secant достиг лимита итераций на ступени нагрузки 1.; residualN=-93410.2903831527; residualMx=-8036739.88251299; residualMy=-3567565.2884184
+extensionRetry=нулевое осевое приближение / stepped; result=failed; stop=Равновесие не найдено: превышен лимит перезапусков матрицы Secant; причина: подбор шага не уменьшил невязку; residualN=-82727.286374061; residualMx=-4881855.4200255; residualMy=-1283952.01273382
+
+OK: audit03.extended.CircleSym.Secant.1.0.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.1.0.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.1.0.5.1|N=-15852360.4706677|Mx=0.000000005388|My=0.000000017233|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.1.0.5.1.equilibrium
+OK: audit03.extended.CircleSym.Secant.1.0.5.1.rN; actual=0.000000003725; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.0.5.1.rMx; actual=-0.000000058208; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.0.5.1.rMy; actual=0.000000006494; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.0.5.1.extensionUsed
+OK: audit03.extended.CircleSym.Secant.1.0.5.1.physicalFail
+OK: audit03.extended.CircleSym.Secant.1.0.5.1.displayFail
+OK: audit03.extended.CircleSym.Secant.1.0.5.1.offNoEquilibrium
+OK: audit03.extended.CircleSym.Secant.1.0.5.1.offNumericalCause
+OK: audit03.extended.CircleSym.Secant.1.0.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.1.0.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.1.0.5.2|N=4018725.32247206|Mx=-0.000000013437|My=-0.000000019965|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.1.0.5.2.equilibrium
+OK: audit03.extended.CircleSym.Secant.1.0.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.0.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.0.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.0.5.2.extensionUsed
+OK: audit03.extended.CircleSym.Secant.1.0.5.2.physicalFail
+OK: audit03.extended.CircleSym.Secant.1.0.5.2.displayFail
+OK: audit03.extended.CircleSym.Secant.1.0.5.2.offNoEquilibrium
+OK: audit03.extended.CircleSym.Secant.1.0.5.2.offNumericalCause
+OK: audit03.extended.CircleSym.Secant.1.0.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.1.0.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.1.0.5.3|N=-2191742.92032451|Mx=289468444.638681|My=215248485.539571|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.1.0.5.3.equilibrium
+OK: audit03.extended.CircleSym.Secant.1.0.5.3.rN; actual=0.000000000466; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.0.5.3.rMx; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.0.5.3.rMy; actual=-0.000000029802; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.0.5.3.extensionUsed
+OK: audit03.extended.CircleSym.Secant.1.0.5.3.physicalFail
+OK: audit03.extended.CircleSym.Secant.1.0.5.3.displayFail
+OK: audit03.extended.CircleSym.Secant.1.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.1.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.1.5.1|N=-141528239.023078|Mx=0.000000448956|My=0.000000207714|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.1.5.1.equilibrium
+OK: audit03.extended.CircleSym.Secant.1.5.1.rN; actual=0.000000059605; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.5.1.rMx; actual=-0.000000860542; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.5.1.rMy; actual=-0.00000002241; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.5.1.extensionUsed
+OK: audit03.extended.CircleSym.Secant.1.5.1.physicalFail
+OK: audit03.extended.CircleSym.Secant.1.5.1.displayFail
+OK: audit03.extended.CircleSym.Secant.1.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.1.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.1.5.2|N=31840669.8626633|Mx=-0.000000020023|My=-0.00000017017|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.1.5.2.equilibrium
+OK: audit03.extended.CircleSym.Secant.1.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.5.2.rMx; actual=0.000000298023; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.5.2.rMy; actual=0.000000059605; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.5.2.extensionUsed
+OK: audit03.extended.CircleSym.Secant.1.5.2.physicalFail
+OK: audit03.extended.CircleSym.Secant.1.5.2.displayFail
+OK: audit03.extended.CircleSym.Secant.1.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.1.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.1.5.3|N=-17593038.0424743|Mx=2241382350.59637|My=1515506403.11004|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.1.5.3.equilibrium
+OK: audit03.extended.CircleSym.Secant.1.5.3.rN; actual=0.000000007451; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.5.3.rMx; actual=-0.000000476837; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.5.3.rMy; actual=-0.000000238419; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.5.3.extensionUsed
+OK: audit03.extended.CircleSym.Secant.1.5.3.physicalFail
+OK: audit03.extended.CircleSym.Secant.1.5.3.displayFail
+OK: audit03.extended.CircleSym.Secant.1.9.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.1.9.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.1.9.5.1|N=-267204117.575488|Mx=0.000000091823|My=0.000000352098|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.1.9.5.1.equilibrium
+OK: audit03.extended.CircleSym.Secant.1.9.5.1.rN; actual=0.000000029802; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.9.5.1.rMx; actual=-0.000000461936; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.9.5.1.rMy; actual=-0.000000208907; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.9.5.1.extensionUsed
+OK: audit03.extended.CircleSym.Secant.1.9.5.1.physicalFail
+OK: audit03.extended.CircleSym.Secant.1.9.5.1.displayFail
+OK: audit03.extended.CircleSym.Secant.1.9.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.1.9.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.1.9.5.2|N=59662614.4028545|Mx=-0.000000277592|My=-0.000000453496|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.1.9.5.2.equilibrium
+OK: audit03.extended.CircleSym.Secant.1.9.5.2.rN; actual=-0.000000007451; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.9.5.2.rMx; actual=-0.000000003725; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.9.5.2.rMy; actual=0.00000002241; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.9.5.2.extensionUsed
+OK: audit03.extended.CircleSym.Secant.1.9.5.2.physicalFail
+OK: audit03.extended.CircleSym.Secant.1.9.5.2.displayFail
+OK: audit03.extended.CircleSym.Secant.1.9.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.1.9.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.1.9.5.3|N=-32994333.1646242|Mx=4192871854.87042|My=2816499405.9594|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.1.9.5.3.equilibrium
+OK: audit03.extended.CircleSym.Secant.1.9.5.3.rN; actual=0.000000018626; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.9.5.3.rMx; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.9.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Secant.1.9.5.3.extensionUsed
+OK: audit03.extended.CircleSym.Secant.1.9.5.3.physicalFail
+OK: audit03.extended.CircleSym.Secant.1.9.5.3.displayFail
+OK: audit03.extended.CircleSym.Secant.3.0.05.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.3.0.05.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.3.0.05.1|N=-3843332.07565959|Mx=-0.000000011665|My=0.000000008019|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.3.0.05.1.equilibrium
+OK: audit03.extended.CircleSym.Secant.3.0.05.1.rN; actual=0.000000001397; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.0.05.1.rMx; actual=0.000000006636; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.0.05.1.rMy; actual=-0.000000013739; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.0.05.1.extensionUsed
+OK: audit03.extended.CircleSym.Secant.3.0.05.1.physicalFail
+OK: audit03.extended.CircleSym.Secant.3.0.05.1.displayFail
+OK: audit03.extended.CircleSym.Secant.3.0.05.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.3.0.05.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.3.0.05.2|N=1360183.95529824|Mx=0.000000001339|My=-0.000000011533|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.3.0.05.2.equilibrium
+OK: audit03.extended.CircleSym.Secant.3.0.05.2.rN; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.0.05.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.0.05.2.rMy; actual=-0.000000003725; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.0.05.2.extensionUsed
+OK: audit03.extended.CircleSym.Secant.3.0.05.2.physicalFail
+OK: audit03.extended.CircleSym.Secant.3.0.05.2.displayFail
+OK: audit03.extended.CircleSym.Secant.3.0.05.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.3.0.05.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.3.0.05.3|N=-851497.99797716|Mx=111542015.212145|My=102493921.59399|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.3.0.05.3.equilibrium
+OK: audit03.extended.CircleSym.Secant.3.0.05.3.rN; actual=0.000000001746; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.0.05.3.rMx; actual=-0.000000029802; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.0.05.3.rMy; actual=0.000000014901; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.0.05.3.extensionUsed
+OK: audit03.extended.CircleSym.Secant.3.0.05.3.physicalFail
+OK: audit03.extended.CircleSym.Secant.3.0.05.3.displayFail
+OK: audit03.extended.CircleSym.Secant.3.0.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.3.0.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.3.0.5.1|N=-16410919.9309006|Mx=0.000000016464|My=0.000000004482|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.3.0.5.1.equilibrium
+OK: audit03.extended.CircleSym.Secant.3.0.5.1.rN; actual=0.000000003725; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.0.5.1.rMx; actual=-0.000000073342; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.0.5.1.rMy; actual=0.000000007894; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.0.5.1.extensionUsed
+OK: audit03.extended.CircleSym.Secant.3.0.5.1.physicalFail
+OK: audit03.extended.CircleSym.Secant.3.0.5.1.displayFail
+OK: audit03.extended.CircleSym.Secant.3.0.5.1.offNoEquilibrium
+OK: audit03.extended.CircleSym.Secant.3.0.5.1.offNumericalCause
+OK: audit03.extended.CircleSym.Secant.3.0.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.3.0.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.3.0.5.2|N=4142378.40931736|Mx=0.000000008202|My=-0.000000044107|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.3.0.5.2.equilibrium
+OK: audit03.extended.CircleSym.Secant.3.0.5.2.rN; actual=-0.000000000466; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.0.5.2.rMx; actual=0.00000001071; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.0.5.2.rMy; actual=-0.000000004646; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.0.5.2.extensionUsed
+OK: audit03.extended.CircleSym.Secant.3.0.5.2.physicalFail
+OK: audit03.extended.CircleSym.Secant.3.0.5.2.displayFail
+OK: audit03.extended.CircleSym.Secant.3.0.5.2.offNoEquilibrium
+OK: audit03.extended.CircleSym.Secant.3.0.5.2.offNumericalCause
+OK: audit03.extended.CircleSym.Secant.3.0.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.3.0.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.3.0.5.3|N=-2409196.10701833|Mx=307307960.067016|My=229781125.815933|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.3.0.5.3.equilibrium
+OK: audit03.extended.CircleSym.Secant.3.0.5.3.rN; actual=0.000000000466; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.0.5.3.rMx; actual=-0.000000119209; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.0.5.3.rMy; actual=-0.000000029802; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.0.5.3.extensionUsed
+OK: audit03.extended.CircleSym.Secant.3.0.5.3.physicalFail
+OK: audit03.extended.CircleSym.Secant.3.0.5.3.displayFail
+OK: audit03.extended.CircleSym.Secant.3.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.3.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.3.5.1|N=-142086798.483311|Mx=0.000000652581|My=0.000000157277|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.3.5.1.equilibrium
+OK: audit03.extended.CircleSym.Secant.3.5.1.rN; actual=0.000000029802; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.5.1.rMx; actual=-0.000000713393; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.5.1.rMy; actual=0.000000048371; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.5.1.extensionUsed
+OK: audit03.extended.CircleSym.Secant.3.5.1.physicalFail
+OK: audit03.extended.CircleSym.Secant.3.5.1.displayFail
+OK: audit03.extended.CircleSym.Secant.3.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.3.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.3.5.2|N=31964322.9495086|Mx=0.000000076121|My=-0.000000142143|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.3.5.2.equilibrium
+OK: audit03.extended.CircleSym.Secant.3.5.2.rN; actual=-0.000000003725; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.5.2.rMx; actual=0.00000041537; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.5.2.rMy; actual=0.000000190019; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.5.2.extensionUsed
+OK: audit03.extended.CircleSym.Secant.3.5.2.physicalFail
+OK: audit03.extended.CircleSym.Secant.3.5.2.displayFail
+OK: audit03.extended.CircleSym.Secant.3.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.3.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.3.5.3|N=-17810491.2291682|Mx=2259221866.02471|My=1530039043.3864|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.3.5.3.equilibrium
+OK: audit03.extended.CircleSym.Secant.3.5.3.rN; actual=0.000000007451; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.5.3.rMx; actual=-0.000000953674; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.5.3.extensionUsed
+OK: audit03.extended.CircleSym.Secant.3.5.3.physicalFail
+OK: audit03.extended.CircleSym.Secant.3.5.3.displayFail
+OK: audit03.extended.CircleSym.Secant.3.9.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.3.9.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.3.9.5.1|N=-267762677.035721|Mx=0.000000267522|My=0.00000058845|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.3.9.5.1.equilibrium
+OK: audit03.extended.CircleSym.Secant.3.9.5.1.rN; actual=0.000000029802; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.9.5.1.rMx; actual=-0.000001005828; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.9.5.1.rMy; actual=-0.000000283268; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.9.5.1.extensionUsed
+OK: audit03.extended.CircleSym.Secant.3.9.5.1.physicalFail
+OK: audit03.extended.CircleSym.Secant.3.9.5.1.displayFail
+OK: audit03.extended.CircleSym.Secant.3.9.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.3.9.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.3.9.5.2|N=59786267.4896998|Mx=-0.000000062253|My=-0.000000425498|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.3.9.5.2.equilibrium
+OK: audit03.extended.CircleSym.Secant.3.9.5.2.rN; actual=-0.000000014901; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.9.5.2.rMx; actual=0.000000119209; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.9.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.9.5.2.extensionUsed
+OK: audit03.extended.CircleSym.Secant.3.9.5.2.physicalFail
+OK: audit03.extended.CircleSym.Secant.3.9.5.2.displayFail
+OK: audit03.extended.CircleSym.Secant.3.9.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.CircleSym.Secant.3.9.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.CircleSym.Secant.3.9.5.3|N=-33211786.351318|Mx=4210711370.29875|My=2831032046.23576|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.CircleSym.Secant.3.9.5.3.equilibrium
+OK: audit03.extended.CircleSym.Secant.3.9.5.3.rN; actual=0.000000022352; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.9.5.3.rMx; actual=-0.000000476837; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.9.5.3.rMy; actual=0.000000476837; expected=0.
+OK: audit03.extended.CircleSym.Secant.3.9.5.3.extensionUsed
+OK: audit03.extended.CircleSym.Secant.3.9.5.3.physicalFail
+OK: audit03.extended.CircleSym.Secant.3.9.5.3.displayFail
+OK: audit03.extendedBeyond.CircleSym.-1.noEquilibrium
+OK: audit03.extendedBeyond.CircleSym.-1.numeric
+OK: audit03.extendedBeyond.CircleSym.-1.reason
+OK: audit03.extendedBeyond.CircleSym.1.noEquilibrium
+OK: audit03.extendedBeyond.CircleSym.1.numeric
+OK: audit03.extendedBeyond.CircleSym.1.reason
+TOTAL_AUDIT03_EXTENDED_OVERLOAD: shape=CircleSym; knownStates=48; passed=447; failed=1
+
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03ExtendedOverloadEquilibriumTests; 2026-10-02T09:24:43
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

@@ -462,8 +462,8 @@ End Function
 
 ' Заполняет справочное sigma_s,crc без дополнительных solve-вызовов.
 ' Если состояние PostCrackState уже найдено предварительной проверкой
-' образования трещины, берем среднее напряжение выбранной арматуры из
-' сохраненного solver-а. Для fallback-путей честной точки sigma_s,crc нет.
+' образования трещины, берем плоскость деформаций из сохраненного State.
+' Живой solver не нужен. Для fallback-путей отдельной точки sigma_s,crc нет.
 Private Sub CaptureSigmaSCrcIfAvailable(ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByRef selected() As Boolean)
     If mSigmaSCrc > NEAR_ZERO_STRESS Then Exit Sub
@@ -628,10 +628,10 @@ End Function
 
 
 
-' Выбирает пользовательский смысл расстояния a_s. В обычном режиме берется
-' локальный выход луча из выбранного стержня к ближайшему бетонному контуру.
-' Режим GlobalExtreme оставлен для проверки старой глобальной трактовки, когда
-' расстояние считается до дальней опорной линии всего сечения.
+' Выбирает смысл расстояния a_s по настройке CoverMode. NearestContour
+' использует локальный выход луча от стержня к бетонному контуру;
+' GlobalExtreme считает расстояние до опорной линии всего сечения.
+' Если локальный контур не определен, используется расстояние GlobalExtreme.
 Private Function CoverDistanceForRebar(ByVal section As CSectionModel, ByVal rebarIndex As Long, _
         ByVal nx As Double, ByVal ny As Double, ByVal st As Double, ByVal sBarMax As Double) As Double
     If StrComp(mCoverMode, COVER_MODE_GLOBAL_EXTREME, vbTextCompare) = 0 Then

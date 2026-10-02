@@ -1,0 +1,77 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_source_v46.xlsm
+SOURCE_SHA256: BB94807A0C5788FB2E07B1D37AB3E9EE42D802B6A111BBAFCBE8E756D9D1EAB4
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_2e57a133582c4eb79d983694556e6dc0\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestSectionSolver.RunAudit03ExtremeStateInputTests =====
+SUITE_STARTED: modTestSectionSolver.RunAudit03ExtremeStateInputTests; 2026-10-02T08:50:18
+EXCEL_AFTER_SUITE: pid=16336; workingSet=128483328; privateBytes=88772608; cpu=2.46875
+OK: audit03.extreme.Newton.shift=False.extension=False.notConverged
+OK: audit03.extreme.Newton.shift=False.extension=False.numericCause
+OK: audit03.extreme.Newton.shift=False.extension=False.reason
+EXTREME_CASE: audit03.extreme.Newton.shift=False.extension=False|N=-1e308|Mx=1e308|My=-1e308|failureCode=1|comment=Равновесие не найдено: при численном расчете произошло переполнение диапазона Double.
+OK: audit03.extreme.Newton.shift=False.extension=False.stateNumeric
+OK: audit03.extreme.Newton.shift=False.extension=False.displayNumFail
+OK: audit03.extreme.Newton.shift=False.extension=False.notPhysical
+OK: audit03.extreme.Newton.shift=False.extension=False.normalRecovers
+OK: audit03.extreme.Newton.shift=False.extension=True.notConverged
+OK: audit03.extreme.Newton.shift=False.extension=True.numericCause
+OK: audit03.extreme.Newton.shift=False.extension=True.reason
+EXTREME_CASE: audit03.extreme.Newton.shift=False.extension=True|N=-1e308|Mx=1e308|My=-1e308|failureCode=1|comment=Равновесие не найдено: при численном расчете произошло переполнение диапазона Double.
+OK: audit03.extreme.Newton.shift=False.extension=True.stateNumeric
+OK: audit03.extreme.Newton.shift=False.extension=True.displayNumFail
+OK: audit03.extreme.Newton.shift=False.extension=True.notPhysical
+OK: audit03.extreme.Newton.shift=False.extension=True.normalRecovers
+OK: audit03.extreme.Newton.shift=True.extension=False.notConverged
+OK: audit03.extreme.Newton.shift=True.extension=False.numericCause
+OK: audit03.extreme.Newton.shift=True.extension=False.reason
+EXTREME_CASE: audit03.extreme.Newton.shift=True.extension=False|N=-1e308|Mx=1e308|My=-1e308|failureCode=1|comment=Равновесие не найдено: при численном расчете произошло переполнение диапазона Double.
+OK: audit03.extreme.Newton.shift=True.extension=False.stateNumeric
+OK: audit03.extreme.Newton.shift=True.extension=False.displayNumFail
+OK: audit03.extreme.Newton.shift=True.extension=False.notPhysical
+OK: audit03.extreme.Newton.shift=True.extension=False.normalRecovers
+OK: audit03.extreme.Newton.shift=True.extension=True.notConverged
+OK: audit03.extreme.Newton.shift=True.extension=True.numericCause
+OK: audit03.extreme.Newton.shift=True.extension=True.reason
+EXTREME_CASE: audit03.extreme.Newton.shift=True.extension=True|N=-1e308|Mx=1e308|My=-1e308|failureCode=1|comment=Равновесие не найдено: при численном расчете произошло переполнение диапазона Double.
+OK: audit03.extreme.Newton.shift=True.extension=True.stateNumeric
+OK: audit03.extreme.Newton.shift=True.extension=True.displayNumFail
+OK: audit03.extreme.Newton.shift=True.extension=True.notPhysical
+OK: audit03.extreme.Newton.shift=True.extension=True.normalRecovers
+OK: audit03.extreme.Secant.shift=False.extension=False.notConverged
+OK: audit03.extreme.Secant.shift=False.extension=False.numericCause
+OK: audit03.extreme.Secant.shift=False.extension=False.reason
+EXTREME_CASE: audit03.extreme.Secant.shift=False.extension=False|N=-1e308|Mx=1e308|My=-1e308|failureCode=2|comment=Равновесие не найдено: матрица чувствительности Secant вырождена или ее численная оценка не представима.
+OK: audit03.extreme.Secant.shift=False.extension=False.stateNumeric
+OK: audit03.extreme.Secant.shift=False.extension=False.displayNumFail
+OK: audit03.extreme.Secant.shift=False.extension=False.notPhysical
+OK: audit03.extreme.Secant.shift=False.extension=False.normalRecovers
+OK: audit03.extreme.Secant.shift=False.extension=True.notConverged
+OK: audit03.extreme.Secant.shift=False.extension=True.numericCause
+OK: audit03.extreme.Secant.shift=False.extension=True.reason
+EXTREME_CASE: audit03.extreme.Secant.shift=False.extension=True|N=-1e308|Mx=1e308|My=-1e308|failureCode=2|comment=Равновесие не найдено: матрица чувствительности Secant вырождена или ее численная оценка не представима.
+OK: audit03.extreme.Secant.shift=False.extension=True.stateNumeric
+OK: audit03.extreme.Secant.shift=False.extension=True.displayNumFail
+OK: audit03.extreme.Secant.shift=False.extension=True.notPhysical
+OK: audit03.extreme.Secant.shift=False.extension=True.normalRecovers
+OK: audit03.extreme.Secant.shift=True.extension=False.notConverged
+OK: audit03.extreme.Secant.shift=True.extension=False.numericCause
+OK: audit03.extreme.Secant.shift=True.extension=False.reason
+EXTREME_CASE: audit03.extreme.Secant.shift=True.extension=False|N=-1e308|Mx=1e308|My=-1e308|failureCode=2|comment=Равновесие не найдено: матрица чувствительности Secant вырождена или ее численная оценка не представима.
+OK: audit03.extreme.Secant.shift=True.extension=False.stateNumeric
+OK: audit03.extreme.Secant.shift=True.extension=False.displayNumFail
+OK: audit03.extreme.Secant.shift=True.extension=False.notPhysical
+OK: audit03.extreme.Secant.shift=True.extension=False.normalRecovers
+OK: audit03.extreme.Secant.shift=True.extension=True.notConverged
+OK: audit03.extreme.Secant.shift=True.extension=True.numericCause
+OK: audit03.extreme.Secant.shift=True.extension=True.reason
+EXTREME_CASE: audit03.extreme.Secant.shift=True.extension=True|N=-1e308|Mx=1e308|My=-1e308|failureCode=2|comment=Равновесие не найдено: матрица чувствительности Secant вырождена или ее численная оценка не представима.
+OK: audit03.extreme.Secant.shift=True.extension=True.stateNumeric
+OK: audit03.extreme.Secant.shift=True.extension=True.displayNumFail
+OK: audit03.extreme.Secant.shift=True.extension=True.notPhysical
+OK: audit03.extreme.Secant.shift=True.extension=True.normalRecovers
+TOTAL_AUDIT03_EXTREME_STATE: passed=56; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionSolver.RunAudit03ExtremeStateInputTests; 2026-10-02T08:50:19
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

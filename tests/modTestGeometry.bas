@@ -2070,6 +2070,8 @@ Private Function FakeRegion(ByVal area As Double, ByVal xCoord As Double, ByVal 
     Set FakeRegion = region
 End Function
 
+' Строит сетку через общий geometry-контракт и вычисляет бетонные A/центр/I.
+' При ошибке дополняет причину шагами сетки и числом полученных волокон.
 Private Function MeshProps(ByVal geom As ISectionGeometry, ByVal stepX As Double, ByVal stepY As Double) As CSectionPropertiesCalculator
     On Error GoTo Failed
 
@@ -2096,6 +2098,7 @@ Failed:
     Err.Raise Err.Number, "MeshProps", Err.Description & "; stepX=" & CStr(stepX) & "; stepY=" & CStr(stepY) & "; " & fiberCountText
 End Function
 
+' Выявляет подячейки границы хотя бы по одному размеру относительно базового шага.
 Private Function MeshHasSmallFibers(ByVal mesh As CFiberMeshBuilder, ByVal baseStep As Double) As Boolean
     Dim i As Long
     For i = 1 To mesh.FiberCount
@@ -2106,6 +2109,7 @@ Private Function MeshHasSmallFibers(ByVal mesh As CFiberMeshBuilder, ByVal baseS
     Next i
 End Function
 
+' Читает ширину первой уменьшенной по X подячейки; ноль означает отсутствие такой ячейки.
 Private Function FirstSmallFiberWidth(ByVal mesh As CFiberMeshBuilder, ByVal baseStep As Double) As Double
     Dim i As Long
     For i = 1 To mesh.FiberCount
@@ -2117,6 +2121,7 @@ Private Function FirstSmallFiberWidth(ByVal mesh As CFiberMeshBuilder, ByVal bas
     FirstSmallFiberWidth = 0#
 End Function
 
+' Проверяет валидацию размеров/радиусов непосредственно на RoundedRectangle-геометрии.
 Private Sub AssertInvalid(ByRef stats As TTestStats, ByVal name As String, _
         ByVal width As Double, ByVal height As Double, ByVal rtl As Double, ByVal rtr As Double, _
         ByVal rbr As Double, ByVal rbl As Double)
@@ -2128,6 +2133,7 @@ Private Sub AssertInvalid(ByRef stats As TTestStats, ByVal name As String, _
     AssertTrue stats, name, Not geom.IsValid(message)
 End Sub
 
+' Требует отклонения ошибочной геометрии/шага публичным BuildMesh, а не пустой успешной сетки.
 Private Sub AssertBuildError(ByRef stats As TTestStats, ByVal name As String, _
         ByVal geom As CGeometryRoundedRectangle, ByVal stepX As Double, ByVal stepY As Double)
 
@@ -2144,6 +2150,7 @@ GotError:
     AssertTrue stats, name, True
 End Sub
 
+' Пропускает ошибочные круговые ряды через реальный builder и требует ошибки ввода.
 Private Sub AssertCircleRebarError(ByRef stats As TTestStats, ByVal name As String, _
         ByVal diameter As Double, ByVal axisDistance As Double, ByVal barCount As Long, ByVal barDiameter As Double, _
         Optional ByVal row2Diameter As Double = 0#, Optional ByVal row3Diameter As Double = 0#, _
@@ -2164,6 +2171,8 @@ GotError:
     AssertTrue stats, name, True
 End Sub
 
+' Активирует одну грань RectSet с заданными n/as/d/отступами; остальные грани выключены.
+' Ошибочные активные параметры должны отклоняться builder-ом.
 Private Sub AssertRectSetRebarError(ByRef stats As TTestStats, ByVal name As String, _
         ByVal lowerWidth As Double, ByVal upperHeight As Double, ByVal upperWidth As Double, ByVal lowerHeight As Double, _
         ByVal barCount As Long, ByVal axisDistance As Double, ByVal barDiameter As Double, _
@@ -2188,10 +2197,12 @@ GotError:
     AssertTrue stats, name, True
 End Sub
 
+' Фиксированные параметры выключенной грани: оба количества равны нулю, ряды отсутствуют.
 Private Function EmptyFaceSettings() As Variant
     EmptyFaceSettings = Array(40#, 40#, 20#, 20#, 0, 0, 40#, 40#, 40#, 40#, 0#, 0#, 0#, 0#, "Stacked", "Stacked")
 End Function
 
+' Проверяет наличие semantic-группы раскладки независимо от графического вывода.
 Private Function HasAnnotationGroup(ByVal layout As CRebarLayout, ByVal groupName As String) As Boolean
     Dim i As Long
     For i = 1 To layout.AnnotationCount
@@ -2202,11 +2213,13 @@ Private Function HasAnnotationGroup(ByVal layout As CRebarLayout, ByVal groupNam
     Next i
 End Function
 
+' Поиск аннотации требует совпадения типа и ID, а не только похожей подписи.
 Private Function HasSectionAnnotation(ByVal model As CSectionModel, ByVal annotationType As String, _
         ByVal annotationID As String) As Boolean
     HasSectionAnnotation = (FindSectionAnnotationIndex(model, annotationType, annotationID) > 0)
 End Function
 
+' Проверяет происхождение semantic-аннотации по префиксу ID в готовой модели.
 Private Function HasSectionAnnotationIDPrefix(ByVal model As CSectionModel, ByVal annotationIDPrefix As String) As Boolean
     If model Is Nothing Then Exit Function
 
@@ -2222,6 +2235,7 @@ Private Function HasSectionAnnotationIDPrefix(ByVal model As CSectionModel, ByVa
     Next i
 End Function
 
+' Считает аннотации заданного типа; отсутствие модели не создает фиктивных записей.
 Private Function CountSectionAnnotationType(ByVal model As CSectionModel, ByVal annotationType As String) As Long
     If model Is Nothing Then Exit Function
 
@@ -2236,6 +2250,7 @@ Private Function CountSectionAnnotationType(ByVal model As CSectionModel, ByVal 
     Next i
 End Function
 
+' Возвращает индекс точной пары Type/ID либо ноль при отсутствии.
 Private Function FindSectionAnnotationIndex(ByVal model As CSectionModel, ByVal annotationType As String, _
         ByVal annotationID As String) As Long
     If model Is Nothing Then Exit Function
@@ -2253,6 +2268,8 @@ Private Function FindSectionAnnotationIndex(ByVal model As CSectionModel, ByVal 
     Next i
 End Function
 
+' Передает ошибочные дополнительные ряды только активной H1-грани тестового RectSet.
+' Остальные грани выключены, чтобы отказ относился к проверяемому набору.
 Private Sub AssertRectSetRebarRowsError(ByRef stats As TTestStats, ByVal name As String, ByVal h1Settings As Variant)
     On Error GoTo Expected
     Dim builder As CRectSetRebarLayoutBuilder
@@ -2267,6 +2284,7 @@ Expected:
     AppendLine stats, "OK: " & name
 End Sub
 
+' Считает созданные стержни по трассировочной части ID ряда.
 Private Function CountBarsWithRow(ByVal layout As CRebarLayout, ByVal rowToken As String) As Long
     Dim i As Long
     For i = 1 To layout.Count
@@ -2274,6 +2292,7 @@ Private Function CountBarsWithRow(ByVal layout As CRebarLayout, ByVal rowToken A
     Next i
 End Function
 
+' Считает стержни по исходной грани/линии в ID раскладки.
 Private Function CountBarsWithSource(ByVal layout As CRebarLayout, ByVal sourceToken As String) As Long
     Dim i As Long
     For i = 1 To layout.Count
@@ -2281,6 +2300,7 @@ Private Function CountBarsWithSource(ByVal layout As CRebarLayout, ByVal sourceT
     Next i
 End Function
 
+' Считает реальные стержни semantic-группы, а не число подписей этой группы.
 Private Function CountBarsInAnnotationGroup(ByVal layout As CRebarLayout, ByVal groupName As String) As Long
     Dim i As Long
     For i = 1 To layout.Count
@@ -2290,6 +2310,7 @@ Private Function CountBarsInAnnotationGroup(ByVal layout As CRebarLayout, ByVal 
     Next i
 End Function
 
+' Выбирает крайний Y только внутри нужной группы; первый стержень задает начальное значение.
 Private Function ExtremeYInAnnotationGroup(ByVal layout As CRebarLayout, ByVal groupName As String, ByVal findMax As Boolean) As Double
     Dim initialized As Boolean
     Dim i As Long
@@ -2307,6 +2328,7 @@ Private Function ExtremeYInAnnotationGroup(ByVal layout As CRebarLayout, ByVal g
     Next i
 End Function
 
+' Проверяет Y каждого стержня горизонтальной группы и обязательное наличие стержней.
 Private Sub AssertBarsInGroupHaveY(ByRef stats As TTestStats, ByVal layout As CRebarLayout, _
         ByVal groupName As String, ByVal expectedY As Double, ByVal prefix As String)
     Dim found As Boolean
@@ -2320,6 +2342,7 @@ Private Sub AssertBarsInGroupHaveY(ByRef stats As TTestStats, ByVal layout As CR
     AssertTrue stats, prefix & ".hasBars", found
 End Sub
 
+' Проверяет X каждого стержня вертикальной группы и обязательное наличие стержней.
 Private Sub AssertBarsInGroupHaveX(ByRef stats As TTestStats, ByVal layout As CRebarLayout, _
         ByVal groupName As String, ByVal expectedX As Double, ByVal prefix As String)
     Dim found As Boolean
@@ -2333,6 +2356,7 @@ Private Sub AssertBarsInGroupHaveX(ByRef stats As TTestStats, ByVal layout As CR
     AssertTrue stats, prefix & ".hasBars", found
 End Sub
 
+' Выдает первый/последний индекс группы в порядке раскладки; оба нулевые при отсутствии.
 Private Sub FindFirstLastBarInAnnotationGroup(ByVal layout As CRebarLayout, ByVal groupName As String, _
         ByRef firstIndex As Long, ByRef lastIndex As Long)
     Dim i As Long
@@ -2346,6 +2370,7 @@ Private Sub FindFirstLastBarInAnnotationGroup(ByVal layout As CRebarLayout, ByVa
     Next i
 End Sub
 
+' Находит semantic-якорь подписи группы, не подменяя его координатами крайнего стержня.
 Private Function FindRebarAnnotationAnchor(ByVal layout As CRebarLayout, ByVal groupName As String) As Long
     Dim i As Long
     For i = 1 To layout.AnnotationCount
@@ -2356,6 +2381,7 @@ Private Function FindRebarAnnotationAnchor(ByVal layout As CRebarLayout, ByVal g
     Next i
 End Function
 
+' Assertions ниже сохраняют причины всех проверок группы без досрочного выхода suite.
 Private Sub AssertTrue(ByRef stats As TTestStats, ByVal name As String, ByVal condition As Boolean)
     If condition Then
         stats.Passed = stats.Passed + 1
@@ -2366,6 +2392,7 @@ Private Sub AssertTrue(ByRef stats As TTestStats, ByVal name As String, ByVal co
     End If
 End Sub
 
+' Записывает абсолютную разницу с заданным геометрическим допуском.
 Private Sub AssertClose(ByRef stats As TTestStats, ByVal name As String, ByVal actual As Double, _
         ByVal expected As Double, ByVal tolerance As Double)
 
@@ -2382,6 +2409,7 @@ Private Sub AssertClose(ByRef stats As TTestStats, ByVal name As String, ByVal a
     End If
 End Sub
 
+' Сравнивает относительную разницу; нулевой эталон проверяется без деления на него.
 Private Sub AssertRelative(ByRef stats As TTestStats, ByVal name As String, ByVal actual As Double, _
         ByVal expected As Double, ByVal relTolerance As Double)
 
@@ -2403,6 +2431,7 @@ Private Sub AssertRelative(ByRef stats As TTestStats, ByVal name As String, ByVa
     End If
 End Sub
 
+' Helpers протокола сохраняют строки и форматируют числа с точкой для повторяемого сравнения.
 Private Sub AppendLine(ByRef stats As TTestStats, ByVal text As String)
     stats.Report = stats.Report & text & vbCrLf
 End Sub

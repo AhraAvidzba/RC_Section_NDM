@@ -117,8 +117,8 @@ Public Sub InitializeCrackFormation(ByVal crackCalculator As CCrackFormationCalc
 End Sub
 
 ' Заполняет request уже готовой доменной задачей LimitSearch.
-' Этот вход нужен для контрактных тестов и будущих инженерных задач, где
-' callback-объект уже создан снаружи. Он не заменяет строгие доменные
+' Этот вход используется контрактными тестами с callback-объектом,
+' созданным снаружи. Он не заменяет строгие доменные
 ' фабрики Capacity/CrackFormation: те по-прежнему проверяют обязательные
 ' материалы и расчетную модель.
 Public Sub InitializeWithProblem(ByVal problem As ILimitSearchProblem, _

@@ -665,7 +665,7 @@ Private Function ResultColumn(ByRef data As Variant, ByVal headerName As String)
     Err.Raise vbObjectError + 4355, "ResultColumn", "В Results не найден столбец: " & headerName
 End Function
 
-' Геометрический snapshot теперь явно пишет статус интерпретации оболочки.
+' Геометрический snapshot явно хранит статус интерпретации оболочки.
 ' Допускает ShapeType в сохраненной таблице без GeometryInterpretationStatus.
 Private Function GeometryStatusColumn(ByRef data As Variant) As Long
     On Error Resume Next
@@ -1058,7 +1058,7 @@ Private Sub AppendContourSegment(ByRef startX() As Double, ByRef startY() As Dou
 End Sub
 
 ' Строит одну непрерывную LWPOLYLINE по порядку contour-аннотаций.
-' Если будущий генератор случайно запишет сегменты с разрывом, экспорт
+' Если сохраненный набор сегментов содержит разрыв, экспорт
 ' останавливается с понятной ошибкой: лучше увидеть проблему, чем получить в
 ' AutoCAD контур с паразитной перемычкой.
 Private Function DrawContourSegmentPolyline(ByVal ms As Object, ByVal contourLayer As String, _

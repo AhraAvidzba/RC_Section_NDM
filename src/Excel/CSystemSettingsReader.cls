@@ -44,9 +44,9 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object)
     NormalizeDiagramExtensionSetting
 End Sub
 
-' Подключает дополнительный именованный диапазон, если он уже есть в книге.
-' Это позволяет старым тестовым книгам открываться с расчетными defaults,
-' но новая сборка книги все равно создает эти диапазоны явно на Config.
+' Подключает необязательный для reader диапазон, если он есть в книге.
+' Отсутствие имени не маскирует ошибки значений найденного диапазона;
+' обязательность конкретных материалных параметров проверяет их потребитель.
 Private Sub AppendNamedSettingsRangeIfExists(ByVal workbook As Object, ByVal rangeName As String)
     On Error GoTo MissingRange
     Dim settingsRange As Object

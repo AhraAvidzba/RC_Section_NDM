@@ -967,6 +967,9 @@ Public Property Get LoadReferenceX() As Double: LoadReferenceX = mLoadReferenceX
 Public Property Get LoadReferenceY() As Double: LoadReferenceY = mLoadReferenceY: End Property
 Public Property Get ExtensionUsed() As Boolean: ExtensionUsed = mExtensionUsed: End Property
 Public Property Get DirectStateStatus() As String: DirectStateStatus = mStateStatus: End Property
+' Определяет необходимость предупреждения по сохраненному снимку Results:
+' использовано extension либо записан физический FAIL. Решатель не запускается,
+' внешний словарь статусов остается у общей policy.
 Public Property Get PhysicalDiagramWarningRequired() As Boolean
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy

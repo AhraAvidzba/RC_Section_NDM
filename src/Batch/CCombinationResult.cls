@@ -49,10 +49,14 @@ Public Property Get Status() As String
     Status = Policy.ExternalStatus(OverallMeta)
 End Property
 
+' Возвращает display-итог образования/раскрытия нормальной трещины;
+' независимая проверка продольных трещин в этот статус не включается.
 Public Property Get NormalCrackStatus() As String
     NormalCrackStatus = Policy.ExternalStatus(CrackMeta)
 End Property
 
+' Возвращает display-итог всего crack subtree, включая продольные трещины.
+' Источником является готовая агрегированная meta, а не строки соседних ячеек.
 Public Property Get CrackSummaryStatus() As String
     CrackSummaryStatus = Policy.ExternalStatus(CrackSummaryMeta)
 End Property

@@ -130,7 +130,7 @@ Public Sub InitializeBaseFail(ByVal reason As String, _
     InitializeEarlyResult rsCheckFailed, rcInitialStateBeyondLimit, NormalizeBaseFailReason(reason), pathKey, True
 End Sub
 
-' Убирает старые технические формулировки из пользовательского BaseFail.
+' Нормализует объяснение BaseFail в понятную формулировку об исходной части пути.
 ' Машинный код причины остается в ResultCode = INITIAL_STATE_BEYOND_LIMIT.
 Private Function NormalizeBaseFailReason(ByVal reason As String) As String
     NormalizeBaseFailReason = Trim$(reason)
@@ -216,6 +216,8 @@ Private Sub StoreCapacityStateIfAvailable()
     Set mStateResult = mSearchResult.PointState
 End Sub
 
+' Возвращает отдельный контейнер итогов Search, чтобы потребитель не изменил
+' опубликованный результат. Конечные named-states сохраняют свою идентичность.
 Public Property Get SearchResult() As CLimitSearchResult
     If Not mSearchResult Is Nothing Then Set SearchResult = mSearchResult.Clone
 End Property
@@ -298,6 +300,8 @@ Public Property Get StateResult() As CSectionStateResult
     Set StateResult = mStateResult
 End Property
 
+' Получает внешний статус из канонической ResultMeta через общую policy.
+' Физический BaseFail интерпретирован калькулятором, а не текстом комментария.
 Public Property Get Status() As String
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
@@ -336,6 +340,8 @@ Public Property Get MyUltimate() As Double
     MyUltimate = mMyUltimate
 End Property
 
+' Возвращают внутренние усилия сохраненного конечного состояния. Без state
+' числовые свойства равны нулю; наличие и допустимость проверяются отдельно.
 Public Property Get CapacityStateN() As Double
     If Not mStateResult Is Nothing Then CapacityStateN = mStateResult.Nint
 End Property
@@ -356,6 +362,8 @@ Public Property Get CapacityStateAvailable() As Boolean
     CapacityStateAvailable = Not mStateResult Is Nothing
 End Property
 
+' Возвращают параметры сохраненной плоскости деформаций, не повторяя solve.
+' Нули при отсутствии state не следует трактовать как найденное равновесие.
 Public Property Get CapacityEpsilon0() As Double
     If Not mStateResult Is Nothing Then CapacityEpsilon0 = mStateResult.Epsilon0
 End Property

@@ -133,8 +133,8 @@ End Function
 ' Добавляет semantic-аннотации формы в готовую CSectionModel.
 ' AnnotationBuilder получает модельные координаты и смысловые группы арматуры;
 ' Excel/Chart-координаты по-прежнему рассчитывает только layout/plot layer.
-' Если для будущего типа сечения annotation builder еще не создан, это не
-' считается ошибкой: модель просто останется без размеров/подписей граней,
+' Если зарегистрированная форма не имеет annotation builder, это не
+' считается ошибкой: модель остается без размеров/подписей граней,
 ' а общие подписи схемы CSectionPlotter продолжит выводить сам.
 Public Sub BuildAnnotations(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, _
         ByVal rebars As CRebarLayout, ByVal settings As CSystemSettingsReader)

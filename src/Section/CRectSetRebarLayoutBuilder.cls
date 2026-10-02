@@ -445,13 +445,13 @@ Private Function LineEndOffset(ByVal lineSettings As Variant) As Double
     LineEndOffset = CDbl(lineSettings(LBound(lineSettings) + 4))
 End Function
 
-' Возвращает диаметр второго ряда; для старых тестовых массивов допускает отсутствие поля.
+' Возвращает диаметр второго ряда; отсутствие optional поля означает, что ряда нет.
 Private Function LineRow2Diameter(ByVal lineSettings As Variant) As Double
     If UBound(lineSettings) - LBound(lineSettings) < 5 Then Exit Function
     LineRow2Diameter = CDbl(lineSettings(LBound(lineSettings) + 5))
 End Function
 
-' Возвращает диаметр третьего ряда; для старых тестовых массивов допускает отсутствие поля.
+' Возвращает диаметр третьего ряда; отсутствие optional поля означает, что ряда нет.
 Private Function LineRow3Diameter(ByVal lineSettings As Variant) As Double
     If UBound(lineSettings) - LBound(lineSettings) < 6 Then Exit Function
     LineRow3Diameter = CDbl(lineSettings(LBound(lineSettings) + 6))
