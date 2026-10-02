@@ -17,6 +17,7 @@ Option Explicit
 ' продольные трещины по сжатому бетону. Он не пишет Results и не запускает
 ' solver; это контейнер result-tree между orchestration-слоем и batch-снимком.
 
+Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
 Private mFormation As CCrackFormationResult ' Результат поиска Ncrc/Mxy,crc.
 Private mCurrentStateMeta As CResultMeta ' Meta обязательного CurrentCrackedState, если он уже решался.
 Private mWidth As CCrackWidthResult ' Результат формульного расчета a_crc.
@@ -33,6 +34,7 @@ End Sub
 Public Sub Initialize(ByVal formation As CCrackFormationResult, _
         ByVal currentStateMeta As CResultMeta, ByVal width As CCrackWidthResult, _
         ByVal longitudinal As CLongitudinalCrackResult)
+    AssertWritable
     Set mFormation = formation
     If mFormation Is Nothing Then Set mFormation = New CCrackFormationResult
     If currentStateMeta Is Nothing Then
@@ -104,3 +106,21 @@ Public Property Get ResultMeta() As CResultMeta
     Set ResultMeta = mPolicy.WorstResultMeta(rkGeneric, normal, longitudinal)
     ResultMeta.ResultComment = comment
 End Property
+
+' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
+' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
+' но их fill/reset API больше не могут изменить опубликованный результат.
+Friend Sub Freeze()
+    If mFrozen Then Exit Sub
+    If Not mFormation Is Nothing Then mFormation.Freeze
+    If Not mWidth Is Nothing Then mWidth.Freeze
+    If Not mLongitudinal Is Nothing Then mLongitudinal.Freeze
+    mFrozen = True
+End Sub
+
+' Явно отклоняет изменение уже выданного результата вместо тихой порчи снимка.
+' Для повторного расчета workflow создает новый объект, сохраняя прежние ссылки.
+Private Sub AssertWritable()
+    If mFrozen Then Err.Raise vbObjectError + 4220, "CCrackResult", _
+        "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
+End Sub

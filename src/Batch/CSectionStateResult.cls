@@ -22,6 +22,7 @@ Option Explicit
 ' состояние solver-а в компактный объект, который CCombinationResult хранит
 ' до блочной записи snapshot.
 
+Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
 Private mStateType As ESectionStateType ' Какое именованное состояние рассчитано.
 Private mMaterialModelRole As ECalculationPurpose ' Смысловая роль модели материала.
 Private mMaterialSpec As CMaterialModelSpec ' Фактически использованная спецификация профиля.
@@ -69,6 +70,7 @@ Public Sub InitializeFromSolver(ByVal stateType As ESectionStateType, _
         Optional ByVal withinPhysicalRange As Boolean = True, _
         Optional ByVal solverCallCount As Long = 0, _
         Optional ByVal diagnosticLog As String = vbNullString)
+    AssertWritable
     If materialSpec Is Nothing Then Err.Raise vbObjectError + 3970, "CSectionStateResult", "MaterialModelSpec не передан."
     If solver Is Nothing Then Err.Raise vbObjectError + 3971, "CSectionStateResult", "Решатель для именованного состояния не передан."
 
@@ -105,6 +107,7 @@ End Sub
 ' Сохраняет диагностический результат запроса, для которого solve не мог
 ' начаться из-за отсутствующего программного контекста. Это не reusable НДС.
 Public Sub InitializeFailure(ByVal request As CStateRequest, ByVal meta As CResultMeta)
+    AssertWritable
     If request Is Nothing Then Err.Raise vbObjectError + 3972, "CSectionStateResult", "Запрос диагностического состояния не передан."
     If meta Is Nothing Then Err.Raise vbObjectError + 3973, "CSectionStateResult", "Причина отсутствия состояния не передана."
     ClearSnapshot
@@ -429,3 +432,18 @@ Private Function ResultKindFromStateType(ByVal stateType As ESectionStateType) A
             ResultKindFromStateType = rkDirectState
     End Select
 End Function
+
+' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
+' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
+' но их fill/reset API больше не могут изменить опубликованный результат.
+Friend Sub Freeze()
+    If mFrozen Then Exit Sub
+    mFrozen = True
+End Sub
+
+' Явно отклоняет изменение уже выданного результата вместо тихой порчи снимка.
+' Для повторного расчета workflow создает новый объект, сохраняя прежние ссылки.
+Private Sub AssertWritable()
+    If mFrozen Then Err.Raise vbObjectError + 4220, "CSectionStateResult", _
+        "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
+End Sub

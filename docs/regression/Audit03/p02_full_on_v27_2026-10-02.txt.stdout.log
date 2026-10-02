@@ -1,0 +1,21 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_f06_fixed.xlsm
+SOURCE_SHA256: 31084D30A1BA4E2CFB070B309144338DF22CC2095B68BCD00309A67A656A1498
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_ef43b89d3cb84c1a8aea78b17398ab55\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TOTAL: passed=524; failed=0
+MODE_AFTER_SUITE: Yes
+TOTAL_MATERIAL: passed=1359; failed=0; elapsedSec=0.064453125
+MODE_AFTER_SUITE: Yes
+TOTAL_SECTION_SOLVER: passed=583; failed=0; elapsedSec=0.4814453125
+MODE_AFTER_SUITE: Yes
+TOTAL_CAPACITY: passed=1676; failed=0; elapsedSec=43.0107421875
+MODE_AFTER_SUITE: Yes
+TOTAL_CRACK: passed=479; failed=0; elapsedSec=5.03125
+MODE_AFTER_SUITE: Yes
+TOTAL_BATCH: passed=3068; failed=0; elapsedSec=60.625
+MODE_AFTER_SUITE: Yes
+TOTAL_WORKBOOK_UI: passed=641; failed=0; elapsedSec=38.744140625
+MODE_AFTER_SUITE: Yes
+TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.4716796875
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

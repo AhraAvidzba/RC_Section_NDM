@@ -41,6 +41,7 @@ Public Function RunSectionSolverTests() As String
     TestAudit02LoadPathResidualScaling stats
     TestAudit02ExtendedInitialGuessPhysicalFinal stats
     TestAudit03TypedStateFailures stats
+    TestAudit03RetryAttemptSession stats
 
     AppendLine stats, "TOTAL_SECTION_SOLVER: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -1025,3 +1026,98 @@ End Sub
 
 
 
+
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Проверяет память только идентичных численных retries. Иные старты/options,
+' новое сечение/материалы, новая session и успех не блокируются прежней неудачей.
+Public Function RunAudit03RetryAttemptSessionTests() As String
+    On Error GoTo Failed
+    Dim stats As TSectionSolverTestStats
+    TestAudit03RetryAttemptSession stats
+    AppendLine stats, "TOTAL_RETRY_SESSION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03RetryAttemptSessionTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03RetryAttemptSessionTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' Одной Newton-итерации недостаточно для финального подтверждения линейной
+' задачи: это управляемая численная неудача без изменения эталонной физики.
+Private Sub TestAudit03RetryAttemptSession(ByRef stats As TSectionSolverTestStats)
+    Dim section As CSectionModel
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 20#), Nothing)
+    Dim concrete As CLinearConcreteMaterial, steel As CLinearSteelMaterial
+    Set concrete = New CLinearConcreteMaterial
+    concrete.Initialize 32500#
+    Set steel = New CLinearSteelMaterial
+    steel.Initialize 200000#
+    Dim runner As CStateSolutionRunner
+    Set runner = New CStateSolutionRunner
+    runner.MaxIterations = 1
+    runner.DiagnosticsEnabled = False
+    runner.BeginRetryAttemptSession section, concrete, steel
+    AssertTrue stats, "audit03.retry.firstFailure", Not runner.TestRunRetryAttempt(section, concrete, steel, -100000#)
+    AssertTrue stats, "audit03.retry.firstSolve", runner.SolverCallCount = 1
+    AssertTrue stats, "audit03.retry.sameFailure", Not runner.TestRunRetryAttempt(section, concrete, steel, -100000#)
+    AssertTrue stats, "audit03.retry.sameNoSolve", runner.SolverCallCount = 1
+    AssertTrue stats, "audit03.retry.noDisabledDiagnostic", Len(runner.DiagnosticLog) = 0
+    runner.TestRunRetryAttempt section, concrete, steel, -100000#, -0.000001
+    AssertTrue stats, "audit03.retry.newPlane", runner.SolverCallCount = 2
+    runner.TestRunRetryAttempt section, concrete, steel, -110000#
+    AssertTrue stats, "audit03.retry.newTarget", runner.SolverCallCount = 3
+    runner.ToleranceN = 0.1
+    runner.TestRunRetryAttempt section, concrete, steel, -100000#
+    AssertTrue stats, "audit03.retry.newTolerance", runner.SolverCallCount = 4
+    runner.TestRunRetryAttempt section, concrete, steel, -100000#, 0#, 2
+    AssertTrue stats, "audit03.retry.newSteps", runner.SolverCallCount = 5
+    runner.TestRunRetryAttempt section, concrete, steel, -100000#, 0#, 1, True
+    AssertTrue stats, "audit03.retry.newLineSearch", runner.SolverCallCount = 6
+    runner.BeginRetryAttemptSession section, concrete, steel
+    runner.TestRunRetryAttempt section, concrete, steel, -100000#
+    AssertTrue stats, "audit03.retry.newSession", runner.SolverCallCount = 7
+    runner.MaxIterations = 2
+    AssertTrue stats, "audit03.retry.canRecover", runner.TestRunRetryAttempt(section, concrete, steel, -100000#)
+    AssertTrue stats, "audit03.retry.recoverySolve", runner.SolverCallCount = 8
+    AssertTrue stats, "audit03.retry.successNotFailureCache", runner.TestRunRetryAttempt(section, concrete, steel, -100000#)
+    AssertTrue stats, "audit03.retry.successSolvedAgain", runner.SolverCallCount = 9
+    runner.MaxIterations = 0
+    runner.TestRunRetryAttempt section, concrete, steel, -100000#
+    runner.TestRunRetryAttempt section, concrete, steel, -100000#
+    AssertTrue stats, "audit03.retry.configurationNotCached", runner.SolverCallCount = 11
+    runner.MaxIterations = 1
+    Dim otherSection As CSectionModel
+    Set otherSection = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 20#), Nothing)
+    runner.TestRunRetryAttempt otherSection, concrete, steel, -100000#
+    runner.TestRunRetryAttempt otherSection, concrete, steel, -100000#
+    AssertTrue stats, "audit03.retry.otherContextClosesSession", runner.SolverCallCount = 13
+    runner.BeginRetryAttemptSession section, concrete, steel
+    runner.TestRunRetryAttempt section, concrete, steel, -100000#
+    Dim otherConcrete As CLinearConcreteMaterial
+    Set otherConcrete = New CLinearConcreteMaterial
+    otherConcrete.Initialize 30000#
+    runner.TestRunRetryAttempt section, otherConcrete, steel, -100000#
+    runner.TestRunRetryAttempt section, otherConcrete, steel, -100000#
+    AssertTrue stats, "audit03.retry.otherMaterialClosesSession", runner.SolverCallCount = 16
+    runner.BeginRetryAttemptSession section, concrete, steel
+    runner.TestRunRetryAttempt section, concrete, steel, -100000#
+    section.Clear
+    section.AddConcreteElement 0#, 0#, 20000#
+    runner.TestRunRetryAttempt section, concrete, steel, -100000#
+    runner.TestRunRetryAttempt section, concrete, steel, -100000#
+    AssertTrue stats, "audit03.retry.revisionClosesSession", runner.SolverCallCount = 19
+    runner.BeginRetryAttemptSession section, concrete, steel
+    Dim targetIndex As Long
+    For targetIndex = 1 To 80
+        runner.TestRunRetryAttempt section, concrete, steel, -100000# - targetIndex
+    Next targetIndex
+    AssertTrue stats, "audit03.retry.boundedScalarMemory", runner.TestRetryAttemptCount = 64
+    Dim calls As Long
+    calls = runner.SolverCallCount
+    runner.TestRunRetryAttempt section, concrete, steel, -100080#
+    AssertTrue stats, "audit03.retry.lastAttemptRetained", runner.SolverCallCount = calls
+    runner.TestRunRetryAttempt section, concrete, steel, -100001#
+    AssertTrue stats, "audit03.retry.evictedAttemptCanRun", runner.SolverCallCount = calls + 1
+End Sub

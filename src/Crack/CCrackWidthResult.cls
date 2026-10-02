@@ -18,6 +18,7 @@ Option Explicit
 ' rsBlockedByDependency или rsNotApplicable, а чистая формула при этом не
 ' вызывается.
 
+Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
 Private mMeta As CResultMeta ' Типизированный статус именно формульного этапа width.
 Private mCrackWidth As Double ' a_crc, мм.
 Private mAllowableCrackWidth As Double ' a_crc,ult, мм.
@@ -54,6 +55,7 @@ End Sub
 ' Downstream-слой работает с отдельным result-объектом и ResultMeta, не
 ' обращаясь к внутренним временным полям calculator-а.
 Public Sub InitializeFromCalculator(ByVal crack As CCrackWidthCalculator, ByVal meta As CResultMeta)
+    AssertWritable
     ResetData
     If meta Is Nothing Then
         mMeta.SetResult rsInternalError, rcInternalError, rkCrackWidth, _
@@ -226,4 +228,19 @@ Private Sub ResetData()
     mCentralTensionBranch = False
     mStopReason = vbNullString
     mDiagnosticLog = vbNullString
+End Sub
+
+' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
+' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
+' но их fill/reset API больше не могут изменить опубликованный результат.
+Friend Sub Freeze()
+    If mFrozen Then Exit Sub
+    mFrozen = True
+End Sub
+
+' Явно отклоняет изменение уже выданного результата вместо тихой порчи снимка.
+' Для повторного расчета workflow создает новый объект, сохраняя прежние ссылки.
+Private Sub AssertWritable()
+    If mFrozen Then Err.Raise vbObjectError + 4220, "CCrackWidthResult", _
+        "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub

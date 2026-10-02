@@ -1030,6 +1030,9 @@ End Sub
 
 
 
+' Проверяет найденную точку около lambda=0 отдельным равновесием постоянной
+' части. Если она уже треснула, выбранный путь не дает отдельной sigma_s,crc:
+' фиксируется доменный fallback, а Auto может попробовать следующий путь.
 Private Function TryMarkConstantPartFormationFallback(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double) As Boolean
@@ -1061,8 +1064,6 @@ End Function
 
 
 
-' Создает PreCrackState для центрального растяжения, где lambda_crc задана
-' через Ncrc и нет отдельного прямого поиска плоскости по eps_bt,ult.
 ' Оценивает невязки для прямого UltimateStrain-поиска lambda_crc
 ' на общей линии нагрузки Offset + lambda*Base.
 Private Function EvaluateCrcLoadPathResidual(ByVal section As CSectionModel, _
@@ -1418,6 +1419,9 @@ End Sub
 
 
 
+' Решает одну lambda-точку общего LoadMultiplier через единый state pipeline.
+' Подбирает полезный warm-start, при его неудаче пробует самостоятельный старт
+' и возвращает formation residual только после подтвержденного равновесия.
 Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _

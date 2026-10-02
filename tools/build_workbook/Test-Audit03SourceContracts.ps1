@@ -93,6 +93,35 @@ Assert-Contract 'oneFinalCrackPackaging' ($packagingCalls -eq 1) "calls=$packagi
 $meta = Get-CodeOnly 'src/Common/CResultMeta.cls'
 Assert-Contract 'noIndependentLifecycleSetters' ($meta -notmatch 'Property Let (InternalStatus|ResultCode|ResultKind|Applies|Calculated)\b') 'Atomic SetResult owns typed outcome and lifecycle'
 
+# Проверяет реальные границы публикации, а не только отсутствие setter-а.
+# Mutable fill API остаются у builders, но не меняют уже выданные snapshots.
+foreach ($path in @('src/Batch/CCombinationResult.cls', 'src/Batch/CStrengthResult.cls',
+        'src/Batch/CDirectStateResult.cls', 'src/Batch/CSectionStateResult.cls',
+        'src/Batch/CStateRepository.cls', 'src/Crack/CCrackResult.cls',
+        'src/Crack/CCrackFormationResult.cls', 'src/Crack/CCrackWidthResult.cls',
+        'src/Crack/CLongitudinalCrackResult.cls', 'src/Solver/CCapacityResult.cls',
+        'src/Stability/CStabilityResult.cls')) {
+    $code = Get-CodeOnly $path
+    $mutators = [regex]::Matches($code, '(?m)^Public Sub [^\r\n]*(?:\r?\n\s+[^\r\n]*)*?\r?\n\s+AssertWritable\b')
+    $declared = [regex]::Matches($code, '(?m)^Public Sub ').Count
+    Assert-Contract "publishedGuard.$path" ($code -match 'Friend Sub Freeze\(\)' -and
+        $code -match 'If mFrozen Then Err.Raise vbObjectError \+ 4220' -and $mutators.Count -eq $declared) "guarded=$($mutators.Count); mutators=$declared"
+    Assert-Contract "noPublicResultFields.$path" ($code -notmatch '(?m)^Public \w+ As ') 'Published values are read-only; fill operations have lifecycle guard'
+}
+Assert-Contract 'batchPublicationBoundary' ($batch -match 'mResults\(index\)\.Freeze' -and
+    $batch -match '(?ms)Private Sub ClearResultRow.*?Set mResults\(index\) = New CCombinationResult') 'ResultAt freezes tree; repeated Execute replaces LC instead of resetting an old published object'
+
+foreach ($path in @('src/Geometry/CGeometryRoundedRectangle.cls', 'src/Geometry/CGeometryHollowRectangle.cls')) {
+    $code = Get-CodeOnly $path
+    $contains = [regex]::Match($code, '(?ms)^Public Function ContainsPoint\b.*?^End Function')
+    Assert-Contract "preparedGeometry.$path" ($contains.Success -and
+        $contains.Value -match 'If Not IsValid\(message\) Then Exit Function' -and
+        $contains.Value -notmatch 'ValidateCurrentGeometry|RebuildContour|OpeningFitsInsideOuter' -and
+        $code -match 'mValidationReady = False' -and $code -match 'mGeometryValid = IsValid\(message\)') 'Initialize validates new parameters; hot point queries use the prepared contour'
+}
+$geometryTypes = Get-CodeOnly 'src/Common/modGeometryTypes.bas'
+Assert-Contract 'stableGeometryPiLiteral' ($geometryTypes -match 'GEOM_PI As Double = 3\.14159265358979 \+ 3\.10862446895044E-15') 'Same full-precision Double before and after VBE literal canonicalization'
+
 $exportFile = (Resolve-Path -LiteralPath (Join-Path $root $ExportPath)).Path
 $export = Get-Content -LiteralPath $exportFile -Raw -Encoding UTF8
 $components = @{}

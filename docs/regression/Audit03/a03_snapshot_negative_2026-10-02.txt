@@ -1,0 +1,7 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_snapshot_negative.xlsm
+SOURCE_SHA256: E18A784BD06AB73F327718CD0335701F8649D509F2FA7969C8154E0FE98895E6
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_aee13d0433ae443387f0613d70123cc5\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03PublishedResultTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03PublishedResultTests; 2026-10-02T02:26:09
+WATCHDOG_FAILURE: timeout=180 sec; macro=modTestBatchCalculation.RunAudit03PublishedResultTests; test Excel terminated

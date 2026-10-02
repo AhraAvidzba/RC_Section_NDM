@@ -18,6 +18,7 @@ Option Explicit
 ' FindEquivalent их не возвращает: новый solve с другим warm-start должен
 ' оставаться возможным.
 
+Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
 Private mStates As Collection ' Все конечные named-state для вывода Results.
 Private mReusableByKey As Object ' Dictionary: equivalence key -> успешно полученный физический state.
 Private mContextSection As CSectionModel ' Identity геометрии, которой принадлежит reusable cache.
@@ -27,6 +28,8 @@ Private mMaterialRevision As Long ' Версия материалов на мо�
 Private mAcceptanceKey As String ' Effective Extension и допуски приемки равновесия.
 Private mContextBound As Boolean ' Контекст cache уже определен общим State pipeline.
 
+' Создает раздельные коллекции итоговых named-state и доказанного reuse.
+' До BindContext ни один вручную сохраненный state не получает ключ эквивалентности.
 Private Sub Class_Initialize()
     Set mStates = New Collection
     Set mReusableByKey = CreateObject("Scripting.Dictionary")
@@ -34,6 +37,7 @@ End Sub
 
 ' Очищает snapshot states и reusable-cache перед новым расчетом LC.
 Public Sub Clear()
+    AssertWritable
     Set mStates = New Collection
     Set mReusableByKey = CreateObject("Scripting.Dictionary")
     Set mContextSection = Nothing
@@ -47,6 +51,7 @@ End Sub
 ' unkeyed named states, уже принятые владельцем LC, например CapacityState.
 Public Sub BindContext(ByVal section As CSectionModel, ByVal materials As CMaterialModelProvider, _
         ByVal acceptanceKey As String)
+    AssertWritable
     If section Is Nothing Or materials Is Nothing Then _
         Err.Raise vbObjectError + 3986, "CStateRepository", "Не передан расчетный контекст repository."
 
@@ -71,7 +76,9 @@ End Sub
 ' Сохраняет state без ключа переиспользования. Такой путь нужен для уже
 ' найденных capacity-точек и других физических states без CStateRequest.
 Public Sub StoreState(ByVal stateResult As CSectionStateResult)
+    AssertWritable
     If stateResult Is Nothing Then Exit Sub
+    stateResult.Freeze
     Dim existingIndex As Long
     existingIndex = StateIndex(stateResult.StateType)
     If existingIndex > 0 Then
@@ -85,6 +92,7 @@ End Sub
 ' попадают только сошедшиеся состояния, то есть состояния с реально полученной
 ' плоскостью деформаций. NumFail/InputErr/CalcErr не блокируют будущие попытки.
 Public Sub StoreForRequest(ByVal request As CStateRequest, ByVal stateResult As CSectionStateResult)
+    AssertWritable
     If stateResult Is Nothing Then Exit Sub
     StoreState stateResult
     If request Is Nothing Then Exit Sub
@@ -170,3 +178,22 @@ Private Function IsReusablePhysicalState(ByVal stateResult As CSectionStateResul
             IsReusablePhysicalState = True
     End Select
 End Function
+
+' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
+' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
+' но их fill/reset API больше не могут изменить опубликованный результат.
+Friend Sub Freeze()
+    If mFrozen Then Exit Sub
+    Dim state As CSectionStateResult
+    For Each state In mStates
+        state.Freeze
+    Next state
+    mFrozen = True
+End Sub
+
+' Явно отклоняет изменение уже выданного результата вместо тихой порчи снимка.
+' Для повторного расчета workflow создает новый объект, сохраняя прежние ссылки.
+Private Sub AssertWritable()
+    If mFrozen Then Err.Raise vbObjectError + 4220, "CStateRepository", _
+        "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
+End Sub

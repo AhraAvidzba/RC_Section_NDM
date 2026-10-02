@@ -83,6 +83,7 @@ Private mSolverSecantMinStepNorm As Double ' Минимальный шаг вн�
 Private mMomentEquilibriumResidual As Double ' Невязка направления/момента в найденном предельном состоянии.
 Private mDiagnosticLog As String ' Текстовая трассировка lambda-точек и причин остановки.
 Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал в массовом пользовательском расчете без txt-отчета.
+Private mProbeRunner As CStateSolutionRunner ' Общий pipeline и локальная память точных retry-attempts только текущего поиска.
 Private mCriticalStrain As Double ' Деформация критического волокна или стержня.
 Private mCriticalElement As String ' ID элемента, который первым определил предельное состояние.
 Private mCriticalStrainUtilization As Double ' Отношение фактической деформации к своему пределу.
@@ -1290,7 +1291,11 @@ Private Function ProbeOnce(ByVal section As CSectionModel, _
     End If
 
     Dim runner As CStateSolutionRunner
-    Set runner = New CStateSolutionRunner
+    If mProbeRunner Is Nothing Then
+        Set mProbeRunner = New CStateSolutionRunner
+        mProbeRunner.BeginRetryAttemptSession section, concreteMaterial, steelMaterial
+    End If
+    Set runner = mProbeRunner
     ConfigureCapacityProbeRunner runner, attempt
     Dim allowExtensionWarmStart As Boolean
     allowExtensionWarmStart = runner.MaterialsHaveExtension(concreteMaterial, steelMaterial)
@@ -1699,6 +1704,7 @@ Private Sub ClearResult()
     mLastAcceptableN = 0#: mLastAcceptableMx = 0#: mLastAcceptableMy = 0#
     Set mLastSolver = Nothing
     Set mLastAcceptableSolver = Nothing
+    Set mProbeRunner = Nothing
     mDiagnosticLog = vbNullString
     mSolutionMethod = vbNullString
     ClearProbeCache

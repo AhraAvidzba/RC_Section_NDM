@@ -213,6 +213,8 @@ Public Function RunBatchCalculationTests() As String
     TestAudit02InitialOffsetOnOffStatuses stats
     TestAudit03ResultLifecycle stats
     TestAudit03LoadPathComments stats
+    AppendLine stats, "RUN: TestAudit03PublishedResults"
+    TestAudit03PublishedResults stats
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -221,9 +223,13 @@ Public Function RunBatchCalculationTests() As String
     Exit Function
 
 Failed:
+    Dim failureNumber As Long, failureSource As String, failureDescription As String
+    failureNumber = Err.Number
+    failureSource = Err.Source
+    failureDescription = Err.Description
     RestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability
-    RunBatchCalculationTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & _
-        "; source=" & Err.Source & "; description=" & Err.Description
+    RunBatchCalculationTests = stats.Report & "RUNTIME ERROR: " & CStr(failureNumber) & _
+        "; source=" & failureSource & "; description=" & failureDescription
 End Function
 
 ' Возвращает настройки профиля, временно измененные общим batch-прогоном.
@@ -4171,7 +4177,8 @@ Private Function MaxDouble(ByVal firstValue As Double, ByVal secondValue As Doub
 End Function
 
 ' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
-Private Function BuildBatchCalculator(Optional ByVal diagramExtensionEnabled As Boolean = True) As CBatchSectionCalculator
+Private Function BuildBatchCalculator(Optional ByVal diagramExtensionEnabled As Boolean = True, _
+        Optional ByRef preparedSection As CSectionModel = Nothing) As CBatchSectionCalculator
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
     geom.Initialize 300#, 200#, 0#, 0#, 0#, 0#
@@ -4189,6 +4196,7 @@ Private Function BuildBatchCalculator(Optional ByVal diagramExtensionEnabled As 
 
     Dim section As CSectionModel
     Set section = BuildGeneratedSectionModel(mesh, rebars, "TestBatch")
+    Set preparedSection = section
 
     Dim batch As CBatchSectionCalculator
     Set batch = New CBatchSectionCalculator
@@ -4896,15 +4904,14 @@ Private Sub TestAudit02CurrentCrackedStateCacheHitCalculatesWidth(ByRef stats As
     Set batch = BuildBatchCalculator()
     batch.AddCombination "AUDIT02_CURRENT_CACHE", 200000#, 0#, 0#, "PR2", "current state cache"
     batch.Execute
+    Dim countBefore As Long
+    countBefore = SectionEquilibriumSolveCount()
     Dim first As CCrackResult
-    Set first = batch.ResultAt(1).CrackResult
+    Set first = batch.TestRepeatCrackCalculation(1)
     AssertTrue stats, "audit02.currentCache.firstExists", Not first Is Nothing
     If first Is Nothing Then Exit Sub
     AssertTrue stats, "audit02.currentCache.crackFormed", first.Formation.CrackFormed
     AssertTrue stats, "audit02.currentCache.firstWidth", first.Width.CrackWidth > 0#
-    Dim countBefore As Long
-    countBefore = SectionEquilibriumSolveCount()
-    batch.TestRepeatCrackCalculation 1
     Dim second As CCrackResult
     Set second = batch.ResultAt(1).CrackResult
     AssertTrue stats, "audit02.currentCache.secondExists", Not second Is Nothing
@@ -4923,7 +4930,8 @@ End Sub
 ' а нейтральная повторная инициализация не оставляет чисел прошлого сочетания.
 Private Sub TestAudit02CanonicalResultsAndReset(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Dim section As CSectionModel
+    Set batch = BuildBatchCalculator(True, section)
     batch.AddCombination "AUDIT02_CANONICAL", 200000#, 0#, 0#, "PR2", "canonical result"
     batch.Execute
     Dim calculated As CCombinationResult
@@ -4951,7 +4959,16 @@ Private Sub TestAudit02CanonicalResultsAndReset(ByRef stats As TBatchTestStats)
     AssertTrue stats, "audit02.canonical.noDirectOverwrite", result.StrengthResult.DirectState.StateResult Is current
 
     Dim width As CCrackWidthResult
-    Set width = result.CrackResult.Width
+    Set width = New CCrackWidthResult
+    Dim widthCalculator As CCrackWidthCalculator
+    Set widthCalculator = New CCrackWidthCalculator
+    Dim classificationLoad As CSectionLoadState
+    Set classificationLoad = New CSectionLoadState
+    classificationLoad.Initialize 200000#, 0#, 0#, 0#, 0#
+    widthCalculator.Calculate current, section, TestMaterialProvider(), _
+        TestProfileCatalog().ProfileById("PR2").CrackedStateSpec, _
+        calculated.CrackResult.Formation, classificationLoad
+    width.InitializeFromCalculator widthCalculator, widthCalculator.ResultMeta
     AssertTrue stats, "audit02.canonical.widthPopulated", width.CrackWidth > 0#
     Dim neutral As CResultMeta
     Set neutral = New CResultMeta
@@ -4962,15 +4979,23 @@ Private Sub TestAudit02CanonicalResultsAndReset(ByRef stats As TBatchTestStats)
     AssertClose stats, "audit02.canonical.spacingReset", width.CrackSpacing, 0#, 0#
     AssertEquals stats, "audit02.canonical.rebarsReset", width.TensionRebarIds, vbNullString
     AssertTrue stats, "audit02.canonical.widthMetaReset", width.ResultMeta.InternalStatus = rsNotApplicable
+    AssertTrue stats, "audit02.canonical.publishedWidthRetained", calculated.CrackResult.Width.CrackWidth > 0#
 
     Dim stability As CStabilityResult
     Set stability = New CStabilityResult
-    stability.Ncr2 = 123#
-    stability.PhiValue1 = 0.8
-    stability.StiffnessD2 = 456#
-    stability.PlaneBranch2 = "branch"
-    stability.PlaneApplicable2 = True
-    stability.PlanePassed2 = True
+    Dim stabilityCalculator As CStabilityCalculator
+    Set stabilityCalculator = New CStabilityCalculator
+    stabilityCalculator.Calculate section, TestMaterialProvider(), mvsULS, "SP63", _
+        -150000#, 6000000#, 3000000#, -75000#, 3000000#, 1500000#, _
+        1000#, 1#, 1#, "Determinate", 1#, 1#, "Auto", "AutoWithL", "BothPlanes", _
+        0#, 0#, 0.7, 0.15, 1.5, 1#, 0.7, Empty
+    stability.InitializeFromCalculator stabilityCalculator.ResultMeta, stabilityCalculator, 0#, 0#
+    AssertEquals stats, "audit02.canonical.stabilityFixtureStatus", stability.Status, "OK"
+    AppendLine stats, "COMMENT: audit02.canonical.stabilityFixture; " & stability.Meta.ResultComment
+    AssertTrue stats, "audit02.canonical.stabilityNcrPopulated", stability.Ncr2 > 0#
+    AssertTrue stats, "audit02.canonical.stabilityDPopulated", stability.StiffnessD2 > 0#
+    AssertTrue stats, "audit02.canonical.stabilityBranchPopulated", Len(stability.PlaneBranch2) > 0
+    AssertTrue stats, "audit02.canonical.stabilityFlagsPopulated", stability.PlaneApplicable2 And stability.PlanePassed2
     stability.Clear
     AssertClose stats, "audit02.canonical.stabilityNcrReset", stability.Ncr2, 0#, 0#
     AssertClose stats, "audit02.canonical.stabilityPhiReset", stability.PhiValue1, 0#, 0#
@@ -4981,6 +5006,15 @@ Private Sub TestAudit02CanonicalResultsAndReset(ByRef stats As TBatchTestStats)
     Set detached = stability.Meta
     detached.SetResult rsInternalError, rcInternalError, rkStability, "Изменение внешней копии."
     AssertEquals stats, "audit02.canonical.stabilityMetaIsolated", stability.Status, "N/A"
+
+    stabilityCalculator.Calculate section, TestMaterialProvider(), mvsULS, "SP35", _
+        -100000#, 0#, 0#, -50000#, 0#, 0#, 1000#, 1#, 1#, "Determinate", _
+        1#, 1#, "Auto", "AutoWithL", "BothPlanes", 0#, 0#, 0.7, 0.15, 1.5, _
+        1#, 0.7, ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    stability.InitializeFromCalculator stabilityCalculator.ResultMeta, stabilityCalculator, 0#, 0#
+    AssertTrue stats, "audit02.canonical.stabilityPhiPopulated", stability.PhiValue1 > 0#
+    stability.Clear
+    AssertClose stats, "audit02.canonical.stabilityPopulatedPhiReset", stability.PhiValue1, 0#, 0#
 
     result.Clear "LambdaN"
     AssertTrue stats, "audit02.canonical.clearNoState", result.StrengthResult.DirectState.StateResult Is Nothing
@@ -6093,4 +6127,144 @@ Private Function Audit03RequiresComment(ByVal meta As CResultMeta) As Boolean
                 rsInternalError, rsBlockedByDependency, rsSuccessWithWarning
             Audit03RequiresComment = True
     End Select
+End Function
+
+' ДЛЯ ТЕСТОВ: запускает проверку неизменности реальных опубликованных LC.
+' Отдельный entrypoint нужен для того же контрпримера до и после исправления.
+Public Function RunAudit03PublishedResultTests() As String
+    On Error GoTo Failed
+    Dim stats As TBatchTestStats
+    TestAudit03PublishedResults stats
+    AppendLine stats, "TOTAL_AUDIT03_PUBLISHED_RESULTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03PublishedResultTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03PublishedResultTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ: каждый mutation-case получает свежий расчет, поэтому ошибочная
+' мутация baseline не скрывает следующие дефекты. Повтор Execute обязан создать
+' новый LC-снимок, сохранив ранее выданные ссылки, числа, meta и nested identity.
+Private Sub TestAudit03PublishedResults(ByRef stats As TBatchTestStats)
+    Dim oldStability As String
+    oldStability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    On Error GoTo Failed
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    Dim batch As CBatchSectionCalculator
+    Set batch = BuildBatchCalculator(True)
+    batch.AddCombination "FROZEN_PR1", -150000#, -6000000#, -3000000#, "PR1", vbNullString, ChrW$(&H3BB) & "*Mxy"
+    batch.AddCombination "FROZEN_PR2", 200000#, 9000000#, -3000000#, "PR2", vbNullString
+    Dim i As Long, result As CCombinationResult, state As CSectionStateResult
+    Dim status As String, comment As String, errorNumber As Long, prefix As String
+    Dim stateCount As Long, stabilityCode As String, designN As Double, extensionEnabled As Boolean
+    For i = 1 To 17
+        batch.Execute
+        If i >= 8 And i <= 11 Then Set result = batch.ResultAt(2) Else Set result = batch.ResultAt(1)
+        status = result.Status
+        comment = result.OverallMeta.ResultComment
+        stateCount = result.StateRepository.StateCount
+        stabilityCode = result.StabilityResult.Code
+        designN = result.StabilityResult.DesignN
+        extensionEnabled = result.DiagramExtensionEnabled
+        prefix = "audit03.published." & CStr(i)
+        errorNumber = Audit03AttemptPublishedMutation(result, i)
+        AppendLine stats, "MUTATION: " & prefix & "; error=" & CStr(errorNumber)
+        If i = 2 Or i = 3 Or i = 12 Then
+            AssertTrue stats, prefix & ".noPublicField", errorNumber = 438 Or errorNumber = 451
+        Else
+            AssertTrue stats, prefix & ".explicitContractError", errorNumber = vbObjectError + 4220
+        End If
+        AssertEquals stats, prefix & ".statusUnchanged", result.Status, status
+        AssertEquals stats, prefix & ".commentUnchanged", result.OverallMeta.ResultComment, comment
+        AssertTrue stats, prefix & ".statesUnchanged", result.StateRepository.StateCount = stateCount
+        AssertEquals stats, prefix & ".stabilityCodeUnchanged", result.StabilityResult.Code, stabilityCode
+        AssertClose stats, prefix & ".designNUnchanged", result.StabilityResult.DesignN, designN, 0#
+        AssertTrue stats, prefix & ".extensionUnchanged", result.DiagramExtensionEnabled = extensionEnabled
+        AssertEquals stats, prefix & ".profileUnchanged", result.ProfileId, batch.InputProfileId(1 + Abs(i >= 8 And i <= 11))
+    Next i
+
+    batch.Execute
+    Set result = batch.ResultAt(1)
+    Set state = result.StrengthResult.DirectState.StateResult
+    AssertTrue stats, "audit03.published.realState", Not state Is Nothing
+    Dim oldN As Double, oldMx As Double, oldProfile As String
+    oldN = state.TargetN: oldMx = state.TargetMx: oldProfile = result.ProfileId
+    status = result.Status: comment = result.OverallMeta.ResultComment
+    Dim meta As CResultMeta, spec As CMaterialModelSpec
+    Set meta = state.ResultMeta
+    meta.SetResult rsInternalError, rcInternalError, rkDirectState, "Внешняя тестовая мутация."
+    Set spec = state.MaterialSpec
+    spec.Initialize "SLS(II)", "TwoLine", "UseDiagram", "ThreeLine"
+    AssertEquals stats, "audit03.published.metaClone", result.Status, status
+    AssertTrue stats, "audit03.published.specClone", state.MaterialSpec.SpecKey <> spec.SpecKey
+
+    batch.ApplyLoadReference 25#, -15#, 0#, 0#
+    batch.Execute
+    Dim repeated As CCombinationResult
+    Set repeated = batch.ResultAt(1)
+    AssertTrue stats, "audit03.published.newResultIdentity", Not repeated Is result
+    AssertTrue stats, "audit03.published.oldStateIdentity", result.StrengthResult.DirectState.StateResult Is state
+    AssertClose stats, "audit03.published.oldN", state.TargetN, oldN, 0#
+    AssertClose stats, "audit03.published.oldMx", state.TargetMx, oldMx, 0#
+    AssertEquals stats, "audit03.published.oldStatus", result.Status, status
+    AssertEquals stats, "audit03.published.oldComment", result.OverallMeta.ResultComment, comment
+    AssertEquals stats, "audit03.published.oldProfile", result.ProfileId, oldProfile
+    AssertTrue stats, "audit03.published.newLoad", repeated.StrengthResult.DirectState.StateResult.TargetMx <> oldMx
+Restore:
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
+    Exit Sub
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.published.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    Resume Restore
+End Sub
+
+' ДЛЯ ТЕСТОВ: использует действующие типизированные fill/reset API. Только
+' отсутствие публичного setter-а проверяется через позднее связывание.
+' До правки они существуют и изменяют опубликованный объект; после правки
+' тот же вызов обязан вернуть явную ошибку контракта, не изменяя snapshot.
+Private Function Audit03AttemptPublishedMutation(ByVal result As CCombinationResult, ByVal scenario As Long) As Long
+    On Error GoTo Rejected
+    Dim target As Object, meta As CResultMeta, request As CStateRequest
+    Dim formation As CCrackFormationCalculator, width As CCrackWidthCalculator
+    Set meta = New CResultMeta
+    meta.SetNotApplicable rkGeneric
+    Select Case scenario
+        Case 1: result.Clear "LambdaMxy"
+        Case 2: CallByName result, "ProfileId", VbLet, "MUTATED"
+        Case 3: CallByName result, "DiagramExtensionEnabled", VbLet, False
+        Case 4
+            result.StrengthResult.Clear "LambdaMxy"
+        Case 5
+            result.StrengthResult.DirectState.Clear
+        Case 6
+            result.StrengthResult.Capacity.InitializeSkipped "Внешняя тестовая мутация."
+        Case 7
+            result.CrackResult.Initialize result.CrackResult.Formation, meta, result.CrackResult.Width, result.CrackResult.Longitudinal
+        Case 8
+            result.CrackResult.Formation.InitializeFromCalculator formation, meta
+        Case 9
+            result.CrackResult.Width.InitializeFromCalculator width, meta
+        Case 10
+            result.CrackResult.Longitudinal.Initialize meta, 0#, 1#, 0#
+        Case 11
+            result.CrackResult.Initialize result.CrackResult.Formation, meta, result.CrackResult.Width, result.CrackResult.Longitudinal
+        Case 12
+            Set target = result.StabilityResult
+            CallByName target, "Code", VbLet, "MUTATED"
+        Case 13
+            result.StabilityResult.UpdateDesignLoads 1#, 2#, 3#, 0#
+        Case 14
+            result.StateRepository.Clear
+        Case 15
+            result.StateRepository.StoreState result.StrengthResult.DirectState.StateResult
+        Case 16
+            result.StrengthResult.DirectState.StateResult.InitializeFailure request, meta
+        Case 17
+            result.StabilityResult.Clear
+    End Select
+    Exit Function
+Rejected:
+    Audit03AttemptPublishedMutation = Err.Number
+    Err.Clear
 End Function

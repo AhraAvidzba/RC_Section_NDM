@@ -17,6 +17,7 @@ Option Explicit
 ' при отсутствии обязательного CurrentCrackedState orchestration-слой должен
 ' передать meta rsBlockedByDependency, а внешний N/A сформирует policy.
 
+Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
 Private mMeta As CResultMeta ' Типизированный статус проверки продольных трещин.
 Private mMaxCompressionStress As Double ' Максимальное сжатие бетона в текущем CrackedState.
 Private mRbMc2 As Double ' Допустимое Rb,mc2.
@@ -31,6 +32,7 @@ End Sub
 ' Заполняет результат уже выполненной проверки без запуска solver-а.
 Public Sub Initialize(ByVal meta As CResultMeta, ByVal maxCompressionStress As Double, _
         ByVal rbMc2 As Double, ByVal utilization As Double)
+    AssertWritable
     If meta Is Nothing Then
         mMeta.SetResult rsInternalError, rcInternalError, rkLongitudinalCrack, _
             "Meta результата продольных трещин не сформирована.", vbNullString, True, False
@@ -75,3 +77,18 @@ Public Property Get ReserveFactor() As Double
     If Not policy.IsFinished(Status) Then Exit Property
     ReserveFactor = 1# / mUtilization
 End Property
+
+' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
+' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
+' но их fill/reset API больше не могут изменить опубликованный результат.
+Friend Sub Freeze()
+    If mFrozen Then Exit Sub
+    mFrozen = True
+End Sub
+
+' Явно отклоняет изменение уже выданного результата вместо тихой порчи снимка.
+' Для повторного расчета workflow создает новый объект, сохраняя прежние ссылки.
+Private Sub AssertWritable()
+    If mFrozen Then Err.Raise vbObjectError + 4220, "CLongitudinalCrackResult", _
+        "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
+End Sub

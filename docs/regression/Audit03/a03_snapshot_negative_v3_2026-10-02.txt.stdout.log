@@ -1,0 +1,40 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_snapshot_negative.xlsm
+SOURCE_SHA256: F095460DA31E8F813B19AD2C7B017D7757C16B0DBEABD98BD1D142ED9196CBAA
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a3ab852b3de443ee96a9ff6272845a17\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.published.1.explicitContractError
+FAIL: audit03.published.1.statusUnchanged; actual=N/A; expected=OK
+FAIL: audit03.published.1.statesUnchanged
+FAIL: audit03.published.1.extensionUnchanged
+FAIL: audit03.published.1.profileUnchanged; actual=; expected=PR1
+FAIL: audit03.published.2.noPublicField
+FAIL: audit03.published.2.profileUnchanged; actual=MUTATED; expected=PR1
+FAIL: audit03.published.3.noPublicField
+FAIL: audit03.published.3.extensionUnchanged
+FAIL: audit03.published.4.explicitContractError
+FAIL: audit03.published.4.statusUnchanged; actual=N/A; expected=OK
+FAIL: audit03.published.5.explicitContractError
+FAIL: audit03.published.6.explicitContractError
+FAIL: audit03.published.7.explicitContractError
+FAIL: audit03.published.8.explicitContractError
+FAIL: audit03.published.8.statusUnchanged; actual=CalcErr; expected=FAIL
+FAIL: audit03.published.8.commentUnchanged; actual=Трещинообразование: Не передан расчет образования трещины.; Ширина трещин: Раскрытие нормальной трещины 0.325986046744 мм превышает допускаемое 0.3 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s рассчитан по состоянию сразу после образования трещины.; expected=Трещинообразование: ?*Mxy: Трещина уже образуется в постоянной части выбранного пути ?*Mxy; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1. ?*N: Трещина уже образуется в постоянной части выбранного пути ?*N; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1. Принят путь ?*NMxy. Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; Ширина трещин: Раскрытие нормальной трещины 0.325986046744 мм превышает допускаемое 0.3 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s рассчитан по состоянию сразу после образования трещины.
+FAIL: audit03.published.9.explicitContractError
+FAIL: audit03.published.9.statusUnchanged; actual=OK; expected=FAIL
+FAIL: audit03.published.9.commentUnchanged; actual=Трещинообразование: ?*Mxy: Трещина уже образуется в постоянной части выбранного пути ?*Mxy; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1. ?*N: Трещина уже образуется в постоянной части выбранного пути ?*N; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1. Принят путь ?*NMxy. Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; expected=Трещинообразование: ?*Mxy: Трещина уже образуется в постоянной части выбранного пути ?*Mxy; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1. ?*N: Трещина уже образуется в постоянной части выбранного пути ?*N; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1. Принят путь ?*NMxy. Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; Ширина трещин: Раскрытие нормальной трещины 0.325986046744 мм превышает допускаемое 0.3 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s рассчитан по состоянию сразу после образования трещины.
+FAIL: audit03.published.10.explicitContractError
+FAIL: audit03.published.11.explicitContractError
+FAIL: audit03.published.12.noPublicField
+FAIL: audit03.published.12.stabilityCodeUnchanged; actual=MUTATED; expected=
+FAIL: audit03.published.13.explicitContractError
+FAIL: audit03.published.13.designNUnchanged; actual=1.; expected=0.
+FAIL: audit03.published.14.explicitContractError
+FAIL: audit03.published.14.statesUnchanged
+FAIL: audit03.published.15.explicitContractError
+FAIL: audit03.published.16.explicitContractError
+FAIL: audit03.published.17.explicitContractError
+FAIL: audit03.published.newResultIdentity
+FAIL: audit03.published.oldStateIdentity
+TOTAL_AUDIT03_PUBLISHED_RESULTS: passed=114; failed=33
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

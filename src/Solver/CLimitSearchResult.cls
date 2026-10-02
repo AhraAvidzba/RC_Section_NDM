@@ -68,6 +68,7 @@ Public Sub Initialize(ByVal meta As CResultMeta, ByVal requestedStrategy As Stri
                 "Предельная точка передана без подтвержденного равновесия.", vbNullString, True, searchExecuted
             Exit Sub
         End If
+        pointState.Freeze
         Set mPointState = pointState
     Else
         mNUltimate = nValue

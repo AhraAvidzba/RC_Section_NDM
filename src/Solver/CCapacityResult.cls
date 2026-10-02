@@ -21,6 +21,7 @@ Option Explicit
 ' Здесь нет выбора search-алгоритма и нет чтения Config. Эти обязанности
 ' остаются соответственно в CLimitSearch* и вызывающем orchestration-слое.
 
+Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
 Private Const CAPACITY_PATH_NONE As String = "None" ' Единый маркер: capacity для LC не выполнялся.
 
 Private mSearchResult As CLimitSearchResult ' Типизированный результат общего LimitSearch.
@@ -53,6 +54,7 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
         ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepthForMx As Double, _
         ByVal concreteDepthForMy As Double)
+    AssertWritable
     ResetNumericSnapshot
     If Not searchResult Is Nothing Then Set mSearchResult = searchResult.Clone
     mPureAxialForMethod = pureAxialForMethod
@@ -97,6 +99,7 @@ End Sub
 ' Заполняет результат ошибкой входных данных до запуска search.
 Public Sub InitializeInvalidInput(ByVal reason As String, _
         Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
+    AssertWritable
     ' При ошибке разбора пути он не выбран; служебный None не является
     ' фактически выполненной траекторией и не должен подменять пустое поле.
     If StrComp(pathKey, CAPACITY_PATH_NONE, vbTextCompare) = 0 Then pathKey = vbNullString
@@ -106,6 +109,7 @@ End Sub
 ' Заполняет результат внутренней ошибкой до запуска search.
 Public Sub InitializeCalcError(ByVal reason As String, _
         Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
+    AssertWritable
     InitializeEarlyResult rsInternalError, rcInternalError, reason, pathKey
 End Sub
 
@@ -114,6 +118,7 @@ End Sub
 ' по которому можно искать предельный множитель lambda.
 Public Sub InitializeSkipped(ByVal reason As String, _
         Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
+    AssertWritable
     InitializeEarlyResult rsNotApplicable, rcNotApplicable, reason, pathKey
 End Sub
 
@@ -121,6 +126,7 @@ End Sub
 ' несущей способности. Для Capacity такая связка отображается как BaseFail.
 Public Sub InitializeBaseFail(ByVal reason As String, _
         Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
+    AssertWritable
     InitializeEarlyResult rsCheckFailed, rcInitialStateBeyondLimit, NormalizeBaseFailReason(reason), pathKey, True
 End Sub
 
@@ -375,3 +381,19 @@ Public Property Get ReserveFactor() As Double
     If Not policy.IsFinished(Status) Then Exit Property
     ReserveFactor = mLambdaCapacity
 End Property
+
+' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
+' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
+' но их fill/reset API больше не могут изменить опубликованный результат.
+Friend Sub Freeze()
+    If mFrozen Then Exit Sub
+    If Not mStateResult Is Nothing Then mStateResult.Freeze
+    mFrozen = True
+End Sub
+
+' Явно отклоняет изменение уже выданного результата вместо тихой порчи снимка.
+' Для повторного расчета workflow создает новый объект, сохраняя прежние ссылки.
+Private Sub AssertWritable()
+    If mFrozen Then Err.Raise vbObjectError + 4220, "CCapacityResult", _
+        "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
+End Sub

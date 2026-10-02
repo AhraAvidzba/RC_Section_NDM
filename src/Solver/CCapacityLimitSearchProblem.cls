@@ -9,14 +9,14 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Implements ILimitSearchProblem
-
 ' ==========================================================================
 ' Адаптер Capacity для общего LimitSearch
 ' ==========================================================================
 ' Класс прячет CCapacitySolver за общим ILimitSearchProblem. Одномерный
 ' search работает с этим адаптером как с источником probe-функции и приемником
 ' результата, не зная о внутренних полях несущей способности.
+
+Implements ILimitSearchProblem
 
 Private mCapacity As CCapacitySolver ' Доменный расчетчик несущей способности и владелец capacity-диагностики.
 

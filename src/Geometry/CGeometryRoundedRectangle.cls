@@ -47,6 +47,9 @@ Private mRightR2 As Double ' Носовой радиус справа для Tap
 Private mCenterX As Double
 Private mCenterY As Double
 Private mInitialized As Boolean
+Private mValidationReady As Boolean ' Результат проверки относится к текущему набору параметров.
+Private mGeometryValid As Boolean ' Горячие запросы точки не перестраивают и не проверяют контур.
+Private mValidationMessage As String ' Сохраненная причина невалидности до следующего Initialize.
 
 Private mPointX() As Double ' Дискретизированный внешний контур в координатах модели.
 Private mPointY() As Double
@@ -152,6 +155,9 @@ Public Sub InitializeSides(ByVal bMm As Double, ByVal hMm As Double, _
         ByVal leftR2Mm As Double, ByVal rightR2Mm As Double, _
         Optional ByVal centerXMm As Double = 0#, Optional ByVal centerYMm As Double = 0#)
 
+    mValidationReady = False
+    mGeometryValid = False
+    mValidationMessage = vbNullString
     mB = bMm
     mH = hMm
     mLeftType = NormalizeSideType(leftType)
@@ -166,6 +172,8 @@ Public Sub InitializeSides(ByVal bMm As Double, ByVal hMm As Double, _
     mCenterY = centerYMm
     mInitialized = True
     RebuildContour
+    Dim message As String
+    mGeometryValid = IsValid(message)
 End Sub
 
 Public Property Get B() As Double
@@ -270,8 +278,20 @@ Public Function IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
     IsPointInside = ContainsPoint(X, Y)
 End Function
 
-' Валидирует размеры, типы боковых граней и возможность построить невырожденный скругленный контур.
+' Возвращает проверку текущей неизменяемой геометрии. Initialize инвалидирует
+' прежний результат и выполняет проверку один раз после подготовки контура.
 Public Function IsValid(ByRef message As String) As Boolean
+    If Not mValidationReady Then
+        mGeometryValid = ValidateCurrentGeometry(mValidationMessage)
+        mValidationReady = True
+    End If
+    message = mValidationMessage
+    IsValid = mGeometryValid
+End Function
+
+' Проверяет размеры, сопряжения радиусов и невырожденность готового контура.
+' Численная геометрия остается общей с ContainsPoint и построением арматуры.
+Private Function ValidateCurrentGeometry(ByRef message As String) As Boolean
     message = vbNullString
 
     If Not mInitialized Then
@@ -317,7 +337,7 @@ Public Function IsValid(ByRef message As String) As Boolean
         Exit Function
     End If
 
-    IsValid = True
+    ValidateCurrentGeometry = True
 End Function
 
 ' Проверяет, что касательные участки соседних скруглений помещаются на каждом

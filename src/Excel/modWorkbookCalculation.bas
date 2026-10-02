@@ -227,7 +227,9 @@ DefaultEnabled:
     NonCriticalMessagesEnabled = True
 End Function
 
-' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
+' Выполняет весь Excel-сценарий на указанной книге: один раз читает Config,
+' строит модель/материалы, рассчитывает LC и записывает согласованный Results.
+' Возвращает сообщение запуска; настройками Excel управляет временный guard.
 Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optional ByVal showMessages As Boolean = False) As String
     On Error GoTo Failed
     If workbook Is Nothing Then Err.Raise vbObjectError + 4100, "RunSectionCalculationForWorkbook", "Книга Excel не передана."
@@ -764,7 +766,8 @@ Private Sub CalculateResultsSheet(ByVal workbook As Object)
 SafeExit:
 End Sub
 
-' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
+' Готовит итоговое сообщение о запуске, отдельно выделяя ошибки входных строк.
+' Не назначает инженерные статусы: они уже сохранены в результатах batch.
 Private Function BuildCalculationMessage(ByVal section As CSectionModel, ByVal settings As CSystemSettingsReader, _
         ByVal batch As CBatchSectionCalculator) As String
     Dim calculationCaption As String
@@ -872,6 +875,8 @@ Private Function JoinCollectionLines(ByVal lines As Collection) As String
     JoinCollectionLines = Join(parts, vbCrLf)
 End Function
 
+' Задает пользовательскую точку относительно центра бетонного сечения.
+' Смещения переводятся через CUnitSystem; приведенный центр здесь не используется.
 Private Sub ApplyLoadReferenceFromSettings(ByVal section As CSectionModel, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
         ByVal batch As CBatchSectionCalculator)
@@ -978,6 +983,8 @@ Public Sub ClearSectionResultsForWorkbook(ByVal workbook As Object)
     ndmWriter.ClearResults workbook
 End Sub
 
+' Создает выбранную параметрическую геометрию через registry в внутренних мм.
+' Здесь нет импорта AutoCAD или построения расчетной сетки.
 Public Function ReadWorkbookGeometry(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As ISectionGeometry
     If units Is Nothing Then
         Set units = New CUnitSystem
@@ -988,7 +995,9 @@ Public Function ReadWorkbookGeometry(ByVal workbook As Object, ByVal settings As
     Set ReadWorkbookGeometry = registry.CreateGeometry(settings, units)
 End Function
 
-' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
+' Получает единственную модель для расчета: строит Generated по Config либо
+' читает ранее импортированный AutoCAD snapshot из Results. Повторный импорт
+' не выполняется; отсутствие нужного сохраненного источника является ошибкой.
 Public Function BuildWorkbookSectionModel(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
     If units Is Nothing Then
         Set units = New CUnitSystem
@@ -1019,12 +1028,16 @@ Public Function BuildWorkbookSectionModel(ByVal workbook As Object, ByVal settin
     End If
 End Function
 
+' Возвращает утвержденное число подъячеек границы через общий geometry registry.
+' Тот же параметр используется при построении модели, а не только на схеме.
 Public Function WorkbookMeshBoundarySubdivisions(ByVal settings As CSystemSettingsReader) As Long
     Dim registry As CSectionTypeRegistry
     Set registry = New CSectionTypeRegistry
     WorkbookMeshBoundarySubdivisions = registry.MeshBoundarySubdivisions(settings)
 End Function
 
+' Строит автоматическую арматуру выбранной формы через registry и CUnitSystem.
+' Возвращает раскладку до объединения с бетонной сеткой в CSectionModel.
 Public Function ReadWorkbookRebars(ByVal workbook As Object, ByVal geometry As ISectionGeometry, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CRebarLayout
     If units Is Nothing Then
         Set units = New CUnitSystem

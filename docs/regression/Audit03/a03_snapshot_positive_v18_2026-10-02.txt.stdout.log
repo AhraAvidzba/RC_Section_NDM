@@ -1,0 +1,24 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_f06_fixed.xlsm
+SOURCE_SHA256: 341ADBBBBBBF5D332F6492AD22531FE4C94EF3957327DBF68465F87C892AFBD3
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_eed07c1ddcc6446eac2b4fa34cf623e0\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.published.1.explicitContractError
+FAIL: audit03.published.2.noPublicField
+FAIL: audit03.published.3.noPublicField
+FAIL: audit03.published.4.explicitContractError
+FAIL: audit03.published.5.explicitContractError
+FAIL: audit03.published.6.explicitContractError
+FAIL: audit03.published.7.explicitContractError
+FAIL: audit03.published.8.explicitContractError
+FAIL: audit03.published.9.explicitContractError
+FAIL: audit03.published.10.explicitContractError
+FAIL: audit03.published.11.explicitContractError
+FAIL: audit03.published.12.noPublicField
+FAIL: audit03.published.13.explicitContractError
+FAIL: audit03.published.14.explicitContractError
+FAIL: audit03.published.15.explicitContractError
+FAIL: audit03.published.16.explicitContractError
+FAIL: audit03.published.17.explicitContractError
+TOTAL_AUDIT03_PUBLISHED_RESULTS: passed=130; failed=17
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

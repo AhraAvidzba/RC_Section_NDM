@@ -1,0 +1,40 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_pre_p02.xlsm
+SOURCE_SHA256: 2DE8B20BAA8D8145D58CAA553DB679080EA43A8527E56966F16F156BBF9D67F8
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_2b95a2424df948b1930fedfb300dc6fb\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestGeometry.RunAudit03GeometryLifecycleTests =====
+SUITE_STARTED: modTestGeometry.RunAudit03GeometryLifecycleTests; 2026-10-02T03:04:20
+EXCEL_AFTER_SUITE: pid=22412; workingSet=127004672; privateBytes=86990848; cpu=4.25
+OK: audit03.geometry.rounded.uninitialized
+OK: audit03.geometry.rounded.uninitializedPoint
+OK: audit03.geometry.hollow.uninitialized
+OK: audit03.geometry.hollow.uninitializedPoint
+OK: audit03.geometry.rounded.firstValid
+OK: audit03.geometry.rounded.firstCenter
+OK: audit03.geometry.rounded.invalid
+OK: audit03.geometry.rounded.invalidPoint
+OK: audit03.geometry.rounded.repeatInvalid
+OK: audit03.geometry.rounded.stableReason
+OK: audit03.geometry.rounded.revalidated
+OK: audit03.geometry.hollow.firstValid
+OK: audit03.geometry.hollow.opening
+OK: audit03.geometry.hollow.invalid
+OK: audit03.geometry.hollow.invalidPoint
+OK: audit03.geometry.hollow.repeatInvalid
+OK: audit03.geometry.hollow.stableReason
+OK: audit03.geometry.hollow.revalidated
+OK: audit03.geometry.hollow.newOpening
+OK: audit03.geometry.rounded.reinitGrid
+OK: audit03.geometry.hollow.reinitGrid
+OK: audit03.geometry.hollow.outerBoundary
+OK: audit03.geometry.hollow.openingBoundary
+OK: audit03.geometry.rounded.reinitArea; actual=78071.4150594949; expected=78071.4150594949; absDiff=0.
+OK: audit03.geometry.rounded.areaAvailable
+OK: audit03.geometry.hollow.reinitArea; actual=237459.154335937; expected=237459.154335937; absDiff=0.
+OK: audit03.geometry.hollow.areaAvailable
+TOTAL_GEOMETRY_LIFECYCLE: passed=27; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometry.RunAudit03GeometryLifecycleTests; 2026-10-02T03:04:22
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

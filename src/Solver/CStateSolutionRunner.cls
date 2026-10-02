@@ -47,6 +47,11 @@ Private mWithinPhysicalRange As Boolean ' True, если все элементы
 Private mDiagnosticLog As String ' Короткие строки о retry-попытках прямого НДС.
 Private mInitialGuessApplied As Boolean ' True, если стартовая плоскость была задана не нулевой.
 Private mSolverCallCount As Long ' Сколько раз runner действительно запускал CSectionSolver.Solve.
+Private mRetryAttemptFailures As Collection ' Только scalar-диагностика эквивалентных неудачных retries одной search-session.
+Private mRetryContextSection As CSectionModel ' Удерживает identity контекста; это не repository физических состояний.
+Private mRetryContextConcrete As Object
+Private mRetryContextSteel As Object
+Private mRetrySectionRevision As Long ' Изменение модели запрещает использование прежних попыток.
 
 ' Задает безопасные настройки по умолчанию для unit-тестов и вызовов без Config.
 Private Sub Class_Initialize()
@@ -65,6 +70,21 @@ Private Sub Class_Initialize()
     mSecantMinStepNorm = 0.000000000001
     mDiagnosticsEnabled = True
     mWithinPhysicalRange = True
+End Sub
+
+' Открывает локальную память численных retries для одного поиска на неизменных
+' материалах и модели. Основной solve не кешируется, успешный/failed State не
+' публикуется; другая плоскость или options всегда дают отдельную попытку.
+Friend Sub BeginRetryAttemptSession(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object)
+    If section Is Nothing Then Err.Raise vbObjectError + 3483, "CStateSolutionRunner", "Модель retry-сессии не передана."
+    If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 3484, "CStateSolutionRunner", "Материал бетона retry-сессии не передан."
+    If steelMaterial Is Nothing Then Err.Raise vbObjectError + 3485, "CStateSolutionRunner", "Материал арматуры retry-сессии не передан."
+    Set mRetryContextSection = section
+    Set mRetryContextConcrete = concreteMaterial
+    Set mRetryContextSteel = steelMaterial
+    mRetrySectionRevision = section.Revision
+    Set mRetryAttemptFailures = New Collection
 End Sub
 
 ' Восстанавливает вычисляемый снимок найденного named-state без поиска
@@ -474,21 +494,85 @@ Private Function TryRunRetry(ByVal section As CSectionModel, _
     If disableLineSearch Then retry.LineSearchEnabled = False
     retry.LoadSteps = loadSteps
     retry.SetInitialLoadState eps0, kx, ky, initialN, initialMx, initialMy
+    Dim attemptKey As Variant, previousFailure As Variant
+    If RetryAttemptContextMatches(section, concreteMaterial, steelMaterial) Then
+        attemptKey = Array(targetN, targetMx, targetMy, eps0, kx, ky, initialN, initialMx, initialMy, _
+            loadSteps, mMaxIterations, mToleranceN, mToleranceMx, mToleranceMy, _
+            (mLineSearchEnabled And Not disableLineSearch), mDampingInitial, mMinLineSearchAlpha, _
+            mMaxDeltaEpsilon0, mMaxDeltaKappa, mSolverMethod, mSecantMaxRestarts, mSecantMinStepNorm)
+        If TryRestoreFailedRetryAttempt(attemptKey, previousFailure) Then
+            If mDiagnosticsEnabled Then
+                AppendDiagnostic retryKind & "=" & attemptName & _
+                    "; идентичная неудачная попытка уже выполнена в этом поиске; stop=" & CStr(previousFailure(2))
+            End If
+            Exit Function
+        End If
+    End If
     mSolverCallCount = mSolverCallCount + 1
     retry.Solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
 
     If retry.Converged Then
         Set service = retry
-        AppendDiagnostic retryKind & "=" & attemptName & "; result=converged"
+        If mDiagnosticsEnabled Then AppendDiagnostic retryKind & "=" & attemptName & "; result=converged"
         TryRunRetry = True
     Else
-        AppendDiagnostic retryKind & "=" & attemptName & _
-            "; result=failed; stop=" & retry.StopReason & _
-            "; residualN=" & FormatNumberInvariant(retry.ResidualN) & _
-            "; residualMx=" & FormatNumberInvariant(retry.ResidualMx) & _
-            "; residualMy=" & FormatNumberInvariant(retry.ResidualMy)
+        If IsArray(attemptKey) Then StoreFailedRetryAttempt attemptKey, retry
+        If mDiagnosticsEnabled Then
+            AppendDiagnostic retryKind & "=" & attemptName & _
+                "; result=failed; stop=" & retry.StopReason & _
+                "; residualN=" & FormatNumberInvariant(retry.ResidualN) & _
+                "; residualMx=" & FormatNumberInvariant(retry.ResidualMx) & _
+                "; residualMy=" & FormatNumberInvariant(retry.ResidualMy)
+        End If
     End If
 End Function
+
+' Проверяет identity и версию модели перед чтением локальных retry-записей.
+' Несовпадение закрывает сессию; оно не блокирует обычное решение новой задачи.
+Private Function RetryAttemptContextMatches(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object) As Boolean
+    If mRetryAttemptFailures Is Nothing Then Exit Function
+    If Not section Is mRetryContextSection Or Not concreteMaterial Is mRetryContextConcrete Or _
+            Not steelMaterial Is mRetryContextSteel Then
+        Set mRetryAttemptFailures = Nothing
+        Exit Function
+    End If
+    If section.Revision <> mRetrySectionRevision Then
+        Set mRetryAttemptFailures = Nothing
+        Exit Function
+    End If
+    RetryAttemptContextMatches = True
+End Function
+
+' Сравнивает все численные параметры попытки без округления и без lambda-only
+' ключа. Запись доказывает только повтор той же неудачной процедуры, не разрушение.
+Private Function TryRestoreFailedRetryAttempt(ByVal attemptKey As Variant, ByRef failureRecord As Variant) As Boolean
+    Dim record As Variant, storedKey As Variant, index As Long, sameAttempt As Boolean
+    For Each record In mRetryAttemptFailures
+        storedKey = record(0)
+        sameAttempt = True
+        For index = LBound(attemptKey) To UBound(attemptKey)
+            If attemptKey(index) <> storedKey(index) Then
+                sameAttempt = False
+                Exit For
+            End If
+        Next index
+        If sameAttempt Then
+            failureRecord = record
+            TryRestoreFailedRetryAttempt = True
+            Exit Function
+        End If
+    Next record
+End Function
+
+' Сохраняет только короткую диагностику реальной численной неудачи, без solver-а
+' и массивов волокон. Память ограничена; terminal errors и физические states
+' не кешируются. После нового capacity-поиска прежний runner уничтожается.
+Private Sub StoreFailedRetryAttempt(ByVal attemptKey As Variant, ByVal retry As CSectionSolver)
+    If retry.FailureCode <> sfcNumericalFailure And retry.FailureCode <> sfcSingularTangent Then Exit Sub
+    If mRetryAttemptFailures.Count >= 64 Then mRetryAttemptFailures.Remove 1
+    mRetryAttemptFailures.Add Array(attemptKey, retry.FailureCode, retry.StopReason)
+End Sub
 
 ' Проверяет, попала ли деформация хотя бы одного элемента в добавленную
 ' provider-ом technical extension. Этот признак сохраняется в Results отдельно
@@ -716,5 +800,25 @@ End Property
 
 Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
     mDiagnosticsEnabled = value
+End Property
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Вызывает реальную внутреннюю retry-процедуру с явно заданными scalar inputs.
+' Нужен для проверки exact-attempt reuse; не создает named State или repository.
+Friend Function TestRunRetryAttempt(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal targetN As Double, Optional ByVal epsilon0 As Double = 0#, _
+        Optional ByVal loadSteps As Long = 1, Optional ByVal disableLineSearch As Boolean = False) As Boolean
+    Dim service As CSectionSolver
+    TestRunRetryAttempt = TryRunRetry(section, concreteMaterial, steelMaterial, _
+        targetN, 0#, 0#, epsilon0, 0#, 0#, targetN, 0#, 0#, loadSteps, _
+        "проверка эквивалентности попыток", service, disableLineSearch, "testRetry")
+End Function
+
+' Возвращает размер ограниченной scalar-памяти для проверки ее жизненного цикла.
+Friend Property Get TestRetryAttemptCount() As Long
+    If Not mRetryAttemptFailures Is Nothing Then TestRetryAttemptCount = mRetryAttemptFailures.Count
 End Property
 

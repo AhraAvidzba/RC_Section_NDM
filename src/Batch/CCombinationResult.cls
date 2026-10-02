@@ -17,8 +17,9 @@ Option Explicit
 ' в плоскую таблицу. Здесь собираются только итоговые meta и комментарии LC;
 ' класс не решает равновесие, не читает Config и не пишет Excel.
 
-Public ProfileId As String ' Снимок выбранного профиля одной строки сочетаний.
-Public DiagramExtensionEnabled As Boolean ' Глобальная настройка на момент запуска LC.
+Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
+Private mProfileId As String ' Снимок выбранного профиля одной строки сочетаний.
+Private mDiagramExtensionEnabled As Boolean ' Глобальная настройка на момент запуска LC.
 
 Private mStateRepository As CStateRepository ' Конечные named states текущего LC.
 Private mResultPolicy As CResultStatusPolicy ' Единственное преобразование meta в display.
@@ -33,13 +34,14 @@ End Sub
 
 ' Сбрасывает все ветви LC, не затрагивая исходные нагрузки и геометрию.
 Public Sub Clear(ByVal defaultCapacityPath As String)
+    AssertWritable
     Set mStateRepository = New CStateRepository
     Set mStrengthResult = New CStrengthResult
     mStrengthResult.Clear defaultCapacityPath
     Set mCrackResult = New CCrackResult
     Set mStabilityResult = New CStabilityResult
-    ProfileId = vbNullString
-    DiagramExtensionEnabled = False
+    mProfileId = vbNullString
+    mDiagramExtensionEnabled = False
 End Sub
 
 ' Display-статусы являются производными от typed meta и не имеют setter-а.
@@ -205,22 +207,26 @@ End Function
 
 ' Устанавливает фактическую инженерную meta прямого НДС.
 Public Sub SetDirectStateMeta(ByVal meta As CResultMeta)
+    AssertWritable
     mStrengthResult.SetDirectMeta meta
 End Sub
 
 ' Объединяет несколько причин прямого расчета в один итоговый result.
 Public Sub MergeDirectStateMeta(ByVal meta As CResultMeta)
+    AssertWritable
     mStrengthResult.MergeDirectMeta meta
 End Sub
 
 ' Устанавливает meta устойчивости, если полный calculator-result отсутствует.
 Public Sub SetStabilityMeta(ByVal meta As CResultMeta, Optional ByVal resultComment As String = vbNullString)
+    AssertWritable
     mStabilityResult.SetMeta meta, resultComment
 End Sub
 
 ' Сохраняет единственный самостоятельный result устойчивости.
 Public Sub StoreStabilityResult(ByVal meta As CResultMeta, ByVal stability As CStabilityCalculator, _
         Optional ByVal referenceX As Double = 0#, Optional ByVal referenceY As Double = 0#)
+    AssertWritable
     Set mStabilityResult = New CStabilityResult
     mStabilityResult.InitializeFromCalculator meta, stability, referenceX, referenceY
 End Sub
@@ -228,11 +234,13 @@ End Sub
 ' Обновляет окончательные усилия после общего фильтра малых моментов.
 Public Sub UpdateStabilityDesignLoads(ByVal designN As Double, ByVal designMx As Double, _
         ByVal designMy As Double, ByVal principalAngleRad As Double)
+    AssertWritable
     mStabilityResult.UpdateDesignLoads designN, designMx, designMy, principalAngleRad
 End Sub
 
 ' Сбрасывает незапрошенную ветвь устойчивости.
 Public Sub ClearStabilityResult()
+    AssertWritable
     Set mStabilityResult = New CStabilityResult
 End Sub
 
@@ -240,6 +248,7 @@ End Sub
 ' lambda-точки поиска сюда не пишутся; состояния PreCrackState/PostCrackState сохраняются,
 ' если обязательная проверка образования трещины реально дошла до lambda_crc.
 Public Sub AddState(ByVal stateResult As CSectionStateResult)
+    AssertWritable
     If stateResult Is Nothing Then Exit Sub
     If mStateRepository Is Nothing Then Set mStateRepository = New CStateRepository
     mStateRepository.StoreState stateResult
@@ -257,6 +266,7 @@ End Property
 
 ' Сохраняет готовый capacity-result и его конечное физическое состояние.
 Public Sub StoreCapacityResult(ByVal capacity As CCapacityResult)
+    AssertWritable
     If capacity Is Nothing Then Err.Raise vbObjectError + 3941, "CCombinationResult", "Не передан результат несущей способности."
     mStrengthResult.StoreCapacityResult capacity
     If Not capacity.StateResult Is Nothing Then AddState capacity.StateResult
@@ -266,16 +276,60 @@ End Sub
 Public Sub StoreSectionStateResult(ByVal stateResult As CSectionStateResult, _
         Optional ByVal physicalConcrete As CMaterialDiagram = Nothing, _
         Optional ByVal physicalSteel As CMaterialDiagram = Nothing)
+    AssertWritable
     mStrengthResult.StoreDirectFromStateResult stateResult, DiagramExtensionEnabled, physicalConcrete, physicalSteel
 End Sub
 
 ' Сохраняет самостоятельное дерево трещин без копирования численных полей.
 Public Sub StoreCrackAggregateResult(ByVal crackResult As CCrackResult)
+    AssertWritable
     If crackResult Is Nothing Then Err.Raise vbObjectError + 3942, "CCombinationResult", "Не передан результат расчета трещин."
     Set mCrackResult = crackResult
 End Sub
 
 ' Полностью сбрасывает незапрошенную ветвь трещин.
 Public Sub ClearCrackResult()
+    AssertWritable
     Set mCrackResult = New CCrackResult
+End Sub
+
+' Контекст LC читается потребителями, а меняется только внутри workflow до
+' публикации. Friend методы недоступны внешнему Automation-интерфейсу.
+Public Property Get ProfileId() As String
+    ProfileId = mProfileId
+End Property
+
+' Запоминает профиль до публикации LC; внешним потребителям доступно только чтение.
+Friend Sub SetProfileId(ByVal value As String)
+    AssertWritable
+    mProfileId = value
+End Sub
+
+Public Property Get DiagramExtensionEnabled() As Boolean
+    DiagramExtensionEnabled = mDiagramExtensionEnabled
+End Property
+
+' Запоминает effective Extension запуска, не меняя признаки уже полученных State.
+Friend Sub SetDiagramExtensionEnabled(ByVal value As Boolean)
+    AssertWritable
+    mDiagramExtensionEnabled = value
+End Sub
+
+' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
+' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
+' но их fill/reset API больше не могут изменить опубликованный результат.
+Friend Sub Freeze()
+    If mFrozen Then Exit Sub
+    If Not mStrengthResult Is Nothing Then mStrengthResult.Freeze
+    If Not mCrackResult Is Nothing Then mCrackResult.Freeze
+    If Not mStabilityResult Is Nothing Then mStabilityResult.Freeze
+    If Not mStateRepository Is Nothing Then mStateRepository.Freeze
+    mFrozen = True
+End Sub
+
+' Явно отклоняет изменение уже выданного результата вместо тихой порчи снимка.
+' Для повторного расчета workflow создает новый объект, сохраняя прежние ссылки.
+Private Sub AssertWritable()
+    If mFrozen Then Err.Raise vbObjectError + 4220, "CCombinationResult", _
+        "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub

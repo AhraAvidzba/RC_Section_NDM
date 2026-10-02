@@ -62,6 +62,7 @@ Public Function RunGeometryTests() As String
     TestRectangularMeshSteps stats
     TestMeshConvergence stats
     TestPerformance stats
+    TestAudit03GeometryLifecycle stats
 
     AppendLine stats, "TOTAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunGeometryTests = stats.Report
@@ -2376,6 +2377,100 @@ End Sub
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Проверяет, что повторный Initialize заменяет контур, валидность и причину,
+' а запрос точки не принимает прежнюю геометрию после невалидного ввода.
+Public Function RunAudit03GeometryLifecycleTests(Optional ByVal includeContourDetails As Boolean = False) As String
+    On Error GoTo Failed
+    Dim stats As TTestStats
+    TestAudit03GeometryLifecycle stats, includeContourDetails
+    AppendLine stats, "TOTAL_GEOMETRY_LIFECYCLE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03GeometryLifecycleTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03GeometryLifecycleTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' Сопоставляет прогретую и заново созданную геометрию по сетке точек после
+' valid-invalid-valid переходов. Допуски, дуги и алгоритм сетки не меняются.
+Private Sub TestAudit03GeometryLifecycle(ByRef stats As TTestStats, Optional ByVal includeContourDetails As Boolean = False)
+    Dim rounded As CGeometryRoundedRectangle
+    Set rounded = New CGeometryRoundedRectangle
+    Dim hollow As CGeometryHollowRectangle
+    Set hollow = New CGeometryHollowRectangle
+    Dim message As String, repeatedMessage As String
+    AssertTrue stats, "audit03.geometry.rounded.uninitialized", Not rounded.IsValid(message)
+    AssertTrue stats, "audit03.geometry.rounded.uninitializedPoint", Not rounded.ContainsPoint(0#, 0#)
+    AssertTrue stats, "audit03.geometry.hollow.uninitialized", Not hollow.IsValid(message)
+    AssertTrue stats, "audit03.geometry.hollow.uninitializedPoint", Not hollow.ContainsPoint(0#, 0#)
+
+    rounded.Initialize 300#, 200#, 20#, 20#, 20#, 20#
+    AssertTrue stats, "audit03.geometry.rounded.firstValid", rounded.IsValid(message)
+    AssertTrue stats, "audit03.geometry.rounded.firstCenter", rounded.ContainsPoint(0#, 0#)
+    rounded.Initialize 300#, 200#, 1000#, 1000#, 1000#, 1000#
+    AssertTrue stats, "audit03.geometry.rounded.invalid", Not rounded.IsValid(message)
+    AssertTrue stats, "audit03.geometry.rounded.invalidPoint", Not rounded.ContainsPoint(0#, 0#)
+    AssertTrue stats, "audit03.geometry.rounded.repeatInvalid", Not rounded.IsValid(repeatedMessage)
+    AssertTrue stats, "audit03.geometry.rounded.stableReason", message = repeatedMessage And Len(message) > 0
+    rounded.InitializeSides 400#, 180#, "Simple", "Tapered", 0#, 70#, 20#, 25#, 0#, 10#, 50#, -30#
+    Dim freshRounded As CGeometryRoundedRectangle
+    Set freshRounded = New CGeometryRoundedRectangle
+    freshRounded.InitializeSides 400#, 180#, "Simple", "Tapered", 0#, 70#, 20#, 25#, 0#, 10#, 50#, -30#
+    AssertTrue stats, "audit03.geometry.rounded.revalidated", rounded.IsValid(message) And Len(message) = 0
+    If includeContourDetails Then
+        Dim contourX() As Double, contourY() As Double, contourIndex As Long
+        rounded.GetExtremePoints contourX, contourY
+        For contourIndex = LBound(contourX) To UBound(contourX)
+            AppendLine stats, "CONTOUR: Rounded; i=" & CStr(contourIndex) & "; x=" & CStr(contourX(contourIndex)) & _
+                "; y=" & CStr(contourY(contourIndex)) & "; deltaFromBottom=" & CStr((contourY(contourIndex) + 120#) * 1000000000000#)
+        Next contourIndex
+    End If
+
+    hollow.Initialize 500#, 800#, 30#, 200#, 500#, 20#, 40#, -30#
+    AssertTrue stats, "audit03.geometry.hollow.firstValid", hollow.IsValid(message)
+    AssertTrue stats, "audit03.geometry.hollow.opening", Not hollow.ContainsPoint(40#, -30#)
+    hollow.Initialize 500#, 800#, 30#, 600#, 500#, 20#, 40#, -30#
+    AssertTrue stats, "audit03.geometry.hollow.invalid", Not hollow.IsValid(message)
+    AssertTrue stats, "audit03.geometry.hollow.invalidPoint", Not hollow.ContainsPoint(0#, 350#)
+    AssertTrue stats, "audit03.geometry.hollow.repeatInvalid", Not hollow.IsValid(repeatedMessage)
+    AssertTrue stats, "audit03.geometry.hollow.stableReason", message = repeatedMessage And Len(message) > 0
+    hollow.Initialize 450#, 650#, 40#, 180#, 300#, 20#, -30#, 20#
+    Dim freshHollow As CGeometryHollowRectangle
+    Set freshHollow = New CGeometryHollowRectangle
+    freshHollow.Initialize 450#, 650#, 40#, 180#, 300#, 20#, -30#, 20#
+    AssertTrue stats, "audit03.geometry.hollow.revalidated", hollow.IsValid(message) And Len(message) = 0
+    AssertTrue stats, "audit03.geometry.hollow.newOpening", Not hollow.ContainsPoint(-30#, 20#)
+
+    Dim ix As Long, iy As Long
+    Dim roundedMismatch As Long, hollowMismatch As Long
+    Dim roundedRow As String, hollowRow As String
+    For iy = -18 To 18
+        roundedRow = vbNullString
+        hollowRow = vbNullString
+        For ix = -24 To 24
+            If rounded.ContainsPoint(ix * 15#, iy * 20#) <> freshRounded.ContainsPoint(ix * 15#, iy * 20#) Then roundedMismatch = roundedMismatch + 1
+            If hollow.ContainsPoint(ix * 15#, iy * 20#) <> freshHollow.ContainsPoint(ix * 15#, iy * 20#) Then hollowMismatch = hollowMismatch + 1
+            If rounded.ContainsPoint(ix * 15#, iy * 20#) Then roundedRow = roundedRow & "1" Else roundedRow = roundedRow & "0"
+            If hollow.ContainsPoint(ix * 15#, iy * 20#) Then hollowRow = hollowRow & "1" Else hollowRow = hollowRow & "0"
+        Next ix
+        AppendLine stats, "GRID: Rounded; y=" & CStr(iy * 20#) & "; " & roundedRow
+        AppendLine stats, "GRID: Hollow; y=" & CStr(iy * 20#) & "; " & hollowRow
+    Next iy
+    AssertTrue stats, "audit03.geometry.rounded.reinitGrid", roundedMismatch = 0
+    AssertTrue stats, "audit03.geometry.hollow.reinitGrid", hollowMismatch = 0
+    AssertTrue stats, "audit03.geometry.hollow.outerBoundary", hollow.ContainsPoint(225#, 0#)
+    AssertTrue stats, "audit03.geometry.hollow.openingBoundary", Not hollow.ContainsPoint(60#, 20#)
+    Dim available As Boolean, freshAvailable As Boolean
+    AssertClose stats, "audit03.geometry.rounded.reinitArea", rounded.AnalyticalArea(available), freshRounded.AnalyticalArea(freshAvailable), 0#
+    AssertTrue stats, "audit03.geometry.rounded.areaAvailable", available And freshAvailable
+    AssertClose stats, "audit03.geometry.hollow.reinitArea", hollow.AnalyticalArea(available), freshHollow.AnalyticalArea(freshAvailable), 0#
+    AssertTrue stats, "audit03.geometry.hollow.areaAvailable", available And freshAvailable
+    AppendLine stats, "CONST: GEOM_PI deltaFrom3x1e15=" & CStr((GEOM_PI - 3#) * 1000000000000000#)
+    AssertClose stats, "audit03.geometry.piFullPrecision", GEOM_PI, 4# * Atn(1#), 0#
+End Sub
 
 
 

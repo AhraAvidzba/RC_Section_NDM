@@ -1,0 +1,177 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_f06_fixed.xlsm
+SOURCE_SHA256: 7752CBA7D16DFAFC75F44E0D08E26DB2B35520F6CD366EF33AA399FDD2EBAF5B
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5f876db1e5374067947799edbaf5e47d\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03PublishedResultTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03PublishedResultTests; 2026-10-02T02:40:34
+EXCEL_AFTER_SUITE: pid=1672; workingSet=130822144; privateBytes=92213248; cpu=3.65625
+MUTATION: audit03.published.1; error=-2147217284
+OK: audit03.published.1.explicitContractError
+OK: audit03.published.1.statusUnchanged
+OK: audit03.published.1.commentUnchanged
+OK: audit03.published.1.statesUnchanged
+OK: audit03.published.1.stabilityCodeUnchanged
+OK: audit03.published.1.designNUnchanged; actual=0.; expected=0.
+OK: audit03.published.1.extensionUnchanged
+OK: audit03.published.1.profileUnchanged
+MUTATION: audit03.published.2; error=451
+OK: audit03.published.2.noPublicField
+OK: audit03.published.2.statusUnchanged
+OK: audit03.published.2.commentUnchanged
+OK: audit03.published.2.statesUnchanged
+OK: audit03.published.2.stabilityCodeUnchanged
+OK: audit03.published.2.designNUnchanged; actual=0.; expected=0.
+OK: audit03.published.2.extensionUnchanged
+OK: audit03.published.2.profileUnchanged
+MUTATION: audit03.published.3; error=451
+OK: audit03.published.3.noPublicField
+OK: audit03.published.3.statusUnchanged
+OK: audit03.published.3.commentUnchanged
+OK: audit03.published.3.statesUnchanged
+OK: audit03.published.3.stabilityCodeUnchanged
+OK: audit03.published.3.designNUnchanged; actual=0.; expected=0.
+OK: audit03.published.3.extensionUnchanged
+OK: audit03.published.3.profileUnchanged
+MUTATION: audit03.published.4; error=-2147217284
+OK: audit03.published.4.explicitContractError
+OK: audit03.published.4.statusUnchanged
+OK: audit03.published.4.commentUnchanged
+OK: audit03.published.4.statesUnchanged
+OK: audit03.published.4.stabilityCodeUnchanged
+OK: audit03.published.4.designNUnchanged; actual=0.; expected=0.
+OK: audit03.published.4.extensionUnchanged
+OK: audit03.published.4.profileUnchanged
+MUTATION: audit03.published.5; error=-2147217284
+OK: audit03.published.5.explicitContractError
+OK: audit03.published.5.statusUnchanged
+OK: audit03.published.5.commentUnchanged
+OK: audit03.published.5.statesUnchanged
+OK: audit03.published.5.stabilityCodeUnchanged
+OK: audit03.published.5.designNUnchanged; actual=0.; expected=0.
+OK: audit03.published.5.extensionUnchanged
+OK: audit03.published.5.profileUnchanged
+MUTATION: audit03.published.6; error=-2147217284
+OK: audit03.published.6.explicitContractError
+OK: audit03.published.6.statusUnchanged
+OK: audit03.published.6.commentUnchanged
+OK: audit03.published.6.statesUnchanged
+OK: audit03.published.6.stabilityCodeUnchanged
+OK: audit03.published.6.designNUnchanged; actual=0.; expected=0.
+OK: audit03.published.6.extensionUnchanged
+OK: audit03.published.6.profileUnchanged
+MUTATION: audit03.published.7; error=-2147217284
+OK: audit03.published.7.explicitContractError
+OK: audit03.published.7.statusUnchanged
+OK: audit03.published.7.commentUnchanged
+OK: audit03.published.7.statesUnchanged
+OK: audit03.published.7.stabilityCodeUnchanged
+OK: audit03.published.7.designNUnchanged; actual=0.; expected=0.
+OK: audit03.published.7.extensionUnchanged
+OK: audit03.published.7.profileUnchanged
+MUTATION: audit03.published.8; error=-2147217284
+OK: audit03.published.8.explicitContractError
+OK: audit03.published.8.statusUnchanged
+OK: audit03.published.8.commentUnchanged
+OK: audit03.published.8.statesUnchanged
+OK: audit03.published.8.stabilityCodeUnchanged
+OK: audit03.published.8.designNUnchanged; actual=0.; expected=0.
+OK: audit03.published.8.extensionUnchanged
+OK: audit03.published.8.profileUnchanged
+MUTATION: audit03.published.9; error=-2147217284
+OK: audit03.published.9.explicitContractError
+OK: audit03.published.9.statusUnchanged
+OK: audit03.published.9.commentUnchanged
+OK: audit03.published.9.statesUnchanged
+OK: audit03.published.9.stabilityCodeUnchanged
+OK: audit03.published.9.designNUnchanged; actual=0.; expected=0.
+OK: audit03.published.9.extensionUnchanged
+OK: audit03.published.9.profileUnchanged
+MUTATION: audit03.published.10; error=-2147217284
+OK: audit03.published.10.explicitContractError
+OK: audit03.published.10.statusUnchanged
+OK: audit03.published.10.commentUnchanged
+OK: audit03.published.10.statesUnchanged
+OK: audit03.published.10.stabilityCodeUnchanged
+OK: audit03.published.10.designNUnchanged; actual=0.; expected=0.
+OK: audit03.published.10.extensionUnchanged
+OK: audit03.published.10.profileUnchanged
+MUTATION: audit03.published.11; error=-2147217284
+OK: audit03.published.11.explicitContractError
+OK: audit03.published.11.statusUnchanged
+OK: audit03.published.11.commentUnchanged
+OK: audit03.published.11.statesUnchanged
+OK: audit03.published.11.stabilityCodeUnchanged
+OK: audit03.published.11.designNUnchanged; actual=0.; expected=0.
+OK: audit03.published.11.extensionUnchanged
+OK: audit03.published.11.profileUnchanged
+MUTATION: audit03.published.12; error=451
+OK: audit03.published.12.noPublicField
+OK: audit03.published.12.statusUnchanged
+OK: audit03.published.12.commentUnchanged
+OK: audit03.published.12.statesUnchanged
+OK: audit03.published.12.stabilityCodeUnchanged
+OK: audit03.published.12.designNUnchanged; actual=0.; expected=0.
+OK: audit03.published.12.extensionUnchanged
+OK: audit03.published.12.profileUnchanged
+MUTATION: audit03.published.13; error=-2147217284
+OK: audit03.published.13.explicitContractError
+OK: audit03.published.13.statusUnchanged
+OK: audit03.published.13.commentUnchanged
+OK: audit03.published.13.statesUnchanged
+OK: audit03.published.13.stabilityCodeUnchanged
+OK: audit03.published.13.designNUnchanged; actual=0.; expected=0.
+OK: audit03.published.13.extensionUnchanged
+OK: audit03.published.13.profileUnchanged
+MUTATION: audit03.published.14; error=-2147217284
+OK: audit03.published.14.explicitContractError
+OK: audit03.published.14.statusUnchanged
+OK: audit03.published.14.commentUnchanged
+OK: audit03.published.14.statesUnchanged
+OK: audit03.published.14.stabilityCodeUnchanged
+OK: audit03.published.14.designNUnchanged; actual=0.; expected=0.
+OK: audit03.published.14.extensionUnchanged
+OK: audit03.published.14.profileUnchanged
+MUTATION: audit03.published.15; error=-2147217284
+OK: audit03.published.15.explicitContractError
+OK: audit03.published.15.statusUnchanged
+OK: audit03.published.15.commentUnchanged
+OK: audit03.published.15.statesUnchanged
+OK: audit03.published.15.stabilityCodeUnchanged
+OK: audit03.published.15.designNUnchanged; actual=0.; expected=0.
+OK: audit03.published.15.extensionUnchanged
+OK: audit03.published.15.profileUnchanged
+MUTATION: audit03.published.16; error=-2147217284
+OK: audit03.published.16.explicitContractError
+OK: audit03.published.16.statusUnchanged
+OK: audit03.published.16.commentUnchanged
+OK: audit03.published.16.statesUnchanged
+OK: audit03.published.16.stabilityCodeUnchanged
+OK: audit03.published.16.designNUnchanged; actual=0.; expected=0.
+OK: audit03.published.16.extensionUnchanged
+OK: audit03.published.16.profileUnchanged
+MUTATION: audit03.published.17; error=-2147217284
+OK: audit03.published.17.explicitContractError
+OK: audit03.published.17.statusUnchanged
+OK: audit03.published.17.commentUnchanged
+OK: audit03.published.17.statesUnchanged
+OK: audit03.published.17.stabilityCodeUnchanged
+OK: audit03.published.17.designNUnchanged; actual=0.; expected=0.
+OK: audit03.published.17.extensionUnchanged
+OK: audit03.published.17.profileUnchanged
+OK: audit03.published.realState
+OK: audit03.published.metaClone
+OK: audit03.published.specClone
+OK: audit03.published.newResultIdentity
+OK: audit03.published.oldStateIdentity
+OK: audit03.published.oldN; actual=-150000.; expected=-150000.
+OK: audit03.published.oldMx; actual=-6000000.; expected=-6000000.
+OK: audit03.published.oldStatus
+OK: audit03.published.oldComment
+OK: audit03.published.oldProfile
+OK: audit03.published.newLoad
+TOTAL_AUDIT03_PUBLISHED_RESULTS: passed=147; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03PublishedResultTests; 2026-10-02T02:40:35
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

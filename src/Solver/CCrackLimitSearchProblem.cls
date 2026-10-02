@@ -9,14 +9,14 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Implements ILimitSearchProblem
-
 ' ==========================================================================
 ' Адаптер CrackFormation для общего LimitSearch
 ' ==========================================================================
 ' Класс прячет CCrackFormationCalculator за общим ILimitSearchProblem. Доменный
 ' калькулятор по-прежнему хранит критерий образования трещины, Pre/Post-state и
 ' crack-диагностику, но общий search обращается к нему только через контракт.
+
+Implements ILimitSearchProblem
 
 Private Const STATE_ACCEPTABLE As String = "Acceptable" ' Трещина еще не образована.
 Private Const STATE_CRACK_LIMIT As String = "CrackFormationLimit" ' Достигнут критерий eps_bt,ult.

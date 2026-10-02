@@ -39,6 +39,9 @@ Private mArea As Double ' Аналитическая площадь бетонн
 Private mCentroidX As Double ' Центр тяжести бетонного кольца.
 Private mCentroidY As Double
 Private mInitialized As Boolean
+Private mValidationReady As Boolean ' Сброс при каждом Initialize, включая ошибочные параметры.
+Private mGeometryValid As Boolean ' Наружный контур и отверстие уже проверены совместно.
+Private mValidationMessage As String ' Причина отказа текущей геометрии, а не предыдущего сечения.
 
 ' Инициализирует внешний контур и Opening в одной системе координат.
 ' OffsetX/OffsetY задают смещение центра отверстия относительно центра
@@ -46,6 +49,12 @@ Private mInitialized As Boolean
 Public Sub Initialize(ByVal widthMm As Double, ByVal heightMm As Double, ByVal radiusMm As Double, _
         ByVal openingWidthMm As Double, ByVal openingHeightMm As Double, ByVal openingRadiusMm As Double, _
         Optional ByVal openingOffsetXMm As Double = 0#, Optional ByVal openingOffsetYMm As Double = 0#)
+    mValidationReady = False
+    mGeometryValid = False
+    mValidationMessage = vbNullString
+    mArea = 0#
+    mCentroidX = 0#
+    mCentroidY = 0#
     mB = widthMm
     mH = heightMm
     mR = radiusMm
@@ -75,6 +84,8 @@ Public Sub Initialize(ByVal widthMm As Double, ByVal heightMm As Double, ByVal r
 
     mInitialized = True
     RecalculateAnalyticalProperties
+    Dim message As String
+    mGeometryValid = IsValid(message)
 End Sub
 
 Public Property Get B() As Double
@@ -245,8 +256,20 @@ Public Function IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
     IsPointInside = ContainsPoint(X, Y)
 End Function
 
-' Проверяет размеры, радиусы и размещение Opening внутри наружного контура.
+' Возвращает сохраненную совместную проверку контуров. Геометрия меняется
+' только через Initialize, поэтому массовые запросы точки не повторяют ее.
 Public Function IsValid(ByRef message As String) As Boolean
+    If Not mValidationReady Then
+        mGeometryValid = ValidateCurrentGeometry(mValidationMessage)
+        mValidationReady = True
+    End If
+    message = mValidationMessage
+    IsValid = mGeometryValid
+End Function
+
+' Проверяет размеры, радиусы, размещение отверстия и площадь бетонного кольца.
+' Вызывается один раз для каждого нового набора параметров геометрии.
+Private Function ValidateCurrentGeometry(ByRef message As String) As Boolean
     message = vbNullString
     If Not mInitialized Then
         message = "Геометрия пустотелого прямоугольника не инициализирована."
@@ -278,7 +301,7 @@ Public Function IsValid(ByRef message As String) As Boolean
         Exit Function
     End If
 
-    IsValid = True
+    ValidateCurrentGeometry = True
 End Function
 
 ' Возвращает аналитическую площадь бетонного кольца, если геометрия прошла

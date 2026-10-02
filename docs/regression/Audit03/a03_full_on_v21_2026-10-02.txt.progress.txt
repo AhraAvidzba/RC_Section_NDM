@@ -1,0 +1,1137 @@
+RUN: TestMxPositiveAndNegative
+OK: capacity.mx.negative.converged
+OK: capacity.mx.positive.converged
+OK: capacity.mx.negative.sign
+OK: capacity.mx.positive.sign
+OK: capacity.mx.limit.physical
+OK: capacity.mx.negative.N; actual=-300000.; expected=-300000.; relDiff=0.
+OK: capacity.mx.negative.Mx; actual=-30937500.; expected=-30937500.; relDiff=0.
+OK: capacity.mx.negative.My; actual=-0.000000000102; expected=0.; absDiff=0.000000000102
+OK: capacity.mx.positive.N; actual=-300000.; expected=-300000.; relDiff=0.
+OK: capacity.mx.positive.Mx; actual=30937500.; expected=30937500.; relDiff=0.
+OK: capacity.mx.positive.My; actual=0.000000001062; expected=0.; absDiff=0.000000001062
+RUN: TestMyPositiveAndNegative
+OK: capacity.my.negative.converged
+OK: capacity.my.positive.converged
+OK: capacity.my.negative.sign
+OK: capacity.my.positive.sign
+OK: capacity.my.limit.physical
+OK: capacity.my.negative.N; actual=-300000.; expected=-300000.; relDiff=0.
+OK: capacity.my.negative.Mx; actual=0.000000000262; expected=0.; absDiff=0.000000000262
+OK: capacity.my.negative.My; actual=-44843750.; expected=-44843750.; relDiff=0.
+OK: capacity.my.positive.N; actual=-300000.; expected=-300000.; relDiff=0.
+OK: capacity.my.positive.Mx; actual=0.000000000204; expected=0.; absDiff=0.000000000204
+OK: capacity.my.positive.My; actual=44843750.; expected=44843750.; relDiff=0.
+RUN: TestMxySignedCombinations
+OK: capacity.mxy.pp.converged
+OK: capacity.mxy.pp.lambda.positive
+OK: capacity.mxy.pp.mx.sign
+OK: capacity.mxy.pp.my.sign
+OK: capacity.mxy.pp.direction; actual=0.; expected=0.; absDiff=0.
+OK: capacity.mxy.pp.N; actual=-250000.; expected=-250000.; relDiff=0.
+OK: capacity.mxy.pp.Mx; actual=21468750.; expected=21468750.; relDiff=0.
+OK: capacity.mxy.pp.My; actual=14312500.; expected=14312500.; relDiff=0.
+OK: capacity.mxy.np.converged
+OK: capacity.mxy.np.lambda.positive
+OK: capacity.mxy.np.mx.sign
+OK: capacity.mxy.np.my.sign
+OK: capacity.mxy.np.direction; actual=0.; expected=0.; absDiff=0.
+OK: capacity.mxy.np.N; actual=-250000.; expected=-250000.; relDiff=0.
+OK: capacity.mxy.np.Mx; actual=-21468750.; expected=-21468750.; relDiff=0.
+OK: capacity.mxy.np.My; actual=14312500.; expected=14312500.; relDiff=0.
+OK: capacity.mxy.pn.converged
+OK: capacity.mxy.pn.lambda.positive
+OK: capacity.mxy.pn.mx.sign
+OK: capacity.mxy.pn.my.sign
+OK: capacity.mxy.pn.direction; actual=0.; expected=0.; absDiff=0.
+OK: capacity.mxy.pn.N; actual=-250000.; expected=-250000.; relDiff=0.
+OK: capacity.mxy.pn.Mx; actual=21468750.; expected=21468750.; relDiff=0.
+OK: capacity.mxy.pn.My; actual=-14312500.; expected=-14312500.; relDiff=0.
+OK: capacity.mxy.nn.converged
+OK: capacity.mxy.nn.lambda.positive
+OK: capacity.mxy.nn.mx.sign
+OK: capacity.mxy.nn.my.sign
+OK: capacity.mxy.nn.direction; actual=0.; expected=0.; absDiff=0.
+OK: capacity.mxy.nn.N; actual=-250000.; expected=-250000.; relDiff=0.
+OK: capacity.mxy.nn.Mx; actual=-21468750.; expected=-21468750.; relDiff=0.
+OK: capacity.mxy.nn.My; actual=-14312500.; expected=-14312500.; relDiff=0.
+RUN: TestConcreteTensionBehaviorAffectsSolverAndCapacity
+OK: tensionMode.solver.ignore.converged
+OK: tensionMode.solver.use.converged
+OK: tensionMode.solver.affectsState
+OK: tensionBehavior.strength.mx.ignore.converged
+OK: tensionBehavior.strength.mx.use.converged
+OK: tensionBehavior.strength.mx.stateDiffers
+OK: tensionBehavior.strength.my.ignore.converged
+OK: tensionBehavior.strength.my.use.converged
+OK: tensionBehavior.strength.my.stateDiffers
+OK: tensionBehavior.strength.mxy.ignore.converged
+OK: tensionBehavior.strength.mxy.use.converged
+OK: tensionBehavior.strength.mxy.stateDiffers
+RUN: TestCircleCapacitySymmetry
+OK: circle.capacity.mx.converged
+OK: circle.capacity.my.converged
+OK: circle.capacity.mxy.converged
+OK: circle.capacity.mx.my.symmetry; actual=31921875.; expected=31921875.; relDiff=0.
+OK: circle.capacity.mxy.lambda.positive
+OK: circle.capacity.mxy.direction; actual=0.; expected=0.; absDiff=0.
+RUN: TestLambdaLessThanOne
+OK: capacity.lambda.lessThanOne.converged
+OK: capacity.lambda.lessThanOne.value
+OK: audit02.searchEngineering.searchSuccess
+OK: audit02.searchEngineering.searchCode
+OK: audit02.searchEngineering.searchSucceeded
+OK: audit02.searchEngineering.capacityFailed
+OK: audit02.searchEngineering.capacityDisplay
+OK: audit02.searchEngineering.lambdaUnchanged; actual=0.5; expected=0.5; absDiff=0.
+OK: audit02.searchEngineering.metaSnapshot
+OK: audit02.searchEngineering.pointState
+OK: audit02.searchEngineering.sharedState
+OK: audit02.searchEngineering.solverMutation.N; actual=-300000.; expected=-300000.; absDiff=0.
+OK: audit02.searchEngineering.solverMutation.plane; actual=-0.000125367202; expected=-0.000125367202; absDiff=0.
+OK: audit03.searchEngineering.outputSnapshot
+OK: audit03.searchEngineering.outputLambda; actual=0.5; expected=0.5; absDiff=0.
+OK: audit03.searchEngineering.inputSnapshot
+OK: audit03.searchEngineering.inputMeta
+OK: audit03.searchEngineering.inputLambda; actual=0.5; expected=0.5; absDiff=0.
+OK: audit03.searchEngineering.capacityStatusPreserved
+RUN: TestLambdaNearOne
+OK: capacity.lambda.nearOne.converged
+OK: capacity.lambda.nearOne.value; actual=1.; expected=1.; absDiff=0.
+RUN: TestZeroAxialForce
+OK: capacity.zeroN.converged
+OK: capacity.zeroN.N; actual=-0.000000000015; expected=0.; absDiff=0.000000000015
+OK: capacity.zeroN.Mx; actual=-47929687.4999999; expected=-47929687.5; relDiff=0.
+OK: capacity.zeroN.My; actual=0.000000000902; expected=0.; absDiff=0.000000000902
+RUN: TestAxialLoadMultiplierFindsNult
+OK: capacity.nult.compression.converged
+OK: capacity.nult.compression.sign
+OK: capacity.nult.compression.safety
+OK: capacity.nult.compression.N; actual=-1287513.24397852; expected=-1287513.24397852; relDiff=0.
+OK: capacity.nult.compression.Mx; actual=0.; expected=0.; absDiff=0.
+OK: capacity.nult.compression.My; actual=0.000000000466; expected=0.; absDiff=0.000000000466
+OK: capacity.nult.tension.converged
+OK: capacity.nult.tension.sign
+OK: capacity.nult.tension.safety
+OK: capacity.nult.tension.N; actual=439822.971502571; expected=439822.971502571; relDiff=0.
+OK: capacity.nult.tension.Mx; actual=-0.000000000116; expected=0.; absDiff=0.000000000116
+OK: capacity.nult.tension.My; actual=-0.000000000175; expected=0.; absDiff=0.000000000175
+RUN: TestConcreteLimitState
+OK: capacity.concreteLimit.converged
+OK: capacity.concreteLimit.state
+RUN: TestConcreteTensionLimitState
+OK: capacity.concreteTensionLimit.converged
+OK: capacity.concreteTensionLimit.state
+RUN: TestConcreteTensionLimitIgnored
+OK: capacity.concreteTensionLimit.ignore.notTension
+OK: capacity.concreteTensionLimit.ignore.state
+RUN: TestSteelLimitState
+OK: capacity.steelLimit.converged
+OK: capacity.steelLimit.state
+RUN: TestLoadMultiplierPureBendingUsesStateGuess
+OK: capacity.pureBendingGuess.converged
+OK: capacity.pureBendingGuess.physical
+OK: capacity.pureBendingGuess.usedGuess
+RUN: TestAsymmetricCoupledCurvatures
+OK: capacity.asym.Ixy.nonzero
+OK: capacity.asym.converged
+OK: capacity.asym.coupledKappaY
+OK: capacity.asym.N; actual=-260000.; expected=-260000.; relDiff=0.
+OK: capacity.asym.Mx; actual=-320000000.; expected=-320000000.; relDiff=0.
+OK: capacity.asym.My; actual=-0.000000072119; expected=0.; absDiff=0.000000072119
+RUN: TestAsymmetricMxy
+OK: capacity.mxy.asym.Ixy.nonzero
+OK: capacity.mxy.asym.converged
+OK: capacity.mxy.asym.kappaX.nonzero
+OK: capacity.mxy.asym.kappaY.nonzero
+OK: capacity.mxy.asym.direction; actual=0.; expected=0.; absDiff=0.
+OK: capacity.mxy.asym.N; actual=-260000.; expected=-260000.; relDiff=0.
+OK: capacity.mxy.asym.Mx; actual=-173484375.; expected=-173484375.; relDiff=0.
+OK: capacity.mxy.asym.My; actual=-115656250.; expected=-115656250.; relDiff=0.
+RUN: TestInvalidBaseMoment
+OK: capacity.invalidBaseMoment.notConverged
+OK: capacity.invalidBaseMoment.state
+RUN: TestCapacitySolutionStrategyComparisons
+OK: method.pure_compression.load.invalid
+OK: method.pure_compression.strain.invalid
+COMPARE|method.pure_compression.load|converged=False|lambda=0.|limitState=InvalidInput|criticalStrain=0.|criticalElement=|solverCalls=0|elapsedSec=0.
+COMPARE|method.pure_compression.strain|converged=False|lambda=0.|limitState=InvalidInput|criticalStrain=0.|criticalElement=|solverCalls=0|elapsedSec=0.
+OK: method.n_plus_mx.load.converged
+OK: method.n_plus_mx.strain.converged
+OK: method.n_plus_mx.lambda; actual=3.09871424391; expected=3.09375; absDiff=0.00496424391
+OK: method.n_plus_mx.limitState
+OK: method.n_plus_mx.criticalElement
+OK: method.n_plus_mx.solverCalls
+COMPARE|method.n_plus_mx.load|converged=True|lambda=3.09375|limitState=ConcreteStrainLimit|criticalStrain=-0.001501652538|criticalElement=C142:Compression|solverCalls=12|elapsedSec=0.0625
+COMPARE|method.n_plus_mx.strain|converged=True|lambda=3.09871424391|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C136:Compression|solverCalls=6|elapsedSec=0.013671875
+OK: method.n_plus_my.load.converged
+OK: method.n_plus_my.strain.converged
+OK: method.n_plus_my.lambda; actual=4.490409406951; expected=4.484375; absDiff=0.006034406951
+OK: method.n_plus_my.limitState
+OK: method.n_plus_my.criticalElement
+OK: method.n_plus_my.solverCalls
+COMPARE|method.n_plus_my.load|converged=True|lambda=4.484375|limitState=ConcreteStrainLimit|criticalStrain=-0.001500652149|criticalElement=C15:Compression|solverCalls=18|elapsedSec=0.21484375
+COMPARE|method.n_plus_my.strain|converged=True|lambda=4.490409406951|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=6|elapsedSec=0.00390625
+OK: method.biaxial.load.converged
+OK: method.biaxial.strain.converged
+OK: method.biaxial.lambda; actual=3.583378103741; expected=3.578125; absDiff=0.005253103741
+OK: method.biaxial.limitState
+OK: method.biaxial.criticalElement
+OK: method.biaxial.solverCalls
+COMPARE|method.biaxial.load|converged=True|lambda=3.578125|limitState=ConcreteStrainLimit|criticalStrain=-0.001501063653|criticalElement=C150:Compression|solverCalls=12|elapsedSec=0.06640625
+COMPARE|method.biaxial.strain|converged=True|lambda=3.583378103741|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C150:Compression|solverCalls=16|elapsedSec=0.0087890625
+OK: method.circle.load.converged
+OK: method.circle.strain.converged
+OK: method.circle.symmetry; actual=31453125.; expected=31489108.1594418; relDiff=0.001142717643
+OK: method.circle.criticalElement
+COMPARE|method.circle.load|converged=True|lambda=5.2421875|limitState=ConcreteStrainLimit|criticalStrain=-0.001498237699|criticalElement=C483:Compression|solverCalls=14|elapsedSec=0.
+COMPARE|method.circle.strain|converged=True|lambda=5.24818469324|limitState=ConcreteStrainLimit|criticalStrain=-0.0015|criticalElement=C182:Compression|solverCalls=11|elapsedSec=0.
+OK: method.strain_limit.load.converged
+OK: method.strain_limit.strain.converged
+OK: method.strain_limit.lambda; actual=4.795168098697; expected=4.7890625; absDiff=0.006105598697
+OK: method.strain_limit.limitState
+OK: method.strain_limit.criticalElement
+OK: method.strain_limit.criticalUtilization
+COMPARE|method.strain_limit.load|converged=True|lambda=4.7890625|limitState=ConcreteStrainLimit|criticalStrain=-0.000599236031|criticalElement=C136:Compression|solverCalls=14|elapsedSec=0.
+COMPARE|method.strain_limit.strain|converged=True|lambda=4.795168098697|limitState=ConcreteStrainLimit|criticalStrain=-0.0006|criticalElement=C136:Compression|solverCalls=1|elapsedSec=0.
+OK: method.numericalFailure.notConverged
+OK: method.numericalFailure.state
+OK: method.numericalFailure.noPhysicalUpper
+COMPARE|method.numericalFailure.strain|converged=False|lambda=0.|limitState=NumericalFailure|criticalStrain=-0.001500000001|criticalElement=C150:Compression|solverCalls=5|elapsedSec=0.
+OK: method.maxLambdaIgnored.converged
+OK: method.maxLambdaIgnored.lambdaAboveLimit
+OK: method.maxLambdaIgnored.momentStored
+RUN: TestLoadMultiplierWithWorkbookTfDefaults
+OK: capacity.tfDefaults.geometry
+OK: capacity.tfDefaults.forceUnit
+OK: capacity.tfDefaults.momentUnit
+OK: capacity.tfDefaults.ultimate.converged
+OK: capacity.tfDefaults.ultimate.lambda
+OK: capacity.tfDefaults.Bisection.converged
+OK: capacity.tfDefaults.Bisection.physical
+OK: capacity.tfDefaults.Bisection.lambda; actual=3.099609375; expected=3.101519282512; absDiff=0.001909907512
+OK: capacity.tfDefaults.Bisection.notOvershot
+OK: capacity.tfDefaults.Brent.converged
+OK: capacity.tfDefaults.Brent.physical
+OK: capacity.tfDefaults.Brent.lambda; actual=3.10075110116; expected=3.101519282512; absDiff=0.000768181352
+OK: capacity.tfDefaults.Brent.notOvershot
+OK: capacity.tfDefaults.Secant.converged
+OK: capacity.tfDefaults.Secant.physical
+OK: capacity.tfDefaults.Secant.lambda; actual=3.106208325658; expected=3.101519282512; absDiff=0.004689043147
+OK: capacity.tfDefaults.Secant.notOvershot
+RUN: TestLoadMultiplierSearchMethods
+OK: search.bisection.converged
+OK: search.brent.converged
+OK: search.secant.converged
+OK: search.bisection.branch
+OK: search.brent.branch
+OK: search.secant.branch
+OK: search.brent.independent
+OK: search.secant.independent
+OK: search.brent.lambda; actual=3.09776378716; expected=3.09375; absDiff=0.00401378716
+OK: search.secant.lambda; actual=3.098514991183; expected=3.09375; absDiff=0.004764991183
+OK: search.brent.N; actual=-300000.; expected=-300000.; relDiff=0.
+OK: search.brent.Mx; actual=-30977637.8716034; expected=-30977637.8716034; relDiff=0.
+OK: search.brent.My; actual=-0.000000000582; expected=0.; absDiff=0.000000000582
+OK: search.secant.N; actual=-300000.; expected=-300000.; relDiff=0.
+OK: search.secant.Mx; actual=-30985149.9118327; expected=-30985149.9118327; relDiff=0.
+OK: search.secant.My; actual=0.00000000032; expected=0.; absDiff=0.00000000032
+RUN: TestLimitSearchSecantFinalizesCheckedRoot
+OK: limitSearch.secant.resultObject
+OK: limitSearch.secant.converged
+OK: limitSearch.secant.method
+OK: limitSearch.secant.root; actual=0.75; expected=0.75; absDiff=0.
+RUN: TestLimitSearchBisectionIterationLimitFails
+OK: limitSearch.bisection.resultObject
+OK: limitSearch.bisection.iterationLimitHit
+OK: limitSearch.bisection.notConverged
+OK: limitSearch.bisection.limitState
+OK: limitSearch.bisection.noFakeLimit
+RUN: TestAudit02GenericUltimateSearch
+OK: audit02.genericUltimate.succeeded
+OK: audit02.genericUltimate.lambda; actual=1.25; expected=1.25; absDiff=0.
+OK: audit02.genericUltimate.method
+RUN: TestAudit02GenericLoadMultiplierMatrix
+OK: audit02.genericMultiplier.2.Bisection.0.75.success
+OK: audit02.genericMultiplier.2.Bisection.0.75.point
+OK: audit02.genericMultiplier.2.Bisection.0.75.lambda; actual=0.749999046326; expected=0.75; absDiff=0.000000953674
+OK: audit02.genericMultiplier.2.Bisection.0.75.loads; actual=0.749999046326; expected=0.749999046326; absDiff=0.
+OK: audit02.genericMultiplier.2.Bisection.0.75.method
+OK: audit02.genericMultiplier.2.Bisection.0.75.resetPoint
+OK: audit02.genericMultiplier.2.Bisection.0.75.resetState
+OK: audit02.genericMultiplier.2.Bisection.0.75.resetExecution
+OK: audit02.genericMultiplier.2.Bisection.0.75.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.2.Bisection.5.25.success
+OK: audit02.genericMultiplier.2.Bisection.5.25.point
+OK: audit02.genericMultiplier.2.Bisection.5.25.lambda; actual=5.249999046326; expected=5.25; absDiff=0.000000953674
+OK: audit02.genericMultiplier.2.Bisection.5.25.loads; actual=5.249999046326; expected=5.249999046326; absDiff=0.
+OK: audit02.genericMultiplier.2.Bisection.5.25.method
+OK: audit02.genericMultiplier.2.Bisection.5.25.resetPoint
+OK: audit02.genericMultiplier.2.Bisection.5.25.resetState
+OK: audit02.genericMultiplier.2.Bisection.5.25.resetExecution
+OK: audit02.genericMultiplier.2.Bisection.5.25.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.2.Bisection.6.success
+OK: audit02.genericMultiplier.2.Bisection.6.point
+OK: audit02.genericMultiplier.2.Bisection.6.lambda; actual=5.999999046326; expected=6.; absDiff=0.000000953674
+OK: audit02.genericMultiplier.2.Bisection.6.loads; actual=5.999999046326; expected=5.999999046326; absDiff=0.
+OK: audit02.genericMultiplier.2.Bisection.6.method
+OK: audit02.genericMultiplier.2.Bisection.6.resetPoint
+OK: audit02.genericMultiplier.2.Bisection.6.resetState
+OK: audit02.genericMultiplier.2.Bisection.6.resetExecution
+OK: audit02.genericMultiplier.2.Bisection.6.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.2.Bisection.8.boundCode
+OK: audit02.genericMultiplier.2.Bisection.8.noPoint
+OK: audit02.genericMultiplier.2.Bisection.8.noCapacity; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.2.Bisection.8.maxProbed; actual=6.; expected=6.; absDiff=0.
+OK: audit02.genericMultiplier.2.Bisection.8.resetPoint
+OK: audit02.genericMultiplier.2.Bisection.8.resetState
+OK: audit02.genericMultiplier.2.Bisection.8.resetExecution
+OK: audit02.genericMultiplier.2.Bisection.8.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.2.Brent.0.75.success
+OK: audit02.genericMultiplier.2.Brent.0.75.point
+OK: audit02.genericMultiplier.2.Brent.0.75.lambda; actual=0.75; expected=0.75; absDiff=0.
+OK: audit02.genericMultiplier.2.Brent.0.75.loads; actual=0.75; expected=0.75; absDiff=0.
+OK: audit02.genericMultiplier.2.Brent.0.75.method
+OK: audit02.genericMultiplier.2.Brent.0.75.resetPoint
+OK: audit02.genericMultiplier.2.Brent.0.75.resetState
+OK: audit02.genericMultiplier.2.Brent.0.75.resetExecution
+OK: audit02.genericMultiplier.2.Brent.0.75.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.2.Brent.5.25.success
+OK: audit02.genericMultiplier.2.Brent.5.25.point
+OK: audit02.genericMultiplier.2.Brent.5.25.lambda; actual=5.25; expected=5.25; absDiff=0.
+OK: audit02.genericMultiplier.2.Brent.5.25.loads; actual=5.25; expected=5.25; absDiff=0.
+OK: audit02.genericMultiplier.2.Brent.5.25.method
+OK: audit02.genericMultiplier.2.Brent.5.25.resetPoint
+OK: audit02.genericMultiplier.2.Brent.5.25.resetState
+OK: audit02.genericMultiplier.2.Brent.5.25.resetExecution
+OK: audit02.genericMultiplier.2.Brent.5.25.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.2.Brent.6.success
+OK: audit02.genericMultiplier.2.Brent.6.point
+OK: audit02.genericMultiplier.2.Brent.6.lambda; actual=6.; expected=6.; absDiff=0.
+OK: audit02.genericMultiplier.2.Brent.6.loads; actual=6.; expected=6.; absDiff=0.
+OK: audit02.genericMultiplier.2.Brent.6.method
+OK: audit02.genericMultiplier.2.Brent.6.resetPoint
+OK: audit02.genericMultiplier.2.Brent.6.resetState
+OK: audit02.genericMultiplier.2.Brent.6.resetExecution
+OK: audit02.genericMultiplier.2.Brent.6.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.2.Brent.8.boundCode
+OK: audit02.genericMultiplier.2.Brent.8.noPoint
+OK: audit02.genericMultiplier.2.Brent.8.noCapacity; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.2.Brent.8.maxProbed; actual=6.; expected=6.; absDiff=0.
+OK: audit02.genericMultiplier.2.Brent.8.resetPoint
+OK: audit02.genericMultiplier.2.Brent.8.resetState
+OK: audit02.genericMultiplier.2.Brent.8.resetExecution
+OK: audit02.genericMultiplier.2.Brent.8.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.2.Secant.0.75.success
+OK: audit02.genericMultiplier.2.Secant.0.75.point
+OK: audit02.genericMultiplier.2.Secant.0.75.lambda; actual=0.75; expected=0.75; absDiff=0.
+OK: audit02.genericMultiplier.2.Secant.0.75.loads; actual=0.75; expected=0.75; absDiff=0.
+OK: audit02.genericMultiplier.2.Secant.0.75.method
+OK: audit02.genericMultiplier.2.Secant.0.75.resetPoint
+OK: audit02.genericMultiplier.2.Secant.0.75.resetState
+OK: audit02.genericMultiplier.2.Secant.0.75.resetExecution
+OK: audit02.genericMultiplier.2.Secant.0.75.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.2.Secant.5.25.success
+OK: audit02.genericMultiplier.2.Secant.5.25.point
+OK: audit02.genericMultiplier.2.Secant.5.25.lambda; actual=5.25; expected=5.25; absDiff=0.
+OK: audit02.genericMultiplier.2.Secant.5.25.loads; actual=5.25; expected=5.25; absDiff=0.
+OK: audit02.genericMultiplier.2.Secant.5.25.method
+OK: audit02.genericMultiplier.2.Secant.5.25.resetPoint
+OK: audit02.genericMultiplier.2.Secant.5.25.resetState
+OK: audit02.genericMultiplier.2.Secant.5.25.resetExecution
+OK: audit02.genericMultiplier.2.Secant.5.25.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.2.Secant.6.success
+OK: audit02.genericMultiplier.2.Secant.6.point
+OK: audit02.genericMultiplier.2.Secant.6.lambda; actual=6.; expected=6.; absDiff=0.
+OK: audit02.genericMultiplier.2.Secant.6.loads; actual=6.; expected=6.; absDiff=0.
+OK: audit02.genericMultiplier.2.Secant.6.method
+OK: audit02.genericMultiplier.2.Secant.6.resetPoint
+OK: audit02.genericMultiplier.2.Secant.6.resetState
+OK: audit02.genericMultiplier.2.Secant.6.resetExecution
+OK: audit02.genericMultiplier.2.Secant.6.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.2.Secant.8.boundCode
+OK: audit02.genericMultiplier.2.Secant.8.noPoint
+OK: audit02.genericMultiplier.2.Secant.8.noCapacity; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.2.Secant.8.maxProbed; actual=6.; expected=6.; absDiff=0.
+OK: audit02.genericMultiplier.2.Secant.8.resetPoint
+OK: audit02.genericMultiplier.2.Secant.8.resetState
+OK: audit02.genericMultiplier.2.Secant.8.resetExecution
+OK: audit02.genericMultiplier.2.Secant.8.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.recovery.2.point
+OK: audit02.genericMultiplier.recovery.2.lambda; actual=1.099999427795; expected=1.1; absDiff=0.000000572205
+OK: audit02.genericMultiplier.recovery.2.upperFailed
+OK: audit02.genericMultiplier.3.Bisection.0.75.success
+OK: audit02.genericMultiplier.3.Bisection.0.75.point
+OK: audit02.genericMultiplier.3.Bisection.0.75.lambda; actual=0.75; expected=0.75; absDiff=0.
+OK: audit02.genericMultiplier.3.Bisection.0.75.loads; actual=0.75; expected=0.75; absDiff=0.
+OK: audit02.genericMultiplier.3.Bisection.0.75.method
+OK: audit02.genericMultiplier.3.Bisection.0.75.resetPoint
+OK: audit02.genericMultiplier.3.Bisection.0.75.resetState
+OK: audit02.genericMultiplier.3.Bisection.0.75.resetExecution
+OK: audit02.genericMultiplier.3.Bisection.0.75.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.3.Bisection.5.25.success
+OK: audit02.genericMultiplier.3.Bisection.5.25.point
+OK: audit02.genericMultiplier.3.Bisection.5.25.lambda; actual=5.25; expected=5.25; absDiff=0.
+OK: audit02.genericMultiplier.3.Bisection.5.25.loads; actual=5.25; expected=5.25; absDiff=0.
+OK: audit02.genericMultiplier.3.Bisection.5.25.method
+OK: audit02.genericMultiplier.3.Bisection.5.25.resetPoint
+OK: audit02.genericMultiplier.3.Bisection.5.25.resetState
+OK: audit02.genericMultiplier.3.Bisection.5.25.resetExecution
+OK: audit02.genericMultiplier.3.Bisection.5.25.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.3.Bisection.6.success
+OK: audit02.genericMultiplier.3.Bisection.6.point
+OK: audit02.genericMultiplier.3.Bisection.6.lambda; actual=6.; expected=6.; absDiff=0.
+OK: audit02.genericMultiplier.3.Bisection.6.loads; actual=6.; expected=6.; absDiff=0.
+OK: audit02.genericMultiplier.3.Bisection.6.method
+OK: audit02.genericMultiplier.3.Bisection.6.resetPoint
+OK: audit02.genericMultiplier.3.Bisection.6.resetState
+OK: audit02.genericMultiplier.3.Bisection.6.resetExecution
+OK: audit02.genericMultiplier.3.Bisection.6.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.3.Bisection.8.boundCode
+OK: audit02.genericMultiplier.3.Bisection.8.noPoint
+OK: audit02.genericMultiplier.3.Bisection.8.noCapacity; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.3.Bisection.8.maxProbed; actual=6.; expected=6.; absDiff=0.
+OK: audit02.genericMultiplier.3.Bisection.8.resetPoint
+OK: audit02.genericMultiplier.3.Bisection.8.resetState
+OK: audit02.genericMultiplier.3.Bisection.8.resetExecution
+OK: audit02.genericMultiplier.3.Bisection.8.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.3.Brent.0.75.success
+OK: audit02.genericMultiplier.3.Brent.0.75.point
+OK: audit02.genericMultiplier.3.Brent.0.75.lambda; actual=0.75; expected=0.75; absDiff=0.
+OK: audit02.genericMultiplier.3.Brent.0.75.loads; actual=0.75; expected=0.75; absDiff=0.
+OK: audit02.genericMultiplier.3.Brent.0.75.method
+OK: audit02.genericMultiplier.3.Brent.0.75.resetPoint
+OK: audit02.genericMultiplier.3.Brent.0.75.resetState
+OK: audit02.genericMultiplier.3.Brent.0.75.resetExecution
+OK: audit02.genericMultiplier.3.Brent.0.75.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.3.Brent.5.25.success
+OK: audit02.genericMultiplier.3.Brent.5.25.point
+OK: audit02.genericMultiplier.3.Brent.5.25.lambda; actual=5.25; expected=5.25; absDiff=0.
+OK: audit02.genericMultiplier.3.Brent.5.25.loads; actual=5.25; expected=5.25; absDiff=0.
+OK: audit02.genericMultiplier.3.Brent.5.25.method
+OK: audit02.genericMultiplier.3.Brent.5.25.resetPoint
+OK: audit02.genericMultiplier.3.Brent.5.25.resetState
+OK: audit02.genericMultiplier.3.Brent.5.25.resetExecution
+OK: audit02.genericMultiplier.3.Brent.5.25.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.3.Brent.6.success
+OK: audit02.genericMultiplier.3.Brent.6.point
+OK: audit02.genericMultiplier.3.Brent.6.lambda; actual=6.; expected=6.; absDiff=0.
+OK: audit02.genericMultiplier.3.Brent.6.loads; actual=6.; expected=6.; absDiff=0.
+OK: audit02.genericMultiplier.3.Brent.6.method
+OK: audit02.genericMultiplier.3.Brent.6.resetPoint
+OK: audit02.genericMultiplier.3.Brent.6.resetState
+OK: audit02.genericMultiplier.3.Brent.6.resetExecution
+OK: audit02.genericMultiplier.3.Brent.6.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.3.Brent.8.boundCode
+OK: audit02.genericMultiplier.3.Brent.8.noPoint
+OK: audit02.genericMultiplier.3.Brent.8.noCapacity; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.3.Brent.8.maxProbed; actual=6.; expected=6.; absDiff=0.
+OK: audit02.genericMultiplier.3.Brent.8.resetPoint
+OK: audit02.genericMultiplier.3.Brent.8.resetState
+OK: audit02.genericMultiplier.3.Brent.8.resetExecution
+OK: audit02.genericMultiplier.3.Brent.8.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.3.Secant.0.75.success
+OK: audit02.genericMultiplier.3.Secant.0.75.point
+OK: audit02.genericMultiplier.3.Secant.0.75.lambda; actual=0.75; expected=0.75; absDiff=0.
+OK: audit02.genericMultiplier.3.Secant.0.75.loads; actual=0.75; expected=0.75; absDiff=0.
+OK: audit02.genericMultiplier.3.Secant.0.75.method
+OK: audit02.genericMultiplier.3.Secant.0.75.resetPoint
+OK: audit02.genericMultiplier.3.Secant.0.75.resetState
+OK: audit02.genericMultiplier.3.Secant.0.75.resetExecution
+OK: audit02.genericMultiplier.3.Secant.0.75.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.3.Secant.5.25.success
+OK: audit02.genericMultiplier.3.Secant.5.25.point
+OK: audit02.genericMultiplier.3.Secant.5.25.lambda; actual=5.25; expected=5.25; absDiff=0.
+OK: audit02.genericMultiplier.3.Secant.5.25.loads; actual=5.25; expected=5.25; absDiff=0.
+OK: audit02.genericMultiplier.3.Secant.5.25.method
+OK: audit02.genericMultiplier.3.Secant.5.25.resetPoint
+OK: audit02.genericMultiplier.3.Secant.5.25.resetState
+OK: audit02.genericMultiplier.3.Secant.5.25.resetExecution
+OK: audit02.genericMultiplier.3.Secant.5.25.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.3.Secant.6.success
+OK: audit02.genericMultiplier.3.Secant.6.point
+OK: audit02.genericMultiplier.3.Secant.6.lambda; actual=6.; expected=6.; absDiff=0.
+OK: audit02.genericMultiplier.3.Secant.6.loads; actual=6.; expected=6.; absDiff=0.
+OK: audit02.genericMultiplier.3.Secant.6.method
+OK: audit02.genericMultiplier.3.Secant.6.resetPoint
+OK: audit02.genericMultiplier.3.Secant.6.resetState
+OK: audit02.genericMultiplier.3.Secant.6.resetExecution
+OK: audit02.genericMultiplier.3.Secant.6.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.3.Secant.8.boundCode
+OK: audit02.genericMultiplier.3.Secant.8.noPoint
+OK: audit02.genericMultiplier.3.Secant.8.noCapacity; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.3.Secant.8.maxProbed; actual=6.; expected=6.; absDiff=0.
+OK: audit02.genericMultiplier.3.Secant.8.resetPoint
+OK: audit02.genericMultiplier.3.Secant.8.resetState
+OK: audit02.genericMultiplier.3.Secant.8.resetExecution
+OK: audit02.genericMultiplier.3.Secant.8.resetLoads; actual=0.; expected=0.; absDiff=0.
+OK: audit02.genericMultiplier.recovery.3.point
+OK: audit02.genericMultiplier.recovery.3.lambda; actual=1.10000038147; expected=1.1; absDiff=0.00000038147
+OK: audit02.genericMultiplier.recovery.3.upperFailed
+OK: audit02.genericMultiplier.missingProblem.internal
+OK: audit02.genericMultiplier.missingProblem.noPoint
+OK: audit03.search.2.Bisection.1.adjacentDistinct
+OK: audit03.search.2.Bisection.1.numerical
+OK: audit03.search.2.Bisection.1.notBound
+OK: audit03.search.2.Bisection.1.noPoint
+OK: audit03.search.2.Bisection.1.noFakeLimit
+OK: audit03.search.2.Bisection.1.finiteWork
+OK: audit03.search.2.Bisection.1.reason
+COMMENT: audit03.search.2.Bisection.1; NumericalFailure; acceptable lambda=0.
+acceptable lambda=1.
+searchMethod=Bisection
+Поиск Bisection остановлен: между границами lambda нет представимого числа, а заданная точность еще не достигнута.
+retainedCapacity
+OK: audit03.search.2.Bisection.2.success
+OK: audit03.search.2.Bisection.2.accuracy
+OK: audit03.search.2.Bisection.2.bounded
+COMMENT: audit03.search.2.Bisection.2; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.
+searchMethod=Bisection
+retained lambda=119999999999999000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.; method=Bisection
+OK: audit03.search.2.Bisection.3.numerical
+OK: audit03.search.2.Bisection.3.notBound
+OK: audit03.search.2.Bisection.3.noPoint
+OK: audit03.search.2.Bisection.3.noFakeLimit
+OK: audit03.search.2.Bisection.3.finiteWork
+OK: audit03.search.2.Bisection.3.reason
+COMMENT: audit03.search.2.Bisection.3; NumericalFailure; acceptable lambda=0.
+Восстановление поиска lambda не уменьшило интервал; следующую пробу невозможно выбрать.
+retainedCapacity
+OK: audit03.search.2.Bisection.4.success
+OK: audit03.search.2.Bisection.4.maxLambda; actual=5.999999046326; expected=6.; absDiff=0.000000953674
+OK: audit03.search.2.Bisection.4.lastProbe; actual=6.; expected=6.; absDiff=0.
+COMMENT: audit03.search.2.Bisection.4; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=1.
+acceptable lambda=2.
+acceptable lambda=4.
+searchMethod=Bisection
+retained lambda=5.999999046326; method=Bisection
+OK: audit03.search.2.Brent.1.adjacentDistinct
+OK: audit03.search.2.Brent.1.numerical
+OK: audit03.search.2.Brent.1.notBound
+OK: audit03.search.2.Brent.1.noPoint
+OK: audit03.search.2.Brent.1.noFakeLimit
+OK: audit03.search.2.Brent.1.finiteWork
+OK: audit03.search.2.Brent.1.reason
+COMMENT: audit03.search.2.Brent.1; NumericalFailure; acceptable lambda=0.
+acceptable lambda=1.
+searchMethod=Brent
+Поиск Brent остановлен: между границами lambda нет представимого шага заданной точности.
+retainedCapacity
+OK: audit03.search.2.Brent.2.success
+OK: audit03.search.2.Brent.2.accuracy
+OK: audit03.search.2.Brent.2.bounded
+COMMENT: audit03.search.2.Brent.2; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.
+searchMethod=Brent
+final lambda=120000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.; method=Brent
+OK: audit03.search.2.Brent.3.numerical
+OK: audit03.search.2.Brent.3.notBound
+OK: audit03.search.2.Brent.3.noPoint
+OK: audit03.search.2.Brent.3.noFakeLimit
+OK: audit03.search.2.Brent.3.finiteWork
+OK: audit03.search.2.Brent.3.reason
+COMMENT: audit03.search.2.Brent.3; NumericalFailure; acceptable lambda=0.
+Восстановление поиска lambda не уменьшило интервал; следующую пробу невозможно выбрать.
+retainedCapacity
+OK: audit03.search.2.Brent.4.success
+OK: audit03.search.2.Brent.4.maxLambda; actual=6.; expected=6.; absDiff=0.
+OK: audit03.search.2.Brent.4.lastProbe; actual=6.; expected=6.; absDiff=0.
+COMMENT: audit03.search.2.Brent.4; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=1.
+acceptable lambda=2.
+acceptable lambda=4.
+searchMethod=Brent
+final lambda=6.; method=Brent
+OK: audit03.search.2.Secant.1.adjacentDistinct
+OK: audit03.search.2.Secant.1.numerical
+OK: audit03.search.2.Secant.1.notBound
+OK: audit03.search.2.Secant.1.noPoint
+OK: audit03.search.2.Secant.1.noFakeLimit
+OK: audit03.search.2.Secant.1.finiteWork
+OK: audit03.search.2.Secant.1.reason
+COMMENT: audit03.search.2.Secant.1; NumericalFailure; acceptable lambda=0.
+acceptable lambda=1.
+searchMethod=Secant
+secantGuard=insideBracket; rawLambda=1.; guardedLambda=1.; bracketLow=1.; bracketHigh=1.
+Поиск Secant остановлен: между границами lambda нет представимого шага заданной точности.
+retainedCapacity
+OK: audit03.search.2.Secant.2.success
+OK: audit03.search.2.Secant.2.accuracy
+OK: audit03.search.2.Secant.2.bounded
+COMMENT: audit03.search.2.Secant.2; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.
+searchMethod=Secant
+final lambda=120000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.; method=Secant
+OK: audit03.search.2.Secant.3.numerical
+OK: audit03.search.2.Secant.3.notBound
+OK: audit03.search.2.Secant.3.noPoint
+OK: audit03.search.2.Secant.3.noFakeLimit
+OK: audit03.search.2.Secant.3.finiteWork
+OK: audit03.search.2.Secant.3.reason
+COMMENT: audit03.search.2.Secant.3; NumericalFailure; acceptable lambda=0.
+Восстановление поиска lambda не уменьшило интервал; следующую пробу невозможно выбрать.
+retainedCapacity
+OK: audit03.search.2.Secant.4.success
+OK: audit03.search.2.Secant.4.maxLambda; actual=6.; expected=6.; absDiff=0.
+OK: audit03.search.2.Secant.4.lastProbe; actual=6.; expected=6.; absDiff=0.
+COMMENT: audit03.search.2.Secant.4; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=1.
+acceptable lambda=2.
+acceptable lambda=4.
+searchMethod=Secant
+final lambda=6.; method=Secant
+OK: audit03.search.3.Bisection.1.adjacentDistinct
+OK: audit03.search.3.Bisection.1.numerical
+OK: audit03.search.3.Bisection.1.notBound
+OK: audit03.search.3.Bisection.1.noPoint
+OK: audit03.search.3.Bisection.1.noFakeLimit
+OK: audit03.search.3.Bisection.1.finiteWork
+OK: audit03.search.3.Bisection.1.reason
+COMMENT: audit03.search.3.Bisection.1; NumericalFailure; acceptable lambda=0.
+acceptable lambda=1.
+searchMethod=Bisection
+Поиск Bisection остановлен: между границами lambda нет представимого числа, а заданная точность еще не достигнута.
+retainedCapacity
+OK: audit03.search.3.Bisection.2.success
+OK: audit03.search.3.Bisection.2.accuracy
+OK: audit03.search.3.Bisection.2.bounded
+COMMENT: audit03.search.3.Bisection.2; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.
+searchMethod=Bisection
+retained lambda=120000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.; method=Bisection
+OK: audit03.search.3.Bisection.3.numerical
+OK: audit03.search.3.Bisection.3.notBound
+OK: audit03.search.3.Bisection.3.noPoint
+OK: audit03.search.3.Bisection.3.noFakeLimit
+OK: audit03.search.3.Bisection.3.finiteWork
+OK: audit03.search.3.Bisection.3.reason
+COMMENT: audit03.search.3.Bisection.3; NumericalFailure; acceptable lambda=0.
+Восстановление поиска lambda не уменьшило интервал; следующую пробу невозможно выбрать.
+retainedCapacity
+OK: audit03.search.3.Bisection.4.success
+OK: audit03.search.3.Bisection.4.maxLambda; actual=6.; expected=6.; absDiff=0.
+OK: audit03.search.3.Bisection.4.lastProbe; actual=6.; expected=6.; absDiff=0.
+COMMENT: audit03.search.3.Bisection.4; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=1.
+acceptable lambda=2.
+acceptable lambda=4.
+searchMethod=Bisection
+retained lambda=6.; method=Bisection
+OK: audit03.search.3.Brent.1.adjacentDistinct
+OK: audit03.search.3.Brent.1.numerical
+OK: audit03.search.3.Brent.1.notBound
+OK: audit03.search.3.Brent.1.noPoint
+OK: audit03.search.3.Brent.1.noFakeLimit
+OK: audit03.search.3.Brent.1.finiteWork
+OK: audit03.search.3.Brent.1.reason
+COMMENT: audit03.search.3.Brent.1; NumericalFailure; acceptable lambda=0.
+acceptable lambda=1.
+searchMethod=Brent
+Поиск Brent остановлен: между границами lambda нет представимого шага заданной точности.
+retainedCapacity
+OK: audit03.search.3.Brent.2.success
+OK: audit03.search.3.Brent.2.accuracy
+OK: audit03.search.3.Brent.2.bounded
+COMMENT: audit03.search.3.Brent.2; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.
+searchMethod=Brent
+final lambda=120000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.; method=Brent
+OK: audit03.search.3.Brent.3.numerical
+OK: audit03.search.3.Brent.3.notBound
+OK: audit03.search.3.Brent.3.noPoint
+OK: audit03.search.3.Brent.3.noFakeLimit
+OK: audit03.search.3.Brent.3.finiteWork
+OK: audit03.search.3.Brent.3.reason
+COMMENT: audit03.search.3.Brent.3; NumericalFailure; acceptable lambda=0.
+Восстановление поиска lambda не уменьшило интервал; следующую пробу невозможно выбрать.
+retainedCapacity
+OK: audit03.search.3.Brent.4.success
+OK: audit03.search.3.Brent.4.maxLambda; actual=6.; expected=6.; absDiff=0.
+OK: audit03.search.3.Brent.4.lastProbe; actual=6.; expected=6.; absDiff=0.
+COMMENT: audit03.search.3.Brent.4; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=1.
+acceptable lambda=2.
+acceptable lambda=4.
+searchMethod=Brent
+final lambda=6.; method=Brent
+OK: audit03.search.3.Secant.1.adjacentDistinct
+OK: audit03.search.3.Secant.1.numerical
+OK: audit03.search.3.Secant.1.notBound
+OK: audit03.search.3.Secant.1.noPoint
+OK: audit03.search.3.Secant.1.noFakeLimit
+OK: audit03.search.3.Secant.1.finiteWork
+OK: audit03.search.3.Secant.1.reason
+COMMENT: audit03.search.3.Secant.1; NumericalFailure; acceptable lambda=0.
+acceptable lambda=1.
+searchMethod=Secant
+secantGuard=insideBracket; rawLambda=1.; guardedLambda=1.; bracketLow=1.; bracketHigh=1.
+Поиск Secant остановлен: между границами lambda нет представимого шага заданной точности.
+retainedCapacity
+OK: audit03.search.3.Secant.2.success
+OK: audit03.search.3.Secant.2.accuracy
+OK: audit03.search.3.Secant.2.bounded
+COMMENT: audit03.search.3.Secant.2; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.
+searchMethod=Secant
+final lambda=120000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.; method=Secant
+OK: audit03.search.3.Secant.3.numerical
+OK: audit03.search.3.Secant.3.notBound
+OK: audit03.search.3.Secant.3.noPoint
+OK: audit03.search.3.Secant.3.noFakeLimit
+OK: audit03.search.3.Secant.3.finiteWork
+OK: audit03.search.3.Secant.3.reason
+COMMENT: audit03.search.3.Secant.3; NumericalFailure; acceptable lambda=0.
+Восстановление поиска lambda не уменьшило интервал; следующую пробу невозможно выбрать.
+retainedCapacity
+OK: audit03.search.3.Secant.4.success
+OK: audit03.search.3.Secant.4.maxLambda; actual=6.; expected=6.; absDiff=0.
+OK: audit03.search.3.Secant.4.lastProbe; actual=6.; expected=6.; absDiff=0.
+COMMENT: audit03.search.3.Secant.4; Тестовый критерий найден.; acceptable lambda=0.
+acceptable lambda=1.
+acceptable lambda=2.
+acceptable lambda=4.
+searchMethod=Secant
+final lambda=6.; method=Secant
+OK: audit03.capacity.realPrecision.numerical
+OK: audit03.capacity.realPrecision.code
+OK: audit03.capacity.realPrecision.noPoint
+OK: audit03.capacity.realPrecision.notBound
+OK: audit03.capacity.realPrecision.finiteWork
+OK: audit03.capacity.realPrecision.calculated
+OK: audit03.capacity.realPrecision.reason
+COMMENT: audit03.capacity.realPrecision; Поиск Bisection остановлен: между границами lambda нет представимого числа, а заданная точность еще не достигнута.
+DIAGNOSTIC: search=lambda=0: нулевая нагрузка принята как точное равновесие нулевой плоскости деформаций.
+probe=1; attempt=0; lambda=0.; Mx=0.; My=0.; converged=True; state=Acceptable; stop=Равновесие заданной плоскости подтверждено по N, Mx и My.; minConcreteStrain=0.; maxConcreteStrain=0.; maxAbsSteelStrain=0.
+probe=2; attempt=0; lambda=1.; Mx=10000000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.000125125958; maxConcreteStrain=0.000125125958; maxAbsSteelStrain=0.000083417305
+probe=3; attempt=0; lambda=2.; Mx=20000000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.000250251915; maxConcreteStrain=0.000250251915; maxAbsSteelStrain=0.00016683461
+probe=4; attempt=0; lambda=4.; Mx=40000000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.00050050383; maxConcreteStrain=0.00050050383; maxAbsSteelStrain=0.00033366922
+probe=5; attempt=0; lambda=8.; Mx=80000000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.00100100766; maxConcreteStrain=0.00100100766; maxAbsSteelStrain=0.00066733844
+probe=6; attempt=0; lambda=16.; Mx=160000000.; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.002002015321; maxConcreteStrain=0.002002015321; maxAbsSteelStrain=0.001334676881
+search=searchMethod=Bisection
+probe=7; attempt=0; lambda=12.; Mx=120000000.; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001501511491; maxConcreteStrain=0.001501511491; maxAbsSteelStrain=0.00100100766
+probe=8; attempt=0; lambda=10.; Mx=100000000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001251259576; maxConcreteStrain=0.001251259576; maxAbsSteelStrain=0.00083417305
+probe=9; attempt=0; lambda=11.; Mx=110000000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001376385533; maxConcreteStrain=0.001376385533; maxAbsSteelStrain=0.000917590355
+probe=10; attempt=0; lambda=11.5; Mx=115000000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001438948512; maxConcreteStrain=0.001438948512; maxAbsSteelStrain=0.000959299008
+probe=11; attempt=0; lambda=11.75; Mx=117500000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001470230001; maxConcreteStrain=0.001470230001; maxAbsSteelStrain=0.000980153334
+probe=12; attempt=0; lambda=11.875; Mx=118750000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001485870746; maxConcreteStrain=0.001485870746; maxAbsSteelStrain=0.000990580497
+probe=13; attempt=0; lambda=11.9375; Mx=119375000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001493691118; maxConcreteStrain=0.001493691118; maxAbsSteelStrain=0.000995794079
+probe=14; attempt=0; lambda=11.96875; Mx=119687500.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001497601305; maxConcreteStrain=0.001497601305; maxAbsSteelStrain=0.00099840087
+probe=15; attempt=0; lambda=11.984375; Mx=119843750.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499556398; maxConcreteStrain=0.001499556398; maxAbsSteelStrain=0.000999704265
+probe=16; attempt=0; lambda=11.9921875; Mx=119921875.; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500533944; maxConcreteStrain=0.001500533944; maxAbsSteelStrain=0.001000355963
+probe=17; attempt=0; lambda=11.98828125; Mx=119882812.5; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500045171; maxConcreteStrain=0.001500045171; maxAbsSteelStrain=0.001000030114
+probe=18; attempt=0; lambda=11.986328125; Mx=119863281.25; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499800784; maxConcreteStrain=0.001499800784; maxAbsSteelStrain=0.000999867189
+probe=19; attempt=0; lambda=11.9873046875; Mx=119873046.875; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499922978; maxConcreteStrain=0.001499922978; maxAbsSteelStrain=0.000999948652
+probe=20; attempt=0; lambda=11.98779296875; Mx=119877929.6875; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499984074; maxConcreteStrain=0.001499984074; maxAbsSteelStrain=0.000999989383
+probe=21; attempt=0; lambda=11.988037109375; Mx=119880371.09375; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500014623; maxConcreteStrain=0.001500014623; maxAbsSteelStrain=0.001000009748
+probe=22; attempt=0; lambda=11.987915039063; Mx=119879150.390625; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499999348; maxConcreteStrain=0.001499999348; maxAbsSteelStrain=0.000999999566
+probe=23; attempt=0; lambda=11.987976074219; Mx=119879760.742188; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500006985; maxConcreteStrain=0.001500006985; maxAbsSteelStrain=0.001000004657
+probe=24; attempt=0; lambda=11.987945556641; Mx=119879455.566406; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500003167; maxConcreteStrain=0.001500003167; maxAbsSteelStrain=0.001000002111
+probe=25; attempt=0; lambda=11.987930297852; Mx=119879302.978516; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500001258; maxConcreteStrain=0.001500001258; maxAbsSteelStrain=0.001000000838
+probe=26; attempt=0; lambda=11.987922668457; Mx=119879226.68457; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500000303; maxConcreteStrain=0.001500000303; maxAbsSteelStrain=0.001000000202
+probe=27; attempt=0; lambda=11.98791885376; Mx=119879188.537598; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499999826; maxConcreteStrain=0.001499999826; maxAbsSteelStrain=0.000999999884
+probe=28; attempt=0; lambda=11.987920761108; Mx=119879207.611084; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500000064; maxConcreteStrain=0.001500000064; maxAbsSteelStrain=0.001000000043
+probe=29; attempt=0; lambda=11.987919807434; Mx=119879198.074341; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499999945; maxConcreteStrain=0.001499999945; maxAbsSteelStrain=0.000999999963
+probe=30; attempt=0; lambda=11.987920284271; Mx=119879202.842712; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500000005; maxConcreteStrain=0.001500000005; maxAbsSteelStrain=0.001000000003
+probe=31; attempt=0; lambda=11.987920045853; Mx=119879200.458527; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499999975; maxConcreteStrain=0.001499999975; maxAbsSteelStrain=0.000999999983
+probe=32; attempt=0; lambda=11.987920165062; Mx=119879201.65062; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.00149999999; maxConcreteStrain=0.00149999999; maxAbsSteelStrain=0.000999999993
+probe=33; attempt=0; lambda=11.987920224667; Mx=119879202.246666; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499999997; maxConcreteStrain=0.001499999997; maxAbsSteelStrain=0.000999999998
+probe=34; attempt=0; lambda=11.987920254469; Mx=119879202.544689; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500000001; maxConcreteStrain=0.001500000001; maxAbsSteelStrain=0.001000000001
+probe=35; attempt=0; lambda=11.987920239568; Mx=119879202.395678; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499999999; maxConcreteStrain=0.001499999999; maxAbsSteelStrain=0.000999999999
+probe=36; attempt=0; lambda=11.987920247018; Mx=119879202.470183; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=37; attempt=0; lambda=11.987920243293; Mx=119879202.43293; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=38; attempt=0; lambda=11.987920245156; Mx=119879202.451557; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=39; attempt=0; lambda=11.987920246087; Mx=119879202.46087; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=40; attempt=0; lambda=11.987920246553; Mx=119879202.465527; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=41; attempt=0; lambda=11.987920246786; Mx=119879202.467855; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=42; attempt=0; lambda=11.987920246669; Mx=119879202.466691; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=43; attempt=0; lambda=11.987920246727; Mx=119879202.467273; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=44; attempt=0; lambda=11.987920246756; Mx=119879202.467564; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=45; attempt=0; lambda=11.987920246742; Mx=119879202.467419; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=46; attempt=0; lambda=11.987920246749; Mx=119879202.467491; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=47; attempt=0; lambda=11.987920246746; Mx=119879202.467455; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=48; attempt=0; lambda=11.987920246744; Mx=119879202.467437; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=49; attempt=0; lambda=11.987920246743; Mx=119879202.467428; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=50; attempt=0; lambda=11.987920246743; Mx=119879202.467432; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=51; attempt=0; lambda=11.987920246743; Mx=119879202.46743; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=52; attempt=0; lambda=11.987920246743; Mx=119879202.467431; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=53; attempt=0; lambda=11.987920246743; Mx=119879202.467432; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=54; attempt=0; lambda=11.987920246743; Mx=119879202.467431; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=55; attempt=0; lambda=11.987920246743; Mx=119879202.467431; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=56; attempt=0; lambda=11.987920246743; Mx=119879202.467431; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=57; attempt=0; lambda=11.987920246743; Mx=119879202.467431; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=58; attempt=0; lambda=11.987920246743; Mx=119879202.467431; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+
+OK: audit03.capacity.typed.1.status
+OK: audit03.capacity.typed.1.code
+OK: audit03.capacity.typed.1.failure
+OK: audit03.capacity.typed.1.noRetry
+OK: audit03.capacity.typed.1.noPoint
+OK: audit03.capacity.typed.1.notBaseFail
+OK: audit03.capacity.typed.1.reason
+OK: audit03.capacity.typed.1.notCalculated
+COMMENT: audit03.capacity.typed.1; Solver.Method должен быть Newton или Secant.
+OK: audit03.capacity.typed.2.status
+OK: audit03.capacity.typed.2.code
+OK: audit03.capacity.typed.2.failure
+OK: audit03.capacity.typed.2.noRetry
+OK: audit03.capacity.typed.2.noPoint
+OK: audit03.capacity.typed.2.notBaseFail
+OK: audit03.capacity.typed.2.reason
+OK: audit03.capacity.typed.2.notCalculated
+COMMENT: audit03.capacity.typed.2; Число итераций решателя несущей способности должно быть положительным.
+OK: audit03.capacity.typed.3.status
+OK: audit03.capacity.typed.3.code
+OK: audit03.capacity.typed.3.failure
+OK: audit03.capacity.typed.3.noRetry
+OK: audit03.capacity.typed.3.noPoint
+OK: audit03.capacity.typed.3.notBaseFail
+OK: audit03.capacity.typed.3.reason
+OK: audit03.capacity.typed.3.notCalculated
+COMMENT: audit03.capacity.typed.3; Модель сечения не передана расчетчику несущей способности.
+OK: audit03.capacity.typed.4.status
+OK: audit03.capacity.typed.4.code
+OK: audit03.capacity.typed.4.failure
+OK: audit03.capacity.typed.4.noRetry
+OK: audit03.capacity.typed.4.noPoint
+OK: audit03.capacity.typed.4.notBaseFail
+OK: audit03.capacity.typed.4.reason
+OK: audit03.capacity.typed.4.notCalculated
+COMMENT: audit03.capacity.typed.4; Материал бетона не передан расчетчику несущей способности.
+OK: audit03.capacity.typed.5.status
+OK: audit03.capacity.typed.5.code
+OK: audit03.capacity.typed.5.failure
+OK: audit03.capacity.typed.5.noRetry
+OK: audit03.capacity.typed.5.noPoint
+OK: audit03.capacity.typed.5.notBaseFail
+OK: audit03.capacity.typed.5.reason
+OK: audit03.capacity.typed.5.notCalculated
+COMMENT: audit03.capacity.typed.5; В модели сечения нет бетонных элементов.
+OK: audit03.capacity.typed.6.status
+OK: audit03.capacity.typed.6.code
+OK: audit03.capacity.typed.6.failure
+OK: audit03.capacity.typed.6.noRetry
+OK: audit03.capacity.typed.6.noPoint
+OK: audit03.capacity.typed.6.notBaseFail
+OK: audit03.capacity.typed.6.reason
+COMMENT: audit03.capacity.typed.6; Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена.
+OK: audit03.capacity.typed.7.status
+OK: audit03.capacity.typed.7.code
+OK: audit03.capacity.typed.7.failure
+OK: audit03.capacity.typed.7.noRetry
+OK: audit03.capacity.typed.7.noPoint
+OK: audit03.capacity.typed.7.notBaseFail
+OK: audit03.capacity.typed.7.reason
+OK: audit03.capacity.typed.7.notCalculated
+COMMENT: audit03.capacity.typed.7; Минимальный шаг line search UltimateStrain должен быть больше 0 и не больше начального демпфирования.
+OK: audit03.capacity.typed.8.status
+OK: audit03.capacity.typed.8.code
+OK: audit03.capacity.typed.8.failure
+OK: audit03.capacity.typed.8.noRetry
+OK: audit03.capacity.typed.8.noPoint
+OK: audit03.capacity.typed.8.notBaseFail
+OK: audit03.capacity.typed.8.reason
+OK: audit03.capacity.typed.8.notCalculated
+COMMENT: audit03.capacity.typed.8; Начальный коэффициент демпфирования UltimateStrain должен быть больше 0 и не больше 1.
+OK: audit03.capacity.typed.9.status
+OK: audit03.capacity.typed.9.code
+OK: audit03.capacity.typed.9.failure
+OK: audit03.capacity.typed.9.noRetry
+OK: audit03.capacity.typed.9.noPoint
+OK: audit03.capacity.typed.9.notBaseFail
+OK: audit03.capacity.typed.9.reason
+OK: audit03.capacity.typed.9.notCalculated
+COMMENT: audit03.capacity.typed.9; Минимальный шаг line search UltimateStrain должен быть больше 0 и не больше начального демпфирования.
+OK: audit03.ultimate.2.1.notAccepted
+OK: audit03.ultimate.2.1.typedCause
+OK: audit03.ultimate.2.1.noPoint
+OK: audit03.ultimate.2.1.finiteProbes
+OK: audit03.ultimate.2.1.noNumericalAttempt
+OK: audit03.ultimate.2.1.status
+OK: audit03.ultimate.2.1.code
+OK: audit03.ultimate.2.1.resultKind
+OK: audit03.ultimate.2.1.noPhysicalPoint
+OK: audit03.ultimate.2.1.lifecycle
+OK: audit03.ultimate.2.1.reason
+COMMENT: audit03.ultimate.2.1; calls=0; Минимальный шаг line search UltimateStrain должен быть больше 0 и не больше начального демпфирования.
+OK: audit03.ultimate.2.2.notAccepted
+OK: audit03.ultimate.2.2.typedCause
+OK: audit03.ultimate.2.2.noPoint
+OK: audit03.ultimate.2.2.finiteProbes
+OK: audit03.ultimate.2.2.noNumericalAttempt
+OK: audit03.ultimate.2.2.status
+OK: audit03.ultimate.2.2.code
+OK: audit03.ultimate.2.2.resultKind
+OK: audit03.ultimate.2.2.noPhysicalPoint
+OK: audit03.ultimate.2.2.lifecycle
+OK: audit03.ultimate.2.2.reason
+COMMENT: audit03.ultimate.2.2; calls=0; Начальный коэффициент демпфирования UltimateStrain должен быть больше 0 и не больше 1.
+OK: audit03.ultimate.2.3.notAccepted
+OK: audit03.ultimate.2.3.typedCause
+OK: audit03.ultimate.2.3.noPoint
+OK: audit03.ultimate.2.3.finiteProbes
+OK: audit03.ultimate.2.3.noNumericalAttempt
+OK: audit03.ultimate.2.3.status
+OK: audit03.ultimate.2.3.code
+OK: audit03.ultimate.2.3.resultKind
+OK: audit03.ultimate.2.3.noPhysicalPoint
+OK: audit03.ultimate.2.3.lifecycle
+OK: audit03.ultimate.2.3.reason
+COMMENT: audit03.ultimate.2.3; calls=0; Минимальный шаг line search UltimateStrain должен быть больше 0 и не больше начального демпфирования.
+OK: audit03.ultimate.2.4.notAccepted
+OK: audit03.ultimate.2.4.typedCause
+OK: audit03.ultimate.2.4.noPoint
+OK: audit03.ultimate.2.4.finiteProbes
+OK: audit03.ultimate.2.4.noNumericalAttempt
+OK: audit03.ultimate.2.4.status
+OK: audit03.ultimate.2.4.code
+OK: audit03.ultimate.2.4.resultKind
+OK: audit03.ultimate.2.4.noPhysicalPoint
+OK: audit03.ultimate.2.4.lifecycle
+OK: audit03.ultimate.2.4.reason
+COMMENT: audit03.ultimate.2.4; calls=0; Число итераций UltimateStrain должно быть положительным.
+OK: audit03.ultimate.2.5.notAccepted
+OK: audit03.ultimate.2.5.typedCause
+OK: audit03.ultimate.2.5.noPoint
+OK: audit03.ultimate.2.5.finiteProbes
+OK: audit03.ultimate.2.5.noNumericalAttempt
+OK: audit03.ultimate.2.5.status
+OK: audit03.ultimate.2.5.code
+OK: audit03.ultimate.2.5.resultKind
+OK: audit03.ultimate.2.5.noPhysicalPoint
+OK: audit03.ultimate.2.5.lifecycle
+OK: audit03.ultimate.2.5.reason
+COMMENT: audit03.ultimate.2.5; calls=0; Ограничения приращений UltimateStrain должны быть конечными неотрицательными числами.
+OK: audit03.ultimate.2.6.notAccepted
+OK: audit03.ultimate.2.6.typedCause
+OK: audit03.ultimate.2.6.noPoint
+OK: audit03.ultimate.2.6.finiteProbes
+OK: audit03.ultimate.2.6.stagnationReason
+OK: audit03.ultimate.2.6.status
+OK: audit03.ultimate.2.6.code
+OK: audit03.ultimate.2.6.resultKind
+OK: audit03.ultimate.2.6.noPhysicalPoint
+OK: audit03.ultimate.2.6.lifecycle
+OK: audit03.ultimate.2.6.reason
+COMMENT: audit03.ultimate.2.6; calls=4; UltimateStrain остановлен: приращение плоскости деформаций меньше представимого шага Double, требуемые допуски не достигнуты.
+OK: audit03.ultimate.2.7.notAccepted
+OK: audit03.ultimate.2.7.typedCause
+OK: audit03.ultimate.2.7.noPoint
+OK: audit03.ultimate.2.7.finiteProbes
+OK: audit03.ultimate.2.7.failedProbeNotOverwritten
+OK: audit03.ultimate.2.7.status
+OK: audit03.ultimate.2.7.code
+OK: audit03.ultimate.2.7.resultKind
+OK: audit03.ultimate.2.7.noPhysicalPoint
+OK: audit03.ultimate.2.7.lifecycle
+OK: audit03.ultimate.2.7.reason
+COMMENT: audit03.ultimate.2.7; calls=2; Ошибочная настройка тестового callback-а Якобиана.
+OK: audit03.ultimate.2.8.notAccepted
+OK: audit03.ultimate.2.8.typedCause
+OK: audit03.ultimate.2.8.noPoint
+OK: audit03.ultimate.2.8.finiteProbes
+OK: audit03.ultimate.2.8.failedProbeNotOverwritten
+OK: audit03.ultimate.2.8.status
+OK: audit03.ultimate.2.8.code
+OK: audit03.ultimate.2.8.resultKind
+OK: audit03.ultimate.2.8.noPhysicalPoint
+OK: audit03.ultimate.2.8.lifecycle
+OK: audit03.ultimate.2.8.reason
+COMMENT: audit03.ultimate.2.8; calls=2; Тестовый callback не получил обязательную зависимость.
+OK: audit03.ultimate.2.9.notAccepted
+OK: audit03.ultimate.2.9.typedCause
+OK: audit03.ultimate.2.9.noPoint
+OK: audit03.ultimate.2.9.finiteProbes
+OK: audit03.ultimate.2.9.failedProbeNotOverwritten
+OK: audit03.ultimate.2.9.status
+OK: audit03.ultimate.2.9.code
+OK: audit03.ultimate.2.9.resultKind
+OK: audit03.ultimate.2.9.noPhysicalPoint
+OK: audit03.ultimate.2.9.lifecycle
+OK: audit03.ultimate.2.9.reason
+COMMENT: audit03.ultimate.2.9; calls=2; Вырождение тестовой касательной.
+OK: audit03.ultimate.2.10.notAccepted
+OK: audit03.ultimate.2.10.typedCause
+OK: audit03.ultimate.2.10.noPoint
+OK: audit03.ultimate.2.10.finiteProbes
+OK: audit03.ultimate.2.10.failedProbeNotOverwritten
+OK: audit03.ultimate.2.10.status
+OK: audit03.ultimate.2.10.code
+OK: audit03.ultimate.2.10.resultKind
+OK: audit03.ultimate.2.10.noPhysicalPoint
+OK: audit03.ultimate.2.10.lifecycle
+OK: audit03.ultimate.2.10.reason
+COMMENT: audit03.ultimate.2.10; calls=2; Шаг Newton UltimateStrain не выполнен: Тестовое нарушение программного контракта.
+OK: audit03.ultimate.2.11.notAccepted
+OK: audit03.ultimate.2.11.typedCause
+OK: audit03.ultimate.2.11.noPoint
+OK: audit03.ultimate.2.11.finiteProbes
+OK: audit03.ultimate.2.11.failedProbeNotOverwritten
+OK: audit03.ultimate.2.11.status
+OK: audit03.ultimate.2.11.code
+OK: audit03.ultimate.2.11.resultKind
+OK: audit03.ultimate.2.11.noPhysicalPoint
+OK: audit03.ultimate.2.11.lifecycle
+OK: audit03.ultimate.2.11.reason
+COMMENT: audit03.ultimate.2.11; calls=2; Шаг Newton UltimateStrain не выполнен: Тестовое переполнение численной операции.
+OK: audit03.ultimate.2.12.controlledContractError
+OK: audit03.ultimate.2.13.notAccepted
+OK: audit03.ultimate.2.13.typedCause
+OK: audit03.ultimate.2.13.noPoint
+OK: audit03.ultimate.2.13.finiteProbes
+OK: audit03.ultimate.2.13.noNumericalAttempt
+OK: audit03.ultimate.2.13.status
+OK: audit03.ultimate.2.13.code
+OK: audit03.ultimate.2.13.resultKind
+OK: audit03.ultimate.2.13.noPhysicalPoint
+OK: audit03.ultimate.2.13.lifecycle
+OK: audit03.ultimate.2.13.reason
+COMMENT: audit03.ultimate.2.13; calls=0; Общий поиск UltimateStrain не получил траекторию нагрузки.
+OK: audit03.ultimate.3.1.notAccepted
+OK: audit03.ultimate.3.1.typedCause
+OK: audit03.ultimate.3.1.noPoint
+OK: audit03.ultimate.3.1.finiteProbes
+OK: audit03.ultimate.3.1.noNumericalAttempt
+OK: audit03.ultimate.3.1.status
+OK: audit03.ultimate.3.1.code
+OK: audit03.ultimate.3.1.resultKind
+OK: audit03.ultimate.3.1.noPhysicalPoint
+OK: audit03.ultimate.3.1.lifecycle
+OK: audit03.ultimate.3.1.reason
+COMMENT: audit03.ultimate.3.1; calls=0; Минимальный шаг line search UltimateStrain должен быть больше 0 и не больше начального демпфирования.
+OK: audit03.ultimate.3.2.notAccepted
+OK: audit03.ultimate.3.2.typedCause
+OK: audit03.ultimate.3.2.noPoint
+OK: audit03.ultimate.3.2.finiteProbes
+OK: audit03.ultimate.3.2.noNumericalAttempt
+OK: audit03.ultimate.3.2.status
+OK: audit03.ultimate.3.2.code
+OK: audit03.ultimate.3.2.resultKind
+OK: audit03.ultimate.3.2.noPhysicalPoint
+OK: audit03.ultimate.3.2.lifecycle
+OK: audit03.ultimate.3.2.reason
+COMMENT: audit03.ultimate.3.2; calls=0; Начальный коэффициент демпфирования UltimateStrain должен быть больше 0 и не больше 1.
+OK: audit03.ultimate.3.3.notAccepted
+OK: audit03.ultimate.3.3.typedCause
+OK: audit03.ultimate.3.3.noPoint
+OK: audit03.ultimate.3.3.finiteProbes
+OK: audit03.ultimate.3.3.noNumericalAttempt
+OK: audit03.ultimate.3.3.status
+OK: audit03.ultimate.3.3.code
+OK: audit03.ultimate.3.3.resultKind
+OK: audit03.ultimate.3.3.noPhysicalPoint
+OK: audit03.ultimate.3.3.lifecycle
+OK: audit03.ultimate.3.3.reason
+COMMENT: audit03.ultimate.3.3; calls=0; Минимальный шаг line search UltimateStrain должен быть больше 0 и не больше начального демпфирования.
+OK: audit03.ultimate.3.4.notAccepted
+OK: audit03.ultimate.3.4.typedCause
+OK: audit03.ultimate.3.4.noPoint
+OK: audit03.ultimate.3.4.finiteProbes
+OK: audit03.ultimate.3.4.noNumericalAttempt
+OK: audit03.ultimate.3.4.status
+OK: audit03.ultimate.3.4.code
+OK: audit03.ultimate.3.4.resultKind
+OK: audit03.ultimate.3.4.noPhysicalPoint
+OK: audit03.ultimate.3.4.lifecycle
+OK: audit03.ultimate.3.4.reason
+COMMENT: audit03.ultimate.3.4; calls=0; Число итераций UltimateStrain должно быть положительным.
+OK: audit03.ultimate.3.5.notAccepted
+OK: audit03.ultimate.3.5.typedCause
+OK: audit03.ultimate.3.5.noPoint
+OK: audit03.ultimate.3.5.finiteProbes
+OK: audit03.ultimate.3.5.noNumericalAttempt
+OK: audit03.ultimate.3.5.status
+OK: audit03.ultimate.3.5.code
+OK: audit03.ultimate.3.5.resultKind
+OK: audit03.ultimate.3.5.noPhysicalPoint
+OK: audit03.ultimate.3.5.lifecycle
+OK: audit03.ultimate.3.5.reason
+COMMENT: audit03.ultimate.3.5; calls=0; Ограничения приращений UltimateStrain должны быть конечными неотрицательными числами.
+OK: audit03.ultimate.3.6.notAccepted
+OK: audit03.ultimate.3.6.typedCause
+OK: audit03.ultimate.3.6.noPoint
+OK: audit03.ultimate.3.6.finiteProbes
+OK: audit03.ultimate.3.6.stagnationReason
+OK: audit03.ultimate.3.6.status
+OK: audit03.ultimate.3.6.code
+OK: audit03.ultimate.3.6.resultKind
+OK: audit03.ultimate.3.6.noPhysicalPoint
+OK: audit03.ultimate.3.6.lifecycle
+OK: audit03.ultimate.3.6.reason
+COMMENT: audit03.ultimate.3.6; calls=4; UltimateStrain остановлен: приращение плоскости деформаций меньше представимого шага Double, требуемые допуски не достигнуты.
+OK: audit03.ultimate.3.7.notAccepted
+OK: audit03.ultimate.3.7.typedCause
+OK: audit03.ultimate.3.7.noPoint
+OK: audit03.ultimate.3.7.finiteProbes
+OK: audit03.ultimate.3.7.failedProbeNotOverwritten
+OK: audit03.ultimate.3.7.status
+OK: audit03.ultimate.3.7.code
+OK: audit03.ultimate.3.7.resultKind
+OK: audit03.ultimate.3.7.noPhysicalPoint
+OK: audit03.ultimate.3.7.lifecycle
+OK: audit03.ultimate.3.7.reason
+COMMENT: audit03.ultimate.3.7; calls=2; Ошибочная настройка тестового callback-а Якобиана.
+OK: audit03.ultimate.3.8.notAccepted
+OK: audit03.ultimate.3.8.typedCause
+OK: audit03.ultimate.3.8.noPoint
+OK: audit03.ultimate.3.8.finiteProbes
+OK: audit03.ultimate.3.8.failedProbeNotOverwritten
+OK: audit03.ultimate.3.8.status
+OK: audit03.ultimate.3.8.code
+OK: audit03.ultimate.3.8.resultKind
+OK: audit03.ultimate.3.8.noPhysicalPoint
+OK: audit03.ultimate.3.8.lifecycle
+OK: audit03.ultimate.3.8.reason
+COMMENT: audit03.ultimate.3.8; calls=2; Тестовый callback не получил обязательную зависимость.
+OK: audit03.ultimate.3.9.notAccepted
+OK: audit03.ultimate.3.9.typedCause
+OK: audit03.ultimate.3.9.noPoint
+OK: audit03.ultimate.3.9.finiteProbes
+OK: audit03.ultimate.3.9.failedProbeNotOverwritten
+OK: audit03.ultimate.3.9.status
+OK: audit03.ultimate.3.9.code
+OK: audit03.ultimate.3.9.resultKind
+OK: audit03.ultimate.3.9.noPhysicalPoint
+OK: audit03.ultimate.3.9.lifecycle
+OK: audit03.ultimate.3.9.reason
+COMMENT: audit03.ultimate.3.9; calls=2; Вырождение тестовой касательной.
+OK: audit03.ultimate.3.10.notAccepted
+OK: audit03.ultimate.3.10.typedCause
+OK: audit03.ultimate.3.10.noPoint
+OK: audit03.ultimate.3.10.finiteProbes
+OK: audit03.ultimate.3.10.failedProbeNotOverwritten
+OK: audit03.ultimate.3.10.status
+OK: audit03.ultimate.3.10.code
+OK: audit03.ultimate.3.10.resultKind
+OK: audit03.ultimate.3.10.noPhysicalPoint
+OK: audit03.ultimate.3.10.lifecycle
+OK: audit03.ultimate.3.10.reason
+COMMENT: audit03.ultimate.3.10; calls=2; Шаг Newton UltimateStrain не выполнен: Тестовое нарушение программного контракта.
+OK: audit03.ultimate.3.11.notAccepted
+OK: audit03.ultimate.3.11.typedCause
+OK: audit03.ultimate.3.11.noPoint
+OK: audit03.ultimate.3.11.finiteProbes
+OK: audit03.ultimate.3.11.failedProbeNotOverwritten
+OK: audit03.ultimate.3.11.status
+OK: audit03.ultimate.3.11.code
+OK: audit03.ultimate.3.11.resultKind
+OK: audit03.ultimate.3.11.noPhysicalPoint
+OK: audit03.ultimate.3.11.lifecycle
+OK: audit03.ultimate.3.11.reason
+COMMENT: audit03.ultimate.3.11; calls=2; Шаг Newton UltimateStrain не выполнен: Тестовое переполнение численной операции.
+OK: audit03.ultimate.3.12.controlledContractError
+OK: audit03.ultimate.3.13.notAccepted
+OK: audit03.ultimate.3.13.typedCause
+OK: audit03.ultimate.3.13.noPoint
+OK: audit03.ultimate.3.13.finiteProbes
+OK: audit03.ultimate.3.13.noNumericalAttempt
+OK: audit03.ultimate.3.13.status
+OK: audit03.ultimate.3.13.code
+OK: audit03.ultimate.3.13.resultKind
+OK: audit03.ultimate.3.13.noPhysicalPoint
+OK: audit03.ultimate.3.13.lifecycle
+OK: audit03.ultimate.3.13.reason
+COMMENT: audit03.ultimate.3.13; calls=0; Общий поиск UltimateStrain не получил траекторию нагрузки.
+
+DONE: audit03.ultimate.3.13

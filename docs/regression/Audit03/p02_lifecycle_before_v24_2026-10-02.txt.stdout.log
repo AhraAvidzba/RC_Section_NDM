@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_pre_p02.xlsm
+SOURCE_SHA256: E585D9B0D0EE29F4BE96B14A841A611778F135590E2FB3ECB8E7CE9EBB1497BB
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5db69099bf38442f9fba3cfbe801e66d\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_GEOMETRY_LIFECYCLE: passed=27; failed=0
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

@@ -40,6 +40,8 @@ Private mDiagnosticsEnabled As Boolean ' Нужно ли копить диагн
 Private mLastRunner As CStateSolutionRunner ' Runner последнего реального solve; Nothing при cache-hit.
 Private mLastStateWasReused As Boolean ' True, если state взят из repository.
 
+' Задает самостоятельные настройки solve для прямого использования provider-а.
+' Excel-сценарий затем заменяет их нормализованными значениями Config.
 Private Sub Class_Initialize()
     mSolverMethod = "Newton"
     mLoadSteps = 8

@@ -1,0 +1,35 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_f06_fixed.xlsm
+SOURCE_SHA256: B6B6119E2C70DC286B47098A93E7981D463DF6FE86DD095D06F1873033A4832E
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f6e4a274e9004666851e96f39859598b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestSectionSolver.RunAudit03RetryAttemptSessionTests =====
+SUITE_STARTED: modTestSectionSolver.RunAudit03RetryAttemptSessionTests; 2026-10-02T04:04:11
+EXCEL_AFTER_SUITE: pid=23688; workingSet=126763008; privateBytes=87183360; cpu=2.515625
+OK: audit03.retry.firstFailure
+OK: audit03.retry.firstSolve
+OK: audit03.retry.sameFailure
+OK: audit03.retry.sameNoSolve
+OK: audit03.retry.noDisabledDiagnostic
+OK: audit03.retry.newPlane
+OK: audit03.retry.newTarget
+OK: audit03.retry.newTolerance
+OK: audit03.retry.newSteps
+OK: audit03.retry.newLineSearch
+OK: audit03.retry.newSession
+OK: audit03.retry.canRecover
+OK: audit03.retry.recoverySolve
+OK: audit03.retry.successNotFailureCache
+OK: audit03.retry.successSolvedAgain
+OK: audit03.retry.configurationNotCached
+OK: audit03.retry.otherContextClosesSession
+OK: audit03.retry.otherMaterialClosesSession
+OK: audit03.retry.revisionClosesSession
+OK: audit03.retry.boundedScalarMemory
+OK: audit03.retry.lastAttemptRetained
+OK: audit03.retry.evictedAttemptCanRun
+TOTAL_RETRY_SESSION: passed=22; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionSolver.RunAudit03RetryAttemptSessionTests; 2026-10-02T04:04:11
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

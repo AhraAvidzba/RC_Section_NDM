@@ -664,7 +664,7 @@ Private Sub RunCombination(ByVal index As Long)
 
     Dim profile As CCalculationProfile
     Set profile = mProfiles.ProfileById(mInputs(index).ProfileId)
-    mResults(index).ProfileId = profile.ProfileId
+    mResults(index).SetProfileId profile.ProfileId
     ReportValue "Профиль", profile.ProfileId & " / " & profile.DisplayName
     ReportValue "N", mReport.FormatForce(mInputs(index).N)
     ReportValue "Mx расчетный", mReport.FormatMx(mInputs(index).Mx)
@@ -985,7 +985,7 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
         ByVal materialRole As ECalculationPurpose, ByVal spec As CMaterialModelSpec, _
         Optional ByVal useDiagramExtension As Boolean = True, _
         Optional ByVal mergeIntoDirectStateStatus As Boolean = True) As CStateSolutionRunner
-    mResults(index).DiagramExtensionEnabled = mMaterialProvider.DiagramExtensionEnabled
+    mResults(index).SetDiagramExtensionEnabled mMaterialProvider.DiagramExtensionEnabled
     Dim effectiveDiagramExtension As Boolean
     effectiveDiagramExtension = (useDiagramExtension And mResults(index).DiagramExtensionEnabled)
 
@@ -1310,12 +1310,12 @@ End Function
 Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     If Len(Trim$(reason)) = 0 Then reason = "Некорректное сочетание нагрузок."
     mInputs(index).InputError = reason
-    mResults(index).ProfileId = mInputs(index).ProfileId
+    mResults(index).SetProfileId mInputs(index).ProfileId
     mResults(index).SetDirectStateMeta InvalidInputMeta(rkDirectState, reason)
     mResults(index).SetStabilityMeta InvalidInputMeta(rkStability, reason), reason
     StoreInvalidCapacity index, reason
     If Not mMaterialProvider Is Nothing Then
-        mResults(index).DiagramExtensionEnabled = mMaterialProvider.DiagramExtensionEnabled
+        mResults(index).SetDiagramExtensionEnabled mMaterialProvider.DiagramExtensionEnabled
     End If
     AppendDiagnostic index
 End Sub
@@ -1447,9 +1447,11 @@ End Sub
 ' Сбрасывает все результаты одной строки перед повторным расчетом LC.
 ' Входные усилия и комментарий не трогаются.
 Private Sub ClearResultRow(ByVal index As Long)
-    If mResults(index) Is Nothing Then Set mResults(index) = New CCombinationResult
+    ' Прежний результат мог быть выдан writer-у или другому потребителю.
+    ' Новый запуск не должен менять объект, на который у него осталась ссылка.
+    Set mResults(index) = New CCombinationResult
     mResults(index).Clear CAPACITY_PATH_NONE
-    mResults(index).ProfileId = mInputs(index).ProfileId
+    mResults(index).SetProfileId mInputs(index).ProfileId
 End Sub
 
 ' Добавляет одну строку в текстовую диагностику batch-расчета.
@@ -1731,6 +1733,7 @@ End Property
 Public Property Get ResultAt(ByVal index As Long) As CCombinationResult
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3943, _
         "CBatchSectionCalculator", "Номер результата сочетания вне диапазона пакета."
+    mResults(index).Freeze
     Set ResultAt = mResults(index)
 End Property
 
@@ -2007,13 +2010,15 @@ End Property
 ' которые удобны regression-тестам: отдельно проверяются lambda capacity
 ' и факт сходимости прямого НДС.
 
-' Повторяет production-маршрут трещин для уже рассчитанного LC, сохраняя
-' repository. Нужен интеграционной проверке cache-hit CurrentCrackedState:
+' Повторяет production-маршрут до публикации всего LC и возвращает первый
+' неизменяемый crack-result для сравнения. Repository остается рабочим:
 ' новые formation/width-калькуляторы получают найденные состояния без solve.
-Public Sub TestRepeatCrackCalculation(ByVal index As Long)
+Public Function TestRepeatCrackCalculation(ByVal index As Long) As CCrackResult
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 4270, _
         "CBatchSectionCalculator", "Индекс тестового сочетания вне диапазона."
     Dim profile As CCalculationProfile
     Set profile = mProfiles.ProfileById(mInputs(index).ProfileId)
+    Set TestRepeatCrackCalculation = mResults(index).CrackResult
+    TestRepeatCrackCalculation.Freeze
     RunCrackWidth index, profile
-End Sub
+End Function

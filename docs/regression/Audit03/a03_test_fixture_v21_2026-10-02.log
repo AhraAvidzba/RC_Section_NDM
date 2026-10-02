@@ -1,0 +1,5 @@
+C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\Update-Audit03TestModule.ps1 : A param
+eter cannot be found that matches parameter name 'SourcePath'.
+    + CategoryInfo          : InvalidArgument: (:) [Update-Audit03TestModule.ps1], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : NamedParameterNotFound,Update-Audit03TestModule.ps1
+ 

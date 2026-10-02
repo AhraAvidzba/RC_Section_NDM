@@ -16,6 +16,7 @@ Option Explicit
 ' модели прочности. Плоскость, усилия, невязки и экстремумы принадлежат State
 ' и не дублируются здесь. Класс не запускает solver; display формирует policy.
 
+Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
 Private mMeta As CResultMeta ' Инженерный итог проверки прямого НДС.
 Private mState As CSectionStateResult ' Единственный численный снимок named state.
 Private mExtensionEnabled As Boolean ' Настройка глобального Extension при запуске.
@@ -32,6 +33,7 @@ End Sub
 
 ' Сбрасывает состояние и meta для безопасного повторного использования.
 Public Sub Clear()
+    AssertWritable
     Set mState = Nothing
     Set mMeta = New CResultMeta
     mMeta.SetNotApplicable rkDirectState
@@ -45,6 +47,7 @@ End Sub
 
 ' Устанавливает итоговую meta; пустая meta является нарушением контракта.
 Public Sub SetMeta(ByVal meta As CResultMeta)
+    AssertWritable
     If meta Is Nothing Then
         Set mMeta = New CResultMeta
         mMeta.SetResult rsInternalError, rcInternalError, rkDirectState, _
@@ -59,6 +62,7 @@ End Sub
 Public Sub StoreStateResult(ByVal stateResult As CSectionStateResult, ByVal extensionEnabledValue As Boolean, _
         Optional ByVal physicalConcrete As CMaterialDiagram = Nothing, _
         Optional ByVal physicalSteel As CMaterialDiagram = Nothing)
+    AssertWritable
     Clear
     Set mState = stateResult
     mExtensionEnabled = extensionEnabledValue
@@ -140,4 +144,20 @@ Private Sub AddStrainReserve(ByRef reserve As Double, ByVal hasValue As Boolean,
     Dim candidate As Double
     candidate = Abs(limitValue) / Abs(actualValue)
     If candidate < reserve Then reserve = candidate
+End Sub
+
+' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
+' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
+' но их fill/reset API больше не могут изменить опубликованный результат.
+Friend Sub Freeze()
+    If mFrozen Then Exit Sub
+    If Not mState Is Nothing Then mState.Freeze
+    mFrozen = True
+End Sub
+
+' Явно отклоняет изменение уже выданного результата вместо тихой порчи снимка.
+' Для повторного расчета workflow создает новый объект, сохраняя прежние ссылки.
+Private Sub AssertWritable()
+    If mFrozen Then Err.Raise vbObjectError + 4220, "CDirectStateResult", _
+        "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub

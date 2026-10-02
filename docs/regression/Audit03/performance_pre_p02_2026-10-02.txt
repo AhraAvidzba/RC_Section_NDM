@@ -1,0 +1,4 @@
+﻿ENVIRONMENT|date=2026-10-02T03:04:44|powershell=5.1.19041.6456|os=Microsoft Windows NT 10.0.19045.0|repeats=5
+GIT|3d0112e4346f741a923b93a7f7c9a3bf9da64573|dirty=True
+EXCEL|version=16.0|build=10417|operatingSystem=Windows (32-bit) NT 10.00
+SCRIPT ERROR: Duration method not unique: WriteResults

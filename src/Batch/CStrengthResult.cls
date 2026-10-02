@@ -19,6 +19,7 @@ Option Explicit
 ' Объект является источником typed meta для вывода strength-блока: writer-ы
 ' получают внешний статус через CResultStatusPolicy, а не выводят его из текста ошибок.
 
+Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
 Private mDirectState As CDirectStateResult ' Прямое НДС от заданного сочетания.
 Private mCapacity As CCapacityResult ' Предельная несущая способность по выбранной lambda-траектории.
 Private mPolicy As CResultStatusPolicy ' Общий typed/display приоритет, без собственной копии словаря.
@@ -31,6 +32,7 @@ End Sub
 ' Очищает оба подрезультата. Незапрошенная capacity имеет нейтральную typed meta,
 ' но не содержит фиктивной найденной точки или физического состояния.
 Public Sub Clear(ByVal defaultCapacityPath As String)
+    AssertWritable
     Set mDirectState = New CDirectStateResult
     Set mCapacity = New CCapacityResult
     mCapacity.InitializeSkipped "Несущая способность не запрошена.", defaultCapacityPath
@@ -38,6 +40,7 @@ End Sub
 
 ' Сохраняет typed meta прямого НДС без изменения его численных данных.
 Public Sub SetDirectMeta(ByVal meta As CResultMeta)
+    AssertWritable
     If mDirectState Is Nothing Then Set mDirectState = New CDirectStateResult
     mDirectState.SetMeta meta
 End Sub
@@ -46,12 +49,14 @@ End Sub
 Public Sub StoreDirectFromStateResult(ByVal stateResult As CSectionStateResult, ByVal extensionEnabled As Boolean, _
         Optional ByVal physicalConcrete As CMaterialDiagram = Nothing, _
         Optional ByVal physicalSteel As CMaterialDiagram = Nothing)
+    AssertWritable
     If mDirectState Is Nothing Then Set mDirectState = New CDirectStateResult
     mDirectState.StoreStateResult stateResult, extensionEnabled, physicalConcrete, physicalSteel
 End Sub
 
 ' Сохраняет полный capacity-result как вторую ветвь strength-subtree.
 Public Sub StoreCapacityResult(ByVal capacity As CCapacityResult)
+    AssertWritable
     Set mCapacity = capacity
 End Sub
 
@@ -105,7 +110,25 @@ End Property
 ' Объединяет причины последовательных прямых State одного workflow, сохраняя
 ' комментарий выбранной причины и не стирая его пустым аргументом агрегации.
 Public Sub MergeDirectMeta(ByVal meta As CResultMeta)
+    AssertWritable
     If meta Is Nothing Then Exit Sub
     If mPolicy Is Nothing Then Set mPolicy = New CResultStatusPolicy
     SetDirectMeta mPolicy.WorstResultMeta(rkDirectState, DirectMeta, meta)
+End Sub
+
+' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
+' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
+' но их fill/reset API больше не могут изменить опубликованный результат.
+Friend Sub Freeze()
+    If mFrozen Then Exit Sub
+    If Not mDirectState Is Nothing Then mDirectState.Freeze
+    If Not mCapacity Is Nothing Then mCapacity.Freeze
+    mFrozen = True
+End Sub
+
+' Явно отклоняет изменение уже выданного результата вместо тихой порчи снимка.
+' Для повторного расчета workflow создает новый объект, сохраняя прежние ссылки.
+Private Sub AssertWritable()
+    If mFrozen Then Err.Raise vbObjectError + 4220, "CStrengthResult", _
+        "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub

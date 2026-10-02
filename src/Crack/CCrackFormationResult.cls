@@ -20,6 +20,7 @@ Option Explicit
 ' Класс не запускает solver и не решает, как статус будет выглядеть на листе.
 ' Внешний OK/FAIL/NumFail/N/A формирует CResultStatusPolicy по ResultMeta.
 
+Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
 Private mMeta As CResultMeta ' Типизированный статус search-этапа образования трещины.
 Private mCrackFormed As Boolean ' True, если нормальная трещина образована при текущем LC.
 Private mFormationMethod As String ' Фактически принятый путь lambda-поиска.
@@ -48,6 +49,7 @@ End Sub
 ' Заполняет результат по calculator-у образования трещины. Calculator отвечает
 ' за физику поиска, а этот объект фиксирует итоговые величины и typed status для batch.
 Public Sub InitializeFromCalculator(ByVal crack As CCrackFormationCalculator, ByVal meta As CResultMeta)
+    AssertWritable
     ResetResult
     If meta Is Nothing Then
         mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, _
@@ -180,3 +182,20 @@ End Property
 Public Property Get Converged() As Boolean
     Converged = (mMeta.InternalStatus = rsSuccess Or mMeta.InternalStatus = rsSuccessWithWarning)
 End Property
+
+' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
+' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
+' но их fill/reset API больше не могут изменить опубликованный результат.
+Friend Sub Freeze()
+    If mFrozen Then Exit Sub
+    If Not mPreCrackState Is Nothing Then mPreCrackState.Freeze
+    If Not mPostCrackState Is Nothing Then mPostCrackState.Freeze
+    mFrozen = True
+End Sub
+
+' Явно отклоняет изменение уже выданного результата вместо тихой порчи снимка.
+' Для повторного расчета workflow создает новый объект, сохраняя прежние ссылки.
+Private Sub AssertWritable()
+    If mFrozen Then Err.Raise vbObjectError + 4220, "CCrackFormationResult", _
+        "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
+End Sub

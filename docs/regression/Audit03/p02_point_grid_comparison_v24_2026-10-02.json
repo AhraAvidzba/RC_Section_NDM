@@ -1,0 +1,16 @@
+{
+  "BeforeRows": 74,
+  "AfterRows": 74,
+  "PointChecks": 3626,
+  "Differences": 2,
+  "Details": [
+    {
+      "InputObject": "GRID: Rounded; y=-120; 0000000000000000111111111111111111111111000000000",
+      "SideIndicator": "=>"
+    },
+    {
+      "InputObject": "GRID: Rounded; y=-120; 0000000000000000000000000000000000000000000000000",
+      "SideIndicator": "<="
+    }
+  ]
+}
