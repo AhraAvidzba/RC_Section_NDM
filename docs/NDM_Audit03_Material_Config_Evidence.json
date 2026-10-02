@@ -4,7 +4,9 @@
   "PositiveGate": "TOTAL_AUDIT03_MATERIAL_CONFIG: passed=1442; failed=0",
   "FullReports": [
     "docs/regression/Audit03/full_no_v68_2026-10-02.txt",
-    "docs/regression/Audit03/full_yes_v68_2026-10-02.txt"
+    "docs/regression/Audit03/full_yes_v68_2026-10-02.txt",
+    "docs/regression/Audit03/config_units_full_off_v71_2026-10-02.txt",
+    "docs/regression/Audit03/config_units_full_on_v71_2026-10-02.txt"
   ],
   "Consumer": "Фактическая таблица Config -> CSystemSettingsReader.LoadFromWorkbook -> CUnitSystem -> CMaterialModelProvider.Initialize -> physical spec; Rb,mc2 -> CLongitudinalCrackCalculator.CalculateFromStress",
   "TestId": "modTestMaterialDiagrams.TestAudit03MaterialConfigBehavior",

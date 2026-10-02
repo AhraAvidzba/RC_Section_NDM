@@ -17,6 +17,15 @@ if (-not $positive.Contains($evidence.PositiveGate) -or
     -not $positive.Contains('WATCHDOG_COMPLETED: exit=0; source unchanged=True')) {
     throw 'Положительное directed evidence не завершено или не совпадает с gate.'
 }
+$supplementaryPaths = @()
+if ($evidence.SupplementaryReport) {
+    $supplementary = Get-Content -LiteralPath (Join-Path $root $evidence.SupplementaryReport) -Raw -Encoding UTF8
+    if (-not $supplementary.Contains($evidence.SupplementaryGate) -or
+        -not $supplementary.Contains('WATCHDOG_COMPLETED: exit=0; source unchanged=True')) {
+        throw 'Дополнительный сквозной directed gate не завершен или не совпадает.'
+    }
+    $supplementaryPaths = @($evidence.SupplementaryReport)
+}
 $fullReports = foreach ($path in $evidence.FullReports) {
     $report = Get-Content -LiteralPath (Join-Path $root $path) -Raw -Encoding UTF8
     if (-not $report.Contains('WATCHDOG_COMPLETED: exit=0; source unchanged=True')) {
@@ -30,6 +39,11 @@ $fullReports = foreach ($path in $evidence.FullReports) {
         if (-not $report.Contains("SUITE_FINISHED: $suite;")) { throw "В full evidence отсутствует suite $suite : $path" }
     }
     if ($report -match '(?m)^TOTAL[^\r\n]*failed=[1-9]') { throw "В full evidence есть ошибки: $path" }
+    foreach ($prefix in $evidence.SupplementaryAssertionPrefixes) {
+        if ($report -notmatch ('(?m)^OK: ' + [regex]::Escape($prefix))) {
+            throw "Full suite не содержит сквозной assertion $prefix : $path"
+        }
+    }
     $report
 }
 foreach ($entry in $evidence.Entries) {
@@ -49,7 +63,7 @@ foreach ($entry in $evidence.Entries) {
     $field.Consumers = $evidence.Consumer
     $field.ExpectedEffect = $entry.ExpectedEffect
     $field.TestId = $evidence.TestId
-    $field.Evidence = @($evidence.PositiveReport) + @($evidence.FullReports)
+    $field.Evidence = @($evidence.PositiveReport) + $supplementaryPaths + @($evidence.FullReports)
     $field.CoverageStatus = 'ActiveBehaviorAccepted:FullRangeReviewNotComplete'
     $field | Add-Member -NotePropertyName ValidRange -NotePropertyValue $entry.ValidRange -Force
     $field | Add-Member -NotePropertyName RangeReview -NotePropertyValue $entry.RangeReview -Force

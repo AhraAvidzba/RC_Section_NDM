@@ -1617,6 +1617,8 @@ Private Sub AssertTrue(ByRef stats As TCapacityTestStats, ByVal name As String, 
     End If
 End Sub
 
+' Сравнивает строковый результат без нормализации; при отказе сохраняет обе
+' строки, чтобы отличить неверный статус или код от численной ошибки теста.
 Private Sub AssertEquals(ByRef stats As TCapacityTestStats, ByVal name As String, ByVal actual As String, ByVal expected As String)
     If actual = expected Then
         stats.Passed = stats.Passed + 1

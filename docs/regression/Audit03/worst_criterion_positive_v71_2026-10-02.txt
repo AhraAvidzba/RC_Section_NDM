@@ -1,0 +1,85 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_source_v71.xlsm
+SOURCE_SHA256: 7A3F2198E271DCCECE63B34A2E2BA67DAA72FCB57B39F98DDA11F3EF06EE3E20
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_bfb28580d6b146b9a9f910b86e5b8a77\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== RunAudit03WorstCriterionConfigTests =====
+SUITE_STARTED: RunAudit03WorstCriterionConfigTests; 2026-10-02T15:31:34
+EXCEL_AFTER_SUITE: pid=21188; workingSet=144707584; privateBytes=97591296; cpu=5.921875
+EXCEL_AFTER_SUITE: pid=29556; workingSet=167243776; privateBytes=97996800; cpu=165.578125
+OK: audit03.worst.StrengthStrain.active
+OK: audit03.worst.StrengthStrain.selection
+OK: audit03.worst.StrengthStrain.key
+OK: audit03.worst.StrengthStrain.written
+OK: audit03.worst.StrengthCapacity.active
+OK: audit03.worst.StrengthCapacity.selection
+OK: audit03.worst.StrengthCapacity.key
+OK: audit03.worst.StrengthCapacity.written
+OK: audit03.worst.Cracks.active
+OK: audit03.worst.Cracks.selection
+OK: audit03.worst.Cracks.key
+OK: audit03.worst.Cracks.written
+OK: audit03.worst.Stability.active
+OK: audit03.worst.Stability.selection
+OK: audit03.worst.Stability.key
+OK: audit03.worst.Stability.written
+OK: audit03.worst.distinctChoices
+WORST_CHOICES: StrengthStrain=S2; StrengthCapacity=S2; Cracks=C2; Stability=S2; 
+OK: audit03.worst.invalid.WrongCriterion.status.1
+OK: audit03.worst.invalid.WrongCriterion.reason.1
+OK: audit03.worst.invalid.WrongCriterion.status.2
+OK: audit03.worst.invalid.WrongCriterion.reason.2
+OK: audit03.worst.invalid.WrongCriterion.status.3
+OK: audit03.worst.invalid.WrongCriterion.reason.3
+OK: audit03.worst.invalid.WrongCriterion.status.4
+OK: audit03.worst.invalid.WrongCriterion.reason.4
+OK: audit03.worst.invalid.WrongCriterion.noSolve
+OK: audit03.worst.invalid.WrongCriterion.recovery
+OK: audit03.worst.invalid..status.1
+OK: audit03.worst.invalid..reason.1
+OK: audit03.worst.invalid..status.2
+OK: audit03.worst.invalid..reason.2
+OK: audit03.worst.invalid..status.3
+OK: audit03.worst.invalid..reason.3
+OK: audit03.worst.invalid..status.4
+OK: audit03.worst.invalid..reason.4
+OK: audit03.worst.invalid..noSolve
+OK: audit03.worst.invalid..recovery
+OK: audit03.worst.invalid. .status.1
+OK: audit03.worst.invalid. .reason.1
+OK: audit03.worst.invalid. .status.2
+OK: audit03.worst.invalid. .reason.2
+OK: audit03.worst.invalid. .status.3
+OK: audit03.worst.invalid. .reason.3
+OK: audit03.worst.invalid. .status.4
+OK: audit03.worst.invalid. .reason.4
+OK: audit03.worst.invalid. .noSolve
+OK: audit03.worst.invalid. .recovery
+OK: audit03.worst.invalid.TODO.status.1
+OK: audit03.worst.invalid.TODO.reason.1
+OK: audit03.worst.invalid.TODO.status.2
+OK: audit03.worst.invalid.TODO.reason.2
+OK: audit03.worst.invalid.TODO.status.3
+OK: audit03.worst.invalid.TODO.reason.3
+OK: audit03.worst.invalid.TODO.status.4
+OK: audit03.worst.invalid.TODO.reason.4
+OK: audit03.worst.invalid.TODO.noSolve
+OK: audit03.worst.invalid.TODO.recovery
+OK: audit03.worst.invalid.0.status.1
+OK: audit03.worst.invalid.0.reason.1
+OK: audit03.worst.invalid.0.status.2
+OK: audit03.worst.invalid.0.reason.2
+OK: audit03.worst.invalid.0.status.3
+OK: audit03.worst.invalid.0.reason.3
+OK: audit03.worst.invalid.0.status.4
+OK: audit03.worst.invalid.0.reason.4
+OK: audit03.worst.invalid.0.noSolve
+OK: audit03.worst.invalid.0.recovery
+OK: audit03.worst.invalid.formula1/0.readerError
+OK: audit03.worst.invalid.formula1/0.readerReason
+OK: audit03.worst.invalid.formula1/0.recovery
+TOTAL: passed=70; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: RunAudit03WorstCriterionConfigTests; 2026-10-02T15:31:38
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

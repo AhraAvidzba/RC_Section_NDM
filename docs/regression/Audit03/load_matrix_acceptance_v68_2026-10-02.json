@@ -1,0 +1,9 @@
+{
+  "SourceSHA256": "6A17F72B1EB21173CB9A4BC635C38DDA1AA0E63B457CE40891D142DD6A49EB9F",
+  "Reports": 52,
+  "Cases": 18980,
+  "PassedReports": 52,
+  "SaveReopenEqualReports": 52,
+  "WatchdogCompleteReports": 52,
+  "Scope": "v68 only; historical runs excluded; no broader Config acceptance"
+}

@@ -50,6 +50,8 @@ Public Type TGeometryProperties
     PrincipalRadius2 As Double
 End Type
 
+' Скалярные helpers выбирают крайнее значение в геометрических расчетах.
+' Не зависят от Excel и не приводят значения к пользовательским единицам.
 Public Function GeomMax(ByVal A As Double, ByVal B As Double) As Double
     If A >= B Then
         GeomMax = A

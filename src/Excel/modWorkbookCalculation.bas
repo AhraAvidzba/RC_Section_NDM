@@ -29,7 +29,9 @@ Failed:
     MsgBox "Расчет не выполнен: " & Err.Description, vbExclamation, "RC Section NDM"
 End Sub
 
-' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
+' Выполняет кнопку очистки Results без изменения Config и таблицы нагрузок.
+' Очистка делегируется workbook-entrypoint; необязательное сообщение зависит
+' от настройки, а ошибка очистки показывается всегда.
 Public Sub ClearSectionResults()
     On Error GoTo Failed
     ClearSectionResultsForWorkbook ThisWorkbook
@@ -988,7 +990,9 @@ Public Sub CalculateTransformedSectionCentroid(ByVal section As CSectionModel, _
     referenceY = props.CentroidY
 End Sub
 
-' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
+' Очищает сводку, подробные расчетные блоки и сохраненные NDM-таблицы Results
+' через ответственные writer-ы. Исходные настройки не читаются и не меняются;
+' новый расчет и повторный импорт геометрии здесь не запускаются.
 Public Sub ClearSectionResultsForWorkbook(ByVal workbook As Object)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4110, "ClearSectionResultsForWorkbook", "Книга Excel не передана."
     Dim summaryWriter As CBatchResultWriter

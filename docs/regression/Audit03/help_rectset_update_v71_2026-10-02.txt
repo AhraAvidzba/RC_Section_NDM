@@ -1,0 +1,477 @@
+﻿RECTSET_PRESERVATION_SCOPE: originalFields=777; unchangedFields=761; sharedFollowers=16; fullBefore=4C7F3C85619931B937B69D4729A7B644FA700EAC94196C13834250E46DE5BBBF
+RECTSET_UNCHANGED_FIELDS_ORIGINAL: signature=B6DAC7FF588500A2A744C580D5CCCC5D075B6A15EDA5EC050A58C6BFDD820661
+RECTSET_APPROVED_ALIGNMENT: address=Config!K118; horizontal=-4131->-4108; vertical=-4108->-4108; values/formulas/validation/numberFormat unchanged
+RECTSET_APPROVED_ALIGNMENT: address=Config!K120; horizontal=-4131->-4108; vertical=-4108->-4108; values/formulas/validation/numberFormat unchanged
+RECTSET_APPROVED_ALIGNMENT: address=Config!K122; horizontal=-4131->-4108; vertical=-4108->-4108; values/formulas/validation/numberFormat unchanged
+RECTSET_APPROVED_ALIGNMENT: address=Config!K124; horizontal=-4131->-4108; vertical=-4108->-4108; values/formulas/validation/numberFormat unchanged
+RECTSET_SHARED_SELECTOR: {"Address":"$J$119","SharedAddress":"$J$118","PreviousValue":"Stacked","PreviousFormula":"Stacked","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$K$119","SharedAddress":"$K$118","PreviousValue":"EachBar","PreviousFormula":"EachBar","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$M$119","SharedAddress":"$M$118","PreviousValue":"Stacked","PreviousFormula":"Stacked","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$N$119","SharedAddress":"$N$118","PreviousValue":"EachBar","PreviousFormula":"EachBar","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$J$121","SharedAddress":"$J$120","PreviousValue":"Stacked","PreviousFormula":"Stacked","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$K$121","SharedAddress":"$K$120","PreviousValue":"EachBar","PreviousFormula":"EachBar","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$M$121","SharedAddress":"$M$120","PreviousValue":"Stacked","PreviousFormula":"Stacked","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$N$121","SharedAddress":"$N$120","PreviousValue":"EachBar","PreviousFormula":"EachBar","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$J$123","SharedAddress":"$J$122","PreviousValue":"Stacked","PreviousFormula":"Stacked","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$K$123","SharedAddress":"$K$122","PreviousValue":"EachBar","PreviousFormula":"EachBar","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$M$123","SharedAddress":"$M$122","PreviousValue":"Stacked","PreviousFormula":"Stacked","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$N$123","SharedAddress":"$N$122","PreviousValue":"EachBar","PreviousFormula":"EachBar","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$J$125","SharedAddress":"$J$124","PreviousValue":"Stacked","PreviousFormula":"Stacked","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$K$125","SharedAddress":"$K$124","PreviousValue":"EachBar","PreviousFormula":"EachBar","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$M$125","SharedAddress":"$M$124","PreviousValue":"Stacked","PreviousFormula":"Stacked","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$N$125","SharedAddress":"$N$124","PreviousValue":"EachBar","PreviousFormula":"EachBar","SharedValue":"EachBar","HadConflict":false}
+HELP|rectset.migrationRecords|passed=True|count=16
+HELP|rectset.merge.$J$118|passed=True|$J$118:$J$119
+HELP|rectset.dropdown.$J$118|passed=True|=$EF$1:$EF$2
+HELP|rectset.followerEmpty.$J$119|passed=True|Shared selector has no second value
+HELP|rectset.centered.$J$118|passed=True|Shared input is centered
+HELP|rectset.merge.$K$118|passed=True|$K$118:$K$119
+HELP|rectset.dropdown.$K$118|passed=True|=$EG$1:$EG$2
+HELP|rectset.followerEmpty.$K$119|passed=True|Shared selector has no second value
+HELP|rectset.centered.$K$118|passed=True|Shared input is centered
+HELP|rectset.merge.$M$118|passed=True|$M$118:$M$119
+HELP|rectset.dropdown.$M$118|passed=True|=$EF$1:$EF$2
+HELP|rectset.followerEmpty.$M$119|passed=True|Shared selector has no second value
+HELP|rectset.centered.$M$118|passed=True|Shared input is centered
+HELP|rectset.merge.$N$118|passed=True|$N$118:$N$119
+HELP|rectset.dropdown.$N$118|passed=True|=$EG$1:$EG$2
+HELP|rectset.followerEmpty.$N$119|passed=True|Shared selector has no second value
+HELP|rectset.centered.$N$118|passed=True|Shared input is centered
+HELP|rectset.merge.$J$120|passed=True|$J$120:$J$121
+HELP|rectset.dropdown.$J$120|passed=True|=$EF$1:$EF$2
+HELP|rectset.followerEmpty.$J$121|passed=True|Shared selector has no second value
+HELP|rectset.centered.$J$120|passed=True|Shared input is centered
+HELP|rectset.merge.$K$120|passed=True|$K$120:$K$121
+HELP|rectset.dropdown.$K$120|passed=True|=$EG$1:$EG$2
+HELP|rectset.followerEmpty.$K$121|passed=True|Shared selector has no second value
+HELP|rectset.centered.$K$120|passed=True|Shared input is centered
+HELP|rectset.merge.$M$120|passed=True|$M$120:$M$121
+HELP|rectset.dropdown.$M$120|passed=True|=$EF$1:$EF$2
+HELP|rectset.followerEmpty.$M$121|passed=True|Shared selector has no second value
+HELP|rectset.centered.$M$120|passed=True|Shared input is centered
+HELP|rectset.merge.$N$120|passed=True|$N$120:$N$121
+HELP|rectset.dropdown.$N$120|passed=True|=$EG$1:$EG$2
+HELP|rectset.followerEmpty.$N$121|passed=True|Shared selector has no second value
+HELP|rectset.centered.$N$120|passed=True|Shared input is centered
+HELP|rectset.merge.$J$122|passed=True|$J$122:$J$123
+HELP|rectset.dropdown.$J$122|passed=True|=$EF$1:$EF$2
+HELP|rectset.followerEmpty.$J$123|passed=True|Shared selector has no second value
+HELP|rectset.centered.$J$122|passed=True|Shared input is centered
+HELP|rectset.merge.$K$122|passed=True|$K$122:$K$123
+HELP|rectset.dropdown.$K$122|passed=True|=$EG$1:$EG$2
+HELP|rectset.followerEmpty.$K$123|passed=True|Shared selector has no second value
+HELP|rectset.centered.$K$122|passed=True|Shared input is centered
+HELP|rectset.merge.$M$122|passed=True|$M$122:$M$123
+HELP|rectset.dropdown.$M$122|passed=True|=$EF$1:$EF$2
+HELP|rectset.followerEmpty.$M$123|passed=True|Shared selector has no second value
+HELP|rectset.centered.$M$122|passed=True|Shared input is centered
+HELP|rectset.merge.$N$122|passed=True|$N$122:$N$123
+HELP|rectset.dropdown.$N$122|passed=True|=$EG$1:$EG$2
+HELP|rectset.followerEmpty.$N$123|passed=True|Shared selector has no second value
+HELP|rectset.centered.$N$122|passed=True|Shared input is centered
+HELP|rectset.merge.$J$124|passed=True|$J$124:$J$125
+HELP|rectset.dropdown.$J$124|passed=True|=$EF$1:$EF$2
+HELP|rectset.followerEmpty.$J$125|passed=True|Shared selector has no second value
+HELP|rectset.centered.$J$124|passed=True|Shared input is centered
+HELP|rectset.merge.$K$124|passed=True|$K$124:$K$125
+HELP|rectset.dropdown.$K$124|passed=True|=$EG$1:$EG$2
+HELP|rectset.followerEmpty.$K$125|passed=True|Shared selector has no second value
+HELP|rectset.centered.$K$124|passed=True|Shared input is centered
+HELP|rectset.merge.$M$124|passed=True|$M$124:$M$125
+HELP|rectset.dropdown.$M$124|passed=True|=$EF$1:$EF$2
+HELP|rectset.followerEmpty.$M$125|passed=True|Shared selector has no second value
+HELP|rectset.centered.$M$124|passed=True|Shared input is centered
+HELP|rectset.merge.$N$124|passed=True|$N$124:$N$125
+HELP|rectset.dropdown.$N$124|passed=True|=$EG$1:$EG$2
+HELP|rectset.followerEmpty.$N$125|passed=True|Shared selector has no second value
+HELP|rectset.centered.$N$124|passed=True|Shared input is centered
+HELP|rectset.layoutIdempotent|passed=True|signature=96C6145D2DE050864551757A8097A964E61350E9476621666569D0D19B18AF98
+HELP|inputsPreserved|passed=True|fields=761; before=96C6145D2DE050864551757A8097A964E61350E9476621666569D0D19B18AF98; after=96C6145D2DE050864551757A8097A964E61350E9476621666569D0D19B18AF98
+HELP|statusDictionaryPresent|passed=True|row=636
+HELP|status.OK|passed=True|Расчет этой проверки выполнен успешно. Для прямого НДС равновесие найдено внутри физической диаграммы материала; для прочности или трещин проверка прошла.
+HELP|status.FAIL|passed=True|Численное решение есть, но инженерная проверка не проходит: превышена несущая способность, ширина нормальной трещины больше допуска, sigma_c,max больше Rb,mc2 по продольным трещинам или прямое НДС найдено только за пределами физической диаграммы.
+HELP|status.BaseFail|passed=True|Сечение не выдерживает уже постоянную часть выбранного пути несущей способности, при λ = 0. Физический отказ подтвержден; это не просто несходимость решателя.
+HELP|status.NumFail|passed=True|Программа не смогла найти равновесие или предельную точку с текущими численными настройками. Это не доказательство разрушения; нужно проверить диагностику, нагрузку, сетку и параметры расчета.
+HELP|status.InputErr|passed=True|Результат не получен из-за ошибки исходных данных или настройки: обязательная пустая ячейка, неизвестный вариант, недопустимая геометрия, материал, единицы или строка сочетания. Ошибка могла быть обнаружена до запуска либо при подготовке конкретной проверки; место и причина указаны в комментарии.
+HELP|status.CalcErr|passed=True|Нарушен внутренний контракт расчета или произошла программная ошибка. Это не физический отказ и не обычная несходимость. Сохраните комментарий и txt-отчет для диагностики.
+HELP|status.N/A|passed=True|Проверка не запрошена, неприменима либо не выполнена из-за отсутствия обязательного предыдущего результата. В последнем случае причина указана в комментарии, а фактический отказ остается в статусе соответствующего НДС или поиска и в общей сводке. N/A само по себе не означает успешную проверку.
+HELP|baseFailIsPhysical|passed=True|lambda=0 requires physical evidence
+HELP|notApplicableDependency|passed=True|Blocked dependency is not an OK check
+HELP|extensionAllStates|passed=True|Global extension scope
+HELP|extensionDoesNotChangePhysicalNodes|passed=True|Physical diagram preserved
+HELP|profileBooleanInputContract|passed=True|Explicit invalid value is not No
+HELP|subdivisionsInputContract|passed=True|Mesh setting has help
+HELP|worstCriterionInputContract|passed=True|Invalid criterion cannot silently select another check
+HELP|rectsetCommonSelectors|passed=True|One common selector, separate diameters
+HELP|unitChoiceInputContract|passed=True|Explicit invalid units do not become defaults
+HELP|signsDoNotFlipStressOrStrain|passed=True|Material tension/compression and strain plane keep internal signs
+HELP|link.$E$5|passed=True|'Справка'!A846
+HELP|link.$E$6|passed=True|'Справка'!A854
+HELP|link.$E$7|passed=True|'Справка'!A860
+HELP|link.$E$8|passed=True|'Справка'!A870
+HELP|link.$E$9|passed=True|'Справка'!A881
+HELP|link.$E$12|passed=True|'Справка'!A890
+HELP|link.$E$13|passed=True|'Справка'!A898
+HELP|link.$E$14|passed=True|'Справка'!A904
+HELP|link.$E$15|passed=True|'Справка'!A913
+HELP|link.$E$16|passed=True|'Справка'!A922
+HELP|link.$E$17|passed=True|'Справка'!A931
+HELP|link.$E$18|passed=True|'Справка'!A940
+HELP|link.$E$22|passed=True|'Справка'!A949
+HELP|link.$E$23|passed=True|'Справка'!A958
+HELP|link.$E$24|passed=True|'Справка'!A965
+HELP|link.$E$25|passed=True|'Справка'!A971
+HELP|link.$E$26|passed=True|'Справка'!A980
+HELP|link.$E$27|passed=True|'Справка'!A989
+HELP|link.$E$29|passed=True|'Справка'!A998
+HELP|link.$E$30|passed=True|'Справка'!A1004
+HELP|link.$E$31|passed=True|'Справка'!A1011
+HELP|link.$E$32|passed=True|'Справка'!A1018
+HELP|link.$E$33|passed=True|'Справка'!A1025
+HELP|link.$E$35|passed=True|'Справка'!A1033
+HELP|link.$E$36|passed=True|'Справка'!A1039
+HELP|link.$E$40|passed=True|'Справка'!A1046
+HELP|link.$E$41|passed=True|'Справка'!A1064
+HELP|link.$E$43|passed=True|'Справка'!A1072
+HELP|link.$E$45|passed=True|'Справка'!A1082
+HELP|link.$E$46|passed=True|'Справка'!A1089
+HELP|link.$E$47|passed=True|'Справка'!A1100
+HELP|link.$E$48|passed=True|'Справка'!A1107
+HELP|link.$E$49|passed=True|'Справка'!A1114
+HELP|link.$E$50|passed=True|'Справка'!A1124
+HELP|link.$E$54|passed=True|'Справка'!A1134
+HELP|link.$E$55|passed=True|'Справка'!A1141
+HELP|link.$E$56|passed=True|'Справка'!A1148
+HELP|link.$E$57|passed=True|'Справка'!A1156
+HELP|link.$E$58|passed=True|'Справка'!A1164
+HELP|link.$E$59|passed=True|'Справка'!A1171
+HELP|link.$E$60|passed=True|'Справка'!A1179
+HELP|link.$E$61|passed=True|'Справка'!A1187
+HELP|link.$E$62|passed=True|'Справка'!A1194
+HELP|link.$E$63|passed=True|'Справка'!A1203
+HELP|link.$E$64|passed=True|'Справка'!A1212
+HELP|link.$E$65|passed=True|'Справка'!A1218
+HELP|link.$E$67|passed=True|'Справка'!A1228
+HELP|link.$E$68|passed=True|'Справка'!A1236
+HELP|link.$E$69|passed=True|'Справка'!A1244
+HELP|link.$E$71|passed=True|'Справка'!A1252
+HELP|link.$E$72|passed=True|'Справка'!A1259
+HELP|link.$E$75|passed=True|'Справка'!A1266
+HELP|link.$E$76|passed=True|'Справка'!A1275
+HELP|link.$E$77|passed=True|'Справка'!A1287
+HELP|link.$E$78|passed=True|'Справка'!A1295
+HELP|link.$E$79|passed=True|'Справка'!A1307
+HELP|link.$E$80|passed=True|'Справка'!A1316
+HELP|link.$E$81|passed=True|'Справка'!A1323
+HELP|link.$E$82|passed=True|'Справка'!A1330
+HELP|link.$E$83|passed=True|'Справка'!A1337
+HELP|link.$E$84|passed=True|'Справка'!A1343
+HELP|link.$E$85|passed=True|'Справка'!A1361
+HELP|link.$E$86|passed=True|'Справка'!A1369
+HELP|link.$E$89|passed=True|'Справка'!A1376
+HELP|link.$E$90|passed=True|'Справка'!A1383
+HELP|link.$E$91|passed=True|'Справка'!A1389
+HELP|link.$E$92|passed=True|'Справка'!A1396
+HELP|link.$E$93|passed=True|'Справка'!A1402
+HELP|link.$E$94|passed=True|'Справка'!A1409
+HELP|link.$E$95|passed=True|'Справка'!A1415
+HELP|link.$E$96|passed=True|'Справка'!A1421
+HELP|link.$E$97|passed=True|'Справка'!A1427
+HELP|link.$E$98|passed=True|'Справка'!A1434
+HELP|link.$E$99|passed=True|'Справка'!A1440
+HELP|link.$E$100|passed=True|'Справка'!A1446
+HELP|link.$E$101|passed=True|'Справка'!A1452
+HELP|link.$E$102|passed=True|'Справка'!A1458
+HELP|link.$E$103|passed=True|'Справка'!A1462
+HELP|link.$E$104|passed=True|'Справка'!A1466
+HELP|link.$E$105|passed=True|'Справка'!A1470
+HELP|link.$E$106|passed=True|'Справка'!A1474
+HELP|link.$E$109|passed=True|'Справка'!A1478
+HELP|link.$E$110|passed=True|'Справка'!A1488
+HELP|link.$E$111|passed=True|'Справка'!A1495
+HELP|link.$E$114|passed=True|'Справка'!A1502
+HELP|link.$E$115|passed=True|'Справка'!A1507
+HELP|link.$E$116|passed=True|'Справка'!A1513
+HELP|link.$E$117|passed=True|'Справка'!A1519
+HELP|link.$E$118|passed=True|'Справка'!A1525
+HELP|link.$E$119|passed=True|'Справка'!A1531
+HELP|link.$E$120|passed=True|'Справка'!A1537
+HELP|link.$E$121|passed=True|'Справка'!A1542
+HELP|link.$E$122|passed=True|'Справка'!A1549
+HELP|link.$E$123|passed=True|'Справка'!A1554
+HELP|link.$E$124|passed=True|'Справка'!A1560
+HELP|link.$E$125|passed=True|'Справка'!A1566
+HELP|link.$E$126|passed=True|'Справка'!A1572
+HELP|link.$E$127|passed=True|'Справка'!A1577
+HELP|link.$E$128|passed=True|'Справка'!A1583
+HELP|link.$E$129|passed=True|'Справка'!A1589
+HELP|link.$E$130|passed=True|'Справка'!A1595
+HELP|link.$E$131|passed=True|'Справка'!A1601
+HELP|link.$M$19|passed=True|'Справка'!A1742
+HELP|link.$M$20|passed=True|'Справка'!A1748
+HELP|link.$M$21|passed=True|'Справка'!A1754
+HELP|link.$M$22|passed=True|'Справка'!A1761
+HELP|link.$M$23|passed=True|'Справка'!A1769
+HELP|link.$M$27|passed=True|'Справка'!A1681
+HELP|link.$M$28|passed=True|'Справка'!A1689
+HELP|link.$M$29|passed=True|'Справка'!A1698
+HELP|link.$M$30|passed=True|'Справка'!A1708
+HELP|link.$M$31|passed=True|'Справка'!A1715
+HELP|link.$M$32|passed=True|'Справка'!A1724
+HELP|link.$M$33|passed=True|'Справка'!A1733
+HELP|link.$M$71|passed=True|'Справка'!A1607
+HELP|link.$M$72|passed=True|'Справка'!A1612
+HELP|link.$M$73|passed=True|'Справка'!A1617
+HELP|link.$M$74|passed=True|'Справка'!A1624
+HELP|link.$M$75|passed=True|'Справка'!A1629
+HELP|link.$M$76|passed=True|'Справка'!A1634
+HELP|link.$M$77|passed=True|'Справка'!A1639
+HELP|link.$M$78|passed=True|'Справка'!A1647
+HELP|link.$M$79|passed=True|'Справка'!A1654
+HELP|link.$M$80|passed=True|'Справка'!A1661
+HELP|link.$M$81|passed=True|'Справка'!A1666
+HELP|link.$M$82|passed=True|'Справка'!A1671
+HELP|link.$M$83|passed=True|'Справка'!A1676
+HELP|link.$AI$1|passed=True|'Справка'!A771
+HELP|link.$H$2|passed=True|'Справка'!A646
+HELP|link.$O$2|passed=True|'Справка'!A671
+HELP|link.$H$11|passed=True|'Справка'!A659
+HELP|link.$H$17|passed=True|'Справка'!A735
+HELP|link.$H$25|passed=True|'Справка'!A726
+HELP|link.$H$35|passed=True|'Справка'!A744
+HELP|link.$P$36|passed=True|'Справка'!A706
+HELP|link.$AI$58|passed=True|'Справка'!A716
+HELP|link.$H$69|passed=True|'Справка'!A777
+HELP|link.$H$85|passed=True|'Справка'!A787
+HELP|link.$H$97|passed=True|'Справка'!A818
+HELP|link.$H$127|passed=True|'Справка'!A794
+HELP|link.$H$152|passed=True|'Справка'!A804
+HELP|directHelpLinksPresent|passed=True|count=141
+ACTUAL_HELP: rows=1903; links=141; shapes=118
+HELP|inputsSaveReopen|passed=True|before=96C6145D2DE050864551757A8097A964E61350E9476621666569D0D19B18AF98; reopened=96C6145D2DE050864551757A8097A964E61350E9476621666569D0D19B18AF98
+HELP|rectset.merge.$J$118|passed=True|$J$118:$J$119
+HELP|rectset.dropdown.$J$118|passed=True|=$EF$1:$EF$2
+HELP|rectset.followerEmpty.$J$119|passed=True|Shared selector has no second value
+HELP|rectset.centered.$J$118|passed=True|Shared input is centered
+HELP|rectset.merge.$K$118|passed=True|$K$118:$K$119
+HELP|rectset.dropdown.$K$118|passed=True|=$EG$1:$EG$2
+HELP|rectset.followerEmpty.$K$119|passed=True|Shared selector has no second value
+HELP|rectset.centered.$K$118|passed=True|Shared input is centered
+HELP|rectset.merge.$M$118|passed=True|$M$118:$M$119
+HELP|rectset.dropdown.$M$118|passed=True|=$EF$1:$EF$2
+HELP|rectset.followerEmpty.$M$119|passed=True|Shared selector has no second value
+HELP|rectset.centered.$M$118|passed=True|Shared input is centered
+HELP|rectset.merge.$N$118|passed=True|$N$118:$N$119
+HELP|rectset.dropdown.$N$118|passed=True|=$EG$1:$EG$2
+HELP|rectset.followerEmpty.$N$119|passed=True|Shared selector has no second value
+HELP|rectset.centered.$N$118|passed=True|Shared input is centered
+HELP|rectset.merge.$J$120|passed=True|$J$120:$J$121
+HELP|rectset.dropdown.$J$120|passed=True|=$EF$1:$EF$2
+HELP|rectset.followerEmpty.$J$121|passed=True|Shared selector has no second value
+HELP|rectset.centered.$J$120|passed=True|Shared input is centered
+HELP|rectset.merge.$K$120|passed=True|$K$120:$K$121
+HELP|rectset.dropdown.$K$120|passed=True|=$EG$1:$EG$2
+HELP|rectset.followerEmpty.$K$121|passed=True|Shared selector has no second value
+HELP|rectset.centered.$K$120|passed=True|Shared input is centered
+HELP|rectset.merge.$M$120|passed=True|$M$120:$M$121
+HELP|rectset.dropdown.$M$120|passed=True|=$EF$1:$EF$2
+HELP|rectset.followerEmpty.$M$121|passed=True|Shared selector has no second value
+HELP|rectset.centered.$M$120|passed=True|Shared input is centered
+HELP|rectset.merge.$N$120|passed=True|$N$120:$N$121
+HELP|rectset.dropdown.$N$120|passed=True|=$EG$1:$EG$2
+HELP|rectset.followerEmpty.$N$121|passed=True|Shared selector has no second value
+HELP|rectset.centered.$N$120|passed=True|Shared input is centered
+HELP|rectset.merge.$J$122|passed=True|$J$122:$J$123
+HELP|rectset.dropdown.$J$122|passed=True|=$EF$1:$EF$2
+HELP|rectset.followerEmpty.$J$123|passed=True|Shared selector has no second value
+HELP|rectset.centered.$J$122|passed=True|Shared input is centered
+HELP|rectset.merge.$K$122|passed=True|$K$122:$K$123
+HELP|rectset.dropdown.$K$122|passed=True|=$EG$1:$EG$2
+HELP|rectset.followerEmpty.$K$123|passed=True|Shared selector has no second value
+HELP|rectset.centered.$K$122|passed=True|Shared input is centered
+HELP|rectset.merge.$M$122|passed=True|$M$122:$M$123
+HELP|rectset.dropdown.$M$122|passed=True|=$EF$1:$EF$2
+HELP|rectset.followerEmpty.$M$123|passed=True|Shared selector has no second value
+HELP|rectset.centered.$M$122|passed=True|Shared input is centered
+HELP|rectset.merge.$N$122|passed=True|$N$122:$N$123
+HELP|rectset.dropdown.$N$122|passed=True|=$EG$1:$EG$2
+HELP|rectset.followerEmpty.$N$123|passed=True|Shared selector has no second value
+HELP|rectset.centered.$N$122|passed=True|Shared input is centered
+HELP|rectset.merge.$J$124|passed=True|$J$124:$J$125
+HELP|rectset.dropdown.$J$124|passed=True|=$EF$1:$EF$2
+HELP|rectset.followerEmpty.$J$125|passed=True|Shared selector has no second value
+HELP|rectset.centered.$J$124|passed=True|Shared input is centered
+HELP|rectset.merge.$K$124|passed=True|$K$124:$K$125
+HELP|rectset.dropdown.$K$124|passed=True|=$EG$1:$EG$2
+HELP|rectset.followerEmpty.$K$125|passed=True|Shared selector has no second value
+HELP|rectset.centered.$K$124|passed=True|Shared input is centered
+HELP|rectset.merge.$M$124|passed=True|$M$124:$M$125
+HELP|rectset.dropdown.$M$124|passed=True|=$EF$1:$EF$2
+HELP|rectset.followerEmpty.$M$125|passed=True|Shared selector has no second value
+HELP|rectset.centered.$M$124|passed=True|Shared input is centered
+HELP|rectset.merge.$N$124|passed=True|$N$124:$N$125
+HELP|rectset.dropdown.$N$124|passed=True|=$EG$1:$EG$2
+HELP|rectset.followerEmpty.$N$125|passed=True|Shared selector has no second value
+HELP|rectset.centered.$N$124|passed=True|Shared input is centered
+HELP|statusDictionaryPresent|passed=True|row=636
+HELP|status.OK|passed=True|Расчет этой проверки выполнен успешно. Для прямого НДС равновесие найдено внутри физической диаграммы материала; для прочности или трещин проверка прошла.
+HELP|status.FAIL|passed=True|Численное решение есть, но инженерная проверка не проходит: превышена несущая способность, ширина нормальной трещины больше допуска, sigma_c,max больше Rb,mc2 по продольным трещинам или прямое НДС найдено только за пределами физической диаграммы.
+HELP|status.BaseFail|passed=True|Сечение не выдерживает уже постоянную часть выбранного пути несущей способности, при λ = 0. Физический отказ подтвержден; это не просто несходимость решателя.
+HELP|status.NumFail|passed=True|Программа не смогла найти равновесие или предельную точку с текущими численными настройками. Это не доказательство разрушения; нужно проверить диагностику, нагрузку, сетку и параметры расчета.
+HELP|status.InputErr|passed=True|Результат не получен из-за ошибки исходных данных или настройки: обязательная пустая ячейка, неизвестный вариант, недопустимая геометрия, материал, единицы или строка сочетания. Ошибка могла быть обнаружена до запуска либо при подготовке конкретной проверки; место и причина указаны в комментарии.
+HELP|status.CalcErr|passed=True|Нарушен внутренний контракт расчета или произошла программная ошибка. Это не физический отказ и не обычная несходимость. Сохраните комментарий и txt-отчет для диагностики.
+HELP|status.N/A|passed=True|Проверка не запрошена, неприменима либо не выполнена из-за отсутствия обязательного предыдущего результата. В последнем случае причина указана в комментарии, а фактический отказ остается в статусе соответствующего НДС или поиска и в общей сводке. N/A само по себе не означает успешную проверку.
+HELP|baseFailIsPhysical|passed=True|lambda=0 requires physical evidence
+HELP|notApplicableDependency|passed=True|Blocked dependency is not an OK check
+HELP|extensionAllStates|passed=True|Global extension scope
+HELP|extensionDoesNotChangePhysicalNodes|passed=True|Physical diagram preserved
+HELP|profileBooleanInputContract|passed=True|Explicit invalid value is not No
+HELP|subdivisionsInputContract|passed=True|Mesh setting has help
+HELP|worstCriterionInputContract|passed=True|Invalid criterion cannot silently select another check
+HELP|rectsetCommonSelectors|passed=True|One common selector, separate diameters
+HELP|unitChoiceInputContract|passed=True|Explicit invalid units do not become defaults
+HELP|signsDoNotFlipStressOrStrain|passed=True|Material tension/compression and strain plane keep internal signs
+HELP|link.$E$5|passed=True|'Справка'!A846
+HELP|link.$E$6|passed=True|'Справка'!A854
+HELP|link.$E$7|passed=True|'Справка'!A860
+HELP|link.$E$8|passed=True|'Справка'!A870
+HELP|link.$E$9|passed=True|'Справка'!A881
+HELP|link.$E$12|passed=True|'Справка'!A890
+HELP|link.$E$13|passed=True|'Справка'!A898
+HELP|link.$E$14|passed=True|'Справка'!A904
+HELP|link.$E$15|passed=True|'Справка'!A913
+HELP|link.$E$16|passed=True|'Справка'!A922
+HELP|link.$E$17|passed=True|'Справка'!A931
+HELP|link.$E$18|passed=True|'Справка'!A940
+HELP|link.$E$22|passed=True|'Справка'!A949
+HELP|link.$E$23|passed=True|'Справка'!A958
+HELP|link.$E$24|passed=True|'Справка'!A965
+HELP|link.$E$25|passed=True|'Справка'!A971
+HELP|link.$E$26|passed=True|'Справка'!A980
+HELP|link.$E$27|passed=True|'Справка'!A989
+HELP|link.$E$29|passed=True|'Справка'!A998
+HELP|link.$E$30|passed=True|'Справка'!A1004
+HELP|link.$E$31|passed=True|'Справка'!A1011
+HELP|link.$E$32|passed=True|'Справка'!A1018
+HELP|link.$E$33|passed=True|'Справка'!A1025
+HELP|link.$E$35|passed=True|'Справка'!A1033
+HELP|link.$E$36|passed=True|'Справка'!A1039
+HELP|link.$E$40|passed=True|'Справка'!A1046
+HELP|link.$E$41|passed=True|'Справка'!A1064
+HELP|link.$E$43|passed=True|'Справка'!A1072
+HELP|link.$E$45|passed=True|'Справка'!A1082
+HELP|link.$E$46|passed=True|'Справка'!A1089
+HELP|link.$E$47|passed=True|'Справка'!A1100
+HELP|link.$E$48|passed=True|'Справка'!A1107
+HELP|link.$E$49|passed=True|'Справка'!A1114
+HELP|link.$E$50|passed=True|'Справка'!A1124
+HELP|link.$E$54|passed=True|'Справка'!A1134
+HELP|link.$E$55|passed=True|'Справка'!A1141
+HELP|link.$E$56|passed=True|'Справка'!A1148
+HELP|link.$E$57|passed=True|'Справка'!A1156
+HELP|link.$E$58|passed=True|'Справка'!A1164
+HELP|link.$E$59|passed=True|'Справка'!A1171
+HELP|link.$E$60|passed=True|'Справка'!A1179
+HELP|link.$E$61|passed=True|'Справка'!A1187
+HELP|link.$E$62|passed=True|'Справка'!A1194
+HELP|link.$E$63|passed=True|'Справка'!A1203
+HELP|link.$E$64|passed=True|'Справка'!A1212
+HELP|link.$E$65|passed=True|'Справка'!A1218
+HELP|link.$E$67|passed=True|'Справка'!A1228
+HELP|link.$E$68|passed=True|'Справка'!A1236
+HELP|link.$E$69|passed=True|'Справка'!A1244
+HELP|link.$E$71|passed=True|'Справка'!A1252
+HELP|link.$E$72|passed=True|'Справка'!A1259
+HELP|link.$E$75|passed=True|'Справка'!A1266
+HELP|link.$E$76|passed=True|'Справка'!A1275
+HELP|link.$E$77|passed=True|'Справка'!A1287
+HELP|link.$E$78|passed=True|'Справка'!A1295
+HELP|link.$E$79|passed=True|'Справка'!A1307
+HELP|link.$E$80|passed=True|'Справка'!A1316
+HELP|link.$E$81|passed=True|'Справка'!A1323
+HELP|link.$E$82|passed=True|'Справка'!A1330
+HELP|link.$E$83|passed=True|'Справка'!A1337
+HELP|link.$E$84|passed=True|'Справка'!A1343
+HELP|link.$E$85|passed=True|'Справка'!A1361
+HELP|link.$E$86|passed=True|'Справка'!A1369
+HELP|link.$E$89|passed=True|'Справка'!A1376
+HELP|link.$E$90|passed=True|'Справка'!A1383
+HELP|link.$E$91|passed=True|'Справка'!A1389
+HELP|link.$E$92|passed=True|'Справка'!A1396
+HELP|link.$E$93|passed=True|'Справка'!A1402
+HELP|link.$E$94|passed=True|'Справка'!A1409
+HELP|link.$E$95|passed=True|'Справка'!A1415
+HELP|link.$E$96|passed=True|'Справка'!A1421
+HELP|link.$E$97|passed=True|'Справка'!A1427
+HELP|link.$E$98|passed=True|'Справка'!A1434
+HELP|link.$E$99|passed=True|'Справка'!A1440
+HELP|link.$E$100|passed=True|'Справка'!A1446
+HELP|link.$E$101|passed=True|'Справка'!A1452
+HELP|link.$E$102|passed=True|'Справка'!A1458
+HELP|link.$E$103|passed=True|'Справка'!A1462
+HELP|link.$E$104|passed=True|'Справка'!A1466
+HELP|link.$E$105|passed=True|'Справка'!A1470
+HELP|link.$E$106|passed=True|'Справка'!A1474
+HELP|link.$E$109|passed=True|'Справка'!A1478
+HELP|link.$E$110|passed=True|'Справка'!A1488
+HELP|link.$E$111|passed=True|'Справка'!A1495
+HELP|link.$E$114|passed=True|'Справка'!A1502
+HELP|link.$E$115|passed=True|'Справка'!A1507
+HELP|link.$E$116|passed=True|'Справка'!A1513
+HELP|link.$E$117|passed=True|'Справка'!A1519
+HELP|link.$E$118|passed=True|'Справка'!A1525
+HELP|link.$E$119|passed=True|'Справка'!A1531
+HELP|link.$E$120|passed=True|'Справка'!A1537
+HELP|link.$E$121|passed=True|'Справка'!A1542
+HELP|link.$E$122|passed=True|'Справка'!A1549
+HELP|link.$E$123|passed=True|'Справка'!A1554
+HELP|link.$E$124|passed=True|'Справка'!A1560
+HELP|link.$E$125|passed=True|'Справка'!A1566
+HELP|link.$E$126|passed=True|'Справка'!A1572
+HELP|link.$E$127|passed=True|'Справка'!A1577
+HELP|link.$E$128|passed=True|'Справка'!A1583
+HELP|link.$E$129|passed=True|'Справка'!A1589
+HELP|link.$E$130|passed=True|'Справка'!A1595
+HELP|link.$E$131|passed=True|'Справка'!A1601
+HELP|link.$M$19|passed=True|'Справка'!A1742
+HELP|link.$M$20|passed=True|'Справка'!A1748
+HELP|link.$M$21|passed=True|'Справка'!A1754
+HELP|link.$M$22|passed=True|'Справка'!A1761
+HELP|link.$M$23|passed=True|'Справка'!A1769
+HELP|link.$M$27|passed=True|'Справка'!A1681
+HELP|link.$M$28|passed=True|'Справка'!A1689
+HELP|link.$M$29|passed=True|'Справка'!A1698
+HELP|link.$M$30|passed=True|'Справка'!A1708
+HELP|link.$M$31|passed=True|'Справка'!A1715
+HELP|link.$M$32|passed=True|'Справка'!A1724
+HELP|link.$M$33|passed=True|'Справка'!A1733
+HELP|link.$M$71|passed=True|'Справка'!A1607
+HELP|link.$M$72|passed=True|'Справка'!A1612
+HELP|link.$M$73|passed=True|'Справка'!A1617
+HELP|link.$M$74|passed=True|'Справка'!A1624
+HELP|link.$M$75|passed=True|'Справка'!A1629
+HELP|link.$M$76|passed=True|'Справка'!A1634
+HELP|link.$M$77|passed=True|'Справка'!A1639
+HELP|link.$M$78|passed=True|'Справка'!A1647
+HELP|link.$M$79|passed=True|'Справка'!A1654
+HELP|link.$M$80|passed=True|'Справка'!A1661
+HELP|link.$M$81|passed=True|'Справка'!A1666
+HELP|link.$M$82|passed=True|'Справка'!A1671
+HELP|link.$M$83|passed=True|'Справка'!A1676
+HELP|link.$AI$1|passed=True|'Справка'!A771
+HELP|link.$H$2|passed=True|'Справка'!A646
+HELP|link.$O$2|passed=True|'Справка'!A671
+HELP|link.$H$11|passed=True|'Справка'!A659
+HELP|link.$H$17|passed=True|'Справка'!A735
+HELP|link.$H$25|passed=True|'Справка'!A726
+HELP|link.$H$35|passed=True|'Справка'!A744
+HELP|link.$P$36|passed=True|'Справка'!A706
+HELP|link.$AI$58|passed=True|'Справка'!A716
+HELP|link.$H$69|passed=True|'Справка'!A777
+HELP|link.$H$85|passed=True|'Справка'!A787
+HELP|link.$H$97|passed=True|'Справка'!A818
+HELP|link.$H$127|passed=True|'Справка'!A794
+HELP|link.$H$152|passed=True|'Справка'!A804
+HELP|directHelpLinksPresent|passed=True|count=141
+ACTUAL_HELP: rows=1903; links=141; shapes=118
+TOTAL_AUDIT03_HELP: failed=0

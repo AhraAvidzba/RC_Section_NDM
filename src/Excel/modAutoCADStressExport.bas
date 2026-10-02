@@ -987,7 +987,7 @@ Private Function DrawParametricSectionContour(ByVal workbook As Object, ByVal ms
 End Function
 
 ' Читает единицу длины последнего расчетного снимка. Для annotation-таблицы это
-' важнее заголовков StartX/EndX: сами заголовки исторически без ", mm", но
+' важнее заголовков StartX/EndX: сами заголовки не содержат единицу длины, но
 ' значения уже переведены writer-ом в Output.LengthUnit.
 Private Function ResultsOutputLengthUnit(ByVal workbook As Object) As String
     On Error GoTo Failed

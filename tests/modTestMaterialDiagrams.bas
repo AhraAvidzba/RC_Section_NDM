@@ -292,6 +292,8 @@ Private Sub AssertTrue(ByRef stats As TMaterialTestStats, ByVal name As String, 
     End If
 End Sub
 
+' Проверяет точку или характеристику материала по абсолютному допуску теста.
+' Обе величины и разница записываются в лог для независимого сравнения диаграмм.
 Private Sub AssertClose(ByRef stats As TMaterialTestStats, ByVal name As String, ByVal actual As Double, _
         ByVal expected As Double, ByVal tolerance As Double)
     Dim diff As Double

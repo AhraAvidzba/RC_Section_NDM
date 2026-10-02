@@ -85,6 +85,28 @@ try {
     $target = [string]$relationship[0].Target
     if ($target.StartsWith('/')) { $sheetPart = $target.TrimStart('/') } else { $sheetPart = 'xl/' + $target }
     $sheet = Read-XmlPart $sheetPart
+    $styles = Read-XmlPart 'xl/styles.xml'
+    $baseFormats = @($styles.styleSheet.cellStyleXfs.xf)
+    $effectiveStyles = @($styles.styleSheet.cellXfs.xf | ForEach-Object {
+        $alignment = $_.SelectSingleNode('./*[local-name()="alignment"]')
+        if (-not $alignment -and $_.HasAttribute('xfId')) {
+            $alignment = $baseFormats[[int]$_.xfId].SelectSingleNode('./*[local-name()="alignment"]')
+        }
+        $horizontal = 'general'; $vertical = 'bottom'
+        if ($alignment) {
+            if ($alignment.HasAttribute('horizontal')) { $horizontal = [string]$alignment.horizontal }
+            if ($alignment.HasAttribute('vertical')) { $vertical = [string]$alignment.vertical }
+        }
+        [pscustomobject]@{ Horizontal = $horizontal; Vertical = $vertical }
+    })
+    $columnStyleIndex = @{}
+    foreach ($columnRange in $sheet.worksheet.cols.col) {
+        if ($columnRange.HasAttribute('style')) {
+            for ($column = [int]$columnRange.min; $column -le [int]$columnRange.max; $column++) {
+                $columnStyleIndex[$column] = [int]$columnRange.style
+            }
+        }
+    }
     $stringsPart = Read-XmlPart 'xl/sharedStrings.xml' $false
     $sharedStrings = @()
     if ($stringsPart) {
@@ -111,6 +133,10 @@ try {
     $hyperlinks = @($sheet.worksheet.hyperlinks.hyperlink | Where-Object { $_ } | ForEach-Object {
         [pscustomobject]@{ Range = [string]$_.ref; Location = [string]$_.location; Display = [string]$_.display }
     })
+    $mergedRanges = @($sheet.worksheet.mergeCells.mergeCell | Where-Object { $_ } | ForEach-Object {
+        $address = [string]$_.ref
+        [pscustomobject]@{ Range = $address; Anchor = ($address -split ':')[0]; Rectangle = (Get-Rectangle $address) }
+    })
     $namesIndex = @{}
     foreach ($range in $namedRanges) { Add-RectangleToIndex $range.Rectangle $range.Name $namesIndex }
     $validationIndex = @{}
@@ -118,6 +144,10 @@ try {
         foreach ($rectangle in $validation.Rectangles) {
             Add-RectangleToIndex $rectangle $validation.Range $validationIndex
         }
+    }
+    $mergeIndex = @{}
+    foreach ($merged in $mergedRanges) {
+        Add-RectangleToIndex $merged.Rectangle $merged.Range $mergeIndex
     }
     $hiddenColumnIndex = @{}
     foreach ($columnRange in $hiddenColumns) {
@@ -139,11 +169,27 @@ try {
             $formulaNode = $cell.SelectSingleNode('./*[local-name()="f"]')
             $formula = ''
             if ($formulaNode) { $formula = [string]$formulaNode.InnerText }
+            $mergeRange = ''
+            $mergeAnchor = ''
+            if ($mergeIndex.ContainsKey($key)) {
+                if ($mergeIndex[$key].Count -ne 1) { throw "Overlapping merged areas at Config!$address." }
+                $mergeRange = $mergeIndex[$key][0]
+                $mergeAnchor = ($mergeRange -split ':')[0]
+            }
+            $styleIndex = 0
+            if ($cell.HasAttribute('s')) { $styleIndex = [int]$cell.s }
+            elseif ($row.HasAttribute('s') -and $row.customFormat -eq '1') { $styleIndex = [int]$row.s }
+            elseif ($columnStyleIndex.ContainsKey($position.Left)) { $styleIndex = $columnStyleIndex[$position.Left] }
+            if ($styleIndex -ge $effectiveStyles.Count) { throw "Unknown style index at Config!$address : $styleIndex" }
             $cells.Add([pscustomobject]@{
                 Address = $address; Value = (Get-CellText $cell); Formula = $formula
                 OpenXmlType = [string]$cell.t; Style = [string]$cell.s
                 RowHidden = ($row.hidden -eq '1'); ColumnHidden = $hiddenColumnIndex.ContainsKey($position.Left)
                 NamedRanges = $names; Validations = $validation
+                MergeRange = $mergeRange; MergeAnchor = $mergeAnchor
+                EffectiveStyle = $styleIndex
+                HorizontalAlignment = $effectiveStyles[$styleIndex].Horizontal
+                VerticalAlignment = $effectiveStyles[$styleIndex].Vertical
                 CoverageStatus = 'NotYetMappedToBehaviorTest'
             })
         }
@@ -153,7 +199,7 @@ try {
         CapturedAt = [DateTimeOffset]::Now.ToString('o'); CellCount = $cells.Count
         NamedRangeCount = $namedRanges.Count; ValidationCount = $validations.Count
         SheetState = [string]$config[0].state; SheetProtection = [string]$sheet.worksheet.sheetProtection.sheet
-        NamedRanges = $namedRanges; Validations = $validations; Hyperlinks = $hyperlinks
+        NamedRanges = $namedRanges; Validations = $validations; Hyperlinks = $hyperlinks; MergedRanges = $mergedRanges
         HiddenRows = @($sheet.worksheet.sheetData.row | Where-Object { $_.hidden -eq '1' } | ForEach-Object { [int]$_.r })
         HiddenColumns = @($hiddenColumns | ForEach-Object { [pscustomobject]@{ From = [int]$_.min; To = [int]$_.max } })
         Cells = $cells.ToArray()

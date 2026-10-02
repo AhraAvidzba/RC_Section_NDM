@@ -11,7 +11,9 @@ $templatePatterns = @(
     'Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения',
     'Возвращает сохраненное значение',
     'Обновляет сохраненное значение',
-    'Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек'
+    'Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек',
+    'Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен',
+    'Очищает накопленное состояние перед новым расчетом или повторным формированием вывода'
 )
 $files = @(Get-ChildItem -LiteralPath (Join-Path $root 'src'), (Join-Path $root 'tests') -Recurse -File |
     Where-Object { $_.Extension -in @('.cls', '.bas', '.frm') } | Sort-Object FullName)
@@ -48,12 +50,36 @@ foreach ($file in $files) {
             $text = $comment -join ' '
             $template = $false
             foreach ($pattern in $templatePatterns) { if ($text.Contains($pattern)) { $template = $true; break } }
+            # Inline accessors end on their declaration line; do not absorb the
+            # next method when selecting candidates for semantic review.
+            $endKind = if ($kind.StartsWith('Property')) { 'Property' } else { $kind }
+            $body = New-Object System.Collections.Generic.List[string]
+            $declaration = $i
+            while ($source[$declaration].TrimEnd().EndsWith('_')) { $declaration++ }
+            if ($source[$declaration] -match ':\s*End\s+' + $endKind + '\b') {
+                $inlineBody = $source[$declaration] -replace '^.*?\)\s*(?:As\s+[A-Za-z0-9_()]+)?\s*:', ''
+                $inlineBody = $inlineBody -replace ':\s*End\s+' + $endKind + '\b.*$', ''
+                if (-not [string]::IsNullOrWhiteSpace($inlineBody)) { $body.Add($inlineBody.Trim()) }
+            } else {
+                for ($next = $declaration + 1; $next -lt $source.Length; $next++) {
+                    if ($source[$next] -match '^\s*End\s+' + $endKind + '\b') { break }
+                    if ([string]::IsNullOrWhiteSpace($source[$next]) -or $source[$next] -match "^\s*'") { continue }
+                    $body.Add($source[$next].Trim())
+                }
+            }
+            $simpleAccessor = $false
+            if ($kind.StartsWith('Property') -and $body.Count -eq 1) {
+                $simpleAccessor = $body[0] -match '^\s*(?:Set\s+)?(?:[A-Za-z_][A-Za-z0-9_]*|m[A-Za-z0-9_]+)\s*=\s*(?:m[A-Za-z0-9_]+|value|rhs)\s*$'
+            }
             if ($template) { $templateCount++ }
             $methodCount++
             $methods.Add([pscustomobject]@{
                 File = $relative; Module = $name; SourceLine = $i + 1; Visibility = $visibility;
                 Kind = $kind; Method = $methodName; CommentLines = $comment.Count;
-                Comment = $text; TemplateSuspected = $template; SemanticReview = 'Pending'
+                Comment = $text; TemplateSuspected = $template; BodyLines = $body.Count;
+                SimpleAccessorCandidate = $simpleAccessor;
+                MissingNontrivialCommentCandidate = ($comment.Count -eq 0 -and -not $simpleAccessor);
+                SemanticReview = 'Pending'
             })
         }
         if ($line -match '^\s*[^'']*(?:\bAnd\b|\bOr\b|\bIIf\s*\(|\bLBound\s*\(|\bUBound\s*\()') {

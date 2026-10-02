@@ -392,8 +392,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     Dim i As Long
     ' LC-зависимые свойства уровня сечения хранятся отдельно от поэлементных
     ' строк. Плоскости деформаций пишутся ниже только как State.<StateType>.*,
-    ' чтобы схема и AutoCAD всегда выбирали конкретное named-state без
-    ' неоднозначных legacy-полей.
+    ' чтобы схема и AutoCAD выбирали плоскость конкретного named-state.
     For i = 1 To batch.Count
         If batch.ResultAt(i).StrengthResult.DirectState.StateAvailable Then
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nint", OutputForce(batch.ResultAt(i).StrengthResult.DirectState.StateResult.Nint, units), OutputForceUnit(units), "Равнодействующая продольная сила внутреннего НДС для выбранного сочетания."

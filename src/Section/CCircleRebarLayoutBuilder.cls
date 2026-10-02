@@ -183,7 +183,9 @@ Private Function RowSkipDiameter(ByVal row2Diameter As Double, ByVal row2Locatio
     End If
 End Function
 
-' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
+' Проверяет размеры круга, число стержней и положение активных рядов до
+' построения координат. Нулевой первый ряд выключает зависимые ряды;
+' активный ряд должен иметь защитное расстояние и помещаться по радиусу.
 Private Sub ValidateInputs(ByVal diameter As Double, ByVal axisDistance As Double, _
         ByVal barCount As Long, ByVal barDiameter As Double, ByVal row2Diameter As Double, _
         ByVal row3Diameter As Double, ByVal row2Location As String, ByVal row3Location As String)
@@ -202,7 +204,9 @@ Private Sub ValidateInputs(ByVal diameter As Double, ByVal axisDistance As Doubl
     If axisDistance >= diameter / 2# Then Err.Raise vbObjectError + 3154, "CCircleRebarLayoutBuilder", "Rebar.AxisDistance должен быть меньше Circle.Diameter/2."
 End Sub
 
-' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
+' Проверяет размещение всего круглого стержня, а не только его центра.
+' Выход дополнительного ряда за наружную окружность отклоняется с причиной
+' до добавления стержня в раскладку.
 Private Sub ValidateBarInsideCircle(ByVal geom As CGeometryCircle, ByVal centerX As Double, ByVal centerY As Double, _
         ByVal xCoord As Double, ByVal yCoord As Double, ByVal barDiameter As Double)
     Dim dx As Double

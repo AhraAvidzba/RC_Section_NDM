@@ -764,12 +764,9 @@ Public Sub LimitSearchAcceptPureAxialRetainedCapacity(ByVal section As CSectionM
     AcceptPureAxialRetainedCapacity section, concreteMaterial, steelMaterial, loadPath
 End Sub
 
-' Сохраняет прежнее поведение LoadMultiplier при численной неудаче внутри уже
-' найденной физической скобки: расчет не считается сошедшимся, но последняя
-' acceptable-точка остается доступной для диагностики и осевой fallback-ветки.
-' Сохраняет последнюю acceptable lambda-точку, которую уже решил общий
-' LoadMultiplier-search. Это ровно прежний контракт CCapacitySolver: bisection
-' финализируется по нижней стороне физической скобки без повторного solve.
+' Сохраняет последнюю допустимую точку общего LoadMultiplier-search.
+' Она нужна для финализации с нижней стороны физической скобки без повторного
+' solve, а при численном отказе остается диагностикой, не готовой capacity.
 Public Sub LimitSearchRecordCapacityAcceptable(ByVal nValue As Double, _
         ByVal mxValue As Double, ByVal myValue As Double)
     RecordAcceptableState mLastSolver, nValue, mxValue, myValue
@@ -797,8 +794,8 @@ Public Sub LimitSearchFinalizeCapacityLoadMultiplier(ByVal lambdaValue As Double
 End Sub
 
 ' Финализирует Bisection по последней безопасной lambda-точке, уже
-' посчитанной внутри общей скобки. Это сохраняет прежнее поведение:
-' дополнительный solve в той же точке не нужен и не может испортить результат
+' посчитанной внутри общей скобки. Повторный solve в той же точке не нужен
+' и не должен заменять подтвержденное равновесие неудачной повторной попыткой
 ' на жестких сценариях с малым числом итераций внутреннего CSectionSolver.
 Public Sub LimitSearchFinalizeCapacityFromRetainedAcceptable(ByVal lambdaValue As Double, _
         ByVal loadPath As CLoadPathVector, ByVal methodName As String)
@@ -898,8 +895,8 @@ Public Function LimitSearchUltimateResidualReached(ByVal rPath1 As Double, _
 End Function
 
 ' Возвращает норму невязок для line-search общего UltimateStrain-цикла.
-' Моментная постановка сохраняет прежние веса направления M, остальные
-' траектории используют общий CLoadPathMath с допусками capacity solver-а.
+' Моментная постановка использует веса невязок 1, 100 и 10; остальные
+' траектории нормирует CLoadPathMath по допускам capacity solver-а.
 Public Function LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Double
     If mUltimateMomentOnlyPath Then
@@ -1172,7 +1169,9 @@ Private Function ValidateLoadPathCapacityInputs(ByVal section As CSectionModel, 
     End If
 End Function
 
-' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
+' Проверяет модель, материалы и ненулевой масштабируемый вектор момента
+' для поиска при фиксированной продольной силе. Отказ сохраняется typed:
+' ошибка модели/ввода/настройки не подменяется численной несходимостью.
 Private Function ValidateCapacityInputs(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
         ByVal steelMaterial As Object, ByVal mxBase As Double, ByVal myBase As Double) As Boolean
     If section Is Nothing Then

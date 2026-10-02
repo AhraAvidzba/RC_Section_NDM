@@ -470,7 +470,7 @@ Public Function SteelMaterialForEquilibrium(ByVal basePurpose As ECalculationPur
 End Function
 
 ' Возвращает физическую бетонную диаграмму по спецификации профиля.
-' Это новый основной вход provider-а: профиль уже определил ValueSet,
+' Профиль определяет ValueSet,
 ' TwoLine/ThreeLine и режим растянутого бетона, а solver получает готовую
 ' CMaterialDiagram без знания этих настроек.
 Public Function ConcreteMaterialFromSpec(ByVal spec As CMaterialModelSpec) As CMaterialDiagram
@@ -736,91 +736,91 @@ Private Function MaterialDiagramCacheKey(ByVal roleKey As String, ByVal spec As 
     MaterialDiagramCacheKey = roleKey & "|" & spec.SpecKey
 End Function
 
-' Возвращает группу предельных состояний для исторического API по расчетной роли.
+' Возвращает группу предельных состояний диаграмм, подготовленных для расчетной роли.
 Public Function LimitStateGroup(ByVal purpose As ECalculationPurpose) As String
     EnsureInitialized
     LimitStateGroup = mLimitStateGroup(PhysicalPurposeSlot(purpose))
 End Function
 
-' Возвращает тип бетонной диаграммы для исторического API по расчетной роли.
+' Возвращает тип бетонной диаграммы, подготовленной для расчетной роли.
 Public Function ConcreteDiagramType(ByVal purpose As ECalculationPurpose) As String
     EnsureInitialized
     ConcreteDiagramType = mConcreteDiagramType(PhysicalPurposeSlot(purpose))
 End Function
 
-' Возвращает режим учета растянутого бетона для исторического API по расчетной роли.
+' Возвращает режим растянутого бетона в диаграмме выбранной расчетной роли.
 Public Function ConcreteTensionBehavior(ByVal purpose As ECalculationPurpose) As String
     EnsureInitialized
     ConcreteTensionBehavior = mConcreteTensionBehavior(PhysicalPurposeSlot(purpose))
 End Function
 
-' Возвращает тип диаграммы арматуры для исторического API по расчетной роли.
+' Возвращает тип диаграммы арматуры, подготовленной для расчетной роли.
 Public Function SteelDiagramType(ByVal purpose As ECalculationPurpose) As String
     EnsureInitialized
     SteelDiagramType = mSteelDiagramType(PhysicalPurposeSlot(purpose))
 End Function
 
-' Возвращает предельную сжатую деформацию бетона для исторического API по расчетной роли.
+' Возвращает физическую предельную деформацию бетона при сжатии для расчетной роли.
 Public Function ConcreteCompressionLimit(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     ConcreteCompressionLimit = mConcreteCompressionLimit(PhysicalPurposeSlot(purpose))
 End Function
 
-' Возвращает предельную растянутую деформацию бетона для исторического API по расчетной роли.
+' Возвращает физическую предельную деформацию растянутого бетона для расчетной роли.
 Public Function ConcreteTensionLimit(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     ConcreteTensionLimit = mConcreteTensionLimit(PhysicalPurposeSlot(purpose))
 End Function
 
-' Показывает, включен ли предел растянутого бетона для исторического API по расчетной роли.
+' Показывает, действует ли физический предел растянутого бетона для расчетной роли.
 Public Function ConcreteTensionLimitEnabled(ByVal purpose As ECalculationPurpose) As Boolean
     EnsureInitialized
     ConcreteTensionLimitEnabled = mConcreteTensionLimitEnabled(PhysicalPurposeSlot(purpose))
 End Function
 
-' Возвращает предельную сжатую деформацию арматуры для исторического API по расчетной роли.
+' Возвращает физическую предельную деформацию арматуры при сжатии для расчетной роли.
 Public Function SteelCompressionLimit(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     SteelCompressionLimit = mSteelCompressionLimit(PhysicalPurposeSlot(purpose))
 End Function
 
-' Возвращает предельную растянутую деформацию арматуры для исторического API по расчетной роли.
+' Возвращает физическую предельную деформацию арматуры при растяжении для расчетной роли.
 Public Function SteelTensionLimit(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     SteelTensionLimit = mSteelTensionLimit(PhysicalPurposeSlot(purpose))
 End Function
 
-' Возвращает сопротивление бетона сжатию для исторического API по расчетной роли.
+' Возвращает сопротивление бетона сжатию для диаграмм расчетной роли, МПа.
 Public Function ConcreteCompressionResistance(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     ConcreteCompressionResistance = mConcreteCompressionResistance(PhysicalPurposeSlot(purpose))
 End Function
 
-' Возвращает сопротивление бетона растяжению для исторического API по расчетной роли.
+' Возвращает сопротивление бетона растяжению для диаграмм расчетной роли, МПа.
 Public Function ConcreteTensionResistance(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     ConcreteTensionResistance = mConcreteTensionResistance(PhysicalPurposeSlot(purpose))
 End Function
 
-' Возвращает модуль бетона для исторического API по расчетной роли.
+' Возвращает модуль бетона для диаграмм расчетной роли, МПа.
 Public Function ConcreteElasticModulus(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     ConcreteElasticModulus = mConcreteElasticModulus(PhysicalPurposeSlot(purpose))
 End Function
 
-' Возвращает сопротивление арматуры сжатию для исторического API по расчетной роли.
+' Возвращает сопротивление арматуры сжатию для диаграмм расчетной роли, МПа.
 Public Function SteelCompressionResistance(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     SteelCompressionResistance = mSteelCompressionResistance(PhysicalPurposeSlot(purpose))
 End Function
 
-' Возвращает сопротивление арматуры растяжению для исторического API по расчетной роли.
+' Возвращает сопротивление арматуры растяжению для диаграмм расчетной роли, МПа.
 Public Function SteelTensionResistance(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     SteelTensionResistance = mSteelTensionResistance(PhysicalPurposeSlot(purpose))
 End Function
 
-' Возвращает модуль арматуры для исторического API по расчетной роли.
+' Возвращает модуль арматуры для диаграмм расчетной роли, МПа.
 Public Function SteelElasticModulus(ByVal purpose As ECalculationPurpose) As Double
     EnsureInitialized
     SteelElasticModulus = mSteelElasticModulus(PhysicalPurposeSlot(purpose))

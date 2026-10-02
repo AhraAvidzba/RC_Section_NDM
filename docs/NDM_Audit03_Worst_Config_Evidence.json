@@ -1,0 +1,25 @@
+{
+  "Scope": "Активный выбор Worst проверен по четырем typed reserve поддеревьям; не является всей Config приемкой.",
+  "PositiveReport": "docs/regression/Audit03/worst_criterion_positive_v71_2026-10-02.txt",
+  "PositiveGate": "TOTAL: passed=70; failed=0",
+  "FullReports": [
+    "docs/regression/Audit03/config_units_full_off_v71_2026-10-02.txt",
+    "docs/regression/Audit03/config_units_full_on_v71_2026-10-02.txt"
+  ],
+  "Consumer": "Config -> CSystemSettingsReader -> CBatchSectionCalculator.ApplySettings/SelectWorst -> CCombinationResult.ReserveForCriterion -> CBatchResultWriter",
+  "TestId": "modTestBatchCalculation.TestAudit03WorstCriterionConfig",
+  "Entries": [
+    {
+      "Id": "General.WorstCombinationCriterion",
+      "Type": "Enum",
+      "InternalUnits": "-",
+      "RuntimeDefault": "StrengthCapacity при отсутствующем optional API key; явный пустой/unknown не подменяется.",
+      "ValidRange": "StrengthStrain / StrengthCapacity / Cracks / Stability",
+      "Activity": "Выбор governing LC после запрошенных проверок",
+      "ExpectedEffect": "Каждый вариант выбирает LC по собственному независимому reserve oracle; actual summary совпадает",
+      "AssertionPrefix": "audit03.worst.",
+      "BlankAndErrorContract": "Пустой/TODO/unknown/CVErr дают InputErr без solve; recovery восстанавливает работу.",
+      "RangeReview": "Все четыре значения, invalid/recovery и зависимый writer проверены; остальные interaction tests сохраняются отдельными gates."
+    }
+  ]
+}

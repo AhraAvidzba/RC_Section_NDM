@@ -1,0 +1,238 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_source_v71.xlsm
+SOURCE_SHA256: 7A3F2198E271DCCECE63B34A2E2BA67DAA72FCB57B39F98DDA11F3EF06EE3E20
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_938d9b059aeb4b5c9b6186ea0acf759b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== RunAudit03RectSetSharedSelectorTests =====
+SUITE_STARTED: RunAudit03RectSetSharedSelectorTests; 2026-10-02T15:32:45
+EXCEL_AFTER_SUITE: pid=28960; workingSet=140234752; privateBytes=105160704; cpu=3.3125
+EXCEL_AFTER_SUITE: pid=29556; workingSet=169410560; privateBytes=102146048; cpu=167.40625
+OK: audit03.rectset.shared.H1.loc_2row.matching; actual=Stacked
+OK: audit03.rectset.shared.H1.loc_2row.emptyFollower; actual=Stacked
+OK: audit03.rectset.shared.H1.loc_2row.inactiveFollower; actual=Stacked
+OK: audit03.rectset.shared.H1.loc_2row.conflictCode
+OK: audit03.rectset.shared.H1.loc_2row.conflictReason
+OK: audit03.rectset.shared.H1.loc_2row.alternative; actual=SideBySide
+OK: audit03.rectset.shared.H1.bind_2row.matching; actual=EachBar
+OK: audit03.rectset.shared.H1.bind_2row.emptyFollower; actual=EachBar
+OK: audit03.rectset.shared.H1.bind_2row.inactiveFollower; actual=EachBar
+OK: audit03.rectset.shared.H1.bind_2row.conflictCode
+OK: audit03.rectset.shared.H1.bind_2row.conflictReason
+OK: audit03.rectset.shared.H1.bind_2row.alternative; actual=EverySecondBar
+OK: audit03.rectset.shared.H1.loc_3row.matching; actual=Stacked
+OK: audit03.rectset.shared.H1.loc_3row.emptyFollower; actual=Stacked
+OK: audit03.rectset.shared.H1.loc_3row.inactiveFollower; actual=Stacked
+OK: audit03.rectset.shared.H1.loc_3row.conflictCode
+OK: audit03.rectset.shared.H1.loc_3row.conflictReason
+OK: audit03.rectset.shared.H1.loc_3row.alternative; actual=SideBySide
+OK: audit03.rectset.shared.H1.bind_3row.matching; actual=EachBar
+OK: audit03.rectset.shared.H1.bind_3row.emptyFollower; actual=EachBar
+OK: audit03.rectset.shared.H1.bind_3row.inactiveFollower; actual=EachBar
+OK: audit03.rectset.shared.H1.bind_3row.conflictCode
+OK: audit03.rectset.shared.H1.bind_3row.conflictReason
+OK: audit03.rectset.shared.H1.bind_3row.alternative; actual=EverySecondBar
+OK: audit03.rectset.shared.B1.loc_2row.matching; actual=Stacked
+OK: audit03.rectset.shared.B1.loc_2row.emptyFollower; actual=Stacked
+OK: audit03.rectset.shared.B1.loc_2row.inactiveFollower; actual=Stacked
+OK: audit03.rectset.shared.B1.loc_2row.conflictCode
+OK: audit03.rectset.shared.B1.loc_2row.conflictReason
+OK: audit03.rectset.shared.B1.loc_2row.alternative; actual=SideBySide
+OK: audit03.rectset.shared.B1.bind_2row.matching; actual=EachBar
+OK: audit03.rectset.shared.B1.bind_2row.emptyFollower; actual=EachBar
+OK: audit03.rectset.shared.B1.bind_2row.inactiveFollower; actual=EachBar
+OK: audit03.rectset.shared.B1.bind_2row.conflictCode
+OK: audit03.rectset.shared.B1.bind_2row.conflictReason
+OK: audit03.rectset.shared.B1.bind_2row.alternative; actual=EverySecondBar
+OK: audit03.rectset.shared.B1.loc_3row.matching; actual=Stacked
+OK: audit03.rectset.shared.B1.loc_3row.emptyFollower; actual=Stacked
+OK: audit03.rectset.shared.B1.loc_3row.inactiveFollower; actual=Stacked
+OK: audit03.rectset.shared.B1.loc_3row.conflictCode
+OK: audit03.rectset.shared.B1.loc_3row.conflictReason
+OK: audit03.rectset.shared.B1.loc_3row.alternative; actual=SideBySide
+OK: audit03.rectset.shared.B1.bind_3row.matching; actual=EachBar
+OK: audit03.rectset.shared.B1.bind_3row.emptyFollower; actual=EachBar
+OK: audit03.rectset.shared.B1.bind_3row.inactiveFollower; actual=EachBar
+OK: audit03.rectset.shared.B1.bind_3row.conflictCode
+OK: audit03.rectset.shared.B1.bind_3row.conflictReason
+OK: audit03.rectset.shared.B1.bind_3row.alternative; actual=EverySecondBar
+OK: audit03.rectset.shared.H2.loc_2row.matching; actual=Stacked
+OK: audit03.rectset.shared.H2.loc_2row.emptyFollower; actual=Stacked
+OK: audit03.rectset.shared.H2.loc_2row.inactiveFollower; actual=Stacked
+OK: audit03.rectset.shared.H2.loc_2row.conflictCode
+OK: audit03.rectset.shared.H2.loc_2row.conflictReason
+OK: audit03.rectset.shared.H2.loc_2row.alternative; actual=SideBySide
+OK: audit03.rectset.shared.H2.bind_2row.matching; actual=EachBar
+OK: audit03.rectset.shared.H2.bind_2row.emptyFollower; actual=EachBar
+OK: audit03.rectset.shared.H2.bind_2row.inactiveFollower; actual=EachBar
+OK: audit03.rectset.shared.H2.bind_2row.conflictCode
+OK: audit03.rectset.shared.H2.bind_2row.conflictReason
+OK: audit03.rectset.shared.H2.bind_2row.alternative; actual=EverySecondBar
+OK: audit03.rectset.shared.H2.loc_3row.matching; actual=Stacked
+OK: audit03.rectset.shared.H2.loc_3row.emptyFollower; actual=Stacked
+OK: audit03.rectset.shared.H2.loc_3row.inactiveFollower; actual=Stacked
+OK: audit03.rectset.shared.H2.loc_3row.conflictCode
+OK: audit03.rectset.shared.H2.loc_3row.conflictReason
+OK: audit03.rectset.shared.H2.loc_3row.alternative; actual=SideBySide
+OK: audit03.rectset.shared.H2.bind_3row.matching; actual=EachBar
+OK: audit03.rectset.shared.H2.bind_3row.emptyFollower; actual=EachBar
+OK: audit03.rectset.shared.H2.bind_3row.inactiveFollower; actual=EachBar
+OK: audit03.rectset.shared.H2.bind_3row.conflictCode
+OK: audit03.rectset.shared.H2.bind_3row.conflictReason
+OK: audit03.rectset.shared.H2.bind_3row.alternative; actual=EverySecondBar
+OK: audit03.rectset.shared.B2.loc_2row.matching; actual=Stacked
+OK: audit03.rectset.shared.B2.loc_2row.emptyFollower; actual=Stacked
+OK: audit03.rectset.shared.B2.loc_2row.inactiveFollower; actual=Stacked
+OK: audit03.rectset.shared.B2.loc_2row.conflictCode
+OK: audit03.rectset.shared.B2.loc_2row.conflictReason
+OK: audit03.rectset.shared.B2.loc_2row.alternative; actual=SideBySide
+OK: audit03.rectset.shared.B2.bind_2row.matching; actual=EachBar
+OK: audit03.rectset.shared.B2.bind_2row.emptyFollower; actual=EachBar
+OK: audit03.rectset.shared.B2.bind_2row.inactiveFollower; actual=EachBar
+OK: audit03.rectset.shared.B2.bind_2row.conflictCode
+OK: audit03.rectset.shared.B2.bind_2row.conflictReason
+OK: audit03.rectset.shared.B2.bind_2row.alternative; actual=EverySecondBar
+OK: audit03.rectset.shared.B2.loc_3row.matching; actual=Stacked
+OK: audit03.rectset.shared.B2.loc_3row.emptyFollower; actual=Stacked
+OK: audit03.rectset.shared.B2.loc_3row.inactiveFollower; actual=Stacked
+OK: audit03.rectset.shared.B2.loc_3row.conflictCode
+OK: audit03.rectset.shared.B2.loc_3row.conflictReason
+OK: audit03.rectset.shared.B2.loc_3row.alternative; actual=SideBySide
+OK: audit03.rectset.shared.B2.bind_3row.matching; actual=EachBar
+OK: audit03.rectset.shared.B2.bind_3row.emptyFollower; actual=EachBar
+OK: audit03.rectset.shared.B2.bind_3row.inactiveFollower; actual=EachBar
+OK: audit03.rectset.shared.B2.bind_3row.conflictCode
+OK: audit03.rectset.shared.B2.bind_3row.conflictReason
+OK: audit03.rectset.shared.B2.bind_3row.alternative; actual=EverySecondBar
+OK: audit03.rectset.layout.H1.loc_2row.mergedPair
+OK: audit03.rectset.layout.H1.loc_2row.oneValue
+OK: audit03.rectset.layout.H1.loc_2row.dropdown
+OK: audit03.rectset.layout.H1.loc_2row.reader; actual=Stacked
+OK: audit03.rectset.layout.H1.bind_2row.mergedPair
+OK: audit03.rectset.layout.H1.bind_2row.oneValue
+OK: audit03.rectset.layout.H1.bind_2row.dropdown
+OK: audit03.rectset.layout.H1.bind_2row.reader; actual=EachBar
+OK: audit03.rectset.layout.H1.loc_3row.mergedPair
+OK: audit03.rectset.layout.H1.loc_3row.oneValue
+OK: audit03.rectset.layout.H1.loc_3row.dropdown
+OK: audit03.rectset.layout.H1.loc_3row.reader; actual=Stacked
+OK: audit03.rectset.layout.H1.bind_3row.mergedPair
+OK: audit03.rectset.layout.H1.bind_3row.oneValue
+OK: audit03.rectset.layout.H1.bind_3row.dropdown
+OK: audit03.rectset.layout.H1.bind_3row.reader; actual=EachBar
+OK: audit03.rectset.layout.B1.loc_2row.mergedPair
+OK: audit03.rectset.layout.B1.loc_2row.oneValue
+OK: audit03.rectset.layout.B1.loc_2row.dropdown
+OK: audit03.rectset.layout.B1.loc_2row.reader; actual=Stacked
+OK: audit03.rectset.layout.B1.bind_2row.mergedPair
+OK: audit03.rectset.layout.B1.bind_2row.oneValue
+OK: audit03.rectset.layout.B1.bind_2row.dropdown
+OK: audit03.rectset.layout.B1.bind_2row.reader; actual=EachBar
+OK: audit03.rectset.layout.B1.loc_3row.mergedPair
+OK: audit03.rectset.layout.B1.loc_3row.oneValue
+OK: audit03.rectset.layout.B1.loc_3row.dropdown
+OK: audit03.rectset.layout.B1.loc_3row.reader; actual=Stacked
+OK: audit03.rectset.layout.B1.bind_3row.mergedPair
+OK: audit03.rectset.layout.B1.bind_3row.oneValue
+OK: audit03.rectset.layout.B1.bind_3row.dropdown
+OK: audit03.rectset.layout.B1.bind_3row.reader; actual=EachBar
+OK: audit03.rectset.layout.H2.loc_2row.mergedPair
+OK: audit03.rectset.layout.H2.loc_2row.oneValue
+OK: audit03.rectset.layout.H2.loc_2row.dropdown
+OK: audit03.rectset.layout.H2.loc_2row.reader; actual=Stacked
+OK: audit03.rectset.layout.H2.bind_2row.mergedPair
+OK: audit03.rectset.layout.H2.bind_2row.oneValue
+OK: audit03.rectset.layout.H2.bind_2row.dropdown
+OK: audit03.rectset.layout.H2.bind_2row.reader; actual=EachBar
+OK: audit03.rectset.layout.H2.loc_3row.mergedPair
+OK: audit03.rectset.layout.H2.loc_3row.oneValue
+OK: audit03.rectset.layout.H2.loc_3row.dropdown
+OK: audit03.rectset.layout.H2.loc_3row.reader; actual=Stacked
+OK: audit03.rectset.layout.H2.bind_3row.mergedPair
+OK: audit03.rectset.layout.H2.bind_3row.oneValue
+OK: audit03.rectset.layout.H2.bind_3row.dropdown
+OK: audit03.rectset.layout.H2.bind_3row.reader; actual=EachBar
+OK: audit03.rectset.layout.B2.loc_2row.mergedPair
+OK: audit03.rectset.layout.B2.loc_2row.oneValue
+OK: audit03.rectset.layout.B2.loc_2row.dropdown
+OK: audit03.rectset.layout.B2.loc_2row.reader; actual=Stacked
+OK: audit03.rectset.layout.B2.bind_2row.mergedPair
+OK: audit03.rectset.layout.B2.bind_2row.oneValue
+OK: audit03.rectset.layout.B2.bind_2row.dropdown
+OK: audit03.rectset.layout.B2.bind_2row.reader; actual=EachBar
+OK: audit03.rectset.layout.B2.loc_3row.mergedPair
+OK: audit03.rectset.layout.B2.loc_3row.oneValue
+OK: audit03.rectset.layout.B2.loc_3row.dropdown
+OK: audit03.rectset.layout.B2.loc_3row.reader; actual=Stacked
+OK: audit03.rectset.layout.B2.bind_3row.mergedPair
+OK: audit03.rectset.layout.B2.bind_3row.oneValue
+OK: audit03.rectset.layout.B2.bind_3row.dropdown
+OK: audit03.rectset.layout.B2.bind_3row.reader; actual=EachBar
+OK: audit03.rectset.effect.H1.column3.baseline
+OK: audit03.rectset.effect.H1.column3.bothSidesMoved
+OK: audit03.rectset.effect.H1.column3.inactiveCount
+OK: audit03.rectset.effect.H1.column3.inactiveCoordinates
+OK: audit03.rectset.effect.H1.column4.baseline
+OK: audit03.rectset.effect.H1.column4.bothSidesBound
+OK: audit03.rectset.effect.H1.column4.inactiveCount
+OK: audit03.rectset.effect.H1.column4.inactiveCoordinates
+OK: audit03.rectset.effect.H1.column6.baseline
+OK: audit03.rectset.effect.H1.column6.bothSidesMoved
+OK: audit03.rectset.effect.H1.column6.inactiveCount
+OK: audit03.rectset.effect.H1.column6.inactiveCoordinates
+OK: audit03.rectset.effect.H1.column7.baseline
+OK: audit03.rectset.effect.H1.column7.bothSidesBound
+OK: audit03.rectset.effect.H1.column7.inactiveCount
+OK: audit03.rectset.effect.H1.column7.inactiveCoordinates
+OK: audit03.rectset.effect.B1.column3.baseline
+OK: audit03.rectset.effect.B1.column3.bothSidesMoved
+OK: audit03.rectset.effect.B1.column3.inactiveCount
+OK: audit03.rectset.effect.B1.column3.inactiveCoordinates
+OK: audit03.rectset.effect.B1.column4.baseline
+OK: audit03.rectset.effect.B1.column4.bothSidesBound
+OK: audit03.rectset.effect.B1.column4.inactiveCount
+OK: audit03.rectset.effect.B1.column4.inactiveCoordinates
+OK: audit03.rectset.effect.B1.column6.baseline
+OK: audit03.rectset.effect.B1.column6.bothSidesMoved
+OK: audit03.rectset.effect.B1.column6.inactiveCount
+OK: audit03.rectset.effect.B1.column6.inactiveCoordinates
+OK: audit03.rectset.effect.B1.column7.baseline
+OK: audit03.rectset.effect.B1.column7.bothSidesBound
+OK: audit03.rectset.effect.B1.column7.inactiveCount
+OK: audit03.rectset.effect.B1.column7.inactiveCoordinates
+OK: audit03.rectset.effect.H2.column3.baseline
+OK: audit03.rectset.effect.H2.column3.bothSidesMoved
+OK: audit03.rectset.effect.H2.column3.inactiveCount
+OK: audit03.rectset.effect.H2.column3.inactiveCoordinates
+OK: audit03.rectset.effect.H2.column4.baseline
+OK: audit03.rectset.effect.H2.column4.bothSidesBound
+OK: audit03.rectset.effect.H2.column4.inactiveCount
+OK: audit03.rectset.effect.H2.column4.inactiveCoordinates
+OK: audit03.rectset.effect.H2.column6.baseline
+OK: audit03.rectset.effect.H2.column6.bothSidesMoved
+OK: audit03.rectset.effect.H2.column6.inactiveCount
+OK: audit03.rectset.effect.H2.column6.inactiveCoordinates
+OK: audit03.rectset.effect.H2.column7.baseline
+OK: audit03.rectset.effect.H2.column7.bothSidesBound
+OK: audit03.rectset.effect.H2.column7.inactiveCount
+OK: audit03.rectset.effect.H2.column7.inactiveCoordinates
+OK: audit03.rectset.effect.B2.column3.baseline
+OK: audit03.rectset.effect.B2.column3.bothSidesMoved
+OK: audit03.rectset.effect.B2.column3.inactiveCount
+OK: audit03.rectset.effect.B2.column3.inactiveCoordinates
+OK: audit03.rectset.effect.B2.column4.baseline
+OK: audit03.rectset.effect.B2.column4.bothSidesBound
+OK: audit03.rectset.effect.B2.column4.inactiveCount
+OK: audit03.rectset.effect.B2.column4.inactiveCoordinates
+OK: audit03.rectset.effect.B2.column6.baseline
+OK: audit03.rectset.effect.B2.column6.bothSidesMoved
+OK: audit03.rectset.effect.B2.column6.inactiveCount
+OK: audit03.rectset.effect.B2.column6.inactiveCoordinates
+OK: audit03.rectset.effect.B2.column7.baseline
+OK: audit03.rectset.effect.B2.column7.bothSidesBound
+OK: audit03.rectset.effect.B2.column7.inactiveCount
+OK: audit03.rectset.effect.B2.column7.inactiveCoordinates
+TOTAL: passed=224; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: RunAudit03RectSetSharedSelectorTests; 2026-10-02T15:32:47
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

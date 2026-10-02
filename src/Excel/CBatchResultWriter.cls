@@ -481,7 +481,8 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
 End Sub
 
 ' Возвращает строку данных Results, соответствующую строке LC в rngLoadCombinations.
-' Если batch был создан старым тестовым кодом без source-offset, writer сохраняет прежнюю компактную раскладку.
+' Если исходный номер строки не задан или вне блока, используется компактная
+' раскладка по индексу результата с ограничением границами выходного массива.
 Private Function OutputDataOffset(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal dataRows As Long) As Long
     OutputDataOffset = batch.SourceDataOffset(index)
     If OutputDataOffset < 1 Then OutputDataOffset = index

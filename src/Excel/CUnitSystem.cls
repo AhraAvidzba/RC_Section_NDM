@@ -53,27 +53,29 @@ Public Sub InitializeDefaults()
     mSignMy = "+X tension"
 End Sub
 
-' Читает настройки единиц и знаков из общего reader-а Config с валидацией каждого значения.
+' Читает единицы и знаки из Config. Явно пустой, TODO или неизвестный выбор
+' является ошибкой ввода, а не запросом default. Автономный неполный reader
+' может не содержать ключа: только для отсутствующего ключа остается default.
 Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader)
     InitializeDefaults
     If settings Is Nothing Then Exit Sub
 
-    mInputLength = ValidLengthUnit(settings.GetString("Units.Length.Input", mInputLength))
-    mOutputLength = ValidLengthUnit(settings.GetString("Units.Length.Output", mOutputLength))
-    mInputArea = ValidAreaUnit(settings.GetString("Units.Area.Input", mInputArea))
-    mOutputArea = ValidAreaUnit(settings.GetString("Units.Area.Output", mOutputArea))
-    mInputForce = ValidForceUnit(settings.GetString("Units.Force.Input", mInputForce))
-    mOutputForce = ValidForceUnit(settings.GetString("Units.Force.Output", mOutputForce))
-    mInputMoment = ValidMomentUnit(settings.GetString("Units.Moment.Input", mInputMoment))
-    mOutputMoment = ValidMomentUnit(settings.GetString("Units.Moment.Output", mOutputMoment))
-    mInputStress = ValidStressUnit(settings.GetString("Units.Stress.Input", mInputStress))
-    mOutputStress = ValidStressUnit(settings.GetString("Units.Stress.Output", mOutputStress))
-    mInputCurvature = ValidCurvatureUnit(settings.GetString("Units.Curvature.Input", mInputCurvature))
-    mOutputCurvature = ValidCurvatureUnit(settings.GetString("Units.Curvature.Output", mOutputCurvature))
+    mInputLength = ValidLengthUnit(settings.GetRawString("Units.Length.Input", mInputLength), "Units.Length.Input")
+    mOutputLength = ValidLengthUnit(settings.GetRawString("Units.Length.Output", mOutputLength), "Units.Length.Output")
+    mInputArea = ValidAreaUnit(settings.GetRawString("Units.Area.Input", mInputArea), "Units.Area.Input")
+    mOutputArea = ValidAreaUnit(settings.GetRawString("Units.Area.Output", mOutputArea), "Units.Area.Output")
+    mInputForce = ValidForceUnit(settings.GetRawString("Units.Force.Input", mInputForce), "Units.Force.Input")
+    mOutputForce = ValidForceUnit(settings.GetRawString("Units.Force.Output", mOutputForce), "Units.Force.Output")
+    mInputMoment = ValidMomentUnit(settings.GetRawString("Units.Moment.Input", mInputMoment), "Units.Moment.Input")
+    mOutputMoment = ValidMomentUnit(settings.GetRawString("Units.Moment.Output", mOutputMoment), "Units.Moment.Output")
+    mInputStress = ValidStressUnit(settings.GetRawString("Units.Stress.Input", mInputStress), "Units.Stress.Input")
+    mOutputStress = ValidStressUnit(settings.GetRawString("Units.Stress.Output", mOutputStress), "Units.Stress.Output")
+    mInputCurvature = ValidCurvatureUnit(settings.GetRawString("Units.Curvature.Input", mInputCurvature), "Units.Curvature.Input")
+    mOutputCurvature = ValidCurvatureUnit(settings.GetRawString("Units.Curvature.Output", mOutputCurvature), "Units.Curvature.Output")
 
-    mSignN = ValidNSign(settings.GetString("Sign.N.User", mSignN))
-    mSignMx = ValidMxSign(settings.GetString("Sign.Mx.User", mSignMx))
-    mSignMy = ValidMySign(settings.GetString("Sign.My.User", mSignMy))
+    mSignN = ValidNSign(settings.GetRawString("Sign.N.User", mSignN), "Sign.N.User")
+    mSignMx = ValidMxSign(settings.GetRawString("Sign.Mx.User", mSignMx), "Sign.Mx.User")
+    mSignMy = ValidMySign(settings.GetRawString("Sign.My.User", mSignMy), "Sign.My.User")
 End Sub
 
 ' Переводит длину из пользовательских INPUT-единиц во внутренние мм.
@@ -323,74 +325,74 @@ Private Function MySignFactor() As Double
 End Function
 
 ' Валидирует строку единицы длины из Config и возвращает ее без изменения регистра пользователя.
-Private Function ValidLengthUnit(ByVal value As String) As String
+Private Function ValidLengthUnit(ByVal value As String, ByVal settingKey As String) As String
     Select Case LCase$(Trim$(value))
         Case "mm", "cm", "m": ValidLengthUnit = Trim$(value)
-        Case Else: Err.Raise vbObjectError + 4530, "CUnitSystem", "Units.Length должен быть mm, cm или m."
+        Case Else: Err.Raise vbObjectError + 4530, "CUnitSystem", "На листе Config настройка " & settingKey & " должна быть mm, cm или m."
     End Select
 End Function
 
 ' Валидирует строку единицы площади из Config.
-Private Function ValidAreaUnit(ByVal value As String) As String
+Private Function ValidAreaUnit(ByVal value As String, ByVal settingKey As String) As String
     Select Case LCase$(Trim$(value))
         Case "mm2", "cm2", "m2": ValidAreaUnit = Trim$(value)
-        Case Else: Err.Raise vbObjectError + 4531, "CUnitSystem", "Units.Area должен быть mm2, cm2 или m2."
+        Case Else: Err.Raise vbObjectError + 4531, "CUnitSystem", "На листе Config настройка " & settingKey & " должна быть mm2, cm2 или m2."
     End Select
 End Function
 
 ' Валидирует строку единицы силы из Config.
-Private Function ValidForceUnit(ByVal value As String) As String
+Private Function ValidForceUnit(ByVal value As String, ByVal settingKey As String) As String
     Select Case LCase$(Trim$(value))
         Case "n", "kn", "tf": ValidForceUnit = Trim$(value)
-        Case Else: Err.Raise vbObjectError + 4532, "CUnitSystem", "Units.Force должен быть N, kN или tf."
+        Case Else: Err.Raise vbObjectError + 4532, "CUnitSystem", "На листе Config настройка " & settingKey & " должна быть N, kN или tf."
     End Select
 End Function
 
 ' Валидирует строку единицы момента из Config.
-Private Function ValidMomentUnit(ByVal value As String) As String
+Private Function ValidMomentUnit(ByVal value As String, ByVal settingKey As String) As String
     Select Case LCase$(Trim$(value))
         Case "n*mm", "kn*m", "tf*m": ValidMomentUnit = Trim$(value)
-        Case Else: Err.Raise vbObjectError + 4533, "CUnitSystem", "Units.Moment должен быть N*mm, kN*m или tf*m."
+        Case Else: Err.Raise vbObjectError + 4533, "CUnitSystem", "На листе Config настройка " & settingKey & " должна быть N*mm, kN*m или tf*m."
     End Select
 End Function
 
 ' Валидирует строку единицы напряжения из Config.
-Private Function ValidStressUnit(ByVal value As String) As String
+Private Function ValidStressUnit(ByVal value As String, ByVal settingKey As String) As String
     Select Case LCase$(Trim$(value))
         Case "pa", "kpa", "mpa", "kgf/cm2", "tf/m2": ValidStressUnit = Trim$(value)
-        Case Else: Err.Raise vbObjectError + 4534, "CUnitSystem", "Units.Stress содержит неподдерживаемое значение."
+        Case Else: Err.Raise vbObjectError + 4534, "CUnitSystem", "На листе Config настройка " & settingKey & " должна быть Pa, kPa, MPa, kgf/cm2 или tf/m2."
     End Select
 End Function
 
 ' Валидирует строку единицы кривизны из Config.
-Private Function ValidCurvatureUnit(ByVal value As String) As String
+Private Function ValidCurvatureUnit(ByVal value As String, ByVal settingKey As String) As String
     Select Case LCase$(Trim$(value))
         Case "1/mm", "1/m": ValidCurvatureUnit = Trim$(value)
-        Case Else: Err.Raise vbObjectError + 4535, "CUnitSystem", "Units.Curvature должен быть 1/mm или 1/m."
+        Case Else: Err.Raise vbObjectError + 4535, "CUnitSystem", "На листе Config настройка " & settingKey & " должна быть 1/mm или 1/m."
     End Select
 End Function
 
 ' Валидирует пользовательское соглашение знака продольной силы.
-Private Function ValidNSign(ByVal value As String) As String
+Private Function ValidNSign(ByVal value As String, ByVal settingKey As String) As String
     Select Case LCase$(Trim$(value))
         Case "tension", "compression": ValidNSign = Trim$(value)
-        Case Else: Err.Raise vbObjectError + 4536, "CUnitSystem", "Sign.N.User должен быть Tension или Compression."
+        Case Else: Err.Raise vbObjectError + 4536, "CUnitSystem", "На листе Config настройка " & settingKey & " должна быть Tension или Compression."
     End Select
 End Function
 
 ' Валидирует пользовательское соглашение знака Mx.
-Private Function ValidMxSign(ByVal value As String) As String
+Private Function ValidMxSign(ByVal value As String, ByVal settingKey As String) As String
     Select Case LCase$(Trim$(value))
         Case "+y tension", "-y tension": ValidMxSign = Trim$(value)
-        Case Else: Err.Raise vbObjectError + 4537, "CUnitSystem", "Sign.Mx.User должен быть +Y tension или -Y tension."
+        Case Else: Err.Raise vbObjectError + 4537, "CUnitSystem", "На листе Config настройка " & settingKey & " должна быть +Y tension или -Y tension."
     End Select
 End Function
 
 ' Валидирует пользовательское соглашение знака My.
-Private Function ValidMySign(ByVal value As String) As String
+Private Function ValidMySign(ByVal value As String, ByVal settingKey As String) As String
     Select Case LCase$(Trim$(value))
         Case "+x tension", "-x tension": ValidMySign = Trim$(value)
-        Case Else: Err.Raise vbObjectError + 4538, "CUnitSystem", "Sign.My.User должен быть +X tension или -X tension."
+        Case Else: Err.Raise vbObjectError + 4538, "CUnitSystem", "На листе Config настройка " & settingKey & " должна быть +X tension или -X tension."
     End Select
 End Function
 

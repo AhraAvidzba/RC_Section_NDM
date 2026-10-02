@@ -39,6 +39,11 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAudit03ProfileInputContracts stats
     TestAudit03NumericSettingsInputContracts stats
     TestAudit03UnitSignConsumers stats
+    TestAudit03UnitSignChoices stats
+    TestAudit03UnitSignEquivalence stats
+    TestAudit03RectSetSharedSelectors stats
+    TestAudit03RectSetSharedSelectorLayout stats
+    TestAudit03RectSetSharedSelectorEffects stats
     AppendLine stats, "RUN: TestPartialCombinationIsInvalid"
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats
@@ -5045,6 +5050,663 @@ ReaderFailed:
 Failed:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: " & prefix & ".runtime; " & CStr(Err.Number) & "; " & Err.Description
+End Sub
+
+' ДЛЯ ТЕСТОВ: отдельный gate общего выбора положения/привязки рядов RectSet.
+' Проверяет настоящий табличный формат на временном листе, не меняя Config.
+Public Function RunAudit03RectSetSharedSelectorTests() As String
+    Dim stats As TUiTestStats
+    TestAudit03RectSetSharedSelectors stats
+    TestAudit03RectSetSharedSelectorLayout stats
+    TestAudit03RectSetSharedSelectorEffects stats
+    AppendLine stats, "TOTAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03RectSetSharedSelectorTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: четыре пары граней и четыре общих селектора не допускают двух
+' различных значений. Совпадающая пара читается, конфликт должен отклоняться
+' с адресной причиной, а не молча теряться при разворачивании таблицы в keys.
+Private Sub TestAudit03RectSetSharedSelectors(ByRef stats As TUiTestStats)
+    Dim sheet As Object, target As Object, source As Object
+    Dim settings As CSystemSettingsReader, face As Variant, column As Variant
+    Dim topRow As Long, pairIndex As Long, key As String, prefix As String
+    Dim original As String, conflicting As String, tail As String
+    Dim number As Long, description As String, savedAlerts As Boolean
+    On Error GoTo Failed
+    savedAlerts = Application.DisplayAlerts
+    Set source = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
+    Set sheet = ThisWorkbook.Worksheets.Add
+    Set target = sheet.Range("A1").Resize(source.Rows.Count, source.Columns.Count)
+    target.Value2 = source.Value2
+    pairIndex = 0
+    For Each face In Array("H1", "B1", "H2", "B2")
+        topRow = 21 + pairIndex * 2
+        For Each column In Array(3, 4, 6, 7)
+            If CLng(column) = 3 Or CLng(column) = 6 Then
+                original = "Stacked": conflicting = "SideBySide"
+                If CLng(column) = 3 Then tail = "loc_2row" Else tail = "loc_3row"
+            Else
+                original = "EachBar": conflicting = "EverySecondBar"
+                If CLng(column) = 4 Then tail = "bind_2row" Else tail = "bind_3row"
+            End If
+            key = "RectSet." & CStr(face) & "." & tail
+            prefix = "audit03.rectset.shared." & CStr(face) & "." & tail
+            target.Cells(topRow, CLng(column)).Value2 = original
+            target.Cells(topRow + 1, CLng(column)).Value2 = original
+            Set settings = New CSystemSettingsReader
+            settings.LoadFromRange target
+            AssertTextEquals stats, prefix & ".matching", settings.GetString(key), original
+            target.Cells(topRow + 1, CLng(column)).ClearContents
+            settings.LoadFromRange target
+            AssertTextEquals stats, prefix & ".emptyFollower", settings.GetString(key), original
+            target.Cells(topRow + 1, CLng(column)).Value2 = "-"
+            settings.LoadFromRange target
+            AssertTextEquals stats, prefix & ".inactiveFollower", settings.GetString(key), original
+            target.Cells(topRow + 1, CLng(column)).Value2 = conflicting
+            On Error Resume Next
+            settings.LoadFromRange target
+            number = Err.Number: description = Err.Description
+            Err.Clear
+            On Error GoTo Failed
+            AssertTrue stats, prefix & ".conflictCode", number = vbObjectError + 4317
+            AssertTrue stats, prefix & ".conflictReason", _
+                InStr(1, description, CStr(face), vbTextCompare) > 0 And _
+                InStr(1, description, "общ", vbTextCompare) > 0
+            target.Cells(topRow, CLng(column)).Value2 = conflicting
+            Set settings = New CSystemSettingsReader
+            settings.LoadFromRange target
+            AssertTextEquals stats, prefix & ".alternative", settings.GetString(key), conflicting
+        Next column
+        pairIndex = pairIndex + 1
+    Next face
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.rectset.shared.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    Application.DisplayAlerts = False
+    If Not sheet Is Nothing Then sheet.Delete
+    Application.DisplayAlerts = savedAlerts
+    On Error GoTo 0
+End Sub
+
+' ДЛЯ ТЕСТОВ: в фактическом Config каждая из шестнадцати общих настроек
+' представлена объединением двух строк с одним списком и одним значением.
+' Чтение полной книги должно возвращать значение верхней ячейки объединения.
+Private Sub TestAudit03RectSetSharedSelectorLayout(ByRef stats As TUiTestStats)
+    Dim target As Object, first As Object, second As Object, settings As CSystemSettingsReader
+    Dim face As Variant, column As Variant, pairIndex As Long, topRow As Long
+    Dim key As String, tail As String, prefix As String
+    On Error GoTo Failed
+    Set target = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    For Each face In Array("H1", "B1", "H2", "B2")
+        topRow = 21 + pairIndex * 2
+        For Each column In Array(3, 4, 6, 7)
+            Select Case CLng(column)
+                Case 3: tail = "loc_2row"
+                Case 4: tail = "bind_2row"
+                Case 6: tail = "loc_3row"
+                Case 7: tail = "bind_3row"
+            End Select
+            key = "RectSet." & CStr(face) & "." & tail
+            prefix = "audit03.rectset.layout." & CStr(face) & "." & tail
+            Set first = target.Cells(topRow, CLng(column))
+            Set second = target.Cells(topRow + 1, CLng(column))
+            AssertTrue stats, prefix & ".mergedPair", first.MergeCells And _
+                first.MergeArea.Address = first.Resize(2, 1).Address
+            AssertTrue stats, prefix & ".oneValue", IsEmpty(second.Value2)
+            AssertTrue stats, prefix & ".dropdown", first.Validation.Type = 3 And first.Validation.InCellDropdown
+            AssertTextEquals stats, prefix & ".reader", settings.GetString(key), CStr(first.Value2)
+        Next column
+        pairIndex = pairIndex + 1
+    Next face
+    Exit Sub
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.rectset.layout.runtime; " & CStr(Err.Number) & "; " & Err.Description
+End Sub
+
+' ДЛЯ ТЕСТОВ: каждый общий selector проходит Range -> reader -> builder.
+' Одна активная пара сторон имеет по три основных стержня. Привязка через
+' один должна убрать два дополнительных стержня, положение должно сдвинуть
+' все шесть дополнительных стержней; при выключенном ряде оба выбора не влияют.
+Private Sub TestAudit03RectSetSharedSelectorEffects(ByRef stats As TUiTestStats)
+    Dim source As Object, sheet As Object, target As Object, settings As CSystemSettingsReader
+    Dim units As CUnitSystem, builder As CRectSetRebarLayoutBuilder
+    Dim baseline As CRebarLayout, changed As CRebarLayout, inactive As CRebarLayout
+    Dim face As Variant, column As Variant, pairIndex As Long, topRow As Long
+    Dim mainRow As Long, row As Long, i As Long, diameterColumn As Long
+    Dim prefix As String, original As String, alternative As String
+    Dim changedBars As Long, same As Boolean, savedAlerts As Boolean
+    On Error GoTo Failed
+    savedAlerts = Application.DisplayAlerts
+    Set source = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
+    Set sheet = ThisWorkbook.Worksheets.Add
+    Set target = sheet.Range("A1").Resize(source.Rows.Count, source.Columns.Count)
+    Set units = New CUnitSystem
+    units.InitializeDefaults
+    Set builder = New CRectSetRebarLayoutBuilder
+    For Each face In Array("H1", "B1", "H2", "B2")
+        topRow = 21 + pairIndex * 2
+        mainRow = 11 + pairIndex * 2
+        For Each column In Array(3, 4, 6, 7)
+            target.Value2 = source.Value2
+            target.Cells(3, 2).Value2 = "LSection"
+            target.Cells(4, 2).Value2 = 0#
+            target.Cells(8, 1).Value2 = 300#: target.Cells(8, 2).Value2 = 200#
+            target.Cells(8, 3).Value2 = 200#: target.Cells(8, 4).Value2 = 500#
+            For row = 11 To 18
+                target.Cells(row, 3).Value2 = 0#: target.Cells(row, 4).Value2 = 0
+            Next row
+            For row = 21 To 28
+                target.Cells(row, 2).Value2 = 0#: target.Cells(row, 5).Value2 = 0#
+                If (row Mod 2) = 1 Then
+                    target.Cells(row, 3).Value2 = "Stacked": target.Cells(row, 6).Value2 = "Stacked"
+                    target.Cells(row, 4).Value2 = "EachBar": target.Cells(row, 7).Value2 = "EachBar"
+                Else
+                    target.Cells(row, 3).ClearContents: target.Cells(row, 6).ClearContents
+                    target.Cells(row, 4).ClearContents: target.Cells(row, 7).ClearContents
+                End If
+            Next row
+            For row = mainRow To mainRow + 1
+                target.Cells(row, 2).Value2 = 20#
+                target.Cells(row, 3).Value2 = 10#: target.Cells(row, 4).Value2 = 3
+                target.Cells(row, 5).Value2 = 30#: target.Cells(row, 6).Value2 = 30#
+            Next row
+            If CLng(column) <= 4 Then diameterColumn = 2 Else diameterColumn = 5
+            target.Cells(topRow, diameterColumn).Value2 = 8#
+            target.Cells(topRow + 1, diameterColumn).Value2 = 8#
+            If CLng(column) = 3 Or CLng(column) = 6 Then
+                original = "Stacked": alternative = "SideBySide"
+            Else
+                original = "EachBar": alternative = "EverySecondBar"
+            End If
+            prefix = "audit03.rectset.effect." & CStr(face) & ".column" & CStr(column)
+            Set settings = New CSystemSettingsReader
+            settings.LoadFromRange target
+            Set baseline = builder.BuildFromSettings(settings, units)
+            AssertTrue stats, prefix & ".baseline", baseline.Count = 12
+            target.Cells(topRow, CLng(column)).Value2 = alternative
+            settings.LoadFromRange target
+            Set changed = builder.BuildFromSettings(settings, units)
+            If CLng(column) = 3 Or CLng(column) = 6 Then
+                changedBars = 0
+                For i = 1 To baseline.Count
+                    If Abs(baseline.X(i) - changed.X(i)) + Abs(baseline.Y(i) - changed.Y(i)) > 0.00000001 Then changedBars = changedBars + 1
+                Next i
+                AssertTrue stats, prefix & ".bothSidesMoved", changedBars = 6 And changed.Count = 12
+            Else
+                AssertTrue stats, prefix & ".bothSidesBound", changed.Count = 10
+            End If
+            target.Cells(topRow, diameterColumn).Value2 = 0#
+            target.Cells(topRow + 1, diameterColumn).Value2 = 0#
+            settings.LoadFromRange target
+            Set inactive = builder.BuildFromSettings(settings, units)
+            AssertTrue stats, prefix & ".inactiveCount", inactive.Count = 6
+            target.Cells(topRow, CLng(column)).Value2 = original
+            settings.LoadFromRange target
+            Set changed = builder.BuildFromSettings(settings, units)
+            same = (changed.Count = inactive.Count)
+            For i = 1 To inactive.Count
+                If Abs(inactive.X(i) - changed.X(i)) + Abs(inactive.Y(i) - changed.Y(i)) > 0.00000001 Then same = False
+            Next i
+            AssertTrue stats, prefix & ".inactiveCoordinates", same
+        Next column
+        pairIndex = pairIndex + 1
+    Next face
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.rectset.effect.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    Application.DisplayAlerts = False
+    If Not sheet Is Nothing Then sheet.Delete
+    Application.DisplayAlerts = savedAlerts
+    On Error GoTo 0
+End Sub
+
+' ДЛЯ ТЕСТОВ: запускает поведенческую проверку всех пятнадцати пользовательских
+' селекторов единиц/знаков через фактический Config, включая ошибку и recovery.
+Public Function RunAudit03UnitSignChoiceTests() As String
+    Dim stats As TUiTestStats
+    TestAudit03UnitSignChoices stats
+    AppendLine stats, "TOTAL_AUDIT03_UNIT_SIGN_CHOICES: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03UnitSignChoiceTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: сверяет каждый вариант с независимым коэффициентом пересчета,
+' а не только с обратным преобразованием того же адаптера. Ошибочный выбор
+' не может молча стать default; исходные формулы обеих таблиц восстанавливаются.
+Private Sub TestAudit03UnitSignChoices(ByRef stats As TUiTestStats)
+    Dim unitRange As Object, signRange As Object, savedUnits As Variant, savedSigns As Variant
+    Dim quantities As Variant, unitQuantities As Variant, choices As Variant, factors As Variant, side As Variant
+    Dim q As Long, optionIndex As Long, rowIndex As Long, columnIndex As Long, signIndex As Long
+    Dim cell As Object, settings As CSystemSettingsReader, units As CUnitSystem
+    Dim key As String, prefix As String, factor As Double, oldValue As Variant
+    Dim invalid As Variant, errorNumber As Long, errorDescription As String
+    Dim actual As Double, expected As Double, value As Variant, labelRange As Object
+    On Error GoTo Failed
+    Set unitRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
+    Set signRange = ThisWorkbook.Names.Item("rngSignConventionSettings").RefersToRange
+    savedUnits = unitRange.Formula: savedSigns = signRange.Formula
+    signRange.Cells(2, 2).Value2 = "Tension"
+    signRange.Cells(3, 2).Value2 = "+Y tension"
+    signRange.Cells(4, 2).Value2 = "+X tension"
+    quantities = Array("Length", "Area", "Force", "Moment", "Stress", "Curvature")
+    unitQuantities = quantities
+    choices = Array(Array("mm", "cm", "m"), Array("mm2", "cm2", "m2"), _
+        Array("N", "kN", "tf"), Array("N*mm", "kN*m", "tf*m"), _
+        Array("Pa", "kPa", "MPa", "kgf/cm2", "tf/m2"), Array("1/mm", "1/m"))
+    factors = Array(Array(1#, 10#, 1000#), Array(1#, 100#, 1000000#), _
+        Array(1#, 1000#, 9806.65), Array(1#, 1000000#, 9806650#), _
+        Array(0.000001, 0.001, 1#, 0.0980665, 0.00980665), Array(1#, 0.001))
+
+    For q = 0 To UBound(quantities)
+        For Each side In Array("Input", "Output")
+            key = "Units." & CStr(quantities(q)) & "." & CStr(side)
+            If Not UnitSettingAddress(key, rowIndex, columnIndex) Then Err.Raise vbObjectError + 4499, , key
+            Set cell = unitRange.Cells(rowIndex, columnIndex)
+            oldValue = cell.Formula
+            AssertTrue stats, "audit03.unitChoice." & key & ".validation", ValidationCellHasOptions(cell, choices(q))
+            For optionIndex = 0 To UBound(choices(q))
+                cell.Value2 = choices(q)(optionIndex)
+                Set settings = New CSystemSettingsReader
+                settings.LoadFromWorkbook ThisWorkbook
+                Set units = New CUnitSystem
+                units.LoadFromSettings settings
+                factor = CDbl(factors(q)(optionIndex))
+                prefix = "audit03.unitChoice." & key & "." & CStr(choices(q)(optionIndex))
+                For Each value In Array(-123.456, 0#, 123.456)
+                    actual = Audit03UnitConversion(units, q, CStr(side), CDbl(value))
+                    If CStr(side) = "Input" Then expected = CDbl(value) * factor Else expected = CDbl(value) / factor
+                    AssertClose stats, prefix & ".value" & CStr(value), actual, expected, _
+                        0.000000000001 * (1# + Abs(expected))
+                Next value
+                If q = 0 Then
+                    If CStr(side) = "Input" Then
+                        actual = units.InputFourthPowerLengthToInternal(2#): expected = 2# * factor ^ 4
+                    Else
+                        actual = units.InternalFourthPowerLengthToOutput(2#): expected = 2# / factor ^ 4
+                        AssertClose stats, prefix & ".reverseL4", units.OutputFourthPowerLengthToInternal(2#), _
+                            2# * factor ^ 4, 0.000000000001 * (1# + 2# * factor ^ 4)
+                    End If
+                    AssertClose stats, prefix & ".L4", actual, expected, 0.000000000001 * (1# + Abs(expected))
+                End If
+            Next optionIndex
+            For Each invalid In Array("", " ", "TODO", "unknown-unit", "0", CVErr(xlErrValue))
+                cell.Value2 = invalid
+                On Error Resume Next
+                Err.Clear
+                Set settings = New CSystemSettingsReader
+                settings.LoadFromWorkbook ThisWorkbook
+                If Err.Number = 0 Then
+                    Set units = New CUnitSystem
+                    units.LoadFromSettings settings
+                End If
+                errorNumber = Err.Number: errorDescription = Err.Description
+                On Error GoTo Failed
+                AssertTrue stats, "audit03.unitChoice." & key & ".invalid." & CStr(VarType(invalid)) & "." & CStr(errorNumber), _
+                    errorNumber = vbObjectError + 4530 + q Or errorNumber = vbObjectError + 4309
+                AssertTrue stats, "audit03.unitChoice." & key & ".invalid.reason", _
+                    InStr(1, errorDescription, "Units." & CStr(quantities(q)), vbTextCompare) > 0
+            Next invalid
+            cell.Formula = oldValue
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem: units.LoadFromSettings settings
+            AssertTrue stats, "audit03.unitChoice." & key & ".recovery", Len(settings.GetRawString(key)) > 0
+        Next side
+    Next q
+
+    unitRange.Cells(2, 2).Value2 = "mm"
+    unitRange.Cells(4, 2).Value2 = "tf": unitRange.Cells(4, 4).Value2 = "tf"
+    unitRange.Cells(5, 2).Value2 = "tf*m": unitRange.Cells(5, 4).Value2 = "tf*m"
+    unitRange.Cells(6, 2).Value2 = "MPa"
+    choices = Array(Array("Tension", "Compression"), Array("+Y tension", "-Y tension"), Array("+X tension", "-X tension"))
+    quantities = Array("N", "Mx", "My")
+    For signIndex = 0 To 2
+        key = "Sign." & CStr(quantities(signIndex)) & ".User"
+        Set cell = signRange.Cells(signIndex + 2, 2)
+        oldValue = cell.Formula
+        AssertTrue stats, "audit03.signChoice." & key & ".validation", ValidationCellHasOptions(cell, choices(signIndex))
+        For optionIndex = 0 To 1
+            cell.Value2 = choices(signIndex)(optionIndex)
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem: units.LoadFromSettings settings
+            factor = 1# - 2# * optionIndex
+            If signIndex = 0 Then
+                expected = 123# * 9806.65 * factor
+                actual = units.InputForceToInternal(123#)
+                AssertClose stats, "audit03.signChoice.N.output." & CStr(optionIndex), _
+                    units.InternalForceToOutput(9806.65), factor, 0.000000000001
+            ElseIf signIndex = 1 Then
+                expected = 123# * 9806650# * factor
+                actual = units.InputMomentMxToInternal(123#)
+                AssertClose stats, "audit03.signChoice.Mx.output." & CStr(optionIndex), _
+                    units.InternalMomentMxToOutput(9806650#), factor, 0.000000000001
+            Else
+                expected = 123# * 9806650# * factor
+                actual = units.InputMomentMyToInternal(123#)
+                AssertClose stats, "audit03.signChoice.My.output." & CStr(optionIndex), _
+                    units.InternalMomentMyToOutput(9806650#), factor, 0.000000000001
+            End If
+            AssertClose stats, "audit03.signChoice." & key & ".input." & CStr(optionIndex), actual, expected, 0.00001
+            AssertClose stats, "audit03.signChoice." & key & ".stressNotFlipped", units.InputStressToInternal(-12#), -12#, 0.000000000001
+            AssertClose stats, "audit03.signChoice." & key & ".magnitudeNotFlipped", units.InternalMomentMagnitudeToOutput(9806650#), 1#, 0.000000000001
+            AssertClose stats, "audit03.signChoice." & key & ".thresholdNotFlipped", units.InputMomentPerLengthToInternal(1#), 9806650#, 0.000001
+        Next optionIndex
+        For Each invalid In Array("", " ", "TODO", "unknown-sign", "0", CVErr(xlErrValue))
+            cell.Value2 = invalid
+            On Error Resume Next
+            Err.Clear
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            If Err.Number = 0 Then
+                Set units = New CUnitSystem: units.LoadFromSettings settings
+            End If
+            errorNumber = Err.Number: errorDescription = Err.Description
+            On Error GoTo Failed
+            AssertTrue stats, "audit03.signChoice." & key & ".invalid." & CStr(errorNumber), _
+                errorNumber = vbObjectError + 4536 + signIndex Or errorNumber = vbObjectError + 4309
+            AssertTrue stats, "audit03.signChoice." & key & ".invalid.reason", InStr(1, errorDescription, key, vbTextCompare) > 0
+        Next invalid
+        cell.Formula = oldValue
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        AssertTrue stats, "audit03.signChoice." & key & ".recovery", Len(settings.GetRawString(key)) > 0
+    Next signIndex
+    ' Поврежденная подпись строки не должна превращать обязательную настройку
+    ' полной книги в отсутствующий optional key с внутренним default.
+    For q = 0 To 8
+        If q < 6 Then
+            Set labelRange = unitRange.Cells(q + 2, 1)
+            key = "Units." & CStr(unitQuantities(q)) & ".Input"
+        Else
+            Set labelRange = signRange.Cells(q - 4, 1)
+            key = "Sign." & CStr(quantities(q - 6)) & ".User"
+        End If
+        oldValue = labelRange.Formula
+        For Each invalid In Array("", "unknown-quantity")
+            labelRange.Value2 = invalid
+            On Error Resume Next
+            Err.Clear
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            If Err.Number = 0 Then
+                Set units = New CUnitSystem: units.LoadFromSettings settings
+            End If
+            errorNumber = Err.Number: errorDescription = Err.Description
+            On Error GoTo Failed
+            AssertTrue stats, "audit03.unitSignMissing." & key & ".inputError", errorNumber = vbObjectError + 4313
+            AssertTrue stats, "audit03.unitSignMissing." & key & ".reason", InStr(1, errorDescription, key, vbTextCompare) > 0
+        Next invalid
+        labelRange.Formula = oldValue
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        AssertTrue stats, "audit03.unitSignMissing." & key & ".recovery", settings.HasKey(key)
+    Next q
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.unitSignChoices.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    If Not unitRange Is Nothing Then unitRange.Formula = savedUnits
+    If Not signRange Is Nothing Then signRange.Formula = savedSigns
+    On Error GoTo 0
+End Sub
+
+' ДЛЯ ТЕСТОВ: выбирает именно проверяемое преобразование. Независимые
+' коэффициенты и ожидаемые значения задаются в тесте, не читаются из CUnitSystem.
+Private Function Audit03UnitConversion(ByVal units As CUnitSystem, ByVal quantity As Long, _
+        ByVal side As String, ByVal value As Double) As Double
+    If side = "Input" Then
+        Select Case quantity
+            Case 0: Audit03UnitConversion = units.InputLengthToInternal(value)
+            Case 1: Audit03UnitConversion = units.InputAreaToInternal(value)
+            Case 2: Audit03UnitConversion = units.InputForceToInternal(value)
+            Case 3: Audit03UnitConversion = units.InputMomentMxToInternal(value)
+            Case 4: Audit03UnitConversion = units.InputStressToInternal(value)
+            Case 5: Audit03UnitConversion = units.InputCurvatureToInternal(value)
+        End Select
+    Else
+        Select Case quantity
+            Case 0: Audit03UnitConversion = units.InternalLengthToOutput(value)
+            Case 1: Audit03UnitConversion = units.InternalAreaToOutput(value)
+            Case 2: Audit03UnitConversion = units.InternalForceToOutput(value)
+            Case 3: Audit03UnitConversion = units.InternalMomentMxToOutput(value)
+            Case 4: Audit03UnitConversion = units.InternalStressToOutput(value)
+            Case 5: Audit03UnitConversion = units.InternalCurvatureToOutput(value)
+        End Select
+    End If
+End Function
+
+' ДЛЯ ТЕСТОВ: проверяет эквивалентные физические LC при всех восьми знаковых
+' соглашениях и девяти парах единиц силы/момента, с фактической записью Results.
+Public Function RunAudit03UnitSignEquivalenceTests() As String
+    Dim stats As TUiTestStats
+    TestAudit03UnitSignEquivalence stats
+    AppendLine stats, "TOTAL_AUDIT03_UNIT_SIGN_EQUIVALENCE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03UnitSignEquivalenceTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: один внутренний section используется во всех 72 вариантах.
+' Внешние LC читаются обычным reader-ом; сравниваются все сохраненные named-state,
+' напряжения, геометрия, физические признаки и metadata. Output-only перевод
+' выполняется после solve и не должен запускать ни одного дополнительного НДС.
+Private Sub TestAudit03UnitSignEquivalence(ByRef stats As TUiTestStats)
+    Dim unitRange As Object, signRange As Object, systemRange As Object, profileRange As Object, loads As Object
+    Dim savedUnits As Variant, savedSigns As Variant, savedSystem As Variant, savedProfiles As Variant, savedLoads As Variant
+    Dim forceNames As Variant, momentNames As Variant, forceFactors As Variant, momentFactors As Variant
+    Dim lengthNames As Variant, areaNames As Variant, lengthFactors As Variant, areaFactors As Variant
+    Dim stressNames As Variant, stressFactors As Variant
+    Dim nValues As Variant, mxValues As Variant, myValues As Variant, signN As Double, signMx As Double, signMy As Double
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
+    Dim profiles As CCalculationProfileCatalog, reader As CLoadCombinationReader, batch As CBatchSectionCalculator
+    Dim section As CSectionModel, mesh As CFiberMeshBuilder, geom As CGeometryCircle, rebars As CRebarLayout
+    Dim rebarBuilder As CCircleRebarLayoutBuilder, snapshot As CNDMResultsWriter, summary As CBatchResultWriter
+    Dim baselineElements As Variant, baselineGeometry As Variant, baselineProperties As Variant
+    Dim actual As Variant, signs As Long, forceIndex As Long, momentIndex As Long, caseIndex As Long, i As Long
+    Dim lengthFactor As Double, areaFactor As Double, stressFactor As Double, curvatureFactor As Double
+    Dim solveCount As Long, prefix As String
+    On Error GoTo Failed
+    Set unitRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
+    Set signRange = ThisWorkbook.Names.Item("rngSignConventionSettings").RefersToRange
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    savedUnits = unitRange.Formula: savedSigns = signRange.Formula: savedSystem = systemRange.Formula
+    savedProfiles = profileRange.Formula: savedLoads = loads.Formula
+    unitRange.Cells(2, 2).Value2 = "mm": unitRange.Cells(2, 4).Value2 = "mm"
+    unitRange.Cells(3, 2).Value2 = "mm2": unitRange.Cells(3, 4).Value2 = "mm2"
+    unitRange.Cells(6, 2).Value2 = "MPa": unitRange.Cells(6, 4).Value2 = "MPa"
+    unitRange.Cells(7, 2).Value2 = "1/mm": unitRange.Cells(7, 4).Value2 = "1/mm"
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    SetSystemSetting "Load.ReferenceOffsetX", "10": SetSystemSetting "Load.ReferenceOffsetY", "-7"
+    SetSystemSetting "General.ExecutionReportEnabled", "No"
+    SetSystemSetting "Solver.MaxDeltaKappa", "0.0001"
+    SetProfileSetting "PR1", "Calculation.Strength.DirectState", "Yes"
+    SetProfileSetting "PR1", "Calculation.Strength.Capacity", "No"
+    SetProfileSetting "PR1", "Calculation.Crack.Width", "No"
+    SetProfileSetting "PR1", "Calculation.Stability.Enabled", "No"
+    SetProfileSetting "PR2", "Calculation.Strength.DirectState", "No"
+    SetProfileSetting "PR2", "Calculation.Strength.Capacity", "No"
+    SetProfileSetting "PR2", "Calculation.Crack.Width", "Yes"
+    SetProfileSetting "PR2", "Calculation.Stability.Enabled", "No"
+    Set geom = New CGeometryCircle: geom.InitializeByDiameter 300#
+    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geom, 20#, 20#, 1
+    Set rebarBuilder = New CCircleRebarLayoutBuilder
+    Set rebars = rebarBuilder.Build(300#, 0#, 0#, 40#, 8, 20#, "Rebar")
+    Set section = BuildGeneratedSectionModel(mesh, rebars, "Audit03UnitSign")
+    Set snapshot = New CNDMResultsWriter: Set summary = New CBatchResultWriter
+    forceNames = Array("N", "kN", "tf"): forceFactors = Array(1#, 1000#, 9806.65)
+    momentNames = Array("N*mm", "kN*m", "tf*m"): momentFactors = Array(1#, 1000000#, 9806650#)
+    lengthNames = Array("mm", "cm", "m"): areaNames = Array("mm2", "cm2", "m2")
+    lengthFactors = Array(1#, 10#, 1000#): areaFactors = Array(1#, 100#, 1000000#)
+    stressNames = Array("MPa", "Pa", "kPa", "kgf/cm2", "tf/m2")
+    stressFactors = Array(1#, 0.000001, 0.001, 0.0980665, 0.00980665)
+    nValues = Array(-100000#, 30000#, -100000#, 30000#)
+    mxValues = Array(-4000000#, 3000000#, -4000000#, 3000000#)
+    myValues = Array(-3000000#, -2000000#, -3000000#, -2000000#)
+    For signs = 0 To 7
+        signN = IIf((signs And 1) = 0, 1#, -1#)
+        signMx = IIf((signs And 2) = 0, 1#, -1#)
+        signMy = IIf((signs And 4) = 0, 1#, -1#)
+        signRange.Cells(2, 2).Value2 = IIf(signN > 0#, "Tension", "Compression")
+        signRange.Cells(3, 2).Value2 = IIf(signMx > 0#, "+Y tension", "-Y tension")
+        signRange.Cells(4, 2).Value2 = IIf(signMy > 0#, "+X tension", "-X tension")
+        For forceIndex = 0 To 2
+            For momentIndex = 0 To 2
+                prefix = "audit03.unitEquivalent.s" & CStr(signs) & ".f" & CStr(forceIndex) & ".m" & CStr(momentIndex)
+                unitRange.Cells(4, 2).Value2 = forceNames(forceIndex)
+                unitRange.Cells(5, 2).Value2 = momentNames(momentIndex)
+                SetSystemSetting "Solver.ToleranceN", CStr(0.1 / CDbl(forceFactors(forceIndex)))
+                SetSystemSetting "Solver.ToleranceMx", CStr(1# / CDbl(momentFactors(momentIndex)))
+                SetSystemSetting "Solver.ToleranceMy", CStr(1# / CDbl(momentFactors(momentIndex)))
+                ClearDataRows loads
+                For i = 0 To 3
+                    loads.Cells(i + 2, 1).Value2 = "UNIT" & CStr(i + 1)
+                    loads.Cells(i + 2, 2).Value2 = CDbl(nValues(i)) / CDbl(forceFactors(forceIndex)) * signN
+                    loads.Cells(i + 2, 3).Value2 = CDbl(mxValues(i)) / CDbl(momentFactors(momentIndex)) * signMx
+                    loads.Cells(i + 2, 4).Value2 = CDbl(myValues(i)) / CDbl(momentFactors(momentIndex)) * signMy
+                    loads.Cells(i + 2, 5).Value2 = IIf(i < 2, "PR1", "PR2")
+                    loads.Cells(i + 2, 6).Value2 = ChrW$(&H3BB) & "*NMxy"
+                Next i
+                Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+                Set units = New CUnitSystem: units.LoadFromSettings settings
+                Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+                Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook
+                Set batch = New CBatchSectionCalculator
+                batch.Initialize section, provider: batch.ApplySettings settings
+                Set batch.ProfileCatalog = profiles
+                Set reader = New CLoadCombinationReader: reader.LoadFromWorkbook ThisWorkbook, batch, units
+                batch.ApplyLoadReference 10#, -7#, 0#, 0#
+                AssertTrue stats, prefix & ".count", batch.Count = 4
+                For i = 0 To 3
+                    AssertClose stats, prefix & ".N." & CStr(i), batch.N(i + 1), CDbl(nValues(i)), 0.000001
+                    AssertClose stats, prefix & ".Mx." & CStr(i), batch.UserMx(i + 1), CDbl(mxValues(i)), 0.000001
+                    AssertClose stats, prefix & ".My." & CStr(i), batch.UserMy(i + 1), CDbl(myValues(i)), 0.000001
+                Next i
+                batch.Execute
+                solveCount = batch.SolverCallCount
+                AssertTrue stats, prefix & ".solved", solveCount > 0
+                ' Выбор OUTPUT меняем уже после получения всех физических состояний.
+                unitRange.Cells(2, 4).Value2 = lengthNames(caseIndex Mod 3)
+                unitRange.Cells(3, 4).Value2 = areaNames((caseIndex \ 3) Mod 3)
+                unitRange.Cells(4, 4).Value2 = forceNames((caseIndex \ 9) Mod 3)
+                unitRange.Cells(5, 4).Value2 = momentNames((caseIndex \ 3) Mod 3)
+                unitRange.Cells(6, 4).Value2 = stressNames(caseIndex Mod 5)
+                unitRange.Cells(7, 4).Value2 = IIf((caseIndex Mod 2) = 0, "1/mm", "1/m")
+                lengthFactor = CDbl(lengthFactors(caseIndex Mod 3))
+                areaFactor = CDbl(areaFactors((caseIndex \ 3) Mod 3))
+                stressFactor = CDbl(stressFactors(caseIndex Mod 5))
+                curvatureFactor = IIf((caseIndex Mod 2) = 0, 1#, 0.001)
+                Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+                units.LoadFromSettings settings
+                snapshot.WriteResults ThisWorkbook, section, provider, batch, units
+                summary.WriteSummary ThisWorkbook, batch, units, section
+                AssertTrue stats, prefix & ".outputDoesNotSolve", solveCount = batch.SolverCallCount
+                AssertTextEquals stats, prefix & ".outputForceUnit", ResultsPropertyValue("ALL", "Output.ForceUnit"), units.OutputForceUnit
+                AssertTextEquals stats, prefix & ".outputStressUnit", ResultsPropertyValue("ALL", "Output.StressUnit"), CStr(stressNames(caseIndex Mod 5))
+                If caseIndex = 0 Then
+                    baselineElements = ResultTable("rngNDMElementResults")
+                    baselineGeometry = ResultTable("rngNDMSectionGeometry")
+                    baselineProperties = ResultTable("rngNDMSectionProperties")
+                    AssertTrue stats, prefix & ".strengthState", ResultsPropertyExists("UNIT1", "State.StrengthState.Epsilon0")
+                    AssertTrue stats, prefix & ".crackedState", ResultsPropertyExists("UNIT3", "State.CrackedState.Epsilon0")
+                Else
+                    actual = ResultTable("rngNDMElementResults")
+                    Audit03CompareUnitSnapshot stats, prefix & ".elements", baselineElements, actual, "Elements", _
+                        lengthFactor, areaFactor, stressFactor, curvatureFactor, _
+                        CDbl(forceFactors((caseIndex \ 9) Mod 3)), CDbl(momentFactors((caseIndex \ 3) Mod 3)), signN, signMx, signMy
+                    actual = ResultTable("rngNDMSectionGeometry")
+                    Audit03CompareUnitSnapshot stats, prefix & ".geometry", baselineGeometry, actual, "Geometry", _
+                        lengthFactor, areaFactor, stressFactor, curvatureFactor, _
+                        CDbl(forceFactors((caseIndex \ 9) Mod 3)), CDbl(momentFactors((caseIndex \ 3) Mod 3)), signN, signMx, signMy
+                    actual = ResultTable("rngNDMSectionProperties")
+                    Audit03CompareUnitSnapshot stats, prefix & ".properties", baselineProperties, actual, "Properties", _
+                        lengthFactor, areaFactor, stressFactor, curvatureFactor, _
+                        CDbl(forceFactors((caseIndex \ 9) Mod 3)), CDbl(momentFactors((caseIndex \ 3) Mod 3)), signN, signMx, signMy
+                End If
+                caseIndex = caseIndex + 1
+            Next momentIndex
+        Next forceIndex
+    Next signs
+    AssertTrue stats, "audit03.unitEquivalent.allCases", caseIndex = 72
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.unitEquivalent.runtime; " & prefix & "; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    If Not unitRange Is Nothing Then unitRange.Formula = savedUnits
+    If Not signRange Is Nothing Then signRange.Formula = savedSigns
+    If Not systemRange Is Nothing Then systemRange.Formula = savedSystem
+    If Not profileRange Is Nothing Then profileRange.Formula = savedProfiles
+    If Not loads Is Nothing Then loads.Formula = savedLoads
+    On Error GoTo 0
+End Sub
+
+' ДЛЯ ТЕСТОВ: нормализует только выводимые численные поля независимыми
+' коэффициентами. Strain и PhysicalState не меняются от пользовательских
+' знаков; знак момента применяется к усилиям, но не к внутренней KappaX/Y.
+Private Sub Audit03CompareUnitSnapshot(ByRef stats As TUiTestStats, ByVal prefix As String, _
+        ByRef baseline As Variant, ByRef actual As Variant, ByVal kind As String, _
+        ByVal lengthFactor As Double, ByVal areaFactor As Double, ByVal stressFactor As Double, _
+        ByVal curvatureFactor As Double, ByVal forceFactor As Double, ByVal momentFactor As Double, _
+        ByVal signN As Double, ByVal signMx As Double, ByVal signMy As Double)
+    Dim row As Long, column As Long, factor As Double, parameter As String, tolerance As Double
+    Dim same As Boolean, detail As String, expected As Double, converted As Double
+    same = (UBound(baseline, 1) = UBound(actual, 1) And UBound(baseline, 2) = UBound(actual, 2))
+    If Not same Then detail = "размер таблицы" Else detail = vbNullString
+    If same Then
+        For row = 2 To UBound(baseline, 1)
+            For column = 2 To UBound(baseline, 2)
+                factor = 1#: tolerance = 0.000000001
+                If kind = "Elements" Then
+                    If column = 8 Then factor = stressFactor
+                    If column = 7 Then tolerance = 0.0000000001
+                ElseIf kind = "Geometry" Then
+                    Select Case column
+                        Case 4, 5, 8, 9, 10: factor = lengthFactor
+                        Case 6: factor = areaFactor
+                        Case 12, 13, 14: factor = lengthFactor ^ 4
+                    End Select
+                Else
+                    If column = 5 Or column = 6 Then GoTo NextColumn
+                    parameter = CStr(baseline(row, 3))
+                    If Left$(parameter, 7) = "Output." Then GoTo NextColumn
+                    If column = 4 Then
+                        Select Case CStr(baseline(row, 5))
+                            Case "mm": factor = lengthFactor
+                            Case "mm2": factor = areaFactor
+                            Case "mm4": factor = lengthFactor ^ 4
+                            Case "MPa": factor = stressFactor
+                            Case "1/mm": factor = curvatureFactor: tolerance = 0.000000000001
+                            Case "N": factor = forceFactor * signN
+                            Case "N*mm"
+                                If Left$(parameter, 2) = "My" Then factor = momentFactor * signMy Else factor = momentFactor * signMx
+                        End Select
+                    End If
+                End If
+                If IsNumeric(baseline(row, column)) And IsNumeric(actual(row, column)) Then
+                    expected = CDbl(baseline(row, column)): converted = CDbl(actual(row, column)) * factor
+                    If Abs(converted - expected) > tolerance * (1# + Abs(expected)) Then same = False
+                ElseIf CStr(baseline(row, column)) <> CStr(actual(row, column)) Then
+                    same = False
+                End If
+                If Not same Then
+                    detail = "row=" & CStr(row) & "; col=" & CStr(column) & "; parameter=" & parameter & _
+                        "; expected=" & CStr(baseline(row, column)) & "; actual=" & CStr(actual(row, column)) & "; factor=" & CStr(factor)
+                    Exit For
+                End If
+NextColumn:
+            Next column
+            If Not same Then Exit For
+        Next row
+    End If
+    AssertTrue stats, prefix & ".equivalent; " & detail, same
 End Sub
 
 

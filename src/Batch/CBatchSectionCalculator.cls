@@ -245,7 +245,8 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mCrackSigmaSCrcAveragingMode = settings.GetString("SLS.Crack.SigmaSCrcAveragingMode", mCrackSigmaSCrcAveragingMode)
     mCrackFormationPath = settings.GetString("SLS.Crack.InitiationLoadPath", mCrackFormationPath)
     mCrackFormationSolutionStrategy = settings.GetString("SLS.Crack.InitiationSolutionStrategy", mCrackFormationSolutionStrategy)
-    mWorstCombinationCriterion = settings.GetString("General.WorstCombinationCriterion", mWorstCombinationCriterion)
+    mWorstCombinationCriterion = NormalizeWorstCombinationCriterion( _
+        settings.GetRawString("General.WorstCombinationCriterion", mWorstCombinationCriterion))
     mCrackTensionZoneMode = settings.GetString("SLS.Crack.TensionZoneMode", mCrackTensionZoneMode)
     If settings.HasKey("SLS.Crack.CoverDistanceMode") Then
         mCrackCoverDistanceMode = settings.GetString("SLS.Crack.CoverDistanceMode", mCrackCoverDistanceMode)
@@ -921,7 +922,7 @@ Private Sub CrackReferencePointForCombination(ByVal index As Long, _
 End Sub
 
 ' Возвращает центр приведенного сечения для расчетов по модели прочности.
-' Именно относительно этой точки новый strength summary показывает N/Mx/My
+' Именно относительно этой точки strength summary показывает N/Mx/My
 ' в группе "относительно центральных осей приведенного сечения".
 Private Sub StrengthReferencePointForCombination(ByVal index As Long, _
         ByRef referenceX As Double, ByRef referenceY As Double)
@@ -1626,29 +1627,34 @@ End Sub
 Private Function IsBetterWorstCandidate(ByVal candidateIndex As Long, ByVal currentIndex As Long) As Boolean
     Dim candidateSafety As Double
     Dim currentSafety As Double
-    candidateSafety = mResults(candidateIndex).ReserveForCriterion(NormalizedWorstCombinationCriterion())
+    candidateSafety = mResults(candidateIndex).ReserveForCriterion(mWorstCombinationCriterion)
     If candidateSafety <= 0# Then Exit Function
 
     If currentIndex <= 0 Then
         IsBetterWorstCandidate = True
     Else
-        currentSafety = mResults(currentIndex).ReserveForCriterion(NormalizedWorstCombinationCriterion())
+        currentSafety = mResults(currentIndex).ReserveForCriterion(mWorstCombinationCriterion)
         IsBetterWorstCandidate = (currentSafety <= 0# Or candidateSafety < currentSafety)
     End If
 End Function
 
-' Нормализует пользовательский критерий выбора Worst. Некорректная строка не
-' роняет расчет, а возвращает прежний консервативный смысл по capacity.
-Private Function NormalizedWorstCombinationCriterion() As String
-    Select Case LCase$(Trim$(mWorstCombinationCriterion))
+' Проверяет критерий Worst на границе чтения Config. Неизвестное или явно
+' пустое значение запрещает запуск LC как ошибочная настройка, без подмены
+' другим критерием. После успешного чтения поле содержит каноническое имя.
+Private Function NormalizeWorstCombinationCriterion(ByVal rawValue As String) As String
+    Select Case LCase$(Trim$(rawValue))
         Case "strengthstrain"
-            NormalizedWorstCombinationCriterion = "StrengthStrain"
+            NormalizeWorstCombinationCriterion = "StrengthStrain"
+        Case "strengthcapacity"
+            NormalizeWorstCombinationCriterion = "StrengthCapacity"
         Case "cracks"
-            NormalizedWorstCombinationCriterion = "Cracks"
+            NormalizeWorstCombinationCriterion = "Cracks"
         Case "stability"
-            NormalizedWorstCombinationCriterion = "Stability"
+            NormalizeWorstCombinationCriterion = "Stability"
         Case Else
-            NormalizedWorstCombinationCriterion = "StrengthCapacity"
+            Err.Raise vbObjectError + 3908, "CBatchSectionCalculator.ApplySettings", _
+                "Настройка General.WorstCombinationCriterion должна быть StrengthStrain, " & _
+                "StrengthCapacity, Cracks или Stability. Прочитано: """ & rawValue & """."
     End Select
 End Function
 
@@ -1900,7 +1906,7 @@ Public Property Get WorstCombinationName() As String
 End Property
 
 Public Property Get WorstCombinationCriterion() As String
-    WorstCombinationCriterion = NormalizedWorstCombinationCriterion()
+    WorstCombinationCriterion = mWorstCombinationCriterion
 End Property
 
 Public Property Get SolverCallCount() As Long

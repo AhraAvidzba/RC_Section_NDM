@@ -150,7 +150,9 @@ Public Function Build(ByVal upperWidth As Double, ByVal upperHeight As Double, _
     Set Build = layout
 End Function
 
-' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
+' Передает размеры и смещение верхнего прямоугольника общему владельцу
+' геометрии RectSet. Раскладка не дублирует правила допустимости формы;
+' при отказе возвращается инженерное пояснение CGeometryRectSet.
 Private Sub ValidateGeometry(ByVal b1 As Double, ByVal h1 As Double, ByVal b2 As Double, ByVal h2 As Double, _
         Optional ByVal upperOffsetX As Double = 0#, Optional ByVal sectionType As String = "LSection")
     Dim geom As CGeometryRectSet
@@ -527,7 +529,9 @@ Private Function RectSetSideDisplayName(ByVal faceBaseName As String, ByVal side
     End If
 End Function
 
-' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
+' Проверяет неотрицательные диаметры и режимы активных дополнительных рядов.
+' Нулевой диаметр означает отсутствие ряда, поэтому его положение и привязка
+' не участвуют в построении и не требуют активного значения selector-а.
 Private Sub ValidateAdditionalRows(ByVal faceName As String, ByVal row2Diameter As Double, ByVal row3Diameter As Double, _
         ByVal row2Location As String, ByVal row3Location As String, ByVal row2Binding As String, ByVal row3Binding As String)
     If row2Diameter < 0# Or row3Diameter < 0# Then Err.Raise vbObjectError + 3180, "CRectSetRebarLayoutBuilder", faceName & ": диаметры дополнительных рядов d_2row и d_3row должны быть неотрицательными."

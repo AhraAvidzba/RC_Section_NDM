@@ -27,7 +27,7 @@ Public Function RunBatchCalculationTests() As String
     Dim t0 As Double
     t0 = Timer
 
-    ' Общий batch-набор исторически проверяет прочность PR1 без фильтра устойчивости.
+    ' Общий batch-набор проверяет прочность PR1 без фильтра устойчивости.
     ' Пользовательский дефолт книги при этом не меняем: значение возвращается в конце.
     originalPr1Stability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
     hasOriginalPr1Stability = True
@@ -43,6 +43,8 @@ Public Function RunBatchCalculationTests() As String
     TestBatchGoverningUsesLowestSafetyFactor stats
     AppendLine stats, "RUN: TestBatchGoverningUsesStrengthProfilesOnly"
     TestBatchGoverningUsesStrengthProfilesOnly stats
+    AppendLine stats, "RUN: TestAudit03WorstCriterionConfig"
+    TestAudit03WorstCriterionConfig stats
     AppendLine stats, "RUN: TestBatchPureAxialCapacityUsesNult"
     TestBatchPureAxialCapacityUsesNult stats
     AppendLine stats, "RUN: TestBatchEccentricAxialCapacityTriesUltimateStrain"
@@ -1056,10 +1058,10 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
-' Проверяет полный путь batch + Results writer для новых траекторий
-' трещинообразования lambda*N и lambda*NMxy. Раньше найденные Ncrc/Mxy,crc
-' могли сохраниться в результате LC, но не попасть в таблицу трещин из-за
-' позднего N/A после проверки CrackedState.
+' Проверяет полный путь batch + Results writer для траекторий
+' трещинообразования lambda*N и lambda*NMxy. Найденные Ncrc/Mxy,crc должны
+' присутствовать в подробной таблице независимо от последующего результата
+' проверки текущего CrackedState.
 Private Sub TestCrackInitiationLoadPathsWriteFormationSummary(ByRef stats As TBatchTestStats)
     Dim oldPath As String
     Dim oldStrategy As String
@@ -1397,9 +1399,9 @@ RestoreAndFail:
 End Sub
 
 ' Проверяет ряд почти соседних осевых растягивающих нагрузок возле физического
-' предела. Первый найденный warm-start может сорваться на одной точке
-' ряда и давал NumFail между двумя корректными FAIL; теперь batch пробует
-' несколько стартов и не должен терять равновесие из-за неудачной подсказки.
+' предела. Неудачная warm-start подсказка должна запускать следующие старты,
+' а не давать NumFail между соседними физическими FAIL, когда равновесие
+' достижимо тем же solver-ом и выбранными диаграммами.
 Private Sub TestPR1AxialTensionNearLimitDoesNotJumpToNumFail(ByRef stats As TBatchTestStats)
     Dim oldMode As String
     Dim oldCrackEnabled As String
@@ -1649,6 +1651,8 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
+' ДЛЯ ТЕСТОВ: кодирует знак осевой нагрузки и ее уровень в ID прогрессии.
+' Это позволяет сопоставлять строки повторных запусков независимо от порядка LC.
 Private Function ProgressionCombinationID(ByVal isTension As Boolean, ByVal loadTf As Double) As String
     If isTension Then
         ProgressionCombinationID = "G1_TP" & CStr(CLng(loadTf))
@@ -4589,7 +4593,7 @@ Private Function RectSetRebars(ByVal b1 As Double, ByVal h1 As Double, ByVal b2 
 End Function
 
 ' Проверяет утвержденный словарь ResultMeta -> внешний статус.
-' Отдельно фиксируется правило этапа 1: capacity с INITIAL_STATE_BEYOND_LIMIT
+' Capacity с INITIAL_STATE_BEYOND_LIMIT
 ' выводится как BaseFail, а не как NumFail.
 Private Sub TestResultMetaStatusDictionary(ByRef stats As TBatchTestStats)
     Dim policy As CResultStatusPolicy
@@ -7480,3 +7484,144 @@ Private Sub Audit03StressBounds(ByVal diagram As CMaterialDiagram, ByRef lower A
         upper = MaxDouble(upper, diagram.PointStress(i))
     Next i
 End Sub
+
+' ДЛЯ ТЕСТОВ: отдельный runtime gate чтения и действия критерия Worst.
+' Использует реальные таблицы Config и writer; исходные настройки восстанавливает.
+Public Function RunAudit03WorstCriterionConfigTests() As String
+    Dim stats As TBatchTestStats
+    TestAudit03WorstCriterionConfig stats
+    AppendLine stats, "TOTAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03WorstCriterionConfigTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: каждый допустимый критерий выбирает минимум своего положительного
+' запаса среди реальных PR1/PR2 результатов. Ошибочное значение запрещает solve,
+' а следующая корректная ApplySettings восстанавливает работу того же batch.
+Private Sub TestAudit03WorstCriterionConfig(ByRef stats As TBatchTestStats)
+    Dim systemRange As Object, profileRange As Object, criterionCell As Object
+    Dim savedSystem As Variant, savedProfiles As Variant, row As Long
+    Dim settings As CSystemSettingsReader, units As CUnitSystem
+    Dim batch As CBatchSectionCalculator, writer As CBatchResultWriter
+    Dim mode As Variant, invalid As Variant, prefix As String
+    Dim i As Long, expectedIndex As Long, reserve As Double, minimum As Double
+    Dim chosenIds As String, sawDifferentChoice As Boolean, firstChoice As String
+    Dim failureNumber As Long, failureDescription As String, readError As Long, readReason As String
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedSystem = systemRange.Formula
+    savedProfiles = profileRange.Formula
+    For row = 2 To systemRange.Rows.Count
+        If StrComp(CStr(systemRange.Cells(row, 1).Value2), "General.WorstCombinationCriterion", vbTextCompare) = 0 Then
+            Set criterionCell = systemRange.Cells(row, 2)
+            Exit For
+        End If
+    Next row
+    If criterionCell Is Nothing Then Err.Raise vbObjectError + 3971, _
+        "TestAudit03WorstCriterionConfig", "В Config не найден General.WorstCombinationCriterion."
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    SetSystemSetting "Stability.Code", "SP63"
+    SetSystemSetting "Stability.ElementLength", "1000"
+    SetSystemSetting "Stability.Mu1", "1"
+    SetSystemSetting "Stability.Mu2", "1"
+    SetSystemSetting "Stability.PhiLMode", "PhiL2"
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    Set writer = New CBatchResultWriter
+    For Each mode In Array("StrengthStrain", "StrengthCapacity", "Cracks", "Stability")
+        criterionCell.Value2 = CStr(mode)
+        Set settings = New CSystemSettingsReader
+        settings.LoadFromWorkbook ThisWorkbook
+        Set units = New CUnitSystem
+        units.LoadFromSettings settings
+        Set batch = BuildBatchCalculator()
+        batch.ApplySettings settings, units
+        batch.AddCombination "S1", -100000#, 1500000#, 500000#, "PR1", "малые усилия", "LambdaNMxy"
+        batch.AddCombination "S2", -250000#, 7000000#, 3000000#, "PR1", "большие усилия", "LambdaNMxy"
+        batch.AddCombination "C1", 40000#, 3000000#, 1000000#, "PR2", "трещины при растяжении"
+        batch.AddCombination "C2", -100000#, 9000000#, 3000000#, "PR2", "трещины при изгибе"
+        batch.Execute
+        expectedIndex = 0: minimum = 0#
+        prefix = "audit03.worst." & CStr(mode)
+        For i = 1 To batch.Count
+            reserve = Audit03WorstExpectedReserve(batch.ResultAt(i), CStr(mode))
+            If reserve > 0# Then
+                If expectedIndex = 0 Or reserve < minimum Then
+                    expectedIndex = i: minimum = reserve
+                End If
+            End If
+        Next i
+        AssertTrue stats, prefix & ".active", expectedIndex > 0
+        AssertTrue stats, prefix & ".selection", batch.WorstCombinationIndex = expectedIndex
+        AssertEquals stats, prefix & ".key", batch.WorstCombinationCriterion, CStr(mode)
+        writer.WriteSummary ThisWorkbook, batch, units
+        AssertEquals stats, prefix & ".written", _
+            CStr(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1).Value2), batch.WorstCombinationID
+        If Len(firstChoice) = 0 Then firstChoice = batch.WorstCombinationID
+        If batch.WorstCombinationID <> firstChoice Then sawDifferentChoice = True
+        chosenIds = chosenIds & CStr(mode) & "=" & batch.WorstCombinationID & "; "
+    Next mode
+    AssertTrue stats, "audit03.worst.distinctChoices", sawDifferentChoice
+    AppendLine stats, "WORST_CHOICES: " & chosenIds
+    For Each invalid In Array("WrongCriterion", "", " ", "TODO", "0", "=1/0")
+        prefix = "audit03.worst.invalid." & Replace$(CStr(invalid), "=", "formula")
+        criterionCell.Formula = invalid
+        Set settings = New CSystemSettingsReader
+        On Error Resume Next
+        settings.LoadFromWorkbook ThisWorkbook
+        readError = Err.Number: readReason = Err.Description
+        Err.Clear
+        On Error GoTo Failed
+        If readError <> 0 Then
+            AssertTrue stats, prefix & ".readerError", readError = vbObjectError + 4309
+            AssertTrue stats, prefix & ".readerReason", _
+                InStr(1, readReason, "General.WorstCombinationCriterion", vbTextCompare) > 0
+        Else
+            batch.ApplySettings settings, units
+            batch.Execute
+            For i = 1 To batch.Count
+                AssertEquals stats, prefix & ".status." & CStr(i), batch.ResultAt(i).Status, "InputErr"
+                AssertTrue stats, prefix & ".reason." & CStr(i), _
+                    InStr(1, batch.ResultAt(i).OverallMeta.ResultComment, "General.WorstCombinationCriterion", vbTextCompare) > 0
+            Next i
+            AssertTrue stats, prefix & ".noSolve", batch.SolverCallCount = 0
+        End If
+        criterionCell.Value2 = "StrengthCapacity"
+        Set settings = New CSystemSettingsReader
+        settings.LoadFromWorkbook ThisWorkbook
+        batch.ApplySettings settings, units
+        batch.Execute
+        AssertTrue stats, prefix & ".recovery", batch.SolverCallCount > 0 And batch.ResultAt(1).Status <> "InputErr"
+    Next invalid
+    GoTo Restore
+Failed:
+    failureNumber = Err.Number: failureDescription = Err.Description
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.worst.runtime; " & CStr(failureNumber) & "; " & failureDescription
+Restore:
+    On Error Resume Next
+    If IsArray(savedSystem) Then systemRange.Formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
+    On Error GoTo 0
+End Sub
+
+' ДЛЯ ТЕСТОВ: независимое чтение численных запасов typed leaves, без вызова
+' production-селектора ReserveForCriterion и без повторного решения НДС.
+Private Function Audit03WorstExpectedReserve(ByVal result As CCombinationResult, ByVal mode As String) As Double
+    Dim first As Double, second As Double
+    Select Case mode
+        Case "StrengthStrain": Audit03WorstExpectedReserve = result.StrengthResult.DirectState.StrainReserve
+        Case "StrengthCapacity": Audit03WorstExpectedReserve = result.StrengthResult.Capacity.ReserveFactor
+        Case "Stability": Audit03WorstExpectedReserve = result.StabilityResult.SummaryReserve
+        Case "Cracks"
+            first = result.CrackResult.Width.ReserveFactor
+            second = result.CrackResult.Longitudinal.ReserveFactor
+            If first > 0# And second > 0# Then
+                If first < second Then Audit03WorstExpectedReserve = first Else Audit03WorstExpectedReserve = second
+            ElseIf first > 0# Then
+                Audit03WorstExpectedReserve = first
+            ElseIf second > 0# Then
+                Audit03WorstExpectedReserve = second
+            End If
+    End Select
+End Function

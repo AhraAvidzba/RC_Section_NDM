@@ -1,10 +1,13 @@
 ﻿# Обновляет справку только в изолированной Audit03-книге. Проверяет фактический
-# лист, ссылки и неизменность input-значений/формул/validation; не подтверждает
+# лист, ссылки и неизменность input-значений/формул/validation. По явному флагу
+# объединяет повторные общие селекторы RectSet с отчетом прежних значений;
+# не подтверждает
 # нормативную трассировку либо пиксельную визуальную приемку.
 param(
     [Parameter(Mandatory=$true)][string]$WorkbookPath,
     [Parameter(Mandatory=$true)][string]$ReportPath,
-    [string]$RegistryPath = 'docs/regression/Audit03/config_field_registry_2026-10-02.csv'
+    [string]$RegistryPath = 'docs/regression/Audit03/config_field_registry_2026-10-02.csv',
+    [switch]$UpdateRectSetSharedSelectors
 )
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'SettingsCatalog.ps1')
@@ -41,7 +44,15 @@ function Get-InputSignature([object]$Book) {
             numberFormat=[string]$cell.NumberFormat; horizontal=[int]$cell.HorizontalAlignment;
             vertical=[int]$cell.VerticalAlignment; validation=$validation})
     }
-    $payload = ConvertTo-Json -InputObject $records.ToArray() -Depth 8 -Compress
+    $script:lastInputRecords = $records.ToArray()
+    return Get-InputRecordsSignature $script:lastInputRecords
+}
+
+# Хеширует зафиксированные input-records. Отдельный вызов нужен только для
+# явно согласованного центрирования общих RectSet-селекторов; их значения,
+# формулы, validation и number format остаются в неизменном строгом сравнении.
+function Get-InputRecordsSignature([object[]]$Records) {
+    $payload = ConvertTo-Json -InputObject $Records -Depth 8 -Compress
     $sha = [Security.Cryptography.SHA256]::Create()
     try { return [BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($payload))).Replace('-', '') }
     finally { $sha.Dispose() }
@@ -52,6 +63,24 @@ function Get-InputSignature([object]$Book) {
 function Assert-Help([string]$Name, [bool]$Passed, [string]$Detail) {
     if (-not $Passed) { $script:failed++ }
     $lines.Add("HELP|$Name|passed=$Passed|$Detail")
+}
+
+# Проверяет реальные объединения и единственный dropdown каждой общей
+# настройки. Нижняя ячейка больше не является отдельным вводом; все остальные
+# input-поля остаются в строгой проверке сохранности значений и validation.
+function Test-RectSetSharedLayout([object]$Book) {
+    $target = $Book.Names.Item('rngRectSetGeometry').RefersToRange
+    foreach ($firstRow in @(21, 23, 25, 27)) {
+        foreach ($column in @(3, 4, 6, 7)) {
+            $first = $target.Cells.Item($firstRow, $column)
+            $second = $target.Cells.Item(($firstRow + 1), $column)
+            $expected = $first.Resize(2, 1).Address()
+            Assert-Help ("rectset.merge."+$first.Address()) ($first.MergeCells -and $first.MergeArea.Address() -eq $expected) $expected
+            Assert-Help ("rectset.dropdown."+$first.Address()) ($first.Validation.Type -eq 3 -and $first.Validation.InCellDropdown) ([string]$first.Validation.Formula1)
+            Assert-Help ("rectset.followerEmpty."+$second.Address()) ($null -eq $second.Value2) 'Shared selector has no second value'
+            Assert-Help ("rectset.centered."+$first.Address()) ($first.HorizontalAlignment -eq -4108 -and $first.VerticalAlignment -eq -4108) 'Shared input is centered'
+        }
+    }
 }
 
 # Читает сохраненный лист и каждую прямую Config-ссылку. Проверка содержания
@@ -81,6 +110,10 @@ function Test-ActualHelp([object]$Book) {
     Assert-Help 'extensionDoesNotChangePhysicalNodes' ($body.Contains('Исходные физические точки, сопротивления, касательные, плато и предельные деформации не меняются')) 'Physical diagram preserved'
     Assert-Help 'profileBooleanInputContract' ($body.Contains('Все четыре переключателя Calculation.* обязательны')) 'Explicit invalid value is not No'
     Assert-Help 'subdivisionsInputContract' ($body.Contains('Mesh.BoundarySubdivisions')) 'Mesh setting has help'
+    Assert-Help 'worstCriterionInputContract' ($body.Contains('неизвестное значение этого критерия') -and $body.Contains('InputErr')) 'Invalid criterion cannot silently select another check'
+    Assert-Help 'rectsetCommonSelectors' ($body.Contains('общие для двух сторон каждой грани H1, B1, H2 или B2')) 'One common selector, separate diameters'
+    Assert-Help 'unitChoiceInputContract' ($body.Contains('Пустой выбор, TODO или неподдержанная единица являются ошибкой Config')) 'Explicit invalid units do not become defaults'
+    Assert-Help 'signsDoNotFlipStressOrStrain' ($body.Contains('Пользовательские знаки N/Mx/My не меняют знак Stress и Strain')) 'Material tension/compression and strain plane keep internal signs'
     $config = $Book.Worksheets.Item('Config')
     $count = 0
     foreach ($link in $config.Hyperlinks) {
@@ -103,9 +136,60 @@ try {
     $excel.DisplayAlerts = $false
     $excel.AutomationSecurity = 3
     $book = $excel.Workbooks.Open($bookPath)
-    $before = Get-InputSignature $book
+    if ($UpdateRectSetSharedSelectors) {
+        $fullBefore = Get-InputSignature $book
+        $target = $book.Names.Item('rngRectSetGeometry').RefersToRange
+        $followers = @{}
+        $selectorAnchors = @{}
+        foreach ($firstRow in @(21, 23, 25, 27)) {
+            foreach ($column in @(3, 4, 6, 7)) {
+                $address = $target.Cells.Item(($firstRow + 1), $column).Address($false, $false)
+                $followers[([string]$target.Worksheet.Name+'!'+$address)] = $true
+                $anchorAddress = $target.Cells.Item($firstRow, $column).Address($false, $false)
+                $selectorAnchors[([string]$target.Worksheet.Name+'!'+$anchorAddress)] = $true
+            }
+        }
+        $originalCount = $fields.Count
+        $fields = @($fields | Where-Object { -not $followers.ContainsKey($_.Address) })
+        $lines.Add("RECTSET_PRESERVATION_SCOPE: originalFields=$originalCount; unchangedFields=$($fields.Count); sharedFollowers=16; fullBefore=$fullBefore")
+        $before = Get-InputSignature $book
+        $beforeRecords = @($script:lastInputRecords)
+        $lines.Add("RECTSET_UNCHANGED_FIELDS_ORIGINAL: signature=$before")
+        foreach ($record in $beforeRecords) {
+            if ($selectorAnchors.ContainsKey($record.address)) {
+                if ($record.horizontal -ne -4108 -or $record.vertical -ne -4108) {
+                    $lines.Add("RECTSET_APPROVED_ALIGNMENT: address=$($record.address); horizontal=$($record.horizontal)->-4108; vertical=$($record.vertical)->-4108; values/formulas/validation/numberFormat unchanged")
+                }
+                $record.horizontal = -4108
+                $record.vertical = -4108
+            }
+        }
+        $before = Get-InputRecordsSignature $beforeRecords
+        $migration = @(Set-RectSetSharedSelectorLayout $target)
+        foreach ($record in $migration) {
+            $lines.Add('RECTSET_SHARED_SELECTOR: '+(ConvertTo-Json $record -Compress))
+        }
+        Assert-Help 'rectset.migrationRecords' ($migration.Count -eq 16) "count=$($migration.Count)"
+        Test-RectSetSharedLayout $book
+        $layoutOnce = Get-InputSignature $book
+        Set-RectSetSharedSelectorLayout $target | Out-Null
+        Assert-Help 'rectset.layoutIdempotent' ($layoutOnce -eq (Get-InputSignature $book)) "signature=$layoutOnce"
+    } else {
+        $before = Get-InputSignature $book
+        $beforeRecords = @($script:lastInputRecords)
+    }
     Add-SettingsInstructions $book $book.Worksheets.Item('Config') $book.Worksheets.Item('Справка')
     $after = Get-InputSignature $book
+    $afterRecords = @($script:lastInputRecords)
+    if ($before -ne $after) {
+        for ($i = 0; $i -lt $beforeRecords.Count; $i++) {
+            $expectedRecord = ConvertTo-Json -InputObject $beforeRecords[$i] -Depth 8 -Compress
+            $actualRecord = ConvertTo-Json -InputObject $afterRecords[$i] -Depth 8 -Compress
+            if ($expectedRecord -ne $actualRecord) {
+                $lines.Add("INPUT_CHANGED: before=$expectedRecord; after=$actualRecord")
+            }
+        }
+    }
     Assert-Help 'inputsPreserved' ($before -eq $after) "fields=$($fields.Count); before=$before; after=$after"
     Test-ActualHelp $book
     $book.Save()
@@ -113,6 +197,7 @@ try {
     $book = $excel.Workbooks.Open($bookPath)
     $reopened = Get-InputSignature $book
     Assert-Help 'inputsSaveReopen' ($before -eq $reopened) "before=$before; reopened=$reopened"
+    if ($UpdateRectSetSharedSelectors) { Test-RectSetSharedLayout $book }
     Test-ActualHelp $book
     $lines.Add("TOTAL_AUDIT03_HELP: failed=$script:failed")
 } catch {

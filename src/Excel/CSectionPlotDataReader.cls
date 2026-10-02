@@ -797,8 +797,8 @@ Private Function ResultColumn(ByRef data As Variant, ByVal headerName As String)
     Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", "В Results не найден столбец: " & headerName
 End Function
 
-' Новый snapshot пишет статус интерпретации оболочки явно. ShapeType оставлен
-' как совместимость со старыми файлами Results, созданными до переименования.
+' Читает GeometryInterpretationStatus; если этого столбца нет в сохраненном
+' Results, допускает ShapeType как входной формат ранее записанного снимка.
 Private Function GeometryStatusColumn(ByRef data As Variant) As Long
     On Error Resume Next
     GeometryStatusColumn = ResultColumn(data, "GeometryInterpretationStatus")

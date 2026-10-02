@@ -36,7 +36,9 @@ Private mAnnotationNormalY() As Double
 Private mAnnotationAxisDistance() As Double
 Private mAnnotationCount As Long
 
-' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
+' Удаляет промежуточные стержни и аннотации линий раскладки целиком.
+' Оба счетчика сбрасываются вместе с массивами, чтобы следующая генерация
+' не смешивала координаты или подписи с предыдущей геометрией.
 Public Sub Clear()
     Erase mBarID
     Erase mX

@@ -68,6 +68,18 @@ function Add-Field([string]$id, [string]$block, [int]$row, [int]$column,
     if ($validation.Count -gt 0) { $type = ($validation.Type | Select-Object -Unique) -join ',' }
     if ($cell.Formula) { $role = 'DerivedFormula'; $type = 'Formula' }
     if ($cell.Value -eq '-') { $role = 'NotEditable:NotApplicableCell' }
+    $mergeRange = ''
+    $mergeAnchor = ''
+    foreach ($merged in $census.MergedRanges) {
+        $rectangle = $merged.Rectangle
+        if ($row -ge $rectangle.Top -and $row -le $rectangle.Bottom -and
+            $column -ge $rectangle.Left -and $column -le $rectangle.Right) {
+            $mergeRange = $merged.Range
+            $mergeAnchor = $merged.Anchor
+            if ($cell.Address -ne $mergeAnchor) { $role = 'NotEditable:MergedFollower'; $type = 'MergedFollower' }
+            break
+        }
+    }
     $default = 'PendingCatalogMapping'
     if ($defaults.ContainsKey($id)) { $default = $defaults[$id] }
     $helpAddress = ''
@@ -76,6 +88,7 @@ function Add-Field([string]$id, [string]$block, [int]$row, [int]$column,
     $help = @($census.Hyperlinks | Where-Object { $helpAddress -and $_.Range -eq $helpAddress })
     $fields.Add([pscustomobject]@{
         Id=$id; Block=$block; Address=('Config!' + $cell.Address); Role=$role
+        MergeRange=$mergeRange; MergeAnchor=$mergeAnchor
         SavedValue=$cell.Value; Formula=$cell.Formula; Type=$type; UserUnits=$units
         InternalUnits='PendingPerFieldReview'; Validation=$validation
         NewWorkbookDefault=$default; RuntimeDefault='PendingCallSiteReview'
@@ -205,11 +218,13 @@ for ($row=3; $row -lt $ranges['rngSP35Table721'].Top; $row++) {
 $result=[pscustomobject]@{
     Workbook=$census.Workbook; SHA256=$census.SHA256; CensusPath=$CensusPath
     FieldCount=$fields.Count; UniqueAddressCount=$registered.Count
+    MergedFollowerCount=@($fields | Where-Object Role -eq 'NotEditable:MergedFollower').Count
+    EditableAddressCount=@($fields | Where-Object Role -eq 'UserInput').Count
     BehavioralAcceptance='NotComplete'; Fields=$fields.ToArray()
 }
 $output=Join-Path $root $OutputPath
 $result | ConvertTo-Json -Depth 13 | Set-Content -LiteralPath $output -Encoding UTF8
-$fields | Select-Object Id,Block,Address,Role,SavedValue,Formula,Type,UserUnits,NewWorkbookDefault,RuntimeDefault,Activity,Consumers,TestId,CoverageStatus |
+$fields | Select-Object Id,Block,Address,Role,MergeRange,MergeAnchor,SavedValue,Formula,Type,UserUnits,NewWorkbookDefault,RuntimeDefault,Activity,Consumers,TestId,CoverageStatus |
     Export-Csv -LiteralPath ([IO.Path]::ChangeExtension($output,'.csv')) -NoTypeInformation -Encoding UTF8
 $fields | Group-Object Block | Select-Object Name,Count | Format-Table -AutoSize
 Write-Output "CONFIG_FIELD_REGISTRY: fields=$($fields.Count); unique addresses=$($registered.Count); behavioral acceptance=NotComplete"

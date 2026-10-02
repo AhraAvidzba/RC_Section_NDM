@@ -375,17 +375,43 @@ function Apply-ConfigNamedRangeBorders {
     }
 }
 
-# Единое правило для колонок "Комментарий/Комментарии" на Config:
-# если справа нет других пользовательских колонок, текст прижимается вправо
-# и визуально не растекается по пустым ячейкам; если справа есть "Справка",
-# комментарий остается слева и читается как обычное описание.
+# Возвращает фактические таблицы форматирования внутри именованных диапазонов.
+# Составная геометрия содержит несколько таблиц с разными колонками: правило
+# общего комментария не должно затрагивать расположенные ниже числа и selectors.
+function Get-ConfigFormattingTables {
+    param([object]$Workbook)
+
+    $composite = @{
+        rngRoundedRectangleGeometry = @(@(1, 2, 5), @(5, 5, 5), @(11, 5, 6), @(17, 5, 9))
+        rngHollowRectangleGeometry = @(@(1, 3, 4), @(5, 2, 7), @(9, 9, 6), @(19, 9, 9))
+        rngRectSetGeometry = @(@(1, 3, 4), @(6, 2, 5), @(9, 9, 8), @(19, 9, 9))
+    }
+    foreach ($rangeName in (Get-ConfigNamedRangeNames)) {
+        try { $range = $Workbook.Names.Item($rangeName).RefersToRange }
+        catch { continue } # В промежуточной сборке обязательные имена проверяет валидатор.
+        if ([string]$range.Worksheet.Name -ne 'Config') { continue }
+        if ($composite.ContainsKey($rangeName)) {
+            foreach ($block in $composite[$rangeName]) {
+                if ($range.Rows.Count -lt ($block[0] + $block[1]) -or $range.Columns.Count -lt $block[2]) {
+                    throw "Неполная составная таблица Config: $rangeName."
+                }
+                [pscustomobject]@{ Name = $rangeName; Range = $range.Offset($block[0], 0).Resize($block[1], $block[2]) }
+            }
+        } else {
+            [pscustomobject]@{ Name = $rangeName; Range = $range }
+        }
+    }
+}
+
+# Выравнивает комментарии в пределах их собственной таблицы, а не всей
+# составной геометрии. Последняя колонка читается справа; при колонке справа
+# комментарий остается слева. Шапка сохраняет левое выравнивание.
 function Apply-ConfigCommentColumnAlignment {
     param([object]$Workbook)
 
-    foreach ($rangeName in (Get-ConfigNamedRangeNames)) {
+    foreach ($table in (Get-ConfigFormattingTables $Workbook)) {
         try {
-            $range = $Workbook.Names.Item($rangeName).RefersToRange
-            if ([string]$range.Worksheet.Name -ne "Config") { continue }
+            $range = $table.Range
             if ($range.Rows.Count -lt 2) { continue }
 
             for ($c = 1; $c -le $range.Columns.Count; $c++) {
@@ -428,10 +454,9 @@ function Set-ConfigInputCellAlignment {
 function Apply-ConfigShortColumnAlignment {
     param([object]$Workbook)
 
-    foreach ($rangeName in (Get-ConfigNamedRangeNames)) {
+    foreach ($table in (Get-ConfigFormattingTables $Workbook)) {
         try {
-            $range = $Workbook.Names.Item($rangeName).RefersToRange
-            if ([string]$range.Worksheet.Name -ne "Config") { continue }
+            $range = $table.Range
 
             for ($c = 1; $c -le $range.Columns.Count; $c++) {
                 $header = [string]$range.Cells.Item(1, $c).Value2
@@ -488,10 +513,10 @@ function Apply-ConfigUserInputAlignment {
             $sheet = $range.Worksheet
             $top = $range.Row
             $left = $range.Column
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 2, $left + 1), $sheet.Cells.Item($top + 2, $left + 3))
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 6, $left + 1), $sheet.Cells.Item($top + 9, $left + 3))
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 12, $left + 1), $sheet.Cells.Item($top + 15, $left + 4))
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 18, $left + 1), $sheet.Cells.Item($top + 21, $left + 7))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 2, $left + 1), $sheet.Cells.Item($top + 2, $left + 2))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 6, $left + 1), $sheet.Cells.Item($top + 9, $left + 2))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 12, $left + 1), $sheet.Cells.Item($top + 15, $left + 3))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 18, $left + 1), $sheet.Cells.Item($top + 21, $left + 6))
         }
     } catch {
         # RoundedRectangle имеет составную таблицу, поэтому его ячейки ввода форматируются отдельно.
@@ -503,8 +528,8 @@ function Apply-ConfigUserInputAlignment {
             $sheet = $range.Worksheet
             $top = $range.Row
             $left = $range.Column
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 3, $left + 1), $sheet.Cells.Item($top + 4, $left + 1))
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 7, $left + 1), $sheet.Cells.Item($top + 7, $left + 6))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 2, $left + 1), $sheet.Cells.Item($top + 3, $left + 1))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 6, $left), $sheet.Cells.Item($top + 6, $left + 5))
             Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 10, $left + 1), $sheet.Cells.Item($top + 17, $left + 3))
             Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 20, $left + 1), $sheet.Cells.Item($top + 27, $left + 6))
         }
@@ -519,14 +544,10 @@ function Apply-ConfigUserInputAlignment {
             $top = $range.Row
             $left = $range.Column
             Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 2, $left + 1), $sheet.Cells.Item($top + 3, $left + 1))
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 6, $left), $sheet.Cells.Item($top + 6, $left + 4))
+            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 6, $left), $sheet.Cells.Item($top + 6, $left + 3))
             Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 7, $left), $sheet.Cells.Item($top + 7, $left + 3))
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 9, $left + 1), $sheet.Cells.Item($top + 9, $left + 6))
             Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 10, $left + 1), $sheet.Cells.Item($top + 17, $left + 5))
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 10, $left + 6), $sheet.Cells.Item($top + 17, $left + 6))
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 19, $left + 1), $sheet.Cells.Item($top + 19, $left + 7))
             Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 20, $left + 1), $sheet.Cells.Item($top + 27, $left + 6))
-            Set-ConfigInputCellAlignment $sheet.Range($sheet.Cells.Item($top + 20, $left + 7), $sheet.Cells.Item($top + 27, $left + 7))
         }
     } catch {
         # RectSet имеет составную таблицу, поэтому его ячейки ввода форматируются отдельно.
@@ -555,10 +576,11 @@ function Get-SettingInstructionLines {
         "General.WorstCombinationCriterion" { return @($lead) + @(
             "Настройка выбирает, какое сочетание считать Worst в верхней сводке Results.",
             "StrengthStrain выбирает сочетание с минимальным запасом по предельным деформациям модели прочности.",
-            "StrengthCapacity выбирает сочетание с минимальным запасом по найденному множителю несущей способности. Это значение по умолчанию, потому что оно сохраняет прежний смысл Worst.",
+            "StrengthCapacity выбирает сочетание с минимальным запасом по найденному множителю несущей способности. Это значение по умолчанию новой книги.",
             "Cracks выбирает сочетание с минимальным запасом по нормальным или продольным трещинам среди включенных проверок.",
             "Stability выбирает сочетание с минимальным запасом по расчету продольного изгиба и устойчивости. Для ветви СП 35 с условием N/N_cr ≤ Stability.SP35.NOverNcrLimit запас считается именно относительно этого лимита.",
-            "Plot.LoadCase = Worst и AutoCAD.Export.CombinationID = Worst не пересчитывают критерий самостоятельно: они читают уже выбранное сочетание из верхней строки rngBatchSummary."
+            "Plot.LoadCase = Worst и AutoCAD.Export.CombinationID = Worst не пересчитывают критерий самостоятельно: они читают уже выбранное сочетание из верхней строки rngBatchSummary.",
+            "Явно пустое, ошибочное или неизвестное значение этого критерия является ошибкой Config: сочетания не передаются в решатель и получают InputErr с указанием настройки. Другая проверка вместо выбранной молча не подставляется."
         ) }
         "Calculation.ZeroMomentPerDepth" { return @($lead) + @(
             "Эта настройка задает инженерный порог, ниже которого момент считается практически нулевым. Она нужна, чтобы после переноса точки приложения нагрузки, поворота осей или учета устойчивости случайный остаток вроде 1E-16 не включал моментную ветку расчета.",
@@ -1249,10 +1271,13 @@ function Get-SettingsInstructionCatalog {
     $items.Add(@{ Key = "Units"; Title = "Единицы измерения"; Lines = @(
         "Этот блок задает пользовательские единицы ввода INPUT и вывода OUTPUT. Колонка INTERNAL является справочной и показывает фиксированные единицы расчетного ядра.",
         "Внутренние единицы ядра: длина - мм, площадь - мм2, сила - Н, момент - Н*мм, напряжение - МПа, кривизна - 1/мм.",
+        "Допустимые INPUT/OUTPUT: длина mm, cm, m; площадь mm2, cm2, m2; сила N, kN, tf; момент N*mm, kN*m, tf*m; напряжение Pa, kPa, MPa, kgf/cm2, tf/m2; кривизна 1/mm или 1/m.",
+        "Пустой выбор, TODO или неподдержанная единица являются ошибкой Config и не заменяются значением по умолчанию. Сообщение указывает конкретную настройку INPUT или OUTPUT.",
         "Формула: q_internal = q_user · k_input.",
         "Формула: q_output = q_internal·k_output⁻¹.",
         "Все пересчеты единиц выполняются централизованно, поэтому расчетные формулы внутри программы работают в одной системе единиц.",
         "INPUT и OUTPUT могут быть разными. Например нагрузки удобно вводить в tf и tf*m, а результаты смотреть в kN и kN*m.",
+        "Смена INPUT не пересчитывает уже введенные числа автоматически. Для сохранения того же физического расчета переведите нагрузки, размеры, характеристики материалов и размерные настройки, в том числе допуски solver-а, в новые INPUT-единицы. Смена OUTPUT не меняет внутреннее НДС.",
         "Results является неизменяемым снимком последнего успешного расчета. Если после расчета пользователь поменял OUTPUT units, старые Results и схема не конвертируются заново; новые единицы применятся только после нового расчета.",
         "Выбор единиц не является расчетным допущением СП. При корректном обратимом пересчете физический результат должен сохраняться."
     )}) | Out-Null
@@ -1261,7 +1286,10 @@ function Get-SettingsInstructionCatalog {
         "Внутри расчетного ядра используется фиксированная INTERNAL convention: растяжение положительное, сжатие отрицательное.",
         "Формула: ε(x, y) = ε_0 + κ_x·y + κ_y·x.",
         "Пользователь может выбрать, считать ли +N сжатием или растяжением. Программа преобразует внешний знак во внутренний перед расчетом и обратно перед записью Results.",
-        "Сохраненный Output.SignConvention на Results является описанием сохраненных Results. Он не применяется повторно к Stress, N, Mx и My, потому что эти значения уже записаны с конечным пользовательским знаком.",
+        "Для Mx вариант +Y tension означает положительный момент с растяжением со стороны +Y, а -Y tension меняет внешний знак Mx. Для My аналогично выбираются +X tension и -X tension. Все восемь сочетаний этих трех правил допустимы.",
+        "Пустой выбор, TODO или неизвестное правило знаков являются ошибкой Config, а не запросом значения по умолчанию.",
+        "Сохраненный Output.SignConvention на Results является описанием сохраненных Results. Он не применяется повторно к N, Mx и My, потому что эти значения уже записаны с конечным пользовательским знаком.",
+        "Пользовательские знаки N/Mx/My не меняют знак Stress и Strain: растяжение остается положительным, сжатие отрицательным. KappaX/KappaY описывают плоскость во внутренних осях, поэтому меняется только единица кривизны, но не направление от пользовательского знака момента. Модули усилий, жесткости и положительные расчетные пороги также не получают знаков N/Mx/My.",
         "Цвета схемы определяются не по пользовательскому знаку Stress, а по сохраненному PhysicalState: Compression, Tension, InactiveTensionConcrete или NearZero.",
         "СП 63.13330.2018, п. 8.1.22 задает правило знаков для деформаций и напряжений НДМ: сжатие со знаком минус, растяжение со знаком плюс. Пользовательская настройка знаков меняет только ввод и вывод, а внутренняя математика остается той же."
     )}) | Out-Null
@@ -1438,6 +1466,7 @@ function Get-SettingsInstructionCatalog {
         "loc_2row - направление второго ряда относительно первого: Stacked ставит стержень внутрь сечения, SideBySide ставит его вдоль грани рядом с первым рядом.",
         "loc_3row - направление третьего ряда относительно первого. Если оно совпадает с loc_2row и второй ряд существует, третий ряд ставится дальше от первого, перескакивая второй.",
         "bind_2row - привязка второго ряда к первому: EachBar ставит дополнительный стержень у каждого стержня первого ряда, EverySecondBar - через один.",
+        "Положение loc_2row/loc_3row и привязка bind_2row/bind_3row общие для двух сторон каждой грани H1, B1, H2 или B2. Один объединенный селектор применяется к обеим строкам пары; диаметры дополнительных рядов для сторон задаются раздельно. В необъединенной таблице разные значения общего селектора в двух строках являются ошибкой ввода, а не независимыми настройками.",
         "bind_3row - привязка третьего ряда к первому: EachBar ставит дополнительный стержень у каждого стержня первого ряда, EverySecondBar - через один.",
         "Служебные имена в настройках: H1 - вертикальные грани верхнего прямоугольника; B1 - горизонтальные грани верхнего прямоугольника; H2 - вертикальные грани нижнего прямоугольника; B2 - горизонтальные грани нижнего прямоугольника.",
         "Суффикс _1 означает первую сторону грани: левая для H1/H2 и верхняя для B1/B2. Суффикс _2 означает вторую сторону: правая для H1/H2 и нижняя для B1/B2.",
@@ -5092,6 +5121,57 @@ function Add-RectSetFaceSettingsTable {
     $sectionTypeCell.Validation.InCellDropdown = $true
 
     Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($extraHeaderRow + $extraRows.Count) ($StartColumn + 8)
+    Set-RectSetSharedSelectorLayout ($Workbook.Names.Item($RangeName).RefersToRange) | Out-Null
+}
+
+# Оставляет один общий ввод положения и привязки для пары граней RectSet.
+# Значения первой строки сохраняются; повторные нижние ячейки становятся
+# частями объединения. Возвращает прежние значения для отчета миграции книги.
+function Set-RectSetSharedSelectorLayout {
+    param([object]$Target)
+    if ($Target.Rows.Count -lt 28 -or $Target.Columns.Count -lt 7) {
+        throw 'Таблица RectSet не содержит полный блок дополнительных рядов.'
+    }
+    $records = New-Object 'System.Collections.Generic.List[object]'
+    # Проверяем все пары до первого изменения, чтобы конфликт не оставил
+    # частично преобразованную таблицу и не потерял пользовательское значение.
+    foreach ($firstRow in @(21, 23, 25, 27)) {
+        foreach ($column in @(3, 4, 6, 7)) {
+            $first = $Target.Cells.Item($firstRow, $column)
+            $second = $Target.Cells.Item(($firstRow + 1), $column)
+            $area = $first.Resize(2, 1)
+            $records.Add([pscustomobject]@{
+                Address = $second.Address(); SharedAddress = $first.Address()
+                PreviousValue = $second.Value2; PreviousFormula = $second.Formula
+                SharedValue = $first.Value2
+                HadConflict = (-not [string]::IsNullOrWhiteSpace([string]$second.Value2) -and
+                    ([string]$second.Value2).Trim() -ne '-' -and
+                    ([string]$second.Value2).Trim() -ne ([string]$first.Value2).Trim())
+            })
+            if ($first.MergeCells) {
+                if ($first.MergeArea.Address() -ne $area.Address()) {
+                    throw "Неожиданное объединение общего селектора RectSet: $($first.Address())."
+                }
+            } elseif ($records[$records.Count - 1].HadConflict) {
+                throw "Конфликт общих настроек дополнительного ряда RectSet в $($first.Address()) и $($second.Address()). Значения не изменены; задайте одинаковый выбор для пары граней."
+            }
+        }
+    }
+    foreach ($firstRow in @(21, 23, 25, 27)) {
+        foreach ($column in @(3, 4, 6, 7)) {
+            $first = $Target.Cells.Item($firstRow, $column)
+            $second = $Target.Cells.Item(($firstRow + 1), $column)
+            $area = $first.Resize(2, 1)
+            if (-not $first.MergeCells) {
+                $second.Validation.Delete() | Out-Null
+                $second.ClearContents() | Out-Null
+                $area.Merge() | Out-Null
+            }
+            $area.HorizontalAlignment = -4108
+            $area.VerticalAlignment = -4108
+        }
+    }
+    return $records.ToArray()
 }
 
 # Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.

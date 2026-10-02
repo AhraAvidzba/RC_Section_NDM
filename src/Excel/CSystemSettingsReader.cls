@@ -36,12 +36,30 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object)
     Clear
     AppendSettingsRange workbook.Names.Item("rngUnitSettings").RefersToRange
     AppendSettingsRange workbook.Names.Item("rngSignConventionSettings").RefersToRange
+    ValidateWorkbookUnitAndSignKeys
     AppendSettingsRange workbook.Names.Item("rngSystemSettings").RefersToRange
     AppendNamedSettingsRangeIfExists workbook, "rngConcreteMaterialParameters"
     AppendNamedSettingsRangeIfExists workbook, "rngSteelMaterialParameters"
     AppendSettingsRange workbook.Names.Item("rngPlotAnnotationSettings").RefersToRange
     AppendGeometrySettingsRanges workbook
     NormalizeDiagramExtensionSetting
+End Sub
+
+' Проверяет обязательные пользовательские ключи полной книги после чтения
+' обеих таблиц. Поврежденная или отсутствующая строка Config не становится
+' optional default адаптера; автономный LoadFromRange остается неполным reader-ом.
+Private Sub ValidateWorkbookUnitAndSignKeys()
+    Dim key As Variant
+    For Each key In Array("Units.Length.Input", "Units.Length.Output", "Units.Area.Input", "Units.Area.Output", _
+            "Units.Force.Input", "Units.Force.Output", "Units.Moment.Input", "Units.Moment.Output", _
+            "Units.Stress.Input", "Units.Stress.Output", "Units.Curvature.Input", "Units.Curvature.Output", _
+            "Sign.N.User", "Sign.Mx.User", "Sign.My.User")
+        If Not HasKey(CStr(key)) Then
+            Err.Raise vbObjectError + 4313, "CSystemSettingsReader.LoadFromWorkbook", _
+                "На листе Config отсутствует обязательная настройка " & CStr(key) & _
+                ". Проверьте строки таблиц единиц измерения и системы знаков."
+        End If
+    Next key
 End Sub
 
 ' Подключает необязательный для reader диапазон, если он есть в книге.
@@ -801,12 +819,47 @@ Private Sub AppendRectSetSectionedSettings(ByRef data As Variant, Optional ByVal
         AppendSetting "RectSet." & faceNames(i) & ".d_2row_" & CStr(sideIndexes(i)), Trim$(CStr(data(extraRow, 2))), Trim$(CStr(data(extraRow, 2))), Trim$(CStr(data(extraRow, 9)))
         AppendSetting "RectSet." & faceNames(i) & ".d_3row_" & CStr(sideIndexes(i)), Trim$(CStr(data(extraRow, 5))), Trim$(CStr(data(extraRow, 5))), Trim$(CStr(data(extraRow, 9)))
         If sideIndexes(i) = 1 Then
+            ValidateRectSetSharedSelectors data, extraRow, faceNames(i)
             AppendSetting "RectSet." & faceNames(i) & ".loc_2row", Trim$(CStr(data(extraRow, 3))), Trim$(CStr(data(extraRow, 3))), Trim$(CStr(data(extraRow, 9)))
             AppendSetting "RectSet." & faceNames(i) & ".bind_2row", Trim$(CStr(data(extraRow, 4))), Trim$(CStr(data(extraRow, 4))), Trim$(CStr(data(extraRow, 9)))
             AppendSetting "RectSet." & faceNames(i) & ".loc_3row", Trim$(CStr(data(extraRow, 6))), Trim$(CStr(data(extraRow, 6))), Trim$(CStr(data(extraRow, 9)))
             AppendSetting "RectSet." & faceNames(i) & ".bind_3row", Trim$(CStr(data(extraRow, 7))), Trim$(CStr(data(extraRow, 7))), Trim$(CStr(data(extraRow, 9)))
         End If
     Next i
+End Sub
+
+' Проверяет общие для пары граней параметры дополнительных рядов RectSet.
+' Повторное значение во второй строке допускается только совпадающее с первой;
+' пустая служебная ячейка или "-" не задает отдельный выбор. Конфликт нельзя
+' молча проигнорировать, поскольку независимый выбор по сторонам не поддержан.
+Private Sub ValidateRectSetSharedSelectors(ByRef data As Variant, ByVal firstRow As Long, ByVal faceName As String)
+    Dim column As Variant, firstValue As String, secondValue As String, parameterName As String
+    Dim faceLabel As String
+    Select Case UCase$(faceName)
+        Case "H1": faceLabel = "вертикальных граней верхнего прямоугольника (H1)"
+        Case "B1": faceLabel = "горизонтальных граней верхнего прямоугольника (B1)"
+        Case "H2": faceLabel = "вертикальных граней нижнего прямоугольника (H2)"
+        Case "B2": faceLabel = "горизонтальных граней нижнего прямоугольника (B2)"
+        Case Else: faceLabel = "граней " & faceName
+    End Select
+    For Each column In Array(3, 4, 6, 7)
+        firstValue = Trim$(CStr(data(firstRow, CLng(column))))
+        secondValue = Trim$(CStr(data(firstRow + 1, CLng(column))))
+        If Len(secondValue) > 0 And secondValue <> "-" Then
+            If StrComp(firstValue, secondValue, vbTextCompare) <> 0 Then
+                Select Case CLng(column)
+                    Case 3: parameterName = "положение второго ряда"
+                    Case 4: parameterName = "привязка второго ряда к первому"
+                    Case 6: parameterName = "положение третьего ряда"
+                    Case 7: parameterName = "привязка третьего ряда к первому"
+                End Select
+                Err.Raise vbObjectError + 4317, "CSystemSettingsReader", _
+                    "В таблице RectSet для " & faceLabel & " параметр """ & _
+                    parameterName & """ задан по-разному в двух строках. Это общий выбор для пары сторон; " & _
+                    "укажите его в первой строке, а во второй оставьте тот же выбор или пустое значение."
+            End If
+        End If
+    Next column
 End Sub
 
 ' Задает порядок строк в секционной таблице RectSet.

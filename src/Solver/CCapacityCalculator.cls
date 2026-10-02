@@ -175,8 +175,8 @@ Public Function Calculate(ByVal section As CSectionModel, _
 End Function
 
 ' Возвращает нормализованную стратегию Capacity.SolutionStrategy.
-' Пустая строка сохраняет прежнее поведение для невалидной настройки: дальше
-' search-слой сформирует controlled InputErr, а не молча подставит fallback.
+' Для неизвестного значения возвращает пустую строку: search-слой отклоняет
+' такую настройку с InputErr, без молчаливой подстановки другой стратегии.
 Public Property Get SolutionStrategy() As String
     Select Case LCase$(Trim$(mSolutionStrategy))
         Case "auto"

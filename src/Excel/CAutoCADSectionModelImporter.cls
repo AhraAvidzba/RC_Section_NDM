@@ -449,7 +449,9 @@ Private Function EntityHandle(ByVal entity As Object) As String
     On Error GoTo 0
 End Function
 
-' Проверяет входные данные и прерывает выполнение понятной ошибкой, если расчетный контракт нарушен.
+' Проверяет результат фильтрации Region по слоям и площади: для принятого
+' импорта должны остаться бетон и арматура. Пустой слой получает собственную
+' причину, а не передает пустую модель в решатель НДС.
 Private Sub ValidateImportedModel(ByVal model As CSectionModel)
     If model.ConcreteCount <= 0 Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
         "Не найдено бетонных AutoCAD Region на заданном слое импорта."

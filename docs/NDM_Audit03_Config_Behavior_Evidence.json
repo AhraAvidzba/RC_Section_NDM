@@ -4,7 +4,9 @@
   "PositiveGate": "TOTAL_AUDIT03_SOLVER_EFFECTS: passed=100; failed=0",
   "FullReports": [
     "docs/regression/Audit03/full_no_v68_2026-10-02.txt",
-    "docs/regression/Audit03/full_yes_v68_2026-10-02.txt"
+    "docs/regression/Audit03/full_yes_v68_2026-10-02.txt",
+    "docs/regression/Audit03/config_units_full_off_v71_2026-10-02.txt",
+    "docs/regression/Audit03/config_units_full_on_v71_2026-10-02.txt"
   ],
   "InputEvidence": "docs/regression/Audit03/k02_numeric_input_positive_v45_2026-10-02.txt",
   "MutationReport": "docs/regression/Audit03/solver_method_mutation_v48b_2026-10-02.txt",

@@ -850,7 +850,7 @@ Private Sub DrawAxisNameLabels()
 End Sub
 
 ' Показывает под схемой короткое красное предупреждение по сохраненному
-' DirectStateStatus. Для FAIL сохраняется прежний смысл: состояние найдено
+' DirectStateStatus. Для FAIL состояние найдено
 ' вне физической диаграммы. Для NumFail отдельно предупреждаем, что на схеме
 ' может быть последняя итерация, а не корректное равновесное состояние.
 Private Sub DrawStateWarning(ByVal data As CSectionPlotDataReader)
@@ -1364,8 +1364,8 @@ Private Sub DrawPrincipalAxes(ByVal data As CSectionPlotDataReader, ByVal axesMo
         centroidX - lengthValue * sa, centroidY + lengthValue * ca, RGB(0, 0, 0), REFERENCE_AXIS_WEIGHT, "Principal2", MSO_LINE_DASH
 End Sub
 
-' Читает режим осей схемы. Старый Yes/No-ключ поддержан только как fallback
-' для уже открытых старых книг, но новый Config использует PrincipalAxesMode.
+' Читает Plot.PrincipalAxesMode. При отсутствии значения допускает входной
+' Yes/No-ключ Plot.PrincipalAxesEnabled: Yes -> Transformed, No -> None.
 Private Function PlotPrincipalAxesMode(ByVal settings As CSystemSettingsReader) As String
     Dim rawValue As String
     rawValue = Trim$(settings.GetString("Plot.PrincipalAxesMode", vbNullString))
@@ -2240,8 +2240,8 @@ Private Function AverageKnownConcreteElementRotation(ByVal data As CSectionPlotD
 End Function
 
 ' Определяет последний fallback бетонного Region по площади.
-' Новый snapshot пишет Equivalent square, старое EquivalentSquare оставлено
-' только для просмотра ранее записанных Results.
+' При чтении допускает оба написания статуса: Equivalent square и
+' EquivalentSquare. Положительные Width/Height исключают этот fallback.
 Private Function IsEquivalentAreaFallbackElement(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Boolean
     Dim statusText As String
     statusText = Replace$(Trim$(data.ShapeType(index)), " ", vbNullString)

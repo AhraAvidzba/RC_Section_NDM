@@ -937,6 +937,8 @@ Private Sub AssertTrue(ByRef stats As TCrackTestStats, ByVal name As String, ByV
     End If
 End Sub
 
+' Проверяет абсолютную разницу по допуску конкретного теста и сохраняет
+' actual/expected/absDiff; инженерные критерии этим допуском не изменяются.
 Private Sub AssertClose(ByRef stats As TCrackTestStats, ByVal name As String, ByVal actual As Double, _
         ByVal expected As Double, ByVal tolerance As Double)
     Dim diff As Double
