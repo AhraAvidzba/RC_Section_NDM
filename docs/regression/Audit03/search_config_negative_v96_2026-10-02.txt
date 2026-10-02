@@ -1,0 +1,15 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_search_config_v96.xlsm
+SOURCE_SHA256: 97EF8EAA8E40F523FE0218781E239E7C97F3354259A2132C60D704C532799BEF
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_b22c1f8b37b741af94e42eb9c960ac8f\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== RunAudit03SearchConfigTests =====
+SUITE_STARTED: RunAudit03SearchConfigTests; 2026-10-02T22:08:30
+EXCEL_AFTER_SUITE: pid=28796; workingSet=143605760; privateBytes=104296448; cpu=2.453125
+FAIL: searchConfig.runtime; -2147217005; Не найден ключ Config Calculation.Stability.Enabled
+TOTAL_AUDIT03_SEARCH_CONFIG: passed=0; failed=1
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_b22c1f8b37b741af94e42eb9c960ac8f\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: RunAudit03SearchConfigTests; 2026-10-02T22:08:31
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

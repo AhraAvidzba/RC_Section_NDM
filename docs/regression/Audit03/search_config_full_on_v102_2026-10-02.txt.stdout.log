@@ -1,0 +1,150 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_search_config_v102.xlsm
+SOURCE_SHA256: 184E299BCC6D6BB60F70296599D3742C9AA00A4BA82CEE7C3167243E2C9A29EB
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d021dc37573747368f11289d7db57871\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TOTAL: passed=524; failed=0
+MODE_AFTER_SUITE: Yes
+TOTAL_MATERIAL: passed=2856; failed=0; elapsedSec=2.046875
+MODE_AFTER_SUITE: Yes
+TOTAL_SECTION_SOLVER: passed=895; failed=0; elapsedSec=2.0625
+MODE_AFTER_SUITE: Yes
+TOTAL_CAPACITY: passed=1676; failed=0; elapsedSec=41.234375
+MODE_AFTER_SUITE: Yes
+TOTAL_CRACK: passed=484; failed=0; elapsedSec=1.5
+MODE_AFTER_SUITE: Yes
+TOTAL_AUDIT03_SEARCH_CONFIG: passed=1812; failed=0
+TOTAL_BATCH: passed=8145; failed=0; elapsedSec=111.7890625
+MODE_AFTER_SUITE: Yes
+FAIL: audit03.unitEquivalent.s0.f0.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405658.22802188; factor=0.000001
+FAIL: audit03.unitEquivalent.s0.f0.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s0.f0.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405.65822802188; factor=0.001
+FAIL: audit03.unitEquivalent.s0.f0.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s0.f1.m0.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=14.333724850196; factor=0.0980665
+FAIL: audit03.unitEquivalent.s0.f1.m0.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011381; factor=1
+FAIL: audit03.unitEquivalent.s0.f1.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=143.337248501974; factor=0.00980665
+FAIL: audit03.unitEquivalent.s0.f1.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s0.f1.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1.40565822802188; factor=1
+FAIL: audit03.unitEquivalent.s0.f1.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s0.f2.m0.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405658.22802175; factor=0.000001
+FAIL: audit03.unitEquivalent.s0.f2.m0.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011381; factor=1
+FAIL: audit03.unitEquivalent.s0.f2.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405.65822802188; factor=0.001
+FAIL: audit03.unitEquivalent.s0.f2.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s0.f2.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=14.3337248501974; factor=0.0980665
+FAIL: audit03.unitEquivalent.s0.f2.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s1.f0.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1.40565822802188; factor=1
+FAIL: audit03.unitEquivalent.s1.f0.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s1.f0.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405658.22802188; factor=0.000001
+FAIL: audit03.unitEquivalent.s1.f0.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s1.f1.m0.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405.65822802175; factor=0.001
+FAIL: audit03.unitEquivalent.s1.f1.m0.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011381; factor=1
+FAIL: audit03.unitEquivalent.s1.f1.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=14.3337248501974; factor=0.0980665
+FAIL: audit03.unitEquivalent.s1.f1.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s1.f1.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=143.337248501974; factor=0.00980665
+FAIL: audit03.unitEquivalent.s1.f1.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s1.f2.m0.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1.40565822802175; factor=1
+FAIL: audit03.unitEquivalent.s1.f2.m0.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011381; factor=1
+FAIL: audit03.unitEquivalent.s1.f2.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405658.22802188; factor=0.000001
+FAIL: audit03.unitEquivalent.s1.f2.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s1.f2.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405.65822802188; factor=0.001
+FAIL: audit03.unitEquivalent.s1.f2.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s2.f0.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=143.337248501974; factor=0.00980665
+FAIL: audit03.unitEquivalent.s2.f0.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s2.f0.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1.40565822802188; factor=1
+FAIL: audit03.unitEquivalent.s2.f0.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s2.f1.m0.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405658.22802175; factor=0.000001
+FAIL: audit03.unitEquivalent.s2.f1.m0.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011381; factor=1
+FAIL: audit03.unitEquivalent.s2.f1.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405.65822802188; factor=0.001
+FAIL: audit03.unitEquivalent.s2.f1.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s2.f1.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=14.3337248501974; factor=0.0980665
+FAIL: audit03.unitEquivalent.s2.f1.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s2.f2.m0.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=143.33724850196; factor=0.00980665
+FAIL: audit03.unitEquivalent.s2.f2.m0.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011381; factor=1
+FAIL: audit03.unitEquivalent.s2.f2.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1.40565822802188; factor=1
+FAIL: audit03.unitEquivalent.s2.f2.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s2.f2.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405658.22802188; factor=0.000001
+FAIL: audit03.unitEquivalent.s2.f2.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s3.f0.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=14.3337248501974; factor=0.0980665
+FAIL: audit03.unitEquivalent.s3.f0.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s3.f0.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=143.337248501974; factor=0.00980665
+FAIL: audit03.unitEquivalent.s3.f0.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s3.f1.m0.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1.40565822802175; factor=1
+FAIL: audit03.unitEquivalent.s3.f1.m0.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011381; factor=1
+FAIL: audit03.unitEquivalent.s3.f1.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405658.22802188; factor=0.000001
+FAIL: audit03.unitEquivalent.s3.f1.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s3.f1.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405.65822802188; factor=0.001
+FAIL: audit03.unitEquivalent.s3.f1.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s3.f2.m0.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=14.333724850196; factor=0.0980665
+FAIL: audit03.unitEquivalent.s3.f2.m0.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011381; factor=1
+FAIL: audit03.unitEquivalent.s3.f2.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=143.337248501974; factor=0.00980665
+FAIL: audit03.unitEquivalent.s3.f2.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s3.f2.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1.40565822802188; factor=1
+FAIL: audit03.unitEquivalent.s3.f2.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s4.f0.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405.65822802188; factor=0.001
+FAIL: audit03.unitEquivalent.s4.f0.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s4.f0.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=14.3337248501974; factor=0.0980665
+FAIL: audit03.unitEquivalent.s4.f0.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s4.f1.m0.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=143.33724850196; factor=0.00980665
+FAIL: audit03.unitEquivalent.s4.f1.m0.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011381; factor=1
+FAIL: audit03.unitEquivalent.s4.f1.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1.40565822802188; factor=1
+FAIL: audit03.unitEquivalent.s4.f1.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s4.f1.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405658.22802188; factor=0.000001
+FAIL: audit03.unitEquivalent.s4.f1.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s4.f2.m0.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405.65822802175; factor=0.001
+FAIL: audit03.unitEquivalent.s4.f2.m0.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011381; factor=1
+FAIL: audit03.unitEquivalent.s4.f2.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=14.3337248501974; factor=0.0980665
+FAIL: audit03.unitEquivalent.s4.f2.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s4.f2.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=143.337248501974; factor=0.00980665
+FAIL: audit03.unitEquivalent.s4.f2.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s5.f0.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405658.22802188; factor=0.000001
+FAIL: audit03.unitEquivalent.s5.f0.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s5.f0.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405.65822802188; factor=0.001
+FAIL: audit03.unitEquivalent.s5.f0.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s5.f1.m0.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=14.333724850196; factor=0.0980665
+FAIL: audit03.unitEquivalent.s5.f1.m0.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011381; factor=1
+FAIL: audit03.unitEquivalent.s5.f1.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=143.337248501974; factor=0.00980665
+FAIL: audit03.unitEquivalent.s5.f1.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s5.f1.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1.40565822802188; factor=1
+FAIL: audit03.unitEquivalent.s5.f1.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s5.f2.m0.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405658.22802175; factor=0.000001
+FAIL: audit03.unitEquivalent.s5.f2.m0.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011381; factor=1
+FAIL: audit03.unitEquivalent.s5.f2.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405.65822802188; factor=0.001
+FAIL: audit03.unitEquivalent.s5.f2.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s5.f2.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=14.3337248501974; factor=0.0980665
+FAIL: audit03.unitEquivalent.s5.f2.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s6.f0.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1.40565822802188; factor=1
+FAIL: audit03.unitEquivalent.s6.f0.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s6.f0.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405658.22802188; factor=0.000001
+FAIL: audit03.unitEquivalent.s6.f0.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s6.f1.m0.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405.65822802175; factor=0.001
+FAIL: audit03.unitEquivalent.s6.f1.m0.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011381; factor=1
+FAIL: audit03.unitEquivalent.s6.f1.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=14.3337248501974; factor=0.0980665
+FAIL: audit03.unitEquivalent.s6.f1.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s6.f1.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=143.337248501974; factor=0.00980665
+FAIL: audit03.unitEquivalent.s6.f1.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s6.f2.m0.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1.40565822802175; factor=1
+FAIL: audit03.unitEquivalent.s6.f2.m0.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011381; factor=1
+FAIL: audit03.unitEquivalent.s6.f2.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405658.22802188; factor=0.000001
+FAIL: audit03.unitEquivalent.s6.f2.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s6.f2.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405.65822802188; factor=0.001
+FAIL: audit03.unitEquivalent.s6.f2.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s7.f0.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=143.337248501974; factor=0.00980665
+FAIL: audit03.unitEquivalent.s7.f0.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s7.f0.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1.40565822802188; factor=1
+FAIL: audit03.unitEquivalent.s7.f0.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s7.f1.m0.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405658.22802175; factor=0.000001
+FAIL: audit03.unitEquivalent.s7.f1.m0.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011381; factor=1
+FAIL: audit03.unitEquivalent.s7.f1.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405.65822802188; factor=0.001
+FAIL: audit03.unitEquivalent.s7.f1.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s7.f1.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=14.3337248501974; factor=0.0980665
+FAIL: audit03.unitEquivalent.s7.f1.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s7.f2.m0.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=143.33724850196; factor=0.00980665
+FAIL: audit03.unitEquivalent.s7.f2.m0.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011381; factor=1
+FAIL: audit03.unitEquivalent.s7.f2.m1.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1.40565822802188; factor=1
+FAIL: audit03.unitEquivalent.s7.f2.m1.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+FAIL: audit03.unitEquivalent.s7.f2.m2.elements.equivalent; row=375; col=8; parameter=; expected=1.40565822541636; actual=1405658.22802188; factor=0.000001
+FAIL: audit03.unitEquivalent.s7.f2.m2.properties.equivalent; row=173; col=4; parameter=State.PreCrackState.NeutralLine.Angle; expected=2.2603538545584; actual=2.26035385011358; factor=1
+TOTAL_WORKBOOK_UI: passed=6796; failed=128; elapsedSec=186.59375
+MODE_AFTER_SUITE: Yes
+TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.5234375
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

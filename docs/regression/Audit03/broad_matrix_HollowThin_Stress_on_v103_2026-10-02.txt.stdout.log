@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_search_config_v103.xlsm
+SOURCE_SHA256: E42DD9EDEFBEA6BC6A35D1E5E240CDA20DB61A3C063CCC880EC4DE4009A361C5
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_7a458df3aa184dc2943c4e230c009712\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TOTAL_AUDIT03_LOAD_MATRIX: shape=HollowThin; family=Stress; independentCases=240; passed=10570; failed=0
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

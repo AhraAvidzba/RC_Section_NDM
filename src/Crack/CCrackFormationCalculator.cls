@@ -125,6 +125,8 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
 
     mCrackFormationPath = settings.GetRequiredString("SLS.Crack.InitiationLoadPath")
     mCrackFormationSolutionStrategy = settings.GetRequiredString("SLS.Crack.InitiationSolutionStrategy")
+    mCrackFormationPath = NormalizeCrackFormationPath(mCrackFormationPath, settings)
+    mCrackFormationSolutionStrategy = NormalizeCrackFormationSolutionStrategy(mCrackFormationSolutionStrategy, settings)
 
     mSolverMaxIterations = settings.GetLong("Solver.MaxIterations", mSolverMaxIterations, False)
     mSolverLoadSteps = settings.GetLong("Solver.LoadSteps", mSolverLoadSteps, False)
@@ -800,13 +802,16 @@ End Function
 
 
 ' Возвращает норму невязок для общего UltimateStrain line-search при поиске
-' трещинообразования. Масштабы rPath1/rPath2 задает CLoadPathMath, а rLimit
-' отвечает за достижение предельной растягивающей деформации бетона.
+' трещинообразования. Невязки пути уже выражены в долях допуска равновесия,
+' а деформационный критерий приводится к своему допуску. Иначе шаг к точке
+' трещины отвергается из-за временной невязки усилий, несмотря на уменьшение
+' относительной ошибки критерия. Условия приема State здесь не меняются.
 Public Function LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Double
     Dim loadPathMath As CLoadPathMath
     Set loadPathMath = NewLoadPathMath()
-    LimitSearchUltimateResidualNorm = loadPathMath.ResidualNorm(rPath1, rPath2, rLimit)
+    LimitSearchUltimateResidualNorm = loadPathMath.ResidualNorm(rPath1, rPath2, rLimit, _
+        CRACK_EQUILIBRIUM_TOLERANCE / CRACK_STRAIN_RATIO_TOLERANCE)
 End Function
 
 
@@ -2019,7 +2024,10 @@ End Function
 ' Приводит пользовательский выбор пути трещинообразования к внутреннему ключу.
 ' Поддерживаются те же обозначения lambda, что и в CapacityLoadPath, но без
 ' одноосных Mx/My: для трещин пользователь выбирает Mxy, N или весь N+Mxy.
-Private Function NormalizeCrackFormationPath(ByVal rawPath As String) As String
+' Batch и автономный ApplySettings используют одну проверку допустимых вариантов.
+' Необязательный reader добавляет фактическое место исправления только к ошибке.
+Public Function NormalizeCrackFormationPath(ByVal rawPath As String, _
+        Optional ByVal settings As CSystemSettingsReader = Nothing) As String
     Dim value As String
     value = LCase$(Trim$(rawPath))
     value = Replace$(value, " ", vbNullString)
@@ -2035,8 +2043,11 @@ Private Function NormalizeCrackFormationPath(ByVal rawPath As String) As String
         Case "lambda*nmxy", "lambdanmxy", "nmxy", "all"
             NormalizeCrackFormationPath = CRACK_PATH_NMXY
         Case Else
-            Err.Raise vbObjectError + 3734, "CCrackFormationCalculator", _
-                "На листе Config в строке SLS.Crack.InitiationLoadPath выберите Auto, lambda*Mxy, lambda*N или lambda*NMxy."
+            Dim message As String
+            message = "На листе Config в строке SLS.Crack.InitiationLoadPath выберите Auto, lambda*Mxy, lambda*N или lambda*NMxy."
+            If Not settings Is Nothing Then message = settings.InputErrorMessage("SLS.Crack.InitiationLoadPath", _
+                "Неизвестный путь: """ & rawPath & """.", "Выберите Auto, lambda*Mxy, lambda*N или lambda*NMxy.")
+            Err.Raise vbObjectError + 3734, "CCrackFormationCalculator", message
     End Select
 End Function
 
@@ -2044,7 +2055,10 @@ End Function
 
 ' Приводит численную стратегию поиска трещинообразования к той же логике,
 ' что используется для capacity: Auto, UltimateStrain или LoadMultiplier.
-Private Function NormalizeCrackFormationSolutionStrategy(ByVal rawStrategy As String) As String
+' Допустимые aliases проверяются здесь для всех consumers; reader при наличии
+' указывает адрес Config, не влияя на выбор метода или расчетную постановку.
+Public Function NormalizeCrackFormationSolutionStrategy(ByVal rawStrategy As String, _
+        Optional ByVal settings As CSystemSettingsReader = Nothing) As String
     Select Case LCase$(Trim$(rawStrategy))
         Case vbNullString, "auto"
             NormalizeCrackFormationSolutionStrategy = STRATEGY_AUTO
@@ -2053,8 +2067,11 @@ Private Function NormalizeCrackFormationSolutionStrategy(ByVal rawStrategy As St
         Case "loadmultiplier", "multiplier", "lambda"
             NormalizeCrackFormationSolutionStrategy = STRATEGY_LOAD_MULTIPLIER
         Case Else
-            Err.Raise vbObjectError + 3735, "CCrackFormationCalculator", _
-                "На листе Config в строке SLS.Crack.InitiationSolutionStrategy выберите Auto, UltimateStrain или LoadMultiplier."
+            Dim message As String
+            message = "На листе Config в строке SLS.Crack.InitiationSolutionStrategy выберите Auto, UltimateStrain или LoadMultiplier."
+            If Not settings Is Nothing Then message = settings.InputErrorMessage("SLS.Crack.InitiationSolutionStrategy", _
+                "Неизвестная стратегия: """ & rawStrategy & """.", "Выберите Auto, UltimateStrain или LoadMultiplier.")
+            Err.Raise vbObjectError + 3735, "CCrackFormationCalculator", message
     End Select
 End Function
 

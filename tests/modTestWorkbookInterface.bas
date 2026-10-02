@@ -5600,7 +5600,7 @@ Private Sub TestAudit03UnitSignEquivalence(ByRef stats As TUiTestStats)
                 Set provider = New CMaterialModelProvider: provider.Initialize settings, units
                 Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook
                 Set batch = New CBatchSectionCalculator
-                batch.Initialize section, provider: batch.ApplySettings settings
+                batch.Initialize section, provider: batch.ApplySettings settings, units
                 Set batch.ProfileCatalog = profiles
                 Set reader = New CLoadCombinationReader: reader.LoadFromWorkbook ThisWorkbook, batch, units
                 batch.ApplyLoadReference 10#, -7#, 0#, 0#

@@ -224,6 +224,12 @@ Public Function RunBatchCalculationTests() As String
     AppendLine stats, "RUN: TestAudit03PublishedResults"
     TestAudit03PublishedResults stats
 
+    Dim searchPassed As Long, searchFailed As Long
+    AppendLine stats, "RUN: RunAudit03SearchConfigTests"
+    stats.Report = stats.Report & RunAudit03SearchConfigTests(searchPassed, searchFailed)
+    stats.Passed = stats.Passed + searchPassed
+    stats.Failed = stats.Failed + searchFailed
+
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
     RestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability
@@ -4952,6 +4958,22 @@ Public Function RunAudit02ResultMetaStress() As String
     Next i
     RunAudit02ResultMetaStress = "INFO: metaStress; reads=5000; elapsedSec=" & _
         FormatNumberInvariant(Timer - started) & "; status=" & statusText & "; comment=" & commentText
+End Function
+
+' ДЛЯ ТЕСТОВ: проверяет комментарии и четыре блока вывода готового batch.
+' Позволяет отдельному Config-набору использовать те же проверки subtree,
+' не запускать весь batch-набор повторно и не копировать его assertions.
+Public Function Audit03ValidateConfigBatchResults(ByVal batch As CBatchSectionCalculator, _
+        ByVal units As CUnitSystem, ByRef passed As Long, ByRef failed As Long) As String
+    Dim stats As TBatchTestStats, writer As CBatchResultWriter, i As Long
+    Set writer = New CBatchResultWriter
+    writer.WriteSummary ThisWorkbook, batch, units
+    For i = 1 To batch.Count
+        Audit03CheckResultComments stats, batch, i
+    Next i
+    passed = stats.Passed
+    failed = stats.Failed
+    Audit03ValidateConfigBatchResults = stats.Report
 End Function
 
 ' Повторяет реальный batch-маршрут после сохранения Pre/Post/current states.

@@ -1,4 +1,4 @@
-# Imports an existing standard test module into an isolated Audit03 fixture.
+# Imports a standard test module into an isolated Audit03 fixture.
 # Production code is not replaced, so the same reproducer can test old behavior.
 param(
     [Parameter(Mandatory=$true)][string]$WorkbookPath,
@@ -10,7 +10,7 @@ $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $bookPath = (Resolve-Path -LiteralPath (Join-Path $root $WorkbookPath)).Path
 $allowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/Audit03')) + [IO.Path]::DirectorySeparatorChar
 if (-not $bookPath.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase)) { throw 'Only isolated Audit03 fixtures may be modified.' }
-if ($TestModule -notmatch '^modTest[A-Za-z0-9]+$') { throw 'Expected an existing standard test module.' }
+if ($TestModule -notmatch '^modTest[A-Za-z0-9]+$') { throw 'Expected a standard test module.' }
 $source = Join-Path $root ("tests/$TestModule.bas")
 $body = ([IO.File]::ReadAllText($source, [Text.Encoding]::UTF8) -split '\r?\n' | Where-Object { $_ -notmatch '^Attribute VB_' }) -join "`r`n"
 $excel = $null
@@ -21,7 +21,16 @@ try {
     $excel.DisplayAlerts = $false
     $excel.AutomationSecurity = 3
     $book = $excel.Workbooks.Open($bookPath)
-    $module = $book.VBProject.VBComponents.Item($TestModule).CodeModule
+    $component = $null
+    foreach ($candidate in $book.VBProject.VBComponents) {
+        if ($candidate.Name -eq $TestModule) { $component = $candidate; break }
+    }
+    if ($null -eq $component) {
+        $component = $book.VBProject.VBComponents.Add(1)
+        $component.Name = $TestModule
+    }
+    if ($component.Type -ne 1) { throw 'Only standard test modules may be replaced.' }
+    $module = $component.CodeModule
     if ($module.CountOfLines -gt 0) { $module.DeleteLines(1, $module.CountOfLines) }
     $module.AddFromString($body)
     if ($RestoreGeometryConstants) {

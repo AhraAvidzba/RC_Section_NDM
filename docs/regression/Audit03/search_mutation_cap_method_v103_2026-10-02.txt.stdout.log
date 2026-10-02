@@ -1,0 +1,33 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_search_mutation_cap_method_v103.xlsm
+SOURCE_SHA256: F459E5CBC8EA0E0AC0B961083FE9C549D7526F2F59CE2B0906B3FC3F405A75B6
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_21d6672f513f4492936b5c0585552945\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: searchConfig.capacity.LoadMultiplier.Brent.activeSearchMethod
+FAIL: searchConfig.capacity.LoadMultiplier.Secant.activeSearchMethod
+FAIL: searchConfig.invalid.Capacity.SearchMethod..inputErr
+FAIL: searchConfig.invalid.Capacity.SearchMethod..noSolve
+FAIL: searchConfig.invalid.Capacity.SearchMethod..key
+FAIL: searchConfig.invalid.Capacity.SearchMethod..location
+FAIL: searchConfig.invalid.Capacity.SearchMethod..cell
+FAIL: searchConfig.invalid.Capacity.SearchMethod..action
+FAIL: searchConfig.invalid.Capacity.SearchMethod.TODO.inputErr
+FAIL: searchConfig.invalid.Capacity.SearchMethod.TODO.noSolve
+FAIL: searchConfig.invalid.Capacity.SearchMethod.TODO.key
+FAIL: searchConfig.invalid.Capacity.SearchMethod.TODO.location
+FAIL: searchConfig.invalid.Capacity.SearchMethod.TODO.cell
+FAIL: searchConfig.invalid.Capacity.SearchMethod.TODO.action
+FAIL: searchConfig.invalid.Capacity.SearchMethod.Unknown.inputErr
+FAIL: searchConfig.invalid.Capacity.SearchMethod.Unknown.noSolve
+FAIL: searchConfig.invalid.Capacity.SearchMethod.Unknown.key
+FAIL: searchConfig.invalid.Capacity.SearchMethod.Unknown.location
+FAIL: searchConfig.invalid.Capacity.SearchMethod.Unknown.cell
+FAIL: searchConfig.invalid.Capacity.SearchMethod.Unknown.action
+FAIL: searchConfig.invalid.Capacity.SearchMethod.missing.inputErr
+FAIL: searchConfig.invalid.Capacity.SearchMethod.missing.noSolve
+FAIL: searchConfig.invalid.Capacity.SearchMethod.missing.key
+FAIL: searchConfig.invalid.Capacity.SearchMethod.missing.location
+FAIL: searchConfig.invalid.Capacity.SearchMethod.missing.section
+FAIL: searchConfig.invalid.Capacity.SearchMethod.missing.action
+TOTAL_AUDIT03_SEARCH_CONFIG: passed=1750; failed=26
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

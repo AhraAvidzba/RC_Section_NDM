@@ -1,0 +1,9 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_search_address_negative_v102.xlsm
+SOURCE_SHA256: 4D11DECACDFD142BDFAB9D8D8B21AAB9AFA27D2501E8F5520E54596A59DBDEF0
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e7e727b18cd7466999b487c6140fda0a\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.Unknown.cell
+FAIL: searchConfig.invalid.SLS.Crack.InitiationSolutionStrategy.Unknown.cell
+TOTAL_AUDIT03_SEARCH_CONFIG: passed=1810; failed=2
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

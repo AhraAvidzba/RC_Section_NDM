@@ -1,0 +1,1599 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_search_config_v103.xlsm
+SOURCE_SHA256: F900A322E7371DEE5067D1BC0B7D22F752D386EFAA2A1FC137E9C5A8D3815C0A
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_429534d76ecb494ba91af26d37ce9874\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== RunAudit03UnitSignEquivalenceTests =====
+SUITE_STARTED: RunAudit03UnitSignEquivalenceTests; 2026-10-02T23:14:34
+EXCEL_AFTER_SUITE: pid=13940; workingSet=161705984; privateBytes=115949568; cpu=83.390625
+OK: audit03.unitEquivalent.s0.f0.m0.count
+OK: audit03.unitEquivalent.s0.f0.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s0.f0.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s0.f0.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s0.f0.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s0.f0.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s0.f0.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s0.f0.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s0.f0.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s0.f0.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s0.f0.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s0.f0.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s0.f0.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s0.f0.m0.solved
+OK: audit03.unitEquivalent.s0.f0.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s0.f0.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s0.f0.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s0.f0.m0.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s0.f0.m0.outputStressUnit; actual=MPa
+OK: audit03.unitEquivalent.s0.f0.m0.strengthState
+OK: audit03.unitEquivalent.s0.f0.m0.crackedState
+OK: audit03.unitEquivalent.s0.f0.m1.count
+OK: audit03.unitEquivalent.s0.f0.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s0.f0.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s0.f0.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s0.f0.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s0.f0.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s0.f0.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s0.f0.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s0.f0.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s0.f0.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s0.f0.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s0.f0.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s0.f0.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s0.f0.m1.solved
+OK: audit03.unitEquivalent.s0.f0.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s0.f0.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s0.f0.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s0.f0.m1.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s0.f0.m1.outputStressUnit; actual=Pa
+OK: audit03.unitEquivalent.s0.f0.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s0.f0.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s0.f0.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s0.f0.m2.count
+OK: audit03.unitEquivalent.s0.f0.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s0.f0.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s0.f0.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s0.f0.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s0.f0.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s0.f0.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s0.f0.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s0.f0.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s0.f0.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s0.f0.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s0.f0.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s0.f0.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s0.f0.m2.solved
+OK: audit03.unitEquivalent.s0.f0.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s0.f0.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s0.f0.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s0.f0.m2.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s0.f0.m2.outputStressUnit; actual=kPa
+OK: audit03.unitEquivalent.s0.f0.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s0.f0.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s0.f0.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s0.f1.m0.count
+OK: audit03.unitEquivalent.s0.f1.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s0.f1.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s0.f1.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s0.f1.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s0.f1.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s0.f1.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s0.f1.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s0.f1.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s0.f1.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s0.f1.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s0.f1.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s0.f1.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s0.f1.m0.solved
+OK: audit03.unitEquivalent.s0.f1.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s0.f1.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s0.f1.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s0.f1.m0.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s0.f1.m0.outputStressUnit; actual=kgf/cm2
+OK: audit03.unitEquivalent.s0.f1.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s0.f1.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s0.f1.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s0.f1.m1.count
+OK: audit03.unitEquivalent.s0.f1.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s0.f1.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s0.f1.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s0.f1.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s0.f1.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s0.f1.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s0.f1.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s0.f1.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s0.f1.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s0.f1.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s0.f1.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s0.f1.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s0.f1.m1.solved
+OK: audit03.unitEquivalent.s0.f1.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s0.f1.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s0.f1.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s0.f1.m1.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s0.f1.m1.outputStressUnit; actual=tf/m2
+OK: audit03.unitEquivalent.s0.f1.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s0.f1.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s0.f1.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s0.f1.m2.count
+OK: audit03.unitEquivalent.s0.f1.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s0.f1.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s0.f1.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s0.f1.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s0.f1.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s0.f1.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s0.f1.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s0.f1.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s0.f1.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s0.f1.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s0.f1.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s0.f1.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s0.f1.m2.solved
+OK: audit03.unitEquivalent.s0.f1.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s0.f1.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s0.f1.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s0.f1.m2.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s0.f1.m2.outputStressUnit; actual=MPa
+OK: audit03.unitEquivalent.s0.f1.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s0.f1.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s0.f1.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s0.f2.m0.count
+OK: audit03.unitEquivalent.s0.f2.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s0.f2.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s0.f2.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s0.f2.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s0.f2.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s0.f2.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s0.f2.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s0.f2.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s0.f2.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s0.f2.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s0.f2.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s0.f2.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s0.f2.m0.solved
+OK: audit03.unitEquivalent.s0.f2.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s0.f2.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s0.f2.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s0.f2.m0.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s0.f2.m0.outputStressUnit; actual=Pa
+OK: audit03.unitEquivalent.s0.f2.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s0.f2.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s0.f2.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s0.f2.m1.count
+OK: audit03.unitEquivalent.s0.f2.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s0.f2.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s0.f2.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s0.f2.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s0.f2.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s0.f2.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s0.f2.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s0.f2.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s0.f2.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s0.f2.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s0.f2.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s0.f2.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s0.f2.m1.solved
+OK: audit03.unitEquivalent.s0.f2.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s0.f2.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s0.f2.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s0.f2.m1.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s0.f2.m1.outputStressUnit; actual=kPa
+OK: audit03.unitEquivalent.s0.f2.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s0.f2.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s0.f2.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s0.f2.m2.count
+OK: audit03.unitEquivalent.s0.f2.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s0.f2.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s0.f2.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s0.f2.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s0.f2.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s0.f2.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s0.f2.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s0.f2.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s0.f2.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s0.f2.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s0.f2.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s0.f2.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s0.f2.m2.solved
+OK: audit03.unitEquivalent.s0.f2.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s0.f2.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s0.f2.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s0.f2.m2.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s0.f2.m2.outputStressUnit; actual=kgf/cm2
+OK: audit03.unitEquivalent.s0.f2.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s0.f2.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s0.f2.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s1.f0.m0.count
+OK: audit03.unitEquivalent.s1.f0.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s1.f0.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s1.f0.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s1.f0.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s1.f0.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s1.f0.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s1.f0.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s1.f0.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s1.f0.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s1.f0.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s1.f0.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s1.f0.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s1.f0.m0.solved
+OK: audit03.unitEquivalent.s1.f0.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s1.f0.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s1.f0.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s1.f0.m0.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s1.f0.m0.outputStressUnit; actual=tf/m2
+OK: audit03.unitEquivalent.s1.f0.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s1.f0.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s1.f0.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s1.f0.m1.count
+OK: audit03.unitEquivalent.s1.f0.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s1.f0.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s1.f0.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s1.f0.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s1.f0.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s1.f0.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s1.f0.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s1.f0.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s1.f0.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s1.f0.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s1.f0.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s1.f0.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s1.f0.m1.solved
+OK: audit03.unitEquivalent.s1.f0.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s1.f0.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s1.f0.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s1.f0.m1.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s1.f0.m1.outputStressUnit; actual=MPa
+OK: audit03.unitEquivalent.s1.f0.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s1.f0.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s1.f0.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s1.f0.m2.count
+OK: audit03.unitEquivalent.s1.f0.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s1.f0.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s1.f0.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s1.f0.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s1.f0.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s1.f0.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s1.f0.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s1.f0.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s1.f0.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s1.f0.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s1.f0.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s1.f0.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s1.f0.m2.solved
+OK: audit03.unitEquivalent.s1.f0.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s1.f0.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s1.f0.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s1.f0.m2.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s1.f0.m2.outputStressUnit; actual=Pa
+OK: audit03.unitEquivalent.s1.f0.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s1.f0.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s1.f0.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s1.f1.m0.count
+OK: audit03.unitEquivalent.s1.f1.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s1.f1.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s1.f1.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s1.f1.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s1.f1.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s1.f1.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s1.f1.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s1.f1.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s1.f1.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s1.f1.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s1.f1.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s1.f1.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s1.f1.m0.solved
+OK: audit03.unitEquivalent.s1.f1.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s1.f1.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s1.f1.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s1.f1.m0.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s1.f1.m0.outputStressUnit; actual=kPa
+OK: audit03.unitEquivalent.s1.f1.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s1.f1.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s1.f1.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s1.f1.m1.count
+OK: audit03.unitEquivalent.s1.f1.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s1.f1.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s1.f1.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s1.f1.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s1.f1.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s1.f1.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s1.f1.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s1.f1.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s1.f1.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s1.f1.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s1.f1.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s1.f1.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s1.f1.m1.solved
+OK: audit03.unitEquivalent.s1.f1.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s1.f1.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s1.f1.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s1.f1.m1.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s1.f1.m1.outputStressUnit; actual=kgf/cm2
+OK: audit03.unitEquivalent.s1.f1.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s1.f1.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s1.f1.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s1.f1.m2.count
+OK: audit03.unitEquivalent.s1.f1.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s1.f1.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s1.f1.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s1.f1.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s1.f1.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s1.f1.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s1.f1.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s1.f1.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s1.f1.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s1.f1.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s1.f1.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s1.f1.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s1.f1.m2.solved
+OK: audit03.unitEquivalent.s1.f1.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s1.f1.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s1.f1.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s1.f1.m2.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s1.f1.m2.outputStressUnit; actual=tf/m2
+OK: audit03.unitEquivalent.s1.f1.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s1.f1.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s1.f1.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s1.f2.m0.count
+OK: audit03.unitEquivalent.s1.f2.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s1.f2.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s1.f2.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s1.f2.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s1.f2.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s1.f2.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s1.f2.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s1.f2.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s1.f2.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s1.f2.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s1.f2.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s1.f2.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s1.f2.m0.solved
+OK: audit03.unitEquivalent.s1.f2.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s1.f2.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s1.f2.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s1.f2.m0.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s1.f2.m0.outputStressUnit; actual=MPa
+OK: audit03.unitEquivalent.s1.f2.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s1.f2.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s1.f2.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s1.f2.m1.count
+OK: audit03.unitEquivalent.s1.f2.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s1.f2.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s1.f2.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s1.f2.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s1.f2.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s1.f2.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s1.f2.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s1.f2.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s1.f2.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s1.f2.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s1.f2.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s1.f2.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s1.f2.m1.solved
+OK: audit03.unitEquivalent.s1.f2.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s1.f2.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s1.f2.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s1.f2.m1.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s1.f2.m1.outputStressUnit; actual=Pa
+OK: audit03.unitEquivalent.s1.f2.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s1.f2.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s1.f2.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s1.f2.m2.count
+OK: audit03.unitEquivalent.s1.f2.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s1.f2.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s1.f2.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s1.f2.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s1.f2.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s1.f2.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s1.f2.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s1.f2.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s1.f2.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s1.f2.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s1.f2.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s1.f2.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s1.f2.m2.solved
+OK: audit03.unitEquivalent.s1.f2.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s1.f2.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s1.f2.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s1.f2.m2.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s1.f2.m2.outputStressUnit; actual=kPa
+OK: audit03.unitEquivalent.s1.f2.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s1.f2.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s1.f2.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s2.f0.m0.count
+OK: audit03.unitEquivalent.s2.f0.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s2.f0.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s2.f0.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s2.f0.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s2.f0.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s2.f0.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s2.f0.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s2.f0.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s2.f0.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s2.f0.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s2.f0.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s2.f0.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s2.f0.m0.solved
+OK: audit03.unitEquivalent.s2.f0.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s2.f0.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s2.f0.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s2.f0.m0.outputForceUnit; actual=tf
+OK: audit03.unitEquivalent.s2.f0.m0.outputStressUnit; actual=kgf/cm2
+OK: audit03.unitEquivalent.s2.f0.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s2.f0.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s2.f0.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s2.f0.m1.count
+OK: audit03.unitEquivalent.s2.f0.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s2.f0.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s2.f0.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s2.f0.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s2.f0.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s2.f0.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s2.f0.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s2.f0.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s2.f0.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s2.f0.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s2.f0.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s2.f0.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s2.f0.m1.solved
+OK: audit03.unitEquivalent.s2.f0.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s2.f0.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s2.f0.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s2.f0.m1.outputForceUnit; actual=tf
+OK: audit03.unitEquivalent.s2.f0.m1.outputStressUnit; actual=tf/m2
+OK: audit03.unitEquivalent.s2.f0.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s2.f0.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s2.f0.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s2.f0.m2.count
+OK: audit03.unitEquivalent.s2.f0.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s2.f0.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s2.f0.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s2.f0.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s2.f0.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s2.f0.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s2.f0.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s2.f0.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s2.f0.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s2.f0.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s2.f0.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s2.f0.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s2.f0.m2.solved
+OK: audit03.unitEquivalent.s2.f0.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s2.f0.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s2.f0.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s2.f0.m2.outputForceUnit; actual=tf
+OK: audit03.unitEquivalent.s2.f0.m2.outputStressUnit; actual=MPa
+OK: audit03.unitEquivalent.s2.f0.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s2.f0.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s2.f0.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s2.f1.m0.count
+OK: audit03.unitEquivalent.s2.f1.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s2.f1.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s2.f1.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s2.f1.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s2.f1.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s2.f1.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s2.f1.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s2.f1.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s2.f1.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s2.f1.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s2.f1.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s2.f1.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s2.f1.m0.solved
+OK: audit03.unitEquivalent.s2.f1.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s2.f1.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s2.f1.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s2.f1.m0.outputForceUnit; actual=tf
+OK: audit03.unitEquivalent.s2.f1.m0.outputStressUnit; actual=Pa
+OK: audit03.unitEquivalent.s2.f1.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s2.f1.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s2.f1.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s2.f1.m1.count
+OK: audit03.unitEquivalent.s2.f1.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s2.f1.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s2.f1.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s2.f1.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s2.f1.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s2.f1.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s2.f1.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s2.f1.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s2.f1.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s2.f1.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s2.f1.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s2.f1.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s2.f1.m1.solved
+OK: audit03.unitEquivalent.s2.f1.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s2.f1.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s2.f1.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s2.f1.m1.outputForceUnit; actual=tf
+OK: audit03.unitEquivalent.s2.f1.m1.outputStressUnit; actual=kPa
+OK: audit03.unitEquivalent.s2.f1.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s2.f1.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s2.f1.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s2.f1.m2.count
+OK: audit03.unitEquivalent.s2.f1.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s2.f1.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s2.f1.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s2.f1.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s2.f1.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s2.f1.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s2.f1.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s2.f1.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s2.f1.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s2.f1.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s2.f1.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s2.f1.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s2.f1.m2.solved
+OK: audit03.unitEquivalent.s2.f1.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s2.f1.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s2.f1.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s2.f1.m2.outputForceUnit; actual=tf
+OK: audit03.unitEquivalent.s2.f1.m2.outputStressUnit; actual=kgf/cm2
+OK: audit03.unitEquivalent.s2.f1.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s2.f1.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s2.f1.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s2.f2.m0.count
+OK: audit03.unitEquivalent.s2.f2.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s2.f2.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s2.f2.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s2.f2.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s2.f2.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s2.f2.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s2.f2.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s2.f2.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s2.f2.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s2.f2.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s2.f2.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s2.f2.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s2.f2.m0.solved
+OK: audit03.unitEquivalent.s2.f2.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s2.f2.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s2.f2.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s2.f2.m0.outputForceUnit; actual=tf
+OK: audit03.unitEquivalent.s2.f2.m0.outputStressUnit; actual=tf/m2
+OK: audit03.unitEquivalent.s2.f2.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s2.f2.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s2.f2.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s2.f2.m1.count
+OK: audit03.unitEquivalent.s2.f2.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s2.f2.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s2.f2.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s2.f2.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s2.f2.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s2.f2.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s2.f2.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s2.f2.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s2.f2.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s2.f2.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s2.f2.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s2.f2.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s2.f2.m1.solved
+OK: audit03.unitEquivalent.s2.f2.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s2.f2.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s2.f2.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s2.f2.m1.outputForceUnit; actual=tf
+OK: audit03.unitEquivalent.s2.f2.m1.outputStressUnit; actual=MPa
+OK: audit03.unitEquivalent.s2.f2.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s2.f2.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s2.f2.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s2.f2.m2.count
+OK: audit03.unitEquivalent.s2.f2.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s2.f2.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s2.f2.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s2.f2.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s2.f2.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s2.f2.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s2.f2.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s2.f2.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s2.f2.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s2.f2.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s2.f2.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s2.f2.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s2.f2.m2.solved
+OK: audit03.unitEquivalent.s2.f2.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s2.f2.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s2.f2.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s2.f2.m2.outputForceUnit; actual=tf
+OK: audit03.unitEquivalent.s2.f2.m2.outputStressUnit; actual=Pa
+OK: audit03.unitEquivalent.s2.f2.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s2.f2.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s2.f2.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s3.f0.m0.count
+OK: audit03.unitEquivalent.s3.f0.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s3.f0.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s3.f0.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s3.f0.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s3.f0.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s3.f0.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s3.f0.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s3.f0.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s3.f0.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s3.f0.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s3.f0.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s3.f0.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s3.f0.m0.solved
+OK: audit03.unitEquivalent.s3.f0.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s3.f0.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s3.f0.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s3.f0.m0.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s3.f0.m0.outputStressUnit; actual=kPa
+OK: audit03.unitEquivalent.s3.f0.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s3.f0.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s3.f0.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s3.f0.m1.count
+OK: audit03.unitEquivalent.s3.f0.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s3.f0.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s3.f0.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s3.f0.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s3.f0.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s3.f0.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s3.f0.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s3.f0.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s3.f0.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s3.f0.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s3.f0.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s3.f0.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s3.f0.m1.solved
+OK: audit03.unitEquivalent.s3.f0.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s3.f0.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s3.f0.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s3.f0.m1.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s3.f0.m1.outputStressUnit; actual=kgf/cm2
+OK: audit03.unitEquivalent.s3.f0.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s3.f0.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s3.f0.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s3.f0.m2.count
+OK: audit03.unitEquivalent.s3.f0.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s3.f0.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s3.f0.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s3.f0.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s3.f0.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s3.f0.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s3.f0.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s3.f0.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s3.f0.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s3.f0.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s3.f0.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s3.f0.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s3.f0.m2.solved
+OK: audit03.unitEquivalent.s3.f0.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s3.f0.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s3.f0.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s3.f0.m2.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s3.f0.m2.outputStressUnit; actual=tf/m2
+OK: audit03.unitEquivalent.s3.f0.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s3.f0.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s3.f0.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s3.f1.m0.count
+OK: audit03.unitEquivalent.s3.f1.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s3.f1.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s3.f1.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s3.f1.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s3.f1.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s3.f1.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s3.f1.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s3.f1.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s3.f1.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s3.f1.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s3.f1.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s3.f1.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s3.f1.m0.solved
+OK: audit03.unitEquivalent.s3.f1.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s3.f1.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s3.f1.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s3.f1.m0.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s3.f1.m0.outputStressUnit; actual=MPa
+OK: audit03.unitEquivalent.s3.f1.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s3.f1.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s3.f1.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s3.f1.m1.count
+OK: audit03.unitEquivalent.s3.f1.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s3.f1.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s3.f1.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s3.f1.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s3.f1.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s3.f1.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s3.f1.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s3.f1.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s3.f1.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s3.f1.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s3.f1.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s3.f1.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s3.f1.m1.solved
+OK: audit03.unitEquivalent.s3.f1.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s3.f1.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s3.f1.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s3.f1.m1.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s3.f1.m1.outputStressUnit; actual=Pa
+OK: audit03.unitEquivalent.s3.f1.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s3.f1.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s3.f1.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s3.f1.m2.count
+OK: audit03.unitEquivalent.s3.f1.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s3.f1.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s3.f1.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s3.f1.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s3.f1.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s3.f1.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s3.f1.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s3.f1.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s3.f1.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s3.f1.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s3.f1.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s3.f1.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s3.f1.m2.solved
+OK: audit03.unitEquivalent.s3.f1.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s3.f1.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s3.f1.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s3.f1.m2.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s3.f1.m2.outputStressUnit; actual=kPa
+OK: audit03.unitEquivalent.s3.f1.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s3.f1.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s3.f1.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s3.f2.m0.count
+OK: audit03.unitEquivalent.s3.f2.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s3.f2.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s3.f2.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s3.f2.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s3.f2.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s3.f2.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s3.f2.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s3.f2.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s3.f2.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s3.f2.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s3.f2.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s3.f2.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s3.f2.m0.solved
+OK: audit03.unitEquivalent.s3.f2.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s3.f2.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s3.f2.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s3.f2.m0.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s3.f2.m0.outputStressUnit; actual=kgf/cm2
+OK: audit03.unitEquivalent.s3.f2.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s3.f2.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s3.f2.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s3.f2.m1.count
+OK: audit03.unitEquivalent.s3.f2.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s3.f2.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s3.f2.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s3.f2.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s3.f2.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s3.f2.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s3.f2.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s3.f2.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s3.f2.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s3.f2.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s3.f2.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s3.f2.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s3.f2.m1.solved
+OK: audit03.unitEquivalent.s3.f2.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s3.f2.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s3.f2.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s3.f2.m1.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s3.f2.m1.outputStressUnit; actual=tf/m2
+OK: audit03.unitEquivalent.s3.f2.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s3.f2.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s3.f2.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s3.f2.m2.count
+OK: audit03.unitEquivalent.s3.f2.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s3.f2.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s3.f2.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s3.f2.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s3.f2.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s3.f2.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s3.f2.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s3.f2.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s3.f2.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s3.f2.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s3.f2.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s3.f2.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s3.f2.m2.solved
+OK: audit03.unitEquivalent.s3.f2.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s3.f2.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s3.f2.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s3.f2.m2.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s3.f2.m2.outputStressUnit; actual=MPa
+OK: audit03.unitEquivalent.s3.f2.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s3.f2.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s3.f2.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s4.f0.m0.count
+OK: audit03.unitEquivalent.s4.f0.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s4.f0.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s4.f0.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s4.f0.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s4.f0.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s4.f0.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s4.f0.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s4.f0.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s4.f0.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s4.f0.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s4.f0.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s4.f0.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s4.f0.m0.solved
+OK: audit03.unitEquivalent.s4.f0.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s4.f0.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s4.f0.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s4.f0.m0.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s4.f0.m0.outputStressUnit; actual=Pa
+OK: audit03.unitEquivalent.s4.f0.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s4.f0.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s4.f0.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s4.f0.m1.count
+OK: audit03.unitEquivalent.s4.f0.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s4.f0.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s4.f0.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s4.f0.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s4.f0.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s4.f0.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s4.f0.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s4.f0.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s4.f0.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s4.f0.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s4.f0.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s4.f0.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s4.f0.m1.solved
+OK: audit03.unitEquivalent.s4.f0.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s4.f0.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s4.f0.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s4.f0.m1.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s4.f0.m1.outputStressUnit; actual=kPa
+OK: audit03.unitEquivalent.s4.f0.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s4.f0.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s4.f0.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s4.f0.m2.count
+OK: audit03.unitEquivalent.s4.f0.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s4.f0.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s4.f0.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s4.f0.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s4.f0.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s4.f0.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s4.f0.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s4.f0.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s4.f0.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s4.f0.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s4.f0.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s4.f0.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s4.f0.m2.solved
+OK: audit03.unitEquivalent.s4.f0.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s4.f0.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s4.f0.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s4.f0.m2.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s4.f0.m2.outputStressUnit; actual=kgf/cm2
+OK: audit03.unitEquivalent.s4.f0.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s4.f0.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s4.f0.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s4.f1.m0.count
+OK: audit03.unitEquivalent.s4.f1.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s4.f1.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s4.f1.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s4.f1.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s4.f1.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s4.f1.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s4.f1.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s4.f1.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s4.f1.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s4.f1.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s4.f1.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s4.f1.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s4.f1.m0.solved
+OK: audit03.unitEquivalent.s4.f1.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s4.f1.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s4.f1.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s4.f1.m0.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s4.f1.m0.outputStressUnit; actual=tf/m2
+OK: audit03.unitEquivalent.s4.f1.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s4.f1.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s4.f1.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s4.f1.m1.count
+OK: audit03.unitEquivalent.s4.f1.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s4.f1.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s4.f1.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s4.f1.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s4.f1.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s4.f1.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s4.f1.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s4.f1.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s4.f1.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s4.f1.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s4.f1.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s4.f1.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s4.f1.m1.solved
+OK: audit03.unitEquivalent.s4.f1.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s4.f1.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s4.f1.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s4.f1.m1.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s4.f1.m1.outputStressUnit; actual=MPa
+OK: audit03.unitEquivalent.s4.f1.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s4.f1.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s4.f1.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s4.f1.m2.count
+OK: audit03.unitEquivalent.s4.f1.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s4.f1.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s4.f1.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s4.f1.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s4.f1.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s4.f1.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s4.f1.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s4.f1.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s4.f1.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s4.f1.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s4.f1.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s4.f1.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s4.f1.m2.solved
+OK: audit03.unitEquivalent.s4.f1.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s4.f1.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s4.f1.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s4.f1.m2.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s4.f1.m2.outputStressUnit; actual=Pa
+OK: audit03.unitEquivalent.s4.f1.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s4.f1.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s4.f1.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s4.f2.m0.count
+OK: audit03.unitEquivalent.s4.f2.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s4.f2.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s4.f2.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s4.f2.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s4.f2.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s4.f2.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s4.f2.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s4.f2.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s4.f2.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s4.f2.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s4.f2.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s4.f2.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s4.f2.m0.solved
+OK: audit03.unitEquivalent.s4.f2.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s4.f2.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s4.f2.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s4.f2.m0.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s4.f2.m0.outputStressUnit; actual=kPa
+OK: audit03.unitEquivalent.s4.f2.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s4.f2.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s4.f2.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s4.f2.m1.count
+OK: audit03.unitEquivalent.s4.f2.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s4.f2.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s4.f2.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s4.f2.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s4.f2.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s4.f2.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s4.f2.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s4.f2.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s4.f2.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s4.f2.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s4.f2.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s4.f2.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s4.f2.m1.solved
+OK: audit03.unitEquivalent.s4.f2.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s4.f2.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s4.f2.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s4.f2.m1.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s4.f2.m1.outputStressUnit; actual=kgf/cm2
+OK: audit03.unitEquivalent.s4.f2.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s4.f2.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s4.f2.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s4.f2.m2.count
+OK: audit03.unitEquivalent.s4.f2.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s4.f2.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s4.f2.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s4.f2.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s4.f2.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s4.f2.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s4.f2.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s4.f2.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s4.f2.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s4.f2.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s4.f2.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s4.f2.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s4.f2.m2.solved
+OK: audit03.unitEquivalent.s4.f2.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s4.f2.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s4.f2.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s4.f2.m2.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s4.f2.m2.outputStressUnit; actual=tf/m2
+OK: audit03.unitEquivalent.s4.f2.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s4.f2.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s4.f2.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s5.f0.m0.count
+OK: audit03.unitEquivalent.s5.f0.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s5.f0.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s5.f0.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s5.f0.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s5.f0.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s5.f0.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s5.f0.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s5.f0.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s5.f0.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s5.f0.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s5.f0.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s5.f0.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s5.f0.m0.solved
+OK: audit03.unitEquivalent.s5.f0.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s5.f0.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s5.f0.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s5.f0.m0.outputForceUnit; actual=tf
+OK: audit03.unitEquivalent.s5.f0.m0.outputStressUnit; actual=MPa
+OK: audit03.unitEquivalent.s5.f0.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s5.f0.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s5.f0.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s5.f0.m1.count
+OK: audit03.unitEquivalent.s5.f0.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s5.f0.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s5.f0.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s5.f0.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s5.f0.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s5.f0.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s5.f0.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s5.f0.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s5.f0.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s5.f0.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s5.f0.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s5.f0.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s5.f0.m1.solved
+OK: audit03.unitEquivalent.s5.f0.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s5.f0.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s5.f0.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s5.f0.m1.outputForceUnit; actual=tf
+OK: audit03.unitEquivalent.s5.f0.m1.outputStressUnit; actual=Pa
+OK: audit03.unitEquivalent.s5.f0.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s5.f0.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s5.f0.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s5.f0.m2.count
+OK: audit03.unitEquivalent.s5.f0.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s5.f0.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s5.f0.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s5.f0.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s5.f0.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s5.f0.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s5.f0.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s5.f0.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s5.f0.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s5.f0.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s5.f0.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s5.f0.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s5.f0.m2.solved
+OK: audit03.unitEquivalent.s5.f0.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s5.f0.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s5.f0.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s5.f0.m2.outputForceUnit; actual=tf
+OK: audit03.unitEquivalent.s5.f0.m2.outputStressUnit; actual=kPa
+OK: audit03.unitEquivalent.s5.f0.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s5.f0.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s5.f0.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s5.f1.m0.count
+OK: audit03.unitEquivalent.s5.f1.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s5.f1.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s5.f1.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s5.f1.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s5.f1.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s5.f1.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s5.f1.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s5.f1.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s5.f1.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s5.f1.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s5.f1.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s5.f1.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s5.f1.m0.solved
+OK: audit03.unitEquivalent.s5.f1.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s5.f1.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s5.f1.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s5.f1.m0.outputForceUnit; actual=tf
+OK: audit03.unitEquivalent.s5.f1.m0.outputStressUnit; actual=kgf/cm2
+OK: audit03.unitEquivalent.s5.f1.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s5.f1.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s5.f1.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s5.f1.m1.count
+OK: audit03.unitEquivalent.s5.f1.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s5.f1.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s5.f1.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s5.f1.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s5.f1.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s5.f1.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s5.f1.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s5.f1.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s5.f1.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s5.f1.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s5.f1.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s5.f1.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s5.f1.m1.solved
+OK: audit03.unitEquivalent.s5.f1.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s5.f1.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s5.f1.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s5.f1.m1.outputForceUnit; actual=tf
+OK: audit03.unitEquivalent.s5.f1.m1.outputStressUnit; actual=tf/m2
+OK: audit03.unitEquivalent.s5.f1.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s5.f1.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s5.f1.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s5.f1.m2.count
+OK: audit03.unitEquivalent.s5.f1.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s5.f1.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s5.f1.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s5.f1.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s5.f1.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s5.f1.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s5.f1.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s5.f1.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s5.f1.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s5.f1.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s5.f1.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s5.f1.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s5.f1.m2.solved
+OK: audit03.unitEquivalent.s5.f1.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s5.f1.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s5.f1.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s5.f1.m2.outputForceUnit; actual=tf
+OK: audit03.unitEquivalent.s5.f1.m2.outputStressUnit; actual=MPa
+OK: audit03.unitEquivalent.s5.f1.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s5.f1.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s5.f1.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s5.f2.m0.count
+OK: audit03.unitEquivalent.s5.f2.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s5.f2.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s5.f2.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s5.f2.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s5.f2.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s5.f2.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s5.f2.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s5.f2.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s5.f2.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s5.f2.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s5.f2.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s5.f2.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s5.f2.m0.solved
+OK: audit03.unitEquivalent.s5.f2.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s5.f2.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s5.f2.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s5.f2.m0.outputForceUnit; actual=tf
+OK: audit03.unitEquivalent.s5.f2.m0.outputStressUnit; actual=Pa
+OK: audit03.unitEquivalent.s5.f2.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s5.f2.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s5.f2.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s5.f2.m1.count
+OK: audit03.unitEquivalent.s5.f2.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s5.f2.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s5.f2.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s5.f2.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s5.f2.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s5.f2.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s5.f2.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s5.f2.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s5.f2.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s5.f2.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s5.f2.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s5.f2.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s5.f2.m1.solved
+OK: audit03.unitEquivalent.s5.f2.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s5.f2.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s5.f2.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s5.f2.m1.outputForceUnit; actual=tf
+OK: audit03.unitEquivalent.s5.f2.m1.outputStressUnit; actual=kPa
+OK: audit03.unitEquivalent.s5.f2.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s5.f2.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s5.f2.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s5.f2.m2.count
+OK: audit03.unitEquivalent.s5.f2.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s5.f2.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s5.f2.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s5.f2.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s5.f2.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s5.f2.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s5.f2.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s5.f2.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s5.f2.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s5.f2.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s5.f2.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s5.f2.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s5.f2.m2.solved
+OK: audit03.unitEquivalent.s5.f2.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s5.f2.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s5.f2.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s5.f2.m2.outputForceUnit; actual=tf
+OK: audit03.unitEquivalent.s5.f2.m2.outputStressUnit; actual=kgf/cm2
+OK: audit03.unitEquivalent.s5.f2.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s5.f2.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s5.f2.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s6.f0.m0.count
+OK: audit03.unitEquivalent.s6.f0.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s6.f0.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s6.f0.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s6.f0.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s6.f0.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s6.f0.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s6.f0.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s6.f0.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s6.f0.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s6.f0.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s6.f0.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s6.f0.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s6.f0.m0.solved
+OK: audit03.unitEquivalent.s6.f0.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s6.f0.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s6.f0.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s6.f0.m0.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s6.f0.m0.outputStressUnit; actual=tf/m2
+OK: audit03.unitEquivalent.s6.f0.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s6.f0.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s6.f0.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s6.f0.m1.count
+OK: audit03.unitEquivalent.s6.f0.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s6.f0.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s6.f0.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s6.f0.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s6.f0.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s6.f0.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s6.f0.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s6.f0.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s6.f0.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s6.f0.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s6.f0.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s6.f0.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s6.f0.m1.solved
+OK: audit03.unitEquivalent.s6.f0.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s6.f0.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s6.f0.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s6.f0.m1.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s6.f0.m1.outputStressUnit; actual=MPa
+OK: audit03.unitEquivalent.s6.f0.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s6.f0.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s6.f0.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s6.f0.m2.count
+OK: audit03.unitEquivalent.s6.f0.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s6.f0.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s6.f0.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s6.f0.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s6.f0.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s6.f0.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s6.f0.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s6.f0.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s6.f0.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s6.f0.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s6.f0.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s6.f0.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s6.f0.m2.solved
+OK: audit03.unitEquivalent.s6.f0.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s6.f0.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s6.f0.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s6.f0.m2.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s6.f0.m2.outputStressUnit; actual=Pa
+OK: audit03.unitEquivalent.s6.f0.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s6.f0.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s6.f0.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s6.f1.m0.count
+OK: audit03.unitEquivalent.s6.f1.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s6.f1.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s6.f1.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s6.f1.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s6.f1.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s6.f1.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s6.f1.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s6.f1.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s6.f1.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s6.f1.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s6.f1.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s6.f1.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s6.f1.m0.solved
+OK: audit03.unitEquivalent.s6.f1.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s6.f1.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s6.f1.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s6.f1.m0.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s6.f1.m0.outputStressUnit; actual=kPa
+OK: audit03.unitEquivalent.s6.f1.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s6.f1.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s6.f1.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s6.f1.m1.count
+OK: audit03.unitEquivalent.s6.f1.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s6.f1.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s6.f1.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s6.f1.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s6.f1.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s6.f1.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s6.f1.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s6.f1.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s6.f1.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s6.f1.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s6.f1.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s6.f1.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s6.f1.m1.solved
+OK: audit03.unitEquivalent.s6.f1.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s6.f1.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s6.f1.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s6.f1.m1.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s6.f1.m1.outputStressUnit; actual=kgf/cm2
+OK: audit03.unitEquivalent.s6.f1.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s6.f1.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s6.f1.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s6.f1.m2.count
+OK: audit03.unitEquivalent.s6.f1.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s6.f1.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s6.f1.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s6.f1.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s6.f1.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s6.f1.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s6.f1.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s6.f1.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s6.f1.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s6.f1.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s6.f1.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s6.f1.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s6.f1.m2.solved
+OK: audit03.unitEquivalent.s6.f1.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s6.f1.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s6.f1.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s6.f1.m2.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s6.f1.m2.outputStressUnit; actual=tf/m2
+OK: audit03.unitEquivalent.s6.f1.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s6.f1.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s6.f1.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s6.f2.m0.count
+OK: audit03.unitEquivalent.s6.f2.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s6.f2.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s6.f2.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s6.f2.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s6.f2.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s6.f2.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s6.f2.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s6.f2.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s6.f2.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s6.f2.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s6.f2.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s6.f2.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s6.f2.m0.solved
+OK: audit03.unitEquivalent.s6.f2.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s6.f2.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s6.f2.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s6.f2.m0.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s6.f2.m0.outputStressUnit; actual=MPa
+OK: audit03.unitEquivalent.s6.f2.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s6.f2.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s6.f2.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s6.f2.m1.count
+OK: audit03.unitEquivalent.s6.f2.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s6.f2.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s6.f2.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s6.f2.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s6.f2.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s6.f2.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s6.f2.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s6.f2.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s6.f2.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s6.f2.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s6.f2.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s6.f2.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s6.f2.m1.solved
+OK: audit03.unitEquivalent.s6.f2.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s6.f2.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s6.f2.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s6.f2.m1.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s6.f2.m1.outputStressUnit; actual=Pa
+OK: audit03.unitEquivalent.s6.f2.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s6.f2.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s6.f2.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s6.f2.m2.count
+OK: audit03.unitEquivalent.s6.f2.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s6.f2.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s6.f2.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s6.f2.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s6.f2.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s6.f2.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s6.f2.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s6.f2.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s6.f2.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s6.f2.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s6.f2.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s6.f2.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s6.f2.m2.solved
+OK: audit03.unitEquivalent.s6.f2.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s6.f2.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s6.f2.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s6.f2.m2.outputForceUnit; actual=N
+OK: audit03.unitEquivalent.s6.f2.m2.outputStressUnit; actual=kPa
+OK: audit03.unitEquivalent.s6.f2.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s6.f2.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s6.f2.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s7.f0.m0.count
+OK: audit03.unitEquivalent.s7.f0.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s7.f0.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s7.f0.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s7.f0.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s7.f0.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s7.f0.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s7.f0.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s7.f0.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s7.f0.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s7.f0.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s7.f0.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s7.f0.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s7.f0.m0.solved
+OK: audit03.unitEquivalent.s7.f0.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s7.f0.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s7.f0.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s7.f0.m0.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s7.f0.m0.outputStressUnit; actual=kgf/cm2
+OK: audit03.unitEquivalent.s7.f0.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s7.f0.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s7.f0.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s7.f0.m1.count
+OK: audit03.unitEquivalent.s7.f0.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s7.f0.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s7.f0.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s7.f0.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s7.f0.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s7.f0.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s7.f0.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s7.f0.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s7.f0.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s7.f0.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s7.f0.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s7.f0.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s7.f0.m1.solved
+OK: audit03.unitEquivalent.s7.f0.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s7.f0.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s7.f0.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s7.f0.m1.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s7.f0.m1.outputStressUnit; actual=tf/m2
+OK: audit03.unitEquivalent.s7.f0.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s7.f0.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s7.f0.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s7.f0.m2.count
+OK: audit03.unitEquivalent.s7.f0.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s7.f0.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s7.f0.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s7.f0.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s7.f0.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s7.f0.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s7.f0.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s7.f0.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s7.f0.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s7.f0.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s7.f0.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s7.f0.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s7.f0.m2.solved
+OK: audit03.unitEquivalent.s7.f0.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s7.f0.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s7.f0.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s7.f0.m2.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s7.f0.m2.outputStressUnit; actual=MPa
+OK: audit03.unitEquivalent.s7.f0.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s7.f0.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s7.f0.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s7.f1.m0.count
+OK: audit03.unitEquivalent.s7.f1.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s7.f1.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s7.f1.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s7.f1.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s7.f1.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s7.f1.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s7.f1.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s7.f1.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s7.f1.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s7.f1.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s7.f1.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s7.f1.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s7.f1.m0.solved
+OK: audit03.unitEquivalent.s7.f1.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s7.f1.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s7.f1.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s7.f1.m0.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s7.f1.m0.outputStressUnit; actual=Pa
+OK: audit03.unitEquivalent.s7.f1.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s7.f1.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s7.f1.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s7.f1.m1.count
+OK: audit03.unitEquivalent.s7.f1.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s7.f1.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s7.f1.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s7.f1.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s7.f1.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s7.f1.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s7.f1.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s7.f1.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s7.f1.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s7.f1.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s7.f1.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s7.f1.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s7.f1.m1.solved
+OK: audit03.unitEquivalent.s7.f1.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s7.f1.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s7.f1.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s7.f1.m1.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s7.f1.m1.outputStressUnit; actual=kPa
+OK: audit03.unitEquivalent.s7.f1.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s7.f1.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s7.f1.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s7.f1.m2.count
+OK: audit03.unitEquivalent.s7.f1.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s7.f1.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s7.f1.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s7.f1.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s7.f1.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s7.f1.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s7.f1.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s7.f1.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s7.f1.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s7.f1.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s7.f1.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s7.f1.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s7.f1.m2.solved
+OK: audit03.unitEquivalent.s7.f1.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s7.f1.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s7.f1.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s7.f1.m2.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s7.f1.m2.outputStressUnit; actual=kgf/cm2
+OK: audit03.unitEquivalent.s7.f1.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s7.f1.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s7.f1.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.s7.f2.m0.count
+OK: audit03.unitEquivalent.s7.f2.m0.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s7.f2.m0.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s7.f2.m0.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s7.f2.m0.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s7.f2.m0.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s7.f2.m0.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s7.f2.m0.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s7.f2.m0.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s7.f2.m0.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s7.f2.m0.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s7.f2.m0.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s7.f2.m0.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s7.f2.m0.solved
+OK: audit03.unitEquivalent.s7.f2.m0.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s7.f2.m0.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s7.f2.m0.outputDoesNotSolve
+OK: audit03.unitEquivalent.s7.f2.m0.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s7.f2.m0.outputStressUnit; actual=tf/m2
+OK: audit03.unitEquivalent.s7.f2.m0.elements.equivalent; 
+OK: audit03.unitEquivalent.s7.f2.m0.geometry.equivalent; 
+OK: audit03.unitEquivalent.s7.f2.m0.properties.equivalent; 
+OK: audit03.unitEquivalent.s7.f2.m1.count
+OK: audit03.unitEquivalent.s7.f2.m1.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s7.f2.m1.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s7.f2.m1.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s7.f2.m1.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s7.f2.m1.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s7.f2.m1.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s7.f2.m1.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s7.f2.m1.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s7.f2.m1.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s7.f2.m1.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s7.f2.m1.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s7.f2.m1.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s7.f2.m1.solved
+OK: audit03.unitEquivalent.s7.f2.m1.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s7.f2.m1.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s7.f2.m1.outputDoesNotSolve
+OK: audit03.unitEquivalent.s7.f2.m1.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s7.f2.m1.outputStressUnit; actual=MPa
+OK: audit03.unitEquivalent.s7.f2.m1.elements.equivalent; 
+OK: audit03.unitEquivalent.s7.f2.m1.geometry.equivalent; 
+OK: audit03.unitEquivalent.s7.f2.m1.properties.equivalent; 
+OK: audit03.unitEquivalent.s7.f2.m2.count
+OK: audit03.unitEquivalent.s7.f2.m2.N.0; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s7.f2.m2.Mx.0; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s7.f2.m2.My.0; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s7.f2.m2.N.1; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s7.f2.m2.Mx.1; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s7.f2.m2.My.1; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s7.f2.m2.N.2; actual=-100000.; expected=-100000.
+OK: audit03.unitEquivalent.s7.f2.m2.Mx.2; actual=-4000000.; expected=-4000000.
+OK: audit03.unitEquivalent.s7.f2.m2.My.2; actual=-3000000.; expected=-3000000.
+OK: audit03.unitEquivalent.s7.f2.m2.N.3; actual=30000.; expected=30000.
+OK: audit03.unitEquivalent.s7.f2.m2.Mx.3; actual=3000000.; expected=3000000.
+OK: audit03.unitEquivalent.s7.f2.m2.My.3; actual=-2000000.; expected=-2000000.
+OK: audit03.unitEquivalent.s7.f2.m2.solved
+OK: audit03.unitEquivalent.s7.f2.m2.autoCADGeometryMm; 
+OK: audit03.unitEquivalent.s7.f2.m2.autoCADDoesNotSolve
+OK: audit03.unitEquivalent.s7.f2.m2.outputDoesNotSolve
+OK: audit03.unitEquivalent.s7.f2.m2.outputForceUnit; actual=kN
+OK: audit03.unitEquivalent.s7.f2.m2.outputStressUnit; actual=Pa
+OK: audit03.unitEquivalent.s7.f2.m2.elements.equivalent; 
+OK: audit03.unitEquivalent.s7.f2.m2.geometry.equivalent; 
+OK: audit03.unitEquivalent.s7.f2.m2.properties.equivalent; 
+OK: audit03.unitEquivalent.allCases
+TOTAL_AUDIT03_UNIT_SIGN_EQUIVALENCE: passed=1584; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_429534d76ecb494ba91af26d37ce9874\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: RunAudit03UnitSignEquivalenceTests; 2026-10-02T23:15:41
+RESULTS_SAVE_REOPEN: before=259C5DA1A69923917EA72EEB24184ADF68B0865F76117277404499E301880952; after=259C5DA1A69923917EA72EEB24184ADF68B0865F76117277404499E301880952; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_429534d76ecb494ba91af26d37ce9874\RC_Section_NDM_saved.xlsm
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

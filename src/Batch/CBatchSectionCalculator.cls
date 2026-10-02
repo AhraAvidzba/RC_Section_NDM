@@ -248,6 +248,12 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mCrackSigmaSCrcAveragingMode = settings.GetRequiredString("SLS.Crack.SigmaSCrcAveragingMode")
     mCrackFormationPath = settings.GetRequiredString("SLS.Crack.InitiationLoadPath")
     mCrackFormationSolutionStrategy = settings.GetRequiredString("SLS.Crack.InitiationSolutionStrategy")
+    ' Formation владеет допустимыми путями и стратегиями; до любого solve
+    ' проверяем пользовательский выбор с адресной диагностикой reader-а.
+    Dim formationOptions As CCrackFormationCalculator
+    Set formationOptions = New CCrackFormationCalculator
+    mCrackFormationPath = formationOptions.NormalizeCrackFormationPath(mCrackFormationPath, settings)
+    mCrackFormationSolutionStrategy = formationOptions.NormalizeCrackFormationSolutionStrategy(mCrackFormationSolutionStrategy, settings)
     mWorstCombinationCriterion = NormalizeWorstCombinationCriterion( _
         settings.GetRawString("General.WorstCombinationCriterion", mWorstCombinationCriterion))
     mCrackTensionZoneMode = settings.GetRequiredString("SLS.Crack.TensionZoneMode")
@@ -276,12 +282,8 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mSolverSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSolverSecantMaxRestarts, False)
     mSolverSecantMinStepNorm = settings.GetDouble("Solver.SecantMinStepNorm", mSolverSecantMinStepNorm, False)
     mCapacityInitialLambda = settings.GetDouble("Capacity.InitialLambda", mCapacityInitialLambda, False)
-    mCapacitySolutionStrategy = settings.GetString("Capacity.SolutionStrategy", mCapacitySolutionStrategy)
-    If settings.HasKey("Capacity.SearchMethod") Then
-        mCapacitySearchMethod = settings.GetRawString("Capacity.SearchMethod", vbNullString)
-    Else
-        mCapacitySearchMethod = "Bisection"
-    End If
+    mCapacitySolutionStrategy = CapacityTextSetting(settings, "Capacity.SolutionStrategy")
+    mCapacitySearchMethod = CapacityTextSetting(settings, "Capacity.SearchMethod")
     mCapacityMaxLambda = settings.GetDouble("Capacity.MaxLambda", mCapacityMaxLambda, False)
     mCapacityToleranceLambda = settings.GetDouble("Capacity.ToleranceLambda", mCapacityToleranceLambda, False)
     mCapacityToleranceStrain = settings.GetDouble("Capacity.ToleranceStrain", mCapacityToleranceStrain, False)
@@ -344,6 +346,31 @@ InvalidSettings:
     End If
     ReportStep "Настройки расчета содержат ошибку: " & mSettingsError
 End Sub
+
+' Проверяет обязательные селекторы несущей до запуска НДС. Ошибка указывает
+' реальную ячейку Config и допустимые варианты; пустой выбор не становится Auto.
+' Начальные значения автономных solver-ов здесь не заменяют пользовательский ввод.
+Private Function CapacityTextSetting(ByVal settings As CSystemSettingsReader, ByVal key As String) As String
+    Dim value As String, allowed As String
+    value = settings.GetRequiredString(key)
+    If key = "Capacity.SolutionStrategy" Then
+        allowed = "Auto, UltimateStrain или LoadMultiplier"
+        Select Case LCase$(Trim$(value))
+            Case "auto": CapacityTextSetting = "Auto"
+            Case "ultimatestrain": CapacityTextSetting = "UltimateStrain"
+            Case "loadmultiplier": CapacityTextSetting = "LoadMultiplier"
+        End Select
+    Else
+        allowed = "Bisection, Brent или Secant"
+        Select Case LCase$(Trim$(value))
+            Case "bisection": CapacityTextSetting = "Bisection"
+            Case "brent": CapacityTextSetting = "Brent"
+            Case "secant": CapacityTextSetting = "Secant"
+        End Select
+    End If
+    If Len(CapacityTextSetting) = 0 Then Err.Raise vbObjectError + 4313, "CBatchSectionCalculator", _
+        settings.InputErrorMessage(key, "Неизвестный вариант: """ & value & """.", "Выберите " & allowed & ".")
+End Function
 
 ' Читает обязательную числовую настройку устойчивости без скрытой подстановки
 ' default. Если строка Config не прочиталась, пуста или содержит не число,

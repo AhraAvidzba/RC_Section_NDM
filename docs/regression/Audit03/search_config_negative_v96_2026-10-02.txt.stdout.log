@@ -1,0 +1,8 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_search_config_v96.xlsm
+SOURCE_SHA256: 97EF8EAA8E40F523FE0218781E239E7C97F3354259A2132C60D704C532799BEF
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_b22c1f8b37b741af94e42eb9c960ac8f\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: searchConfig.runtime; -2147217005; Не найден ключ Config Calculation.Stability.Enabled
+TOTAL_AUDIT03_SEARCH_CONFIG: passed=0; failed=1
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

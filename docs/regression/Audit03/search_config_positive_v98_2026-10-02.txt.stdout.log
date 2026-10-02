@@ -1,0 +1,8 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_search_config_v98.xlsm
+SOURCE_SHA256: A08D018CF29B2F2986755EB14656E0D63D49B5F3887408C4BA8B11BCA73575DB
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_b6e85f8ab4d44752b9757fb95dd3f926\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: searchConfig.capacity.LoadMultiplier.Bisection.physicalCriterion|actual=0.999338813322101|expected=1
+TOTAL_AUDIT03_SEARCH_CONFIG: passed=1479; failed=1
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

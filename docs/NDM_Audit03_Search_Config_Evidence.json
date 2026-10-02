@@ -1,0 +1,71 @@
+{
+  "Scope": "Активность четырех Search-селекторов на управляемом круглом сечении; полный допустимый диапазон, все профили/геометрии и pairwise не объявляются принятыми",
+  "PositiveReport": "docs/regression/Audit03/search_config_positive_v103_2026-10-02.txt",
+  "PositiveGate": "TOTAL_AUDIT03_SEARCH_CONFIG: passed=1812; failed=0",
+  "FullReports": [
+    "docs/regression/Audit03/search_config_full_off_v103_2026-10-02.txt",
+    "docs/regression/Audit03/search_config_full_on_v103_2026-10-02.txt"
+  ],
+  "MutationReports": [
+    "docs/regression/Audit03/search_mutation_cap_strategy_v103_2026-10-02.txt",
+    "docs/regression/Audit03/search_mutation_cap_method_v103_2026-10-02.txt",
+    "docs/regression/Audit03/search_mutation_formation_path_v103_2026-10-02.txt",
+    "docs/regression/Audit03/search_mutation_formation_strategy_v103_2026-10-02.txt"
+  ],
+  "MutationReview": "Четыре соответствующих AssertionPrefix имеют FAIL при отключении только своего call site; ожидаемые failed=33/26/30/36; watchdog exit=1; source unchanged=True. Это отдельное доказательство чувствительности, не положительный gate и не Solver.Method mutation.",
+  "ScopedLoadMatrixReports": [
+    "docs/regression/Audit03/broad_matrix_CircleUneven_Stress_off_v103_2026-10-02.txt",
+    "docs/regression/Audit03/broad_matrix_CircleUneven_Stress_on_v103_2026-10-02.txt",
+    "docs/regression/Audit03/broad_matrix_HollowThin_Stress_off_v103_2026-10-02.txt",
+    "docs/regression/Audit03/broad_matrix_HollowThin_Stress_on_v103_2026-10-02.txt"
+  ],
+  "ScopedLoadMatrixGate": "4/4 chunks; 960 independent cases; failed=0; Results save/reopen=True; source unchanged=True",
+  "Consumer": "Реальные Config cells -> CSystemSettingsReader.LoadFromWorkbook -> CUnitSystem/materials/profiles -> CBatchSectionCalculator.ApplySettings/Execute -> общий LimitSearch -> физические Capacity/Formation states и четыре result writers",
+  "TestId": "modTestConfiguration.RunAudit03SearchConfigTests",
+  "Entries": [
+    {
+      "Id": "Capacity.SolutionStrategy",
+      "Type": "Enum",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательный Config-ввод; начальное значение автономного solver-а не подставляется вместо пользовательской строки",
+      "ValidRange": "Auto / UltimateStrain / LoadMultiplier",
+      "Activity": "Поиск несущей; фактический метод учитывает предусмотренную обработку осевых и fallback-траекторий",
+      "ExpectedEffect": "Все три стратегии выполняют поиск реальной физической точки; для неосевого fixture UltimateStrain и LoadMultiplier отражаются в ActualMethod, Auto сохраняется как RequestedStrategy",
+      "AssertionPrefix": "searchConfig.capacity.LoadMultiplier.Bisection.actual",
+      "RangeReview": "Девять пар strategy/method, physical range, равновесие N/Mx/My, критерий, отсутствие расширения конечной точки, изоляция от Crack-настроек, blank/TODO/Unknown/CVErr/missing/recovery. Все формы, aliases и полный диапазон численных options этим не закрыты."
+    },
+    {
+      "Id": "Capacity.SearchMethod",
+      "Type": "Enum",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательный Config-выбор даже при неактивной численной ветви UltimateStrain; missing/blank не становится Bisection",
+      "ValidRange": "Bisection / Brent / Secant",
+      "Activity": "Фактический LoadMultiplier, включая предусмотренный fallback; при успешном UltimateStrain метод одномерного поиска не используется",
+      "ExpectedEffect": "В LoadMultiplier реальные диагностические ветви соответствуют выбору; в UltimateStrain смена выбора не меняет lambda/метод/число solve. Физически недопустимый Brent/Secant кандидат не становится конечной точкой",
+      "AssertionPrefix": "searchConfig.capacity.LoadMultiplier.Brent.activeSearchMethod",
+      "RangeReview": "Все три метода и active/inactive режимы, отдельный исходный Brent-контрпример, physical criterion, path/equilibrium и writer comments, blank/TODO/Unknown/CVErr/missing/recovery. Независимые арифметические краевые Search-тесты сохраняют прежние expected/tolerance. Full-range и pairwise остаются открытыми."
+    },
+    {
+      "Id": "SLS.Crack.InitiationLoadPath",
+      "Type": "Enum",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательный Config-ввод; blank/TODO/missing не заменяются Auto или Mxy",
+      "ValidRange": "Auto / lambda*Mxy / lambda*N / lambda*NMxy; в книге символ lambda",
+      "Activity": "Поиск образования нормальной трещины при активном Crack.Width",
+      "ExpectedEffect": "Все четыре пути проверены для трех стратегий; Auto выбирает первый применимый Mxy-путь fixture, фиксированные пути сохраняют собственную траекторию. N/Mx/My точки независимо сверяются с тем, какие компоненты масштабируются",
+      "AssertionPrefix": "searchConfig.formation.N.UltimateStrain.fixedPath",
+      "RangeReview": "Двенадцать пар path/strategy, Pre/Post физические states, отсутствие расширения конечной точки, предельная растягивающая деформация бетона, изоляция от Capacity-настроек, blank/TODO/Unknown/CVErr/missing/recovery с адресом/разделом. Все геометрии и причины Auto fallback остаются отдельным gate."
+    },
+    {
+      "Id": "SLS.Crack.InitiationSolutionStrategy",
+      "Type": "Enum",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательный Config-ввод, без fallback при отсутствии/невалидности",
+      "ValidRange": "Auto / UltimateStrain / LoadMultiplier",
+      "Activity": "Численный метод Formation на выбранной lambda-траектории",
+      "ExpectedEffect": "UltimateStrain и LoadMultiplier возвращают собственный ActualMethod на всех трех фиксированных путях; Auto сохраняет RequestedStrategy и фактически найденную физическую точку. Подготовка PostCrackState и Width не запускают вторую параллельную search-реализацию",
+      "AssertionPrefix": "searchConfig.formation.Mxy.UltimateStrain.actual",
+      "RangeReview": "Все стратегии/пути, Pre/Post states и три компоненты равновесия, критерий, comments всех output-блоков, blank/TODO/Unknown/CVErr/missing/recovery. Изменена только line-search merit normalization по существующим допускам; conditions/material limits/исторические expected не изменены. Полный диапазон и interactions не объявляются закрытыми."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_search_config_v96.xlsm
+SOURCE_SHA256: D26D88604092BB40E5D8CF0ACEC7931CB6B59A1C85F5FAD5DADC05AE479358B6
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_1cf7bf8c1d9b4cecb505eb9e713c4eda\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== RunAudit03SearchConfigTests =====
+SUITE_STARTED: RunAudit03SearchConfigTests; 2026-10-02T22:09:35
+SCRIPT ERROR: Исключение при вызове "Run" с "1" аргументами: "Сбой при удаленном вызове процедуры. (Исключение из HRESULT: 0x800706BE)"
+SCRIPT_ERROR_CONTEXT: macro=RunAudit03SearchConfigTests; exceptionType=System.Management.Automation.MethodInvocationException
+SCRIPT_ERROR_POSITION: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\Run-Audit02ModeTests.ps1:208 знак:16
++         else { $result = [string]$excel.Run($macroName) }
++                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SCRIPT_ERROR_STACK: в <ScriptBlock>, C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\Run-Audit02ModeTests.ps1: строка 208
+CLEANUP ERROR: workbook; Сервер RPC недоступен. (Исключение из HRESULT: 0x800706BA)
+CLEANUP ERROR: Excel; Исключение при вызове "Quit" с "0" аргументами: "Сервер RPC недоступен. (Исключение из HRESULT: 0x800706BA)"
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

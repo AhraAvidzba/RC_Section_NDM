@@ -1,0 +1,2 @@
+FAIL: searchConfig.runtime; -2147217005; Не найден ключ Config Calculation.Stability.Enabled
+TOTAL_AUDIT03_SEARCH_CONFIG: passed=0; failed=1

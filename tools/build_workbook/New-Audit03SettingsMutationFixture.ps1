@@ -1,10 +1,12 @@
-# Создает отдельную отрицательную книгу для проверки чувствительности тестов.
+﻿# Создает отдельную отрицательную книгу для проверки чувствительности тестов.
 # Подмена существует только в ее VBE: исходники и исходная книга неизменны.
-# Пока проверяется потеря передачи Solver.Method; новые мутации требуют
-# отдельного точного контракта, а не произвольного replace по всему проекту.
+# Каждая мутация имеет отдельный точный call site; произвольной замены
+# одинаковых строк по всему проекту нет.
 param(
     [Parameter(Mandatory=$true)][string]$SourceWorkbook,
-    [Parameter(Mandatory=$true)][string]$OutputWorkbook
+    [Parameter(Mandatory=$true)][string]$OutputWorkbook,
+    [ValidateSet('SolverMethod', 'CapacityStrategy', 'CapacitySearchMethod', 'FormationPath', 'FormationStrategy')]
+    [string]$Mutation = 'SolverMethod'
 )
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
@@ -25,13 +27,41 @@ try {
     $excel.DisplayAlerts = $false
     $excel.AutomationSecurity = 3
     $book = $excel.Workbooks.Open($destination)
-    $module = $book.VBProject.VBComponents.Item('CSectionSolver').CodeModule
-    $body = $module.Lines(1, $module.CountOfLines)
-    $needle = 'mSolverMethod = settings.GetRawString("Solver.Method", vbNullString)'
-    if (($body.Split(@($needle), [StringSplitOptions]::None).Count - 1) -ne 1) {
-        throw 'Точный call site Solver.Method не найден или неоднозначен.'
+    $componentName = 'CBatchSectionCalculator'
+    switch ($Mutation) {
+        'SolverMethod' {
+            $componentName = 'CSectionSolver'
+            $key = 'Solver.Method'
+            $needle = 'mSolverMethod = settings.GetRawString("Solver.Method", vbNullString)'
+            $replacement = 'mSolverMethod = "Newton"'
+        }
+        'CapacityStrategy' {
+            $key = 'Capacity.SolutionStrategy'
+            $needle = 'mCapacitySolutionStrategy = CapacityTextSetting(settings, "Capacity.SolutionStrategy")'
+            $replacement = 'mCapacitySolutionStrategy = "Auto"'
+        }
+        'CapacitySearchMethod' {
+            $key = 'Capacity.SearchMethod'
+            $needle = 'mCapacitySearchMethod = CapacityTextSetting(settings, "Capacity.SearchMethod")'
+            $replacement = 'mCapacitySearchMethod = "Bisection"'
+        }
+        'FormationPath' {
+            $key = 'SLS.Crack.InitiationLoadPath'
+            $needle = 'mCrackFormationPath = settings.GetRequiredString("SLS.Crack.InitiationLoadPath")'
+            $replacement = 'mCrackFormationPath = "Auto"'
+        }
+        'FormationStrategy' {
+            $key = 'SLS.Crack.InitiationSolutionStrategy'
+            $needle = 'mCrackFormationSolutionStrategy = settings.GetRequiredString("SLS.Crack.InitiationSolutionStrategy")'
+            $replacement = 'mCrackFormationSolutionStrategy = "LoadMultiplier"'
+        }
     }
-    $body = $body.Replace($needle, 'mSolverMethod = "Newton"')
+    $module = $book.VBProject.VBComponents.Item($componentName).CodeModule
+    $body = $module.Lines(1, $module.CountOfLines)
+    if (($body.Split(@($needle), [StringSplitOptions]::None).Count - 1) -ne 1) {
+        throw "Точный call site $key не найден или неоднозначен."
+    }
+    $body = $body.Replace($needle, $replacement)
     $module.DeleteLines(1, $module.CountOfLines)
     $module.AddFromString($body)
     $book.Save()
@@ -40,7 +70,7 @@ try {
     if ((Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash -ne $sourceHash) {
         throw 'Исходная книга изменилась при создании отрицательного fixture.'
     }
-    Write-Output "SETTINGS_MUTATION: Solver.Method disconnected; sourceSHA=$sourceHash; sourceUnchanged=True; fixture=$OutputWorkbook"
+    Write-Output "SETTINGS_MUTATION: $key disconnected; sourceSHA=$sourceHash; sourceUnchanged=True; fixture=$OutputWorkbook"
 } finally {
     if ($book) { $book.Close($false) }
     if ($excel) {

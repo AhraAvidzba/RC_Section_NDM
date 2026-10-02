@@ -1,0 +1,45 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_search_config_v96.xlsm
+SOURCE_SHA256: 72433ED3F3E739A16020C4C6262D56056026D60C11ED30895F958B9378DF97E1
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_83c696fae1ac4a25a5511f0db06cba67\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: searchConfig.capacity.LoadMultiplier.Bisection.activeSearchMethod
+FAIL: searchConfig.capacity.LoadMultiplier.Brent.physical
+FAIL: searchConfig.capacity.LoadMultiplier.Brent.physicalCriterion|actual=1.00046210519761|expected=1
+FAIL: searchConfig.capacity.LoadMultiplier.Brent.activeSearchMethod
+FAIL: searchConfig.capacity.LoadMultiplier.Secant.activeSearchMethod
+FAIL: searchConfig.formation.Auto.Auto.postExists
+FAIL: searchConfig.formation.Auto.UltimateStrain.autoFirstPath
+FAIL: searchConfig.formation.Auto.UltimateStrain.postExists
+FAIL: searchConfig.formation.Auto.LoadMultiplier.postExists
+FAIL: searchConfig.formation.Mxy.Auto.postExists
+FAIL: searchConfig.formation.Mxy.UltimateStrain.point
+FAIL: searchConfig.formation.Mxy.UltimateStrain.fixedPath
+FAIL: searchConfig.formation.Mxy.UltimateStrain.preExists
+FAIL: searchConfig.formation.Mxy.UltimateStrain.postExists
+FAIL: searchConfig.formation.Mxy.LoadMultiplier.postExists
+FAIL: searchConfig.formation.N.Auto.postExists
+FAIL: searchConfig.formation.N.UltimateStrain.point
+FAIL: searchConfig.formation.N.UltimateStrain.fixedPath
+FAIL: searchConfig.formation.N.UltimateStrain.preExists
+FAIL: searchConfig.formation.N.UltimateStrain.postExists
+FAIL: searchConfig.formation.N.LoadMultiplier.postExists
+FAIL: searchConfig.formation.NMxy.Auto.postExists
+FAIL: searchConfig.formation.NMxy.UltimateStrain.postExists
+FAIL: searchConfig.formation.NMxy.LoadMultiplier.postExists
+FAIL: searchConfig.invalid.Capacity.SolutionStrategy..inputErr
+FAIL: searchConfig.invalid.Capacity.SolutionStrategy..noSolve
+FAIL: searchConfig.invalid.Capacity.SolutionStrategy..key
+FAIL: searchConfig.invalid.Capacity.SolutionStrategy..location
+FAIL: searchConfig.invalid.Capacity.SolutionStrategy..action
+FAIL: searchConfig.invalid.Capacity.SolutionStrategy.TODO.inputErr
+FAIL: searchConfig.invalid.Capacity.SolutionStrategy.TODO.noSolve
+FAIL: searchConfig.invalid.Capacity.SolutionStrategy.TODO.key
+FAIL: searchConfig.invalid.Capacity.SolutionStrategy.TODO.location
+FAIL: searchConfig.invalid.Capacity.SolutionStrategy.TODO.action
+FAIL: searchConfig.invalid.Capacity.SolutionStrategy.Unknown.noSolve
+FAIL: searchConfig.invalid.Capacity.SolutionStrategy.Unknown.location
+FAIL: searchConfig.invalid.Capacity.SolutionStrategy.Unknown.action
+FAIL: searchConfig.runtime; -2147216982; WriteStrengthSummary: Недопустимая единица силы: 
+TOTAL_AUDIT03_SEARCH_CONFIG: passed=762; failed=38
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

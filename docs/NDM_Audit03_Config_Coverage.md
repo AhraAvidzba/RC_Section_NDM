@@ -348,3 +348,41 @@ INPUT прочитан в A22/A23 листа Справка, без заявле
 поведения и обязательного input-contract указанного среза, а не всех диапазонов,
 профилей, форм, взаимодействий или двух Formation-селекторов. Отрицательные
 журналы не переписаны; оставшиеся K/T/D и выпуск основной книги не закрыты.
+
+## Search-Селекторы И Адреса Ошибок
+
+Четыре ключа Capacity.SolutionStrategy, Capacity.SearchMethod,
+SLS.Crack.InitiationLoadPath и SLS.Crack.InitiationSolutionStrategy проверяются
+через реальные Config-ячейки, профили, материалы, batch и общий LimitSearch.
+Пустое/TODO, неизвестный вариант, ошибка формулы и утраченная строка дают
+InputErr до решения НДС; после исправления повторный запуск работает.
+Для найденной строки сообщение называет фактическую ячейку, для утраченной
+строки - раздел и действие по восстановлению. Writer только выводит готовую
+причину, машинный статус не определяется по тексту сообщения.
+
+Directed v102: 1812/0, source unchanged=True, Results save/reopen=True.
+Address negative v102: 1810/2 на прежнем production с усиленным тестом;
+обе ошибки относились к неизвестным Formation-селекторам без адреса.
+Нормализация остается у Formation и переиспользуется Batch до любого solve.
+Full Off v102b: 21534/0, все восемь suites. Full On, formatting, четыре
+selector mutations и scoped all-path повтор еще выполняются/ожидаются.
+До завершения этих gates реестр остается 79/1065, приемка четырех новых
+полей и полный Audit03 не объявляются завершенными.
+
+Окончательные gates среза v103 завершены: directed 1812/0; full Off
+21534/0 и On 21543/0; formatting 1004/0; Validate 25/25; source/export
+102/102. Исправление unit-equivalence fixture передает выбранные единицы
+в Batch.ApplySettings; production и исторические comparison tolerances
+не менялись. Отдельный On-повтор 72 вариантов: 1584/0.
+
+Четыре selector mutations обнаружены нужными active assertions, соответственно
+33/26/30/36 failures, без изменения source. Матрица CircleUneven/HollowThin
+Stress Off/On: 4/4 chunks, 960 независимых случаев, failed=0; Results
+save/reopen и неизменность source подтверждены. После merge реестр v103
+содержит 83 active-reviewed из 1065, fullAcceptance=False. Это приемка данного
+среза, а не полного Audit03 или будущего общего LoadPath.
+
+Первый запуск mutation helper остановился из-за UTF-8 без BOM в Windows
+PowerShell 5.1 до выполнения VBA. Совместимость кодировки исправлена;
+отрицательные книги создавались только после этого, исходный журнал сохранен
+в диагностике запуска. Такая ошибка не является численной несходимостью.

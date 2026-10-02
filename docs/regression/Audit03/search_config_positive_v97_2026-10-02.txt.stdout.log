@@ -1,0 +1,15 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_search_config_v97.xlsm
+SOURCE_SHA256: 0C0EEB2DE11DEBFEB2BDEE623C59D0C72A40873FFAE2813CFED4F16D9AAE3795
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a98a46b1662a4b1283c061604b70f95c\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: searchConfig.capacity.LoadMultiplier.Bisection.physicalCriterion|actual=0.999338813322101|expected=1
+FAIL: searchConfig.capacity.LoadMultiplier.Brent.physicalCriterion|actual=0.998262721307764|expected=1
+FAIL: searchConfig.capacity.LoadMultiplier.Secant.physicalCriterion|actual=0.998262721307764|expected=1
+FAIL: searchConfig.formation.Auto.UltimateStrain.autoFirstPath
+FAIL: searchConfig.formation.Mxy.UltimateStrain.point
+FAIL: searchConfig.formation.Mxy.UltimateStrain.fixedPath
+FAIL: searchConfig.formation.Mxy.UltimateStrain.preExists
+FAIL: searchConfig.formation.Mxy.UltimateStrain.postExists
+TOTAL_AUDIT03_SEARCH_CONFIG: passed=1442; failed=8
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

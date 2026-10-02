@@ -1,0 +1,28 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_search_config_v101.xlsm
+SOURCE_SHA256: 738A04E5975AA393D2A2C660FF57301D499D153913F276C03A433DDFF3E01B39
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e078f83b149946b680fa5394d91d953f\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL: passed=524; failed=0
+MODE_AFTER_SUITE: No
+TOTAL_MATERIAL: passed=2856; failed=0; elapsedSec=3.5390625
+MODE_AFTER_SUITE: No
+TOTAL_SECTION_SOLVER: passed=895; failed=0; elapsedSec=1.84375
+MODE_AFTER_SUITE: No
+FAIL: audit02.genericMultiplier.2.Brent.0.75.lambda; actual=0.; expected=0.75; absDiff=0.75
+FAIL: audit02.genericMultiplier.2.Brent.5.25.lambda; actual=4.; expected=5.25; absDiff=1.25
+FAIL: audit03.search.2.Brent.2.success
+FAIL: audit03.search.2.Brent.2.accuracy
+FAIL: audit03.search.3.Brent.2.success
+FAIL: audit03.search.3.Brent.2.accuracy
+TOTAL_CAPACITY: passed=1670; failed=6; elapsedSec=41.390625
+MODE_AFTER_SUITE: No
+TOTAL_CRACK: passed=484; failed=0; elapsedSec=1.5078125
+MODE_AFTER_SUITE: No
+TOTAL_AUDIT03_SEARCH_CONFIG: passed=1792; failed=0
+TOTAL_BATCH: passed=8116; failed=0; elapsedSec=126.4921875
+MODE_AFTER_SUITE: No
+TOTAL_WORKBOOK_UI: passed=6924; failed=0; elapsedSec=184.1953125
+MODE_AFTER_SUITE: Yes
+TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.515625
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

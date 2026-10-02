@@ -21,7 +21,7 @@
 | 2. Корректность входа, поиска и метаданных | в работе | F01/F02/F03 и основные F06 контрпримеры имеют runtime evidence; F04/F05/F07 и окончательная приемка еще не завершены. |
 | 3. Упрощение архитектуры | в работе | A01/A02 и перенос агрегации A03 имеют runtime evidence. Один итог crack workflow, изоляция Search и комментарии всех путей проверены; окончательная проверка всех классов/consumers A03-A05 продолжается. |
 | 4. Измеряемая оптимизация | в работе | P01/P03 benchmark v6: 160 измерений, 0 ошибок, exact duplicates 10 -> 0; P02 сохраняет 3600 волокон и точную pi. Финальная повторная приемка на выпускном исходнике еще нужна. |
-| 5. Config/краевые нагрузки/документация/UI | в работе | Directed input 54/0, profile Boolean 72/0, numeric 690/0 по 56 consumer/key маршрутам. Runner выполняет 6 Capacity/4 Formation вариантов; CircleSym Light v42 и RectL Stress v42 имеют all-path gates. Фактические help/update/input preservation и clean palette проверены направленно; per-key эффекты, L01-L17/все формы/селекторы/пиксельная и методическая приемка не завершены. |
+| 5. Config/краевые нагрузки/документация/UI | в работе | Все 13 форм и 52 all-path runs v68 приняты для того численного среза. v95 имеет 79 адресно принятых активных полей из 1065; остальные поля, полный диапазон/pairwise, комментарии всех методов, выпускной help/UI и актуальный повтор матрицы еще открыты. Search-селекторы v96-v102 проходят отдельную приемку, не blanket PASS. |
 | 6. Независимая приемка и выпуск | не начато | Полная отдельная сборка, все suites Off/On, config/edge/benchmarks/snapshots, все три audits, final report, source/book/export equality. |
 
 ## Карта Обязанностей
@@ -57,7 +57,7 @@
 | A01-A05 | в работе | 83 + 3 classes; A01/A02 и текущий A03/A04 срез с actual writers прошли full Off v13. Crack/Strength сами собирают свои итоги; общий приоритет без дублей; shared named-state сохранен. Полная acceptance всех остальных классов и A05 еще впереди. |
 | P01-P04 | в работе | 15 сценариев x 5 повторов x 2 версии; asymmetric: 94 solves/3874 iterations/20 retries/10 эквивалентных попыток. P02 численные и point-grid инварианты подтверждены; окончательный benchmark/разбор повторов впереди. |
 | K01-K04 | структурный реестр в работе; поведенческая приемка впереди | Read-only census фактической книги: 35617 ячеек, 14 диапазонов, 72 validation. Поадресный реестр 1065 полей, 241 default из каталога; pending metadata не получает PASS. Полный behavior/active-inactive/mutation sensitivity/isolation еще не завершен. |
-| T01-T05 | в работе | All-path RoundedSimple Light 441/12954 assertions и Stress 216/8491 assertions green; остальные формы/selector variants/pairwise/high-risk tuples и независимые near-limit gates впереди. |
+| T01-T05 | в работе | v68: все 13 форм, Light/Stress, Off/On, 52/52 chunks и 18 980 all-path cases, failed=0. Это приемка численного среза v68, не поздних Config/UI правок; selector variants/pairwise/high-risk tuples, независимые near-limit gates и финальный повтор на выпускном source впереди. |
 | D01-D02 | в работе | Comment-only ревизия export/writers/enum/workbook entrypoints выполнена частично; все остальные methods/tests и фактический help/Config/validation/links в clean/update впереди. |
 | UI01 | directed COM PASS, выпускная приемка впереди | v39 Off/On: 351/0; семь статусов, DisplayFormat, чувствительность к чужому CF, очистка старых строк и сохранность оформления после save/reopen. Проверка clean/update итоговой книги еще предстоит. |
 | W01 | в работе | Git/base/spec/hash/progress сохранены; checkpoints без push/destructive Git. |
@@ -66,6 +66,69 @@
 принято 79 активных полей (13 Solver, 23 Material, 15 Unit/Sign, 1 Worst,
 16 общих RectSet selectors, 1 AutoCAD MinArea, 10 Crack). Остальные 986 адресов не получают blanket PASS.
 Срезы metadata/full-range/downstream и K03 остаются отдельными задачами.
+
+## Актуальная Точка Продолжения
+
+- Итог текущего Search-среза v103: directed 1812/0; полные восемь suites
+  Off 21534/0 и On 21543/0; unit/sign equivalence On 1584/0;
+  formatting 1004/0, Validate 25/25, source/export 102/102.
+- Все четыре изолированные selector mutations обнаружены соответствующими
+  active assertions (33/26/30/36 ожидаемых failures). Stress-повтор
+  CircleUneven/HollowThin, Off/On: 4/4 chunks, 960 independent cases,
+  failed=0, Results save/reopen=True, source unchanged=True.
+- Проверенная книга v103 SHA256:
+  `E42DD9EDEFBEA6BC6A35D1E5E240CDA20DB61A3C063CCC880EC4DE4009A361C5`;
+  общий export SHA256:
+  `4FA295D689013E602E0D5A1656A17EB83C9919454F9A4065862271C02EB51529`.
+  Основная output-книга и исходное ТЗ Audit03 не изменены.
+- Текущий срез готов к checkpoint. После него включить новое согласованное
+  требование единого LoadPath в текущую цель, не объявляя весь Audit03 закрытым.
+  Приведенные ниже записи v101/v102 являются историей диагностики, а не
+  текущей незавершенной очередью проверок.
+
+- Последний коммит: `59ef7cf92cb25847bd7773996164950944b1b904`.
+- Текущий dirty-срез: четыре Search-селектора, направленные Config-тесты и
+  подтвержденные дефекты Brent/Secant/Formation line-search. Чужие untracked
+  файлы и основная output-книга не меняются, новые классы не добавлены.
+- Directed v100 и v101: 1792/0, результаты сохранены и после повторного
+  открытия совпадают. Help v101: 1933 строки, 141 ссылка, 118 shapes,
+  input records/Print_Area сохранены. Source/export v101: 102/102, failed=0.
+- Full Off v101 выявил шесть регрессий точного корня Brent в старых generic
+  tests; этот прогон не является приемкой. Исправленный точный корень сначала
+  проходит доменный FinalizeAt, узкая скобка отдельно FinalizeBracket.
+- Проверка фактических INPUT_MESSAGE v101 обнаружила неполную навигацию для
+  двух неизвестных Formation-селекторов. В v102 тест требует реальную ячейку
+  либо раздел для утраченной строки. Их нормализация остается у Formation;
+  Batch проверяет ее до запуска НДС, с адресной диагностикой reader-а.
+- Следующий порядок: завершить текущий Off v101 без второго COM процесса,
+  выполнить test-only address negative на его копии, затем Refresh v102,
+  directed/full Off/On, formatting/Validate, selector mutations и scoped
+  all-path нагрузочную матрицу. Реестр обновлять только после всех gates.
+  Общий DoD Audit03 по-прежнему не выполнен.
+
+Уточнение после завершения этих шагов: v102 directed 1812/0 и full Off v102b
+21534/0 уже завершены. Full On выполняется. v102 source/export: 102/102,
+failed=0; export SHA `B5310EAA47C4B18D952B3CB4DB50C74BCCB858FD893CB46FACDF99F49D55D346`.
+Full Off v102 без суффикса b был ошибочным вызовом runner-а с общим
+VerifyResultsReopen: этот флаг допускается только для одного выбранного macro.
+Он остановился до suites и сохранен как script-error, не numerical failure.
+Правильный полный вызов v102b не содержит этого флага; directed save/reopen
+выполнен отдельно, SHA `5BE1E24E028DEB9881077C850691975F0AD5F70F4481A235D9D12AAFFAEDBDD1`.
+
+Full On v102 завершен с 128 failures в старом unit-equivalence test, остальные
+suites зеленые. Тест записывал ToleranceN/Mx/My в выбранных INPUT-единицах,
+но вызывал Batch.ApplySettings без units: внутренние допуски различались
+между сравниваемыми вариантами. В v103 исправлен только этот один вызов,
+production, expected values и прежний строгий comparison tolerance не изменены.
+Directed 72-case On equivalence выполняется; после него повторить окончательные
+source/export, Off/On и остальные gates на v103. v102 On не объявлять PASS.
+
+Directed unit/sign equivalence v103 On: 1584/0, все 72 варианта, Results
+save/reopen SHA `259C5DA1A69923917EA72EEB24184ADF68B0865F76117277404499E301880952`.
+Production не изменен относительно v102; исправлен только отсутствующий units
+аргумент реального Batch.ApplySettings в тесте. Окончательные directed Search,
+full Off/On, source/export, formatting/Validate, четыре mutations и Stress
+CircleUneven/HollowThin Off/On выполняются последовательно на v103.
 
 ## Important Decisions
 
@@ -747,3 +810,61 @@
   успешен. Общий check также видит конечные пробелы и пустые строки в неизмененных
   raw VBE exports и runtime logs; эти доказательства не форматировались задним
   числом ради зеленой проверки. Их байтовые SHA и отрицательные исходы сохранены.
+- Search Config, рабочий срез v96-v98: отдельный standard test module, без
+  новых classes, подключен к полному Batch suite. Проверяет девять пар
+  Capacity strategy/method, двенадцать Formation path/strategy, настоящий
+  reader/Config, физические точки, три компоненты равновесия, четыре writer
+  comments, 20 ошибочных вводов и recovery. Пока acceptance не присвоен.
+  Первый setup v96 не нашел profile key: таблица профилей использует key во
+  втором столбце. v96b/v96c остановились на ссылках теста на чужие private
+  helpers; через read-only Excel VBE API установлена точная строка компиляции,
+  собственные helpers добавлены. Это дефекты нового test setup, не NumFail ядра.
+  Полные отрицательные журналы сохранены.
+- v96d: 762/38 до ошибочного вывода неинициализированного тестового unit
+  adapter. Подтверждены blank/TODO fallback Capacity.SolutionStrategy и
+  недостаточная навигация Unknown; последующие invalid cases не приняты.
+  Brent для N=100000 Н, Mx=4000000 Н*мм, My=2000000 Н*мм при lambda tolerance
+  0.0001 выдавал OK/HasLimitPoint с physical=False, ratio=1.00046210519761.
+  Исправление сохраняет обе solver-точки скобки, передает их доменному
+  FinalizeBracket и использует именно переданное допустимое НДС, без re-solve.
+- v97: 1442/8, все 20 invalid/recovery cases выполнены и дают InputErr с
+  понятным местом и действием, без solve. Три новых ratio assertions были
+  строже точности собственного lambda-fixture; для девяти точных сравнений
+  этот fixture теперь задает 0.000001. Отдельный Brent-контрпример сохраняет
+  прежние нагрузки и 0.0001: запрет extended/нефизической точки не ослаблен.
+  Малая нагрузка v96 не требовала PostCrackState; невырожденный активный
+  Formation fixture v97 использует N=130000 Н, Mx=5200000, My=2600000 Н*мм.
+- v97 также воспроизвел NumFail фиксированного Mxy/UltimateStrain: line-search
+  вес критерия 10 не учитывал его действующий допуск 1e-9 и отвергал полный
+  Newton-шаг к трещине из-за промежуточной невязки N. Merit function v98
+  использует отношение уже принятых допусков равновесия/критерия; сами
+  conditions/tolerances и материальные пределы не изменены. Отрицательные
+  пробы/диагностика сохранены; positive, full suites и повтор матрицы еще
+  необходимы. v97 source/export equality 102/102, failed=0, не закрывает runtime.
+- v98: 1479/1; все пути/стратегии Formation получили физическую точку.
+  Новый точный ratio oracle был строже force/moment tolerance собственного
+  fixture. Для девяти точных Capacity сравнений fixture v99 использует
+  N tolerance=0.01 Н и M tolerance=1 Н*мм; исторические expected/tolerance
+  и отдельный Brent-контрпример не изменены.
+- v99: 1479/1. Secant выдавал физически недопустимую конечную точку при
+  ratio=1.00000003003019. Capacity FinalizeAt теперь проверяет physical range
+  и может отклонить кандидата; общий Secant учитывает Boolean callback-а,
+  продолжает уточнение и финализирует retained bracket без чужого LastSolver.
+  v100: 1792/0, включая 13 cross-section isolation вариантов и два baseline.
+  Results save/reopen SHA `434F226C4944C475A09274185BF6554A4A45020910F0E7BD31D2982A056752F9`.
+- Directed v101: 1792/0, Results save/reopen SHA
+  `66EE7587ADE8C90DDF1653D49F4B8E923180418A043AAD2C257D308167069484`.
+  Source/export equality: 102/102, failed=0, export SHA
+  `4A54B5A63AE69D30817CAFA3BC061EA044C14E3459AE77A66DB7B2E2EDEF7C04`.
+  Help: 1933 строки, 141 ссылка, 118 shapes, input/Print_Area сохранены.
+  Full Off v101 завершен с шестью regression failures в прежних Brent tests:
+  точный корень финализировался как сторона скобки. Они не скрыты и ожидаемые
+  lambda/tolerance не изменены; общий Brent снова сначала вызывает FinalizeAt
+  для точного корня, затем отдельно FinalizeBracket для узкой скобки.
+- Address negative v102: 1810/2 на v101 production + только усиленный тест.
+  Обе ошибки относятся к неизвестному Formation path/strategy без адреса.
+  Новые нормализаторы Formation сохраняют aliases и автономный контракт,
+  optional reader только добавляет адресную диагностику. Batch использует их
+  до любого solve; нет нового класса, словаря статусов или формулы.
+  Watchdog negative exit=1, source unchanged=True. Положительные/final gates
+  на v102 еще выполняются, per-key registry пока остается 79/1065.

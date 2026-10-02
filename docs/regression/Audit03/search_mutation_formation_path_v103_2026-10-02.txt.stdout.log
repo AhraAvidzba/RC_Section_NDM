@@ -1,0 +1,37 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_search_mutation_formation_path_v103.xlsm
+SOURCE_SHA256: 5164032961A8148921047CDA2BBA7B89092B969BB0A21C19BCB178813719827F
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_dc7d1935c90844f9b0803dd830a1f51d\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: searchConfig.formation.N.Auto.fixedPath
+FAIL: searchConfig.formation.N.UltimateStrain.fixedPath
+FAIL: searchConfig.formation.N.LoadMultiplier.fixedPath
+FAIL: searchConfig.formation.NMxy.Auto.fixedPath
+FAIL: searchConfig.formation.NMxy.UltimateStrain.fixedPath
+FAIL: searchConfig.formation.NMxy.LoadMultiplier.fixedPath
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath..inputErr
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath..noSolve
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath..key
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath..location
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath..cell
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath..action
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.TODO.inputErr
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.TODO.noSolve
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.TODO.key
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.TODO.location
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.TODO.cell
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.TODO.action
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.Unknown.inputErr
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.Unknown.noSolve
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.Unknown.key
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.Unknown.location
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.Unknown.cell
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.Unknown.action
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.missing.inputErr
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.missing.noSolve
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.missing.key
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.missing.location
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.missing.section
+FAIL: searchConfig.invalid.SLS.Crack.InitiationLoadPath.missing.action
+TOTAL_AUDIT03_SEARCH_CONFIG: passed=1782; failed=30
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

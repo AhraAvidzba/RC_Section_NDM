@@ -217,6 +217,15 @@ Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchReq
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByVal probeState As String, ByVal methodName As String, _
         ByVal solver As CSectionSolver, ByVal iterations As Long) As Boolean
+    If Not request.PureAxialForMethod Then
+        Dim runner As CStateSolutionRunner
+        Set runner = New CStateSolutionRunner
+        If Not runner.StateWithinPhysicalRange(request.Section, solver, request.ConcreteMaterial, request.SteelMaterial) Then
+            mCapacity.LimitSearchAppendCapacityDiagnostic _
+                methodName & ": кандидат конечной точки вне физического диапазона; продолжаем уточнение скобки."
+            Exit Function
+        End If
+    End If
     mCapacity.LimitSearchFinalizeCapacityLoadMultiplier lambdaValue, loadPath, probeState, methodName, solver
     ' На осевом плато одна и та же сила соответствует разным деформациям.
     ' Нижняя проба силовой скобки не определяет предельную плоскость: доводим
@@ -232,7 +241,11 @@ Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchReq
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
         ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
         ByVal methodName As String, ByVal iterations As Long)
-    mCapacity.LimitSearchFinalizeCapacityFromRetainedAcceptable lowLambda, loadPath, methodName
+    If lowSolver Is Nothing Then
+        mCapacity.LimitSearchFinalizeCapacityFromRetainedAcceptable lowLambda, loadPath, methodName
+    Else
+        mCapacity.LimitSearchFinalizeCapacityLoadMultiplier lowLambda, loadPath, vbNullString, methodName, lowSolver
+    End If
     If request.PureAxialForMethod Then mCapacity.LimitSearchAcceptPureAxialRetainedCapacity _
         request.Section, request.ConcreteMaterial, request.SteelMaterial, loadPath
 End Sub
