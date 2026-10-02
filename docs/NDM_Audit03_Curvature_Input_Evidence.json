@@ -1,0 +1,29 @@
+{
+  "Scope": "INPUT Curvature: binding ограничитель на двух осях, Newton/Secant и обе единицы. Не blanket PASS остальных solver settings или per-field Config. Отрицательный контроль использует только отдельный тестовый call без адаптера, production solver не изменяется.",
+  "PositiveReport": "docs/regression/Audit03/input_curvature_binding_v78_2026-10-02.txt",
+  "PositiveGate": "TOTAL_AUDIT03_INPUT_CURVATURE_BINDING: passed=132; failed=0",
+  "SupplementaryAssertionPrefixes": [
+    "audit03.inputCurvature."
+  ],
+  "FullReports": [
+    "docs/regression/Audit03/config_import_units_full_off_v83b_2026-10-02.txt",
+    "docs/regression/Audit03/config_import_units_full_on_v83b_2026-10-02.txt"
+  ],
+  "Consumer": "Config -> CSystemSettingsReader/CUnitSystem -> Solver.MaxDeltaKappa -> реальное Solve",
+  "TestId": "modTestSectionSolver.TestAudit03InputCurvatureBinding",
+  "Entries": [
+    {
+      "Id": "Units.Curvature.Input",
+      "CanonicalKey": "Units.Curvature.Input",
+      "Type": "Enum",
+      "InternalUnits": "1/мм",
+      "RuntimeDefault": "Обязательный key полной книги; отсутствующее поле частичного автономного API имеет программный default 1/mm.",
+      "ValidRange": "1/mm / 1/m",
+      "Activity": "Активен при ненулевом Solver.MaxDeltaKappa; при нулевом ограничителе смена единицы не должна менять решение.",
+      "ExpectedEffect": "1e-7 1/mm и 1e-4 1/m дают одинаковые физические пределы приращения, аналитические кривизны и число итераций 22/7 вместо свободных 2. Тестовое исключение адаптера наблюдаемо снимает ограничитель.",
+      "AssertionPrefix": "audit03.inputCurvature.",
+      "BlankAndErrorContract": "Полная книга отклоняет пустой/пробел/TODO/unknown/0/CVErr и поврежденный обязательный key; см. сохраненные 408/0 unit-choice assertions v71, включенные в full suites.",
+      "RangeReview": "Две единицы x два solver method x две оси. Независимая аналитика дискретной сетки, N/Mx/My residual и eps0 проверены. Допуски production и исторических тестов не менялись; UnitSettings восстанавливаются, directed save/reopen=True."
+    }
+  ]
+}

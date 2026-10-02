@@ -36,11 +36,16 @@ function Save-Progress {
     $lines | Set-Content -LiteralPath $fullReport -Encoding UTF8
 }
 
-# Находит единственную строку настройки: неизвестный формат не заменяет
-# настройку другим default и не позволяет получить ложный Off-прогон.
+# Находит единственную строку настройки через именованный Range листа Config.
+# Не зависит от промежуточного COM-proxy Workbook.Names после долгого VBA-вызова;
+# неизвестный формат не заменяет настройку другим default или режимом.
 function Get-ModeSettingCell {
     param([object]$Book, [string]$Key)
-    $range = $Book.Names.Item("rngSystemSettings").RefersToRange
+    if ($null -eq $Book) { throw "Книга недоступна при чтении тестового режима $Key." }
+    $config = $Book.Worksheets.Item('Config')
+    if ($null -eq $config) { throw "Лист Config недоступен при чтении тестового режима $Key." }
+    $range = $config.Range('rngSystemSettings')
+    if ($null -eq $range) { throw "rngSystemSettings не ссылается на ячейки при чтении тестового режима $Key." }
     $data = $range.Value2
     $row = 0
     for ($r = 2; $r -le $range.Rows.Count; $r++) {
@@ -162,6 +167,23 @@ try {
             $lines.Add($line)
             if ($line -match "failed=([1-9][0-9]*)|^FAIL:|RUNTIME ERROR") { $failed = $true }
         }
+        # Получаем заново ссылку на ту же открытую книгу после долгого VBA Run.
+        # Файл не открывается повторно: несохраненные изменения suite остаются
+        # доступными для post-mode и save/reopen проверок, без скрытого reset.
+        $openBooks = $excel.Workbooks
+        if ($null -eq $openBooks) { throw 'Excel.Workbooks недоступен после выполнения suite.' }
+        $liveBook = $null
+        for ($bookIndex = 1; $bookIndex -le $openBooks.Count; $bookIndex++) {
+            $candidate = $openBooks.Item($bookIndex)
+            if ([string]::Equals([string]$candidate.FullName, $fixturePath, [StringComparison]::OrdinalIgnoreCase)) {
+                if ($null -ne $liveBook) { throw 'Найдено несколько открытых книг с путем тестовой копии.' }
+                $liveBook = $candidate
+            }
+        }
+        if ($null -eq $liveBook) { throw 'Тестовая книга закрыта или ее путь изменен во время suite.' }
+        if (-not [bool]$liveBook.ReadOnly) { throw 'Тестовая книга перестала быть ReadOnly во время suite.' }
+        $lines.Add("COM_WORKBOOK_AFTER_SUITE: path=$($liveBook.FullName); readOnly=$($liveBook.ReadOnly); sameProxy=$([object]::ReferenceEquals($workbook, $liveBook))")
+        $workbook = $liveBook
         $modeAfter = [string](Get-ModeSettingCell $workbook $SettingKey).Value2
         $lines.Add("MODE_AFTER_SUITE: $modeAfter")
         $lines.Add("SUITE_FINISHED: $macro; $([DateTime]::Now.ToString('s'))")
@@ -195,6 +217,9 @@ try {
 } catch {
     $failed = $true
     $lines.Add("SCRIPT ERROR: $($_.Exception.Message)")
+    $lines.Add("SCRIPT_ERROR_CONTEXT: macro=$macro; exceptionType=$($_.Exception.GetType().FullName)")
+    $lines.Add("SCRIPT_ERROR_POSITION: $($_.InvocationInfo.PositionMessage)")
+    $lines.Add("SCRIPT_ERROR_STACK: $($_.ScriptStackTrace)")
 } finally {
     if ($workbook) {
         try { $workbook.Close($false) } catch { $lines.Add("CLEANUP ERROR: workbook; $($_.Exception.Message)") }

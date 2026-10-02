@@ -45,6 +45,7 @@ Public Function RunSectionSolverTests() As String
     TestAudit03RetryAttemptSession stats
     TestAudit03ExtremeStateInputs stats
     TestAudit03SolverSettingEffects stats
+    TestAudit03InputCurvatureBinding stats
 
     AppendLine stats, "TOTAL_SECTION_SOLVER: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -730,6 +731,135 @@ Private Sub TestAudit03TypedStateFailures(ByRef stats As TSectionSolverTestStats
     For scenario = 1 To 11
         TestAudit03TypedStateFailureCase stats, scenario
     Next scenario
+End Sub
+
+' ДЛЯ ТЕСТОВ: отдельный запуск связывает выбор INPUT-кривизны с реально
+' активным ограничителем шага Newton/Secant. Исходные ячейки восстанавливаются.
+Public Function RunAudit03InputCurvatureBindingTests() As String
+    Dim stats As TSectionSolverTestStats
+    TestAudit03InputCurvatureBinding stats
+    AppendLine stats, "TOTAL_AUDIT03_INPUT_CURVATURE_BINDING: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03InputCurvatureBindingTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: одинаковый физический clamp задается как 1e-7 1/мм либо
+' 1e-4 1/м. Сравниваем не только найденное равновесие, но и число итераций:
+' без пересчета единиц второй clamp перестает ограничивать шаг. Линейный
+' прямоугольник дает независимые аналитические значения обеих кривизн.
+Private Sub TestAudit03InputCurvatureBinding(ByRef stats As TSectionSolverTestStats)
+    Dim unitRange As Range, savedUnits As Variant, sheet As Worksheet
+    Dim oldAlerts As Boolean, row As Long, column As Long, curvatureRow As Long
+    Dim section As CSectionModel, concrete As CLinearConcreteMaterial, steel As CLinearSteelMaterial
+    Dim settings As CSystemSettingsReader, units As CUnitSystem
+    Dim freeSolver As CSectionSolver, referenceSolver As CSectionSolver, solver As CSectionSolver
+    Dim disconnectedSolver As CSectionSolver, method As Variant, axis As Long, unitIndex As Long
+    Dim mx As Double, my As Double, expectedKx As Double, expectedKy As Double, rawClamp As Double
+    Dim prefix As String, unitName As String
+    oldAlerts = Application.DisplayAlerts
+    On Error GoTo Failed
+    Set unitRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
+    savedUnits = unitRange.Formula
+    For row = 2 To unitRange.Rows.Count
+        Select Case CStr(unitRange.Cells(row, 1).Value2)
+            Case "Force": unitRange.Cells(row, 2).Value2 = "N"
+            Case "Moment": unitRange.Cells(row, 2).Value2 = "N*mm"
+            Case "Curvature": curvatureRow = row
+        End Select
+    Next row
+    If curvatureRow = 0 Then Err.Raise vbObjectError + 4601, "TestAudit03InputCurvatureBinding", "Не найдена INPUT-единица кривизны."
+    Set sheet = ThisWorkbook.Worksheets.Add
+    sheet.Name = "__Audit03Curvature"
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 10#), Nothing)
+    Set concrete = New CLinearConcreteMaterial
+    concrete.Initialize 30000#
+    Set steel = New CLinearSteelMaterial
+    steel.Initialize 200000#
+
+    For Each method In Array("Newton", "Secant")
+        For axis = 1 To 2
+            mx = 0#: my = 0#: expectedKx = 0#: expectedKy = 0#
+            ' Моменты инерции сетки считаются по центрам квадратов 10x10 мм,
+            ' как в линейном равновесии: B*H*(H^2-step^2)/12 и аналогично по Y.
+            If axis = 1 Then
+                mx = 1000000#
+                expectedKx = mx / (30000# * 200# * 100# * (100# ^ 2 - 10# ^ 2) / 12#)
+            Else
+                my = -1000000#
+                expectedKy = my / (30000# * 200# * 100# * (200# ^ 2 - 10# ^ 2) / 12#)
+            End If
+            unitRange.Cells(curvatureRow, 2).Value2 = "1/mm"
+            Set settings = New CSystemSettingsReader
+            settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem
+            units.LoadFromSettings settings
+            Set freeSolver = Audit03ConfiguredSolver(sheet, "Solver.MaxDeltaKappa", 0#, CStr(method), False, units)
+            Set referenceSolver = Audit03ConfiguredSolver(sheet, "Solver.MaxDeltaKappa", 0.0000001, CStr(method), False, units)
+            freeSolver.Solve section, concrete, steel, 0#, mx, my
+            referenceSolver.Solve section, concrete, steel, 0#, mx, my
+            prefix = "audit03.inputCurvature." & CStr(method) & ".axis" & CStr(axis)
+            AssertTrue stats, prefix & ".referenceConverged", freeSolver.Converged And referenceSolver.Converged
+            AssertTrue stats, prefix & ".binding", referenceSolver.Iterations > freeSolver.Iterations
+
+            For unitIndex = 0 To 1
+                If unitIndex = 0 Then
+                    unitName = "1/mm": rawClamp = 0.0000001
+                Else
+                    unitName = "1/m": rawClamp = 0.0001
+                End If
+                unitRange.Cells(curvatureRow, 2).Value2 = unitName
+                Set settings = New CSystemSettingsReader
+                settings.LoadFromWorkbook ThisWorkbook
+                Set units = New CUnitSystem
+                units.LoadFromSettings settings
+                Set solver = Audit03ConfiguredSolver(sheet, "Solver.MaxDeltaKappa", rawClamp, CStr(method), False, units)
+                solver.Solve section, concrete, steel, 0#, mx, my
+                prefix = "audit03.inputCurvature." & CStr(method) & ".axis" & CStr(axis) & ".unit" & CStr(unitIndex)
+                AssertClose stats, prefix & ".physicalClamp", units.InputCurvatureToInternal(rawClamp), 0.0000001, 0.000000000000000001
+                AssertTrue stats, prefix & ".converged", solver.Converged
+                AssertTrue stats, prefix & ".iterations", solver.Iterations = referenceSolver.Iterations
+                AssertTrue stats, prefix & ".moreWork", solver.Iterations > freeSolver.Iterations
+                AssertClose stats, prefix & ".N", solver.Nint, 0#, 0.001
+                AssertClose stats, prefix & ".Mx", solver.Mxint, mx, 0.001
+                AssertClose stats, prefix & ".My", solver.Myint, my, 0.001
+                AssertClose stats, prefix & ".epsilon0", solver.Epsilon0, 0#, 0.000000000001
+                AssertClose stats, prefix & ".kappaX", solver.KappaX, expectedKx, 0.000000000001
+                AssertClose stats, prefix & ".kappaY", solver.KappaY, expectedKy, 0.000000000001
+                AppendLine stats, "CURVATURE_BINDING: method=" & CStr(method) & "|axis=" & CStr(axis) & _
+                    "|input=" & unitName & "|raw=" & FormatNumberInvariant(rawClamp) & _
+                    "|iterations=" & CStr(solver.Iterations) & "|freeIterations=" & CStr(freeSolver.Iterations)
+                If unitIndex = 1 Then
+                    ' Отдельный контроль чувствительности отключает адаптер только
+                    ' в тестовом вызове. Production код и физический итог не меняются.
+                    Set disconnectedSolver = Audit03ConfiguredSolver(sheet, "Solver.MaxDeltaKappa", rawClamp, CStr(method))
+                    disconnectedSolver.Solve section, concrete, steel, 0#, mx, my
+                    AssertTrue stats, prefix & ".disconnectedConverged", disconnectedSolver.Converged
+                    AssertTrue stats, prefix & ".detectDisconnectedUnits", disconnectedSolver.Iterations < solver.Iterations
+                    AssertClose stats, prefix & ".disconnectedKx", disconnectedSolver.KappaX, expectedKx, 0.000000000001
+                    AssertClose stats, prefix & ".disconnectedKy", disconnectedSolver.KappaY, expectedKy, 0.000000000001
+                    AppendLine stats, "CURVATURE_DISCONNECTED: method=" & CStr(method) & "|axis=" & CStr(axis) & _
+                        "|iterations=" & CStr(disconnectedSolver.Iterations) & "|correctIterations=" & CStr(solver.Iterations)
+                End If
+            Next unitIndex
+        Next axis
+    Next method
+    GoTo Cleanup
+Failed:
+    AssertTrue stats, "audit03.inputCurvature.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
+    If Not unitRange Is Nothing Then unitRange.Formula = savedUnits
+    Application.DisplayAlerts = False
+    If Not sheet Is Nothing Then sheet.Delete
+    Application.DisplayAlerts = oldAlerts
+    On Error GoTo 0
+    If Not unitRange Is Nothing And IsArray(savedUnits) Then
+        For row = 1 To unitRange.Rows.Count
+            For column = 1 To unitRange.Columns.Count
+                AssertTrue stats, "audit03.inputCurvature.restore." & CStr(row) & "." & CStr(column), _
+                    CStr(unitRange.Cells(row, column).Formula) = CStr(savedUnits(row, column))
+            Next column
+        Next row
+    End If
 End Sub
 
 

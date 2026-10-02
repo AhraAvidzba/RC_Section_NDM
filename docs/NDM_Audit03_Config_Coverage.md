@@ -177,9 +177,10 @@ Stress/Strain и кривизны сохраняют внутренние оси
 
 Этот тест не выдается за сквозное покрытие INPUT Length/Stress/Curvature:
 их варианты пока проверены в адаптере, downstream geometry/material proof
-требует отдельной серии. INPUT Area не имеет пользовательского ввода площади
-в текущем workbook flow и требует K03 решения по фактическому потребителю;
-адаптерный round-trip сам по себе не делает мертвую UI-настройку активной.
+требует отдельной серии. На этом срезе INPUT Area еще не прослежен до своего
+workbook consumer; адаптерный round-trip сам по себе не доказывает активность.
+Последующая проверка выявила потребителя AutoCAD.Import.MinArea (см. ниже),
+поэтому первоначальное предположение о мертвом INPUT Area не подтверждается.
 
 По запросу пользователя отклонения оформления сразу фиксируются в Progress.
 COM negative v71 нашел 52 отклонения input/service/comment ячеек; строгий
@@ -218,7 +219,9 @@ Full v77b Off/On: 14837/0 и 14843/0, source unchanged=True. Это позвол
 Units.Curvature.Input проверен по valid/invalid выбору и equivalence, но clamp
 в этой серии не доказан как binding. Его active K02 gate остается открытым;
 отдельный тест эффекта Solver.MaxDeltaKappa не заменяет combined-unit маршрут.
-Units.Area.Input по-прежнему требует K03 решения об отсутствии workbook consumer.
+Units.Area.Input на срезе v77 еще не имеет runtime evidence своего workbook
+consumer. Последующая трассировка подтвердила его использование порогом
+AutoCAD.Import.MinArea; это не основание удалять настройку как мертвую.
 
 В 72 OUTPUT/sign вариантах реальный AutoCAD export reader возвращает
 геометрию в мм, площади в мм2 и локальные инерции в мм4; еще 72 assertions
@@ -226,3 +229,36 @@ Units.Area.Input по-прежнему требует K03 решения об о
 Справка в test/update книге объясняет фиксированный масштаб в Units и
 AutoCAD.Export.CombinationID. Input data/формулы/validation/format 761 полей
 сохранены, 141 ссылка корректна, область печати сохранена после help-update.
+
+## Import Units И Binding Curvature v83
+
+INPUT Curvature теперь имеет отдельный active proof: 132/0. Два solver method,
+две оси и обе единицы проходят полный Config adapter; физически одинаковый
+binding clamp дает 22/7 итераций вместо свободных 2. Аналитика дискретной
+сетки и равновесие проверены независимо, solver tolerance не меняется.
+
+INPUT Area не является мертвой настройкой: consumer - AutoCAD.Import.MinArea.
+Общий Config preparation live-import и directed теста один, новых классов нет.
+Порог переводится во внутренние мм2, а сами Region остаются мм/мм2/мм4.
+Directed 89/0: три единицы, три порога, включительная граница, отсутствие
+скрытого default, missing/blank/TODO/CVErr/negative/overflow, полное удаление
+бетона/арматуры фильтром и восстановление Config. Исключение адаптера в
+отдельном test-call меняет отбор, подтверждая чувствительность теста.
+
+Import -> смена INPUT/OUTPUT -> Calculate: девять переходов mm/cm/m, 228/0.
+Сохраненный snapshot читается по своим старым заголовкам и не масштабируется
+повторно. Новый snapshot получает новые OUTPUT-единицы. Порог/слои после
+импорта не влияют на Calculate, импорт заново не выполняется. Некорректный
+OUTPUT отклоняется до solve и сохраняет прежнюю геометрию; recovery успешен.
+Непереведенное число при смене INPUT Force N -> kN меняет нагрузку/деформацию
+в 1000 раз при неизменной геометрии. Save/reopen сохраняет Results точно.
+
+Фактическая справка v83: явный Region contract в B1488/B1489 - X/Y/размеры мм,
+Area мм2, Ix/Iy/Ixy мм4, без определения масштаба INSUNITS. Пользовательские
+INPUT/OUTPUT не конвертируют исходный DWG. Сохранены 761 input-records,
+141 ссылка и Print_Area. Это не реальный DWG smoke и не пиксельная приемка.
+
+Full v83b Off/On: 15286/0 и 15292/0, source unchanged=True. Реестр сохраняет
+1065 адресов, active-reviewed=69, fullAcceptance=False. Остальные per-key,
+inactive, full-range и pairwise требования остаются открытыми. Прежние
+отрицательные workflow/COM-runner журналы не переписаны и не названы PASS.

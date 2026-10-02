@@ -1,0 +1,251 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_import_unit_workflow_v80.xlsm
+SOURCE_SHA256: F4BE5BCC5969799A349DC03F6E3C5F1BFA6482B24D19874321299258D956EB94
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_467f5a19c48245a38a91084c49d234fa\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit03ImportedSnapshotUnitChangeTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03ImportedSnapshotUnitChangeTests; 2026-10-02T18:18:17
+EXCEL_AFTER_SUITE: pid=14796; workingSet=166055936; privateBytes=119767040; cpu=19.109375
+OK: audit03.importUnits.before0.after0.previewX; actual=950.; expected=950.
+OK: audit03.importUnits.before0.after0.previewArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before0.after0.previewHeader; actual=X, mm
+OK: audit03.importUnits.before0.after0.previewAreaHeader; actual=Area, mm2
+OK: audit03.importUnits.before0.after0.beforeChange.autoCADGeometryMm; 
+OK: audit03.importUnits.before0.after0.beforeChange.autoCADDoesNotSolve
+OK: audit03.importUnits.before0.after0.source; actual=AutoCADImport
+OK: audit03.importUnits.before0.after0.restoredX; actual=950.; expected=950.
+OK: audit03.importUnits.before0.after0.restoredArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before0.after0.restoreNoSolve
+OK: audit03.importUnits.before0.after0.snapshotUnchangedBeforeSolve.equivalent; 
+OK: audit03.importUnits.before0.after0.afterChangeBeforeSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before0.after0.afterChangeBeforeSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before0.after0.run
+OK: audit03.importUnits.before0.after0.hasState
+OK: audit03.importUnits.before0.after0.loadN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before0.after0.afterSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before0.after0.afterSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before0.after0.newHeader; actual=X, mm
+OK: audit03.importUnits.before0.after0.newAreaHeader; actual=Area, mm2
+OK: audit03.importUnits.before0.after0.newX; actual=950.; expected=950.
+IMPORTED_UNIT_CHANGE: before=mm|after=mm|inputForce=N|inputStress=MPa|source=AutoCADImport
+OK: audit03.importUnits.before0.after1.previewX; actual=950.; expected=950.
+OK: audit03.importUnits.before0.after1.previewArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before0.after1.previewHeader; actual=X, mm
+OK: audit03.importUnits.before0.after1.previewAreaHeader; actual=Area, mm2
+OK: audit03.importUnits.before0.after1.beforeChange.autoCADGeometryMm; 
+OK: audit03.importUnits.before0.after1.beforeChange.autoCADDoesNotSolve
+OK: audit03.importUnits.before0.after1.source; actual=AutoCADImport
+OK: audit03.importUnits.before0.after1.restoredX; actual=950.; expected=950.
+OK: audit03.importUnits.before0.after1.restoredArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before0.after1.restoreNoSolve
+OK: audit03.importUnits.before0.after1.snapshotUnchangedBeforeSolve.equivalent; 
+OK: audit03.importUnits.before0.after1.afterChangeBeforeSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before0.after1.afterChangeBeforeSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before0.after1.run
+OK: audit03.importUnits.before0.after1.hasState
+OK: audit03.importUnits.before0.after1.loadN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before0.after1.afterSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before0.after1.afterSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before0.after1.newHeader; actual=X, cm
+OK: audit03.importUnits.before0.after1.newAreaHeader; actual=Area, cm2
+OK: audit03.importUnits.before0.after1.newX; actual=95.; expected=95.
+OK: audit03.importUnits.before0.after1.elements.equivalent; 
+OK: audit03.importUnits.before0.after1.geometry.equivalent; 
+OK: audit03.importUnits.before0.after1.properties.equivalent; 
+IMPORTED_UNIT_CHANGE: before=mm|after=cm|inputForce=kN|inputStress=kPa|source=AutoCADImport
+OK: audit03.importUnits.before0.after2.previewX; actual=950.; expected=950.
+OK: audit03.importUnits.before0.after2.previewArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before0.after2.previewHeader; actual=X, mm
+OK: audit03.importUnits.before0.after2.previewAreaHeader; actual=Area, mm2
+OK: audit03.importUnits.before0.after2.beforeChange.autoCADGeometryMm; 
+OK: audit03.importUnits.before0.after2.beforeChange.autoCADDoesNotSolve
+OK: audit03.importUnits.before0.after2.source; actual=AutoCADImport
+OK: audit03.importUnits.before0.after2.restoredX; actual=950.; expected=950.
+OK: audit03.importUnits.before0.after2.restoredArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before0.after2.restoreNoSolve
+OK: audit03.importUnits.before0.after2.snapshotUnchangedBeforeSolve.equivalent; 
+OK: audit03.importUnits.before0.after2.afterChangeBeforeSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before0.after2.afterChangeBeforeSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before0.after2.run
+OK: audit03.importUnits.before0.after2.hasState
+OK: audit03.importUnits.before0.after2.loadN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before0.after2.afterSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before0.after2.afterSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before0.after2.newHeader; actual=X, m
+OK: audit03.importUnits.before0.after2.newAreaHeader; actual=Area, m2
+OK: audit03.importUnits.before0.after2.newX; actual=0.95; expected=0.95
+FAIL: audit03.importUnits.before0.after2.elements.equivalent; row=2; col=7; parameter=; expected=-6.91234425995679E-05; actual=-6.62038265442774E-05; factor=1
+OK: audit03.importUnits.before0.after2.geometry.equivalent; 
+FAIL: audit03.importUnits.before0.after2.properties.equivalent; row=73; col=4; parameter=MxUser; expected=1000000; actual=0; factor=9806650
+IMPORTED_UNIT_CHANGE: before=mm|after=m|inputForce=tf|inputStress=Pa|source=AutoCADImport
+OK: audit03.importUnits.before1.after0.previewX; actual=95.; expected=95.
+OK: audit03.importUnits.before1.after0.previewArea; actual=100.; expected=100.
+OK: audit03.importUnits.before1.after0.previewHeader; actual=X, cm
+OK: audit03.importUnits.before1.after0.previewAreaHeader; actual=Area, cm2
+OK: audit03.importUnits.before1.after0.beforeChange.autoCADGeometryMm; 
+OK: audit03.importUnits.before1.after0.beforeChange.autoCADDoesNotSolve
+OK: audit03.importUnits.before1.after0.source; actual=AutoCADImport
+OK: audit03.importUnits.before1.after0.restoredX; actual=950.; expected=950.
+OK: audit03.importUnits.before1.after0.restoredArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before1.after0.restoreNoSolve
+OK: audit03.importUnits.before1.after0.snapshotUnchangedBeforeSolve.equivalent; 
+OK: audit03.importUnits.before1.after0.afterChangeBeforeSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before1.after0.afterChangeBeforeSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before1.after0.run
+OK: audit03.importUnits.before1.after0.hasState
+OK: audit03.importUnits.before1.after0.loadN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before1.after0.afterSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before1.after0.afterSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before1.after0.newHeader; actual=X, mm
+OK: audit03.importUnits.before1.after0.newAreaHeader; actual=Area, mm2
+OK: audit03.importUnits.before1.after0.newX; actual=950.; expected=950.
+OK: audit03.importUnits.before1.after0.elements.equivalent; 
+OK: audit03.importUnits.before1.after0.geometry.equivalent; 
+OK: audit03.importUnits.before1.after0.properties.equivalent; 
+IMPORTED_UNIT_CHANGE: before=cm|after=mm|inputForce=N|inputStress=MPa|source=AutoCADImport
+OK: audit03.importUnits.before1.after1.previewX; actual=95.; expected=95.
+OK: audit03.importUnits.before1.after1.previewArea; actual=100.; expected=100.
+OK: audit03.importUnits.before1.after1.previewHeader; actual=X, cm
+OK: audit03.importUnits.before1.after1.previewAreaHeader; actual=Area, cm2
+OK: audit03.importUnits.before1.after1.beforeChange.autoCADGeometryMm; 
+OK: audit03.importUnits.before1.after1.beforeChange.autoCADDoesNotSolve
+OK: audit03.importUnits.before1.after1.source; actual=AutoCADImport
+OK: audit03.importUnits.before1.after1.restoredX; actual=950.; expected=950.
+OK: audit03.importUnits.before1.after1.restoredArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before1.after1.restoreNoSolve
+OK: audit03.importUnits.before1.after1.snapshotUnchangedBeforeSolve.equivalent; 
+OK: audit03.importUnits.before1.after1.afterChangeBeforeSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before1.after1.afterChangeBeforeSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before1.after1.run
+OK: audit03.importUnits.before1.after1.hasState
+OK: audit03.importUnits.before1.after1.loadN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before1.after1.afterSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before1.after1.afterSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before1.after1.newHeader; actual=X, cm
+OK: audit03.importUnits.before1.after1.newAreaHeader; actual=Area, cm2
+OK: audit03.importUnits.before1.after1.newX; actual=95.; expected=95.
+OK: audit03.importUnits.before1.after1.elements.equivalent; 
+OK: audit03.importUnits.before1.after1.geometry.equivalent; 
+OK: audit03.importUnits.before1.after1.properties.equivalent; 
+IMPORTED_UNIT_CHANGE: before=cm|after=cm|inputForce=kN|inputStress=kPa|source=AutoCADImport
+OK: audit03.importUnits.before1.after2.previewX; actual=95.; expected=95.
+OK: audit03.importUnits.before1.after2.previewArea; actual=100.; expected=100.
+OK: audit03.importUnits.before1.after2.previewHeader; actual=X, cm
+OK: audit03.importUnits.before1.after2.previewAreaHeader; actual=Area, cm2
+OK: audit03.importUnits.before1.after2.beforeChange.autoCADGeometryMm; 
+OK: audit03.importUnits.before1.after2.beforeChange.autoCADDoesNotSolve
+OK: audit03.importUnits.before1.after2.source; actual=AutoCADImport
+OK: audit03.importUnits.before1.after2.restoredX; actual=950.; expected=950.
+OK: audit03.importUnits.before1.after2.restoredArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before1.after2.restoreNoSolve
+OK: audit03.importUnits.before1.after2.snapshotUnchangedBeforeSolve.equivalent; 
+OK: audit03.importUnits.before1.after2.afterChangeBeforeSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before1.after2.afterChangeBeforeSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before1.after2.run
+OK: audit03.importUnits.before1.after2.hasState
+OK: audit03.importUnits.before1.after2.loadN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before1.after2.afterSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before1.after2.afterSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before1.after2.newHeader; actual=X, m
+OK: audit03.importUnits.before1.after2.newAreaHeader; actual=Area, m2
+OK: audit03.importUnits.before1.after2.newX; actual=0.95; expected=0.95
+FAIL: audit03.importUnits.before1.after2.elements.equivalent; row=2; col=7; parameter=; expected=-6.91234425995679E-05; actual=-6.62038265442774E-05; factor=1
+OK: audit03.importUnits.before1.after2.geometry.equivalent; 
+FAIL: audit03.importUnits.before1.after2.properties.equivalent; row=73; col=4; parameter=MxUser; expected=1000000; actual=0; factor=9806650
+IMPORTED_UNIT_CHANGE: before=cm|after=m|inputForce=tf|inputStress=Pa|source=AutoCADImport
+OK: audit03.importUnits.before2.after0.previewX; actual=0.95; expected=0.95
+OK: audit03.importUnits.before2.after0.previewArea; actual=0.01; expected=0.01
+OK: audit03.importUnits.before2.after0.previewHeader; actual=X, m
+OK: audit03.importUnits.before2.after0.previewAreaHeader; actual=Area, m2
+OK: audit03.importUnits.before2.after0.beforeChange.autoCADGeometryMm; 
+OK: audit03.importUnits.before2.after0.beforeChange.autoCADDoesNotSolve
+OK: audit03.importUnits.before2.after0.source; actual=AutoCADImport
+OK: audit03.importUnits.before2.after0.restoredX; actual=950.; expected=950.
+OK: audit03.importUnits.before2.after0.restoredArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before2.after0.restoreNoSolve
+OK: audit03.importUnits.before2.after0.snapshotUnchangedBeforeSolve.equivalent; 
+OK: audit03.importUnits.before2.after0.afterChangeBeforeSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before2.after0.afterChangeBeforeSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before2.after0.run
+OK: audit03.importUnits.before2.after0.hasState
+OK: audit03.importUnits.before2.after0.loadN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before2.after0.afterSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before2.after0.afterSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before2.after0.newHeader; actual=X, mm
+OK: audit03.importUnits.before2.after0.newAreaHeader; actual=Area, mm2
+OK: audit03.importUnits.before2.after0.newX; actual=950.; expected=950.
+OK: audit03.importUnits.before2.after0.elements.equivalent; 
+OK: audit03.importUnits.before2.after0.geometry.equivalent; 
+OK: audit03.importUnits.before2.after0.properties.equivalent; 
+IMPORTED_UNIT_CHANGE: before=m|after=mm|inputForce=N|inputStress=MPa|source=AutoCADImport
+OK: audit03.importUnits.before2.after1.previewX; actual=0.95; expected=0.95
+OK: audit03.importUnits.before2.after1.previewArea; actual=0.01; expected=0.01
+OK: audit03.importUnits.before2.after1.previewHeader; actual=X, m
+OK: audit03.importUnits.before2.after1.previewAreaHeader; actual=Area, m2
+OK: audit03.importUnits.before2.after1.beforeChange.autoCADGeometryMm; 
+OK: audit03.importUnits.before2.after1.beforeChange.autoCADDoesNotSolve
+OK: audit03.importUnits.before2.after1.source; actual=AutoCADImport
+OK: audit03.importUnits.before2.after1.restoredX; actual=950.; expected=950.
+OK: audit03.importUnits.before2.after1.restoredArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before2.after1.restoreNoSolve
+OK: audit03.importUnits.before2.after1.snapshotUnchangedBeforeSolve.equivalent; 
+OK: audit03.importUnits.before2.after1.afterChangeBeforeSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before2.after1.afterChangeBeforeSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before2.after1.run
+OK: audit03.importUnits.before2.after1.hasState
+OK: audit03.importUnits.before2.after1.loadN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before2.after1.afterSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before2.after1.afterSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before2.after1.newHeader; actual=X, cm
+OK: audit03.importUnits.before2.after1.newAreaHeader; actual=Area, cm2
+OK: audit03.importUnits.before2.after1.newX; actual=95.; expected=95.
+OK: audit03.importUnits.before2.after1.elements.equivalent; 
+OK: audit03.importUnits.before2.after1.geometry.equivalent; 
+OK: audit03.importUnits.before2.after1.properties.equivalent; 
+IMPORTED_UNIT_CHANGE: before=m|after=cm|inputForce=kN|inputStress=kPa|source=AutoCADImport
+OK: audit03.importUnits.before2.after2.previewX; actual=0.95; expected=0.95
+OK: audit03.importUnits.before2.after2.previewArea; actual=0.01; expected=0.01
+OK: audit03.importUnits.before2.after2.previewHeader; actual=X, m
+OK: audit03.importUnits.before2.after2.previewAreaHeader; actual=Area, m2
+OK: audit03.importUnits.before2.after2.beforeChange.autoCADGeometryMm; 
+OK: audit03.importUnits.before2.after2.beforeChange.autoCADDoesNotSolve
+OK: audit03.importUnits.before2.after2.source; actual=AutoCADImport
+OK: audit03.importUnits.before2.after2.restoredX; actual=950.; expected=950.
+OK: audit03.importUnits.before2.after2.restoredArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before2.after2.restoreNoSolve
+OK: audit03.importUnits.before2.after2.snapshotUnchangedBeforeSolve.equivalent; 
+OK: audit03.importUnits.before2.after2.afterChangeBeforeSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before2.after2.afterChangeBeforeSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before2.after2.run
+OK: audit03.importUnits.before2.after2.hasState
+OK: audit03.importUnits.before2.after2.loadN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before2.after2.afterSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before2.after2.afterSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before2.after2.newHeader; actual=X, m
+OK: audit03.importUnits.before2.after2.newAreaHeader; actual=Area, m2
+OK: audit03.importUnits.before2.after2.newX; actual=0.95; expected=0.95
+FAIL: audit03.importUnits.before2.after2.elements.equivalent; row=2; col=7; parameter=; expected=-6.91234425995679E-05; actual=-6.62038265442774E-05; factor=1
+OK: audit03.importUnits.before2.after2.geometry.equivalent; 
+FAIL: audit03.importUnits.before2.after2.properties.equivalent; row=73; col=4; parameter=MxUser; expected=1000000; actual=0; factor=9806650
+IMPORTED_UNIT_CHANGE: before=m|after=m|inputForce=tf|inputStress=Pa|source=AutoCADImport
+OK: audit03.importUnits.rawUnchanged.oldN; actual=-100.; expected=-100.
+OK: audit03.importUnits.rawUnchanged.number; actual=-100.; expected=-100.
+OK: audit03.importUnits.rawUnchanged.newN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.rawUnchanged.equilibrium; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.rawUnchanged.compression
+FAIL: audit03.importUnits.rawUnchanged.strainRatio; actual=0.883785500709; expected=1000.
+OK: audit03.importUnits.rawUnchanged.geometry.autoCADGeometryMm; 
+OK: audit03.importUnits.rawUnchanged.geometry.autoCADDoesNotSolve
+OK: audit03.importUnits.invalidOutput.rejected
+OK: audit03.importUnits.invalidOutput.address
+OK: audit03.importUnits.invalidOutput.noSolve
+OK: audit03.importUnits.invalidOutput.snapshotPreserved.equivalent; 
+OK: audit03.importUnits.invalidOutput.recovery
+OK: audit03.importUnits.invalidOutput.recoveredGeometry.autoCADGeometryMm; 
+OK: audit03.importUnits.invalidOutput.recoveredGeometry.autoCADDoesNotSolve
+TOTAL_AUDIT03_IMPORTED_UNIT_CHANGES: passed=221; failed=7
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03ImportedSnapshotUnitChangeTests; 2026-10-02T18:18:31
+RESULTS_SAVE_REOPEN: before=B1A9ABAF85002B6BD9EAE59D144CBCE3FAEACC8238769893104EECF84E9C9159; after=B1A9ABAF85002B6BD9EAE59D144CBCE3FAEACC8238769893104EECF84E9C9159; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_467f5a19c48245a38a91084c49d234fa\RC_Section_NDM_saved.xlsm
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

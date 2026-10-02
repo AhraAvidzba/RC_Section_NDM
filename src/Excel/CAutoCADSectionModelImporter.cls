@@ -46,18 +46,37 @@ Public Function ImportFromActiveDocument(ByVal settings As CSystemSettingsReader
     If doc Is Nothing Then Err.Raise vbObjectError + 4402, "CAutoCADSectionModelImporter", _
         "AutoCAD открыт, но активный чертеж не найден. Откройте или создайте чертеж и повторите импорт."
 
+    Set ImportFromActiveDocument = ImportConfiguredModelSpace(doc.ModelSpace, settings, units)
+End Function
+
+' Подготавливает параметры импорта из прочитанного Config и передает ModelSpace
+' общему обходу Region. Порог из пользовательской INPUT-площади переводится
+' в мм2; координаты и геометрические свойства самих Region уже заданы в мм.
+' Получение активного документа остается только в ImportFromActiveDocument.
+Public Function ImportConfiguredModelSpace(ByVal modelSpace As Object, ByVal settings As CSystemSettingsReader, _
+        Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
+    If settings Is Nothing Then Err.Raise vbObjectError + 4400, "CAutoCADSectionModelImporter", "Настройки Config не переданы."
     Dim importUnits As CUnitSystem
     Set importUnits = units
     If importUnits Is Nothing Then
         Set importUnits = New CUnitSystem
-        importUnits.InitializeDefaults
+        importUnits.LoadFromSettings settings
     End If
 
-    Set ImportFromActiveDocument = ImportFromModelSpace(doc.ModelSpace, _
-        settings.GetString("AutoCAD.Import.ConcreteLayer", "Concrete"), _
-        settings.GetString("AutoCAD.Import.RebarLayer", "Reinf"), _
-        REBAR_STEEL_CLASS, _
-        importUnits.InputAreaToInternal(settings.GetDouble("AutoCAD.Import.MinArea", 0.000001)), importUnits)
+    Dim minArea As Double
+    minArea = settings.GetRequiredDouble("AutoCAD.Import.MinArea")
+    If minArea < 0# Then Err.Raise vbObjectError + 4404, "CAutoCADSectionModelImporter", _
+        "AutoCAD.Import.MinArea на листе Config должна быть неотрицательной площадью."
+    On Error GoTo InvalidMinimumArea
+    minArea = importUnits.InputAreaToInternal(minArea)
+    On Error GoTo 0
+    Set ImportConfiguredModelSpace = ImportFromModelSpace(modelSpace, _
+        settings.GetRequiredString("AutoCAD.Import.ConcreteLayer"), _
+        settings.GetRequiredString("AutoCAD.Import.RebarLayer"), REBAR_STEEL_CLASS, minArea, importUnits)
+    Exit Function
+InvalidMinimumArea:
+    Err.Raise vbObjectError + 4404, "CAutoCADSectionModelImporter", _
+        "AutoCAD.Import.MinArea на листе Config слишком велика для перевода в мм2. Проверьте число и INPUT-единицу площади."
 End Function
 
 ' Проходит по ModelSpace и отбирает только Region на пользовательских слоях
@@ -454,9 +473,9 @@ End Function
 ' причину, а не передает пустую модель в решатель НДС.
 Private Sub ValidateImportedModel(ByVal model As CSectionModel)
     If model.ConcreteCount <= 0 Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
-        "Не найдено бетонных AutoCAD Region на заданном слое импорта."
+        "Не найдено бетонных AutoCAD Region на заданном слое импорта. Проверьте слой AutoCAD.Import.ConcreteLayer и порог AutoCAD.Import.MinArea на листе Config."
     If model.RebarCount <= 0 Then Err.Raise vbObjectError + 4406, "CAutoCADSectionModelImporter", _
-        "Не найдено арматурных AutoCAD Region на заданном слое импорта."
+        "Не найдено арматурных AutoCAD Region на заданном слое импорта. Проверьте слой AutoCAD.Import.RebarLayer и порог AutoCAD.Import.MinArea на листе Config."
 End Sub
 
 ' Проверяет, что двумерный Variant действительно содержит хотя бы одну строку.

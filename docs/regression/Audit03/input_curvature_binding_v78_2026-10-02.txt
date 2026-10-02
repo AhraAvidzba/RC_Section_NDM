@@ -1,0 +1,158 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_curvature_binding_v78.xlsm
+SOURCE_SHA256: 67399F22383CC706EF95F92C96E671E7B62030584005E1AA4134484C85511A98
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_b78cdf6ebf344cfd8182f663bd074fdc\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestSectionSolver.RunAudit03InputCurvatureBindingTests =====
+SUITE_STARTED: modTestSectionSolver.RunAudit03InputCurvatureBindingTests; 2026-10-02T17:39:14
+EXCEL_AFTER_SUITE: pid=22648; workingSet=138072064; privateBytes=98258944; cpu=2.890625
+OK: audit03.inputCurvature.Newton.axis1.referenceConverged
+OK: audit03.inputCurvature.Newton.axis1.binding
+OK: audit03.inputCurvature.Newton.axis1.unit0.physicalClamp; actual=0.0000001; expected=0.0000001; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis1.unit0.converged
+OK: audit03.inputCurvature.Newton.axis1.unit0.iterations
+OK: audit03.inputCurvature.Newton.axis1.unit0.moreWork
+OK: audit03.inputCurvature.Newton.axis1.unit0.N; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis1.unit0.Mx; actual=999999.999999999; expected=1000000.; absDiff=0.000000000582
+OK: audit03.inputCurvature.Newton.axis1.unit0.My; actual=0.000000000005; expected=0.; absDiff=0.000000000005
+OK: audit03.inputCurvature.Newton.axis1.unit0.epsilon0; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis1.unit0.kappaX; actual=0.000002020202; expected=0.000002020202; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis1.unit0.kappaY; actual=0.; expected=0.; absDiff=0.
+CURVATURE_BINDING: method=Newton|axis=1|input=1/mm|raw=0.0000001|iterations=22|freeIterations=2
+OK: audit03.inputCurvature.Newton.axis1.unit1.physicalClamp; actual=0.0000001; expected=0.0000001; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis1.unit1.converged
+OK: audit03.inputCurvature.Newton.axis1.unit1.iterations
+OK: audit03.inputCurvature.Newton.axis1.unit1.moreWork
+OK: audit03.inputCurvature.Newton.axis1.unit1.N; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis1.unit1.Mx; actual=1000000.; expected=1000000.; absDiff=0.000000000466
+OK: audit03.inputCurvature.Newton.axis1.unit1.My; actual=-0.000000000021; expected=0.; absDiff=0.000000000021
+OK: audit03.inputCurvature.Newton.axis1.unit1.epsilon0; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis1.unit1.kappaX; actual=0.000002020202; expected=0.000002020202; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis1.unit1.kappaY; actual=0.; expected=0.; absDiff=0.
+CURVATURE_BINDING: method=Newton|axis=1|input=1/m|raw=0.0001|iterations=22|freeIterations=2
+OK: audit03.inputCurvature.Newton.axis1.unit1.disconnectedConverged
+OK: audit03.inputCurvature.Newton.axis1.unit1.detectDisconnectedUnits
+OK: audit03.inputCurvature.Newton.axis1.unit1.disconnectedKx; actual=0.000002020202; expected=0.000002020202; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis1.unit1.disconnectedKy; actual=0.; expected=0.; absDiff=0.
+CURVATURE_DISCONNECTED: method=Newton|axis=1|iterations=2|correctIterations=22
+OK: audit03.inputCurvature.Newton.axis2.referenceConverged
+OK: audit03.inputCurvature.Newton.axis2.binding
+OK: audit03.inputCurvature.Newton.axis2.unit0.physicalClamp; actual=0.0000001; expected=0.0000001; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis2.unit0.converged
+OK: audit03.inputCurvature.Newton.axis2.unit0.iterations
+OK: audit03.inputCurvature.Newton.axis2.unit0.moreWork
+OK: audit03.inputCurvature.Newton.axis2.unit0.N; actual=-0.000000000002; expected=0.; absDiff=0.000000000002
+OK: audit03.inputCurvature.Newton.axis2.unit0.Mx; actual=0.000000000005; expected=0.; absDiff=0.000000000005
+OK: audit03.inputCurvature.Newton.axis2.unit0.My; actual=-999999.999999999; expected=-1000000.; absDiff=0.000000001048
+OK: audit03.inputCurvature.Newton.axis2.unit0.epsilon0; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis2.unit0.kappaX; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis2.unit0.kappaY; actual=-0.000000501253; expected=-0.000000501253; absDiff=0.
+CURVATURE_BINDING: method=Newton|axis=2|input=1/mm|raw=0.0000001|iterations=7|freeIterations=2
+OK: audit03.inputCurvature.Newton.axis2.unit1.physicalClamp; actual=0.0000001; expected=0.0000001; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis2.unit1.converged
+OK: audit03.inputCurvature.Newton.axis2.unit1.iterations
+OK: audit03.inputCurvature.Newton.axis2.unit1.moreWork
+OK: audit03.inputCurvature.Newton.axis2.unit1.N; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis2.unit1.Mx; actual=-0.000000000002; expected=0.; absDiff=0.000000000002
+OK: audit03.inputCurvature.Newton.axis2.unit1.My; actual=-999999.999999999; expected=-1000000.; absDiff=0.000000001048
+OK: audit03.inputCurvature.Newton.axis2.unit1.epsilon0; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis2.unit1.kappaX; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis2.unit1.kappaY; actual=-0.000000501253; expected=-0.000000501253; absDiff=0.
+CURVATURE_BINDING: method=Newton|axis=2|input=1/m|raw=0.0001|iterations=7|freeIterations=2
+OK: audit03.inputCurvature.Newton.axis2.unit1.disconnectedConverged
+OK: audit03.inputCurvature.Newton.axis2.unit1.detectDisconnectedUnits
+OK: audit03.inputCurvature.Newton.axis2.unit1.disconnectedKx; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis2.unit1.disconnectedKy; actual=-0.000000501253; expected=-0.000000501253; absDiff=0.
+CURVATURE_DISCONNECTED: method=Newton|axis=2|iterations=2|correctIterations=7
+OK: audit03.inputCurvature.Secant.axis1.referenceConverged
+OK: audit03.inputCurvature.Secant.axis1.binding
+OK: audit03.inputCurvature.Secant.axis1.unit0.physicalClamp; actual=0.0000001; expected=0.0000001; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis1.unit0.converged
+OK: audit03.inputCurvature.Secant.axis1.unit0.iterations
+OK: audit03.inputCurvature.Secant.axis1.unit0.moreWork
+OK: audit03.inputCurvature.Secant.axis1.unit0.N; actual=-0.000000000005; expected=0.; absDiff=0.000000000005
+OK: audit03.inputCurvature.Secant.axis1.unit0.Mx; actual=999999.999999999; expected=1000000.; absDiff=0.000000000582
+OK: audit03.inputCurvature.Secant.axis1.unit0.My; actual=0.000000000083; expected=0.; absDiff=0.000000000083
+OK: audit03.inputCurvature.Secant.axis1.unit0.epsilon0; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis1.unit0.kappaX; actual=0.000002020202; expected=0.000002020202; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis1.unit0.kappaY; actual=0.; expected=0.; absDiff=0.
+CURVATURE_BINDING: method=Secant|axis=1|input=1/mm|raw=0.0000001|iterations=22|freeIterations=2
+OK: audit03.inputCurvature.Secant.axis1.unit1.physicalClamp; actual=0.0000001; expected=0.0000001; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis1.unit1.converged
+OK: audit03.inputCurvature.Secant.axis1.unit1.iterations
+OK: audit03.inputCurvature.Secant.axis1.unit1.moreWork
+OK: audit03.inputCurvature.Secant.axis1.unit1.N; actual=0.000000000036; expected=0.; absDiff=0.000000000036
+OK: audit03.inputCurvature.Secant.axis1.unit1.Mx; actual=1000000.; expected=1000000.; absDiff=0.000000000466
+OK: audit03.inputCurvature.Secant.axis1.unit1.My; actual=-0.000000000052; expected=0.; absDiff=0.000000000052
+OK: audit03.inputCurvature.Secant.axis1.unit1.epsilon0; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis1.unit1.kappaX; actual=0.000002020202; expected=0.000002020202; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis1.unit1.kappaY; actual=0.; expected=0.; absDiff=0.
+CURVATURE_BINDING: method=Secant|axis=1|input=1/m|raw=0.0001|iterations=22|freeIterations=2
+OK: audit03.inputCurvature.Secant.axis1.unit1.disconnectedConverged
+OK: audit03.inputCurvature.Secant.axis1.unit1.detectDisconnectedUnits
+OK: audit03.inputCurvature.Secant.axis1.unit1.disconnectedKx; actual=0.000002020202; expected=0.000002020202; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis1.unit1.disconnectedKy; actual=0.; expected=0.; absDiff=0.
+CURVATURE_DISCONNECTED: method=Secant|axis=1|iterations=2|correctIterations=22
+OK: audit03.inputCurvature.Secant.axis2.referenceConverged
+OK: audit03.inputCurvature.Secant.axis2.binding
+OK: audit03.inputCurvature.Secant.axis2.unit0.physicalClamp; actual=0.0000001; expected=0.0000001; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis2.unit0.converged
+OK: audit03.inputCurvature.Secant.axis2.unit0.iterations
+OK: audit03.inputCurvature.Secant.axis2.unit0.moreWork
+OK: audit03.inputCurvature.Secant.axis2.unit0.N; actual=-0.000000000002; expected=0.; absDiff=0.000000000002
+OK: audit03.inputCurvature.Secant.axis2.unit0.Mx; actual=0.000000000005; expected=0.; absDiff=0.000000000005
+OK: audit03.inputCurvature.Secant.axis2.unit0.My; actual=-999999.999999999; expected=-1000000.; absDiff=0.000000001048
+OK: audit03.inputCurvature.Secant.axis2.unit0.epsilon0; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis2.unit0.kappaX; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis2.unit0.kappaY; actual=-0.000000501253; expected=-0.000000501253; absDiff=0.
+CURVATURE_BINDING: method=Secant|axis=2|input=1/mm|raw=0.0000001|iterations=7|freeIterations=2
+OK: audit03.inputCurvature.Secant.axis2.unit1.physicalClamp; actual=0.0000001; expected=0.0000001; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis2.unit1.converged
+OK: audit03.inputCurvature.Secant.axis2.unit1.iterations
+OK: audit03.inputCurvature.Secant.axis2.unit1.moreWork
+OK: audit03.inputCurvature.Secant.axis2.unit1.N; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis2.unit1.Mx; actual=0.000000000006; expected=0.; absDiff=0.000000000006
+OK: audit03.inputCurvature.Secant.axis2.unit1.My; actual=-999999.999999999; expected=-1000000.; absDiff=0.000000001048
+OK: audit03.inputCurvature.Secant.axis2.unit1.epsilon0; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis2.unit1.kappaX; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis2.unit1.kappaY; actual=-0.000000501253; expected=-0.000000501253; absDiff=0.
+CURVATURE_BINDING: method=Secant|axis=2|input=1/m|raw=0.0001|iterations=7|freeIterations=2
+OK: audit03.inputCurvature.Secant.axis2.unit1.disconnectedConverged
+OK: audit03.inputCurvature.Secant.axis2.unit1.detectDisconnectedUnits
+OK: audit03.inputCurvature.Secant.axis2.unit1.disconnectedKx; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis2.unit1.disconnectedKy; actual=-0.000000501253; expected=-0.000000501253; absDiff=0.
+CURVATURE_DISCONNECTED: method=Secant|axis=2|iterations=2|correctIterations=7
+OK: audit03.inputCurvature.restore.1.1
+OK: audit03.inputCurvature.restore.1.2
+OK: audit03.inputCurvature.restore.1.3
+OK: audit03.inputCurvature.restore.1.4
+OK: audit03.inputCurvature.restore.2.1
+OK: audit03.inputCurvature.restore.2.2
+OK: audit03.inputCurvature.restore.2.3
+OK: audit03.inputCurvature.restore.2.4
+OK: audit03.inputCurvature.restore.3.1
+OK: audit03.inputCurvature.restore.3.2
+OK: audit03.inputCurvature.restore.3.3
+OK: audit03.inputCurvature.restore.3.4
+OK: audit03.inputCurvature.restore.4.1
+OK: audit03.inputCurvature.restore.4.2
+OK: audit03.inputCurvature.restore.4.3
+OK: audit03.inputCurvature.restore.4.4
+OK: audit03.inputCurvature.restore.5.1
+OK: audit03.inputCurvature.restore.5.2
+OK: audit03.inputCurvature.restore.5.3
+OK: audit03.inputCurvature.restore.5.4
+OK: audit03.inputCurvature.restore.6.1
+OK: audit03.inputCurvature.restore.6.2
+OK: audit03.inputCurvature.restore.6.3
+OK: audit03.inputCurvature.restore.6.4
+OK: audit03.inputCurvature.restore.7.1
+OK: audit03.inputCurvature.restore.7.2
+OK: audit03.inputCurvature.restore.7.3
+OK: audit03.inputCurvature.restore.7.4
+TOTAL_AUDIT03_INPUT_CURVATURE_BINDING: passed=132; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionSolver.RunAudit03InputCurvatureBindingTests; 2026-10-02T17:39:15
+RESULTS_SAVE_REOPEN: before=9C94ACB36F3FB2AECA520E4F5A4E07CB40C3C1E1ABD72E74576E2FEB2281E38D; after=9C94ACB36F3FB2AECA520E4F5A4E07CB40C3C1E1ABD72E74576E2FEB2281E38D; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_b78cdf6ebf344cfd8182f663bd074fdc\RC_Section_NDM_saved.xlsm
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

@@ -1,0 +1,47 @@
+{
+  "Scope": "INPUT Area имеет реальный consumer AutoCAD.Import.MinArea. Девять пар единицы/порога проходят тот же Config preparation, что live-import. Геометрические данные DWG остаются mm/mm2/mm4. Fake Region не являются доказательством COM-чтения реального DWG или записи в AutoCAD.",
+  "PositiveReport": "docs/regression/Audit03/input_area_import_v79_2026-10-02.txt",
+  "PositiveGate": "TOTAL_AUDIT03_INPUT_AREA_IMPORT: passed=89; failed=0",
+  "SupplementaryReport": "docs/regression/Audit03/imported_snapshot_unit_changes_v81_2026-10-02.txt",
+  "SupplementaryGate": "TOTAL_AUDIT03_IMPORTED_UNIT_CHANGES: passed=228; failed=0",
+  "SupplementaryAssertionPrefixes": [
+    "audit03.importUnits.before0.after2.properties.equivalent",
+    "audit03.importUnits.before2.after0.afterSolve.autoCADGeometryMm",
+    "audit03.importUnits.invalidOutput.snapshotPreserved",
+    "audit03.importUnits.rawUnchanged.strainRatio"
+  ],
+  "FullReports": [
+    "docs/regression/Audit03/config_import_units_full_off_v83b_2026-10-02.txt",
+    "docs/regression/Audit03/config_import_units_full_on_v83b_2026-10-02.txt"
+  ],
+  "Consumer": "Config -> CSystemSettingsReader/CUnitSystem -> CAutoCADSectionModelImporter.ImportConfiguredModelSpace -> ImportFromModelSpace -> CSectionModel -> Results geometry preview / реальный Calculate",
+  "TestId": "modTestWorkbookInterface.TestAudit03InputAreaImportFilter + TestAudit03ImportedSnapshotUnitChanges",
+  "Entries": [
+    {
+      "Id": "Units.Area.Input",
+      "CanonicalKey": "Units.Area.Input",
+      "Type": "Enum",
+      "InternalUnits": "мм2",
+      "RuntimeDefault": "Обязательный key полной книги; отсутствующее поле частичного автономного API имеет программный default mm2.",
+      "ValidRange": "mm2 / cm2 / m2",
+      "Activity": "Порог площади при новом импорте AutoCAD; сами Region не масштабируются через INPUT. При расчете сохраненной импортной геометрии MinArea повторно не применяется.",
+      "ExpectedEffect": "25 mm2 / 0.25 cm2 / 0.000025 m2 отбирают одинаковые Region с включительной границей. Пропуск адаптера в отдельном нижнеуровневом тестовом call меняет отбор, доказывая активность настройки.",
+      "AssertionPrefix": "audit03.inputArea.unit",
+      "BlankAndErrorContract": "Некорректные UnitSettings отклоняются адресно общей валидацией; отдельные directed unit-choice assertions v71 сохранены и исполняются в full suites.",
+      "RangeReview": "Все три единицы при порогах 0, 25 и 24.998 mm2. Проверены число Region, handle граничного стержня, неизменные координаты/A/I в мм и чтение Config units при опущенном optional units. INPUT/OUTPUT меняются в девяти import-to-calculation переходах, source/no-solve/save-reopen проверены."
+    },
+    {
+      "Id": "AutoCAD.Import.MinArea",
+      "CanonicalKey": "AutoCAD.Import.MinArea",
+      "Type": "Double",
+      "InternalUnits": "мм2 после InputAreaToInternal",
+      "RuntimeDefault": "Обязательная настройка импорта, скрытого fallback при пустом/ошибочном key нет.",
+      "ValidRange": "Конечное неотрицательное число, переводимое в Double mm2 без переполнения. Большое значение может удалить все бетонные или арматурные Region и вызывает понятную ошибку импорта.",
+      "Activity": "Только новый импорт; не фильтрует повторно saved Results при Calculate.",
+      "ExpectedEffect": "Region с A < MinArea пропускается, A = MinArea сохраняется. Нулевой порог не отбрасывает Region по малой площади. Порог не изменяет координаты и A/I оставшихся элементов.",
+      "AssertionPrefix": "audit03.inputArea.",
+      "BlankAndErrorContract": "Пустое значение, TODO, abc, CVErr, отрицательное число, overflow после перевода площади и отсутствующий key отклоняются с именем настройки. Empty concrete/rebar selection сообщает соответствующий layer и MinArea.",
+      "RangeReview": "Порог 25 mm2 проверен на стержнях 24.999/25/25.001 mm2 и малом бетонном Region. Проверены zero, lower threshold, complete elimination по каждому типу и восстановление всех измененных Config ranges. Смена порога/слоев после импортного snapshot не влияет на Calculate без нового импорта."
+    }
+  ]
+}

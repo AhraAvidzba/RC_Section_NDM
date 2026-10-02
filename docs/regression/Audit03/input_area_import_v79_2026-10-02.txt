@@ -1,0 +1,118 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_import_unit_workflow_v79.xlsm
+SOURCE_SHA256: DDBAE7FD6D921CEA7FABBABFC7845DFCFA02498879F89A3F3F75FFB70F33FAD9
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_b7666752b3b641b69ff88def73160ba7\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit03InputAreaImportFilterTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03InputAreaImportFilterTests; 2026-10-02T18:15:50
+EXCEL_AFTER_SUITE: pid=19096; workingSet=132603904; privateBytes=93143040; cpu=2.75
+OK: audit03.inputArea.unit0.case0.concreteCount
+OK: audit03.inputArea.unit0.case0.rebarCount
+OK: audit03.inputArea.unit0.case0.xMm; actual=1000.; expected=1000.
+OK: audit03.inputArea.unit0.case0.yMm; actual=2000.; expected=2000.
+OK: audit03.inputArea.unit0.case0.areaMm2; actual=10000.; expected=10000.
+OK: audit03.inputArea.unit0.case0.inertiaMm4; actual=8333333.33333588; expected=8333333.33333333
+AREA_FILTER: input=mm2|raw=0|thresholdMm2=0|concrete=2|rebar=3
+OK: audit03.inputArea.unit0.case1.concreteCount
+OK: audit03.inputArea.unit0.case1.rebarCount
+OK: audit03.inputArea.unit0.case1.xMm; actual=1000.; expected=1000.
+OK: audit03.inputArea.unit0.case1.yMm; actual=2000.; expected=2000.
+OK: audit03.inputArea.unit0.case1.areaMm2; actual=10000.; expected=10000.
+OK: audit03.inputArea.unit0.case1.inertiaMm4; actual=8333333.33333588; expected=8333333.33333333
+OK: audit03.inputArea.unit0.case1.inclusiveBoundary
+OK: audit03.inputArea.unit0.case1.boundaryArea; actual=25.; expected=25.
+OK: audit03.inputArea.unit0.case1.boundaryX; actual=1000.; expected=1000.
+OK: audit03.inputArea.unit0.case1.implicitUnitsRead
+AREA_FILTER: input=mm2|raw=25|thresholdMm2=25|concrete=1|rebar=2
+OK: audit03.inputArea.unit0.case2.concreteCount
+OK: audit03.inputArea.unit0.case2.rebarCount
+OK: audit03.inputArea.unit0.case2.xMm; actual=1000.; expected=1000.
+OK: audit03.inputArea.unit0.case2.yMm; actual=2000.; expected=2000.
+OK: audit03.inputArea.unit0.case2.areaMm2; actual=10000.; expected=10000.
+OK: audit03.inputArea.unit0.case2.inertiaMm4; actual=8333333.33333588; expected=8333333.33333333
+AREA_FILTER: input=mm2|raw=24.998|thresholdMm2=24.998|concrete=1|rebar=3
+OK: audit03.inputArea.unit1.case0.concreteCount
+OK: audit03.inputArea.unit1.case0.rebarCount
+OK: audit03.inputArea.unit1.case0.xMm; actual=1000.; expected=1000.
+OK: audit03.inputArea.unit1.case0.yMm; actual=2000.; expected=2000.
+OK: audit03.inputArea.unit1.case0.areaMm2; actual=10000.; expected=10000.
+OK: audit03.inputArea.unit1.case0.inertiaMm4; actual=8333333.33333588; expected=8333333.33333333
+AREA_FILTER: input=cm2|raw=0|thresholdMm2=0|concrete=2|rebar=3
+OK: audit03.inputArea.unit1.case1.concreteCount
+OK: audit03.inputArea.unit1.case1.rebarCount
+OK: audit03.inputArea.unit1.case1.xMm; actual=1000.; expected=1000.
+OK: audit03.inputArea.unit1.case1.yMm; actual=2000.; expected=2000.
+OK: audit03.inputArea.unit1.case1.areaMm2; actual=10000.; expected=10000.
+OK: audit03.inputArea.unit1.case1.inertiaMm4; actual=8333333.33333588; expected=8333333.33333333
+OK: audit03.inputArea.unit1.case1.inclusiveBoundary
+OK: audit03.inputArea.unit1.case1.boundaryArea; actual=25.; expected=25.
+OK: audit03.inputArea.unit1.case1.boundaryX; actual=1000.; expected=1000.
+OK: audit03.inputArea.unit1.case1.implicitUnitsRead
+OK: audit03.inputArea.unit1.case1.detectDisconnectedUnits
+AREA_FILTER: input=cm2|raw=0.25|thresholdMm2=25|concrete=1|rebar=2
+OK: audit03.inputArea.unit1.case2.concreteCount
+OK: audit03.inputArea.unit1.case2.rebarCount
+OK: audit03.inputArea.unit1.case2.xMm; actual=1000.; expected=1000.
+OK: audit03.inputArea.unit1.case2.yMm; actual=2000.; expected=2000.
+OK: audit03.inputArea.unit1.case2.areaMm2; actual=10000.; expected=10000.
+OK: audit03.inputArea.unit1.case2.inertiaMm4; actual=8333333.33333588; expected=8333333.33333333
+AREA_FILTER: input=cm2|raw=0.24998|thresholdMm2=24.998|concrete=1|rebar=3
+OK: audit03.inputArea.unit2.case0.concreteCount
+OK: audit03.inputArea.unit2.case0.rebarCount
+OK: audit03.inputArea.unit2.case0.xMm; actual=1000.; expected=1000.
+OK: audit03.inputArea.unit2.case0.yMm; actual=2000.; expected=2000.
+OK: audit03.inputArea.unit2.case0.areaMm2; actual=10000.; expected=10000.
+OK: audit03.inputArea.unit2.case0.inertiaMm4; actual=8333333.33333588; expected=8333333.33333333
+AREA_FILTER: input=m2|raw=0|thresholdMm2=0|concrete=2|rebar=3
+OK: audit03.inputArea.unit2.case1.concreteCount
+OK: audit03.inputArea.unit2.case1.rebarCount
+OK: audit03.inputArea.unit2.case1.xMm; actual=1000.; expected=1000.
+OK: audit03.inputArea.unit2.case1.yMm; actual=2000.; expected=2000.
+OK: audit03.inputArea.unit2.case1.areaMm2; actual=10000.; expected=10000.
+OK: audit03.inputArea.unit2.case1.inertiaMm4; actual=8333333.33333588; expected=8333333.33333333
+OK: audit03.inputArea.unit2.case1.inclusiveBoundary
+OK: audit03.inputArea.unit2.case1.boundaryArea; actual=25.; expected=25.
+OK: audit03.inputArea.unit2.case1.boundaryX; actual=1000.; expected=1000.
+OK: audit03.inputArea.unit2.case1.implicitUnitsRead
+OK: audit03.inputArea.unit2.case1.detectDisconnectedUnits
+AREA_FILTER: input=m2|raw=0.000025|thresholdMm2=25|concrete=1|rebar=2
+OK: audit03.inputArea.unit2.case2.concreteCount
+OK: audit03.inputArea.unit2.case2.rebarCount
+OK: audit03.inputArea.unit2.case2.xMm; actual=1000.; expected=1000.
+OK: audit03.inputArea.unit2.case2.yMm; actual=2000.; expected=2000.
+OK: audit03.inputArea.unit2.case2.areaMm2; actual=10000.; expected=10000.
+OK: audit03.inputArea.unit2.case2.inertiaMm4; actual=8333333.33333588; expected=8333333.33333333
+AREA_FILTER: input=m2|raw=0.000024998|thresholdMm2=24.998|concrete=1|rebar=3
+OK: audit03.inputArea.invalid0.rejected
+OK: audit03.inputArea.invalid0.address
+AREA_INVALID: case=0|error=-2147217194|reason=Обязательная числовая настройка AutoCAD.Import.MinArea не задана.
+OK: audit03.inputArea.invalid1.rejected
+OK: audit03.inputArea.invalid1.address
+AREA_INVALID: case=1|error=-2147217194|reason=Обязательная числовая настройка AutoCAD.Import.MinArea не задана.
+OK: audit03.inputArea.invalid2.rejected
+OK: audit03.inputArea.invalid2.address
+AREA_INVALID: case=2|error=-2147217191|reason=Обязательная числовая настройка AutoCAD.Import.MinArea должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.inputArea.invalid3.rejected
+OK: audit03.inputArea.invalid3.address
+AREA_INVALID: case=3|error=-2147217195|reason=На листе Config настройка AutoCAD.Import.MinArea содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.inputArea.invalid4.rejected
+OK: audit03.inputArea.invalid4.address
+AREA_INVALID: case=4|error=-2147217100|reason=AutoCAD.Import.MinArea на листе Config должна быть неотрицательной площадью.
+OK: audit03.inputArea.invalid5.rejected
+OK: audit03.inputArea.invalid5.address
+AREA_INVALID: case=5|error=-2147217100|reason=AutoCAD.Import.MinArea на листе Config слишком велика для перевода в мм2. Проверьте число и INPUT-единицу площади.
+OK: audit03.inputArea.emptyRebar.rejected
+OK: audit03.inputArea.emptyRebar.reason
+OK: audit03.inputArea.emptyConcrete.rejected
+OK: audit03.inputArea.emptyConcrete.reason
+OK: audit03.inputArea.missing.rejected
+OK: audit03.inputArea.missing.address
+OK: audit03.inputArea.noStateSolve
+OK: audit03.inputArea.restoreUnits.equivalent; 
+OK: audit03.inputArea.restoreSettings.equivalent; 
+TOTAL_AUDIT03_INPUT_AREA_IMPORT: passed=89; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03InputAreaImportFilterTests; 2026-10-02T18:15:50
+RESULTS_SAVE_REOPEN: before=9C94ACB36F3FB2AECA520E4F5A4E07CB40C3C1E1ABD72E74576E2FEB2281E38D; after=9C94ACB36F3FB2AECA520E4F5A4E07CB40C3C1E1ABD72E74576E2FEB2281E38D; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_b7666752b3b641b69ff88def73160ba7\RC_Section_NDM_saved.xlsm
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

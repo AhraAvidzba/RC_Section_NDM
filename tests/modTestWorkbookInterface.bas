@@ -51,6 +51,8 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAutoCADSourceRequiresManualImport stats
     TestAutoCADImportButtonRejectsGeneratedSource stats
     TestAutoCADImporterTreatsDrawingUnitsAsMillimeters stats
+    TestAudit03InputAreaImportFilter stats
+    TestAudit03ImportedSnapshotUnitChanges stats
     AppendLine stats, "RUN: TestAutoCADPreviewWritesAndDrawsBoundsDimensions"
     TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
     TestAnnotationDimensionTextRoundsInMillimeters stats
@@ -6025,6 +6027,390 @@ Private Sub Audit03ComparePlainSnapshot(ByRef stats As TUiTestStats, ByVal prefi
     End If
     AssertTrue stats, prefix & ".equivalent; " & detail, same
 End Sub
+
+' ДЛЯ ТЕСТОВ: проверяет INPUT-площадь и численный порог на том же Config ->
+' ModelSpace pipeline, который вызывает live import, но без подключения DWG.
+Public Function RunAudit03InputAreaImportFilterTests() As String
+    Dim stats As TUiTestStats
+    TestAudit03InputAreaImportFilter stats
+    AppendLine stats, "TOTAL_AUDIT03_INPUT_AREA_IMPORT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03InputAreaImportFilterTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: mm2/cm2/m2 должны одинаково отфильтровать Region около порога.
+' Саму DWG-геометрию не масштабируем. Нулевой порог, ошибочный ввод и потеря
+' обязательного key проверяются отдельно; измененные ячейки восстанавливаются.
+Private Sub TestAudit03InputAreaImportFilter(ByRef stats As TUiTestStats)
+    Dim unitRange As Object, systemRange As Object, savedUnits As Variant, savedSystem As Variant
+    Dim modelSpace As Collection, region As CFakeAcadRegion, importer As CAutoCADSectionModelImporter
+    Dim section As CSectionModel, disconnected As CSectionModel
+    Dim settings As CSystemSettingsReader, units As CUnitSystem
+    Dim unitIndex As Long, caseIndex As Long, factor As Double, threshold As Double, rawValue As Double
+    Dim row As Long, minAreaRow As Long, expectedConcrete As Long, expectedRebar As Long
+    Dim unitNames As Variant, factors As Variant, areas As Variant, invalid As Variant, invalidIndex As Long
+    Dim errorNumber As Long, description As String, prefix As String, solveCount As Long
+    On Error GoTo Failed
+    Set unitRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    savedUnits = unitRange.Formula: savedSystem = systemRange.Formula
+    For row = 2 To systemRange.Rows.Count
+        If CStr(systemRange.Cells(row, 1).Value2) = "AutoCAD.Import.MinArea" Then minAreaRow = row
+    Next row
+    If minAreaRow = 0 Then Err.Raise vbObjectError + 4602, "TestAudit03InputAreaImportFilter", "Не найден порог площади импорта."
+    SetSystemSetting "Units.Length.Input", "m"
+    SetSystemSetting "AutoCAD.Import.ConcreteLayer", "Concrete"
+    SetSystemSetting "AutoCAD.Import.RebarLayer", "Reinf"
+    Set modelSpace = New Collection
+    Set region = New CFakeAcadRegion
+    region.Initialize 10000#, 1000#, 2000#, 10000# * 10000# / 12#, 10000# * 10000# / 12#, 0#, "Concrete", "C_MAIN"
+    modelSpace.Add region
+    Set region = New CFakeAcadRegion
+    region.Initialize 2#, 1005#, 2005#, 4# / 12#, 4# / 12#, 0#, "Concrete", "C_SMALL"
+    modelSpace.Add region
+    areas = Array(24.999, 25#, 25.001)
+    For row = 0 To UBound(areas)
+        Set region = New CFakeAcadRegion
+        region.Initialize CDbl(areas(row)), 980# + row * 20#, 1980#, 1#, 1#, 0#, "Reinf", "R" & CStr(row + 1)
+        modelSpace.Add region
+    Next row
+    Set importer = New CAutoCADSectionModelImporter
+    unitNames = Array("mm2", "cm2", "m2")
+    factors = Array(1#, 100#, 1000000#)
+    solveCount = SectionEquilibriumSolveCount()
+    For unitIndex = 0 To 2
+        factor = CDbl(factors(unitIndex))
+        SetSystemSetting "Units.Area.Input", CStr(unitNames(unitIndex))
+        For caseIndex = 0 To 2
+            Select Case caseIndex
+                Case 0: threshold = 0#: expectedConcrete = 2: expectedRebar = 3
+                Case 1: threshold = 25#: expectedConcrete = 1: expectedRebar = 2
+                Case 2: threshold = 24.998: expectedConcrete = 1: expectedRebar = 3
+            End Select
+            rawValue = threshold / factor
+            systemRange.Cells(minAreaRow, 2).Value2 = rawValue
+            Set settings = New CSystemSettingsReader
+            settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem
+            units.LoadFromSettings settings
+            Set section = importer.ImportConfiguredModelSpace(modelSpace, settings, units)
+            prefix = "audit03.inputArea.unit" & CStr(unitIndex) & ".case" & CStr(caseIndex)
+            AssertTrue stats, prefix & ".concreteCount", section.ConcreteCount = expectedConcrete
+            AssertTrue stats, prefix & ".rebarCount", section.RebarCount = expectedRebar
+            AssertClose stats, prefix & ".xMm", section.ConcreteX(1), 1000#, 0.000001
+            AssertClose stats, prefix & ".yMm", section.ConcreteY(1), 2000#, 0.000001
+            AssertClose stats, prefix & ".areaMm2", section.ConcreteArea(1), 10000#, 0.000001
+            AssertClose stats, prefix & ".inertiaMm4", section.ConcreteLocalIx(1), 10000# * 10000# / 12#, 0.001
+            If caseIndex = 1 Then
+                AssertTrue stats, prefix & ".inclusiveBoundary", section.RebarSourceHandle(1) = "R2"
+                AssertClose stats, prefix & ".boundaryArea", section.RebarArea(1), 25#, 0.000001
+                AssertClose stats, prefix & ".boundaryX", section.RebarX(1), 1000#, 0.000001
+                Set section = importer.ImportConfiguredModelSpace(modelSpace, settings)
+                AssertTrue stats, prefix & ".implicitUnitsRead", section.ConcreteCount = expectedConcrete And section.RebarCount = expectedRebar
+                If unitIndex > 0 Then
+                    Set disconnected = importer.ImportFromModelSpace(modelSpace, "Concrete", "Reinf", "Rebar", rawValue, units)
+                    AssertTrue stats, prefix & ".detectDisconnectedUnits", disconnected.ConcreteCount <> section.ConcreteCount And _
+                        disconnected.RebarCount <> section.RebarCount
+                End If
+            End If
+            AppendLine stats, "AREA_FILTER: input=" & CStr(unitNames(unitIndex)) & "|raw=" & CStr(rawValue) & _
+                "|thresholdMm2=" & CStr(threshold) & "|concrete=" & CStr(section.ConcreteCount) & "|rebar=" & CStr(section.RebarCount)
+        Next caseIndex
+    Next unitIndex
+    SetSystemSetting "Units.Area.Input", "m2"
+    invalid = Array(vbNullString, "TODO", "abc", CVErr(2042), -1#, "1e308")
+    For invalidIndex = 0 To UBound(invalid)
+        systemRange.Cells(minAreaRow, 2).Value2 = invalid(invalidIndex)
+        Audit03CaptureImportError modelSpace, errorNumber, description
+        prefix = "audit03.inputArea.invalid" & CStr(invalidIndex)
+        AssertTrue stats, prefix & ".rejected", errorNumber <> 0
+        AssertTrue stats, prefix & ".address", InStr(1, description, "AutoCAD.Import.MinArea", vbBinaryCompare) > 0
+        AppendLine stats, "AREA_INVALID: case=" & CStr(invalidIndex) & "|error=" & CStr(errorNumber) & "|reason=" & description
+    Next invalidIndex
+    systemRange.Cells(minAreaRow, 2).Value2 = 25.002 / 1000000#
+    Audit03CaptureImportError modelSpace, errorNumber, description
+    AssertTrue stats, "audit03.inputArea.emptyRebar.rejected", errorNumber <> 0
+    AssertTrue stats, "audit03.inputArea.emptyRebar.reason", InStr(1, description, "арматурных", vbBinaryCompare) > 0 And _
+        InStr(1, description, "AutoCAD.Import.MinArea", vbBinaryCompare) > 0
+    systemRange.Cells(minAreaRow, 2).Value2 = 10001# / 1000000#
+    Audit03CaptureImportError modelSpace, errorNumber, description
+    AssertTrue stats, "audit03.inputArea.emptyConcrete.rejected", errorNumber <> 0
+    AssertTrue stats, "audit03.inputArea.emptyConcrete.reason", InStr(1, description, "бетонных", vbBinaryCompare) > 0 And _
+        InStr(1, description, "AutoCAD.Import.MinArea", vbBinaryCompare) > 0
+    systemRange.Cells(minAreaRow, 1).Value2 = "__MissingImportMinimumArea"
+    Audit03CaptureImportError modelSpace, errorNumber, description
+    AssertTrue stats, "audit03.inputArea.missing.rejected", errorNumber <> 0
+    AssertTrue stats, "audit03.inputArea.missing.address", InStr(1, description, "AutoCAD.Import.MinArea", vbBinaryCompare) > 0
+    AssertTrue stats, "audit03.inputArea.noStateSolve", SectionEquilibriumSolveCount() = solveCount
+    GoTo Restore
+Failed:
+    AssertTrue stats, "audit03.inputArea.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Restore:
+    On Error Resume Next
+    If Not unitRange Is Nothing Then unitRange.Formula = savedUnits
+    If Not systemRange Is Nothing Then systemRange.Formula = savedSystem
+    On Error GoTo 0
+    If Not unitRange Is Nothing Then
+        If IsArray(savedUnits) Then
+            invalid = unitRange.Formula
+            Audit03ComparePlainSnapshot stats, "audit03.inputArea.restoreUnits", savedUnits, invalid, 1
+        End If
+    End If
+    If Not systemRange Is Nothing Then
+        If IsArray(savedSystem) Then
+            invalid = systemRange.Formula
+            Audit03ComparePlainSnapshot stats, "audit03.inputArea.restoreSettings", savedSystem, invalid, 1
+        End If
+    End If
+End Sub
+
+' ДЛЯ ТЕСТОВ: собирает настройки заново после изменения ячейки и сохраняет
+' только фактическую ошибку общего импорта. Ошибка не превращается в default.
+Private Sub Audit03CaptureImportError(ByVal modelSpace As Object, ByRef errorNumber As Long, ByRef description As String)
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, importer As CAutoCADSectionModelImporter, section As CSectionModel
+    errorNumber = 0: description = vbNullString
+    On Error GoTo Failed
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+    Set importer = New CAutoCADSectionModelImporter
+    Set section = importer.ImportConfiguredModelSpace(modelSpace, settings, units)
+    Exit Sub
+Failed:
+    errorNumber = Err.Number: description = Err.Description
+    Err.Clear
+End Sub
+
+' ДЛЯ ТЕСТОВ: воспроизводит импорт -> смена INPUT/OUTPUT -> кнопка расчета.
+' Использует общий импорт существующих fake Region и реальный snapshot/pipeline.
+Public Function RunAudit03ImportedSnapshotUnitChangeTests() As String
+    Dim stats As TUiTestStats
+    TestAudit03ImportedSnapshotUnitChanges stats
+    AppendLine stats, "TOTAL_AUDIT03_IMPORTED_UNIT_CHANGES: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03ImportedSnapshotUnitChangeTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: все девять переходов OUTPUT-длины mm/cm/m должны сохранить
+' импортное сечение. INPUT и знаки меняются вместе с независимым переводом
+' чисел; заголовки старого snapshot остаются источником его размерностей.
+' Непереведенное число нагрузки отдельно должно получить новый физический смысл.
+Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
+    Dim rangeNames As Variant, original As Collection, name As Variant, i As Long, beforeIndex As Long, afterIndex As Long
+    Dim lengthNames As Variant, areaNames As Variant, lengthFactors As Variant, areaFactors As Variant
+    Dim forceNames As Variant, forceFactors As Variant, momentNames As Variant, momentFactors As Variant
+    Dim stressNames As Variant, stressFactors As Variant, lengthFactor As Double, stressFactor As Double
+    Dim forceFactor As Double, momentFactor As Double, signN As Double, signMx As Double, signMy As Double
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, section As CSectionModel, restored As CSectionModel
+    Dim writer As CNDMResultsWriter, loads As Object, preview As Variant, actual As Variant
+    Dim baselineElements As Variant, baselineGeometry As Variant, baselineProperties As Variant
+    Dim prefix As String, message As String, solveCount As Long, errorNumber As Long, description As String
+    Dim smallStrain As Double, largeStrain As Double
+    On Error GoTo Failed
+    rangeNames = Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
+        "rngCalculationProfiles", "rngLoadCombinations", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", _
+        "rngCircleGeometry", "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry")
+    Set original = New Collection
+    For Each name In rangeNames
+        original.Add ThisWorkbook.Names.Item(CStr(name)).RefersToRange.Formula
+    Next name
+    lengthNames = Array("mm", "cm", "m"): lengthFactors = Array(1#, 10#, 1000#)
+    areaNames = Array("mm2", "cm2", "m2"): areaFactors = Array(1#, 100#, 1000000#)
+    forceNames = Array("N", "kN", "tf"): forceFactors = Array(1#, 1000#, 9806.65)
+    momentNames = Array("N*mm", "kN*m", "tf*m"): momentFactors = Array(1#, 1000000#, 9806650#)
+    stressNames = Array("MPa", "kPa", "Pa"): stressFactors = Array(1#, 0.001, 0.000001)
+    Set writer = New CNDMResultsWriter
+    For beforeIndex = 0 To 2
+        For afterIndex = 0 To 2
+            For i = 0 To UBound(rangeNames)
+                ThisWorkbook.Names.Item(CStr(rangeNames(i))).RefersToRange.Formula = original(i + 1)
+            Next i
+            PrepareCircleInput
+            SetSystemSetting "General.ExecutionReportEnabled", "No"
+            SetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
+            SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+            SetSystemSetting "Load.ReferenceOffsetX", "0": SetSystemSetting "Load.ReferenceOffsetY", "0"
+            SetSystemSetting "Solver.MaxDeltaKappa", "0"
+            SetSystemSetting "Solver.ToleranceN", "0.001"
+            SetSystemSetting "Solver.ToleranceMx", "0.001": SetSystemSetting "Solver.ToleranceMy", "0.001"
+            SetProfileSetting "PR1", "Calculation.Strength.DirectState", "Yes"
+            SetProfileSetting "PR1", "Calculation.Strength.Capacity", "No"
+            SetProfileSetting "PR1", "Calculation.Crack.Width", "No"
+            SetProfileSetting "PR1", "Calculation.Stability.Enabled", "No"
+            SetProfileSetting "PR1", "Visualization.State", "StrengthState"
+            SetSystemSetting "AutoCAD.Import.MinArea", "0.000001"
+            SetSystemSetting "AutoCAD.Import.ConcreteLayer", "Concrete"
+            SetSystemSetting "AutoCAD.Import.RebarLayer", "Reinf"
+            For Each name In Array("Force", "Moment", "Stress", "Curvature")
+                SetSystemSetting "Units." & CStr(name) & ".Output", GetSystemSetting("Units." & CStr(name) & ".Input")
+            Next name
+            SetSystemSetting "Units.Length.Output", CStr(lengthNames(beforeIndex))
+            SetSystemSetting "Units.Area.Output", CStr(areaNames(beforeIndex))
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem: units.LoadFromSettings settings
+            Set section = Audit03ImportSnapshotFixture(settings, units)
+            writer.WriteGeometryPreview ThisWorkbook, section, units
+            preview = ResultTable("rngNDMSectionGeometry")
+            prefix = "audit03.importUnits.before" & CStr(beforeIndex) & ".after" & CStr(afterIndex)
+            AssertClose stats, prefix & ".previewX", GeometryResultValue(preview, "C1", "X"), 950# / CDbl(lengthFactors(beforeIndex)), 0.000001
+            AssertClose stats, prefix & ".previewArea", GeometryResultValue(preview, "C1", "Area"), 10000# / CDbl(areaFactors(beforeIndex)), 0.000001
+            AssertTextEquals stats, prefix & ".previewHeader", CStr(preview(1, ResultHeaderColumnByBaseName(preview, "X"))), "X, " & CStr(lengthNames(beforeIndex))
+            AssertTextEquals stats, prefix & ".previewAreaHeader", CStr(preview(1, ResultHeaderColumnByBaseName(preview, "Area"))), "Area, " & CStr(areaNames(beforeIndex))
+            Audit03AssertAutoCADMmGeometry stats, prefix & ".beforeChange", section
+
+            ' Меняем текущие единицы, но не переписываем импортированный snapshot.
+            lengthFactor = CDbl(lengthFactors(afterIndex)): stressFactor = CDbl(stressFactors(afterIndex))
+            forceFactor = CDbl(forceFactors(afterIndex)): momentFactor = CDbl(momentFactors(afterIndex))
+            Audit03RescaleInputTables lengthFactor, stressFactor
+            SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+            SetSystemSetting "Units.Length.Input", CStr(lengthNames(afterIndex))
+            SetSystemSetting "Units.Area.Input", CStr(areaNames(afterIndex))
+            SetSystemSetting "Units.Force.Input", CStr(forceNames(afterIndex))
+            SetSystemSetting "Units.Moment.Input", CStr(momentNames(afterIndex))
+            SetSystemSetting "Units.Stress.Input", CStr(stressNames(afterIndex))
+            SetSystemSetting "Units.Curvature.Input", IIf(afterIndex = 0, "1/mm", "1/m")
+            SetSystemSetting "Units.Length.Output", CStr(lengthNames(afterIndex))
+            SetSystemSetting "Units.Area.Output", CStr(areaNames(afterIndex))
+            SetSystemSetting "Units.Force.Output", CStr(forceNames(afterIndex))
+            SetSystemSetting "Units.Moment.Output", CStr(momentNames(afterIndex))
+            SetSystemSetting "Units.Stress.Output", CStr(stressNames(afterIndex))
+            SetSystemSetting "Units.Curvature.Output", IIf(afterIndex = 0, "1/mm", "1/m")
+            signN = IIf(afterIndex = 1, -1#, 1#): signMx = IIf(afterIndex = 1, -1#, 1#): signMy = IIf(afterIndex = 2, -1#, 1#)
+            SetSystemSetting "Sign.N.User", IIf(signN > 0#, "Tension", "Compression")
+            SetSystemSetting "Sign.Mx.User", IIf(signMx > 0#, "+Y tension", "-Y tension")
+            SetSystemSetting "Sign.My.User", IIf(signMy > 0#, "+X tension", "-X tension")
+            SetSystemSetting "Solver.ToleranceN", CStr(0.001 / forceFactor)
+            SetSystemSetting "Solver.ToleranceMx", CStr(0.001 / momentFactor)
+            SetSystemSetting "Solver.ToleranceMy", CStr(0.001 / momentFactor)
+            SetSystemSetting "Geometry.Source", "AutoCAD"
+            ' Эти параметры остановили бы новый импорт, но сохраненную модель
+            ' при расчете не должны ни перечитывать из DWG, ни фильтровать заново.
+            SetSystemSetting "AutoCAD.Import.MinArea", "1e100"
+            SetSystemSetting "AutoCAD.Import.ConcreteLayer", "__NoNewConcreteImport"
+            SetSystemSetting "AutoCAD.Import.RebarLayer", "__NoNewRebarImport"
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem: units.LoadFromSettings settings
+            solveCount = SectionEquilibriumSolveCount()
+            Set restored = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
+            AssertTextEquals stats, prefix & ".source", restored.SourceType, "AutoCADImport"
+            AssertClose stats, prefix & ".restoredX", restored.ConcreteX(1), 950#, 0.000001
+            AssertClose stats, prefix & ".restoredArea", restored.ConcreteArea(1), 10000#, 0.000001
+            AssertTrue stats, prefix & ".restoreNoSolve", SectionEquilibriumSolveCount() = solveCount
+            actual = ResultTable("rngNDMSectionGeometry")
+            Audit03ComparePlainSnapshot stats, prefix & ".snapshotUnchangedBeforeSolve", preview, actual, 1
+            Audit03AssertAutoCADMmGeometry stats, prefix & ".afterChangeBeforeSolve", section
+
+            Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+            ClearDataRows loads
+            loads.Cells(2, 1).Value2 = "LC_IMPORT"
+            loads.Cells(2, 2).Value2 = -100000# / forceFactor * signN
+            loads.Cells(2, 3).Value2 = 1000000# / momentFactor * signMx
+            loads.Cells(2, 4).Value2 = -750000# / momentFactor * signMy
+            loads.Cells(2, 5).Value2 = "PR1": loads.Cells(2, 6).Value2 = ChrW$(&H3BB) & "*Mxy"
+            message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+            AssertTrue stats, prefix & ".run", InStr(1, message, "Расчет импортированной", vbTextCompare) > 0
+            AssertTrue stats, prefix & ".hasState", ResultTableRowCount("rngNDMElementResults") > 1
+            AssertClose stats, prefix & ".loadN", CDbl(ResultsPropertyValue("LC_IMPORT", "N")) * forceFactor * signN, -100000#, 0.001
+            Audit03AssertAutoCADMmGeometry stats, prefix & ".afterSolve", section
+            actual = ResultTable("rngNDMSectionGeometry")
+            AssertTextEquals stats, prefix & ".newHeader", CStr(actual(1, ResultHeaderColumnByBaseName(actual, "X"))), "X, " & CStr(lengthNames(afterIndex))
+            AssertTextEquals stats, prefix & ".newAreaHeader", CStr(actual(1, ResultHeaderColumnByBaseName(actual, "Area"))), "Area, " & CStr(areaNames(afterIndex))
+            AssertClose stats, prefix & ".newX", GeometryResultValue(actual, "C1", "X"), 950# / lengthFactor, 0.000001
+            actual = ResultTable("rngNDMElementResults")
+            If beforeIndex = 0 And afterIndex = 0 Then
+                baselineElements = actual
+                baselineGeometry = ResultTable("rngNDMSectionGeometry")
+                baselineProperties = ResultTable("rngNDMSectionProperties")
+            Else
+                Audit03CompareUnitSnapshot stats, prefix & ".elements", baselineElements, actual, "Elements", _
+                    lengthFactor, CDbl(areaFactors(afterIndex)), stressFactor, IIf(afterIndex = 0, 1#, 0.001), forceFactor, momentFactor, signN, signMx, signMy
+                actual = ResultTable("rngNDMSectionGeometry")
+                Audit03CompareUnitSnapshot stats, prefix & ".geometry", baselineGeometry, actual, "Geometry", _
+                    lengthFactor, CDbl(areaFactors(afterIndex)), stressFactor, 1#, forceFactor, momentFactor, signN, signMx, signMy
+                actual = ResultTable("rngNDMSectionProperties")
+                Audit03CompareUnitSnapshot stats, prefix & ".properties", baselineProperties, actual, "Properties", _
+                    lengthFactor, CDbl(areaFactors(afterIndex)), stressFactor, IIf(afterIndex = 0, 1#, 0.001), forceFactor, momentFactor, signN, signMx, signMy, True
+            End If
+            AppendLine stats, "IMPORTED_UNIT_CHANGE: before=" & CStr(lengthNames(beforeIndex)) & "|after=" & CStr(lengthNames(afterIndex)) & _
+                "|inputForce=" & CStr(forceNames(afterIndex)) & "|inputStress=" & CStr(stressNames(afterIndex)) & "|source=" & ResultsGeometrySource(ThisWorkbook)
+        Next afterIndex
+    Next beforeIndex
+
+    ' Смена INPUT без изменения числа не сохраняет физическую нагрузку.
+    ' Геометрия при этом остается той же, обе осевые задачи здесь линейны.
+    loads.Cells(2, 2).Value2 = -100#: loads.Cells(2, 3).Value2 = 0#: loads.Cells(2, 4).Value2 = 0#
+    SetSystemSetting "Units.Force.Input", "N"
+    SetSystemSetting "Solver.ToleranceN", "0.001"
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    AssertClose stats, "audit03.importUnits.rawUnchanged.oldN", CDbl(ResultsPropertyValue("LC_IMPORT", "N")) * 9806.65, -100#, 0.001
+    smallStrain = CDbl(ResultsPropertyValue("LC_IMPORT", "State.StrengthState.Epsilon0"))
+    AppendLine stats, "IMPORTED_RAW_LOAD: stage=N; epsilon0=" & CStr(smallStrain) & _
+        "; kappaX=" & ResultsPropertyValue("LC_IMPORT", "State.StrengthState.KappaX") & _
+        "; kappaY=" & ResultsPropertyValue("LC_IMPORT", "State.StrengthState.KappaY") & _
+        "; Nint=" & ResultsPropertyValue("LC_IMPORT", "Nint")
+    SetSystemSetting "Units.Force.Input", "kN"
+    SetSystemSetting "Solver.ToleranceN", "0.000001"
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    AssertClose stats, "audit03.importUnits.rawUnchanged.number", CDbl(loads.Cells(2, 2).Value2), -100#, 0#
+    AssertClose stats, "audit03.importUnits.rawUnchanged.newN", CDbl(ResultsPropertyValue("LC_IMPORT", "N")) * 9806.65, -100000#, 0.001
+    AssertClose stats, "audit03.importUnits.rawUnchanged.equilibrium", CDbl(ResultsPropertyValue("LC_IMPORT", "Nint")) * 9806.65, -100000#, 0.001
+    largeStrain = CDbl(ResultsPropertyValue("LC_IMPORT", "State.StrengthState.Epsilon0"))
+    AppendLine stats, "IMPORTED_RAW_LOAD: stage=kN; epsilon0=" & CStr(largeStrain) & _
+        "; kappaX=" & ResultsPropertyValue("LC_IMPORT", "State.StrengthState.KappaX") & _
+        "; kappaY=" & ResultsPropertyValue("LC_IMPORT", "State.StrengthState.KappaY") & _
+        "; Nint=" & ResultsPropertyValue("LC_IMPORT", "Nint")
+    AssertTrue stats, "audit03.importUnits.rawUnchanged.compression", smallStrain < 0# And largeStrain < 0#
+    AssertClose stats, "audit03.importUnits.rawUnchanged.strainRatio", largeStrain / smallStrain, 1000#, 0.000001
+    Audit03AssertAutoCADMmGeometry stats, "audit03.importUnits.rawUnchanged.geometry", section
+
+    preview = ResultTable("rngNDMSectionGeometry")
+    solveCount = SectionEquilibriumSolveCount()
+    SetSystemSetting "Units.Length.Output", "ft"
+    On Error Resume Next
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    errorNumber = Err.Number: description = Err.Description
+    Err.Clear
+    On Error GoTo Failed
+    AssertTrue stats, "audit03.importUnits.invalidOutput.rejected", errorNumber <> 0
+    AssertTrue stats, "audit03.importUnits.invalidOutput.address", InStr(1, description, "Units.Length.Output", vbBinaryCompare) > 0
+    AssertTrue stats, "audit03.importUnits.invalidOutput.noSolve", SectionEquilibriumSolveCount() = solveCount
+    actual = ResultTable("rngNDMSectionGeometry")
+    Audit03ComparePlainSnapshot stats, "audit03.importUnits.invalidOutput.snapshotPreserved", preview, actual, 1
+    SetSystemSetting "Units.Length.Output", "m"
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    AssertTrue stats, "audit03.importUnits.invalidOutput.recovery", InStr(1, message, "Расчет импортированной", vbTextCompare) > 0
+    Audit03AssertAutoCADMmGeometry stats, "audit03.importUnits.invalidOutput.recoveredGeometry", section
+    GoTo Restore
+Failed:
+    AssertTrue stats, "audit03.importUnits.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Restore:
+    On Error Resume Next
+    If Not original Is Nothing Then
+        For i = 0 To original.Count - 1
+            ThisWorkbook.Names.Item(CStr(rangeNames(i))).RefersToRange.Formula = original(i + 1)
+        Next i
+    End If
+    On Error GoTo 0
+End Sub
+
+' ДЛЯ ТЕСТОВ: четыре квадратных бетонных Region и четыре арматурных Region
+' проходят общий importer с Config. Смещенный центр проверяет перенос момента.
+Private Function Audit03ImportSnapshotFixture(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As CSectionModel
+    Dim modelSpace As Collection, region As CFakeAcadRegion, importer As CAutoCADSectionModelImporter
+    Dim x As Double, y As Double, i As Long
+    Set modelSpace = New Collection
+    For i = 0 To 3
+        x = 950# + (i Mod 2) * 100#: y = -750# + (i \ 2) * 100#
+        Set region = New CFakeAcadRegion
+        region.Initialize 10000#, x, y, 10000# * 10000# / 12#, 10000# * 10000# / 12#, 0#, "Concrete", "C" & CStr(i + 1)
+        modelSpace.Add region
+        x = 930# + (i Mod 2) * 140#: y = -770# + (i \ 2) * 140#
+        Set region = New CFakeAcadRegion
+        region.Initialize GEOM_PI * 20# ^ 2 / 4#, x, y, 1#, 1#, 0#, "Reinf", "R" & CStr(i + 1)
+        modelSpace.Add region
+    Next i
+    Set importer = New CAutoCADSectionModelImporter
+    Set Audit03ImportSnapshotFixture = importer.ImportConfiguredModelSpace(modelSpace, settings, units)
+End Function
 
 
 

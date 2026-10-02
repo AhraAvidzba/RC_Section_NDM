@@ -62,9 +62,9 @@
 | UI01 | directed COM PASS, выпускная приемка впереди | v39 Off/On: 351/0; семь статусов, DisplayFormat, чувствительность к чужому CF, очистка старых строк и сохранность оформления после save/reopen. Проверка clean/update итоговой книги еще предстоит. |
 | W01 | в работе | Git/base/spec/hash/progress сохранены; checkpoints без push/destructive Git. |
 
-Последнее уточнение coverage: v73 сохраняет denominator 1065; адресно
-принято 64 активных поля (13 Solver, 23 Material, 11 Unit/Sign, 1 Worst,
-16 общих RectSet selectors). Остальные 1001 адресов не получают blanket PASS.
+Последнее уточнение coverage: v83 сохраняет denominator 1065; адресно
+принято 69 активных полей (13 Solver, 23 Material, 15 Unit/Sign, 1 Worst,
+16 общих RectSet selectors, 1 AutoCAD MinArea). Остальные 996 адресов не получают blanket PASS.
 Срезы metadata/full-range/downstream и K03 остаются отдельными задачами.
 
 ## Important Decisions
@@ -490,3 +490,108 @@
   сохранение пользовательских данных при output update и независимый self-audit.
   После compaction читать этот хвост вместе с Git status/diff/log, baseline,
   ТЗ и архитектурными MD; старый раздел "Как продолжить" не подменяет новые gates.
+- Checkpoint `2d656722`: INPUT Length/Stress, AutoCAD geometry-mm contract,
+  русские комментарии устойчивости, actual help/Print_Area и v77b full Off/On.
+  Коммит подтвержден через git log; tracked dirty после него отсутствовал.
+- INPUT Curvature v78: отдельный binding gate 132/0, source unchanged=True,
+  Results save/reopen=True. По двум осям Newton/Secant ограничитель 1e-7 1/мм
+  и 1e-4 1/м дает одинаковые 22/7 итераций вместо свободных 2; отключение
+  адаптера в отдельном test-call наблюдаемо снимает ограничение. Это не новая
+  production методика и не подгонка solver tolerance. Full Off v78: 14969/0;
+  On еще выполняется. Source SHA 67399F22383CC706EF95F92C96E671E7B62030584005E1AA4134484C85511A98.
+- Уточнение K03 INPUT Area: прежняя формулировка об отсутствии workbook
+  consumer была неполной. Реальный путь ImportGeometryFromAutoCADForWorkbook
+  передает Config units в ImportFromActiveDocument, где INPUT Area применяется
+  к AutoCAD.Import.MinArea. Геометрия самих Region остается в мм/мм2/мм4.
+  Поэтому поле не удаляется; справку фиксированного мм2 порога нужно исправить.
+  Подготовка импорта выделена в метод того же importer-а, который используется
+  live wrapper-ом и тестом существующего CFakeAcadRegion. Новых классов нет.
+  Добавлен обязательный/неотрицательный MinArea, адресная ошибка overflow,
+  nine-case equivalence/boundary и invalid/missing tests; runtime еще впереди.
+- Full On v78: все семь первых suites, включая UI 5010/0, завершили свои
+  assertions, но runner после UI упал с Null method invocation до восьмой
+  suite. Это не full PASS. Отрицательный лог сохраняется. Runner получает
+  точный ScriptStackTrace/PositionMessage и guards недоступного Mode Range;
+  повтор v78b нужен до принятия Curvature evidence и дальнейших COM запусков.
+- Повтор Full On v78b завершен: 14975/0, восемь suites, source unchanged=True.
+  Null post-UI сбой не воспроизвелся; его причина не выдается за исправленный
+  production дефект. Добавленная диагностика остается в runner-е для точной
+  локализации при повторении. Curvature evidence теперь имеет Off/On gates.
+- Новое требование пользователя: проверить import -> смена INPUT/OUTPUT ->
+  расчет и единицы исходного import snapshot. Добавлен nine-transition тест
+  mm/cm/m с INPUT Area/Force/Moment/Stress/Curvature и пользовательскими знаками,
+  независимым переводом чисел и сравнением НДС/геометрии/свойств Results.
+  Fake Region идут через общий импорт, реальный preview writer и кнопку расчета;
+  это не реальный DWG smoke. Несуществующие import layers и огромный MinArea
+  после snapshot должны доказать отсутствие повторного импорта/фильтрации.
+  Отдельно проверяются непереведенное число нагрузки и invalid OUTPUT с
+  сохранностью старой геометрии/recovery. Runtime еще предстоит.
+- v79 actual help: 761 input-значение/формула/validation сохранены, 141 ссылка,
+  Print_Area count=1, failed=0; новые import/MinArea тексты проверены на листе.
+  Validate v79 успешен. INPUT Area directed: 89/0, source unchanged=True,
+  Results save/reopen=True. Порог включительно сохраняет Region ровно на границе.
+- Import-unit workflow v79 отрицательный: 2/1, ошибка только тестового поиска
+  заголовка X вместо X, mm (индекс 0). В новой v80 используется существующий
+  ResultHeaderColumnByBaseName. v80: 221/7, геометрия всех девяти переходов,
+  отсутствие reimport, invalid OUTPUT/recovery и save/reopen уже проходят.
+  Три пары numerical snapshot не совпали: helper пересчета INPUT повторно
+  устанавливал ZeroMomentPerDepth, в tf*m зануляя тестовый момент. Новый вызов
+  явно отключает этот фильтр после helper. Отдельный axial strainRatio пока
+  не принят; добавлена диагностика epsilon0/kappa/Nint. Отрицательные книги
+  и журналы не перезаписываются; требуется новый v81 runtime и full gates.
+- v81 directed import-unit workflow: 228/0, source unchanged=True,
+  Results save/reopen SHA `41F8614F9929EC76D4E5944B93FA62F3353DF17A8C1CA82F071E5C31B752DA58`.
+  После исключения фильтра оба numerical mismatches устранены без изменений
+  production математики: чисто осевые epsilon0 -6.62038e-8/-6.62038e-5,
+  отношение 1000, почти нулевые kappaX/Y и правильный Nint. Предыдущие
+  negative tests выявляли плохую настройку самого сценария, не unit defect.
+  Source contracts v81: 101/101, failed=0; raw export SHA
+  `5C71C72EF47490F65872F221ABE8C5DE93382E31F23490E73772655550DED41C`.
+  Full Off выполняется; per-key evidence для Curvature и Area/MinArea создан,
+  но merge не запускается до обоих full gates.
+- Full Off v81: 15286/0, восемь suites, source unchanged=True; SHA
+  `051FA4BE33BC899504D5A88CBD315F6DBE66C9807A40E5987293A6FD8CECE263`.
+  Full On v81 не принят: UI assertions 5327/0 завершены, затем runner упал
+  на строке 44 `$Book.Names.Item(...).RefersToRange` до восьмой suite.
+  Новый stack точно локализует COM-сбой, не numerical failure расчета.
+  Get-ModeSettingCell теперь читает тот же именованный диапазон через
+  Config.Range с проверками отсутствующего листа/range; не подставляет mode
+  и не пропускает post-suite контроль. Полный повтор еще нужен.
+- Последнее дополнение пользователя: контракт исходных AutoCAD Region
+  добавлен в справку AutoCAD.Import.ConcreteLayer: X/Y/размеры мм, Area мм2,
+  Ix/Iy/Ixy мм4, независимо от INPUT/OUTPUT, без определения масштаба INSUNITS.
+  Отдельно объяснены MinArea INPUT и геометрический snapshot OUTPUT.
+  Неточное описание "площади в миллиметрах" в Geometry.Source исправлено.
+  v82 содержит предыдущую справку, v83 получает окончательный текст; его
+  actual help/format/full gates еще предстоят. Основной output не изменен.
+- v83 actual help завершен: 761 input-records/validation/formulas сохранены,
+  141 ссылка, Print_Area count=1, failed=0. OpenXML подтвердил окончательный
+  контракт Region в Справка!B1488, отсутствие INSUNITS scaling в B1489.
+  Validate успешен; source contracts 101/101, failed=0; export SHA
+  `49FDEF50E4A1DEAE662869B4A4F24904F61FC2A1885C7554807B85CD0D64E3C8`.
+  Книга SHA `DC646D3C622F95E1B696390C4EDFEBFD4E30E59E62DFC0B47BD75DC0EC6EC4DE`.
+  Directed import-unit On повторно 228/0, save/reopen=True. Полный On теперь
+  выполняется с Range-based mode-reader, после него требуется full Off и
+  actual formatting/evidence merge. Output и ТЗ сохраняют исходные SHA.
+- Full On v83 снова отрицательный: все UI 5327/0 закончены, но теперь Null
+  на `$Book.Worksheets.Item('Config')`, так что замена Names на Range не
+  устранила сбой. Предыдущая гипотеза об одной коллекции Names не подтверждена.
+  Runner после VBA Run получает ту же открытую книгу из Excel.Workbooks,
+  строго сверяет FullName и ReadOnly и логирует sameProxy. Это не reopen,
+  не потеря dirty данных и не mode fallback. Полный v83b On запущен; до
+  его завершения и полного Off merge/commit этого среза не делать.
+- Full v83b On/Off завершены: 15292/0 и 15286/0, все восемь suites,
+  source unchanged=True. COM_WORKBOOK_AFTER_SUITE: sameProxy=True и ReadOnly=True
+  во всех восьми шагах; это успешный повтор, а не доказательство внутренней
+  причины прежнего transient COM Null. Negative v78/v81/v83 журналы сохранены.
+  Evidence merge v83: 1065 адресов, active-reviewed=69, fullAcceptance=False.
+  Добавлены только Units.Curvature.Input, Units.Area.Input и AutoCAD.Import.MinArea.
+  Основной output остается AAF5... и не заменен промежуточным срезом.
+- Actual formatting v83: 1004/0, 1003 адреса, deviations=0, тот же SHA DC646...;
+  все нужные test/COM sessions завершены, процессов EXCEL не осталось.
+  Версионный raw export `VBA_All_Code_v83_2026-10-02.txt` сохранен отдельно.
+  Срез готов к scoped checkpoint. Audit03 и Final Report не завершены;
+  следующая работа - остальные per-key/active-inactive/pairwise, semantic D01,
+  F07 реальные array callers и L15/L16 independent proof, затем final clean
+  build/benchmarks, output update с сохранением пользовательских данных и
+  итоговый self-audit. Не подменять это зеленым import-unit срезом.

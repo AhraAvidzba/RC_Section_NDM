@@ -1,0 +1,17 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_import_unit_workflow_v79.xlsm
+SOURCE_SHA256: DDBAE7FD6D921CEA7FABBABFC7845DFCFA02498879F89A3F3F75FFB70F33FAD9
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_3fb86ae3c3224773a9d275dc7bf550fe\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit03ImportedSnapshotUnitChangeTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03ImportedSnapshotUnitChangeTests; 2026-10-02T18:16:17
+EXCEL_AFTER_SUITE: pid=15024; workingSet=132112384; privateBytes=111976448; cpu=2.96875
+OK: audit03.importUnits.before0.after0.previewX; actual=950.; expected=950.
+OK: audit03.importUnits.before0.after0.previewArea; actual=10000.; expected=10000.
+FAIL: audit03.importUnits.runtime.9.Subscript out of range
+TOTAL_AUDIT03_IMPORTED_UNIT_CHANGES: passed=2; failed=1
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03ImportedSnapshotUnitChangeTests; 2026-10-02T18:16:18
+RESULTS_SAVE_REOPEN: before=BDD90E7847AF692F7E91C31A61DFFF789411323CA0A715F753A1F6CAB4F70148; after=BDD90E7847AF692F7E91C31A61DFFF789411323CA0A715F753A1F6CAB4F70148; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_3fb86ae3c3224773a9d275dc7bf550fe\RC_Section_NDM_saved.xlsm
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True
