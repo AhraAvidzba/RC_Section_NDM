@@ -149,6 +149,8 @@ Public Function RunBatchCalculationTests() As String
     TestPR2PhysicalStateRunsCrackWithExtensionEnabled stats
     AppendLine stats, "RUN: TestBatchCrackCoverDistanceModeChangesAs"
     TestBatchCrackCoverDistanceModeChangesAs stats
+    AppendLine stats, "RUN: TestAudit03CrackConfigBehavior"
+    TestAudit03CrackConfigBehavior stats
     AppendLine stats, "RUN: TestPR2AutoCrackStoresPreAndPostCrackStates"
     TestPR2AutoCrackStoresPreAndPostCrackStates stats
     AppendLine stats, "RUN: TestPR2AutoCrackPureBendingStoresMcrcStates"
@@ -2862,6 +2864,8 @@ Private Sub TestStabilityInvalidMuReportsInputErr(ByRef stats As TBatchTestStats
     batch.Execute
 
     AssertTrue stats, "batch.stability.mu.inputErr", batch.ResultAt(1).StabilityResult.Status = "InputErr"
+    AssertTrue stats, "batch.stability.mu.messageConfig", InStr(1, batch.ResultAt(1).StabilityMeta.ResultComment, "Config", vbTextCompare) > 0
+    AssertTrue stats, "batch.stability.mu.messageAction", InStr(1, batch.ResultAt(1).StabilityMeta.ResultComment, "задайте", vbTextCompare) > 0
 
 Restore:
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -7704,3 +7708,265 @@ Restore:
     If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
     On Error GoTo 0
 End Sub
+
+' ====================== ДЛЯ ТЕСТОВ: AUDIT03 CRACK CONFIG ======================
+
+' ДЛЯ ТЕСТОВ: отдельный gate реальных настроек трещин. Выполняет batch и
+' writers, а не только чтение getter-ов; полный набор включает тот же тест.
+Public Function RunAudit03CrackConfigBehaviorTests() As String
+    Dim stats As TBatchTestStats
+    TestAudit03CrackConfigBehavior stats
+    AppendLine stats, "TOTAL_AUDIT03_CRACK_CONFIG: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03CrackConfigBehaviorTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: коэффициенты проверяются независимой формулой и отношениями
+' ширины, неактивные User-поля - неизменностью Auto-результата. Все 12 ключей
+' проходят invalid/missing/recovery; измененные таблицы восстанавливаются.
+Private Sub TestAudit03CrackConfigBehavior(ByRef stats As TBatchTestStats)
+    Dim systemRange As Object, unitRange As Object, savedSystem As Variant, savedUnits As Variant
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set unitRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
+    savedSystem = systemRange.Formula: savedUnits = unitRange.Formula
+    On Error GoTo Failed
+    ' В действующей таблице первая строка данных - длина, INPUT/OUTPUT
+    ' занимают столбцы 2/4, а столбец 3 содержит неизменные INTERNAL.
+    unitRange.Cells(2, 2).Value2 = "mm": unitRange.Cells(2, 4).Value2 = "mm"
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    SetSystemSetting "SLS.Crack.InitiationLoadPath", "Auto"
+    SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
+    SetSystemSetting "SLS.Crack.Allowable", "1"
+    SetSystemSetting "SLS.Crack.Phi1", "1.4"
+    SetSystemSetting "SLS.Crack.Phi2", "0.5"
+    SetSystemSetting "SLS.Crack.Phi3Mode", "User"
+    SetSystemSetting "SLS.Crack.Phi3", "1"
+    SetSystemSetting "SLS.Crack.PsiMode", "User"
+    SetSystemSetting "SLS.Crack.PsiS", "1"
+    SetSystemSetting "SLS.Crack.SigmaSCrcAveragingMode", "AllSelected"
+    SetSystemSetting "SLS.Crack.TensionZoneMode", "Effective"
+    SetSystemSetting "SLS.Crack.CoverDistanceMode", "GlobalExtreme"
+
+    Dim baseline As CBatchSectionCalculator, changed As CBatchSectionCalculator
+    Dim baseWidth As CCrackWidthResult, value As CCrackWidthResult
+    Set baseline = Audit03CrackConfigBatch(stats, "baseline", 200000#, 0#, 0#)
+    Set baseWidth = baseline.ResultAt(1).CrackResult.Width
+    AssertTrue stats, "audit03.crackConfig.baseline.calculated", baseWidth.ResultMeta.Calculated
+    AssertTrue stats, "audit03.crackConfig.baseline.positive", baseWidth.CrackWidth > 0# And baseWidth.SigmaS > 0#
+    Dim keys As Variant, newValues As Variant, factors As Variant, i As Long, prefix As String
+    keys = Array("SLS.Crack.Phi1", "SLS.Crack.Phi2", "SLS.Crack.Phi3", "SLS.Crack.PsiS", "SLS.Crack.Allowable")
+    newValues = Array("2.1", "0.75", "1.5", "0.5", "0.5")
+    factors = Array(1.5, 1.5, 1.5, 0.5, 1#)
+    For i = 0 To UBound(keys)
+        Dim previous As String
+        previous = GetSystemSetting(CStr(keys(i)))
+        SetSystemSetting CStr(keys(i)), CStr(newValues(i))
+        prefix = "active." & CStr(i)
+        Set changed = Audit03CrackConfigBatch(stats, prefix, 200000#, 0#, 0#)
+        Set value = changed.ResultAt(1).CrackResult.Width
+        AssertClose stats, "audit03.crackConfig." & prefix & ".widthFactor", value.CrackWidth, _
+            baseWidth.CrackWidth * CDbl(factors(i)), 0.0000000001
+        Dim expectedUtilization As Double
+        expectedUtilization = value.CrackWidth / CDbl(newValues(i))
+        If i <> 4 Then expectedUtilization = value.CrackWidth / baseWidth.AllowableCrackWidth
+        AssertClose stats, "audit03.crackConfig." & prefix & ".utilization", value.Utilization, expectedUtilization, 0.0000000001
+        AssertClose stats, "audit03.crackConfig." & prefix & ".sigmaInvariant", value.SigmaS, baseWidth.SigmaS, 0.000000001
+        AssertClose stats, "audit03.crackConfig." & prefix & ".spacingInvariant", value.CrackSpacing, baseWidth.CrackSpacing, 0.000000001
+        AssertTrue stats, "audit03.crackConfig." & prefix & ".solveCountInvariant", changed.SolverCallCount = baseline.SolverCallCount
+        SetSystemSetting CStr(keys(i)), previous
+    Next i
+    SetSystemSetting "SLS.Crack.Allowable", FormatNumberInvariant(baseWidth.CrackWidth / 2#)
+    Set changed = Audit03CrackConfigBatch(stats, "allowableFail", 200000#, 0#, 0#)
+    AssertEquals stats, "audit03.crackConfig.allowableFail.status", changed.ResultAt(1).NormalCrackStatus, "FAIL"
+    AssertClose stats, "audit03.crackConfig.allowableFail.widthSame", changed.ResultAt(1).CrackResult.Width.CrackWidth, baseWidth.CrackWidth, 0.0000000001
+    SetSystemSetting "SLS.Crack.Allowable", "1"
+    SetSystemSetting "SLS.Crack.Phi3Mode", "Auto"
+    Set changed = Audit03CrackConfigBatch(stats, "phi3Auto", 200000#, 0#, 0#)
+    Set value = changed.ResultAt(1).CrackResult.Width
+    AssertClose stats, "audit03.crackConfig.phi3Auto.tension", value.Phi3, 1.2, 0#
+    SetSystemSetting "SLS.Crack.Phi3", "2.5"
+    Set changed = Audit03CrackConfigBatch(stats, "phi3Inactive", 200000#, 0#, 0#)
+    AssertClose stats, "audit03.crackConfig.phi3Inactive.widthSame", changed.ResultAt(1).CrackResult.Width.CrackWidth, value.CrackWidth, 0.0000000001
+    SetSystemSetting "SLS.Crack.Phi3", "1"
+    SetSystemSetting "SLS.Crack.Phi3Mode", "User"
+
+    SetSystemSetting "SLS.Crack.PsiMode", "AlwaysCalc"
+    Set changed = Audit03CrackConfigBatch(stats, "psiAlways", 200000#, 0#, 0#)
+    Set value = changed.ResultAt(1).CrackResult.Width
+    Dim expectedPsi As Double
+    expectedPsi = 1# - 0.8 * value.SigmaSCrc / value.SigmaS
+    If expectedPsi < 0# Then expectedPsi = 0#
+    If expectedPsi > 1# Then expectedPsi = 1#
+    AssertTrue stats, "audit03.crackConfig.psiAlways.positiveCrc", value.SigmaSCrc > 0#
+    AssertClose stats, "audit03.crackConfig.psiAlways.formula", value.PsiS, expectedPsi, 0.000000000001
+    AssertTrue stats, "audit03.crackConfig.psiAlways.differsUser", value.CrackWidth < baseWidth.CrackWidth
+    SetSystemSetting "SLS.Crack.PsiS", "0.25"
+    Set changed = Audit03CrackConfigBatch(stats, "psiInactive", 200000#, 0#, 0#)
+    AssertClose stats, "audit03.crackConfig.psiInactive.widthSame", changed.ResultAt(1).CrackResult.Width.CrackWidth, value.CrackWidth, 0.0000000001
+    SetSystemSetting "SLS.Crack.PsiS", "1"
+    SetSystemSetting "SLS.Crack.PsiMode", "Auto"
+    Set changed = Audit03CrackConfigBatch(stats, "psiAutoPass", 200000#, 0#, 0#)
+    AssertClose stats, "audit03.crackConfig.psiAutoPass.unity", changed.ResultAt(1).CrackResult.Width.PsiS, 1#, 0#
+    SetSystemSetting "SLS.Crack.Allowable", "0.00000001"
+    Set changed = Audit03CrackConfigBatch(stats, "psiAutoFail", 200000#, 0#, 0#)
+    AssertClose stats, "audit03.crackConfig.psiAutoFail.refined", changed.ResultAt(1).CrackResult.Width.PsiS, expectedPsi, 0.000000000001
+    SetSystemSetting "SLS.Crack.Allowable", "1"
+    SetSystemSetting "SLS.Crack.PsiMode", "User"
+
+    ' У этой сжатой нагрузки выбранная по текущему НДС арматура еще сжата
+    ' в PostCrackState. Режим меняет только справочное sigma_s,crc, не As/sigma_s.
+    SetSystemSetting "SLS.Crack.InitiationLoadPath", "lambda*Mxy"
+    SetSystemSetting "SLS.Crack.PsiMode", "AlwaysCalc"
+    Set baseline = Audit03CrackConfigBatch(stats, "averagingSigned", -528000#, 30800000#, 0#)
+    Set value = baseline.ResultAt(1).CrackResult.Width
+    SetSystemSetting "SLS.Crack.SigmaSCrcAveragingMode", "TensionOnly"
+    Set changed = Audit03CrackConfigBatch(stats, "averagingPositive", -528000#, 30800000#, 0#)
+    AssertTrue stats, "audit03.crackConfig.averaging.signedNegative", value.SigmaSCrc < 0#
+    AssertClose stats, "audit03.crackConfig.averaging.compressionZero", changed.ResultAt(1).CrackResult.Width.SigmaSCrc, 0#, 0.000000001
+    AssertClose stats, "audit03.crackConfig.averaging.sigmaUnchanged", changed.ResultAt(1).CrackResult.Width.SigmaS, value.SigmaS, 0.000000001
+    AssertEquals stats, "audit03.crackConfig.averaging.selectionUnchanged", changed.ResultAt(1).CrackResult.Width.TensionRebarIds, value.TensionRebarIds
+    SetSystemSetting "SLS.Crack.SigmaSCrcAveragingMode", "AllSelected"
+    SetSystemSetting "SLS.Crack.PsiMode", "User"
+    Set baseline = Audit03CrackConfigBatch(stats, "zoneEffective", -528000#, 30800000#, 0#)
+    Set value = baseline.ResultAt(1).CrackResult.Width
+    SetSystemSetting "SLS.Crack.TensionZoneMode", "FullTension"
+    Set changed = Audit03CrackConfigBatch(stats, "zoneFull", -528000#, 30800000#, 0#)
+    AssertTrue stats, "audit03.crackConfig.zone.differsAbt", Abs(changed.ResultAt(1).CrackResult.Width.Abt - value.Abt) > 1#
+    AssertTrue stats, "audit03.crackConfig.zone.differsDepth", Abs(changed.ResultAt(1).CrackResult.Width.EffectiveZoneDepth - value.EffectiveZoneDepth) > 0.001
+    SetSystemSetting "SLS.Crack.TensionZoneMode", "Effective"
+    SetSystemSetting "SLS.Crack.CoverDistanceMode", "NearestContour"
+    Set baseline = Audit03CrackConfigBatch(stats, "coverNearest", -20000#, -32000000#, 0#, True)
+    Set value = baseline.ResultAt(1).CrackResult.Width
+    SetSystemSetting "SLS.Crack.CoverDistanceMode", "GlobalExtreme"
+    Set changed = Audit03CrackConfigBatch(stats, "coverGlobal", -20000#, -32000000#, 0#, True)
+    AssertTrue stats, "audit03.crackConfig.cover.differsDistance", Abs(changed.ResultAt(1).CrackResult.Width.CoverA - value.CoverA) > 1#
+    SetSystemSetting "SLS.Crack.InitiationLoadPath", "Auto"
+
+    keys = Array("SLS.Crack.Allowable", "SLS.Crack.InitiationLoadPath", "SLS.Crack.InitiationSolutionStrategy", _
+        "SLS.Crack.TensionZoneMode", "SLS.Crack.CoverDistanceMode", "SLS.Crack.Phi1", "SLS.Crack.Phi2", _
+        "SLS.Crack.Phi3Mode", "SLS.Crack.Phi3", "SLS.Crack.PsiMode", "SLS.Crack.SigmaSCrcAveragingMode", "SLS.Crack.PsiS")
+    Dim invalidValue As Variant, cell As Object, keyCell As Object, row As Long, originalKey As Variant, invalidText As String
+    For i = 0 To UBound(keys)
+        Set cell = Nothing
+        For row = 2 To systemRange.Rows.Count
+            If CStr(systemRange.Cells(row, 1).Value2) = CStr(keys(i)) Then
+                Set keyCell = systemRange.Cells(row, 1): Set cell = systemRange.Cells(row, 2): Exit For
+            End If
+        Next row
+        If cell Is Nothing Then Err.Raise 5, , "Не найдена тестируемая настройка " & CStr(keys(i))
+        previous = CStr(cell.Value2)
+        For Each invalidValue In Array("", "TODO", "abc", CVErr(2015))
+            cell.Value2 = invalidValue
+            prefix = "invalid." & CStr(i) & "." & CStr(VarType(invalidValue)) & "." & CStr(LenSafeAudit03(invalidValue))
+            Set changed = Audit03CrackConfigInvalidBatch(stats, CStr(keys(i)))
+            AssertEquals stats, "audit03.crackConfig." & prefix & ".inputErr", changed.ResultAt(1).Status, "InputErr"
+            AssertTrue stats, "audit03.crackConfig." & prefix & ".reasonKey", InStr(1, changed.ResultAt(1).OverallMeta.ResultComment, CStr(keys(i)), vbTextCompare) > 0
+            AssertTrue stats, "audit03.crackConfig." & prefix & ".reasonConfig", InStr(1, changed.ResultAt(1).OverallMeta.ResultComment, "Config", vbTextCompare) > 0
+            invalidText = vbNullString
+            If Not IsError(invalidValue) Then invalidText = CStr(invalidValue)
+            If Len(invalidText) = 0 Or invalidText = "TODO" Then
+                AssertTrue stats, "audit03.crackConfig." & prefix & ".reasonAddress", _
+                    InStr(1, changed.ResultAt(1).OverallMeta.ResultComment, cell.Address(False, False), vbTextCompare) > 0
+            End If
+            cell.Value2 = previous
+        Next invalidValue
+        If i = 0 Or i = 5 Or i = 6 Or i = 8 Or i = 11 Then
+            For Each invalidValue In Array("0", "-1", "1e309")
+                cell.Value2 = invalidValue
+                Set changed = Audit03CrackConfigInvalidBatch(stats, CStr(keys(i)))
+                AssertEquals stats, "audit03.crackConfig.numericInvalid." & CStr(i) & "." & CStr(invalidValue), changed.ResultAt(1).Status, "InputErr"
+                AssertTrue stats, "audit03.crackConfig.numericInvalid." & CStr(i) & ".action", _
+                    InStr(1, changed.ResultAt(1).OverallMeta.ResultComment, "Введите", vbTextCompare) > 0
+                cell.Value2 = previous
+            Next invalidValue
+        End If
+        originalKey = keyCell.Value2: keyCell.Value2 = CStr(originalKey) & ".REMOVED"
+        Set changed = Audit03CrackConfigInvalidBatch(stats, CStr(keys(i)))
+        AssertEquals stats, "audit03.crackConfig.missing." & CStr(i), changed.ResultAt(1).Status, "InputErr"
+        AssertTrue stats, "audit03.crackConfig.missing." & CStr(i) & ".restoreAction", _
+            InStr(1, changed.ResultAt(1).OverallMeta.ResultComment, "Восстановите строку", vbTextCompare) > 0
+        keyCell.Value2 = originalKey
+        Set changed = Audit03CrackConfigBatch(stats, "recovery." & CStr(i), 200000#, 0#, 0#)
+        AssertClose stats, "audit03.crackConfig.recovery." & CStr(i) & ".width", changed.ResultAt(1).CrackResult.Width.CrackWidth, baseWidth.CrackWidth, 0.0000000001
+    Next i
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.crackConfig.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    systemRange.Formula = savedSystem: unitRange.Formula = savedUnits
+End Sub
+
+' ДЛЯ ТЕСТОВ: не преобразует Excel-error в CStr при создании имени случая.
+Private Function LenSafeAudit03(ByVal value As Variant) As Long
+    If Not IsError(value) Then LenSafeAudit03 = Len(CStr(value))
+End Function
+
+' ДЛЯ ТЕСТОВ: валидный Config проходит адаптер единиц, профильный batch и все
+' четыре writer-а. Проверяет готовую формулу, статусы и сборку ResultComment.
+Private Function Audit03CrackConfigBatch(ByRef stats As TBatchTestStats, ByVal caseName As String, _
+        ByVal n As Double, ByVal mx As Double, ByVal my As Double, _
+        Optional ByVal stepped As Boolean = False) As CBatchSectionCalculator
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, batch As CBatchSectionCalculator
+    AppendLine stats, "CRACK_CONFIG_STAGE: " & caseName & ".read"
+    Audit03SaveMatrixProgress stats.Report
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Dim preparedSection As CSectionModel
+    Set batch = BuildBatchCalculator(True, preparedSection)
+    If stepped Then
+        ' Выступ меняет дальний контур на 60 мм, но не исключает основные
+        ' стержни из полосы h/2. Его малая площадь почти не меняет равновесие.
+        preparedSection.SourceType = "SteppedCoverConfigTest"
+        preparedSection.AddConcreteElement -220#, -130#, 1#, 1, "", "", "Rectangle", 10#, 60#, 0#
+    End If
+    batch.ApplySettings settings, units
+    batch.AddCombination "CRACK_CONFIG_" & caseName, n, mx, my, "PR2", "Проверка настроек трещин"
+    AppendLine stats, "CRACK_CONFIG_STAGE: " & caseName & ".execute"
+    Audit03SaveMatrixProgress stats.Report
+    batch.Execute
+    Dim writer As CBatchResultWriter, width As CCrackWidthResult
+    Set writer = New CBatchResultWriter: writer.WriteSummary ThisWorkbook, batch, units
+    AppendLine stats, "CRACK_CONFIG_STAGE: " & caseName & ".comments"
+    Audit03SaveMatrixProgress stats.Report
+    Audit03CheckResultComments stats, batch, 1
+    Set width = batch.ResultAt(1).CrackResult.Width
+    Dim prefix As String: prefix = "audit03.crackConfig." & caseName
+    AssertTrue stats, prefix & ".widthCalculated", width.ResultMeta.Calculated
+    AssertClose stats, prefix & ".independentFormula", width.CrackWidth, _
+        width.Phi1 * width.Phi2 * width.Phi3 * width.PsiS * width.SigmaS / width.SteelEs * width.CrackSpacing, 0.0000000001
+    Dim anchor As Object: Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
+    AssertClose stats, prefix & ".writerWidth", CDbl(anchor.Offset(0, 41).Value2), width.CrackWidth, 0.0000000001
+    AppendLine stats, "CRACK_CONFIG: " & prefix & "|width=" & FormatNumberInvariant(width.CrackWidth) & _
+        "|psi=" & FormatNumberInvariant(width.PsiS) & "|sigmaSCrc=" & FormatNumberInvariant(width.SigmaSCrc) & _
+        "|status=" & batch.ResultAt(1).NormalCrackStatus & "|solverCalls=" & CStr(batch.SolverCallCount)
+    Set Audit03CrackConfigBatch = batch
+End Function
+
+' ДЛЯ ТЕСТОВ: ошибки reader-а и ошибки ApplySettings получают один реальный
+' batch InputErr. Текст исключения не используется для назначения статуса.
+Private Function Audit03CrackConfigInvalidBatch(ByRef stats As TBatchTestStats, ByVal key As String) As CBatchSectionCalculator
+    Dim batch As CBatchSectionCalculator, settings As CSystemSettingsReader, reason As String
+    Set batch = BuildBatchCalculator()
+    Set settings = New CSystemSettingsReader
+    AppendLine stats, "CRACK_CONFIG_INVALID_STAGE: " & key & ".read"
+    Audit03SaveMatrixProgress stats.Report
+    On Error GoTo InvalidRead
+    settings.LoadFromWorkbook ThisWorkbook
+    batch.ApplySettings settings
+    batch.AddCombination "CRACK_CONFIG_INVALID", 200000#, 0#, 0#, "PR2", "Ошибочный Config"
+    batch.Execute
+    GoTo Publish
+InvalidRead:
+    reason = Err.Description
+    On Error GoTo 0
+    batch.AddInvalidCombination "CRACK_CONFIG_INVALID", "PR2", "Ошибочный Config", reason
+    batch.Execute
+Publish:
+    AppendLine stats, "CRACK_CONFIG_INVALID_STAGE: " & key & ".publish"
+    Audit03SaveMatrixProgress stats.Report
+    Dim writer As CBatchResultWriter
+    Set writer = New CBatchResultWriter: writer.WriteSummary ThisWorkbook, batch
+    Audit03CheckResultComments stats, batch, 1
+    AppendLine stats, "INPUT_MESSAGE: " & key & "|" & batch.ResultAt(1).OverallMeta.ResultComment
+    Set Audit03CrackConfigInvalidBatch = batch
+End Function

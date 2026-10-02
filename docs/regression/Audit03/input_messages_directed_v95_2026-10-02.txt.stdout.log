@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_input_messages_v95.xlsm
+SOURCE_SHA256: B67272107FA67A947D468B996355B7AECFB3F55F2FB5E2A6F3BF0E255B2F19DA
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_aba60e4053614764bc513f589f9aac60\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_AUDIT03_SETTING_ERROR_MESSAGES: passed=1993; failed=0
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

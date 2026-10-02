@@ -239,25 +239,24 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     Set mReportUnits = units
     Set mReport.UnitSystem = units
     Dim zeroMomentSettingRead As Boolean
+    Dim conversionKey As String ' Настройка текущего пересчета единиц для точной диагностики переполнения.
     zeroMomentSettingRead = settings.HasKey("Calculation.ZeroMomentPerDepth")
-    mCrackAllowable = settings.GetDouble("SLS.Crack.Allowable", mCrackAllowable)
-    mCrackPsiMode = settings.GetString("SLS.Crack.PsiMode", mCrackPsiMode)
-    mCrackSigmaSCrcAveragingMode = settings.GetString("SLS.Crack.SigmaSCrcAveragingMode", mCrackSigmaSCrcAveragingMode)
-    mCrackFormationPath = settings.GetString("SLS.Crack.InitiationLoadPath", mCrackFormationPath)
-    mCrackFormationSolutionStrategy = settings.GetString("SLS.Crack.InitiationSolutionStrategy", mCrackFormationSolutionStrategy)
+    ' Значения таблицы трещин обязательны: очистка ячейки или потерянный key
+    ' не должны незаметно менять методику на начальные значения calculator-а.
+    mCrackAllowable = settings.GetRequiredDouble("SLS.Crack.Allowable")
+    mCrackPsiMode = settings.GetRequiredString("SLS.Crack.PsiMode")
+    mCrackSigmaSCrcAveragingMode = settings.GetRequiredString("SLS.Crack.SigmaSCrcAveragingMode")
+    mCrackFormationPath = settings.GetRequiredString("SLS.Crack.InitiationLoadPath")
+    mCrackFormationSolutionStrategy = settings.GetRequiredString("SLS.Crack.InitiationSolutionStrategy")
     mWorstCombinationCriterion = NormalizeWorstCombinationCriterion( _
         settings.GetRawString("General.WorstCombinationCriterion", mWorstCombinationCriterion))
-    mCrackTensionZoneMode = settings.GetString("SLS.Crack.TensionZoneMode", mCrackTensionZoneMode)
-    If settings.HasKey("SLS.Crack.CoverDistanceMode") Then
-        mCrackCoverDistanceMode = settings.GetString("SLS.Crack.CoverDistanceMode", mCrackCoverDistanceMode)
-    Else
-        mCrackCoverDistanceMode = settings.GetString("SLS.Crack.CoverMode", mCrackCoverDistanceMode)
-    End If
-    mCrackPhi1 = settings.GetDouble("SLS.Crack.Phi1", mCrackPhi1)
-    mCrackPhi2 = settings.GetDouble("SLS.Crack.Phi2", mCrackPhi2)
-    mCrackPhi3Mode = settings.GetString("SLS.Crack.Phi3Mode", mCrackPhi3Mode)
-    mCrackPhi3 = settings.GetDouble("SLS.Crack.Phi3", mCrackPhi3)
-    mCrackPsiS = settings.GetDouble("SLS.Crack.PsiS", mCrackPsiS)
+    mCrackTensionZoneMode = settings.GetRequiredString("SLS.Crack.TensionZoneMode")
+    mCrackCoverDistanceMode = settings.GetRequiredString("SLS.Crack.CoverDistanceMode")
+    mCrackPhi1 = settings.GetRequiredDouble("SLS.Crack.Phi1")
+    mCrackPhi2 = settings.GetRequiredDouble("SLS.Crack.Phi2")
+    mCrackPhi3Mode = settings.GetRequiredString("SLS.Crack.Phi3Mode")
+    mCrackPhi3 = settings.GetRequiredDouble("SLS.Crack.Phi3")
+    mCrackPsiS = settings.GetRequiredDouble("SLS.Crack.PsiS")
     mZeroMomentPerDepth = settings.GetDouble("Calculation.ZeroMomentPerDepth", mZeroMomentPerDepth)
     If settings.HasKey("Solver.Method") Then
         mSolverMethod = settings.GetRawString("Solver.Method", vbNullString)
@@ -307,16 +306,28 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mStabilitySP35PhiP = StabilityNumericSetting(settings, "Stability.SP35.PhiP")
     mStabilitySP35NOverNcrLimit = StabilityNumericSetting(settings, "Stability.SP35.NOverNcrLimit")
     If Not units Is Nothing Then
+        conversionKey = "SLS.Crack.Allowable"
         mCrackAllowable = units.InputLengthToInternal(mCrackAllowable)
+        conversionKey = "Stability.ElementLength"
         mStabilityElementLength = units.InputLengthToInternal(mStabilityElementLength)
+        conversionKey = "Stability.AccidentalEccentricityUser1"
         mStabilityAccidentalEccentricityUser1 = units.InputLengthToInternal(mStabilityAccidentalEccentricityUser1)
+        conversionKey = "Stability.AccidentalEccentricityUser2"
         mStabilityAccidentalEccentricityUser2 = units.InputLengthToInternal(mStabilityAccidentalEccentricityUser2)
         ' Отрицательный допуск остается ошибкой настройки и после перевода единиц.
+        conversionKey = "Solver.ToleranceN"
         mSolverToleranceN = Sgn(mSolverToleranceN) * Abs(units.InputForceToInternal(mSolverToleranceN))
+        conversionKey = "Solver.ToleranceMx"
         mSolverToleranceMx = Sgn(mSolverToleranceMx) * Abs(units.InputMomentMxToInternal(mSolverToleranceMx))
+        conversionKey = "Solver.ToleranceMy"
         mSolverToleranceMy = Sgn(mSolverToleranceMy) * Abs(units.InputMomentMyToInternal(mSolverToleranceMy))
+        conversionKey = "Solver.MaxDeltaKappa"
         mSolverMaxDeltaKappa = Sgn(mSolverMaxDeltaKappa) * Abs(units.InputCurvatureToInternal(mSolverMaxDeltaKappa))
-        If zeroMomentSettingRead Then mZeroMomentPerDepth = units.InputMomentPerLengthToInternal(mZeroMomentPerDepth)
+        If zeroMomentSettingRead Then
+            conversionKey = "Calculation.ZeroMomentPerDepth"
+            mZeroMomentPerDepth = units.InputMomentPerLengthToInternal(mZeroMomentPerDepth)
+        End If
+        conversionKey = vbNullString
     End If
     ConfigureMomentZeroFilter
     NormalizeAllCombinationMoments
@@ -324,7 +335,13 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
 
 InvalidSettings:
     mSettingsValid = False
-    mSettingsError = Err.Description
+    If Err.Number = 6 And Len(conversionKey) > 0 Then
+        mSettingsError = settings.InputErrorMessage(conversionKey, _
+            "Значение слишком велико для пересчета в выбранных INPUT-единицах.", _
+            "Введите меньшее по модулю число и проверьте INPUT-единицы на листе Config.")
+    Else
+        mSettingsError = Err.Description
+    End If
     ReportStep "Настройки расчета содержат ошибку: " & mSettingsError
 End Sub
 
@@ -561,6 +578,7 @@ End Function
 ' Нормализует пару пользовательских моментов и заново переносит их к системе
 ' координат модели. Это единая точка для исходных LC и усилий после Stability.
 Private Sub NormalizeCombinationMoments(ByVal index As Long)
+    If Not mSettingsValid Then Exit Sub
     If index < 1 Or index > mCount Then Exit Sub
     If Not mInputs(index).InputValid Then Exit Sub
 

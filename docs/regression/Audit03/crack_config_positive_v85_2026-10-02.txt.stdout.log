@@ -1,0 +1,9 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_crack_config_v85.xlsm
+SOURCE_SHA256: 04EE3CCA38C1A0F8D096B697804BA277DBD839779CF10C5307615393FC4EDAF5
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_172419c75f404c2f82fbd11897fa802f\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.crackConfig.coverNearest.widthCalculated
+FAIL: audit03.crackConfig.coverGlobal.widthCalculated
+TOTAL_AUDIT03_CRACK_CONFIG: passed=994; failed=2
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

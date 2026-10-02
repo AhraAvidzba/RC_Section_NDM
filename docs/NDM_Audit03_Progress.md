@@ -62,9 +62,9 @@
 | UI01 | directed COM PASS, выпускная приемка впереди | v39 Off/On: 351/0; семь статусов, DisplayFormat, чувствительность к чужому CF, очистка старых строк и сохранность оформления после save/reopen. Проверка clean/update итоговой книги еще предстоит. |
 | W01 | в работе | Git/base/spec/hash/progress сохранены; checkpoints без push/destructive Git. |
 
-Последнее уточнение coverage: v83 сохраняет denominator 1065; адресно
-принято 69 активных полей (13 Solver, 23 Material, 15 Unit/Sign, 1 Worst,
-16 общих RectSet selectors, 1 AutoCAD MinArea). Остальные 996 адресов не получают blanket PASS.
+Последнее уточнение coverage: v95 сохраняет denominator 1065; адресно
+принято 79 активных полей (13 Solver, 23 Material, 15 Unit/Sign, 1 Worst,
+16 общих RectSet selectors, 1 AutoCAD MinArea, 10 Crack). Остальные 986 адресов не получают blanket PASS.
 Срезы metadata/full-range/downstream и K03 остаются отдельными задачами.
 
 ## Important Decisions
@@ -595,3 +595,155 @@
   F07 реальные array callers и L15/L16 independent proof, затем final clean
   build/benchmarks, output update с сохранением пользовательских данных и
   итоговый self-audit. Не подменять это зеленым import-unit срезом.
+- Crack Config v84-v87: подтверждено, что все 12 SLS.Crack полей ранее
+  могли подменять missing/blank/TODO значениями классов. Корректный negative
+  v84b: 746/60; v84 дополнительно содержал 25 ошибок самого unit-fixture
+  (721/85). Batch, Formation и Width теперь используют обязательные getters;
+  начальные значения программно создаваемых классов не изменены. Формулы,
+  физические критерии, expected и tolerance не менялись.
+- Новый directed Crack Config тест: 31 валидный параметризованный запуск и
+  75 invalid/missing запусков на трех нагрузочных постановках, включая
+  ступенчатый контур. Все 12 ключей проходят invalid/missing/recovery,
+  десять имеют отдельный active proof. Нельзя выдавать это за проверку всех
+  форм/профилей или активность двух Formation-селекторов. v85: 994/2 из-за
+  слишком большого тестового выступа, исключавшего арматуру из зоны;
+  отрицательный лог сохранен. После исправления только fixture v86 и v87:
+  2726/0, независимая численная формула, реальные writers и ResultComment.
+  v87 Results save/reopen SHA `3E9F5EFC6437BD20AA01048EC2CDA84B95A94B1FF3101356018C5559E1097A34`.
+- Full Off v86/v86b останавливались после Batch 6211/0 на null Workbooks.
+  Диагностический v86c доказал: тот же Excel был Ready=True, raw Workbooks
+  имел Count=1, книга оставалась с правильным FullName и ReadOnly=True,
+  raw Worksheets имел Count=4. Прямое чтение COM-свойств в runner-е заменяет
+  неверно возвращавшую null PowerShell-обертку; нет reopen/retry/default.
+  Это доказательство текущего сбоя, а не утверждение о причинах всех прежних
+  transient failures. Отрицательные журналы v86/v86b/v86c сохраняются.
+- Full Off v86d завершил все восемь suites без COM-сбоя, но UI дал 5239/88:
+  минимальный Formation Config старого numeric-fixture не содержал двух
+  обязательных селекторов. В v87 они явно заданы; проверяемый Solver-key
+  по-прежнему удаляется в optionalAbsent. Направленный повтор numeric input:
+  690/0. Ни один expected error code или допуск не ослаблен.
+- v87 actual help: 1925 строк, 141 ссылка, 118 shapes, сохранены 761 input
+  records/формулы/validation и Print_Area count=1, failed=0. Контракт Region
+  мм/мм2/мм4 без INSUNITS scaling присутствует и проходит actual-sheet gate.
+  Validate успешен. Source contracts: 101/101, failed=0, 83 + 3 classes.
+  Raw export SHA `2681F25F692E3A257782A1AB5AE049B5AE600C922D825515F8F21281006A1A22`;
+  книга SHA `11152F2A2C7984697DF4F061C45CB13999E85AA57C4DCEA597FCC3111BB6CED4`.
+  Полный Off v87 выполняется; полный On и formatting/merge еще нужны.
+- Новый read-only census v87: 101 module, 4142 methods, 1378 guards;
+  semantic acceptance=Pending. 971 метода без собственной подписи требуют
+  контекстной проверки групп простых свойств, а не 971 автоматической правки.
+  D01 worklist: шаблонная первая строка ClearGeneratedShapes в CSectionPlotter
+  (2166); историческое объяснение ClearLegacyWorksheetGeneratedShapes (2178)
+  проверить и описать текущую очистку принадлежащих схеме объектов. Код этих
+  методов в этом срезе не менялся. Census запускать через PowerShell 7:
+  WindowsPowerShell 5.1 не прочитал UTF-8 без BOM и дал parser error; это не
+  ошибка VBA. Основной output и пользовательское ТЗ сохраняют исходные SHA.
+- Новый запрос пользователя: обязательный ввод должен давать понятные причины,
+  место и действие для исправления. Reader сохраняет фактические адреса значений
+  обычных таблиц, единиц/знаков и material aliases; для удаленной строки адрес
+  не придумывает, называет раздел и восстановление строки. Материалы и адаптер
+  единиц добавляют это место к собственной валидации, не меняя машинные коды.
+  Ошибки SLS-селекторов/диапазонов указывают Config, имя строки и действие.
+  Ошибки отсутствующих обязательных named tables отдельно объясняют восстановление
+  имени в Excel. Нет нового класса, назначения статусов по тексту или default.
+- Full Off v87 завершил все восемь suites, failed=0: Geometry 524, Material 2856,
+  Solver 895, Capacity 1676, Crack 484, Batch 6211, UI 5327, Baseline 39.
+  Runner/исходная книга сохранены, watchdog exit=0. On v87 не запускался:
+  новый запрос требует финального повтора на более свежем v89.
+- Input messages v88 directed: 1897/4. Все четыре failures - ошибочный адрес
+  batch-комментария в новой проверке (Offset 1 вместо принятого Offset 12),
+  а итоговое workbook-сообщение уже содержало SLS.Crack.Allowable, Config B75
+  и действие. Исправлен только test offset; отрицательный лог/книга сохранены.
+  Первый source-contract gate был запущен до окончания обновления export и
+  получил 93/101, 8 mismatches именно в измененных модулях; не считается PASS.
+  v89 собран из v88 с исправленным test; актуализация help и повтор source
+  contracts выполняются. Directed/full Off+On, formatting и evidence merge
+  остаются обязательными до приемки/коммита этого среза.
+- Directed messages v89 и v90: 1901/0, watchdog exit=0, source unchanged=True.
+  Workbook message и batch Results содержат SLS.Crack.Allowable, Config B75,
+  причину и действие. Проверены 32 системных ключа, 23 material aliases и
+  выбор единиц/знаков; количество assertions не равно количеству настроек.
+  Source contracts v89 и v90: 101/101, failed=0. Финальный VBE export v90 SHA
+  `8338B482D03496F6189796C52C3C391CF9A391808C48FB66CE451D5E80FF54CF`.
+- Отрицательный help v89: failed=2, новый gate читал только B и пропускал
+  общие абзацы, объединенные от A. Проверка теперь читает A и B; содержимое
+  справки не удалено ради PASS. v89b и v90 failed=0. В v90 1930 строк, 141
+  ссылка, 118 shapes, 761 input records и Print_Area count=1 сохранены.
+  Добавлено различие между оформленным InputErr в Results и ранней остановкой
+  до записи нового snapshot. Поздние изменения диапазонов Stability/MinArea
+  не меняют критерии и error codes; их дополнительные assertions входят в
+  штатные suites. Полные Off/On v90 и formatting еще выполняются/ожидаются.
+  Изолированная v90 SHA `4EF49CC1A19EBC3D3E5E289C562ABE8E75803BB84115F8D2EEC24EBEBE48CFF8`.
+- Crack directed v90/v91 завершились отрицательным watchdog timeout до
+  решения НДС. В v91 последний этап `baseline.read`: новая сигнатура
+  Validate(settings) материалов не учитывала программные Initialize/Clone,
+  вызывавшие Validate без аргумента. Это внесенный дефект компиляции,
+  а не numerical failure. Диагностический reader теперь необязателен;
+  физическая проверка и машинные коды сохраняются для обоих способов создания.
+  Directed messages 1901/0 не проверяли эти программные маршруты и не
+  являются доказательством полной компилируемости. Отрицательные артефакты
+  сохранены, окончательные directed/full gates повторяются на новом v92.
+- v92 Material suite 2856/0 подтвердила исправление Initialize/Clone.
+  В v93 добавлены четыре направленных случая поврежденных имен обязательных
+  таблиц: rngUnitSettings, rngSignConventionSettings, rngSystemSettings,
+  rngPlotAnnotationSettings. Каждое сообщение называет Config, таблицу/имя,
+  восстановление ссылки в диспетчере имен; после восстановления reader работает.
+  Directed messages v93: 1921/0, watchdog exit=0, source unchanged=True.
+  Directed Crack Config v93: 2837/0, Results save/reopen SHA
+  `6971B8B12E62C112D76A80F5D28FC75CE8BAF7085F8889B322B21ED9C5FF67C1`.
+  Source contracts v93: 101/101, failed=0; export SHA
+  `A83FCDC2BB759DFA56420A680D1E6499618D1088E313DCD4B45248D006838BF1`.
+  Full Off/On и formatting еще не приняты; evidence merge не запускать раньше.
+  D01 worklist дополнен: у NormalizePlaneMoments в CStabilityCalculator
+  первая строка комментария относится к другому методу; RequirePositive
+  арматуры содержит историческое слово "прежний" вместо текущего контракта.
+  Эти comment-only правки относятся к очередной семантической D01-проверке,
+  не к выпуску до приемки всех требований Audit03.
+- Полный Off v93 завершен: 19650/0, восемь suites, source unchanged=True.
+  Этот прогон не заменяет повтор позднего исправления пересчета единиц на v95.
+  Направленный negative v94: 1950/36. Семь настроек возвращали только Overflow
+  без имени/ячейки/действия; восьмой случай Calculation.ZeroMomentPerDepth
+  прерывался при добавлении LC из-за фильтра с уже невалидными настройками.
+  Исправление: ApplySettings сохраняет ключ текущего пересчета и по машинному
+  Err.Number=6 формирует понятную причину; NormalizeCombinationMoments не
+  обрабатывает LC при mSettingsValid=False. Арифметика CUnitSystem, критерии
+  и допуски не менялись, новая методика/классы не вводились.
+- Directed messages v95: 1993/0. Все восемь конечных Double, переполняющих
+  пересчет INPUT, дают InputErr с собственным адресом и действием, без solve;
+  после восстановления тот же batch исполняется. Кнопка расчета показывает
+  ошибки независимо от NonCriticalMessages (проверено по entrypoint и
+  фактически возвращенному workbook-сообщению, не по screenshot MsgBox).
+  Crack directed v95: 2837/0, Results save/reopen SHA
+  `3E9F5EFC6437BD20AA01048EC2CDA84B95A94B1FF3101356018C5559E1097A34`.
+  Help v95: 1932 строки, 141 ссылка, 118 shapes, сохранены 761 input records
+  и Print_Area count=1, failed=0. Source contracts 101/101, failed=0.
+  Export SHA `B74AEF7FCE42D45F413983229A34F051C1E4572DFD0555A496E89D3E85B3E5B3`;
+  книга SHA `585719A6972C8E1D49AED0463562A98B862A88151F7D85ECE33FC4CA890B75F4`.
+  Полные Off/On, formatting и merge v95 на этом шаге еще выполнялись/ожидались;
+  итоговая приемка этого среза приведена ниже.
+- Окончательные full v95 Off/On завершены: 19722/0 и 19728/0. Все восемь
+  suites прошли: Geometry 524, Material 2856, Solver 895, Capacity 1676,
+  Crack 484, Batch 6324/6330, UI 6924, Baseline 39. Watchdog exit=0,
+  source unchanged=True; исторические explicit-On setup в Off сохранены.
+  Formatting: 1004/0, 1003 адреса, deviations=0, без исправлений оформления.
+  Validate: все 25 структурных проверок True, фактическая книга не изменена.
+  В справке фактической v95 A22/A23 присутствует полный текст о переполнении
+  INPUT и исправлении указанной ячейки; это OpenXML-проверка содержимого,
+  не пиксельная приемка интерфейса или MsgBox.
+- Per-key evidence десяти Crack-настроек присоединен только после направленного
+  gate, двух полных suites и formatting. Реестр v95: 1065 адресов,
+  activeReviewed=79, fullAcceptance=False. Два Formation-селектора не получают
+  новую активную приемку; full-range, interactions и оставшиеся K/T/D/F07/P
+  требования по-прежнему открыты. Merge запускать PowerShell 7: проба через
+  Windows PowerShell 5.1 не прочитала UTF-8 без BOM и дала parser error;
+  повтор в PowerShell 7 успешен, VBA/расчет к этому сбою не относится.
+  Проверенный checkpoint содержит source, изолированную v95-книгу, export,
+  положительные и отрицательные доказательства. Основной output не опубликован
+  до полного DoD Audit03 и сохраняет SHA
+  `AAF5D4FAF06197F01966463DE85BA813EB4216B455AA8504B2DE4F0BA717C012`.
+  Пользовательское ТЗ также не изменено: SHA
+  `F3B32621FD3D6BDFF0313B76599EDD5D93F637971A5F91818902FF4418118E98`.
+  `git diff --cached --check` для source/tests/tools и вручную правленных MD/JSON
+  успешен. Общий check также видит конечные пробелы и пустые строки в неизмененных
+  raw VBE exports и runtime logs; эти доказательства не форматировались задним
+  числом ради зеленой проверки. Их байтовые SHA и отрицательные исходы сохранены.

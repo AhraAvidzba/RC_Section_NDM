@@ -104,6 +104,8 @@ function Test-ActualHelp([object]$Book) {
     $text = New-Object Text.StringBuilder
     for ($r = 1; $r -le $data.GetLength(0); $r++) {
         if ([string]$data[$r,1] -eq 'Словарь пользовательских статусов') { $start = $r }
+        # Общие абзацы объединены от A, а таблицы настроек содержат текст в B.
+        [void]$text.AppendLine(([string]$data[$r,1]))
         [void]$text.AppendLine(([string]$data[$r,2]))
     }
     Assert-Help 'statusDictionaryPresent' ($start -gt 0) "row=$start"
@@ -133,6 +135,9 @@ function Test-ActualHelp([object]$Book) {
     Assert-Help 'importedSnapshotUnitChanges' ($body.Contains('Импортированная геометрия записывается в Results в выбранных на момент импорта OUTPUT-единицах') -and $body.Contains('восстановит геометрию по единицам старого снимка')) 'Import and recalculation use their own recorded OUTPUT units'
     Assert-Help 'inputChangeDoesNotRescaleImportedGeometry' ($body.Contains('смена INPUT без перевода уже введенных чисел меняет их физический смысл') -and $body.Contains('не отфильтровывает заново сохраненный снимок')) 'Current input values and preserved imported geometry are distinct'
     Assert-Help 'signsDoNotFlipStressOrStrain' ($body.Contains('Пользовательские знаки N/Mx/My не меняют знак Stress и Strain')) 'Material tension/compression and strain plane keep internal signs'
+    Assert-Help 'crackSettingsRequiredInput' ($body.Contains('Все поля раздела SLS.Crack должны быть заполнены допустимыми значениями') -and $body.Contains('а не командой использовать значение по умолчанию')) 'Crack Config invalid/missing values do not become defaults'
+    Assert-Help 'crackInactiveUserCoefficientContract' ($body.Contains('Phi3 и PsiS сохраняют допустимое число и в автоматических режимах')) 'Inactive user coefficients remain valid editable inputs'
+    Assert-Help 'mandatoryInputErrorNavigation' ($body.Contains('Сообщение называет настройку и фактическую ячейку Config') -and $body.Contains('Если строка удалена, адрес не угадывается') -and $body.Contains('в диспетчере имен Excel')) 'Input diagnostics explain actual cell, missing row and damaged named table repair'
     $config = $Book.Worksheets.Item('Config')
     $count = 0
     foreach ($link in $config.Hyperlinks) {

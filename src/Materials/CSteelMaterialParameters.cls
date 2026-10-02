@@ -59,21 +59,36 @@ Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader, Optional By
         mEsc = units.InputStressToInternal(mEsc)
     End If
 
-    Validate
+    Validate settings
 End Sub
 
 ' Проверяет, что характеристики можно использовать для построения диаграмм.
-Private Sub Validate()
-    If mRsULS <= 0# Then Err.Raise vbObjectError + 3201, "CSteelMaterialParameters", "Steel.Rs.ULS должен быть положительным."
-    If mRscULS <= 0# Then Err.Raise vbObjectError + 3202, "CSteelMaterialParameters", "Steel.Rsc.ULS должен быть положительным."
-    If mRsSLS <= 0# Then Err.Raise vbObjectError + 3203, "CSteelMaterialParameters", "Steel.Rs.SLS должен быть положительным."
-    If mRscSLS <= 0# Then Err.Raise vbObjectError + 3204, "CSteelMaterialParameters", "Steel.Rsc.SLS должен быть положительным."
-    If mEs <= 0# Then Err.Raise vbObjectError + 3205, "CSteelMaterialParameters", "Steel.Es должен быть положительным."
-    If mEsc <= 0# Then Err.Raise vbObjectError + 3206, "CSteelMaterialParameters", "Steel.Esc должен быть положительным."
-    If mTwoLineEs2 <= 0# Then Err.Raise vbObjectError + 3207, "CSteelMaterialParameters", "Steel.TwoLine.Es2 должен быть положительным."
-    If mTwoLineEsc2 <= 0# Then Err.Raise vbObjectError + 3208, "CSteelMaterialParameters", "Steel.TwoLine.Esc2 должен быть положительным."
-    If mThreeLineEs2 <= 0# Then Err.Raise vbObjectError + 3209, "CSteelMaterialParameters", "Steel.ThreeLine.Es2 должен быть положительным."
-    If mThreeLineEsc2 <= 0# Then Err.Raise vbObjectError + 3210, "CSteelMaterialParameters", "Steel.ThreeLine.Esc2 должен быть положительным."
+Private Sub Validate(Optional ByVal settings As CSystemSettingsReader = Nothing)
+    RequirePositive settings, "Steel.Rs.ULS", mRsULS, 3201
+    RequirePositive settings, "Steel.Rsc.ULS", mRscULS, 3202
+    RequirePositive settings, "Steel.Rs.SLS", mRsSLS, 3203
+    RequirePositive settings, "Steel.Rsc.SLS", mRscSLS, 3204
+    RequirePositive settings, "Steel.Es", mEs, 3205
+    RequirePositive settings, "Steel.Esc", mEsc, 3206
+    RequirePositive settings, "Steel.TwoLine.Es2", mTwoLineEs2, 3207
+    RequirePositive settings, "Steel.TwoLine.Esc2", mTwoLineEsc2, 3208
+    RequirePositive settings, "Steel.ThreeLine.Es2", mThreeLineEs2, 3209
+    RequirePositive settings, "Steel.ThreeLine.Esc2", mThreeLineEsc2, 3210
+End Sub
+
+' Проверяет физически положительный параметр арматуры и сохраняет прежний
+' машинный код. Адрес нужной сжатой/растянутой ячейки добавляется Excel-reader-ом.
+Private Sub RequirePositive(ByVal settings As CSystemSettingsReader, ByVal key As String, _
+        ByVal value As Double, ByVal errorCode As Long)
+    If value > 0# Then Exit Sub
+    Dim message As String
+    If settings Is Nothing Then
+        message = key & " должен быть положительным."
+    Else
+        message = settings.InputErrorMessage(key, "Характеристика арматуры должна быть больше нуля.", _
+            "Введите положительное значение в указанных на листе единицах измерения.")
+    End If
+    Err.Raise vbObjectError + errorCode, "CSteelMaterialParameters", message
 End Sub
 
 Public Property Get RsULS() As Double

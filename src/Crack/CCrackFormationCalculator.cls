@@ -118,12 +118,13 @@ End Sub
 ' Загружает только те настройки, которые нужны расчету трещин и внутренним
 ' прямым solve. Все пользовательские единицы сразу переводятся во внутренние
 ' мм, Н, Н*мм и МПа; дальше класс работает как часть расчетного ядра.
-' Явно пустой численный Solver-параметр отклоняется как ошибка Config.
+' Путь и стратегия Formation обязательны; пустые значения не заменяются
+' defaults. Явно пустой численный Solver-параметр также является ошибкой Config.
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
 
-    mCrackFormationPath = settings.GetString("SLS.Crack.InitiationLoadPath", mCrackFormationPath)
-    mCrackFormationSolutionStrategy = settings.GetString("SLS.Crack.InitiationSolutionStrategy", mCrackFormationSolutionStrategy)
+    mCrackFormationPath = settings.GetRequiredString("SLS.Crack.InitiationLoadPath")
+    mCrackFormationSolutionStrategy = settings.GetRequiredString("SLS.Crack.InitiationSolutionStrategy")
 
     mSolverMaxIterations = settings.GetLong("Solver.MaxIterations", mSolverMaxIterations, False)
     mSolverLoadSteps = settings.GetLong("Solver.LoadSteps", mSolverLoadSteps, False)
@@ -2035,7 +2036,7 @@ Private Function NormalizeCrackFormationPath(ByVal rawPath As String) As String
             NormalizeCrackFormationPath = CRACK_PATH_NMXY
         Case Else
             Err.Raise vbObjectError + 3734, "CCrackFormationCalculator", _
-                "SLS.Crack.InitiationLoadPath должен быть Auto, lambda*Mxy, lambda*N или lambda*NMxy."
+                "На листе Config в строке SLS.Crack.InitiationLoadPath выберите Auto, lambda*Mxy, lambda*N или lambda*NMxy."
     End Select
 End Function
 
@@ -2053,7 +2054,7 @@ Private Function NormalizeCrackFormationSolutionStrategy(ByVal rawStrategy As St
             NormalizeCrackFormationSolutionStrategy = STRATEGY_LOAD_MULTIPLIER
         Case Else
             Err.Raise vbObjectError + 3735, "CCrackFormationCalculator", _
-                "SLS.Crack.InitiationSolutionStrategy должен быть Auto, UltimateStrain или LoadMultiplier."
+                "На листе Config в строке SLS.Crack.InitiationSolutionStrategy выберите Auto, UltimateStrain или LoadMultiplier."
     End Select
 End Function
 

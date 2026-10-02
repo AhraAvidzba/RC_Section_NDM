@@ -25,6 +25,10 @@ Private mKeys() As String ' Имена настроек Config: Solver.Method, C
 Private mValues() As String ' Значения, которые ввел пользователь или подставили формулы таблицы.
 Private mDefaults() As String ' Значения по умолчанию из таблицы Config.
 Private mSources() As String ' Комментарий/источник строки для диагностики.
+Private mLocations() As String ' Лист, адрес и видимый столбец прочитанного значения; только диагностика ввода.
+Private mLoadingSheet As String ' Имя листа текущей входной таблицы для диагностики.
+Private mLoadingRow As Long ' Первая строка таблицы; считывается один раз, без COM на каждый ключ.
+Private mLoadingColumn As Long ' Первый столбец таблицы для вычисления абсолютного адреса значения.
 Private mCount As Long ' Количество загруженных ключей.
 Private mMigrationWarning As String ' Предупреждение о конфликте старого и канонического ключа Extension.
 
@@ -34,15 +38,30 @@ Private mMigrationWarning As String ' Предупреждение о конфл
 ' перед попаданием в словарь разворачиваются в ключи Concrete.* / Steel.*.
 Public Sub LoadFromWorkbook(ByVal workbook As Object)
     Clear
-    AppendSettingsRange workbook.Names.Item("rngUnitSettings").RefersToRange
-    AppendSettingsRange workbook.Names.Item("rngSignConventionSettings").RefersToRange
+    AppendRequiredNamedSettingsRange workbook, "rngUnitSettings", "Единицы измерения"
+    AppendRequiredNamedSettingsRange workbook, "rngSignConventionSettings", "Система знаков"
     ValidateWorkbookUnitAndSignKeys
-    AppendSettingsRange workbook.Names.Item("rngSystemSettings").RefersToRange
+    AppendRequiredNamedSettingsRange workbook, "rngSystemSettings", "Системные настройки"
     AppendNamedSettingsRangeIfExists workbook, "rngConcreteMaterialParameters"
     AppendNamedSettingsRangeIfExists workbook, "rngSteelMaterialParameters"
-    AppendSettingsRange workbook.Names.Item("rngPlotAnnotationSettings").RefersToRange
+    AppendRequiredNamedSettingsRange workbook, "rngPlotAnnotationSettings", "Подписи и размеры схемы"
     AppendGeometrySettingsRanges workbook
     NormalizeDiagramExtensionSetting
+End Sub
+
+' Различает поврежденное имя обязательной таблицы и ошибку ее значения.
+' При утрате имени дает действие для восстановления книги вместо COM-ошибки 1004.
+Private Sub AppendRequiredNamedSettingsRange(ByVal workbook As Object, ByVal rangeName As String, ByVal caption As String)
+    Dim settingsRange As Object
+    On Error GoTo MissingRange
+    Set settingsRange = workbook.Names.Item(rangeName).RefersToRange
+    On Error GoTo 0
+    AppendSettingsRange settingsRange
+    Exit Sub
+MissingRange:
+    Err.Raise vbObjectError + 4316, "CSystemSettingsReader.LoadFromWorkbook", _
+        "На листе Config недоступна обязательная таблица """ & caption & """ (имя " & rangeName & _
+        "). Восстановите таблицу и ссылку на нее в диспетчере имен Excel или используйте исправный шаблон книги."
 End Sub
 
 ' Проверяет обязательные пользовательские ключи полной книги после чтения
@@ -56,8 +75,8 @@ Private Sub ValidateWorkbookUnitAndSignKeys()
             "Sign.N.User", "Sign.Mx.User", "Sign.My.User")
         If Not HasKey(CStr(key)) Then
             Err.Raise vbObjectError + 4313, "CSystemSettingsReader.LoadFromWorkbook", _
-                "На листе Config отсутствует обязательная настройка " & CStr(key) & _
-                ". Проверьте строки таблиц единиц измерения и системы знаков."
+                InputErrorMessage(CStr(key), "Обязательная строка настройки отсутствует.", _
+                    "Восстановите строку в указанной таблице и заполните пользовательское значение.")
         End If
     Next key
 End Sub
@@ -169,7 +188,7 @@ Private Function DiagramExtensionValue(ByVal rawValue As String, ByVal settingKe
         Case "NO", "FALSE", "0", "НЕТ": DiagramExtensionValue = "No"
         Case Else
             Err.Raise vbObjectError + 4310, "CSystemSettingsReader", _
-                "На листе Config настройка " & settingKey & " должна быть Yes или No."
+                InputErrorMessage(settingKey, "Значение переключателя не распознано.", "Выберите Yes или No.")
     End Select
 End Function
 
@@ -182,6 +201,7 @@ Private Sub RemoveSettingAt(ByVal index As Long)
         mValues(i) = mValues(i + 1)
         mDefaults(i) = mDefaults(i + 1)
         mSources(i) = mSources(i + 1)
+        mLocations(i) = mLocations(i + 1)
     Next i
     mCount = mCount - 1
 End Sub
@@ -194,6 +214,9 @@ End Property
 Private Sub AppendSettingsRange(ByVal settingsRange As Object)
     If settingsRange Is Nothing Then Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
         "Таблица настроек Config не передана."
+    mLoadingSheet = CStr(settingsRange.Worksheet.Name)
+    mLoadingRow = settingsRange.Row
+    mLoadingColumn = settingsRange.Column
     Dim data As Variant
     data = settingsRange.Value2
     If Not IsArray(data) Then Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
@@ -240,7 +263,7 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object)
     ' в квадратных скобках пропускаются.
     For rowIndex = 2 To UBound(data, 1)
         Dim keyValue As String
-        keyValue = ConfigCellText(data(rowIndex, 1), "ключ настройки", rowIndex, vbNullString)
+        keyValue = ConfigCellText(data(rowIndex, 1), "ключ настройки", rowIndex, vbNullString, False, 1)
         If Len(keyValue) > 0 And Left$(keyValue, 1) <> "[" Then
             Dim sourceValue As String
             If columnCount >= 6 Then
@@ -251,9 +274,9 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object)
                 sourceValue = vbNullString
             End If
             AppendSetting keyValue, _
-                ConfigCellText(data(rowIndex, 2), "значение", rowIndex, keyValue), _
+                ConfigCellText(data(rowIndex, 2), "значение", rowIndex, keyValue, False, 2), _
                 ConfigCellText(data(rowIndex, 3), "единица измерения", rowIndex, keyValue, True), _
-                sourceValue
+                sourceValue, rowIndex, 2
         End If
     Next rowIndex
 End Sub
@@ -263,13 +286,14 @@ End Sub
 ' VBA Type mismatch при CStr(...), без указания проблемной настройки.
 Private Function ConfigCellText(ByVal cellValue As Variant, ByVal columnName As String, _
         ByVal rowIndex As Long, ByVal keyValue As String, _
-        Optional ByVal allowFormulaErrorAsEmpty As Boolean = False) As String
+        Optional ByVal allowFormulaErrorAsEmpty As Boolean = False, Optional ByVal columnIndex As Long = 0) As String
     If IsError(cellValue) Then
         If allowFormulaErrorAsEmpty Then Exit Function
         If Len(keyValue) = 0 Then keyValue = "строка " & CStr(rowIndex)
         Err.Raise vbObjectError + 4309, "CSystemSettingsReader", _
-            "На листе Config настройка " & keyValue & " содержит ошибку Excel в колонке """ & _
-            columnName & """. Проверьте формулу или замените ее числом/текстом."
+            "Настройка " & keyValue & " (" & InputCellLocation(rowIndex, columnIndex) & _
+            ") содержит ошибку Excel в колонке """ & columnName & _
+            """. Исправьте формулу или введите допустимое значение вместо ошибки Excel."
     End If
     ConfigCellText = Trim$(CStr(cellValue))
 End Function
@@ -296,33 +320,33 @@ Private Sub AppendConcreteMaterialParameters(ByRef data As Variant)
         Dim compressionValue As String
         Dim tensionValue As String
         Dim commentValue As String
-        compressionValue = Trim$(CStr(data(rowIndex, 2)))
-        tensionValue = Trim$(CStr(data(rowIndex, 3)))
+        compressionValue = ConfigCellText(data(rowIndex, 2), "Сжатие", rowIndex, rowKey, False, 2)
+        tensionValue = ConfigCellText(data(rowIndex, 3), "Растяжение", rowIndex, rowKey, False, 3)
         If UBound(data, 2) >= 5 Then commentValue = Trim$(CStr(data(rowIndex, 5)))
 
         Select Case LCase$(rowKey)
             Case "concrete.r.uls(i)", "concrete.r.i(uls)", "concrete.r.uls"
-                AppendSetting "Concrete.Rb.ULS", compressionValue, compressionValue, commentValue
-                AppendSetting "Concrete.Rbt.ULS", tensionValue, tensionValue, commentValue
+                AppendSetting "Concrete.Rb.ULS", compressionValue, compressionValue, commentValue, rowIndex, 2
+                AppendSetting "Concrete.Rbt.ULS", tensionValue, tensionValue, commentValue, rowIndex, 3
             Case "concrete.r.sls(ii)", "concrete.r.ii(sls)", "concrete.r.sls"
-                AppendSetting "Concrete.Rb.SLS", compressionValue, compressionValue, commentValue
-                AppendSetting "Concrete.Rbt.SLS", tensionValue, tensionValue, commentValue
+                AppendSetting "Concrete.Rb.SLS", compressionValue, compressionValue, commentValue, rowIndex, 2
+                AppendSetting "Concrete.Rbt.SLS", tensionValue, tensionValue, commentValue, rowIndex, 3
             Case "concrete.rb.mc2"
-                AppendSetting "Concrete.Rb.mc2", compressionValue, compressionValue, commentValue
+                AppendSetting "Concrete.Rb.mc2", compressionValue, compressionValue, commentValue, rowIndex, 2
             Case "concrete.e"
-                AppendSetting "Concrete.Eb", compressionValue, compressionValue, commentValue
-                AppendSetting "Concrete.Ebt", tensionValue, tensionValue, commentValue
+                AppendSetting "Concrete.Eb", compressionValue, compressionValue, commentValue, rowIndex, 2
+                AppendSetting "Concrete.Ebt", tensionValue, tensionValue, commentValue, rowIndex, 3
             Case "concrete.twoline.eb1red"
-                AppendSetting "Concrete.Eb1Red", compressionValue, compressionValue, commentValue
-                AppendSetting "Concrete.Ebt1Red", tensionValue, tensionValue, commentValue
+                AppendSetting "Concrete.Eb1Red", compressionValue, compressionValue, commentValue, rowIndex, 2
+                AppendSetting "Concrete.Ebt1Red", tensionValue, tensionValue, commentValue, rowIndex, 3
             Case "concrete.threeline.eb0"
-                AppendSetting "Concrete.Eb0", compressionValue, compressionValue, commentValue
-                AppendSetting "Concrete.Ebt0", tensionValue, tensionValue, commentValue
+                AppendSetting "Concrete.Eb0", compressionValue, compressionValue, commentValue, rowIndex, 2
+                AppendSetting "Concrete.Ebt0", tensionValue, tensionValue, commentValue, rowIndex, 3
             Case "concrete.twothreeline.eb2"
-                AppendSetting "Concrete.Eb2", compressionValue, compressionValue, commentValue
-                AppendSetting "Concrete.Ebt2", tensionValue, tensionValue, commentValue
+                AppendSetting "Concrete.Eb2", compressionValue, compressionValue, commentValue, rowIndex, 2
+                AppendSetting "Concrete.Ebt2", tensionValue, tensionValue, commentValue, rowIndex, 3
             Case Else
-                If Len(compressionValue) > 0 Then AppendSetting rowKey, compressionValue, compressionValue, commentValue
+                If Len(compressionValue) > 0 Then AppendSetting rowKey, compressionValue, compressionValue, commentValue, rowIndex, 2
         End Select
 NextRow:
     Next rowIndex
@@ -349,28 +373,28 @@ Private Sub AppendSteelMaterialParameters(ByRef data As Variant)
         Dim compressionValue As String
         Dim tensionValue As String
         Dim commentValue As String
-        compressionValue = Trim$(CStr(data(rowIndex, 2)))
-        tensionValue = Trim$(CStr(data(rowIndex, 3)))
+        compressionValue = ConfigCellText(data(rowIndex, 2), "Сжатие", rowIndex, rowKey, False, 2)
+        tensionValue = ConfigCellText(data(rowIndex, 3), "Растяжение", rowIndex, rowKey, False, 3)
         If UBound(data, 2) >= 5 Then commentValue = Trim$(CStr(data(rowIndex, 5)))
 
         Select Case LCase$(rowKey)
             Case "steel.r.uls(i)", "steel.r.i(uls)", "steel.r.uls"
-                AppendSetting "Steel.Rsc.ULS", compressionValue, compressionValue, commentValue
-                AppendSetting "Steel.Rs.ULS", tensionValue, tensionValue, commentValue
+                AppendSetting "Steel.Rsc.ULS", compressionValue, compressionValue, commentValue, rowIndex, 2
+                AppendSetting "Steel.Rs.ULS", tensionValue, tensionValue, commentValue, rowIndex, 3
             Case "steel.r.sls(ii)", "steel.r.ii(sls)", "steel.r.sls"
-                AppendSetting "Steel.Rsc.SLS", compressionValue, compressionValue, commentValue
-                AppendSetting "Steel.Rs.SLS", tensionValue, tensionValue, commentValue
+                AppendSetting "Steel.Rsc.SLS", compressionValue, compressionValue, commentValue, rowIndex, 2
+                AppendSetting "Steel.Rs.SLS", tensionValue, tensionValue, commentValue, rowIndex, 3
             Case "steel.e"
-                AppendSetting "Steel.Esc", compressionValue, compressionValue, commentValue
-                AppendSetting "Steel.Es", tensionValue, tensionValue, commentValue
+                AppendSetting "Steel.Esc", compressionValue, compressionValue, commentValue, rowIndex, 2
+                AppendSetting "Steel.Es", tensionValue, tensionValue, commentValue, rowIndex, 3
             Case "steel.twoline.es2"
-                AppendSetting "Steel.TwoLine.Esc2", compressionValue, compressionValue, commentValue
-                AppendSetting "Steel.TwoLine.Es2", tensionValue, tensionValue, commentValue
+                AppendSetting "Steel.TwoLine.Esc2", compressionValue, compressionValue, commentValue, rowIndex, 2
+                AppendSetting "Steel.TwoLine.Es2", tensionValue, tensionValue, commentValue, rowIndex, 3
             Case "steel.threeline.es2"
-                AppendSetting "Steel.ThreeLine.Esc2", compressionValue, compressionValue, commentValue
-                AppendSetting "Steel.ThreeLine.Es2", tensionValue, tensionValue, commentValue
+                AppendSetting "Steel.ThreeLine.Esc2", compressionValue, compressionValue, commentValue, rowIndex, 2
+                AppendSetting "Steel.ThreeLine.Es2", tensionValue, tensionValue, commentValue, rowIndex, 3
             Case Else
-                If Len(compressionValue) > 0 Then AppendSetting rowKey, compressionValue, compressionValue, commentValue
+                If Len(compressionValue) > 0 Then AppendSetting rowKey, compressionValue, compressionValue, commentValue, rowIndex, 2
         End Select
 NextRow:
     Next rowIndex
@@ -431,9 +455,13 @@ Private Sub AppendUnitSettings(ByRef data As Variant)
         Dim quantity As String
         quantity = UnitQuantityKey(Trim$(CStr(data(rowIndex, 1))))
         If Len(quantity) > 0 Then
-            AppendSetting "Units." & quantity & ".Input", Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), "Пользовательская единица ввода"
-            AppendSetting "Units." & quantity & ".Internal", Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 3))), "Фиксированная внутренняя единица"
-            AppendSetting "Units." & quantity & ".Output", Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 4))), "Пользовательская единица вывода"
+            Dim value As String
+            value = ConfigCellText(data(rowIndex, 2), "INPUT", rowIndex, "Units." & quantity & ".Input", False, 2)
+            AppendSetting "Units." & quantity & ".Input", value, value, "Пользовательская единица ввода", rowIndex, 2
+            value = ConfigCellText(data(rowIndex, 3), "INTERNAL", rowIndex, "Units." & quantity & ".Internal", False, 3)
+            AppendSetting "Units." & quantity & ".Internal", value, value, "Фиксированная внутренняя единица", rowIndex, 3
+            value = ConfigCellText(data(rowIndex, 4), "OUTPUT", rowIndex, "Units." & quantity & ".Output", False, 4)
+            AppendSetting "Units." & quantity & ".Output", value, value, "Пользовательская единица вывода", rowIndex, 4
         End If
     Next rowIndex
 End Sub
@@ -445,8 +473,11 @@ Private Sub AppendSignConventionSettings(ByRef data As Variant)
         Dim quantity As String
         quantity = SignQuantityKey(Trim$(CStr(data(rowIndex, 1))))
         If Len(quantity) > 0 Then
-            AppendSetting "Sign." & quantity & ".User", Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), "Пользовательское правило знаков"
-            AppendSetting "Sign." & quantity & ".Internal", Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 3))), "Фиксированное внутреннее правило знаков"
+            Dim value As String
+            value = ConfigCellText(data(rowIndex, 2), "USER", rowIndex, "Sign." & quantity & ".User", False, 2)
+            AppendSetting "Sign." & quantity & ".User", value, value, "Пользовательское правило знаков", rowIndex, 2
+            value = ConfigCellText(data(rowIndex, 3), "INTERNAL", rowIndex, "Sign." & quantity & ".Internal", False, 3)
+            AppendSetting "Sign." & quantity & ".Internal", value, value, "Фиксированное внутреннее правило знаков", rowIndex, 3
         End If
     Next rowIndex
 End Sub
@@ -879,17 +910,66 @@ End Sub
 ' Массивы параллельные: это проще и быстрее для VBA, чем словарь с Variant-объектами,
 ' а поиск по ключу остается достаточно дешевым для числа настроек Config.
 Private Sub AppendSetting(ByVal keyValue As String, ByVal settingValue As String, _
-        ByVal defaultValue As String, ByVal sourceValue As String)
+        ByVal defaultValue As String, ByVal sourceValue As String, _
+        Optional ByVal valueRow As Long = 0, Optional ByVal valueColumn As Long = 0)
     mCount = mCount + 1
     ReDim Preserve mKeys(1 To mCount)
     ReDim Preserve mValues(1 To mCount)
     ReDim Preserve mDefaults(1 To mCount)
     ReDim Preserve mSources(1 To mCount)
+    ReDim Preserve mLocations(1 To mCount)
     mKeys(mCount) = keyValue
     mValues(mCount) = settingValue
     mDefaults(mCount) = defaultValue
     mSources(mCount) = sourceValue
+    If valueRow > 0 And valueColumn > 0 Then mLocations(mCount) = InputCellLocation(valueRow, valueColumn)
 End Sub
+
+' Фиксирует фактический адрес значения, а не предполагаемую позицию Config.
+' Адрес используется только в диагностике: перестановка строк таблицы допустима.
+Private Function InputCellLocation(ByVal rowIndex As Long, ByVal columnIndex As Long) As String
+    If Len(mLoadingSheet) = 0 Or columnIndex < 1 Then
+        InputCellLocation = "лист Config"
+        Exit Function
+    End If
+    Dim column As Long, address As String
+    column = mLoadingColumn + columnIndex - 1
+    Do While column > 0
+        address = Chr$(65 + (column - 1) Mod 26) & address
+        column = (column - 1) \ 26
+    Loop
+    InputCellLocation = "лист " & mLoadingSheet & ", ячейка " & address & CStr(mLoadingRow + rowIndex - 1)
+End Function
+
+' Добавляет место исправления к ошибке конкретной настройки. Причину и
+' допустимые значения определяет ее владелец; текст не назначает ResultCode/status.
+' Для отсутствующего ключа адрес не выдумывается: указаны раздел и восстановление строки.
+Public Function InputErrorMessage(ByVal key As String, ByVal reason As String, ByVal correction As String) As String
+    Dim index As Long, location As String
+    index = FindKey(key)
+    If index > 0 Then location = mLocations(index)
+    If Len(location) = 0 Then location = InputSettingsSection(key)
+    InputErrorMessage = "Настройка " & key & " (" & location & "): " & reason & " " & correction
+End Function
+
+' Называет видимую таблицу для утраченной строки. Это навигация по Config,
+' а не подстановка значения отсутствующей настройки или таблицы.
+Private Function InputSettingsSection(ByVal key As String) As String
+    Dim sectionName As String
+    Select Case True
+        Case Left$(key, 9) = "Concrete.": sectionName = "параметры бетона"
+        Case Left$(key, 6) = "Steel.": sectionName = "параметры арматуры"
+        Case Left$(key, 6) = "Units.": sectionName = "единицы измерения, столбцы INPUT/OUTPUT"
+        Case Left$(key, 5) = "Sign.": sectionName = "система знаков, столбец USER"
+        Case Left$(key, 10) = "SLS.Crack.": sectionName = "настройки расчета трещин"
+        Case Left$(key, 10) = "Stability.": sectionName = "настройки устойчивости"
+        Case Left$(key, 7) = "Solver.": sectionName = "настройки решателя"
+        Case Left$(key, 9) = "Capacity.": sectionName = "настройки несущей способности"
+        Case Left$(key, 15) = "AutoCAD.Import.": sectionName = "импорт геометрии из AutoCAD"
+        Case Else: sectionName = "таблица исходных настроек"
+    End Select
+    InputSettingsSection = "лист Config, раздел """ & sectionName & """"
+End Function
 
 ' Сбрасывает все прочитанные настройки и точки диаграмм.
 Public Sub Clear()
@@ -897,6 +977,10 @@ Public Sub Clear()
     Erase mValues
     Erase mDefaults
     Erase mSources
+    Erase mLocations
+    mLoadingSheet = vbNullString
+    mLoadingRow = 0
+    mLoadingColumn = 0
     mCount = 0
     mMigrationWarning = vbNullString
 End Sub
@@ -938,7 +1022,7 @@ Public Function GetDouble(ByVal key As String, Optional ByVal defaultValue As Do
         textValue = Trim$(GetRawString(key))
         If Len(textValue) = 0 Or UCase$(textValue) = "TODO" Then
             Err.Raise vbObjectError + 4310, "CSystemSettingsReader.GetDouble", _
-                "Числовая настройка " & key & " не задана. Заполните значение или формулу на листе Config."
+                InputErrorMessage(key, "Числовое значение не задано.", "Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.")
         End If
     Else
         textValue = GetString(key, vbNullString)
@@ -953,19 +1037,19 @@ Public Function GetDouble(ByVal key As String, Optional ByVal defaultValue As Do
 
 InvalidNumber:
     Err.Raise vbObjectError + 4312, "CSystemSettingsReader.GetDouble", _
-        "Настройка " & key & " должна быть числом, но сейчас прочитано: """ & _
-        textValue & """. Проверьте значение или формулу на листе Config."
+        InputErrorMessage(key, "Не удалось прочитать число: """ & textValue & """.", _
+            "Введите конечное число допустимого диапазона или исправьте формулу.")
 End Function
 
 ' Читает обязательную числовую настройку без скрытой подстановки значения.
-' Используется для характеристик материалов: если пользователь очистил ячейку
-' или ключ не попал в Config, расчет должен остановиться как ошибка исходных данных.
+' Используется для обязательных исходных данных. Пустая ячейка и потерянная
+' строка различаются в сообщении; обе причины остаются ошибкой ввода без default.
 Public Function GetRequiredDouble(ByVal key As String) As Double
     Dim textValue As String
     textValue = Trim$(GetRawString(key, vbNullString))
     If Len(textValue) = 0 Or UCase$(textValue) = "TODO" Then
         Err.Raise vbObjectError + 4310, "CSystemSettingsReader", _
-            "Обязательная числовая настройка " & key & " не задана."
+            InputErrorMessage(key, "Обязательное числовое значение не задано.", RequiredInputCorrection(key, True))
     End If
     On Error GoTo InvalidNumber
     GetRequiredDouble = CDbl(Replace$(textValue, ".", ApplicationDecimalSeparator()))
@@ -973,8 +1057,8 @@ Public Function GetRequiredDouble(ByVal key As String) As Double
 
 InvalidNumber:
     Err.Raise vbObjectError + 4313, "CSystemSettingsReader.GetRequiredDouble", _
-        "Обязательная числовая настройка " & key & " должна быть числом, но сейчас прочитано: """ & _
-        textValue & """. Проверьте значение или формулу на листе Config."
+        InputErrorMessage(key, "Не удалось прочитать обязательное число: """ & textValue & """.", _
+            "Введите конечное число допустимого диапазона или исправьте формулу.")
 End Function
 
 ' Читает обязательную текстовую настройку без default-значения.
@@ -985,9 +1069,20 @@ Public Function GetRequiredString(ByVal key As String) As String
     textValue = Trim$(GetRawString(key, vbNullString))
     If Len(textValue) = 0 Or UCase$(textValue) = "TODO" Then
         Err.Raise vbObjectError + 4311, "CSystemSettingsReader", _
-            "Обязательная настройка " & key & " не задана."
+            InputErrorMessage(key, "Обязательное значение не задано.", RequiredInputCorrection(key, False))
     End If
     GetRequiredString = textValue
+End Function
+
+' Подсказывает действие отдельно для утраченной строки и незаполненного значения.
+' Число/текст проверяются здесь, а инженерный диапазон остается у потребителя.
+Private Function RequiredInputCorrection(ByVal key As String, ByVal numericValue As Boolean) As String
+    If Not HasKey(key) Then RequiredInputCorrection = "Восстановите строку " & key & " в указанном разделе. "
+    If numericValue Then
+        RequiredInputCorrection = RequiredInputCorrection & "Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы."
+    Else
+        RequiredInputCorrection = RequiredInputCorrection & "Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы."
+    End If
 End Function
 
 ' Читает Long без округления дроби и переполнения. Контракт пустой ячейки
@@ -997,9 +1092,9 @@ Public Function GetLong(ByVal key As String, Optional ByVal defaultValue As Long
     Dim value As Double
     value = GetDouble(key, CDbl(defaultValue), allowBlankValue)
     If value < -2147483648# Or value > 2147483647# Then Err.Raise vbObjectError + 4315, "CSystemSettingsReader.GetLong", _
-        "Настройка " & key & " должна быть целым числом в диапазоне Long; прочитанное значение выходит за этот диапазон."
+        InputErrorMessage(key, "Целое число выходит за допустимый диапазон Long.", "Введите целое число от -2147483648 до 2147483647 с учетом допустимого диапазона этой настройки.")
     If value <> Fix(value) Then Err.Raise vbObjectError + 4315, "CSystemSettingsReader.GetLong", _
-        "Настройка " & key & " должна быть целым числом. Дробное значение на листе Config не округляется автоматически."
+        InputErrorMessage(key, "Введено дробное значение вместо целого; автоматическое округление не выполняется.", "Введите целое число.")
     GetLong = CLng(value)
 End Function
 
@@ -1017,7 +1112,7 @@ Public Function GetBoolean(ByVal key As String, Optional ByVal defaultValue As B
         Case "NO", "FALSE", "0", "НЕТ": GetBoolean = False
         Case Else
             Err.Raise vbObjectError + 4314, "CSystemSettingsReader.GetBoolean", _
-                "Настройка " & key & " должна иметь значение Yes или No. Проверьте значение или формулу на листе Config."
+                InputErrorMessage(key, "Значение переключателя не распознано.", "Выберите Yes или No.")
     End Select
 End Function
 

@@ -1,0 +1,103 @@
+{
+  "Scope": "Доказана активность десяти настроек подготовки ширины; полный допустимый диапазон, все профили/формы и независимая активность двух Formation-селекторов не объявляются принятыми",
+  "PositiveReport": "docs/regression/Audit03/crack_config_positive_v95_2026-10-02.txt",
+  "PositiveGate": "TOTAL_AUDIT03_CRACK_CONFIG: passed=2837; failed=0",
+  "FullReports": [
+    "docs/regression/Audit03/crack_config_full_off_v95_2026-10-02.txt",
+    "docs/regression/Audit03/crack_config_full_on_v95_2026-10-02.txt"
+  ],
+  "Consumer": "Реальные Config cells -> CSystemSettingsReader.LoadFromWorkbook -> CUnitSystem -> CBatchSectionCalculator.ApplySettings/Execute -> отдельные Formation/Width/Longitudinal results -> CBatchResultWriter и подробные writers",
+  "TestId": "modTestBatchCalculation.TestAudit03CrackConfigBehavior",
+  "Entries": [
+    {
+      "Id": "SLS.Crack.Allowable", "Type": "Double", "InternalUnits": "мм",
+      "RuntimeDefault": "Обязательный Config-ввод; начальное значение класса не подставляется вместо missing/blank/TODO/error",
+      "ValidRange": "> 0",
+      "Activity": "Выполненная формула нормальной ширины, а также решение Auto psi об уточнении",
+      "ExpectedEffect": "Изменение предела не меняет a_crc, но меняет utilization и OK/FAIL; переход Auto psi от unity к уточнению проверен отдельно",
+      "AssertionPrefix": "audit03.crackConfig.allowableFail.",
+      "RangeReview": "Два положительных предела и пересечение проверки, 0/-1/1e309, blank/TODO/abc/CVErr/missing/recovery. Полный диапазон и все interactions остаются отдельным gate."
+    },
+    {
+      "Id": "SLS.Crack.Phi1", "Type": "Double", "InternalUnits": "-",
+      "RuntimeDefault": "Обязательный Config-ввод, без fallback",
+      "ValidRange": "> 0",
+      "Activity": "Выполненная формула нормальной ширины",
+      "ExpectedEffect": "1.4 -> 2.1 умножает a_crc на 1.5 при неизменных sigma_s, ls и числе solve",
+      "AssertionPrefix": "audit03.crackConfig.active.0.widthFactor",
+      "RangeReview": "Активный эффект, независимая формула/writer, 0/-1/1e309, blank/TODO/abc/CVErr/missing/recovery. Полный диапазон и все consumers не закрыты."
+    },
+    {
+      "Id": "SLS.Crack.Phi2", "Type": "Double", "InternalUnits": "-",
+      "RuntimeDefault": "Обязательный Config-ввод, без fallback",
+      "ValidRange": "> 0",
+      "Activity": "Выполненная формула нормальной ширины",
+      "ExpectedEffect": "0.5 -> 0.75 умножает a_crc на 1.5 при неизменных sigma_s, ls и числе solve",
+      "AssertionPrefix": "audit03.crackConfig.active.1.widthFactor",
+      "RangeReview": "Активный эффект, независимая формула/writer, 0/-1/1e309, blank/TODO/abc/CVErr/missing/recovery. Полный диапазон и все consumers не закрыты."
+    },
+    {
+      "Id": "SLS.Crack.Phi3", "Type": "Double", "InternalUnits": "-",
+      "RuntimeDefault": "Обязательное положительное число даже в Auto, без fallback",
+      "ValidRange": "> 0",
+      "Activity": "Задает коэффициент только при Phi3Mode=User; Auto не использует его для формулы",
+      "ExpectedEffect": "User 1 -> 1.5 умножает a_crc на 1.5; Auto 1 -> 2.5 не меняет фактический коэффициент и ширину",
+      "AssertionPrefix": "audit03.crackConfig.active.2.widthFactor",
+      "RangeReview": "Активный/неактивный режим, 0/-1/1e309, blank/TODO/abc/CVErr/missing/recovery. Остальные нагрузки Auto и full-range еще проверяются."
+    },
+    {
+      "Id": "SLS.Crack.PsiS", "Type": "Double", "InternalUnits": "-",
+      "RuntimeDefault": "Обязательное положительное число даже в Auto/AlwaysCalc, без fallback",
+      "ValidRange": "> 0; автоматический psi ограничен 0..1 отдельно от User-ввода",
+      "Activity": "Задает psi только при PsiMode=User; автоматические режимы не используют число для итогового psi",
+      "ExpectedEffect": "User 1 -> 0.5 уменьшает ширину вдвое; AlwaysCalc 1 -> 0.25 не меняет уточненное раскрытие",
+      "AssertionPrefix": "audit03.crackConfig.active.3.widthFactor",
+      "RangeReview": "Активный/неактивный режим, 0/-1/1e309, blank/TODO/abc/CVErr/missing/recovery. Не вводится новый верхний предел User-настройки."
+    },
+    {
+      "Id": "SLS.Crack.Phi3Mode", "Type": "Enum", "InternalUnits": "-",
+      "RuntimeDefault": "Обязательный Config-ввод, без fallback",
+      "ValidRange": "Auto / User",
+      "Activity": "Выполненная формула ширины и классификация внутренней продольной силы",
+      "ExpectedEffect": "User берет 1; Auto при внутреннем растяжении принимает 1.2 и игнорирует пользовательское Phi3",
+      "AssertionPrefix": "audit03.crackConfig.phi3Auto.tension",
+      "RangeReview": "Оба значения и User-параметр, blank/TODO/abc/CVErr/missing/recovery. Отдельный per-key Auto compression/zero oracle и pairwise остаются открытыми."
+    },
+    {
+      "Id": "SLS.Crack.PsiMode", "Type": "Enum", "InternalUnits": "-",
+      "RuntimeDefault": "Обязательный Config-ввод, без fallback",
+      "ValidRange": "User / Auto / AlwaysCalc",
+      "Activity": "Выполненная формула ширины; готовое PostCrackState передается без повторного solve",
+      "ExpectedEffect": "AlwaysCalc вычисляет 1-0.8*sigma_s,crc/sigma_s даже при достаточном допустимом раскрытии; Auto применяет unity при первой успешной проверке и уточняет при непрохождении; User берет PsiS",
+      "AssertionPrefix": "audit03.crackConfig.psiAlways.formula",
+      "RangeReview": "Все три режима, обе ветви Auto, неактивный PsiS и готовое отрицательное sigma_s,crc, blank/TODO/abc/CVErr/missing/recovery. Все формы/профили еще не закрыты."
+    },
+    {
+      "Id": "SLS.Crack.SigmaSCrcAveragingMode", "Type": "Enum", "InternalUnits": "-",
+      "RuntimeDefault": "Обязательный Config-ввод, без fallback",
+      "ValidRange": "AllSelected / TensionOnly",
+      "Activity": "Справочное sigma_s,crc при наличии физического PostCrackState; изменение psi только если используется автоматическое уточнение",
+      "ExpectedEffect": "На реальном текущем/пороговом НДС AllSelected дает -5.833595888369 МПа, TensionOnly 0; sigma_s и выбранные стержни неизменны, psi=1 и нет NumFail формулы",
+      "AssertionPrefix": "audit03.crackConfig.averaging.signedNegative",
+      "RangeReview": "Оба режима и содержательные комментарии неположительного среднего, blank/TODO/abc/CVErr/missing/recovery. Другие веса/зоны и все профили требуют отдельного gate."
+    },
+    {
+      "Id": "SLS.Crack.TensionZoneMode", "Type": "Enum", "InternalUnits": "-",
+      "RuntimeDefault": "Обязательный Config-ввод, без fallback",
+      "ValidRange": "Effective / FullTension",
+      "Activity": "Общая изгибная ветвь с нейтральной линией; центральное растяжение берет всю площадь независимо от выбора",
+      "ExpectedEffect": "Меняются принятая глубина, Abt и a_crc: 0.045381361994 -> 0.034036021495 мм, при одном текущем LC",
+      "AssertionPrefix": "audit03.crackConfig.zone.differsAbt",
+      "RangeReview": "Оба режима при реально активной полосе, независимая формула/writer/comments, blank/TODO/abc/CVErr/missing/recovery. Не утверждается full-range/pairwise."
+    },
+    {
+      "Id": "SLS.Crack.CoverDistanceMode", "Type": "Enum", "InternalUnits": "-",
+      "RuntimeDefault": "Обязательный Config-ввод, без fallback",
+      "ValidRange": "NearestContour / GlobalExtreme",
+      "Activity": "Геометрическая подготовка a_s в общей изгибной ветви; для полного центрального растяжения a_s неприменимо",
+      "ExpectedEffect": "На ступенчатом бетонном контуре отличается подготовленное a_s; оба режима выполняют формулу ширины и запись a_crc. Итоговая ширина в этом fixture совпадает; отдельный эффект на a_crc и вывод a_s не объявляются доказанными этим assertion",
+      "AssertionPrefix": "audit03.crackConfig.cover.differsDistance",
+      "RangeReview": "Оба режима с активным контуром, формула/writer/comments, blank/TODO/abc/CVErr/missing/recovery. Реальный DWG и все формы не подменяются этим fixture."
+    }
+  ]
+}

@@ -61,24 +61,40 @@ Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader, Optional By
         mEbt = units.InputStressToInternal(mEbt)
     End If
 
-    Validate
+    Validate settings
 End Sub
 
-' Проверяет, что характеристики можно использовать для диаграмм.
-Private Sub Validate()
-    If mRbULS <= 0# Then Err.Raise vbObjectError + 3191, "CConcreteMaterialParameters", "Concrete.Rb.ULS должен быть положительным."
-    If mRbtULS <= 0# Then Err.Raise vbObjectError + 3192, "CConcreteMaterialParameters", "Concrete.Rbt.ULS должен быть положительным."
-    If mRbSLS <= 0# Then Err.Raise vbObjectError + 3193, "CConcreteMaterialParameters", "Concrete.Rb.SLS должен быть положительным."
-    If mRbtSLS <= 0# Then Err.Raise vbObjectError + 3194, "CConcreteMaterialParameters", "Concrete.Rbt.SLS должен быть положительным."
-    If mRbMc2 <= 0# Then Err.Raise vbObjectError + 3203, "CConcreteMaterialParameters", "Concrete.Rb.mc2 должен быть положительным."
-    If mEb <= 0# Then Err.Raise vbObjectError + 3195, "CConcreteMaterialParameters", "Concrete.Eb должен быть положительным."
-    If mEbt <= 0# Then Err.Raise vbObjectError + 3196, "CConcreteMaterialParameters", "Concrete.Ebt должен быть положительным."
-    If mEb1Red <= 0# Then Err.Raise vbObjectError + 3197, "CConcreteMaterialParameters", "Concrete.Eb1Red должен быть положительным."
-    If mEbt1Red <= 0# Then Err.Raise vbObjectError + 3198, "CConcreteMaterialParameters", "Concrete.Ebt1Red должен быть положительным."
-    If mEb0 <= 0# Then Err.Raise vbObjectError + 3199, "CConcreteMaterialParameters", "Concrete.Eb0 должен быть положительным."
-    If mEbt0 <= 0# Then Err.Raise vbObjectError + 3200, "CConcreteMaterialParameters", "Concrete.Ebt0 должен быть положительным."
-    If mEb2 <= 0# Then Err.Raise vbObjectError + 3201, "CConcreteMaterialParameters", "Concrete.Eb2 должен быть положительным."
-    If mEbt2 <= 0# Then Err.Raise vbObjectError + 3202, "CConcreteMaterialParameters", "Concrete.Ebt2 должен быть положительным."
+' Проверяет пригодность характеристик для диаграмм и связывает неверное
+' число с фактической ячейкой столбца Сжатие/Растяжение, без изменения кодов ошибок.
+Private Sub Validate(Optional ByVal settings As CSystemSettingsReader = Nothing)
+    RequirePositive settings, "Concrete.Rb.ULS", mRbULS, 3191
+    RequirePositive settings, "Concrete.Rbt.ULS", mRbtULS, 3192
+    RequirePositive settings, "Concrete.Rb.SLS", mRbSLS, 3193
+    RequirePositive settings, "Concrete.Rbt.SLS", mRbtSLS, 3194
+    RequirePositive settings, "Concrete.Rb.mc2", mRbMc2, 3203
+    RequirePositive settings, "Concrete.Eb", mEb, 3195
+    RequirePositive settings, "Concrete.Ebt", mEbt, 3196
+    RequirePositive settings, "Concrete.Eb1Red", mEb1Red, 3197
+    RequirePositive settings, "Concrete.Ebt1Red", mEbt1Red, 3198
+    RequirePositive settings, "Concrete.Eb0", mEb0, 3199
+    RequirePositive settings, "Concrete.Ebt0", mEbt0, 3200
+    RequirePositive settings, "Concrete.Eb2", mEb2, 3201
+    RequirePositive settings, "Concrete.Ebt2", mEbt2, 3202
+End Sub
+
+' Сохраняет инженерное требование положительной характеристики; reader
+' добавляет только место исправления и не решает, допустим ли физический параметр.
+Private Sub RequirePositive(ByVal settings As CSystemSettingsReader, ByVal key As String, _
+        ByVal value As Double, ByVal errorCode As Long)
+    If value > 0# Then Exit Sub
+    Dim message As String
+    If settings Is Nothing Then
+        message = key & " должен быть положительным."
+    Else
+        message = settings.InputErrorMessage(key, "Характеристика бетона должна быть больше нуля.", _
+            "Введите положительное значение в указанных на листе единицах измерения.")
+    End If
+    Err.Raise vbObjectError + errorCode, "CConcreteMaterialParameters", message
 End Sub
 
 Public Property Get RbULS() As Double

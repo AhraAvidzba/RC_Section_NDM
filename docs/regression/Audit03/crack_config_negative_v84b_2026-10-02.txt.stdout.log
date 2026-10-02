@@ -1,0 +1,67 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_crack_config_negative_v84b.xlsm
+SOURCE_SHA256: 631C5B094EEE3E66DA40595CE3B3DC77879CC388F86CED6E7FD888F871F5B15C
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_daf6700a94f64ade9df5aa45ed964583\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.crackConfig.invalid.0.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.0.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.0.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.0.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.0; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.1.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.1.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.1.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.1.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.1; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.2.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.2.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.2.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.2.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.2; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.3.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.3.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.3.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.3.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.3; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.4.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.4.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.4.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.4.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.4; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.5.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.5.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.5.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.5.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.5; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.6.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.6.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.6.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.6.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.6; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.7.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.7.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.7.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.7.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.7; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.8.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.8.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.8.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.8.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.8; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.9.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.9.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.9.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.9.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.9; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.10.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.10.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.10.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.10.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.10; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.11.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.11.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.11.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.11.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.11; actual=OK; expected=InputErr
+TOTAL_AUDIT03_CRACK_CONFIG: passed=746; failed=60
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

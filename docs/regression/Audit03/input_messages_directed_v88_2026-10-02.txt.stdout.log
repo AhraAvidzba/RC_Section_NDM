@@ -1,0 +1,11 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_input_messages_v88.xlsm
+SOURCE_SHA256: 45C8EBD93F3F8885AA9F540A3B5E57038D8CC698F83F52EF951609605E1D0E9F
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e33a40c0421f42048becea420ac9b899\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.settingMessage.workbook.results.key
+FAIL: audit03.settingMessage.workbook.results.sheet
+FAIL: audit03.settingMessage.workbook.results.address
+FAIL: audit03.settingMessage.workbook.results.action
+TOTAL_AUDIT03_SETTING_ERROR_MESSAGES: passed=1897; failed=4
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

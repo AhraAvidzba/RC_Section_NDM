@@ -1,0 +1,16 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_crack_config_v86.xlsm
+SOURCE_SHA256: 114FED1054BA17E05C3223EDF87504BA800C5D92203494B27B5B5D7CED28730A
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_806411efe5c84b42a7f4c61b07cab724\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL: passed=524; failed=0
+MODE_AFTER_SUITE: No
+TOTAL_MATERIAL: passed=2856; failed=0; elapsedSec=2.2109375
+MODE_AFTER_SUITE: No
+TOTAL_SECTION_SOLVER: passed=895; failed=0; elapsedSec=1.71875
+MODE_AFTER_SUITE: No
+TOTAL_CAPACITY: passed=1676; failed=0; elapsedSec=40.8046875
+MODE_AFTER_SUITE: No
+TOTAL_CRACK: passed=484; failed=0; elapsedSec=4.6328125
+MODE_AFTER_SUITE: No
+TOTAL_BATCH: passed=6211; failed=0; elapsedSec=55.2890625
+SCRIPT ERROR: Excel.Workbooks недоступен после выполнения suite.

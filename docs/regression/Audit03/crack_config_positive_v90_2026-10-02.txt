@@ -1,0 +1,7 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_input_messages_v90.xlsm
+SOURCE_SHA256: 4EF49CC1A19EBC3D3E5E289C562ABE8E75803BB84115F8D2EEC24EBEBE48CFF8
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d220d5bfdf1e47fb9a3f269e237c04f2\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03CrackConfigBehaviorTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03CrackConfigBehaviorTests; 2026-10-02T20:54:03
+WATCHDOG_FAILURE: timeout=180 sec; macro=modTestBatchCalculation.RunAudit03CrackConfigBehaviorTests; test Excel terminated

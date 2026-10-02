@@ -1,0 +1,43 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_input_messages_negative_v94.xlsm
+SOURCE_SHA256: BD9C06CB42F9F05A66ECF1DB1822DE3A4A4DC704FD461FA953DAA7271686D119
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8e5da0d1e985485bad130cfe940cddd6\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.settingMessage.conversion.SLS.Crack.Allowable.key
+FAIL: audit03.settingMessage.conversion.SLS.Crack.Allowable.sheet
+FAIL: audit03.settingMessage.conversion.SLS.Crack.Allowable.address
+FAIL: audit03.settingMessage.conversion.SLS.Crack.Allowable.action
+FAIL: audit03.settingMessage.conversion.SLS.Crack.Allowable.units
+FAIL: audit03.settingMessage.conversion.Stability.ElementLength.key
+FAIL: audit03.settingMessage.conversion.Stability.ElementLength.sheet
+FAIL: audit03.settingMessage.conversion.Stability.ElementLength.address
+FAIL: audit03.settingMessage.conversion.Stability.ElementLength.action
+FAIL: audit03.settingMessage.conversion.Stability.ElementLength.units
+FAIL: audit03.settingMessage.conversion.Stability.AccidentalEccentricityUser1.key
+FAIL: audit03.settingMessage.conversion.Stability.AccidentalEccentricityUser1.sheet
+FAIL: audit03.settingMessage.conversion.Stability.AccidentalEccentricityUser1.address
+FAIL: audit03.settingMessage.conversion.Stability.AccidentalEccentricityUser1.action
+FAIL: audit03.settingMessage.conversion.Stability.AccidentalEccentricityUser1.units
+FAIL: audit03.settingMessage.conversion.Stability.AccidentalEccentricityUser2.key
+FAIL: audit03.settingMessage.conversion.Stability.AccidentalEccentricityUser2.sheet
+FAIL: audit03.settingMessage.conversion.Stability.AccidentalEccentricityUser2.address
+FAIL: audit03.settingMessage.conversion.Stability.AccidentalEccentricityUser2.action
+FAIL: audit03.settingMessage.conversion.Stability.AccidentalEccentricityUser2.units
+FAIL: audit03.settingMessage.conversion.Solver.ToleranceN.key
+FAIL: audit03.settingMessage.conversion.Solver.ToleranceN.sheet
+FAIL: audit03.settingMessage.conversion.Solver.ToleranceN.address
+FAIL: audit03.settingMessage.conversion.Solver.ToleranceN.action
+FAIL: audit03.settingMessage.conversion.Solver.ToleranceN.units
+FAIL: audit03.settingMessage.conversion.Solver.ToleranceMx.key
+FAIL: audit03.settingMessage.conversion.Solver.ToleranceMx.sheet
+FAIL: audit03.settingMessage.conversion.Solver.ToleranceMx.address
+FAIL: audit03.settingMessage.conversion.Solver.ToleranceMx.action
+FAIL: audit03.settingMessage.conversion.Solver.ToleranceMx.units
+FAIL: audit03.settingMessage.conversion.Solver.ToleranceMy.key
+FAIL: audit03.settingMessage.conversion.Solver.ToleranceMy.sheet
+FAIL: audit03.settingMessage.conversion.Solver.ToleranceMy.address
+FAIL: audit03.settingMessage.conversion.Solver.ToleranceMy.action
+FAIL: audit03.settingMessage.conversion.Solver.ToleranceMy.units
+FAIL: audit03.settingMessage.conversion.runtime; 6; Overflow
+TOTAL_AUDIT03_SETTING_ERROR_MESSAGES: passed=1950; failed=36
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

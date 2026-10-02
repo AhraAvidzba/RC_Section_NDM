@@ -36,13 +36,54 @@ function Save-Progress {
     $lines | Set-Content -LiteralPath $fullReport -Encoding UTF8
 }
 
+# Диагностирует потерю COM-свойств после suite без повторного открытия книги
+# и без признания прогона успешным. Прямой IDispatch-вызов позволяет отделить
+# недоступность Excel от проблемы адаптера PowerShell при том же RCW-объекте.
+function Save-ComPropertyDiagnostic {
+    param([object]$Target, [string]$Label, [string[]]$Properties)
+    if ($null -eq $Target) { $lines.Add("COM_DIAGNOSTIC: $Label is null"); return }
+    $type = $Target.GetType()
+    $lines.Add("COM_DIAGNOSTIC: $Label; type=$($type.FullName); isCom=$([Runtime.InteropServices.Marshal]::IsComObject($Target))")
+    foreach ($property in $Properties) {
+        try {
+            $value = $type.InvokeMember($property, [Reflection.BindingFlags]::GetProperty, $null, $Target, $null)
+            if ($null -eq $value) { $detail = 'null' }
+            elseif ([Runtime.InteropServices.Marshal]::IsComObject($value)) {
+                $detail = "COM object; type=$($value.GetType().FullName)"
+                try {
+                    $count = $value.GetType().InvokeMember('Count', [Reflection.BindingFlags]::GetProperty, $null, $value, $null)
+                    $detail += "; rawCount=$count"
+                } catch { $detail += "; countError=$($_.Exception.Message)" }
+            } else { $detail = [string]$value }
+            $lines.Add("COM_DIAGNOSTIC: $Label.$property; raw=$detail")
+        } catch { $lines.Add("COM_DIAGNOSTIC: $Label.$property; rawError=$($_.Exception.Message)") }
+    }
+}
+
+# Читает свойство того же COM-объекта напрямую через IDispatch. После VBA Run
+# адаптер PowerShell может вернуть null для существующей коллекции, тогда как
+# прямой getter видит открытую книгу. Здесь нет reopen, retry или подстановки
+# данных; настоящий null остается ошибкой, COM-коллекция не разворачивается
+# в pipeline и сохраняет собственные Count/Item.
+function Get-RequiredComProperty {
+    param([object]$Target, [string]$Property)
+    if ($null -eq $Target) { throw "COM-объект недоступен при чтении $Property." }
+    $value = $Target.GetType().InvokeMember($Property, [Reflection.BindingFlags]::GetProperty, $null, $Target, $null)
+    if ($null -eq $value) {
+        Save-ComPropertyDiagnostic $Target 'UnavailableTarget' @($Property)
+        throw "COM-свойство $Property недоступно при прямом чтении."
+    }
+    return ,$value
+}
+
 # Находит единственную строку настройки через именованный Range листа Config.
 # Не зависит от промежуточного COM-proxy Workbook.Names после долгого VBA-вызова;
 # неизвестный формат не заменяет настройку другим default или режимом.
 function Get-ModeSettingCell {
     param([object]$Book, [string]$Key)
     if ($null -eq $Book) { throw "Книга недоступна при чтении тестового режима $Key." }
-    $config = $Book.Worksheets.Item('Config')
+    $worksheets = Get-RequiredComProperty $Book 'Worksheets'
+    $config = $worksheets.Item('Config')
     if ($null -eq $config) { throw "Лист Config недоступен при чтении тестового режима $Key." }
     $range = $config.Range('rngSystemSettings')
     if ($null -eq $range) { throw "rngSystemSettings не ссылается на ячейки при чтении тестового режима $Key." }
@@ -61,7 +102,8 @@ function Get-ModeSettingCell {
 # Сравнивает только сохраненные значения Results, включая все комментарии.
 # Это gate сохранности данных, а не проверка цветов или внешнего вида.
 function Get-ResultsValueHash([object]$Book) {
-    $range = $Book.Worksheets.Item("Results").UsedRange
+    $worksheets = Get-RequiredComProperty $Book 'Worksheets'
+    $range = $worksheets.Item("Results").UsedRange
     $data = $range.Value2
     $payload = ConvertTo-Json -InputObject @{
         rows = $range.Rows.Count; columns = $range.Columns.Count; values = @($data)
@@ -75,7 +117,8 @@ function Get-ResultsValueHash([object]$Book) {
 # строки, легенду и направленную palette-fixture. DisplayFormat учитывает CF;
 # это проверка Excel COM, а не утверждение о просмотренных пикселях экрана.
 function Get-ResultsStatusStyleHash([object]$Book) {
-    $rows = [int]$Book.Names.Item('rngLoadCombinations').RefersToRange.Rows.Count - 1
+    $names = Get-RequiredComProperty $Book 'Names'
+    $rows = [int]$names.Item('rngLoadCombinations').RefersToRange.Rows.Count - 1
     $records = New-Object 'System.Collections.Generic.List[object]'
     $blocks = @(
         @{name='rngBatchSummary'; offset=12; columns=@(4,6,7,8,9,10,11,12,13,14,15)},
@@ -84,7 +127,7 @@ function Get-ResultsStatusStyleHash([object]$Book) {
         @{name='rngStabilitySummaryAnchor'; offset=0; columns=@(3,38,44,53,59,72,84)}
     )
     foreach ($block in $blocks) {
-        $anchor = $Book.Names.Item($block.name).RefersToRange
+        $anchor = $names.Item($block.name).RefersToRange
         for ($r = 0; $r -lt $rows; $r++) {
             foreach ($column in $block.columns) {
                 $cell = $anchor.Worksheet.Cells.Item($anchor.Row + $block.offset + $r, $anchor.Column + $column - 1)
@@ -95,14 +138,15 @@ function Get-ResultsStatusStyleHash([object]$Book) {
             }
         }
     }
-    $anchor = $Book.Names.Item('rngBatchSummary').RefersToRange
+    $anchor = $names.Item('rngBatchSummary').RefersToRange
     for ($r = 7; $r -le 13; $r++) {
         $cell = $anchor.Worksheet.Cells.Item($anchor.Row + $r, $anchor.Column + 27)
         $records.Add(@{block='legend'; address=$cell.Address(); value=[string]$cell.Value2;
             fill=[int]$cell.Interior.Color; display=[int]$cell.DisplayFormat.Interior.Color;
             conditionalRules=[int]$cell.FormatConditions.Count})
     }
-    foreach ($sheet in $Book.Worksheets) {
+    $worksheets = Get-RequiredComProperty $Book 'Worksheets'
+    foreach ($sheet in $worksheets) {
         if ($sheet.Name -ne '__Audit03Palette') { continue }
         for ($r = 1; $r -le 12; $r++) {
             $cell = $sheet.Cells.Item($r, 1)
@@ -128,7 +172,8 @@ try {
     $excel.Visible = [bool]$Visible
     $excel.DisplayAlerts = $false
     $excel.AutomationSecurity = 1
-    $workbook = $excel.Workbooks.Open($fixturePath)
+    $openBooks = Get-RequiredComProperty $excel 'Workbooks'
+    $workbook = $openBooks.Open($fixturePath)
     (Get-ModeSettingCell $workbook $SettingKey).Value2 = $Mode
     $workbook.Save()
     $workbook.Close($false)
@@ -149,7 +194,8 @@ try {
         throw "Аргументы macro/save-reopen допускаются только для одной явно выбранной проверки."
     }
     foreach ($macro in $macros) {
-        $workbook = $excel.Workbooks.Open($fixturePath, $null, $true)
+        $openBooks = Get-RequiredComProperty $excel 'Workbooks'
+        $workbook = $openBooks.Open($fixturePath, $null, $true)
         $lines.Add("===== $macro =====")
         $lines.Add("SUITE_STARTED: $macro; $([DateTime]::Now.ToString('s'))")
         Save-Progress
@@ -170,8 +216,7 @@ try {
         # Получаем заново ссылку на ту же открытую книгу после долгого VBA Run.
         # Файл не открывается повторно: несохраненные изменения suite остаются
         # доступными для post-mode и save/reopen проверок, без скрытого reset.
-        $openBooks = $excel.Workbooks
-        if ($null -eq $openBooks) { throw 'Excel.Workbooks недоступен после выполнения suite.' }
+        $openBooks = Get-RequiredComProperty $excel 'Workbooks'
         $liveBook = $null
         for ($bookIndex = 1; $bookIndex -le $openBooks.Count; $bookIndex++) {
             $candidate = $openBooks.Item($bookIndex)
@@ -197,7 +242,8 @@ try {
             $savedPath = Join-Path $fixtureRoot 'RC_Section_NDM_saved.xlsm'
             $workbook.SaveAs($savedPath, 52)
             $workbook.Close($false)
-            $workbook = $excel.Workbooks.Open($savedPath, $null, $true)
+            $openBooks = Get-RequiredComProperty $excel 'Workbooks'
+            $workbook = $openBooks.Open($savedPath, $null, $true)
             $afterHash = Get-ResultsValueHash $workbook
             $lines.Add("RESULTS_SAVE_REOPEN: before=$beforeHash; after=$afterHash; equal=$($beforeHash -eq $afterHash); file=$savedPath")
             if ($beforeHash -ne $afterHash) { throw "Значения или комментарии Results изменились после save/reopen." }

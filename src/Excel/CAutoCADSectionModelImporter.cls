@@ -66,7 +66,8 @@ Public Function ImportConfiguredModelSpace(ByVal modelSpace As Object, ByVal set
     Dim minArea As Double
     minArea = settings.GetRequiredDouble("AutoCAD.Import.MinArea")
     If minArea < 0# Then Err.Raise vbObjectError + 4404, "CAutoCADSectionModelImporter", _
-        "AutoCAD.Import.MinArea на листе Config должна быть неотрицательной площадью."
+        settings.InputErrorMessage("AutoCAD.Import.MinArea", "Порог площади не может быть отрицательным.", _
+            "Введите ноль для отключения фильтра или положительную площадь в единицах INPUT Area.")
     On Error GoTo InvalidMinimumArea
     minArea = importUnits.InputAreaToInternal(minArea)
     On Error GoTo 0
@@ -76,7 +77,8 @@ Public Function ImportConfiguredModelSpace(ByVal modelSpace As Object, ByVal set
     Exit Function
 InvalidMinimumArea:
     Err.Raise vbObjectError + 4404, "CAutoCADSectionModelImporter", _
-        "AutoCAD.Import.MinArea на листе Config слишком велика для перевода в мм2. Проверьте число и INPUT-единицу площади."
+        settings.InputErrorMessage("AutoCAD.Import.MinArea", "Площадь слишком велика для перевода в мм2.", _
+            "Уменьшите число и проверьте выбранную единицу INPUT Area.")
 End Function
 
 ' Проходит по ModelSpace и отбирает только Region на пользовательских слоях

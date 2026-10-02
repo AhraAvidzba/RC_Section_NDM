@@ -38,6 +38,9 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAudit03InputContracts stats
     TestAudit03ProfileInputContracts stats
     TestAudit03NumericSettingsInputContracts stats
+    TestAudit03SettingErrorMessages stats
+    TestAudit03RequiredTableMessages stats
+    TestAudit03ConfigConversionMessages stats
     TestAudit03UnitSignConsumers stats
     TestAudit03UnitSignChoices stats
     TestAudit03UnitSignEquivalence stats
@@ -4782,7 +4785,7 @@ End Function
 Private Sub TestAudit03NumericSettingsInputContracts(ByRef stats As TUiTestStats)
     Dim sheet As Object, oldAlerts As Boolean, operationValue As Variant, keyValue As Variant
     Dim key As String, operation As String, value As Variant, actualCode As Long
-    Dim description As String, expectedCode As Long, settings As CSystemSettingsReader
+    Dim description As String, expectedCode As Long, settings As CSystemSettingsReader, inputRange As Object
     oldAlerts = Application.DisplayAlerts
     On Error GoTo Failed
     Set sheet = ThisWorkbook.Worksheets.Add
@@ -4790,6 +4793,14 @@ Private Sub TestAudit03NumericSettingsInputContracts(ByRef stats As TUiTestStats
     sheet.Range("A1").Value2 = "Key": sheet.Range("B1").Value2 = "Value": sheet.Range("C1").Value2 = "Unit"
     For Each operationValue In Array("Solver", "Capacity", "Formation")
         operation = CStr(operationValue)
+        Set inputRange = sheet.Range("A1:C2")
+        If operation = "Formation" Then
+            ' Минимальный Config Formation содержит обязательные селекторы;
+            ' отсутствие проверяемого Solver-key остается отдельным сценарием.
+            sheet.Range("A3").Value2 = "SLS.Crack.InitiationLoadPath": sheet.Range("B3").Value2 = "Auto"
+            sheet.Range("A4").Value2 = "SLS.Crack.InitiationSolutionStrategy": sheet.Range("B4").Value2 = "Auto"
+            Set inputRange = sheet.Range("A1:C4")
+        End If
         For Each keyValue In Audit03NumericSettingsKeys(operation)
             key = CStr(keyValue)
             sheet.Range("A2").Value2 = key
@@ -4803,17 +4814,17 @@ Private Sub TestAudit03NumericSettingsInputContracts(ByRef stats As TUiTestStats
                     expectedCode = vbObjectError + 4312
                 End If
                 description = vbNullString
-                actualCode = Audit03CaptureInputError(sheet.Range("A1:C2"), operation, description)
+                actualCode = Audit03CaptureInputError(inputRange, operation, description)
                 AssertTrue stats, "audit03.numeric." & operation & "." & key & ".error", actualCode = expectedCode
                 AssertTrue stats, "audit03.numeric." & operation & "." & key & ".reason", InStr(1, description, key, vbBinaryCompare) > 0
                 AppendLine stats, "NUMERIC_INPUT: operation=" & operation & "|key=" & key & _
                     "|value=" & CStr(value) & "|error=" & CStr(actualCode) & "|reason=" & description
             Next value
             sheet.Range("B2").Value2 = 80#
-            actualCode = Audit03CaptureInputError(sheet.Range("A1:C2"), operation, description)
+            actualCode = Audit03CaptureInputError(inputRange, operation, description)
             AssertTrue stats, "audit03.numeric." & operation & "." & key & ".parsable", actualCode = 0
             sheet.Range("A2").Value2 = "Audit03.Unrelated"
-            actualCode = Audit03CaptureInputError(sheet.Range("A1:C2"), operation, description)
+            actualCode = Audit03CaptureInputError(inputRange, operation, description)
             AssertTrue stats, "audit03.numeric." & operation & ".optionalAbsent", actualCode = 0
         Next keyValue
     Next operationValue
@@ -5356,6 +5367,10 @@ Private Sub TestAudit03UnitSignChoices(ByRef stats As TUiTestStats)
                     errorNumber = vbObjectError + 4530 + q Or errorNumber = vbObjectError + 4309
                 AssertTrue stats, "audit03.unitChoice." & key & ".invalid.reason", _
                     InStr(1, errorDescription, "Units." & CStr(quantities(q)), vbTextCompare) > 0
+                AssertTrue stats, "audit03.unitChoice." & key & ".invalid.address", _
+                    InStr(1, errorDescription, cell.Address(False, False), vbTextCompare) > 0
+                AssertTrue stats, "audit03.unitChoice." & key & ".invalid.action", _
+                    InStr(1, errorDescription, "Выберите", vbTextCompare) > 0 Or InStr(1, errorDescription, "Исправьте", vbTextCompare) > 0
             Next invalid
             cell.Formula = oldValue
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
@@ -5414,6 +5429,10 @@ Private Sub TestAudit03UnitSignChoices(ByRef stats As TUiTestStats)
             AssertTrue stats, "audit03.signChoice." & key & ".invalid." & CStr(errorNumber), _
                 errorNumber = vbObjectError + 4536 + signIndex Or errorNumber = vbObjectError + 4309
             AssertTrue stats, "audit03.signChoice." & key & ".invalid.reason", InStr(1, errorDescription, key, vbTextCompare) > 0
+            AssertTrue stats, "audit03.signChoice." & key & ".invalid.address", _
+                InStr(1, errorDescription, cell.Address(False, False), vbTextCompare) > 0
+            AssertTrue stats, "audit03.signChoice." & key & ".invalid.action", _
+                InStr(1, errorDescription, "Выберите", vbTextCompare) > 0 Or InStr(1, errorDescription, "Исправьте", vbTextCompare) > 0
         Next invalid
         cell.Formula = oldValue
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
@@ -6124,6 +6143,9 @@ Private Sub TestAudit03InputAreaImportFilter(ByRef stats As TUiTestStats)
         prefix = "audit03.inputArea.invalid" & CStr(invalidIndex)
         AssertTrue stats, prefix & ".rejected", errorNumber <> 0
         AssertTrue stats, prefix & ".address", InStr(1, description, "AutoCAD.Import.MinArea", vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".actualCell", InStr(1, description, systemRange.Cells(minAreaRow, 2).Address(False, False), vbTextCompare) > 0
+        AssertTrue stats, prefix & ".action", InStr(1, description, "Введите", vbTextCompare) > 0 Or _
+            InStr(1, description, "Исправьте", vbTextCompare) > 0 Or InStr(1, description, "Уменьшите", vbTextCompare) > 0
         AppendLine stats, "AREA_INVALID: case=" & CStr(invalidIndex) & "|error=" & CStr(errorNumber) & "|reason=" & description
     Next invalidIndex
     systemRange.Cells(minAreaRow, 2).Value2 = 25.002 / 1000000#
@@ -6411,6 +6433,274 @@ Private Function Audit03ImportSnapshotFixture(ByVal settings As CSystemSettingsR
     Set importer = New CAutoCADSectionModelImporter
     Set Audit03ImportSnapshotFixture = importer.ImportConfiguredModelSpace(modelSpace, settings, units)
 End Function
+
+' ====================== ДЛЯ ТЕСТОВ: ПОНЯТНЫЕ ОШИБКИ CONFIG ======================
+
+' ДЛЯ ТЕСТОВ: отдельный gate адресов, причин и действий в диагностике ввода.
+' Полный UI suite запускает те же проверки, а не отдельную упрощенную реализацию.
+Public Function RunAudit03SettingErrorMessageTests() As String
+    Dim stats As TUiTestStats
+    TestAudit03SettingErrorMessages stats
+    TestAudit03RequiredTableMessages stats
+    TestAudit03ConfigConversionMessages stats
+    TestAudit03UnitSignChoices stats
+    AppendLine stats, "TOTAL_AUDIT03_SETTING_ERROR_MESSAGES: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03SettingErrorMessageTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: обязательные строки берутся из фактического Config. Материальные
+' alias-ключи отдельно проверяются по сжатой/растянутой ячейке. После мутаций
+' восстанавливаются формулы; проверка не заменяет производственные defaults.
+Private Sub TestAudit03SettingErrorMessages(ByRef stats As TUiTestStats)
+    Dim systemRange As Object, concreteRange As Object, steelRange As Object, loads As Object
+    Dim savedSystem As Variant, savedConcrete As Variant, savedSteel As Variant, savedLoads As Variant
+    Dim settings As CSystemSettingsReader, cell As Object, keyCell As Object, target As Object
+    Dim keys As Variant, entry As Variant, invalid As Variant, key As String, row As Long, i As Long
+    Dim numericValue As Boolean, oldValue As Variant, description As String, code As Long, prefix As String
+    Dim result As Double, text As String, concrete As CConcreteMaterialParameters, steel As CSteelMaterialParameters
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set concreteRange = ThisWorkbook.Names.Item("rngConcreteMaterialParameters").RefersToRange
+    Set steelRange = ThisWorkbook.Names.Item("rngSteelMaterialParameters").RefersToRange
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    savedSystem = systemRange.Formula: savedConcrete = concreteRange.Formula
+    savedSteel = steelRange.Formula: savedLoads = loads.Formula
+    keys = Array("SLS.Crack.Allowable", "SLS.Crack.Phi1", "SLS.Crack.Phi2", "SLS.Crack.Phi3", "SLS.Crack.PsiS", _
+        "SLS.Crack.Phi3Mode", "SLS.Crack.PsiMode", "SLS.Crack.SigmaSCrcAveragingMode", "SLS.Crack.TensionZoneMode", _
+        "SLS.Crack.CoverDistanceMode", "SLS.Crack.InitiationLoadPath", "SLS.Crack.InitiationSolutionStrategy", _
+        "Stability.Code", "Stability.ElementLength", "Stability.Mu1", "Stability.Mu2", "Stability.SystemType", _
+        "Stability.ZeroMomentEccentricitySign1", "Stability.ZeroMomentEccentricitySign2", "Stability.PhiLMode", _
+        "Stability.AccidentalEccentricityMode", "Stability.AccidentalEccentricityPlanes", _
+        "Stability.AccidentalEccentricityUser1", "Stability.AccidentalEccentricityUser2", "Stability.SP63.Ks", _
+        "Stability.SP63.DeltaEMin", "Stability.SP63.DeltaEMax", "Stability.SP35.PhiP", "Stability.SP35.NOverNcrLimit", _
+        "AutoCAD.Import.MinArea", "AutoCAD.Import.ConcreteLayer", "AutoCAD.Import.RebarLayer")
+    For i = 0 To UBound(keys)
+        key = CStr(keys(i))
+        Set keyCell = Nothing
+        For row = 2 To systemRange.Rows.Count
+            If CStr(systemRange.Cells(row, 1).Value2) = key Then Set keyCell = systemRange.Cells(row, 1): Exit For
+        Next row
+        If keyCell Is Nothing Then Err.Raise 5, , "Не найдена обязательная строка " & key
+        Set cell = keyCell.Offset(0, 1): oldValue = cell.Formula
+        numericValue = IsNumeric(cell.Value2)
+        For Each invalid In Array("", "TODO", "abc", CVErr(xlErrValue))
+            text = vbNullString
+            If Not IsError(invalid) Then text = CStr(invalid)
+            If numericValue Or IsError(invalid) Or text <> "abc" Then
+                cell.Value2 = invalid
+                On Error Resume Next
+                Err.Clear
+                Set settings = New CSystemSettingsReader: settings.LoadFromRange systemRange
+                If Err.Number = 0 Then
+                    If numericValue Then result = settings.GetRequiredDouble(key) Else text = settings.GetRequiredString(key)
+                End If
+                code = Err.Number: description = Err.Description
+                On Error GoTo Failed
+                prefix = "audit03.settingMessage.system." & key & "." & CStr(VarType(invalid))
+                AssertTrue stats, prefix & ".error", code <> 0
+                Audit03AssertSettingMessage stats, prefix, description, key, cell
+            End If
+        Next invalid
+        cell.Formula = oldValue
+        keyCell.Value2 = key & ".REMOVED"
+        On Error Resume Next
+        Err.Clear
+        Set settings = New CSystemSettingsReader: settings.LoadFromRange systemRange
+        If numericValue Then result = settings.GetRequiredDouble(key) Else text = settings.GetRequiredString(key)
+        code = Err.Number: description = Err.Description
+        On Error GoTo Failed
+        AssertTrue stats, "audit03.settingMessage.missing." & key & ".error", code <> 0
+        Audit03AssertSettingMessage stats, "audit03.settingMessage.missing." & key, description, key, Nothing
+        AssertTrue stats, "audit03.settingMessage.missing." & key & ".restore", InStr(1, description, "Восстановите строку", vbTextCompare) > 0
+        keyCell.Value2 = key
+    Next i
+
+    ' Входной alias материала должен указывать на правильную сторону диаграммы.
+    keys = Array(Array("Concrete.Rb.ULS", "Concrete.R.ULS(I)", 2), Array("Concrete.Rbt.ULS", "Concrete.R.ULS(I)", 3), _
+        Array("Concrete.Rb.SLS", "Concrete.R.SLS(II)", 2), Array("Concrete.Rbt.SLS", "Concrete.R.SLS(II)", 3), _
+        Array("Concrete.Rb.mc2", "Concrete.Rb.mc2", 2), Array("Concrete.Eb", "Concrete.E", 2), Array("Concrete.Ebt", "Concrete.E", 3), _
+        Array("Concrete.Eb1Red", "Concrete.TwoLine.Eb1Red", 2), Array("Concrete.Ebt1Red", "Concrete.TwoLine.Eb1Red", 3), _
+        Array("Concrete.Eb0", "Concrete.ThreeLine.Eb0", 2), Array("Concrete.Ebt0", "Concrete.ThreeLine.Eb0", 3), _
+        Array("Concrete.Eb2", "Concrete.TwoThreeLine.Eb2", 2), Array("Concrete.Ebt2", "Concrete.TwoThreeLine.Eb2", 3), _
+        Array("Steel.Rsc.ULS", "Steel.R.ULS(I)", 2), Array("Steel.Rs.ULS", "Steel.R.ULS(I)", 3), _
+        Array("Steel.Rsc.SLS", "Steel.R.SLS(II)", 2), Array("Steel.Rs.SLS", "Steel.R.SLS(II)", 3), _
+        Array("Steel.Esc", "Steel.E", 2), Array("Steel.Es", "Steel.E", 3), _
+        Array("Steel.TwoLine.Esc2", "Steel.TwoLine.Es2", 2), Array("Steel.TwoLine.Es2", "Steel.TwoLine.Es2", 3), _
+        Array("Steel.ThreeLine.Esc2", "Steel.ThreeLine.Es2", 2), Array("Steel.ThreeLine.Es2", "Steel.ThreeLine.Es2", 3))
+    For Each entry In keys
+        key = CStr(entry(0))
+        If Left$(key, 9) = "Concrete." Then Set target = concreteRange Else Set target = steelRange
+        Set cell = Nothing
+        For row = 2 To target.Rows.Count
+            If CStr(target.Cells(row, 1).Value2) = CStr(entry(1)) Then Set cell = target.Cells(row, CLng(entry(2))): Exit For
+        Next row
+        If cell Is Nothing Then Err.Raise 5, , "Не найдена материальная строка " & CStr(entry(1))
+        oldValue = cell.Formula
+        For Each invalid In Array("", "TODO", "abc", 0#, CVErr(xlErrValue))
+            cell.Value2 = invalid
+            On Error Resume Next
+            Err.Clear
+            Set settings = New CSystemSettingsReader: settings.LoadFromRange target
+            If Err.Number = 0 Then
+                If Left$(key, 9) = "Concrete." Then
+                    Set concrete = New CConcreteMaterialParameters: concrete.LoadFromSettings settings
+                Else
+                    Set steel = New CSteelMaterialParameters: steel.LoadFromSettings settings
+                End If
+            End If
+            code = Err.Number: description = Err.Description
+            On Error GoTo Failed
+            prefix = "audit03.settingMessage.material." & key & "." & CStr(VarType(invalid))
+            AssertTrue stats, prefix & ".error", code <> 0
+            ' Excel-error возникает до разворачивания alias, поэтому там видимое имя строки.
+            If IsError(invalid) Then text = CStr(entry(1)) Else text = key
+            Audit03AssertSettingMessage stats, prefix, description, text, cell
+            cell.Formula = oldValue
+        Next invalid
+    Next entry
+
+    ' Проверяем не только исключение reader-а, но и сообщение обычного workbook-сценария.
+    SetSystemSetting "Geometry.Source", "Generated"
+    SetSystemSetting "Geometry.Type", "Circle"
+    SetSystemSetting "General.ExecutionReportEnabled", "No"
+    SetSystemSetting "SLS.Crack.Allowable", ""
+    loads.Offset(1, 0).Resize(loads.Rows.Count - 1, loads.Columns.Count).ClearContents
+    loads.Cells(2, 1).Value2 = "INPUT_MESSAGE": loads.Cells(2, 2).Value2 = 1#
+    loads.Cells(2, 3).Value2 = 0#: loads.Cells(2, 4).Value2 = 0#: loads.Cells(2, 5).Value2 = "PR2"
+    text = RunSectionCalculationForWorkbook(ThisWorkbook)
+    For row = 2 To systemRange.Rows.Count
+        If CStr(systemRange.Cells(row, 1).Value2) = "SLS.Crack.Allowable" Then Set cell = systemRange.Cells(row, 2): Exit For
+    Next row
+    Audit03AssertSettingMessage stats, "audit03.settingMessage.workbook.message", text, "SLS.Crack.Allowable", cell
+    description = CStr(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Offset(12, 2).Value2)
+    Audit03AssertSettingMessage stats, "audit03.settingMessage.workbook.results", description, "SLS.Crack.Allowable", cell
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.settingMessage.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    If Not systemRange Is Nothing Then systemRange.Formula = savedSystem
+    If Not concreteRange Is Nothing Then concreteRange.Formula = savedConcrete
+    If Not steelRange Is Nothing Then steelRange.Formula = savedSteel
+    If Not loads Is Nothing Then loads.Formula = savedLoads
+    On Error GoTo 0
+End Sub
+
+' ДЛЯ ТЕСТОВ: проверяет четыре независимых компонента видимой диагностики.
+' Сообщение пишется в evidence без назначения статуса по его тексту.
+Private Sub Audit03AssertSettingMessage(ByRef stats As TUiTestStats, ByVal prefix As String, _
+        ByVal description As String, ByVal key As String, ByVal cell As Object)
+    AssertTrue stats, prefix & ".key", InStr(1, description, key, vbTextCompare) > 0
+    AssertTrue stats, prefix & ".sheet", InStr(1, description, "Config", vbTextCompare) > 0
+    If Not cell Is Nothing Then AssertTrue stats, prefix & ".address", InStr(1, description, cell.Address(False, False), vbTextCompare) > 0
+    AssertTrue stats, prefix & ".action", InStr(1, description, "Введите", vbTextCompare) > 0 Or _
+        InStr(1, description, "Заполните", vbTextCompare) > 0 Or InStr(1, description, "Исправьте", vbTextCompare) > 0
+    AppendLine stats, "SETTING_MESSAGE: " & prefix & "|" & description
+End Sub
+
+' ДЛЯ ТЕСТОВ: повреждает только ссылку обязательной таблицы и проверяет
+' понятное действие вместо технической COM-ошибки. Имя и исходная ссылка
+' восстанавливаются даже при исключении; пользовательские ячейки не меняются.
+Private Sub TestAudit03RequiredTableMessages(ByRef stats As TUiTestStats)
+    Dim rangeName As Variant, name As Object, savedReference As String
+    Dim settings As CSystemSettingsReader, code As Long, description As String, prefix As String
+    On Error GoTo Failed
+    For Each rangeName In Array("rngUnitSettings", "rngSignConventionSettings", _
+            "rngSystemSettings", "rngPlotAnnotationSettings")
+        Set name = ThisWorkbook.Names.Item(CStr(rangeName))
+        savedReference = name.RefersTo
+        name.RefersTo = "=#REF!"
+        On Error Resume Next
+        Err.Clear
+        Set settings = New CSystemSettingsReader
+        settings.LoadFromWorkbook ThisWorkbook
+        code = Err.Number: description = Err.Description
+        On Error GoTo Failed
+        name.RefersTo = savedReference
+        savedReference = vbNullString
+        prefix = "audit03.settingMessage.requiredTable." & CStr(rangeName)
+        AssertTrue stats, prefix & ".code", code = vbObjectError + 4316
+        AssertTrue stats, prefix & ".sheet", InStr(1, description, "Config", vbTextCompare) > 0
+        AssertTrue stats, prefix & ".name", InStr(1, description, CStr(rangeName), vbTextCompare) > 0
+        AssertTrue stats, prefix & ".action", InStr(1, description, "Восстановите таблицу", vbTextCompare) > 0 And _
+            InStr(1, description, "диспетчере имен", vbTextCompare) > 0
+        AppendLine stats, "SETTING_MESSAGE: " & prefix & "|" & description
+        Set settings = New CSystemSettingsReader
+        settings.LoadFromWorkbook ThisWorkbook
+        AssertTrue stats, prefix & ".recovery", settings.HasKey("Units.Length.Input")
+    Next rangeName
+    Exit Sub
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.settingMessage.requiredTable.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    On Error Resume Next
+    If Not name Is Nothing Then
+        If Len(savedReference) > 0 Then name.RefersTo = savedReference
+    End If
+    On Error GoTo 0
+End Sub
+
+' ДЛЯ ТЕСТОВ: отделяет переполнение перевода единиц от ошибки чтения Double.
+' Каждая настройка дает InputErr до solver-а с собственной ячейкой и действием;
+' восстановление Config позволяет повторный запуск того же batch без ошибки.
+Private Sub TestAudit03ConfigConversionMessages(ByRef stats As TUiTestStats)
+    Dim target As Object, unitRange As Object, savedSettings As Variant, savedUnits As Variant
+    Dim key As Variant, row As Long, cell As Object, unitRow As Long, prefix As String
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, batch As CBatchSectionCalculator
+    Dim value As Double, description As String
+    On Error GoTo Failed
+    Set target = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set unitRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
+    savedSettings = target.Formula: savedUnits = unitRange.Formula
+    For unitRow = 2 To unitRange.Rows.Count
+        Select Case CStr(unitRange.Cells(unitRow, 1).Value2)
+            Case "Length": unitRange.Cells(unitRow, 2).Value2 = "m"
+            Case "Force": unitRange.Cells(unitRow, 2).Value2 = "tf"
+            Case "Moment": unitRange.Cells(unitRow, 2).Value2 = "tf*m"
+        End Select
+    Next unitRow
+    For Each key In Array("SLS.Crack.Allowable", "Stability.ElementLength", _
+            "Stability.AccidentalEccentricityUser1", "Stability.AccidentalEccentricityUser2", _
+            "Solver.ToleranceN", "Solver.ToleranceMx", "Solver.ToleranceMy", "Calculation.ZeroMomentPerDepth")
+        target.Formula = savedSettings
+        Set cell = Nothing
+        For row = 2 To target.Rows.Count
+            If CStr(target.Cells(row, 1).Value2) = CStr(key) Then Set cell = target.Cells(row, 2): Exit For
+        Next row
+        If cell Is Nothing Then Err.Raise 5, , "Не найдена проверяемая настройка " & CStr(key)
+        cell.Value2 = "1e308"
+        Set settings = New CSystemSettingsReader
+        settings.LoadFromWorkbook ThisWorkbook
+        value = settings.GetRequiredDouble(CStr(key))
+        prefix = "audit03.settingMessage.conversion." & CStr(key)
+        AssertTrue stats, prefix & ".readableDouble", value > 1E+307
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        Set batch = BuildUiBatch()
+        batch.ApplySettings settings, units
+        batch.AddCombination "CONFIG_OVERFLOW", 0#, 0#, 0#, "PR1", "Переполнение пересчета настройки"
+        batch.Execute
+        AssertTextEquals stats, prefix & ".status", batch.ResultAt(1).Status, "InputErr"
+        AssertTrue stats, prefix & ".noSolve", batch.SolverCallCount = 0
+        description = batch.ResultAt(1).OverallMeta.ResultComment
+        Audit03AssertSettingMessage stats, prefix, description, CStr(key), cell
+        AssertTrue stats, prefix & ".units", InStr(1, description, "INPUT", vbTextCompare) > 0
+        target.Formula = savedSettings
+        settings.LoadFromWorkbook ThisWorkbook
+        batch.ApplySettings settings, units
+        batch.Execute
+        AssertTrue stats, prefix & ".recovery", batch.ResultAt(1).Status <> "InputErr"
+    Next key
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.settingMessage.conversion.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    If Not target Is Nothing Then target.Formula = savedSettings
+    If Not unitRange Is Nothing Then unitRange.Formula = savedUnits
+    On Error GoTo 0
+End Sub
 
 
 

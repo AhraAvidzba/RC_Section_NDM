@@ -192,9 +192,9 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
         mStopReason = "Для проверки устойчивости не передан поставщик материалов."
         GoTo Failed
     End If
-    If elementLength <= 0# Then RaiseInput "Stability.ElementLength должен быть положительным."
-    If mu1 <= 0# Or mu2 <= 0# Then RaiseInput "Stability.Mu1 и Stability.Mu2 должны быть положительными при включенном расчете устойчивости."
-    If mCode <> CODE_SP63 And mCode <> CODE_SP35 Then RaiseInput "Stability.Code должен быть SP63 или SP35."
+    If elementLength <= 0# Then RaiseInput "На листе Config в строке Stability.ElementLength введите длину элемента больше нуля в единицах INPUT Length."
+    If mu1 <= 0# Or mu2 <= 0# Then RaiseInput "На листе Config в строках Stability.Mu1 и Stability.Mu2 задайте положительные коэффициенты расчетной длины для обеих плоскостей."
+    If mCode <> CODE_SP63 And mCode <> CODE_SP35 Then RaiseInput "На листе Config в строке Stability.Code выберите SP63 или SP35."
 
     Dim nCompression As Double
     nCompression = totalLoad.CompressionMagnitude(SMALL_FORCE)
@@ -489,10 +489,10 @@ Private Sub CalculateSP63(ByVal section As CSectionModel, ByVal materialProvider
     eb = materialProvider.ConcreteElasticModulusFromValueSet(valueSet)
     es = materialProvider.SteelElasticModulusFromValueSet(valueSet)
     If eb <= 0# Or es <= 0# Then RaiseInput "Для расчета устойчивости СП 63 нужны положительные Eb и Es."
-    If ksValue <= 0# Then RaiseInput "Stability.SP63.Ks должен быть положительным."
-    If deltaEMin < 0# Or deltaEMax < 0# Then RaiseInput "Stability.SP63.DeltaEMin/DeltaEMax не должны быть отрицательными."
+    If ksValue <= 0# Then RaiseInput "На листе Config в строке Stability.SP63.Ks введите коэффициент больше нуля."
+    If deltaEMin < 0# Or deltaEMax < 0# Then RaiseInput "На листе Config в строках Stability.SP63.DeltaEMin и Stability.SP63.DeltaEMax введите неотрицательные границы относительного эксцентриситета."
     If deltaEMin > 0# And deltaEMax > 0# And deltaEMin > deltaEMax Then _
-        RaiseInput "Stability.SP63.DeltaEMin не должен быть больше Stability.SP63.DeltaEMax."
+        RaiseInput "На листе Config исправьте Stability.SP63.DeltaEMin или Stability.SP63.DeltaEMax: нижняя граница не может быть больше верхней."
 
     CalculateSP63Plane section, nCompression, sustainedCompression, eb, es, ksValue, systemType, phiLMode, deltaEMin, deltaEMax, plane1, "1"
     CalculateSP63Plane section, nCompression, sustainedCompression, eb, es, ksValue, systemType, phiLMode, deltaEMin, deltaEMax, plane2, "2"
@@ -557,8 +557,8 @@ Private Sub CalculateSP35(ByVal section As CSectionModel, ByVal materialProvider
     rb = materialProvider.ConcreteCompressionResistanceFromValueSet(valueSet)
     rsc = materialProvider.SteelCompressionResistanceFromValueSet(valueSet)
     If eb <= 0# Or es <= 0# Or rb <= 0# Or rsc <= 0# Then RaiseInput "Для расчета устойчивости СП 35 нужны положительные Eb, Es, Rb и Rsc."
-    If phiP <= 0# Then RaiseInput "Stability.SP35.PhiP должен быть положительным."
-    If nOverNcrLimit <= 0# Then RaiseInput "Stability.SP35.NOverNcrLimit должен быть положительным."
+    If phiP <= 0# Then RaiseInput "На листе Config в строке Stability.SP35.PhiP введите коэффициент больше нуля."
+    If nOverNcrLimit <= 0# Then RaiseInput "На листе Config в строке Stability.SP35.NOverNcrLimit введите предельное отношение N/Ncr больше нуля."
 
     CalculateSP35Plane concreteArea, totalSteelArea, nCompression, sustainedCompression, eb, es, rb, rsc, systemType, phiLMode, phiP, nOverNcrLimit, table721, plane1, "1"
     CalculateSP35Plane concreteArea, totalSteelArea, nCompression, sustainedCompression, eb, es, rb, rsc, systemType, phiLMode, phiP, nOverNcrLimit, table721, plane2, "2"
@@ -881,7 +881,7 @@ Private Function AccidentalEccentricity(ByVal modeText As String, ByVal userValu
     normalizedMode = NormalizeAccidentalMode(modeText)
     If normalizedMode = ACC_USER Then
         AccidentalEccentricity = Abs(userValue)
-        If AccidentalEccentricity <= SMALL_VALUE Then RaiseInput userSettingName & " должен быть положительным для режима User."
+        If AccidentalEccentricity <= SMALL_VALUE Then RaiseInput "На листе Config в строке " & userSettingName & " введите положительный случайный эксцентриситет в единицах INPUT Length для режима User."
         Exit Function
     End If
 
@@ -891,7 +891,7 @@ Private Function AccidentalEccentricity(ByVal modeText As String, ByVal userValu
     Else
         lengthForAccidental = geometricLength
     End If
-    If lengthForAccidental <= SMALL_VALUE Then RaiseInput "Stability.ElementLength должен быть положительным для случайного эксцентриситета."
+    If lengthForAccidental <= SMALL_VALUE Then RaiseInput "На листе Config проверьте Stability.ElementLength и коэффициент расчетной длины: длина для случайного эксцентриситета должна быть больше нуля."
 
     If mCode = CODE_SP35 Then
         AccidentalEccentricity = lengthForAccidental / 400#
@@ -944,7 +944,7 @@ Private Function PhiLFromMomentRatio(ByVal phiLMode As String, ByVal totalMoment
     If normalizedMode = UCase$(PHIL_2) Then
         PhiLFromMomentRatio = 2#
     ElseIf normalizedMode <> UCase$(PHIL_AUTO) Then
-        RaiseInput "Stability.PhiLMode должен быть Auto или PhiL2."
+        RaiseInput "На листе Config в строке Stability.PhiLMode выберите Auto или PhiL2."
     ElseIf Abs(totalMoment) <= SMALL_VALUE Then
         If Abs(sustainedMoment) <= SMALL_VALUE Then PhiLFromMomentRatio = 1# Else PhiLFromMomentRatio = 2#
     Else
@@ -1104,7 +1104,7 @@ Private Function NormalizeAccidentalMode(ByVal value As String) As String
         Case "AUTOWITHL"
             NormalizeAccidentalMode = ACC_AUTO_L
         Case Else
-            RaiseInput "Stability.AccidentalEccentricityMode должен быть AutoWithL, AutoWithMuL или User."
+            RaiseInput "На листе Config в строке Stability.AccidentalEccentricityMode выберите AutoWithL, AutoWithMuL или User."
     End Select
 End Function
 
@@ -1116,7 +1116,7 @@ Private Function NormalizeAccidentalPlanes(ByVal value As String) As String
         Case UCase$(ACC_PLANES_ONLY_MOMENT)
             NormalizeAccidentalPlanes = ACC_PLANES_ONLY_MOMENT
         Case Else
-            RaiseInput "Stability.AccidentalEccentricityPlanes должен быть OnlyMomentPlane или BothPlanes."
+            RaiseInput "На листе Config в строке Stability.AccidentalEccentricityPlanes выберите OnlyMomentPlane или BothPlanes."
     End Select
 End Function
 

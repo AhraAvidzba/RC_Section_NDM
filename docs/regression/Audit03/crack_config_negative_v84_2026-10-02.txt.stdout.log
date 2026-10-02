@@ -1,0 +1,92 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_crack_config_negative_v84.xlsm
+SOURCE_SHA256: 325BA5F306528F3607C405F5323B03E551AE01242DC7ADB86F54C0AB7CE60F3C
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_fcbe73a2eff4411f84b74fcea031107d\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.crackConfig.baseline.writerWidth; actual=0.00022281692; expected=0.222816920329
+FAIL: audit03.crackConfig.active.0.writerWidth; actual=0.00033422538; expected=0.334225380493
+FAIL: audit03.crackConfig.active.1.writerWidth; actual=0.00033422538; expected=0.334225380493
+FAIL: audit03.crackConfig.active.2.writerWidth; actual=0.00033422538; expected=0.334225380493
+FAIL: audit03.crackConfig.active.3.writerWidth; actual=0.00011140846; expected=0.111408460164
+FAIL: audit03.crackConfig.active.4.writerWidth; actual=0.00022281692; expected=0.222816920329
+FAIL: audit03.crackConfig.allowableFail.writerWidth; actual=0.00022281692; expected=0.222816920329
+FAIL: audit03.crackConfig.phi3Auto.writerWidth; actual=0.000267380304; expected=0.267380304394
+FAIL: audit03.crackConfig.phi3Inactive.writerWidth; actual=0.000267380304; expected=0.267380304394
+FAIL: audit03.crackConfig.psiAlways.writerWidth; actual=0.000116169857; expected=0.116169856901
+FAIL: audit03.crackConfig.psiInactive.writerWidth; actual=0.000116169857; expected=0.116169856901
+FAIL: audit03.crackConfig.psiAutoPass.writerWidth; actual=0.00022281692; expected=0.222816920329
+FAIL: audit03.crackConfig.psiAutoFail.writerWidth; actual=0.000116169857; expected=0.116169856901
+FAIL: audit03.crackConfig.invalid.0.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.0.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.0.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.0.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.0; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.recovery.0.writerWidth; actual=0.00022281692; expected=0.222816920329
+FAIL: audit03.crackConfig.invalid.1.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.1.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.1.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.1.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.1; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.recovery.1.writerWidth; actual=0.00022281692; expected=0.222816920329
+FAIL: audit03.crackConfig.invalid.2.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.2.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.2.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.2.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.2; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.recovery.2.writerWidth; actual=0.00022281692; expected=0.222816920329
+FAIL: audit03.crackConfig.invalid.3.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.3.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.3.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.3.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.3; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.recovery.3.writerWidth; actual=0.00022281692; expected=0.222816920329
+FAIL: audit03.crackConfig.invalid.4.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.4.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.4.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.4.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.4; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.recovery.4.writerWidth; actual=0.00022281692; expected=0.222816920329
+FAIL: audit03.crackConfig.invalid.5.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.5.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.5.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.5.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.5; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.recovery.5.writerWidth; actual=0.00022281692; expected=0.222816920329
+FAIL: audit03.crackConfig.invalid.6.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.6.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.6.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.6.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.6; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.recovery.6.writerWidth; actual=0.00022281692; expected=0.222816920329
+FAIL: audit03.crackConfig.invalid.7.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.7.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.7.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.7.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.7; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.recovery.7.writerWidth; actual=0.00022281692; expected=0.222816920329
+FAIL: audit03.crackConfig.invalid.8.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.8.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.8.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.8.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.8; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.recovery.8.writerWidth; actual=0.00022281692; expected=0.222816920329
+FAIL: audit03.crackConfig.invalid.9.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.9.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.9.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.9.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.9; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.recovery.9.writerWidth; actual=0.00022281692; expected=0.222816920329
+FAIL: audit03.crackConfig.invalid.10.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.10.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.10.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.10.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.10; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.recovery.10.writerWidth; actual=0.00022281692; expected=0.222816920329
+FAIL: audit03.crackConfig.invalid.11.8.0.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.11.8.0.reasonKey
+FAIL: audit03.crackConfig.invalid.11.8.4.inputErr; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.invalid.11.8.4.reasonKey
+FAIL: audit03.crackConfig.missing.11; actual=OK; expected=InputErr
+FAIL: audit03.crackConfig.recovery.11.writerWidth; actual=0.00022281692; expected=0.222816920329
+TOTAL_AUDIT03_CRACK_CONFIG: passed=721; failed=85
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True
