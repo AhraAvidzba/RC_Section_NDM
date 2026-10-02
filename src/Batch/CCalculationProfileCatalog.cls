@@ -80,10 +80,10 @@ Private Function BuildProfile(ByRef data As Variant, ByVal profileColumn As Long
     Set profile = New CCalculationProfile
     profile.Initialize profileId, ProfileValue(values, "Profile.DisplayName"), _
         ProfileValue(values, "Profile.Description"), _
-        YesNo(ProfileValue(values, "Calculation.Strength.DirectState")), _
-        YesNo(ProfileValue(values, "Calculation.Strength.Capacity")), _
-        YesNo(ProfileValue(values, "Calculation.Crack.Width")), _
-        YesNo(ProfileValue(values, "Calculation.Stability.Enabled"))
+        YesNo(ProfileValue(values, "Calculation.Strength.DirectState"), "Calculation.Strength.DirectState", profileId), _
+        YesNo(ProfileValue(values, "Calculation.Strength.Capacity"), "Calculation.Strength.Capacity", profileId), _
+        YesNo(ProfileValue(values, "Calculation.Crack.Width"), "Calculation.Crack.Width", profileId), _
+        YesNo(ProfileValue(values, "Calculation.Stability.Enabled"), "Calculation.Stability.Enabled", profileId)
 
     Dim spec As CMaterialModelSpec
     Set spec = SpecFromValues(values, "MaterialModel.Strength")
@@ -170,10 +170,19 @@ Private Function IsProfileIdText(ByVal value As String) As Boolean
     IsProfileIdText = (Len(value) >= 3 And Left$(value, 2) = "PR" And IsNumeric(Mid$(value, 3)))
 End Function
 
-' Приводит пользовательское Yes/No-значение к Boolean с учетом русской записи "Да".
-Private Function YesNo(ByVal value As String) As Boolean
+' Читает обязательный переключатель расчета профиля. Все утвержденные
+' Boolean aliases сохраняются; пустое/неизвестное значение является ошибкой
+' Config, а не неявным отключением запрошенного пользователем расчета.
+Private Function YesNo(ByVal value As String, ByVal key As String, ByVal profileId As String) As Boolean
     value = UCase$(Trim$(value))
-    YesNo = (value = "YES" Or value = "TRUE" Or value = "1" Or value = "ДА")
+    Select Case value
+        Case "YES", "TRUE", "1", "ДА": YesNo = True
+        Case "NO", "FALSE", "0", "НЕТ": YesNo = False
+        Case Else
+            Err.Raise vbObjectError + 3988, "CCalculationProfileCatalog", _
+                "Профиль " & profileId & ": параметр " & key & _
+                " должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: """ & value & """."
+    End Select
 End Function
 
 ' Очищает ранее прочитанный каталог перед новой загрузкой из workbook.

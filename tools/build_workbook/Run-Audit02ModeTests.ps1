@@ -10,6 +10,7 @@ param(
     [string]$MacroArgument1 = "",
     [string]$MacroArgument2 = "",
     [switch]$VerifyResultsReopen,
+    [switch]$VerifyStatusReopen,
     [switch]$Visible
 )
 $ErrorActionPreference = "Stop"
@@ -65,6 +66,53 @@ function Get-ResultsValueHash([object]$Book) {
     finally { $sha.Dispose() }
 }
 
+# Сохраняет фактическое оформление всех статусных колонок, включая пустые
+# строки, легенду и направленную palette-fixture. DisplayFormat учитывает CF;
+# это проверка Excel COM, а не утверждение о просмотренных пикселях экрана.
+function Get-ResultsStatusStyleHash([object]$Book) {
+    $rows = [int]$Book.Names.Item('rngLoadCombinations').RefersToRange.Rows.Count - 1
+    $records = New-Object 'System.Collections.Generic.List[object]'
+    $blocks = @(
+        @{name='rngBatchSummary'; offset=12; columns=@(4,6,7,8,9,10,11,12,13,14,15)},
+        @{name='rngStrengthSummaryAnchor'; offset=0; columns=@(3,30,49)},
+        @{name='rngCrackSummaryAnchor'; offset=0; columns=@(3,19,20,23,45,49)},
+        @{name='rngStabilitySummaryAnchor'; offset=0; columns=@(3,38,44,53,59,72,84)}
+    )
+    foreach ($block in $blocks) {
+        $anchor = $Book.Names.Item($block.name).RefersToRange
+        for ($r = 0; $r -lt $rows; $r++) {
+            foreach ($column in $block.columns) {
+                $cell = $anchor.Worksheet.Cells.Item($anchor.Row + $block.offset + $r, $anchor.Column + $column - 1)
+                $records.Add(@{block=$block.name; address=$cell.Address(); value=[string]$cell.Value2;
+                    fill=[int]$cell.Interior.Color; pattern=[int]$cell.Interior.Pattern;
+                    display=[int]$cell.DisplayFormat.Interior.Color; displayPattern=[int]$cell.DisplayFormat.Interior.Pattern;
+                    conditionalRules=[int]$cell.FormatConditions.Count})
+            }
+        }
+    }
+    $anchor = $Book.Names.Item('rngBatchSummary').RefersToRange
+    for ($r = 7; $r -le 13; $r++) {
+        $cell = $anchor.Worksheet.Cells.Item($anchor.Row + $r, $anchor.Column + 27)
+        $records.Add(@{block='legend'; address=$cell.Address(); value=[string]$cell.Value2;
+            fill=[int]$cell.Interior.Color; display=[int]$cell.DisplayFormat.Interior.Color;
+            conditionalRules=[int]$cell.FormatConditions.Count})
+    }
+    foreach ($sheet in $Book.Worksheets) {
+        if ($sheet.Name -ne '__Audit03Palette') { continue }
+        for ($r = 1; $r -le 12; $r++) {
+            $cell = $sheet.Cells.Item($r, 1)
+            $records.Add(@{block='palette'; address=$cell.Address(); value=[string]$cell.Value2;
+                fill=[int]$cell.Interior.Color; pattern=[int]$cell.Interior.Pattern;
+                display=[int]$cell.DisplayFormat.Interior.Color; displayPattern=[int]$cell.DisplayFormat.Interior.Pattern;
+                conditionalRules=[int]$cell.FormatConditions.Count})
+        }
+    }
+    $payload = ConvertTo-Json -InputObject @($records.ToArray()) -Depth 6 -Compress
+    $sha = [Security.Cryptography.SHA256]::Create()
+    try { return [BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($payload))).Replace('-', '') }
+    finally { $sha.Dispose() }
+}
+
 try {
     $lines.Add("SOURCE: $sourcePath")
     $lines.Add("SOURCE_SHA256: $sourceHash")
@@ -92,7 +140,7 @@ try {
         "modTestRegressionBaseline.RunRegressionBaselineTests"
     )
     if ($Macro.Count -gt 0) { $macros = $Macro }
-    if (($MacroArgument1 -or $MacroArgument2 -or $VerifyResultsReopen) -and $macros.Count -ne 1) {
+    if (($MacroArgument1 -or $MacroArgument2 -or $VerifyResultsReopen -or $VerifyStatusReopen) -and $macros.Count -ne 1) {
         throw "Аргументы macro/save-reopen допускаются только для одной явно выбранной проверки."
     }
     foreach ($macro in $macros) {
@@ -121,8 +169,9 @@ try {
         if ($modeAfter -ne $Mode) {
             $lines.Add("SUITE_MODE_OVERRIDE: explicit test setup left $modeAfter; changes discarded on close")
         }
-        if ($VerifyResultsReopen) {
+        if ($VerifyResultsReopen -or $VerifyStatusReopen) {
             $beforeHash = Get-ResultsValueHash $workbook
+            if ($VerifyStatusReopen) { $beforeStyleHash = Get-ResultsStatusStyleHash $workbook }
             $savedPath = Join-Path $fixtureRoot 'RC_Section_NDM_saved.xlsm'
             $workbook.SaveAs($savedPath, 52)
             $workbook.Close($false)
@@ -130,6 +179,11 @@ try {
             $afterHash = Get-ResultsValueHash $workbook
             $lines.Add("RESULTS_SAVE_REOPEN: before=$beforeHash; after=$afterHash; equal=$($beforeHash -eq $afterHash); file=$savedPath")
             if ($beforeHash -ne $afterHash) { throw "Значения или комментарии Results изменились после save/reopen." }
+            if ($VerifyStatusReopen) {
+                $afterStyleHash = Get-ResultsStatusStyleHash $workbook
+                $lines.Add("STATUS_STYLE_SAVE_REOPEN: before=$beforeStyleHash; after=$afterStyleHash; equal=$($beforeStyleHash -eq $afterStyleHash)")
+                if ($beforeStyleHash -ne $afterStyleHash) { throw "Отображаемая палитра/условное форматирование изменились после save/reopen." }
+            }
         }
         $workbook.Close($false)
         $workbook = $null

@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM_f06_fixed.xlsm
-Date: 2026-10-02 05:17:28
+Date: 2026-10-02 06:30:19
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -1686,7 +1686,7 @@ End Function
 ====================================================================================================
 COMPONENT: ILimitSearchProblem
 TYPE: 2
-LINES: 248
+LINES: 260
 ====================================================================================================
 Option Explicit
 
@@ -1771,9 +1771,13 @@ End Function
 Public Function IsNumericalFailureState(ByVal probeState As String) As Boolean
 End Function
 
+' Отличает отказ входа от численной неудачи, которую разрешено повторять.
+' Domain adapter классифицирует свой probe-код, общий Search не разбирает текст.
 Public Function IsInvalidInputState(ByVal probeState As String) As Boolean
 End Function
 
+' Предлагает промежуточную lambda после несошедшейся верхней пробы.
+' Общий Search отдельно проверяет границы и строгий прогресс recovery.
 Public Function ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, _
         ByVal highLambda As Double, ByVal probeState As String) As Double
 End Function
@@ -1883,6 +1887,8 @@ Public Function LimitSearchUltimateResidualReached(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Boolean
 End Function
 
+' Нормирует те же три невязки для сравнения line-search шагов.
+' Уменьшение нормы не заменяет отдельную проверку всех допусков и физического финала.
 Public Function LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Double
 End Function
@@ -1925,12 +1931,18 @@ End Property
 Public Property Get stopReason() As String
 End Property
 
+' Снимает причину законченной попытки перед разрешенным резервным стартом.
+' Не должен отменять typed терминальную ошибку или принятый физический исход.
 Public Sub ClearStopReason()
 End Sub
 
+' Добавляет контекст остановки только при отсутствии более точной причины.
+' Первичная диагностика solver/search сохраняет приоритет.
 Public Sub SetStopReasonIfEmpty(ByVal reason As String)
 End Sub
 
+' Объединяет диагностику первой и резервной попыток в результирующем контексте.
+' Последняя принятая попытка определяет исход; история объясняет переход метода.
 Public Sub MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
         ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
         ByVal transitionMessage As String, ByVal successMessage As String)
@@ -19153,7 +19165,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCrackFormationCalculator
 TYPE: 2
-LINES: 2455
+LINES: 2463
 ====================================================================================================
 Option Explicit
 
@@ -19357,9 +19369,17 @@ Public Property Get ResultMeta() As CResultMeta
     Set ResultMeta = meta
 End Property
 
-' Наличие точки не совпадает с успешным warning-fallback без lambda-точки.
+' Подтверждает физическую точку, а не только сохраненную нагрузку кандидата.
+' Неуспешное PreCrackState остается диагностикой отказа и не дает limit point;
+' аналитический Ncrc без State допустим только при успешном исходе проверки.
 Public Property Get HasLimitPoint() As Boolean
-    HasLimitPoint = mFormationLoadDefined And Not mFormationPathFallbackPsi1
+    If Not mFormationLoadDefined Or mFormationPathFallbackPsi1 Then Exit Property
+    If Not mPreCrackState Is Nothing Then
+        HasLimitPoint = mPreCrackState.Converged And mPreCrackState.withinPhysicalRange And _
+            Not mPreCrackState.extensionUsed
+    Else
+        HasLimitPoint = (mFormationInternalStatus = rsSuccess Or mFormationInternalStatus = rsSuccessWithWarning)
+    End If
 End Property
 
 ' Передает исходный полный вектор найденной точки, до переноса моментов.
@@ -25681,7 +25701,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CBatchSectionCalculator
 TYPE: 2
-LINES: 2016
+LINES: 2019
 ====================================================================================================
 Option Explicit
 
@@ -25808,7 +25828,10 @@ Private mStabilityLoadN() As Double ' N от постоянных или пос�
 Private mStabilityLoadUserMx() As Double ' Пользовательский Mx длительной части в точке приложения нагрузки.
 Private mStabilityLoadUserMy() As Double ' Пользовательский My длительной части в точке приложения нагрузки.
 
-' Инициализирует внутреннее состояние объекта значениями по умолчанию, безопасными для последующей настройки.
+' Создает общую status-policy, report и фильтр моментов, резервирует массивы
+' LC и длительных нагрузок. Начальные параметры нужны прямому API класса;
+' workbook-сценарий затем передает прочитанный Config через ApplySettings.
+' Ошибочное явное значение Config не заменяется этими начальными параметрами.
 Private Sub Class_Initialize()
     Set mStatusPolicy = New CResultStatusPolicy
     Set mReport = New CExecutionReport
@@ -27980,7 +28003,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCalculationProfileCatalog
 TYPE: 2
-LINES: 223
+LINES: 232
 ====================================================================================================
 Option Explicit
 
@@ -28055,10 +28078,10 @@ Private Function BuildProfile(ByRef data As Variant, ByVal profileColumn As Long
     Set profile = New CCalculationProfile
     profile.Initialize profileId, ProfileValue(values, "Profile.DisplayName"), _
         ProfileValue(values, "Profile.Description"), _
-        YesNo(ProfileValue(values, "Calculation.Strength.DirectState")), _
-        YesNo(ProfileValue(values, "Calculation.Strength.Capacity")), _
-        YesNo(ProfileValue(values, "Calculation.Crack.Width")), _
-        YesNo(ProfileValue(values, "Calculation.Stability.Enabled"))
+        YesNo(ProfileValue(values, "Calculation.Strength.DirectState"), "Calculation.Strength.DirectState", profileId), _
+        YesNo(ProfileValue(values, "Calculation.Strength.Capacity"), "Calculation.Strength.Capacity", profileId), _
+        YesNo(ProfileValue(values, "Calculation.Crack.Width"), "Calculation.Crack.Width", profileId), _
+        YesNo(ProfileValue(values, "Calculation.Stability.Enabled"), "Calculation.Stability.Enabled", profileId)
 
     Dim spec As CMaterialModelSpec
     Set spec = SpecFromValues(values, "MaterialModel.Strength")
@@ -28145,10 +28168,19 @@ Private Function IsProfileIdText(ByVal value As String) As Boolean
     IsProfileIdText = (Len(value) >= 3 And Left$(value, 2) = "PR" And IsNumeric(Mid$(value, 3)))
 End Function
 
-' Приводит пользовательское Yes/No-значение к Boolean с учетом русской записи "Да".
-Private Function YesNo(ByVal value As String) As Boolean
+' Читает обязательный переключатель расчета профиля. Все утвержденные
+' Boolean aliases сохраняются; пустое/неизвестное значение является ошибкой
+' Config, а не неявным отключением запрошенного пользователем расчета.
+Private Function YesNo(ByVal value As String, ByVal key As String, ByVal profileId As String) As Boolean
     value = UCase$(Trim$(value))
-    YesNo = (value = "YES" Or value = "TRUE" Or value = "1" Or value = "ДА")
+    Select Case value
+        Case "YES", "TRUE", "1", "ДА": YesNo = True
+        Case "NO", "FALSE", "0", "НЕТ": YesNo = False
+        Case Else
+            Err.Raise vbObjectError + 3988, "CCalculationProfileCatalog", _
+                "Профиль " & profileId & ": параметр " & key & _
+                " должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: """ & value & """."
+    End Select
 End Function
 
 ' Очищает ранее прочитанный каталог перед новой загрузкой из workbook.
@@ -30918,7 +30950,7 @@ Private Function SummaryTargetRange(ByVal workbook As Object, Optional ByVal Req
     Set target = workbook.names.item("rngBatchSummary").RefersToRange(1, 1)
     If RequiredRows <= 0 Then RequiredRows = RequiredSummaryRows(1)
     If target.row + RequiredRows - 1 > target.Worksheet.rows.count Or _
-            target.Column + RequiredSummaryOutputColumns() - 1 > target.Worksheet.columns.count Then
+            target.column + RequiredSummaryOutputColumns() - 1 > target.Worksheet.columns.count Then
         Err.Raise vbObjectError + 3973, "CBatchResultWriter", _
             "rngBatchSummary не имеет места для требуемого размера сводки."
     End If
@@ -31747,7 +31779,7 @@ Private Function ClearTargetRange(ByVal workbook As Object) As Object
 
 UseDefaultHeight:
     If topRow + rowsToClear - 1 > anchor.Worksheet.rows.count Then rowsToClear = anchor.Worksheet.rows.count - topRow + 1
-    Set ClearTargetRange = anchor.Worksheet.Cells(topRow, anchor.Column).Resize(rowsToClear, TOTAL_COLUMNS)
+    Set ClearTargetRange = anchor.Worksheet.Cells(topRow, anchor.column).Resize(rowsToClear, TOTAL_COLUMNS)
 End Function
 
 ' Снимает старые объединения и очищает значения/форматы перед новой записью.
@@ -31765,7 +31797,7 @@ Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
     titleRow = target.row - 1
     target.Worksheet.rows.item(titleRow).Interior.Color = RGB(189, 215, 238)
     target.Worksheet.rows.item(titleRow).RowHeight = 15
-    With target.Worksheet.Cells(titleRow, target.Column)
+    With target.Worksheet.Cells(titleRow, target.column)
         .Value2 = titleText
         .Font.name = "Arial"
         .Font.size = 12
@@ -33521,7 +33553,7 @@ Private Sub WriteSnapshotTitle(ByVal workbook As Object)
     titleRow = anchor.row - SNAPSHOT_TITLE_OFFSET
     anchor.Worksheet.rows.item(titleRow).Interior.Color = RGB(189, 215, 238)
     anchor.Worksheet.rows.item(titleRow).RowHeight = 15
-    With anchor.Worksheet.Cells(titleRow, anchor.Column)
+    With anchor.Worksheet.Cells(titleRow, anchor.column)
         .Value2 = "Расчетный снимок Results: элементы, геометрия, свойства сечения, диаграммы материалов и аннотации"
         .Font.name = "Arial"
         .Font.size = 12
@@ -39314,7 +39346,7 @@ Private Function ClearTargetRange(ByVal workbook As Object) As Object
 UseDefaultHeight:
     If topRow + rowsToClear - 1 > anchor.Worksheet.rows.count Then _
         rowsToClear = anchor.Worksheet.rows.count - topRow + 1
-    Set ClearTargetRange = anchor.Worksheet.Cells(topRow, anchor.Column).Resize(rowsToClear, TOTAL_COLUMNS)
+    Set ClearTargetRange = anchor.Worksheet.Cells(topRow, anchor.column).Resize(rowsToClear, TOTAL_COLUMNS)
 End Function
 
 ' Снимает старые объединения и чистит область, чтобы при переносе якоря не осталось старой верстки.
@@ -39332,7 +39364,7 @@ Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
     titleRow = target.row - 1
     target.Worksheet.rows.item(titleRow).Interior.Color = RGB(189, 215, 238)
     target.Worksheet.rows.item(titleRow).RowHeight = 15
-    With target.Worksheet.Cells(titleRow, target.Column)
+    With target.Worksheet.Cells(titleRow, target.column)
         .Value2 = titleText
         .Font.name = "Arial"
         .Font.size = 12
@@ -40267,7 +40299,7 @@ Private Function ClearTargetRange(ByVal workbook As Object) As Object
 
 UseDefaultHeight:
     If topRow + rowsToClear - 1 > anchor.Worksheet.rows.count Then rowsToClear = anchor.Worksheet.rows.count - topRow + 1
-    Set ClearTargetRange = anchor.Worksheet.Cells(topRow, anchor.Column).Resize(rowsToClear, TOTAL_COLUMNS)
+    Set ClearTargetRange = anchor.Worksheet.Cells(topRow, anchor.column).Resize(rowsToClear, TOTAL_COLUMNS)
 End Function
 
 ' Снимает старые объединения и очищает значения/форматы перед новой записью.
@@ -40285,7 +40317,7 @@ Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
     titleRow = target.row - 1
     target.Worksheet.rows.item(titleRow).Interior.Color = RGB(189, 215, 238)
     target.Worksheet.rows.item(titleRow).RowHeight = 15
-    With target.Worksheet.Cells(titleRow, target.Column)
+    With target.Worksheet.Cells(titleRow, target.column)
         .Value2 = titleText
         .Font.name = "Arial"
         .Font.size = 12
@@ -42319,7 +42351,7 @@ End Function
 ====================================================================================================
 COMPONENT: modAutoCADStressExport
 TYPE: 1
-LINES: 1890
+LINES: 1896
 ====================================================================================================
 Option Explicit
 
@@ -43705,6 +43737,9 @@ Private Function ConcreteDrawWidth(ByVal section As CSectionModel, ByVal index A
     If ConcreteDrawWidth <= 0# Then ConcreteDrawWidth = Sqr(section.concreteArea(index))
 End Function
 
+' Возвращает высоту визуальной оболочки бетонного элемента. Если импорт
+' не сохранил габарит, для рисунка используется сторона равноплощадного
+' квадрата; расчетные Area/I и напряжения элемента не заменяются.
 Private Function ConcreteDrawHeight(ByVal section As CSectionModel, ByVal index As Long) As Double
     ConcreteDrawHeight = section.concreteHeight(index)
     If ConcreteDrawHeight <= 0# Then ConcreteDrawHeight = Sqr(section.concreteArea(index))
@@ -43912,6 +43947,9 @@ Private Function NeutralYAtXState(ByVal epsilon0 As Double, ByVal kappaX As Doub
     End If
 End Function
 
+' Находит X нулевой деформации на заданной горизонтали по сохраненной
+' плоскости НДС. При нулевом kappaY возвращает заведомо внешнюю координату:
+' эта горизонталь не дает отдельного пересечения для отсечения линии.
 Private Function NeutralXAtYState(ByVal epsilon0 As Double, ByVal kappaX As Double, _
         ByVal kappaY As Double, ByVal y As Double) As Double
     If Abs(kappaY) <= 0.000000000000001 Then
@@ -44744,7 +44782,7 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
     summaryRows = summaryWriter.RequiredSummaryOutputRowsForWorkbook(workbook, batch.count)
     summaryCols = summaryWriter.RequiredSummaryOutputColumns()
     CheckFootprintWithinSheet issues, ws, "rngBatchSummary", _
-        summaryAnchor.row, summaryAnchor.Column, summaryRows, summaryCols
+        summaryAnchor.row, summaryAnchor.column, summaryRows, summaryCols
 
     Dim strengthTopRow As Long
     Dim strengthRows As Long
@@ -44756,7 +44794,7 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
         AddLayoutIssue issues, "rngStrengthSummaryAnchor расположен слишком высоко: над ним нет места для шапки таблицы прочности."
     Else
         CheckFootprintWithinSheet issues, ws, "rngStrengthSummaryAnchor с шапкой прочности", _
-            strengthTopRow, strengthAnchor.Column, strengthRows, strengthCols
+            strengthTopRow, strengthAnchor.column, strengthRows, strengthCols
     End If
 
     Dim crackTopRow As Long
@@ -44769,7 +44807,7 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
         AddLayoutIssue issues, "rngCrackSummaryAnchor расположен слишком высоко: над ним нет места для шапки таблицы трещин."
     Else
         CheckFootprintWithinSheet issues, ws, "rngCrackSummaryAnchor с шапкой трещин", _
-            crackTopRow, crackAnchor.Column, crackRows, crackCols
+            crackTopRow, crackAnchor.column, crackRows, crackCols
     End If
 
     Dim stabilityTopRow As Long
@@ -44782,7 +44820,7 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
         AddLayoutIssue issues, "rngStabilitySummaryAnchor расположен слишком высоко: над ним нет места для шапки таблицы устойчивости."
     Else
         CheckFootprintWithinSheet issues, ws, "rngStabilitySummaryAnchor с шапкой устойчивости", _
-            stabilityTopRow, stabilityAnchor.Column, stabilityRows, stabilityCols
+            stabilityTopRow, stabilityAnchor.column, stabilityRows, stabilityCols
     End If
 
     Dim summaryBottomRow As Long
@@ -44908,18 +44946,18 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workb
         If Not (anchor.Worksheet Is ws) Then
             AddLayoutIssue issues, names(index) & " должен находиться на том же листе Results, что и остальные блоки вывода."
         End If
-        CheckFootprintWithinSheet issues, ws, names(index), anchor.row, anchor.Column, rows(index), cols(index)
+        CheckFootprintWithinSheet issues, ws, names(index), anchor.row, anchor.column, rows(index), cols(index)
 
         If previousRightColumn > 0 Then
             Dim gapColumns As Long
-            gapColumns = anchor.Column - previousRightColumn - 1
+            gapColumns = anchor.column - previousRightColumn - 1
             If gapColumns < requiredGapColumns Then
                 AddLayoutIssue issues, "Между нижними блоками Results должно быть не меньше " & _
                     CStr(requiredGapColumns) & " пустых столбцов. Перед " & names(index) & _
                     " сейчас " & CStr(gapColumns) & ". Раздвиньте якоря вправо."
             End If
         End If
-        previousRightColumn = anchor.Column + cols(index) - 1
+        previousRightColumn = anchor.column + cols(index) - 1
     Next index
     Exit Sub
 
@@ -45528,8 +45566,6 @@ LINES: 553
 ====================================================================================================
 Option Explicit
 
-Implements ILimitSearchProblem
-
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ: простая доменная задача общего LimitSearch
 ' ==========================================================================
@@ -45540,6 +45576,8 @@ Implements ILimitSearchProblem
 ' Такой тест защищает архитектурное требование: Bisection/Secant/Brent должны
 ' работать через ILimitSearchProblem, а не через конкретный Capacity или Crack
 ' calculator.
+
+Implements ILimitSearchProblem
 
 Private Const PROBE_ACCEPTABLE As String = "Acceptable" ' Точка находится до предела.
 Private Const PROBE_LIMIT As String = "Limit" ' Точка достигла или превысила предел.
@@ -46083,7 +46121,7 @@ End Property
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 6625
+LINES: 6816
 ====================================================================================================
 Option Explicit
 
@@ -46102,7 +46140,8 @@ End Type
 Private Const TEST_TF_M_IN_NMM As Double = 9806650# ' 1 tf*m во внутренних Н*мм.
 Private Const TEST_DEFAULT_ZERO_MOMENT_PER_DEPTH As Double = 4903.325 ' 0.5 tf*m/m = 4903.325 Н*мм/мм.
 
-' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
+' Выполняет пакетные регрессии профилей, путей, typed results, reuse и вывода.
+' Общий отчет сохраняет отдельные причины failure и количество assertions.
 Public Function RunBatchCalculationTests() As String
     On Error GoTo Failed
 
@@ -46352,7 +46391,8 @@ Failed:
         CStr(Err.Number) & "; source=" & Err.source & "; description=" & Err.description
 End Function
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет полный Execute одного LC: число результатов, определяющее
+' сочетание, заполнение статусов разделов и неотрицательное время расчета.
 Private Sub TestBatchOneCombination(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
@@ -46366,7 +46406,8 @@ Private Sub TestBatchOneCombination(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.one.elapsed", batch.elapsedSeconds >= 0#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Решает одинаковые усилия по Strength- и Crack-профилям: запрошенные
+' разделы выполняются, остальные остаются неприменимыми, без чужой модели.
 Private Sub TestProfileIdControlsLimitStateGroup(ByRef stats As TBatchTestStats)
     Dim group1 As CBatchSectionCalculator
     Set group1 = BuildBatchCalculator()
@@ -46386,7 +46427,9 @@ Private Sub TestProfileIdControlsLimitStateGroup(ByRef stats As TBatchTestStats)
         Not group2.ResultAt(1).StateRepository.FindState(sstCrackedState) Is Nothing
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Задает LoadMultiplier и малую техническую границу lambda в Config;
+' batch должен сохранить незавершенный поиск как NumFail без выдуманного запаса.
+' Исходные настройки восстанавливаются и при ошибке проверки.
 Private Sub TestBatchCapacityUsesSystemSettings(ByRef stats As TBatchTestStats)
     Dim oldStrategy As String
     Dim oldMaxLambda As String
@@ -46422,7 +46465,8 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Передает неизвестную Capacity.SolutionStrategy через настоящий reader.
+' Ожидается InputErr без lambda/reserve, а не fallback на допустимый метод.
 Private Sub TestInvalidModeSettingsAreNotFallbacks(ByRef stats As TBatchTestStats)
     Dim oldCapacitySolutionStrategy As String
     oldCapacitySolutionStrategy = GetSystemSetting("Capacity.SolutionStrategy")
@@ -46454,7 +46498,8 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет пять различных LC, выбор определяющего индекса в пределах пакета
+' и наличие диагностической строки последнего сочетания после Execute.
 Private Sub TestBatchFiveCombinations(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
@@ -46471,7 +46516,8 @@ Private Sub TestBatchFiveCombinations(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.five.diagnostics", InStr(1, batch.DiagnosticLog, "combination=C5", vbTextCompare) > 0
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сравнивает две нагрузки с одинаковой N и разными моментами: governing
+' выбирается по меньшему lambda-запасу, а не по позиции LC в пакете.
 Private Sub TestBatchGoverningUsesLowestSafetyFactor(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
@@ -47320,7 +47366,7 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
     If detailRow <= 0 Then Exit Sub
 
     Dim baseColumn As Long
-    baseColumn = anchor.Column
+    baseColumn = anchor.column
     Dim isCentralAxial As Boolean
     isCentralAxial = batch.ResultAt(1).crackResult.width.CentralTensionBranch
     If Not isCentralAxial Then _
@@ -47901,7 +47947,8 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет добавление N*offset к внутренним моментам при сохранении исходных
+' пользовательских Mx/My; отдельно сверяет offsets относительно сдвинутого центра.
 Private Sub TestLoadReferenceTransformsUserMoments(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
@@ -49673,7 +49720,7 @@ Private Sub TestBatchSummaryWritesOnlySelectedStabilityCode(ByRef stats As TBatc
     Set stabilityAnchor = ThisWorkbook.names.item("rngStabilitySummaryAnchor").RefersToRange
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.item("Results")
-    AssertTrue stats, "batch.writer.stability.anchor", stabilityAnchor.row = 122 And stabilityAnchor.Column = 1
+    AssertTrue stats, "batch.writer.stability.anchor", stabilityAnchor.row = 122 And stabilityAnchor.column = 1
     AssertTrue stats, "batch.writer.stability.sp35.empty", Len(CStr(resultsSheet.Cells.item(stabilityAnchor.row, 29).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.item(stabilityAnchor.row, 30).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.item(stabilityAnchor.row, 45).Value2)) = 0
@@ -49703,7 +49750,8 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Выполняет 24 LC, проверяя динамический размер массива результатов,
+' доступность последнего статуса и governing вне прежних малых пакетов.
 Private Sub TestBatchMoreThanTwentyCombinations(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
@@ -49720,7 +49768,8 @@ Private Sub TestBatchMoreThanTwentyCombinations(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.dynamic.last.status", Len(batch.ResultAt(24).status) > 0
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Читает строку настоящего rngLoadCombinations с нечисловой N.
+' Строка сохраняется в пакете как InputErr, а не теряется или становится нулевой.
 Private Sub TestInvalidCombinationFromNamedRange(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
@@ -49797,7 +49846,8 @@ Failed:
     Resume CleanUp
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Записывает Strength/Crack/осевое LC настоящим writer-ом и проверяет шапки,
+' объединения, позиции блоков, единицы, статусы и отсутствие перекрытия Results.
 Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     On Error GoTo Failed
 
@@ -50155,7 +50205,7 @@ Private Function DetailedRowByCombination(ByVal resultsSheet As Object, ByVal an
     Set anchor = ThisWorkbook.names.item(anchorName).RefersToRange
     Dim rowIndex As Long
     For rowIndex = anchor.row To anchor.row + 200
-        If StrComp(CStr(resultsSheet.Cells.item(rowIndex, anchor.Column).Value2), combinationID, vbTextCompare) = 0 Then
+        If StrComp(CStr(resultsSheet.Cells.item(rowIndex, anchor.column).Value2), combinationID, vbTextCompare) = 0 Then
             DetailedRowByCombination = rowIndex
             Exit Function
         End If
@@ -50201,12 +50251,15 @@ Private Function BatchSummaryCellText(ByVal resultsSheet As Object, ByVal rowInd
     BatchSummaryCellText = Trim$(CStr(cell.Value2))
 End Function
 
-' Проверяет, что одна статусная ячейка окрашена по единой палитре Results.
+' Проверяет исходную и реально отображаемую заливку статусной ячейки.
+' DisplayFormat учитывает conditional formatting: совпадение только Interior
+' недостаточно, если другая Excel-rule скрывает утвержденный цвет.
 Private Function StatusCellHasExpectedFill(ByVal resultsSheet As Object, _
         ByVal rowIndex As Long, ByVal columnIndex As Long) As Boolean
     Dim statusText As String
     statusText = CStr(resultsSheet.Cells.item(rowIndex, columnIndex).Value2)
-    StatusCellHasExpectedFill = (CLng(resultsSheet.Cells.item(rowIndex, columnIndex).Interior.Color) = StatusFillColor(statusText))
+    StatusCellHasExpectedFill = (CLng(resultsSheet.Cells.item(rowIndex, columnIndex).Interior.Color) = StatusFillColor(statusText) And _
+        CLng(resultsSheet.Cells.item(rowIndex, columnIndex).DisplayFormat.Interior.Color) = StatusFillColor(statusText))
 End Function
 
 ' Проверяет, что расчетная ячейка рядом со статусом не получила статусную заливку всего блока.
@@ -50262,7 +50315,9 @@ Private Function MaxDouble(ByVal firstValue As Double, ByVal secondValue As Doub
     If firstValue > secondValue Then MaxDouble = firstValue Else MaxDouble = secondValue
 End Function
 
-' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
+' Собирает независимый армированный прямоугольник 300x200 и профильный batch.
+' Effective Extension задается явно для теста; готовая модель при необходимости
+' возвращается для дополнительных проверок состояний без повторной геометрии.
 Private Function BuildBatchCalculator(Optional ByVal diagramExtensionEnabled As Boolean = True, _
         Optional ByRef preparedSection As CSectionModel = Nothing) As CBatchSectionCalculator
     Dim geom As CGeometryRoundedRectangle
@@ -52070,10 +52125,32 @@ Private Sub Audit03CheckCapacityPath(ByRef stats As TBatchTestStats, ByVal capac
         ByVal prefix As String, ByVal component As String, ByVal load As Variant, _
         Optional ByVal referenceX As Double = 0#, Optional ByVal referenceY As Double = 0#, _
         Optional ByVal includeUnscaledPath As Boolean = False)
+    Dim selection As String
+    selection = component
+    If component = "Auto" Then
+        ' Независимый выбор по пользовательским моментам: эксцентриситет N
+        ' сам по себе не превращает осевой Auto-путь в масштабирование Mxy.
+        If Sqr(CDbl(load(1)) * CDbl(load(1)) + CDbl(load(2)) * CDbl(load(2))) > 0.000000001 Then
+            component = "Mxy"
+        ElseIf Abs(CDbl(load(0))) > 0.000000001 Then
+            component = "N"
+        Else
+            component = "None"
+        End If
+    End If
     AppendLine stats, "CASE: " & prefix & "|N=" & CStr(load(0)) & "|Mx=" & CStr(load(1)) & _
         "|My=" & CStr(load(2)) & "|offsetX=10|offsetY=-7|path=" & component & _
+        "|selection=" & selection & _
         "|lambda=" & FormatNumberInvariant(capacity.LambdaCapacity) & "|method=" & capacity.solutionMethod & _
         "|limit=" & capacity.LimitState & "|status=" & capacity.status
+    If component = "None" Then
+        AssertTrue stats, prefix & ".autoNoLoad", capacity.ResultMeta.InternalStatus = rsNotApplicable And _
+            capacity.ResultMeta.ResultCode = rcNotApplicable And Not capacity.ResultMeta.calculated
+        AssertEquals stats, prefix & ".autoNoPath", capacity.PathResolved, "None"
+        AssertTrue stats, prefix & ".autoNoSearch", capacity.searchResult Is Nothing
+        AssertTrue stats, prefix & ".autoNoPoint", capacity.stateResult Is Nothing
+        Exit Sub
+    End If
     If includeUnscaledPath Then
         ' Явный путь с нулевой масштабируемой компонентой не определяет поиск
         ' lambda. Проверяем существующий InputErr-контракт, а не фиктивный предел.
@@ -52136,14 +52213,31 @@ Private Sub Audit03CheckFormationPath(ByRef stats As TBatchTestStats, ByVal form
         End If
     End If
     If Not formation.PreCrackState Is Nothing Then
-        AssertTrue stats, prefix & ".preConverged", formation.PreCrackState.Converged
-        AssertTrue stats, prefix & ".prePhysical", formation.PreCrackState.withinPhysicalRange
-        AssertTrue stats, prefix & ".preNotExtended", Not formation.PreCrackState.extensionUsed
+        If formation.HasLimitPoint Then
+            AssertTrue stats, prefix & ".preConverged", formation.PreCrackState.Converged
+            AssertTrue stats, prefix & ".prePhysical", formation.PreCrackState.withinPhysicalRange
+            AssertTrue stats, prefix & ".preNotExtended", Not formation.PreCrackState.extensionUsed
+        Else
+            ' Диагностический кандидат сохраняет точный отказ State, но не
+            ' выдается за физическую пороговую точку или успешный Search.
+            AssertTrue stats, prefix & ".preFailureTyped", Audit03RequiresComment(formation.PreCrackState.ResultMeta)
+            AssertTrue stats, prefix & ".preFailureNoPoint", Not formation.searchResult.HasLimitPoint
+            AssertTrue stats, prefix & ".preFailureFormationCause", _
+                formation.ResultMeta.InternalStatus = formation.PreCrackState.ResultMeta.InternalStatus And _
+                formation.ResultMeta.ResultCode = formation.PreCrackState.ResultMeta.ResultCode
+        End If
     End If
     If Not formation.PostCrackState Is Nothing Then
-        AssertTrue stats, prefix & ".postConverged", formation.PostCrackState.Converged
-        AssertTrue stats, prefix & ".postPhysical", formation.PostCrackState.withinPhysicalRange
-        AssertTrue stats, prefix & ".postNotExtended", Not formation.PostCrackState.extensionUsed
+        If formation.PostCrackState.ResultMeta.InternalStatus = rsSuccess Then
+            AssertTrue stats, prefix & ".postConverged", formation.PostCrackState.Converged
+            AssertTrue stats, prefix & ".postPhysical", formation.PostCrackState.withinPhysicalRange
+            AssertTrue stats, prefix & ".postNotExtended", Not formation.PostCrackState.extensionUsed
+        Else
+            AssertTrue stats, prefix & ".postFailureTyped", Audit03RequiresComment(formation.PostCrackState.ResultMeta)
+            AssertTrue stats, prefix & ".postFailureFormationCause", _
+                formation.ResultMeta.InternalStatus = formation.PostCrackState.ResultMeta.InternalStatus And _
+                formation.ResultMeta.ResultCode = formation.PostCrackState.ResultMeta.ResultCode
+        End If
     End If
 End Sub
 
@@ -52394,6 +52488,7 @@ End Function
 ' передает внешний watchdog; полный набор не входит в быстрый suite. Config
 ' восстанавливается, результаты остаются в копии для save/reopen проверки.
 Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal family As String) As String
+    Const CAPACITY_VARIANT_COUNT As Long = 6 ' Пять физических путей и отдельный выбор Auto.
     Dim stats As TBatchTestStats, settings As CSystemSettingsReader, units As CUnitSystem
     Dim oldSystem As Variant, oldProfiles As Variant, systemRange As Object, profileRange As Object
     Dim section As CSectionModel, provider As CMaterialModelProvider, loads As Collection
@@ -52423,12 +52518,12 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
         "|rebars=" & CStr(section.rebarCount) & "|referenceX=" & FormatNumberInvariant(referenceX) & _
         "|referenceY=" & FormatNumberInvariant(referenceY) & "|offsetX=10|offsetY=-7|zeroMoment=0|stability=No"
     Set writer = New CBatchResultWriter
-    paths = Array("Mx", "My", "Mxy", "N", "NMxy", "Auto", "Mxy", "N", "NMxy")
-    For pathIndex = 0 To 8
-        If pathIndex < 5 Then profileId = "PR1" Else profileId = "PR2"
+    paths = Array("Mx", "My", "Mxy", "N", "NMxy", "Auto", "Auto", "Mxy", "N", "NMxy")
+    For pathIndex = LBound(paths) To UBound(paths)
+        If pathIndex < CAPACITY_VARIANT_COUNT Then profileId = "PR1" Else profileId = "PR2"
         path = CStr(paths(pathIndex))
         If path <> "Auto" Then path = ChrW$(&H3BB) & "*" & path
-        If pathIndex >= 5 Then SetSystemSetting "SLS.Crack.InitiationLoadPath", path
+        If pathIndex >= CAPACITY_VARIANT_COUNT Then SetSystemSetting "SLS.Crack.InitiationLoadPath", path
         settings.LoadFromWorkbook ThisWorkbook
         units.LoadFromSettings settings
         ' Двадцать LC сохраняют штатную сетку Results без изменения Config.
@@ -52446,7 +52541,12 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
                     CDbl(item(1)), CDbl(item(2)), CDbl(item(3)), profileId, _
                     shapeName & ": " & CStr(item(0)), path
             Next index
-            batch.ApplyLoadReference 10#, -7#, referenceX, referenceY
+            ' API принимает абсолютную точку в координатах модели, а не
+            ' смещение от бетонного центра. Проверяем оба эксцентриситета
+            ' отдельно, чтобы ненулевой центр формы не искажал fixture.
+            batch.ApplyLoadReference referenceX + 10#, referenceY - 7#, referenceX, referenceY
+            AssertClose stats, "audit03.matrix.reference.offsetX", batch.LoadReferenceOffsetX, 10#, 0.000000001
+            AssertClose stats, "audit03.matrix.reference.offsetY", batch.LoadReferenceOffsetY, -7#, 0.000000001
             batch.Execute
             writer.WriteSummary ThisWorkbook, batch, units, section
             Report.Save "Нагрузочная проверка Audit03: " & shapeName & ", " & family & ", " & path
@@ -52458,7 +52558,7 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
                     "|id=" & batch.combinationID(localIndex) & "|load=" & CStr(item(0)) & _
                     "|N=" & FormatNumberInvariant(CDbl(item(1))) & "|Mx=" & FormatNumberInvariant(CDbl(item(2))) & _
                     "|My=" & FormatNumberInvariant(CDbl(item(3))) & "|profile=" & profileId & "|path=" & path
-                If pathIndex < 5 Then
+                If pathIndex < CAPACITY_VARIANT_COUNT Then
                     Audit03CheckCapacityPath stats, batch.ResultAt(localIndex).StrengthResult.capacity, _
                         "audit03.matrix." & shapeName & "." & batch.combinationID(localIndex), _
                         CStr(paths(pathIndex)), Array(item(1), item(2), item(3)), referenceX, referenceY, True
@@ -52474,6 +52574,7 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
             Audit03SaveMatrixProgress stats.Report
         Next first
     Next pathIndex
+    AssertTrue stats, "audit03.matrix.allRequestedPaths", independentCases = loads.count * (UBound(paths) - LBound(paths) + 1)
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
@@ -52599,6 +52700,10 @@ Private Function Audit03NormalizedLoads(ByVal section As CSectionModel, ByVal fa
     ElseIf family = "PhysicalBoundary" Then
         result.Add Array("physicalMy-", 0#, -0.003 * mxRef, -0.03 * myRef)
         result.Add Array("physicalMy+", 0#, 0.003 * mxRef, -0.03 * myRef)
+    ElseIf family = "FormationBoundary" Then
+        ' Сжатие с заданным общим эксцентриситетом: extended-кандидат достигает
+        ' растягивающего критерия лишь после физического предела сжатой зоны.
+        result.Add Array("axialC2", -2# * nc, 0#, 0#)
     ElseIf family = "Light" Then
         result.Add Array("zero", 0#, 0#, 0#)
         For signX = -1 To 1 Step 2
@@ -52670,7 +52775,17 @@ Private Sub Audit03CheckMatrixStates(ByRef stats As TBatchTestStats, ByVal resul
         End If
         If Not extensionEnabled Then AssertTrue stats, prefix & ".state.noHiddenExtension." & CStr(i), Not state.extensionUsed
         If state.stateType = sstCapacityState Or state.stateType = sstPreCrackState Or state.stateType = sstPostCrackState Then
-            AssertTrue stats, prefix & ".state.finalPhysical." & CStr(i), state.Converged And state.withinPhysicalRange And Not state.extensionUsed
+            If state.ResultMeta.InternalStatus = rsSuccess Then
+                AssertTrue stats, prefix & ".state.finalPhysical." & CStr(i), state.Converged And state.withinPhysicalRange And Not state.extensionUsed
+            Else
+                AssertTrue stats, prefix & ".state.finalFailureTyped." & CStr(i), Audit03RequiresComment(state.ResultMeta)
+                If state.stateType = sstPreCrackState Then
+                    AssertTrue stats, prefix & ".state.failedPreNoPoint." & CStr(i), Not result.crackResult.formation.HasLimitPoint
+                    AssertTrue stats, prefix & ".state.failedPreCause." & CStr(i), _
+                        result.CrackFormationMeta.InternalStatus = state.ResultMeta.InternalStatus And _
+                        result.CrackFormationMeta.ResultCode = state.ResultMeta.ResultCode
+                End If
+            End If
         End If
     Next i
     For Each comment In Array(result.DirectStateMeta, result.CapacityMeta, result.CrackFormationMeta, _
@@ -52710,11 +52825,125 @@ Private Function Audit03MinLong(ByVal a As Long, ByVal b As Long) As Long
     If a < b Then Audit03MinLong = a Else Audit03MinLong = b
 End Function
 
+' ДЛЯ ТЕСТОВ
+' Проверяет семь цветов в настоящей легенде/writer-ах, нормализацию и очистку.
+' Дополнительный лист создается только в изолированной книге для save/reopen;
+' подготовка palette-fixture не изменяет физику или dictionary production-кода.
+Public Function RunAudit03StatusPaletteTests() As String
+    On Error GoTo Failed
+    Dim stats As TBatchTestStats
+    TestBatchSummaryWriter stats
+    Audit03CheckWriterPalette stats, 3, False
+
+    Dim palette As Object, cell As Object, statuses As Variant, status As Variant, colors As Variant, i As Long
+    Set palette = ThisWorkbook.Worksheets.Add(After:=ThisWorkbook.Worksheets.item(ThisWorkbook.Worksheets.count))
+    palette.name = "__Audit03Palette"
+    statuses = Array("OK", "FAIL", "BaseFail", "NumFail", "InputErr", "CalcErr", "N/A")
+    colors = Array(RGB(188, 222, 158), RGB(255, 190, 206), RGB(255, 190, 206), _
+        RGB(255, 71, 71), RGB(255, 230, 153), RGB(255, 71, 71), RGB(237, 237, 237))
+    For i = LBound(statuses) To UBound(statuses)
+        Set cell = palette.Cells(i + 1, 1)
+        cell.Value2 = statuses(i)
+        ApplyStatusFill cell, "  " & LCase$(CStr(statuses(i))) & "  "
+        AssertTrue stats, "audit03.palette.canonical." & CStr(statuses(i)), CLng(cell.Interior.Color) = CLng(colors(i))
+        AssertTrue stats, "audit03.palette.display." & CStr(statuses(i)), CLng(cell.DisplayFormat.Interior.Color) = CLng(colors(i))
+        AppendLine stats, "PALETTE_CELL: " & CStr(statuses(i)) & "|fill=" & CStr(cell.Interior.Color) & _
+            "|display=" & CStr(cell.DisplayFormat.Interior.Color) & "|cf=" & CStr(cell.FormatConditions.count)
+    Next i
+
+    Set cell = palette.Cells(9, 1)
+    cell.Value2 = "UnknownExternalStatus"
+    ApplyStatusFill cell, CStr(cell.Value2)
+    AssertTrue stats, "audit03.palette.unknownCalcErr", CLng(cell.DisplayFormat.Interior.Color) = RGB(255, 71, 71)
+    Set cell = palette.Cells(10, 1)
+    ApplyStatusFill cell, vbNullString
+    AssertTrue stats, "audit03.palette.emptyPolicy", CLng(cell.DisplayFormat.Interior.Color) = RGB(237, 237, 237)
+    cell.Clear
+    AssertTrue stats, "audit03.palette.clearedCell", cell.Interior.colorIndex = -4142 And cell.DisplayFormat.Interior.colorIndex = -4142
+    Set cell = palette.Cells(11, 1)
+    For Each status In Array("FAIL", "OK", "N/A")
+        cell.Value2 = CStr(status)
+        ApplyStatusFill cell, CStr(status)
+        AssertTrue stats, "audit03.palette.transition." & CStr(status), StatusCellHasExpectedFill(palette, 11, 1)
+    Next status
+
+    ' Доказываем чувствительность проверки к чужому CF, затем удаляем только
+    ' эту тестовую rule. Production-палитра по-прежнему имеет одного владельца.
+    Set cell = palette.Cells(12, 1)
+    cell.Value2 = "FAIL"
+    ApplyStatusFill cell, "FAIL"
+    Dim rule As Object
+    Set rule = cell.FormatConditions.Add(1, 3, "=""FAIL""")
+    rule.Interior.Color = RGB(188, 222, 158)
+    ThisWorkbook.Application.CalculateFull
+    AssertTrue stats, "audit03.palette.detectsConditionalOverride", Not StatusCellHasExpectedFill(palette, 12, 1)
+    cell.FormatConditions.Delete
+    AssertTrue stats, "audit03.palette.overrideRemoved", StatusCellHasExpectedFill(palette, 12, 1)
+
+    Dim batch As CBatchSectionCalculator, writer As CBatchResultWriter
+    Set batch = BuildBatchCalculator()
+    batch.AddCombination "PALETTE_ONE", -180000#, -3500000#, -2500000#, "PR1", "palette reduction"
+    batch.Execute
+    Set writer = New CBatchResultWriter
+    writer.WriteSummary ThisWorkbook, batch
+    Audit03CheckWriterPalette stats, 1, False
+    Audit03CheckWriterPalette stats, 3, True
+    AppendLine stats, "TOTAL_AUDIT03_PALETTE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03StatusPaletteTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03StatusPaletteTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.description
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Сверяет каждую статусную колонку четырех output-блоков и реальную легенду.
+' При сокращении пакета проверяет отсутствие предыдущей заливки во второй
+' и третьей строке; неприменимые пустые placeholders не считаются новым расчетом.
+Private Sub Audit03CheckWriterPalette(ByRef stats As TBatchTestStats, ByVal rows As Long, ByVal clearedRows As Boolean)
+    Dim blocks As Variant, block As Variant, columns As Variant, column As Variant
+    Dim anchor As Object, rowIndex As Long, firstRow As Long, cell As Object, statusText As String
+    blocks = Array("rngBatchSummary", "rngStrengthSummaryAnchor", "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor")
+    For Each block In blocks
+        Set anchor = ThisWorkbook.names.item(CStr(block)).RefersToRange
+        firstRow = anchor.row
+        Select Case CStr(block)
+            Case "rngBatchSummary": firstRow = firstRow + 12: columns = Array(4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+            Case "rngStrengthSummaryAnchor": columns = Array(3, 30, 49)
+            Case "rngCrackSummaryAnchor": columns = Array(3, 19, 20, 23, 45, 49)
+            Case "rngStabilitySummaryAnchor": columns = Array(3, 38, 44, 53, 59, 72, 84)
+        End Select
+        For rowIndex = 1 To rows
+            If Not clearedRows Or rowIndex > 1 Then
+                For Each column In columns
+                    Set cell = anchor.Worksheet.Cells(firstRow + rowIndex - 1, anchor.column + CLng(column) - 1)
+                    statusText = CStr(cell.Value2)
+                    If clearedRows Then
+                        AssertTrue stats, "audit03.palette.clear." & CStr(block) & "." & CStr(rowIndex) & "." & CStr(column), _
+                            cell.Interior.colorIndex = -4142 And cell.DisplayFormat.Interior.colorIndex = -4142
+                    ElseIf Len(statusText) > 0 Then
+                        AssertTrue stats, "audit03.palette.writer." & CStr(block) & "." & CStr(rowIndex) & "." & CStr(column), _
+                            StatusCellHasExpectedFill(anchor.Worksheet, cell.row, cell.column)
+                        AppendLine stats, "PALETTE_WRITER: " & CStr(block) & "|cell=" & cell.Address(False, False) & _
+                            "|status=" & statusText & "|cf=" & CStr(cell.FormatConditions.count)
+                    End If
+                Next column
+            End If
+        Next rowIndex
+    Next block
+    If Not clearedRows Then
+        Set anchor = ThisWorkbook.names.item("rngBatchSummary").RefersToRange
+        For rowIndex = 7 To 13
+            AssertTrue stats, "audit03.palette.legend." & CStr(rowIndex), _
+                StatusCellHasExpectedFill(anchor.Worksheet, anchor.row + rowIndex, anchor.column + 27)
+        Next rowIndex
+    End If
+End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestCapacitySolver
 TYPE: 1
-LINES: 2264
+LINES: 2299
 ====================================================================================================
 Option Explicit
 
@@ -52730,7 +52959,8 @@ Private Type TCapacityTestStats
     Report As String
 End Type
 
-' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
+' Выполняет регрессии физических пределов, знаков и общих поисковых методов.
+' Отчет различает проверенный limit point, численный отказ и неверный вход.
 Public Function RunCapacitySolverTests() As String
     On Error GoTo Failed
 
@@ -52824,7 +53054,8 @@ Failed:
         "; source=" & Err.source & "; description=" & Err.description
 End Function
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Решает два направления Mx при постоянной сжимающей N: проверяет знаки
+' предельных моментов, физический критерий и равновесие каждой конечной точки.
 Private Sub TestMxPositiveAndNegative(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -52849,7 +53080,8 @@ Private Sub TestMxPositiveAndNegative(ByRef stats As TCapacityTestStats)
     AssertEquilibrium stats, "capacity.mx.positive", capPos.LastSolver, -300000#, capPos.mxUltimate, 0#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет симметрию несущей круглого сечения по X/Y и сохранение направления
+' косого изгиба. Допуск симметрии учитывает дискретизацию исходной тестовой сетки.
 Private Sub TestCircleCapacitySymmetry(ByRef stats As TCapacityTestStats)
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -52889,7 +53121,8 @@ Private Sub TestCircleCapacitySymmetry(ByRef stats As TCapacityTestStats)
     AssertClose stats, "circle.capacity.mxy.direction", capMxy.mxUltimate * -5000000# - capMxy.myUltimate * -5000000#, 0#, 1000#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сравнивает Ignore/UseDiagram для растянутого бетона при одинаковых нагрузках.
+' Активная ветвь должна менять равновесную плоскость в одно-/двухосных задачах.
 Private Sub TestConcreteTensionBehaviorAffectsSolverAndCapacity(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -52920,6 +53153,8 @@ Private Sub TestConcreteTensionBehaviorAffectsSolverAndCapacity(ByRef stats As T
     AssertTensionBehaviorAffectsSolverMode stats, "tensionBehavior.strength.mxy", mesh, rebars, -50000#, -5000000#, -3000000#
 End Sub
 
+' Решает один вектор усилий с отключенным и активным растянутым бетоном;
+' проверяет сходимость обеих моделей и значимое различие параметров плоскости.
 Private Sub AssertTensionBehaviorAffectsSolverMode(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double)
@@ -52945,7 +53180,8 @@ Private Sub AssertTensionBehaviorAffectsSolverMode(ByRef stats As TCapacityTestS
         Abs(solverIgnore.kappaY - solverUse.kappaY) > 0.000000001 Or Abs(solverIgnore.epsilon0 - solverUse.epsilon0) > 0.000000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет все четыре квадранта Mx/My при одинаковой постоянной N.
+' Предельные моменты сохраняют знаки и отношение компонентов заданного пути.
 Private Sub TestMxySignedCombinations(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -52957,6 +53193,8 @@ Private Sub TestMxySignedCombinations(ByRef stats As TCapacityTestStats)
     CheckMxyCombination stats, "capacity.mxy.nn", mesh, rebars, -250000#, -6000000#, -4000000#
 End Sub
 
+' Проверяет одну косую траекторию: положительную lambda, направление моментов
+' и равновесие конечной точки. Не заменяет косую задачу независимыми осями.
 Private Sub CheckMxyCombination(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
         ByVal nValue As Double, ByVal mxBase As Double, ByVal myBase As Double)
@@ -52973,7 +53211,8 @@ Private Sub CheckMxyCombination(ByRef stats As TCapacityTestStats, ByVal prefix 
     AssertEquilibrium stats, prefix, cap.LastSolver, nValue, cap.mxUltimate, cap.myUltimate
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Решает оба направления My при постоянной N и проверяет знаки конечных
+' моментов, физический управляющий предел и компонентное равновесие.
 Private Sub TestMyPositiveAndNegative(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -52997,7 +53236,8 @@ Private Sub TestMyPositiveAndNegative(ByRef stats As TCapacityTestStats)
     AssertEquilibrium stats, "capacity.my.negative", capNeg.LastSolver, -300000#, 0#, capNeg.myUltimate
     AssertEquilibrium stats, "capacity.my.positive", capPos.LastSolver, -300000#, 0#, capPos.myUltimate
 End Sub
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Удваивает предварительно найденный предельный момент и ожидает lambda<1.
+' Успех Search при этом не должен маскировать инженерный FAIL заданного LC.
 Private Sub TestLambdaLessThanOne(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -53019,7 +53259,8 @@ Private Sub TestLambdaLessThanOne(ByRef stats As TCapacityTestStats)
         -300000#, reference.mxUltimate * 2#, 0#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Повторно ищет предел от момента уже найденной опорной точки;
+' lambda должна быть около 1 в исходном допуске, без изменения критерия.
 Private Sub TestLambdaNearOne(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -53039,7 +53280,8 @@ Private Sub TestLambdaNearOne(ByRef stats As TCapacityTestStats)
     AssertClose stats, "capacity.lambda.nearOne.value", cap.LambdaUltimate, 1#, 0.03
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет чистый изгиб при N=0 на линейных материалах с заданными пределами.
+' Нулевая продольная сила не должна нарушать поиск или равновесие точки.
 Private Sub TestZeroAxialForce(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -53090,7 +53332,8 @@ Private Sub TestAxialLoadMultiplierFindsNult(ByRef stats As TCapacityTestStats)
     AssertEquilibrium stats, "capacity.nult.tension", tension.LastSolver, tension.nUltimate, 0#, 0#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Делает сжатие бетона управляющим ограничением, оставляя большой предел
+' арматуры; поиск должен завершиться именно ConcreteStrainLimit.
 Private Sub TestConcreteLimitState(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -53107,7 +53350,8 @@ Private Sub TestConcreteLimitState(ByRef stats As TCapacityTestStats)
     AssertEquals stats, "capacity.concreteLimit.state", cap.LimitState, "ConcreteStrainLimit"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Включает активную tensile-ветвь и малый растягивающий предел бетона.
+' Управляющий код должен относиться к растяжению, а не сжатию или арматуре.
 Private Sub TestConcreteTensionLimitState(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -53130,7 +53374,8 @@ Private Sub TestConcreteTensionLimitState(ByRef stats As TCapacityTestStats)
     AssertEquals stats, "capacity.concreteTensionLimit.state", cap.LimitState, "ConcreteTensionStrainLimit"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Отключает растянутый бетон при таком же малом tensile-пределе;
+' неактивная ветвь не ограничивает несущую, в этом fixture управляет арматура.
 Private Sub TestConcreteTensionLimitIgnored(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -53153,7 +53398,8 @@ Private Sub TestConcreteTensionLimitIgnored(ByRef stats As TCapacityTestStats)
     AssertEquals stats, "capacity.concreteTensionLimit.ignore.state", cap.LimitState, "SteelStrainLimit"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Делает деформацию арматуры управляющей на линейных материалах;
+' ожидается SteelStrainLimit при сохраненном поиске равновесия.
 Private Sub TestSteelLimitState(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -53170,9 +53416,9 @@ Private Sub TestSteelLimitState(ByRef stats As TCapacityTestStats)
     AssertEquals stats, "capacity.steelLimit.state", cap.LimitState, "SteelStrainLimit"
 End Sub
 
-' Проверяет, что LoadMultiplier не падает на чистом изгибе из-за старта из нулевого излома диаграммы.
-' Этот искусственно жесткий сценарий проверяет устойчивость numerical extension после появления
-' CStateGuessBuilder он стал важной регрессией устойчивости для lambda*Mx/lambda*My без постоянной продольной силы.
+' Проверяет старт чистого изгиба из подготовленной StateGuessBuilder плоскости.
+' При жестком бюджете итераций должен находиться физический предел, а журнал
+' подтверждать использование начального приближения вместо нулевого излома.
 Private Sub TestLoadMultiplierPureBendingUsesStateGuess(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -53192,7 +53438,8 @@ Private Sub TestLoadMultiplierPureBendingUsesStateGuess(ByRef stats As TCapacity
     AssertTrue stats, "capacity.pureBendingGuess.usedGuess", InStr(1, cap.DiagnosticLog, "для lambda-точки чистого изгиба применена стартовая плоскость", vbTextCompare) > 0
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет связность кривизн несимметричного сечения с ненулевым Ixy:
+' даже при My=0 равновесная KappaY может быть ненулевой.
 Private Sub TestAsymmetricCoupledCurvatures(ByRef stats As TCapacityTestStats)
     Dim geom As CGeometryRectSet
     Set geom = CapacityAsymmetricGeometry()
@@ -53222,7 +53469,8 @@ Private Sub TestAsymmetricCoupledCurvatures(ByRef stats As TCapacityTestStats)
     AssertEquilibrium stats, "capacity.asym", cap.LastSolver, -260000#, cap.mxUltimate, 0#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Решает косой изгиб несимметричного RectSet и проверяет обе кривизны,
+' отношение предельных моментов и равновесие относительно исходных осей.
 Private Sub TestAsymmetricMxy(ByRef stats As TCapacityTestStats)
     Dim geom As CGeometryRectSet
     Set geom = CapacityAsymmetricGeometry()
@@ -53254,7 +53502,8 @@ Private Sub TestAsymmetricMxy(ByRef stats As TCapacityTestStats)
     AssertEquilibrium stats, "capacity.mxy.asym", cap.LastSolver, -260000#, cap.mxUltimate, cap.myUltimate
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Передает нулевую масштабируемую часть именно моментного пути.
+' Наличие постоянной N не делает такой путь допустимым: ожидается InvalidInput.
 Private Sub TestInvalidBaseMoment(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -53269,7 +53518,8 @@ Private Sub TestInvalidBaseMoment(ByRef stats As TCapacityTestStats)
     AssertEquals stats, "capacity.invalidBaseMoment.state", cap.LimitState, "InvalidInput"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сопоставляет LoadMultiplier и UltimateStrain на прямоугольнике/круге,
+' включая управляющие деформации и отдельные контракты численного отказа.
 Private Sub TestCapacitySolutionStrategyComparisons(ByRef stats As TCapacityTestStats)
     TestMethodPureCompression stats
     CompareCapacitySolutionStrategys stats, "method.n_plus_mx", -300000#, -10000000#, 0#, False
@@ -53281,7 +53531,8 @@ Private Sub TestCapacitySolutionStrategyComparisons(ByRef stats As TCapacityTest
     TestUltimateStrainDoesNotApplyMaxLambda stats
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет, что моментные entrypoint-ы обоих методов отклоняют чистую N
+' без базового момента; допустимая осевая lambda*N тестируется отдельным путем.
 Private Sub TestMethodPureCompression(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -53303,6 +53554,8 @@ Private Sub TestMethodPureCompression(ByRef stats As TCapacityTestStats)
     AppendComparison stats, "method.pure_compression.strain", strainMethod, 0#
 End Sub
 
+' Решает одинаковую моментную траекторию двумя стратегиями и сравнивает
+' lambda/управляющий предел; время сохраняется как наблюдение, не порог PASS.
 Private Sub CompareCapacitySolutionStrategys(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal nValue As Double, ByVal mxBase As Double, ByVal myBase As Double, ByVal tightLimits As Boolean)
     Dim mesh As CFiberMeshBuilder
@@ -53345,6 +53598,8 @@ Private Sub CompareCapacitySolutionStrategys(ByRef stats As TCapacityTestStats, 
     AppendComparison stats, prefix & ".strain", strainMethod, strainElapsed
 End Sub
 
+' Сопоставляет стратегии на симметричном круге с повернутыми X/Y задачами;
+' проверяет конечные моменты и определение критического элемента.
 Private Sub CompareCircleCapacitySolutionStrategys(ByRef stats As TCapacityTestStats)
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -53379,7 +53634,8 @@ Private Sub CompareCircleCapacitySolutionStrategys(ByRef stats As TCapacityTestS
     AppendComparison stats, "method.circle.strain", strainMethod, 0#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сравнивает обе стратегии при специально заданном бетонном strain-пределе.
+' UltimateStrain должен подтвердить тот же управляющий критерий и utilization.
 Private Sub TestMethodStrainLimitState(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -53409,7 +53665,8 @@ Private Sub TestMethodStrainLimitState(ByRef stats As TCapacityTestStats)
     AppendComparison stats, "method.strain_limit.strain", strainMethod, 0#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Ограничивает UltimateStrain одной итерацией и проверяет честный численный
+' отказ: неподтвержденная проба не становится физической верхней границей.
 Private Sub TestUltimateStrainNumericalFailure(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -53530,7 +53787,8 @@ Private Sub AssertLoadMultiplierTfDefault(ByRef stats As TCapacityTestStats, ByV
     AssertTrue stats, "capacity.tfDefaults." & methodName & ".notOvershot", cap.LambdaUltimate < 2# * referenceLambda
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сравнивает Bisection/Brent/Secant на одной моментной траектории;
+' каждый метод должен выполнить свою ветвь и подтвердить близкую lambda.
 Private Sub TestLoadMultiplierSearchMethods(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -53996,7 +54254,8 @@ Private Sub AssertLoadPathResult(ByRef stats As TCapacityTestStats, ByVal prefix
     AssertClose stats, prefix & ".myUltimate", cap.myUltimate, expectedMy, 20000#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет пустое/неизвестное имя Search и контролируемый отказ Secant
+' при малом бюджете: ни один сценарий не переключается молча на другой метод.
 Private Sub TestSearchMethodInputErrors(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -54053,7 +54312,8 @@ Private Sub TestInitialLambdaFailureStatusMapping(ByRef stats As TCapacityTestSt
         policy.ExternalStatus(physicalResult.meta), "BaseFail"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сохраняет три повторных измерения каждого Search-метода на общем fixture.
+' Эти строки предназначены для сравнения, а не для утверждения ускорения по одному запуску.
 Private Sub TestSearchMethodPerformanceComparison(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -54064,7 +54324,8 @@ Private Sub TestSearchMethodPerformanceComparison(ByRef stats As TCapacityTestSt
     AppendSearchPerformance stats, "Secant", mesh, rebars
 End Sub
 
-' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
+' Решает общий контрольный моментный путь указанным Bisection/Brent/Secant
+' и возвращает solver с фактическими счетчиками и конечной диагностикой.
 Private Function RunSearchMethod(ByVal methodName As String, ByVal mesh As CFiberMeshBuilder, _
         ByVal rebars As CRebarLayout) As CCapacitySolver
     Dim cap As CCapacitySolver
@@ -54075,6 +54336,8 @@ Private Function RunSearchMethod(ByVal methodName As String, ByVal mesh As CFibe
     Set RunSearchMethod = cap
 End Function
 
+' Выполняет повторные измерения метода на свежем solver-е и добавляет
+' среднее время вместе с результатом; не изменяет настройки ради быстродействия.
 Private Sub AppendSearchPerformance(ByRef stats As TCapacityTestStats, ByVal methodName As String, _
         ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout)
     Dim runs As Long
@@ -54214,7 +54477,8 @@ Private Function CapacityAsymmetricGeometry() As CGeometryRectSet
     Set CapacityAsymmetricGeometry = geom
 End Function
 
-' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
+' Строит тестовую сетку любого поддерживаемого ISectionGeometry с одинаковым
+' шагом по осям; затем сетка и арматура объединяются в CSectionModel.
 Private Function BuildMesh(ByVal geom As ISectionGeometry, ByVal stepSize As Double) As CFiberMeshBuilder
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
@@ -56110,7 +56374,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestGeometry
 TYPE: 1
-LINES: 2473
+LINES: 2506
 ====================================================================================================
 Option Explicit
 
@@ -56126,7 +56390,9 @@ Private Type TTestStats
     Report As String
 End Type
 
-' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
+' Выполняет проверки форм, сетки, автоматической арматуры, аннотаций и
+' импортированных Region fixtures. Возвращает численный протокол; наличие
+' fake-импорта не объявляется проверкой настоящего сеанса AutoCAD.
 Public Function RunGeometryTests() As String
     On Error GoTo Failed
 
@@ -56186,7 +56452,9 @@ Failed:
         "; source=" & Err.source & "; description=" & Err.description
 End Function
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет переход generated-сетки и стержней в общую CSectionModel:
+' площади/число элементов сохраняются, расчетные ID создаются моделью,
+' исходное имя стержня остается отдельным трассировочным полем.
 Private Sub TestSectionModelFromGeneratedGeometry(ByRef stats As TTestStats)
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -56212,7 +56480,9 @@ Private Sub TestSectionModelFromGeneratedGeometry(ByRef stats As TTestStats)
     AssertClose stats, "model.rebar.area", model.rebarArea(1), GEOM_PI * 20# * 20# / 4#, 0.000000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет точки/нормали аннотаций круговых и гранных рядов арматуры.
+' Нулевая активная линия не должна давать подпись отсутствующих стержней;
+' перенос аннотаций в модель не меняет расположение самих стержней.
 Private Sub TestRebarAnnotationAnchors(ByRef stats As TTestStats)
     Dim circleBuilder As CCircleRebarLayoutBuilder
     Set circleBuilder = New CCircleRebarLayoutBuilder
@@ -56279,7 +56549,9 @@ Private Sub TestRebarAnnotationAnchors(ByRef stats As TTestStats)
     AssertTrue stats, "annotation.model.rebarLabel", HasSectionAnnotation(model, "REBAR_ANNOTATION", "REBAR_Circle")
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Импортирует заданные массивы Region без AutoCAD COM: отбрасывает малую
+' область, сохраняет реальные размеры/площадь и создает расчетные ID.
+' Диаметр арматуры по площади и габарит бетона проверяются независимо.
 Private Sub TestAutoCADImporterBuildsSectionModel(ByRef stats As TTestStats)
     Dim concreteRegions(1 To 2, 1 To 10) As Variant
     concreteRegions(1, 1) = 0.0000000001
@@ -56794,7 +57066,9 @@ Private Sub TestSectionModelFallbackInertiaSquare(ByRef stats As TTestStats)
     AssertClose stats, "model.fallback.square.localIxy", model.ConcreteLocalIxy(1), 0#, 0.000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сравнивает сеточный прямоугольник с аналитическими A, центром и Ix/Iy/Ixy.
+' Скругления равны нулю, поэтому ошибка проверяет дискретизацию и перенос
+' характеристик, а не приближение криволинейного контура.
 Private Sub TestRectangle(ByRef stats As TTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -56811,7 +57085,9 @@ Private Sub TestRectangle(ByRef stats As TTestStats)
     AssertClose stats, "rect.Ixy", props.Ixyc, 0#, 0.000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет второй/третий ряды RectSet в Stack/SideBySide, разные диаметры
+' двух линий, отсутствие первого ряда и частоту EverySecondBar.
+' Координаты защищают направление смещения и перескок через второй ряд.
 Private Sub TestRectSetAdditionalRebarRows(ByRef stats As TTestStats)
     Dim builder As CRectSetRebarLayoutBuilder
     Set builder = New CRectSetRebarLayoutBuilder
@@ -56900,7 +57176,9 @@ Private Sub TestRectSetAdditionalRebarRows(ByRef stats As TTestStats)
         Array(50#, 50#, 20#, 20#, 1, 0, 100#, 100#, 100#, 100#, 20#, 0#, 0#, 0#, "Diagonal", "Stacked")
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сверяет аналитические площадь/центр Г-сечения и точки его реального контура.
+' На грубой сетке сравнивает центральную и subcell-дискретизацию, проверяя
+' малые краевые элементы и сохранение расчетной площади.
 Private Sub TestRectSetGeometry(ByRef stats As TTestStats)
     Dim geom As CGeometryRectSet
     Set geom = New CGeometryRectSet
@@ -57129,7 +57407,9 @@ Private Sub TestConcreteCoverUsesLocalContour(ByRef stats As TTestStats)
     AssertTrue stats, "geometry.cover.localLessThanGlobal", localCover < maxS - 60#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет количество, шаг и координаты автоматических гранных стержней.
+' Нулевые число/диаметр исключают линию, остальные стержни остаются в бетоне;
+' отрицательное число и невозможные отступы дают ошибку ввода.
 Private Sub TestRectSetAutoRebarLayout(ByRef stats As TTestStats)
     Dim builder As CRectSetRebarLayoutBuilder
     Set builder = New CRectSetRebarLayoutBuilder
@@ -57191,7 +57471,9 @@ Private Sub TestRectSetAutoRebarLayout(ByRef stats As TTestStats)
     AssertRectSetRebarError stats, "rectset.rebar.invalid.offsets", 600#, 550#, 250#, 250#, 2, 50#, 20#, 500#, 500#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Задает разные начальные/конечные отступы противоположным линиям H1.
+' Проверяет четыре координаты стержней, чтобы настройки одной линии
+' не подменяли независимые настройки соседней линии.
 Private Sub TestRectSetSeparateLineOffsets(ByRef stats As TTestStats)
     Dim builder As CRectSetRebarLayoutBuilder
     Set builder = New CRectSetRebarLayoutBuilder
@@ -57211,7 +57493,9 @@ Private Sub TestRectSetSeparateLineOffsets(ByRef stats As TTestStats)
     AssertClose stats, "rectset.offsets.as_2.edgeY", layout.y(4), 770#, 0.000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет круговой шаг, радиус осей, центр, площадь и дополнительные ряды.
+' Защищает направление Stack/SideBySide и пропуск зависимых рядов без первого;
+' невозможные диаметр, защитное расстояние и расположение отклоняются.
 Private Sub TestCircleAutoRebarLayout(ByRef stats As TTestStats)
     Dim builder As CCircleRebarLayoutBuilder
     Set builder = New CCircleRebarLayoutBuilder
@@ -57275,7 +57559,9 @@ Private Sub TestCircleAutoRebarLayout(ByRef stats As TTestStats)
     AssertCircleRebarError stats, "circle.rebar.invalid.row2.outside", 300#, 20#, 8, 20#, 40#, 0#, "SideBySide", "Stacked"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сравнивает две сетки круга: попадание центров и разбиение краевых ячеек.
+' Subcells должны улучшить площадь, увеличить число граничных волокон
+' и сохранить их настоящий уменьшенный размер в модели.
 Private Sub TestBoundarySubcellMesh(ByRef stats As TTestStats)
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -57328,7 +57614,9 @@ Private Sub TestRectangularMeshSteps(ByRef stats As TTestStats)
     AssertClose stats, "mesh.rectangularSteps.modelHeight", model.concreteHeight(1), 15#, 0.000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет круг с ненулевым центром: аналитические размеры/характеристики,
+' включение точек в контур и сеточные A/I относительно независимых формул.
+' Координаты центра не должны теряться при генерации модели.
 Private Sub TestCircleGeometry(ByRef stats As TTestStats)
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -57601,7 +57889,8 @@ Private Sub TestCirclePrincipalAxesStableOnCoarseMesh(ByRef stats As TTestStats)
         Abs(props.Ixc - props.Iyc) / GeomMax(Abs(props.Ixc), Abs(props.Iyc)) < 0.000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет, что нулевой радиус и отрицательный диаметр не дают допустимый
+' круг; геометрическая валидация выполняется до построения расчетной сетки.
 Private Sub TestCircleInvalidData(ByRef stats As TTestStats)
     Dim geom As CGeometryCircle
     Dim message As String
@@ -57614,7 +57903,8 @@ Private Sub TestCircleInvalidData(ByRef stats As TTestStats)
     AssertTrue stats, "circle.invalid.negativeDiameter", Not geom.IsValid(message)
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сверяет сетку симметричного скругленного прямоугольника с аналитической
+' площадью, нулевым центром/Ixy и ожидаемым направлением главных осей.
 Private Sub TestSymmetricRoundedRectangle(ByRef stats As TTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -57635,7 +57925,9 @@ Private Sub TestSymmetricRoundedRectangle(ByRef stats As TTestStats)
     AssertClose stats, "sym.principal.angle", props.principalAngleRad, GEOM_PI / 2#, 0.000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет независимую коническую сторону: сходимость сеточных A/I,
+' положение касательных и фактический габарит после скруглений.
+' Допустимые большие радиусы различаются с действительно перекрывающимися.
 Private Sub TestTaperedRoundedRectangle(ByRef stats As TTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -58052,7 +58344,8 @@ Private Sub TestHollowRectangleSharpOpeningBProjection(ByRef stats As TTestStats
     AssertBarsInGroupHaveX stats, layout, "Opening.H.Right", x1, "hollow.rebar.sharp.openingRight"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет ошибки размеров/радиусов скругленного прямоугольника и неположительных
+' шагов сетки. Невалидная геометрия не должна создавать расчетные волокна.
 Private Sub TestInvalidData(ByRef stats As TTestStats)
     AssertInvalid stats, "invalid.width", -100#, 100#, 0#, 0#, 0#, 0#
     AssertInvalid stats, "invalid.height", 100#, 0#, 0#, 0#, 0#, 0#
@@ -58067,7 +58360,9 @@ Private Sub TestInvalidData(ByRef stats As TTestStats)
     AssertBuildError stats, "invalid.step.negative", geom, 10#, -10#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Строит одно скругленное сечение с шагами 50/25/12.5 мм и записывает A/центр/I.
+' Последнее уточнение проверяется прежними относительными допусками;
+' численные результаты не заменяются текущей сеткой как новым эталоном.
 Private Sub TestMeshConvergence(ByRef stats As TTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -58102,7 +58397,9 @@ Private Sub TestMeshConvergence(ByRef stats As TTestStats)
     AssertRelative stats, "conv.Iy.25.12", p125.Iyc, p25.Iyc, 0.05
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Измеряет построение сетки и геометрические характеристики модели 800x500.
+' Проверяет непустую сетку; время записывается как диагностика, без
+' необоснованного требования ускорения отдельного случайного запуска.
 Private Sub TestPerformance(ByRef stats As TTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -59054,7 +59351,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestRegressionBaseline
 TYPE: 1
-LINES: 352
+LINES: 365
 ====================================================================================================
 Option Explicit
 
@@ -59070,7 +59367,9 @@ Private Type TRegressionStats
     Report As String
 End Type
 
-' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
+' Выполняет пять опорных задач круглого сечения и проверки повторяемости,
+' изменения геометрии и переноса начала координат. Возвращает численный
+' протокол с прежними компонентными допусками и отдельными счетчиками отказов.
 Public Function RunRegressionBaselineTests() As String
     On Error GoTo Failed
 
@@ -59098,7 +59397,9 @@ Failed:
         "; source=" & Err.source & "; description=" & Err.description
 End Function
 
-' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
+' Строит заданную круговую модель и решает N+Mx+My опорными материалами.
+' Проверяет равновесие, при запросе отдельно ищет lambda и записывает
+' плоскость, размеры модели и время в воспроизводимый baseline-протокол.
 Private Sub RunBaselineCase(ByRef stats As TRegressionStats, ByVal caseName As String, _
         ByVal diameter As Double, ByVal centerX As Double, ByVal centerY As Double, _
         ByVal axisDistance As Double, ByVal barCount As Long, ByVal barDiameter As Double, _
@@ -59139,7 +59440,9 @@ Private Sub RunBaselineCase(ByRef stats As TRegressionStats, ByVal caseName As S
     AppendBaseline stats, caseName, solver, lambdaText, elapsed, mesh.fiberCount, rebars.count
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Дважды решает один и тот же LC на одинаковой круговой модели отдельными
+' solver-ами. Проверяет равновесие и совпадение epsilon0/кривизн, защищая
+' повторный запуск от случайного сохраненного состояния предыдущей задачи.
 Private Sub TestRepeatedRun(ByRef stats As TRegressionStats)
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -59173,7 +59476,9 @@ Private Sub TestRepeatedRun(ByRef stats As TRegressionStats)
     AppendBaseline stats, "repeated_run_second", secondSolver, "NA", 0#, mesh.fiberCount, rebars.count
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сравнивает круги 300 и 360 мм под одинаковыми усилиями. Обе задачи должны
+' найти равновесие, а плоскости отличаться: изменение геометрии должно
+' действительно доходить до расчетного ядра, а не использовать старую модель.
 Private Sub TestGeometryChange(ByRef stats As TRegressionStats)
     Dim smallSolver As CSectionSolver
     Dim largeSolver As CSectionSolver
@@ -59189,7 +59494,9 @@ Private Sub TestGeometryChange(ByRef stats As TRegressionStats)
     AppendBaseline stats, "geometry_change_d360", largeSolver, "NA", 0#, 0, 0
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Переносит модель и усилия к другому началу координат через общий load adapter.
+' Кривизны должны сохраняться, epsilon0 и моменты преобразоваться по заданному
+' сдвигу; равновесие подтверждается отдельно в смещенной системе.
 Private Sub TestOriginShift(ByRef stats As TRegressionStats)
     Dim baseN As Double
     Dim baseMx As Double
@@ -59231,6 +59538,9 @@ Private Sub TestOriginShift(ByRef stats As TRegressionStats)
     AppendBaseline stats, "origin_shift_shifted", shiftedSolver, "NA", 0#, 0, 0
 End Sub
 
+' Создает самостоятельную круговую модель с автоматическими стержнями и
+' возвращает решенное прямое НДС. Использует фиксированные baseline-настройки,
+' не меняя Config и не переиспользуя solver соседнего теста.
 Private Function SolveCircleDirect(ByVal diameter As Double, ByVal centerX As Double, ByVal centerY As Double, _
         ByVal axisDistance As Double, ByVal barCount As Long, ByVal barDiameter As Double, ByVal meshStep As Double, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double) As CSectionSolver
@@ -59412,7 +59722,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestSectionSolver
 TYPE: 1
-LINES: 1123
+LINES: 1142
 ====================================================================================================
 Option Explicit
 
@@ -59428,7 +59738,8 @@ Private Type TSectionSolverTestStats
     Report As String
 End Type
 
-' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
+' Выполняет регрессии равновесия, единиц, численных методов и State-контрактов.
+' Возвращает все assertions и итог; ошибка suite остается отдельной диагностикой.
 Public Function RunSectionSolverTests() As String
     On Error GoTo Failed
 
@@ -59468,7 +59779,8 @@ Failed:
         "; source=" & Err.source & "; description=" & Err.description
 End Function
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет пересчет пользовательских tf/tf*m и знака сжатия во внутренние
+' Н/Н*мм, а также обратный вывод и размерность порога малых моментов.
 Private Sub TestUnitSystemConversions(ByRef stats As TSectionSolverTestStats)
     Dim units As CUnitSystem
     Set units = New CUnitSystem
@@ -59494,7 +59806,8 @@ Private Sub TestUnitSystemConversions(ByRef stats As TSectionSolverTestStats)
     AssertClose stats, "units.loadcase.Mx.example", configured.InputMomentMxToInternal(150#), 1470997500#, 0.1
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сверяет решение невырожденной системы 3x3 с известным вектором и невязкой.
+' Вырожденная система должна вернуть отказ, а не фиктивную поправку Newton.
 Private Sub TestLinearSystem3x3(ByRef stats As TSectionSolverTestStats)
     Dim system As CLinearSystem3x3
     Set system = New CLinearSystem3x3
@@ -59509,7 +59822,8 @@ Private Sub TestLinearSystem3x3(ByRef stats As TSectionSolverTestStats)
     AssertTrue stats, "linsys.singular", Not singular.Solve(1#, 2#, 3#, 2#, 4#, 6#, 3#, 6#, 9#, 1#, 2#, 3#)
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Читает фактические именованные диапазоны и проверяет модули материалов,
+' наличие профилей и различие активной tensile-ветви Strength/CrackInitiation.
 Private Sub TestSystemSettingsReader(ByRef stats As TSectionSolverTestStats)
     Dim reader As CSystemSettingsReader
     Set reader = New CSystemSettingsReader
@@ -59526,7 +59840,8 @@ Private Sub TestSystemSettingsReader(ByRef stats As TSectionSolverTestStats)
     AssertTrue stats, "settings.material.mcrcTensionEnabled", provider.concreteMaterial(cpMcrc).GetStress(0.0001) > 0#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сравнивает независимый Secant с Newton для сжатия и одно-/двухосного изгиба
+' прямоугольника и круга; обе ветви должны подтвердить компонентное равновесие.
 Private Sub TestSecantComparativeTasks(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(300#, 200#)
@@ -59547,7 +59862,8 @@ Private Sub TestSecantComparativeTasks(ByRef stats As TSectionSolverTestStats)
     AssertNewtonSecantCase stats, "secant.compare.circle", circleMesh, Nothing, -120000#, -5000000#, 0#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет наличие обязательных ключей и диапазонов действующей схемы Config,
+' отсутствие дубликатов и удаленных полей. Это структурная, не поведенческая приемка.
 Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     Dim reader As CSystemSettingsReader
     Set reader = New CSystemSettingsReader
@@ -59688,6 +60004,8 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     Next i
 End Sub
 
+' Проверяет каждый переданный ключ в настоящем reader-е книги и сохраняет
+' отдельный assertion, чтобы отсутствие настройки не скрывалось общим итогом.
 Private Sub AssertRequiredKeys(ByRef stats As TSectionSolverTestStats, ByVal requiredKeys As Variant)
     Dim reader As CSystemSettingsReader
     Set reader = New CSystemSettingsReader
@@ -59699,7 +60017,8 @@ Private Sub AssertRequiredKeys(ByRef stats As TSectionSolverTestStats, ByVal req
     Next i
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сверяет плоскость деформаций линейного бетонного прямоугольника с заранее
+' рассчитанными epsilon0/kappaX/kappaY и независимо проверяет N/Mx/My.
 Private Sub TestLinearMaterialEquilibrium(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(200#, 100#)
@@ -59732,7 +60051,8 @@ Private Sub TestLinearMaterialEquilibrium(ByRef stats As TSectionSolverTestStats
     AssertEquilibrium stats, "section.linear", solver, n, mx, my
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет линейное армированное сечение с замещением бетона площадью стержней:
+' эталонные параметры плоскости и равновесие должны учитывать именно эту модель.
 Private Sub TestLinearMaterialWithRebarReplacement(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(200#, 100#)
@@ -59771,7 +60091,8 @@ Private Sub TestLinearMaterialWithRebarReplacement(ByRef stats As TSectionSolver
     AssertEquilibrium stats, "section.rebar", solver, n, mx, my
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет центральное сжатие по нелинейной диаграмме: отрицательную осевую
+' деформацию, нулевые кривизны и равновесие без искусственного изгиба.
 Private Sub TestDiagramConcreteCentralCompression(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(200#, 100#)
@@ -59795,7 +60116,8 @@ Private Sub TestDiagramConcreteCentralCompression(ByRef stats As TSectionSolverT
     AssertEquilibrium stats, "section.diagramCompression", solver, -100000#, 0#, 0#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Решает внецентренное сжатие армированного прямоугольника по диаграммам;
+' проверяет равновесие и прохождение всех пяти ступеней заданного нагружения.
 Private Sub TestDiagramConcreteWithRebar(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(300#, 200#)
@@ -59818,7 +60140,8 @@ Private Sub TestDiagramConcreteWithRebar(ByRef stats As TSectionSolverTestStats)
     AssertTrue stats, "section.diagramRebar.steps", solver.LoadStepsCompleted = 5
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Ограничивает приращение epsilon0 и проверяет сходимость с дополнительными
+' итерациями, а также наличие реальных итерационных строк в диагностике.
 Private Sub TestIncrementLimitsAndDiagnostics(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(200#, 100#)
@@ -59836,7 +60159,8 @@ Private Sub TestIncrementLimitsAndDiagnostics(ByRef stats As TSectionSolverTestS
     AssertTrue stats, "section.diagnostics.log", InStr(1, solver.DiagnosticLog, "iter=", vbTextCompare) > 0
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Доказывает, что Secant не вызывает Newton: сравнивает плоскости и равновесие,
+' проверяет счетчики вычислений, рестарты и собственную диагностику метода.
 Private Sub TestSecantIndependentBranch(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(300#, 200#)
@@ -59875,7 +60199,8 @@ Private Sub TestSecantIndependentBranch(ByRef stats As TSectionSolverTestStats)
     AssertTrue stats, "section.secant.broydenDiagnostics", secant.InternalForceEvaluationCount > secant.iterations
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Передает неизвестный и пустой Solver.Method; оба значения должны дать
+' ошибку ввода, а не незаявленное переключение на метод по умолчанию.
 Private Sub TestSolverMethodInputErrors(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(200#, 100#)
@@ -59898,7 +60223,8 @@ Private Sub TestSolverMethodInputErrors(ByRef stats As TSectionSolverTestStats)
     AssertTrue stats, "section.method.emptyMessage", InStr(1, solver.stopReason, "InputError", vbTextCompare) > 0
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Применяет настройки из Config к реальному solver-у и проверяет, что
+' выбранный Newton действительно выполняет свою ветвь и находит равновесие.
 Private Sub TestSolverMethodFromSystem(ByRef stats As TSectionSolverTestStats)
     Dim reader As CSystemSettingsReader
     Set reader = New CSystemSettingsReader
@@ -59917,6 +60243,8 @@ Private Sub TestSolverMethodFromSystem(ByRef stats As TSectionSolverTestStats)
     AssertTrue stats, "section.systemMethod.newtonBranch", solver.Converged And solver.InternalNewtonCallCount > 0
 End Sub
 
+' Решает одну и ту же задачу двумя методами с одинаковыми материалами;
+' сохраняет сравнительные iterations/evaluations и проверяет независимый Secant.
 Private Sub AssertNewtonSecantCase(ByRef stats As TSectionSolverTestStats, ByVal prefix As String, _
         ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
         ByVal n As Double, ByVal mx As Double, ByVal my As Double)
@@ -59994,7 +60322,8 @@ Private Function RectangleGeometry(ByVal width As Double, ByVal height As Double
     Set RectangleGeometry = geom
 End Function
 
-' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
+' Строит бетонную сетку тестового прямоугольника с одинаковым шагом по осям.
+' Арматура добавляется отдельно, а ядру затем передается собранный CSectionModel.
 Private Function BuildMesh(ByVal geom As CGeometryRoundedRectangle, ByVal stepSize As Double) As CFiberMeshBuilder
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
@@ -60541,7 +60870,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 4533
+LINES: 4643
 ====================================================================================================
 Option Explicit
 
@@ -60562,7 +60891,8 @@ Private Const TEST_PLOT_FRAME_TOP As Double = 36#
 Private Const TEST_PLOT_FRAME_WIDTH_MARGIN As Double = 180#
 Private Const TEST_PLOT_FRAME_HEIGHT_MARGIN As Double = 72#
 
-' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
+' Выполняет COM-регрессии структуры Config/Results, workbook-макросов и схемы.
+' Проверка снимков и export-data не является приемкой фактической записи DWG.
 Public Function RunWorkbookInterfaceTests() As String
     On Error GoTo Failed
 
@@ -60579,6 +60909,7 @@ Public Function RunWorkbookInterfaceTests() As String
     AppendLine stats, "RUN: TestAudit03ReaderContract"
     TestAudit03ReaderContract stats
     TestAudit03InputContracts stats
+    TestAudit03ProfileInputContracts stats
     AppendLine stats, "RUN: TestPartialCombinationIsInvalid"
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats
@@ -60669,7 +61000,7 @@ Private Sub TestLoadCombinationsOnConfig(ByRef stats As TUiTestStats)
     Set loads = ThisWorkbook.names.item("rngLoadCombinations").RefersToRange
 
     AssertTrue stats, "ui.loads.layout.sheet", loads.Worksheet.name = "Config"
-    AssertTrue stats, "ui.loads.layout.position", loads.row = 3 And loads.Column = 15
+    AssertTrue stats, "ui.loads.layout.position", loads.row = 3 And loads.column = 15
     AssertTrue stats, "ui.loads.layout.defaultRows30", loads.rows.count = 31
     AssertTrue stats, "ui.loads.layout.title", _
         InStr(1, CStr(loads.Worksheet.Cells.item(2, 15).Value2), "Сочетания нагрузок", vbTextCompare) > 0
@@ -60680,7 +61011,8 @@ Private Sub TestLoadCombinationsOnConfig(ByRef stats As TUiTestStats)
         LoadCombinationValidationHasOptions(6, pathOptions)
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет наличие пяти кнопок, привязанные OnAction-макросы и размещение
+' вне области печати; надписи должны быть центрированы в самих shapes.
 Private Sub TestButtons(ByRef stats As TUiTestStats)
     Dim calc As Object
     Set calc = ThisWorkbook.Worksheets.item("Расчет")
@@ -60840,7 +61172,8 @@ Private Sub TestExcelApplicationStateGuardRestoresSettings(ByRef stats As TUiTes
     AssertTrue stats, "ui.excelGuard.alerts", app.DisplayAlerts = oldDisplayAlerts
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет общий перенос нагрузки к бетонному центру, используемый batch
+' и export-данными. AutoCAD COM здесь не вызывается, DWG не создается.
 Private Sub TestAutoCADExportUsesSharedLoadReference(ByRef stats As TUiTestStats)
     PrepareRectSetInput
     SetSystemSetting "Load.ReferenceOffsetX", "0"
@@ -60897,7 +61230,8 @@ Private Sub TestAutoCADExportUsesSharedLoadReference(ByRef stats As TUiTestStats
     AssertClose stats, "ui.autocad.reference.myTransfer", batch.my(1), expectedLoad.InternalMy, 0.000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Читает один LC среди пустых строк: свободные строки не становятся
+' ошибочными сочетаниями и не добавляют расчетов в пакет.
 Private Sub TestSingleCombinationSkipsBlankRows(ByRef stats As TUiTestStats)
     PrepareCircleInput
 
@@ -60970,7 +61304,8 @@ Failed:
     Resume CleanUp
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Удаляет ID из строки с заданными усилиями: строка сохраняется как InputErr,
+' а пользовательский макрос выводит понятный итог ошибки ввода.
 Private Sub TestPartialCombinationIsInvalid(ByRef stats As TUiTestStats)
     PrepareCircleInput
     Dim loads As Object
@@ -60994,7 +61329,8 @@ Private Sub TestPartialCombinationIsInvalid(ByRef stats As TUiTestStats)
         InStr(1, message, "InputErr", vbTextCompare) > 0
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' При пустом ProfileId даже включенное автообновление не запускает вывод НДС.
+' Проверяет сообщение InputErr и отсутствие строк element-results.
 Private Sub TestInvalidProfileIdDoesNotRunPlot(ByRef stats As TUiTestStats)
     PrepareCircleInput
     SetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
@@ -61537,7 +61873,8 @@ Private Sub TestAutoCADCalculationMessageUsesSavedGeometry(ByRef stats As TUiTes
         AnnotationTextByID(afterAnnotations, "REBAR_AUTO_ALL"), "ALL: 4" & ChrW$(&H2205) & "20"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет разрешенный пустой My как 0 и пропуск достоверно нулевого LC.
+' Пропуск нуля не должен скрывать ошибку или менять число ненулевых сочетаний.
 Private Sub TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped(ByRef stats As TUiTestStats)
     PrepareCircleInput
     Dim loads As Object
@@ -61562,7 +61899,8 @@ Private Sub TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped(ByRef stats As T
     AssertTrue stats, "ui.loads.blankMoment.valid", InStr(1, batch.ResultAt(1).status, "InputErr", vbTextCompare) = 0
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Запускает полный workbook-сценарий круга и сверяет сохраненные таблицы,
+' шапки, плоскость НДС, units и отсутствие дублированной геометрии элементов.
 Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     PrepareCircleInput
     Dim message As String
@@ -61608,13 +61946,13 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Dim geometryResults As Variant
     geometryResults = ResultTable("rngNDMSectionGeometry")
     AssertTrue stats, "ui.results.geometry.rows", UBound(geometryResults, 1) > 1
-    AssertTrue stats, "ui.results.strength.anchor", ThisWorkbook.names.item("rngStrengthSummaryAnchor").RefersToRange.row = 49 And ThisWorkbook.names.item("rngStrengthSummaryAnchor").RefersToRange.Column = 1
-    AssertTrue stats, "ui.results.crack.anchor", ThisWorkbook.names.item("rngCrackSummaryAnchor").RefersToRange.row = 85 And ThisWorkbook.names.item("rngCrackSummaryAnchor").RefersToRange.Column = 1
-    AssertTrue stats, "ui.results.stability.anchor", ThisWorkbook.names.item("rngStabilitySummaryAnchor").RefersToRange.row = 122 And ThisWorkbook.names.item("rngStabilitySummaryAnchor").RefersToRange.Column = 1
-    AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.names.item("rngNDMSectionGeometry").RefersToRange.row = 156 And ThisWorkbook.names.item("rngNDMSectionGeometry").RefersToRange.Column = 12
-    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.names.item("rngNDMSectionProperties").RefersToRange.row = 156 And ThisWorkbook.names.item("rngNDMSectionProperties").RefersToRange.Column = 29
-    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.names.item("rngNDMMaterialDiagrams").RefersToRange.row = 156 And ThisWorkbook.names.item("rngNDMMaterialDiagrams").RefersToRange.Column = 37
-    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.names.item("rngNDMSectionAnnotations").RefersToRange.row = 156 And ThisWorkbook.names.item("rngNDMSectionAnnotations").RefersToRange.Column = 50
+    AssertTrue stats, "ui.results.strength.anchor", ThisWorkbook.names.item("rngStrengthSummaryAnchor").RefersToRange.row = 49 And ThisWorkbook.names.item("rngStrengthSummaryAnchor").RefersToRange.column = 1
+    AssertTrue stats, "ui.results.crack.anchor", ThisWorkbook.names.item("rngCrackSummaryAnchor").RefersToRange.row = 85 And ThisWorkbook.names.item("rngCrackSummaryAnchor").RefersToRange.column = 1
+    AssertTrue stats, "ui.results.stability.anchor", ThisWorkbook.names.item("rngStabilitySummaryAnchor").RefersToRange.row = 122 And ThisWorkbook.names.item("rngStabilitySummaryAnchor").RefersToRange.column = 1
+    AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.names.item("rngNDMSectionGeometry").RefersToRange.row = 156 And ThisWorkbook.names.item("rngNDMSectionGeometry").RefersToRange.column = 12
+    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.names.item("rngNDMSectionProperties").RefersToRange.row = 156 And ThisWorkbook.names.item("rngNDMSectionProperties").RefersToRange.column = 29
+    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.names.item("rngNDMMaterialDiagrams").RefersToRange.row = 156 And ThisWorkbook.names.item("rngNDMMaterialDiagrams").RefersToRange.column = 37
+    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.names.item("rngNDMSectionAnnotations").RefersToRange.row = 156 And ThisWorkbook.names.item("rngNDMSectionAnnotations").RefersToRange.column = 50
     AssertTrue stats, "ui.results.geometry.noSource", ResultHeaderColumn(geometryResults, "SourceName") = 0
     AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(geometryResults, "MaterialClass") = 0
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.names.item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
@@ -61910,7 +62248,8 @@ Private Sub TestLargeSnapshotPlotStress(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.largeSnapshot.plotSeriesLimit", seriesCount < 256
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Запускает RectSet через пользовательский workbook-entrypoint и проверяет
+' фактический Results, блок диаграмм и отсутствие отдельного ручного RebarInput.
 Private Sub TestRectSetWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     PrepareRectSetInput
     Dim message As String
@@ -62160,7 +62499,8 @@ Private Sub TestRectSetAxialTensionExtensionFromWorkbookSettings(ByRef stats As 
     SetSystemSetting "General.ExecutionReportEnabled", "No"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Решает безопасное и более тяжелое LC с критерием governing StrengthCapacity.
+' Сверяет выбранный ID с запасами в настоящей сводке и итоговым сообщением.
 Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTestStats)
     PrepareCircleInput
     SetSystemSetting "General.WorstCombinationCriterion", "StrengthCapacity"
@@ -62440,7 +62780,8 @@ Private Function MaterialDiagramIdsMatchStateProperties(ByRef materialDiagrams A
     MaterialDiagramIdsMatchStateProperties = True
 End Function
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сверяет фактические validation-списки расчетов, геометрии, plot и export,
+' динамические ссылки и default labels. Наличие списка не доказывает поведение каждой опции.
 Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.validation.CapacitySolutionStrategy", _
         SystemSettingValidationHasOptions("Capacity.SolutionStrategy", Array("Auto", "UltimateStrain", "LoadMultiplier"))
@@ -63077,7 +63418,8 @@ Private Function AnnotationValueByID(ByRef annotationData As Variant, ByVal anno
 Failed:
 End Function
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Очищает все расчетные snapshot-блоки пользовательским macro, проверяя
+' пустые результаты и сохранение исходного Geometry.Type на Config.
 Private Sub TestClearResultsKeepsInputs(ByRef stats As TUiTestStats)
     PrepareCircleInput
     ThisWorkbook.names.item("rngNDMElementResults").RefersToRange.Value2 = "RunID"
@@ -63769,7 +64111,7 @@ Private Function ColumnsUntilNextResultAnchor(ByVal anchor As Object) As Long
         If Not candidate Is Nothing Then
             If candidate.Worksheet.name = anchor.Worksheet.name And candidate.row = anchor.row Then
                 Dim delta As Long
-                delta = candidate.Column - anchor.Column
+                delta = candidate.column - anchor.column
                 If delta > 0 Then
                     If bestDelta = 0 Or delta < bestDelta Then bestDelta = delta
                 End If
@@ -63977,7 +64319,8 @@ Private Function ValidationCellHasOptions(ByVal target As Object, ByVal expected
 Failed:
 End Function
 
-' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
+' Собирает тестовый круг и арматуру из настоящего Config, подключает материалы,
+' solver-options и каталог профилей. Reader сочетаний затем вызывается отдельно.
 Private Function BuildUiBatch() As CBatchSectionCalculator
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -65074,6 +65417,102 @@ Private Function Audit03CaptureInputError(ByVal source As Object, ByVal operatio
 ExpectedError:
     Audit03CaptureInputError = Err.Number
     description = Err.description
+End Function
+
+' ДЛЯ ТЕСТОВ: проверяет настоящий reader профилей независимо от общего
+' SettingsReader. Неверный переключатель не должен молча отключать расчет.
+Public Function RunAudit03ProfileInputTests() As String
+    On Error GoTo Failed
+    Dim stats As TUiTestStats
+    TestAudit03ProfileInputContracts stats
+    AppendLine stats, "TOTAL_AUDIT03_PROFILE_INPUT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03ProfileInputTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03ProfileInputTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.description
+End Function
+
+' ДЛЯ ТЕСТОВ: копирует фактическую таблицу профилей на временный лист.
+' Проверяет все Boolean aliases и поврежденные/отсутствующие ячейки каждого
+' переключателя; исходные Config, формулы и validation не изменяются.
+Private Sub TestAudit03ProfileInputContracts(ByRef stats As TUiTestStats)
+    Dim source As Object, sheet As Object, target As Object, data As Variant
+    Dim oldAlerts As Boolean, key As Variant, value As Variant, row As Long, column As Long
+    Dim keyRow As Long, profileColumn As Long, profiles As CCalculationProfileCatalog
+    Dim profile As CCalculationProfile, actualCode As Long, description As String, caseIndex As Long
+    oldAlerts = Application.DisplayAlerts
+    On Error GoTo Failed
+    Set source = ThisWorkbook.names.item("rngCalculationProfiles").RefersToRange
+    data = source.Value2
+    Set sheet = ThisWorkbook.Worksheets.Add
+    sheet.name = "__Audit03ProfileInput"
+    Set target = sheet.range("A1").Resize(source.rows.count, source.columns.count)
+    target.Value2 = data
+    For row = 1 To UBound(data, 1)
+        For column = 3 To UBound(data, 2)
+            If CStr(data(row, column)) = "PR1" Then profileColumn = column
+        Next column
+        If profileColumn > 0 Then Exit For
+    Next row
+    If profileColumn = 0 Then Err.Raise vbObjectError + 4499, "TestAudit03ProfileInputContracts", "В fixture не найден PR1."
+    For Each key In Array("Calculation.Strength.DirectState", "Calculation.Strength.Capacity", _
+            "Calculation.Crack.Width", "Calculation.Stability.Enabled")
+        keyRow = 0
+        For row = 1 To UBound(data, 1)
+            If CStr(data(row, 2)) = CStr(key) Then keyRow = row
+        Next row
+        If keyRow = 0 Then Err.Raise vbObjectError + 4499, "TestAudit03ProfileInputContracts", "В fixture не найден " & CStr(key)
+        For Each value In Array("Yes", "True", "1", "Да", "No", "False", "0", "Нет")
+            target.Value2 = data
+            target.Cells.item(keyRow, profileColumn).Value2 = CStr(value)
+            Set profiles = New CCalculationProfileCatalog
+            profiles.LoadFromRange target
+            Set profile = profiles.ProfileById("PR1")
+            AssertTrue stats, "audit03.profile.boolean." & CStr(key) & "." & CStr(value), _
+                Audit03ProfileFlag(profile, CStr(key)) = (value = "Yes" Or value = "True" Or value = "1" Or value = "Да")
+        Next value
+        caseIndex = 0
+        For Each value In Array("Maybe", "TODO", "", CVErr(xlErrNA))
+            caseIndex = caseIndex + 1
+            target.Value2 = data
+            target.Cells.item(keyRow, profileColumn).Value2 = value
+            description = vbNullString
+            actualCode = Audit03CaptureInputError(target, "Profiles", description)
+            AssertTrue stats, "audit03.profile.invalid." & CStr(key) & "." & CStr(caseIndex), actualCode = vbObjectError + 3988
+            AssertTrue stats, "audit03.profile.reason." & CStr(key) & "." & CStr(caseIndex), _
+                InStr(1, description, CStr(key), vbBinaryCompare) > 0 And InStr(1, description, "PR1", vbBinaryCompare) > 0
+            AppendLine stats, "PROFILE_INPUT: key=" & CStr(key) & "; case=" & CStr(caseIndex) & _
+                "; error=" & CStr(actualCode) & "; reason=" & description
+        Next value
+        target.Value2 = data
+        target.Cells.item(keyRow, 2).Value2 = "__Removed." & CStr(key)
+        description = vbNullString
+        actualCode = Audit03CaptureInputError(target, "Profiles", description)
+        AssertTrue stats, "audit03.profile.missing." & CStr(key), actualCode = vbObjectError + 3988
+        AssertTrue stats, "audit03.profile.missingReason." & CStr(key), InStr(1, description, CStr(key), vbBinaryCompare) > 0
+    Next key
+    GoTo CleanUp
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.profile.runtime; " & CStr(Err.Number) & "; " & Err.description
+CleanUp:
+    On Error Resume Next
+    Application.DisplayAlerts = False
+    If Not sheet Is Nothing Then sheet.Delete
+    Application.DisplayAlerts = oldAlerts
+    On Error GoTo 0
+End Sub
+
+' ДЛЯ ТЕСТОВ: читает конечный флаг профиля, а не повторяет строковый parser.
+' Поэтому тест выявляет потерю настройки между ячейкой и CCalculationProfile.
+Private Function Audit03ProfileFlag(ByVal profile As CCalculationProfile, ByVal key As String) As Boolean
+    Select Case key
+        Case "Calculation.Strength.DirectState": Audit03ProfileFlag = profile.StrengthDirectStateEnabled
+        Case "Calculation.Strength.Capacity": Audit03ProfileFlag = profile.StrengthCapacityEnabled
+        Case "Calculation.Crack.Width": Audit03ProfileFlag = profile.CrackWidthEnabled
+        Case "Calculation.Stability.Enabled": Audit03ProfileFlag = profile.StabilityEnabled
+        Case Else: Err.Raise vbObjectError + 4499, "Audit03ProfileFlag", "Неизвестный тестовый переключатель профиля."
+    End Select
 End Function
 
 

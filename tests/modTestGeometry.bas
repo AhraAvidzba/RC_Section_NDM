@@ -13,7 +13,9 @@ Private Type TTestStats
     Report As String
 End Type
 
-' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
+' Выполняет проверки форм, сетки, автоматической арматуры, аннотаций и
+' импортированных Region fixtures. Возвращает численный протокол; наличие
+' fake-импорта не объявляется проверкой настоящего сеанса AutoCAD.
 Public Function RunGeometryTests() As String
     On Error GoTo Failed
 
@@ -73,7 +75,9 @@ Failed:
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет переход generated-сетки и стержней в общую CSectionModel:
+' площади/число элементов сохраняются, расчетные ID создаются моделью,
+' исходное имя стержня остается отдельным трассировочным полем.
 Private Sub TestSectionModelFromGeneratedGeometry(ByRef stats As TTestStats)
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -99,7 +103,9 @@ Private Sub TestSectionModelFromGeneratedGeometry(ByRef stats As TTestStats)
     AssertClose stats, "model.rebar.area", model.RebarArea(1), GEOM_PI * 20# * 20# / 4#, 0.000000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет точки/нормали аннотаций круговых и гранных рядов арматуры.
+' Нулевая активная линия не должна давать подпись отсутствующих стержней;
+' перенос аннотаций в модель не меняет расположение самих стержней.
 Private Sub TestRebarAnnotationAnchors(ByRef stats As TTestStats)
     Dim circleBuilder As CCircleRebarLayoutBuilder
     Set circleBuilder = New CCircleRebarLayoutBuilder
@@ -166,7 +172,9 @@ Private Sub TestRebarAnnotationAnchors(ByRef stats As TTestStats)
     AssertTrue stats, "annotation.model.rebarLabel", HasSectionAnnotation(model, "REBAR_ANNOTATION", "REBAR_Circle")
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Импортирует заданные массивы Region без AutoCAD COM: отбрасывает малую
+' область, сохраняет реальные размеры/площадь и создает расчетные ID.
+' Диаметр арматуры по площади и габарит бетона проверяются независимо.
 Private Sub TestAutoCADImporterBuildsSectionModel(ByRef stats As TTestStats)
     Dim concreteRegions(1 To 2, 1 To 10) As Variant
     concreteRegions(1, 1) = 0.0000000001
@@ -681,7 +689,9 @@ Private Sub TestSectionModelFallbackInertiaSquare(ByRef stats As TTestStats)
     AssertClose stats, "model.fallback.square.localIxy", model.ConcreteLocalIxy(1), 0#, 0.000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сравнивает сеточный прямоугольник с аналитическими A, центром и Ix/Iy/Ixy.
+' Скругления равны нулю, поэтому ошибка проверяет дискретизацию и перенос
+' характеристик, а не приближение криволинейного контура.
 Private Sub TestRectangle(ByRef stats As TTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -698,7 +708,9 @@ Private Sub TestRectangle(ByRef stats As TTestStats)
     AssertClose stats, "rect.Ixy", props.Ixyc, 0#, 0.000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет второй/третий ряды RectSet в Stack/SideBySide, разные диаметры
+' двух линий, отсутствие первого ряда и частоту EverySecondBar.
+' Координаты защищают направление смещения и перескок через второй ряд.
 Private Sub TestRectSetAdditionalRebarRows(ByRef stats As TTestStats)
     Dim builder As CRectSetRebarLayoutBuilder
     Set builder = New CRectSetRebarLayoutBuilder
@@ -787,7 +799,9 @@ Private Sub TestRectSetAdditionalRebarRows(ByRef stats As TTestStats)
         Array(50#, 50#, 20#, 20#, 1, 0, 100#, 100#, 100#, 100#, 20#, 0#, 0#, 0#, "Diagonal", "Stacked")
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сверяет аналитические площадь/центр Г-сечения и точки его реального контура.
+' На грубой сетке сравнивает центральную и subcell-дискретизацию, проверяя
+' малые краевые элементы и сохранение расчетной площади.
 Private Sub TestRectSetGeometry(ByRef stats As TTestStats)
     Dim geom As CGeometryRectSet
     Set geom = New CGeometryRectSet
@@ -1016,7 +1030,9 @@ Private Sub TestConcreteCoverUsesLocalContour(ByRef stats As TTestStats)
     AssertTrue stats, "geometry.cover.localLessThanGlobal", localCover < maxS - 60#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет количество, шаг и координаты автоматических гранных стержней.
+' Нулевые число/диаметр исключают линию, остальные стержни остаются в бетоне;
+' отрицательное число и невозможные отступы дают ошибку ввода.
 Private Sub TestRectSetAutoRebarLayout(ByRef stats As TTestStats)
     Dim builder As CRectSetRebarLayoutBuilder
     Set builder = New CRectSetRebarLayoutBuilder
@@ -1078,7 +1094,9 @@ Private Sub TestRectSetAutoRebarLayout(ByRef stats As TTestStats)
     AssertRectSetRebarError stats, "rectset.rebar.invalid.offsets", 600#, 550#, 250#, 250#, 2, 50#, 20#, 500#, 500#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Задает разные начальные/конечные отступы противоположным линиям H1.
+' Проверяет четыре координаты стержней, чтобы настройки одной линии
+' не подменяли независимые настройки соседней линии.
 Private Sub TestRectSetSeparateLineOffsets(ByRef stats As TTestStats)
     Dim builder As CRectSetRebarLayoutBuilder
     Set builder = New CRectSetRebarLayoutBuilder
@@ -1098,7 +1116,9 @@ Private Sub TestRectSetSeparateLineOffsets(ByRef stats As TTestStats)
     AssertClose stats, "rectset.offsets.as_2.edgeY", layout.Y(4), 770#, 0.000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет круговой шаг, радиус осей, центр, площадь и дополнительные ряды.
+' Защищает направление Stack/SideBySide и пропуск зависимых рядов без первого;
+' невозможные диаметр, защитное расстояние и расположение отклоняются.
 Private Sub TestCircleAutoRebarLayout(ByRef stats As TTestStats)
     Dim builder As CCircleRebarLayoutBuilder
     Set builder = New CCircleRebarLayoutBuilder
@@ -1162,7 +1182,9 @@ Private Sub TestCircleAutoRebarLayout(ByRef stats As TTestStats)
     AssertCircleRebarError stats, "circle.rebar.invalid.row2.outside", 300#, 20#, 8, 20#, 40#, 0#, "SideBySide", "Stacked"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сравнивает две сетки круга: попадание центров и разбиение краевых ячеек.
+' Subcells должны улучшить площадь, увеличить число граничных волокон
+' и сохранить их настоящий уменьшенный размер в модели.
 Private Sub TestBoundarySubcellMesh(ByRef stats As TTestStats)
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -1215,7 +1237,9 @@ Private Sub TestRectangularMeshSteps(ByRef stats As TTestStats)
     AssertClose stats, "mesh.rectangularSteps.modelHeight", model.ConcreteHeight(1), 15#, 0.000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет круг с ненулевым центром: аналитические размеры/характеристики,
+' включение точек в контур и сеточные A/I относительно независимых формул.
+' Координаты центра не должны теряться при генерации модели.
 Private Sub TestCircleGeometry(ByRef stats As TTestStats)
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -1488,7 +1512,8 @@ Private Sub TestCirclePrincipalAxesStableOnCoarseMesh(ByRef stats As TTestStats)
         Abs(props.Ixc - props.Iyc) / GeomMax(Abs(props.Ixc), Abs(props.Iyc)) < 0.000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет, что нулевой радиус и отрицательный диаметр не дают допустимый
+' круг; геометрическая валидация выполняется до построения расчетной сетки.
 Private Sub TestCircleInvalidData(ByRef stats As TTestStats)
     Dim geom As CGeometryCircle
     Dim message As String
@@ -1501,7 +1526,8 @@ Private Sub TestCircleInvalidData(ByRef stats As TTestStats)
     AssertTrue stats, "circle.invalid.negativeDiameter", Not geom.IsValid(message)
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сверяет сетку симметричного скругленного прямоугольника с аналитической
+' площадью, нулевым центром/Ixy и ожидаемым направлением главных осей.
 Private Sub TestSymmetricRoundedRectangle(ByRef stats As TTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -1522,7 +1548,9 @@ Private Sub TestSymmetricRoundedRectangle(ByRef stats As TTestStats)
     AssertClose stats, "sym.principal.angle", props.PrincipalAngleRad, GEOM_PI / 2#, 0.000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет независимую коническую сторону: сходимость сеточных A/I,
+' положение касательных и фактический габарит после скруглений.
+' Допустимые большие радиусы различаются с действительно перекрывающимися.
 Private Sub TestTaperedRoundedRectangle(ByRef stats As TTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -1939,7 +1967,8 @@ Private Sub TestHollowRectangleSharpOpeningBProjection(ByRef stats As TTestStats
     AssertBarsInGroupHaveX stats, layout, "Opening.H.Right", x1, "hollow.rebar.sharp.openingRight"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет ошибки размеров/радиусов скругленного прямоугольника и неположительных
+' шагов сетки. Невалидная геометрия не должна создавать расчетные волокна.
 Private Sub TestInvalidData(ByRef stats As TTestStats)
     AssertInvalid stats, "invalid.width", -100#, 100#, 0#, 0#, 0#, 0#
     AssertInvalid stats, "invalid.height", 100#, 0#, 0#, 0#, 0#, 0#
@@ -1954,7 +1983,9 @@ Private Sub TestInvalidData(ByRef stats As TTestStats)
     AssertBuildError stats, "invalid.step.negative", geom, 10#, -10#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Строит одно скругленное сечение с шагами 50/25/12.5 мм и записывает A/центр/I.
+' Последнее уточнение проверяется прежними относительными допусками;
+' численные результаты не заменяются текущей сеткой как новым эталоном.
 Private Sub TestMeshConvergence(ByRef stats As TTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -1989,7 +2020,9 @@ Private Sub TestMeshConvergence(ByRef stats As TTestStats)
     AssertRelative stats, "conv.Iy.25.12", p125.Iyc, p25.Iyc, 0.05
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Измеряет построение сетки и геометрические характеристики модели 800x500.
+' Проверяет непустую сетку; время записывается как диагностика, без
+' необоснованного требования ускорения отдельного случайного запуска.
 Private Sub TestPerformance(ByRef stats As TTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle

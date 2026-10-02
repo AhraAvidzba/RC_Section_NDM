@@ -16,7 +16,8 @@ End Type
 Private Const TEST_TF_M_IN_NMM As Double = 9806650# ' 1 tf*m во внутренних Н*мм.
 Private Const TEST_DEFAULT_ZERO_MOMENT_PER_DEPTH As Double = 4903.325 ' 0.5 tf*m/m = 4903.325 Н*мм/мм.
 
-' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
+' Выполняет пакетные регрессии профилей, путей, typed results, reuse и вывода.
+' Общий отчет сохраняет отдельные причины failure и количество assertions.
 Public Function RunBatchCalculationTests() As String
     On Error GoTo Failed
 
@@ -266,7 +267,8 @@ Failed:
         CStr(Err.Number) & "; source=" & Err.Source & "; description=" & Err.Description
 End Function
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет полный Execute одного LC: число результатов, определяющее
+' сочетание, заполнение статусов разделов и неотрицательное время расчета.
 Private Sub TestBatchOneCombination(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
@@ -280,7 +282,8 @@ Private Sub TestBatchOneCombination(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.one.elapsed", batch.ElapsedSeconds >= 0#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Решает одинаковые усилия по Strength- и Crack-профилям: запрошенные
+' разделы выполняются, остальные остаются неприменимыми, без чужой модели.
 Private Sub TestProfileIdControlsLimitStateGroup(ByRef stats As TBatchTestStats)
     Dim group1 As CBatchSectionCalculator
     Set group1 = BuildBatchCalculator()
@@ -300,7 +303,9 @@ Private Sub TestProfileIdControlsLimitStateGroup(ByRef stats As TBatchTestStats)
         Not group2.ResultAt(1).StateRepository.FindState(sstCrackedState) Is Nothing
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Задает LoadMultiplier и малую техническую границу lambda в Config;
+' batch должен сохранить незавершенный поиск как NumFail без выдуманного запаса.
+' Исходные настройки восстанавливаются и при ошибке проверки.
 Private Sub TestBatchCapacityUsesSystemSettings(ByRef stats As TBatchTestStats)
     Dim oldStrategy As String
     Dim oldMaxLambda As String
@@ -336,7 +341,8 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Передает неизвестную Capacity.SolutionStrategy через настоящий reader.
+' Ожидается InputErr без lambda/reserve, а не fallback на допустимый метод.
 Private Sub TestInvalidModeSettingsAreNotFallbacks(ByRef stats As TBatchTestStats)
     Dim oldCapacitySolutionStrategy As String
     oldCapacitySolutionStrategy = GetSystemSetting("Capacity.SolutionStrategy")
@@ -368,7 +374,8 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет пять различных LC, выбор определяющего индекса в пределах пакета
+' и наличие диагностической строки последнего сочетания после Execute.
 Private Sub TestBatchFiveCombinations(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
@@ -385,7 +392,8 @@ Private Sub TestBatchFiveCombinations(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.five.diagnostics", InStr(1, batch.DiagnosticLog, "combination=C5", vbTextCompare) > 0
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сравнивает две нагрузки с одинаковой N и разными моментами: governing
+' выбирается по меньшему lambda-запасу, а не по позиции LC в пакете.
 Private Sub TestBatchGoverningUsesLowestSafetyFactor(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
@@ -1815,7 +1823,8 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет добавление N*offset к внутренним моментам при сохранении исходных
+' пользовательских Mx/My; отдельно сверяет offsets относительно сдвинутого центра.
 Private Sub TestLoadReferenceTransformsUserMoments(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
@@ -3617,7 +3626,8 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Выполняет 24 LC, проверяя динамический размер массива результатов,
+' доступность последнего статуса и governing вне прежних малых пакетов.
 Private Sub TestBatchMoreThanTwentyCombinations(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
@@ -3634,7 +3644,8 @@ Private Sub TestBatchMoreThanTwentyCombinations(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.dynamic.last.status", Len(batch.ResultAt(24).Status) > 0
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Читает строку настоящего rngLoadCombinations с нечисловой N.
+' Строка сохраняется в пакете как InputErr, а не теряется или становится нулевой.
 Private Sub TestInvalidCombinationFromNamedRange(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
@@ -3711,7 +3722,8 @@ Failed:
     Resume CleanUp
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Записывает Strength/Crack/осевое LC настоящим writer-ом и проверяет шапки,
+' объединения, позиции блоков, единицы, статусы и отсутствие перекрытия Results.
 Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     On Error GoTo Failed
 
@@ -4115,12 +4127,15 @@ Private Function BatchSummaryCellText(ByVal resultsSheet As Object, ByVal rowInd
     BatchSummaryCellText = Trim$(CStr(cell.Value2))
 End Function
 
-' Проверяет, что одна статусная ячейка окрашена по единой палитре Results.
+' Проверяет исходную и реально отображаемую заливку статусной ячейки.
+' DisplayFormat учитывает conditional formatting: совпадение только Interior
+' недостаточно, если другая Excel-rule скрывает утвержденный цвет.
 Private Function StatusCellHasExpectedFill(ByVal resultsSheet As Object, _
         ByVal rowIndex As Long, ByVal columnIndex As Long) As Boolean
     Dim statusText As String
     statusText = CStr(resultsSheet.Cells.Item(rowIndex, columnIndex).Value2)
-    StatusCellHasExpectedFill = (CLng(resultsSheet.Cells.Item(rowIndex, columnIndex).Interior.Color) = StatusFillColor(statusText))
+    StatusCellHasExpectedFill = (CLng(resultsSheet.Cells.Item(rowIndex, columnIndex).Interior.Color) = StatusFillColor(statusText) And _
+        CLng(resultsSheet.Cells.Item(rowIndex, columnIndex).DisplayFormat.Interior.Color) = StatusFillColor(statusText))
 End Function
 
 ' Проверяет, что расчетная ячейка рядом со статусом не получила статусную заливку всего блока.
@@ -4176,7 +4191,9 @@ Private Function MaxDouble(ByVal firstValue As Double, ByVal secondValue As Doub
     If firstValue > secondValue Then MaxDouble = firstValue Else MaxDouble = secondValue
 End Function
 
-' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
+' Собирает независимый армированный прямоугольник 300x200 и профильный batch.
+' Effective Extension задается явно для теста; готовая модель при необходимости
+' возвращается для дополнительных проверок состояний без повторной геометрии.
 Private Function BuildBatchCalculator(Optional ByVal diagramExtensionEnabled As Boolean = True, _
         Optional ByRef preparedSection As CSectionModel = Nothing) As CBatchSectionCalculator
     Dim geom As CGeometryRoundedRectangle
@@ -5984,10 +6001,32 @@ Private Sub Audit03CheckCapacityPath(ByRef stats As TBatchTestStats, ByVal capac
         ByVal prefix As String, ByVal component As String, ByVal load As Variant, _
         Optional ByVal referenceX As Double = 0#, Optional ByVal referenceY As Double = 0#, _
         Optional ByVal includeUnscaledPath As Boolean = False)
+    Dim selection As String
+    selection = component
+    If component = "Auto" Then
+        ' Независимый выбор по пользовательским моментам: эксцентриситет N
+        ' сам по себе не превращает осевой Auto-путь в масштабирование Mxy.
+        If Sqr(CDbl(load(1)) * CDbl(load(1)) + CDbl(load(2)) * CDbl(load(2))) > 0.000000001 Then
+            component = "Mxy"
+        ElseIf Abs(CDbl(load(0))) > 0.000000001 Then
+            component = "N"
+        Else
+            component = "None"
+        End If
+    End If
     AppendLine stats, "CASE: " & prefix & "|N=" & CStr(load(0)) & "|Mx=" & CStr(load(1)) & _
         "|My=" & CStr(load(2)) & "|offsetX=10|offsetY=-7|path=" & component & _
+        "|selection=" & selection & _
         "|lambda=" & FormatNumberInvariant(capacity.LambdaCapacity) & "|method=" & capacity.SolutionMethod & _
         "|limit=" & capacity.LimitState & "|status=" & capacity.Status
+    If component = "None" Then
+        AssertTrue stats, prefix & ".autoNoLoad", capacity.ResultMeta.InternalStatus = rsNotApplicable And _
+            capacity.ResultMeta.ResultCode = rcNotApplicable And Not capacity.ResultMeta.Calculated
+        AssertEquals stats, prefix & ".autoNoPath", capacity.PathResolved, "None"
+        AssertTrue stats, prefix & ".autoNoSearch", capacity.SearchResult Is Nothing
+        AssertTrue stats, prefix & ".autoNoPoint", capacity.StateResult Is Nothing
+        Exit Sub
+    End If
     If includeUnscaledPath Then
         ' Явный путь с нулевой масштабируемой компонентой не определяет поиск
         ' lambda. Проверяем существующий InputErr-контракт, а не фиктивный предел.
@@ -6050,14 +6089,31 @@ Private Sub Audit03CheckFormationPath(ByRef stats As TBatchTestStats, ByVal form
         End If
     End If
     If Not formation.PreCrackState Is Nothing Then
-        AssertTrue stats, prefix & ".preConverged", formation.PreCrackState.Converged
-        AssertTrue stats, prefix & ".prePhysical", formation.PreCrackState.WithinPhysicalRange
-        AssertTrue stats, prefix & ".preNotExtended", Not formation.PreCrackState.ExtensionUsed
+        If formation.HasLimitPoint Then
+            AssertTrue stats, prefix & ".preConverged", formation.PreCrackState.Converged
+            AssertTrue stats, prefix & ".prePhysical", formation.PreCrackState.WithinPhysicalRange
+            AssertTrue stats, prefix & ".preNotExtended", Not formation.PreCrackState.ExtensionUsed
+        Else
+            ' Диагностический кандидат сохраняет точный отказ State, но не
+            ' выдается за физическую пороговую точку или успешный Search.
+            AssertTrue stats, prefix & ".preFailureTyped", Audit03RequiresComment(formation.PreCrackState.ResultMeta)
+            AssertTrue stats, prefix & ".preFailureNoPoint", Not formation.SearchResult.HasLimitPoint
+            AssertTrue stats, prefix & ".preFailureFormationCause", _
+                formation.ResultMeta.InternalStatus = formation.PreCrackState.ResultMeta.InternalStatus And _
+                formation.ResultMeta.ResultCode = formation.PreCrackState.ResultMeta.ResultCode
+        End If
     End If
     If Not formation.PostCrackState Is Nothing Then
-        AssertTrue stats, prefix & ".postConverged", formation.PostCrackState.Converged
-        AssertTrue stats, prefix & ".postPhysical", formation.PostCrackState.WithinPhysicalRange
-        AssertTrue stats, prefix & ".postNotExtended", Not formation.PostCrackState.ExtensionUsed
+        If formation.PostCrackState.ResultMeta.InternalStatus = rsSuccess Then
+            AssertTrue stats, prefix & ".postConverged", formation.PostCrackState.Converged
+            AssertTrue stats, prefix & ".postPhysical", formation.PostCrackState.WithinPhysicalRange
+            AssertTrue stats, prefix & ".postNotExtended", Not formation.PostCrackState.ExtensionUsed
+        Else
+            AssertTrue stats, prefix & ".postFailureTyped", Audit03RequiresComment(formation.PostCrackState.ResultMeta)
+            AssertTrue stats, prefix & ".postFailureFormationCause", _
+                formation.ResultMeta.InternalStatus = formation.PostCrackState.ResultMeta.InternalStatus And _
+                formation.ResultMeta.ResultCode = formation.PostCrackState.ResultMeta.ResultCode
+        End If
     End If
 End Sub
 
@@ -6308,6 +6364,7 @@ End Function
 ' передает внешний watchdog; полный набор не входит в быстрый suite. Config
 ' восстанавливается, результаты остаются в копии для save/reopen проверки.
 Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal family As String) As String
+    Const CAPACITY_VARIANT_COUNT As Long = 6 ' Пять физических путей и отдельный выбор Auto.
     Dim stats As TBatchTestStats, settings As CSystemSettingsReader, units As CUnitSystem
     Dim oldSystem As Variant, oldProfiles As Variant, systemRange As Object, profileRange As Object
     Dim section As CSectionModel, provider As CMaterialModelProvider, loads As Collection
@@ -6337,12 +6394,12 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
         "|rebars=" & CStr(section.RebarCount) & "|referenceX=" & FormatNumberInvariant(referenceX) & _
         "|referenceY=" & FormatNumberInvariant(referenceY) & "|offsetX=10|offsetY=-7|zeroMoment=0|stability=No"
     Set writer = New CBatchResultWriter
-    paths = Array("Mx", "My", "Mxy", "N", "NMxy", "Auto", "Mxy", "N", "NMxy")
-    For pathIndex = 0 To 8
-        If pathIndex < 5 Then profileId = "PR1" Else profileId = "PR2"
+    paths = Array("Mx", "My", "Mxy", "N", "NMxy", "Auto", "Auto", "Mxy", "N", "NMxy")
+    For pathIndex = LBound(paths) To UBound(paths)
+        If pathIndex < CAPACITY_VARIANT_COUNT Then profileId = "PR1" Else profileId = "PR2"
         path = CStr(paths(pathIndex))
         If path <> "Auto" Then path = ChrW$(&H3BB) & "*" & path
-        If pathIndex >= 5 Then SetSystemSetting "SLS.Crack.InitiationLoadPath", path
+        If pathIndex >= CAPACITY_VARIANT_COUNT Then SetSystemSetting "SLS.Crack.InitiationLoadPath", path
         settings.LoadFromWorkbook ThisWorkbook
         units.LoadFromSettings settings
         ' Двадцать LC сохраняют штатную сетку Results без изменения Config.
@@ -6360,7 +6417,12 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
                     CDbl(item(1)), CDbl(item(2)), CDbl(item(3)), profileId, _
                     shapeName & ": " & CStr(item(0)), path
             Next index
-            batch.ApplyLoadReference 10#, -7#, referenceX, referenceY
+            ' API принимает абсолютную точку в координатах модели, а не
+            ' смещение от бетонного центра. Проверяем оба эксцентриситета
+            ' отдельно, чтобы ненулевой центр формы не искажал fixture.
+            batch.ApplyLoadReference referenceX + 10#, referenceY - 7#, referenceX, referenceY
+            AssertClose stats, "audit03.matrix.reference.offsetX", batch.LoadReferenceOffsetX, 10#, 0.000000001
+            AssertClose stats, "audit03.matrix.reference.offsetY", batch.LoadReferenceOffsetY, -7#, 0.000000001
             batch.Execute
             writer.WriteSummary ThisWorkbook, batch, units, section
             report.Save "Нагрузочная проверка Audit03: " & shapeName & ", " & family & ", " & path
@@ -6372,7 +6434,7 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
                     "|id=" & batch.CombinationID(localIndex) & "|load=" & CStr(item(0)) & _
                     "|N=" & FormatNumberInvariant(CDbl(item(1))) & "|Mx=" & FormatNumberInvariant(CDbl(item(2))) & _
                     "|My=" & FormatNumberInvariant(CDbl(item(3))) & "|profile=" & profileId & "|path=" & path
-                If pathIndex < 5 Then
+                If pathIndex < CAPACITY_VARIANT_COUNT Then
                     Audit03CheckCapacityPath stats, batch.ResultAt(localIndex).StrengthResult.Capacity, _
                         "audit03.matrix." & shapeName & "." & batch.CombinationID(localIndex), _
                         CStr(paths(pathIndex)), Array(item(1), item(2), item(3)), referenceX, referenceY, True
@@ -6388,6 +6450,7 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
             Audit03SaveMatrixProgress stats.Report
         Next first
     Next pathIndex
+    AssertTrue stats, "audit03.matrix.allRequestedPaths", independentCases = loads.Count * (UBound(paths) - LBound(paths) + 1)
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
@@ -6513,6 +6576,10 @@ Private Function Audit03NormalizedLoads(ByVal section As CSectionModel, ByVal fa
     ElseIf family = "PhysicalBoundary" Then
         result.Add Array("physicalMy-", 0#, -0.003 * mxRef, -0.03 * myRef)
         result.Add Array("physicalMy+", 0#, 0.003 * mxRef, -0.03 * myRef)
+    ElseIf family = "FormationBoundary" Then
+        ' Сжатие с заданным общим эксцентриситетом: extended-кандидат достигает
+        ' растягивающего критерия лишь после физического предела сжатой зоны.
+        result.Add Array("axialC2", -2# * nc, 0#, 0#)
     ElseIf family = "Light" Then
         result.Add Array("zero", 0#, 0#, 0#)
         For signX = -1 To 1 Step 2
@@ -6584,7 +6651,17 @@ Private Sub Audit03CheckMatrixStates(ByRef stats As TBatchTestStats, ByVal resul
         End If
         If Not extensionEnabled Then AssertTrue stats, prefix & ".state.noHiddenExtension." & CStr(i), Not state.ExtensionUsed
         If state.StateType = sstCapacityState Or state.StateType = sstPreCrackState Or state.StateType = sstPostCrackState Then
-            AssertTrue stats, prefix & ".state.finalPhysical." & CStr(i), state.Converged And state.WithinPhysicalRange And Not state.ExtensionUsed
+            If state.ResultMeta.InternalStatus = rsSuccess Then
+                AssertTrue stats, prefix & ".state.finalPhysical." & CStr(i), state.Converged And state.WithinPhysicalRange And Not state.ExtensionUsed
+            Else
+                AssertTrue stats, prefix & ".state.finalFailureTyped." & CStr(i), Audit03RequiresComment(state.ResultMeta)
+                If state.StateType = sstPreCrackState Then
+                    AssertTrue stats, prefix & ".state.failedPreNoPoint." & CStr(i), Not result.CrackResult.Formation.HasLimitPoint
+                    AssertTrue stats, prefix & ".state.failedPreCause." & CStr(i), _
+                        result.CrackFormationMeta.InternalStatus = state.ResultMeta.InternalStatus And _
+                        result.CrackFormationMeta.ResultCode = state.ResultMeta.ResultCode
+                End If
+            End If
         End If
     Next i
     For Each comment In Array(result.DirectStateMeta, result.CapacityMeta, result.CrackFormationMeta, _
@@ -6623,3 +6700,117 @@ End Sub
 Private Function Audit03MinLong(ByVal a As Long, ByVal b As Long) As Long
     If a < b Then Audit03MinLong = a Else Audit03MinLong = b
 End Function
+
+' ДЛЯ ТЕСТОВ
+' Проверяет семь цветов в настоящей легенде/writer-ах, нормализацию и очистку.
+' Дополнительный лист создается только в изолированной книге для save/reopen;
+' подготовка palette-fixture не изменяет физику или dictionary production-кода.
+Public Function RunAudit03StatusPaletteTests() As String
+    On Error GoTo Failed
+    Dim stats As TBatchTestStats
+    TestBatchSummaryWriter stats
+    Audit03CheckWriterPalette stats, 3, False
+
+    Dim palette As Object, cell As Object, statuses As Variant, status As Variant, colors As Variant, i As Long
+    Set palette = ThisWorkbook.Worksheets.Add(After:=ThisWorkbook.Worksheets.Item(ThisWorkbook.Worksheets.Count))
+    palette.Name = "__Audit03Palette"
+    statuses = Array("OK", "FAIL", "BaseFail", "NumFail", "InputErr", "CalcErr", "N/A")
+    colors = Array(RGB(188, 222, 158), RGB(255, 190, 206), RGB(255, 190, 206), _
+        RGB(255, 71, 71), RGB(255, 230, 153), RGB(255, 71, 71), RGB(237, 237, 237))
+    For i = LBound(statuses) To UBound(statuses)
+        Set cell = palette.Cells(i + 1, 1)
+        cell.Value2 = statuses(i)
+        ApplyStatusFill cell, "  " & LCase$(CStr(statuses(i))) & "  "
+        AssertTrue stats, "audit03.palette.canonical." & CStr(statuses(i)), CLng(cell.Interior.Color) = CLng(colors(i))
+        AssertTrue stats, "audit03.palette.display." & CStr(statuses(i)), CLng(cell.DisplayFormat.Interior.Color) = CLng(colors(i))
+        AppendLine stats, "PALETTE_CELL: " & CStr(statuses(i)) & "|fill=" & CStr(cell.Interior.Color) & _
+            "|display=" & CStr(cell.DisplayFormat.Interior.Color) & "|cf=" & CStr(cell.FormatConditions.Count)
+    Next i
+
+    Set cell = palette.Cells(9, 1)
+    cell.Value2 = "UnknownExternalStatus"
+    ApplyStatusFill cell, CStr(cell.Value2)
+    AssertTrue stats, "audit03.palette.unknownCalcErr", CLng(cell.DisplayFormat.Interior.Color) = RGB(255, 71, 71)
+    Set cell = palette.Cells(10, 1)
+    ApplyStatusFill cell, vbNullString
+    AssertTrue stats, "audit03.palette.emptyPolicy", CLng(cell.DisplayFormat.Interior.Color) = RGB(237, 237, 237)
+    cell.Clear
+    AssertTrue stats, "audit03.palette.clearedCell", cell.Interior.ColorIndex = -4142 And cell.DisplayFormat.Interior.ColorIndex = -4142
+    Set cell = palette.Cells(11, 1)
+    For Each status In Array("FAIL", "OK", "N/A")
+        cell.Value2 = CStr(status)
+        ApplyStatusFill cell, CStr(status)
+        AssertTrue stats, "audit03.palette.transition." & CStr(status), StatusCellHasExpectedFill(palette, 11, 1)
+    Next status
+
+    ' Доказываем чувствительность проверки к чужому CF, затем удаляем только
+    ' эту тестовую rule. Production-палитра по-прежнему имеет одного владельца.
+    Set cell = palette.Cells(12, 1)
+    cell.Value2 = "FAIL"
+    ApplyStatusFill cell, "FAIL"
+    Dim rule As Object
+    Set rule = cell.FormatConditions.Add(1, 3, "=""FAIL""")
+    rule.Interior.Color = RGB(188, 222, 158)
+    ThisWorkbook.Application.CalculateFull
+    AssertTrue stats, "audit03.palette.detectsConditionalOverride", Not StatusCellHasExpectedFill(palette, 12, 1)
+    cell.FormatConditions.Delete
+    AssertTrue stats, "audit03.palette.overrideRemoved", StatusCellHasExpectedFill(palette, 12, 1)
+
+    Dim batch As CBatchSectionCalculator, writer As CBatchResultWriter
+    Set batch = BuildBatchCalculator()
+    batch.AddCombination "PALETTE_ONE", -180000#, -3500000#, -2500000#, "PR1", "palette reduction"
+    batch.Execute
+    Set writer = New CBatchResultWriter
+    writer.WriteSummary ThisWorkbook, batch
+    Audit03CheckWriterPalette stats, 1, False
+    Audit03CheckWriterPalette stats, 3, True
+    AppendLine stats, "TOTAL_AUDIT03_PALETTE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03StatusPaletteTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03StatusPaletteTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Сверяет каждую статусную колонку четырех output-блоков и реальную легенду.
+' При сокращении пакета проверяет отсутствие предыдущей заливки во второй
+' и третьей строке; неприменимые пустые placeholders не считаются новым расчетом.
+Private Sub Audit03CheckWriterPalette(ByRef stats As TBatchTestStats, ByVal rows As Long, ByVal clearedRows As Boolean)
+    Dim blocks As Variant, block As Variant, columns As Variant, column As Variant
+    Dim anchor As Object, rowIndex As Long, firstRow As Long, cell As Object, statusText As String
+    blocks = Array("rngBatchSummary", "rngStrengthSummaryAnchor", "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor")
+    For Each block In blocks
+        Set anchor = ThisWorkbook.Names.Item(CStr(block)).RefersToRange
+        firstRow = anchor.Row
+        Select Case CStr(block)
+            Case "rngBatchSummary": firstRow = firstRow + 12: columns = Array(4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+            Case "rngStrengthSummaryAnchor": columns = Array(3, 30, 49)
+            Case "rngCrackSummaryAnchor": columns = Array(3, 19, 20, 23, 45, 49)
+            Case "rngStabilitySummaryAnchor": columns = Array(3, 38, 44, 53, 59, 72, 84)
+        End Select
+        For rowIndex = 1 To rows
+            If Not clearedRows Or rowIndex > 1 Then
+                For Each column In columns
+                    Set cell = anchor.Worksheet.Cells(firstRow + rowIndex - 1, anchor.Column + CLng(column) - 1)
+                    statusText = CStr(cell.Value2)
+                    If clearedRows Then
+                        AssertTrue stats, "audit03.palette.clear." & CStr(block) & "." & CStr(rowIndex) & "." & CStr(column), _
+                            cell.Interior.ColorIndex = -4142 And cell.DisplayFormat.Interior.ColorIndex = -4142
+                    ElseIf Len(statusText) > 0 Then
+                        AssertTrue stats, "audit03.palette.writer." & CStr(block) & "." & CStr(rowIndex) & "." & CStr(column), _
+                            StatusCellHasExpectedFill(anchor.Worksheet, cell.Row, cell.Column)
+                        AppendLine stats, "PALETTE_WRITER: " & CStr(block) & "|cell=" & cell.Address(False, False) & _
+                            "|status=" & statusText & "|cf=" & CStr(cell.FormatConditions.Count)
+                    End If
+                Next column
+            End If
+        Next rowIndex
+    Next block
+    If Not clearedRows Then
+        Set anchor = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
+        For rowIndex = 7 To 13
+            AssertTrue stats, "audit03.palette.legend." & CStr(rowIndex), _
+                StatusCellHasExpectedFill(anchor.Worksheet, anchor.Row + rowIndex, anchor.Column + 27)
+        Next rowIndex
+    End If
+End Sub

@@ -90,9 +90,13 @@ End Function
 Public Function IsNumericalFailureState(ByVal probeState As String) As Boolean
 End Function
 
+' Отличает отказ входа от численной неудачи, которую разрешено повторять.
+' Domain adapter классифицирует свой probe-код, общий Search не разбирает текст.
 Public Function IsInvalidInputState(ByVal probeState As String) As Boolean
 End Function
 
+' Предлагает промежуточную lambda после несошедшейся верхней пробы.
+' Общий Search отдельно проверяет границы и строгий прогресс recovery.
 Public Function ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, _
         ByVal highLambda As Double, ByVal probeState As String) As Double
 End Function
@@ -202,6 +206,8 @@ Public Function LimitSearchUltimateResidualReached(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Boolean
 End Function
 
+' Нормирует те же три невязки для сравнения line-search шагов.
+' Уменьшение нормы не заменяет отдельную проверку всех допусков и физического финала.
 Public Function LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Double
 End Function
@@ -244,12 +250,18 @@ End Property
 Public Property Get StopReason() As String
 End Property
 
+' Снимает причину законченной попытки перед разрешенным резервным стартом.
+' Не должен отменять typed терминальную ошибку или принятый физический исход.
 Public Sub ClearStopReason()
 End Sub
 
+' Добавляет контекст остановки только при отсутствии более точной причины.
+' Первичная диагностика solver/search сохраняет приоритет.
 Public Sub SetStopReasonIfEmpty(ByVal reason As String)
 End Sub
 
+' Объединяет диагностику первой и резервной попыток в результирующем контексте.
+' Последняя принятая попытка определяет исход; история объясняет переход метода.
 Public Sub MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
         ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
         ByVal transitionMessage As String, ByVal successMessage As String)

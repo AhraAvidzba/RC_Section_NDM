@@ -1,0 +1,63 @@
+
+
+PSMessageDetails      : 
+Exception             : System.ArgumentException: Argument types do not match
+                           at System.Linq.Expressions.Expression.Condition(Expression test, Expression ifTrue, Expressi
+                        on ifFalse)
+                           at System.Management.Automation.Language.PSEnumerableBinder.MaybeDebase(DynamicMetaObjectBin
+                        der binder, Func`2 generator, DynamicMetaObject target)
+                           at System.Management.Automation.Language.PSToObjectArrayBinder.Bind(DynamicMetaObject target
+                        , DynamicMetaObject[] args)
+                           at System.Dynamic.DynamicMetaObjectBinder.Bind(Object[] args, ReadOnlyCollection`1 parameter
+                        s, LabelTarget returnLabel)
+                           at System.Runtime.CompilerServices.CallSiteBinder.BindCore[T](CallSite`1 site, Object[] args
+                        )
+                           at System.Dynamic.UpdateDelegates.UpdateAndExecute1[T0,TRet](CallSite site, T0 arg0)
+                           at System.Management.Automation.Interpreter.DynamicInstruction`2.Run(InterpretedFrame frame)
+                           at System.Management.Automation.Interpreter.EnterTryCatchFinallyInstruction.Run(InterpretedF
+                        rame frame)
+                           at System.Management.Automation.Interpreter.EnterTryCatchFinallyInstruction.Run(InterpretedF
+                        rame frame)
+TargetObject          : 
+CategoryInfo          : OperationStopped: (:) [Update-Audit03WorkbookHelp.ps1], ArgumentException
+FullyQualifiedErrorId : System.ArgumentException,Update-Audit03WorkbookHelp.ps1
+ErrorDetails          : 
+InvocationInfo        : System.Management.Automation.InvocationInfo
+ScriptStackTrace      : at Get-InputSignature, C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_
+                        workbook\Update-Audit03WorkbookHelp.ps1: line 44
+                        at <ScriptBlock>, C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workb
+                        ook\Update-Audit03WorkbookHelp.ps1: line 106
+                        at <ScriptBlock>, <No file>: line 1
+PipelineIterationInfo : {}
+
+
+
+
+
+Message        : Argument types do not match
+ParamName      : 
+Data           : {System.Management.Automation.Interpreter.InterpretedFrameInfo}
+InnerException : 
+TargetSite     : System.Linq.Expressions.ConditionalExpression Condition(System.Linq.Expressions.Expression, System.Lin
+                 q.Expressions.Expression, System.Linq.Expressions.Expression)
+StackTrace     :    at System.Linq.Expressions.Expression.Condition(Expression test, Expression ifTrue, Expression ifFa
+                 lse)
+                    at System.Management.Automation.Language.PSEnumerableBinder.MaybeDebase(DynamicMetaObjectBinder bin
+                 der, Func`2 generator, DynamicMetaObject target)
+                    at System.Management.Automation.Language.PSToObjectArrayBinder.Bind(DynamicMetaObject target, Dynam
+                 icMetaObject[] args)
+                    at System.Dynamic.DynamicMetaObjectBinder.Bind(Object[] args, ReadOnlyCollection`1 parameters, Labe
+                 lTarget returnLabel)
+                    at System.Runtime.CompilerServices.CallSiteBinder.BindCore[T](CallSite`1 site, Object[] args)
+                    at System.Dynamic.UpdateDelegates.UpdateAndExecute1[T0,TRet](CallSite site, T0 arg0)
+                    at System.Management.Automation.Interpreter.DynamicInstruction`2.Run(InterpretedFrame frame)
+                    at System.Management.Automation.Interpreter.EnterTryCatchFinallyInstruction.Run(InterpretedFrame fr
+                 ame)
+                    at System.Management.Automation.Interpreter.EnterTryCatchFinallyInstruction.Run(InterpretedFrame fr
+                 ame)
+HelpLink       : 
+Source         : System.Core
+HResult        : -2147024809
+
+
+

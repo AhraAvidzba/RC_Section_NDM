@@ -8,6 +8,7 @@ param(
     [string]$MacroArgument1 = "",
     [string]$MacroArgument2 = "",
     [switch]$VerifyResultsReopen,
+    [switch]$VerifyStatusReopen,
     [ValidateSet("Yes", "No")][string]$Mode = "No",
     [ValidateRange(10, 3600)][int]$TimeoutSeconds = 120
 )
@@ -51,6 +52,7 @@ if (-not [string]::IsNullOrWhiteSpace($Macro)) {
 if ($MacroArgument1) { $arguments += @("-MacroArgument1", (Quote-ProcessArgument $MacroArgument1)) }
 if ($MacroArgument2) { $arguments += @("-MacroArgument2", (Quote-ProcessArgument $MacroArgument2)) }
 if ($VerifyResultsReopen) { $arguments += "-VerifyResultsReopen" }
+if ($VerifyStatusReopen) { $arguments += "-VerifyStatusReopen" }
 $arguments = $arguments -join " "
 $process = Start-Process -FilePath (Join-Path $PSHOME "powershell.exe") `
     -ArgumentList $arguments -WorkingDirectory $root -WindowStyle Hidden -PassThru `

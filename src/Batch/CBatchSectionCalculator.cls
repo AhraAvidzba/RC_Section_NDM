@@ -132,7 +132,10 @@ Private mStabilityLoadN() As Double ' N от постоянных или пос�
 Private mStabilityLoadUserMx() As Double ' Пользовательский Mx длительной части в точке приложения нагрузки.
 Private mStabilityLoadUserMy() As Double ' Пользовательский My длительной части в точке приложения нагрузки.
 
-' Инициализирует внутреннее состояние объекта значениями по умолчанию, безопасными для последующей настройки.
+' Создает общую status-policy, report и фильтр моментов, резервирует массивы
+' LC и длительных нагрузок. Начальные параметры нужны прямому API класса;
+' workbook-сценарий затем передает прочитанный Config через ApplySettings.
+' Ошибочное явное значение Config не заменяется этими начальными параметрами.
 Private Sub Class_Initialize()
     Set mStatusPolicy = New CResultStatusPolicy
     Set mReport = New CExecutionReport

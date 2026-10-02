@@ -18,7 +18,8 @@ Private Const TEST_PLOT_FRAME_TOP As Double = 36#
 Private Const TEST_PLOT_FRAME_WIDTH_MARGIN As Double = 180#
 Private Const TEST_PLOT_FRAME_HEIGHT_MARGIN As Double = 72#
 
-' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
+' Выполняет COM-регрессии структуры Config/Results, workbook-макросов и схемы.
+' Проверка снимков и export-data не является приемкой фактической записи DWG.
 Public Function RunWorkbookInterfaceTests() As String
     On Error GoTo Failed
 
@@ -35,6 +36,7 @@ Public Function RunWorkbookInterfaceTests() As String
     AppendLine stats, "RUN: TestAudit03ReaderContract"
     TestAudit03ReaderContract stats
     TestAudit03InputContracts stats
+    TestAudit03ProfileInputContracts stats
     AppendLine stats, "RUN: TestPartialCombinationIsInvalid"
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats
@@ -136,7 +138,8 @@ Private Sub TestLoadCombinationsOnConfig(ByRef stats As TUiTestStats)
         LoadCombinationValidationHasOptions(6, pathOptions)
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет наличие пяти кнопок, привязанные OnAction-макросы и размещение
+' вне области печати; надписи должны быть центрированы в самих shapes.
 Private Sub TestButtons(ByRef stats As TUiTestStats)
     Dim calc As Object
     Set calc = ThisWorkbook.Worksheets.Item("Расчет")
@@ -296,7 +299,8 @@ Private Sub TestExcelApplicationStateGuardRestoresSettings(ByRef stats As TUiTes
     AssertTrue stats, "ui.excelGuard.alerts", app.DisplayAlerts = oldDisplayAlerts
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет общий перенос нагрузки к бетонному центру, используемый batch
+' и export-данными. AutoCAD COM здесь не вызывается, DWG не создается.
 Private Sub TestAutoCADExportUsesSharedLoadReference(ByRef stats As TUiTestStats)
     PrepareRectSetInput
     SetSystemSetting "Load.ReferenceOffsetX", "0"
@@ -353,7 +357,8 @@ Private Sub TestAutoCADExportUsesSharedLoadReference(ByRef stats As TUiTestStats
     AssertClose stats, "ui.autocad.reference.myTransfer", batch.My(1), expectedLoad.InternalMy, 0.000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Читает один LC среди пустых строк: свободные строки не становятся
+' ошибочными сочетаниями и не добавляют расчетов в пакет.
 Private Sub TestSingleCombinationSkipsBlankRows(ByRef stats As TUiTestStats)
     PrepareCircleInput
 
@@ -426,7 +431,8 @@ Failed:
     Resume CleanUp
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Удаляет ID из строки с заданными усилиями: строка сохраняется как InputErr,
+' а пользовательский макрос выводит понятный итог ошибки ввода.
 Private Sub TestPartialCombinationIsInvalid(ByRef stats As TUiTestStats)
     PrepareCircleInput
     Dim loads As Object
@@ -450,7 +456,8 @@ Private Sub TestPartialCombinationIsInvalid(ByRef stats As TUiTestStats)
         InStr(1, message, "InputErr", vbTextCompare) > 0
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' При пустом ProfileId даже включенное автообновление не запускает вывод НДС.
+' Проверяет сообщение InputErr и отсутствие строк element-results.
 Private Sub TestInvalidProfileIdDoesNotRunPlot(ByRef stats As TUiTestStats)
     PrepareCircleInput
     SetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
@@ -993,7 +1000,8 @@ Private Sub TestAutoCADCalculationMessageUsesSavedGeometry(ByRef stats As TUiTes
         AnnotationTextByID(afterAnnotations, "REBAR_AUTO_ALL"), "ALL: 4" & ChrW$(&H2205) & "20"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет разрешенный пустой My как 0 и пропуск достоверно нулевого LC.
+' Пропуск нуля не должен скрывать ошибку или менять число ненулевых сочетаний.
 Private Sub TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped(ByRef stats As TUiTestStats)
     PrepareCircleInput
     Dim loads As Object
@@ -1018,7 +1026,8 @@ Private Sub TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped(ByRef stats As T
     AssertTrue stats, "ui.loads.blankMoment.valid", InStr(1, batch.ResultAt(1).Status, "InputErr", vbTextCompare) = 0
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Запускает полный workbook-сценарий круга и сверяет сохраненные таблицы,
+' шапки, плоскость НДС, units и отсутствие дублированной геометрии элементов.
 Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     PrepareCircleInput
     Dim message As String
@@ -1366,7 +1375,8 @@ Private Sub TestLargeSnapshotPlotStress(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.largeSnapshot.plotSeriesLimit", seriesCount < 256
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Запускает RectSet через пользовательский workbook-entrypoint и проверяет
+' фактический Results, блок диаграмм и отсутствие отдельного ручного RebarInput.
 Private Sub TestRectSetWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     PrepareRectSetInput
     Dim message As String
@@ -1616,7 +1626,8 @@ Private Sub TestRectSetAxialTensionExtensionFromWorkbookSettings(ByRef stats As 
     SetSystemSetting "General.ExecutionReportEnabled", "No"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Решает безопасное и более тяжелое LC с критерием governing StrengthCapacity.
+' Сверяет выбранный ID с запасами в настоящей сводке и итоговым сообщением.
 Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTestStats)
     PrepareCircleInput
     SetSystemSetting "General.WorstCombinationCriterion", "StrengthCapacity"
@@ -1896,7 +1907,8 @@ Private Function MaterialDiagramIdsMatchStateProperties(ByRef materialDiagrams A
     MaterialDiagramIdsMatchStateProperties = True
 End Function
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сверяет фактические validation-списки расчетов, геометрии, plot и export,
+' динамические ссылки и default labels. Наличие списка не доказывает поведение каждой опции.
 Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.validation.CapacitySolutionStrategy", _
         SystemSettingValidationHasOptions("Capacity.SolutionStrategy", Array("Auto", "UltimateStrain", "LoadMultiplier"))
@@ -2533,7 +2545,8 @@ Private Function AnnotationValueByID(ByRef annotationData As Variant, ByVal anno
 Failed:
 End Function
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Очищает все расчетные snapshot-блоки пользовательским macro, проверяя
+' пустые результаты и сохранение исходного Geometry.Type на Config.
 Private Sub TestClearResultsKeepsInputs(ByRef stats As TUiTestStats)
     PrepareCircleInput
     ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Value2 = "RunID"
@@ -3433,7 +3446,8 @@ Private Function ValidationCellHasOptions(ByVal target As Object, ByVal expected
 Failed:
 End Function
 
-' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
+' Собирает тестовый круг и арматуру из настоящего Config, подключает материалы,
+' solver-options и каталог профилей. Reader сочетаний затем вызывается отдельно.
 Private Function BuildUiBatch() As CBatchSectionCalculator
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -4530,6 +4544,102 @@ Private Function Audit03CaptureInputError(ByVal source As Object, ByVal operatio
 ExpectedError:
     Audit03CaptureInputError = Err.Number
     description = Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ: проверяет настоящий reader профилей независимо от общего
+' SettingsReader. Неверный переключатель не должен молча отключать расчет.
+Public Function RunAudit03ProfileInputTests() As String
+    On Error GoTo Failed
+    Dim stats As TUiTestStats
+    TestAudit03ProfileInputContracts stats
+    AppendLine stats, "TOTAL_AUDIT03_PROFILE_INPUT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03ProfileInputTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03ProfileInputTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ: копирует фактическую таблицу профилей на временный лист.
+' Проверяет все Boolean aliases и поврежденные/отсутствующие ячейки каждого
+' переключателя; исходные Config, формулы и validation не изменяются.
+Private Sub TestAudit03ProfileInputContracts(ByRef stats As TUiTestStats)
+    Dim source As Object, sheet As Object, target As Object, data As Variant
+    Dim oldAlerts As Boolean, key As Variant, value As Variant, row As Long, column As Long
+    Dim keyRow As Long, profileColumn As Long, profiles As CCalculationProfileCatalog
+    Dim profile As CCalculationProfile, actualCode As Long, description As String, caseIndex As Long
+    oldAlerts = Application.DisplayAlerts
+    On Error GoTo Failed
+    Set source = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    data = source.Value2
+    Set sheet = ThisWorkbook.Worksheets.Add
+    sheet.Name = "__Audit03ProfileInput"
+    Set target = sheet.Range("A1").Resize(source.Rows.Count, source.Columns.Count)
+    target.Value2 = data
+    For row = 1 To UBound(data, 1)
+        For column = 3 To UBound(data, 2)
+            If CStr(data(row, column)) = "PR1" Then profileColumn = column
+        Next column
+        If profileColumn > 0 Then Exit For
+    Next row
+    If profileColumn = 0 Then Err.Raise vbObjectError + 4499, "TestAudit03ProfileInputContracts", "В fixture не найден PR1."
+    For Each key In Array("Calculation.Strength.DirectState", "Calculation.Strength.Capacity", _
+            "Calculation.Crack.Width", "Calculation.Stability.Enabled")
+        keyRow = 0
+        For row = 1 To UBound(data, 1)
+            If CStr(data(row, 2)) = CStr(key) Then keyRow = row
+        Next row
+        If keyRow = 0 Then Err.Raise vbObjectError + 4499, "TestAudit03ProfileInputContracts", "В fixture не найден " & CStr(key)
+        For Each value In Array("Yes", "True", "1", "Да", "No", "False", "0", "Нет")
+            target.Value2 = data
+            target.Cells.Item(keyRow, profileColumn).Value2 = CStr(value)
+            Set profiles = New CCalculationProfileCatalog
+            profiles.LoadFromRange target
+            Set profile = profiles.ProfileById("PR1")
+            AssertTrue stats, "audit03.profile.boolean." & CStr(key) & "." & CStr(value), _
+                Audit03ProfileFlag(profile, CStr(key)) = (value = "Yes" Or value = "True" Or value = "1" Or value = "Да")
+        Next value
+        caseIndex = 0
+        For Each value In Array("Maybe", "TODO", "", CVErr(xlErrNA))
+            caseIndex = caseIndex + 1
+            target.Value2 = data
+            target.Cells.Item(keyRow, profileColumn).Value2 = value
+            description = vbNullString
+            actualCode = Audit03CaptureInputError(target, "Profiles", description)
+            AssertTrue stats, "audit03.profile.invalid." & CStr(key) & "." & CStr(caseIndex), actualCode = vbObjectError + 3988
+            AssertTrue stats, "audit03.profile.reason." & CStr(key) & "." & CStr(caseIndex), _
+                InStr(1, description, CStr(key), vbBinaryCompare) > 0 And InStr(1, description, "PR1", vbBinaryCompare) > 0
+            AppendLine stats, "PROFILE_INPUT: key=" & CStr(key) & "; case=" & CStr(caseIndex) & _
+                "; error=" & CStr(actualCode) & "; reason=" & description
+        Next value
+        target.Value2 = data
+        target.Cells.Item(keyRow, 2).Value2 = "__Removed." & CStr(key)
+        description = vbNullString
+        actualCode = Audit03CaptureInputError(target, "Profiles", description)
+        AssertTrue stats, "audit03.profile.missing." & CStr(key), actualCode = vbObjectError + 3988
+        AssertTrue stats, "audit03.profile.missingReason." & CStr(key), InStr(1, description, CStr(key), vbBinaryCompare) > 0
+    Next key
+    GoTo CleanUp
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.profile.runtime; " & CStr(Err.Number) & "; " & Err.Description
+CleanUp:
+    On Error Resume Next
+    Application.DisplayAlerts = False
+    If Not sheet Is Nothing Then sheet.Delete
+    Application.DisplayAlerts = oldAlerts
+    On Error GoTo 0
+End Sub
+
+' ДЛЯ ТЕСТОВ: читает конечный флаг профиля, а не повторяет строковый parser.
+' Поэтому тест выявляет потерю настройки между ячейкой и CCalculationProfile.
+Private Function Audit03ProfileFlag(ByVal profile As CCalculationProfile, ByVal key As String) As Boolean
+    Select Case key
+        Case "Calculation.Strength.DirectState": Audit03ProfileFlag = profile.StrengthDirectStateEnabled
+        Case "Calculation.Strength.Capacity": Audit03ProfileFlag = profile.StrengthCapacityEnabled
+        Case "Calculation.Crack.Width": Audit03ProfileFlag = profile.CrackWidthEnabled
+        Case "Calculation.Stability.Enabled": Audit03ProfileFlag = profile.StabilityEnabled
+        Case Else: Err.Raise vbObjectError + 4499, "Audit03ProfileFlag", "Неизвестный тестовый переключатель профиля."
+    End Select
 End Function
 
 

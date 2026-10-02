@@ -1,0 +1,13 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_f06_fixed.xlsm
+SOURCE_SHA256: 5453EACB936D705B10234C8451A3B92CE3B677C100284B7DDC98BCAAC0654B4E
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d09902ebbdfc45e292f8dcfbe4de27a5\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+FAIL: audit03.matrix.CircleSym.M_5_10.prePhysical
+FAIL: audit03.matrix.CircleSym.M_5_10.preNotExtended
+FAIL: audit03.matrix.CircleSym.M_5_10.state.finalPhysical.1
+FAIL: audit03.matrix.CircleSym.M_8_10.prePhysical
+FAIL: audit03.matrix.CircleSym.M_8_10.preNotExtended
+FAIL: audit03.matrix.CircleSym.M_8_10.state.finalPhysical.1
+TOTAL_AUDIT03_LOAD_MATRIX: shape=CircleSym; family=Stress; independentCases=216; passed=8279; failed=6
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

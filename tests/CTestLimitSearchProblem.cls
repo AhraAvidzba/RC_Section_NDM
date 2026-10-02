@@ -9,8 +9,6 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Implements ILimitSearchProblem
-
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ: простая доменная задача общего LimitSearch
 ' ==========================================================================
@@ -21,6 +19,8 @@ Implements ILimitSearchProblem
 ' Такой тест защищает архитектурное требование: Bisection/Secant/Brent должны
 ' работать через ILimitSearchProblem, а не через конкретный Capacity или Crack
 ' calculator.
+
+Implements ILimitSearchProblem
 
 Private Const PROBE_ACCEPTABLE As String = "Acceptable" ' Точка находится до предела.
 Private Const PROBE_LIMIT As String = "Limit" ' Точка достигла или превысила предел.

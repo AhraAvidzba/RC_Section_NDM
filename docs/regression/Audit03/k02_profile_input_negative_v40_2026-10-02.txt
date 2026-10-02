@@ -1,0 +1,101 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_profile_input_negative.xlsm
+SOURCE_SHA256: FF5540B37D6FA87D192288B7FD1ACABB62024D3C3C2F63391493273A0922DD89
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_6b7c007bd5c24271af284d22040a430c\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit03ProfileInputTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03ProfileInputTests; 2026-10-02T06:03:18
+EXCEL_AFTER_SUITE: pid=5032; workingSet=138788864; privateBytes=106758144; cpu=2.84375
+OK: audit03.profile.boolean.Calculation.Strength.DirectState.Yes
+OK: audit03.profile.boolean.Calculation.Strength.DirectState.True
+OK: audit03.profile.boolean.Calculation.Strength.DirectState.1
+OK: audit03.profile.boolean.Calculation.Strength.DirectState.Да
+OK: audit03.profile.boolean.Calculation.Strength.DirectState.No
+OK: audit03.profile.boolean.Calculation.Strength.DirectState.False
+OK: audit03.profile.boolean.Calculation.Strength.DirectState.0
+OK: audit03.profile.boolean.Calculation.Strength.DirectState.Нет
+FAIL: audit03.profile.invalid.Calculation.Strength.DirectState.1
+FAIL: audit03.profile.reason.Calculation.Strength.DirectState.1
+PROFILE_INPUT: key=Calculation.Strength.DirectState; case=1; error=0; reason=
+FAIL: audit03.profile.invalid.Calculation.Strength.DirectState.2
+FAIL: audit03.profile.reason.Calculation.Strength.DirectState.2
+PROFILE_INPUT: key=Calculation.Strength.DirectState; case=2; error=0; reason=
+FAIL: audit03.profile.invalid.Calculation.Strength.DirectState.3
+FAIL: audit03.profile.reason.Calculation.Strength.DirectState.3
+PROFILE_INPUT: key=Calculation.Strength.DirectState; case=3; error=0; reason=
+FAIL: audit03.profile.invalid.Calculation.Strength.DirectState.4
+FAIL: audit03.profile.reason.Calculation.Strength.DirectState.4
+PROFILE_INPUT: key=Calculation.Strength.DirectState; case=4; error=0; reason=
+FAIL: audit03.profile.missing.Calculation.Strength.DirectState
+FAIL: audit03.profile.missingReason.Calculation.Strength.DirectState
+OK: audit03.profile.boolean.Calculation.Strength.Capacity.Yes
+OK: audit03.profile.boolean.Calculation.Strength.Capacity.True
+OK: audit03.profile.boolean.Calculation.Strength.Capacity.1
+OK: audit03.profile.boolean.Calculation.Strength.Capacity.Да
+OK: audit03.profile.boolean.Calculation.Strength.Capacity.No
+OK: audit03.profile.boolean.Calculation.Strength.Capacity.False
+OK: audit03.profile.boolean.Calculation.Strength.Capacity.0
+OK: audit03.profile.boolean.Calculation.Strength.Capacity.Нет
+FAIL: audit03.profile.invalid.Calculation.Strength.Capacity.1
+FAIL: audit03.profile.reason.Calculation.Strength.Capacity.1
+PROFILE_INPUT: key=Calculation.Strength.Capacity; case=1; error=0; reason=
+FAIL: audit03.profile.invalid.Calculation.Strength.Capacity.2
+FAIL: audit03.profile.reason.Calculation.Strength.Capacity.2
+PROFILE_INPUT: key=Calculation.Strength.Capacity; case=2; error=0; reason=
+FAIL: audit03.profile.invalid.Calculation.Strength.Capacity.3
+FAIL: audit03.profile.reason.Calculation.Strength.Capacity.3
+PROFILE_INPUT: key=Calculation.Strength.Capacity; case=3; error=0; reason=
+FAIL: audit03.profile.invalid.Calculation.Strength.Capacity.4
+FAIL: audit03.profile.reason.Calculation.Strength.Capacity.4
+PROFILE_INPUT: key=Calculation.Strength.Capacity; case=4; error=0; reason=
+FAIL: audit03.profile.missing.Calculation.Strength.Capacity
+FAIL: audit03.profile.missingReason.Calculation.Strength.Capacity
+OK: audit03.profile.boolean.Calculation.Crack.Width.Yes
+OK: audit03.profile.boolean.Calculation.Crack.Width.True
+OK: audit03.profile.boolean.Calculation.Crack.Width.1
+OK: audit03.profile.boolean.Calculation.Crack.Width.Да
+OK: audit03.profile.boolean.Calculation.Crack.Width.No
+OK: audit03.profile.boolean.Calculation.Crack.Width.False
+OK: audit03.profile.boolean.Calculation.Crack.Width.0
+OK: audit03.profile.boolean.Calculation.Crack.Width.Нет
+FAIL: audit03.profile.invalid.Calculation.Crack.Width.1
+FAIL: audit03.profile.reason.Calculation.Crack.Width.1
+PROFILE_INPUT: key=Calculation.Crack.Width; case=1; error=0; reason=
+FAIL: audit03.profile.invalid.Calculation.Crack.Width.2
+FAIL: audit03.profile.reason.Calculation.Crack.Width.2
+PROFILE_INPUT: key=Calculation.Crack.Width; case=2; error=0; reason=
+FAIL: audit03.profile.invalid.Calculation.Crack.Width.3
+FAIL: audit03.profile.reason.Calculation.Crack.Width.3
+PROFILE_INPUT: key=Calculation.Crack.Width; case=3; error=0; reason=
+FAIL: audit03.profile.invalid.Calculation.Crack.Width.4
+FAIL: audit03.profile.reason.Calculation.Crack.Width.4
+PROFILE_INPUT: key=Calculation.Crack.Width; case=4; error=0; reason=
+FAIL: audit03.profile.missing.Calculation.Crack.Width
+FAIL: audit03.profile.missingReason.Calculation.Crack.Width
+OK: audit03.profile.boolean.Calculation.Stability.Enabled.Yes
+OK: audit03.profile.boolean.Calculation.Stability.Enabled.True
+OK: audit03.profile.boolean.Calculation.Stability.Enabled.1
+OK: audit03.profile.boolean.Calculation.Stability.Enabled.Да
+OK: audit03.profile.boolean.Calculation.Stability.Enabled.No
+OK: audit03.profile.boolean.Calculation.Stability.Enabled.False
+OK: audit03.profile.boolean.Calculation.Stability.Enabled.0
+OK: audit03.profile.boolean.Calculation.Stability.Enabled.Нет
+FAIL: audit03.profile.invalid.Calculation.Stability.Enabled.1
+FAIL: audit03.profile.reason.Calculation.Stability.Enabled.1
+PROFILE_INPUT: key=Calculation.Stability.Enabled; case=1; error=0; reason=
+FAIL: audit03.profile.invalid.Calculation.Stability.Enabled.2
+FAIL: audit03.profile.reason.Calculation.Stability.Enabled.2
+PROFILE_INPUT: key=Calculation.Stability.Enabled; case=2; error=0; reason=
+FAIL: audit03.profile.invalid.Calculation.Stability.Enabled.3
+FAIL: audit03.profile.reason.Calculation.Stability.Enabled.3
+PROFILE_INPUT: key=Calculation.Stability.Enabled; case=3; error=0; reason=
+FAIL: audit03.profile.invalid.Calculation.Stability.Enabled.4
+FAIL: audit03.profile.reason.Calculation.Stability.Enabled.4
+PROFILE_INPUT: key=Calculation.Stability.Enabled; case=4; error=0; reason=
+FAIL: audit03.profile.missing.Calculation.Stability.Enabled
+FAIL: audit03.profile.missingReason.Calculation.Stability.Enabled
+TOTAL_AUDIT03_PROFILE_INPUT: passed=32; failed=40
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03ProfileInputTests; 2026-10-02T06:03:19
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

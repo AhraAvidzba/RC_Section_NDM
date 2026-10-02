@@ -209,9 +209,17 @@ Public Property Get ResultMeta() As CResultMeta
     Set ResultMeta = meta
 End Property
 
-' Наличие точки не совпадает с успешным warning-fallback без lambda-точки.
+' Подтверждает физическую точку, а не только сохраненную нагрузку кандидата.
+' Неуспешное PreCrackState остается диагностикой отказа и не дает limit point;
+' аналитический Ncrc без State допустим только при успешном исходе проверки.
 Public Property Get HasLimitPoint() As Boolean
-    HasLimitPoint = mFormationLoadDefined And Not mFormationPathFallbackPsi1
+    If Not mFormationLoadDefined Or mFormationPathFallbackPsi1 Then Exit Property
+    If Not mPreCrackState Is Nothing Then
+        HasLimitPoint = mPreCrackState.Converged And mPreCrackState.WithinPhysicalRange And _
+            Not mPreCrackState.ExtensionUsed
+    Else
+        HasLimitPoint = (mFormationInternalStatus = rsSuccess Or mFormationInternalStatus = rsSuccessWithWarning)
+    End If
 End Property
 
 ' Передает исходный полный вектор найденной точки, до переноса моментов.

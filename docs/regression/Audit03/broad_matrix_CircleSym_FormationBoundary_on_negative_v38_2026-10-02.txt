@@ -1,0 +1,501 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_formation_point_negative.xlsm
+SOURCE_SHA256: B3A7CCF8809F1B7EBACC5F2419DC25A90F88572C15E7B0A8DC0BCEDEAAF31796
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_fd1118dd804c4b418cc83f37bd9bfe9e\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03BroadLoadMatrixTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03BroadLoadMatrixTests; 2026-10-02T05:36:14
+EXCEL_AFTER_SUITE: pid=16580; workingSet=145833984; privateBytes=102445056; cpu=7.078125
+MATRIX_SETUP: shape=CircleSym|family=FormationBoundary|loads=1|extension=True|fibers=184|rebars=12|referenceX=0.|referenceY=0.|offsetX=10|offsetY=-7|zeroMoment=0|stability=No
+MATRIX_CASE: shape=CircleSym|family=FormationBoundary|id=M_0_1|load=axialC2|N=-4333929.01979265|Mx=0.|My=0.|profile=PR1|path=λ*Mx
+CASE: audit03.matrix.CircleSym.M_0_1|N=-4333929.01979265|Mx=0|My=0|offsetX=10|offsetY=-7|path=Mx|lambda=0.|method=|limit=Для выбранного CapacityLoadPath соответствующая нагрузка должна быть ненулевой.|status=InputErr
+OK: audit03.matrix.CircleSym.M_0_1.unscaledInput
+OK: audit03.matrix.CircleSym.M_0_1.unscaledNotExecuted
+OK: audit03.matrix.CircleSym.M_0_1.unscaledNoSearch
+OK: audit03.matrix.CircleSym.M_0_1.unscaledNoPoint
+META: audit03.comments.M_0_1.direct|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|applies=True|calculated=True|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_0_1.direct.reasonPresent
+OK: audit03.comments.M_0_1.direct.russianReason
+OK: audit03.comments.M_0_1.direct.readable
+OK: audit03.comments.M_0_1.direct.ownSubtree
+META: audit03.comments.M_0_1.capacity|status=rsInvalidInput|code=INVALID_INPUT|applies=True|calculated=False|comment=Для выбранного CapacityLoadPath соответствующая нагрузка должна быть ненулевой.
+OK: audit03.comments.M_0_1.capacity.reasonPresent
+OK: audit03.comments.M_0_1.capacity.russianReason
+OK: audit03.comments.M_0_1.capacity.readable
+OK: audit03.comments.M_0_1.capacity.ownSubtree
+META: audit03.comments.M_0_1.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_0_1.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_0_1.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_0_1.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_0_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.M_0_1.formulaNoNumFail
+OK: audit03.comments.M_0_1.strengthNoCrack
+OK: audit03.comments.M_0_1.crackNoCapacity
+OK: audit03.comments.M_0_1.overallComposition
+OK: audit03.comments.M_0_1.batchOutput
+OK: audit03.comments.M_0_1.strengthOutput
+OK: audit03.comments.M_0_1.crackOutput
+OK: audit03.comments.M_0_1.stabilityOutput
+OUTPUT: audit03.comments.M_0_1|strength=НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Несущая: Для выбранного CapacityLoadPath соответствующая нагрузка должна быть ненулевой.|crack=|stability=|batch=НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Несущая: Для выбранного CapacityLoadPath соответствующая нагрузка должна быть ненулевой.
+MATRIX_STATE: audit03.matrix.CircleSym.M_0_1|type=StrengthState|spec=ULS(I)|ThreeLine|Ignore|TwoLine|N=-4333929.01979265|Mx=30337503.1385485|My=-43339290.1979265|rN=0.000000000931|rMx=0.000000018626|rMy=0.000000014901|converged=True|physical=False|extension=True
+MATRIX_STRAINS: audit03.matrix.CircleSym.M_0_1|type=StrengthState|concreteMin=-0.135177186946|concreteMax=-0.039955827822|steelMin=-0.126298189618|steelMax=-0.04883482515
+OK: audit03.matrix.CircleSym.M_0_1.state.rN.1; actual=0.000000000931; expected=0.
+OK: audit03.matrix.CircleSym.M_0_1.state.rMx.1; actual=0.000000018626; expected=0.
+OK: audit03.matrix.CircleSym.M_0_1.state.rMy.1; actual=0.000000014901; expected=0.
+OK: audit03.matrix.CircleSym.M_0_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_0_1.reportComment.1
+OK: audit03.matrix.CircleSym.M_0_1.noInternalFailure.2
+OK: audit03.matrix.CircleSym.M_0_1.reportComment.2
+OK: audit03.matrix.CircleSym.M_0_1.noInternalFailure.3
+OK: audit03.matrix.CircleSym.M_0_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_0_1.noInternalFailure.4
+OK: audit03.matrix.CircleSym.M_0_1.noInternalFailure.5
+OK: audit03.matrix.CircleSym.M_0_1.noInternalFailure.2
+OK: audit03.matrix.CircleSym.M_0_1.reportComment.2
+MATRIX_CASE: shape=CircleSym|family=FormationBoundary|id=M_1_1|load=axialC2|N=-4333929.01979265|Mx=0.|My=0.|profile=PR1|path=λ*My
+CASE: audit03.matrix.CircleSym.M_1_1|N=-4333929.01979265|Mx=0|My=0|offsetX=10|offsetY=-7|path=My|lambda=0.|method=|limit=Для выбранного CapacityLoadPath соответствующая нагрузка должна быть ненулевой.|status=InputErr
+OK: audit03.matrix.CircleSym.M_1_1.unscaledInput
+OK: audit03.matrix.CircleSym.M_1_1.unscaledNotExecuted
+OK: audit03.matrix.CircleSym.M_1_1.unscaledNoSearch
+OK: audit03.matrix.CircleSym.M_1_1.unscaledNoPoint
+META: audit03.comments.M_1_1.direct|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|applies=True|calculated=True|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_1_1.direct.reasonPresent
+OK: audit03.comments.M_1_1.direct.russianReason
+OK: audit03.comments.M_1_1.direct.readable
+OK: audit03.comments.M_1_1.direct.ownSubtree
+META: audit03.comments.M_1_1.capacity|status=rsInvalidInput|code=INVALID_INPUT|applies=True|calculated=False|comment=Для выбранного CapacityLoadPath соответствующая нагрузка должна быть ненулевой.
+OK: audit03.comments.M_1_1.capacity.reasonPresent
+OK: audit03.comments.M_1_1.capacity.russianReason
+OK: audit03.comments.M_1_1.capacity.readable
+OK: audit03.comments.M_1_1.capacity.ownSubtree
+META: audit03.comments.M_1_1.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_1_1.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_1_1.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_1_1.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_1_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.M_1_1.formulaNoNumFail
+OK: audit03.comments.M_1_1.strengthNoCrack
+OK: audit03.comments.M_1_1.crackNoCapacity
+OK: audit03.comments.M_1_1.overallComposition
+OK: audit03.comments.M_1_1.batchOutput
+OK: audit03.comments.M_1_1.strengthOutput
+OK: audit03.comments.M_1_1.crackOutput
+OK: audit03.comments.M_1_1.stabilityOutput
+OUTPUT: audit03.comments.M_1_1|strength=НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Несущая: Для выбранного CapacityLoadPath соответствующая нагрузка должна быть ненулевой.|crack=|stability=|batch=НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Несущая: Для выбранного CapacityLoadPath соответствующая нагрузка должна быть ненулевой.
+MATRIX_STATE: audit03.matrix.CircleSym.M_1_1|type=StrengthState|spec=ULS(I)|ThreeLine|Ignore|TwoLine|N=-4333929.01979265|Mx=30337503.1385485|My=-43339290.1979265|rN=0.000000000931|rMx=0.000000018626|rMy=0.000000014901|converged=True|physical=False|extension=True
+MATRIX_STRAINS: audit03.matrix.CircleSym.M_1_1|type=StrengthState|concreteMin=-0.135177186946|concreteMax=-0.039955827822|steelMin=-0.126298189618|steelMax=-0.04883482515
+OK: audit03.matrix.CircleSym.M_1_1.state.rN.1; actual=0.000000000931; expected=0.
+OK: audit03.matrix.CircleSym.M_1_1.state.rMx.1; actual=0.000000018626; expected=0.
+OK: audit03.matrix.CircleSym.M_1_1.state.rMy.1; actual=0.000000014901; expected=0.
+OK: audit03.matrix.CircleSym.M_1_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_1_1.reportComment.1
+OK: audit03.matrix.CircleSym.M_1_1.noInternalFailure.2
+OK: audit03.matrix.CircleSym.M_1_1.reportComment.2
+OK: audit03.matrix.CircleSym.M_1_1.noInternalFailure.3
+OK: audit03.matrix.CircleSym.M_1_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_1_1.noInternalFailure.4
+OK: audit03.matrix.CircleSym.M_1_1.noInternalFailure.5
+OK: audit03.matrix.CircleSym.M_1_1.noInternalFailure.2
+OK: audit03.matrix.CircleSym.M_1_1.reportComment.2
+MATRIX_CASE: shape=CircleSym|family=FormationBoundary|id=M_2_1|load=axialC2|N=-4333929.01979265|Mx=0.|My=0.|profile=PR1|path=λ*Mxy
+CASE: audit03.matrix.CircleSym.M_2_1|N=-4333929.01979265|Mx=0|My=0|offsetX=10|offsetY=-7|path=Mxy|lambda=0.|method=|limit=Для выбранного CapacityLoadPath соответствующая нагрузка должна быть ненулевой.|status=InputErr
+OK: audit03.matrix.CircleSym.M_2_1.unscaledInput
+OK: audit03.matrix.CircleSym.M_2_1.unscaledNotExecuted
+OK: audit03.matrix.CircleSym.M_2_1.unscaledNoSearch
+OK: audit03.matrix.CircleSym.M_2_1.unscaledNoPoint
+META: audit03.comments.M_2_1.direct|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|applies=True|calculated=True|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_2_1.direct.reasonPresent
+OK: audit03.comments.M_2_1.direct.russianReason
+OK: audit03.comments.M_2_1.direct.readable
+OK: audit03.comments.M_2_1.direct.ownSubtree
+META: audit03.comments.M_2_1.capacity|status=rsInvalidInput|code=INVALID_INPUT|applies=True|calculated=False|comment=Для выбранного CapacityLoadPath соответствующая нагрузка должна быть ненулевой.
+OK: audit03.comments.M_2_1.capacity.reasonPresent
+OK: audit03.comments.M_2_1.capacity.russianReason
+OK: audit03.comments.M_2_1.capacity.readable
+OK: audit03.comments.M_2_1.capacity.ownSubtree
+META: audit03.comments.M_2_1.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_2_1.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_2_1.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_2_1.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_2_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.M_2_1.formulaNoNumFail
+OK: audit03.comments.M_2_1.strengthNoCrack
+OK: audit03.comments.M_2_1.crackNoCapacity
+OK: audit03.comments.M_2_1.overallComposition
+OK: audit03.comments.M_2_1.batchOutput
+OK: audit03.comments.M_2_1.strengthOutput
+OK: audit03.comments.M_2_1.crackOutput
+OK: audit03.comments.M_2_1.stabilityOutput
+OUTPUT: audit03.comments.M_2_1|strength=НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Несущая: Для выбранного CapacityLoadPath соответствующая нагрузка должна быть ненулевой.|crack=|stability=|batch=НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Несущая: Для выбранного CapacityLoadPath соответствующая нагрузка должна быть ненулевой.
+MATRIX_STATE: audit03.matrix.CircleSym.M_2_1|type=StrengthState|spec=ULS(I)|ThreeLine|Ignore|TwoLine|N=-4333929.01979265|Mx=30337503.1385485|My=-43339290.1979265|rN=0.000000000931|rMx=0.000000018626|rMy=0.000000014901|converged=True|physical=False|extension=True
+MATRIX_STRAINS: audit03.matrix.CircleSym.M_2_1|type=StrengthState|concreteMin=-0.135177186946|concreteMax=-0.039955827822|steelMin=-0.126298189618|steelMax=-0.04883482515
+OK: audit03.matrix.CircleSym.M_2_1.state.rN.1; actual=0.000000000931; expected=0.
+OK: audit03.matrix.CircleSym.M_2_1.state.rMx.1; actual=0.000000018626; expected=0.
+OK: audit03.matrix.CircleSym.M_2_1.state.rMy.1; actual=0.000000014901; expected=0.
+OK: audit03.matrix.CircleSym.M_2_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_2_1.reportComment.1
+OK: audit03.matrix.CircleSym.M_2_1.noInternalFailure.2
+OK: audit03.matrix.CircleSym.M_2_1.reportComment.2
+OK: audit03.matrix.CircleSym.M_2_1.noInternalFailure.3
+OK: audit03.matrix.CircleSym.M_2_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_2_1.noInternalFailure.4
+OK: audit03.matrix.CircleSym.M_2_1.noInternalFailure.5
+OK: audit03.matrix.CircleSym.M_2_1.noInternalFailure.2
+OK: audit03.matrix.CircleSym.M_2_1.reportComment.2
+MATRIX_CASE: shape=CircleSym|family=FormationBoundary|id=M_3_1|load=axialC2|N=-4333929.01979265|Mx=0.|My=0.|profile=PR1|path=λ*N
+CASE: audit03.matrix.CircleSym.M_3_1|N=-4333929.01979265|Mx=0|My=0|offsetX=10|offsetY=-7|path=N|lambda=0.433399827113|method=UltimateStrain|limit=ConcreteStrainLimit|status=FAIL
+OK: audit03.matrix.CircleSym.M_3_1.path
+OK: audit03.matrix.CircleSym.M_3_1.validInput
+OK: audit03.matrix.CircleSym.M_3_1.NU; actual=-1878324.08789929; expected=-1878324.08789929
+OK: audit03.matrix.CircleSym.M_3_1.MxU; actual=-210.858354946831; expected=0.
+OK: audit03.matrix.CircleSym.M_3_1.MyU; actual=-203.987235455308; expected=0.
+OK: audit03.matrix.CircleSym.M_3_1.stateMx; actual=13148057.7569401; expected=13148268.615295
+OK: audit03.matrix.CircleSym.M_3_1.stateMy; actual=-18783444.8662283; expected=-18783240.8789929
+OK: audit03.matrix.CircleSym.M_3_1.physicalCriterion
+OK: audit03.matrix.CircleSym.M_3_1.finalPhysical
+META: audit03.comments.M_3_1.direct|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|applies=True|calculated=True|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_3_1.direct.reasonPresent
+OK: audit03.comments.M_3_1.direct.russianReason
+OK: audit03.comments.M_3_1.direct.readable
+OK: audit03.comments.M_3_1.direct.ownSubtree
+META: audit03.comments.M_3_1.capacity|status=rsCheckFailed|code=PHYSICAL_LIMIT_EXCEEDED|applies=True|calculated=True|comment=Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.433400, раньше заданной нагрузки (lambda = 1).
+OK: audit03.comments.M_3_1.capacity.reasonPresent
+OK: audit03.comments.M_3_1.capacity.russianReason
+OK: audit03.comments.M_3_1.capacity.readable
+OK: audit03.comments.M_3_1.capacity.ownSubtree
+META: audit03.comments.M_3_1.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_3_1.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_3_1.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_3_1.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_3_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.M_3_1.formulaNoNumFail
+OK: audit03.comments.M_3_1.strengthNoCrack
+OK: audit03.comments.M_3_1.crackNoCapacity
+OK: audit03.comments.M_3_1.overallComposition
+OK: audit03.comments.M_3_1.batchOutput
+OK: audit03.comments.M_3_1.strengthOutput
+OK: audit03.comments.M_3_1.crackOutput
+OK: audit03.comments.M_3_1.stabilityOutput
+OUTPUT: audit03.comments.M_3_1|strength=НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Несущая: Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.433400, раньше заданной нагрузки (lambda = 1).|crack=|stability=|batch=НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Несущая: Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.433400, раньше заданной нагрузки (lambda = 1).
+MATRIX_STATE: audit03.matrix.CircleSym.M_3_1|type=CapacityState|spec=ULS(I)|ThreeLine|Ignore|TwoLine|N=-1878324.08789929|Mx=13148268.615295|My=-18783240.8789929|rN=0.|rMx=-210.858354946598|rMy=-203.987235456705|converged=True|physical=True|extension=False
+MATRIX_STRAINS: audit03.matrix.CircleSym.M_3_1|type=CapacityState|concreteMin=-0.0035|concreteMax=-0.000525832155|steelMin=-0.00322260788|steelMax=-0.000803224275
+OK: audit03.matrix.CircleSym.M_3_1.state.rN.1; actual=0.; expected=0.
+OK: audit03.matrix.CircleSym.M_3_1.state.rMx.1; actual=-210.858354946598; expected=0.
+OK: audit03.matrix.CircleSym.M_3_1.state.rMy.1; actual=-203.987235456705; expected=0.
+OK: audit03.matrix.CircleSym.M_3_1.state.finalPhysical.1
+MATRIX_STATE: audit03.matrix.CircleSym.M_3_1|type=StrengthState|spec=ULS(I)|ThreeLine|Ignore|TwoLine|N=-4333929.01979265|Mx=30337503.1385485|My=-43339290.1979265|rN=0.000000000931|rMx=0.000000018626|rMy=0.000000014901|converged=True|physical=False|extension=True
+MATRIX_STRAINS: audit03.matrix.CircleSym.M_3_1|type=StrengthState|concreteMin=-0.135177186946|concreteMax=-0.039955827822|steelMin=-0.126298189618|steelMax=-0.04883482515
+OK: audit03.matrix.CircleSym.M_3_1.state.rN.2; actual=0.000000000931; expected=0.
+OK: audit03.matrix.CircleSym.M_3_1.state.rMx.2; actual=0.000000018626; expected=0.
+OK: audit03.matrix.CircleSym.M_3_1.state.rMy.2; actual=0.000000014901; expected=0.
+OK: audit03.matrix.CircleSym.M_3_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_3_1.reportComment.1
+OK: audit03.matrix.CircleSym.M_3_1.noInternalFailure.2
+OK: audit03.matrix.CircleSym.M_3_1.reportComment.2
+OK: audit03.matrix.CircleSym.M_3_1.noInternalFailure.3
+OK: audit03.matrix.CircleSym.M_3_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_3_1.noInternalFailure.4
+OK: audit03.matrix.CircleSym.M_3_1.noInternalFailure.5
+OK: audit03.matrix.CircleSym.M_3_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_3_1.reportComment.1
+MATRIX_CASE: shape=CircleSym|family=FormationBoundary|id=M_4_1|load=axialC2|N=-4333929.01979265|Mx=0.|My=0.|profile=PR1|path=λ*NMxy
+CASE: audit03.matrix.CircleSym.M_4_1|N=-4333929.01979265|Mx=0|My=0|offsetX=10|offsetY=-7|path=NMxy|lambda=0.433399827113|method=UltimateStrain|limit=ConcreteStrainLimit|status=FAIL
+OK: audit03.matrix.CircleSym.M_4_1.path
+OK: audit03.matrix.CircleSym.M_4_1.validInput
+OK: audit03.matrix.CircleSym.M_4_1.NU; actual=-1878324.08789929; expected=-1878324.08789929
+OK: audit03.matrix.CircleSym.M_4_1.MxU; actual=-210.858354946831; expected=0.
+OK: audit03.matrix.CircleSym.M_4_1.MyU; actual=-203.987235455308; expected=0.
+OK: audit03.matrix.CircleSym.M_4_1.stateMx; actual=13148057.7569401; expected=13148268.615295
+OK: audit03.matrix.CircleSym.M_4_1.stateMy; actual=-18783444.8662283; expected=-18783240.8789929
+OK: audit03.matrix.CircleSym.M_4_1.physicalCriterion
+OK: audit03.matrix.CircleSym.M_4_1.finalPhysical
+META: audit03.comments.M_4_1.direct|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|applies=True|calculated=True|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_4_1.direct.reasonPresent
+OK: audit03.comments.M_4_1.direct.russianReason
+OK: audit03.comments.M_4_1.direct.readable
+OK: audit03.comments.M_4_1.direct.ownSubtree
+META: audit03.comments.M_4_1.capacity|status=rsCheckFailed|code=PHYSICAL_LIMIT_EXCEEDED|applies=True|calculated=True|comment=Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.433400, раньше заданной нагрузки (lambda = 1).
+OK: audit03.comments.M_4_1.capacity.reasonPresent
+OK: audit03.comments.M_4_1.capacity.russianReason
+OK: audit03.comments.M_4_1.capacity.readable
+OK: audit03.comments.M_4_1.capacity.ownSubtree
+META: audit03.comments.M_4_1.formation|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_4_1.current|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_4_1.width|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_4_1.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_4_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.M_4_1.formulaNoNumFail
+OK: audit03.comments.M_4_1.strengthNoCrack
+OK: audit03.comments.M_4_1.crackNoCapacity
+OK: audit03.comments.M_4_1.overallComposition
+OK: audit03.comments.M_4_1.batchOutput
+OK: audit03.comments.M_4_1.strengthOutput
+OK: audit03.comments.M_4_1.crackOutput
+OK: audit03.comments.M_4_1.stabilityOutput
+OUTPUT: audit03.comments.M_4_1|strength=НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Несущая: Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.433400, раньше заданной нагрузки (lambda = 1).|crack=|stability=|batch=НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Несущая: Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.433400, раньше заданной нагрузки (lambda = 1).
+MATRIX_STATE: audit03.matrix.CircleSym.M_4_1|type=CapacityState|spec=ULS(I)|ThreeLine|Ignore|TwoLine|N=-1878324.08789929|Mx=13148268.615295|My=-18783240.8789929|rN=0.|rMx=-210.858354946598|rMy=-203.987235456705|converged=True|physical=True|extension=False
+MATRIX_STRAINS: audit03.matrix.CircleSym.M_4_1|type=CapacityState|concreteMin=-0.0035|concreteMax=-0.000525832155|steelMin=-0.00322260788|steelMax=-0.000803224275
+OK: audit03.matrix.CircleSym.M_4_1.state.rN.1; actual=0.; expected=0.
+OK: audit03.matrix.CircleSym.M_4_1.state.rMx.1; actual=-210.858354946598; expected=0.
+OK: audit03.matrix.CircleSym.M_4_1.state.rMy.1; actual=-203.987235456705; expected=0.
+OK: audit03.matrix.CircleSym.M_4_1.state.finalPhysical.1
+MATRIX_STATE: audit03.matrix.CircleSym.M_4_1|type=StrengthState|spec=ULS(I)|ThreeLine|Ignore|TwoLine|N=-4333929.01979265|Mx=30337503.1385485|My=-43339290.1979265|rN=0.000000000931|rMx=0.000000018626|rMy=0.000000014901|converged=True|physical=False|extension=True
+MATRIX_STRAINS: audit03.matrix.CircleSym.M_4_1|type=StrengthState|concreteMin=-0.135177186946|concreteMax=-0.039955827822|steelMin=-0.126298189618|steelMax=-0.04883482515
+OK: audit03.matrix.CircleSym.M_4_1.state.rN.2; actual=0.000000000931; expected=0.
+OK: audit03.matrix.CircleSym.M_4_1.state.rMx.2; actual=0.000000018626; expected=0.
+OK: audit03.matrix.CircleSym.M_4_1.state.rMy.2; actual=0.000000014901; expected=0.
+OK: audit03.matrix.CircleSym.M_4_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_4_1.reportComment.1
+OK: audit03.matrix.CircleSym.M_4_1.noInternalFailure.2
+OK: audit03.matrix.CircleSym.M_4_1.reportComment.2
+OK: audit03.matrix.CircleSym.M_4_1.noInternalFailure.3
+OK: audit03.matrix.CircleSym.M_4_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_4_1.noInternalFailure.4
+OK: audit03.matrix.CircleSym.M_4_1.noInternalFailure.5
+OK: audit03.matrix.CircleSym.M_4_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_4_1.reportComment.1
+MATRIX_CASE: shape=CircleSym|family=FormationBoundary|id=M_5_1|load=axialC2|N=-4333929.01979265|Mx=0.|My=0.|profile=PR2|path=Auto
+CASE: audit03.matrix.CircleSym.M_5_1|requested=Auto|resolved=|lambda=0.834566851362|Ncrc=0.|Mcrc=0.|point=True|formed=False
+OK: audit03.matrix.CircleSym.M_5_1.validInput
+OK: audit03.matrix.CircleSym.M_5_1.preConverged
+FAIL: audit03.matrix.CircleSym.M_5_1.prePhysical
+FAIL: audit03.matrix.CircleSym.M_5_1.preNotExtended
+META: audit03.comments.M_5_1.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_5_1.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+META: audit03.comments.M_5_1.formation|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|applies=True|calculated=True|comment=До образования трещины: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_5_1.formation.reasonPresent
+OK: audit03.comments.M_5_1.formation.russianReason
+OK: audit03.comments.M_5_1.formation.readable
+OK: audit03.comments.M_5_1.formation.ownSubtree
+META: audit03.comments.M_5_1.current|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|applies=True|calculated=True|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_5_1.current.reasonPresent
+OK: audit03.comments.M_5_1.current.russianReason
+OK: audit03.comments.M_5_1.current.readable
+OK: audit03.comments.M_5_1.current.ownSubtree
+META: audit03.comments.M_5_1.width|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_5_1.width.reasonPresent
+OK: audit03.comments.M_5_1.width.russianReason
+OK: audit03.comments.M_5_1.width.readable
+OK: audit03.comments.M_5_1.width.ownSubtree
+META: audit03.comments.M_5_1.longitudinal|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_5_1.longitudinal.reasonPresent
+OK: audit03.comments.M_5_1.longitudinal.russianReason
+OK: audit03.comments.M_5_1.longitudinal.readable
+OK: audit03.comments.M_5_1.longitudinal.ownSubtree
+META: audit03.comments.M_5_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.M_5_1.widthBlockActualReason
+OK: audit03.comments.M_5_1.longitudinalBlockActualReason
+OK: audit03.comments.M_5_1.formulaNoNumFail
+OK: audit03.comments.M_5_1.strengthNoCrack
+OK: audit03.comments.M_5_1.crackNoCapacity
+OK: audit03.comments.M_5_1.overallComposition
+OK: audit03.comments.M_5_1.batchOutput
+OK: audit03.comments.M_5_1.strengthOutput
+OK: audit03.comments.M_5_1.crackOutput
+OK: audit03.comments.M_5_1.stabilityOutput
+OUTPUT: audit03.comments.M_5_1|strength=|crack=Трещинообразование: До образования трещины: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.|stability=|batch=Трещинообразование: До образования трещины: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+MATRIX_STATE: audit03.matrix.CircleSym.M_5_1|type=PreCrackState|spec=SLS(II)|ThreeLine|UseDiagram|TwoLine|N=-3616953.49607363|Mx=25318674.4725154|My=-36169534.9607363|rN=0.|rMx=-0.000007763505|rMy=0.000000603497|converged=True|physical=False|extension=True
+MATRIX_STRAINS: audit03.matrix.CircleSym.M_5_1|type=PreCrackState|concreteMin=-0.082602457751|concreteMax=0.00015|steelMin=-0.074890095653|steelMax=-0.007562362098
+OK: audit03.matrix.CircleSym.M_5_1.state.rN.1; actual=0.; expected=0.
+OK: audit03.matrix.CircleSym.M_5_1.state.rMx.1; actual=-0.000007763505; expected=0.
+OK: audit03.matrix.CircleSym.M_5_1.state.rMy.1; actual=0.000000603497; expected=0.
+OK: audit03.matrix.CircleSym.M_5_1.state.finalFailureTyped.1
+FAIL: audit03.matrix.CircleSym.M_5_1.state.failedPreNoPoint.1
+OK: audit03.matrix.CircleSym.M_5_1.state.failedPreCause.1
+MATRIX_STATE: audit03.matrix.CircleSym.M_5_1|type=CrackedState|spec=SLS(II)|TwoLine|Ignore|TwoLine|N=-4333929.01979265|Mx=30337503.1385485|My=-43339290.1979265|rN=-0.000000003725|rMx=0.000000014901|rMy=0.000000029802|converged=True|physical=False|extension=True
+MATRIX_STRAINS: audit03.matrix.CircleSym.M_5_1|type=CrackedState|concreteMin=-0.115177186946|concreteMax=-0.019955827822|steelMin=-0.106298189618|steelMax=-0.02883482515
+OK: audit03.matrix.CircleSym.M_5_1.state.rN.2; actual=-0.000000003725; expected=0.
+OK: audit03.matrix.CircleSym.M_5_1.state.rMx.2; actual=0.000000014901; expected=0.
+OK: audit03.matrix.CircleSym.M_5_1.state.rMy.2; actual=0.000000029802; expected=0.
+OK: audit03.matrix.CircleSym.M_5_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_5_1.noInternalFailure.2
+OK: audit03.matrix.CircleSym.M_5_1.noInternalFailure.3
+OK: audit03.matrix.CircleSym.M_5_1.reportComment.3
+OK: audit03.matrix.CircleSym.M_5_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_5_1.reportComment.1
+OK: audit03.matrix.CircleSym.M_5_1.noInternalFailure.4
+OK: audit03.matrix.CircleSym.M_5_1.reportComment.4
+OK: audit03.matrix.CircleSym.M_5_1.noInternalFailure.5
+OK: audit03.matrix.CircleSym.M_5_1.reportComment.5
+OK: audit03.matrix.CircleSym.M_5_1.noInternalFailure.3
+OK: audit03.matrix.CircleSym.M_5_1.reportComment.3
+MATRIX_CASE: shape=CircleSym|family=FormationBoundary|id=M_6_1|load=axialC2|N=-4333929.01979265|Mx=0.|My=0.|profile=PR2|path=λ*Mxy
+CASE: audit03.matrix.CircleSym.M_6_1|requested=λ*Mxy|resolved=|lambda=0.|Ncrc=0.|Mcrc=0.|point=False|formed=False
+OK: audit03.matrix.CircleSym.M_6_1.validInput
+META: audit03.comments.M_6_1.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_6_1.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+META: audit03.comments.M_6_1.formation|status=rsCheckFailed|code=PHYSICAL_LIMIT_EXCEEDED|applies=True|calculated=True|comment=При поиске образования трещины физический предел бетона или арматуры достигнут раньше порога трещинообразования.
+OK: audit03.comments.M_6_1.formation.reasonPresent
+OK: audit03.comments.M_6_1.formation.russianReason
+OK: audit03.comments.M_6_1.formation.readable
+OK: audit03.comments.M_6_1.formation.ownSubtree
+META: audit03.comments.M_6_1.current|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|applies=True|calculated=True|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_6_1.current.reasonPresent
+OK: audit03.comments.M_6_1.current.russianReason
+OK: audit03.comments.M_6_1.current.readable
+OK: audit03.comments.M_6_1.current.ownSubtree
+META: audit03.comments.M_6_1.width|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_6_1.width.reasonPresent
+OK: audit03.comments.M_6_1.width.russianReason
+OK: audit03.comments.M_6_1.width.readable
+OK: audit03.comments.M_6_1.width.ownSubtree
+META: audit03.comments.M_6_1.longitudinal|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_6_1.longitudinal.reasonPresent
+OK: audit03.comments.M_6_1.longitudinal.russianReason
+OK: audit03.comments.M_6_1.longitudinal.readable
+OK: audit03.comments.M_6_1.longitudinal.ownSubtree
+META: audit03.comments.M_6_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.M_6_1.widthBlockActualReason
+OK: audit03.comments.M_6_1.longitudinalBlockActualReason
+OK: audit03.comments.M_6_1.formulaNoNumFail
+OK: audit03.comments.M_6_1.strengthNoCrack
+OK: audit03.comments.M_6_1.crackNoCapacity
+OK: audit03.comments.M_6_1.overallComposition
+OK: audit03.comments.M_6_1.batchOutput
+OK: audit03.comments.M_6_1.strengthOutput
+OK: audit03.comments.M_6_1.crackOutput
+OK: audit03.comments.M_6_1.stabilityOutput
+OUTPUT: audit03.comments.M_6_1|strength=|crack=Трещинообразование: При поиске образования трещины физический предел бетона или арматуры достигнут раньше порога трещинообразования.; НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.|stability=|batch=Трещинообразование: При поиске образования трещины физический предел бетона или арматуры достигнут раньше порога трещинообразования.; НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+MATRIX_STATE: audit03.matrix.CircleSym.M_6_1|type=CrackedState|spec=SLS(II)|TwoLine|Ignore|TwoLine|N=-4333929.01979265|Mx=30337503.1385485|My=-43339290.1979265|rN=-0.000000003725|rMx=0.000000014901|rMy=0.000000029802|converged=True|physical=False|extension=True
+MATRIX_STRAINS: audit03.matrix.CircleSym.M_6_1|type=CrackedState|concreteMin=-0.115177186946|concreteMax=-0.019955827822|steelMin=-0.106298189618|steelMax=-0.02883482515
+OK: audit03.matrix.CircleSym.M_6_1.state.rN.1; actual=-0.000000003725; expected=0.
+OK: audit03.matrix.CircleSym.M_6_1.state.rMx.1; actual=0.000000014901; expected=0.
+OK: audit03.matrix.CircleSym.M_6_1.state.rMy.1; actual=0.000000029802; expected=0.
+OK: audit03.matrix.CircleSym.M_6_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_6_1.noInternalFailure.2
+OK: audit03.matrix.CircleSym.M_6_1.noInternalFailure.3
+OK: audit03.matrix.CircleSym.M_6_1.reportComment.3
+OK: audit03.matrix.CircleSym.M_6_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_6_1.reportComment.1
+OK: audit03.matrix.CircleSym.M_6_1.noInternalFailure.4
+OK: audit03.matrix.CircleSym.M_6_1.reportComment.4
+OK: audit03.matrix.CircleSym.M_6_1.noInternalFailure.5
+OK: audit03.matrix.CircleSym.M_6_1.reportComment.5
+OK: audit03.matrix.CircleSym.M_6_1.noInternalFailure.3
+OK: audit03.matrix.CircleSym.M_6_1.reportComment.3
+MATRIX_CASE: shape=CircleSym|family=FormationBoundary|id=M_7_1|load=axialC2|N=-4333929.01979265|Mx=0.|My=0.|profile=PR2|path=λ*N
+CASE: audit03.matrix.CircleSym.M_7_1|requested=λ*N|resolved=λ*N|lambda=0.|Ncrc=0.|Mcrc=0.|point=False|formed=True
+OK: audit03.matrix.CircleSym.M_7_1.validInput
+OK: audit03.matrix.CircleSym.M_7_1.fixedPath
+META: audit03.comments.M_7_1.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_7_1.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+META: audit03.comments.M_7_1.formation|status=rsSuccessWithWarning|code=INITIAL_STATE_BEYOND_LIMIT|applies=True|calculated=True|comment=Трещина уже образуется в постоянной части выбранного пути λ*N; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1.
+OK: audit03.comments.M_7_1.formation.reasonPresent
+OK: audit03.comments.M_7_1.formation.russianReason
+OK: audit03.comments.M_7_1.formation.readable
+OK: audit03.comments.M_7_1.formation.ownSubtree
+META: audit03.comments.M_7_1.current|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|applies=True|calculated=True|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_7_1.current.reasonPresent
+OK: audit03.comments.M_7_1.current.russianReason
+OK: audit03.comments.M_7_1.current.readable
+OK: audit03.comments.M_7_1.current.ownSubtree
+META: audit03.comments.M_7_1.width|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_7_1.width.reasonPresent
+OK: audit03.comments.M_7_1.width.russianReason
+OK: audit03.comments.M_7_1.width.readable
+OK: audit03.comments.M_7_1.width.ownSubtree
+META: audit03.comments.M_7_1.longitudinal|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_7_1.longitudinal.reasonPresent
+OK: audit03.comments.M_7_1.longitudinal.russianReason
+OK: audit03.comments.M_7_1.longitudinal.readable
+OK: audit03.comments.M_7_1.longitudinal.ownSubtree
+META: audit03.comments.M_7_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.M_7_1.widthBlockActualReason
+OK: audit03.comments.M_7_1.longitudinalBlockActualReason
+OK: audit03.comments.M_7_1.formulaNoNumFail
+OK: audit03.comments.M_7_1.strengthNoCrack
+OK: audit03.comments.M_7_1.crackNoCapacity
+OK: audit03.comments.M_7_1.overallComposition
+OK: audit03.comments.M_7_1.batchOutput
+OK: audit03.comments.M_7_1.strengthOutput
+OK: audit03.comments.M_7_1.crackOutput
+OK: audit03.comments.M_7_1.stabilityOutput
+OUTPUT: audit03.comments.M_7_1|strength=|crack=Трещинообразование: Трещина уже образуется в постоянной части выбранного пути λ*N; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1.; НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.|stability=|batch=Трещинообразование: Трещина уже образуется в постоянной части выбранного пути λ*N; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1.; НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+MATRIX_STATE: audit03.matrix.CircleSym.M_7_1|type=CrackedState|spec=SLS(II)|TwoLine|Ignore|TwoLine|N=-4333929.01979265|Mx=30337503.1385485|My=-43339290.1979265|rN=-0.000000003725|rMx=0.000000014901|rMy=0.000000029802|converged=True|physical=False|extension=True
+MATRIX_STRAINS: audit03.matrix.CircleSym.M_7_1|type=CrackedState|concreteMin=-0.115177186946|concreteMax=-0.019955827822|steelMin=-0.106298189618|steelMax=-0.02883482515
+OK: audit03.matrix.CircleSym.M_7_1.state.rN.1; actual=-0.000000003725; expected=0.
+OK: audit03.matrix.CircleSym.M_7_1.state.rMx.1; actual=0.000000014901; expected=0.
+OK: audit03.matrix.CircleSym.M_7_1.state.rMy.1; actual=0.000000029802; expected=0.
+OK: audit03.matrix.CircleSym.M_7_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_7_1.noInternalFailure.2
+OK: audit03.matrix.CircleSym.M_7_1.noInternalFailure.3
+OK: audit03.matrix.CircleSym.M_7_1.reportComment.3
+OK: audit03.matrix.CircleSym.M_7_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_7_1.reportComment.1
+OK: audit03.matrix.CircleSym.M_7_1.noInternalFailure.4
+OK: audit03.matrix.CircleSym.M_7_1.reportComment.4
+OK: audit03.matrix.CircleSym.M_7_1.noInternalFailure.5
+OK: audit03.matrix.CircleSym.M_7_1.reportComment.5
+OK: audit03.matrix.CircleSym.M_7_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_7_1.reportComment.1
+MATRIX_CASE: shape=CircleSym|family=FormationBoundary|id=M_8_1|load=axialC2|N=-4333929.01979265|Mx=0.|My=0.|profile=PR2|path=λ*NMxy
+CASE: audit03.matrix.CircleSym.M_8_1|requested=λ*NMxy|resolved=|lambda=0.834566851362|Ncrc=0.|Mcrc=0.|point=True|formed=False
+OK: audit03.matrix.CircleSym.M_8_1.validInput
+OK: audit03.matrix.CircleSym.M_8_1.preConverged
+FAIL: audit03.matrix.CircleSym.M_8_1.prePhysical
+FAIL: audit03.matrix.CircleSym.M_8_1.preNotExtended
+META: audit03.comments.M_8_1.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.M_8_1.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+META: audit03.comments.M_8_1.formation|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|applies=True|calculated=True|comment=До образования трещины: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_8_1.formation.reasonPresent
+OK: audit03.comments.M_8_1.formation.russianReason
+OK: audit03.comments.M_8_1.formation.readable
+OK: audit03.comments.M_8_1.formation.ownSubtree
+META: audit03.comments.M_8_1.current|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|applies=True|calculated=True|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_8_1.current.reasonPresent
+OK: audit03.comments.M_8_1.current.russianReason
+OK: audit03.comments.M_8_1.current.readable
+OK: audit03.comments.M_8_1.current.ownSubtree
+META: audit03.comments.M_8_1.width|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_8_1.width.reasonPresent
+OK: audit03.comments.M_8_1.width.russianReason
+OK: audit03.comments.M_8_1.width.readable
+OK: audit03.comments.M_8_1.width.ownSubtree
+META: audit03.comments.M_8_1.longitudinal|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.M_8_1.longitudinal.reasonPresent
+OK: audit03.comments.M_8_1.longitudinal.russianReason
+OK: audit03.comments.M_8_1.longitudinal.readable
+OK: audit03.comments.M_8_1.longitudinal.ownSubtree
+META: audit03.comments.M_8_1.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.M_8_1.widthBlockActualReason
+OK: audit03.comments.M_8_1.longitudinalBlockActualReason
+OK: audit03.comments.M_8_1.formulaNoNumFail
+OK: audit03.comments.M_8_1.strengthNoCrack
+OK: audit03.comments.M_8_1.crackNoCapacity
+OK: audit03.comments.M_8_1.overallComposition
+OK: audit03.comments.M_8_1.batchOutput
+OK: audit03.comments.M_8_1.strengthOutput
+OK: audit03.comments.M_8_1.crackOutput
+OK: audit03.comments.M_8_1.stabilityOutput
+OUTPUT: audit03.comments.M_8_1|strength=|crack=Трещинообразование: До образования трещины: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.|stability=|batch=Трещинообразование: До образования трещины: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+MATRIX_STATE: audit03.matrix.CircleSym.M_8_1|type=PreCrackState|spec=SLS(II)|ThreeLine|UseDiagram|TwoLine|N=-3616953.49607363|Mx=25318674.4725154|My=-36169534.9607363|rN=0.|rMx=-0.000007763505|rMy=0.000000603497|converged=True|physical=False|extension=True
+MATRIX_STRAINS: audit03.matrix.CircleSym.M_8_1|type=PreCrackState|concreteMin=-0.082602457751|concreteMax=0.00015|steelMin=-0.074890095653|steelMax=-0.007562362098
+OK: audit03.matrix.CircleSym.M_8_1.state.rN.1; actual=0.; expected=0.
+OK: audit03.matrix.CircleSym.M_8_1.state.rMx.1; actual=-0.000007763505; expected=0.
+OK: audit03.matrix.CircleSym.M_8_1.state.rMy.1; actual=0.000000603497; expected=0.
+OK: audit03.matrix.CircleSym.M_8_1.state.finalFailureTyped.1
+FAIL: audit03.matrix.CircleSym.M_8_1.state.failedPreNoPoint.1
+OK: audit03.matrix.CircleSym.M_8_1.state.failedPreCause.1
+MATRIX_STATE: audit03.matrix.CircleSym.M_8_1|type=CrackedState|spec=SLS(II)|TwoLine|Ignore|TwoLine|N=-4333929.01979265|Mx=30337503.1385485|My=-43339290.1979265|rN=-0.000000003725|rMx=0.000000014901|rMy=0.000000029802|converged=True|physical=False|extension=True
+MATRIX_STRAINS: audit03.matrix.CircleSym.M_8_1|type=CrackedState|concreteMin=-0.115177186946|concreteMax=-0.019955827822|steelMin=-0.106298189618|steelMax=-0.02883482515
+OK: audit03.matrix.CircleSym.M_8_1.state.rN.2; actual=-0.000000003725; expected=0.
+OK: audit03.matrix.CircleSym.M_8_1.state.rMx.2; actual=0.000000014901; expected=0.
+OK: audit03.matrix.CircleSym.M_8_1.state.rMy.2; actual=0.000000029802; expected=0.
+OK: audit03.matrix.CircleSym.M_8_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_8_1.noInternalFailure.2
+OK: audit03.matrix.CircleSym.M_8_1.noInternalFailure.3
+OK: audit03.matrix.CircleSym.M_8_1.reportComment.3
+OK: audit03.matrix.CircleSym.M_8_1.noInternalFailure.1
+OK: audit03.matrix.CircleSym.M_8_1.reportComment.1
+OK: audit03.matrix.CircleSym.M_8_1.noInternalFailure.4
+OK: audit03.matrix.CircleSym.M_8_1.reportComment.4
+OK: audit03.matrix.CircleSym.M_8_1.noInternalFailure.5
+OK: audit03.matrix.CircleSym.M_8_1.reportComment.5
+OK: audit03.matrix.CircleSym.M_8_1.noInternalFailure.3
+OK: audit03.matrix.CircleSym.M_8_1.reportComment.3
+TOTAL_AUDIT03_LOAD_MATRIX: shape=CircleSym; family=FormationBoundary; independentCases=9; passed=364; failed=6
+
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03BroadLoadMatrixTests; 2026-10-02T05:36:20
+RESULTS_SAVE_REOPEN: before=275F0B67EF79EFA1A807D036B6633CAD8074167E2FD29A389F1BC5B8352FEE85; after=275F0B67EF79EFA1A807D036B6633CAD8074167E2FD29A389F1BC5B8352FEE85; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_fd1118dd804c4b418cc83f37bd9bfe9e\RC_Section_NDM_saved.xlsm
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

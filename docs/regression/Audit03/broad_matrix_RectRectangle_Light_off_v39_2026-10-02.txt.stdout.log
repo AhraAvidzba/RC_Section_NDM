@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_f06_fixed.xlsm
+SOURCE_SHA256: D568D3C37C02D38DCC0959F2F1141898809F76150882E25E229CEB6E951124E9
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5ec5447578074932b0402bda997ca992\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_AUDIT03_LOAD_MATRIX: shape=RectRectangle; family=Light; independentCases=441; passed=12996; failed=0
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

@@ -1,0 +1,101 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_f06_fixed.xlsm
+SOURCE_SHA256: DF4C671E36B98CC78F5CC43427D768BBA0ACB934114481A19E465791951D8302
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_106f72e93c264e9bb0e184ee2ff7fdf3\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit03ProfileInputTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03ProfileInputTests; 2026-10-02T06:05:48
+EXCEL_AFTER_SUITE: pid=5980; workingSet=146747392; privateBytes=106143744; cpu=3.078125
+OK: audit03.profile.boolean.Calculation.Strength.DirectState.Yes
+OK: audit03.profile.boolean.Calculation.Strength.DirectState.True
+OK: audit03.profile.boolean.Calculation.Strength.DirectState.1
+OK: audit03.profile.boolean.Calculation.Strength.DirectState.Да
+OK: audit03.profile.boolean.Calculation.Strength.DirectState.No
+OK: audit03.profile.boolean.Calculation.Strength.DirectState.False
+OK: audit03.profile.boolean.Calculation.Strength.DirectState.0
+OK: audit03.profile.boolean.Calculation.Strength.DirectState.Нет
+OK: audit03.profile.invalid.Calculation.Strength.DirectState.1
+OK: audit03.profile.reason.Calculation.Strength.DirectState.1
+PROFILE_INPUT: key=Calculation.Strength.DirectState; case=1; error=-2147217516; reason=Профиль PR1: параметр Calculation.Strength.DirectState должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: "MAYBE".
+OK: audit03.profile.invalid.Calculation.Strength.DirectState.2
+OK: audit03.profile.reason.Calculation.Strength.DirectState.2
+PROFILE_INPUT: key=Calculation.Strength.DirectState; case=2; error=-2147217516; reason=Профиль PR1: параметр Calculation.Strength.DirectState должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: "TODO".
+OK: audit03.profile.invalid.Calculation.Strength.DirectState.3
+OK: audit03.profile.reason.Calculation.Strength.DirectState.3
+PROFILE_INPUT: key=Calculation.Strength.DirectState; case=3; error=-2147217516; reason=Профиль PR1: параметр Calculation.Strength.DirectState должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: "".
+OK: audit03.profile.invalid.Calculation.Strength.DirectState.4
+OK: audit03.profile.reason.Calculation.Strength.DirectState.4
+PROFILE_INPUT: key=Calculation.Strength.DirectState; case=4; error=-2147217516; reason=Профиль PR1: параметр Calculation.Strength.DirectState должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: "ERROR 2042".
+OK: audit03.profile.missing.Calculation.Strength.DirectState
+OK: audit03.profile.missingReason.Calculation.Strength.DirectState
+OK: audit03.profile.boolean.Calculation.Strength.Capacity.Yes
+OK: audit03.profile.boolean.Calculation.Strength.Capacity.True
+OK: audit03.profile.boolean.Calculation.Strength.Capacity.1
+OK: audit03.profile.boolean.Calculation.Strength.Capacity.Да
+OK: audit03.profile.boolean.Calculation.Strength.Capacity.No
+OK: audit03.profile.boolean.Calculation.Strength.Capacity.False
+OK: audit03.profile.boolean.Calculation.Strength.Capacity.0
+OK: audit03.profile.boolean.Calculation.Strength.Capacity.Нет
+OK: audit03.profile.invalid.Calculation.Strength.Capacity.1
+OK: audit03.profile.reason.Calculation.Strength.Capacity.1
+PROFILE_INPUT: key=Calculation.Strength.Capacity; case=1; error=-2147217516; reason=Профиль PR1: параметр Calculation.Strength.Capacity должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: "MAYBE".
+OK: audit03.profile.invalid.Calculation.Strength.Capacity.2
+OK: audit03.profile.reason.Calculation.Strength.Capacity.2
+PROFILE_INPUT: key=Calculation.Strength.Capacity; case=2; error=-2147217516; reason=Профиль PR1: параметр Calculation.Strength.Capacity должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: "TODO".
+OK: audit03.profile.invalid.Calculation.Strength.Capacity.3
+OK: audit03.profile.reason.Calculation.Strength.Capacity.3
+PROFILE_INPUT: key=Calculation.Strength.Capacity; case=3; error=-2147217516; reason=Профиль PR1: параметр Calculation.Strength.Capacity должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: "".
+OK: audit03.profile.invalid.Calculation.Strength.Capacity.4
+OK: audit03.profile.reason.Calculation.Strength.Capacity.4
+PROFILE_INPUT: key=Calculation.Strength.Capacity; case=4; error=-2147217516; reason=Профиль PR1: параметр Calculation.Strength.Capacity должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: "ERROR 2042".
+OK: audit03.profile.missing.Calculation.Strength.Capacity
+OK: audit03.profile.missingReason.Calculation.Strength.Capacity
+OK: audit03.profile.boolean.Calculation.Crack.Width.Yes
+OK: audit03.profile.boolean.Calculation.Crack.Width.True
+OK: audit03.profile.boolean.Calculation.Crack.Width.1
+OK: audit03.profile.boolean.Calculation.Crack.Width.Да
+OK: audit03.profile.boolean.Calculation.Crack.Width.No
+OK: audit03.profile.boolean.Calculation.Crack.Width.False
+OK: audit03.profile.boolean.Calculation.Crack.Width.0
+OK: audit03.profile.boolean.Calculation.Crack.Width.Нет
+OK: audit03.profile.invalid.Calculation.Crack.Width.1
+OK: audit03.profile.reason.Calculation.Crack.Width.1
+PROFILE_INPUT: key=Calculation.Crack.Width; case=1; error=-2147217516; reason=Профиль PR1: параметр Calculation.Crack.Width должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: "MAYBE".
+OK: audit03.profile.invalid.Calculation.Crack.Width.2
+OK: audit03.profile.reason.Calculation.Crack.Width.2
+PROFILE_INPUT: key=Calculation.Crack.Width; case=2; error=-2147217516; reason=Профиль PR1: параметр Calculation.Crack.Width должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: "TODO".
+OK: audit03.profile.invalid.Calculation.Crack.Width.3
+OK: audit03.profile.reason.Calculation.Crack.Width.3
+PROFILE_INPUT: key=Calculation.Crack.Width; case=3; error=-2147217516; reason=Профиль PR1: параметр Calculation.Crack.Width должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: "".
+OK: audit03.profile.invalid.Calculation.Crack.Width.4
+OK: audit03.profile.reason.Calculation.Crack.Width.4
+PROFILE_INPUT: key=Calculation.Crack.Width; case=4; error=-2147217516; reason=Профиль PR1: параметр Calculation.Crack.Width должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: "ERROR 2042".
+OK: audit03.profile.missing.Calculation.Crack.Width
+OK: audit03.profile.missingReason.Calculation.Crack.Width
+OK: audit03.profile.boolean.Calculation.Stability.Enabled.Yes
+OK: audit03.profile.boolean.Calculation.Stability.Enabled.True
+OK: audit03.profile.boolean.Calculation.Stability.Enabled.1
+OK: audit03.profile.boolean.Calculation.Stability.Enabled.Да
+OK: audit03.profile.boolean.Calculation.Stability.Enabled.No
+OK: audit03.profile.boolean.Calculation.Stability.Enabled.False
+OK: audit03.profile.boolean.Calculation.Stability.Enabled.0
+OK: audit03.profile.boolean.Calculation.Stability.Enabled.Нет
+OK: audit03.profile.invalid.Calculation.Stability.Enabled.1
+OK: audit03.profile.reason.Calculation.Stability.Enabled.1
+PROFILE_INPUT: key=Calculation.Stability.Enabled; case=1; error=-2147217516; reason=Профиль PR1: параметр Calculation.Stability.Enabled должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: "MAYBE".
+OK: audit03.profile.invalid.Calculation.Stability.Enabled.2
+OK: audit03.profile.reason.Calculation.Stability.Enabled.2
+PROFILE_INPUT: key=Calculation.Stability.Enabled; case=2; error=-2147217516; reason=Профиль PR1: параметр Calculation.Stability.Enabled должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: "TODO".
+OK: audit03.profile.invalid.Calculation.Stability.Enabled.3
+OK: audit03.profile.reason.Calculation.Stability.Enabled.3
+PROFILE_INPUT: key=Calculation.Stability.Enabled; case=3; error=-2147217516; reason=Профиль PR1: параметр Calculation.Stability.Enabled должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: "".
+OK: audit03.profile.invalid.Calculation.Stability.Enabled.4
+OK: audit03.profile.reason.Calculation.Stability.Enabled.4
+PROFILE_INPUT: key=Calculation.Stability.Enabled; case=4; error=-2147217516; reason=Профиль PR1: параметр Calculation.Stability.Enabled должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: "ERROR 2042".
+OK: audit03.profile.missing.Calculation.Stability.Enabled
+OK: audit03.profile.missingReason.Calculation.Stability.Enabled
+TOTAL_AUDIT03_PROFILE_INPUT: passed=72; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03ProfileInputTests; 2026-10-02T06:05:48
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

@@ -1383,6 +1383,9 @@ Private Function ConcreteDrawWidth(ByVal section As CSectionModel, ByVal index A
     If ConcreteDrawWidth <= 0# Then ConcreteDrawWidth = Sqr(section.ConcreteArea(index))
 End Function
 
+' Возвращает высоту визуальной оболочки бетонного элемента. Если импорт
+' не сохранил габарит, для рисунка используется сторона равноплощадного
+' квадрата; расчетные Area/I и напряжения элемента не заменяются.
 Private Function ConcreteDrawHeight(ByVal section As CSectionModel, ByVal index As Long) As Double
     ConcreteDrawHeight = section.ConcreteHeight(index)
     If ConcreteDrawHeight <= 0# Then ConcreteDrawHeight = Sqr(section.ConcreteArea(index))
@@ -1590,6 +1593,9 @@ Private Function NeutralYAtXState(ByVal epsilon0 As Double, ByVal kappaX As Doub
     End If
 End Function
 
+' Находит X нулевой деформации на заданной горизонтали по сохраненной
+' плоскости НДС. При нулевом kappaY возвращает заведомо внешнюю координату:
+' эта горизонталь не дает отдельного пересечения для отсечения линии.
 Private Function NeutralXAtYState(ByVal epsilon0 As Double, ByVal kappaX As Double, _
         ByVal kappaY As Double, ByVal y As Double) As Double
     If Abs(kappaY) <= 0.000000000000001 Then

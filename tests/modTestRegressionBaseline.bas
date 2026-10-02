@@ -13,7 +13,9 @@ Private Type TRegressionStats
     Report As String
 End Type
 
-' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
+' Выполняет пять опорных задач круглого сечения и проверки повторяемости,
+' изменения геометрии и переноса начала координат. Возвращает численный
+' протокол с прежними компонентными допусками и отдельными счетчиками отказов.
 Public Function RunRegressionBaselineTests() As String
     On Error GoTo Failed
 
@@ -41,7 +43,9 @@ Failed:
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
 
-' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
+' Строит заданную круговую модель и решает N+Mx+My опорными материалами.
+' Проверяет равновесие, при запросе отдельно ищет lambda и записывает
+' плоскость, размеры модели и время в воспроизводимый baseline-протокол.
 Private Sub RunBaselineCase(ByRef stats As TRegressionStats, ByVal caseName As String, _
         ByVal diameter As Double, ByVal centerX As Double, ByVal centerY As Double, _
         ByVal axisDistance As Double, ByVal barCount As Long, ByVal barDiameter As Double, _
@@ -82,7 +86,9 @@ Private Sub RunBaselineCase(ByRef stats As TRegressionStats, ByVal caseName As S
     AppendBaseline stats, caseName, solver, lambdaText, elapsed, mesh.FiberCount, rebars.Count
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Дважды решает один и тот же LC на одинаковой круговой модели отдельными
+' solver-ами. Проверяет равновесие и совпадение epsilon0/кривизн, защищая
+' повторный запуск от случайного сохраненного состояния предыдущей задачи.
 Private Sub TestRepeatedRun(ByRef stats As TRegressionStats)
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -116,7 +122,9 @@ Private Sub TestRepeatedRun(ByRef stats As TRegressionStats)
     AppendBaseline stats, "repeated_run_second", secondSolver, "NA", 0#, mesh.FiberCount, rebars.Count
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сравнивает круги 300 и 360 мм под одинаковыми усилиями. Обе задачи должны
+' найти равновесие, а плоскости отличаться: изменение геометрии должно
+' действительно доходить до расчетного ядра, а не использовать старую модель.
 Private Sub TestGeometryChange(ByRef stats As TRegressionStats)
     Dim smallSolver As CSectionSolver
     Dim largeSolver As CSectionSolver
@@ -132,7 +140,9 @@ Private Sub TestGeometryChange(ByRef stats As TRegressionStats)
     AppendBaseline stats, "geometry_change_d360", largeSolver, "NA", 0#, 0, 0
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Переносит модель и усилия к другому началу координат через общий load adapter.
+' Кривизны должны сохраняться, epsilon0 и моменты преобразоваться по заданному
+' сдвигу; равновесие подтверждается отдельно в смещенной системе.
 Private Sub TestOriginShift(ByRef stats As TRegressionStats)
     Dim baseN As Double
     Dim baseMx As Double
@@ -174,6 +184,9 @@ Private Sub TestOriginShift(ByRef stats As TRegressionStats)
     AppendBaseline stats, "origin_shift_shifted", shiftedSolver, "NA", 0#, 0, 0
 End Sub
 
+' Создает самостоятельную круговую модель с автоматическими стержнями и
+' возвращает решенное прямое НДС. Использует фиксированные baseline-настройки,
+' не меняя Config и не переиспользуя solver соседнего теста.
 Private Function SolveCircleDirect(ByVal diameter As Double, ByVal centerX As Double, ByVal centerY As Double, _
         ByVal axisDistance As Double, ByVal barCount As Long, ByVal barDiameter As Double, ByVal meshStep As Double, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double) As CSectionSolver

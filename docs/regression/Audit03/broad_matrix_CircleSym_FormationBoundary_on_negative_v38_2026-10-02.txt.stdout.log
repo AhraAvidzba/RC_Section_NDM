@@ -1,0 +1,13 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_formation_point_negative.xlsm
+SOURCE_SHA256: B3A7CCF8809F1B7EBACC5F2419DC25A90F88572C15E7B0A8DC0BCEDEAAF31796
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_fd1118dd804c4b418cc83f37bd9bfe9e\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+FAIL: audit03.matrix.CircleSym.M_5_1.prePhysical
+FAIL: audit03.matrix.CircleSym.M_5_1.preNotExtended
+FAIL: audit03.matrix.CircleSym.M_5_1.state.failedPreNoPoint.1
+FAIL: audit03.matrix.CircleSym.M_8_1.prePhysical
+FAIL: audit03.matrix.CircleSym.M_8_1.preNotExtended
+FAIL: audit03.matrix.CircleSym.M_8_1.state.failedPreNoPoint.1
+TOTAL_AUDIT03_LOAD_MATRIX: shape=CircleSym; family=FormationBoundary; independentCases=9; passed=364; failed=6
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

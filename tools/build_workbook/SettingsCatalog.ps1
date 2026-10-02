@@ -1349,6 +1349,7 @@ function Get-SettingsInstructionCatalog {
         "Calculation.Strength.Capacity включает поиск предельной несущей способности по выбранной λ-траектории сочетания. Используется та же модель материала, что и для НДС по прочности.",
         "Calculation.Crack.Width включает расчет нормальных трещин и существующую проверку продольных трещин. Для этих проверок по СП используются характеристики SLS(II): Rb,ser/Rbt,ser и Rs,ser.",
         "Calculation.Stability.Enabled включает учет продольного изгиба и проверку устойчивости перед последующими расчетами профиля.",
+        "Все четыре переключателя Calculation.* обязательны: выберите Yes или No. Пустая ячейка, ошибка формулы, неизвестное значение или отсутствующая строка не означают No и отклоняются с указанием профиля и параметра.",
         "Если устойчивость включена и сочетание не проходит нормативную проверку, последующие НДС, несущая способность и трещины для этого сочетания не запускаются. В Summary это остается FAIL по устойчивости, а пропущенные разделы получают N/A.",
         "MaterialModel.Stability.ValueSet задает только набор характеристик материала для устойчивости. Диаграммы TwoLine/ThreeLine здесь не выбираются, потому что в формулах D, Ncr и eta используются R, Eb и Es.",
         "Для нормативного расчета устойчивости следует выбирать ULS(I): это расчет прочности сжатого элемента по первой группе предельных состояний.",
@@ -2623,6 +2624,7 @@ function Add-CapacityMethodologyGuide {
     $row = Add-GuideFormula $Sheet $row "λ_ult ≥ 1  >  проверка проходит"
     $row = Add-GuideFormula $Sheet $row "λ_ult < 1  >  проверка не проходит"
     $row = Add-GuideParagraph $Sheet $row "λ_ult - найденный предельный множитель выбранной траектории. SF_capacity - коэффициент запаса по несущей способности, который попадает в подробный вывод и в rngBatchSummary."
+    $row = Add-GuideParagraph $Sheet $row "BaseFail означает, что сечение уже не выдерживает постоянную часть выбранного пути: те усилия, которые остаются при λ = 0. Увеличение масштабируемой нагрузки здесь не начинается. Этот статус появляется только при подтвержденном физическом отказе; сама по себе несходимость равновесия при λ = 0 остается NumFail."
     $row = Add-GuideParagraph $Sheet $row "NumFail означает, что предельная точка не была надежно найдена численно. Это не равнозначно физическому разрушению: нужно смотреть txt-отчет, выбранный путь, настройки LoadMultiplier и прямой НДС."
     $row++
 
@@ -3003,7 +3005,7 @@ function Add-ResultsSheetGuide {
     param([object]$Sheet, [int]$StartRow)
 
     $row = $StartRow
-    $row = Add-GuideParagraph $Sheet $row "Лист Results хранит расчетный снимок последнего успешного запуска. Схема на листе Расчет и AutoCAD export читают именно этот снимок: они не перечитывают текущие исходные данные Config и не запускают solver заново."
+    $row = Add-GuideParagraph $Sheet $row "Лист Results хранит расчетный снимок последнего завершенного запуска, включая не прошедшие проверки и диагностические состояния. Схема на листе Расчет и AutoCAD export читают именно этот снимок: они не перечитывают текущие исходные данные Config и не запускают solver заново."
     $row = Add-GuideParagraph $Sheet $row "Все численные результаты перед записью проходят через CUnitSystem. Поэтому единицы и знаки на Results соответствуют настройкам rngUnitSettings и rngSignConventionSettings, а не внутренним Н, мм и внутреннему знаку сжатия."
     $row++
 
@@ -3124,6 +3126,7 @@ function Add-SettingsInstructions {
     $InstructionSheet.Cells.Item($row, 1).Font.Bold = $true
     $InstructionSheet.Cells.Item($row, 1).Interior.Color = 15921906
     $InstructionSheet.Cells.Item($row, 2).Interior.Color = 15921906
+    $statusTableStart = $row
     $row++
     $InstructionSheet.Cells.Item($row, 1).Value2 = "OK"
     $InstructionSheet.Cells.Item($row, 2).Value2 = "Расчет этой проверки выполнен успешно. Для прямого НДС равновесие найдено внутри физической диаграммы материала; для прочности или трещин проверка прошла."
@@ -3131,16 +3134,22 @@ function Add-SettingsInstructions {
     $InstructionSheet.Cells.Item($row, 1).Value2 = "FAIL"
     $InstructionSheet.Cells.Item($row, 2).Value2 = "Численное решение есть, но инженерная проверка не проходит: превышена несущая способность, ширина нормальной трещины больше допуска, sigma_c,max больше Rb,mc2 по продольным трещинам или прямое НДС найдено только за пределами физической диаграммы."
     $row++
+    $InstructionSheet.Cells.Item($row, 1).Value2 = "BaseFail"
+    $InstructionSheet.Cells.Item($row, 2).Value2 = "Сечение не выдерживает уже постоянную часть выбранного пути несущей способности, при λ = 0. Физический отказ подтвержден; это не просто несходимость решателя."
+    $row++
     $InstructionSheet.Cells.Item($row, 1).Value2 = "NumFail"
     $InstructionSheet.Cells.Item($row, 2).Value2 = "Программа не смогла найти равновесие или предельную точку с текущими численными настройками. Это не доказательство разрушения; нужно проверить диагностику, нагрузку, сетку и параметры расчета."
     $row++
     $InstructionSheet.Cells.Item($row, 1).Value2 = "InputErr"
-    $InstructionSheet.Cells.Item($row, 2).Value2 = "Расчет не запускался из-за ошибки во входных данных: пустая или неизвестная настройка, недопустимая геометрия, материал, единицы или строка сочетания."
+    $InstructionSheet.Cells.Item($row, 2).Value2 = "Результат не получен из-за ошибки исходных данных или настройки: обязательная пустая ячейка, неизвестный вариант, недопустимая геометрия, материал, единицы или строка сочетания. Ошибка могла быть обнаружена до запуска либо при подготовке конкретной проверки; место и причина указаны в комментарии."
+    $row++
+    $InstructionSheet.Cells.Item($row, 1).Value2 = "CalcErr"
+    $InstructionSheet.Cells.Item($row, 2).Value2 = "Нарушен внутренний контракт расчета или произошла программная ошибка. Это не физический отказ и не обычная несходимость. Сохраните комментарий и txt-отчет для диагностики."
     $row++
     $InstructionSheet.Cells.Item($row, 1).Value2 = "N/A"
-    $InstructionSheet.Cells.Item($row, 2).Value2 = "Проверка для этого сочетания не выполнялась и не считается ошибкой: например, она не включена выбранным профилем или неприменима к найденному состоянию."
-    $InstructionSheet.Range($InstructionSheet.Cells.Item($row - 5, 1), $InstructionSheet.Cells.Item($row, 2)).Borders.LineStyle = 1
-    $InstructionSheet.Range($InstructionSheet.Cells.Item($row - 5, 1), $InstructionSheet.Cells.Item($row, 2)).Borders.Color = 14277081
+    $InstructionSheet.Cells.Item($row, 2).Value2 = "Проверка не запрошена, неприменима либо не выполнена из-за отсутствия обязательного предыдущего результата. В последнем случае причина указана в комментарии, а фактический отказ остается в статусе соответствующего НДС или поиска и в общей сводке. N/A само по себе не означает успешную проверку."
+    $InstructionSheet.Range($InstructionSheet.Cells.Item($statusTableStart, 1), $InstructionSheet.Cells.Item($row, 2)).Borders.LineStyle = 1
+    $InstructionSheet.Range($InstructionSheet.Cells.Item($statusTableStart, 1), $InstructionSheet.Cells.Item($row, 2)).Borders.Color = 14277081
     $row += 3
 
     $anchors = @{}
@@ -3287,6 +3296,12 @@ function Add-SettingsInstructions {
     for ($r = 1; $r -le ($used.Row + $used.Rows.Count + 40); $r++) {
         for ($c = 1; $c -le 40; $c++) {
             $caption = [string]$ConfigSheet.Cells.Item($r, $c).Value2
+            # При обновлении готовой книги заголовок уже содержит пометку ссылки.
+            # Сравниваем исходное название, чтобы назначить новый адрес справки
+            # и не накапливать повторные "(Подробнее)" при следующем обновлении.
+            if ($caption.EndsWith(" (Подробнее)")) {
+                $caption = $caption.Substring(0, $caption.Length - " (Подробнее)".Length)
+            }
             if ($headerLinks.ContainsKey($caption)) {
                 $targetKey = $headerLinks[$caption]
                 if ($anchors.ContainsKey($targetKey)) {

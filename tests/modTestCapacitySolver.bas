@@ -13,7 +13,8 @@ Private Type TCapacityTestStats
     Report As String
 End Type
 
-' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
+' Выполняет регрессии физических пределов, знаков и общих поисковых методов.
+' Отчет различает проверенный limit point, численный отказ и неверный вход.
 Public Function RunCapacitySolverTests() As String
     On Error GoTo Failed
 
@@ -107,7 +108,8 @@ Failed:
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Решает два направления Mx при постоянной сжимающей N: проверяет знаки
+' предельных моментов, физический критерий и равновесие каждой конечной точки.
 Private Sub TestMxPositiveAndNegative(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -132,7 +134,8 @@ Private Sub TestMxPositiveAndNegative(ByRef stats As TCapacityTestStats)
     AssertEquilibrium stats, "capacity.mx.positive", capPos.LastSolver, -300000#, capPos.MxUltimate, 0#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет симметрию несущей круглого сечения по X/Y и сохранение направления
+' косого изгиба. Допуск симметрии учитывает дискретизацию исходной тестовой сетки.
 Private Sub TestCircleCapacitySymmetry(ByRef stats As TCapacityTestStats)
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -172,7 +175,8 @@ Private Sub TestCircleCapacitySymmetry(ByRef stats As TCapacityTestStats)
     AssertClose stats, "circle.capacity.mxy.direction", capMxy.MxUltimate * -5000000# - capMxy.MyUltimate * -5000000#, 0#, 1000#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сравнивает Ignore/UseDiagram для растянутого бетона при одинаковых нагрузках.
+' Активная ветвь должна менять равновесную плоскость в одно-/двухосных задачах.
 Private Sub TestConcreteTensionBehaviorAffectsSolverAndCapacity(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -203,6 +207,8 @@ Private Sub TestConcreteTensionBehaviorAffectsSolverAndCapacity(ByRef stats As T
     AssertTensionBehaviorAffectsSolverMode stats, "tensionBehavior.strength.mxy", mesh, rebars, -50000#, -5000000#, -3000000#
 End Sub
 
+' Решает один вектор усилий с отключенным и активным растянутым бетоном;
+' проверяет сходимость обеих моделей и значимое различие параметров плоскости.
 Private Sub AssertTensionBehaviorAffectsSolverMode(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double)
@@ -228,7 +234,8 @@ Private Sub AssertTensionBehaviorAffectsSolverMode(ByRef stats As TCapacityTestS
         Abs(solverIgnore.KappaY - solverUse.KappaY) > 0.000000001 Or Abs(solverIgnore.Epsilon0 - solverUse.Epsilon0) > 0.000000001
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет все четыре квадранта Mx/My при одинаковой постоянной N.
+' Предельные моменты сохраняют знаки и отношение компонентов заданного пути.
 Private Sub TestMxySignedCombinations(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -240,6 +247,8 @@ Private Sub TestMxySignedCombinations(ByRef stats As TCapacityTestStats)
     CheckMxyCombination stats, "capacity.mxy.nn", mesh, rebars, -250000#, -6000000#, -4000000#
 End Sub
 
+' Проверяет одну косую траекторию: положительную lambda, направление моментов
+' и равновесие конечной точки. Не заменяет косую задачу независимыми осями.
 Private Sub CheckMxyCombination(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
         ByVal nValue As Double, ByVal mxBase As Double, ByVal myBase As Double)
@@ -256,7 +265,8 @@ Private Sub CheckMxyCombination(ByRef stats As TCapacityTestStats, ByVal prefix 
     AssertEquilibrium stats, prefix, cap.LastSolver, nValue, cap.MxUltimate, cap.MyUltimate
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Решает оба направления My при постоянной N и проверяет знаки конечных
+' моментов, физический управляющий предел и компонентное равновесие.
 Private Sub TestMyPositiveAndNegative(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -280,7 +290,8 @@ Private Sub TestMyPositiveAndNegative(ByRef stats As TCapacityTestStats)
     AssertEquilibrium stats, "capacity.my.negative", capNeg.LastSolver, -300000#, 0#, capNeg.MyUltimate
     AssertEquilibrium stats, "capacity.my.positive", capPos.LastSolver, -300000#, 0#, capPos.MyUltimate
 End Sub
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Удваивает предварительно найденный предельный момент и ожидает lambda<1.
+' Успех Search при этом не должен маскировать инженерный FAIL заданного LC.
 Private Sub TestLambdaLessThanOne(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -302,7 +313,8 @@ Private Sub TestLambdaLessThanOne(ByRef stats As TCapacityTestStats)
         -300000#, reference.MxUltimate * 2#, 0#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Повторно ищет предел от момента уже найденной опорной точки;
+' lambda должна быть около 1 в исходном допуске, без изменения критерия.
 Private Sub TestLambdaNearOne(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -322,7 +334,8 @@ Private Sub TestLambdaNearOne(ByRef stats As TCapacityTestStats)
     AssertClose stats, "capacity.lambda.nearOne.value", cap.LambdaUltimate, 1#, 0.03
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет чистый изгиб при N=0 на линейных материалах с заданными пределами.
+' Нулевая продольная сила не должна нарушать поиск или равновесие точки.
 Private Sub TestZeroAxialForce(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -373,7 +386,8 @@ Private Sub TestAxialLoadMultiplierFindsNult(ByRef stats As TCapacityTestStats)
     AssertEquilibrium stats, "capacity.nult.tension", tension.LastSolver, tension.NUltimate, 0#, 0#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Делает сжатие бетона управляющим ограничением, оставляя большой предел
+' арматуры; поиск должен завершиться именно ConcreteStrainLimit.
 Private Sub TestConcreteLimitState(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -390,7 +404,8 @@ Private Sub TestConcreteLimitState(ByRef stats As TCapacityTestStats)
     AssertEquals stats, "capacity.concreteLimit.state", cap.LimitState, "ConcreteStrainLimit"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Включает активную tensile-ветвь и малый растягивающий предел бетона.
+' Управляющий код должен относиться к растяжению, а не сжатию или арматуре.
 Private Sub TestConcreteTensionLimitState(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -413,7 +428,8 @@ Private Sub TestConcreteTensionLimitState(ByRef stats As TCapacityTestStats)
     AssertEquals stats, "capacity.concreteTensionLimit.state", cap.LimitState, "ConcreteTensionStrainLimit"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Отключает растянутый бетон при таком же малом tensile-пределе;
+' неактивная ветвь не ограничивает несущую, в этом fixture управляет арматура.
 Private Sub TestConcreteTensionLimitIgnored(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -436,7 +452,8 @@ Private Sub TestConcreteTensionLimitIgnored(ByRef stats As TCapacityTestStats)
     AssertEquals stats, "capacity.concreteTensionLimit.ignore.state", cap.LimitState, "SteelStrainLimit"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Делает деформацию арматуры управляющей на линейных материалах;
+' ожидается SteelStrainLimit при сохраненном поиске равновесия.
 Private Sub TestSteelLimitState(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -453,9 +470,9 @@ Private Sub TestSteelLimitState(ByRef stats As TCapacityTestStats)
     AssertEquals stats, "capacity.steelLimit.state", cap.LimitState, "SteelStrainLimit"
 End Sub
 
-' Проверяет, что LoadMultiplier не падает на чистом изгибе из-за старта из нулевого излома диаграммы.
-' Этот искусственно жесткий сценарий проверяет устойчивость numerical extension после появления
-' CStateGuessBuilder он стал важной регрессией устойчивости для lambda*Mx/lambda*My без постоянной продольной силы.
+' Проверяет старт чистого изгиба из подготовленной StateGuessBuilder плоскости.
+' При жестком бюджете итераций должен находиться физический предел, а журнал
+' подтверждать использование начального приближения вместо нулевого излома.
 Private Sub TestLoadMultiplierPureBendingUsesStateGuess(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -475,7 +492,8 @@ Private Sub TestLoadMultiplierPureBendingUsesStateGuess(ByRef stats As TCapacity
     AssertTrue stats, "capacity.pureBendingGuess.usedGuess", InStr(1, cap.DiagnosticLog, "для lambda-точки чистого изгиба применена стартовая плоскость", vbTextCompare) > 0
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет связность кривизн несимметричного сечения с ненулевым Ixy:
+' даже при My=0 равновесная KappaY может быть ненулевой.
 Private Sub TestAsymmetricCoupledCurvatures(ByRef stats As TCapacityTestStats)
     Dim geom As CGeometryRectSet
     Set geom = CapacityAsymmetricGeometry()
@@ -505,7 +523,8 @@ Private Sub TestAsymmetricCoupledCurvatures(ByRef stats As TCapacityTestStats)
     AssertEquilibrium stats, "capacity.asym", cap.LastSolver, -260000#, cap.MxUltimate, 0#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Решает косой изгиб несимметричного RectSet и проверяет обе кривизны,
+' отношение предельных моментов и равновесие относительно исходных осей.
 Private Sub TestAsymmetricMxy(ByRef stats As TCapacityTestStats)
     Dim geom As CGeometryRectSet
     Set geom = CapacityAsymmetricGeometry()
@@ -537,7 +556,8 @@ Private Sub TestAsymmetricMxy(ByRef stats As TCapacityTestStats)
     AssertEquilibrium stats, "capacity.mxy.asym", cap.LastSolver, -260000#, cap.MxUltimate, cap.MyUltimate
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Передает нулевую масштабируемую часть именно моментного пути.
+' Наличие постоянной N не делает такой путь допустимым: ожидается InvalidInput.
 Private Sub TestInvalidBaseMoment(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -552,7 +572,8 @@ Private Sub TestInvalidBaseMoment(ByRef stats As TCapacityTestStats)
     AssertEquals stats, "capacity.invalidBaseMoment.state", cap.LimitState, "InvalidInput"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сопоставляет LoadMultiplier и UltimateStrain на прямоугольнике/круге,
+' включая управляющие деформации и отдельные контракты численного отказа.
 Private Sub TestCapacitySolutionStrategyComparisons(ByRef stats As TCapacityTestStats)
     TestMethodPureCompression stats
     CompareCapacitySolutionStrategys stats, "method.n_plus_mx", -300000#, -10000000#, 0#, False
@@ -564,7 +585,8 @@ Private Sub TestCapacitySolutionStrategyComparisons(ByRef stats As TCapacityTest
     TestUltimateStrainDoesNotApplyMaxLambda stats
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет, что моментные entrypoint-ы обоих методов отклоняют чистую N
+' без базового момента; допустимая осевая lambda*N тестируется отдельным путем.
 Private Sub TestMethodPureCompression(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -586,6 +608,8 @@ Private Sub TestMethodPureCompression(ByRef stats As TCapacityTestStats)
     AppendComparison stats, "method.pure_compression.strain", strainMethod, 0#
 End Sub
 
+' Решает одинаковую моментную траекторию двумя стратегиями и сравнивает
+' lambda/управляющий предел; время сохраняется как наблюдение, не порог PASS.
 Private Sub CompareCapacitySolutionStrategys(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal nValue As Double, ByVal mxBase As Double, ByVal myBase As Double, ByVal tightLimits As Boolean)
     Dim mesh As CFiberMeshBuilder
@@ -628,6 +652,8 @@ Private Sub CompareCapacitySolutionStrategys(ByRef stats As TCapacityTestStats, 
     AppendComparison stats, prefix & ".strain", strainMethod, strainElapsed
 End Sub
 
+' Сопоставляет стратегии на симметричном круге с повернутыми X/Y задачами;
+' проверяет конечные моменты и определение критического элемента.
 Private Sub CompareCircleCapacitySolutionStrategys(ByRef stats As TCapacityTestStats)
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -662,7 +688,8 @@ Private Sub CompareCircleCapacitySolutionStrategys(ByRef stats As TCapacityTestS
     AppendComparison stats, "method.circle.strain", strainMethod, 0#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сравнивает обе стратегии при специально заданном бетонном strain-пределе.
+' UltimateStrain должен подтвердить тот же управляющий критерий и utilization.
 Private Sub TestMethodStrainLimitState(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -692,7 +719,8 @@ Private Sub TestMethodStrainLimitState(ByRef stats As TCapacityTestStats)
     AppendComparison stats, "method.strain_limit.strain", strainMethod, 0#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Ограничивает UltimateStrain одной итерацией и проверяет честный численный
+' отказ: неподтвержденная проба не становится физической верхней границей.
 Private Sub TestUltimateStrainNumericalFailure(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -813,7 +841,8 @@ Private Sub AssertLoadMultiplierTfDefault(ByRef stats As TCapacityTestStats, ByV
     AssertTrue stats, "capacity.tfDefaults." & methodName & ".notOvershot", cap.LambdaUltimate < 2# * referenceLambda
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сравнивает Bisection/Brent/Secant на одной моментной траектории;
+' каждый метод должен выполнить свою ветвь и подтвердить близкую lambda.
 Private Sub TestLoadMultiplierSearchMethods(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -1279,7 +1308,8 @@ Private Sub AssertLoadPathResult(ByRef stats As TCapacityTestStats, ByVal prefix
     AssertClose stats, prefix & ".myUltimate", cap.MyUltimate, expectedMy, 20000#
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Проверяет пустое/неизвестное имя Search и контролируемый отказ Secant
+' при малом бюджете: ни один сценарий не переключается молча на другой метод.
 Private Sub TestSearchMethodInputErrors(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -1336,7 +1366,8 @@ Private Sub TestInitialLambdaFailureStatusMapping(ByRef stats As TCapacityTestSt
         policy.ExternalStatus(physicalResult.Meta), "BaseFail"
 End Sub
 
-' Проверяет отдельный расчетный или интерфейсный сценарий и фиксирует ожидаемое поведение регрессией.
+' Сохраняет три повторных измерения каждого Search-метода на общем fixture.
+' Эти строки предназначены для сравнения, а не для утверждения ускорения по одному запуску.
 Private Sub TestSearchMethodPerformanceComparison(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -1347,7 +1378,8 @@ Private Sub TestSearchMethodPerformanceComparison(ByRef stats As TCapacityTestSt
     AppendSearchPerformance stats, "Secant", mesh, rebars
 End Sub
 
-' Запускает связанный набор операций и возвращает пользователю итоговый статус выполнения.
+' Решает общий контрольный моментный путь указанным Bisection/Brent/Secant
+' и возвращает solver с фактическими счетчиками и конечной диагностикой.
 Private Function RunSearchMethod(ByVal methodName As String, ByVal mesh As CFiberMeshBuilder, _
         ByVal rebars As CRebarLayout) As CCapacitySolver
     Dim cap As CCapacitySolver
@@ -1358,6 +1390,8 @@ Private Function RunSearchMethod(ByVal methodName As String, ByVal mesh As CFibe
     Set RunSearchMethod = cap
 End Function
 
+' Выполняет повторные измерения метода на свежем solver-е и добавляет
+' среднее время вместе с результатом; не изменяет настройки ради быстродействия.
 Private Sub AppendSearchPerformance(ByRef stats As TCapacityTestStats, ByVal methodName As String, _
         ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout)
     Dim runs As Long
@@ -1497,7 +1531,8 @@ Private Function CapacityAsymmetricGeometry() As CGeometryRectSet
     Set CapacityAsymmetricGeometry = geom
 End Function
 
-' Создает расчетный или интерфейсный объект из нормализованных исходных данных и локальных настроек.
+' Строит тестовую сетку любого поддерживаемого ISectionGeometry с одинаковым
+' шагом по осям; затем сетка и арматура объединяются в CSectionModel.
 Private Function BuildMesh(ByVal geom As ISectionGeometry, ByVal stepSize As Double) As CFiberMeshBuilder
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
